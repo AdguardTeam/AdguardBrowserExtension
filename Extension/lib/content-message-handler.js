@@ -43,7 +43,7 @@
             }
         });
         eventListeners[listenerId] = sender;
-        return {listenerId: listenerId};
+        return { listenerId: listenerId };
     }
 
     /**
@@ -135,7 +135,7 @@
                 adguard.settings.setProperty(message.key, message.value);
                 break;
             case 'checkRequestFilterReady':
-                return {ready: adguard.requestFilter.isReady()};
+                return { ready: adguard.requestFilter.isReady() };
             case 'addAndEnableFilter':
                 adguard.filters.addAndEnableFilters([message.filterId]);
                 break;
@@ -215,20 +215,16 @@
                 adguard.frames.resetBlockedAdsCount();
                 break;
             case 'getSelectorsAndScripts':
-                if (adguard.utils.workaround.isFacebookIframe(message.documentUrl)) {
-                    return {};
-                }
-                var cssAndScripts = adguard.webRequestService.processGetSelectorsAndScripts(sender.tab, message.documentUrl, message.options);
-                return cssAndScripts || {};
+                return adguard.webRequestService.processGetSelectorsAndScripts(sender.tab, message.documentUrl) || {};
             case 'checkPageScriptWrapperRequest':
                 var block = adguard.webRequestService.checkPageScriptWrapperRequest(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
-                return {block: block, requestId: message.requestId};
+                return { block: block, requestId: message.requestId };
             case 'processShouldCollapse':
                 var collapse = adguard.webRequestService.processShouldCollapse(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
-                return {collapse: collapse, requestId: message.requestId};
+                return { collapse: collapse, requestId: message.requestId };
             case 'processShouldCollapseMany':
                 var requests = adguard.webRequestService.processShouldCollapseMany(sender.tab, message.documentUrl, message.requests);
-                return {requests: requests};
+                return { requests: requests };
             case 'onOpenFilteringLogPage':
                 adguard.filteringLog.onOpenFilteringLogPage();
                 break;
@@ -243,22 +239,21 @@
                 break;
             case 'getTabFrameInfoById':
                 if (message.tabId) {
-                    var frameInfo = adguard.frames.getFrameInfo({tabId: message.tabId});
-                    return {frameInfo: frameInfo};
+                    var frameInfo = adguard.frames.getFrameInfo({ tabId: message.tabId });
+                    return { frameInfo: frameInfo };
                 } else {
                     adguard.tabs.getActive(function (tab) {
                         var frameInfo = adguard.frames.getFrameInfo(tab);
-                        callback({frameInfo: frameInfo});
+                        callback({ frameInfo: frameInfo });
                     });
                     return true; // Async
                 }
-                break;
             case 'getFilteringInfoByTabId':
                 var filteringInfo = adguard.filteringLog.getFilteringInfoByTabId(message.tabId);
-                return {filteringInfo: filteringInfo};
+                return { filteringInfo: filteringInfo };
             case 'synchronizeOpenTabs':
                 adguard.filteringLog.synchronizeOpenTabs(function (tabs) {
-                    callback({tabs: tabs});
+                    callback({ tabs: tabs });
                 });
                 return true; // Async
             case 'checkSubscriptionUrl':
@@ -271,7 +266,7 @@
                     //filter not found
                     confirmText = adguard.i18n.getMessage('abp_subscribe_confirm_import', [message.title]);
                 }
-                return {confirmText: confirmText};
+                return { confirmText: confirmText };
             case 'enableSubscription':
                 adguard.filters.processAbpSubscriptionUrl(message.url, function (rulesAddedCount) {
                     var title = adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_title');
@@ -298,6 +293,9 @@
                 break;
             case 'openSiteReportTab':
                 adguard.ui.openSiteReportTab(message.url);
+                break;
+            case 'openAbuseTab':
+                adguard.ui.openAbuseTab(message.url);
                 break;
             case 'openSettingsTab':
                 adguard.ui.openSettingsTab();
@@ -388,4 +386,3 @@
     adguard.runtime.onMessageHandler = handleMessage;
 
 })(adguard);
-

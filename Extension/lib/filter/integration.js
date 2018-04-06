@@ -59,6 +59,33 @@ adguard.integration = (function (adguard) {
 
     var integrationMode = INTEGRATION_MODE_FULL;
 
+    var integrationModeForceDisabled = false;
+    var integrationModeLastCheckTime = 0;
+    var INTEGRATION_CHECK_PERIOD_MS = 30 * 60 * 1000; // 30 minutes
+
+    /**
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/963
+     */
+    function reCheckIntegrationMode() {
+
+        if (Date.now() - integrationModeLastCheckTime > INTEGRATION_CHECK_PERIOD_MS) {
+
+            integrationModeLastCheckTime = Date.now();
+
+            // Sending request that should be intercepted by the Adguard App
+            adguard.backend.getResponseHeaders(adguard.backend.injectionsUrl + '/generate_204', function (headers) {
+                if (headers === null) {
+                    // Unable to retrieve response
+                    integrationModeForceDisabled = false;
+                    return;
+                }
+                var adguardAppHeaderValue = adguard.utils.browser.getHeaderValueByName(headers, ADGUARD_APP_HEADER);
+                // Unable to find X-Adguard-Filtered header
+                integrationModeForceDisabled = !adguardAppHeaderValue;
+            });
+        }
+    }
+
     /**
      * Parses Adguard version from X-Adguard-Filtered header
      *
@@ -136,7 +163,7 @@ adguard.integration = (function (adguard) {
         if (rule && rule.whiteListRule &&
             rule instanceof adguard.rules.UrlFilterRule &&
             rule.isFiltered(tabUrl, false, adguard.RequestTypes.DOCUMENT) &&
-            rule.checkContentTypeIncluded("DOCUMENT")) {
+            rule.isDocumentWhiteList()) {
 
             ruleInfo.headerRule = rule;
             ruleInfo.documentWhiteListed = true;
@@ -164,6 +191,9 @@ adguard.integration = (function (adguard) {
             adguard.frames.recordAdguardIntegrationForTab(tab, false, false, false, null, null, false);
             return;
         }
+
+        // Re-check integration status to prevent attack by the script, that adds X-Adguard-Filtered header
+        reCheckIntegrationMode();
 
         // Set adguard detected in frame
         var appInfo = parseAppHeader(adguardAppHeaderValue);
@@ -276,6 +306,15 @@ adguard.integration = (function (adguard) {
 
         shouldOverrideReferrer: shouldOverrideReferrer,
         getIntegrationBaseUrl: getIntegrationBaseUrl,
+
+        /**
+         * In some cases we have to force disable integration mode
+         * See `reCheckIntegrationMode` for details
+         * @returns {boolean}
+         */
+        isEnabled: function () {
+            return !integrationModeForceDisabled;
+        },
 
         /**
          * In simple api integration module may be missed

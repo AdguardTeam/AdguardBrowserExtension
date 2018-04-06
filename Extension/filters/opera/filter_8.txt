@@ -1,16 +1,9 @@
-! Checksum: bL1U0mBJGWpK3ugSh7j6Dw
+! Checksum: yiajw+1k36SAPmmSaK8Jyw
 ! Title: Dutch filter
-! Description: EasyList Dutch + Adguard Dutch filter. Filter list that specifically removes adverts on Dutch language websites.
-! Version: 1.0.9.29
-! TimeUpdated: 2017-07-10T23:01:25.585+04:00
+! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
+! Version: 2.0.0.27
+! TimeUpdated: 2018-03-14T03:03:20+00:00
 ! Expires: 2 days (update frequency)
-! Title: Adguard Dutch Filter.
-!
-! Filter that enables removing of the ads from websites with Dutch content.
-! Originally based on the EasyList Dutch filter.
-! Modified by Adguard Team according to the complaints from users.
-! This filter is licensed under the Creative Commons Attribution-ShareAlike 3.0 Unported license.
-!
 ! Homepage: http://adguard.com/filters.html#dutch
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
 !
@@ -23,6 +16,11 @@
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+!
+! Experimental
+!
+#%#var AG_abortInlineScript=function(d,e,f){var c;if("currentScript"in document)var b=function(){return document.currentScript};else b=function(){var a=document.getElementsByTagName("script");return a[a.length-1]},window.addEventListener("DOMContentLoaded",function(){b=function(){return null}});AG_defineProperty(e,{beforeGet:function(){var a=b();if(a&&a!==c&&(c=a,""===a.src&&d.test(a.textContent)))throw setTimeout(function(){console.warn("AdGuard aborted an execution of an inline script")}),null;}},f)};
+#%#var AG_defineProperty=function(){var k,l=Object.defineProperty;if("function"==typeof WeakMap)k=WeakMap;else{var m=0,n=function(){this.a=(m+=Math.random()).toString()};n.prototype.set=function(a,b){var c=a[this.a];c&&c[0]===a?c[1]=b:l(a,this.a,{value:[a,b],writable:!0});return this};n.prototype.get=function(a){var b;return(b=a[this.a])&&b[0]===a?b[1]:void 0};n.prototype.has=function(a){var b=a[this.a];return b?b[0]===a:!1};k=n}function r(a){this.b=a;this.h=Object.create(null)}function t(a,b,c,d){this.a=a;this.i=b;this.c=c;this.g=d}function u(){this.a=new k}function v(a,b,c){var d=b.i,e=b.c,f=new r(e.b),g;for(g in e.h)v(a,e.h[g],f);d=new t(c,d,f,b.g);c.h[d.i]=d;"undefined"!==typeof c.b&&(e=w(c.b,d.i),d.f=e,f=x(d.g)||y(a,d),!e||e.configurable?(l(c.b,d.i,f),e&&z(e)&&(A(c.b,f,e.value),B(a,e.value,b.c))):B(a,c.b[d.i],b.c))}function y(a,b){return{get:function(){var c=b.g;c&&c.beforeGet&&c.beforeGet.call(this,b.a.b);a:if(c=b.f)c=z(c)?c.value:c.get?c.get.call(this):void 0;else{c=b.a.b;if(b.i in c&&(c=C(c),null!==c)){var d=D.call(c,b.i);c=d?d.call(this):c[b.i];break a}c=void 0}(this===b.a.b||E.call(b.a.b,this))&&B(a,c,b.c);return c},set:function(c){if(this===b.a.b||E.call(b.a.b,this)){b.g&&b.g.beforeSet&&(c=b.g.beforeSet.call(this,c,this));var d=b.f;d&&z(d)&&d.value===c?c=!0:(d=F(b,c,this),G(c)&&(c=H(a,c),I(a,c,b.c)),c=d)}else c=F(b,c,this);return c},enumerable:b.f?b.f.enumerable:!0}}function I(a,b,c){for(var d in c.h){var e=c.h[d];if(b.h[d]){var f=a,g=b.h[d];!e.g||g.g||"undefined"===typeof g.a.b||g.f||(g.f=x(e.g));g.c&&e.c&&g.c!==e.c&&I(f,g.c,e.c)}else v(a,e,b)}}function B(a,b,c){G(b)&&(b=H(a,b),I(a,b,c))}function A(a,b,c){return z(b)?b.writable?(b.value=c,!0):!1:b.set?b.set.call(a,c):!1}function F(a,b,c){var d=a.f;if(!d){d=C(a.a.b);if(null!==d&&(d=J.call(d,a.i)))return d.call(c,b);if(!K(a.a.b))return!1;a.f={value:b,configurable:!0,writable:!0,enumerable:!0};return!0}return A(c,d,b)}function z(a){return"undefined"!==typeof a.writable}function x(a){if(a){for(var b={},c=L,d=!1;c--;){var e=M[c];N.call(a,e)&&(d=!0,b[e]=a[e])}return d?b:void 0}}function H(a,b){var c=a.a.get(b);c||(c=new r(b),a.a.set(b,c));return c}var M="value get set writable configurable enumerable".split(" "),L=6,w=Object.getOwnPropertyDescriptor,K=Object.isExtensible,C=Object.getPrototypeOf,N=Object.prototype.hasOwnProperty,E=Object.prototype.isPrototypeOf,D=Object.prototype.__lookupGetter__||function(a){return(a=O(this,a))&&a.get?a.get:void 0},J=Object.prototype.__lookupSetter__||function(a){return(a=O(this,a))&&a.set?a.set:void 0};function O(a,b){if(b in a){for(;!N.call(a,b);)a=C(a);return w(a,b)}}function G(a){var b=typeof a;return"function"===b||"object"===b&&null!==a?!0:!1}var P;return function(a,b,c){P||(P=new u);var d=P;c=c||window;var e=new r;a+=".";var f=e||new r;for(var g=d.f||(d.f=/^([^\\\.]|\\.)*?\./),h,p,q;a;){h=g.exec(a);if(null===h)throw 1;h=h[0].length;p=a.slice(0,h-1);a=a.slice(h);(h=f.h[p])?q=h.c:(q=new r,h=new t(f,p,q),f.h[p]=h);f=q}if(!h)throw 1;a=h;a.g=b;B(d,c,e)};}();
 ! JS API FINISH
 !---------------------------------------------------------------------------!
 -reclameplaatjes/
@@ -701,6 +699,7 @@ _advertentieleaderboardhome.
 @@||doubleclick.net^*adj/hbvl/homepage;tile=15;sz=160x600;$script,domain=hbvl.be
 @@||doubleclick.net^*adj/ster_cinema.nl/preroll;$script,domain=cinema.nl
 @@||easyads.eu/api/Advertisements/$domain=marktfeed.nl
+@@||easyads.eu/api/v2/AdvertentiePlanet/me/advertisements/$domain=advertentieplanet.nl
 @@||g.doubleclick.net/gampad/ads?$script,domain=marktplaats.nl
 @@||g.doubleclick.net/gampad/ads?$xmlhttprequest,domain=radioluisteren.fm
 @@||google.com/ads/search/module/ads/*/search.js$domain=zoover.be|zoover.nl
@@ -1318,10 +1317,30 @@ tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
 !
 ! These rules are against anti-adblock scripts
 !
-! https://github.com/AdguardTeam/AdguardFilters/issues/5246
-vogelgeluid.nl#@##banner_ad
 ! Prevent AdFender detection
 @@/ad_bomb/*$image,domain=computerworld.nl|webwereld.nl
+@@/ad_pics/*$image,domain=webwereld.nl
+!
+! https://github.com/AdguardTeam/AdguardFilters/issues/13007
+@@||static.webwereld.nl/javascripts/advert.js
+! https://github.com/AdguardTeam/AdguardFilters/issues/12387
+@@||v.fwmrm.net/ad/g/1$domain=player.medialaancdn.be|vtm.be
+player.medialaancdn.be,vtm.be#$#.pub300x250.pub300x250m.pub728x90.text-ad.textAd.textad.textads.text-ads.text-ad-links {display:block!important;}
+! https://github.com/AdguardTeam/AdguardFilters/issues/11545
+! https://github.com/AdguardTeam/AdguardFilters/issues/10738
+!+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
+@@||voipsipclient.blogspot.nl^$generichide
+! https://forum.adguard.com/index.php?threads/26050/
+voetbalwedstrijdenvandaag.nl#@##sponsorText
+! https://github.com/AdguardTeam/AdguardFilters/issues/6938
+@@||v.fwmrm.net/ad/g/1$domain=q2.be
+q2.be#$#.pub300x250.pub300x250m.pub728x90.text-ad.textAd.textad.textads.text-ads.text-ad-links {display:block!important;}
+! https://forum.adguard.com/index.php?threads/25361/
+icttipsandtricks.nl##body #adblock_screen
+! https://forum.adguard.com/index.php?threads/24081/
+@@||gamekings.tv/wp-content/themes/*/js/ads.js
+! https://github.com/AdguardTeam/AdguardFilters/issues/5246
+vogelgeluid.nl#@##banner_ad
 ! https://forum.adguard.com/index.php?threads/telegraaf-nl-antiadblock-warning.21364/
 @@||telegraaf.tcdn.nl/javascript/ads/*$domain=telegraaf.nl,third-party
 telegraaf.nl#%#window.canRunAds = true;
@@ -1336,6 +1355,12 @@ biernet.nl#@#.afs_ads
 !-------------------------------------------------------------------------------!
 !
 ! Extended CSS rules
+!
+! https://forum.adguard.com/index.php?threads/27070/
+pcmweb.nl##.site__sidebar > .block[-ext-has='div.banner']
+pcmweb.nl##.site__sidebar > .block[-ext-has='div#marketingcarrousseluitingen']
+computertotaal.nl###sidebar > .sidebarBlock[-ext-has='div#marketingcarrousseluitingen']
+computertotaal.nl###sidebar > .sidebarBlock[-ext-has='div.banner']
 !
 ad.nl##.tile[-ext-has=">.ankeiler--advertisement"]
 gelderlander.nl##.page-content > .theme-default[-ext-has='div.ad']
@@ -1374,6 +1399,7 @@ omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3
 !
 ! The content replacement rules
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/6938
 ! https://forum.adguard.com/index.php?threads/tv2-no.22252/
 !---------------------------------------------------------------------------!
 !-------------- Rules for specific websites --------------------------------!
@@ -1381,6 +1407,16 @@ omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3
 !--------------------------------------------------------!
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
+||topomania.net/sites/topomania.net/images/pacnum-promo.png
+ondertitel.com##.billboard_ad_new
+mediamarkt.nl###colorbox
+||pornozot.com/js/compiled/exo-
+||pornozot.com/js/compiled/custom-vendor.js
+pornozot.com##.banners-footer
+pornozot.com##.texto-aviso
+/vtm_od/prerolls/*.mp4$domain=q2.be
+berekenhet.nl##.bh-ads
+jan-magazine.nl##.banner.top
 feyenoord.nl##.reveal-modal-bg
 feyenoord.nl###adModal
 feyenoord.nl###ads.show-for-medium-up
@@ -1391,7 +1427,6 @@ allaboutphones.nl##.ad-container
 autoweek.nl##.page-banner
 marktplaats.nl###banner-aanbieding
 marktplaats.nl###banner-bottom
-marktplaats.nl###banner-marketing
 marktplaats.nl###banner-viptop
 afkortingen.nu###banner_right
 afkortingen.nu###banner_top
@@ -1431,12 +1466,21 @@ klusidee.nl##td.td-ad
 ||serving-sys.com/*.mp4^$domain=kijk.nl
 ||totaaltv.nl/upload/Banner-sep-astrasat.gif
 ||vlinderscrime.nl/wp-content/uploads/*/*banner*.
+! https://github.com/AdguardTeam/AdguardFilters/issues/10738
+!+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
+voipsipclient.blogspot.nl##.adsbygoogle
 !---------------------------------------------------------------------------!
 !------ White list. Fixing filtration errors (false-positive) --------------!
 !---------------------------------------------------------------------------!
 !
 ! White list. Fixing filtration errors (false-positive)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/12129
+@@||player.ooyala.com/static/*/ad-plugin/$domain=qmusic.nl
+! https://github.com/AdguardTeam/AdguardFilters/issues/10227
+@@||kpn.com^$third-party
+! https://forum.adguard.com/index.php?threads/23573/
+@@||diodrogist.nl^$generichide
 ! https://forum.adguard.com/index.php?threads/resolved-klusidee-nl.15961/
 klusidee.nl#@#.header-ad
 ! https://forum.adguard.com/index.php?threads/12438/

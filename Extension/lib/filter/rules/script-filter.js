@@ -84,7 +84,7 @@
          * Builds script for the specified domain to be injected
          *
          * @param domainName Domain name
-         * @returns List of scripts to be applied and scriptSource
+         * @returns {Array.<{{scriptSource: string, rule: string}}>} List of scripts to be applied and scriptSource
          */
         buildScript: function (domainName) {
             var scripts = [];
@@ -115,7 +115,7 @@
 
             for (var i = 0; i < this.scriptRules.length; i++) {
                 var scriptRule = this.scriptRules[i];
-                if (scriptRule.script == exceptionRule.script) {
+                if (scriptRule.script === exceptionRule.script) {
                     scriptRule.removeRestrictedDomains(exceptionRule.getPermittedDomains());
                 }
             }
@@ -149,7 +149,7 @@
 
         _removeExceptionDomains: function (scriptRule, exceptionRule) {
 
-            if (scriptRule.script != exceptionRule.script) {
+            if (scriptRule.script !== exceptionRule.script) {
                 return;
             }
 

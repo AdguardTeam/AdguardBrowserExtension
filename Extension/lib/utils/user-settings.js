@@ -70,6 +70,13 @@ adguard.settings = (function (adguard) {
             return properties[propertyName];
         }
 
+        /**
+         * Don't cache values in case of uninitialized storage
+         */
+        if (!adguard.localStorage.isInitialized()) {
+            return defaultProperties.defaults[propertyName];
+        }
+
         var propertyValue = null;
 
         if (adguard.localStorage.hasItem(propertyName)) {

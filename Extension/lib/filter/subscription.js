@@ -300,11 +300,13 @@ adguard.subscriptions = (function (adguard) {
     function applyFilterTagLocalization(tag, i18nMetadata) {
         var tagId = tag.tagId;
         var localizations = i18nMetadata[tagId];
-        var locale = adguard.app.getLocale();
-        if (localizations && locale in localizations) {
+        if (localizations) {
+            var locale = adguard.utils.i18n.normalize(localizations, adguard.app.getLocale());
             var localization = localizations[locale];
-            tag.name = localization.name;
-            tag.description = localization.description;
+            if (localization) {
+                tag.name = localization.name;
+                tag.description = localization.description;
+            }
         }
     }
 
@@ -317,11 +319,13 @@ adguard.subscriptions = (function (adguard) {
     function applyFilterLocalization(filter, i18nMetadata) {
         var filterId = filter.filterId;
         var localizations = i18nMetadata[filterId];
-        var locale = adguard.app.getLocale();
-        if (localizations && locale in localizations) {
+        if (localizations) {
+            var locale = adguard.utils.i18n.normalize(localizations, adguard.app.getLocale());
             var localization = localizations[locale];
-            filter.name = localization.name;
-            filter.description = localization.description;
+            if (localization) {
+                filter.name = localization.name;
+                filter.description = localization.description;
+            }
         }
     }
 
@@ -368,20 +372,22 @@ adguard.subscriptions = (function (adguard) {
     /**
      * Gets list of filters for the specified languages
      *
-     * @param lang Language to check
+     * @param locale Locale to check
      * @returns List of filters identifiers
      */
-    var getFilterIdsForLanguage = function (lang) {
-        if (!lang) {
+    var getFilterIdsForLanguage = function (locale) {
+        if (!locale) {
             return [];
         }
-        lang = lang.substring(0, 2).toLowerCase();
         var filterIds = [];
         for (var i = 0; i < filters.length; i++) {
             var filter = filters[i];
             var languages = filter.languages;
-            if (languages && languages.indexOf(lang) >= 0) {
-                filterIds.push(filter.filterId);
+            if (languages && languages.length > 0) {
+                var language = adguard.utils.i18n.normalize(languages, locale);
+                if (language) {
+                    filterIds.push(filter.filterId);
+                }
             }
         }
         return filterIds;

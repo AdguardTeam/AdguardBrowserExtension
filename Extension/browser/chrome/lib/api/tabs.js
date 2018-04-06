@@ -32,6 +32,51 @@ adguard.windowsImpl = (function (adguard) {
         };
     }
 
+    // Make compatible with Android WebExt
+    if (typeof browser.windows === 'undefined') {
+
+        browser.windows = (function () {
+
+            var defaultWindow = {
+                id: 1,
+                type: 'normal'
+            };
+
+            var emptyListener = {
+                addListener: function () {
+                    // Doing nothing
+                }
+            };
+
+            var create = function (createData, callback) {
+                callback(defaultWindow);
+            };
+
+            var update = function (windowId, data, callback) {
+                callback();
+            };
+
+            var getAll = function (query, callback) {
+                callback(defaultWindow);
+            };
+
+            var getLastFocused = function (callback) {
+                callback(defaultWindow);
+            };
+
+            return {
+                onCreated: emptyListener,
+                onRemoved: emptyListener,
+                onFocusChanged: emptyListener,
+                create: create,
+                update: update,
+                getAll: getAll,
+                getLastFocused: getLastFocused
+            };
+
+        })();
+    }
+
     var onCreatedChannel = adguard.utils.channels.newChannel();
     var onRemovedChannel = adguard.utils.channels.newChannel();
     var onUpdatedChannel = adguard.utils.channels.newChannel();
@@ -170,7 +215,7 @@ adguard.tabsImpl = (function (adguard) {
         getActive(function (activeTabId) {
             if (tabId !== activeTabId) {
                 // Focus window
-                browser.windows.update(windowId, {focused: true}, function () {
+                browser.windows.update(windowId, { focused: true }, function () {
                     if (checkLastError("Update window " + windowId)) {
                         return;
                     }
@@ -188,7 +233,9 @@ adguard.tabsImpl = (function (adguard) {
 
         if (createData.type === 'popup' &&
             // Does not work properly in Anniversary builds
-            !adguard.utils.browser.isEdgeBeforeCreatorsUpdate()) {
+            !adguard.utils.browser.isEdgeBeforeCreatorsUpdate() &&
+            // Isn't supported by Android WebExt
+            !adguard.prefs.mobile) {
             // https://developer.chrome.com/extensions/windows#method-create
             // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/create
             browser.windows.create({
@@ -266,7 +313,7 @@ adguard.tabsImpl = (function (adguard) {
 
     var activate = function (tabId, callback) {
         // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/update
-        browser.tabs.update(tabIdToInt(tabId), {active: true}, function (chromeTab) {
+        browser.tabs.update(tabIdToInt(tabId), { active: true }, function (chromeTab) {
             if (checkLastError("Before tab update")) {
                 return;
             }
@@ -296,19 +343,19 @@ adguard.tabsImpl = (function (adguard) {
                  * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/580
                  */
                 setTimeout(function () {
-                    sendMessage(tabId, {type: 'update-tab-url', url: url});
+                    sendMessage(tabId, { type: 'update-tab-url', url: url });
                 }, 100);
             } else {
-                browser.tabs.update(tabIdToInt(tabId), {url: url}, checkLastError);
+                browser.tabs.update(tabIdToInt(tabId), { url: url }, checkLastError);
             }
         } else {
             // https://developer.chrome.com/extensions/tabs#method-reload
             // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/reload#Browser_compatibility
             if (browser.tabs.reload) {
-                browser.tabs.reload(tabIdToInt(tabId), {bypassCache: true}, checkLastError);
+                browser.tabs.reload(tabIdToInt(tabId), { bypassCache: true }, checkLastError);
             } else {
                 // Reload page without cache via content script
-                sendMessage(tabId, {type: 'no-cache-reload'});
+                sendMessage(tabId, { type: 'no-cache-reload' });
             }
         }
     };
@@ -345,7 +392,7 @@ adguard.tabsImpl = (function (adguard) {
          * https://dev.opera.com/extensions/tab-window/#accessing-the-current-tab
          * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/query
          */
-        browser.tabs.query({currentWindow: true, active: true}, function (tabs) {
+        browser.tabs.query({ currentWindow: true, active: true }, function (tabs) {
             if (tabs && tabs.length > 0) {
                 callback(tabs[0].id);
             }
@@ -366,6 +413,79 @@ adguard.tabsImpl = (function (adguard) {
         });
     };
 
+    /**
+     * True if `browser.tabs.insertCSS` supports `cssOrigin: "user"`.
+     */
+    const userCSSSupport = adguard.prefs.features.userCSSSupport;
+
+    /**
+     * The only purpose of this callback is to read `lastError` and prevent 
+     * unnecessary console warnings (can happen with Chrome preloaded tabs).
+     * See https://stackoverflow.com/questions/43665470/cannot-call-chrome-tabs-executescript-into-preloaded-tab-is-this-a-bug-in-chr
+     */
+    const noopCallback = function () {
+        adguard.runtime.lastError;
+    };
+
+    /**
+     * Inserts CSS using the `browser.tabs.insertCSS` under the hood.
+     * This method always injects CSS using `runAt: document_start`/
+     * 
+     * @param {number} tabId Tab id or null if you want to inject into the active tab
+     * @param {number} requestFrameId Target frame id (CSS will be inserted into that frame)
+     * @param {number} code CSS code to insert
+     */
+    const insertCssCode = !browser.tabs.insertCSS ? undefined : function (tabId, requestFrameId, code) {
+        let injectDetails = {
+            code: code,
+            runAt: 'document_start',
+            frameId: requestFrameId
+        };
+
+        if (userCSSSupport) {
+            // If this is set for not supporting browser, it will throw an error.
+            injectDetails.cssOrigin = 'user';
+        }
+
+        browser.tabs.insertCSS(tabId, injectDetails, noopCallback);
+    };
+
+    /**
+     * Executes the specified JS code using `browser.tabs.executeScript` under the hood.
+     * This method forces `runAt: document_start`.
+     * 
+     * @param {number} tabId Tab id or null if you want to inject into the active tab
+     * @param {requestFrameId} requestFrameId Target frame id (script will be injected into that frame)
+     * @param {requestFrameId} code Javascript code to execute
+     */
+    const executeScriptCode = !browser.tabs.executeScript ? undefined : function (tabId, requestFrameId, code) {
+        browser.tabs.executeScript(tabId, {
+            code: code,
+            frameId: requestFrameId,
+            runAt: 'document_start'
+        }, noopCallback);
+    };
+
+    /**
+     * Executes the specified javascript file in the top frame of the specified tab.
+     * This method forces `runAt: document_start`.
+     * 
+     * @param {number} tabId Tab id or null if you want to inject into the active tab
+     * @param {filePath} filePath Path to the javascript file
+     * @param {function} callback Called when the script injection is complete
+     */
+    const executeScriptFile = !browser.tabs.executeScript ? undefined : function (tabId, filePath, callback) {
+        browser.tabs.executeScript(tabId, {
+            file: filePath,
+            runAt: 'document_start'
+        }, function () {
+            noopCallback();
+            if (callback) {
+                callback();
+            }
+        });
+    };
+
     return {
 
         onCreated: onCreatedChannel,
@@ -381,6 +501,10 @@ adguard.tabsImpl = (function (adguard) {
         getAll: getAll,
         getActive: getActive,
         get: get,
+
+        insertCssCode: insertCssCode,
+        executeScriptCode: executeScriptCode,
+        executeScriptFile: executeScriptFile,
 
         fromChromeTab: toTabFromChromeTab
     };

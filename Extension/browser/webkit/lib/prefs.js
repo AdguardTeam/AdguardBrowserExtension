@@ -25,10 +25,11 @@ adguard.prefs = (function (adguard) {
 
     var Prefs = {
 
-        /**
-         * Makes sense in case of FF add-on only
-         */
-        mobile: false,
+        get mobile() {
+            return adguard.lazyGet(Prefs, 'mobile', function () {
+                return navigator.userAgent.indexOf('Android') >= 0;
+            });
+        },
 
         platform: typeof safari === 'undefined' ? "chromium" : "webkit",
 
@@ -68,13 +69,8 @@ adguard.prefs = (function (adguard) {
 
         get chromeVersion() {
             return adguard.lazyGet(Prefs, 'chromeVersion', function () {
-                if (this.browser == "Chrome") {
-                    var i = navigator.userAgent.indexOf("Chrome/");
-                    if (i < 0) {
-                        return null;
-                    }
-                    return parseInt(navigator.userAgent.substring(i + 7));
-                }
+                var match = /\sChrome\/(\d+)\./.exec(navigator.userAgent);
+                return match === null ? null : parseInt(match[1]);
             });
         },
 
@@ -135,6 +131,56 @@ adguard.prefs = (function (adguard) {
          */
         collectHitsCountEnabled: (typeof safari === 'undefined')
     };
+
+    /**
+     * Collect browser specific features here
+     */
+    Prefs.features = (function () {
+
+        // Get the global extension object (browser for FF, chrome for Chromium)
+        var browser = window.browser || window.chrome;
+
+        var responseContentFilteringSupported = (typeof browser !== 'undefined' &&
+            typeof browser.webRequest !== 'undefined' &&
+            typeof browser.webRequest.filterResponseData !== 'undefined');
+
+        var canUseInsertCSSAndExecuteScript = (
+            // Blink engine based browsers
+            (Prefs.browser === 'Chrome' || Prefs.browser === 'Opera' || Prefs.browser === 'YaBrowser') &&
+            // Support for tabs.insertCSS and tabs.executeScript on chrome 
+            // requires chrome version above or equal to 39, as per documentation: https://developers.chrome.com/extensions/tabs
+            // But due to a bug, it requires version >= 50
+            // https://bugs.chromium.org/p/chromium/issues/detail?id=63979
+            Prefs.chromeVersion >= 50
+        ) || (
+            Prefs.browser === 'Firefox' && (
+                typeof browser !== 'undefined' &&
+                typeof browser.tabs !== 'undefined' &&
+                typeof browser.tabs.insertCSS !== 'undefined' 
+            )
+        );
+        // Edge browser does not support `runAt` in options of tabs.insertCSS
+        // and tabs.executeScript
+          
+        /**
+         * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/extensionTypes
+         * 
+         * Whether it implements cssOrigin: 'user' option.
+         * Style declarations in user origin stylesheets that have `!important` priority
+         * takes precedence over page styles
+         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/Cascade#Cascading_order}
+         */
+        var userCSSSupport = typeof browser !== 'undefined' &&
+            typeof browser.extensionTypes === 'object' &&
+            typeof browser.extensionTypes.CSSOrigin !== 'undefined';
+
+        return {
+            responseContentFilteringSupported: responseContentFilteringSupported,
+            canUseInsertCSSAndExecuteScript: canUseInsertCSSAndExecuteScript,
+            userCSSSupport: userCSSSupport,
+            hasBackgroundTab: typeof browser !== 'undefined' // Background requests have sense only in case of webext
+        };
+    })();
 
     return Prefs;
 

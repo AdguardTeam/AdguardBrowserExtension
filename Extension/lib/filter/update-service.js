@@ -151,6 +151,57 @@ adguard.applicationUpdateService = (function (adguard) {
     }
 
     /**
+     * Migrates from the storage.local to the indexedDB
+     * Version > 2.7.3
+     */
+    function onUpdateFirefoxWebExtRulesStorage() {
+
+        var dfd = new adguard.utils.Promise();
+
+        function writeFilterRules(keys, items) {
+            if (keys.length === 0) {
+                dfd.resolve();
+            } else {
+                var key = keys.shift();
+                var lines = items[key] || [];
+                var linesLength = lines.length;
+                adguard.rulesStorageImpl.write(key, lines, function () {
+                    adguard.console.info('Adguard filter "{0}" has been migrated. Rules: {1}', key, linesLength);
+                    browser.storage.local.remove(key);
+                    writeFilterRules(keys, items);
+                });
+            }
+        }
+
+        function migrate() {
+
+            adguard.console.info('Call update to use indexedDB instead of storage.local for Firefox browser');
+
+            browser.storage.local.get(null, function (items) {
+
+                var keys = [];
+                for (var key in items) {
+                    if (items.hasOwnProperty(key) && key.indexOf('filterrules_') === 0) {
+                        keys.push(key);
+                    }
+                }
+
+                writeFilterRules(keys, items);
+            });
+        }
+
+        if (adguard.rulesStorageImpl.isIndexedDB) {
+            // Switch implementation to indexedDB
+            migrate();
+        } else {
+            // indexedDB initialization failed, doing nothing
+            dfd.resolve();
+        }
+
+        return dfd;
+    }
+
+    /**
      * Edge supports unlimitedStorage since Creators update.
      * Previously, we keep filter rules in localStorage, and now we have to migrate this rules to browser.storage.local
      * See https://github.com/AdguardTeam/AdguardBrowserExtension/issues/566
@@ -232,6 +283,9 @@ adguard.applicationUpdateService = (function (adguard) {
         }
         if (adguard.utils.browser.isEdgeBrowser() && !adguard.utils.browser.isEdgeBeforeCreatorsUpdate()) {
             methods.push(onUpdateEdgeRulesStorage);
+        }
+        if (adguard.utils.browser.isGreaterVersion("2.7.4", runInfo.prevVersion) & adguard.utils.browser.isFirefoxBrowser() && typeof browser !== 'undefined') {
+            methods.push(onUpdateFirefoxWebExtRulesStorage);
         }
 
         var dfd = executeMethods(methods);

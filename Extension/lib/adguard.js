@@ -67,7 +67,7 @@ var adguard = (function () { // jshint ignore:line
     };
 
     var filteringLogModule = {
-        addEvent: notImplemented,
+        addHttpRequestEvent: notImplemented,
         clearEventsByTabId: notImplemented
     };
 
@@ -77,6 +77,7 @@ var adguard = (function () { // jshint ignore:line
 
     var integrationModule = {
         isSupported: notImplemented,
+        isEnabled: notImplemented,
         isIntegrationRequest: notImplemented,
         shouldOverrideReferrer: notImplemented
     };

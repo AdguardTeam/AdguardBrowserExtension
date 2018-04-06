@@ -33,6 +33,9 @@ var browser = window.browser || chrome;
                     if (sender.tab) {
                         senderOverride.tab = adguard.tabsImpl.fromChromeTab(sender.tab);
                     }
+                    if (typeof sender.frameId !== 'undefined') {
+                        senderOverride.frameId = sender.frameId;
+                    }
                     var response = callback(message, senderOverride, sendResponse);
                     var async = response === true;
                     // If async sendResponse will be invoked later
@@ -52,6 +55,27 @@ var browser = window.browser || chrome;
             }
         };
     })();
+
+    const backgroundTabId = -1;
+
+    // Calculates absolute URL of this extension
+    const extensionProtocol = (function () {
+        var url = browser.extension.getURL("");
+        var index = url.indexOf('://');
+        if (index > 0) {
+            return url.substring(0, index);
+        }
+        return url;
+    })();
+
+    /**
+     * We are skipping requests to internal resources of extensions (e.g. chrome-extension:// or moz-extension://... etc.)
+     * @param details Request details
+     * @returns {boolean}
+     */
+    function shouldSkipRequest(details) {
+        return details.tabId === backgroundTabId && details.url.indexOf(extensionProtocol) === 0;
+    }
 
     var linkHelper = document.createElement('a');
 
@@ -75,7 +99,7 @@ var browser = window.browser || chrome;
 
     function getRequestDetails(details) {
 
-        var tab = {tabId: details.tabId};
+        var tab = { tabId: details.tabId };
 
         /**
          * FF sends http instead of ws protocol at the http-listeners layer
@@ -85,10 +109,13 @@ var browser = window.browser || chrome;
             details.url = details.url.replace(/^http(s)?:/, 'ws$1:');
         }
 
-        //https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
+        // https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
         var requestDetails = {
             requestUrl: details.url,    //request url
-            tab: tab                    //request tab
+            tab: tab,                   //request tab,
+            requestId: details.requestId,
+            statusCode: details.statusCode,
+            method: details.method
         };
 
         var frameId = 0;        //id of this frame (only for main_frame and sub_frame types)
@@ -111,7 +138,7 @@ var browser = window.browser || chrome;
                 break;
         }
 
-        //relate request to main_frame
+        // Relate request to main_frame
         if (requestFrameId === -1) {
             requestFrameId = 0;
         }
@@ -125,7 +152,7 @@ var browser = window.browser || chrome;
         }
 
         /**
-         * Use `OTHER` type as fallback
+         * Use `OTHER` type as a fallback
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/777
          */
         if (!(requestType in adguard.RequestTypes)) {
@@ -144,6 +171,13 @@ var browser = window.browser || chrome;
             requestDetails.responseHeaders = details.responseHeaders;
         }
 
+        if (details.tabId === backgroundTabId) {
+            // In case of background request, its details contains referrer url
+            // Chrome uses `initiator`: https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
+            // FF uses `originUrl`: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webRequest/onBeforeRequest#Additional_objects
+            requestDetails.referrerUrl = details.originUrl || details.initiator;
+        }
+
         return requestDetails;
     }
 
@@ -154,14 +188,14 @@ var browser = window.browser || chrome;
             // https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
             browser.webRequest.onBeforeRequest.addListener(function (details) {
 
-                if (details.tabId === -1) {
+                if (shouldSkipRequest(details)) {
                     return;
                 }
 
                 var requestDetails = getRequestDetails(details);
                 return callback(requestDetails);
 
-            }, urls ? {urls: urls} : {}, ["blocking"]);
+            }, urls ? { urls: urls } : {}, ["blocking"]);
         }
     };
 
@@ -171,17 +205,17 @@ var browser = window.browser || chrome;
 
             browser.webRequest.onHeadersReceived.addListener(function (details) {
 
-                if (details.tabId === -1) {
+                if (shouldSkipRequest(details)) {
                     return;
                 }
 
                 var requestDetails = getRequestDetails(details);
                 var result = callback(requestDetails);
                 if (result) {
-                    return 'responseHeaders' in result ? {responseHeaders: result.responseHeaders} : {};
+                    return 'responseHeaders' in result ? { responseHeaders: result.responseHeaders } : {};
                 }
 
-            }, urls ? {urls: urls} : {}, ["responseHeaders", "blocking"]);
+            }, urls ? { urls: urls } : {}, ["responseHeaders", "blocking"]);
         }
     };
 
@@ -191,17 +225,17 @@ var browser = window.browser || chrome;
 
             browser.webRequest.onBeforeSendHeaders.addListener(function (details) {
 
-                if (details.tabId === -1) {
+                if (shouldSkipRequest(details)) {
                     return;
                 }
 
                 var requestDetails = getRequestDetails(details);
                 var result = callback(requestDetails);
                 if (result) {
-                    return 'requestHeaders' in result ? {requestHeaders: result.requestHeaders} : {};
+                    return 'requestHeaders' in result ? { requestHeaders: result.requestHeaders } : {};
                 }
 
-            }, urls ? {urls: urls} : {}, ["requestHeaders", "blocking"]);
+            }, urls ? { urls: urls } : {}, ["requestHeaders", "blocking"]);
         }
     };
 
@@ -256,7 +290,8 @@ var browser = window.browser || chrome;
         onErrorOccurred: browser.webRequest.onErrorOccurred,
         onHeadersReceived: onHeadersReceived,
         onBeforeSendHeaders: onBeforeSendHeaders,
-        webSocketSupported: typeof browser.webRequest.ResourceType !== 'undefined' && browser.webRequest.ResourceType['WEBSOCKET'] === 'websocket'
+        webSocketSupported: typeof browser.webRequest.ResourceType !== 'undefined' && browser.webRequest.ResourceType['WEBSOCKET'] === 'websocket',
+        filterResponseData: browser.webRequest.filterResponseData
     };
 
     var onCreatedNavigationTarget = {
@@ -270,7 +305,7 @@ var browser = window.browser || chrome;
 
             browser.webNavigation.onCreatedNavigationTarget.addListener(function (details) {
 
-                if (details.tabId === -1) {
+                if (details.tabId === backgroundTabId) {
                     return;
                 }
 
@@ -286,15 +321,13 @@ var browser = window.browser || chrome;
     var onCommitted = {
 
         addListener: function (callback) {
-
             // https://developer.chrome.com/extensions/webNavigation#event-onCommitted
-            browser.webNavigation.onCommitted.addListener(function (details) {
-
-                if (details.tabId === -1) {
-                    return;
-                }
-
-                callback(details.tabId, details.frameId, details.url);
+            browser.webNavigation.onCommitted.addListener(callback, {
+                url: [{
+                    urlPrefix: 'http'
+                }, {
+                    urlPrefix: 'https'
+                }]
             });
         }
     };
@@ -305,10 +338,22 @@ var browser = window.browser || chrome;
         onCommitted: onCommitted
     };
 
+    var browserActionSupported = typeof browser.browserAction.setIcon !== 'undefined';
+    if (!browserActionSupported && browser.browserAction.onClicked) {
+        // Open settings menu
+        browser.browserAction.onClicked.addListener(function () {
+            adguard.ui.openSettingsTab();
+        });
+    }
+
     //noinspection JSUnusedLocalSymbols,JSHint
     adguard.browserAction = {
 
         setBrowserAction: function (tab, icon, badge, badgeColor, title) {
+
+            if (!browserActionSupported) {
+                return;
+            }
 
             var tabId = tab.tabId;
 
@@ -316,13 +361,13 @@ var browser = window.browser || chrome;
                 if (browser.runtime.lastError) {
                     return;
                 }
-                browser.browserAction.setBadgeText({tabId: tabId, text: badge});
+                browser.browserAction.setBadgeText({ tabId: tabId, text: badge });
 
                 if (browser.runtime.lastError) {
                     return;
                 }
                 if (badge) {
-                    browser.browserAction.setBadgeBackgroundColor({tabId: tabId, color: badgeColor});
+                    browser.browserAction.setBadgeBackgroundColor({ tabId: tabId, color: badgeColor });
                 }
 
                 //title setup via manifest.json file
@@ -339,7 +384,7 @@ var browser = window.browser || chrome;
                 return;
             }
 
-            browser.browserAction.setIcon({tabId: tabId, path: icon}, onIconReady);
+            browser.browserAction.setIcon({ tabId: tabId, path: icon }, onIconReady);
         },
         setPopup: function () {
             // Do nothing. Popup is already installed in manifest file

@@ -21,7 +21,7 @@
 adguard.antiBannerService = (function (adguard) {
 
     // Add synthetic user filter
-    var userFilter = {filterId: adguard.utils.filters.USER_FILTER_ID};
+    var userFilter = { filterId: adguard.utils.filters.USER_FILTER_ID };
 
     // Request filter contains all filter rules
     // This class does the actual filtering (checking URLs, constructing CSS/JS to inject, etc)
@@ -125,7 +125,7 @@ adguard.antiBannerService = (function (adguard) {
             }
 
             // Schedule filters update job
-            scheduleFiltersUpdate();
+            scheduleFiltersUpdate(runInfo.isFirstRun);
         };
 
         /**
@@ -269,11 +269,11 @@ adguard.antiBannerService = (function (adguard) {
     var checkAntiBannerFiltersUpdate = function (forceUpdate, successCallback, errorCallback) {
 
         successCallback = successCallback || function () {
-                // Empty callback
-            };
+            // Empty callback
+        };
         errorCallback = errorCallback || function () {
-                // Empty callback
-            };
+            // Empty callback
+        };
 
         // Don't update in background if request filter isn't running
         if (!forceUpdate && !applicationRunning) {
@@ -347,7 +347,7 @@ adguard.antiBannerService = (function (adguard) {
      * @param customFilterIds
      * @param callback
      */
-    function updateCustomFilters (customFilterIds, callback) {
+    function updateCustomFilters(customFilterIds, callback) {
         if (customFilterIds.length === 0) {
             callback([]);
             return;
@@ -767,7 +767,7 @@ adguard.antiBannerService = (function (adguard) {
 
         var processFilterEvent = function (event, filter, rules) {
 
-            filterEventsHistory.push({event: event, filter: filter, rules: rules});
+            filterEventsHistory.push({ event: event, filter: filter, rules: rules });
 
             if (onFilterChangeTimeout !== null) {
                 clearTimeout(onFilterChangeTimeout);
@@ -899,13 +899,14 @@ adguard.antiBannerService = (function (adguard) {
 
     /**
      * Schedules filters update job
-     * @isFirstRun
+     *
+     * @param isFirstRun App first run flag
      * @private
      */
-    function scheduleFiltersUpdate() {
+    function scheduleFiltersUpdate(isFirstRun) {
 
         // First run delay
-        setTimeout(checkAntiBannerFiltersUpdate, UPDATE_FILTERS_DELAY);
+        setTimeout(checkAntiBannerFiltersUpdate, UPDATE_FILTERS_DELAY, isFirstRun === true);
 
         // Scheduling job
         var scheduleUpdate = function () {
@@ -1059,7 +1060,10 @@ adguard.antiBannerService = (function (adguard) {
             }
         }
         requestFilter.addRules(rules);
+
         adguard.listeners.notifyListeners(adguard.listeners.ADD_RULES, userFilter, rulesText);
+        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_USER_FILTER_RULES, getRequestFilterInfo());
+
         return rules;
     };
 
@@ -1069,6 +1073,7 @@ adguard.antiBannerService = (function (adguard) {
      */
     var updateUserFilterRules = function (rulesText) {
         adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, userFilter, rulesText);
+        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_USER_FILTER_RULES, getRequestFilterInfo());
     };
 
     /**
@@ -1108,7 +1113,6 @@ adguard.antiBannerService = (function (adguard) {
 })(adguard);
 
 /**
- *
  * Api for filtering and elements hiding.
  */
 adguard.requestFilter = (function (adguard) {
@@ -1163,6 +1167,16 @@ adguard.requestFilter = (function (adguard) {
     var getScriptsForUrl = function (documentUrl) {
         return getRequestFilter().getScriptsForUrl(documentUrl);
     };
+    var getScriptsStringForUrl = function (documentUrl) {
+        return getRequestFilter().getScriptsStringForUrl(documentUrl);
+    };
+    var getContentRulesForUrl = function (documentUrl) {
+        return getRequestFilter().getContentRulesForUrl(documentUrl);
+    };
+
+    var getMatchedElementsForContentRules = function (doc, rules) {
+        return getRequestFilter().getMatchedElementsForContentRules(doc, rules);
+    };
 
     var getCspRules = function (requestUrl, referrer, requestType) {
         return getRequestFilter().findCspRules(requestUrl, referrer, requestType);
@@ -1190,6 +1204,9 @@ adguard.requestFilter = (function (adguard) {
         getSelectorsForUrl: getSelectorsForUrl,
         getInjectedSelectorsForUrl: getInjectedSelectorsForUrl,
         getScriptsForUrl: getScriptsForUrl,
+        getScriptsStringForUrl: getScriptsStringForUrl,
+        getContentRulesForUrl: getContentRulesForUrl,
+        getMatchedElementsForContentRules: getMatchedElementsForContentRules,
         getCspRules: getCspRules,
 
         getRequestFilterInfo: getRequestFilterInfo,
@@ -1419,8 +1436,8 @@ adguard.filters = (function (adguard) {
     var addAndEnableFilters = function (filterIds, callback, options) {
 
         callback = callback || function () {
-                // Empty callback
-            };
+            // Empty callback
+        };
 
         var enabledFilters = [];
 

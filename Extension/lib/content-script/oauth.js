@@ -44,41 +44,38 @@
         }
     }
 
-    if (document.domain === 'testsync.adguard.com') {
+    var hash = window.location.hash;
+    if (hash) {
+        hash = hash.substring(1);
+    }
+    var search = window.location.search;
+    if (search) {
+        search = search.substring(1);
+    }
+    var hashParams = getParams(hash);
+    var searchParams = getParams(search);
 
-        var hash = window.location.hash;
-        if (hash) {
-            hash = hash.substring(1);
-        }
-        var search = window.location.search;
-        if (search) {
-            search = search.substring(1);
-        }
-        var hashParams = getParams(hash);
-        var searchParams = getParams(search);
+    var provider = searchParams.provider;
+    var token = hashParams.access_token;
+    var csrfState = hashParams.state ? hashParams.state : searchParams.state;
+    var error = hashParams.error;
+    var expires = hashParams.expires_in;
 
-        var provider = searchParams.provider;
-        var token = hashParams.access_token;
-        var csrfState = hashParams.state ? hashParams.state : searchParams.state;
-        var error = hashParams.error;
-        var expires = hashParams.expires_in;
+    if (error) {
+        var errorDescription = hashParams.error_description;
+        showError(error, errorDescription);
+        // TODO[SYNC]: handle this case
+        return;
+    }
 
-        if (error) {
-            var errorDescription = hashParams.error_description;
-            showError(error, errorDescription);
-            // TODO[SYNC]: handle this case
-            return;
-        }
-
-        if (token && provider) {
-            contentPage.sendMessage({
-                type: 'setOAuthToken',
-                provider: provider,
-                token: token,
-                csrfState: csrfState,
-                expires: expires
-            });
-        }
+    if (token && provider) {
+        contentPage.sendMessage({
+            type: 'setOAuthToken',
+            provider: provider,
+            token: token,
+            csrfState: csrfState,
+            expires: expires
+        });
     }
 
 })();

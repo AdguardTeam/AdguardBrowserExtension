@@ -40,7 +40,6 @@ PopupController.prototype = {
 
         // Bind actions
         this._bindActions();
-        this._initFeedback();
 
         this.afterRender();
     },
@@ -74,6 +73,10 @@ PopupController.prototype = {
 
     openSiteReportTab: function (url) {
         popupPage.sendMessage({type: 'openSiteReportTab', url: url});
+    },
+
+    openAbuseTab: function (url) {
+        popupPage.sendMessage({type: 'openAbuseTab', url: url});
     },
 
     openSettingsTab: function () {
@@ -687,6 +690,11 @@ PopupController.prototype = {
             self.openLink(e.currentTarget.href);
             popupPage.closePopup();
         });
+        parent.on('click', '.openAbuse', function (e) {
+            e.preventDefault();
+            self.openAbuseTab(self.tabInfo.url);
+            popupPage.closePopup();
+        });
 
         // checkbox
         parent.on('click', '.changeDocumentWhiteListed', function (e) {
@@ -768,78 +776,6 @@ PopupController.prototype = {
 
         parent.on('click', '.hide-full-stats', function (e) {
             $('.analytics').hide();
-        });
-    },
-
-    _initFeedback: function () {
-
-        if (this.feedbackBind === true) {
-            return;
-        }
-        this.feedbackBind = true;
-
-        var parent = $('.widjet-popup');
-        var feedbackModal = $('.modal-feedback');
-
-        var self = this;
-        var feedbackErrorMessage = $('#feedbackErrorMessage');
-
-        function sendFeedback() {
-            var topic = selectorText.data('abuseOption');
-            if (!topic) {
-                feedbackErrorMessage.addClass('show');
-                return;
-            }
-            var comment = selectorComment.val();
-            self.sendFeedback(self.tabInfo.url, topic, comment);
-            closeFeedback();
-            selectorComment.val('');
-        }
-
-        function closeFeedback() {
-            feedbackModal.addClass('hidden');
-            parent.removeClass('hidden');
-            selectorText.data('abuseOption', '');
-            i18n.translateElement(selectorText[0], 'popup_feedback_empty_option');
-            feedbackErrorMessage.removeClass('show');
-            self.resizePopupWindow();
-        }
-
-        parent.on('click', '.openAbuse', function (e) {
-            e.preventDefault();
-            parent.addClass('hidden');
-            feedbackModal.removeClass('hidden');
-            self.resizePopupWindow();
-        });
-
-        feedbackModal.on('click', '#cancelFeedback', function (e) {
-            e.preventDefault();
-            closeFeedback();
-        });
-        feedbackModal.on('click', '#sendFeedback', function (e) {
-            e.preventDefault();
-            sendFeedback();
-        });
-
-        var selectorText = $('.m-feedback-inner-text');
-        var selectorDropdown = $('.modal-feedback-dropdown');
-        var selectorComment = $('.modal-feedback-message textarea');
-        feedbackModal.on('click', '.modal-feedback-inner', function (e) {
-            e.preventDefault();
-            selectorDropdown.toggleClass('hidden');
-            e.stopPropagation();
-        });
-        //clickoff
-        $(document).click(function () {
-            selectorDropdown.addClass('hidden');
-        });
-        feedbackModal.on('click', '.m-feedback-dropdown-item', function (e) {
-            e.preventDefault();
-            var text = $(this).text();
-            selectorText.text(text);
-            selectorText.data('abuseOption', $(this).attr('item-data'));
-            selectorDropdown.addClass('hidden');
-            feedbackErrorMessage.removeClass('show');
         });
     },
 

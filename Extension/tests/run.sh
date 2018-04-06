@@ -60,12 +60,20 @@ result=1
     node-qunit-phantomjs css-filter/test-css-filter.html
 ) || result=0
 (
+    echo "Content filter tests"
+    node-qunit-phantomjs content-filter/test-content-filter.html
+) || result=0
+(
     echo "Css hits tests"
     node-qunit-phantomjs css-filter/test-css-hits.html
 ) || result=0
 (
     echo "Request filter tests"
     node-qunit-phantomjs request-filter/test-request-filter.html
+) || result=0
+(
+    echo "Element collapser tests"
+    node-qunit-phantomjs miscellaneous/test-element-collapser.html
 ) || result=0
 (
     echo "Ring buffer tests"

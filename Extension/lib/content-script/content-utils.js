@@ -66,19 +66,19 @@
         var title = message.title;
 
         var alertDivHtml = '<div class="adguard-popup-alert adguard-popup-alert--active">' +
-                                //'<div class="adguard-popup-alert__close"></div>' +
-                                '<div class="adguard-popup-alert__in">' +
-                                    '<div class="adguard-popup-alert__ico"></div>' +
-                                '<div>' +
-                                    '<div class="adguard-popup-subtitle-2">' +
-                                        title +
-                                    '</div>' +
-                                    '<div class="adguard-popup-alert__desc">' +
-                                        text +
-                                    '</div>' +
-                                    '</div>' +
-                                '</div>' +
-                            '</div>';
+            //'<div class="adguard-popup-alert__close"></div>' +
+            '<div class="adguard-popup-alert__in">' +
+            '<div class="adguard-popup-alert__ico"></div>' +
+            '<div>' +
+            '<div class="adguard-popup-subtitle-2">' +
+            title +
+            '</div>' +
+            '<div class="adguard-popup-alert__desc">' +
+            text +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '</div>';
 
         var triesCount = 10;
 

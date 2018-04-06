@@ -110,7 +110,9 @@ var UrlFilterRule = {
 	MATCH_CASE_OPTION: "match-case",
 	THIRD_PARTY_OPTION: "third-party",
 	OPTIONS_DELIMITER: "$",
-    CSP_OPTION: "csp"
+    CSP_OPTION: "csp",
+    WEBRTC_OPTION: "webrtc",
+    WEBSOCKET_OPTION: "websocket"
 };
 
 PageController.prototype = {
@@ -157,6 +159,11 @@ PageController.prototype = {
         // Bind click to reload tab
         $('body').on('click', '.reloadTab', function (e) {
             e.preventDefault();
+            if (this.currentTabId == -1) {
+                // Unable to reload "background" tab, just clear events
+                contentPage.sendMessage({type: 'clearEventsByTabId', tabId: this.currentTabId});
+                return;
+            }
             contentPage.sendMessage({type: 'reloadTabById', tabId: this.currentTabId});
         }.bind(this));
 
@@ -212,7 +219,7 @@ PageController.prototype = {
 
     onTabAdded: function (tabInfo) {
         //don't add not http tabs
-        if (!tabInfo.isHttp) {
+        if (!tabInfo.isExtensionTab) {
             return;
         }
         this.tabSelectorList.append($('<li>', {
@@ -226,7 +233,7 @@ PageController.prototype = {
 
     onTabUpdated: function (tabInfo) {
         var item = this.tabSelectorList.find('[data-tab-id=' + tabInfo.tabId + ']');
-        if (!tabInfo.isHttp) {
+        if (!tabInfo.isExtensionTab) {
             //remove not http tabs
             this.onTabClose(tabInfo);
             return;
@@ -265,6 +272,18 @@ PageController.prototype = {
             return;
         }
         this._renderEvents([event]);
+    },
+
+    onEventUpdated: function (tabInfo, event) {
+        if (this.currentTabId != tabInfo.tabId) {
+            //don't relate to the current tab
+            return;
+        }
+        var element = this.logTable.find('#request-' + event.requestId);
+        if (element.length > 0) {
+            var template = this._renderTemplate(event);
+            element.replaceWith(template);
+        }
     },
 
     onSelectedTabChange: function () {
@@ -409,6 +428,9 @@ PageController.prototype = {
         if (event.requestRule) {
             metadata.class += event.requestRule.whiteListRule ? ' green' : ' red';
         }
+        if (event.requestId) {
+            metadata.id = 'request-' + event.requestId;
+        }
 
         var ruleText = '';
         if (event.requestRule) {
@@ -545,7 +567,13 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
     //bind events
     template.find('#openRequestNewTab').on('click', function (e) {
         e.preventDefault();
-        contentPage.sendMessage({type: 'openTab', url: filteringEvent.requestUrl, options: {inNewWindow: true}});
+
+        var requestUrl = filteringEvent.requestUrl;
+        if (requestUrl === 'content-security-policy-check') {
+            requestUrl = filteringEvent.frameUrl;
+        }
+
+        contentPage.sendMessage({type: 'openTab', url: requestUrl, options: {inNewWindow: true}});
     });
 
     var blockRequestButton = template.find('#blockRequest');
@@ -604,7 +632,7 @@ RequestWizard.prototype.showCreateBlockRuleModal = function (frameInfo, filterin
 
     var template = this.createBlockRuleTemplate.clone();
 
-    var patterns = RequestWizard.splitToPatterns(filteringEvent, false).reverse();
+    var patterns = RequestWizard.splitToPatterns(filteringEvent.requestUrl, filteringEvent.requestDomain, false).reverse();
 
     this._initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
 };
@@ -613,7 +641,11 @@ RequestWizard.prototype.showCreateExceptionRuleModal = function (frameInfo, filt
 
     var template = this.createExceptionRuleTemplate.clone();
 
-	var patterns = RequestWizard.splitToPatterns(filteringEvent, true).reverse();
+	var patterns = RequestWizard.splitToPatterns(filteringEvent.requestUrl, filteringEvent.requestDomain, true).reverse();
+
+    if (filteringEvent.requestUrl === 'content-security-policy-check') {
+        patterns = ['@@'];
+    }
 
 	this._initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
 };
@@ -688,6 +720,10 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 			mandatoryOptions = [UrlFilterRule.CSP_OPTION];
         }
 
+        if (filteringEvent.requestUrl === 'content-security-policy-check') {
+        	mandatoryOptions = [UrlFilterRule.WEBRTC_OPTION, UrlFilterRule.WEBSOCKET_OPTION];
+		}
+
 		var ruleText = RequestWizard.createRuleFromParams(urlPattern, domain, matchCase, thirdParty, important, mandatoryOptions);
 		ruleTextEl.val(ruleText);
 	}
@@ -719,10 +755,7 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 
 RequestWizard.PATTERNS_COUNT = 2; //exclude domain and full request url
 
-RequestWizard.splitToPatterns = function (filteringEvent, whitelist) {
-
-    var requestUrl = filteringEvent.requestUrl;
-	var domain = filteringEvent.requestDomain;
+RequestWizard.splitToPatterns = function (requestUrl, domain, whitelist) {
 
 	var hierarchicUrl = UrlUtils.isHierarchicUrl(requestUrl);
     var protocol = UrlUtils.getProtocol(requestUrl);
@@ -863,7 +896,8 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
             EventNotifierTypes.TAB_UPDATE,
             EventNotifierTypes.TAB_CLOSE,
             EventNotifierTypes.TAB_RESET,
-            EventNotifierTypes.LOG_EVENT_ADDED
+            EventNotifierTypes.LOG_EVENT_ADDED,
+            EventNotifierTypes.LOG_EVENT_UPDATED
         ];
 
         //set log is open
@@ -883,6 +917,9 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
                     break;
                 case EventNotifierTypes.LOG_EVENT_ADDED :
                     pageController.onEventAdded(tabInfo, filteringEvent);
+                    break;
+                case EventNotifierTypes.LOG_EVENT_UPDATED:
+                    pageController.onEventUpdated(tabInfo, filteringEvent);
                     break;
             }
         }, function () {
