@@ -1,8 +1,8 @@
-! Checksum: UZNctADWYsKvSb1ww8reVw
+! Checksum: PJzR29QTyw/K3Sx+36GOww
 ! Title: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. Use this filter if you do not want your actions on the Internet to be tracked.
-! Version: 2.0.0.95
-! TimeUpdated: 2018-03-29T16:46:26+00:00
+! Version: 2.0.1.0
+! TimeUpdated: 2018-04-03T12:02:54+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#privacy
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -3682,6 +3682,8 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 !
 ! Section contains the list of tracking servers, which are hosted on useful sites as subdomains
 !
+||pixel.carambo.la^
+||analytics*.carambo.la^
 ||collect.tianya.cn^
 ||t.dtscdn.com^
 ||adcounter*.uptolike.ru^
@@ -4276,6 +4278,7 @@ link.gmapp*.net$image
 ||semasio.net^$domain=avgle.com
 ||t.dtscdn.com^$domain=avgle.com
 !
+||elmir.ua/response/stats.php
 ||img.sputniknews.com/min/js/plugins/video-counters.jss
 ||phimmoi.net/js/fx/ga.js
 ||shazoo.ru/ping|
@@ -4641,7 +4644,7 @@ drive2.ru,drive2.com##.js-scrolltracking[data-adkind="relap"]
 ||prezi.com/*/log/json^
 ||log.prezi.com^
 thehill.com###block-thehill-blocks-amp-outbrain
-||cstream.wi-fi.ru/csc-event
+||cstream.wi-fi.ru/csc-event$domain=wi-fi.ru
 ||gj.applog.uc.cn/collect^
 ||gjapplog.uc.cn/collect^
 ||hqq.tv/js/counters.js
@@ -4855,7 +4858,6 @@ dreamprogs.net##td[width="88"][height="31"]
 ||dsr.livefyre.com/livecountping/
 ||dus.trivago.com/tracking
 ||dws.reporting.dnitv.com/dni_reporting.js
-||dyn.tnaflix.com/ajax/ga.php
 ||ebaystatic.com/js/v/in/roverlv.js
 ||ebaystatic.com^*/tracking_
 ||embed.sendtonews.com/player2/data_logging.php?
@@ -5267,6 +5269,8 @@ dreamprogs.net##td[width="88"][height="31"]
 !-------------- Whitelist ------------------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/14245
+@@||googletagmanager.com/gtm.js$domain=militaria.pl
 ! https://github.com/AdguardTeam/AdguardFilters/issues/13560
 @@||letelegramme.fr/js/xtcore.js
 @@||scdn.cxense.com/cx.js$domain=letelegramme.fr
@@ -5543,6 +5547,7 @@ dreamprogs.net##td[width="88"][height="31"]
 @@||pixel.quantserve.com/pixel^$domain=mixcloud.com
 ! Unblock adblockanalytics.com marker
 @@||adblockanalytics.com/ads.js|
+@@||detectadblock.com/ads.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6269
 @@||ukit.com/js/lib/fingerprint2.min.js^$domain=ukit.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6216
