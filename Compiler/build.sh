@@ -66,7 +66,7 @@ elif [ "$env" = beta ]; then
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox beta (WebExt)
-    options="$opts --browser=firefox_webext --pack=webext --extensionId=adguardadblockerbeta@adguard.com --update-url=https://adguardteam.github.io/AdguardBrowserExtension/firefox_updates.rdf"
+    options="$opts --browser=firefox_webext --pack=webext --extensionId=adguardadblockerbeta@adguard.com --update-url=https://adguardteam.github.io/AdguardBrowserExtension/firefox_updates.json"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox beta (Legacy)
