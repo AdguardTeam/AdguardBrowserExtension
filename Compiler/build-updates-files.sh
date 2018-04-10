@@ -9,11 +9,16 @@ tagName=$2
 
 cp ./resources/chrome_updates.xml     ../
 cp ./resources/firefox_updates.rdf    ../
+cp ./resources/firefox_updates.json   ../
 cp ./resources/safari_updates.xml     ../
 
 sed -i '' -e "s/%VERSION%/${version}/g"                         ../chrome_updates.xml
 sed -i '' -e "s/%TAGNAME%/${tagName}/g"                         ../chrome_updates.xml
 sed -i '' -e "s/%NAME%/chrome-beta-${version}.crx/g"            ../chrome_updates.xml
+
+sed -i '' -e "s/%VERSION%/${version}/g"                                     ../firefox_updates.json
+sed -i '' -e "s/%TAGNAME%/${tagName}/g"                                     ../firefox_updates.json
+sed -i '' -e "s/%STANDALONE_NAME%/firefox-standalone-beta-${version}.xpi/g" ../firefox_updates.json
 
 sed -i '' -e "s/%VERSION%/${version}/g"                                     ../firefox_updates.rdf
 sed -i '' -e "s/%TAGNAME%/${tagName}/g"                                     ../firefox_updates.rdf
