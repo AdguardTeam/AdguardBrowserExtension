@@ -332,12 +332,41 @@ PopupController.prototype = {
         return result;
     },
 
+    DAYS_OF_WEEK: (function () {
+        return this.DAYS_OF_WEEK || [
+            i18n.getMessage("popup_statistics_week_days_mon"),
+            i18n.getMessage("popup_statistics_week_days_tue"),
+            i18n.getMessage("popup_statistics_week_days_wed"),
+            i18n.getMessage("popup_statistics_week_days_thu"),
+            i18n.getMessage("popup_statistics_week_days_fri"),
+            i18n.getMessage("popup_statistics_week_days_sat"),
+            i18n.getMessage("popup_statistics_week_days_sun")
+        ];
+    })(),
+
     _dayOfWeekAsString: function (dayIndex) {
-        return ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][dayIndex];
+        return this.DAYS_OF_WEEK[dayIndex];
     },
 
+    MONTHS_OF_YEAR: (function () {
+        return this.MONTHS_OF_YEAR || [
+                i18n.getMessage("popup_statistics_months_jan"),
+                i18n.getMessage("popup_statistics_months_feb"),
+                i18n.getMessage("popup_statistics_months_mar"),
+                i18n.getMessage("popup_statistics_months_apr"),
+                i18n.getMessage("popup_statistics_months_may"),
+                i18n.getMessage("popup_statistics_months_jun"),
+                i18n.getMessage("popup_statistics_months_jul"),
+                i18n.getMessage("popup_statistics_months_aug"),
+                i18n.getMessage("popup_statistics_months_sep"),
+                i18n.getMessage("popup_statistics_months_oct"),
+                i18n.getMessage("popup_statistics_months_nov"),
+                i18n.getMessage("popup_statistics_months_dec")
+            ];
+    })(),
+
     _monthsAsString: function (monthIndex) {
-        return ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][monthIndex];
+        return this.MONTHS_OF_YEAR[monthIndex];
     },
 
     _getCategoriesLines: function (statsData, range) {
@@ -488,14 +517,12 @@ PopupController.prototype = {
         });
     },
 
-    _capitalizeFirstLetter: function (string) {
-        if (!string || string.length < 2) {
-            return string;
+    _localizeBlockedType: function (type) {
+        if (!type) {
+            return "";
         }
 
-        string = string.toLowerCase();
-
-        return string.charAt(0).toUpperCase() + string.slice(1);
+        return i18n.getMessage("popup_statistics_request_types_" + type.toLowerCase());
     },
 
     _buildRequestTypesColumns: function (stats, range) {
@@ -503,13 +530,13 @@ PopupController.prototype = {
 
         var columns = {
             x: ['x'],
-            values: ['Request types']
+            values: [i18n.getMessage("popup_statistics_type_request_types")]
         };
 
         for (var type in stats.blockedTypes) {
             var number = statsData[stats.blockedTypes[type]] ? statsData[stats.blockedTypes[type]] : 0;
 
-            columns.x.push(this._capitalizeFirstLetter(type));
+            columns.x.push(this._localizeBlockedType(type));
             columns.values.push(number);
         }
 
@@ -590,7 +617,7 @@ PopupController.prototype = {
             var number = statsData[stats.blockedTypes[type]] ? statsData[stats.blockedTypes[type]] : 0;
 
             $analytics.append(
-                '<li><span class="key">' + this._capitalizeFirstLetter(type) + '</span><span class="value">' + number + '</span></li>'
+                '<li><span class="key">' + this._localizeBlockedType(type) + '</span><span class="value">' + number + '</span></li>'
             );
         }
     },
@@ -787,7 +814,7 @@ PopupController.prototype = {
         }
         setTimeout(function () {
             var block = $(".macoshackresize");
-            block.css("padding-top", "23px");
+            block.css("padding-top", "4px");
         }, 1000);
     }
 };

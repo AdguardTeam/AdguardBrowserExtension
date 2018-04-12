@@ -219,7 +219,7 @@ PageController.prototype = {
 
     onTabAdded: function (tabInfo) {
         //don't add not http tabs
-        if (!tabInfo.isExtensionTab) {
+        if (tabInfo.isExtensionTab) {
             return;
         }
         this.tabSelectorList.append($('<li>', {
@@ -233,7 +233,7 @@ PageController.prototype = {
 
     onTabUpdated: function (tabInfo) {
         var item = this.tabSelectorList.find('[data-tab-id=' + tabInfo.tabId + ']');
-        if (!tabInfo.isExtensionTab) {
+        if (tabInfo.isExtensionTab) {
             //remove not http tabs
             this.onTabClose(tabInfo);
             return;
