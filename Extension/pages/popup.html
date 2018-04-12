@@ -23,8 +23,8 @@
 <body style="overflow: hidden;">
 <div class="widjet-popup">
     <div class="tabbar">
-        <button class="tab active macoshackresize" tab-switch="main">Main</button>
-        <button class="tab macoshackresize" tab-switch="statistics">Statistics</button>
+        <button class="tab active macoshackresize" tab-switch="main" i18n="popup_tab_main"></button>
+        <button class="tab macoshackresize" tab-switch="statistics" i18n="popup_tab_statistics"></button>
     </div>
     <div class="tabstack">
         <div class="tab-main active tab-switch-tab" tab-switch="main"></div>
@@ -130,21 +130,21 @@
 <div id="filtering-statistics-template" style="display: none;">
     <div class="statistics-wrapper">
         <select name="type" class="statistics-select statistics-select-type">
-            <option value="badRequests">Bad requests</option>
-            <option value="requestTypes">Request types</option>
+            <option value="badRequests" i18n="popup_statistics_type_bad_requests"></option>
+            <option value="requestTypes" i18n="popup_statistics_type_request_types"></option>
         </select>
         <select name="time" class="statistics-select statistics-select-time">
-            <option value="day">Last day</option>
-            <option value="week" selected="true">Last week</option>
-            <option value="month">Last month</option>
-            <option value="year">Last year</option>
+            <option value="day" i18n="popup_statistics_time_day"></option>
+            <option value="week" selected="true" i18n="popup_statistics_time_week"></option>
+            <option value="month" i18n="popup_statistics_time_month"></option>
+            <option value="year" i18n="popup_statistics_time_year"></option>
         </select>
     </div>
     <div id="chart" class="chart"></div>
-    <button class="full-stats show-full-stats">Full statistics</button>
+    <button class="full-stats show-full-stats" i18n="popup_statistics_full_statistics"></button>
     <div class="analytics" style="display: none;">
         <div class="close hide-full-stats"><img src="images/arrow-up.png" class="arrow-up" alt=""></div>
-        <div class="title">Analytics</div>
+        <div class="title" i18n="popup_statistics_analytics"></div>
         <ul id="analytics-blocked-types-values">
         </ul>
     </div>
