@@ -787,7 +787,7 @@ PopupController.prototype = {
         }
         setTimeout(function () {
             var block = $(".macoshackresize");
-            block.css("padding-top", "23px");
+            block.css("padding-top", "4px");
         }, 1000);
     }
 };
