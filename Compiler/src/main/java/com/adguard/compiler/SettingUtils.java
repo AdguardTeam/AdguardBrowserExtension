@@ -79,9 +79,10 @@ public class SettingUtils {
         File manifestFile = new File(dest, "manifest.json");
         String content = FileUtils.readFileToString(manifestFile, "utf-8").trim();
         if (updateUrl != null) {
-            content = StringUtils.removeEnd(content, "}").trim();
-            content = content + ",\r\n\r\n";
-            content = content + "\t\"update_url\": \"" + updateUrl + "\"\r\n}";
+            updateUrl = "\"update_url\": \"" + updateUrl + "\",";
+            content = StringUtils.replace(content, "{UPDATE_URL}", updateUrl);
+        } else {
+            content = StringUtils.replace(content, "{UPDATE_URL}", "");
         }
         content = StringUtils.replace(content, "${version}", version);
         content = StringUtils.replace(content, "${extensionId}", extensionId);
@@ -196,7 +197,7 @@ public class SettingUtils {
         }
 
         // Copy external assistant library to api folder
-        FileUtils.copyFile(new File(dest,"lib/content-script/assistant/js/assistant.js"),new File(dest,"adguard/assistant/assistant.js"));
+        FileUtils.copyFile(new File(dest, "lib/content-script/assistant/js/assistant.js"), new File(dest, "adguard/assistant/assistant.js"));
 
         FileUtils.writeStringToFile(manifestFile, manifestContent);
 
