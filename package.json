@@ -1,0 +1,45 @@
+{
+  "name": "browser-extension",
+  "version": "2.8.6",
+  "description": "AdGuard Extension",
+  "scripts": {
+    "start": "NODE_ENV=dev ./node_modules/.bin/gulp build --require babel-register --gulpfile tasks",
+    "dev": "NODE_ENV=dev ./node_modules/.bin/gulp build --require babel-register --gulpfile tasks",
+    "beta": "NODE_ENV=beta ./node_modules/.bin/gulp build --require babel-register --gulpfile tasks",
+    "release": "NODE_ENV=release ./node_modules/.bin/gulp build --require babel-register --gulpfile tasks",
+    "test": "./node_modules/.bin/gulp runTests --require babel-register --gulpfile tasks",
+    "filters": "./node_modules/.bin/gulp downloadFilters --require babel-register --gulpfile tasks",
+    "locales": "./node_modules/.bin/gulp downloadLocalesStream --require babel-register --gulpfile tasks"
+  },
+  "babel": {
+    "presets": [
+      "env"
+    ],
+    "babelrc": false
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@bit.adguard.com:7999/extensions/browser-extension.git"
+  },
+  "author": "adguard@adguard.com",
+  "license": "LGPL-3.0",
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "gulp": "^4.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-crx-pack": "^1.0.2",
+    "gulp-download2": "^1.0.2",
+    "gulp-file": "^0.4.0",
+    "gulp-hash-creator": "^0.2.0",
+    "gulp-zip": "^4.1.0",
+    "node-qunit-phantomjs": "^2.0.0",
+    "preprocess": "^3.1.0",
+    "safariextz": "^2.0.2",
+    "web-ext": "^2.6.0"
+  },
+  "devDependencies": {
+    "qunit": "^2.6.0"
+  }
+}
