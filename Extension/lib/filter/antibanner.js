@@ -1004,8 +1004,8 @@ adguard.antiBannerService = (function (adguard) {
             callback(true);
         };
 
-        var errorCallback = function (request, cause) {
-            adguard.console.error("Error retrieved response from server for filter {0}, cause: {1} {2}", filter.filterId, request.statusText, cause || "");
+        var errorCallback = function (cause) {
+            adguard.console.error("Error retrieved response from server for filter {0}, cause: {1}", filter.filterId, cause || "");
             delete filter._isDownloading;
             adguard.listeners.notifyListeners(adguard.listeners.ERROR_DOWNLOAD_FILTER, filter);
             callback(false);
@@ -1606,7 +1606,7 @@ adguard.filters = (function (adguard) {
                 var rules = adguard.userrules.addRules(rulesText);
                 loadCallback(rules.length);
             }, function (request, cause) {
-                adguard.console.error("Error download subscription by url {0}, cause: {1} {2}", subscriptionUrl, request.statusText, cause || "");
+                adguard.console.error("Error download subscription by url {0}, cause: {1}", subscriptionUrl, cause || "");
             });
         }
     };
