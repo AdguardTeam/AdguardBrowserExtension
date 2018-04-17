@@ -1,7 +1,7 @@
 /* global process */
 import fs from 'fs';
 import gulp from 'gulp';
-import {BUILD_DIR, LOCALES_DIR, FIREFOX_EXTENSION_ID} from './consts';
+import {BUILD_DIR, LOCALES_DIR, FIREFOX_EXTENSION_ID, FIREFOX_WEBEXT_UPDATE_URL} from './consts';
 import {version} from './parse-package';
 import {updateLocalesMSGName, preprocessAll} from './helpers';
 import zip from 'gulp-zip';
@@ -30,6 +30,7 @@ const updateManifest = (done) => {
     const manifest = JSON.parse(fs.readFileSync(paths.dest + 'manifest.json'));
     manifest.version = version;
     manifest.applications.gecko.id = FIREFOX_EXTENSION_ID;
+    manifest.applications.gecko.update_url = FIREFOX_WEBEXT_UPDATE_URL;
     fs.writeFileSync(paths.dest + 'manifest.json', JSON.stringify(manifest, null, 4));
     return done();
 };

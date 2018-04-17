@@ -27,6 +27,8 @@ export const LOCAL_SCRIPT_RULES_COMMENT = 'By the rules of AMO and addons.opera.
 
 export const FIREFOX_EXTENSION_ID = 'adguardadblockerdev@adguard.com';
 
+export const FIREFOX_WEBEXT_UPDATE_URL = 'https://adguardteam.github.io/AdguardBrowserExtension/firefox_updates.json';
+
 export const SAFARI_EXTENSION_ID = 'com.adguard.safaridev';
 
 export const SAFARI_UPDATE_URL = '';
