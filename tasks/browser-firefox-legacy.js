@@ -7,7 +7,7 @@ import zip from 'gulp-zip';
 
 const paths = {
     entry: 'Extension/browser/firefox/**/*',
-    filters: 'Extension/filters2/firefox/**/*',
+    filters: 'Extension/filters/firefox/**/*',
     pages: 'Extension/pages/**/*',
     lib: 'Extension/lib/**/*',
     locales: LOCALES_DIR + '**/*',
