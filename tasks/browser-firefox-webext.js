@@ -8,7 +8,7 @@ import zip from 'gulp-zip';
 
 const paths = {
     entry: 'Extension/browser/firefox_webext/**/*',
-    filters: 'Extension/filters2/firefox/**/*',
+    filters: 'Extension/filters/firefox/**/*',
     pages: 'Extension/pages/**/*',
     lib: 'Extension/lib/**/*',
     chromeFiles: 'Extension/browser/chrome/**/*',

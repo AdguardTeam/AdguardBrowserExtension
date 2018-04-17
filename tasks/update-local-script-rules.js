@@ -3,7 +3,7 @@ import gulp from 'gulp';
 import {FILTERS_DEST, LAST_ADGUARD_FILTER_ID, LOCAL_SCRIPT_RULES_COMMENT} from './consts';
 
 const updateLocalScriptRules = (browser, done) => {
-    const folder = FILTERS_DEST.replace('%b', browser);
+    const folder = FILTERS_DEST.replace('%browser', browser);
     const rules = {
         comment: LOCAL_SCRIPT_RULES_COMMENT,
         rules: []
@@ -27,7 +27,7 @@ const updateLocalScriptRules = (browser, done) => {
         }
     }
 
-    fs.writeFileSync(FILTERS_DEST.replace('%b', browser) + '/local_script_rules.json', JSON.stringify(rules, null, 4));
+    fs.writeFileSync(FILTERS_DEST.replace('%browser', browser) + '/local_script_rules.json', JSON.stringify(rules, null, 4));
 
     return done();
 };

@@ -8,7 +8,7 @@ import webExt from 'web-ext';
 
 const paths = {
     entry: 'Extension/browser/firefox_webext/**/*',
-    filters: 'Extension/filters2/firefox/**/*',
+    filters: 'Extension/filters/firefox/**/*',
     pages: 'Extension/pages/**/*',
     lib: 'Extension/lib/**/*',
     chromeFiles: 'Extension/browser/chrome/**/*',
@@ -43,7 +43,7 @@ const createWebExt = (done) => {
         sourceDir: paths.dest,
         artifactsDir: `./${BUILD_DIR}/${process.env.NODE_ENV}/`,
         overwriteDest: true
-    }).then(() => done());
+    }).then(done);
 };
 
 export default gulp.series(copyLibs, copyPages, copyFilters, copyLocales, firefoxWebext, updateManifest, localesProcess, preprocess, createWebExt);

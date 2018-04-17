@@ -27,6 +27,16 @@ You can get a beta version of AdGuard Browser Extension for any browser. All nec
 
 ### How to build
 
+#### Requirements
+
+- [nodejs](https://nodejs.org/en/download/)
+- [yarn](https://yarnpkg.com/en/docs/install/)
+
+Install local dependencies by runnning:
+```
+  yarn install
+```
+
 #### Download localizations
 
 To run the task of downloading the localization files, put the `oneskyapp.json` configuration file in the root directory.

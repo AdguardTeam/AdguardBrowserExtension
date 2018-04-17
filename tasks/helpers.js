@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 import pp from 'preprocess';
 
 export function updateLocalesMSGName (branch, dest, done, browser, allowRemoteScripts) {
@@ -37,7 +38,7 @@ export function updateLocalesMSGName (branch, dest, done, browser, allowRemoteSc
     const locales = fs.readdirSync(dest + '_locales/');
 
     for (let i of locales) {
-        let file = dest + '_locales/' + i + '/messages.json';
+        let file = path.join(dest, '_locales', i, 'messages.json');
         let messages = JSON.parse(fs.readFileSync(file));
 
         if (messages.name) {
@@ -54,6 +55,14 @@ export function updateLocalesMSGName (branch, dest, done, browser, allowRemoteSc
     return done();
 }
 
+/**
+ * Preprocess files. See docs: https://github.com/jsoverson/preprocess#what-does-it-look-like
+ *
+ * @param dest   src folder. In our task src and destination folder are the same
+ * @param data   params to preprocess
+ * @param done
+ * @return done
+ */
 export function preprocessAll (dest, data, done) {
     const popupHTML = dest + 'pages/popup.html';
     const filterHTML = dest + 'pages/filter-download.html';

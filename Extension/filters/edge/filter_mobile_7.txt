@@ -1,8 +1,8 @@
-! Checksum: TvIl099sZWufrcOlKrhJgw
+! Checksum: fSq99vXlTNgzTQ1Og3DoSg
 ! Title: Japanese filter
 ! Description: AdGuard Japanese filter. Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.0.38
-! TimeUpdated: 2018-04-10T03:02:44+00:00
+! Version: 2.0.0.35
+! TimeUpdated: 2018-03-29T12:03:28+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -175,7 +175,6 @@
 ||webtracker.jp^
 ||widget.zenback.jp^$third-party
 ||yeas.yahoo.co.jp^$third-party
-avgirl.online#@#.google-ad
 @@||avgle.com^$generichide,genericblock
 @@||ads.exosrv.com/ads.js$domain=avgle.com
 @@||adserver.juicyads.com/js/jads.js^$domain=avgle.com
@@ -267,13 +266,13 @@ repeat-drama.info##.side_inner > .box:contains(スポンサーリンク)
 ##.adsense_box01
 ##.adsense_mainbox01
 ##.adsize728
-~regionxeberleri.com##.adtitle
+##.adtitle
 ##.yahoo_ad
 ##a[href^="http://ad2.trafficgate.net/"]
 ##a[href^="http://www.rssad.jp/"]
 ogeji.hatenablog.com#$#.sleeping-ads {position: absolute!important; left: -3000px!important; }
 avgle.com#%#AG_onLoad(function() { var el = document.querySelector('.col-lg-8  > a[href^="https://bit.ly/"][target="_blank"]'); if(el) { el.removeAttribute("href"); }; });
-avgle.com#$#img[src^="https://isafe.pro"] { height: 35px!important; width: 60%!important; }
+avgle.com#$#img[src^="https://isafe.pro"] { height: 35px!important; width: 60%!important; clip-path: polygon(0px 0px,0px 0px,0px 0px,0px 0px); }
 avgle.com#$#iframe[src*="exosrv"] { height: 200px!important; }
 avgle.com#$#iframe[src*="juicyads"] { height: 10px!important; }
 .com/ufo/$script
@@ -373,7 +372,6 @@ javegg.com##.sidebar > .widget_text.sidebar-wrapper
 jadult.net##a[href^="https://goo.gl"]
 jadult.net##a[href^="http://www.adxpansion"]
 jadult.net##.icon_fb
-avgle.com##.navbar-nav > li:nth-child(2)
 ||avgle.com/images.php$domain=avgle.com
 ||juicyads.com^$domain=avgle.com
 avgle.com##a[href^="http://pussl48.com"]

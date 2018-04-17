@@ -1,10 +1,70 @@
 /* global process */
 import fs from 'fs';
 import gulp from 'gulp';
-import {BUILD_DIR, LOCALES_DIR, API_SCRIPTS} from './consts';
+import {BUILD_DIR, LOCALES_DIR} from './consts';
 import {version} from './parse-package';
 import concatFiles from 'gulp-concat';
 import zip from 'gulp-zip';
+
+const API_SCRIPTS = [
+    // Third party libraries
+    'Extension/lib/libs/deferred.min.js',
+    'Extension/lib/utils/sha256.patched.js',
+    'Extension/lib/utils/punycode.js',
+    // Adguard Global and preferences
+    'Extension/lib/adguard.js',
+    'Extension/browser/webkit/lib/prefs.js',
+    // Utils libraries
+    'Extension/lib/utils/common.js',
+    'Extension/lib/utils/log.js',
+    'Extension/lib/utils/url.js',
+    'Extension/lib/utils/notifier.js',
+    'Extension/lib/utils/browser-utils.js',
+    'Extension/lib/utils/service-client.js',
+    'Extension/lib/utils/page-stats.js',
+    'Extension/lib/utils/user-settings.js',
+    'Extension/lib/utils/frames.js',
+    // Local storage and rules storage libraries
+    'Extension/browser/chrome/lib/utils/local-storage.js',
+    'Extension/browser/chrome/lib/utils/rules-storage.js',
+    'Extension/lib/storage.js',
+    // Chromium api adapter libraries
+    'Extension/browser/chrome/lib/content-script/common-script.js',
+    'Extension/browser/chrome/lib/api/background-page.js',
+    // Tabs api library
+    'Extension/browser/chrome/lib/api/tabs.js',
+    'Extension/lib/tabs/tabs-api.js',
+    // Rules and filters libraries
+    'Extension/lib/filter/rules/rules.js',
+    'Extension/lib/filter/rules/shortcuts-lookup-table.js',
+    'Extension/lib/filter/rules/domains-lookup-table.js',
+    'Extension/lib/filter/rules/url-filter-lookup-table.js',
+    'Extension/lib/filter/rules/simple-regex.js',
+    'Extension/lib/filter/rules/base-filter-rule.js',
+    'Extension/lib/filter/rules/css-filter-rule.js',
+    'Extension/lib/filter/rules/css-filter.js',
+    'Extension/lib/filter/rules/script-filter-rule.js',
+    'Extension/lib/filter/rules/script-filter.js',
+    'Extension/lib/filter/rules/url-filter-rule.js',
+    'Extension/lib/filter/rules/url-filter.js',
+    'Extension/lib/filter/rules/content-filter-rule.js',
+    'Extension/lib/filter/rules/content-filter.js',
+    'Extension/lib/filter/rules/csp-filter.js',
+    'Extension/lib/filter/rules/filter-rule-builder.js',
+    // Filters metadata and filtration modules
+    'Extension/lib/filter/subscription.js',
+    'Extension/lib/filter/update-service.js',
+    'Extension/lib/filter/whitelist.js',
+    'Extension/lib/filter/userrules.js',
+    'Extension/lib/filter/filters.js',
+    'Extension/lib/filter/antibanner.js',
+    'Extension/lib/filter/request-blocking.js',
+    // Content messaging
+    'Extension/lib/content-message-handler.js',
+    'Extension/lib/webrequest.js',
+    'Extension/lib/blockpopup.js',
+    'Extension/api/chrome/lib/api.js'
+];
 
 const paths = {
     entry: 'Extension/api/sample-extension/**/*',

@@ -9,7 +9,7 @@ import crx from 'gulp-crx-pack';
 
 const paths = {
     entry: 'Extension/browser/chrome/**/*',
-    filters: 'Extension/filters2/chromium/**/*',
+    filters: 'Extension/filters/chromium/**/*',
     webkitFiles: 'Extension/browser/webkit/**/*',
     pages: 'Extension/pages/**/*',
     lib: 'Extension/lib/**/*',
