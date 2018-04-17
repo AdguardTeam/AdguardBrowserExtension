@@ -1,8 +1,8 @@
-! Checksum: EoytxzylS7gS8W7/NGziFw
+! Checksum: VDEIVFKD4fkOYNPrD0kEcA
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.0.81
-! TimeUpdated: 2018-04-03T15:04:34+00:00
+! Version: 2.0.0.96
+! TimeUpdated: 2018-04-17T00:02:56+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#mobile
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -101,6 +101,7 @@
 !+ NOT_OPTIMIZED
 ||hqsjc.com^
 !
+||ads.jianchiapp.com^
 ||abroad-ad.kingsoft-office-service.com^
 ||cdn.adbert.info^
 ||agent.tamedia.com.tw^
@@ -931,6 +932,11 @@
 ! https://github.com/AdguardTeam/AdguardForiOS/issues/255
 @@||m.beautypageants.in^$elemhide
 !---
+! https://github.com/AdguardTeam/AdguardFilters/issues/8802
+@@||securepubads.g.doubleclick.net/gpt/pubads_impl_$domain=mobile.donanimhaber.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/14770
+! https://github.com/AdguardTeam/AdguardFilters/issues/14756
+! https://github.com/AdguardTeam/AdguardFilters/issues/14752
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9789
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5033
 @@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=dthforum.com
@@ -992,6 +998,10 @@ westseattleblog.com#@#.header-ad
 !
 ! Extended CSS rules
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/13010
+spaces.ru###sz_plain > div > div[class]:has(> div[id] > a > div.ico)
+spaces.ru##.main > div[class] > div[class]:has(> div[class] > div > script:contains(spaces_gifts))
+spaces.ru##body.mobile div[class]:has(> div[class] > img+a[class^="arrow_link"])
 ! reddit.com hiding promoted posts on mobile device
 reddit.com##.PostsList > .Post[-ext-has='.PostHeader__promoted-flair']
 ! https://github.com/AdguardTeam/AdguardFilters/issues/11988
@@ -1429,6 +1439,15 @@ m.news.de##.aside > div[style="height: 600px;"]
 m.news.de##.unisterAdsStart
 !
 !
+gomovies.cd,123moviestube.io###mv-info > div.mobile-btn
+m.donanimhaber.com##.diger-haberler > div[style="margin:10px auto; text-align:center; width:600px; height:338px;"]
+marumaru.in##body > div[align="center"]:not([id]):not([class]) > a[target="_blank"] > img
+forum.xda-developers.com##amp-ad
+m-gsmarena-com.cdn.ampproject.org##amp-iframe[src^="https://www.91mobiles.com"]
+onedio.com###sponsored
+m.naver.com##a[href*="/fxclick?"]
+m.sadistic.pl##article.images[style="text-align: center"]
+outlook.live.com##.scrollContainer > div[style="height: 88px;"]
 sueddeutsche.de##.frame-holder:not([id]):not([style])
 sueddeutsche.de##amp-ad
 amazon.com###centerBelow > #ape_search_btf_search-mWeb_text-wrapper
@@ -2193,6 +2212,10 @@ m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m.news.yand
 !+ NOT_PLATFORM(ios, ext_safari, ext_android_cb)
 ||app.adjust.com^
 !
+||urbanairship.com^
+||ploy.batmobi.net^
+||an.batmobi.net^
+||ustat.batmobi.net^
 ||analytics.any.do^
 ||data.mistat.intl.xiaomi.com^
 ||zeus.ad.intl.xiaomi.com^
