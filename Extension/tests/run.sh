@@ -79,6 +79,10 @@ result=1
     echo "Ring buffer tests"
     node-qunit-phantomjs miscellaneous/test-ring-buffer.html
 ) || result=0
+(
+    echo "Encoding tests"
+    node-qunit-phantomjs miscellaneous/test-encoding.html
+) || result=0
 
 if [ $result = 0 ]
 then
