@@ -29,5 +29,5 @@ QUnit.test("Test Encodings", function (assert) {
     assert.equal(244, bytes[0]);
 
     // Fallback to replacement
-    assert.equal(63, encoder.encode("Ⓢ"));
+    assert.equal(63, encoder.encode("Ⓢ")[0]);
 });
