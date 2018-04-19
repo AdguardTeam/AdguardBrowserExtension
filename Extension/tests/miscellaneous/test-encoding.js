@@ -7,10 +7,9 @@ QUnit.test("Test Encodings", function (assert) {
         var encoder = new TextEncoder(charset, { NONSTANDARD_allowLegacyEncoding: true });
         var decoder = new TextDecoder(charset, { NONSTANDARD_allowLegacyEncoding: true });
 
-        var t = [];
         for (var i = 0; i < 65533; i++) {
             var bytes = encoder.encode(String.fromCharCode(i));
-            t.push(decoder.decode(bytes));
+            decoder.decode(bytes);
             if (i <= 0x7F) {
                 assert.equal(i, bytes[0]);
             }
