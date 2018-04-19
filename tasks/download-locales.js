@@ -5,6 +5,9 @@ import gulp from 'gulp';
 import download from 'gulp-download2';
 import md5 from 'gulp-hash-creator';
 import {LOCALES, LOCALES_DIR} from './consts';
+import Logs from './log';
+
+const logs = new Logs();
 
 const hashString = (stringContent) => {
     return md5({
@@ -21,9 +24,9 @@ const prepare = () => {
     let oneskyapp;
 
     try {
-        oneskyapp = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../oneskyapp.json')));
+        oneskyapp = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../private/oneskyapp.json')));
     } catch (err) {
-        console.error(err);
+        logs.error(err);
         return false;
     }
 
@@ -52,9 +55,6 @@ const prepare = () => {
     return urls;
 };
 
-const downloadLocales = () => {
-    return download(prepare())
-        .pipe(gulp.dest(LOCALES_DIR));
-};
+const downloadLocales = () => download(prepare()).pipe(gulp.dest(LOCALES_DIR));
 
 export default downloadLocales;

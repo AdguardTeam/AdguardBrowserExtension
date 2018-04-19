@@ -1,32 +1,43 @@
 /* global process */
 import fs from 'fs';
+import path from 'path';
 import gulp from 'gulp';
-import {BUILD_DIR, LOCALES_DIR, SAFARI_EXTENSION_ID, SAFARI_UPDATE_URL} from './consts';
+import {BUILD_DIR, SAFARI_EXTENSION_ID, SAFARI_UPDATE_URL} from './consts';
 import {version} from './parse-package';
 import {updateLocalesMSGName, preprocessAll} from './helpers';
 import safariextz from 'safariextz';
+import copyCommonFiles from './copy-common';
 
 const paths = {
-    entry: 'Extension/browser/safari/**/*',
-    filters: 'Extension/filters/safari/**/*',
-    pages: 'Extension/pages/**/*',
-    lib: 'Extension/lib/**/*',
-    webkitFiles: 'Extension/browser/webkit/**/*',
-    locales: LOCALES_DIR + '**/*',
-    dest: `${BUILD_DIR}/${process.env.NODE_ENV}/safari-${version}.safariextension/`,
+    entry: path.join('Extension/browser/safari/**/*'),
+    filters: path.join('Extension/filters/safari/**/*'),
+    webkitFiles: path.join('Extension/browser/webkit/**/*'),
+    dest: path.join(BUILD_DIR, process.env.NODE_ENV || '', `safari-${version}.safariextension`),
 };
 
-const copyLibs = () => gulp.src(paths.lib).pipe(gulp.dest(paths.dest + 'lib/'));
-const copyPages = () => gulp.src(paths.pages).pipe(gulp.dest(paths.dest + 'pages/'));
-const copyFilters = () => gulp.src(paths.filters).pipe(gulp.dest(paths.dest + 'filters/'));
-const copyLocales = () => gulp.src(paths.locales).pipe(gulp.dest(paths.dest + '_locales/'));
+const dest = {
+    filters: path.join(paths.dest, 'filters'),
+    plist: path.join(paths.dest, 'Info.plist')
+};
+
+// copy common files
+const copyCommon = () => copyCommonFiles(paths.dest);
+
+// copy safari filters
+const copyFilters = () => gulp.src(paths.filters).pipe(gulp.dest(dest.filters));
+
+// copy webkit and safari files
 const safari = () => gulp.src([paths.webkitFiles, paths.entry]).pipe(gulp.dest(paths.dest));
 
+// preprocess with params
 const preprocess = (done) => preprocessAll(paths.dest, {browser: 'SAFARI', remoteScripts: true}, done);
+
+// change the extension name based on a type of a build (dev, beta or release)
 const localesProcess = (done) => updateLocalesMSGName(process.env.NODE_ENV, paths.dest, done);
 
+// update Info.plist file data
 const updatePlist = (done) => {
-    let plist = fs.readFileSync(paths.dest + 'Info.plist').toString();
+    let plist = fs.readFileSync(dest.plist).toString();
     let updateFromGallery = SAFARI_EXTENSION_ID.indexOf('beta' > 0) ? 'false' : 'true';
 
     plist = plist.replace(/\$\{version\}/g, version);
@@ -43,16 +54,17 @@ const updatePlist = (done) => {
             break;
     }
 
-    fs.writeFileSync(paths.dest + 'Info.plist', plist);
+    fs.writeFileSync(dest.plist, plist);
     return done();
 };
 
+// create safariextz which required private keys
 const ext = (done) => {
     if (process.env.NODE_ENV !== 'beta' && process.env.NODE_ENV !== 'release') {
         return done();
     }
 
-    return safariextz(`safari-${version}.safariextz`, `${BUILD_DIR}/${process.env.NODE_ENV}/safari-${version}.safariextension/`, {
+    return safariextz(`safari-${version}.safariextz`, paths.dest, {
         privateKey:   '../../private/safari_certs/key.pem',
         extensionCer: '../../private/safari_certs/cert.pem',
         appleDevCer:  '../../private/safari_certs/AppleWWDRCA.pem',
@@ -60,4 +72,4 @@ const ext = (done) => {
     });
 };
 
-export default gulp.series(copyLibs, copyPages, copyFilters, copyLocales, safari, updatePlist, localesProcess, preprocess, ext);
+export default gulp.series(copyCommon, copyFilters, safari, updatePlist, localesProcess, preprocess, ext);

@@ -1,8 +1,8 @@
-! Checksum: RrqpksLohEzFdUTqdUEFPA
+! Checksum: r4GgTmx69FaYsSZ8uKLvyQ
 ! Title: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such)
-! Version: 2.0.1.91
-! TimeUpdated: 2018-04-17T09:03:35+00:00
+! Version: 2.0.1.98
+! TimeUpdated: 2018-04-19T12:03:29+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -239,6 +239,8 @@ lj_bookmarklet
 /image2006/default/naver.gif^
 /image2006/default/Twitter.gif^
 /image2006/default/yozm.gif^
+cankiri.tv##.sidebar > .widget:first-child:has(#fb-root)
+ademocut.com###sidebar > .yanmenu:has(>h2:contains(Facebook Takip Et))
 uvfitness.net##.blog-sidebar > .box-blue:has(> .widget > .share)
 faktxeber.com###habersol > .ikutub:has(a[href^="https://web.whatsapp.com/send?"])
 forum.donanimhaber.com##.altkisim > [class="altkisimdetay"]:has(>span:contains(Facebook Sayfamız))
@@ -443,6 +445,11 @@ syl.ru##.share
 gazeta.ru##.article-share-name
 !+ NOT_PLATFORM(windows,mac,android)
 kakprosto.ru##.content__share
+people-press.org##.selectionSharer
+gidagundemi.com##.makalesosyal
+vnexpress.net###mshare_title > .item_social
+vnexpress.net###header_sticky .block_share_sticky > .item_social
+vnexpress.net##.block_share > a:not(.btn_print):not(.btn_email)
 vectorhq.com##.onp-sociallocker-buttons > div:not([class*="np-sociallocker-button-twitter-follow"])
 canakkaletv.com.tr##.SocialTools > ul > li[class]:not(.print):not(.resizer)
 newsyou.info##.social
@@ -868,7 +875,7 @@ livelib.ru##.mp-share
 newmoviezion.pro##.ShareRow
 akillitelefon.com##div[class^="bimber-microshare-item-share"]
 zarplata.ru##div[class^="socialbuttons"]
-||platform.twitter.com/widgets.js$domain=online.anidub.com
+||platform.twitter.com/widgets.js$domain=anidub.com
 123putlocker.org##.column-right > #text-6
 kingbetting.tv,tikostream2.com,macburda.tv,tikobet.tv##.embed-responsive + .s-b[style="margin-top:0"]
 live-privates.com##a[data-opt-tab="share"]
@@ -1195,7 +1202,6 @@ ek.ua##.soc-buttons-good
 dieunbestechlichen.com##.meta-share-wrapper > li[class]:not(.email)
 ndtv.com##.article-share__item
 day.az##.like-holder
-vnexpress.net##.block_share
 promobil.de##div[element-article-sharing]
 thefreedictionary.com##.social-networks > li > a[title^="Share on"]
 computerbild.de##.teaserblock div.specialbutton
@@ -3469,6 +3475,8 @@ yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua##.map
 ##.share-facebook
 !+ NOT_OPTIMIZED
 ##.view_sns
+##.share-navigation
+##.IN-widget
 ##.share__link
 ##.voc-author-social
 ##.dp-share
@@ -4037,7 +4045,7 @@ designboom.com,livescience.com,pbtech.co.nz,peoplesworld.org,space.com##.fa-face
 ##.social-block-div
 ##.social-block-links
 ##.social-block-share
-~disqus.com,~chip.com.tr,~66.ru##.social-button
+~zen.yandex.by,~zen.yandex.com,~zen.yandex.kz,~zen.yandex.ru,~zen.yandex.ua,~disqus.com,~chip.com.tr,~66.ru##.social-button
 ~chip.com.tr##.social-button-small
 ##.social-button_holder
 ~hongkiat.com,~66.ru,~buffer.com##.social-buttons
@@ -4121,7 +4129,7 @@ designboom.com,livescience.com,pbtech.co.nz,peoplesworld.org,space.com##.fa-face
 ##.social_main
 ##.social_networks
 ##.social_pinterest
-##.social_share
+~vnexpress.net##.social_share
 ##.social_share_left
 ##.social_sharing
 ##.social_st
@@ -4643,6 +4651,7 @@ bomb01.com#$#.modal-open { overflow: visible!important; }
 1track.ru#$#body { overflow: visible!important; }
 neokur.com#$#body { overflow: visible!important; }
 neokur.com#$#.jquery-modal.blocker { display: none!important; }
+@@||apis.google.com/js/platform.js$domain=hyperping.io
 @@||platform.twitter.com/js/button.*.js$domain=vectorhq.com
 @@||platform.twitter.com/widgets/$domain=vectorhq.com
 photoshoptutorials.ws#@#.share-container

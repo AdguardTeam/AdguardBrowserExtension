@@ -1,3 +1,11 @@
+/**
+ * By the rules of AMO and addons.opera.com we cannot use remote scripts (and our JS injection rules could be counted as remote scripts).
+ * So what we do:
+ * 1. We gather all current JS rules in the local_script_rules.json and load into the DEFAULT_SCRIPT_RULES object (see lib/utils/local-script-rules.js)
+ * 2. We disable JS rules got from remote server
+ * 3. We allow only custom rules got from the User filter (which user creates manually) or from this DEFAULT_SCRIPT_RULES object
+ */
+
 import fs from 'fs';
 import gulp from 'gulp';
 import {FILTERS_DEST, LAST_ADGUARD_FILTER_ID, LOCAL_SCRIPT_RULES_COMMENT} from './consts';

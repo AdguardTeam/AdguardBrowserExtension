@@ -1,5 +1,11 @@
+/**
+ * Build sample-extension
+ */
+
 /* global process */
+
 import fs from 'fs';
+import path from 'path';
 import gulp from 'gulp';
 import {BUILD_DIR, LOCALES_DIR} from './consts';
 import {version} from './parse-package';
@@ -67,31 +73,44 @@ const API_SCRIPTS = [
 ];
 
 const paths = {
-    entry: 'Extension/api/sample-extension/**/*',
-    assistant: 'Extension/lib/content-script/assistant/js/assistant.js',
-    locales: LOCALES_DIR + '**/*',
-    sourceManifest: 'Extension/api/chrome/manifest.json',
-    contentScriptsStartFile: 'adguard/adguard-content.js',
-    filters: ['Extension/filters/chromium/filters_i18n.json', 'Extension/filters/chromium/filters.json'],
-    dest: `${BUILD_DIR}/${process.env.NODE_ENV}/adguard-api-${version}/`
+    entry: path.join('Extension/api/sample-extension/**/*'),
+    assistant: path.join('Extension/lib/content-script/assistant/js/assistant.js'),
+    locales: path.join(LOCALES_DIR + '**/*'),
+    sourceManifest: path.join('Extension/api/chrome/manifest.json'),
+    contentScriptsStartFile: path.join('adguard/adguard-content.js'),
+    filters: [
+        path.join('Extension/filters/chromium/filters_i18n.json'),
+        path.join('Extension/filters/chromium/filters.json')
+    ],
+    dest: path.join(BUILD_DIR, process.env.NODE_ENV, `adguard-api-${version}`)
 };
 
+const dest = {
+    adguard: path.join(paths.dest, 'adguard'),
+    assistant: path.join(paths.dest, 'adguard', 'assistant'),
+    inner: path.join(paths.dest, '**/*'),
+    buildDir: path.join(BUILD_DIR, process.env.NODE_ENV || ''),
+    manifest: path.join(paths.dest, 'manifest.json')
+};
+
+// copy sample files
 const sampleApi = () => gulp.src(paths.entry).pipe(gulp.dest(paths.dest));
 
-const copyAssistant = () => gulp.src(paths.assistant).pipe(gulp.dest(paths.dest + 'adguard/assistant/'));
+// copy assistant files
+const copyAssistant = () => gulp.src(paths.assistant).pipe(gulp.dest(dest.assistant));
 
-const copyFilters = () => gulp.src(paths.filters).pipe(gulp.dest(paths.dest + 'adguard/'));
+//  copy filters
+const copyFilters = () => gulp.src(paths.filters).pipe(gulp.dest(dest.adguard));
 
 const concatStartFiles = () => concat('document_start', 'adguard-content.js');
-
 const concatEndFiles = () => concat('document_end', 'adguard-assistant.js');
 
-const apiConcat = () => gulp.src(API_SCRIPTS).pipe(concatFiles('adguard-api.js')).pipe(gulp.dest(paths.dest + 'adguard/'));
+const apiConcat = () => gulp.src(API_SCRIPTS).pipe(concatFiles('adguard-api.js')).pipe(gulp.dest(dest.adguard));
 
 const concat = (runAt, srcFileName) => {
     const manifest = JSON.parse(fs.readFileSync(paths.sourceManifest));
     let files = [];
-    for (let i of manifest.content_scripts) {
+    for (const i of manifest.content_scripts) {
         if (i.run_at === runAt) {
             files = i.js;
         }
@@ -107,13 +126,13 @@ const concat = (runAt, srcFileName) => {
 
     return gulp.src(files)
         .pipe(concatFiles(srcFileName))
-        .pipe(gulp.dest(paths.dest + 'adguard/'));
+        .pipe(gulp.dest(dest.adguard));
 };
 
 const updateManifest = (done) => {
-    const manifest = JSON.parse(fs.readFileSync(paths.dest + 'manifest.json'));
+    const manifest = JSON.parse(fs.readFileSync(dest.manifest));
     manifest.version = version;
-    fs.writeFileSync(paths.dest + 'manifest.json', JSON.stringify(manifest, null, 4));
+    fs.writeFileSync(dest.manifest, JSON.stringify(manifest, null, 4));
     return done();
 };
 
@@ -122,9 +141,9 @@ const createArchive = (done) => {
         return done();
     }
 
-    return gulp.src(paths.dest + '**/*')
+    return gulp.src(dest.inner)
         .pipe(zip(`chrome-${version}.zip`))
-        .pipe(gulp.dest(`${BUILD_DIR}/${process.env.NODE_ENV}/`));
+        .pipe(gulp.dest(dest.buildDir));
 };
 
 export default gulp.series(copyAssistant, sampleApi, concatStartFiles, concatEndFiles, apiConcat, copyFilters, updateManifest, createArchive);

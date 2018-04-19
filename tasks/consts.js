@@ -32,3 +32,13 @@ export const FIREFOX_WEBEXT_UPDATE_URL = 'https://adguardteam.github.io/AdguardB
 export const SAFARI_EXTENSION_ID = 'com.adguard.safaridev';
 
 export const SAFARI_UPDATE_URL = '';
+
+export const FIREFOX_LEGACY = 'FIREFOX_LEGACY';
+
+export const FIREFOX_WEBEXT = 'FIREFOX_WEBEXT';
+
+export const BRANCH_DEV = 'dev';
+
+export const BRANCH_BETA = 'beta';
+
+export const BRANCH_RELEASE = 'release';

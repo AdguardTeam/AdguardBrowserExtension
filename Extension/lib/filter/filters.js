@@ -317,13 +317,13 @@
                          * In case of Firefox and Opera add-ons, JS filtering rules are hardcoded into add-on code.
                          * Look at ScriptFilterRule.getScriptSource to learn more.
                          */
-                        /* @if remoteScripts == true */
+                        /* @if remoteScripts == false */
                         if (!isFirefox && !isOpera) {
                             scriptsToApply.push(scriptRule.rule);
                         }
                         /* @endif*/
 
-                        /* @if remoteScripts == false */
+                        /* @if remoteScripts == true */
                         if (!isOpera) {
                             scriptsToApply.push(scriptRule.rule);
                         }
