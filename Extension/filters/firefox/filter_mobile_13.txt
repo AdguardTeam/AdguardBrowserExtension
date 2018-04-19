@@ -1,8 +1,8 @@
-! Checksum: ypdo3q93LSlVWu+fzl1CLw
+! Checksum: lEDbvQ0J6Tnx7h+AiBri9w
 ! Title: Turkish filter
 ! Description: AdGuard Turkish filter. Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.1.52
-! TimeUpdated: 2018-04-17T15:03:44+00:00
+! Version: 2.0.1.57
+! TimeUpdated: 2018-04-19T12:02:57+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -348,7 +348,7 @@ fox.com.tr###lbads
 @@||kizlarsoruyor.com/content/js/ads.min.js
 kizlarsoruyor.com#%#window.canRunAds=!0;
 @@||www.tahminkolik.com/advertisement.js
-||mail.yandex.*/*/*-*-*-*-$replace=/Ya\[([0-9]{10\,15})\]\([\s\S]*\)\$//,script,important,domain=mail.yandex.com.tr
+||mail.yandex.*/*/*-*-*-*-$replace=/Ya\s?\[([0-9]{10\,15})\]\([\s\S]*\)\$//,script,important,domain=mail.yandex.com.tr
 !+ NOT_PLATFORM(windows, mac, android)
 @@||mail.yandex.$generichide
 !+ NOT_PLATFORM(windows, mac, android)
@@ -362,6 +362,11 @@ kizlarsoruyor.com#%#window.canRunAds=!0;
 vizyonfilmizle.tv#$#.fancybox-overlay-fixed[-ext-has="> div"] { display: none!important; }
 vizyonfilmizle.tv#$#.fancybox-lock body[-ext-has="> div"] { overflow: visible!important; }
 vizyonfilmizle.tv#$#html[-ext-has="> body"] { overflow: visible!important; }
+gidagundemi.com###sagsutunsbt .haber300x250:has(.adsbygoogle)
+ademocut.com##body > .wrapper > .aligncenter:has(>.adsbygoogle)
+ademocut.com###sidebar > .yanmenu:has(> h2:contains(Sponsorl))
+ademocut.com##.content >article > center:contains(Sponsorlu Bağlantılar)
+ademocut.com##.wrapper > .anasayfa > .homewidget:has(>h2:contains(Sponsorl))
 meydan.com.tr##.inner-wrap > #secondary > .widget:has(> .adsbygoogle)
 medyaindir1.com##.news-text > div > b > span[style^="font-size:"][-ext-has='span:contains(Premium Üyelik)']
 medyaindir1.com###right-sidebar > div:contains(Reklam Alanı)
@@ -1345,6 +1350,21 @@ pornomolca.com,uicmail.com,185.85.75.229,elrabeh.com,r0j.org,terapisex.com,sinir
 toonssexfree.com,jvi8.com,pornofilmlistesi.com,porneda.com,gsicb.com,sexgw.com,konnova.com,tvocs.com,konuluporno.xn--6frz82g,tiw8.com,izporno.com##a[href^="tel:"] > img
 idstamper.com##.porno-izle > p[style*="background-color:"][style*="color:"]
 fullizlefilmizle.com##a[href^="tel:0"] > img
+oncurtv.com##.modal-backdrop
+oncurtv.com###modal-ads
+||boluekspres.com/rklm^
+bakimliyiz.com###ad_global_below_navbar
+bulurum.com##a[href*="advertising.bulurum.com"][target="_blank"]
+cankiri.tv##[id^="reklam-"]
+dijitalajanslar.com###sidebar-right > #inner-left > #text-13
+dijitalajanslar.com###sidebar-right > #inner-left > #magman_widget_text-5
+karabuknethaber.com###siteSag a[href][target="_blank"][rel="noopener"] > img
+karabuknethaber.com##.haberText a[href][target="_blank"][rel="noopener"] > img
+karabuknethaber.com###siteGenel > [style^="width: 100%; height: 100px;"] > div[style^="float: right;"] > img
+||karabuknethaber.com/aden/
+||karabuknethaber.com/reks/
+birsence.com##.td-a-rec-id-header > a[href] > img
+||karizmaserver.com/1/1.gif
 editor.sol.org.tr###ad-haber-alti
 editor.sol.org.tr##.reklam-sagbant
 yasamaktuel.com##a[href^="ReklamDetay/"]
@@ -1530,7 +1550,7 @@ meleklermekani.com##.u-bottomFixer
 cezmikalorifer.com###secondary > aside[id^="media_image-"]
 ||makroo.kanal7-cdn.com/turkcell*_expand*.js$domain=forum.donanimhaber.com
 koroglugazetesi.com##.haberText > div[style*="width: 300px"] > img
-fisiltimedyahaber.com,koroglugazetesi.com##div[class$="kulereklam"]
+karabuknethaber.com,fisiltimedyahaber.com,koroglugazetesi.com##div[class$="kulereklam"]
 bolusporluyuz.com###rklm-sayfaustu
 bolusporluyuz.com###girisReklamalani
 unikampus.net##div.bsac-container[itemtype="https://schema.org/WPAdBlock"]
@@ -3712,7 +3732,6 @@ dha.com.tr##.headreklam
 canlimacizle.org##.hizala > a[href^="http://goo.gl/"] > img
 dizipub.com##.homepage-rk-300
 dizipub.com##.homepage-rk-728
-ademocut.com##.homewidget > .textwidget > a:not([href^="http://ademocut.com/"]) > img
 gazetevatan.com##.hsharea
 oyungezginler.org##.icerik > .navigasyon
 oyungezginler.org##.icerik > center > a[title="agario"][target="_blank"]
@@ -3959,7 +3978,6 @@ minikago.com.tr##.x300
 minikago.com.tr##.x300250
 gercektaraf.com,vatandanhaber.com##.x_advert
 gazetespor.com.tr##.yanReklamlar
-ademocut.com##.yanmenu > .textwidget > a:not([href^="http://ademocut.com/"]) > img
 gecce.com##.yataybannerTop
 macyayinlarim.com,macyayinlaritv.org##.yayinlar-468x60
 antalyahilal.com##.yazar_banner
@@ -3990,7 +4008,6 @@ hdfilmcehennemi.com##a[href="http://lidyabet6.com/"]
 listelist.com##a[href="http://lstl.st/nikekam"]
 motordelisi.com##a[href="http://motordelisi.com/advertisement/"]
 kanala.com.tr##a[href="http://shop.termikel.com.tr/"]
-ademocut.com##a[href="http://windows10.gen.tr"]
 otekisinema.com##a[href="http://www.atasehirkisafilm.com/"]
 motordelisi.com##a[href="http://www.benelliturkiye.com"]
 gundembursa.com##a[href="http://www.bursarender.com/"]

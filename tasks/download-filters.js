@@ -1,18 +1,20 @@
+import path from 'path';
 import request from 'request';
 import fs from 'fs';
-import path from 'path';
+import fse from 'fs-extra';
 import crypto from 'crypto';
+import Logs from './log';
 import gulp from 'gulp';
-import {log} from './log';
 import 'babel-polyfill';
 import {METADATA_DOWNLOAD_URL_FORMAT, FILTERS_DEST, METADATA_I18N_DOWNLOAD_URL_FORMAT, LAST_ADGUARD_FILTER_ID, FILTER_DOWNLOAD_URL_FORMAT, OPTIMIZED_FILTER_DOWNLOAD_URL_FORMAT} from './consts';
 
 const CHECKSUM_PATTERN = /^\s*!\s*checksum[\s-:]+([\w\+/=]+).*[\r\n]+/i;
+const logs = new Logs();
 
 /**
- * Getting files array
+ * Getting filters array
  *
- * @param browser Which browser files to download
+ * @param browser Which browser filters to download
  * @return array
  */
 const filtersList = (browser) => {
@@ -64,16 +66,16 @@ const validateChecksum = (url, body) => {
     const checksumMatch = partOfResponse.match(CHECKSUM_PATTERN);
 
     if (!checksumMatch[1]) {
-        throw new Error(`Filter rules from ${url.url} doesn't contain a checksum ${partOfResponse}`);
+        logs.error(`Filter rules from ${url.url} doesn't contain a checksum ${partOfResponse}`);
     }
 
     const bodyChecksum = crypto.createHash('md5').update(normalizeResponse(body)).digest('base64').replace(/=/g,'');
 
     if (bodyChecksum !== checksumMatch[1]) {
-        throw new Error(`Wrong checksum: found ${bodyChecksum}, expected ${checksumMatch[1]}`);
+        logs.error(`Wrong checksum: found ${bodyChecksum}, expected ${checksumMatch[1]}`);
     }
 
-    log('checksum is valid');
+    logs.info('checksum is valid');
 };
 
 /**
@@ -94,7 +96,7 @@ const normalizeResponse = (response) => {
  * Download filters
  *
  * @param browser Which browser filters to download
- * @param done
+ * @param done  stream
  * @return done
  */
 const startDownload = async (browser, done) => {
@@ -108,18 +110,16 @@ const startDownload = async (browser, done) => {
 const downloadFilters = (url, browser) => {
     const filtersDir = FILTERS_DEST.replace('%browser', browser);
 
-    if (!fs.existsSync(filtersDir)) {
-        fs.mkdirSync(filtersDir);
-    }
+    fse.ensureDirSync(filtersDir);
 
     return new Promise(resolve => {
-        log(`Download ${url.url}...`);
+        logs.info(`Download ${url.url}...`);
         request(url, (error, response, body) => {
             if (url.validate) {
                 validateChecksum(url, body);
             }
 
-            log('Done');
+            logs.info('Done');
             resolve();
         })
         .pipe(fs.createWriteStream(path.join(filtersDir, url.file)));
@@ -130,6 +130,6 @@ const chromium = (done) => startDownload('chromium', done);
 const edge = (done) => startDownload('edge', done);
 const firefox = (done) => startDownload('firefox', done);
 const safari = (done) => startDownload('safari', done);
-const operaBrowser = (done) => startDownload('opera', done);
+const opera = (done) => startDownload('opera', done);
 
-export default gulp.series(chromium, edge, firefox, safari, operaBrowser);
+export default gulp.series(chromium, edge, firefox, safari, opera);

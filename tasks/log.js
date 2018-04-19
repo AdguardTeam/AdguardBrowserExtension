@@ -1,4 +1,17 @@
+export default class Logs {
+    error(text) {
+        if (text) {
+            throw new Error(text);
+        } else {
+            throw new Error('Unknown error');
+        }
+    }
 
-export const log = (text) => {
-    console.log(text);
-};
+    info(text) {
+        if (text) {
+            console.info(text);
+        } else {
+            console.info('unknown info');
+        }
+    }
+}

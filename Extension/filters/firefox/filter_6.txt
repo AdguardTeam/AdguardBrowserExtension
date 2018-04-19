@@ -1,8 +1,8 @@
-! Checksum: +pS01d/IAn3tO2ME8X7Hag
+! Checksum: 6mQjqFTCcQJtYbrvaRzV6A
 ! Title: German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.1.0
-! TimeUpdated: 2018-04-17T15:04:17+00:00
+! Version: 2.0.1.5
+! TimeUpdated: 2018-04-19T03:03:12+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#german
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -931,6 +931,9 @@ pnp.de###gesBox > div[style*="color:#aaa"]:not([class]):not([id])
 !+ NOT_OPTIMIZED
 lvz.de##.pdma-adaside
 !
+journalistenwatch.com##div[class^="journ-nach-dem-inhalt"]
+journalistenwatch.com##.td-a-rec
+deutsche-mittelstands-nachrichten.de###main > #left > .entry:not([id]):not([class*="template"])
 web.de,gmx.net##.partner-links
 ||img.ui-portal.de/UIM_Promoline^
 farmeramania.de##.adsbygoogle
@@ -2380,6 +2383,9 @@ wallstreet-online.de###mooTickerContainer
 ! wetter.com has different script than websites above
 /\:\/\/config-vvs\.glomex\.com\/[a-z0-9]*\.js/$replace=/"adScheduler"\:/"adScheduler":\{"cobra":\{\}\}\,"x":/,domain=wetter.com
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/14897
+svonm.com/www.watchbox.de/config.json$replace=/"enabled": true\,/"enabled": false\,/i
+svonm.com/www.watchbox.de/config.json$replace=/"enabled": true\,/"enabled": false\,/i,important
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9237
 ||watchbox.de/homad*.json$replace=/"enabled": true\,/"enabled": false\,/i,important
 ! https://github.com/AdguardTeam/AdguardFilters/issues/7551
@@ -6109,6 +6115,7 @@ guterhut.de,hardwareluxx.de,hbf-info.de,rakuten.at,rakuten.de,zalando.de#@#div[i
 ||tageblatt.com.ar/banners/
 ||tagseoblog.de/images/schildkroete-net.png
 ||tagseoblog.de/images/vpp-werben280x250.jpg
+||tah.de^*&tx_sfbanners_
 ||taketv.net/bilder/backdell.jpg
 ||taschenlampen-forum.de/images/fenix/
 ||taschenlampen-forum.de/images/imalent/
@@ -10158,6 +10165,8 @@ lablue.de##.ads-wrapper-top
 mehr-tanken.de##.container-fluid > div > div > img
 mein.dbna.de##.container-header
 woman.at##.ad_con + * > * > img
+4players.de,chefkoch.de,finanzen.at,finanzen.net,gamestar.de,golem.de,heise.de,serienjunkies.de,welt.de,wetter.com,wetter.de,wetteronline.de##div[style="display: inherit !important;"]
+golem.de##div[style="max-width:300px; width:auto; float:right; margin:0 -150px 0 20px;"]
 @@|http://byte.to/js/javascript.js|
 @@|http://byte.to/js/wz_tooltip.js|
 @@||1000steine.de/img/ads/

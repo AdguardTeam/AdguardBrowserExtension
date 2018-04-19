@@ -1,5 +1,3 @@
-import fs from 'fs';
-
-const packageJSON = JSON.parse(fs.readFileSync('package.json'));
+import * as packageJSON from '../package.json';
 
 export const version = packageJSON.version;

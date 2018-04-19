@@ -1,43 +1,44 @@
 import fs from 'fs';
 import path from 'path';
 import pp from 'preprocess';
+import {FIREFOX_LEGACY, FIREFOX_WEBEXT, BRANCH_DEV, BRANCH_BETA, BRANCH_RELEASE} from './consts';
 
 export function updateLocalesMSGName (branch, dest, done, browser, allowRemoteScripts) {
     let extensionNamePostfix = '';
 
     switch (browser) {
-        case 'FIREFOX_LEGACY':
-            if (branch == 'beta') {
+        case FIREFOX_LEGACY:
+            if (branch == BRANCH_BETA) {
                 extensionNamePostfix = " (Legacy)";
-            } else if (branch == 'dev') {
+            } else if (branch == BRANCH_DEV) {
                 extensionNamePostfix = " (Legacy Dev)";
             }
             break;
-        case 'FIREFOX_WEBEXT':
+        case FIREFOX_WEBEXT:
             if (allowRemoteScripts) {
-                if (branch == 'beta') {
+                if (branch == BRANCH_BETA) {
                     extensionNamePostfix = " (Standalone)";
-                } else if (branch == 'dev') {
+                } else if (branch == BRANCH_DEV) {
                     extensionNamePostfix = " (Standalone Dev)";
                 }
             } else {
-                if (branch == 'beta') {
+                if (branch == BRANCH_BETA) {
                     extensionNamePostfix = " (Beta)";
-                } else if (branch == 'dev') {
+                } else if (branch == BRANCH_DEV) {
                     extensionNamePostfix = " (AMO Dev)";
                 }
             }
             break;
         default:
-            if (branch != 'release') {
+            if (branch != BRANCH_RELEASE) {
                 extensionNamePostfix = " (" + capitalize(branch) + ")";
             }
             break;
     }
 
-    const locales = fs.readdirSync(dest + '_locales/');
+    const locales = fs.readdirSync(path.join(dest, '_locales'));
 
-    for (let i of locales) {
+    for (const i of locales) {
         let file = path.join(dest, '_locales', i, 'messages.json');
         let messages = JSON.parse(fs.readFileSync(file));
 
@@ -60,26 +61,25 @@ export function updateLocalesMSGName (branch, dest, done, browser, allowRemoteSc
  *
  * @param dest   src folder. In our task src and destination folder are the same
  * @param data   params to preprocess
- * @param done
+ * @param done   stream
  * @return done
  */
 export function preprocessAll (dest, data, done) {
-    const popupHTML = dest + 'pages/popup.html';
-    const filterHTML = dest + 'pages/filter-download.html';
-    const thankyouHTML = dest + 'pages/thankyou.html';
-    const exportHTML = dest + 'pages/export.html';
-    const logHTML = dest + 'pages/log.html';
-    const optionsHTML = dest + 'pages/options.html';
-    const sbHTML = dest + 'pages/sb.html';
-    const filtersJS = dest + 'lib/filter/filters.js';
-    pp.preprocessFileSync(popupHTML, popupHTML, data);
-    pp.preprocessFileSync(filterHTML, filterHTML, data);
-    pp.preprocessFileSync(thankyouHTML, thankyouHTML, data);
-    pp.preprocessFileSync(exportHTML, exportHTML, data);
-    pp.preprocessFileSync(logHTML, logHTML, data);
-    pp.preprocessFileSync(optionsHTML, optionsHTML, data);
-    pp.preprocessFileSync(sbHTML, sbHTML, data);
-    pp.preprocessFileSync(filtersJS, filtersJS, data);
+    const filesToPreprocess = [
+        path.join(dest, 'pages/popup.html'),
+        path.join(dest, 'pages/filter-download.html'),
+        path.join(dest, 'pages/thankyou.html'),
+        path.join(dest, 'pages/export.html'),
+        path.join(dest, 'pages/log.html'),
+        path.join(dest, 'pages/options.html'),
+        path.join(dest, 'pages/sb.html'),
+        path.join(dest, 'lib/filter/filters.js'),
+    ];
+
+    for (const filePath of filesToPreprocess) {
+        pp.preprocessFileSync(filePath, filePath, data);
+    }
+
     return done();
 }
 
