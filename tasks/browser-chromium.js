@@ -12,9 +12,6 @@ import {updateLocalesMSGName, preprocessAll} from './helpers';
 import zip from 'gulp-zip';
 import crx from 'gulp-crx-pack';
 import copyCommonFiles from './copy-common';
-import Logs from './log';
-
-const logs = new Logs();
 
 const paths = {
     entry: path.join('Extension/browser/chrome/**/*'),

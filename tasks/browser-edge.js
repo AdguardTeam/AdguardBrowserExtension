@@ -11,9 +11,6 @@ import {BUILD_DIR} from './consts';
 import {version} from './parse-package';
 import {updateLocalesMSGName, preprocessAll} from './helpers';
 import copyCommonFiles from './copy-common';
-import Logs from './log';
-
-const logs = new Logs();
 
 const paths = {
     entry: path.join('Extension/browser/edge/**/*'),
