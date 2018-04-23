@@ -1,15 +1,26 @@
-/* global process */
+/**
+ * Safari build
+ * 1. Copying common scripts and htmls (pages, lib, locales)
+ * 2. Copying Safari filters
+ * 3. Copying Webkit and Safari scripts
+ * 4. Updating version, extensionId, updateURL and other data in Info.plist file
+ * 5. Change the extension name in localization files based on a type of a build (dev, beta or release)
+ * 6. Preprocessing files
+ * 7. Creating safariextz pack using
+ */
+
+/* global process, __dirname */
 import fs from 'fs';
 import path from 'path';
 import gulp from 'gulp';
-import {BUILD_DIR, SAFARI_EXTENSION_ID, SAFARI_UPDATE_URL} from './consts';
+import {BUILD_DIR, SAFARI_UPDATE_URL, BRANCH_BETA, BRANCH_DEV, BRANCH_RELEASE, SAFARI_EXTENSION_ID_DEV, SAFARI_EXTENSION_ID_BETA, SAFARI_EXTENSION_ID_RELEASE} from './consts';
 import {version} from './parse-package';
 import {updateLocalesMSGName, preprocessAll} from './helpers';
 import safariextz from 'safariextz';
 import copyCommonFiles from './copy-common';
 
 const paths = {
-    entry: path.join('Extension/browser/safari/**/*'),
+    safari: path.join('Extension/browser/safari/**/*'),
     filters: path.join('Extension/filters/safari/**/*'),
     webkitFiles: path.join('Extension/browser/webkit/**/*'),
     dest: path.join(BUILD_DIR, process.env.NODE_ENV || '', `safari-${version}.safariextension`),
@@ -27,7 +38,7 @@ const copyCommon = () => copyCommonFiles(paths.dest);
 const copyFilters = () => gulp.src(paths.filters).pipe(gulp.dest(dest.filters));
 
 // copy webkit and safari files
-const safari = () => gulp.src([paths.webkitFiles, paths.entry]).pipe(gulp.dest(paths.dest));
+const safari = () => gulp.src([paths.webkitFiles, paths.safari]).pipe(gulp.dest(paths.dest));
 
 // preprocess with params
 const preprocess = (done) => preprocessAll(paths.dest, {browser: 'SAFARI', remoteScripts: true}, done);
@@ -38,18 +49,32 @@ const localesProcess = (done) => updateLocalesMSGName(process.env.NODE_ENV, path
 // update Info.plist file data
 const updatePlist = (done) => {
     let plist = fs.readFileSync(dest.plist).toString();
-    let updateFromGallery = SAFARI_EXTENSION_ID.indexOf('beta' > 0) ? 'false' : 'true';
+
+    let extensionID = '';
+
+    switch (process.env.NODE_ENV) {
+        case BRANCH_BETA:
+            extensionID = SAFARI_EXTENSION_ID_BETA;
+            break;
+        case BRANCH_DEV:
+            extensionID = SAFARI_EXTENSION_ID_DEV;
+            break;
+        default:
+            extensionID = SAFARI_EXTENSION_ID_RELEASE;
+    }
+
+    let updateFromGallery = extensionID.indexOf('beta' > 0) ? 'false' : 'true';
 
     plist = plist.replace(/\$\{version\}/g, version);
-    plist = plist.replace(/\$\{extensionId\}/g, SAFARI_EXTENSION_ID);
+    plist = plist.replace(/\$\{extensionId\}/g, extensionID);
     plist = plist.replace(/\$\{updateURL\}/g, SAFARI_UPDATE_URL);
     plist = plist.replace(/\$\{updateFromGallery\}/g, updateFromGallery);
 
     switch (process.env.NODE_ENV) {
-        case 'dev':
+        case BRANCH_DEV:
             plist = plist.replace(/\$\{extensionNamePostfix\}/g, ' (Dev)');
             break;
-        case 'beta':
+        case BRANCH_BETA:
             plist = plist.replace(/\$\{extensionNamePostfix\}/g, ' (Beta)');
             break;
     }
@@ -60,15 +85,15 @@ const updatePlist = (done) => {
 
 // create safariextz which required private keys
 const ext = (done) => {
-    if (process.env.NODE_ENV !== 'beta' && process.env.NODE_ENV !== 'release') {
+    if (process.env.NODE_ENV !== BRANCH_BETA && process.env.NODE_ENV !== BRANCH_RELEASE) {
         return done();
     }
 
     return safariextz(`safari-${version}.safariextz`, paths.dest, {
-        privateKey:   '../../private/safari_certs/key.pem',
-        extensionCer: '../../private/safari_certs/cert.pem',
-        appleDevCer:  '../../private/safari_certs/AppleWWDRCA.pem',
-        appleRootCer: '../../private/safari_certs/AppleIncRootCertificate.pem'
+        privateKey:   path.resolve(__dirname, '../private/AdguardBrowserExtension/safari_certs/key.pem'),
+        extensionCer: path.resolve(__dirname, '../private/AdguardBrowserExtension/safari_certs/cert.pem'),
+        appleDevCer:  path.resolve(__dirname, '../private/AdguardBrowserExtension/safari_certs/AppleWWDRCA.pem'),
+        appleRootCer: path.resolve(__dirname, '../private/AdguardBrowserExtension/safari_certs/AppleIncRootCertificate.pem')
     });
 };
 

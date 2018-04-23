@@ -1,3 +1,7 @@
+/**
+ * Update filters in repository
+ */
+
 import path from 'path';
 import request from 'request';
 import fs from 'fs';

@@ -1,5 +1,12 @@
 /*
  * Edge build
+ * 1. Copying common scripts and htmls (pages, lib, locales)
+ * 2. Copying Edge filters
+ * 3. Copying Webkit, Chrome and Edge scripts
+ * 4. Updating version of an extension in manifest
+ * 5. Change the extension name in localization files based on a type of a build (dev, beta or release)
+ * 6. Preprocessing files
+ * 7. Creating zip archive of an extension
  */
 
 /* global process */
@@ -7,13 +14,13 @@ import fs from 'fs';
 import path from 'path';
 import gulp from 'gulp';
 import zip from 'gulp-zip';
-import {BUILD_DIR} from './consts';
+import {BUILD_DIR, BRANCH_BETA, BRANCH_RELEASE} from './consts';
 import {version} from './parse-package';
 import {updateLocalesMSGName, preprocessAll} from './helpers';
 import copyCommonFiles from './copy-common';
 
 const paths = {
-    entry: path.join('Extension/browser/edge/**/*'),
+    edge: path.join('Extension/browser/edge/**/*'),
     filters: path.join('Extension/filters/edge/**/*'),
     chromeFiles: path.join('Extension/browser/chrome/**/*'),
     webkitFiles: path.join('Extension/browser/webkit/**/*'),
@@ -34,7 +41,7 @@ const copyCommon = () => copyCommonFiles(paths.dest);
 const copyFilters = () => gulp.src(paths.filters).pipe(gulp.dest(dest.filters));
 
 // edge extension includes webkit and chromium files
-const edge = () => gulp.src([paths.webkitFiles, paths.chromeFiles, paths.entry]).pipe(gulp.dest(paths.dest));
+const edge = () => gulp.src([paths.webkitFiles, paths.chromeFiles, paths.edge]).pipe(gulp.dest(paths.dest));
 
 // preprocess with params
 const preprocess = (done) => preprocessAll(paths.dest, {browser: 'EDGE', remoteScripts: true}, done);
@@ -51,7 +58,7 @@ const updateManifest = (done) => {
 };
 
 const createArchive = (done) => {
-    if (process.env.NODE_ENV !== 'beta' && process.env.NODE_ENV !== 'release') {
+    if (process.env.NODE_ENV !== BRANCH_BETA && process.env.NODE_ENV !== BRANCH_RELEASE) {
         return done();
     }
 

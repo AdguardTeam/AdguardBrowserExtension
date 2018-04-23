@@ -1,7 +1,7 @@
 export default class Logs {
-    error(text) {
+    error(text, data) {
         if (text) {
-            throw new Error(text);
+            throw new Error(text, data);
         } else {
             throw new Error('Unknown error');
         }
