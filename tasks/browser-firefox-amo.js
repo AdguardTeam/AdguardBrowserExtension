@@ -14,7 +14,7 @@
 import fs from 'fs';
 import path from 'path';
 import gulp from 'gulp';
-import {BUILD_DIR, FIREFOX_WEBEXT_UPDATE_URL, BRANCH_BETA, BRANCH_RELEASE, FIREFOX_WEBEXT, FIREFOX_EXTENSION_ID_BETA, FIREFOX_EXTENSION_ID_RELEASE} from './consts';
+import {BUILD_DIR, BRANCH_DEV, BRANCH_BETA, BRANCH_RELEASE, FIREFOX_WEBEXT, FIREFOX_EXTENSION_ID_BETA, FIREFOX_EXTENSION_ID_RELEASE, FIREFOX_EXTENSION_ID_DEV} from './consts';
 import {version} from './parse-package';
 import {updateLocalesMSGName, preprocessAll} from './helpers';
 import webExt from 'web-ext';
@@ -62,6 +62,8 @@ const updateManifest = (done) => {
         case BRANCH_RELEASE:
             extensionID = FIREFOX_EXTENSION_ID_RELEASE;
             break;
+        case BRANCH_DEV:
+            extensionID = FIREFOX_EXTENSION_ID_DEV;
     }
 
     manifest.version = version;
