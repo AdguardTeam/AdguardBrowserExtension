@@ -17,6 +17,19 @@ window.TextEncoder = window.TextDecoder = null;
             "windows-1252":[8364,129,8218,402,8222,8230,8224,8225,710,8240,352,8249,338,141,381,143,144,8216,8217,8220,8221,8226,8211,8212,732,8482,353,8250,339,157,382,376,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255]
         };
 
+    // Defines encoding fallback strategy
+    // First try to use Best-Fit Fallback, then Replacement fallback
+    global["encode-fallback-replacement"] =
+        {
+            "windows-1251": {
+                "replacement": 63,
+                "index": "windows-1252"
+            },
+            "windows-1252": {
+                "replacement": 63
+            }
+        };
+
 // For strict environments where `this` inside the global scope
 // is `undefined`, take a pure object instead
 }(this || {}));
@@ -871,6 +884,22 @@ window.TextEncoder = window.TextDecoder = null;
   }
 
   /**
+   * Searches for fallback replacement
+   * @param {string} name Name of the encoding.
+   * @returns {{replacement: String|number|*, index: Array<number>|Array<Array<number>>}}
+   */
+  function fallbackReplacement(name) {
+    var fallback = global['encode-fallback-replacement'][name];
+    if (fallback) {
+      return {
+        "replacement": fallback.replacement,
+        "index": index(fallback.index)
+      }
+    }
+    return null;
+  }
+
+  /**
    * @param {number} pointer The |pointer| to search for in the gb18030 index.
    * @return {?number} The code point corresponding to |pointer| in |index|,
    *     or null if |code point| is not in the gb18030 index.
@@ -1615,8 +1644,9 @@ window.TextEncoder = window.TextDecoder = null;
    * @implements {Encoder}
    * @param {!Array.<?number>} index The encoding index.
    * @param {{fatal: boolean}} options
+   * @param {{replacement: String|number|*, index: Array<number>|Array<Array<number>>}} fallback
    */
-  function SingleByteEncoder(index, options) {
+  function SingleByteEncoder(index, options, fallback) {
     var fatal = options.fatal;
     /**
      * @param {Stream} stream Input stream.
@@ -1637,6 +1667,15 @@ window.TextEncoder = window.TextDecoder = null;
       // single-byte.
       var pointer = indexPointerFor(code_point, index);
 
+      // If encoding index table doesn't contain code point switch to fallback strategy
+      if (pointer == null && fallback.index) {
+        pointer = indexPointerFor(code_point, fallback.index);
+      }
+
+      if (pointer == null) {
+        return fallback.replacement;
+      }
+
       // 4. If pointer is null, return error with code point.
       if (pointer === null)
         encoderError(code_point);
@@ -1655,13 +1694,14 @@ window.TextEncoder = window.TextDecoder = null;
       category.encodings.forEach(function(encoding) {
         var name = encoding.name;
         var idx = index(name.toLowerCase());
+        var fallback = fallbackReplacement(name.toLowerCase());
         /** @param {{fatal: boolean}} options */
         decoders[name] = function(options) {
           return new SingleByteDecoder(idx, options);
         };
         /** @param {{fatal: boolean}} options */
         encoders[name] = function(options) {
-          return new SingleByteEncoder(idx, options);
+          return new SingleByteEncoder(idx, options, fallback);
         };
       });
     });

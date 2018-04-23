@@ -1,12 +1,20 @@
 /**
  * Chromium build
+ * 1. Copying common scripts and htmls (pages, lib, locales)
+ * 2. Copying Chromium filters
+ * 3. Copying webkit and Chromium scripts
+ * 4. Updating version of an extension in manifest
+ * 5. Change the extension name in localization files based on a type of a build (dev, beta or release)
+ * 6. Preprocessing files
+ * 7. Creating zip archive of an extension
+ * 8. Creating crx pack
  */
 
 /* global process */
 import fs from 'fs';
 import path from 'path';
 import gulp from 'gulp';
-import {BUILD_DIR} from './consts';
+import {BUILD_DIR, BRANCH_BETA, BRANCH_RELEASE, BRANCH_DEV} from './consts';
 import {version} from './parse-package';
 import {updateLocalesMSGName, preprocessAll} from './helpers';
 import zip from 'gulp-zip';
@@ -14,10 +22,10 @@ import crx from 'gulp-crx-pack';
 import copyCommonFiles from './copy-common';
 
 const paths = {
-    entry: path.join('Extension/browser/chrome/**/*'),
+    chrome: path.join('Extension/browser/chrome/**/*'),
     filters: path.join('Extension/filters/chromium/**/*'),
     webkitFiles: path.join('Extension/browser/webkit/**/*'),
-    cert: path.join('private/certificate.pem'),
+    cert: path.join('private/AdguardBrowserExtension/certificate.pem'),
     dest: path.join(BUILD_DIR, process.env.NODE_ENV || '', `chrome-${version}`)
 };
 
@@ -35,7 +43,7 @@ const copyCommon = () => copyCommonFiles(paths.dest);
 const copyFilters = () => gulp.src(paths.filters).pipe(gulp.dest(dest.filters));
 
 // copy chromium and webkit files
-const chromiumMainFiles = () => gulp.src([paths.entry, paths.webkitFiles]).pipe(gulp.dest(paths.dest));
+const chromiumMainFiles = () => gulp.src([paths.webkitFiles, paths.chrome]).pipe(gulp.dest(paths.dest));
 
 // preprocess with params
 const preprocess = (done) => preprocessAll(paths.dest, {browser: 'CHROMIUM', remoteScripts: true}, done);
@@ -52,7 +60,7 @@ const updateManifest = (done) => {
 };
 
 const createArchive = (done) => {
-    if (process.env.NODE_ENV !== 'beta' && process.env.NODE_ENV !== 'release') {
+    if (process.env.NODE_ENV !== BRANCH_BETA && process.env.NODE_ENV !== BRANCH_RELEASE) {
         return done();
     }
 
@@ -62,7 +70,7 @@ const createArchive = (done) => {
 };
 
 const crxPack = (done) => {
-    if (process.env.NODE_ENV !== 'release') {
+    if (process.env.NODE_ENV === BRANCH_DEV || process.env.NODE_ENV === BRANCH_RELEASE) {
         return done();
     }
 

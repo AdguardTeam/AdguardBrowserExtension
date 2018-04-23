@@ -1,31 +1,40 @@
 /**
- * Firefox webext
+ * Firefox webextension build
+ * 1. Copying common scripts and htmls (pages, lib, locales)
+ * 2. Copying Firefox filters
+ * 3. Copying Webkit, Chrome and Firefox_webext scripts
+ * 4. Updating version of an extension in manifest and changing update_url if its a beta build
+ * 5. Change the extension name in localization files based on a type of a build (dev, beta or release)
+ * 6. Preprocessing files
+ * 7. Creating firefox web-extension pack
  */
 
 /* global process */
 import fs from 'fs';
 import path from 'path';
 import gulp from 'gulp';
-import {BUILD_DIR, FIREFOX_EXTENSION_ID, FIREFOX_WEBEXT_UPDATE_URL} from './consts';
+import {BUILD_DIR, FIREFOX_WEBEXT_UPDATE_URL, FIREFOX_WEBEXT, BRANCH_BETA, BRANCH_RELEASE, BRANCH_DEV, FIREFOX_EXTENSION_ID_DEV, FIREFOX_EXTENSION_ID_BETA} from './consts';
 import {version} from './parse-package';
 import {updateLocalesMSGName, preprocessAll} from './helpers';
 import zip from 'gulp-zip';
 import copyCommonFiles from './copy-common';
 
+const BRANCH = process.env.NODE_ENV || '';
+
 const paths = {
-    entry: path.join('Extension/browser/firefox_webext/**/*'),
+    firefox_webext: path.join('Extension/browser/firefox_webext/**/*'),
     filters: path.join('Extension/filters/firefox/**/*'),
     pages: path.join('Extension/pages/**/*'),
     lib: path.join('Extension/lib/**/*'),
     chromeFiles: path.join('Extension/browser/chrome/**/*'),
     webkitFiles: path.join('Extension/browser/webkit/**/*'),
-    dest: path.join(BUILD_DIR, process.env.NODE_ENV || '', `firefox-standalone-${version}`)
+    dest: path.join(BUILD_DIR, BRANCH || '', `firefox-standalone-${version}`)
 };
 
 const dest = {
     filters: path.join(paths.dest, 'filters'),
     inner: path.join(paths.dest, '**/*'),
-    buildDir: path.join(BUILD_DIR, process.env.NODE_ENV || ''),
+    buildDir: path.join(BUILD_DIR, BRANCH || ''),
     manifest: path.join(paths.dest, 'manifest.json')
 };
 
@@ -36,19 +45,32 @@ const copyCommon = () => copyCommonFiles(paths.dest);
 const copyFilters = () => gulp.src(paths.filters).pipe(gulp.dest(dest.filters));
 
 // copy chromium, webkit and firefox files
-const firefoxWebext = () => gulp.src([paths.webkitFiles, paths.chromeFiles, paths.entry]).pipe(gulp.dest(paths.dest));
+const firefoxWebext = () => gulp.src([paths.webkitFiles, paths.chromeFiles, paths.firefox_webext]).pipe(gulp.dest(paths.dest));
 
 // preprocess with params
 const preprocess = (done) => preprocessAll(paths.dest, {browser: 'FIREFOX', remoteScripts: true}, done);
 
 // change the extension name based on a type of a build (dev, beta or release)
-const localesProcess = (done) => updateLocalesMSGName(process.env.NODE_ENV, paths.dest, done, 'FIREFOX_WEBEXT', true);
+const localesProcess = (done) => updateLocalesMSGName(BRANCH, paths.dest, done, FIREFOX_WEBEXT, true);
 
 const updateManifest = (done) => {
     const manifest = JSON.parse(fs.readFileSync(dest.manifest));
     manifest.version = version;
-    manifest.applications.gecko.id = FIREFOX_EXTENSION_ID;
-    if (process.env.NODE_ENV === 'beta') {
+
+    let extensionID = '';
+
+    switch (process.env.NODE_ENV) {
+        case BRANCH_BETA:
+            extensionID = FIREFOX_EXTENSION_ID_BETA;
+            break;
+        case BRANCH_DEV:
+            extensionID = FIREFOX_EXTENSION_ID_DEV;
+            break;
+    }
+
+    manifest.applications.gecko.id = extensionID;
+
+    if (BRANCH === BRANCH_BETA) {
         manifest.applications.gecko.update_url = FIREFOX_WEBEXT_UPDATE_URL;
     }
     fs.writeFileSync(dest.manifest, JSON.stringify(manifest, null, 4));
@@ -56,12 +78,12 @@ const updateManifest = (done) => {
 };
 
 const createArchive = (done) => {
-    if (process.env.NODE_ENV !== 'beta' && process.env.NODE_ENV !== 'release') {
+    if (BRANCH !== BRANCH_BETA && BRANCH !== BRANCH_RELEASE) {
         return done();
     }
 
     return gulp.src(dest.inner)
-        .pipe(zip(`firefox-standalone-${version}.zip`))
+        .pipe(zip(`firefox-standalone-beta-${version}-unsigned.zip`))
         .pipe(gulp.dest(dest.buildDir));
 };
 

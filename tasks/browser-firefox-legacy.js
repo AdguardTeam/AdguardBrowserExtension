@@ -1,5 +1,10 @@
 /**
- * Firefox legacy
+ * Firefox legacy build.
+ * 1. Copying common scripts and htmls (pages, lib, locales)
+ * 2. Copying Firefox filters
+ * 3. Converting localizations from json to old Firefox format
+ * 4. Copying Firefox scripts
+ * 5. Creating zip archive with replacing file extension from .zip to .xpi
  */
 
 /* global process */
@@ -7,13 +12,13 @@ import fs from 'fs';
 import fse from 'fs-extra';
 import path from 'path';
 import gulp from 'gulp';
-import {BUILD_DIR, LOCALES_DIR} from './consts';
+import {BUILD_DIR, LOCALES_DIR, BRANCH_BETA, BRANCH_RELEASE, FIREFOX_LEGACY_UPDATE_URL, FIREFOX_LEGACY_ID_BETA} from './consts';
 import {version} from './parse-package';
 import zip from 'gulp-zip';
 import copyCommonFiles from './copy-common';
 
 const paths = {
-    entry: path.join('Extension/browser/firefox/**/*'),
+    firefox: path.join('Extension/browser/firefox/**/*'),
     filters: path.join('Extension/filters/firefox/**/*'),
     dest: path.join(BUILD_DIR, process.env.NODE_ENV || '', `firefox-legacy-${version}`)
 };
@@ -22,7 +27,7 @@ const dest = {
     filters: path.join(paths.dest, 'filters'),
     inner: path.join(paths.dest, '**/*'),
     buildDir: path.join(BUILD_DIR, process.env.NODE_ENV || ''),
-    manifest: path.join(paths.dest, 'manifest.json')
+    rdf: path.join(paths.dest, 'install.rdf')
 };
 
 // copy common files except languages
@@ -32,7 +37,7 @@ const copyCommon = () => copyCommonFiles(paths.dest, true);
 const copyFilters = () => gulp.src(paths.filters).pipe(gulp.dest(dest.filters));
 
 // copy firefox files
-const firefoxLegacy = () => gulp.src(paths.entry).pipe(gulp.dest(paths.dest));
+const firefoxLegacy = () => gulp.src(paths.firefox).pipe(gulp.dest(paths.dest));
 
 const propsToString = (messages, prev, key) => `${prev}${key}=${messages[key].message}\n`;
 
@@ -57,14 +62,31 @@ const convertLocales = (done) => {
     return done();
 };
 
+const updateRdf = (done) => {
+    let data = fs.readFileSync(dest.rdf).toString();
+
+    data = data.replace(/\$\{version\}/g, version);
+
+    if (process.env.NODE_ENV === BRANCH_BETA) {
+        data = data.replace(/\$\{updateUrl\}/g, FIREFOX_LEGACY_UPDATE_URL);
+    } else {
+        data = data.replace(/\$\{updateUrl\}/g, '');
+    }
+
+    data = data.replace(/\$\{extensionId\}/g, FIREFOX_LEGACY_ID_BETA);
+
+    fs.writeFileSync(dest.rdf, data);
+    return done();
+};
+
 const createArchive = (done) => {
-    if (process.env.NODE_ENV !== 'beta' && process.env.NODE_ENV !== 'release') {
+    if (process.env.NODE_ENV !== BRANCH_BETA && process.env.NODE_ENV !== BRANCH_RELEASE) {
         return done();
     }
 
     return gulp.src(dest.inner)
-        .pipe(zip(`firefox-legacy-${version}.zip`))
+        .pipe(zip(`firefox-legacy-${version}.xpi`))
         .pipe(gulp.dest((path.join(BUILD_DIR, process.env.NODE_ENV))));
 };
 
-export default gulp.series(copyCommon, copyFilters, convertLocales, firefoxLegacy, createArchive);
+export default gulp.series(copyCommon, copyFilters, convertLocales, firefoxLegacy, updateRdf, createArchive);

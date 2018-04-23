@@ -54,10 +54,17 @@ For security reasons, this file is ignored by .gitignore settings.
 
 To download and append localizations run:
 ```
-  yarn locales
+  yarn locales-download
+```
+
+To upload new phrases to oneskyapp you need the same file `oneskyapp.json` and file with phrases `./Extension/_locales/en/messages.json`. Then run:
+```
+  yarn locales-upload
 ```
 
 #### Download filters
+
+Filters are updated automatically in release build. But you can run updating manually with command:
 ```
   yarn filters
 ```

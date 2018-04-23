@@ -1,3 +1,7 @@
+/**
+ * Update locales in repository
+ */
+
 /* global __dirname */
 import fs from 'fs';
 import path from 'path';
@@ -24,7 +28,7 @@ const prepare = () => {
     let oneskyapp;
 
     try {
-        oneskyapp = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../private/oneskyapp.json')));
+        oneskyapp = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../private/AdguardBrowserExtension/oneskyapp.json')));
     } catch (err) {
         logs.error(err);
         return false;

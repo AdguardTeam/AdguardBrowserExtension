@@ -25,13 +25,22 @@ export const LOCAL_SCRIPT_RULES_COMMENT = 'By the rules of AMO and addons.opera.
         '2. We disable JS rules got from remote server\r\n' +
         '3. We allow only custom rules got from the User filter (which user creates manually) or from this DEFAULT_SCRIPT_RULES object';
 
-export const FIREFOX_EXTENSION_ID = 'adguardadblockerdev@adguard.com';
+// Firefox extension IDs
+export const FIREFOX_EXTENSION_ID_DEV = 'adguardadblockerdev@adguard.com';
+export const FIREFOX_EXTENSION_ID_BETA = 'adguardadblockerbeta@adguard.com';
+export const FIREFOX_EXTENSION_ID_RELEASE = 'adguardadblocker@adguard.com';
+export const FIREFOX_LEGACY_ID_BETA = 'adguardadblockerlegacy@adguard.com';
 
+// Update urls
+export const CHROME_UPDATE_URL = 'https://adguardteam.github.io/AdguardBrowserExtension/chrome_updates.xml';
+export const FIREFOX_LEGACY_UPDATE_URL = 'https://adguardteam.github.io/AdguardBrowserExtension/firefox_updates.rdf';
 export const FIREFOX_WEBEXT_UPDATE_URL = 'https://adguardteam.github.io/AdguardBrowserExtension/firefox_updates.json';
+export const SAFARI_UPDATE_URL = 'https://adguardteam.github.io/AdguardBrowserExtension/safari_updates.xml';
 
-export const SAFARI_EXTENSION_ID = 'com.adguard.safaridev';
-
-export const SAFARI_UPDATE_URL = '';
+// Safari extension IDs
+export const SAFARI_EXTENSION_ID_DEV = 'com.adguard.safaridev';
+export const SAFARI_EXTENSION_ID_BETA = 'com.adguard.safaribeta';
+export const SAFARI_EXTENSION_ID_RELEASE = 'com.adguard.safari';
 
 export const FIREFOX_LEGACY = 'FIREFOX_LEGACY';
 

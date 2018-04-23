@@ -3,6 +3,17 @@ import path from 'path';
 import pp from 'preprocess';
 import {FIREFOX_LEGACY, FIREFOX_WEBEXT, BRANCH_DEV, BRANCH_BETA, BRANCH_RELEASE} from './consts';
 
+
+/**
+ * Change the extension name in localization files based on a type of a build (dev, beta or release) and browser
+ *
+ * @param branch    branch of a build
+ * @param dest      locales folder
+ * @param done      done function which is returning of gulp stream
+ * @param browser   browser name
+ * @param allowRemoteScripts   param for Firefox browser
+ * @return done
+ */
 export function updateLocalesMSGName (branch, dest, done, browser, allowRemoteScripts) {
     let extensionNamePostfix = '';
 
