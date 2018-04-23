@@ -9,6 +9,10 @@ export const LOCALES_DIR = './Extension/_locales/';
 
 export const FILTERS_DEST = 'Extension/filters/%browser';
 
+export const PRIVATE_FILES = '../private/AdguardBrowserExtension';
+
+export const SAFARI_CERTS_PRIVATE_FILES = PRIVATE_FILES + '/safari_certs';
+
 export const EXTENSION_FILTERS_SERVER_URL_FORMAT = 'https://filters.adtidy.org/extension/%browser';
 
 export const METADATA_DOWNLOAD_URL_FORMAT = EXTENSION_FILTERS_SERVER_URL_FORMAT + '/filters.json';

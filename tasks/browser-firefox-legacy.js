@@ -12,7 +12,7 @@ import fs from 'fs';
 import fse from 'fs-extra';
 import path from 'path';
 import gulp from 'gulp';
-import {BUILD_DIR, LOCALES_DIR, BRANCH_BETA, BRANCH_RELEASE, FIREFOX_LEGACY_UPDATE_URL, FIREFOX_LEGACY_ID_BETA} from './consts';
+import {BUILD_DIR, LOCALES_DIR, BRANCH_BETA, BRANCH_RELEASE, FIREFOX_LEGACY_UPDATE_URL, FIREFOX_LEGACY_ID_BETA, FIREFOX_EXTENSION_ID_DEV} from './consts';
 import {version} from './parse-package';
 import zip from 'gulp-zip';
 import copyCommonFiles from './copy-common';
@@ -69,11 +69,11 @@ const updateRdf = (done) => {
 
     if (process.env.NODE_ENV === BRANCH_BETA) {
         data = data.replace(/\$\{updateUrl\}/g, FIREFOX_LEGACY_UPDATE_URL);
+        data = data.replace(/\$\{extensionId\}/g, FIREFOX_LEGACY_ID_BETA);
     } else {
         data = data.replace(/\$\{updateUrl\}/g, '');
+        data = data.replace(/\$\{extensionId\}/g, FIREFOX_EXTENSION_ID_DEV);
     }
-
-    data = data.replace(/\$\{extensionId\}/g, FIREFOX_LEGACY_ID_BETA);
 
     fs.writeFileSync(dest.rdf, data);
     return done();

@@ -13,7 +13,7 @@
 import fs from 'fs';
 import path from 'path';
 import gulp from 'gulp';
-import {BUILD_DIR, SAFARI_UPDATE_URL, BRANCH_BETA, BRANCH_DEV, BRANCH_RELEASE, SAFARI_EXTENSION_ID_DEV, SAFARI_EXTENSION_ID_BETA, SAFARI_EXTENSION_ID_RELEASE} from './consts';
+import {BUILD_DIR, SAFARI_UPDATE_URL, BRANCH_BETA, BRANCH_DEV, BRANCH_RELEASE, SAFARI_EXTENSION_ID_DEV, SAFARI_EXTENSION_ID_BETA, SAFARI_EXTENSION_ID_RELEASE, SAFARI_CERTS_PRIVATE_FILES} from './consts';
 import {version} from './parse-package';
 import {updateLocalesMSGName, preprocessAll} from './helpers';
 import safariextz from 'safariextz';
@@ -90,10 +90,10 @@ const ext = (done) => {
     }
 
     return safariextz(`safari-${version}.safariextz`, paths.dest, {
-        privateKey:   path.resolve(__dirname, '../private/AdguardBrowserExtension/safari_certs/key.pem'),
-        extensionCer: path.resolve(__dirname, '../private/AdguardBrowserExtension/safari_certs/cert.pem'),
-        appleDevCer:  path.resolve(__dirname, '../private/AdguardBrowserExtension/safari_certs/AppleWWDRCA.pem'),
-        appleRootCer: path.resolve(__dirname, '../private/AdguardBrowserExtension/safari_certs/AppleIncRootCertificate.pem')
+        privateKey:   path.resolve(__dirname, SAFARI_CERTS_PRIVATE_FILES, 'key.pem'),
+        extensionCer: path.resolve(__dirname, SAFARI_CERTS_PRIVATE_FILES, 'cert.pem'),
+        appleDevCer:  path.resolve(__dirname, SAFARI_CERTS_PRIVATE_FILES, 'AppleWWDRCA.pem'),
+        appleRootCer: path.resolve(__dirname, SAFARI_CERTS_PRIVATE_FILES, 'AppleIncRootCertificate.pem')
     });
 };
 

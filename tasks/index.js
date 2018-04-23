@@ -20,20 +20,20 @@ export const downloadFilters = gulp.series(downloadAllFilters, updateLocalScript
 // download localizations to repository
 export const downloadLocalesStream = gulp.series(downloadLocales, (done) => done());
 
-// download localizations to oneskyapp
+// upload localizations to oneskyapp
 export const uploadLocalesStream = gulp.series(uploadLocales, (done) => done());
 
 // tests
 export const runTests = gulp.series(tests, (done) => done());
 
-// tests
+// build updates files
 export const buildUpdatesFilesStream = gulp.series(buildUpdatesFiles, (done) => done());
 
 // dev build
 export const buildDev = gulp.series(chromium, firefoxAmo, firefoxWebext, firefoxLegacy, safari, edge, api, (done) => done());
 
 // beta build
-export const buildBeta = gulp.series(chromium, firefoxWebext, firefoxLegacy, safari, edge, api, (done) => done());
+export const buildBeta = gulp.series(safari, (done) => done());
 
 // release build
 export const buildRelease = gulp.series(downloadFilters, chromium, opera, firefoxAmo, safari, edge, (done) => done());
