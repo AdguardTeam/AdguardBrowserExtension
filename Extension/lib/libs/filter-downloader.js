@@ -1,6 +1,6 @@
 /**
  * filters-downloader - Compiles filters source files
- * @version v1.0.0
+ * @version v1.0.1
  * @link http://adguard.com
  */
 /**
@@ -140,7 +140,7 @@ const FilterDownloader = (() => {
             const innerExpression = expression.substring(openBracketIndex + 1, endBracketIndex);
             const innerResult = resolveExpression(innerExpression, definedProperties);
             const resolvedInner = expression.substring(0, openBracketIndex) +
-                    innerResult + expression.substring(endBracketIndex + 1);
+                innerResult + expression.substring(endBracketIndex + 1);
 
             return resolveExpression(resolvedInner, definedProperties);
         }
@@ -276,7 +276,7 @@ const FilterDownloader = (() => {
      */
     const resolveInclude = function (line, filterOrigin, definedProperties) {
         if (line.indexOf(INCLUDE_DIRECTIVE) !== 0) {
-            return Promise.resolve([line]);
+            return Promise.resolve(line);
         } else {
             const url = line.substring(INCLUDE_DIRECTIVE.length).trim();
             validateUrl(url, filterOrigin);
@@ -302,8 +302,13 @@ const FilterDownloader = (() => {
 
         return Promise.all(dfds).then((values) => {
             let result = [];
+
             values.forEach(function (v) {
-                result = result.concat(v);
+                if (Array.isArray(v)) {
+                    result = result.concat(v);
+                } else {
+                    result.push(v);
+                }
             });
 
             return result;
@@ -340,7 +345,7 @@ const FilterDownloader = (() => {
      */
     const downloadFilterRules = (url, filterUrlOrigin, definedProperties) => {
         return executeRequestAsync(url, 'text/plain').then((response) => {
-            if (response.status !== 200) {
+            if (response.status !== 200 && response.status !== 0) {
                 throw new Error("Response status is invalid: " + response.status);
             }
 
