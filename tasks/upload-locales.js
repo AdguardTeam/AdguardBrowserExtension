@@ -1,10 +1,10 @@
-/* global __dirname */
 import gulp from 'gulp';
 import path from 'path';
 import md5 from 'gulp-hash-creator';
 import fs from 'fs';
 import request from 'request';
 import Logs from './log';
+import {LOCALES_DIR, PRIVATE_FILES} from './consts';
 
 const logs = new Logs();
 
@@ -18,7 +18,7 @@ const prepare = () => {
     let oneskyapp;
 
     try {
-        oneskyapp = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../private/AdguardBrowserExtension/oneskyapp.json')));
+        oneskyapp = JSON.parse(fs.readFileSync(path.resolve(PRIVATE_FILES, 'oneskyapp.json')));
     } catch (err) {
         logs.error(err);
         return false;
@@ -26,7 +26,7 @@ const prepare = () => {
 
     const timestamp = Math.round(new Date().getTime() / 1000);
     const formData = {
-        'file': fs.createReadStream(path.join('./Extension/_locales/en/messages.json')),
+        'file': fs.createReadStream(path.resolve(LOCALES_DIR, 'en/messages.json')),
         'file_format': 'HIERARCHICAL_JSON',
         'locale': 'en',
         'is_keeping_all_strings': 'false',

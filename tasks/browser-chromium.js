@@ -14,7 +14,7 @@
 import fs from 'fs';
 import path from 'path';
 import gulp from 'gulp';
-import {BUILD_DIR, BRANCH_BETA, BRANCH_RELEASE, BRANCH_DEV} from './consts';
+import {BUILD_DIR, BRANCH_BETA, BRANCH_RELEASE, BRANCH_DEV, PRIVATE_FILES} from './consts';
 import {version} from './parse-package';
 import {updateLocalesMSGName, preprocessAll} from './helpers';
 import zip from 'gulp-zip';
@@ -25,7 +25,7 @@ const paths = {
     chrome: path.join('Extension/browser/chrome/**/*'),
     filters: path.join('Extension/filters/chromium/**/*'),
     webkitFiles: path.join('Extension/browser/webkit/**/*'),
-    cert: path.join('private/AdguardBrowserExtension/certificate.pem'),
+    cert: path.join(PRIVATE_FILES, 'certificate.pem'),
     dest: path.join(BUILD_DIR, process.env.NODE_ENV || '', `chrome-${version}`)
 };
 

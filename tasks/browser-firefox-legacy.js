@@ -12,10 +12,12 @@ import fs from 'fs';
 import fse from 'fs-extra';
 import path from 'path';
 import gulp from 'gulp';
-import {BUILD_DIR, LOCALES_DIR, BRANCH_BETA, BRANCH_RELEASE, FIREFOX_LEGACY_UPDATE_URL, FIREFOX_LEGACY_ID_BETA, FIREFOX_EXTENSION_ID_DEV} from './consts';
+import {BUILD_DIR, LOCALES, LOCALES_DIR, BRANCH_BETA, BRANCH_RELEASE, FIREFOX_LEGACY_UPDATE_URL, FIREFOX_LEGACY_ID_BETA, FIREFOX_EXTENSION_ID_DEV, FIREFOX_LEGACY} from './consts';
 import {version} from './parse-package';
 import zip from 'gulp-zip';
 import copyCommonFiles from './copy-common';
+import {preprocessAll, getExtensionNamePostfix} from './helpers';
+import os from 'os';
 
 const paths = {
     firefox: path.join('Extension/browser/firefox/**/*'),
@@ -27,7 +29,8 @@ const dest = {
     filters: path.join(paths.dest, 'filters'),
     inner: path.join(paths.dest, '**/*'),
     buildDir: path.join(BUILD_DIR, process.env.NODE_ENV || ''),
-    rdf: path.join(paths.dest, 'install.rdf')
+    rdf: path.join(paths.dest, 'install.rdf'),
+    chromeManifest: path.join(paths.dest, 'chrome.manifest')
 };
 
 // copy common files except languages
@@ -62,6 +65,9 @@ const convertLocales = (done) => {
     return done();
 };
 
+// preprocess with params
+const preprocess = (done) => preprocessAll(paths.dest, {browser: 'FIREFOX', remoteScripts: true}, done);
+
 const updateRdf = (done) => {
     let data = fs.readFileSync(dest.rdf).toString();
 
@@ -74,6 +80,8 @@ const updateRdf = (done) => {
         data = data.replace(/\$\{updateUrl\}/g, '');
         data = data.replace(/\$\{extensionId\}/g, FIREFOX_EXTENSION_ID_DEV);
     }
+
+    data = data.replace(/\$\{localised\}/g, getLocalesToFirefoxInstallRdf());
 
     fs.writeFileSync(dest.rdf, data);
     return done();
@@ -89,4 +97,47 @@ const createArchive = (done) => {
         .pipe(gulp.dest((path.join(BUILD_DIR, process.env.NODE_ENV))));
 };
 
-export default gulp.series(copyCommon, copyFilters, convertLocales, firefoxLegacy, updateRdf, createArchive);
+/**
+ * Get locales list to write in Firefox RDF file. Example of notation:
+ * <em:localized>
+ * <Description>
+ * <em:locale>en</em:locale>
+ * <em:name>Adguard AdBlocker</em:name>
+ * <em:description>Adguard AdBlocker</em:description>
+ * </Description>
+ * </em:localized>
+ */
+const getLocalesToFirefoxInstallRdf = () => {
+    const sb = [];
+    for (const locale of LOCALES) {
+        const file = path.join(LOCALES_DIR, locale, 'messages.json');
+        const messages = JSON.parse(fs.readFileSync(file));
+
+        sb.push('<em:localized>' + os.EOL);
+        sb.push('\t<Description>' + os.EOL);
+        sb.push('\t\t<em:locale>' + locale + '</em:locale>' + os.EOL);
+        sb.push('\t\t<em:name>' + messages.name.message + getExtensionNamePostfix(process.env.NODE_ENV, FIREFOX_LEGACY) + '</em:name>' + os.EOL);
+        sb.push('\t\t<em:description>' + messages.description.message + '</em:description>' + os.EOL);
+        sb.push('\t</Description>' + os.EOL);
+        sb.push('</em:localized>' + os.EOL);
+    }
+
+    return sb.join('');
+};
+
+const updateChromeManifest = (done) => {
+    let data = fs.readFileSync(dest.chromeManifest).toString();
+
+    const sb = [os.EOL, os.EOL];
+
+    for (const locale of LOCALES) {
+        sb.push('locale adguard ' + locale.replace('_', '-') + ' ./chrome/locale/' + locale.replace('_', '-') + '/'  + os.EOL);
+    }
+
+    data += sb.join('');
+
+    fs.writeFileSync(dest.chromeManifest, data);
+    return done();
+};
+
+export default gulp.series(copyCommon, copyFilters, convertLocales, firefoxLegacy, updateRdf, preprocess, updateChromeManifest, createArchive);

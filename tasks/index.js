@@ -13,6 +13,7 @@ import downloadLocales from './download-locales';
 import uploadLocales from './upload-locales';
 import buildUpdatesFiles from './build-updates-files';
 import tests from './tests';
+import clean from './clean-build-dir';
 
 // download filters to repository
 export const downloadFilters = gulp.series(downloadAllFilters, updateLocalScriptRules, (done) => done());
@@ -33,7 +34,7 @@ export const buildUpdatesFilesStream = gulp.series(buildUpdatesFiles, (done) => 
 export const buildDev = gulp.series(chromium, firefoxAmo, firefoxWebext, firefoxLegacy, safari, edge, api, (done) => done());
 
 // beta build
-export const buildBeta = gulp.series(chromium, firefoxWebext, firefoxLegacy, safari, edge, api, (done) => done());
+export const buildBeta = gulp.series(chromium, firefoxWebext, firefoxLegacy, safari, edge, api, clean, (done) => done());
 
 // release build
 export const buildRelease = gulp.series(downloadFilters, chromium, opera, firefoxAmo, safari, edge, (done) => done());

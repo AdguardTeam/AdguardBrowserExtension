@@ -90,10 +90,10 @@ const ext = (done) => {
     }
 
     return safariextz(`safari-${version}.safariextz`, paths.dest, {
-        privateKey:   path.resolve(__dirname, SAFARI_CERTS_PRIVATE_FILES, 'key.pem'),
-        extensionCer: path.resolve(__dirname, SAFARI_CERTS_PRIVATE_FILES, 'cert.pem'),
-        appleDevCer:  path.resolve(__dirname, SAFARI_CERTS_PRIVATE_FILES, 'AppleWWDRCA.pem'),
-        appleRootCer: path.resolve(__dirname, SAFARI_CERTS_PRIVATE_FILES, 'AppleIncRootCertificate.pem')
+        privateKey:   path.resolve(SAFARI_CERTS_PRIVATE_FILES, 'key.pem'),
+        extensionCer: path.resolve(SAFARI_CERTS_PRIVATE_FILES, 'cert.pem'),
+        appleDevCer:  path.resolve(SAFARI_CERTS_PRIVATE_FILES, 'AppleWWDRCA.pem'),
+        appleRootCer: path.resolve(SAFARI_CERTS_PRIVATE_FILES, 'AppleIncRootCertificate.pem')
     });
 };
 
