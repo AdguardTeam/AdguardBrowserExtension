@@ -51,10 +51,12 @@ const updatePlist = (done) => {
     let plist = fs.readFileSync(dest.plist).toString();
 
     let extensionID = '';
+    let updateUrl = '';
 
     switch (process.env.NODE_ENV) {
         case BRANCH_BETA:
             extensionID = SAFARI_EXTENSION_ID_BETA;
+            updateUrl = SAFARI_UPDATE_URL;
             break;
         case BRANCH_DEV:
             extensionID = SAFARI_EXTENSION_ID_DEV;
@@ -67,7 +69,7 @@ const updatePlist = (done) => {
 
     plist = plist.replace(/\$\{version\}/g, version);
     plist = plist.replace(/\$\{extensionId\}/g, extensionID);
-    plist = plist.replace(/\$\{updateURL\}/g, SAFARI_UPDATE_URL);
+    plist = plist.replace(/\$\{updateURL\}/g, updateUrl);
     plist = plist.replace(/\$\{updateFromGallery\}/g, updateFromGallery);
 
     switch (process.env.NODE_ENV) {
