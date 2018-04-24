@@ -13,8 +13,10 @@ const branch = process.env.NODE_ENV || '';
 
 const paths = [
     path.join(BUILD_DIR, branch, `chrome-${version}`),
+    path.join(BUILD_DIR, branch, `opera-${version}`),
     path.join(BUILD_DIR, branch, `firefox-standalone-${version}`),
     path.join(BUILD_DIR, branch, `firefox-legacy-${version}`),
+    path.join(BUILD_DIR, branch, `firefox-amo-${version}`),
     path.join(BUILD_DIR, branch, `safari-${version}.safariextension`),
     path.join(BUILD_DIR, branch, `edge-${version}`),
     path.join(BUILD_DIR, branch, `adguard-api-${version}`)
