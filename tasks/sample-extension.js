@@ -153,12 +153,12 @@ const updateManifest = (done) => {
 };
 
 const createArchive = (done) => {
-    if (process.env.NODE_ENV !== BRANCH_BETA && process.env.NODE_ENV !== BRANCH_RELEASE) {
+    if (process.env.NODE_ENV !== BRANCH_BETA) {
         return done();
     }
 
     return gulp.src(dest.inner)
-        .pipe(zip(`chrome-${version}.zip`))
+        .pipe(zip(`adguard-${process.env.NODE_ENV}-api-${version}.zip`))
         .pipe(gulp.dest(dest.buildDir));
 };
 

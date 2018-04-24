@@ -8,7 +8,7 @@ import path from 'path';
 import gulp from 'gulp';
 import download from 'gulp-download2';
 import md5 from 'gulp-hash-creator';
-import {LOCALES, LOCALES_DIR} from './consts';
+import {LOCALES, LOCALES_DIR, PRIVATE_FILES} from './consts';
 import Logs from './log';
 
 const logs = new Logs();
@@ -28,7 +28,7 @@ const prepare = () => {
     let oneskyapp;
 
     try {
-        oneskyapp = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../private/AdguardBrowserExtension/oneskyapp.json')));
+        oneskyapp = JSON.parse(fs.readFileSync(path.resolve(PRIVATE_FILES, 'oneskyapp.json')));
     } catch (err) {
         logs.error(err);
         return false;

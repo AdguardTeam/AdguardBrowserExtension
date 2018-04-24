@@ -5,6 +5,46 @@ import {FIREFOX_LEGACY, FIREFOX_WEBEXT, BRANCH_DEV, BRANCH_BETA, BRANCH_RELEASE}
 
 
 /**
+ * Get the extension name postfix
+ *
+ * @param branch    branch of a build
+ * @param browser   browser name
+ * @param allowRemoteScripts   param for Firefox browser
+ * @return {string}  postfix
+ */
+export function getExtensionNamePostfix (branch, browser, allowRemoteScripts) {
+    switch (browser) {
+        case FIREFOX_LEGACY:
+            if (branch == BRANCH_BETA) {
+                return ' (Legacy)';
+            } else if (branch == BRANCH_DEV) {
+                return ' (Legacy Dev)';
+            }
+            break;
+        case FIREFOX_WEBEXT:
+            if (allowRemoteScripts) {
+                if (branch == BRANCH_BETA) {
+                    return ' (Standalone)';
+                } else if (branch == BRANCH_DEV) {
+                    return ' (Standalone Dev)';
+                }
+            } else {
+                if (branch == BRANCH_BETA) {
+                    return ' (Beta)';
+                } else if (branch == BRANCH_DEV) {
+                    return ' (AMO Dev)';
+                }
+            }
+            break;
+        default:
+            if (branch != BRANCH_RELEASE) {
+                return ' (' + capitalize(branch) + ')';
+            }
+            break;
+    }
+}
+
+/**
  * Change the extension name in localization files based on a type of a build (dev, beta or release) and browser
  *
  * @param branch    branch of a build
@@ -15,37 +55,7 @@ import {FIREFOX_LEGACY, FIREFOX_WEBEXT, BRANCH_DEV, BRANCH_BETA, BRANCH_RELEASE}
  * @return done
  */
 export function updateLocalesMSGName (branch, dest, done, browser, allowRemoteScripts) {
-    let extensionNamePostfix = '';
-
-    switch (browser) {
-        case FIREFOX_LEGACY:
-            if (branch == BRANCH_BETA) {
-                extensionNamePostfix = " (Legacy)";
-            } else if (branch == BRANCH_DEV) {
-                extensionNamePostfix = " (Legacy Dev)";
-            }
-            break;
-        case FIREFOX_WEBEXT:
-            if (allowRemoteScripts) {
-                if (branch == BRANCH_BETA) {
-                    extensionNamePostfix = " (Standalone)";
-                } else if (branch == BRANCH_DEV) {
-                    extensionNamePostfix = " (Standalone Dev)";
-                }
-            } else {
-                if (branch == BRANCH_BETA) {
-                    extensionNamePostfix = " (Beta)";
-                } else if (branch == BRANCH_DEV) {
-                    extensionNamePostfix = " (AMO Dev)";
-                }
-            }
-            break;
-        default:
-            if (branch != BRANCH_RELEASE) {
-                extensionNamePostfix = " (" + capitalize(branch) + ")";
-            }
-            break;
-    }
+    let extensionNamePostfix = getExtensionNamePostfix(branch, browser, allowRemoteScripts);
 
     const locales = fs.readdirSync(path.join(dest, '_locales'));
 
