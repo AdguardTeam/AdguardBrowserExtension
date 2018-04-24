@@ -61,4 +61,10 @@ const testRing = (done) => {
     return done();
 };
 
-export default gulp.series(testSafari, testRule, testSB, testURL, testCSSfilter, testContent, testCSShits, testReq, testEl, testRing);
+// Encoding tests
+const testEncoding = (done) => {
+    qunit('Extension/tests/miscellaneous/test-encoding.html');
+    return done();
+};
+
+export default gulp.series(testSafari, testRule, testSB, testURL, testCSSfilter, testContent, testCSShits, testReq, testEl, testRing, testEncoding);
