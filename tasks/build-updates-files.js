@@ -35,7 +35,7 @@ const chromeUpdate = (done) => {
 
     chrome_updates = chrome_updates.replace(/\%VERSION\%/g, version);
     chrome_updates = chrome_updates.replace(/\%TAGNAME\%/g, getTagArg());
-    chrome_updates = chrome_updates.replace(/\%NAME\%/g, `chrome-beta-${version}.crx`);
+    chrome_updates = chrome_updates.replace(/\%NAME\%/g, `chrome-standalone-beta-${version}.crx`);
 
     fs.writeFileSync('./chrome_updates.xml', chrome_updates);
 
