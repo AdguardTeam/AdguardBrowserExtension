@@ -20,19 +20,23 @@ import {updateLocalesMSGName, preprocessAll} from './helpers';
 import webExt from 'web-ext';
 import copyCommonFiles from './copy-common';
 
+// set current type of build
+const BRANCH = process.env.NODE_ENV || '';
+
 const paths = {
     firefox_webext: path.join('Extension/browser/firefox_webext/**/*'),
     filters: path.join('Extension/filters/firefox/**/*'),
     chromeFiles: path.join('Extension/browser/chrome/**/*'),
     webkitFiles: path.join('Extension/browser/webkit/**/*'),
-    dest: path.join(BUILD_DIR, process.env.NODE_ENV || '', `firefox-amo-${version}`)
+    dest: path.join(BUILD_DIR, BRANCH, `firefox-amo-${BRANCH}-${version}-unsigned`)
 };
 
 const dest = {
     filters: path.join(paths.dest, 'filters'),
     inner: path.join(paths.dest, '**/*'),
-    buildDir: path.join(BUILD_DIR, process.env.NODE_ENV || ''),
-    manifest: path.join(paths.dest, 'manifest.json')
+    buildDir: path.join(BUILD_DIR, BRANCH),
+    manifest: path.join(paths.dest, 'manifest.json'),
+    webext: path.join(BUILD_DIR, BRANCH, `firefox-amo-${BRANCH}-${version}.zip`)
 };
 
 // copy common files
@@ -48,14 +52,14 @@ const firefoxWebext = () => gulp.src([paths.webkitFiles, paths.chromeFiles, path
 const preprocess = (done) => preprocessAll(paths.dest, {browser: 'FIREFOX', build: 'AMO', remoteScripts: false}, done);
 
 // change the extension name based on a type of a build (dev, beta or release)
-const localesProcess = (done) => updateLocalesMSGName(process.env.NODE_ENV, paths.dest, done, FIREFOX_WEBEXT);
+const localesProcess = (done) => updateLocalesMSGName(BRANCH, paths.dest, done, FIREFOX_WEBEXT);
 
 const updateManifest = (done) => {
     const manifest = JSON.parse(fs.readFileSync(dest.manifest));
 
     let extensionID = '';
 
-    switch (process.env.NODE_ENV) {
+    switch (BRANCH) {
         case BRANCH_BETA:
             extensionID = FIREFOX_EXTENSION_ID_BETA;
             break;
@@ -73,7 +77,7 @@ const updateManifest = (done) => {
 };
 
 const createWebExt = (done) => {
-    if (process.env.NODE_ENV !== BRANCH_BETA && process.env.NODE_ENV !== BRANCH_RELEASE) {
+    if (BRANCH !== BRANCH_BETA && BRANCH !== BRANCH_RELEASE) {
         return done();
     }
 
@@ -81,7 +85,10 @@ const createWebExt = (done) => {
         sourceDir: paths.dest,
         artifactsDir: dest.buildDir,
         overwriteDest: true
-    }).then(() => done());
+    }).then((file) => {
+        fs.renameSync(file.extensionPath, dest.webext);
+        done();
+    });
 };
 
 export default gulp.series(copyCommon, copyFilters, firefoxWebext, updateManifest, localesProcess, preprocess, createWebExt);

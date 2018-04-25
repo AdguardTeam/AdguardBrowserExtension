@@ -21,18 +21,21 @@ import zip from 'gulp-zip';
 import crx from 'gulp-crx-pack';
 import copyCommonFiles from './copy-common';
 
+// set current type of build
+const BRANCH = process.env.NODE_ENV || '';
+
 const paths = {
     chrome: path.join('Extension/browser/chrome/**/*'),
     filters: path.join('Extension/filters/chromium/**/*'),
     webkitFiles: path.join('Extension/browser/webkit/**/*'),
     cert: path.join(PRIVATE_FILES, 'certificate.pem'),
-    dest: path.join(BUILD_DIR, process.env.NODE_ENV || '', `chrome-${version}`)
+    dest: path.join(BUILD_DIR, BRANCH, `chrome-${version}`)
 };
 
 const dest = {
     filters: path.join(paths.dest, 'filters'),
     inner: path.join(paths.dest, '**/*'),
-    buildDir: path.join(BUILD_DIR, process.env.NODE_ENV || ''),
+    buildDir: path.join(BUILD_DIR, BRANCH),
     manifest: path.join(paths.dest, 'manifest.json')
 };
 
@@ -49,7 +52,7 @@ const chromiumMainFiles = () => gulp.src([paths.webkitFiles, paths.chrome]).pipe
 const preprocess = (done) => preprocessAll(paths.dest, {browser: 'CHROMIUM', remoteScripts: true}, done);
 
 // change the extension name based on a type of a build (dev, beta or release)
-const localesProcess = (done) => updateLocalesMSGName(process.env.NODE_ENV, paths.dest, done);
+const localesProcess = (done) => updateLocalesMSGName(BRANCH, paths.dest, done);
 
 // update current version of extension
 const updateManifest = (done) => {
@@ -60,24 +63,24 @@ const updateManifest = (done) => {
 };
 
 const createArchive = (done) => {
-    if (process.env.NODE_ENV !== BRANCH_BETA && process.env.NODE_ENV !== BRANCH_RELEASE) {
+    if (BRANCH !== BRANCH_BETA && BRANCH !== BRANCH_RELEASE) {
         return done();
     }
 
     return gulp.src(dest.inner)
-        .pipe(zip(`chrome-${version}.zip`))
+        .pipe(zip(`chrome-${version}-${BRANCH}.zip`))
         .pipe(gulp.dest(dest.buildDir));
 };
 
 const crxPack = (done) => {
-    if (process.env.NODE_ENV === BRANCH_DEV || process.env.NODE_ENV === BRANCH_RELEASE) {
+    if (BRANCH === BRANCH_DEV || BRANCH === BRANCH_RELEASE) {
         return done();
     }
 
     return gulp.src(paths.dest)
         .pipe(crx({
             privateKey: fs.readFileSync(paths.cert, 'utf8'),
-            filename: `chrome-${version}.crx`
+            filename: `chrome-${BRANCH}-${version}.crx`
         }))
         .pipe(gulp.dest(dest.buildDir));
 };

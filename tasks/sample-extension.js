@@ -14,7 +14,7 @@
 import fs from 'fs';
 import path from 'path';
 import gulp from 'gulp';
-import {BUILD_DIR, LOCALES_DIR, BRANCH_BETA, BRANCH_RELEASE} from './consts';
+import {BUILD_DIR, LOCALES_DIR, BRANCH_BETA} from './consts';
 import {version} from './parse-package';
 import concatFiles from 'gulp-concat';
 import zip from 'gulp-zip';
@@ -79,6 +79,9 @@ const API_SCRIPTS = [
     'Extension/api/chrome/lib/api.js'
 ];
 
+// set current type of build
+const BRANCH = process.env.NODE_ENV || '';
+
 const paths = {
     sample: path.join('Extension/api/sample-extension/**/*'),
     assistant: path.join('Extension/lib/content-script/assistant/js/assistant.js'),
@@ -89,14 +92,14 @@ const paths = {
         path.join('Extension/filters/chromium/filters_i18n.json'),
         path.join('Extension/filters/chromium/filters.json')
     ],
-    dest: path.join(BUILD_DIR, process.env.NODE_ENV || '', `adguard-api-${version}`)
+    dest: path.join(BUILD_DIR, BRANCH, `adguard-api-${version}`)
 };
 
 const dest = {
     adguard: path.join(paths.dest, 'adguard'),
     assistant: path.join(paths.dest, 'adguard', 'assistant'),
     inner: path.join(paths.dest, '**/*'),
-    buildDir: path.join(BUILD_DIR, process.env.NODE_ENV || ''),
+    buildDir: path.join(BUILD_DIR, BRANCH),
     manifest: path.join(paths.dest, 'manifest.json')
 };
 
@@ -153,12 +156,12 @@ const updateManifest = (done) => {
 };
 
 const createArchive = (done) => {
-    if (process.env.NODE_ENV !== BRANCH_BETA) {
+    if (BRANCH !== BRANCH_BETA) {
         return done();
     }
 
     return gulp.src(dest.inner)
-        .pipe(zip(`adguard-${process.env.NODE_ENV}-api-${version}.zip`))
+        .pipe(zip(`adguard-api-${BRANCH}-${version}.zip`))
         .pipe(gulp.dest(dest.buildDir));
 };
 

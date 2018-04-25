@@ -19,18 +19,21 @@ import {version} from './parse-package';
 import {updateLocalesMSGName, preprocessAll} from './helpers';
 import copyCommonFiles from './copy-common';
 
+// set current type of build
+const BRANCH = process.env.NODE_ENV || '';
+
 const paths = {
     edge: path.join('Extension/browser/edge/**/*'),
     filters: path.join('Extension/filters/edge/**/*'),
     chromeFiles: path.join('Extension/browser/chrome/**/*'),
     webkitFiles: path.join('Extension/browser/webkit/**/*'),
-    dest: path.join(BUILD_DIR, process.env.NODE_ENV || '', `edge-${version}`)
+    dest: path.join(BUILD_DIR, BRANCH, `edge-${version}`)
 };
 
 const dest = {
     filters: path.join(paths.dest, 'filters'),
     inner: path.join(paths.dest, '**/*'),
-    buildDir: path.join(BUILD_DIR, process.env.NODE_ENV || ''),
+    buildDir: path.join(BUILD_DIR, BRANCH),
     manifest: path.join(paths.dest, 'manifest.json')
 };
 
@@ -47,7 +50,7 @@ const edge = () => gulp.src([paths.webkitFiles, paths.chromeFiles, paths.edge]).
 const preprocess = (done) => preprocessAll(paths.dest, {browser: 'EDGE', remoteScripts: true}, done);
 
 // change the extension name based on a type of a build (dev, beta or release)
-const localesProcess = (done) => updateLocalesMSGName(process.env.NODE_ENV, paths.dest, done);
+const localesProcess = (done) => updateLocalesMSGName(BRANCH, paths.dest, done);
 
 // update current version of extension
 const updateManifest = (done) => {
@@ -58,12 +61,12 @@ const updateManifest = (done) => {
 };
 
 const createArchive = (done) => {
-    if (process.env.NODE_ENV !== BRANCH_BETA && process.env.NODE_ENV !== BRANCH_RELEASE) {
+    if (BRANCH !== BRANCH_BETA && BRANCH !== BRANCH_RELEASE) {
         return done();
     }
 
     return gulp.src(dest.inner)
-        .pipe(zip(`edge-${version}.zip`))
+        .pipe(zip(`edge-${BRANCH}-${version}.zip`))
         .pipe(gulp.dest(dest.buildDir));
 };
 

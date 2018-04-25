@@ -5,22 +5,27 @@
  */
 
 /* global process */
+import fs from 'fs';
 import path from 'path';
 import gulp from 'gulp';
-import {BUILD_DIR, BRANCH_RELEASE} from './consts';
+import {BUILD_DIR, BRANCH_RELEASE, PRIVATE_FILES} from './consts';
 import {version} from './parse-package';
-import zip from 'gulp-zip';
+import crx from 'gulp-crx-pack';
+
+// set current type of build
+const BRANCH = process.env.NODE_ENV || '';
 
 const paths = {
     filtersOpera: path.join('Extension/filters/opera/**/*'),
-    chromium: path.join(BUILD_DIR, process.env.NODE_ENV || '', `chrome-${version}`),
-    dest: path.join(BUILD_DIR, process.env.NODE_ENV || '', `opera-${version}`)
+    chromium: path.join(BUILD_DIR, BRANCH, `chrome-${version}`, '**/*'),
+    cert: path.join(PRIVATE_FILES, 'certificate.pem'),
+    dest: path.join(BUILD_DIR, BRANCH, `opera-${version}`)
 };
 
 const dest = {
     filters: path.join(paths.dest, 'filters'),
     inner: path.join(paths.dest, '**/*'),
-    buildDir: path.join(BUILD_DIR, process.env.NODE_ENV || '')
+    buildDir: path.join(BUILD_DIR, BRANCH)
 };
 
 // copy chromium build dir
@@ -29,14 +34,17 @@ const copyChromiumFiles = () => gulp.src(paths.chromium).pipe(gulp.dest(paths.de
 // replace chromium filters by opera filters
 const copyFiltersOpera = () => gulp.src(paths.filtersOpera).pipe(gulp.dest(dest.filters));
 
-const createOperaArchive = (done) => {
-    if (process.env.NODE_ENV !== BRANCH_RELEASE) {
+const crxPack = (done) => {
+    if (BRANCH !== BRANCH_RELEASE) {
         return done();
     }
 
-    return gulp.src(dest.inner)
-        .pipe(zip(`opera-${version}.zip`))
+    return gulp.src(paths.dest)
+        .pipe(crx({
+            privateKey: fs.readFileSync(paths.cert, 'utf8'),
+            filename: `opera-${BRANCH}-${version}.crx`
+        }))
         .pipe(gulp.dest(dest.buildDir));
 };
 
-export default gulp.series(copyChromiumFiles, copyFiltersOpera, createOperaArchive);
+export default gulp.series(copyChromiumFiles, copyFiltersOpera, crxPack);
