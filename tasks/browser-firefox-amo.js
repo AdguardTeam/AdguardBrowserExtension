@@ -36,7 +36,7 @@ const dest = {
     inner: path.join(paths.dest, '**/*'),
     buildDir: path.join(BUILD_DIR, BRANCH),
     manifest: path.join(paths.dest, 'manifest.json'),
-    webext: path.join(BUILD_DIR, BRANCH, `firefox-amo-${BRANCH}-${version}.zip`)
+    webext: path.join(BUILD_DIR, BRANCH, `firefox-amo-${BRANCH}-${version}-unsigned.zip`)
 };
 
 // copy common files
