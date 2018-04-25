@@ -28,7 +28,7 @@ const paths = {
     filters: path.join('Extension/filters/firefox/**/*'),
     chromeFiles: path.join('Extension/browser/chrome/**/*'),
     webkitFiles: path.join('Extension/browser/webkit/**/*'),
-    dest: path.join(BUILD_DIR, BRANCH, `firefox-amo-${BRANCH}-${version}-unsigned`)
+    dest: path.join(BUILD_DIR, BRANCH, (BRANCH === BRANCH_DEV) ? `firefox-amo-${version}` : `firefox-amo-${BRANCH}-${version}-unsigned`)
 };
 
 const dest = {
