@@ -55,11 +55,13 @@ const updatePlist = (done) => {
 
     let extensionID = '';
     let updateUrl = '';
+    let updateFromGallery = 'true';
 
     switch (BRANCH) {
         case BRANCH_BETA:
             extensionID = SAFARI_EXTENSION_ID_BETA;
             updateUrl = SAFARI_UPDATE_URL;
+            updateFromGallery = 'false';
             break;
         case BRANCH_DEV:
             extensionID = SAFARI_EXTENSION_ID_DEV;
@@ -67,8 +69,6 @@ const updatePlist = (done) => {
         default:
             extensionID = SAFARI_EXTENSION_ID_RELEASE;
     }
-
-    let updateFromGallery = extensionID.indexOf('beta' > 0) ? 'false' : 'true';
 
     plist = plist.replace(/\$\{version\}/g, version);
     plist = plist.replace(/\$\{extensionId\}/g, extensionID);
