@@ -68,7 +68,7 @@ const createArchive = (done) => {
     }
 
     return gulp.src(dest.inner)
-        .pipe(zip(`chrome-${version}-${BRANCH}.zip`))
+        .pipe(zip(`chrome-${BRANCH}-${version}.zip`))
         .pipe(gulp.dest(dest.buildDir));
 };
 
