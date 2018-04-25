@@ -14,7 +14,7 @@
 import fs from 'fs';
 import path from 'path';
 import gulp from 'gulp';
-import {BUILD_DIR, BRANCH_BETA, BRANCH_RELEASE, BRANCH_DEV, PRIVATE_FILES} from './consts';
+import {BUILD_DIR, BRANCH_BETA, BRANCH_RELEASE, BRANCH_DEV, PRIVATE_FILES, CHROME_UPDATE_URL} from './consts';
 import {version} from './parse-package';
 import {updateLocalesMSGName, preprocessAll} from './helpers';
 import zip from 'gulp-zip';
@@ -77,10 +77,14 @@ const crxPack = (done) => {
         return done();
     }
 
+    const manifest = JSON.parse(fs.readFileSync(dest.manifest));
+    manifest.update_url = CHROME_UPDATE_URL;
+    fs.writeFileSync(dest.manifest, JSON.stringify(manifest, null, 4));
+
     return gulp.src(paths.dest)
         .pipe(crx({
             privateKey: fs.readFileSync(paths.cert, 'utf8'),
-            filename: `chrome-${BRANCH}-${version}.crx`
+            filename: `chrome-standalone-${BRANCH}-${version}.crx`
         }))
         .pipe(gulp.dest(dest.buildDir));
 };
