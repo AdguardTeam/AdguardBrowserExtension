@@ -12,7 +12,7 @@ import fs from 'fs';
 import fse from 'fs-extra';
 import path from 'path';
 import gulp from 'gulp';
-import {BUILD_DIR, LOCALES, LOCALES_DIR, BRANCH_BETA, BRANCH_RELEASE, FIREFOX_LEGACY_UPDATE_URL, FIREFOX_LEGACY_ID_BETA, FIREFOX_EXTENSION_ID_DEV, FIREFOX_LEGACY} from './consts';
+import {BUILD_DIR, LOCALES, LOCALES_DIR, BRANCH_DEV, BRANCH_BETA, BRANCH_RELEASE, FIREFOX_LEGACY_UPDATE_URL, FIREFOX_LEGACY_ID_BETA, FIREFOX_EXTENSION_ID_DEV, FIREFOX_LEGACY} from './consts';
 import {version} from './parse-package';
 import zip from 'gulp-zip';
 import copyCommonFiles from './copy-common';
@@ -25,7 +25,7 @@ const BRANCH = process.env.NODE_ENV || '';
 const paths = {
     firefox: path.join('Extension/browser/firefox/**/*'),
     filters: path.join('Extension/filters/firefox/**/*'),
-    dest: path.join(BUILD_DIR, BRANCH, `firefox-legacy-${version}`)
+    dest: path.join(BUILD_DIR, BRANCH, (BRANCH === BRANCH_DEV) ? `firefox-legacy-${version}` : `firefox-legacy-${BRANCH}-${version}-unsigned`)
 };
 
 const dest = {
@@ -96,7 +96,7 @@ const createArchive = (done) => {
     }
 
     return gulp.src(dest.inner)
-        .pipe(zip(`firefox-legacy-${BRANCH}-${version}.xpi`))
+        .pipe(zip(`firefox-legacy-${BRANCH}-${version}-unsigned.xpi`))
         .pipe(gulp.dest((path.join(BUILD_DIR, BRANCH))));
 };
 

@@ -15,7 +15,7 @@ const paths = [
     path.join(BUILD_DIR, BRANCH, `chrome-${version}`),
     path.join(BUILD_DIR, BRANCH, `opera-${version}`),
     path.join(BUILD_DIR, BRANCH, `firefox-standalone-${version}`),
-    path.join(BUILD_DIR, BRANCH, `firefox-legacy-${version}`),
+    path.join(BUILD_DIR, BRANCH, `firefox-legacy-${BRANCH}-${version}-unsigned`),
     path.join(BUILD_DIR, BRANCH, `firefox-amo-${BRANCH}-${version}-unsigned`),
     path.join(BUILD_DIR, BRANCH, `safari-${version}.safariextension`),
     path.join(BUILD_DIR, BRANCH, `edge-${version}`),
