@@ -19,16 +19,19 @@ import copyCommonFiles from './copy-common';
 import {preprocessAll, getExtensionNamePostfix} from './helpers';
 import os from 'os';
 
+// set current type of build
+const BRANCH = process.env.NODE_ENV || '';
+
 const paths = {
     firefox: path.join('Extension/browser/firefox/**/*'),
     filters: path.join('Extension/filters/firefox/**/*'),
-    dest: path.join(BUILD_DIR, process.env.NODE_ENV || '', `firefox-legacy-${version}`)
+    dest: path.join(BUILD_DIR, BRANCH, `firefox-legacy-${version}`)
 };
 
 const dest = {
     filters: path.join(paths.dest, 'filters'),
     inner: path.join(paths.dest, '**/*'),
-    buildDir: path.join(BUILD_DIR, process.env.NODE_ENV || ''),
+    buildDir: path.join(BUILD_DIR, BRANCH),
     rdf: path.join(paths.dest, 'install.rdf'),
     chromeManifest: path.join(paths.dest, 'chrome.manifest')
 };
@@ -73,7 +76,7 @@ const updateRdf = (done) => {
 
     data = data.replace(/\$\{version\}/g, version);
 
-    if (process.env.NODE_ENV === BRANCH_BETA) {
+    if (BRANCH === BRANCH_BETA) {
         data = data.replace(/\$\{updateUrl\}/g, FIREFOX_LEGACY_UPDATE_URL);
         data = data.replace(/\$\{extensionId\}/g, FIREFOX_LEGACY_ID_BETA);
     } else {
@@ -88,13 +91,13 @@ const updateRdf = (done) => {
 };
 
 const createArchive = (done) => {
-    if (process.env.NODE_ENV !== BRANCH_BETA && process.env.NODE_ENV !== BRANCH_RELEASE) {
+    if (BRANCH !== BRANCH_BETA && BRANCH !== BRANCH_RELEASE) {
         return done();
     }
 
     return gulp.src(dest.inner)
-        .pipe(zip(`firefox-legacy-${version}.xpi`))
-        .pipe(gulp.dest((path.join(BUILD_DIR, process.env.NODE_ENV))));
+        .pipe(zip(`firefox-legacy-${BRANCH}-${version}.xpi`))
+        .pipe(gulp.dest((path.join(BUILD_DIR, BRANCH))));
 };
 
 /**
@@ -116,7 +119,7 @@ const getLocalesToFirefoxInstallRdf = () => {
         sb.push('<em:localized>' + os.EOL);
         sb.push('\t<Description>' + os.EOL);
         sb.push('\t\t<em:locale>' + locale + '</em:locale>' + os.EOL);
-        sb.push('\t\t<em:name>' + messages.name.message + getExtensionNamePostfix(process.env.NODE_ENV, FIREFOX_LEGACY) + '</em:name>' + os.EOL);
+        sb.push('\t\t<em:name>' + messages.name.message + getExtensionNamePostfix(BRANCH, FIREFOX_LEGACY) + '</em:name>' + os.EOL);
         sb.push('\t\t<em:description>' + messages.description.message + '</em:description>' + os.EOL);
         sb.push('\t</Description>' + os.EOL);
         sb.push('</em:localized>' + os.EOL);

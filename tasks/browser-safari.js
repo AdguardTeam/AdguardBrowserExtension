@@ -19,11 +19,14 @@ import {updateLocalesMSGName, preprocessAll} from './helpers';
 import safariextz from 'safariextz';
 import copyCommonFiles from './copy-common';
 
+// set current type of build
+const BRANCH = process.env.NODE_ENV || '';
+
 const paths = {
     safari: path.join('Extension/browser/safari/**/*'),
     filters: path.join('Extension/filters/safari/**/*'),
     webkitFiles: path.join('Extension/browser/webkit/**/*'),
-    dest: path.join(BUILD_DIR, process.env.NODE_ENV || '', `safari-${version}.safariextension`),
+    dest: path.join(BUILD_DIR, BRANCH, `safari-${version}.safariextension`),
 };
 
 const dest = {
@@ -44,7 +47,7 @@ const safari = () => gulp.src([paths.webkitFiles, paths.safari]).pipe(gulp.dest(
 const preprocess = (done) => preprocessAll(paths.dest, {browser: 'SAFARI', remoteScripts: true}, done);
 
 // change the extension name based on a type of a build (dev, beta or release)
-const localesProcess = (done) => updateLocalesMSGName(process.env.NODE_ENV, paths.dest, done);
+const localesProcess = (done) => updateLocalesMSGName(BRANCH, paths.dest, done);
 
 // update Info.plist file data
 const updatePlist = (done) => {
@@ -53,7 +56,7 @@ const updatePlist = (done) => {
     let extensionID = '';
     let updateUrl = '';
 
-    switch (process.env.NODE_ENV) {
+    switch (BRANCH) {
         case BRANCH_BETA:
             extensionID = SAFARI_EXTENSION_ID_BETA;
             updateUrl = SAFARI_UPDATE_URL;
@@ -72,7 +75,7 @@ const updatePlist = (done) => {
     plist = plist.replace(/\$\{updateURL\}/g, updateUrl);
     plist = plist.replace(/\$\{updateFromGallery\}/g, updateFromGallery);
 
-    switch (process.env.NODE_ENV) {
+    switch (BRANCH) {
         case BRANCH_DEV:
             plist = plist.replace(/\$\{extensionNamePostfix\}/g, ' (Dev)');
             break;
@@ -87,11 +90,11 @@ const updatePlist = (done) => {
 
 // create safariextz which required private keys
 const ext = (done) => {
-    if (process.env.NODE_ENV !== BRANCH_BETA && process.env.NODE_ENV !== BRANCH_RELEASE) {
+    if (BRANCH !== BRANCH_BETA && BRANCH !== BRANCH_RELEASE) {
         return done();
     }
 
-    return safariextz(`safari-${version}.safariextz`, paths.dest, {
+    return safariextz(`safari-${BRANCH}-${version}.safariextz`, paths.dest, {
         privateKey:   path.resolve(SAFARI_CERTS_PRIVATE_FILES, 'key.pem'),
         extensionCer: path.resolve(SAFARI_CERTS_PRIVATE_FILES, 'cert.pem'),
         appleDevCer:  path.resolve(SAFARI_CERTS_PRIVATE_FILES, 'AppleWWDRCA.pem'),

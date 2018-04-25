@@ -19,6 +19,7 @@ import {updateLocalesMSGName, preprocessAll} from './helpers';
 import zip from 'gulp-zip';
 import copyCommonFiles from './copy-common';
 
+// set current type of build
 const BRANCH = process.env.NODE_ENV || '';
 
 const paths = {
@@ -28,13 +29,13 @@ const paths = {
     lib: path.join('Extension/lib/**/*'),
     chromeFiles: path.join('Extension/browser/chrome/**/*'),
     webkitFiles: path.join('Extension/browser/webkit/**/*'),
-    dest: path.join(BUILD_DIR, BRANCH || '', `firefox-standalone-${version}`)
+    dest: path.join(BUILD_DIR, BRANCH, `firefox-standalone-${version}`)
 };
 
 const dest = {
     filters: path.join(paths.dest, 'filters'),
     inner: path.join(paths.dest, '**/*'),
-    buildDir: path.join(BUILD_DIR, BRANCH || ''),
+    buildDir: path.join(BUILD_DIR, BRANCH),
     manifest: path.join(paths.dest, 'manifest.json')
 };
 
@@ -83,7 +84,7 @@ const createArchive = (done) => {
     }
 
     return gulp.src(dest.inner)
-        .pipe(zip(`firefox-standalone-beta-${version}-unsigned.zip`))
+        .pipe(zip(`firefox-standalone-${BRANCH}-${version}-unsigned.zip`))
         .pipe(gulp.dest(dest.buildDir));
 };
 
