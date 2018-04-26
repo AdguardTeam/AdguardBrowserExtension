@@ -1,8 +1,8 @@
-! Checksum: ukbtbCNIuzvH5BtD5z+mAQ
+! Checksum: +pct/16cof98IUh+cbBRPw
 ! Title: Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.0.27
-! TimeUpdated: 2018-03-14T03:03:20+00:00
+! Version: 2.0.0.28
+! TimeUpdated: 2018-04-13T00:03:07+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#dutch
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -1310,6 +1310,7 @@ tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
 !
 ! Section contains list of advertising networks
 !
+||widget.igcdn.nl^$third-party
 ||wwa.pacific-yield.com^$third-party
 !---------------------------------------------------------------------------!
 !-------------- Anti-adblock rules -----------------------------------------!
@@ -1380,7 +1381,8 @@ omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3
 !--------------------------------------!
 !------- CSS fixes --------------------!
 !--------------------------------------!
-!
+! https://github.com/AdguardTeam/AdguardFilters/issues/14714
+omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
 !--------------------------------------!
 !------- Content filtering rules ------!
 !--------------------------------------!
@@ -1405,6 +1407,8 @@ omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3
 !--------------------------------------------------------!
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
+||mediareader.omroepwest.nl/gaslicht^
+||unity.nu/media/*/BANNERS/
 ||topomania.net/sites/topomania.net/images/pacnum-promo.png
 ondertitel.com##.billboard_ad_new
 mediamarkt.nl###colorbox

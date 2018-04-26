@@ -7,16 +7,16 @@
     <link type="text/css" rel="stylesheet" href="skin/style.css">
     <link type="text/css" rel="stylesheet" href="skin/my.css">
 
-    <#if browser.name() == "CHROMIUM" || browser.name() == "EDGE" || browser.name() == "SAFARI" || browser.name() == "OPERA">
-        <script type="text/javascript" src="../lib/libs/jquery-2.2.4.min.js"></script>
-        <script type="text/javascript" src="../lib/content-script/adguard-content.js"></script>
-        <script type="text/javascript" src="../lib/content-script/common-script.js"></script>
-        <script type="text/javascript" src="../lib/content-script/popup-script.js"></script>
-        <script type="text/javascript" src="../lib/content-script/i18n-helper.js"></script>
-        <script type="text/javascript" src="../lib/pages/i18n.js"></script>
-        <script type="text/javascript" src="../lib/pages/script.js"></script>
-        <script type="text/javascript" src="../lib/pages/popup-controller.js"></script>
-    </#if>
+    <!-- @if browser == "CHROMIUM" || browser == "EDGE" || browser == "SAFARI" || browser == "OPERA"-->
+    <script type="text/javascript" src="../lib/libs/jquery-2.2.4.min.js"></script>
+    <script type="text/javascript" src="../lib/content-script/adguard-content.js"></script>
+    <script type="text/javascript" src="../lib/content-script/common-script.js"></script>
+    <script type="text/javascript" src="../lib/content-script/popup-script.js"></script>
+    <script type="text/javascript" src="../lib/content-script/i18n-helper.js"></script>
+    <script type="text/javascript" src="../lib/pages/i18n.js"></script>
+    <script type="text/javascript" src="../lib/pages/script.js"></script>
+    <script type="text/javascript" src="../lib/pages/popup-controller.js"></script>
+    <!-- @endif -->
     <link rel="shortcut icon" href="skin/favicon.png"/>
 </head>
 <body style="overflow: hidden;">
@@ -125,19 +125,19 @@
         <div class="os-popup-other-os-block">
             <span i18n="popup_adguard_other_os"></span>
         </div>
-        <#if browser.name() != "SAFARI">        
+        <!-- @if browser != "SAFARI" -->
         <a href="https://adguard.com/adguard-windows/overview.html?utm_source=extension&aid=18081" i18n-title="popup_adguard_windows" class="popup-footer-link openLink">
             <i class="os-popup-icon-windows"></i>
         </a>
-        </#if>
+        <!-- @endif -->
         <a href="https://adguard.com/adguard-mac/overview.html?utm_source=extension&aid=18081" i18n-title="popup_adguard_mac" class="popup-footer-link openLink">
             <i class="os-popup-icon-mac"></i>
         </a>
-        <#if browser.name() != "SAFARI">
+        <!-- @if browser != "SAFARI" -->
         <a href="https://adguard.com/adguard-android/overview.html?utm_source=extension&aid=18081" i18n-title="popup_adguard_android" class="popup-footer-link openLink">
             <i class="os-popup-icon-android"></i>
         </a>
-        </#if>
+        <!-- @endif -->
         <a href="https://adguard.com/ios" i18n-title="popup_adguard_ios" class="popup-footer-link openLink">
             <i class="os-popup-icon-ios"></i>
         </a>
