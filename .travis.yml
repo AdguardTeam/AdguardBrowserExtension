@@ -1,11 +1,7 @@
-language: bash
-
+language: node_js
 node_js:
-    - "4.1"
-
+  - "9"
 install:
-    - npm install -g node-qunit-phantomjs
-
+  - yarn install
 script:
-    - cd Extension/tests
-    - bash run.sh
+  - yarn test
