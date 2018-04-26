@@ -241,9 +241,9 @@
         },
 
         /**
-         * An object with the information on the CSS and ExtendedCss stylesheets which 
+         * An object with the information on the CSS and ExtendedCss stylesheets which
          * need to be injected into a web page.
-         * 
+         *
          * @typedef {Object} SelectorsData
          * @property {Array.<string>} css Regular CSS stylesheets
          * @property {Array.<string>} extendedCss ExtendedCSS stylesheets
@@ -293,7 +293,7 @@
         /**
          * Builds the final output string for the specified page.
          * Depending on the browser we either allow or forbid the new remote rules (see how `scriptSource` is used).
-         * 
+         *
          * @param {string} url Page URL
          * @returns {string} Script to be applied
          */
@@ -317,9 +317,17 @@
                          * In case of Firefox and Opera add-ons, JS filtering rules are hardcoded into add-on code.
                          * Look at ScriptFilterRule.getScriptSource to learn more.
                          */
+                        /* @if remoteScripts == false */
                         if (!isFirefox && !isOpera) {
                             scriptsToApply.push(scriptRule.rule);
                         }
+                        /* @endif*/
+
+                        /* @if remoteScripts == true */
+                        if (!isOpera) {
+                            scriptsToApply.push(scriptRule.rule);
+                        }
+                        /* @endif*/
                         break;
                 }
             }
