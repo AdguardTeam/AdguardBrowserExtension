@@ -49,7 +49,7 @@ const copyFilters = () => gulp.src(paths.filters).pipe(gulp.dest(dest.filters));
 const firefoxWebext = () => gulp.src([paths.webkitFiles, paths.chromeFiles, paths.firefox_webext]).pipe(gulp.dest(paths.dest));
 
 // preprocess with params
-const preprocess = (done) => preprocessAll(paths.dest, {browser: 'FIREFOX', build: 'AMO', remoteScripts: false}, done);
+const preprocess = (done) => preprocessAll(paths.dest, {browser: FIREFOX_WEBEXT, remoteScripts: false}, done);
 
 // change the extension name based on a type of a build (dev, beta or release)
 const localesProcess = (done) => updateLocalesMSGName(BRANCH, paths.dest, done, FIREFOX_WEBEXT);
