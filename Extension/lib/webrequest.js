@@ -460,15 +460,18 @@
                 }
 
                 /** 
-                 * Executes scripts in a scope of page.
-                 * Sometimes page doesn't has it's document.head or document.documentElement at the moment of injection
-                 * so script wait them. But if frameRequests reaches FRAME_REQUESTS_LIMIT we stop waiting.
+                 * Executes scripts in a scope of the page.
+                 * Sometimes in Firefox when content-filtering is applied to the page race condition happens.
+                 * This causes an issue when the page doesn't have its document.head or document.documentElement at the moment of
+                 * injection. So script waits for them. But if a quantity of frame-requests reaches FRAME_REQUESTS_LIMIT then
+                 * script stops waiting with the error.
+                 * Description of the issue: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1004
                  */
                 let injectedScript = '(function() {\
                     var script = document.createElement("script");\
                     script.setAttribute("type", "text/javascript");\
                     script.textContent = "' + scriptText.replace(reJsEscape, escapeJs) + '";\
-                    var FRAME_REQUESTS_LIMIT = 60;\
+                    var FRAME_REQUESTS_LIMIT = 500;\
                     var frameRequests = 0;\
                     function waitParent () {\
                         frameRequests += 1;\
@@ -485,10 +488,10 @@
                         if(frameRequests < FRAME_REQUESTS_LIMIT) {\
                             requestAnimationFrame(waitParent);\
                         } else {\
-                            console.log("document.head or document.documentElement were unavailable too long");\
+                            console.log("AdGuard: document.head or document.documentElement were unavailable too long");\
                         }\
                     }\
-                    requestAnimationFrame(waitParent);\
+                    waitParent();\
                 })()';
 
                 return injectedScript;
