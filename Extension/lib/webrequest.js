@@ -459,19 +459,36 @@
                     return null;
                 }
 
-                // Executes scripts in a scope of page.
+                /** 
+                 * Executes scripts in a scope of page.
+                 * Sometimes page doesn't has it's document.head or document.documentElement at the moment of injection
+                 * so script wait them. But if frameRequests reaches FRAME_REQUESTS_LIMIT we stop waiting.
+                 */
                 let injectedScript = '(function() {\
                     var script = document.createElement("script");\
                     script.setAttribute("type", "text/javascript");\
                     script.textContent = "' + scriptText.replace(reJsEscape, escapeJs) + '";\
-                    var parent = document.head || document.documentElement;\
-                    try {\
-                        parent.appendChild(script);\
-                        parent.removeChild(script);\
-                    } catch (e) {\
-                    } finally {\
-                        return true;\
+                    var FRAME_REQUESTS_LIMIT = 60;\
+                    var frameRequests = 0;\
+                    function waitParent () {\
+                        frameRequests += 1;\
+                        var parent = document.head || document.documentElement;\
+                        if(parent) {\
+                            try {\
+                                parent.appendChild(script);\
+                                parent.removeChild(script);\
+                            } catch (e) {\
+                            } finally {\
+                                return true;\
+                            }\
+                        }\
+                        if(frameRequests < FRAME_REQUESTS_LIMIT) {\
+                            requestAnimationFrame(waitParent);\
+                        } else {\
+                            console.log("document.head or document.documentElement were unavailable too long");\
+                        }\
                     }\
+                    requestAnimationFrame(waitParent);\
                 })()';
 
                 return injectedScript;
