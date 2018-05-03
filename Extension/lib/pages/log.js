@@ -450,6 +450,10 @@ PageController.prototype = {
 			'class': 'task-manager-content-header-body-col task-manager-content-item-rule'
 		}));
 		el.append($('<div>', {
+			text: event.requestRule ? RequestWizard.getFilterName(event.requestRule.filterId) : '',
+			'class': 'task-manager-content-header-body-col task-manager-content-item-filter'
+		}));
+		el.append($('<div>', {
 			text: RequestWizard.getSource(event.frameDomain),
 			'class': 'task-manager-content-header-body-col task-manager-content-item-source'
 		}));
