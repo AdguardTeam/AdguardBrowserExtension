@@ -1,4 +1,4 @@
-/*! extended-css - v1.0.10 - 2018-03-21
+/*! extended-css - v1.0.11 - 2018-04-24
 * https://github.com/AdguardTeam/ExtendedCss
 * Copyright (c) 2018 ; Licensed Apache License 2.0 */
 var ExtendedCss = (function(window) {
@@ -372,24 +372,35 @@ utils.matchesPropertyName = function () {
 }();
 
 /**
- * Calculates stats values (adv)
- * 
- * @param {Array<number>} timingArray An array of execution timings (ms)
+ * Provides stats information
  */
-utils.Stats = function (timingArray) {
-    this.timingArray = timingArray;
+utils.Stats = function () {
+    /** @member {Array<number>} */
+    this.array = [];
+    /** @member {number} */
+    this.length = 0;
+    var zeroDescriptor = {
+        value: 0,
+        writable: true
+    };
+    /** @member {number} @private */
+    Object.defineProperty(this, 'sum', zeroDescriptor);
+    /** @member {number} @private */
+    Object.defineProperty(this, 'squaredSum', zeroDescriptor);
+};
 
-    var sum = 0;
-    var squaredSum = 0;
-    var len = timingArray.length;
-    for (var i = 0; i < len; i++) {
-        var num = timingArray[i];
-        sum += num;
-        squaredSum += num * num;
-    }
-
-    this.mean = sum / len;
-    this.stddev = Math.sqrt(squaredSum / len - Math.pow(this.mean, 2));
+/**
+ * @param {number} dataPoint data point
+ */
+utils.Stats.prototype.push = function (dataPoint) {
+    this.array.push(dataPoint);
+    this.length++;
+    this.sum += dataPoint;
+    this.squaredSum += dataPoint * dataPoint;
+    /** @member {number} */
+    this.mean = this.sum / this.length;
+    /** @member {number} */
+    this.stddev = Math.sqrt(this.squaredSum / this.length - Math.pow(this.mean, 2));
 };
 
 /** Safe console.error version */
@@ -4243,7 +4254,7 @@ var ExtendedSelectorFactory = function () {
  * @param {Array.<HTMLElement>} propertyFilterIgnoreStyleNodes A list of stylesheet nodes that should be ignored by the StyleObserver (":properties" matching object)
  * @constructor
  */
-var ExtendedCss = function (styleSheet, propertyFilterIgnoreStyleNodes) {
+function ExtendedCss(styleSheet, propertyFilterIgnoreStyleNodes) {
     // jshint ignore:line
     var rules = [];
     var affectedElements = [];
@@ -4251,7 +4262,7 @@ var ExtendedCss = function (styleSheet, propertyFilterIgnoreStyleNodes) {
     var eventListenerSupported = window.addEventListener;
     var domMutationObserver = void 0;
 
-    var observeDocument = function (callback) {
+    function observeDocument(callback) {
         if (utils.MutationObserver) {
             domMutationObserver = new utils.MutationObserver(function (mutations) {
                 if (mutations && mutations.length) {
@@ -4268,8 +4279,8 @@ var ExtendedCss = function (styleSheet, propertyFilterIgnoreStyleNodes) {
             document.addEventListener('DOMNodeRemoved', callback, false);
             document.addEventListener('DOMAttrModified', callback, false);
         }
-    };
-    var disconnectDocument = function (callback) {
+    }
+    function disconnectDocument(callback) {
         if (domMutationObserver) {
             domMutationObserver.disconnect();
         } else if (eventListenerSupported) {
@@ -4277,7 +4288,7 @@ var ExtendedCss = function (styleSheet, propertyFilterIgnoreStyleNodes) {
             document.removeEventListener('DOMNodeRemoved', callback, false);
             document.removeEventListener('DOMAttrModified', callback, false);
         }
-    };
+    }
 
     var MAX_STYLE_PROTECTION_COUNT = 50;
 
@@ -4287,31 +4298,25 @@ var ExtendedCss = function (styleSheet, propertyFilterIgnoreStyleNodes) {
         attributeFilter: ['style']
     };
 
-    var protectionFunction = function (mutations, observer) {
+    function protectionFunction(mutations, observer) {
         if (!mutations.length) {
             return;
         }
-        var target = mutations[0].target;
+        var mutation = mutations[0];
+        var target = mutation.target;
         observer.disconnect();
-
-        for (var _i = 0; _i < mutations.length; _i++) {
-            var mutation = mutations[_i];
-            if (mutation.attributeName === 'style') {
-                target.setAttribute('style', mutation.oldValue);
-            }
-        }
-
+        target.setAttribute('style', mutation.oldValue);
         if (++observer.styleProtectionCount < MAX_STYLE_PROTECTION_COUNT) {
             observer.observe(target, protectionObserverOption);
         }
-    };
+    }
 
     /**
      * Sets up a MutationObserver which protects style attributes from changes
      * @param node DOM node
      * @returns Mutation observer used to protect attribute or null if there's nothing to protect
      */
-    var protectStyleAttribute = function (node) {
+    function protectStyleAttribute(node) {
         if (!utils.MutationObserver) {
             return null;
         }
@@ -4320,37 +4325,37 @@ var ExtendedCss = function (styleSheet, propertyFilterIgnoreStyleNodes) {
         // Adds an expando to the observer to keep 'style fix counts'.
         protectionObserver.styleProtectionCount = 0;
         return protectionObserver;
-    };
+    }
 
-    var removeSuffix = function (str, suffix) {
+    function removeSuffix(str, suffix) {
         var index = str.indexOf(suffix, str.length - suffix.length);
         if (index >= 0) {
             return str.substring(0, index);
         }
         return str;
-    };
+    }
 
     /**
      * Finds affectedElement object for the specified DOM node
      * @param node  DOM node
      * @returns     affectedElement found or null
      */
-    var findAffectedElement = function (node) {
-        for (var _i2 = 0; _i2 < affectedElements.length; _i2++) {
-            var affectedElement = affectedElements[_i2];
+    function findAffectedElement(node) {
+        for (var _i = 0; _i < affectedElements.length; _i++) {
+            var affectedElement = affectedElements[_i];
             if (affectedElement.node === node) {
                 return affectedElement;
             }
         }
 
         return null;
-    };
+    }
 
     /**
      * Applies style to the specified DOM node
      * @param affectedElement Object containing DOM node and rule to be applied
      */
-    var applyStyle = function (affectedElement) {
+    function applyStyle(affectedElement) {
         if (affectedElement.protectionObserver) {
             // Style is already applied and protected by the observer
             return;
@@ -4369,24 +4374,24 @@ var ExtendedCss = function (styleSheet, propertyFilterIgnoreStyleNodes) {
         }
         // Protect "style" attribute from changes
         affectedElement.protectionObserver = protectStyleAttribute(node);
-    };
+    }
 
     /**
      * Reverts style for the affected object
      */
-    var revertStyle = function (affectedElement) {
+    function revertStyle(affectedElement) {
         if (affectedElement.protectionObserver) {
             affectedElement.protectionObserver.disconnect();
         }
         affectedElement.node.style.cssText = affectedElement.originalStyle;
-    };
+    }
 
     /**
      * Applies specified rule and returns list of elements affected
      * @param rule Rule to apply
      * @returns List of elements affected by this rule
      */
-    var applyRule = function (rule) {
+    function applyRule(rule) {
         var debug = rule.selector.isDebugging();
         var start = void 0;
         if (debug) {
@@ -4396,8 +4401,8 @@ var ExtendedCss = function (styleSheet, propertyFilterIgnoreStyleNodes) {
         var selector = rule.selector;
         var nodes = selector.querySelectorAll();
 
-        for (var _i3 = 0; _i3 < nodes.length; _i3++) {
-            var node = nodes[_i3];
+        for (var _i2 = 0; _i2 < nodes.length; _i2++) {
+            var node = nodes[_i2];
             var affectedElement = findAffectedElement(node);
 
             if (affectedElement) {
@@ -4420,31 +4425,24 @@ var ExtendedCss = function (styleSheet, propertyFilterIgnoreStyleNodes) {
 
         if (debug) {
             var elapsed = utils.AsyncWrapper.now() - start;
-            if (!('timings' in rule)) {
-                rule.timings = [];
+            if (!('timingStats' in rule)) {
+                rule.timingStats = new utils.Stats();
             }
-            rule.timings.push(elapsed);
+            rule.timingStats.push(elapsed);
         }
 
         return nodes;
-    };
+    }
 
     /**
      * Applies filtering rules
      */
-    var applyRules = function () {
+    function applyRules() {
         var elementsIndex = [];
-        var printTiming = false;
 
-        for (var _i4 = 0, _rules = rules; _i4 < _rules.length; _i4++) {
-            var rule = _rules[_i4];
+        for (var _i3 = 0, _rules = rules; _i3 < _rules.length; _i3++) {
+            var rule = _rules[_i3];
             var nodes = applyRule(rule);
-            if ('timings' in rule) {
-                // Timings are recorded at least for one rule
-                // We should print them to the console
-                printTiming = true;
-            }
-
             Array.prototype.push.apply(elementsIndex, nodes);
         }
 
@@ -4461,16 +4459,14 @@ var ExtendedCss = function (styleSheet, propertyFilterIgnoreStyleNodes) {
             }
         }
 
-        if (printTiming) {
-            printTimingInfo();
-        }
-    };
+        printTimingInfo();
+    }
 
     var APPLY_RULES_DELAY = 50;
     var applyRulesScheduler = new utils.AsyncWrapper(applyRules, APPLY_RULES_DELAY);
     var mainCallback = applyRulesScheduler.run.bind(applyRulesScheduler);
 
-    var observe = function () {
+    function observe() {
         if (domObserved) {
             return;
         }
@@ -4478,68 +4474,57 @@ var ExtendedCss = function (styleSheet, propertyFilterIgnoreStyleNodes) {
         // Handle dynamically added elements
         domObserved = true;
         observeDocument(mainCallback);
-    };
+    }
 
-    var apply = function () {
+    function apply() {
         applyRules();
         observe();
 
         if (document.readyState !== "complete") {
             document.addEventListener("DOMContentLoaded", applyRules);
         }
-    };
+    }
 
     /**
      * Disposes ExtendedCss and removes our styles from matched elements
      */
-    var dispose = function () {
+    function dispose() {
         if (domObserved) {
             disconnectDocument(mainCallback);
             domObserved = false;
         }
 
-        for (var _i5 = 0; _i5 < affectedElements.length; _i5++) {
-            var obj = affectedElements[_i5];
+        for (var _i4 = 0; _i4 < affectedElements.length; _i4++) {
+            var obj = affectedElements[_i4];
             revertStyle(obj);
         }
-    };
+    }
 
-    /**
-     * This is a helper object that is used for the only purpose - to prevent spamming
-     * the console with new records every time and just update this object state instead.
-     */
-    var timings = Object.create(null);
     var timingsPrinted = false;
-
     /**
      * Prints timing information for all selectors marked as "debug"
      */
-    var printTimingInfo = function () {
-        var debugRules = rules.filter(function (rule) {
-            return 'timings' in rule;
-        });
-
-        if (debugRules.length === 0) {
-            // No timings recorded
+    function printTimingInfo() {
+        if (timingsPrinted) {
             return;
         }
+        timingsPrinted = true;
 
-        timings.stats = debugRules.map(function (rule) {
+        var timings = rules.filter(function (rule) {
+            return rule.selector.isDebugging();
+        }).map(function (rule) {
             return {
                 selectorText: rule.selector.selectorText,
-                stats: new utils.Stats(rule.timings)
+                timingStats: rule.timingStats
             };
         });
 
-        if (!timingsPrinted) {
-            timingsPrinted = true;
-            timings.counter = 1;
-            // Add window.location to the message to distinguish frames
-            utils.logInfo("[ExtendedCss] Timings for %o:\n%o", window.location, timings);
-        } else {
-            timings.counter++;
+        if (timings.length === 0) {
+            return;
         }
-    };
+        // Add location.href to the message to distinguish frames
+        utils.logInfo("[ExtendedCss] Timings for %o:\n%o (in milliseconds)", location.href, timings);
+    }
 
     // Let StyleObserver know which stylesheets should not be used for :properties matching
     StyleObserver.setIgnoredStyleNodes(propertyFilterIgnoreStyleNodes);
@@ -4555,18 +4540,34 @@ var ExtendedCss = function (styleSheet, propertyFilterIgnoreStyleNodes) {
     this._getAffectedElements = function () {
         return affectedElements;
     };
-};
+}
 
-// Expose querySelectorAll for debugging selectors
-ExtendedCss.query = function (selectorText) {
+/**
+ * Expose querySelectorAll for debugging and validating selectors
+ * 
+ * @param {string} selectorText selector text
+ * @param {boolean} noTiming if true -- do not print the timing to the console
+ * @returns {Array<Node>|NodeList} a list of elements found
+ * @throws Will throw an error if the argument is not a valid selector
+ */
+ExtendedCss.query = function (selectorText, noTiming) {
+    if (typeof selectorText !== 'string') {
+        throw 'Selector text is empty';
+    }
+
     var now = utils.AsyncWrapper.now;
-    var selector = ExtendedSelectorFactory.createSelector(selectorText);
     var start = now();
-    var matched = selector.querySelectorAll();
-    var end = now();
-    utils.logInfo('[ExtendedCss] Elapsed: ' + Math.round((end - start) * 1000) + ' μs.');
-    StyleObserver.clear();
-    return matched;
+
+    try {
+        return ExtendedSelectorFactory.createSelector(selectorText).querySelectorAll();
+    } finally {
+        StyleObserver.clear();
+
+        var end = now();
+        if (!noTiming) {
+            utils.logInfo('[ExtendedCss] Elapsed: ' + Math.round((end - start) * 1000) + ' μs.');
+        }
+    }
 };
 
 // EXPOSE
