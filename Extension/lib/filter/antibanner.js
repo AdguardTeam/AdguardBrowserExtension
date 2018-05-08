@@ -1001,8 +1001,8 @@ adguard.antiBannerService = (function (adguard) {
             callback(true);
         };
 
-        var errorCallback = function (request, cause) {
-            adguard.console.error("Error retrieved response from server for filter {0}, cause: {1} {2}", filter.filterId, request.statusText, cause || "");
+        var errorCallback = function (cause) {
+            adguard.console.error("Error retrieved response from server for filter {0}, cause: {1}", filter.filterId, cause || "");
             delete filter._isDownloading;
             adguard.listeners.notifyListeners(adguard.listeners.ERROR_DOWNLOAD_FILTER, filter);
             callback(false);
@@ -1060,10 +1060,10 @@ adguard.antiBannerService = (function (adguard) {
             }
         }
         requestFilter.addRules(rules);
-
-        adguard.listeners.notifyListeners(adguard.listeners.ADD_RULES, userFilter, rulesText);
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_USER_FILTER_RULES, getRequestFilterInfo());
-
+        adguard.listeners.notifyListeners(adguard.listeners.ADD_RULES, filter, rulesText);
+        if (filterId === adguard.utils.filters.USER_FILTER_ID) {
+            adguard.listeners.notifyListeners(adguard.listeners.UPDATE_USER_FILTER_RULES, getRequestFilterInfo());
+        }
         return rules;
     };
 
@@ -1085,7 +1085,11 @@ adguard.antiBannerService = (function (adguard) {
         if (rule !== null) {
             requestFilter.removeRule(rule);
         }
-        adguard.listeners.notifyListeners(adguard.listeners.REMOVE_RULE, userFilter, [ruleText]);
+        var filter = getFilterById(filterId);
+        adguard.listeners.notifyListeners(adguard.listeners.REMOVE_RULE, filter, [ruleText]);
+        if (filterId === adguard.utils.filters.USER_FILTER_ID) {
+            adguard.listeners.notifyListeners(adguard.listeners.UPDATE_USER_FILTER_RULES, getRequestFilterInfo());
+        }
     };
 
     return {
@@ -1552,7 +1556,7 @@ adguard.filters = (function (adguard) {
                 var rules = adguard.userrules.addRules(rulesText);
                 loadCallback(rules.length);
             }, function (request, cause) {
-                adguard.console.error("Error download subscription by url {0}, cause: {1} {2}", subscriptionUrl, request.statusText, cause || "");
+                adguard.console.error("Error download subscription by url {0}, cause: {1}", subscriptionUrl, cause || "");
             });
         }
     };

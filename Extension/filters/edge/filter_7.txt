@@ -1,8 +1,8 @@
-! Checksum: GpI6ryXiNamfpUnB9yFNOw
+! Checksum: N1iVEWSAgGqvI4w+aoJ+9w
 ! Title: Japanese filter
 ! Description: AdGuard Japanese filter. Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.0.35
-! TimeUpdated: 2018-03-29T12:03:28+00:00
+! Version: 2.0.0.43
+! TimeUpdated: 2018-04-15T15:03:47+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#japanese
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -198,6 +198,8 @@
 !
 ! These rules are against anti-adblock scripts
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/14263
+avgirl.online#@#.google-ad
 ! https://github.com/AdguardTeam/AdguardFilters/issues/7918
 @@||avgle.com^$generichide,genericblock
 @@||ads.exosrv.com/ads.js$domain=avgle.com
@@ -320,7 +322,7 @@ repeat-drama.info##.side_inner > .box:contains(スポンサーリンク)
 ##.adsense_box01
 ##.adsense_mainbox01
 ##.adsize728
-##.adtitle
+~regionxeberleri.com##.adtitle
 ##.yahoo_ad
 ##a[href^="http://ad2.trafficgate.net/"]
 ##a[href^="http://www.rssad.jp/"]
@@ -340,8 +342,7 @@ repeat-drama.info##.side_inner > .box:contains(スポンサーリンク)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/12280
 ogeji.hatenablog.com#$#.sleeping-ads {position: absolute!important; left: -3000px!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/7918
-avgle.com#%#AG_onLoad(function() { var el = document.querySelector('.col-lg-8  > a[href^="https://bit.ly/"][target="_blank"]'); if(el) { el.removeAttribute("href"); }; });
-avgle.com#$#img[src^="https://isafe.pro"] { height: 35px!important; width: 60%!important; clip-path: polygon(0px 0px,0px 0px,0px 0px,0px 0px); }
+avgle.com#$#img[src^="https://isafe.pro"] { height: 35px!important; width: 100%!important; }
 avgle.com#$#iframe[src*="exosrv"] { height: 200px!important; }
 avgle.com#$#iframe[src*="juicyads"] { height: 10px!important; }
 !
@@ -428,6 +429,7 @@ _ds_adtag_
 !
 ! Section contains rules for specific websites
 !
+bookbang.jp###footer_ban
 evidus.com##.module__adheadion
 nicovideo.jp##.realdabista_banner
 nicovideo.jp###sideNav > #enjoy
@@ -792,6 +794,7 @@ yahoo.co.jp##ul[class^="sponsor"]
 !
 ! White list. Fixing filtration errors(false-positive)
 !
+tver.jp#@#.adspace
 @@||nazolog.com^$generichide
 publicdomainq.net#@#.adsbygoogle
 @@/weblog/*$domain=mplus-fonts.sourceforge.jp

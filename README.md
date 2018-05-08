@@ -11,7 +11,7 @@ To get more information and to download AdGuard Browser Extension, visit our web
 
 GitHub can be used to report a bug or to submit a feature request. To do so, go to [this page](https://github.com/AdguardTeam/AdguardBrowserExtension/issues) and click the *New issue* button.
 
->**Note:** for the filter-related issues (missed ads, false positives etc.) use the [dedicated repository](https://github.com/AdguardTeam/AdguardFilters). 
+>**Note:** for the filter-related issues (missed ads, false positives etc.) use the [dedicated repository](https://github.com/AdguardTeam/AdguardFilters).
 
 ### Our plans
 
@@ -23,21 +23,57 @@ You can find all AdGuard Browser Extension releases here: https://github.com/Adg
 
 ### How to become a beta tester?
 
-You can get a beta version of AdGuard Browser Extension for any browser. All necessary information on this topic can be found in our [Knowledgebase article](https://kb.adguard.com/general/adguard-beta-testing-program#browser-extensions). 
+You can get a beta version of AdGuard Browser Extension for any browser. All necessary information on this topic can be found in our [Knowledgebase article](https://kb.adguard.com/general/adguard-beta-testing-program#browser-extensions).
 
 ### How to build
 
 #### Requirements
 
-- [JDK 1.7+](http://www.oracle.com/technetwork/java/javaee/downloads/index.html)
-- [Apache Maven 2+](https://maven.apache.org/download.cgi)
-- Set JAVA_HOME and JDK_HOME environment variables
+- [nodejs](https://nodejs.org/en/download/)
+- [yarn](https://yarnpkg.com/en/docs/install/)
+
+Install local dependencies by runnning:
+```
+  yarn install
+```
+
+#### Download localizations
+
+To run the task of downloading the localization files, put the `oneskyapp.json` configuration file in the root directory.
+
+The configuration file looks like:
+
+    {
+        "url": "url of localizations",
+        "project_id": "some id",
+        "secret_key": "some key",
+        "api_key": "some api key"
+    }
+
+For security reasons, this file is ignored by .gitignore settings.
+
+To download and append localizations run:
+```
+  yarn locales-download
+```
+
+To upload new phrases to oneskyapp you need the same file `oneskyapp.json` and file with phrases `./Extension/_locales/en/messages.json`. Then run:
+```
+  yarn locales-upload
+```
+
+#### Download filters
+
+Filters are updated automatically in release build. But you can run updating manually with command:
+```
+  yarn filters
+```
 
 #### Building the dev version
 
-Run the following command in the Compiler directory:
+Run the following command:
 ```
-  ./build.sh dev
+  yarn dev
 ```
 
 This will create a Build directory with unpacked extensions for all browsers:
@@ -50,13 +86,12 @@ This will create a Build directory with unpacked extensions for all browsers:
 
 #### Building the beta and release versions
 ```
-  ./build.sh beta
-  ./build.sh release
+  yarn beta
+  yarn release
 ```
 You will need to put certificate.pem file to the Compiler directory. This build will create unpacked extensions and then pack them (crx for Chrome, xpi for Firefox).
 
 ### How to run tests
 ```
-  cd tests 
-  ./run.sh
+  yarn test
 ```

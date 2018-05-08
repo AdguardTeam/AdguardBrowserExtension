@@ -150,7 +150,7 @@
                 adguard.tags.addAndEnableFiltersByTagId(message.tagId);
                 break;
             case 'disableAntiBannerFiltersByTagId':
-                adguard.tags.disableAntiBannerFiltersByTagId(message.tagId);
+                 adguard.tags.disableAntiBannerFiltersByTagId(message.tagId);
                 break;
             case 'changeDefaultWhiteListMode':
                 adguard.whitelist.changeDefaultWhiteListMode(message.enabled);
@@ -293,6 +293,9 @@
                 break;
             case 'openSiteReportTab':
                 adguard.ui.openSiteReportTab(message.url);
+                break;
+            case 'openAbuseTab':
+                adguard.ui.openAbuseTab(message.url);
                 break;
             case 'openAbuseTab':
                 adguard.ui.openAbuseTab(message.url);

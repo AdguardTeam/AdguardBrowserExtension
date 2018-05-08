@@ -1,8 +1,8 @@
-! Checksum: JydQCKDeGk6w9HSNCKND9w
+! Checksum: iiLL8a4hU+83FQTnXgzpVA
 ! Title: Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.0.27
-! TimeUpdated: 2018-03-14T03:03:20+00:00
+! Version: 2.0.0.28
+! TimeUpdated: 2018-04-13T00:03:07+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -1292,6 +1292,7 @@ amonis.be#@#.text-ad
 kamernet.nl#@#.topAdd
 voetbalnieuws.be#@#a[href^="http://adserving.unibet.com/"]
 tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
+||widget.igcdn.nl^$third-party
 ||wwa.pacific-yield.com^$third-party
 @@/ad_bomb/*$image,domain=computerworld.nl|webwereld.nl
 @@/ad_pics/*$image,domain=webwereld.nl
@@ -1319,6 +1320,9 @@ ad.nl##.tile[-ext-has=">.ankeiler--advertisement"]
 gelderlander.nl##.page-content > .theme-default[-ext-has='div.ad']
 klusidee.nl##tr.table-row[-ext-has=".td-ad"]
 omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3000px!important; }
+omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
+||mediareader.omroepwest.nl/gaslicht^
+||unity.nu/media/*/BANNERS/
 ||topomania.net/sites/topomania.net/images/pacnum-promo.png
 ondertitel.com##.billboard_ad_new
 mediamarkt.nl###colorbox
