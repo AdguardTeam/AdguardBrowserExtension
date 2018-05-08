@@ -102,7 +102,6 @@ PopupController.prototype = {
     _renderPopup: function (tabInfo) {
 
         var parent = $('.widjet-popup');
-        //parent.empty();
         parent.find('.footer').remove();
 
         var stack = parent.find('.tabstack');
@@ -114,6 +113,12 @@ PopupController.prototype = {
         containerStats.empty();
 
         stack.attr('class', 'tabstack');
+
+        // Hide stats for integration mode
+        if (tabInfo.adguardDetected) {
+            parent.find('.tab-stats-button').hide();
+            parent.find('.tab-main-button').width('100%');
+        }
 
         // define class
         if (tabInfo.urlFilteringDisabled) {
@@ -180,11 +185,6 @@ PopupController.prototype = {
         var template;
         if (tabInfo.adguardDetected) {
             template = this.filteringIntegrationHeader;
-            if (tabInfo.adguardProductName) {
-                i18n.translateElement(template.find('.blocked-tab')[0], 'popup_ads_has_been_removed_by_adguard', [tabInfo.adguardProductName]);
-            } else {
-                i18n.translateElement(template.find('.blocked-tab')[0], 'popup_ads_has_been_removed');
-            }
         } else {
             template = this.filteringDefaultHeader;
             var tabBlocked = template.find('.blocked-tab');
@@ -203,6 +203,7 @@ PopupController.prototype = {
 
     _renderFilteringControls: function (container, tabInfo) {
         var template = this.filteringControlDefault;
+
         if (tabInfo.urlFilteringDisabled) {
             template = this.filteringControlDisabled;
         } else if (tabInfo.applicationFilteringDisabled) { // jshint ignore:line
@@ -212,12 +213,14 @@ PopupController.prototype = {
                 template = this.filteringControlException;
             }
         }
+
         if (tabInfo.urlFilteringDisabled || tabInfo.applicationFilteringDisabled || tabInfo.adguardDetected) {
             template.find('.pause').hide();
         }
         if (tabInfo.adguardDetected) {
             template.find('.settings').hide();
         }
+
         container.append(template);
     },
 
@@ -228,20 +231,21 @@ PopupController.prototype = {
         var text = '';
 
         if (tabInfo.urlFilteringDisabled) {
-            text = 'popup_site_filtering_disabled';
+            text = 'popup_site_filtering_state_tab_unavailable';
         } else if (tabInfo.applicationFilteringDisabled) {
-            text = 'popup_enable_protection';
+            text = 'popup_site_filtering_state_paused';
         } else {
             if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
-                text = 'popup_site_exception';
+                text = 'popup_site_filtering_state_subscription_unavailable';
             } else {
                 if (tabInfo.documentWhiteListed) {
-                    text = 'context_site_filtering_on';
+                    text = 'popup_site_filtering_state_disabled';
                 } else {
-                    text = 'context_site_filtering_off';
+                    text = 'popup_site_filtering_state_enabled';
                 }
             }
         }
+
         i18n.translateElement(template[0], text);
 
         container.append(template);
