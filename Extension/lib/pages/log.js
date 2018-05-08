@@ -156,16 +156,19 @@ PageController.prototype = {
         this.searchBlocked = false;
         this.searchWhitelisted = false;
 
-        // Bind click to reload tab
-        $('body').on('click', '.reloadTab', function (e) {
-            e.preventDefault();
-            if (this.currentTabId == -1) {
+		// Bind click to reload tab
+		$('body').on('click', '.reloadTab', function (e) {
+			e.preventDefault();if (this.currentTabId == -1) {
                 // Unable to reload "background" tab, just clear events
                 contentPage.sendMessage({type: 'clearEventsByTabId', tabId: this.currentTabId});
                 return;
             }
-            contentPage.sendMessage({type: 'reloadTabById', tabId: this.currentTabId});
-        }.bind(this));
+			// Unable to reload "background" tab, just clear events
+            if (this.currentTabId == -1) {
+                contentPage.sendMessage({type: 'clearEventsByTabId', tabId: this.currentTabId});
+                return;
+            }contentPage.sendMessage({type: 'reloadTabById', tabId: this.currentTabId});
+		}.bind(this));
 
         // Bind click to clear events
         $('#clearTabLog').on('click', function (e) {
@@ -217,38 +220,37 @@ PageController.prototype = {
         }
     },
 
-    onTabAdded: function (tabInfo) {
-        //don't add not http tabs
-        if (tabInfo.isExtensionTab) {
-            return;
-        }
-        this.tabSelectorList.append($('<li>', {
-            text: tabInfo.title,
-            'data-tab-id': tabInfo.tabId
-        }));
-        if (!this.currentTabId) {
-            this.onSelectedTabChange();
-        }
-    },
+	onTabAdded: function (tabInfo) {
 
-    onTabUpdated: function (tabInfo) {
-        var item = this.tabSelectorList.find('[data-tab-id=' + tabInfo.tabId + ']');
-        if (tabInfo.isExtensionTab) {
-            //remove not http tabs
-            this.onTabClose(tabInfo);
-            return;
-        }
-        if (item && item.length > 0) {
-            item.text(tabInfo.title);
-            if (tabInfo.tabId == this.currentTabId) {
-                this.tabSelectorValue.text(tabInfo.title);
-                //update icon logo
-                this._updateLogoIcon();
-            }
-        } else {
-            this.onTabAdded(tabInfo);
-        }
-    },
+		if (tabInfo.isExtensionTab) {
+			return;
+		}
+		this.tabSelectorList.append($('<li>',{
+			text: tabInfo.title,
+			'data-tab-id': tabInfo.tabId
+		}));
+		if (!this.currentTabId) {
+			this.onSelectedTabChange();
+		}
+	},
+
+	onTabUpdated: function (tabInfo) {
+		var item = this.tabSelectorList.find('[data-tab-id=' + tabInfo.tabId + ']');
+		if (tabInfo.isExtensionTab) {
+			this.onTabClose(tabInfo);
+			return;
+		}
+		if (item && item.length > 0) {
+			item.text(tabInfo.title);
+			if (tabInfo.tabId == this.currentTabId) {
+				this.tabSelectorValue.text(tabInfo.title);
+				//update icon logo
+				this._updateLogoIcon();
+			}
+		} else {
+			this.onTabAdded(tabInfo);
+		}
+	},
 
     onTabClose: function (tabInfo) {
         this.tabSelectorList.find('[data-tab-id=' + tabInfo.tabId + ']').remove();
@@ -274,7 +276,7 @@ PageController.prototype = {
         this._renderEvents([event]);
     },
 
-    onEventUpdated: function (tabInfo, event) {
+	onEventUpdated: function (tabInfo, event) {
         if (this.currentTabId != tabInfo.tabId) {
             //don't relate to the current tab
             return;
@@ -284,25 +286,23 @@ PageController.prototype = {
             var template = this._renderTemplate(event);
             element.replaceWith(template);
         }
-    },
-
-    onSelectedTabChange: function () {
-        var selectedItem = this.tabSelectorList.find('[data-tab-id="' + this.currentTabId + '"]');
-        if (selectedItem.length === 0) {
-            selectedItem = this.tabSelectorList.find(':first');
-        }
-        var text = '';
-        var selectedTabId = null;
-        if (selectedItem.length > 0) {
-            text = selectedItem.text();
-            selectedTabId = selectedItem.attr('data-tab-id');
-        }
-        this.currentTabId = selectedTabId;
-        this.tabSelectorValue.text(text);
-        this._updateLogoIcon();
-        //render events
-        this._renderEventsForTab(this.currentTabId);
-    },
+    },onSelectedTabChange: function () {
+		var selectedItem = this.tabSelectorList.find('[data-tab-id="' + this.currentTabId + '"]');
+		if (selectedItem.length === 0) {
+			selectedItem = this.tabSelectorList.find(':first');
+		}
+		var text = '';
+		var selectedTabId = null;
+		if (selectedItem.length > 0) {
+			text = selectedItem.text();
+			selectedTabId = selectedItem.attr('data-tab-id');
+		}
+		this.currentTabId = selectedTabId;
+		this.tabSelectorValue.text(text);
+		this._updateLogoIcon();
+		//render events
+		this._renderEventsForTab(this.currentTabId);
+	},
 
     _updateLogoIcon: function () {
         contentPage.sendMessage({type: 'getTabFrameInfoById', tabId: this.currentTabId}, function (response) {
@@ -454,7 +454,11 @@ PageController.prototype = {
         // Rule
         el.append($('<td>', {text: ruleText}));
         // Source
-        el.append($('<td>', {text: RequestWizard.getSource(event.frameDomain)}));
+        el.append($('<td>', {text: event.requestRule ? RequestWizard.getFilterName(event.requestRule.filterId) : '',
+			'class': 'task-manager-content-header-body-col task-manager-content-item-filter'
+		}));
+		el.append($('<div>', {
+			text: RequestWizard.getSource(event.frameDomain)}));
 
         return el;
     },
@@ -564,8 +568,14 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
         };
     }
 
-    //bind events
-    template.find('#openRequestNewTab').on('click', function (e) {
+	//bind events
+    var openRequestButton = template.find('#openRequestNewTab');
+	var blockRequestButton = template.find('#blockRequest');
+	var unblockRequestButton = template.find('#unblockRequest');
+	var removeWhiteListDomainButton = template.find('#removeWhiteListDomain');
+	var removeUserFilterRuleButton = template.find('#removeUserFilterRule');
+
+	openRequestButton.on('click', function (e) {
         e.preventDefault();
 
         var requestUrl = filteringEvent.requestUrl;
@@ -576,16 +586,11 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
         contentPage.sendMessage({type: 'openTab', url: requestUrl, options: {inNewWindow: true}});
     });
 
-    var blockRequestButton = template.find('#blockRequest');
-    var unblockRequestButton = template.find('#unblockRequest');
-    var removeWhiteListDomainButton = template.find('#removeWhiteListDomain');
-    var removeUserFilterRuleButton = template.find('#removeUserFilterRule');
-
-    blockRequestButton.on('click', function (e) {
-        e.preventDefault();
-        this.closeModal();
-        this.showCreateBlockRuleModal(frameInfo, filteringEvent);
-    }.bind(this));
+	blockRequestButton.on('click', function (e) {
+		e.preventDefault();
+		this.closeModal();
+		this.showCreateBlockRuleModal(frameInfo, filteringEvent);
+	}.bind(this));
 
     unblockRequestButton.on('click', function (e) {
         e.preventDefault();

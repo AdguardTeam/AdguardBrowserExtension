@@ -15,6 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global FilterDownloader */
 adguard.backend = (function (adguard) {
 
     'use strict';
@@ -129,43 +130,21 @@ adguard.backend = (function (adguard) {
     };
 
     /**
+     * FilterDownloader constants
+     */
+    var FilterCompilerConditionsConstants = {
+        adguard: true,
+        adguard_ext_chromium: adguard.utils.browser.isChromium(),
+        adguard_ext_firefox: adguard.utils.browser.isFirefoxBrowser(),
+        adguard_ext_edge: adguard.utils.browser.isEdgeBrowser(),
+        adguard_ext_safari: adguard.utils.browser.isSafariBrowser(),
+        adguard_ext_opera: adguard.utils.browser.isOperaBrowser(),
+    };
+
+    /**
      * Loading subscriptions map
      */
     var loadingSubscriptions = Object.create(null);
-
-    /**
-     * Load filter rules.
-     * Parse header and rules.
-     * Response format:
-     * HEADER
-     * rule1
-     * rule2
-     * ...
-     * ruleN
-     *
-     * @param filterId Filter identifier
-     * @param url Url for loading rules
-     * @param successCallback Success callback (version, rules)
-     * @param errorCallback Error callback (response, errorText)
-     * @private
-     */
-    function doLoadFilterRules(filterId, url, successCallback, errorCallback) {
-
-        var success = function (response) {
-
-            var responseText = response.responseText;
-            if (!responseText) {
-                errorCallback(response, "filter rules missing");
-                return;
-            }
-
-            var lines = responseText.split(/[\r\n]+/);
-            successCallback(lines);
-
-        };
-
-        executeRequestAsync(url, "text/plain", success, errorCallback);
-    }
 
     /**
      * Executes async request
@@ -295,7 +274,7 @@ adguard.backend = (function (adguard) {
             }
         }
 
-        doLoadFilterRules(filterId, url, successCallback, errorCallback);
+        FilterDownloader.download(url, FilterCompilerConditionsConstants).then(successCallback, errorCallback);
     };
 
     /**
@@ -312,22 +291,9 @@ adguard.backend = (function (adguard) {
         }
         loadingSubscriptions[url] = true;
 
-        var success = function (response) {
-
+        var success = function (lines) {
             delete loadingSubscriptions[url];
 
-            if (response.status !== 200) {
-                errorCallback(response, "wrong status code: " + response.status);
-                return;
-            }
-
-            var responseText = (response.responseText || '').trim();
-            if (responseText.length === 0) {
-                errorCallback(response, "filter rules missing");
-                return;
-            }
-
-            var lines = responseText.split(/[\r\n]+/);
             if (lines[0].indexOf('[') === 0) {
                 //[Adblock Plus 2.0]
                 lines.shift();
@@ -336,12 +302,12 @@ adguard.backend = (function (adguard) {
             successCallback(lines);
         };
 
-        var error = function (request, cause) {
+        var error = function (cause) {
             delete loadingSubscriptions[url];
-            errorCallback(request, cause);
+            errorCallback(cause);
         };
 
-        executeRequestAsync(url, "text/plain", success, error);
+        FilterDownloader.download(url, FilterCompilerConditionsConstants).then(success, error);
     };
 
     /**

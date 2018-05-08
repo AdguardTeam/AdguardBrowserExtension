@@ -605,7 +605,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     /*
      * The `openAssistant` function uses the `tabs.executeScript` function to inject the Assistant code into a page without using messaging.
      * We do it dynamically and not include assistant file into the default content scripts in order to reduce the overall memory usage.
-     * 
+     *
      * Browsers that do not support `tabs.executeScript` function use Assistant from the manifest file manually (Safari for instance).
      * After executing the Assistant code in callback the `initAssistant` function is called.
      * It sends messages to current tab and runs Assistant. Other browsers call `initAssistant` function manually.
@@ -614,7 +614,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
      */
     var openAssistant = function (selectElement) {
         if (adguard.tabs.executeScriptFile) {
-            
+
             // Load Assistant code to the activate tab immediately
             adguard.tabs.executeScriptFile(null, "/lib/content-script/assistant/js/assistant.js", function() {
                 initAssistant(selectElement);
