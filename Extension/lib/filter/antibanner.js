@@ -1060,10 +1060,10 @@ adguard.antiBannerService = (function (adguard) {
             }
         }
         requestFilter.addRules(rules);
-        adguard.listeners.notifyListeners(adguard.listeners.ADD_RULES, filter, rulesText);
-        if (filterId === adguard.utils.filters.USER_FILTER_ID) {
-            adguard.listeners.notifyListeners(adguard.listeners.UPDATE_USER_FILTER_RULES, getRequestFilterInfo());
-        }
+
+        adguard.listeners.notifyListeners(adguard.listeners.ADD_RULES, userFilter, rulesText);
+        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_USER_FILTER_RULES, getRequestFilterInfo());
+
         return rules;
     };
 
@@ -1085,11 +1085,7 @@ adguard.antiBannerService = (function (adguard) {
         if (rule !== null) {
             requestFilter.removeRule(rule);
         }
-        var filter = getFilterById(filterId);
-        adguard.listeners.notifyListeners(adguard.listeners.REMOVE_RULE, filter, [ruleText]);
-        if (filterId === adguard.utils.filters.USER_FILTER_ID) {
-            adguard.listeners.notifyListeners(adguard.listeners.UPDATE_USER_FILTER_RULES, getRequestFilterInfo());
-        }
+        adguard.listeners.notifyListeners(adguard.listeners.REMOVE_RULE, userFilter, [ruleText]);
     };
 
     return {
