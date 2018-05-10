@@ -10,12 +10,14 @@
     "filters": "gulp downloadFilters --require babel-register --gulpfile tasks",
     "locales-download": "gulp downloadLocalesStream --require babel-register --gulpfile tasks",
     "locales-upload": "gulp uploadLocalesStream --require babel-register --gulpfile tasks",
-    "build-update": "gulp buildUpdatesFilesStream --require babel-register --gulpfile tasks"
+    "build-update": "gulp buildUpdatesFilesStream --require babel-register --gulpfile tasks",
+    "update-suffixes": "gulp updateSuffixList --require babel-register --gulpfile tasks"
   },
   "babel": {
     "presets": [
       "env"
     ],
+    "plugins": ["transform-runtime"],
     "babelrc": false
   },
   "repository": {
@@ -42,6 +44,10 @@
     "web-ext": "^2.6.0"
   },
   "devDependencies": {
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-runtime": "^6.26.0",
+    "gulp-replace": "^0.6.1",
+    "punycode": "^2.1.0",
     "qunit": "^2.6.0"
   }
 }

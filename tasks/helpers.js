@@ -1,7 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import pp from 'preprocess';
-import {FIREFOX_LEGACY, FIREFOX_WEBEXT, BRANCH_DEV, BRANCH_BETA, BRANCH_RELEASE} from './consts';
+import punycode from 'punycode';
+import {FIREFOX_LEGACY, FIREFOX_WEBEXT, BRANCH_DEV, BRANCH_BETA, BRANCH_RELEASE, PUBLIC_SUFFIXES_FILE} from './consts';
 
 
 /**
@@ -106,4 +107,40 @@ export function preprocessAll (dest, data, done) {
 
 export function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+// returns string JSON string with RESERVED_DOMAINS
+export const getReservedDomains = async () => {
+    const getSuffixList = (pathname) => new Promise((resolve, reject) => {
+        fs.readFile(pathname, 'utf8', (err, data) => {
+            if (err) {
+                reject(err);
+            }
+            resolve(data);
+        });
+    });
+    
+    const convertListToObject = (list) => {
+        const rows = list.split('\n');
+        const suffixesWithoutCommentsAndSpaces = rows.filter((row) => {
+            return !(row.length === 0 || row.indexOf('//') !== -1);
+        });
+        const suffixesBiggerThenFirstLevel = suffixesWithoutCommentsAndSpaces.filter(suffix => {
+            return suffix.split('.').length > 1;
+        });
+        const suffixesWithoutSpecialRules = suffixesBiggerThenFirstLevel.filter(suffix => {
+            return !(suffix.indexOf('*') !== -1 || suffix.indexOf('!') !== -1);
+        });
+        const suffixesInPunycode = suffixesWithoutSpecialRules.map(suffix => {
+            return punycode.toASCII(suffix);
+        });
+        const suffixesObject = {};
+        suffixesInPunycode.forEach(suffix => {
+            suffixesObject[suffix] = 1;
+        });
+        return suffixesObject;
+    };
+
+    const suffixesObject = convertListToObject(await getSuffixList(path.resolve(__dirname, PUBLIC_SUFFIXES_FILE)));
+    return JSON.stringify(suffixesObject);
 }
