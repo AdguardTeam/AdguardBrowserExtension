@@ -166,6 +166,9 @@
         var userAgent = navigator.userAgent.toLowerCase();
         var isFirefox = userAgent.indexOf('firefox') >= 0;
 
+        // Edge doesn't provide access to websockets via onBeforeRequest api
+        var isEdge = userAgent.indexOf('edge') >= 0;
+        
         // Explicit check, we must not go further in case of Firefox
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/379
         if (isFirefox) {
@@ -182,7 +185,7 @@
         var versionNumber = Number.parseInt(version.substring(0, version.indexOf('.')));
 
         // WebSockets are broken in old versions of chrome and we don't need this hack in new version cause then websocket traffic is intercepted
-        return versionNumber >= 47 && versionNumber <= 57;
+        return isEdge || versionNumber >= 47 && versionNumber <= 57;
     };
 
     /**
