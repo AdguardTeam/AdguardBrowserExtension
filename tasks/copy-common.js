@@ -20,7 +20,7 @@ const paths = {
  */
 const copyCommonFiles = async (pathDest, exceptLanguages) => 
     gulp.src([paths.lib, paths.pages, ...(exceptLanguages ? [] : [paths.locales])], {base: 'Extension'})
-        .pipe(replace(/\%RESERVED_DOMAINS\%/g, await getReservedDomains()))
+        .pipe(replace(/\%RESERVED_DOMAINS\%/g, await getReservedDomains(), {skipBinary: true}))
         .pipe(gulp.dest(pathDest));
 
 export default copyCommonFiles;
