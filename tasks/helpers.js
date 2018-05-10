@@ -119,28 +119,12 @@ export const getReservedDomains = async () => {
             resolve(data);
         });
     });
-    
-    const convertListToObject = (list) => {
-        const rows = list.split('\n');
-        const suffixesWithoutCommentsAndSpaces = rows.filter((row) => {
-            return !(row.length === 0 || row.indexOf('//') !== -1);
-        });
-        const suffixesBiggerThenFirstLevel = suffixesWithoutCommentsAndSpaces.filter(suffix => {
-            return suffix.split('.').length > 1;
-        });
-        const suffixesWithoutSpecialRules = suffixesBiggerThenFirstLevel.filter(suffix => {
-            return !(suffix.indexOf('*') !== -1 || suffix.indexOf('!') !== -1);
-        });
-        const suffixesInPunycode = suffixesWithoutSpecialRules.map(suffix => {
-            return punycode.toASCII(suffix);
-        });
-        const suffixesObject = {};
-        suffixesInPunycode.forEach(suffix => {
-            suffixesObject[suffix] = 1;
-        });
-        return suffixesObject;
-    };
 
-    const suffixesObject = convertListToObject(await getSuffixList(path.resolve(__dirname, PUBLIC_SUFFIXES_FILE)));
-    return JSON.stringify(suffixesObject);
+    const suffixesData = await getSuffixList(path.resolve(__dirname, PUBLIC_SUFFIXES_FILE));
+
+    if(suffixesData.length <= 0) {
+        throw new Error(`there is no data in: ${PUBLIC_SUFFIXES_FILE}. to update file run 'yarn resources'`);
+    }
+
+    return suffixesData.replace(/\s/g, '');
 }
