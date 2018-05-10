@@ -110,14 +110,14 @@
 
     /**
      * Tries to collapse a blocked element using tabs.insertCSS.
-     * 
+     *
      * This method of collapsing has numerous advantages over the traditional one.
      * First of all, it prevents blocked elements flickering as it occurs earlier.
      * Second, it is harder to detect as there's no custom <style> node required.
-     * 
-     * However, we're still keeping the old approach intact - we have not enough information 
+     *
+     * However, we're still keeping the old approach intact - we have not enough information
      * here to properly collapse elements that use relative URLs (<img src='../path_to_element'>).
-     * 
+     *
      * @param {number} tabId Tab id
      * @param {number} requestFrameId Id of a frame request was sent from
      * @param {string} requestUrl Request URL
@@ -419,8 +419,8 @@
 
         /**
          * Applying CSS/JS rules from the background page.
-         * 
-         * When the frame is commited (webNavigation.onCommitted), we use browser.tabs.insertCSS 
+         *
+         * When the frame is commited (webNavigation.onCommitted), we use browser.tabs.insertCSS
          * and browser.tabs.executeScript functions to inject our CSS/JS rules. This
          * method can be used in modern Chrome and FF only.
          */
@@ -459,19 +459,39 @@
                     return null;
                 }
 
-                // Executes scripts in a scope of page.
+                /**
+                 * Executes scripts in a scope of the page.
+                 * Sometimes in Firefox when content-filtering is applied to the page race condition happens.
+                 * This causes an issue when the page doesn't have its document.head or document.documentElement at the moment of
+                 * injection. So script waits for them. But if a quantity of frame-requests reaches FRAME_REQUESTS_LIMIT then
+                 * script stops waiting with the error.
+                 * Description of the issue: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1004
+                 */
                 let injectedScript = '(function() {\
                     var script = document.createElement("script");\
                     script.setAttribute("type", "text/javascript");\
                     script.textContent = "' + scriptText.replace(reJsEscape, escapeJs) + '";\
-                    var parent = document.head || document.documentElement;\
-                    try {\
-                        parent.appendChild(script);\
-                        parent.removeChild(script);\
-                    } catch (e) {\
-                    } finally {\
-                        return true;\
+                    var FRAME_REQUESTS_LIMIT = 500;\
+                    var frameRequests = 0;\
+                    function waitParent () {\
+                        frameRequests += 1;\
+                        var parent = document.head || document.documentElement;\
+                        if(parent) {\
+                            try {\
+                                parent.appendChild(script);\
+                                parent.removeChild(script);\
+                            } catch (e) {\
+                            } finally {\
+                                return true;\
+                            }\
+                        }\
+                        if(frameRequests < FRAME_REQUESTS_LIMIT) {\
+                            requestAnimationFrame(waitParent);\
+                        } else {\
+                            console.log("AdGuard: document.head or document.documentElement were unavailable too long");\
+                        }\
                     }\
+                    waitParent();\
                 })()';
 
                 return injectedScript;
@@ -491,7 +511,7 @@
 
             /**
              * Injects necessary CSS and scripts into the web page.
-             * 
+             *
              * @param {*} details Details about the navigation event: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webNavigation/onCommitted#details
              */
             function tryInject(details) {
