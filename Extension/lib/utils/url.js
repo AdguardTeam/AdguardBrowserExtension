@@ -232,7 +232,7 @@
     var RE_BAD_CHARACTERS = /([^0-9a-f:])/i;
     var RE_BAD_ADDRESS = /([0-9a-f]{5,}|:{3,}|[^:]:$|^:[^:]$)/i;
 
-    var RESERVED_DOMAINS = JSON.parse('%RESERVED_DOMAINS%');
+    var RESERVED_DOMAINS = '%RESERVED_DOMAINS%';
 
     api.url = UrlUtils;
 
