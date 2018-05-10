@@ -1,6 +1,8 @@
 import path from 'path';
 import gulp from 'gulp';
+import replace from 'gulp-replace';
 import {LOCALES_DIR} from './consts';
+import {getReservedDomains} from './helpers';
 
 const paths = {
     pages: path.join('Extension/pages/**/*'),
@@ -16,8 +18,9 @@ const paths = {
  * @param {Boolean} exceptLanguages   do not copy languages if true
  * @return stream
  */
-const copyCommonFiles = (pathDest, exceptLanguages) => 
+const copyCommonFiles = async (pathDest, exceptLanguages) => 
     gulp.src([paths.lib, paths.pages, ...(exceptLanguages ? [] : [paths.locales])], {base: 'Extension'})
+        .pipe(replace(/\%RESERVED_DOMAINS\%/g, await getReservedDomains()))
         .pipe(gulp.dest(pathDest));
 
 export default copyCommonFiles;
