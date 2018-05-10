@@ -79,7 +79,7 @@ This will create a Build directory with unpacked extensions for all browsers:
 
 #### Building the beta and release versions
 
-Before building release you should manualy download resources: filters and public suffix list. To do this run command:
+Before building the release version, you should manually download necessary resources: filters and public suffix list.
 
 ```
   yarn resources
