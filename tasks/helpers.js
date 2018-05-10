@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import pp from 'preprocess';
-import punycode from 'punycode';
 import {FIREFOX_LEGACY, FIREFOX_WEBEXT, BRANCH_DEV, BRANCH_BETA, BRANCH_RELEASE, PUBLIC_SUFFIXES_FILE} from './consts';
 
 
