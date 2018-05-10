@@ -163,16 +163,20 @@
             return;
         }
 
-        /* global browser */
-        if (tab.tabId && typeof browser != 'undefined' && browser.tabs && browser.tabs.detectLanguage) {
-            // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/detectLanguage
-            browser.tabs.detectLanguage(tab.tabId, function (language) {
-                if (browser.runtime.lastError) {
-                    return;
-                }
-                detectLanguage(language);
-            });
-            return;
+        // tabs.detectLanguage doesn't work in Opera
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/997
+        if (!adguard.utils.browser.isOperaBrowser()) {
+            /* global browser */
+            if (tab.tabId && typeof browser != 'undefined' && browser.tabs && browser.tabs.detectLanguage) {
+                // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/detectLanguage
+                browser.tabs.detectLanguage(tab.tabId, function (language) {
+                    if (browser.runtime.lastError) {
+                        return;
+                    }
+                    detectLanguage(language);
+                });
+                return;
+            }
         }
 
         // Detecting language by top-level domain if extension API language detection is unavailable
