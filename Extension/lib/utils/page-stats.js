@@ -24,6 +24,8 @@ adguard.pageStats = (function (adguard) {
 
     var pageStatisticProperty = "page-statistic";
 
+    var STATS_SAVE_INTERVAL = 1000;
+
     var pageStatsHolder = {
         /**
          * Getter for total page stats (gets it from local storage)
@@ -52,7 +54,7 @@ adguard.pageStats = (function (adguard) {
             }
             this.saveTimeoutId = setTimeout(function () {
                 adguard.localStorage.setItem(pageStatisticProperty, JSON.stringify(this.stats));
-            }.bind(this), 1000);
+            }.bind(this), STATS_SAVE_INTERVAL);
         },
 
         clear: function () {
