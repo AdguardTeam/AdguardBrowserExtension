@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import pp from 'preprocess';
-import {FIREFOX_LEGACY, FIREFOX_WEBEXT, BRANCH_DEV, BRANCH_BETA, BRANCH_RELEASE} from './consts';
+import {FIREFOX_LEGACY, FIREFOX_WEBEXT, BRANCH_DEV, BRANCH_BETA, BRANCH_RELEASE, PUBLIC_SUFFIXES_FILE} from './consts';
 
 
 /**
@@ -106,4 +106,24 @@ export function preprocessAll (dest, data, done) {
 
 export function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+// returns string JSON string with RESERVED_DOMAINS
+export const getReservedDomains = async () => {
+    const getSuffixList = (pathname) => new Promise((resolve, reject) => {
+        fs.readFile(pathname, 'utf8', (err, data) => {
+            if (err) {
+                reject(err);
+            }
+            resolve(data);
+        });
+    });
+
+    const suffixesData = await getSuffixList(path.resolve(__dirname, PUBLIC_SUFFIXES_FILE));
+
+    if(suffixesData.length <= 0) {
+        throw new Error(`there is no data in: ${PUBLIC_SUFFIXES_FILE}. to update file run 'yarn resources'`);
+    }
+
+    return suffixesData.replace(/\s/g, '');
 }
