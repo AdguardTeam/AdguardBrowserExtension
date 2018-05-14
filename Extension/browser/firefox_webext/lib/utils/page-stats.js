@@ -15,32 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function throttle(callback, delay) {
-    let isThrottled = false,
-        args, context;
-
-    function wrapper() {
-        if (isThrottled) {
-            args = arguments;
-            context = this;
-            return;
-        }
-
-        isThrottled = true;
-        callback.apply(this, arguments);
-
-        setTimeout(() => {
-            isThrottled = false;
-            if (args) {
-                wrapper.apply(context, args);
-                args = context = null;
-            }
-        }, delay);
-    }
-
-    return wrapper;
-}
-
 /**
  * Global stats
  */
@@ -51,6 +25,8 @@ adguard.pageStats = (function (adguard) {
 
     var pageStatisticProperty = "page-statistic";
 
+    // interval 60 seconds is set due to excessive IO operations on every storage change
+    // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1006
     var STATS_SAVE_INTERVAL = 1000 * 60;
 
     var pageStatsHolder = {
@@ -75,7 +51,7 @@ adguard.pageStats = (function (adguard) {
             });
         },
 
-        save: throttle(function() {
+        save: adguard.utils.concurrent.throttle(function() {
             adguard.localStorage.setItem(pageStatisticProperty, JSON.stringify(this.stats));
         }, STATS_SAVE_INTERVAL),
 
