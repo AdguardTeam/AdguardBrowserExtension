@@ -73,7 +73,11 @@ adguard.prefs = (function (adguard) {
          * We use these stats to get rid of redundant filtering rules and provide "optimized" filters. Details: https://adguard.com/en/filter-rules-statistics.html
          * Disabled for the current version of FF add-on.
          */
-        collectHitsCountEnabled: false
+        collectHitsCountEnabled: false,
+
+        get statsSaveInterval() {
+            return 1000;
+        }
     };
 
     return Prefs;
