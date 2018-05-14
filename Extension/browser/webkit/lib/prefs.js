@@ -129,7 +129,8 @@ adguard.prefs = (function (adguard) {
          * If user enables `Send ad filters usage stats` option (which is disabled by default) in Adguard settings, it starts collecting & sending stats on used ad filtering rules.
          * We use these stats to get rid of redundant filtering rules and provide "optimized" filters. Details: https://adguard.com/en/filter-rules-statistics.html
          */
-        collectHitsCountEnabled: (typeof safari === 'undefined')
+        collectHitsCountEnabled: (typeof safari === 'undefined'),
+        
     };
 
     /**
@@ -178,7 +179,10 @@ adguard.prefs = (function (adguard) {
             responseContentFilteringSupported: responseContentFilteringSupported,
             canUseInsertCSSAndExecuteScript: canUseInsertCSSAndExecuteScript,
             userCSSSupport: userCSSSupport,
-            hasBackgroundTab: typeof browser !== 'undefined' // Background requests have sense only in case of webext
+            hasBackgroundTab: typeof browser !== 'undefined', // Background requests have sense only in case of webext
+            // interval 60 seconds in Firefox is set so big due to excessive IO operations on every storage save
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1006
+            statsSaveInterval: Prefs.browser === 'Firefox' ? 1000 * 60 : 1000,
         };
     })();
 
