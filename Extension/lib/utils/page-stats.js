@@ -24,8 +24,6 @@ adguard.pageStats = (function (adguard) {
 
     var pageStatisticProperty = "page-statistic";
 
-    var STATS_SAVE_INTERVAL = 1000;
-
     var pageStatsHolder = {
         /**
          * Getter for total page stats (gets it from local storage)
@@ -48,14 +46,10 @@ adguard.pageStats = (function (adguard) {
             });
         },
 
-        save: function () {
-            if (this.saveTimeoutId) {
-                clearTimeout(this.saveTimeoutId);
-            }
-            this.saveTimeoutId = setTimeout(function () {
-                adguard.localStorage.setItem(pageStatisticProperty, JSON.stringify(this.stats));
-            }.bind(this), STATS_SAVE_INTERVAL);
-        },
+        save: adguard.utils.concurrent.throttle(function() {
+            console.log(adguard.prefs.features.statsSaveInterval);
+            adguard.localStorage.setItem(pageStatisticProperty, JSON.stringify(this.stats));
+        }, adguard.prefs.features.statsSaveInterval),
 
         clear: function () {
             adguard.localStorage.removeItem(pageStatisticProperty);
