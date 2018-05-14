@@ -47,7 +47,6 @@ adguard.pageStats = (function (adguard) {
         },
 
         save: adguard.utils.concurrent.throttle(function() {
-            console.log(adguard.prefs.features.statsSaveInterval);
             adguard.localStorage.setItem(pageStatisticProperty, JSON.stringify(this.stats));
         }, adguard.prefs.features.statsSaveInterval),
 
