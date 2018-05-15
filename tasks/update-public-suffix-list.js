@@ -36,8 +36,7 @@ const convertListToObject = (list) => {
     return suffixesObject;
 };
 
-const writeFileSync = (data, path) => {
-    return new Promise((resolve, reject) => {
+const writeFileSync = (data, path) => new Promise((resolve, reject) => {
         fs.writeFile(path, data, (err) => {
             if (err) {
                 reject(err);
@@ -45,12 +44,22 @@ const writeFileSync = (data, path) => {
             resolve();
         });
     });
-};
+
+const readFileSync = (pathname) => new Promise((resolve, reject) => {
+    fs.readFile(pathname, 'utf8', (err, data) => {
+        if (err) {
+            reject(err);
+        }
+        resolve(data);
+    });
+});
 
 const updateSuffixes = () => {
-    return request(PUBLIC_SUFFIXES_URL, (error, response, body) => {
+    return request(PUBLIC_SUFFIXES_URL, async (error, response, body) => {
         const jsonString = JSON.stringify(convertListToObject(body), null, 2);
-        writeFileSync(jsonString, path.join(__dirname, PUBLIC_SUFFIXES_FILE));
+        const data = await readFileSync(path.join(__dirname, PUBLIC_SUFFIXES_FILE));
+        const updatedData = data.replace(/(\/\/\%START_RESERVED_DOMAINS\%)[\s\S]*?(\/\/\%END_RESERVED_DOMAINS\%)/g, "$1\n" + jsonString + "\n  $2");
+        writeFileSync(updatedData, path.join(__dirname, PUBLIC_SUFFIXES_FILE));
     });
 };
 
