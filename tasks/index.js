@@ -41,4 +41,5 @@ export const buildBeta = gulp.series(chromium, firefoxWebext, firefoxLegacy, saf
 export const buildRelease = gulp.series(chromium, opera, firefoxAmo, safari, edge, clean, (done) => done());
 
 // download resources
-export const downloadResources = gulp.series(downloadFilters, updatePublicSuffixList, (done) => done());
+// export const downloadResources = gulp.series(downloadFilters, updatePublicSuffixList, (done) => done());
+export const downloadResources = gulp.series(updatePublicSuffixList, (done) => done());

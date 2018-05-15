@@ -58,4 +58,4 @@ export const BRANCH_RELEASE = 'release';
 
 // URL for reserved domains
 export const PUBLIC_SUFFIXES_URL = 'https://publicsuffix.org/list/public_suffix_list.dat';
-export const PUBLIC_SUFFIXES_FILE = '../Extension/lib/utils/url.js';
+export const PUBLIC_SUFFIXES_FILE = '../Extension/lib/utils/public-suffixes.js';
