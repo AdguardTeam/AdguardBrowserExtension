@@ -188,6 +188,42 @@
         isDomainOrSubDomain: function (domainNameToCheck, domainName) {
             // Double endsWith check is memory optimization
             // Works in android, not sure if it makes sense here
+            // domainName: 'youtube.*' domainNameToCheck: 'www.youtube.com' 'youtube.co.uk' 'youtube.com'
+            function extractTld(domainName) {
+                var parts = domainName.split('.');
+                function iter (parts) {
+                    if(parts.length === 1) {
+                        return parts[0];
+                    }
+                    const tld = parts.join('.');
+                    if(tld in RESERVED_DOMAINS) {
+                        return tld;
+                    }
+                    return iter(parts.slice(1));
+                }
+                return iter(parts);
+            }
+            
+            function genTldWildcard (domainName) {
+                var tld = extractTld(domainName);
+                return domainName.slice(0, domainName.indexOf('.' + tld)) + '.*';
+            }
+            
+            function matchAsWildCard (wildcard, domainToCheck) {
+                var wildcardedDomainToCheck = genTldWildcard(domainToCheck);
+                return wildcardedDomainToCheck === wildcard && 
+                    api.strings.endsWith(wildcardedDomainToCheck, domainName) &&
+                    api.strings.endsWith(wildcardedDomainToCheck, "." + domainName);
+            }
+
+            function isWildcardDomain (domainName) {
+                return domainName.indexOf('*') !== -1;
+            }
+
+            if(isWildcardDomain) {
+                return matchAsWildCard(domainName, domainNameToCheck);
+            }
+
             return domainName == domainNameToCheck ||
                 api.strings.endsWith(domainNameToCheck, domainName) &&
                 api.strings.endsWith(domainNameToCheck, "." + domainName);

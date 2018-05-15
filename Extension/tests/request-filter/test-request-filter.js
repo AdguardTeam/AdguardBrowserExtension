@@ -372,6 +372,26 @@ QUnit.test("BadFilter multi-options", function (assert) {
 
 });
 
+// QUnit.test('Test wildcards', function (assert) {
+
+//     var requestFilter = new adguard.RequestFilter();
+
+//     var rule1 = new adguard.rules.UrlFilterRule('block1$domain=google.*');
+//     var rule2 = new adguard.rules.UrlFilterRule('block2$domain=google.com');
+//     var rule3 = new adguard.rules.UrlFilterRule('block3$domain=~yandex.*');
+//     requestFilter.addRule(rule1);
+//     requestFilter.addRule(rule2);
+//     requestFilter.addRule(rule3);
+
+//     assert.ok(requestFilter.findRuleForRequest('block1', 'https://google.com', adguard.RequestTypes.IMAGE));
+//     assert.ok(requestFilter.findRuleForRequest('block2', 'https://google.com', adguard.RequestTypes.IMAGE));
+//     assert.ok(requestFilter.findRuleForRequest('block3', 'https://google.com', adguard.RequestTypes.IMAGE));
+//     assert.ok(requestFilter.findRuleForRequest('block1', 'https://google.de', adguard.RequestTypes.IMAGE));
+//     assert.ok(requestFilter.findRuleForRequest('block1', 'https://google.co.uk', adguard.RequestTypes.IMAGE));
+//     assert.notOk(requestFilter.findRuleForRequest('block2', 'https://google.de', adguard.RequestTypes.IMAGE));
+//     assert.notOk(requestFilter.findRuleForRequest('block3', 'https://yandex.com', adguard.RequestTypes.IMAGE));
+//     assert.notOk(requestFilter.findRuleForRequest('block3', 'https://yandex.ru', adguard.RequestTypes.IMAGE));
+
 QUnit.test("Request filter performance", function (assert) {
 
     var done = assert.async();
