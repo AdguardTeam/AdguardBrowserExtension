@@ -211,7 +211,7 @@
             
             function matchAsWildCard (wildcard, domainToCheck) {
                 var wildcardedDomainToCheck = genTldWildcard(domainToCheck);
-                return wildcardedDomainToCheck === wildcard && 
+                return wildcardedDomainToCheck === wildcard || 
                     api.strings.endsWith(wildcardedDomainToCheck, domainName) &&
                     api.strings.endsWith(wildcardedDomainToCheck, "." + domainName);
             }
@@ -268,10 +268,11 @@
     var RE_BAD_CHARACTERS = /([^0-9a-f:])/i;
     var RE_BAD_ADDRESS = /([0-9a-f]{5,}|:{3,}|[^:]:$|^:[^:]$)/i;
 
-    var RESERVED_DOMAINS = '%RESERVED_DOMAINS%';
+    // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1010
+    var RESERVED_DOMAINS = api.publicSuffixes;
+
+    api.url = UrlUtils;
 
     api.url = UrlUtils;
 
 })(adguard.utils, window);
-
-
