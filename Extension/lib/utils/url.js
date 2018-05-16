@@ -217,10 +217,10 @@
             }
 
             function isWildcardDomain (domainName) {
-                return domainName.indexOf('*') !== -1;
+                return domainName.indexOf('.*') === domainName.length - 2;
             }
 
-            if(isWildcardDomain) {
+            if(isWildcardDomain(domainName)) {
                 return matchAsWildCard(domainName, domainNameToCheck);
             }
 
@@ -270,8 +270,6 @@
 
     // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1010
     var RESERVED_DOMAINS = api.publicSuffixes;
-
-    api.url = UrlUtils;
 
     api.url = UrlUtils;
 
