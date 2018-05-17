@@ -682,4 +682,5 @@ QUnit.test('Test wildcard domains in the url rules', function (assert) {
     assert.notOk(rule.isPermitted("nigma.ru"));
     assert.notOk(rule.isPermitted("nigma.com"));
     assert.notOk(rule.isPermitted("www.nigma.ru"));
+    assert.notOk(rule.isPermitted("adguard.ru"));
 });

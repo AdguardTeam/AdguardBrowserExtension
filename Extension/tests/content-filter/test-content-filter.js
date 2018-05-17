@@ -139,4 +139,5 @@ QUnit.test("Test wildcard domains in the content rules", function (assert) {
     assert.notOk(rule.isPermitted("youtube.com"));
     assert.notOk(rule.isPermitted("youtube.de"));
     assert.notOk(rule.isPermitted("www.nigma.ru"));
+    assert.notOk(rule.isPermitted("yandex.ru"));
 });

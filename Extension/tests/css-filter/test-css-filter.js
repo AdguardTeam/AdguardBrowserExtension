@@ -764,10 +764,13 @@ QUnit.test("Test wildcard domains in the css rules", function (assert) {
     assert.ok(rule.isPermitted('google.co.uk'));
     assert.notOk(rule.isPermitted('google.eu.uk')); // non-existent tld
 
-    var ruleText2 = "google.*,youtube.*###ad-iframe";
+    var ruleText2 = "~yandex.*,google.*,youtube.*###ad-iframe";
     var rule2 = new adguard.rules.CssFilterRule(ruleText2);
     assert.ok(rule2 !== null);
     assert.ok(rule2.isPermitted('google.com'));
     assert.ok(rule2.isPermitted('youtube.ru'));
     assert.ok(rule2.isPermitted('youtube.co.id'));
+    assert.notOk(rule2.isPermitted('yandex.com'));
+    assert.notOk(rule2.isPermitted('www.yandex.ru'));
+    assert.notOk(rule2.isPermitted('www.adguard.com'));
 });
