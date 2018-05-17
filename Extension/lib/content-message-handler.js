@@ -146,11 +146,11 @@
                     adguard.filters.disableFilters([message.filterId]);
                 }
                 break;
-            case 'addAndEnableFiltersByTagId':
-                adguard.tags.addAndEnableFiltersByTagId(message.tagId);
+            case 'addAndEnableFiltersByCategoryId':
+                adguard.tags.addAndEnableFiltersByCategoryId(message.categoryId);
                 break;
-            case 'disableAntiBannerFiltersByTagId':
-                 adguard.tags.disableAntiBannerFiltersByTagId(message.tagId);
+            case 'disableAntiBannerFiltersByCategoryId':
+                adguard.tags.disableAntiBannerFiltersByCategoryId(message.categoryId);
                 break;
             case 'changeDefaultWhiteListMode':
                 adguard.whitelist.changeDefaultWhiteListMode(message.enabled);

@@ -238,12 +238,6 @@ var AntiBannerFilters = function (options) {
 
     var groupsList = $('#groupsList');
 
-    function getFiltersByTagId(tagId, filters) {
-        return filters.filter(function (f) {
-            return f.tags.indexOf(tagId) >= 0;
-        });
-    }
-
     function countEnabledFilters(filters) {
         var count = 0;
         for (var i = 0; i < filters.length; i++) {
@@ -255,12 +249,12 @@ var AntiBannerFilters = function (options) {
         return count;
     }
 
-    function getCategoryElement(tagId) {
-        return $('#tag' + tagId);
+    function getCategoryElement(categoryId) {
+        return $('#category' + categoryId);
     }
 
-    function getCategoryCheckbox(tagId) {
-        return getCategoryElement(tagId).find('input');
+    function getCategoryCheckbox(categoryId) {
+        return getCategoryElement(categoryId).find('input');
     }
 
     function getFilterElement(filterId) {
@@ -271,30 +265,29 @@ var AntiBannerFilters = function (options) {
         return getFilterElement(filterId).find('input');
     }
 
-    function updateCategoryFiltersInfo(tagId) {
+    function updateCategoryFiltersInfo(categoryId, filters) {
+        var categoryFilters = filters.recommendedFilters.concat(filters.otherFilters);
+        var enabledFiltersCount = countEnabledFilters(categoryFilters);
 
-        var tagFilters = getFiltersByTagId(tagId, loadedFiltersInfo.filters);
-        var enabledFiltersCount = countEnabledFilters(tagFilters);
-
-        var element = getCategoryElement(tagId);
-        var checkbox = getCategoryCheckbox(tagId);
+        var element = getCategoryElement(categoryId);
+        var checkbox = getCategoryCheckbox(categoryId);
         element.find('.desc').text('Enabled filters: ' + enabledFiltersCount);
         checkbox.updateCheckbox(enabledFiltersCount > 0);
     }
 
-    function getFilterCategoryTemplate(tag) {
+    function getFilterCategoryTemplate(category) {
 
-        return $('<li>', {id: 'tag' + tag.tagId})
+        return $('<li>', {id: 'category' + category.categoryId})
             .append($('<div>', {class: 'block-type'})
                 .append($('<img>', {src: 'images/icon-block-ads.png'}))
                 .append($('<a>', {
-                    href: '#antibanner' + tag.tagId,
-                    text: tag.keyword + (tag.name ? ' ' + tag.name : '')
+                    href: '#antibanner' + category.categoryId,
+                    text: category.keyword
                 })))
             .append($('<div>', {class: 'opt-state'})
                 .append($('<div>', {class: 'preloader'}))
                 .append($('<div>', {class: 'desc'}))
-                .append($('<input>', {type: 'checkbox', name: 'tagId', value: tag.tagId})));
+                .append($('<input>', {type: 'checkbox', name: 'categoryId', value: category.categoryId})));
     }
 
     function getFilterTemplate(filter, enabled) {
@@ -309,9 +302,8 @@ var AntiBannerFilters = function (options) {
     }
 
     function getFiltersContentTemplate(category) {
-        var tag = category.tag;
-        var filters = category.otherFilters;
-        var recommendedFilters = category.recommendedFilters;
+        var filters = category.filters.otherFilters;
+        var recommendedFilters = category.filters.recommendedFilters;
 
         var pageTitleEl = $('<div>', {class: 'page-title'})
             .append($('<a>', {href: '#antibanner'})
@@ -319,7 +311,7 @@ var AntiBannerFilters = function (options) {
                     src: 'images/icon-back.png',
                     class: 'back'
                 })))
-            .append(document.createTextNode(tag.keyword));
+            .append(document.createTextNode(category.keyword));
 
         var tabsBar = $('<div>', {class: 'tabs-bar'})
             .append($('<a>', {href: '', class: 'tab active', text: 'Recommended', 'data-tab': 'recommended'}))
@@ -342,7 +334,7 @@ var AntiBannerFilters = function (options) {
             appendFilterTemplate(recommendedFilters[j], recommendedFiltersList);
         }
 
-        return $('<div>', {id: 'antibanner' + tag.tagId, class: 'settings-content tab-pane filters-list'})
+        return $('<div>', {id: 'antibanner' + category.categoryId, class: 'settings-content tab-pane filters-list'})
             .append(pageTitleEl)
             .append($('<div>', {class: 'settings-body'})
                 .append(tabsBar)
@@ -351,10 +343,9 @@ var AntiBannerFilters = function (options) {
     }
 
     function renderFilterCategory(category) {
-
-        var categoryTemplate = getFilterCategoryTemplate(category.tag);
+        var categoryTemplate = getFilterCategoryTemplate(category);
         groupsList.append(categoryTemplate);
-        updateCategoryFiltersInfo(category.tag.tagId);
+        updateCategoryFiltersInfo(category.categoryId, category.filters);
 
         var filtersContentTemplate = getFiltersContentTemplate(category);
 
@@ -366,6 +357,7 @@ var AntiBannerFilters = function (options) {
         contentPage.sendMessage({type: 'getFiltersMetadata'}, function (response) {
 
             loadedFiltersInfo.filters = response.filters;
+            loadedFiltersInfo.categories = response.categories;
 
             var filters = response.filters;
             var categories = response.categories;
@@ -419,12 +411,12 @@ var AntiBannerFilters = function (options) {
     }
 
     function toggleCategoryState() {
-        var tagId = this.value - 0;
+        var categoryId = this.value - 0;
 
         if (this.checked) {
-            contentPage.sendMessage({type: 'addAndEnableFiltersByTagId', tagId: tagId});
+            contentPage.sendMessage({type: 'addAndEnableFiltersByCategoryId', categoryId: categoryId});
         } else {
-            contentPage.sendMessage({type: 'disableAntiBannerFiltersByTagId', tagId: tagId});
+            contentPage.sendMessage({type: 'disableAntiBannerFiltersByCategoryId', categoryId: categoryId});
         }
     }
 
@@ -489,25 +481,28 @@ var AntiBannerFilters = function (options) {
         var filterId = filter.filterId;
         var enabled = filter.enabled;
         loadedFiltersInfo.updateEnabled(filterId, enabled);
-        for (var i = 0; i < filter.tags.length; i++) {
-            updateCategoryFiltersInfo(filter.tags[i]);
-        }
+        // TODO: Fix
+        // for (var i = 0; i < filter.tags.length; i++) {
+        //     updateCategoryFiltersInfo(filter.tags[i]);
+        // }
 
         getFilterCheckbox(filterId).updateCheckbox(enabled);
     };
 
     var onFilterDownloadStarted = function (filter) {
-        for (var i = 0; i < filter.tags.length; i++) {
-            getCategoryElement(filter.tags[i]).find('.preloader').addClass('active');
-        }
+        // TODO: Fix
+        // for (var i = 0; i < filter.tags.length; i++) {
+        //     getCategoryElement(filter.tags[i]).find('.preloader').addClass('active');
+        // }
 
         getFilterElement(filter.filterId).find('.preloader').addClass('active');
     };
 
     var onFilterDownloadFinished = function (filter) {
-        for (var i = 0; i < filter.tags.length; i++) {
-            getCategoryElement(filter.tags[i]).find('.preloader').removeClass('active');
-        }
+        // TODO: Fix
+        // for (var i = 0; i < filter.tags.length; i++) {
+        //     getCategoryElement(filter.tags[i]).find('.preloader').removeClass('active');
+        // }
 
         getFilterElement(filter.filterId).find('.preloader').removeClass('active');
         setLastUpdatedTimeText(filter.lastUpdateTime);
@@ -515,7 +510,7 @@ var AntiBannerFilters = function (options) {
 
     // Bind events
     $(document).on('change', '.filters-list [name="filterId"]', toggleFilterState);
-    $(document).on('change', '#groupsList [name="tagId"]', toggleCategoryState);
+    $(document).on('change', '#groupsList [name="categoryId"]', toggleCategoryState);
     $('#updateAntiBannerFilters').on('click', updateAntiBannerFilters);
     $('#addCustomFilter').on('click', addCustomFilter);
 

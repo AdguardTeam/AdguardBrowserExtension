@@ -42,25 +42,52 @@ adguard.tags = (function (adguard) {
         });
     };
 
-    var createFilterCategory = function (tag, filters) {
-        var filtersByTag = getFiltersByTagId(tag.tagId, filters);
-
-        var recommendedFilters = filtersByTag.filter(function (f) {
-            return f.tags.indexOf(RECOMMENDED_TAG_ID) >= 0;
+    var getArraySubtraction = function (a, b) {
+        return a.filter(function (i) {
+            return b.indexOf(i) < 0;
         });
-        recommendedFilters.sort(function (a, b) {
+    };
+
+    var selectTagFilters = function (tagId, filters) {
+        var filtersByTag = getFiltersByTagId(tagId, filters);
+        filtersByTag.sort(function (a, b) {
             return a.displayNumber - b.displayNumber;
         });
 
-        var otherFilters = filtersByTag.filter(function (f) {
-            return f.tags.indexOf(RECOMMENDED_TAG_ID) < 0;
-        });
-        otherFilters.sort(function (a, b) {
-            return a.displayNumber - b.displayNumber;
-        });
+        var recommendedFilters = getFiltersByTagId(RECOMMENDED_TAG_ID, filtersByTag);
+        var otherFilters = getArraySubtraction(filtersByTag, recommendedFilters);
 
         return {
-            tag: tag,
+            recommendedFilters: recommendedFilters,
+            otherFilters: otherFilters
+        };
+    };
+
+    /**
+     * Creates special category for language-specific filters
+     *
+     * @param filters
+     */
+    var selectLangSpecificFilters = function (tags, filters) {
+        var selected = [];
+
+        for (var i = 0; i < tags.length; i++) {
+            var tag = tags[i];
+            if (tag.keyword.indexOf('lang:') !== 0) {
+                continue;
+            }
+
+            selected = selected.concat(getFiltersByTagId(tag.tagId, filters));
+        }
+
+        selected.sort(function (a, b) {
+            return a.displayNumber - b.displayNumber;
+        });
+
+        var recommendedFilters = getFiltersByTagId(RECOMMENDED_TAG_ID, selected);
+        var otherFilters = getArraySubtraction(selected, recommendedFilters);
+
+        return {
             recommendedFilters: recommendedFilters,
             otherFilters: otherFilters
         };
@@ -74,49 +101,88 @@ adguard.tags = (function (adguard) {
         var tags = adguard.subscriptions.getTags();
         var filters = getFilters();
 
-        var categories = [];
+        var langSpecificFilters = selectLangSpecificFilters(tags, filters);
+        filters = getArraySubtraction(filters, langSpecificFilters.recommendedFilters);
+        filters = getArraySubtraction(filters, langSpecificFilters.otherFilters);
 
-        for (var i = 0; i < tags.length; i++) {
-
-            var tag = tags[i];
-            if (tag.keyword.indexOf('purpose:') < 0) {
-                continue;
+        /**
+         * TODO: This is temporary and should be changed to proper groups selecting
+         */
+        var filterCategories = [
+            {
+                // Language specific
+                categoryId: 1,
+                filters: langSpecificFilters,
+                keyword: 'Language-specific'
+            },
+            {
+                categoryId: 2,
+                tagId: PURPOSE_ADS_TAG_ID,
+                keyword: 'Ad Blocking'
+            },
+            {
+                categoryId: 3,
+                tagId: PURPOSE_PRIVACY_TAG_ID,
+                keyword: 'Privacy'
+            },
+            {
+                categoryId: 4,
+                tagId: PURPOSE_SOCIAL_TAG_ID,
+                keyword: 'Social Widgets'
+            },
+            {
+                categoryId: 5,
+                tagId: PURPOSE_ANNOYANCES_TAG_ID,
+                keyword: 'Annoyances'
+            },
+            {
+                categoryId: 6,
+                tagId: 0,
+                keyword: "Custom Filters"
             }
+        ];
 
-            categories.push(createFilterCategory(tag, filters));
+        for (var i = 0; i < filterCategories.length; i++) {
+            var category = filterCategories[i];
+            if (typeof category.tagId !== 'undefined') {
+                category.filters = selectTagFilters(category.tagId, filters);
+                filters = getArraySubtraction(filters, category.filters.recommendedFilters);
+                filters = getArraySubtraction(filters, category.filters.otherFilters);
+            }
         }
 
-        categories.push(createFilterCategory({tagId: 0, keyword: "Custom Filters"}, filters));
-
         return {
-            filters: filters,
-            categories: categories
+            filters: getFilters(),
+            categories: filterCategories
         };
     };
 
-    var getRecommendedFilterIdsByTagId = function (tagId) {
-        var filters = getFilters();
-        var filtersByTagId = getFiltersByTagId(tagId, filters);
+    var getRecommendedFilterIdsByCategoryId = function (categoryId) {
+        var metadata = getFiltersMetadata();
 
-        var filterIds = [];
-        for (var i = 0; i < filtersByTagId.length; i++) {
-            var f = filtersByTagId[i];
-            if (f.tags.indexOf(RECOMMENDED_TAG_ID) >= 0) {
-                filterIds.push(f.filterId);
+        for (var i = 0; i < metadata.categories.length; i++) {
+            var category = metadata.categories[i];
+            if (category.categoryId === categoryId) {
+                var result = [];
+                category.filters.recommendedFilters.forEach(function (f) {
+                    result.push(f.filterId);
+                });
+
+                return result;
             }
         }
 
-        return filterIds;
+        return [];
     };
 
-    var addAndEnableFiltersByTagId = function (tagId) {
-        var idsByTagId = getRecommendedFilterIdsByTagId(tagId);
+    var addAndEnableFiltersByCategoryId = function (categoryId) {
+        var idsByTagId = getRecommendedFilterIdsByCategoryId(categoryId);
 
         adguard.filters.addAndEnableFilters(idsByTagId);
     };
 
-    var disableAntiBannerFiltersByTagId = function (tagId) {
-        var idsByTagId = getRecommendedFilterIdsByTagId(tagId);
+    var disableAntiBannerFiltersByCategoryId = function (categoryId) {
+        var idsByTagId = getRecommendedFilterIdsByCategoryId(categoryId);
 
         adguard.filters.disableFilters(idsByTagId);
     };
@@ -142,8 +208,8 @@ adguard.tags = (function (adguard) {
 
     return {
         getFiltersMetadata: getFiltersMetadata,
-        addAndEnableFiltersByTagId: addAndEnableFiltersByTagId,
-        disableAntiBannerFiltersByTagId: disableAntiBannerFiltersByTagId,
+        addAndEnableFiltersByCategoryId: addAndEnableFiltersByCategoryId,
+        disableAntiBannerFiltersByCategoryId: disableAntiBannerFiltersByCategoryId,
         getPurposeGroupedFilters: getPurposeGroupedFilters
     };
 })(adguard);
