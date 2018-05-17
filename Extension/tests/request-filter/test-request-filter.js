@@ -384,51 +384,23 @@ QUnit.test("requestFilter.findRuleForRequest performance", function (assert) {
     }
 
     var url = "https://www.youtube.com/gaming";
+    var referrer = "http://example.org";
 
     var count = 50000;
     var startTime = new Date().getTime();
     var results = [];
     for (var k = 0; k < count; k++) {
-        requestFilter.findRuleForRequest(url, null, adguard.RequestTypes.SUBDOCUMENT);
+        requestFilter.findRuleForRequest(url, referrer, adguard.RequestTypes.SUBDOCUMENT);
     }
 
     var elapsed = new Date().getTime() - startTime;
     assert.ok(elapsed > 0);
 
-    console.log('------------------------------------START filter.findRuleForRequest PERFORMANCE-----------------------------------');
+    console.log('------------------------------------START TEST PERFORMANCE-----------------------------------');
     console.log("Total: " + elapsed + " ms");
     console.log("Average: " + elapsed / count + " ms");
-    console.log('------------------------------------END filter.findRuleForRequest PERFORMANCE-----------------------------------');
-});
-
-QUnit.test("rule.isPermited performance", function (assert) {
-    var rules = filtersFromTxt; // variable filtersFromTxt is from 'test_filter.js'
-    var requestFilter = new adguard.RequestFilter();
-    for (var i = 0; i < rules.length; i++) {
-        var rule = adguard.rules.builder.createRule(rules[i], adguard.utils.filters.USER_FILTER_ID);
-        if (rule) {
-            requestFilter.addRule(rule);
-        }
-    }
-
-    var url = 'https://www.youtube.com/gaming';
-    var rules = requestFilter.getRules();
-    var startTime = new Date().getTime();
-    var results = [];
-        for(var i = 0; i < rules.length; i++) {
-            rules[i].isPermitted(url);
-        }
-
-    var elapsed = new Date().getTime() - startTime;
-    assert.ok(elapsed > 0);
-
-    console.log('------------------------------------START rule.isPermitted PERFORMANCE-----------------------------------');
-    console.log('Quantity of rules: ' + rules.length);
-    console.log("Total: " + elapsed + " ms");
-    console.log("Average: " + elapsed / rules.length + " ms");
-    console.log('------------------------------------END rule.isPermitted PERFORMANCE-----------------------------------');
-
-    // Quantity of rules: 60181
-    // Total: 70 ms
-    // Average: 0.0011631578072813678 ms
+    console.log('------------------------------------END TEST PERFORMANCE-----------------------------------');
+    
+    // Total: 84 ms
+    // Average: 0.00168 ms
 });
