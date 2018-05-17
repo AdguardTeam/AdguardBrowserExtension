@@ -659,3 +659,27 @@ QUnit.test("BadFilter option", function (assert) {
     assert.ok(badFilterRule.badFilter);
     assert.equal(badFilterRule.badFilter,'https:*_ad_$third-party,image');
 });
+
+QUnit.test('Test wildcard domains in the url rules', function (assert) {
+
+    var ruleText = "||test.ru/^$domain=~nigma.*|google.*,third-party,match-case,popup";
+    var rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.ok(rule !== null);
+    assert.ok(rule.isMatchCase());
+    assert.ok(rule.isThirdParty());
+    assert.ok(rule.isCheckThirdParty());
+    assert.equal("google.*", rule.getPermittedDomains()[0]);
+    assert.equal("nigma.*", rule.getRestrictedDomains()[0]);
+
+    assert.ok(rule.isPermitted("google.com"));
+    assert.ok(rule.isPermitted("www.google.com"));
+    assert.ok(rule.isPermitted("www.google.de"));
+    assert.ok(rule.isPermitted("www.google.co.uk"));
+    assert.ok(rule.isPermitted("google.co.uk"));
+    
+    assert.notOk(rule.isPermitted("google.uk.eu")); // non-existent tld
+    assert.notOk(rule.isPermitted("nigma.ru"));
+    assert.notOk(rule.isPermitted("nigma.com"));
+    assert.notOk(rule.isPermitted("www.nigma.ru"));
+});

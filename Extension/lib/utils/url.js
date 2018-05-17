@@ -185,7 +185,7 @@
          * @param domainName        Domain name
          * @returns boolean true if there is suitable domain in domainNames
          */
-        isDomainOrSubDomain: function (domainNameToCheck, domainName) {
+        isDomainOrSubDomain: (function () {
             // Double endsWith check is memory optimization
             // Works in android, not sure if it makes sense here
             function extractTld(domainName) {
@@ -208,15 +208,15 @@
             function matchAsWildCard (wildcard, domainNameToCheck) {
                 var wildcardedDomainToCheck = genTldWildcard(domainNameToCheck);
                 return wildcardedDomainToCheck === wildcard || 
-                    api.strings.endsWith(wildcardedDomainToCheck, domainName) &&
-                    api.strings.endsWith(wildcardedDomainToCheck, "." + domainName);
+                    api.strings.endsWith(wildcardedDomainToCheck, wildcard) &&
+                    api.strings.endsWith(wildcardedDomainToCheck, "." + wildcard);
             }
 
             function isWildcardDomain(domainName) {
                 return api.strings.endsWith(domainName, '.*');
             }
 
-            return (function (domainNameToCheck, domainName) {
+            return function (domainNameToCheck, domainName) {
                 if (isWildcardDomain(domainName)) {
                     return matchAsWildCard(domainName, domainNameToCheck);
                 }
@@ -224,8 +224,8 @@
                 return domainName == domainNameToCheck ||
                     api.strings.endsWith(domainNameToCheck, domainName) &&
                     api.strings.endsWith(domainNameToCheck, "." + domainName);
-            })(domainNameToCheck, domainName);
-        },
+            };
+        })(),
 
         _get2NdLevelDomainName: function (url) {
 

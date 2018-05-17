@@ -372,72 +372,63 @@ QUnit.test("BadFilter multi-options", function (assert) {
 
 });
 
-QUnit.test('Test wildcards', function (assert) {
+QUnit.test("requestFilter.findRuleForRequest performance", function (assert) {
 
+    var rules = filtersFromTxt; // variable filtersFromTxt is from 'test_filter.js'
     var requestFilter = new adguard.RequestFilter();
+    for (var i = 0; i < rules.length; i++) {
+        var rule = adguard.rules.builder.createRule(rules[i], adguard.utils.filters.USER_FILTER_ID);
+        if (rule) {
+            requestFilter.addRule(rule);
+        }
+    }
 
-    var rule1 = new adguard.rules.UrlFilterRule('block1$domain=google.*');
-    var rule2 = new adguard.rules.UrlFilterRule('block2$domain=google.com');
-    var rule3 = new adguard.rules.UrlFilterRule('block3$domain=~yandex.*');
-    requestFilter.addRule(rule1);
-    requestFilter.addRule(rule2);
-    requestFilter.addRule(rule3);
+    var url = "https://www.youtube.com/gaming";
 
-    assert.ok(requestFilter.findRuleForRequest('block1', 'https://google.com', adguard.RequestTypes.IMAGE));
-    assert.ok(requestFilter.findRuleForRequest('block2', 'https://google.com', adguard.RequestTypes.IMAGE));
-    assert.ok(requestFilter.findRuleForRequest('block3', 'https://google.com', adguard.RequestTypes.IMAGE));
-    assert.ok(requestFilter.findRuleForRequest('block1', 'https://google.de', adguard.RequestTypes.IMAGE));
-    assert.ok(requestFilter.findRuleForRequest('block1', 'https://google.co.uk', adguard.RequestTypes.IMAGE));
-    assert.notOk(requestFilter.findRuleForRequest('block2', 'https://google.de', adguard.RequestTypes.IMAGE));
-    assert.notOk(requestFilter.findRuleForRequest('block3', 'https://yandex.com', adguard.RequestTypes.IMAGE));
-    assert.notOk(requestFilter.findRuleForRequest('block3', 'https://yandex.ru', adguard.RequestTypes.IMAGE));
+    var count = 50000;
+    var startTime = new Date().getTime();
+    var results = [];
+    for (var k = 0; k < count; k++) {
+        requestFilter.findRuleForRequest(url, null, adguard.RequestTypes.SUBDOCUMENT);
+    }
+
+    var elapsed = new Date().getTime() - startTime;
+    assert.ok(elapsed > 0);
+
+    console.log('------------------------------------START filter.findRuleForRequest PERFORMANCE-----------------------------------');
+    console.log("Total: " + elapsed + " ms");
+    console.log("Average: " + elapsed / count + " ms");
+    console.log('------------------------------------END filter.findRuleForRequest PERFORMANCE-----------------------------------');
 });
 
-QUnit.test("Request filter performance", function (assert) {
+QUnit.test("rule.isPermited performance", function (assert) {
+    var rules = filtersFromTxt; // variable filtersFromTxt is from 'test_filter.js'
+    var requestFilter = new adguard.RequestFilter();
+    for (var i = 0; i < rules.length; i++) {
+        var rule = adguard.rules.builder.createRule(rules[i], adguard.utils.filters.USER_FILTER_ID);
+        if (rule) {
+            requestFilter.addRule(rule);
+        }
+    }
 
-    var done = assert.async();
-
-    var readFromFile = function (path, successCallback) {
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", path, false);
-        xhr.send(null);
-        successCallback(xhr.responseText);
-    };
-
-    var onFileLoaded = function (text) {
-        assert.ok(text != null);
-
-        var requestFilter = new adguard.RequestFilter();
-        var rules = text.split("\n");
-        assert.ok(rules.length > 0);
-        for (var i = 0; i < rules.length; i++) {
-            var rule = adguard.rules.builder.createRule(rules[i], adguard.utils.filters.USER_FILTER_ID);
-            if (rule) {
-                requestFilter.addRule(rule);
-            }
+    var url = 'https://www.youtube.com/gaming';
+    var rules = requestFilter.getRules();
+    var startTime = new Date().getTime();
+    var results = [];
+        for(var i = 0; i < rules.length; i++) {
+            rules[i].isPermitted(url);
         }
 
-        var url = "https://thisistesturl.com/asdasdasd_adsajdasda_asdasdjashdkasdasdasdasd_adsajdasda_asdasdjashdkasd";
+    var elapsed = new Date().getTime() - startTime;
+    assert.ok(elapsed > 0);
 
-        var count = 50000;
-        var startTime = new Date().getTime();
-        for (var k = 0; k < count; k++) {
-            requestFilter.findRuleForRequest(url, null, adguard.RequestTypes.SUBDOCUMENT);
-        }
+    console.log('------------------------------------START rule.isPermitted PERFORMANCE-----------------------------------');
+    console.log('Quantity of rules: ' + rules.length);
+    console.log("Total: " + elapsed + " ms");
+    console.log("Average: " + elapsed / rules.length + " ms");
+    console.log('------------------------------------END rule.isPermitted PERFORMANCE-----------------------------------');
 
-        var elapsed = new Date().getTime() - startTime;
-        assert.ok(elapsed > 0);
-
-        console.log('------------------------------------START TEST PERFORMANCE-----------------------------------');
-        console.log("Total: " + elapsed + " ms");
-        console.log("Average: " + elapsed / count + " µs");
-        console.log('------------------------------------START TEST PERFORMANCE-----------------------------------');
-        
-        //Total: 0.000006 ms
-        //Average: 0.0000012 ms
-
-        done();
-    };
-
-    readFromFile('test_filter.txt', onFileLoaded);
+    // Quantity of rules: 60181
+    // Total: 70 ms
+    // Average: 0.0011631578072813678 ms
 });

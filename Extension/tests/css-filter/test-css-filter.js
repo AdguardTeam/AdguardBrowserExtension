@@ -754,3 +754,20 @@ QUnit.test("Permitted/Restricted domains Test", function (assert) {
     assert.equal(rule.getRestrictedDomains()[0], 'lenta.ru');
     assert.equal(rule.getRestrictedDomains()[1], 'google.com');
 });
+
+QUnit.test("Test wildcard domains in the css rules", function (assert) {
+    var ruleText = "google.*##body";
+    var rule = new adguard.rules.CssFilterRule(ruleText);
+    assert.ok(rule !== null);
+    assert.ok(rule.isPermitted('google.com'));
+    assert.ok(rule.isPermitted('google.de'));
+    assert.ok(rule.isPermitted('google.co.uk'));
+    assert.notOk(rule.isPermitted('google.eu.uk')); // non-existent tld
+
+    var ruleText2 = "google.*,youtube.*###ad-iframe";
+    var rule2 = new adguard.rules.CssFilterRule(ruleText2);
+    assert.ok(rule2 !== null);
+    assert.ok(rule2.isPermitted('google.com'));
+    assert.ok(rule2.isPermitted('youtube.ru'));
+    assert.ok(rule2.isPermitted('youtube.co.id'));
+});
