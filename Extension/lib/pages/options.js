@@ -282,7 +282,7 @@ var AntiBannerFilters = function (options) {
                 .append($('<img>', {src: 'images/icon-block-ads.png'}))
                 .append($('<a>', {
                     href: '#antibanner' + category.categoryId,
-                    text: category.keyword
+                    text: category.groupName
                 })))
             .append($('<div>', {class: 'opt-state'})
                 .append($('<div>', {class: 'preloader'}))
@@ -311,7 +311,7 @@ var AntiBannerFilters = function (options) {
                     src: 'images/icon-back.png',
                     class: 'back'
                 })))
-            .append(document.createTextNode(category.keyword));
+            .append(document.createTextNode(category.groupName));
 
         var tabsBar = $('<div>', {class: 'tabs-bar'})
             .append($('<a>', {href: '', class: 'tab active', text: 'Recommended', 'data-tab': 'recommended'}))
@@ -481,29 +481,19 @@ var AntiBannerFilters = function (options) {
         var filterId = filter.filterId;
         var enabled = filter.enabled;
         loadedFiltersInfo.updateEnabled(filterId, enabled);
-        // TODO: Fix
-        // for (var i = 0; i < filter.tags.length; i++) {
-        //     updateCategoryFiltersInfo(filter.tags[i]);
-        // }
+        //TODO: Fix then after deployment of new groups
+        //updateCategoryFiltersInfo(filter.groupId);
 
         getFilterCheckbox(filterId).updateCheckbox(enabled);
     };
 
     var onFilterDownloadStarted = function (filter) {
-        // TODO: Fix
-        // for (var i = 0; i < filter.tags.length; i++) {
-        //     getCategoryElement(filter.tags[i]).find('.preloader').addClass('active');
-        // }
-
+        getCategoryElement(filter.groupId).find('.preloader').addClass('active');
         getFilterElement(filter.filterId).find('.preloader').addClass('active');
     };
 
     var onFilterDownloadFinished = function (filter) {
-        // TODO: Fix
-        // for (var i = 0; i < filter.tags.length; i++) {
-        //     getCategoryElement(filter.tags[i]).find('.preloader').removeClass('active');
-        // }
-
+        getCategoryElement(filter.groupId).find('.preloader').removeClass('active');
         getFilterElement(filter.filterId).find('.preloader').removeClass('active');
         setLastUpdatedTimeText(filter.lastUpdateTime);
     };
