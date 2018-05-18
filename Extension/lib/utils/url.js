@@ -201,9 +201,9 @@
                     }
                     guess = guess.slice(dotIndex + 1, guess.length);
                     dotIndex = guess.indexOf('.');
-                    if(dotIndex === -1 && guess in RESERVED_DOMAINS) {
-                        return guess;
-                    }
+                }
+                if (guess in RESERVED_DOMAINS) {
+                    return guess;
                 }
                 return '';
             }
