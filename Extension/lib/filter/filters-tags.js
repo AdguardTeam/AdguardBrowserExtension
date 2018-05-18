@@ -23,6 +23,7 @@ adguard.tags = (function (adguard) {
     'use strict';
 
     var RECOMMENDED_TAG_ID = 10;
+
     var PURPOSE_ADS_TAG_ID = 1;
     var PURPOSE_PRIVACY_TAG_ID = 2;
     var PURPOSE_SOCIAL_TAG_ID = 3;
@@ -42,83 +43,8 @@ adguard.tags = (function (adguard) {
         });
     };
 
-    var createFilterCategory = function (tag, filters) {
-        var filtersByTag = getFiltersByTagId(tag.tagId, filters);
-
-        var recommendedFilters = filtersByTag.filter(function (f) {
-            return f.tags.indexOf(RECOMMENDED_TAG_ID) >= 0;
-        });
-        recommendedFilters.sort(function (a, b) {
-            return a.displayNumber - b.displayNumber;
-        });
-
-        var otherFilters = filtersByTag.filter(function (f) {
-            return f.tags.indexOf(RECOMMENDED_TAG_ID) < 0;
-        });
-        otherFilters.sort(function (a, b) {
-            return a.displayNumber - b.displayNumber;
-        });
-
-        return {
-            tag: tag,
-            recommendedFilters: recommendedFilters,
-            otherFilters: otherFilters
-        };
-    };
-
-    /**
-     * Constructs filters metadata for options.html page
-     */
-    var getFiltersMetadata = function () {
-
-        var tags = adguard.subscriptions.getTags();
-        var filters = getFilters();
-
-        var categories = [];
-
-        for (var i = 0; i < tags.length; i++) {
-
-            var tag = tags[i];
-            if (tag.keyword.indexOf('purpose:') < 0) {
-                continue;
-            }
-
-            categories.push(createFilterCategory(tag, filters));
-        }
-
-        categories.push(createFilterCategory({tagId: 0, keyword: "Custom Filters"}, filters));
-
-        return {
-            filters: filters,
-            categories: categories
-        };
-    };
-
-    var getRecommendedFilterIdsByTagId = function (tagId) {
-        var filters = getFilters();
-        var filtersByTagId = getFiltersByTagId(tagId, filters);
-
-        var filterIds = [];
-        for (var i = 0; i < filtersByTagId.length; i++) {
-            var f = filtersByTagId[i];
-            if (f.tags.indexOf(RECOMMENDED_TAG_ID) >= 0) {
-                filterIds.push(f.filterId);
-            }
-        }
-
-        return filterIds;
-    };
-
-    var addAndEnableFiltersByTagId = function (tagId) {
-        var idsByTagId = getRecommendedFilterIdsByTagId(tagId);
-
-        adguard.filters.addAndEnableFilters(idsByTagId);
-    };
-
-    var disableAntiBannerFiltersByTagId = function (tagId) {
-        var idsByTagId = getRecommendedFilterIdsByTagId(tagId);
-
-        adguard.filters.disableFilters(idsByTagId);
+    var getRecommendedFilters = function (filters) {
+        return getFiltersByTagId(RECOMMENDED_TAG_ID, filters);
     };
 
     var getPurposeGroupedFilters = function () {
@@ -141,10 +67,9 @@ adguard.tags = (function (adguard) {
     };
 
     return {
-        getFiltersMetadata: getFiltersMetadata,
-        addAndEnableFiltersByTagId: addAndEnableFiltersByTagId,
-        disableAntiBannerFiltersByTagId: disableAntiBannerFiltersByTagId,
-        getPurposeGroupedFilters: getPurposeGroupedFilters
+        getPurposeGroupedFilters: getPurposeGroupedFilters,
+        getFiltersByTagId: getFiltersByTagId,
+        getRecommendedFilters: getRecommendedFilters
     };
 })(adguard);
 
