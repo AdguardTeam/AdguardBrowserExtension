@@ -135,6 +135,10 @@
             return;
         }
 
+        // Collapsing is not supported for the requests which happen out of the tabs, e.g. other extensions
+        if(tabId === -1) {
+            return;
+        }
 
         // Strip the protocol and host name (for first-party requests) from the selector
         let thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrerUrl);
