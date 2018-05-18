@@ -185,13 +185,70 @@
          * @param domainName        Domain name
          * @returns boolean true if there is suitable domain in domainNames
          */
-        isDomainOrSubDomain: function (domainNameToCheck, domainName) {
-            // Double endsWith check is memory optimization
-            // Works in android, not sure if it makes sense here
-            return domainName == domainNameToCheck ||
-                api.strings.endsWith(domainNameToCheck, domainName) &&
-                api.strings.endsWith(domainNameToCheck, "." + domainName);
-        },
+        isDomainOrSubDomain: (function () {
+            /**
+             * Extract from domain name tld if exists
+             * 
+             * @param {string} domainName 
+             * @returns {string} string is empty if tld doesn't exist
+             */
+            function extractTld(domainName) {
+                var guess = domainName;
+                var dotIndex = guess.indexOf('.');
+                while (dotIndex >= 0) {
+                    if (guess in RESERVED_DOMAINS) {
+                        return guess;
+                    }
+                    guess = guess.slice(dotIndex + 1, guess.length);
+                    dotIndex = guess.indexOf('.');
+                }
+                if (guess in RESERVED_DOMAINS) {
+                    return guess;
+                }
+                return '';
+            }
+            
+            /**
+             * Generates from domain tld wildcard e.g. google.com -> google.* ; youtube.co.uk -> youtube.*
+             * 
+             * @param {string} domainName 
+             * @returns {string} string is empty if tld for provided domain name doesn't exists
+             */
+            function genTldWildcard(domainName) {
+                var tld = extractTld(domainName);
+                if (tld) {
+                    return domainName.slice(0, domainName.indexOf('.' + tld)) + '.*';
+                }
+                return '';
+            }
+            
+            function matchAsWildcard(wildcard, domainNameToCheck) {
+                var wildcardedDomainToCheck = genTldWildcard(domainNameToCheck);
+                if(wildcardedDomainToCheck) {
+                    return wildcardedDomainToCheck === wildcard || 
+                        api.strings.endsWith(wildcardedDomainToCheck, wildcard) &&
+                        api.strings.endsWith(wildcardedDomainToCheck, "." + wildcard);
+                }
+                return false;
+            }
+
+            function isWildcardDomain(domainName) {
+                return api.strings.endsWith(domainName, '.*');
+            }
+
+            return function (domainNameToCheck, domainName) {
+                // Checks if domain name from rule is tld wildcard
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/571
+                if (isWildcardDomain(domainName)) {
+                    return matchAsWildcard(domainName, domainNameToCheck);
+                }
+                // Double endsWith check is memory optimization
+                // Works in android, not sure if it makes sense here
+                return domainName == domainNameToCheck ||
+                    api.strings.endsWith(domainNameToCheck, domainName) &&
+                    api.strings.endsWith(domainNameToCheck, "." + domainName);
+            };
+        })(),
 
         _get2NdLevelDomainName: function (url) {
 
@@ -238,5 +295,3 @@
     api.url = UrlUtils;
 
 })(adguard.utils, window);
-
-
