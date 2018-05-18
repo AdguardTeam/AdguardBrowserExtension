@@ -13,7 +13,7 @@ const convertListToObject = (list) => {
     const suffixesWithoutCommentsAndSpaces = rows.filter((row) => {
         return !(row.length === 0 || row.indexOf('//') !== -1);
     });
-    const suffixesWithoutSpecialRules = suffixesBiggerThenFirstLevel.filter(suffix => {
+    const suffixesWithoutSpecialRules = suffixesWithoutCommentsAndSpaces.filter(suffix => {
         return !(suffix.indexOf('*') !== -1 || suffix.indexOf('!') !== -1);
     });
     const suffixesInPunycode = suffixesWithoutSpecialRules.map(suffix => {
