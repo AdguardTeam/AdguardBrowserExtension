@@ -136,7 +136,7 @@
         }
 
         // Collapsing is not supported for the requests which happen out of the tabs, e.g. other extensions
-        if(tabId === -1) {
+        if (tabId === -1) {
             return;
         }
 
