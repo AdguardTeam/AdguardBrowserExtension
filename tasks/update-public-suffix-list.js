@@ -13,9 +13,6 @@ const convertListToObject = (list) => {
     const suffixesWithoutCommentsAndSpaces = rows.filter((row) => {
         return !(row.length === 0 || row.indexOf('//') !== -1);
     });
-    const suffixesBiggerThenFirstLevel = suffixesWithoutCommentsAndSpaces.filter(suffix => {
-        return suffix.split('.').length > 1;
-    });
     const suffixesWithoutSpecialRules = suffixesBiggerThenFirstLevel.filter(suffix => {
         return !(suffix.indexOf('*') !== -1 || suffix.indexOf('!') !== -1);
     });
