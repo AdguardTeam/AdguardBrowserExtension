@@ -138,12 +138,6 @@ adguard.integration = (function (adguard) {
             headerInfo[keyAndValue[0]] = decodeURIComponent(keyAndValue[1]);
         }
 
-        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1016
-        if (adguard.utils.strings.contains(headerInfo.rule, '$replace')) {
-            adguard.console.warn('Cannot create rule from "{0}": {1}, cause {2}', 'HEADER RULES', headerInfo.rule, '$replace modifier');
-            return;
-        }
-
         return adguard.rules.builder.createRule(headerInfo.rule, headerInfo.filterId - 0);
     }
 
