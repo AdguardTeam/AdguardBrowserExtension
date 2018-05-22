@@ -67,7 +67,7 @@
 
             return  new api.UrlFilterRule(ruleText, filterId);
         } catch (ex) {
-            adguard.console.warn("Cannot create rule from filter {0}: {1}, cause {2}", filterId || 0, ruleText, ex);
+            adguard.console.debug("Cannot create rule from filter {0}: {1}, cause {2}", filterId || 0, ruleText, ex);
         }
 
         return null;
