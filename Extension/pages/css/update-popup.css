@@ -6,6 +6,7 @@
 }
 
 * {
+    -webkit-box-sizing: border-box;
     box-sizing: border-box;
 }
 html {
@@ -21,8 +22,15 @@ body {
 
 .update-popup {
     width: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
     flex-direction: column;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
     text-align: center;
     background-color: #fff;
@@ -69,6 +77,8 @@ body {
     outline: none;
     border-bottom: 1px dotted;
     margin-bottom: 25px;
+    -webkit-transition: 0.3s ease background-color;
+    -o-transition: 0.3s ease background-color;
     transition: 0.3s ease background-color;
 }
 
@@ -90,7 +100,10 @@ body {
     line-height: 32px;
     min-width: 235px;
     text-transform: uppercase;
+    -webkit-box-shadow: inset 0 0 0 1px rgba(151, 151, 151, 0.28);
     box-shadow: inset 0 0 0 1px rgba(151, 151, 151, 0.28);
+    -webkit-transition: 0.3s ease background-color;
+    -o-transition: 0.3s ease background-color;
     transition: 0.3s ease background-color;
 }
 
