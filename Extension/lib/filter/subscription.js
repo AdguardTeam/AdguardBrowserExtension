@@ -25,6 +25,7 @@ adguard.subscriptions = (function (adguard) {
     'use strict';
 
     var tags = [];
+    var groups = [];
     var filters = [];
     var filtersMap = {};
 
@@ -51,6 +52,15 @@ adguard.subscriptions = (function (adguard) {
     var FilterTag = function (tagId, keyword) {
         this.tagId = tagId;
         this.keyword = keyword;
+    };
+
+    /**
+     * Group metadata
+     */
+    var SubscriptionGroup = function (groupId, groupName, displayNumber) {
+        this.groupId = groupId;
+        this.groupName = groupName;
+        this.displayNumber = displayNumber;
     };
 
     /**
@@ -83,6 +93,20 @@ adguard.subscriptions = (function (adguard) {
         var keyword = tag.keyword;
 
         return new FilterTag(tagId, keyword);
+    }
+
+    /**
+     * Create group from object
+     * @param group Object
+     * @returns {SubscriptionGroup}
+     */
+    function createSubscriptionGroupFromJSON(group) {
+
+        var groupId = group.groupId - 0;
+        var defaultGroupName = group.groupName;
+        var displayNumber = group.displayNumber - 0;
+
+        return new SubscriptionGroup(groupId, defaultGroupName, displayNumber);
     }
 
     /**
@@ -223,6 +247,7 @@ adguard.subscriptions = (function (adguard) {
         adguard.backend.loadLocalFiltersMetadata(function (metadata) {
 
             tags = [];
+            groups = [];
             filters = [];
             filtersMap = {};
 
@@ -236,7 +261,15 @@ adguard.subscriptions = (function (adguard) {
                 filtersMap[filter.filterId] = filter;
             }
 
+            for (var k = 0; k < metadata.groups.length; k++) {
+                groups.push(createSubscriptionGroupFromJSON(metadata.groups[k]));
+            }
+
             filters.sort(function (f1, f2) {
+                return f1.displayNumber - f2.displayNumber;
+            });
+
+            groups.sort(function (f1, f2) {
                 return f1.displayNumber - f2.displayNumber;
             });
 
@@ -257,6 +290,7 @@ adguard.subscriptions = (function (adguard) {
 
             var tagsI18n = i18nMetadata.tags;
             var filtersI18n = i18nMetadata.filters;
+            var groupsI18n = i18nMetadata.groups;
 
             for (var i = 0; i < tags.length; i++) {
                 applyFilterTagLocalization(tags[i], tagsI18n);
@@ -264,6 +298,10 @@ adguard.subscriptions = (function (adguard) {
 
             for (var j = 0; j < filters.length; j++) {
                 applyFilterLocalization(filters[j], filtersI18n);
+            }
+
+            for (var k = 0; k < groups.length; k++) {
+                applyGroupLocalization(groups[i], groupsI18n);
             }
 
             adguard.console.info('Filters i18n metadata loaded');
@@ -307,6 +345,22 @@ adguard.subscriptions = (function (adguard) {
                 tag.name = localization.name;
                 tag.description = localization.description;
             }
+        }
+    }
+
+    /**
+     * Localize group
+     * @param group
+     * @param i18nMetadata
+     * @private
+     */
+    function applyGroupLocalization(group, i18nMetadata) {
+        var groupId = group.groupId;
+        var localizations = i18nMetadata[groupId];
+        var locale = adguard.app.getLocale();
+        if (localizations && locale in localizations) {
+            var localization = localizations[locale];
+            group.groupName = localization.name;
         }
     }
 
@@ -363,10 +417,16 @@ adguard.subscriptions = (function (adguard) {
 
     /**
      * @returns Array of Tags metadata
-     * @Deprecated
      */
     var getTags = function () {
         return tags;
+    };
+
+    /**
+     * @returns Array of Groups metadata
+     */
+    var getGroups = function () {
+        return groups;
     };
 
     /**
@@ -397,6 +457,7 @@ adguard.subscriptions = (function (adguard) {
         init: init,
         getFilterIdsForLanguage: getFilterIdsForLanguage,
         getTags: getTags,
+        getGroups: getGroups,
         getFilters: getFilters,
         getFilter: getFilter,
         createSubscriptionFilterFromJSON: createSubscriptionFilterFromJSON,
