@@ -1,8 +1,8 @@
-! Checksum: 8HQWF/vW45rEEQbLPdiAuQ
-! Title: Spanish/Portuguese filter
-! Description: AdGuard Spanish/Portuguese filter. Filter list that specifically removes ads on websites in Spanish and Portuguese languages.
-! Version: 2.0.1.28
-! TimeUpdated: 2018-05-23T15:03:38+00:00
+! Checksum: za4WSGIxzHMKkJ6jjuLZwQ
+! Title: AdGuard Spanish/Portuguese filter
+! Description: Filter list that specifically removes ads on websites in Spanish and Portuguese languages.
+! Version: 2.0.1.29
+! TimeUpdated: 2018-05-24T15:04:21+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -434,6 +434,8 @@ maisgasolina.com###main [id$="Block"][-ext-has='.adsbygoogle']
 ##.standard-ad
 ##.video_ads_overdiv
 ##[href^="http://ads.glispa.com/"]
+tvsinpagar.com#%#AG_abortInlineScript(/about:blank/, 'document.addEventListener');
+tvsinpagar.com#%#(function() { window.open_ = window.open; var w_open = window.open, regex = /iupot\.com/; window.open = function(a, b) { if (typeof a !== 'string' || !regex.test(a)) { w_open(a, b); } }; })();
 filmesonlinehd7.cc#%#Object.defineProperty(window, 'smrtSB', { get: function() { return; } });
 peliculas-mp4.com#%#document.cookie = "unlocked=1";
 cutwin.us#%#window.open = function() {};
@@ -549,6 +551,12 @@ _publicidade.
 _publicidade_
 _publicitario.
 http://adw.
+tvsinpagar.com##.pub728x90
+tvsinpagar.com##.pub300x250
+tvsinpagar.com##.gray[style="width:100%;height:98px;"]
+tvsinpagar.com##div[style="float:left;width:100%;height:90px;"]
+tvsinpagar.com##div[style="float:left;width:100%;height:100px;"]
+tvsinpagar.com##div[style="width:620px;height:250px;margin:20px auto;"]
 exabytetv.info###flyingBottomAd
 imperiodefamosas.com###fg_popup
 imperiodefamosas.com###photos > a[rel="nofollow"]

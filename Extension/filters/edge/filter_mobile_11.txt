@@ -1,8 +1,8 @@
-! Checksum: tKu187n6amecU+EXJT5v7Q
-! Title: Mobile Ads filter
+! Checksum: V848o0/5pp8eY5CEPHiqfw
+! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.1.60
-! TimeUpdated: 2018-05-23T21:02:46+00:00
+! Version: 2.0.1.62
+! TimeUpdated: 2018-05-24T14:18:34+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -1177,6 +1177,7 @@ m.news.de##.articleTeaser + div[style="height: 250px"]
 m.news.de##.aside > div[style="height: 600px;"]
 !+ NOT_OPTIMIZED
 m.news.de##.unisterAdsStart
+m.takvim.com.tr##div[ad="id_m_textlink"]
 m.benzinga.com##.benzinga-content-container > .item.columns.ad:empty
 magazinkafe.com##.mobil_advert
 m.iguides.ru##.banner_in_list
@@ -1796,6 +1797,7 @@ auth.wi-fi.ru##.c-fullscreen-banner
 yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua##body.i-bem > div.body__wrapper > div.content.i-bem > div[class] > div[class^="time"]~div
 yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua##.banner__link-frame
 yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua##.direct_type_between
+yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua##.direct_type_search
 yandex.ru,m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m.news.yandex.ru,m.news.yandex.ua##.page__advert
 m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m.news.yandex.ru,m.news.yandex.ua##.page-content > div.story+div[id]:not(.story)
 ||extmaps-api.yandex.net/promo/api/
