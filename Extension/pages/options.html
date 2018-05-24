@@ -92,6 +92,135 @@
         </div>
 
         <div id="antibanner" class="settings-content tab-pane">
+            <div class="option-popup option-popup--active">
+                <div class="option-popup__in">
+                    <div class="option-popup__cross"></div>
+                    <div class="option-popup__step">
+                        <div class="option-popup__title">
+                            New filter subscription
+                        </div>
+                        <div class="option-popup__content">
+                            <input type="text" class="option-popup__input" placeholder="Enter URL or path">
+                            <div class="option-popup__desc">
+                                Enter valid URL or file path of the filter into field above.
+                            </div>
+                            <div class="option-popup__desc">
+                                You will be subscribed to that filter.
+                            </div>
+                        </div>
+                        <div class="option-popup__btns option-popup__btns--sb">
+                            <div class="option-popup__btns-in">
+                                <button class="button button--transparent option-popup__btn">
+                                    Browse local file ...
+                                </button>
+                                <button class="button button--transparent option-popup__btn">
+                                    Cancel
+                                </button>
+                            </div>
+                            <button class="button button--green">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                    <div class="option-popup__step">
+                        <div class="option-popup__content">
+                            <div class="load option-popup__load"></div>
+                            <div class="option-popup__desc option-popup__desc--tac">
+                                Checking your filter
+                            </div>
+                        </div>
+                    </div>
+                    <div class="option-popup__step">
+                        <div class="option-popup__content">
+                            <div class="option-popup__subtitle">
+                                Check false
+                            </div>
+                            <div class="option-popup__desc option-popup__desc--false option-popup__desc--tac">
+                                Unfortunately your custom filter is not as cool as everyone else
+                            </div>
+                        </div>
+                        <div class="option-popup__btns option-popup__btns--center">
+                            <button class="button button--transparent">
+                                Try again
+                            </button>
+                        </div>
+                    </div>
+                    <div class="option-popup__step option-popup__step--active">
+                        <div class="option-popup__title">
+                            New filter subscription
+                        </div>
+                        <div class="option-popup__content">
+                            <div class="option-popup__table">
+                                <div class="option-popup__table-row">
+                                    <div class="option-popup__table-cell">
+                                        Title:
+                                    </div>
+                                    <div class="option-popup__table-cell">
+                                        Easylist
+                                    </div>
+                                </div>
+                                <div class="option-popup__table-row">
+                                    <div class="option-popup__table-cell">
+                                        Description:
+                                    </div>
+                                    <div class="option-popup__table-cell">
+                                        Last modified: 08 May 2018 14:10 UTC
+                                    </div>
+                                </div>
+                                <div class="option-popup__table-row">
+                                    <div class="option-popup__table-cell">
+                                        Version:
+                                    </div>
+                                    <div class="option-popup__table-cell">
+                                        23304442222
+                                    </div>
+                                </div>
+                                <div class="option-popup__table-row">
+                                    <div class="option-popup__table-cell">
+                                        Rules Count:
+                                    </div>
+                                    <div class="option-popup__table-cell">
+                                        69 163
+                                    </div>
+                                </div>
+                                <div class="option-popup__table-row">
+                                    <div class="option-popup__table-cell">
+                                        Homepage:
+                                    </div>
+                                    <div class="option-popup__table-cell">
+                                        <a href="#">
+                                            https://easylist.to/
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="option-popup__table-row">
+                                    <div class="option-popup__table-cell">
+                                        URL:
+                                    </div>
+                                    <div class="option-popup__table-cell">
+                                        <a href="#">
+                                            https://easylist-downloads.org/easylist.txt
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="option-popup__btns option-popup__btns--sb">
+                            <div class="option-popup__btns-in">
+                                <button class="button button--transparent option-popup__btn">
+                                    Browse local file ...
+                                </button>
+                                <button class="button button--transparent option-popup__btn">
+                                    Cancel
+                                </button>
+                            </div>
+                            <button class="button button--green">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="settings-content">
                 <div class="page-title">
                     <div class="info">
@@ -134,6 +263,15 @@
                         <!--See more-->
                     <!--</a>-->
                 <!--</div>-->
+            </div>
+            <div class="empty-filters">
+                <div class="empty-filters__logo"></div>
+                <div class="empty-filters__desc">
+                    Sorry, but you dont have any custom filters yet
+                </div>
+                <button class="button button--green empty-filters__btn">
+                    Add custom filter
+                </button>
             </div>
         </div>
 
@@ -251,10 +389,10 @@
                             </div>
                         </div>
                         <div class="account__btns">
-                            <button id="signInButton" class="btn-green account__btn">
+                            <button id="signInButton" class="button button--green account__btn">
                                 Sign in
                             </button>
-                            <button id="startSyncButton" class="btn-green account__btn">
+                            <button id="startSyncButton" class="button button--green account__btn">
                                 Start sync
                             </button>
                         </div>
@@ -273,11 +411,11 @@
                         <span id="lastSyncTimeInfo"></span>
                         <div class="account__btns">
                             <a href="https://adguard.com/login.html?utm_source=extension&aid=16593" id="manageAccountButton"
-                               class="btn-green manage-account-btn account__btn" i18n="sync_manage_account_button_text"></a>
-                            <button id="signOutButton" class="btn-transparent account__btn">
+                               class="button button--green manage-account-btn account__btn" i18n="sync_manage_account_button_text"></a>
+                            <button id="signOutButton" class="button button--transparent account__btn">
                                 Disconnect
                             </button>
-                            <button id="syncNowButton" class="btn-green account__btn">
+                            <button id="syncNowButton" class="button button--green account__btn">
                                 Sync now
                             </button>
                         </div>
@@ -314,7 +452,7 @@
                     </div>
                     <div class="settings-form__in">
                         <input id="deviceNameInput" class="settings-form__input" type="text" placeholder="Enter your device name">
-                        <input id="changeDeviceNameButton" class="btn-transparent" type="submit" value="Change device name">
+                        <input id="changeDeviceNameButton" class="button button--transparent" type="submit" value="Change device name">
                     </div>
                 </form>
             </div>
