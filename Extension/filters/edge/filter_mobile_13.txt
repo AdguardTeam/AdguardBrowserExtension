@@ -1,8 +1,8 @@
-! Checksum: o9Avhsz7NTLO5DcKbLHxIA
-! Title: Turkish filter
-! Description: AdGuard Turkish filter. Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.2.23
-! TimeUpdated: 2018-05-23T21:02:48+00:00
+! Checksum: eXq4W5HNkxJaQrC1majoHA
+! Title: AdGuard Turkish filter
+! Description: Filter list that specifically removes ads on websites in Turkish language.
+! Version: 2.0.2.24
+! TimeUpdated: 2018-05-24T14:18:36+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -378,6 +378,7 @@ kizlarsoruyor.com#%#window.canRunAds=!0;
 vizyonfilmizle.tv#$#.fancybox-overlay-fixed[-ext-has="> div"] { display: none!important; }
 vizyonfilmizle.tv#$#.fancybox-lock body[-ext-has="> div"] { overflow: visible!important; }
 vizyonfilmizle.tv#$#html[-ext-has="> body"] { overflow: visible!important; }
+gulum.net##td[Width="130"] > table[align="center"][Width="150"]:has(font > b:contains(Reklamlar))
 sozsepeti.com##.theiaStickySidebar > .bilesen:has(>.w_baslik > div[style="color:#FFF; text-decoration:none;"]:contains(Sponsorlu Bağlantılar))
 star.com.tr##.col-4 > div[class^="article"][-ext-has='div[id^="div-gpt-ad-"]']
 star.com.tr##.col-4 > div[class^="article"][-ext-has='iframe[name="BIKADV"]']
@@ -1366,6 +1367,11 @@ fullizlefilmizle.com##a[href^="tel:0"] > img
 wmporn.com###vplayer > div[style*="background"]
 !+ NOT_PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
 ||yeniasya.com.tr/sites/yeniasya/static/*-kampanya
+sozumona.net##p[style="margin: 0cm 0cm 7.5pt; line-height: 15pt;"] > span[style="font-size: 10.5pt; font-family: Arial, sans-serif; color: #ff6600;"]
+oguzelsozler.com##.reklam160
+gulum.net##td[Width="130"]:first-of-type > br:first-of-type
+sozlerguzel.com##section[class*="-sidebar"][role] > aside#custom_html-4
+sozlerguzel.com##section[class*="-sidebar"][role] > div.widget_text > aside#custom_html-3
 dizifilm.com##.td-ss-main-sidebar > .td-a-rec-id-sidebar
 eguzelsozler.com###page > #kapat
 eguzelsozler.com##.small-sidebar > .widget_text > aside#custom_html-6

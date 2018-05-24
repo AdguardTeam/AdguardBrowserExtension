@@ -1015,6 +1015,10 @@
         },
         {
             "domains": "9anime.is",
+            "script": "AG_onLoad(function() { var el=document.querySelector('#sidebar > [class=\"widget crop text-center mgid\"] > [id*=\"ScriptRoot\"]'); var ce=document.createElement('div'); if(el) { el.appendChild(ce); ce.setAttribute(\"id\", \"MarketGidComposite180508\"); } });"
+        },
+        {
+            "domains": "9anime.is",
             "script": "AG_onLoad(function() { setTimeout(function() { AG_removeElementBySelector('.container > .widget.crop.text-center, .content > .widget.crop.text-center'); }, 300); });"
         },
         {
@@ -2118,7 +2122,7 @@
             "script": "Object.defineProperties(window,{admvpu:{get:function(){},set:function(a){if(\"function\"==typeof a)throw Error();}},Fingerprint2:{get:function(){},set:function(){throw Error();}}});"
         },
         {
-            "domains": "flashx.cc,adsrt.com,extreme-down.im,flashx.bz,peliculasveo.gratis,itdmusic.site,zi-m.com,downsub.com,xrivonet.info,linkrex.net,youtubemultidownloader.com,123movies.fun,worldsrc.com,shink.me,onhax.net,dizilab.net,cpygames.com,vidtodo.me,tv-porinternet.com,drhtv.com.pl,srt.am,link-protect.me,dir50.net,ojomovies.com,yobuilder.com,estrenos10.com,urle.co,tvsportslive.stream,9xbuddy.com,pasteca.sh,onlinehdmovies.org,peliculaxd.com,vidzella.me,thepiratebay.org,listentoyoutube.com,streamplay.gdn,powvideo.net,monova.org,gamesofpc.com,gameslords.com,filesharingz.ga,file.up09.com,cogismith.com,coginator.com,simizer.com,riffhold.com,kaitect.com,vizer.tv,jkanime.net,tugaflix.com,douploads.com,suprafiles.org,leakedearly.gdn,tusfiles.net,solidfiles.com,itdmusic.com,ebook-gratuit.co,cloudyfiles.org",
+            "domains": "goalsport.se,flashx.cc,adsrt.com,extreme-down.im,flashx.bz,peliculasveo.gratis,itdmusic.site,zi-m.com,downsub.com,xrivonet.info,linkrex.net,youtubemultidownloader.com,123movies.fun,worldsrc.com,shink.me,onhax.net,dizilab.net,cpygames.com,vidtodo.me,tv-porinternet.com,drhtv.com.pl,srt.am,link-protect.me,dir50.net,ojomovies.com,yobuilder.com,estrenos10.com,urle.co,tvsportslive.stream,9xbuddy.com,pasteca.sh,onlinehdmovies.org,peliculaxd.com,vidzella.me,thepiratebay.org,listentoyoutube.com,streamplay.gdn,powvideo.net,monova.org,gamesofpc.com,gameslords.com,filesharingz.ga,file.up09.com,cogismith.com,coginator.com,simizer.com,riffhold.com,kaitect.com,vizer.tv,jkanime.net,tugaflix.com,douploads.com,suprafiles.org,leakedearly.gdn,tusfiles.net,solidfiles.com,itdmusic.com,ebook-gratuit.co,cloudyfiles.org",
             "script": "Object.defineProperties(window,{admvpu:{get:function(){},set:function(a){if(\"function\"==typeof a)throw Error();}},Fingerprint2:{get:function(){},set:function(){throw Error();}}});"
         },
         {
@@ -2202,7 +2206,7 @@
             "script": "!function(d,e){function f(g,h){return\"function\"!=typeof g||-1===g.toString().indexOf(h)}d=document.addEventListener,document.addEventListener=function(){f(arguments[1],\"['tagName']['toLowerCase']()&&document\")&&d.apply(document,arguments)},e=window.setInterval,window.setInterval=function(){return f(arguments[0],\"['overlayName'])[\")?e.apply(window,arguments):void 0},AG_defineProperty(\"onbeforeunload\",{beforeSet:function beforeSet(g){return f(g,\"location.href=options.url\")?g:null}})}();"
         },
         {
-            "domains": "filmux.org,egy.best",
+            "domains": "tvsinpagar.com,filmux.org,egy.best",
             "script": "!function(a,b){function c(i,j){return\"function\"!=typeof i||-1===i.toString().indexOf(j)}a=document.addEventListener,document.addEventListener=function(){c(arguments[1],\")]=null,!(\")&&a.apply(document,arguments)},b=window.setInterval,window.setInterval=function(){return c(arguments[0],\"popunder\")?b.apply(window,arguments):void 0},AG_defineProperty(\"onbeforeunload\",{beforeSet:function(j){return c(j,\"location.href=options.url\")?j:null}})}();"
         },
         {
@@ -4440,6 +4444,14 @@
         {
             "domains": "zonasports.me",
             "script": "var baseCreateElement = document.createElement.bind(document); document.createElement = function(name) { var el = baseCreateElement(name); if(name != 'span') { return el; } else { Object.defineProperty(el, 'innerHTML', { set: function(text) { if(/^(<a id=\"[^\"]*\"><\\/a>)*$/.test(text)) { throw new Error(); } Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML').set.call(el, text); }, get: function() { return el.innerHTML; } }); return el; }};"
+        },
+        {
+            "domains": "tvsinpagar.com",
+            "script": "AG_abortInlineScript(/about:blank/, 'document.addEventListener');"
+        },
+        {
+            "domains": "tvsinpagar.com",
+            "script": "(function() { window.open_ = window.open; var w_open = window.open, regex = /iupot\\.com/; window.open = function(a, b) { if (typeof a !== 'string' || !regex.test(a)) { w_open(a, b); } }; })();"
         },
         {
             "domains": "filmesonlinehd7.cc",
