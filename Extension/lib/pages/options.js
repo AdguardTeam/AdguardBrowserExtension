@@ -279,7 +279,7 @@ var AntiBannerFilters = function (options) {
 
         return $('<li>', {id: 'category' + category.categoryId})
             .append($('<div>', {class: 'block-type'})
-                .append($('<img>', {src: 'images/icon-block-ads.png'}))
+                .append($('<div>', {class: 'block-type__ico block-type__ico--' + category.categoryId}))
                 .append($('<a>', {
                     href: '#antibanner' + category.categoryId,
                     text: category.groupName
@@ -294,7 +294,19 @@ var AntiBannerFilters = function (options) {
         return $('<li>', {id: 'filter' + filter.filterId})
             .append($('<div>', {class: 'opt-name'})
                 .append($('<div>', {class: 'title', text: filter.name}))
-                .append($('<div>', {class: 'desc', text: filter.description})))
+                .append($('<div>', {class: 'desc', text: filter.description}))
+                .append($('<div>', {class: 'opt-name__info'})
+                    .append($('<div>', {class: 'opt-name__info-labels'})
+                        .append($('<div>', {class: 'opt-name__info-item', text: 'version 1.001'}))
+                        .append($('<div>', {class: 'opt-name__info-item', text: 'updated: 01/04/2018 20:13'}))
+                    )
+                    .append($('<div>', {class: 'opt-name__info-labels opt-name__info-labels--tags'})
+                        .append($('<div>', {class: 'opt-name__tag', 'data-tooltip': 'EasyList + Adguard English filter. Filter list that specifically removes adverts on English language websites.', text: '#ads'}))
+                        .append($('<div>', {class: 'opt-name__tag', 'data-tooltip': 'EasyList + Adguard English filter. Filter list that specifically removes adverts on English language websites.', text: '#privacy'}))
+                        .append($('<div>', {class: 'opt-name__tag', 'data-tooltip': 'EasyList + Adguard English filter. Filter list that specifically removes adverts on English language websites.', text: '#lang:ru'}))
+                    )
+                )
+            )
             .append($('<div>', {class: 'opt-state'})
                 .append($('<div>', {class: 'preloader'}))
                 .append($('<a>', {class: 'icon-home', target: '_blank', href: filter.homepage}))
