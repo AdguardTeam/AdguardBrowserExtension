@@ -1,8 +1,8 @@
-! Checksum: SNPRPdFyHQfyOH4jyI1Vqw
+! Checksum: JEzFMDgLQ3/uo9AAumbLYg
 ! Title: Filter unblocking search ads and self-promotion
-! Description: Filter that unblocks search and self-promo ads.
-! Version: 2.0.0.23
-! TimeUpdated: 2018-03-09T17:30:12+00:00
+! Description: Filter that unblocks search (Duckduckgo, Google, Bing, Yahoo) and self-promo ads. Self-promotion definition: when an ad on a website is promoting this very website or other websites/social media/etc closely related to it, such ad is considered a self-promoting one.
+! Version: 2.0.0.28
+! TimeUpdated: 2018-05-20T15:02:23+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -40,8 +40,11 @@ yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua#@$#.c
 yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua#@#.container__banner iframe
 yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua#@$#.serp-adv-item { position: absolute!important; left: -3000px!important; }
 yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua#@$#.search-direct-snippet-view { position: absolute!important; left: -3000px!important; }
+news.yandex.by,news.yandex.com,news.yandex.fr,news.yandex.kz,news.yandex.ru,news.yandex.ua#@$#.search-direct-snippet-view { position: absolute!important; left: -3000px!important; }
 realty.yandex.by,realty.yandex.kz,realty.yandex.ru,realty.yandex.ua#@#.b-guadeloupe
 rabota.yandex.by,rabota.yandex.kz,rabota.yandex.ru,rabota.yandex.ua#@#.search-results__guadeloupe
+amazon.de,amazon.com,amazon.co.uk,amazon.fr,amazon.it,amazon.es#@#.s-result-list > .s-result-item[-ext-has='h5[data-alt-pixel-url^="/gp/sponsored"]']
+amazon.fr,amazon.co.uk,amazon.de#@#.s-result-list > li[id^="result_"][style*="display: block;"]
 mediafire.com#@##upsellBox
 @@||startpage.com/adsense/search/async-ads.js$domain=startpage.com
 @@||startpage.com^$elemhide,content
@@ -77,9 +80,10 @@ atresplayer.com#@#.mod_blanco
 @@||feed.adrelayer.com/feed$domain=dxdigitals.info
 @@||image.adrelayer.com/widgets/*$domain=dxdigitals.info
 @@||image.adrelayer.com/favicon/*$domain=dxdigitals.info
-geektimes.ru,habrahabr.ru#@$#.bmenu_inner > span { position: absolute!important; left: -3000px!important; }
 @@||adwolf.ru^$domain=retrofm.ru|radio7.ru|europaplus.ru
 @@||retrofm.ru/template/Retro-2012/js/adwolf.js$domain=retrofm.ru
 consultant.ru#@#img[Width="468"][height="60"]
 @@||an.yandex.ru^$domain=pervushin.com
 @@||an.yandex.ru^$domain=baby-health.info
+mercurynews.com#@#div.info-box[id^="ConneXt_Action_Id-"]
+@@||shop.kicker.de^

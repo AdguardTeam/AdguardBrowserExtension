@@ -1,8 +1,8 @@
-! Checksum: 38ZdcPz6nR1gWKgoTNeINA
+! Checksum: MOme+lqUXm9aPCdX6vHJQg
 ! Title: Filter unblocking search ads and self-promotion
-! Description: Filter that unblocks search and self-promo ads.
-! Version: 2.0.0.23
-! TimeUpdated: 2018-03-09T17:30:12+00:00
+! Description: Filter that unblocks search (Duckduckgo, Google, Bing, Yahoo) and self-promo ads. Self-promotion definition: when an ad on a website is promoting this very website or other websites/social media/etc closely related to it, such ad is considered a self-promoting one.
+! Version: 2.0.0.28
+! TimeUpdated: 2018-05-20T15:02:23+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/whitelist.html
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -89,6 +89,8 @@ yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua#@#.co
 yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua#@$#.serp-adv-item { position: absolute!important; left: -3000px!important; }
 ! Yandex.Maps - search results
 yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua#@$#.search-direct-snippet-view { position: absolute!important; left: -3000px!important; }
+! Yandex.News
+news.yandex.by,news.yandex.com,news.yandex.fr,news.yandex.kz,news.yandex.ru,news.yandex.ua#@$#.search-direct-snippet-view { position: absolute!important; left: -3000px!important; }
 ! Yandex.Недвижимость
 ! Ads in the search results
 realty.yandex.by,realty.yandex.kz,realty.yandex.ru,realty.yandex.ua#@#.b-guadeloupe
@@ -98,6 +100,9 @@ rabota.yandex.by,rabota.yandex.kz,rabota.yandex.ru,rabota.yandex.ua#@#.search-re
 !
 ! END: Yandex
 !
+! Amazon
+amazon.de,amazon.com,amazon.co.uk,amazon.fr,amazon.it,amazon.es#@#.s-result-list > .s-result-item[-ext-has='h5[data-alt-pixel-url^="/gp/sponsored"]']
+amazon.fr,amazon.co.uk,amazon.de#@#.s-result-list > li[id^="result_"][style*="display: block;"]
 ! Mediafire premium upgrade
 mediafire.com#@##upsellBox
 ! Startpage
@@ -151,8 +156,6 @@ atresplayer.com#@#.mod_blanco
 @@||feed.adrelayer.com/feed$domain=dxdigitals.info
 @@||image.adrelayer.com/widgets/*$domain=dxdigitals.info
 @@||image.adrelayer.com/favicon/*$domain=dxdigitals.info
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/1025
-geektimes.ru,habrahabr.ru#@$#.bmenu_inner > span { position: absolute!important; left: -3000px!important; }
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1041
 ! Unblock the sliders
 @@||adwolf.ru^$domain=retrofm.ru|radio7.ru|europaplus.ru
@@ -162,3 +165,5 @@ consultant.ru#@#img[width="468"][height="60"]
 !-------------------------------------------------------------------------------!
 @@||an.yandex.ru^$domain=pervushin.com
 @@||an.yandex.ru^$domain=baby-health.info
+mercurynews.com#@#div.info-box[id^="ConneXt_Action_Id-"]
+@@||shop.kicker.de^
