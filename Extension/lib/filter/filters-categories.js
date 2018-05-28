@@ -40,6 +40,16 @@ adguard.categories = (function (adguard) {
                 });
 
                 if (tagDetails) {
+                    if (tagDetails.keyword.startsWith('reference:')) {
+                        // Hide 'reference:' tags
+                        return;
+                    }
+
+                    if (!tagDetails.keyword.startsWith('lang:')) {
+                        // Hide prefixes except of 'lang:'
+                        tagDetails.keyword = tagDetails.keyword.substring(tagDetails.keyword.indexOf(':') + 1);
+                    }
+
                     f.tagsDetails.push(tagDetails);
                 }
             });
