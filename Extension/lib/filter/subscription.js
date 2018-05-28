@@ -357,10 +357,12 @@ adguard.subscriptions = (function (adguard) {
     function applyGroupLocalization(group, i18nMetadata) {
         var groupId = group.groupId;
         var localizations = i18nMetadata[groupId];
-        var locale = adguard.app.getLocale();
-        if (localizations && locale in localizations) {
+        if (localizations) {
+            var locale = adguard.utils.i18n.normalize(localizations, adguard.app.getLocale());
             var localization = localizations[locale];
-            group.groupName = localization.name;
+            if (localization) {
+                group.groupName = localization.name;
+            }
         }
     }
 
