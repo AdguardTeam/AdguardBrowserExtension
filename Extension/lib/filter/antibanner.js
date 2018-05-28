@@ -119,6 +119,9 @@ adguard.antiBannerService = (function (adguard) {
             } else if (runInfo.isUpdate) {
                 // Updating storage schema on extension update (if needed)
                 adguard.applicationUpdateService.onUpdate(runInfo, initRequestFilter);
+                // Show updated version popup
+                adguard.listeners.notifyListeners(adguard.listeners.APPLICATION_UPDATED, runInfo);
+
             } else {
                 // Init RequestFilter object
                 initRequestFilter();
