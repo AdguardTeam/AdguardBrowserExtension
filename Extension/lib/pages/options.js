@@ -301,6 +301,11 @@ var AntiBannerFilters = function (options) {
         timeUpdated.locale(environmentOptions.Prefs.locale);
         var timeUpdatedText = timeUpdated.format("D/MM/YYYY HH:mm").toLowerCase();
 
+        var tagDetails = $('<div>', {class: 'opt-name__info-labels opt-name__info-labels--tags'});
+        filter.tagsDetails.forEach(function (tag) {
+            tagDetails.append($('<div>', {class: 'opt-name__tag', 'data-tooltip': tag.description, text: '#' + tag.keyword}));
+        });
+
         return $('<li>', {id: 'filter' + filter.filterId})
             .append($('<div>', {class: 'opt-name'})
                 .append($('<div>', {class: 'title', text: filter.name}))
@@ -310,11 +315,7 @@ var AntiBannerFilters = function (options) {
                         .append($('<div>', {class: 'opt-name__info-item', text: 'version ' + filter.version}))
                         .append($('<div>', {class: 'opt-name__info-item', text: 'updated: ' + timeUpdatedText}))
                     )
-                    .append($('<div>', {class: 'opt-name__info-labels opt-name__info-labels--tags'})
-                        .append($('<div>', {class: 'opt-name__tag', 'data-tooltip': 'EasyList + Adguard English filter. Filter list that specifically removes adverts on English language websites.', text: '#ads'}))
-                        .append($('<div>', {class: 'opt-name__tag', 'data-tooltip': 'EasyList + Adguard English filter. Filter list that specifically removes adverts on English language websites.', text: '#privacy'}))
-                        .append($('<div>', {class: 'opt-name__tag', 'data-tooltip': 'EasyList + Adguard English filter. Filter list that specifically removes adverts on English language websites.', text: '#lang:ru'}))
-                    )
+                    .append(tagDetails)
                 )
             )
             .append($('<div>', {class: 'opt-state'})
