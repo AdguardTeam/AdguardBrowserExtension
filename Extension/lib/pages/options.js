@@ -285,7 +285,7 @@ var AntiBannerFilters = function (options) {
 
         return $('<li>', {id: 'category' + category.groupId})
             .append($('<div>', {class: 'block-type'})
-                .append($('<div>', {class: 'block-type__ico block-type__ico--' + category.categoryId}))
+                .append($('<div>', {class: 'block-type__ico block-type__ico--' + category.groupId}))
                 .append($('<a>', {
                     href: '#antibanner' + category.groupId,
                     text: category.groupName
