@@ -352,6 +352,18 @@ adguard.utils = (function () {
          */
         isArray: Array.isArray || function (obj) {
             return '' + obj === '[object Array]';
+        },
+
+        /**
+         * Returns array elements of a, which is not included in b
+         *
+         * @param a
+         * @param b
+         */
+        getArraySubtraction: function (a, b) {
+            return a.filter(function (i) {
+                return b.indexOf(i) < 0;
+            });
         }
     };
 

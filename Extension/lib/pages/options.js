@@ -238,6 +238,12 @@ var AntiBannerFilters = function (options) {
 
     var groupsList = $('#groupsList');
 
+    function getFiltersByGroupId(groupId, filters) {
+        return filters.filter(function (f) {
+            return f.groupId === groupId;
+        });
+    }
+
     function countEnabledFilters(filters) {
         var count = 0;
         for (var i = 0; i < filters.length; i++) {
@@ -249,12 +255,12 @@ var AntiBannerFilters = function (options) {
         return count;
     }
 
-    function getCategoryElement(categoryId) {
-        return $('#category' + categoryId);
+    function getCategoryElement(groupId) {
+        return $('#category' + groupId);
     }
 
-    function getCategoryCheckbox(categoryId) {
-        return getCategoryElement(categoryId).find('input');
+    function getCategoryCheckbox(groupId) {
+        return getCategoryElement(groupId).find('input');
     }
 
     function getFilterElement(filterId) {
@@ -265,29 +271,29 @@ var AntiBannerFilters = function (options) {
         return getFilterElement(filterId).find('input');
     }
 
-    function updateCategoryFiltersInfo(categoryId, filters) {
-        var categoryFilters = filters.recommendedFilters.concat(filters.otherFilters);
-        var enabledFiltersCount = countEnabledFilters(categoryFilters);
+    function updateCategoryFiltersInfo(groupId) {
+        var groupFilters = getFiltersByGroupId(groupId, loadedFiltersInfo.filters);
+        var enabledFiltersCount = countEnabledFilters(groupFilters);
 
-        var element = getCategoryElement(categoryId);
-        var checkbox = getCategoryCheckbox(categoryId);
+        var element = getCategoryElement(groupId);
+        var checkbox = getCategoryCheckbox(groupId);
         element.find('.desc').text('Enabled filters: ' + enabledFiltersCount);
         checkbox.updateCheckbox(enabledFiltersCount > 0);
     }
 
     function getFilterCategoryTemplate(category) {
 
-        return $('<li>', {id: 'category' + category.categoryId})
+        return $('<li>', {id: 'category' + category.groupId})
             .append($('<div>', {class: 'block-type'})
                 .append($('<img>', {src: 'images/icon-block-ads.png'}))
                 .append($('<a>', {
-                    href: '#antibanner' + category.categoryId,
+                    href: '#antibanner' + category.groupId,
                     text: category.groupName
                 })))
             .append($('<div>', {class: 'opt-state'})
                 .append($('<div>', {class: 'preloader'}))
                 .append($('<div>', {class: 'desc'}))
-                .append($('<input>', {type: 'checkbox', name: 'categoryId', value: category.categoryId})));
+                .append($('<input>', {type: 'checkbox', name: 'groupId', value: category.groupId})));
     }
 
     function getFilterTemplate(filter, enabled) {
@@ -334,7 +340,7 @@ var AntiBannerFilters = function (options) {
             appendFilterTemplate(recommendedFilters[j], recommendedFiltersList);
         }
 
-        return $('<div>', {id: 'antibanner' + category.categoryId, class: 'settings-content tab-pane filters-list'})
+        return $('<div>', {id: 'antibanner' + category.groupId, class: 'settings-content tab-pane filters-list'})
             .append(pageTitleEl)
             .append($('<div>', {class: 'settings-body'})
                 .append(tabsBar)
@@ -345,7 +351,7 @@ var AntiBannerFilters = function (options) {
     function renderFilterCategory(category) {
         var categoryTemplate = getFilterCategoryTemplate(category);
         groupsList.append(categoryTemplate);
-        updateCategoryFiltersInfo(category.categoryId, category.filters);
+        updateCategoryFiltersInfo(category.groupId);
 
         var filtersContentTemplate = getFiltersContentTemplate(category);
 
@@ -410,13 +416,13 @@ var AntiBannerFilters = function (options) {
         }
     }
 
-    function toggleCategoryState() {
-        var categoryId = this.value - 0;
+    function toggleGroupState() {
+        var groupId = this.value - 0;
 
         if (this.checked) {
-            contentPage.sendMessage({type: 'addAndEnableFiltersByCategoryId', categoryId: categoryId});
+            contentPage.sendMessage({type: 'addAndEnableFiltersByGroupId', groupId: groupId});
         } else {
-            contentPage.sendMessage({type: 'disableAntiBannerFiltersByCategoryId', categoryId: categoryId});
+            contentPage.sendMessage({type: 'disableAntiBannerFiltersByGroupId', groupId: groupId});
         }
     }
 
@@ -481,8 +487,7 @@ var AntiBannerFilters = function (options) {
         var filterId = filter.filterId;
         var enabled = filter.enabled;
         loadedFiltersInfo.updateEnabled(filterId, enabled);
-        //TODO: Fix then after deployment of new groups
-        //updateCategoryFiltersInfo(filter.groupId);
+        updateCategoryFiltersInfo(filter.groupId);
 
         getFilterCheckbox(filterId).updateCheckbox(enabled);
     };
@@ -500,7 +505,7 @@ var AntiBannerFilters = function (options) {
 
     // Bind events
     $(document).on('change', '.filters-list [name="filterId"]', toggleFilterState);
-    $(document).on('change', '#groupsList [name="categoryId"]', toggleCategoryState);
+    $(document).on('change', '#groupsList [name="groupId"]', toggleGroupState);
     $('#updateAntiBannerFilters').on('click', updateAntiBannerFilters);
     $('#addCustomFilter').on('click', addCustomFilter);
 
