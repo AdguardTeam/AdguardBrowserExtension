@@ -297,14 +297,18 @@ var AntiBannerFilters = function (options) {
     }
 
     function getFilterTemplate(filter, enabled) {
+        var timeUpdated = moment(filter.timeUpdated);
+        timeUpdated.locale(environmentOptions.Prefs.locale);
+        var timeUpdatedText = timeUpdated.format("D/MM/YYYY HH:mm").toLowerCase();
+
         return $('<li>', {id: 'filter' + filter.filterId})
             .append($('<div>', {class: 'opt-name'})
                 .append($('<div>', {class: 'title', text: filter.name}))
                 .append($('<div>', {class: 'desc', text: filter.description}))
                 .append($('<div>', {class: 'opt-name__info'})
                     .append($('<div>', {class: 'opt-name__info-labels'})
-                        .append($('<div>', {class: 'opt-name__info-item', text: 'version 1.001'}))
-                        .append($('<div>', {class: 'opt-name__info-item', text: 'updated: 01/04/2018 20:13'}))
+                        .append($('<div>', {class: 'opt-name__info-item', text: 'version ' + filter.version}))
+                        .append($('<div>', {class: 'opt-name__info-item', text: 'updated: ' + timeUpdatedText}))
                     )
                     .append($('<div>', {class: 'opt-name__info-labels opt-name__info-labels--tags'})
                         .append($('<div>', {class: 'opt-name__tag', 'data-tooltip': 'EasyList + Adguard English filter. Filter list that specifically removes adverts on English language websites.', text: '#ads'}))
