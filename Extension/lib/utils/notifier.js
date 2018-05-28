@@ -35,6 +35,7 @@ adguard.listeners = (function () {
         UPDATE_TAB_BUTTON_STATE: "event.update.tab.button.state",
         REQUEST_FILTER_UPDATED: "event.request.filter.updated",
         APPLICATION_INITIALIZED: "event.application.initialized",
+        APPLICATION_UPDATED: "event.application.updated",
         CHANGE_PREFS: "event.change.prefs",
         UPDATE_FILTERS_SHOW_POPUP: "event.update.filters.show.popup",
         UPDATE_USER_FILTER_RULES: "event.update.user.filter.rules",

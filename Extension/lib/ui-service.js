@@ -374,6 +374,12 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         });
     }
 
+    function showVersionUpdatedPopup(currentVersion) {
+        adguard.tabs.getActive(function (tab) {
+            adguard.tabs.sendMessage(tab.tabId, {type: 'show-version-updated-popup', version: currentVersion});
+        });
+    }
+
     function getFiltersUpdateResultMessage(success, updatedFilters) {
         var title = adguard.i18n.getMessage("options_popup_update_title");
         var text = [];
@@ -729,6 +735,13 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     adguard.listeners.addListener(function (event) {
         if (event === adguard.listeners.APPLICATION_INITIALIZED) {
             adguard.tabs.getActive(updateTabIconAndContextMenu);
+        }
+    });
+
+    //on application updated event
+    adguard.listeners.addListener(function (event, info) {
+        if (event === adguard.listeners.APPLICATION_UPDATED) {
+            showVersionUpdatedPopup(info.currentVersion);
         }
     });
 

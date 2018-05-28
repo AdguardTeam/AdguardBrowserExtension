@@ -106,6 +106,54 @@
     }
 
     /**
+     * Shows version updated popup.
+     * Popup content is added right to the page content.
+     *
+     * @param message
+     */
+    function showVersionUpdatedPopup(message) {
+        var alertDivHtml =
+            `<div class="update-popup update-popup--active">
+                    <div class="update-popup__close"></div>
+                    <div class="update-popup__logo"></div>
+                    <div class="update-popup__title">
+                    AdGuard browser extension was just updated to version ${message.version}.
+                </div>
+                <div class="update-popup__desc">
+                    This version contains mostly bugfixes and minor improvements.
+                </div>
+                <a href="#" class="update-popup__link">
+                    Click here to view the full changelog.
+                </a>
+                <div class="update-popup__offer">
+                    If you are obsessed with privacy as we are, try premium AdGuard products for Windows, Mac, iOS or Android to find even more features.
+                </div>
+                <a href="#" class="update-popup__btn">
+                    TRY PREMIUM
+                </a>
+                </div>`;
+
+        var triesCount = 10;
+
+        var alertDiv = htmlToElement(alertDivHtml);
+
+        function appendPopup(count) {
+            if (count >= triesCount) {
+                return;
+            }
+            if (document.body) {
+                document.body.appendChild(alertDiv);
+            } else {
+                setTimeout(function () {
+                    appendPopup(count + 1);
+                }, 500);
+            }
+        }
+
+        appendPopup(0);
+    }
+
+    /**
      * Reload page without cache
      */
     function noCacheReload() {
@@ -123,6 +171,8 @@
     contentPage.onMessage.addListener(function (message) {
         if (message.type === 'show-alert-popup') {
             showAlertPopup(message);
+        } else if (message.type === 'show-version-updated-popup') {
+            showVersionUpdatedPopup(message);
         } else if (message.type === 'no-cache-reload') {
             noCacheReload();
         } else if (message.type === 'update-tab-url') {
