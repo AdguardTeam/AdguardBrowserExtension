@@ -238,8 +238,7 @@
                 adguard.ui.checkFiltersUpdates();
                 break;
             case 'getAntiBannerFiltersForOptionsPage':
-                var renderedFilters = adguard.filters.getFiltersForOptionsPage();
-                return { filters: renderedFilters };
+                return { filters: adguard.filters.getFiltersForOptionsPage() };
             case 'changeDefaultWhiteListMode':
                 adguard.whitelist.changeDefaultWhiteListMode(message.enabled);
                 break;

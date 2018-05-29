@@ -364,9 +364,14 @@ adguard.antiBannerService = (function (adguard) {
      */
     function createAdguardFilter(filterMetadata) {
         var filter = new AdguardFilter(filterMetadata.filterId);
+        var groupMetadata = adguard.subscriptions.getGroupMetadata(filterMetadata.groupId);
+        var displayNumber = filterMetadata.displayNumber;
+        if (groupMetadata) {
+            displayNumber += 0x0000 | (groupMetadata.displayNumber << 8)
+        }
         filter.name = filterMetadata.name || '';
         filter.description = filterMetadata.description || 0;
-        filter.displayNumber = filterMetadata.displayNumber || 0;
+        filter.displayNumber = displayNumber;
         return filter;
     }
 
