@@ -31,6 +31,10 @@ adguard.tags = (function (adguard) {
     var PURPOSE_ANNOYANCES_TAG_ID = 5;
     var PURPOSE_COOKIES_TAG_ID = 6;
 
+    var getTags = function () {
+        return adguard.subscriptions.getTags();
+    };
+
     var getFilters = function () {
         return adguard.subscriptions.getFilters().filter(function (f) {
             return f.filterId != adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID;
@@ -67,6 +71,7 @@ adguard.tags = (function (adguard) {
     };
 
     return {
+        getTags: getTags,
         getPurposeGroupedFilters: getPurposeGroupedFilters,
         getFiltersByTagId: getFiltersByTagId,
         getRecommendedFilters: getRecommendedFilters

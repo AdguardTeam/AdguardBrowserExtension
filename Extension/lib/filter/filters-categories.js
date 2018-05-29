@@ -26,9 +26,36 @@ adguard.categories = (function (adguard) {
      * @returns {Array.<*>} filters
      */
     var getFilters = function () {
-        return adguard.subscriptions.getFilters().filter(function (f) {
+        var result = adguard.subscriptions.getFilters().filter(function (f) {
             return f.filterId != adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID;
         });
+
+        var tags = adguard.tags.getTags();
+
+        result.forEach(function (f) {
+            f.tagsDetails = [];
+            f.tags.forEach(function (tagId) {
+                var tagDetails = tags.find(function (tag) {
+                    return tag.tagId === tagId;
+                });
+
+                if (tagDetails) {
+                    if (tagDetails.keyword.startsWith('reference:')) {
+                        // Hide 'reference:' tags
+                        return;
+                    }
+
+                    if (!tagDetails.keyword.startsWith('lang:')) {
+                        // Hide prefixes except of 'lang:'
+                        tagDetails.keyword = tagDetails.keyword.substring(tagDetails.keyword.indexOf(':') + 1);
+                    }
+
+                    f.tagsDetails.push(tagDetails);
+                }
+            });
+        });
+
+        return result;
     };
 
     /**
