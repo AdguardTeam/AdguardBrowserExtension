@@ -130,16 +130,6 @@
         };
     }
 
-    function processGetFiltersForOptionsPage() {
-        var filtersForOptionsPage = adguard.filters.getFiltersForOptionsPage();
-        var filters = filtersForOptionsPage.map(function (filter) {
-            var groupMetadata = adguard.subscriptions.getGroupMetadata(filter.groupId);
-            var displayNumber = 0x0000 | (groupMetadata.displayNumber << 8) + filter.displayNumber;
-            return Object.assign({}, filter, { displayNumber: displayNumber });
-        });
-        return filters;
-    }
-
     /**
      * Searches for whitelisted domains.
      *
@@ -248,7 +238,7 @@
                 adguard.ui.checkFiltersUpdates();
                 break;
             case 'getAntiBannerFiltersForOptionsPage':
-                return { filters: processGetFiltersForOptionsPage() };
+                return { filters: adguard.filters.getFiltersForOptionsPage() };
             case 'changeDefaultWhiteListMode':
                 adguard.whitelist.changeDefaultWhiteListMode(message.enabled);
                 break;
