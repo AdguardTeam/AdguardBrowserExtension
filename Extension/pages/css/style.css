@@ -1051,7 +1051,9 @@ li.active .toggler:before {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  padding-top: 20px;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  padding-top: 10px;
   font-family: gotham_proregular;
 }
 
@@ -1059,27 +1061,22 @@ li.active .toggler:before {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  font-size: 13px;
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
-  font-size: 13px;
-  flex-shrink: 0;
+  flex-shrink: 1;
   -webkit-box-flex: 0;
   -ms-flex-positive: 0;
   flex-grow: 0;
-  max-width: 60%;
 }
 
-.opt-name__info-labels--tags {
-  max-width: 40%;
-}
-
-.opt-name__info-labels:nth-child(2) {
-  margin-left: 20px;
+.opt-name__info-labels:nth-child(1) {
+  margin-right: 20px;
 }
 
 .opt-name__info-item {
   margin-right: 20px;
-  margin-bottom: 5px;
+  margin-top: 10px;
 }
 
 .opt-name__info-item:last-child {
@@ -1090,7 +1087,7 @@ li.active .toggler:before {
   position: relative;
   cursor: pointer;
   margin-right: 20px;
-  margin-bottom: 5px;
+  margin-top: 10px;
 }
 
 .opt-name__tag:last-child {
