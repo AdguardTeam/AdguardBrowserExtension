@@ -366,7 +366,7 @@ adguard.antiBannerService = (function (adguard) {
         var filter = new AdguardFilter(filterMetadata.filterId);
         var groupMetadata = adguard.subscriptions.getGroupMetadata(filterMetadata.groupId);
         var displayNumber = 0;
-        if (groupMetadata && filterMetadata) {
+        if (groupMetadata) {
             displayNumber = 0x0000 | (groupMetadata.displayNumber << 8) + filterMetadata.displayNumber;
         }
         filter.name = filterMetadata.name || '';
