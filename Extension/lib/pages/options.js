@@ -285,7 +285,7 @@ var AntiBannerFilters = function (options) {
 
         return $('<li>', {id: 'category' + category.groupId})
             .append($('<div>', {class: 'block-type'})
-                .append($('<img>', {src: 'images/icon-block-ads.png'}))
+                .append($('<div>', {class: 'block-type__ico block-type__ico--' + category.groupId}))
                 .append($('<a>', {
                     href: '#antibanner' + category.groupId,
                     text: category.groupName
@@ -297,10 +297,27 @@ var AntiBannerFilters = function (options) {
     }
 
     function getFilterTemplate(filter, enabled) {
+        var timeUpdated = moment(filter.timeUpdated);
+        timeUpdated.locale(environmentOptions.Prefs.locale);
+        var timeUpdatedText = timeUpdated.format("D/MM/YYYY HH:mm").toLowerCase();
+
+        var tagDetails = $('<div>', {class: 'opt-name__info-labels opt-name__info-labels--tags'});
+        filter.tagsDetails.forEach(function (tag) {
+            tagDetails.append($('<div>', {class: 'opt-name__tag', 'data-tooltip': tag.description, text: '#' + tag.keyword}));
+        });
+
         return $('<li>', {id: 'filter' + filter.filterId})
             .append($('<div>', {class: 'opt-name'})
                 .append($('<div>', {class: 'title', text: filter.name}))
-                .append($('<div>', {class: 'desc', text: filter.description})))
+                .append($('<div>', {class: 'desc', text: filter.description}))
+                .append($('<div>', {class: 'opt-name__info'})
+                    .append($('<div>', {class: 'opt-name__info-labels'})
+                        .append($('<div>', {class: 'opt-name__info-item', text: 'version ' + filter.version}))
+                        .append($('<div>', {class: 'opt-name__info-item', text: 'updated: ' + timeUpdatedText}))
+                    )
+                    .append(tagDetails)
+                )
+            )
             .append($('<div>', {class: 'opt-state'})
                 .append($('<div>', {class: 'preloader'}))
                 .append($('<a>', {class: 'icon-home', target: '_blank', href: filter.homepage}))
