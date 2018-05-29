@@ -130,6 +130,21 @@
         };
     }
 
+    function processGetFiltersForOptionsPage() {
+        var filtersMeta = adguard.subscriptions.getFilters();
+        var filtersForOptionsPage = adguard.filters.getFiltersForOptionsPage();
+        var filters = filtersForOptionsPage.map(function (filter) {
+            for (var i = 0; i < filtersMeta.length; i += 1) {
+                var metaFilter = filtersMeta[i];
+                if (metaFilter.filterId === filter.filterId) {
+                    return Object.assign({ groupId: metaFilter.groupId }, filter);
+                }
+            }
+            return Object.assign({}, filter);
+        });
+        return filters;
+    }
+
     /**
      * Searches for whitelisted domains.
      *
@@ -238,8 +253,7 @@
                 adguard.ui.checkFiltersUpdates();
                 break;
             case 'getAntiBannerFiltersForOptionsPage':
-                var renderedFilters = adguard.filters.getFiltersForOptionsPage();
-                return { filters: renderedFilters };
+                return { filters: processGetFiltersForOptionsPage() };
             case 'changeDefaultWhiteListMode':
                 adguard.whitelist.changeDefaultWhiteListMode(message.enabled);
                 break;
