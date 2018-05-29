@@ -828,10 +828,7 @@ PageController.prototype = {
     _renderAntiBannerFilters: function () {
         contentPage.sendMessage({type: 'getAntiBannerFiltersForOptionsPage'}, function (response) {
             var antiBannerFilters = response.filters.sort(function (previousFilter, currentFilter) {
-                if(previousFilter.groupId === currentFilter.groupId) {
-                    return previousFilter.displayNumber - currentFilter.displayNumber;
-                }
-                return previousFilter.groupId - currentFilter.groupId;
+                return previousFilter.displayNumber - currentFilter.displayNumber;
             });
             if (antiBannerFilters.length === 0) {
                 this.antiBannerFiltersList.hide();

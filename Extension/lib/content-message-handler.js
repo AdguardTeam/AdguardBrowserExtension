@@ -131,16 +131,11 @@
     }
 
     function processGetFiltersForOptionsPage() {
-        var filtersMeta = adguard.subscriptions.getFilters();
         var filtersForOptionsPage = adguard.filters.getFiltersForOptionsPage();
         var filters = filtersForOptionsPage.map(function (filter) {
-            for (var i = 0; i < filtersMeta.length; i += 1) {
-                var metaFilter = filtersMeta[i];
-                if (metaFilter.filterId === filter.filterId) {
-                    return Object.assign({ groupId: metaFilter.groupId }, filter);
-                }
-            }
-            return Object.assign({}, filter);
+            var groupMetadata = adguard.subscriptions.getGroupMetadata(filter.groupId);
+            var displayNumber = 0x0000 | (groupMetadata.displayNumber << 8) + filter.displayNumber;
+            return Object.assign({}, filter, { displayNumber: displayNumber });
         });
         return filters;
     }
