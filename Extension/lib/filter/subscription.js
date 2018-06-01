@@ -144,8 +144,9 @@ adguard.subscriptions = (function (adguard) {
         function parseTag(tagName) {
             var result = '';
 
-            //Look up only 50 first lines
-            for (var i = 0; i < 50; i++) {
+            //Look up no more than 50 first lines
+            var maxLines = Math.min(50, rules.length);
+            for (var i = 0; i < maxLines; i++) {
                 var r = rules[i];
 
                 var search = '! ' + tagName + ': ';
@@ -164,7 +165,7 @@ adguard.subscriptions = (function (adguard) {
             homepage: parseTag('Homepage'),
             version: parseTag('Version'),
             expires: parseTag('Expires')
-        }
+        };
     };
 
     var addFilterId = function () {
@@ -201,6 +202,7 @@ adguard.subscriptions = (function (adguard) {
             var languages = [];
             var displayNumber = 0;
             var tags = [0];
+            var rulesCount = rules.length;
 
             //Check if filter from this url was added before
             var filter = filters.find(function (f) {
@@ -216,8 +218,9 @@ adguard.subscriptions = (function (adguard) {
             } else {
                 filter = new SubscriptionFilter(filterId, groupId, defaultName, defaultDescription, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl, tags);
                 filter.loaded = true;
-                //custom filters have special field
+                //custom filters have special fields
                 filter.customUrl = url;
+                filter.rulesCount = rulesCount;
 
                 filters.push(filter);
                 filtersMap[filter.filterId] = filter;
@@ -301,7 +304,7 @@ adguard.subscriptions = (function (adguard) {
             }
 
             for (var k = 0; k < groups.length; k++) {
-                applyGroupLocalization(groups[i], groupsI18n);
+                applyGroupLocalization(groups[k], groupsI18n);
             }
 
             adguard.console.info('Filters i18n metadata loaded');
