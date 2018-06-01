@@ -429,9 +429,24 @@
          * method can be used in modern Chrome and FF only.
          */
         (function (adguard) {
+            
+            var scriptsCache = {
+                createKey: function (tabId, frameId) {
+                    return tabId + '-' + frameId;
+                },
 
-            const REQUEST_FILTER_READY_TIMEOUT = 100;
+                set: function (tabId, frameId, scripts) {
+                    this[this.createKey(tabId, frameId)] = scripts;
+                },
 
+                get: function (tabId, frameId) {
+                    return this[this.createKey(tabId, frameId)];
+                },
+
+                remove: function (tabId, frameId) {
+                    delete this[this.createKey(tabId, frameId)];
+                },
+            };
             /**
              * Taken from
              * {@link https://github.com/seanl-adg/InlineResourceLiteral/blob/master/index.js#L136}
@@ -458,12 +473,11 @@
             }
 
             function buildScriptText(scriptText) {
-
                 if (!scriptText) {
                     return null;
                 }
 
-                /** 
+                /**
                  * Executes scripts in a scope of the page.
                  * Sometimes in Firefox when content-filtering is applied to the page race condition happens.
                  * This causes an issue when the page doesn't have its document.head or document.documentElement at the moment of
@@ -474,6 +488,7 @@
                 let injectedScript = '(function() {\
                     var script = document.createElement("script");\
                     script.setAttribute("type", "text/javascript");\
+                    script.dataset.source = "AdGuard";\
                     script.textContent = "' + scriptText.replace(reJsEscape, escapeJs) + '";\
                     var FRAME_REQUESTS_LIMIT = 500;\
                     var frameRequests = 0;\
@@ -482,8 +497,10 @@
                         var parent = document.head || document.documentElement;\
                         if(parent) {\
                             try {\
-                                parent.appendChild(script);\
-                                parent.removeChild(script);\
+                                var adGuardScript = document.querySelector(\'script[data-source="AdGuard"]\');\
+                                if(!adGuardScript) {\
+                                    parent.appendChild(script);\
+                                }\
                             } catch (e) {\
                             } finally {\
                                 return true;\
@@ -509,42 +526,92 @@
                 if (!selectorsData || !selectorsData.css) {
                     return null;
                 }
-
-                return selectorsData.css.join("\n");
+                return selectorsData.css.join('\n');
             }
 
-            /**
-             * Injects necessary CSS and scripts into the web page.
-             * 
-             * @param {*} details Details about the navigation event: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webNavigation/onCommitted#details
-             */
-            function tryInject(details) {
-                let tabId = details.tabId;
+            const REQUEST_FILTER_READY_TIMEOUT = 100;
+            function prepareScripts(details) {
+                let tab = details.tab;
+                let tabId = tab.tabId;
                 let frameId = details.frameId;
-                let url = details.url;
+                let url = details.requestUrl;
 
                 let cssFilterOption = adguard.rules.CssFilter.RETRIEVE_TRADITIONAL_CSS;
                 const retrieveScripts = true;
                 let result = adguard.webRequestService.processGetSelectorsAndScripts({ tabId: tabId }, url, cssFilterOption, retrieveScripts);
 
                 if (result.requestFilterReady === false) {
-                    setTimeout(tryInject, REQUEST_FILTER_READY_TIMEOUT, details);
+                    setTimeout(prepareScripts, REQUEST_FILTER_READY_TIMEOUT, details);
                     return;
                 }
 
-                let scriptText = buildScriptText(result.scripts);
-                let cssText = buildCssText(result.selectors);
+                scriptsCache.set(tabId, frameId, {
+                    jsScriptText: buildScriptText(result.scripts),
+                    cssText: buildCssText(result.selectors),
+                });
+            }
 
-                if (scriptText) {
-                    adguard.tabs.executeScriptCode(tabId, frameId, scriptText);
+            /**
+             * Removes inserted script from page when onCommit event fires
+             * to clear traces
+             * @param {number} tabId
+             * @param {number} frameId
+             */
+            function removeScriptFromPage(tabId, frameId) {
+                var code = 'var script = document.querySelector(\'script[data-source="AdGuard"]\');\
+                    if(script) {\
+                        script.parentNode.removeChild(script);\
+                    }';
+                adguard.tabs.executeScriptCode(tabId, frameId, code);
+            }
+            
+            /**
+             * Injects js code in the page on responseStarted event only if event was fired from main_frame
+             * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1029
+             * @param {*} details Details about the webrequest event
+             */
+            function tryInjectOnResponseStarted(details) {
+                if (details.requestType !== adguard.RequestTypes.DOCUMENT) {
+                    return;
                 }
-
-                if (cssText) {
-                    adguard.tabs.insertCssCode(tabId, frameId, cssText);
+                var frameId = details.frameId;
+                var tab = details.tab;
+                var tabId = tab.tabId;
+                var scriptTexts = scriptsCache.get(tabId, frameId);
+                if (scriptTexts && scriptTexts.jsScriptText) {
+                    adguard.tabs.executeScriptCode(tabId, frameId, scriptTexts.jsScriptText);
                 }
             }
 
-            adguard.webNavigation.onCommitted.addListener(tryInject);
+            /**
+             * Injects necessary CSS and scripts into the web page.
+             * 
+             * @param {*} details Details about the navigation event:
+             * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webNavigation/onCommitted#details
+             */
+            function tryInjectOnCommitted(details) {
+                let tabId = details.tabId;
+                let frameId = details.frameId;
+                const scriptTexts = scriptsCache.get(tabId, frameId);
+                if (!scriptTexts) {
+                    setTimeout(tryInjectOnCommitted, REQUEST_FILTER_READY_TIMEOUT, details);
+                    return;
+                }
+                if (scriptTexts) {
+                    if (scriptTexts.jsScriptText) {
+                        adguard.tabs.executeScriptCode(tabId, frameId, scriptTexts.jsScriptText);
+                    }
+                    if (scriptTexts.cssText) {
+                        adguard.tabs.insertCssCode(tabId, frameId, scriptTexts.cssText);
+                    }
+                }
+                removeScriptFromPage(tabId, frameId);
+                scriptsCache.remove(tabId, frameId);
+            }
+
+            adguard.webNavigation.onCommitted.addListener(tryInjectOnCommitted);
+            adguard.webRequest.onBeforeRequest.addListener(prepareScripts, ['<all_urls>']);
+            adguard.webRequest.onResponseStarted.addListener(tryInjectOnResponseStarted, ['<all_urls>']);
         })(adguard);
     }
 })(adguard);
