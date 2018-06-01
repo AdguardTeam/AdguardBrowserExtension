@@ -1569,18 +1569,17 @@ adguard.filters = (function (adguard) {
     var loadCustomFilter = function (url, successCallback, errorCallback) {
         adguard.console.info('Downloading custom filter from {0}', url);
 
+        if (!url) {
+            errorCallback();
+            return;
+        }
+
         adguard.subscriptions.updateCustomFilter(url, function (filterId) {
             if (filterId) {
-                antiBannerService.addAntiBannerFilter(filterId, function (success) {
-                    if (success) {
-                        enableFilter(filterId);
+                adguard.console.info('Custom filter info downloaded');
 
-                        adguard.console.info('Custom filter downloaded and enabled');
-                        successCallback();
-                    } else {
-                        errorCallback();
-                    }
-                });
+                var filter = adguard.subscriptions.getFilter(filterId);
+                successCallback(filter);
             } else {
                 errorCallback();
             }

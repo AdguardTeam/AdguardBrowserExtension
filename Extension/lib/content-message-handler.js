@@ -185,9 +185,9 @@
             case 'checkAntiBannerFiltersUpdate':
                 adguard.ui.checkFiltersUpdates();
                 break;
-            case 'addCustomFilter':
-                adguard.ui.addCustomFilter(message.url);
-                break;
+            case 'loadCustomFilterInfo':
+                adguard.ui.loadCustomFilterInfo(message.url, callback);
+                return true;
             case 'getFiltersMetadata':
                 return adguard.categories.getFiltersMetadata();
             case 'openThankYouPage':

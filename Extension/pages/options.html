@@ -92,15 +92,15 @@
         </div>
 
         <div id="antibanner" class="settings-content tab-pane">
-            <div class="option-popup option-popup--active">
+            <div id="add-custom-filter-popup" class="option-popup">
                 <div class="option-popup__in">
-                    <div class="option-popup__cross"></div>
-                    <div class="option-popup__step">
+                    <div class="option-popup__cross custom-filter-popup-cancel"></div>
+                    <div id="add-custom-filter-step-1" class="option-popup__step">
                         <div class="option-popup__title">
                             New filter subscription
                         </div>
                         <div class="option-popup__content">
-                            <input type="text" class="option-popup__input" placeholder="Enter URL or path">
+                            <input id="custom-filter-popup-url" type="text" class="option-popup__input" placeholder="Enter URL or path">
                             <div class="option-popup__desc">
                                 Enter valid URL or file path of the filter into field above.
                             </div>
@@ -113,16 +113,16 @@
                                 <button class="button button--transparent option-popup__btn">
                                     Browse local file ...
                                 </button>
-                                <button class="button button--transparent option-popup__btn">
+                                <button class="button button--transparent option-popup__btn custom-filter-popup-cancel">
                                     Cancel
                                 </button>
                             </div>
-                            <button class="button button--green">
-                                Cancel
+                            <button class="button button--green custom-filter-popup-next">
+                                Next
                             </button>
                         </div>
                     </div>
-                    <div class="option-popup__step">
+                    <div id="add-custom-filter-step-2" class="option-popup__step">
                         <div class="option-popup__content">
                             <div class="load option-popup__load"></div>
                             <div class="option-popup__desc option-popup__desc--tac">
@@ -130,7 +130,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="option-popup__step">
+                    <div id="add-custom-filter-step-3" class="option-popup__step">
                         <div class="option-popup__content">
                             <div class="option-popup__subtitle">
                                 Check false
@@ -140,12 +140,12 @@
                             </div>
                         </div>
                         <div class="option-popup__btns option-popup__btns--center">
-                            <button class="button button--transparent">
+                            <button class="button button--transparent custom-filter-popup-try-again">
                                 Try again
                             </button>
                         </div>
                     </div>
-                    <div class="option-popup__step option-popup__step--active">
+                    <div id="add-custom-filter-step-4" class="option-popup__step">
                         <div class="option-popup__title">
                             New filter subscription
                         </div>
@@ -155,32 +155,28 @@
                                     <div class="option-popup__table-cell">
                                         Title:
                                     </div>
-                                    <div class="option-popup__table-cell">
-                                        Easylist
+                                    <div id="custom-filter-popup-added-title" class="option-popup__table-cell">
                                     </div>
                                 </div>
                                 <div class="option-popup__table-row">
                                     <div class="option-popup__table-cell">
                                         Description:
                                     </div>
-                                    <div class="option-popup__table-cell">
-                                        Last modified: 08 May 2018 14:10 UTC
+                                    <div id="custom-filter-popup-added-desc" class="option-popup__table-cell">
                                     </div>
                                 </div>
                                 <div class="option-popup__table-row">
                                     <div class="option-popup__table-cell">
                                         Version:
                                     </div>
-                                    <div class="option-popup__table-cell">
-                                        23304442222
+                                    <div id="custom-filter-popup-added-version" class="option-popup__table-cell">
                                     </div>
                                 </div>
                                 <div class="option-popup__table-row">
                                     <div class="option-popup__table-cell">
                                         Rules Count:
                                     </div>
-                                    <div class="option-popup__table-cell">
-                                        69 163
+                                    <div id="custom-filter-popup-added-rules-count" class="option-popup__table-cell">
                                     </div>
                                 </div>
                                 <div class="option-popup__table-row">
@@ -188,8 +184,7 @@
                                         Homepage:
                                     </div>
                                     <div class="option-popup__table-cell">
-                                        <a href="#">
-                                            https://easylist.to/
+                                        <a id="custom-filter-popup-added-homepage" href="#" target="_blank">
                                         </a>
                                     </div>
                                 </div>
@@ -198,8 +193,7 @@
                                         URL:
                                     </div>
                                     <div class="option-popup__table-cell">
-                                        <a href="#">
-                                            https://easylist-downloads.org/easylist.txt
+                                        <a id="custom-filter-popup-added-url" href="#" target="_blank">
                                         </a>
                                     </div>
                                 </div>
@@ -207,15 +201,15 @@
                         </div>
                         <div class="option-popup__btns option-popup__btns--sb">
                             <div class="option-popup__btns-in">
-                                <button class="button button--transparent option-popup__btn">
-                                    Browse local file ...
+                                <button id="custom-filter-popup-added-back" class="button button--transparent option-popup__btn">
+                                    Back
                                 </button>
-                                <button class="button button--transparent option-popup__btn">
+                                <button class="button button--transparent option-popup__btn custom-filter-popup-cancel">
                                     Cancel
                                 </button>
                             </div>
-                            <button class="button button--green">
-                                Cancel
+                            <button id="custom-filter-popup-added-subscribe" class="button button--green">
+                                Subscribe
                             </button>
                         </div>
                     </div>
@@ -237,7 +231,6 @@
                 </div>
                 <div class="settings-actions">
                     <a href="#" id="addCustomFilter" i18n="options_add_custom_filter"></a>
-                    <input type="text" id="customFilterUrl"/>
                 </div>
             </div>
             <div class="filters-check">
@@ -263,15 +256,6 @@
                         <!--See more-->
                     <!--</a>-->
                 <!--</div>-->
-            </div>
-            <div class="empty-filters">
-                <div class="empty-filters__logo"></div>
-                <div class="empty-filters__desc">
-                    Sorry, but you dont have any custom filters yet
-                </div>
-                <button class="button button--green empty-filters__btn">
-                    Add custom filter
-                </button>
             </div>
         </div>
 

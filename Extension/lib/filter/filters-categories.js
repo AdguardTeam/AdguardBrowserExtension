@@ -94,7 +94,12 @@ adguard.categories = (function (adguard) {
             categories.push(category);
         }
 
-        //TODO: Add custom filters group
+        categories.push({
+            groupId: 0,
+            groupName: 'Custom',
+            displayNumber: 99,
+            filters: selectFiltersByGroupId(0, filters)
+        });
 
         return {
             filters: getFilters(),
