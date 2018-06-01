@@ -239,6 +239,17 @@ var browser = window.browser || chrome;
         }
     };
 
+    var onResponseStarted = {
+        addListener: function (callback, urls) {
+            browser.webRequest.onResponseStarted.addListener(function (details) {
+                if (shouldSkipRequest(details)) {
+                    return;
+                }
+                var requestDetails = getRequestDetails(details);
+                return callback(requestDetails);
+            }, urls ? { urls: urls } : {}, ['responseHeaders']);
+        },
+    };
     /**
      * Gets URL of a file that belongs to our extension
      */
@@ -290,8 +301,9 @@ var browser = window.browser || chrome;
         onErrorOccurred: browser.webRequest.onErrorOccurred,
         onHeadersReceived: onHeadersReceived,
         onBeforeSendHeaders: onBeforeSendHeaders,
+        onResponseStarted: onResponseStarted,
         webSocketSupported: typeof browser.webRequest.ResourceType !== 'undefined' && browser.webRequest.ResourceType['WEBSOCKET'] === 'websocket',
-        filterResponseData: browser.webRequest.filterResponseData
+        filterResponseData: browser.webRequest.filterResponseData,
     };
 
     var onCreatedNavigationTarget = {
