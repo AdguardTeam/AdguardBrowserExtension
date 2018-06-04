@@ -348,6 +348,9 @@ var AntiBannerFilters = function (options) {
                         .append($('<button>', {class:'button button--green empty-filters__btn', text: 'Add custom filter'}))));
         }
 
+        var recommendedFiltersList = $('<ul>', {class: 'opts-list', 'data-tab': 'recommended'});
+        var filtersList = $('<ul>', {class: 'opts-list', 'data-tab': 'other', style: 'display:none;'});
+
         var tabsBar = $('<div>', {class: 'tabs-bar'})
             .append($('<a>', {href: '', class: 'tab active', text: 'Recommended', 'data-tab': 'recommended'}))
             .append($('<a>', {href: '', class: 'tab', text: 'Other', 'data-tab': 'other'}));
@@ -355,11 +358,10 @@ var AntiBannerFilters = function (options) {
         if (category.groupId === 0) {
             tabsBar = $('<div>', {class: 'tabs-bar'})
                 .append($('<a>', {href: '', class: 'tab active', text: 'Other', 'data-tab': 'other'}));
-            //TODO: Toggle show active tab
-        }
 
-        var recommendedFiltersList = $('<ul>', {class: 'opts-list', 'data-tab': 'recommended'});
-        var filtersList = $('<ul>', {class: 'opts-list', 'data-tab': 'other', style: 'display:none;'});
+            recommendedFiltersList.hide();
+            filtersList.show();
+        }
 
         function appendFilterTemplate(filter, list) {
             var enabled = loadedFiltersInfo.isEnabled(filter.filterId);
@@ -503,22 +505,6 @@ var AntiBannerFilters = function (options) {
             $('#add-custom-filter-step-1').addClass('option-popup__step--active');
 
             $('#custom-filter-popup-url').focus();
-
-            //TODO: Bind browse local
-            $('.custom-filter-popup-next').on('click', function (e) {
-                e.preventDefault();
-
-                var url = $('#custom-filter-popup-url').val();
-                contentPage.sendMessage({type: 'loadCustomFilterInfo', url: url}, function (filter) {
-                    if (filter) {
-                        renderStepFour(filter);
-                    } else {
-                        renderStepThree();
-                    }
-                });
-
-                renderStepTwo();
-            });
         }
 
         function renderStepTwo() {
@@ -529,8 +515,6 @@ var AntiBannerFilters = function (options) {
         function renderStepThree() {
             $('.option-popup__step').removeClass('option-popup__step--active');
             $('#add-custom-filter-step-3').addClass('option-popup__step--active');
-
-            $('.custom-filter-popup-try-again').on('click', renderStepOne);
         }
 
         function renderStepFour(filter) {
@@ -545,6 +529,7 @@ var AntiBannerFilters = function (options) {
             $('#custom-filter-popup-added-url').text(filter.customUrl).attr("href", filter.customUrl);
 
             $('#custom-filter-popup-added-back').on('click', renderStepOne);
+            $('#custom-filter-popup-added-subscribe').off('click');
             $('#custom-filter-popup-added-subscribe').on('click', function (e) {
                 e.preventDefault();
 
@@ -559,6 +544,31 @@ var AntiBannerFilters = function (options) {
         $('#add-custom-filter-popup').addClass('option-popup--active');
         $('.option-popup__cross').on('click', closePopup);
         $('.custom-filter-popup-cancel').on('click', closePopup);
+
+        $(".custom-filter-popup-upload-file").off('click');
+        $(".custom-filter-popup-upload-file").on('click', function (e) {
+            e.preventDefault();
+
+            // TODO: Select local file path
+            $('#custom-filter-popup-upload-file-input').trigger('click');
+        });
+
+        $('.custom-filter-popup-next').on('click', function (e) {
+            e.preventDefault();
+
+            var url = $('#custom-filter-popup-url').val();
+            contentPage.sendMessage({type: 'loadCustomFilterInfo', url: url}, function (filter) {
+                if (filter) {
+                    renderStepFour(filter);
+                } else {
+                    renderStepThree();
+                }
+            });
+
+            renderStepTwo();
+        });
+
+        $('.custom-filter-popup-try-again').on('click', renderStepOne);
 
         renderStepOne();
     }
