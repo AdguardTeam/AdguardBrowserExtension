@@ -470,20 +470,7 @@
                 }
             }
 
-            /**
-             * returns random identificator
-             * @param {Number} length of result
-             */
-            function generateRandomIdentificator(length) {
-                var charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-                var result = '';
-                for (var i = 0; i < length; i += 1) {
-                    result += charset.charAt(Math.floor(Math.random() * charset.length));
-                }
-                return result;
-            }
-
-            var randomIdentificator = generateRandomIdentificator(10);
+            var randomIdentificator = adguard.utils.strings.generateRandomIdentificator(10);
 
             function buildScriptText(scriptText) {
                 if (!scriptText) {

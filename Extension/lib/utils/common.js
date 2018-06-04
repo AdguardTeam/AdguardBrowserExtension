@@ -211,7 +211,19 @@ adguard.utils = (function () {
             }
 
             return parts;
-        }
+        },
+        /**
+         * returns random identificator
+         * @param {Number} length
+         */
+        generateRandomIdentificator: function (length) {
+            var charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            var result = '';
+            for (var i = 0; i < length; i += 1) {
+                result += charset.charAt(Math.floor(Math.random() * charset.length));
+            }
+            return result;
+        },
     };
 
     api.strings = StringUtils;
