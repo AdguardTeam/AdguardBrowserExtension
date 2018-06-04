@@ -423,14 +423,12 @@
 
         /**
          * Applying CSS/JS rules from the background page.
-         * 
-         * When the frame is commited (webNavigation.onCommitted), we use browser.tabs.insertCSS 
-         * and browser.tabs.executeScript functions to inject our CSS/JS rules. This
-         * method can be used in modern Chrome and FF only.
+         * This function realize algorithm, suggested here https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1029
+         * We use browser.tabs.insertCSS and browser.tabs.executeScript functions to inject our CSS/JS rules.
+         * This method can be used in modern Chrome and FF only.
          */
         (function (adguard) {
-            
-            var scriptsCache = {
+            var cssAndJsCache = {
                 createKey: function (tabId, frameId) {
                     return tabId + '-' + frameId;
                 },
@@ -472,6 +470,21 @@
                 }
             }
 
+            /**
+             * returns random identificator
+             * @param {Number} length of result
+             */
+            function generateRandomIdentificator(length) {
+                var charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                var result = '';
+                for (var i = 0; i < length; i += 1) {
+                    result += charset.charAt(Math.floor(Math.random() * charset.length));
+                }
+                return result;
+            }
+
+            var randomIdentificator = generateRandomIdentificator(10);
+
             function buildScriptText(scriptText) {
                 if (!scriptText) {
                     return null;
@@ -488,7 +501,7 @@
                 let injectedScript = '(function() {\
                     var script = document.createElement("script");\
                     script.setAttribute("type", "text/javascript");\
-                    script.dataset.source = "AdGuard";\
+                    script.dataset.source = "' + randomIdentificator + '";\
                     script.textContent = "' + scriptText.replace(reJsEscape, escapeJs) + '";\
                     var FRAME_REQUESTS_LIMIT = 500;\
                     var frameRequests = 0;\
@@ -497,8 +510,8 @@
                         var parent = document.head || document.documentElement;\
                         if(parent) {\
                             try {\
-                                var adGuardScript = document.querySelector(\'script[data-source="AdGuard"]\');\
-                                if(!adGuardScript) {\
+                                var adguardScript = document.querySelector(\'script[data-source="' + randomIdentificator + '"]\');\
+                                if(!adguardScript) {\
                                     parent.appendChild(script);\
                                 }\
                             } catch (e) {\
@@ -545,7 +558,7 @@
                     return;
                 }
 
-                scriptsCache.set(tabId, frameId, {
+                cssAndJsCache.set(tabId, frameId, {
                     jsScriptText: buildScriptText(result.scripts),
                     cssText: buildCssText(result.selectors),
                 });
@@ -558,13 +571,13 @@
              * @param {number} frameId
              */
             function removeScriptFromPage(tabId, frameId) {
-                var code = 'var script = document.querySelector(\'script[data-source="AdGuard"]\');\
+                var code = 'var script = document.querySelector(\'script[data-source="' + randomIdentificator + '"]\');\
                     if(script) {\
                         script.parentNode.removeChild(script);\
                     }';
                 adguard.tabs.executeScriptCode(tabId, frameId, code);
             }
-            
+
             /**
              * Injects js code in the page on responseStarted event only if event was fired from main_frame
              * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1029
@@ -577,7 +590,7 @@
                 var frameId = details.frameId;
                 var tab = details.tab;
                 var tabId = tab.tabId;
-                var scriptTexts = scriptsCache.get(tabId, frameId);
+                var scriptTexts = cssAndJsCache.get(tabId, frameId);
                 if (scriptTexts && scriptTexts.jsScriptText) {
                     adguard.tabs.executeScriptCode(tabId, frameId, scriptTexts.jsScriptText);
                 }
@@ -585,28 +598,26 @@
 
             /**
              * Injects necessary CSS and scripts into the web page.
-             * 
+             *
              * @param {*} details Details about the navigation event:
              * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webNavigation/onCommitted#details
              */
             function tryInjectOnCommitted(details) {
                 let tabId = details.tabId;
                 let frameId = details.frameId;
-                const scriptTexts = scriptsCache.get(tabId, frameId);
+                const scriptTexts = cssAndJsCache.get(tabId, frameId);
                 if (!scriptTexts) {
                     setTimeout(tryInjectOnCommitted, REQUEST_FILTER_READY_TIMEOUT, details);
                     return;
                 }
-                if (scriptTexts) {
-                    if (scriptTexts.jsScriptText) {
-                        adguard.tabs.executeScriptCode(tabId, frameId, scriptTexts.jsScriptText);
-                    }
-                    if (scriptTexts.cssText) {
-                        adguard.tabs.insertCssCode(tabId, frameId, scriptTexts.cssText);
-                    }
+                if (scriptTexts.jsScriptText) {
+                    adguard.tabs.executeScriptCode(tabId, frameId, scriptTexts.jsScriptText);
+                }
+                if (scriptTexts.cssText) {
+                    adguard.tabs.insertCssCode(tabId, frameId, scriptTexts.cssText);
                 }
                 removeScriptFromPage(tabId, frameId);
-                scriptsCache.remove(tabId, frameId);
+                cssAndJsCache.remove(tabId, frameId);
             }
 
             adguard.webNavigation.onCommitted.addListener(tryInjectOnCommitted);
