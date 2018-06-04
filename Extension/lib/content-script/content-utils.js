@@ -113,9 +113,9 @@
      */
     function showVersionUpdatedPopup(message) {
         var alertDivHtml =
-            `<div class="update-popup update-popup--active">
+            `<div id="adguard-new-version-popup" class="update-popup update-popup--active">
                 <div class="update-popup__in">
-                    <div class="update-popup__close"></div>
+                    <div id="adguard-new-version-popup-close" class="update-popup__close"></div>
                     <div class="update-popup__logo"></div>
                     <div class="update-popup__title">
                         AdGuard browser extension was just updated to version ${message.version}.
@@ -145,6 +145,11 @@
             }
             if (document.body) {
                 document.body.appendChild(alertDiv);
+
+                var close = document.getElementById('adguard-new-version-popup-close');
+                close.addEventListener('click', function () {
+                    document.body.removeChild(alertDiv);
+                });
             } else {
                 setTimeout(function () {
                     appendPopup(count + 1);
