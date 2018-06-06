@@ -228,10 +228,13 @@ var AntiBannerFilters = function (options) {
             var info = this.filtersById[filterId];
             return info && info.enabled;
         },
-        updateEnabled: function (filterId, enabled) {
-            var info = this.filtersById[filterId];
+        updateEnabled: function (filter, enabled) {
+            var info = this.filtersById[filter.filterId];
             if (info) {
                 info.enabled = enabled;
+            } else {
+                this.filters.push(filter);
+                this.filtersById[filter.filterId] = filter;
             }
         }
     };
@@ -386,6 +389,9 @@ var AntiBannerFilters = function (options) {
     }
 
     function renderFilterCategory(category) {
+        $('#antibanner' + category.groupId).remove();
+        $('#category' + category.groupId).remove();
+
         var categoryTemplate = getFilterCategoryTemplate(category);
         groupsList.append(categoryTemplate);
         updateCategoryFiltersInfo(category.groupId);
@@ -530,28 +536,24 @@ var AntiBannerFilters = function (options) {
 
             $('#custom-filter-popup-added-back').on('click', renderStepOne);
             $('#custom-filter-popup-added-subscribe').off('click');
-            $('#custom-filter-popup-added-subscribe').on('click', function (e) {
-                e.preventDefault();
-
+            $('#custom-filter-popup-added-subscribe').on('click', function () {
                 contentPage.sendMessage({type: 'addAndEnableFilter', filterId: filter.filterId});
-
                 closePopup();
             });
 
-            //TODO: Cancel button should remove loaded filter info
+            $('#custom-filter-popup-remove').on('click', function () {
+                contentPage.sendMessage({
+                    type: 'disableAntiBannerFilter',
+                    filterId: filter.filterId,
+                    remove: true
+                });
+                closePopup();
+            });
         }
 
         $('#add-custom-filter-popup').addClass('option-popup--active');
         $('.option-popup__cross').on('click', closePopup);
         $('.custom-filter-popup-cancel').on('click', closePopup);
-
-        $(".custom-filter-popup-upload-file").off('click');
-        $(".custom-filter-popup-upload-file").on('click', function (e) {
-            e.preventDefault();
-
-            // TODO: Select local file path
-            $('#custom-filter-popup-upload-file-input').trigger('click');
-        });
 
         $('.custom-filter-popup-next').on('click', function (e) {
             e.preventDefault();
@@ -603,7 +605,7 @@ var AntiBannerFilters = function (options) {
     var onFilterStateChanged = function (filter) {
         var filterId = filter.filterId;
         var enabled = filter.enabled;
-        loadedFiltersInfo.updateEnabled(filterId, enabled);
+        loadedFiltersInfo.updateEnabled(filter, enabled);
         updateCategoryFiltersInfo(filter.groupId);
 
         getFilterCheckbox(filterId).updateCheckbox(enabled);
@@ -1181,7 +1183,7 @@ var initPage = function (response) {
                     controller.antiBannerFilters.onFilterStateChanged(options);
                     break;
                 case EventNotifierTypes.FILTER_ADD_REMOVE:
-                    controller.antiBannerFilters.onFilterStateChanged(options);
+                    controller.antiBannerFilters.render();
                     break;
                 case EventNotifierTypes.START_DOWNLOAD_FILTER:
                     controller.antiBannerFilters.onFilterDownloadStarted(options);
