@@ -23,6 +23,13 @@ adguard.categories = (function (adguard) {
     'use strict';
 
     /**
+     * Custom filters group identifier
+     *
+     * @type {number}
+     */
+    var CUSTOM_FILTERS_GROUP_ID = 0;
+
+    /**
      * @returns {Array.<*>} filters
      */
     var getFilters = function () {
@@ -95,10 +102,10 @@ adguard.categories = (function (adguard) {
         }
 
         categories.push({
-            groupId: 0,
+            groupId: CUSTOM_FILTERS_GROUP_ID,
             groupName: 'Custom',
             displayNumber: 99,
-            filters: selectFiltersByGroupId(0, filters)
+            filters: selectFiltersByGroupId(CUSTOM_FILTERS_GROUP_ID, filters)
         });
 
         return {
