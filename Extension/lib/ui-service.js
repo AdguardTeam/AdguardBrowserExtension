@@ -415,20 +415,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         };
     }
 
-    function getCustomFilterDownloadResultMessage(success) {
-        var title = success
-            ? adguard.i18n.getMessage("alert_popup_custom_filter_added_title")
-            : adguard.i18n.getMessage("alert_popup_custom_filter_error_title");
-        var text = success
-            ? adguard.i18n.getMessage("alert_popup_custom_filter_added_text")
-            : adguard.i18n.getMessage("alert_popup_custom_filter_error_text");
-
-        return {
-            title: title,
-            text: text
-        };
-    }
-
     var updateTabIconAndContextMenu = function (tab, reloadFrameData) {
         if (reloadFrameData) {
             adguard.frames.reloadFrameData(tab);
@@ -579,11 +565,17 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         });
     };
 
-    var addCustomFilter = function (url) {
-        adguard.filters.loadCustomFilter(url, function () {
-            adguard.listeners.notifyListeners(adguard.listeners.ADDED_CUSTOM_FILTER_SHOW_POPUP);
+    /**
+     * Loads information about custom filter from url
+     *
+     * @param url
+     * @param callback
+     */
+    var loadCustomFilterInfo = function (url, callback) {
+        adguard.filters.loadCustomFilter(url, function (filter) {
+            callback(filter);
         }, function () {
-            adguard.listeners.notifyListeners(adguard.listeners.ERROR_DOWNLOAD_CUSTOM_FILTER_SHOW_POPUP);
+            callback();
         });
     };
 
@@ -748,16 +740,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         }
     });
 
-    //custom filters events
-    adguard.listeners.addListener(function (event) {
-        if (event === adguard.listeners.ADDED_CUSTOM_FILTER_SHOW_POPUP ||
-            event === adguard.listeners.ERROR_DOWNLOAD_CUSTOM_FILTER_SHOW_POPUP) {
-
-            var result = getCustomFilterDownloadResultMessage(event === adguard.listeners.ADDED_CUSTOM_FILTER_SHOW_POPUP);
-            showAlertMessagePopup(result.title, result.text);
-        }
-    });
-
     //close all page on unload
     adguard.unload.when(closeAllPages);
 
@@ -778,7 +760,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
         changeApplicationFilteringDisabled: changeApplicationFilteringDisabled,
         checkFiltersUpdates: checkFiltersUpdates,
-        addCustomFilter: addCustomFilter,
+        loadCustomFilterInfo: loadCustomFilterInfo,
         openAssistant: openAssistant,
         openTab: openTab,
 

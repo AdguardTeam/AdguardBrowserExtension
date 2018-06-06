@@ -228,10 +228,13 @@ var AntiBannerFilters = function (options) {
             var info = this.filtersById[filterId];
             return info && info.enabled;
         },
-        updateEnabled: function (filterId, enabled) {
-            var info = this.filtersById[filterId];
+        updateEnabled: function (filter, enabled) {
+            var info = this.filtersById[filter.filterId];
             if (info) {
                 info.enabled = enabled;
+            } else {
+                this.filters.push(filter);
+                this.filtersById[filter.filterId] = filter;
             }
         }
     };
@@ -282,7 +285,6 @@ var AntiBannerFilters = function (options) {
     }
 
     function getFilterCategoryTemplate(category) {
-
         return $('<li>', {id: 'category' + category.groupId})
             .append($('<div>', {class: 'block-type'})
                 .append($('<div>', {class: 'block-type__ico block-type__ico--' + category.groupId}))
@@ -336,12 +338,33 @@ var AntiBannerFilters = function (options) {
                 })))
             .append(document.createTextNode(category.groupName));
 
+        if (category.groupId === 0 &&
+            category.filters.recommendedFilters.length === 0 &&
+            category.filters.otherFilters.length === 0) {
+
+            return $('<div>', {id: 'antibanner' + category.groupId, class: 'settings-content tab-pane filters-list'})
+                .append(pageTitleEl)
+                .append($('<div>', {class: 'settings-body'})
+                    .append($('<div>', {class:'empty-filters'})
+                        .append($('<div>', {class:'empty-filters__logo'}))
+                        .append($('<div>', {class:'empty-filters__desc', text: "Sorry, but you don't have any custom filters yet"}))
+                        .append($('<button>', {class:'button button--green empty-filters__btn', text: 'Add custom filter'}))));
+        }
+
+        var recommendedFiltersList = $('<ul>', {class: 'opts-list', 'data-tab': 'recommended'});
+        var filtersList = $('<ul>', {class: 'opts-list', 'data-tab': 'other', style: 'display:none;'});
+
         var tabsBar = $('<div>', {class: 'tabs-bar'})
             .append($('<a>', {href: '', class: 'tab active', text: 'Recommended', 'data-tab': 'recommended'}))
             .append($('<a>', {href: '', class: 'tab', text: 'Other', 'data-tab': 'other'}));
 
-        var recommendedFiltersList = $('<ul>', {class: 'opts-list', 'data-tab': 'recommended'});
-        var filtersList = $('<ul>', {class: 'opts-list', 'data-tab': 'other', style: 'display:none;'});
+        if (category.groupId === 0) {
+            tabsBar = $('<div>', {class: 'tabs-bar'})
+                .append($('<a>', {href: '', class: 'tab active', text: 'Other', 'data-tab': 'other'}));
+
+            recommendedFiltersList.hide();
+            filtersList.show();
+        }
 
         function appendFilterTemplate(filter, list) {
             var enabled = loadedFiltersInfo.isEnabled(filter.filterId);
@@ -366,6 +389,9 @@ var AntiBannerFilters = function (options) {
     }
 
     function renderFilterCategory(category) {
+        $('#antibanner' + category.groupId).remove();
+        $('#category' + category.groupId).remove();
+
         var categoryTemplate = getFilterCategoryTemplate(category);
         groupsList.append(categoryTemplate);
         updateCategoryFiltersInfo(category.groupId);
@@ -373,6 +399,8 @@ var AntiBannerFilters = function (options) {
         var filtersContentTemplate = getFiltersContentTemplate(category);
 
         $('#antibanner').parent().append(filtersContentTemplate);
+
+        $('.empty-filters__btn, #addCustomFilter').on('click', addCustomFilter);
     }
 
     function renderCategoriesAndFilters() {
@@ -468,9 +496,83 @@ var AntiBannerFilters = function (options) {
     function addCustomFilter(e) {
         e.preventDefault();
 
-        var url = $('#customFilterUrl').val();
-        contentPage.sendMessage({type: 'addCustomFilter', url: url}, function () {
+        document.location.hash = 'antibanner';
+
+        renderCustomFilterPopup();
+    }
+
+    function renderCustomFilterPopup() {
+        function closePopup() {
+            $('#add-custom-filter-popup').removeClass('option-popup--active');
+        }
+
+        function renderStepOne() {
+            $('.option-popup__step').removeClass('option-popup__step--active');
+            $('#add-custom-filter-step-1').addClass('option-popup__step--active');
+
+            $('#custom-filter-popup-url').focus();
+        }
+
+        function renderStepTwo() {
+            $('.option-popup__step').removeClass('option-popup__step--active');
+            $('#add-custom-filter-step-2').addClass('option-popup__step--active');
+        }
+
+        function renderStepThree() {
+            $('.option-popup__step').removeClass('option-popup__step--active');
+            $('#add-custom-filter-step-3').addClass('option-popup__step--active');
+        }
+
+        function renderStepFour(filter) {
+            $('.option-popup__step').removeClass('option-popup__step--active');
+            $('#add-custom-filter-step-4').addClass('option-popup__step--active');
+
+            $('#custom-filter-popup-added-title').text(filter.name);
+            $('#custom-filter-popup-added-desc').text(filter.description);
+            $('#custom-filter-popup-added-version').text(filter.version);
+            $('#custom-filter-popup-added-rules-count').text(filter.rulesCount);
+            $('#custom-filter-popup-added-homepage').text(filter.homepage).attr("href", filter.homepage);
+            $('#custom-filter-popup-added-url').text(filter.customUrl).attr("href", filter.customUrl);
+
+            $('#custom-filter-popup-added-back').on('click', renderStepOne);
+            $('#custom-filter-popup-added-subscribe').off('click');
+            $('#custom-filter-popup-added-subscribe').on('click', function () {
+                contentPage.sendMessage({type: 'addAndEnableFilter', filterId: filter.filterId});
+                closePopup();
+            });
+
+            $('#custom-filter-popup-remove').on('click', function () {
+                contentPage.sendMessage({
+                    type: 'disableAntiBannerFilter',
+                    filterId: filter.filterId,
+                    remove: true
+                });
+                closePopup();
+            });
+        }
+
+        $('#add-custom-filter-popup').addClass('option-popup--active');
+        $('.option-popup__cross').on('click', closePopup);
+        $('.custom-filter-popup-cancel').on('click', closePopup);
+
+        $('.custom-filter-popup-next').on('click', function (e) {
+            e.preventDefault();
+
+            var url = $('#custom-filter-popup-url').val();
+            contentPage.sendMessage({type: 'loadCustomFilterInfo', url: url}, function (filter) {
+                if (filter) {
+                    renderStepFour(filter);
+                } else {
+                    renderStepThree();
+                }
+            });
+
+            renderStepTwo();
         });
+
+        $('.custom-filter-popup-try-again').on('click', renderStepOne);
+
+        renderStepOne();
     }
 
     function setLastUpdatedTimeText(lastUpdateTime) {
@@ -503,7 +605,7 @@ var AntiBannerFilters = function (options) {
     var onFilterStateChanged = function (filter) {
         var filterId = filter.filterId;
         var enabled = filter.enabled;
-        loadedFiltersInfo.updateEnabled(filterId, enabled);
+        loadedFiltersInfo.updateEnabled(filter, enabled);
         updateCategoryFiltersInfo(filter.groupId);
 
         getFilterCheckbox(filterId).updateCheckbox(enabled);
@@ -524,7 +626,6 @@ var AntiBannerFilters = function (options) {
     $(document).on('change', '.filters-list [name="filterId"]', toggleFilterState);
     $(document).on('change', '#groupsList [name="groupId"]', toggleGroupState);
     $('#updateAntiBannerFilters').on('click', updateAntiBannerFilters);
-    $('#addCustomFilter').on('click', addCustomFilter);
 
     updateRulesCountInfo(options.rulesInfo);
 
@@ -1082,7 +1183,7 @@ var initPage = function (response) {
                     controller.antiBannerFilters.onFilterStateChanged(options);
                     break;
                 case EventNotifierTypes.FILTER_ADD_REMOVE:
-                    controller.antiBannerFilters.onFilterStateChanged(options);
+                    controller.antiBannerFilters.render();
                     break;
                 case EventNotifierTypes.START_DOWNLOAD_FILTER:
                     controller.antiBannerFilters.onFilterDownloadStarted(options);
