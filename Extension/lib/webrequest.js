@@ -423,12 +423,12 @@
 
         /**
          * Applying CSS/JS rules from the background page.
-         * This function realize algorithm, suggested here https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1029
+         * This function implements the algorithm suggested here: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1029
          * We use browser.tabs.insertCSS and browser.tabs.executeScript functions to inject our CSS/JS rules.
          * This method can be used in modern Chrome and FF only.
          */
         (function (adguard) {
-            var cssAndJsCache = {
+            let cssJsForTabs = {
                 createKey: function (tabId, frameId) {
                     return tabId + '-' + frameId;
                 },
@@ -470,7 +470,7 @@
                 }
             }
 
-            var randomIdentificator = adguard.utils.strings.generateRandomIdentificator(10);
+            var randomIdentifier = adguard.utils.strings.generateRandomIdentifier(10);
 
             function buildScriptText(scriptText) {
                 if (!scriptText) {
@@ -488,7 +488,7 @@
                 let injectedScript = '(function() {\
                     var script = document.createElement("script");\
                     script.setAttribute("type", "text/javascript");\
-                    script.dataset.source = "' + randomIdentificator + '";\
+                    script.dataset.source = "' + randomIdentifier + '";\
                     script.textContent = "' + scriptText.replace(reJsEscape, escapeJs) + '";\
                     var FRAME_REQUESTS_LIMIT = 500;\
                     var frameRequests = 0;\
@@ -497,7 +497,7 @@
                         var parent = document.head || document.documentElement;\
                         if(parent) {\
                             try {\
-                                var adguardScript = document.querySelector(\'script[data-source="' + randomIdentificator + '"]\');\
+                                var adguardScript = document.querySelector(\'script[data-source="' + randomIdentifier + '"]\');\
                                 if(!adguardScript) {\
                                     parent.appendChild(script);\
                                 }\
@@ -545,7 +545,7 @@
                     return;
                 }
 
-                cssAndJsCache.set(tabId, frameId, {
+                cssJsForTabs.set(tabId, frameId, {
                     jsScriptText: buildScriptText(result.scripts),
                     cssText: buildCssText(result.selectors),
                 });
@@ -558,7 +558,7 @@
              * @param {number} frameId
              */
             function removeScriptFromPage(tabId, frameId) {
-                var code = 'var script = document.querySelector(\'script[data-source="' + randomIdentificator + '"]\');\
+                var code = 'var script = document.querySelector(\'script[data-source="' + randomIdentifier + '"]\');\
                     if(script) {\
                         script.parentNode.removeChild(script);\
                     }';
@@ -577,7 +577,7 @@
                 var frameId = details.frameId;
                 var tab = details.tab;
                 var tabId = tab.tabId;
-                var scriptTexts = cssAndJsCache.get(tabId, frameId);
+                var scriptTexts = cssJsForTabs.get(tabId, frameId);
                 if (scriptTexts && scriptTexts.jsScriptText) {
                     adguard.tabs.executeScriptCode(tabId, frameId, scriptTexts.jsScriptText);
                 }
@@ -592,7 +592,7 @@
             function tryInjectOnCommitted(details) {
                 let tabId = details.tabId;
                 let frameId = details.frameId;
-                const scriptTexts = cssAndJsCache.get(tabId, frameId);
+                const scriptTexts = cssJsForTabs.get(tabId, frameId);
                 if (!scriptTexts) {
                     setTimeout(tryInjectOnCommitted, REQUEST_FILTER_READY_TIMEOUT, details);
                     return;
@@ -604,7 +604,7 @@
                     adguard.tabs.insertCssCode(tabId, frameId, scriptTexts.cssText);
                 }
                 removeScriptFromPage(tabId, frameId);
-                cssAndJsCache.remove(tabId, frameId);
+                cssJsForTabs.remove(tabId, frameId);
             }
 
             adguard.webNavigation.onCommitted.addListener(tryInjectOnCommitted);

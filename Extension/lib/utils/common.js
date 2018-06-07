@@ -213,10 +213,11 @@ adguard.utils = (function () {
             return parts;
         },
         /**
-         * returns random identificator
-         * @param {Number} length
+         * Generates random string with required length
+         * @returns {String} - returns randomly generated string
+         * @param {Number} length - required length of random identifier
          */
-        generateRandomIdentificator: function (length) {
+        generateRandomIdentifier: function (length) {
             var charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             var result = '';
             for (var i = 0; i < length; i += 1) {
