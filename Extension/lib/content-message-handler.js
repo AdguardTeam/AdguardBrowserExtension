@@ -141,10 +141,13 @@
                 break;
             case 'disableAntiBannerFilter':
                 if (message.remove) {
-                    adguard.filters.removeFilters([message.filterId]);
+                    adguard.filters.uninstallFilters([message.filterId]);
                 } else {
                     adguard.filters.disableFilters([message.filterId]);
                 }
+                break;
+            case 'removeAntiBannerFilter':
+                adguard.filters.removeFilter(message.filterId);
                 break;
             case 'addAndEnableFiltersByGroupId':
                 adguard.categories.addAndEnableFiltersByGroupId(message.groupId);
