@@ -298,7 +298,7 @@ var AntiBannerFilters = function (options) {
                 .append($('<input>', {type: 'checkbox', name: 'groupId', value: category.groupId})));
     }
 
-    function getFilterTemplate(filter, enabled) {
+    function getFilterTemplate(filter, enabled, showDeleteButton) {
         var timeUpdated = moment(filter.timeUpdated);
         timeUpdated.locale(environmentOptions.Prefs.locale);
         var timeUpdatedText = timeUpdated.format("D/MM/YYYY HH:mm").toLowerCase();
@@ -307,6 +307,15 @@ var AntiBannerFilters = function (options) {
         filter.tagsDetails.forEach(function (tag) {
             tagDetails.append($('<div>', {class: 'opt-name__tag', 'data-tooltip': tag.description, text: '#' + tag.keyword}));
         });
+
+        var optionsBlock = $('<div>', {class: 'opt-state'})
+            .append($('<div>', {class: 'preloader'}))
+            .append($('<a>', {class: 'icon-home', target: '_blank', href: filter.homepage}))
+            .append($('<input>', {type: 'checkbox', name: 'filterId', value: filter.filterId, checked: enabled}));
+
+        if (showDeleteButton) {
+            optionsBlock = optionsBlock.append($('<a>', {href: '#', text: 'remove', filterId: filter.filterId, class: 'remove-custom-filter-button'}));
+        }
 
         return $('<li>', {id: 'filter' + filter.filterId})
             .append($('<div>', {class: 'opt-name'})
@@ -320,10 +329,7 @@ var AntiBannerFilters = function (options) {
                     .append(tagDetails)
                 )
             )
-            .append($('<div>', {class: 'opt-state'})
-                .append($('<div>', {class: 'preloader'}))
-                .append($('<a>', {class: 'icon-home', target: '_blank', href: filter.homepage}))
-                .append($('<input>', {type: 'checkbox', name: 'filterId', value: filter.filterId, checked: enabled})));
+            .append(optionsBlock);
     }
 
     function getFiltersContentTemplate(category) {
@@ -353,9 +359,9 @@ var AntiBannerFilters = function (options) {
             return result.append($('<a>', {href: '', class: othersClass, text: 'Other', 'data-tab': 'other'}));
         }
 
-        function appendFilterTemplate(filter, list) {
+        function appendFilterTemplate(filter, list, showDeleteButton) {
             var enabled = loadedFiltersInfo.isEnabled(filter.filterId);
-            var filterTemplate = getFilterTemplate(filter, enabled);
+            var filterTemplate = getFilterTemplate(filter, enabled, showDeleteButton);
             list.append(filterTemplate);
         }
 
@@ -385,11 +391,11 @@ var AntiBannerFilters = function (options) {
         }
 
         for (var i = 0; i < filters.length; i++) {
-            appendFilterTemplate(filters[i], filtersList);
+            appendFilterTemplate(filters[i], filtersList, isCustomFilters);
         }
 
         for (var j = 0; j < recommendedFilters.length; j++) {
-            appendFilterTemplate(recommendedFilters[j], recommendedFiltersList);
+            appendFilterTemplate(recommendedFilters[j], recommendedFiltersList, isCustomFilters);
         }
 
         var tabs = $('<div>', {class: 'settings-body'});
@@ -417,6 +423,7 @@ var AntiBannerFilters = function (options) {
         $('#antibanner').parent().append(filtersContentTemplate);
 
         $('.empty-filters__btn, #addCustomFilter').on('click', addCustomFilter);
+        $('.remove-custom-filter-button').on('click', removeCustomFilter);
     }
 
     function renderCategoriesAndFilters() {
@@ -517,6 +524,19 @@ var AntiBannerFilters = function (options) {
         renderCustomFilterPopup();
     }
 
+    function removeCustomFilter(e) {
+        e.preventDefault();
+
+        var filterId = $(e.currentTarget).attr('filterId');
+
+        contentPage.sendMessage({
+            type: 'removeAntiBannerFilter',
+            filterId: filterId
+        });
+
+        getFilterElement(filterId).remove();
+    }
+
     function renderCustomFilterPopup() {
         function closePopup() {
             $('#add-custom-filter-popup').removeClass('option-popup--active');
@@ -559,9 +579,8 @@ var AntiBannerFilters = function (options) {
 
             $('#custom-filter-popup-remove').on('click', function () {
                 contentPage.sendMessage({
-                    type: 'disableAntiBannerFilter',
-                    filterId: filter.filterId,
-                    remove: true
+                    type: 'removeAntiBannerFilter',
+                    filterId: filter.filterId
                 });
                 closePopup();
             });
