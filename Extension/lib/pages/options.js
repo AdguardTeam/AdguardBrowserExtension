@@ -345,9 +345,12 @@ var AntiBannerFilters = function (options) {
             var recommendedClass = showRecommended ? 'tab active': 'tab';
             var othersClass = showRecommended ? 'tab': 'tab active';
 
-            return $('<div>', {class: 'tabs-bar'})
-                .append($('<a>', {href: '', class: recommendedClass, text: 'Recommended', 'data-tab': 'recommended'}))
-                .append($('<a>', {href: '', class: othersClass, text: 'Other', 'data-tab': 'other'}));
+            var result = $('<div>', {class: 'tabs-bar'});
+            if (showRecommended) {
+                result = result.append($('<a>', {href: '', class: recommendedClass, text: 'Recommended', 'data-tab': 'recommended'}));
+            }
+
+            return result.append($('<a>', {href: '', class: othersClass, text: 'Other', 'data-tab': 'other'}));
         }
 
         function appendFilterTemplate(filter, list) {
