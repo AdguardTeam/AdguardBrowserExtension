@@ -157,7 +157,10 @@
             }
         }
 
-        appendPopup(0);
+        // Wait 10 seconds
+        setTimeout(function () {
+            appendPopup(0);
+        }, 10000);
     }
 
     /**
