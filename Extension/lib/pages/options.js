@@ -329,18 +329,38 @@ var AntiBannerFilters = function (options) {
     function getFiltersContentTemplate(category) {
         var filters = category.filters.otherFilters;
         var recommendedFilters = category.filters.recommendedFilters;
+        var isCustomFilters = category.groupId === 0;
 
-        var pageTitleEl = $('<div>', {class: 'page-title'})
-            .append($('<a>', {href: '#antibanner'})
-                .append($('<img>', {
-                    src: 'images/icon-back.png',
-                    class: 'back'
-                })))
-            .append(document.createTextNode(category.groupName));
+        function createPageTitleElement(name) {
+            return $('<div>', {class: 'page-title'})
+                .append($('<a>', {href: '#antibanner'})
+                    .append($('<img>', {
+                        src: 'images/icon-back.png',
+                        class: 'back'
+                    })))
+                .append(document.createTextNode(name));
+        }
 
-        if (category.groupId === 0 &&
-            category.filters.recommendedFilters.length === 0 &&
-            category.filters.otherFilters.length === 0) {
+        function createTabsBar(showRecommended) {
+            var recommendedClass = showRecommended ? 'tab active': 'tab';
+            var othersClass = showRecommended ? 'tab': 'tab active';
+
+            return $('<div>', {class: 'tabs-bar'})
+                .append($('<a>', {href: '', class: recommendedClass, text: 'Recommended', 'data-tab': 'recommended'}))
+                .append($('<a>', {href: '', class: othersClass, text: 'Other', 'data-tab': 'other'}));
+        }
+
+        function appendFilterTemplate(filter, list) {
+            var enabled = loadedFiltersInfo.isEnabled(filter.filterId);
+            var filterTemplate = getFilterTemplate(filter, enabled);
+            list.append(filterTemplate);
+        }
+
+        var pageTitleEl = createPageTitleElement(category.groupName);
+
+        if (isCustomFilters &&
+            filters.length === 0 &&
+            recommendedFilters.length === 0) {
 
             return $('<div>', {id: 'antibanner' + category.groupId, class: 'settings-content tab-pane filters-list'})
                 .append(pageTitleEl)
@@ -354,22 +374,11 @@ var AntiBannerFilters = function (options) {
         var recommendedFiltersList = $('<ul>', {class: 'opts-list', 'data-tab': 'recommended'});
         var filtersList = $('<ul>', {class: 'opts-list', 'data-tab': 'other', style: 'display:none;'});
 
-        var tabsBar = $('<div>', {class: 'tabs-bar'})
-            .append($('<a>', {href: '', class: 'tab active', text: 'Recommended', 'data-tab': 'recommended'}))
-            .append($('<a>', {href: '', class: 'tab', text: 'Other', 'data-tab': 'other'}));
-
-        if (category.groupId === 0) {
-            tabsBar = $('<div>', {class: 'tabs-bar'})
-                .append($('<a>', {href: '', class: 'tab active', text: 'Other', 'data-tab': 'other'}));
-
+        var showRecommended = recommendedFilters.length > 0;
+        var tabsBar = createTabsBar(showRecommended);
+        if (!showRecommended) {
             recommendedFiltersList.hide();
             filtersList.show();
-        }
-
-        function appendFilterTemplate(filter, list) {
-            var enabled = loadedFiltersInfo.isEnabled(filter.filterId);
-            var filterTemplate = getFilterTemplate(filter, enabled);
-            list.append(filterTemplate);
         }
 
         for (var i = 0; i < filters.length; i++) {
@@ -380,12 +389,16 @@ var AntiBannerFilters = function (options) {
             appendFilterTemplate(recommendedFilters[j], recommendedFiltersList);
         }
 
+        var tabs = $('<div>', {class: 'settings-body'});
+        if (!isCustomFilters) {
+            tabs = tabs.append(tabsBar);
+        }
+
+        tabs = tabs.append(filtersList).append(recommendedFiltersList);
+
         return $('<div>', {id: 'antibanner' + category.groupId, class: 'settings-content tab-pane filters-list'})
             .append(pageTitleEl)
-            .append($('<div>', {class: 'settings-body'})
-                .append(tabsBar)
-                .append(filtersList)
-                .append(recommendedFiltersList));
+            .append(tabs);
     }
 
     function renderFilterCategory(category) {

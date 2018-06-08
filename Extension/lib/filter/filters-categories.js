@@ -77,6 +77,13 @@ adguard.categories = (function (adguard) {
             return f.groupId === groupId;
         });
 
+        if (groupId === 0) {
+            return {
+                recommendedFilters: groupFilters,
+                otherFilters: []
+            };
+        }
+
         var recommendedFilters = adguard.tags.getRecommendedFilters(groupFilters);
         var otherFilters = adguard.utils.collections.getArraySubtraction(groupFilters, recommendedFilters);
 
