@@ -155,10 +155,7 @@
             }
         }
 
-        // Wait 10 seconds
-        setTimeout(function () {
-            appendPopup(0);
-        }, 10000);
+        appendPopup(0);
     }
 
     /**

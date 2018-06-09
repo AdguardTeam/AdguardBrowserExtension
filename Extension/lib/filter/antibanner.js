@@ -87,6 +87,18 @@ adguard.antiBannerService = (function (adguard) {
     function initialize(options, callback) {
 
         /**
+         * Waits and notifies listener with application updated event
+         *
+         * @param runInfo
+         */
+        var notifyApplicationUpdated = function (runInfo) {
+            // Wait 10 seconds
+            setTimeout(function () {
+                adguard.listeners.notifyListeners(adguard.listeners.APPLICATION_UPDATED, runInfo);
+            }, 10000);
+        };
+
+        /**
          * This method is called when filter subscriptions have been loaded from remote server.
          * It is used to recreate RequestFilter object.
          */
@@ -120,8 +132,7 @@ adguard.antiBannerService = (function (adguard) {
                 // Updating storage schema on extension update (if needed)
                 adguard.applicationUpdateService.onUpdate(runInfo, initRequestFilter);
                 // Show updated version popup
-                adguard.listeners.notifyListeners(adguard.listeners.APPLICATION_UPDATED, runInfo);
-
+                notifyApplicationUpdated(runInfo);
             } else {
                 // Init RequestFilter object
                 initRequestFilter();
