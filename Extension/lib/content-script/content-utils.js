@@ -109,7 +109,7 @@
      * Shows version updated popup.
      * Popup content is added right to the page content.
      *
-     * @param message
+     * @param {{title,description, changelogHref, changelogText, offer, offerButtonHref, offerButtonText}} message
      */
     function showVersionUpdatedPopup(message) {
         var alertDivHtml =
@@ -117,19 +117,19 @@
                 <div id="adguard-new-version-popup-close" class="update-popup__close"></div>
                 <div class="update-popup__logo"></div>
                 <div class="update-popup__title">
-                    AdGuard browser extension was just updated to version ${message.version}.
+                    ${message.title}
                 </div>
                 <div class="update-popup__desc">
-                    This version contains mostly bugfixes and minor improvements.
+                    ${message.description}
                 </div>
-                <a href="#" class="update-popup__link">
-                    Click here to view the full changelog.
+                <a href="${message.changelogHref}" class="update-popup__link" target="_blank">
+                    ${message.changelogText}
                 </a>
                 <div class="update-popup__offer">
-                    If you are obsessed with privacy as we are, try premium AdGuard products for Windows, Mac, iOS or Android to find even more features.
+                    ${message.offer}
                 </div>
-                <a href="#" class="update-popup__btn">
-                    TRY PREMIUM
+                <a href="${message.offerButtonHref}" class="update-popup__btn">
+                    ${message.offerButtonText}
                 </a>
             </div>`;
 
