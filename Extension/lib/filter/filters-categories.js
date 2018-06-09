@@ -77,7 +77,7 @@ adguard.categories = (function (adguard) {
             return f.groupId === groupId;
         });
 
-        if (groupId === 0) {
+        if (groupId === CUSTOM_FILTERS_GROUP_ID) {
             return {
                 recommendedFilters: groupFilters,
                 otherFilters: []
