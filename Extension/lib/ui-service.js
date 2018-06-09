@@ -375,8 +375,19 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     }
 
     function showVersionUpdatedPopup(currentVersion) {
+        var message = {
+            type: 'show-version-updated-popup',
+            title: adguard.i18n.getMessage("options_popup_version_update_title", currentVersion),
+            description: adguard.i18n.getMessage("options_popup_version_update_description"),
+            changelogHref: adguard.i18n.getMessage("options_popup_version_update_changelog_href"),
+            changelogText: adguard.i18n.getMessage("options_popup_version_update_changelog_text"),
+            offer: adguard.i18n.getMessage("options_popup_version_update_offer"),
+            offerButtonHref: adguard.i18n.getMessage("options_popup_version_update_offer_button_href"),
+            offerButtonText: adguard.i18n.getMessage("options_popup_version_update_offer_button_text")
+        };
+
         adguard.tabs.getActive(function (tab) {
-            adguard.tabs.sendMessage(tab.tabId, {type: 'show-version-updated-popup', version: currentVersion});
+            adguard.tabs.sendMessage(tab.tabId, message);
         });
     }
 
