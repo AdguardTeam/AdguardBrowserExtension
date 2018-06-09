@@ -437,26 +437,25 @@
              * by key corresponding to tabId and frameId
              * 2. for getting js and css texts for injection on proper time
              * After injection corresponding js and css texts are removed from object
-             * @type {Object} cssForTabs
              */
-            let cssJsForTabs = {
+            let injections = {
                 createKey: function (tabId, frameId) {
                     return tabId + '-' + frameId;
                 },
 
                 /**
-                 * @typedef {Object} Scripts
-                 * @param {Boolean} [ready] false if css and js text is not ready yet
-                 * @param {String} [jsScriptText] prepared JS code text for injection
-                 * @param {Strins} [cssText] prepared CSS code text for injection
+                 * @typedef Injection
+                 * @property {Boolean} ready value depends on are css and js texts ready or not. If false we should retry get them later
+                 * @property {String} [jsScriptText] prepared JS code text for injection
+                 * @property {String} [cssText] prepared CSS code text for injection
                  */
 
                 /**
-                 * Saves css, js and ready flag in cssJsForTabs object
-                 * @param {Scripts} scripts object with css and js texts or ready flag
+                 * Saves css, js and ready flag in injection object
+                 * @param {Injection} injection
                  */
-                set: function (tabId, frameId, scripts) {
-                    this[this.createKey(tabId, frameId)] = scripts;
+                set: function (tabId, frameId, injection) {
+                    this[this.createKey(tabId, frameId)] = injection;
                 },
 
                 get: function (tabId, frameId) {
@@ -522,9 +521,9 @@
                             try {\
                                 parent.appendChild(script);\
                                 parent.removeChild(script);\
-                                window.scriptExecuted = true;\
                             } catch (e) {\
                             } finally {\
+                                window.scriptExecuted = true;\
                                 return true;\
                             }\
                         }\
@@ -553,12 +552,10 @@
 
             const REQUEST_FILTER_READY_TIMEOUT = 100;
             /**
-             * Get css and js by tabId, url;
-             * Builds code from them
-             * And saves code in cssJsForTabs by tabId + frameId
+             * Prepares injection content (scripts and css) for a given frame.
              * @param {RequestDetails} details
              */
-            function prepareScripts(details) {
+            function prepareInjectionContent(details) {
                 let tab = details.tab;
                 let tabId = tab.tabId;
                 let frameId = details.frameId;
@@ -569,11 +566,12 @@
                 let result = adguard.webRequestService.processGetSelectorsAndScripts({ tabId: tabId }, url, cssFilterOption, retrieveScripts);
 
                 if (result.requestFilterReady === false) {
-                    cssJsForTabs.set(tabId, frameId, {
+                    injections.set(tabId, frameId, {
                         ready: false,
                     });
                 } else {
-                    cssJsForTabs.set(tabId, frameId, {
+                    injections.set(tabId, frameId, {
+                        ready: true,
                         jsScriptText: buildScriptText(result.scripts),
                         cssText: buildCssText(result.selectors),
                     });
@@ -592,9 +590,9 @@
                 var frameId = details.frameId;
                 var tab = details.tab;
                 var tabId = tab.tabId;
-                var scriptTexts = cssJsForTabs.get(tabId, frameId);
-                if (scriptTexts && scriptTexts.jsScriptText) {
-                    adguard.tabs.executeScriptCode(tabId, frameId, scriptTexts.jsScriptText);
+                var injection = injections.get(tabId, frameId);
+                if (injection && injection.jsScriptText) {
+                    adguard.tabs.executeScriptCode(tabId, frameId, injection.jsScriptText);
                 }
             }
 
@@ -607,36 +605,38 @@
             function tryInjectOnCommitted(details) {
                 let tabId = details.tabId;
                 let frameId = details.frameId;
-                const scriptTexts = cssJsForTabs.get(tabId, frameId);
-                if (scriptTexts.ready && scriptTexts.ready === false) {
-                    /**
-                     * If scriptTexts are not ready yet, we call prepareScripts and tryInjectOnCommited functions again
-                     * setTimeout callback lambda function accepts onCommited details
-                     * from onCommited details we prepare object similar to RequestDetails
-                     * with properties and structure used to get css and js code
-                     */
-                    setTimeout(function (details) {
-                        const onCommitedDetails = {
-                            tab: { tabId: details.tabId },
-                            frameId: details.frameId,
-                            requestUrl: details.url,
-                        };
-                        prepareScripts(onCommitedDetails);
-                        tryInjectOnCommitted(details);
-                    }, REQUEST_FILTER_READY_TIMEOUT, details);
-                    return;
+                const injection = injections.get(tabId, frameId);
+                if (injection) {
+                    if (!injection.ready) {
+                        /**
+                         * If injection is not ready yet, we call prepareScripts and tryInjectOnCommited functions again
+                         * setTimeout callback lambda function accepts onCommited details
+                         * from onCommited details we prepare object similar to RequestDetails
+                         * with properties and structure used to get css and js code
+                         */
+                        setTimeout(function (details) {
+                            const onCommitedDetails = {
+                                tab: { tabId: details.tabId },
+                                frameId: details.frameId,
+                                requestUrl: details.url,
+                            };
+                            prepareInjectionContent(onCommitedDetails);
+                            tryInjectOnCommitted(details);
+                        }, REQUEST_FILTER_READY_TIMEOUT, details);
+                        return;
+                    }
+                    if (injection.jsScriptText) {
+                        adguard.tabs.executeScriptCode(tabId, frameId, injection.jsScriptText);
+                    }
+                    if (injection.cssText) {
+                        adguard.tabs.insertCssCode(tabId, frameId, injection.cssText);
+                    }
+                    injections.remove(tabId, frameId);
                 }
-                if (scriptTexts.jsScriptText) {
-                    adguard.tabs.executeScriptCode(tabId, frameId, scriptTexts.jsScriptText);
-                }
-                if (scriptTexts.cssText) {
-                    adguard.tabs.insertCssCode(tabId, frameId, scriptTexts.cssText);
-                }
-                cssJsForTabs.remove(tabId, frameId);
             }
 
             adguard.webNavigation.onCommitted.addListener(tryInjectOnCommitted);
-            adguard.webRequest.onBeforeRequest.addListener(prepareScripts, ['<all_urls>']);
+            adguard.webRequest.onBeforeRequest.addListener(prepareInjectionContent, ['<all_urls>']);
             adguard.webRequest.onResponseStarted.addListener(tryInjectOnResponseStarted, ['<all_urls>']);
         })(adguard);
     }
