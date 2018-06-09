@@ -1410,8 +1410,8 @@ adguard.filters = (function (adguard) {
     /**
      * Enable filter
      *
-     * @param filterId Filter identifier
-     * @param options
+     * @param {Number} filterId Filter identifier
+     * @param {{syncSuppress}} [options]
      * @returns {boolean} true if filter was enabled successfully
      */
     var enableFilter = function (filterId, options) {
@@ -1430,7 +1430,7 @@ adguard.filters = (function (adguard) {
     /**
      * Successively add filters from filterIds and then enable successfully added filters
      * @param filterIds Filter identifiers
-     * @param options
+     * @param {{syncSuppress}} [options]
      * @param callback We pass list of enabled filter identifiers to the callback
      */
     var addAndEnableFilters = function (filterIds, callback, options) {
@@ -1470,10 +1470,10 @@ adguard.filters = (function (adguard) {
     };
 
     /**
-     * Disables filter by id
+     * Disables filters by id
      *
-     * @param filterIds Filter identifier
-     * @param options
+     * @param {Array.<Number>} filterIds Filter identifiers
+     * @param {{syncSuppress}} [options]
      * @returns {boolean} true if filter was disabled successfully
      */
     var disableFilters = function (filterIds, options) {
@@ -1497,8 +1497,8 @@ adguard.filters = (function (adguard) {
     /**
      * Uninstalls filters
      *
-     * @param filterIds Filter identifier
-     * @param options
+     * @param {Array.<Number>} filterIds Filter identifiers
+     * @param {{syncSuppress}} [options]
      * @returns {boolean} true if filter was removed successfully
      */
     var uninstallFilters = function (filterIds, options) {
@@ -1526,8 +1526,8 @@ adguard.filters = (function (adguard) {
     /**
      * Removes filter
      *
-     * @param filterId Filter identifier
-     * @param options
+     * @param {Number} filterId Filter identifier
+     * @param {{syncSuppress}} [options]
      */
     var removeFilter = function (filterId, options) {
 

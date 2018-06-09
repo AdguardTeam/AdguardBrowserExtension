@@ -308,14 +308,14 @@ var AntiBannerFilters = function (options) {
             tagDetails.append($('<div>', {class: 'opt-name__tag', 'data-tooltip': tag.description, text: '#' + tag.keyword}));
         });
 
-        var optionsBlock = $('<div>', {class: 'opt-state'})
-            .append($('<div>', {class: 'preloader'}))
-            .append($('<a>', {class: 'icon-home', target: '_blank', href: filter.homepage}))
-            .append($('<input>', {type: 'checkbox', name: 'filterId', value: filter.filterId, checked: enabled}));
+        var optionsBlock = $('<div>', {class: 'opt-state'}).append($('<div>', {class: 'preloader'}));
 
         if (showDeleteButton) {
             optionsBlock = optionsBlock.append($('<a>', {href: '#', text: 'remove', filterId: filter.filterId, class: 'remove-custom-filter-button'}));
         }
+
+        optionsBlock = optionsBlock.append($('<a>', {class: 'icon-home', target: '_blank', href: filter.homepage}))
+            .append($('<input>', {type: 'checkbox', name: 'filterId', value: filter.filterId, checked: enabled}));
 
         return $('<li>', {id: 'filter' + filter.filterId})
             .append($('<div>', {class: 'opt-name'})
