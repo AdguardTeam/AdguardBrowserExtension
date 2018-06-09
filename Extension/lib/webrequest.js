@@ -420,26 +420,41 @@
     });
 
     if (shouldUseInsertCSSAndExecuteScript) {
-
         /**
          * Applying CSS/JS rules from the background page.
          * This function implements the algorithm suggested here: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1029
          * For faster script injection, we prepare scriptText onResponseStarted event, save it and try to inject twice
-         * 1. onResponseStarted - this event fires early, but is not reliable
-         * 2. onCommited - this event fires on when part of document has been received, this event is reliable
+         * first time onResponseStarted event - this event fires early, but is not reliable
+         * second time onCommited event - this event fires on when part of document has been received, this event is reliable
          * Every time we try to inject script we check if script wasn't yet executed
          * We use browser.tabs.insertCSS and browser.tabs.executeScript functions to inject our CSS/JS rules.
          * This method can be used in modern Chrome and FF only.
          */
         (function (adguard) {
             /**
-             * Object used for keeping js and css code when onBeforeRequest event fired
+             * Object is used:
+             * 1. to save js and css texts when onBeforeRequest event fired
+             * by key corresponding to tabId and frameId
+             * 2. for getting js and css texts for injection on proper time
+             * After injection corresponding js and css texts are removed from object
+             * @type {Object} cssForTabs
              */
             let cssJsForTabs = {
                 createKey: function (tabId, frameId) {
                     return tabId + '-' + frameId;
                 },
 
+                /**
+                 * @typedef {Object} Scripts
+                 * @param {Boolean} [ready] false if css and js text is not ready yet
+                 * @param {String} [jsScriptText] prepared JS code text for injection
+                 * @param {Strins} [cssText] prepared CSS code text for injection
+                 */
+
+                /**
+                 * Saves css, js and ready flag in cssJsForTabs object
+                 * @param {Scripts} scripts object with css and js texts or ready flag
+                 */
                 set: function (tabId, frameId, scripts) {
                     this[this.createKey(tabId, frameId)] = scripts;
                 },
@@ -537,6 +552,12 @@
             }
 
             const REQUEST_FILTER_READY_TIMEOUT = 100;
+            /**
+             * Get css and js by tabId, url;
+             * Builds code from them
+             * And saves code in cssJsForTabs by tabId + frameId
+             * @param {RequestDetails} details
+             */
             function prepareScripts(details) {
                 let tab = details.tab;
                 let tabId = tab.tabId;
@@ -548,14 +569,15 @@
                 let result = adguard.webRequestService.processGetSelectorsAndScripts({ tabId: tabId }, url, cssFilterOption, retrieveScripts);
 
                 if (result.requestFilterReady === false) {
-                    setTimeout(prepareScripts, REQUEST_FILTER_READY_TIMEOUT, details);
-                    return;
+                    cssJsForTabs.set(tabId, frameId, {
+                        ready: false,
+                    });
+                } else {
+                    cssJsForTabs.set(tabId, frameId, {
+                        jsScriptText: buildScriptText(result.scripts),
+                        cssText: buildCssText(result.selectors),
+                    });
                 }
-
-                cssJsForTabs.set(tabId, frameId, {
-                    jsScriptText: buildScriptText(result.scripts),
-                    cssText: buildCssText(result.selectors),
-                });
             }
 
             /**
@@ -579,15 +601,29 @@
             /**
              * Injects necessary CSS and scripts into the web page.
              *
-             * @param {*} details Details about the navigation event:
+             * @param {RequestDetails} details Details about the navigation event:
              * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webNavigation/onCommitted#details
              */
             function tryInjectOnCommitted(details) {
                 let tabId = details.tabId;
                 let frameId = details.frameId;
                 const scriptTexts = cssJsForTabs.get(tabId, frameId);
-                if (!scriptTexts) {
-                    setTimeout(tryInjectOnCommitted, REQUEST_FILTER_READY_TIMEOUT, details);
+                if (scriptTexts.ready && scriptTexts.ready === false) {
+                    /**
+                     * If scriptTexts are not ready yet, we call prepareScripts and tryInjectOnCommited functions again
+                     * setTimeout callback lambda function accepts onCommited details
+                     * from onCommited details we prepare object similar to RequestDetails
+                     * with properties and structure used to get css and js code
+                     */
+                    setTimeout(function (details) {
+                        const onCommitedDetails = {
+                            tab: { tabId: details.tabId },
+                            frameId: details.frameId,
+                            requestUrl: details.url,
+                        };
+                        prepareScripts(onCommitedDetails);
+                        tryInjectOnCommitted(details);
+                    }, REQUEST_FILTER_READY_TIMEOUT, details);
                     return;
                 }
                 if (scriptTexts.jsScriptText) {
