@@ -114,25 +114,23 @@
     function showVersionUpdatedPopup(message) {
         var alertDivHtml =
             `<div id="adguard-new-version-popup" class="update-popup update-popup--active">
-                <div class="update-popup__in">
-                    <div id="adguard-new-version-popup-close" class="update-popup__close"></div>
-                    <div class="update-popup__logo"></div>
-                    <div class="update-popup__title">
-                        AdGuard browser extension was just updated to version ${message.version}.
-                    </div>
-                    <div class="update-popup__desc">
-                        This version contains mostly bugfixes and minor improvements.
-                    </div>
-                    <a href="#" class="update-popup__link">
-                        Click here to view the full changelog.
-                    </a>
-                    <div class="update-popup__offer">
-                        If you are obsessed with privacy as we are, try premium AdGuard products for Windows, Mac, iOS or Android to find even more features.
-                    </div>
-                    <a href="#" class="update-popup__btn">
-                        TRY PREMIUM
-                    </a>
+                <div id="adguard-new-version-popup-close" class="update-popup__close"></div>
+                <div class="update-popup__logo"></div>
+                <div class="update-popup__title">
+                    AdGuard browser extension was just updated to version ${message.version}.
                 </div>
+                <div class="update-popup__desc">
+                    This version contains mostly bugfixes and minor improvements.
+                </div>
+                <a href="#" class="update-popup__link">
+                    Click here to view the full changelog.
+                </a>
+                <div class="update-popup__offer">
+                    If you are obsessed with privacy as we are, try premium AdGuard products for Windows, Mac, iOS or Android to find even more features.
+                </div>
+                <a href="#" class="update-popup__btn">
+                    TRY PREMIUM
+                </a>
             </div>`;
 
         var triesCount = 10;
