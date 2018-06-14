@@ -374,11 +374,32 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         });
     }
 
-    function showVersionUpdatedPopup(currentVersion) {
+    /**
+     * Depending on version numbers select proper message for description
+     *
+     * @param currentVersion
+     * @param previousVersion
+     */
+    function getUpdateDescriptionMessage(currentVersion, previousVersion) {
+        if (adguard.utils.browser.getMajorVersionNumber(currentVersion) > adguard.utils.browser.getMajorVersionNumber(previousVersion) ||
+            adguard.utils.browser.getMinorVersionNumber(currentVersion) > adguard.utils.browser.getMinorVersionNumber(previousVersion)) {
+            return adguard.i18n.getMessage("options_popup_version_update_description_major");
+        }
+
+        return adguard.i18n.getMessage("options_popup_version_update_description_minor");
+    }
+
+    /**
+     * Shows application updated popup
+     *
+     * @param currentVersion
+     * @param previousVersion
+     */
+    function showVersionUpdatedPopup(currentVersion, previousVersion) {
         var message = {
             type: 'show-version-updated-popup',
             title: adguard.i18n.getMessage("options_popup_version_update_title", currentVersion),
-            description: adguard.i18n.getMessage("options_popup_version_update_description"),
+            description: getUpdateDescriptionMessage(currentVersion, previousVersion),
             changelogHref: adguard.i18n.getMessage("options_popup_version_update_changelog_href"),
             changelogText: adguard.i18n.getMessage("options_popup_version_update_changelog_text"),
             offer: adguard.i18n.getMessage("options_popup_version_update_offer"),
@@ -752,7 +773,9 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     //on application updated event
     adguard.listeners.addListener(function (event, info) {
         if (event === adguard.listeners.APPLICATION_UPDATED) {
-            showVersionUpdatedPopup(info.currentVersion);
+            if (adguard.settings.isShowAppUpdatedNotification()) {
+                showVersionUpdatedPopup(info.currentVersion, info.prevVersion);
+            }
         }
     });
 
