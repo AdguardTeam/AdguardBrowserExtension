@@ -34,7 +34,7 @@ adguard.categories = (function (adguard) {
      */
     var getFilters = function () {
         var result = adguard.subscriptions.getFilters().filter(function (f) {
-            return f.filterId != adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID;
+            return !f.removed && f.filterId != adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID;
         });
 
         var tags = adguard.tags.getTags();
@@ -76,6 +76,13 @@ adguard.categories = (function (adguard) {
         var groupFilters  = filters.filter(function (f) {
             return f.groupId === groupId;
         });
+
+        if (groupId === CUSTOM_FILTERS_GROUP_ID) {
+            return {
+                recommendedFilters: groupFilters,
+                otherFilters: []
+            };
+        }
 
         var recommendedFilters = adguard.tags.getRecommendedFilters(groupFilters);
         var otherFilters = adguard.utils.collections.getArraySubtraction(groupFilters, recommendedFilters);

@@ -1410,8 +1410,8 @@ adguard.filters = (function (adguard) {
     /**
      * Enable filter
      *
-     * @param filterId Filter identifier
-     * @param options
+     * @param {Number} filterId Filter identifier
+     * @param {{syncSuppress}} [options]
      * @returns {boolean} true if filter was enabled successfully
      */
     var enableFilter = function (filterId, options) {
@@ -1430,7 +1430,7 @@ adguard.filters = (function (adguard) {
     /**
      * Successively add filters from filterIds and then enable successfully added filters
      * @param filterIds Filter identifiers
-     * @param options
+     * @param {{syncSuppress}} [options]
      * @param callback We pass list of enabled filter identifiers to the callback
      */
     var addAndEnableFilters = function (filterIds, callback, options) {
@@ -1470,10 +1470,10 @@ adguard.filters = (function (adguard) {
     };
 
     /**
-     * Disables filter by id
+     * Disables filters by id
      *
-     * @param filterIds Filter identifier
-     * @param options
+     * @param {Array.<Number>} filterIds Filter identifiers
+     * @param {{syncSuppress}} [options]
      * @returns {boolean} true if filter was disabled successfully
      */
     var disableFilters = function (filterIds, options) {
@@ -1495,13 +1495,13 @@ adguard.filters = (function (adguard) {
     };
 
     /**
-     * Removes filter
+     * Uninstalls filters
      *
-     * @param filterIds Filter identifier
-     * @param options
+     * @param {Array.<Number>} filterIds Filter identifiers
+     * @param {{syncSuppress}} [options]
      * @returns {boolean} true if filter was removed successfully
      */
-    var removeFilters = function (filterIds, options) {
+    var uninstallFilters = function (filterIds, options) {
 
         filterIds = adguard.utils.collections.removeDuplicates(filterIds.slice(0)); // Copy array to prevent parameter mutation
 
@@ -1512,13 +1512,42 @@ adguard.filters = (function (adguard) {
                 continue;
             }
 
-            adguard.console.debug("Remove filter {0}", filter.filterId);
+            adguard.console.debug("Uninstall filter {0}", filter.filterId);
 
             filter.enabled = false;
             filter.installed = false;
             adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
             adguard.listeners.notifyListeners(adguard.listeners.FILTER_ADD_REMOVE, filter);
         }
+
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
+    };
+
+    /**
+     * Removes filter
+     *
+     * @param {Number} filterId Filter identifier
+     * @param {{syncSuppress}} [options]
+     */
+    var removeFilter = function (filterId, options) {
+
+        var filter = adguard.subscriptions.getFilter(filterId);
+        if (!filter || filter.removed) {
+            return;
+        }
+
+        if (!filter.customUrl) {
+            adguard.console.error("Filter {0} is not custom and could not be removed", filter.filterId);
+            return;
+        }
+
+        adguard.console.debug("Remove filter {0}", filter.filterId);
+
+        filter.enabled = false;
+        filter.installed = false;
+        filter.removed = true;
+        adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
+        adguard.listeners.notifyListeners(adguard.listeners.FILTER_ADD_REMOVE, filter);
 
         adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
     };
@@ -1579,6 +1608,9 @@ adguard.filters = (function (adguard) {
                 adguard.console.info('Custom filter info downloaded');
 
                 var filter = adguard.subscriptions.getFilter(filterId);
+                //In case filter is loaded again and was removed before
+                delete filter.removed;
+
                 successCallback(filter);
             } else {
                 errorCallback();
@@ -1603,7 +1635,8 @@ adguard.filters = (function (adguard) {
 
         addAndEnableFilters: addAndEnableFilters,
         disableFilters: disableFilters,
-        removeFilters: removeFilters,
+        uninstallFilters: uninstallFilters,
+        removeFilter: removeFilter,
 
         findFilterMetadataBySubscriptionUrl: findFilterMetadataBySubscriptionUrl,
         processAbpSubscriptionUrl: processAbpSubscriptionUrl,
