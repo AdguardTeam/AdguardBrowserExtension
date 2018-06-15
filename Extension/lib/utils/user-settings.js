@@ -33,7 +33,8 @@ adguard.settings = (function (adguard) {
         DISABLE_COLLECT_HITS: 'hits-count-disabled',
         DISABLE_SHOW_CONTEXT_MENU: 'context-menu-disabled',
         USE_OPTIMIZED_FILTERS: 'use-optimized-filters',
-        DEFAULT_WHITE_LIST_MODE: 'default-whitelist-mode'
+        DEFAULT_WHITE_LIST_MODE: 'default-whitelist-mode',
+        DISABLE_SHOW_APP_UPDATED_NOTIFICATION: 'show-app-updated-disabled'
     };
 
     var properties = Object.create(null);
@@ -59,6 +60,7 @@ adguard.settings = (function (adguard) {
                 defaults[settings.DEFAULT_WHITE_LIST_MODE] = true;
                 defaults[settings.USE_OPTIMIZED_FILTERS] = adguard.utils.browser.isContentBlockerEnabled() || adguard.prefs.mobile;
                 defaults[settings.DISABLE_DETECT_FILTERS] = adguard.utils.browser.isContentBlockerEnabled();
+                defaults[settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION] = false;
                 return defaults;
             });
         }
@@ -157,6 +159,14 @@ adguard.settings = (function (adguard) {
         setProperty(settings.DISABLE_SHOW_ADGUARD_PROMO_INFO, !show, options);
     };
 
+    var isShowAppUpdatedNotification = function () {
+        return !getProperty(settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION);
+    };
+
+    var changeShowAppUpdatedNotification = function (show, options) {
+        setProperty(settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION, !show, options);
+    };
+
     var changeEnableSafebrowsing = function (enabled, options) {
         setProperty(settings.DISABLE_SAFEBROWSING, !enabled);
 
@@ -229,6 +239,8 @@ adguard.settings = (function (adguard) {
     api.changeShowPageStatistic = changeShowPageStatistic;
     api.isShowInfoAboutAdguardFullVersion = isShowInfoAboutAdguardFullVersion;
     api.changeShowInfoAboutAdguardFullVersion = changeShowInfoAboutAdguardFullVersion;
+    api.isShowAppUpdatedNotification = isShowAppUpdatedNotification;
+    api.changeShowAppUpdatedNotification = changeShowAppUpdatedNotification;
     api.changeEnableSafebrowsing = changeEnableSafebrowsing;
     api.changeSendSafebrowsingStats = changeSendSafebrowsingStats;
     api.getSafebrowsingInfo = getSafebrowsingInfo;
