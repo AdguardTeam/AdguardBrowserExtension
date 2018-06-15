@@ -102,7 +102,7 @@ var browser = window.browser || chrome;
      * Each header is represented as a dictionary containing the keys name and either value or binaryValue.
      * https://developer.chrome.com/extensions/webRequest#type-HttpHeaders
      * @typedef HttpHeaders
-     * @type {Array.<Object>}
+     * @type {Array.<{ name: String, value: String, binaryValue }>}
      */
 
     /**
@@ -286,6 +286,19 @@ var browser = window.browser || chrome;
             }, urls ? { urls: urls } : {}, ['responseHeaders']);
         },
     };
+
+    var onErrorOccurred = {
+        addListener: function (callback, urls) {
+            browser.webRequest.onErrorOccurred.addListener(function (details) {
+                if (shouldSkipRequest(details)) {
+                    return;
+                }
+                var requestDetails = getRequestDetails(details);
+                return callback(requestDetails);
+            }, urls ? { urls: urls } : {});
+        },
+    };
+
     /**
      * Gets URL of a file that belongs to our extension
      */
@@ -334,7 +347,7 @@ var browser = window.browser || chrome;
         onBeforeRequest: onBeforeRequest,
         handlerBehaviorChanged: browser.webRequest.handlerBehaviorChanged,
         onCompleted: browser.webRequest.onCompleted,
-        onErrorOccurred: browser.webRequest.onErrorOccurred,
+        onErrorOccurred: onErrorOccurred,
         onHeadersReceived: onHeadersReceived,
         onBeforeSendHeaders: onBeforeSendHeaders,
         onResponseStarted: onResponseStarted,

@@ -550,14 +550,35 @@
                 return selectorsData.css.join('\n');
             }
 
+            // If request isn't related to a tab then tabId from the webRequest callback details is equal to -1
+            const backgroundTabId = -1;
+
+            /**
+             * Checks requestType and tabId.
+             * We don't inject CSS or JS if request wasn't related to tab, or if request type
+             * is not equal to DOCUMENT or SUBDOCUMENT.
+             * @param {String} requestType
+             * @param {Integer} tabId
+             * @returns {Boolean}
+             */
+            function shouldSkipInjection(requestType, tabId) {
+                return (requestType !== adguard.RequestTypes.DOCUMENT &&
+                    requestType !== adguard.RequestTypes.SUBDOCUMENT) ||
+                    tabId === backgroundTabId;
+            }
+
             const REQUEST_FILTER_READY_TIMEOUT = 100;
             /**
              * Prepares injection content (scripts and css) for a given frame.
              * @param {RequestDetails} details
              */
             function prepareInjectionContent(details) {
+                let requestType = details.requestType;
                 let tab = details.tab;
                 let tabId = tab.tabId;
+                if (shouldSkipInjection(requestType, tabId)) {
+                    return;
+                }
                 let frameId = details.frameId;
                 let url = details.requestUrl;
 
@@ -568,12 +589,14 @@
                 if (result.requestFilterReady === false) {
                     injections.set(tabId, frameId, {
                         ready: false,
+                        details: details,
                     });
                 } else {
                     injections.set(tabId, frameId, {
                         ready: true,
                         jsScriptText: buildScriptText(result.scripts),
                         cssText: buildCssText(result.selectors),
+                        details: details,
                     });
                 }
             }
@@ -602,27 +625,28 @@
              * @param {RequestDetails} details Details about the navigation event:
              * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webNavigation/onCommitted#details
              */
-            function tryInjectOnCommitted(details) {
+            function tryInjectOnCommited(details) {
                 let tabId = details.tabId;
                 let frameId = details.frameId;
                 const injection = injections.get(tabId, frameId);
                 if (injection) {
                     if (!injection.ready) {
                         /**
-                         * If injection is not ready yet, we call prepareScripts and tryInjectOnCommited functions again
+                         * If injection is not ready yet, we call prepareScripts and tryInject functions again
                          * setTimeout callback lambda function accepts onCommited details
                          * from onCommited details we prepare object similar to RequestDetails
                          * with properties and structure used to get css and js code
                          */
                         setTimeout(function (details) {
-                            const onCommitedDetails = {
+                            const webRequestDetails = {
                                 tab: { tabId: details.tabId },
                                 frameId: details.frameId,
                                 requestUrl: details.url,
                             };
-                            prepareInjectionContent(onCommitedDetails);
-                            tryInjectOnCommitted(details);
+                            prepareInjectionContent(webRequestDetails);
+                            tryInjectOnCommited(details);
                         }, REQUEST_FILTER_READY_TIMEOUT, details);
+                        injections.remove(tabId, frameId);
                         return;
                     }
                     if (injection.jsScriptText) {
@@ -635,9 +659,25 @@
                 }
             }
 
-            adguard.webNavigation.onCommitted.addListener(tryInjectOnCommitted);
+            /**
+             * Removes prepared injection onErrorOccured event for appropriate requestType, tabId and frameId
+             * @param {RequestDetails} details
+             */
+            function removeRelatedInjection(details) {
+                let requestType = details.requestType;
+                let tab = details.tab;
+                let tabId = tab.tabId;
+                if (shouldSkipInjection(requestType, tabId)) {
+                    return;
+                }
+                let frameId = details.frameId;
+                injections.remove(tabId, frameId);
+            }
+
+            adguard.webNavigation.onCommitted.addListener(tryInjectOnCommited);
             adguard.webRequest.onBeforeRequest.addListener(prepareInjectionContent, ['<all_urls>']);
             adguard.webRequest.onResponseStarted.addListener(tryInjectOnResponseStarted, ['<all_urls>']);
+            adguard.webRequest.onErrorOccurred.addListener(removeRelatedInjection, ['<all_urls>']);
         })(adguard);
     }
 })(adguard);
