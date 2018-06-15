@@ -374,6 +374,44 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         });
     }
 
+    /**
+     * Depending on version numbers select proper message for description
+     *
+     * @param currentVersion
+     * @param previousVersion
+     */
+    function getUpdateDescriptionMessage(currentVersion, previousVersion) {
+        if (adguard.utils.browser.getMajorVersionNumber(currentVersion) > adguard.utils.browser.getMajorVersionNumber(previousVersion) ||
+            adguard.utils.browser.getMinorVersionNumber(currentVersion) > adguard.utils.browser.getMinorVersionNumber(previousVersion)) {
+            return adguard.i18n.getMessage("options_popup_version_update_description_major");
+        }
+
+        return adguard.i18n.getMessage("options_popup_version_update_description_minor");
+    }
+
+    /**
+     * Shows application updated popup
+     *
+     * @param currentVersion
+     * @param previousVersion
+     */
+    function showVersionUpdatedPopup(currentVersion, previousVersion) {
+        var message = {
+            type: 'show-version-updated-popup',
+            title: adguard.i18n.getMessage("options_popup_version_update_title", currentVersion),
+            description: getUpdateDescriptionMessage(currentVersion, previousVersion),
+            changelogHref: adguard.i18n.getMessage("options_popup_version_update_changelog_href"),
+            changelogText: adguard.i18n.getMessage("options_popup_version_update_changelog_text"),
+            offer: adguard.i18n.getMessage("options_popup_version_update_offer"),
+            offerButtonHref: adguard.i18n.getMessage("options_popup_version_update_offer_button_href"),
+            offerButtonText: adguard.i18n.getMessage("options_popup_version_update_offer_button_text")
+        };
+
+        adguard.tabs.getActive(function (tab) {
+            adguard.tabs.sendMessage(tab.tabId, message);
+        });
+    }
+
     function getFiltersUpdateResultMessage(success, updatedFilters) {
         var title = adguard.i18n.getMessage("options_popup_update_title");
         var text = [];
@@ -721,6 +759,15 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     adguard.listeners.addListener(function (event) {
         if (event === adguard.listeners.APPLICATION_INITIALIZED) {
             adguard.tabs.getActive(updateTabIconAndContextMenu);
+        }
+    });
+
+    //on application updated event
+    adguard.listeners.addListener(function (event, info) {
+        if (event === adguard.listeners.APPLICATION_UPDATED) {
+            if (adguard.settings.isShowAppUpdatedNotification()) {
+                showVersionUpdatedPopup(info.currentVersion, info.prevVersion);
+            }
         }
     });
 

@@ -100,6 +100,26 @@
         },
 
         /**
+         * Returns major number of version
+         *
+         * @param version
+         */
+        getMajorVersionNumber: function (version) {
+            var v = new Version(version);
+            return v.version[0];
+        },
+
+        /**
+         * Returns minor number of version
+         *
+         * @param version
+         */
+        getMinorVersionNumber: function (version) {
+            var v = new Version(version);
+            return v.version[1];
+        },
+
+        /**
          * @returns Extension version
          */
         getAppVersion: function () {

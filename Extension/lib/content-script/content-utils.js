@@ -106,6 +106,59 @@
     }
 
     /**
+     * Shows version updated popup.
+     * Popup content is added right to the page content.
+     *
+     * @param {{title,description, changelogHref, changelogText, offer, offerButtonHref, offerButtonText}} message
+     */
+    function showVersionUpdatedPopup(message) {
+        var alertDivHtml =
+            `<div id="adguard-new-version-popup" class="update-popup update-popup--active">
+                <div id="adguard-new-version-popup-close" class="update-popup__close"></div>
+                <div class="update-popup__logo"></div>
+                <div class="update-popup__title">
+                    ${message.title}
+                </div>
+                <div class="update-popup__desc">
+                    ${message.description}
+                </div>
+                <a href="${message.changelogHref}" class="update-popup__link" target="_blank">
+                    ${message.changelogText}
+                </a>
+                <div class="update-popup__offer">
+                    ${message.offer}
+                </div>
+                <a href="${message.offerButtonHref}" class="update-popup__btn">
+                    ${message.offerButtonText}
+                </a>
+            </div>`;
+
+        var triesCount = 10;
+
+        var alertDiv = htmlToElement(alertDivHtml);
+
+        function appendPopup(count) {
+            if (count >= triesCount) {
+                return;
+            }
+            if (document.body) {
+                document.body.appendChild(alertDiv);
+
+                var close = document.getElementById('adguard-new-version-popup-close');
+                close.addEventListener('click', function () {
+                    document.body.removeChild(alertDiv);
+                });
+            } else {
+                setTimeout(function () {
+                    appendPopup(count + 1);
+                }, 500);
+            }
+        }
+
+        appendPopup(0);
+    }
+
+    /**
      * Reload page without cache
      */
     function noCacheReload() {
@@ -123,6 +176,8 @@
     contentPage.onMessage.addListener(function (message) {
         if (message.type === 'show-alert-popup') {
             showAlertPopup(message);
+        } else if (message.type === 'show-version-updated-popup') {
+            showVersionUpdatedPopup(message);
         } else if (message.type === 'no-cache-reload') {
             noCacheReload();
         } else if (message.type === 'update-tab-url') {

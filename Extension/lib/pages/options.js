@@ -944,6 +944,9 @@ var Settings = function () {
     checkboxes.push(new Checkbox('#showInfoAboutAdguardFullVersion', userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO, {
         negate: true
     }));
+    checkboxes.push(new Checkbox('#showAppUpdatedNotification', userSettings.names.DISABLE_SHOW_APP_UPDATED_NOTIFICATION, {
+        negate: true
+    }));
 
     var allowAcceptableAdsCheckbox = $("#allowAcceptableAds");
     allowAcceptableAdsCheckbox.on('change', function () {

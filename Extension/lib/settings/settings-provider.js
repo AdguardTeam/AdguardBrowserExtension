@@ -181,7 +181,8 @@
                 "use-optimized-filters": adguard.settings.isUseOptimizedFiltersEnabled(),
                 "collect-hits-count": adguard.settings.collectHitsCount(),
                 "show-context-menu": adguard.settings.showContextMenu(),
-                "show-info-about-adguard": adguard.settings.isShowInfoAboutAdguardFullVersion()
+                "show-info-about-adguard": adguard.settings.isShowInfoAboutAdguardFullVersion(),
+                "show-app-updated-info": adguard.settings.isShowAppUpdatedNotification()
             }
         };
 
@@ -254,6 +255,7 @@
         adguard.settings.changeCollectHitsCount(!!set["collect-hits-count"], syncSuppressOptions);
         adguard.settings.changeShowContextMenu(!!set["show-context-menu"], syncSuppressOptions);
         adguard.settings.changeShowInfoAboutAdguardFullVersion(!!set["show-info-about-adguard"], syncSuppressOptions);
+        adguard.settings.changeShowAppUpdatedNotification(!!set["show-app-updated-info"], syncSuppressOptions);
 
         callback(true);
     };
