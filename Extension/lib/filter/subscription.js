@@ -164,7 +164,8 @@ adguard.subscriptions = (function (adguard) {
             description: parseTag('Description'),
             homepage: parseTag('Homepage'),
             version: parseTag('Version'),
-            expires: parseTag('Expires')
+            expires: parseTag('Expires'),
+            timeUpdated: parseTag('TimeUpdated')
         };
     };
 
@@ -196,7 +197,7 @@ adguard.subscriptions = (function (adguard) {
             var defaultDescription = filterData.description;
             var homepage = filterData.homepage;
             var version = filterData.version;
-            var timeUpdated = null;
+            var timeUpdated = filterData.timeUpdated || new Date().toString();
             var expires = filterData.expires;
             var subscriptionUrl = url;
             var languages = [];
