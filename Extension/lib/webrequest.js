@@ -462,7 +462,7 @@
                     return this[this.createKey(tabId, frameId)];
                 },
 
-                remove: function (tabId, frameId) {
+                remove: function (tabId, frameId, requestType) {
                     delete this[this.createKey(tabId, frameId)];
                 },
             };
@@ -625,8 +625,9 @@
              * @param {RequestDetails} details Details about the navigation event:
              * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webNavigation/onCommitted#details
              */
-            function tryInjectOnCommited(details) {
-                let tabId = details.tabId;
+            function tryInject(details) {
+                let tab = details.tab;
+                let tabId = tab.tabId;
                 let frameId = details.frameId;
                 const injection = injections.get(tabId, frameId);
                 if (injection) {
@@ -638,13 +639,8 @@
                          * with properties and structure used to get css and js code
                          */
                         setTimeout(function (details) {
-                            const webRequestDetails = {
-                                tab: { tabId: details.tabId },
-                                frameId: details.frameId,
-                                requestUrl: details.url,
-                            };
-                            prepareInjectionContent(webRequestDetails);
-                            tryInjectOnCommited(details);
+                            prepareInjectionContent(details);
+                            tryInject(details);
                         }, REQUEST_FILTER_READY_TIMEOUT, details);
                         injections.remove(tabId, frameId);
                         return;
@@ -674,10 +670,13 @@
                 injections.remove(tabId, frameId);
             }
 
-            adguard.webNavigation.onCommitted.addListener(tryInjectOnCommited);
             adguard.webRequest.onBeforeRequest.addListener(prepareInjectionContent, ['<all_urls>']);
             adguard.webRequest.onResponseStarted.addListener(tryInjectOnResponseStarted, ['<all_urls>']);
+            adguard.webNavigation.onCommitted.addListener(tryInject);
             adguard.webRequest.onErrorOccurred.addListener(removeRelatedInjection, ['<all_urls>']);
+            if (adguard.utils.browser.isFirefoxBrowser()) {
+                adguard.webRequest.onCompleted.addListener(tryInject, ['<all_urls>']);
+            }
         })(adguard);
     }
 })(adguard);
