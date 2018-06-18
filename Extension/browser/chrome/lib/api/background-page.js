@@ -299,6 +299,18 @@ var browser = window.browser || chrome;
         },
     };
 
+    var onCompleted = {
+        addListener: function (callback, urls) {
+            browser.webRequest.onCompleted.addListener(function (details) {
+                if (shouldSkipRequest(details)) {
+                    return;
+                }
+                var requestDetails = getRequestDetails(details);
+                return callback(requestDetails);
+            }, urls ? { urls: urls } : {}, ['responseHeaders']);
+        },
+    };
+
     /**
      * Gets URL of a file that belongs to our extension
      */
@@ -346,7 +358,7 @@ var browser = window.browser || chrome;
     adguard.webRequest = {
         onBeforeRequest: onBeforeRequest,
         handlerBehaviorChanged: browser.webRequest.handlerBehaviorChanged,
-        onCompleted: browser.webRequest.onCompleted,
+        onCompleted: onCompleted,
         onErrorOccurred: onErrorOccurred,
         onHeadersReceived: onHeadersReceived,
         onBeforeSendHeaders: onBeforeSendHeaders,
@@ -383,7 +395,11 @@ var browser = window.browser || chrome;
 
         addListener: function (callback) {
             // https://developer.chrome.com/extensions/webNavigation#event-onCommitted
-            browser.webNavigation.onCommitted.addListener(callback, {
+            browser.webNavigation.onCommitted.addListener(function (details) {
+                details.requestType = details.frameId === 0 ? 'DOCUMENT' : 'SUBDOCUMENT';
+                details.tab = { tabId: details.tabId };
+                callback(details);
+            }, {
                 url: [{
                     urlPrefix: 'http'
                 }, {
