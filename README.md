@@ -81,7 +81,6 @@ This will create a Build directory with unpacked extensions for all browsers:
   Build/chrome-$currentVersion
   Build/firefox-$currentVersion
   Build/opera-$currentVersion
-  Build/safari-$currentVersion.safariextension
 ```
 
 #### Building the beta and release versions

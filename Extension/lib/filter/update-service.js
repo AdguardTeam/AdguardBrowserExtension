@@ -278,7 +278,7 @@ adguard.applicationUpdateService = (function (adguard) {
     var onUpdate = function (runInfo, callback) {
 
         var methods = [];
-        if (adguard.utils.browser.isGreaterVersion("2.3.5", runInfo.prevVersion) && adguard.utils.browser.isChromium() && !adguard.utils.browser.isSafariBrowser()) {
+        if (adguard.utils.browser.isGreaterVersion("2.3.5", runInfo.prevVersion) && adguard.utils.browser.isChromium()) {
             methods.push(onUpdateChromiumStorage);
         }
         if (adguard.utils.browser.isEdgeBrowser() && !adguard.utils.browser.isEdgeBeforeCreatorsUpdate()) {

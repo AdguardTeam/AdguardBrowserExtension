@@ -70,12 +70,9 @@
             enabledFilters: enabledFilters,
             filtersMetadata: adguard.subscriptions.getFilters(),
             requestFilterInfo: adguard.requestFilter.getRequestFilterInfo(),
-            contentBlockerInfo: adguard.requestFilter.getContentBlockerInfo(),
             syncStatusInfo: adguard.sync.syncService.getSyncStatus(),
             environmentOptions: {
                 isMacOs: adguard.utils.browser.isMacOs(),
-                isSafariBrowser: adguard.utils.browser.isSafariBrowser(),
-                isContentBlockerEnabled: adguard.utils.browser.isContentBlockerEnabled(),
                 Prefs: {
                     locale: adguard.app.getLocale(),
                     mobile: adguard.prefs.mobile || false
@@ -315,8 +312,7 @@
                     callback({
                         frameInfo: frameInfo,
                         options: {
-                            showStatsSupported: !adguard.utils.browser.isContentBlockerEnabled(),
-                            isSafariBrowser: adguard.utils.browser.isSafariBrowser(),
+                            showStatsSupported: true,
                             isFirefoxBrowser: adguard.utils.browser.isFirefoxBrowser(),
                             isMacOs: adguard.utils.browser.isMacOs()
                         }

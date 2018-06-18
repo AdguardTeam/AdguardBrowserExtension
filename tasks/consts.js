@@ -11,8 +11,6 @@ export const FILTERS_DEST = 'Extension/filters/%browser';
 
 export const PRIVATE_FILES = 'private/AdguardBrowserExtension';
 
-export const SAFARI_CERTS_PRIVATE_FILES = PRIVATE_FILES + '/safari_certs';
-
 export const EXTENSION_FILTERS_SERVER_URL_FORMAT = 'https://filters.adtidy.org/extension/%browser';
 
 export const METADATA_DOWNLOAD_URL_FORMAT = EXTENSION_FILTERS_SERVER_URL_FORMAT + '/filters.json';
@@ -39,12 +37,6 @@ export const FIREFOX_LEGACY_ID_BETA = 'adguardadblockerlegacy@adguard.com';
 export const CHROME_UPDATE_URL = 'https://adguardteam.github.io/AdguardBrowserExtension/chrome_updates.xml';
 export const FIREFOX_LEGACY_UPDATE_URL = 'https://adguardteam.github.io/AdguardBrowserExtension/firefox_updates.rdf';
 export const FIREFOX_WEBEXT_UPDATE_URL = 'https://adguardteam.github.io/AdguardBrowserExtension/firefox_updates.json';
-export const SAFARI_UPDATE_URL = 'https://adguardteam.github.io/AdguardBrowserExtension/safari_updates.xml';
-
-// Safari extension IDs
-export const SAFARI_EXTENSION_ID_DEV = 'com.adguard.safaridev';
-export const SAFARI_EXTENSION_ID_BETA = 'com.adguard.safaribeta';
-export const SAFARI_EXTENSION_ID_RELEASE = 'com.adguard.safari';
 
 export const FIREFOX_LEGACY = 'FIREFOX_LEGACY';
 

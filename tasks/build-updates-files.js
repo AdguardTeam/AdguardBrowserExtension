@@ -67,16 +67,4 @@ const firefoxRDFupdate = (done) => {
     return done();
 };
 
-const safariUpdate = (done) => {
-    let safari_updates = fs.readFileSync('./safari_updates.xml').toString();
-
-    safari_updates = safari_updates.replace(/\%VERSION\%/g, version);
-    safari_updates = safari_updates.replace(/\%TAGNAME\%/g, getTagArg());
-    safari_updates = safari_updates.replace(/\%NAME\%/g, `safari-beta-${version}.safariextz`);
-
-    fs.writeFileSync('./safari_updates.xml', safari_updates);
-
-    return done();
-};
-
-export default gulp.series(copyFiles, chromeUpdate, firefoxJSONupdate, firefoxRDFupdate, safariUpdate);
+export default gulp.series(copyFiles, chromeUpdate, firefoxJSONupdate, firefoxRDFupdate);
