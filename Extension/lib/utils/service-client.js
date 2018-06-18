@@ -45,8 +45,6 @@ adguard.backend = (function (adguard) {
             return adguard.lazyGet(this, 'filtersUrl', function () {
                 if (adguard.utils.browser.isFirefoxBrowser()) {
                     return 'https://filters.adtidy.org/extension/firefox';
-                } else if (adguard.utils.browser.isSafariBrowser()) {
-                    return 'https://filters.adtidy.org/extension/safari';
                 } else if (adguard.utils.browser.isEdgeBrowser()) {
                     return 'https://filters.adtidy.org/extension/edge';
                 } else if (adguard.utils.browser.isOperaBrowser()) {
@@ -137,7 +135,7 @@ adguard.backend = (function (adguard) {
         adguard_ext_chromium: adguard.utils.browser.isChromium(),
         adguard_ext_firefox: adguard.utils.browser.isFirefoxBrowser(),
         adguard_ext_edge: adguard.utils.browser.isEdgeBrowser(),
-        adguard_ext_safari: adguard.utils.browser.isSafariBrowser(),
+        adguard_ext_safari: false,
         adguard_ext_opera: adguard.utils.browser.isOperaBrowser(),
     };
 

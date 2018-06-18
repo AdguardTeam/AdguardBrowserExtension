@@ -232,8 +232,9 @@
                 while (iExtendedCss--) {
                     rule = this.extendedCssRules[iExtendedCss];
                     if (rule.isPermitted(domainName)) {
-                        if (genericHide && rule.isGeneric()) { continue; }
-                        // Extcss rules should be injected for safari content blocking api
+                        if (genericHide && rule.isGeneric()) {
+                            continue;
+                        }
                         rules.push(rule);
                     }
                 }

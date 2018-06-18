@@ -43,7 +43,6 @@ const updateLocalScriptRules = (browser, done) => {
 const chromium = (done) => updateLocalScriptRules('chromium', done);
 const edge = (done) => updateLocalScriptRules('edge', done);
 const firefox = (done) => updateLocalScriptRules('firefox', done);
-const safari = (done) => updateLocalScriptRules('safari', done);
 const operaBrowser = (done) => updateLocalScriptRules('opera', done);
 
-export default gulp.series(chromium, edge, firefox, safari, operaBrowser);
+export default gulp.series(chromium, edge, firefox, operaBrowser);

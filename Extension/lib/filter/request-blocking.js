@@ -130,12 +130,6 @@ adguard.webRequestService = (function (adguard) {
 
         if (retrieveSelectors) {
             result.collapseAllElements = adguard.requestFilter.shouldCollapseAllElements();
-
-            if (!shouldLoadAllSelectors(result.collapseAllElements)) {
-                // We don't need regular element hiding rules in case of the Safari content blocker
-                cssFilterOptions += CssFilter.CSS_INJECTION_ONLY;
-            }
-
             result.selectors = adguard.requestFilter.getSelectorsForUrl(documentUrl, cssFilterOptions);
         }
 
@@ -438,19 +432,6 @@ adguard.webRequestService = (function (adguard) {
 
         // Record rule hit
         recordRuleHit(tab, requestRule, requestUrl);
-    };
-
-    var shouldLoadAllSelectors = function (collapseAllElements) {
-
-        var safariContentBlockerEnabled = adguard.utils.browser.isContentBlockerEnabled();
-        if (safariContentBlockerEnabled && collapseAllElements) {
-            // For Safari 9+ we will load all selectors when browser is just started
-            // as at that moment content blocker may not been initialized
-            return true;
-        }
-
-        // In other cases we should load all selectors every time
-        return !safariContentBlockerEnabled;
     };
 
     // EXPOSE
