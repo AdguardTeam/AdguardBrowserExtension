@@ -229,7 +229,7 @@
                 initAssistant(tabId);
             });
         } else {
-            // Manualy start assistant in legacy firefox
+            // Manualy start assistant
             initAssistant(tabId);
         }
     };

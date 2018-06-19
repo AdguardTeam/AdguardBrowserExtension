@@ -4,7 +4,6 @@ import opera from './browser-opera';
 import edge from './browser-edge';
 import firefoxWebext from './browser-firefox-webext ';
 import firefoxAmo from './browser-firefox-amo';
-import firefoxLegacy from './browser-firefox-legacy';
 import api from './sample-extension';
 import downloadAllFilters from './download-filters';
 import updateLocalScriptRules from './update-local-script-rules';
@@ -30,10 +29,10 @@ export const runTests = gulp.series(tests, (done) => done());
 export const buildUpdatesFilesStream = gulp.series(buildUpdatesFiles, (done) => done());
 
 // dev build
-export const buildDev = gulp.series(chromium, firefoxAmo, firefoxWebext, firefoxLegacy, edge, api, (done) => done());
+export const buildDev = gulp.series(chromium, firefoxAmo, firefoxWebext, edge, api, (done) => done());
 
 // beta build
-export const buildBeta = gulp.series(chromium, firefoxWebext, firefoxLegacy, edge, api, clean, (done) => done());
+export const buildBeta = gulp.series(chromium, firefoxWebext, edge, api, clean, (done) => done());
 
 // release build
 export const buildRelease = gulp.series(downloadFilters, chromium, opera, firefoxAmo, edge, clean, (done) => done());

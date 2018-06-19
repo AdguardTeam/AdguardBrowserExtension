@@ -31,14 +31,10 @@ export const LOCAL_SCRIPT_RULES_COMMENT = 'By the rules of AMO and addons.opera.
 export const FIREFOX_EXTENSION_ID_DEV = 'adguardadblockerdev@adguard.com';
 export const FIREFOX_EXTENSION_ID_BETA = 'adguardadblockerbeta@adguard.com';
 export const FIREFOX_EXTENSION_ID_RELEASE = 'adguardadblocker@adguard.com';
-export const FIREFOX_LEGACY_ID_BETA = 'adguardadblockerlegacy@adguard.com';
 
 // Update urls
 export const CHROME_UPDATE_URL = 'https://adguardteam.github.io/AdguardBrowserExtension/chrome_updates.xml';
-export const FIREFOX_LEGACY_UPDATE_URL = 'https://adguardteam.github.io/AdguardBrowserExtension/firefox_updates.rdf';
 export const FIREFOX_WEBEXT_UPDATE_URL = 'https://adguardteam.github.io/AdguardBrowserExtension/firefox_updates.json';
-
-export const FIREFOX_LEGACY = 'FIREFOX_LEGACY';
 
 export const FIREFOX_WEBEXT = 'FIREFOX_WEBEXT';
 
