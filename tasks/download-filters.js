@@ -133,7 +133,6 @@ const downloadFilters = (url, browser) => {
 const chromium = (done) => startDownload('chromium', done);
 const edge = (done) => startDownload('edge', done);
 const firefox = (done) => startDownload('firefox', done);
-const safari = (done) => startDownload('safari', done);
 const opera = (done) => startDownload('opera', done);
 
-export default gulp.series(chromium, edge, firefox, safari, opera);
+export default gulp.series(chromium, edge, firefox, opera);

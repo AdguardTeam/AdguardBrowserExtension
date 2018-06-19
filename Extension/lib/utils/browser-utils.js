@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global safari */
-
 (function (adguard, api) {
 
     /**
@@ -138,17 +136,8 @@
             return adguard.prefs.browser === "Opera";
         },
 
-        isSafariBrowser: function () {
-            return adguard.prefs.browser === "Safari";
-        },
-
         isEdgeBrowser: function () {
             return adguard.prefs.browser === "Edge";
-        },
-
-        isSafari9Plus: function () {
-            return adguard.prefs.browser === "Safari" &&
-                this.isGreaterOrEqualsVersion(adguard.prefs.safariVersion, "9.0");
         },
 
         isFirefoxBrowser: function () {
@@ -169,24 +158,6 @@
 
         isMacOs: function () {
             return navigator.platform.toUpperCase().indexOf('MAC') >= 0;
-        },
-
-        /**
-         * Returns true if Safari content blocker API is supported
-         */
-        isContentBlockerEnabled: function () {
-
-            if (typeof safari === 'undefined' || !this.isSafari9Plus()) {
-                return false;
-            }
-
-            if (typeof this._useOldSafariAPI === 'undefined') {
-                // Seems that getItem returns a string
-                // Cast it to string as I don't understand why it's type randomly changes (in dev build it is string, in beta - boolean)
-                this._useOldSafariAPI = (String(safari.extension.settings.getItem('useOldSafariAPI')) === 'true');
-            }
-
-            return !this._useOldSafariAPI;
         },
 
         /**
@@ -247,13 +218,8 @@
             if (referrerUrl && referrerUrl.indexOf('http') === 0) {
                 return referrerUrl;
             }
-            if (this.isFirefoxBrowser()) {
-                return 'about:newtab';
-            } else if (this.isSafariBrowser()) {
-                return 'about:blank';
-            } else {
-                return 'about:newtab';
-            }
+
+            return 'about:newtab';
         },
 
         /**

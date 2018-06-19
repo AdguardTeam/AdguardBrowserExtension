@@ -494,22 +494,6 @@ var AntiBannerFilters = function (options) {
         }
     }
 
-    /**
-     * Checks Safari content blocker rules limit, shows alert message for rules overlimit.
-     * It's important to check that limit because of Safari limitations.
-     * Content blocker with too many rules won't work at all.
-     *
-     * @param rulesOverLimit True if loaded rules more than limit
-     * @private
-     */
-    function checkSafariContentBlockerRulesLimit(rulesOverLimit) {
-        if (rulesOverLimit) {
-            this.tooManyRulesEl.show();
-        } else {
-            this.tooManyRulesEl.hide();
-        }
-    }
-
     function updateAntiBannerFilters(e) {
         e.preventDefault();
         contentPage.sendMessage({type: 'checkAntiBannerFiltersUpdate'}, function () {
@@ -631,10 +615,6 @@ var AntiBannerFilters = function (options) {
 
         var el = $('#filtersRulesInfo');
         el.text(message);
-
-        if (environmentOptions.isContentBlockerEnabled) {
-            checkSafariContentBlockerRulesLimit(info.rulesOverLimit);
-        }
     };
 
     var onFilterStateChanged = function (filter) {
@@ -939,7 +919,7 @@ var Settings = function () {
     }));
     checkboxes.push(new Checkbox('#enableShowContextMenu', userSettings.names.DISABLE_SHOW_CONTEXT_MENU, {
         negate: true,
-        hidden: environmentOptions.isSafariBrowser
+        hidden: false
     }));
     checkboxes.push(new Checkbox('#showInfoAboutAdguardFullVersion', userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO, {
         negate: true
@@ -1070,7 +1050,6 @@ PageController.prototype = {
         this.resetStatsPopup = $("#resetStatsPopup");
         this.subscriptionModalEl = $('#subscriptionModal');
         this.tooManySubscriptionsEl = $('#tooManySubscriptions');
-        this.tooManyRulesEl = $('#tooManyRules');
 
         $("#resetStats").on('click', this.onResetStatsClicked.bind(this));
 
@@ -1092,12 +1071,7 @@ PageController.prototype = {
         if (environmentOptions.Prefs.mobile) {
             $('#resetStats').hide();
         }
-        //Hide some functionality for content blocker safari browsers
-        if (environmentOptions.isContentBlockerEnabled) {
-            $('#openLog').hide();
-            $('#resetStats').hide();
-            $('.page-stats-switch-block').hide();
-        }
+
         this.checkSubscriptionsCount();
 
         this.settings = new Settings();
@@ -1112,7 +1086,7 @@ PageController.prototype = {
         this.userFilter.updateUserFilterRules();
 
         // Initialize AntiBanner filters
-        this.antiBannerFilters = new AntiBannerFilters({rulesInfo: environmentOptions.isContentBlockerEnabled ? contentBlockerInfo : requestFilterInfo});
+        this.antiBannerFilters = new AntiBannerFilters({rulesInfo: requestFilterInfo});
         this.antiBannerFilters.render();
 
         // Initialize sync tab
@@ -1157,10 +1131,6 @@ PageController.prototype = {
             return;
         }
 
-        if (environmentOptions.isContentBlockerEnabled) {
-            return;
-        }
-
         var enabledCount = this.subscriptionModalEl.find('input[name="modalFilterId"]:checked').length;
 
         if (enabledCount >= this.SUBSCRIPTIONS_LIMIT) {
@@ -1177,7 +1147,6 @@ var environmentOptions;
 var AntiBannerFiltersId;
 var EventNotifierTypes;
 var requestFilterInfo;
-var contentBlockerInfo;
 var syncStatusInfo;
 
 /**
@@ -1189,7 +1158,6 @@ var initPage = function (response) {
     enabledFilters = response.enabledFilters;
     environmentOptions = response.environmentOptions;
     requestFilterInfo = response.requestFilterInfo;
-    contentBlockerInfo = response.contentBlockerInfo;
     syncStatusInfo = response.syncStatusInfo;
 
     AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
@@ -1208,7 +1176,6 @@ var initPage = function (response) {
             EventNotifierTypes.ERROR_DOWNLOAD_FILTER,
             EventNotifierTypes.UPDATE_USER_FILTER_RULES,
             EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES,
-            EventNotifierTypes.CONTENT_BLOCKER_UPDATED,
             EventNotifierTypes.REQUEST_FILTER_UPDATED,
             EventNotifierTypes.SYNC_STATUS_UPDATED,
             EventNotifierTypes.SETTINGS_UPDATED
@@ -1232,21 +1199,12 @@ var initPage = function (response) {
                     break;
                 case EventNotifierTypes.UPDATE_USER_FILTER_RULES:
                     controller.userFilter.updateUserFilterRules();
-                    if (!environmentOptions.isContentBlockerEnabled) {
-                        controller.antiBannerFilters.updateRulesCountInfo(options);
-                    }
+                    controller.antiBannerFilters.updateRulesCountInfo(options);
                     break;
                 case EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES:
                     controller.whiteListFilter.updateWhiteListDomains();
                     break;
                 case EventNotifierTypes.REQUEST_FILTER_UPDATED:
-                    // Don't react on this event. If ContentBlockerEnabled CONTENT_BLOCKER_UPDATED event will be received.
-                    if (environmentOptions.isContentBlockerEnabled) {
-                        break;
-                    }
-                    controller.antiBannerFilters.updateRulesCountInfo(options);
-                    break;
-                case EventNotifierTypes.CONTENT_BLOCKER_UPDATED:
                     controller.antiBannerFilters.updateRulesCountInfo(options);
                     break;
                 case EventNotifierTypes.SYNC_STATUS_UPDATED:

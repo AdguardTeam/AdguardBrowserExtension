@@ -813,7 +813,7 @@ PopupController.prototype = {
     // http://jira.performix.ru/browse/AG-3474
     resizePopupWindowForMacOs: function () {
         var options = this.options;
-        if (options.isSafariBrowser || options.isFirefoxBrowser || !options.isMacOs) {
+        if (options.isFirefoxBrowser || !options.isMacOs) {
             return;
         }
         setTimeout(function () {
@@ -837,7 +837,7 @@ PopupController.prototype = {
     controller.afterRender = function () {
         // Add some delay for show popup size properly
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/505
-        var timeout = controller.options.isSafariBrowser ? 150 : 10;
+        var timeout = 10;
         setTimeout(function () {
             controller.resizePopupWindow();
             controller.resizePopupWindowForMacOs();

@@ -58,8 +58,8 @@ adguard.settings = (function (adguard) {
                 defaults[settings.DISABLE_COLLECT_HITS] = true;
                 defaults[settings.DISABLE_SEND_SAFEBROWSING_STATS] = true;
                 defaults[settings.DEFAULT_WHITE_LIST_MODE] = true;
-                defaults[settings.USE_OPTIMIZED_FILTERS] = adguard.utils.browser.isContentBlockerEnabled() || adguard.prefs.mobile;
-                defaults[settings.DISABLE_DETECT_FILTERS] = adguard.utils.browser.isContentBlockerEnabled();
+                defaults[settings.USE_OPTIMIZED_FILTERS] = adguard.prefs.mobile;
+                defaults[settings.DISABLE_DETECT_FILTERS] = false;
                 defaults[settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION] = false;
                 return defaults;
             });

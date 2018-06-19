@@ -87,8 +87,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             urlBuilder.push("firefox");
         } else if (adguard.utils.browser.isYaBrowser()) {
             urlBuilder.push("yabrowser");
-        } else if (adguard.utils.browser.isSafariBrowser()) {
-            urlBuilder.push("safari");
         } else if (adguard.utils.browser.isEdgeBrowser()) {
             urlBuilder.push("edge");
         } else {

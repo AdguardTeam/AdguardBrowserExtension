@@ -229,7 +229,7 @@
                 initAssistant(tabId);
             });
         } else {
-            // Manualy start assistant in safari and legacy firefox
+            // Manualy start assistant in legacy firefox
             initAssistant(tabId);
         }
     };

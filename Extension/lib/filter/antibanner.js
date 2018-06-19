@@ -74,14 +74,6 @@ adguard.antiBannerService = (function (adguard) {
         return SAVE_FILTER_RULES_TO_STORAGE_EVENTS.indexOf(el.event) >= 0;
     };
 
-    /**
-     * Persist state of content blocker
-     */
-    var contentBlockerInfo = {
-        rulesCount: 0,
-        rulesOverLimit: false
-    };
-
     var reloadedRules = false;
 
     /**
@@ -755,23 +747,6 @@ adguard.antiBannerService = (function (adguard) {
     };
 
     /**
-     * Update content blocker info
-     * We save state of content blocker for properly show in options page (converted rules count and over limit flag)
-     * @param info Content blocker info
-     */
-    var updateContentBlockerInfo = function (info) {
-        contentBlockerInfo.rulesCount = info.rulesCount;
-        contentBlockerInfo.rulesOverLimit = info.rulesOverLimit;
-    };
-
-    /**
-     * Content Blocker info
-     */
-    var getContentBlockerInfo = function () {
-        return contentBlockerInfo;
-    };
-
-    /**
      * Adds event listener for filters changes.
      * If filter is somehow changed this method checks if we should save changes to the storage
      * and if we should recreate RequestFilter.
@@ -1122,8 +1097,6 @@ adguard.antiBannerService = (function (adguard) {
         removeUserFilterRule: removeUserFilterRule,
 
         getRequestFilterInfo: getRequestFilterInfo,
-        updateContentBlockerInfo: updateContentBlockerInfo,
-        getContentBlockerInfo: getContentBlockerInfo,
 
         checkAntiBannerFiltersUpdate: checkAntiBannerFiltersUpdate
     };
@@ -1203,12 +1176,6 @@ adguard.requestFilter = (function (adguard) {
     var getRequestFilterInfo = function () {
         return antiBannerService.getRequestFilterInfo();
     };
-    var updateContentBlockerInfo = function (info) {
-        return antiBannerService.updateContentBlockerInfo(info);
-    };
-    var getContentBlockerInfo = function () {
-        return antiBannerService.getContentBlockerInfo();
-    };
 
     return {
 
@@ -1227,9 +1194,7 @@ adguard.requestFilter = (function (adguard) {
         getMatchedElementsForContentRules: getMatchedElementsForContentRules,
         getCspRules: getCspRules,
 
-        getRequestFilterInfo: getRequestFilterInfo,
-        updateContentBlockerInfo: updateContentBlockerInfo,
-        getContentBlockerInfo: getContentBlockerInfo
+        getRequestFilterInfo: getRequestFilterInfo
     };
 
 })(adguard);
@@ -1370,11 +1335,6 @@ adguard.filters = (function (adguard) {
         // Get language-specific filters by user locale
         var localeFilterIds = adguard.subscriptions.getFilterIdsForLanguage(adguard.app.getLocale());
         filterIds = filterIds.concat(localeFilterIds);
-
-        // Add safari filter for safari browser
-        if (adguard.utils.browser.isSafariBrowser()) {
-            filterIds.push(adguard.utils.filters.SAFARI_FILTER);
-        }
 
         // Get language-specific filters by navigator languages
         // Get the 2 most commonly used languages
