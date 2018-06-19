@@ -648,7 +648,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                 initAssistant(selectElement);
             });
         } else {
-            // Mannualy start assistant in safari and legacy firefox
+            // Mannualy start assistant
             initAssistant(selectElement);
         }
     };
