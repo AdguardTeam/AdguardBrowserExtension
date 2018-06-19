@@ -60,7 +60,6 @@ const firefoxRDFupdate = (done) => {
     firefox_updates = firefox_updates.replace(/\%VERSION\%/g, version);
     firefox_updates = firefox_updates.replace(/\%TAGNAME\%/g, getTagArg());
     firefox_updates = firefox_updates.replace(/\%STANDALONE_NAME\%/g, `firefox-standalone-beta-${version}.xpi`);
-    firefox_updates = firefox_updates.replace(/\%LEGACY_NAME\%/g, `firefox-legacy-beta-${version}.xpi`);
 
     fs.writeFileSync('./firefox_updates.rdf', firefox_updates);
 
