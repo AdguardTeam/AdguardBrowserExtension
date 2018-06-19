@@ -158,11 +158,6 @@
      */
     var shouldOverrideWebSocket = function () {
 
-        // Checks for using of Content Blocker API for Safari 9+
-        if (getContentPage().isSafari) {
-            return !getContentPage().isSafariContentBlockerEnabled;
-        }
-
         var userAgent = navigator.userAgent.toLowerCase();
         var isFirefox = userAgent.indexOf('firefox') >= 0;
 
@@ -189,20 +184,6 @@
     };
 
     /**
-     * We should override RTCPeerConnection in all browsers, except the case of using of Content Blocker API for Safari 9+
-     * @returns true if RTCPeerConnection should be overridden
-     */
-    var shouldOverrideWebRTC = function () {
-
-        // Checks for using of Content Blocker API for Safari 9+
-        if (getContentPage().isSafari) {
-            return !getContentPage().isSafariContentBlockerEnabled;
-        }
-
-        return true;
-    };
-
-    /**
      * Overrides window.WebSocket and window.RTCPeerConnection running the function from wrappers.js
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/203
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/588
@@ -224,16 +205,12 @@
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/572
          */
         var overrideWebSocket = shouldOverrideWebSocket();
-        var overrideWebRTC = shouldOverrideWebRTC();
 
-        if (overrideWebSocket || overrideWebRTC) {
+        initPageMessageListener();
 
-            initPageMessageListener();
-
-            var wrapperScriptName = 'wrapper-script-' + Math.random().toString().substr(2);
-            var script = "(" + injectPageScriptAPI.toString() + ")('" + wrapperScriptName + "', " + overrideWebSocket + ", " + overrideWebRTC + ");";
-            executeScripts([script]);
-        }
+        var wrapperScriptName = 'wrapper-script-' + Math.random().toString().substr(2);
+        var script = "(" + injectPageScriptAPI.toString() + ")('" + wrapperScriptName + "', " + overrideWebSocket + ", true);";
+        executeScripts([script]);
     };
 
     /**
@@ -630,14 +607,6 @@
             init();
         }
     };
-
-    /**
-     * Messaging won't work when page is loaded by Safari top hits
-     */
-    if (getContentPage().isSafari && document.hidden) {
-        document.addEventListener("visibilitychange", onVisibilityChange);
-        return;
-    }
 
     // Start the content script
     init();

@@ -22,7 +22,6 @@
     var ESCAPE_CHARACTER = '\\';
 
     var isFirefoxBrowser = adguard.utils.browser.isFirefoxBrowser();
-    var isContentBlockerEnabled = adguard.utils.browser.isContentBlockerEnabled();
 
     /**
      * Searches for domain name in rule text and transforms it to punycode if needed.
@@ -287,12 +286,6 @@
             return;
         }
 
-        // Maybe safari could intercept data: and blob: URIs,
-        // otherwise csp rules are not supported in converter
-        if (isContentBlockerEnabled) {
-            return;
-        }
-
         if (urlRuleText.indexOf('data:') === 0 || urlRuleText.indexOf('|data:') === 0 ||
             urlRuleText.indexOf('blob:') === 0 || urlRuleText.indexOf('|blob:') === 0) {
 
@@ -460,16 +453,6 @@
         }
 
         return this.urlRegExp;
-    };
-
-    /**
-     * Lazy getter for url rule text ( uses in safari content blocker)
-     */
-    UrlFilterRule.prototype.getUrlRuleText = function () {
-        if (!this.urlRuleText) {
-            this.urlRuleText = parseRuleText(this.ruleText).urlRuleText;
-        }
-        return this.urlRuleText;
     };
 
     /**

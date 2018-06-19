@@ -7,12 +7,6 @@ const testRule = (done) => {
     return done();
 };
 
-// Safari converter tests
-const testSafari = (done) => {
-    qunit('Extension/tests/safari-converter/test-safari-converter.html');
-    return done();
-};
-
 // Safebrowsing filter tests
 const testSB = (done) => {
     qunit('Extension/tests/sb-filter/test-sb-filter.html');
@@ -67,4 +61,4 @@ const testEncoding = (done) => {
     return done();
 };
 
-export default gulp.series(testSafari, testRule, testSB, testURL, testCSSfilter, testContent, testCSShits, testReq, testEl, testRing, testEncoding);
+export default gulp.series(testRule, testSB, testURL, testCSSfilter, testContent, testCSShits, testReq, testEl, testRing, testEncoding);
