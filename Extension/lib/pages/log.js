@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global i18n, $, contentPage, createEventListener */
+/* global i18n, contentPage, createEventListener */
 
 var PageController = function () {
     this.requestWizard = new RequestWizard();
@@ -286,7 +286,9 @@ PageController.prototype = {
             var template = this._renderTemplate(event);
             element.replaceWith(template);
         }
-    },onSelectedTabChange: function () {
+    },
+
+    onSelectedTabChange: function () {
 		var selectedItem = this.tabSelectorList.find('[data-tab-id="' + this.currentTabId + '"]');
 		if (selectedItem.length === 0) {
 			selectedItem = this.tabSelectorList.find(':first');

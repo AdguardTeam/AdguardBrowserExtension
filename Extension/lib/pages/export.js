@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global $, contentPage */
+/* global contentPage */
 
 /**
  * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/541
@@ -27,13 +27,13 @@ function isFirefox51OrHigher() {
     return version >= 51;
 }
 
-$(document).ready(function () {
+document.addEventListener("DOMContentLoaded", function () {
 
     var callback = function (rulesText) {
 
-        var el = $('<pre/>');
-        el.text(rulesText);
-        $("body").append(el);
+        var el = document.createElement('pre');
+        el.textContent = rulesText;
+        document.body.appendChild(el);
 
         // FF (>= 51) doesn't correctly process clicking on the download link, so don't do it.
         if (isFirefox51OrHigher()) {
@@ -102,11 +102,15 @@ var showSaveFunc = (function () {
             if (DownloadAttributeSupport) {
                 blob = new Blob([data], {type: mimetype});
                 url = URL.createObjectURL(blob);
+                
                 var link = document.createElement("a");
                 link.setAttribute("href", url);
                 link.setAttribute("download", name || "Download.bin");
-                $('body').append(link);
-                $(link).get(0).click();
+                document.body.appendChild(link);
+                
+                var event = document.createEvent('HTMLEvents');
+                event.initEvent('click', true, false);
+                link.dispatchEvent(event);
             } else {
                 blob = new Blob([data], {type: mimetype});
                 url = URL.createObjectURL(blob);

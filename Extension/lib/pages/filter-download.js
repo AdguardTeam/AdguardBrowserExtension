@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 /* global $, NProgress, contentPage */
-$(document).ready(function () {
+document.addEventListener("DOMContentLoaded", function () {
 
     NProgress.inc();
 
