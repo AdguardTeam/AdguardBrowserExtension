@@ -494,6 +494,8 @@
                                             | webRequest.onErrorOccured    |     Remove injections on error
                                             |                              |
                                             +------------------------------+
+            In both flows we clear injections on tab close
+            Also our injections removes old injections for iframes when user navigates to other page in the same tab
          */
         (function (adguard) {
             /**
