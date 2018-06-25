@@ -398,6 +398,7 @@ var browser = window.browser || chrome;
             browser.webNavigation.onCommitted.addListener(function (details) {
                 details.requestType = details.frameId === 0 ? 'DOCUMENT' : 'SUBDOCUMENT';
                 details.tab = { tabId: details.tabId };
+                details.requestUrl = details.url;
                 callback(details);
             }, {
                 url: [{
