@@ -195,6 +195,7 @@ function createEventListener(events, callback, onUnloadCallback) { // jshint ign
             }
         }
     };
+
     $(window).on('beforeunload', onUnload);
     $(window).on('unload', onUnload);
 }
