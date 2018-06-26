@@ -371,6 +371,9 @@
 
         return {
 
+            // Constant
+            BACKGROUND_TAB_ID: -1,
+
             // Events
             onCreated: onCreatedChannel,
             onRemoved: onRemovedChannel,
