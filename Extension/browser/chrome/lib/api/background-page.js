@@ -396,6 +396,7 @@ var browser = window.browser || chrome;
         addListener: function (callback) {
             // https://developer.chrome.com/extensions/webNavigation#event-onCommitted
             browser.webNavigation.onCommitted.addListener(function (details) {
+                // makes webNavigation.onCommited details similar to webRequestDetails
                 details.requestType = details.frameId === 0 ? 'DOCUMENT' : 'SUBDOCUMENT';
                 details.tab = { tabId: details.tabId };
                 details.requestUrl = details.url;
