@@ -24,7 +24,7 @@ adguard.filteringLog = (function (adguard) {
 
     var REQUESTS_SIZE_PER_TAB = 1000;
 
-    const backgroundTabId = -1;
+    const backgroundTabId = adguard.BACKGROUND_TAB_ID;
     const backgroundTab = {
         tabId: backgroundTabId,
         title: adguard.i18n.getMessage('background_tab_title')

@@ -664,7 +664,7 @@
                 if (eventName === 'onCompleted' && requestType === adguard.RequestTypes.DOCUMENT) {
                     return true;
                 }
-                if (tabId === adguard.tabs.BACKGROUND_TAB_ID) {
+                if (tabId === adguard.BACKGROUND_TAB_ID) {
                     return true;
                 }
                 if (requestType !== adguard.RequestTypes.DOCUMENT && requestType !== adguard.RequestTypes.SUBDOCUMENT) {
