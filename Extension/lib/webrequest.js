@@ -429,6 +429,9 @@
          * Every time we try to inject script we check if script wasn't yet executed
          * We use browser.tabs.insertCSS and browser.tabs.executeScript functions to inject our CSS/JS rules.
          * This method can be used in modern Chrome and FF only.
+         * Bellow are presented rough event flows in Chrome and Firefox
+         * This flows are were tested for Chrome 67.0.3396.87 (64 bit) and Firefox 60.0.2 (64-bit)
+         * FLOWS MAY BE MODIFIED IN THE FUTURE
          *
                                                 Chrome flow description
 
@@ -641,18 +644,16 @@
                 return selectorsData.css.join('\n');
             }
 
-            // If request isn't related to a tab then tabId from the webRequest callback details is equal to -1
-            const backgroundTabId = -1;
-
             /**
              * Checks requestType, tabId and event
              * We don't inject CSS or JS if request wasn't related to tab, or if request type
              * is not equal to DOCUMENT or SUBDOCUMENT.
              * @param {String} requestType
              * @param {Number} tabId
+             * @param {String} eventName
              * @returns {Boolean}
              */
-            function shouldSkipInjection(requestType, tabId, event) {
+            function shouldSkipInjection(requestType, tabId, eventName) {
                 /**
                  * onCompleted event is used only to inject code to the Firefox iframes
                  * because in current Firefox implementation webNavigation.onCommitted event for iframes
@@ -660,10 +661,10 @@
                  * if onCompleted event fired with requestType DOCUMENT then we skip it, because we don't
                  * use onCompleted event only for SUBDOCUMENTS
                  */
-                if (event === 'onCompleted' && requestType === adguard.RequestTypes.DOCUMENT) {
+                if (eventName === 'onCompleted' && requestType === adguard.RequestTypes.DOCUMENT) {
                     return true;
                 }
-                if (tabId === backgroundTabId) {
+                if (tabId === adguard.tabs.BACKGROUND_TAB_ID) {
                     return true;
                 }
                 if (requestType !== adguard.RequestTypes.DOCUMENT && requestType !== adguard.RequestTypes.SUBDOCUMENT) {
@@ -736,6 +737,10 @@
                     return;
                 }
                 const injection = injections.get(tabId, frameId);
+                /**
+                 * Sometimes it can happen that onCommited event fires earlier than onBeforeRequest
+                 * for example onCommited event for iframes in Firefox
+                 */
                 if (!injection) {
                     return;
                 }
@@ -783,7 +788,8 @@
             adguard.webRequest.onResponseStarted.addListener(tryInjectOnResponseStarted, ['<all_urls>']);
             adguard.webNavigation.onCommitted.addListener(tryInject);
             adguard.webRequest.onErrorOccurred.addListener(removeInjection, ['<all_urls>']);
-            // In the Firefox current implementation onCommited event fires earlier than onBeforeRequest event
+            // In the current Firefox version (60.0.2), the onCommitted even fires earlier than onBeforeRequest for SUBDOCUMENT requests
+            // This is true only for SUBDOCUMENTS i.e. iframes
             // so we inject code when onCompleted event fires
             if (adguard.utils.browser.isFirefoxBrowser()) {
                 adguard.webRequest.onCompleted.addListener(function (details) { tryInject(details, 'onCompleted'); }, ['<all_urls>']);

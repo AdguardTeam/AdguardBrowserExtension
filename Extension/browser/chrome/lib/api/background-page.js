@@ -218,7 +218,12 @@ var browser = window.browser || chrome;
     }
 
     var onBeforeRequest = {
-
+        /**
+         * Wrapper for webRequest.onBeforeRequest event
+         * It prepares requestDetails and passes them to the callback
+         * @param callback callback function receives {RequestDetails} and handles event
+         * @param {String} urls url match pattern https://developer.chrome.com/extensions/match_patterns
+         */
         addListener: function (callback, urls) {
 
             // https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
@@ -236,7 +241,12 @@ var browser = window.browser || chrome;
     };
 
     var onHeadersReceived = {
-
+        /**
+         * Wrapper for webRequest.onHeadersReceived event
+         * It prepares requestDetails and passes them to the callback
+         * @param callback callback function receives {RequestDetails} and handles event
+         * @param {String} urls url match pattern https://developer.chrome.com/extensions/match_patterns
+         */
         addListener: function (callback, urls) {
 
             browser.webRequest.onHeadersReceived.addListener(function (details) {
@@ -257,6 +267,12 @@ var browser = window.browser || chrome;
 
     var onBeforeSendHeaders = {
 
+        /**
+         * Wrapper for webRequest.onBeforeSendHeaders event
+         * It prepares requestDetails and passes them to the callback
+         * @param callback callback function receives {RequestDetails} and handles event
+         * @param {String} urls url match pattern https://developer.chrome.com/extensions/match_patterns
+         */
         addListener: function (callback, urls) {
 
             browser.webRequest.onBeforeSendHeaders.addListener(function (details) {
@@ -276,6 +292,12 @@ var browser = window.browser || chrome;
     };
 
     var onResponseStarted = {
+        /**
+         * Wrapper for webRequest.onResponseStarted event
+         * It prepares requestDetails and passes them to the callback
+         * @param callback callback function receives {RequestDetails} and handles event
+         * @param {String} urls url match pattern https://developer.chrome.com/extensions/match_patterns
+         */
         addListener: function (callback, urls) {
             browser.webRequest.onResponseStarted.addListener(function (details) {
                 if (shouldSkipRequest(details)) {
@@ -288,6 +310,12 @@ var browser = window.browser || chrome;
     };
 
     var onErrorOccurred = {
+        /**
+         * Wrapper for webRequest.onErrorOccurred event
+         * It prepares requestDetails and passes them to the callback
+         * @param callback callback function receives {RequestDetails} and handles event
+         * @param {String} urls url match pattern https://developer.chrome.com/extensions/match_patterns
+         */
         addListener: function (callback, urls) {
             browser.webRequest.onErrorOccurred.addListener(function (details) {
                 if (shouldSkipRequest(details)) {
@@ -300,6 +328,12 @@ var browser = window.browser || chrome;
     };
 
     var onCompleted = {
+        /**
+         * Wrapper for webRequest.onCompleted event
+         * It prepares requestDetails and passes them to the callback
+         * @param callback callback function receives {RequestDetails} and handles event
+         * @param {String} urls url match pattern https://developer.chrome.com/extensions/match_patterns
+         */
         addListener: function (callback, urls) {
             browser.webRequest.onCompleted.addListener(function (details) {
                 if (shouldSkipRequest(details)) {
@@ -392,7 +426,11 @@ var browser = window.browser || chrome;
     };
 
     var onCommitted = {
-
+        /**
+         * Wrapper for webNavigation.onCommitted event
+         * It prepares webNavigation details and passes them to the callback
+         * @param callback callback function receives object similar to {RequestDetails} and handles event
+         */
         addListener: function (callback) {
             // https://developer.chrome.com/extensions/webNavigation#event-onCommitted
             browser.webNavigation.onCommitted.addListener(function (details) {
