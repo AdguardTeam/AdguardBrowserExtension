@@ -690,7 +690,7 @@
             function tryInjectOnResponseStarted(details) {
                 var tab = details.tab;
                 var tabId = tab.tabId;
-                var requestType = details;
+                var requestType = details.requestType;
                 if (shouldSkipInjection(requestType, tabId)) {
                     return;
                 }
