@@ -494,16 +494,16 @@
                                             | webRequest.onErrorOccured    |     Remove injections on error
                                             |                              |
                                             +------------------------------+
-            In both flows we clear injections on tab close
+            On tab close we clear our injections for corresponding tab
             Also our injections removes old injections for iframes when user navigates to other page in the same tab
          */
         (function (adguard) {
             /**
-             * Object is used:
-             * 1. to save js and css texts when onBeforeRequest event fired
+             * This object is used:
+             * 1. to save js and css texts when onBeforeRequest event fires
              * by key corresponding to tabId and frameId
-             * 2. for getting js and css texts for injection on proper time
-             * After injection corresponding js and css texts are removed from object
+             * 2. to get js and css texts for injection
+             * After injection corresponding js and css texts are removed from the object
              */
             let injections = {
                 createKey: function (tabId, frameId) {
@@ -538,6 +538,11 @@
                     return undefined;
                 },
 
+                /**
+                 * Removes injection corresponding to tabId and frameId
+                 * @param {Number} tabId
+                 * @param {Number} frameId
+                 */
                 removeTabFrameInjection: function (tabId, frameId) {
                     delete this[tabId][frameId];
                     if (Object.keys(this[tabId]).length === 0) {
@@ -545,6 +550,10 @@
                     }
                 },
 
+                /**
+                 * Removes all injections corresponding to tabId
+                 * @param {Number} tabId
+                 */
                 removeTabInjection: function (tabId) {
                     delete this[tabId];
                 },
@@ -578,7 +587,6 @@
                 if (!scriptText) {
                     return null;
                 }
-
                 /**
                  * Executes scripts in a scope of the page.
                  * In order to prevent multiple script execution checks if script was already executed
@@ -637,17 +645,31 @@
             const backgroundTabId = -1;
 
             /**
-             * Checks requestType and tabId.
+             * Checks requestType, tabId and event
              * We don't inject CSS or JS if request wasn't related to tab, or if request type
              * is not equal to DOCUMENT or SUBDOCUMENT.
              * @param {String} requestType
-             * @param {Integer} tabId
+             * @param {Number} tabId
              * @returns {Boolean}
              */
-            function shouldSkipInjection(requestType, tabId) {
-                return (requestType !== adguard.RequestTypes.DOCUMENT &&
-                    requestType !== adguard.RequestTypes.SUBDOCUMENT) ||
-                    tabId === backgroundTabId;
+            function shouldSkipInjection(requestType, tabId, event) {
+                /**
+                 * onCompleted event is used only to inject code to the Firefox iframes
+                 * because in current Firefox implementation webNavigation.onCommitted event for iframes
+                 * occures early than webRequest.onBeforeRequest
+                 * if onCompleted event fired with requestType DOCUMENT then we skip it, because we don't
+                 * use onCompleted event only for SUBDOCUMENTS
+                 */
+                if (event === 'onCompleted' && requestType === adguard.RequestTypes.DOCUMENT) {
+                    return true;
+                }
+                if (tabId === backgroundTabId) {
+                    return true;
+                }
+                if (requestType !== adguard.RequestTypes.DOCUMENT && requestType !== adguard.RequestTypes.SUBDOCUMENT) {
+                    return true;
+                }
+                return false;
             }
 
             const REQUEST_FILTER_READY_TIMEOUT = 100;
@@ -677,24 +699,23 @@
                     injections.set(tabId, frameId, {
                         ready: true,
                         jsScriptText: buildScriptText(result.scripts),
-                        cssText: buildCssText(result.selectors)
+                        cssText: buildCssText(result.selectors),
                     });
                 }
             }
 
             /**
-             * Injects js code in the page on responseStarted event only if event was fired from main_frame
-             * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1029
-             * @param {*} details Details about the webrequest event
+             * Injects js code in the page on responseStarted event only if event was fired from the main_frame
+             * @param {RequestDetails} details Details about the webrequest event
              */
             function tryInjectOnResponseStarted(details) {
                 var tab = details.tab;
                 var tabId = tab.tabId;
                 var requestType = details.requestType;
+                var frameId = details.frameId;
                 if (shouldSkipInjection(requestType, tabId)) {
                     return;
                 }
-                var frameId = details.frameId;
                 var injection = injections.get(tabId, frameId);
                 if (injection && injection.jsScriptText) {
                     adguard.tabs.executeScriptCode(tabId, frameId, injection.jsScriptText);
@@ -703,56 +724,47 @@
 
             /**
              * Injects necessary CSS and scripts into the web page.
-             *
-             * @param {RequestDetails} details Details about the navigation event:
-             * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webNavigation/onCommitted#details
+             * @param {RequestDetails} details Details about the navigation event
+             * @param {String} eventName Event name
              */
-            function tryInject(details, event) {
+            function tryInject(details, eventName) {
                 let tab = details.tab;
                 let tabId = tab.tabId;
                 let frameId = details.frameId;
                 let requestType = details.requestType;
-                if (shouldSkipInjection(requestType, tabId)) {
-                    return;
-                }
-                /**
-                 * oncompleted event is used only to inject code to the firefox iframes,
-                 * because in firefox webNavigation.onCommitted event for iframes occures early than webRequest.onBeforeRequest
-                 */
-                if (event === 'oncompleted' && requestType === 'DOCUMENT') {
+                if (shouldSkipInjection(requestType, tabId, eventName)) {
                     return;
                 }
                 const injection = injections.get(tabId, frameId);
-                if (injection) {
-                    if (!injection.ready) {
-                        /**
-                         * If injection is not ready yet, we call prepareScripts and tryInject functions again
-                         * setTimeout callback lambda function accepts onCommited details
-                         * from onCommited details we prepare object similar to RequestDetails
-                         * with properties and structure used to get css and js code
-                         */
-                        setTimeout(function (details) {
-                            prepareInjection(details);
-                            tryInject(details, event);
-                        }, REQUEST_FILTER_READY_TIMEOUT, details);
-                        injections.removeTabFrameInjection(tabId, frameId);
-                        return;
-                    }
-                    if (injection.jsScriptText) {
-                        adguard.tabs.executeScriptCode(tabId, frameId, injection.jsScriptText);
-                    }
-                    if (injection.cssText) {
-                        adguard.tabs.insertCssCode(tabId, frameId, injection.cssText);
-                    }
-                    injections.removeTabFrameInjection(tabId, frameId);
+                if (!injection) {
+                    return;
                 }
+                if (!injection.ready) {
+                    /**
+                     * If injection is not ready yet, we call prepareScripts and tryInject functions again
+                     * setTimeout callback lambda function accepts onCommited details and eventName
+                     */
+                    setTimeout(function (details, eventName) {
+                        prepareInjection(details);
+                        tryInject(details, eventName);
+                    }, REQUEST_FILTER_READY_TIMEOUT, details, eventName);
+                    injections.removeTabFrameInjection(tabId, frameId);
+                    return;
+                }
+                if (injection.jsScriptText) {
+                    adguard.tabs.executeScriptCode(tabId, frameId, injection.jsScriptText);
+                }
+                if (injection.cssText) {
+                    adguard.tabs.insertCssCode(tabId, frameId, injection.cssText);
+                }
+                injections.removeTabFrameInjection(tabId, frameId);
             }
 
             /**
-             * Removes prepared injection onErrorOccured event for appropriate requestType, tabId and frameId
+             * Removes injection if onErrorOccured event fires for corresponding tabId and frameId
              * @param {RequestDetails} details
              */
-            function removeRelatedInjection(details) {
+            function removeInjection(details) {
                 let requestType = details.requestType;
                 let tab = details.tab;
                 let tabId = tab.tabId;
@@ -764,21 +776,20 @@
             }
 
             /**
-             * Remove all injections related with tab when tab is closed
-             * @param {Number} tabId
+             * https://developer.chrome.com/extensions/webRequest
+             * https://developer.chrome.com/extensions/webNavigation
              */
-            function removeAllTabInjections(tabId) {
-                injections.removeTabInjection(tabId);
-            }
-
             adguard.webRequest.onBeforeRequest.addListener(prepareInjection, ['<all_urls>']);
             adguard.webRequest.onResponseStarted.addListener(tryInjectOnResponseStarted, ['<all_urls>']);
             adguard.webNavigation.onCommitted.addListener(tryInject);
-            adguard.webRequest.onErrorOccurred.addListener(removeRelatedInjection, ['<all_urls>']);
+            adguard.webRequest.onErrorOccurred.addListener(removeInjection, ['<all_urls>']);
+            // In the Firefox current implementation onCommited event fires earlier than onBeforeRequest event
+            // so we inject code when onCompleted event fires
             if (adguard.utils.browser.isFirefoxBrowser()) {
-                adguard.webRequest.onCompleted.addListener(function (details) { tryInject(details, 'oncompleted') }, ['<all_urls>']);
+                adguard.webRequest.onCompleted.addListener(function (details) { tryInject(details, 'onCompleted'); }, ['<all_urls>']);
             }
-            adguard.tabsImpl.onRemoved.addListener(removeAllTabInjections);
+            // Remove injections when tab is closed
+            adguard.tabsImpl.onRemoved.addListener(injections.removeTabInjection);
         })(adguard);
     }
 })(adguard);
