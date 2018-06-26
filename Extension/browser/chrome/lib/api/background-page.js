@@ -56,8 +56,6 @@ var browser = window.browser || chrome;
         };
     })();
 
-    const backgroundTabId = -1;
-
     // Calculates absolute URL of this extension
     const extensionProtocol = (function () {
         var url = browser.extension.getURL("");
@@ -74,7 +72,7 @@ var browser = window.browser || chrome;
      * @returns {boolean}
      */
     function shouldSkipRequest(details) {
-        return details.tabId === backgroundTabId && details.url.indexOf(extensionProtocol) === 0;
+        return details.tabId === adguard.BACKGROUND_TAB_ID && details.url.indexOf(extensionProtocol) === 0;
     }
 
     var linkHelper = document.createElement('a');
@@ -207,7 +205,7 @@ var browser = window.browser || chrome;
             requestDetails.responseHeaders = details.responseHeaders;
         }
 
-        if (details.tabId === backgroundTabId) {
+        if (details.tabId === adguard.BACKGROUND_TAB_ID) {
             // In case of background request, its details contains referrer url
             // Chrome uses `initiator`: https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
             // FF uses `originUrl`: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webRequest/onBeforeRequest#Additional_objects
@@ -412,7 +410,7 @@ var browser = window.browser || chrome;
 
             browser.webNavigation.onCreatedNavigationTarget.addListener(function (details) {
 
-                if (details.tabId === backgroundTabId) {
+                if (details.tabId === adguard.BACKGROUND_TAB_ID) {
                     return;
                 }
 
