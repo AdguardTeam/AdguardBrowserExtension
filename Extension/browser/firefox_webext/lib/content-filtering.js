@@ -20,7 +20,8 @@
 adguard.contentFiltering = (function (adguard) {
 
     var DEFAULT_CHARSET = 'utf-8';
-    var SUPPORTED_CHARSETS = [ DEFAULT_CHARSET, 'windows-1251', 'windows-1252', 'iso-8859-1'];
+    var ONE_BYTE_CHARSET = 'iso-8859-1';
+    var SUPPORTED_CHARSETS = [DEFAULT_CHARSET, 'windows-1251', 'windows-1252', ONE_BYTE_CHARSET];
 
     /**
      * Encapsulates response data filter logic
@@ -39,7 +40,7 @@ adguard.contentFiltering = (function (adguard) {
 
         this.initEncoders = () => {
             let set = this.charset ? this.charset : DEFAULT_CHARSET;
-            if (set === 'iso-8859-1') {
+            if (set === ONE_BYTE_CHARSET) {
                 set = 'windows-1252';
             }
 
@@ -59,7 +60,7 @@ adguard.contentFiltering = (function (adguard) {
             if (!this.charset) {
                 // Charset is not detected, looking for <meta> tags
                 try {
-                    var charset = this.parseCharset(event.data);
+                    var charset = this.parseCharset(event.data) ? this.parseCharset(event.data) : ONE_BYTE_CHARSET;
                     if (charset && SUPPORTED_CHARSETS.indexOf(charset) >= 0) {
                         this.charset = charset;
                         this.initEncoders();
@@ -71,6 +72,8 @@ adguard.contentFiltering = (function (adguard) {
                     }
                 } catch (e) {
                     adguard.console.warn(e);
+                    // on error we disconnect the filter from the request
+                    this.disconnect(event.data);
                 }
             } else {
                 this.content += this.decoder.decode(event.data, {stream: true});
