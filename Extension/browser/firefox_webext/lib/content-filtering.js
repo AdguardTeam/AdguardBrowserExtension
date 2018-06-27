@@ -60,6 +60,8 @@ adguard.contentFiltering = (function (adguard) {
             if (!this.charset) {
                 // Charset is not detected, looking for <meta> tags
                 try {
+                    // If we fail to find charset from meta tags we set charset to 'iso-8859-1', because this charset
+                    // allows to decode and encode data without errors
                     var charset = this.parseCharset(event.data) ? this.parseCharset(event.data) : ONE_BYTE_CHARSET;
                     if (charset && SUPPORTED_CHARSETS.indexOf(charset) >= 0) {
                         this.charset = charset;
