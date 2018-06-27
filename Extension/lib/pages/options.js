@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global $, updateDisplayAdguardPromo, contentPage, i18n, moment, ace */
+/* global $, updateDisplayAdguardPromo, contentPage, i18n, moment, ace, CheckboxUtils */
 
 var Utils = {
 
@@ -151,7 +151,7 @@ var WhiteListFilter = function (options) {
 
     applyChangesBtn.on('click', saveWhiteListDomains);
     changeDefaultWhiteListModeCheckbox.on('change', changeDefaultWhiteListMode);
-    changeDefaultWhiteListModeCheckbox.updateCheckbox(!options.defaultWhiteListMode);
+    CheckboxUtils.updateCheckbox(changeDefaultWhiteListModeCheckbox, !options.defaultWhiteListMode);
 
     editor.getSession().on('change', function () {
         applyChangesBtn.show();
@@ -281,7 +281,7 @@ var AntiBannerFilters = function (options) {
         var element = getCategoryElement(groupId);
         var checkbox = getCategoryCheckbox(groupId);
         element.find('.desc').text('Enabled filters: ' + enabledFiltersCount);
-        checkbox.updateCheckbox(enabledFiltersCount > 0);
+        CheckboxUtils.updateCheckbox(checkbox, enabledFiltersCount > 0);
     }
 
     function getFilterCategoryTemplate(category) {
@@ -465,7 +465,7 @@ var AntiBannerFilters = function (options) {
                 $('.opts-list[data-tab="' + attr + '"]').show();
             });
 
-            $(".opt-state input:checkbox").toggleCheckbox();
+            CheckboxUtils.toggleCheckbox(document.querySelectorAll(".opt-state input[type=checkbox]"));
 
             // check document hash
             var hash = document.location.hash;
@@ -623,7 +623,7 @@ var AntiBannerFilters = function (options) {
         loadedFiltersInfo.updateEnabled(filter, enabled);
         updateCategoryFiltersInfo(filter.groupId);
 
-        getFilterCheckbox(filterId).updateCheckbox(enabled);
+        CheckboxUtils.updateCheckbox(getFilterCheckbox(filterId), enabled);
     };
 
     var onFilterDownloadStarted = function (filter) {
@@ -891,6 +891,7 @@ var Settings = function () {
                 }
             });
         }
+
         var render = function () {
             if (hidden) {
                 element.closest('li').hide();
@@ -900,7 +901,8 @@ var Settings = function () {
             if (negate) {
                 checked = !checked;
             }
-            element.updateCheckbox(checked);
+
+            CheckboxUtils.updateCheckbox(element, checked);
         };
         return {
             render: render
@@ -947,7 +949,8 @@ var Settings = function () {
         for (var i = 0; i < checkboxes.length; i++) {
             checkboxes[i].render();
         }
-        allowAcceptableAdsCheckbox.updateCheckbox(AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID in enabledFilters);
+
+        CheckboxUtils.updateCheckbox(allowAcceptableAdsCheckbox, AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID in enabledFilters);
     };
 
     var showPopup = function (title, text) {
@@ -1002,7 +1005,7 @@ PageController.prototype = {
         this._bindEvents();
         this._render();
 
-        $(".opt-state input:checkbox").toggleCheckbox();
+        CheckboxUtils.toggleCheckbox(document.querySelectorAll(".opt-state input[type=checkbox]"));
 
         // Initialize top menu
         TopMenu.init({

@@ -15,130 +15,98 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global $, i18n, contentPage */
+/* global i18n, contentPage */
 
-$(function () {
+/**
+ * UI checkboxes utils
+ *
+ * @type {{toggleCheckbox, updateCheckbox}}
+ */
+var CheckboxUtils = (function () {
+    'use strict';
 
-    $.fn.toggleCheckbox = function () {
+    /**
+     * Toggles wrapped elements with checkbox UI
+     *
+     * @param {Array.<Object>} elements
+     */
+    var toggleCheckbox = function (elements) {
 
-        return this.each(function () {
+        Array.prototype.forEach.call(elements, function (checkbox) {
 
-            var checkbox = this;
-            var $checkbox = $(this);
-
-            if ($checkbox.data("toggleCheckbox")) {
+            if (checkbox.getAttribute("toggleCheckbox")) {
                 //already applied
                 return;
             }
 
-            var el = $('<div>', {class: 'toggler'});
-            el.insertAfter(checkbox);
+            var el = document.createElement('div');
+            el.classList.add('toggler');
+            checkbox.parentNode.insertBefore(el, checkbox.nextSibling);
 
-            el.on('click', function () {
+            el.addEventListener('click', function () {
                 checkbox.checked = !checkbox.checked;
-                $checkbox.change();
+
+                var event = document.createEvent('HTMLEvents');
+                event.initEvent('change', true, false);
+                checkbox.dispatchEvent(event);
             });
 
-            $checkbox.bind('change', function () {
+            checkbox.addEventListener('change', function () {
                 onClicked(checkbox.checked);
             });
 
             function onClicked(checked) {
                 if (checked) {
-                    el.addClass("active");
-                    el.closest("li").addClass("active");
+                    el.classList.add("active");
+                    el.closest("li").classList.add("active");
                 } else {
-                    el.removeClass("active");
-                    el.closest("li").removeClass("active");
+                    el.classList.remove("active");
+                    el.closest("li").classList.remove("active");
                 }
             }
 
-            $checkbox.hide();
+            checkbox.style.display = 'none';
             onClicked(checkbox.checked);
 
-            $checkbox.data("toggleCheckbox", true);
+            checkbox.setAttribute('toggleCheckbox', 'true');
         });
     };
 
-    $.fn.updateCheckbox = function (checked) {
+    /**
+     * Updates checkbox elements according to checked parameter
+     *
+     * @param {Array.<Object>} elements
+     * @param {boolean} checked
+     */
+    var updateCheckbox = function (elements, checked) {
 
-        return this.each(function () {
-            var $this = $(this);
+        Array.prototype.forEach.call(elements, function (el) {
             if (checked) {
-                $this.attr('checked', 'checked');
-                $this.next('.toggler').addClass('active');
-                $this.closest('li').addClass('active');
+                el.setAttribute('checked', 'checked');
+                el.closest('li').classList.add('active');
             } else {
-                $this.removeAttr('checked');
-                $this.next('.toggler').removeClass('active');
-                $this.closest('li').removeClass('active');
+                el.removeAttribute('checked');
+                el.closest('li').classList.remove('active');
             }
         });
     };
 
-    $.fn.popupHelp = function () {
-
-        return this.each(function () {
-
-            var el = $(this);
-            var popup = $("#" + el.attr("data-popup"));
-            if (!popup || popup.length == 0) {
-                return;
-            }
-
-            var w = $(window);
-
-            function positionPopup() {
-
-                var viewport = {
-                    right: w.scrollLeft() + w.width(),
-                    bottom: w.scrollTop() + w.height()
-                };
-
-                var elBounds = el.offset();
-
-                var popupHeight = popup.outerHeight();
-                var popupWidth = popup.outerWidth();
-
-                var offsetTop = elBounds.top + 15;
-                if (viewport.bottom < offsetTop + popupHeight) {
-                    offsetTop = elBounds.top - popupHeight - 15;
-                }
-
-                var offsetLeft = elBounds.left + 15;
-                if (viewport.right < offsetLeft + popupWidth) {
-                    offsetLeft = elBounds.left - popupWidth - 15;
-                }
-
-                popup.css({
-                    top: offsetTop,
-                    left: offsetLeft
-                });
-            }
-
-            el.on({
-                mouseenter: function () {
-                    positionPopup();
-                    popup.removeClass("hidden");
-                },
-                mouseleave: function () {
-                    popup.addClass("hidden");
-                }
-            });
-        });
+    return {
+        toggleCheckbox: toggleCheckbox,
+        updateCheckbox: updateCheckbox
     };
-});
+})();
 
 function updateDisplayAdguardPromo(showPromo) {
 
     // Sometimes in FF promo block isn't rendered properly
     setTimeout(function () {
         if (showPromo) {
-            $('.download-adguard-block').show();
-            $('.non-download-adguard-block').hide();
+            document.querySelector('.download-adguard-block').style.display = '';
+            document.querySelector('.non-download-adguard-block').style.display = 'none';
         } else {
-            $('.download-adguard-block').hide();
-            $('.non-download-adguard-block').show();
+            document.querySelector('.download-adguard-block').style.display = 'none';
+            document.querySelector('.non-download-adguard-block').style.display = '';
         }
     }, 100);
 }
@@ -147,19 +115,19 @@ function customizePopupFooter(isMacOs) {
 
     //fix title
     var messageId = isMacOs ? 'thankyou_want_full_protection_mac' : 'thankyou_want_full_protection';
-    var title = $('.thanks-prefooter .thanks-prefooter-title');
-    i18n.translateElement(title[0], messageId);
+    var title = document.querySelector('.thanks-prefooter .thanks-prefooter-title');
+    i18n.translateElement(title, messageId);
 
     //fix title in table
     messageId = isMacOs ? 'thankyou_compare_full_title_mac' : 'thankyou_compare_full_title';
-    title = $('.thanks-prefooter .thanks-prefooter-table .tpt-head-full');
-    i18n.translateElement(title[0], messageId);
+    title = document.querySelector('.thanks-prefooter .thanks-prefooter-table .tpt-head-full');
+    i18n.translateElement(title, messageId);
 
     //hide parental control feature for mac os
     if (isMacOs) {
-        $('.parental-control-feature').hide();
+        document.querySelector('.parental-control-feature').style.display = 'none';
     } else {
-        $('.parental-control-feature').show();
+        document.querySelector('.parental-control-feature').style.display = '';
     }
 }
 
@@ -196,6 +164,6 @@ function createEventListener(events, callback, onUnloadCallback) { // jshint ign
         }
     };
 
-    $(window).on('beforeunload', onUnload);
-    $(window).on('unload', onUnload);
+    window.addEventListener('beforeunload', onUnload);
+    window.addEventListener('unload', onUnload);
 }
