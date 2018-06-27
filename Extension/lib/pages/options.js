@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global $, updateDisplayAdguardPromo, contentPage, i18n, moment, ace, CheckboxUtils */
+/* global updateDisplayAdguardPromo, contentPage, i18n, moment, ace, CheckboxUtils */
 
 var Utils = {
 
@@ -35,40 +35,53 @@ var Utils = {
 
 var TopMenu = (function () {
 
+    var GENERAL_SETTINGS = '#general-settings';
+    var ANTIBANNER = '#antibanner';
+    var WHITELIST = '#whitelist';
+
     var prevTabId;
     var onHashUpdatedCallback;
 
     var toggleTab = function () {
 
-        var tabId = document.location.hash || '#general-settings';
-        var tab = $(tabId);
+        var tabId = document.location.hash || GENERAL_SETTINGS;
+        var tab = document.querySelector(tabId);
 
-        if (tabId.indexOf('#antibanner') === 0 && tab.length === 0) {
+        if (tabId.indexOf(ANTIBANNER) === 0 && !tab) {
             // AntiBanner groups and filters are loaded and rendered async
             return;
         }
 
-        if (tab.length === 0) {
-            tabId = '#general-settings';
-            tab = $(tabId);
+        if (!tab) {
+            tabId = GENERAL_SETTINGS;
+            tab = document.querySelector(tabId);
         }
+
+        var antibannerTabs = document.querySelectorAll('[data-tab="' + ANTIBANNER + '"]');
 
         if (prevTabId) {
-            $('[data-tab="' + prevTabId + '"]').removeClass('active');
-            if (prevTabId.indexOf('#antibanner') === 0) {
-                $('[data-tab="#antibanner"]').removeClass('active');
+            if (prevTabId.indexOf(ANTIBANNER) === 0) {
+                antibannerTabs.forEach(function (el) {
+                    el.classList.remove('active');
+                });
+            } else {
+                document.querySelector('[data-tab="' + prevTabId + '"]').classList.remove('active');
             }
-            $(prevTabId).hide();
+
+            document.querySelector(prevTabId).style.display = 'none';
         }
 
-        $('[data-tab="' + tabId + '"]').addClass('active');
-        if (tabId.indexOf('#antibanner') === 0) {
-            $('[data-tab="#antibanner"]').addClass('active');
+        if (tabId.indexOf(ANTIBANNER) === 0) {
+            antibannerTabs.forEach(function (el) {
+                el.classList.add('active');
+            });
+        } else {
+            document.querySelector('[data-tab="' + tabId + '"]').classList.add('active');
         }
 
-        tab.show();
+        tab.style.display = 'block';
 
-        if (tabId === '#whitelist') {
+        if (tabId === WHITELIST) {
             if (typeof onHashUpdatedCallback === 'function') {
                 onHashUpdatedCallback(tabId);
             }
@@ -79,11 +92,15 @@ var TopMenu = (function () {
 
     var init = function (options) {
         onHashUpdatedCallback = options.onHashUpdated;
+
         window.addEventListener('hashchange', toggleTab);
-        $('[data-tab]').on('click', function (e) {
-            e.preventDefault();
-            document.location.hash = $(this).attr('data-tab');
+        document.querySelectorAll('[data-tab]').forEach(function (el) {
+            el.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.location.hash = el.getAttribute('data-tab');
+            });
         });
+
         toggleTab();
     };
 
