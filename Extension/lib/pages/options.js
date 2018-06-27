@@ -35,6 +35,8 @@ var Utils = {
 
 var TopMenu = (function () {
 
+    'use strict';
+
     var GENERAL_SETTINGS = '#general-settings';
     var ANTIBANNER = '#antibanner';
     var WHITELIST = '#whitelist';
@@ -121,20 +123,19 @@ var WhiteListFilter = function (options) {
     // Ace TextHighlightRules mode is edited in ace.js library file
     editor.session.setMode("ace/mode/text_highlight_rules");
 
-    var applyChangesBtn = $('#whiteListFilterApplyChanges');
-    var changeDefaultWhiteListModeCheckbox = $('#changeDefaultWhiteListMode');
+    var applyChangesBtn = document.querySelector('#whiteListFilterApplyChanges');
+    var changeDefaultWhiteListModeCheckbox = document.querySelector('#changeDefaultWhiteListMode');
 
     function loadWhiteListDomains() {
         contentPage.sendMessage({
             type: 'getWhiteListDomains'
         }, function (response) {
             editor.setValue(response.content || '');
-            applyChangesBtn.hide();
+            applyChangesBtn.style.display = 'none';
         });
     }
 
     function saveWhiteListDomains(e) {
-
         e.preventDefault();
 
         omitRenderEventsCount = 1;
@@ -147,7 +148,7 @@ var WhiteListFilter = function (options) {
             content: text
         }, function () {
             editor.setReadOnly(false);
-            applyChangesBtn.hide();
+            applyChangesBtn.style.display = 'none';
         });
     }
 
@@ -156,22 +157,25 @@ var WhiteListFilter = function (options) {
             omitRenderEventsCount--;
             return;
         }
+
         loadWhiteListDomains();
     }
 
     function changeDefaultWhiteListMode(e) {
         e.preventDefault();
+
         contentPage.sendMessage({type: 'changeDefaultWhiteListMode', enabled: !e.currentTarget.checked}, function () {
             updateWhiteListDomains();
         });
     }
 
-    applyChangesBtn.on('click', saveWhiteListDomains);
-    changeDefaultWhiteListModeCheckbox.on('change', changeDefaultWhiteListMode);
+    applyChangesBtn.addEventListener('click', saveWhiteListDomains);
+    changeDefaultWhiteListModeCheckbox.addEventListener('change', changeDefaultWhiteListMode);
+
     CheckboxUtils.updateCheckbox(changeDefaultWhiteListModeCheckbox, !options.defaultWhiteListMode);
 
-    editor.getSession().on('change', function () {
-        applyChangesBtn.show();
+    editor.getSession().addEventListener('change', function () {
+        applyChangesBtn.style.display = 'block';
     });
 
     return {
@@ -189,17 +193,18 @@ var UserFilter = function () {
     // Ace TextHighlightRules mode is edited in ace.js library file
     editor.session.setMode("ace/mode/text_highlight_rules");
 
+    var applyChangesBtn = document.querySelector('#userFilterApplyChanges');
+
     function loadUserRules() {
         contentPage.sendMessage({
             type: 'getUserRules'
         }, function (response) {
             editor.setValue(response.content || '');
-            $('#userFilterApplyChanges').hide();
+            applyChangesBtn.style.display = 'none';
         });
     }
 
     function saveUserRules(e) {
-
         e.preventDefault();
 
         omitRenderEventsCount = 1;
@@ -212,7 +217,7 @@ var UserFilter = function () {
             content: text
         }, function () {
             editor.setReadOnly(false);
-            $('#userFilterApplyChanges').hide();
+            applyChangesBtn.style.display = 'none';
         });
     }
 
@@ -221,13 +226,14 @@ var UserFilter = function () {
             omitRenderEventsCount--;
             return;
         }
+
         loadUserRules();
     }
 
-    $('#userFilterApplyChanges').on('click', saveUserRules);
+    applyChangesBtn.addEventListener('click', saveUserRules);
 
-    editor.getSession().on('change', function () {
-        $('#userFilterApplyChanges').show();
+    editor.getSession().addEventListener('change', function () {
+        applyChangesBtn.style.display = 'block';
     });
 
     return {
