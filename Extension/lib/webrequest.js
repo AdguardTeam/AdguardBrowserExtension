@@ -585,6 +585,13 @@
                         return '\\u2029'
                 }
             }
+            
+            /**
+             * We use changing variable name because global properties
+             * can be modified across isolated worlds of extension content page and tab page
+             * https://bugs.chromium.org/p/project-zero/issues/detail?id=1225&desc=6
+             */
+            const variableName = 'scriptExecuted' + Date.now();
 
             function buildScriptText(scriptText) {
                 if (!scriptText) {
@@ -600,7 +607,7 @@
                  * Description of the issue: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1004
                  */
                 let injectedScript = '(function() {\
-                    if (window.scriptExecuted) {\
+                    if (window.' + variableName + ') {\
                         return;\
                     }\
                     var script = document.createElement("script");\
@@ -617,7 +624,7 @@
                                 parent.removeChild(script);\
                             } catch (e) {\
                             } finally {\
-                                window.scriptExecuted = true;\
+                                window.' + variableName + ' = true;\
                                 return true;\
                             }\
                         }\
@@ -795,7 +802,7 @@
                 adguard.webRequest.onCompleted.addListener(function (details) { tryInject(details, 'onCompleted'); }, ['<all_urls>']);
             }
             // Remove injections when tab is closed
-            adguard.tabsImpl.onRemoved.addListener(injections.removeTabInjection);
+            adguard.tabs.onRemoved.addListener(injections.removeTabInjection);
         })(adguard);
     }
 })(adguard);
