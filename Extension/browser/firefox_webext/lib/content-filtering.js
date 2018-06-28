@@ -31,9 +31,10 @@ adguard.contentFiltering = (function (adguard) {
      * @param charset encoding
      * @constructor
      */
-    var ContentFilter = function (requestId, charset) {
+    var ContentFilter = function (requestId, requestType, charset) {
 
         this.filter = adguard.webRequest.filterResponseData(requestId);
+        this.requestType = requestType;
 
         this.content = '';
         this.contentDfd = new adguard.utils.Promise();
@@ -60,10 +61,19 @@ adguard.contentFiltering = (function (adguard) {
         this.filter.ondata = (event) => {
             if (!this.charset) {
                 try {
-                    // If charset is undefined, we are looking it in <meta> tags
-                    var charset = this.parseCharset(event.data);
-                    // If we fail to find charset from meta tags we set charset to 'iso-8859-1', because this charset
-                    // allows to decode and encode data without errors
+                    var charset;
+                    /**
+                     * If this.charset is undefined and requestType is DOCUMENT or SUBDOCUMENT, we try
+                     * to detect charset from page <meta> tags
+                     */
+                    if (this.requestType === adguard.RequestTypes.DOCUMENT ||
+                        this.requestType === adguard.RequestTypes.SUBDOCUMENT) {
+                        charset = this.parseCharset(event.data);
+                    }
+                    /**
+                     * If we fail to find charset from meta tags we set charset to 'iso-8859-1',
+                     * because this charset allows to decode and encode data without errors
+                     */
                     if (!charset) {
                         charset = LATIN_1;
                     }
@@ -145,7 +155,7 @@ adguard.contentFiltering = (function (adguard) {
 
         this.handleResponse = function (requestId, requestUrl, requestType, charset, callback) {
 
-            var contentFilter = new ContentFilter(requestId, charset);
+            var contentFilter = new ContentFilter(requestId, requestType, charset);
 
             contentFilter.getContent()
                 .then(function (content) {
