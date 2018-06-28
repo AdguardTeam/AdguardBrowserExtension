@@ -20,7 +20,8 @@
 adguard.contentFiltering = (function (adguard) {
 
     var DEFAULT_CHARSET = 'utf-8';
-    var SUPPORTED_CHARSETS = [ DEFAULT_CHARSET, 'windows-1251', 'windows-1252', 'iso-8859-1'];
+    var LATIN_1 = 'iso-8859-1';
+    var SUPPORTED_CHARSETS = [DEFAULT_CHARSET, 'windows-1251', 'windows-1252', LATIN_1];
 
     /**
      * Encapsulates response data filter logic
@@ -30,16 +31,19 @@ adguard.contentFiltering = (function (adguard) {
      * @param charset encoding
      * @constructor
      */
-    var ContentFilter = function (requestId, charset) {
+    var ContentFilter = function (requestId, requestType, charset) {
 
         this.filter = adguard.webRequest.filterResponseData(requestId);
+        this.requestType = requestType;
 
         this.content = '';
         this.contentDfd = new adguard.utils.Promise();
 
         this.initEncoders = () => {
             let set = this.charset ? this.charset : DEFAULT_CHARSET;
-            if (set === 'iso-8859-1') {
+
+            // Redefining it as TextDecoder does not understand the iso- name
+            if (set === LATIN_1) {
                 set = 'windows-1252';
             }
 
@@ -55,15 +59,27 @@ adguard.contentFiltering = (function (adguard) {
         this.initEncoders();
 
         this.filter.ondata = (event) => {
-
             if (!this.charset) {
-                // Charset is not detected, looking for <meta> tags
                 try {
-                    var charset = this.parseCharset(event.data);
+                    var charset;
+                    /**
+                     * If this.charset is undefined and requestType is DOCUMENT or SUBDOCUMENT, we try
+                     * to detect charset from page <meta> tags
+                     */
+                    if (this.requestType === adguard.RequestTypes.DOCUMENT ||
+                        this.requestType === adguard.RequestTypes.SUBDOCUMENT) {
+                        charset = this.parseCharset(event.data);
+                    }
+                    /**
+                     * If we fail to find charset from meta tags we set charset to 'iso-8859-1',
+                     * because this charset allows to decode and encode data without errors
+                     */
+                    if (!charset) {
+                        charset = LATIN_1;
+                    }
                     if (charset && SUPPORTED_CHARSETS.indexOf(charset) >= 0) {
                         this.charset = charset;
                         this.initEncoders();
-
                         this.content += this.decoder.decode(event.data, {stream: true});
                     } else {
                         // Charset is not supported
@@ -71,6 +87,8 @@ adguard.contentFiltering = (function (adguard) {
                     }
                 } catch (e) {
                     adguard.console.warn(e);
+                    // on error we disconnect the filter from the request
+                    this.disconnect(event.data);
                 }
             } else {
                 this.content += this.decoder.decode(event.data, {stream: true});
@@ -137,7 +155,7 @@ adguard.contentFiltering = (function (adguard) {
 
         this.handleResponse = function (requestId, requestUrl, requestType, charset, callback) {
 
-            var contentFilter = new ContentFilter(requestId, charset);
+            var contentFilter = new ContentFilter(requestId, requestType, charset);
 
             contentFilter.getContent()
                 .then(function (content) {
