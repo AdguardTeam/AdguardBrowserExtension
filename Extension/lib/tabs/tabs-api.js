@@ -370,7 +370,6 @@
         var executeScriptFile = tabsImpl.executeScriptFile;
 
         return {
-
             // Events
             onCreated: onCreatedChannel,
             onRemoved: onRemovedChannel,

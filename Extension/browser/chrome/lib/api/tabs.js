@@ -462,7 +462,7 @@ adguard.tabsImpl = (function (adguard) {
         browser.tabs.executeScript(tabId, {
             code: code,
             frameId: requestFrameId,
-            runAt: 'document_start'
+            runAt: 'document_start',
         }, noopCallback);
     };
 
