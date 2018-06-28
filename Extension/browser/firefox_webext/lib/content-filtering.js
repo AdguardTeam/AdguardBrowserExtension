@@ -20,8 +20,8 @@
 adguard.contentFiltering = (function (adguard) {
 
     var DEFAULT_CHARSET = 'utf-8';
-    var ONE_BYTE_CHARSET = 'iso-8859-1';
-    var SUPPORTED_CHARSETS = [DEFAULT_CHARSET, 'windows-1251', 'windows-1252', ONE_BYTE_CHARSET];
+    var LATIN_1 = 'iso-8859-1';
+    var SUPPORTED_CHARSETS = [DEFAULT_CHARSET, 'windows-1251', 'windows-1252', LATIN_1];
 
     /**
      * Encapsulates response data filter logic
@@ -40,7 +40,9 @@ adguard.contentFiltering = (function (adguard) {
 
         this.initEncoders = () => {
             let set = this.charset ? this.charset : DEFAULT_CHARSET;
-            if (set === ONE_BYTE_CHARSET) {
+
+            // Redefining it as TextDecoder does not understand the iso- name
+            if (set === LATIN_1) {
                 set = 'windows-1252';
             }
 
@@ -56,17 +58,18 @@ adguard.contentFiltering = (function (adguard) {
         this.initEncoders();
 
         this.filter.ondata = (event) => {
-
             if (!this.charset) {
-                // Charset is not detected, looking for <meta> tags
                 try {
+                    // If charset is undefined, we are looking it in <meta> tags
+                    var charset = this.parseCharset(event.data);
                     // If we fail to find charset from meta tags we set charset to 'iso-8859-1', because this charset
                     // allows to decode and encode data without errors
-                    var charset = this.parseCharset(event.data) ? this.parseCharset(event.data) : ONE_BYTE_CHARSET;
+                    if (!charset) {
+                        charset = LATIN_1;
+                    }
                     if (charset && SUPPORTED_CHARSETS.indexOf(charset) >= 0) {
                         this.charset = charset;
                         this.initEncoders();
-
                         this.content += this.decoder.decode(event.data, {stream: true});
                     } else {
                         // Charset is not supported
