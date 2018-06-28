@@ -262,7 +262,7 @@ var AntiBannerFilters = function (options) {
         }
     };
 
-    var groupsList = $('#groupsList');
+    var groupsListElement = document.querySelector('#groupsList');
 
     function getFiltersByGroupId(groupId, filters) {
         return filters.filter(function (f) {
@@ -282,19 +282,24 @@ var AntiBannerFilters = function (options) {
     }
 
     function getCategoryElement(groupId) {
-        return $('#category' + groupId);
+        return document.querySelector('#category' + groupId);
     }
 
     function getCategoryCheckbox(groupId) {
-        return getCategoryElement(groupId).find('input');
+        var categoryElement = getCategoryElement(groupId);
+        if (!categoryElement) {
+            return null;
+        }
+
+        return categoryElement.querySelector('input');
     }
 
     function getFilterElement(filterId) {
-        return $('#filter' + filterId);
+        return document.querySelector('#filter' + filterId);
     }
 
     function getFilterCheckbox(filterId) {
-        return getFilterElement(filterId).find('input');
+        return getFilterElement(filterId).querySelector('input');
     }
 
     function updateCategoryFiltersInfo(groupId) {
@@ -303,8 +308,9 @@ var AntiBannerFilters = function (options) {
 
         var element = getCategoryElement(groupId);
         var checkbox = getCategoryCheckbox(groupId);
-        element.find('.desc').text('Enabled filters: ' + enabledFiltersCount);
-        CheckboxUtils.updateCheckbox(checkbox, enabledFiltersCount > 0);
+
+        element.querySelector('.desc').textContent = 'Enabled filters: ' + enabledFiltersCount;
+        CheckboxUtils.updateCheckbox([checkbox], enabledFiltersCount > 0);
     }
 
     function getFilterCategoryTemplate(category) {
@@ -438,7 +444,7 @@ var AntiBannerFilters = function (options) {
         $('#category' + category.groupId).remove();
 
         var categoryTemplate = getFilterCategoryTemplate(category);
-        groupsList.append(categoryTemplate);
+        $(groupsListElement).append(categoryTemplate);
         updateCategoryFiltersInfo(category.groupId);
 
         var filtersContentTemplate = getFiltersContentTemplate(category);
@@ -534,57 +540,66 @@ var AntiBannerFilters = function (options) {
     function removeCustomFilter(e) {
         e.preventDefault();
 
-        var filterId = $(e.currentTarget).attr('filterId');
+        var filterId = e.currentTarget.getAttribute('filterId');
 
         contentPage.sendMessage({
             type: 'removeAntiBannerFilter',
             filterId: filterId
         });
 
-        getFilterElement(filterId).remove();
+        var filterElement = getFilterElement(filterId);
+        filterElement.parentNode.removeChild(filterElement);
     }
 
     function renderCustomFilterPopup() {
+        var POPUP_ACTIVE_CLASS = 'option-popup__step--active';
+
         function closePopup() {
-            $('#add-custom-filter-popup').removeClass('option-popup--active');
+            document.querySelector('#add-custom-filter-popup').classList.remove('option-popup--active');
+        }
+
+        function clearActiveStep() {
+            document.querySelector('#add-custom-filter-step-1').classList.remove(POPUP_ACTIVE_CLASS);
+            document.querySelector('#add-custom-filter-step-2').classList.remove(POPUP_ACTIVE_CLASS);
+            document.querySelector('#add-custom-filter-step-3').classList.remove(POPUP_ACTIVE_CLASS);
+            document.querySelector('#add-custom-filter-step-4').classList.remove(POPUP_ACTIVE_CLASS);
         }
 
         function renderStepOne() {
-            $('.option-popup__step').removeClass('option-popup__step--active');
-            $('#add-custom-filter-step-1').addClass('option-popup__step--active');
+            clearActiveStep();
+            document.querySelector('#add-custom-filter-step-1').classList.add(POPUP_ACTIVE_CLASS);
 
-            $('#custom-filter-popup-url').focus();
+            document.querySelector('#custom-filter-popup-url').focus();
         }
 
         function renderStepTwo() {
-            $('.option-popup__step').removeClass('option-popup__step--active');
-            $('#add-custom-filter-step-2').addClass('option-popup__step--active');
+            clearActiveStep();
+            document.querySelector('#add-custom-filter-step-2').classList.add(POPUP_ACTIVE_CLASS);
         }
 
         function renderStepThree() {
-            $('.option-popup__step').removeClass('option-popup__step--active');
-            $('#add-custom-filter-step-3').addClass('option-popup__step--active');
+            clearActiveStep();
+            document.querySelector('#add-custom-filter-step-3').classList.add(POPUP_ACTIVE_CLASS);
         }
 
         function renderStepFour(filter) {
-            $('.option-popup__step').removeClass('option-popup__step--active');
-            $('#add-custom-filter-step-4').addClass('option-popup__step--active');
+            clearActiveStep();
+            document.querySelector('#add-custom-filter-step-4').classList.add(POPUP_ACTIVE_CLASS);
 
-            $('#custom-filter-popup-added-title').text(filter.name);
-            $('#custom-filter-popup-added-desc').text(filter.description);
-            $('#custom-filter-popup-added-version').text(filter.version);
-            $('#custom-filter-popup-added-rules-count').text(filter.rulesCount);
-            $('#custom-filter-popup-added-homepage').text(filter.homepage).attr("href", filter.homepage);
-            $('#custom-filter-popup-added-url').text(filter.customUrl).attr("href", filter.customUrl);
+            document.querySelector('#custom-filter-popup-added-title').textContent = filter.name;
+            document.querySelector('#custom-filter-popup-added-desc').textContent = filter.description;
+            document.querySelector('#custom-filter-popup-added-version').textContent = filter.version;
+            document.querySelector('#custom-filter-popup-added-rules-count').textContent = filter.rulesCount;
+            document.querySelector('#custom-filter-popup-added-homepage').textContent = filter.homepage;
+            document.querySelector('#custom-filter-popup-added-homepage').setAttribute("href", filter.homepage);
+            document.querySelector('#custom-filter-popup-added-url').textContent = filter.customUrl;
+            document.querySelector('#custom-filter-popup-added-url').setAttribute("href", filter.customUrl);
 
-            $('#custom-filter-popup-added-back').on('click', renderStepOne);
-            $('#custom-filter-popup-added-subscribe').off('click');
-            $('#custom-filter-popup-added-subscribe').on('click', function () {
-                contentPage.sendMessage({type: 'addAndEnableFilter', filterId: filter.filterId});
-                closePopup();
-            });
+            document.querySelector('#custom-filter-popup-added-back').addEventListener('click', renderStepOne);
+            document.querySelector('#custom-filter-popup-added-subscribe').removeEventListener('click', onSubscribeClicked);
+            document.querySelector('#custom-filter-popup-added-subscribe').addEventListener('click', onSubscribeClicked);
 
-            $('#custom-filter-popup-remove').on('click', function () {
+            document.querySelector('#custom-filter-popup-remove').addEventListener('click', function () {
                 contentPage.sendMessage({
                     type: 'removeAntiBannerFilter',
                     filterId: filter.filterId
@@ -593,14 +608,19 @@ var AntiBannerFilters = function (options) {
             });
         }
 
-        $('#add-custom-filter-popup').addClass('option-popup--active');
-        $('.option-popup__cross').on('click', closePopup);
-        $('.custom-filter-popup-cancel').on('click', closePopup);
+        function onSubscribeClicked() {
+            contentPage.sendMessage({type: 'addAndEnableFilter', filterId: filter.filterId});
+            closePopup();
+        }
 
-        $('.custom-filter-popup-next').on('click', function (e) {
+        document.querySelector('#add-custom-filter-popup').classList.add('option-popup--active');
+        document.querySelector('.option-popup__cross').addEventListener('click', closePopup);
+        document.querySelector('.custom-filter-popup-cancel').addEventListener('click', closePopup);
+
+        document.querySelector('.custom-filter-popup-next').addEventListener('click', function (e) {
             e.preventDefault();
 
-            var url = $('#custom-filter-popup-url').val();
+            var url = document.querySelector('#custom-filter-popup-url').value;
             contentPage.sendMessage({type: 'loadCustomFilterInfo', url: url}, function (filter) {
                 if (filter) {
                     renderStepFour(filter);
@@ -612,7 +632,7 @@ var AntiBannerFilters = function (options) {
             renderStepTwo();
         });
 
-        $('.custom-filter-popup-try-again').on('click', renderStepOne);
+        document.querySelector('.custom-filter-popup-try-again').addEventListener('click', renderStepOne);
 
         renderStepOne();
     }
@@ -621,6 +641,7 @@ var AntiBannerFilters = function (options) {
         if (lastUpdateTime && lastUpdateTime > loadedFiltersInfo.lastUpdateTime) {
             loadedFiltersInfo.lastUpdateTime = lastUpdateTime;
         }
+
         var updateText = "";
         lastUpdateTime = loadedFiltersInfo.lastUpdateTime;
         if (lastUpdateTime) {
@@ -629,15 +650,13 @@ var AntiBannerFilters = function (options) {
             updateText = lastUpdateTime.format("D MMMM YYYY HH:mm").toLowerCase();
             //TODO: localization (options_filter_version)
         }
-        $('#lastUpdateTime').text(updateText);
+
+        document.querySelector('#lastUpdateTime').textContent = updateText;
     }
 
     var updateRulesCountInfo = function (info) {
-
         var message = i18n.getMessage("options_antibanner_info", [String(info.rulesCount || 0)]);
-
-        var el = $('#filtersRulesInfo');
-        el.text(message);
+        document.querySelector('#filtersRulesInfo').textContent = message;
     };
 
     var onFilterStateChanged = function (filter) {
@@ -646,24 +665,24 @@ var AntiBannerFilters = function (options) {
         loadedFiltersInfo.updateEnabled(filter, enabled);
         updateCategoryFiltersInfo(filter.groupId);
 
-        CheckboxUtils.updateCheckbox(getFilterCheckbox(filterId), enabled);
+        CheckboxUtils.updateCheckbox([getFilterCheckbox(filterId)], enabled);
     };
 
     var onFilterDownloadStarted = function (filter) {
-        getCategoryElement(filter.groupId).find('.preloader').addClass('active');
-        getFilterElement(filter.filterId).find('.preloader').addClass('active');
+        getCategoryElement(filter.groupId).querySelector('.preloader').classList.add('active');
+        getFilterElement(filter.filterId).querySelector('.preloader').classList.add('active');
     };
 
     var onFilterDownloadFinished = function (filter) {
-        getCategoryElement(filter.groupId).find('.preloader').removeClass('active');
-        getFilterElement(filter.filterId).find('.preloader').removeClass('active');
+        getCategoryElement(filter.groupId).querySelector('.preloader').classList.remove('active');
+        getFilterElement(filter.filterId).querySelector('.preloader').classList.remove('active');
         setLastUpdatedTimeText(filter.lastUpdateTime);
     };
 
     // Bind events
     $(document).on('change', '.filters-list [name="filterId"]', toggleFilterState);
     $(document).on('change', '#groupsList [name="groupId"]', toggleGroupState);
-    $('#updateAntiBannerFilters').on('click', updateAntiBannerFilters);
+    document.querySelector('#updateAntiBannerFilters').addEventListener('click', updateAntiBannerFilters);
 
     updateRulesCountInfo(options.rulesInfo);
 
