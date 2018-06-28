@@ -279,11 +279,10 @@ adguard.webRequestService = (function (adguard) {
          */
         if (tab.tabId === adguard.BACKGROUND_TAB_ID) {
             whitelistRule = adguard.whitelist.findWhiteListRule(referrerUrl);
-            if (whitelistRule) {
-                return whitelistRule;
-            }
+        } else {
+            whitelistRule = adguard.frames.getFrameWhiteListRule(tab);
         }
-        whitelistRule = adguard.frames.getFrameWhiteListRule(tab);
+
         if (whitelistRule && whitelistRule.isDocumentWhiteList()) {
             // Frame is whitelisted by the main frame's $document rule
             // We do nothing more in this case - return the rule.
