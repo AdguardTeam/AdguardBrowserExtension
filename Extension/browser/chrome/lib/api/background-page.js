@@ -56,8 +56,6 @@ var browser = window.browser || chrome;
         };
     })();
 
-    const backgroundTabId = -1;
-
     // Calculates absolute URL of this extension
     const extensionProtocol = (function () {
         var url = browser.extension.getURL("");
@@ -74,7 +72,7 @@ var browser = window.browser || chrome;
      * @returns {boolean}
      */
     function shouldSkipRequest(details) {
-        return details.tabId === backgroundTabId && details.url.indexOf(extensionProtocol) === 0;
+        return details.tabId === adguard.BACKGROUND_TAB_ID && details.url.indexOf(extensionProtocol) === 0;
     }
 
     var linkHelper = document.createElement('a');
@@ -97,8 +95,44 @@ var browser = window.browser || chrome;
         return requestType;
     }
 
-    function getRequestDetails(details) {
+    /**
+     * An array of HTTP headers.
+     * Each header is represented as a dictionary containing the keys name and either value or binaryValue.
+     * https://developer.chrome.com/extensions/webRequest#type-HttpHeaders
+     * @typedef HttpHeaders
+     * @type {Array.<{ name: String, value: String, binaryValue }>}
+     */
 
+    /**
+     * @typedef RequestDetails
+     * @type {Object}
+     * @property {String} requestUrl - request url
+     * @property {{tabId: Number}} tab - request tab with tabId in property
+     * @property {Number} requestId - the ID of the request
+     * @property {Number} statusCode - standard HTTP status code
+     * @property {String} method - standard HTTP method
+     * @property {Number} frameId - ID of current frame. Frame IDs are unique within a tab.
+     * @property {Number} requestFrameId - ID of frame where request is executed
+     * @property {Number} requestType - request type
+     * @property {HttpHeaders} [requestHeaders] - the HTTP request headers
+     * @property {HttpHeaders} [responseHeaders] - the HTTP response headers
+     * @property {String} [referrerUrl] - the origin where the request was initiated
+     */
+
+    /**
+     * Argument passed to the webRequest event listener.
+     * Every webRequest event listener has its own object with request details.
+     * To learn more see https://developer.chrome.com/extensions/webRequest or
+     * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webRequest
+     * @typedef {Object} WebRequestDetails
+     */
+
+    /**
+     * Transforms raw request details from different browsers into unified format
+     * @param {WebRequestDetails} details raw webRequest details
+     * @returns {RequestDetails} prepared request details
+     */
+    function getRequestDetails(details) {
         var tab = { tabId: details.tabId };
 
         /**
@@ -171,7 +205,7 @@ var browser = window.browser || chrome;
             requestDetails.responseHeaders = details.responseHeaders;
         }
 
-        if (details.tabId === backgroundTabId) {
+        if (details.tabId === adguard.BACKGROUND_TAB_ID) {
             // In case of background request, its details contains referrer url
             // Chrome uses `initiator`: https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
             // FF uses `originUrl`: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webRequest/onBeforeRequest#Additional_objects
@@ -182,7 +216,12 @@ var browser = window.browser || chrome;
     }
 
     var onBeforeRequest = {
-
+        /**
+         * Wrapper for webRequest.onBeforeRequest event
+         * It prepares requestDetails and passes them to the callback
+         * @param callback callback function receives {RequestDetails} and handles event
+         * @param {String} urls url match pattern https://developer.chrome.com/extensions/match_patterns
+         */
         addListener: function (callback, urls) {
 
             // https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
@@ -200,7 +239,12 @@ var browser = window.browser || chrome;
     };
 
     var onHeadersReceived = {
-
+        /**
+         * Wrapper for webRequest.onHeadersReceived event
+         * It prepares requestDetails and passes them to the callback
+         * @param callback callback function receives {RequestDetails} and handles event
+         * @param {String} urls url match pattern https://developer.chrome.com/extensions/match_patterns
+         */
         addListener: function (callback, urls) {
 
             browser.webRequest.onHeadersReceived.addListener(function (details) {
@@ -221,6 +265,12 @@ var browser = window.browser || chrome;
 
     var onBeforeSendHeaders = {
 
+        /**
+         * Wrapper for webRequest.onBeforeSendHeaders event
+         * It prepares requestDetails and passes them to the callback
+         * @param callback callback function receives {RequestDetails} and handles event
+         * @param {String} urls url match pattern https://developer.chrome.com/extensions/match_patterns
+         */
         addListener: function (callback, urls) {
 
             browser.webRequest.onBeforeSendHeaders.addListener(function (details) {
@@ -237,6 +287,60 @@ var browser = window.browser || chrome;
 
             }, urls ? { urls: urls } : {}, ["requestHeaders", "blocking"]);
         }
+    };
+
+    var onResponseStarted = {
+        /**
+         * Wrapper for webRequest.onResponseStarted event
+         * It prepares requestDetails and passes them to the callback
+         * @param callback callback function receives {RequestDetails} and handles event
+         * @param {String} urls url match pattern https://developer.chrome.com/extensions/match_patterns
+         */
+        addListener: function (callback, urls) {
+            browser.webRequest.onResponseStarted.addListener(function (details) {
+                if (shouldSkipRequest(details)) {
+                    return;
+                }
+                var requestDetails = getRequestDetails(details);
+                return callback(requestDetails);
+            }, urls ? { urls: urls } : {}, ['responseHeaders']);
+        },
+    };
+
+    var onErrorOccurred = {
+        /**
+         * Wrapper for webRequest.onErrorOccurred event
+         * It prepares requestDetails and passes them to the callback
+         * @param callback callback function receives {RequestDetails} and handles event
+         * @param {String} urls url match pattern https://developer.chrome.com/extensions/match_patterns
+         */
+        addListener: function (callback, urls) {
+            browser.webRequest.onErrorOccurred.addListener(function (details) {
+                if (shouldSkipRequest(details)) {
+                    return;
+                }
+                var requestDetails = getRequestDetails(details);
+                return callback(requestDetails);
+            }, urls ? { urls: urls } : {});
+        },
+    };
+
+    var onCompleted = {
+        /**
+         * Wrapper for webRequest.onCompleted event
+         * It prepares requestDetails and passes them to the callback
+         * @param callback callback function receives {RequestDetails} and handles event
+         * @param {String} urls url match pattern https://developer.chrome.com/extensions/match_patterns
+         */
+        addListener: function (callback, urls) {
+            browser.webRequest.onCompleted.addListener(function (details) {
+                if (shouldSkipRequest(details)) {
+                    return;
+                }
+                var requestDetails = getRequestDetails(details);
+                return callback(requestDetails);
+            }, urls ? { urls: urls } : {}, ['responseHeaders']);
+        },
     };
 
     /**
@@ -286,12 +390,13 @@ var browser = window.browser || chrome;
     adguard.webRequest = {
         onBeforeRequest: onBeforeRequest,
         handlerBehaviorChanged: browser.webRequest.handlerBehaviorChanged,
-        onCompleted: browser.webRequest.onCompleted,
-        onErrorOccurred: browser.webRequest.onErrorOccurred,
+        onCompleted: onCompleted,
+        onErrorOccurred: onErrorOccurred,
         onHeadersReceived: onHeadersReceived,
         onBeforeSendHeaders: onBeforeSendHeaders,
+        onResponseStarted: onResponseStarted,
         webSocketSupported: typeof browser.webRequest.ResourceType !== 'undefined' && browser.webRequest.ResourceType['WEBSOCKET'] === 'websocket',
-        filterResponseData: browser.webRequest.filterResponseData
+        filterResponseData: browser.webRequest.filterResponseData,
     };
 
     var onCreatedNavigationTarget = {
@@ -305,7 +410,7 @@ var browser = window.browser || chrome;
 
             browser.webNavigation.onCreatedNavigationTarget.addListener(function (details) {
 
-                if (details.tabId === backgroundTabId) {
+                if (details.tabId === adguard.BACKGROUND_TAB_ID) {
                     return;
                 }
 
@@ -319,10 +424,20 @@ var browser = window.browser || chrome;
     };
 
     var onCommitted = {
-
+        /**
+         * Wrapper for webNavigation.onCommitted event
+         * It prepares webNavigation details and passes them to the callback
+         * @param callback callback function receives object similar to {RequestDetails} and handles event
+         */
         addListener: function (callback) {
             // https://developer.chrome.com/extensions/webNavigation#event-onCommitted
-            browser.webNavigation.onCommitted.addListener(callback, {
+            browser.webNavigation.onCommitted.addListener(function (details) {
+                // makes webNavigation.onCommited details similar to webRequestDetails
+                details.requestType = details.frameId === 0 ? adguard.RequestTypes.DOCUMENT : adguard.RequestTypes.SUBDOCUMENT;
+                details.tab = { tabId: details.tabId };
+                details.requestUrl = details.url;
+                callback(details);
+            }, {
                 url: [{
                     urlPrefix: 'http'
                 }, {

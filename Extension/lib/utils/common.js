@@ -45,6 +45,11 @@ adguard.RequestTypes = {
 };
 
 /**
+ * Background tab id in browsers is defined as -1
+ */
+adguard.BACKGROUND_TAB_ID = -1;
+
+/**
  * Utilities namespace
  */
 adguard.utils = (function () {
@@ -211,7 +216,7 @@ adguard.utils = (function () {
             }
 
             return parts;
-        }
+        },
     };
 
     api.strings = StringUtils;
