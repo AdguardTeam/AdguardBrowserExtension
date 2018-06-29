@@ -264,6 +264,17 @@ var AntiBannerFilters = function (options) {
 
     var groupsListElement = document.querySelector('#groupsList');
 
+    /**
+     * @param {String} HTML representing a single element
+     * @return {Element}
+     */
+    function htmlToElement(html) {
+        var template = document.createElement('template');
+        html = html.trim(); // Never return a text node of whitespace as the result
+        template.innerHTML = html;
+        return template.content.firstChild;
+    }
+
     function getFiltersByGroupId(groupId, filters) {
         return filters.filter(function (f) {
             return f.groupId === groupId;
@@ -314,17 +325,18 @@ var AntiBannerFilters = function (options) {
     }
 
     function getFilterCategoryTemplate(category) {
-        return $('<li>', {id: 'category' + category.groupId})
-            .append($('<div>', {class: 'block-type'})
-                .append($('<div>', {class: 'block-type__ico block-type__ico--' + category.groupId}))
-                .append($('<a>', {
-                    href: '#antibanner' + category.groupId,
-                    text: category.groupName
-                })))
-            .append($('<div>', {class: 'opt-state'})
-                .append($('<div>', {class: 'preloader'}))
-                .append($('<div>', {class: 'desc'}))
-                .append($('<input>', {type: 'checkbox', name: 'groupId', value: category.groupId})));
+        return htmlToElement(`
+                <li id="category${category.groupId}" class="active">
+                    <div class="block-type">
+                        <div class="block-type__ico block-type__ico--${category.groupId}"></div>
+                        <a href="#antibanner${category.groupId}">${category.groupName}</a>
+                    </div>
+                    <div class="opt-state">
+                        <div class="preloader"></div>
+                        <div class="desc"></div>
+                        <input type="checkbox" name="groupId" value="${category.groupId}">
+                    </div>
+                </li>`);
     }
 
     function getFilterTemplate(filter, enabled, showDeleteButton) {
@@ -332,33 +344,39 @@ var AntiBannerFilters = function (options) {
         timeUpdated.locale(environmentOptions.Prefs.locale);
         var timeUpdatedText = timeUpdated.format("D/MM/YYYY HH:mm").toLowerCase();
 
-        var tagDetails = $('<div>', {class: 'opt-name__info-labels opt-name__info-labels--tags'});
+        var tagDetails = '';
         filter.tagsDetails.forEach(function (tag) {
-            tagDetails.append($('<div>', {class: 'opt-name__tag', 'data-tooltip': tag.description, text: '#' + tag.keyword}));
+            tagDetails += `<div class="opt-name__tag" data-tooltip="${tag.description}">#${tag.keyword}</div>`;
         });
 
-        var optionsBlock = $('<div>', {class: 'opt-state'}).append($('<div>', {class: 'preloader'}));
-
+        var deleteButton = '';
         if (showDeleteButton) {
-            optionsBlock = optionsBlock.append($('<a>', {href: '#', text: 'remove', filterId: filter.filterId, class: 'remove-custom-filter-button'}));
+            deleteButton = `<a href="#" filterid="${filter.filterId}" class="remove-custom-filter-button">remove</a>`;
         }
 
-        optionsBlock = optionsBlock.append($('<a>', {class: 'icon-home', target: '_blank', href: filter.homepage}))
-            .append($('<input>', {type: 'checkbox', name: 'filterId', value: filter.filterId, checked: enabled}));
-
-        return $('<li>', {id: 'filter' + filter.filterId})
-            .append($('<div>', {class: 'opt-name'})
-                .append($('<div>', {class: 'title', text: filter.name}))
-                .append($('<div>', {class: 'desc', text: filter.description}))
-                .append($('<div>', {class: 'opt-name__info'})
-                    .append($('<div>', {class: 'opt-name__info-labels'})
-                        .append($('<div>', {class: 'opt-name__info-item', text: 'version ' + filter.version}))
-                        .append($('<div>', {class: 'opt-name__info-item', text: 'updated: ' + timeUpdatedText}))
-                    )
-                    .append(tagDetails)
-                )
-            )
-            .append(optionsBlock);
+        return htmlToElement(`
+            <li id="filter${filter.filterId}">
+                <div class="opt-name">
+                    <div class="title">${filter.name}</div>
+                    <div class="desc">${filter.description}</div>
+                    <div class="opt-name__info">
+                        <div class="opt-name__info-labels">
+                            <div class="opt-name__info-item">version ${filter.version}</div>
+                            <div class="opt-name__info-item">updated: ${timeUpdatedText}</div>
+                        </div>
+                        <div class="opt-name__info-labels opt-name__info-labels--tags">
+                            ${tagDetails}
+                        </div>
+                    </div>
+                </div>
+                <div class="opt-state">
+                    <div class="preloader"></div>
+                    ${deleteButton}
+                    <a class="icon-home" target="_blank" href="${filter.homepage}"></a>
+                    <input type="checkbox" name="filterId" value="${filter.filterId}" ${enabled ? 'checked="checked"' : ''}>
+                </div>
+            </li>
+        `);
     }
 
     function getFiltersContentTemplate(category) {
@@ -444,7 +462,7 @@ var AntiBannerFilters = function (options) {
         $('#category' + category.groupId).remove();
 
         var categoryTemplate = getFilterCategoryTemplate(category);
-        $(groupsListElement).append(categoryTemplate);
+        groupsListElement.appendChild(categoryTemplate);
         updateCategoryFiltersInfo(category.groupId);
 
         var filtersContentTemplate = getFiltersContentTemplate(category);
