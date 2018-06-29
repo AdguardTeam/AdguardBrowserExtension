@@ -124,25 +124,8 @@ PageController.prototype = {
         this.logTableHidden = true;
 
         this.tabSelector = $('#tabSelector');
-        this.tabSelectorValue = this.tabSelector.find('#selectorListCurrentValue');
-        this.tabSelectorList = this.tabSelector.find('#selectorList');
 
         this.logoIcon = $('#logoIcon');
-
-        this.tabSelectorValue.dropdown();
-
-        this.tabSelector.on('show.bs.dropdown', function () {
-            this.tabSelector.addClass('active');
-        }.bind(this));
-        this.tabSelector.on('hide.bs.dropdown', function () {
-            this.tabSelector.removeClass('active');
-        }.bind(this));
-
-        // bind on change of selected tab
-        this.tabSelectorList.on('click', 'li', function (e) {
-            var el = $(e.currentTarget);
-            document.location.hash = '#' + el.attr('data-tab-id');
-        }.bind(this));
 
         // bind location hash change
         $(window).on('hashchange', function () {
@@ -221,11 +204,10 @@ PageController.prototype = {
     },
 
 	onTabAdded: function (tabInfo) {
-
 		if (tabInfo.isExtensionTab) {
 			return;
 		}
-		this.tabSelectorList.append($('<li>',{
+		this.tabSelector.append($('<option>',{
 			text: tabInfo.title,
 			'data-tab-id': tabInfo.tabId
 		}));
@@ -235,7 +217,7 @@ PageController.prototype = {
 	},
 
 	onTabUpdated: function (tabInfo) {
-		var item = this.tabSelectorList.find('[data-tab-id=' + tabInfo.tabId + ']');
+		var item = this.tabSelector.find('[data-tab-id=' + tabInfo.tabId + ']');
 		if (tabInfo.isExtensionTab) {
 			this.onTabClose(tabInfo);
 			return;
@@ -243,7 +225,7 @@ PageController.prototype = {
 		if (item && item.length > 0) {
 			item.text(tabInfo.title);
 			if (tabInfo.tabId == this.currentTabId) {
-				this.tabSelectorValue.text(tabInfo.title);
+                document.querySelector('[data-tab-id="' + this.currentTabId + '"]').selected = true;
 				//update icon logo
 				this._updateLogoIcon();
 			}
@@ -253,7 +235,7 @@ PageController.prototype = {
 	},
 
     onTabClose: function (tabInfo) {
-        this.tabSelectorList.find('[data-tab-id=' + tabInfo.tabId + ']').remove();
+        this.tabSelector.find('[data-tab-id=' + tabInfo.tabId + ']').remove();
         if (this.currentTabId == tabInfo.tabId) {
             //current tab was removed
             this.currentTabId = null;
@@ -289,9 +271,9 @@ PageController.prototype = {
     },
 
     onSelectedTabChange: function () {
-		var selectedItem = this.tabSelectorList.find('[data-tab-id="' + this.currentTabId + '"]');
+		var selectedItem = this.tabSelector.find('[data-tab-id="' + this.currentTabId + '"]');
 		if (selectedItem.length === 0) {
-			selectedItem = this.tabSelectorList.find(':first');
+			selectedItem = this.tabSelector.find(':first');
 		}
 		var text = '';
 		var selectedTabId = null;
@@ -300,7 +282,7 @@ PageController.prototype = {
 			selectedTabId = selectedItem.attr('data-tab-id');
 		}
 		this.currentTabId = selectedTabId;
-		this.tabSelectorValue.text(text);
+		document.querySelector('[data-tab-id="' + this.currentTabId + '"]').selected = true;
 		this._updateLogoIcon();
 		//render events
 		this._renderEventsForTab(this.currentTabId);
