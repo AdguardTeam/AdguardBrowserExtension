@@ -285,6 +285,18 @@ var AntiBannerFilters = function (options) {
         }
     };
 
+    // Bind events
+    document.addEventListener('change', function (e) {
+        if (e.target.getAttribute('name') === 'filterId') {
+            toggleFilterState.bind(e.target)();
+        } else if (e.target.getAttribute('name') === 'groupId') {
+            toggleGroupState.bind(e.target)();
+        }
+    });
+    document.querySelector('#updateAntiBannerFilters').addEventListener('click', updateAntiBannerFilters);
+
+    updateRulesCountInfo(options.rulesInfo);
+
     /**
      * @param {String} HTML representing a single element
      * @return {Element}
@@ -710,42 +722,30 @@ var AntiBannerFilters = function (options) {
         document.querySelector('#lastUpdateTime').textContent = updateText;
     }
 
-    var updateRulesCountInfo = function (info) {
+    function updateRulesCountInfo(info) {
         var message = i18n.getMessage("options_antibanner_info", [String(info.rulesCount || 0)]);
         document.querySelector('#filtersRulesInfo').textContent = message;
-    };
+    }
 
-    var onFilterStateChanged = function (filter) {
+    function onFilterStateChanged(filter) {
         var filterId = filter.filterId;
         var enabled = filter.enabled;
         loadedFiltersInfo.updateEnabled(filter, enabled);
         updateCategoryFiltersInfo(filter.groupId);
 
         CheckboxUtils.updateCheckbox([getFilterCheckbox(filterId)], enabled);
-    };
+    }
 
-    var onFilterDownloadStarted = function (filter) {
+    function onFilterDownloadStarted(filter) {
         getCategoryElement(filter.groupId).querySelector('.preloader').classList.add('active');
         getFilterElement(filter.filterId).querySelector('.preloader').classList.add('active');
-    };
+    }
 
-    var onFilterDownloadFinished = function (filter) {
+    function onFilterDownloadFinished(filter) {
         getCategoryElement(filter.groupId).querySelector('.preloader').classList.remove('active');
         getFilterElement(filter.filterId).querySelector('.preloader').classList.remove('active');
         setLastUpdatedTimeText(filter.lastUpdateTime);
-    };
-
-    // Bind events
-    document.addEventListener('change', function (e) {
-        if (e.target.getAttribute('name') === 'filterId') {
-            toggleFilterState.bind(e.target)();
-        } else if (e.target.getAttribute('name') === 'groupId') {
-            toggleGroupState.bind(e.target)();
-        }
-    });
-    document.querySelector('#updateAntiBannerFilters').addEventListener('click', updateAntiBannerFilters);
-
-    updateRulesCountInfo(options.rulesInfo);
+    }
 
     return {
         render: renderCategoriesAndFilters,
