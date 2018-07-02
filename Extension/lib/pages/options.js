@@ -343,7 +343,12 @@ var AntiBannerFilters = function (options) {
     }
 
     function getFilterCheckbox(filterId) {
-        return getFilterElement(filterId).querySelector('input');
+        var filterElement = getFilterElement(filterId);
+        if (!filterElement) {
+            return null;
+        }
+
+        return filterElement.querySelector('input');
     }
 
     function updateCategoryFiltersInfo(groupId) {
@@ -762,26 +767,26 @@ var SyncSettings = function (options) {
     var syncStatus = options.syncStatusInfo;
     var currentProvider = options.syncStatusInfo.currentProvider;
 
-    var unauthorizedBlock = $('#unauthorizedBlock');
-    var authorizedBlock = $('#authorizedBlock');
-    var signInButton = $('#signInButton');
-    var signOutButton = $('#signOutButton');
-    var startSyncButton = $('#startSyncButton');
-    var syncNowButton = $('#syncNowButton');
-    var lastSyncTimeInfo = $('#lastSyncTimeInfo');
-    var selectProviderButton = $('#selectProviderButton');
+    var unauthorizedBlock = document.querySelector('#unauthorizedBlock');
+    var authorizedBlock = document.querySelector('#authorizedBlock');
+    var signInButton = document.querySelector('#signInButton');
+    var signOutButton = document.querySelector('#signOutButton');
+    var startSyncButton = document.querySelector('#startSyncButton');
+    var syncNowButton = document.querySelector('#syncNowButton');
+    var lastSyncTimeInfo = document.querySelector('#lastSyncTimeInfo');
+    var selectProviderButton = document.querySelector('#selectProviderButton');
 
-    var providersDropdown = $('#selectProviderDropdown');
+    var providersDropdown = document.querySelector('#selectProviderDropdown');
 
     bindControls();
 
     function bindControls() {
 
-        selectProviderButton.on('click', function () {
-            providersDropdown.show();
-        }.bind(this));
+        selectProviderButton.addEventListener('click', function () {
+            providersDropdown.style.display = 'block';
+        });
 
-        signInButton.on('click', function (e) {
+        signInButton.addEventListener('click', function (e) {
             e.preventDefault();
             if (currentProvider) {
                 contentPage.sendMessage({
@@ -789,9 +794,9 @@ var SyncSettings = function (options) {
                     provider: currentProvider.name
                 });
             }
-        }.bind(this));
+        });
 
-        signOutButton.on('click', function (e) {
+        signOutButton.addEventListener('click', function (e) {
             e.preventDefault();
             if (currentProvider && currentProvider.isOAuthSupported) {
                 contentPage.sendMessage({
@@ -801,43 +806,43 @@ var SyncSettings = function (options) {
             } else {
                 contentPage.sendMessage({type: 'toggleSync'});
             }
-        }.bind(this));
+        });
 
-        startSyncButton.on('click', function (e) {
+        startSyncButton.addEventListener('click', function (e) {
             e.preventDefault();
             contentPage.sendMessage({type: 'toggleSync'});
         });
 
-        syncNowButton.on('click', function (e) {
+        syncNowButton.addEventListener('click', function (e) {
             e.preventDefault();
             updateSyncState();
             contentPage.sendMessage({type: 'syncNow'});
-        }.bind(this));
+        });
 
-        $('#changeDeviceNameButton').on('click', function (e) {
+        document.querySelector('#changeDeviceNameButton').addEventListener('click', function (e) {
             e.preventDefault();
-            var deviceName = $('#deviceNameInput').val();
+            var deviceName = document.querySelector('#deviceNameInput').value;
             contentPage.sendMessage({
                 type: 'syncChangeDeviceName',
                 deviceName: deviceName
             });
         });
 
-        $('#adguardSelectProvider').on('click', onProviderSelected('ADGUARD_SYNC'));
-        $('#dropboxSelectProvider').on('click', onProviderSelected('DROPBOX'));
-        $('#browserStorageSelectProvider').on('click', onProviderSelected('BROWSER_SYNC'));
+        document.querySelector('#adguardSelectProvider').addEventListener('click', onProviderSelected('ADGUARD_SYNC'));
+        document.querySelector('#dropboxSelectProvider').addEventListener('click', onProviderSelected('DROPBOX'));
+        document.querySelector('#browserStorageSelectProvider').addEventListener('click', onProviderSelected('BROWSER_SYNC'));
 
-        $('#sync-general-settings-checkbox').on('change', onSyncOptionsChanged);
-        $('#sync-filters-checkbox').on('change', onSyncOptionsChanged);
-        $('#sync-extension-specific-checkbox').on('change', onSyncOptionsChanged);
+        document.querySelector('#sync-general-settings-checkbox').addEventListener('change', onSyncOptionsChanged);
+        document.querySelector('#sync-filters-checkbox').addEventListener('change', onSyncOptionsChanged);
+        document.querySelector('#sync-extension-specific-checkbox').addEventListener('change', onSyncOptionsChanged);
     }
 
     function onSyncOptionsChanged() {
         contentPage.sendMessage({
             type: 'setSyncOptions', options: {
-                syncGeneral: $('#sync-general-settings-checkbox').is(':checked'),
-                syncFilters: $('#sync-filters-checkbox').is(':checked'),
-                syncExtensionSpecific: $('#sync-extension-specific-checkbox').is(':checked')
+                syncGeneral: document.querySelector('#sync-general-settings-checkbox').hasAttribute('checked'),
+                syncFilters: document.querySelector('#sync-filters-checkbox').hasAttribute('checked'),
+                syncExtensionSpecific: document.querySelector('#sync-extension-specific-checkbox').hasAttribute('checked')
             }
         });
     }
@@ -845,64 +850,64 @@ var SyncSettings = function (options) {
     function onProviderSelected(providerName) {
         return function (e) {
             e.preventDefault();
-            providersDropdown.hide();
+            providersDropdown.style.display = 'none';
             contentPage.sendMessage({type: 'setSyncProvider', provider: providerName}, function () {
                 document.location.reload();
             });
-        }.bind(this);
+        };
     }
 
     function renderSelectProviderBlock() {
-        unauthorizedBlock.show();
-        authorizedBlock.hide();
-        signInButton.hide();
-        startSyncButton.hide();
+        unauthorizedBlock.style.display = 'block';
+        authorizedBlock.style.display = 'none';
+        signInButton.style.display = 'none';
+        startSyncButton.style.display = 'none';
     }
 
     function renderUnauthorizedBlock() {
 
-        unauthorizedBlock.show();
-        authorizedBlock.hide();
+        unauthorizedBlock.style.display = 'block';
+        authorizedBlock.style.display = 'none';
 
         if (currentProvider.isOAuthSupported && !currentProvider.isAuthorized) {
-            signInButton.show();
+            signInButton.style.display = 'block';
         } else {
-            signInButton.hide();
+            signInButton.style.display = 'none';
         }
 
         if (!syncStatus.enabled && currentProvider.isAuthorized) {
-            startSyncButton.show();
+            startSyncButton.style.display = 'block';
         } else {
-            startSyncButton.hide();
+            startSyncButton.style.display = 'none';
         }
 
-        selectProviderButton.text(currentProvider.title);
+        selectProviderButton.textContent = currentProvider.title;
     }
 
     function renderAuthorizedBlock() {
 
-        unauthorizedBlock.hide();
-        authorizedBlock.show();
+        unauthorizedBlock.style.display = 'none';
+        authorizedBlock.style.display = 'block';
 
-        $('#providerNameInfo').text(currentProvider.title);
+        document.querySelector('#providerNameInfo').textContent = currentProvider.title;
 
-        var manageAccountButton = $('#manageAccountButton');
-        var deviceNameBlock = $('#deviceNameBlock');
+        var manageAccountButton = document.querySelector('#manageAccountButton');
+        var deviceNameBlock = document.querySelector('#deviceNameBlock');
 
         updateSyncState();
 
         if (currentProvider.isOAuthSupported && currentProvider.name === 'ADGUARD_SYNC') {
-            manageAccountButton.show();
-            deviceNameBlock.show();
-            $('#deviceNameInput').val(currentProvider.deviceName);
+            manageAccountButton.style.display = 'block';
+            deviceNameBlock.style.display = 'block';
+            document.querySelector('#deviceNameInput').value = currentProvider.deviceName;
         } else {
-            manageAccountButton.hide();
-            deviceNameBlock.hide();
+            manageAccountButton.style.display = 'none';
+            deviceNameBlock.style.display = 'none';
         }
 
-        $('#sync-general-settings-checkbox').attr('checked', syncStatus.syncOptions.syncGeneral);
-        $('#sync-filters-checkbox').attr('checked', syncStatus.syncOptions.syncFilters);
-        $('#sync-extension-specific-checkbox').attr('checked', syncStatus.syncOptions.syncExtensionSpecific);
+        document.querySelector('#sync-general-settings-checkbox').setAttribute('checked', syncStatus.syncOptions.syncGeneral);
+        document.querySelector('#sync-filters-checkbox').setAttribute('checked', syncStatus.syncOptions.syncFilters);
+        document.querySelector('#sync-extension-specific-checkbox').setAttribute('checked', syncStatus.syncOptions.syncExtensionSpecific);
     }
 
     function renderSyncSettings() {
@@ -923,7 +928,7 @@ var SyncSettings = function (options) {
         }).length > 0;
 
         if (!browserStorageSupported) {
-            $('#browserStorageSelectProvider').hide();
+            document.querySelector('#browserStorageSelectProvider').style.display = 'none';
         }
 
         if (currentProvider) {
@@ -931,13 +936,13 @@ var SyncSettings = function (options) {
 
             switch (currentProvider.name) {
                 case 'ADGUARD_SYNC':
-                    $('#adguardSelectProvider').addClass(activeClass);
+                    document.querySelector('#adguardSelectProvider').classList.add(activeClass);
                     break;
                 case 'DROPBOX':
-                    $('#dropboxSelectProvider').addClass(activeClass);
+                    document.querySelector('#dropboxSelectProvider').classList.add(activeClass);
                     break;
                 case 'BROWSER_SYNC':
-                    $('#browserStorageSelectProvider').addClass(activeClass);
+                    document.querySelector('#browserStorageSelectProvider').classList.add(activeClass);
                     break;
             }
         }
@@ -951,19 +956,19 @@ var SyncSettings = function (options) {
 
     function updateSyncState() {
         if (syncStatus.syncInProgress) {
-            syncNowButton.attr('disabled', 'disabled');
-            syncNowButton.text(i18n.getMessage('sync_in_progress_button_text'));
+            syncNowButton.setAttribute('disabled', 'disabled');
+            syncNowButton.textContent = i18n.getMessage('sync_in_progress_button_text');
         } else {
-            syncNowButton.removeAttr('disabled');
-            syncNowButton.text(i18n.getMessage('sync_now_button_text'));
+            syncNowButton.removeAttribute('disabled');
+            syncNowButton.textContent = i18n.getMessage('sync_now_button_text');
         }
 
         if (currentProvider) {
             var lastSyncTime = currentProvider.lastSyncTime;
             if (lastSyncTime) {
-                lastSyncTimeInfo.text(new Date(parseInt(lastSyncTime)).toLocaleString());
+                lastSyncTimeInfo.textContent = new Date(parseInt(lastSyncTime)).toLocaleString();
             } else {
-                lastSyncTimeInfo.text(i18n.getMessage('sync_last_sync_time_never_sync_text'));
+                lastSyncTimeInfo.textContent = i18n.getMessage('sync_last_sync_time_never_sync_text');
             }
         }
     }
@@ -975,6 +980,7 @@ var SyncSettings = function (options) {
 };
 
 var Settings = function () {
+    'use strict';
 
     var Checkbox = function (id, property, options) {
 
@@ -982,14 +988,15 @@ var Settings = function () {
         var negate = options.negate;
         var hidden = options.hidden;
 
-        var element = $(id);
+        var element = document.querySelector(id);
         if (!hidden) {
-            element.on('change', function () {
+            element.addEventListener('change', function () {
                 contentPage.sendMessage({
                     type: 'changeUserSetting',
                     key: property,
                     value: negate ? !this.checked : this.checked
                 });
+
                 if (property === userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO) {
                     updateDisplayAdguardPromo(this.checked);
                 }
@@ -998,7 +1005,7 @@ var Settings = function () {
 
         var render = function () {
             if (hidden) {
-                element.closest('li').hide();
+                element.closest('li').style.display = 'none';
                 return;
             }
             var checked = userSettings.values[property];
@@ -1006,8 +1013,9 @@ var Settings = function () {
                 checked = !checked;
             }
 
-            CheckboxUtils.updateCheckbox(element, checked);
+            CheckboxUtils.updateCheckbox([element], checked);
         };
+
         return {
             render: render
         };
@@ -1034,8 +1042,8 @@ var Settings = function () {
         negate: true
     }));
 
-    var allowAcceptableAdsCheckbox = $("#allowAcceptableAds");
-    allowAcceptableAdsCheckbox.on('change', function () {
+    var allowAcceptableAdsCheckbox = document.querySelector("#allowAcceptableAds");
+    allowAcceptableAdsCheckbox.addEventListener('change', function () {
         if (this.checked) {
             contentPage.sendMessage({
                 type: 'addAndEnableFilter',
@@ -1054,7 +1062,7 @@ var Settings = function () {
             checkboxes[i].render();
         }
 
-        CheckboxUtils.updateCheckbox(allowAcceptableAdsCheckbox, AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID in enabledFilters);
+        CheckboxUtils.updateCheckbox([allowAcceptableAdsCheckbox], AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID in enabledFilters);
     };
 
     var showPopup = function (title, text) {
@@ -1064,14 +1072,16 @@ var Settings = function () {
     var importSettingsFile = function () {
         var input = document.createElement('input');
         input.type = 'file';
-        input.click();
+        var event = document.createEvent('HTMLEvents');
+        event.initEvent('click', true, false);
+        input.dispatchEvent(event);
 
         var onFileLoaded = function (content) {
             contentPage.sendMessage({type: 'applySettingsJson', json: content});
         };
 
-        $(input).change(function () {
-            var file = $(input).get(0).files[0];
+        input.addEventListener('change', function () {
+            var file = e.currentTarget.files[0];
             if (file) {
                 var reader = new FileReader();
                 reader.readAsText(file, "UTF-8");
@@ -1085,7 +1095,7 @@ var Settings = function () {
         });
     };
 
-    $('#importSettingsFile').on('click', function (e) {
+    document.querySelector('#importSettingsFile').addEventListener('click', function (e) {
         e.preventDefault();
         importSettingsFile();
     }.bind(this));
