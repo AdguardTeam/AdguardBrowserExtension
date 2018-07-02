@@ -118,6 +118,8 @@ PageController.prototype = {
 
     init: function () {
 
+        RequestWizard.initRequestWizard();
+
         this.logTable = $("#logTable");
         this.logTableEmpty = $('#logTableEmpty');
         this.logTableHidden = true;
@@ -478,9 +480,9 @@ var RequestWizard = (function () {
     //exclude domain and full request url
     var PATTERNS_COUNT = 2;
 
-    var requestInfoTemplate = $('#modal-request-info');
-    var createBlockRuleTemplate = $('#modal-create-block-rule');
-    var createExceptionRuleTemplate = $('#modal-create-exception-rule');
+    var requestInfoTemplate;
+    var createBlockRuleTemplate;
+    var createExceptionRuleTemplate;
 
     var currentModal;
 
@@ -898,7 +900,17 @@ var RequestWizard = (function () {
         return filterMetadata ? filterMetadata.name : "";
     };
 
+    /**
+     * Initialization
+     */
+    var initRequestWizard = function () {
+        requestInfoTemplate = $('#modal-request-info');
+        createBlockRuleTemplate = $('#modal-create-block-rule');
+        createExceptionRuleTemplate = $('#modal-create-exception-rule');
+    };
+
     return {
+        initRequestWizard: initRequestWizard,
         showRequestInfoModal: showRequestInfoModal,
         closeModal: closeModal,
         getFilterName: getFilterName,
