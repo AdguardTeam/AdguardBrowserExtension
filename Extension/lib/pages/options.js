@@ -1150,32 +1150,34 @@ PageController.prototype = {
     },
 
     _customizeText: function () {
-        $('a.sp-table-row-info').addClass('question').text('');
-        var elements = $('span.sp-table-row-info');
-        for (var i = 0; i < elements.length; i++) {
-            var element = $(elements[i]);
+        document.querySelectorAll('a.sp-table-row-info').forEach(function (a) {
+            a.classList.add('question');
+            a.textContent = '';
+        });
+
+        document.querySelectorAll('span.sp-table-row-info').forEach(function (element) {
             var li = element.closest('li');
-            element.remove();
-            var state = li.find('.opt-state');
-            element.addClass('desc');
-            state.prepend(element);
-        }
+            element.parentNode.removeChild(element);
+
+            var state = li.querySelector('.opt-state');
+            element.classList.add('desc');
+            state.insertBefore(element, state.firstChild);
+        });
     },
 
     _bindEvents: function () {
 
-        this.resetStatsPopup = $("#resetStatsPopup");
-        this.subscriptionModalEl = $('#subscriptionModal');
-        this.tooManySubscriptionsEl = $('#tooManySubscriptions');
+        this.resetStatsPopup = document.querySelector("#resetStatsPopup");
+        this.tooManySubscriptionsEl = document.querySelector('#tooManySubscriptions');
 
-        $("#resetStats").on('click', this.onResetStatsClicked.bind(this));
+        document.querySelector("#resetStats").addEventListener('click', this.onResetStatsClicked.bind(this));
 
-        $(".openExtensionStore").on('click', function (e) {
+        document.querySelector(".openExtensionStore").addEventListener('click', function (e) {
             e.preventDefault();
             contentPage.sendMessage({type: 'openExtensionStore'});
         });
 
-        $("#openLog").on('click', function (e) {
+        document.querySelector("#openLog").addEventListener('click', function (e) {
             e.preventDefault();
             contentPage.sendMessage({type: 'openFilteringLog'});
         });
@@ -1186,7 +1188,7 @@ PageController.prototype = {
         var defaultWhitelistMode = userSettings.values[userSettings.names.DEFAULT_WHITE_LIST_MODE];
 
         if (environmentOptions.Prefs.mobile) {
-            $('#resetStats').hide();
+            document.querySelector('#resetStats').style.display = 'none';
         }
 
         this.checkSubscriptionsCount();
@@ -1232,29 +1234,24 @@ PageController.prototype = {
     },
 
     _onStatsReset: function () {
-        this.resetStatsPopup.show();
+        this.resetStatsPopup.style.display = 'block';
         if (this.closePopupTimeoutId) {
             clearTimeout(this.closePopupTimeoutId);
         }
         this.closePopupTimeoutId = setTimeout(function () {
-            this.resetStatsPopup.hide();
+            this.resetStatsPopup.style.display = 'none';
         }.bind(this), 4000);
     },
 
     checkSubscriptionsCount: function () {
-        var modalOpen = this.subscriptionModalEl.is('.in');
-        if (!modalOpen) {
-            this.tooManySubscriptionsEl.hide();
-            return;
-        }
+        //TODO: Fix too many subscriptions warning
+        //var enabledCount = this.subscriptionModalEl.querySelectorAll('input[name="modalFilterId"][checked="checked"]').length;
 
-        var enabledCount = this.subscriptionModalEl.find('input[name="modalFilterId"]:checked').length;
-
-        if (enabledCount >= this.SUBSCRIPTIONS_LIMIT) {
-            this.tooManySubscriptionsEl.show();
-        } else {
-            this.tooManySubscriptionsEl.hide();
-        }
+        // if (enabledCount >= this.SUBSCRIPTIONS_LIMIT) {
+        //     this.tooManySubscriptionsEl.show();
+        // } else {
+        //     this.tooManySubscriptionsEl.hide();
+        // }
     }
 };
 
@@ -1280,7 +1277,7 @@ var initPage = function (response) {
     AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
     EventNotifierTypes = response.constants.EventNotifierTypes;
 
-    $(document).ready(function () {
+    var onDocumentReady = function() {
 
         var controller = new PageController();
         controller.init();
@@ -1332,7 +1329,13 @@ var initPage = function (response) {
                     break;
             }
         });
-    });
+    };
+
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        onDocumentReady();
+    } else {
+        document.addEventListener('DOMContentLoaded', onDocumentReady);
+    }
 };
 
 contentPage.sendMessage({type: 'initializeFrameScript'}, initPage);
