@@ -18,7 +18,6 @@
 /* global i18n, contentPage, createEventListener */
 
 var PageController = function () {
-    this.requestWizard = new RequestWizard();
 };
 
 var Messages = {
@@ -141,7 +140,8 @@ PageController.prototype = {
 
 		// Bind click to reload tab
 		$('body').on('click', '.reloadTab', function (e) {
-			e.preventDefault();if (this.currentTabId == -1) {
+			e.preventDefault();
+			if (this.currentTabId == -1) {
                 // Unable to reload "background" tab, just clear events
                 contentPage.sendMessage({type: 'clearEventsByTabId', tabId: this.currentTabId});
                 return;
@@ -168,7 +168,7 @@ PageController.prototype = {
                 if (!frameInfo) {
                     return;
                 }
-                self.requestWizard.showRequestInfoModal(frameInfo, filteringEvent);
+                RequestWizard.showRequestInfoModal(frameInfo, filteringEvent);
             });
         });
 
@@ -187,7 +187,7 @@ PageController.prototype = {
 
         $(document).keyup(function (e) {
             if (e.keyCode === 27) {
-                self.requestWizard.closeModal();
+                RequestWizard.closeModal();
             }
         });
     },
@@ -468,397 +468,445 @@ PageController.prototype = {
     }
 };
 
-var RequestWizard = function () {
-    this.requestInfoTemplate = $('#modal-request-info');
-    this.createBlockRuleTemplate = $('#modal-create-block-rule');
-    this.createExceptionRuleTemplate = $('#modal-create-exception-rule');
-};
+/**
+ * Request wizard
+ *
+ * @type {{showRequestInfoModal, closeModal, getFilterName, getRequestType, getSource}}
+ */
+var RequestWizard = (function () {
 
-RequestWizard.getFilterName = function (filterId) {
-    if (filterId == AntiBannerFiltersId.USER_FILTER_ID) {
-        return Messages.OPTIONS_USERFILTER;
-    }
-    if (filterId == AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
-        return Messages.OPTIONS_WHITELIST;
-    }
-    var filterMetadata = filtersMetadata.filter(function (el) {
-        return el.filterId == filterId;
-    })[0];
-    return filterMetadata ? filterMetadata.name : "";
-};
+    //exclude domain and full request url
+    var PATTERNS_COUNT = 2;
 
-RequestWizard.prototype.showModal = function (template) {
+    var requestInfoTemplate = $('#modal-request-info');
+    var createBlockRuleTemplate = $('#modal-create-block-rule');
+    var createExceptionRuleTemplate = $('#modal-create-exception-rule');
 
-    this.closeModal();
+    var currentModal;
 
-    $(document.body).append(template);
-    template.show();
+    var showModal = function (template) {
+        closeModal();
 
-    template.modal();
+        $(document.body).append(template);
+        template.show();
 
-    template.on('hidden.bs.modal', function () {
-        $(this).remove();
-    });
+        template.modal();
 
-    this.currentModal = template;
-};
-
-RequestWizard.prototype.closeModal = function () {
-    if (this.currentModal) {
-        this.currentModal.modal('hide');
-        this.currentModal = null;
-    }
-};
-
-RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEvent) {
-
-    var template = this.requestInfoTemplate.clone();
-
-    var requestRule = filteringEvent.requestRule;
-
-    template.find('[attr-text="requestUrl"]').text(filteringEvent.requestUrl);
-    template.find('[attr-text="requestType"]').text(RequestWizard.getRequestType(filteringEvent.requestType));
-    template.find('[attr-text="frameDomain"]').text(RequestWizard.getSource(filteringEvent.frameDomain));
-    if (!filteringEvent.frameDomain) {
-        template.find('[attr-text="frameDomain"]').closest('li').hide();
-    }
-
-    if (requestRule) {
-        if (requestRule.filterId !== AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
-            template.find('[attr-text="requestRule"]').text(requestRule.ruleText);
-        } else {
-            template.find('[attr-text="requestRule"]').closest('li').hide();
-        }
-        template.find('[attr-text="requestRuleFilter"]').text(RequestWizard.getFilterName(requestRule.filterId));
-    } else {
-        template.find('[attr-text="requestRule"]').closest('li').hide();
-        template.find('[attr-text="requestRuleFilter"]').closest('li').hide();
-    }
-
-	if (filteringEvent.requestType === "IMAGE") {
-
-        template.removeClass('compact-view');
-
-        var imagePreview = template.find('[attr-src="requestUrl"]');
-        var image = new Image();
-        image.src = filteringEvent.requestUrl;
-        image.onload = function () {
-            var width = this.width;
-            var height = this.height;
-            if (width > 1 && height > 1) {
-                imagePreview.attr('src', filteringEvent.requestUrl);
-                imagePreview.parent().show();
-            }
-        };
-    }
-
-	//bind events
-    var openRequestButton = template.find('#openRequestNewTab');
-	var blockRequestButton = template.find('#blockRequest');
-	var unblockRequestButton = template.find('#unblockRequest');
-	var removeWhiteListDomainButton = template.find('#removeWhiteListDomain');
-	var removeUserFilterRuleButton = template.find('#removeUserFilterRule');
-
-	openRequestButton.on('click', function (e) {
-        e.preventDefault();
-
-        var requestUrl = filteringEvent.requestUrl;
-        if (requestUrl === 'content-security-policy-check') {
-            requestUrl = filteringEvent.frameUrl;
-        }
-
-        contentPage.sendMessage({type: 'openTab', url: requestUrl, options: {inNewWindow: true}});
-    });
-
-	blockRequestButton.on('click', function (e) {
-		e.preventDefault();
-		this.closeModal();
-		this.showCreateBlockRuleModal(frameInfo, filteringEvent);
-	}.bind(this));
-
-    unblockRequestButton.on('click', function (e) {
-        e.preventDefault();
-        this.closeModal();
-        this.showCreateExceptionRuleModal(frameInfo, filteringEvent);
-    }.bind(this));
-
-    removeWhiteListDomainButton.on('click', function (e) {
-        e.preventDefault();
-        contentPage.sendMessage({type: 'unWhiteListFrame', frameInfo: frameInfo});
-        this.closeModal();
-    }.bind(this));
-
-    removeUserFilterRuleButton.on('click', function (e) {
-        e.preventDefault();
-        contentPage.sendMessage({
-            type: 'removeUserRule',
-            ruleText: requestRule.ruleText,
-            adguardDetected: frameInfo.adguardDetected
+        template.on('hidden.bs.modal', function () {
+            $(this).remove();
         });
-        if (frameInfo.adguardDetected) {
-            // In integration mode rule may be present in whitelist filter
-            contentPage.sendMessage({type: 'unWhiteListFrame', frameInfo: frameInfo});
-        }
-        this.closeModal();
-    }.bind(this));
 
-    if (!requestRule) {
-        blockRequestButton.removeClass('hidden');
-    } else {
-        if (requestRule.filterId === AntiBannerFiltersId.USER_FILTER_ID) {
-            removeUserFilterRuleButton.removeClass('hidden');
-        } else if (requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
-            removeWhiteListDomainButton.removeClass('hidden');
-        } else if (!requestRule.whiteListRule) {
-            unblockRequestButton.removeClass('hidden');
-        }
-    }
+        currentModal = template;
+    };
 
-    this.showModal(template);
-};
+    var showCreateBlockRuleModal = function (frameInfo, filteringEvent) {
 
-RequestWizard.prototype.showCreateBlockRuleModal = function (frameInfo, filteringEvent) {
+        var template = createBlockRuleTemplate.clone();
 
-    var template = this.createBlockRuleTemplate.clone();
+        var patterns = splitToPatterns(filteringEvent.requestUrl, filteringEvent.requestDomain, false).reverse();
 
-    var patterns = RequestWizard.splitToPatterns(filteringEvent.requestUrl, filteringEvent.requestDomain, false).reverse();
+        initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
+    };
 
-    this._initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
-};
+    var showCreateExceptionRuleModal = function (frameInfo, filteringEvent) {
 
-RequestWizard.prototype.showCreateExceptionRuleModal = function (frameInfo, filteringEvent) {
+        var template = createExceptionRuleTemplate.clone();
 
-    var template = this.createExceptionRuleTemplate.clone();
-
-	var patterns = RequestWizard.splitToPatterns(filteringEvent.requestUrl, filteringEvent.requestDomain, true).reverse();
-
-    if (filteringEvent.requestUrl === 'content-security-policy-check') {
-        patterns = ['@@'];
-    }
-
-	this._initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
-};
-
-RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, patterns, filteringEvent) {
-
-	var frameDomain = filteringEvent.frameDomain;
-	var isThirdPartyRequest = filteringEvent.requestThirdParty;
-
-    var rulePatternsEl = template.find('#rulePatterns');
-    for (var i = 0; i < patterns.length; i++) {
-        var patternEl = $('<li>', {'class': 'checkb-wrap'});
-        var input = $('<input>', {
-            type: 'radio',
-            name: 'rulePattern',
-            id: 'pattern' + i,
-            value: patterns[i]
-        });
-        var div = $('<div>', {class: 'radio'});
-        var label = $('<label>', {'for': 'pattern' + i});
-        patternEl.append(input);
-        patternEl.append(label);
-        label.append(div);
-        label.append(document.createTextNode(patterns[i]));
-        rulePatternsEl.append(patternEl);
-        if (i === 0) {
-            input.attr('checked', 'checked');
-        }
-    }
-
-	var rulePatterns = template.find('[name="rulePattern"]');
-	var ruleDomainCheckbox = template.find('[name="ruleDomain"]');
-	var ruleImportantCheckbox = template.find('[name="ruleImportant"]');
-	var ruleMatchCaseCheckbox = template.find('[name="ruleMatchCase"]');
-	var ruleThirdPartyCheckbox = template.find('[name="ruleThirdParty"]');
-	var ruleTextEl = template.find('[name="ruleText"]');
-
-	ruleDomainCheckbox.attr('id', 'ruleDomain');
-	ruleDomainCheckbox.parent().find('label').attr('for', 'ruleDomain');
-	if (!frameDomain) {
-		ruleDomainCheckbox.closest('.checkbox').hide();
-	}
-
-    ruleImportantCheckbox.attr('id', 'ruleImportant');
-    ruleImportantCheckbox.parent().find('label').attr('for', 'ruleImportant');
-
-	ruleMatchCaseCheckbox.attr('id', 'ruleMatchCase');
-	ruleMatchCaseCheckbox.parent().find('label').attr('for', 'ruleMatchCase');
-
-    ruleThirdPartyCheckbox.attr('id', 'ruleThirdParty');
-    ruleThirdPartyCheckbox.parent().find('label').attr('for', 'ruleThirdParty');
-    if (isThirdPartyRequest) {
-        ruleThirdPartyCheckbox.attr('checked', 'checked');
-    }
-
-    //bind events
-    function updateRuleText() {
-
-		var urlPattern = rulePatterns.filter(':checked').val();
-		var permitDomain = !ruleDomainCheckbox.is(':checked');
-		var important = ruleImportantCheckbox.is(':checked');
-		var matchCase = ruleMatchCaseCheckbox.is(':checked');
-		var thirdParty = ruleThirdPartyCheckbox.is(':checked');
-
-		var domain = permitDomain ? frameDomain : null;
-
-		var mandatoryOptions = null;
-
-		// Deal with csp rule
-        var requestRule = filteringEvent.requestRule;
-        if (requestRule && requestRule.cspRule) {
-			mandatoryOptions = [UrlFilterRule.CSP_OPTION];
-        }
+        var patterns = splitToPatterns(filteringEvent.requestUrl, filteringEvent.requestDomain, true).reverse();
 
         if (filteringEvent.requestUrl === 'content-security-policy-check') {
-        	mandatoryOptions = [UrlFilterRule.WEBRTC_OPTION, UrlFilterRule.WEBSOCKET_OPTION];
-		}
-
-		var ruleText = RequestWizard.createRuleFromParams(urlPattern, domain, matchCase, thirdParty, important, mandatoryOptions);
-		ruleTextEl.val(ruleText);
-	}
-
-	//update rule text events
-	ruleDomainCheckbox.on('change', updateRuleText);
-    ruleImportantCheckbox.on('change', updateRuleText);
-	ruleMatchCaseCheckbox.on('change', updateRuleText);
-	ruleThirdPartyCheckbox.on('change', updateRuleText);
-	rulePatterns.on('change', updateRuleText);
-
-    //create rule event
-    template.find('#createRule').on('click', function (e) {
-        e.preventDefault();
-        var ruleText = ruleTextEl.val();
-        if (!ruleText) {
-            return;
+            patterns = ['@@'];
         }
-        // Add rule to user filter
-        contentPage.sendMessage({type: 'addUserRule', ruleText: ruleText, adguardDetected: frameInfo.adguardDetected});
-        // Close modal
-        this.closeModal();
-    }.bind(this));
 
-    updateRuleText();
+        initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
+    };
 
-    this.showModal(template);
-};
+    var initCreateRuleDialog = function (frameInfo, template, patterns, filteringEvent) {
 
-RequestWizard.PATTERNS_COUNT = 2; //exclude domain and full request url
+        var frameDomain = filteringEvent.frameDomain;
+        var isThirdPartyRequest = filteringEvent.requestThirdParty;
 
-RequestWizard.splitToPatterns = function (requestUrl, domain, whitelist) {
-
-	var hierarchicUrl = UrlUtils.isHierarchicUrl(requestUrl);
-    var protocol = UrlUtils.getProtocol(requestUrl);
-
-    var prefix;
-    if (hierarchicUrl) {
-        prefix = UrlFilterRule.MASK_START_URL; // Covers default protocols: http, ws
-    }else {
-        prefix = protocol + ':'; // Covers non-default protocols: stun, turn
-	}
-    if (whitelist) {
-        prefix = FilterRule.MASK_WHITE_LIST + prefix;
-    }
-
-	var patterns = [];
-
-    var relative = StringUtils.substringAfter(requestUrl, domain + '/');
-
-	var path = StringUtils.substringBefore(relative, '?');
-
-    if (path) {
-
-        var parts = path.split('/');
-
-        var pattern = domain + '/';
-        for (var i = 0; i < Math.min(parts.length - 1, RequestWizard.PATTERNS_COUNT); i++) {
-            pattern += parts[i] + '/';
-            patterns.push(prefix + pattern + UrlFilterRule.MASK_ANY_SYMBOL);
+        var rulePatternsEl = template.find('#rulePatterns');
+        for (var i = 0; i < patterns.length; i++) {
+            var patternEl = $('<li>', {'class': 'checkb-wrap'});
+            var input = $('<input>', {
+                type: 'radio',
+                name: 'rulePattern',
+                id: 'pattern' + i,
+                value: patterns[i]
+            });
+            var div = $('<div>', {class: 'radio'});
+            var label = $('<label>', {'for': 'pattern' + i});
+            patternEl.append(input);
+            patternEl.append(label);
+            label.append(div);
+            label.append(document.createTextNode(patterns[i]));
+            rulePatternsEl.append(patternEl);
+            if (i === 0) {
+                input.attr('checked', 'checked');
+            }
         }
-        var file = parts[parts.length - 1];
-        if (file && patterns.length < RequestWizard.PATTERNS_COUNT) {
-            pattern += file;
-            patterns.push(prefix + pattern);
+
+        var rulePatterns = template.find('[name="rulePattern"]');
+        var ruleDomainCheckbox = template.find('[name="ruleDomain"]');
+        var ruleImportantCheckbox = template.find('[name="ruleImportant"]');
+        var ruleMatchCaseCheckbox = template.find('[name="ruleMatchCase"]');
+        var ruleThirdPartyCheckbox = template.find('[name="ruleThirdParty"]');
+        var ruleTextEl = template.find('[name="ruleText"]');
+
+        ruleDomainCheckbox.attr('id', 'ruleDomain');
+        ruleDomainCheckbox.parent().find('label').attr('for', 'ruleDomain');
+        if (!frameDomain) {
+            ruleDomainCheckbox.closest('.checkbox').hide();
         }
-    }
 
-    //add domain pattern to start
-    patterns.unshift(prefix + domain + UrlFilterRule.MASK_SEPARATOR);
+        ruleImportantCheckbox.attr('id', 'ruleImportant');
+        ruleImportantCheckbox.parent().find('label').attr('for', 'ruleImportant');
 
-	//push full url pattern
-	var url = UrlUtils.getUrlWithoutScheme(requestUrl);
-    if (domain + '/' !== url) { // Don't duplicate: ||example.com/ and ||example.com^
-        if (patterns.indexOf(prefix + url) < 0) {
-            patterns.push(prefix + url);
+        ruleMatchCaseCheckbox.attr('id', 'ruleMatchCase');
+        ruleMatchCaseCheckbox.parent().find('label').attr('for', 'ruleMatchCase');
+
+        ruleThirdPartyCheckbox.attr('id', 'ruleThirdParty');
+        ruleThirdPartyCheckbox.parent().find('label').attr('for', 'ruleThirdParty');
+        if (isThirdPartyRequest) {
+            ruleThirdPartyCheckbox.attr('checked', 'checked');
         }
-    }
 
-    return patterns;
-};
+        //bind events
+        function updateRuleText() {
 
-RequestWizard.createRuleFromParams = function (urlPattern, urlDomain, matchCase, thirdParty, important, mandatoryOptions) {
+            var urlPattern = rulePatterns.filter(':checked').val();
+            var permitDomain = !ruleDomainCheckbox.is(':checked');
+            var important = ruleImportantCheckbox.is(':checked');
+            var matchCase = ruleMatchCaseCheckbox.is(':checked');
+            var thirdParty = ruleThirdPartyCheckbox.is(':checked');
 
-    var ruleText = urlPattern;
-    var options = [];
+            var domain = permitDomain ? frameDomain : null;
 
-	//add domain option
-	if (urlDomain) {
-		options.push(UrlFilterRule.DOMAIN_OPTION + '=' + urlDomain);
-	}
-	//add important option
-    if (important) {
-        options.push(UrlFilterRule.IMPORTANT_OPTION);
-    }
-	//add match case option
-	if (matchCase) {
-		options.push(UrlFilterRule.MATCH_CASE_OPTION);
-	}
-	//add third party option
-	if (thirdParty) {
-		options.push(UrlFilterRule.THIRD_PARTY_OPTION);
-	}
-    if (mandatoryOptions) {
-		options = options.concat(mandatoryOptions);
-    }
-	if (options.length > 0) {
-		ruleText += UrlFilterRule.OPTIONS_DELIMITER + options.join(',');
-	}
-	return ruleText;
-};
+            var mandatoryOptions = null;
 
-RequestWizard.getRequestType = function (requestType) {
-	switch (requestType) {
-		case 'DOCUMENT':
-		case 'SUBDOCUMENT':
-			return 'HTML';
-		case 'STYLESHEET':
-			return 'CSS';
-		case 'SCRIPT':
-			return 'JavaScript';
-		case 'XMLHTTPREQUEST':
-			return 'Ajax';
-		case 'IMAGE':
-			return 'Image';
-		case 'OBJECT':
-		case 'OBJECT_SUBREQUEST':
-		case 'MEDIA':
-			return 'Media';
-		case 'FONT':
-			return 'Font';
-		case 'WEBSOCKET':
-			return 'WebSocket';
-		case 'WEBRTC':
-			return 'WebRTC';
-        case 'CSP':
-            return 'CSP';
-		case 'OTHER':
-			return 'Other';
-	}
-	return '';
-};
+            // Deal with csp rule
+            var requestRule = filteringEvent.requestRule;
+            if (requestRule && requestRule.cspRule) {
+                mandatoryOptions = [UrlFilterRule.CSP_OPTION];
+            }
 
-RequestWizard.getSource = function (frameDomain) {
-    return frameDomain || '';
-};
+            if (filteringEvent.requestUrl === 'content-security-policy-check') {
+                mandatoryOptions = [UrlFilterRule.WEBRTC_OPTION, UrlFilterRule.WEBSOCKET_OPTION];
+            }
+
+            var ruleText = createRuleFromParams(urlPattern, domain, matchCase, thirdParty, important, mandatoryOptions);
+            ruleTextEl.val(ruleText);
+        }
+
+        //update rule text events
+        ruleDomainCheckbox.on('change', updateRuleText);
+        ruleImportantCheckbox.on('change', updateRuleText);
+        ruleMatchCaseCheckbox.on('change', updateRuleText);
+        ruleThirdPartyCheckbox.on('change', updateRuleText);
+        rulePatterns.on('change', updateRuleText);
+
+        //create rule event
+        template.find('#createRule').on('click', function (e) {
+            e.preventDefault();
+            var ruleText = ruleTextEl.val();
+            if (!ruleText) {
+                return;
+            }
+            // Add rule to user filter
+            contentPage.sendMessage({type: 'addUserRule', ruleText: ruleText, adguardDetected: frameInfo.adguardDetected});
+            // Close modal
+            closeModal();
+        }.bind(this));
+
+        updateRuleText();
+
+        showModal(template);
+    };
+
+    var splitToPatterns = function (requestUrl, domain, whitelist) {
+
+        var hierarchicUrl = UrlUtils.isHierarchicUrl(requestUrl);
+        var protocol = UrlUtils.getProtocol(requestUrl);
+
+        var prefix;
+        if (hierarchicUrl) {
+            prefix = UrlFilterRule.MASK_START_URL; // Covers default protocols: http, ws
+        } else {
+            prefix = protocol + ':'; // Covers non-default protocols: stun, turn
+        }
+
+        if (whitelist) {
+            prefix = FilterRule.MASK_WHITE_LIST + prefix;
+        }
+
+        var patterns = [];
+
+        var relative = StringUtils.substringAfter(requestUrl, domain + '/');
+
+        var path = StringUtils.substringBefore(relative, '?');
+
+        if (path) {
+
+            var parts = path.split('/');
+
+            var pattern = domain + '/';
+            for (var i = 0; i < Math.min(parts.length - 1, PATTERNS_COUNT); i++) {
+                pattern += parts[i] + '/';
+                patterns.push(prefix + pattern + UrlFilterRule.MASK_ANY_SYMBOL);
+            }
+            var file = parts[parts.length - 1];
+            if (file && patterns.length < PATTERNS_COUNT) {
+                pattern += file;
+                patterns.push(prefix + pattern);
+            }
+        }
+
+        //add domain pattern to start
+        patterns.unshift(prefix + domain + UrlFilterRule.MASK_SEPARATOR);
+
+        //push full url pattern
+        var url = UrlUtils.getUrlWithoutScheme(requestUrl);
+        if (domain + '/' !== url) { // Don't duplicate: ||example.com/ and ||example.com^
+            if (patterns.indexOf(prefix + url) < 0) {
+                patterns.push(prefix + url);
+            }
+        }
+
+        return patterns;
+    };
+
+    var createRuleFromParams = function (urlPattern, urlDomain, matchCase, thirdParty, important, mandatoryOptions) {
+
+        var ruleText = urlPattern;
+        var options = [];
+
+        //add domain option
+        if (urlDomain) {
+            options.push(UrlFilterRule.DOMAIN_OPTION + '=' + urlDomain);
+        }
+        //add important option
+        if (important) {
+            options.push(UrlFilterRule.IMPORTANT_OPTION);
+        }
+        //add match case option
+        if (matchCase) {
+            options.push(UrlFilterRule.MATCH_CASE_OPTION);
+        }
+        //add third party option
+        if (thirdParty) {
+            options.push(UrlFilterRule.THIRD_PARTY_OPTION);
+        }
+        if (mandatoryOptions) {
+            options = options.concat(mandatoryOptions);
+        }
+        if (options.length > 0) {
+            ruleText += UrlFilterRule.OPTIONS_DELIMITER + options.join(',');
+        }
+
+        return ruleText;
+    };
+
+    /**
+     * Request type map
+     *
+     * @param {String} requestType
+     * @returns {String}
+     */
+    var getRequestType = function (requestType) {
+        switch (requestType) {
+            case 'DOCUMENT':
+            case 'SUBDOCUMENT':
+                return 'HTML';
+            case 'STYLESHEET':
+                return 'CSS';
+            case 'SCRIPT':
+                return 'JavaScript';
+            case 'XMLHTTPREQUEST':
+                return 'Ajax';
+            case 'IMAGE':
+                return 'Image';
+            case 'OBJECT':
+            case 'OBJECT_SUBREQUEST':
+            case 'MEDIA':
+                return 'Media';
+            case 'FONT':
+                return 'Font';
+            case 'WEBSOCKET':
+                return 'WebSocket';
+            case 'WEBRTC':
+                return 'WebRTC';
+            case 'CSP':
+                return 'CSP';
+            case 'OTHER':
+                return 'Other';
+        }
+
+        return '';
+    };
+
+    /**
+     * Frame domain
+     *
+     * @param {String} frameDomain
+     * @returns {String}
+     */
+    var getSource = function (frameDomain) {
+        return frameDomain || '';
+    };
+
+    /**
+     * Shows request info
+     *
+     * @param {Object} frameInfo
+     * @param {Object} filteringEvent
+     */
+    var showRequestInfoModal = function (frameInfo, filteringEvent) {
+        var template = requestInfoTemplate.clone();
+
+        var requestRule = filteringEvent.requestRule;
+
+        template.find('[attr-text="requestUrl"]').text(filteringEvent.requestUrl);
+        template.find('[attr-text="requestType"]').text(getRequestType(filteringEvent.requestType));
+        template.find('[attr-text="frameDomain"]').text(getSource(filteringEvent.frameDomain));
+        if (!filteringEvent.frameDomain) {
+            template.find('[attr-text="frameDomain"]').closest('li').hide();
+        }
+
+        if (requestRule) {
+            if (requestRule.filterId !== AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+                template.find('[attr-text="requestRule"]').text(requestRule.ruleText);
+            } else {
+                template.find('[attr-text="requestRule"]').closest('li').hide();
+            }
+            template.find('[attr-text="requestRuleFilter"]').text(getFilterName(requestRule.filterId));
+        } else {
+            template.find('[attr-text="requestRule"]').closest('li').hide();
+            template.find('[attr-text="requestRuleFilter"]').closest('li').hide();
+        }
+
+        if (filteringEvent.requestType === "IMAGE") {
+
+            template.removeClass('compact-view');
+
+            var imagePreview = template.find('[attr-src="requestUrl"]');
+            var image = new Image();
+            image.src = filteringEvent.requestUrl;
+            image.onload = function () {
+                var width = this.width;
+                var height = this.height;
+                if (width > 1 && height > 1) {
+                    imagePreview.attr('src', filteringEvent.requestUrl);
+                    imagePreview.parent().show();
+                }
+            };
+        }
+
+        //bind events
+        var openRequestButton = template.find('#openRequestNewTab');
+        var blockRequestButton = template.find('#blockRequest');
+        var unblockRequestButton = template.find('#unblockRequest');
+        var removeWhiteListDomainButton = template.find('#removeWhiteListDomain');
+        var removeUserFilterRuleButton = template.find('#removeUserFilterRule');
+
+        openRequestButton.on('click', function (e) {
+            e.preventDefault();
+
+            var requestUrl = filteringEvent.requestUrl;
+            if (requestUrl === 'content-security-policy-check') {
+                requestUrl = filteringEvent.frameUrl;
+            }
+
+            contentPage.sendMessage({type: 'openTab', url: requestUrl, options: {inNewWindow: true}});
+        });
+
+        blockRequestButton.on('click', function (e) {
+            e.preventDefault();
+            closeModal();
+            showCreateBlockRuleModal(frameInfo, filteringEvent);
+        });
+
+        unblockRequestButton.on('click', function (e) {
+            e.preventDefault();
+            closeModal();
+            showCreateExceptionRuleModal(frameInfo, filteringEvent);
+        });
+
+        removeWhiteListDomainButton.on('click', function (e) {
+            e.preventDefault();
+            contentPage.sendMessage({type: 'unWhiteListFrame', frameInfo: frameInfo});
+            closeModal();
+        });
+
+        removeUserFilterRuleButton.on('click', function (e) {
+            e.preventDefault();
+            contentPage.sendMessage({
+                type: 'removeUserRule',
+                ruleText: requestRule.ruleText,
+                adguardDetected: frameInfo.adguardDetected
+            });
+            if (frameInfo.adguardDetected) {
+                // In integration mode rule may be present in whitelist filter
+                contentPage.sendMessage({type: 'unWhiteListFrame', frameInfo: frameInfo});
+            }
+            closeModal();
+        });
+
+        if (!requestRule) {
+            blockRequestButton.removeClass('hidden');
+        } else {
+            if (requestRule.filterId === AntiBannerFiltersId.USER_FILTER_ID) {
+                removeUserFilterRuleButton.removeClass('hidden');
+            } else if (requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+                removeWhiteListDomainButton.removeClass('hidden');
+            } else if (!requestRule.whiteListRule) {
+                unblockRequestButton.removeClass('hidden');
+            }
+        }
+
+        showModal(template);
+    };
+
+    /**
+     * Closes current open modal
+     */
+    var closeModal = function () {
+        if (currentModal) {
+            currentModal.modal('hide');
+            currentModal = null;
+        }
+    };
+
+    /**
+     * Filter's name for filterId
+     *
+     * @param {Number} filterId
+     * @returns {String}
+     */
+    var getFilterName = function (filterId) {
+        if (filterId === AntiBannerFiltersId.USER_FILTER_ID) {
+            return Messages.OPTIONS_USERFILTER;
+        }
+        if (filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+            return Messages.OPTIONS_WHITELIST;
+        }
+
+        var filterMetadata = filtersMetadata.filter(function (el) {
+            return el.filterId === filterId;
+        })[0];
+
+        return filterMetadata ? filterMetadata.name : "";
+    };
+
+    return {
+        showRequestInfoModal: showRequestInfoModal,
+        closeModal: closeModal,
+        getFilterName: getFilterName,
+        getRequestType: getRequestType,
+        getSource: getSource
+    };
+
+})();
 
 var userSettings;
 var environmentOptions;
