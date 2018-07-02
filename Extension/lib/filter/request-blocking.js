@@ -271,8 +271,18 @@ adguard.webRequestService = (function (adguard) {
             //don't process request
             return null;
         }
+        let whitelistRule;
+        /**
+         * Background requests will be whitelisted if their referrer
+         * url will match with user whitelist rule
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1032
+         */
+        if (tab.tabId === adguard.BACKGROUND_TAB_ID) {
+            whitelistRule = adguard.whitelist.findWhiteListRule(referrerUrl);
+        } else {
+            whitelistRule = adguard.frames.getFrameWhiteListRule(tab);
+        }
 
-        var whitelistRule = adguard.frames.getFrameWhiteListRule(tab);
         if (whitelistRule && whitelistRule.isDocumentWhiteList()) {
             // Frame is whitelisted by the main frame's $document rule
             // We do nothing more in this case - return the rule.
