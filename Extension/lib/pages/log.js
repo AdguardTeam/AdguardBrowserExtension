@@ -489,12 +489,12 @@ var RequestWizard = (function () {
     var showModal = function (template) {
         closeModal();
 
-        $(document.body).append(template);
-        template.show();
+        document.body.appendChild(template);
+        template.style.display = 'block';
 
         template.modal();
 
-        template.on('hidden.bs.modal', function () {
+        template.addEventListener('hidden.bs.modal', function () {
             $(this).remove();
         });
 
@@ -503,7 +503,7 @@ var RequestWizard = (function () {
 
     var showCreateBlockRuleModal = function (frameInfo, filteringEvent) {
 
-        var template = createBlockRuleTemplate.clone();
+        var template = createBlockRuleTemplate.cloneNode(true);
 
         var patterns = splitToPatterns(filteringEvent.requestUrl, filteringEvent.requestDomain, false).reverse();
 
@@ -512,12 +512,12 @@ var RequestWizard = (function () {
 
     var showCreateExceptionRuleModal = function (frameInfo, filteringEvent) {
 
-        var template = createExceptionRuleTemplate.clone();
+        var template = createExceptionRuleTemplate.cloneNode(true);
 
         var patterns = splitToPatterns(filteringEvent.requestUrl, filteringEvent.requestDomain, true).reverse();
 
         if (filteringEvent.requestUrl === 'content-security-policy-check') {
-            patterns = ['@@'];
+            patterns = [FilterRule.MASK_WHITE_LIST];
         }
 
         initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
@@ -528,7 +528,8 @@ var RequestWizard = (function () {
         var frameDomain = filteringEvent.frameDomain;
         var isThirdPartyRequest = filteringEvent.requestThirdParty;
 
-        var rulePatternsEl = template.find('#rulePatterns');
+        var rulePatternsEl = template.querySelector('#rulePatterns');
+        //TODO: Remove jquery
         for (var i = 0; i < patterns.length; i++) {
             var patternEl = $('<li>', {'class': 'checkb-wrap'});
             var input = $('<input>', {
@@ -647,7 +648,6 @@ var RequestWizard = (function () {
         var relative = StringUtils.substringAfter(requestUrl, domain + '/');
 
         var path = StringUtils.substringBefore(relative, '?');
-
         if (path) {
 
             var parts = path.split('/');
@@ -764,54 +764,54 @@ var RequestWizard = (function () {
      * @param {Object} filteringEvent
      */
     var showRequestInfoModal = function (frameInfo, filteringEvent) {
-        var template = requestInfoTemplate.clone();
+        var template = requestInfoTemplate.cloneNode(true);
 
         var requestRule = filteringEvent.requestRule;
 
-        template.find('[attr-text="requestUrl"]').text(filteringEvent.requestUrl);
-        template.find('[attr-text="requestType"]').text(getRequestType(filteringEvent.requestType));
-        template.find('[attr-text="frameDomain"]').text(getSource(filteringEvent.frameDomain));
+        template.querySelector('[attr-text="requestUrl"]').textContent = filteringEvent.requestUrl;
+        template.querySelector('[attr-text="requestType"]').textContent = getRequestType(filteringEvent.requestType);
+        template.querySelector('[attr-text="frameDomain"]').textContent = getSource(filteringEvent.frameDomain);
         if (!filteringEvent.frameDomain) {
-            template.find('[attr-text="frameDomain"]').closest('li').hide();
+            template.querySelector('[attr-text="frameDomain"]').closest('li').style.display = 'none';
         }
 
         if (requestRule) {
             if (requestRule.filterId !== AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
-                template.find('[attr-text="requestRule"]').text(requestRule.ruleText);
+                template.querySelector('[attr-text="requestRule"]').textContent = requestRule.ruleText;
             } else {
-                template.find('[attr-text="requestRule"]').closest('li').hide();
+                template.querySelector('[attr-text="requestRule"]').closest('li').style.display = 'none';
             }
-            template.find('[attr-text="requestRuleFilter"]').text(getFilterName(requestRule.filterId));
+            template.querySelector('[attr-text="requestRuleFilter"]').textContent = getFilterName(requestRule.filterId);
         } else {
-            template.find('[attr-text="requestRule"]').closest('li').hide();
-            template.find('[attr-text="requestRuleFilter"]').closest('li').hide();
+            template.querySelector('[attr-text="requestRule"]').closest('li').style.display = 'none';
+            template.querySelector('[attr-text="requestRuleFilter"]').closest('li').style.display = 'none';
         }
 
         if (filteringEvent.requestType === "IMAGE") {
 
-            template.removeClass('compact-view');
+            template.classList.remove('compact-view');
 
-            var imagePreview = template.find('[attr-src="requestUrl"]');
+            var imagePreview = template.querySelector('[attr-text="requestUrl"]');
             var image = new Image();
             image.src = filteringEvent.requestUrl;
             image.onload = function () {
                 var width = this.width;
                 var height = this.height;
                 if (width > 1 && height > 1) {
-                    imagePreview.attr('src', filteringEvent.requestUrl);
-                    imagePreview.parent().show();
+                    imagePreview.setAttribute('src', filteringEvent.requestUrl);
+                    imagePreview.parentNode.style.display = 'block';
                 }
             };
         }
 
         //bind events
-        var openRequestButton = template.find('#openRequestNewTab');
-        var blockRequestButton = template.find('#blockRequest');
-        var unblockRequestButton = template.find('#unblockRequest');
-        var removeWhiteListDomainButton = template.find('#removeWhiteListDomain');
-        var removeUserFilterRuleButton = template.find('#removeUserFilterRule');
+        var openRequestButton = template.querySelector('#openRequestNewTab');
+        var blockRequestButton = template.querySelector('#blockRequest');
+        var unblockRequestButton = template.querySelector('#unblockRequest');
+        var removeWhiteListDomainButton = template.querySelector('#removeWhiteListDomain');
+        var removeUserFilterRuleButton = template.querySelector('#removeUserFilterRule');
 
-        openRequestButton.on('click', function (e) {
+        openRequestButton.addEventListener('click', function (e) {
             e.preventDefault();
 
             var requestUrl = filteringEvent.requestUrl;
@@ -822,47 +822,49 @@ var RequestWizard = (function () {
             contentPage.sendMessage({type: 'openTab', url: requestUrl, options: {inNewWindow: true}});
         });
 
-        blockRequestButton.on('click', function (e) {
+        blockRequestButton.addEventListener('click', function (e) {
             e.preventDefault();
             closeModal();
             showCreateBlockRuleModal(frameInfo, filteringEvent);
         });
 
-        unblockRequestButton.on('click', function (e) {
+        unblockRequestButton.addEventListener('click', function (e) {
             e.preventDefault();
             closeModal();
             showCreateExceptionRuleModal(frameInfo, filteringEvent);
         });
 
-        removeWhiteListDomainButton.on('click', function (e) {
+        removeWhiteListDomainButton.addEventListener('click', function (e) {
             e.preventDefault();
             contentPage.sendMessage({type: 'unWhiteListFrame', frameInfo: frameInfo});
             closeModal();
         });
 
-        removeUserFilterRuleButton.on('click', function (e) {
+        removeUserFilterRuleButton.addEventListener('click', function (e) {
             e.preventDefault();
             contentPage.sendMessage({
                 type: 'removeUserRule',
                 ruleText: requestRule.ruleText,
                 adguardDetected: frameInfo.adguardDetected
             });
+
             if (frameInfo.adguardDetected) {
                 // In integration mode rule may be present in whitelist filter
                 contentPage.sendMessage({type: 'unWhiteListFrame', frameInfo: frameInfo});
             }
+
             closeModal();
         });
 
         if (!requestRule) {
-            blockRequestButton.removeClass('hidden');
+            blockRequestButton.classList.remove('hidden');
         } else {
             if (requestRule.filterId === AntiBannerFiltersId.USER_FILTER_ID) {
-                removeUserFilterRuleButton.removeClass('hidden');
+                removeUserFilterRuleButton.classList.remove('hidden');
             } else if (requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
-                removeWhiteListDomainButton.removeClass('hidden');
+                removeWhiteListDomainButton.classList.remove('hidden');
             } else if (!requestRule.whiteListRule) {
-                unblockRequestButton.removeClass('hidden');
+                unblockRequestButton.classList.remove('hidden');
             }
         }
 
@@ -904,9 +906,9 @@ var RequestWizard = (function () {
      * Initialization
      */
     var initRequestWizard = function () {
-        requestInfoTemplate = $('#modal-request-info');
-        createBlockRuleTemplate = $('#modal-create-block-rule');
-        createExceptionRuleTemplate = $('#modal-create-exception-rule');
+        requestInfoTemplate = document.querySelector('#modal-request-info');
+        createBlockRuleTemplate = document.querySelector('#modal-create-block-rule');
+        createExceptionRuleTemplate = document.querySelector('#modal-create-exception-rule');
     };
 
     return {
