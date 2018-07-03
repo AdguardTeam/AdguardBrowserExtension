@@ -523,66 +523,67 @@ var RequestWizard = (function () {
         initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
     };
 
+    var htmlToElement = function(html) {
+        var template = document.createElement('template');
+        html = html.trim(); // Never return a text node of whitespace as the result
+        template.innerHTML = html;
+        return template.content.firstChild;
+    }
+
     var initCreateRuleDialog = function (frameInfo, template, patterns, filteringEvent) {
 
         var frameDomain = filteringEvent.frameDomain;
         var isThirdPartyRequest = filteringEvent.requestThirdParty;
 
         var rulePatternsEl = template.querySelector('#rulePatterns');
-        //TODO: Remove jquery
+
         for (var i = 0; i < patterns.length; i++) {
-            var patternEl = $('<li>', {'class': 'checkb-wrap'});
-            var input = $('<input>', {
-                type: 'radio',
-                name: 'rulePattern',
-                id: 'pattern' + i,
-                value: patterns[i]
-            });
-            var div = $('<div>', {class: 'radio'});
-            var label = $('<label>', {'for': 'pattern' + i});
-            patternEl.append(input);
-            patternEl.append(label);
-            label.append(div);
-            label.append(document.createTextNode(patterns[i]));
-            rulePatternsEl.append(patternEl);
-            if (i === 0) {
-                input.attr('checked', 'checked');
-            }
+
+            //TODO: Correct layout
+            var rulePatternTemplate = `
+                <li class="checkb-wrap">
+                    <input type="radio" name="rulePattern" id="pattern${i}" value="${patterns[i]}" ${i === 0 ? "checked='checked'" : ""}>
+                    <label class="radio-label" for="pattern${i}">
+                        <div class="radio"/>
+                        ${patterns[i]}
+                    </label>
+                </li>`;
+
+            rulePatternsEl.appendChild(htmlToElement(rulePatternTemplate));
         }
 
-        var rulePatterns = template.find('[name="rulePattern"]');
-        var ruleDomainCheckbox = template.find('[name="ruleDomain"]');
-        var ruleImportantCheckbox = template.find('[name="ruleImportant"]');
-        var ruleMatchCaseCheckbox = template.find('[name="ruleMatchCase"]');
-        var ruleThirdPartyCheckbox = template.find('[name="ruleThirdParty"]');
-        var ruleTextEl = template.find('[name="ruleText"]');
+        var rulePatterns = template.querySelector('[name="rulePattern"]');
+        var ruleDomainCheckbox = template.querySelector('[name="ruleDomain"]');
+        var ruleImportantCheckbox = template.querySelector('[name="ruleImportant"]');
+        var ruleMatchCaseCheckbox = template.querySelector('[name="ruleMatchCase"]');
+        var ruleThirdPartyCheckbox = template.querySelector('[name="ruleThirdParty"]');
+        var ruleTextEl = template.querySelector('[name="ruleText"]');
 
-        ruleDomainCheckbox.attr('id', 'ruleDomain');
-        ruleDomainCheckbox.parent().find('label').attr('for', 'ruleDomain');
+        ruleDomainCheckbox.setAttribute('id', 'ruleDomain');
+        ruleDomainCheckbox.parentNode.querySelector('label').setAttribute('for', 'ruleDomain');
         if (!frameDomain) {
-            ruleDomainCheckbox.closest('.checkbox').hide();
+            ruleDomainCheckbox.closest('.checkbox').style.display = 'none';
         }
 
-        ruleImportantCheckbox.attr('id', 'ruleImportant');
-        ruleImportantCheckbox.parent().find('label').attr('for', 'ruleImportant');
+        ruleImportantCheckbox.setAttribute('id', 'ruleImportant');
+        ruleImportantCheckbox.parentNode.querySelector('label').setAttribute('for', 'ruleImportant');
 
-        ruleMatchCaseCheckbox.attr('id', 'ruleMatchCase');
-        ruleMatchCaseCheckbox.parent().find('label').attr('for', 'ruleMatchCase');
+        ruleMatchCaseCheckbox.setAttribute('id', 'ruleMatchCase');
+        ruleMatchCaseCheckbox.parentNode.querySelector('label').setAttribute('for', 'ruleMatchCase');
 
-        ruleThirdPartyCheckbox.attr('id', 'ruleThirdParty');
-        ruleThirdPartyCheckbox.parent().find('label').attr('for', 'ruleThirdParty');
+        ruleThirdPartyCheckbox.setAttribute('id', 'ruleThirdParty');
+        ruleThirdPartyCheckbox.parentNode.querySelector('label').setAttribute('for', 'ruleThirdParty');
         if (isThirdPartyRequest) {
-            ruleThirdPartyCheckbox.attr('checked', 'checked');
+            ruleThirdPartyCheckbox.setAttribute('checked', 'checked');
         }
 
-        //bind events
         function updateRuleText() {
 
-            var urlPattern = rulePatterns.filter(':checked').val();
-            var permitDomain = !ruleDomainCheckbox.is(':checked');
-            var important = ruleImportantCheckbox.is(':checked');
-            var matchCase = ruleMatchCaseCheckbox.is(':checked');
-            var thirdParty = ruleThirdPartyCheckbox.is(':checked');
+            var urlPattern = template.querySelector('[name="rulePattern"][checked]').value;
+            var permitDomain = !ruleDomainCheckbox.getAttribute('checked');
+            var important = !!ruleImportantCheckbox.getAttribute('checked');
+            var matchCase = !!ruleMatchCaseCheckbox.getAttribute('checked');
+            var thirdParty = !!ruleThirdPartyCheckbox.getAttribute('checked');
 
             var domain = permitDomain ? frameDomain : null;
 
@@ -599,20 +600,20 @@ var RequestWizard = (function () {
             }
 
             var ruleText = createRuleFromParams(urlPattern, domain, matchCase, thirdParty, important, mandatoryOptions);
-            ruleTextEl.val(ruleText);
+            ruleTextEl.value = ruleText;
         }
 
         //update rule text events
-        ruleDomainCheckbox.on('change', updateRuleText);
-        ruleImportantCheckbox.on('change', updateRuleText);
-        ruleMatchCaseCheckbox.on('change', updateRuleText);
-        ruleThirdPartyCheckbox.on('change', updateRuleText);
-        rulePatterns.on('change', updateRuleText);
+        ruleDomainCheckbox.addEventListener('change', updateRuleText);
+        ruleImportantCheckbox.addEventListener('change', updateRuleText);
+        ruleMatchCaseCheckbox.addEventListener('change', updateRuleText);
+        ruleThirdPartyCheckbox.addEventListener('change', updateRuleText);
+        rulePatterns.addEventListener('change', updateRuleText);
 
         //create rule event
-        template.find('#createRule').on('click', function (e) {
+        template.querySelector('#createRule').addEventListener('click', function (e) {
             e.preventDefault();
-            var ruleText = ruleTextEl.val();
+            var ruleText = ruleTextEl.value;
             if (!ruleText) {
                 return;
             }
@@ -791,7 +792,7 @@ var RequestWizard = (function () {
 
             template.classList.remove('compact-view');
 
-            var imagePreview = template.querySelector('[attr-text="requestUrl"]');
+            var imagePreview = template.querySelector('[attr-src="requestUrl"]');
             var image = new Image();
             image.src = filteringEvent.requestUrl;
             image.onload = function () {
@@ -937,7 +938,7 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
     AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
     EventNotifierTypes = response.constants.EventNotifierTypes;
 
-    $(document).ready(function () {
+    var onDocumentReady = function () {
 
         var pageController = new PageController();
         pageController.init();
@@ -977,5 +978,11 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
             //set log is closed
             contentPage.sendMessage({type: 'onCloseFilteringLogPage'});
         });
-	});
+	};
+
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        onDocumentReady();
+    } else {
+        document.addEventListener('DOMContentLoaded', onDocumentReady);
+    }
 });
