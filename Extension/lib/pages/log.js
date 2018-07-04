@@ -120,16 +120,16 @@ PageController.prototype = {
 
         RequestWizard.initRequestWizard();
 
-        this.logTable = $("#logTable");
-        this.logTableEmpty = $('#logTableEmpty');
+        this.logTable = document.querySelector("#logTable");
+        this.logTableEmpty = document.querySelector('#logTableEmpty');
         this.logTableHidden = true;
 
-        this.tabSelector = $('#tabSelector');
+        this.tabSelector = document.querySelector('#tabSelector');
 
-        this.logoIcon = $('#logoIcon');
+        this.logoIcon = document.querySelector('#logoIcon');
 
         // bind location hash change
-        $(window).on('hashchange', function () {
+        window.addEventListener('hashchange', function () {
             this._updateTabIdFromHash();
             this.onSelectedTabChange();
         }.bind(this));
@@ -141,41 +141,44 @@ PageController.prototype = {
         this.searchWhitelisted = false;
 
 		// Bind click to reload tab
-		$('body').on('click', '.reloadTab', function (e) {
+		document.querySelector('.reloadTab').addEventListener('click', function (e) {
 			e.preventDefault();
-			if (this.currentTabId == -1) {
+			if (this.currentTabId === -1) {
                 // Unable to reload "background" tab, just clear events
                 contentPage.sendMessage({type: 'clearEventsByTabId', tabId: this.currentTabId});
                 return;
             }
 			// Unable to reload "background" tab, just clear events
-            if (this.currentTabId == -1) {
+            if (this.currentTabId === -1) {
                 contentPage.sendMessage({type: 'clearEventsByTabId', tabId: this.currentTabId});
                 return;
-            }contentPage.sendMessage({type: 'reloadTabById', tabId: this.currentTabId});
+            }
+
+            contentPage.sendMessage({type: 'reloadTabById', tabId: this.currentTabId});
 		}.bind(this));
 
         // Bind click to clear events
-        $('#clearTabLog').on('click', function (e) {
+        document.querySelector('#clearTabLog').addEventListener('click', function (e) {
             e.preventDefault();
             contentPage.sendMessage({type: 'clearEventsByTabId', tabId: this.currentTabId});
         }.bind(this));
 
         // Bind click to show request info
         var self = this;
-        this.logTable.on('click', 'tr', function () {
-            var filteringEvent = $(this).data();
-            contentPage.sendMessage({type: 'getTabFrameInfoById', tabId: self.currentTabId}, function (response) {
-                var frameInfo = response.frameInfo;
-                if (!frameInfo) {
-                    return;
-                }
-                RequestWizard.showRequestInfoModal(frameInfo, filteringEvent);
+        this.logTable.querySelectorAll('tr').forEach(function (t) {
+            t.addEventListener('click', function () {
+                var filteringEvent = $(this).data();
+                contentPage.sendMessage({type: 'getTabFrameInfoById', tabId: self.currentTabId}, function (response) {
+                    var frameInfo = response.frameInfo;
+                    if (!frameInfo) {
+                        return;
+                    }
+                    RequestWizard.showRequestInfoModal(frameInfo, filteringEvent);
+                });
             });
         });
 
         this._bindSearchFilters();
-
         this._updateTabIdFromHash();
 
         // Synchronize opened tabs
@@ -187,7 +190,7 @@ PageController.prototype = {
             this.onSelectedTabChange();
         }.bind(this));
 
-        $(document).keyup(function (e) {
+        document.addEventListener('keyup', function (e) {
             if (e.keyCode === 27) {
                 RequestWizard.closeModal();
             }
@@ -209,24 +212,27 @@ PageController.prototype = {
 		if (tabInfo.isExtensionTab) {
 			return;
 		}
-		this.tabSelector.append($('<option>',{
-			text: tabInfo.title,
-			'data-tab-id': tabInfo.tabId
-		}));
+
+        var option = document.createElement('option');
+		option.textContent = tabInfo.title;
+		option.setAttribute('data-tab-id', tabInfo.tabId);
+        this.tabSelector.appendChild(option);
+
 		if (!this.currentTabId) {
 			this.onSelectedTabChange();
 		}
 	},
 
 	onTabUpdated: function (tabInfo) {
-		var item = this.tabSelector.find('[data-tab-id=' + tabInfo.tabId + ']');
+		var item = this.tabSelector.querySelector('[data-tab-id="' + tabInfo.tabId + '"]');
 		if (tabInfo.isExtensionTab) {
 			this.onTabClose(tabInfo);
 			return;
 		}
+
 		if (item && item.length > 0) {
 			item.text(tabInfo.title);
-			if (tabInfo.tabId == this.currentTabId) {
+			if (tabInfo.tabId === this.currentTabId) {
                 document.querySelector('[data-tab-id="' + this.currentTabId + '"]').selected = true;
 				//update icon logo
 				this._updateLogoIcon();
@@ -237,23 +243,35 @@ PageController.prototype = {
 	},
 
     onTabClose: function (tabInfo) {
-        this.tabSelector.find('[data-tab-id=' + tabInfo.tabId + ']').remove();
-        if (this.currentTabId == tabInfo.tabId) {
+        var element = this.tabSelector.querySelector('[data-tab-id="' + tabInfo.tabId + '"]');
+        if (!element) {
+            return;
+        }
+
+        element.parentNode.removeChild(element);
+
+        if (this.currentTabId === tabInfo.tabId) {
             //current tab was removed
             this.currentTabId = null;
             this.onSelectedTabChange();
         }
     },
 
+    emptyLogTable: function () {
+        while(this.logTable.firstChild) {
+            this.logTable.removeChild(this.logTable.firstChild);
+        }
+    },
+
     onTabReset: function (tabInfo) {
-        if (this.currentTabId == tabInfo.tabId) {
-            this.logTable.empty();
+        if (this.currentTabId === tabInfo.tabId) {
+            this.emptyLogTable();
             this._onEmptyTable();
         }
     },
 
     onEventAdded: function (tabInfo, event) {
-        if (this.currentTabId != tabInfo.tabId) {
+        if (this.currentTabId !== tabInfo.tabId) {
             //don't relate to the current tab
             return;
         }
@@ -261,11 +279,11 @@ PageController.prototype = {
     },
 
 	onEventUpdated: function (tabInfo, event) {
-        if (this.currentTabId != tabInfo.tabId) {
+        if (this.currentTabId !== tabInfo.tabId) {
             //don't relate to the current tab
             return;
         }
-        var element = this.logTable.find('#request-' + event.requestId);
+        var element = this.logTable.querySelector('#request-' + event.requestId);
         if (element.length > 0) {
             var template = this._renderTemplate(event);
             element.replaceWith(template);
@@ -273,19 +291,26 @@ PageController.prototype = {
     },
 
     onSelectedTabChange: function () {
-		var selectedItem = this.tabSelector.find('[data-tab-id="' + this.currentTabId + '"]');
-		if (selectedItem.length === 0) {
-			selectedItem = this.tabSelector.find(':first');
+		var selectedItem = this.tabSelector.querySelector('[data-tab-id="' + this.currentTabId + '"]');
+		if (!selectedItem) {
+			selectedItem = this.tabSelector.firstChild;
 		}
+
 		var text = '';
 		var selectedTabId = null;
-		if (selectedItem.length > 0) {
-			text = selectedItem.text();
-			selectedTabId = selectedItem.attr('data-tab-id');
+		if (selectedItem) {
+			text = selectedItem.textContent;
+			selectedTabId = selectedItem.getAttribute('data-tab-id');
 		}
+
 		this.currentTabId = selectedTabId;
-		document.querySelector('[data-tab-id="' + this.currentTabId + '"]').selected = true;
+        var selectedTab = document.querySelector('[data-tab-id="' + this.currentTabId + '"]');
+        if (selectedTab) {
+            selectedTab.selected = true;
+        }
+
 		this._updateLogoIcon();
+
 		//render events
 		this._renderEventsForTab(this.currentTabId);
 	},
@@ -297,8 +322,15 @@ PageController.prototype = {
             if (frameInfo && frameInfo.adguardDetected) {
                 src = 'skin/logpage/images/dropdown-logo-blue.png'; // TODO: integration icon
             }
-            this.logoIcon.attr('src', src);
+
+            this.logoIcon.setAttribute('src', src);
         }.bind(this));
+    },
+
+    removeClass: function (elements, className) {
+        elements.forEach(function (el) {
+            el.classList.remove(className);
+        });
     },
 
     _bindSearchFilters: function () {
@@ -306,78 +338,82 @@ PageController.prototype = {
         var self = this;
 
         //bind click to search http request
-        $('[name="searchEventRequest"]').on('keyup', function () {
+        document.querySelector('[name="searchEventRequest"]').addEventListener('keyup', function () {
             self.searchRequest = this.value.trim();
             self._filterEvents();
         });
 
         //bind click to filter by type
-        var searchEventTypeItems = $('.searchEventType');
-        searchEventTypeItems.on('click', function (e) {
+        var searchEventTypeItems = document.querySelectorAll('.searchEventType');
+        searchEventTypeItems.forEach(function (item) {
+            item.addEventListener('click', function (e) {
+                e.preventDefault();
 
-            e.preventDefault();
+                self.removeClass(searchEventTypeItems, 'active');
 
-            searchEventTypeItems.removeClass('active');
+                var selectedItem = e.currentTarget;
+                selectedItem.classList.add('active');
+                var selectedValue = selectedItem.getAttribute('attr-type');
 
-            var selectedItem = $(e.currentTarget);
-            selectedItem.addClass('active');
-            var selectedValue = selectedItem.attr('attr-type');
-
-            self.searchTypes = selectedValue ? selectedValue.split(',') : [];
-            self._filterEvents();
+                self.searchTypes = selectedValue ? selectedValue.split(',') : [];
+                self._filterEvents();
+            });
         });
 
-        $('.checkb-wrap').on('click', function () {
-            var el = $(this);
-            var checkbox = el.find('.checkbox');
-            checkbox.toggleClass('active');
-            var active = checkbox.is('.active');
-            if (el.is('.searchEventThirdParty')) {
-                self.searchThirdParty = active;
-            } else if (el.is('.searchEventBlocked')) {
-                self.searchBlocked = active;
-            } else if (el.is('.searchEventWhitelisted')) {
-                self.searchWhitelisted = active;
-            }
-            self._filterEvents();
+        var radioWraps = document.querySelectorAll('.checkb-wrap');
+        radioWraps.forEach(function (w) {
+            w.addEventListener('click', function () {
+                var checkbox = w.querySelector('.checkbox');
+                checkbox.classList.toggle('active');
+
+                var active = checkbox.classList.contains('active');
+                if (w.classList.contains('searchEventThirdParty')) {
+                    self.searchThirdParty = active;
+                } else if (w.classList.contains('searchEventBlocked')) {
+                    self.searchBlocked = active;
+                } else if (w.classList.contains('searchEventWhitelisted')) {
+                    self.searchWhitelisted = active;
+                }
+
+                self._filterEvents();
+            });
         });
     },
 
     _filterEvents: function () {
 
-        var rows = this.logTable.children();
+        var rows = this.logTable.children;
 
         // Filters not set
         if (!this.searchRequest &&
             this.searchTypes.length === 0 && !this.searchThirdParty && !this.searchBlocked && !this.searchWhitelisted) {
 
-            rows.removeClass('hidden');
+            this.removeClass(rows, 'hidden');
             return;
         }
 
         var self = this;
-        $.each(rows, function () {
-            self._handleEventShow($(this));
+        rows.forEach(function (row) {
+            self._handleEventShow(row);
         });
     },
 
     _onEmptyTable: function () {
         this.logTableHidden = true;
-        this.logTable.addClass('hidden');
-        this.logTableEmpty.removeClass('hidden');
+        this.logTable.classList.add('hidden');
+        this.logTableEmpty.classList.remove('hidden');
     },
 
     _onNotEmptyTable: function () {
         if (this.logTableHidden) {
             this.logTableHidden = false;
-            this.logTableEmpty.addClass('hidden');
-            this.logTable.removeClass('hidden');
+            this.logTableEmpty.classList.add('hidden');
+            this.logTable.classList.remove('hidden');
         }
     },
 
     _renderEventsForTab: function (tabId) {
-
-        this.logTable.empty();
+        this.emptyLogTable();
 
         contentPage.sendMessage({type: 'getFilteringInfoByTabId', tabId: tabId}, function (response) {
 
@@ -405,7 +441,10 @@ PageController.prototype = {
             templates.push(template);
         }
         this._onNotEmptyTable();
-        this.logTable.append(templates);
+
+        templates.forEach(function (t) {
+            this.logTable.appendChild(t);
+        });
     },
 
     _renderTemplate: function (event) {
@@ -427,6 +466,7 @@ PageController.prototype = {
             }
         }
 
+        //TODO: Remove jquery
         var el = $('<tr>', metadata);
         // Url
         el.append($('<td>', {text: event.requestUrl}));
@@ -451,6 +491,7 @@ PageController.prototype = {
 
     _handleEventShow: function (el) {
 
+        //TODO: Remove jquery
         var filterData = el.data();
 
         var show = !this.searchRequest || StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest);
@@ -463,9 +504,9 @@ PageController.prototype = {
         show &= !(this.searchWhitelisted || this.searchBlocked || this.searchThirdParty) || checkboxes; // jshint ignore:line
 
         if (show) {
-            el.removeClass('hidden');
+            el.classList.remove('hidden');
         } else {
-            el.addClass('hidden');
+            el.classList.add('hidden');
         }
     }
 };
