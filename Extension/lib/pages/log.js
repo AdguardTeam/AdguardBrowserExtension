@@ -232,7 +232,7 @@ PageController.prototype = {
 
 		if (item && item.length > 0) {
 			item.text(tabInfo.title);
-			if (tabInfo.tabId === this.currentTabId) {
+			if (tabInfo.tabId == this.currentTabId) {
                 document.querySelector('[data-tab-id="' + this.currentTabId + '"]').selected = true;
 				//update icon logo
 				this._updateLogoIcon();
@@ -250,7 +250,7 @@ PageController.prototype = {
 
         element.parentNode.removeChild(element);
 
-        if (this.currentTabId === tabInfo.tabId) {
+        if (this.currentTabId == tabInfo.tabId) {
             //current tab was removed
             this.currentTabId = null;
             this.onSelectedTabChange();
@@ -264,14 +264,14 @@ PageController.prototype = {
     },
 
     onTabReset: function (tabInfo) {
-        if (this.currentTabId === tabInfo.tabId) {
+        if (this.currentTabId == tabInfo.tabId) {
             this.emptyLogTable();
             this._onEmptyTable();
         }
     },
 
     onEventAdded: function (tabInfo, event) {
-        if (this.currentTabId !== tabInfo.tabId) {
+        if (this.currentTabId != tabInfo.tabId) {
             //don't relate to the current tab
             return;
         }
@@ -279,14 +279,14 @@ PageController.prototype = {
     },
 
 	onEventUpdated: function (tabInfo, event) {
-        if (this.currentTabId !== tabInfo.tabId) {
+        if (this.currentTabId != tabInfo.tabId) {
             //don't relate to the current tab
             return;
         }
         var element = this.logTable.querySelector('#request-' + event.requestId);
         if (element.length > 0) {
             var template = this._renderTemplate(event);
-            element.replaceWith(template);
+            element.outerHTML = template;
         }
     },
 
@@ -466,33 +466,41 @@ PageController.prototype = {
             }
         }
 
-        //TODO: Remove jquery
-        var el = $('<tr>', metadata);
-        // Url
-        el.append($('<td>', {text: event.requestUrl}));
-        // Type
-        var typeEl = $('<td>', {text: RequestWizard.getRequestType(event.requestType)});
+        var thirdPartyDetails = '';
         if (event.requestThirdParty) {
-            typeEl.append($('<img/>', {src: "images/icon-chain-link.png", class: "icon-chain"}));
-            typeEl.append($('<small>', {text: 'Third party'}));
+            thirdPartyDetails = `<img src="images/icon-chain-link.png" class="icon-chain"><small>Third party</small>`;
         }
-        el.append(typeEl);
-        // Rule
-        el.append($('<td>', {text: ruleText}));
-        // Source
-        el.append($('<td>', {text: event.requestRule ? RequestWizard.getFilterName(event.requestRule.filterId) : '',
-			'class': 'task-manager-content-header-body-col task-manager-content-item-filter'
-		}));
-		el.append($('<div>', {
-			text: RequestWizard.getSource(event.frameDomain)}));
 
-        return el;
+        var eventTemplate = `
+            <tr ${metadata.id ? 'id="' + metadata.id + '"' : ''}
+                ${metadata.class ? 'class="' + metadata.class + '"' : ''}>
+                <td>${event.requestUrl}</td>
+                <td>
+                    ${RequestWizard.getRequestType(event.requestType)}
+                    ${thirdPartyDetails}
+                </td>
+                <td>${ruleText ? ruleText : ''}</td>
+                <td class="task-manager-content-header-body-col task-manager-content-item-filter">
+                    ${event.requestRule ? RequestWizard.getFilterName(event.requestRule.filterId) : ''}
+                </td>
+                <div>${RequestWizard.getSource(event.frameDomain)}</div>
+            </tr>`;
+
+        var element = this.htmlToElement(eventTemplate);
+        element.data = metadata.data;
+        return element;
+    },
+
+    htmlToElement: function(html) {
+        var template = document.createElement('template');
+        html = html.trim(); // Never return a text node of whitespace as the result
+        template.innerHTML = html;
+        return template.content.firstChild;
     },
 
     _handleEventShow: function (el) {
 
-        //TODO: Remove jquery
-        var filterData = el.data();
+        var filterData = el.data;
 
         var show = !this.searchRequest || StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest);
         show &= this.searchTypes.length === 0 || this.searchTypes.indexOf(filterData.requestType) >= 0; // jshint ignore:line
@@ -569,7 +577,7 @@ var RequestWizard = (function () {
         html = html.trim(); // Never return a text node of whitespace as the result
         template.innerHTML = html;
         return template.content.firstChild;
-    }
+    };
 
     var initCreateRuleDialog = function (frameInfo, template, patterns, filteringEvent) {
 
