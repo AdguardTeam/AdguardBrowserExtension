@@ -266,7 +266,7 @@
 
             if (!cssInjectionOnly &&
                 adguard.prefs.collectHitsCountEnabled &&
-                (adguard.settings.collectHitsCount() || adguard.filteringLog.isOpen())) {
+                adguard.webRequestService.isCollectingCosmeticRulesHits()) {
                 /**
                  * If user has enabled "Send statistics for ad filters usage" option we
                  * build CSS with enabled hits stats. In this case style contains "content"
@@ -274,6 +274,9 @@
                  */
                 var selectors = this.cssFilter.buildCssHits(domain, options);
                 selectors.cssHitsCounterEnabled = true;
+
+                // TODO send message that cssHitsCounterEnabled
+
                 return selectors;
             }
 

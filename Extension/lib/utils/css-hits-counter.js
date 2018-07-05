@@ -82,6 +82,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
         }
 
         if (length === elements.length) {
+            console.log(result);
             callback(result);
             return;
         }

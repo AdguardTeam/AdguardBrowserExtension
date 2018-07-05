@@ -177,7 +177,7 @@
      * @param stats
      */
     function processSaveCssHitStats(tab, stats) {
-        if (!adguard.settings.collectHitsCount()) {
+        if (!adguard.webRequestService.isCollectingCosmeticRulesHits()) {
             return;
         }
         if (adguard.frames.isIncognitoTab(tab)) {
@@ -188,7 +188,7 @@
             var stat = stats[i];
             adguard.hitStats.addRuleHit(domain, stat.ruleText, stat.filterId);
             // adguard.filteringLog.addCosmeticEvent(tab, element, frameUrl, requestType, rule);
-            adguard.filteringLog.addCosmeticEvent(tab, element, frameUrl, requestType, rule);
+            // adguard.filteringLog.addCosmeticEvent(tab, element, frameUrl, requestType, rule);
         }
     }
 

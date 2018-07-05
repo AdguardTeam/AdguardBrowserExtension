@@ -463,6 +463,10 @@ adguard.webRequestService = (function (adguard) {
         return !safariContentBlockerEnabled;
     };
 
+    var isCollectingCosmeticRulesHits = function () {
+        return adguard.settings.collectHitsCount() || adguard.filteringLog.isOpen();
+    };
+
     // EXPOSE
     return {
         processGetSelectorsAndScripts: processGetSelectorsAndScripts,
@@ -478,7 +482,8 @@ adguard.webRequestService = (function (adguard) {
         processRequestResponse: processRequestResponse,
         postProcessRequest: postProcessRequest,
         recordRuleHit: recordRuleHit,
-        onRequestBlocked: onRequestBlockedChannel
+        onRequestBlocked: onRequestBlockedChannel,
+        isCollectingCosmeticRulesHits: isCollectingCosmeticRulesHits,
     };
 
 })(adguard);
