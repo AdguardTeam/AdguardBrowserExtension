@@ -187,6 +187,8 @@
         for (var i = 0; i < stats.length; i++) {
             var stat = stats[i];
             adguard.hitStats.addRuleHit(domain, stat.ruleText, stat.filterId);
+            // adguard.filteringLog.addCosmeticEvent(tab, element, frameUrl, requestType, rule);
+            adguard.filteringLog.addCosmeticEvent(tab, element, frameUrl, requestType, rule);
         }
     }
 
