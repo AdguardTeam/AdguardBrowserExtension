@@ -224,7 +224,6 @@ adguard.filteringLog = (function (adguard) {
      * @param requestRule
      */
     var addCosmeticEvent = function (tab, element, frameUrl, requestType, requestRule) {
-
         if (openedFilteringLogsPage === 0) {
             return;
         }
@@ -240,7 +239,7 @@ adguard.filteringLog = (function (adguard) {
             requestUrl: elementToString(element), // TODO: change naming
             frameUrl: frameUrl,
             frameDomain: frameDomain,
-            requestType: requestType
+            requestType: requestType,
         };
         if (requestRule) {
             // Copy useful properties
@@ -347,6 +346,10 @@ adguard.filteringLog = (function (adguard) {
         }
     };
 
+    var isOpen = function () {
+        return openedFilteringLogsPage > 0;
+    };
+
     // Initialize filtering log
     synchronizeOpenTabs();
 
@@ -367,8 +370,8 @@ adguard.filteringLog = (function (adguard) {
         addCosmeticEvent: addCosmeticEvent,
         clearEventsByTabId: clearEventsByTabId,
 
+        isOpen: isOpen,
         onOpenFilteringLogPage: onOpenFilteringLogPage,
-        onCloseFilteringLogPage: onCloseFilteringLogPage
+        onCloseFilteringLogPage: onCloseFilteringLogPage,
     };
-
 })(adguard);
