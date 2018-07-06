@@ -599,11 +599,12 @@ var RequestWizard = (function () {
             //TODO: Correct layout
             var rulePatternTemplate = `
                 <li class="checkb-wrap">
-                    <input type="radio" name="rulePattern" id="pattern${i}" value="${patterns[i]}" ${i === 0 ? "checked='checked'" : ""}>
-                    <label class="radio-label" for="pattern${i}">
-                        <div class="radio"/>
-                        ${patterns[i]}
-                    </label>
+                    <div class="radio">
+                        <input class="radio__input" type="radio" name="rulePattern" id="pattern${i}" value="${patterns[i]}" ${i === 0 ? "checked='checked'" : ""}>
+                        <label class="radio__label" for="pattern${i}">
+                            ${patterns[i]}
+                        </label>
+                    </div>
                 </li>`;
 
             rulePatternsEl.appendChild(htmlToElement(rulePatternTemplate));
