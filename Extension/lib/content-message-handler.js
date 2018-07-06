@@ -186,8 +186,9 @@
         var domain = adguard.frames.getFrameDomain(tab);
         for (var i = 0; i < stats.length; i++) {
             var stat = stats[i];
-            adguard.hitStats.addRuleHit(domain, stat.ruleText, stat.filterId);
-            // adguard.filteringLog.addCosmeticEvent(tab, element, frameUrl, requestType, rule);
+            if (adguard.settings.collectHitsCount()) {
+                adguard.hitStats.addRuleHit(domain, stat.ruleText, stat.filterId);
+            }
             const rule = adguard.rules.builder.createRule(stat.ruleText, stat.filterId);
             adguard.filteringLog.addCosmeticEvent(tab, stat.element, tab.url, adguard.RequestTypes.DOCUMENT, rule);
         }
@@ -413,6 +414,9 @@
                 break;
             case 'saveCssHitStats':
                 processSaveCssHitStats(sender.tab, message.stats);
+                break;
+            case 'isCssHitsCounterEnabled':
+                callback(adguard.webRequestService.isCollectingCosmeticRulesHits());
                 break;
             default:
                 // Unhandled message

@@ -68,7 +68,6 @@
      * It allows us to execute script as soon as possible, because runtime.messaging makes huge overhead
      * If onCommitted event doesn't occur for the frame, scripts will be applied in usual way.
      */
-    
     getContentPage().onMessage.addListener(function (response, sender, sendResponse) {
         if (response.type === 'injectScripts') {
             // Notify background-page that content-script was received scripts
@@ -77,9 +76,6 @@
                 return;
             }
             applyScripts(response.scripts);
-        }
-        if (response.type === 'setCssHitsCounterState') {
-            cssHitsCounterEnabled = response.message;
         }
     });
 
@@ -172,7 +168,7 @@
 
         // Edge doesn't provide access to websockets via onBeforeRequest api
         var isEdge = userAgent.indexOf('edge') >= 0;
-        
+
         // Explicit check, we must not go further in case of Firefox
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/379
         if (isFirefox) {
@@ -256,11 +252,6 @@
     };
 
     /**
-     * Variable to keep state of cssHitsCounter
-     */
-    var cssHitsCounterEnabled;
-
-    /**
      * Processes response from the background page containing CSS and JS injections
      * @param response Response from the background page
      */
@@ -291,13 +282,11 @@
             applySelectors(response.selectors);
             applyScripts(response.scripts);
         }
-
-        if (typeof CssHitsCounter !== 'undefined' &&
-            typeof CssHitsCounter.count === 'function' &&
-            response && response.selectors && cssHitsCounterEnabled) {
-            // Start css hits calculation
-            CssHitsCounter.count();
-        }
+        getContentPage().sendMessage({ type: 'isCssHitsCounterEnabled' }, function (response) {
+            if (response && response === true) {
+                CssHitsCounter.count();
+            }
+        });
     };
 
     /**

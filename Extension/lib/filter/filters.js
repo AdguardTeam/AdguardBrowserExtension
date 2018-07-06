@@ -265,7 +265,6 @@
             var cssInjectionOnly = (options & CSS_INJECTION_ONLY) === CSS_INJECTION_ONLY;
 
             if (!cssInjectionOnly &&
-                adguard.prefs.collectHitsCountEnabled &&
                 adguard.webRequestService.isCollectingCosmeticRulesHits()) {
                 /**
                  * If user has enabled "Send statistics for ad filters usage" option we
@@ -273,21 +272,8 @@
                  * with filter identifier and rule text.
                  */
                 var selectors = this.cssFilter.buildCssHits(domain, options);
-
-                // send message to the preload page that cssHitsCounter is enabled
-                adguard.tabs.sendMessage(tab.tabId, {
-                    type: 'setCssHitsCounterState',
-                    message: true,
-                });
-
                 return selectors;
             }
-            // send message to the preload page that cssHitsCounter is disabled
-            adguard.tabs.sendMessage(tab.tabId, {
-                type: 'setCssHitsCounterState',
-                message: false,
-            });
-
             return this.cssFilter.buildCss(domain, options);
         },
 
