@@ -96,6 +96,19 @@ var UrlUtils = {
 	}
 };
 
+/**
+ * Modal window utils
+ */
+var ModalUtils = {
+    showModal: function (element) {
+        element.style.display = 'block';
+    },
+
+    closeModal: function (element) {
+        element.style.display = 'none';
+    }
+};
+
 var FilterRule = {
     MASK_WHITE_LIST: "@@"
 };
@@ -162,21 +175,6 @@ PageController.prototype = {
             e.preventDefault();
             contentPage.sendMessage({type: 'clearEventsByTabId', tabId: this.currentTabId});
         }.bind(this));
-
-        // Bind click to show request info
-        var self = this;
-        this.logTable.querySelectorAll('tr').forEach(function (t) {
-            t.addEventListener('click', function () {
-                var filteringEvent = $(this).data();
-                contentPage.sendMessage({type: 'getTabFrameInfoById', tabId: self.currentTabId}, function (response) {
-                    var frameInfo = response.frameInfo;
-                    if (!frameInfo) {
-                        return;
-                    }
-                    RequestWizard.showRequestInfoModal(frameInfo, filteringEvent);
-                });
-            });
-        });
 
         this._bindSearchFilters();
         this._updateTabIdFromHash();
@@ -382,7 +380,7 @@ PageController.prototype = {
 
     _filterEvents: function () {
 
-        var rows = this.logTable.children;
+        var rows = this.logTable.childNodes;
 
         // Filters not set
         if (!this.searchRequest &&
@@ -441,6 +439,22 @@ PageController.prototype = {
             templates.push(template);
         }
         this._onNotEmptyTable();
+
+        // Bind click to show request info
+        var self = this;
+        templates.forEach(function (t) {
+            t.addEventListener('click', function () {
+                var filteringEvent = t.data;
+                contentPage.sendMessage({type: 'getTabFrameInfoById', tabId: self.currentTabId}, function (response) {
+                    var frameInfo = response.frameInfo;
+                    if (!frameInfo) {
+                        return;
+                    }
+
+                    RequestWizard.showRequestInfoModal(frameInfo, filteringEvent);
+                });
+            });
+        });
 
         templates.forEach(function (t) {
             this.logTable.appendChild(t);
@@ -539,13 +553,7 @@ var RequestWizard = (function () {
         closeModal();
 
         document.body.appendChild(template);
-        template.style.display = 'block';
-
-        template.modal();
-
-        template.addEventListener('hidden.bs.modal', function () {
-            $(this).remove();
-        });
+        ModalUtils.showModal(template);
 
         currentModal = template;
     };
@@ -926,7 +934,7 @@ var RequestWizard = (function () {
      */
     var closeModal = function () {
         if (currentModal) {
-            currentModal.modal('hide');
+            ModalUtils.closeModal(currentModal);
             currentModal = null;
         }
     };
