@@ -464,7 +464,8 @@ adguard.webRequestService = (function (adguard) {
     };
 
     var isCollectingCosmeticRulesHits = function () {
-        return adguard.settings.collectHitsCount() || adguard.filteringLog.isOpen();
+        return adguard.prefs.collectHitsCountEnabled &&
+            (adguard.settings.collectHitsCount() || adguard.filteringLog.isOpen());
     };
 
     // EXPOSE
