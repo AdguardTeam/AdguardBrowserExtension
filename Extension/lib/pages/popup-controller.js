@@ -102,38 +102,47 @@ PopupController.prototype = {
 
     _renderPopup: function (tabInfo) {
 
-        var parent = $('.widjet-popup');
-        parent.find('.footer').remove();
+        var parent = document.querySelector('.widjet-popup');
 
-        var stack = parent.find('.tabstack');
+        var footer = parent.querySelector('.footer');
+        if (footer) {
+            footer.parentNode.removeChild(footer);
+        }
 
-        var containerMain = parent.find('.tab-main');
-        containerMain.empty();
+        var stack = parent.querySelector('.tabstack');
 
-        var containerStats = parent.find('.tab-statistics');
-        containerStats.empty();
+        var containerMain = parent.querySelector('.tab-main');
+        while(containerMain.firstChild) {
+            containerMain.removeChild(containerMain.firstChild);
+        }
 
-        stack.attr('class', 'tabstack');
+        var containerStats = parent.querySelector('.tab-statistics');
+        while(containerStats.firstChild) {
+            containerStats.removeChild(containerStats.firstChild);
+        }
+
+        stack.setAttribute('class', 'tabstack');
 
         // Hide stats for integration mode
         if (tabInfo.adguardDetected) {
-            parent.find('.tab-stats-button').hide();
-            parent.find('.tab-main-button').width('100%');
+            parent.querySelector('.tab-stats-button').style.display = 'none';
+            parent.querySelector('.tab-main-button').style.width = '100%';
         }
 
         // define class
         if (tabInfo.urlFilteringDisabled) {
-            stack.addClass('status-error error-sad');
+            stack.classList.add('status-error');
+            stack.classList.add('error-sad');
         } else if (tabInfo.applicationFilteringDisabled) {
-            stack.addClass('status-paused');
+            stack.classList.add('status-paused');
         } else {
             if (!tabInfo.canAddRemoveRule) {
-                stack.addClass('status-error error-filter');
+                stack.classList.add('status-error error-filter');
             } else {
                 if (tabInfo.documentWhiteListed) {
-                    stack.addClass('status-cross');
+                    stack.classList.add('status-cross');
                 } else {
-                    stack.addClass('status-checkmark');
+                    stack.classList.add('status-checkmark');
                 }
             }
         }
@@ -174,7 +183,13 @@ PopupController.prototype = {
     },
 
     _getTemplate: function (id) {
-        return $('#' + id).children().clone();
+        return document.querySelector('#' + id).cloneNode(true);
+    },
+
+    _appendTemplate: function (container, template) {
+        template.childNodes.forEach(function (c) {
+            container.appendChild(c.cloneNode(true));
+        });
     },
 
     _renderHeader: function (container, tabInfo) {
@@ -188,18 +203,21 @@ PopupController.prototype = {
             template = this.filteringIntegrationHeader;
         } else {
             template = this.filteringDefaultHeader;
-            var tabBlocked = template.find('.blocked-tab');
-            var totalBlocked = template.find('.blocked-all');
-            i18n.translateElement(tabBlocked[0], 'popup_tab_blocked', [formatNumber(tabInfo.totalBlockedTab || 0)]);
-            i18n.translateElement(totalBlocked[0], 'popup_tab_blocked_all', [formatNumber(tabInfo.totalBlocked || 0)]);
-            if (tabInfo.totalBlocked >= 10000000) {
-                tabBlocked.closest('.widjet-popup-filter').addClass('db');
-            } else {
-                tabBlocked.closest('.widjet-popup-filter').removeClass('db');
+            var tabBlocked = template.querySelector('.blocked-tab');
+            var totalBlocked = template.querySelector('.blocked-all');
+            i18n.translateElement(tabBlocked, 'popup_tab_blocked', [formatNumber(tabInfo.totalBlockedTab || 0)]);
+            i18n.translateElement(totalBlocked, 'popup_tab_blocked_all', [formatNumber(tabInfo.totalBlocked || 0)]);
+            var closestWidjetFilter = tabBlocked.closest('.widjet-popup-filter');
+            if (closestWidjetFilter) {
+                if (tabInfo.totalBlocked >= 10000000) {
+                    closestWidjetFilter.classList.add('db');
+                } else {
+                    closestWidjetFilter.classList.remove('db');
+                }
             }
         }
 
-        container.append(template);
+        this._appendTemplate(container, template);
     },
 
     _renderFilteringControls: function (container, tabInfo) {
@@ -216,21 +234,19 @@ PopupController.prototype = {
         }
 
         if (tabInfo.urlFilteringDisabled || tabInfo.applicationFilteringDisabled || tabInfo.adguardDetected) {
-            template.find('.pause').hide();
+            template.querySelector('.pause').style.display = 'none';
         }
         if (tabInfo.adguardDetected) {
-            template.find('.settings').hide();
+            template.querySelector('.settings').style.display = 'none';
         }
 
-        container.append(template);
+        this._appendTemplate(container, template);
     },
 
     _renderStatus: function (container, tabInfo) {
-
         var template = this.filteringStatusText;
 
         var text = '';
-
         if (tabInfo.urlFilteringDisabled) {
             text = 'popup_site_filtering_state_tab_unavailable';
         } else if (tabInfo.applicationFilteringDisabled) {
@@ -247,15 +263,15 @@ PopupController.prototype = {
             }
         }
 
-        i18n.translateElement(template[0], text);
+        //TODO: Fix
+        i18n.translateElement(template.childNodes[0], text);
 
-        container.append(template);
+        this._appendTemplate(container, template);
     },
 
     _renderMessage: function (container, tabInfo) {
 
         var text;
-
         if (tabInfo.urlFilteringDisabled) {
             text = 'popup_site_filtering_disabled';
         } else if (tabInfo.applicationFilteringDisabled) {
@@ -268,8 +284,9 @@ PopupController.prototype = {
 
         var template = this.filteringMessageText;
         if (text) {
-            i18n.translateElement(template[0], text);
-            container.append(template);
+            //TODO: Fix
+            i18n.translateElement(template.childNodes[0], text);
+            this._appendTemplate(container, template);
         }
     },
 
@@ -615,15 +632,22 @@ PopupController.prototype = {
     _renderAnalyticsBlock: function (stats, range) {
         var statsData = this._selectRequestTypesStatsData(stats, range);
 
-        var $analytics = $('#analytics-blocked-types-values');
-        $analytics.empty();
+        var analytics = document.querySelector('#analytics-blocked-types-values');
+        while(analytics.firstChild) {
+            analytics.removeChild(analytics.firstChild);
+        }
 
         for (var type in stats.blockedTypes) {
             var number = statsData[stats.blockedTypes[type]] ? statsData[stats.blockedTypes[type]] : 0;
 
-            $analytics.append(
-                '<li><span class="key">' + this._localizeBlockedType(type) + '</span><span class="value">' + number + '</span></li>'
-            );
+            var blockedTypeItem = this._htmlToElement(`
+                <li>
+                    <span class="key">${this._localizeBlockedType(type)}</span>
+                    <span class="value">${number}</span>
+                </li>
+            `);
+
+            analytics.appendChild(blockedTypeItem);
         }
     },
 
@@ -638,8 +662,8 @@ PopupController.prototype = {
     },
 
     _renderStatsBlock: function () {
-        var timeRange = $('.statistics-select-time').val();
-        var typeData = $('.statistics-select-type').val();
+        var timeRange = document.querySelector('.statistics-select-time').value;
+        var typeData = document.querySelector('.statistics-select-type').value;
 
         var self = this;
         popupPage.sendMessage({type: 'getStatisticsData'}, function (message) {
@@ -649,7 +673,7 @@ PopupController.prototype = {
 
     _renderStats: function (container) {
         var template = this.filteringStatisticsTemplate;
-        container.append(template);
+        this._appendTemplate(container, template);
 
         this._renderStatsBlock();
     },
@@ -660,25 +684,26 @@ PopupController.prototype = {
             return;
         }
 
-        var el = $('<div>', {class: 'actions'});
+        var el = document.createElement('div');
+        el.classList.add('actions');
 
-        el.append(this.actionOpenAssistant);
+        this._appendTemplate(el, this.actionOpenAssistant);
         if (tabInfo.applicationFilteringDisabled || tabInfo.documentWhiteListed) {
             // May be show later
-            this.actionOpenAssistant.hide();
+            this.actionOpenAssistant.style.display = 'none';
         }
 
-        el.append(this.actionOpenAbuse);
-        el.append(this.actionOpenSiteReport);
+        this._appendTemplate(el, this.actionOpenAbuse);
+        this._appendTemplate(el, this.actionOpenSiteReport);
 
-        container.append(el);
+        container.appendChild(el);
     },
 
-    _renderFooter: function (footer, tabInfo) {
+    _renderFooter: function (footerContainer, tabInfo) {
         if (tabInfo.adguardDetected) {
-            footer.append(this.footerIntegration);
+            this._appendTemplate(footerContainer, this.footerIntegration);
         } else {
-            footer.append(this.footerDefault);
+            this._appendTemplate(footerContainer, this.footerDefault);
         }
     },
 
@@ -805,20 +830,26 @@ PopupController.prototype = {
         });
 
         // Stats filters
-        parent.querySelector('.statistics-select-time').addEventListener('change', function () {
+        this._bindAction(parent, '.statistics-select-time', 'change', function () {
             self._renderStatsBlock();
         });
-        parent.querySelector('.statistics-select-type').addEventListener('change', function () {
+        this._bindAction(parent, '.statistics-select-type', 'change', function () {
             self._renderStatsBlock();
         });
 
-        parent.querySelector('.show-full-stats').addEventListener('click', function () {
+        this._bindAction(parent, '.show-full-stats', 'click', function () {
             document.querySelector('.analytics').style.display = 'block';
         });
-
-        parent.querySelector('.hide-full-stats').addEventListener('click', function () {
+        this._bindAction(parent, '.hide-full-stats', 'click', function (e) {
             document.querySelector('.analytics').style.display = 'none';
         });
+    },
+
+    _htmlToElement: function(html) {
+        var template = document.createElement('template');
+        html = html.trim(); // Never return a text node of whitespace as the result
+        template.innerHTML = html;
+        return template.content.firstChild;
     },
 
     // http://jira.performix.ru/browse/AG-3474
