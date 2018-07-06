@@ -596,7 +596,6 @@ var RequestWizard = (function () {
 
         for (var i = 0; i < patterns.length; i++) {
 
-            //TODO: Correct layout
             var rulePatternTemplate = `
                 <li class="checkb-wrap">
                     <div class="radio">
