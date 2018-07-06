@@ -555,6 +555,8 @@ var RequestWizard = (function () {
         document.body.appendChild(template);
         ModalUtils.showModal(template);
 
+        template.querySelector('.close').addEventListener('click', closeModal);
+
         currentModal = template;
     };
 
@@ -609,7 +611,7 @@ var RequestWizard = (function () {
             rulePatternsEl.appendChild(htmlToElement(rulePatternTemplate));
         }
 
-        var rulePatterns = template.querySelector('[name="rulePattern"]');
+        var rulePatterns = template.querySelectorAll('[name="rulePattern"]');
         var ruleDomainCheckbox = template.querySelector('[name="ruleDomain"]');
         var ruleImportantCheckbox = template.querySelector('[name="ruleImportant"]');
         var ruleMatchCaseCheckbox = template.querySelector('[name="ruleMatchCase"]');
@@ -665,7 +667,10 @@ var RequestWizard = (function () {
         ruleImportantCheckbox.addEventListener('change', updateRuleText);
         ruleMatchCaseCheckbox.addEventListener('change', updateRuleText);
         ruleThirdPartyCheckbox.addEventListener('change', updateRuleText);
-        rulePatterns.addEventListener('change', updateRuleText);
+        //TODO: Link click on radio wrap to 'change' event on input
+        rulePatterns.forEach(function (r) {
+            r.addEventListener('change', updateRuleText);
+        });
 
         //create rule event
         template.querySelector('#createRule').addEventListener('click', function (e) {
