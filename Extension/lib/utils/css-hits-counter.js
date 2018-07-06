@@ -34,6 +34,31 @@ var CssHitsCounter = (function () { // jshint ignore:line
         }
         return value;
     }
+    
+    /**
+     * TODO think how to unite this method with the same one in
+     * /Volumes/dev/browser-extension/Extension/lib/filter/filtering-log.js
+     */
+    /**
+     * Serialize HTML element
+     * @param element
+     */
+    function elementToString(element) {
+        var s = [];
+        s.push('<');
+        s.push(element.localName);
+        var attributes = element.attributes;
+        for (var i = 0; i < attributes.length; i++) {
+            var attr = attributes[i];
+            s.push(' ');
+            s.push(attr.name);
+            s.push('="');
+            s.push(attr.value);
+            s.push('"');
+        }
+        s.push('>');
+        return s.join('');
+    }
 
     /**
      * Main calculation function.
@@ -77,7 +102,8 @@ var CssHitsCounter = (function () { // jshint ignore:line
             var ruleText = filterIdAndRuleText.substring(index + 1);
             result.push({
                 filterId: filterId,
-                ruleText: ruleText
+                ruleText: ruleText,
+                element: elementToString(element),
             });
         }
 
