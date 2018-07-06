@@ -78,7 +78,7 @@
             }
             applyScripts(response.scripts);
         }
-        if (response.type === 'setCssHitsCounterEnabled') {
+        if (response.type === 'setCssHitsCounterState') {
             cssHitsCounterEnabled = response.message;
         }
     });
@@ -296,7 +296,6 @@
             typeof CssHitsCounter.count === 'function' &&
             response && response.selectors && cssHitsCounterEnabled) {
             // Start css hits calculation
-            console.log('start counting');
             CssHitsCounter.count();
         }
     };

@@ -316,7 +316,6 @@ adguard.contentFiltering = (function (adguard) {
      * @returns null or document html
      */
     function applyContentRules(tab, frameUrl, requestType, doc, rules) {
-
         var deleted = [];
 
         for (var i = 0; i < rules.length; i++) {
