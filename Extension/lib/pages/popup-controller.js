@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global $, i18n, popupPage */
+/* global i18n, popupPage */
 
 /**
  * Controller that manages add-on popup window
@@ -45,6 +45,7 @@ PopupController.prototype = {
     },
 
     resizePopupWindow: function () {
+        //TODO: Remove jquery
         var $widjet = $('body>div:not(.hidden)');
         var width = $widjet.outerWidth();
         var height = $widjet.outerHeight();
@@ -52,7 +53,7 @@ PopupController.prototype = {
     },
 
     afterRender: function () {
-
+        //Should be overwritten
     },
 
     addWhiteListDomain: function (url) {
@@ -681,9 +682,16 @@ PopupController.prototype = {
         }
     },
 
+    _bindAction: function (parentElement, selector, eventName, handler) {
+        var element = parentElement.querySelector(selector);
+        if (element) {
+            element.addEventListener(eventName, handler);
+        }
+    },
+
     _bindActions: function () {
 
-        var parent = $('.widjet-popup');
+        var parent = document.querySelector('.widjet-popup');
 
         if (this.actionsBind === true) {
             return;
@@ -691,44 +699,44 @@ PopupController.prototype = {
         this.actionsBind = true;
 
         var self = this;
-        parent.on('click', '.siteReport', function (e) {
+        this._bindAction(parent, '.siteReport', 'click', function (e) {
             e.preventDefault();
             self.openSiteReportTab(self.tabInfo.url);
             popupPage.closePopup();
         });
-        parent.on('click', '.openSettings', function (e) {
+        this._bindAction(parent, '.openSettings', 'click', function (e) {
             e.preventDefault();
             self.openSettingsTab();
             popupPage.closePopup();
         });
-        parent.on('click', '.openAssistant', function (e) {
+        this._bindAction(parent, '.openAssistant', 'click', function (e) {
             e.preventDefault();
             self.openAssistantInTab();
             popupPage.closePopup();
         });
-        parent.on('click', '.openFilteringLog', function (e) {
+        this._bindAction(parent, '.openFilteringLog', 'click', function (e) {
             e.preventDefault();
             self.openFilteringLog();
             popupPage.closePopup();
         });
-        parent.on('click', '.resetStats', function (e) {
+        this._bindAction(parent, '.resetStats', 'click', function (e) {
             e.preventDefault();
             self.resetBlockedAdsCount();
-            parent.find('.w-popup-filter-title-blocked-all').text('0');
+            parent.querySelector('.w-popup-filter-title-blocked-all').textContent = '0';
         });
-        parent.on('click', '.openLink', function (e) {
+        this._bindAction(parent, '.openLink', 'click', function (e) {
             e.preventDefault();
             self.openLink(e.currentTarget.href);
             popupPage.closePopup();
         });
-        parent.on('click', '.openAbuse', function (e) {
+        this._bindAction(parent, '.openAbuse', 'click', function (e) {
             e.preventDefault();
             self.openAbuseTab(self.tabInfo.url);
             popupPage.closePopup();
         });
 
         // checkbox
-        parent.on('click', '.changeDocumentWhiteListed', function (e) {
+        this._bindAction(parent, '.changeDocumentWhiteListed', 'click', function (e) {
             e.preventDefault();
             var tabInfo = self.tabInfo;
             if (tabInfo.urlFilteringDisabled || tabInfo.applicationFilteringDisabled) {
@@ -767,46 +775,49 @@ PopupController.prototype = {
         }
 
         // Disable filtering
-        parent.on('click', '.changeProtectionStateDisable', function (e) {
+        this._bindAction(parent, '.changeProtectionStateDisable', 'click', function (e) {
             e.preventDefault();
             changeProtectionState(true);
         });
 
         // Enable filtering
-        parent.on('click', '.changeProtectionStateEnable', function (e) {
+        this._bindAction(parent, '.changeProtectionStateEnable', 'click', function (e) {
             e.preventDefault();
             changeProtectionState(false);
         });
 
         // Tabs
-        parent.on('click', '.tabbar .tab', function (e) {
-            e.preventDefault();
+        parent.querySelectorAll('.tabbar .tab').forEach(function (t) {
+            t.addEventListener('click', function (e) {
+                e.preventDefault();
 
-            $('.tabbar .tab').removeClass('active');
-            $(e.target).addClass('active');
+                parent.querySelectorAll('.tabbar .tab').forEach(function (tab) {
+                    tab.classList.remove('active');
+                });
+                e.target.classList.add('active');
 
-            var attr = $(e.target).attr('tab-switch');
-
-            $('.tab-switch-tab').hide();
-            $('.tab-switch-tab[tab-switch="' + attr + '"]').show();
-
+                var attr = e.target.getAttribute('tab-switch');
+                parent.querySelectorAll('.tab-switch-tab').forEach(function (tab) {
+                    tab.style.display = 'none';
+                });
+                parent.querySelector('.tab-switch-tab[tab-switch="' + attr + '"]').style.display = 'block';
+            });
         });
 
         // Stats filters
-        parent.on('change', '.statistics-select-time', function (e) {
+        parent.querySelector('.statistics-select-time').addEventListener('change', function () {
+            self._renderStatsBlock();
+        });
+        parent.querySelector('.statistics-select-type').addEventListener('change', function () {
             self._renderStatsBlock();
         });
 
-        parent.on('change', '.statistics-select-type', function (e) {
-            self._renderStatsBlock();
+        parent.querySelector('.show-full-stats').addEventListener('click', function () {
+            document.querySelector('.analytics').style.display = 'block';
         });
 
-        parent.on('click', '.show-full-stats', function (e) {
-            $('.analytics').show();
-        });
-
-        parent.on('click', '.hide-full-stats', function (e) {
-            $('.analytics').hide();
+        parent.querySelector('.hide-full-stats').addEventListener('click', function () {
+            document.querySelector('.analytics').style.display = 'none';
         });
     },
 
@@ -817,8 +828,8 @@ PopupController.prototype = {
             return;
         }
         setTimeout(function () {
-            var block = $(".macoshackresize");
-            block.css("padding-top", "4px");
+            var block = document.querySelector(".macoshackresize");
+            block.style["padding-top"] = "4px";
         }, 1000);
     }
 };
@@ -849,9 +860,15 @@ PopupController.prototype = {
     });
 
     popupPage.sendMessage({type: 'getTabInfoForPopup'}, function (message) {
-        $(document).ready(function () {
+        var onDocumentReady = function () {
             controller.render(message.frameInfo, message.options);
-        });
+        };
+
+        if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+            onDocumentReady();
+        } else {
+            document.addEventListener('DOMContentLoaded', onDocumentReady);
+        }
     });
 
 })();
