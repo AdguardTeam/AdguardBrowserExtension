@@ -258,7 +258,7 @@
          * @param {number} options CssFilter bitmask
          * @returns {SelectorsData} CSS and ExtCss data for the webpage
          */
-        getSelectorsForUrl: function (url, options) {
+        getSelectorsForUrl: function (url, tab, options) {
             var domain = adguard.utils.url.getHost(url);
 
             var CSS_INJECTION_ONLY = adguard.rules.CssFilter.CSS_INJECTION_ONLY;
@@ -273,9 +273,10 @@
                  * with filter identifier and rule text.
                  */
                 var selectors = this.cssFilter.buildCssHits(domain, options);
-                selectors.cssHitsCounterEnabled = true;
-
-                // TODO send message that cssHitsCounterEnabled
+                adguard.tabs.sendMessage(tab.tabId, {
+                    type: 'setCssHitsCounterEnabled',
+                    message: true,
+                });
 
                 return selectors;
             }

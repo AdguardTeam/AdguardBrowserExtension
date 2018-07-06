@@ -68,6 +68,7 @@
      * It allows us to execute script as soon as possible, because runtime.messaging makes huge overhead
      * If onCommitted event doesn't occur for the frame, scripts will be applied in usual way.
      */
+    
     getContentPage().onMessage.addListener(function (response, sender, sendResponse) {
         if (response.type === 'injectScripts') {
             // Notify background-page that content-script was received scripts
@@ -76,6 +77,9 @@
                 return;
             }
             applyScripts(response.scripts);
+        }
+        if (response.type === 'setCssHitsCounterEnabled') {
+            cssHitsCounterEnabled = response.message;
         }
     });
 
@@ -252,6 +256,11 @@
     };
 
     /**
+     * Variable to keep state of cssHitsCounter
+     */
+    var cssHitsCounterEnabled;
+
+    /**
      * Processes response from the background page containing CSS and JS injections
      * @param response Response from the background page
      */
@@ -285,9 +294,9 @@
 
         if (typeof CssHitsCounter !== 'undefined' &&
             typeof CssHitsCounter.count === 'function' &&
-            response && response.selectors && response.selectors.cssHitsCounterEnabled) {
-
+            response && response.selectors && cssHitsCounterEnabled) {
             // Start css hits calculation
+            console.log('start counting');
             CssHitsCounter.count();
         }
     };

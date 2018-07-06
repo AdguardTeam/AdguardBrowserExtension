@@ -136,7 +136,7 @@ adguard.webRequestService = (function (adguard) {
                 cssFilterOptions += CssFilter.CSS_INJECTION_ONLY;
             }
 
-            result.selectors = adguard.requestFilter.getSelectorsForUrl(documentUrl, cssFilterOptions);
+            result.selectors = adguard.requestFilter.getSelectorsForUrl(documentUrl, tab, cssFilterOptions);
         }
 
         if (retrieveScripts) {
