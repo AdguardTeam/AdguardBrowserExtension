@@ -546,11 +546,10 @@
          * @private
          */
         _buildCssByRulesHits: function (rules) {
-
-            var ELEMHIDE_CSS_STYLE = " { display: none!important; }\r\n";
             var ELEMHIDE_HIT_START = " { display: none!important; content: 'adguard";
-            var ELEMHIDE_HIT_SEP = encodeURIComponent(';');
-            var ELEMHIDE_HIT_END = "' !important;}\r\n";
+            var HIT_SEP = encodeURIComponent(';');
+            var HIT_END = "' !important;}\r\n";
+            var INJECT_HIT_START = " content: 'adguard";
 
             var elemHideSb = [];
             var cssSb = [];
@@ -559,24 +558,30 @@
                 var rule = rules[i];
 
                 if (rule.isInjectRule) {
-                    cssSb.push(this._getRuleCssSelector(rule));
+                    const ruleText = this._getRuleCssSelector(rule);
+                    // remove close brace
+                    const ruleTextWithoutCloseBrace = ruleText.slice(0, -1).trim();
+                    // check semicolon
+                    const ruleTextWithSemicolon = ruleTextWithoutCloseBrace.slice(-1) === ';' ? ruleTextWithoutCloseBrace : ruleTextWithoutCloseBrace + ';';
+                    cssSb.push(ruleTextWithSemicolon);
+                    cssSb.push(INJECT_HIT_START);
+                    cssSb.push(rule.filterId);
+                    cssSb.push(HIT_SEP);
+                    cssSb.push(api.FilterRule.escapeRule(rule.ruleText));
+                    cssSb.push(HIT_END);
                 } else {
                     elemHideSb.push(this._getRuleCssSelector(rule));
-                    if (adguard.utils.filters.isUserFilterRule(rule)) {
-                        elemHideSb.push(ELEMHIDE_CSS_STYLE);
-                    } else {
-                        elemHideSb.push(ELEMHIDE_HIT_START);
-                        elemHideSb.push(rule.filterId);
-                        elemHideSb.push(ELEMHIDE_HIT_SEP);
-                        elemHideSb.push(api.FilterRule.escapeRule(rule.ruleText));
-                        elemHideSb.push(ELEMHIDE_HIT_END);
-                    }
+                    elemHideSb.push(ELEMHIDE_HIT_START);
+                    elemHideSb.push(rule.filterId);
+                    elemHideSb.push(HIT_SEP);
+                    elemHideSb.push(api.FilterRule.escapeRule(rule.ruleText));
+                    elemHideSb.push(HIT_END);
                 }
             }
 
             var styles = [];
             var elemHideStyle = elemHideSb.join("");
-            var cssStyle = cssSb.join("\r\n");
+            var cssStyle = cssSb.join("");
 
             if (elemHideStyle) {
                 styles.push(elemHideStyle);
