@@ -189,6 +189,7 @@
             if (adguard.settings.collectHitsCount()) {
                 adguard.hitStats.addRuleHit(domain, stat.ruleText, stat.filterId);
             }
+            console.log(stat);
             const rule = adguard.rules.builder.createRule(stat.ruleText, stat.filterId);
             adguard.filteringLog.addCosmeticEvent(tab, stat.element, tab.url, adguard.RequestTypes.DOCUMENT, rule);
         }

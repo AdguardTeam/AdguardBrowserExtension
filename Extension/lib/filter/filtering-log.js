@@ -236,7 +236,7 @@ adguard.filteringLog = (function (adguard) {
         var frameDomain = adguard.utils.url.getDomainName(frameUrl);
 
         var filteringEvent = {
-            requestUrl: typeof element === 'string' ? element : elementToString(element), // TODO: change naming
+            element: typeof element === 'string' ? element : elementToString(element), // TODO: change naming
             frameUrl: frameUrl,
             frameDomain: frameDomain,
             requestType: requestType,

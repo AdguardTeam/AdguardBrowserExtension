@@ -98,7 +98,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
             if (index < 0) {
                 continue;
             }
-            var filterId = filterIdAndRuleText.substring(0, index);
+            var filterId = parseInt(filterIdAndRuleText.substring(0, index), 10);
             var ruleText = filterIdAndRuleText.substring(index + 1);
             result.push({
                 filterId: filterId,

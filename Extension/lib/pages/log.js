@@ -174,7 +174,7 @@ PageController.prototype = {
 		// Bind click to show request info
 		var self = this;
 		this.logTable.on('click', '.task-manager-content-header-body-row', function () {
-			var filteringEvent = $(this).data();
+            var filteringEvent = $(this).data();
 			contentPage.sendMessage({type: 'getTabFrameInfoById', tabId: self.currentTabId}, function (response) {
 				var frameInfo = response.frameInfo;
 				if (!frameInfo) {
@@ -416,7 +416,7 @@ PageController.prototype = {
 	},
 
 	_renderTemplate: function (event) {
-
+        console.log(event);
 		var metadata = {data: event, 'class': 'task-manager-content-header-body-row cf'};
 		if (event.requestRule) {
 			metadata.class += event.requestRule.whiteListRule ? ' green' : ' red';
@@ -439,11 +439,11 @@ PageController.prototype = {
 			requestTypeClass += ' third-party';
 		}
 
-		var el = $('<div>', metadata);
-		el.append($('<div>', {
-			text: event.requestUrl,
-			'class': 'task-manager-content-header-body-col task-manager-content-item-url'
-		}));
+        var el = $('<div>', metadata);
+        el.append($('<div>', {
+            text: event.requestUrl ? event.requestUrl : event.element,
+            'class': 'task-manager-content-header-body-col task-manager-content-item-url'
+        }));
 		el.append($('<div>', {text: RequestWizard.getRequestType(event.requestType), 'class': requestTypeClass}));
 		el.append($('<div>', {
 			text: ruleText,
@@ -456,8 +456,8 @@ PageController.prototype = {
 		el.append($('<div>', {
 			text: RequestWizard.getSource(event.frameDomain),
 			'class': 'task-manager-content-header-body-col task-manager-content-item-source'
-		}));
-
+        }));
+        
 		return el;
 	},
 
@@ -528,7 +528,20 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 
 	var requestRule = filteringEvent.requestRule;
 
-	template.find('[attr-text="requestUrl"]').text(filteringEvent.requestUrl);
+    var requestUrlNode = template.find('[attr-text="requestUrl"]');
+    if (filteringEvent.requestUrl) {
+        requestUrlNode.text(filteringEvent.requestUrl);
+    } else {
+        requestUrlNode.parent().hide();
+    }
+
+    var elementNode = template.find('[attr-text="element"]');
+    if (filteringEvent.element) {
+        elementNode.text(filteringEvent.element);
+    } else {
+        elementNode.parent().hide();
+    }
+
 	template.find('[attr-text="requestType"]').text(RequestWizard.getRequestType(filteringEvent.requestType));
 	template.find('[attr-text="frameDomain"]').text(RequestWizard.getSource(filteringEvent.frameDomain));
 	if (!filteringEvent.frameDomain) {
@@ -614,6 +627,7 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 		this.closeModal();
 	}.bind(this));
 
+    console.log(requestRule);
 	if (!requestRule) {
 		blockRequestButton.removeClass('hidden');
 	} else {
