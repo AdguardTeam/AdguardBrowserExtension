@@ -45,10 +45,9 @@ PopupController.prototype = {
     },
 
     resizePopupWindow: function () {
-        //TODO: Remove jquery
-        var $widjet = $('body>div:not(.hidden)');
-        var width = $widjet.outerWidth();
-        var height = $widjet.outerHeight();
+        var widjet = document.querySelector('.widjet-popup');
+        var width = widjet.offsetWidth;
+        var height = widjet.offsetHeight;
         popupPage.resizePopup(width, height);
     },
 
@@ -263,9 +262,7 @@ PopupController.prototype = {
             }
         }
 
-        //TODO: Fix
-        i18n.translateElement(template.childNodes[0], text);
-
+        i18n.translateElement(template.childNodes[1], text);
         this._appendTemplate(container, template);
     },
 
@@ -284,8 +281,7 @@ PopupController.prototype = {
 
         var template = this.filteringMessageText;
         if (text) {
-            //TODO: Fix
-            i18n.translateElement(template.childNodes[0], text);
+            i18n.translateElement(template.childNodes[1], text);
             this._appendTemplate(container, template);
         }
     },
@@ -718,11 +714,6 @@ PopupController.prototype = {
 
         var parent = document.querySelector('.widjet-popup');
 
-        if (this.actionsBind === true) {
-            return;
-        }
-        this.actionsBind = true;
-
         var self = this;
         this._bindAction(parent, '.siteReport', 'click', function (e) {
             e.preventDefault();
@@ -781,6 +772,7 @@ PopupController.prototype = {
             tabInfo.documentWhiteListed = isWhiteListed;
             tabInfo.userWhiteListed = isWhiteListed;
             self._renderPopup(tabInfo);
+            self._bindActions();
             self.resizePopupWindow();
 
             if (tabInfo.adguardDetected) {
@@ -796,6 +788,7 @@ PopupController.prototype = {
             self.changeApplicationFilteringDisabled(disabled);
             tabInfo.applicationFilteringDisabled = disabled;
             self._renderPopup(tabInfo);
+            self._bindActions();
             self.resizePopupWindow();
         }
 
