@@ -418,7 +418,6 @@ PageController.prototype = {
 	},
 
 	_renderTemplate: function (event) {
-        console.log(event);
 		var metadata = {data: event, 'class': 'task-manager-content-header-body-row cf'};
 		if (event.requestRule) {
 			metadata.class += event.requestRule.whiteListRule ? ' green' : ' red';
