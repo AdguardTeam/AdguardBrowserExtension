@@ -122,6 +122,28 @@ var CssHitsCounter = (function () { // jshint ignore:line
         }, 50);
     }
 
+    function countCssHitsForMutations() {
+        const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+        if (!MutationObserver) {
+            return;
+        }
+        const observer = new MutationObserver((mutations) => {
+            let mutatedElements = [];
+            mutations.forEach(mutation => {
+                mutatedElements = [...mutatedElements, ...mutation.addedNodes];
+            });
+            countCssHitsBatch(mutatedElements, 0, 100, 100, [], function (result) {
+                if (result.length > 0 && typeof onCssHitsFoundCallback === 'function') {
+                    onCssHitsFoundCallback(result);
+                }
+            });
+        });
+        observer.observe(document.documentElement, {
+            childList: true,
+            subtree: true,
+        });
+    }
+
     /**
      * This function divides calculation process into tasks.
      * When calculation finishes, sends results to background page.
@@ -136,6 +158,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
                 onCssHitsFoundCallback(result);
             }
         });
+        countCssHitsForMutations();
     }
 
     /**
