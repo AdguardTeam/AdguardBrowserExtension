@@ -596,6 +596,11 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 
         contentPage.sendMessage({type: 'openTab', url: requestUrl, options: {inNewWindow: true}});
     });
+    
+    // there is nothing to open if log event reveals blocked element
+    if (filteringEvent.element) {
+        openRequestButton.hide();
+    }
 
 	blockRequestButton.on('click', function (e) {
 		e.preventDefault();
