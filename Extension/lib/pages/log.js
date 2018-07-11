@@ -96,7 +96,9 @@ var UrlUtils = {
 };
 
 var FilterRule = {
-	MASK_WHITE_LIST: "@@"
+    MASK_WHITE_LIST: '@@',
+    MASK_CSS_RULE: '##',
+    MASK_CSS_INJECT_RULE: '#$#',
 };
 
 var UrlFilterRule = {
@@ -625,9 +627,8 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 			contentPage.sendMessage({type: 'unWhiteListFrame', frameInfo: frameInfo});
 		}
 		this.closeModal();
-	}.bind(this));
+    }.bind(this));
 
-    console.log(requestRule);
 	if (!requestRule) {
 		blockRequestButton.removeClass('hidden');
 	} else {
@@ -656,14 +657,41 @@ RequestWizard.prototype.showCreateExceptionRuleModal = function (frameInfo, filt
 
 	var template = this.createExceptionRuleTemplate.clone();
 
-	var patterns = RequestWizard.splitToPatterns(filteringEvent.requestUrl, filteringEvent.requestDomain, true).reverse();
-
+    var patterns;
+    if (filteringEvent.requestUrl) {
+        patterns = RequestWizard.splitToPatterns(filteringEvent.requestUrl, filteringEvent.requestDomain, true).reverse();
+    }
     if (filteringEvent.requestUrl === 'content-security-policy-check') {
         patterns = ['@@'];
     }
-
+    if (filteringEvent.element) {
+        patterns = [RequestWizard.createExcludingCssRule(filteringEvent.requestRule, filteringEvent)];
+    }
 	this._initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
 };
+
+const generateExcludeRule = (ruleText, mask) => {
+    const insert = (str, index, value) => {
+        return str.slice(0, index) + value + str.slice(index);
+    }
+    const maskIndex = ruleText.indexOf(mask);
+    const maskLength = mask.length;
+    const rulePart = ruleText.slice(maskIndex + maskLength);
+    const excludingMask = insert(mask, maskLength - 1, '@');
+    return excludingMask + rulePart;
+};
+
+RequestWizard.createExcludingCssRule = function (rule, event) {
+    const ruleText = rule.ruleText;
+    const domainPart = event.frameDomain;
+    if (ruleText.indexOf(FilterRule.MASK_CSS_RULE) > -1) {
+        return domainPart + generateExcludeRule(ruleText, FilterRule.MASK_CSS_RULE);
+    }
+    if (ruleText.indexOf(FilterRule.MASK_CSS_INJECT_RULE > -1)) {
+        return domainPart + generateExcludeRule(ruleText, FilterRule.MASK_CSS_INJECT_RULE);
+    }
+    
+}
 
 RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, patterns, filteringEvent) {
 
@@ -671,29 +699,29 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 	var isThirdPartyRequest = filteringEvent.requestThirdParty;
 
 	var rulePatternsEl = template.find('#rulePatterns');
-	for (var i = 0; i < patterns.length; i++) {
-		var patternEl = $('<div>', {'class': 'radio radio-patterns'});
-		var input = $('<input>', {
-			'class': 'radio-input',
-			type: 'radio',
-			name: 'rulePattern',
-			id: 'pattern' + i,
-			value: patterns[i]
-		});
-		var label = $('<label>', {
-			'class': 'radio-label',
-			'for': 'pattern' + i
-		}).append($('<span>', {'class': 'radio-icon'})).append($('<span>', {
-			'class': 'radio-label-text',
-			text: patterns[i]
-		}));
-		patternEl.append(input);
-		patternEl.append(label);
-		rulePatternsEl.append(patternEl);
-		if (i === 0) {
-			input.attr('checked', 'checked');
-		}
-	}
+    for (var i = 0; i < patterns.length; i++) {
+        var patternEl = $('<div>', {'class': 'radio radio-patterns'});
+        var input = $('<input>', {
+            'class': 'radio-input',
+            type: 'radio',
+            name: 'rulePattern',
+            id: 'pattern' + i,
+            value: patterns[i]
+        });
+        var label = $('<label>', {
+            'class': 'radio-label',
+            'for': 'pattern' + i
+        }).append($('<span>', {'class': 'radio-icon'})).append($('<span>', {
+            'class': 'radio-label-text',
+            text: patterns[i]
+        }));
+        patternEl.append(input);
+        patternEl.append(label);
+        rulePatternsEl.append(patternEl);
+        if (i === 0) {
+            input.attr('checked', 'checked');
+        }
+    }
 
 	var rulePatterns = template.find('[name="rulePattern"]');
 	var ruleDomainCheckbox = template.find('[name="ruleDomain"]');
@@ -710,15 +738,24 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 
     ruleImportantCheckbox.attr('id', 'ruleImportant');
     ruleImportantCheckbox.parent().find('label').attr('for', 'ruleImportant');
+    if (filteringEvent.element) {
+        ruleImportantCheckbox.parent().hide();
+    }
 
 	ruleMatchCaseCheckbox.attr('id', 'ruleMatchCase');
-	ruleMatchCaseCheckbox.parent().find('label').attr('for', 'ruleMatchCase');
+    ruleMatchCaseCheckbox.parent().find('label').attr('for', 'ruleMatchCase');
+    if (filteringEvent.element) {
+        ruleMatchCaseCheckbox.parent().hide();
+    }
 
 	ruleThirdPartyCheckbox.attr('id', 'ruleThirdParty');
 	ruleThirdPartyCheckbox.parent().find('label').attr('for', 'ruleThirdParty');
 	if (isThirdPartyRequest) {
 		ruleThirdPartyCheckbox.attr('checked', 'checked');
-	}
+    }
+    if (filteringEvent.element) {
+        ruleThirdPartyCheckbox.parent().hide();
+    }
 
 	//bind events
 	function updateRuleText() {
@@ -742,8 +779,12 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
         if (filteringEvent.requestUrl === 'content-security-policy-check') {
         	mandatoryOptions = [UrlFilterRule.WEBRTC_OPTION, UrlFilterRule.WEBSOCKET_OPTION];
 		}
-
-		var ruleText = RequestWizard.createRuleFromParams(urlPattern, domain, matchCase, thirdParty, important, mandatoryOptions);
+        var ruleText;
+        if (filteringEvent.element) {
+            ruleText = RequestWizard.createCssRuleFromParams(urlPattern, permitDomain);
+        } else {
+            ruleText = RequestWizard.createRuleFromParams(urlPattern, domain, matchCase, thirdParty, important, mandatoryOptions);
+        }
 		ruleTextEl.val(ruleText);
 	}
 
@@ -853,6 +894,15 @@ RequestWizard.createRuleFromParams = function (urlPattern, urlDomain, matchCase,
 		ruleText += UrlFilterRule.OPTIONS_DELIMITER + options.join(',');
 	}
 	return ruleText;
+};
+
+RequestWizard.createCssRuleFromParams = function (urlPattern, permitDomain) {
+    var ruleText = urlPattern;
+    if (!permitDomain) {
+        const index = ruleText.indexOf('#');
+        ruleText = ruleText.slice(index);
+    }
+    return ruleText;
 };
 
 RequestWizard.getRequestType = function (requestType) {
