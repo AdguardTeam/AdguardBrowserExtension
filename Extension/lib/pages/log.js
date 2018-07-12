@@ -99,6 +99,8 @@ var FilterRule = {
     MASK_WHITE_LIST: '@@',
     MASK_CSS_RULE: '##',
     MASK_CSS_INJECT_RULE: '#$#',
+    MASK_CSS_EXTENDED_CSS_RULE: '#?#',
+    MASK_CSS_INJECT_EXTENDED_CSS_RULE: '#$?#',
 };
 
 var UrlFilterRule = {
@@ -669,32 +671,38 @@ RequestWizard.prototype.showCreateExceptionRuleModal = function (frameInfo, filt
         patterns = ['@@'];
     }
     if (filteringEvent.element) {
-        patterns = [RequestWizard.createExcludingCssRule(filteringEvent.requestRule, filteringEvent)];
+        patterns = [RequestWizard.createExceptionCssRule(filteringEvent.requestRule, filteringEvent)];
     }
 	this._initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
 };
 
-const generateExcludeRule = (ruleText, mask) => {
+const generateExceptionRule = (ruleText, mask) => {
     const insert = (str, index, value) => {
         return str.slice(0, index) + value + str.slice(index);
     }
     const maskIndex = ruleText.indexOf(mask);
     const maskLength = mask.length;
     const rulePart = ruleText.slice(maskIndex + maskLength);
-    const excludingMask = insert(mask, maskLength - 1, '@');
-    return excludingMask + rulePart;
+    // insert exception mark after first char
+    const exceptionMask = insert(mask, 1, '@');
+    return exceptionMask + rulePart;
 };
 
-RequestWizard.createExcludingCssRule = function (rule, event) {
+RequestWizard.createExceptionCssRule = function (rule, event) {
     const ruleText = rule.ruleText;
     const domainPart = event.frameDomain;
     if (ruleText.indexOf(FilterRule.MASK_CSS_RULE) > -1) {
-        return domainPart + generateExcludeRule(ruleText, FilterRule.MASK_CSS_RULE);
+        return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_RULE);
     }
     if (ruleText.indexOf(FilterRule.MASK_CSS_INJECT_RULE > -1)) {
-        return domainPart + generateExcludeRule(ruleText, FilterRule.MASK_CSS_INJECT_RULE);
+        return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_INJECT_RULE);
     }
-    
+    if (ruleText.indexOf(FilterRule.MASK_CSS_EXTENDED_CSS_RULE > -1)) {
+        return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_EXTENDED_CSS_RULE);
+    }
+    if (ruleText.indexOf(FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE > -1)) {
+        return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE);
+    }
 }
 
 RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, patterns, filteringEvent) {

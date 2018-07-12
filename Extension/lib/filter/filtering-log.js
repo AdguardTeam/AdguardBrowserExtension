@@ -139,7 +139,7 @@ adguard.filteringLog = (function (adguard) {
             s.push(' ');
             s.push(attr.name);
             s.push('="');
-            s.push(attr.value);
+            s.push(attr.value.replace(/"/g, '\\"'));
             s.push('"');
         }
         s.push('>');
@@ -216,15 +216,19 @@ adguard.filteringLog = (function (adguard) {
     };
 
     /**
-     * Add event to log with the cosmetic rule
-     * @param tab
-     * @param element
-     * @param frameUrl
-     * @param requestType
-     * @param requestRule
+     * Add event to log with the corresponding rule
+     * @param {{tabId: Number}} tab - Tab object with one of properties tabId
+     * @param {(string|Element)} element - String presentation of element or NodeElement
+     * @param {String} frameUrl - Frame url
+     * @param {String} requestType - Request type
+     * @param {{ruleText: String, filterId: Number, isInjectRule: Boolean}} requestRule - Request rule
      */
     var addCosmeticEvent = function (tab, element, frameUrl, requestType, requestRule) {
         if (openedFilteringLogsPage === 0) {
+            return;
+        }
+
+        if (!requestRule) {
             return;
         }
 
@@ -234,9 +238,8 @@ adguard.filteringLog = (function (adguard) {
         }
 
         var frameDomain = adguard.utils.url.getDomainName(frameUrl);
-
         var filteringEvent = {
-            element: typeof element === 'string' ? element : elementToString(element), // TODO: change naming
+            element: typeof element === 'string' ? element : elementToString(element),
             frameUrl: frameUrl,
             frameDomain: frameDomain,
             requestType: requestType,

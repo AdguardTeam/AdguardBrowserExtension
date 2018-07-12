@@ -258,7 +258,7 @@
          * @param {number} options CssFilter bitmask
          * @returns {SelectorsData} CSS and ExtCss data for the webpage
          */
-        getSelectorsForUrl: function (url, tab, options) {
+        getSelectorsForUrl: function (url, options) {
             var domain = adguard.utils.url.getHost(url);
 
             var CSS_INJECTION_ONLY = adguard.rules.CssFilter.CSS_INJECTION_ONLY;

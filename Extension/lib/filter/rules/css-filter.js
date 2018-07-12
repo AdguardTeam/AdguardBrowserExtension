@@ -182,7 +182,7 @@
             if (typeof options === 'undefined') {
                 options = RETRIEVE_TRADITIONAL_CSS + RETRIEVE_EXTCSS;
             }
-            
+
             var rules = this._filterRules(domainName, options);
 
             var genericHide = (options & GENERIC_HIDE_APPLIED) === GENERIC_HIDE_APPLIED;
@@ -537,60 +537,80 @@
         },
 
         /**
+         * Patch rule selector adding adguard mark and rule info in the content attribute
+         * Example:
+         * .selector { color: red } -> .selector { color: red, content: 'adguard{filterId};{ruleText} !important;}
+         * @param rule
+         * @returns {String}
+         */
+        _addMarkerToInjectRule: function (rule) {
+            var INJECT_HIT_START = " content: 'adguard";
+            var HIT_SEP = encodeURIComponent(';');
+            var HIT_END = "' !important;}\r\n";
+
+            var result = [];
+            var ruleText = this._getRuleCssSelector(rule);
+            // if rule text has content attribute we don't add rule marker
+            if (ruleText.indexOf('content') !== -1) {
+                return rule;
+            }
+            // remove closing brace
+            var ruleTextWithoutCloseBrace = ruleText.slice(0, -1).trim();
+            // check semicolon
+            var ruleTextWithSemicolon = adguard.utils.strings.endsWith(ruleTextWithoutCloseBrace, ';') ?
+                ruleTextWithoutCloseBrace :
+                ruleTextWithoutCloseBrace + ';';
+            result.push(ruleTextWithSemicolon);
+            result.push(INJECT_HIT_START);
+            result.push(rule.filterId);
+            result.push(HIT_SEP);
+            result.push(api.FilterRule.escapeRule(rule.ruleText));
+            result.push(HIT_END);
+            return result.join('');
+        },
+
+        /**
+         * Patch rule selector adding adguard mark rule info in the content attribute
+         * Example:
+         * .selector -> .selector { content: 'adguard{filterId};{ruleText} !important;}
+         * @param rule
+         * @returns {String}
+         */
+        _addMarkerToElemhideRule: function (rule) {
+            var ELEMHIDE_HIT_START = " { display: none!important; content: 'adguard";
+            var HIT_SEP = encodeURIComponent(';');
+            var HIT_END = "' !important;}\r\n";
+
+            var result = [];
+            result.push(this._getRuleCssSelector(rule));
+            result.push(ELEMHIDE_HIT_START);
+            result.push(rule.filterId);
+            result.push(HIT_SEP);
+            result.push(api.FilterRule.escapeRule(rule.ruleText));
+            result.push(HIT_END);
+            return result.join('');
+        },
+
+        /**
          * Builds CSS with content style to be injected.
-         * This method is used if user has enabled "Send statistics for ad filters usage" option.
+         * This method is used if user has enabled "Send statistics for ad filters usage" option and/or
+         * if filtering log window is open
          * Parsing css 'content' attribute allows us to track rule hits.
          *
-         * @param rules     List of rules
+         * @param rules List of rules
          * @returns List of CSS stylesheets
          * @private
          */
         _buildCssByRulesHits: function (rules) {
-            var ELEMHIDE_HIT_START = " { display: none!important; content: 'adguard";
-            var HIT_SEP = encodeURIComponent(';');
-            var HIT_END = "' !important;}\r\n";
-            var INJECT_HIT_START = " content: 'adguard";
-
-            var elemHideSb = [];
-            var cssSb = [];
-
-            for (var i = 0; i < rules.length; i++) {
+            var styles = [];
+            for (var i = 0; i < rules.length; i += 1) {
                 var rule = rules[i];
-
                 if (rule.isInjectRule) {
-                    const ruleText = this._getRuleCssSelector(rule);
-                    // remove close brace
-                    const ruleTextWithoutCloseBrace = ruleText.slice(0, -1).trim();
-                    // check semicolon
-                    const ruleTextWithSemicolon = ruleTextWithoutCloseBrace.slice(-1) === ';' ? ruleTextWithoutCloseBrace : ruleTextWithoutCloseBrace + ';';
-                    cssSb.push(ruleTextWithSemicolon);
-                    cssSb.push(INJECT_HIT_START);
-                    cssSb.push(rule.filterId);
-                    cssSb.push(HIT_SEP);
-                    cssSb.push(api.FilterRule.escapeRule(rule.ruleText));
-                    cssSb.push(HIT_END);
+                    styles.push(this._addMarkerToInjectRule(rule));
                 } else {
-                    elemHideSb.push(this._getRuleCssSelector(rule));
-                    elemHideSb.push(ELEMHIDE_HIT_START);
-                    elemHideSb.push(rule.filterId);
-                    elemHideSb.push(HIT_SEP);
-                    elemHideSb.push(api.FilterRule.escapeRule(rule.ruleText));
-                    elemHideSb.push(HIT_END);
+                    styles.push(this._addMarkerToElemhideRule(rule));
                 }
             }
-
-            var styles = [];
-            var elemHideStyle = elemHideSb.join("");
-            var cssStyle = cssSb.join("");
-
-            if (elemHideStyle) {
-                styles.push(elemHideStyle);
-            }
-
-            if (cssStyle) {
-                styles.push(cssStyle);
-            }
-
             return styles;
         },
 
