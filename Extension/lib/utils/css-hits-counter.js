@@ -34,11 +34,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
         }
         return value;
     }
-    
-    /**
-     * TODO think how to unite this method with the same one in
-     * /Volumes/dev/browser-extension/Extension/lib/filter/filtering-log.js
-     */
+
     /**
      * Serialize HTML element
      * @param element
@@ -61,6 +57,46 @@ var CssHitsCounter = (function () { // jshint ignore:line
     }
 
     /**
+     * Random id generator
+     * @param {Number} [length=10] - length of random key
+     * @returns {String} - random key with desired length
+     */
+    function generateRandomKey(length) {
+        var DEFAULT_LENGTH = 10;
+        length = (typeof length !== 'undefined') ? length : DEFAULT_LENGTH;
+        var result = '';
+        var possibleValues = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        for (var i = 0; i < length; i += 1) {
+            result += possibleValues.charAt(Math.floor(Math.random() * possibleValues.length));
+        }
+        return result;
+    }
+
+    var HitsCounterStorage = {
+        counter: 0,
+        randomKey: generateRandomKey(),
+        isCounted: function (element, rule) {
+            var hitAddress = element[this.randomKey];
+            if (hitAddress) {
+                var countedHit = this[hitAddress];
+                if (countedHit) {
+                    return countedHit.element === element && countedHit.rule === rule;
+                }
+            }
+            return false;
+        },
+        setCounted: function (element, rule) {
+            var counter = this.getCounter();
+            element[this.randomKey] = counter;
+            this[counter] = { element: element, rule: rule };
+        },
+        getCounter: function () {
+            this.counter = this.counter + 1;
+            return this.counter;
+        },
+    };
+
+    /**
      * Main calculation function.
      * 1. Select sub collection from elements.
      * 2. For each element from sub collection: retrieve calculated css 'content' attribute and if it contains 'adguard' marker then retrieve rule text and filter identifier.
@@ -74,7 +110,6 @@ var CssHitsCounter = (function () { // jshint ignore:line
      * @param callback Finish callback
      */
     function countCssHitsBatch(elements, start, end, step, result, callback) {
-
         var length = Math.min(end, elements.length);
         for (var i = start; i < length; i++) {
 
@@ -100,6 +135,12 @@ var CssHitsCounter = (function () { // jshint ignore:line
             }
             var filterId = parseInt(filterIdAndRuleText.substring(0, index), 10);
             var ruleText = filterIdAndRuleText.substring(index + 1);
+            var RULE_FILTER_SEPARATOR = ';';
+            var ruleAndFilterString = filterId + RULE_FILTER_SEPARATOR + ruleText;
+            if (HitsCounterStorage.isCounted(element, ruleAndFilterString)) {
+                continue;
+            }
+            HitsCounterStorage.setCounted(element, ruleAndFilterString);
             result.push({
                 filterId: filterId,
                 ruleText: ruleText,
@@ -126,14 +167,17 @@ var CssHitsCounter = (function () { // jshint ignore:line
         if (!MutationObserver) {
             return;
         }
-        var observer = new MutationObserver(function (mutations) {
-            var mutatedElements = [];
-            mutations.forEach(function (mutation) {
-                for (var i = 0; i < mutation.addedNodes.length; i += 1) {
-                    mutatedElements.push(mutation.addedNodes[i]);
+        var observer = new MutationObserver(function (mutationRecords) {
+            var potentialElementsWithNewHits = [];
+            mutationRecords.forEach(function (mutationRecord) {
+                var mutationTarget = mutationRecord.target;
+                potentialElementsWithNewHits.push(mutationTarget);
+                var mutationTargetElements = mutationTarget.querySelectorAll('*');
+                for (var i = 0; i < mutationTargetElements.length; i += 1) {
+                    potentialElementsWithNewHits.push(mutationTargetElements[i]);
                 }
             });
-            countCssHitsBatch(mutatedElements, 0, 100, 100, [], function (result) {
+            countCssHitsBatch(potentialElementsWithNewHits, 0, 100, 100, [], function (result) {
                 if (result.length > 0 && typeof onCssHitsFoundCallback === 'function') {
                     onCssHitsFoundCallback(result);
                 }
@@ -142,6 +186,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
         observer.observe(document.documentElement, {
             childList: true,
             subtree: true,
+            attributes: true,
         });
     }
 
@@ -151,7 +196,6 @@ var CssHitsCounter = (function () { // jshint ignore:line
      * See countCssHitsBatch for details.
      */
     function countCssHits() {
-
         var elements = document.querySelectorAll('*');
         // Submit first task.
         countCssHitsBatch(elements, 0, 100, 100, [], function (result) {
