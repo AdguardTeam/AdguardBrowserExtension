@@ -53,7 +53,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
             s.push(' ');
             s.push(attr.name);
             s.push('="');
-            s.push(attr.value);
+            s.push(attr.value.replace(/"/g, '\\"'));
             s.push('"');
         }
         s.push('>');
@@ -122,14 +122,16 @@ var CssHitsCounter = (function () { // jshint ignore:line
     }
 
     function countCssHitsForMutations() {
-        const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+        var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
         if (!MutationObserver) {
             return;
         }
-        const observer = new MutationObserver((mutations) => {
-            let mutatedElements = [];
-            mutations.forEach(mutation => {
-                mutatedElements = [...mutatedElements, ...mutation.addedNodes];
+        var observer = new MutationObserver(function (mutations) {
+            var mutatedElements = [];
+            mutations.forEach(function (mutation) {
+                for (var i = 0; i < mutation.addedNodes.length; i += 1) {
+                    mutatedElements.push(mutation.addedNodes[i]);
+                }
             });
             countCssHitsBatch(mutatedElements, 0, 100, 100, [], function (result) {
                 if (result.length > 0 && typeof onCssHitsFoundCallback === 'function') {
