@@ -636,7 +636,7 @@ PopupController.prototype = {
         for (var type in stats.blockedTypes) {
             var number = statsData[stats.blockedTypes[type]] ? statsData[stats.blockedTypes[type]] : 0;
 
-            var blockedTypeItem = this._htmlToElement(`
+            var blockedTypeItem = htmlToElement(`
                 <li>
                     <span class="key">${this._localizeBlockedType(type)}</span>
                     <span class="value">${number}</span>
@@ -836,13 +836,6 @@ PopupController.prototype = {
         this._bindAction(parent, '.hide-full-stats', 'click', function (e) {
             document.querySelector('.analytics').style.display = 'none';
         });
-    },
-
-    _htmlToElement: function(html) {
-        var template = document.createElement('template');
-        html = html.trim(); // Never return a text node of whitespace as the result
-        template.innerHTML = html;
-        return template.content.firstChild;
     },
 
     // http://jira.performix.ru/browse/AG-3474

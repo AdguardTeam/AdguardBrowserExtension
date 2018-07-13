@@ -297,17 +297,6 @@ var AntiBannerFilters = function (options) {
 
     updateRulesCountInfo(options.rulesInfo);
 
-    /**
-     * @param {String} HTML representing a single element
-     * @return {Element}
-     */
-    function htmlToElement(html) {
-        var template = document.createElement('template');
-        html = html.trim(); // Never return a text node of whitespace as the result
-        template.innerHTML = html;
-        return template.content.firstChild;
-    }
-
     function getFiltersByGroupId(groupId, filters) {
         return filters.filter(function (f) {
             return f.groupId === groupId;
