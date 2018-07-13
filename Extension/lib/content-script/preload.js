@@ -168,7 +168,7 @@
 
         // Edge doesn't provide access to websockets via onBeforeRequest api
         var isEdge = userAgent.indexOf('edge') >= 0;
-        
+
         // Explicit check, we must not go further in case of Firefox
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/379
         if (isFirefox) {
@@ -282,14 +282,11 @@
             applySelectors(response.selectors);
             applyScripts(response.scripts);
         }
-
-        if (typeof CssHitsCounter !== 'undefined' &&
-            typeof CssHitsCounter.count === 'function' &&
-            response && response.selectors && response.selectors.cssHitsCounterEnabled) {
-
-            // Start css hits calculation
-            CssHitsCounter.count();
-        }
+        getContentPage().sendMessage({ type: 'isCssHitsCounterEnabled' }, function (response) {
+            if (response && response === true) {
+                CssHitsCounter.count();
+            }
+        });
     };
 
     /**
