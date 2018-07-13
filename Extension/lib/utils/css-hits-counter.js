@@ -49,7 +49,8 @@ var CssHitsCounter = (function () { // jshint ignore:line
             s.push(' ');
             s.push(attr.name);
             s.push('="');
-            s.push(attr.value.replace(/"/g, '\\"'));
+            var value = attr.value === null ? '' : attr.value.replace(/"/g, '\\"');
+            s.push(value);
             s.push('"');
         }
         s.push('>');
@@ -72,6 +73,10 @@ var CssHitsCounter = (function () { // jshint ignore:line
         return result;
     }
 
+    /**
+     * This storage is used to keep track of counted rules
+     * regarding to node elements
+     */
     var HitsCounterStorage = {
         counter: 0,
         randomKey: generateRandomKey(),

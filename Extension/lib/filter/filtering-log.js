@@ -139,7 +139,8 @@ adguard.filteringLog = (function (adguard) {
             s.push(' ');
             s.push(attr.name);
             s.push('="');
-            s.push(attr.value.replace(/"/g, '\\"'));
+            var value = attr.value === null ? '' : attr.value.replace(/"/g, '\\"');
+            s.push(value);
             s.push('"');
         }
         s.push('>');
