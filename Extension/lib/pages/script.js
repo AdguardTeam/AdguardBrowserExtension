@@ -167,3 +167,16 @@ function createEventListener(events, callback, onUnloadCallback) { // jshint ign
     window.addEventListener('beforeunload', onUnload);
     window.addEventListener('unload', onUnload);
 }
+
+/**
+ * Creates HTMLElement from string
+ *
+ * @param {String} HTML representing a single element
+ * @return {Element}
+ */
+function htmlToElement(html) {
+    var template = document.createElement('template');
+    html = html.trim(); // Never return a text node of whitespace as the result
+    template.innerHTML = html;
+    return template.content.firstChild;
+}

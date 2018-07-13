@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global i18n, contentPage, createEventListener */
+/* global i18n, contentPage, createEventListener, htmlToElement */
 
 var PageController = function () {
 };
@@ -500,16 +500,9 @@ PageController.prototype = {
                 <div>${RequestWizard.getSource(event.frameDomain)}</div>
             </tr>`;
 
-        var element = this.htmlToElement(eventTemplate);
+        var element = htmlToElement(eventTemplate);
         element.data = metadata.data;
         return element;
-    },
-
-    htmlToElement: function(html) {
-        var template = document.createElement('template');
-        html = html.trim(); // Never return a text node of whitespace as the result
-        template.innerHTML = html;
-        return template.content.firstChild;
     },
 
     _handleEventShow: function (el) {
@@ -580,13 +573,6 @@ var RequestWizard = (function () {
         }
 
         initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
-    };
-
-    var htmlToElement = function(html) {
-        var template = document.createElement('template');
-        html = html.trim(); // Never return a text node of whitespace as the result
-        template.innerHTML = html;
-        return template.content.firstChild;
     };
 
     var initCreateRuleDialog = function (frameInfo, template, patterns, filteringEvent) {
