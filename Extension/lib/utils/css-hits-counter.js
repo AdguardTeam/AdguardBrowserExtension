@@ -36,6 +36,72 @@ var CssHitsCounter = (function () { // jshint ignore:line
     }
 
     /**
+     * Serialize HTML element
+     * @param element
+     */
+    function elementToString(element) {
+        var s = [];
+        s.push('<');
+        s.push(element.localName);
+        var attributes = element.attributes;
+        for (var i = 0; i < attributes.length; i++) {
+            var attr = attributes[i];
+            s.push(' ');
+            s.push(attr.name);
+            s.push('="');
+            var value = attr.value === null ? '' : attr.value.replace(/"/g, '\\"');
+            s.push(value);
+            s.push('"');
+        }
+        s.push('>');
+        return s.join('');
+    }
+
+    /**
+     * Random id generator
+     * @param {Number} [length=10] - length of random key
+     * @returns {String} - random key with desired length
+     */
+    function generateRandomKey(length) {
+        var DEFAULT_LENGTH = 10;
+        length = (typeof length !== 'undefined') ? length : DEFAULT_LENGTH;
+        var result = '';
+        var possibleValues = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        for (var i = 0; i < length; i += 1) {
+            result += possibleValues.charAt(Math.floor(Math.random() * possibleValues.length));
+        }
+        return result;
+    }
+
+    /**
+     * This storage is used to keep track of counted rules
+     * regarding to node elements
+     */
+    var HitsCounterStorage = {
+        counter: 0,
+        randomKey: generateRandomKey(),
+        isCounted: function (element, rule) {
+            var hitAddress = element[this.randomKey];
+            if (hitAddress) {
+                var countedHit = this[hitAddress];
+                if (countedHit) {
+                    return countedHit.element === element && countedHit.rule === rule;
+                }
+            }
+            return false;
+        },
+        setCounted: function (element, rule) {
+            var counter = this.getCounter();
+            element[this.randomKey] = counter;
+            this[counter] = { element: element, rule: rule };
+        },
+        getCounter: function () {
+            this.counter = this.counter + 1;
+            return this.counter;
+        },
+    };
+
+    /**
      * Main calculation function.
      * 1. Select sub collection from elements.
      * 2. For each element from sub collection: retrieve calculated css 'content' attribute and if it contains 'adguard' marker then retrieve rule text and filter identifier.
@@ -49,7 +115,6 @@ var CssHitsCounter = (function () { // jshint ignore:line
      * @param callback Finish callback
      */
     function countCssHitsBatch(elements, start, end, step, result, callback) {
-
         var length = Math.min(end, elements.length);
         for (var i = start; i < length; i++) {
 
@@ -73,11 +138,18 @@ var CssHitsCounter = (function () { // jshint ignore:line
             if (index < 0) {
                 continue;
             }
-            var filterId = filterIdAndRuleText.substring(0, index);
+            var filterId = parseInt(filterIdAndRuleText.substring(0, index), 10);
             var ruleText = filterIdAndRuleText.substring(index + 1);
+            var RULE_FILTER_SEPARATOR = ';';
+            var ruleAndFilterString = filterId + RULE_FILTER_SEPARATOR + ruleText;
+            if (HitsCounterStorage.isCounted(element, ruleAndFilterString)) {
+                continue;
+            }
+            HitsCounterStorage.setCounted(element, ruleAndFilterString);
             result.push({
                 filterId: filterId,
-                ruleText: ruleText
+                ruleText: ruleText,
+                element: elementToString(element),
             });
         }
 
@@ -95,13 +167,40 @@ var CssHitsCounter = (function () { // jshint ignore:line
         }, 50);
     }
 
+    function countCssHitsForMutations() {
+        var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+        if (!MutationObserver) {
+            return;
+        }
+        var observer = new MutationObserver(function (mutationRecords) {
+            var potentialElementsWithNewHits = [];
+            mutationRecords.forEach(function (mutationRecord) {
+                var mutationTarget = mutationRecord.target;
+                potentialElementsWithNewHits.push(mutationTarget);
+                var mutationTargetElements = mutationTarget.querySelectorAll('*');
+                for (var i = 0; i < mutationTargetElements.length; i += 1) {
+                    potentialElementsWithNewHits.push(mutationTargetElements[i]);
+                }
+            });
+            countCssHitsBatch(potentialElementsWithNewHits, 0, 100, 100, [], function (result) {
+                if (result.length > 0 && typeof onCssHitsFoundCallback === 'function') {
+                    onCssHitsFoundCallback(result);
+                }
+            });
+        });
+        observer.observe(document.documentElement, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+        });
+    }
+
     /**
      * This function divides calculation process into tasks.
      * When calculation finishes, sends results to background page.
      * See countCssHitsBatch for details.
      */
     function countCssHits() {
-
         var elements = document.querySelectorAll('*');
         // Submit first task.
         countCssHitsBatch(elements, 0, 100, 100, [], function (result) {
@@ -109,6 +208,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
                 onCssHitsFoundCallback(result);
             }
         });
+        countCssHitsForMutations();
     }
 
     /**
