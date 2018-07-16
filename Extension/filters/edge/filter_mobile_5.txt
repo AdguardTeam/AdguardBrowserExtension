@@ -1,8 +1,8 @@
-! Checksum: eNQemhn7PhtGpPx6rPWqIQ
+! Checksum: N6PLk/N2W8/50tyPvwk9RQ
 ! Title: AdGuard Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.0.26
-! TimeUpdated: 2018-04-19T03:03:10+00:00
+! Version: 2.0.0.30
+! TimeUpdated: 2018-07-06T16:26:57+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -14,6 +14,10 @@
 /fbevents.js^
 /ads/beacon-
 /AppMeasurement-$script
+||windows.filter^$third-party
+||windows.test.filter^$third-party
+||android.test.filter^$third-party
+||chrome.test.filter.com^$third-party
 ~banki.ru,~ukrinform.ua,~ukrinform.ru,~prophotos.ru,~cheater-top.ru,~allkey.org,~anti-free.ru,~art-on.ru,~blogig.org,~bloknot-krasnodar.ru,~bloknot-rostov.ru,~bloknot-stavropol.ru,~bucwar.ru,~bukvaved.biz,~capa.me,~car72.ru,~crox.ws,~delo.ua,~dfm.ru,~edp.kiev.ua,~f1comp.ru,~firstvds.ru,~forum.esetnod32.ru,~forum.ixbt.com,~fsm-portal.net,~gamai.ru,~gamegpu.ru,~games-java.ru,~golos-naroda.tv,~gradmart.ru,~hcdinamo.by,~hitfm.ru,~igromania.ru,~joomla.ru,~kahai.ru,~keddr.com,~kinogo.co,~kinoshka-new.ru,~maximum.ru,~maxthon.org.ru,~metallurg.ru,~mixupload.com,~montecarlo.ru,~moviez.kz,~onlinefilmu.ru,~planetaua.net,~respecta.net,~rulit.net,~rus-linux.net,~rusradio.ru,~smotretfilmy.ru,~sobytiya.info,~softek.ucoz.ru,~speedy-warez.ru,~uznayvse.ru,~vestivrn.ru,~wowjp.net,~yarportal.ru,~rozetka.com.ua,~kaermorhen.ru,~rubasket.com,~anal-porno.su##noindex a[rel="nofollow"] > img
 ~kinogo-onlaine.net,~allmult.com,~batzbatz.com,~batzbatz.ru,~bobfilm.net,~bobfilm1.net,~fanserials.tv,~kinobar.kz,~kinoimperiya.net,~latino-serialo.ru,~nastol.com.ua,~novinkionlain.ru,~online-multy.ru,~rusdtp.ru,~smeshnoevideo.com,~vidoser.com,~xrust.ru,~zerx.tv,~docfilms.info,~kinogohd.net,porno-hd.tv###dle-content noindex > div[style]
 ~junodownload.com#%#document.onmouseout = null; window.onbeforeunload = null; window.blur = null;
@@ -24,6 +28,7 @@ redtube.com###content_container > div[class]:not(.section_wrapper):not([id]):not
 ||youjizz.com/*/cache/*.gif
 mobiflip.de##div[data-widget="plista_widget_belowArticle"] ~ h4.post-header
 real-vin.com##div.sm-widget
+fullfilmihdizlesene.com###sidebar > .sidebarborder:not(:nth-child(3))
 wowhead.com###page-content > div[class="main"] > div[class="blocks"]
 wowhead.com##div[class="wrapper"] > div[class="blocks"]
 rgmechanics.com##.sidebar.fright > div.widget.widget_text
