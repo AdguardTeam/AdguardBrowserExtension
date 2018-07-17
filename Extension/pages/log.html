@@ -9,8 +9,6 @@
     <link type="text/css" rel="stylesheet" href="../lib/content-script/css/alert-popup.css">
 
     <!-- @if browser == "CHROMIUM" || browser == "EDGE" || browser == "OPERA" || browser == "FIREFOX_WEBEXT" -->
-    <script type="text/javascript" src="../lib/libs/jquery-2.2.4.min.js"></script>
-    <script type="text/javascript" src="../lib/libs/bootstrap.min.js"></script>
     <script type="text/javascript" src="../lib/libs/moment-with-locales.min.js"></script>
     <script type="text/javascript" src="../lib/content-script/adguard-content.js"></script>
     <script type="text/javascript" src="../lib/content-script/common-script.js"></script>
@@ -30,11 +28,7 @@
         <div class="col-logo"><img id="logoIcon" src="images/icon-adguard.png" alt=""></div>
         <div class="col-tab" i18n="filtering_log_tab"></div>
         <div class="col-tab-drop">
-            <div id="tabSelector" class="dropdown" data-toggle="dropdown" data-target="#tabSelector">
-                <span id="selectorListCurrentValue" class="current-value"></span>
-                <span class="caret"></span>
-                <ul id="selectorList" class="drop-items"></ul>
-            </div>
+            <select id="tabSelector" class="dropdown" data-toggle="dropdown" data-target="#tabSelector"></select>
         </div>
     </div>
     <div class="col-refresh">
@@ -88,7 +82,7 @@
     <div class="desc" i18n="filtering_table_empty_row"></div>
 </div>
 
-<div <div id="modal-request-info" class="modal modal-request-details" style="display: none;">
+<div id="modal-request-info" class="modal modal-request-details" style="display: none;">
     <div class="head">
         <div class="close" data-dismiss="modal" aria-label="Close"></div>
         <div class="title" i18n="filtering_modal_info_title"></div>
@@ -116,6 +110,13 @@
             <li>
                 <div class="name" i18n="filtering_modal_filter"></div>
                 <div class="value" attr-text="requestRuleFilter"></div>
+            </li>
+        </ul>
+        <ul class="list">
+            <li>
+                <div class="adg-modal-window-locking-info-right pull-right" style="display: none;">
+                    <img class="adg-modal-window-locking-info-right-pic" attr-src="requestUrl">
+                </div>
             </li>
         </ul>
     </div>
@@ -192,11 +193,11 @@
         <ul class="list">
             <li>
                 <div class="name" i18n="filtering_modal_patterns"></div>
-            </div>
-            <div class="task-manager-content-header-item task-manager-content-item-filter">
-                <div class="task-manager-content-header-item-wrap" i18n="filtering_table_filter"></div>
-                <div class="value">
-                    <ul id="rulePatterns" class="list"></ul>
+                <div class="task-manager-content-header-item task-manager-content-item-filter">
+                    <div class="task-manager-content-header-item-wrap" i18n="filtering_table_filter"></div>
+                    <div class="value">
+                        <ul id="rulePatterns" class="list"></ul>
+                    </div>
                 </div>
             </li>
         </ul>

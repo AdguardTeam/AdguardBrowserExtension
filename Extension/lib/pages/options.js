@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global $, updateDisplayAdguardPromo, contentPage, i18n, moment, ace */
+/* global updateDisplayAdguardPromo, contentPage, i18n, moment, ace, CheckboxUtils */
 
 var Utils = {
 
@@ -34,41 +34,55 @@ var Utils = {
 };
 
 var TopMenu = (function () {
+    'use strict';
+
+    var GENERAL_SETTINGS = '#general-settings';
+    var ANTIBANNER = '#antibanner';
+    var WHITELIST = '#whitelist';
 
     var prevTabId;
     var onHashUpdatedCallback;
 
     var toggleTab = function () {
 
-        var tabId = document.location.hash || '#general-settings';
-        var tab = $(tabId);
+        var tabId = document.location.hash || GENERAL_SETTINGS;
+        var tab = document.querySelector(tabId);
 
-        if (tabId.indexOf('#antibanner') === 0 && tab.length === 0) {
+        if (tabId.indexOf(ANTIBANNER) === 0 && !tab) {
             // AntiBanner groups and filters are loaded and rendered async
             return;
         }
 
-        if (tab.length === 0) {
-            tabId = '#general-settings';
-            tab = $(tabId);
+        if (!tab) {
+            tabId = GENERAL_SETTINGS;
+            tab = document.querySelector(tabId);
         }
+
+        var antibannerTabs = document.querySelectorAll('[data-tab="' + ANTIBANNER + '"]');
 
         if (prevTabId) {
-            $('[data-tab="' + prevTabId + '"]').removeClass('active');
-            if (prevTabId.indexOf('#antibanner') === 0) {
-                $('[data-tab="#antibanner"]').removeClass('active');
+            if (prevTabId.indexOf(ANTIBANNER) === 0) {
+                antibannerTabs.forEach(function (el) {
+                    el.classList.remove('active');
+                });
+            } else {
+                document.querySelector('[data-tab="' + prevTabId + '"]').classList.remove('active');
             }
-            $(prevTabId).hide();
+
+            document.querySelector(prevTabId).style.display = 'none';
         }
 
-        $('[data-tab="' + tabId + '"]').addClass('active');
-        if (tabId.indexOf('#antibanner') === 0) {
-            $('[data-tab="#antibanner"]').addClass('active');
+        if (tabId.indexOf(ANTIBANNER) === 0) {
+            antibannerTabs.forEach(function (el) {
+                el.classList.add('active');
+            });
+        } else {
+            document.querySelector('[data-tab="' + tabId + '"]').classList.add('active');
         }
 
-        tab.show();
+        tab.style.display = 'block';
 
-        if (tabId === '#whitelist') {
+        if (tabId === WHITELIST) {
             if (typeof onHashUpdatedCallback === 'function') {
                 onHashUpdatedCallback(tabId);
             }
@@ -79,11 +93,15 @@ var TopMenu = (function () {
 
     var init = function (options) {
         onHashUpdatedCallback = options.onHashUpdated;
+
         window.addEventListener('hashchange', toggleTab);
-        $('[data-tab]').on('click', function (e) {
-            e.preventDefault();
-            document.location.hash = $(this).attr('data-tab');
+        document.querySelectorAll('[data-tab]').forEach(function (el) {
+            el.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.location.hash = el.getAttribute('data-tab');
+            });
         });
+
         toggleTab();
     };
 
@@ -95,6 +113,7 @@ var TopMenu = (function () {
 })();
 
 var WhiteListFilter = function (options) {
+    'use strict';
 
     var omitRenderEventsCount = 0;
 
@@ -104,20 +123,19 @@ var WhiteListFilter = function (options) {
     // Ace TextHighlightRules mode is edited in ace.js library file
     editor.session.setMode("ace/mode/text_highlight_rules");
 
-    var applyChangesBtn = $('#whiteListFilterApplyChanges');
-    var changeDefaultWhiteListModeCheckbox = $('#changeDefaultWhiteListMode');
+    var applyChangesBtn = document.querySelector('#whiteListFilterApplyChanges');
+    var changeDefaultWhiteListModeCheckbox = document.querySelector('#changeDefaultWhiteListMode');
 
     function loadWhiteListDomains() {
         contentPage.sendMessage({
             type: 'getWhiteListDomains'
         }, function (response) {
             editor.setValue(response.content || '');
-            applyChangesBtn.hide();
+            applyChangesBtn.style.display = 'none';
         });
     }
 
     function saveWhiteListDomains(e) {
-
         e.preventDefault();
 
         omitRenderEventsCount = 1;
@@ -130,7 +148,7 @@ var WhiteListFilter = function (options) {
             content: text
         }, function () {
             editor.setReadOnly(false);
-            applyChangesBtn.hide();
+            applyChangesBtn.style.display = 'none';
         });
     }
 
@@ -139,22 +157,25 @@ var WhiteListFilter = function (options) {
             omitRenderEventsCount--;
             return;
         }
+
         loadWhiteListDomains();
     }
 
     function changeDefaultWhiteListMode(e) {
         e.preventDefault();
+
         contentPage.sendMessage({type: 'changeDefaultWhiteListMode', enabled: !e.currentTarget.checked}, function () {
             updateWhiteListDomains();
         });
     }
 
-    applyChangesBtn.on('click', saveWhiteListDomains);
-    changeDefaultWhiteListModeCheckbox.on('change', changeDefaultWhiteListMode);
-    changeDefaultWhiteListModeCheckbox.updateCheckbox(!options.defaultWhiteListMode);
+    applyChangesBtn.addEventListener('click', saveWhiteListDomains);
+    changeDefaultWhiteListModeCheckbox.addEventListener('change', changeDefaultWhiteListMode);
 
-    editor.getSession().on('change', function () {
-        applyChangesBtn.show();
+    CheckboxUtils.updateCheckbox(changeDefaultWhiteListModeCheckbox, !options.defaultWhiteListMode);
+
+    editor.getSession().addEventListener('change', function () {
+        applyChangesBtn.style.display = 'block';
     });
 
     return {
@@ -163,6 +184,7 @@ var WhiteListFilter = function (options) {
 };
 
 var UserFilter = function () {
+    'use strict';
 
     var omitRenderEventsCount = 0;
 
@@ -172,17 +194,18 @@ var UserFilter = function () {
     // Ace TextHighlightRules mode is edited in ace.js library file
     editor.session.setMode("ace/mode/text_highlight_rules");
 
+    var applyChangesBtn = document.querySelector('#userFilterApplyChanges');
+
     function loadUserRules() {
         contentPage.sendMessage({
             type: 'getUserRules'
         }, function (response) {
             editor.setValue(response.content || '');
-            $('#userFilterApplyChanges').hide();
+            applyChangesBtn.style.display = 'none';
         });
     }
 
     function saveUserRules(e) {
-
         e.preventDefault();
 
         omitRenderEventsCount = 1;
@@ -195,7 +218,7 @@ var UserFilter = function () {
             content: text
         }, function () {
             editor.setReadOnly(false);
-            $('#userFilterApplyChanges').hide();
+            applyChangesBtn.style.display = 'none';
         });
     }
 
@@ -204,13 +227,14 @@ var UserFilter = function () {
             omitRenderEventsCount--;
             return;
         }
+
         loadUserRules();
     }
 
-    $('#userFilterApplyChanges').on('click', saveUserRules);
+    applyChangesBtn.addEventListener('click', saveUserRules);
 
-    editor.getSession().on('change', function () {
-        $('#userFilterApplyChanges').show();
+    editor.getSession().addEventListener('change', function () {
+        applyChangesBtn.style.display = 'block';
     });
 
     return {
@@ -219,15 +243,37 @@ var UserFilter = function () {
 };
 
 var AntiBannerFilters = function (options) {
+    'use strict';
 
     var loadedFiltersInfo = {
         filters: [],
+        categories: [],
         filtersById: {},
         lastUpdateTime: 0,
+
+        initLoadedFilters: function (filters, categories) {
+            this.filters = filters;
+            this.categories = categories;
+
+            var lastUpdateTime = 0;
+            var filtersById = Object.create(null);
+            for (var i = 0; i < this.filters.length; i++) {
+                var filter = this.filters[i];
+                filtersById[filter.filterId] = filter;
+                if (filter.lastUpdateTime && filter.lastUpdateTime > lastUpdateTime) {
+                    lastUpdateTime = filter.lastUpdateTime;
+                }
+            }
+
+            this.filtersById = filtersById;
+            this.lastUpdateTime = lastUpdateTime;
+        },
+
         isEnabled: function (filterId) {
             var info = this.filtersById[filterId];
             return info && info.enabled;
         },
+
         updateEnabled: function (filter, enabled) {
             var info = this.filtersById[filter.filterId];
             if (info) {
@@ -239,7 +285,17 @@ var AntiBannerFilters = function (options) {
         }
     };
 
-    var groupsList = $('#groupsList');
+    // Bind events
+    document.addEventListener('change', function (e) {
+        if (e.target.getAttribute('name') === 'filterId') {
+            toggleFilterState.bind(e.target)();
+        } else if (e.target.getAttribute('name') === 'groupId') {
+            toggleGroupState.bind(e.target)();
+        }
+    });
+    document.querySelector('#updateAntiBannerFilters').addEventListener('click', updateAntiBannerFilters);
+
+    updateRulesCountInfo(options.rulesInfo);
 
     function getFiltersByGroupId(groupId, filters) {
         return filters.filter(function (f) {
@@ -259,19 +315,29 @@ var AntiBannerFilters = function (options) {
     }
 
     function getCategoryElement(groupId) {
-        return $('#category' + groupId);
+        return document.querySelector('#category' + groupId);
     }
 
     function getCategoryCheckbox(groupId) {
-        return getCategoryElement(groupId).find('input');
+        var categoryElement = getCategoryElement(groupId);
+        if (!categoryElement) {
+            return null;
+        }
+
+        return categoryElement.querySelector('input');
     }
 
     function getFilterElement(filterId) {
-        return $('#filter' + filterId);
+        return document.querySelector('#filter' + filterId);
     }
 
     function getFilterCheckbox(filterId) {
-        return getFilterElement(filterId).find('input');
+        var filterElement = getFilterElement(filterId);
+        if (!filterElement) {
+            return null;
+        }
+
+        return filterElement.querySelector('input');
     }
 
     function updateCategoryFiltersInfo(groupId) {
@@ -280,22 +346,24 @@ var AntiBannerFilters = function (options) {
 
         var element = getCategoryElement(groupId);
         var checkbox = getCategoryCheckbox(groupId);
-        element.find('.desc').text('Enabled filters: ' + enabledFiltersCount);
-        checkbox.updateCheckbox(enabledFiltersCount > 0);
+
+        element.querySelector('.desc').textContent = 'Enabled filters: ' + enabledFiltersCount;
+        CheckboxUtils.updateCheckbox([checkbox], enabledFiltersCount > 0);
     }
 
-    function getFilterCategoryTemplate(category) {
-        return $('<li>', {id: 'category' + category.groupId})
-            .append($('<div>', {class: 'block-type'})
-                .append($('<div>', {class: 'block-type__ico block-type__ico--' + category.groupId}))
-                .append($('<a>', {
-                    href: '#antibanner' + category.groupId,
-                    text: category.groupName
-                })))
-            .append($('<div>', {class: 'opt-state'})
-                .append($('<div>', {class: 'preloader'}))
-                .append($('<div>', {class: 'desc'}))
-                .append($('<input>', {type: 'checkbox', name: 'groupId', value: category.groupId})));
+    function getFilterCategoryElement(category) {
+        return htmlToElement(`
+                <li id="category${category.groupId}" class="active">
+                    <div class="block-type">
+                        <div class="block-type__ico block-type__ico--${category.groupId}"></div>
+                        <a href="#antibanner${category.groupId}">${category.groupName}</a>
+                    </div>
+                    <div class="opt-state">
+                        <div class="preloader"></div>
+                        <div class="desc"></div>
+                        <input type="checkbox" name="groupId" value="${category.groupId}">
+                    </div>
+                </li>`);
     }
 
     function getFilterTemplate(filter, enabled, showDeleteButton) {
@@ -303,169 +371,192 @@ var AntiBannerFilters = function (options) {
         timeUpdated.locale(environmentOptions.Prefs.locale);
         var timeUpdatedText = timeUpdated.format("D/MM/YYYY HH:mm").toLowerCase();
 
-        var tagDetails = $('<div>', {class: 'opt-name__info-labels opt-name__info-labels--tags'});
+        var tagDetails = '';
         filter.tagsDetails.forEach(function (tag) {
-            tagDetails.append($('<div>', {class: 'opt-name__tag', 'data-tooltip': tag.description, text: '#' + tag.keyword}));
+            tagDetails += `<div class="opt-name__tag" data-tooltip="${tag.description}">#${tag.keyword}</div>`;
         });
 
-        var optionsBlock = $('<div>', {class: 'opt-state'}).append($('<div>', {class: 'preloader'}));
-
+        var deleteButton = '';
         if (showDeleteButton) {
-            optionsBlock = optionsBlock.append($('<a>', {href: '#', text: 'remove', filterId: filter.filterId, class: 'remove-custom-filter-button'}));
+            deleteButton = `<a href="#" filterid="${filter.filterId}" class="remove-custom-filter-button">remove</a>`;
         }
 
-        optionsBlock = optionsBlock.append($('<a>', {class: 'icon-home', target: '_blank', href: filter.homepage}))
-            .append($('<input>', {type: 'checkbox', name: 'filterId', value: filter.filterId, checked: enabled}));
-
-        return $('<li>', {id: 'filter' + filter.filterId})
-            .append($('<div>', {class: 'opt-name'})
-                .append($('<div>', {class: 'title', text: filter.name}))
-                .append($('<div>', {class: 'desc', text: filter.description}))
-                .append($('<div>', {class: 'opt-name__info'})
-                    .append($('<div>', {class: 'opt-name__info-labels'})
-                        .append($('<div>', {class: 'opt-name__info-item', text: 'version ' + filter.version}))
-                        .append($('<div>', {class: 'opt-name__info-item', text: 'updated: ' + timeUpdatedText}))
-                    )
-                    .append(tagDetails)
-                )
-            )
-            .append(optionsBlock);
+        return `
+            <li id="filter${filter.filterId}">
+                <div class="opt-name">
+                    <div class="title">${filter.name}</div>
+                    <div class="desc">${filter.description}</div>
+                    <div class="opt-name__info">
+                        <div class="opt-name__info-labels">
+                            <div class="opt-name__info-item">version ${filter.version}</div>
+                            <div class="opt-name__info-item">updated: ${timeUpdatedText}</div>
+                        </div>
+                        <div class="opt-name__info-labels opt-name__info-labels--tags">
+                            ${tagDetails}
+                        </div>
+                    </div>
+                </div>
+                <div class="opt-state">
+                    <div class="preloader"></div>
+                    ${deleteButton}
+                    <a class="icon-home" target="_blank" href="${filter.homepage}"></a>
+                    <input type="checkbox" name="filterId" value="${filter.filterId}" ${enabled ? 'checked="checked"' : ''}>
+                </div>
+            </li>`;
     }
 
-    function getFiltersContentTemplate(category) {
+    function getPageTitleTemplate(name) {
+        return `
+            <div class="page-title">
+                <a href="#antibanner">
+                    <img src="images/icon-back.png" class="back">
+                </a>
+                ${name}
+            </div>`;
+    }
+
+    function getTabsBarTemplate(showRecommended) {
+        if (showRecommended) {
+            return `
+                <div class="tabs-bar">
+                    <a href="" class="tab active" data-tab="recommended">Recommended</a>
+                    <a href="" class="tab" data-tab="other">Other</a>
+                </div>`;
+        }
+
+        return `
+            <div class="tabs-bar">
+                <a href="" class="tab active" data-tab="other">Other</a>
+            </div>`;
+    }
+
+    function getEmptyCustomFiltersTemplate(category) {
+        return `
+            <div id="antibanner${category.groupId}" class="settings-content tab-pane filters-list">
+                ${getPageTitleTemplate(category.groupName)}
+                <div class="settings-body">
+                    <div class="empty-filters">
+                        <div class="empty-filters__logo"></div>
+                        <div class="empty-filters__desc">
+                            Sorry, but you don't have any custom filters yet
+                        </div>
+                        <button class="button button--green empty-filters__btn">
+                            Add custom filter
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+    }
+
+    function getFiltersContentElement(category) {
         var filters = category.filters.otherFilters;
         var recommendedFilters = category.filters.recommendedFilters;
         var isCustomFilters = category.groupId === 0;
-
-        function createPageTitleElement(name) {
-            return $('<div>', {class: 'page-title'})
-                .append($('<a>', {href: '#antibanner'})
-                    .append($('<img>', {
-                        src: 'images/icon-back.png',
-                        class: 'back'
-                    })))
-                .append(document.createTextNode(name));
-        }
-
-        function createTabsBar(showRecommended) {
-            var recommendedClass = showRecommended ? 'tab active': 'tab';
-            var othersClass = showRecommended ? 'tab': 'tab active';
-
-            var result = $('<div>', {class: 'tabs-bar'});
-            if (showRecommended) {
-                result = result.append($('<a>', {href: '', class: recommendedClass, text: 'Recommended', 'data-tab': 'recommended'}));
-            }
-
-            return result.append($('<a>', {href: '', class: othersClass, text: 'Other', 'data-tab': 'other'}));
-        }
-
-        function appendFilterTemplate(filter, list, showDeleteButton) {
-            var enabled = loadedFiltersInfo.isEnabled(filter.filterId);
-            var filterTemplate = getFilterTemplate(filter, enabled, showDeleteButton);
-            list.append(filterTemplate);
-        }
-
-        var pageTitleEl = createPageTitleElement(category.groupName);
+        var showRecommended = recommendedFilters.length > 0;
 
         if (isCustomFilters &&
             filters.length === 0 &&
             recommendedFilters.length === 0) {
 
-            return $('<div>', {id: 'antibanner' + category.groupId, class: 'settings-content tab-pane filters-list'})
-                .append(pageTitleEl)
-                .append($('<div>', {class: 'settings-body'})
-                    .append($('<div>', {class:'empty-filters'})
-                        .append($('<div>', {class:'empty-filters__logo'}))
-                        .append($('<div>', {class:'empty-filters__desc', text: "Sorry, but you don't have any custom filters yet"}))
-                        .append($('<button>', {class:'button button--green empty-filters__btn', text: 'Add custom filter'}))));
+            return htmlToElement(getEmptyCustomFiltersTemplate(category));
         }
 
-        var recommendedFiltersList = $('<ul>', {class: 'opts-list', 'data-tab': 'recommended'});
-        var filtersList = $('<ul>', {class: 'opts-list', 'data-tab': 'other', style: 'display:none;'});
+        var pageTitleEl = getPageTitleTemplate(category.groupName);
 
-        var showRecommended = recommendedFilters.length > 0;
-        var tabsBar = createTabsBar(showRecommended);
-        if (!showRecommended) {
-            recommendedFiltersList.hide();
-            filtersList.show();
+        var tabs = '';
+        if (!isCustomFilters) {
+            tabs = getTabsBarTemplate(showRecommended);
         }
+
+        var recommendedFiltersList = '';
+        var otherFiltersList = '';
 
         for (var i = 0; i < filters.length; i++) {
-            appendFilterTemplate(filters[i], filtersList, isCustomFilters);
+            otherFiltersList += getFilterTemplate(filters[i], loadedFiltersInfo.isEnabled(filters[i].filterId), isCustomFilters);
         }
 
         for (var j = 0; j < recommendedFilters.length; j++) {
-            appendFilterTemplate(recommendedFilters[j], recommendedFiltersList, isCustomFilters);
+            recommendedFiltersList += getFilterTemplate(recommendedFilters[j], loadedFiltersInfo.isEnabled(recommendedFilters[j].filterId), isCustomFilters);
         }
 
-        var tabs = $('<div>', {class: 'settings-body'});
-        if (!isCustomFilters) {
-            tabs = tabs.append(tabsBar);
-        }
-
-        tabs = tabs.append(filtersList).append(recommendedFiltersList);
-
-        return $('<div>', {id: 'antibanner' + category.groupId, class: 'settings-content tab-pane filters-list'})
-            .append(pageTitleEl)
-            .append(tabs);
+        return htmlToElement(`
+            <div id="antibanner${category.groupId}" class="settings-content tab-pane filters-list">
+                ${pageTitleEl}
+                <div class="settings-body">
+                    ${tabs}
+                    <ul class="opts-list" data-tab="other" ${showRecommended ? 'style="display: none;"' : ''}>
+                        ${otherFiltersList}
+                    </ul>
+                    <ul class="opts-list" data-tab="recommended" ${!showRecommended ? 'style="display: none;"' : ''}>
+                        ${recommendedFiltersList}
+                    </ul>
+                </div>
+            </div>
+        `);
     }
 
     function renderFilterCategory(category) {
-        $('#antibanner' + category.groupId).remove();
-        $('#category' + category.groupId).remove();
+        var categoryContentElement = document.querySelector('#antibanner' + category.groupId);
+        if (categoryContentElement) {
+            categoryContentElement.parentNode.removeChild(categoryContentElement);
+        }
+        var categoryElement = document.querySelector('#category' + category.groupId);
+        if (categoryElement) {
+            categoryElement.parentNode.removeChild(categoryElement);
+        }
 
-        var categoryTemplate = getFilterCategoryTemplate(category);
-        groupsList.append(categoryTemplate);
+        categoryElement = getFilterCategoryElement(category);
+        document.querySelector('#groupsList').appendChild(categoryElement);
         updateCategoryFiltersInfo(category.groupId);
 
-        var filtersContentTemplate = getFiltersContentTemplate(category);
+        categoryContentElement = getFiltersContentElement(category);
+        document.querySelector('#antibanner').parentNode.appendChild(categoryContentElement);
+    }
 
-        $('#antibanner').parent().append(filtersContentTemplate);
+    function bindControls() {
+        var emptyFiltersAddCustomButton = document.querySelector('.empty-filters__btn');
+        if (emptyFiltersAddCustomButton) {
+            emptyFiltersAddCustomButton.addEventListener('click', addCustomFilter);
+        }
 
-        $('.empty-filters__btn, #addCustomFilter').on('click', addCustomFilter);
-        $('.remove-custom-filter-button').on('click', removeCustomFilter);
+        document.querySelector('#addCustomFilter').addEventListener('click', addCustomFilter);
+        document.querySelectorAll('.remove-custom-filter-button').forEach(function (el) {
+            el.addEventListener('click', removeCustomFilter);
+        });
+
+        document.querySelectorAll('.tabs-bar .tab').forEach(function (tab) {
+            tab.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                var current = e.currentTarget;
+                current.parentNode.querySelectorAll('.tabs-bar .tab').forEach(function (el) {
+                    el.classList.remove('active');
+                });
+                current.classList.add('active');
+
+                var parentNode = current.parentNode.parentNode;
+                parentNode.querySelector('.opts-list[data-tab="recommended"]').style.display = 'none';
+                parentNode.querySelector('.opts-list[data-tab="other"]').style.display = 'none';
+
+                var attr = current.getAttribute('data-tab');
+                parentNode.querySelector('.opts-list[data-tab="' + attr + '"]').style.display = 'block';
+            });
+        });
     }
 
     function renderCategoriesAndFilters() {
-
         contentPage.sendMessage({type: 'getFiltersMetadata'}, function (response) {
 
-            loadedFiltersInfo.filters = response.filters;
-            loadedFiltersInfo.categories = response.categories;
+            loadedFiltersInfo.initLoadedFilters(response.filters, response.categories);
+            setLastUpdatedTimeText(loadedFiltersInfo.lastUpdateTime);
 
-            var filters = response.filters;
-            var categories = response.categories;
-
-            var lastUpdateTime = 0;
-            var filtersById = Object.create(null);
-            for (var i = 0; i < filters.length; i++) {
-                var filter = filters[i];
-                filtersById[filter.filterId] = filter;
-                if (filter.lastUpdateTime && filter.lastUpdateTime > lastUpdateTime) {
-                    lastUpdateTime = filter.lastUpdateTime;
-                }
-            }
-            loadedFiltersInfo.filtersById = filtersById;
-            setLastUpdatedTimeText(lastUpdateTime);
-
+            var categories = loadedFiltersInfo.categories;
             for (var j = 0; j < categories.length; j++) {
                 renderFilterCategory(categories[j]);
             }
 
-            $('.tabs-bar .tab').click(function (e) {
-                e.preventDefault();
-
-                $('.tabs-bar .tab').removeClass('active');
-                $(e.target).addClass('active');
-
-                var attr = $(e.target).attr('data-tab');
-
-                $('.opts-list[data-tab="recommended"]').hide();
-                $('.opts-list[data-tab="other"]').hide();
-                $('.opts-list[data-tab="' + attr + '"]').show();
-            });
-
-            $(".opt-state input:checkbox").toggleCheckbox();
+            bindControls();
+            CheckboxUtils.toggleCheckbox(document.querySelectorAll(".opt-state input[type=checkbox]"));
 
             // check document hash
             var hash = document.location.hash;
@@ -497,6 +588,7 @@ var AntiBannerFilters = function (options) {
     function updateAntiBannerFilters(e) {
         e.preventDefault();
         contentPage.sendMessage({type: 'checkAntiBannerFiltersUpdate'}, function () {
+            //Empty
         });
     }
 
@@ -504,64 +596,72 @@ var AntiBannerFilters = function (options) {
         e.preventDefault();
 
         document.location.hash = 'antibanner';
-
         renderCustomFilterPopup();
     }
 
     function removeCustomFilter(e) {
         e.preventDefault();
 
-        var filterId = $(e.currentTarget).attr('filterId');
+        var filterId = e.currentTarget.getAttribute('filterId');
 
         contentPage.sendMessage({
             type: 'removeAntiBannerFilter',
             filterId: filterId
         });
 
-        getFilterElement(filterId).remove();
+        var filterElement = getFilterElement(filterId);
+        filterElement.parentNode.removeChild(filterElement);
     }
 
     function renderCustomFilterPopup() {
+        var POPUP_ACTIVE_CLASS = 'option-popup__step--active';
+
         function closePopup() {
-            $('#add-custom-filter-popup').removeClass('option-popup--active');
+            document.querySelector('#add-custom-filter-popup').classList.remove('option-popup--active');
+        }
+
+        function clearActiveStep() {
+            document.querySelector('#add-custom-filter-step-1').classList.remove(POPUP_ACTIVE_CLASS);
+            document.querySelector('#add-custom-filter-step-2').classList.remove(POPUP_ACTIVE_CLASS);
+            document.querySelector('#add-custom-filter-step-3').classList.remove(POPUP_ACTIVE_CLASS);
+            document.querySelector('#add-custom-filter-step-4').classList.remove(POPUP_ACTIVE_CLASS);
         }
 
         function renderStepOne() {
-            $('.option-popup__step').removeClass('option-popup__step--active');
-            $('#add-custom-filter-step-1').addClass('option-popup__step--active');
+            clearActiveStep();
+            document.querySelector('#add-custom-filter-step-1').classList.add(POPUP_ACTIVE_CLASS);
 
-            $('#custom-filter-popup-url').focus();
+            document.querySelector('#custom-filter-popup-url').focus();
         }
 
         function renderStepTwo() {
-            $('.option-popup__step').removeClass('option-popup__step--active');
-            $('#add-custom-filter-step-2').addClass('option-popup__step--active');
+            clearActiveStep();
+            document.querySelector('#add-custom-filter-step-2').classList.add(POPUP_ACTIVE_CLASS);
         }
 
         function renderStepThree() {
-            $('.option-popup__step').removeClass('option-popup__step--active');
-            $('#add-custom-filter-step-3').addClass('option-popup__step--active');
+            clearActiveStep();
+            document.querySelector('#add-custom-filter-step-3').classList.add(POPUP_ACTIVE_CLASS);
         }
 
         function renderStepFour(filter) {
-            $('.option-popup__step').removeClass('option-popup__step--active');
-            $('#add-custom-filter-step-4').addClass('option-popup__step--active');
+            clearActiveStep();
+            document.querySelector('#add-custom-filter-step-4').classList.add(POPUP_ACTIVE_CLASS);
 
-            $('#custom-filter-popup-added-title').text(filter.name);
-            $('#custom-filter-popup-added-desc').text(filter.description);
-            $('#custom-filter-popup-added-version').text(filter.version);
-            $('#custom-filter-popup-added-rules-count').text(filter.rulesCount);
-            $('#custom-filter-popup-added-homepage').text(filter.homepage).attr("href", filter.homepage);
-            $('#custom-filter-popup-added-url').text(filter.customUrl).attr("href", filter.customUrl);
+            document.querySelector('#custom-filter-popup-added-title').textContent = filter.name;
+            document.querySelector('#custom-filter-popup-added-desc').textContent = filter.description;
+            document.querySelector('#custom-filter-popup-added-version').textContent = filter.version;
+            document.querySelector('#custom-filter-popup-added-rules-count').textContent = filter.rulesCount;
+            document.querySelector('#custom-filter-popup-added-homepage').textContent = filter.homepage;
+            document.querySelector('#custom-filter-popup-added-homepage').setAttribute("href", filter.homepage);
+            document.querySelector('#custom-filter-popup-added-url').textContent = filter.customUrl;
+            document.querySelector('#custom-filter-popup-added-url').setAttribute("href", filter.customUrl);
 
-            $('#custom-filter-popup-added-back').on('click', renderStepOne);
-            $('#custom-filter-popup-added-subscribe').off('click');
-            $('#custom-filter-popup-added-subscribe').on('click', function () {
-                contentPage.sendMessage({type: 'addAndEnableFilter', filterId: filter.filterId});
-                closePopup();
-            });
+            document.querySelector('#custom-filter-popup-added-back').addEventListener('click', renderStepOne);
+            document.querySelector('#custom-filter-popup-added-subscribe').removeEventListener('click', onSubscribeClicked);
+            document.querySelector('#custom-filter-popup-added-subscribe').addEventListener('click', onSubscribeClicked);
 
-            $('#custom-filter-popup-remove').on('click', function () {
+            document.querySelector('#custom-filter-popup-remove').addEventListener('click', function () {
                 contentPage.sendMessage({
                     type: 'removeAntiBannerFilter',
                     filterId: filter.filterId
@@ -570,14 +670,19 @@ var AntiBannerFilters = function (options) {
             });
         }
 
-        $('#add-custom-filter-popup').addClass('option-popup--active');
-        $('.option-popup__cross').on('click', closePopup);
-        $('.custom-filter-popup-cancel').on('click', closePopup);
+        function onSubscribeClicked() {
+            contentPage.sendMessage({type: 'addAndEnableFilter', filterId: filter.filterId});
+            closePopup();
+        }
 
-        $('.custom-filter-popup-next').on('click', function (e) {
+        document.querySelector('#add-custom-filter-popup').classList.add('option-popup--active');
+        document.querySelector('.option-popup__cross').addEventListener('click', closePopup);
+        document.querySelector('.custom-filter-popup-cancel').addEventListener('click', closePopup);
+
+        document.querySelector('.custom-filter-popup-next').addEventListener('click', function (e) {
             e.preventDefault();
 
-            var url = $('#custom-filter-popup-url').val();
+            var url = document.querySelector('#custom-filter-popup-url').value;
             contentPage.sendMessage({type: 'loadCustomFilterInfo', url: url}, function (filter) {
                 if (filter) {
                     renderStepFour(filter);
@@ -589,7 +694,7 @@ var AntiBannerFilters = function (options) {
             renderStepTwo();
         });
 
-        $('.custom-filter-popup-try-again').on('click', renderStepOne);
+        document.querySelector('.custom-filter-popup-try-again').addEventListener('click', renderStepOne);
 
         renderStepOne();
     }
@@ -598,6 +703,7 @@ var AntiBannerFilters = function (options) {
         if (lastUpdateTime && lastUpdateTime > loadedFiltersInfo.lastUpdateTime) {
             loadedFiltersInfo.lastUpdateTime = lastUpdateTime;
         }
+
         var updateText = "";
         lastUpdateTime = loadedFiltersInfo.lastUpdateTime;
         if (lastUpdateTime) {
@@ -606,43 +712,34 @@ var AntiBannerFilters = function (options) {
             updateText = lastUpdateTime.format("D MMMM YYYY HH:mm").toLowerCase();
             //TODO: localization (options_filter_version)
         }
-        $('#lastUpdateTime').text(updateText);
+
+        document.querySelector('#lastUpdateTime').textContent = updateText;
     }
 
-    var updateRulesCountInfo = function (info) {
-
+    function updateRulesCountInfo(info) {
         var message = i18n.getMessage("options_antibanner_info", [String(info.rulesCount || 0)]);
+        document.querySelector('#filtersRulesInfo').textContent = message;
+    }
 
-        var el = $('#filtersRulesInfo');
-        el.text(message);
-    };
-
-    var onFilterStateChanged = function (filter) {
+    function onFilterStateChanged(filter) {
         var filterId = filter.filterId;
         var enabled = filter.enabled;
         loadedFiltersInfo.updateEnabled(filter, enabled);
         updateCategoryFiltersInfo(filter.groupId);
 
-        getFilterCheckbox(filterId).updateCheckbox(enabled);
-    };
+        CheckboxUtils.updateCheckbox([getFilterCheckbox(filterId)], enabled);
+    }
 
-    var onFilterDownloadStarted = function (filter) {
-        getCategoryElement(filter.groupId).find('.preloader').addClass('active');
-        getFilterElement(filter.filterId).find('.preloader').addClass('active');
-    };
+    function onFilterDownloadStarted(filter) {
+        getCategoryElement(filter.groupId).querySelector('.preloader').classList.add('active');
+        getFilterElement(filter.filterId).querySelector('.preloader').classList.add('active');
+    }
 
-    var onFilterDownloadFinished = function (filter) {
-        getCategoryElement(filter.groupId).find('.preloader').removeClass('active');
-        getFilterElement(filter.filterId).find('.preloader').removeClass('active');
+    function onFilterDownloadFinished(filter) {
+        getCategoryElement(filter.groupId).querySelector('.preloader').classList.remove('active');
+        getFilterElement(filter.filterId).querySelector('.preloader').classList.remove('active');
         setLastUpdatedTimeText(filter.lastUpdateTime);
-    };
-
-    // Bind events
-    $(document).on('change', '.filters-list [name="filterId"]', toggleFilterState);
-    $(document).on('change', '#groupsList [name="groupId"]', toggleGroupState);
-    $('#updateAntiBannerFilters').on('click', updateAntiBannerFilters);
-
-    updateRulesCountInfo(options.rulesInfo);
+    }
 
     return {
         render: renderCategoriesAndFilters,
@@ -654,30 +751,31 @@ var AntiBannerFilters = function (options) {
 };
 
 var SyncSettings = function (options) {
+    'use strict';
 
     var syncStatus = options.syncStatusInfo;
     var currentProvider = options.syncStatusInfo.currentProvider;
 
-    var unauthorizedBlock = $('#unauthorizedBlock');
-    var authorizedBlock = $('#authorizedBlock');
-    var signInButton = $('#signInButton');
-    var signOutButton = $('#signOutButton');
-    var startSyncButton = $('#startSyncButton');
-    var syncNowButton = $('#syncNowButton');
-    var lastSyncTimeInfo = $('#lastSyncTimeInfo');
-    var selectProviderButton = $('#selectProviderButton');
+    var unauthorizedBlock = document.querySelector('#unauthorizedBlock');
+    var authorizedBlock = document.querySelector('#authorizedBlock');
+    var signInButton = document.querySelector('#signInButton');
+    var signOutButton = document.querySelector('#signOutButton');
+    var startSyncButton = document.querySelector('#startSyncButton');
+    var syncNowButton = document.querySelector('#syncNowButton');
+    var lastSyncTimeInfo = document.querySelector('#lastSyncTimeInfo');
+    var selectProviderButton = document.querySelector('#selectProviderButton');
 
-    var providersDropdown = $('#selectProviderDropdown');
+    var providersDropdown = document.querySelector('#selectProviderDropdown');
 
     bindControls();
 
     function bindControls() {
 
-        selectProviderButton.on('click', function () {
-            providersDropdown.show();
-        }.bind(this));
+        selectProviderButton.addEventListener('click', function () {
+            providersDropdown.style.display = 'block';
+        });
 
-        signInButton.on('click', function (e) {
+        signInButton.addEventListener('click', function (e) {
             e.preventDefault();
             if (currentProvider) {
                 contentPage.sendMessage({
@@ -685,9 +783,9 @@ var SyncSettings = function (options) {
                     provider: currentProvider.name
                 });
             }
-        }.bind(this));
+        });
 
-        signOutButton.on('click', function (e) {
+        signOutButton.addEventListener('click', function (e) {
             e.preventDefault();
             if (currentProvider && currentProvider.isOAuthSupported) {
                 contentPage.sendMessage({
@@ -697,43 +795,43 @@ var SyncSettings = function (options) {
             } else {
                 contentPage.sendMessage({type: 'toggleSync'});
             }
-        }.bind(this));
+        });
 
-        startSyncButton.on('click', function (e) {
+        startSyncButton.addEventListener('click', function (e) {
             e.preventDefault();
             contentPage.sendMessage({type: 'toggleSync'});
         });
 
-        syncNowButton.on('click', function (e) {
+        syncNowButton.addEventListener('click', function (e) {
             e.preventDefault();
             updateSyncState();
             contentPage.sendMessage({type: 'syncNow'});
-        }.bind(this));
+        });
 
-        $('#changeDeviceNameButton').on('click', function (e) {
+        document.querySelector('#changeDeviceNameButton').addEventListener('click', function (e) {
             e.preventDefault();
-            var deviceName = $('#deviceNameInput').val();
+            var deviceName = document.querySelector('#deviceNameInput').value;
             contentPage.sendMessage({
                 type: 'syncChangeDeviceName',
                 deviceName: deviceName
             });
         });
 
-        $('#adguardSelectProvider').on('click', onProviderSelected('ADGUARD_SYNC'));
-        $('#dropboxSelectProvider').on('click', onProviderSelected('DROPBOX'));
-        $('#browserStorageSelectProvider').on('click', onProviderSelected('BROWSER_SYNC'));
+        document.querySelector('#adguardSelectProvider').addEventListener('click', onProviderSelected('ADGUARD_SYNC'));
+        document.querySelector('#dropboxSelectProvider').addEventListener('click', onProviderSelected('DROPBOX'));
+        document.querySelector('#browserStorageSelectProvider').addEventListener('click', onProviderSelected('BROWSER_SYNC'));
 
-        $('#sync-general-settings-checkbox').on('change', onSyncOptionsChanged);
-        $('#sync-filters-checkbox').on('change', onSyncOptionsChanged);
-        $('#sync-extension-specific-checkbox').on('change', onSyncOptionsChanged);
+        document.querySelector('#sync-general-settings-checkbox').addEventListener('change', onSyncOptionsChanged);
+        document.querySelector('#sync-filters-checkbox').addEventListener('change', onSyncOptionsChanged);
+        document.querySelector('#sync-extension-specific-checkbox').addEventListener('change', onSyncOptionsChanged);
     }
 
     function onSyncOptionsChanged() {
         contentPage.sendMessage({
             type: 'setSyncOptions', options: {
-                syncGeneral: $('#sync-general-settings-checkbox').is(':checked'),
-                syncFilters: $('#sync-filters-checkbox').is(':checked'),
-                syncExtensionSpecific: $('#sync-extension-specific-checkbox').is(':checked')
+                syncGeneral: document.querySelector('#sync-general-settings-checkbox').hasAttribute('checked'),
+                syncFilters: document.querySelector('#sync-filters-checkbox').hasAttribute('checked'),
+                syncExtensionSpecific: document.querySelector('#sync-extension-specific-checkbox').hasAttribute('checked')
             }
         });
     }
@@ -741,64 +839,64 @@ var SyncSettings = function (options) {
     function onProviderSelected(providerName) {
         return function (e) {
             e.preventDefault();
-            providersDropdown.hide();
+            providersDropdown.style.display = 'none';
             contentPage.sendMessage({type: 'setSyncProvider', provider: providerName}, function () {
                 document.location.reload();
             });
-        }.bind(this);
+        };
     }
 
     function renderSelectProviderBlock() {
-        unauthorizedBlock.show();
-        authorizedBlock.hide();
-        signInButton.hide();
-        startSyncButton.hide();
+        unauthorizedBlock.style.display = 'block';
+        authorizedBlock.style.display = 'none';
+        signInButton.style.display = 'none';
+        startSyncButton.style.display = 'none';
     }
 
     function renderUnauthorizedBlock() {
 
-        unauthorizedBlock.show();
-        authorizedBlock.hide();
+        unauthorizedBlock.style.display = 'block';
+        authorizedBlock.style.display = 'none';
 
         if (currentProvider.isOAuthSupported && !currentProvider.isAuthorized) {
-            signInButton.show();
+            signInButton.style.display = 'block';
         } else {
-            signInButton.hide();
+            signInButton.style.display = 'none';
         }
 
         if (!syncStatus.enabled && currentProvider.isAuthorized) {
-            startSyncButton.show();
+            startSyncButton.style.display = 'block';
         } else {
-            startSyncButton.hide();
+            startSyncButton.style.display = 'none';
         }
 
-        selectProviderButton.text(currentProvider.title);
+        selectProviderButton.textContent = currentProvider.title;
     }
 
     function renderAuthorizedBlock() {
 
-        unauthorizedBlock.hide();
-        authorizedBlock.show();
+        unauthorizedBlock.style.display = 'none';
+        authorizedBlock.style.display = 'block';
 
-        $('#providerNameInfo').text(currentProvider.title);
+        document.querySelector('#providerNameInfo').textContent = currentProvider.title;
 
-        var manageAccountButton = $('#manageAccountButton');
-        var deviceNameBlock = $('#deviceNameBlock');
+        var manageAccountButton = document.querySelector('#manageAccountButton');
+        var deviceNameBlock = document.querySelector('#deviceNameBlock');
 
         updateSyncState();
 
         if (currentProvider.isOAuthSupported && currentProvider.name === 'ADGUARD_SYNC') {
-            manageAccountButton.show();
-            deviceNameBlock.show();
-            $('#deviceNameInput').val(currentProvider.deviceName);
+            manageAccountButton.style.display = 'block';
+            deviceNameBlock.style.display = 'block';
+            document.querySelector('#deviceNameInput').value = currentProvider.deviceName;
         } else {
-            manageAccountButton.hide();
-            deviceNameBlock.hide();
+            manageAccountButton.style.display = 'none';
+            deviceNameBlock.style.display = 'none';
         }
 
-        $('#sync-general-settings-checkbox').attr('checked', syncStatus.syncOptions.syncGeneral);
-        $('#sync-filters-checkbox').attr('checked', syncStatus.syncOptions.syncFilters);
-        $('#sync-extension-specific-checkbox').attr('checked', syncStatus.syncOptions.syncExtensionSpecific);
+        document.querySelector('#sync-general-settings-checkbox').setAttribute('checked', syncStatus.syncOptions.syncGeneral);
+        document.querySelector('#sync-filters-checkbox').setAttribute('checked', syncStatus.syncOptions.syncFilters);
+        document.querySelector('#sync-extension-specific-checkbox').setAttribute('checked', syncStatus.syncOptions.syncExtensionSpecific);
     }
 
     function renderSyncSettings() {
@@ -819,7 +917,7 @@ var SyncSettings = function (options) {
         }).length > 0;
 
         if (!browserStorageSupported) {
-            $('#browserStorageSelectProvider').hide();
+            document.querySelector('#browserStorageSelectProvider').style.display = 'none';
         }
 
         if (currentProvider) {
@@ -827,13 +925,13 @@ var SyncSettings = function (options) {
 
             switch (currentProvider.name) {
                 case 'ADGUARD_SYNC':
-                    $('#adguardSelectProvider').addClass(activeClass);
+                    document.querySelector('#adguardSelectProvider').classList.add(activeClass);
                     break;
                 case 'DROPBOX':
-                    $('#dropboxSelectProvider').addClass(activeClass);
+                    document.querySelector('#dropboxSelectProvider').classList.add(activeClass);
                     break;
                 case 'BROWSER_SYNC':
-                    $('#browserStorageSelectProvider').addClass(activeClass);
+                    document.querySelector('#browserStorageSelectProvider').classList.add(activeClass);
                     break;
             }
         }
@@ -847,19 +945,19 @@ var SyncSettings = function (options) {
 
     function updateSyncState() {
         if (syncStatus.syncInProgress) {
-            syncNowButton.attr('disabled', 'disabled');
-            syncNowButton.text(i18n.getMessage('sync_in_progress_button_text'));
+            syncNowButton.setAttribute('disabled', 'disabled');
+            syncNowButton.textContent = i18n.getMessage('sync_in_progress_button_text');
         } else {
-            syncNowButton.removeAttr('disabled');
-            syncNowButton.text(i18n.getMessage('sync_now_button_text'));
+            syncNowButton.removeAttribute('disabled');
+            syncNowButton.textContent = i18n.getMessage('sync_now_button_text');
         }
 
         if (currentProvider) {
             var lastSyncTime = currentProvider.lastSyncTime;
             if (lastSyncTime) {
-                lastSyncTimeInfo.text(new Date(parseInt(lastSyncTime)).toLocaleString());
+                lastSyncTimeInfo.textContent = new Date(parseInt(lastSyncTime)).toLocaleString();
             } else {
-                lastSyncTimeInfo.text(i18n.getMessage('sync_last_sync_time_never_sync_text'));
+                lastSyncTimeInfo.textContent = i18n.getMessage('sync_last_sync_time_never_sync_text');
             }
         }
     }
@@ -871,6 +969,7 @@ var SyncSettings = function (options) {
 };
 
 var Settings = function () {
+    'use strict';
 
     var Checkbox = function (id, property, options) {
 
@@ -878,30 +977,34 @@ var Settings = function () {
         var negate = options.negate;
         var hidden = options.hidden;
 
-        var element = $(id);
+        var element = document.querySelector(id);
         if (!hidden) {
-            element.on('change', function () {
+            element.addEventListener('change', function () {
                 contentPage.sendMessage({
                     type: 'changeUserSetting',
                     key: property,
                     value: negate ? !this.checked : this.checked
                 });
+
                 if (property === userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO) {
                     updateDisplayAdguardPromo(this.checked);
                 }
             });
         }
+
         var render = function () {
             if (hidden) {
-                element.closest('li').hide();
+                element.closest('li').style.display = 'none';
                 return;
             }
             var checked = userSettings.values[property];
             if (negate) {
                 checked = !checked;
             }
-            element.updateCheckbox(checked);
+
+            CheckboxUtils.updateCheckbox([element], checked);
         };
+
         return {
             render: render
         };
@@ -928,8 +1031,8 @@ var Settings = function () {
         negate: true
     }));
 
-    var allowAcceptableAdsCheckbox = $("#allowAcceptableAds");
-    allowAcceptableAdsCheckbox.on('change', function () {
+    var allowAcceptableAdsCheckbox = document.querySelector("#allowAcceptableAds");
+    allowAcceptableAdsCheckbox.addEventListener('change', function () {
         if (this.checked) {
             contentPage.sendMessage({
                 type: 'addAndEnableFilter',
@@ -947,7 +1050,8 @@ var Settings = function () {
         for (var i = 0; i < checkboxes.length; i++) {
             checkboxes[i].render();
         }
-        allowAcceptableAdsCheckbox.updateCheckbox(AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID in enabledFilters);
+
+        CheckboxUtils.updateCheckbox([allowAcceptableAdsCheckbox], AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID in enabledFilters);
     };
 
     var showPopup = function (title, text) {
@@ -957,14 +1061,16 @@ var Settings = function () {
     var importSettingsFile = function () {
         var input = document.createElement('input');
         input.type = 'file';
-        input.click();
+        var event = document.createEvent('HTMLEvents');
+        event.initEvent('click', true, false);
+        input.dispatchEvent(event);
 
         var onFileLoaded = function (content) {
             contentPage.sendMessage({type: 'applySettingsJson', json: content});
         };
 
-        $(input).change(function () {
-            var file = $(input).get(0).files[0];
+        input.addEventListener('change', function () {
+            var file = e.currentTarget.files[0];
             if (file) {
                 var reader = new FileReader();
                 reader.readAsText(file, "UTF-8");
@@ -978,7 +1084,7 @@ var Settings = function () {
         });
     };
 
-    $('#importSettingsFile').on('click', function (e) {
+    document.querySelector('#importSettingsFile').addEventListener('click', function (e) {
         e.preventDefault();
         importSettingsFile();
     }.bind(this));
@@ -1002,7 +1108,7 @@ PageController.prototype = {
         this._bindEvents();
         this._render();
 
-        $(".opt-state input:checkbox").toggleCheckbox();
+        CheckboxUtils.toggleCheckbox(document.querySelectorAll(".opt-state input[type=checkbox]"));
 
         // Initialize top menu
         TopMenu.init({
@@ -1033,32 +1139,34 @@ PageController.prototype = {
     },
 
     _customizeText: function () {
-        $('a.sp-table-row-info').addClass('question').text('');
-        var elements = $('span.sp-table-row-info');
-        for (var i = 0; i < elements.length; i++) {
-            var element = $(elements[i]);
+        document.querySelectorAll('a.sp-table-row-info').forEach(function (a) {
+            a.classList.add('question');
+            a.textContent = '';
+        });
+
+        document.querySelectorAll('span.sp-table-row-info').forEach(function (element) {
             var li = element.closest('li');
-            element.remove();
-            var state = li.find('.opt-state');
-            element.addClass('desc');
-            state.prepend(element);
-        }
+            element.parentNode.removeChild(element);
+
+            var state = li.querySelector('.opt-state');
+            element.classList.add('desc');
+            state.insertBefore(element, state.firstChild);
+        });
     },
 
     _bindEvents: function () {
 
-        this.resetStatsPopup = $("#resetStatsPopup");
-        this.subscriptionModalEl = $('#subscriptionModal');
-        this.tooManySubscriptionsEl = $('#tooManySubscriptions');
+        this.resetStatsPopup = document.querySelector("#resetStatsPopup");
+        this.tooManySubscriptionsEl = document.querySelector('#tooManySubscriptions');
 
-        $("#resetStats").on('click', this.onResetStatsClicked.bind(this));
+        document.querySelector("#resetStats").addEventListener('click', this.onResetStatsClicked.bind(this));
 
-        $(".openExtensionStore").on('click', function (e) {
+        document.querySelector(".openExtensionStore").addEventListener('click', function (e) {
             e.preventDefault();
             contentPage.sendMessage({type: 'openExtensionStore'});
         });
 
-        $("#openLog").on('click', function (e) {
+        document.querySelector("#openLog").addEventListener('click', function (e) {
             e.preventDefault();
             contentPage.sendMessage({type: 'openFilteringLog'});
         });
@@ -1069,7 +1177,7 @@ PageController.prototype = {
         var defaultWhitelistMode = userSettings.values[userSettings.names.DEFAULT_WHITE_LIST_MODE];
 
         if (environmentOptions.Prefs.mobile) {
-            $('#resetStats').hide();
+            document.querySelector('#resetStats').style.display = 'none';
         }
 
         this.checkSubscriptionsCount();
@@ -1115,29 +1223,24 @@ PageController.prototype = {
     },
 
     _onStatsReset: function () {
-        this.resetStatsPopup.show();
+        this.resetStatsPopup.style.display = 'block';
         if (this.closePopupTimeoutId) {
             clearTimeout(this.closePopupTimeoutId);
         }
         this.closePopupTimeoutId = setTimeout(function () {
-            this.resetStatsPopup.hide();
+            this.resetStatsPopup.style.display = 'none';
         }.bind(this), 4000);
     },
 
     checkSubscriptionsCount: function () {
-        var modalOpen = this.subscriptionModalEl.is('.in');
-        if (!modalOpen) {
-            this.tooManySubscriptionsEl.hide();
-            return;
-        }
+        //TODO: Fix too many subscriptions warning
+        //var enabledCount = this.subscriptionModalEl.querySelectorAll('input[name="modalFilterId"][checked="checked"]').length;
 
-        var enabledCount = this.subscriptionModalEl.find('input[name="modalFilterId"]:checked').length;
-
-        if (enabledCount >= this.SUBSCRIPTIONS_LIMIT) {
-            this.tooManySubscriptionsEl.show();
-        } else {
-            this.tooManySubscriptionsEl.hide();
-        }
+        // if (enabledCount >= this.SUBSCRIPTIONS_LIMIT) {
+        //     this.tooManySubscriptionsEl.show();
+        // } else {
+        //     this.tooManySubscriptionsEl.hide();
+        // }
     }
 };
 
@@ -1163,7 +1266,7 @@ var initPage = function (response) {
     AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
     EventNotifierTypes = response.constants.EventNotifierTypes;
 
-    $(document).ready(function () {
+    var onDocumentReady = function() {
 
         var controller = new PageController();
         controller.init();
@@ -1215,7 +1318,13 @@ var initPage = function (response) {
                     break;
             }
         });
-    });
+    };
+
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        onDocumentReady();
+    } else {
+        document.addEventListener('DOMContentLoaded', onDocumentReady);
+    }
 };
 
 contentPage.sendMessage({type: 'initializeFrameScript'}, initPage);
