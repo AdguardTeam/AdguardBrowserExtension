@@ -228,8 +228,8 @@ PageController.prototype = {
 			return;
 		}
 
-		if (item && item.length > 0) {
-			item.text(tabInfo.title);
+		if (item) {
+			item.textContent = tabInfo.title;
 			if (tabInfo.tabId == this.currentTabId) {
                 document.querySelector('[data-tab-id="' + this.currentTabId + '"]').selected = true;
 				//update icon logo
@@ -256,7 +256,7 @@ PageController.prototype = {
     },
 
     emptyLogTable: function () {
-        while(this.logTable.firstChild) {
+        while (this.logTable.firstChild) {
             this.logTable.removeChild(this.logTable.firstChild);
         }
     },
