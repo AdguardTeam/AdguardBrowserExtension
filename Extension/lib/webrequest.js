@@ -550,7 +550,7 @@
                     if (this[tabId]) {
                         delete this[tabId][frameId];
                     }
-                    if (Object.keys(this[tabId]).length === 0) {
+                    if (this[tabId] && Object.keys(this[tabId]).length === 0) {
                         delete this[tabId];
                     }
                 },
