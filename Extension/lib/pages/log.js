@@ -15,10 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global i18n, $, contentPage, createEventListener */
+/* global i18n, contentPage, createEventListener, htmlToElement */
 
 var PageController = function () {
-    this.requestWizard = new RequestWizard();
 };
 
 var Messages = {
@@ -97,6 +96,19 @@ var UrlUtils = {
 	}
 };
 
+/**
+ * Modal window utils
+ */
+var ModalUtils = {
+    showModal: function (element) {
+        element.style.display = 'block';
+    },
+
+    closeModal: function (element) {
+        element.style.display = 'none';
+    }
+};
+
 var FilterRule = {
     MASK_WHITE_LIST: "@@"
 };
@@ -119,33 +131,18 @@ PageController.prototype = {
 
     init: function () {
 
-        this.logTable = $("#logTable");
-        this.logTableEmpty = $('#logTableEmpty');
+        RequestWizard.initRequestWizard();
+
+        this.logTable = document.querySelector("#logTable");
+        this.logTableEmpty = document.querySelector('#logTableEmpty');
         this.logTableHidden = true;
 
-        this.tabSelector = $('#tabSelector');
-        this.tabSelectorValue = this.tabSelector.find('#selectorListCurrentValue');
-        this.tabSelectorList = this.tabSelector.find('#selectorList');
+        this.tabSelector = document.querySelector('#tabSelector');
 
-        this.logoIcon = $('#logoIcon');
-
-        this.tabSelectorValue.dropdown();
-
-        this.tabSelector.on('show.bs.dropdown', function () {
-            this.tabSelector.addClass('active');
-        }.bind(this));
-        this.tabSelector.on('hide.bs.dropdown', function () {
-            this.tabSelector.removeClass('active');
-        }.bind(this));
-
-        // bind on change of selected tab
-        this.tabSelectorList.on('click', 'li', function (e) {
-            var el = $(e.currentTarget);
-            document.location.hash = '#' + el.attr('data-tab-id');
-        }.bind(this));
+        this.logoIcon = document.querySelector('#logoIcon');
 
         // bind location hash change
-        $(window).on('hashchange', function () {
+        window.addEventListener('hashchange', function () {
             this._updateTabIdFromHash();
             this.onSelectedTabChange();
         }.bind(this));
@@ -157,40 +154,29 @@ PageController.prototype = {
         this.searchWhitelisted = false;
 
 		// Bind click to reload tab
-		$('body').on('click', '.reloadTab', function (e) {
-			e.preventDefault();if (this.currentTabId == -1) {
+		document.querySelector('.reloadTab').addEventListener('click', function (e) {
+			e.preventDefault();
+			if (this.currentTabId === -1) {
                 // Unable to reload "background" tab, just clear events
                 contentPage.sendMessage({type: 'clearEventsByTabId', tabId: this.currentTabId});
                 return;
             }
 			// Unable to reload "background" tab, just clear events
-            if (this.currentTabId == -1) {
+            if (this.currentTabId === -1) {
                 contentPage.sendMessage({type: 'clearEventsByTabId', tabId: this.currentTabId});
                 return;
-            }contentPage.sendMessage({type: 'reloadTabById', tabId: this.currentTabId});
+            }
+
+            contentPage.sendMessage({type: 'reloadTabById', tabId: this.currentTabId});
 		}.bind(this));
 
         // Bind click to clear events
-        $('#clearTabLog').on('click', function (e) {
+        document.querySelector('#clearTabLog').addEventListener('click', function (e) {
             e.preventDefault();
             contentPage.sendMessage({type: 'clearEventsByTabId', tabId: this.currentTabId});
         }.bind(this));
 
-        // Bind click to show request info
-        var self = this;
-        this.logTable.on('click', 'tr', function () {
-            var filteringEvent = $(this).data();
-            contentPage.sendMessage({type: 'getTabFrameInfoById', tabId: self.currentTabId}, function (response) {
-                var frameInfo = response.frameInfo;
-                if (!frameInfo) {
-                    return;
-                }
-                self.requestWizard.showRequestInfoModal(frameInfo, filteringEvent);
-            });
-        });
-
         this._bindSearchFilters();
-
         this._updateTabIdFromHash();
 
         // Synchronize opened tabs
@@ -202,9 +188,9 @@ PageController.prototype = {
             this.onSelectedTabChange();
         }.bind(this));
 
-        $(document).keyup(function (e) {
+        document.addEventListener('keyup', function (e) {
             if (e.keyCode === 27) {
-                self.requestWizard.closeModal();
+                RequestWizard.closeModal();
             }
         });
     },
@@ -221,29 +207,31 @@ PageController.prototype = {
     },
 
 	onTabAdded: function (tabInfo) {
-
 		if (tabInfo.isExtensionTab) {
 			return;
 		}
-		this.tabSelectorList.append($('<li>',{
-			text: tabInfo.title,
-			'data-tab-id': tabInfo.tabId
-		}));
+
+        var option = document.createElement('option');
+		option.textContent = tabInfo.title;
+		option.setAttribute('data-tab-id', tabInfo.tabId);
+        this.tabSelector.appendChild(option);
+
 		if (!this.currentTabId) {
 			this.onSelectedTabChange();
 		}
 	},
 
 	onTabUpdated: function (tabInfo) {
-		var item = this.tabSelectorList.find('[data-tab-id=' + tabInfo.tabId + ']');
+		var item = this.tabSelector.querySelector('[data-tab-id="' + tabInfo.tabId + '"]');
 		if (tabInfo.isExtensionTab) {
 			this.onTabClose(tabInfo);
 			return;
 		}
-		if (item && item.length > 0) {
-			item.text(tabInfo.title);
+
+		if (item) {
+			item.textContent = tabInfo.title;
 			if (tabInfo.tabId == this.currentTabId) {
-				this.tabSelectorValue.text(tabInfo.title);
+                document.querySelector('[data-tab-id="' + this.currentTabId + '"]').selected = true;
 				//update icon logo
 				this._updateLogoIcon();
 			}
@@ -253,7 +241,13 @@ PageController.prototype = {
 	},
 
     onTabClose: function (tabInfo) {
-        this.tabSelectorList.find('[data-tab-id=' + tabInfo.tabId + ']').remove();
+        var element = this.tabSelector.querySelector('[data-tab-id="' + tabInfo.tabId + '"]');
+        if (!element) {
+            return;
+        }
+
+        element.parentNode.removeChild(element);
+
         if (this.currentTabId == tabInfo.tabId) {
             //current tab was removed
             this.currentTabId = null;
@@ -261,9 +255,15 @@ PageController.prototype = {
         }
     },
 
+    emptyLogTable: function () {
+        while (this.logTable.firstChild) {
+            this.logTable.removeChild(this.logTable.firstChild);
+        }
+    },
+
     onTabReset: function (tabInfo) {
         if (this.currentTabId == tabInfo.tabId) {
-            this.logTable.empty();
+            this.emptyLogTable();
             this._onEmptyTable();
         }
     },
@@ -281,25 +281,34 @@ PageController.prototype = {
             //don't relate to the current tab
             return;
         }
-        var element = this.logTable.find('#request-' + event.requestId);
+        var element = this.logTable.querySelector('#request-' + event.requestId);
         if (element.length > 0) {
             var template = this._renderTemplate(event);
-            element.replaceWith(template);
+            element.outerHTML = template;
         }
-    },onSelectedTabChange: function () {
-		var selectedItem = this.tabSelectorList.find('[data-tab-id="' + this.currentTabId + '"]');
-		if (selectedItem.length === 0) {
-			selectedItem = this.tabSelectorList.find(':first');
+    },
+
+    onSelectedTabChange: function () {
+		var selectedItem = this.tabSelector.querySelector('[data-tab-id="' + this.currentTabId + '"]');
+		if (!selectedItem) {
+			selectedItem = this.tabSelector.firstChild;
 		}
+
 		var text = '';
 		var selectedTabId = null;
-		if (selectedItem.length > 0) {
-			text = selectedItem.text();
-			selectedTabId = selectedItem.attr('data-tab-id');
+		if (selectedItem) {
+			text = selectedItem.textContent;
+			selectedTabId = selectedItem.getAttribute('data-tab-id');
 		}
+
 		this.currentTabId = selectedTabId;
-		this.tabSelectorValue.text(text);
+        var selectedTab = document.querySelector('[data-tab-id="' + this.currentTabId + '"]');
+        if (selectedTab) {
+            selectedTab.selected = true;
+        }
+
 		this._updateLogoIcon();
+
 		//render events
 		this._renderEventsForTab(this.currentTabId);
 	},
@@ -311,8 +320,15 @@ PageController.prototype = {
             if (frameInfo && frameInfo.adguardDetected) {
                 src = 'skin/logpage/images/dropdown-logo-blue.png'; // TODO: integration icon
             }
-            this.logoIcon.attr('src', src);
+
+            this.logoIcon.setAttribute('src', src);
         }.bind(this));
+    },
+
+    removeClass: function (elements, className) {
+        elements.forEach(function (el) {
+            el.classList.remove(className);
+        });
     },
 
     _bindSearchFilters: function () {
@@ -320,78 +336,82 @@ PageController.prototype = {
         var self = this;
 
         //bind click to search http request
-        $('[name="searchEventRequest"]').on('keyup', function () {
+        document.querySelector('[name="searchEventRequest"]').addEventListener('keyup', function () {
             self.searchRequest = this.value.trim();
             self._filterEvents();
         });
 
         //bind click to filter by type
-        var searchEventTypeItems = $('.searchEventType');
-        searchEventTypeItems.on('click', function (e) {
+        var searchEventTypeItems = document.querySelectorAll('.searchEventType');
+        searchEventTypeItems.forEach(function (item) {
+            item.addEventListener('click', function (e) {
+                e.preventDefault();
 
-            e.preventDefault();
+                self.removeClass(searchEventTypeItems, 'active');
 
-            searchEventTypeItems.removeClass('active');
+                var selectedItem = e.currentTarget;
+                selectedItem.classList.add('active');
+                var selectedValue = selectedItem.getAttribute('attr-type');
 
-            var selectedItem = $(e.currentTarget);
-            selectedItem.addClass('active');
-            var selectedValue = selectedItem.attr('attr-type');
-
-            self.searchTypes = selectedValue ? selectedValue.split(',') : [];
-            self._filterEvents();
+                self.searchTypes = selectedValue ? selectedValue.split(',') : [];
+                self._filterEvents();
+            });
         });
 
-        $('.checkb-wrap').on('click', function () {
-            var el = $(this);
-            var checkbox = el.find('.checkbox');
-            checkbox.toggleClass('active');
-            var active = checkbox.is('.active');
-            if (el.is('.searchEventThirdParty')) {
-                self.searchThirdParty = active;
-            } else if (el.is('.searchEventBlocked')) {
-                self.searchBlocked = active;
-            } else if (el.is('.searchEventWhitelisted')) {
-                self.searchWhitelisted = active;
-            }
-            self._filterEvents();
+        var radioWraps = document.querySelectorAll('.checkb-wrap');
+        radioWraps.forEach(function (w) {
+            w.addEventListener('click', function () {
+                var checkbox = w.querySelector('.checkbox');
+                checkbox.classList.toggle('active');
+
+                var active = checkbox.classList.contains('active');
+                if (w.classList.contains('searchEventThirdParty')) {
+                    self.searchThirdParty = active;
+                } else if (w.classList.contains('searchEventBlocked')) {
+                    self.searchBlocked = active;
+                } else if (w.classList.contains('searchEventWhitelisted')) {
+                    self.searchWhitelisted = active;
+                }
+
+                self._filterEvents();
+            });
         });
     },
 
     _filterEvents: function () {
 
-        var rows = this.logTable.children();
+        var rows = this.logTable.childNodes;
 
         // Filters not set
         if (!this.searchRequest &&
             this.searchTypes.length === 0 && !this.searchThirdParty && !this.searchBlocked && !this.searchWhitelisted) {
 
-            rows.removeClass('hidden');
+            this.removeClass(rows, 'hidden');
             return;
         }
 
         var self = this;
-        $.each(rows, function () {
-            self._handleEventShow($(this));
+        rows.forEach(function (row) {
+            self._handleEventShow(row);
         });
     },
 
     _onEmptyTable: function () {
         this.logTableHidden = true;
-        this.logTable.addClass('hidden');
-        this.logTableEmpty.removeClass('hidden');
+        this.logTable.classList.add('hidden');
+        this.logTableEmpty.classList.remove('hidden');
     },
 
     _onNotEmptyTable: function () {
         if (this.logTableHidden) {
             this.logTableHidden = false;
-            this.logTableEmpty.addClass('hidden');
-            this.logTable.removeClass('hidden');
+            this.logTableEmpty.classList.add('hidden');
+            this.logTable.classList.remove('hidden');
         }
     },
 
     _renderEventsForTab: function (tabId) {
-
-        this.logTable.empty();
+        this.emptyLogTable();
 
         contentPage.sendMessage({type: 'getFilteringInfoByTabId', tabId: tabId}, function (response) {
 
@@ -419,7 +439,26 @@ PageController.prototype = {
             templates.push(template);
         }
         this._onNotEmptyTable();
-        this.logTable.append(templates);
+
+        // Bind click to show request info
+        var self = this;
+        templates.forEach(function (t) {
+            t.addEventListener('click', function () {
+                var filteringEvent = t.data;
+                contentPage.sendMessage({type: 'getTabFrameInfoById', tabId: self.currentTabId}, function (response) {
+                    var frameInfo = response.frameInfo;
+                    if (!frameInfo) {
+                        return;
+                    }
+
+                    RequestWizard.showRequestInfoModal(frameInfo, filteringEvent);
+                });
+            });
+        });
+
+        templates.forEach(function (t) {
+            this.logTable.appendChild(t);
+        });
     },
 
     _renderTemplate: function (event) {
@@ -441,31 +480,34 @@ PageController.prototype = {
             }
         }
 
-        var el = $('<tr>', metadata);
-        // Url
-        el.append($('<td>', {text: event.requestUrl}));
-        // Type
-        var typeEl = $('<td>', {text: RequestWizard.getRequestType(event.requestType)});
+        var thirdPartyDetails = '';
         if (event.requestThirdParty) {
-            typeEl.append($('<img/>', {src: "images/icon-chain-link.png", class: "icon-chain"}));
-            typeEl.append($('<small>', {text: 'Third party'}));
+            thirdPartyDetails = `<img src="images/icon-chain-link.png" class="icon-chain"><small>Third party</small>`;
         }
-        el.append(typeEl);
-        // Rule
-        el.append($('<td>', {text: ruleText}));
-        // Source
-        el.append($('<td>', {text: event.requestRule ? RequestWizard.getFilterName(event.requestRule.filterId) : '',
-			'class': 'task-manager-content-header-body-col task-manager-content-item-filter'
-		}));
-		el.append($('<div>', {
-			text: RequestWizard.getSource(event.frameDomain)}));
 
-        return el;
+        var eventTemplate = `
+            <tr ${metadata.id ? 'id="' + metadata.id + '"' : ''}
+                ${metadata.class ? 'class="' + metadata.class + '"' : ''}>
+                <td>${event.requestUrl}</td>
+                <td>
+                    ${RequestWizard.getRequestType(event.requestType)}
+                    ${thirdPartyDetails}
+                </td>
+                <td>${ruleText ? ruleText : ''}</td>
+                <td class="task-manager-content-header-body-col task-manager-content-item-filter">
+                    ${event.requestRule ? RequestWizard.getFilterName(event.requestRule.filterId) : ''}
+                </td>
+                <div>${RequestWizard.getSource(event.frameDomain)}</div>
+            </tr>`;
+
+        var element = htmlToElement(eventTemplate);
+        element.data = metadata.data;
+        return element;
     },
 
     _handleEventShow: function (el) {
 
-        var filterData = el.data();
+        var filterData = el.data;
 
         var show = !this.searchRequest || StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest);
         show &= this.searchTypes.length === 0 || this.searchTypes.indexOf(filterData.requestType) >= 0; // jshint ignore:line
@@ -477,404 +519,457 @@ PageController.prototype = {
         show &= !(this.searchWhitelisted || this.searchBlocked || this.searchThirdParty) || checkboxes; // jshint ignore:line
 
         if (show) {
-            el.removeClass('hidden');
+            el.classList.remove('hidden');
         } else {
-            el.addClass('hidden');
+            el.classList.add('hidden');
         }
     }
 };
 
-var RequestWizard = function () {
-    this.requestInfoTemplate = $('#modal-request-info');
-    this.createBlockRuleTemplate = $('#modal-create-block-rule');
-    this.createExceptionRuleTemplate = $('#modal-create-exception-rule');
-};
+/**
+ * Request wizard
+ *
+ * @type {{showRequestInfoModal, closeModal, getFilterName, getRequestType, getSource}}
+ */
+var RequestWizard = (function () {
 
-RequestWizard.getFilterName = function (filterId) {
-    if (filterId == AntiBannerFiltersId.USER_FILTER_ID) {
-        return Messages.OPTIONS_USERFILTER;
-    }
-    if (filterId == AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
-        return Messages.OPTIONS_WHITELIST;
-    }
-    var filterMetadata = filtersMetadata.filter(function (el) {
-        return el.filterId == filterId;
-    })[0];
-    return filterMetadata ? filterMetadata.name : "";
-};
+    //exclude domain and full request url
+    var PATTERNS_COUNT = 2;
 
-RequestWizard.prototype.showModal = function (template) {
+    var requestInfoTemplate;
+    var createBlockRuleTemplate;
+    var createExceptionRuleTemplate;
 
-    this.closeModal();
+    var currentModal;
 
-    $(document.body).append(template);
-    template.show();
+    var showModal = function (template) {
+        closeModal();
 
-    template.modal();
+        document.body.appendChild(template);
+        ModalUtils.showModal(template);
 
-    template.on('hidden.bs.modal', function () {
-        $(this).remove();
-    });
+        template.querySelector('.close').addEventListener('click', closeModal);
 
-    this.currentModal = template;
-};
+        currentModal = template;
+    };
 
-RequestWizard.prototype.closeModal = function () {
-    if (this.currentModal) {
-        this.currentModal.modal('hide');
-        this.currentModal = null;
-    }
-};
+    var showCreateBlockRuleModal = function (frameInfo, filteringEvent) {
 
-RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEvent) {
+        var template = createBlockRuleTemplate.cloneNode(true);
 
-    var template = this.requestInfoTemplate.clone();
+        var patterns = splitToPatterns(filteringEvent.requestUrl, filteringEvent.requestDomain, false).reverse();
 
-    var requestRule = filteringEvent.requestRule;
+        initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
+    };
 
-    template.find('[attr-text="requestUrl"]').text(filteringEvent.requestUrl);
-    template.find('[attr-text="requestType"]').text(RequestWizard.getRequestType(filteringEvent.requestType));
-    template.find('[attr-text="frameDomain"]').text(RequestWizard.getSource(filteringEvent.frameDomain));
-    if (!filteringEvent.frameDomain) {
-        template.find('[attr-text="frameDomain"]').closest('li').hide();
-    }
+    var showCreateExceptionRuleModal = function (frameInfo, filteringEvent) {
 
-    if (requestRule) {
-        if (requestRule.filterId !== AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
-            template.find('[attr-text="requestRule"]').text(requestRule.ruleText);
-        } else {
-            template.find('[attr-text="requestRule"]').closest('li').hide();
-        }
-        template.find('[attr-text="requestRuleFilter"]').text(RequestWizard.getFilterName(requestRule.filterId));
-    } else {
-        template.find('[attr-text="requestRule"]').closest('li').hide();
-        template.find('[attr-text="requestRuleFilter"]').closest('li').hide();
-    }
+        var template = createExceptionRuleTemplate.cloneNode(true);
 
-	if (filteringEvent.requestType === "IMAGE") {
-
-        template.removeClass('compact-view');
-
-        var imagePreview = template.find('[attr-src="requestUrl"]');
-        var image = new Image();
-        image.src = filteringEvent.requestUrl;
-        image.onload = function () {
-            var width = this.width;
-            var height = this.height;
-            if (width > 1 && height > 1) {
-                imagePreview.attr('src', filteringEvent.requestUrl);
-                imagePreview.parent().show();
-            }
-        };
-    }
-
-	//bind events
-    var openRequestButton = template.find('#openRequestNewTab');
-	var blockRequestButton = template.find('#blockRequest');
-	var unblockRequestButton = template.find('#unblockRequest');
-	var removeWhiteListDomainButton = template.find('#removeWhiteListDomain');
-	var removeUserFilterRuleButton = template.find('#removeUserFilterRule');
-
-	openRequestButton.on('click', function (e) {
-        e.preventDefault();
-
-        var requestUrl = filteringEvent.requestUrl;
-        if (requestUrl === 'content-security-policy-check') {
-            requestUrl = filteringEvent.frameUrl;
-        }
-
-        contentPage.sendMessage({type: 'openTab', url: requestUrl, options: {inNewWindow: true}});
-    });
-
-	blockRequestButton.on('click', function (e) {
-		e.preventDefault();
-		this.closeModal();
-		this.showCreateBlockRuleModal(frameInfo, filteringEvent);
-	}.bind(this));
-
-    unblockRequestButton.on('click', function (e) {
-        e.preventDefault();
-        this.closeModal();
-        this.showCreateExceptionRuleModal(frameInfo, filteringEvent);
-    }.bind(this));
-
-    removeWhiteListDomainButton.on('click', function (e) {
-        e.preventDefault();
-        contentPage.sendMessage({type: 'unWhiteListFrame', frameInfo: frameInfo});
-        this.closeModal();
-    }.bind(this));
-
-    removeUserFilterRuleButton.on('click', function (e) {
-        e.preventDefault();
-        contentPage.sendMessage({
-            type: 'removeUserRule',
-            ruleText: requestRule.ruleText,
-            adguardDetected: frameInfo.adguardDetected
-        });
-        if (frameInfo.adguardDetected) {
-            // In integration mode rule may be present in whitelist filter
-            contentPage.sendMessage({type: 'unWhiteListFrame', frameInfo: frameInfo});
-        }
-        this.closeModal();
-    }.bind(this));
-
-    if (!requestRule) {
-        blockRequestButton.removeClass('hidden');
-    } else {
-        if (requestRule.filterId === AntiBannerFiltersId.USER_FILTER_ID) {
-            removeUserFilterRuleButton.removeClass('hidden');
-        } else if (requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
-            removeWhiteListDomainButton.removeClass('hidden');
-        } else if (!requestRule.whiteListRule) {
-            unblockRequestButton.removeClass('hidden');
-        }
-    }
-
-    this.showModal(template);
-};
-
-RequestWizard.prototype.showCreateBlockRuleModal = function (frameInfo, filteringEvent) {
-
-    var template = this.createBlockRuleTemplate.clone();
-
-    var patterns = RequestWizard.splitToPatterns(filteringEvent.requestUrl, filteringEvent.requestDomain, false).reverse();
-
-    this._initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
-};
-
-RequestWizard.prototype.showCreateExceptionRuleModal = function (frameInfo, filteringEvent) {
-
-    var template = this.createExceptionRuleTemplate.clone();
-
-	var patterns = RequestWizard.splitToPatterns(filteringEvent.requestUrl, filteringEvent.requestDomain, true).reverse();
-
-    if (filteringEvent.requestUrl === 'content-security-policy-check') {
-        patterns = ['@@'];
-    }
-
-	this._initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
-};
-
-RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, patterns, filteringEvent) {
-
-	var frameDomain = filteringEvent.frameDomain;
-	var isThirdPartyRequest = filteringEvent.requestThirdParty;
-
-    var rulePatternsEl = template.find('#rulePatterns');
-    for (var i = 0; i < patterns.length; i++) {
-        var patternEl = $('<li>', {'class': 'checkb-wrap'});
-        var input = $('<input>', {
-            type: 'radio',
-            name: 'rulePattern',
-            id: 'pattern' + i,
-            value: patterns[i]
-        });
-        var div = $('<div>', {class: 'radio'});
-        var label = $('<label>', {'for': 'pattern' + i});
-        patternEl.append(input);
-        patternEl.append(label);
-        label.append(div);
-        label.append(document.createTextNode(patterns[i]));
-        rulePatternsEl.append(patternEl);
-        if (i === 0) {
-            input.attr('checked', 'checked');
-        }
-    }
-
-	var rulePatterns = template.find('[name="rulePattern"]');
-	var ruleDomainCheckbox = template.find('[name="ruleDomain"]');
-	var ruleImportantCheckbox = template.find('[name="ruleImportant"]');
-	var ruleMatchCaseCheckbox = template.find('[name="ruleMatchCase"]');
-	var ruleThirdPartyCheckbox = template.find('[name="ruleThirdParty"]');
-	var ruleTextEl = template.find('[name="ruleText"]');
-
-	ruleDomainCheckbox.attr('id', 'ruleDomain');
-	ruleDomainCheckbox.parent().find('label').attr('for', 'ruleDomain');
-	if (!frameDomain) {
-		ruleDomainCheckbox.closest('.checkbox').hide();
-	}
-
-    ruleImportantCheckbox.attr('id', 'ruleImportant');
-    ruleImportantCheckbox.parent().find('label').attr('for', 'ruleImportant');
-
-	ruleMatchCaseCheckbox.attr('id', 'ruleMatchCase');
-	ruleMatchCaseCheckbox.parent().find('label').attr('for', 'ruleMatchCase');
-
-    ruleThirdPartyCheckbox.attr('id', 'ruleThirdParty');
-    ruleThirdPartyCheckbox.parent().find('label').attr('for', 'ruleThirdParty');
-    if (isThirdPartyRequest) {
-        ruleThirdPartyCheckbox.attr('checked', 'checked');
-    }
-
-    //bind events
-    function updateRuleText() {
-
-		var urlPattern = rulePatterns.filter(':checked').val();
-		var permitDomain = !ruleDomainCheckbox.is(':checked');
-		var important = ruleImportantCheckbox.is(':checked');
-		var matchCase = ruleMatchCaseCheckbox.is(':checked');
-		var thirdParty = ruleThirdPartyCheckbox.is(':checked');
-
-		var domain = permitDomain ? frameDomain : null;
-
-		var mandatoryOptions = null;
-
-		// Deal with csp rule
-        var requestRule = filteringEvent.requestRule;
-        if (requestRule && requestRule.cspRule) {
-			mandatoryOptions = [UrlFilterRule.CSP_OPTION];
-        }
+        var patterns = splitToPatterns(filteringEvent.requestUrl, filteringEvent.requestDomain, true).reverse();
 
         if (filteringEvent.requestUrl === 'content-security-policy-check') {
-        	mandatoryOptions = [UrlFilterRule.WEBRTC_OPTION, UrlFilterRule.WEBSOCKET_OPTION];
-		}
-
-		var ruleText = RequestWizard.createRuleFromParams(urlPattern, domain, matchCase, thirdParty, important, mandatoryOptions);
-		ruleTextEl.val(ruleText);
-	}
-
-	//update rule text events
-	ruleDomainCheckbox.on('change', updateRuleText);
-    ruleImportantCheckbox.on('change', updateRuleText);
-	ruleMatchCaseCheckbox.on('change', updateRuleText);
-	ruleThirdPartyCheckbox.on('change', updateRuleText);
-	rulePatterns.on('change', updateRuleText);
-
-    //create rule event
-    template.find('#createRule').on('click', function (e) {
-        e.preventDefault();
-        var ruleText = ruleTextEl.val();
-        if (!ruleText) {
-            return;
+            patterns = [FilterRule.MASK_WHITE_LIST];
         }
-        // Add rule to user filter
-        contentPage.sendMessage({type: 'addUserRule', ruleText: ruleText, adguardDetected: frameInfo.adguardDetected});
-        // Close modal
-        this.closeModal();
-    }.bind(this));
 
-    updateRuleText();
+        initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
+    };
 
-    this.showModal(template);
-};
+    var initCreateRuleDialog = function (frameInfo, template, patterns, filteringEvent) {
 
-RequestWizard.PATTERNS_COUNT = 2; //exclude domain and full request url
+        var frameDomain = filteringEvent.frameDomain;
+        var isThirdPartyRequest = filteringEvent.requestThirdParty;
 
-RequestWizard.splitToPatterns = function (requestUrl, domain, whitelist) {
+        var rulePatternsEl = template.querySelector('#rulePatterns');
 
-	var hierarchicUrl = UrlUtils.isHierarchicUrl(requestUrl);
-    var protocol = UrlUtils.getProtocol(requestUrl);
+        for (var i = 0; i < patterns.length; i++) {
 
-    var prefix;
-    if (hierarchicUrl) {
-        prefix = UrlFilterRule.MASK_START_URL; // Covers default protocols: http, ws
-    }else {
-        prefix = protocol + ':'; // Covers non-default protocols: stun, turn
-	}
-    if (whitelist) {
-        prefix = FilterRule.MASK_WHITE_LIST + prefix;
-    }
+            var rulePatternTemplate = `
+                <li class="checkb-wrap">
+                    <div class="radio">
+                        <input class="radio__input" type="radio" name="rulePattern" id="pattern${i}" value="${patterns[i]}" ${i === 0 ? "checked='checked'" : ""}>
+                        <label class="radio__label" for="pattern${i}">
+                            ${patterns[i]}
+                        </label>
+                    </div>
+                </li>`;
 
-	var patterns = [];
-
-    var relative = StringUtils.substringAfter(requestUrl, domain + '/');
-
-	var path = StringUtils.substringBefore(relative, '?');
-
-    if (path) {
-
-        var parts = path.split('/');
-
-        var pattern = domain + '/';
-        for (var i = 0; i < Math.min(parts.length - 1, RequestWizard.PATTERNS_COUNT); i++) {
-            pattern += parts[i] + '/';
-            patterns.push(prefix + pattern + UrlFilterRule.MASK_ANY_SYMBOL);
+            rulePatternsEl.appendChild(htmlToElement(rulePatternTemplate));
         }
-        var file = parts[parts.length - 1];
-        if (file && patterns.length < RequestWizard.PATTERNS_COUNT) {
-            pattern += file;
-            patterns.push(prefix + pattern);
+
+        var rulePatterns = template.querySelectorAll('[name="rulePattern"]');
+        var ruleDomainCheckbox = template.querySelector('[name="ruleDomain"]');
+        var ruleImportantCheckbox = template.querySelector('[name="ruleImportant"]');
+        var ruleMatchCaseCheckbox = template.querySelector('[name="ruleMatchCase"]');
+        var ruleThirdPartyCheckbox = template.querySelector('[name="ruleThirdParty"]');
+        var ruleTextEl = template.querySelector('[name="ruleText"]');
+
+        ruleDomainCheckbox.setAttribute('id', 'ruleDomain');
+        ruleDomainCheckbox.parentNode.querySelector('label').setAttribute('for', 'ruleDomain');
+        if (!frameDomain) {
+            ruleDomainCheckbox.closest('.checkbox').style.display = 'none';
         }
-    }
 
-    //add domain pattern to start
-    patterns.unshift(prefix + domain + UrlFilterRule.MASK_SEPARATOR);
+        ruleImportantCheckbox.setAttribute('id', 'ruleImportant');
+        ruleImportantCheckbox.parentNode.querySelector('label').setAttribute('for', 'ruleImportant');
 
-	//push full url pattern
-	var url = UrlUtils.getUrlWithoutScheme(requestUrl);
-    if (domain + '/' !== url) { // Don't duplicate: ||example.com/ and ||example.com^
-        if (patterns.indexOf(prefix + url) < 0) {
-            patterns.push(prefix + url);
+        ruleMatchCaseCheckbox.setAttribute('id', 'ruleMatchCase');
+        ruleMatchCaseCheckbox.parentNode.querySelector('label').setAttribute('for', 'ruleMatchCase');
+
+        ruleThirdPartyCheckbox.setAttribute('id', 'ruleThirdParty');
+        ruleThirdPartyCheckbox.parentNode.querySelector('label').setAttribute('for', 'ruleThirdParty');
+        if (isThirdPartyRequest) {
+            ruleThirdPartyCheckbox.setAttribute('checked', 'checked');
         }
-    }
 
-    return patterns;
-};
+        function updateRuleText() {
 
-RequestWizard.createRuleFromParams = function (urlPattern, urlDomain, matchCase, thirdParty, important, mandatoryOptions) {
+            var urlPattern = template.querySelector('[name="rulePattern"][checked]').value;
+            var permitDomain = !ruleDomainCheckbox.getAttribute('checked');
+            var important = !!ruleImportantCheckbox.getAttribute('checked');
+            var matchCase = !!ruleMatchCaseCheckbox.getAttribute('checked');
+            var thirdParty = !!ruleThirdPartyCheckbox.getAttribute('checked');
 
-    var ruleText = urlPattern;
-    var options = [];
+            var domain = permitDomain ? frameDomain : null;
 
-	//add domain option
-	if (urlDomain) {
-		options.push(UrlFilterRule.DOMAIN_OPTION + '=' + urlDomain);
-	}
-	//add important option
-    if (important) {
-        options.push(UrlFilterRule.IMPORTANT_OPTION);
-    }
-	//add match case option
-	if (matchCase) {
-		options.push(UrlFilterRule.MATCH_CASE_OPTION);
-	}
-	//add third party option
-	if (thirdParty) {
-		options.push(UrlFilterRule.THIRD_PARTY_OPTION);
-	}
-    if (mandatoryOptions) {
-		options = options.concat(mandatoryOptions);
-    }
-	if (options.length > 0) {
-		ruleText += UrlFilterRule.OPTIONS_DELIMITER + options.join(',');
-	}
-	return ruleText;
-};
+            var mandatoryOptions = null;
 
-RequestWizard.getRequestType = function (requestType) {
-	switch (requestType) {
-		case 'DOCUMENT':
-		case 'SUBDOCUMENT':
-			return 'HTML';
-		case 'STYLESHEET':
-			return 'CSS';
-		case 'SCRIPT':
-			return 'JavaScript';
-		case 'XMLHTTPREQUEST':
-			return 'Ajax';
-		case 'IMAGE':
-			return 'Image';
-		case 'OBJECT':
-		case 'OBJECT_SUBREQUEST':
-		case 'MEDIA':
-			return 'Media';
-		case 'FONT':
-			return 'Font';
-		case 'WEBSOCKET':
-			return 'WebSocket';
-		case 'WEBRTC':
-			return 'WebRTC';
-        case 'CSP':
-            return 'CSP';
-		case 'OTHER':
-			return 'Other';
-	}
-	return '';
-};
+            // Deal with csp rule
+            var requestRule = filteringEvent.requestRule;
+            if (requestRule && requestRule.cspRule) {
+                mandatoryOptions = [UrlFilterRule.CSP_OPTION];
+            }
 
-RequestWizard.getSource = function (frameDomain) {
-    return frameDomain || '';
-};
+            if (filteringEvent.requestUrl === 'content-security-policy-check') {
+                mandatoryOptions = [UrlFilterRule.WEBRTC_OPTION, UrlFilterRule.WEBSOCKET_OPTION];
+            }
+
+            var ruleText = createRuleFromParams(urlPattern, domain, matchCase, thirdParty, important, mandatoryOptions);
+            ruleTextEl.value = ruleText;
+        }
+
+        //update rule text events
+        ruleDomainCheckbox.addEventListener('change', updateRuleText);
+        ruleImportantCheckbox.addEventListener('change', updateRuleText);
+        ruleMatchCaseCheckbox.addEventListener('change', updateRuleText);
+        ruleThirdPartyCheckbox.addEventListener('change', updateRuleText);
+        //TODO: Link click on radio wrap to 'change' event on input
+        rulePatterns.forEach(function (r) {
+            r.addEventListener('change', updateRuleText);
+        });
+
+        //create rule event
+        template.querySelector('#createRule').addEventListener('click', function (e) {
+            e.preventDefault();
+            var ruleText = ruleTextEl.value;
+            if (!ruleText) {
+                return;
+            }
+            // Add rule to user filter
+            contentPage.sendMessage({type: 'addUserRule', ruleText: ruleText, adguardDetected: frameInfo.adguardDetected});
+            // Close modal
+            closeModal();
+        }.bind(this));
+
+        updateRuleText();
+
+        showModal(template);
+    };
+
+    var splitToPatterns = function (requestUrl, domain, whitelist) {
+
+        var hierarchicUrl = UrlUtils.isHierarchicUrl(requestUrl);
+        var protocol = UrlUtils.getProtocol(requestUrl);
+
+        var prefix;
+        if (hierarchicUrl) {
+            prefix = UrlFilterRule.MASK_START_URL; // Covers default protocols: http, ws
+        } else {
+            prefix = protocol + ':'; // Covers non-default protocols: stun, turn
+        }
+
+        if (whitelist) {
+            prefix = FilterRule.MASK_WHITE_LIST + prefix;
+        }
+
+        var patterns = [];
+
+        var relative = StringUtils.substringAfter(requestUrl, domain + '/');
+
+        var path = StringUtils.substringBefore(relative, '?');
+        if (path) {
+
+            var parts = path.split('/');
+
+            var pattern = domain + '/';
+            for (var i = 0; i < Math.min(parts.length - 1, PATTERNS_COUNT); i++) {
+                pattern += parts[i] + '/';
+                patterns.push(prefix + pattern + UrlFilterRule.MASK_ANY_SYMBOL);
+            }
+            var file = parts[parts.length - 1];
+            if (file && patterns.length < PATTERNS_COUNT) {
+                pattern += file;
+                patterns.push(prefix + pattern);
+            }
+        }
+
+        //add domain pattern to start
+        patterns.unshift(prefix + domain + UrlFilterRule.MASK_SEPARATOR);
+
+        //push full url pattern
+        var url = UrlUtils.getUrlWithoutScheme(requestUrl);
+        if (domain + '/' !== url) { // Don't duplicate: ||example.com/ and ||example.com^
+            if (patterns.indexOf(prefix + url) < 0) {
+                patterns.push(prefix + url);
+            }
+        }
+
+        return patterns;
+    };
+
+    var createRuleFromParams = function (urlPattern, urlDomain, matchCase, thirdParty, important, mandatoryOptions) {
+
+        var ruleText = urlPattern;
+        var options = [];
+
+        //add domain option
+        if (urlDomain) {
+            options.push(UrlFilterRule.DOMAIN_OPTION + '=' + urlDomain);
+        }
+        //add important option
+        if (important) {
+            options.push(UrlFilterRule.IMPORTANT_OPTION);
+        }
+        //add match case option
+        if (matchCase) {
+            options.push(UrlFilterRule.MATCH_CASE_OPTION);
+        }
+        //add third party option
+        if (thirdParty) {
+            options.push(UrlFilterRule.THIRD_PARTY_OPTION);
+        }
+        if (mandatoryOptions) {
+            options = options.concat(mandatoryOptions);
+        }
+        if (options.length > 0) {
+            ruleText += UrlFilterRule.OPTIONS_DELIMITER + options.join(',');
+        }
+
+        return ruleText;
+    };
+
+    /**
+     * Request type map
+     *
+     * @param {String} requestType
+     * @returns {String}
+     */
+    var getRequestType = function (requestType) {
+        switch (requestType) {
+            case 'DOCUMENT':
+            case 'SUBDOCUMENT':
+                return 'HTML';
+            case 'STYLESHEET':
+                return 'CSS';
+            case 'SCRIPT':
+                return 'JavaScript';
+            case 'XMLHTTPREQUEST':
+                return 'Ajax';
+            case 'IMAGE':
+                return 'Image';
+            case 'OBJECT':
+            case 'OBJECT_SUBREQUEST':
+            case 'MEDIA':
+                return 'Media';
+            case 'FONT':
+                return 'Font';
+            case 'WEBSOCKET':
+                return 'WebSocket';
+            case 'WEBRTC':
+                return 'WebRTC';
+            case 'CSP':
+                return 'CSP';
+            case 'OTHER':
+                return 'Other';
+        }
+
+        return '';
+    };
+
+    /**
+     * Frame domain
+     *
+     * @param {String} frameDomain
+     * @returns {String}
+     */
+    var getSource = function (frameDomain) {
+        return frameDomain || '';
+    };
+
+    /**
+     * Shows request info
+     *
+     * @param {Object} frameInfo
+     * @param {Object} filteringEvent
+     */
+    var showRequestInfoModal = function (frameInfo, filteringEvent) {
+        var template = requestInfoTemplate.cloneNode(true);
+
+        var requestRule = filteringEvent.requestRule;
+
+        template.querySelector('[attr-text="requestUrl"]').textContent = filteringEvent.requestUrl;
+        template.querySelector('[attr-text="requestType"]').textContent = getRequestType(filteringEvent.requestType);
+        template.querySelector('[attr-text="frameDomain"]').textContent = getSource(filteringEvent.frameDomain);
+        if (!filteringEvent.frameDomain) {
+            template.querySelector('[attr-text="frameDomain"]').closest('li').style.display = 'none';
+        }
+
+        if (requestRule) {
+            if (requestRule.filterId !== AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+                template.querySelector('[attr-text="requestRule"]').textContent = requestRule.ruleText;
+            } else {
+                template.querySelector('[attr-text="requestRule"]').closest('li').style.display = 'none';
+            }
+            template.querySelector('[attr-text="requestRuleFilter"]').textContent = getFilterName(requestRule.filterId);
+        } else {
+            template.querySelector('[attr-text="requestRule"]').closest('li').style.display = 'none';
+            template.querySelector('[attr-text="requestRuleFilter"]').closest('li').style.display = 'none';
+        }
+
+        if (filteringEvent.requestType === "IMAGE") {
+
+            template.classList.remove('compact-view');
+
+            var imagePreview = template.querySelector('[attr-src="requestUrl"]');
+            var image = new Image();
+            image.src = filteringEvent.requestUrl;
+            image.onload = function () {
+                var width = this.width;
+                var height = this.height;
+                if (width > 1 && height > 1) {
+                    imagePreview.setAttribute('src', filteringEvent.requestUrl);
+                    imagePreview.parentNode.style.display = 'block';
+                }
+            };
+        }
+
+        //bind events
+        var openRequestButton = template.querySelector('#openRequestNewTab');
+        var blockRequestButton = template.querySelector('#blockRequest');
+        var unblockRequestButton = template.querySelector('#unblockRequest');
+        var removeWhiteListDomainButton = template.querySelector('#removeWhiteListDomain');
+        var removeUserFilterRuleButton = template.querySelector('#removeUserFilterRule');
+
+        openRequestButton.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            var requestUrl = filteringEvent.requestUrl;
+            if (requestUrl === 'content-security-policy-check') {
+                requestUrl = filteringEvent.frameUrl;
+            }
+
+            contentPage.sendMessage({type: 'openTab', url: requestUrl, options: {inNewWindow: true}});
+        });
+
+        blockRequestButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            closeModal();
+            showCreateBlockRuleModal(frameInfo, filteringEvent);
+        });
+
+        unblockRequestButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            closeModal();
+            showCreateExceptionRuleModal(frameInfo, filteringEvent);
+        });
+
+        removeWhiteListDomainButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            contentPage.sendMessage({type: 'unWhiteListFrame', frameInfo: frameInfo});
+            closeModal();
+        });
+
+        removeUserFilterRuleButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            contentPage.sendMessage({
+                type: 'removeUserRule',
+                ruleText: requestRule.ruleText,
+                adguardDetected: frameInfo.adguardDetected
+            });
+
+            if (frameInfo.adguardDetected) {
+                // In integration mode rule may be present in whitelist filter
+                contentPage.sendMessage({type: 'unWhiteListFrame', frameInfo: frameInfo});
+            }
+
+            closeModal();
+        });
+
+        if (!requestRule) {
+            blockRequestButton.classList.remove('hidden');
+        } else {
+            if (requestRule.filterId === AntiBannerFiltersId.USER_FILTER_ID) {
+                removeUserFilterRuleButton.classList.remove('hidden');
+            } else if (requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+                removeWhiteListDomainButton.classList.remove('hidden');
+            } else if (!requestRule.whiteListRule) {
+                unblockRequestButton.classList.remove('hidden');
+            }
+        }
+
+        showModal(template);
+    };
+
+    /**
+     * Closes current open modal
+     */
+    var closeModal = function () {
+        if (currentModal) {
+            ModalUtils.closeModal(currentModal);
+            currentModal = null;
+        }
+    };
+
+    /**
+     * Filter's name for filterId
+     *
+     * @param {Number} filterId
+     * @returns {String}
+     */
+    var getFilterName = function (filterId) {
+        if (filterId === AntiBannerFiltersId.USER_FILTER_ID) {
+            return Messages.OPTIONS_USERFILTER;
+        }
+        if (filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+            return Messages.OPTIONS_WHITELIST;
+        }
+
+        var filterMetadata = filtersMetadata.filter(function (el) {
+            return el.filterId === filterId;
+        })[0];
+
+        return filterMetadata ? filterMetadata.name : "";
+    };
+
+    /**
+     * Initialization
+     */
+    var initRequestWizard = function () {
+        requestInfoTemplate = document.querySelector('#modal-request-info');
+        createBlockRuleTemplate = document.querySelector('#modal-create-block-rule');
+        createExceptionRuleTemplate = document.querySelector('#modal-create-exception-rule');
+    };
+
+    return {
+        initRequestWizard: initRequestWizard,
+        showRequestInfoModal: showRequestInfoModal,
+        closeModal: closeModal,
+        getFilterName: getFilterName,
+        getRequestType: getRequestType,
+        getSource: getSource
+    };
+
+})();
 
 var userSettings;
 var environmentOptions;
@@ -891,7 +986,7 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
     AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
     EventNotifierTypes = response.constants.EventNotifierTypes;
 
-    $(document).ready(function () {
+    var onDocumentReady = function () {
 
         var pageController = new PageController();
         pageController.init();
@@ -931,5 +1026,11 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
             //set log is closed
             contentPage.sendMessage({type: 'onCloseFilteringLogPage'});
         });
-	});
+	};
+
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        onDocumentReady();
+    } else {
+        document.addEventListener('DOMContentLoaded', onDocumentReady);
+    }
 });

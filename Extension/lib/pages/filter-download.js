@@ -14,13 +14,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global $, NProgress, contentPage */
-$(document).ready(function () {
+/* global Nanobar, contentPage */
+document.addEventListener("DOMContentLoaded", function () {
+    var nanobar = new Nanobar({
+        classname: 'adg-progress-bar',
+    });
 
-    NProgress.inc();
+    nanobar.go(15);
 
     function onLoaded() {
-        NProgress.done();
+        nanobar.go(100);
         setTimeout(function () {
             if (window) {
                 contentPage.sendMessage({type: 'openThankYouPage'});

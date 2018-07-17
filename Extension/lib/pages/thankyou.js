@@ -14,7 +14,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* global contentPage */
+
 var PageController = function () {
+    // Empty
 };
 
 PageController.prototype = {
@@ -27,23 +31,23 @@ PageController.prototype = {
 
     _bindEvents: function () {
 
-        this.safebrowsingEnabledCheckbox = $("#safebrowsingEnabledCheckbox");
-        this.trackingFilterEnabledCheckbox = $("#trackingFilterEnabledCheckbox");
-        this.socialFilterEnabledCheckbox = $("#socialFilterEnabledCheckbox");
-        this.sendSafebrowsingStatsCheckbox = $("#sendSafebrowsingStatsCheckbox");
-        this.allowAcceptableAdsCheckbox = $("#allowAcceptableAds");
+        this.safebrowsingEnabledCheckbox = document.getElementById("safebrowsingEnabledCheckbox");
+        this.trackingFilterEnabledCheckbox = document.getElementById("trackingFilterEnabledCheckbox");
+        this.socialFilterEnabledCheckbox = document.getElementById("socialFilterEnabledCheckbox");
+        this.sendSafebrowsingStatsCheckbox = document.getElementById("sendSafebrowsingStatsCheckbox");
+        this.allowAcceptableAdsCheckbox = document.getElementById("allowAcceptableAds");
 
-        this.safebrowsingEnabledCheckbox.on('change', this.safebrowsingEnabledChange);
-        this.trackingFilterEnabledCheckbox.on('change', this.trackingFilterEnabledChange);
-        this.socialFilterEnabledCheckbox.on('change', this.socialFilterEnabledChange);
-        this.sendSafebrowsingStatsCheckbox.on('change', this.sendSafebrowsingStatsChange);
-        this.allowAcceptableAdsCheckbox.on('change', this.allowAcceptableAdsChange);
+        this.safebrowsingEnabledCheckbox.addEventListener('change', this.safebrowsingEnabledChange);
+        this.trackingFilterEnabledCheckbox.addEventListener('change', this.trackingFilterEnabledChange);
+        this.socialFilterEnabledCheckbox.addEventListener('change', this.socialFilterEnabledChange);
+        this.sendSafebrowsingStatsCheckbox.addEventListener('change', this.sendSafebrowsingStatsChange);
+        this.allowAcceptableAdsCheckbox.addEventListener('change', this.allowAcceptableAdsChange);
 
-        $(".openExtensionStore").on('click', function (e) {
+        document.querySelectorAll(".openExtensionStore").get(0).addEventListener('click', function (e) {
             e.preventDefault();
             contentPage.sendMessage({type: 'openExtensionStore'});
         });
-        $('.openSettings').on('click', function (e) {
+        document.querySelectorAll('.openSettings').addEventListener('click', function (e) {
             e.preventDefault();
             contentPage.sendMessage({type: 'openSettingsTab'});
         });
@@ -131,9 +135,9 @@ PageController.prototype = {
 
     _updateCheckbox: function (checkbox, enabled) {
         if (enabled) {
-            checkbox.attr('checked', 'checked');
+            checkbox.setAttribute('checked', 'checked');
         } else {
-            checkbox.removeAttr('checked');
+            checkbox.removeAttribute('checked');
         }
     }
 };
@@ -150,7 +154,7 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
     environmentOptions = response.environmentOptions;
     AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
 
-    $(document).ready(function () {
+    document.addEventListener("DOMContentLoaded", function () {
         var controller = new PageController();
         controller.init();
     });

@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global $, i18n, popupPage */
+/* global i18n, popupPage */
 
 /**
  * Controller that manages add-on popup window
@@ -45,14 +45,14 @@ PopupController.prototype = {
     },
 
     resizePopupWindow: function () {
-        var $widjet = $('body>div:not(.hidden)');
-        var width = $widjet.outerWidth();
-        var height = $widjet.outerHeight();
+        var widjet = document.querySelector('.widjet-popup');
+        var width = widjet.offsetWidth;
+        var height = widjet.offsetHeight;
         popupPage.resizePopup(width, height);
     },
 
     afterRender: function () {
-
+        //Should be overwritten
     },
 
     addWhiteListDomain: function (url) {
@@ -101,38 +101,47 @@ PopupController.prototype = {
 
     _renderPopup: function (tabInfo) {
 
-        var parent = $('.widjet-popup');
-        parent.find('.footer').remove();
+        var parent = document.querySelector('.widjet-popup');
 
-        var stack = parent.find('.tabstack');
+        var footer = parent.querySelector('.footer');
+        if (footer) {
+            footer.parentNode.removeChild(footer);
+        }
 
-        var containerMain = parent.find('.tab-main');
-        containerMain.empty();
+        var stack = parent.querySelector('.tabstack');
 
-        var containerStats = parent.find('.tab-statistics');
-        containerStats.empty();
+        var containerMain = parent.querySelector('.tab-main');
+        while(containerMain.firstChild) {
+            containerMain.removeChild(containerMain.firstChild);
+        }
 
-        stack.attr('class', 'tabstack');
+        var containerStats = parent.querySelector('.tab-statistics');
+        while(containerStats.firstChild) {
+            containerStats.removeChild(containerStats.firstChild);
+        }
+
+        stack.setAttribute('class', 'tabstack');
 
         // Hide stats for integration mode
         if (tabInfo.adguardDetected) {
-            parent.find('.tab-stats-button').hide();
-            parent.find('.tab-main-button').width('100%');
+            parent.querySelector('.tab-stats-button').style.display = 'none';
+            parent.querySelector('.tab-main-button').style.width = '100%';
         }
 
         // define class
         if (tabInfo.urlFilteringDisabled) {
-            stack.addClass('status-error error-sad');
+            stack.classList.add('status-error');
+            stack.classList.add('error-sad');
         } else if (tabInfo.applicationFilteringDisabled) {
-            stack.addClass('status-paused');
+            stack.classList.add('status-paused');
         } else {
             if (!tabInfo.canAddRemoveRule) {
-                stack.addClass('status-error error-filter');
+                stack.classList.add('status-error error-filter');
             } else {
                 if (tabInfo.documentWhiteListed) {
-                    stack.addClass('status-cross');
+                    stack.classList.add('status-cross');
                 } else {
-                    stack.addClass('status-checkmark');
+                    stack.classList.add('status-checkmark');
                 }
             }
         }
@@ -173,7 +182,13 @@ PopupController.prototype = {
     },
 
     _getTemplate: function (id) {
-        return $('#' + id).children().clone();
+        return document.querySelector('#' + id).cloneNode(true);
+    },
+
+    _appendTemplate: function (container, template) {
+        template.childNodes.forEach(function (c) {
+            container.appendChild(c.cloneNode(true));
+        });
     },
 
     _renderHeader: function (container, tabInfo) {
@@ -187,18 +202,21 @@ PopupController.prototype = {
             template = this.filteringIntegrationHeader;
         } else {
             template = this.filteringDefaultHeader;
-            var tabBlocked = template.find('.blocked-tab');
-            var totalBlocked = template.find('.blocked-all');
-            i18n.translateElement(tabBlocked[0], 'popup_tab_blocked', [formatNumber(tabInfo.totalBlockedTab || 0)]);
-            i18n.translateElement(totalBlocked[0], 'popup_tab_blocked_all', [formatNumber(tabInfo.totalBlocked || 0)]);
-            if (tabInfo.totalBlocked >= 10000000) {
-                tabBlocked.closest('.widjet-popup-filter').addClass('db');
-            } else {
-                tabBlocked.closest('.widjet-popup-filter').removeClass('db');
+            var tabBlocked = template.querySelector('.blocked-tab');
+            var totalBlocked = template.querySelector('.blocked-all');
+            i18n.translateElement(tabBlocked, 'popup_tab_blocked', [formatNumber(tabInfo.totalBlockedTab || 0)]);
+            i18n.translateElement(totalBlocked, 'popup_tab_blocked_all', [formatNumber(tabInfo.totalBlocked || 0)]);
+            var closestWidjetFilter = tabBlocked.closest('.widjet-popup-filter');
+            if (closestWidjetFilter) {
+                if (tabInfo.totalBlocked >= 10000000) {
+                    closestWidjetFilter.classList.add('db');
+                } else {
+                    closestWidjetFilter.classList.remove('db');
+                }
             }
         }
 
-        container.append(template);
+        this._appendTemplate(container, template);
     },
 
     _renderFilteringControls: function (container, tabInfo) {
@@ -215,21 +233,19 @@ PopupController.prototype = {
         }
 
         if (tabInfo.urlFilteringDisabled || tabInfo.applicationFilteringDisabled || tabInfo.adguardDetected) {
-            template.find('.pause').hide();
+            template.querySelector('.pause').style.display = 'none';
         }
         if (tabInfo.adguardDetected) {
-            template.find('.settings').hide();
+            template.querySelector('.settings').style.display = 'none';
         }
 
-        container.append(template);
+        this._appendTemplate(container, template);
     },
 
     _renderStatus: function (container, tabInfo) {
-
         var template = this.filteringStatusText;
 
         var text = '';
-
         if (tabInfo.urlFilteringDisabled) {
             text = 'popup_site_filtering_state_tab_unavailable';
         } else if (tabInfo.applicationFilteringDisabled) {
@@ -246,15 +262,13 @@ PopupController.prototype = {
             }
         }
 
-        i18n.translateElement(template[0], text);
-
-        container.append(template);
+        i18n.translateElement(template.childNodes[1], text);
+        this._appendTemplate(container, template);
     },
 
     _renderMessage: function (container, tabInfo) {
 
         var text;
-
         if (tabInfo.urlFilteringDisabled) {
             text = 'popup_site_filtering_disabled';
         } else if (tabInfo.applicationFilteringDisabled) {
@@ -267,8 +281,8 @@ PopupController.prototype = {
 
         var template = this.filteringMessageText;
         if (text) {
-            i18n.translateElement(template[0], text);
-            container.append(template);
+            i18n.translateElement(template.childNodes[1], text);
+            this._appendTemplate(container, template);
         }
     },
 
@@ -614,15 +628,22 @@ PopupController.prototype = {
     _renderAnalyticsBlock: function (stats, range) {
         var statsData = this._selectRequestTypesStatsData(stats, range);
 
-        var $analytics = $('#analytics-blocked-types-values');
-        $analytics.empty();
+        var analytics = document.querySelector('#analytics-blocked-types-values');
+        while(analytics.firstChild) {
+            analytics.removeChild(analytics.firstChild);
+        }
 
         for (var type in stats.blockedTypes) {
             var number = statsData[stats.blockedTypes[type]] ? statsData[stats.blockedTypes[type]] : 0;
 
-            $analytics.append(
-                '<li><span class="key">' + this._localizeBlockedType(type) + '</span><span class="value">' + number + '</span></li>'
-            );
+            var blockedTypeItem = htmlToElement(`
+                <li>
+                    <span class="key">${this._localizeBlockedType(type)}</span>
+                    <span class="value">${number}</span>
+                </li>
+            `);
+
+            analytics.appendChild(blockedTypeItem);
         }
     },
 
@@ -637,8 +658,8 @@ PopupController.prototype = {
     },
 
     _renderStatsBlock: function () {
-        var timeRange = $('.statistics-select-time').val();
-        var typeData = $('.statistics-select-type').val();
+        var timeRange = document.querySelector('.statistics-select-time').value;
+        var typeData = document.querySelector('.statistics-select-type').value;
 
         var self = this;
         popupPage.sendMessage({type: 'getStatisticsData'}, function (message) {
@@ -648,7 +669,7 @@ PopupController.prototype = {
 
     _renderStats: function (container) {
         var template = this.filteringStatisticsTemplate;
-        container.append(template);
+        this._appendTemplate(container, template);
 
         this._renderStatsBlock();
     },
@@ -659,76 +680,79 @@ PopupController.prototype = {
             return;
         }
 
-        var el = $('<div>', {class: 'actions'});
+        var el = document.createElement('div');
+        el.classList.add('actions');
 
-        el.append(this.actionOpenAssistant);
+        this._appendTemplate(el, this.actionOpenAssistant);
         if (tabInfo.applicationFilteringDisabled || tabInfo.documentWhiteListed) {
             // May be show later
-            this.actionOpenAssistant.hide();
+            this.actionOpenAssistant.style.display = 'none';
         }
 
-        el.append(this.actionOpenAbuse);
-        el.append(this.actionOpenSiteReport);
+        this._appendTemplate(el, this.actionOpenAbuse);
+        this._appendTemplate(el, this.actionOpenSiteReport);
 
-        container.append(el);
+        container.appendChild(el);
     },
 
-    _renderFooter: function (footer, tabInfo) {
+    _renderFooter: function (footerContainer, tabInfo) {
         if (tabInfo.adguardDetected) {
-            footer.append(this.footerIntegration);
+            this._appendTemplate(footerContainer, this.footerIntegration);
         } else {
-            footer.append(this.footerDefault);
+            this._appendTemplate(footerContainer, this.footerDefault);
+        }
+    },
+
+    _bindAction: function (parentElement, selector, eventName, handler) {
+        var element = parentElement.querySelector(selector);
+        if (element) {
+            element.addEventListener(eventName, handler);
         }
     },
 
     _bindActions: function () {
 
-        var parent = $('.widjet-popup');
-
-        if (this.actionsBind === true) {
-            return;
-        }
-        this.actionsBind = true;
+        var parent = document.querySelector('.widjet-popup');
 
         var self = this;
-        parent.on('click', '.siteReport', function (e) {
+        this._bindAction(parent, '.siteReport', 'click', function (e) {
             e.preventDefault();
             self.openSiteReportTab(self.tabInfo.url);
             popupPage.closePopup();
         });
-        parent.on('click', '.openSettings', function (e) {
+        this._bindAction(parent, '.openSettings', 'click', function (e) {
             e.preventDefault();
             self.openSettingsTab();
             popupPage.closePopup();
         });
-        parent.on('click', '.openAssistant', function (e) {
+        this._bindAction(parent, '.openAssistant', 'click', function (e) {
             e.preventDefault();
             self.openAssistantInTab();
             popupPage.closePopup();
         });
-        parent.on('click', '.openFilteringLog', function (e) {
+        this._bindAction(parent, '.openFilteringLog', 'click', function (e) {
             e.preventDefault();
             self.openFilteringLog();
             popupPage.closePopup();
         });
-        parent.on('click', '.resetStats', function (e) {
+        this._bindAction(parent, '.resetStats', 'click', function (e) {
             e.preventDefault();
             self.resetBlockedAdsCount();
-            parent.find('.w-popup-filter-title-blocked-all').text('0');
+            parent.querySelector('.w-popup-filter-title-blocked-all').textContent = '0';
         });
-        parent.on('click', '.openLink', function (e) {
+        this._bindAction(parent, '.openLink', 'click', function (e) {
             e.preventDefault();
             self.openLink(e.currentTarget.href);
             popupPage.closePopup();
         });
-        parent.on('click', '.openAbuse', function (e) {
+        this._bindAction(parent, '.openAbuse', 'click', function (e) {
             e.preventDefault();
             self.openAbuseTab(self.tabInfo.url);
             popupPage.closePopup();
         });
 
         // checkbox
-        parent.on('click', '.changeDocumentWhiteListed', function (e) {
+        this._bindAction(parent, '.changeDocumentWhiteListed', 'click', function (e) {
             e.preventDefault();
             var tabInfo = self.tabInfo;
             if (tabInfo.urlFilteringDisabled || tabInfo.applicationFilteringDisabled) {
@@ -748,6 +772,7 @@ PopupController.prototype = {
             tabInfo.documentWhiteListed = isWhiteListed;
             tabInfo.userWhiteListed = isWhiteListed;
             self._renderPopup(tabInfo);
+            self._bindActions();
             self.resizePopupWindow();
 
             if (tabInfo.adguardDetected) {
@@ -763,50 +788,53 @@ PopupController.prototype = {
             self.changeApplicationFilteringDisabled(disabled);
             tabInfo.applicationFilteringDisabled = disabled;
             self._renderPopup(tabInfo);
+            self._bindActions();
             self.resizePopupWindow();
         }
 
         // Disable filtering
-        parent.on('click', '.changeProtectionStateDisable', function (e) {
+        this._bindAction(parent, '.changeProtectionStateDisable', 'click', function (e) {
             e.preventDefault();
             changeProtectionState(true);
         });
 
         // Enable filtering
-        parent.on('click', '.changeProtectionStateEnable', function (e) {
+        this._bindAction(parent, '.changeProtectionStateEnable', 'click', function (e) {
             e.preventDefault();
             changeProtectionState(false);
         });
 
         // Tabs
-        parent.on('click', '.tabbar .tab', function (e) {
-            e.preventDefault();
+        parent.querySelectorAll('.tabbar .tab').forEach(function (t) {
+            t.addEventListener('click', function (e) {
+                e.preventDefault();
 
-            $('.tabbar .tab').removeClass('active');
-            $(e.target).addClass('active');
+                parent.querySelectorAll('.tabbar .tab').forEach(function (tab) {
+                    tab.classList.remove('active');
+                });
+                e.target.classList.add('active');
 
-            var attr = $(e.target).attr('tab-switch');
-
-            $('.tab-switch-tab').hide();
-            $('.tab-switch-tab[tab-switch="' + attr + '"]').show();
-
+                var attr = e.target.getAttribute('tab-switch');
+                parent.querySelectorAll('.tab-switch-tab').forEach(function (tab) {
+                    tab.style.display = 'none';
+                });
+                parent.querySelector('.tab-switch-tab[tab-switch="' + attr + '"]').style.display = 'block';
+            });
         });
 
         // Stats filters
-        parent.on('change', '.statistics-select-time', function (e) {
+        this._bindAction(parent, '.statistics-select-time', 'change', function () {
+            self._renderStatsBlock();
+        });
+        this._bindAction(parent, '.statistics-select-type', 'change', function () {
             self._renderStatsBlock();
         });
 
-        parent.on('change', '.statistics-select-type', function (e) {
-            self._renderStatsBlock();
+        this._bindAction(parent, '.show-full-stats', 'click', function () {
+            document.querySelector('.analytics').style.display = 'block';
         });
-
-        parent.on('click', '.show-full-stats', function (e) {
-            $('.analytics').show();
-        });
-
-        parent.on('click', '.hide-full-stats', function (e) {
-            $('.analytics').hide();
+        this._bindAction(parent, '.hide-full-stats', 'click', function (e) {
+            document.querySelector('.analytics').style.display = 'none';
         });
     },
 
@@ -817,8 +845,8 @@ PopupController.prototype = {
             return;
         }
         setTimeout(function () {
-            var block = $(".macoshackresize");
-            block.css("padding-top", "4px");
+            var block = document.querySelector(".macoshackresize");
+            block.style["padding-top"] = "4px";
         }, 1000);
     }
 };
@@ -849,9 +877,15 @@ PopupController.prototype = {
     });
 
     popupPage.sendMessage({type: 'getTabInfoForPopup'}, function (message) {
-        $(document).ready(function () {
+        var onDocumentReady = function () {
             controller.render(message.frameInfo, message.options);
-        });
+        };
+
+        if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+            onDocumentReady();
+        } else {
+            document.addEventListener('DOMContentLoaded', onDocumentReady);
+        }
     });
 
 })();
