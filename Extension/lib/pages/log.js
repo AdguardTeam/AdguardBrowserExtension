@@ -465,6 +465,10 @@ PageController.prototype = {
         });
     },
 
+    _escapeHTML: function (text) {
+        return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    },
+
     _renderTemplate: function (event) {
 
         var metadata = {data: event};
@@ -474,6 +478,8 @@ PageController.prototype = {
         if (event.requestId) {
             metadata.id = 'request-' + event.requestId;
         }
+
+        var requestInfo = event.requestUrl ? event.requestUrl : this._escapeHTML(event.element);
 
         var ruleText = '';
         if (event.requestRule) {
@@ -492,7 +498,7 @@ PageController.prototype = {
         var eventTemplate = `
             <tr ${metadata.id ? 'id="' + metadata.id + '"' : ''}
                 ${metadata.class ? 'class="' + metadata.class + '"' : ''}>
-                <td>${event.requestUrl ? event.requestUrl : event.element}</td>
+                <td>${requestInfo}</td>
                 <td>
                     ${RequestWizard.getRequestType(event.requestType)}
                     ${thirdPartyDetails}
@@ -570,13 +576,58 @@ var RequestWizard = (function () {
 
         var template = createExceptionRuleTemplate.cloneNode(true);
 
-        var patterns = splitToPatterns(filteringEvent.requestUrl, filteringEvent.requestDomain, true).reverse();
-
+        var patterns;
+        if (filteringEvent.requestUrl) {
+            patterns = splitToPatterns(filteringEvent.requestUrl, filteringEvent.requestDomain, true).reverse();
+        }
         if (filteringEvent.requestUrl === 'content-security-policy-check') {
             patterns = [FilterRule.MASK_WHITE_LIST];
         }
 
+        if (filteringEvent.element) {
+            patterns = [createExceptionCssRule(filteringEvent.requestRule, filteringEvent)];
+        }
+
         initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
+    };
+
+    var generateExceptionRule = function (ruleText, mask) {
+        var insert = (str, index, value) => {
+            return str.slice(0, index) + value + str.slice(index);
+        };
+
+        var maskIndex = ruleText.indexOf(mask);
+        var maskLength = mask.length;
+        var rulePart = ruleText.slice(maskIndex + maskLength);
+        // insert exception mark after first char
+        var exceptionMask = insert(mask, 1, '@');
+        return exceptionMask + rulePart;
+    };
+
+    var createExceptionCssRule = function (rule, event) {
+        var ruleText = rule.ruleText;
+        var domainPart = event.frameDomain;
+        if (ruleText.indexOf(FilterRule.MASK_CSS_RULE) > -1) {
+            return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_RULE);
+        }
+        if (ruleText.indexOf(FilterRule.MASK_CSS_INJECT_RULE) > -1) {
+            return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_INJECT_RULE);
+        }
+        if (ruleText.indexOf(FilterRule.MASK_CSS_EXTENDED_CSS_RULE) > -1) {
+            return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_EXTENDED_CSS_RULE);
+        }
+        if (ruleText.indexOf(FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE) > -1) {
+            return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE);
+        }
+    };
+
+    var createCssRuleFromParams = function (urlPattern, permitDomain) {
+        var ruleText = urlPattern;
+        if (!permitDomain) {
+            ruleText = ruleText.slice(ruleText.indexOf('#'));
+        }
+
+        return ruleText;
     };
 
     var initCreateRuleDialog = function (frameInfo, template, patterns, filteringEvent) {
@@ -626,6 +677,12 @@ var RequestWizard = (function () {
             ruleThirdPartyCheckbox.setAttribute('checked', 'checked');
         }
 
+        if (filteringEvent.element) {
+            ruleImportantCheckbox.parentNode.style.display = 'none';
+            ruleMatchCaseCheckbox.parentNode.style.display = 'none';
+            ruleThirdPartyCheckbox.parentNode.style.display = 'none';
+        }
+
         function updateRuleText() {
 
             var urlPattern = template.querySelector('[name="rulePattern"][checked]').value;
@@ -648,7 +705,12 @@ var RequestWizard = (function () {
                 mandatoryOptions = [UrlFilterRule.WEBRTC_OPTION, UrlFilterRule.WEBSOCKET_OPTION];
             }
 
-            var ruleText = createRuleFromParams(urlPattern, domain, matchCase, thirdParty, important, mandatoryOptions);
+            var ruleText;
+            if (filteringEvent.element) {
+                ruleText = createCssRuleFromParams(urlPattern, permitDomain);
+            } else {
+                ruleText = createRuleFromParams(urlPattern, domain, matchCase, thirdParty, important, mandatoryOptions);
+            }
             ruleTextEl.value = ruleText;
         }
 
@@ -887,6 +949,11 @@ var RequestWizard = (function () {
 
             contentPage.sendMessage({type: 'openTab', url: requestUrl, options: {inNewWindow: true}});
         });
+
+        // there is nothing to open if log event reveals blocked element
+        if (filteringEvent.element) {
+            openRequestButton.style.display = 'none';
+        }
 
         blockRequestButton.addEventListener('click', function (e) {
             e.preventDefault();
