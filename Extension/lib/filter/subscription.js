@@ -436,15 +436,6 @@ adguard.subscriptions = (function (adguard) {
     };
 
     /**
-     * @returns group metadata by group id
-     */
-    var getGroupMetadata = function (id) {
-        return groups.filter(function (group) {
-            return group.groupId === id;
-        })[0];
-    };
-
-    /**
      * Gets list of filters for the specified languages
      *
      * @param locale Locale to check
