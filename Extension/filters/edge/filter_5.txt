@@ -1,8 +1,8 @@
-! Checksum: HYBAysiSgO3+n4MO9kAQsg
-! Title: Experimental filter
+! Checksum: kp9SJYP62hp51STLKDe8eg
+! Title: AdGuard Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.0.26
-! TimeUpdated: 2018-04-19T03:03:10+00:00
+! Version: 2.0.0.30
+! TimeUpdated: 2018-07-06T16:26:57+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#experimental
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -190,7 +190,9 @@
 !-------------------------------------------------------------------!
 !
 ! This file contains all filters other than English, Social, Spyware and Russian.
-!
+! Also filters by platforms https://github.com/AdguardTeam/AdguardBrowserExtension/issues/917
+! Filters for adguard without safari
+||chrome.test.filter.com^$third-party
 !-------------------------------------------------------------------!
 !------- Experimental rules for Mobile ads filter-------------------!
 !-------------------------------------------------------------------!
@@ -232,6 +234,7 @@ mobiflip.de##div[data-widget="plista_widget_belowArticle"] ~ h4.post-header
 ! https://forum.adguard.com/index.php?threads/20885/
 real-vin.com##div.sm-widget
 ! https://forum.adguard.com/index.php?threads/19852/
+fullfilmihdizlesene.com###sidebar > .sidebarborder:not(:nth-child(3))
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4322
 wowhead.com###page-content > div[class="main"] > div[class="blocks"]
 wowhead.com##div[class="wrapper"] > div[class="blocks"]

@@ -1,8 +1,8 @@
-! Checksum: ItigLN6mDjc35hcthWAYpw
-! Title: Dutch filter
+! Checksum: iOMBXOpTxhPYy1noN8N0OQ
+! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.0.28
-! TimeUpdated: 2018-04-13T00:03:07+00:00
+! Version: 2.0.0.31
+! TimeUpdated: 2018-06-22T00:04:04+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#dutch
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -1322,6 +1322,13 @@ tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
 @@/ad_bomb/*$image,domain=computerworld.nl|webwereld.nl
 @@/ad_pics/*$image,domain=webwereld.nl
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/18487
+windowstechblog.nl#@#.an-advert-banner
+windowstechblog.nl#@##adsense
+windowstechblog.nl#@#.an-sponsored
+! https://github.com/AdguardTeam/AdguardFilters/issues/17023
+icttipsandtricks.nl##body > div[style^="position: fixed; top:"][style*="z-index: 9999"]:not([class]):not([id])
+icttipsandtricks.nl#%#Object.defineProperty(window, 'ai_adb_detected', { get: function() { return function() {}; } });
 ! https://github.com/AdguardTeam/AdguardFilters/issues/13007
 @@||static.webwereld.nl/javascripts/advert.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/12387
@@ -1357,6 +1364,9 @@ biernet.nl#@#.afs_ads
 !
 ! Extended CSS rules
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/16658
+androidplanet.nl##.sidebar > .widget_static_device_widget:has(.device-ad)
+androidplanet.nl##.pd-results-container > .results-inner > .pd-advisor-offer-container:first-child:has(> .pd-advisor-offer > .result-badge:contains(Adv.))
 ! https://forum.adguard.com/index.php?threads/27070/
 pcmweb.nl##.site__sidebar > .block[-ext-has='div.banner']
 pcmweb.nl##.site__sidebar > .block[-ext-has='div#marketingcarrousseluitingen']
@@ -1409,6 +1419,8 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 !--------------------------------------------------------!
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
+androidplanet.nl###featured-header[data-campaign]
+androidplanet.nl##.sidebar > .widget_ad_html
 ||mediareader.omroepwest.nl/gaslicht^
 ||unity.nu/media/*/BANNERS/
 ||topomania.net/sites/topomania.net/images/pacnum-promo.png

@@ -118,3 +118,26 @@ QUnit.test("testWildcardShortcut", function (assert) {
     assert.ok((new Wildcard("*TEST ?STRING*")).matches("tatatatataTEST _STRINGbabababah"));
     assert.notOk((new Wildcard("*TEST ?STRING*")).matches("tatatatataTEST STRINGbabababah"));
 });
+
+QUnit.test("Test wildcard domains in the content rules", function (assert) {
+    var ruleText = "~nigma.ru,~youtube.*,google.*$$div[id=\"ad_text\"][tag-content=\"teasernet\"]";
+    var rule = new adguard.rules.ContentFilterRule(ruleText);
+
+    assert.ok(rule !== null);
+    assert.equal("google.*", rule.getPermittedDomains()[0]);
+    assert.ok(rule.getRestrictedDomains().indexOf("youtube.*") >= 0);
+    assert.ok(rule.getRestrictedDomains().indexOf("nigma.ru") >= 0);
+
+    assert.ok(rule.isPermitted("google.com"));
+    assert.ok(rule.isPermitted("www.google.com"));
+    assert.ok(rule.isPermitted("www.google.de"));
+    assert.ok(rule.isPermitted("www.google.co.uk"));
+    assert.ok(rule.isPermitted("google.co.uk"));
+    assert.notOk(rule.isPermitted("nigma.com"));    
+    assert.notOk(rule.isPermitted("google.uk.eu")); // non-existent tld
+    assert.notOk(rule.isPermitted("nigma.ru"));
+    assert.notOk(rule.isPermitted("youtube.com"));
+    assert.notOk(rule.isPermitted("youtube.de"));
+    assert.notOk(rule.isPermitted("www.nigma.ru"));
+    assert.notOk(rule.isPermitted("yandex.ru"));
+});

@@ -62,13 +62,6 @@ To upload new phrases to oneskyapp you need the same file `oneskyapp.json` and f
   yarn locales-upload
 ```
 
-#### Download filters
-
-Filters are updated automatically in release build. But you can run updating manually with command:
-```
-  yarn filters
-```
-
 #### Building the dev version
 
 Run the following command:
@@ -84,6 +77,13 @@ This will create a Build directory with unpacked extensions for all browsers:
 ```
 
 #### Building the beta and release versions
+
+Before building the release version, you should manually download necessary resources: filters and public suffix list.
+
+```
+  yarn resources
+```
+
 ```
   yarn beta
   yarn release

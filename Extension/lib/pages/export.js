@@ -102,12 +102,12 @@ var showSaveFunc = (function () {
             if (DownloadAttributeSupport) {
                 blob = new Blob([data], {type: mimetype});
                 url = URL.createObjectURL(blob);
-                
+
                 var link = document.createElement("a");
                 link.setAttribute("href", url);
                 link.setAttribute("download", name || "Download.bin");
                 document.body.appendChild(link);
-                
+
                 var event = document.createEvent('HTMLEvents');
                 event.initEvent('click', true, false);
                 link.dispatchEvent(event);
