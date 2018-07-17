@@ -179,7 +179,10 @@ var CssHitsCounter = (function () { // jshint ignore:line
                 potentialElementsWithNewHits.push(mutationTarget);
                 var mutationTargetElements = mutationTarget.querySelectorAll('*');
                 for (var i = 0; i < mutationTargetElements.length; i += 1) {
-                    potentialElementsWithNewHits.push(mutationTargetElements[i]);
+                    var element = mutationTargetElements[i];
+                    if (potentialElementsWithNewHits.indexOf(element) === -1) {
+                        potentialElementsWithNewHits.push(element);
+                    }
                 }
             });
             countCssHitsBatch(potentialElementsWithNewHits, 0, 100, 100, [], function (result) {
