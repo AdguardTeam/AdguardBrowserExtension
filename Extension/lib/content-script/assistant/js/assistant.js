@@ -1,4 +1,4 @@
-/*! AdGuard Assistant - v4.2.9 - 2018-07-03
+/*! AdGuard Assistant - v4.3.1 - 2018-07-16
 * https://github.com/AdguardTeam/AdguardAssistant
 * Copyright (c) 2018; Licensed LGPL 3.0 */
 
@@ -22,7 +22,7 @@ var HTML = {
     'settings_menu': "<div class=\"main\"><div class=\"close\"></div><div class=\"head\"><div i18n=\"assistant_settings\" class=\"head_title\"></div><div i18n=\"settings_choose_size_and_position\" class=\"head_text head_text--mobile-h\"></div></div><div class=\"content\"><div class=\"settings settings__horizontal\"><div class=\"settings_fieldset\"><div i18n=\"settings_position_save\" class=\"settings_fieldset_lbl\"></div><div class=\"settings_fieldset_val\"><div class=\"position-save\"><div class=\"position-save_group\"><div class=\"position-save_field\"><input class=\"form-ui-control\" id=\"all-site\" type=\"radio\" name=\"position-save\"> <label class=\"form-ui\" for=\"all-site\"><span i18n=\"settings_position_save_all\" class=\"form-ui-txt\"></span></label></div><div class=\"position-save_field\"><input class=\"form-ui-control\" id=\"this-site\" type=\"radio\" name=\"position-save\"> <label class=\"form-ui\" for=\"this-site\"><span i18n=\"settings_position_save_this\" class=\"form-ui-txt\"></span></label></div></div></div></div></div><div class=\"settings_fieldset\"><div i18n=\"settings_icon_size\" class=\"settings_fieldset_lbl\"></div><div class=\"settings_fieldset_val\"><div class=\"choice-size\"><div class=\"choice-size_group\"><div class=\"choice-size_field\"><input class=\"choice-size_input form-ui-control\" id=\"size-small\" type=\"radio\" name=\"radio\"> <label class=\"form-ui\" for=\"size-small\"><span i18n=\"settings_small\" class=\"form-ui-txt\"></span></label><div class=\"adguard-assistant-button-main-logo choice-size_logo logo__small\"></div></div><div class=\"choice-size_field\"><input class=\"choice-size_input form-ui-control\" id=\"size-big\" type=\"radio\" name=\"radio\"> <label class=\"form-ui\" for=\"size-big\"><span i18n=\"settings_big\" class=\"form-ui-txt\"></span></label><div class=\"adguard-assistant-button-main-logo choice-size_logo\"></div></div></div></div></div></div><div class=\"settings_fieldset\"><div i18n=\"settings_position\" class=\"settings_fieldset_lbl settings_fieldset_lbl__pos\"></div><div class=\"settings_fieldset_val\"><div class=\"change-position\"><div class=\"change-position_i\"><input type=\"radio\" name=\"position\" class=\"change-position_input\" id=\"position-top-left\"> <label class=\"change-position_label\" for=\"position-top-left\"><span class=\"s-position-arr-top-left\"></span></label><div i18n=\"settings_left_top\" class=\"change-position_val\"></div></div><div class=\"change-position_i\"><input type=\"radio\" name=\"position\" class=\"change-position_input\" id=\"position-top-right\"> <label class=\"change-position_label\" for=\"position-top-right\"><span class=\"s-position-arr-top-right\"></span></label><div i18n=\"settings_right_top\" class=\"change-position_val\"></div></div><div class=\"change-position_i\"><input type=\"radio\" name=\"position\" class=\"change-position_input\" id=\"position-bottom-left\"> <label class=\"change-position_label\" for=\"position-bottom-left\"><span class=\"s-position-arr-bottom-left\"></span></label><div i18n=\"settings_left_bottom\" class=\"change-position_val\"></div></div><div class=\"change-position_i\"><input type=\"radio\" name=\"position\" class=\"change-position_input\" id=\"position-bottom-right\"> <label class=\"change-position_label\" for=\"position-bottom-right\"><span class=\"s-position-arr-bottom-right\"></span></label><div i18n=\"settings_right_bottom\" class=\"change-position_val\"></div></div></div></div></div></div></div><div class=\"foot\"><div class=\"foot_action\"><div class=\"foot_action_btn\"><button i18n=\"settings_cancel\" class=\"btn btn-default\" type=\"button\" id=\"cancel\"></button> <button i18n=\"settings_save\" class=\"btn btn-primary\" type=\"button\" id=\"save-settings\"></button></div></div><div class=\"cf\"></div></div></div>",
     'slider_menu': "<div class=\"main\"><div class=\"close adg-close\"></div><div class=\"head head--slider\"><div class=\"head_in head_in--slider\"><div i18n=\"assistant_block_element\" class=\"head_title head_title--slider\" id=\"head_title\"></div><div class=\"element-rule_more element-rule_more--mobile\"><span class=\"element-rule_expand-link\" id=\"ExtendedSettingsText\"></span> <button i18n=\"assistant_block\" type=\"button\" class=\"btn btn-cancel\" id=\"adg-accept\"></button> <button i18n=\"assistant_another_element\" type=\"button\" class=\"btn btn-default\" id=\"adg-cancel\"></button></div></div><div class=\"adg-slide-btns\"><div class=\"adg-slide-btn adg-slide-btn--minus\"></div><div class=\"adg-slide-btn adg-slide-btn--plus\"></div></div><div i18n=\"assistant_block_element_explain\" class=\"head_text head_text--mobile-h\" id=\"head_text\"></div></div><div class=\"content\" id=\"slider-area\"><div class=\"element-rule element-rule--slider\"><div i18n=\"assistant_slider_explain\" class=\"element-rule_text element-rule_text--slider\"></div><div class=\"element-rule_slider\"><div class=\"adg-slide\" id=\"slider\"><div i18n=\"assistant_slider_max\" class=\"adg-slide-clue-max\"></div><div i18n=\"assistant_slider_min\" class=\"adg-slide-clue-min\"></div></div></div><div class=\"element-rule_more\"><span class=\"element-rule_expand-link\" id=\"ExtendedSettingsText\"><span i18n=\"assistant_extended_settings\" class=\"element-rule_expand-link_txt\"></span> <span class=\"element-rule_expand-link_arr\"></span></span></div><div class=\"element-rule_form\" id=\"adv-settings\"><div class=\"element-rule_form-cont\"><div class=\"element-rule_fieldset\" id=\"one-domain-checkbox-block\"><input class=\"form-ui-control\" id=\"one-domain-checkbox\" type=\"checkbox\"> <label for=\"one-domain-checkbox\" class=\"form-ui\"><span i18n=\"assistant_apply_rule_to_all_sites\" class=\"form-ui-txt\"></span></label></div><div style=\"display:none\" class=\"element-rule_fieldset\" id=\"block-by-url-checkbox-block\"><input class=\"form-ui-control\" id=\"block-by-url-checkbox\" type=\"checkbox\"> <label for=\"block-by-url-checkbox\" class=\"form-ui\"><span i18n=\"assistant_block_by_reference\" class=\"form-ui-txt\"></span></label></div><div style=\"display:none\" class=\"element-rule_fieldset\" id=\"block-similar-checkbox-block\"><input class=\"form-ui-control\" id=\"block-similar-checkbox\" type=\"checkbox\"> <label for=\"block-similar-checkbox\" class=\"form-ui\"><span i18n=\"assistant_block_similar\" class=\"form-ui-txt\"></span></label></div><div class=\"element-rule_fieldset\"><input class=\"form-control\" id=\"filter-rule\" type=\"text\"></div></div></div></div></div><div class=\"foot foot--slider\"><button i18n=\"assistant_another_element\" type=\"button\" class=\"btn btn-default btn-another-el\" id=\"adg-cancel\"></button><div class=\"foot_action\"><div class=\"foot_action_btn\"><button i18n=\"assistant_preview\" type=\"button\" class=\"btn btn-primary\" id=\"adg-preview\"></button> <button i18n=\"assistant_block\" type=\"button\" class=\"btn btn-cancel\" id=\"adg-accept\"></button></div></div></div></div>",
     'preview': "<div class=\"main\"><div class=\"close\"></div><div class=\"head\"><div i18n=\"assistant_preview_header\" class=\"head_title\"></div><div i18n=\"assistant_preview_header_info\" class=\"head_text\"></div></div><div class=\"foot\"><button i18n=\"assistant_another_element\" class=\"btn btn-default\" id=\"select-another-element\" type=\"button\"></button><div class=\"foot_action\"><div class=\"foot_action_btn\"><button i18n=\"assistant_preview_end\" class=\"btn btn-primary\" id=\"end-preview\" type=\"button\"></button> <button i18n=\"assistant_block\" class=\"btn btn-cancel\" id=\"block-element\" type=\"button\"></button></div></div></div></div>",
-    'popup': "<div class=\"main mobile main-popup\"><div class=\"main-popup__logo adguard-assistant-button-main-logo\"></div><h2 class=\"mobile-title main-popup__title\" i18n=\"assistant_select_element\"></h2><div class=\"content main-popup__content\" i18n=\"assistant_select_element_text\"></div><div class=\"footer\"><button i18n=\"assistant_select_element_start\" class=\"btn btn-active start-select-mode main-popup__btn main-popup__btn--green\"></button> <button i18n=\"assistant_select_element_cancel\" class=\"btn cancel-select-mode main-popup__btn\"></button></div><i class=\"main-version\">v4.2.9</i></div>",
+    'popup': "<div class=\"main mobile main-popup\"><div class=\"main-popup__logo adguard-assistant-button-main-logo\"></div><h2 class=\"mobile-title main-popup__title\" i18n=\"assistant_select_element\"></h2><div class=\"content main-popup__content\" i18n=\"assistant_select_element_text\"></div><div class=\"footer\"><button i18n=\"assistant_select_element_start\" class=\"btn btn-active start-select-mode main-popup__btn main-popup__btn--green\"></button> <button i18n=\"assistant_select_element_cancel\" class=\"btn cancel-select-mode main-popup__btn\"></button></div><i class=\"main-version\">v4.3.1</i></div>",
     'mobile_menu': "<div class=\"main mobile main-menu\"><button i18n-title=\"assistant_block\" class=\"adg-accept main-menu__btn main-menu__btn--accept\">accept</button> <button i18n-title=\"assistant_preview\" class=\"adg-preview main-menu__btn main-menu__btn--preview\">preview</button> <button i18n-title=\"plus\" class=\"adg-plus main-menu__btn main-menu__btn--plus\">plus</button> <button i18n-title=\"minus\" class=\"adg-minus main-menu__btn main-menu__btn--minus\">minus</button> <button i18n-title=\"close\" class=\"adg-close main-menu__btn main-menu__btn--close\">close</button></div>"
 };
 
@@ -426,9 +426,9 @@ var uk = {
     }
 }
 var pl = {
-    "settings_position_save": "Websites",
-    "settings_position_save_all": "All websites",
-    "settings_position_save_this": "This website",
+    "settings_position_save": "Strony internetowe",
+    "settings_position_save_all": "Wszystkie strony internetowe",
+    "settings_position_save_this": "Ta strona internetowa",
     "assistant_select_element_start": "Rozpocznij",
     "assistant_select_element_text": "Wybierz element na stronie do zablokowania. Od\u015bwie\u017c stron\u0119, aby anulowa\u0107 tryb blokowania elementu.",
     "menu_filtration_status": {
@@ -559,9 +559,9 @@ var pl = {
     }
 }
 var de = {
-    "settings_position_save": "Websites",
-    "settings_position_save_all": "All websites",
-    "settings_position_save_this": "This website",
+    "settings_position_save": "Webseiten",
+    "settings_position_save_all": "Alle Webseiten",
+    "settings_position_save_this": "Diese Webseite",
     "assistant_select_element_start": "Starten",
     "assistant_select_element_text": "W\u00e4hlen Sie ein zu blockierendes Element auf der Seite aus. Laden Sie die Seite neu, um den Blockiermodus zu verlassen.",
     "menu_filtration_status": {
@@ -958,9 +958,9 @@ var zh_TW = {
     }
 }
 var he = {
-    "settings_position_save": "Websites",
-    "settings_position_save_all": "All websites",
-    "settings_position_save_this": "This website",
+    "settings_position_save": "\u05d0\u05ea\u05e8\u05d9 \u05d0\u05d9\u05e0\u05d8\u05e8\u05e0\u05d8",
+    "settings_position_save_all": "\u05db\u05dc \u05d4\u05d0\u05ea\u05e8\u05d9\u05dd",
+    "settings_position_save_this": "\u05d4\u05d0\u05ea\u05e8 \u05d4\u05d6\u05d4",
     "assistant_select_element_start": "\u05d4\u05ea\u05d7\u05dc",
     "assistant_select_element_text": ".\u05d1\u05d7\u05e8 \u05d0\u05dc\u05de\u05e0\u05d8 \u05d1\u05d3\u05e3 \u05dc\u05d7\u05e1\u05d9\u05de\u05d4 .\u05e8\u05e2\u05e0\u05df \u05d0\u05ea \u05d4\u05d3\u05e3 \u05db\u05d3\u05d9 \u05dc\u05d1\u05d8\u05dc \u05d0\u05ea \u05de\u05e6\u05d1 \u05d7\u05e1\u05d9\u05de\u05ea \u05d4\u05d0\u05dc\u05de\u05e0\u05d8\u05d9\u05dd",
     "menu_filtration_status": {
@@ -1091,9 +1091,9 @@ var he = {
     }
 }
 var it = {
-    "settings_position_save": "Websites",
-    "settings_position_save_all": "All websites",
-    "settings_position_save_this": "This website",
+    "settings_position_save": "Siti",
+    "settings_position_save_all": "Tutti i siti",
+    "settings_position_save_this": "Questo sito",
     "assistant_select_element_start": "Inizio",
     "assistant_select_element_text": "Seleziona un elemento nella pagina per bloccarlo. Ricarica la pagina per cancellare la modalit\u00e0 che blocca un elemento.",
     "menu_filtration_status": {
@@ -2702,7 +2702,7 @@ var fr = {
         "message": "Blocage des annonces sur ce site "
     },
     "menu_report_abuse": {
-        "message": "Renseigner le site"
+        "message": "Signaler le site"
     },
     "menu_site_report": {
         "message": "Rapport de s\u00e9curit\u00e9 du site"
@@ -2795,7 +2795,7 @@ var fr = {
         "message": "Petite"
     },
     "settings_big": {
-        "message": "Grand"
+        "message": "Grande"
     },
     "settings_position": {
         "message": "Positionnement"
@@ -2820,11 +2820,11 @@ var fr = {
     }
 }
 var id = {
-    "settings_position_save": "Websites",
-    "settings_position_save_all": "All websites",
-    "settings_position_save_this": "This website",
-    "assistant_select_element_start": "Start",
-    "assistant_select_element_text": "Choose an element on the page to block. Refresh the page to cancel the element blocking mode.",
+    "settings_position_save": "Situs",
+    "settings_position_save_all": "Semua situs",
+    "settings_position_save_this": "Situs ini",
+    "assistant_select_element_start": "Mulai",
+    "assistant_select_element_text": "Pilih elemen di halaman untuk diblokir. Segarkan halaman untuk membatalkan mode pemblokiran elemen.",
     "menu_filtration_status": {
         "message": "Penyaringan di situs ini"
     },
@@ -4245,7 +4245,7 @@ var Settings = function (log, gmApi, UpgradeHelper, protectedApi) { // jshint ig
      */
     var DefaultConfig = {
         buttonPositionTop: false,
-        buttonPositionLeft: false,
+        buttonPositionLeft: true,
         smallIcon: false,
         personalConfig: true,
         scriptVersion: 2,
@@ -4490,6 +4490,9 @@ var Settings = function (log, gmApi, UpgradeHelper, protectedApi) { // jshint ig
  */
 var UIUtils = function($, protectedApi) { // jshint ignore:line
     var elWidth, elHeight, windowWidth, windowHeight;
+
+    // Stored button anchor position
+    var storedAnchor = {};
 
     /**
      * Make element draggable
@@ -4798,11 +4801,6 @@ var UIUtils = function($, protectedApi) { // jshint ignore:line
         if(outsidePosition.right(pos)) pos.x = - windowWidth + 60;
 
         moveElementTo(element, pos.x, pos.y);
-    };
-
-    var storedAnchor = {
-        top: false,
-        left: false
     };
 
     return {
@@ -6118,6 +6116,7 @@ var IframeController = function ($, settings, uiUtils, gmApi, log, selector, uiV
     var iframePositionOffset = 20;
     var sliderMenuHeight = {advanced: 420, normal: 291};
     var buttonPosition = null;
+    var blockedElementsStyleID = 'ag-hide-elements-style-id';
 
     var views = {};
 
@@ -6278,6 +6277,7 @@ var IframeController = function ($, settings, uiUtils, gmApi, log, selector, uiV
             if (!options) {
                 options = {};
             }
+            options.iframeAnchor = iframeAnchor;
             controller.init(frameElement, options);
             currentItem = viewName;
             onShowMenuItem.notify();
@@ -6326,16 +6326,16 @@ var IframeController = function ($, settings, uiUtils, gmApi, log, selector, uiV
         setCloseEventIfNotHitIframe(false);
     };
 
-    var showSliderMenu = function (initElement, currentElement) {
+    var showSliderMenu = function (initElement, currentElement, path, optionsState) {
         var controller = Ioc.get(SliderMenuController);
-        var options = {element: initElement, dragElement: '.head', currentElement: currentElement};
+        var options = {element: initElement, path: path, dragElement: '.head', currentElement: currentElement, options: optionsState};
         showMenuItem(settings.MenuItemsNames.SliderMenu, controller, menuMaxWidth, 'auto', options);
         setCloseEventIfNotHitIframe(true);
     };
 
-    var showBlockPreview = function (initElement, path, currentElement) {
+    var showBlockPreview = function (initElement, path, currentElement, optionsState) {
         var controller = Ioc.get(BlockPreviewController);
-        var options = {element: initElement, path: path, dragElement: '.head', currentElement: currentElement};
+        var options = {element: initElement, path: path, dragElement: '.head', currentElement: currentElement, options: optionsState};
         showMenuItem(settings.MenuItemsNames.BlockPreview, controller, menuMaxWidth, 'auto', options);
         setCloseEventIfNotHitIframe(true);
     };
@@ -6420,6 +6420,71 @@ var IframeController = function ($, settings, uiUtils, gmApi, log, selector, uiV
         onCloseMenu.notify();
     };
 
+    var hideElementsByPath = function (selectedPath, styleID) {
+        if (!selectedPath) {
+            return false;
+        }
+
+        var selector, style;
+
+        if (selectedPath.indexOf('://') > 0) {
+            // all images by src
+            selector = '[src*="' + selectedPath.split('$domain=')[0] + '"]';
+        } else {
+            selector = selectedPath.split('##')[1];
+        }
+
+        if (selector) {
+            style = selector + '{display:none!important}';
+        } else {
+            log.error('Can`t block element: `selector` path is empty');
+            return false;
+        }
+
+        if (!styleID) {
+            styleID = blockedElementsStyleID;
+        }
+
+        var stylesElement = document.documentElement.querySelector('#' + styleID);
+
+        if (stylesElement) {
+            stylesElement.innerHTML = stylesElement.innerHTML + ' ' + style;
+        } else {
+            document.documentElement.appendChild(protectedApi.createStylesElement(style, getStyleNonce(), styleID));
+        }
+
+        // do not hide assistant div if the user wrote a rule
+        // that blocks all div or iframe elements
+        iframeAnchor.style.setProperty('display', 'block', 'important');
+    };
+
+    // show elements hidden by `hideElementsByPath` function
+    var showHiddenElements = function (styleID) {
+        if (!styleID) {
+            styleID = blockedElementsStyleID;
+        }
+        var stylesElement = document.documentElement.querySelector('#' + styleID);
+
+        if (stylesElement) {
+            stylesElement.parentNode.removeChild(stylesElement);
+        }
+    };
+
+    var blockElement = function (path) {
+        if (gmApi.ADG_addRule) {
+            gmApi.ADG_addRule(path, function () {
+                removeIframe();
+                hideElementsByPath(path);
+                CommonUtils.bypassCache();
+            });
+        } else {
+            addRule(path);
+            removeIframe();
+            hideElementsByPath(path);
+            CommonUtils.bypassCache();
+        }
+    };
+
     return {
         showDetailedMenu: showDetailedMenu,
         showSelectorMenu: showSelectorMenu,
@@ -6432,7 +6497,10 @@ var IframeController = function ($, settings, uiUtils, gmApi, log, selector, uiV
         removeIframe: removeIframe,
         resizeSliderMenuToAdvanced: resizeSliderMenuToAdvanced,
         resizeSliderMenuToNormal: resizeSliderMenuToNormal,
-        resizeIframe: resizeIframe
+        resizeIframe: resizeIframe,
+        hideElementsByPath: hideElementsByPath,
+        showHiddenElements: showHiddenElements,
+        blockElement: blockElement
     };
 };
 
@@ -7194,6 +7262,20 @@ var SliderMenuController = function ($, selector, sliderWidget, settings, adguar
         if (currentElement) {
             onSliderMove(currentElement);
         }
+
+        // make input clickable with right mouse button for text editing
+        CommonUtils.events.add(contentDocument.getElementById('filter-rule'), 'contextmenu', function(e) {
+            e.stopPropagation();
+        });
+
+        if (options.path) {
+            setFilterRuleInputText(options.path);
+            expandAdvanced();
+        }
+
+        if (options.options) {
+            makeDefaultCheckboxesForDetailedMenu(options.options);
+        }
     };
 
     var close = function () {
@@ -7204,10 +7286,12 @@ var SliderMenuController = function ($, selector, sliderWidget, settings, adguar
         var menuEvents = {
             '.close': close,
             '#ExtendedSettingsText': expandAdvanced,
-            '#adv-settings': onScopeChange,
             '#adg-cancel': iframeCtrl.showSelectorMenu,
             '#adg-preview': showPreview,
-            '#adg-accept': blockElement
+            '#adg-accept': blockElement,
+            '#block-by-url-checkbox-block': onScopeChange,
+            '#one-domain-checkbox-block': onScopeChange,
+            '#block-similar-checkbox-block': onScopeChange
         };
         Object.keys(menuEvents).forEach(function (item) {
             $(contentDocument.querySelectorAll(item)).on('click', menuEvents[item]);
@@ -7215,16 +7299,8 @@ var SliderMenuController = function ($, selector, sliderWidget, settings, adguar
     };
 
     var blockElement = function () {
-        if (gmApi.ADG_addRule) {
-            gmApi.ADG_addRule(getFilterRuleInputText(), function () {
-                iframeCtrl.removeIframe();
-                CommonUtils.reloadPageBypassCache();
-            });
-        } else {
-            selectedElement.style.display = 'none';
-            addRule(getFilterRuleInputText());
-            iframeCtrl.removeIframe();
-        }
+        var path = getFilterRuleInputText();
+        iframeCtrl.blockElement(path);
     };
 
     var expandAdvanced = function () {
@@ -7241,7 +7317,13 @@ var SliderMenuController = function ($, selector, sliderWidget, settings, adguar
     };
 
     var showPreview = function () {
-        iframeCtrl.showBlockPreview(selectedElement, getFilterRuleInputText(), startElement);
+        var options = {
+            isBlockByUrl: contentDocument.getElementById('block-by-url-checkbox').checked,
+            isBlockSimilar: contentDocument.getElementById('block-similar-checkbox').checked,
+            isBlockOneDomain: contentDocument.getElementById('one-domain-checkbox').checked
+        };
+
+        iframeCtrl.showBlockPreview(selectedElement, getFilterRuleInputText(), startElement, options);
     };
 
     var createSlider = function (setElement) {
@@ -7307,10 +7389,14 @@ var SliderMenuController = function ($, selector, sliderWidget, settings, adguar
         handleShowBlockSettings(haveUrlBlockParameter(element), haveClassAttribute(element));
     };
 
-    var makeDefaultCheckboxesForDetailedMenu = function () {
-        contentDocument.getElementById('block-by-url-checkbox').checked = false;
-        contentDocument.getElementById('block-similar-checkbox').checked = false;
-        contentDocument.getElementById('one-domain-checkbox').checked = false;
+    var makeDefaultCheckboxesForDetailedMenu = function (options) {
+        contentDocument.getElementById('block-by-url-checkbox').checked = options && options.isBlockByUrl;
+        contentDocument.getElementById('block-similar-checkbox').checked = options && options.isBlockSimilar;
+        contentDocument.getElementById('one-domain-checkbox').checked = options && options.isBlockOneDomain;
+
+        if (options && (options.isBlockByUrl || options.isBlockSimilar)) {
+            handleShowBlockSettings(options.isBlockByUrl, options.isBlockSimilar);
+        }
     };
 
     var onScopeChange = function () {
@@ -7331,6 +7417,7 @@ var SliderMenuController = function ($, selector, sliderWidget, settings, adguar
 
         var ruleText = adguardRulesConstructor.constructRuleText(selectedElement, options);
         setFilterRuleInputText(ruleText);
+        iframeCtrl.resizeIframe();
     };
 
     var haveUrlBlockParameter = function (element) {
@@ -7352,7 +7439,7 @@ var SliderMenuController = function ($, selector, sliderWidget, settings, adguar
 
     var haveClassAttribute = function (element) {
         var className = element.className;
-        return className && className.trim() !== '';
+        return className && typeof className === 'string' && className.trim() !== '';
     };
 
     var handleShowBlockSettings = function (showBlockByUrl, showBlockSimilar) {
@@ -7537,7 +7624,10 @@ var BlockPreviewController = function ($, selector, gmApi, addRule) { // jshint 
     var contentDocument = null;
     var selectedElement = null;
     var selectedPath = null;
+    var iframeAnchor = null;
+    var optionsState = null;
     var iframeCtrl = Ioc.get('iframeController');
+    var previewStyleID = 'ag-preview-style-id';
 
     /*
      Called from IframeController.showMenuItem to initialize view
@@ -7547,6 +7637,8 @@ var BlockPreviewController = function ($, selector, gmApi, addRule) { // jshint 
         selectedPath = options.path;
         currentElement = options.currentElement;
         contentDocument = iframe.contentDocument;
+        iframeAnchor = options.iframeAnchor;
+        optionsState = options.options;
         selector.reset();
         bindEvents();
         hideElement();
@@ -7570,17 +7662,16 @@ var BlockPreviewController = function ($, selector, gmApi, addRule) { // jshint 
     };
 
     var hideElement = function () {
-        if (!selectedElement) {
+        if (!selectedPath) {
+            log.error('Can`t block element: `selector` path is empty');
             return;
         }
-        $(selectedElement).addClass('sg_hide_element');
+
+        iframeCtrl.hideElementsByPath(selectedPath, previewStyleID);
     };
 
     var showElement = function () {
-        if (!selectedElement) {
-            return;
-        }
-        $(selectedElement).removeClass('sg_hide_element');
+        iframeCtrl.showHiddenElements(previewStyleID);
     };
 
     var selectAnotherElement = function () {
@@ -7589,21 +7680,12 @@ var BlockPreviewController = function ($, selector, gmApi, addRule) { // jshint 
     };
 
     var blockElement = function () {
-        if (gmApi.ADG_addRule) {
-            gmApi.ADG_addRule(selectedPath, function () {
-                iframeCtrl.removeIframe();
-                CommonUtils.reloadPageBypassCache();
-            });
-        } else {
-            selectedElement.style.display = 'none';
-            addRule(selectedPath);
-            iframeCtrl.removeIframe();
-        }
+        iframeCtrl.blockElement(selectedPath);
     };
 
     var showDetailedMenu = function () {
         showElement();
-        iframeCtrl.showSliderMenu(currentElement, selectedElement);
+        iframeCtrl.showSliderMenu(currentElement, selectedElement, selectedPath, optionsState);
     };
 
     return {
