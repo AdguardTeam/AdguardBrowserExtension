@@ -549,9 +549,9 @@
                 removeTabFrameInjection: function (tabId, frameId) {
                     if (this[tabId]) {
                         delete this[tabId][frameId];
-                    }
-                    if (this[tabId] && Object.keys(this[tabId]).length === 0) {
-                        delete this[tabId];
+                        if (Object.keys(this[tabId]).length === 0) {
+                            delete this[tabId];
+                        }
                     }
                 },
 
