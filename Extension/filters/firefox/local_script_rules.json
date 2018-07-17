@@ -18,12 +18,48 @@
             "script": "(function() { var sto = window.setTimeout, re = /\\.bab_elementid.$/; window.setTimeout = function(a, b) { if ( typeof a !== 'string' || !re.test(a) ) { return sto(a, b); } }.bind(window); var signatures = [ ['blockadblock'], ['babasbm'], [/getItem\\('babn'\\)/], ['getElementById','String.fromCharCode','ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789','charAt','DOMContentLoaded','AdBlock','addEventListener','doScroll','fromCharCode','<<2|r>>4','sessionStorage','clientWidth','localStorage','Math','random'] ]; var check = function(s) { var tokens, match, j, token, pos; for ( var i = 0; i < signatures.length; i++ ) { tokens = signatures[i]; match = 0; for ( j = 0, pos = 0; j < tokens.length; j++ ) { token = tokens[j]; pos = token instanceof RegExp ? s.search(token) : s.indexOf(token); if ( pos !== -1 ) { match += 1; } } if ( (match / tokens.length) >= 0.8 ) { return true; } } return false; }; var realEval = window.eval; window.eval = function(a) { if ( !check(a) ) { return realEval(a); } var el = document.body; if ( el ) { el.style.removeProperty('visibility'); } el = document.getElementById('babasbmsgx'); if ( el ) { el.parentNode.removeChild(el); } }.bind(window); })();"
         },
         {
-            "domains": "helpsetup.ru",
+            "domains": "ferr-um.ucoz.ru,stalker-mods.clan.su,helpsetup.ru",
             "script": "(function(b){Object.defineProperty(Element.prototype,\"innerHTML\",{get:function(){return b.get.call(this)},set:function(a){/^(?:<([abisuq]) id=\"[^\"]*\"><\\/\\1>)*$/.test(a)||b.set.call(this,a)},enumerable:!0,configurable:!0})})(Object.getOwnPropertyDescriptor(Element.prototype,\"innerHTML\"));"
+        },
+        {
+            "domains": "unit-car.com",
+            "script": "window.blockAdBlock = function() {};"
+        },
+        {
+            "domains": "kinoafisha.ua,simpsonsua.com.ua,glavcom.ua,filmitorrent.org,tabfilm.ru,gagadget.com,dynamo.kiev.ua,fastpic.ru,liga.net,etextlib.ru,okino.ua,kurs.com.ua,kurs.com.ru,isport.ua,football24.ua,lostfilm-online.org,strana.ua,gorod.dp.ua,telegraf.in.ua,24tv.ua,ria-m.tv,kaztorka.org,segodnya.ua,dengi.ua,allboxing.ru",
+            "script": "AG_abortInlineScript(/!function\\(\\)/, 'String.fromCharCode');"
+        },
+        {
+            "domains": "kinoskala.net,mirknig.su,112.ua,kinopad.club,vsetv.com,kp.ua,i.ua,newsyou.info,kino-fs.ucoz.net,censor.net.ua,ex-fs.net,sinoptik.com.ru,vgorode.ua,radikal.ru,hvylya.net,korrespondent.net",
+            "script": "AG_abortInlineScript(/\\/\\*[0-9a-f]{40}\\*\\//, 'String.fromCharCode');"
+        },
+        {
+            "domains": "tushkan-tv.net",
+            "script": "AG_onLoad(function() { for (var key in window) { if (key.indexOf('_0x') == 0) { window[key] = function() { }; } }; });"
+        },
+        {
+            "domains": "tapochek.net",
+            "script": "AG_abortInlineScript(/stop.bind/, 'z');"
         },
         {
             "domains": "zemlyaki.name,sonnikonline.club",
             "script": "AG_abortInlineScript(/\\/rotator/, 'document.addEventListener');"
+        },
+        {
+            "domains": "farap.ru,darkside.ru,sovsport.ru,txapela.ru",
+            "script": "AG_abortInlineScript(/load\\(\\[e\\(atob\\(host\\)/, 'String.fromCharCode');"
+        },
+        {
+            "domains": "primamedia.ru,sobakada.ru,aftershock.news,it-tehnik.ru,modernfirearms.net,izhevsk.ru",
+            "script": "AG_abortInlineScript(/^new \\(function\\(\\)/, 'String.fromCharCode');"
+        },
+        {
+            "domains": "pravda.com.ua,epravda.com.ua,newsyou.info,sinoptik.com.ru,sinoptik.ua",
+            "script": "AG_abortInlineScript(/window/, 'atob');"
+        },
+        {
+            "domains": "tabfilm.ru,the-cinema.club,kinocoin.online",
+            "script": "AG_abortInlineScript(/var/, 'String.fromCharCode');"
         },
         {
             "domains": "vimperor.ru",
@@ -46,8 +82,8 @@
             "script": "Object.defineProperty(window, 'antiadblock', { get: function() { return; } });"
         },
         {
-            "domains": "www.rambler.ru,news.rambler.ru",
-            "script": "Object.defineProperty(Object.prototype, 'checkAdBlockVisability', { set:function(){ throw new Error(); }});"
+            "domains": "rns.online,championat.com,gazeta.ru,lenta.ru,rambler.ru",
+            "script": "AG_abortInlineScript(/!function\\(x\\,n\\,e\\)/, 'String.fromCharCode');"
         },
         {
             "domains": "rns.online,championat.com,gazeta.ru,lenta.ru,rambler.ru",
@@ -118,6 +154,14 @@
             "script": "var empty = { get: function() { return []; }, set: function() {} }; Object.defineProperties(window, { yandex_context_callbacks: empty, yandexContextAsyncCallbacks: empty, yandexContextSyncCallbacks: empty });"
         },
         {
+            "domains": "overclockers.ru",
+            "script": "AG_onLoad(function() { for (var key in window) { if (key.indexOf('a_0x') == 0) { window[key] = []; } }; });"
+        },
+        {
+            "domains": "overclockers.ru",
+            "script": "AG_onLoad(function() { window.chkA = function() {}; window.chkB = function() {}; });"
+        },
+        {
             "domains": "radioscope.in.ua",
             "script": "window.adsbygoogle={loaded:!0}"
         },
@@ -164,14 +208,6 @@
         {
             "domains": "theplace.ru",
             "script": "AG_onLoad(function() { $(\"ins.adsbygoogle\").html(\"anti-antiadblock\"); });"
-        },
-        {
-            "domains": "cnews.ru",
-            "script": "Object.defineProperty(window, '_', { get: function() { return 0; } });"
-        },
-        {
-            "domains": "dugtor.ru",
-            "script": "setTimeout(function() { window.StartAntiAdBlock = function() {} }, 1500);"
         },
         {
             "domains": "3dnews.ru",
@@ -250,12 +286,20 @@
             "script": "Object.defineProperty(window, 'SocialMartDocumentHelper', { get: function() { return function SocialMartDocumentHelper(){} } });"
         },
         {
-            "domains": "nnm-club.tv,rustorka.com,pise4ka.net,nnm-club.me,nnm-club.ws,nnmclub.to,onlainfilm.ucoz.ua,rutor.is,baskino.club,rutor.info,nnm.me,korzik.net,seasonvar.ru,rsload.net,nnm-club.me,nnmclub.to,rustorka.com,auto.mail.ru,horo.mail.ru,realty.mail.ru,health.mail.ru,afisha.mail.ru,cloud.mail.ru,otvet.mail.ru,pogoda.mail.ru,sport.mail.ru,tv.mail.ru,torg.mail.ru,cars.mail.ru,hi-tech.mail.ru,free-torrent.org,free-torrents.org,ukrinform.ru,radikal.ru,trackeroc.ru,trackerock.ru",
-            "script": "window.WebSocket = undefined;"
+            "domains": "repack.app",
+            "script": "Object.defineProperty(window, 'PopShow3', { get: function() { return; } });"
+        },
+        {
+            "domains": "eworldmedia.info",
+            "script": "Object.defineProperty(window, 'PopunderShown', { get: function() { return true; } });"
+        },
+        {
+            "domains": "ivi-video.com,kinosafe.net",
+            "script": "Object.defineProperty(window, 'cur_time', { value: 0});"
         },
         {
             "domains": "gamer-info.com",
-            "script": "Object.defineProperty(window, 'vFABLpWeReallyNeedToSpotDoingThis', { value: false });"
+            "script": "Object.defineProperty(window, 'vFABLpHiAgain', { value: false }); console.log('Hello:)');"
         },
         {
             "domains": "milf-hd.org",
@@ -278,7 +322,7 @@
             "script": "AG_abortInlineScript(/place_rvn/, 'document.addEventListener');"
         },
         {
-            "domains": "spaces.ru",
+            "domains": "spcs.me",
             "script": "Object.defineProperty(window, 'mobiads_loader', { get: function() { return function(){}; } });"
         },
         {
@@ -358,10 +402,6 @@
             "script": "AG_onLoad(function() { for (var key in window) { if (key.indexOf('AD_DOMAIN_URL') == 0) { window[key] = undefined; } }; });"
         },
         {
-            "domains": "smotret-anime.ru",
-            "script": "window.atob = function() { };"
-        },
-        {
             "domains": "tushkan.club,hdrezka.ag",
             "script": "(function() { var _eval = window.eval; window.eval = function(a) { if ( a.toString().indexOf('charCodeAt') === -1 ) { _eval(a); return; } }; })();"
         },
@@ -430,7 +470,7 @@
             "script": "Object.defineProperty(window, 'AddEvents', { get: function() { return; } });"
         },
         {
-            "domains": "hdrezka.ag,hdrezka.su,hdrezka.pro",
+            "domains": "hdrezka.ag,hdrezka.pro",
             "script": "AG_onLoad(function() { document.querySelector('body').style.cssText+=';padding-top: 0!important'; });"
         },
         {
@@ -548,10 +588,6 @@
         {
             "domains": "46.30.46.35",
             "script": "Object.defineProperty(window, 'MTretCKed', { get: function() { return false; } });"
-        },
-        {
-            "domains": "3dnews.ru",
-            "script": "Object.defineProperty(window, 'mobilev', { get: function() { return true; } });"
         },
         {
             "domains": "forum.militarist.ua",
@@ -834,11 +870,11 @@
             "script": "(function() { var noopfn = function() {;}; var Fab = function() {}; Fab.prototype.check = noopfn; Fab.prototype.clearEvent = noopfn;  Fab.prototype.emitEvent = noopfn; Fab.prototype.on = function(a, b) { if ( !a ) { b(); } return this; }; Fab.prototype.onDetected = function() {  return this; }; Fab.prototype.onNotDetected = function(a) { a(); return this; }; Fab.prototype.setOption = noopfn; var fab = new Fab(),  getSetFab = { get: function() { return Fab; }, set: function() {} }, getsetfab = { get: function() { return fab; }, set: function() {} }; if ( window.hasOwnProperty('FuckAdBlock') ) { window.FuckAdBlock = Fab; } else { Object.defineProperty(window, 'FuckAdBlock', getSetFab); } if ( window.hasOwnProperty('BlockAdBlock') ) { window.BlockAdBlock = Fab; } else {Object.defineProperty(window, 'BlockAdBlock', getSetFab); } if ( window.hasOwnProperty('SniffAdBlock') ) { window.SniffAdBlock = Fab; } else { Object.defineProperty(window, 'SniffAdBlock', getSetFab); } if ( window.hasOwnProperty('fuckAdBlock') ) { window.fuckAdBlock = fab; } else { Object.defineProperty(window, 'fuckAdBlock', getsetfab); } if ( window.hasOwnProperty('blockAdBlock') ) { window.blockAdBlock = fab; } else { Object.defineProperty(window, 'blockAdBlock', getsetfab); } if ( window.hasOwnProperty('sniffAdBlock') ) { window.sniffAdBlock = fab; } else { Object.defineProperty(window, 'sniffAdBlock', getsetfab); } })();"
         },
         {
-            "domains": "sol.dk,newz.dk,repo.hackyouriphone.org,donnaglamour.it,ripple.is,windows7forum.pl,weatherx.co.in,dwatchseries.to,proapkmod.com,faucetgame.com,gamefaucet.com,viki.com,cryptoracers.com,anime47.com,funimation.com,shareinfo.pl,animeku.tv,myanimelist.net,gotceleb.com,mooma.sh",
+            "domains": "wordgames.com,s-kip.eu,mobinozer.com,coolgames.com,likn.xyz,repo.xarold.com,cpmlink.net,mylivesignature.com,winhelp.us,kuchnia-domowa.pl,commentimemorabili.it,sol.dk,newz.dk,repo.hackyouriphone.org,donnaglamour.it,ripple.is,windows7forum.pl,weatherx.co.in,dwatchseries.to,proapkmod.com,faucetgame.com,gamefaucet.com,viki.com,cryptoracers.com,anime47.com,funimation.com,shareinfo.pl,animeku.tv,myanimelist.net,gotceleb.com,mooma.sh",
             "script": "(function() { var noopfn = function() {;}; var Fab = function() {}; Fab.prototype.check = noopfn; Fab.prototype.clearEvent = noopfn;  Fab.prototype.emitEvent = noopfn; Fab.prototype.on = function(a, b) { if ( !a ) { b(); } return this; }; Fab.prototype.onDetected = function() {  return this; }; Fab.prototype.onNotDetected = function(a) { a(); return this; }; Fab.prototype.setOption = noopfn; var fab = new Fab(),  getSetFab = { get: function() { return Fab; }, set: function() {} }, getsetfab = { get: function() { return fab; }, set: function() {} }; if ( window.hasOwnProperty('FuckAdBlock') ) { window.FuckAdBlock = Fab; } else { Object.defineProperty(window, 'FuckAdBlock', getSetFab); } if ( window.hasOwnProperty('BlockAdBlock') ) { window.BlockAdBlock = Fab; } else {Object.defineProperty(window, 'BlockAdBlock', getSetFab); } if ( window.hasOwnProperty('SniffAdBlock') ) { window.SniffAdBlock = Fab; } else { Object.defineProperty(window, 'SniffAdBlock', getSetFab); } if ( window.hasOwnProperty('fuckAdBlock') ) { window.fuckAdBlock = fab; } else { Object.defineProperty(window, 'fuckAdBlock', getsetfab); } if ( window.hasOwnProperty('blockAdBlock') ) { window.blockAdBlock = fab; } else { Object.defineProperty(window, 'blockAdBlock', getsetfab); } if ( window.hasOwnProperty('sniffAdBlock') ) { window.sniffAdBlock = fab; } else { Object.defineProperty(window, 'sniffAdBlock', getsetfab); } })();"
         },
         {
-            "domains": "worldfreeware.com,loadvid.online,satoshimonster.com,satoshihero.com,mp4mania.xyz,onvasortir.com,o2tvseries.com,paladinsdecks.com,proiezionidiborsa.it,mountainbike-magazin.de,win10.vn,layer13.net,camhue.com,sgxnifty.org,manta.com,pressgazette.co.uk,soft4win.com,aphim.co,1337x.info",
+            "domains": "thesurfersview.com,hdmp4mania.me,androidaba.com,vcstream.to,worldfreeware.com,loadvid.online,satoshimonster.com,satoshihero.com,mp4mania.xyz,onvasortir.com,o2tvseries.com,paladinsdecks.com,proiezionidiborsa.it,mountainbike-magazin.de,win10.vn,layer13.net,camhue.com,sgxnifty.org,manta.com,pressgazette.co.uk,soft4win.com,aphim.co,1337x.info",
             "script": "(function() { var noopfn = function() {;}; var Fab = function() {}; Fab.prototype.check = noopfn; Fab.prototype.clearEvent = noopfn;  Fab.prototype.emitEvent = noopfn; Fab.prototype.on = function(a, b) { if ( !a ) { b(); } return this; }; Fab.prototype.onDetected = function() {  return this; }; Fab.prototype.onNotDetected = function(a) { a(); return this; }; Fab.prototype.setOption = noopfn; var fab = new Fab(),  getSetFab = { get: function() { return Fab; }, set: function() {} }, getsetfab = { get: function() { return fab; }, set: function() {} }; if ( window.hasOwnProperty('FuckAdBlock') ) { window.FuckAdBlock = Fab; } else { Object.defineProperty(window, 'FuckAdBlock', getSetFab); } if ( window.hasOwnProperty('BlockAdBlock') ) { window.BlockAdBlock = Fab; } else {Object.defineProperty(window, 'BlockAdBlock', getSetFab); } if ( window.hasOwnProperty('SniffAdBlock') ) { window.SniffAdBlock = Fab; } else { Object.defineProperty(window, 'SniffAdBlock', getSetFab); } if ( window.hasOwnProperty('fuckAdBlock') ) { window.fuckAdBlock = fab; } else { Object.defineProperty(window, 'fuckAdBlock', getsetfab); } if ( window.hasOwnProperty('blockAdBlock') ) { window.blockAdBlock = fab; } else { Object.defineProperty(window, 'blockAdBlock', getsetfab); } if ( window.hasOwnProperty('sniffAdBlock') ) { window.sniffAdBlock = fab; } else { Object.defineProperty(window, 'sniffAdBlock', getsetfab); } Object.defineProperty(window, 'adBlockDetected', getsetfab); })();"
         },
         {
@@ -846,7 +882,7 @@
             "script": "(function() { var sto = window.setTimeout, re = /\\.bab_elementid.$/; window.setTimeout = function(a, b) { if ( typeof a !== 'string' || !re.test(a) ) { return sto(a, b); } }.bind(window); var signatures = [ ['blockadblock'], ['babasbm'], [/getItem\\('babn'\\)/], ['getElementById','String.fromCharCode','ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789','charAt','DOMContentLoaded','AdBlock','addEventListener','doScroll','fromCharCode','<<2|r>>4','sessionStorage','clientWidth','localStorage','Math','random'] ]; var check = function(s) { var tokens, match, j, token, pos; for ( var i = 0; i < signatures.length; i++ ) { tokens = signatures[i]; match = 0; for ( j = 0, pos = 0; j < tokens.length; j++ ) { token = tokens[j]; pos = token instanceof RegExp ? s.search(token) : s.indexOf(token); if ( pos !== -1 ) { match += 1; } } if ( (match / tokens.length) >= 0.8 ) { return true; } } return false; }; var realEval = window.eval; window.eval = function(a) { if ( !check(a) ) { return realEval(a); } var el = document.body; if ( el ) { el.style.removeProperty('visibility'); } el = document.getElementById('babasbmsgx'); if ( el ) { el.parentNode.removeChild(el); } }.bind(window); })();"
         },
         {
-            "domains": "freeiptv.life,deadtoonsindia.com,script-stack.com,freemcserver.net,silicongadget.com,intoupload.com,clk.press,macappdownload.com,damasgate.com,itdunya.pk,ak77now.pixnet.net,education-load.com,fuyufs.com,gamecode.win,pes-patch.com,kodi-tutorials.uk,wallpaperenginefree.com,adsrt.com,hdbox.ws,utmn.gnomio.com,arenavision2017.ga,arenavision2018.ml,arenavision2018.tk,arenavision2018.gq,movieforhd.com,900hub.pw,artikeltekno.com,zlounge.co,e-dokument.org,znaki.vxm.pl,funtastic-vids.com,jh800.pw,faucetcrypto.com,blogthetech.com,kissmanga.com,watchtheofficeonline.net,forum.mgame.us,niagotch.com,watchhouseonline.net,watch30rockonline.com,watchbreakingbad.online,watchtopgearonline.net,watchrickandmorty.online,watchcurbyourenthusiasm.com,watchthexfiles.com,watchsmallvilleonline.net,watchfearthewalkingdead.net,watchpsychonline.net,watchcheersonline.com,iwatchseries.online,watchhowimetyourmother.com,watchscrubsonline.com,watchthesopranos.com,watchdoctorwhoonline.com,watchkingofthehill.com,watcheverybodylovesraymond.com,watchitsalwayssunnyinphiladelphia.com,watchsupernaturalonline.cc,watchprisonbreakonline.com,watcharresteddevelopment.com,watcharcheronline.com,watchsouthpark.online,watchamericandad.net,iwatchgot.com,watchseinfeld.com,watchparksandrecreation.net,watchthewalkingdead.online,watchfriendsonline.net,gay69.stream,gifswithsound.eu,platinmods.com,tecknity.com,easylife.tw,allvideos.me,bella-thorne.org,stefaniescott.org,audioz.cc,jh900.pw,dopedgeeks.com,automobile-catalog.com,hotcoins.cf,sukkisukki.com,livetvcafe.me,skmedix.pl,hentaicore.org,iptvbin.com,techtunes.com.bd,losslessbests.com,hyperdebrid.download,jh333.pw,proxybunker.online,majesy.com,magesy.eu,getmyfile.ga,vipervenom.net,macbed.com,yourlifeupdated.net,baqiworld.com,ez3c.tw",
+            "domains": "intoupload.net,hightech.web.id,sportbh.stream,dream-sound.com,dove-cameron.org,forum.darksoftware.net,ani-share.com,serialwale.com,findwords.info,bestarticles.me,ilcorsaroblu.info,galaxy.gala100.net,autoiptv.net,wizblogger.com,uploadbank.com,imaginetricks.com,winhelp.us,topzone.lt,bail-bonds.me,wallpaper-house.com,gamemod.mobi,vivads.net,maclife.vn,mytechnopedia.com,streamlord.com,manga-best.com,aphim.co,apnetv.tv,thefirmwareclub.com,onlinevideoconverter.com,sorcerers.net,topvideosgay.com,skyfaucet.win,leakforums.co,0mniscient.github.io,contract-miner.com,appvn.com,freemobilefirmware.com,geomedia.gala100.net,extraimage.co,vietmod.pro,watchtheoffice.online,thoptv.online,maritimeherald.com,mcoc-guide.blogspot.co.uk,mcoc-guide.blogspot.com,mcoc-guide.blogspot.in,freeiptv.life,deadtoonsindia.com,script-stack.com,freemcserver.net,silicongadget.com,intoupload.com,clk.press,macappdownload.com,damasgate.com,itdunya.pk,ak77now.pixnet.net,education-load.com,fuyufs.com,gamecode.win,pes-patch.com,kodi-tutorials.uk,wallpaperenginefree.com,adsrt.com,hdbox.ws,utmn.gnomio.com,arenavision2017.ga,arenavision2018.ml,arenavision2018.tk,arenavision2018.gq,movieforhd.com,900hub.pw,artikeltekno.com,zlounge.co,e-dokument.org,znaki.vxm.pl,funtastic-vids.com,jh800.pw,faucetcrypto.com,blogthetech.com,kissmanga.com,watchtheofficeonline.net,forum.mgame.us,niagotch.com,watchhouseonline.net,watch30rockonline.com,watchbreakingbad.online,watchtopgearonline.net,watchrickandmorty.online,watchcurbyourenthusiasm.com,watchthexfiles.com,watchsmallvilleonline.net,watchfearthewalkingdead.net,watchpsychonline.net,watchcheersonline.com,iwatchseries.online,watchhowimetyourmother.com,watchscrubsonline.com,watchthesopranos.com,watchdoctorwhoonline.com,watchkingofthehill.com,watcheverybodylovesraymond.com,watchitsalwayssunnyinphiladelphia.com,watchsupernaturalonline.cc,watchprisonbreakonline.com,watcharresteddevelopment.com,watcharcheronline.com,watchsouthpark.online,watchamericandad.net,iwatchgot.com,watchseinfeld.com,watchparksandrecreation.net,watchthewalkingdead.online,watchfriendsonline.net,gay69.stream,gifswithsound.eu,platinmods.com,tecknity.com,easylife.tw,allvideos.me,bella-thorne.org,stefaniescott.org,audioz.cc,jh900.pw,dopedgeeks.com,automobile-catalog.com,hotcoins.cf,sukkisukki.com,livetvcafe.me,skmedix.pl,hentaicore.org,iptvbin.com,techtunes.com.bd,losslessbests.com,hyperdebrid.download,jh333.pw,proxybunker.online,majesy.com,magesy.eu,getmyfile.ga,vipervenom.net,macbed.com,yourlifeupdated.net,baqiworld.com,ez3c.tw",
             "script": "(function() { var sto = window.setTimeout, re = /\\.bab_elementid.$/; window.setTimeout = function(a, b) { if ( typeof a !== 'string' || !re.test(a) ) { return sto(a, b); } }.bind(window); var signatures = [ ['blockadblock'], ['babasbm'], [/getItem\\('babn'\\)/], ['getElementById','String.fromCharCode','ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789','charAt','DOMContentLoaded','AdBlock','addEventListener','doScroll','fromCharCode','<<2|r>>4','sessionStorage','clientWidth','localStorage','Math','random'] ]; var check = function(s) { var tokens, match, j, token, pos; for ( var i = 0; i < signatures.length; i++ ) { tokens = signatures[i]; match = 0; for ( j = 0, pos = 0; j < tokens.length; j++ ) { token = tokens[j]; pos = token instanceof RegExp ? s.search(token) : s.indexOf(token); if ( pos !== -1 ) { match += 1; } } if ( (match / tokens.length) >= 0.8 ) { return true; } } return false; }; var realEval = window.eval; window.eval = function(a) { if ( !check(a) ) { return realEval(a); } var el = document.body; if ( el ) { el.style.removeProperty('visibility'); } el = document.getElementById('babasbmsgx'); if ( el ) { el.parentNode.removeChild(el); } }.bind(window); })();"
         },
         {
@@ -862,15 +898,15 @@
             "script": "AG_abortInlineScript(/,displayMessage:/, 'document.addEventListener');"
         },
         {
-            "domains": "micloudfiles.com,file-upload.com,toptech360.com,siteneverdown.xyz,androgalaxy.in,torrentevo.blogspot.com,viewingcat.tistory.com,kpliker.net,smarturlref.net,go-ez.net,dz4soft.blogspot.de,dz4soft.blogspot.com,free-premium.maxidbr.com,telolet.in,mimaletadepeliculas.blogspot.de,mimaletadepeliculas.blogspot.com,voipsipclient.blogspot.com,voipsipclient.blogspot.nl,cryptovertise.tk,mamahd.tv,antiblock.org,dinostream.pw,verdirectotv.com,stadium-live.biz",
+            "domains": "animeforce.stream,anonyviet.com,javhay.net,hexafile.net,subfb.us,neko-miku.com,visionias.net,micloudfiles.com,file-upload.com,toptech360.com,siteneverdown.xyz,androgalaxy.in,torrentevo.blogspot.com,viewingcat.tistory.com,kpliker.net,smarturlref.net,go-ez.net,dz4soft.blogspot.de,dz4soft.blogspot.com,free-premium.maxidbr.com,telolet.in,mimaletadepeliculas.blogspot.de,mimaletadepeliculas.blogspot.com,voipsipclient.blogspot.com,voipsipclient.blogspot.nl,cryptovertise.tk,mamahd.tv,antiblock.org,dinostream.pw,verdirectotv.com,stadium-live.biz",
             "script": "AG_abortInlineScript(/google_ad_client/, 'document.addEventListener');"
         },
         {
-            "domains": "everydayhealth.com,xda-developers.com,windowscentral.com,motortrend.com,medicinenet.com,wowhead.com,laptopmag.com",
+            "domains": "tvtropes.org,gamespot.com,everydayhealth.com,xda-developers.com,windowscentral.com,motortrend.com,medicinenet.com,wowhead.com,laptopmag.com",
             "script": "(function() { var consoleLog = window.console.log; console.log = function(arg) { if (arg) { arg.toString(); } consoleLog.apply(this, arguments); } })();"
         },
         {
-            "domains": "gamepedia.com,vg.no,tenplay.com.au,livescience.com,boston.com,newsarama.com,tomsguide.com,chicagotribune.com,emedicinehealth.com,spox.com,motortrend.com,sporcle.com,space.com,cnet.com,tvguide.com,msn.com,metacritic.com,salon.com,tomshardware.co.uk,tomshardware.com",
+            "domains": "workingmother.com,gamepedia.com,vg.no,tenplay.com.au,livescience.com,boston.com,newsarama.com,tomsguide.com,chicagotribune.com,emedicinehealth.com,spox.com,motortrend.com,sporcle.com,space.com,cnet.com,tvguide.com,msn.com,metacritic.com,salon.com,tomshardware.co.uk,tomshardware.com",
             "script": "AG_abortInlineScript(/INSTART_TARGET_NAME/i, 'parseInt');"
         },
         {
@@ -890,7 +926,7 @@
             "script": "(function(b,d,e){function a(){}b={get:function(){return a},set:a},d={};Object.defineProperties(d,{spid_control_callback:b,content_control_callback:b,vid_control_callback:b});e=new Proxy({},{get:function(a,c){switch(c){case \"config\":return d;case \"_setSpKey\":throw Error();default:return a[c]}},set:function(a,c,b){switch(c){case \"config\":return!0;case \"bootstrap\":case \"mms\":return a[c]=b,!0;default:throw Error();}}});Object.defineProperty(window,\"_sp_\",{get:function(){return e},set:a})})();"
         },
         {
-            "domains": "evo.co.uk,southwalesargus.co.uk,swindonadvertiser.co.uk,theargus.co.uk,theboltonnews.co.uk,thetelegraphandargus.co.uk,eveningtimes.co.uk,dailyecho.co.uk,oxfordmail.co.uk,southwalesargus.co.uk,huffingtonpost.co.uk,radiotimes.com,huffingtonpost.com,gamesradar.com,giga.de,gamona.de,erdbeerlounge.de,chip.de",
+            "domains": "vg247.com,evo.co.uk,southwalesargus.co.uk,swindonadvertiser.co.uk,theargus.co.uk,theboltonnews.co.uk,thetelegraphandargus.co.uk,eveningtimes.co.uk,dailyecho.co.uk,oxfordmail.co.uk,southwalesargus.co.uk,huffingtonpost.co.uk,radiotimes.com,huffingtonpost.com,gamesradar.com,giga.de,gamona.de,erdbeerlounge.de,chip.de",
             "script": "(function(o){function a(a){return{get:function(){return a},set:b}}function b(){}function c(){throw\"Adguard: stopped a script execution.\";}var d={},e=a(function(a){a(!1)}),f={},g=EventTarget.prototype.addEventListener;o(d,{spid_control_callback:a(b),content_control_callback:a(b),vid_control_callback:a(b)});o(f,{config:a(d),_setSpKey:{get:c,set:c},checkState:e,isAdBlocking:e,getSafeUri:a(function(a){return a}),pageChange:a(b),setupSmartBeacons:a(b)});Object.defineProperty(window,\"_sp_\",a(f));EventTarget.prototype.addEventListener=function(a){\"sp.blocking\"!=a&&\"sp.not_blocking\"!=a&&g.apply(this,arguments)}})(Object.defineProperties);"
         },
         {
@@ -910,11 +946,11 @@
             "script": "window.TextDecoder = function(){};"
         },
         {
-            "domains": "colourlovers.com",
+            "domains": "youtubeonrepeat.com,colourlovers.com",
             "script": "AG_abortInlineScript(/window\\.TextDecoder/, 'window.addEventListener');"
         },
         {
-            "domains": "uploadfiles.io,newatlas.com,gamesgames.com,a10.com,africam.com,addictivetips.com,cultofmac.com,chicagoreader.com,crackberry.com,imore.com,onmsft.com,post-gazette.com,sanfoundry.com,thewindowsclub.com,windowscentral.com",
+            "domains": "fallbrook247.com,uploadfiles.io,newatlas.com,gamesgames.com,a10.com,africam.com,addictivetips.com,cultofmac.com,chicagoreader.com,crackberry.com,imore.com,onmsft.com,post-gazette.com,sanfoundry.com,thewindowsclub.com,windowscentral.com",
             "script": "!function(a,c,b){a&&(Promise=function(e){if('function'!=typeof e)throw new TypeError(e+' is not a function');for(var f=c.call(e),d=0,g=b.length;d<g;d++)if(b[d][0].test(f))return b[d][1]?a.reject(b[d][2]):a.resolve(b[d][2]);return new a(e)},Object.getOwnPropertyNames(a).forEach(function(b){Object.defineProperty(Promise,b,Object.getOwnPropertyDescriptor(a,b))}),a.prototype.constructor=Promise)}(window.Promise,Function.prototype.toString,[[/\\.MozBinding\\.indexOf\\([\"']abp-/],[/\\.parentNode\\.removeChild\\([\\s\\S]*?\\.removeEventListener\\(\"error\"[\\s\\S]*?\\.createElement\\([\\s\\S]*?\\.getElementsByTagName\\(\"head\"/,,1],[/\\.createElement\\(\"iframe\"[\\s\\S]*?URL\\.createObjectURL\\(new Blob\\(\\[\"\"/],[/\\.getPropertyValue\\(\"display\"\\)[\\s\\S]*?\\/tpc\\.googlesyndication[\\s\\S]*?\\.addEventListener\\([\"']message[\"']/,1]]);"
         },
         {
@@ -938,6 +974,14 @@
             "script": "!function(b,a){AG_defineProperty('CloudflareApps.installs',{get:function(){return a instanceof Object&&Object.getOwnPropertyNames(a).forEach(function(c){a[c].appId=='ziT6U3epKObS'&&Object.defineProperty(a[c],'URLPatterns',{value:b})}),a},set:function(b){a=b}})}(Object.seal([/(?!)/]));"
         },
         {
+            "domains": "dot.ro",
+            "script": "!function(b,a){AG_defineProperty('CloudflareApps.installs',{get:function(){return a instanceof Object&&Object.getOwnPropertyNames(a).forEach(function(c){a[c].appId=='ziT6U3epKObS'&&Object.defineProperty(a[c],'URLPatterns',{value:b})}),a},set:function(b){a=b}})}(Object.seal([/(?!)/]));"
+        },
+        {
+            "domains": "accuweather.com",
+            "script": "AG_abortInlineScript(/p.d.e0mn.com/, 'Date');"
+        },
+        {
             "domains": "poststar.com,stltoday.com",
             "script": "AG_abortInlineScript(/emn0.com/, 'navigator');"
         },
@@ -954,16 +998,84 @@
             "script": "var _x;Object.defineProperty(window,\"x\",{get:function(){return _x},set:function(a){var b=a.toString();0==b.indexOf(\"eval(function(p,a,c,k,e,d\")&&/adblock/i.test(b)||(_x=a)}});"
         },
         {
-            "domains": "newsland.com,kimcartoon.me,sunhome.ru,bigtorrent.org,tivix.co,4chan.org,tele.ru,0day.kiev.ua,112.ua,24boxing.com.ua,24tv.ua,5.ua,5litra.ru,allboxing.ru,allday2.com,alluc.com,alluc.ee,altapress.ru,animeflv.me,animeget.ch,animeget.tv,animeid.io,animekade.com,animekb.com,animereborn.co,aniorion.com,antidiary.com,audioboo.ru,autoua.net,avtodispetcher.ru,avtovod.org.ua,azov-sea.info,baskino.co,baskino.me,beztabu.net,bigmir.net,bilshe.com,bitvid.sx,blackboxrepack.com,bmovies.is,bookre.org,bookree.org,boxnews.com.ua,buhgalter.com.ua,buhgalter911.com,bukvar.su,businessua.com,byhgalter.com,car.ru,censor.net.ua,chia-anime.tv,chiaanime.co,chtyvo.org.ua,cikavosti.com,cinema-hd.tv,cn.ru,comments.ua,cxid.info,dailymotiontomp3.com,dengi.ua,depo.ua,detectivebooks.ru,dextv.net,dinoklafbzor.org,dokonlin.ru,doramatv.ru,dovidka.biz.ua,dsnews.ua,dwatchseries.to,dynamo.kiev.ua,economics-prorok.com,eizvestia.com,ekabu.ru,eknigi.org,elise.com.ua,estrenos10.com,etextlib.ru,ex-fs.net,expres.ua,extendedunlimited.org,f1analytic.com,facenews.ua,fakty.ua,fan-tv.ru,fanread.ru,fast-torrent.ru,fastpic.ru,fightsday.com,filmaon.com,filmix.info,filmix.me,filmxy.me,finance.ua,findanime.me,fontanka.fm,fontanka.ru,football-ukraine.com,football24.ua,footballgazeta.com,footballtransfer.com.ua,forumodua.com,fotokto.ru,fritchy.com,gagadget.com,gameorplay.info,gazeta.ua,getwall.ru,glavcom.ua,glavpost.com,gogetnews.info,gogoanime.io,grouple.co,guru.ua,hd-1080.com,hd-dream.ru,hdkinohit.net,hdkinoset.org,headinsider.net,hronika.info,hvylya.net,hyser.com.ua,i.ua,igra-prestoloff.biz,igra-prestoloff.com,imperiya.by,indiankino.net,inforesist.org,irr.ua,isport.ua,it-like.ru,jkanime.co,kaktus.site,kaztorka.org,khazin.ru,kidstaff.com.ua,kimcartoon.me,kino-dom.org,kino-dom.tv,kino-hd1080.ru,kino-live2.org,kinoafisha.ua,kinogo-hd.pro,kinohome.net,kinomaxpro.com,kinotan.ru,kinozal.tv,klerk.ru,kolobok.ua,korrespondent.net,korupciya.com,kp.ua,kriminal.tv,krutor.org,kurs.com.ua,lavamovies.com,lessons.com.ua,librebook.ru,liga.net,linx.cloud,look.com.ua,lostfilm-hd720.ru,love.ua,lugradar.net,luxlux.net,lvivexpres.com,m24.ru,mabila.ua,makataka.ru,mama.ua,mash-xxl.info,maximum.fm,meta.ua,metodportal.net,mibius.com.ua,mil.in.ua,minfin.com.ua,mintmanga.com,mport.ua,mrutor.org,my-hit.fm,myledi.net,mynnm.ru,nashamama.com,nashasvadba.ua,newdeaf-online.net,newsyou.info,nnm-club-me.appspot.com,nnm-club.lib,nnm-club.me,nnm-club.name,nnm-club.tv,nnm.me,nnm2.com,nnmclub.to,nnovosti.info,novosti-n.org,novostionline.net,novostivmire.com,nowvideo.sx,nowwatchtvlive.cc,nwanime.com,obozrevatel.com,obsuzhday.com,ok-tv.org,okino.ua,oklivetv.com,online-freebee.ru,onpress.info,ostfilm.org,ostrnum.com,ostro.org,padabum.com,padaread.com,peers.tv,postimg.org,pravda.com.ua,pure-t.ru,putin-today.ru,putlocker.io,qp.ua,radikal.ru,radio24.ua,radnuk.info,rbc.ua,real-vin.com,ria-m.tv,rian.com.ua,ringside24.com,romanbook.ru,rumedia.ws,rus-porno.org,rustorka.com,scribble.su,seasonvar.ru,seedoff.cc,seedoff.tv,segodnya.ua,seria-z.net,serialbox.org,simpsonsua.com.ua,sinoptik.com.ru,sinoptik.ua,skidrowcrack.com,smak.ua,smotri-filmi.co,sockshare.net,socportal.info,solarmovie.net,sport.ua,sportanalytic.com,sprashivalka.com,stereotraker.ru,strana.ua,subject.com.ua,tchkcdn.com,tfile.cc,the-cinema.net,tochka.net,toneto.net,tribuna.com,tushkan.net,tv.ua,tvgid.ua,tvonlinegratis1.com,tvplayvideos.com,tvtorrent.su,u-news.com.ua,ubr.ua,uchim.org,udoktora.net,ukrinform.ua,ukrlib.com.ua,ukrlit.net,unian.net,v-androide.com,vchaspik.ua,vesti-ukr.com,vesti.ru,vesti.ua,vgorode.ua,videolike.org,vimeotomp3.com,vklasse.org,vmirechudes.com,voroniny-online.net,vseserialy.org,vsetv.com,vshkole.com,watch32.is,watchcartoononline.com,webcam.guru.ua,webpark.ru,wikibit.me,woman.ua,womanhappiness.ru,wow-helper.com,yahooeu.ru,youtubecomtomp3.com,yummyanime.com,zarlit.com,zaxid.net,zdorovia.com.ua,zhzh.info,zk.fm,zona-film.com,zoo-dom.com.ua,кинопират.рф",
+            "domains": "smotriserial.me,newsland.com,kimcartoon.me,sunhome.ru,bigtorrent.org,tivix.co,4chan.org,tele.ru,0day.kiev.ua,112.ua,24boxing.com.ua,5.ua,5litra.ru,allboxing.ru,allday2.com,alluc.com,alluc.ee,altapress.ru,animeflv.me,animeget.ch,animeget.tv,animeid.io,animekade.com,animekb.com,animereborn.co,aniorion.com,antidiary.com,audioboo.ru,autoua.net,avtodispetcher.ru,avtovod.org.ua,azov-sea.info,baskino.co,baskino.me,beztabu.net,bigmir.net,bilshe.com,bitvid.sx,blackboxrepack.com,bmovies.is,bookre.org,bookree.org,boxnews.com.ua,buhgalter.com.ua,buhgalter911.com,bukvar.su,businessua.com,byhgalter.com,car.ru,censor.net.ua,chia-anime.tv,chiaanime.co,chtyvo.org.ua,cikavosti.com,cinema-hd.tv,cn.ru,comments.ua,cxid.info,dailymotiontomp3.com,dengi.ua,depo.ua,detectivebooks.ru,dextv.net,dinoklafbzor.org,dokonlin.ru,doramatv.ru,dovidka.biz.ua,dsnews.ua,dwatchseries.to,economics-prorok.com,eizvestia.com,ekabu.ru,eknigi.org,elise.com.ua,estrenos10.com,etextlib.ru,expres.ua,extendedunlimited.org,f1analytic.comfakty.ua,fan-tv.ru,fanread.ru,fast-torrent.ru,fightsday.com,filmaon.com,filmix.info,filmix.me,filmxy.me,finance.ua,findanime.me,fontanka.fm,fontanka.ru,football-ukraine.com,football24.ua,footballgazeta.com,footballtransfer.com.ua,fotokto.ru,fritchy.com,gameorplay.info,gazeta.ua,getwall.ru,glavpost.com,gogetnews.info,gogoanime.io,grouple.co,guru.ua,hd-1080.com,hd-dream.ru,hdkinohit.net,hdkinoset.org,headinsider.net,hronika.info,hyser.com.ua,i.ua,igra-prestoloff.biz,igra-prestoloff.com,imperiya.by,indiankino.net,inforesist.org,irr.ua,isport.ua,it-like.ru,jkanime.co,kaktus.site,kaztorka.org,khazin.ru,kidstaff.com.ua,kimcartoon.me,kino-dom.org,kino-dom.tv,kino-hd1080.ru,kino-live2.org,kinoafisha.ua,kinogo-hd.pro,kinohome.net,kinomaxpro.com,kinotan.ru,kinozal.tv,klerk.ru,kolobok.ua,korrespondent.net,korupciya.com,kp.ua,kriminal.tv,krutor.org,kurs.com.ua,lavamovies.com,lessons.com.ua,librebook.ru,liga.net,linx.cloud,look.com.ua,lostfilm-hd720.ru,love.ua,lugradar.net,luxlux.net,lvivexpres.com,m24.ru,mabila.ua,makataka.ru,mama.ua,mash-xxl.info,maximum.fm,meta.ua,metodportal.net,mibius.com.ua,mil.in.ua,minfin.com.ua,mintmanga.com,mport.ua,mrutor.org,my-hit.fm,myledi.net,mynnm.ru,nashamama.com,nashasvadba.ua,newdeaf-online.net,newsyou.info,nnm-club-me.appspot.com,nnm-club.lib,nnm-club.me,nnm-club.name,nnm-club.tv,nnm.me,nnm2.com,nnmclub.to,nnovosti.info,novosti-n.org,novostionline.net,novostivmire.com,nowvideo.sx,nowwatchtvlive.cc,nwanime.com,obsuzhday.com,ok-tv.org,okino.ua,oklivetv.com,online-freebee.ru,onpress.info,ostfilm.org,ostrnum.com,ostro.org,padabum.com,padaread.com,peers.tv,postimg.org,pure-t.ru,putin-today.ru,putlocker.io,qp.ua,radikal.ru,radio24.ua,radnuk.info,rbc.ua,real-vin.com,ria-m.tv,rian.com.ua,ringside24.com,romanbook.ru,rumedia.ws,rus-porno.org,rustorka.com,scribble.su,seasonvar.ru,seedoff.cc,seedoff.tv,segodnya.ua,seria-z.net,serialbox.org,sinoptik.com.ru,sinoptik.ua,skidrowcrack.com,smak.ua,smotri-filmi.co,sockshare.net,socportal.info,solarmovie.net,sport.ua,sportanalytic.com,sprashivalka.com,stereotraker.ru,subject.com.ua,tchkcdn.com,tfile.cc,the-cinema.net,tochka.net,toneto.net,tribuna.com,tushkan.net,tv.ua,tvgid.ua,tvonlinegratis1.com,tvplayvideos.com,tvtorrent.su,u-news.com.ua,ubr.ua,uchim.org,udoktora.net,ukrinform.ua,ukrlib.com.ua,ukrlit.net,unian.net,v-androide.com,vchaspik.ua,vesti-ukr.com,vesti.ru,vesti.ua,vgorode.ua,videolike.org,vimeotomp3.com,vklasse.org,vmirechudes.com,voroniny-online.net,vseserialy.org,vsetv.com,vshkole.com,watch32.is,watchcartoononline.com,webcam.guru.ua,webpark.ru,wikibit.me,woman.ua,womanhappiness.ru,wow-helper.com,yahooeu.ru,youtubecomtomp3.com,yummyanime.com,zarlit.com,zaxid.net,zdorovia.com.ua,zhzh.info,zk.fm,zona-film.com,zoo-dom.com.ua,кинопират.рф",
             "script": "(function(){var b=XMLHttpRequest.prototype.open,c=/[/.@](piguiqproxy\\.com|rcdn\\.pro|amgload\\.net|dsn-fishki\\.ru|v6t39t\\.ru|greencuttlefish\\.com|rgy1wk\\.ru|vt4dlx\\.ru|d38dub\\.ru)[:/]/i;XMLHttpRequest.prototype.open=function(d,a){if(\"GET\"===d&&c.test(a))this.send=function(){return null},this.setRequestHeader=function(){return null},console.log(\"AG has blocked request: \",a);else return b.apply(this,arguments)}})();"
         },
         {
-            "domains": "tfile.pw,history.vn.ua,gorod.dp.ua,filmix.co,russiapost.su,zk.fm,internetua.com,goanimelist.com,newsone.ua,kinosvit.tv,kino-hd1080.ru,ruclip.com,ru-clip.com,watchcartoononline.io,kino-2018.club,mirsegondya.com,meteobar.com,paprikolu.net,filmix.nl,gamereleasedate.info,tapochek.net,hdrezka.name,zserials.cc,kinogo.cc,onelike.tv,fast-torrent.ru,online-life.club,hdpicture.ru,rodinkam.com,hdreactor.club,kinogo-hit.com,tfile-soft.cc,gogoanime.se,foxi.tv,it-tehnik.ru,gtavicecity.ru,tsargrad.tv,kinokrad.co,kinokrad.co,allday2.com,viks.tv,only-tv.org,hdrezka.ag,kinokrab.co,kinokrab.co,citysmile.org",
+            "domains": "putlockers.cm,cartooncrazy.net,0n-line.tv,filmix.fun,filmix.cool,mignews.com.ua,thexvid.com,shippuden-naruto.com,woman365.ru,kubik3.ru,seria-z.club,tfile.pw,history.vn.ua,gorod.dp.ua,filmix.co,russiapost.su,zk.fm,internetua.com,goanimelist.com,newsone.ua,kinosvit.tv,kino-hd1080.ru,ruclip.com,ru-clip.com,watchcartoononline.io,kino-2018.club,mirsegondya.com,meteobar.com,paprikolu.net,filmix.nl,gamereleasedate.info,tapochek.net,hdrezka.name,zserials.cc,kinogo.cc,onelike.tv,fast-torrent.ru,online-life.club,hdpicture.ru,rodinkam.com,hdreactor.club,kinogo-hit.com,tfile-soft.cc,gogoanime.se,foxi.tv,it-tehnik.ru,gtavicecity.ru,tsargrad.tv,kinokrad.co,kinokrad.co,allday2.com,viks.tv,only-tv.org,hdrezka.ag,kinokrab.co,kinokrab.co,citysmile.org",
             "script": "(function(){var b=XMLHttpRequest.prototype.open,c=/[/.@](piguiqproxy\\.com|rcdn\\.pro|amgload\\.net|dsn-fishki\\.ru|v6t39t\\.ru|greencuttlefish\\.com|rgy1wk\\.ru|vt4dlx\\.ru|d38dub\\.ru|csp-oz66pp\\.ru|ok9ydq\\.ru|kingoablc\\.com)[:/]/i;XMLHttpRequest.prototype.open=function(d,a){if(\"GET\"===d&&c.test(a))this.send=function(){return null},this.setRequestHeader=function(){return null},console.log(\"AG has blocked request: \",a);else return b.apply(this,arguments)}})();"
         },
         {
             "domains": "sporx.com,kizi.com,loveroms.com,minijuegos.com,footyroom.com,computerhoy.com,tworeddots.com,netzwelt.de,datpiff.com,jpost.com,fullmatchesandshows.com,quotidiano.net,broadwayworld.com,bold.dk,ilrestodelcarlino.it,spaziogames.it,ilgiorno.it,almasdarnews.com,diariodocentrodomundo.com.br,acidcow.com,yepi.com,talkwithstranger.com,allthetests.com,mathwarehouse.com,lanazione.it,vidmax.com,popmatters.com,toptenz.net,autobild.es,activistpost.com,spiele-umsonst.de,tamilo.com,nowtheendbegins.com,obaoba.com.br,autopista.es,izzygames.com,blacklistednews.com,theamericanmirror.com,textsfromlastnight.com,meta-chart.com,motociclismo.es,mobga.me,ginjfo.com,sportlife.es,dailygalaxy.com,miniplay.com,meta-calculator.com,minijogos.com.br,ciclismoafondo.es,hiphopearly.com,iltelegrafolivorno.it,healthyfocus.org,parolesdefoot.com,asheepnomore.net,virtualjerusalem.com,dailyspikes.com,triatlonweb.es,status-quote.com,vreme-on.net,transportemundial.es,iwhatsappstatus.com,mathworksheetsgo.com,lamoto.es,sportenkort.dk,motomercado.es,allthetests.com,diariodocentrodomundo.com.br,almasdarnews.com,datpiff.com,asheepnomore.net,tworeddots.com,datpiff.com,footyroom.com,kizi.com",
             "script": "AG_abortInlineScript(/window.TextEncoder/, 'addEventListener');"
+        },
+        {
+            "domains": "paksociety.com",
+            "script": "Object.defineProperty(window, 'ai_adb_detected', { get: function() { return function(){}; } });"
+        },
+        {
+            "domains": "cwseed.com",
+            "script": "AG_defineProperty('wc.pid', { value: \"\" });"
+        },
+        {
+            "domains": "asiancorrespondent.com",
+            "script": "AG_abortInlineScript(/bidWon/, 'Math.floor');"
+        },
+        {
+            "domains": "countrylife.co.uk",
+            "script": "AG_abortInlineScript(/bidWon/, 'IPCCoreQueue');"
+        },
+        {
+            "domains": "123tvseries.co",
+            "script": "AG_abortInlineScript(/stop.bind/, 'z');"
+        },
+        {
+            "domains": "goodtoknow.co.uk",
+            "script": "AG_abortInlineScript(/bidWon/, 'IPCCoreQueue');"
+        },
+        {
+            "domains": "kissasian.ch",
+            "script": "Object.defineProperty(window, 'alb', { value: false });"
+        },
+        {
+            "domains": "thefirmwareclub.com",
+            "script": "Object.defineProperty(window, 'ai_adb_detected', { get: function() { return function(){}; } });"
+        },
+        {
+            "domains": "xberuang.blogspot.de,xberuang.blogspot.com",
+            "script": "AG_defineProperty('safelink.adblock', {value: false}); AG_defineProperty('safelink.counter', {value: 0});"
+        },
+        {
+            "domains": "finalservers.net",
+            "script": "(function(){var b=window.setInterval;window.setInterval=function(a,c){if(!/t\\.visibility=='none'/.test(a.toString()))return b(a,c)}.bind(window)})();"
+        },
+        {
+            "domains": "notebookcheck-hu.com,notebookcheck.com,notebookcheck.net,notebookcheck.org,notebookcheck.biz,notebookcheck.it,notebookcheck.nl,notebookcheck.info,notebookcheck-tr.com,notebookcheck.se,notebookcheck-ru.com",
+            "script": "window.uabpdl = window.uabInject = true;"
+        },
+        {
+            "domains": "a2zapk.com",
+            "script": "window.ads = \"on\";"
+        },
+        {
+            "domains": "almasdarnews.com",
+            "script": "Object.defineProperty(window, 'ddbbca0c0ea9', { get: function() { return function() {}; } });"
+        },
+        {
+            "domains": "cbc.ca",
+            "script": "AG_abortInlineScript(/\\{bs: \"\\/cxresources\\/\"\\,sb:/, 'cxrgxs');"
+        },
+        {
+            "domains": "kissanime.ru",
+            "script": "Object.defineProperty(window, 'isClickHide', { value: true });"
+        },
+        {
+            "domains": "kissanime.ru",
+            "script": "Object.defineProperties(window, { DoDetect1: { get: function() { return; } }, DoDetect2: { get: function() { return; } } });"
+        },
+        {
+            "domains": "thoptv.online",
+            "script": "AG_abortInlineScript(/adblocker\\.html/, 'document.getElementById');"
         },
         {
             "domains": "stream.cr",
@@ -1586,6 +1698,14 @@
             "script": "var adb_detected = function() {};"
         },
         {
+            "domains": "video.gjirafa.com",
+            "script": "AG_defineProperty('originVideo.requestA.Id', { value: \"0\" });"
+        },
+        {
+            "domains": "sigma4pc.com",
+            "script": "AG_abortInlineScript(/abisuq/, 'document.addEventListener');"
+        },
+        {
             "domains": "karwan.tv",
             "script": "AG_defineProperty('settings.adBlockerDetection', { value: false });"
         },
@@ -1638,6 +1758,10 @@
             "script": "window.canRunAds = true;"
         },
         {
+            "domains": "subhd.com",
+            "script": "sessionStorage.setItem(\"hassession\", 1);"
+        },
+        {
             "domains": "88files.net",
             "script": "window.open = function() {};"
         },
@@ -1666,8 +1790,16 @@
             "script": "AG_onLoad(function() { window.ckcpt = function() {}; });"
         },
         {
+            "domains": "zive.cz",
+            "script": "AG_abortInlineScript(/adbDetect/, 'Math.random');"
+        },
+        {
+            "domains": "aktualne.cz",
+            "script": "AG_abortInlineScript(/adbDetect/, 'Math.random');"
+        },
+        {
             "domains": "centrum.cz",
-            "script": "Object.defineProperty(window, '_sashec_queue', { get: function() { return -1; } });"
+            "script": "AG_abortInlineScript(/adbDetect/, 'Math.random');"
         },
         {
             "domains": "super.cz",
@@ -1722,6 +1854,10 @@
             "script": "(function(b){Object.defineProperty(Element.prototype,\"innerHTML\",{get:function(){return b.get.call(this)},set:function(a){/^(?:<([abisuq]) id=\"[^\"]*\"><\\/\\1>)*$/.test(a)||b.set.call(this,a)},enumerable:!0,configurable:!0})})(Object.getOwnPropertyDescriptor(Element.prototype,\"innerHTML\"));"
         },
         {
+            "domains": "almapiac.com",
+            "script": "AG_defineProperty('SqueezeBox.open', { get: function() { return function() { popupAnywherecloseWindow(); }; }, set: function() {} });"
+        },
+        {
             "domains": "zsibvasar.hu",
             "script": "AG_onLoad(function() { $('a[target=\"_blank\"]:not([href*=\"zsibvasar.hu\"]').closest('.item').remove(); $('.carousel-inner > .item')[0].classList.add(\"active\") });"
         },
@@ -1762,6 +1898,10 @@
             "script": "var canABP = true;"
         },
         {
+            "domains": "kompas.com",
+            "script": "AG_abortInlineScript(/isIframeNetworking/, 'Math.random');"
+        },
+        {
             "domains": "indofilm.pro",
             "script": "window.open = function() {};"
         },
@@ -1798,6 +1938,10 @@
             "script": "Object.defineProperty(window, 'iframepopupwidow', { get: function() { return; } });"
         },
         {
+            "domains": "haaretz.co.il",
+            "script": "window.showAds = true;"
+        },
+        {
             "domains": "m.calcalist.co.il",
             "script": "Object.defineProperty(window, 'show_maavaron', { value: false })"
         },
@@ -1808,6 +1952,10 @@
         {
             "domains": "mako.co.il",
             "script": "Object.defineProperty(window, 'isBs', { get: function(){ return false; } });"
+        },
+        {
+            "domains": "macitynet.it",
+            "script": "window.open = function() {};"
         },
         {
             "domains": "calciomercato.com",
@@ -1860,6 +2008,10 @@
         {
             "domains": "vg.no",
             "script": "Object.defineProperty(window, '__AB__', { get: function() { return; } });"
+        },
+        {
+            "domains": "alltube.pl",
+            "script": "AG_abortInlineScript(/__htapop /, 'document.createElement');"
         },
         {
             "domains": "superfilm.pl",
@@ -1995,7 +2147,7 @@
         },
         {
             "domains": "abczdrowie.pl,allani.pl,autokrata.pl,autokult.pl,biztok.pl,bloog.pl,dobreprogramy.pl,dzieci.pl,easygo.pl,echirurgia.pl,fotoblogia.pl,gadzetomania.pl,hotmoney.pl,interaktywnie.com,inwestycje.pl,jejswiat.pl,kafeteria.pl,kafeteria.tv,kantory.pl,kazimierzdolny.pl,komediowo.pl,komorkomania.pl,mazury.com,mojeauto.pl,mojeosiedle.pl,money.pl,nasygnale.pl,niewiarygodne.pl,nocowanie.pl,o2.pl,odkrywcy.pl,parenting.pl,pudelek.pl,pudelek.tv,pytamy.pl,sfora.pl,snobka.pl,tlen.pl,totalmoney.pl,wakacje.pl,wawalove.pl,wp.pl,wp.tv,wrzuta.pl",
-            "script": "AG_defineProperty('WP.gaf.addCreation', { get: function() { return function() {}; }, set: function() {} });"
+            "script": "AG_defineProperty('WP.gaf.setSlotCreation', { get: function() { return function() {}; }, set: function() {} });"
         },
         {
             "domains": "abczdrowie.pl,allani.pl,autokrata.pl,autokult.pl,biztok.pl,bloog.pl,dobreprogramy.pl,dzieci.pl,easygo.pl,echirurgia.pl,fotoblogia.pl,gadzetomania.pl,hotmoney.pl,interaktywnie.com,inwestycje.pl,jejswiat.pl,kafeteria.pl,kafeteria.tv,kantory.pl,kazimierzdolny.pl,komediowo.pl,komorkomania.pl,mazury.com,mojeauto.pl,mojeosiedle.pl,money.pl,nasygnale.pl,niewiarygodne.pl,nocowanie.pl,o2.pl,odkrywcy.pl,parenting.pl,pudelek.pl,pudelek.tv,pytamy.pl,sfora.pl,snobka.pl,tlen.pl,totalmoney.pl,wakacje.pl,wawalove.pl,wp.pl,wp.tv,wrzuta.pl",
@@ -2062,6 +2214,22 @@
             "script": "AG_onLoad(function() { jQuery(function() { jQuery('body, a').unbind('click'); }); });"
         },
         {
+            "domains": "phimmedia.tv",
+            "script": "window.adblock = 1;"
+        },
+        {
+            "domains": "phimmedia.tv",
+            "script": "AG_defineProperty('PM_popup', { get: function() { return function() {}; }, set: function() {}});"
+        },
+        {
+            "domains": "phim.media",
+            "script": "window.adblock = 1;"
+        },
+        {
+            "domains": "phim.media",
+            "script": "AG_onLoad(function() { var elems=document.querySelectorAll('#btn-film-watch,.poster > a');if(elems)for(var href,i=0;i<elems.length;i++)href=elems[i].getAttribute('href'),href=href.match('utm_id=.*')[0].replace('utm_id=',''),href&&elems[i].setAttribute('href',atob(href)); });"
+        },
+        {
             "domains": "tiengnhatpro.net",
             "script": "AG_abortInlineScript(/google_ad_client/, 'document.addEventListener');"
         },
@@ -2082,7 +2250,7 @@
             "script": "Object.defineProperty(window, 'popunder', { get: function() { return {}; } });"
         },
         {
-            "domains": "maturefatporn.com,chyoa.com,hutimg.com,nopeporn.com,101xxx.xyz,xxxarray.com,veu.xxx,mature-girls.com,iwantmature.com,amateurs-fuck.com,clubtubes.com,cumlouder.com,sexy-youtubers.com,smplace.com,losporn.org,sexytrunk.com,gaytiger.com,revolutions.pw,gaypornmasters.com,inpixme.pw,xxxbanjo.com,24video.adult,24video.in,russian-porn.online,bdsmstreak.com,pornozot.com,pornyfap.com,celebrity-leaks.net,perfectgirls.net,imgking.xyz,luscious.net,imgprime.com,pornoruf.com,thisvid.com,txxx.com,hdzog.com,yourporn.sexy,gotporn.com,upornia.com,pornhd.com,bravotube.net,hotmovs.com,porndoe.com,4tube.com,porntube.com,sunporno.com,myreadingmanga.info,plusone8.com,pornerbros.com,javhihi.com,hellporno.com,sexu.com,thefappening.pro,tubedupe.com,ah-me.com,pussyspace.com,hotclips24.com,alotporn.com,52av.tv,multporn.com,xbabe.com,vintage-erotica-forum.com,thegay.com,fux.com,ashemaletv.com,bobs-tube.com,hardsextube.com,reallifecamhd.net,pandamovie.eu,absoluporn.com,biguz.net,javbuz.com,frprn.com,8teenxxx.com,jizzman.com,ftopx.com,realgfporn.com,pornomovies.com,thehentaiworld.com,see.xxx,fullhdxxx.com,free-sex-video.net,amateurporn1.com,porntui.com,pornobae.com,worldsex.com,imzog.com,tranny.one,pornwatchers.com,girlscanner.cc,kporno.com,xerotica.com,jizzhut.com,besteporn.com,pornl.com,pornorips.com,simply-hentai.com,submityourflicks.com,japan-whores.com,singlove.com,tuberel.com,pornult.com,unfaithfulxxx.com,dreamamateurs.com,likuoo.video,bravoerotica.com,madchensex.com,xstory-fr.com,juicygif.com,newporn24.com,gotgayporn.com,favefreeporn.com,thatpervert.com,onlygayvideo.com,qrrro.com,veronicca.com,eegay.com,sensualgirls.org,whichav.com,fxporn69.com,pornoheit.com,pornj.com,fuckbox.org,vixvids.to,thegay.porn,girlscv.com,redtub3xxx.com,pornoreino.com,9gag2.com,hentaipulse.com,onlyhgames.com,pornmtn.com,nakedmodelsxxx.com,homosexualtube.com,imghall.com,deutschsex.com,yeswegays.com,pornmaki.com,bonertube.com,rockjockcock.com,betterhdporn.com,vqporn.com,fuqer.com,sizzlingclicks.com,needgayporn.com,mrsexe.com,nude-gals.com,mypornstarbook.net,nxgx.com,erowall.com,streaming-porn.org,picbank.tk,hentaifr.net,jizzonline.com,whichav.net,dump.xxx,twinkhouse.com,home-made-videos.com,xxxvideos247.com,18-teen-xxx.com,nakenprat.com,deliciousbabes.org,pornvideoq.com,gosexpod.com,xnxxporntube.net,pornfapr.com,blobopics.biz,teenagefucking.com,sexuhot.com,xnxxvideoporn.com,eroxia.com,plashporn.com,xfilmen.com,lucotube.com,vidshort.net,wokao.co,18hentaionline.net,gameofporn.com,freexvideossex.com,homemature.net,gutesex.com,sexhdtuber.com,sexrura.pl,pornzexx.com,pornhugo.com,al4a.com,thisav.video,fivestarpornsites.com,pornv.porn,upskirtporn.de,cutieporno.com,xvideos.works,japanesefuck.com,playpornfree.net,muschitube.com,dumphub.com,sexybabes.club,pornpy.com,jizzbo.com,erohentai.net,pornoversion.com,porntcomic.com,freepornik.com,nakedbabes.club,thedoujin.com,fitteasatismerkezi.com,realitybrazzers.com,fuckhardporn.com,boysnaweb.net,onlypron.com,yumstories.com,losporn.com,hotsexlove.com,area51.porn,nudistube.com,pornvideoslove.com,porntubexxxl.com,pervertedmilfs.com,wetpornvideos.net,vavvi.net,girlsfucking.net,goshgay.com,cartoontube.xxx,japornhd.com,hdporn8.com,okporn.com,absolugirl.com,lonely-mature.com,gifsfor.com,drunkmoms.net,picfox.org,beste-sexgeschichten.com,porngq.com,freeimagefap.com,toustubes.com,pornvideo1.xxx,amateurdumper.com,pornclipsxxx.com,xboyzzz.com,sexymature.net,pornsql.com,ok-gay.com,misterboys.com,pornbourn.com,jemontremasextape.com,panapin.com,imgtorrnt.in,sikwap.info,twinks.singles,auntmia.com,youwatchporn.com,mega3x.com,brazzerzxxx.com,jemontremonminou.com,g6hentai.com,freetubeasia.com,tubeflv.com,obitube.com,seqing.world,beegsexporn.com,momthumb.com,sassygays.com,ohhgays.com,4asianporn.com,5278.live,gay-boys-xxx.com,desihoes.com,malexxx.net,fuckvideos.adult,sassytube.com,gaybarebacks.com,sexybabesz.com,moviesguy.com,youngsexhd.com,pornnudexxx.com,yify-films.com,club-flank.com,hdmoza.com,xxx-y.com,superbgays.com,newxxxvideos.net,pornvideohunter.com,hdporn.click,xxxtubesex.net,bustmonkey.com,fulltube.porn,porn-free-hub.com,perfectgirlsboobs.com,pornstarsadvice.com,jav789.com,javhihi.in,prostoporno.me,prostoporno.net,prostoporno.club,prostoporno.xxx,prostoporno.tv,pikoclick.ru,sex01.org,trans.firm.in,imgdawgknuttz.com,picshick.com,mujeres-desnudas.com,imgdone.com,imghost.top,petrovixxxjav.info,kawstimages.com,xyzimage.net,imgplaces.com,imageshtorm.com,xxxwebdlxxx.org,picshits.com,imgazel.info,enigmages.com,subrimages.com,imagerar.com,yoerotica.com,gelbooru.com,freeyesporn.com,imgpeak.com,motherless.com,beeg.com,pentasex.io,movierls.net,milffox.com,pixroute.com,img-central.com,ximagehost.org,newpornup.com,imgic.ru,pictoa.com,imgsalem.com,xxximagetpb.org,img24.org,xeimg.yt,pornleech.com,naughtyblog.org,8muses.com,doolls.org,topboard.org,youjizz.com,hipornvideo.com,imageweb.ws,planetsuzy.org,imagetwist.com",
+            "domains": "anysex.com,maturefatporn.com,chyoa.com,hutimg.com,nopeporn.com,101xxx.xyz,xxxarray.com,veu.xxx,mature-girls.com,iwantmature.com,amateurs-fuck.com,clubtubes.com,cumlouder.com,sexy-youtubers.com,smplace.com,losporn.org,sexytrunk.com,gaytiger.com,revolutions.pw,gaypornmasters.com,inpixme.pw,xxxbanjo.com,24video.adult,24video.in,russian-porn.online,bdsmstreak.com,pornozot.com,pornyfap.com,celebrity-leaks.net,perfectgirls.net,imgking.xyz,luscious.net,imgprime.com,pornoruf.com,thisvid.com,txxx.com,hdzog.com,yourporn.sexy,gotporn.com,upornia.com,pornhd.com,bravotube.net,hotmovs.com,porndoe.com,4tube.com,porntube.com,sunporno.com,myreadingmanga.info,plusone8.com,pornerbros.com,javhihi.com,hellporno.com,sexu.com,thefappening.pro,tubedupe.com,ah-me.com,pussyspace.com,hotclips24.com,alotporn.com,52av.tv,multporn.com,xbabe.com,vintage-erotica-forum.com,thegay.com,fux.com,ashemaletv.com,bobs-tube.com,hardsextube.com,reallifecamhd.net,pandamovie.eu,absoluporn.com,biguz.net,javbuz.com,frprn.com,8teenxxx.com,jizzman.com,ftopx.com,realgfporn.com,pornomovies.com,thehentaiworld.com,see.xxx,fullhdxxx.com,free-sex-video.net,amateurporn1.com,porntui.com,pornobae.com,worldsex.com,imzog.com,tranny.one,pornwatchers.com,girlscanner.cc,kporno.com,xerotica.com,jizzhut.com,besteporn.com,pornl.com,pornorips.com,simply-hentai.com,submityourflicks.com,japan-whores.com,singlove.com,tuberel.com,pornult.com,unfaithfulxxx.com,dreamamateurs.com,likuoo.video,bravoerotica.com,madchensex.com,xstory-fr.com,juicygif.com,newporn24.com,gotgayporn.com,favefreeporn.com,thatpervert.com,onlygayvideo.com,qrrro.com,veronicca.com,eegay.com,sensualgirls.org,whichav.com,fxporn69.com,pornoheit.com,pornj.com,fuckbox.org,vixvids.to,thegay.porn,girlscv.com,redtub3xxx.com,pornoreino.com,9gag2.com,hentaipulse.com,onlyhgames.com,pornmtn.com,nakedmodelsxxx.com,homosexualtube.com,imghall.com,deutschsex.com,yeswegays.com,pornmaki.com,bonertube.com,rockjockcock.com,betterhdporn.com,vqporn.com,fuqer.com,sizzlingclicks.com,needgayporn.com,mrsexe.com,nude-gals.com,mypornstarbook.net,nxgx.com,erowall.com,streaming-porn.org,picbank.tk,hentaifr.net,jizzonline.com,whichav.net,dump.xxx,twinkhouse.com,home-made-videos.com,xxxvideos247.com,18-teen-xxx.com,nakenprat.com,deliciousbabes.org,pornvideoq.com,gosexpod.com,xnxxporntube.net,pornfapr.com,blobopics.biz,teenagefucking.com,sexuhot.com,xnxxvideoporn.com,eroxia.com,plashporn.com,xfilmen.com,lucotube.com,vidshort.net,wokao.co,18hentaionline.net,gameofporn.com,freexvideossex.com,homemature.net,gutesex.com,sexhdtuber.com,sexrura.pl,pornzexx.com,pornhugo.com,al4a.com,thisav.video,fivestarpornsites.com,pornv.porn,upskirtporn.de,cutieporno.com,xvideos.works,japanesefuck.com,playpornfree.net,muschitube.com,dumphub.com,sexybabes.club,pornpy.com,jizzbo.com,erohentai.net,pornoversion.com,porntcomic.com,freepornik.com,nakedbabes.club,thedoujin.com,fitteasatismerkezi.com,realitybrazzers.com,fuckhardporn.com,boysnaweb.net,onlypron.com,yumstories.com,losporn.com,hotsexlove.com,area51.porn,nudistube.com,pornvideoslove.com,porntubexxxl.com,pervertedmilfs.com,wetpornvideos.net,vavvi.net,girlsfucking.net,goshgay.com,cartoontube.xxx,japornhd.com,hdporn8.com,okporn.com,absolugirl.com,lonely-mature.com,gifsfor.com,drunkmoms.net,picfox.org,beste-sexgeschichten.com,porngq.com,freeimagefap.com,toustubes.com,pornvideo1.xxx,amateurdumper.com,pornclipsxxx.com,xboyzzz.com,sexymature.net,pornsql.com,ok-gay.com,misterboys.com,pornbourn.com,jemontremasextape.com,panapin.com,imgtorrnt.in,sikwap.info,twinks.singles,auntmia.com,youwatchporn.com,mega3x.com,brazzerzxxx.com,jemontremonminou.com,g6hentai.com,freetubeasia.com,tubeflv.com,obitube.com,seqing.world,beegsexporn.com,momthumb.com,sassygays.com,ohhgays.com,4asianporn.com,5278.live,gay-boys-xxx.com,desihoes.com,malexxx.net,fuckvideos.adult,sassytube.com,gaybarebacks.com,sexybabesz.com,moviesguy.com,youngsexhd.com,pornnudexxx.com,yify-films.com,club-flank.com,hdmoza.com,xxx-y.com,superbgays.com,newxxxvideos.net,pornvideohunter.com,hdporn.click,xxxtubesex.net,bustmonkey.com,fulltube.porn,porn-free-hub.com,perfectgirlsboobs.com,pornstarsadvice.com,jav789.com,javhihi.in,prostoporno.me,prostoporno.net,prostoporno.club,prostoporno.xxx,prostoporno.tv,pikoclick.ru,sex01.org,trans.firm.in,imgdawgknuttz.com,picshick.com,mujeres-desnudas.com,imgdone.com,imghost.top,petrovixxxjav.info,kawstimages.com,xyzimage.net,imgplaces.com,imageshtorm.com,xxxwebdlxxx.org,picshits.com,imgazel.info,enigmages.com,subrimages.com,imagerar.com,yoerotica.com,gelbooru.com,freeyesporn.com,imgpeak.com,motherless.com,beeg.com,pentasex.io,movierls.net,milffox.com,pixroute.com,img-central.com,ximagehost.org,newpornup.com,imgic.ru,pictoa.com,imgsalem.com,xxximagetpb.org,img24.org,xeimg.yt,pornleech.com,naughtyblog.org,8muses.com,doolls.org,topboard.org,youjizz.com,hipornvideo.com,imageweb.ws,planetsuzy.org,imagetwist.com",
             "script": "Object.defineProperty(window, 'ExoLoader', { get: function() { return; } });"
         },
         {
@@ -2102,7 +2270,7 @@
             "script": "Object.defineProperty(window, 'popns', { get: function() { return {}; } });"
         },
         {
-            "domains": "filecrypt.cc,icdrama.se,faselhd.com,jawcloud.co,imgfile.net,xmoviesforyou.com,123moviesonline.stream,pornovo.com,swapsmut.com,ddlfr.pw,imp3.live,imgrock.info,alantv.com,publicleech.xyz,pornwhite.com,dir50.com,vshare.eu",
+            "domains": "anysex.com,filecrypt.cc,icdrama.se,faselhd.com,jawcloud.co,imgfile.net,xmoviesforyou.com,123moviesonline.stream,pornovo.com,swapsmut.com,ddlfr.pw,imp3.live,imgrock.info,alantv.com,publicleech.xyz,pornwhite.com,dir50.com,vshare.eu",
             "script": "Object.defineProperty(window, 'popns', { get: function() { return {}; } });"
         },
         {
@@ -2110,7 +2278,7 @@
             "script": "Object.defineProperties(window,{admvpu:{get:function(){},set:function(a){if(\"function\"==typeof a)throw Error();}},Fingerprint2:{get:function(){},set:function(){throw Error();}}});"
         },
         {
-            "domains": "goalsport.se,flashx.cc,adsrt.com,extreme-down.im,flashx.bz,peliculasveo.gratis,itdmusic.site,zi-m.com,downsub.com,xrivonet.info,linkrex.net,youtubemultidownloader.com,123movies.fun,worldsrc.com,shink.me,onhax.net,dizilab.net,cpygames.com,vidtodo.me,tv-porinternet.com,drhtv.com.pl,srt.am,link-protect.me,dir50.net,ojomovies.com,yobuilder.com,estrenos10.com,urle.co,tvsportslive.stream,9xbuddy.com,pasteca.sh,onlinehdmovies.org,peliculaxd.com,vidzella.me,thepiratebay.org,listentoyoutube.com,streamplay.gdn,powvideo.net,monova.org,gamesofpc.com,gameslords.com,filesharingz.ga,file.up09.com,cogismith.com,coginator.com,simizer.com,riffhold.com,kaitect.com,vizer.tv,jkanime.net,tugaflix.com,douploads.com,suprafiles.org,leakedearly.gdn,tusfiles.net,solidfiles.com,itdmusic.com,ebook-gratuit.co,cloudyfiles.org",
+            "domains": "easyview.eu,peggo.tv,vidmoly.me,megaxtreme.net,goalsport.se,flashx.cc,adsrt.com,extreme-down.im,flashx.bz,peliculasveo.gratis,itdmusic.site,zi-m.com,downsub.com,xrivonet.info,linkrex.net,youtubemultidownloader.com,123movies.fun,worldsrc.com,shink.me,onhax.net,cpygames.com,vidtodo.me,tv-porinternet.com,drhtv.com.pl,srt.am,link-protect.me,dir50.net,ojomovies.com,yobuilder.com,estrenos10.com,urle.co,tvsportslive.stream,9xbuddy.com,pasteca.sh,onlinehdmovies.org,peliculaxd.com,vidzella.me,thepiratebay.org,listentoyoutube.com,streamplay.gdn,powvideo.net,monova.org,gamesofpc.com,gameslords.com,filesharingz.ga,file.up09.com,cogismith.com,coginator.com,simizer.com,riffhold.com,kaitect.com,vizer.tv,jkanime.net,tugaflix.com,douploads.com,suprafiles.org,leakedearly.gdn,tusfiles.net,solidfiles.com,itdmusic.com,ebook-gratuit.co,cloudyfiles.org",
             "script": "Object.defineProperties(window,{admvpu:{get:function(){},set:function(a){if(\"function\"==typeof a)throw Error();}},Fingerprint2:{get:function(){},set:function(){throw Error();}}});"
         },
         {
@@ -2130,7 +2298,7 @@
             "script": "Object.defineProperties(window, { \"_impspcabe_alpha\": { value: false, writable: false }, \"_impspcabe_beta\": { value: false, writable: false }, \"_impspcabe_path\": { value: 'about:blank', writable: false }, \"_impspcabe\": { value: false, writable: false } });"
         },
         {
-            "domains": "femefun.com,masalaclips.org,votrube.ru,hdpicture.ru,fastpic.ru,hdreactor.org,720video.tv,megapeer.org,vidabc.com,bravoerotica.com,javfind.com,hotasiantubes.com",
+            "domains": "tamilyogi.cc,femefun.com,masalaclips.org,votrube.ru,hdpicture.ru,fastpic.ru,hdreactor.org,720video.tv,megapeer.org,vidabc.com,bravoerotica.com,javfind.com,hotasiantubes.com",
             "script": "Object.defineProperties(window, { \"_impspcabe_alpha\": { value: false, writable: false }, \"_impspcabe_beta\": { value: false, writable: false }, \"_impspcabe_path\": { value: 'about:blank', writable: false }, \"_impspcabe\": { value: false, writable: false } });"
         },
         {
@@ -2166,7 +2334,7 @@
             "script": "Object.defineProperty(window, 'BetterJsPop', { get: function() { return { init: function() { } }; } });"
         },
         {
-            "domains": "oload.win",
+            "domains": "xxxity.com,oload.win",
             "script": "Object.defineProperty(window, 'BetterJsPop', { get: function() { return { init: function() { } }; } });"
         },
         {
@@ -2186,27 +2354,27 @@
             "script": "!function(b,c){function a(a,b){return typeof a!=='function'?!0:a.toString().indexOf(b)===-1}b=document.addEventListener,document.addEventListener=function(){a(arguments[1],'inXP(e.target')&&b.apply(document,arguments)},c=window.setInterval,window.setInterval=function(){return a(arguments[0],'pSC(ppu_main,')?c.apply(window,arguments):void 0},AG_defineProperty('onbeforeunload',{beforeSet:function(b){return a(b,'location.href=options.url')?b:null}})}();"
         },
         {
-            "domains": "rarbgto.org,rarbgunblock.org,nopeporn.com,101xxx.xyz,xxxarray.com,veu.xxx,rarbg.to,proxyfl.info,bayproxy.eu,proxytpb.org,zombay.org,unblockedhyperbay.info,tpbbay.eu,tpbairproxy.in,thepiratebay.pictures,proxyoneahoy.net,proxybayduck.fi,piratepirate.eu,piratenbucht.eu,piratebaai.click,piratbaypirate.link,capjackproxy.net,thepiratebay.bet,ikwildepiratebay.org,proxyproxyproxy.nl,tpb.tw,proxypirate.in,urbanproxy.eu,piratebays.co,gameofbay.org,piratebay.click,pirateproxy.tf,tpbunblocked.org,piratebaymirror.eu,unblocktpb.com,pirate.trade,piratebays.co.uk,thepiratebay-proxy.com,wearepirates.click,tpbportal.in,ukpirate.org,hyperproxy.net,duckingproxy.eu,piratebayproxy.tf,thepiratebay.uk.net,fastpiratebay.co.uk,tpbmirror.us,piratetoday.click,pirateproxy.yt,alivbay.org,batpirate.info,baypirate.click,piratebay.red,thepiratebay.blue,piratebaai.club,baytpbportal.fi,pirateproxy.wf,ukpirateproxy.xyz,piratebay247.net,pirateprox.club,proxyspotting.in,baypiratebay.be,ukpirate.click,tpbproxyone.org,unblockedbay.info,baybaypirate.org,rowpirate.org,indiaproxy.in,pirateproxy.click,ahoypirate.click,thepirate.click,kickass.cd,eztv.unblocked.sh,porn00.org,megadrive.co,altadefinizione01.zone,altadefinizione01.life,javhdx.com,piratepirate.eu,tamilrockers.tw,vidto.me,rarbgmirror.org,avgle.com,piratbaypirate.link,seehd.pl,vidzi.tv",
+            "domains": "videoszoofiliahd.com,rarbgto.org,rarbgunblock.org,nopeporn.com,101xxx.xyz,xxxarray.com,veu.xxx,rarbg.to,proxyfl.info,bayproxy.eu,proxytpb.org,zombay.org,unblockedhyperbay.info,tpbbay.eu,tpbairproxy.in,thepiratebay.pictures,proxyoneahoy.net,proxybayduck.fi,piratepirate.eu,piratenbucht.eu,piratebaai.click,piratbaypirate.link,capjackproxy.net,thepiratebay.bet,ikwildepiratebay.org,proxyproxyproxy.nl,tpb.tw,proxypirate.in,urbanproxy.eu,piratebays.co,gameofbay.org,piratebay.click,pirateproxy.tf,tpbunblocked.org,piratebaymirror.eu,unblocktpb.com,pirate.trade,piratebays.co.uk,thepiratebay-proxy.com,wearepirates.click,tpbportal.in,ukpirate.org,hyperproxy.net,duckingproxy.eu,piratebayproxy.tf,thepiratebay.uk.net,fastpiratebay.co.uk,tpbmirror.us,piratetoday.click,pirateproxy.yt,alivbay.org,batpirate.info,baypirate.click,piratebay.red,thepiratebay.blue,piratebaai.club,baytpbportal.fi,pirateproxy.wf,ukpirateproxy.xyz,piratebay247.net,pirateprox.club,proxyspotting.in,baypiratebay.be,ukpirate.click,tpbproxyone.org,unblockedbay.info,baybaypirate.org,rowpirate.org,indiaproxy.in,pirateproxy.click,ahoypirate.click,thepirate.click,kickass.cd,eztv.unblocked.sh,porn00.org,megadrive.co,altadefinizione01.zone,altadefinizione01.life,javhdx.com,piratepirate.eu,tamilrockers.tw,vidto.me,rarbgmirror.org,avgle.com,piratbaypirate.link,seehd.pl,vidzi.tv",
             "script": "!function(b,c){function a(a,b){return typeof a!=='function'?!0:a.toString().indexOf(b)===-1}b=document.addEventListener,document.addEventListener=function(){a(arguments[1],'inXP(e.target')&&b.apply(document,arguments)},c=window.setInterval,window.setInterval=function(){return a(arguments[0],'cookies.ppu_main')?c.apply(window,arguments):void 0},AG_defineProperty('onbeforeunload',{beforeSet:function(b){return a(b,'location.href=options.url')?b:null}})}();"
         },
         {
-            "domains": "x1337x.eu,1337x.to,1337x.st,x1337x.ws,estream.nu,estream.to,animeskai.com,animeflv.ru",
+            "domains": "estream.xyz,estream.nu,estream.to,animeskai.com,animeflv.ru",
             "script": "!function(d,e){function f(g,h){return\"function\"!=typeof g||-1===g.toString().indexOf(h)}d=document.addEventListener,document.addEventListener=function(){f(arguments[1],\"['tagName']['toLowerCase']()&&document\")&&d.apply(document,arguments)},e=window.setInterval,window.setInterval=function(){return f(arguments[0],\"['overlayName'])[\")?e.apply(window,arguments):void 0},AG_defineProperty(\"onbeforeunload\",{beforeSet:function beforeSet(g){return f(g,\"location.href=options.url\")?g:null}})}();"
         },
         {
-            "domains": "tvsinpagar.com,filmux.org,egy.best",
+            "domains": "x1337x.eu,1337x.to,1337x.st,x1337x.ws,kissasian.ch,fembed.com,proxytpb.pw,tvsinpagar.com,filmux.org,egy.best",
             "script": "!function(a,b){function c(i,j){return\"function\"!=typeof i||-1===i.toString().indexOf(j)}a=document.addEventListener,document.addEventListener=function(){c(arguments[1],\")]=null,!(\")&&a.apply(document,arguments)},b=window.setInterval,window.setInterval=function(){return c(arguments[0],\"popunder\")?b.apply(window,arguments):void 0},AG_defineProperty(\"onbeforeunload\",{beforeSet:function(j){return c(j,\"location.href=options.url\")?j:null}})}();"
         },
         {
-            "domains": "evdekimseyok71.com,fu3k7.com,imgrock.info,dir50.net,thevideo.me,voodaith7e.com,imgrock.net,imgoutlet.com,spashopaz.com,doyki.com,vidup.me,imgoutlet.com",
+            "domains": "imgrock.info,dir50.net,thevideo.me,voodaith7e.com,imgrock.net,imgoutlet.com,spashopaz.com,doyki.com,vidup.me,imgoutlet.com",
             "script": "Object.defineProperty(window, 'jsPopunder', { get: function() { return function() {}; } });"
         },
         {
-            "domains": "lizardporn.com,downace.com,javstyle.com,yts.ag,qwertty.net,imgsin.com",
+            "domains": "shemaleporn.xxx,lizardporn.com,downace.com,javstyle.com,yts.ag,qwertty.net,imgsin.com",
             "script": "Object.defineProperty(window, 'puShown', { get: function() { return true; } });"
         },
         {
-            "domains": "69games.xxx,mirrorace.com,xxxhost.me,4fuckr.com",
+            "domains": "cartoonporno.xxx,69games.xxx,mirrorace.com,xxxhost.me,4fuckr.com",
             "script": "Object.defineProperty(window, 'initPu', { get: function() { return; } });"
         },
         {
@@ -2222,7 +2390,7 @@
             "script": "Object.defineProperty(window,'_drp', { get:function(){return {}; } });"
         },
         {
-            "domains": "fmovies.ac,tumejortorrent.com,pornlicias.com,animestreams.tv,yalla-shoot.com,fmovies.ag,putlockertv.io,toptech360.com,solarmoviefreez.com,vidlox.me,niagotch.com,vidfile.net,solarmoviez.se,camwhores.adult,cwtvembeds.com,homewhores.net,subsmovies.me,dl.go4up.com,animeflv.net,1movies.to,otakustream.tv,myegy.tv,flashx.to,imgrock.info,fmovies.is,filmywap2.com,pornscum.com,m4ufree.io,123moviesss.com,uploadbank.com,putlocker.ninja,solarmovie.net,solarmoviesc.com,imgbox.com,darmowa-tv.pl,hdfilme.tv,bmovies.is,fmovies.pe,putlockers.movie,putlocker.chat,fmovies.su,solarmoviefree.co,lavamovies.se,vidlox.tv,sendvid.com,hizlifullfilmizle.com,tny.ec,zedstream.com,clipconverter.cc,egy.best,putlocker.io,putlockers.fm,camwhores.tv,0123movies.com,watchonlinemovies.com.pk,putlocker.sk,sockshare.net,1movies.online,porntrex.com,aovivonatv.com,tudotv.tv,downloadhub.ws,putlockers.mn,downloadming.la,123videos.tv,xmoviesforyou.com,downloadhub.org,flowhot.me,solarmovie.st,seriesonline.io,newpct1.com,5starmusiq.com,putlocker.today,series9.io,worldfree4u.ws,filmywap.com,seriesonlinehd.org,new-mastermovie.com,atozmp3.co,fmovies.org,watch32.is,lavamovies.com,reallifecamhd.net,tumejortorrent.com,altadefinizione01.love,newpct.com,sexmag.biz,torrentlocura.com,thenightseries.net,pagalworldm.com,milfzr.com,sceper.ws,watchfilmy.com,kprofiles.com,jizzman.com,4oof.com,9xrockers.pw,sabwap.co,aflam.io,altadefinizione.bid,xrares.com,thepcgames.net,joymovies.com,olozmp3.net,vezi-online.com,vidnode.net,aflamonlinee.org,aflam4you.tv,f-hd.net,vojkudee.net,egybest.site,flenix.net,extramovies.ws,mp3-search.click,mrelhlawany.com,torrentrapid.com,extramovies.cc,fullmaza.net,1xxx.tv,downloadmp3song.live,ipagal.org,hon3yhd.com,theseriesonline.net,highquality.xyz,camwhoreshd.com,cinema4tv.com,sportify365.blogspot.hr,aflamhq.co,greenmp3.com,panda-streaming.net,gomovies.la,filme-bune.net,kreskowkazone.pl,cambabe.me,sdmoviespoint.in,mr-hd.in,hdmoviesfree.net,xkeezmovies.com,ekasiwap.com,hdmoviesfree.me,katcr.review,indoakatsuki.net,starmusiq.la,moviespur.pw,caminspector.net,pornley.com,streaming-football.org,watchrecentmovies.co,czech3x.net,pornfree.tv,kinemania.tv,xxxstreams.eu,putlockerapp.com,168hd.net,moviesevil.ws,3arabicporn.com,watchparksandrecreation.net,torrents9.org,momjoi.com,denunciando.com,watchcommunity.cc,ngusman.com,randomlisten.space,mp3-search.top,300mbmovies4u.club,zinkhd.co,streaming-foot.club,javtasty.com,adultwallpapers.co.in,bindassbros.com,mangaindo.web.id,pornoamador.xxx,pornlibrary.net,scanof.net,fullmovies24.net,kinofen.net,justdubsanime.net,descargacineclasico.net,clubedoaz.com.br,moviemart.in,legendofkorra.tv,watchncum.biz,vstarmusiq.com,nghmaty.com,vidoevo.com,f16f.com,cb01.io,alldownloads4u.com,tusnovelas.net,filehostguru.online,videokhoj.co,animesave.com,pregledaj.net,kombatch.com,downloadhub.in,4cima.tv,seriesblanco.tv,despreseriale.ro,narudemi.co,mp3skulls.today,moviescounter.cool,torrentsmd.eu.org,her69.net,iwatchtwd.com,hdpopcorns.in,viralitytoday.com,sa7eralkutub.com,ebooksz.net,gotdatfire.com,oikamenoi.com,onlinemoviezrasiganyogi.com,rdxhd.biz,musicpleer.es,odia1.me,crackzsoft.com,kinoger.com,siii.club,mehlizmovies.com,animeyes.biz,fridaymovieshd.com,ganduworld.info,musicastorrent.com,hdteenx.com,a5bar-sari3a.com,fatimakhamissa.com,sebn.sc,koursaros.net,yuyalay.com,fullmoviescenter.com,urgetofap.com,tubebg.com,segiempat.com,123movieson.com,sexarabtv.com,baixandotudo.net,watchncum.com,indexofmovie.com,nordicfilm.co,tudotvonline.com,camgirlbay.net,ahlamtv.com,fmoviez.org,hdmoviesfree.co,4shworld.com,tubidydb.org,demonoid.co,gaypinoyporn.com,yttomp3.org,123watchmovies.org,chodan.com,9xrockershd.com,yeane.org,softcoretube.org,xmovies8.net,afghanidata.com,dramamate.com,tamilrock.org,regarder-film-gratuit.eu,btgalaxy.com,hindugodsongs.com,pelisencastellano.com,mr-hd.com,toquemp3.com,polskie-aktorki-porno.pl,toonworld4all.in,yaoimangaonline.com,yt2mp3s.me,tambayanlivetv.com,softpcfull.com,mktba22.blogspot.com,sempreinter.com,tamilfreemp3songs.com,hdpicturs.com,universalmusic.tk,360nobs.org,phimotv.net,streamingo.org,bucetasx.com,onlinemovierasiganyogis.in,musicart.ml,egybest.net,movie1k.pw,freelivesports.co,animedoor.com,toptx.net,cima5.com,simitator.com,msphubs.com,lapeliculas.com,mobilemovieshd.in,yakaracolombia.com,nepalikanchi.com,songspkred.in,promp3download.com,downlaodmovies.com,amateurvenezolano.com.ve,thaihotmodels.com,fullxxxonline.com,cockhero.org,altastreaming.online,onlinemovizrasiganyogi.in,f5movies.top,tnhd.co,irp.uz,vidtomp3.info,vizhe.xyz,moviestime.to,tamilfullmovies.in,tous-sports.tv,ogario.ovh,alotofmusic.org,4oof4u.com,cineblog01.media,movieshd.ru,123moviese.com,dropfile.download,topbestsite.me,putlockertv.se,tridolki.com,altadefinizione01.site,allkdramas.tk,onlinemoviesrasiganyogis.in,kickasstorrent.com.pl,movies79.com,sportpesatodaygames.com,novelasfb.com,watcharcheronline.com,fullypcgames.in,toussports.info,downloadming.biz,fussball-livestream.net,fastmobileporn.org,dp-stream.com,arabhd.co,cadelanocio.com.br,kovrov-tvc.ru,coolmg.com,rumahminimalisbagus.com,watch-online.biz,sportify365.blogspot.co.uk,almidan9.net,pdf2arab.blogspot.com,ioverview.info,kinoger.to,mithaaprilia.com,shurikenteam.com,hdmoviedownloader.com,animeawake.org,jav18tv.com,dailyuploads.cc,123moviesfree.ac,dir50.com,animezone.pl,glinks.me,fmovies.se,fmovies.to,putstream.com,solarmoviefree.me,downace.com,app4free.ml,rule34hentai.net,cmovieshd.net,ewatchseries.to,genfb.com,solarmovie.today,solarmoviefree.net,mp3red.me,xeimg.yt,movieonline.io,sawlive.tv,cmovieshd.com,rapidvideo.com,fmovies.sc,krutor.org.pl,fmovies.io,123moviesfree.com,9anime.to,fastpiratebay.co.uk,gameofbay.org,mywatchseries.to,oploverz.in,piratebays.co.uk,pirateproxy.click,pirateproxy.wf,pirateproxy.yt,gsur.in,gsul.me",
+            "domains": "animo-pace-stream.io,drakulawidget.com,mirrored.to,mac-torrent-download.net,extreme-d0wn.com,downloadming.pro,solarmoviesc.co,putlockers.cm,katmoviehd.cc,xmoviesforyou1.com,revivelink.com,vimeotomp3.com,serietvu.online,fmovie.cc,mp3-pn.com,beinmatch.com,mirrorcreator.com,yts.am,fmovies.ac,tumejortorrent.com,pornlicias.com,animestreams.tv,yalla-shoot.com,fmovies.ag,putlockertv.io,toptech360.com,solarmoviefreez.com,vidlox.me,niagotch.com,vidfile.net,solarmoviez.se,camwhores.adult,cwtvembeds.com,homewhores.net,subsmovies.me,dl.go4up.com,animeflv.net,1movies.to,otakustream.tv,myegy.tv,flashx.to,imgrock.info,fmovies.is,filmywap2.com,pornscum.com,m4ufree.io,123moviesss.com,uploadbank.com,putlocker.ninja,solarmovie.net,solarmoviesc.com,imgbox.com,darmowa-tv.pl,hdfilme.tv,bmovies.is,fmovies.pe,putlockers.movie,putlocker.chat,fmovies.su,solarmoviefree.co,lavamovies.se,vidlox.tv,sendvid.com,hizlifullfilmizle.com,tny.ec,zedstream.com,clipconverter.cc,egy.best,putlocker.io,putlockers.fm,camwhores.tv,0123movies.com,watchonlinemovies.com.pk,putlocker.sk,sockshare.net,1movies.online,porntrex.com,aovivonatv.com,tudotv.tv,downloadhub.ws,putlockers.mn,downloadming.la,123videos.tv,xmoviesforyou.com,downloadhub.org,flowhot.me,solarmovie.st,seriesonline.io,newpct1.com,5starmusiq.com,putlocker.today,series9.io,worldfree4u.ws,filmywap.com,seriesonlinehd.org,new-mastermovie.com,atozmp3.co,fmovies.org,watch32.is,lavamovies.com,reallifecamhd.net,tumejortorrent.com,altadefinizione01.love,newpct.com,sexmag.biz,torrentlocura.com,thenightseries.net,pagalworldm.com,milfzr.com,sceper.ws,watchfilmy.com,kprofiles.com,jizzman.com,4oof.com,9xrockers.pw,sabwap.co,aflam.io,altadefinizione.bid,xrares.com,thepcgames.net,joymovies.com,olozmp3.net,vezi-online.com,vidnode.net,aflamonlinee.org,aflam4you.tv,f-hd.net,vojkudee.net,egybest.site,flenix.net,extramovies.ws,mp3-search.click,mrelhlawany.com,torrentrapid.com,extramovies.cc,fullmaza.net,1xxx.tv,downloadmp3song.live,ipagal.org,hon3yhd.com,theseriesonline.net,highquality.xyz,camwhoreshd.com,cinema4tv.com,sportify365.blogspot.hr,aflamhq.co,greenmp3.com,panda-streaming.net,gomovies.la,filme-bune.net,kreskowkazone.pl,cambabe.me,sdmoviespoint.in,mr-hd.in,hdmoviesfree.net,xkeezmovies.com,ekasiwap.com,hdmoviesfree.me,katcr.review,indoakatsuki.net,starmusiq.la,moviespur.pw,caminspector.net,pornley.com,streaming-football.org,watchrecentmovies.co,czech3x.net,pornfree.tv,kinemania.tv,xxxstreams.eu,putlockerapp.com,168hd.net,moviesevil.ws,3arabicporn.com,watchparksandrecreation.net,torrents9.org,momjoi.com,denunciando.com,watchcommunity.cc,ngusman.com,randomlisten.space,mp3-search.top,300mbmovies4u.club,zinkhd.co,streaming-foot.club,javtasty.com,adultwallpapers.co.in,bindassbros.com,mangaindo.web.id,pornoamador.xxx,pornlibrary.net,scanof.net,fullmovies24.net,kinofen.net,justdubsanime.net,descargacineclasico.net,clubedoaz.com.br,moviemart.in,legendofkorra.tv,watchncum.biz,vstarmusiq.com,nghmaty.com,vidoevo.com,f16f.com,cb01.io,alldownloads4u.com,tusnovelas.net,filehostguru.online,videokhoj.co,animesave.com,pregledaj.net,kombatch.com,downloadhub.in,4cima.tv,seriesblanco.tv,despreseriale.ro,narudemi.co,mp3skulls.today,moviescounter.cool,torrentsmd.eu.org,her69.net,iwatchtwd.com,hdpopcorns.in,viralitytoday.com,sa7eralkutub.com,ebooksz.net,gotdatfire.com,oikamenoi.com,onlinemoviezrasiganyogi.com,rdxhd.biz,musicpleer.es,odia1.me,crackzsoft.com,kinoger.com,siii.club,mehlizmovies.com,animeyes.biz,fridaymovieshd.com,ganduworld.info,musicastorrent.com,hdteenx.com,a5bar-sari3a.com,fatimakhamissa.com,sebn.sc,koursaros.net,yuyalay.com,fullmoviescenter.com,urgetofap.com,tubebg.com,segiempat.com,123movieson.com,sexarabtv.com,baixandotudo.net,watchncum.com,indexofmovie.com,nordicfilm.co,tudotvonline.com,camgirlbay.net,ahlamtv.com,fmoviez.org,hdmoviesfree.co,4shworld.com,tubidydb.org,demonoid.co,gaypinoyporn.com,yttomp3.org,123watchmovies.org,chodan.com,9xrockershd.com,yeane.org,softcoretube.org,xmovies8.net,afghanidata.com,dramamate.com,tamilrock.org,regarder-film-gratuit.eu,btgalaxy.com,hindugodsongs.com,pelisencastellano.com,mr-hd.com,toquemp3.com,polskie-aktorki-porno.pl,toonworld4all.in,yaoimangaonline.com,yt2mp3s.me,tambayanlivetv.com,softpcfull.com,mktba22.blogspot.com,sempreinter.com,tamilfreemp3songs.com,hdpicturs.com,universalmusic.tk,360nobs.org,phimotv.net,streamingo.org,bucetasx.com,onlinemovierasiganyogis.in,musicart.ml,egybest.net,movie1k.pw,freelivesports.co,animedoor.com,toptx.net,cima5.com,simitator.com,msphubs.com,lapeliculas.com,mobilemovieshd.in,yakaracolombia.com,nepalikanchi.com,songspkred.in,promp3download.com,downlaodmovies.com,amateurvenezolano.com.ve,thaihotmodels.com,fullxxxonline.com,cockhero.org,altastreaming.online,onlinemovizrasiganyogi.in,f5movies.top,tnhd.co,irp.uz,vidtomp3.info,vizhe.xyz,moviestime.to,tamilfullmovies.in,tous-sports.tv,ogario.ovh,alotofmusic.org,4oof4u.com,cineblog01.media,movieshd.ru,123moviese.com,dropfile.download,topbestsite.me,putlockertv.se,tridolki.com,altadefinizione01.site,allkdramas.tk,onlinemoviesrasiganyogis.in,kickasstorrent.com.pl,movies79.com,sportpesatodaygames.com,novelasfb.com,watcharcheronline.com,fullypcgames.in,toussports.info,downloadming.biz,fussball-livestream.net,fastmobileporn.org,dp-stream.com,arabhd.co,cadelanocio.com.br,kovrov-tvc.ru,coolmg.com,rumahminimalisbagus.com,watch-online.biz,sportify365.blogspot.co.uk,almidan9.net,pdf2arab.blogspot.com,ioverview.info,kinoger.to,mithaaprilia.com,shurikenteam.com,hdmoviedownloader.com,animeawake.org,jav18tv.com,dailyuploads.cc,123moviesfree.ac,dir50.com,animezone.pl,glinks.me,fmovies.se,fmovies.to,putstream.com,solarmoviefree.me,downace.com,app4free.ml,rule34hentai.net,cmovieshd.net,ewatchseries.to,genfb.com,solarmovie.today,solarmoviefree.net,mp3red.me,xeimg.yt,movieonline.io,sawlive.tv,cmovieshd.com,rapidvideo.com,fmovies.sc,krutor.org.pl,fmovies.io,123moviesfree.com,9anime.to,fastpiratebay.co.uk,gameofbay.org,mywatchseries.to,oploverz.in,piratebays.co.uk,pirateproxy.click,pirateproxy.wf,pirateproxy.yt,gsur.in,gsul.me",
             "script": "window.zfgloadedpopup = true;"
         },
         {
@@ -2240,6 +2408,154 @@
         {
             "domains": "youporngay.com",
             "script": "Object.defineProperty(window, 'loadPUscript', { get: function() {return function() {}; } });"
+        },
+        {
+            "domains": "vidcloud.co,loadvid.online,vcstream.to",
+            "script": "AG_defineProperty('BetterJsPop', { get: function() { return function() { }; }, set: function() { }});"
+        },
+        {
+            "domains": "vidcloud.co,loadvid.online,vcstream.to",
+            "script": "AG_onLoad(function() { setTimeout(function() { loadPlayer(); }, 300); });"
+        },
+        {
+            "domains": "intoupload.net",
+            "script": "AG_onLoad(function() { setTimeout(function() { $('#chkIsAdd').click(); }, 300); });"
+        },
+        {
+            "domains": "caminspector.net",
+            "script": "AG_abortInlineScript(/popunder/, 'navigator');"
+        },
+        {
+            "domains": "xxxmilfporn.xxx",
+            "script": "window.open = function() {};"
+        },
+        {
+            "domains": "cwtvembeds.com",
+            "script": "window.open = function() {};"
+        },
+        {
+            "domains": "mp3skull-tube.net",
+            "script": "Object.defineProperty(window, 'is_enabled_ads', { value: false });"
+        },
+        {
+            "domains": "sport7.pw",
+            "script": "window.open = function() {};"
+        },
+        {
+            "domains": "phillymag.com",
+            "script": "AG_onLoad(function() { if (window.location.pathname.indexOf('/welcome/') > -1) { document.cookie = \"10up-prestitial=true; path=/;\"; var wlochref = window.location.href; var dec = decodeURIComponent(wlochref); var loc = dec.replace(/https?:\\/\\/(www\\.)?phillymag.com\\/welcome\\/[\\s\\S]*?(https?)/,'$2'); window.location = loc; } });"
+        },
+        {
+            "domains": "katfile.com",
+            "script": "window.open = function() {};"
+        },
+        {
+            "domains": "clipwatching.com",
+            "script": "(function() { window.open_ = window.open; var w_open = window.open, regex = /predictivdisplay\\.com|rhfgjld\\.com|refuzzlizing\\.pro|exdynsrv\\.com|ooredi\\.com|911proxy\\.re/; window.open = function(a, b) { if (typeof a !== 'string' || !regex.test(a)) { w_open(a, b); } }; })();"
+        },
+        {
+            "domains": "veporns.com",
+            "script": "AG_onLoad(function() { setTimeout(function() { document.getElementById(\"bt\").click(); }, 300); });"
+        },
+        {
+            "domains": "arenavision.in",
+            "script": "Object.defineProperty(window, 'smrtAdSySPop', { get: function() { return function() {}; } });"
+        },
+        {
+            "domains": "efukt.com",
+            "script": "window.open = function() {};"
+        },
+        {
+            "domains": "vivads.net",
+            "script": "window.open = function() {};"
+        },
+        {
+            "domains": "tranny.one",
+            "script": "Object.defineProperty(window, 'spot', { get: function() { } });"
+        },
+        {
+            "domains": "embedy.me",
+            "script": "window.open = function() {};"
+        },
+        {
+            "domains": "sloomp.space",
+            "script": "Object.defineProperty(window, 'pup', { value: 3 });"
+        },
+        {
+            "domains": "sloomp.space",
+            "script": "var d=document.addEventListener;document.addEventListener=function(a,b,c){(\"mousedown\"!=a&&\"click\"!=a||-1==b.toString().indexOf(\"popundrInit\"))&&d(a,b,c)}.bind(document);"
+        },
+        {
+            "domains": "mp3-pn.com",
+            "script": "(function() { window.open_ = window.open; var w_open = window.open, regex = /demolat\\.com/; window.open = function(a, b) { if (typeof a !== 'string' || !regex.test(a)) { w_open(a, b); } }; })();"
+        },
+        {
+            "domains": "momsextube.pro",
+            "script": "Object.defineProperty(window, 'getRandomPopunder', { get: function() { return; } });"
+        },
+        {
+            "domains": "bitporno.com",
+            "script": "window.open = function() {};"
+        },
+        {
+            "domains": "streamsk.com",
+            "script": "window.open = function() {};"
+        },
+        {
+            "domains": "xpau.se",
+            "script": "Object.defineProperty(window, 'counter', { value: -1 });"
+        },
+        {
+            "domains": "xpau.se",
+            "script": "AG_defineProperty('miner.getAcceptedHashes', { get: function() { return function() { 1000; } }, set: function() {} });"
+        },
+        {
+            "domains": "xpau.se",
+            "script": "AG_onLoad(function() { setTimeout(function() { var el = document.getElementById(\"skipper\"); if(el) { el.click(); } }, 2000); });"
+        },
+        {
+            "domains": "ourl.io",
+            "script": "AG_abortInlineScript(/hicpm10\\.com/, 'document.createElement');"
+        },
+        {
+            "domains": "cinemamkv.net",
+            "script": "AG_onLoad(function() { setTimeout(function() { var elements = document.querySelectorAll(\"a[href*='go.oclaserver.com']\"); for(var i =0 ; i < elements.length; i++){ elements[i].removeAttribute(\"href\"); } ; }, 500); });"
+        },
+        {
+            "domains": "asiananimaltube.org",
+            "script": "window.open = function() {};"
+        },
+        {
+            "domains": "zoosex.pink",
+            "script": "Object.defineProperty(window, 'Popunder', { get: function() { } });"
+        },
+        {
+            "domains": "upvid.co",
+            "script": "window.open = function() { var dummy = document.getElementsByTagName(\"body\")[0]; return dummy;}"
+        },
+        {
+            "domains": "upvid.co",
+            "script": "AG_onLoad(function() { setTimeout(function() { document.getElementsByClassName(\"vjs-big-play-button\")[0].click(); document.getElementsByClassName(\"vjs-big-play-button\")[0].click(); }, 300); });"
+        },
+        {
+            "domains": "oload.download",
+            "script": "window.open = function() {}; document.cookie = \"popcashpuCap=1\"; Object.defineProperty(window,'turnoff',{value:true});"
+        },
+        {
+            "domains": "vcstream.to",
+            "script": "Object.defineProperty(window, 'pop_cnt', { value: 10 });"
+        },
+        {
+            "domains": "monova.to",
+            "script": "AG_onLoad(function() { setTimeout(function() { var elements = document.querySelectorAll(\"div[onclick]\"); for(var i =0 ; i < elements.length; i++){ elements[i].removeAttribute(\"onclick\"); } ; }, 300); });"
+        },
+        {
+            "domains": "userscloud.com",
+            "script": "AG_onLoad(function() { setTimeout(function() { document.querySelectorAll(\"a.btn-success.btn-icon-stacked\")[0].removeAttribute(\"onclick\"); }, 300); });"
+        },
+        {
+            "domains": "vixenless.com,bestialporn.com,bestialitysexanimals.com,mynakedwife.video,bestialitytaboo.tv,mujeresdesnudas.club,megaxtreme.net",
+            "script": "AG_abortInlineScript(/clickObject/, '$');"
         },
         {
             "domains": "catcuturl.tk",
@@ -2287,7 +2603,7 @@
         },
         {
             "domains": "loadvid.online",
-            "script": "Object.defineProperties(window, { pop_cnt: { value: 3 }, popup: { value: true } });"
+            "script": "Object.defineProperties(window, { pop_cnt: { value: 10 }, popup: { value: true } });"
         },
         {
             "domains": "kimcartoon.me",
@@ -2304,10 +2620,6 @@
         {
             "domains": "thevid.net",
             "script": "(function(){var c=document.addEventListener;document.addEventListener=function(a,b,d,e){\"click\"!=a&&-1==b.toString().indexOf('\"dtnoppu\"')&&c(a,b,d,e)}.bind(document);})();"
-        },
-        {
-            "domains": "androidpolice.com",
-            "script": "AG_onLoad(function() { setTimeout(function() {var el=document.querySelector('.primary > .post-flag-pinned + .post'); if(el.classList.contains(\"sticky\") && el.style.display == \"none\") { document.querySelector('.primary > .post-flag-pinned').style.display = \"none\"; } }, 300); });"
         },
         {
             "domains": "bagusdl.pro",
@@ -2431,7 +2743,7 @@
         },
         {
             "domains": "animeflv.net,animeplus.tv,goodanime.co,animewow.org,animenova.org,animeland.tv,animetoon.org,9anime.is,gogoanime.se,gogoanime.to,gogoanime.in,mangapanda.com,memecenter.com,mangareader.net",
-            "script": "Object.defineProperty(window, 'bDocReady', { get: function() { throw null; }, set: function() { throw null; } });"
+            "script": "Object.defineProperty(window, 'bbHideDiv', { get: function() { throw null; }, set: function() { throw null; } });"
         },
         {
             "domains": "animewow.org,animenova.org,gogoanime.to",
@@ -2508,10 +2820,6 @@
         {
             "domains": "pornotube.xxx",
             "script": "window.open = function() {};"
-        },
-        {
-            "domains": "xpau.se",
-            "script": "AG_onLoad(function() { newElement.parentNode.replaceChild(downloadButton, newElement); downloadButton.style.display = 'inline-block'; });"
         },
         {
             "domains": "tinypaste.cc",
@@ -3714,10 +4022,6 @@
             "script": "var cv = function() {};"
         },
         {
-            "domains": "notebookcheck-hu.com,notebookcheck.com,notebookcheck.net,notebookcheck.org,notebookcheck.biz,notebookcheck.it,notebookcheck.nl,notebookcheck.info,notebookcheck-tr.com,notebookcheck.se,notebookcheck-ru.com",
-            "script": "window.uabpdl = window.uabInject = true;"
-        },
-        {
             "domains": "uploaded.net",
             "script": "Object.defineProperty(window, 'e5V', { get: function() { return []; } });"
         },
@@ -4010,6 +4314,10 @@
             "script": "(function(){var pageParams={};Object.defineProperty(window,\"pageParams\",{get:function(){return pageParams},set:function(){}});Object.defineProperty(pageParams,\"dispAds\",{get:function(){return false},set:function(){}});Object.defineProperty(pageParams,\"attemptDisplayAdAtBottom\",{get:function(){return false},set:function(){}})})();"
         },
         {
+            "domains": "pebx.pl",
+            "script": "Object.defineProperty(window, 'miner', { get: function() { return; } });"
+        },
+        {
             "domains": "sportstream365.com,justintvizletir.tv",
             "script": "Object.defineProperty(window, 'Blob', { get: function() { return; } });"
         },
@@ -4142,6 +4450,14 @@
             "script": "(function() { var sto = window.setTimeout, re = /\\.bab_elementid.$/; window.setTimeout = function(a, b) { if ( typeof a !== 'string' || !re.test(a) ) { return sto(a, b); } }.bind(window); var signatures = [ ['blockadblock'], ['babasbm'], [/getItem\\('babn'\\)/], ['getElementById','String.fromCharCode','ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789','charAt','DOMContentLoaded','AdBlock','addEventListener','doScroll','fromCharCode','<<2|r>>4','sessionStorage','clientWidth','localStorage','Math','random'] ]; var check = function(s) { var tokens, match, j, token, pos; for ( var i = 0; i < signatures.length; i++ ) { tokens = signatures[i]; match = 0; for ( j = 0, pos = 0; j < tokens.length; j++ ) { token = tokens[j]; pos = token instanceof RegExp ? s.search(token) : s.indexOf(token); if ( pos !== -1 ) { match += 1; } } if ( (match / tokens.length) >= 0.8 ) { return true; } } return false; }; var realEval = window.eval; window.eval = function(a) { if ( !check(a) ) { return realEval(a); } var el = document.body; if ( el ) { el.style.removeProperty('visibility'); } el = document.getElementById('babasbmsgx'); if ( el ) { el.parentNode.removeChild(el); } }.bind(window); })();"
         },
         {
+            "domains": "wieistmeineip.de,smart-wohnen.net,immobilienscout24.de,onlinekosten.de,quoka.de,tichyseinblick.de,aachener-nachrichten.de,aachener-zeitung.de,airliners.de,bikerszene.de,brieffreunde.de,digitalfernsehen.de,donnerwetter.de,e-hausaufgaben.de,epochtimes.de,fanfiktion.de,fid-gesundheitswissen.de,formel1.de,fremdwort.de,frustfrei-lernen.de,gamersglobal.de,gameswelt.de,gartendialog.de,gevestor.de,gut-erklaert.de,hausgarten.net,iban-rechner.de,inside-handy.de,kindergeld.org,laut.de,liga3-online.de,motorsport-total.com,moviejones.de,netzwelt.de,news.de,nickles.de,nw.de,pferde.de,pixelio.de,playfront.de,prad.de,psychic.de,roemische-zahlen.net,rp-online.de,skodacommunity.de,spielen.de,spielfilm.de,transfermarkt.de,truckscout24.at,truckscout24.de,unicum.de,virtualnights.com,weristdeinfreund.de,weser-kurier.de,wetteronline.de,windows-7-forum.net,wintotal.de,wize.life",
+            "script": "window.trckd = true;"
+        },
+        {
+            "domains": "wallstreet-online.de,meinestadt.de,wieistmeineip.ch,wieistmeineip.at,boersennews.de,express.de,computerbild.de,berliner-zeitung.de,rimondo.com,play3.de,kicker.de,berliner-kurier.de",
+            "script": "window.trckd = true;"
+        },
+        {
             "domains": "caravaning.de",
             "script": "AG_defineProperty('adblockActive', {value:false}, window);"
         },
@@ -4160,14 +4476,6 @@
         {
             "domains": "menshealth.de",
             "script": "window.blockAdBlock = function() {};"
-        },
-        {
-            "domains": "wieistmeineip.de,smart-wohnen.net,immobilienscout24.de,onlinekosten.de,quoka.de,tichyseinblick.de,aachener-nachrichten.de,aachener-zeitung.de,airliners.de,bikerszene.de,brieffreunde.de,digitalfernsehen.de,donnerwetter.de,e-hausaufgaben.de,epochtimes.de,fanfiktion.de,fid-gesundheitswissen.de,formel1.de,fremdwort.de,frustfrei-lernen.de,gamersglobal.de,gameswelt.de,gartendialog.de,gevestor.de,gut-erklaert.de,hausgarten.net,iban-rechner.de,inside-handy.de,kindergeld.org,laut.de,liga3-online.de,motorsport-total.com,moviejones.de,netzwelt.de,news.de,nickles.de,nw.de,pferde.de,pixelio.de,playfront.de,prad.de,psychic.de,roemische-zahlen.net,rp-online.de,skodacommunity.de,spielen.de,spielfilm.de,transfermarkt.de,truckscout24.at,truckscout24.de,unicum.de,virtualnights.com,weristdeinfreund.de,weser-kurier.de,wetteronline.de,windows-7-forum.net,wintotal.de,wize.life",
-            "script": "window.trckd = true;"
-        },
-        {
-            "domains": "wieistmeineip.ch,wieistmeineip.at,boersennews.de,express.de,computerbild.de,berliner-zeitung.de,rimondo.com,play3.de,kicker.de,berliner-kurier.de",
-            "script": "window.trckd = true;"
         },
         {
             "domains": "transfermarkt.de",
@@ -4196,6 +4504,10 @@
         {
             "domains": "4players.de",
             "script": "Object.defineProperty(window, 'abWarningMobile', { get: function() { return function abWarningMobile(){} } });"
+        },
+        {
+            "domains": "saarbruecker-zeitung.de",
+            "script": "AG_onLoad(function() { setTimeout(function() { document.querySelector(\".content > aside > .module-list\").innerHTML = document.querySelector(\".content > aside > .module-list\").innerHTML.replace(\"ANZEIGE\",\"\"); }, 300); });"
         },
         {
             "domains": "pcwelt.de",
@@ -4282,27 +4594,7 @@
             "script": "function google_ad_request_done() {};"
         },
         {
-            "domains": "wakudan.seesaa.net",
-            "script": "AG_abortInlineScript(/google_ad_client/, 'document.addEventListener');"
-        },
-        {
-            "domains": "omutulove.seesaa.net,omutulove.blog.fc2.com",
-            "script": "AG_abortInlineScript(/google_ad_client/, 'document.addEventListener');"
-        },
-        {
-            "domains": "akb48gnittimatome.com",
-            "script": "AG_abortInlineScript(/google_ad_client/, 'document.addEventListener');"
-        },
-        {
-            "domains": "kamikiyuki.hatenablog.com",
-            "script": "AG_abortInlineScript(/google_ad_client/, 'document.addEventListener');"
-        },
-        {
-            "domains": "halchim.jp",
-            "script": "AG_abortInlineScript(/google_ad_client/, 'document.addEventListener');"
-        },
-        {
-            "domains": "gtoys.blog48.fc2.com",
+            "domains": "wakudan.seesaa.net,kamikiyuki.hatenablog.com,omutulove.seesaa.net,omutulove.blog.fc2.com,akb48gnittimatome.com,gtoys.blog48.fc2.com,halchim.jp",
             "script": "AG_abortInlineScript(/google_ad_client/, 'document.addEventListener');"
         },
         {
@@ -4310,15 +4602,15 @@
             "script": "(function(b){Object.defineProperty(Element.prototype,\"innerHTML\",{get:function(){return b.get.call(this)},set:function(a){/^(?:<([abisuq]) id=\"[^\"]*\"><\\/\\1>)*$/.test(a)||b.set.call(this,a)},enumerable:!0,configurable:!0})})(Object.getOwnPropertyDescriptor(Element.prototype,\"innerHTML\"));"
         },
         {
-            "domains": "avgle.com",
-            "script": "AG_onLoad(function() { setTimeout(function() { $(\"#player_3x2_close > *\").click(); }, 300); });"
+            "domains": "icttipsandtricks.nl",
+            "script": "Object.defineProperty(window, 'ai_adb_detected', { get: function() { return function() {}; } });"
         },
         {
             "domains": "telegraaf.nl",
             "script": "window.canRunAds = true;"
         },
         {
-            "domains": "peliculasputlocker.co,alojamiento.biz,globo.com,trecetv.es,megapelishdonline.website,tugaflix.fun,latinoweb-tv.com,sobremascotas.info,tecnofullpc.com,animextre.me,habboin.net,flooxer.com,bemad.es,cuatro.com,divinity.es,eltiempohoy.es,energytv.es,factoriadeficcion.com,mtmad.es,telecinco.es",
+            "domains": "ecuestre.es,peliculasputlocker.co,alojamiento.biz,globo.com,trecetv.es,megapelishdonline.website,tugaflix.fun,latinoweb-tv.com,sobremascotas.info,tecnofullpc.com,animextre.me,habboin.net,flooxer.com,bemad.es,cuatro.com,divinity.es,eltiempohoy.es,energytv.es,factoriadeficcion.com,mtmad.es,telecinco.es",
             "script": "(function() { var noopfn = function() {;}; var Fab = function() {}; Fab.prototype.check = noopfn; Fab.prototype.clearEvent = noopfn;  Fab.prototype.emitEvent = noopfn; Fab.prototype.on = function(a, b) { if ( !a ) { b(); } return this; }; Fab.prototype.onDetected = function() {  return this; }; Fab.prototype.onNotDetected = function(a) { a(); return this; }; Fab.prototype.setOption = noopfn; var fab = new Fab(),  getSetFab = { get: function() { return Fab; }, set: function() {} }, getsetfab = { get: function() { return fab; }, set: function() {} }; if ( window.hasOwnProperty('FuckAdBlock') ) { window.FuckAdBlock = Fab; } else { Object.defineProperty(window, 'FuckAdBlock', getSetFab); } if ( window.hasOwnProperty('BlockAdBlock') ) { window.BlockAdBlock = Fab; } else {Object.defineProperty(window, 'BlockAdBlock', getSetFab); } if ( window.hasOwnProperty('SniffAdBlock') ) { window.SniffAdBlock = Fab; } else { Object.defineProperty(window, 'SniffAdBlock', getSetFab); } if ( window.hasOwnProperty('fuckAdBlock') ) { window.fuckAdBlock = fab; } else { Object.defineProperty(window, 'fuckAdBlock', getsetfab); } if ( window.hasOwnProperty('blockAdBlock') ) { window.blockAdBlock = fab; } else { Object.defineProperty(window, 'blockAdBlock', getsetfab); } if ( window.hasOwnProperty('sniffAdBlock') ) { window.sniffAdBlock = fab; } else { Object.defineProperty(window, 'sniffAdBlock', getsetfab); } })();"
         },
         {
@@ -4326,20 +4618,32 @@
             "script": "(function() { var noopfn = function() {;}; var Fab = function() {}; Fab.prototype.check = noopfn; Fab.prototype.clearEvent = noopfn;  Fab.prototype.emitEvent = noopfn; Fab.prototype.on = function(a, b) { if ( !a ) { b(); } return this; }; Fab.prototype.onDetected = function() {  return this; }; Fab.prototype.onNotDetected = function(a) { a(); return this; }; Fab.prototype.setOption = noopfn; var fab = new Fab(),  getSetFab = { get: function() { return Fab; }, set: function() {} }, getsetfab = { get: function() { return fab; }, set: function() {} }; if ( window.hasOwnProperty('FuckAdBlock') ) { window.FuckAdBlock = Fab; } else { Object.defineProperty(window, 'FuckAdBlock', getSetFab); } if ( window.hasOwnProperty('BlockAdBlock') ) { window.BlockAdBlock = Fab; } else {Object.defineProperty(window, 'BlockAdBlock', getSetFab); } if ( window.hasOwnProperty('SniffAdBlock') ) { window.SniffAdBlock = Fab; } else { Object.defineProperty(window, 'SniffAdBlock', getSetFab); } if ( window.hasOwnProperty('fuckAdBlock') ) { window.fuckAdBlock = fab; } else { Object.defineProperty(window, 'fuckAdBlock', getsetfab); } if ( window.hasOwnProperty('blockAdBlock') ) { window.blockAdBlock = fab; } else { Object.defineProperty(window, 'blockAdBlock', getsetfab); } if ( window.hasOwnProperty('sniffAdBlock') ) { window.sniffAdBlock = fab; } else { Object.defineProperty(window, 'sniffAdBlock', getsetfab); } Object.defineProperty(window, 'adBlockDetected', getsetfab); })();"
         },
         {
-            "domains": "gigadownloads.co,androidaba.com,seriesgato.tv,cinemafacil.com,mixmods.com.br,urlcero.com,medicalopium.blogspot.com.br,visioncloud.rocks,androidescomplicado.blogspot.com,programasvirtualespc.net,cobachpl8.milaulas.com,torrentsgamez.com,mangahostbr.com,popfilmeshd.net,tibiabr.com,ddmix.net,saikocloud.ml,saikoanimes.com,tvfree.me,gamesandroidhvga.net,mangahost.cc,minhasreceita.in,torrentbrazil.org,alt-torrent.com,animesgo.net,futeboltv.com,eusouandroid.co,peliculasmegahdd.net,urlcloud.us,meulink.tk,mwpaste.com,wakfutemporada2subs.blogspot.com",
+            "domains": "2cheat.net,hibrido1337.blogspot.com,seriesgato.net,gigadownloads.co,androidaba.com,seriesgato.tv,cinemafacil.com,mixmods.com.br,urlcero.com,medicalopium.blogspot.com.br,visioncloud.rocks,androidescomplicado.blogspot.com,programasvirtualespc.net,cobachpl8.milaulas.com,torrentsgamez.com,mangahostbr.com,popfilmeshd.net,tibiabr.com,ddmix.net,saikocloud.ml,saikoanimes.com,tvfree.me,gamesandroidhvga.net,mangahost.cc,minhasreceita.in,torrentbrazil.org,alt-torrent.com,animesgo.net,futeboltv.com,eusouandroid.co,peliculasmegahdd.net,urlcloud.us,meulink.tk,mwpaste.com,wakfutemporada2subs.blogspot.com",
             "script": "(function() { var sto = window.setTimeout, re = /\\.bab_elementid.$/; window.setTimeout = function(a, b) { if ( typeof a !== 'string' || !re.test(a) ) { return sto(a, b); } }.bind(window); var signatures = [ ['blockadblock'], ['babasbm'], [/getItem\\('babn'\\)/], ['getElementById','String.fromCharCode','ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789','charAt','DOMContentLoaded','AdBlock','addEventListener','doScroll','fromCharCode','<<2|r>>4','sessionStorage','clientWidth','localStorage','Math','random'] ]; var check = function(s) { var tokens, match, j, token, pos; for ( var i = 0; i < signatures.length; i++ ) { tokens = signatures[i]; match = 0; for ( j = 0, pos = 0; j < tokens.length; j++ ) { token = tokens[j]; pos = token instanceof RegExp ? s.search(token) : s.indexOf(token); if ( pos !== -1 ) { match += 1; } } if ( (match / tokens.length) >= 0.8 ) { return true; } } return false; }; var realEval = window.eval; window.eval = function(a) { if ( !check(a) ) { return realEval(a); } var el = document.body; if ( el ) { el.style.removeProperty('visibility'); } el = document.getElementById('babasbmsgx'); if ( el ) { el.parentNode.removeChild(el); } }.bind(window); })();"
         },
         {
-            "domains": "megafilmestorrents.net,sharecool.us,netflink.top,deportesmax.com,deportesmax.info,vivo-tv.com,vivotvhd.com",
+            "domains": "micinehd.com,lapumiafilmes.com,mangahost-br.com,2cheat.net,hibrido1337.blogspot.com,seriesgato.net,gigadownloads.co,androidaba.com,seriesgato.tv,cinemafacil.com,mixmods.com.br,urlcero.com,medicalopium.blogspot.com.br,visioncloud.rocks,androidescomplicado.blogspot.com,programasvirtualespc.net,cobachpl8.milaulas.com,torrentsgamez.com,mangahostbr.com,popfilmeshd.net,tibiabr.com,ddmix.net,saikocloud.ml,saikoanimes.com,tvfree.me,gamesandroidhvga.net,mangahost.cc,minhasreceita.in,torrentbrazil.org,alt-torrent.com,animesgo.net,futeboltv.com,eusouandroid.co,peliculasmegahdd.net,urlcloud.us,meulink.tk,mwpaste.com,wakfutemporada2subs.blogspot.com",
+            "script": "(function() { var sto = window.setTimeout, re = /\\.bab_elementid.$/; window.setTimeout = function(a, b) { if ( typeof a !== 'string' || !re.test(a) ) { return sto(a, b); } }.bind(window); var signatures = [ ['blockadblock'], ['babasbm'], [/getItem\\('babn'\\)/], ['getElementById','String.fromCharCode','ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789','charAt','DOMContentLoaded','AdBlock','addEventListener','doScroll','fromCharCode','<<2|r>>4','sessionStorage','clientWidth','localStorage','Math','random'] ]; var check = function(s) { var tokens, match, j, token, pos; for ( var i = 0; i < signatures.length; i++ ) { tokens = signatures[i]; match = 0; for ( j = 0, pos = 0; j < tokens.length; j++ ) { token = tokens[j]; pos = token instanceof RegExp ? s.search(token) : s.indexOf(token); if ( pos !== -1 ) { match += 1; } } if ( (match / tokens.length) >= 0.8 ) { return true; } } return false; }; var realEval = window.eval; window.eval = function(a) { if ( !check(a) ) { return realEval(a); } var el = document.body; if ( el ) { el.style.removeProperty('visibility'); } el = document.getElementById('babasbmsgx'); if ( el ) { el.parentNode.removeChild(el); } }.bind(window); })();"
+        },
+        {
+            "domains": "anime-extremo.com,megafilmestorrents.net,sharecool.us,netflink.top,deportesmax.com,deportesmax.info,vivo-tv.com,vivotvhd.com",
             "script": "AG_abortInlineScript(/,displayMessage:/, 'document.addEventListener')"
         },
         {
-            "domains": "nuevos-mu.ucoz.com,generacionretro.net,goaldirecto.blogspot.com,goaldirecto.blogspot.com.ar,novelasd.com",
+            "domains": "lacajetillaroja.blogspot.com,latornamesa.blogspot.com,acienciasgalilei.com,yoututosjeff.es,nuevos-mu.ucoz.com,generacionretro.net,goaldirecto.blogspot.com,goaldirecto.blogspot.com.ar,novelasd.com",
             "script": "AG_abortInlineScript(/google_ad_client/, 'document.addEventListener');"
         },
         {
-            "domains": "parasitipedia.net",
+            "domains": "zonasports.es,pajaslocas.com,parasitipedia.net",
             "script": "(function(b){Object.defineProperty(Element.prototype,\"innerHTML\",{get:function(){return b.get.call(this)},set:function(a){/^(?:<([abisuq]) id=\"[^\"]*\"><\\/\\1>)*$/.test(a)||b.set.call(this,a)},enumerable:!0,configurable:!0})})(Object.getOwnPropertyDescriptor(Element.prototype,\"innerHTML\"));"
+        },
+        {
+            "domains": "xtraordinaryfansub.com",
+            "script": "window.loadingAds = true;"
+        },
+        {
+            "domains": "xtraordinaryfansub.com",
+            "script": "Object.defineProperty(window, 'BB', { get: function() { return { getVASTUrl: function() {} }; } });"
         },
         {
             "domains": "techmoviles.com",
@@ -4428,6 +4732,14 @@
         {
             "domains": "zonasports.me",
             "script": "var baseCreateElement = document.createElement.bind(document); document.createElement = function(name) { var el = baseCreateElement(name); if(name != 'span') { return el; } else { Object.defineProperty(el, 'innerHTML', { set: function(text) { if(/^(<a id=\"[^\"]*\"><\\/a>)*$/.test(text)) { throw new Error(); } Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML').set.call(el, text); }, get: function() { return el.innerHTML; } }); return el; }};"
+        },
+        {
+            "domains": "anitubebr.com",
+            "script": "Object.defineProperty(window, 'checkOpenPopupToday', { get: function() { return true; } });"
+        },
+        {
+            "domains": "inkapelis.com,cinemitas.com",
+            "script": "Object.defineProperty(window, 'smrtSB', { get: function() { return; } }); Object.defineProperty(window, 'smrtSP', { get: function() { return; } });"
         },
         {
             "domains": "tvsinpagar.com",
@@ -4570,12 +4882,16 @@
             "script": "(function () {try {var youtubeAdRegExp = /^((.*_)?(ad|ads|afv|adsense)(_.*)?|(ad3|st)_module|prerolls|interstitial|infringe|iv_cta_url)$/;function updateFlashvars(flashvars) {var values = flashvars.split('&');for (var i = 0; i < values.length; i++) {var param = values[i].split('=')[0];if (youtubeAdRegExp.test(param)) {values.splice(i--, 1);}}return values.join('&');}function blockPlayerAds(player) {var updatedPlayer = player.cloneNode(true);var changed = false;var flashvars = updatedPlayer.getAttribute('flashvars');if (flashvars) {var flashvarsUpdated = updateFlashvars(flashvars);if (flashvars != flashvarsUpdated) {updatedPlayer.setAttribute('flashvars', flashvarsUpdated);changed = true;}}var param = updatedPlayer.querySelector('param[name=flashvars]');if (param) {var value = param.getAttribute('value');if (value) {var valueUpdated = updateFlashvars(value);if (value != valueUpdated) {param.setAttribute('value', valueUpdated);changed = true;}}}if (changed && player.parentNode) {player.parentNode.replaceChild(updatedPlayer, player);}var container = document.querySelector(\".video-ads\");if (container && container.parentNode) {container.parentNode.removeChild(container);}var progress = document.querySelector(\".html5-ad-progress-list\");if (progress && progress.parentNode) {progress.parentNode.removeChild(progress);}if (typeof ytplayer == 'undefined') {return;}var config = ytplayer['config'];if (!config) {return;}config.loaded = false;var args = config['args'];if (!args) {return;}args.ad3_module = 0;args.ad_channel_code_instream = 0;args.ad_channel_code_overlay = 0;args.ad_device = 0;args.ad_eurl = 0;args.ad_host = 0;args.ad_host_tier = 0;args.ad_logging_flag = 0;args.ad_preroll = 0;args.ad_slots = 0;args.ad_tag = 0;args.ad_video_pub_id = 0;args.adsense_video_doc_id = 0;args.advideo = 0;args.afv = 0;args.afv_ad_tag = 0;args.afv_ad_tag_restricted_to_instream = 0;args.afv_instream_max = 0;args.allowed_ads = 0;args.afv_video_min_cpm = 0;args.allow_html5_ads = 0;args.excluded_ad = 0;args.dynamic_allocation_ad_tag = 0;}window.ytspf = {};Object.defineProperty(window.ytspf, 'enabled', {configurable: true,get: function () {return false;},set: function (enabled) {}});var player = document.querySelector('#movie_player');if (player) {blockPlayerAds(player);} else {var onDOMNodeInserted = function (e) {if (e.target.id == 'movie_player') {blockPlayerAds(e.target);document.removeEventListener('DOMNodeInserted', onDOMNodeInserted, false);}};document.addEventListener('DOMNodeInserted', onDOMNodeInserted, false);}} catch (ex) {console.log('Youtube ads blocking error');console.log(ex);}})();"
         },
         {
-            "domains": "wanaliz.com",
+            "domains": "hdturk.de,dizired.com,wanaliz.com",
             "script": "(function() { var sto = window.setTimeout, re = /\\.bab_elementid.$/; window.setTimeout = function(a, b) { if ( typeof a !== 'string' || !re.test(a) ) { return sto(a, b); } }.bind(window); var signatures = [ ['blockadblock'], ['babasbm'], [/getItem\\('babn'\\)/], ['getElementById','String.fromCharCode','ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789','charAt','DOMContentLoaded','AdBlock','addEventListener','doScroll','fromCharCode','<<2|r>>4','sessionStorage','clientWidth','localStorage','Math','random'] ]; var check = function(s) { var tokens, match, j, token, pos; for ( var i = 0; i < signatures.length; i++ ) { tokens = signatures[i]; match = 0; for ( j = 0, pos = 0; j < tokens.length; j++ ) { token = tokens[j]; pos = token instanceof RegExp ? s.search(token) : s.indexOf(token); if ( pos !== -1 ) { match += 1; } } if ( (match / tokens.length) >= 0.8 ) { return true; } } return false; }; var realEval = window.eval; window.eval = function(a) { if ( !check(a) ) { return realEval(a); } var el = document.body; if ( el ) { el.style.removeProperty('visibility'); } el = document.getElementById('babasbmsgx'); if ( el ) { el.parentNode.removeChild(el); } }.bind(window); })();"
         },
         {
-            "domains": "hesaplama.net,unikampus.net,saglamindir.net,globalklavye.com",
+            "domains": "muhendisimaaslari.com,hesaplama.net,unikampus.net,saglamindir.net,globalklavye.com",
             "script": "(function() { var noopfn = function() {;}; var Fab = function() {}; Fab.prototype.check = noopfn; Fab.prototype.clearEvent = noopfn;  Fab.prototype.emitEvent = noopfn; Fab.prototype.on = function(a, b) { if ( !a ) { b(); } return this; }; Fab.prototype.onDetected = function() {  return this; }; Fab.prototype.onNotDetected = function(a) { a(); return this; }; Fab.prototype.setOption = noopfn; var fab = new Fab(),  getSetFab = { get: function() { return Fab; }, set: function() {} }, getsetfab = { get: function() { return fab; }, set: function() {} }; if ( window.hasOwnProperty('FuckAdBlock') ) { window.FuckAdBlock = Fab; } else { Object.defineProperty(window, 'FuckAdBlock', getSetFab); } if ( window.hasOwnProperty('BlockAdBlock') ) { window.BlockAdBlock = Fab; } else {Object.defineProperty(window, 'BlockAdBlock', getSetFab); } if ( window.hasOwnProperty('SniffAdBlock') ) { window.SniffAdBlock = Fab; } else { Object.defineProperty(window, 'SniffAdBlock', getSetFab); } if ( window.hasOwnProperty('fuckAdBlock') ) { window.fuckAdBlock = fab; } else { Object.defineProperty(window, 'fuckAdBlock', getsetfab); } if ( window.hasOwnProperty('blockAdBlock') ) { window.blockAdBlock = fab; } else { Object.defineProperty(window, 'blockAdBlock', getsetfab); } if ( window.hasOwnProperty('sniffAdBlock') ) { window.sniffAdBlock = fab; } else { Object.defineProperty(window, 'sniffAdBlock', getsetfab); } })();"
+        },
+        {
+            "domains": "habnet.biz",
+            "script": "Object.defineProperty(window, 'adblock', { value: false });"
         },
         {
             "domains": "driverdestek.com",
@@ -4618,19 +4934,19 @@
             "script": "window.canRunAds=!0;"
         },
         {
-            "domains": "ddizim.com,hicopmeyimcanimyilansevmiyorum.com,ifsaatlar.com,pornoprize.com,pornovik.net,morezidli.com,gazorez.com,pornokut.net,pornoold.com,r0j.org,ifsag.com,hamuda.com,pornovski1.info,jn5.org,yeuluon.com,baskod.com,sot7.com,sexoku2.club,ifsa2008.com,xxzporno.info,pornosikistr.info,riverwalkinsurance.com,pornochon.com,turbanli1.com,pornoduel.com,paroketfilms.com,istanbul-ifsa.org,catekno.com,pornoboro.com,westgahome.com,tiw8.com,pornopix.net,filme-xxx-porno.info,yerliturksikis.com,turkcepornolar.net,turkologs.org,sinemaizle.co,webspor34.org,bidiziizleyelim1.org,xn--altyazlfilm-4zbb.com,kitapindir.in,hepfullfilmizle.com,ilkfullfilmizle.com,limitsizamca.org,filmcuks.com,fulldiziizleyelim2.com,diziizlehdfulltr.com,tekparcafullizle1.com,hdfilmarenasi.com,tekparthdkeyfi.com,hdfilmseli.com",
+            "domains": "ddizim.com,hicopmeyimcanimyilansevmiyorum.com,ifsaatlar.com,pornoprize.com,pornovik.net,morezidli.com,gazorez.com,pornokut.net,pornoold.com,r0j.org,ifsag.com,hamuda.com,yeuluon.com,baskod.com,sot7.com,sexoku2.club,ifsa2008.com,xxzporno.info,pornosikistr.info,riverwalkinsurance.com,pornochon.com,turbanli1.com,pornoduel.com,paroketfilms.com,istanbul-ifsa.org,catekno.com,pornoboro.com,westgahome.com,tiw8.com,pornopix.net,filme-xxx-porno.info,yerliturksikis.com,turkcepornolar.net,turkologs.org,sinemaizle.co,webspor34.org,bidiziizleyelim1.org,xn--altyazlfilm-4zbb.com,kitapindir.in,hepfullfilmizle1.com,ilkfullfilmizle.com,limitsizamca.org,filmcuks.com,fulldiziizleyelim2.com,diziizlehdfulltr.com,tekparcafullizle1.com,hdfilmarenasi.com,tekparthdkeyfi.com,hdfilmseli.com",
             "script": "Object.defineProperty(window, 'puShown', { get: function() { return true; } });"
         },
         {
-            "domains": "dizilab.net,dizired.com,fullhdcanlidizi.net,canlidizihd6.net,dizifilmix.com,dizihd3.com,seks03.com,hddiziizle.tv,canlinc.com,amatorpornox.com,sexoku3.club,blogaddicts.com,pornohumb.com,tib7.com,hdsonbolumler.com,w2star.com,pornopile.com,pornooc.com,fgeza.com,sexpornole.com,aysberg.club,pornopank.com,bicanlidiziizle.com,asyafanatikleri.net,hdfilmizle.fun,filmgoo.org,sonbolumizlesene2.com,filmexpresi2.com,sonbolumizlesene.biz,hdizletekpart.net,superstadyum1.net,hddiziizlez.com,canlidizihd6.com,futboltv24.net,filmtat1.com,ultrafilmizle.co,filmozel.com,filmizle.se,filmizleburda.org,filmizlepix.com,fullhdfilmtekpart.com,fullhdegedizi.net,hdhergundizi.com,filmizleburda.net,filmexpresi.org,seyirlikfilms.com,hdciyiz.com,fullfilmsitesi.com,haydifilmizle.com,diziizlesen.com,diziizlesonbolum.org,futboltv.site,trdublajizle.net,hdfilmtekpart.co,dizifind.com,ddizi1.com,hdfilmekani.com,ilkhdfilmcehennemi.com,hdfilmizles.net,dizikoliks.com,fullhdfilm.gen.tr,vizyonkolik.org,filmotoru.org,akfilmizle.com,filmexpresi1.com,filmkomedi.com,truvafilmizle.net,dizireplay.com,noktafilmizle.net,hddizifullizle.com,gool7.net,hdfilmevreni.co,fullfilmizlesin.com,fullhdfilmizleyicisi.com,sinefun.com,filmsonu.com,dizilanda.net,openloding.com,abcdizi.com,www.nettenfilm.com,sinemaizlefullhd.org,canlihddizi.com",
+            "domains": "bicaps.net,hdegedizi1.com,kurukayisi.info,diziizledizi.org,dizikolik.org,dizibip.com,dizired.com,fullhdcanlidizi.net,canlidizihd6.net,dizifilmix.com,dizihd3.com,hddiziizle.tv,canlinc.com,amatorpornox.com,sexoku3.club,blogaddicts.com,pornohumb.com,tib7.com,hdsonbolumler.com,w2star.com,pornopile.com,pornooc.com,fgeza.com,sexpornole.com,aysberg.club,pornopank.com,bicanlidiziizle.com,asyafanatikleri.net,hdfilmizle.fun,filmgoo.org,sonbolumizlesene2.com,filmexpresi2.com,sonbolumizlesene.biz,hdizletekpart.net,hddiziizlez.com,canlidizihd6.com,futboltv24.net,filmtat1.com,ultrafilmizle.co,filmozel.com,filmizle.se,filmizleburda.org,filmizlepix.com,fullhdfilmtekpart.com,fullhdegedizi.net,hdhergundizi.com,filmizleburda.net,filmexpresi2.com,seyirlikfilms.com,hdciyiz.com,fullfilmsitesi.com,haydifilmizle.com,diziizlesen.com,diziizlesonbolum.org,futboltv.site,trdublajizle.net,hdfilmtekpart.co,dizifind.com,hdfilmekani.com,ilkhdfilmcehennemi.com,hdfilmizles.net,dizikoliks.com,fullhdfilm.gen.tr,vizyonkolik.org,filmotoru.org,akfilmizle.com,filmkomedi.com,truvafilmizle.net,dizireplay.com,noktafilmizle.net,hddizifullizle.com,gool7.net,hdfilmevreni.co,fullfilmizlesin.com,fullhdfilmizleyicisi.com,sinefun.com,filmsonu.com,dizilanda.net,openloding.com,abcdizi.com,www.nettenfilm.com,sinemaizlefullhd.org,canlihddizi.com",
             "script": "Object.defineProperty(window, 'puShown', { get: function() { return true; } });"
         },
         {
-            "domains": "altyazilifilm1.co,webspor34.tv,filmi-izle.com,hdfilmakinasi.com,limitsizdayi.org,filmsezonu.net,dizi10.com",
+            "domains": "filmi-izle.com,dizi10.com",
             "script": "Object.defineProperty(window, 'initPu', { get: function() { return {}; } });"
         },
         {
-            "domains": "dizilab.me,fullhdfilmsitesi.org,futbolcafetv6.org,trgool.com,sportv.me,dizimag5.co,ligtvjet24.com,birdenfilmizle.com,nettenfilm.com",
+            "domains": "trgool.com,sportv.me,dizimag5.co",
             "script": "Object.defineProperty(window,'isShow',{value:true});"
         },
         {
@@ -4650,16 +4966,12 @@
             "script": "Object.defineProperty(window, 'makePopunder', { get: function() { return; } });"
         },
         {
-            "domains": "fullfilmhdizle1.net,hdfilmseli.com,hdfilmizlesek.net,dizi10.com,hdfullfilmizlesene.tv",
+            "domains": "fullfilmhdizle1.net,hdfilmseli.com,hdfilmizlesek.net,dizi10.com",
             "script": "document.cookie = \"popundr=1\";"
         },
         {
-            "domains": "hdfilmkablosu.com,ilkfullfilmizle.com",
+            "domains": "ilkfullfilmizle.com",
             "script": "document.cookie = \"i=1\";"
-        },
-        {
-            "domains": "futbolmacizle1.com",
-            "script": "(function() { var w_open = window.open, regex = /winaffiliates.com/; window.open = function(a, b) { if (typeof a !== 'string' || !regex.test(a)) { w_open(a, b); } }; })();"
         },
         {
             "domains": "bahismerkezi.org,technopat.net",
@@ -4674,7 +4986,7 @@
             "script": "document.cookie = \"popundr15=1\";"
         },
         {
-            "domains": "37.247.103.85,kifim.com,filmrax.com",
+            "domains": "filmrax.com",
             "script": "Object.defineProperty(window, 'undercipop', {get: function() { return function() {}; } });"
         },
         {
@@ -4682,24 +4994,32 @@
             "script": "window.local = true;"
         },
         {
-            "domains": "hdfilmnet.com",
-            "script": "window._popwnd = 1;"
-        },
-        {
-            "domains": "filmmovieizle.com",
-            "script": "document.cookie = \"ciunder=ok\";"
-        },
-        {
-            "domains": "yesilcampornolar.com,vizyondafilm.info,owgs.org,vhrc.org",
-            "script": "Object.defineProperty(window, 'oV1', { get: function() { return {}; } });"
-        },
-        {
             "domains": "fullhdfilmizlesene.org,ultrahdfilmizle.org",
             "script": "AG_onLoad(function() { window.startScript = function() {}; });"
         },
         {
-            "domains": "cardascend.com,bedava-tr.com",
-            "script": "Object.defineProperty(window, 'dataPopUnder', { get: function() { return {}; } });"
+            "domains": "haber7.com",
+            "script": "AG_onLoad(function() { var elements = document.querySelectorAll(\".headline-slider > .slick-dots > li > a:not([href*='advertorial'])\"); for(var i = 0; i < elements.length; i++) { elements[i].innerHTML = i+1; }; });"
+        },
+        {
+            "domains": "milligazete.com.tr",
+            "script": "AG_onLoad(function() { var _setInterval=setInterval(function(){removeAd()},500);function removeAd(){var a=$('ul.row[role=\"tablist\"] > li > a[href^=\"/service/advertclick\"]');a.length&&($('ul.row[role=\"tablist\"] > li > a[href^=\"/service/advertclick\"]').closest('li').remove(),$('div.slick-track > a[href^=\"/service/advertclick\"]').closest('a').remove())}setTimeout(function(){clearInterval(_setInterval)},5e3); });"
+        },
+        {
+            "domains": "dizired.com",
+            "script": "AG_onLoad(function() { var el=document.querySelector('#video-area > a[href^=\"http://wlbetcup.adsrv.eacdn.com/C.ashx\"]'); if(el) { el.removeAttribute(\"href\"); } });"
+        },
+        {
+            "domains": "showradyo.com.tr",
+            "script": "Object.defineProperty(window, 'skipped', { value: true }); AG_onLoad(function() { setTimeout(function() { if( typeof playerPrerollStop != 'undefined' ) { playerPrerollStop(); } }, 1000); });"
+        },
+        {
+            "domains": "dizilab6.com",
+            "script": "AG_onLoad(function() { setTimeout(function() { document.getElementsByClassName(\"ads-skip\")[0].click(); }, 300); });"
+        },
+        {
+            "domains": "ensonhaber.com",
+            "script": "AG_onLoad(function() { setTimeout(function() { var elements = document.querySelectorAll('a[title=\"Hiranur Vakfı\"]'); elements[0].closest('div.util-item').remove(); var elements = document.querySelectorAll('a[href=\"hiranur-vakfi.html\"]'); elements[0].closest('td').remove(); var elements = document.querySelectorAll(\".mcaralt td[onmouseover] .mansetAlt\"); for(var i =0 ; i < elements.length; i++){ elements[i].innerHTML = i+1; elements[i].setAttribute(\"id\",\"mansetAlt_\" + i); }; var elements = document.querySelectorAll(\".mcaralt td[onmouseover]\"); for(var i =0 ; i < elements.length; i++){ elements[i].setAttribute(\"onmouseover\", \"goToLa(\" + i + \")\"); }; }, 300); });"
         },
         {
             "domains": "ahaber.com.tr",
@@ -4712,10 +5032,6 @@
         {
             "domains": "ademocut.com",
             "script": "AG_onLoad(function() { document.getElementsByClassName(\"yazi-icerik\")[0].innerHTML = document.getElementsByClassName(\"yazi-icerik\")[0].innerHTML.replace(\"Sponsorlu Bağlantılar\", ''); });"
-        },
-        {
-            "domains": "dizilab.me",
-            "script": "AG_onLoad(function() { setTimeout(function() { var el = document.querySelector('.ads-skip'); if(el) el.click(); }, 300); });"
         },
         {
             "domains": "gazetevatan.com",
@@ -4754,24 +5070,8 @@
             "script": "document.cookie = \"splashlightbox=1\";"
         },
         {
-            "domains": "intersportv.com",
-            "script": "(function() { window.open_ = window.open; var w_open = window.open, regex = /adsrv.eacdn.com|x.co/; window.open = function(a, b) { if (typeof a !== 'string' || !regex.test(a)) { w_open(a, b); } }; })();"
-        },
-        {
-            "domains": "matchandbet.ml",
-            "script": "AG_onLoad(function() { setTimeout(function() { var el = document.querySelector('.skip'); if(el) { el.click(); el.remove(); } }, 300); });"
-        },
-        {
-            "domains": "grbetstv.com",
-            "script": "AG_defineProperty('config.adv.enabled', {value: 0});"
-        },
-        {
             "domains": "61saat.com",
             "script": "AG_onLoad(function() { setTimeout(function() {if(window.location.href.indexOf(\"tanitim.php\") != -1) { document.querySelectorAll('[href*=\"interstitial=true\"]')[0].click(); }}, 300); });"
-        },
-        {
-            "domains": "dizilab.net",
-            "script": "AG_onLoad(function() { setTimeout(function() { var el = document.querySelector('.ads-skip'); if(el) el.click(); }, 300); });"
         },
         {
             "domains": "hocam.com",
@@ -4779,14 +5079,6 @@
         },
         {
             "domains": "porn19.net",
-            "script": "(function(){var c=document.addEventListener;document.addEventListener=function(a,b,d,e){\"mousedown\"!=a&&-1==b.toString().indexOf('about:blank')&&c(a,b,d,e)}.bind(document);})();"
-        },
-        {
-            "domains": "futbolcafetv6.org",
-            "script": "AG_onLoad(function() { setTimeout(function() { var el = document.getElementById(\"player\"); if(el) $(\"#reklami-gec\").click(); }, 300); });"
-        },
-        {
-            "domains": "e-mp3bul.xyz",
             "script": "(function(){var c=document.addEventListener;document.addEventListener=function(a,b,d,e){\"mousedown\"!=a&&-1==b.toString().indexOf('about:blank')&&c(a,b,d,e)}.bind(document);})();"
         },
         {
@@ -4798,20 +5090,8 @@
             "script": "window.open = function() {};"
         },
         {
-            "domains": "ddizi1.com",
-            "script": "Object.defineProperty(window, 'show_pop', { get: function() { return; } });"
-        },
-        {
-            "domains": "hyoa.org",
-            "script": "window.open = function() {};"
-        },
-        {
             "domains": "superfb.com",
             "script": "AG_onLoad(function() { if (window.location.href.indexOf(\"/index_prestitial.php\") != -1) { window.location.href = \"/\" }; });"
-        },
-        {
-            "domains": "sinegram1.com",
-            "script": "AG_onLoad(function() { document.getElementsByClassName('content-right')[0].innerHTML = document.getElementsByClassName('content-right')[0].innerHTML.replace('Reklam :','');});"
         },
         {
             "domains": "dizimag5.co",
@@ -4828,10 +5108,6 @@
         {
             "domains": "fenerbahce.org",
             "script": "AG_onLoad(function() { setTimeout(function() { var e = document.querySelector('body > div.h1mutitle > div[class=\"sag devamet\"] > a'); if (e) e.click(); }, 100); });"
-        },
-        {
-            "domains": "filmizlepix.com",
-            "script": "Object.defineProperty(window, 'load_pop_power', { get: function() { return {}; } });"
         },
         {
             "domains": "bahissirketleri.org",
@@ -4858,24 +5134,12 @@
             "script": "AG_onLoad(function() { document.body.removeAttribute(\"onclick\"); });"
         },
         {
-            "domains": "diziyo1.net",
-            "script": "AG_onLoad(function() { if(document.getElementById(\"videopart\")) { goster(); goster2(); } });"
-        },
-        {
-            "domains": "reallycdn.com",
-            "script": "Object.defineProperty(window,'ofa',{value:true});"
-        },
-        {
             "domains": "polonyam.com",
             "script": "(function() { window.open_ = window.open; var w_open = window.open, regex = /spwms.com/; window.open = function(a, b) { if (typeof a !== 'string' || !regex.test(a)) { w_open(a, b); } }; })();"
         },
         {
             "domains": "onlinedizi.com",
             "script": "Object.defineProperty(window,'ll',{value:true});"
-        },
-        {
-            "domains": "hdfilmizle.life",
-            "script": "var _st = window.setTimeout; window.setTimeout = function setTimeout(fn, timeout) { if (/\\$\\(\"#playerarea\"\\)\\.html\\(/.test(fn.toString())) { fn(); } else { _st.apply(window, arguments); } };"
         },
         {
             "domains": "filmionlineizle.net",
@@ -4930,14 +5194,6 @@
             "script": "AG_onLoad(function() { setTimeout(function() {MilliyetManset.Count = MilliyetManset.Count -1;}, 300); });"
         },
         {
-            "domains": "fastrapidleech.com",
-            "script": "Object.defineProperty(window, 'alert', { get: function() { return; } });"
-        },
-        {
-            "domains": "populerfilmler.net",
-            "script": "AG_onLoad(function() { window.myatu_bgm = function() {}; });"
-        },
-        {
             "domains": "sporx.com",
             "script": "AG_onLoad(function() { if (window.location.href.indexOf(\"prestitial\") != -1) { document.cookie = \"interstitial_banner_2500=1\"; document.cookie = \"prestitial_banner_2500=1\"; window.location.href = \"http://www.sporx.com/?giris=ok\"; } });"
         },
@@ -4954,24 +5210,8 @@
             "script": "window.google_jobrunner = function() {};"
         },
         {
-            "domains": "excel.web.tr",
-            "script": "AG_onLoad(function() { $('td[class=\"alt1Active\"] > a > img').closest('tr[align$=\"center\"]').remove(); });"
-        },
-        {
             "domains": "webaslan.com",
             "script": "AG_onLoad(function() { setTimeout(function() { yonlen(); }, 300); });"
-        },
-        {
-            "domains": "fulldizi7.com",
-            "script": "AG_onLoad(function() { document.body.removeAttribute(\"onclick\"); });"
-        },
-        {
-            "domains": "fulldizi7.com",
-            "script": "AG_onLoad(function() { document.body.removeAttribute(\"style\"); });"
-        },
-        {
-            "domains": "dizivid.com",
-            "script": "AG_onLoad(function() { gizle(); });"
         },
         {
             "domains": "izlemeyedeger.com",
@@ -4988,10 +5228,6 @@
         {
             "domains": "finikeakdeniz.com.tr",
             "script": "AG_onLoad(function() { if (window.location.href.indexOf(\"/reklam.asp\") != -1) { window.location.href = \"/\" }; });"
-        },
-        {
-            "domains": "populerfilmler.net",
-            "script": "Object.defineProperty(window, 'undercipop', { get: function() { return {}; } });"
         },
         {
             "domains": "altyazilifilmizle.org",
@@ -5070,7 +5306,7 @@
             "script": "AG_onLoad(function() { window.bizpanda = {}; });"
         },
         {
-            "domains": "cnet.com,focus.de,eurogamer.pl,bikeradar.com,digitalspy.com,geo.de,cnn.com,gamespot.com",
+            "domains": "rockpapershotgun.com,techradar.com,cnet.com,focus.de,eurogamer.pl,bikeradar.com,digitalspy.com,geo.de,cnn.com,gamespot.com",
             "script": "!function(){function b(){}function a(a){return{get:function(){return a},set:b}}function c(a){a(!1)}AG_defineProperty('_sp_.config.content_control_callback',a(b)),AG_defineProperty('_sp_.config.spid_control_callback',a(b)),AG_defineProperty('_sp_.config.vid_control_callback',a(b)),AG_defineProperty('_sp_.config.disableBlockerStyleSheets',a(!1)),AG_defineProperty('_sp_.checkState',a(c)),AG_defineProperty('_sp_.isAdBlocking',a(c)),AG_defineProperty('_sp_.isAdblocking',a(c)),AG_defineProperty('_sp_.isContentBlockerPresent',a(c)),AG_defineProperty('_sp_.getSafeUri',a(function(a){return a})),AG_defineProperty('_sp_.pageChange',a(b)),AG_defineProperty('_sp_.setupSmartBeacons',a(b)),AG_defineProperty('_sp_.msg.startMsg',a(b)),document.addEventListener('sp.blocking',function(a){a.stopImmediatePropagation(),a=document.createEvent('Event'),a.initEvent('sp.not_blocking',!0,!1),this.dispatchEvent(a)})}();"
         },
         {
@@ -5088,6 +5324,22 @@
         {
             "domains": "windowscentral.com,androidcentral.com",
             "script": "AG_abortInlineScript(/,blockerScore:/, 'Promise');"
+        },
+        {
+            "domains": "thewindowsclub.com",
+            "script": "AG_abortInlineScript(/,blockerScore:/, 'Promise');"
+        },
+        {
+            "domains": "dejure.org",
+            "script": "window.ad_allowed = true;"
+        },
+        {
+            "domains": "mobil.se",
+            "script": "window.ADTECH = function() {};"
+        },
+        {
+            "domains": "leiderdorpsweekblad.nl",
+            "script": "Object.defineProperty(window,'canRunAds',{value:true});"
         },
         {
             "domains": "megagames.com",
@@ -5206,6 +5458,10 @@
             "script": "window.blockAdBlock = function() {};"
         },
         {
+            "domains": "techsolutiontips.com",
+            "script": "window.google_jobrunner = function() { };"
+        },
+        {
             "domains": "apkmirror.com",
             "script": "Object.defineProperty(window, 'ranTwice', {set: function(){ throw new Error(); }});"
         },
@@ -5242,6 +5498,82 @@
             "script": "window.canRunAds = true;"
         },
         {
+            "domains": "gadgethacks.com",
+            "script": "AG_onLoad(function() { setTimeout(function() { if(document.getElementsByClassName(\"consentContainer\")[0].isvisible = true) { var date = Date().split(\" GMT\"); document.cookie = \"GDPRConsentDate = \" + date[0] +\";domain=.gadgethacks.com\"; location.reload(); }; }, 1000); });"
+        },
+        {
+            "domains": "reserved.com",
+            "script": "document.cookie = \"res_dcm=1\";"
+        },
+        {
+            "domains": "instagram.com",
+            "script": "document.cookie = \"ig_cb=1\";"
+        },
+        {
+            "domains": "webmd.com",
+            "script": "document.cookie = \"gdpreu=eu%7C%7CCONSENTED%7C1531150348\";"
+        },
+        {
+            "domains": "popsugar.co.uk",
+            "script": "AG_onLoad(function() { setTimeout(function() {if(window.location.href.indexOf(\"gdpr-consent\") != -1) { document.getElementById(\"_evidon-banner-acceptbutton\").click(); };  }, 1000); });"
+        },
+        {
+            "domains": "echo-online.de",
+            "script": "document.cookie = \"privacy-accepted=1\"; document.cookie = \"privacy-read=1\";"
+        },
+        {
+            "domains": "qxl.dk,qxl.no",
+            "script": "AG_onLoad(function() { setTimeout(function() { if(document.getElementById(\"cookie-container\").isvisible = true) { document.cookie = \"cookielaw=true\"; location.reload(); } }, 300); });"
+        },
+        {
+            "domains": "tweakers.net",
+            "script": "AG_onLoad(function() { var el=document.querySelector('form#cookieAcceptForm button.fancyButton[type=\"submit\"]'); if(el) el.click(); });"
+        },
+        {
+            "domains": "twitch.tv",
+            "script": "if (typeof localStorage != 'undefined' && localStorage.setItem) { localStorage.setItem('twilight.gdpr.preferences', '{\"version\":1,\"vendorPreferences\":{\"amazon\":false,\"comscore\":false,\"google\":false,\"nielsen\":false,\"salesforce_dmp\":false}}'); }"
+        },
+        {
+            "domains": "rtlmost.hu",
+            "script": "if (typeof localStorage != 'undefined' && localStorage.setItem) { localStorage.setItem('gdprUserHasInteracted', '1'); }"
+        },
+        {
+            "domains": "11880.com",
+            "script": "document.cookie = \"areCookiesAccepted=true\";"
+        },
+        {
+            "domains": "neckermann-reisen.de",
+            "script": "document.cookie = \"useOfCookiesAccepted_live = true\";"
+        },
+        {
+            "domains": "dm.hu",
+            "script": "document.cookie = \"dmDrogeriemarkt_euLaw_userDidNotOptIn = true\";"
+        },
+        {
+            "domains": "trustarc.com",
+            "script": "AG_onLoad(function() { setTimeout(function() { document.getElementsByClassName(\"call\")[0].click(); }, 2000); });"
+        },
+        {
+            "domains": "transip.nl",
+            "script": "AG_onLoad(function() { setTimeout(function() { if(document.getElementById(\"consent\").isvisible = true) { document.cookie = \"cookie-consent-dismissed=1\"; location.reload(); }; }, 300); });"
+        },
+        {
+            "domains": "myprivacy.persgroep.net",
+            "script": "AG_onLoad(function() { setTimeout(function() { document.getElementsByClassName(\"fjs-set-consent\")[0].click(); }, 300); });"
+        },
+        {
+            "domains": "7sur7.be",
+            "script": "document.cookie = \"pws=functional|social_media\";"
+        },
+        {
+            "domains": "fortune.com",
+            "script": "AG_onLoad(function() { setTimeout(function() { if(document.getElementsByClassName(\"gdpr-legal-copy\")[0].isvisible = true) { document.getElementsByClassName(\"btn\")[0].click();}; }, 2000); });"
+        },
+        {
+            "domains": "derstandard.at",
+            "script": "AG_onLoad(function() { setTimeout(function() { if(document.getElementsByClassName(\"privacywall-overlay\")[0].isvisible = true) { document.cookie = \"DSGVO_ZUSAGE_V1=true; path=/\"; location.reload(); }; }, 300); });"
+        },
+        {
             "domains": "cookies.rtlnieuws.nl",
             "script": "AG_onLoad(function() { setTimeout(function() { var el = document.querySelector('form[action=\"https://cookieservice.rtl.nl/consent\"] > .accept-button'); if (el) el.click(); }, 300); });"
         },
@@ -5255,7 +5587,7 @@
         },
         {
             "domains": "f1racing.pl",
-            "script": "AG_onLoad(function() { var el = document.querySelector('a[href=\"/x-set-cookie/\"]'); if (el) el.click(); });"
+            "script": "AG_onLoad(function() { var el = document.querySelector('a[href^=\"/x-set-cookie/\"]'); if (el) el.click(); });"
         },
         {
             "domains": "britishairways.com",
@@ -5446,6 +5778,10 @@
             "script": "AG_onLoad(function() { document.getElementsByClassName('post-body entry-content')[0].innerHTML = document.getElementsByClassName('post-body entry-content')[0].innerHTML.replace('↓↓PUBLICIDAD / ADS↓↓',''); document.getElementsByClassName('post-body entry-content')[0].innerHTML = document.getElementsByClassName('post-body entry-content')[0].innerHTML.replace('↓↓PUBLICIDAD / ADS↓↓','');});"
         },
         {
+            "domains": "m.standaard.be",
+            "script": "document.cookie = \"sb-closed=true\";"
+        },
+        {
             "domains": "givemesport.com",
             "script": "document.cookie = \"gms.appPromo=1\";"
         },
@@ -5498,6 +5834,10 @@
             "script": "document.cookie = \"hide_popup_banner=true\";"
         },
         {
+            "domains": "medium.com",
+            "script": "AG_onLoad(function() { setTimeout(function() { document.getElementsByClassName(\"overlay\")[0].remove(); document.getElementsByClassName(\"u-overflowHidden\")[0].classList.remove(\"u-overflowHidden\"); }, 1000); });"
+        },
+        {
             "domains": "akampus.com",
             "script": "Object.defineProperty(window,'userclosed',{value:true});"
         },
@@ -5524,6 +5864,10 @@
         {
             "domains": "rbc.ru",
             "script": "document.cookie = \"pushAllow = close\";"
+        },
+        {
+            "domains": "allocine.fr",
+            "script": "(function() { try { if (\"undefined\" != typeof localStorage) { var a = { date: (new Date).getTime(), time: 1 }; localStorage.setItem(\"ac_newsletter_modal_capping\", JSON.stringify(a)) } } catch (ex) {} })();"
         },
         {
             "domains": "patch.com",
@@ -5556,10 +5900,6 @@
         {
             "domains": "wallstreet-online.de,dni.ru,polit.info",
             "script": "if (window.PushManager) { window.PushManager.prototype.subscribe = function () { return { then: function (func) { } }; }; }"
-        },
-        {
-            "domains": "livelib.ru,lenta.ru,rambler.ru,sports.ru",
-            "script": "(function() { if (typeof Notification == 'undefined') { return; } Object.defineProperty(Notification, \"permission\", { get: function() { return \"denied\"; } }); })();"
         },
         {
             "domains": "sports.ru",
@@ -5604,6 +5944,18 @@
         {
             "domains": "openload.co",
             "script": "document.cookie = \"popcashpuCap=1\";"
+        },
+        {
+            "domains": "videosynd.kataweb.it",
+            "script": "Object.defineProperty(window, 'varAutoplay', { value: 0 });"
+        },
+        {
+            "domains": "fortune.com",
+            "script": "AG_onLoad(function() { var el = document.querySelector('.video-js[data-stickyplay]'); if (el.getAttribute('data-stickyplay')==='true') { el.setAttribute('data-stickyplay','false'); }; var el1 = document.querySelector('.video-js[data-autoplay]'); if (el1.getAttribute('data-autoplay')==='true') { el1.setAttribute('data-autoplay','false'); } });"
+        },
+        {
+            "domains": "doviz.com",
+            "script": "AG_onLoad(function() { setTimeout(function() { if(typeof player.pause != 'undefined') { player.pause(); } }, 3000); });"
         },
         {
             "domains": "reklamlar.my-debrid.net",
@@ -5728,6 +6080,22 @@
         {
             "domains": "imslp.org",
             "script": "AG_onLoad(function(){var b=document.getElementById(\"sm_dl_wait\");if(b){var c=document.createElement(\"a\");c.setAttribute(\"href\",b.getAttribute(\"data-id\"));c.innerHTML=\"<b>\"+(\"function\"==typeof window.a?IMSLPGetMsg(\"js-s\"):\"Click here to continue your download.\")+\"</b>\";var d=document.createElement(\"style\");d.innerHTML=\"#sm_dl_wait{display:none!important;}\";b.parentNode.insertBefore(c,b);b.parentNode.insertBefore(d,b)}});"
+        },
+        {
+            "domains": "infoserial.tv",
+            "script": "Object.defineProperty(document, 'oncontextmenu', { get: function() { return; } }); Object.defineProperty(document, 'ondragstart', { get: function() { return; } }); Object.defineProperty(document, 'onkeydown', { get: function() { return; } }); Object.defineProperty(document, 'onselectstart', { get: function() { return; } }); Object.defineProperty(document, 'onmousedown', { get: function() { return; } }); Object.defineProperty(document, 'onclick', { get: function() { return; } }); Object.defineProperty(window, 'disableSelection', { get: function() { return; } }); Object.defineProperty(window, 'disable_copy', { get: function() { return; } }); Object.defineProperty(window, 'disableEnterKey', { get: function() { return; } }); Object.defineProperty(window, 'disable_copy_ie', { get: function() { return; } });"
+        },
+        {
+            "domains": "androidmtk.com",
+            "script": "Object.defineProperty(document, 'oncontextmenu', { get: function() { return; } }); Object.defineProperty(document, 'ondragstart', { get: function() { return; } }); Object.defineProperty(document, 'onkeydown', { get: function() { return; } }); Object.defineProperty(document, 'onselectstart', { get: function() { return; } }); Object.defineProperty(document, 'onmousedown', { get: function() { return; } }); Object.defineProperty(document, 'onclick', { get: function() { return; } }); Object.defineProperty(window, 'disableSelection', { get: function() { return; } }); Object.defineProperty(window, 'disable_copy', { get: function() { return; } }); Object.defineProperty(window, 'disableEnterKey', { get: function() { return; } }); Object.defineProperty(window, 'disable_copy_ie', { get: function() { return; } });"
+        },
+        {
+            "domains": "volt-index.ru",
+            "script": "Object.defineProperty(document, 'oncontextmenu', { get: function() { return; } }); Object.defineProperty(document, 'ondragstart', { get: function() { return; } }); Object.defineProperty(document, 'onkeydown', { get: function() { return; } }); Object.defineProperty(document, 'onselectstart', { get: function() { return; } }); Object.defineProperty(document, 'onmousedown', { get: function() { return; } }); Object.defineProperty(document, 'onclick', { get: function() { return; } }); Object.defineProperty(window, 'disableSelection', { get: function() { return; } }); Object.defineProperty(window, 'disable_copy', { get: function() { return; } }); Object.defineProperty(window, 'disableEnterKey', { get: function() { return; } }); Object.defineProperty(window, 'disable_copy_ie', { get: function() { return; } });"
+        },
+        {
+            "domains": "volt-index.ru",
+            "script": "AG_abortInlineScript(/oncopy/, 'jQuery');"
         },
         {
             "domains": "toptech360.com",
