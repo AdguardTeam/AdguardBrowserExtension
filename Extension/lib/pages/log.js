@@ -110,7 +110,11 @@ var ModalUtils = {
 };
 
 var FilterRule = {
-    MASK_WHITE_LIST: "@@"
+    MASK_WHITE_LIST: '@@',
+    MASK_CSS_RULE: '##',
+    MASK_CSS_INJECT_RULE: '#$#',
+    MASK_CSS_EXTENDED_CSS_RULE: '#?#',
+    MASK_CSS_INJECT_EXTENDED_CSS_RULE: '#$?#',
 };
 
 var UrlFilterRule = {
@@ -488,7 +492,7 @@ PageController.prototype = {
         var eventTemplate = `
             <tr ${metadata.id ? 'id="' + metadata.id + '"' : ''}
                 ${metadata.class ? 'class="' + metadata.class + '"' : ''}>
-                <td>${event.requestUrl}</td>
+                <td>${event.requestUrl ? event.requestUrl : event.element}</td>
                 <td>
                     ${RequestWizard.getRequestType(event.requestType)}
                     ${thirdPartyDetails}
@@ -817,7 +821,20 @@ var RequestWizard = (function () {
 
         var requestRule = filteringEvent.requestRule;
 
-        template.querySelector('[attr-text="requestUrl"]').textContent = filteringEvent.requestUrl;
+        var requestUrlNode = template.querySelector('[attr-text="requestUrl"]');
+        if (filteringEvent.requestUrl) {
+            requestUrlNode.textContent = filteringEvent.requestUrl;
+        } else {
+            requestUrlNode.parentNode.style.display = 'none';
+        }
+
+        var elementNode = template.querySelector('[attr-text="element"]');
+        if (filteringEvent.element) {
+            elementNode.textContent = filteringEvent.element;
+        } else {
+            elementNode.parentNode.style.display = 'none';
+        }
+
         template.querySelector('[attr-text="requestType"]').textContent = getRequestType(filteringEvent.requestType);
         template.querySelector('[attr-text="frameDomain"]').textContent = getSource(filteringEvent.frameDomain);
         if (!filteringEvent.frameDomain) {
