@@ -265,17 +265,16 @@
             var cssInjectionOnly = (options & CSS_INJECTION_ONLY) === CSS_INJECTION_ONLY;
 
             if (!cssInjectionOnly &&
-                adguard.prefs.collectHitsCountEnabled &&
-                adguard.settings.collectHitsCount()) {
-
-                // If user has enabled "Send statistics for ad filters usage" option we build CSS with enabled hits stats.
-                // In this case style contains "content" with filter identifier and rule text.
+                adguard.webRequestService.isCollectingCosmeticRulesHits()) {
+                /**
+                 * If user has enabled "Send statistics for ad filters usage" option we
+                 * build CSS with enabled hits stats. In this case style contains "content"
+                 * with filter identifier and rule text.
+                 */
                 var selectors = this.cssFilter.buildCssHits(domain, options);
-                selectors.cssHitsCounterEnabled = true;
                 return selectors;
-            } else {
-                return this.cssFilter.buildCss(domain, options);
             }
+            return this.cssFilter.buildCss(domain, options);
         },
 
         /**

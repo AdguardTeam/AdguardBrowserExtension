@@ -46,14 +46,9 @@ adguard.pageStats = (function (adguard) {
             });
         },
 
-        save: function () {
-            if (this.saveTimeoutId) {
-                clearTimeout(this.saveTimeoutId);
-            }
-            this.saveTimeoutId = setTimeout(function () {
-                adguard.localStorage.setItem(pageStatisticProperty, JSON.stringify(this.stats));
-            }.bind(this), 1000);
-        },
+        save: adguard.utils.concurrent.throttle(function() {
+            adguard.localStorage.setItem(pageStatisticProperty, JSON.stringify(this.stats));
+        }, adguard.prefs.statsSaveInterval),
 
         clear: function () {
             adguard.localStorage.removeItem(pageStatisticProperty);
