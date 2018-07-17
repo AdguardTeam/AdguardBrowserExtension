@@ -464,7 +464,11 @@ adguard.webRequestService = (function (adguard) {
     };
 
     var isCollectingCosmeticRulesHits = function () {
-        return adguard.prefs.collectHitsCountEnabled &&
+        /**
+         * Edge browser doesn't support css content attribute for node elements except :before and :after
+         * Due to this we can't use cssHitsCounter for edge browser
+         */
+        return !adguard.utils.browser.isEdgeBrowser() && adguard.prefs.collectHitsCountEnabled &&
             (adguard.settings.collectHitsCount() || adguard.filteringLog.isOpen());
     };
 
