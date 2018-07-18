@@ -113,22 +113,22 @@
      */
     function showVersionUpdatedPopup(message) {
         var alertDivHtml =
-            `<div id="adguard-new-version-popup" class="update-popup update-popup--active">
-                <div id="adguard-new-version-popup-close" class="update-popup__close"></div>
-                <div class="update-popup__logo"></div>
-                <div class="update-popup__title">
+            `<div id="adguard-new-version-popup" class="adguard-update-popup adguard-update-popup--active">
+                <div id="adguard-new-version-popup-close" class="adguard-update-popup__close"></div>
+                <div class="adguard-update-popup__logo"></div>
+                <div class="adguard-update-popup__title">
                     ${message.title}
                 </div>
-                <div class="update-popup__desc">
+                <div class="adguard-update-popup__desc">
                     ${message.description}
                 </div>
-                <a href="${message.changelogHref}" class="update-popup__link" target="_blank">
+                <a href="${message.changelogHref}" class="adguard-update-popup__link" target="_blank">
                     ${message.changelogText}
                 </a>
-                <div class="update-popup__offer">
+                <div class="adguard-update-popup__offer">
                     ${message.offer}
                 </div>
-                <a href="${message.offerButtonHref}" class="update-popup__btn">
+                <a href="${message.offerButtonHref}" class="adguard-update-popup__btn">
                     ${message.offerButtonText}
                 </a>
             </div>`;
