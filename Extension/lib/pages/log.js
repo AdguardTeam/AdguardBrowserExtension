@@ -504,10 +504,10 @@ PageController.prototype = {
                     ${thirdPartyDetails}
                 </td>
                 <td>${ruleText ? ruleText : ''}</td>
-                <td class="task-manager-content-header-body-col task-manager-content-item-filter">
+                <td>
                     ${event.requestRule ? RequestWizard.getFilterName(event.requestRule.filterId) : ''}
                 </td>
-                <div>${RequestWizard.getSource(event.frameDomain)}</div>
+                <td>${RequestWizard.getSource(event.frameDomain)}</td>
             </tr>`;
 
         var element = htmlToElement(eventTemplate);
