@@ -372,48 +372,35 @@ QUnit.test("BadFilter multi-options", function (assert) {
 
 });
 
-QUnit.test("Request filter performance", function (assert) {
+QUnit.test("requestFilter.findRuleForRequest performance", function (assert) {
 
-    var done = assert.async();
-
-    var readFromFile = function (path, successCallback) {
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", path, false);
-        xhr.send(null);
-        successCallback(xhr.responseText);
-    };
-
-    var onFileLoaded = function (text) {
-        assert.ok(text != null);
-
-        var requestFilter = new adguard.RequestFilter();
-        var rules = text.split("\n");
-        assert.ok(rules.length > 0);
-        for (var i = 0; i < rules.length; i++) {
-            var rule = adguard.rules.builder.createRule(rules[i], adguard.utils.filters.USER_FILTER_ID);
-            if (rule) {
-                requestFilter.addRule(rule);
-            }
+    var rules = filtersFromTxt; // variable filtersFromTxt is from 'test_filter.js'
+    var requestFilter = new adguard.RequestFilter();
+    for (var i = 0; i < rules.length; i++) {
+        var rule = adguard.rules.builder.createRule(rules[i], adguard.utils.filters.USER_FILTER_ID);
+        if (rule) {
+            requestFilter.addRule(rule);
         }
+    }
 
-        var url = "https://thisistesturl.com/asdasdasd_adsajdasda_asdasdjashdkasdasdasdasd_adsajdasda_asdasdjashdkasd";
+    var url = "https://www.youtube.com/gaming";
+    var referrer = "http://example.org";
 
-        var count = 5000;
-        var startTime = new Date().getTime();
-        for (var k = 0; k < count; k++) {
-            requestFilter.findRuleForRequest(url, null, adguard.RequestTypes.SUBDOCUMENT);
-        }
+    var count = 50000;
+    var startTime = new Date().getTime();
+    var results = [];
+    for (var k = 0; k < count; k++) {
+        requestFilter.findRuleForRequest(url, referrer, adguard.RequestTypes.SUBDOCUMENT);
+    }
 
-        var elapsed = new Date().getTime() - startTime;
-        assert.ok(elapsed > 0);
-        console.log("Total: " + elapsed / 1000000 + " ms");
-        console.log("Average: " + elapsed / 1000 / count + " µs");
+    var elapsed = new Date().getTime() - startTime;
+    assert.ok(elapsed > 0);
 
-        //Total: 0.000006 ms
-        //Average: 0.0000012 ms
-
-        done();
-    };
-
-    readFromFile('test_filter.txt', onFileLoaded);
+    console.log('------------------------------------START TEST PERFORMANCE-----------------------------------');
+    console.log("Total: " + elapsed + " ms");
+    console.log("Average: " + elapsed / count + " ms");
+    console.log('------------------------------------END TEST PERFORMANCE-----------------------------------');
+    
+    // Total: 84 ms
+    // Average: 0.00168 ms
 });
