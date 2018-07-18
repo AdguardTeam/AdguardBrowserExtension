@@ -140,10 +140,12 @@ PageController.prototype = {
         this.logTable = document.querySelector("#logTable");
         this.logTableEmpty = document.querySelector('#logTableEmpty');
         this.logTableHidden = true;
+        this.logoIcon = document.querySelector('#logoIcon');
 
         this.tabSelector = document.querySelector('#tabSelector');
-
-        this.logoIcon = document.querySelector('#logoIcon');
+        this.tabSelector.addEventListener('change', function (e) {
+            document.location.hash = '#' + e.target.selectedOptions[0].getAttribute('data-tab-id');
+        });
 
         // bind location hash change
         window.addEventListener('hashchange', function () {
