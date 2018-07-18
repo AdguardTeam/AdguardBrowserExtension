@@ -28,7 +28,7 @@
         <div class="col-logo"><img id="logoIcon" src="images/icon-adguard.png" alt=""></div>
         <div class="col-tab" i18n="filtering_log_tab"></div>
         <div class="col-tab-drop">
-            <select id="tabSelector" class="dropdown" data-toggle="dropdown" data-target="#tabSelector"></select>
+            <select id="tabSelector" class="tab-selector-dropdown" data-toggle="dropdown" data-target="#tabSelector"></select>
         </div>
     </div>
     <div class="col-refresh">
@@ -72,6 +72,7 @@
         <th>URL</th>
         <th i18n="filtering_table_type"></th>
         <th i18n="filtering_table_rule"></th>
+        <th i18n="filtering_table_filter"></th>
         <th i18n="filtering_table_source"></th>
     </thead>
     <tbody id="logTable" class="hidden"></tbody>
@@ -92,6 +93,10 @@
             <li>
                 <div class="name">URL:</div>
                 <div class="value" attr-text="requestUrl"></div>
+            </li>
+            <li>
+                <div class="name" i18n="filtering_modal_element"></div>
+                <div class="value" attr-text="element"></div>
             </li>
         </ul>
         <ul class="list">

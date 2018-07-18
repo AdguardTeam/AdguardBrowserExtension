@@ -1,8 +1,8 @@
-! Checksum: iiLL8a4hU+83FQTnXgzpVA
-! Title: Dutch filter
+! Checksum: Ds033y6NEFOF5ExchldV1g
+! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.0.28
-! TimeUpdated: 2018-04-13T00:03:07+00:00
+! Version: 2.0.0.31
+! TimeUpdated: 2018-06-22T00:04:04+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -1296,6 +1296,11 @@ tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
 ||wwa.pacific-yield.com^$third-party
 @@/ad_bomb/*$image,domain=computerworld.nl|webwereld.nl
 @@/ad_pics/*$image,domain=webwereld.nl
+windowstechblog.nl#@#.an-advert-banner
+windowstechblog.nl#@##adsense
+windowstechblog.nl#@#.an-sponsored
+icttipsandtricks.nl##body > div[style^="position: fixed; top:"][style*="z-index: 9999"]:not([class]):not([id])
+icttipsandtricks.nl#%#Object.defineProperty(window, 'ai_adb_detected', { get: function() { return function() {}; } });
 @@||static.webwereld.nl/javascripts/advert.js
 @@||v.fwmrm.net/ad/g/1$domain=player.medialaancdn.be|vtm.be
 player.medialaancdn.be,vtm.be#$#.pub300x250.pub300x250m.pub728x90.text-ad.textAd.textad.textads.text-ads.text-ad-links {display:block!important;}
@@ -1312,6 +1317,8 @@ telegraaf.nl#%#window.canRunAds = true;
 @@||static.buienradar.nl/resources/js/advertisement.js
 biernet.nl#@#.afs_ads
 @@||telegraaf.tcdn.nl/javascript/showads*.js
+androidplanet.nl##.sidebar > .widget_static_device_widget:has(.device-ad)
+androidplanet.nl##.pd-results-container > .results-inner > .pd-advisor-offer-container:first-child:has(> .pd-advisor-offer > .result-badge:contains(Adv.))
 pcmweb.nl##.site__sidebar > .block[-ext-has='div.banner']
 pcmweb.nl##.site__sidebar > .block[-ext-has='div#marketingcarrousseluitingen']
 computertotaal.nl###sidebar > .sidebarBlock[-ext-has='div#marketingcarrousseluitingen']
@@ -1321,6 +1328,8 @@ gelderlander.nl##.page-content > .theme-default[-ext-has='div.ad']
 klusidee.nl##tr.table-row[-ext-has=".td-ad"]
 omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3000px!important; }
 omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
+androidplanet.nl###featured-header[data-campaign]
+androidplanet.nl##.sidebar > .widget_ad_html
 ||mediareader.omroepwest.nl/gaslicht^
 ||unity.nu/media/*/BANNERS/
 ||topomania.net/sites/topomania.net/images/pacnum-promo.png

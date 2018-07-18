@@ -265,8 +265,18 @@ adguard.webRequestService = (function (adguard) {
             //don't process request
             return null;
         }
+        let whitelistRule;
+        /**
+         * Background requests will be whitelisted if their referrer
+         * url will match with user whitelist rule
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1032
+         */
+        if (tab.tabId === adguard.BACKGROUND_TAB_ID) {
+            whitelistRule = adguard.whitelist.findWhiteListRule(referrerUrl);
+        } else {
+            whitelistRule = adguard.frames.getFrameWhiteListRule(tab);
+        }
 
-        var whitelistRule = adguard.frames.getFrameWhiteListRule(tab);
         if (whitelistRule && whitelistRule.isDocumentWhiteList()) {
             // Frame is whitelisted by the main frame's $document rule
             // We do nothing more in this case - return the rule.
@@ -434,6 +444,15 @@ adguard.webRequestService = (function (adguard) {
         recordRuleHit(tab, requestRule, requestUrl);
     };
 
+    var isCollectingCosmeticRulesHits = function () {
+        /**
+         * Edge browser doesn't support css content attribute for node elements except :before and :after
+         * Due to this we can't use cssHitsCounter for edge browser
+         */
+        return !adguard.utils.browser.isEdgeBrowser() && adguard.prefs.collectHitsCountEnabled &&
+            (adguard.settings.collectHitsCount() || adguard.filteringLog.isOpen());
+    };
+
     // EXPOSE
     return {
         processGetSelectorsAndScripts: processGetSelectorsAndScripts,
@@ -449,7 +468,8 @@ adguard.webRequestService = (function (adguard) {
         processRequestResponse: processRequestResponse,
         postProcessRequest: postProcessRequest,
         recordRuleHit: recordRuleHit,
-        onRequestBlocked: onRequestBlockedChannel
+        onRequestBlocked: onRequestBlockedChannel,
+        isCollectingCosmeticRulesHits: isCollectingCosmeticRulesHits,
     };
 
 })(adguard);

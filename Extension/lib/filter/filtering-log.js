@@ -24,7 +24,7 @@ adguard.filteringLog = (function (adguard) {
 
     var REQUESTS_SIZE_PER_TAB = 1000;
 
-    const backgroundTabId = -1;
+    const backgroundTabId = adguard.BACKGROUND_TAB_ID;
     const backgroundTab = {
         tabId: backgroundTabId,
         title: adguard.i18n.getMessage('background_tab_title')
@@ -139,7 +139,8 @@ adguard.filteringLog = (function (adguard) {
             s.push(' ');
             s.push(attr.name);
             s.push('="');
-            s.push(attr.value);
+            var value = attr.value === null ? '' : attr.value.replace(/"/g, '\\"');
+            s.push(value);
             s.push('"');
         }
         s.push('>');
@@ -216,16 +217,19 @@ adguard.filteringLog = (function (adguard) {
     };
 
     /**
-     * Add event to log with the cosmetic rule
-     * @param tab
-     * @param element
-     * @param frameUrl
-     * @param requestType
-     * @param requestRule
+     * Add event to log with the corresponding rule
+     * @param {{tabId: Number}} tab - Tab object with one of properties tabId
+     * @param {(string|Element)} element - String presentation of element or NodeElement
+     * @param {String} frameUrl - Frame url
+     * @param {String} requestType - Request type
+     * @param {{ruleText: String, filterId: Number, isInjectRule: Boolean}} requestRule - Request rule
      */
     var addCosmeticEvent = function (tab, element, frameUrl, requestType, requestRule) {
-
         if (openedFilteringLogsPage === 0) {
+            return;
+        }
+
+        if (!requestRule) {
             return;
         }
 
@@ -235,12 +239,11 @@ adguard.filteringLog = (function (adguard) {
         }
 
         var frameDomain = adguard.utils.url.getDomainName(frameUrl);
-
         var filteringEvent = {
-            requestUrl: elementToString(element), // TODO: change naming
+            element: typeof element === 'string' ? element : elementToString(element),
             frameUrl: frameUrl,
             frameDomain: frameDomain,
-            requestType: requestType
+            requestType: requestType,
         };
         if (requestRule) {
             // Copy useful properties
@@ -347,6 +350,10 @@ adguard.filteringLog = (function (adguard) {
         }
     };
 
+    var isOpen = function () {
+        return openedFilteringLogsPage > 0;
+    };
+
     // Initialize filtering log
     synchronizeOpenTabs();
 
@@ -367,8 +374,8 @@ adguard.filteringLog = (function (adguard) {
         addCosmeticEvent: addCosmeticEvent,
         clearEventsByTabId: clearEventsByTabId,
 
+        isOpen: isOpen,
         onOpenFilteringLogPage: onOpenFilteringLogPage,
-        onCloseFilteringLogPage: onCloseFilteringLogPage
+        onCloseFilteringLogPage: onCloseFilteringLogPage,
     };
-
 })(adguard);
