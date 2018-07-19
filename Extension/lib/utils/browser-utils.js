@@ -135,6 +135,11 @@
             return adguard.prefs.browser === "Firefox";
         },
 
+        isFirefoxForAndroidBrowser: function () {
+            return navigator.userAgent.indexOf('Firefox') > -1 &&
+                navigator.userAgent.indexOf('Android') > -1;
+        },
+
         isChromeBrowser: function () {
             return adguard.prefs.browser === "Chrome";
         },
