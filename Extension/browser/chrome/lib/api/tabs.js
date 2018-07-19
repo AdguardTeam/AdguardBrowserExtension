@@ -257,7 +257,7 @@ adguard.tabsImpl = (function (adguard) {
                  * There is only one window whole time
                  * Thats why if we try to provide windowId, method fails with error.
                  */
-                windowId: !adguard.utils.browser.isFirefoxForAndroidBrowser() ? win.id : undefined,
+                windowId: !adguard.prefs.mobile ? win.id : undefined,
                 url: url,
                 active: active,
             }, function (chromeTab) {
