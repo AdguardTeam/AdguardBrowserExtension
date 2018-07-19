@@ -1179,8 +1179,9 @@ PageController.prototype = {
         return $('<div>', {class: 's-page-table-row cf'})
             .append($('<div>', {
                 class: 'sp-table-row-label',
-                text: filterName
-            }).append($('<a>', {class: 'sp-table-row-info', href: homepageLink, text: homepageText, target: '_blank'})))
+            })
+            .append($('<div>', {class: 'sp-table-row-title', text: filterName, target: '_blank'}))
+            .append($('<a>', {class: 'sp-table-row-info', href: homepageLink, text: homepageText, target: '_blank'})))
             .append($('<input>', {
                 type: 'checkbox',
                 name: 'modalFilterId',
