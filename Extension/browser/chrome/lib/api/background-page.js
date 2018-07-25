@@ -450,7 +450,9 @@ var browser = window.browser || chrome;
     // https://developer.chrome.com/extensions/webNavigation
     adguard.webNavigation = {
         onCreatedNavigationTarget: onCreatedNavigationTarget,
-        onCommitted: onCommitted
+        onCommitted: onCommitted,
+        onDOMContentLoaded: browser.webNavigation.onDOMContentLoaded,
+        getFrame: browser.webNavigation.getFrame,
     };
 
     var browserActionSupported = typeof browser.browserAction.setIcon !== 'undefined';

@@ -771,7 +771,14 @@
                 if (injection.cssText) {
                     adguard.tabs.insertCssCode(tabId, frameId, injection.cssText);
                 }
-                injections.removeTabFrameInjection(tabId, frameId);
+                /**
+                 * Remove only injections corresponding to subframes
+                 * Main frame injection may be used later in the iframes without src
+                 * and will be removed on page removal
+                 */
+                if (frameId !== adguard.MAIN_FRAME_ID) {
+                    injections.removeTabFrameInjection(tabId, frameId);
+                }
             }
 
             /**
@@ -790,6 +797,42 @@
             }
 
             /**
+             * Checks if iframe doesn't has the src
+             * or is src is about:blank, javascript:'', etc
+             * @param {string} frameUrl url
+             * @param {number} frameId unique id of frame in the tab
+             * @param {string} tabUrl url of tab where iframe exists
+             */
+            function isIframeWithoutSrc(frameUrl, frameId, tabUrl) {
+                return (frameUrl === tabUrl ||
+                        frameUrl === 'about:blank' ||
+                        frameUrl === 'about:srcdoc' ||
+                        frameUrl.indexOf("javascript:'") > -1)
+                    && frameId !== adguard.MAIN_FRAME_ID;
+            }
+
+            function tryInjectInIframes(details) {
+                const { frameId, tabId, url: frameUrl } = details;
+                /**
+                 * Get url of the tab where iframe exists
+                 */
+                browser.tabs.get(tabId, function (tab) {
+                    const { url: tabUrl } = tab;
+                    if (isIframeWithoutSrc(frameUrl, frameId, tabUrl)) {
+                        const injection = injections.get(tabId, adguard.MAIN_FRAME_ID);
+                        if (!injection && !injection.ready) {
+                            return;
+                        }
+                        if (injection.jsScriptText) {
+                            adguard.tabs.executeScriptCode(tabId, frameId, injection.jsScriptText);
+                        }
+                        if (injection.cssText) {
+                            adguard.tabs.insertCssCode(tabId, frameId, injection.cssText);
+                        }
+                    }
+                });
+            }
+            /**
              * https://developer.chrome.com/extensions/webRequest
              * https://developer.chrome.com/extensions/webNavigation
              */
@@ -797,6 +840,7 @@
             adguard.webRequest.onResponseStarted.addListener(tryInjectOnResponseStarted, ['<all_urls>']);
             adguard.webNavigation.onCommitted.addListener(tryInject);
             adguard.webRequest.onErrorOccurred.addListener(removeInjection, ['<all_urls>']);
+            adguard.webNavigation.onDOMContentLoaded.addListener(tryInjectInIframes);
             // In the current Firefox version (60.0.2), the onCommitted even fires earlier than onBeforeRequest for SUBDOCUMENT requests
             // This is true only for SUBDOCUMENTS i.e. iframes
             // so we inject code when onCompleted event fires
