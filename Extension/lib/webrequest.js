@@ -500,7 +500,7 @@
             On tab close we clear our injections for corresponding tab
             Also our injections removes old injections for iframes when user navigates to other page in the same tab
 
-            If page has iframes without remote source we can not get rules for this iframe with usual methods,
+            In Firefox and Chrome if page has iframes without remote source we can not get rules for this iframe with usual methods,
             That's why we get rules for main frame and inject them.
                                             +- ----------------------------------+
                                             |                                    |     Get injection for main iframe
@@ -813,6 +813,15 @@
                     && frameId !== adguard.MAIN_FRAME_ID;
             }
 
+            /**
+             * This method injects css and js code in iframes without remote source
+             * Usual webRequest callbacks don't fire for iframes without remote source
+             * Also urls in these iframes may be "about:blank", "about:srcdoc", etc.
+             * Due to this reason we prepare injections for them as for mainframe
+             * and inject them only when onDOMContentLoaded fires
+             * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1046
+             * @param {{tabId: Number, url: String, processId: Number, frameId: Number, timeStamp: Number}} details
+             */
             function tryInjectInIframesWithoutSrc(details) {
                 const { frameId, tabId, url: frameUrl } = details;
                 /**
