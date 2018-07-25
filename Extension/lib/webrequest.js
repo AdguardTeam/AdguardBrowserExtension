@@ -779,14 +779,7 @@
                 if (injection.cssText) {
                     adguard.tabs.insertCssCode(tabId, frameId, injection.cssText);
                 }
-                /**
-                 * Remove only injections corresponding to subframes
-                 * Main frame injection may be used later in the iframes without src
-                 * and will be removed on page removal
-                 */
-                if (frameId !== adguard.MAIN_FRAME_ID) {
-                    injections.removeTabFrameInjection(tabId, frameId);
-                }
+                injections.removeTabFrameInjection(tabId, frameId);
             }
 
             /**
