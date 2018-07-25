@@ -499,6 +499,14 @@
                                             +------------------------------+
             On tab close we clear our injections for corresponding tab
             Also our injections removes old injections for iframes when user navigates to other page in the same tab
+
+            If page has iframes without remote source we can not get rules for this iframe with usual methods,
+            That's why we get rules for main frame and inject them.
+                                            +- ----------------------------------+
+                                            |                                    |     Get injection for main iframe
+                                            |  webNavigation.onDOMContentLoaded  |     inject it in the frame without
+                                            |                                    |     remote source
+                                            +- ----------------------------------+
          */
         (function (adguard) {
             /**
@@ -797,17 +805,18 @@
             }
 
             /**
-             * Checks if iframe doesn't has the src
+             * Checks if iframe does not have a remote source
              * or is src is about:blank, javascript:'', etc
              * @param {string} frameUrl url
              * @param {number} frameId unique id of frame in the tab
-             * @param {string} tabUrl url of tab where iframe exists
+             * @param {string} mainFrameUrl url of tab where iframe exists
              */
-            function isIframeWithoutSrc(frameUrl, frameId, tabUrl) {
-                return (frameUrl === tabUrl ||
+            function isIframeWithoutSrc(frameUrl, frameId, mainFrameUrl) {
+                return (frameUrl === mainFrameUrl ||
                         frameUrl === 'about:blank' ||
                         frameUrl === 'about:srcdoc' ||
-                        frameUrl.indexOf("javascript:'") > -1)
+                        frameUrl.indexOf('javascript:') > -1 ||
+                        frameUrl.indexOf('data:') > -1)
                     && frameId !== adguard.MAIN_FRAME_ID;
             }
 
@@ -816,21 +825,26 @@
                 /**
                  * Get url of the tab where iframe exists
                  */
-                browser.tabs.get(tabId, function (tab) {
-                    const { url: tabUrl } = tab;
-                    if (isIframeWithoutSrc(frameUrl, frameId, tabUrl)) {
-                        const injection = injections.get(tabId, adguard.MAIN_FRAME_ID);
-                        if (!injection && !injection.ready) {
-                            return;
-                        }
-                        if (injection.jsScriptText) {
-                            adguard.tabs.executeScriptCode(tabId, frameId, injection.jsScriptText);
-                        }
-                        if (injection.cssText) {
-                            adguard.tabs.insertCssCode(tabId, frameId, injection.cssText);
-                        }
+                const mainFrameUrl = adguard.frames.getMainFrameUrl({ tabId: tabId });
+                if (mainFrameUrl && isIframeWithoutSrc(frameUrl, frameId, mainFrameUrl)) {
+                    const cssFilterOption = adguard.rules.CssFilter.RETRIEVE_TRADITIONAL_CSS;
+                    const retrieveScripts = true;
+                    const result = adguard.webRequestService.processGetSelectorsAndScripts({ tabId: tabId }, mainFrameUrl, cssFilterOption, retrieveScripts);
+                    if (result.requestFilterReady === false) {
+                        setTimeout(function (details) {
+                            tryInjectInIframesWithoutSrc(details);
+                        }, REQUEST_FILTER_READY_TIMEOUT, details);
+                        return;
                     }
-                });
+                    const jsScriptText = buildScriptText(result.scripts);
+                    const cssText = buildCssText(result.selectors);
+                    if (jsScriptText) {
+                        adguard.tabs.executeScriptCode(tabId, frameId, jsScriptText);
+                    }
+                    if (cssText) {
+                        adguard.tabs.insertCssCode(tabId, frameId, cssText);
+                    }
+                }
             }
             /**
              * https://developer.chrome.com/extensions/webRequest

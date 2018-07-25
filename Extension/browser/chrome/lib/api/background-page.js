@@ -452,7 +452,6 @@ var browser = window.browser || chrome;
         onCreatedNavigationTarget: onCreatedNavigationTarget,
         onCommitted: onCommitted,
         onDOMContentLoaded: browser.webNavigation.onDOMContentLoaded,
-        getFrame: browser.webNavigation.getFrame,
     };
 
     var browserActionSupported = typeof browser.browserAction.setIcon !== 'undefined';
