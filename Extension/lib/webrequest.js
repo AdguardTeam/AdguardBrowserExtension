@@ -811,7 +811,7 @@
                     && frameId !== adguard.MAIN_FRAME_ID;
             }
 
-            function tryInjectInIframes(details) {
+            function tryInjectInIframesWithoutSrc(details) {
                 const { frameId, tabId, url: frameUrl } = details;
                 /**
                  * Get url of the tab where iframe exists
@@ -840,7 +840,7 @@
             adguard.webRequest.onResponseStarted.addListener(tryInjectOnResponseStarted, ['<all_urls>']);
             adguard.webNavigation.onCommitted.addListener(tryInject);
             adguard.webRequest.onErrorOccurred.addListener(removeInjection, ['<all_urls>']);
-            adguard.webNavigation.onDOMContentLoaded.addListener(tryInjectInIframes);
+            adguard.webNavigation.onDOMContentLoaded.addListener(tryInjectInIframesWithoutSrc);
             // In the current Firefox version (60.0.2), the onCommitted even fires earlier than onBeforeRequest for SUBDOCUMENT requests
             // This is true only for SUBDOCUMENTS i.e. iframes
             // so we inject code when onCompleted event fires
