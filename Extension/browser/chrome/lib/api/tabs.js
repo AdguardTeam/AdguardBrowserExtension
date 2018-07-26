@@ -442,7 +442,8 @@ adguard.tabsImpl = (function (adguard) {
         let injectDetails = {
             code: code,
             runAt: 'document_start',
-            frameId: requestFrameId
+            frameId: requestFrameId,
+            matchAboutBlank: true,
         };
 
         if (userCSSSupport) {
@@ -466,6 +467,7 @@ adguard.tabsImpl = (function (adguard) {
             code: code,
             frameId: requestFrameId,
             runAt: 'document_start',
+            matchAboutBlank: true,
         }, noopCallback);
     };
 
