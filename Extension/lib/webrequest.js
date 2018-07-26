@@ -782,7 +782,7 @@
                 }
                 const mainFrameUrl = adguard.frames.getMainFrameUrl({ tabId: tabId });
                 if (isIframeWithoutSrc(frameUrl, frameId, mainFrameUrl)) {
-                    adguard.console.warn('Early this type of frames didn\'t fire webNavigation.onCommited event: frameId: {0} frameUrl: {1}', frameId, frameUrl);
+                    adguard.console.warn('Unexpected onCommited event from this frame - frameId: {0}, frameUrl: {1}. See https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1046', frameId, frameUrl);
                 }
                 injections.removeTabFrameInjection(tabId, frameId);
             }
