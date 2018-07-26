@@ -779,6 +779,10 @@
                 if (injection.cssText) {
                     adguard.tabs.insertCssCode(tabId, frameId, injection.cssText);
                 }
+                const mainFrameUrl = adguard.frames.getMainFrameUrl({ tabId: tabId });
+                if (isIframeWithoutSrc(frameUrl, frameId, mainFrameUrl)) {
+                    adguard.console.warn('Early this type of frames didn\'t fire webNavigation.onCommited event: frameId: {0} frameUrl: {1}', frameId, frameUrl);
+                }
                 injections.removeTabFrameInjection(tabId, frameId);
             }
 
@@ -800,6 +804,9 @@
             /**
              * Checks if iframe does not have a remote source
              * or is src is about:blank, javascript:'', etc
+             * We don't include iframes with 'src=data:' because chrome and firefox don't allow to inject
+             * in iframes with this type of src, this bug is reported here
+             * https://bugs.chromium.org/p/chromium/issues/detail?id=55084
              * @param {string} frameUrl url
              * @param {number} frameId unique id of frame in the tab
              * @param {string} mainFrameUrl url of tab where iframe exists
@@ -808,8 +815,7 @@
                 return (frameUrl === mainFrameUrl ||
                         frameUrl === 'about:blank' ||
                         frameUrl === 'about:srcdoc' ||
-                        frameUrl.indexOf('javascript:') > -1 ||
-                        frameUrl.indexOf('data:') > -1)
+                        frameUrl.indexOf('javascript:') > -1
                     && frameId !== adguard.MAIN_FRAME_ID;
             }
 
