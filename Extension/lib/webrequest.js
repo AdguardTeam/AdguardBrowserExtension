@@ -815,7 +815,7 @@
                 return (frameUrl === mainFrameUrl ||
                         frameUrl === 'about:blank' ||
                         frameUrl === 'about:srcdoc' ||
-                        frameUrl.indexOf('javascript:') > -1
+                        frameUrl.indexOf('javascript:') > -1)
                     && frameId !== adguard.MAIN_FRAME_ID;
             }
 
