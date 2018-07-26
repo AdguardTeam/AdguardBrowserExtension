@@ -750,6 +750,7 @@
                 let tabId = tab.tabId;
                 let frameId = details.frameId;
                 let requestType = details.requestType;
+                let frameUrl = details.requestUrl;
                 if (shouldSkipInjection(requestType, tabId, eventName)) {
                     return;
                 }
