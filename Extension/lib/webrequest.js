@@ -499,6 +499,14 @@
                                             +------------------------------+
             On tab close we clear our injections for corresponding tab
             Also our injections removes old injections for iframes when user navigates to other page in the same tab
+
+            In Firefox and Chrome if page has iframes without remote source we can not get rules for this iframe with usual methods,
+            That's why we get rules for main frame and inject them.
+                                            +- ----------------------------------+
+                                            |                                    |     Get injection for main iframe
+                                            |  webNavigation.onDOMContentLoaded  |     inject it in the frame without
+                                            |                                    |     remote source
+                                            +- ----------------------------------+
          */
         (function (adguard) {
             /**
@@ -742,6 +750,7 @@
                 let tabId = tab.tabId;
                 let frameId = details.frameId;
                 let requestType = details.requestType;
+                let frameUrl = details.requestUrl;
                 if (shouldSkipInjection(requestType, tabId, eventName)) {
                     return;
                 }
@@ -771,6 +780,10 @@
                 if (injection.cssText) {
                     adguard.tabs.insertCssCode(tabId, frameId, injection.cssText);
                 }
+                const mainFrameUrl = adguard.frames.getMainFrameUrl({ tabId: tabId });
+                if (isIframeWithoutSrc(frameUrl, frameId, mainFrameUrl)) {
+                    adguard.console.warn('Unexpected onCommited event from this frame - frameId: {0}, frameUrl: {1}. See https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1046', frameId, frameUrl);
+                }
                 injections.removeTabFrameInjection(tabId, frameId);
             }
 
@@ -790,6 +803,59 @@
             }
 
             /**
+             * Checks if iframe does not have a remote source
+             * or is src is about:blank, javascript:'', etc
+             * We don't include iframes with 'src=data:' because chrome and firefox don't allow to inject
+             * in iframes with this type of src, this bug is reported here
+             * https://bugs.chromium.org/p/chromium/issues/detail?id=55084
+             * @param {string} frameUrl url
+             * @param {number} frameId unique id of frame in the tab
+             * @param {string} mainFrameUrl url of tab where iframe exists
+             */
+            function isIframeWithoutSrc(frameUrl, frameId, mainFrameUrl) {
+                return (frameUrl === mainFrameUrl ||
+                        frameUrl === 'about:blank' ||
+                        frameUrl === 'about:srcdoc' ||
+                        frameUrl.indexOf('javascript:') > -1)
+                    && frameId !== adguard.MAIN_FRAME_ID;
+            }
+
+            /**
+             * This method injects css and js code in iframes without remote source
+             * Usual webRequest callbacks don't fire for iframes without remote source
+             * Also urls in these iframes may be "about:blank", "about:srcdoc", etc.
+             * Due to this reason we prepare injections for them as for mainframe
+             * and inject them only when onDOMContentLoaded fires
+             * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1046
+             * @param {{tabId: Number, url: String, processId: Number, frameId: Number, timeStamp: Number}} details
+             */
+            function tryInjectInIframesWithoutSrc(details) {
+                const { frameId, tabId, url: frameUrl } = details;
+                /**
+                 * Get url of the tab where iframe exists
+                 */
+                const mainFrameUrl = adguard.frames.getMainFrameUrl({ tabId: tabId });
+                if (mainFrameUrl && isIframeWithoutSrc(frameUrl, frameId, mainFrameUrl)) {
+                    const cssFilterOption = adguard.rules.CssFilter.RETRIEVE_TRADITIONAL_CSS;
+                    const retrieveScripts = true;
+                    const result = adguard.webRequestService.processGetSelectorsAndScripts({ tabId: tabId }, mainFrameUrl, cssFilterOption, retrieveScripts);
+                    if (result.requestFilterReady === false) {
+                        setTimeout(function (details) {
+                            tryInjectInIframesWithoutSrc(details);
+                        }, REQUEST_FILTER_READY_TIMEOUT, details);
+                        return;
+                    }
+                    const jsScriptText = buildScriptText(result.scripts);
+                    const cssText = buildCssText(result.selectors);
+                    if (jsScriptText) {
+                        adguard.tabs.executeScriptCode(tabId, frameId, jsScriptText);
+                    }
+                    if (cssText) {
+                        adguard.tabs.insertCssCode(tabId, frameId, cssText);
+                    }
+                }
+            }
+            /**
              * https://developer.chrome.com/extensions/webRequest
              * https://developer.chrome.com/extensions/webNavigation
              */
@@ -797,6 +863,7 @@
             adguard.webRequest.onResponseStarted.addListener(tryInjectOnResponseStarted, ['<all_urls>']);
             adguard.webNavigation.onCommitted.addListener(tryInject);
             adguard.webRequest.onErrorOccurred.addListener(removeInjection, ['<all_urls>']);
+            adguard.webNavigation.onDOMContentLoaded.addListener(tryInjectInIframesWithoutSrc);
             // In the current Firefox version (60.0.2), the onCommitted even fires earlier than onBeforeRequest for SUBDOCUMENT requests
             // This is true only for SUBDOCUMENTS i.e. iframes
             // so we inject code when onCompleted event fires
