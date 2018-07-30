@@ -423,7 +423,8 @@
         /**
          * Applying CSS/JS rules from the background page.
          * This function implements the algorithm suggested here: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1029
-         * For faster script injection, we prepare scriptText onResponseStarted event, save it and try to inject twice
+         * For faster script injection, we prepare scriptText onHeadersReceived event (we can't use onBeforeRequest
+         * event because we can't detect adguard applicati:qon headers early), save it and try to inject twice:
          * first time onResponseStarted event - this event fires early, but is not reliable
          * second time onCommited event - this event fires on when part of document has been received, this event is reliable
          * Every time we try to inject script we check if script wasn't yet executed
@@ -435,11 +436,11 @@
          *
                                                 Chrome flow description
 
-                                            +------------------------------+
-                                            |                              |
-                                            | webRequest.onBeforeRequest   |     Prepare injection
-                                            |                              |
-                                            +---------------+--------------+
+                                            +--------------------------------+
+                                            |                                |
+                                            | webRequest.onHeadersReceived   |     Prepare injection
+                                            |                                |
+                                            +---------------+----------------+
                                                             |
                                             +---------------v--------------+
                                             |                              |
@@ -463,16 +464,16 @@
                                                 Firefox flow description
 
             onCommited event in Firefox for  +------------------------------+
-            sub_frames fire before           |                              |
-            onBeforeRequest event            | webNavigation.onCommited     |
+            sub_frames fires before          |                              |
+            onHeadersReceived event          | webNavigation.onCommited     |
             That's why we inject our code    |                              |
             on onCompletedEvent              +------------------------------+
 
-                                            +------------------------------+
-                                            |                              |
-                                            | webRequest.onBeforeRequest   |      Prepare injection
-                                            |                              |
-                                            +--------------+---------------+
+                                            +--------------------------------+
+                                            |                                |
+                                            | webRequest.onHeadersReceived   |      Prepare injection
+                                            |                                |
+                                            +--------------+-----------------+
                                                            |
                                             +--------------v---------------+
                                             |                              |
@@ -511,7 +512,7 @@
         (function (adguard) {
             /**
              * This object is used:
-             * 1. to save js and css texts when onBeforeRequest event fires
+             * 1. to save js and css texts when onHeadersReceived event fires
              * by key corresponding to tabId and frameId
              * 2. to get js and css texts for injection
              * After injection corresponding js and css texts are removed from the object
@@ -674,8 +675,8 @@
                 /**
                  * onCompleted event is used only to inject code to the Firefox iframes
                  * because in current Firefox implementation webNavigation.onCommitted event for iframes
-                 * occures early than webRequest.onBeforeRequest
-                 * if onCompleted event fired with requestType DOCUMENT then we skip it, because we don't
+                 * occures early than webRequest.onHeadersReceived event
+                 * if onCompleted event fired with requestType DOCUMENT then we skip it, because we
                  * use onCompleted event only for SUBDOCUMENTS
                  */
                 if (eventName === 'onCompleted' && requestType === adguard.RequestTypes.DOCUMENT) {
@@ -703,6 +704,7 @@
                     return;
                 }
                 let frameId = details.frameId;
+                console.log('onHeaderReceived', tabId, frameId);
                 let url = details.requestUrl;
 
                 let cssFilterOption = adguard.rules.CssFilter.RETRIEVE_TRADITIONAL_CSS;
@@ -749,6 +751,7 @@
                 let tab = details.tab;
                 let tabId = tab.tabId;
                 let frameId = details.frameId;
+                console.log('onCommited', tabId, frameId);
                 let requestType = details.requestType;
                 let frameUrl = details.requestUrl;
                 if (shouldSkipInjection(requestType, tabId, eventName)) {
@@ -756,7 +759,7 @@
                 }
                 const injection = injections.get(tabId, frameId);
                 /**
-                 * Sometimes it can happen that onCommited event fires earlier than onBeforeRequest
+                 * Sometimes it can happen that onCommited event fires earlier than onHeadersReceived
                  * for example onCommited event for iframes in Firefox
                  */
                 if (!injection) {
@@ -859,12 +862,12 @@
              * https://developer.chrome.com/extensions/webRequest
              * https://developer.chrome.com/extensions/webNavigation
              */
-            adguard.webRequest.onBeforeRequest.addListener(prepareInjection, ['<all_urls>']);
+            adguard.webRequest.onHeadersReceived.addListener(prepareInjection, ['<all_urls>']);
             adguard.webRequest.onResponseStarted.addListener(tryInjectOnResponseStarted, ['<all_urls>']);
             adguard.webNavigation.onCommitted.addListener(tryInject);
             adguard.webRequest.onErrorOccurred.addListener(removeInjection, ['<all_urls>']);
             adguard.webNavigation.onDOMContentLoaded.addListener(tryInjectInIframesWithoutSrc);
-            // In the current Firefox version (60.0.2), the onCommitted even fires earlier than onBeforeRequest for SUBDOCUMENT requests
+            // In the current Firefox version (60.0.2), the onCommitted even fires earlier than onHeadersReceived for SUBDOCUMENT requests
             // This is true only for SUBDOCUMENTS i.e. iframes
             // so we inject code when onCompleted event fires
             if (adguard.utils.browser.isFirefoxBrowser()) {
