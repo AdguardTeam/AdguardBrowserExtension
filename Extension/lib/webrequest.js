@@ -424,7 +424,8 @@
          * Applying CSS/JS rules from the background page.
          * This function implements the algorithm suggested here: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1029
          * For faster script injection, we prepare scriptText onHeadersReceived event (we can't use onBeforeRequest
-         * event because we can't detect adguard applicati:qon headers early), save it and try to inject twice:
+         * event because we can't detect adguard application headers early in order to know should extension inject scripts or no),
+         * save it and try to inject twice:
          * first time onResponseStarted event - this event fires early, but is not reliable
          * second time onCommited event - this event fires on when part of document has been received, this event is reliable
          * Every time we try to inject script we check if script wasn't yet executed
@@ -704,7 +705,6 @@
                     return;
                 }
                 let frameId = details.frameId;
-                console.log('onHeaderReceived', tabId, frameId);
                 let url = details.requestUrl;
 
                 let cssFilterOption = adguard.rules.CssFilter.RETRIEVE_TRADITIONAL_CSS;
@@ -751,7 +751,6 @@
                 let tab = details.tab;
                 let tabId = tab.tabId;
                 let frameId = details.frameId;
-                console.log('onCommited', tabId, frameId);
                 let requestType = details.requestType;
                 let frameUrl = details.requestUrl;
                 if (shouldSkipInjection(requestType, tabId, eventName)) {
