@@ -422,7 +422,13 @@ PageController.prototype = {
 	_renderTemplate: function (event) {
 		var metadata = {data: event, 'class': 'task-manager-content-header-body-row cf'};
 		if (event.requestRule) {
-			metadata.class += event.requestRule.whiteListRule ? ' green' : ' red';
+            if (event.requestRule.whiteListRule) {
+                metadata.class += ' green';
+            } else if (event.requestRule.cssRule) {
+                metadata.class += ' yellow';
+            } else {
+                metadata.class += ' red';
+            }
 		}
         if (event.requestId) {
             metadata.id = 'request-' + event.requestId;
