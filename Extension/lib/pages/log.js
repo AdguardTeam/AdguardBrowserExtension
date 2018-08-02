@@ -473,12 +473,15 @@ PageController.prototype = {
 	_handleEventShow: function (el) {
 
         var filterData = el.data();
-
         var show = !this.searchRequest ||
             StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest) || 
-            StringUtils.containsIgnoreCase(filterData.element, this.searchRequest) ||
-            StringUtils.containsIgnoreCase(filterData.requestRule, this.searchRequest);
-		show &= this.searchTypes.length === 0 || this.searchTypes.indexOf(filterData.requestType) >= 0;
+            StringUtils.containsIgnoreCase(filterData.element, this.searchRequest);
+        
+        if (filterData.requestRule && filterData.requestRule.ruleText) {
+            show |= StringUtils.containsIgnoreCase(filterData.requestRule && filterData.requestRule.ruleText, this.searchRequest);
+        }
+        
+        show &= this.searchTypes.length === 0 || this.searchTypes.indexOf(filterData.requestType) >= 0;
 
 		var checkboxes = !(this.searchWhitelisted || this.searchBlocked || this.searchThirdParty);
 		checkboxes |= this.searchWhitelisted && filterData.requestRule && filterData.requestRule.whiteListRule;
