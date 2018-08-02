@@ -358,7 +358,7 @@ PageController.prototype = {
 
 		var rows = this.logTable.children();
 
-		// Filters not set
+        // Filters not set
 		if (!this.searchRequest &&
 			this.searchTypes.length === 0 && !this.searchThirdParty && !this.searchBlocked && !this.searchWhitelisted) {
 
@@ -472,9 +472,10 @@ PageController.prototype = {
 
 	_handleEventShow: function (el) {
 
-		var filterData = el.data();
+        var filterData = el.data();
 
-		var show = !this.searchRequest || StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest);
+        var show = !this.searchRequest || StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest) || 
+            StringUtils.containsIgnoreCase(filterData.element, this.searchRequest);
 		show &= this.searchTypes.length === 0 || this.searchTypes.indexOf(filterData.requestType) >= 0;
 
 		var checkboxes = !(this.searchWhitelisted || this.searchBlocked || this.searchThirdParty);
