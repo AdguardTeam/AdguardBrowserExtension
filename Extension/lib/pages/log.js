@@ -474,8 +474,10 @@ PageController.prototype = {
 
         var filterData = el.data();
 
-        var show = !this.searchRequest || StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest) || 
-            StringUtils.containsIgnoreCase(filterData.element, this.searchRequest);
+        var show = !this.searchRequest ||
+            StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest) || 
+            StringUtils.containsIgnoreCase(filterData.element, this.searchRequest) ||
+            StringUtils.containsIgnoreCase(filterData.requestRule, this.searchRequest);
 		show &= this.searchTypes.length === 0 || this.searchTypes.indexOf(filterData.requestType) >= 0;
 
 		var checkboxes = !(this.searchWhitelisted || this.searchBlocked || this.searchThirdParty);
