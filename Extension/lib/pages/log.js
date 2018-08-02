@@ -712,10 +712,8 @@ RequestWizard.createExceptionCssRule = function (rule, event) {
 }
 
 RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, patterns, filteringEvent) {
-
 	var frameDomain = filteringEvent.frameDomain;
 	var isThirdPartyRequest = filteringEvent.requestThirdParty;
-
 	var rulePatternsEl = template.find('#rulePatterns');
     for (var i = 0; i < patterns.length; i++) {
         var patternEl = $('<div>', {'class': 'radio radio-patterns'});
@@ -741,6 +739,13 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
         }
     }
 
+    // hide options if filteringEvent is element
+    var optionsArea = template.find('.addition-rule-row-left-options');
+    if (filteringEvent.element) {
+        optionsArea.parent().hide();
+        rulePatternsEl.parent().hide();
+    }
+
 	var rulePatterns = template.find('[name="rulePattern"]');
 	var ruleDomainCheckbox = template.find('[name="ruleDomain"]');
 	var ruleImportantCheckbox = template.find('[name="ruleImportant"]');
@@ -752,7 +757,7 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 	ruleDomainCheckbox.parent().find('label').attr('for', 'ruleDomain');
 	if (!frameDomain) {
 		ruleDomainCheckbox.closest('.checkbox').hide();
-	}
+    }
 
     ruleImportantCheckbox.attr('id', 'ruleImportant');
     ruleImportantCheckbox.parent().find('label').attr('for', 'ruleImportant');
