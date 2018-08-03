@@ -358,7 +358,7 @@ PageController.prototype = {
 
 		var rows = this.logTable.children();
 
-		// Filters not set
+        // Filters not set
 		if (!this.searchRequest &&
 			this.searchTypes.length === 0 && !this.searchThirdParty && !this.searchBlocked && !this.searchWhitelisted) {
 
@@ -420,6 +420,10 @@ PageController.prototype = {
 	},
 
 	_renderTemplate: function (event) {
+        event.filterName = event.requestRule ?
+            RequestWizard.getFilterName(event.requestRule.filterId) :
+            '';
+
 		var metadata = {data: event, 'class': 'task-manager-content-header-body-row cf'};
 		if (event.requestRule) {
             if (event.requestRule.whiteListRule) {
@@ -459,7 +463,7 @@ PageController.prototype = {
 			'class': 'task-manager-content-header-body-col task-manager-content-item-rule'
 		}));
 		el.append($('<div>', {
-			text: event.requestRule ? RequestWizard.getFilterName(event.requestRule.filterId) : '',
+			text: event.filterName,
 			'class': 'task-manager-content-header-body-col task-manager-content-item-filter'
 		}));
 		el.append($('<div>', {
@@ -472,10 +476,20 @@ PageController.prototype = {
 
 	_handleEventShow: function (el) {
 
-		var filterData = el.data();
+        var filterData = el.data();
+        var show = !this.searchRequest ||
+            StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest) || 
+            StringUtils.containsIgnoreCase(filterData.element, this.searchRequest);
+        
+        if (filterData.requestRule && filterData.requestRule.ruleText) {
+            show |= StringUtils.containsIgnoreCase(filterData.requestRule.ruleText, this.searchRequest);
+        }
 
-		var show = !this.searchRequest || StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest);
-		show &= this.searchTypes.length === 0 || this.searchTypes.indexOf(filterData.requestType) >= 0;
+        if (filterData.filterName) {
+            show |= StringUtils.containsIgnoreCase(filterData.filterName, this.searchRequest);
+        }
+        
+        show &= this.searchTypes.length === 0 || this.searchTypes.indexOf(filterData.requestType) >= 0;
 
 		var checkboxes = !(this.searchWhitelisted || this.searchBlocked || this.searchThirdParty);
 		checkboxes |= this.searchWhitelisted && filterData.requestRule && filterData.requestRule.whiteListRule;
