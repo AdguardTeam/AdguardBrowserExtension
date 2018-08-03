@@ -1,6 +1,6 @@
 /**
  * filters-downloader - Compiles filters source files
- * @version v1.0.6
+ * @version v1.0.7
  * @link http://adguard.com
  */
 /**
@@ -27,7 +27,7 @@
  *
  * @type {{getLocalFile, getExternalFile}}
  */
-const FileDownloadWrapper = (() => {
+let FileDownloadWrapper = (() => {
     "use strict";
 
     /**
@@ -326,24 +326,6 @@ const FilterDownloader = (() => {
         }
 
         return result;
-    };
-
-    /**
-     * Executes async request
-     *
-     * @param url Url
-     * @param contentType Content type
-     * @returns {Promise}
-     */
-    const executeRequestAsync = (url, contentType) => {
-        return axios({
-            method: 'get',
-            url: encodeURI(url),
-            headers: {
-                'Content-type': contentType,
-                'Pragma': 'no-cache'
-            }
-        });
     };
 
     /**
