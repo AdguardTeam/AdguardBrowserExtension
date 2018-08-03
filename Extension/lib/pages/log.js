@@ -477,7 +477,6 @@ PageController.prototype = {
 	_handleEventShow: function (el) {
 
         var filterData = el.data();
-        console.log(filterData);
         var show = !this.searchRequest ||
             StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest) || 
             StringUtils.containsIgnoreCase(filterData.element, this.searchRequest);
