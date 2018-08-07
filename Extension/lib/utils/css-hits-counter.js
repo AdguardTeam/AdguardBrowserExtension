@@ -122,21 +122,22 @@ var CssHitsCounter = (function () { // jshint ignore:line
         }
         var filterId = parseInt(filterIdAndRuleText.substring(0, index), 10);
         var ruleText = filterIdAndRuleText.substring(index + 1);
-        return { filterId, ruleText };
+        return { filterId: filterId, ruleText: ruleText };
     }
 
     function countCssHitsForElements(elements, start, length) {
-        const RULE_FILTER_SEPARATOR = ';';
+        var RULE_FILTER_SEPARATOR = ';';
         start = start || 0;
         length = length || elements.length;
-        let result = [];
+        var result = [];
         for (var i = 0; i < length; i += 1) {
             var element = elements[i];
-            const cssHitData = getCssHitData(element);
+            var cssHitData = getCssHitData(element);
             if (!cssHitData) {
                 continue;
             }
-            const { filterId, ruleText } = getCssHitData(element);
+            var filterId = cssHitData.filterId;
+            var ruleText = cssHitData.ruleText;
             var ruleAndFilterString = filterId + RULE_FILTER_SEPARATOR + ruleText;
             if (HitsCounterStorage.isCounted(element, ruleAndFilterString)) {
                 continue;
@@ -166,7 +167,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
      * @param callback Finish callback
      */
     function countCssHitsBatch(elements, start, end, step, result, callback) {
-        const COUNT_CSS_HITS_BATCH_DELAY = 50;
+        var COUNT_CSS_HITS_BATCH_DELAY = 50;
         var length = Math.min(end, elements.length);
         result = result.concat(countCssHitsForElements(elements, start, length));
         if (length === elements.length) {
@@ -190,8 +191,8 @@ var CssHitsCounter = (function () { // jshint ignore:line
     }
 
     function removeElements(elements) {
-        for (let i = 0; i < elements.length; i += 1) {
-            const element = elements[i];
+        for (var i = 0; i < elements.length; i += 1) {
+            var element = elements[i];
             element.remove();
         }
     }
@@ -219,9 +220,9 @@ var CssHitsCounter = (function () { // jshint ignore:line
                 if (mutationRecord.addedNodes.length === 0) {
                     return;
                 }
-                for (let i = 0; i < mutationRecord.addedNodes.length; i += 1) {
-                    const node = mutationRecord.addedNodes[i];
-                    const { target } = mutationRecord;
+                for (var i = 0; i < mutationRecord.addedNodes.length; i += 1) {
+                    var node = mutationRecord.addedNodes[i];
+                    var target = mutationRecord.target;
                     if (!node.parentNode && target && node instanceof Element) {
                         // Most likely this is a "probe" element that was added and then immediately removed from DOM.
                         // We re-add it and check if any rule matched it
@@ -234,7 +235,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
             });
 
             if (probeElements.length > 0) {
-                const result = countCssHitsForElements(probeElements);
+                var result = countCssHitsForElements(probeElements);
                 if (result.length > 0) {
                     onCssHitsFoundCallback(result);
                 }
