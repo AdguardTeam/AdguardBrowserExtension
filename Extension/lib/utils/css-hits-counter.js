@@ -217,7 +217,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
         var COUNT_ALL_CSS_HITS_TIMEOUT = 500;
         var timeoutId;
         var observer = new MutationObserver(function (mutationRecords) {
-            // TODO: Collect probe elements, count them, then remove from their targets
+            // Collect probe elements, count them, then remove from their targets
             var probeElements = [];
             mutationRecords.forEach(function (mutationRecord) {
                 if (mutationRecord.addedNodes.length > 0) {
