@@ -74,7 +74,7 @@ QUnit.test('Count css hits', function (assert) {
         assert.equal(result[3].filterId, 1);
         done();
     });
-    CssHitsCounter.count();
+    CssHitsCounter.init();
 });
 
 QUnit.test('Save css hits', function (assert) {

@@ -104,11 +104,11 @@ var CssHitsCounter = (function () { // jshint ignore:line
     function getCssHitData(element) {
         var style = getComputedStyle(element);
         if (!style) {
-            return {};
+            return null;
         }
         var content = style.content;
         if (!content || content.indexOf(CONTENT_ATTR_PREFIX) < 0) {
-            return {};
+            return null;
         }
         var filterIdAndRuleText = decodeURIComponent(content);
         // 'content' value may include open and close quotes.
@@ -118,7 +118,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
         // Attribute 'content' in css looks like: {content: 'adguard{filterId};{ruleText}'}
         var index = filterIdAndRuleText.indexOf(';');
         if (index < 0) {
-            return {};
+            return null;
         }
         var filterId = parseInt(filterIdAndRuleText.substring(0, index), 10);
         var ruleText = filterIdAndRuleText.substring(index + 1);
@@ -132,10 +132,11 @@ var CssHitsCounter = (function () { // jshint ignore:line
         let result = [];
         for (var i = 0; i < length; i += 1) {
             var element = elements[i];
-            const { filterId, ruleText } = getCssHitData(element);
-            if (typeof filterId === 'undefined' || typeof ruleText === 'undefined') {
+            const cssHitData = getCssHitData(element);
+            if (!cssHitData) {
                 continue;
             }
+            const { filterId, ruleText } = getCssHitData(element);
             var ruleAndFilterString = filterId + RULE_FILTER_SEPARATOR + ruleText;
             if (HitsCounterStorage.isCounted(element, ruleAndFilterString)) {
                 continue;
@@ -148,11 +149,6 @@ var CssHitsCounter = (function () { // jshint ignore:line
             });
         }
         return result;
-    }
-
-    function countCssHitsImmediately(elements, callback) {
-        const result = countCssHitsForElements(elements);
-        callback(result);
     }
 
     /**
@@ -203,7 +199,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
     function countAllCssHits() {
         var elements = document.querySelectorAll('*');
         countCssHitsBatch(elements, 0, 100, 100, [], function (result) {
-            if (result.length > 0 && typeof onCssHitsFoundCallback === 'function') {
+            if (result.length > 0) {
                 onCssHitsFoundCallback(result);
             }
         });
@@ -220,32 +216,31 @@ var CssHitsCounter = (function () { // jshint ignore:line
             // Collect probe elements, count them, then remove from their targets
             var probeElements = [];
             mutationRecords.forEach(function (mutationRecord) {
-                if (mutationRecord.addedNodes.length > 0) {
-                    for (let i = 0; i < mutationRecord.addedNodes.length; i += 1) {
-                        const node = mutationRecord.addedNodes[i];
-                        const { target } = mutationRecord;
-                        if (!node.parentNode && target && target instanceof Node) {
-                            // Most likely this is a "probe" element that was added and then immediately removed from DOM.
-                            // We re-add it and check if any rule matched it
-                            probeElements.push(node);
-                            observer.disconnect();
-                            mutationRecord.target.appendChild(node);
-                            startObserver(observer);
-                        }
+                if (mutationRecord.addedNodes.length === 0) {
+                    return;
+                }
+                for (let i = 0; i < mutationRecord.addedNodes.length; i += 1) {
+                    const node = mutationRecord.addedNodes[i];
+                    const { target } = mutationRecord;
+                    if (!node.parentNode && target && node instanceof Element) {
+                        // Most likely this is a "probe" element that was added and then immediately removed from DOM.
+                        // We re-add it and check if any rule matched it
+                        probeElements.push(node);
+                        observer.disconnect();
+                        mutationRecord.target.appendChild(node);
+                        startObserver(observer);
                     }
                 }
             });
 
             if (probeElements.length > 0) {
-                countCssHitsImmediately(probeElements, function (result) {
-                    if (result.length > 0 && typeof onCssHitsFoundCallback === 'function') {
-                        onCssHitsFoundCallback(result);
-                        // remove probeElements after sending result
-                        observer.disconnect();
-                        removeElements(probeElements);
-                        startObserver(observer);
-                    }
-                });
+                const result = countCssHitsForElements(probeElements);
+                if (result.length > 0) {
+                    onCssHitsFoundCallback(result);
+                }
+                observer.disconnect();
+                removeElements(probeElements);
+                startObserver(observer);
             }
 
             // debounce counting all css hits when mutation record fires
@@ -269,8 +264,11 @@ var CssHitsCounter = (function () { // jshint ignore:line
      * This function prepares calculation of css hits.
      * We are waiting for 'load' event and start calculation.
      */
-    var count = function () {
+    var init = function () {
         // 'load' has already fired
+        if (typeof onCssHitsFoundCallback !== 'function') {
+            return;
+        }
         if (document.readyState === 'complete' ||
             document.readyState === 'interactive') {
             countCssHits();
@@ -291,7 +289,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
     };
 
     return {
-        count: count,
+        init: init,
         setCssHitsFoundCallback: setCssHitsFoundCallback,
     };
 })();
