@@ -284,7 +284,7 @@
         }
         getContentPage().sendMessage({ type: 'isCssHitsCounterEnabled' }, function (response) {
             if (response && response === true) {
-                CssHitsCounter.count();
+                CssHitsCounter.init();
             }
         });
     };
