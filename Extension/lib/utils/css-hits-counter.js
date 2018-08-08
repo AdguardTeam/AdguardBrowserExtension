@@ -19,6 +19,23 @@ var CssHitsCounter = (function () { // jshint ignore:line
 
     'use strict';
 
+    /**
+     * We split CSS hits counting into smaller batches of elements
+     * and schedule them one by one using setTimeout
+     */
+    var COUNT_CSS_HITS_BATCH_DELAY = 5;
+
+    /**
+     * Size of small batches of elements we count
+     */
+    var CSS_HITS_BATCH_SIZE = 25;
+
+    /**
+     * In order to find elements hidden by AdGuard we look for a `:content` pseudo-class
+     * with values starting with this prefix. Filter information will be encoded in this value as well.
+     */
+    var CONTENT_ATTR_PREFIX = 'adguard';
+
     var onCssHitsFoundCallback;
 
     /**
@@ -100,7 +117,6 @@ var CssHitsCounter = (function () { // jshint ignore:line
     };
 
     function getCssHitData(element) {
-        var CONTENT_ATTR_PREFIX = 'adguard';
         var style = getComputedStyle(element);
         if (!style) {
             return null;
@@ -166,7 +182,6 @@ var CssHitsCounter = (function () { // jshint ignore:line
      * @param callback Finish callback
      */
     function countCssHitsBatch(elements, start, end, step, result, callback) {
-        var COUNT_CSS_HITS_BATCH_DELAY = 50;
         var length = Math.min(end, elements.length);
         result = result.concat(countCssHitsForElements(elements, start, length));
         if (length === elements.length) {
@@ -190,7 +205,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
 
     function countAllCssHits() {
         var elements = document.querySelectorAll('*');
-        countCssHitsBatch(elements, 0, 100, 100, [], function (result) {
+        countCssHitsBatch(elements, 0, CSS_HITS_BATCH_SIZE, CSS_HITS_BATCH_SIZE, [], function (result) {
             if (result.length > 0) {
                 onCssHitsFoundCallback(result);
             }
