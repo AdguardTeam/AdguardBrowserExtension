@@ -305,8 +305,8 @@ var CssHitsCounter = (function () { // jshint ignore:line
             if (document.readyState === 'interactive' ||
                 document.readyState === 'complete') {
                 countCssHits();
+                document.removeEventListener('readystatechange', startCounter);
             }
-            document.removeEventListener('readystatechange', startCounter);
         }
 
         if (document.readyState === 'complete' ||
