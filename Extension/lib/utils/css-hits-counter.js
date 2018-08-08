@@ -276,13 +276,20 @@ var CssHitsCounter = (function () { // jshint ignore:line
     }
 
     /**
+     * This callback is called on css hits detection
+     * @callback cssHitsCounterCallback
+     * @param {{filterId: Number, ruleText: String, element: String}[]} stats
+     */
+
+    /**
      * This function prepares calculation of css hits.
      * We are waiting for 'load' event and start calculation.
+     * @param {cssHitsCounterCallback} callback callback handles counted css hits
      */
     var init = function (callback) {
         // 'load' has already fired
         if (typeof callback !== 'function') {
-            return;
+            throw new Error('AdGuard Extension: "callback" parameter is not a function');
         }
         onCssHitsFoundCallback = callback;
         if (document.readyState === 'complete' ||
