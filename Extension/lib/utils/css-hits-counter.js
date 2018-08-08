@@ -19,8 +19,6 @@ var CssHitsCounter = (function () { // jshint ignore:line
 
     'use strict';
 
-    var CONTENT_ATTR_PREFIX = 'adguard';
-
     var onCssHitsFoundCallback;
 
     /**
@@ -102,6 +100,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
     };
 
     function getCssHitData(element) {
+        var CONTENT_ATTR_PREFIX = 'adguard';
         var style = getComputedStyle(element);
         if (!style) {
             return null;
@@ -182,14 +181,6 @@ var CssHitsCounter = (function () { // jshint ignore:line
         }, COUNT_CSS_HITS_BATCH_DELAY);
     }
 
-    function startObserver(observer) {
-        observer.observe(document.documentElement, {
-            childList: true,
-            subtree: true,
-            attributes: true,
-        });
-    }
-
     function removeElements(elements) {
         for (var i = 0; i < elements.length; i += 1) {
             var element = elements[i];
@@ -203,6 +194,14 @@ var CssHitsCounter = (function () { // jshint ignore:line
             if (result.length > 0) {
                 onCssHitsFoundCallback(result);
             }
+        });
+    }
+
+    function startObserver(observer) {
+        observer.observe(document.documentElement, {
+            childList: true,
+            subtree: true,
+            attributes: true,
         });
     }
 
@@ -265,11 +264,12 @@ var CssHitsCounter = (function () { // jshint ignore:line
      * This function prepares calculation of css hits.
      * We are waiting for 'load' event and start calculation.
      */
-    var init = function () {
+    var init = function (callback) {
         // 'load' has already fired
-        if (typeof onCssHitsFoundCallback !== 'function') {
+        if (typeof callback !== 'function') {
             return;
         }
+        onCssHitsFoundCallback = callback;
         if (document.readyState === 'complete' ||
             document.readyState === 'interactive') {
             countCssHits();
@@ -278,19 +278,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
         }
     };
 
-    /**
-     * Sets callback that is fired on css hits.
-     * @param callback Callback function
-     */
-    var setCssHitsFoundCallback = function (callback) {
-        if (typeof callback !== 'function') {
-            throw new Error('Wrong callback type');
-        }
-        onCssHitsFoundCallback = callback;
-    };
-
     return {
         init: init,
-        setCssHitsFoundCallback: setCssHitsFoundCallback,
     };
 })();
