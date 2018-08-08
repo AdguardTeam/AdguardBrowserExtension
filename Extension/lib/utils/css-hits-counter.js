@@ -36,6 +36,11 @@ var CssHitsCounter = (function () { // jshint ignore:line
      */
     var CONTENT_ATTR_PREFIX = 'adguard';
 
+    /**
+     * We delay countAllCssHits function if it was called too frequently from mutationObserver
+     */
+    var COUNT_ALL_CSS_HITS_TIMEOUT_MS = 500;
+
     var onCssHitsFoundCallback;
 
     /**
@@ -116,6 +121,11 @@ var CssHitsCounter = (function () { // jshint ignore:line
         },
     };
 
+    /**
+     * Function checks if elements style content attribute contains data injected with AdGuard
+     * @param {Node} element
+     * @returns {({filterId: Number, ruleText: String} | null)}
+     */
     function getCssHitData(element) {
         var style = getComputedStyle(element);
         if (!style) {
@@ -225,7 +235,6 @@ var CssHitsCounter = (function () { // jshint ignore:line
         if (!MutationObserver) {
             return;
         }
-        var COUNT_ALL_CSS_HITS_TIMEOUT = 500;
         var timeoutId;
         var observer = new MutationObserver(function (mutationRecords) {
             // Collect probe elements, count them, then remove from their targets
@@ -265,7 +274,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
             timeoutId = setTimeout(function () {
                 countAllCssHits();
                 clearTimeout(timeoutId);
-            }, COUNT_ALL_CSS_HITS_TIMEOUT);
+            }, COUNT_ALL_CSS_HITS_TIMEOUT_MS);
         });
         startObserver(observer);
     }
@@ -284,7 +293,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
     /**
      * This function prepares calculation of css hits.
      * We are waiting for 'load' event and start calculation.
-     * @param {cssHitsCounterCallback} callback callback handles counted css hits
+     * @param {cssHitsCounterCallback} callback - handles counted css hits
      */
     var init = function (callback) {
         // 'load' has already fired
