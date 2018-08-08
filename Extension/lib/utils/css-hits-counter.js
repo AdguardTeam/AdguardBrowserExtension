@@ -296,7 +296,13 @@ var CssHitsCounter = (function () { // jshint ignore:line
      * @param {cssHitsCounterCallback} callback - handles counted css hits
      */
     var init = function (callback) {
-        // 'load' has already fired
+        function startCounter() {
+            if (document.readyState === 'interactive' ||
+                document.readyState === 'complete') {
+                countCssHits();
+            }
+            document.removeEventListener('readystatechange', startCounter);
+        }
         if (typeof callback !== 'function') {
             throw new Error('AdGuard Extension: "callback" parameter is not a function');
         }
@@ -305,7 +311,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
             document.readyState === 'interactive') {
             countCssHits();
         } else {
-            addEventListener('DOMContentLoaded', countCssHits);
+            document.addEventListener('readystatechange', startCounter);
         }
     };
 
