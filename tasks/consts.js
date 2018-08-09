@@ -31,7 +31,7 @@ export const LOCAL_SCRIPT_RULES_COMMENT = 'By the rules of AMO and addons.opera.
 
 // Firefox extension IDs
 export const FIREFOX_EXTENSION_ID_DEV = 'adguardadblockerdev@adguard.com';
-export const FIREFOX_EXTENSION_ID_BETA = 'adguardadblockerbeta@adguard.com';
+export const FIREFOX_EXTENSION_ID_BETA = 'adguardadblockeramobeta@adguard.com';
 export const FIREFOX_EXTENSION_ID_RELEASE = 'adguardadblocker@adguard.com';
 export const FIREFOX_LEGACY_ID_BETA = 'adguardadblockerlegacy@adguard.com';
 
