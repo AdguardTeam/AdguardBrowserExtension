@@ -24,12 +24,14 @@ const API_SCRIPTS = [
     'Extension/lib/libs/deferred.min.js',
     'Extension/lib/utils/sha256.patched.js',
     'Extension/lib/utils/punycode.js',
+    'Extension/lib/libs/filter-downloader.js',
     // Adguard Global and preferences
     'Extension/lib/adguard.js',
     'Extension/browser/webkit/lib/prefs.js',
     // Utils libraries
     'Extension/lib/utils/common.js',
     'Extension/lib/utils/log.js',
+    'Extension/lib/utils/public-suffixes.js',
     'Extension/lib/utils/url.js',
     'Extension/lib/utils/notifier.js',
     'Extension/lib/utils/browser-utils.js',

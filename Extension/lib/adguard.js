@@ -68,7 +68,8 @@ var adguard = (function () { // jshint ignore:line
 
     var filteringLogModule = {
         addHttpRequestEvent: notImplemented,
-        clearEventsByTabId: notImplemented
+        clearEventsByTabId: notImplemented,
+        isOpen: notImplemented,
     };
 
     var safebrowsingModule = {
