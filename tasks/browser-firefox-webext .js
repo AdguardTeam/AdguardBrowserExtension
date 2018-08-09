@@ -1,12 +1,11 @@
 /**
- * Firefox AMO build is the same as Firefox-webext build but in this case
- * remote scripts are not allowed.
+ * Firefox webextension build
  * 1. Copying common scripts and htmls (pages, lib, locales)
  * 2. Copying Firefox filters
  * 3. Copying Webkit, Chrome and Firefox_webext scripts
  * 4. Updating version of an extension in manifest and changing update_url if its a beta build
  * 5. Change the extension name in localization files based on a type of a build (dev, beta or release)
- * 6. Preprocessing files with the AMO param for prohibition of remote scripts
+ * 6. Preprocessing files
  * 7. Creating firefox web-extension pack
  */
 
@@ -14,10 +13,10 @@
 import fs from 'fs';
 import path from 'path';
 import gulp from 'gulp';
-import {BUILD_DIR, BRANCH_DEV, BRANCH_BETA, BRANCH_RELEASE, FIREFOX_WEBEXT, FIREFOX_EXTENSION_ID_BETA, FIREFOX_EXTENSION_ID_RELEASE, FIREFOX_EXTENSION_ID_DEV} from './consts';
+import {BUILD_DIR, FIREFOX_WEBEXT_UPDATE_URL, FIREFOX_WEBEXT, BRANCH_BETA, BRANCH_RELEASE, BRANCH_DEV, FIREFOX_EXTENSION_ID_DEV, FIREFOX_EXTENSION_ID_BETA} from './consts';
 import {version} from './parse-package';
 import {updateLocalesMSGName, preprocessAll} from './helpers';
-import webExt from 'web-ext';
+import zip from 'gulp-zip';
 import copyCommonFiles from './copy-common';
 
 // set current type of build
@@ -26,17 +25,18 @@ const BRANCH = process.env.NODE_ENV || '';
 const paths = {
     firefox_webext: path.join('Extension/browser/firefox_webext/**/*'),
     filters: path.join('Extension/filters/firefox/**/*'),
+    pages: path.join('Extension/pages/**/*'),
+    lib: path.join('Extension/lib/**/*'),
     chromeFiles: path.join('Extension/browser/chrome/**/*'),
     webkitFiles: path.join('Extension/browser/webkit/**/*'),
-    dest: path.join(BUILD_DIR, BRANCH, (BRANCH === BRANCH_DEV) ? `firefox-amo-${version}` : `firefox-amo-${BRANCH}-${version}-unsigned`)
+    dest: path.join(BUILD_DIR, BRANCH, `firefox-standalone-${version}`)
 };
 
 const dest = {
     filters: path.join(paths.dest, 'filters'),
     inner: path.join(paths.dest, '**/*'),
     buildDir: path.join(BUILD_DIR, BRANCH),
-    manifest: path.join(paths.dest, 'manifest.json'),
-    webext: path.join(BUILD_DIR, BRANCH, `firefox-amo-${BRANCH}-${version}-unsigned.zip`)
+    manifest: path.join(paths.dest, 'manifest.json')
 };
 
 // copy common files
@@ -45,50 +45,47 @@ const copyCommon = () => copyCommonFiles(paths.dest);
 // copy firefox filters
 const copyFilters = () => gulp.src(paths.filters).pipe(gulp.dest(dest.filters));
 
-// copy chromium, webkit files and firefox_webext files
+// copy chromium, webkit and firefox files
 const firefoxWebext = () => gulp.src([paths.webkitFiles, paths.chromeFiles, paths.firefox_webext]).pipe(gulp.dest(paths.dest));
 
 // preprocess with params
-const preprocess = (done) => preprocessAll(paths.dest, {browser: FIREFOX_WEBEXT, remoteScripts: false}, done);
+const preprocess = (done) => preprocessAll(paths.dest, {browser: FIREFOX_WEBEXT, remoteScripts: true}, done);
 
 // change the extension name based on a type of a build (dev, beta or release)
-const localesProcess = (done) => updateLocalesMSGName(BRANCH, paths.dest, done, FIREFOX_WEBEXT);
+const localesProcess = (done) => updateLocalesMSGName(BRANCH, paths.dest, done, FIREFOX_WEBEXT, true);
 
 const updateManifest = (done) => {
     const manifest = JSON.parse(fs.readFileSync(dest.manifest));
+    manifest.version = version;
 
     let extensionID = '';
 
-    switch (BRANCH) {
+    switch (process.env.NODE_ENV) {
         case BRANCH_BETA:
             extensionID = FIREFOX_EXTENSION_ID_BETA;
             break;
-        case BRANCH_RELEASE:
-            extensionID = FIREFOX_EXTENSION_ID_RELEASE;
-            break;
         case BRANCH_DEV:
             extensionID = FIREFOX_EXTENSION_ID_DEV;
+            break;
     }
 
-    manifest.version = version;
     manifest.applications.gecko.id = extensionID;
+
+    if (BRANCH === BRANCH_BETA) {
+        manifest.applications.gecko.update_url = FIREFOX_WEBEXT_UPDATE_URL;
+    }
     fs.writeFileSync(dest.manifest, JSON.stringify(manifest, null, 4));
     return done();
 };
 
-const createWebExt = (done) => {
+const createArchive = (done) => {
     if (BRANCH !== BRANCH_BETA && BRANCH !== BRANCH_RELEASE) {
         return done();
     }
 
-    return webExt.cmd.build({
-        sourceDir: paths.dest,
-        artifactsDir: dest.buildDir,
-        overwriteDest: true
-    }).then((file) => {
-        fs.renameSync(file.extensionPath, dest.webext);
-        done();
-    });
+    return gulp.src(dest.inner)
+        .pipe(zip(`firefox-standalone-${BRANCH}-${version}-unsigned.zip`))
+        .pipe(gulp.dest(dest.buildDir));
 };
 
-export default gulp.series(copyCommon, copyFilters, firefoxWebext, updateManifest, localesProcess, preprocess, createWebExt);
+export default gulp.series(copyCommon, copyFilters, firefoxWebext, updateManifest, localesProcess, preprocess, createArchive);
