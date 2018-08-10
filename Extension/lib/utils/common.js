@@ -45,6 +45,16 @@ adguard.RequestTypes = {
 };
 
 /**
+ * Background tab id in browsers is defined as -1
+ */
+adguard.BACKGROUND_TAB_ID = -1;
+
+/**
+ * Main frame id is equal to 0
+ */
+adguard.MAIN_FRAME_ID = 0;
+
+/**
  * Utilities namespace
  */
 adguard.utils = (function () {
@@ -211,7 +221,7 @@ adguard.utils = (function () {
             }
 
             return parts;
-        }
+        },
     };
 
     api.strings = StringUtils;
@@ -361,6 +371,41 @@ adguard.utils = (function () {
                 };
                 clearTimeout(timeout);
                 timeout = setTimeout(later, wait);
+            };
+        },
+
+        /**
+         * Returns a new function that, when invoked, invokes `func` at most once per `wait` milliseconds.
+         * https://github.com/component/throttle
+         *
+         * @param {Function} func Function to wrap.
+         * @param {Number} wait Number of milliseconds that must elapse between `func` invocations.
+         * @return {Function} A new function that wraps the `func` function passed in.
+         */
+        throttle: function (func, wait) {
+            var ctx, args, rtn, timeoutID; // caching
+            var last = 0;
+
+            function call() {
+                timeoutID = 0;
+                last = +new Date();
+                rtn = func.apply(ctx, args);
+                ctx = null;
+                args = null;
+            }
+
+            return function throttled() {
+                ctx = this;
+                args = arguments;
+                var delta = new Date() - last;
+                if (!timeoutID) {
+                    if (delta >= wait) {
+                        call();
+                    } else {
+                        timeoutID = setTimeout(call, wait - delta);
+                    }
+                }
+                return rtn;
             };
         }
     };

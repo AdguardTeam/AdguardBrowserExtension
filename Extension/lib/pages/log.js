@@ -96,7 +96,11 @@ var UrlUtils = {
 };
 
 var FilterRule = {
-	MASK_WHITE_LIST: "@@"
+    MASK_WHITE_LIST: '@@',
+    MASK_CSS_RULE: '##',
+    MASK_CSS_INJECT_RULE: '#$#',
+    MASK_CSS_EXTENDED_CSS_RULE: '#?#',
+    MASK_CSS_INJECT_EXTENDED_CSS_RULE: '#$?#',
 };
 
 var UrlFilterRule = {
@@ -174,7 +178,7 @@ PageController.prototype = {
 		// Bind click to show request info
 		var self = this;
 		this.logTable.on('click', '.task-manager-content-header-body-row', function () {
-			var filteringEvent = $(this).data();
+            var filteringEvent = $(this).data();
 			contentPage.sendMessage({type: 'getTabFrameInfoById', tabId: self.currentTabId}, function (response) {
 				var frameInfo = response.frameInfo;
 				if (!frameInfo) {
@@ -354,7 +358,7 @@ PageController.prototype = {
 
 		var rows = this.logTable.children();
 
-		// Filters not set
+        // Filters not set
 		if (!this.searchRequest &&
 			this.searchTypes.length === 0 && !this.searchThirdParty && !this.searchBlocked && !this.searchWhitelisted) {
 
@@ -416,10 +420,19 @@ PageController.prototype = {
 	},
 
 	_renderTemplate: function (event) {
+        event.filterName = event.requestRule ?
+            RequestWizard.getFilterName(event.requestRule.filterId) :
+            '';
 
 		var metadata = {data: event, 'class': 'task-manager-content-header-body-row cf'};
 		if (event.requestRule) {
-			metadata.class += event.requestRule.whiteListRule ? ' green' : ' red';
+            if (event.requestRule.whiteListRule) {
+                metadata.class += ' green';
+            } else if (event.requestRule.cssRule) {
+                metadata.class += ' yellow';
+            } else {
+                metadata.class += ' red';
+            }
 		}
         if (event.requestId) {
             metadata.id = 'request-' + event.requestId;
@@ -439,30 +452,44 @@ PageController.prototype = {
 			requestTypeClass += ' third-party';
 		}
 
-		var el = $('<div>', metadata);
-		el.append($('<div>', {
-			text: event.requestUrl,
-			'class': 'task-manager-content-header-body-col task-manager-content-item-url'
-		}));
+        var el = $('<div>', metadata);
+        el.append($('<div>', {
+            text: event.requestUrl ? event.requestUrl : event.element,
+            'class': 'task-manager-content-header-body-col task-manager-content-item-url'
+        }));
 		el.append($('<div>', {text: RequestWizard.getRequestType(event.requestType), 'class': requestTypeClass}));
 		el.append($('<div>', {
 			text: ruleText,
 			'class': 'task-manager-content-header-body-col task-manager-content-item-rule'
 		}));
 		el.append($('<div>', {
+			text: event.filterName,
+			'class': 'task-manager-content-header-body-col task-manager-content-item-filter'
+		}));
+		el.append($('<div>', {
 			text: RequestWizard.getSource(event.frameDomain),
 			'class': 'task-manager-content-header-body-col task-manager-content-item-source'
-		}));
-
+        }));
+        
 		return el;
 	},
 
 	_handleEventShow: function (el) {
 
-		var filterData = el.data();
+        var filterData = el.data();
+        var show = !this.searchRequest ||
+            StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest) || 
+            StringUtils.containsIgnoreCase(filterData.element, this.searchRequest);
+        
+        if (filterData.requestRule && filterData.requestRule.ruleText) {
+            show |= StringUtils.containsIgnoreCase(filterData.requestRule.ruleText, this.searchRequest);
+        }
 
-		var show = !this.searchRequest || StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest);
-		show &= this.searchTypes.length === 0 || this.searchTypes.indexOf(filterData.requestType) >= 0;
+        if (filterData.filterName) {
+            show |= StringUtils.containsIgnoreCase(filterData.filterName, this.searchRequest);
+        }
+        
+        show &= this.searchTypes.length === 0 || this.searchTypes.indexOf(filterData.requestType) >= 0;
 
 		var checkboxes = !(this.searchWhitelisted || this.searchBlocked || this.searchThirdParty);
 		checkboxes |= this.searchWhitelisted && filterData.requestRule && filterData.requestRule.whiteListRule;
@@ -524,7 +551,20 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 
 	var requestRule = filteringEvent.requestRule;
 
-	template.find('[attr-text="requestUrl"]').text(filteringEvent.requestUrl);
+    var requestUrlNode = template.find('[attr-text="requestUrl"]');
+    if (filteringEvent.requestUrl) {
+        requestUrlNode.text(filteringEvent.requestUrl);
+    } else {
+        requestUrlNode.parent().hide();
+    }
+
+    var elementNode = template.find('[attr-text="element"]');
+    if (filteringEvent.element) {
+        elementNode.text(filteringEvent.element);
+    } else {
+        elementNode.parent().hide();
+    }
+
 	template.find('[attr-text="requestType"]').text(RequestWizard.getRequestType(filteringEvent.requestType));
 	template.find('[attr-text="frameDomain"]').text(RequestWizard.getSource(filteringEvent.frameDomain));
 	if (!filteringEvent.frameDomain) {
@@ -577,6 +617,11 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 
         contentPage.sendMessage({type: 'openTab', url: requestUrl, options: {inNewWindow: true}});
     });
+    
+    // there is nothing to open if log event reveals blocked element
+    if (filteringEvent.element) {
+        openRequestButton.hide();
+    }
 
 	blockRequestButton.on('click', function (e) {
 		e.preventDefault();
@@ -608,7 +653,7 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 			contentPage.sendMessage({type: 'unWhiteListFrame', frameInfo: frameInfo});
 		}
 		this.closeModal();
-	}.bind(this));
+    }.bind(this));
 
 	if (!requestRule) {
 		blockRequestButton.removeClass('hidden');
@@ -638,44 +683,82 @@ RequestWizard.prototype.showCreateExceptionRuleModal = function (frameInfo, filt
 
 	var template = this.createExceptionRuleTemplate.clone();
 
-	var patterns = RequestWizard.splitToPatterns(filteringEvent.requestUrl, filteringEvent.requestDomain, true).reverse();
-
+    var patterns;
+    if (filteringEvent.requestUrl) {
+        patterns = RequestWizard.splitToPatterns(filteringEvent.requestUrl, filteringEvent.requestDomain, true).reverse();
+    }
     if (filteringEvent.requestUrl === 'content-security-policy-check') {
         patterns = ['@@'];
     }
-
+    if (filteringEvent.element) {
+        patterns = [RequestWizard.createExceptionCssRule(filteringEvent.requestRule, filteringEvent)];
+    }
 	this._initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
 };
 
-RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, patterns, filteringEvent) {
+const generateExceptionRule = (ruleText, mask) => {
+    const insert = (str, index, value) => {
+        return str.slice(0, index) + value + str.slice(index);
+    }
+    const maskIndex = ruleText.indexOf(mask);
+    const maskLength = mask.length;
+    const rulePart = ruleText.slice(maskIndex + maskLength);
+    // insert exception mark after first char
+    const exceptionMask = insert(mask, 1, '@');
+    return exceptionMask + rulePart;
+};
 
+RequestWizard.createExceptionCssRule = function (rule, event) {
+    const ruleText = rule.ruleText;
+    const domainPart = event.frameDomain;
+    if (ruleText.indexOf(FilterRule.MASK_CSS_RULE) > -1) {
+        return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_RULE);
+    }
+    if (ruleText.indexOf(FilterRule.MASK_CSS_INJECT_RULE > -1)) {
+        return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_INJECT_RULE);
+    }
+    if (ruleText.indexOf(FilterRule.MASK_CSS_EXTENDED_CSS_RULE > -1)) {
+        return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_EXTENDED_CSS_RULE);
+    }
+    if (ruleText.indexOf(FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE > -1)) {
+        return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE);
+    }
+}
+
+RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, patterns, filteringEvent) {
 	var frameDomain = filteringEvent.frameDomain;
 	var isThirdPartyRequest = filteringEvent.requestThirdParty;
-
 	var rulePatternsEl = template.find('#rulePatterns');
-	for (var i = 0; i < patterns.length; i++) {
-		var patternEl = $('<div>', {'class': 'radio radio-patterns'});
-		var input = $('<input>', {
-			'class': 'radio-input',
-			type: 'radio',
-			name: 'rulePattern',
-			id: 'pattern' + i,
-			value: patterns[i]
-		});
-		var label = $('<label>', {
-			'class': 'radio-label',
-			'for': 'pattern' + i
-		}).append($('<span>', {'class': 'radio-icon'})).append($('<span>', {
-			'class': 'radio-label-text',
-			text: patterns[i]
-		}));
-		patternEl.append(input);
-		patternEl.append(label);
-		rulePatternsEl.append(patternEl);
-		if (i === 0) {
-			input.attr('checked', 'checked');
-		}
-	}
+    for (var i = 0; i < patterns.length; i++) {
+        var patternEl = $('<div>', {'class': 'radio radio-patterns'});
+        var input = $('<input>', {
+            'class': 'radio-input',
+            type: 'radio',
+            name: 'rulePattern',
+            id: 'pattern' + i,
+            value: patterns[i]
+        });
+        var label = $('<label>', {
+            'class': 'radio-label',
+            'for': 'pattern' + i
+        }).append($('<span>', {'class': 'radio-icon'})).append($('<span>', {
+            'class': 'radio-label-text',
+            text: patterns[i]
+        }));
+        patternEl.append(input);
+        patternEl.append(label);
+        rulePatternsEl.append(patternEl);
+        if (i === 0) {
+            input.attr('checked', 'checked');
+        }
+    }
+
+    // hide options if filteringEvent is element
+    var optionsArea = template.find('.addition-rule-row-left-options');
+    if (filteringEvent.element) {
+        optionsArea.parent().hide();
+        rulePatternsEl.parent().hide();
+    }
 
 	var rulePatterns = template.find('[name="rulePattern"]');
 	var ruleDomainCheckbox = template.find('[name="ruleDomain"]');
@@ -688,19 +771,28 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 	ruleDomainCheckbox.parent().find('label').attr('for', 'ruleDomain');
 	if (!frameDomain) {
 		ruleDomainCheckbox.closest('.checkbox').hide();
-	}
+    }
 
     ruleImportantCheckbox.attr('id', 'ruleImportant');
     ruleImportantCheckbox.parent().find('label').attr('for', 'ruleImportant');
+    if (filteringEvent.element) {
+        ruleImportantCheckbox.parent().hide();
+    }
 
 	ruleMatchCaseCheckbox.attr('id', 'ruleMatchCase');
-	ruleMatchCaseCheckbox.parent().find('label').attr('for', 'ruleMatchCase');
+    ruleMatchCaseCheckbox.parent().find('label').attr('for', 'ruleMatchCase');
+    if (filteringEvent.element) {
+        ruleMatchCaseCheckbox.parent().hide();
+    }
 
 	ruleThirdPartyCheckbox.attr('id', 'ruleThirdParty');
 	ruleThirdPartyCheckbox.parent().find('label').attr('for', 'ruleThirdParty');
 	if (isThirdPartyRequest) {
 		ruleThirdPartyCheckbox.attr('checked', 'checked');
-	}
+    }
+    if (filteringEvent.element) {
+        ruleThirdPartyCheckbox.parent().hide();
+    }
 
 	//bind events
 	function updateRuleText() {
@@ -724,8 +816,12 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
         if (filteringEvent.requestUrl === 'content-security-policy-check') {
         	mandatoryOptions = [UrlFilterRule.WEBRTC_OPTION, UrlFilterRule.WEBSOCKET_OPTION];
 		}
-
-		var ruleText = RequestWizard.createRuleFromParams(urlPattern, domain, matchCase, thirdParty, important, mandatoryOptions);
+        var ruleText;
+        if (filteringEvent.element) {
+            ruleText = RequestWizard.createCssRuleFromParams(urlPattern, permitDomain);
+        } else {
+            ruleText = RequestWizard.createRuleFromParams(urlPattern, domain, matchCase, thirdParty, important, mandatoryOptions);
+        }
 		ruleTextEl.val(ruleText);
 	}
 
@@ -835,6 +931,15 @@ RequestWizard.createRuleFromParams = function (urlPattern, urlDomain, matchCase,
 		ruleText += UrlFilterRule.OPTIONS_DELIMITER + options.join(',');
 	}
 	return ruleText;
+};
+
+RequestWizard.createCssRuleFromParams = function (urlPattern, permitDomain) {
+    var ruleText = urlPattern;
+    if (!permitDomain) {
+        const index = ruleText.indexOf('#');
+        ruleText = ruleText.slice(index);
+    }
+    return ruleText;
 };
 
 RequestWizard.getRequestType = function (requestType) {

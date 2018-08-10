@@ -53,17 +53,6 @@
     };
 
     /**
-     * Set callback for saving css hits
-     */
-    if (typeof CssHitsCounter !== 'undefined' &&
-        typeof CssHitsCounter.setCssHitsFoundCallback === 'function') {
-
-        CssHitsCounter.setCssHitsFoundCallback(function (stats) {
-            getContentPage().sendMessage({type: 'saveCssHitStats', stats: stats});
-        });
-    }
-
-    /**
      * When Background page receives 'onCommitted' frame event then it sends scripts to corresponding frame
      * It allows us to execute script as soon as possible, because runtime.messaging makes huge overhead
      * If onCommitted event doesn't occur for the frame, scripts will be applied in usual way.
@@ -166,6 +155,9 @@
         var userAgent = navigator.userAgent.toLowerCase();
         var isFirefox = userAgent.indexOf('firefox') >= 0;
 
+        // Edge doesn't provide access to websockets via onBeforeRequest api
+        var isEdge = userAgent.indexOf('edge') >= 0;
+
         // Explicit check, we must not go further in case of Firefox
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/379
         if (isFirefox) {
@@ -182,7 +174,7 @@
         var versionNumber = Number.parseInt(version.substring(0, version.indexOf('.')));
 
         // WebSockets are broken in old versions of chrome and we don't need this hack in new version cause then websocket traffic is intercepted
-        return versionNumber >= 47 && versionNumber <= 57;
+        return isEdge || versionNumber >= 47 && versionNumber <= 57;
     };
 
     /**
@@ -279,14 +271,13 @@
             applySelectors(response.selectors);
             applyScripts(response.scripts);
         }
-
-        if (typeof CssHitsCounter !== 'undefined' &&
-            typeof CssHitsCounter.count === 'function' &&
-            response && response.selectors && response.selectors.cssHitsCounterEnabled) {
-
-            // Start css hits calculation
-            CssHitsCounter.count();
-        }
+        getContentPage().sendMessage({ type: 'isCssHitsCounterEnabled' }, function (response) {
+            if (response && response === true) {
+                CssHitsCounter.init(function (stats) {
+                    getContentPage().sendMessage({ type: 'saveCssHitStats', stats: stats });
+                });
+            }
+        });
     };
 
     /**
