@@ -469,13 +469,9 @@ adguard.webRequestService = (function (adguard) {
          * Due to this we can't use cssHitsCounter for edge browser
          */
 
-        if (tab) {
-            return !adguard.frames.isTabAdguardDetected(tab) &&
-                !adguard.utils.browser.isEdgeBrowser() &&
-                adguard.prefs.collectHitsCountEnabled &&
-                (adguard.settings.collectHitsCount() || adguard.filteringLog.isOpen());
+        if (tab && !adguard.frames.isTabAdguardDetected(tab)) {
+            return false;
         }
-
         return !adguard.utils.browser.isEdgeBrowser() && adguard.prefs.collectHitsCountEnabled &&
             (adguard.settings.collectHitsCount() || adguard.filteringLog.isOpen());
     };
