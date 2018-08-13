@@ -215,7 +215,9 @@ var CssHitsCounter = (function () { // jshint ignore:line
 
 
     var countAllCssHits = (function () {
+        // we don't start counting again all css hits till previous count process wasn't finished
         var countIsWorking = false;
+
         return function () {
             if (countIsWorking) {
                 return;
