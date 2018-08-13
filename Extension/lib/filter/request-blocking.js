@@ -55,10 +55,10 @@ adguard.webRequestService = (function (adguard) {
      * @param documentUrl               Document URL
      * @param cssFilterOptions          Bitmask for the CssFilter
      * @param {boolean} retrieveScripts Indicates whether to retrieve JS rules or not
-     * 
+     *
      * When cssFilterOptions and retrieveScripts are undefined, we handle it in a special way
      * that depends on whether the browser supports inserting CSS and scripts from the background page
-     * 
+     *
      * @returns {SelectorsAndScripts} an object with the selectors and scripts to be injected into the page
      */
     var processGetSelectorsAndScripts = function (tab, documentUrl, cssFilterOptions, retrieveScripts) {
@@ -96,7 +96,7 @@ adguard.webRequestService = (function (adguard) {
 
         // content-message-handler calls it in this way
         if (typeof cssFilterOptions === 'undefined' && typeof retrieveScripts === 'undefined') {
-            // Build up default flags.    
+            // Build up default flags.
             let canUseInsertCSSAndExecuteScript = adguard.prefs.features.canUseInsertCSSAndExecuteScript;
             // If tabs.executeScript is unavailable, retrieve JS rules now.
             retrieveScripts = !canUseInsertCSSAndExecuteScript;
@@ -463,11 +463,19 @@ adguard.webRequestService = (function (adguard) {
         return !safariContentBlockerEnabled;
     };
 
-    var isCollectingCosmeticRulesHits = function () {
+    var isCollectingCosmeticRulesHits = function (tab) {
         /**
          * Edge browser doesn't support css content attribute for node elements except :before and :after
          * Due to this we can't use cssHitsCounter for edge browser
          */
+
+        if (tab) {
+            return !adguard.frames.isTabAdguardDetected(tab) &&
+                !adguard.utils.browser.isEdgeBrowser() &&
+                adguard.prefs.collectHitsCountEnabled &&
+                (adguard.settings.collectHitsCount() || adguard.filteringLog.isOpen());
+        }
+
         return !adguard.utils.browser.isEdgeBrowser() && adguard.prefs.collectHitsCountEnabled &&
             (adguard.settings.collectHitsCount() || adguard.filteringLog.isOpen());
     };

@@ -177,7 +177,7 @@
      * @param stats
      */
     function processSaveCssHitStats(tab, stats) {
-        if (!adguard.webRequestService.isCollectingCosmeticRulesHits()) {
+        if (!adguard.webRequestService.isCollectingCosmeticRulesHits(tab)) {
             return;
         }
         const isIncognitoTab = adguard.frames.isIncognitoTab(tab);
@@ -415,7 +415,7 @@
                 processSaveCssHitStats(sender.tab, message.stats);
                 break;
             case 'isCssHitsCounterEnabled':
-                callback(adguard.webRequestService.isCollectingCosmeticRulesHits());
+                callback(adguard.webRequestService.isCollectingCosmeticRulesHits(sender.tab));
                 break;
             default:
                 // Unhandled message
