@@ -213,14 +213,23 @@ var CssHitsCounter = (function () { // jshint ignore:line
         }
     }
 
-    function countAllCssHits() {
-        var elements = document.querySelectorAll('*');
-        countCssHitsBatch(elements, 0, CSS_HITS_BATCH_SIZE, CSS_HITS_BATCH_SIZE, [], function (result) {
-            if (result.length > 0) {
-                onCssHitsFoundCallback(result);
+
+    var countAllCssHits = (function () {
+        var countIsWorking = false;
+        return function () {
+            if (countIsWorking) {
+                return;
             }
-        });
-    }
+            countIsWorking = true;
+            var elements = document.querySelectorAll('*');
+            countCssHitsBatch(elements, 0, CSS_HITS_BATCH_SIZE, CSS_HITS_BATCH_SIZE, [], function (result) {
+                if (result.length > 0) {
+                    onCssHitsFoundCallback(result);
+                }
+                countIsWorking = false;
+            });
+        };
+    })();
 
     function startObserver(observer) {
         observer.observe(document.documentElement, {
