@@ -50,6 +50,11 @@ adguard.RequestTypes = {
 adguard.BACKGROUND_TAB_ID = -1;
 
 /**
+ * Main frame id is equal to 0
+ */
+adguard.MAIN_FRAME_ID = 0;
+
+/**
  * Utilities namespace
  */
 adguard.utils = (function () {
