@@ -59,7 +59,7 @@ QUnit.test('Count css hits', function (assert) {
 
     var done = assert.async();
 
-    CssHitsCounter.setCssHitsFoundCallback(function (result) {
+    function setCssHitsFoundCallback(result) {
         assert.equal(result.length, 4);
         result.sort(function (s1, s2) {
             return s1.ruleText < s2.ruleText ? -1 : 1;
@@ -73,8 +73,8 @@ QUnit.test('Count css hits', function (assert) {
         assert.equal(result[3].ruleText, "adguard.com##.sponsored");
         assert.equal(result[3].filterId, 1);
         done();
-    });
-    CssHitsCounter.count();
+    }
+    CssHitsCounter.init(setCssHitsFoundCallback);
 });
 
 QUnit.test('Save css hits', function (assert) {
