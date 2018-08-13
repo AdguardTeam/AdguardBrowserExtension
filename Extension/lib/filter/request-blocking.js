@@ -468,8 +468,7 @@ adguard.webRequestService = (function (adguard) {
          * Edge browser doesn't support css content attribute for node elements except :before and :after
          * Due to this we can't use cssHitsCounter for edge browser
          */
-
-        if (tab && !adguard.frames.isTabAdguardDetected(tab)) {
+        if (tab && adguard.frames.isTabAdguardDetected(tab)) {
             return false;
         }
         return !adguard.utils.browser.isEdgeBrowser() && adguard.prefs.collectHitsCountEnabled &&
