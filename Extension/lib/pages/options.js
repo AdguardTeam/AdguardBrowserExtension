@@ -459,7 +459,7 @@ var AntiBannerFilters = function (options) {
                     <div class="filters-search">
                         <input type="text" placeholder="${i18n.getMessage('options_filters_list_search_placeholder')}" name="searchFiltersList"/>
                         <div class="icon-search">
-                            <img src="images/icon-magnifying-small.png" alt="">
+                            <img src="images/icon-magnifying-green.png" alt="">
                         </div>
                     </div>
                     <ul class="opts-list">
