@@ -488,11 +488,29 @@ var AntiBannerFilters = function (options) {
         document.querySelector('#antibanner').parentNode.appendChild(categoryContentElement);
 
         var searchInput = document.querySelector(`#antibanner${category.groupId} input[name="searchFiltersList"]`);
+        var searchString = '';
+        var filters = document.querySelectorAll(`#antibanner${category.groupId} .opts-list li`);
         if (searchInput) {
-            searchInput.addEventListener('change', function (e) {
-                console.log(e.target.value);
+            searchInput.addEventListener('input', function (e) {
+                searchString = e.target.value;
+                filters.forEach(filter => {
+                    var title = filter.querySelector('.title');
+                    var regexp = new RegExp(searchString, 'gi');
+                    if (!regexp.test(title.textContent)) {
+                        filter.style.display = 'none';
+                    } else {
+                        filter.style.display = 'flex';
+                    }
+                });
             });
         }
+        window.addEventListener('hashchange', function () {
+            searchString = '';
+            searchInput.value = '';
+            filters.forEach(filter => {
+                filter.style.display = 'flex';
+            });
+        });
     }
 
     function bindControls() {
