@@ -415,21 +415,6 @@ var AntiBannerFilters = function (options) {
             </div>`;
     }
 
-    function getTabsBarTemplate(showRecommended) {
-        if (showRecommended) {
-            return `
-                <div class="tabs-bar">
-                    <a href="" class="tab active" data-tab="recommended">Recommended</a>
-                    <a href="" class="tab" data-tab="other">Other</a>
-                </div>`;
-        }
-
-        return `
-            <div class="tabs-bar">
-                <a href="" class="tab active" data-tab="other">Other</a>
-            </div>`;
-    }
-
     function getEmptyCustomFiltersTemplate(category) {
         return `
             <div id="antibanner${category.groupId}" class="settings-content tab-pane filters-list">
@@ -449,46 +434,36 @@ var AntiBannerFilters = function (options) {
     }
 
     function getFiltersContentElement(category) {
-        var filters = category.filters.otherFilters;
+        var otherFilters = category.filters.otherFilters;
         var recommendedFilters = category.filters.recommendedFilters;
+        var filters = [].concat(recommendedFilters, otherFilters);
         var isCustomFilters = category.groupId === 0;
-        var showRecommended = recommendedFilters.length > 0;
 
         if (isCustomFilters &&
-            filters.length === 0 &&
-            recommendedFilters.length === 0) {
-
+            filters.length === 0) {
             return htmlToElement(getEmptyCustomFiltersTemplate(category));
         }
 
         var pageTitleEl = getPageTitleTemplate(category.groupName);
 
-        var tabs = '';
-        if (!isCustomFilters) {
-            tabs = getTabsBarTemplate(showRecommended);
-        }
+        var filtersList = '';
 
-        var recommendedFiltersList = '';
-        var otherFiltersList = '';
-
-        for (var i = 0; i < filters.length; i++) {
-            otherFiltersList += getFilterTemplate(filters[i], loadedFiltersInfo.isEnabled(filters[i].filterId), isCustomFilters);
-        }
-
-        for (var j = 0; j < recommendedFilters.length; j++) {
-            recommendedFiltersList += getFilterTemplate(recommendedFilters[j], loadedFiltersInfo.isEnabled(recommendedFilters[j].filterId), isCustomFilters);
+        for (var i = 0; i < filters.length; i += 1) {
+            filtersList += getFilterTemplate(filters[i], loadedFiltersInfo.isEnabled(filters[i].filterId), isCustomFilters);
         }
 
         return htmlToElement(`
             <div id="antibanner${category.groupId}" class="settings-content tab-pane filters-list">
                 ${pageTitleEl}
                 <div class="settings-body">
-                    ${tabs}
-                    <ul class="opts-list" data-tab="other" ${showRecommended ? 'style="display: none;"' : ''}>
-                        ${otherFiltersList}
-                    </ul>
-                    <ul class="opts-list" data-tab="recommended" ${!showRecommended ? 'style="display: none;"' : ''}>
-                        ${recommendedFiltersList}
+                    <div class="filters-search">
+                        <input type="text" placeholder="${i18n.getMessage('options_filters_list_search_placeholder')}" name="searchFiltersList"/>
+                        <div class="icon-search">
+                            <img src="images/icon-magnifying-small.png" alt="">
+                        </div>
+                    </div>
+                    <ul class="opts-list">
+                        ${filtersList}
                     </ul>
                 </div>
             </div>
@@ -511,6 +486,13 @@ var AntiBannerFilters = function (options) {
 
         categoryContentElement = getFiltersContentElement(category);
         document.querySelector('#antibanner').parentNode.appendChild(categoryContentElement);
+
+        var searchInput = document.querySelector(`#antibanner${category.groupId} input[name="searchFiltersList"]`);
+        if (searchInput) {
+            searchInput.addEventListener('change', function (e) {
+                console.log(e.target.value);
+            });
+        }
     }
 
     function bindControls() {
@@ -523,29 +505,10 @@ var AntiBannerFilters = function (options) {
         document.querySelectorAll('.remove-custom-filter-button').forEach(function (el) {
             el.addEventListener('click', removeCustomFilter);
         });
-
-        document.querySelectorAll('.tabs-bar .tab').forEach(function (tab) {
-            tab.addEventListener('click', function (e) {
-                e.preventDefault();
-
-                var current = e.currentTarget;
-                current.parentNode.querySelectorAll('.tabs-bar .tab').forEach(function (el) {
-                    el.classList.remove('active');
-                });
-                current.classList.add('active');
-
-                var parentNode = current.parentNode.parentNode;
-                parentNode.querySelector('.opts-list[data-tab="recommended"]').style.display = 'none';
-                parentNode.querySelector('.opts-list[data-tab="other"]').style.display = 'none';
-
-                var attr = current.getAttribute('data-tab');
-                parentNode.querySelector('.opts-list[data-tab="' + attr + '"]').style.display = 'block';
-            });
-        });
     }
 
     function renderCategoriesAndFilters() {
-        contentPage.sendMessage({type: 'getFiltersMetadata'}, function (response) {
+        contentPage.sendMessage({ type: 'getFiltersMetadata' }, function (response) {
 
             loadedFiltersInfo.initLoadedFilters(response.filters, response.categories);
             setLastUpdatedTimeText(loadedFiltersInfo.lastUpdateTime);
