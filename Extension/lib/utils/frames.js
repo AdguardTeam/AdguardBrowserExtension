@@ -72,7 +72,7 @@ adguard.frames = (function (adguard) {
 	 * @returns Frame URL
 	 */
 	var getMainFrameUrl = function (tab) {
-		return getFrameUrl(tab, 0);
+		return getFrameUrl(tab, adguard.MAIN_FRAME_ID);
 	};
 
 	/**

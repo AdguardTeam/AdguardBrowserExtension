@@ -423,7 +423,9 @@
         /**
          * Applying CSS/JS rules from the background page.
          * This function implements the algorithm suggested here: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1029
-         * For faster script injection, we prepare scriptText onResponseStarted event, save it and try to inject twice
+         * For faster script injection, we prepare scriptText onHeadersReceived event (we can't use onBeforeRequest
+         * event because we can't detect adguard application headers early in order to know should extension inject scripts or no),
+         * save it and try to inject twice:
          * first time onResponseStarted event - this event fires early, but is not reliable
          * second time onCommited event - this event fires on when part of document has been received, this event is reliable
          * Every time we try to inject script we check if script wasn't yet executed
@@ -435,11 +437,11 @@
          *
                                                 Chrome flow description
 
-                                            +------------------------------+
-                                            |                              |
-                                            | webRequest.onBeforeRequest   |     Prepare injection
-                                            |                              |
-                                            +---------------+--------------+
+                                            +--------------------------------+
+                                            |                                |
+                                            | webRequest.onHeadersReceived   |     Prepare injection
+                                            |                                |
+                                            +---------------+----------------+
                                                             |
                                             +---------------v--------------+
                                             |                              |
@@ -463,16 +465,16 @@
                                                 Firefox flow description
 
             onCommited event in Firefox for  +------------------------------+
-            sub_frames fire before           |                              |
-            onBeforeRequest event            | webNavigation.onCommited     |
+            sub_frames fires before          |                              |
+            onHeadersReceived event          | webNavigation.onCommited     |
             That's why we inject our code    |                              |
             on onCompletedEvent              +------------------------------+
 
-                                            +------------------------------+
-                                            |                              |
-                                            | webRequest.onBeforeRequest   |      Prepare injection
-                                            |                              |
-                                            +--------------+---------------+
+                                            +--------------------------------+
+                                            |                                |
+                                            | webRequest.onHeadersReceived   |      Prepare injection
+                                            |                                |
+                                            +--------------+-----------------+
                                                            |
                                             +--------------v---------------+
                                             |                              |
@@ -499,11 +501,19 @@
                                             +------------------------------+
             On tab close we clear our injections for corresponding tab
             Also our injections removes old injections for iframes when user navigates to other page in the same tab
+
+            In Firefox and Chrome if page has iframes without remote source we can not get rules for this iframe with usual methods,
+            That's why we get rules for main frame and inject them.
+                                            +- ----------------------------------+
+                                            |                                    |     Get injection for main iframe
+                                            |  webNavigation.onDOMContentLoaded  |     inject it in the frame without
+                                            |                                    |     remote source
+                                            +- ----------------------------------+
          */
         (function (adguard) {
             /**
              * This object is used:
-             * 1. to save js and css texts when onBeforeRequest event fires
+             * 1. to save js and css texts when onHeadersReceived event fires
              * by key corresponding to tabId and frameId
              * 2. to get js and css texts for injection
              * After injection corresponding js and css texts are removed from the object
@@ -549,9 +559,9 @@
                 removeTabFrameInjection: function (tabId, frameId) {
                     if (this[tabId]) {
                         delete this[tabId][frameId];
-                    }
-                    if (Object.keys(this[tabId]).length === 0) {
-                        delete this[tabId];
+                        if (Object.keys(this[tabId]).length === 0) {
+                            delete this[tabId];
+                        }
                     }
                 },
 
@@ -666,8 +676,8 @@
                 /**
                  * onCompleted event is used only to inject code to the Firefox iframes
                  * because in current Firefox implementation webNavigation.onCommitted event for iframes
-                 * occures early than webRequest.onBeforeRequest
-                 * if onCompleted event fired with requestType DOCUMENT then we skip it, because we don't
+                 * occures early than webRequest.onHeadersReceived event
+                 * if onCompleted event fired with requestType DOCUMENT then we skip it, because we
                  * use onCompleted event only for SUBDOCUMENTS
                  */
                 if (eventName === 'onCompleted' && requestType === adguard.RequestTypes.DOCUMENT) {
@@ -742,12 +752,13 @@
                 let tabId = tab.tabId;
                 let frameId = details.frameId;
                 let requestType = details.requestType;
+                let frameUrl = details.requestUrl;
                 if (shouldSkipInjection(requestType, tabId, eventName)) {
                     return;
                 }
                 const injection = injections.get(tabId, frameId);
                 /**
-                 * Sometimes it can happen that onCommited event fires earlier than onBeforeRequest
+                 * Sometimes it can happen that onCommited event fires earlier than onHeadersReceived
                  * for example onCommited event for iframes in Firefox
                  */
                 if (!injection) {
@@ -771,6 +782,10 @@
                 if (injection.cssText) {
                     adguard.tabs.insertCssCode(tabId, frameId, injection.cssText);
                 }
+                const mainFrameUrl = adguard.frames.getMainFrameUrl({ tabId: tabId });
+                if (isIframeWithoutSrc(frameUrl, frameId, mainFrameUrl)) {
+                    adguard.console.warn('Unexpected onCommited event from this frame - frameId: {0}, frameUrl: {1}. See https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1046', frameId, frameUrl);
+                }
                 injections.removeTabFrameInjection(tabId, frameId);
             }
 
@@ -790,14 +805,68 @@
             }
 
             /**
+             * Checks if iframe does not have a remote source
+             * or is src is about:blank, javascript:'', etc
+             * We don't include iframes with 'src=data:' because chrome and firefox don't allow to inject
+             * in iframes with this type of src, this bug is reported here
+             * https://bugs.chromium.org/p/chromium/issues/detail?id=55084
+             * @param {string} frameUrl url
+             * @param {number} frameId unique id of frame in the tab
+             * @param {string} mainFrameUrl url of tab where iframe exists
+             */
+            function isIframeWithoutSrc(frameUrl, frameId, mainFrameUrl) {
+                return (frameUrl === mainFrameUrl ||
+                        frameUrl === 'about:blank' ||
+                        frameUrl === 'about:srcdoc' ||
+                        frameUrl.indexOf('javascript:') > -1)
+                    && frameId !== adguard.MAIN_FRAME_ID;
+            }
+
+            /**
+             * This method injects css and js code in iframes without remote source
+             * Usual webRequest callbacks don't fire for iframes without remote source
+             * Also urls in these iframes may be "about:blank", "about:srcdoc", etc.
+             * Due to this reason we prepare injections for them as for mainframe
+             * and inject them only when onDOMContentLoaded fires
+             * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1046
+             * @param {{tabId: Number, url: String, processId: Number, frameId: Number, timeStamp: Number}} details
+             */
+            function tryInjectInIframesWithoutSrc(details) {
+                const { frameId, tabId, url: frameUrl } = details;
+                /**
+                 * Get url of the tab where iframe exists
+                 */
+                const mainFrameUrl = adguard.frames.getMainFrameUrl({ tabId: tabId });
+                if (mainFrameUrl && isIframeWithoutSrc(frameUrl, frameId, mainFrameUrl)) {
+                    const cssFilterOption = adguard.rules.CssFilter.RETRIEVE_TRADITIONAL_CSS;
+                    const retrieveScripts = true;
+                    const result = adguard.webRequestService.processGetSelectorsAndScripts({ tabId: tabId }, mainFrameUrl, cssFilterOption, retrieveScripts);
+                    if (result.requestFilterReady === false) {
+                        setTimeout(function (details) {
+                            tryInjectInIframesWithoutSrc(details);
+                        }, REQUEST_FILTER_READY_TIMEOUT, details);
+                        return;
+                    }
+                    const jsScriptText = buildScriptText(result.scripts);
+                    const cssText = buildCssText(result.selectors);
+                    if (jsScriptText) {
+                        adguard.tabs.executeScriptCode(tabId, frameId, jsScriptText);
+                    }
+                    if (cssText) {
+                        adguard.tabs.insertCssCode(tabId, frameId, cssText);
+                    }
+                }
+            }
+            /**
              * https://developer.chrome.com/extensions/webRequest
              * https://developer.chrome.com/extensions/webNavigation
              */
-            adguard.webRequest.onBeforeRequest.addListener(prepareInjection, ['<all_urls>']);
+            adguard.webRequest.onHeadersReceived.addListener(prepareInjection, ['<all_urls>']);
             adguard.webRequest.onResponseStarted.addListener(tryInjectOnResponseStarted, ['<all_urls>']);
             adguard.webNavigation.onCommitted.addListener(tryInject);
             adguard.webRequest.onErrorOccurred.addListener(removeInjection, ['<all_urls>']);
-            // In the current Firefox version (60.0.2), the onCommitted even fires earlier than onBeforeRequest for SUBDOCUMENT requests
+            adguard.webNavigation.onDOMContentLoaded.addListener(tryInjectInIframesWithoutSrc);
+            // In the current Firefox version (60.0.2), the onCommitted even fires earlier than onHeadersReceived for SUBDOCUMENT requests
             // This is true only for SUBDOCUMENTS i.e. iframes
             // so we inject code when onCompleted event fires
             if (adguard.utils.browser.isFirefoxBrowser()) {
