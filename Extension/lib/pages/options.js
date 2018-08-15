@@ -490,8 +490,9 @@ var AntiBannerFilters = function (options) {
         var searchInput = document.querySelector(`#antibanner${category.groupId} input[name="searchFiltersList"]`);
         var searchString = '';
         var filters = document.querySelectorAll(`#antibanner${category.groupId} .opts-list li`);
+        const SEARCH_DELAY_MS = 250;
         if (searchInput) {
-            searchInput.addEventListener('input', function (e) {
+            searchInput.addEventListener('input', Utils.debounce(function (e) {
                 searchString = e.target.value;
                 filters.forEach(filter => {
                     var title = filter.querySelector('.title');
@@ -502,14 +503,18 @@ var AntiBannerFilters = function (options) {
                         filter.style.display = 'flex';
                     }
                 });
-            });
+            }, SEARCH_DELAY_MS));
         }
         window.addEventListener('hashchange', function () {
             searchString = '';
-            searchInput.value = '';
-            filters.forEach(filter => {
-                filter.style.display = 'flex';
-            });
+            if (searchInput) {
+                searchInput.value = '';
+            }
+            if (filters && filters.length > 0) {
+                filters.forEach(filter => {
+                    filter.style.display = 'flex';
+                });
+            }
         });
     }
 
