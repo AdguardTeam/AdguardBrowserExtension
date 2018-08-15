@@ -105,8 +105,8 @@ var ModalUtils = {
     },
 
     closeModal: function (element) {
-        element.style.display = 'none';
-    }
+        element.remove();
+    },
 };
 
 var FilterRule = {
@@ -473,9 +473,16 @@ PageController.prototype = {
 
     _renderTemplate: function (event) {
 
-        var metadata = {data: event};
+        event.filterName = event.requestRule ? RequestWizard.getFilterName(event.requestRule.filterId) : '';
+        var metadata = {data: event, class: ''};
         if (event.requestRule) {
-            metadata.class += event.requestRule.whiteListRule ? ' green' : ' red';
+            if (event.requestRule.whiteListRule) {
+                metadata.class += ' green';
+            } else if (event.requestRule.cssRule) {
+                metadata.class += ' yellow';
+            } else {
+                metadata.class += ' red';
+            }
         }
         if (event.requestId) {
             metadata.id = 'request-' + event.requestId;
@@ -507,7 +514,7 @@ PageController.prototype = {
                 </td>
                 <td>${ruleText ? ruleText : ''}</td>
                 <td>
-                    ${event.requestRule ? RequestWizard.getFilterName(event.requestRule.filterId) : ''}
+                    ${event.filterName}
                 </td>
                 <td>${RequestWizard.getSource(event.frameDomain)}</td>
             </tr>`;
@@ -521,7 +528,17 @@ PageController.prototype = {
 
         var filterData = el.data;
 
-        var show = !this.searchRequest || StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest);
+        var show = !this.searchRequest ||
+            StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest) || 
+            StringUtils.containsIgnoreCase(filterData.element, this.searchRequest);
+
+        if (filterData.requestRule && filterData.requestRule.ruleText) {
+            show |= StringUtils.containsIgnoreCase(filterData.requestRule.ruleText, this.searchRequest);
+        }
+
+        if (filterData.filterName) {
+            show |= StringUtils.containsIgnoreCase(filterData.filterName, this.searchRequest);
+        }
         show &= this.searchTypes.length === 0 || this.searchTypes.indexOf(filterData.requestType) >= 0; // jshint ignore:line
 
         var checkboxes = true;
@@ -683,6 +700,14 @@ var RequestWizard = (function () {
             ruleImportantCheckbox.parentNode.style.display = 'none';
             ruleMatchCaseCheckbox.parentNode.style.display = 'none';
             ruleThirdPartyCheckbox.parentNode.style.display = 'none';
+            var patternsField = template.querySelector('.filtering-modal-patterns');
+            if (patternsField) {
+                patternsField.style.display = 'none';
+            }
+            var optionsField = template.querySelector('.filtering-modal-options');
+            if (optionsField) {
+                optionsField.style.display = 'none';
+            }
         }
 
         function updateRuleText() {
