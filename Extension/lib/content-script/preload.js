@@ -449,7 +449,7 @@
         if (!elementUrl ||
             elementUrl.indexOf('http') !== 0 ||
             // Some sources could not be set yet, lazy loaded images or smth.
-            // In some cases like on gog.com, collapsing these elements could break the page script loading their sources 
+            // In some cases like on gog.com, collapsing these elements could break the page script loading their sources
             elementUrl === element.baseURI) {
             return null;
         }
