@@ -487,16 +487,16 @@ var AntiBannerFilters = function (options) {
         categoryContentElement = getFiltersContentElement(category);
         document.querySelector('#antibanner').parentNode.appendChild(categoryContentElement);
 
-        var searchInput = document.querySelector(`#antibanner${category.groupId} input[name="searchFiltersList"]`);
-        var searchString = '';
-        var filters = document.querySelectorAll(`#antibanner${category.groupId} .opts-list li`);
+        const searchInput = document.querySelector(`#antibanner${category.groupId} input[name="searchFiltersList"]`);
+        let searchString = '';
+        let filters = document.querySelectorAll(`#antibanner${category.groupId} .opts-list li`);
         const SEARCH_DELAY_MS = 250;
         if (searchInput) {
-            searchInput.addEventListener('input', Utils.debounce(function (e) {
-                searchString = e.target.value;
+            searchInput.addEventListener('input', Utils.debounce((e) => {
+                searchString = e.target.value.trim();
                 filters.forEach(filter => {
-                    var title = filter.querySelector('.title');
-                    var regexp = new RegExp(searchString, 'gi');
+                    const title = filter.querySelector('.title');
+                    const regexp = new RegExp(searchString, 'gi');
                     if (!regexp.test(title.textContent)) {
                         filter.style.display = 'none';
                     } else {
@@ -505,7 +505,7 @@ var AntiBannerFilters = function (options) {
                 });
             }, SEARCH_DELAY_MS));
         }
-        window.addEventListener('hashchange', function () {
+        window.addEventListener('hashchange', () => {
             searchString = '';
             if (searchInput) {
                 searchInput.value = '';
