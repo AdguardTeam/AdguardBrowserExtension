@@ -1,8 +1,8 @@
-! Checksum: dRYCY/sTek/0laJo3KOAJA
+! Checksum: bf8dYPon1pRbcUmww+jwYQ
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.0.91
-! TimeUpdated: 2018-07-12T18:14:55+00:00
+! Version: 2.0.1.5
+! TimeUpdated: 2018-08-14T18:04:25+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#japanese
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -85,6 +85,7 @@
 ! Eimg.jp
 ||adingo.jp.eimg.jp^
 !
+||reseireejoch.info^
 ||ad-trip.com^
 ||ad-shot.com^
 ||ad-sell.com^
@@ -304,11 +305,19 @@
 !
 ! These rules are against anti-adblock scripts
 !
+! FuckAdBlock CSS
+d-navi004.com,gagetmatome.com,h5games.success-corp.co.jp#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
+!
+!
+! https://github.com/AdguardTeam/AdguardFilters/issues/20703
+! https://github.com/AdguardTeam/AdguardFilters/issues/20116
+! https://github.com/AdguardTeam/AdguardFilters/issues/19910
 ! https://github.com/AdguardTeam/AdguardFilters/issues/14263
 avgirl.online#@#.google-ad
 ! https://github.com/AdguardTeam/AdguardFilters/issues/7918
 !! for safety due to possible ban
-@@||avgle.com^$generichide
+@@||avgle.com/video/$genericblock,generichide
+@@||avgle.com/embed/$genericblock,generichide
 !!
 avgle.com#@#.adsBox
 avgle.com#@#.pub_300x250
@@ -342,9 +351,12 @@ avgle.com#@#a[href^="http://bongacams.com/track?"]
 @@||*.club^$domain=avgle.com
 @@||*.info^$domain=avgle.com
 @@||ie8eamus.com/sfp.js$domain=avgle.com
+@@||fingahvf.top/advertisers.js$domain=avgle.com
+@@||avgle.com/include/ajax/related_videos.php
 ! no referrer
 @@||*.info/sc?u=
 @@||*.club/sc?u=
+@@||unrestern.info^
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9125
 socom.yokohama#@#.an-advert-banner
 socom.yokohama#@##adsense
@@ -407,6 +419,7 @@ anipo.jp#@#.adbanner
 !---------------------------------------------------------------------------!
 !
 ! Extended CSS rules
+melos.media##.x1_article > .x1_articleArea[-ext-has='div.x1_siteTitle:contains([PR])']
 repeat-drama.info##.side_inner > .box:contains(スポンサーリンク)
 !---------------------------------------------------------------------------!
 !-------------- General element hiding rules -------------------------------!
@@ -493,6 +506,8 @@ repeat-drama.info##.side_inner > .box:contains(スポンサーリンク)
 !-------JS----------
 !-------------------
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/21092
+xbooks.to#%#document.cookie = "pop=1";
 ! https://github.com/AdguardTeam/AdguardFilters/issues/11687
 ! avgle.com#%#window.open = function() {};
 ! avgle.com#%#AG_onLoad(function() { setTimeout(function() { $("#player_3x2_close > *").click(); }, 300); });
@@ -587,6 +602,22 @@ _ds_adtag_
 !
 ! Section contains rules for specific websites
 !
+xbooks.to###ad_interstitial_wrap
+xbooks.to##.ad_overlay
+||gum.xbooks.to/js/sp/sp_interstitial_move4.js
+||gum.xbooks.to/js/sp/access_overlay_avt_03.js
+||gum.xbooks.to/js/sp/sp_interstitial.js
+||gum.xbooks.to/js/sp^
+||uratube.com/js/ad^
+pandora.tv##a[href^="https://play.google.com/"][target="_blank"]:not([class]):not([id]) > img
+melos.media##.x1_ad
+watch.impress.co.jp##.ad.billboard
+||juicyads.com^$domain=adserver.juicyads.com
+||ads.adxadserv.com^$domain=adserver.juicyads.com
+gagetmatome.com###ad-bottom-oya
+||rationalan.pro^$domain=avgle.com
+/sound?cver*refer*avgle.com$popup
+||avgle.com$popup,domain=avgle.com
 ||blog.livedoor.jp/diet2channel/js/adarea.js
 jin115.com##.dix_ad_n
 vippers.jp##.ad
@@ -959,6 +990,8 @@ yahoo.co.jp##ul[class^="sponsor"]
 ||zenback.jp^*/tracking.html
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/20703
+! https://github.com/AdguardTeam/AdguardFilters/issues/20116
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9091
 !+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
 wakudan.seesaa.net##.adsbygoogle
@@ -999,10 +1032,6 @@ publicdomainq.net#@#.adsbygoogle
 @@||res.nimg.jp/js/ads.js?$domain=nicovideo.jp
 @@||yimg.jp/bdv/yahoo/javascript/gyao/clover.js$domain=gyao.yahoo.co.jp
 ! disabling rules from EasyList China for Extensions
-!+ NOT_PLATFORM(windows, mac, android, ios)
-@@||avgle.com/embed/$genericblock,generichide,badfilter
-!+ NOT_PLATFORM(windows, mac, android, ios)
-@@||avgle.com/video/$genericblock,generichide,badfilter
 !+ NOT_PLATFORM(windows, mac, android, ios)
 @@||avgle.com^$elemhide,badfilter
 !+ NOT_PLATFORM(windows, mac, android, ios)

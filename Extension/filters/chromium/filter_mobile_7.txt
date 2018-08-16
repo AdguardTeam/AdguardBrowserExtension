@@ -1,8 +1,8 @@
-! Checksum: VyXF6HJmnScClpJAtGdz7g
+! Checksum: bIsyJBxEs4LpkGfFjYwCyQ
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.0.91
-! TimeUpdated: 2018-07-12T18:14:55+00:00
+! Version: 2.0.1.5
+! TimeUpdated: 2018-08-14T18:04:25+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -50,6 +50,7 @@
 ||adimp.excite.co.jp^
 ||adimpkwd.excite.co.jp^
 ||adingo.jp.eimg.jp^
+||reseireejoch.info^
 ||ad-trip.com^
 ||ad-shot.com^
 ||ad-sell.com^
@@ -170,6 +171,7 @@
 ||ads.meropar.jp^$third-party
 ||ads.metropolis.co.jp^
 ||ads.mixi.jp^
+||ads.nicovideo.jp^
 ||adstatic.ameba.jp^
 ||affili.dmm.com^$third-party
 ||affiliate-b.com^$third-party
@@ -223,6 +225,7 @@
 ||m.shanbara.jp^$third-party
 ||magma-analytics.com^$third-party
 ||match.seesaa.jp^$third-party
+||mcnt.jp^$third-party
 ||microad.jp^
 ||mmaaxx.com^$image,~image,popup
 ||mobalyzer.net^$third-party
@@ -263,8 +266,10 @@
 ||webtracker.jp^
 ||widget.zenback.jp^$third-party
 ||w.zenback.jp^$third-party
+d-navi004.com,gagetmatome.com,h5games.success-corp.co.jp#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
 avgirl.online#@#.google-ad
-@@||avgle.com^$generichide
+@@||avgle.com/video/$genericblock,generichide
+@@||avgle.com/embed/$genericblock,generichide
 avgle.com#@#.adsBox
 avgle.com#@#.pub_300x250
 avgle.com#@#.pub_300x250m
@@ -297,8 +302,11 @@ avgle.com#@#a[href^="http://bongacams.com/track?"]
 @@||*.club^$domain=avgle.com
 @@||*.info^$domain=avgle.com
 @@||ie8eamus.com/sfp.js$domain=avgle.com
+@@||fingahvf.top/advertisers.js$domain=avgle.com
+@@||avgle.com/include/ajax/related_videos.php
 @@||*.info/sc?u=
 @@||*.club/sc?u=
+@@||unrestern.info^
 socom.yokohama#@#.an-advert-banner
 socom.yokohama#@##adsense
 socom.yokohama#@#.an-sponsored
@@ -309,6 +317,7 @@ wakudan.seesaa.net,kamikiyuki.hatenablog.com,omutulove.seesaa.net,omutulove.blog
 off-soft.net#@#.adsbygoogle
 nazolog.com#%#(function(b){Object.defineProperty(Element.prototype,"innerHTML",{get:function(){return b.get.call(this)},set:function(a){/^(?:<([abisuq]) id="[^"]*"><\/\1>)*$/.test(a)||b.set.call(this,a)},enumerable:!0,configurable:!0})})(Object.getOwnPropertyDescriptor(Element.prototype,"innerHTML"));
 anipo.jp#@#.adbanner
+melos.media##.x1_article > .x1_articleArea[-ext-has='div.x1_siteTitle:contains([PR])']
 repeat-drama.info##.side_inner > .box:contains(スポンサーリンク)
 ###AD1line
 ###AD2line
@@ -382,6 +391,7 @@ repeat-drama.info##.side_inner > .box:contains(スポンサーリンク)
 ##.yahoo_ad
 ##a[href^="http://ad2.trafficgate.net/"]
 ##a[href^="http://www.rssad.jp/"]
+xbooks.to#%#document.cookie = "pop=1";
 ogeji.hatenablog.com#$#.sleeping-ads {position: absolute!important; left: -3000px!important; }
 .com/ufo/$script
 .com/Zen?
@@ -449,6 +459,22 @@ ogeji.hatenablog.com#$#.sleeping-ads {position: absolute!important; left: -3000p
 /top/head_s_bnr
 /yaad.js
 _ds_adtag_
+xbooks.to###ad_interstitial_wrap
+xbooks.to##.ad_overlay
+||gum.xbooks.to/js/sp/sp_interstitial_move4.js
+||gum.xbooks.to/js/sp/access_overlay_avt_03.js
+||gum.xbooks.to/js/sp/sp_interstitial.js
+||gum.xbooks.to/js/sp^
+||uratube.com/js/ad^
+pandora.tv##a[href^="https://play.google.com/"][target="_blank"]:not([class]):not([id]) > img
+melos.media##.x1_ad
+watch.impress.co.jp##.ad.billboard
+||juicyads.com^$domain=adserver.juicyads.com
+||ads.adxadserv.com^$domain=adserver.juicyads.com
+gagetmatome.com###ad-bottom-oya
+||rationalan.pro^$domain=avgle.com
+/sound?cver*refer*avgle.com$popup
+||avgle.com$popup,domain=avgle.com
 ||blog.livedoor.jp/diet2channel/js/adarea.js
 jin115.com##.dix_ad_n
 vippers.jp##.ad
@@ -817,6 +843,7 @@ yahoo.co.jp##ul[class^="sponsor"]
 ||yahoo.co.jp/js/sq.js
 ||yimg.jp/bdv/$image,object,subdocument
 ||yimg.jp/images/*img/banner
+||yjaxc.yahoo.co.jp^
 ||yomiuri.co.jp/ad/
 ||zenback.jp^*/tracking.html
 @@||blogs.yahoo.co.jp^
@@ -839,10 +866,6 @@ publicdomainq.net#@#.adsbygoogle
 @@||rcm-jp.amazon.co.jp^$domain=toscana.sakura.ne.jp
 @@||res.nimg.jp/js/ads.js?$domain=nicovideo.jp
 @@||yimg.jp/bdv/yahoo/javascript/gyao/clover.js$domain=gyao.yahoo.co.jp
-!+ NOT_PLATFORM(windows, mac, android, ios)
-@@||avgle.com/embed/$genericblock,generichide,badfilter
-!+ NOT_PLATFORM(windows, mac, android, ios)
-@@||avgle.com/video/$genericblock,generichide,badfilter
 !+ NOT_PLATFORM(windows, mac, android, ios)
 @@||avgle.com^$elemhide,badfilter
 !+ NOT_PLATFORM(windows, mac, android, ios)

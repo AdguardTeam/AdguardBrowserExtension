@@ -1,8 +1,8 @@
-! Checksum: V0iIDiVuMMyVG07dF/xN2g
+! Checksum: gOaCCnupgbbBLHTOtY6oYA
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.0.31
-! TimeUpdated: 2018-06-22T00:04:04+00:00
+! Version: 2.0.0.35
+! TimeUpdated: 2018-08-08T12:04:51+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -1294,8 +1294,7 @@ voetbalnieuws.be#@#a[href^="http://adserving.unibet.com/"]
 tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
 ||widget.igcdn.nl^$third-party
 ||wwa.pacific-yield.com^$third-party
-@@/ad_bomb/*$image,domain=computerworld.nl|webwereld.nl
-@@/ad_pics/*$image,domain=webwereld.nl
+@@/ad_pics/*$image,domain=computerworld.nl|webwereld.nl
 windowstechblog.nl#@#.an-advert-banner
 windowstechblog.nl#@##adsense
 windowstechblog.nl#@#.an-sponsored
@@ -1315,6 +1314,7 @@ telegraaf.nl#%#window.canRunAds = true;
 @@||static.buienradar.nl/resources/js/advertisement.js
 biernet.nl#@#.afs_ads
 @@||telegraaf.tcdn.nl/javascript/showads*.js
+sceptr.net##.td-main-sidebar > .td-ss-main-sidebar > .widget_text:has(> h4.block-title > span:contains(ADVERTENTIE))
 androidplanet.nl##.sidebar > .widget_static_device_widget:has(.device-ad)
 androidplanet.nl##.pd-results-container > .results-inner > .pd-advisor-offer-container:first-child:has(> .pd-advisor-offer > .result-badge:contains(Adv.))
 pcmweb.nl##.site__sidebar > .block[-ext-has='div.banner']
@@ -1326,6 +1326,11 @@ gelderlander.nl##.page-content > .theme-default[-ext-has='div.ad']
 klusidee.nl##tr.table-row[-ext-has=".td-ad"]
 omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3000px!important; }
 omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
+hln.be##div[data-url*="trackuity.com"]
+hln.be##.ktsjing-row--leader
+hln.be##.ktsjing-row--sky
+hln.be##aside[data-prefix="Advertentie"]
+sceptr.net##.td-main-sidebar > .td-ss-main-sidebar > .widget_sp_image
 androidplanet.nl###featured-header[data-campaign]
 androidplanet.nl##.sidebar > .widget_ad_html
 ||mediareader.omroepwest.nl/gaslicht^
