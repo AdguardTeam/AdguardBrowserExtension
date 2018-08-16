@@ -20,7 +20,7 @@ To see the 'big picture', to watch current progress and to get an idea of approx
 ### Releases
 
 * Latest release version: [2.9.2](https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v2.9.2)
-* Latest beta version: [2.10.5](https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v2.10.5-beta)
+* Latest beta version: [2.10.6](https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v2.10.6-beta)
 
 You can find all AdGuard Browser Extension releases here: https://github.com/AdguardTeam/AdguardBrowserExtension/releases
 
