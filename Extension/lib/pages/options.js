@@ -486,9 +486,23 @@ var AntiBannerFilters = function (options) {
 
         categoryContentElement = getFiltersContentElement(category);
         document.querySelector('#antibanner').parentNode.appendChild(categoryContentElement);
+    }
 
-        const searchInput = document.querySelector(`#antibanner${category.groupId} input[name="searchFiltersList"]`);
+    function bindControls() {
+        var emptyFiltersAddCustomButton = document.querySelector('.empty-filters__btn');
+        if (emptyFiltersAddCustomButton) {
+            emptyFiltersAddCustomButton.addEventListener('click', addCustomFilter);
+        }
+
+        document.querySelector('#addCustomFilter').addEventListener('click', addCustomFilter);
+        document.querySelectorAll('.remove-custom-filter-button').forEach(function (el) {
+            el.addEventListener('click', removeCustomFilter);
+        });
+    }
+
+    function initFiltersSearch(category) {
         let searchString = '';
+        const searchInput = document.querySelector(`#antibanner${category.groupId} input[name="searchFiltersList"]`);
         let filters = document.querySelectorAll(`#antibanner${category.groupId} .opts-list li`);
         const SEARCH_DELAY_MS = 250;
         if (searchInput) {
@@ -505,7 +519,8 @@ var AntiBannerFilters = function (options) {
                 });
             }, SEARCH_DELAY_MS));
         }
-        window.addEventListener('hashchange', () => {
+
+        const clearSearch = () => {
             searchString = '';
             if (searchInput) {
                 searchInput.value = '';
@@ -515,34 +530,34 @@ var AntiBannerFilters = function (options) {
                     filter.style.display = 'flex';
                 });
             }
-        });
+        };
+
+        return clearSearch;
     }
 
-    function bindControls() {
-        var emptyFiltersAddCustomButton = document.querySelector('.empty-filters__btn');
-        if (emptyFiltersAddCustomButton) {
-            emptyFiltersAddCustomButton.addEventListener('click', addCustomFilter);
-        }
-
-        document.querySelector('#addCustomFilter').addEventListener('click', addCustomFilter);
-        document.querySelectorAll('.remove-custom-filter-button').forEach(function (el) {
-            el.addEventListener('click', removeCustomFilter);
-        });
-    }
+    const cleaners = {};
 
     function renderCategoriesAndFilters() {
         contentPage.sendMessage({ type: 'getFiltersMetadata' }, function (response) {
-
             loadedFiltersInfo.initLoadedFilters(response.filters, response.categories);
             setLastUpdatedTimeText(loadedFiltersInfo.lastUpdateTime);
 
             var categories = loadedFiltersInfo.categories;
-            for (var j = 0; j < categories.length; j++) {
-                renderFilterCategory(categories[j]);
+            for (var j = 0; j < categories.length; j += 1) {
+                var category = categories[j];
+                renderFilterCategory(category);
+                var categoryId = category.groupId;
+                var clearSearch = cleaners[categoryId];
+                if (clearSearch) {
+                    window.removeEventListener('hashchange', clearSearch);
+                }
+                clearSearch = initFiltersSearch(category);
+                cleaners[categoryId] = clearSearch;
+                window.addEventListener('hashchange', clearSearch);
             }
 
             bindControls();
-            CheckboxUtils.toggleCheckbox(document.querySelectorAll(".opt-state input[type=checkbox]"));
+            CheckboxUtils.toggleCheckbox(document.querySelectorAll('.opt-state input[type=checkbox]'));
 
             // check document hash
             var hash = document.location.hash;
