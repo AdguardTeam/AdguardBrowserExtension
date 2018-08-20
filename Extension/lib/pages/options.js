@@ -257,16 +257,21 @@ var UserFilter = function () {
         }
     }
 
-    const importUserFilterInput = document.querySelector('#importUserFilterInput');
+    const importUserFiltersInput = document.querySelector('#importUserFilterInput');
+    const importUserFiltersBtn = document.querySelector('#userFiltersImport');
+    const exportUserFiltersBtn = document.querySelector('#userFiltersExport');
 
-    const importUserFilterBtn = document.querySelector('#userFilterImportFilters');
-
-    importUserFilterBtn.addEventListener('click', function (event) {
+    importUserFiltersBtn.addEventListener('click', function (event) {
         event.preventDefault();
-        importUserFilterInput.click();
+        importUserFiltersInput.click();
     });
 
-    importUserFilterInput.addEventListener('change', onUserFilterImportChange);
+    importUserFiltersInput.addEventListener('change', onUserFilterImportChange);
+
+    exportUserFiltersBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        contentPage.sendMessage({ type: 'openExportRulesTab', whitelist: false });
+    });
 
     return {
         updateUserFilterRules: updateUserFilterRules
