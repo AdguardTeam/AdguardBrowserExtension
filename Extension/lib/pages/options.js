@@ -198,7 +198,7 @@ var UserFilter = function () {
 
     function loadUserRules() {
         contentPage.sendMessage({
-            type: 'getUserRules'
+            type: 'getUserRules',
         }, function (response) {
             editor.setValue(response.content || '');
             applyChangesBtn.style.display = 'none';
@@ -234,8 +234,39 @@ var UserFilter = function () {
     applyChangesBtn.addEventListener('click', saveUserRules);
 
     editor.getSession().addEventListener('change', function () {
-        applyChangesBtn.style.display = 'block';
+        applyChangesBtn.style.display = 'inline-block';
     });
+
+    function onUserFilterImportChange(event) {
+        const fileInput = event.target;
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            const oldRules = editor.getValue();
+            const newRules = oldRules + '\n' + e.target.result;
+            editor.setValue(newRules);
+            fileInput.value = '';
+        };
+        reader.onerror = function () {
+            // TODO how to add here adguard.console.error
+            console.log('Error load user rules');
+            fileInput.value = '';
+        };
+        var file = fileInput.files[0];
+        if (file) {
+            reader.readAsText(file, 'utf-8');
+        }
+    }
+
+    const importUserFilterInput = document.querySelector('#importUserFilterInput');
+
+    const importUserFilterBtn = document.querySelector('#userFilterImportFilters');
+
+    importUserFilterBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        importUserFilterInput.click();
+    });
+
+    importUserFilterInput.addEventListener('change', onUserFilterImportChange);
 
     return {
         updateUserFilterRules: updateUserFilterRules
