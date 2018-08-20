@@ -303,7 +303,10 @@ var AntiBannerFilters = function (options) {
             toggleGroupState.bind(e.target)();
         }
     });
+
     document.querySelector('#updateAntiBannerFilters').addEventListener('click', updateAntiBannerFilters);
+
+    window.addEventListener('hashchange', clearSearchEvent);
 
     updateRulesCountInfo(options.rulesInfo);
 
@@ -1216,7 +1219,6 @@ PageController.prototype = {
         // Initialize AntiBanner filters
         this.antiBannerFilters = new AntiBannerFilters({rulesInfo: requestFilterInfo});
         this.antiBannerFilters.render();
-        window.addEventListener('hashchange', this.antiBannerFilters.clearSearchEvent);
 
         // Initialize sync tab
         this.syncSettings = new SyncSettings({syncStatusInfo: syncStatusInfo});
