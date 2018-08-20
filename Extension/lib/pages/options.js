@@ -30,7 +30,17 @@ var Utils = {
             clearTimeout(timeout);
             timeout = setTimeout(later, wait);
         };
-    }
+    },
+
+    escapeRegExp: (function () {
+        var matchOperatorsRe = /[|\\{}()[\]^$+*?.]/g;
+        return function (str) {
+            if (typeof str !== 'string') {
+                throw new TypeError('Expected a string');
+            }
+            return str.replace(matchOperatorsRe, '\\$&');
+        };
+    })(),
 };
 
 var TopMenu = (function () {
@@ -501,13 +511,21 @@ var AntiBannerFilters = function (options) {
     }
 
     function initFiltersSearch(category) {
-        let searchString = '';
         const searchInput = document.querySelector(`#antibanner${category.groupId} input[name="searchFiltersList"]`);
         let filters = document.querySelectorAll(`#antibanner${category.groupId} .opts-list li`);
         const SEARCH_DELAY_MS = 250;
         if (searchInput) {
             searchInput.addEventListener('input', Utils.debounce((e) => {
-                searchString = e.target.value.trim();
+                let searchString;
+                try {
+                    searchString = Utils.escapeRegExp(e.target.value.trim());
+                } catch (err) {
+                    console.log(err.message);
+                    return;
+                }
+                if (!searchString) {
+                    return;
+                }
                 filters.forEach(filter => {
                     const title = filter.querySelector('.title');
                     const regexp = new RegExp(searchString, 'gi');
@@ -519,23 +537,30 @@ var AntiBannerFilters = function (options) {
                 });
             }, SEARCH_DELAY_MS));
         }
-
-        const clearSearch = () => {
-            searchString = '';
-            if (searchInput) {
-                searchInput.value = '';
-            }
-            if (filters && filters.length > 0) {
-                filters.forEach(filter => {
-                    filter.style.display = 'flex';
-                });
-            }
-        };
-
-        return clearSearch;
     }
 
-    const cleaners = {};
+    /**
+     * Function clears search results when user moves from category antibanner page to another page
+     * @param {*} on hashchange event
+     */
+    function clearSearchEvent(event) {
+        const regex = /#antibanner(\d+)/g;
+        const match = regex.exec(event.oldURL);
+        if (!match) {
+            return;
+        }
+        const groupId = match[1];
+        const searchInput = document.querySelector(`#antibanner${groupId} input[name="searchFiltersList"]`);
+        let filters = document.querySelectorAll(`#antibanner${groupId} .opts-list li`);
+        if (searchInput) {
+            searchInput.value = '';
+        }
+        if (filters && filters.length > 0) {
+            filters.forEach(filter => {
+                filter.style.display = 'flex';
+            });
+        }
+    }
 
     function renderCategoriesAndFilters() {
         contentPage.sendMessage({ type: 'getFiltersMetadata' }, function (response) {
@@ -546,14 +571,7 @@ var AntiBannerFilters = function (options) {
             for (var j = 0; j < categories.length; j += 1) {
                 var category = categories[j];
                 renderFilterCategory(category);
-                var categoryId = category.groupId;
-                var clearSearch = cleaners[categoryId];
-                if (clearSearch) {
-                    window.removeEventListener('hashchange', clearSearch);
-                }
-                clearSearch = initFiltersSearch(category);
-                cleaners[categoryId] = clearSearch;
-                window.addEventListener('hashchange', clearSearch);
+                initFiltersSearch(category);
             }
 
             bindControls();
@@ -744,6 +762,7 @@ var AntiBannerFilters = function (options) {
 
     return {
         render: renderCategoriesAndFilters,
+        clearSearchEvent: clearSearchEvent,
         updateRulesCountInfo: updateRulesCountInfo,
         onFilterStateChanged: onFilterStateChanged,
         onFilterDownloadStarted: onFilterDownloadStarted,
@@ -1197,6 +1216,7 @@ PageController.prototype = {
         // Initialize AntiBanner filters
         this.antiBannerFilters = new AntiBannerFilters({rulesInfo: requestFilterInfo});
         this.antiBannerFilters.render();
+        window.addEventListener('hashchange', this.antiBannerFilters.clearSearchEvent);
 
         // Initialize sync tab
         this.syncSettings = new SyncSettings({syncStatusInfo: syncStatusInfo});
