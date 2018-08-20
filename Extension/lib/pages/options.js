@@ -239,7 +239,7 @@ var UserFilter = function () {
 
     function onUserFilterImportChange(event) {
         const fileInput = event.target;
-        var reader = new FileReader();
+        const reader = new FileReader();
         reader.onload = function (e) {
             const oldRules = editor.getValue();
             const newRules = oldRules + '\n' + e.target.result;
@@ -251,7 +251,7 @@ var UserFilter = function () {
             console.log('Error load user rules');
             fileInput.value = '';
         };
-        var file = fileInput.files[0];
+        const file = fileInput.files[0];
         if (file) {
             reader.readAsText(file, 'utf-8');
         }
