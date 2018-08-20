@@ -171,6 +171,7 @@
                 });
                 return true;
             case 'saveUserRules':
+                console.log(message.content);
                 adguard.userrules.updateUserRulesText(message.content);
                 break;
             case 'addUserRule':
