@@ -765,7 +765,6 @@ var AntiBannerFilters = function (options) {
 
     return {
         render: renderCategoriesAndFilters,
-        clearSearchEvent: clearSearchEvent,
         updateRulesCountInfo: updateRulesCountInfo,
         onFilterStateChanged: onFilterStateChanged,
         onFilterDownloadStarted: onFilterDownloadStarted,
