@@ -17,27 +17,12 @@
 
 /* global contentPage */
 
-/**
- * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/541
- */
-function isFirefox51OrHigher() {
-    var userAgent = navigator.userAgent.toLowerCase();
-    var match = userAgent.match(/firefox\/([0-9]+)/);
-    var version = match ? parseInt(match[1]) : 0;
-    return version >= 51;
-}
-
 document.addEventListener("DOMContentLoaded", function () {
 
     var callback = function (rulesText) {
         var el = document.createElement('pre');
         el.textContent = rulesText;
         document.body.appendChild(el);
-
-        // FF (>= 51) doesn't correctly process clicking on the download link, so don't do it.
-        if (isFirefox51OrHigher()) {
-            return;
-        }
 
         var filename = whitelist ? 'whitelist.txt' : 'rules.txt';
         filename = settings ? 'export.json' : filename;
@@ -103,7 +88,9 @@ var showSaveFunc = (function () {
                 const link = document.createElement('a');
                 link.setAttribute('href', url);
                 link.setAttribute('download', name || 'Download.bin');
+                document.body.appendChild(link);
                 link.click();
+                document.body.removeChild(link);
             } else {
                 url = URL.createObjectURL(blob);
                 window.open(url, '_blank', '');
