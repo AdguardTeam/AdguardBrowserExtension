@@ -653,6 +653,9 @@ var RequestWizard = (function () {
 
         var frameDomain = filteringEvent.frameDomain;
         var isThirdPartyRequest = filteringEvent.requestThirdParty;
+        var isWhiteListXMLHttpRequest = filteringEvent.requestRule &&
+          filteringEvent.requestRule.whiteListRule &&
+          filteringEvent.requestType === 'XMLHTTPREQUEST';
 
         var rulePatternsEl = template.querySelector('#rulePatterns');
 
@@ -686,6 +689,10 @@ var RequestWizard = (function () {
 
         ruleImportantCheckbox.setAttribute('id', 'ruleImportant');
         ruleImportantCheckbox.parentNode.querySelector('label').setAttribute('for', 'ruleImportant');
+        if (isWhiteListXMLHttpRequest) {
+            ruleImportantCheckbox.setAttribute('checked', 'checked');
+            ruleImportantCheckbox.disabled = true;
+        }
 
         ruleMatchCaseCheckbox.setAttribute('id', 'ruleMatchCase');
         ruleMatchCaseCheckbox.parentNode.querySelector('label').setAttribute('for', 'ruleMatchCase');
@@ -711,12 +718,11 @@ var RequestWizard = (function () {
         }
 
         function updateRuleText() {
-
-            var urlPattern = template.querySelector('[name="rulePattern"][checked]').value;
-            var permitDomain = !ruleDomainCheckbox.getAttribute('checked');
-            var important = !!ruleImportantCheckbox.getAttribute('checked');
-            var matchCase = !!ruleMatchCaseCheckbox.getAttribute('checked');
-            var thirdParty = !!ruleThirdPartyCheckbox.getAttribute('checked');
+            var urlPattern = template.querySelector('[name="rulePattern"]:checked').value;
+            var permitDomain = !ruleDomainCheckbox.checked;
+            var important = !!ruleImportantCheckbox.checked;
+            var matchCase = !!ruleMatchCaseCheckbox.checked;
+            var thirdParty = !!ruleThirdPartyCheckbox.checked;
 
             var domain = permitDomain ? frameDomain : null;
 
@@ -1025,6 +1031,8 @@ var RequestWizard = (function () {
                 removeWhiteListDomainButton.classList.remove('hidden');
             } else if (!requestRule.whiteListRule) {
                 unblockRequestButton.classList.remove('hidden');
+            } else if (requestRule.whiteListRule) {
+                blockRequestButton.classList.remove('hidden');
             }
         }
 
