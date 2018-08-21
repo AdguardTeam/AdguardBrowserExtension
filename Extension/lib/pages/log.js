@@ -1024,6 +1024,9 @@ var RequestWizard = (function () {
         } else {
             if (requestRule.filterId === AntiBannerFiltersId.USER_FILTER_ID) {
                 removeUserFilterRuleButton.classList.remove('hidden');
+                if (requestRule.whiteListRule) {
+                    blockRequestButton.classList.remove('hidden');
+                }
             } else if (requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
                 removeWhiteListDomainButton.classList.remove('hidden');
             } else if (!requestRule.whiteListRule) {
