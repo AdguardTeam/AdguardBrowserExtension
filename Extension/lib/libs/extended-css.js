@@ -1,4 +1,4 @@
-/*! extended-css - v1.0.11 - 2018-04-24
+/*! extended-css - v1.0.12 - 2018-08-07
 * https://github.com/AdguardTeam/ExtendedCss
 * Copyright (c) 2018 ; Licensed Apache License 2.0 */
 var ExtendedCss = (function(window) {
@@ -3605,7 +3605,9 @@ var StyleObserver = function () {
 var StylePropertyMatcher = function (window, document) {
     // jshint ignore:line
 
-    var useFallback = navigator.vendor && navigator.vendor.indexOf('Apple') > -1 && navigator.userAgent && !navigator.userAgent.match('CriOS') && !!window.getMatchedCSSRules;
+    var isSafari = navigator.vendor && navigator.vendor.indexOf('Apple') > -1 && navigator.userAgent && !navigator.userAgent.match('CriOS');
+    var isPhantom = !!window._phantom;
+    var useFallback = isPhantom && !!window.getMatchedCSSRules;
 
     /**
      * Unquotes specified value
@@ -3636,7 +3638,7 @@ var StylePropertyMatcher = function (window, document) {
     var getMatchedCSSRules = useFallback ? window.getMatchedCSSRules.bind(window) : null;
 
     /**
-     * There is a known issue in Safari browser:
+     * There is an issue in browsers based on old webkit:
      * getComputedStyle(el, ":before") is empty if element is not visible.
      *
      * To circumvent this issue we use getMatchedCSSRules instead.
@@ -3661,6 +3663,10 @@ var StylePropertyMatcher = function (window, document) {
             var style = getComputedStyle(element, pseudoElement);
             if (style) {
                 value = style.getPropertyValue(propertyName);
+                // https://bugs.webkit.org/show_bug.cgi?id=93445
+                if (propertyName === 'opacity' && isSafari) {
+                    value = (Math.round(parseFloat(value) * 100) / 100).toString();
+                }
             }
         }
 
