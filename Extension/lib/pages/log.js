@@ -653,9 +653,6 @@ var RequestWizard = (function () {
 
         var frameDomain = filteringEvent.frameDomain;
         var isThirdPartyRequest = filteringEvent.requestThirdParty;
-        var isWhiteListXMLHttpRequest = filteringEvent.requestRule &&
-          filteringEvent.requestRule.whiteListRule &&
-          filteringEvent.requestType === 'XMLHTTPREQUEST';
 
         var rulePatternsEl = template.querySelector('#rulePatterns');
 
@@ -689,9 +686,9 @@ var RequestWizard = (function () {
 
         ruleImportantCheckbox.setAttribute('id', 'ruleImportant');
         ruleImportantCheckbox.parentNode.querySelector('label').setAttribute('for', 'ruleImportant');
-        if (isWhiteListXMLHttpRequest) {
+        if (filteringEvent.requestRule &&
+            filteringEvent.requestRule.whiteListRule) {
             ruleImportantCheckbox.setAttribute('checked', 'checked');
-            ruleImportantCheckbox.disabled = true;
         }
 
         ruleMatchCaseCheckbox.setAttribute('id', 'ruleMatchCase');

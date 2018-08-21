@@ -43,13 +43,13 @@ PageController.prototype = {
         this.sendSafebrowsingStatsCheckbox.addEventListener('change', this.sendSafebrowsingStatsChange);
         this.allowAcceptableAdsCheckbox.addEventListener('change', this.allowAcceptableAdsChange);
 
-        document.querySelectorAll(".openExtensionStore").get(0).addEventListener('click', function (e) {
+        document.querySelector('.openExtensionStore').addEventListener('click', function (e) {
             e.preventDefault();
-            contentPage.sendMessage({type: 'openExtensionStore'});
+            contentPage.sendMessage({ type: 'openExtensionStore' });
         });
         document.querySelectorAll('.openSettings').addEventListener('click', function (e) {
             e.preventDefault();
-            contentPage.sendMessage({type: 'openSettingsTab'});
+            contentPage.sendMessage({ type: 'openSettingsTab' });
         });
     },
 
