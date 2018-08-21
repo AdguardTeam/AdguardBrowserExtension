@@ -48,7 +48,7 @@ export function getExtensionNamePostfix (branch, browser, allowRemoteScripts) {
  * @return done
  */
 export function updateLocalesMSGName (branch, dest, done, browser, allowRemoteScripts) {
-    let extensionNamePostfix = getExtensionNamePostfix(branch, browser, allowRemoteScripts);
+    let extensionNamePostfix = getExtensionNamePostfix(branch, browser, allowRemoteScripts) || '';
 
     const locales = fs.readdirSync(path.join(dest, '_locales'));
 

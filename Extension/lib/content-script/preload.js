@@ -53,17 +53,6 @@
     };
 
     /**
-     * Set callback for saving css hits
-     */
-    if (typeof CssHitsCounter !== 'undefined' &&
-        typeof CssHitsCounter.setCssHitsFoundCallback === 'function') {
-
-        CssHitsCounter.setCssHitsFoundCallback(function (stats) {
-            getContentPage().sendMessage({type: 'saveCssHitStats', stats: stats});
-        });
-    }
-
-    /**
      * When Background page receives 'onCommitted' frame event then it sends scripts to corresponding frame
      * It allows us to execute script as soon as possible, because runtime.messaging makes huge overhead
      * If onCommitted event doesn't occur for the frame, scripts will be applied in usual way.
@@ -261,7 +250,9 @@
         }
         getContentPage().sendMessage({ type: 'isCssHitsCounterEnabled' }, function (response) {
             if (response && response === true) {
-                CssHitsCounter.count();
+                CssHitsCounter.init(function (stats) {
+                    getContentPage().sendMessage({ type: 'saveCssHitStats', stats: stats });
+                });
             }
         });
     };

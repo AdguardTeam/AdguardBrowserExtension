@@ -252,9 +252,14 @@ adguard.tabsImpl = (function (adguard) {
         function onWindowFound(win) {
             // https://developer.chrome.com/extensions/tabs#method-create
             browser.tabs.create({
-                windowId: win.id,
+                /**
+                 * In the Firefox browser for Android there is not concept of windows
+                 * There is only one window whole time
+                 * Thats why if we try to provide windowId, method fails with error.
+                 */
+                windowId: !adguard.prefs.mobile ? win.id : undefined,
                 url: url,
-                active: active
+                active: active,
             }, function (chromeTab) {
                 if (active) {
                     focusWindow(chromeTab.id, chromeTab.windowId, function () {
@@ -275,7 +280,6 @@ adguard.tabsImpl = (function (adguard) {
         // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/getLastFocused
 
         browser.windows.getLastFocused(function (win) {
-
             if (isAppropriateWindow(win)) {
                 onWindowFound(win);
                 return;
@@ -283,7 +287,6 @@ adguard.tabsImpl = (function (adguard) {
 
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/569
             browser.windows.getAll({}, function (wins) {
-
                 if (wins) {
                     for (var i = 0; i < wins.length; i++) {
                         var win = wins[i];
@@ -439,7 +442,8 @@ adguard.tabsImpl = (function (adguard) {
         let injectDetails = {
             code: code,
             runAt: 'document_start',
-            frameId: requestFrameId
+            frameId: requestFrameId,
+            matchAboutBlank: true,
         };
 
         if (userCSSSupport) {
@@ -463,6 +467,7 @@ adguard.tabsImpl = (function (adguard) {
             code: code,
             frameId: requestFrameId,
             runAt: 'document_start',
+            matchAboutBlank: true,
         }, noopCallback);
     };
 
