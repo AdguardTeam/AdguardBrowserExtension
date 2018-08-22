@@ -115,20 +115,23 @@ var TopMenu = (function () {
 var WhiteListFilter = function (options) {
     'use strict';
 
-    var omitRenderEventsCount = 0;
+    let omitRenderEventsCount = 0;
 
-    var editor = ace.edit('whiteListRules');
+    const editor = ace.edit('whiteListRules');
     editor.setShowPrintMargin(false);
 
     // Ace TextHighlightRules mode is edited in ace.js library file
     editor.session.setMode("ace/mode/text_highlight_rules");
 
-    var applyChangesBtn = document.querySelector('#whiteListFilterApplyChanges');
-    var changeDefaultWhiteListModeCheckbox = document.querySelector('#changeDefaultWhiteListMode');
+    const applyChangesBtn = document.querySelector('#whiteListFilterApplyChanges');
+    const importWhiteListInput = document.querySelector('#importWhiteListInput');
+    const importWhiteListBtn = document.querySelector('#whiteListFiltersImport');
+    const exportWhiteListBtn = document.querySelector('#whiteListFiltersExport');
+    const changeDefaultWhiteListModeCheckbox = document.querySelector('#changeDefaultWhiteListMode');
 
     function loadWhiteListDomains() {
         contentPage.sendMessage({
-            type: 'getWhiteListDomains'
+            type: 'getWhiteListDomains',
         }, function (response) {
             editor.setValue(response.content || '');
             applyChangesBtn.style.display = 'none';
@@ -145,7 +148,7 @@ var WhiteListFilter = function (options) {
 
         contentPage.sendMessage({
             type: 'saveWhiteListDomains',
-            content: text
+            content: text,
         }, function () {
             editor.setReadOnly(false);
             applyChangesBtn.style.display = 'none';
@@ -154,7 +157,7 @@ var WhiteListFilter = function (options) {
 
     function updateWhiteListDomains() {
         if (omitRenderEventsCount > 0) {
-            omitRenderEventsCount--;
+            omitRenderEventsCount -= 1;
             return;
         }
 
@@ -164,22 +167,54 @@ var WhiteListFilter = function (options) {
     function changeDefaultWhiteListMode(e) {
         e.preventDefault();
 
-        contentPage.sendMessage({type: 'changeDefaultWhiteListMode', enabled: !e.currentTarget.checked}, function () {
+        contentPage.sendMessage({ type: 'changeDefaultWhiteListMode', enabled: !e.currentTarget.checked }, function () {
             updateWhiteListDomains();
         });
     }
 
     applyChangesBtn.addEventListener('click', saveWhiteListDomains);
+    // TODO find out why rules dissapear on invert whitelist mode
     changeDefaultWhiteListModeCheckbox.addEventListener('change', changeDefaultWhiteListMode);
+
+    importWhiteListBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        importWhiteListInput.click();
+    });
+
+    exportWhiteListBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        contentPage.sendMessage({ type: 'openExportRulesTab', whitelist: true });
+    });
+
+    const onWhiteListImportChange = (event) => {
+        const fileInput = event.target;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const oldRules = editor.getValue();
+            const newRules = oldRules + '\n' + e.target.result;
+            editor.setValue(newRules);
+            fileInput.value = '';
+        };
+        reader.onerror = function () {
+            console.log('Error load user rules');
+            fileInput.value = '';
+        };
+        const file = fileInput.files[0];
+        if (file) {
+            reader.readAsText(file, 'utf-8');
+        }
+    };
+
+    importWhiteListInput.addEventListener('change', onWhiteListImportChange);
 
     CheckboxUtils.updateCheckbox(changeDefaultWhiteListModeCheckbox, !options.defaultWhiteListMode);
 
     editor.getSession().addEventListener('change', function () {
-        applyChangesBtn.style.display = 'block';
+        applyChangesBtn.style.display = 'inline-block';
     });
 
     return {
-        updateWhiteListDomains: updateWhiteListDomains
+        updateWhiteListDomains: updateWhiteListDomains,
     };
 };
 
