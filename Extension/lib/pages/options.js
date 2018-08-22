@@ -30,7 +30,28 @@ var Utils = {
             clearTimeout(timeout);
             timeout = setTimeout(later, wait);
         };
-    }
+    },
+
+    importFromFileIntoEditor: function importFromFileIntoEditor(editor) {
+        return function (event) {
+            const fileInput = event.target;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const oldRules = editor.getValue();
+                const newRules = oldRules + '\n' + e.target.result;
+                editor.setValue(newRules);
+                fileInput.value = '';
+            };
+            reader.onerror = function () {
+                console.log('Error load user rules');
+                fileInput.value = '';
+            };
+            const file = fileInput.files[0];
+            if (file) {
+                reader.readAsText(file, 'utf-8');
+            }
+        };
+    },
 };
 
 var TopMenu = (function () {
@@ -186,26 +207,7 @@ var WhiteListFilter = function (options) {
         contentPage.sendMessage({ type: 'openExportRulesTab', whitelist: true });
     });
 
-    const onWhiteListImportChange = (event) => {
-        const fileInput = event.target;
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const oldRules = editor.getValue();
-            const newRules = oldRules + '\n' + e.target.result;
-            editor.setValue(newRules);
-            fileInput.value = '';
-        };
-        reader.onerror = function () {
-            console.log('Error load user rules');
-            fileInput.value = '';
-        };
-        const file = fileInput.files[0];
-        if (file) {
-            reader.readAsText(file, 'utf-8');
-        }
-    };
-
-    importWhiteListInput.addEventListener('change', onWhiteListImportChange);
+    importWhiteListInput.addEventListener('change', Utils.importFromFileIntoEditor(editor));
 
     CheckboxUtils.updateCheckbox(changeDefaultWhiteListModeCheckbox, !options.defaultWhiteListMode);
 
@@ -227,7 +229,7 @@ var UserFilter = function () {
     editor.setShowPrintMargin(false);
 
     // Ace TextHighlightRules mode is edited in ace.js library file
-    editor.session.setMode("ace/mode/text_highlight_rules");
+    editor.session.setMode('ace/mode/text_highlight_rules');
 
     var applyChangesBtn = document.querySelector('#userFilterApplyChanges');
 
@@ -272,26 +274,6 @@ var UserFilter = function () {
         applyChangesBtn.style.display = 'inline-block';
     });
 
-    function onUserFilterImportChange(event) {
-        const fileInput = event.target;
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const oldRules = editor.getValue();
-            const newRules = oldRules + '\n' + e.target.result;
-            editor.setValue(newRules);
-            fileInput.value = '';
-        };
-        reader.onerror = function () {
-            // TODO how to add here adguard.console.error
-            console.log('Error load user rules');
-            fileInput.value = '';
-        };
-        const file = fileInput.files[0];
-        if (file) {
-            reader.readAsText(file, 'utf-8');
-        }
-    }
-
     const importUserFiltersInput = document.querySelector('#importUserFilterInput');
     const importUserFiltersBtn = document.querySelector('#userFiltersImport');
     const exportUserFiltersBtn = document.querySelector('#userFiltersExport');
@@ -301,7 +283,7 @@ var UserFilter = function () {
         importUserFiltersInput.click();
     });
 
-    importUserFiltersInput.addEventListener('change', onUserFilterImportChange);
+    importUserFiltersInput.addEventListener('change', Utils.importFromFileIntoEditor(editor));
 
     exportUserFiltersBtn.addEventListener('click', function (event) {
         event.preventDefault();
@@ -309,7 +291,7 @@ var UserFilter = function () {
     });
 
     return {
-        updateUserFilterRules: updateUserFilterRules
+        updateUserFilterRules: updateUserFilterRules,
     };
 };
 
