@@ -269,9 +269,12 @@
      * urlencodes rule text.
      * We need this function because of this issue:
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/34
+     * and
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1079
      */
     FilterRule.escapeRule = function (ruleText) {
-        return encodeURIComponent(ruleText).replace(/'/g, "%27");
+        return encodeURIComponent(ruleText)
+            .replace(/['()]/g, function (match) { return { "'": '%27', '(': '%28', ')': '%29' }[match]; });
     };
 
     FilterRule.PARAMETER_START = "[";
