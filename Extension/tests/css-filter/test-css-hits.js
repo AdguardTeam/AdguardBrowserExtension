@@ -7,14 +7,17 @@ QUnit.test("Extended Css Build CssHits", function (assert) {
     var rule = new adguard.rules.CssFilterRule("adguard.com##.sponsored", 1);
     var genericRule = new adguard.rules.CssFilterRule("##.banner", 2);
     var extendedCssRule = new adguard.rules.CssFilterRule("adguard.com##.sponsored[-ext-contains=test]", 1);
-    var filter = new adguard.rules.CssFilter([rule, genericRule, extendedCssRule]);
+    var filter = new adguard.rules.CssFilter([
+        rule,
+        genericRule,
+        extendedCssRule,
+    ]);
 
-    var selectors, css, extendedCss, commonCss;
+    var selectors = filter.buildCssHits("adguard.com");
+    var css = selectors.css;
+    var extendedCss = selectors.extendedCss;
+    var commonCss = filter.buildCssHits(null).css;
 
-    selectors = filter.buildCssHits("adguard.com");
-    css = selectors.css;
-    extendedCss = selectors.extendedCss;
-    commonCss = filter.buildCssHits(null).css;
     assert.equal(commonCss.length, 1);
     assert.equal(commonCss[0].trim(), ".banner { display: none!important; content: 'adguard2%3B%23%23.banner' !important;}");
     assert.equal(css.length, 2);
@@ -34,6 +37,32 @@ QUnit.test("Extended Css Build CssHits", function (assert) {
     assert.equal(extendedCss.length, 1);
     assert.equal(extendedCss[0].trim(), ".sponsored[-ext-contains=test] { display: none!important; content: 'adguard1%3Badguard.com%23%23.sponsored%5B-ext-contains%3Dtest%5D' !important;}");
 
+});
+
+// https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1079
+QUnit.test('Parsing of Extended Css rule with parenthesis', function (assert) {
+    var elementWithParenthesisHtml = '<div class="withParenthesis" style="background: rgb(0, 0, 0)">element with parenthesis</div>';
+    document.body.insertAdjacentHTML('beforeend', elementWithParenthesisHtml);
+
+    var extendedCssRuleWithParenthesis = new adguard.rules.CssFilterRule('adguard.com#$#.withParenthesis:matches-css(background: rgb(0, 0, 0)) { display: none!important;}', 1);
+
+    var filter = new adguard.rules.CssFilter([
+        extendedCssRuleWithParenthesis,
+    ]);
+
+    var selectors = filter.buildCssHits('adguard.com');
+    var extendedCss = selectors.extendedCss;
+    // Apply extended css rules
+    new ExtendedCss(extendedCss.join('\n')).apply();
+
+    var elementWithParenthesis = document.querySelector('.withParenthesis');
+    var styleOfElementWithParenthesis;
+    if (elementWithParenthesis) {
+        styleOfElementWithParenthesis = getComputedStyle(elementWithParenthesis);
+    }
+    assert.equal(styleOfElementWithParenthesis.display, 'none');
+
+    elementWithParenthesis.remove();
 });
 
 QUnit.test('Count css hits', function (assert) {
