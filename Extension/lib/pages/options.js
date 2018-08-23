@@ -41,6 +41,27 @@ var Utils = {
             return str.replace(matchOperatorsRe, '\\$&');
         };
     })(),
+
+    importFromFileIntoEditor: function importFromFileIntoEditor(editor) {
+        return function (event) {
+            const fileInput = event.target;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const oldRules = editor.getValue();
+                const newRules = oldRules + '\n' + e.target.result;
+                editor.setValue(newRules);
+                fileInput.value = '';
+            };
+            reader.onerror = function () {
+                console.log('Error load user rules');
+                fileInput.value = '';
+            };
+            const file = fileInput.files[0];
+            if (file) {
+                reader.readAsText(file, 'utf-8');
+            }
+        };
+    },
 };
 
 var TopMenu = (function () {
@@ -125,20 +146,23 @@ var TopMenu = (function () {
 var WhiteListFilter = function (options) {
     'use strict';
 
-    var omitRenderEventsCount = 0;
+    let omitRenderEventsCount = 0;
 
-    var editor = ace.edit('whiteListRules');
+    const editor = ace.edit('whiteListRules');
     editor.setShowPrintMargin(false);
 
     // Ace TextHighlightRules mode is edited in ace.js library file
     editor.session.setMode("ace/mode/text_highlight_rules");
 
-    var applyChangesBtn = document.querySelector('#whiteListFilterApplyChanges');
-    var changeDefaultWhiteListModeCheckbox = document.querySelector('#changeDefaultWhiteListMode');
+    const applyChangesBtn = document.querySelector('#whiteListFilterApplyChanges');
+    const importWhiteListInput = document.querySelector('#importWhiteListInput');
+    const importWhiteListBtn = document.querySelector('#whiteListFiltersImport');
+    const exportWhiteListBtn = document.querySelector('#whiteListFiltersExport');
+    const changeDefaultWhiteListModeCheckbox = document.querySelector('#changeDefaultWhiteListMode');
 
     function loadWhiteListDomains() {
         contentPage.sendMessage({
-            type: 'getWhiteListDomains'
+            type: 'getWhiteListDomains',
         }, function (response) {
             editor.setValue(response.content || '');
             applyChangesBtn.style.display = 'none';
@@ -155,7 +179,7 @@ var WhiteListFilter = function (options) {
 
         contentPage.sendMessage({
             type: 'saveWhiteListDomains',
-            content: text
+            content: text,
         }, function () {
             editor.setReadOnly(false);
             applyChangesBtn.style.display = 'none';
@@ -164,7 +188,7 @@ var WhiteListFilter = function (options) {
 
     function updateWhiteListDomains() {
         if (omitRenderEventsCount > 0) {
-            omitRenderEventsCount--;
+            omitRenderEventsCount -= 1;
             return;
         }
 
@@ -174,22 +198,35 @@ var WhiteListFilter = function (options) {
     function changeDefaultWhiteListMode(e) {
         e.preventDefault();
 
-        contentPage.sendMessage({type: 'changeDefaultWhiteListMode', enabled: !e.currentTarget.checked}, function () {
+        contentPage.sendMessage({ type: 'changeDefaultWhiteListMode', enabled: !e.currentTarget.checked }, function () {
             updateWhiteListDomains();
         });
     }
 
     applyChangesBtn.addEventListener('click', saveWhiteListDomains);
+    // TODO find out why rules dissapear on invert whitelist mode
     changeDefaultWhiteListModeCheckbox.addEventListener('change', changeDefaultWhiteListMode);
+
+    importWhiteListBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        importWhiteListInput.click();
+    });
+
+    exportWhiteListBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        contentPage.sendMessage({ type: 'openExportRulesTab', whitelist: true });
+    });
+
+    importWhiteListInput.addEventListener('change', Utils.importFromFileIntoEditor(editor));
 
     CheckboxUtils.updateCheckbox(changeDefaultWhiteListModeCheckbox, !options.defaultWhiteListMode);
 
     editor.getSession().addEventListener('change', function () {
-        applyChangesBtn.style.display = 'block';
+        applyChangesBtn.style.display = 'inline-block';
     });
 
     return {
-        updateWhiteListDomains: updateWhiteListDomains
+        updateWhiteListDomains: updateWhiteListDomains,
     };
 };
 
@@ -202,13 +239,13 @@ var UserFilter = function () {
     editor.setShowPrintMargin(false);
 
     // Ace TextHighlightRules mode is edited in ace.js library file
-    editor.session.setMode("ace/mode/text_highlight_rules");
+    editor.session.setMode('ace/mode/text_highlight_rules');
 
     var applyChangesBtn = document.querySelector('#userFilterApplyChanges');
 
     function loadUserRules() {
         contentPage.sendMessage({
-            type: 'getUserRules'
+            type: 'getUserRules',
         }, function (response) {
             editor.setValue(response.content || '');
             applyChangesBtn.style.display = 'none';
@@ -244,11 +281,27 @@ var UserFilter = function () {
     applyChangesBtn.addEventListener('click', saveUserRules);
 
     editor.getSession().addEventListener('change', function () {
-        applyChangesBtn.style.display = 'block';
+        applyChangesBtn.style.display = 'inline-block';
+    });
+
+    const importUserFiltersInput = document.querySelector('#importUserFilterInput');
+    const importUserFiltersBtn = document.querySelector('#userFiltersImport');
+    const exportUserFiltersBtn = document.querySelector('#userFiltersExport');
+
+    importUserFiltersBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        importUserFiltersInput.click();
+    });
+
+    importUserFiltersInput.addEventListener('change', Utils.importFromFileIntoEditor(editor));
+
+    exportUserFiltersBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        contentPage.sendMessage({ type: 'openExportRulesTab', whitelist: false });
     });
 
     return {
-        updateUserFilterRules: updateUserFilterRules
+        updateUserFilterRules: updateUserFilterRules,
     };
 };
 

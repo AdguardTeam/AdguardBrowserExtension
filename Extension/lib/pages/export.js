@@ -17,28 +17,12 @@
 
 /* global contentPage */
 
-/**
- * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/541
- */
-function isFirefox51OrHigher() {
-    var userAgent = navigator.userAgent.toLowerCase();
-    var match = userAgent.match(/firefox\/([0-9]+)/);
-    var version = match ? parseInt(match[1]) : 0;
-    return version >= 51;
-}
-
 document.addEventListener("DOMContentLoaded", function () {
 
     var callback = function (rulesText) {
-
         var el = document.createElement('pre');
         el.textContent = rulesText;
         document.body.appendChild(el);
-
-        // FF (>= 51) doesn't correctly process clicking on the download link, so don't do it.
-        if (isFirefox51OrHigher()) {
-            return;
-        }
 
         var filename = whitelist ? 'whitelist.txt' : 'rules.txt';
         filename = settings ? 'export.json' : filename;
@@ -73,11 +57,10 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 
-    contentPage.sendMessage({type: messageType}, preProcessResponse);
+    contentPage.sendMessage({ type: messageType }, preProcessResponse);
 });
 
 var showSaveFunc = (function () {
-
     var showSave;
     var DownloadAttributeSupport = 'download' in document.createElement('a');
 
@@ -89,7 +72,7 @@ var showSaveFunc = (function () {
 
     if (Blob && navigator.saveBlob) {
         showSave = function (data, name, mimetype) {
-            var blob = new Blob([data], {type: mimetype});
+            const blob = new Blob([data], { type: mimetype });
             if (window.saveAs) {
                 window.saveAs(blob, name);
             } else {
@@ -98,21 +81,17 @@ var showSaveFunc = (function () {
         };
     } else if (Blob && URL) {
         showSave = function (data, name, mimetype) {
-            var blob, url;
+            let url;
+            const blob = new Blob([data], { type: mimetype });
             if (DownloadAttributeSupport) {
-                blob = new Blob([data], {type: mimetype});
                 url = URL.createObjectURL(blob);
-
-                var link = document.createElement("a");
-                link.setAttribute("href", url);
-                link.setAttribute("download", name || "Download.bin");
+                const link = document.createElement('a');
+                link.setAttribute('href', url);
+                link.setAttribute('download', name || 'Download.bin');
                 document.body.appendChild(link);
-
-                var event = document.createEvent('HTMLEvents');
-                event.initEvent('click', true, false);
-                link.dispatchEvent(event);
+                link.click();
+                document.body.removeChild(link);
             } else {
-                blob = new Blob([data], {type: mimetype});
                 url = URL.createObjectURL(blob);
                 window.open(url, '_blank', '');
             }
