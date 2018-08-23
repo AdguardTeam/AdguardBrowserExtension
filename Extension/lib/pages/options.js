@@ -30,7 +30,17 @@ var Utils = {
             clearTimeout(timeout);
             timeout = setTimeout(later, wait);
         };
-    }
+    },
+
+    escapeRegExp: (function () {
+        var matchOperatorsRe = /[|\\{}()[\]^$+*?.]/g;
+        return function (str) {
+            if (typeof str !== 'string') {
+                throw new TypeError('Expected a string');
+            }
+            return str.replace(matchOperatorsRe, '\\$&');
+        };
+    })(),
 };
 
 var TopMenu = (function () {
@@ -293,7 +303,10 @@ var AntiBannerFilters = function (options) {
             toggleGroupState.bind(e.target)();
         }
     });
+
     document.querySelector('#updateAntiBannerFilters').addEventListener('click', updateAntiBannerFilters);
+
+    window.addEventListener('hashchange', clearSearchEvent);
 
     updateRulesCountInfo(options.rulesInfo);
 
@@ -415,21 +428,6 @@ var AntiBannerFilters = function (options) {
             </div>`;
     }
 
-    function getTabsBarTemplate(showRecommended) {
-        if (showRecommended) {
-            return `
-                <div class="tabs-bar">
-                    <a href="" class="tab active" data-tab="recommended">Recommended</a>
-                    <a href="" class="tab" data-tab="other">Other</a>
-                </div>`;
-        }
-
-        return `
-            <div class="tabs-bar">
-                <a href="" class="tab active" data-tab="other">Other</a>
-            </div>`;
-    }
-
     function getEmptyCustomFiltersTemplate(category) {
         return `
             <div id="antibanner${category.groupId}" class="settings-content tab-pane filters-list">
@@ -449,46 +447,36 @@ var AntiBannerFilters = function (options) {
     }
 
     function getFiltersContentElement(category) {
-        var filters = category.filters.otherFilters;
+        var otherFilters = category.filters.otherFilters;
         var recommendedFilters = category.filters.recommendedFilters;
+        var filters = [].concat(recommendedFilters, otherFilters);
         var isCustomFilters = category.groupId === 0;
-        var showRecommended = recommendedFilters.length > 0;
 
         if (isCustomFilters &&
-            filters.length === 0 &&
-            recommendedFilters.length === 0) {
-
+            filters.length === 0) {
             return htmlToElement(getEmptyCustomFiltersTemplate(category));
         }
 
         var pageTitleEl = getPageTitleTemplate(category.groupName);
 
-        var tabs = '';
-        if (!isCustomFilters) {
-            tabs = getTabsBarTemplate(showRecommended);
-        }
+        var filtersList = '';
 
-        var recommendedFiltersList = '';
-        var otherFiltersList = '';
-
-        for (var i = 0; i < filters.length; i++) {
-            otherFiltersList += getFilterTemplate(filters[i], loadedFiltersInfo.isEnabled(filters[i].filterId), isCustomFilters);
-        }
-
-        for (var j = 0; j < recommendedFilters.length; j++) {
-            recommendedFiltersList += getFilterTemplate(recommendedFilters[j], loadedFiltersInfo.isEnabled(recommendedFilters[j].filterId), isCustomFilters);
+        for (var i = 0; i < filters.length; i += 1) {
+            filtersList += getFilterTemplate(filters[i], loadedFiltersInfo.isEnabled(filters[i].filterId), isCustomFilters);
         }
 
         return htmlToElement(`
             <div id="antibanner${category.groupId}" class="settings-content tab-pane filters-list">
                 ${pageTitleEl}
                 <div class="settings-body">
-                    ${tabs}
-                    <ul class="opts-list" data-tab="other" ${showRecommended ? 'style="display: none;"' : ''}>
-                        ${otherFiltersList}
-                    </ul>
-                    <ul class="opts-list" data-tab="recommended" ${!showRecommended ? 'style="display: none;"' : ''}>
-                        ${recommendedFiltersList}
+                    <div class="filters-search">
+                        <input type="text" placeholder="${i18n.getMessage('options_filters_list_search_placeholder')}" name="searchFiltersList"/>
+                        <div class="icon-search">
+                            <img src="images/icon-magnifying-green.png" alt="">
+                        </div>
+                    </div>
+                    <ul class="opts-list">
+                        ${filtersList}
                     </ul>
                 </div>
             </div>
@@ -523,40 +511,74 @@ var AntiBannerFilters = function (options) {
         document.querySelectorAll('.remove-custom-filter-button').forEach(function (el) {
             el.addEventListener('click', removeCustomFilter);
         });
+    }
 
-        document.querySelectorAll('.tabs-bar .tab').forEach(function (tab) {
-            tab.addEventListener('click', function (e) {
-                e.preventDefault();
-
-                var current = e.currentTarget;
-                current.parentNode.querySelectorAll('.tabs-bar .tab').forEach(function (el) {
-                    el.classList.remove('active');
+    function initFiltersSearch(category) {
+        const searchInput = document.querySelector(`#antibanner${category.groupId} input[name="searchFiltersList"]`);
+        let filters = document.querySelectorAll(`#antibanner${category.groupId} .opts-list li`);
+        const SEARCH_DELAY_MS = 250;
+        if (searchInput) {
+            searchInput.addEventListener('input', Utils.debounce((e) => {
+                let searchString;
+                try {
+                    searchString = Utils.escapeRegExp(e.target.value.trim());
+                } catch (err) {
+                    console.log(err.message);
+                    return;
+                }
+                if (!searchString) {
+                    return;
+                }
+                filters.forEach(filter => {
+                    const title = filter.querySelector('.title');
+                    const regexp = new RegExp(searchString, 'gi');
+                    if (!regexp.test(title.textContent)) {
+                        filter.style.display = 'none';
+                    } else {
+                        filter.style.display = 'flex';
+                    }
                 });
-                current.classList.add('active');
+            }, SEARCH_DELAY_MS));
+        }
+    }
 
-                var parentNode = current.parentNode.parentNode;
-                parentNode.querySelector('.opts-list[data-tab="recommended"]').style.display = 'none';
-                parentNode.querySelector('.opts-list[data-tab="other"]').style.display = 'none';
-
-                var attr = current.getAttribute('data-tab');
-                parentNode.querySelector('.opts-list[data-tab="' + attr + '"]').style.display = 'block';
+    /**
+     * Function clears search results when user moves from category antibanner page to another page
+     * @param {*} on hashchange event
+     */
+    function clearSearchEvent(event) {
+        const regex = /#antibanner(\d+)/g;
+        const match = regex.exec(event.oldURL);
+        if (!match) {
+            return;
+        }
+        const groupId = match[1];
+        const searchInput = document.querySelector(`#antibanner${groupId} input[name="searchFiltersList"]`);
+        let filters = document.querySelectorAll(`#antibanner${groupId} .opts-list li`);
+        if (searchInput) {
+            searchInput.value = '';
+        }
+        if (filters && filters.length > 0) {
+            filters.forEach(filter => {
+                filter.style.display = 'flex';
             });
-        });
+        }
     }
 
     function renderCategoriesAndFilters() {
-        contentPage.sendMessage({type: 'getFiltersMetadata'}, function (response) {
-
+        contentPage.sendMessage({ type: 'getFiltersMetadata' }, function (response) {
             loadedFiltersInfo.initLoadedFilters(response.filters, response.categories);
             setLastUpdatedTimeText(loadedFiltersInfo.lastUpdateTime);
 
             var categories = loadedFiltersInfo.categories;
-            for (var j = 0; j < categories.length; j++) {
-                renderFilterCategory(categories[j]);
+            for (var j = 0; j < categories.length; j += 1) {
+                var category = categories[j];
+                renderFilterCategory(category);
+                initFiltersSearch(category);
             }
 
             bindControls();
-            CheckboxUtils.toggleCheckbox(document.querySelectorAll(".opt-state input[type=checkbox]"));
+            CheckboxUtils.toggleCheckbox(document.querySelectorAll('.opt-state input[type=checkbox]'));
 
             // check document hash
             var hash = document.location.hash;
