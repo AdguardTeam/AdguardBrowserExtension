@@ -43,13 +43,19 @@ PageController.prototype = {
         this.sendSafebrowsingStatsCheckbox.addEventListener('change', this.sendSafebrowsingStatsChange);
         this.allowAcceptableAdsCheckbox.addEventListener('change', this.allowAcceptableAdsChange);
 
-        document.querySelectorAll(".openExtensionStore").get(0).addEventListener('click', function (e) {
-            e.preventDefault();
-            contentPage.sendMessage({type: 'openExtensionStore'});
+        const openExtensionStoreBtns = [].slice.call(document.querySelectorAll('.openExtensionStore'));
+        openExtensionStoreBtns.forEach(openExtensionStoreBtn => {
+            openExtensionStoreBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                contentPage.sendMessage({ type: 'openExtensionStore' });
+            });
         });
-        document.querySelectorAll('.openSettings').addEventListener('click', function (e) {
-            e.preventDefault();
-            contentPage.sendMessage({type: 'openSettingsTab'});
+        const openSettingsBtns = [].slice.call(document.querySelectorAll('.openSettings'));
+        openSettingsBtns.forEach(openSettingsBtn => {
+            openSettingsBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                contentPage.sendMessage({ type: 'openSettingsTab' });
+            });
         });
     },
 
