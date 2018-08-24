@@ -551,8 +551,9 @@
             var result = [];
             var ruleText = this._getRuleCssSelector(rule);
             // if rule text has content attribute we don't add rule marker
-            if (ruleText.indexOf('content') !== -1) {
-                return rule;
+            var contentAttributeRegex = /[{;"(]\s*content\s*:/gi;
+            if (contentAttributeRegex.test(ruleText)) {
+                return ruleText;
             }
             // remove closing brace
             var ruleTextWithoutCloseBrace = ruleText.slice(0, -1).trim();
