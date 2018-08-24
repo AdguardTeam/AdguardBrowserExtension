@@ -551,7 +551,7 @@
             var result = [];
             var ruleText = this._getRuleCssSelector(rule);
             // if rule text has content attribute we don't add rule marker
-            var contentAttributeRegex = new RegExp('[{;"(]\s*content\s*:', 'gi');
+            var contentAttributeRegex = /[{;"(]\s*content\s*:/gi;
             if (contentAttributeRegex.test(ruleText)) {
                 return ruleText;
             }
