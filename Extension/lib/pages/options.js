@@ -580,6 +580,9 @@ var AntiBannerFilters = function (options) {
                     return;
                 }
                 if (!searchString) {
+                    filters.forEach(filter => {
+                        filter.style.display = 'flex';
+                    });
                     return;
                 }
                 filters.forEach(filter => {
