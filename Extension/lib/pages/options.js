@@ -1030,6 +1030,7 @@ var Settings = function () {
     checkboxes.push(new Checkbox('#showAppUpdatedNotification', userSettings.names.DISABLE_SHOW_APP_UPDATED_NOTIFICATION, {
         negate: true
     }));
+    checkboxes.push(new Checkbox('#integrationModeCheckbox', userSettings.names.DISABLE_INTEGRATION_MODE, {negate: true}));
 
     var allowAcceptableAdsCheckbox = document.querySelector("#allowAcceptableAds");
     allowAcceptableAdsCheckbox.addEventListener('change', function () {
