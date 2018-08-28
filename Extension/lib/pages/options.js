@@ -564,6 +564,13 @@ var AntiBannerFilters = function (options) {
         document.querySelectorAll('.remove-custom-filter-button').forEach(function (el) {
             el.addEventListener('click', removeCustomFilter);
         });
+
+        var setFilterUpdateIntervalSelect = document.querySelector('#filtersUpdateIntervalSelect');
+        if (setFilterUpdateIntervalSelect) {
+            setFilterUpdateIntervalSelect.addEventListener('change', function (e) {
+                setFiltersUpdateInterval(e.currentTarget.value);
+            });
+        }
     }
 
     function initFiltersSearch(category) {
@@ -639,6 +646,12 @@ var AntiBannerFilters = function (options) {
                 TopMenu.toggleTab();
             }
         });
+
+        const filtersUpdateIntervalSelect = document.querySelector('#filtersUpdateIntervalSelect');
+        contentPage.sendMessage({ type: 'getFiltersUpdateInterval' }, function (response) {
+            const updateInterval = response.filtersUpdateInterval;
+            filtersUpdateIntervalSelect.value = updateInterval;
+        });
     }
 
     function toggleFilterState() {
@@ -664,6 +677,12 @@ var AntiBannerFilters = function (options) {
         e.preventDefault();
         contentPage.sendMessage({type: 'checkAntiBannerFiltersUpdate'}, function () {
             //Empty
+        });
+    }
+
+    function setFiltersUpdateInterval(updateInterval) {
+        contentPage.sendMessage({ type: 'setFiltersUpdateInterval', updateInterval: updateInterval }, function () {
+            // TODO on successful set filters update interval
         });
     }
 
@@ -821,7 +840,7 @@ var AntiBannerFilters = function (options) {
         updateRulesCountInfo: updateRulesCountInfo,
         onFilterStateChanged: onFilterStateChanged,
         onFilterDownloadStarted: onFilterDownloadStarted,
-        onFilterDownloadFinished: onFilterDownloadFinished
+        onFilterDownloadFinished: onFilterDownloadFinished,
     };
 };
 

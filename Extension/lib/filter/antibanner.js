@@ -37,11 +37,6 @@ adguard.antiBannerService = (function (adguard) {
     var applicationInitialized = false;
 
     /**
-     * Period for filters update check -- 48 hours
-     */
-    var UPDATE_FILTERS_PERIOD = 48 * 60 * 60 * 1000;
-
-    /**
      * Delay before doing first filters update check -- 5 minutes
      */
     var UPDATE_FILTERS_DELAY = 5 * 60 * 1000;
@@ -247,11 +242,13 @@ adguard.antiBannerService = (function (adguard) {
         var filterIds = [];
         var customFilterIds = [];
         var filters = adguard.subscriptions.getFilters();
+        var filtersUpdatePeriod = adguard.settings.getFiltersUpdatePeriod();
+        console.log(filtersUpdatePeriod);
         for (var i = 0; i < filters.length; i++) {
             var filter = filters[i];
             if (filter.installed && filter.enabled) {
                 // Check filters update period (or forceUpdate flag)
-                var needUpdate = forceUpdate || (!filter.lastCheckTime || (Date.now() - filter.lastCheckTime) >= UPDATE_FILTERS_PERIOD);
+                var needUpdate = forceUpdate || (!filter.lastCheckTime || (Date.now() - filter.lastCheckTime) >= filtersUpdatePeriod);
                 if (needUpdate) {
                     if (filter.customUrl) {
                         customFilterIds.push(filter.filterId);
@@ -903,6 +900,9 @@ adguard.antiBannerService = (function (adguard) {
 
         // Scheduling job
         var scheduleUpdate = function () {
+            // TODO make possible to update this schedule on update filtersUpdatePeriod
+            const filtersUpdatePeriod = adguard.settings.getFiltersUpdatePeriod();
+            console.log(filtersUpdatePeriod);
             setTimeout(function () {
                 try {
                     checkAntiBannerFiltersUpdate();
@@ -910,7 +910,7 @@ adguard.antiBannerService = (function (adguard) {
                     adguard.console.error("Error update filters, cause {0}", ex);
                 }
                 scheduleUpdate();
-            }, UPDATE_FILTERS_PERIOD);
+            }, filtersUpdatePeriod);
         };
 
         scheduleUpdate();

@@ -193,6 +193,8 @@
                 return true;
             case 'getFiltersMetadata':
                 return adguard.categories.getFiltersMetadata();
+            case 'getFiltersUpdateInterval':
+                return { filtersUpdateInterval: '24h' };
             case 'openThankYouPage':
                 adguard.ui.openThankYouPage();
                 break;

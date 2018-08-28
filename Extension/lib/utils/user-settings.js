@@ -23,6 +23,9 @@ adguard.settings = (function (adguard) {
 
     'use strict';
 
+    // TODO set to 48 hours
+    const DEFAULT_FILTERS_UPDATE_PERIOD = 1 * 60 * 60 * 1000;
+
     var settings = {
         DISABLE_DETECT_FILTERS: 'detect-filters-disabled',
         DISABLE_SHOW_PAGE_STATS: 'disable-show-page-statistic',
@@ -34,7 +37,8 @@ adguard.settings = (function (adguard) {
         DISABLE_SHOW_CONTEXT_MENU: 'context-menu-disabled',
         USE_OPTIMIZED_FILTERS: 'use-optimized-filters',
         DEFAULT_WHITE_LIST_MODE: 'default-whitelist-mode',
-        DISABLE_SHOW_APP_UPDATED_NOTIFICATION: 'show-app-updated-disabled'
+        DISABLE_SHOW_APP_UPDATED_NOTIFICATION: 'show-app-updated-disabled',
+        FILTERS_UPDATE_PERIOD: 'filters-update-period',
     };
 
     var properties = Object.create(null);
@@ -61,6 +65,7 @@ adguard.settings = (function (adguard) {
                 defaults[settings.USE_OPTIMIZED_FILTERS] = adguard.prefs.mobile;
                 defaults[settings.DISABLE_DETECT_FILTERS] = false;
                 defaults[settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION] = false;
+                defaults[settings.FILTERS_UPDATE_PERIOD] = DEFAULT_FILTERS_UPDATE_PERIOD;
                 return defaults;
             });
         }
@@ -168,8 +173,9 @@ adguard.settings = (function (adguard) {
     };
 
     var changeEnableSafebrowsing = function (enabled, options) {
-        setProperty(settings.DISABLE_SAFEBROWSING, !enabled);
+        setProperty(settings.DISABLE_SAFEBROWSING, !enabled, options);
 
+        // TODO Seems like this line repeats logic from setProperty function. Should I remove it or not?
         adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
     };
 
@@ -216,6 +222,14 @@ adguard.settings = (function (adguard) {
         setProperty(settings.DEFAULT_WHITE_LIST_MODE, enabled);
     };
 
+    var setFiltersUpdatePeriod = function (period) {
+        setProperty(settings.FILTERS_UPDATE_PERIOD, period);
+    };
+
+    var getFiltersUpdatePeriod = function () {
+        return getProperty(settings.FILTERS_UPDATE_PERIOD);
+    };
+
     var api = {};
 
     // Expose settings to api
@@ -252,6 +266,8 @@ adguard.settings = (function (adguard) {
     api.isUseOptimizedFiltersEnabled = isUseOptimizedFiltersEnabled;
     api.changeUseOptimizedFiltersEnabled = changeUseOptimizedFiltersEnabled;
     api.changeDefaultWhiteListMode = changeDefaultWhiteListMode;
+    api.getFiltersUpdatePeriod = getFiltersUpdatePeriod;
+    api.setFiltersUpdatePeriod = setFiltersUpdatePeriod;
 
     return api;
 
