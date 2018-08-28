@@ -1,8 +1,8 @@
-! Checksum: ZSUkGRB/VfRotDGibi9E5Q
+! Checksum: 2kC0Xh9Y1v2kNrh0HsVfZQ
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.3.40
-! TimeUpdated: 2018-08-24T09:56:36+00:00
+! Version: 2.0.3.43
+! TimeUpdated: 2018-08-28T09:05:05+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -453,6 +453,7 @@ gidagundemi.com##div[class^="grid"] > div[class^="grid"] > div[class^="haber300"
 gidagundemi.com##div[class^="grid"] > div[class^="grid"] > div[class^="haber300"][-ext-has='ins.adsbygoogle']
 fotogaleri.haberler.com##.galeri-grup > .galeriler > li[-ext-has='div[id^="ENGAGEYA_WIDGET"]']
 justintv-izle.tv###solside > .solside[-ext-has='a[href^="https://goo.gl"]']
+tamindir.com##.pull-left > .box:has(>script:contains(sas.render))
 sportv.me##.area > .chat.cf:has(>a[href="http://www.whatslogin.com"]:only-child)
 forum.miuiturkiye.net##.mainContent > div[class="sectionMain funbox"]:has(>.funboxWrapper > center:only-child > .adsbygoogle)
 forum.miuiturkiye.net##.mainContent > div[class="sectionMain funbox"]:has(>.funboxWrapper > center:only-child > a[href][target="_blank"])
@@ -544,6 +545,7 @@ dagyeligazetesi.com##.tm-sidebar-a div.uk-panel.uk-panel-header[-ext-has="h3:con
 haber.sol.org.tr##.view-content > .videogallery-thumbnail-fix-height[-ext-has='div.ad-adsense']
 videoseyredin.net##.widget_text[-ext-contains="Reklamları"]
 turkanime.tv##td[valign="top"][style="padding-left:10px; padding-top:10px; padding-right:5px;"] div[-ext-has='span.ui-blok-title:contains(REKLAM)']
+turkanime.tv##td[valign="top"][style="padding-top:10px; padding-left:5px; width:665px;"] div.ui-widget-content[-ext-has="script:contains(cpmstar)"]
 ###main > .wrap.cf > .reklam ~ p[style^="background-color:"]
 ###main > .wrap.cf > .reklam ~ #content > .post > p[style^="background-color:"]
 ##.rek-ivr
@@ -1377,6 +1379,14 @@ azginlar.party##a[href^="tel:"]
 wmporn.com###vplayer > div[style*="background"]
 !+ NOT_PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
 ||yeniasya.com.tr/sites/yeniasya/static/*-kampanya
+dizimag6.co##a[href*="goo.gl"][rel="nofollow"][target="_blank"]
+dizimag6.co##.sagustrek
+dizimag6.co##a[onclick*="_click()"][onclick*="return false"]
+dizimag.net##body > .chrome[id]
+egehaber.com###firma-rehberi
+||egehaber.com/thumb.php?src=*images/banner
+haberankara.com##.rklmSlider
+haberankara.com##a[href^="http://www.haberankara.com/advertising.php"]
 kocaeligazetesi.com.tr##.c-adblok
 ||cdn.commissionlounga.com/delivery/data/codes.php?zoneid=
 kocaeligazetesi.com.tr##.rkm

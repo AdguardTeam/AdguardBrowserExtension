@@ -1,8 +1,8 @@
-! Checksum: nHqsdgWpJ/Iv0qypY1tbyQ
+! Checksum: 1IZu9/nuhM2PFfUCrBHDhw
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.3.2
-! TimeUpdated: 2018-08-24T09:56:34+00:00
+! Version: 2.0.3.9
+! TimeUpdated: 2018-08-27T18:04:30+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -56,6 +56,11 @@
 ||54.222.186.106^
 ||plugin.mobopay.baidu.com^
 ||mo.freeindoapp.com^
+||deliveryengine.adswizz.com
+||sitemaji.com^
+||h5.wannaplay.cn^
+||adsapi.manhuaren.com^
+||euadsapi.manhuaren.com^
 ||cdn1.ettoday.net^
 ||msg.ettoday.net^
 ||d1zkodo2u3p4pe.cloudfront.net^
@@ -1088,6 +1093,8 @@ nasimke.ru$$script[tag-content="function show_ads"][max-length="6000"]
 ||graph.facebook.com/network_ads
 @@||xda-cdn.com
 @@||tf-robots.nl^$elemhide,jsinject,content
+@@||kimcartoon.me/ads/fbMob.aspx
+@@||lk-subscr.tricolor.tv^$document
 @@||collect.igodigital.com^$domain=m.harborfreight.com
 @@||pwapi.washingtonpost.com/*&__amp_source_origin
 @@||ads.rubiconproject.com/prebid^$domain=index.hr
@@ -1239,6 +1246,10 @@ m.news.de##.aside > div[style="height: 600px;"]
 m.news.de##.unisterAdsStart
 !+ NOT_OPTIMIZED
 9to5google.com,9to5toys.com,9to5mac.com,electrek.co##.post-content > .inlinead ~ div[class*=" "]:not([id]):not([style])
+egehaber.com##div[class*="block-"] a[target="_blank"] > img
+yahoo.co.jp###ad-sult
+daily.co.jp##.adv
+rockpapershotgun.com##.mobile-mpu
 irk.ru##.b-banner-float
 m.gameapps.hk##.ad-full-screen
 tonkosti.ru##.tt-catfish
@@ -1320,6 +1331,7 @@ redtube.com###content_container > div[class]:not(.show_page_modals):not([id]):no
 youtube.com##ytm-promoted-video-renderer
 m.facebook.com,touch.facebook.com###m_newsfeed_stream article[data-ft*='"ei\":']
 m.voyeurhit.com##.container > .section--normal[style*="margin-top: -15px"]
+avcanada.ca##.postbody > div[id^="post_content"] > .content ~ center
 xbabe.com###fltd
 m.vikiporn.com##.top-spot
 m.vikiporn.com##.under_player_adv
@@ -1995,6 +2007,8 @@ m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m.news.yand
 ||extmaps-api.yandex.net/promo/api/
 ||googleads.g.doubleclick.net/mads/static/mad/sdk/native/*.html$replace=/[\s\S]*/<!DOCTYPE html><html><head><script>var efs = false;<\/script><\/head><body><\/body><\/html>/,important
 ||a.a-p-i.io/udnnews/$replace=/"udnMobileType":"adNews"/"udnMobileType":"__adNews"/,app=com.udn.news
+||mail.google.com/mail/ads^
+||app.adjust.com^$empty,app=com.ilike.cartoon,important
 ||go2s.co/res/$image
 ||go2s.co/*?t=
 ||go2s.co/*/*.zip
@@ -2406,6 +2420,12 @@ m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m.news.yand
 ||analy.qq.com^
 ||appsupport.qq.com/cgi-bin/appstage/mstats_batch_report
 ||monitor.uu.qq.com/analytics/
+||mangaapi.manhuaren.com/*/public/getGlobalConfig^$replace=/"(splashAdConfig|adConfig)"/"__\$1"/
+||mangaapi.manhuaren.com/*/public/getBaseurl^$replace=/"adsBaseurl"/"__adsBaseurl"/
+||mangaapi.manhuaren.com/*/public/getHome^$replace=/"bannerAd"/"__bannerAd"/
+||mangaapi.manhuaren.com/*/manga/getRank^$replace=/"(topAd|comicListAd)"/"__\$1"/
+||mangaapi.manhuaren.com/*/manga/getComment^$replace=/"commentAd"/"__commentAd"/
+||mangaapi.manhuaren.com/*/manga/getHotComment^$replace=/"hotCommentAd"/"__hotCommentAd"/
 ||ads.adfox.ru/*/getCode?p1=$domain=auth.wi-fi.ru,replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\$1<\/VAST>/,important
 ||nabd-app.com/app/*/important_news_$replace=/<article>[\s\S]*?<promoted>1<\/promoted>[\s\S]*?<\/article>/
 ||x.instreamatic.com/v2/vast/*.xml$replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\$1<\/VAST>/,important
