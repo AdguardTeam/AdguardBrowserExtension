@@ -34,7 +34,8 @@ adguard.settings = (function (adguard) {
         DISABLE_SHOW_CONTEXT_MENU: 'context-menu-disabled',
         USE_OPTIMIZED_FILTERS: 'use-optimized-filters',
         DEFAULT_WHITE_LIST_MODE: 'default-whitelist-mode',
-        DISABLE_SHOW_APP_UPDATED_NOTIFICATION: 'show-app-updated-disabled'
+        DISABLE_SHOW_APP_UPDATED_NOTIFICATION: 'show-app-updated-disabled',
+        DISABLE_INTEGRATION_MODE: 'integration-mode-disabled'
     };
 
     var properties = Object.create(null);
@@ -61,6 +62,7 @@ adguard.settings = (function (adguard) {
                 defaults[settings.USE_OPTIMIZED_FILTERS] = adguard.prefs.mobile;
                 defaults[settings.DISABLE_DETECT_FILTERS] = false;
                 defaults[settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION] = false;
+                defaults[settings.DISABLE_INTEGRATION_MODE] = false;
                 return defaults;
             });
         }
@@ -167,6 +169,14 @@ adguard.settings = (function (adguard) {
         setProperty(settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION, !show, options);
     };
 
+    var isIntegrationModeEnabled = function () {
+        return !getProperty(settings.DISABLE_INTEGRATION_MODE);
+    };
+
+    var changeIntegrationModeEnabled = function (show, options) {
+        setProperty(settings.DISABLE_INTEGRATION_MODE, !show, options);
+    };
+
     var changeEnableSafebrowsing = function (enabled, options) {
         setProperty(settings.DISABLE_SAFEBROWSING, !enabled);
 
@@ -252,6 +262,8 @@ adguard.settings = (function (adguard) {
     api.isUseOptimizedFiltersEnabled = isUseOptimizedFiltersEnabled;
     api.changeUseOptimizedFiltersEnabled = changeUseOptimizedFiltersEnabled;
     api.changeDefaultWhiteListMode = changeDefaultWhiteListMode;
+    api.isIntegrationModeEnabled = isIntegrationModeEnabled;
+    api.changeIntegrationModeEnabled = changeIntegrationModeEnabled;
 
     return api;
 
