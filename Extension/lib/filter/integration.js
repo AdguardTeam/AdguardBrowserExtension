@@ -313,7 +313,7 @@ adguard.integration = (function (adguard) {
          * @returns {boolean}
          */
         isEnabled: function () {
-            return !integrationModeForceDisabled;
+            return adguard.settings.isIntegrationModeEnabled() && !integrationModeForceDisabled;
         },
 
         /**
