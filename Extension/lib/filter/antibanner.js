@@ -898,6 +898,7 @@ adguard.antiBannerService = (function (adguard) {
         if (scheduleUpdateTimeoutId) {
             clearTimeout(scheduleUpdateTimeoutId);
         }
+        // don't update filters if filters update period is equal to 0
         if (filtersUpdatePeriod === 0) {
             return;
         }
