@@ -1134,22 +1134,23 @@ var Settings = function () {
         });
     }
 
-    var setFilterUpdateIntervalSelect = document.querySelector('#filtersUpdatePeriodSelect');
-    if (setFilterUpdateIntervalSelect) {
-        setFilterUpdateIntervalSelect.addEventListener('change', function (e) {
+    const filtersUpdatePeriodSelect = document.querySelector('#filtersUpdatePeriodSelect');
+    if (filtersUpdatePeriodSelect) {
+        filtersUpdatePeriodSelect.addEventListener('change', function (e) {
             setFiltersUpdatePeriod(e.currentTarget.value);
         });
     }
 
+    const selectOptions = [
+        { name: i18n.getMessage('options_select_update_period_default'), value: Utils.hoursToMs(48) },
+        { name: i18n.getMessage('options_select_update_period_24h'), value: Utils.hoursToMs(24) },
+        { name: i18n.getMessage('options_select_update_period_12h'), value: Utils.hoursToMs(12) },
+        { name: i18n.getMessage('options_select_update_period_6h'), value: Utils.hoursToMs(6) },
+        { name: i18n.getMessage('options_select_update_period_1h'), value: Utils.hoursToMs(1) },
+        { name: i18n.getMessage('options_select_update_period_disabled'), value: 0 },
+    ];
+
     function renderSelectOptions(updatePeriod) {
-        const selectOptions = [
-            { name: i18n.getMessage('options_select_update_period_default'), value: Utils.hoursToMs(48) },
-            { name: i18n.getMessage('options_select_update_period_24h'), value: Utils.hoursToMs(24) },
-            { name: i18n.getMessage('options_select_update_period_12h'), value: Utils.hoursToMs(12) },
-            { name: i18n.getMessage('options_select_update_period_6h'), value: Utils.hoursToMs(6) },
-            { name: i18n.getMessage('options_select_update_period_1h'), value: Utils.hoursToMs(1) },
-            { name: i18n.getMessage('options_select_update_period_disabled'), value: 0 },
-        ];
         const filtersUpdatePeriodSelect = document.querySelector('#filtersUpdatePeriodSelect');
         if (!filtersUpdatePeriodSelect) {
             return;
