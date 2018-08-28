@@ -1,6 +1,6 @@
 /* log */
 .btn {
-    font-family: 'gotham_proregular';
+    font-weight: 400;
     background-color: #66B574;
     color: #fff;
     border: 0;
@@ -32,75 +32,6 @@
     -moz-appearance: none;
     appearance: none;
     cursor: pointer;
-}
-.dropdown--sync {
-    width: 280px;
-    position: absolute;
-    top: calc(50% - 90px);
-    left: calc(50% - 180px);
-    padding: 0;
-}
-.dropdown .current-value {
-    position: absolute;
-    left: 10px;
-    right: 27px;
-    top: 11px;
-    font-family: 'gotham_probol';
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-.dropdown .value {
-    opacity: 0.94;
-    letter-spacing: -0.3px;
-}
-.dropdown .caret {
-    position: absolute;
-    right: 13px;
-    top: 50%;
-    margin-top: -3px;
-    width: 11px;
-    height: 6px;
-    display: inline-block;
-    background-image: url(../images/icon-caret-down-gray.png);
-    background-size: contain;
-    background-position: 50%;
-    background-repeat: no-repeat;
-    opacity: 0.54;
-}
-.dropdown .drop-items {
-    list-style: none;
-    margin: 0;
-    margin-top: 1px;
-    position: absolute;
-    background: #fff;
-    text-align: left;
-    padding: 0;
-    left: 0;
-    top: 100%;
-    color: #000;
-    width: 100%;
-    box-shadow: 0 9px 14px 0 rgba(77, 77, 77, 0.18);
-    display: none;
-}
-.dropdown .drop-items li {
-    padding: 12px 20px;
-}
-.dropdown .drop-items li:hover {
-    background-color: rgba(102, 181, 116, 0.14);
-}
-.dropdown .drop-items a {
-    text-decoration: none;
-}
-.dropdown.active {
-    background-color: #fff;
-    color: #000;
-}
-.dropdown.active .caret {
-    background-image: url(../images/caret-up.png);
-}
-.dropdown.active .drop-items {
-    display: block;
 }
 
 .log-header {
@@ -213,7 +144,7 @@
 }
 .checkb-wrap .checkbox.active {
     background-color: #66b574;
-    background-image: url(../images/icon-checkbox-tick.png);
+    background-image: url(../images/checked.svg);
 }
 .checkb-wrap .radio, .checkb-wrap .checkbox {
     vertical-align: middle;
@@ -224,7 +155,7 @@
 }
 .checkb-wrap > input:checked + label > .checkbox {
     background-color: #66b574;
-    background-image: url(../images/icon-checkbox-tick.png);
+    background-image: url(../images/checked.svg);
 }
 .checkb-wrap .radio {
     position: relative;
@@ -318,12 +249,13 @@
     color: #4D4D4D;
 }
 .log-table td:first-child {
-    font-family: "gotham_promedium";
+    font-weight: 600;
     color: #1D1D1D;
     text-overflow: ellipsis;
     overflow: hidden;
 }
 .log-table .icon-chain {
+    width: 20px;
     margin: 0 4px;
     height: 12px;
 }
@@ -378,7 +310,7 @@
     display: block;
     width: 100%;
     border: 0;
-    font-family: gotham_proregular;
+    font-weight: 400;
     color: #4d4d4d;
     font-size: 12px;
     letter-spacing: -0.4px;
@@ -391,7 +323,7 @@
 }
 .modal .head .title {
     font-size: 23px;
-    font-family: gotham_probol;
+    font-weight: 700;
     text-align: center;
     padding: 30px 20px;
     letter-spacing: -1px;
@@ -403,13 +335,9 @@
     position: absolute;
     right: 30px;
     top: 30px;
-    background: url(../images/log-modal-close.png) 50% no-repeat;
+    background: url(../images/cross.svg) 50% no-repeat;
     background-size: contain;
     cursor: pointer;
-    opacity: 0.15;
-}
-.modal .head .close:hover {
-    opacity: 1;
 }
 .modal .body {
     padding: 0 40px;
@@ -426,7 +354,7 @@
 .modal .body > .list .name {
     width: 100px;
     flex-shrink: 0;
-    font-family: 'gotham_proregular', sans-serif;
+    font-weight: 400;
     line-height: 1.2;
 }
 .modal .body > .list .value {

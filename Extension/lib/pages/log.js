@@ -501,7 +501,7 @@ PageController.prototype = {
 
         var thirdPartyDetails = '';
         if (event.requestThirdParty) {
-            thirdPartyDetails = `<img src="images/icon-chain-link.png" class="icon-chain"><small>Third party</small>`;
+            thirdPartyDetails = `<img src="images/chain-link.svg" class="icon-chain"><small>Third party</small>`;
         }
 
         var eventTemplate = `
