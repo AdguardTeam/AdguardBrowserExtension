@@ -36,6 +36,9 @@ adguard.antiBannerService = (function (adguard) {
     // Application initialized flag (Sets on first call of 'start' method)
     var applicationInitialized = false;
 
+    // Get filters update period
+    var filtersUpdatePeriod = adguard.settings.getFiltersUpdatePeriod();
+
     /**
      * Delay before doing first filters update check -- 5 minutes
      */
@@ -242,8 +245,6 @@ adguard.antiBannerService = (function (adguard) {
         var filterIds = [];
         var customFilterIds = [];
         var filters = adguard.subscriptions.getFilters();
-        var filtersUpdatePeriod = adguard.settings.getFiltersUpdatePeriod();
-        console.log(filtersUpdatePeriod);
         for (var i = 0; i < filters.length; i++) {
             var filter = filters[i];
             if (filter.installed && filter.enabled) {
@@ -884,7 +885,30 @@ adguard.antiBannerService = (function (adguard) {
             if (setting === adguard.settings.DISABLE_COLLECT_HITS) {
                 getRequestFilter().cssFilter.dirty = true;
             }
+            if (setting === adguard.settings.FILTERS_UPDATE_PERIOD) {
+                filtersUpdatePeriod = adguard.settings.getFiltersUpdatePeriod();
+                scheduleFiltersUpdate();
+            }
         });
+    }
+
+    // Scheduling job
+    let scheduleUpdateTimeoutId;
+    function scheduleUpdate() {
+        if (scheduleUpdateTimeoutId) {
+            clearTimeout(scheduleUpdateTimeoutId);
+        }
+        if (filtersUpdatePeriod === 0) {
+            return;
+        }
+        scheduleUpdateTimeoutId = setTimeout(function () {
+            try {
+                checkAntiBannerFiltersUpdate();
+            } catch (ex) {
+                adguard.console.error('Error update filters, cause {0}', ex);
+            }
+            scheduleUpdate();
+        }, filtersUpdatePeriod);
     }
 
     /**
@@ -894,25 +918,10 @@ adguard.antiBannerService = (function (adguard) {
      * @private
      */
     function scheduleFiltersUpdate(isFirstRun) {
-
         // First run delay
-        setTimeout(checkAntiBannerFiltersUpdate, UPDATE_FILTERS_DELAY, isFirstRun === true);
-
-        // Scheduling job
-        var scheduleUpdate = function () {
-            // TODO make possible to update this schedule on update filtersUpdatePeriod
-            const filtersUpdatePeriod = adguard.settings.getFiltersUpdatePeriod();
-            console.log(filtersUpdatePeriod);
-            setTimeout(function () {
-                try {
-                    checkAntiBannerFiltersUpdate();
-                } catch (ex) {
-                    adguard.console.error("Error update filters, cause {0}", ex);
-                }
-                scheduleUpdate();
-            }, filtersUpdatePeriod);
-        };
-
+        if (isFirstRun) {
+            setTimeout(checkAntiBannerFiltersUpdate, UPDATE_FILTERS_DELAY, isFirstRun);
+        }
         scheduleUpdate();
     }
 

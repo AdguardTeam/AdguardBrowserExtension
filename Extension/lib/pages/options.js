@@ -62,6 +62,10 @@ var Utils = {
             }
         };
     },
+
+    hoursToMs: function (hours) {
+        return hours * 60 * 60 * 1000;
+    },
 };
 
 var TopMenu = (function () {
@@ -564,13 +568,6 @@ var AntiBannerFilters = function (options) {
         document.querySelectorAll('.remove-custom-filter-button').forEach(function (el) {
             el.addEventListener('click', removeCustomFilter);
         });
-
-        var setFilterUpdateIntervalSelect = document.querySelector('#filtersUpdateIntervalSelect');
-        if (setFilterUpdateIntervalSelect) {
-            setFilterUpdateIntervalSelect.addEventListener('change', function (e) {
-                setFiltersUpdateInterval(e.currentTarget.value);
-            });
-        }
     }
 
     function initFiltersSearch(category) {
@@ -646,12 +643,6 @@ var AntiBannerFilters = function (options) {
                 TopMenu.toggleTab();
             }
         });
-
-        const filtersUpdateIntervalSelect = document.querySelector('#filtersUpdateIntervalSelect');
-        contentPage.sendMessage({ type: 'getFiltersUpdateInterval' }, function (response) {
-            const updateInterval = response.filtersUpdateInterval;
-            filtersUpdateIntervalSelect.value = updateInterval;
-        });
     }
 
     function toggleFilterState() {
@@ -677,12 +668,6 @@ var AntiBannerFilters = function (options) {
         e.preventDefault();
         contentPage.sendMessage({type: 'checkAntiBannerFiltersUpdate'}, function () {
             //Empty
-        });
-    }
-
-    function setFiltersUpdateInterval(updateInterval) {
-        contentPage.sendMessage({ type: 'setFiltersUpdateInterval', updateInterval: updateInterval }, function () {
-            // TODO on successful set filters update interval
         });
     }
 
@@ -1140,12 +1125,54 @@ var Settings = function () {
         }
     });
 
+    function setFiltersUpdatePeriod(updatePeriodString) {
+        contentPage.sendMessage({
+            type: 'setFiltersUpdatePeriod',
+            updatePeriod: parseInt(updatePeriodString, 10),
+        }, function () {
+            // TODO Have I do something on successful set filters update interval?
+        });
+    }
+
+    var setFilterUpdateIntervalSelect = document.querySelector('#filtersUpdatePeriodSelect');
+    if (setFilterUpdateIntervalSelect) {
+        setFilterUpdateIntervalSelect.addEventListener('change', function (e) {
+            setFiltersUpdatePeriod(e.currentTarget.value);
+        });
+    }
+
+    function renderSelectOptions(updatePeriod) {
+        const selectOptions = [
+            { name: 'Default', value: Utils.hoursToMs(48) },
+            { name: '24 hours', value: Utils.hoursToMs(24) },
+            { name: '12 hours', value: Utils.hoursToMs(12) },
+            { name: '6 hours', value: Utils.hoursToMs(6) },
+            { name: '1 hours', value: Utils.hoursToMs(1) },
+            { name: 'Disabled', value: 0 },
+        ];
+        const filtersUpdatePeriodSelect = document.querySelector('#filtersUpdatePeriodSelect');
+        if (!filtersUpdatePeriodSelect) {
+            return;
+        }
+        const optionsSelectHtml = selectOptions.map(selectOption => {
+            const { name, value } = selectOption;
+            return `<option value="${value}">${name}</option>`;
+        }).join('\n');
+        filtersUpdatePeriodSelect.insertAdjacentHTML('afterbegin', optionsSelectHtml);
+        filtersUpdatePeriodSelect.value = updatePeriod;
+    }
+
     var render = function () {
         for (var i = 0; i < checkboxes.length; i++) {
             checkboxes[i].render();
         }
 
         CheckboxUtils.updateCheckbox([allowAcceptableAdsCheckbox], AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID in enabledFilters);
+
+        contentPage.sendMessage({ type: 'getFiltersUpdatePeriod' }, function (response) {
+            const updatePeriod = response.filtersUpdatePeriod;
+            renderSelectOptions(updatePeriod);
+        });
     };
 
     var showPopup = function (title, text) {

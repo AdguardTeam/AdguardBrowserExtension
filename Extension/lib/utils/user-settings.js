@@ -23,8 +23,8 @@ adguard.settings = (function (adguard) {
 
     'use strict';
 
-    // TODO set to 48 hours
-    const DEFAULT_FILTERS_UPDATE_PERIOD = 1 * 60 * 60 * 1000;
+    // Default filters update period is set up to 48 hours
+    const DEFAULT_FILTERS_UPDATE_PERIOD_MS = 48 * 60 * 60 * 1000;
 
     var settings = {
         DISABLE_DETECT_FILTERS: 'detect-filters-disabled',
@@ -65,7 +65,7 @@ adguard.settings = (function (adguard) {
                 defaults[settings.USE_OPTIMIZED_FILTERS] = adguard.prefs.mobile;
                 defaults[settings.DISABLE_DETECT_FILTERS] = false;
                 defaults[settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION] = false;
-                defaults[settings.FILTERS_UPDATE_PERIOD] = DEFAULT_FILTERS_UPDATE_PERIOD;
+                defaults[settings.FILTERS_UPDATE_PERIOD] = DEFAULT_FILTERS_UPDATE_PERIOD_MS;
                 return defaults;
             });
         }
