@@ -1,8 +1,8 @@
-! Checksum: v3Hy3HBgCOj2rLtJ4bfq5g
+! Checksum: T/WlHj3leE50PQHquyuCOQ
 ! Title: AdGuard Annoyances filter
 ! Description: Blocks irritating elements on web pages including cookie notices, third-party widgets and in-page pop-ups.
-! Version: 2.0.7.26
-! TimeUpdated: 2018-08-24T09:56:39+00:00
+! Version: 2.0.7.35
+! TimeUpdated: 2018-08-28T12:03:53+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -11,6 +11,7 @@
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
 #%#var AG_abortInlineScript=function(d,e,f){var c;if("currentScript"in document)var b=function(){return document.currentScript};else b=function(){var a=document.getElementsByTagName("script");return a[a.length-1]},window.addEventListener("DOMContentLoaded",function(){b=function(){return null}});AG_defineProperty(e,{beforeGet:function(){var a=b();if(a&&a!==c&&(c=a,""===a.src&&d.test(a.textContent)))throw setTimeout(function(){console.warn("AdGuard aborted an execution of an inline script")}),null;}},f)};
 #%#var AG_defineProperty=function(){var p,q=Object.defineProperty;if("function"==typeof WeakMap)p=WeakMap;else{var r=0,t=function(){this.a=(r+=Math.random()).toString()};t.prototype.set=function(a,b){var d=a[this.a];d&&d[0]===a?d[1]=b:q(a,this.a,{value:[a,b],writable:!0});return this};t.prototype.get=function(a){var b;return(b=a[this.a])&&b[0]===a?b[1]:void 0};t.prototype.has=function(a){var b=a[this.a];return b?b[0]===a:!1};p=t}function u(a){this.b=a;this.h=Object.create(null)}function v(a,b,d,e){this.a=a;this.i=b;this.c=d;this.f=e}function w(){this.g=/^([^\\\.]|\\.)*?\./;this.j=/\\(.)/g;this.a=new p}function x(a,b){var d=b.f;if(d&&!("beforeGet"in d||"beforeSet"in d))return z(d);var e={get:function(){var c=b.f;c&&c.beforeGet&&c.beforeGet.call(this,b.a.b);a:if(c=b.g)c=A(c)?c.value:c.get?c.get.call(this):void 0;else{c=b.a.b;if(b.i in c&&(c=B(c),null!==c)){var d=C.call(c,b.i);c=d?d.call(this):c[b.i];break a}c=void 0}(this===b.a.b||D.call(b.a.b,this))&&E(a,c,b.c);return c},set:function(c){if(this===b.a.b||D.call(b.a.b,this)){b.f&&b.f.beforeSet&&(c=b.f.beforeSet.call(this,c,this));var d=b.g;d&&A(d)&&d.value===c?c=!0:(d=F(b,c,this),G(c)&&(c=H(a,c),I(a,c,b.c)),c=d)}else c=F(b,c,this);return c}};d&&J(d,e,K);return e}function I(a,b,d){for(var e in d.h){var c=d.h[e];if(b.h[e]){var h=a,g=b.h[e],k=c;!k.f||g.f||"undefined"===typeof g.a.b||g.g||(g.g=z(k.f));g.c&&k.c&&g.c!==k.c&&I(h,g.c,k.c)}else{g=h=void 0;k=a;var f=b,l=c.i,m="undefined"!==typeof f.b,y=!1;m&&(g=L(f.b,l))&&!g.configurable&&(y=!0,h=f.b[l]);var n=y?H(k,h):new u(c.c.b);I(k,n,c.c);n=new v(f,l,n,c.f);f.h[l]=n;m&&(n.g=g,m=x(k,n),y?E(k,h,c.c):(q(f.b,l,m),g&&A(g)&&(M(m,g.value,f.b),E(k,g.value,c.c))))}}}function E(a,b,d){G(b)&&(b=H(a,b),I(a,b,d))}function F(a,b,d){var e=a.g;if(!e){e=B(a.a.b);if(null!==e&&(e=N.call(e,a.i)))return e.call(d,b);if(!O(a.a.b))return!1;a.g={value:b,configurable:!0,writable:!0,enumerable:!0};return!0}return M(e,b,d)}function H(a,b){var d=a.a.get(b);d||(d=new u(b),a.a.set(b,d));return d}function A(a){return"undefined"!==typeof a.writable}function J(a,b,d){for(var e=0,c=d.length;e<c;e++){var h=d[e];h in a&&(b[h]=a[h])}}function z(a){if(a){var b={};J(a,b,P);return b}}function M(a,b,d){if(A(a))return a.writable?(a.value=b,!0):!1;if(!a.set)return!1;a.set.call(d,b);return!0}var P="configurable enumerable value get set writable".split(" "),K=P.slice(0,2),L=Object.getOwnPropertyDescriptor,O=Object.isExtensible,B=Object.getPrototypeOf,D=Object.prototype.isPrototypeOf,C=Object.prototype.__lookupGetter__||function(a){return(a=Q(this,a))&&a.get?a.get:void 0},N=Object.prototype.__lookupSetter__||function(a){return(a=Q(this,a))&&a.set?a.set:void 0};function Q(a,b){if(b in a){for(;!w.hasOwnProperty.call(a,b);)a=B(a);return L(a,b)}}function G(a){var b=typeof a;return"function"===b||"object"===b&&null!==a?!0:!1}var R;return function(a,b,d){R||(R=new w);var e=R;d=d||window;var c=new u;a+=".";var h=c||new u;for(var g=e.g,k=e.j,f,l,m;a;){f=g.exec(a);if(null===f)throw 1;f=f[0].length;l=a.slice(0,f-1).replace(k,"$1");a=a.slice(f);(f=h.h[l])?m=f.c:(m=new u,f=new v(h,l,m),h.h[l]=f);h=m}if(!f)throw 1;a=f;a.f=b;E(e,d,c)};}();
+porn.com##.player-cams
 ||dobro.mail.ru/static/img/dobro.png
 onlinefilm-hd.com###footer div[align="justify"]
 androidpit.de###einsUndEinsBannerFixed
@@ -992,6 +993,7 @@ geek-nose.com##.fixed_link--telegram-group
 verestrenos.net###msgw
 mywebpc.ru##.telegramim_button
 gameguru.ru##.V7-social-buttons
+hdmulti.net##.social-counters
 msn.com###Facebook
 koinbulteni.com##.widget_essbsocialfollowerscounterwidget
 koinbulteni.com###sidebar-wrap > .widget_essbsocialfollowerscounterwidget + #text-16
@@ -1091,6 +1093,7 @@ androidworld.it#%#AG_abortInlineScript(/enm.com/, 'navigator');
 @@||pagead2.googlesyndication.com/pagead^$domain=androidworld.it
 !+ NOT_PLATFORM (windows, mac, android)
 @@||androidworld.it^$generichide
+@@||static.ak.crunchyroll.com/versioned_assets/js/components/ads_enabled.ac6fa3aa.js
 @@||teslamotorsclub.com/tmc/js/audentio/funbox/advertisement.js
 sait-pro-dachu.ru##.adb-def
 @@||kupujemprodajem.com/scripts/ads.js
@@ -1932,9 +1935,9 @@ wotspeak.ru##.adb
 ||static.cdnslate.com/etc/designs/slate/js/plus-upsell-adblock.js
 techsolutiontips.com#%#window.google_jobrunner = function() { };
 !+ NOT_PLATFORM(windows, mac, android)
-@@||d1wa9546y9kg0n.cloudfront.net/index.js$domain=chicoer.com|denverpost.com|pe.com
+@@||d1wa9546y9kg0n.cloudfront.net/index.js$domain=chicoer.com|denverpost.com|newsday.com|pe.com
 !+ NOT_PLATFORM(windows, mac, android)
-@@||asset.pagefair.com/adimages/textlink-ads.jpg$domain=chicoer.com|denverpost.com|pe.com
+@@||asset.pagefair.com/adimages/textlink-ads.jpg$domain=chicoer.com|denverpost.com|newsday.com|pe.com
 !+ NOT_PLATFORM(windows, mac, android)
 @@||techsolutiontips.com/wp-content/plugins/better-adsmanager/js/advertising.min.js
 !+ NOT_PLATFORM(windows, mac, android)
@@ -3649,6 +3652,18 @@ _europecookielaw.
 ||r42tag.com^$third-party
 ||tm.tradetracker.net/public/styles/ttCookieDirective.css
 ||cookieq.com^$third-party
+sevil.com.tr###stnc-cookiecontract
+vitalsource.com###dismiss-cookie-message
+mako.co.il##.GDPR-Msg
+wsj.com##.gdpr-message
+foodnetwork.co.uk#$#body { overflow: visible!important; }
+foodnetwork.co.uk#$#html { overflow: visible!important; }
+foodnetwork.co.uk#$##cookie-message-mask { display:none!important; }
+foodnetwork.co.uk#$#.cookie-message { display:none!important; }
+foodnetwork.co.uk#@#.cookie-message
+ticketea.com#$#html { overflow:visible!important; }
+ticketea.com#$#body > div[class^="mfp-"] { display:none!important; }
+globalscape.com###optanon
 stadtfeste-in-deutschland.de###cono
 mediamarkt.nl#$#.modal-backdrop { display:none!important; }
 mediamarkt.nl#$##cookieLayer { display:none!important; }
@@ -4076,7 +4091,7 @@ plus.net##.cf__main-block
 speedtest.net###_evidon-barrier-wrapper
 superuser.com,askubuntu.com,stackexchange.com,stackoverflow.com,serverfault.com###js-gdpr-consent-banner
 index.hu###_iph_cp_popup
-vox.com,theverge.com,polygon.com###privacy-consent
+recode.net,theringer.com,racked.com,curbed.com,eater.com,vox.com,theverge.com,polygon.com###privacy-consent
 dw.com##.cookie
 itv.com##.js-site-alert
 independent.ie###gdpr18
@@ -5046,6 +5061,7 @@ maximum.com.tr##.sticky_cookie_warning:has(> a[href^="/TR/gizlilik-politikamiz/S
 mycinema.pro##[class][-ext-has=">span:contains(Cookies help us deliver our services. By using our services, you agree to our use of cookies.)"]
 bmwfaq.org##.Notices[-ext-has='a[href="//www.bmwfaq.org/help/cookies"]']
 aliexpress.com###j-site-notice-header[-ext-has='>.site-notice-container:contains(ookies)']
+myprivacy.medialaan.be#%#AG_onLoad(function() { setTimeout(function() { document.getElementsByClassName("form__button-group")[0].submit(); }, 300); });
 evaair.com#%#document.cookie = "_EVAcookieaccept=Y";
 hbvl.be#%#document.cookie = "C_05 = {%22C%22:%221.0%22%2C%22ID%22:%229dee0a48-e1b7-475f-9456-da27157e009e%22%2C%22P%22:%22' + location.href + '%22%2C%22T%22:%222018-08-04T17:54:39.929Z%22%2C%22V%22:%22Y%22%2C%22F%22:1}; path=/; domain=.hbvl.be"
 standaard.be#%#document.cookie = "C_05 = {%22C%22:%221.0%22%2C%22ID%22:%229dee0a48-e1b7-475f-9456-da27157e009e%22%2C%22P%22:%22' + location.href + '%22%2C%22T%22:%222018-08-04T17:54:39.929Z%22%2C%22V%22:%22Y%22%2C%22F%22:1}; path=/; domain=.standaard.be"
@@ -5123,6 +5139,8 @@ trouw.nl#%#AG_onLoad(function() { var check = document.getElementsByClassName('s
 vi.nl#%#AG_onLoad(function() { if(window.location.href.indexOf("cookies") != -1){document.getElementsByClassName('btn')[0].click();} });
 volkskrant.nl#%#AG_onLoad(function() { setTimeout(function() {if(document.getElementsByClassName("modal-overlay")[0].isvisible = true){document.getElementsByClassName("button button--accept")[0].click();}}, 300); });
 ziekenhuis.nl#%#AG_onLoad(function() { setTimeout(function() {var check = document.getElementsByClassName('cookiewall')[0]; if (check){document.cookie = "acceptcookies=true"; location.reload();}; }, 300); });
+chargepoint.com#@#.cookie-consent
+ticketea.com#@##cookies-modal
 @@||firkloveren.no/*/cookienotice.css
 mediamarkt.nl#@##cookie-consent
 mediamarkt.nl#@##cookieLayer
@@ -5263,6 +5281,8 @@ itpro.co.uk###block-onscroll-onscroll[-ext-matches-css-before="content:Advertise
 ds-scene.net###boxes > div[id^="item_left_item_"][-ext-has='div.boxHdr:contains(Advertisement)']
 uploads.to###btn_download_block > .row > center[-ext-has='ins.adsbygoogle']
 muhammetefe.com###leftcol .module-outer[-ext-has='div.bannergroup']
+muhammetefe.com###leftcol .module-outer[-ext-has='script:contains(ad_client)']
+muhammetefe.com###leftcol .module-outer[-ext-has='script:contains(reklam)']
 4kfilmizle.org###sidebar div.sidebarborder[-ext-has="div.g-page"]
 lolchampion.de###sidebar div[class="widget widget_text"][-ext-has=".textwidget:contains(Anzeige)"]
 pawno-info.ru##.body_wrapper > center > div#wgo[-ext-has=".blockhead:contains(Реклама)"]
@@ -5934,6 +5954,13 @@ edeka.de#@##smartbanner.android
 /wp-content/plugins/chimpmatepro/*
 /download.plagin.js
 ||pdmntn.com/popups^
+serfery.ru#$#body { overflow: visible!important; }
+serfery.ru#$#.fancybox-overlay { display: none!important; }
+price.ua##.subscription-popup
+price.ua##.ui-widget-overlay
+rubiks-cube-solver.com###alertBox
+rubiks-cube-solver.com###alertShadow
+geek-nose.com##.cp-modal-popup-container
 yenialanya.com##.alert.fixednews
 pri.org##.CtaMessage__announcement___2yo3y
 cars.com#$#.cui-overlay-scroll-locked { overflow:visible!important; position: relative!important;}
@@ -6819,6 +6846,7 @@ lenta.ru##div.b-topic__favorite-tooltip
 visnyk.lutsk.ua##div.dgd_stb_box
 schuhmuecke.de##div.monoOverlay
 fc-zenit.ru##div.splash-banner
+okcaller.com#$#body.modal-open { overflow: visible!important; }
 okcaller.com##div[class="bootbox modal fade in"]
 okcaller.com##div[class="modal-backdrop fade in"]
 tomchun.tw##div[class^="ArevicoModal"]
@@ -7844,6 +7872,7 @@ alexfitness.ru#$#div.modal-backdrop { display: none!important; }
 alexfitness.ru#$#.modal-open { overflow: visible!important; }
 autogrodno.by###gkPageContent > aside#gkSidebar
 ||xhamsterpremium.com^$third-party
+xhamster.com##iframe[src^="https://xhamsterpremium.com/"]
 multiplex.ua##.catfish-masterpass
 tvigle.ru##.turn-off-ads
 tnt-online.ru##.top_info_block
@@ -8082,6 +8111,7 @@ imslp.org#%#AG_onLoad(function(){var b=document.getElementById("sm_dl_wait");if(
 ||serialuk.net/js/copyright.js
 apkinstaller.com,androidmtk.com,serial-key.com,sjcrack.com,themeslide.com,openssource.biz,kinogo-net-2017.ru,kinogo-online.online,kino-zal.net,lavka-invaitov.ru#$#body * { -webkit-touch-callout: default!important; -moz-user-select: text!important; -webkit-user-select: text!important; -ms-user-select: text!important; -o-user-select: text!important; user-select: text!important; -khtml-user-select: text!important; }
 catekno.com#$#img { -webkit-touch-callout: default!important; -webkit-user-select: text!important; }
+lanjutkeun.blogspot.com#%#AG_onLoad(function() { setTimeout(function() { document.getElementsByTagName("Body")[0].removeAttribute("oncontextmenu"); document.getElementsByTagName("Body")[0].removeAttribute("onkeydown"); }, 300); });
 tvlive.cc#%#AG_onLoad(function() { document.oncontextmenu = function(){return true}; });
 kseries.co#%#Object.defineProperties(window, { clickIE: { get: function() { return; } }, disableselect: { get: function() { return; } } });
 lalawin.com#%#AG_onLoad(function() { document.oncontextmenu = document.ondragstart = document.onselectstart = function() { return true; }; });

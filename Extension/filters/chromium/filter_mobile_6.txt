@@ -1,8 +1,8 @@
-! Checksum: BMpSsgTTXJ8F5mt6t4TdJA
+! Checksum: U8xwthSb+CSq5/bSLPNwSg
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.2.78
-! TimeUpdated: 2018-08-24T09:57:01+00:00
+! Version: 2.0.2.81
+! TimeUpdated: 2018-08-28T09:05:34+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -406,6 +406,7 @@ fussball.de###news-sidebar div.sidebar-teaser[-ext-has='div[data-ad]']
 ikz-online.de,nrz.de,waz.de,wp.de,wr.de##.content-triple__column[-ext-has=">.ad"]
 ikz-online.de,nrz.de,waz.de,wp.de,wr.de##.content-triple__column[-ext-has=">.block-header--banner"]
 winfuture.de###rightWrap .rightBx[-ext-has='div.az_box']
+zuhause.de##.Tsib div.Tmm.Tts.Ttshh[-ext-has="script:contains(GlobalAdTag)"]
 gamesworld.de###contentFrameInner > .item[-ext-has='a[href^="http://www.pcgameshardware.de/E-Commerce-Thema"]']
 gamesworld.de###contentFrameInner > .item[-ext-has='p.title:contains(Anzeige)']
 merkur.de##.id-g[-ext-has=">*>.id-Container--proBEEP"]
@@ -481,6 +482,7 @@ dvdschnaeppchen.de#%#AG_onLoad(function() { window.myatu_bgm = 0; });
 ||videogameszone.de/common/saturn/
 chip.de#%#var originalUserAgent = navigator.userAgent; Object.defineProperty(navigator, 'userAgent', { get: function() { return originalUserAgent + ' Edge'; } });
 menshealth.de#%#function google_ad_request_done() {};
+stuttgarter-nachrichten.de#$#.lay-wrapper { padding-right:0px!important; }
 mimikama.at#$#body.td-ad-background-link { cursor: auto!important;}
 planetradio.de#$##adContainer { position: absolute!important; left: -3000px!important; }
 silicon.de#$#[id^="div-gpt-ad-DESKTOP_MEGA"] { min-height: 0px!important; height: 0px!important; }
@@ -536,6 +538,7 @@ pnp.de###gesBox > div[style*="color:#aaa"]:not([class]):not([id])
 !+ NOT_OPTIMIZED
 lvz.de##.pdma-adaside
 ||*snigelweb-com.videoplayerhub.com^$domain=tellows.de|woxikon.de|notebookcheck.com|dict.cc
+stuttgarter-nachrichten.de##.m-fstb-teaser
 prosieben.de##.adp-wrapper
 prosieben.de##div[class^="productPlacement_"]
 swp.de##.swp-adbox
@@ -558,7 +561,6 @@ contra-magazin.com##.entry > .code-block
 telebasel.ch##div[class^="tb-ad-"]
 dragonball-tube.com,onepiece-tube.com,naruto-tube.org,fairytail-tube.org##a[href^="https://www.amazon.de/"] > img[src^="/templates/caprica/amz"]
 /templates/caprica/amz*/*.gif$domain=naruto-tube.org|fairytail-tube.org|onepiece-tube.com|dragonball-tube.com
-pnp.de##.em_cnt_box_container[style="margin-left: 10px; z-index: 996;"]
 prosiebenmaxx.de,sixx.de,kabeleins.de,sat1.de,prosieben.de##.rectangle-ad-slot-wrapper
 wallstreet-online.de##div[id^="sban"]
 aerzteblatt.de##.anzeigenbox
@@ -570,6 +572,7 @@ ksta.de##.trackedTeaser
 holidaycheck.de##div[id^="tad"]
 heise.de##.a-article-teaser--sponsored
 elektrikforum.de###leader_top_desk
+elektrikforum.de##.sidebar > .funbox
 weser-kurier.de###sebox_889_0
 weser-kurier.de###sebox_764_0
 weser-kurier.de##.page.direct_content > div.nfy-cobo-standard-teaser-changecolor[style*="background-color: #ffffff"]
@@ -605,7 +608,6 @@ rnz.de##.nfy-ads
 idea.de##.mediumrectangle
 idea.de###superbanner
 livenet.ch##.block-werbung
-livenet.ch##body > #pre-header
 ksta.de##a[href^="/anzeige/"]
 frankenpost.de##.werb
 krone.at##.type_AdvertorialBanner
@@ -1269,6 +1271,7 @@ forum.buffed.de###plakatfullsize
 ||zeit.de/www.zeit.de/static/amp-ads/
 chinamobilemag.de###sp-ad1
 easycredit-bbl.de##.partners
+easycredit-bbl.de##.box.cad
 easycredit-bbl.de##.frontpage_advertisement
 ariva.de###ARIVA > div#BIGSIZE
 druckerchannel.de###DCA_BOTTOM
@@ -1442,7 +1445,6 @@ deutscherskiverband.de##.modul-dsv-banner
 windowscentral.com##.netshelter-ad
 fussball.de##.news-teaser-banner
 zeit.de##.nextread-advertisement
-weser-kurier.de##.nfyc_advert_info
 frustfrei-lernen.de##.noContentBannerAd
 gartendatenbank.de##.noprint
 selbst.de##.panel-col > .panel-pane[style^="display: none"] + .panel-separator
@@ -1479,7 +1481,6 @@ autobild.de##.teaserbox.rectangle
 t3n.de##.tg-articletype-sponsored-post
 forum.digitalfernsehen.de##.titleBar + div:not([id]):not([class]):not([style])
 willhaben.at##.topAdsBox
-gamona.de##.topdeals
 tagesspiegel.de##.ts-ad
 anonymousnews.ru##.vc_row.wpb_row.td-pb-row.td-ss-row > .td-pb-span4
 micky-maus.de##.vcadteaser
@@ -1587,6 +1588,7 @@ mathebibel.de##iframe[id^="ylt-"]
 druckerchannel.de##iframe[name^="DC_IFRAME_AD"]
 rebuy.de##iframe[src^="//partners.webmasterplan.com"]
 bild.de##img[alt$="Skoobe "]
+computerbild.de##img[height="250"][width="1000"]
 zuhause.de##img[height="46"][width="606"]
 bild.de##img[usemap$="#ConnectMap"]
 hl-live.de##img[width="160"][height="240"]
@@ -1870,7 +1872,6 @@ _werbung.pl
 ###werbebanner
 ###werbeblock2
 ###werbeflaeche-mpu-big
-###werbeleiste
 ###werbung
 ###werbung-banner
 ###werbung-fb
@@ -3462,7 +3463,6 @@ juraforum.de###jf-stroer-sky + div
 juraforum.de###jf-stroer-superbanner
 juraforum.de###jf-wrapper-inner > div[style="width:100%; position:relative; height:90px;"]
 express.de,fr-online.de,general-anzeiger-bonn.de,ksta.de,mz-web.de,rhein-zeitung.de,wz-newsline.de###kalaydo
-astronews.com###kopf_screen > table[style="width: 900px;"]
 abload.de###layerright
 nickles.de###leader
 boomerangtv.de,channelpartner.de,ebay.at,ebay.ch,ebay.de,ircgalerie.net,laut.de,ringrocker.com,schweizamsonntag.ch,skiinfo.ch,skiinfo.com,skiinfo.de,sky.de,spieletipps.de,teccommunity.de,xboxfront.de###leaderboard
@@ -3738,6 +3738,7 @@ volksblatt.li##.divAnzeige
 xxx-blog.to##.dltable + .easySpoilerWrapper + p:last-child
 metropolico.org##.e_adv
 mtg-forum.de##.ebay_banner
+abnehmen.com,amerika-forum.de,aquariumforum.de,campen.de,deejayforum.de,linux-forum.de,pferd.de,rechnungswesenforum.de,reitforum.de,sat-ulc.eu##.ebayitems
 abacho.de##.econa_editorial_tips
 abacho.de##.econa_editorial_tips_header
 hoerbuch.us,lesen.to##.eintrag_dowload0_link

@@ -1,8 +1,8 @@
-! Checksum: 4qQymTLvYtmLSNWNLtUveQ
+! Checksum: 71eFnoigUN91fULrfP/PbQ
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.3.2
-! TimeUpdated: 2018-08-24T09:56:34+00:00
+! Version: 2.0.3.9
+! TimeUpdated: 2018-08-27T18:04:30+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#mobile
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -98,6 +98,11 @@
 ||plugin.mobopay.baidu.com^
 ||mo.freeindoapp.com^
 !
+||deliveryengine.adswizz.com
+||sitemaji.com^
+||h5.wannaplay.cn^
+||adsapi.manhuaren.com^
+||euadsapi.manhuaren.com^
 ||cdn1.ettoday.net^
 ||msg.ettoday.net^
 ||d1zkodo2u3p4pe.cloudfront.net^
@@ -1283,6 +1288,10 @@ deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important
 !
 !#####################
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/21619
+@@||kimcartoon.me/ads/fbMob.aspx
+! https://github.com/AdguardTeam/AdguardFilters/issues/21111
+@@||lk-subscr.tricolor.tv^$document
 ! https://github.com/AdguardTeam/AdguardFilters/issues/21412
 @@||collect.igodigital.com^$domain=m.harborfreight.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/21178
@@ -1556,6 +1565,10 @@ m.news.de##.unisterAdsStart
 !+ NOT_OPTIMIZED
 9to5google.com,9to5toys.com,9to5mac.com,electrek.co##.post-content > .inlinead ~ div[class*=" "]:not([id]):not([style])
 !
+egehaber.com##div[class*="block-"] a[target="_blank"] > img
+yahoo.co.jp###ad-sult
+daily.co.jp##.adv
+rockpapershotgun.com##.mobile-mpu
 irk.ru##.b-banner-float
 m.gameapps.hk##.ad-full-screen
 tonkosti.ru##.tt-catfish
@@ -1637,6 +1650,7 @@ redtube.com###content_container > div[class]:not(.show_page_modals):not([id]):no
 youtube.com##ytm-promoted-video-renderer
 m.facebook.com,touch.facebook.com###m_newsfeed_stream article[data-ft*='"ei\":']
 m.voyeurhit.com##.container > .section--normal[style*="margin-top: -15px"]
+avcanada.ca##.postbody > div[id^="post_content"] > .content ~ center
 xbabe.com###fltd
 m.vikiporn.com##.top-spot
 m.vikiporn.com##.under_player_adv
@@ -2345,6 +2359,10 @@ m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m.news.yand
 ! https://github.com/AdguardTeam/AdguardFilters/issues/21152
 ! http://4pda.ru/forum/index.php?showtopic=601691&st=8140#entry57313153
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/21629
+||mail.google.com/mail/ads^
+! https://github.com/AdguardTeam/AdguardFilters/issues/21078
+||app.adjust.com^$empty,app=com.ilike.cartoon,important
 ! https://github.com/AdguardTeam/AdguardFilters/issues/20486
 ||go2s.co/res/$image
 ||go2s.co/*?t=
@@ -2878,6 +2896,7 @@ m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m.news.yand
 !
 ! The content replacement rules
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/21078
 ! https://github.com/AdguardTeam/AdguardFilters/issues/10315
 ||ads.adfox.ru/*/getCode?p1=$domain=auth.wi-fi.ru,replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\$1<\/VAST>/,important
 ! https://forum.adguard.com/index.php?threads/23599/
