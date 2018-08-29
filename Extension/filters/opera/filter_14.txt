@@ -1,8 +1,8 @@
-! Checksum: aoMt1ljlqmYN/m/IDMj4hA
+! Checksum: vxTCKN9wIbOK2l9OgQYmmw
 ! Title: AdGuard Annoyances filter
 ! Description: Blocks irritating elements on web pages including cookie notices, third-party widgets and in-page pop-ups.
-! Version: 2.0.7.26
-! TimeUpdated: 2018-08-24T09:56:39+00:00
+! Version: 2.0.7.35
+! TimeUpdated: 2018-08-28T12:03:53+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#annoyances
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -28,6 +28,8 @@
 !
 !######### Annoying elements (not ads)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/20681
+porn.com##.player-cams
 ! https://github.com/AdguardTeam/AdguardFilters/issues/20983
 ||dobro.mail.ru/static/img/dobro.png
 ! https://github.com/AdguardTeam/AdguardFilters/issues/20915
@@ -1351,6 +1353,7 @@ geek-nose.com##.fixed_link--telegram-group
 verestrenos.net###msgw
 mywebpc.ru##.telegramim_button
 gameguru.ru##.V7-social-buttons
+hdmulti.net##.social-counters
 msn.com###Facebook
 koinbulteni.com##.widget_essbsocialfollowerscounterwidget
 koinbulteni.com###sidebar-wrap > .widget_essbsocialfollowerscounterwidget + #text-16
@@ -1509,6 +1512,7 @@ androidworld.it#%#AG_abortInlineScript(/enm.com/, 'navigator');
 !+ NOT_PLATFORM (windows, mac, android)
 @@||androidworld.it^$generichide
 !
+@@||static.ak.crunchyroll.com/versioned_assets/js/components/ads_enabled.ac6fa3aa.js
 @@||teslamotorsclub.com/tmc/js/audentio/funbox/advertisement.js
 sait-pro-dachu.ru##.adb-def
 @@||kupujemprodajem.com/scripts/ads.js
@@ -2350,9 +2354,9 @@ wotspeak.ru##.adb
 techsolutiontips.com#%#window.google_jobrunner = function() { };
 !
 !+ NOT_PLATFORM(windows, mac, android)
-@@||d1wa9546y9kg0n.cloudfront.net/index.js$domain=chicoer.com|denverpost.com|pe.com
+@@||d1wa9546y9kg0n.cloudfront.net/index.js$domain=chicoer.com|denverpost.com|newsday.com|pe.com
 !+ NOT_PLATFORM(windows, mac, android)
-@@||asset.pagefair.com/adimages/textlink-ads.jpg$domain=chicoer.com|denverpost.com|pe.com
+@@||asset.pagefair.com/adimages/textlink-ads.jpg$domain=chicoer.com|denverpost.com|newsday.com|pe.com
 !+ NOT_PLATFORM(windows, mac, android)
 @@||techsolutiontips.com/wp-content/plugins/better-adsmanager/js/advertising.min.js
 !+ NOT_PLATFORM(windows, mac, android)
@@ -4120,6 +4124,18 @@ _europecookielaw.
 !######### Rules for specific sites ####################
 !#######################################################
 !
+sevil.com.tr###stnc-cookiecontract
+vitalsource.com###dismiss-cookie-message
+mako.co.il##.GDPR-Msg
+wsj.com##.gdpr-message
+foodnetwork.co.uk#$#body { overflow: visible!important; }
+foodnetwork.co.uk#$#html { overflow: visible!important; }
+foodnetwork.co.uk#$##cookie-message-mask { display:none!important; }
+foodnetwork.co.uk#$#.cookie-message { display:none!important; }
+foodnetwork.co.uk#@#.cookie-message
+ticketea.com#$#html { overflow:visible!important; }
+ticketea.com#$#body > div[class^="mfp-"] { display:none!important; }
+globalscape.com###optanon
 stadtfeste-in-deutschland.de###cono
 mediamarkt.nl#$#.modal-backdrop { display:none!important; }
 mediamarkt.nl#$##cookieLayer { display:none!important; }
@@ -4547,7 +4563,7 @@ plus.net##.cf__main-block
 speedtest.net###_evidon-barrier-wrapper
 superuser.com,askubuntu.com,stackexchange.com,stackoverflow.com,serverfault.com###js-gdpr-consent-banner
 index.hu###_iph_cp_popup
-vox.com,theverge.com,polygon.com###privacy-consent
+recode.net,theringer.com,racked.com,curbed.com,eater.com,vox.com,theverge.com,polygon.com###privacy-consent
 dw.com##.cookie
 itv.com##.js-site-alert
 independent.ie###gdpr18
@@ -5566,6 +5582,7 @@ aliexpress.com###j-site-notice-header[-ext-has='>.site-notice-container:contains
 !
 ! JS rules
 !
+myprivacy.medialaan.be#%#AG_onLoad(function() { setTimeout(function() { document.getElementsByClassName("form__button-group")[0].submit(); }, 300); });
 evaair.com#%#document.cookie = "_EVAcookieaccept=Y";
 hbvl.be#%#document.cookie = "C_05 = {%22C%22:%221.0%22%2C%22ID%22:%229dee0a48-e1b7-475f-9456-da27157e009e%22%2C%22P%22:%22' + location.href + '%22%2C%22T%22:%222018-08-04T17:54:39.929Z%22%2C%22V%22:%22Y%22%2C%22F%22:1}; path=/; domain=.hbvl.be"
 standaard.be#%#document.cookie = "C_05 = {%22C%22:%221.0%22%2C%22ID%22:%229dee0a48-e1b7-475f-9456-da27157e009e%22%2C%22P%22:%22' + location.href + '%22%2C%22T%22:%222018-08-04T17:54:39.929Z%22%2C%22V%22:%22Y%22%2C%22F%22:1}; path=/; domain=.standaard.be"
@@ -5647,6 +5664,9 @@ ziekenhuis.nl#%#AG_onLoad(function() { setTimeout(function() {var check = docume
 !######### White list. Fixing filtering errors #########
 !#######################################################
 !
+chargepoint.com#@#.cookie-consent
+! https://github.com/AdguardTeam/AdguardFilters/issues/21557
+ticketea.com#@##cookies-modal
 ! https://github.com/AdguardTeam/AdguardFilters/issues/21471
 @@||firkloveren.no/*/cookienotice.css
 ! https://github.com/AdguardTeam/AdguardFilters/issues/21399
@@ -5913,6 +5933,8 @@ itpro.co.uk###block-onscroll-onscroll[-ext-matches-css-before="content:Advertise
 ds-scene.net###boxes > div[id^="item_left_item_"][-ext-has='div.boxHdr:contains(Advertisement)']
 uploads.to###btn_download_block > .row > center[-ext-has='ins.adsbygoogle']
 muhammetefe.com###leftcol .module-outer[-ext-has='div.bannergroup']
+muhammetefe.com###leftcol .module-outer[-ext-has='script:contains(ad_client)']
+muhammetefe.com###leftcol .module-outer[-ext-has='script:contains(reklam)']
 4kfilmizle.org###sidebar div.sidebarborder[-ext-has="div.g-page"]
 lolchampion.de###sidebar div[class="widget widget_text"][-ext-has=".textwidget:contains(Anzeige)"]
 pawno-info.ru##.body_wrapper > center > div#wgo[-ext-has=".blockhead:contains(Реклама)"]
@@ -6663,6 +6685,13 @@ edeka.de#@##smartbanner.android
 !
 ! Specific sites
 !
+serfery.ru#$#body { overflow: visible!important; }
+serfery.ru#$#.fancybox-overlay { display: none!important; }
+price.ua##.subscription-popup
+price.ua##.ui-widget-overlay
+rubiks-cube-solver.com###alertBox
+rubiks-cube-solver.com###alertShadow
+geek-nose.com##.cp-modal-popup-container
 yenialanya.com##.alert.fixednews
 pri.org##.CtaMessage__announcement___2yo3y
 cars.com#$#.cui-overlay-scroll-locked { overflow:visible!important; position: relative!important;}
@@ -7547,6 +7576,7 @@ lenta.ru##div.b-topic__favorite-tooltip
 visnyk.lutsk.ua##div.dgd_stb_box
 schuhmuecke.de##div.monoOverlay
 fc-zenit.ru##div.splash-banner
+okcaller.com#$#body.modal-open { overflow: visible!important; }
 okcaller.com##div[class="bootbox modal fade in"]
 okcaller.com##div[class="modal-backdrop fade in"]
 tomchun.tw##div[class^="ArevicoModal"]
@@ -8858,6 +8888,7 @@ alexfitness.ru#$#.modal-open { overflow: visible!important; }
 !
 autogrodno.by###gkPageContent > aside#gkSidebar
 ||xhamsterpremium.com^$third-party
+xhamster.com##iframe[src^="https://xhamsterpremium.com/"]
 multiplex.ua##.catfish-masterpass
 tvigle.ru##.turn-off-ads
 tnt-online.ru##.top_info_block
@@ -9175,6 +9206,7 @@ imslp.org#%#AG_onLoad(function(){var b=document.getElementById("sm_dl_wait");if(
 apkinstaller.com,androidmtk.com,serial-key.com,sjcrack.com,themeslide.com,openssource.biz,kinogo-net-2017.ru,kinogo-online.online,kino-zal.net,lavka-invaitov.ru#$#body * { -webkit-touch-callout: default!important; -moz-user-select: text!important; -webkit-user-select: text!important; -ms-user-select: text!important; -o-user-select: text!important; user-select: text!important; -khtml-user-select: text!important; }
 catekno.com#$#img { -webkit-touch-callout: default!important; -webkit-user-select: text!important; }
 !--- JS ----
+lanjutkeun.blogspot.com#%#AG_onLoad(function() { setTimeout(function() { document.getElementsByTagName("Body")[0].removeAttribute("oncontextmenu"); document.getElementsByTagName("Body")[0].removeAttribute("onkeydown"); }, 300); });
 tvlive.cc#%#AG_onLoad(function() { document.oncontextmenu = function(){return true}; });
 kseries.co#%#Object.defineProperties(window, { clickIE: { get: function() { return; } }, disableselect: { get: function() { return; } } });
 lalawin.com#%#AG_onLoad(function() { document.oncontextmenu = document.ondragstart = document.onselectstart = function() { return true; }; });

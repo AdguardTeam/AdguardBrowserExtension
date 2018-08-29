@@ -1,8 +1,8 @@
-! Checksum: 2XSp1stnUfXzx79XS/W+pg
+! Checksum: izOVPxNwoGg3KjclhqYv2Q
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.3.2
-! TimeUpdated: 2018-08-24T09:56:34+00:00
+! Version: 2.0.3.9
+! TimeUpdated: 2018-08-27T18:04:30+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -56,6 +56,11 @@
 ||54.222.186.106^
 ||plugin.mobopay.baidu.com^
 ||mo.freeindoapp.com^
+||deliveryengine.adswizz.com
+||sitemaji.com^
+||h5.wannaplay.cn^
+||adsapi.manhuaren.com^
+||euadsapi.manhuaren.com^
 ||cdn1.ettoday.net^
 ||msg.ettoday.net^
 ||d1zkodo2u3p4pe.cloudfront.net^
@@ -1082,6 +1087,8 @@ deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important
 ||graph.facebook.com/network_ads
 @@||xda-cdn.com
 @@||tf-robots.nl^$elemhide,jsinject,content
+@@||kimcartoon.me/ads/fbMob.aspx
+@@||lk-subscr.tricolor.tv^$document
 @@||collect.igodigital.com^$domain=m.harborfreight.com
 @@||pwapi.washingtonpost.com/*&__amp_source_origin
 @@||ads.rubiconproject.com/prebid^$domain=index.hr
@@ -1233,6 +1240,10 @@ m.news.de##.aside > div[style="height: 600px;"]
 m.news.de##.unisterAdsStart
 !+ NOT_OPTIMIZED
 9to5google.com,9to5toys.com,9to5mac.com,electrek.co##.post-content > .inlinead ~ div[class*=" "]:not([id]):not([style])
+egehaber.com##div[class*="block-"] a[target="_blank"] > img
+yahoo.co.jp###ad-sult
+daily.co.jp##.adv
+rockpapershotgun.com##.mobile-mpu
 irk.ru##.b-banner-float
 m.gameapps.hk##.ad-full-screen
 tonkosti.ru##.tt-catfish
@@ -1314,6 +1325,7 @@ redtube.com###content_container > div[class]:not(.show_page_modals):not([id]):no
 youtube.com##ytm-promoted-video-renderer
 m.facebook.com,touch.facebook.com###m_newsfeed_stream article[data-ft*='"ei\":']
 m.voyeurhit.com##.container > .section--normal[style*="margin-top: -15px"]
+avcanada.ca##.postbody > div[id^="post_content"] > .content ~ center
 xbabe.com###fltd
 m.vikiporn.com##.top-spot
 m.vikiporn.com##.under_player_adv
@@ -1987,6 +1999,8 @@ yandex.ru,m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m
 m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m.news.yandex.ru,m.news.yandex.ua##.page-content > div.story+div[id]:not(.story)
 m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m.news.yandex.ru,m.news.yandex.ua##.proffit-wrapper
 ||extmaps-api.yandex.net/promo/api/
+||mail.google.com/mail/ads^
+||app.adjust.com^$empty,app=com.ilike.cartoon,important
 ||go2s.co/res/$image
 ||go2s.co/*?t=
 ||go2s.co/*/*.zip

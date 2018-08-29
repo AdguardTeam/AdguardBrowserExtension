@@ -82,6 +82,8 @@ const updatePlist = (done) => {
         case BRANCH_BETA:
             plist = plist.replace(/\$\{extensionNamePostfix\}/g, ' (Beta)');
             break;
+        default:
+            plist = plist.replace(/\$\{extensionNamePostfix\}/g, '');
     }
 
     fs.writeFileSync(dest.plist, plist);
