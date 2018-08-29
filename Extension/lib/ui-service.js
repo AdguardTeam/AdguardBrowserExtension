@@ -411,12 +411,14 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     }
 
     function getFiltersUpdateResultMessage(success, updatedFilters) {
-        var title = adguard.i18n.getMessage("options_popup_update_title");
+        var title = '';
         var text = [];
         if (success) {
             if (updatedFilters.length === 0) {
+                title = adguard.i18n.getMessage("options_popup_update_title_not_found");
                 text.push(adguard.i18n.getMessage("options_popup_update_not_found"));
             } else {
+                title = adguard.i18n.getMessage("options_popup_update_title");
                 updatedFilters.sort(function (a, b) {
                     return a.displayNumber - b.displayNumber;
                 });
@@ -426,6 +428,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                 }
             }
         } else {
+            title = adguard.i18n.getMessage("options_popup_update_title_error");
             text.push(adguard.i18n.getMessage("options_popup_update_error"));
         }
 
