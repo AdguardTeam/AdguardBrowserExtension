@@ -193,6 +193,9 @@
                 return true;
             case 'getFiltersMetadata':
                 return adguard.categories.getFiltersMetadata();
+            case 'setFiltersUpdatePeriod':
+                adguard.settings.setFiltersUpdatePeriod(message.updatePeriod);
+                break;
             case 'openThankYouPage':
                 adguard.ui.openThankYouPage();
                 break;

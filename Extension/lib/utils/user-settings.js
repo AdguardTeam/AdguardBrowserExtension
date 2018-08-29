@@ -23,6 +23,9 @@ adguard.settings = (function (adguard) {
 
     'use strict';
 
+    // Default filters update period is set up to 48 hours
+    const DEFAULT_FILTERS_UPDATE_PERIOD_MS = 48 * 60 * 60 * 1000;
+
     var settings = {
         DISABLE_DETECT_FILTERS: 'detect-filters-disabled',
         DISABLE_SHOW_PAGE_STATS: 'disable-show-page-statistic',
@@ -35,7 +38,8 @@ adguard.settings = (function (adguard) {
         USE_OPTIMIZED_FILTERS: 'use-optimized-filters',
         DEFAULT_WHITE_LIST_MODE: 'default-whitelist-mode',
         DISABLE_SHOW_APP_UPDATED_NOTIFICATION: 'show-app-updated-disabled',
-        DISABLE_INTEGRATION_MODE: 'integration-mode-disabled'
+        DISABLE_INTEGRATION_MODE: 'integration-mode-disabled',
+        FILTERS_UPDATE_PERIOD: 'filters-update-period',
     };
 
     var properties = Object.create(null);
@@ -63,6 +67,7 @@ adguard.settings = (function (adguard) {
                 defaults[settings.DISABLE_DETECT_FILTERS] = false;
                 defaults[settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION] = false;
                 defaults[settings.DISABLE_INTEGRATION_MODE] = false;
+                defaults[settings.FILTERS_UPDATE_PERIOD] = DEFAULT_FILTERS_UPDATE_PERIOD_MS;
                 return defaults;
             });
         }
@@ -178,9 +183,7 @@ adguard.settings = (function (adguard) {
     };
 
     var changeEnableSafebrowsing = function (enabled, options) {
-        setProperty(settings.DISABLE_SAFEBROWSING, !enabled);
-
-        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
+        setProperty(settings.DISABLE_SAFEBROWSING, !enabled, options);
     };
 
     var changeSendSafebrowsingStats = function (enabled, options) {
@@ -226,6 +229,14 @@ adguard.settings = (function (adguard) {
         setProperty(settings.DEFAULT_WHITE_LIST_MODE, enabled);
     };
 
+    var setFiltersUpdatePeriod = function (period) {
+        setProperty(settings.FILTERS_UPDATE_PERIOD, period);
+    };
+
+    var getFiltersUpdatePeriod = function () {
+        return getProperty(settings.FILTERS_UPDATE_PERIOD);
+    };
+
     var api = {};
 
     // Expose settings to api
@@ -262,6 +273,8 @@ adguard.settings = (function (adguard) {
     api.isUseOptimizedFiltersEnabled = isUseOptimizedFiltersEnabled;
     api.changeUseOptimizedFiltersEnabled = changeUseOptimizedFiltersEnabled;
     api.changeDefaultWhiteListMode = changeDefaultWhiteListMode;
+    api.getFiltersUpdatePeriod = getFiltersUpdatePeriod;
+    api.setFiltersUpdatePeriod = setFiltersUpdatePeriod;
     api.isIntegrationModeEnabled = isIntegrationModeEnabled;
     api.changeIntegrationModeEnabled = changeIntegrationModeEnabled;
 

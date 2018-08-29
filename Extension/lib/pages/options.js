@@ -62,6 +62,10 @@ var Utils = {
             }
         };
     },
+
+    hoursToMs: function (hours) {
+        return hours * 60 * 60 * 1000;
+    },
 };
 
 var TopMenu = (function () {
@@ -824,7 +828,7 @@ var AntiBannerFilters = function (options) {
         updateRulesCountInfo: updateRulesCountInfo,
         onFilterStateChanged: onFilterStateChanged,
         onFilterDownloadStarted: onFilterDownloadStarted,
-        onFilterDownloadFinished: onFilterDownloadFinished
+        onFilterDownloadFinished: onFilterDownloadFinished,
     };
 };
 
@@ -1125,12 +1129,53 @@ var Settings = function () {
         }
     });
 
+    function setFiltersUpdatePeriod(updatePeriodString) {
+        contentPage.sendMessage({
+            type: 'setFiltersUpdatePeriod',
+            updatePeriod: parseInt(updatePeriodString, 10),
+        }, function () {
+            // TODO Have I do something on successful set filters update interval?
+        });
+    }
+
+    const filtersUpdatePeriodSelect = document.querySelector('#filtersUpdatePeriodSelect');
+    if (filtersUpdatePeriodSelect) {
+        filtersUpdatePeriodSelect.addEventListener('change', function (e) {
+            setFiltersUpdatePeriod(e.currentTarget.value);
+        });
+    }
+
+    const selectOptions = [
+        { name: i18n.getMessage('options_select_update_period_default'), value: Utils.hoursToMs(48) },
+        { name: i18n.getMessage('options_select_update_period_24h'), value: Utils.hoursToMs(24) },
+        { name: i18n.getMessage('options_select_update_period_12h'), value: Utils.hoursToMs(12) },
+        { name: i18n.getMessage('options_select_update_period_6h'), value: Utils.hoursToMs(6) },
+        { name: i18n.getMessage('options_select_update_period_1h'), value: Utils.hoursToMs(1) },
+        { name: i18n.getMessage('options_select_update_period_disabled'), value: 0 },
+    ];
+
+    function renderSelectOptions(updatePeriod) {
+        const filtersUpdatePeriodSelect = document.querySelector('#filtersUpdatePeriodSelect');
+        if (!filtersUpdatePeriodSelect) {
+            return;
+        }
+        const optionsSelectHtml = selectOptions.map(selectOption => {
+            const { name, value } = selectOption;
+            return `<option value="${value}">${name}</option>`;
+        }).join('\n');
+        filtersUpdatePeriodSelect.insertAdjacentHTML('afterbegin', optionsSelectHtml);
+        filtersUpdatePeriodSelect.value = updatePeriod;
+    }
+
     var render = function () {
         for (var i = 0; i < checkboxes.length; i++) {
             checkboxes[i].render();
         }
 
         CheckboxUtils.updateCheckbox([allowAcceptableAdsCheckbox], AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID in enabledFilters);
+
+        const updatePeriod = userSettings.values[userSettings.names.FILTERS_UPDATE_PERIOD];
+        renderSelectOptions(updatePeriod);
     };
 
     var showPopup = function (title, text) {
