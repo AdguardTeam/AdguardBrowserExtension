@@ -1171,10 +1171,8 @@ var Settings = function () {
 
         CheckboxUtils.updateCheckbox([allowAcceptableAdsCheckbox], AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID in enabledFilters);
 
-        contentPage.sendMessage({ type: 'getFiltersUpdatePeriod' }, function (response) {
-            const updatePeriod = response.filtersUpdatePeriod;
-            renderSelectOptions(updatePeriod);
-        });
+        const updatePeriod = userSettings.values[userSettings.names.FILTERS_UPDATE_PERIOD];
+        renderSelectOptions(updatePeriod);
     };
 
     var showPopup = function (title, text) {
