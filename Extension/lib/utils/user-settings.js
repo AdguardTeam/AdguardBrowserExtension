@@ -184,9 +184,6 @@ adguard.settings = (function (adguard) {
 
     var changeEnableSafebrowsing = function (enabled, options) {
         setProperty(settings.DISABLE_SAFEBROWSING, !enabled, options);
-
-        // TODO Seems like this line repeats logic from setProperty function. Should I remove it or not?
-        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
     };
 
     var changeSendSafebrowsingStats = function (enabled, options) {
