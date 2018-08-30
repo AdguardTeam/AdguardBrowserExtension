@@ -479,7 +479,7 @@ var AntiBannerFilters = function (options) {
         return `
             <div class="page-title">
                 <a href="#antibanner">
-                    <img src="images/icon-back.png" class="back">
+                    <img src="images/arrow-left.svg" class="back">
                 </a>
                 ${name}
             </div>`;
@@ -529,7 +529,7 @@ var AntiBannerFilters = function (options) {
                     <div class="filters-search">
                         <input type="text" placeholder="${i18n.getMessage('options_filters_list_search_placeholder')}" name="searchFiltersList"/>
                         <div class="icon-search">
-                            <img src="images/icon-magnifying-green.png" alt="">
+                            <img src="images/magnifying-green.svg" alt="">
                         </div>
                     </div>
                     <ul class="opts-list">
