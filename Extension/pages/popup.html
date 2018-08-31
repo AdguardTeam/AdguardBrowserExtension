@@ -23,13 +23,45 @@
     <div class="widjet-popup__header">
         <div class="widjet-popup__header-logo"></div>
     </div>
+    <div class="tabstack">
+        <div class="tab-main active tab-switch-tab" tab-switch="main"></div>
+        <div class="tab-statistics tab-switch-tab" tab-switch="statistics"></div>
+    </div>
     <div class="tabbar">
         <button class="tab active macoshackresize tab-main-button" tab-switch="main" i18n="popup_tab_main"></button>
         <button class="tab macoshackresize tab-stats-button" tab-switch="statistics" i18n="popup_tab_statistics"></button>
     </div>
-    <div class="tabstack">
-        <div class="tab-main active tab-switch-tab" tab-switch="main"></div>
-        <div class="tab-statistics tab-switch-tab" tab-switch="statistics"></div>
+
+    <div class="tabstack-bottom">
+        <!--Actions-->
+        <div id="action-open-assistant-template" style="display: none;">
+            <div class="action openAssistant">
+                <span class="act-icon"><img src="images/block-ad.svg" class="icon-block-ad" alt=""></span>
+                <span class="act-name" i18n="popup_block_site_ads"></span>
+            </div>
+        </div>
+
+        <div id="action-openFilteringLog-template" style="display: none;">
+            <div class="action siteReport">
+                <span class="act-icon"><img src="images/sandwich.svg" class="icon-sandwich" alt=""></span>
+                <span class="act-name" i18n="popup_open_filtering_log"></span>
+            </div>
+        </div>
+
+        <div id="action-site-report-template" style="display: none;">
+            <div class="action siteReport">
+                <span class="act-icon"><img src="images/icon-shield.svg" class="icon-shield" alt=""></span>
+                <span class="act-name" i18n="popup_security_report"></span>
+            </div>
+        </div>
+
+        <div id="action-open-abuse-template" style="display: none;">
+            <div class="action openAbuse">
+                <span class="act-icon"><img src="images/thumb-down.svg" class="icon-thumb-down" alt=""></span>
+                <span class="act-name" i18n="popup_abuse_site"></span>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -73,7 +105,6 @@
         <div class="total blocked-all"></div>
         <div class="blocked">
             <span class="blocked-tab"></span>
-            <img src="images/magnifier-white.svg" class="icon-magnifying openFilteringLog" alt="">
         </div>
     </div>
 </div>
@@ -116,14 +147,6 @@
     <div class="error-msg"></div>
 </div>
 
-<!--Actions-->
-<div id="action-open-assistant-template" style="display: none;">
-    <div class="action openAssistant">
-        <span class="act-icon"><img src="images/block-ad.svg" class="icon-block-ad" alt=""></span>
-        <span class="act-name" i18n="popup_block_site_ads"></span>
-    </div>
-</div>
-
 <!--Statistics-->
 <div id="filtering-statistics-template" style="display: none;">
     <div class="statistics-wrapper">
@@ -145,20 +168,6 @@
         <div class="title" i18n="popup_statistics_analytics"></div>
         <ul id="analytics-blocked-types-values">
         </ul>
-    </div>
-</div>
-
-<div id="action-open-abuse-template" style="display: none;">
-    <div class="action openAbuse">
-        <span class="act-icon"><img src="images/thumb-down.svg" class="icon-thumb-down" alt=""></span>
-        <span class="act-name" i18n="popup_abuse_site"></span>
-    </div>
-</div>
-
-<div id="action-site-report-template" style="display: none;">
-    <div class="action siteReport">
-        <span class="act-icon"><img src="images/icon-shield.svg" class="icon-shield" alt=""></span>
-        <span class="act-name" i18n="popup_security_report"></span>
     </div>
 </div>
 

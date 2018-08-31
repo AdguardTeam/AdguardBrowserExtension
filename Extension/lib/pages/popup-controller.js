@@ -111,6 +111,7 @@ PopupController.prototype = {
         var stack = parent.querySelector('.tabstack');
 
         var containerMain = parent.querySelector('.tab-main');
+        var containerBottom = parent.querySelector('.tabstack-bottom');
         while(containerMain.firstChild) {
             containerMain.removeChild(containerMain.firstChild);
         }
@@ -175,7 +176,7 @@ PopupController.prototype = {
         this._renderHeader(containerMain, tabInfo);
         this._renderFilteringControls(containerMain, tabInfo);
         this._renderStatus(containerMain, tabInfo);
-        this._renderActions(containerMain, tabInfo);
+        this._renderActions(containerBottom, tabInfo);
         this._renderMessage(containerMain, tabInfo);
         this._renderStats(containerStats);
         this._renderFooter(parent, tabInfo);
