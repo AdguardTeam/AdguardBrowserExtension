@@ -322,33 +322,34 @@ PopupController.prototype = {
         return result;
     },
 
-    _selectBadRequestsStatsData: function (stats, range) {
+    _selectRequestsStatsData: function (stats, range, type) {
         var result = [];
-
+        const typeSelector = stats.blockedTypes[type] ? stats.blockedTypes[type] : 'total';
         switch (range) {
             case 'day':
                 stats.today.forEach(function (d) {
-                    result.push(d.total);
+                    result.push(d[typeSelector]);
                 });
                 break;
             case 'week':
                 stats.lastWeek.forEach(function (d) {
-                    result.push(d.total);
+                    result.push(d[typeSelector]);
                 });
                 break;
             case 'month':
                 stats.lastMonth.forEach(function (d) {
-                    result.push(d.total);
+                    result.push(d[typeSelector]);
                 });
                 break;
             case 'year':
                 stats.lastYear.forEach(function (d) {
-                    result.push(d.total);
+                    result.push(d[typeSelector]);
                 });
                 break;
+            default:
+                break;
         }
-
-        return result;
+        return result.map(val => val === undefined ? 0 : val);
     },
 
     DAYS_OF_WEEK: (function () {
@@ -452,8 +453,8 @@ PopupController.prototype = {
         };
     },
 
-    _renderBadRequestsGraphs: function (stats, range) {
-        var statsData = this._selectBadRequestsStatsData(stats, range);
+    _renderRequestsGraphs: function (stats, range, type) {
+        var statsData = this._selectRequestsStatsData(stats, range, type);
         var categoriesLines = this._getCategoriesLines(statsData, range);
         var categories = categoriesLines.categories;
         var lines = categoriesLines.lines;
@@ -562,70 +563,6 @@ PopupController.prototype = {
         return columns;
     },
 
-    _renderRequestTypesGraphs: function (stats, range) {
-        var columns = this._buildRequestTypesColumns(stats, range);
-
-        var chart = c3.generate({
-            size: {
-                height: 230
-            },
-            data: {
-                // columns: columns,
-                x: 'x',
-                columns: [
-                    columns.x,
-                    columns.values
-                ],
-                type: 'bar',
-                color: function(_defaultColor, item) {
-                    return ["#53C166", "#5093B0", "#FF9F14", '#D4D5D4'][item.index % 4];
-                },
-                labels: false
-            },
-            bar: {
-                width: {
-                    ratio: 0.5
-                }
-            },
-            axis: {
-                rotated: true,
-                x: {
-                    type: 'category',
-                    tick: {
-                        fit: true,
-                        multiline: false
-                    }
-                },
-                y: {
-                    tick: {
-                        rotate: 50
-                    }
-                }
-            },
-            padding: {
-                right: 20
-            },
-            grid: {
-                focus: {
-                    show: false
-                },
-                y: {
-                    'show': true
-                }
-            },
-            tooltip: {
-                grouped: true,
-                contents: function(d, defaultTitleFormat, defaultValueFormat, color) {
-                    d = d[0].value;
-                    return '<div id="tooltip" class="chart__tooltip chart__tooltip--bar">' + d + '</div>';
-                }
-            },
-            legend: {
-                show: false
-            }
-        });
-    },
-
     _renderAnalyticsBlock: function (stats, range) {
         var statsData = this._selectRequestTypesStatsData(stats, range);
 
@@ -636,7 +573,6 @@ PopupController.prototype = {
 
         for (var type in stats.blockedTypes) {
             var number = statsData[stats.blockedTypes[type]] ? statsData[stats.blockedTypes[type]] : 0;
-
             var blockedTypeItem = htmlToElement(`
                 <li>
                     <span class="key">${this._localizeBlockedType(type)}</span>
@@ -649,12 +585,18 @@ PopupController.prototype = {
     },
 
     _renderStatsGraphs: function (stats, range, type) {
-        if (type === 'badRequests') {
-            this._renderBadRequestsGraphs(stats, range);
-        } else {
-            this._renderRequestTypesGraphs(stats, range);
-        }
+        /**
+         * Blocked requests types
+         */
+        const requestTypes = {
+            adsRequests: 'ADS',
+            trackersRequests: 'TRACKERS',
+            socialRequests: 'SOCIAL',
+            otherRequests: 'OTHERS',
+            totalRequests: 'total',
+        };
 
+        this._renderRequestsGraphs(stats, range, requestTypes[type]);
         this._renderAnalyticsBlock(stats, range);
     },
 
