@@ -413,11 +413,14 @@ var AntiBannerFilters = function (options) {
     function updateCategoryFiltersInfo(groupId) {
         var groupFilters = getFiltersByGroupId(groupId, loadedFiltersInfo.filters);
         var enabledFiltersCount = countEnabledFilters(groupFilters);
+        var groupFiltersCount = groupFilters.length;
 
         var element = getCategoryElement(groupId);
         var checkbox = getCategoryCheckbox(groupId);
 
-        element.querySelector('.desc').textContent = 'Enabled filters: ' + enabledFiltersCount;
+        if (groupFiltersCount > 0) {
+            element.querySelector('.desc').textContent = `Enabled filters: ${enabledFiltersCount}/${groupFiltersCount}`;
+        }
         CheckboxUtils.updateCheckbox([checkbox], enabledFiltersCount > 0);
     }
 
