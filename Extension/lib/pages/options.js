@@ -429,11 +429,13 @@ var AntiBannerFilters = function (options) {
                 <li id="category${category.groupId}" class="active">
                     <div class="block-type">
                         <div class="block-type__ico block-type__ico--${category.groupId}"></div>
-                        <a href="#antibanner${category.groupId}">${category.groupName}</a>
+                        <div class="block-type__desc">
+                            <a href="#antibanner${category.groupId}">${category.groupName}</a>
+                            <div class="desc desc--filters"></div>
+                        </div>
                     </div>
                     <div class="opt-state">
                         <div class="preloader"></div>
-                        <div class="desc"></div>
                         <input type="checkbox" name="groupId" value="${category.groupId}">
                     </div>
                 </li>`);
@@ -451,13 +453,16 @@ var AntiBannerFilters = function (options) {
 
         var deleteButton = '';
         if (showDeleteButton) {
-            deleteButton = `<a href="#" filterid="${filter.filterId}" class="remove-custom-filter-button">remove</a>`;
+            deleteButton = `<a href="#" filterid="${filter.filterId}" class="remove-custom-filter-button" i18n="remove_custom_filter">delete filter</a>`;
         }
 
         return `
             <li id="filter${filter.filterId}">
                 <div class="opt-name">
-                    <div class="title">${filter.name}</div>
+                    <div class="title-wr">
+                        <div class="title">${filter.name}</div>
+                        ${deleteButton}
+                    </div>
                     <div class="desc">${filter.description}</div>
                     <div class="opt-name__info">
                         <div class="opt-name__info-labels">
@@ -471,7 +476,6 @@ var AntiBannerFilters = function (options) {
                 </div>
                 <div class="opt-state">
                     <div class="preloader"></div>
-                    ${deleteButton}
                     <a class="icon-home" target="_blank" href="${filter.homepage}"></a>
                     <input type="checkbox" name="filterId" value="${filter.filterId}" ${enabled ? 'checked="checked"' : ''}>
                 </div>
@@ -520,7 +524,7 @@ var AntiBannerFilters = function (options) {
         const renderOptions = () => {
             if (isCustomFilters) {
                 return `<div class="settings-actions">
-                            <a href="#" class="add-custom-filter-button" i18n="options_add_custom_filter">Add custom filter</a>
+                            <a href="#" class="add-custom-filter-button button button--green button--link" i18n="options_add_custom_filter">Add custom filter</a>
                         </div>`;
             }
             return '';
