@@ -224,16 +224,13 @@
   color: #D6D6D6;
 }
 .opts-list li.active {
-  color: #4d4d4d;
+  color: #454545;
 }
 .opts-list li.active .opt-name__tag{
   color: #66b574;
 }
 .opts-list li.active .warn-message{
   color: #e85037;
-}
-.opts-list li.active a{
-  color: #409e56;
 }
 .opts-list li:first-child {
   border-top-width: 1px;
@@ -259,6 +256,10 @@
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
+}
+.block-type__desc {
+  display: flex;
+  flex-direction: column;
 }
 .block-type__ico {
   width: 61px;
@@ -302,6 +303,11 @@
 
 .opts-list .block-type a {
   color: #66b574;
+  text-decoration: none;
+  margin-bottom: 5px;
+}
+.desc--filters {
+  color: rgba(77, 77, 77, 0.5);
 }
 .opts-list .opt-state {
   display: -webkit-box;
@@ -533,6 +539,35 @@ li.active .toggler:before {
 }
 .button--transparent:hover {
   background-color: rgba(0, 0, 0, .05);
+}
+.button--link {
+  padding: 0 40px;
+  color: #fff;
+  display: inline-block;
+  text-decoration: none;
+  min-width: 175px;
+}
+.wlimit .settings-actions .button--link {
+  padding: 0 40px;
+}
+.settings-actions .button--link {
+  color: #fff;
+}
+.button--green-bd {
+  padding: 0 40px;
+  color: #66b574;
+  box-shadow: inset 0 0 0 1px #66b574;
+  display: inline-block;
+  text-decoration: none;
+  min-width: 175px;
+  transition: 0.3s ease background-color;
+}
+.button--green-bd:hover {
+  background-color: rgba(239, 239, 239, 0.5);
+}
+.settings-actions .button--green-bd {
+  color: #66b574;
+  margin-left: 35px;
 }
 .account {
   display: none;
@@ -1137,13 +1172,16 @@ li.active .toggler:before {
   visibility: visible;
   opacity: 1;
 }
-
-.remove-custom-filter-button {
-  font-size: 0;
-  width: 18px;
-  height: 18px;
-  margin-left: 15px;
+.title-wr {
+  display: flex;
+  align-items: flex-end;
+}
+.opts-list li .remove-custom-filter-button {
+  font-size: 12px;
+  margin-left: 12px;
+  color: #df3812;
+  text-decoration: underline;
   cursor: pointer;
-  background-size: contain;
-  background-image: url("../images/icon-trash.svg");
+  position: relative;
+  top: -3px;
 }
