@@ -517,6 +517,15 @@ var AntiBannerFilters = function (options) {
             return htmlToElement(getEmptyCustomFiltersTemplate(category));
         }
 
+        const renderOptions = () => {
+            if (isCustomFilters) {
+                return `<div class="settings-actions">
+                            <a href="#" class="add-custom-filter-button" i18n="options_add_custom_filter">Add custom filter</a>
+                        </div>`;
+            }
+            return '';
+        };
+
         var pageTitleEl = getPageTitleTemplate(category.groupName);
 
         var filtersList = '';
@@ -539,6 +548,7 @@ var AntiBannerFilters = function (options) {
                         ${filtersList}
                     </ul>
                 </div>
+                ${renderOptions()}
             </div>
         `);
     }
@@ -567,7 +577,10 @@ var AntiBannerFilters = function (options) {
             emptyFiltersAddCustomButton.addEventListener('click', addCustomFilter);
         }
 
-        document.querySelector('#addCustomFilter').addEventListener('click', addCustomFilter);
+        document.querySelectorAll('.add-custom-filter-button').forEach((el) => {
+            el.addEventListener('click', addCustomFilter);
+        });
+
         document.querySelectorAll('.remove-custom-filter-button').forEach(function (el) {
             el.addEventListener('click', removeCustomFilter);
         });
