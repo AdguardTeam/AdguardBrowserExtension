@@ -761,7 +761,9 @@ PopupController.prototype = {
                 parent.querySelectorAll('.tab-switch-tab').forEach(function (tab) {
                     tab.style.display = 'none';
                 });
-                parent.querySelector('.tab-switch-tab[tab-switch="' + attr + '"]').style.display = 'block';
+                parent.querySelectorAll('.tab-switch-tab[tab-switch="' + attr + '"]').forEach(function (tab) {
+                    tab.style.display = 'block';
+                });
             });
         });
 
@@ -771,13 +773,6 @@ PopupController.prototype = {
         });
         this._bindAction(parent, '.statistics-select-type', 'change', function () {
             self._renderStatsBlock();
-        });
-
-        this._bindAction(parent, '.show-full-stats', 'click', function () {
-            document.querySelector('.analytics').style.display = 'block';
-        });
-        this._bindAction(parent, '.hide-full-stats', 'click', function (e) {
-            document.querySelector('.analytics').style.display = 'none';
         });
     },
 

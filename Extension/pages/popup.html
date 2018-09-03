@@ -22,6 +22,10 @@
 <div class="widjet-popup">
     <div class="widjet-popup__header">
         <div class="widjet-popup__header-logo"></div>
+        <div class="widjet-popup__header-btns">
+            <button class="cir-btn pause changeProtectionStateDisable"><img src="images/icon-pause.svg" alt=""></button>
+            <button class="cir-btn settings openSettings"><img src="images/icon-settings.svg" alt=""></button>
+        </div>
     </div>
     <div class="tabstack">
         <div class="tab-main active tab-switch-tab" tab-switch="main"></div>
@@ -32,7 +36,7 @@
         <button class="tab macoshackresize tab-stats-button" tab-switch="statistics" i18n="popup_tab_statistics"></button>
     </div>
 
-    <div class="tabstack-bottom">
+    <div class="tabstack-bottom tab-switch-tab" tab-switch="main">
         <!--Actions-->
         <div id="action-open-assistant-template" style="display: none;">
             <div class="action openAssistant">
@@ -42,7 +46,7 @@
         </div>
 
         <div id="action-openFilteringLog-template" style="display: none;">
-            <div class="action siteReport">
+            <div class="action openFilteringLog">
                 <span class="act-icon"><img src="images/sandwich.svg" class="icon-sandwich" alt=""></span>
                 <span class="act-name" i18n="popup_open_filtering_log"></span>
             </div>
@@ -61,7 +65,12 @@
                 <span class="act-name" i18n="popup_abuse_site"></span>
             </div>
         </div>
-
+    </div>
+    <div class="tabstack-bottom tab-switch-tab" style="display: none;" tab-switch="statistics">
+        <div class="analytics">
+            <ul id="analytics-blocked-types-values">
+            </ul>
+        </div>
     </div>
 </div>
 
@@ -102,19 +111,17 @@
 
 <div id="filtering-default-header-template" style="display: none;">
     <div class="head">
-        <div class="total blocked-all"></div>
         <div class="blocked">
             <span class="blocked-tab"></span>
         </div>
+        <div class="total blocked-all"></div>
     </div>
 </div>
 
 <!--Filtering State Checkbox-->
 <div id="filtering-default-control-template" style="display: none;">
     <div class="control-buttons">
-        <button class="cir-btn settings openSettings"><img src="images/icon-settings.svg" alt=""></button>
         <button class="cir-btn pause changeProtectionStateDisable"><img src="images/icon-pause.svg" alt=""></button>
-        <!--<div class="error-win"></div>-->
         <div class="center-switch">
             <div class="switch-btn changeProtectionStateEnable changeDocumentWhiteListed"></div>
         </div>
@@ -123,17 +130,13 @@
 
 <div id="filtering-disabled-control-template" style="display: none;">
     <div class="control-buttons">
-        <button class="cir-btn settings openSettings"><img src="images/icon-settings.svg" alt=""></button>
         <button class="cir-btn pause changeProtectionStateDisable"><img src="images/icon-pause.svg" alt=""></button>
-        <div class="error-win"></div>
     </div>
 </div>
 
 <div id="filtering-site-exception-control-template" style="display: none;">
     <div class="control-buttons">
-        <button class="cir-btn settings openSettings"><img src="images/icon-settings.svg" alt=""></button>
         <button class="cir-btn pause changeProtectionStateDisable"><img src="images/icon-pause.svg" alt=""></button>
-        <div class="error-win"></div>
     </div>
 </div>
 
@@ -165,13 +168,6 @@
         </select>
     </div>
     <div id="chart" class="chart"></div>
-    <button class="full-stats show-full-stats" i18n="popup_statistics_full_statistics"></button>
-    <div class="analytics" style="display: none;">
-        <div class="close hide-full-stats"><img src="images/arrow-up.svg" class="arrow-up" alt=""></div>
-        <div class="title" i18n="popup_statistics_analytics"></div>
-        <ul id="analytics-blocked-types-values">
-        </ul>
-    </div>
 </div>
 
 <!--Footer-->
