@@ -31,11 +31,10 @@ PopupController.prototype = {
      * @param options
      */
     render: function (tabInfo, options) {
-
         this.tabInfo = tabInfo;
         this.options = options || {};
 
-        //render
+        // render
         this._renderPopup(tabInfo);
 
         // Bind actions
@@ -45,9 +44,9 @@ PopupController.prototype = {
     },
 
     resizePopupWindow: function () {
-        var widjet = document.querySelector('.widjet-popup');
-        var width = widjet.offsetWidth;
-        var height = widjet.offsetHeight;
+        var widget = document.querySelector('.widget-popup');
+        var width = widget.offsetWidth;
+        var height = widget.offsetHeight;
         popupPage.resizePopup(width, height);
     },
 
@@ -84,7 +83,7 @@ PopupController.prototype = {
     },
 
     openAssistantInTab: function () {
-        popupPage.sendMessage({type: 'openAssistant'});
+        popupPage.sendMessage({ type: 'openAssistant' });
     },
 
     openFilteringLog: function (tabId) {
@@ -101,7 +100,12 @@ PopupController.prototype = {
 
     _renderPopup: function (tabInfo) {
 
-        var parent = document.querySelector('.widjet-popup');
+        var parent = document.querySelector('.widget-popup');
+
+        var containerHeader = document.querySelector('.widget-popup__header');
+        while (containerHeader.firstChild) {
+            containerHeader.removeChild(containerHeader.firstChild);
+        }
 
         var footer = parent.querySelector('.footer');
         if (footer) {
@@ -111,13 +115,17 @@ PopupController.prototype = {
         var stack = parent.querySelector('.tabstack');
 
         var containerMain = parent.querySelector('.tab-main');
-        var containerBottom = parent.querySelector('.tabstack-bottom');
-        while(containerMain.firstChild) {
+        while (containerMain.firstChild) {
             containerMain.removeChild(containerMain.firstChild);
         }
 
+        var containerBottom = parent.querySelector('.tabstack-bottom.tab-main');
+        while (containerBottom.firstChild) {
+            containerBottom.removeChild(containerBottom.firstChild);
+        }
+
         var containerStats = parent.querySelector('.tab-statistics');
-        while(containerStats.firstChild) {
+        while (containerStats.firstChild) {
             containerStats.removeChild(containerStats.firstChild);
         }
 
@@ -148,6 +156,8 @@ PopupController.prototype = {
         }
 
         // Header
+        this.filteringHeader = this._getTemplate('filtering-header-template');
+        // TODO rename, because this is not popup headers
         this.filteringIntegrationHeader = this._getTemplate('filtering-integration-header-template');
         this.filteringDefaultHeader = this._getTemplate('filtering-default-header-template');
 
@@ -160,9 +170,11 @@ PopupController.prototype = {
         this.actionOpenAssistant = this._getTemplate('action-open-assistant-template');
         this.actionOpenAbuse = this._getTemplate('action-open-abuse-template');
         this.actionOpenSiteReport = this._getTemplate('action-site-report-template');
+        this.actionOpenFilteringLog = this._getTemplate('action-open-filtering-log-template');
 
         // Status Text
         this.filteringStatusText = this._getTemplate('filtering-status-template');
+
         // Message text
         this.filteringMessageText = this._getTemplate('filtering-message-template');
 
@@ -173,7 +185,8 @@ PopupController.prototype = {
         this.footerDefault = this._getTemplate('footer-default-template');
         this.footerIntegration = this._getTemplate('footer-integration-template');
 
-        this._renderHeader(containerMain, tabInfo);
+        this._renderHeader(containerHeader, tabInfo);
+        this._renderMain(containerMain, tabInfo);
         this._renderFilteringControls(containerMain, tabInfo);
         this._renderStatus(containerMain, tabInfo);
         this._renderActions(containerBottom, tabInfo);
@@ -193,6 +206,12 @@ PopupController.prototype = {
     },
 
     _renderHeader: function (container, tabInfo) {
+        var template = this.filteringHeader;
+        this._appendTemplate(container, template);
+        // TODO make different buttons visible use tabInfo
+    },
+
+    _renderMain: function (container, tabInfo) {
 
         function formatNumber(v) {
             return v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
@@ -207,12 +226,12 @@ PopupController.prototype = {
             var totalBlocked = template.querySelector('.blocked-all');
             i18n.translateElement(tabBlocked, 'popup_tab_blocked', [formatNumber(tabInfo.totalBlockedTab || 0)]);
             i18n.translateElement(totalBlocked, 'popup_tab_blocked_all', [formatNumber(tabInfo.totalBlocked || 0)]);
-            var closestWidjetFilter = tabBlocked.closest('.widjet-popup-filter');
-            if (closestWidjetFilter) {
+            var closestwidgetFilter = tabBlocked.closest('.widget-popup-filter');
+            if (closestwidgetFilter) {
                 if (tabInfo.totalBlocked >= 10000000) {
-                    closestWidjetFilter.classList.add('db');
+                    closestwidgetFilter.classList.add('db');
                 } else {
-                    closestWidjetFilter.classList.remove('db');
+                    closestwidgetFilter.classList.remove('db');
                 }
             }
         }
@@ -233,9 +252,6 @@ PopupController.prototype = {
             }
         }
 
-        if (tabInfo.urlFilteringDisabled || tabInfo.applicationFilteringDisabled || tabInfo.adguardDetected) {
-            template.querySelector('.pause').style.display = 'none';
-        }
         if (tabInfo.adguardDetected) {
             template.querySelector('.settings').style.display = 'none';
         }
@@ -245,6 +261,7 @@ PopupController.prototype = {
 
     _renderStatus: function (container, tabInfo) {
         var template = this.filteringStatusText;
+        var url = tabInfo.url;
 
         var text = '';
         if (tabInfo.urlFilteringDisabled) {
@@ -263,12 +280,20 @@ PopupController.prototype = {
             }
         }
 
-        i18n.translateElement(template.childNodes[1], text);
+        var statusElement = template.querySelector('.status');
+        i18n.translateElement(statusElement, text);
+
+        var currentSiteElement = template.querySelector('.current-site');
+        currentSiteElement.textContent = url;
+
+        if (tabInfo.urlFilteringDisabled) {
+            currentSiteElement.style.display = 'none';
+        }
+
         this._appendTemplate(container, template);
     },
 
     _renderMessage: function (container, tabInfo) {
-
         var text;
         if (tabInfo.urlFilteringDisabled) {
             text = 'popup_site_filtering_disabled';
@@ -627,6 +652,7 @@ PopupController.prototype = {
         el.classList.add('actions');
 
         this._appendTemplate(el, this.actionOpenAssistant);
+        this._appendTemplate(el, this.actionOpenFilteringLog);
         if (tabInfo.applicationFilteringDisabled || tabInfo.documentWhiteListed) {
             // May be show later
             this.actionOpenAssistant.style.display = 'none';
@@ -654,8 +680,7 @@ PopupController.prototype = {
     },
 
     _bindActions: function () {
-
-        var parent = document.querySelector('.widjet-popup');
+        var parent = document.querySelector('.widget-popup');
 
         var self = this;
         this._bindAction(parent, '.siteReport', 'click', function (e) {
@@ -736,15 +761,21 @@ PopupController.prototype = {
         }
 
         // Disable filtering
-        this._bindAction(parent, '.changeProtectionStateDisable', 'click', function (e) {
-            e.preventDefault();
-            changeProtectionState(true);
+        var changeProtectionStateDisableButtons = document.querySelectorAll('.changeProtectionStateDisable');
+        changeProtectionStateDisableButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                changeProtectionState(true);
+            });
         });
 
         // Enable filtering
-        this._bindAction(parent, '.changeProtectionStateEnable', 'click', function (e) {
-            e.preventDefault();
-            changeProtectionState(false);
+        var changeProtectionStateEnableButtons = document.querySelectorAll('.changeProtectionStateEnable');
+        changeProtectionStateEnableButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                changeProtectionState(false);
+            });
         });
 
         // Tabs
