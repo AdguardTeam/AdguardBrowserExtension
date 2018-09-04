@@ -36,6 +36,17 @@ a {
 .widget-popup__header-btns {
   display: flex;
 }
+.widget-popup__header-btns button {
+  outline: none;
+}
+.widget-popup__header-btns .pause,
+.widget-popup__header-btns .start {
+  display: none;
+}
+.status-checkmark .widget-popup__header-btns .pause,
+.status-paused .widget-popup__header-btns .start {
+  display: flex;
+}
 .tabbar {
   overflow: hidden;
 }
@@ -194,9 +205,19 @@ a {
 }
 .tab-main .status {
   font-size: 14px;
-  padding: 40px 0;
+  padding-bottom: 40px;
   text-align: center;
   font-weight: 600;
+}
+.current-site {
+  padding-top: 40px;
+  padding-bottom: 8px;
+  max-width: 260px;
+  text-align: center;
+  margin: 0 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .control-buttons {
   position: relative;
@@ -273,7 +294,7 @@ a {
   width: 14px;
 }
 .actions {
-  padding: 17px 0 24px;
+  padding: 17px 0;
 }
 .actions .action {
   padding: 9px 20px;
@@ -316,6 +337,7 @@ a {
   justify-content: center;
   align-items: center;
 }
+
 .tab-statistics {
   position: relative;
 }

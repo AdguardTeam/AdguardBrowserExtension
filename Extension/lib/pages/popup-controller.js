@@ -130,6 +130,7 @@ PopupController.prototype = {
         }
 
         stack.setAttribute('class', 'tabstack');
+        parent.setAttribute('class', 'widget-popup');
 
         // Hide stats for integration mode
         if (tabInfo.adguardDetected) {
@@ -143,6 +144,7 @@ PopupController.prototype = {
             stack.classList.add('error-sad');
         } else if (tabInfo.applicationFilteringDisabled) {
             stack.classList.add('status-paused');
+            parent.classList.add('status-paused');
         } else {
             if (!tabInfo.canAddRemoveRule) {
                 stack.classList.add('status-error error-filter');
@@ -151,6 +153,7 @@ PopupController.prototype = {
                     stack.classList.add('status-cross');
                 } else {
                     stack.classList.add('status-checkmark');
+                    parent.classList.add('status-checkmark');
                 }
             }
         }
