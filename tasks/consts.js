@@ -1,5 +1,10 @@
 
-export const LOCALES = ['en', 'ru', 'de', 'tr', 'uk', 'pl', 'pt_BR', 'pt_PT', 'ko', 'zh_CN', 'sr-Latn', 'fr', 'sk', 'hy', 'es_419', 'it', 'id', 'nl', 'bg', 'vi', 'hr', 'hu', 'ca', 'zh_TW', 'da', 'sv', 'ms', 'ar', 'ro', 'sr', 'fa', 'ja', 'bg-BG', 'el', 'cs', 'fi', 'mk-MK',  'he'];
+export const LOCALES = ['en', 'ru', 'de', 'tr', 'uk', 'pl', 'pt_BR', 'pt_PT', 'ko', 'zh_CN', 'sr-Latn', 'fr', 'sk', 'hy', 'es_419', 'it', 'id', 'nl', 'bg', 'vi', 'hr', 'hu', 'ca', 'zh_TW', 'da', 'sv', 'ms', 'ar', 'ro', 'sr', 'fa', 'ja', 'bg-BG', 'el', 'cs', 'fi', 'mk-MK', 'he', 'no'];
+
+export const LOCALES_PAIRS = {
+    no: 'nb',
+    nb: 'no',
+};
 
 export const LAST_ADGUARD_FILTER_ID = 14;
 
