@@ -1162,6 +1162,7 @@ var Settings = function () {
     if (filtersUpdatePeriodSelect) {
         filtersUpdatePeriodSelect.addEventListener('change', function (e) {
             setFiltersUpdatePeriod(e.currentTarget.value);
+            filtersUpdatePeriodSelect.value === '0' ? filtersUpdatePeriodSelect.parentNode.classList.remove('active') : filtersUpdatePeriodSelect.parentNode.classList.add('active');
         });
     }
 
@@ -1179,6 +1180,7 @@ var Settings = function () {
         if (!filtersUpdatePeriodSelect) {
             return;
         }
+        updatePeriod === 0 ? filtersUpdatePeriodSelect.parentNode.classList.remove('active') : filtersUpdatePeriodSelect.parentNode.classList.add('active');
         const optionsSelectHtml = selectOptions.map(selectOption => {
             const { name, value } = selectOption;
             return `<option value="${value}">${name}</option>`;
