@@ -8,7 +8,7 @@ import path from 'path';
 import gulp from 'gulp';
 import download from 'gulp-download2';
 import md5 from 'gulp-hash-creator';
-import { LOCALES, LOCALES_DIR, PRIVATE_FILES, LOCALES_PAIRS } from './consts';
+import { ONESKY_LOCALES, LOCALES_DIR, PRIVATE_FILES, LOCALE_PAIRS } from './consts';
 import Logs from './log';
 
 const logs = new Logs();
@@ -21,9 +21,9 @@ const hashString = (stringContent) => {
 
 const prepare = () => {
     let options = {
-        locales: LOCALES,
+        locales: ONESKY_LOCALES,
         sourceFile: 'messages.json',
-        localesPairs: LOCALES_PAIRS,
+        localePairs: LOCALE_PAIRS,
     };
 
     let oneskyapp;
@@ -51,11 +51,8 @@ const prepare = () => {
         url.push('&timestamp=' + timestamp);
         url.push('&dev_hash=' + hashString(timestamp + options.secretKey));
 
-        /**
-         * save 'no' localization as 'nb' because firefox doesn't have language pack for 'no' locale,
-         * but chrome accepts 'nb' localization
-         */
-        localization = options.localesPairs[localization] || localization;
+        // choose locale code for the extension
+        localization = options.localePairs[localization] || localization;
         urls.push({
             file: `${localization}/${options.sourceFile}`,
             url: url.join(''),
