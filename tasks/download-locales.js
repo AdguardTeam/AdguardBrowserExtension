@@ -35,7 +35,6 @@ const prepare = () => {
     let options = {
         locales: LOCALES,
         sourceFile: 'messages.json',
-        localePairs: LOCALE_PAIRS,
     };
 
     let oneskyapp;

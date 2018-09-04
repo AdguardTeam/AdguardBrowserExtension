@@ -123,7 +123,7 @@ const getLocalesToFirefoxInstallRdf = () => {
         sb.push('\t\t<em:description>' + messages.description.message + '</em:description>' + os.EOL);
         sb.push('\t</Description>' + os.EOL);
         sb.push('</em:localized>' + os.EOL);
-    })
+    });
 
     return sb.join('');
 };
