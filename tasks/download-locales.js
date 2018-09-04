@@ -8,8 +8,20 @@ import path from 'path';
 import gulp from 'gulp';
 import download from 'gulp-download2';
 import md5 from 'gulp-hash-creator';
-import { ONESKY_LOCALES, LOCALES_DIR, PRIVATE_FILES, LOCALE_PAIRS } from './consts';
+import { LOCALES, LOCALES_DIR, PRIVATE_FILES } from './consts';
 import Logs from './log';
+
+/**
+ * We use this pairs because we have different locale codes in the onesky and the extension
+ */
+export const LOCALE_PAIRS = {
+    /**
+     * Norvegian language locale code in oneskyapp is 'no'
+     * chrome recognizes both locale code 'nb' and 'no',
+     * but firefox recognizes only 'nb'
+     */
+    nb: 'no',
+};
 
 const logs = new Logs();
 
@@ -21,7 +33,7 @@ const hashString = (stringContent) => {
 
 const prepare = () => {
     let options = {
-        locales: ONESKY_LOCALES,
+        locales: LOCALES,
         sourceFile: 'messages.json',
         localePairs: LOCALE_PAIRS,
     };
@@ -43,16 +55,20 @@ const prepare = () => {
         const timestamp = Math.round(new Date().getTime() / 1000);
         let url = [];
 
+        /**
+         * GET oneskyapp locale code
+         */
+        const oneSkyLocalization = LOCALE_PAIRS[localization] || localization;
+
         url.push(options.url + options.projectId);
-        url.push('/translations?locale=' + localization);
+        url.push('/translations?locale=' + oneSkyLocalization);
         url.push('&source_file_name=' + options.sourceFile);
-        url.push('&export_file_name=' + localization + '.json');
+        url.push('&export_file_name=' + oneSkyLocalization + '.json');
         url.push('&api_key=' + options.apiKey);
         url.push('&timestamp=' + timestamp);
         url.push('&dev_hash=' + hashString(timestamp + options.secretKey));
 
         // choose locale code for the extension
-        localization = options.localePairs[localization] || localization;
         urls.push({
             file: `${localization}/${options.sourceFile}`,
             url: url.join(''),

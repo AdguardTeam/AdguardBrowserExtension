@@ -12,7 +12,7 @@ import fs from 'fs';
 import fse from 'fs-extra';
 import path from 'path';
 import gulp from 'gulp';
-import { BUILD_DIR, ONESKY_LOCALES, LOCALE_PAIRS, LOCALES_DIR, BRANCH_DEV, BRANCH_BETA, BRANCH_RELEASE, FIREFOX_LEGACY_UPDATE_URL, FIREFOX_LEGACY_ID_BETA, FIREFOX_EXTENSION_ID_DEV, FIREFOX_LEGACY } from './consts';
+import { BUILD_DIR, LOCALES, LOCALES_DIR, BRANCH_DEV, BRANCH_BETA, BRANCH_RELEASE, FIREFOX_LEGACY_UPDATE_URL, FIREFOX_LEGACY_ID_BETA, FIREFOX_EXTENSION_ID_DEV, FIREFOX_LEGACY } from './consts';
 import { version } from './parse-package';
 import zip from 'gulp-zip';
 import copyCommonFiles from './copy-common';
@@ -112,9 +112,7 @@ const createArchive = (done) => {
  */
 const getLocalesToFirefoxInstallRdf = () => {
     const sb = [];
-    ONESKY_LOCALES.forEach(locale => {
-        // get locale for extension
-        locale = LOCALE_PAIRS[locale] || locale;
+    LOCALES.forEach(locale => {
         const file = path.join(LOCALES_DIR, locale, 'messages.json');
         const messages = JSON.parse(fs.readFileSync(file));
 
@@ -135,9 +133,7 @@ const updateChromeManifest = (done) => {
 
     const sb = [os.EOL, os.EOL];
 
-    ONESKY_LOCALES.forEach(function (locale) {
-        // get locale for extension
-        locale = LOCALE_PAIRS[locale] || locale;
+    LOCALES.forEach(function (locale) {
         sb.push('locale adguard ' + locale.replace('_', '-') + ' ./chrome/locale/' + locale.replace('_', '-') + '/'  + os.EOL);
     });
 

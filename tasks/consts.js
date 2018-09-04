@@ -1,12 +1,4 @@
-export const ONESKY_LOCALES = ['en', 'ru', 'de', 'tr', 'uk', 'pl', 'pt_BR', 'pt_PT', 'ko', 'zh_CN', 'sr-Latn', 'fr', 'sk', 'hy', 'es_419', 'it', 'id', 'nl', 'bg', 'vi', 'hr', 'hu', 'ca', 'zh_TW', 'da', 'sv', 'ms', 'ar', 'ro', 'sr', 'fa', 'ja', 'bg-BG', 'el', 'cs', 'fi', 'mk-MK', 'he', 'no'];
-
-/**
- * We use this pairs because we have different locale codes in the onesky and the extension
- */
-export const LOCALE_PAIRS = {
-    no: 'nb',
-    nb: 'no',
-};
+export const LOCALES = ['en', 'ru', 'de', 'tr', 'uk', 'pl', 'pt_BR', 'pt_PT', 'ko', 'zh_CN', 'sr-Latn', 'fr', 'sk', 'hy', 'es_419', 'it', 'id', 'nl', 'bg', 'vi', 'hr', 'hu', 'ca', 'zh_TW', 'da', 'sv', 'ms', 'ar', 'ro', 'sr', 'fa', 'ja', 'bg-BG', 'el', 'cs', 'fi', 'mk-MK', 'he', 'nb'];
 
 export const LAST_ADGUARD_FILTER_ID = 14;
 
