@@ -738,14 +738,7 @@
                 }
                 var injection = injections.get(tabId, frameId);
                 if (injection && injection.jsScriptText) {
-                    try {
-                        adguard.tabs.executeScriptCode(tabId, frameId, injection.jsScriptText);
-                        // to prevent redundant jsScriptText injections we clean injected script
-                        injection.jsScriptText = '';
-                        injections.set(tabId, frameId, injection);
-                    } catch (e) {
-                        adguard.console.warn('Unable to inject jsScriptText in the tabId: {0}, frameId: {1}. Error text: {2}', tabId, frameId, e);
-                    }
+                    adguard.tabs.executeScriptCode(tabId, frameId, injection.jsScriptText);
                 }
             }
 
@@ -794,20 +787,10 @@
                     return;
                 }
                 if (injection.jsScriptText) {
-                    try {
-                        adguard.tabs.executeScriptCode(tabId, frameId, injection.jsScriptText);
-                        injection.jsScriptText = '';
-                    } catch (e) {
-                        adguard.console.warn('Unable to inject jsScriptText in the tabId: {0}, frameId: {1}. Error text: {2}', tabId, frameId, e);
-                    }
+                    adguard.tabs.executeScriptCode(tabId, frameId, injection.jsScriptText);
                 }
                 if (injection.cssText) {
-                    try {
-                        adguard.tabs.insertCssCode(tabId, frameId, injection.cssText);
-                        injection.cssText = '';
-                    } catch (e) {
-                        adguard.console.warn('Unable to inject cssText in the tabId: {0}, frameId: {1}. Error text: {2}', tabId, frameId, e);
-                    }
+                    adguard.tabs.insertCssCode(tabId, frameId, injection.cssText);
                 }
                 const mainFrameUrl = adguard.frames.getMainFrameUrl({ tabId: tabId });
                 if (isIframeWithoutSrc(frameUrl, frameId, mainFrameUrl)) {
