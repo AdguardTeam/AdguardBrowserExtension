@@ -766,6 +766,7 @@
                 if (requestType === adguard.RequestTypes.DOCUMENT && !injection) {
                     prepareInjection(details);
                     tryInject(details);
+                    return;
                 }
                 /**
                  * Sometimes it can happen that onCommited event fires earlier than onHeadersReceived
