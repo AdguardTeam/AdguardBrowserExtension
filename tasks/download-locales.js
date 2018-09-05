@@ -21,6 +21,12 @@ export const LOCALE_PAIRS = {
      * but firefox recognizes only 'nb'
      */
     nb: 'no',
+    /**
+     * Belarusian language locale code in oneskyapp is 'be-BY'
+     * chrome doesn't recognize belarusian language at all
+     * firefox regognizes 'be' code
+     */
+    be: 'be-BY',
 };
 
 const logs = new Logs();
