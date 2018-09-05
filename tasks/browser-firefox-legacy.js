@@ -12,11 +12,11 @@ import fs from 'fs';
 import fse from 'fs-extra';
 import path from 'path';
 import gulp from 'gulp';
-import {BUILD_DIR, LOCALES, LOCALES_DIR, BRANCH_DEV, BRANCH_BETA, BRANCH_RELEASE, FIREFOX_LEGACY_UPDATE_URL, FIREFOX_LEGACY_ID_BETA, FIREFOX_EXTENSION_ID_DEV, FIREFOX_LEGACY} from './consts';
-import {version} from './parse-package';
+import { BUILD_DIR, LOCALES, LOCALES_DIR, BRANCH_DEV, BRANCH_BETA, BRANCH_RELEASE, FIREFOX_LEGACY_UPDATE_URL, FIREFOX_LEGACY_ID_BETA, FIREFOX_EXTENSION_ID_DEV, FIREFOX_LEGACY } from './consts';
+import { version } from './parse-package';
 import zip from 'gulp-zip';
 import copyCommonFiles from './copy-common';
-import {preprocessAll, getExtensionNamePostfix} from './helpers';
+import { preprocessAll, getExtensionNamePostfix } from './helpers';
 import os from 'os';
 
 // set current type of build
@@ -25,7 +25,7 @@ const BRANCH = process.env.NODE_ENV || '';
 const paths = {
     firefox: path.join('Extension/browser/firefox/**/*'),
     filters: path.join('Extension/filters/firefox/**/*'),
-    dest: path.join(BUILD_DIR, BRANCH, (BRANCH === BRANCH_DEV) ? `firefox-legacy-${version}` : `firefox-legacy-${BRANCH}-${version}-unsigned`)
+    dest: path.join(BUILD_DIR, BRANCH, (BRANCH === BRANCH_DEV) ? `firefox-legacy-${version}` : `firefox-legacy-${BRANCH}-${version}-unsigned`),
 };
 
 const dest = {
@@ -112,7 +112,7 @@ const createArchive = (done) => {
  */
 const getLocalesToFirefoxInstallRdf = () => {
     const sb = [];
-    for (const locale of LOCALES) {
+    LOCALES.forEach(locale => {
         const file = path.join(LOCALES_DIR, locale, 'messages.json');
         const messages = JSON.parse(fs.readFileSync(file));
 
@@ -123,7 +123,7 @@ const getLocalesToFirefoxInstallRdf = () => {
         sb.push('\t\t<em:description>' + messages.description.message + '</em:description>' + os.EOL);
         sb.push('\t</Description>' + os.EOL);
         sb.push('</em:localized>' + os.EOL);
-    }
+    });
 
     return sb.join('');
 };
@@ -133,9 +133,9 @@ const updateChromeManifest = (done) => {
 
     const sb = [os.EOL, os.EOL];
 
-    for (const locale of LOCALES) {
+    LOCALES.forEach(function (locale) {
         sb.push('locale adguard ' + locale.replace('_', '-') + ' ./chrome/locale/' + locale.replace('_', '-') + '/'  + os.EOL);
-    }
+    });
 
     data += sb.join('');
 
