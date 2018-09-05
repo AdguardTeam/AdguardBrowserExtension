@@ -738,7 +738,14 @@
                 }
                 var injection = injections.get(tabId, frameId);
                 if (injection && injection.jsScriptText) {
-                    adguard.tabs.executeScriptCode(tabId, frameId, injection.jsScriptText);
+                    try {
+                        adguard.tabs.executeScriptCode(tabId, frameId, injection.jsScriptText);
+                        // to prevent redundant jsScriptText injections we clean injected script
+                        injection.jsScriptText = '';
+                        injections.set(tabId, frameId, injection);
+                    } catch (e) {
+                        adguard.console.warn('Unable to inject jsScriptText in the tabId: {0}, frameId: {1}. Error text: {2}', tabId, frameId, e);
+                    }
                 }
             }
 
@@ -757,6 +764,16 @@
                     return;
                 }
                 const injection = injections.get(tabId, frameId);
+                /**
+                 * webRequest api doesn't see requests served from service worker like they are served from the cache
+                 * https://bugs.chromium.org/p/chromium/issues/detail?id=766433
+                 * that's why we can't prepare injections when webRequest events fire
+                 * so we try to prepare this injection in the onCommit event again
+                 */
+                if (requestType === adguard.RequestTypes.DOCUMENT && !injection) {
+                    prepareInjection(details);
+                    tryInject(details);
+                }
                 /**
                  * Sometimes it can happen that onCommited event fires earlier than onHeadersReceived
                  * for example onCommited event for iframes in Firefox
@@ -777,10 +794,20 @@
                     return;
                 }
                 if (injection.jsScriptText) {
-                    adguard.tabs.executeScriptCode(tabId, frameId, injection.jsScriptText);
+                    try {
+                        adguard.tabs.executeScriptCode(tabId, frameId, injection.jsScriptText);
+                        injection.jsScriptText = '';
+                    } catch (e) {
+                        adguard.console.warn('Unable to inject jsScriptText in the tabId: {0}, frameId: {1}. Error text: {2}', tabId, frameId, e);
+                    }
                 }
                 if (injection.cssText) {
-                    adguard.tabs.insertCssCode(tabId, frameId, injection.cssText);
+                    try {
+                        adguard.tabs.insertCssCode(tabId, frameId, injection.cssText);
+                        injection.cssText = '';
+                    } catch (e) {
+                        adguard.console.warn('Unable to inject cssText in the tabId: {0}, frameId: {1}. Error text: {2}', tabId, frameId, e);
+                    }
                 }
                 const mainFrameUrl = adguard.frames.getMainFrameUrl({ tabId: tabId });
                 if (isIframeWithoutSrc(frameUrl, frameId, mainFrameUrl)) {
