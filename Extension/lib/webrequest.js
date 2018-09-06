@@ -758,6 +758,17 @@
                 }
                 const injection = injections.get(tabId, frameId);
                 /**
+                 * webRequest api doesn't see requests served from service worker like they are served from the cache
+                 * https://bugs.chromium.org/p/chromium/issues/detail?id=766433
+                 * that's why we can't prepare injections when webRequest events fire
+                 * so we try to prepare this injection in the onCommit event again
+                 */
+                if (requestType === adguard.RequestTypes.DOCUMENT && !injection) {
+                    prepareInjection(details);
+                    tryInject(details);
+                    return;
+                }
+                /**
                  * Sometimes it can happen that onCommited event fires earlier than onHeadersReceived
                  * for example onCommited event for iframes in Firefox
                  */
