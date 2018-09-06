@@ -55,11 +55,11 @@ PopupController.prototype = {
     },
 
     addWhiteListDomain: function (url) {
-        popupPage.sendMessage({type: 'addWhiteListDomainPopup', url: url});
+        popupPage.sendMessage({ type: 'addWhiteListDomainPopup', url: url });
     },
 
     removeWhiteListDomain: function (url) {
-        popupPage.sendMessage({type: 'removeWhiteListDomainPopup', url: url});
+        popupPage.sendMessage({ type: 'removeWhiteListDomainPopup', url: url });
     },
 
     changeApplicationFilteringDisabled: function (disabled) {
@@ -848,7 +848,7 @@ PopupController.prototype = {
         controller.resizePopupWindow();
     });
 
-    popupPage.sendMessage({type: 'getTabInfoForPopup'}, function (message) {
+    popupPage.sendMessage({ type: 'getTabInfoForPopup' }, function (message) {
         var onDocumentReady = function () {
             controller.render(message.frameInfo, message.options);
         };
@@ -859,5 +859,4 @@ PopupController.prototype = {
             document.addEventListener('DOMContentLoaded', onDocumentReady);
         }
     });
-
 })();
