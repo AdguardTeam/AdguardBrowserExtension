@@ -151,6 +151,7 @@ PopupController.prototype = {
             } else {
                 if (tabInfo.documentWhiteListed) {
                     stack.classList.add('status-cross');
+                    parent.classList.add('status-cross');
                 } else {
                     stack.classList.add('status-checkmark');
                     parent.classList.add('status-checkmark');
@@ -211,7 +212,6 @@ PopupController.prototype = {
     _renderHeader: function (container, tabInfo) {
         var template = this.filteringHeader;
         this._appendTemplate(container, template);
-        // TODO make different buttons visible use tabInfo
     },
 
     _renderMain: function (container, tabInfo) {
