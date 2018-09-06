@@ -404,10 +404,10 @@ utils.Stats.prototype.push = function (dataPoint) {
 };
 
 /** Safe console.error version */
-utils.logError = typeof console !== 'undefined' && console.error && Function.prototype.bind ? console.error.bind(window.console) : function () {};
+utils.logError = typeof console !== 'undefined' && console.error && Function.prototype.bind && console.error.bind ? console.error.bind(window.console) : console.error;
 
 /** Safe console.info version */
-utils.logInfo = typeof console !== 'undefined' && console.info && Function.prototype.bind ? console.info.bind(window.console) : function () {};
+utils.logInfo = typeof console !== 'undefined' && console.info && Function.prototype.bind && console.error.bind ? console.info.bind(window.console) : console.info;
 
 function isNumber(obj) {
     return typeof obj === 'number';
