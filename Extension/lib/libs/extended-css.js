@@ -1,4 +1,4 @@
-/*! extended-css - v1.0.12 - 2018-08-07
+/*! extended-css - v1.0.13 - 2018-09-06
 * https://github.com/AdguardTeam/ExtendedCss
 * Copyright (c) 2018 ; Licensed Apache License 2.0 */
 var ExtendedCss = (function(window) {
@@ -407,7 +407,7 @@ utils.Stats.prototype.push = function (dataPoint) {
 utils.logError = typeof console !== 'undefined' && console.error && Function.prototype.bind && console.error.bind ? console.error.bind(window.console) : console.error;
 
 /** Safe console.info version */
-utils.logInfo = typeof console !== 'undefined' && console.info && Function.prototype.bind && console.error.bind ? console.info.bind(window.console) : console.info;
+utils.logInfo = typeof console !== 'undefined' && console.info && Function.prototype.bind && console.info.bind ? console.info.bind(window.console) : console.info;
 
 function isNumber(obj) {
     return typeof obj === 'number';
