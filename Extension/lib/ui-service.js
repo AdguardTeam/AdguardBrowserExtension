@@ -569,6 +569,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             });
         } else {
             updateTabIconAndContextMenu(tab, true);
+            adguard.tabs.reload(tab.tabId);
         }
     };
 
@@ -586,6 +587,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             }
         } else {
             updateTabIconAndContextMenu(tab, true);
+            adguard.tabs.reload(tab.tabId);
         }
     };
 
