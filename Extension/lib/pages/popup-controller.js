@@ -796,7 +796,7 @@ PopupController.prototype = {
                     tab.style.display = 'none';
                 });
                 parent.querySelectorAll('.tab-switch-tab[tab-switch="' + attr + '"]').forEach(function (tab) {
-                    tab.style.display = 'block';
+                    tab.style.display = 'flex';
                 });
             });
         });
