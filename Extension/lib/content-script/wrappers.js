@@ -245,7 +245,16 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebSocket, shouldOverride
                 return new RealWebSocket();
             }
 
-            var websocket = new RealWebSocket(url, protocols);
+            /**
+             * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1090
+             * undefined 'protocols', somehow broke websocket wrapper on spotify
+             */
+            var websocket;
+            if (protocols) {
+                websocket = new RealWebSocket(url, protocols);
+            } else {
+                websocket = new RealWebSocket(url);
+            }
 
             // This is the key point: checking if this WS should be blocked or not
             // Don't forget that the type of 'websocket.url' is String, but 'url 'parameter might have another type.
