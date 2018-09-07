@@ -23,6 +23,11 @@
 var PopupController = function () {
 };
 
+// TODO what is the best place for this function?
+function formatNumber(v) {
+    return v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+}
+
 PopupController.prototype = {
 
     /**
@@ -51,7 +56,7 @@ PopupController.prototype = {
     },
 
     afterRender: function () {
-        //Should be overwritten
+        // Should be overwritten
     },
 
     addWhiteListDomain: function (url) {
@@ -63,23 +68,23 @@ PopupController.prototype = {
     },
 
     changeApplicationFilteringDisabled: function (disabled) {
-        popupPage.sendMessage({type: 'changeApplicationFilteringDisabled', disabled: disabled});
+        popupPage.sendMessage({ type: 'changeApplicationFilteringDisabled', disabled: disabled });
     },
 
     sendFeedback: function (url, topic, comment) {
-        popupPage.sendMessage({type: 'sendFeedback', url: url, topic: topic, comment: comment});
+        popupPage.sendMessage({ type: 'sendFeedback', url: url, topic: topic, comment: comment });
     },
 
     openSiteReportTab: function (url) {
-        popupPage.sendMessage({type: 'openSiteReportTab', url: url});
+        popupPage.sendMessage({ type: 'openSiteReportTab', url: url });
     },
 
     openAbuseTab: function (url) {
-        popupPage.sendMessage({type: 'openAbuseTab', url: url});
+        popupPage.sendMessage({ type: 'openAbuseTab', url: url });
     },
 
     openSettingsTab: function () {
-        popupPage.sendMessage({type: 'openSettingsTab'});
+        popupPage.sendMessage({ type: 'openSettingsTab' });
     },
 
     openAssistantInTab: function () {
@@ -87,19 +92,36 @@ PopupController.prototype = {
     },
 
     openFilteringLog: function (tabId) {
-        popupPage.sendMessage({type: 'openFilteringLog', tabId: tabId});
+        popupPage.sendMessage({ type: 'openFilteringLog', tabId: tabId });
     },
 
     resetBlockedAdsCount: function () {
-        popupPage.sendMessage({type: 'resetBlockedAdsCount'});
+        popupPage.sendMessage({ type: 'resetBlockedAdsCount' });
     },
 
     openLink: function (url) {
-        popupPage.sendMessage({type: 'openTab', url: url});
+        popupPage.sendMessage({ type: 'openTab', url: url });
+    },
+
+    updateTotalBlocked: function (tabInfo) {
+        this.tabInfo = tabInfo;
+        const { totalBlockedTab, totalBlocked } = tabInfo;
+        if (totalBlockedTab) {
+            const tabBlocked = document.querySelector('.widget-popup .blocked-tab');
+            if (tabBlocked) {
+                i18n.translateElement(tabBlocked, 'popup_tab_blocked', [formatNumber(totalBlockedTab)]);
+            }
+        }
+
+        if (totalBlocked) {
+            const allBlocked = document.querySelector('.widget-popup .blocked-all');
+            if (allBlocked) {
+                i18n.translateElement(allBlocked, 'popup_tab_blocked_all', [formatNumber(totalBlocked)]);
+            }
+        }
     },
 
     _renderPopup: function (tabInfo) {
-
         var parent = document.querySelector('.widget-popup');
 
         var containerHeader = document.querySelector('.widget-popup__header');
@@ -145,18 +167,14 @@ PopupController.prototype = {
         } else if (tabInfo.applicationFilteringDisabled) {
             stack.classList.add('status-paused');
             parent.classList.add('status-paused');
+        } else if (!tabInfo.canAddRemoveRule) {
+            stack.classList.add('status-error error-filter');
+        } else if (tabInfo.documentWhiteListed) {
+            stack.classList.add('status-cross');
+            parent.classList.add('status-cross');
         } else {
-            if (!tabInfo.canAddRemoveRule) {
-                stack.classList.add('status-error error-filter');
-            } else {
-                if (tabInfo.documentWhiteListed) {
-                    stack.classList.add('status-cross');
-                    parent.classList.add('status-cross');
-                } else {
-                    stack.classList.add('status-checkmark');
-                    parent.classList.add('status-checkmark');
-                }
-            }
+            stack.classList.add('status-checkmark');
+            parent.classList.add('status-checkmark');
         }
 
         // Header
@@ -216,10 +234,6 @@ PopupController.prototype = {
 
     _renderMain: function (container, tabInfo) {
 
-        function formatNumber(v) {
-            return v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-        }
-
         var template;
         if (tabInfo.adguardDetected) {
             template = this.filteringIntegrationHeader;
@@ -229,12 +243,12 @@ PopupController.prototype = {
             var totalBlocked = template.querySelector('.blocked-all');
             i18n.translateElement(tabBlocked, 'popup_tab_blocked', [formatNumber(tabInfo.totalBlockedTab || 0)]);
             i18n.translateElement(totalBlocked, 'popup_tab_blocked_all', [formatNumber(tabInfo.totalBlocked || 0)]);
-            var closestwidgetFilter = tabBlocked.closest('.widget-popup-filter');
-            if (closestwidgetFilter) {
+            var closestWidgetFilter = tabBlocked.closest('.widget-popup-filter');
+            if (closestWidgetFilter) {
                 if (tabInfo.totalBlocked >= 10000000) {
-                    closestwidgetFilter.classList.add('db');
+                    closestWidgetFilter.classList.add('db');
                 } else {
-                    closestwidgetFilter.classList.remove('db');
+                    closestWidgetFilter.classList.remove('db');
                 }
             }
         }
@@ -743,6 +757,7 @@ PopupController.prototype = {
             }
             tabInfo.documentWhiteListed = isWhiteListed;
             tabInfo.userWhiteListed = isWhiteListed;
+            tabInfo.totalBlockedTab = 0;
             self._renderPopup(tabInfo);
             self._bindActions();
             self.resizePopupWindow();
@@ -753,12 +768,13 @@ PopupController.prototype = {
         });
 
         function changeProtectionState(disabled) {
-            var tabInfo = self.tabInfo;
-            if (tabInfo.applicationFilteringDisabled == disabled) {
+            const tabInfo = self.tabInfo;
+            if (tabInfo.applicationFilteringDisabled === disabled) {
                 return;
             }
             self.changeApplicationFilteringDisabled(disabled);
             tabInfo.applicationFilteringDisabled = disabled;
+            tabInfo.totalBlockedTab = 0;
             self._renderPopup(tabInfo);
             self._bindActions();
             self.resizePopupWindow();
@@ -854,10 +870,22 @@ PopupController.prototype = {
             controller.render(message.frameInfo, message.options);
         };
 
-        if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        if (document.attachEvent ? document.readyState === 'complete' : document.readyState !== 'loading') {
             onDocumentReady();
         } else {
             document.addEventListener('DOMContentLoaded', onDocumentReady);
+        }
+    });
+
+    popupPage.onMessage.addListener(function (message) {
+        switch (message.type) {
+            case 'updateTotalBlocked': {
+                const { tabInfo } = message;
+                controller.updateTotalBlocked(tabInfo);
+                break;
+            }
+            default:
+                break;
         }
     });
 })();
