@@ -1162,7 +1162,11 @@ var Settings = function () {
     if (filtersUpdatePeriodSelect) {
         filtersUpdatePeriodSelect.addEventListener('change', function (e) {
             setFiltersUpdatePeriod(e.currentTarget.value);
-            filtersUpdatePeriodSelect.value === '0' ? filtersUpdatePeriodSelect.parentNode.classList.remove('active') : filtersUpdatePeriodSelect.parentNode.classList.add('active');
+            if (filtersUpdatePeriodSelect.value === '0') {
+                filtersUpdatePeriodSelect.parentNode.classList.remove('active');
+            } else {
+                filtersUpdatePeriodSelect.parentNode.classList.add('active');
+            }
         });
     }
 
