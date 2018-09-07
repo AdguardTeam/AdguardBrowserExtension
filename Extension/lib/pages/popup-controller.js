@@ -263,10 +263,8 @@ PopupController.prototype = {
             template = this.filteringControlDisabled;
         } else if (tabInfo.applicationFilteringDisabled) { // jshint ignore:line
             // Use default template
-        } else {
-            if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
-                template = this.filteringControlException;
-            }
+        } else if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
+            template = this.filteringControlException;
         }
 
         if (tabInfo.adguardDetected) {
