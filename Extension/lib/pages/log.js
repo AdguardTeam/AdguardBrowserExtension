@@ -121,7 +121,7 @@ PageController.prototype = {
 
     init: function () {
 
-        this.logTable = $("#logTable");
+        this.logTable = $('#logTable');
         this.logTableEmpty = $('#logTableEmpty');
         this.logTableHidden = true;
 
@@ -150,6 +150,12 @@ PageController.prototype = {
         $(window).on('hashchange', function () {
             this._updateTabIdFromHash();
             this.onSelectedTabChange();
+        }.bind(this));
+
+        // Add preserve log status checkbox
+        this.preserveLogStatus = false;
+        document.querySelector('#preserveLog').addEventListener('change', function (e) {
+            this.preserveLogStatus = e.target.checked;
         }.bind(this));
 
         this.searchRequest = null;
@@ -995,7 +1001,7 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
     $(document).ready(function () {
 
         var pageController = new PageController();
-        pageController.init();
+        pageController.init(userSettings);
 
         function onEvent(event, tabInfo, filteringEvent) {
             switch (event) {
