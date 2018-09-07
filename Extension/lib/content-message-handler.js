@@ -160,14 +160,14 @@
                 break;
             case 'getWhiteListDomains':
                 var whiteListDomains = adguard.whitelist.getWhiteListDomains();
-                return {content: whiteListDomains.join('\r\n')};
+                return { content: whiteListDomains.join('\r\n') };
             case 'saveWhiteListDomains':
                 var domains = message.content.split(/[\r\n]+/);
                 adguard.whitelist.updateWhiteListDomains(domains);
                 break;
             case 'getUserRules':
                 adguard.userrules.getUserRulesText(function (content) {
-                    callback({content: content});
+                    callback({ content: content });
                 });
                 return true;
             case 'saveUserRules':
@@ -303,9 +303,6 @@
             case 'openAbuseTab':
                 adguard.ui.openAbuseTab(message.url);
                 break;
-            case 'openAbuseTab':
-                adguard.ui.openAbuseTab(message.url);
-                break;
             case 'openSettingsTab':
                 adguard.ui.openSettingsTab();
                 break;
@@ -320,14 +317,14 @@
                         options: {
                             showStatsSupported: true,
                             isFirefoxBrowser: adguard.utils.browser.isFirefoxBrowser(),
-                            isMacOs: adguard.utils.browser.isMacOs()
-                        }
+                            isMacOs: adguard.utils.browser.isMacOs(),
+                        },
                     });
                 });
                 return true; // Async
             case 'getStatisticsData':
                 callback({
-                    stats: adguard.pageStats.getStatisticsData()
+                    stats: adguard.pageStats.getStatisticsData(),
                 });
                 return true;
             case 'resizePanelPopup':
