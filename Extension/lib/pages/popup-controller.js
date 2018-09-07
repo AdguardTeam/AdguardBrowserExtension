@@ -676,10 +676,11 @@ PopupController.prototype = {
     },
 
     _bindAction: function (parentElement, selector, eventName, handler) {
-        var element = parentElement.querySelector(selector);
-        if (element) {
-            element.addEventListener(eventName, handler);
+        const elements = parentElement.querySelectorAll(selector);
+        if (!elements || elements.length <= 0) {
+            return;
         }
+        elements.forEach(element => element.addEventListener(eventName, handler));
     },
 
     _bindActions: function () {
