@@ -1181,14 +1181,22 @@ var Settings = function () {
 
     function renderSelectOptions(updatePeriod) {
         const filtersUpdatePeriodSelect = document.querySelector('#filtersUpdatePeriodSelect');
+
         if (!filtersUpdatePeriodSelect) {
             return;
         }
-        updatePeriod === 0 ? filtersUpdatePeriodSelect.parentNode.classList.remove('active') : filtersUpdatePeriodSelect.parentNode.classList.add('active');
+
+        if (updatePeriod === 0) {
+            filtersUpdatePeriodSelect.parentNode.classList.remove('active')
+        } else {
+            filtersUpdatePeriodSelect.parentNode.classList.add('active');
+        }
+
         const optionsSelectHtml = selectOptions.map(selectOption => {
             const { name, value } = selectOption;
             return `<option value="${value}">${name}</option>`;
         }).join('\n');
+
         filtersUpdatePeriodSelect.insertAdjacentHTML('afterbegin', optionsSelectHtml);
         filtersUpdatePeriodSelect.value = updatePeriod;
     }
@@ -1416,7 +1424,7 @@ var initPage = function (response) {
     AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
     EventNotifierTypes = response.constants.EventNotifierTypes;
 
-    var onDocumentReady = function() {
+    var onDocumentReady = function () {
 
         var controller = new PageController();
         controller.init();
@@ -1431,7 +1439,7 @@ var initPage = function (response) {
             EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES,
             EventNotifierTypes.REQUEST_FILTER_UPDATED,
             EventNotifierTypes.SYNC_STATUS_UPDATED,
-            EventNotifierTypes.SETTINGS_UPDATED
+            EventNotifierTypes.SETTINGS_UPDATED,
         ];
 
         createEventListener(events, function (event, options) {
@@ -1470,11 +1478,11 @@ var initPage = function (response) {
         });
     };
 
-    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+    if (document.attachEvent ? document.readyState === 'complete' : document.readyState !== 'loading') {
         onDocumentReady();
     } else {
         document.addEventListener('DOMContentLoaded', onDocumentReady);
     }
 };
 
-contentPage.sendMessage({type: 'initializeFrameScript'}, initPage);
+contentPage.sendMessage({ type: 'initializeFrameScript' }, initPage);
