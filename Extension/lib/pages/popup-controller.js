@@ -157,7 +157,7 @@ PopupController.prototype = {
         // Hide stats for integration mode
         if (tabInfo.adguardDetected) {
             parent.querySelector('.tab-stats-button').style.display = 'none';
-            parent.querySelector('.tab-main-button').style.width = '100%';
+            parent.querySelector('.tab-actions-button').style.width = '100%';
         }
 
         // define class
