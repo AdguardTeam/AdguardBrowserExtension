@@ -268,7 +268,10 @@ PopupController.prototype = {
         }
 
         if (tabInfo.adguardDetected) {
-            template.querySelector('.settings').style.display = 'none';
+            const settings = template.querySelector('.settings');
+            if (settings) {
+                settings.style.display = 'none';
+            }
         }
 
         this._appendTemplate(container, template);
