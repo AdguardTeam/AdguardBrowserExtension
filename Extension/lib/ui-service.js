@@ -595,6 +595,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         adguard.settings.changeFilteringDisabled(disabled);
         adguard.tabs.getActive(function (tab) {
             updateTabIconAndContextMenu(tab, true);
+            adguard.tabs.reload(tab.tabId);
         });
     };
 
