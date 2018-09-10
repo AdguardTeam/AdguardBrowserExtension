@@ -153,9 +153,9 @@ PageController.prototype = {
         }.bind(this));
 
         // Add preserve log status checkbox
-        this.preserveLogStatus = false;
+        this.preserveLogEnabled = false;
         document.querySelector('#preserveLog').addEventListener('change', function (e) {
-            this.preserveLogStatus = e.target.checked;
+            this.preserveLogEnabled = e.target.checked;
         }.bind(this));
 
         this.searchRequest = null;
@@ -169,16 +169,21 @@ PageController.prototype = {
             e.preventDefault();
             // Unable to reload "background" tab, just clear events
             if (this.currentTabId == -1) {
-                contentPage.sendMessage({type: 'clearEventsByTabId', tabId: this.currentTabId});
+                if (this.preserveLogEnabled) {
+                    return;
+                }
+                contentPage.sendMessage({ type: 'clearEventsByTabId', tabId: this.currentTabId });
+                this.logTable.empty();
                 return;
             }
-            contentPage.sendMessage({type: 'reloadTabById', tabId: this.currentTabId});
+            contentPage.sendMessage({ type: 'reloadTabById', tabId: this.currentTabId, preserveLogEnabled: this.preserveLogEnabled });
         }.bind(this));
 
         // Bind click to clear events
         $('#clearTabLog').on('click', function (e) {
             e.preventDefault();
-            contentPage.sendMessage({type: 'clearEventsByTabId', tabId: this.currentTabId});
+            this.logTable.empty();
+            contentPage.sendMessage({ type: 'clearEventsByTabId', tabId: this.currentTabId });
         }.bind(this));
 
         // Bind click to show request info
@@ -260,7 +265,7 @@ PageController.prototype = {
     },
 
     onTabReset: function (tabInfo) {
-        if (this.currentTabId == tabInfo.tabId) {
+        if (this.currentTabId == tabInfo.tabId && !this.preserveLogEnabled) {
             this.logTable.empty();
             this._onEmptyTable();
         }
@@ -271,6 +276,11 @@ PageController.prototype = {
             //don't relate to the current tab
             return;
         }
+
+        if (event.requestType === 'DOCUMENT' && !event.element && !this.preserveLogEnabled) {
+            this.onTabReset(tabInfo);
+        }
+
         this._renderEvents([event]);
     },
 
