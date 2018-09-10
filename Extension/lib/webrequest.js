@@ -73,9 +73,6 @@
         }
 
         if (requestType === adguard.RequestTypes.DOCUMENT) {
-            // New document is being loaded -- clear the filtering log for that tab
-            adguard.filteringLog.clearEventsByTabId(tabId);
-
             // Reset tab button state
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_TAB_BUTTON_STATE, tab, true);
 
@@ -110,14 +107,14 @@
 
     /**
      * Tries to collapse a blocked element using tabs.insertCSS.
-     * 
+     *
      * This method of collapsing has numerous advantages over the traditional one.
      * First of all, it prevents blocked elements flickering as it occurs earlier.
      * Second, it is harder to detect as there's no custom <style> node required.
-     * 
-     * However, we're still keeping the old approach intact - we have not enough information 
+     *
+     * However, we're still keeping the old approach intact - we have not enough information
      * here to properly collapse elements that use relative URLs (<img src='../path_to_element'>).
-     * 
+     *
      * @param {number} tabId Tab id
      * @param {number} requestFrameId Id of a frame request was sent from
      * @param {string} requestUrl Request URL
@@ -597,7 +594,7 @@
                         return '\\u2029'
                 }
             }
-            
+
             /**
              * We use changing variable name because global properties
              * can be modified across isolated worlds of extension content page and tab page
