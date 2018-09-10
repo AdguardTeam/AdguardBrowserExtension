@@ -363,8 +363,6 @@ adguard.webRequestService = (function (adguard) {
 
                 adguard.integration.checkHeaders(tab, responseHeaders, requestUrl);
             }
-            // Clear previous events
-            adguard.filteringLog.clearEventsByTabId(tab.tabId);
         }
 
         var requestRule = null;
@@ -379,7 +377,7 @@ adguard.webRequestService = (function (adguard) {
             var domain = adguard.frames.getFrameDomain(tab);
             if (!adguard.frames.isIncognitoTab(tab) &&
                 adguard.settings.collectHitsCount()) {
-                //add page view to stats
+                // add page view to stats
                 adguard.hitStats.addDomainView(domain);
             }
             appendLogEvent = true;
