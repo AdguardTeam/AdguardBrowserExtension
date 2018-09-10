@@ -363,8 +363,6 @@ adguard.webRequestService = (function (adguard) {
 
                 adguard.integration.checkHeaders(tab, responseHeaders, requestUrl);
             }
-            // Clear previous events
-            adguard.filteringLog.clearEventsByTabId(tab.tabId);
         }
 
         var requestRule = null;
