@@ -127,6 +127,9 @@ var CssHitsCounter = (function () { // jshint ignore:line
      * @returns {({filterId: Number, ruleText: String} | null)}
      */
     function getCssHitData(element) {
+        if (!(element instanceof Element)) {
+            return null;
+        }
         var style = getComputedStyle(element);
         if (!style) {
             return null;
@@ -250,7 +253,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
         var observer = new MutationObserver(function (mutationRecords) {
             // Collect probe elements, count them, then remove from their targets
             var probeElements = [];
-            var childsOfProbeElements = [];
+            var childrenOfProbeElements = [];
             mutationRecords.forEach(function (mutationRecord) {
                 if (mutationRecord.addedNodes.length === 0) {
                     return;
@@ -265,23 +268,22 @@ var CssHitsCounter = (function () { // jshint ignore:line
 
                         // CSS rules could be applied to the nodes inside probe element
                         // that's why we get all child elements of added node
-                        var nodeChilds = node.querySelectorAll('*');
-                        if (nodeChilds && nodeChilds.length > 0) {
-                            for (var childIndex = 0; childIndex < nodeChilds.length; childIndex += 1) {
-                                childsOfProbeElements.push(nodeChilds[childIndex]);
+                        var nodeChildren = node.querySelectorAll('*');
+                        if (nodeChildren && nodeChildren.length > 0) {
+                            for (var childIndex = 0; childIndex < nodeChildren.length; childIndex += 1) {
+                                childrenOfProbeElements.push(nodeChildren[childIndex]);
                             }
                         }
 
                         observer.disconnect();
                         mutationRecord.target.appendChild(node);
-                        startObserver(observer);
                     }
                 }
             });
 
-            if (childsOfProbeElements.length > 0) {
-                for (var i = 0; i < childsOfProbeElements.length; i += 1) {
-                    var childOfProbeElement = childsOfProbeElements[i];
+            if (childrenOfProbeElements.length > 0) {
+                for (var i = 0; i < childrenOfProbeElements.length; i += 1) {
+                    var childOfProbeElement = childrenOfProbeElements[i];
                     if (probeElements.indexOf(childOfProbeElement) === -1) {
                         probeElements.push(childOfProbeElement);
                     }
@@ -293,7 +295,6 @@ var CssHitsCounter = (function () { // jshint ignore:line
                 if (result.length > 0) {
                     onCssHitsFoundCallback(result);
                 }
-                observer.disconnect();
                 removeElements(probeElements);
                 startObserver(observer);
             }
