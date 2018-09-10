@@ -319,6 +319,9 @@
                 adguard.filteringLog.onCloseFilteringLogPage();
                 break;
             case 'reloadTabById':
+                if (!message.preserveLogEnabled) {
+                    adguard.filteringLog.clearEventsByTabId(message.tabId);
+                }
                 adguard.tabs.reload(message.tabId);
                 break;
             case 'clearEventsByTabId':

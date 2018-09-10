@@ -33,8 +33,8 @@ adguard.webRequestService = (function (adguard) {
             adguard.settings.collectHitsCount() &&
             !adguard.utils.filters.isUserFilterRule(requestRule) &&
             !adguard.utils.filters.isWhiteListFilterRule(requestRule) &&
-            !adguard.frames.isIncognitoTab(tab)) {
-
+            !adguard.frames.isIncognitoTab(tab) &&
+            !adguard.frames.isTabAdguardDetected(tab)) {
             var domain = adguard.frames.getFrameDomain(tab);
             adguard.hitStats.addRuleHit(domain, requestRule.ruleText, requestRule.filterId, requestUrl);
         }
@@ -363,8 +363,6 @@ adguard.webRequestService = (function (adguard) {
 
                 adguard.integration.checkHeaders(tab, responseHeaders, requestUrl);
             }
-            // Clear previous events
-            adguard.filteringLog.clearEventsByTabId(tab.tabId);
         }
 
         var requestRule = null;
@@ -377,9 +375,12 @@ adguard.webRequestService = (function (adguard) {
         } else if (requestType === adguard.RequestTypes.DOCUMENT) {
             requestRule = adguard.frames.getFrameWhiteListRule(tab);
             var domain = adguard.frames.getFrameDomain(tab);
-            if (!adguard.frames.isIncognitoTab(tab) &&
-                adguard.settings.collectHitsCount()) {
-                //add page view to stats
+            if (
+                !adguard.frames.isIncognitoTab(tab) &&
+                adguard.settings.collectHitsCount() &&
+                adguard.frames.isTabAdguardDetected(tab)
+            ) {
+                // add page view to stats
                 adguard.hitStats.addDomainView(domain);
             }
             appendLogEvent = true;
