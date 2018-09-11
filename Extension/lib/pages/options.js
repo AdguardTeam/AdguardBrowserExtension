@@ -410,16 +410,56 @@ var AntiBannerFilters = function (options) {
         return filterElement.querySelector('input');
     }
 
+    function generateFiltersNamesDescription(filters) {
+        const namesDisplayCount = 3;
+        const enabledFiltersNames = filters
+            .filter(filter => filter.enabled)
+            .map(filter => filter.name);
+
+        let enabledFiltersNamesString;
+        const length = enabledFiltersNames.length;
+        switch (true) {
+            case (length > namesDisplayCount): {
+                const displayNamesString = enabledFiltersNames.slice(0, namesDisplayCount).join(', ');
+                enabledFiltersNamesString = `${i18n.getMessage(
+                    'options_filters_enabled_and_more_divider',
+                    [displayNamesString, length - namesDisplayCount]
+                )}`;
+                break;
+            }
+            case (length > 1): {
+                const lastName = enabledFiltersNames.slice(length - 1);
+                const firstNames = enabledFiltersNames.slice(0, length - 1);
+                enabledFiltersNamesString = `${i18n.getMessage(
+                    'options_filters_enabled_and_divider',
+                    [firstNames.join(', '), lastName]
+                )}`;
+                break;
+            }
+            case (length === 1): {
+                enabledFiltersNamesString = enabledFiltersNames[0];
+                break;
+            }
+            default:
+                break;
+        }
+        enabledFiltersNamesString = length > 0 ?
+            `${i18n.getMessage('options_filters_enabled')} ${enabledFiltersNamesString}` :
+            `${i18n.getMessage('options_filters_no_enabled')}`;
+        return enabledFiltersNamesString;
+    }
+
     function updateCategoryFiltersInfo(groupId) {
         var groupFilters = getFiltersByGroupId(groupId, loadedFiltersInfo.filters);
         var enabledFiltersCount = countEnabledFilters(groupFilters);
+        var filtersNamesDescription = generateFiltersNamesDescription(groupFilters);
         var groupFiltersCount = groupFilters.length;
 
         var element = getCategoryElement(groupId);
         var checkbox = getCategoryCheckbox(groupId);
 
         if (groupFiltersCount > 0) {
-            element.querySelector('.desc').textContent = `Enabled filters: ${enabledFiltersCount}/${groupFiltersCount}`;
+            element.querySelector('.desc').textContent = filtersNamesDescription;
         }
         CheckboxUtils.updateCheckbox([checkbox], enabledFiltersCount > 0);
     }
