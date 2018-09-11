@@ -71,25 +71,39 @@
   padding: 0;
   margin: 0;
   list-style: none;
+  max-width: 220px;
 }
 .settings-sidebar .nav li {
   list-style: none;
   padding: 0;
   margin: 0;
-  margin-top: 48px;
+  margin-top: 22px;
 }
-.settings-sidebar .nav a {
+.settings-sidebar .nav span {
   display: inline-block;
   font-size: 16px;
-  text-decoration: none;
   position: relative;
   z-index: 1;
   color: #4D4D4D;
 }
+.nav__item {
+  position: relative;
+  min-height: 45px;
+  line-height: 25px;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  transition: 0.3s ease font-weight;
+}
 .settings-sidebar .nav a.active {
   font-weight: 700;
 }
-.settings-sidebar .nav a.active:before {
+.nav__item:hover {
+  font-weight: 700;
+}
+.settings-sidebar .nav a.active span:before {
   content: '';
   position: absolute;
   left: 0;
@@ -97,6 +111,9 @@
   height: 4px;
   background-color: #66b574;
   bottom: -12px;
+}
+.settings-sidebar .logo {
+  margin-bottom: 37px;
 }
 .settings-content {
   -webkit-box-flex: 1;
@@ -252,6 +269,8 @@
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
+  flex-grow: 1;
+  cursor: pointer;
 }
 .block-type__desc {
   display: flex;
@@ -302,6 +321,9 @@
   text-decoration: none;
   margin-bottom: 5px;
 }
+.block-type:hover a {
+  text-decoration: underline;
+}
 .desc--filters {
   color: rgba(77, 77, 77, 0.5);
 }
@@ -312,6 +334,7 @@
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
+  align-self: stretch;
 }
 .sp-table-row-info{
   font-size: 11px;
@@ -358,6 +381,7 @@
 .toggler {
   width: 42px;
   height: 20px;
+  margin-left: 49px;
   background-image: url(../images/toggler-bg.svg);
   background-position: 5px, 23px;
   background-size: 29px;
@@ -380,6 +404,16 @@
   margin-top: 2px;
   left: 2px;
 }
+.toggler:after {
+  content: '';
+  position: absolute;
+  top: -7px;
+  left: -25px;
+  width: 1px;
+  height: 33px;
+  background-color: #E7E7E7;
+}
+
 .toggler.on,
 li.active .toggler {
   background-color: #62c162;
@@ -464,17 +498,28 @@ li.active .toggler:before {
   width: 100%;
   height: 300px;
 }
+@-webkit-keyframes clockwise {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
 .preloader {
-  background: url(../images/pre24.gif) no-repeat;
-  height: 24px;
-  display: none;
-  line-height: 24px;
-  padding-left: 32px;
-  font-size: 12px;
+  background: url(../images/reload-ico-green.svg) no-repeat;
+  height: 18px;
+  width: 22px;
+  display: inline-block;
+  visibility: hidden;
+  animation: clockwise 2s linear infinite;
 }
 
 .preloader.active {
-  display: inline-block;
+  visibility: visible;
 }
 .tabs-bar .tab {
   font-weight: 600;
@@ -528,7 +573,7 @@ li.active .toggler:before {
   height: 40px;
   border-radius: 4px;
   font-size: 13px;
-  line-height: 43px;
+  line-height: 42px;
   transition: 0.3s ease background-color;
   font-weight: 600;
 }
@@ -554,9 +599,10 @@ li.active .toggler:before {
   display: inline-block;
   text-decoration: none;
   min-width: 175px;
+  text-align: center;
 }
 .wlimit .settings-actions .button--link {
-  padding: 0 40px;
+  padding: 0 35px;
 }
 .settings-actions .button--link {
   color: #fff;
@@ -575,7 +621,7 @@ li.active .toggler:before {
 }
 .settings-actions .button--green-bd {
   color: #66b574;
-  margin-left: 35px;
+  margin-left: 20px;
 }
 .account {
   display: none;
@@ -1192,4 +1238,36 @@ li.active .toggler:before {
   cursor: pointer;
   position: relative;
   top: -3px;
+}
+
+.try-premium__in {
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.try-premium__title {
+  display: block;
+  text-align: center;
+  margin-bottom: 15px;
+  line-height: 21px;
+  padding-top: 17px;
+}
+
+.settings-sidebar .nav .try-premium__btn {
+  display: inline-block;
+  min-width: 174px;
+  color: #fff;
+  text-align: center;
+  border-radius: 20px;
+  font-size: 13px;
+  line-height: 40px;
+  background-color: #F5A623;
+  transition: 0.3s ease background-color;
+}
+
+.try-premium:hover .try-premium__btn {
+  background-color: #d89019;
 }

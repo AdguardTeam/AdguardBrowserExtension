@@ -136,7 +136,7 @@ a {
   box-shadow: none;
 }
 .tabstack.status-paused .switch-btn {
-  left: 11px;
+  left: 16px;
 }
 .tabstack.status-paused .switch-btn:before {
   background-image: linear-gradient(to bottom, #64beb0, #74be64);
@@ -151,7 +151,7 @@ a {
 }
 .tabstack.status-checkmark .switch-btn,
 .tabstack.status-checkmark-disabled .switch-btn {
-  right: -8px;
+  right: -30px;
 }
 .tabstack.status-checkmark .switch-btn:before,
 .tabstack.status-checkmark-disabled .switch-btn:before {
@@ -159,9 +159,8 @@ a {
 }
 .tabstack.status-checkmark .switch-btn:after,
 .tabstack.status-checkmark-disabled .switch-btn:after {
-  background-image: url(../images/icon-checkmark.png);
-  background-size: 19px 16px;
-  background-position: 13px 15px;
+  background-image: url(../images/icon-checkmark.svg);
+  background-position: 10px 13px;
 }
 .tabstack.status-checkmark-disabled .switch-btn {
   background: #60808c;
@@ -183,6 +182,7 @@ a {
 .tabstack.status-cross .switch-btn:after {
   background-image: url(../images/cross-white.svg);
   background-size: 15px 15px;
+  background-position: 13px 14px;
 }
 .tabstack.status-error .error-msg {
   display: block;
@@ -269,10 +269,12 @@ a {
   font-weight: 600;
 }
 .control-buttons {
-  position: relative;
-  height: 56px;
-  margin-top: 25px;
-  z-index: 1;
+  width: 90px;
+  height: 80px;
+  display: flex;
+  padding: 0 5px;
+  flex-direction: column;
+  justify-content: center;
 }
 .control-buttons .settings {
   position: absolute;
@@ -297,27 +299,27 @@ a {
   border-radius: 100px;
   background-color: #2a4b57;
   box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.28);
-  position: absolute;
-  left: 50%;
-  top: 10px;
-  margin-left: -37px;
 }
 .control-buttons .switch-btn {
-  position: absolute;
+  position: relative;
+  width: 48px;
+  height: 48px;
   top: -14px;
-  width: 52px;
-  height: 52px;
   border-radius: 50%;
   box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.7);
   background-image: linear-gradient(to bottom, #ffffff, #ebebeb);
   padding: 4px;
   cursor: pointer;
+  transition: 0.3s ease transform;
+}
+.control-buttons .switch-btn:hover {
+  transform: scale(1.03);
 }
 .control-buttons .switch-btn:before {
   content: '';
   display: block;
-  width: 44px;
-  height: 44px;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
 }
 .control-buttons .switch-btn:after {
@@ -326,8 +328,8 @@ a {
   height: 44px;
   display: block;
   position: absolute;
-  left: 4px;
-  top: 4px;
+  left: 3px;
+  top: 3px;
   background-repeat: no-repeat;
   background-position: 50% 50%;
 }
@@ -383,14 +385,18 @@ a {
   width: 36px;
   height: 36px;
   background-color: rgba(255, 255, 255, 0.13);
+  opacity: 0.5;
   border: 0;
   cursor: pointer;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: 0.3s ease opacity;
 }
-
+.cir-btn:hover {
+  opacity: 1;
+}
 .tab-statistics {
   position: relative;
   flex-direction: column;
@@ -566,6 +572,11 @@ img .footer .platforms:first-child {
   display: inline-block;
   margin-left: 10px;
   vertical-align: middle;
+  opacity: 0.3;
+  transition: 0.3s ease opacity;
+}
+.footer .platforms a:hover {
+  opacity: 1;
 }
 .footer .icon-osx,
 .footer .icon-windows {
