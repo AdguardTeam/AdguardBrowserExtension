@@ -80,7 +80,7 @@
             '</div>' +
             '</div>';
 
-        var triesCount = 110;
+        var triesCount = 10;
 
         var alertDiv = htmlToElement(alertDivHtml);
 
