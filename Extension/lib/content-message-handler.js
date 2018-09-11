@@ -312,6 +312,7 @@
             case 'getTabInfoForPopup':
                 adguard.tabs.getActive(function (tab) {
                     var frameInfo = adguard.frames.getFrameInfo(tab);
+                    frameInfo.domainName = adguard.frames.getFrameDomain(tab);
                     callback({
                         frameInfo: frameInfo,
                         options: {
