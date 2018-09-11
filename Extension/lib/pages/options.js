@@ -410,7 +410,7 @@ var AntiBannerFilters = function (options) {
         return filterElement.querySelector('input');
     }
 
-    function getEnabledFiltersNames(filters) {
+    function generateFiltersNamesDescription(filters) {
         const namesDisplayCount = 3;
         const enabledFiltersNames = filters
             .filter(filter => filter.enabled)
@@ -452,14 +452,14 @@ var AntiBannerFilters = function (options) {
     function updateCategoryFiltersInfo(groupId) {
         var groupFilters = getFiltersByGroupId(groupId, loadedFiltersInfo.filters);
         var enabledFiltersCount = countEnabledFilters(groupFilters);
-        var enabledFiltersNames = getEnabledFiltersNames(groupFilters);
+        var filtersNamesDescription = generateFiltersNamesDescription(groupFilters);
         var groupFiltersCount = groupFilters.length;
 
         var element = getCategoryElement(groupId);
         var checkbox = getCategoryCheckbox(groupId);
 
         if (groupFiltersCount > 0) {
-            element.querySelector('.desc').textContent = `${enabledFiltersNames}`;
+            element.querySelector('.desc').textContent = filtersNamesDescription;
         }
         CheckboxUtils.updateCheckbox([checkbox], enabledFiltersCount > 0);
     }
