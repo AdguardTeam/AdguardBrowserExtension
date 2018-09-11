@@ -29,12 +29,48 @@
         <div class="settings-sidebar">
             <div class="logo"><img src="images/logo.svg" alt=""></div>
             <ul class="nav nav-tabs">
-                <li><a href="#" data-tab="#general-settings" i18n="options_general_settings"></a></li>
-                <li><a href="#" data-tab="#antibanner" i18n="options_antibanner"></a></li>
-                <li><a href="#" data-tab="#whitelist" i18n="options_whitelist"></a></li>
-                <li><a href="#" data-tab="#userfilter" i18n="options_userfilter"></a></li>
-                <li><a href="#" data-tab="#miscellaneous-settings" i18n="options_miscellaneous_settings"></a></li>
-                <li><a href="#" data-tab="#sync">Sync</a></li>
+                <li>
+                    <a href="#" class="nav__item" data-tab="#general-settings">
+                        <span i18n="options_general_settings"></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav__item" data-tab="#antibanner">
+                        <span i18n="options_antibanner"></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav__item" data-tab="#whitelist">
+                        <span i18n="options_whitelist"></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav__item" data-tab="#userfilter">
+                        <span i18n="options_userfilter"></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav__item" data-tab="#miscellaneous-settings">
+                        <span i18n="options_miscellaneous_settings"></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav__item" data-tab="#sync">
+                        <span>
+                            Sync
+                        </span>
+                    </a>
+                </li>
+                <li class="try-premium">
+                    <a href="#" class="try-premium__in">
+                        <span class="try-premium__title">
+                            Try AdGuard Premium for better protection!
+                        </span>
+                        <span class="try-premium__btn">
+                            How they compare
+                        </span>
+                    </a>
+                </li>
             </ul>
         </div>
         <div id="general-settings" class="settings-content tab-pane">
@@ -278,8 +314,8 @@
                 </div>
                 <div class="settings-actions">
                     <input type="file" id="importWhiteListInput" style="display: none;" accept=".txt, text/plain"/>
-                    <a id="whiteListFiltersImport" href="#" i18n="options_userfilter_import"></a>
-                    <a id="whiteListFiltersExport" href="#" i18n="options_userfilter_export"></a>
+                    <a class="button button--green button--link" id="whiteListFiltersImport" href="#" i18n="options_userfilter_import"></a>
+                    <a class="button button--green-bd button--link" id="whiteListFiltersExport" href="#" i18n="options_userfilter_export"></a>
                     <a id="whiteListFilterApplyChanges" href="#" i18n="options_modal_save"></a>
                 </div>
             </div>
@@ -296,8 +332,8 @@
                 </div>
                 <div class="settings-actions">
                     <input type="file" id="importUserFilterInput" style="display: none;" accept=".txt, text/plain"/>
-                    <a id="userFiltersImport" href="#" i18n="options_userfilter_import"></a>
-                    <a id="userFiltersExport" href="#" i18n="options_userfilter_export"></a>
+                    <a id="userFiltersImport" href="#" i18n="options_userfilter_import" class="button button--green button--link"></a>
+                    <a id="userFiltersExport" href="#" i18n="options_userfilter_export" class="button button--green-bd button--link"></a>
                     <a id="userFilterApplyChanges" href="#" i18n="options_modal_save"></a>
                 </div>
             </div>
@@ -352,9 +388,9 @@
                 </ul>
             </div>
             <div class="settings-actions">
-                <a id="openLog" href="#" i18n="options_open_log"></a>
-                <a id="resetStats" href="#" i18n="options_reset_stats"></a>
-                <a href="https://github.com/AdguardTeam/AdguardBrowserExtension/releases" target="_blank" i18n="options_open_changelog"></a>
+                <a id="openLog" href="#" i18n="options_open_log" class="button button--green button--link"></a>
+                <a id="resetStats" href="#" i18n="options_reset_stats" class="button button--green-bd button--link"></a>
+                <a href="https://github.com/AdguardTeam/AdguardBrowserExtension/releases" class="button button--green-bd button--link" target="_blank" i18n="options_open_changelog"></a>
             </div>
         </div>
 
