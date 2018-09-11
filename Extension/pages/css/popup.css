@@ -25,6 +25,14 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'Open Sans';
+  src: url('../fonts/opensans-light-webfont.woff2') format('woff2'),
+  url('../fonts/opensans-light-webfont.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+}
+
 :root {
   font-size: 16px;
 }
@@ -94,6 +102,10 @@ a {
 }
 .tabbar .tab.active {
   background: #fff;
+}
+.tabbar .tab--integration {
+  width: auto;
+  padding-left: 20px;
 }
 .tabstack {
   color: #fff;
@@ -238,7 +250,6 @@ a {
   font-size: 14px;
   padding-bottom: 13px;
   text-align: center;
-  font-weight: 600;
 }
 .tab-main--base {
   height: 300px;
@@ -255,6 +266,7 @@ a {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-weight: 600;
 }
 .control-buttons {
   position: relative;
@@ -340,9 +352,11 @@ a {
   cursor: pointer;
   display: flex;
   align-items: center;
+  transition: 0.3s ease background-color;
+
 }
 .actions .action:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: #f3f3f3;
 }
 .actions .act-icon {
   width: 19px;
@@ -363,6 +377,7 @@ a {
   padding-left: 15px;
   font-size: 13px;
   opacity: 0.72;
+  font-weight: 300;
 }
 .cir-btn {
   width: 36px;
