@@ -279,7 +279,6 @@ PopupController.prototype = {
 
     _renderStatus: function (container, tabInfo) {
         var template = this.filteringStatusText;
-        var url = tabInfo.url;
 
         var text = '';
         if (tabInfo.urlFilteringDisabled) {
@@ -302,7 +301,7 @@ PopupController.prototype = {
         i18n.translateElement(statusElement, text);
 
         var currentSiteElement = template.querySelector('.current-site');
-        currentSiteElement.textContent = url;
+        currentSiteElement.textContent = tabInfo.domainName ? tabInfo.domainName : tabInfo.url;
 
         if (tabInfo.urlFilteringDisabled) {
             currentSiteElement.style.display = 'none';
