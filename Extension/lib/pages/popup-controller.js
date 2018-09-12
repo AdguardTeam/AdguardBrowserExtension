@@ -185,8 +185,6 @@ PopupController.prototype = {
 
         // Controls
         this.filteringControlDefault = this._getTemplate('filtering-default-control-template');
-        this.filteringControlDisabled = this._getTemplate('filtering-disabled-control-template');
-        this.filteringControlException = this._getTemplate('filtering-site-exception-control-template');
 
         // Actions
         this.actionOpenAssistant = this._getTemplate('action-open-assistant-template');
@@ -229,6 +227,16 @@ PopupController.prototype = {
 
     _renderHeader: function (container, tabInfo) {
         var template = this.filteringHeader;
+        if (tabInfo.adguardDetected) {
+            const pauseButton = template.querySelector('.pause.changeProtectionStateDisable');
+            if (pauseButton) {
+                pauseButton.style.display = 'none';
+            }
+            const startButton = template.querySelector('.start.changeProtectionStateEnable');
+            if (startButton) {
+                startButton.style.display = 'none';
+            }
+        }
         this._appendTemplate(container, template);
     },
 
@@ -258,22 +266,9 @@ PopupController.prototype = {
 
     _renderFilteringControls: function (container, tabInfo) {
         var template = this.filteringControlDefault;
-
         if (tabInfo.urlFilteringDisabled) {
-            template = this.filteringControlDisabled;
-        } else if (tabInfo.applicationFilteringDisabled) { // jshint ignore:line
-            // Use default template
-        } else if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
-            template = this.filteringControlException;
+            return;
         }
-
-        if (tabInfo.adguardDetected) {
-            const settings = template.querySelector('.settings');
-            if (settings) {
-                settings.style.display = 'none';
-            }
-        }
-
         this._appendTemplate(container, template);
     },
 
