@@ -56,6 +56,22 @@ var CssHitsCounter = (function () { // jshint ignore:line
     }
 
     /**
+     * Adds elements into array if they are not in the array yet
+     * @param {*} targetArray
+     * @param {*} sourceArray
+     */
+    function addUnique(targetArray, sourceArray) {
+        if (sourceArray.length > 0) {
+            for (var i = 0; i < sourceArray.length; i += 1) {
+                var sourceElement = sourceArray[i];
+                if (targetArray.indexOf(sourceElement) === -1) {
+                    targetArray.push(sourceElement);
+                }
+            }
+        }
+    }
+
+    /**
      * Serialize HTML element
      * @param element
      */
@@ -281,20 +297,20 @@ var CssHitsCounter = (function () { // jshint ignore:line
                 }
             });
 
-            if (childrenOfProbeElements.length > 0) {
-                for (var i = 0; i < childrenOfProbeElements.length; i += 1) {
-                    var childOfProbeElement = childrenOfProbeElements[i];
-                    if (probeElements.indexOf(childOfProbeElement) === -1) {
-                        probeElements.push(childOfProbeElement);
-                    }
-                }
-            }
+            let allProbeElements = [];
 
-            if (probeElements.length > 0) {
-                var result = countCssHitsForElements(probeElements);
+            addUnique(allProbeElements, childrenOfProbeElements);
+            addUnique(allProbeElements, probeElements);
+
+            if (allProbeElements.length > 0) {
+                var result = countCssHitsForElements(allProbeElements);
                 if (result.length > 0) {
                     onCssHitsFoundCallback(result);
                 }
+                /**
+                 * don't remove child elements of probe elements
+                 * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1096
+                 */
                 removeElements(probeElements);
                 startObserver(observer);
             }
