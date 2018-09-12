@@ -875,11 +875,13 @@ var AntiBannerFilters = function (options) {
     function onFilterDownloadStarted(filter) {
         getCategoryElement(filter.groupId).querySelector('.preloader').classList.add('active');
         getFilterElement(filter.filterId).querySelector('.preloader').classList.add('active');
+        document.querySelector('.settings-actions--update-filters a').classList.add('active');
     }
 
     function onFilterDownloadFinished(filter) {
         getCategoryElement(filter.groupId).querySelector('.preloader').classList.remove('active');
         getFilterElement(filter.filterId).querySelector('.preloader').classList.remove('active');
+        document.querySelector('.settings-actions--update-filters a').classList.remove('active');
         setLastUpdatedTimeText(filter.lastUpdateTime);
     }
 
