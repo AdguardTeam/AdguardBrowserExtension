@@ -467,13 +467,13 @@ var AntiBannerFilters = function (options) {
     function getFilterCategoryElement(category) {
         return htmlToElement(`
                 <li id="category${category.groupId}" class="active">
-                    <div class="block-type">
+                    <a href="#antibanner${category.groupId}" class="block-type">
                         <div class="block-type__ico block-type__ico--${category.groupId}"></div>
                         <div class="block-type__desc">
-                            <a href="#antibanner${category.groupId}">${category.groupName}</a>
+                            <div class="block-type__desc-title">${category.groupName}</div>
                             <div class="desc desc--filters"></div>
                         </div>
-                    </div>
+                    </a>
                     <div class="opt-state">
                         <div class="preloader"></div>
                         <input type="checkbox" name="groupId" value="${category.groupId}">
