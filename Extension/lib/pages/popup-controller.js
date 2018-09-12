@@ -245,6 +245,14 @@ PopupController.prototype = {
         var template;
         if (tabInfo.adguardDetected) {
             template = this.filteringIntegrationHeader;
+            const headTitleElement = template.querySelector('.head .msg');
+            if (tabInfo.adguardProductName.toLowerCase().includes('mac')) {
+                headTitleElement.textContent = i18n.getMessage('popup_integrate_mode_title_mac');
+            } else if (tabInfo.adguardProductName.toLowerCase().includes('win')) {
+                headTitleElement.textContent = i18n.getMessage('popup_integrate_mode_title_win');
+            } else {
+                headTitleElement.textContent = i18n.getMessage('popup_integrate_mode_title');
+            }
         } else {
             template = this.filteringDefaultHeader;
             var tabBlocked = template.querySelector('.blocked-tab');
