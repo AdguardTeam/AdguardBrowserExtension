@@ -24,13 +24,20 @@ const updateLocalScriptRules = (browser, done) => {
         for (let rule of lines) {
             rule = rule.trim();
 
-            if (rule && rule[0] !== '!' && rule.indexOf('#%#') > 0) {
+            if (rule && rule[0] !== '!' && rule.indexOf('#%#') > -1) {
                 let m = rule.split('#%#');
 
-                rules.rules.push({
-                    'domains': m[0],
-                    'script': m[1]
-                });
+                if (m[0] === '') {
+                    rules.rules.push({
+                        'domains': '<any>',
+                        'script': m[1],
+                    });
+                } else {
+                    rules.rules.push({
+                        'domains': m[0],
+                        'script': m[1],
+                    });
+                }
             }
         }
     }
