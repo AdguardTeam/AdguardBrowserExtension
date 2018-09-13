@@ -8,34 +8,46 @@
 
 import fs from 'fs';
 import gulp from 'gulp';
-import {FILTERS_DEST, LAST_ADGUARD_FILTER_ID, LOCAL_SCRIPT_RULES_COMMENT} from './consts';
+import { FILTERS_DEST, LAST_ADGUARD_FILTER_ID, LOCAL_SCRIPT_RULES_COMMENT } from './consts';
+
+/**
+ * @param arr - array with elements [{domains: '', script: ''}, ...]
+ * @param domainsToCheck String
+ * @param scriptToCheck String
+ * @returns {boolean}
+ */
+const isInArray = (arr, domainsToCheck, scriptToCheck) => {
+    for (let i = 0; i < arr.length; i += 1) {
+        const element = arr[i];
+        const { domains, script } = element;
+        if (domains === domainsToCheck && script === scriptToCheck) {
+            return true;
+        }
+    }
+    return false;
+};
 
 const updateLocalScriptRules = (browser, done) => {
     const folder = FILTERS_DEST.replace('%browser', browser);
     const rules = {
         comment: LOCAL_SCRIPT_RULES_COMMENT,
-        rules: []
+        rules: [],
     };
 
-    for (let i = 1; i <= LAST_ADGUARD_FILTER_ID; i++) {
+    for (let i = 1; i <= LAST_ADGUARD_FILTER_ID; i += 1) {
         const filters = fs.readFileSync(`${folder}/filter_${i}.txt`).toString();
         const lines = filters.split('\n');
 
         for (let rule of lines) {
             rule = rule.trim();
-
             if (rule && rule[0] !== '!' && rule.indexOf('#%#') > -1) {
                 let m = rule.split('#%#');
-
-                if (m[0] === '') {
+                m[0] = m[0] === '' ? '<any>' : m[0];
+                // check that rule is not in array already
+                if (!isInArray(rules.rules, m[0], m[1])) {
                     rules.rules.push({
-                        'domains': '<any>',
-                        'script': m[1],
-                    });
-                } else {
-                    rules.rules.push({
-                        'domains': m[0],
-                        'script': m[1],
+                        domains: m[0],
+                        script: m[1],
                     });
                 }
             }
