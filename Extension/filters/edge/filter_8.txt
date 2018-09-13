@@ -1,8 +1,8 @@
-! Checksum: FAUXDAd4jtJBMh9VHZ7qnA
+! Checksum: xLOq7ntYo2yao6K3L/s1wg
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.0.37
-! TimeUpdated: 2018-08-24T09:57:04+00:00
+! Version: 2.0.0.39
+! TimeUpdated: 2018-09-03T18:09:01+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#dutch
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -1323,6 +1323,8 @@ tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
 ! Fuck fuckAdBlock CSS
 rijmwoordenboek.net#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/21953
+@@||looopings.nl/adsbygoogle.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/18487
 windowstechblog.nl#@#.an-advert-banner
 windowstechblog.nl#@##adsense
@@ -1363,6 +1365,8 @@ biernet.nl#@#.afs_ads
 !
 ! Extended CSS rules
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/21777
+appletips.nl##.padnoshow > div[class^="block"][-ext-has='#kpwrfeatured']
 ! https://github.com/AdguardTeam/AdguardFilters/issues/20572
 sceptr.net##.td-main-sidebar > .td-ss-main-sidebar > .widget_text:has(> h4.block-title > span:contains(ADVERTENTIE))
 ! https://github.com/AdguardTeam/AdguardFilters/issues/16658
@@ -1420,6 +1424,11 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 !--------------------------------------------------------!
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
+looopings.nl###containerAd
+appletips.nl##a[href^="/adverteren-"]
+appletips.nl##.padnoshow > div[class^="block"][style^="margin-top: "]
+appletips.nl##.mobnoshow > center > div[class^="block"][style="margin-top: 35px;"]
+appletips.nl##.padnoshow #kpwrfeatured
 hln.be##div[data-url*="trackuity.com"]
 hln.be##.ktsjing-row--leader
 hln.be##.ktsjing-row--sky
