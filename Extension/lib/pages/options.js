@@ -476,7 +476,9 @@ var AntiBannerFilters = function (options) {
                     </a>
                     <div class="opt-state">
                         <div class="preloader"></div>
-                        <input type="checkbox" name="groupId" value="${category.groupId}">
+                        <div class="toggler-wr">
+                            <input type="checkbox" name="groupId" value="${category.groupId}">
+                        </div>
                     </div>
                 </li>`);
     }
@@ -517,7 +519,9 @@ var AntiBannerFilters = function (options) {
                 <div class="opt-state">
                     <div class="preloader"></div>
                     <a class="icon-home" target="_blank" href="${filter.homepage}"></a>
-                    <input type="checkbox" name="filterId" value="${filter.filterId}" ${enabled ? 'checked="checked"' : ''}>
+                    <div class="toggler-wr">
+                        <input type="checkbox" name="filterId" value="${filter.filterId}" ${enabled ? 'checked="checked"' : ''}>
+                    </div>
                 </div>
             </li>`;
     }
