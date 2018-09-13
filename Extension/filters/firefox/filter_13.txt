@@ -1,8 +1,8 @@
-! Checksum: qK/0seSAlEtM5Nxcd7ldNQ
+! Checksum: z4LBn6F1cwH4JFpnS1XUVg
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.3.43
-! TimeUpdated: 2018-08-28T09:05:05+00:00
+! Version: 2.0.3.51
+! TimeUpdated: 2018-09-12T09:04:19+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#turkish
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -297,7 +297,7 @@
 !---------------------------------------------------------------------------!
 !
 !--- BlockAdBlock ---
-mertcangokgoz.com,hdturk.de,dizired.com,wanaliz.com#%#(function() { var sto = window.setTimeout, re = /\.bab_elementid.$/; window.setTimeout = function(a, b) { if ( typeof a !== 'string' || !re.test(a) ) { return sto(a, b); } }.bind(window); var signatures = [ ['blockadblock'], ['babasbm'], [/getItem\('babn'\)/], ['getElementById','String.fromCharCode','ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789','charAt','DOMContentLoaded','AdBlock','addEventListener','doScroll','fromCharCode','<<2|r>>4','sessionStorage','clientWidth','localStorage','Math','random'] ]; var check = function(s) { var tokens, match, j, token, pos; for ( var i = 0; i < signatures.length; i++ ) { tokens = signatures[i]; match = 0; for ( j = 0, pos = 0; j < tokens.length; j++ ) { token = tokens[j]; pos = token instanceof RegExp ? s.search(token) : s.indexOf(token); if ( pos !== -1 ) { match += 1; } } if ( (match / tokens.length) >= 0.8 ) { return true; } } return false; }; var realEval = window.eval; window.eval = function(a) { if ( !check(a) ) { return realEval(a); } var el = document.body; if ( el ) { el.style.removeProperty('visibility'); } el = document.getElementById('babasbmsgx'); if ( el ) { el.parentNode.removeChild(el); } }.bind(window); })();
+tercihiniyap.net,mertcangokgoz.com,hdturk.de,dizired.com,wanaliz.com#%#(function() { var sto = window.setTimeout, re = /\.bab_elementid.$/; window.setTimeout = function(a, b) { if ( typeof a !== 'string' || !re.test(a) ) { return sto(a, b); } }.bind(window); var signatures = [ ['blockadblock'], ['babasbm'], [/getItem\('babn'\)/], ['getElementById','String.fromCharCode','ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789','charAt','DOMContentLoaded','AdBlock','addEventListener','doScroll','fromCharCode','<<2|r>>4','sessionStorage','clientWidth','localStorage','Math','random'] ]; var check = function(s) { var tokens, match, j, token, pos; for ( var i = 0; i < signatures.length; i++ ) { tokens = signatures[i]; match = 0; for ( j = 0, pos = 0; j < tokens.length; j++ ) { token = tokens[j]; pos = token instanceof RegExp ? s.search(token) : s.indexOf(token); if ( pos !== -1 ) { match += 1; } } if ( (match / tokens.length) >= 0.8 ) { return true; } } return false; }; var realEval = window.eval; window.eval = function(a) { if ( !check(a) ) { return realEval(a); } var el = document.body; if ( el ) { el.style.removeProperty('visibility'); } el = document.getElementById('babasbmsgx'); if ( el ) { el.parentNode.removeChild(el); } }.bind(window); })();
 !
 !--- Fuck fuckAdBlock JS---
 muhendisimaaslari.com,hesaplama.net,unikampus.net,saglamindir.net,globalklavye.com#%#(function() { var noopfn = function() {;}; var Fab = function() {}; Fab.prototype.check = noopfn; Fab.prototype.clearEvent = noopfn;  Fab.prototype.emitEvent = noopfn; Fab.prototype.on = function(a, b) { if ( !a ) { b(); } return this; }; Fab.prototype.onDetected = function() {  return this; }; Fab.prototype.onNotDetected = function(a) { a(); return this; }; Fab.prototype.setOption = noopfn; var fab = new Fab(),  getSetFab = { get: function() { return Fab; }, set: function() {} }, getsetfab = { get: function() { return fab; }, set: function() {} }; if ( window.hasOwnProperty('FuckAdBlock') ) { window.FuckAdBlock = Fab; } else { Object.defineProperty(window, 'FuckAdBlock', getSetFab); } if ( window.hasOwnProperty('BlockAdBlock') ) { window.BlockAdBlock = Fab; } else {Object.defineProperty(window, 'BlockAdBlock', getSetFab); } if ( window.hasOwnProperty('SniffAdBlock') ) { window.SniffAdBlock = Fab; } else { Object.defineProperty(window, 'SniffAdBlock', getSetFab); } if ( window.hasOwnProperty('fuckAdBlock') ) { window.fuckAdBlock = fab; } else { Object.defineProperty(window, 'fuckAdBlock', getsetfab); } if ( window.hasOwnProperty('blockAdBlock') ) { window.blockAdBlock = fab; } else { Object.defineProperty(window, 'blockAdBlock', getsetfab); } if ( window.hasOwnProperty('sniffAdBlock') ) { window.sniffAdBlock = fab; } else { Object.defineProperty(window, 'sniffAdBlock', getsetfab); } })();
@@ -312,6 +312,12 @@ merlininkazani.com,serialbumler.com#%#AG_abortInlineScript(/google_ad_client/, '
 @@||serialbumler.com^$generichide
 !-------------------------
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/22259
+wowturkey.com#@#.adsbox
+wowturkey.com#@#.adsBox
+! https://github.com/AdguardTeam/AdguardFilters/issues/21867
+!+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
+@@||tercihiniyap.net^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/21485
 bursverenkurumlar.com#@##adsense
 bursverenkurumlar.com#@#.an-sponsored
@@ -542,7 +548,7 @@ kizlarsoruyor.com#%#window.canRunAds=!0;
 ! START: Yandex
 !
 ! Yandex.Mail
-||mail.yandex.*/*/*-*-*-*-$replace=/^.{0\,30}Ya\s*.{0\,7}\[[0-9]+][\s\S]*'\)|(var data = \{"settings":[\s\S]+if\s\(window\.loadAdFoxBundle\)[\s\S]+document\.write[\s\S]+bannerFunction\(\);[\s\S]+\Z)|(\{"common":\{"commonRtbVisibility":)[\s\S]+|^\{.*"common":[\s\S]+"stationaryConnection":[\s\S]+"commonRtbVisibility"[\s\S]+|(^\{"rtb":\s*\{\s*"html":.*)|(^.*"blockId":\s*"R-A-.*"adFilter":[\s\S]+)//,script,other,important,domain=mail.yandex.com.tr
+||mail.yandex.*/*/*-*-*-*-$replace=/^.{0\,30}Ya\s*.{0\,7}\[[0-9]+][\s\S]*'\)|(var data = \{"settings":[\s\S]+if\s\(window\.loadAdFoxBundle\)[\s\S]+document\.write[\s\S]+bannerFunction\(\);[\s\S]+\Z)|(\{"common":\{"commonRtbVisibility":)[\s\S]+|^\{.*"common":[\s\S]+"stationaryConnection":[\s\S]+"commonRtbVisibility"[\s\S]+|(^\{"rtb":\s*\{\s*"html":.*)|(^.*"blockId":.*"adFilter".*visibilitySettings.*)//,script,other,important,domain=mail.yandex.com.tr
 !+ NOT_PLATFORM(windows, mac, android)
 @@||mail.yandex.$generichide
 !+ NOT_PLATFORM(windows, mac, android)
@@ -726,7 +732,6 @@ turkanime.tv##td[valign="top"][style="padding-top:10px; padding-left:5px; width:
 ##.rkads
 ##div[id^="floatLayer"]
 ##div[class^="ad-1000x"]
-~sweetalert.js.org##.swal-overlay
 ##img[alt="jigolo"]
 ##a[href*="megabatorturkiyebay"] > img
 ##a[href*="seriouslove.club"] > img
@@ -1021,8 +1026,11 @@ mackolik.com,sahadan.com#%#setTimeout ("HideFloatAdBanner()", 1000);
 !------- CSS fixes --------------------!
 !--------------------------------------!
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/21691
+abcgazetesi.com#$#.gridster-wrapper > div[class="pi-module  gs-w"] > .module_108 { margin-top: -250px; }
+abcgazetesi.com#$#.e-mbl > .gridster-wrapper[style^="height:"]:not([style^="height: 2100px;"]) { margin-top: -250px; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/21307
-hurriyet.com.tr#$#.bigpara-homepage-widget { height: calc(100%)!important; };
+hurriyet.com.tr#$#.bigpara-homepage-widget { height: calc(100%)!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/20640
 fanatik.com.tr#$#.in-view-ads { position: absolute!important; left: -3000px!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/19909
@@ -1688,6 +1696,15 @@ xperua.com###video > p[style*="background-color:"]
 azginlar.party##a[href^="tel:"]
 wmporn.com###vplayer > div[style*="background"]
 !
+hurriyet.com.tr##a[href^=" http://pubads.g.doubleclick.net/"]
+kocaelifikir.com##.widget > .add
+kocaelifikir.com##.row .text-center > a[href][rel="nofollow"] > img
+kocaelifikir.com##body > div[class$="-side hidden-xs hidden-sm"] > a[href][rel="nofollow"] > img
+mailce.com##.post-page-content > div[style^="width: 336px;height: 287px;"]
+mailce.com##.content-single-left > div[style^="width:970px;height:250px;"]
+abcgazetesi.com##.ads
+abcgazetesi.com###Anasayfa
+abcgazetesi.com##.content-news > div[style="width:315px;float:left;height:250px;padding:3px;"]:not([class]):not([id])
 dizimag6.co##a[href*="goo.gl"][rel="nofollow"][target="_blank"]
 dizimag6.co##.sagustrek
 dizimag6.co##a[onclick*="_click()"][onclick*="return false"]
