@@ -1,8 +1,8 @@
-! Checksum: IJu4nz94xAyPwF9TJnxYwg
+! Checksum: 3tiKPpkP/7IOLBLXaAOXcQ
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.3.48
-! TimeUpdated: 2018-09-03T15:05:12+00:00
+! Version: 2.0.3.51
+! TimeUpdated: 2018-09-12T09:04:19+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#turkish
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -308,6 +308,9 @@ muhendisimaaslari.com,androidmakale.com,guzelresimler.info,hesaplama.net,unikamp
 merlininkazani.com,serialbumler.com#%#AG_abortInlineScript(/google_ad_client/, 'document.addEventListener');
 !-------------------------
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/22259
+wowturkey.com#@#.adsbox
+wowturkey.com#@#.adsBox
 ! https://github.com/AdguardTeam/AdguardFilters/issues/21867
 ! https://github.com/AdguardTeam/AdguardFilters/issues/21485
 bursverenkurumlar.com#@##adsense
@@ -711,7 +714,6 @@ turkanime.tv##td[valign="top"][style="padding-top:10px; padding-left:5px; width:
 ##.rkads
 ##div[id^="floatLayer"]
 ##div[class^="ad-1000x"]
-~sweetalert.js.org##.swal-overlay
 ##img[alt="jigolo"]
 ##a[href*="megabatorturkiyebay"] > img
 ##a[href*="seriouslove.club"] > img
@@ -1673,6 +1675,7 @@ wmporn.com###vplayer > div[style*="background"]
 !+ NOT_PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
 ||yeniasya.com.tr/sites/yeniasya/static/*-kampanya
 !
+hurriyet.com.tr##a[href^=" http://pubads.g.doubleclick.net/"]
 kocaelifikir.com##.widget > .add
 kocaelifikir.com##.row .text-center > a[href][rel="nofollow"] > img
 kocaelifikir.com##body > div[class$="-side hidden-xs hidden-sm"] > a[href][rel="nofollow"] > img

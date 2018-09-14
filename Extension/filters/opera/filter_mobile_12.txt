@@ -1,14 +1,16 @@
-! Checksum: /AaJGsIve+vUCiUlZTBVcQ
+! Checksum: dg5wGNu6zuzJaiRqpZutzg
 ! Title: AdGuard Safari filter
 ! Description: Special filter for Safari 9+ on iOS and Mac OS. We need a separate filter for Safari browser because it does not fully support our rules syntax.
-! Version: 2.0.0.94
-! TimeUpdated: 2018-08-30T18:04:05+00:00
+! Version: 2.0.0.97
+! TimeUpdated: 2018-09-13T06:03:51+00:00
 ! Expires: 2 days (update frequency)
 ||adexec.net^$popup
 ||0912701309f8ce.com^$popup
 ||d71e6dd31a026d45.com*^$popup
 ||307cc283bab2ffdec92.com^
 ||xdbwc.com^
+!+ NOT_OPTIMIZED
+||smintmouse.com^$third-party
 ||cb8717377086c72d.com^$popup
 ||go.mobiprotg.com^$popup
 ||partners.parimatch.net^$popup
@@ -507,6 +509,9 @@ wi-fi.ru##.vb
 ||gamer.ru/alarmalarm/js/
 ||sports.ru/desktop/special/$subdocument,domain=sports.ru
 m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
+@@||pics.porn300.com^
+@@||cdn*.porn300.com^
+@@||games.tiscali.cz^$subdocument,domain=games.tiscali.cz
 @@||mp4upload.com^$domain=kissanime.ru
 @@||lh3.googleusercontent.com^$domain=kissanime.ru
 @@||finn.no/*ad.html?
@@ -581,7 +586,7 @@ fxporn.net#@#.video_ads
 @@||gumtree.com.au/p-post-ad*.html
 @@||engine.admelon.ru/c?pid=$domain=argumenti.ru
 @@||engine2.admelon.ru/c?pid=$domain=argumenti.ru
-@@||dyncdn.me/static/20/js/expla*.js$domain=rarbg.to|rarbg.unblocked.work|rarbgmirror.com|rarbgaccess.org
+@@||dyncdn.me/static/20/js/expla*.js$domain=rarbgprx.org|rarbg.to|rarbg.unblocked.work|rarbgmirror.com|rarbgaccess.org
 @@safari-extension://com.adguard.safari-$document
 @@safari-extension://com.adguard.safaridev-$document
 @@||motherlessmedia.com^$domain=motherless.com
