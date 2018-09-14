@@ -1,8 +1,8 @@
-! Checksum: A/gmOttpvbI2tO/ipr6zlg
+! Checksum: Y5G3jQdNgs+/Bsr4P+1DXw
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.0.37
-! TimeUpdated: 2018-08-24T09:57:04+00:00
+! Version: 2.0.0.39
+! TimeUpdated: 2018-09-03T18:09:01+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -1296,6 +1296,7 @@ tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
 ||wwa.pacific-yield.com^$third-party
 @@/ad_pics/*$image,domain=computerworld.nl|webwereld.nl
 rijmwoordenboek.net#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
+@@||looopings.nl/adsbygoogle.js
 windowstechblog.nl#@#.an-advert-banner
 windowstechblog.nl#@##adsense
 windowstechblog.nl#@#.an-sponsored
@@ -1315,6 +1316,7 @@ telegraaf.nl#%#window.canRunAds = true;
 @@||static.buienradar.nl/resources/js/advertisement.js
 biernet.nl#@#.afs_ads
 @@||telegraaf.tcdn.nl/javascript/showads*.js
+appletips.nl##.padnoshow > div[class^="block"][-ext-has='#kpwrfeatured']
 sceptr.net##.td-main-sidebar > .td-ss-main-sidebar > .widget_text:has(> h4.block-title > span:contains(ADVERTENTIE))
 androidplanet.nl##.sidebar > .widget_static_device_widget:has(.device-ad)
 androidplanet.nl##.pd-results-container > .results-inner > .pd-advisor-offer-container:first-child:has(> .pd-advisor-offer > .result-badge:contains(Adv.))
@@ -1327,6 +1329,11 @@ gelderlander.nl##.page-content > .theme-default[-ext-has='div.ad']
 klusidee.nl##tr.table-row[-ext-has=".td-ad"]
 omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3000px!important; }
 omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
+looopings.nl###containerAd
+appletips.nl##a[href^="/adverteren-"]
+appletips.nl##.padnoshow > div[class^="block"][style^="margin-top: "]
+appletips.nl##.mobnoshow > center > div[class^="block"][style="margin-top: 35px;"]
+appletips.nl##.padnoshow #kpwrfeatured
 hln.be##div[data-url*="trackuity.com"]
 hln.be##.ktsjing-row--leader
 hln.be##.ktsjing-row--sky
