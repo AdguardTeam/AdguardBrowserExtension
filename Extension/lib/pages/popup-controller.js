@@ -444,12 +444,12 @@ PopupController.prototype = {
         var lines = [];
         switch (range) {
             case 'day':
-                for (var i = 0; i < 25; i++) {
+                for (let i = 1; i < 25; i += 1) {
                     if (i % 3 === 0) {
-                        var hour = (i + now.getHours()) % 24;
+                        const hour = (i + now.getHours()) % 24;
                         categories.push(hour.toString());
                         lines.push({
-                            value: i
+                            value: i - 1,
                         });
                     } else {
                         categories.push('');
@@ -458,21 +458,21 @@ PopupController.prototype = {
 
                 break;
             case 'week':
-                for (var i = 0; i < 8; i++) {
-                    categories.push(this._dayOfWeekAsString((day + i) % 7 ));
+                for (let i = 0; i < 7; i += 1) {
+                    categories.push(this._dayOfWeekAsString((day + i) % 7));
                     lines.push({
-                        value: i
+                        value: i,
                     });
                 }
 
                 break;
             case 'month':
-                for (var i = 0; i < 31; i++) {
+                for (let i = 0; i < 31; i += 1) {
                     if (i % 3 === 0) {
                         var c = (i + now.getDate()) % lastDayOfPrevMonth + 1;
                         categories.push(c.toString());
                         lines.push({
-                            value: i
+                            value: i,
                         });
                     } else {
                         categories.push('');
@@ -481,11 +481,11 @@ PopupController.prototype = {
 
                 break;
             case 'year':
-                for (var i = 0; i < 13; i++) {
-                    categories.push(this._monthsAsString((month + i) % 12 ));
+                for (let i = 0; i < 13; i += 1) {
+                    categories.push(this._monthsAsString((month + i) % 12));
                     categories = categories.slice(-statsData.length);
                     lines.push({
-                        value: i
+                        value: i,
                     });
                 }
 
@@ -494,7 +494,7 @@ PopupController.prototype = {
 
         return {
             categories: categories,
-            lines: lines
+            lines: lines,
         };
     },
 
@@ -511,24 +511,24 @@ PopupController.prototype = {
             '  <stop offset="100%" style="stop-color:#65BDA8;stop-opacity:1" />'+
             '</linearGradient>';
 
-        var chart = c3.generate({
+        c3.generate({
             size: {
-                height: 230
+                height: 230,
             },
             data: {
                 columns: [
-                    ['data1'].concat(statsData)
+                    ['data1'].concat(statsData),
                 ],
                 types: {
-                    data1: 'area-spline'
+                    data1: 'area-spline',
                 },
                 colors: {
-                    data1: 'url(#grad1)'
-                }
+                    data1: 'url(#grad1)',
+                },
             },
             padding: {
                 left: 15,
-                right: 15
+                right: 15,
             },
             axis: {
                 x: {
@@ -537,57 +537,59 @@ PopupController.prototype = {
                     categories: categories,
                     tick: {
                         outer: false,
-                        multiline: false
-                    }
+                        multiline: false,
+                    },
                 },
                 y: {
-                    show: false
-                }
+                    show: false,
+                },
             },
             legend: {
-                show: false
+                show: false,
             },
             grid: {
                 x: {
-                    lines: lines
+                    lines: lines,
                 },
                 focus: {
-                    show: false
-                }
+                    show: false,
+                },
             },
             spline: {
                 interpolation: {
-                    type: 'basis'
-                }
+                    type: 'basis',
+                },
             },
             point: {
-                show: false
+                show: false,
             },
             tooltip: {
-                position: function(data, width, height, element) {
-                    var top = d3.mouse(element)[1] - 50;
+                position: function (data, width, height, element) {
+                    const tooltipWidth = 20;
+
+                    const top = d3.mouse(element)[1] - 50;
                     return {
                         top: top,
-                        left: parseInt(element.getAttribute('x')) - 3
+                        left: parseInt(element.getAttribute('x'), 10) + (width / 2) - (tooltipWidth / 2),
                     };
                 },
-                contents: function(d, defaultTitleFormat, defaultValueFormat, color) {
-                    d = d[0].value;
-                    return '<div id="tooltip" class="chart__tooltip">' + d + '</div>';
-                }
+                contents: function (d) {
+                    const value = d[0].value;
+                    return `<div id="tooltip" class="chart__tooltip">${value}</div>`;
+                },
             },
-            oninit: function() {
+            oninit: function () {
                 this.svg[0][0].getElementsByTagName('defs')[0].innerHTML += grad1;
-            }
+            },
         });
     },
 
     _localizeBlockedType: function (type) {
         if (!type) {
-            return "";
+            return '';
         }
 
-        return i18n.getMessage("popup_statistics_request_types_" + type.toLowerCase());
+        return i18n.getMessage('popup_statistics_request_types_' + type.toLowerCase());
     },
 
     _buildRequestTypesColumns: function (stats, range) {
