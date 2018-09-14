@@ -47,7 +47,7 @@
 
         // Filter-download.html
         registerChromeContentScript('pages/filter-download.html', [
-            'lib/libs/jquery-2.2.4.min.js',
+            'lib/libs/jquery-3.3.1.min.js',
             'lib/libs/nprogress.patched.js',
             'lib/content-script/adguard-content.js',
             'lib/content-script/content-script.js',
@@ -59,7 +59,7 @@
 
         // Options.html
         registerChromeContentScript('pages/options.html', [
-            'lib/libs/jquery-2.2.4.min.js',
+            'lib/libs/jquery-3.3.1.min.js',
             'lib/libs/bootstrap.min.js',
             'lib/libs/jquery.mousewheel.min.js',
             'lib/libs/jquery.jscrollpane.min.js',
@@ -75,7 +75,7 @@
 
         // Log.html
         registerChromeContentScript('pages/log.html', [
-            'lib/libs/jquery-2.2.4.min.js',
+            'lib/libs/jquery-3.3.1.min.js',
             'lib/libs/bootstrap.min.js',
             'lib/libs/moment-with-locales.min.js',
             'lib/content-script/adguard-content.js',
@@ -89,7 +89,7 @@
 
         // Export.html
         registerChromeContentScript('pages/export.html', [
-            'lib/libs/jquery-2.2.4.min.js',
+            'lib/libs/jquery-3.3.1.min.js',
             'lib/content-script/adguard-content.js',
             'lib/content-script/content-script.js',
             'lib/pages/export.js'
@@ -97,7 +97,7 @@
 
         // Popup.html
         registerChromeContentScript('pages/popup.html', [
-            'lib/libs/jquery-2.2.4.min.js',
+            'lib/libs/jquery-3.3.1.min.js',
             'lib/content-script/adguard-content.js',
             'lib/content-script/content-script.js',
             'lib/content-script/popup-script.js',
@@ -109,7 +109,7 @@
 
         // Sb.html
         registerChromeContentScript('pages/sb.html', [
-            'lib/libs/jquery-2.2.4.min.js',
+            'lib/libs/jquery-3.3.1.min.js',
             'lib/content-script/adguard-content.js',
             'lib/content-script/content-script.js',
             'lib/content-script/i18n-helper.js',
@@ -146,7 +146,7 @@
 
         // Thankyou.html
         registerPageContentScript([
-            'lib/libs/jquery-2.2.4.min.js',
+            'lib/libs/jquery-3.3.1.min.js',
             'lib/content-script/adguard-content.js',
             'lib/content-script/content-script.js',
             'lib/pages/thankyou.js'
