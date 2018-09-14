@@ -1,8 +1,8 @@
-! Checksum: jM4NIehiTRpB4C/ozQwFLg
+! Checksum: xdSV+q4UNzoyabAf/hH3VA
 ! Title: AdGuard Safari filter
 ! Description: Special filter for Safari 9+ on iOS and Mac OS. We need a separate filter for Safari browser because it does not fully support our rules syntax.
-! Version: 2.0.0.94
-! TimeUpdated: 2018-08-30T18:04:05+00:00
+! Version: 2.0.0.97
+! TimeUpdated: 2018-09-13T06:03:51+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#safari
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -18,6 +18,9 @@
 ||d71e6dd31a026d45.com*^$popup
 ||307cc283bab2ffdec92.com^
 ||xdbwc.com^
+! https://github.com/AdguardTeam/AdguardFilters/issues/22373
+!+ NOT_OPTIMIZED
+||smintmouse.com^$third-party
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3656
 ||cb8717377086c72d.com^$popup
 ||go.mobiprotg.com^$popup
@@ -799,6 +802,11 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 !
 ! White list. Fixing content blocking API issues.
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/22371
+@@||pics.porn300.com^
+@@||cdn*.porn300.com^
+! https://github.com/AdguardTeam/AdguardFilters/issues/22168
+@@||games.tiscali.cz^$subdocument,domain=games.tiscali.cz
 ! https://github.com/AdguardTeam/AdguardFilters/issues/21077
 @@||mp4upload.com^$domain=kissanime.ru
 @@||lh3.googleusercontent.com^$domain=kissanime.ru
@@ -908,7 +916,7 @@ fxporn.net#@#.video_ads
 @@||engine.admelon.ru/c?pid=$domain=argumenti.ru
 @@||engine2.admelon.ru/c?pid=$domain=argumenti.ru
 ! rarbg - сhoose popup instead of popunder. Popup will be blocked.
-@@||dyncdn.me/static/20/js/expla*.js$domain=rarbg.to|rarbg.unblocked.work|rarbgmirror.com|rarbgaccess.org
+@@||dyncdn.me/static/20/js/expla*.js$domain=rarbgprx.org|rarbg.to|rarbg.unblocked.work|rarbgmirror.com|rarbgaccess.org
 ! https://github.com/AdguardTeam/AdguardBrowserExtension/issues/678
 ! Prevent self-blocking of Adguard for Safari extension
 @@safari-extension://com.adguard.safari-$document

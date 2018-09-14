@@ -297,7 +297,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
                 }
             });
 
-            let allProbeElements = [];
+            var allProbeElements = [];
 
             addUnique(allProbeElements, childrenOfProbeElements);
             addUnique(allProbeElements, probeElements);
