@@ -143,7 +143,7 @@
      * We should override WebSocket constructor in the following browsers: Chrome (between 47 and 57 versions), YaBrowser, Opera and Safari (old versions)
      * Firefox and Safari (9 or higher) can be omitted because they allow us to inspect and block WS requests.
      * Edge doesn't provide access to websockets via onBeforeRequest API but we don't override them,
-     * because this causes unclear errors
+     * because Edge behaves unpredictably when we override WebSocket.
      * This function simply checks the conditions above.
      * @returns true if WebSocket constructor should be overridden
      */
