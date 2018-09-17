@@ -1,8 +1,8 @@
-! Checksum: FZIjWaneJVAjnBC46bxWiA
+! Checksum: DYX7XTp4UUkGXb8yXQZdSw
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish and Portuguese languages.
-! Version: 2.0.2.16
-! TimeUpdated: 2018-09-13T06:04:31+00:00
+! Version: 2.0.2.17
+! TimeUpdated: 2018-09-14T12:08:46+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -506,6 +506,7 @@ maisgasolina.com###main [id$="Block"][-ext-has='.adsbygoogle']
 ##.video_ads_overdiv
 ##[href^="http://ads.glispa.com/"]
 tugaanimado.net#%#window.zfgloadedpopup = true;
+torrentrapid.com#%#AG_abortInlineScript(/about:blank/, 'document.addEventListener');
 futeboltvgratis.com#%#window.open = function() {};
 gnula.nu#%#(function(){var b=window.setTimeout;window.setTimeout=function(a,c){if(!/\(\)>0x0\)\{fA=setTimeout\(/.test(a.toString()))return b(a,c)};})();
 anitubebr.com#%#AG_abortInlineScript(/abreJanela/, 'document.getElementsByTagName');
@@ -632,6 +633,8 @@ _publicidade.
 _publicidade_
 _publicitario.
 http://adw.
+torrentrapid.com##div[style="float:left;width:620px;height:250px;margin:auto;"]
+||subdo.torrentrapid.com^
 ||pornolandia.xxx/webmaster/videoroll^
 pornolandia.xxx##.ad-bodyvideo
 elespanol.com##.container > .homeNormalNoMobile
@@ -715,9 +718,8 @@ yoututosjeff.es###HTML3
 ||abril.lojaabril.com^*/abrilcom/$third-party
 redecanais.info,redecanais.link###yb_mm
 redecanais.info,redecanais.link###yb_bb
-tvsinpagar.com##.pub728x90
 tvsinpagar.com##.pub300x250
-tvsinpagar.com##.gray[style="width:100%;height:98px;"]
+torrentrapid.com,tvsinpagar.com##.gray[style="width:100%;height:98px;"]
 tvsinpagar.com##div[style="float:left;width:100%;height:90px;"]
 tvsinpagar.com##div[style="float:left;width:100%;height:100px;"]
 tvsinpagar.com##div[style="width:620px;height:250px;margin:20px auto;"]
@@ -732,7 +734,7 @@ androidaba.com##.adsbygoogle
 seriesgato.tv##a[href^="https://ocio.leadzutw.com/"]
 seriesgato.tv##.TPlayerNv > .Button.STPb[data-tplayernv="Opt0"]
 tumejortorrent.com##.pub160x600
-tumejortorrent.com##.box-publi-left
+torrentrapid.com,tumejortorrent.com##.box-publi-left
 tumejortorrent.com##div[style="float:left;width:100%;height:275px;"]
 tumejortorrent.com##li[style="width:100%;height:98px;"]
 tumejortorrent.com##.pub300x250
@@ -932,7 +934,7 @@ tarjetaroja-tv.net##iframe[src="about:blank"]
 deportesmax.com,deportesmax.info###adsdiv
 deportesmax.info##td[width="300"][align="center"][valign="top"] > div[align="center"]
 deportesmax.info##td[width="729"][align="center"][valign="top"]
-newpct1.com##div[style="float:left;width:100%;height:160px;"]
+torrentrapid.com,newpct1.com##div[style="float:left;width:100%;height:160px;"]
 newpct1.com###box-ads-trailer
 /^https:\/\/(ddmix.net)\/[a-z0-9_]*\.js/$script,domain=ddmix.net
 /^https:\/\/(ddmix.net)\/js\/[a-z0-9_]*\.js/$script,domain=ddmix.net
@@ -1660,7 +1662,7 @@ ig.com.br##.pub-ticker.fl
 punch-fansub.com.br,tiinside.com.br##.pub1
 estadao.com.br##.pub157x27
 internautas.org##.pub60
-tumejortorrent.com##.pub728x90
+torrentrapid.com,tvsinpagar.com,tumejortorrent.com##.pub728x90
 telanon.info,xl.pt##.pubBlock
 clix.pt,publico.pt##.pubHeader
 clix.pt,publico.pt##.pubTextual
