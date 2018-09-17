@@ -1,8 +1,8 @@
-! Checksum: xQsz0PaVEceDC04Bgqxs8Q
+! Checksum: xtmpEscLiSFsa6vpP1K+fA
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.3.51
-! TimeUpdated: 2018-09-12T09:04:19+00:00
+! Version: 2.0.3.52
+! TimeUpdated: 2018-09-13T12:05:08+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -717,6 +717,7 @@ diziay.com#%#AG_onLoad(function() { window.clickOnLoad = function() {}; });
 hdfilmkablosu.com#%#document.cookie = "popundr15=1";
 filmrax.com#%#Object.defineProperty(window, 'undercipop', {get: function() { return function() {}; } });
 fullhdfilmizlesene.org#%#window.local = true;
+dizimag.net#%#Object.defineProperty(window, '_pop', { get: function() { return {}; } });
 fullhdfilmizlesene.org,ultrahdfilmizle.org#%#AG_onLoad(function() { window.startScript = function() {}; });
 haber7.com#%#AG_onLoad(function() { var elements = document.querySelectorAll(".headline-slider > .slick-dots > li > a:not([href*='advertorial'])"); for(var i = 0; i < elements.length; i++) { elements[i].innerHTML = i+1; }; });
 milligazete.com.tr#%#AG_onLoad(function() { var _setInterval=setInterval(function(){removeAd()},500);function removeAd(){var a=$('ul.row[role="tablist"] > li > a[href^="/service/advertclick"]');a.length&&($('ul.row[role="tablist"] > li > a[href^="/service/advertclick"]').closest('li').remove(),$('div.slick-track > a[href^="/service/advertclick"]').closest('a').remove())}setTimeout(function(){clearInterval(_setInterval)},5e3); });
