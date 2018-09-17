@@ -1,8 +1,8 @@
-! Checksum: X9cDljzdFlmGRscmwqZINQ
+! Checksum: RmiV0qyU3yvONz1ax6zblw
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.3.32
-! TimeUpdated: 2018-09-13T03:03:12+00:00
+! Version: 2.0.3.37
+! TimeUpdated: 2018-09-15T00:03:48+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -1004,6 +1004,7 @@ yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua,~afisha.yandex.by,~afisha.yan
 ##amp-ad
 nnm-club.tv,all-tor.net,free-rutor.org,lenfilm.tv,krutor.org,fast-bit.org,tor-ru.net,hd-bit.org,radikal.ru,hdkinomax.com,on-movie.net,fastpic.ru,rutor.is,baskino.club,rutor.info,nnm.me,korzik.net,seasonvar.ru,rsload.net,nnm-club.me,nnmclub.to,rustorka.com,auto.mail.ru,horo.mail.ru,realty.mail.ru,health.mail.ru,afisha.mail.ru,cloud.mail.ru,otvet.mail.ru,pogoda.mail.ru,sport.mail.ru,tv.mail.ru,torg.mail.ru,cars.mail.ru,hi-tech.mail.ru,rustorka.com,top-tor.org,super-tor.net,free-ru.org#%#window.WebSocket = undefined;
 pornhub.com#%#AG_onLoad(function() { if (typeof redirect !== 'function') return; var str = redirect.toString(); var m = str.match(/\'(\/view.*)\'/); if (m.length != 2) return; var link = m[1]; window.location.href = m[1]; });
+motherless.com#%#AG_abortInlineScript(/awentw/, 'Math.floor');
 m.cricbuzz.com#%#AG_onLoad(function() { if(window.location.href.indexOf("/cricbuzz-roadblock/dfp?url=") != -1) { var el = document.querySelector('.cbz-grid-table-fix  > a.btn-default'); if(el) el.click(); } });
 m.cricbuzz.com#%#document.cookie = "us_ads=1"; document.cookie = "in_ads=1"; document.cookie = "pk_ads=1"; document.cookie = "gcc_ads=1"; document.cookie = "gb_ads=1"; document.cookie = "eu_ads=1"; document.cookie = "oc_ads=1";
 m.timesofindia.com#%#Object.defineProperty(window,'trev',{get:function(){return function(){var a=document.currentScript;if(!a){var c=document.getElementsByTagName('script');a=c[c.length-1]}if(a&&/typeof\sotab\s==\s'function'/.test(a.textContent)){var d=a.previousSibling,b=d;while(b=b.previousSibling)if(b.nodeType==Node.COMMENT_NODE&&/\d{5,}\s\d{1,2}/.test(b.data)){d.style.setProperty('display','none','important');return}}}},set:function(){}});
@@ -1242,6 +1243,13 @@ m.news.de##.aside > div[style="height: 600px;"]
 m.news.de##.unisterAdsStart
 !+ NOT_OPTIMIZED
 9to5google.com,9to5toys.com,9to5mac.com,electrek.co##.post-content > .inlinead ~ div[class*=" "]:not([id]):not([style])
+motherless.com###advertisement-below-menu
+||motherless.com/floater_iframe.php
+motherless.com##._ln-floater
+kp.ru###mobile_push_bottom
+anyporn.com##.inplb
+anyporn.com###mh-ad
+||anyporn.com/xml^$media,mp4
 blog.livedoor.com##.MdAdBox01
 appleinsider.com##.content-main > .ad
 akket-com.cdn.ampproject.org##.ad_amp
@@ -1348,7 +1356,7 @@ xbabe.com###fltd
 m.vikiporn.com##.top-spot
 m.vikiporn.com##.under_player_adv
 m.vikiporn.com##.bottom-spot
-x.facebook.com,mobile.facebook.com##article[data-store*="is_sponsored.1"]
+iphone.facebook.com,x.facebook.com,mobile.facebook.com##article[data-store*="is_sponsored.1"]
 x.facebook.com,mobile.facebook.com##.storyStream > .fullwidth.carded
 m.allboxing.ru##.arcticmodal-container
 m.delmagyar.hu##.closable-ad
@@ -2018,6 +2026,7 @@ yandex.ru,m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m
 m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m.news.yandex.ru,m.news.yandex.ua##.page-content > div.story+div[id]:not(.story)
 m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m.news.yandex.ru,m.news.yandex.ua##.proffit-wrapper
 ||extmaps-api.yandex.net/promo/api/
+||api.ettoday.net/app/*/get_app_adlist^
 ||mail.google.com/mail/ads^
 ||app.adjust.com^$empty,app=com.ilike.cartoon,important
 ||go2s.co/res/$image
