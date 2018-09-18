@@ -43,7 +43,7 @@ var CheckboxUtils = (function () {
             el.classList.add('toggler');
             checkbox.parentNode.insertBefore(el, checkbox.nextSibling);
 
-            el.addEventListener('click', function () {
+            el.parentNode.addEventListener('click', function () {
                 checkbox.checked = !checkbox.checked;
 
                 var event = document.createEvent('HTMLEvents');

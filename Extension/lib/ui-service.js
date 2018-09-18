@@ -156,6 +156,25 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     }, 250);
 
     /**
+     * Update extension browser action popup window
+     * @param tab - active tab
+     */
+    function updatePopupStats(tab) {
+        var tabInfo = adguard.frames.getFrameInfo(tab);
+        if (!tabInfo) {
+            return;
+        }
+        adguard.runtimeImpl.sendMessage({
+            type: 'updateTotalBlocked',
+            tabInfo: tabInfo,
+        });
+    }
+
+    var updatePopupStatsAsync = adguard.utils.concurrent.debounce(function (tab) {
+        updatePopupStats(tab);
+    }, 250);
+
+    /**
      * Creates context menu item
      * @param title Title id
      * @param options Create options
@@ -569,6 +588,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             });
         } else {
             updateTabIconAndContextMenu(tab, true);
+            adguard.tabs.reload(tab.tabId);
         }
     };
 
@@ -586,6 +606,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             }
         } else {
             updateTabIconAndContextMenu(tab, true);
+            adguard.tabs.reload(tab.tabId);
         }
     };
 
@@ -593,6 +614,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         adguard.settings.changeFilteringDisabled(disabled);
         adguard.tabs.getActive(function (tab) {
             updateTabIconAndContextMenu(tab, true);
+            adguard.tabs.reload(tab.tabId);
         });
     };
 
@@ -715,7 +737,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         updateTabIcon(tab, options);
     });
 
-    // Update icon on ads blocked
+    // Update icon and popup stats on ads blocked
     adguard.listeners.addListener(function (event, rule, tab, blocked) {
 
         if (event !== adguard.listeners.ADS_BLOCKED || !tab) {
@@ -728,6 +750,12 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             return;
         }
         updateTabIconAsync(tab);
+
+        adguard.tabs.getActive(function (activeTab) {
+            if (tab.tabId === activeTab.tabId) {
+                updatePopupStatsAsync(activeTab);
+            }
+        });
     });
 
     // Update context menu on change user settings

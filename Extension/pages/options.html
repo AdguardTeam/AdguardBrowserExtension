@@ -29,12 +29,48 @@
         <div class="settings-sidebar">
             <div class="logo"><img src="images/logo.svg" alt=""></div>
             <ul class="nav nav-tabs">
-                <li><a href="#" data-tab="#general-settings" i18n="options_general_settings"></a></li>
-                <li><a href="#" data-tab="#antibanner" i18n="options_antibanner"></a></li>
-                <li><a href="#" data-tab="#whitelist" i18n="options_whitelist"></a></li>
-                <li><a href="#" data-tab="#userfilter" i18n="options_userfilter"></a></li>
-                <li><a href="#" data-tab="#miscellaneous-settings" i18n="options_miscellaneous_settings"></a></li>
-                <li><a href="#" data-tab="#sync">Sync</a></li>
+                <li>
+                    <a href="#" class="nav__item" data-tab="#general-settings">
+                        <span i18n="options_general_settings"></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav__item" data-tab="#antibanner">
+                        <span i18n="options_antibanner"></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav__item" data-tab="#whitelist">
+                        <span i18n="options_whitelist"></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav__item" data-tab="#userfilter">
+                        <span i18n="options_userfilter"></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav__item" data-tab="#miscellaneous-settings">
+                        <span i18n="options_miscellaneous_settings"></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav__item" data-tab="#sync">
+                        <span>
+                            Sync
+                        </span>
+                    </a>
+                </li>
+                <li class="try-premium">
+                    <a href="https://adguard.com/" target="_blank" class="try-premium__in">
+                        <span class="try-premium__title">
+                            Try AdGuard Premium for better protection!
+                        </span>
+                        <span class="try-premium__btn">
+                            How they compare
+                        </span>
+                    </a>
+                </li>
             </ul>
         </div>
         <div id="general-settings" class="settings-content tab-pane">
@@ -45,20 +81,30 @@
                     <li class="active">
                         <div class="opt-name" i18n="options_allow_acceptable_ads"></div>
                         <div class="opt-state">
-                            <input type="checkbox" class="sp-table-row-input" id="allowAcceptableAds"/>
+                            <div class="toggler-wr">
+                                <input type="checkbox" class="sp-table-row-input" id="allowAcceptableAds"/>
+                            </div>
                         </div>
                     </li>
                     <li class="active">
                         <div class="opt-name" i18n="options_show_blocked_ads_count"></div>
                         <div class="opt-state">
-                            <input type="checkbox" class="sp-table-row-input" id="showPageStatisticCheckbox"/>
+                            <div class="toggler-wr">
+                                <input type="checkbox" class="sp-table-row-input" id="showPageStatisticCheckbox"/>
+                            </div>
                         </div>
                     </li>
                     <li>
                         <div class="opt-name" i18n="options_enable_autodetect_filter"></div>
                         <div class="opt-state">
-                            <input type="checkbox" class="sp-table-row-input" id="autodetectFiltersCheckbox"/>
+                            <div class="toggler-wr">
+                                <input type="checkbox" class="sp-table-row-input" id="autodetectFiltersCheckbox"/>
+                            </div>
                         </div>
+                    </li>
+                    <li>
+                        <div class="opt-name" i18n="options_set_update_interval"></div>
+                        <select class="opt-select" id="filtersUpdatePeriodSelect"></select>
                     </li>
                 </ul>
 
@@ -67,7 +113,9 @@
                     <li>
                         <div class="title" i18n="options_safebrowsing_enabled"></div>
                         <div class="opt-state">
-                            <input type="checkbox" class="sp-table-row-input" id="safebrowsingEnabledCheckbox"/>
+                            <div class="toggler-wr">
+                                <input type="checkbox" class="sp-table-row-input" id="safebrowsingEnabledCheckbox"/>
+                            </div>
                         </div>
                     </li>
                     <li>
@@ -76,19 +124,16 @@
                             <div class="opt-state"></div>
                         </div>
                         <div class="opt-state input">
-                            <input type="checkbox" class="sp-table-row-input" id="sendSafebrowsingStatsCheckbox"/>
+                            <div class="toggler-wr">
+                                <input type="checkbox" class="sp-table-row-input" id="sendSafebrowsingStatsCheckbox"/>
+                            </div>
                         </div>
                     </li>
                 </ul>
             </div>
             <div class="settings-actions">
-                <a href="/pages/export.html#exs" target="_blank" id="exportSettingsFile" i18n="options_export_settings"></a>
-                <a href="#" id="importSettingsFile" i18n="options_import_settings"></a>
-            </div>
-            <div class="settings-actions">
-                <label for="filtersUpdatePeriodSelect" i18n="options_set_update_interval"></label>
-                <select id="filtersUpdatePeriodSelect">
-                </select>
+                <a href="/pages/export.html#exs" target="_blank" id="exportSettingsFile" class="button button--green button--link" i18n="options_export_settings"></a>
+                <a href="#" id="importSettingsFile" i18n="options_import_settings" class="button button--green-bd button--link"></a>
             </div>
         </div>
 
@@ -215,9 +260,12 @@
             </div>
             <div class="settings-content">
                 <div class="page-title">
-                    <div class="info">
+                    <div class="info info--rules-current" id="updateAntiBannerFilters">
                         <span id="filtersRulesInfo"></span>
                         <div id="lastUpdateTime" class="upd"></div>
+                        <div class="settings-actions settings-actions--update-filters">
+                            <a href="#" i18n-title="options_update_antibanner_filters"></a>
+                        </div>
                     </div>
                     <span i18n="options_antibanner"></span>
                 </div>
@@ -225,10 +273,7 @@
                     <ul id="groupsList" class="opts-list ad-blocker"></ul>
                 </div>
                 <div class="settings-actions">
-                    <a href="#" id="updateAntiBannerFilters" i18n="options_update_antibanner_filters"></a>
-                </div>
-                <div class="settings-actions">
-                    <a href="#" id="addCustomFilter" i18n="options_add_custom_filter"></a>
+                    <a href="#" class="add-custom-filter-button button button--green button--link" i18n="options_add_custom_filter"></a>
                 </div>
             </div>
             <div class="filters-check">
@@ -269,7 +314,9 @@
                                 <div class="opt-state"></div>
                             </div>
                             <div class="opt-state input">
-                                <input type="checkbox" class="sp-table-row-input" id="changeDefaultWhiteListMode"/>
+                                <div class="toggler-wr">
+                                    <input type="checkbox" class="sp-table-row-input" id="changeDefaultWhiteListMode"/>
+                                </div>
                             </div>
                         </li>
                     </ul>
@@ -279,9 +326,9 @@
                 </div>
                 <div class="settings-actions">
                     <input type="file" id="importWhiteListInput" style="display: none;" accept=".txt, text/plain"/>
-                    <a id="whiteListFiltersImport" href="#" i18n="options_userfilter_import"></a>
-                    <a id="whiteListFiltersExport" href="#" i18n="options_userfilter_export"></a>
-                    <a id="whiteListFilterApplyChanges" href="#" i18n="options_modal_save"></a>
+                    <a class="button button--green button--link" id="whiteListFiltersImport" href="#" i18n="options_userfilter_import"></a>
+                    <a class="button button--green-bd button--link" id="whiteListFiltersExport" href="#" i18n="options_userfilter_export"></a>
+                    <a class="button button--green-bd button--link" id="whiteListFilterApplyChanges" href="#" i18n="options_modal_save"></a>
                 </div>
             </div>
         </div>
@@ -297,9 +344,9 @@
                 </div>
                 <div class="settings-actions">
                     <input type="file" id="importUserFilterInput" style="display: none;" accept=".txt, text/plain"/>
-                    <a id="userFiltersImport" href="#" i18n="options_userfilter_import"></a>
-                    <a id="userFiltersExport" href="#" i18n="options_userfilter_export"></a>
-                    <a id="userFilterApplyChanges" href="#" i18n="options_modal_save"></a>
+                    <a id="userFiltersImport" href="#" i18n="options_userfilter_import" class="button button--green button--link"></a>
+                    <a id="userFiltersExport" href="#" i18n="options_userfilter_export" class="button button--green-bd button--link"></a>
+                    <a id="userFilterApplyChanges" href="#" i18n="options_modal_save" class="button button--green-bd button--link"></a>
                 </div>
             </div>
         </div>
@@ -314,7 +361,9 @@
                             <div class="opt-state"></div>
                         </div>
                         <div class="opt-state input">
-                            <input type="checkbox" class="sp-table-row-input" id="useOptimizedFilters"/>
+                            <div class="toggler-wr">
+                                <input type="checkbox" class="sp-table-row-input" id="useOptimizedFilters"/>
+                            </div>
                         </div>
                     </li>
                     <li>
@@ -323,39 +372,49 @@
                             <div class="opt-state"></div>
                         </div>
                         <div class="opt-state input">
-                            <input type="checkbox" class="sp-table-row-input" id="integrationModeCheckbox"/>
+                            <div class="toggler-wr">
+                                <input type="checkbox" class="sp-table-row-input" id="integrationModeCheckbox"/>
+                            </div>
                         </div>
                     </li>
                     <li>
                         <div class="opt-name" i18n="options_collect_hit_stats"></div>
                         <div class="opt-state">
-                            <input type="checkbox" class="sp-table-row-input" id="enableHitsCount"/>
+                            <div class="toggler-wr">
+                                <input type="checkbox" class="sp-table-row-input" id="enableHitsCount"/>
+                            </div>
                         </div>
                     </li>
                     <li class="active">
                         <div class="opt-name" i18n="options_show_context_menu"></div>
                         <div class="opt-state">
-                            <input type="checkbox" class="sp-table-row-input" id="enableShowContextMenu"/>
+                            <div class="toggler-wr">
+                                <input type="checkbox" class="sp-table-row-input" id="enableShowContextMenu"/>
+                            </div>
                         </div>
                     </li>
                     <li>
                         <div class="opt-name" i18n="options_show_adguard_full_version"></div>
                         <div class="opt-state">
-                            <input type="checkbox" class="sp-table-row-input" id="showInfoAboutAdguardFullVersion"/>
+                            <div class="toggler-wr">
+                                <input type="checkbox" class="sp-table-row-input" id="showInfoAboutAdguardFullVersion"/>
+                            </div>
                         </div>
                     </li>
                     <li>
                         <div class="opt-name" i18n="options_show_app_updated_notification"></div>
                         <div class="opt-state">
-                            <input type="checkbox" class="sp-table-row-input" id="showAppUpdatedNotification"/>
+                            <div class="toggler-wr">
+                                <input type="checkbox" class="sp-table-row-input" id="showAppUpdatedNotification"/>
+                            </div>
                         </div>
                     </li>
                 </ul>
             </div>
             <div class="settings-actions">
-                <a id="openLog" href="#" i18n="options_open_log"></a>
-                <a id="resetStats" href="#" i18n="options_reset_stats"></a>
-                <a href="https://github.com/AdguardTeam/AdguardBrowserExtension/releases" target="_blank" i18n="options_open_changelog"></a>
+                <a id="openLog" href="#" i18n="options_open_log" class="button button--green button--link"></a>
+                <a id="resetStats" href="#" i18n="options_reset_stats" class="button button--green-bd button--link"></a>
+                <a href="https://github.com/AdguardTeam/AdguardBrowserExtension/releases" class="button button--green-bd button--link" target="_blank" i18n="options_open_changelog"></a>
             </div>
         </div>
 
