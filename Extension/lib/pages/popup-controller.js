@@ -552,7 +552,7 @@ PopupController.prototype = {
                     lines: lines,
                 },
                 focus: {
-                    show: false,
+                    show: true,
                 },
             },
             spline: {
@@ -565,12 +565,15 @@ PopupController.prototype = {
             },
             tooltip: {
                 position: function (data, width, height, element) {
-                    const tooltipWidth = 20;
-
+                    const chart = document.querySelector('#chart');
+                    const elementRect = element.getBoundingClientRect();
+                    const elementCenterPosition = elementRect.left + (elementRect.width / 2);
+                    const tooltipHalfWidth = chart.querySelector('.chart__tooltip').clientWidth / 2;
+                    const tooltipLeft = elementCenterPosition - tooltipHalfWidth;
                     const top = d3.mouse(element)[1] - 50;
                     return {
                         top: top,
-                        left: parseInt(element.getAttribute('x'), 10) + (width / 2) - (tooltipWidth / 2),
+                        left: tooltipLeft,
                     };
                 },
                 contents: function (d) {
