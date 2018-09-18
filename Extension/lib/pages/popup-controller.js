@@ -23,11 +23,6 @@
 var PopupController = function () {
 };
 
-// TODO what is the best place for this function?
-function formatNumber(v) {
-    return v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-}
-
 PopupController.prototype = {
 
     /**
@@ -109,14 +104,14 @@ PopupController.prototype = {
         if (totalBlockedTab) {
             const tabBlocked = document.querySelector('.widget-popup .blocked-tab');
             if (tabBlocked) {
-                i18n.translateElement(tabBlocked, 'popup_tab_blocked', [formatNumber(totalBlockedTab)]);
+                i18n.translateElement(tabBlocked, 'popup_tab_blocked', [this._formatNumber(totalBlockedTab)]);
             }
         }
 
         if (totalBlocked) {
             const allBlocked = document.querySelector('.widget-popup .blocked-all');
             if (allBlocked) {
-                i18n.translateElement(allBlocked, 'popup_tab_blocked_all', [formatNumber(totalBlocked)]);
+                i18n.translateElement(allBlocked, 'popup_tab_blocked_all', [this._formatNumber(totalBlocked)]);
             }
         }
     },
@@ -257,8 +252,8 @@ PopupController.prototype = {
             template = this.filteringDefaultHeader;
             var tabBlocked = template.querySelector('.blocked-tab');
             var totalBlocked = template.querySelector('.blocked-all');
-            i18n.translateElement(tabBlocked, 'popup_tab_blocked', [formatNumber(tabInfo.totalBlockedTab || 0)]);
-            i18n.translateElement(totalBlocked, 'popup_tab_blocked_all', [formatNumber(tabInfo.totalBlocked || 0)]);
+            i18n.translateElement(tabBlocked, 'popup_tab_blocked', [this._formatNumber(tabInfo.totalBlockedTab || 0)]);
+            i18n.translateElement(totalBlocked, 'popup_tab_blocked_all', [this._formatNumber(tabInfo.totalBlocked || 0)]);
             var closestWidgetFilter = tabBlocked.closest('.widget-popup-filter');
             if (closestWidgetFilter) {
                 if (tabInfo.totalBlocked >= 10000000) {
@@ -845,7 +840,11 @@ PopupController.prototype = {
             var block = document.querySelector(".macoshackresize");
             block.style["padding-top"] = "4px";
         }, 1000);
-    }
+    },
+
+    _formatNumber: function (v) {
+        return v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    },
 };
 
 (function () {
