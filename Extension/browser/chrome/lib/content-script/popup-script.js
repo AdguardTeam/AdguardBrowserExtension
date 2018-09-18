@@ -18,19 +18,18 @@
 /* global adguardContent */
 
 (function (adguard) {
-
     'use strict';
 
     window.i18n = adguard.i18n;
 
     window.popupPage = {
         sendMessage: adguard.runtimeImpl.sendMessage,
+        onMessage: adguard.runtimeImpl.onMessage,
         closePopup: function () {
             window.close();
         },
         resizePopup: function () {
             // Doing nothing
-        }
+        },
     };
-
 })(adguardContent);

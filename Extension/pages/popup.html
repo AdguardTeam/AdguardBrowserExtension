@@ -19,14 +19,24 @@
     <!-- @endif -->
 </head>
 <body style="overflow: hidden;">
-<div class="widjet-popup">
-    <div class="tabbar">
-        <button class="tab active macoshackresize tab-main-button" tab-switch="main" i18n="popup_tab_main"></button>
-        <button class="tab macoshackresize tab-stats-button" tab-switch="statistics" i18n="popup_tab_statistics"></button>
+<div class="widget-popup">
+    <div class="widget-popup__header">
     </div>
     <div class="tabstack">
-        <div class="tab-main active tab-switch-tab" tab-switch="main"></div>
+        <div class="tab-main tab-main--base active tab-switch-tab" tab-switch="main"></div>
         <div class="tab-statistics tab-switch-tab" tab-switch="statistics"></div>
+    </div>
+    <div class="tabbar">
+        <button class="tab active macoshackresize tab-actions-button" tab-switch="main" i18n="popup_tab_actions"></button>
+        <button class="tab macoshackresize tab-stats-button" tab-switch="statistics" i18n="popup_tab_statistics"></button>
+    </div>
+
+    <div class="tabstack-bottom tab-main tab-switch-tab" tab-switch="main"></div>
+    <div class="tabstack-bottom tab-switch-tab" style="display: none;" tab-switch="statistics">
+        <div class="analytics">
+            <ul id="analytics-blocked-types-values">
+            </ul>
+        </div>
     </div>
 </div>
 
@@ -59,52 +69,43 @@
 <!--Templates-->
 
 <!--Headers-->
+
 <div id="filtering-integration-header-template" style="display: none;">
     <div class="head">
-        <div class="blocked msg"></div>
+        <div class="blocked msg" i18n-title="popup_integrate_mode_title"></div>
     </div>
 </div>
 
 <div id="filtering-default-header-template" style="display: none;">
     <div class="head">
-        <div class="total blocked-all"></div>
         <div class="blocked">
             <span class="blocked-tab"></span>
-            <img src="images/magnifier-white.svg" class="icon-magnifying openFilteringLog" alt="">
         </div>
+        <div class="total blocked-all"></div>
+    </div>
+</div>
+
+<div id="filtering-header-template" style="display: none;">
+    <div class="widget-popup__header-logo"></div>
+    <div class="widget-popup__header-btns">
+        <button i18n-title="context_disable_protection" class="cir-btn pause changeProtectionStateDisable"><img src="images/icon-pause.svg" alt=""></button>
+        <button i18n-title="context_enable_protection" class="cir-btn start changeProtectionStateEnable"><img src="images/icon-start.svg" alt=""></button>
+        <button i18n-title="options_settings" class="cir-btn settings openSettings"><img src="images/icon-settings.svg" alt=""></button>
     </div>
 </div>
 
 <!--Filtering State Checkbox-->
 <div id="filtering-default-control-template" style="display: none;">
-    <div class="control-buttons">
-        <button class="cir-btn settings openSettings"><img src="images/icon-settings.svg" alt=""></button>
-        <button class="cir-btn pause changeProtectionStateDisable"><img src="images/icon-pause.svg" alt=""></button>
-        <!--<div class="error-win"></div>-->
+    <div class="control-buttons changeProtectionStateEnable changeDocumentWhiteListed">
         <div class="center-switch">
-            <div class="switch-btn changeProtectionStateEnable changeDocumentWhiteListed"></div>
+            <div class="switch-btn"></div>
         </div>
-    </div>
-</div>
-
-<div id="filtering-disabled-control-template" style="display: none;">
-    <div class="control-buttons">
-        <button class="cir-btn settings openSettings"><img src="images/icon-settings.svg" alt=""></button>
-        <button class="cir-btn pause changeProtectionStateDisable"><img src="images/icon-pause.svg" alt=""></button>
-        <div class="error-win"></div>
-    </div>
-</div>
-
-<div id="filtering-site-exception-control-template" style="display: none;">
-    <div class="control-buttons">
-        <button class="cir-btn settings openSettings"><img src="images/icon-settings.svg" alt=""></button>
-        <button class="cir-btn pause changeProtectionStateDisable"><img src="images/icon-pause.svg" alt=""></button>
-        <div class="error-win"></div>
     </div>
 </div>
 
 <!--Status Text-->
 <div id="filtering-status-template" style="display: none;">
+    <div class="current-site"></div>
     <div class="status"></div>
 </div>
 
@@ -115,18 +116,42 @@
 
 <!--Actions-->
 <div id="action-open-assistant-template" style="display: none;">
-    <div class="action openAssistant">
-        <span class="act-icon"><img src="images/block-ad.svg" class="icon-block-ad" alt=""></span>
-        <span class="act-name" i18n="popup_block_site_ads"></span>
-    </div>
+  <div class="action openAssistant">
+    <span class="act-icon"><img src="images/block-ad.svg" class="icon-block-ad" alt=""></span>
+    <span class="act-name" i18n="popup_block_site_ads"></span>
+  </div>
+</div>
+
+<div id="action-open-filtering-log-template" style="display: none;">
+  <div class="action openFilteringLog">
+    <span class="act-icon"><img src="images/sandwich.svg" class="icon-sandwich" alt=""></span>
+    <span class="act-name" i18n="popup_open_filtering_log"></span>
+  </div>
+</div>
+
+<div id="action-site-report-template" style="display: none;">
+  <div class="action siteReport">
+    <span class="act-icon"><img src="images/icon-shield.svg" class="icon-shield" alt=""></span>
+    <span class="act-name" i18n="popup_security_report"></span>
+  </div>
+</div>
+
+<div id="action-open-abuse-template" style="display: none;">
+  <div class="action openAbuse">
+    <span class="act-icon"><img src="images/thumb-down.svg" class="icon-thumb-down" alt=""></span>
+    <span class="act-name" i18n="popup_abuse_site"></span>
+  </div>
 </div>
 
 <!--Statistics-->
 <div id="filtering-statistics-template" style="display: none;">
     <div class="statistics-wrapper">
         <select name="type" class="statistics-select statistics-select-type">
-            <option value="badRequests" i18n="popup_statistics_type_bad_requests"></option>
-            <option value="requestTypes" i18n="popup_statistics_type_request_types"></option>
+            <option value="totalRequests" i18n="popup_statistics_request_types_total"></option>
+            <option value="adsRequests" i18n="popup_statistics_request_types_ads"></option>
+            <option value="trackersRequests" i18n="popup_statistics_request_types_trackers"></option>
+            <option value="socialRequests" i18n="popup_statistics_request_types_social"></option>
+            <option value="otherRequests" i18n="popup_statistics_request_types_others"></option>
         </select>
         <select name="time" class="statistics-select statistics-select-time">
             <option value="day" i18n="popup_statistics_time_day"></option>
@@ -136,27 +161,6 @@
         </select>
     </div>
     <div id="chart" class="chart"></div>
-    <button class="full-stats show-full-stats" i18n="popup_statistics_full_statistics"></button>
-    <div class="analytics" style="display: none;">
-        <div class="close hide-full-stats"><img src="images/arrow-up.svg" class="arrow-up" alt=""></div>
-        <div class="title" i18n="popup_statistics_analytics"></div>
-        <ul id="analytics-blocked-types-values">
-        </ul>
-    </div>
-</div>
-
-<div id="action-open-abuse-template" style="display: none;">
-    <div class="action openAbuse">
-        <span class="act-icon"><img src="images/thumb-down.svg" class="icon-thumb-down" alt=""></span>
-        <span class="act-name" i18n="popup_abuse_site"></span>
-    </div>
-</div>
-
-<div id="action-site-report-template" style="display: none;">
-    <div class="action siteReport">
-        <span class="act-icon"><img src="images/icon-shield.svg" class="icon-shield" alt=""></span>
-        <span class="act-name" i18n="popup_security_report"></span>
-    </div>
 </div>
 
 <!--Footer-->
@@ -187,7 +191,7 @@
 </div>
 
 <!--<div id="adguard-detected-message-template" style="display: none;">-->
-    <!--&lt;!&ndash;<div class="widjet-popup-filter cf macoshackresize">&ndash;&gt;-->
+    <!--&lt;!&ndash;<div class="widget-popup-filter cf macoshackresize">&ndash;&gt;-->
         <!--&lt;!&ndash;<span class="w-popup-filter-title top-title" i18n="popup_ads_has_been_removed"></span>&ndash;&gt;-->
         <!--&lt;!&ndash;<a href="#" i18n-title="popup_filtering_log_icon_title" class="w-popup-filter-icon openFilteringLog"><i class="popup-icon-eye"></i></a>&ndash;&gt;-->
     <!--&lt;!&ndash;</div>&ndash;&gt;-->
@@ -197,7 +201,7 @@
 <!--</div>-->
 
 <!--<div id="site-filtering-disabled-message-template" style="display: none;">-->
-    <!--&lt;!&ndash;<div class="widjet-popup-filter cf macoshackresize">&ndash;&gt;-->
+    <!--&lt;!&ndash;<div class="widget-popup-filter cf macoshackresize">&ndash;&gt;-->
         <!--&lt;!&ndash;<span class="w-popup-filter-title top-title" i18n="popup_site_filtering_disabled"></span>&ndash;&gt;-->
     <!--&lt;!&ndash;</div>&ndash;&gt;-->
     <!--<div class="head">-->
@@ -206,7 +210,7 @@
 <!--</div>-->
 
 <!--<div id="site-protection-disabled-message-template" style="display: none;">-->
-    <!--&lt;!&ndash;<div class="widjet-popup-filter cf macoshackresize">&ndash;&gt;-->
+    <!--&lt;!&ndash;<div class="widget-popup-filter cf macoshackresize">&ndash;&gt;-->
         <!--&lt;!&ndash;<span class="w-popup-filter-title top-title" i18n="popup_site_protection_disabled"></span>&ndash;&gt;-->
     <!--&lt;!&ndash;</div>&ndash;&gt;-->
     <!--<div class="head">-->

@@ -31,11 +31,10 @@ PopupController.prototype = {
      * @param options
      */
     render: function (tabInfo, options) {
-
         this.tabInfo = tabInfo;
         this.options = options || {};
 
-        //render
+        // render
         this._renderPopup(tabInfo);
 
         // Bind actions
@@ -45,63 +44,85 @@ PopupController.prototype = {
     },
 
     resizePopupWindow: function () {
-        var widjet = document.querySelector('.widjet-popup');
-        var width = widjet.offsetWidth;
-        var height = widjet.offsetHeight;
+        var widget = document.querySelector('.widget-popup');
+        var width = widget.offsetWidth;
+        var height = widget.offsetHeight;
         popupPage.resizePopup(width, height);
     },
 
     afterRender: function () {
-        //Should be overwritten
+        // Should be overwritten
     },
 
     addWhiteListDomain: function (url) {
-        popupPage.sendMessage({type: 'addWhiteListDomainPopup', url: url});
+        popupPage.sendMessage({ type: 'addWhiteListDomainPopup', url: url });
     },
 
     removeWhiteListDomain: function (url) {
-        popupPage.sendMessage({type: 'removeWhiteListDomainPopup', url: url});
+        popupPage.sendMessage({ type: 'removeWhiteListDomainPopup', url: url });
     },
 
     changeApplicationFilteringDisabled: function (disabled) {
-        popupPage.sendMessage({type: 'changeApplicationFilteringDisabled', disabled: disabled});
+        popupPage.sendMessage({ type: 'changeApplicationFilteringDisabled', disabled: disabled });
     },
 
     sendFeedback: function (url, topic, comment) {
-        popupPage.sendMessage({type: 'sendFeedback', url: url, topic: topic, comment: comment});
+        popupPage.sendMessage({ type: 'sendFeedback', url: url, topic: topic, comment: comment });
     },
 
     openSiteReportTab: function (url) {
-        popupPage.sendMessage({type: 'openSiteReportTab', url: url});
+        popupPage.sendMessage({ type: 'openSiteReportTab', url: url });
     },
 
     openAbuseTab: function (url) {
-        popupPage.sendMessage({type: 'openAbuseTab', url: url});
+        popupPage.sendMessage({ type: 'openAbuseTab', url: url });
     },
 
     openSettingsTab: function () {
-        popupPage.sendMessage({type: 'openSettingsTab'});
+        popupPage.sendMessage({ type: 'openSettingsTab' });
     },
 
     openAssistantInTab: function () {
-        popupPage.sendMessage({type: 'openAssistant'});
+        popupPage.sendMessage({ type: 'openAssistant' });
     },
 
     openFilteringLog: function (tabId) {
-        popupPage.sendMessage({type: 'openFilteringLog', tabId: tabId});
+        popupPage.sendMessage({ type: 'openFilteringLog', tabId: tabId });
     },
 
     resetBlockedAdsCount: function () {
-        popupPage.sendMessage({type: 'resetBlockedAdsCount'});
+        popupPage.sendMessage({ type: 'resetBlockedAdsCount' });
     },
 
     openLink: function (url) {
-        popupPage.sendMessage({type: 'openTab', url: url});
+        popupPage.sendMessage({ type: 'openTab', url: url });
+    },
+
+    updateTotalBlocked: function (tabInfo) {
+        this.tabInfo = tabInfo;
+        const { totalBlockedTab, totalBlocked } = tabInfo;
+        if (totalBlockedTab) {
+            const tabBlocked = document.querySelector('.widget-popup .blocked-tab');
+            if (tabBlocked) {
+                i18n.translateElement(tabBlocked, 'popup_tab_blocked', [this._formatNumber(totalBlockedTab)]);
+            }
+        }
+
+        if (totalBlocked) {
+            const allBlocked = document.querySelector('.widget-popup .blocked-all');
+            if (allBlocked) {
+                i18n.translateElement(allBlocked, 'popup_tab_blocked_all', [this._formatNumber(totalBlocked)]);
+            }
+        }
     },
 
     _renderPopup: function (tabInfo) {
+        var parent = document.querySelector('.widget-popup');
 
-        var parent = document.querySelector('.widjet-popup');
+        var containerHeader = document.querySelector('.widget-popup__header');
+        while (containerHeader.firstChild) {
+            containerHeader.removeChild(containerHeader.firstChild);
+        }
 
         var footer = parent.querySelector('.footer');
         if (footer) {
@@ -111,21 +132,27 @@ PopupController.prototype = {
         var stack = parent.querySelector('.tabstack');
 
         var containerMain = parent.querySelector('.tab-main');
-        while(containerMain.firstChild) {
+        while (containerMain.firstChild) {
             containerMain.removeChild(containerMain.firstChild);
         }
 
+        var containerBottom = parent.querySelector('.tabstack-bottom.tab-main');
+        while (containerBottom.firstChild) {
+            containerBottom.removeChild(containerBottom.firstChild);
+        }
+
         var containerStats = parent.querySelector('.tab-statistics');
-        while(containerStats.firstChild) {
+        while (containerStats.firstChild) {
             containerStats.removeChild(containerStats.firstChild);
         }
 
         stack.setAttribute('class', 'tabstack');
+        parent.setAttribute('class', 'widget-popup');
 
         // Hide stats for integration mode
         if (tabInfo.adguardDetected) {
             parent.querySelector('.tab-stats-button').style.display = 'none';
-            parent.querySelector('.tab-main-button').style.width = '100%';
+            parent.querySelector('.tab-actions-button').classList.add('tab--integration');
         }
 
         // define class
@@ -134,34 +161,35 @@ PopupController.prototype = {
             stack.classList.add('error-sad');
         } else if (tabInfo.applicationFilteringDisabled) {
             stack.classList.add('status-paused');
+            parent.classList.add('status-paused');
+        } else if (!tabInfo.canAddRemoveRule) {
+            stack.classList.add('status-error error-filter');
+        } else if (tabInfo.documentWhiteListed) {
+            stack.classList.add('status-cross');
+            parent.classList.add('status-cross');
         } else {
-            if (!tabInfo.canAddRemoveRule) {
-                stack.classList.add('status-error error-filter');
-            } else {
-                if (tabInfo.documentWhiteListed) {
-                    stack.classList.add('status-cross');
-                } else {
-                    stack.classList.add('status-checkmark');
-                }
-            }
+            stack.classList.add('status-checkmark');
+            parent.classList.add('status-checkmark');
         }
 
         // Header
+        this.filteringHeader = this._getTemplate('filtering-header-template');
+        // TODO rename, because this is not popup headers
         this.filteringIntegrationHeader = this._getTemplate('filtering-integration-header-template');
         this.filteringDefaultHeader = this._getTemplate('filtering-default-header-template');
 
         // Controls
         this.filteringControlDefault = this._getTemplate('filtering-default-control-template');
-        this.filteringControlDisabled = this._getTemplate('filtering-disabled-control-template');
-        this.filteringControlException = this._getTemplate('filtering-site-exception-control-template');
 
         // Actions
         this.actionOpenAssistant = this._getTemplate('action-open-assistant-template');
         this.actionOpenAbuse = this._getTemplate('action-open-abuse-template');
         this.actionOpenSiteReport = this._getTemplate('action-site-report-template');
+        this.actionOpenFilteringLog = this._getTemplate('action-open-filtering-log-template');
 
         // Status Text
         this.filteringStatusText = this._getTemplate('filtering-status-template');
+
         // Message text
         this.filteringMessageText = this._getTemplate('filtering-message-template');
 
@@ -172,10 +200,11 @@ PopupController.prototype = {
         this.footerDefault = this._getTemplate('footer-default-template');
         this.footerIntegration = this._getTemplate('footer-integration-template');
 
-        this._renderHeader(containerMain, tabInfo);
+        this._renderHeader(containerHeader, tabInfo);
+        this._renderMain(containerMain, tabInfo);
         this._renderFilteringControls(containerMain, tabInfo);
         this._renderStatus(containerMain, tabInfo);
-        this._renderActions(containerMain, tabInfo);
+        this._renderActions(containerBottom, tabInfo);
         this._renderMessage(containerMain, tabInfo);
         this._renderStats(containerStats);
         this._renderFooter(parent, tabInfo);
@@ -192,26 +221,45 @@ PopupController.prototype = {
     },
 
     _renderHeader: function (container, tabInfo) {
-
-        function formatNumber(v) {
-            return v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+        var template = this.filteringHeader;
+        if (tabInfo.adguardDetected) {
+            const pauseButton = template.querySelector('.pause.changeProtectionStateDisable');
+            if (pauseButton) {
+                pauseButton.style.display = 'none';
+            }
+            const startButton = template.querySelector('.start.changeProtectionStateEnable');
+            if (startButton) {
+                startButton.style.display = 'none';
+            }
         }
+        this._appendTemplate(container, template);
+    },
+
+    _renderMain: function (container, tabInfo) {
 
         var template;
         if (tabInfo.adguardDetected) {
             template = this.filteringIntegrationHeader;
+            const headTitleElement = template.querySelector('.head .msg');
+            if (tabInfo.adguardProductName.toLowerCase().includes('mac')) {
+                headTitleElement.textContent = i18n.getMessage('popup_integrate_mode_title_mac');
+            } else if (tabInfo.adguardProductName.toLowerCase().includes('win')) {
+                headTitleElement.textContent = i18n.getMessage('popup_integrate_mode_title_win');
+            } else {
+                headTitleElement.textContent = i18n.getMessage('popup_integrate_mode_title');
+            }
         } else {
             template = this.filteringDefaultHeader;
             var tabBlocked = template.querySelector('.blocked-tab');
             var totalBlocked = template.querySelector('.blocked-all');
-            i18n.translateElement(tabBlocked, 'popup_tab_blocked', [formatNumber(tabInfo.totalBlockedTab || 0)]);
-            i18n.translateElement(totalBlocked, 'popup_tab_blocked_all', [formatNumber(tabInfo.totalBlocked || 0)]);
-            var closestWidjetFilter = tabBlocked.closest('.widjet-popup-filter');
-            if (closestWidjetFilter) {
+            i18n.translateElement(tabBlocked, 'popup_tab_blocked', [this._formatNumber(tabInfo.totalBlockedTab || 0)]);
+            i18n.translateElement(totalBlocked, 'popup_tab_blocked_all', [this._formatNumber(tabInfo.totalBlocked || 0)]);
+            var closestWidgetFilter = tabBlocked.closest('.widget-popup-filter');
+            if (closestWidgetFilter) {
                 if (tabInfo.totalBlocked >= 10000000) {
-                    closestWidjetFilter.classList.add('db');
+                    closestWidgetFilter.classList.add('db');
                 } else {
-                    closestWidjetFilter.classList.remove('db');
+                    closestWidgetFilter.classList.remove('db');
                 }
             }
         }
@@ -221,24 +269,9 @@ PopupController.prototype = {
 
     _renderFilteringControls: function (container, tabInfo) {
         var template = this.filteringControlDefault;
-
         if (tabInfo.urlFilteringDisabled) {
-            template = this.filteringControlDisabled;
-        } else if (tabInfo.applicationFilteringDisabled) { // jshint ignore:line
-            // Use default template
-        } else {
-            if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
-                template = this.filteringControlException;
-            }
+            return;
         }
-
-        if (tabInfo.urlFilteringDisabled || tabInfo.applicationFilteringDisabled || tabInfo.adguardDetected) {
-            template.querySelector('.pause').style.display = 'none';
-        }
-        if (tabInfo.adguardDetected) {
-            template.querySelector('.settings').style.display = 'none';
-        }
-
         this._appendTemplate(container, template);
     },
 
@@ -262,12 +295,20 @@ PopupController.prototype = {
             }
         }
 
-        i18n.translateElement(template.childNodes[1], text);
+        var statusElement = template.querySelector('.status');
+        i18n.translateElement(statusElement, text);
+
+        var currentSiteElement = template.querySelector('.current-site');
+        currentSiteElement.textContent = tabInfo.domainName ? tabInfo.domainName : tabInfo.url;
+
+        if (tabInfo.urlFilteringDisabled) {
+            currentSiteElement.style.display = 'none';
+        }
+
         this._appendTemplate(container, template);
     },
 
     _renderMessage: function (container, tabInfo) {
-
         var text;
         if (tabInfo.urlFilteringDisabled) {
             text = 'popup_site_filtering_disabled';
@@ -321,33 +362,34 @@ PopupController.prototype = {
         return result;
     },
 
-    _selectBadRequestsStatsData: function (stats, range) {
+    _selectRequestsStatsData: function (stats, range, type) {
         var result = [];
-
+        const typeSelector = stats.blockedTypes[type] ? stats.blockedTypes[type] : 'total';
         switch (range) {
             case 'day':
                 stats.today.forEach(function (d) {
-                    result.push(d.total);
+                    result.push(d[typeSelector]);
                 });
                 break;
             case 'week':
                 stats.lastWeek.forEach(function (d) {
-                    result.push(d.total);
+                    result.push(d[typeSelector]);
                 });
                 break;
             case 'month':
                 stats.lastMonth.forEach(function (d) {
-                    result.push(d.total);
+                    result.push(d[typeSelector]);
                 });
                 break;
             case 'year':
                 stats.lastYear.forEach(function (d) {
-                    result.push(d.total);
+                    result.push(d[typeSelector]);
                 });
                 break;
+            default:
+                break;
         }
-
-        return result;
+        return result.map(val => val === undefined ? 0 : val);
     },
 
     DAYS_OF_WEEK: (function () {
@@ -397,12 +439,12 @@ PopupController.prototype = {
         var lines = [];
         switch (range) {
             case 'day':
-                for (var i = 0; i < 25; i++) {
+                for (let i = 1; i < 25; i += 1) {
                     if (i % 3 === 0) {
-                        var hour = (i + now.getHours()) % 24;
+                        const hour = (i + now.getHours()) % 24;
                         categories.push(hour.toString());
                         lines.push({
-                            value: i
+                            value: i - 1,
                         });
                     } else {
                         categories.push('');
@@ -411,21 +453,21 @@ PopupController.prototype = {
 
                 break;
             case 'week':
-                for (var i = 0; i < 8; i++) {
-                    categories.push(this._dayOfWeekAsString((day + i) % 7 ));
+                for (let i = 0; i < 7; i += 1) {
+                    categories.push(this._dayOfWeekAsString((day + i) % 7));
                     lines.push({
-                        value: i
+                        value: i,
                     });
                 }
 
                 break;
             case 'month':
-                for (var i = 0; i < 31; i++) {
+                for (let i = 0; i < 31; i += 1) {
                     if (i % 3 === 0) {
                         var c = (i + now.getDate()) % lastDayOfPrevMonth + 1;
                         categories.push(c.toString());
                         lines.push({
-                            value: i
+                            value: i,
                         });
                     } else {
                         categories.push('');
@@ -434,11 +476,11 @@ PopupController.prototype = {
 
                 break;
             case 'year':
-                for (var i = 0; i < 13; i++) {
-                    categories.push(this._monthsAsString((month + i) % 12 ));
+                for (let i = 0; i < 13; i += 1) {
+                    categories.push(this._monthsAsString((month + i) % 12));
                     categories = categories.slice(-statsData.length);
                     lines.push({
-                        value: i
+                        value: i,
                     });
                 }
 
@@ -447,12 +489,12 @@ PopupController.prototype = {
 
         return {
             categories: categories,
-            lines: lines
+            lines: lines,
         };
     },
 
-    _renderBadRequestsGraphs: function (stats, range) {
-        var statsData = this._selectBadRequestsStatsData(stats, range);
+    _renderRequestsGraphs: function (stats, range, type) {
+        var statsData = this._selectRequestsStatsData(stats, range, type);
         var categoriesLines = this._getCategoriesLines(statsData, range);
         var categories = categoriesLines.categories;
         var lines = categoriesLines.lines;
@@ -464,24 +506,24 @@ PopupController.prototype = {
             '  <stop offset="100%" style="stop-color:#65BDA8;stop-opacity:1" />'+
             '</linearGradient>';
 
-        var chart = c3.generate({
+        c3.generate({
             size: {
-                height: 230
+                height: 230,
             },
             data: {
                 columns: [
-                    ['data1'].concat(statsData)
+                    ['data1'].concat(statsData),
                 ],
                 types: {
-                    data1: 'area-spline'
+                    data1: 'area-spline',
                 },
                 colors: {
-                    data1: 'url(#grad1)'
-                }
+                    data1: 'url(#grad1)',
+                },
             },
             padding: {
                 left: 15,
-                right: 15
+                right: 15,
             },
             axis: {
                 x: {
@@ -490,57 +532,62 @@ PopupController.prototype = {
                     categories: categories,
                     tick: {
                         outer: false,
-                        multiline: false
-                    }
+                        multiline: false,
+                    },
                 },
                 y: {
-                    show: false
-                }
+                    show: false,
+                },
             },
             legend: {
-                show: false
+                show: false,
             },
             grid: {
                 x: {
-                    lines: lines
+                    lines: lines,
                 },
                 focus: {
-                    show: false
-                }
+                    show: true,
+                },
             },
             spline: {
                 interpolation: {
-                    type: 'basis'
-                }
+                    type: 'basis',
+                },
             },
             point: {
-                show: false
+                show: false,
             },
             tooltip: {
-                position: function(data, width, height, element) {
-                    var top = d3.mouse(element)[1] - 50;
+                position: function (data, width, height, element) {
+                    const chart = document.querySelector('#chart');
+                    const elementRect = element.getBoundingClientRect();
+                    const elementCenterPosition = elementRect.left + (elementRect.width / 2);
+                    const tooltipHalfWidth = chart.querySelector('.chart__tooltip').clientWidth / 2;
+                    const tooltipLeft = elementCenterPosition - tooltipHalfWidth;
+                    const top = d3.mouse(element)[1] - 50;
                     return {
                         top: top,
-                        left: parseInt(element.getAttribute('x')) - 3
+                        left: tooltipLeft,
                     };
                 },
-                contents: function(d, defaultTitleFormat, defaultValueFormat, color) {
-                    d = d[0].value;
-                    return '<div id="tooltip" class="chart__tooltip">' + d + '</div>';
-                }
+                contents: function (d) {
+                    const value = d[0].value;
+                    return `<div id="tooltip" class="chart__tooltip">${value}</div>`;
+                },
             },
-            oninit: function() {
+            oninit: function () {
                 this.svg[0][0].getElementsByTagName('defs')[0].innerHTML += grad1;
-            }
+            },
         });
     },
 
     _localizeBlockedType: function (type) {
         if (!type) {
-            return "";
+            return '';
         }
 
-        return i18n.getMessage("popup_statistics_request_types_" + type.toLowerCase());
+        return i18n.getMessage('popup_statistics_request_types_' + type.toLowerCase());
     },
 
     _buildRequestTypesColumns: function (stats, range) {
@@ -561,70 +608,6 @@ PopupController.prototype = {
         return columns;
     },
 
-    _renderRequestTypesGraphs: function (stats, range) {
-        var columns = this._buildRequestTypesColumns(stats, range);
-
-        var chart = c3.generate({
-            size: {
-                height: 230
-            },
-            data: {
-                // columns: columns,
-                x: 'x',
-                columns: [
-                    columns.x,
-                    columns.values
-                ],
-                type: 'bar',
-                color: function(_defaultColor, item) {
-                    return ["#53C166", "#5093B0", "#FF9F14", '#D4D5D4'][item.index % 4];
-                },
-                labels: false
-            },
-            bar: {
-                width: {
-                    ratio: 0.5
-                }
-            },
-            axis: {
-                rotated: true,
-                x: {
-                    type: 'category',
-                    tick: {
-                        fit: true,
-                        multiline: false
-                    }
-                },
-                y: {
-                    tick: {
-                        rotate: 50
-                    }
-                }
-            },
-            padding: {
-                right: 20
-            },
-            grid: {
-                focus: {
-                    show: false
-                },
-                y: {
-                    'show': true
-                }
-            },
-            tooltip: {
-                grouped: true,
-                contents: function(d, defaultTitleFormat, defaultValueFormat, color) {
-                    d = d[0].value;
-                    return '<div id="tooltip" class="chart__tooltip chart__tooltip--bar">' + d + '</div>';
-                }
-            },
-            legend: {
-                show: false
-            }
-        });
-    },
-
     _renderAnalyticsBlock: function (stats, range) {
         var statsData = this._selectRequestTypesStatsData(stats, range);
 
@@ -635,7 +618,6 @@ PopupController.prototype = {
 
         for (var type in stats.blockedTypes) {
             var number = statsData[stats.blockedTypes[type]] ? statsData[stats.blockedTypes[type]] : 0;
-
             var blockedTypeItem = htmlToElement(`
                 <li>
                     <span class="key">${this._localizeBlockedType(type)}</span>
@@ -648,12 +630,18 @@ PopupController.prototype = {
     },
 
     _renderStatsGraphs: function (stats, range, type) {
-        if (type === 'badRequests') {
-            this._renderBadRequestsGraphs(stats, range);
-        } else {
-            this._renderRequestTypesGraphs(stats, range);
-        }
+        /**
+         * Blocked requests types
+         */
+        const requestTypes = {
+            adsRequests: 'ADS',
+            trackersRequests: 'TRACKERS',
+            socialRequests: 'SOCIAL',
+            otherRequests: 'OTHERS',
+            totalRequests: 'total',
+        };
 
+        this._renderRequestsGraphs(stats, range, requestTypes[type]);
         this._renderAnalyticsBlock(stats, range);
     },
 
@@ -684,6 +672,7 @@ PopupController.prototype = {
         el.classList.add('actions');
 
         this._appendTemplate(el, this.actionOpenAssistant);
+        this._appendTemplate(el, this.actionOpenFilteringLog);
         if (tabInfo.applicationFilteringDisabled || tabInfo.documentWhiteListed) {
             // May be show later
             this.actionOpenAssistant.style.display = 'none';
@@ -704,15 +693,15 @@ PopupController.prototype = {
     },
 
     _bindAction: function (parentElement, selector, eventName, handler) {
-        var element = parentElement.querySelector(selector);
-        if (element) {
-            element.addEventListener(eventName, handler);
+        const elements = parentElement.querySelectorAll(selector);
+        if (!elements || elements.length <= 0) {
+            return;
         }
+        elements.forEach(element => element.addEventListener(eventName, handler));
     },
 
     _bindActions: function () {
-
-        var parent = document.querySelector('.widjet-popup');
+        var parent = document.querySelector('.widget-popup');
 
         var self = this;
         this._bindAction(parent, '.siteReport', 'click', function (e) {
@@ -771,6 +760,7 @@ PopupController.prototype = {
             }
             tabInfo.documentWhiteListed = isWhiteListed;
             tabInfo.userWhiteListed = isWhiteListed;
+            tabInfo.totalBlockedTab = 0;
             self._renderPopup(tabInfo);
             self._bindActions();
             self.resizePopupWindow();
@@ -781,27 +771,34 @@ PopupController.prototype = {
         });
 
         function changeProtectionState(disabled) {
-            var tabInfo = self.tabInfo;
-            if (tabInfo.applicationFilteringDisabled == disabled) {
+            const tabInfo = self.tabInfo;
+            if (tabInfo.applicationFilteringDisabled === disabled) {
                 return;
             }
             self.changeApplicationFilteringDisabled(disabled);
             tabInfo.applicationFilteringDisabled = disabled;
+            tabInfo.totalBlockedTab = 0;
             self._renderPopup(tabInfo);
             self._bindActions();
             self.resizePopupWindow();
         }
 
         // Disable filtering
-        this._bindAction(parent, '.changeProtectionStateDisable', 'click', function (e) {
-            e.preventDefault();
-            changeProtectionState(true);
+        var changeProtectionStateDisableButtons = document.querySelectorAll('.changeProtectionStateDisable');
+        changeProtectionStateDisableButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                changeProtectionState(true);
+            });
         });
 
         // Enable filtering
-        this._bindAction(parent, '.changeProtectionStateEnable', 'click', function (e) {
-            e.preventDefault();
-            changeProtectionState(false);
+        var changeProtectionStateEnableButtons = document.querySelectorAll('.changeProtectionStateEnable');
+        changeProtectionStateEnableButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                changeProtectionState(false);
+            });
         });
 
         // Tabs
@@ -818,7 +815,9 @@ PopupController.prototype = {
                 parent.querySelectorAll('.tab-switch-tab').forEach(function (tab) {
                     tab.style.display = 'none';
                 });
-                parent.querySelector('.tab-switch-tab[tab-switch="' + attr + '"]').style.display = 'block';
+                parent.querySelectorAll('.tab-switch-tab[tab-switch="' + attr + '"]').forEach(function (tab) {
+                    tab.style.display = 'flex';
+                });
             });
         });
 
@@ -828,13 +827,6 @@ PopupController.prototype = {
         });
         this._bindAction(parent, '.statistics-select-type', 'change', function () {
             self._renderStatsBlock();
-        });
-
-        this._bindAction(parent, '.show-full-stats', 'click', function () {
-            document.querySelector('.analytics').style.display = 'block';
-        });
-        this._bindAction(parent, '.hide-full-stats', 'click', function (e) {
-            document.querySelector('.analytics').style.display = 'none';
         });
     },
 
@@ -848,7 +840,11 @@ PopupController.prototype = {
             var block = document.querySelector(".macoshackresize");
             block.style["padding-top"] = "4px";
         }, 1000);
-    }
+    },
+
+    _formatNumber: function (v) {
+        return v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    },
 };
 
 (function () {
@@ -876,16 +872,27 @@ PopupController.prototype = {
         controller.resizePopupWindow();
     });
 
-    popupPage.sendMessage({type: 'getTabInfoForPopup'}, function (message) {
+    popupPage.sendMessage({ type: 'getTabInfoForPopup' }, function (message) {
         var onDocumentReady = function () {
             controller.render(message.frameInfo, message.options);
         };
 
-        if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        if (document.attachEvent ? document.readyState === 'complete' : document.readyState !== 'loading') {
             onDocumentReady();
         } else {
             document.addEventListener('DOMContentLoaded', onDocumentReady);
         }
     });
 
+    popupPage.onMessage.addListener(function (message) {
+        switch (message.type) {
+            case 'updateTotalBlocked': {
+                const { tabInfo } = message;
+                controller.updateTotalBlocked(tabInfo);
+                break;
+            }
+            default:
+                break;
+        }
+    });
 })();

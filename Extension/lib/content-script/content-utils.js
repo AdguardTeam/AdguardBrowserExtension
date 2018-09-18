@@ -65,7 +65,10 @@
 
         var title = message.title;
 
-        var alertDivHtml = '<div class="adguard-popup-alert adguard-popup-alert--active">' +
+        var alertDivHtml =
+            (message.title === 'No updates found' ?
+                '<div class="adguard-popup-alert adguard-popup-alert--no-updates adguard-popup-alert--active">' :
+                '<div class="adguard-popup-alert adguard-popup-alert--active">') +
             //'<div class="adguard-popup-alert__close"></div>' +
             '<div class="adguard-popup-alert__in">' +
             '<div class="adguard-popup-alert__ico"></div>' +
