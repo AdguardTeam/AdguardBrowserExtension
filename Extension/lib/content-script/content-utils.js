@@ -48,8 +48,6 @@
      */
     function showAlertPopup(message) {
 
-        console.log(message.title === 'No updates found')
-
         var messages = [];
         if (Array.isArray(message.text)) {
             messages = message.text;
