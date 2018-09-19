@@ -1413,6 +1413,7 @@ adguard.filters = (function (adguard) {
         if (options && options.groupAction) {
             filter.enabled = filter.groupState;
         } else {
+            // set group state undefined if filter was enabled without group action
             filter.groupState = undefined;
         }
         adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
@@ -1475,6 +1476,7 @@ adguard.filters = (function (adguard) {
             var filterId = filterIds[i];
             var filter = adguard.subscriptions.getFilter(filterId);
             if (options && options.groupAction) {
+                // save previous filter enable state if filter was disabled by group disable action
                 filter.groupState = filter.enabled;
             }
             if (!filter || !filter.enabled || !filter.installed) {
