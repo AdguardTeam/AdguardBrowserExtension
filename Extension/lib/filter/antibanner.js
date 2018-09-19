@@ -998,7 +998,7 @@ adguard.antiBannerService = (function (adguard) {
             filter.lastUpdateTime = filterMetadata.timeUpdated;
             filter.lastCheckTime = Date.now();
             filter.loaded = true;
-            //notify listeners
+            // notify listeners
             adguard.listeners.notifyListeners(adguard.listeners.SUCCESS_DOWNLOAD_FILTER, filter);
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, filter, filterRules);
             callback(true);
@@ -1277,7 +1277,8 @@ adguard.filtersState = (function (adguard) {
         filters[filter.filterId] = {
             loaded: filter.loaded,
             enabled: filter.enabled,
-            installed: filter.installed
+            installed: filter.installed,
+            groupState: filter.groupState,
         };
         adguard.localStorage.setItem(FILTERS_STATE_PROP, JSON.stringify(filters));
     };
@@ -1301,7 +1302,7 @@ adguard.filtersState = (function (adguard) {
         getFiltersState: getFiltersState,
         // These methods are used only for migrate from old versions
         updateFilterVersion: updateFilterVersion,
-        updateFilterState: updateFilterState
+        updateFilterState: updateFilterState,
     };
 
 })(adguard);
@@ -1408,8 +1409,12 @@ adguard.filters = (function (adguard) {
         if (!filter || filter.enabled || !filter.installed) {
             return false;
         }
-
         filter.enabled = true;
+        if (options && options.groupAction) {
+            filter.enabled = filter.groupState;
+        } else {
+            filter.groupState = undefined;
+        }
         adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
         adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
         return true;
@@ -1435,7 +1440,6 @@ adguard.filters = (function (adguard) {
         }
 
         filterIds = adguard.utils.collections.removeDuplicates(filterIds.slice(0));
-
         var loadNextFilter = function () {
             if (filterIds.length === 0) {
                 callback(enabledFilters);
@@ -1467,14 +1471,15 @@ adguard.filters = (function (adguard) {
     var disableFilters = function (filterIds, options) {
 
         filterIds = adguard.utils.collections.removeDuplicates(filterIds.slice(0)); // Copy array to prevent parameter mutation
-
         for (var i = 0; i < filterIds.length; i++) {
             var filterId = filterIds[i];
             var filter = adguard.subscriptions.getFilter(filterId);
+            if (options && options.groupAction) {
+                filter.groupState = filter.enabled;
+            }
             if (!filter || !filter.enabled || !filter.installed) {
                 continue;
             }
-
             filter.enabled = false;
             adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
         }

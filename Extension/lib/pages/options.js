@@ -349,7 +349,7 @@ var AntiBannerFilters = function (options) {
                 this.filters.push(filter);
                 this.filtersById[filter.filterId] = filter;
             }
-        }
+        },
     };
 
     // Bind events
@@ -715,26 +715,25 @@ var AntiBannerFilters = function (options) {
     function toggleFilterState() {
         var filterId = this.value - 0;
         if (this.checked) {
-            contentPage.sendMessage({type: 'addAndEnableFilter', filterId: filterId});
+            contentPage.sendMessage({ type: 'addAndEnableFilter', filterId: filterId });
         } else {
-            contentPage.sendMessage({type: 'disableAntiBannerFilter', filterId: filterId});
+            contentPage.sendMessage({ type: 'disableAntiBannerFilter', filterId: filterId });
         }
     }
 
     function toggleGroupState() {
         var groupId = this.value - 0;
-
         if (this.checked) {
-            contentPage.sendMessage({type: 'addAndEnableFiltersByGroupId', groupId: groupId});
+            contentPage.sendMessage({ type: 'addAndEnableFiltersByGroupId', groupId: groupId });
         } else {
-            contentPage.sendMessage({type: 'disableAntiBannerFiltersByGroupId', groupId: groupId});
+            contentPage.sendMessage({ type: 'disableAntiBannerFiltersByGroupId', groupId: groupId });
         }
     }
 
     function updateAntiBannerFilters(e) {
         e.preventDefault();
-        contentPage.sendMessage({type: 'checkAntiBannerFiltersUpdate'}, function () {
-            //Empty
+        contentPage.sendMessage({ type: 'checkAntiBannerFiltersUpdate' }, function () {
+            // Empty
         });
     }
 
@@ -863,7 +862,7 @@ var AntiBannerFilters = function (options) {
     }
 
     function updateRulesCountInfo(info) {
-        var message = i18n.getMessage("options_antibanner_info", [String(info.rulesCount || 0)]);
+        var message = i18n.getMessage('options_antibanner_info', [String(info.rulesCount || 0)]);
         document.querySelector('#filtersRulesInfo').textContent = message;
     }
 
@@ -878,13 +877,19 @@ var AntiBannerFilters = function (options) {
 
     function onFilterDownloadStarted(filter) {
         getCategoryElement(filter.groupId).querySelector('.preloader').classList.add('active');
-        getFilterElement(filter.filterId).querySelector('.preloader').classList.add('active');
+        const filterElement = getFilterElement(filter.filterId);
+        if (filterElement) {
+            filterElement.querySelector('.preloader').classList.add('active');
+        }
         document.querySelector('.settings-actions--update-filters a').classList.add('active');
     }
 
     function onFilterDownloadFinished(filter) {
         getCategoryElement(filter.groupId).querySelector('.preloader').classList.remove('active');
-        getFilterElement(filter.filterId).querySelector('.preloader').classList.remove('active');
+        const filterElement = getFilterElement(filter.filterId);
+        if (filterElement) {
+            filterElement.querySelector('.preloader').classList.remove('active');
+        }
         document.querySelector('.settings-actions--update-filters a').classList.remove('active');
         setLastUpdatedTimeText(filter.lastUpdateTime);
     }
