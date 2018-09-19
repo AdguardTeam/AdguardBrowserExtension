@@ -467,7 +467,7 @@ adguard.subscriptions = (function (adguard) {
         getFilters: getFilters,
         getFilter: getFilter,
         createSubscriptionFilterFromJSON: createSubscriptionFilterFromJSON,
-        updateCustomFilter: updateCustomFilter
+        updateCustomFilter: updateCustomFilter,
     };
 
 })(adguard);

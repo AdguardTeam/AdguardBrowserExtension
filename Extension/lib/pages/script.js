@@ -81,6 +81,9 @@ var CheckboxUtils = (function () {
     var updateCheckbox = function (elements, checked) {
 
         Array.prototype.forEach.call(elements, function (el) {
+            if (checked !== undefined) {
+                el.checked = checked;
+            }
             if (checked) {
                 el.setAttribute('checked', 'checked');
                 el.closest('li').classList.add('active');

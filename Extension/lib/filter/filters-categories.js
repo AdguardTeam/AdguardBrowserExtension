@@ -73,14 +73,14 @@ adguard.categories = (function (adguard) {
      * @returns {{recommendedFilters, otherFilters: *}}
      */
     var selectFiltersByGroupId = function (groupId, filters) {
-        var groupFilters  = filters.filter(function (f) {
+        var groupFilters = filters.filter(function (f) {
             return f.groupId === groupId;
         });
 
         if (groupId === CUSTOM_FILTERS_GROUP_ID) {
             return {
                 recommendedFilters: groupFilters,
-                otherFilters: []
+                otherFilters: [],
             };
         }
 
@@ -89,7 +89,7 @@ adguard.categories = (function (adguard) {
 
         return {
             recommendedFilters: recommendedFilters,
-            otherFilters: otherFilters
+            otherFilters: otherFilters,
         };
     };
 
@@ -102,7 +102,7 @@ adguard.categories = (function (adguard) {
 
         var categories = [];
 
-        for (var i = 0; i < groupsMeta.length; i++) {
+        for (var i = 0; i < groupsMeta.length; i += 1) {
             var category = groupsMeta[i];
             category.filters = selectFiltersByGroupId(category.groupId, filters);
             categories.push(category);
@@ -112,12 +112,12 @@ adguard.categories = (function (adguard) {
             groupId: CUSTOM_FILTERS_GROUP_ID,
             groupName: 'Custom',
             displayNumber: 99,
-            filters: selectFiltersByGroupId(CUSTOM_FILTERS_GROUP_ID, filters)
+            filters: selectFiltersByGroupId(CUSTOM_FILTERS_GROUP_ID, filters),
         });
 
         return {
-            filters: getFilters(),
-            categories: categories
+            filters: filters,
+            categories: categories,
         };
     };
 
@@ -128,7 +128,7 @@ adguard.categories = (function (adguard) {
     var getRecommendedFilterIdsByGroupId = function (groupId) {
         var metadata = getFiltersMetadata();
 
-        for (var i = 0; i < metadata.categories.length; i++) {
+        for (var i = 0; i < metadata.categories.length; i += 1) {
             var category = metadata.categories[i];
             if (category.groupId === groupId) {
                 var result = [];
@@ -143,32 +143,55 @@ adguard.categories = (function (adguard) {
         return [];
     };
 
-    /**
-     * Adds and enables recommended filters by groupId
-     *
-     * @param groupId
-     */
-    var addAndEnableFiltersByGroupId = function (groupId) {
-        var idsByTagId = getRecommendedFilterIdsByGroupId(groupId);
+    var groupHasInstalledFilters = function (groupId) {
+        var metadata = getFiltersMetadata();
+        var filters = metadata.filters;
+        return filters.some(filter => filter.groupId === groupId && filter.installed);
+    };
 
-        adguard.filters.addAndEnableFilters(idsByTagId);
+    var getFilterIdsByGroupId = function (groupId) {
+        var metadata = getFiltersMetadata();
+        if (!metadata && !metadata.filters) {
+            return [];
+        }
+        return metadata.filters.filter(function (filter) {
+            return filter.groupId === groupId;
+        }).map(function (filter) {
+            return filter.filterId;
+        });
     };
 
     /**
-     * Disables recommended filters by groupId
-     *
+     * If group doesn't have installed filters we consider that group is enabled for the first time
+     * On first group enable we add and enable recommended filters by groupId
+     * On the next calls we enable only groups which where previously disabled by
+     * disableAntiBannerFiltersByGroupId function
+     * @param groupId
+     */
+    var addAndEnableFiltersByGroupId = function (groupId) {
+        if (!groupHasInstalledFilters(groupId)) {
+            var recommendedFiltersIds = getRecommendedFilterIdsByGroupId(groupId);
+            adguard.filters.addAndEnableFilters(recommendedFiltersIds);
+            return;
+        }
+        var filterIds = getFilterIdsByGroupId(groupId);
+        adguard.filters.addAndEnableFilters(filterIds, function () {}, { groupAction: true });
+    };
+
+    /**
+     * Disables filters by groupId and add to disabled filters their state before disabling
+     * in order to be able to enable them afterward
      * @param groupId
      */
     var disableAntiBannerFiltersByGroupId = function (groupId) {
-        var idsByTagId = getRecommendedFilterIdsByGroupId(groupId);
-
-        adguard.filters.disableFilters(idsByTagId);
+        var filterIds = getFilterIdsByGroupId(groupId);
+        adguard.filters.disableFilters(filterIds, { groupAction: true });
     };
 
     return {
         getFiltersMetadata: getFiltersMetadata,
         addAndEnableFiltersByGroupId: addAndEnableFiltersByGroupId,
-        disableAntiBannerFiltersByGroupId: disableAntiBannerFiltersByGroupId
+        disableAntiBannerFiltersByGroupId: disableAntiBannerFiltersByGroupId,
     };
 })(adguard);
 
