@@ -1,8 +1,8 @@
-! Checksum: wEOoQd1zWjiRtvJhX0dt1w
+! Checksum: P7FxqwIgtCQbPyOg1OVo1w
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.1.9
-! TimeUpdated: 2018-09-05T18:09:31+00:00
+! Version: 2.0.1.11
+! TimeUpdated: 2018-09-19T12:04:59+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#japanese
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -309,6 +309,11 @@
 d-navi004.com,gagetmatome.com,h5games.success-corp.co.jp#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/22654
+video.tv-tokyo.co.jp#@#.adspace
+video.tv-tokyo.co.jp#@##adspace
+@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=video.tv-tokyo.co.jp
+@@||pubads.g.doubleclick.net/gampad/ads?*/video.tv-tokyo.co.jp$domain=video.tv-tokyo.co.jp
 ! https://github.com/AdguardTeam/AdguardFilters/issues/21737
 380cc.cc#%#Object.defineProperty(window, 'myaabpfun12', { get: function() { return; } });
 380cc.cc#$##playertopads { height: 51px!important; position: absolute!important; left: -3000px!important; }
@@ -577,6 +582,7 @@ _ds_adtag_
 !
 ! Section contains rules for specific websites
 !
+crediblecar.life##a[rel="nofollow"] > img[style]
 auctions.yahoo.co.jp##.bannerFrame
 daily.co.jp##aside.add
 xbooks.to###ad_interstitial_wrap

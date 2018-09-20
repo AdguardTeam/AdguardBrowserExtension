@@ -1,8 +1,8 @@
-! Checksum: nk1SJbcYJS7bk7IAc4OsrA
+! Checksum: ArDC78csVJtQFQBhQKPyfA
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.3.52
-! TimeUpdated: 2018-09-13T12:05:08+00:00
+! Version: 2.0.3.57
+! TimeUpdated: 2018-09-19T06:04:01+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#turkish
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -312,6 +312,8 @@ merlininkazani.com,serialbumler.com#%#AG_abortInlineScript(/google_ad_client/, '
 @@||serialbumler.com^$generichide
 !-------------------------
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/22687
+@@||haberturk.com/scripts/ads.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/22259
 wowturkey.com#@#.adsbox
 wowturkey.com#@#.adsBox
@@ -1109,6 +1111,8 @@ sabah.com.tr#$#header.advertControlArea { top: 0px!important; }
 !
 ! Unhide the player while ads timeout
 !
+sinefilm.net,thesinema.org#$##reklami { display:none!important; }
+sinefilm.net,thesinema.org#$##kendisi { display:block!important; }
 filmizlefilmsitesi.com#$##cn-content { display: block!important; }
 filmizlefilmsitesi.com#$##rk-content { display: none!important; }
 hdfilmcehennemi.org#$##reki { display: none!important; }
@@ -1697,6 +1701,18 @@ xperua.com###video > p[style*="background-color:"]
 azginlar.party##a[href^="tel:"]
 wmporn.com###vplayer > div[style*="background"]
 !
+||cnnturk.com/assets/img/ing^
+cnnturk.com##.sponsor-container
+||streamloaded.com/assets/public^$domain=hdfilmcehennemi.org,media
+paratic.com##.dt_banner
+paratic.com###ors-interval-wrapper
+||uzakdogu.tv/popup.js
+uzakdogu.tv##.sbox > a[target="_blank"][rel*="noopener"] > img
+jetfilmizle.info###HeaderReklam
+hdfilmcehennemi2.org##.headerfixedreklamcontainer
+hdfilmcehennemi2.org###kendisi > div[class^="player-"][class*="-metin"]
+filmakinesi.org###film > div[class^="player-"][class*="-metin"]
+||filmifullizle2.com/250x250.html
 hurriyet.com.tr##a[href^=" http://pubads.g.doubleclick.net/"]
 kocaelifikir.com##.widget > .add
 kocaelifikir.com##.row .text-center > a[href][rel="nofollow"] > img
@@ -1918,7 +1934,7 @@ sifalidoktor.com##.content > .inbar
 asksozlerimiz.com##.yazilmislar > center
 asksozlerimiz.com##div[class^="reklam"]
 bursaspor.org.tr##div[id^="reklam"]
-fanatik.com.tr,erasmusu.com,bolugundem.com,coin-turk.com,expsex.com,ozgurkocaeli.com.tr,polatbuyukarslan.com,aofsoru.com,kocaeligazetesi.com.tr,antalyaburada.com,filmifullizle.org,yeniemlak.com,bafra55.net,airporthaber.com,avrupayakasi.com.tr,canlihaber.com,dunya.com,flvto.biz,ihlassondakika.com,izetaj.org,izlemeyedeger.com,karnaval.com,kilispostasi.com,magazinkolik.com,medyatrendleri.com,netgazete.com,oyungemisi.com,pudra.com,sabah.com.tr,sadecehaber.com,televole.com,tgrthaber.com.tr,yeniakit.com.tr,polishaber.net,neoldu.com##.banner
+filmifullizle2.com,fanatik.com.tr,erasmusu.com,bolugundem.com,coin-turk.com,expsex.com,ozgurkocaeli.com.tr,polatbuyukarslan.com,aofsoru.com,kocaeligazetesi.com.tr,antalyaburada.com,filmifullizle.org,yeniemlak.com,bafra55.net,airporthaber.com,avrupayakasi.com.tr,canlihaber.com,dunya.com,flvto.biz,ihlassondakika.com,izetaj.org,izlemeyedeger.com,karnaval.com,kilispostasi.com,magazinkolik.com,medyatrendleri.com,netgazete.com,oyungemisi.com,pudra.com,sabah.com.tr,sadecehaber.com,televole.com,tgrthaber.com.tr,yeniakit.com.tr,polishaber.net,neoldu.com##.banner
 emlaksitem.com##._commercial
 emlaksitem.com###bannerClick
 emlaksitem.com###bannerClick+div.image
@@ -5122,6 +5138,8 @@ mail.yandex.com.tr##.mail-DirectLine
 !------ White list. Fixing filtration errors (false-positive)---------------!
 !---------------------------------------------------------------------------!
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/22622
+! https://github.com/AdguardTeam/AdguardFilters/issues/22617
 ! https://github.com/AdguardTeam/AdguardFilters/issues/21326
 @@||vsh.visilabs.net/Visilabs.js^$domain=boyner.com.tr
 @@||s.visilabs.net/Target.js^$domain=boyner.com.tr
