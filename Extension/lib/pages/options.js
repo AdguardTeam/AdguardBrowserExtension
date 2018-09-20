@@ -208,7 +208,6 @@ var WhiteListFilter = function (options) {
     }
 
     applyChangesBtn.addEventListener('click', saveWhiteListDomains);
-    // TODO find out why rules dissapear on invert whitelist mode
     changeDefaultWhiteListModeCheckbox.addEventListener('change', changeDefaultWhiteListMode);
 
     importWhiteListBtn.addEventListener('click', (e) => {
