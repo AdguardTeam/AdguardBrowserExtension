@@ -174,7 +174,6 @@ PopupController.prototype = {
 
         // Header
         this.filteringHeader = this._getTemplate('filtering-header-template');
-        // TODO rename, because this is not popup headers
         this.filteringIntegrationHeader = this._getTemplate('filtering-integration-header-template');
         this.filteringDefaultHeader = this._getTemplate('filtering-default-header-template');
 

@@ -779,53 +779,68 @@ adguard.antiBannerService = (function (adguard) {
      */
     function addFiltersChangeEventListener() {
 
-        var filterEventsHistory = [];
-        var onFilterChangeTimeout = null;
+        let filterEventsHistory = [];
+        let onFilterChangeTimeout = null;
 
-        var processFilterEvent = function (event, filter, rules) {
+        const processEventsHistory = function () {
+            // TODO check logic in this part of programm
+            const filterEvents = filterEventsHistory.slice(0);
+            filterEventsHistory = [];
+            onFilterChangeTimeout = null;
+
+            var needCreateRequestFilter = filterEvents.some(isUpdateRequestFilterEvent);
+
+            // Split by filterId
+            const eventsByFilter = Object.create(null);
+            for (let i = 0; i < filterEvents.length; i += 1) {
+                const filterEvent = filterEvents[i];
+                // don't add group events
+                if (!filterEvent.filter) {
+                    continue;
+                }
+                if (!(filterEvent.filter.filterId in eventsByFilter)) {
+                    eventsByFilter[filterEvent.filter.filterId] = [];
+                }
+                eventsByFilter[filterEvent.filter.filterId].push(filterEvent);
+            }
+
+            const dfds = [];
+            for (let filterId in eventsByFilter) { // jshint ignore:line
+                const needSaveRulesToStorage = eventsByFilter[filterId].some(isSaveRulesToStorageEvent);
+                if (!needSaveRulesToStorage) {
+                    continue;
+                }
+                const dfd = processSaveFilterRulesToStorageEvents(filterId, eventsByFilter[filterId]);
+                dfds.push(dfd);
+            }
+
+            if (needCreateRequestFilter) {
+                // Rules will be added to request filter lazy, listeners will be notified about REQUEST_FILTER_UPDATED later
+                adguard.utils.Promise.all(dfds).then(createRequestFilter);
+            } else {
+                // Rules are already in request filter, notify listeners
+                adguard.listeners.notifyListeners(adguard.listeners.REQUEST_FILTER_UPDATED, getRequestFilterInfo());
+            }
+        };
+
+        const processFilterEvent = function (event, filter, rules) {
             filterEventsHistory.push({ event: event, filter: filter, rules: rules });
 
             if (onFilterChangeTimeout !== null) {
                 clearTimeout(onFilterChangeTimeout);
             }
 
-            onFilterChangeTimeout = setTimeout(function () {
-                var filterEvents = filterEventsHistory.slice(0);
-                filterEventsHistory = [];
-                onFilterChangeTimeout = null;
+            onFilterChangeTimeout = setTimeout(processEventsHistory, FILTERS_CHANGE_DEBOUNCE_PERIOD);
+        };
 
-                var needCreateRequestFilter = filterEvents.some(isUpdateRequestFilterEvent);
+        const processGroupEvent = function (event, group) {
+            filterEventsHistory.push({ event: event, group: group });
 
-                // Split by filterId
-                var eventsByFilter = Object.create(null);
-                for (let i = 0; i < filterEvents.length; i += 1) {
-                    const filterEvent = filterEvents[i];
-                    if (!(filterEvent.filter.filterId in eventsByFilter)) {
-                        eventsByFilter[filterEvent.filter.filterId] = [];
-                    }
-                    eventsByFilter[filterEvent.filter.filterId].push(filterEvent);
-                }
+            if (onFilterChangeTimeout !== null) {
+                clearTimeout(onFilterChangeTimeout);
+            }
 
-                var dfds = [];
-                for (var filterId in eventsByFilter) { // jshint ignore:line
-                    var needSaveRulesToStorage = eventsByFilter[filterId].some(isSaveRulesToStorageEvent);
-                    if (!needSaveRulesToStorage) {
-                        continue;
-                    }
-                    var dfd = processSaveFilterRulesToStorageEvents(filterId, eventsByFilter[filterId]);
-                    dfds.push(dfd);
-                }
-
-                if (needCreateRequestFilter) {
-                    // Rules will be added to request filter lazy, listeners will be notified about REQUEST_FILTER_UPDATED later
-                    adguard.utils.Promise.all(dfds).then(createRequestFilter);
-                } else {
-                    // Rules are already in request filter, notify listeners
-                    adguard.listeners.notifyListeners(adguard.listeners.REQUEST_FILTER_UPDATED, getRequestFilterInfo());
-                }
-
-            }, FILTERS_CHANGE_DEBOUNCE_PERIOD);
-
+            onFilterChangeTimeout = setTimeout(processEventsHistory, FILTERS_CHANGE_DEBOUNCE_PERIOD);
         };
 
         adguard.listeners.addListener(function (event, filter, rules) {
@@ -834,21 +849,21 @@ adguard.antiBannerService = (function (adguard) {
                 case adguard.listeners.REMOVE_RULE:
                 case adguard.listeners.UPDATE_FILTER_RULES:
                 case adguard.listeners.FILTER_ENABLE_DISABLE:
-                case adguard.listeners.FILTER_GROUP_ENABLE_DISABLE:
                     processFilterEvent(event, filter, rules);
                     break;
+                default: break;
             }
         });
 
-        // adguard.listeners.addListener(function (event, group) {
-        //     switch (event) {
-        //         case adguard.listeners.FILTER_GROUP_ENABLE_DISABLE:
-        //             processGroupEvent(event, group);
-        //             break;
-        //         default:
-        //             break;
-        //     }
-        // });
+        adguard.listeners.addListener(function (event, group) {
+            switch (event) {
+                case adguard.listeners.FILTER_GROUP_ENABLE_DISABLE:
+                    processGroupEvent(event, group);
+                    break;
+                default:
+                    break;
+            }
+        });
     }
 
     /**
