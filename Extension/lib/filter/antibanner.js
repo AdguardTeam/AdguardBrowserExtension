@@ -1042,7 +1042,7 @@ adguard.antiBannerService = (function (adguard) {
         adguard.listeners.notifyListeners(adguard.listeners.START_DOWNLOAD_FILTER, filter);
 
         var successCallback = function (filterRules) {
-            adguard.console.info("Retrieved response from server for filter {0}, rules count: {1}", filter.filterId, filterRules.length);
+            adguard.console.info('Retrieved response from server for filter {0}, rules count: {1}', filter.filterId, filterRules.length);
             delete filter._isDownloading;
             filter.version = filterMetadata.version;
             filter.lastUpdateTime = filterMetadata.timeUpdated;
@@ -1055,7 +1055,7 @@ adguard.antiBannerService = (function (adguard) {
         };
 
         var errorCallback = function (cause) {
-            adguard.console.error("Error retrieved response from server for filter {0}, cause: {1}", filter.filterId, cause || "");
+            adguard.console.error('Error retrieved response from server for filter {0}, cause: {1}', filter.filterId, cause || '');
             delete filter._isDownloading;
             adguard.listeners.notifyListeners(adguard.listeners.ERROR_DOWNLOAD_FILTER, filter);
             callback(false);
@@ -1072,19 +1072,18 @@ adguard.antiBannerService = (function (adguard) {
      * @private
      */
     function loadFiltersMetadataFromBackend(filterIds, callback) {
-
         if (filterIds.length === 0) {
             callback(true, []);
             return;
         }
 
         var loadSuccess = function (filterMetadataList) {
-            adguard.console.debug("Retrieved response from server for {0} filters, result: {1} metadata", filterIds.length, filterMetadataList.length);
+            adguard.console.debug('Retrieved response from server for {0} filters, result: {1} metadata', filterIds.length, filterMetadataList.length);
             callback(true, filterMetadataList);
         };
 
         var loadError = function (request, cause) {
-            adguard.console.error("Error retrieved response from server for filters {0}, cause: {1} {2}", filterIds, request.statusText, cause || "");
+            adguard.console.error('Error retrieved response from server for filters {0}, cause: {1} {2}', filterIds, request.statusText, cause || '');
             callback(false);
         };
 
