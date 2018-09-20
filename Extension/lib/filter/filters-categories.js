@@ -34,7 +34,7 @@ adguard.categories = (function (adguard) {
      */
     var getFilters = function () {
         var result = adguard.subscriptions.getFilters().filter(function (f) {
-            return !f.removed && f.filterId != adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID;
+            return !f.removed;
         });
 
         var tags = adguard.tags.getTags();
@@ -125,39 +125,30 @@ adguard.categories = (function (adguard) {
      * @param groupId
      * @returns {Array} recommended filters by groupId
      */
-    var getRecommendedFilterIdsByGroupId = function (groupId) {
-        var metadata = getFiltersMetadata();
-
-        for (var i = 0; i < metadata.categories.length; i += 1) {
-            var category = metadata.categories[i];
+    const getRecommendedFilterIdsByGroupId = function (groupId) {
+        const metadata = getFiltersMetadata();
+        const result = [];
+        for (let i = 0; i < metadata.categories.length; i += 1) {
+            const category = metadata.categories[i];
             if (category.groupId === groupId) {
-                var result = [];
-                category.filters.recommendedFilters.forEach(function (f) {
-                    result.push(f.filterId);
-                });
-
+                category.filters.recommendedFilters.forEach(filter => result.push(filter.filterId));
                 return result;
             }
         }
-
-        return [];
-    };
-
-    var groupHasInstalledFilters = function (groupId) {
-        var metadata = getFiltersMetadata();
-        var filters = metadata.filters;
-        return filters.some(filter => filter.groupId === groupId && filter.installed);
+        return result;
     };
 
     /**
-     * If group doesn't have installed filters we consider that group is enabled for the first time
+     * If group doesn't have enabled property we consider that group is enabled for the first time
      * On first group enable we add and enable recommended filters by groupId
      * On the next calls we just enable group
      * @param {number} groupId
      */
     // TODO custom category has it's own logic, check how to work with it too
     const enableFiltersGroup = function (groupId) {
-        if (!groupHasInstalledFilters(groupId)) {
+        const group = adguard.subscriptions.getGroup(groupId);
+        if (typeof group.enabled === 'undefined') {
+            // TODO take in consideration lang tag
             const recommendedFiltersIds = getRecommendedFilterIdsByGroupId(groupId);
             adguard.filters.addAndEnableFilters(recommendedFiltersIds);
         }
