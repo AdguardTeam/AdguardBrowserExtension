@@ -316,11 +316,19 @@ var AntiBannerFilters = function (options) {
         filters: [],
         categories: [],
         filtersById: {},
+        categoriesById: {},
         lastUpdateTime: 0,
 
         initLoadedFilters: function (filters, categories) {
             this.filters = filters;
             this.categories = categories;
+
+            const categoriesById = Object.create(null);
+            for (let i = 0; i < this.categories.length; i += 1) {
+                const category = this.categories[i];
+                categoriesById[category.groupId] = category;
+            }
+            this.categoriesById = categoriesById;
 
             var lastUpdateTime = 0;
             var filtersById = Object.create(null);
@@ -339,6 +347,21 @@ var AntiBannerFilters = function (options) {
         isEnabled: function (filterId) {
             var info = this.filtersById[filterId];
             return info && info.enabled;
+        },
+
+        isCategoryEnabled: function (categoryId) {
+            const category = this.categoriesById[categoryId];
+            return category && category.enabled;
+        },
+
+        updateCategoryEnabled: function (category, enabled) {
+            const categoryInfo = this.categoriesById[category.groupId];
+            if (categoryInfo) {
+                categoryInfo.enabled = enabled;
+            } else {
+                this.categories.push(category);
+                this.categoriesById[category.groupId] = category;
+            }
         },
 
         updateEnabled: function (filter, enabled) {
@@ -461,7 +484,11 @@ var AntiBannerFilters = function (options) {
         if (groupFiltersCount > 0) {
             element.querySelector('.desc').textContent = filtersNamesDescription;
         }
-        CheckboxUtils.updateCheckbox([checkbox], enabledFiltersCount > 0);
+
+        const isCategoryEnabled = loadedFiltersInfo.isCategoryEnabled(groupId);
+        console.log(isCategoryEnabled);
+        const isCheckboxChecked = typeof isCategoryEnabled === 'undefined' ? enabledFiltersCount > 0 : isCategoryEnabled;
+        CheckboxUtils.updateCheckbox([checkbox], isCheckboxChecked);
     }
 
     function getFilterCategoryElement(category) {
@@ -724,9 +751,9 @@ var AntiBannerFilters = function (options) {
     function toggleGroupState() {
         var groupId = this.value - 0;
         if (this.checked) {
-            contentPage.sendMessage({ type: 'addAndEnableFiltersByGroupId', groupId: groupId });
+            contentPage.sendMessage({ type: 'enableFiltersGroup', groupId: groupId });
         } else {
-            contentPage.sendMessage({ type: 'disableAntiBannerFiltersByGroupId', groupId: groupId });
+            contentPage.sendMessage({ type: 'disableFiltersGroup', groupId: groupId });
         }
     }
 
@@ -875,6 +902,11 @@ var AntiBannerFilters = function (options) {
         CheckboxUtils.updateCheckbox([getFilterCheckbox(filterId)], enabled);
     }
 
+    function onCategoryStateChanged(category) {
+        loadedFiltersInfo.updateCategoryEnabled(category, category.enabled);
+        updateCategoryFiltersInfo(category.groupId);
+    }
+
     function onFilterDownloadStarted(filter) {
         getCategoryElement(filter.groupId).querySelector('.preloader').classList.add('active');
         const filterElement = getFilterElement(filter.filterId);
@@ -898,6 +930,7 @@ var AntiBannerFilters = function (options) {
         render: renderCategoriesAndFilters,
         updateRulesCountInfo: updateRulesCountInfo,
         onFilterStateChanged: onFilterStateChanged,
+        onCategoryStateChanged: onCategoryStateChanged,
         onFilterDownloadStarted: onFilterDownloadStarted,
         onFilterDownloadFinished: onFilterDownloadFinished,
     };
@@ -1482,6 +1515,7 @@ var initPage = function (response) {
 
         var events = [
             EventNotifierTypes.FILTER_ENABLE_DISABLE,
+            EventNotifierTypes.FILTER_GROUP_ENABLE_DISABLE,
             EventNotifierTypes.FILTER_ADD_REMOVE,
             EventNotifierTypes.START_DOWNLOAD_FILTER,
             EventNotifierTypes.SUCCESS_DOWNLOAD_FILTER,
@@ -1498,6 +1532,10 @@ var initPage = function (response) {
                 case EventNotifierTypes.FILTER_ENABLE_DISABLE:
                     controller.checkSubscriptionsCount();
                     controller.antiBannerFilters.onFilterStateChanged(options);
+                    break;
+                case EventNotifierTypes.FILTER_GROUP_ENABLE_DISABLE:
+                    // controller.checkSubscriptionsCount();
+                    controller.antiBannerFilters.onCategoryStateChanged(options);
                     break;
                 case EventNotifierTypes.FILTER_ADD_REMOVE:
                     controller.antiBannerFilters.render();
