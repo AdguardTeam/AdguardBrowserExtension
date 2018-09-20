@@ -149,49 +149,34 @@ adguard.categories = (function (adguard) {
         return filters.some(filter => filter.groupId === groupId && filter.installed);
     };
 
-    var getFilterIdsByGroupId = function (groupId) {
-        var metadata = getFiltersMetadata();
-        if (!metadata && !metadata.filters) {
-            return [];
-        }
-        return metadata.filters.filter(function (filter) {
-            return filter.groupId === groupId;
-        }).map(function (filter) {
-            return filter.filterId;
-        });
-    };
-
     /**
      * If group doesn't have installed filters we consider that group is enabled for the first time
      * On first group enable we add and enable recommended filters by groupId
-     * On the next calls we enable only groups which where previously disabled by
-     * disableAntiBannerFiltersByGroupId function
-     * @param groupId
+     * On the next calls we just enable group
+     * @param {number} groupId
      */
-    var addAndEnableFiltersByGroupId = function (groupId) {
+    // TODO custom category has it's own logic, check how to work with it too
+    const enableFiltersGroup = function (groupId) {
         if (!groupHasInstalledFilters(groupId)) {
-            var recommendedFiltersIds = getRecommendedFilterIdsByGroupId(groupId);
+            const recommendedFiltersIds = getRecommendedFilterIdsByGroupId(groupId);
             adguard.filters.addAndEnableFilters(recommendedFiltersIds);
-            return;
         }
-        var filterIds = getFilterIdsByGroupId(groupId);
-        adguard.filters.addAndEnableFilters(filterIds, function () {}, { groupAction: true });
+
+        adguard.filters.enableGroup(groupId);
     };
 
     /**
-     * Disables filters by groupId and add to disabled filters their state before disabling
-     * in order to be able to enable them afterward
-     * @param groupId
+     * Disables group
+     * @param {number} groupId
      */
-    var disableAntiBannerFiltersByGroupId = function (groupId) {
-        var filterIds = getFilterIdsByGroupId(groupId);
-        adguard.filters.disableFilters(filterIds, { groupAction: true });
+    const disableFiltersGroup = function (groupId) {
+        adguard.filters.disableGroup(groupId);
     };
 
     return {
         getFiltersMetadata: getFiltersMetadata,
-        addAndEnableFiltersByGroupId: addAndEnableFiltersByGroupId,
-        disableAntiBannerFiltersByGroupId: disableAntiBannerFiltersByGroupId,
+        enableFiltersGroup: enableFiltersGroup,
+        disableFiltersGroup: disableFiltersGroup,
     };
 })(adguard);
 

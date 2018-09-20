@@ -26,6 +26,7 @@ adguard.subscriptions = (function (adguard) {
 
     var tags = [];
     var groups = [];
+    var groupsMap = {};
     var filters = [];
     var filtersMap = {};
 
@@ -252,6 +253,7 @@ adguard.subscriptions = (function (adguard) {
 
             tags = [];
             groups = [];
+            groupsMap = {};
             filters = [];
             filtersMap = {};
 
@@ -259,14 +261,16 @@ adguard.subscriptions = (function (adguard) {
                 tags.push(createFilterTagFromJSON(metadata.tags[i]));
             }
 
-            for (var j = 0; j < metadata.filters.length; j++) {
+            for (var j = 0; j < metadata.filters.length; j += 1) {
                 var filter = createSubscriptionFilterFromJSON(metadata.filters[j]);
                 filters.push(filter);
                 filtersMap[filter.filterId] = filter;
             }
 
-            for (var k = 0; k < metadata.groups.length; k++) {
-                groups.push(createSubscriptionGroupFromJSON(metadata.groups[k]));
+            for (let k = 0; k < metadata.groups.length; k += 1) {
+                const group = createSubscriptionGroupFromJSON(metadata.groups[k]);
+                groups.push(group);
+                groupsMap[group.groupId] = group;
             }
 
             filters.sort(function (f1, f2) {
@@ -436,6 +440,13 @@ adguard.subscriptions = (function (adguard) {
     };
 
     /**
+     * @returns Array of Groups metadata
+     */
+    var getGroup = function (groupId) {
+        return groupsMap[groupId];
+    };
+
+    /**
      * Gets list of filters for the specified languages
      *
      * @param locale Locale to check
@@ -464,6 +475,7 @@ adguard.subscriptions = (function (adguard) {
         getFilterIdsForLanguage: getFilterIdsForLanguage,
         getTags: getTags,
         getGroups: getGroups,
+        getGroup: getGroup,
         getFilters: getFilters,
         getFilter: getFilter,
         createSubscriptionFilterFromJSON: createSubscriptionFilterFromJSON,
