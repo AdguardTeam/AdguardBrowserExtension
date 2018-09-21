@@ -475,6 +475,23 @@ adguard.subscriptions = (function (adguard) {
         return filterIds;
     };
 
+    const getLangSuitableFilters = function () {
+        // Get language-specific filters by user locale
+        let filterIds = [];
+
+        let localeFilterIds = getFilterIdsForLanguage(adguard.app.getLocale());
+        filterIds = filterIds.concat(localeFilterIds);
+
+        // Get language-specific filters by navigator languages
+        // Get the 2 most commonly used languages
+        const languages = adguard.utils.browser.getNavigatorLanguages(2);
+        for (let i = 0; i < languages.length; i += 1) {
+            localeFilterIds = getFilterIdsForLanguage(languages[i]);
+            filterIds = filterIds.concat(localeFilterIds);
+        }
+        return filterIds;
+    };
+
     return {
         init: init,
         getFilterIdsForLanguage: getFilterIdsForLanguage,
@@ -486,6 +503,7 @@ adguard.subscriptions = (function (adguard) {
         getFilter: getFilter,
         createSubscriptionFilterFromJSON: createSubscriptionFilterFromJSON,
         updateCustomFilter: updateCustomFilter,
+        getLangSuitableFilters: getLangSuitableFilters,
     };
 
 })(adguard);

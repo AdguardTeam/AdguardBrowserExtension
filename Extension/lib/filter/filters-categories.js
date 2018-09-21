@@ -111,12 +111,21 @@ adguard.categories = (function (adguard) {
     const getRecommendedFilterIdsByGroupId = function (groupId) {
         const metadata = getFiltersMetadata();
         const result = [];
+        const langSuitableFilters = adguard.subscriptions.getLangSuitableFilters();
         for (let i = 0; i < metadata.categories.length; i += 1) {
             const category = metadata.categories[i];
             if (category.groupId === groupId) {
                 category.filters.forEach(filter => {
                     if (adguard.tags.isRecommendedFilter(filter)) {
-                        result.push(filter.filterId);
+                        // get ids intersection to enable recommended filters matching the lang tag
+                        // only if filter has language
+                        if (filter.languages && filter.languages.length > 0) {
+                            if (langSuitableFilters.includes(filter.filterId)) {
+                                result.push(filter.filterId);
+                            }
+                        } else {
+                            result.push(filter.filterId);
+                        }
                     }
                 });
                 return result;
@@ -134,8 +143,7 @@ adguard.categories = (function (adguard) {
     // TODO custom category has it's own logic, check how to work with it too
     const enableFiltersGroup = function (groupId) {
         const group = adguard.subscriptions.getGroup(groupId);
-        if (typeof group.enabled === 'undefined') {
-            // TODO take in consideration lang tag
+        if (group && typeof group.enabled === 'undefined') {
             const recommendedFiltersIds = getRecommendedFilterIdsByGroupId(groupId);
             adguard.filters.addAndEnableFilters(recommendedFiltersIds);
         }
