@@ -446,6 +446,11 @@ adguard.subscriptions = (function (adguard) {
         return groupsMap[groupId];
     };
 
+    const groupHasEnabledStatus = (groupId) => {
+        const group = groupsMap[groupId];
+        return typeof group.enabled !== 'undefined';
+    };
+
     /**
      * Gets list of filters for the specified languages
      *
@@ -476,6 +481,7 @@ adguard.subscriptions = (function (adguard) {
         getTags: getTags,
         getGroups: getGroups,
         getGroup: getGroup,
+        groupHasEnabledStatus: groupHasEnabledStatus,
         getFilters: getFilters,
         getFilter: getFilter,
         createSubscriptionFilterFromJSON: createSubscriptionFilterFromJSON,
