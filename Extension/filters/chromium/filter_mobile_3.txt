@@ -1,8 +1,8 @@
-! Checksum: 5xsfNnFruZJPTCLIyVu6KA
+! Checksum: en8QGEod84jzZGoK/lCoew
 ! Title: AdGuard Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. Use this filter if you do not want your actions on the Internet to be tracked.
-! Version: 2.0.3.59
-! TimeUpdated: 2018-09-15T00:04:09+00:00
+! Version: 2.0.3.65
+! TimeUpdated: 2018-09-20T00:04:14+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -42,6 +42,8 @@ kinoman.me###extra_block > div.extra_mod > div.extra_mod:has(> div.extra_mod_tit
 latino-serialo.tv###sidebar-left > div.block[-ext-has="> div.box > h2:contains(Счетчик)"]
 prjaga.ru###right > div#right_nav > h3:contains(Онлайн статистика)
 journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Счетчик)"]
+||healte.de^$third-party
+||track.ddmanager.ru^$third-party
 ||metrika-informer.com^$third-party
 ||rdstation.com^$third-party
 ||rdstation.com.br^$third-party
@@ -1092,7 +1094,7 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 ||formisimo.com^$third-party
 ||forter.com^$third-party
 ||foundry42.com^$third-party
-||fout.jp^$third-party
+||fout.jp^
 ||fpctraffic2.com^$third-party
 ||fprnt.com^$third-party
 ||fqtag.com^$third-party
@@ -4166,6 +4168,12 @@ charlestownwyllie.oaklawnnonantum.com^
 _pagespeed_beacon?
 _social_tracking.js^
 _tracking.php?b=
+||nbalive.pw^$third-party,subdocument
+||s3.amazonaws.com/cdx-radar^
+||yvesrocher.com.tr/images/avenseo/tr_TR/avenseo-uniq.min.js
+||yvesrocher.com.tr/images/js/coremetrics.js
+||yvesrocher.com.tr/images/js/tracking^
+||yvesrocher.com.tr/images/__utm.gif^
 ||teenporn.ws/zaq/cron.php
 ||sirporno.xxx/js/analytics.js
 ||ventunotech.com/beacon/
@@ -5536,6 +5544,8 @@ link.gmapp*.net$image
 ||scorecardresearch.com^$domain=cnet.com,important
 !+ NOT_PLATFORM(ios, ext_safari, android)
 ||hh.ru/analytics^
+@@||pleisty.com^$domain=evomag.ro
+@@||mc.yandex.ru/metrika/watch.js$domain=2mb.ru
 @@||googletagmanager.com/gtm.js^$domain=myaccount.healthypawspetinsurance.com
 @@||mc.yandex.ru/metrika/watch.js$domain=zaycev.fm
 @@||gatr.hit.gemius.pl/xgemius.js$domain=f5haber.com
