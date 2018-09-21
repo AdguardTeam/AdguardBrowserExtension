@@ -485,7 +485,6 @@ var AntiBannerFilters = function (options) {
         }
 
         const isCategoryEnabled = loadedFiltersInfo.isCategoryEnabled(groupId);
-        console.log(isCategoryEnabled);
         const isCheckboxChecked = typeof isCategoryEnabled === 'undefined' ? enabledFiltersCount > 0 : isCategoryEnabled;
         CheckboxUtils.updateCheckbox([checkbox], isCheckboxChecked);
     }
@@ -512,7 +511,7 @@ var AntiBannerFilters = function (options) {
     function getFilterTemplate(filter, enabled, showDeleteButton) {
         var timeUpdated = moment(filter.timeUpdated);
         timeUpdated.locale(environmentOptions.Prefs.locale);
-        var timeUpdatedText = timeUpdated.format("D/MM/YYYY HH:mm").toLowerCase();
+        var timeUpdatedText = timeUpdated.format('D/MM/YYYY HH:mm').toLowerCase();
 
         var tagDetails = '';
         filter.tagsDetails.forEach(function (tag) {
@@ -581,9 +580,7 @@ var AntiBannerFilters = function (options) {
     }
 
     function getFiltersContentElement(category) {
-        var otherFilters = category.filters.otherFilters;
-        var recommendedFilters = category.filters.recommendedFilters;
-        var filters = [].concat(recommendedFilters, otherFilters);
+        var filters = category.filters;
         var isCustomFilters = category.groupId === 0;
 
         if (isCustomFilters &&

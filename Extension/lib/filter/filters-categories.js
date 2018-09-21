@@ -66,31 +66,14 @@ adguard.categories = (function (adguard) {
     };
 
     /**
-     * Selects filters by groupId, separates recommended
+     * Selects filters by groupId
      *
      * @param groupId
      * @param filters
-     * @returns {{recommendedFilters, otherFilters: *}}
+     * @returns {Array.<SubscriptionFilter>}
      */
-    var selectFiltersByGroupId = function (groupId, filters) {
-        var groupFilters = filters.filter(function (f) {
-            return f.groupId === groupId;
-        });
-
-        if (groupId === CUSTOM_FILTERS_GROUP_ID) {
-            return {
-                recommendedFilters: groupFilters,
-                otherFilters: [],
-            };
-        }
-
-        var recommendedFilters = adguard.tags.getRecommendedFilters(groupFilters);
-        var otherFilters = adguard.utils.collections.getArraySubtraction(groupFilters, recommendedFilters);
-
-        return {
-            recommendedFilters: recommendedFilters,
-            otherFilters: otherFilters,
-        };
+    const selectFiltersByGroupId = function (groupId, filters) {
+        return filters.filter(filter => filter.groupId === groupId);
     };
 
     /**
@@ -131,7 +114,11 @@ adguard.categories = (function (adguard) {
         for (let i = 0; i < metadata.categories.length; i += 1) {
             const category = metadata.categories[i];
             if (category.groupId === groupId) {
-                category.filters.recommendedFilters.forEach(filter => result.push(filter.filterId));
+                category.filters.forEach(filter => {
+                    if (adguard.tags.isRecommendedFilter(filter)) {
+                        result.push(filter.filterId);
+                    }
+                });
                 return result;
             }
         }
@@ -152,7 +139,6 @@ adguard.categories = (function (adguard) {
             const recommendedFiltersIds = getRecommendedFilterIdsByGroupId(groupId);
             adguard.filters.addAndEnableFilters(recommendedFiltersIds);
         }
-
         adguard.filters.enableGroup(groupId);
     };
 

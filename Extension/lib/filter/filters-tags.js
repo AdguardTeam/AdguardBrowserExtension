@@ -51,6 +51,10 @@ adguard.tags = (function (adguard) {
         return getFiltersByTagId(RECOMMENDED_TAG_ID, filters);
     };
 
+    const isRecommendedFilter = (filter) => {
+        return filter.tags.includes(RECOMMENDED_TAG_ID);
+    };
+
     var getPurposeGroupedFilters = function () {
         var filters = getFilters();
         var adsFilters = getFiltersByTagId(PURPOSE_ADS_TAG_ID, filters);
@@ -66,15 +70,16 @@ adguard.tags = (function (adguard) {
             privacy: privacyFilters,
             security: securityFilters,
             annoyances: annoyancesFilters,
-            cookies: cookiesFilters
+            cookies: cookiesFilters,
         };
     };
 
     return {
         getTags: getTags,
         getPurposeGroupedFilters: getPurposeGroupedFilters,
+        isRecommendedFilter: isRecommendedFilter,
         getFiltersByTagId: getFiltersByTagId,
-        getRecommendedFilters: getRecommendedFilters
+        getRecommendedFilters: getRecommendedFilters,
     };
 })(adguard);
 
