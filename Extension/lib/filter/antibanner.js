@@ -1422,23 +1422,10 @@ adguard.filters = (function (adguard) {
      * Offer filters on extension install, select default filters and filters by locale and country
      * @param callback
      */
-    var offerFilters = function (callback) {
-
+    const offerFilters = function (callback) {
         // These filters are enabled by default
-        var filterIds = [adguard.utils.filters.ENGLISH_FILTER_ID, adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID];
-
-        // Get language-specific filters by user locale
-        var localeFilterIds = adguard.subscriptions.getFilterIdsForLanguage(adguard.app.getLocale());
-        filterIds = filterIds.concat(localeFilterIds);
-
-        // Get language-specific filters by navigator languages
-        // Get the 2 most commonly used languages
-        var languages = adguard.utils.browser.getNavigatorLanguages(2);
-        for (var i = 0; i < languages.length; i++) {
-            localeFilterIds = adguard.subscriptions.getFilterIdsForLanguage(languages[i]);
-            filterIds = filterIds.concat(localeFilterIds);
-        }
-
+        let filterIds = [adguard.utils.filters.ENGLISH_FILTER_ID, adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID];
+        filterIds.concat(adguard.subscriptions.getLangSuitableFilters());
         callback(filterIds);
     };
 
@@ -1622,18 +1609,17 @@ adguard.filters = (function (adguard) {
      * @param {{syncSuppress}} [options]
      */
     var removeFilter = function (filterId, options) {
-
         var filter = adguard.subscriptions.getFilter(filterId);
         if (!filter || filter.removed) {
             return;
         }
 
         if (!filter.customUrl) {
-            adguard.console.error("Filter {0} is not custom and could not be removed", filter.filterId);
+            adguard.console.error('Filter {0} is not custom and could not be removed', filter.filterId);
             return;
         }
 
-        adguard.console.debug("Remove filter {0}", filter.filterId);
+        adguard.console.debug('Remove filter {0}', filter.filterId);
 
         filter.enabled = false;
         filter.installed = false;
@@ -1661,19 +1647,17 @@ adguard.filters = (function (adguard) {
      * @param loadCallback
      */
     var processAbpSubscriptionUrl = function (subscriptionUrl, loadCallback) {
-
-        var filterMetadata = findFilterMetadataBySubscriptionUrl(subscriptionUrl);
+        const filterMetadata = findFilterMetadataBySubscriptionUrl(subscriptionUrl);
 
         if (filterMetadata) {
             addAndEnableFilters([filterMetadata.filterId]);
         } else {
-
             // Load filter rules
             adguard.backend.loadFilterRulesBySubscriptionUrl(subscriptionUrl, function (rulesText) {
                 var rules = adguard.userrules.addRules(rulesText);
                 loadCallback(rules.length);
             }, function (request, cause) {
-                adguard.console.error("Error download subscription by url {0}, cause: {1}", subscriptionUrl, cause || "");
+                adguard.console.error('Error download subscription by url {0}, cause: {1}', subscriptionUrl, cause || '');
             });
         }
     };
@@ -1700,7 +1684,7 @@ adguard.filters = (function (adguard) {
                 adguard.console.info('Custom filter info downloaded');
 
                 var filter = adguard.subscriptions.getFilter(filterId);
-                //In case filter is loaded again and was removed before
+                // In case filter is loaded again and was removed before
                 delete filter.removed;
 
                 successCallback(filter);
@@ -1736,7 +1720,7 @@ adguard.filters = (function (adguard) {
         findFilterMetadataBySubscriptionUrl: findFilterMetadataBySubscriptionUrl,
         processAbpSubscriptionUrl: processAbpSubscriptionUrl,
 
-        loadCustomFilter: loadCustomFilter
+        loadCustomFilter: loadCustomFilter,
     };
 
 })(adguard);
