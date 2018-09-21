@@ -242,11 +242,11 @@ PopupController.prototype = {
             template = this.filteringIntegrationHeader;
             const headTitleElement = template.querySelector('.head .msg');
             if (tabInfo.adguardProductName.toLowerCase().includes('mac')) {
-                headTitleElement.textContent = i18n.getMessage('popup_integrate_mode_title_mac');
+                headTitleElement.innerHTML = i18n.getMessage('popup_integrate_mode_title_mac');
             } else if (tabInfo.adguardProductName.toLowerCase().includes('win')) {
-                headTitleElement.textContent = i18n.getMessage('popup_integrate_mode_title_win');
+                headTitleElement.innerHTML = i18n.getMessage('popup_integrate_mode_title_win');
             } else {
-                headTitleElement.textContent = i18n.getMessage('popup_integrate_mode_title');
+                headTitleElement.innerHTML = i18n.getMessage('popup_integrate_mode_title');
             }
         } else {
             template = this.filteringDefaultHeader;
