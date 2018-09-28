@@ -161,8 +161,8 @@
 
     /**
      * Called before request is sent to the remote endpoint.
-     * This method is used to modify request in case of working in integration mode
-     * and also to record referrer header in frame data.
+     * This method is used to modify request in case of working in integration mode,
+     * to modify headers for stealth service and also to record referrer header in frame data.
      *
      * @param requestDetails Request details
      * @returns {*} headers to send
@@ -192,6 +192,8 @@
                 adguard.frames.recordFrameReferrerHeader(tab, refHeader.value);
             }
         }
+
+        adguard.stealthService.processRequestHeaders(requestDetails);
 
         return {};
     }
@@ -229,6 +231,8 @@
             var contentType = adguard.utils.browser.getHeaderValueByName(responseHeaders, 'content-type');
             adguard.contentFiltering.apply(tab, requestUrl, referrerUrl, requestType, requestId, statusCode, method, contentType);
         }
+
+        adguard.stealthService.processResponseHeaders(requestDetails, referrerUrl);
 
         if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
             return modifyCSPHeader(requestDetails);
