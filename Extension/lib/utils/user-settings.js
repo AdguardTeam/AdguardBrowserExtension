@@ -40,6 +40,14 @@ adguard.settings = (function (adguard) {
         DISABLE_SHOW_APP_UPDATED_NOTIFICATION: 'show-app-updated-disabled',
         DISABLE_INTEGRATION_MODE: 'integration-mode-disabled',
         FILTERS_UPDATE_PERIOD: 'filters-update-period',
+        HIDE_REFERRER: 'stealth-hide-referrer',
+        HIDE_SEARCH_QUERIES: 'stealth-hide-search-queries',
+        SEND_DO_NOT_TRACK: 'stealth-send-do-not-track',
+        BLOCK_CHROME_CLIENT_DATA: 'stealth-remove-x-client',
+        SELF_DESTRUCT_THIRD_PARTY_COOKIES: 'stealth-block-third-party-cookies',
+        SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME: 'stealth-block-third-party-cookies-time',
+        SELF_DESTRUCT_FIRST_PARTY_COOKIES: 'stealth-block-first-party-cookies',
+        SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME: 'stealth-block-first-party-cookies-time',
     };
 
     var properties = Object.create(null);
@@ -68,6 +76,14 @@ adguard.settings = (function (adguard) {
                 defaults[settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION] = false;
                 defaults[settings.DISABLE_INTEGRATION_MODE] = false;
                 defaults[settings.FILTERS_UPDATE_PERIOD] = DEFAULT_FILTERS_UPDATE_PERIOD_MS;
+                defaults[settings.HIDE_REFERRER] = true;
+                defaults[settings.HIDE_SEARCH_QUERIES] = true;
+                defaults[settings.SEND_DO_NOT_TRACK] = true;
+                defaults[settings.BLOCK_CHROME_CLIENT_DATA] = true;
+                defaults[settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES] = true;
+                defaults[settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME] = 5;
+                defaults[settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES] = true;
+                defaults[settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME] = 5;
                 return defaults;
             });
         }
