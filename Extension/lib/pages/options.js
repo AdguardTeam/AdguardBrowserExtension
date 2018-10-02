@@ -850,7 +850,7 @@ var AntiBannerFilters = function (options) {
                 document.querySelector('#custom-filter-popup-added-subscribe').removeEventListener('click', onSubscribeClicked);
             }
 
-            onSubscribeClicked = () => addAndEnableFilter(filter);
+            onSubscribeClicked = () => addAndEnableFilter(filter.filterId);
             document.querySelector('#custom-filter-popup-added-subscribe').addEventListener('click', onSubscribeClicked);
 
             // TODO may be it would be better don't add filter before user click subscribe button?
@@ -859,7 +859,7 @@ var AntiBannerFilters = function (options) {
                 document.querySelector('#custom-filter-popup-remove').removeEventListener('click', onSubscriptionCancel);
             }
 
-            onSubscriptionCancel = () => removeAntiBannerFilter(filter);
+            onSubscriptionCancel = () => removeAntiBannerFilter(filter.filterId);
             document.querySelector('#custom-filter-popup-remove').addEventListener('click', onSubscriptionCancel);
         }
 
@@ -914,7 +914,6 @@ var AntiBannerFilters = function (options) {
         var enabled = filter.enabled;
         loadedFiltersInfo.updateEnabled(filter, enabled);
         updateCategoryFiltersInfo(filter.groupId);
-
         CheckboxUtils.updateCheckbox([getFilterCheckbox(filterId)], enabled);
     }
 
@@ -1550,7 +1549,6 @@ var initPage = function (response) {
                     controller.antiBannerFilters.onFilterStateChanged(options);
                     break;
                 case EventNotifierTypes.FILTER_GROUP_ENABLE_DISABLE:
-                    // controller.checkSubscriptionsCount();
                     controller.antiBannerFilters.onCategoryStateChanged(options);
                     break;
                 case EventNotifierTypes.FILTER_ADD_REMOVE:

@@ -24,6 +24,20 @@ adguard.subscriptions = (function (adguard) {
 
     'use strict';
 
+    /**
+     * Custom filters group identifier
+     *
+     * @type {number}
+     */
+    const CUSTOM_FILTERS_GROUP_ID = 0;
+
+    /**
+     * Custom filters group display number
+     *
+     * @type {number}
+     */
+    const CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER = 99;
+
     var tags = [];
     var groups = [];
     var groupsMap = {};
@@ -188,10 +202,8 @@ adguard.subscriptions = (function (adguard) {
      * @param callback
      */
     var updateCustomFilter = function (url, callback) {
-
         adguard.backend.loadFilterRulesBySubscriptionUrl(url, function (rules) {
             var filterData = parseFilterDataFromHeader(rules);
-
             var filterId = addFilterId();
             var groupId = 0;
             var defaultName = filterData.name;
@@ -206,21 +218,22 @@ adguard.subscriptions = (function (adguard) {
             var tags = [0];
             var rulesCount = rules.length;
 
-            //Check if filter from this url was added before
+            // Check if filter from this url was added before
             var filter = filters.find(function (f) {
                 return f.customUrl === url;
             });
 
             if (filter) {
                 if (version && adguard.utils.browser.isGreaterVersion(filter.version, version)) {
-                    //Update version is not greater
+                    // Update version is not greater
                     callback();
                     return;
                 }
             } else {
                 filter = new SubscriptionFilter(filterId, groupId, defaultName, defaultDescription, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl, tags);
                 filter.loaded = true;
-                //custom filters have special fields
+
+                // custom filters have special fields
                 filter.customUrl = url;
                 filter.rulesCount = rulesCount;
 
@@ -233,9 +246,8 @@ adguard.subscriptions = (function (adguard) {
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, filter, rules);
 
             callback(filter.filterId);
-
         }, function (request, cause) {
-            adguard.console.error("Error download filter by url {0}, cause: {1} {2}", url, request.statusText, cause || "");
+            adguard.console.error('Error download filter by url {0}, cause: {1} {2}', url, request.statusText, cause || '');
             callback();
         });
     };
@@ -273,6 +285,11 @@ adguard.subscriptions = (function (adguard) {
                 groupsMap[group.groupId] = group;
             }
 
+            const customFiltersGroup
+                = new SubscriptionGroup(CUSTOM_FILTERS_GROUP_ID, 'Custom', CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER);
+            groups.push(customFiltersGroup);
+            groupsMap[customFiltersGroup.groupId] = customFiltersGroup;
+
             filters.sort(function (f1, f2) {
                 return f1.displayNumber - f2.displayNumber;
             });
@@ -283,7 +300,6 @@ adguard.subscriptions = (function (adguard) {
 
             adguard.console.info('Filters metadata loaded');
             successCallback();
-
         }, errorCallback);
     }
 
@@ -476,7 +492,7 @@ adguard.subscriptions = (function (adguard) {
         return filterIds;
     };
 
-    const getLangSuitableFilters = function () {
+    const getLangSuitableFilters = () => {
         // Get language-specific filters by user locale
         let filterIds = [];
 
@@ -490,7 +506,7 @@ adguard.subscriptions = (function (adguard) {
             localeFilterIds = getFilterIdsForLanguage(languages[i]);
             filterIds = filterIds.concat(localeFilterIds);
         }
-        return filterIds;
+        return [...new Set(filterIds)];
     };
 
     return {
