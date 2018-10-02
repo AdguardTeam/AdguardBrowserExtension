@@ -435,17 +435,18 @@ adguard.subscriptions = (function (adguard) {
     /**
      * @returns Array of Groups metadata
      */
-    var getGroups = function () {
-        return groups;
-    };
+    const getGroups = () => groups;
 
     /**
-     * @returns Array of Groups metadata
+     * @returns Group metadata
      */
-    var getGroup = function (groupId) {
-        return groupsMap[groupId];
-    };
+    const getGroup = (groupId) => groupsMap[groupId];
 
+    /**
+     * Checks if group has enabled status true or false
+     * @param groupId
+     * @returns {boolean}
+     */
     const groupHasEnabledStatus = (groupId) => {
         const group = groupsMap[groupId];
         return typeof group.enabled !== 'undefined';
@@ -455,7 +456,7 @@ adguard.subscriptions = (function (adguard) {
      * Gets list of filters for the specified languages
      *
      * @param locale Locale to check
-     * @returns List of filters identifiers
+     * @returns {Array} List of filters identifiers
      */
     var getFilterIdsForLanguage = function (locale) {
         if (!locale) {

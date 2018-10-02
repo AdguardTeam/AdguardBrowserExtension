@@ -783,7 +783,6 @@ adguard.antiBannerService = (function (adguard) {
         let onFilterChangeTimeout = null;
 
         const processEventsHistory = function () {
-            // TODO check logic in this part of programm
             const filterEvents = filterEventsHistory.slice(0);
             filterEventsHistory = [];
             onFilterChangeTimeout = null;
