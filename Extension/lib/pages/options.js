@@ -812,6 +812,25 @@ var AntiBannerFilters = function (options) {
             document.querySelector('#add-custom-filter-step-3').classList.add(POPUP_ACTIVE_CLASS);
         }
 
+        function addAndEnableFilter(filterId) {
+            contentPage.sendMessage({
+                type: 'addAndEnableFilter',
+                filterId,
+            });
+            closePopup();
+        }
+
+        function removeAntiBannerFilter(filterId) {
+            contentPage.sendMessage({
+                type: 'removeAntiBannerFilter',
+                filterId,
+            });
+            closePopup();
+        }
+
+        let onSubscribeClicked;
+        let onSubscriptionCancel;
+
         function renderStepFour(filter) {
             clearActiveStep();
             document.querySelector('#add-custom-filter-step-4').classList.add(POPUP_ACTIVE_CLASS);
@@ -821,26 +840,27 @@ var AntiBannerFilters = function (options) {
             document.querySelector('#custom-filter-popup-added-version').textContent = filter.version;
             document.querySelector('#custom-filter-popup-added-rules-count').textContent = filter.rulesCount;
             document.querySelector('#custom-filter-popup-added-homepage').textContent = filter.homepage;
-            document.querySelector('#custom-filter-popup-added-homepage').setAttribute("href", filter.homepage);
+            document.querySelector('#custom-filter-popup-added-homepage').setAttribute('href', filter.homepage);
             document.querySelector('#custom-filter-popup-added-url').textContent = filter.customUrl;
-            document.querySelector('#custom-filter-popup-added-url').setAttribute("href", filter.customUrl);
+            document.querySelector('#custom-filter-popup-added-url').setAttribute('href', filter.customUrl);
 
             document.querySelector('#custom-filter-popup-added-back').addEventListener('click', renderStepOne);
-            document.querySelector('#custom-filter-popup-added-subscribe').removeEventListener('click', onSubscribeClicked);
+
+            if (onSubscribeClicked) {
+                document.querySelector('#custom-filter-popup-added-subscribe').removeEventListener('click', onSubscribeClicked);
+            }
+
+            onSubscribeClicked = () => addAndEnableFilter(filter);
             document.querySelector('#custom-filter-popup-added-subscribe').addEventListener('click', onSubscribeClicked);
 
-            document.querySelector('#custom-filter-popup-remove').addEventListener('click', function () {
-                contentPage.sendMessage({
-                    type: 'removeAntiBannerFilter',
-                    filterId: filter.filterId
-                });
-                closePopup();
-            });
-        }
+            // TODO may be it would be better don't add filter before user click subscribe button?
+            // In other way user will see filters in the added even if he cancel process via clicking cross button, or back button
+            if (onSubscriptionCancel) {
+                document.querySelector('#custom-filter-popup-remove').removeEventListener('click', onSubscriptionCancel);
+            }
 
-        function onSubscribeClicked() {
-            contentPage.sendMessage({type: 'addAndEnableFilter', filterId: filter.filterId});
-            closePopup();
+            onSubscriptionCancel = () => removeAntiBannerFilter(filter);
+            document.querySelector('#custom-filter-popup-remove').addEventListener('click', onSubscriptionCancel);
         }
 
         document.querySelector('#add-custom-filter-popup').classList.add('option-popup--active');
@@ -851,7 +871,7 @@ var AntiBannerFilters = function (options) {
             e.preventDefault();
 
             var url = document.querySelector('#custom-filter-popup-url').value;
-            contentPage.sendMessage({type: 'loadCustomFilterInfo', url: url}, function (filter) {
+            contentPage.sendMessage({ type: 'loadCustomFilterInfo', url: url }, function (filter) {
                 if (filter) {
                     renderStepFour(filter);
                 } else {
