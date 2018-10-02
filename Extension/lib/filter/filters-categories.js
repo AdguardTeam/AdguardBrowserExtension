@@ -105,6 +105,9 @@ adguard.categories = (function (adguard) {
     };
 
     /**
+     * Returns recommended filters, which meet next requirements
+     * 1. filter has recommended tag
+     * 2. if filter has language tag, tag should match with user locale
      * @param groupId
      * @returns {Array} recommended filters by groupId
      */
