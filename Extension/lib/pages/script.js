@@ -81,6 +81,9 @@ var CheckboxUtils = (function () {
     var updateCheckbox = function (elements, checked) {
 
         Array.prototype.forEach.call(elements, function (el) {
+            if (!el) {
+                return;
+            }
             if (checked) {
                 el.setAttribute('checked', 'checked');
                 el.closest('li').classList.add('active');
@@ -95,7 +98,7 @@ var CheckboxUtils = (function () {
 
     return {
         toggleCheckbox: toggleCheckbox,
-        updateCheckbox: updateCheckbox
+        updateCheckbox: updateCheckbox,
     };
 })();
 

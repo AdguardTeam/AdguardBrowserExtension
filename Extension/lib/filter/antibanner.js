@@ -1685,7 +1685,6 @@ adguard.filters = (function (adguard) {
                 var filter = adguard.subscriptions.getFilter(filterId);
                 // In case filter is loaded again and was removed before
                 delete filter.removed;
-
                 successCallback(filter);
             } else {
                 errorCallback();

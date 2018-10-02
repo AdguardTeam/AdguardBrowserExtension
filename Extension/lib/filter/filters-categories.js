@@ -23,13 +23,6 @@ adguard.categories = (function (adguard) {
     'use strict';
 
     /**
-     * Custom filters group identifier
-     *
-     * @type {number}
-     */
-    var CUSTOM_FILTERS_GROUP_ID = 0;
-
-    /**
      * @returns {Array.<*>} filters
      */
     var getFilters = function () {
@@ -91,13 +84,6 @@ adguard.categories = (function (adguard) {
             categories.push(category);
         }
 
-        categories.push({
-            groupId: CUSTOM_FILTERS_GROUP_ID,
-            groupName: 'Custom',
-            displayNumber: 99,
-            filters: selectFiltersByGroupId(CUSTOM_FILTERS_GROUP_ID, filters),
-        });
-
         return {
             filters: filters,
             categories: categories,
@@ -143,7 +129,6 @@ adguard.categories = (function (adguard) {
      * On the next calls we just enable group
      * @param {number} groupId
      */
-    // TODO custom category has it's own logic, check how to work with it too
     const enableFiltersGroup = function (groupId) {
         const group = adguard.subscriptions.getGroup(groupId);
         if (group && typeof group.enabled === 'undefined') {
