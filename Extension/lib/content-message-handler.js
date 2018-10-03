@@ -149,11 +149,11 @@
             case 'removeAntiBannerFilter':
                 adguard.filters.removeFilter(message.filterId);
                 break;
-            case 'addAndEnableFiltersByGroupId':
-                adguard.categories.addAndEnableFiltersByGroupId(message.groupId);
+            case 'enableFiltersGroup':
+                adguard.categories.enableFiltersGroup(message.groupId);
                 break;
-            case 'disableAntiBannerFiltersByGroupId':
-                adguard.categories.disableAntiBannerFiltersByGroupId(message.groupId);
+            case 'disableFiltersGroup':
+                adguard.categories.disableFiltersGroup(message.groupId);
                 break;
             case 'changeDefaultWhiteListMode':
                 adguard.whitelist.changeDefaultWhiteListMode(message.enabled);
