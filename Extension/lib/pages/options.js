@@ -774,15 +774,16 @@ var AntiBannerFilters = function (options) {
 
         contentPage.sendMessage({
             type: 'removeAntiBannerFilter',
-            filterId: filterId
+            filterId: filterId,
         });
 
         var filterElement = getFilterElement(filterId);
         filterElement.parentNode.removeChild(filterElement);
     }
 
+    let customFilterInitialized = false;
     function renderCustomFilterPopup() {
-        var POPUP_ACTIVE_CLASS = 'option-popup__step--active';
+        const POPUP_ACTIVE_CLASS = 'option-popup__step--active';
 
         function closePopup() {
             document.querySelector('#add-custom-filter-popup').classList.remove('option-popup--active');
@@ -793,23 +794,18 @@ var AntiBannerFilters = function (options) {
             document.querySelector('#add-custom-filter-step-2').classList.remove(POPUP_ACTIVE_CLASS);
             document.querySelector('#add-custom-filter-step-3').classList.remove(POPUP_ACTIVE_CLASS);
             document.querySelector('#add-custom-filter-step-4').classList.remove(POPUP_ACTIVE_CLASS);
+            document.querySelector('#custom-filter-popup-close').style.display = 'block';
         }
 
-        function renderStepOne() {
-            clearActiveStep();
-            document.querySelector('#add-custom-filter-step-1').classList.add(POPUP_ACTIVE_CLASS);
-
-            document.querySelector('#custom-filter-popup-url').focus();
-        }
-
-        function renderStepTwo() {
-            clearActiveStep();
-            document.querySelector('#add-custom-filter-step-2').classList.add(POPUP_ACTIVE_CLASS);
-        }
-
-        function renderStepThree() {
-            clearActiveStep();
-            document.querySelector('#add-custom-filter-step-3').classList.add(POPUP_ACTIVE_CLASS);
+        function fillLoadedFilterDetails(filter) {
+            document.querySelector('#custom-filter-popup-added-title').textContent = filter.name;
+            document.querySelector('#custom-filter-popup-added-desc').textContent = filter.description;
+            document.querySelector('#custom-filter-popup-added-version').textContent = filter.version;
+            document.querySelector('#custom-filter-popup-added-rules-count').textContent = filter.rulesCount;
+            document.querySelector('#custom-filter-popup-added-homepage').textContent = filter.homepage;
+            document.querySelector('#custom-filter-popup-added-homepage').setAttribute('href', filter.homepage);
+            document.querySelector('#custom-filter-popup-added-url').textContent = filter.customUrl;
+            document.querySelector('#custom-filter-popup-added-url').setAttribute('href', filter.customUrl);
         }
 
         function addAndEnableFilter(filterId) {
@@ -825,26 +821,44 @@ var AntiBannerFilters = function (options) {
                 type: 'removeAntiBannerFilter',
                 filterId,
             });
-            closePopup();
         }
 
         let onSubscribeClicked;
         let onSubscriptionCancel;
+        let onPopupCloseClicked;
+        let onSubscribeBackClicked;
+
+        function renderStepOne() {
+            clearActiveStep();
+            document.querySelector('#add-custom-filter-step-1').classList.add(POPUP_ACTIVE_CLASS);
+
+            document.querySelector('#custom-filter-popup-url').focus();
+
+            if (onPopupCloseClicked) {
+                document.querySelector('#custom-filter-popup-close').removeEventListener('click', onPopupCloseClicked);
+            }
+
+            onPopupCloseClicked = () => closePopup();
+            document.querySelector('#custom-filter-popup-close').addEventListener('click', onPopupCloseClicked);
+            document.querySelector('#custom-filter-popup-cancel').addEventListener('click', onPopupCloseClicked);
+        }
+
+        function renderStepTwo() {
+            clearActiveStep();
+            document.querySelector('#add-custom-filter-step-2').classList.add(POPUP_ACTIVE_CLASS);
+            document.querySelector('#custom-filter-popup-close').style.display = 'none';
+        }
+
+        function renderStepThree() {
+            clearActiveStep();
+            document.querySelector('#add-custom-filter-step-3').classList.add(POPUP_ACTIVE_CLASS);
+        }
 
         function renderStepFour(filter) {
             clearActiveStep();
             document.querySelector('#add-custom-filter-step-4').classList.add(POPUP_ACTIVE_CLASS);
 
-            document.querySelector('#custom-filter-popup-added-title').textContent = filter.name;
-            document.querySelector('#custom-filter-popup-added-desc').textContent = filter.description;
-            document.querySelector('#custom-filter-popup-added-version').textContent = filter.version;
-            document.querySelector('#custom-filter-popup-added-rules-count').textContent = filter.rulesCount;
-            document.querySelector('#custom-filter-popup-added-homepage').textContent = filter.homepage;
-            document.querySelector('#custom-filter-popup-added-homepage').setAttribute('href', filter.homepage);
-            document.querySelector('#custom-filter-popup-added-url').textContent = filter.customUrl;
-            document.querySelector('#custom-filter-popup-added-url').setAttribute('href', filter.customUrl);
-
-            document.querySelector('#custom-filter-popup-added-back').addEventListener('click', renderStepOne);
+            fillLoadedFilterDetails(filter);
 
             if (onSubscribeClicked) {
                 document.querySelector('#custom-filter-popup-added-subscribe').removeEventListener('click', onSubscribeClicked);
@@ -855,37 +869,61 @@ var AntiBannerFilters = function (options) {
 
             if (onSubscriptionCancel) {
                 document.querySelector('#custom-filter-popup-remove').removeEventListener('click', onSubscriptionCancel);
-                document.querySelector('.option-popup__cross').removeEventListener('click', onSubscriptionCancel);
-                document.querySelector('.custom-filter-popup-cancel').removeEventListener('click', onSubscriptionCancel);
             }
 
-            onSubscriptionCancel = () => removeAntiBannerFilter(filter.filterId);
+            onSubscriptionCancel = () => {
+                removeAntiBannerFilter(filter.filterId);
+                closePopup();
+            };
+
             document.querySelector('#custom-filter-popup-remove').addEventListener('click', onSubscriptionCancel);
-            document.querySelector('.option-popup__cross').addEventListener('click', onSubscriptionCancel);
-            document.querySelector('.custom-filter-popup-cancel').addEventListener('click', onSubscriptionCancel);
+
+            if (onSubscribeBackClicked) {
+                document.querySelector('#custom-filter-popup-added-back').removeEventListener('click', onSubscribeBackClicked);
+            }
+            onSubscribeBackClicked = () => {
+                removeAntiBannerFilter(filter.filterId);
+                renderStepOne();
+            };
+            document.querySelector('#custom-filter-popup-added-back').addEventListener('click', onSubscribeBackClicked);
+
+            if (onPopupCloseClicked) {
+                document.querySelector('#custom-filter-popup-close').removeEventListener('click', onPopupCloseClicked);
+            }
+            onPopupCloseClicked = () => {
+                removeAntiBannerFilter(filter.filterId);
+                closePopup();
+            };
+            document.querySelector('#custom-filter-popup-close').addEventListener('click', onPopupCloseClicked);
+        }
+
+        function bindEvents() {
+            // step one events
+            document.querySelector('.custom-filter-popup-next').addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const url = document.querySelector('#custom-filter-popup-url').value;
+                contentPage.sendMessage({ type: 'loadCustomFilterInfo', url: url }, function (filter) {
+                    if (filter) {
+                        renderStepFour(filter);
+                    } else {
+                        renderStepThree();
+                    }
+                });
+
+                renderStepTwo();
+            });
+
+            // render step 3 events
+            document.querySelector('.custom-filter-popup-try-again').addEventListener('click', renderStepOne);
+        }
+
+        if (!customFilterInitialized) {
+            bindEvents();
+            customFilterInitialized = true;
         }
 
         document.querySelector('#add-custom-filter-popup').classList.add('option-popup--active');
-        document.querySelector('.option-popup__cross').addEventListener('click', closePopup);
-        document.querySelector('.custom-filter-popup-cancel').addEventListener('click', closePopup);
-
-        document.querySelector('.custom-filter-popup-next').addEventListener('click', function (e) {
-            e.preventDefault();
-
-            var url = document.querySelector('#custom-filter-popup-url').value;
-            contentPage.sendMessage({ type: 'loadCustomFilterInfo', url: url }, function (filter) {
-                if (filter) {
-                    renderStepFour(filter);
-                } else {
-                    renderStepThree();
-                }
-            });
-
-            renderStepTwo();
-        });
-
-        document.querySelector('.custom-filter-popup-try-again').addEventListener('click', renderStepOne);
-
         renderStepOne();
     }
 
