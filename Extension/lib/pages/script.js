@@ -81,19 +81,24 @@ var CheckboxUtils = (function () {
     var updateCheckbox = function (elements, checked) {
 
         Array.prototype.forEach.call(elements, function (el) {
+            if (!el) {
+                return;
+            }
             if (checked) {
                 el.setAttribute('checked', 'checked');
                 el.closest('li').classList.add('active');
+                el.checked = checked;
             } else {
                 el.removeAttribute('checked');
                 el.closest('li').classList.remove('active');
+                el.checked = false;
             }
         });
     };
 
     return {
         toggleCheckbox: toggleCheckbox,
-        updateCheckbox: updateCheckbox
+        updateCheckbox: updateCheckbox,
     };
 })();
 

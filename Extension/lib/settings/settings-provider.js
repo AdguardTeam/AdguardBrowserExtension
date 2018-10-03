@@ -154,6 +154,7 @@
     var loadGeneralSettingsSection = function (callback) {
 
         var enabledFilterIds = collectEnabledFilterIds();
+        // TODO update self search settings on filter status change
         var allowAcceptableAds = enabledFilterIds.indexOf(adguard.utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID) >= 0;
 
         var section = {
