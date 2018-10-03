@@ -853,14 +853,16 @@ var AntiBannerFilters = function (options) {
             onSubscribeClicked = () => addAndEnableFilter(filter.filterId);
             document.querySelector('#custom-filter-popup-added-subscribe').addEventListener('click', onSubscribeClicked);
 
-            // TODO may be it would be better don't add filter before user click subscribe button?
-            // In other way user will see filters in the added even if he cancel process via clicking cross button, or back button
             if (onSubscriptionCancel) {
                 document.querySelector('#custom-filter-popup-remove').removeEventListener('click', onSubscriptionCancel);
+                document.querySelector('.option-popup__cross').removeEventListener('click', onSubscriptionCancel);
+                document.querySelector('.custom-filter-popup-cancel').removeEventListener('click', onSubscriptionCancel);
             }
 
             onSubscriptionCancel = () => removeAntiBannerFilter(filter.filterId);
             document.querySelector('#custom-filter-popup-remove').addEventListener('click', onSubscriptionCancel);
+            document.querySelector('.option-popup__cross').addEventListener('click', onSubscriptionCancel);
+            document.querySelector('.custom-filter-popup-cancel').addEventListener('click', onSubscriptionCancel);
         }
 
         document.querySelector('#add-custom-filter-popup').classList.add('option-popup--active');
