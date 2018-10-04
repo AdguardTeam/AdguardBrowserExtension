@@ -40,6 +40,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="#" class="nav__item" data-tab="#privacy">
+                        <span i18n="options_privacy"></span>
+                    </a>
+                </li>
+                <li>
                     <a href="#" class="nav__item" data-tab="#whitelist">
                         <span i18n="options_whitelist"></span>
                     </a>
@@ -79,7 +84,7 @@
                 <div class="subtitle settings-body-subtitle" i18n="options_general_settings"></div>
                 <ul class="opts-list">
                     <li class="active">
-                        <div>
+                        <div class="opt-desc">
                             <div class="title" i18n="options_allow_acceptable_ads"></div>
                             <div class="opt-state">
                                 <div class="sp-table-row-info desc">
@@ -94,7 +99,9 @@
                         </div>
                     </li>
                     <li class="active">
-                        <div class="opt-name" i18n="options_show_blocked_ads_count"></div>
+                        <div class="opt-desc">
+                            <div class="opt-name" i18n="options_show_blocked_ads_count"></div>
+                        </div>
                         <div class="opt-state">
                             <div class="toggler-wr">
                                 <input type="checkbox" class="sp-table-row-input" id="showPageStatisticCheckbox"/>
@@ -102,7 +109,9 @@
                         </div>
                     </li>
                     <li>
-                        <div class="opt-name" i18n="options_enable_autodetect_filter"></div>
+                        <div class="opt-desc">
+                            <div class="opt-name" i18n="options_enable_autodetect_filter"></div>
+                        </div>
                         <div class="opt-state">
                             <div class="toggler-wr">
                                 <input type="checkbox" class="sp-table-row-input" id="autodetectFiltersCheckbox"/>
@@ -110,7 +119,9 @@
                         </div>
                     </li>
                     <li>
-                        <div class="opt-name" i18n="options_set_update_interval"></div>
+                        <div class="opt-desc">
+                            <div class="opt-name" i18n="options_set_update_interval"></div>
+                        </div>
                         <select class="opt-select" id="filtersUpdatePeriodSelect"></select>
                     </li>
                 </ul>
@@ -118,7 +129,7 @@
                 <div class="subtitle settings-body-subtitle" i18n="options_safebrowsing"></div>
                 <ul class="opts-list">
                     <li>
-                        <div>
+                        <div class="opt-desc">
                             <div class="title" i18n="options_safebrowsing_enabled"></div>
                             <div class="opt-state">
                                 <div class="sp-table-row-info desc">
@@ -133,7 +144,7 @@
                         </div>
                     </li>
                     <li>
-                        <div class="">
+                        <div class="opt-desc">
                             <div class="title" i18n="options_safebrowsing_help"></div>
                             <div class="opt-state"></div>
                         </div>
@@ -313,6 +324,98 @@
             </div>
         </div>
 
+        <div id="privacy" class="settings-content tab-pane">
+            <div class="page-title" i18n="options_privacy_title"></div>
+            <div class="setting-desc setting-desc--sub" i18n="options_privacy_desc"></div>
+            <div class="settings-body">
+                <div class="opts-list">
+                    <li>
+                        <div class="opt-desc">
+                            <div class="title" i18n="options_hide_referrer_title"></div>
+                            <div class="opt-state">
+                                <span class="sp-table-row-info desc" i18n="options_hide_referrer_desc"></span>
+                            </div>
+                        </div>
+                        <div class="opt-state input">
+                            <div class="toggler-wr">
+                                <input type="checkbox" class="sp-table-row-input" id="hide_referrer"/>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="opt-desc">
+                            <div class="title" i18n="options_hide_search_queries_title"></div>
+                            <div class="opt-state">
+                                <span class="sp-table-row-info desc" i18n="options_hide_search_queries_desc"></span>
+                            </div>
+                        </div>
+                        <div class="opt-state input">
+                            <div class="toggler-wr">
+                                <input type="checkbox" class="sp-table-row-input" id="hide_search_queries"/>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="opt-desc">
+                            <div class="title" i18n="options_send_not_track_title"></div>
+                            <div class="opt-state">
+                                <span class="sp-table-row-info desc" i18n="options_send_not_track_desc"></span>
+                            </div>
+                        </div>
+                        <div class="opt-state input">
+                            <div class="toggler-wr">
+                                <input type="checkbox" class="sp-table-row-input" id="send_not_track"/>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="opt-desc">
+                            <div class="title" i18n="options_remove_client_data_title"></div>
+                            <div class="opt-state">
+                                <span class="sp-table-row-info desc" i18n="options_remove_client_data_desc"></span>
+                            </div>
+                        </div>
+                        <div class="opt-state input">
+                            <div class="toggler-wr">
+                                <input type="checkbox" class="sp-table-row-input" id="remove_client-data"/>
+                            </div>
+                        </div>
+                    </li>
+                </div>
+                <div class="subtitle settings-body-subtitle" i18n="options_cookies_title"></div>
+                <div class="opts-list">
+                    <li>
+                        <div class="opt-desc">
+                            <div class="title" i18n="options_third_party_title"></div>
+                            <div class="opt-state">
+                                <span class="sp-table-row-info desc" i18n="options_third_party_desc"></span>
+                            </div>
+                            <input type="number" class="opt-input" id="third_party_time" placeholder="Time (minutes)">
+                        </div>
+                        <div class="opt-state input">
+                            <div class="toggler-wr">
+                                <input type="checkbox" class="sp-table-row-input" id="third_party_cookies"/>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="opt-desc">
+                            <div class="title" i18n="options_first_party_title"></div>
+                            <div class="opt-state">
+                                <span class="sp-table-row-info desc" i18n="options_first_party_desc"></span>
+                            </div>
+                            <input type="number" class="opt-input" id="first_party_time" placeholder="Time (minutes)">
+                        </div>
+                        <div class="opt-state input">
+                            <div class="toggler-wr">
+                                <input type="checkbox" class="sp-table-row-input" id="first_party_cookies"/>
+                            </div>
+                        </div>
+                    </li>
+                </div>
+            </div>
+        </div>
+
         <div id="whitelist" class="settings-content tab-pane">
             <div class="settings-content">
                 <div class="page-title" i18n="options_whitelist"></div>
@@ -320,7 +423,7 @@
                     <div class="setting-desc" i18n="options_whitelist_description"></div>
                     <ul class="opts-list">
                         <li>
-                            <div>
+                            <div class="opt-desc">
                                 <div class="opt-name" i18n="options_whitelist_inverse"></div>
                                 <div class="opt-state"></div>
                             </div>
@@ -367,7 +470,7 @@
             <div class="settings-body">
                 <ul class="opts-list">
                     <li>
-                        <div>
+                        <div class="opt-desc">
                             <div class="opt-name" i18n="options_use_optimized_filters"></div>
                             <div class="opt-state"></div>
                         </div>
@@ -379,7 +482,7 @@
                     </li>
                     <li>
                         <div>
-                            <div>
+                            <div class="opt-desc">
                                 <div class="title" i18n="options_disable_integration_mode"></div>
                                 <div class="opt-state">
                                     <div class="sp-table-row-info desc">
@@ -396,7 +499,7 @@
                         </div>
                     </li>
                     <li>
-                        <div>
+                        <div class="opt-desc">
                             <div class="title" i18n="options_collect_hit_stats"></div>
                             <div class="opt-state">
                                 <div class="sp-table-row-info desc">
@@ -411,7 +514,9 @@
                         </div>
                     </li>
                     <li class="active">
-                        <div class="opt-name" i18n="options_show_context_menu"></div>
+                        <div class="opt-desc">
+                            <div class="opt-name" i18n="options_show_context_menu"></div>
+                        </div>
                         <div class="opt-state">
                             <div class="toggler-wr">
                                 <input type="checkbox" class="sp-table-row-input" id="enableShowContextMenu"/>
@@ -419,7 +524,9 @@
                         </div>
                     </li>
                     <li>
-                        <div class="opt-name" i18n="options_show_adguard_full_version"></div>
+                        <div class="opt-desc">
+                            <div class="opt-name" i18n="options_show_adguard_full_version"></div>
+                        </div>
                         <div class="opt-state">
                             <div class="toggler-wr">
                                 <input type="checkbox" class="sp-table-row-input" id="showInfoAboutAdguardFullVersion"/>
@@ -427,7 +534,9 @@
                         </div>
                     </li>
                     <li>
-                        <div class="opt-name" i18n="options_show_app_updated_notification"></div>
+                        <div class="opt-desc">
+                            <div class="opt-name" i18n="options_show_app_updated_notification"></div>
+                        </div>
                         <div class="opt-state">
                             <div class="toggler-wr">
                                 <input type="checkbox" class="sp-table-row-input" id="showAppUpdatedNotification"/>
