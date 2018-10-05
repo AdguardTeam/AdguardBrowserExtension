@@ -509,6 +509,10 @@ adguard.subscriptions = (function (adguard) {
         return [...new Set(filterIds)];
     };
 
+    const getFiltersCount = () => {
+        return filters.length;
+    };
+
     return {
         init: init,
         getFilterIdsForLanguage: getFilterIdsForLanguage,
@@ -518,6 +522,7 @@ adguard.subscriptions = (function (adguard) {
         groupHasEnabledStatus: groupHasEnabledStatus,
         getFilters: getFilters,
         getFilter: getFilter,
+        getFiltersCount: getFiltersCount,
         createSubscriptionFilterFromJSON: createSubscriptionFilterFromJSON,
         updateCustomFilter: updateCustomFilter,
         getLangSuitableFilters: getLangSuitableFilters,
