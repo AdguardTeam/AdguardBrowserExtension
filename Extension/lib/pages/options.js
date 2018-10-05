@@ -527,8 +527,10 @@ var AntiBannerFilters = function (options) {
             <li id="filter${filter.filterId}">
                 <div class="opt-name">
                     <div class="title-wr">
-                        <div class="title">${filter.name}</div>
-                        ${deleteButton}
+                        <div class="title">
+                            ${filter.name}
+                            ${deleteButton}
+                        </div>
                     </div>
                     <div class="desc">${filter.description}</div>
                     <div class="opt-name__info">
