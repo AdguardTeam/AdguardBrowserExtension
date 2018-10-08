@@ -121,6 +121,12 @@
 </div>
 
 <div id="popup-footer-template" style="display: none;">
+    <!-- @if browser == "EDGE" -->
+    <div class="popup-footer">
+        <span>&copy; AdGuard 2009-2018</span>
+    </div>
+    <!-- @endif -->
+    <!-- @if browser != "EDGE" -->
     <div class="popup-footer">
         <div class="os-popup-other-os-block">
             <span i18n="popup_adguard_other_os"></span>
@@ -144,6 +150,7 @@
             <i class="os-popup-icon-ios"></i>
         </a>
     </div>
+    <!-- @endif -->
 </div>
 
 <div id="popup-footer-integration-template" style="display: none;">
