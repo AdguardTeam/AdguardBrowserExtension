@@ -365,27 +365,25 @@ PopupController.prototype = {
 
     _selectRequestsStatsData: function (stats, range, type) {
         const result = [];
-        // TODO change this logic
-        const typeSelector = type === 'Total' ? 'total' : type;
         switch (range) {
             case 'day':
                 stats.today.forEach(function (d) {
-                    result.push(d[typeSelector]);
+                    result.push(d[type]);
                 });
                 break;
             case 'week':
                 stats.lastWeek.forEach(function (d) {
-                    result.push(d[typeSelector]);
+                    result.push(d[type]);
                 });
                 break;
             case 'month':
                 stats.lastMonth.forEach(function (d) {
-                    result.push(d[typeSelector]);
+                    result.push(d[type]);
                 });
                 break;
             case 'year':
                 stats.lastYear.forEach(function (d) {
-                    result.push(d[typeSelector]);
+                    result.push(d[type]);
                 });
                 break;
             default:
@@ -412,19 +410,19 @@ PopupController.prototype = {
 
     MONTHS_OF_YEAR: (function () {
         return this.MONTHS_OF_YEAR || [
-                i18n.getMessage("popup_statistics_months_jan"),
-                i18n.getMessage("popup_statistics_months_feb"),
-                i18n.getMessage("popup_statistics_months_mar"),
-                i18n.getMessage("popup_statistics_months_apr"),
-                i18n.getMessage("popup_statistics_months_may"),
-                i18n.getMessage("popup_statistics_months_jun"),
-                i18n.getMessage("popup_statistics_months_jul"),
-                i18n.getMessage("popup_statistics_months_aug"),
-                i18n.getMessage("popup_statistics_months_sep"),
-                i18n.getMessage("popup_statistics_months_oct"),
-                i18n.getMessage("popup_statistics_months_nov"),
-                i18n.getMessage("popup_statistics_months_dec")
-            ];
+            i18n.getMessage('popup_statistics_months_jan'),
+            i18n.getMessage('popup_statistics_months_feb'),
+            i18n.getMessage('popup_statistics_months_mar'),
+            i18n.getMessage('popup_statistics_months_apr'),
+            i18n.getMessage('popup_statistics_months_may'),
+            i18n.getMessage('popup_statistics_months_jun'),
+            i18n.getMessage('popup_statistics_months_jul'),
+            i18n.getMessage('popup_statistics_months_aug'),
+            i18n.getMessage('popup_statistics_months_sep'),
+            i18n.getMessage('popup_statistics_months_oct'),
+            i18n.getMessage('popup_statistics_months_nov'),
+            i18n.getMessage('popup_statistics_months_dec'),
+        ];
     })(),
 
     _monthsAsString: function (monthIndex) {
@@ -584,30 +582,13 @@ PopupController.prototype = {
         });
     },
 
+    // TODO remove, as unnecessary
     _localizeBlockedType: function (type) {
         if (!type) {
             return '';
         }
 
         return i18n.getMessage('popup_statistics_request_types_' + type.toLowerCase());
-    },
-
-    _buildRequestTypesColumns: function (stats, range) {
-        var statsData = this._selectRequestTypesStatsData(stats, range);
-
-        var columns = {
-            x: ['x'],
-            values: [i18n.getMessage('popup_statistics_type_request_types')],
-        };
-
-        for (var type in stats.blockedTypes) {
-            var number = statsData[stats.blockedTypes[type]] ? statsData[stats.blockedTypes[type]] : 0;
-
-            columns.x.push(this._localizeBlockedType(type));
-            columns.values.push(number);
-        }
-
-        return columns;
     },
 
     _renderAnalyticsBlock: function (stats, range) {
@@ -621,22 +602,17 @@ PopupController.prototype = {
 
         const { blockedGroups } = stats;
 
-        const blockedGroupsNames = Object.keys(blockedGroups)
-            .map(key => blockedGroups[key])
-            .sort((prevGroup, nextGroup) => {
-                return prevGroup.displayNumber - nextGroup.displayNumber;
-            })
-            .map(group => group.groupName);
-
-        blockedGroupsNames.forEach((blockedGroupName) => {
-            const number = statsData[blockedGroupName];
-            const blockedItem = htmlToElement(`
+        blockedGroups.forEach((blockedGroup) => {
+            const number = statsData[blockedGroup.groupId];
+            if (number) {
+                const blockedItem = htmlToElement(`
                 <li>
-                    <span class="key">${blockedGroupName}</span>
+                    <span class="key">${blockedGroup.groupName}</span>
                     <span class="value">${number}</span>
                 </li>
             `);
-            analytics.appendChild(blockedItem);
+                analytics.appendChild(blockedItem);
+            }
         });
     },
 
@@ -646,8 +622,8 @@ PopupController.prototype = {
     },
 
     _renderStatsBlock: function (stats) {
-        var timeRange = document.querySelector('.statistics-select-time').value;
-        var typeData = document.querySelector('.statistics-select-type').value;
+        const timeRange = document.querySelector('.statistics-select-time').value;
+        const typeData = document.querySelector('.statistics-select-type').value;
 
         if (!stats) {
             const self = this;
@@ -659,21 +635,21 @@ PopupController.prototype = {
         }
     },
 
-    _renderBlockedGroups: function (container, blockedGroups) {
+    _renderBlockedGroups: function (container, stats) {
+        const timeRange = document.querySelector('.statistics-select-time').value;
         const typeSelector = container.querySelector('.statistics-select-type');
-        const blockedGroupsNames = Object.keys(blockedGroups)
-            .map(key => blockedGroups[key])
-            .sort((prevGroup, nextGroup) => {
-                return prevGroup.displayNumber - nextGroup.displayNumber;
-            })
-            .map(group => group.groupName);
-        const groups = ['Total', ...blockedGroupsNames];
-        console.log(groups);
-        const getSelectTemplate = (groupName) => {
-            return `<option value="${groupName}">${groupName}</option>`;
+
+        const statsData = this._selectRequestTypesStatsData(stats, timeRange);
+
+        const blockedGroups = stats.blockedGroups
+            .filter(group => statsData[group.groupId]);
+
+        const getSelectTemplate = (group) => {
+            return `<option value="${group.groupId}">${group.groupName}</option>`;
         };
-        groups.forEach(groupName => {
-            typeSelector.insertAdjacentHTML('beforeend', getSelectTemplate(groupName));
+
+        blockedGroups.forEach(group => {
+            typeSelector.insertAdjacentHTML('beforeend', getSelectTemplate(group));
         });
     },
 
@@ -686,7 +662,7 @@ PopupController.prototype = {
         popupPage.sendMessage({ type: 'getStatisticsData' }, function (message) {
             const { stats } = message;
 
-            self._renderBlockedGroups(container, stats.blockedGroups);
+            self._renderBlockedGroups(container, stats);
             self._renderStatsBlock(stats);
         });
     },
@@ -696,7 +672,7 @@ PopupController.prototype = {
             return;
         }
 
-        var el = document.createElement('div');
+        const el = document.createElement('div');
         el.classList.add('actions');
 
         this._appendTemplate(el, this.actionOpenAssistant);
@@ -849,7 +825,11 @@ PopupController.prototype = {
             });
         });
 
-        // Stats filters
+        /**
+         * Stats filters
+         * we call _renderStatsBlock function w/o stats parameter, in order to update stats on
+         * every selection of range or blockedGroup option
+         */
         this._bindAction(parent, '.statistics-select-time', 'change', function () {
             self._renderStatsBlock();
         });
