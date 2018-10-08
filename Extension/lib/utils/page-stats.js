@@ -24,6 +24,11 @@ adguard.pageStats = (function (adguard) {
     const MAX_HOURS_HISTORY = 24;
     const MAX_DAYS_HISTORY = 30;
 
+    const TOTAL_GROUP = {
+        groupId: 'total',
+        groupName: 'Total',
+    };
+
     const pageStatisticProperty = 'page-statistic';
 
     const pageStatsHolder = {
@@ -35,9 +40,9 @@ adguard.pageStats = (function (adguard) {
          */
         get stats() {
             return adguard.lazyGet(pageStatsHolder, 'stats', function () {
-                var stats;
+                let stats;
                 try {
-                    var json = adguard.localStorage.getItem(pageStatisticProperty);
+                    const json = adguard.localStorage.getItem(pageStatisticProperty);
                     if (json) {
                         stats = JSON.parse(json);
                     }
@@ -85,47 +90,52 @@ adguard.pageStats = (function (adguard) {
     /**
      * Resets tab stats
      */
-    var resetStats = function () {
+    const resetStats = function () {
         pageStatsHolder.clear();
     };
 
-    // /**
-    //  * Blocked requests types
-    //  */
-    // TODO remove this variable
-    var blockedTypes = {
-        // jshint ignore:start
-        // ADS: 1 << 1,
-        // TRACKERS: 1 << 2,
-        // SOCIAL: 1 << 3,
-        // ANNOYANCES: 1 << 4,
-        // SECURITY: 1 << 5,
-        // COOKIES: 1 << 6,
-        // OTHERS: 1 << 0
-        // jshint ignore:end
-    };
-
     /**
-     * Group of blocked stat assigned to stats w/o group
-     * @type {string}
+     * Undefined group of blocked stats
+     * @type {number}
      */
-    const OTHER_BLOCKED_GROUP = 'Other';
-    const OTHER_BLOCKED_GROUP_ORDER = 99;
+    const UNDEFINED_GROUP_ID = -1;
 
     /**
-     * Returns blocked types by filter id
+     * Object used to cache bindings between filters and groups
+     * @type {{filterId: {groupId: Number, groupName: String, displayNumber: Number}}}
+     */
+    const blockedGroupsFilters = {};
+
+    // TODO check why not all filter stats appear here, for example cosmetic filters
+
+    /**
+     * Returns blocked group by filter id
      *
-     * @param filterId
+     * @param {number} filterId
      * @returns
      */
-    const getBlockedTypeByFilterId = function (filterId) {
-        // TODO check why not all filter stats appear here
+    const getBlockedGroupByFilterId = function (filterId) {
+        let blockedGroup = blockedGroupsFilters[filterId];
+
+        if (blockedGroup !== undefined) {
+            return blockedGroup;
+        }
+
         const filter = adguard.subscriptions.getFilter(filterId);
         if (!filter) {
-            return { groupName: OTHER_BLOCKED_GROUP, displayNumber: OTHER_BLOCKED_GROUP_ORDER };
+            return undefined;
         }
-        const { groupName, displayNumber } = adguard.subscriptions.getGroup(filter.groupId);
-        return { groupName, displayNumber };
+
+        const group = adguard.subscriptions.getGroup(filter.groupId);
+        if (!group) {
+            return undefined;
+        }
+
+        const { groupId, groupName, displayNumber } = group;
+        blockedGroup = { groupId, groupName, displayNumber };
+        blockedGroupsFilters[filter.filterId] = blockedGroup;
+
+        return blockedGroup;
     };
 
     const createStatsDataItem = function (type, blocked) {
@@ -133,7 +143,7 @@ adguard.pageStats = (function (adguard) {
         if (type) {
             result[type] = blocked;
         }
-        result.total = blocked;
+        result[TOTAL_GROUP.groupId] = blocked;
         return result;
     };
 
@@ -168,20 +178,21 @@ adguard.pageStats = (function (adguard) {
 
     var updateStatsDataItem = function (type, blocked, current) {
         current[type] = (current[type] || 0) + blocked;
-        current.total = (current.total || 0) + blocked;
+        current[TOTAL_GROUP.groupId] = (current[TOTAL_GROUP.groupId] || 0) + blocked;
 
         return current;
     };
 
     var updateStatsData = function (now, type, blocked, current) {
-        var currentDate = new Date(current.updated);
+        const currentDate = new Date(current.updated);
 
-        var result = current;
+        const result = current;
 
         if (adguard.utils.dates.isSameHour(now, currentDate) && result.hours.length > 0) {
             result.hours[result.hours.length - 1] = updateStatsDataItem(type, blocked, result.hours[result.hours.length - 1]);
         } else {
-            var diffHours = adguard.utils.dates.getDifferenceInHours(now, currentDate);
+            let diffHours = adguard.utils.dates.getDifferenceInHours(now, currentDate);
+
             while (diffHours > 1) {
                 result.hours.push(createStatsDataItem(null, 0));
                 diffHours -= 1;
@@ -196,10 +207,11 @@ adguard.pageStats = (function (adguard) {
         if (adguard.utils.dates.isSameDay(now, currentDate) && result.days.length > 0) {
             result.days[result.days.length - 1] = updateStatsDataItem(type, blocked, result.days[result.days.length - 1]);
         } else {
-            var diffDays = adguard.utils.dates.getDifferenceInDays(now, currentDate);
+            let diffDays = adguard.utils.dates.getDifferenceInDays(now, currentDate);
+
             while (diffDays > 1) {
                 result.days.push(createStatsDataItem(null, 0));
-                diffDays--;
+                diffDays -= 1;
             }
 
             result.days.push(createStatsDataItem(type, blocked));
@@ -211,10 +223,10 @@ adguard.pageStats = (function (adguard) {
         if (adguard.utils.dates.isSameMonth(now, currentDate) && result.months.length > 0) {
             result.months[result.months.length - 1] = updateStatsDataItem(type, blocked, result.months[result.months.length - 1]);
         } else {
-            var diffMonths = adguard.utils.dates.getDifferenceInMonths(now, currentDate);
+            let diffMonths = adguard.utils.dates.getDifferenceInMonths(now, currentDate);
             while (diffMonths > 1) {
                 result.months.push(createStatsDataItem(null, 0));
-                diffMonths--;
+                diffMonths -= 1;
             }
 
             result.months.push(createStatsDataItem(type, blocked));
@@ -248,40 +260,53 @@ adguard.pageStats = (function (adguard) {
      * @param now date
      */
     const updateStats = function (filterId, blocked, now) {
-        // TODO check why cosmetic filter rules don't get here
-        const { groupName, displayNumber } = getBlockedTypeByFilterId(filterId);
+        const blockedGroup = getBlockedGroupByFilterId(filterId);
+
+        if (blockedGroup === undefined) {
+            return;
+        }
+
+        const { groupId } = blockedGroup;
         const stats = pageStatsHolder.stats;
 
         let updated;
+
         if (!stats.data) {
-            updated = createStatsData(now, groupName, blocked);
+            updated = createStatsData(now, groupId, blocked);
         } else {
-            updated = updateStatsData(now, groupName, blocked, stats.data);
+            updated = updateStatsData(now, groupId, blocked, stats.data);
         }
 
         pageStatsHolder.stats.data = updated;
-
-        // TODO where will be better to keep track of groups?
-        if (!stats.blockedGroups) {
-            pageStatsHolder.stats.blockedGroups = {};
-        }
-
-        pageStatsHolder.stats.blockedGroups[groupName] = { groupName, displayNumber };
         pageStatsHolder.save();
+    };
+
+    const getBlockedGroups = () => {
+        const groups = adguard.subscriptions.getGroups()
+            .map(group => {
+                return {
+                    groupId: group.groupId,
+                    groupName: group.groupName,
+                    displayNumber: group.displayNumber,
+                };
+            });
+
+        return [TOTAL_GROUP, ...groups.sort((prevGroup, nextGroup) => {
+            return prevGroup.displayNumber - nextGroup.displayNumber;
+        })];
     };
 
     /**
      * Returns statistics data object
      */
-    var getStatisticsData = function () {
-        var stats = pageStatsHolder.stats;
+    const getStatisticsData = () => {
+        let stats = pageStatsHolder.stats;
         if (!stats) {
             stats = {};
         }
 
         if (!stats.data) {
-            stats.data = createStatsData(new Date(), OTHER_BLOCKED_GROUP, 0);
-
+            stats.data = createStatsData(new Date(), UNDEFINED_GROUP_ID, 0);
             pageStatsHolder.stats.data = stats.data;
             pageStatsHolder.save();
         }
@@ -292,9 +317,7 @@ adguard.pageStats = (function (adguard) {
             lastMonth: stats.data.days,
             lastYear: stats.data.months.slice(-12),
             overall: stats.data.months,
-            blockedTypes: blockedTypes,
-            // Think about removing
-            blockedGroups: stats.blockedGroups,
+            blockedGroups: getBlockedGroups(),
         };
     };
 
