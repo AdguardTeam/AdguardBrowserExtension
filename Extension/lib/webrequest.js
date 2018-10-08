@@ -193,6 +193,8 @@
             }
         }
 
+        adguard.cookieFiltering.modifyRequestHeaders(requestDetails.requestHeaders);
+
         return {};
     }
 
@@ -229,6 +231,8 @@
             var contentType = adguard.utils.browser.getHeaderValueByName(responseHeaders, 'content-type');
             adguard.contentFiltering.apply(tab, requestUrl, referrerUrl, requestType, requestId, statusCode, method, contentType);
         }
+
+        adguard.cookieFiltering.modifyResponseHeaders(requestDetails.responseHeaders);
 
         if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
             return modifyCSPHeader(requestDetails);

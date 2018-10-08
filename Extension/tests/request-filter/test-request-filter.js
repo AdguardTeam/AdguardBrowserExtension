@@ -234,6 +234,20 @@ QUnit.test('Test CSP important rules', function (assert) {
     assert.equal(rules[1].cspDirective, adguard.rules.CspFilter.DEFAULT_DIRECTIVE);
 });
 
+QUnit.test("Cookie rules", function (assert) {
+
+    var requestFilter = new adguard.RequestFilter();
+
+    var cookieRule = new adguard.rules.UrlFilterRule('||xpanama.net^$third-party,cookie=c_user,domain=~example.org|merriam-webster.com');
+    requestFilter.addRule(cookieRule);
+
+    var rules = requestFilter.findCookieRules('https://nop.xpanama.net/if.html?adflag=1&cb=kq4iOggNyP', 'https://www.merriam-webster.com/', adguard.RequestTypes.DOCUMENT);
+    assert.ok(rules.length === 1);
+    assert.equal(rules[0].ruleText, cookieRule.ruleText);
+
+    //TODO: Add cases and other tests
+});
+
 
 QUnit.test('Test object subrequest type', function (assert) {
 

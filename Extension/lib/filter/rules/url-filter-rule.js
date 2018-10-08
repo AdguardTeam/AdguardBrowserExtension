@@ -270,6 +270,22 @@
     }
 
     /**
+     * Validates cookie rule
+     * @param rule options
+     */
+    function validateCookieRule(ruleOptions) {
+        ruleOptions.split(',').forEach(function (option) {
+            var partIndex = option.indexOf('=');
+            if (partIndex >= 0) {
+                option = option.substr(0, partIndex);
+            }
+            if (VALID_COOKIE_RULE_OPTIONS.indexOf(option) < 0) {
+                throw 'Cookie rules do not support modifier: ' + option;
+            }
+        });
+    }
+
+    /**
      * Tries to convert data: or blob: rule to CSP rule
      * @param rule Rule
      * @param urlRuleText URL rule text
@@ -399,6 +415,10 @@
 
         if (this.isCspRule()) {
             validateCspRule(this);
+        }
+
+        if (this.isCookieRule()) {
+            validateCookieRule(parseResult.options);
         }
     };
 
@@ -715,6 +735,13 @@
     };
 
     /**
+     * @returns true if this rule is cookie
+     */
+    UrlFilterRule.prototype.isCookieRule = function () {
+        return this.isOptionEnabled(UrlFilterRule.options.COOKIE_RULE);
+    };
+
+    /**
      * If rule is bad-filter returns true
      */
     UrlFilterRule.prototype.isBadFilter = function () {
@@ -792,6 +819,12 @@
                     this._setUrlFilterRuleOption(UrlFilterRule.options.CSP_RULE, true);
                     if (optionsKeyValue.length > 1) {
                         this.cspDirective = optionsKeyValue[1];
+                    }
+                    break;
+                case UrlFilterRule.COOKIE_OPTION:
+                    this._setUrlFilterRuleOption(UrlFilterRule.options.COOKIE_RULE, true);
+                    if (optionsKeyValue.length > 1) {
+                        this.cookieModifier = optionsKeyValue[1];
                     }
                     break;
                 case UrlFilterRule.REPLACE_OPTION:
@@ -932,6 +965,7 @@
     UrlFilterRule.EMPTY_OPTION = "empty";
     UrlFilterRule.REPLACE_OPTION = "replace"; // Extension doesn't support replace rules, $replace option is here only for correctly parsing
     UrlFilterRule.CSP_OPTION = "csp";
+    UrlFilterRule.COOKIE_OPTION = "cookie";
     UrlFilterRule.BADFILTER_OPTION = "badfilter";
 
     UrlFilterRule.contentTypes = {
@@ -1043,10 +1077,16 @@
         MATCH_CASE: 1 << 9,
 
         /**
-         * defines a CSP rule
+         * defines a Cookie rule
          * For example, ||xpanama.net^$third-party,csp=connect-src 'none'
          */
-        CSP_RULE: 1 << 10
+        CSP_RULE: 1 << 10,
+
+        /**
+         * defines a CSP rule
+         * For example, ||example.com^$third-party,cookie=c_user
+         */
+        COOKIE_RULE: 1 << 11
 
         // jshint ignore:end
     };
@@ -1080,6 +1120,19 @@
         '~COLLAPSE': true,
         '~DOCUMENT': true
     };
+
+    /**
+     * $cookie rules support a limited list of modifiers: domain, ~domain, important, third-party, ~third-party.
+     * TODO: Change to masks
+     */
+    var VALID_COOKIE_RULE_OPTIONS = [
+        UrlFilterRule.COOKIE_OPTION,
+        UrlFilterRule.DOMAIN_OPTION,
+        '~' + UrlFilterRule.DOMAIN_OPTION,
+        UrlFilterRule.IMPORTANT_OPTION,
+        UrlFilterRule.THIRD_PARTY_OPTION,
+        '~' + UrlFilterRule.THIRD_PARTY_OPTION
+    ];
 
     api.UrlFilterRule = UrlFilterRule;
 
