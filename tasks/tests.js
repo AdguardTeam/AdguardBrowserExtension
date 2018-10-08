@@ -38,6 +38,11 @@ const testContent = (done) => {
     runQunit('Extension/tests/content-filter/test-content-filter.html', done);
 };
 
+// Cookie filtering tests
+const testCookieFiltering = (done) => {
+    runQunit('Extension/tests/cookie-filtering/test-cookie-filtering.html', done);
+};
+
 // Css hits tests
 const testCSShits = (done) => {
     runQunit('Extension/tests/css-filter/test-css-hits.html', done);
@@ -63,4 +68,4 @@ const testEncoding = (done) => {
     runQunit('Extension/tests/miscellaneous/test-encoding.html', done);
 };
 
-export default gulp.parallel(testRule, testSB, testURL, testCSSfilter, testContent, testCSShits, testReq, testEl, testRing, testEncoding);
+export default gulp.parallel(testRule, testSB, testURL, testCSSfilter, testContent, testCookieFiltering, testCSShits, testReq, testEl, testRing, testEncoding);
