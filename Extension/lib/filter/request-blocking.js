@@ -334,6 +334,31 @@ adguard.webRequestService = (function (adguard) {
     };
 
     /**
+     * Find cookie rules for request
+     * @param tab           Tab
+     * @param requestUrl    Request URL
+     * @param referrerUrl   Referrer URL
+     * @param requestType   Request type (DOCUMENT or SUBDOCUMENT)
+     * @returns {*}         Collection of rules or null
+     */
+    var getCookieRules = function (tab, requestUrl, referrerUrl, requestType) {
+
+        if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab) || adguard.frames.isTabWhiteListed(tab)) {
+            //don't process request
+            return null;
+        }
+
+        // $cookie rules are not affected by regular exception rules (@@). In order to disable a $cookie rule, the exception rule should also have a $cookie modifier.
+        // TODO: Check that $cookie whitelist is found
+        var whitelistRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
+        if (whitelistRule && whitelistRule.isCookieRule()) {
+            return null;
+        }
+
+        return adguard.requestFilter.getCookieRules(requestUrl, referrerUrl, requestType);
+    };
+
+    /**
      * Processes HTTP response.
      * It could do the following:
      * 1. Detect desktop AG and switch to integration mode
@@ -464,6 +489,7 @@ adguard.webRequestService = (function (adguard) {
         getBlockedResponseByRule: getBlockedResponseByRule,
         getRuleForRequest: getRuleForRequest,
         getCspRules: getCspRules,
+        getCookieRules: getCookieRules,
         getContentRules: getContentRules,
         processRequestResponse: processRequestResponse,
         postProcessRequest: postProcessRequest,

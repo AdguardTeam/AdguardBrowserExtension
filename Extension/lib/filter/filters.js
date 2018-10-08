@@ -114,6 +114,9 @@
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#csp-modifier
         this.cspFilter = new adguard.rules.CspFilter();
 
+        // Filter that applies cookie rules
+        // TODO: Add link
+        this.cookieFilter = new adguard.rules.CookieFilter();
 
         // Filter that applies HTML filtering rules
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#html-filtering-rules
@@ -164,6 +167,8 @@
             if (rule instanceof adguard.rules.UrlFilterRule) {
                 if (rule.isCspRule()) {
                     this.cspFilter.addRule(rule);
+                } else if (rule.isCookieRule()) {
+                    this.cookieFilter.addRule(rule);
                 } else {
                     if (rule.isBadFilter()) {
                         this.badFilterRules[rule.badFilter] = rule;
@@ -200,6 +205,8 @@
             if (rule instanceof adguard.rules.UrlFilterRule) {
                 if (rule.isCspRule()) {
                     this.cspFilter.removeRule(rule);
+                } else if (rule.isCookieRule()) {
+                    this.cookieFilter.removeRule(rule);
                 } else {
                     if (rule.isBadFilter()) {
                         delete this.badFilterRules[rule.badFilter];
@@ -232,6 +239,7 @@
             result = result.concat(this.cssFilter.getRules());
             result = result.concat(this.scriptFilter.getRules());
             result = result.concat(this.cspFilter.getRules());
+            result = result.concat(this.cookieFilter.getRules());
 
             for (var badFilter in this.badFilterRules) {
                 result.push(this.badFilterRules[badFilter]);
@@ -458,6 +466,21 @@
             var thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
 
             return this.cspFilter.findCspRules(requestUrl, documentHost, thirdParty, requestType);
+        },
+
+        /**
+         * Searches for cookie rules for the specified request
+         * @param requestUrl Request URL
+         * @param documentUrl Document URL
+         * @param requestType Request Type (DOCUMENT or SUBDOCUMENT)
+         * @returns Collection of CSP rules for applying to the request or null
+         */
+        findCookieRules: function (requestUrl, documentUrl, requestType) {
+
+            var documentHost = adguard.utils.url.getHost(documentUrl);
+            var thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
+
+            return this.cookieFilter.findCookieRules(requestUrl, documentHost, thirdParty, requestType);
         },
 
         /**

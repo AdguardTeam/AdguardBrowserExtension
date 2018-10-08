@@ -684,3 +684,42 @@ QUnit.test('Test wildcard domains in the url rules', function (assert) {
     assert.notOk(rule.isPermitted("www.nigma.ru"));
     assert.notOk(rule.isPermitted("adguard.ru"));
 });
+
+QUnit.test("Cookie option", function (assert) {
+    var cookieRule = new adguard.rules.UrlFilterRule("||facebook.com^$third-party,cookie=c_user");
+
+    assert.ok(cookieRule);
+    assert.ok(cookieRule.isCookieRule());
+    assert.ok(cookieRule.cookieModifier);
+    assert.equal(cookieRule.cookieModifier,'c_user');
+    assert.ok(cookieRule.isThirdParty());
+
+    cookieRule = new adguard.rules.UrlFilterRule("$cookie=__cfduid");
+
+    assert.ok(cookieRule);
+    assert.ok(cookieRule.isCookieRule());
+    assert.ok(cookieRule.cookieModifier);
+    assert.equal(cookieRule.cookieModifier,'__cfduid');
+
+    cookieRule = new adguard.rules.UrlFilterRule("$cookie=/__utm[a-z]/");
+
+    assert.ok(cookieRule);
+    assert.ok(cookieRule.isRegexRule);
+    assert.ok(cookieRule.isCookieRule());
+    assert.ok(cookieRule.cookieModifier);
+    assert.equal(cookieRule.cookieModifier,'/__utm[a-z]/');
+
+    cookieRule = new adguard.rules.UrlFilterRule("@@||example.org^$cookie");
+    assert.ok(cookieRule);
+    assert.ok(cookieRule.whiteListRule);
+    assert.ok(cookieRule.isCookieRule());
+    assert.notOk(cookieRule.cookieModifier);
+
+    //Invalid modifier
+    try {
+        new adguard.rules.UrlFilterRule("example.com$popup,cookie=/__utm[a-z]/");
+        assert.ok(false);
+    } catch (ex) {
+        assert.ok(ex === 'Cookie rules do not support modifier: popup');
+    }
+});

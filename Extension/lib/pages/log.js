@@ -128,7 +128,8 @@ var UrlFilterRule = {
 	OPTIONS_DELIMITER: "$",
     CSP_OPTION: "csp",
     WEBRTC_OPTION: "webrtc",
-    WEBSOCKET_OPTION: "websocket"
+    WEBSOCKET_OPTION: "websocket",
+    COOKIE_OPTION: "cookie"
 };
 
 PageController.prototype = {
