@@ -1,8 +1,8 @@
-! Checksum: dRYCY/sTek/0laJo3KOAJA
+! Checksum: YmLDP6uUmE+N0ytsg5aVPg
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.0.91
-! TimeUpdated: 2018-07-12T18:14:55+00:00
+! Version: 2.0.1.11
+! TimeUpdated: 2018-09-19T12:04:59+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#japanese
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -20,7 +20,7 @@
 ! Experimental
 !
 #%#var AG_abortInlineScript=function(d,e,f){var c;if("currentScript"in document)var b=function(){return document.currentScript};else b=function(){var a=document.getElementsByTagName("script");return a[a.length-1]},window.addEventListener("DOMContentLoaded",function(){b=function(){return null}});AG_defineProperty(e,{beforeGet:function(){var a=b();if(a&&a!==c&&(c=a,""===a.src&&d.test(a.textContent)))throw setTimeout(function(){console.warn("AdGuard aborted an execution of an inline script")}),null;}},f)};
-#%#var AG_defineProperty=function(){var k,l=Object.defineProperty;if("function"==typeof WeakMap)k=WeakMap;else{var m=0,n=function(){this.a=(m+=Math.random()).toString()};n.prototype.set=function(a,b){var c=a[this.a];c&&c[0]===a?c[1]=b:l(a,this.a,{value:[a,b],writable:!0});return this};n.prototype.get=function(a){var b;return(b=a[this.a])&&b[0]===a?b[1]:void 0};n.prototype.has=function(a){var b=a[this.a];return b?b[0]===a:!1};k=n}function r(a){this.b=a;this.h=Object.create(null)}function t(a,b,c,d){this.a=a;this.i=b;this.c=c;this.g=d}function u(){this.a=new k}function v(a,b,c){var d=b.i,e=b.c,f=new r(e.b),g;for(g in e.h)v(a,e.h[g],f);d=new t(c,d,f,b.g);c.h[d.i]=d;"undefined"!==typeof c.b&&(e=w(c.b,d.i),d.f=e,f=x(d.g)||y(a,d),!e||e.configurable?(l(c.b,d.i,f),e&&z(e)&&(A(c.b,f,e.value),B(a,e.value,b.c))):B(a,c.b[d.i],b.c))}function y(a,b){return{get:function(){var c=b.g;c&&c.beforeGet&&c.beforeGet.call(this,b.a.b);a:if(c=b.f)c=z(c)?c.value:c.get?c.get.call(this):void 0;else{c=b.a.b;if(b.i in c&&(c=C(c),null!==c)){var d=D.call(c,b.i);c=d?d.call(this):c[b.i];break a}c=void 0}(this===b.a.b||E.call(b.a.b,this))&&B(a,c,b.c);return c},set:function(c){if(this===b.a.b||E.call(b.a.b,this)){b.g&&b.g.beforeSet&&(c=b.g.beforeSet.call(this,c,this));var d=b.f;d&&z(d)&&d.value===c?c=!0:(d=F(b,c,this),G(c)&&(c=H(a,c),I(a,c,b.c)),c=d)}else c=F(b,c,this);return c},enumerable:b.f?b.f.enumerable:!0}}function I(a,b,c){for(var d in c.h){var e=c.h[d];if(b.h[d]){var f=a,g=b.h[d];!e.g||g.g||"undefined"===typeof g.a.b||g.f||(g.f=x(e.g));g.c&&e.c&&g.c!==e.c&&I(f,g.c,e.c)}else v(a,e,b)}}function B(a,b,c){G(b)&&(b=H(a,b),I(a,b,c))}function A(a,b,c){return z(b)?b.writable?(b.value=c,!0):!1:b.set?b.set.call(a,c):!1}function F(a,b,c){var d=a.f;if(!d){d=C(a.a.b);if(null!==d&&(d=J.call(d,a.i)))return d.call(c,b);if(!K(a.a.b))return!1;a.f={value:b,configurable:!0,writable:!0,enumerable:!0};return!0}return A(c,d,b)}function z(a){return"undefined"!==typeof a.writable}function x(a){if(a){for(var b={},c=L,d=!1;c--;){var e=M[c];N.call(a,e)&&(d=!0,b[e]=a[e])}return d?b:void 0}}function H(a,b){var c=a.a.get(b);c||(c=new r(b),a.a.set(b,c));return c}var M="value get set writable configurable enumerable".split(" "),L=6,w=Object.getOwnPropertyDescriptor,K=Object.isExtensible,C=Object.getPrototypeOf,N=Object.prototype.hasOwnProperty,E=Object.prototype.isPrototypeOf,D=Object.prototype.__lookupGetter__||function(a){return(a=O(this,a))&&a.get?a.get:void 0},J=Object.prototype.__lookupSetter__||function(a){return(a=O(this,a))&&a.set?a.set:void 0};function O(a,b){if(b in a){for(;!N.call(a,b);)a=C(a);return w(a,b)}}function G(a){var b=typeof a;return"function"===b||"object"===b&&null!==a?!0:!1}var P;return function(a,b,c){P||(P=new u);var d=P;c=c||window;var e=new r;a+=".";var f=e||new r;for(var g=d.f||(d.f=/^([^\\\.]|\\.)*?\./),h,p,q;a;){h=g.exec(a);if(null===h)throw 1;h=h[0].length;p=a.slice(0,h-1);a=a.slice(h);(h=f.h[p])?q=h.c:(q=new r,h=new t(f,p,q),f.h[p]=h);f=q}if(!h)throw 1;a=h;a.g=b;B(d,c,e)};}();
+#%#var AG_defineProperty=function(){var p,q=Object.defineProperty;if("function"==typeof WeakMap)p=WeakMap;else{var r=0,t=function(){this.a=(r+=Math.random()).toString()};t.prototype.set=function(a,b){var d=a[this.a];d&&d[0]===a?d[1]=b:q(a,this.a,{value:[a,b],writable:!0});return this};t.prototype.get=function(a){var b;return(b=a[this.a])&&b[0]===a?b[1]:void 0};t.prototype.has=function(a){var b=a[this.a];return b?b[0]===a:!1};p=t}function u(a){this.b=a;this.h=Object.create(null)}function v(a,b,d,e){this.a=a;this.i=b;this.c=d;this.f=e}function w(){this.g=/^([^\\\.]|\\.)*?\./;this.j=/\\(.)/g;this.a=new p}function x(a,b){var d=b.f;if(d&&!("beforeGet"in d||"beforeSet"in d))return z(d);var e={get:function(){var c=b.f;c&&c.beforeGet&&c.beforeGet.call(this,b.a.b);a:if(c=b.g)c=A(c)?c.value:c.get?c.get.call(this):void 0;else{c=b.a.b;if(b.i in c&&(c=B(c),null!==c)){var d=C.call(c,b.i);c=d?d.call(this):c[b.i];break a}c=void 0}(this===b.a.b||D.call(b.a.b,this))&&E(a,c,b.c);return c},set:function(c){if(this===b.a.b||D.call(b.a.b,this)){b.f&&b.f.beforeSet&&(c=b.f.beforeSet.call(this,c,this));var d=b.g;d&&A(d)&&d.value===c?c=!0:(d=F(b,c,this),G(c)&&(c=H(a,c),I(a,c,b.c)),c=d)}else c=F(b,c,this);return c}};d&&J(d,e,K);return e}function I(a,b,d){for(var e in d.h){var c=d.h[e];if(b.h[e]){var h=a,g=b.h[e],k=c;!k.f||g.f||"undefined"===typeof g.a.b||g.g||(g.g=z(k.f));g.c&&k.c&&g.c!==k.c&&I(h,g.c,k.c)}else{g=h=void 0;k=a;var f=b,l=c.i,m="undefined"!==typeof f.b,y=!1;m&&(g=L(f.b,l))&&!g.configurable&&(y=!0,h=f.b[l]);var n=y?H(k,h):new u(c.c.b);I(k,n,c.c);n=new v(f,l,n,c.f);f.h[l]=n;m&&(n.g=g,m=x(k,n),y?E(k,h,c.c):(q(f.b,l,m),g&&A(g)&&(M(m,g.value,f.b),E(k,g.value,c.c))))}}}function E(a,b,d){G(b)&&(b=H(a,b),I(a,b,d))}function F(a,b,d){var e=a.g;if(!e){e=B(a.a.b);if(null!==e&&(e=N.call(e,a.i)))return e.call(d,b);if(!O(a.a.b))return!1;a.g={value:b,configurable:!0,writable:!0,enumerable:!0};return!0}return M(e,b,d)}function H(a,b){var d=a.a.get(b);d||(d=new u(b),a.a.set(b,d));return d}function A(a){return"undefined"!==typeof a.writable}function J(a,b,d){for(var e=0,c=d.length;e<c;e++){var h=d[e];h in a&&(b[h]=a[h])}}function z(a){if(a){var b={};J(a,b,P);return b}}function M(a,b,d){if(A(a))return a.writable?(a.value=b,!0):!1;if(!a.set)return!1;a.set.call(d,b);return!0}var P="configurable enumerable value get set writable".split(" "),K=P.slice(0,2),L=Object.getOwnPropertyDescriptor,O=Object.isExtensible,B=Object.getPrototypeOf,D=Object.prototype.isPrototypeOf,C=Object.prototype.__lookupGetter__||function(a){return(a=Q(this,a))&&a.get?a.get:void 0},N=Object.prototype.__lookupSetter__||function(a){return(a=Q(this,a))&&a.set?a.set:void 0};function Q(a,b){if(b in a){for(;!w.hasOwnProperty.call(a,b);)a=B(a);return L(a,b)}}function G(a){var b=typeof a;return"function"===b||"object"===b&&null!==a?!0:!1}var R;return function(a,b,d){R||(R=new w);var e=R;d=d||window;var c=new u;a+=".";var h=c||new u;for(var g=e.g,k=e.j,f,l,m;a;){f=g.exec(a);if(null===f)throw 1;f=f[0].length;l=a.slice(0,f-1).replace(k,"$1");a=a.slice(f);(f=h.h[l])?m=f.c:(m=new u,f=new v(h,l,m),h.h[l]=f);h=m}if(!f)throw 1;a=f;a.f=b;E(e,d,c)};}();
 ! JS API FINISH
 !---------------------------------------------------------------------------!
 !-------------- Advertising networks ---------------------------------------!
@@ -85,6 +85,7 @@
 ! Eimg.jp
 ||adingo.jp.eimg.jp^
 !
+||reseireejoch.info^
 ||ad-trip.com^
 ||ad-shot.com^
 ||ad-sell.com^
@@ -304,11 +305,27 @@
 !
 ! These rules are against anti-adblock scripts
 !
+! FuckAdBlock CSS
+d-navi004.com,gagetmatome.com,h5games.success-corp.co.jp#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
+!
+!
+! https://github.com/AdguardTeam/AdguardFilters/issues/22654
+video.tv-tokyo.co.jp#@#.adspace
+video.tv-tokyo.co.jp#@##adspace
+@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=video.tv-tokyo.co.jp
+@@||pubads.g.doubleclick.net/gampad/ads?*/video.tv-tokyo.co.jp$domain=video.tv-tokyo.co.jp
+! https://github.com/AdguardTeam/AdguardFilters/issues/21737
+380cc.cc#%#Object.defineProperty(window, 'myaabpfun12', { get: function() { return; } });
+380cc.cc#$##playertopads { height: 51px!important; position: absolute!important; left: -3000px!important; }
+! https://github.com/AdguardTeam/AdguardFilters/issues/20703
+! https://github.com/AdguardTeam/AdguardFilters/issues/20116
+! https://github.com/AdguardTeam/AdguardFilters/issues/19910
 ! https://github.com/AdguardTeam/AdguardFilters/issues/14263
 avgirl.online#@#.google-ad
 ! https://github.com/AdguardTeam/AdguardFilters/issues/7918
 !! for safety due to possible ban
-@@||avgle.com^$generichide
+@@||avgle.com/video/$genericblock,generichide
+@@||avgle.com/embed/$genericblock,generichide
 !!
 avgle.com#@#.adsBox
 avgle.com#@#.pub_300x250
@@ -342,9 +359,12 @@ avgle.com#@#a[href^="http://bongacams.com/track?"]
 @@||*.club^$domain=avgle.com
 @@||*.info^$domain=avgle.com
 @@||ie8eamus.com/sfp.js$domain=avgle.com
+@@||fingahvf.top/advertisers.js$domain=avgle.com
+@@||avgle.com/include/ajax/related_videos.php
 ! no referrer
 @@||*.info/sc?u=
 @@||*.club/sc?u=
+@@||unrestern.info^
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9125
 socom.yokohama#@#.an-advert-banner
 socom.yokohama#@##adsense
@@ -407,6 +427,7 @@ anipo.jp#@#.adbanner
 !---------------------------------------------------------------------------!
 !
 ! Extended CSS rules
+melos.media##.x1_article > .x1_articleArea[-ext-has='div.x1_siteTitle:contains([PR])']
 repeat-drama.info##.side_inner > .box:contains(スポンサーリンク)
 !---------------------------------------------------------------------------!
 !-------------- General element hiding rules -------------------------------!
@@ -493,6 +514,8 @@ repeat-drama.info##.side_inner > .box:contains(スポンサーリンク)
 !-------JS----------
 !-------------------
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/21092
+xbooks.to#%#document.cookie = "pop=1";
 ! https://github.com/AdguardTeam/AdguardFilters/issues/11687
 ! avgle.com#%#window.open = function() {};
 ! avgle.com#%#AG_onLoad(function() { setTimeout(function() { $("#player_3x2_close > *").click(); }, 300); });
@@ -587,6 +610,25 @@ _ds_adtag_
 !
 ! Section contains rules for specific websites
 !
+crediblecar.life##a[rel="nofollow"] > img[style]
+auctions.yahoo.co.jp##.bannerFrame
+daily.co.jp##aside.add
+xbooks.to###ad_interstitial_wrap
+xbooks.to##.ad_overlay
+||gum.xbooks.to/js/sp/sp_interstitial_move4.js
+||gum.xbooks.to/js/sp/access_overlay_avt_03.js
+||gum.xbooks.to/js/sp/sp_interstitial.js
+||gum.xbooks.to/js/sp^
+||uratube.com/js/ad^
+pandora.tv##a[href^="https://play.google.com/"][target="_blank"]:not([class]):not([id]) > img
+melos.media##.x1_ad
+watch.impress.co.jp##.ad.billboard
+||juicyads.com^$domain=adserver.juicyads.com
+||ads.adxadserv.com^$domain=adserver.juicyads.com
+gagetmatome.com###ad-bottom-oya
+||rationalan.pro^$domain=avgle.com
+/sound?cver*refer*avgle.com$popup
+||avgle.com$popup,domain=avgle.com
 ||blog.livedoor.jp/diet2channel/js/adarea.js
 jin115.com##.dix_ad_n
 vippers.jp##.ad
@@ -959,6 +1001,8 @@ yahoo.co.jp##ul[class^="sponsor"]
 ||zenback.jp^*/tracking.html
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/20703
+! https://github.com/AdguardTeam/AdguardFilters/issues/20116
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9091
 !+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
 wakudan.seesaa.net##.adsbygoogle
@@ -999,10 +1043,6 @@ publicdomainq.net#@#.adsbygoogle
 @@||res.nimg.jp/js/ads.js?$domain=nicovideo.jp
 @@||yimg.jp/bdv/yahoo/javascript/gyao/clover.js$domain=gyao.yahoo.co.jp
 ! disabling rules from EasyList China for Extensions
-!+ NOT_PLATFORM(windows, mac, android, ios)
-@@||avgle.com/embed/$genericblock,generichide,badfilter
-!+ NOT_PLATFORM(windows, mac, android, ios)
-@@||avgle.com/video/$genericblock,generichide,badfilter
 !+ NOT_PLATFORM(windows, mac, android, ios)
 @@||avgle.com^$elemhide,badfilter
 !+ NOT_PLATFORM(windows, mac, android, ios)
