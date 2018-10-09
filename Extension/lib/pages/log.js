@@ -154,9 +154,6 @@ PageController.prototype = {
 
         // Add preserve log status checkbox
         this.preserveLogEnabled = false;
-        document.querySelector('#preserveLog').addEventListener('change', function (e) {
-            this.preserveLogEnabled = e.target.checked;
-        }.bind(this));
 
         this.searchRequest = null;
         this.searchTypes = [];
@@ -173,27 +170,33 @@ PageController.prototype = {
                     return;
                 }
                 contentPage.sendMessage({ type: 'clearEventsByTabId', tabId: this.currentTabId });
-                this.logTable.empty();
+                this.emptyLogTable();
                 return;
             }
-
-            contentPage.sendMessage({ type: 'reloadTabById', tabId: this.currentTabId });
+            contentPage.sendMessage({ type: 'reloadTabById', tabId: this.currentTabId, preserveLogEnabled: this.preserveLogEnabled });
         }.bind(this));
 
         // Bind click to clear events
         document.querySelector('#clearTabLog').addEventListener('click', function (e) {
             e.preventDefault();
-            this.logTable.empty();
+            this.emptyLogTable();
             contentPage.sendMessage({ type: 'clearEventsByTabId', tabId: this.currentTabId });
         }.bind(this));
 
         this._bindSearchFilters();
+
+        // Bind click to preserve log
+        document.querySelector('#preserveLog').addEventListener('click', function (e) {
+            const checkbox = e.currentTarget.querySelector('.checkbox');
+            this.preserveLogEnabled = checkbox.classList.contains('active');
+        }.bind(this));
+
         this._updateTabIdFromHash();
 
         // Synchronize opened tabs
         contentPage.sendMessage({ type: 'synchronizeOpenTabs' }, function (response) {
             var tabs = response.tabs;
-            for (var i = 0; i < tabs.length; i++) {
+            for (let i = 0; i < tabs.length; i += 1) {
                 this.onTabUpdated(tabs[i]);
             }
             this.onSelectedTabChange();

@@ -352,9 +352,11 @@ adguard.webRequestService = (function (adguard) {
         if (requestType === adguard.RequestTypes.DOCUMENT) {
             // Check headers to detect Adguard application
             if (adguard.integration.isSupported() && // Integration module may be missing
-                !adguard.prefs.mobile &&  // Mobile Firefox doesn't support integration mode
-                !adguard.utils.browser.isEdgeBrowser()) { // TODO[Edge]: Integration mode is not fully functional in Edge (cannot redefine Referer header yet and Edge doesn't intercept requests from background page)
-
+                !adguard.prefs.mobile && // Mobile Firefox doesn't support integration mode
+                !adguard.utils.browser.isEdgeBrowser()) {
+                // TODO[Edge]: Integration mode is not fully functional in Edge (cannot
+                // redefine Referer header yet and Edge doesn't intercept requests from
+                // background page)
                 adguard.integration.checkHeaders(tab, responseHeaders, requestUrl);
             }
         }
