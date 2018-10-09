@@ -445,7 +445,7 @@ adguard.webRequestService = (function (adguard) {
         recordRuleHit(tab, requestRule, requestUrl);
     };
 
-    var isCollectingCosmeticRulesHits = function () {
+    var isCollectingCosmeticRulesHits = function (tab) {
         /**
          * Edge browser doesn't support css content attribute for node elements except :before and :after
          * Due to this we can't use cssHitsCounter for edge browser
