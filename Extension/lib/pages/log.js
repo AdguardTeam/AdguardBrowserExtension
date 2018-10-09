@@ -55,7 +55,7 @@ var StringUtils = {
 
 var UrlUtils = {
 
-	getProtocol: function (url) {
+    getProtocol: function (url) {
         var index = url.indexOf('//');
         if (index >= 0) {
             return url.substring(0, index);
@@ -70,7 +70,7 @@ var UrlUtils = {
     },
 
     /**
-	 * Removes protocol from URL
+     * Removes protocol from URL
      */
     getUrlWithoutScheme: function (url) {
         var index = url.indexOf('//');
@@ -87,13 +87,13 @@ var UrlUtils = {
     },
 
     /**
-	 * Checks the given URL whether is hierarchical or not
+     * Checks the given URL whether is hierarchical or not
      * @param url
      * @returns {boolean}
      */
     isHierarchicUrl: function(url){
         return url.indexOf('//') !== -1;
-	}
+    }
 };
 
 /**
@@ -118,14 +118,14 @@ var FilterRule = {
 };
 
 var UrlFilterRule = {
-	MASK_START_URL: "||",
-	MASK_ANY_SYMBOL: "*",
-	MASK_SEPARATOR: "^",
-	DOMAIN_OPTION: "domain",
+    MASK_START_URL: "||",
+    MASK_ANY_SYMBOL: "*",
+    MASK_SEPARATOR: "^",
+    DOMAIN_OPTION: "domain",
     IMPORTANT_OPTION: "important",
-	MATCH_CASE_OPTION: "match-case",
-	THIRD_PARTY_OPTION: "third-party",
-	OPTIONS_DELIMITER: "$",
+    MATCH_CASE_OPTION: "match-case",
+    THIRD_PARTY_OPTION: "third-party",
+    OPTIONS_DELIMITER: "$",
     CSP_OPTION: "csp",
     WEBRTC_OPTION: "webrtc",
     WEBSOCKET_OPTION: "websocket"
@@ -153,6 +153,12 @@ PageController.prototype = {
             this.onSelectedTabChange();
         }.bind(this));
 
+        // Add preserve log status checkbox
+        this.preserveLogEnabled = false;
+        document.querySelector('#preserveLog').addEventListener('change', function (e) {
+            this.preserveLogEnabled = e.target.checked;
+        }.bind(this));
+
         this.searchRequest = null;
         this.searchTypes = [];
         this.searchThirdParty = false;
@@ -162,14 +168,13 @@ PageController.prototype = {
 		// Bind click to reload tab
 		document.querySelector('.reloadTab').addEventListener('click', function (e) {
 			e.preventDefault();
-			if (this.currentTabId === -1) {
-                // Unable to reload "background" tab, just clear events
-                contentPage.sendMessage({type: 'clearEventsByTabId', tabId: this.currentTabId});
-                return;
-            }
 			// Unable to reload "background" tab, just clear events
-            if (this.currentTabId === -1) {
+			if (this.currentTabId === -1) {
+                if (this.preserveLogEnabled) {
+                    return;
+                }
                 contentPage.sendMessage({type: 'clearEventsByTabId', tabId: this.currentTabId});
+                this.logTable.empty();
                 return;
             }
 
@@ -179,6 +184,7 @@ PageController.prototype = {
         // Bind click to clear events
         document.querySelector('#clearTabLog').addEventListener('click', function (e) {
             e.preventDefault();
+            this.logTable.empty();
             contentPage.sendMessage({type: 'clearEventsByTabId', tabId: this.currentTabId});
         }.bind(this));
 
@@ -529,7 +535,7 @@ PageController.prototype = {
         var filterData = el.data;
 
         var show = !this.searchRequest ||
-            StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest) || 
+            StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest) ||
             StringUtils.containsIgnoreCase(filterData.element, this.searchRequest);
 
         if (filterData.requestRule && filterData.requestRule.ruleText) {
