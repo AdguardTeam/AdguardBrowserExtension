@@ -41,7 +41,7 @@ var StringUtils = {
             return str;
         }
         var index = str.indexOf(separator);
-        return index < 0 ? "" : str.substring(index + separator.length);
+        return index < 0 ? '' : str.substring(index + separator.length);
     },
 
     substringBefore: function (str, separator) {
@@ -50,7 +50,7 @@ var StringUtils = {
         }
         var index = str.indexOf(separator);
         return index < 0 ? str : str.substring(0, index);
-    }
+    },
 };
 
 var UrlUtils = {
