@@ -153,15 +153,25 @@ adguard.filteringLog = (function (adguard) {
      * @param filteringEvent Event to add
      */
     function pushFilteringEvent(tabInfo, filteringEvent) {
-
         if (!tabInfo.filteringEvents) {
             tabInfo.filteringEvents = [];
+        }
+
+        var requestId = filteringEvent.requestId;
+
+        if (requestId) {
+            for (var i = 0; i < tabInfo.filteringEvents.length; i += 1) {
+                var pushedRequestId = tabInfo.filteringEvents[i].requestId;
+                if (pushedRequestId && requestId === pushedRequestId) {
+                    return;
+                }
+            }
         }
 
         tabInfo.filteringEvents.push(filteringEvent);
 
         if (tabInfo.filteringEvents.length > REQUESTS_SIZE_PER_TAB) {
-            //don't remove first item, cause it's request to main frame
+            // don't remove first item, cause it's request to main frame
             tabInfo.filteringEvents.splice(1, 1);
         }
 
@@ -206,8 +216,9 @@ adguard.filteringLog = (function (adguard) {
             frameUrl: frameUrl,
             frameDomain: frameDomain,
             requestType: requestType,
-            requestThirdParty: adguard.utils.url.isThirdPartyRequest(requestUrl, frameUrl)
+            requestThirdParty: adguard.utils.url.isThirdPartyRequest(requestUrl, frameUrl),
         };
+
         if (requestRule) {
             // Copy useful properties
             addRuleToFilteringEvent(filteringEvent, requestRule);

@@ -92,7 +92,7 @@
      * @param stats
      */
     function processSaveCssHitStats(tab, stats) {
-        if (!adguard.webRequestService.isCollectingCosmeticRulesHits()) {
+        if (!adguard.webRequestService.isCollectingCosmeticRulesHits(tab)) {
             return;
         }
         const isIncognitoTab = adguard.frames.isIncognitoTab(tab);
@@ -238,6 +238,9 @@
                 adguard.filteringLog.onCloseFilteringLogPage();
                 break;
             case 'reloadTabById':
+                if (!message.preserveLogEnabled) {
+                    adguard.filteringLog.clearEventsByTabId(message.tabId);
+                }
                 adguard.tabs.reload(message.tabId);
                 break;
             case 'clearEventsByTabId':
@@ -341,7 +344,7 @@
                 processSaveCssHitStats(sender.tab, message.stats);
                 break;
             case 'isCssHitsCounterEnabled':
-                callback(adguard.webRequestService.isCollectingCosmeticRulesHits());
+                callback(adguard.webRequestService.isCollectingCosmeticRulesHits(sender.tab));
                 break;
             // Sync messages
             case 'setSyncProvider':

@@ -33,8 +33,8 @@ adguard.webRequestService = (function (adguard) {
             adguard.settings.collectHitsCount() &&
             !adguard.utils.filters.isUserFilterRule(requestRule) &&
             !adguard.utils.filters.isWhiteListFilterRule(requestRule) &&
-            !adguard.frames.isIncognitoTab(tab)) {
-
+            !adguard.frames.isIncognitoTab(tab) &&
+            !adguard.frames.isTabAdguardDetected(tab)) {
             var domain = adguard.frames.getFrameDomain(tab);
             adguard.hitStats.addRuleHit(domain, requestRule.ruleText, requestRule.filterId, requestUrl);
         }
@@ -55,10 +55,10 @@ adguard.webRequestService = (function (adguard) {
      * @param documentUrl               Document URL
      * @param cssFilterOptions          Bitmask for the CssFilter
      * @param {boolean} retrieveScripts Indicates whether to retrieve JS rules or not
-     * 
+     *
      * When cssFilterOptions and retrieveScripts are undefined, we handle it in a special way
      * that depends on whether the browser supports inserting CSS and scripts from the background page
-     * 
+     *
      * @returns {SelectorsAndScripts} an object with the selectors and scripts to be injected into the page
      */
     var processGetSelectorsAndScripts = function (tab, documentUrl, cssFilterOptions, retrieveScripts) {
@@ -96,7 +96,7 @@ adguard.webRequestService = (function (adguard) {
 
         // content-message-handler calls it in this way
         if (typeof cssFilterOptions === 'undefined' && typeof retrieveScripts === 'undefined') {
-            // Build up default flags.    
+            // Build up default flags.
             let canUseInsertCSSAndExecuteScript = adguard.prefs.features.canUseInsertCSSAndExecuteScript;
             // If tabs.executeScript is unavailable, retrieve JS rules now.
             retrieveScripts = !canUseInsertCSSAndExecuteScript;
@@ -352,13 +352,13 @@ adguard.webRequestService = (function (adguard) {
         if (requestType === adguard.RequestTypes.DOCUMENT) {
             // Check headers to detect Adguard application
             if (adguard.integration.isSupported() && // Integration module may be missing
-                !adguard.prefs.mobile &&  // Mobile Firefox doesn't support integration mode
-                !adguard.utils.browser.isEdgeBrowser()) { // TODO[Edge]: Integration mode is not fully functional in Edge (cannot redefine Referer header yet and Edge doesn't intercept requests from background page)
-
+                !adguard.prefs.mobile && // Mobile Firefox doesn't support integration mode
+                !adguard.utils.browser.isEdgeBrowser()) {
+                // TODO[Edge]: Integration mode is not fully functional in Edge (cannot
+                // redefine Referer header yet and Edge doesn't intercept requests from
+                // background page)
                 adguard.integration.checkHeaders(tab, responseHeaders, requestUrl);
             }
-            // Clear previous events
-            adguard.filteringLog.clearEventsByTabId(tab.tabId);
         }
 
         var requestRule = null;
@@ -371,9 +371,12 @@ adguard.webRequestService = (function (adguard) {
         } else if (requestType === adguard.RequestTypes.DOCUMENT) {
             requestRule = adguard.frames.getFrameWhiteListRule(tab);
             var domain = adguard.frames.getFrameDomain(tab);
-            if (!adguard.frames.isIncognitoTab(tab) &&
-                adguard.settings.collectHitsCount()) {
-                //add page view to stats
+            if (
+                !adguard.frames.isIncognitoTab(tab) &&
+                adguard.settings.collectHitsCount() &&
+                adguard.frames.isTabAdguardDetected(tab)
+            ) {
+                // add page view to stats
                 adguard.hitStats.addDomainView(domain);
             }
             appendLogEvent = true;
@@ -444,11 +447,14 @@ adguard.webRequestService = (function (adguard) {
         recordRuleHit(tab, requestRule, requestUrl);
     };
 
-    var isCollectingCosmeticRulesHits = function () {
+    var isCollectingCosmeticRulesHits = function (tab) {
         /**
          * Edge browser doesn't support css content attribute for node elements except :before and :after
          * Due to this we can't use cssHitsCounter for edge browser
          */
+        if (tab && adguard.frames.isTabAdguardDetected(tab)) {
+            return false;
+        }
         return !adguard.utils.browser.isEdgeBrowser() && adguard.prefs.collectHitsCountEnabled &&
             (adguard.settings.collectHitsCount() || adguard.filteringLog.isOpen());
     };
