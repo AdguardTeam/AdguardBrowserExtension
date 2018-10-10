@@ -233,58 +233,108 @@ var WhiteListFilter = function (options) {
     };
 };
 
-var UserFilter = function () {
+const UserFilter = function () {
     'use strict';
 
-    var omitRenderEventsCount = 0;
+    let omitRenderEventsCount = 0;
 
-    var editor = ace.edit('userRules');
+    const editor = ace.edit('userRules');
     editor.setShowPrintMargin(false);
 
     // Ace TextHighlightRules mode is edited in ace.js library file
     editor.session.setMode('ace/mode/text_highlight_rules');
 
-    var applyChangesBtn = document.querySelector('#userFilterApplyChanges');
+    const states = {
+        EMPTY: 'empty',
+        EDITING: 'editing',
+        SAVING: 'saving',
+        SAVED: 'saved',
+    };
+
+    function Saver(element) {
+        this.element = element;
+
+        this.updateState = function (state) {
+            this.currentState = state;
+            this.element.textContent = state;
+        };
+
+        let timeout;
+
+        this.setState = function (state) {
+            const EDIT_TIMEOUT_MS = 1000;
+            const HIDE_INDICATOR_TIMEOUT_MS = 1000;
+            if (timeout) {
+                clearTimeout(timeout);
+            }
+            const self = this;
+            switch (state) {
+                case states.EMPTY:
+                    this.updateState(state);
+                    break;
+                case states.SAVED:
+                    this.updateState(state);
+                    timeout = setTimeout(function () {
+                        self.setState(states.EMPTY);
+                    }, HIDE_INDICATOR_TIMEOUT_MS);
+                    break;
+                case states.SAVING:
+                    this.updateState(state);
+                    this.saveRules(function () {
+                        self.setState(states.SAVED);
+                    });
+                    break;
+                case states.EDITING:
+                    this.updateState(state);
+                    timeout = setTimeout(function () {
+                        self.setState(states.SAVING);
+                    }, EDIT_TIMEOUT_MS);
+                    break;
+                default:
+                    break;
+            }
+        };
+
+        this.getState = function () {
+            return this.currentState;
+        };
+
+        this.saveRules = function (callback) {
+            omitRenderEventsCount = 1;
+            const text = editor.getValue();
+            // TODO is it possible to fire this callback when filters will be saved?
+            contentPage.sendMessage({
+                type: 'saveUserRules',
+                content: text,
+            }, callback);
+        };
+    }
+
+    const saveIndicatorElement = document.querySelector('#userRulesSaveIndicator');
+    const saver = new Saver(saveIndicatorElement);
+    saver.setState(states.EMPTY);
 
     function loadUserRules() {
         contentPage.sendMessage({
             type: 'getUserRules',
         }, function (response) {
             editor.setValue(response.content || '');
-            applyChangesBtn.style.display = 'none';
-        });
-    }
-
-    function saveUserRules(e) {
-        e.preventDefault();
-
-        omitRenderEventsCount = 1;
-
-        editor.setReadOnly(true);
-        var text = editor.getValue();
-
-        contentPage.sendMessage({
-            type: 'saveUserRules',
-            content: text
-        }, function () {
-            editor.setReadOnly(false);
-            applyChangesBtn.style.display = 'none';
         });
     }
 
     function updateUserFilterRules() {
         if (omitRenderEventsCount > 0) {
-            omitRenderEventsCount--;
+            omitRenderEventsCount -= 1;
             return;
         }
 
         loadUserRules();
     }
 
-    applyChangesBtn.addEventListener('click', saveUserRules);
+    const session = editor.getSession();
 
-    editor.getSession().addEventListener('change', function () {
-        applyChangesBtn.style.display = 'inline-block';
+    session.addEventListener('change', function () {
+        saver.setState(states.EDITING);
     });
 
     const importUserFiltersInput = document.querySelector('#importUserFilterInput');
