@@ -845,6 +845,25 @@ li.active .toggler:before {
 /* /st */
 .filter-rules {
   border: 1px solid #EDEDED;
+  position: relative;
+}
+.filter-rules__label {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+}
+.filter-rules__label--saved {
+    padding-right: 20px;
+}
+.filter-rules__label--saved:after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-image: url(../images/tick.svg);
+    background-size: cover;
+    width: 12px;
+    height: 12px;
 }
 .filter-rules textarea {
   border: 0;
@@ -860,6 +879,9 @@ li.active .toggler:before {
 }
 .sp-table-row-input{
   display: none;
+}
+.ace_text-input {
+    resize: vertical !important;
 }
 .filters-check {
   margin-top: 60px;
