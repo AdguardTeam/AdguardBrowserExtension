@@ -474,7 +474,7 @@ adguard.antiBannerService = (function (adguard) {
         // We are doing this for FF as everything in FF is done on the UI thread
         // Request filter creation is rather slow operation so we should
         // use setTimeout calls to give UI thread some time.
-        var async = adguard.prefs.speedupStartup() || false;
+        var async = true; // adguard.prefs.speedupStartup() || false;
         var asyncStep = 1000;
         adguard.console.info('Starting request filter initialization. Async={0}', async);
 
