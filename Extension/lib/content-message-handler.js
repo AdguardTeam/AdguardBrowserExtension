@@ -171,6 +171,11 @@
                 });
                 return true;
             case 'saveUserRules':
+                const initiator = adguard.antiBannerService.initiatorTypes.OPTIONS;
+                adguard.antiBannerService.setRequestFilterInitiator(initiator);
+                adguard.userrules.updateUserRulesText(message.content);
+                break;
+            case 'isUserRulesSaving':
                 adguard.userrules.updateUserRulesText(message.content);
                 break;
             case 'addUserRule':
