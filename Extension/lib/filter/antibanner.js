@@ -70,13 +70,37 @@ adguard.antiBannerService = (function (adguard) {
      * List of events which cause saving filter rules to the rules storage
      * @type {Array}
      */
-    var SAVE_FILTER_RULES_TO_STORAGE_EVENTS = [adguard.listeners.UPDATE_FILTER_RULES, adguard.listeners.ADD_RULES, adguard.listeners.REMOVE_RULE];
+    const SAVE_FILTER_RULES_TO_STORAGE_EVENTS = [
+        adguard.listeners.UPDATE_FILTER_RULES,
+        adguard.listeners.ADD_RULES,
+        adguard.listeners.REMOVE_RULE,
+    ];
 
     var isSaveRulesToStorageEvent = function (el) {
         return SAVE_FILTER_RULES_TO_STORAGE_EVENTS.indexOf(el.event) >= 0;
     };
 
     var reloadedRules = false;
+
+    /**
+     * If request filter update was initiated by options page we use async mode
+     * Otherwise options page UI will be blocked by heavy background page process
+     * @type {number}
+     */
+    let requestFilterInitiator;
+
+    const initiatorTypes = {
+        GENERAL: 1 << 0,
+        OPTIONS: 1 << 1,
+    };
+
+    /**
+     * Sets current requestFilterInitiator
+     * @param {Number} initiator - above you can see possible values
+     */
+    const setRequestFilterInitiator = function (initiator) {
+        requestFilterInitiator = initiator;
+    };
 
     /**
      * AntiBannerService initialize method. Process install, update or simple run.
@@ -467,14 +491,14 @@ adguard.antiBannerService = (function (adguard) {
      * @param callback Called when request filter is initialized
      */
     function onFiltersLoadedFromStorage(rulesFilterMap, callback) {
-
         var start = new Date().getTime();
 
         // We create filter rules using chunks of the specified length
         // We are doing this for FF as everything in FF is done on the UI thread
         // Request filter creation is rather slow operation so we should
         // use setTimeout calls to give UI thread some time.
-        var async = true; // adguard.prefs.speedupStartup() || false;
+        // Also use async mode if requestFilter update was initiated from options page
+        var async = (requestFilterInitiator === initiatorTypes.OPTIONS) || adguard.prefs.speedupStartup() || false;
         var asyncStep = 1000;
         adguard.console.info('Starting request filter initialization. Async={0}', async);
 
@@ -527,6 +551,8 @@ adguard.antiBannerService = (function (adguard) {
             }
 
             adguard.listeners.notifyListeners(adguard.listeners.REQUEST_FILTER_UPDATED, getRequestFilterInfo());
+            // After request filter is updated we set initiator to GENERAL TYPE
+            setRequestFilterInitiator(initiatorTypes.GENERAL);
             adguard.console.info('Finished request filter initialization in {0} ms. Rules count: {1}', (new Date().getTime() - start), newRequestFilter.rulesCount);
 
             /**
@@ -537,12 +563,12 @@ adguard.antiBannerService = (function (adguard) {
             }
 
             if (newRequestFilter.rulesCount === 0 && !reloadedRules) {
-                //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/205
-                adguard.console.info("No rules have been found - checking filter updates");
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/205
+                adguard.console.info('No rules have been found - checking filter updates');
                 reloadAntiBannerFilters();
                 reloadedRules = true;
             } else if (newRequestFilter.rulesCount > 0 && reloadedRules) {
-                adguard.console.info("Filters reloaded, deleting reloadRules flag");
+                adguard.console.info('Filters reloaded, deleting reloadRules flag');
                 reloadedRules = false;
             }
         };
@@ -766,7 +792,9 @@ adguard.antiBannerService = (function (adguard) {
             rulesCount = requestFilter.rulesCount;
         }
         return {
-            rulesCount: rulesCount
+            rulesCount: rulesCount,
+            initiator: requestFilterInitiator,
+            initiatorTypes: initiatorTypes,
         };
     };
 
@@ -1156,7 +1184,9 @@ adguard.antiBannerService = (function (adguard) {
 
         getRequestFilterInfo: getRequestFilterInfo,
 
-        checkAntiBannerFiltersUpdate: checkAntiBannerFiltersUpdate
+        checkAntiBannerFiltersUpdate: checkAntiBannerFiltersUpdate,
+        setRequestFilterInitiator: setRequestFilterInitiator,
+        initiatorTypes: initiatorTypes,
     };
 
 })(adguard);

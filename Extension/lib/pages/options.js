@@ -301,11 +301,11 @@ const UserFilter = function () {
             }
 
             if (!skipManageState) {
-                this.manageState(this.currentState);
+                this.manageState();
             }
         };
 
-        this.manageState = function (state) {
+        this.manageState = function () {
             const EDIT_TIMEOUT_MS = 1000;
             const HIDE_INDICATOR_TIMEOUT_MS = 1500;
 
@@ -315,8 +315,8 @@ const UserFilter = function () {
 
             const self = this;
 
-            const isDirty = (state & states.DIRTY) === states.DIRTY;
-            const isSaving = (state & states.SAVING) === states.SAVING;
+            const isDirty = this.isDirty();
+            const isSaving = this.isSaving();
 
             if (isDirty && !isSaving) {
                 this.updateIndicator(states.DIRTY);
@@ -357,6 +357,14 @@ const UserFilter = function () {
                 type: 'saveUserRules',
                 content: text,
             }, () => {});
+        };
+
+        this.isSaving = function () {
+            return (this.currentState & states.SAVING) === states.SAVING;
+        };
+
+        this.isDirty = function () {
+            return (this.currentState & states.DIRTY) === states.DIRTY;
         };
     }
 
@@ -1670,7 +1678,6 @@ var initPage = function (response) {
     EventNotifierTypes = response.constants.EventNotifierTypes;
 
     var onDocumentReady = function () {
-
         var controller = new PageController();
         controller.init();
 
@@ -1716,7 +1723,7 @@ var initPage = function (response) {
                     break;
                 case EventNotifierTypes.REQUEST_FILTER_UPDATED:
                     controller.antiBannerFilters.updateRulesCountInfo(options);
-                    controller.userFilter.updateUserFilterRules();
+                    controller.userFilter.updateUserFilterRules(options);
                     break;
                 case EventNotifierTypes.SYNC_STATUS_UPDATED:
                     controller.syncSettings.updateSyncSettings(options);
