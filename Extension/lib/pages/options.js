@@ -156,7 +156,8 @@ var WhiteListFilter = function (options) {
     editor.setShowPrintMargin(false);
 
     // Ace TextHighlightRules mode is edited in ace.js library file
-    editor.session.setMode("ace/mode/text_highlight_rules");
+    editor.session.setMode('ace/mode/text_highlight_rules');
+    editor.$blockScrolling = Infinity;
 
     const applyChangesBtn = document.querySelector('#whiteListFilterApplyChanges');
     const importWhiteListInput = document.querySelector('#importWhiteListInput');
@@ -240,68 +241,72 @@ const UserFilter = function () {
 
     const editor = ace.edit('userRules');
     editor.setShowPrintMargin(false);
-    editor.$blockScrolling = Infinity;
 
     // Ace TextHighlightRules mode is edited in ace.js library file
     editor.session.setMode('ace/mode/text_highlight_rules');
+    editor.$blockScrolling = Infinity;
 
     const states = {
-        SAVING: 1 << 0,
+        CLEAR: 1 << 0,
         DIRTY: 1 << 1,
+        SAVING: 1 << 2,
+        SAVED: 1 << 3,
     };
 
-    // TODO add translations
-    const buttonText = {
-        EDITING: 'Editing...',
-        SAVING: 'Saving...',
-        SAVED: 'Saved',
-        EMPTY: 'Empty',
+    const indicatorText = {
+        [states.CLEAR]: '',
+        [states.DIRTY]: i18n.getMessage('options_userfilter_editing'),
+        [states.SAVING]: i18n.getMessage('options_userfilter_saving'),
+        [states.SAVED]: i18n.getMessage('options_userfilter_saved'),
     };
 
     function Saver(element) {
         this.element = element;
-        this.currentState = 0;
 
-        this.updateIndicator = function (text) {
-            if (text === buttonText.EDITING) {
-                this.element.textContent = text;
-                this.element.classList.remove('filter-rules__label--saved');
-                return;
-            }
-            if (text === buttonText.SAVED) {
-                this.element.textContent = text;
-                this.element.classList.add('filter-rules__label--saved');
-                return;
-            }
-            if (text === buttonText.SAVING) {
-                this.element.textContent = text;
-                this.element.classList.remove('filter-rules__label--saved');
-                return;
-            }
-            if (text === buttonText.EMPTY) {
-                this.element.textContent = '';
-                this.element.classList.remove('filter-rules__label--saved');
+        this.updateIndicator = function (state) {
+            this.element.textContent = indicatorText[state];
+            switch (state) {
+                case states.DIRTY:
+                case states.CLEAR:
+                case states.SAVING:
+                    this.element.classList.remove('filter-rules__label--saved');
+                    break;
+                case states.SAVED:
+                    this.element.classList.add('filter-rules__label--saved');
+                    break;
+                default:
+                    break;
             }
         };
 
         let timeout;
 
-        this.removeState = (state, updateState = true) => {
-            this.currentState &= ~state;
-            if (updateState) {
-                this.manageState(this.currentState);
-            }
-        };
-
-        this.addState = (state, updateState = true) => {
+        this.setState = (state, skipManageState = false) => {
             this.currentState |= state;
-            if (updateState) {
+            switch (state) {
+                case states.DIRTY:
+                    this.currentState &= ~states.CLEAR;
+                    break;
+                case states.CLEAR:
+                    this.currentState &= ~states.DIRTY;
+                    break;
+                case states.SAVING:
+                    this.currentState &= ~states.SAVED;
+                    break;
+                case states.SAVED:
+                    this.currentState &= ~states.SAVING;
+                    break;
+                default:
+                    break;
+            }
+
+            if (!skipManageState) {
                 this.manageState(this.currentState);
             }
         };
 
         this.manageState = function (state) {
-            const EDIT_TIMEOUT_MS = 1500;
+            const EDIT_TIMEOUT_MS = 1000;
             const HIDE_INDICATOR_TIMEOUT_MS = 1500;
 
             if (timeout) {
@@ -309,38 +314,39 @@ const UserFilter = function () {
             }
 
             const self = this;
+
             const isDirty = (state & states.DIRTY) === states.DIRTY;
             const isSaving = (state & states.SAVING) === states.SAVING;
 
             if (isDirty && !isSaving) {
-                this.updateIndicator(buttonText.EDITING);
+                this.updateIndicator(states.DIRTY);
                 timeout = setTimeout(() => {
                     self.saveRules();
-                    self.removeState(states.DIRTY, false);
-                    self.addState(states.SAVING);
+                    self.setState(states.CLEAR, true);
+                    self.setState(states.SAVING);
                 }, EDIT_TIMEOUT_MS);
                 return;
             }
 
             if (isDirty && isSaving) {
-                this.updateIndicator(buttonText.EDITING);
+                this.updateIndicator(states.DIRTY);
                 timeout = setTimeout(() => {
-                    self.removeState(states.DIRTY);
+                    self.setState(states.CLEAR);
                     self.saveRules();
                 }, EDIT_TIMEOUT_MS);
                 return;
             }
 
             if (!isDirty && !isSaving && (omitRenderEventsCount === 1)) {
-                this.updateIndicator(buttonText.SAVED);
+                this.updateIndicator(states.SAVED);
                 timeout = setTimeout(() => {
-                    self.updateIndicator(buttonText.EMPTY);
+                    self.updateIndicator(states.CLEAR);
                 }, HIDE_INDICATOR_TIMEOUT_MS);
                 return;
             }
 
             if (!isDirty && isSaving) {
-                this.updateIndicator(buttonText.SAVING);
+                this.updateIndicator(states.SAVING);
             }
         };
 
@@ -367,7 +373,7 @@ const UserFilter = function () {
 
     function updateUserFilterRules() {
         if (omitRenderEventsCount > 0) {
-            saver.removeState(states.SAVING);
+            saver.setState(states.SAVED);
             omitRenderEventsCount -= 1;
             return;
         }
@@ -377,12 +383,12 @@ const UserFilter = function () {
 
     const session = editor.getSession();
     let initialChangeFired = false;
-    session.addEventListener('change', function () {
+    session.addEventListener('change', () => {
         if (!initialChangeFired) {
             initialChangeFired = true;
             return;
         }
-        saver.addState(states.DIRTY);
+        saver.setState(states.DIRTY);
     });
 
     const importUserFiltersInput = document.querySelector('#importUserFilterInput');
@@ -1711,7 +1717,6 @@ var initPage = function (response) {
                 case EventNotifierTypes.REQUEST_FILTER_UPDATED:
                     controller.antiBannerFilters.updateRulesCountInfo(options);
                     controller.userFilter.updateUserFilterRules();
-                    console.log('filters realy updated');
                     break;
                 case EventNotifierTypes.SYNC_STATUS_UPDATED:
                     controller.syncSettings.updateSyncSettings(options);
