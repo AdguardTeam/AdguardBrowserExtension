@@ -270,9 +270,9 @@ const Saver = function (options) {
         }, () => {});
     };
 
-    const getOmitRenderEventsCount = (function () {
+    const getOmitRenderEventsCount = () => {
         return this.omitRenderEventsCount;
-    }).bind(this);
+    };
 
     const setOmitRenderEventsCount = (count) => {
         this.omitRenderEventsCount = count;
