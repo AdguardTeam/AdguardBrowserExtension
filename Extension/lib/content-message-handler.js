@@ -173,9 +173,6 @@
             case 'saveUserRules':
                 adguard.userrules.updateUserRulesText(message.content);
                 break;
-            case 'isUserRulesSaving':
-                adguard.userrules.updateUserRulesText(message.content);
-                break;
             case 'addUserRule':
                 adguard.userrules.addRules([message.ruleText]);
                 if (message.adguardDetected || adguard.frames.isTabAdguardDetected(sender.tab)) {

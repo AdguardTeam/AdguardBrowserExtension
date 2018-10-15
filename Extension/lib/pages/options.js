@@ -1731,7 +1731,6 @@ var initPage = function (response) {
                     controller.antiBannerFilters.onFilterDownloadFinished(options);
                     break;
                 case EventNotifierTypes.UPDATE_USER_FILTER_RULES:
-                    // controller.userFilter.updateUserFilterRules();
                     controller.antiBannerFilters.updateRulesCountInfo(options);
                     break;
                 case EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES:
