@@ -147,6 +147,145 @@ var TopMenu = (function () {
 
 })();
 
+const Saver = function (element, editor) {
+    this.element = element;
+    this.editor = editor;
+    this.omitRenderEventsCount = 0;
+
+    const states = {
+        CLEAR: 1 << 0,
+        DIRTY: 1 << 1,
+        SAVING: 1 << 2,
+        SAVED: 1 << 3,
+    };
+
+    const indicatorText = {
+        [states.CLEAR]: '',
+        [states.DIRTY]: i18n.getMessage('options_userfilter_editing'),
+        [states.SAVING]: i18n.getMessage('options_userfilter_saving'),
+        [states.SAVED]: i18n.getMessage('options_userfilter_saved'),
+    };
+
+    this.isSaving = function () {
+        return (this.currentState & states.SAVING) === states.SAVING;
+    };
+
+    this.isDirty = function () {
+        return (this.currentState & states.DIRTY) === states.DIRTY;
+    };
+
+    this.updateIndicator = function (state) {
+        this.element.textContent = indicatorText[state];
+        switch (state) {
+            case states.DIRTY:
+            case states.CLEAR:
+            case states.SAVING:
+                this.element.classList.remove('filter-rules__label--saved');
+                break;
+            case states.SAVED:
+                this.element.classList.add('filter-rules__label--saved');
+                break;
+            default:
+                break;
+        }
+    };
+
+    let timeout;
+
+    const setState = (state, skipManageState = false) => {
+        this.currentState |= state;
+        switch (state) {
+            case states.DIRTY:
+                this.currentState &= ~states.CLEAR;
+                break;
+            case states.CLEAR:
+                this.currentState &= ~states.DIRTY;
+                break;
+            case states.SAVING:
+                this.currentState &= ~states.SAVED;
+                break;
+            case states.SAVED:
+                this.currentState &= ~states.SAVING;
+                break;
+            default:
+                break;
+        }
+
+        if (!skipManageState) {
+            this.manageState();
+        }
+    };
+
+    this.manageState = function () {
+        const EDIT_TIMEOUT_MS = 1000;
+        const HIDE_INDICATOR_TIMEOUT_MS = 1500;
+
+        if (timeout) {
+            clearTimeout(timeout);
+        }
+
+        const self = this;
+
+        const isDirty = this.isDirty();
+        const isSaving = this.isSaving();
+
+        if (isDirty && !isSaving) {
+            this.updateIndicator(states.DIRTY);
+            timeout = setTimeout(() => {
+                self.saveRules();
+                setState(states.CLEAR, true);
+                setState(states.SAVING);
+            }, EDIT_TIMEOUT_MS);
+            return;
+        }
+
+        if (isDirty && isSaving) {
+            this.updateIndicator(states.DIRTY);
+            timeout = setTimeout(() => {
+                setState(states.CLEAR);
+                self.saveRules();
+            }, EDIT_TIMEOUT_MS);
+            return;
+        }
+
+        if (!isDirty && !isSaving && (this.omitRenderEventsCount === 1)) {
+            this.updateIndicator(states.SAVED);
+            timeout = setTimeout(() => {
+                self.updateIndicator(states.CLEAR);
+            }, HIDE_INDICATOR_TIMEOUT_MS);
+            return;
+        }
+
+        if (!isDirty && isSaving) {
+            this.updateIndicator(states.SAVING);
+        }
+    };
+
+    this.saveRules = function () {
+        this.omitRenderEventsCount += 1;
+        const text = this.editor.getValue();
+        contentPage.sendMessage({
+            type: 'saveUserRules',
+            content: text,
+        }, () => {});
+    };
+
+    const getOmitRenderEventsCount = (function () {
+        return this.omitRenderEventsCount;
+    }).bind(this);
+
+    const setOmitRenderEventsCount = (count) => {
+        this.omitRenderEventsCount = count;
+    };
+
+    return {
+        setState: setState,
+        setOmitRenderEventsCount: setOmitRenderEventsCount,
+        getOmitRenderEventsCount: getOmitRenderEventsCount,
+        states: states,
+    };
+};
+
 var WhiteListFilter = function (options) {
     'use strict';
 
@@ -237,8 +376,6 @@ var WhiteListFilter = function (options) {
 const UserFilter = function () {
     'use strict';
 
-    let omitRenderEventsCount = 0;
-
     const editor = ace.edit('userRules');
     editor.setShowPrintMargin(false);
 
@@ -246,130 +383,8 @@ const UserFilter = function () {
     editor.session.setMode('ace/mode/text_highlight_rules');
     editor.$blockScrolling = Infinity;
 
-    const states = {
-        CLEAR: 1 << 0,
-        DIRTY: 1 << 1,
-        SAVING: 1 << 2,
-        SAVED: 1 << 3,
-    };
-
-    const indicatorText = {
-        [states.CLEAR]: '',
-        [states.DIRTY]: i18n.getMessage('options_userfilter_editing'),
-        [states.SAVING]: i18n.getMessage('options_userfilter_saving'),
-        [states.SAVED]: i18n.getMessage('options_userfilter_saved'),
-    };
-
-    function Saver(element) {
-        this.element = element;
-
-        this.updateIndicator = function (state) {
-            this.element.textContent = indicatorText[state];
-            switch (state) {
-                case states.DIRTY:
-                case states.CLEAR:
-                case states.SAVING:
-                    this.element.classList.remove('filter-rules__label--saved');
-                    break;
-                case states.SAVED:
-                    this.element.classList.add('filter-rules__label--saved');
-                    break;
-                default:
-                    break;
-            }
-        };
-
-        let timeout;
-
-        this.setState = (state, skipManageState = false) => {
-            this.currentState |= state;
-            switch (state) {
-                case states.DIRTY:
-                    this.currentState &= ~states.CLEAR;
-                    break;
-                case states.CLEAR:
-                    this.currentState &= ~states.DIRTY;
-                    break;
-                case states.SAVING:
-                    this.currentState &= ~states.SAVED;
-                    break;
-                case states.SAVED:
-                    this.currentState &= ~states.SAVING;
-                    break;
-                default:
-                    break;
-            }
-
-            if (!skipManageState) {
-                this.manageState();
-            }
-        };
-
-        this.manageState = function () {
-            const EDIT_TIMEOUT_MS = 1000;
-            const HIDE_INDICATOR_TIMEOUT_MS = 1500;
-
-            if (timeout) {
-                clearTimeout(timeout);
-            }
-
-            const self = this;
-
-            const isDirty = this.isDirty();
-            const isSaving = this.isSaving();
-
-            if (isDirty && !isSaving) {
-                this.updateIndicator(states.DIRTY);
-                timeout = setTimeout(() => {
-                    self.saveRules();
-                    self.setState(states.CLEAR, true);
-                    self.setState(states.SAVING);
-                }, EDIT_TIMEOUT_MS);
-                return;
-            }
-
-            if (isDirty && isSaving) {
-                this.updateIndicator(states.DIRTY);
-                timeout = setTimeout(() => {
-                    self.setState(states.CLEAR);
-                    self.saveRules();
-                }, EDIT_TIMEOUT_MS);
-                return;
-            }
-
-            if (!isDirty && !isSaving && (omitRenderEventsCount === 1)) {
-                this.updateIndicator(states.SAVED);
-                timeout = setTimeout(() => {
-                    self.updateIndicator(states.CLEAR);
-                }, HIDE_INDICATOR_TIMEOUT_MS);
-                return;
-            }
-
-            if (!isDirty && isSaving) {
-                this.updateIndicator(states.SAVING);
-            }
-        };
-
-        this.saveRules = function () {
-            omitRenderEventsCount += 1;
-            const text = editor.getValue();
-            contentPage.sendMessage({
-                type: 'saveUserRules',
-                content: text,
-            }, () => {});
-        };
-
-        this.isSaving = function () {
-            return (this.currentState & states.SAVING) === states.SAVING;
-        };
-
-        this.isDirty = function () {
-            return (this.currentState & states.DIRTY) === states.DIRTY;
-        };
-    }
-
     const saveIndicatorElement = document.querySelector('#userRulesSaveIndicator');
-    const saver = new Saver(saveIndicatorElement);
+    const saver = new Saver(saveIndicatorElement, editor);
 
     function loadUserRules() {
         contentPage.sendMessage({
@@ -380,9 +395,9 @@ const UserFilter = function () {
     }
 
     function updateUserFilterRules() {
-        if (omitRenderEventsCount > 0) {
-            saver.setState(states.SAVED);
-            omitRenderEventsCount -= 1;
+        if (saver.getOmitRenderEventsCount() > 0) {
+            saver.setState(saver.states.SAVED);
+            saver.setOmitRenderEventsCount(saver.getOmitRenderEventsCount() - 1);
             return;
         }
 
@@ -396,7 +411,7 @@ const UserFilter = function () {
             initialChangeFired = true;
             return;
         }
-        saver.setState(states.DIRTY);
+        saver.setState(saver.states.DIRTY);
     });
 
     const importUserFiltersInput = document.querySelector('#importUserFilterInput');
