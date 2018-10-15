@@ -473,7 +473,8 @@ adguard.antiBannerService = (function (adguard) {
     function onFiltersLoadedFromStorage(rulesFilterMap, callback) {
         var start = new Date().getTime();
 
-        // We create filter rules using chunks of the specified length
+        // UI thread becomes blocked on the options page while request filter is created
+        // that't why we create filter rules using chunks of the specified length
         // Request filter creation is rather slow operation so we should
         // use setTimeout calls to give UI thread some time.
         var async = adguard.requestFilter.isReady();
