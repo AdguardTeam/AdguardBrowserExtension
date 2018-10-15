@@ -162,7 +162,7 @@
                 var whiteListDomains = adguard.whitelist.getWhiteListDomains();
                 return { content: whiteListDomains.join('\r\n') };
             case 'saveWhiteListDomains':
-                var domains = message.content.split(/[\r\n]+/);
+                const domains = message.content.split(/[\r\n]+/);
                 adguard.whitelist.updateWhiteListDomains(domains);
                 break;
             case 'getUserRules':

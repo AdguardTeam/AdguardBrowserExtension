@@ -142,14 +142,14 @@ var TopMenu = (function () {
 
     return {
         init: init,
-        toggleTab: toggleTab
+        toggleTab: toggleTab,
     };
-
 })();
 
-const Saver = function (element, editor) {
-    this.element = element;
-    this.editor = editor;
+const Saver = function (options) {
+    this.indicatorElement = options.indicatorElement;
+    this.editor = options.editor;
+    this.saveEventType = options.saveEventType;
     this.omitRenderEventsCount = 0;
 
     const states = {
@@ -161,9 +161,9 @@ const Saver = function (element, editor) {
 
     const indicatorText = {
         [states.CLEAR]: '',
-        [states.DIRTY]: i18n.getMessage('options_userfilter_editing'),
-        [states.SAVING]: i18n.getMessage('options_userfilter_saving'),
-        [states.SAVED]: i18n.getMessage('options_userfilter_saved'),
+        [states.DIRTY]: i18n.getMessage('options_editor_indicator_editing'),
+        [states.SAVING]: i18n.getMessage('options_editor_indicator_saving'),
+        [states.SAVED]: i18n.getMessage('options_editor_indicator_saved'),
     };
 
     this.isSaving = function () {
@@ -175,15 +175,15 @@ const Saver = function (element, editor) {
     };
 
     this.updateIndicator = function (state) {
-        this.element.textContent = indicatorText[state];
+        this.indicatorElement.textContent = indicatorText[state];
         switch (state) {
             case states.DIRTY:
             case states.CLEAR:
             case states.SAVING:
-                this.element.classList.remove('filter-rules__label--saved');
+                this.indicatorElement.classList.remove('filter-rules__label--saved');
                 break;
             case states.SAVED:
-                this.element.classList.add('filter-rules__label--saved');
+                this.indicatorElement.classList.add('filter-rules__label--saved');
                 break;
             default:
                 break;
@@ -265,7 +265,7 @@ const Saver = function (element, editor) {
         this.omitRenderEventsCount += 1;
         const text = this.editor.getValue();
         contentPage.sendMessage({
-            type: 'saveUserRules',
+            type: this.saveEventType,
             content: text,
         }, () => {});
     };
@@ -289,14 +289,19 @@ const Saver = function (element, editor) {
 var WhiteListFilter = function (options) {
     'use strict';
 
-    let omitRenderEventsCount = 0;
-
     const editor = ace.edit('whiteListRules');
     editor.setShowPrintMargin(false);
 
     // Ace TextHighlightRules mode is edited in ace.js library file
     editor.session.setMode('ace/mode/text_highlight_rules');
     editor.$blockScrolling = Infinity;
+
+    const saveIndicatorElement = document.querySelector('#whiteListRulesSaveIndicator');
+    const saver = new Saver({
+        editor: editor,
+        saveEventType: 'saveWhiteListDomains',
+        indicatorElement: saveIndicatorElement,
+    });
 
     const applyChangesBtn = document.querySelector('#whiteListFilterApplyChanges');
     const importWhiteListInput = document.querySelector('#importWhiteListInput');
@@ -309,35 +314,28 @@ var WhiteListFilter = function (options) {
             type: 'getWhiteListDomains',
         }, function (response) {
             editor.setValue(response.content || '');
-            applyChangesBtn.style.display = 'none';
-        });
-    }
-
-    function saveWhiteListDomains(e) {
-        e.preventDefault();
-
-        omitRenderEventsCount = 1;
-
-        editor.setReadOnly(true);
-        var text = editor.getValue();
-
-        contentPage.sendMessage({
-            type: 'saveWhiteListDomains',
-            content: text,
-        }, function () {
-            editor.setReadOnly(false);
-            applyChangesBtn.style.display = 'none';
         });
     }
 
     function updateWhiteListDomains() {
-        if (omitRenderEventsCount > 0) {
-            omitRenderEventsCount -= 1;
+        if (saver.getOmitRenderEventsCount() > 0) {
+            saver.setState(saver.states.SAVED);
+            saver.setOmitRenderEventsCount(saver.getOmitRenderEventsCount() - 1);
             return;
         }
 
         loadWhiteListDomains();
     }
+
+    const session = editor.getSession();
+    let initialChangeFired = false;
+    session.addEventListener('change', () => {
+        if (!initialChangeFired) {
+            initialChangeFired = true;
+            return;
+        }
+        saver.setState(saver.states.DIRTY);
+    });
 
     function changeDefaultWhiteListMode(e) {
         e.preventDefault();
@@ -347,7 +345,6 @@ var WhiteListFilter = function (options) {
         });
     }
 
-    applyChangesBtn.addEventListener('click', saveWhiteListDomains);
     changeDefaultWhiteListModeCheckbox.addEventListener('change', changeDefaultWhiteListMode);
 
     importWhiteListBtn.addEventListener('click', (e) => {
@@ -384,7 +381,11 @@ const UserFilter = function () {
     editor.$blockScrolling = Infinity;
 
     const saveIndicatorElement = document.querySelector('#userRulesSaveIndicator');
-    const saver = new Saver(saveIndicatorElement, editor);
+    const saver = new Saver({
+        editor: editor,
+        saveEventType: 'saveUserRules',
+        indicatorElement: saveIndicatorElement,
+    });
 
     function loadUserRules() {
         contentPage.sendMessage({
