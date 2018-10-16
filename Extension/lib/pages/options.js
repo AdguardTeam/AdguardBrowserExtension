@@ -270,19 +270,22 @@ const Saver = function (options) {
         }, () => {});
     };
 
-    const getOmitRenderEventsCount = () => {
-        return this.omitRenderEventsCount;
+    const setDirty = () => {
+        setState(states.DIRTY);
     };
 
-    const setOmitRenderEventsCount = (count) => {
-        this.omitRenderEventsCount = count;
+    const setSaved = () => {
+        if (this.omitRenderEventsCount > 0) {
+            setState(states.SAVED);
+            this.omitRenderEventsCount -= 1;
+            return true;
+        }
+        return false;
     };
 
     return {
-        setState: setState,
-        setOmitRenderEventsCount: setOmitRenderEventsCount,
-        getOmitRenderEventsCount: getOmitRenderEventsCount,
-        states: states,
+        setDirty: setDirty,
+        setSaved: setSaved,
     };
 };
 
@@ -318,12 +321,10 @@ var WhiteListFilter = function (options) {
     }
 
     function updateWhiteListDomains() {
-        if (saver.getOmitRenderEventsCount() > 0) {
-            saver.setState(saver.states.SAVED);
-            saver.setOmitRenderEventsCount(saver.getOmitRenderEventsCount() - 1);
+        const omitRenderEvent = saver.setSaved();
+        if (omitRenderEvent) {
             return;
         }
-
         loadWhiteListDomains();
     }
 
@@ -334,7 +335,7 @@ var WhiteListFilter = function (options) {
             initialChangeFired = true;
             return;
         }
-        saver.setState(saver.states.DIRTY);
+        saver.setDirty();
     });
 
     function changeDefaultWhiteListMode(e) {
@@ -396,12 +397,10 @@ const UserFilter = function () {
     }
 
     function updateUserFilterRules() {
-        if (saver.getOmitRenderEventsCount() > 0) {
-            saver.setState(saver.states.SAVED);
-            saver.setOmitRenderEventsCount(saver.getOmitRenderEventsCount() - 1);
+        const omitRenderEvent = saver.setSaved();
+        if (omitRenderEvent) {
             return;
         }
-
         loadUserRules();
     }
 
@@ -412,7 +411,7 @@ const UserFilter = function () {
             initialChangeFired = true;
             return;
         }
-        saver.setState(saver.states.DIRTY);
+        saver.setDirty();
     });
 
     const importUserFiltersInput = document.querySelector('#importUserFilterInput');
