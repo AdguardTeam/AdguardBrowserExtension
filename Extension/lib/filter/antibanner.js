@@ -70,7 +70,11 @@ adguard.antiBannerService = (function (adguard) {
      * List of events which cause saving filter rules to the rules storage
      * @type {Array}
      */
-    var SAVE_FILTER_RULES_TO_STORAGE_EVENTS = [adguard.listeners.UPDATE_FILTER_RULES, adguard.listeners.ADD_RULES, adguard.listeners.REMOVE_RULE];
+    const SAVE_FILTER_RULES_TO_STORAGE_EVENTS = [
+        adguard.listeners.UPDATE_FILTER_RULES,
+        adguard.listeners.ADD_RULES,
+        adguard.listeners.REMOVE_RULE,
+    ];
 
     var isSaveRulesToStorageEvent = function (el) {
         return SAVE_FILTER_RULES_TO_STORAGE_EVENTS.indexOf(el.event) >= 0;
@@ -467,14 +471,13 @@ adguard.antiBannerService = (function (adguard) {
      * @param callback Called when request filter is initialized
      */
     function onFiltersLoadedFromStorage(rulesFilterMap, callback) {
-
         var start = new Date().getTime();
 
-        // We create filter rules using chunks of the specified length
-        // We are doing this for FF as everything in FF is done on the UI thread
+        // UI thread becomes blocked on the options page while request filter is created
+        // that't why we create filter rules using chunks of the specified length
         // Request filter creation is rather slow operation so we should
         // use setTimeout calls to give UI thread some time.
-        var async = adguard.prefs.speedupStartup() || false;
+        var async = adguard.requestFilter.isReady();
         var asyncStep = 1000;
         adguard.console.info('Starting request filter initialization. Async={0}', async);
 
@@ -537,12 +540,12 @@ adguard.antiBannerService = (function (adguard) {
             }
 
             if (newRequestFilter.rulesCount === 0 && !reloadedRules) {
-                //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/205
-                adguard.console.info("No rules have been found - checking filter updates");
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/205
+                adguard.console.info('No rules have been found - checking filter updates');
                 reloadAntiBannerFilters();
                 reloadedRules = true;
             } else if (newRequestFilter.rulesCount > 0 && reloadedRules) {
-                adguard.console.info("Filters reloaded, deleting reloadRules flag");
+                adguard.console.info('Filters reloaded, deleting reloadRules flag');
                 reloadedRules = false;
             }
         };
@@ -766,7 +769,7 @@ adguard.antiBannerService = (function (adguard) {
             rulesCount = requestFilter.rulesCount;
         }
         return {
-            rulesCount: rulesCount
+            rulesCount: rulesCount,
         };
     };
 
@@ -1156,7 +1159,7 @@ adguard.antiBannerService = (function (adguard) {
 
         getRequestFilterInfo: getRequestFilterInfo,
 
-        checkAntiBannerFiltersUpdate: checkAntiBannerFiltersUpdate
+        checkAntiBannerFiltersUpdate: checkAntiBannerFiltersUpdate,
     };
 
 })(adguard);
