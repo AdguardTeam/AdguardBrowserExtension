@@ -236,7 +236,7 @@
         return {
             urlRuleText: urlRuleText,
             options: options,
-            whiteListRule: whiteListRule
+            whiteListRule: whiteListRule,
         };
     }
 
@@ -734,7 +734,6 @@
             var option = optionsParts[i];
             var optionsKeyValue = option.split(api.FilterRule.EQUAL);
             var optionName = optionsKeyValue[0];
-
             switch (optionName) {
                 case UrlFilterRule.DOMAIN_OPTION:
                     if (optionsKeyValue.length > 1) {
@@ -811,6 +810,9 @@
                         this.replace = new ReplaceOption(replaceOption);
                     }
                     break;
+                case UrlFilterRule.EXTENSION_OPTION: {
+                    throw 'Unknown option: EXTENSION';
+                }
                 case UrlFilterRule.BADFILTER_OPTION:
                     this.badFilter = this.ruleText
                         .replace(UrlFilterRule.OPTIONS_DELIMITER + UrlFilterRule.BADFILTER_OPTION + api.FilterRule.COMA_DELIMITER, UrlFilterRule.OPTIONS_DELIMITER)
@@ -931,6 +933,7 @@
     UrlFilterRule.REGEXP_ANY_SYMBOL = ".*";
     UrlFilterRule.EMPTY_OPTION = "empty";
     UrlFilterRule.REPLACE_OPTION = "replace"; // Extension doesn't support replace rules, $replace option is here only for correctly parsing
+    UrlFilterRule.EXTENSION_OPTION = "extension"; // Extension doesn't support extension rules, $extension option is here only for correctly parsing
     UrlFilterRule.CSP_OPTION = "csp";
     UrlFilterRule.BADFILTER_OPTION = "badfilter";
 
