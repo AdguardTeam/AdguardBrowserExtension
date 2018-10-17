@@ -729,6 +729,17 @@
     };
 
     /**
+     * we recognize rules with $extension modifier, but
+     * ignore them when create RequestFilter
+     */
+    UrlFilterRule.prototype.isIgnored = function () {
+        if (typeof this.isExtension === 'function') {
+            return this.isExtension();
+        }
+        return false;
+    };
+
+    /**
      * Loads rule options
      * @param options Options string
      * @private
