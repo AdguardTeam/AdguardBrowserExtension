@@ -608,25 +608,22 @@ var RequestWizard = (function () {
         initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
     };
 
-    var generateExceptionRule = function (ruleText, mask) {
-        var insert = (str, index, value) => {
+    const generateExceptionRule = function (ruleText, mask) {
+        const insert = (str, index, value) => {
             return str.slice(0, index) + value + str.slice(index);
         };
 
-        var maskIndex = ruleText.indexOf(mask);
-        var maskLength = mask.length;
-        var rulePart = ruleText.slice(maskIndex + maskLength);
+        const maskIndex = ruleText.indexOf(mask);
+        const maskLength = mask.length;
+        const rulePart = ruleText.slice(maskIndex + maskLength);
         // insert exception mark after first char
-        var exceptionMask = insert(mask, 1, '@');
+        const exceptionMask = insert(mask, 1, '@');
         return exceptionMask + rulePart;
     };
 
-    var createExceptionCssRule = function (rule, event) {
-        var ruleText = rule.ruleText;
-        var domainPart = event.frameDomain;
-        if (ruleText.indexOf(FilterRule.MASK_CSS_RULE) > -1) {
-            return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_RULE);
-        }
+    const createExceptionCssRule = function (rule, event) {
+        const ruleText = rule.ruleText;
+        const domainPart = event.frameDomain;
         if (ruleText.indexOf(FilterRule.MASK_CSS_INJECT_RULE) > -1) {
             return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_INJECT_RULE);
         }
@@ -635,6 +632,9 @@ var RequestWizard = (function () {
         }
         if (ruleText.indexOf(FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE) > -1) {
             return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE);
+        }
+        if (ruleText.indexOf(FilterRule.MASK_CSS_RULE) > -1) {
+            return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_RULE);
         }
     };
 
