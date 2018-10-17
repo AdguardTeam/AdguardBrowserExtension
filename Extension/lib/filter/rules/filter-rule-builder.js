@@ -34,7 +34,6 @@
         }
         var rule = null;
         try {
-
             var StringUtils = adguard.utils.strings;
 
             if (StringUtils.startWith(ruleText, api.FilterRule.COMMENT) ||
@@ -65,16 +64,16 @@
                 return new api.ScriptFilterRule(ruleText, filterId);
             }
 
-            return  new api.UrlFilterRule(ruleText, filterId);
+            return new api.UrlFilterRule(ruleText, filterId);
         } catch (ex) {
-            adguard.console.debug("Cannot create rule from filter {0}: {1}, cause {2}", filterId || 0, ruleText, ex);
+            adguard.console.debug('Cannot create rule from filter {0}: {1}, cause {2}', filterId || 0, ruleText, ex);
         }
 
         return null;
     };
 
     api.builder = {
-        createRule: createRule
+        createRule: createRule,
     };
 
 })(adguard, adguard.rules);

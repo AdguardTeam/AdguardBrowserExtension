@@ -558,21 +558,21 @@ adguard.antiBannerService = (function (adguard) {
          * @param startIdx Start index of the rules array
          * @param endIdx End index of the rules array
          */
-        var addRules = function (filterId, rulesTexts, startIdx, endIdx) {
+        const addRules = function (filterId, rulesTexts, startIdx, endIdx) {
             if (!rulesTexts) {
                 return;
             }
 
-            for (var i = startIdx; i < rulesTexts.length && i < endIdx; i++) {
-                var ruleText = rulesTexts[i];
+            for (let i = startIdx; i < rulesTexts.length && i < endIdx; i += 1) {
+                const ruleText = rulesTexts[i];
                 if (ruleText in uniqueRules) {
                     // Do not allow duplicates
                     continue;
                 }
                 uniqueRules[ruleText] = true;
-                var rule = adguard.rules.builder.createRule(ruleText, filterId);
+                const rule = adguard.rules.builder.createRule(ruleText, filterId);
 
-                if (rule !== null) {
+                if (rule !== null && !rule.isExtension()) {
                     newRequestFilter.addRule(rule);
                 }
             }
