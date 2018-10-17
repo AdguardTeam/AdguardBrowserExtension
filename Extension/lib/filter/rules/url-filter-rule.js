@@ -722,6 +722,13 @@
     };
 
     /**
+     * If rule has extension modifier
+     */
+    UrlFilterRule.prototype.isExtension = function () {
+        return this.isOptionEnabled(UrlFilterRule.options.EXTENSION);
+    };
+
+    /**
      * Loads rule options
      * @param options Options string
      * @private
@@ -787,6 +794,9 @@
                 case UrlFilterRule.EMPTY_OPTION:
                     this._setUrlFilterRuleOption(UrlFilterRule.options.EMPTY_RESPONSE, true);
                     break;
+                case UrlFilterRule.EXTENSION_OPTION:
+                    this._setUrlFilterRuleOption(UrlFilterRule.options.EXTENSION, true);
+                    break;
                 case UrlFilterRule.CSP_OPTION:
                     this._setUrlFilterRuleOption(UrlFilterRule.options.CSP_RULE, true);
                     if (optionsKeyValue.length > 1) {
@@ -810,9 +820,6 @@
                         this.replace = new ReplaceOption(replaceOption);
                     }
                     break;
-                case UrlFilterRule.EXTENSION_OPTION: {
-                    throw 'Unknown option: EXTENSION';
-                }
                 case UrlFilterRule.BADFILTER_OPTION:
                     this.badFilter = this.ruleText
                         .replace(UrlFilterRule.OPTIONS_DELIMITER + UrlFilterRule.BADFILTER_OPTION + api.FilterRule.COMA_DELIMITER, UrlFilterRule.OPTIONS_DELIMITER)
@@ -1049,7 +1056,13 @@
          * defines a CSP rule
          * For example, ||xpanama.net^$third-party,csp=connect-src 'none'
          */
-        CSP_RULE: 1 << 10
+        CSP_RULE: 1 << 10,
+
+        /**
+         * defines rules with $extension modifier
+         * for example, @@||example.org^$extension
+         */
+        EXTENSION: 1 << 11,
 
         // jshint ignore:end
     };
@@ -1075,9 +1088,6 @@
         // Deprecated modifiers
         'BACKGROUND': true,
         '~BACKGROUND': true,
-        // Specific to desktop version (can be ignored)
-        'EXTENSION': true,
-        '~EXTENSION': true,
         // Unused modifiers
         'COLLAPSE': true,
         '~COLLAPSE': true,
