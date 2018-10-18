@@ -133,7 +133,8 @@
             createRegexText: createRegexText,
 
             // Configuration used for the transformation
-            regexConfiguration: regexConfiguration
+            regexConfiguration: regexConfiguration,
+            escapeRegExp: escapeRegExp,
         };
     })();
 

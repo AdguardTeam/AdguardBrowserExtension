@@ -637,6 +637,22 @@ QUnit.test('testReplaceToEmptyString', function (assert) {
     assert.equal(expected, output);
 });
 
+QUnit.test('testReplaceWithMoreThanOneReplaceGroups', function (assert) {
+
+    adguard.prefs.features.responseContentFilteringSupported = true;
+
+    var input = 'remove "BIG" from string';
+    var expected = 'remove "" from string';
+
+    var ruleText = '||example.com^$replace=/(remove ")[\\s\\S]*(" from string)/\\$1\\$2/';
+    var rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.ok(rule.getReplace());
+
+    var actual = rule.getReplace().apply(input);
+    assert.equal(actual, expected);
+});
+
 QUnit.test("BadFilter option", function (assert) {
     var badFilterRule = new adguard.rules.UrlFilterRule("https:*_ad_$badfilter");
 
@@ -677,7 +693,7 @@ QUnit.test('Test wildcard domains in the url rules', function (assert) {
     assert.ok(rule.isPermitted("www.google.de"));
     assert.ok(rule.isPermitted("www.google.co.uk"));
     assert.ok(rule.isPermitted("google.co.uk"));
-    
+
     assert.notOk(rule.isPermitted("google.uk.eu")); // non-existent tld
     assert.notOk(rule.isPermitted("nigma.ru"));
     assert.notOk(rule.isPermitted("nigma.com"));
