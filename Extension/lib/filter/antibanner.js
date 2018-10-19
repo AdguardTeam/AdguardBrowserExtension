@@ -573,9 +573,6 @@ adguard.antiBannerService = (function (adguard) {
                 const rule = adguard.rules.builder.createRule(ruleText, filterId);
 
                 if (rule !== null) {
-                    if (typeof rule.isIgnored === 'function' && rule.isIgnored()) {
-                        return;
-                    }
                     newRequestFilter.addRule(rule);
                 }
             }
