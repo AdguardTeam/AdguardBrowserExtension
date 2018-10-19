@@ -236,7 +236,7 @@
         return {
             urlRuleText: urlRuleText,
             options: options,
-            whiteListRule: whiteListRule
+            whiteListRule: whiteListRule,
         };
     }
 
@@ -722,6 +722,24 @@
     };
 
     /**
+     * If rule has extension modifier
+     */
+    UrlFilterRule.prototype.isExtension = function () {
+        return this.isOptionEnabled(UrlFilterRule.options.EXTENSION);
+    };
+
+    /**
+     * we recognize rules with $extension modifier, but
+     * ignore them when create RequestFilter
+     */
+    UrlFilterRule.prototype.isIgnored = function () {
+        if (typeof this.isExtension === 'function') {
+            return this.isExtension();
+        }
+        return false;
+    };
+
+    /**
      * Loads rule options
      * @param options Options string
      * @private
@@ -734,7 +752,6 @@
             var option = optionsParts[i];
             var optionsKeyValue = option.split(api.FilterRule.EQUAL);
             var optionName = optionsKeyValue[0];
-
             switch (optionName) {
                 case UrlFilterRule.DOMAIN_OPTION:
                     if (optionsKeyValue.length > 1) {
@@ -787,6 +804,9 @@
                     break;
                 case UrlFilterRule.EMPTY_OPTION:
                     this._setUrlFilterRuleOption(UrlFilterRule.options.EMPTY_RESPONSE, true);
+                    break;
+                case UrlFilterRule.EXTENSION_OPTION:
+                    this._setUrlFilterRuleOption(UrlFilterRule.options.EXTENSION, true);
                     break;
                 case UrlFilterRule.CSP_OPTION:
                     this._setUrlFilterRuleOption(UrlFilterRule.options.CSP_RULE, true);
@@ -931,6 +951,7 @@
     UrlFilterRule.REGEXP_ANY_SYMBOL = ".*";
     UrlFilterRule.EMPTY_OPTION = "empty";
     UrlFilterRule.REPLACE_OPTION = "replace"; // Extension doesn't support replace rules, $replace option is here only for correctly parsing
+    UrlFilterRule.EXTENSION_OPTION = "extension"; // Extension doesn't support extension rules, $extension option is here only for correctly parsing
     UrlFilterRule.CSP_OPTION = "csp";
     UrlFilterRule.BADFILTER_OPTION = "badfilter";
 
@@ -1046,7 +1067,13 @@
          * defines a CSP rule
          * For example, ||xpanama.net^$third-party,csp=connect-src 'none'
          */
-        CSP_RULE: 1 << 10
+        CSP_RULE: 1 << 10,
+
+        /**
+         * defines rules with $extension modifier
+         * for example, @@||example.org^$extension
+         */
+        EXTENSION: 1 << 11,
 
         // jshint ignore:end
     };
@@ -1072,9 +1099,6 @@
         // Deprecated modifiers
         'BACKGROUND': true,
         '~BACKGROUND': true,
-        // Specific to desktop version (can be ignored)
-        'EXTENSION': true,
-        '~EXTENSION': true,
         // Unused modifiers
         'COLLAPSE': true,
         '~COLLAPSE': true,
