@@ -220,7 +220,9 @@
 
                         if (foundEscaped) {
                             // Find and replace escaped options delimiter
-                            options = options.replace(ESCAPE_CHARACTER + UrlFilterRule.OPTIONS_DELIMITER, UrlFilterRule.OPTIONS_DELIMITER);
+                            var search = api.SimpleRegex.escapeRegExp(ESCAPE_CHARACTER + UrlFilterRule.OPTIONS_DELIMITER);
+                            var regexp = new RegExp(search, 'g');
+                            options = options.replace(regexp, UrlFilterRule.OPTIONS_DELIMITER);
                         }
 
                         // Options delimiter was found, doing nothing
