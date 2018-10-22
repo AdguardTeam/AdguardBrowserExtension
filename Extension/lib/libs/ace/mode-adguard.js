@@ -750,7 +750,7 @@ ace.define("ace/mode/csp_highlight_rules",[], function(require, exports, module)
     exports.CspHighlightRules = CspHighlightRules;
 });
 
-ace.define("ace/mode/adblock_highlight_rules",[], function (require, exports, module) {
+ace.define("ace/mode/adguard_highlight_rules",[], function (require, exports, module) {
   'use strict';
 
   var oop = require('../lib/oop');
@@ -759,7 +759,7 @@ ace.define("ace/mode/adblock_highlight_rules",[], function (require, exports, mo
   var JavaScriptHighlightRules = require('./javascript_highlight_rules').JavaScriptHighlightRules;
   var CspHighlightRules = require('./csp_highlight_rules').CspHighlightRules;
 
-  var AdblockHighlightRules = function () {
+  var AdguardHighlightRules = function () {
     this.$rules = {
       "start": [
         {
@@ -950,14 +950,14 @@ ace.define("ace/mode/adblock_highlight_rules",[], function (require, exports, mo
     this.normalizeRules();
   };
 
-  AdblockHighlightRules.metaData = {
+  AdguardHighlightRules.metaData = {
     '$schema': 'https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json',
     name: 'Adblock',
     scopeName: 'text.adblock',
   };
 
-  oop.inherits(AdblockHighlightRules, TextHighlightRules);
-  exports.AdblockHighlightRules = AdblockHighlightRules;
+  oop.inherits(AdguardHighlightRules, TextHighlightRules);
+  exports.AdguardHighlightRules = AdguardHighlightRules;
 });
 
 ace.define("ace/mode/folding/cstyle",[], function(require, exports, module) {
@@ -1100,27 +1100,27 @@ oop.inherits(FoldMode, BaseFoldMode);
 
 });
 
-ace.define("ace/mode/adblock",[], function(require, exports, module) {
+ace.define("ace/mode/adguard",[], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
 var TextMode = require("./text").Mode;
-var AdblockHighlightRules = require("./adblock_highlight_rules").AdblockHighlightRules;
+var AdguardHighlightRules = require("./adguard_highlight_rules").AdguardHighlightRules;
 var FoldMode = require("./folding/cstyle").FoldMode;
 
 var Mode = function() {
-    this.HighlightRules = AdblockHighlightRules;
+    this.HighlightRules = AdguardHighlightRules;
     this.foldingRules = new FoldMode();
 };
 oop.inherits(Mode, TextMode);
 
 (function() {
-    this.$id = "ace/mode/adblock"
+    this.$id = "ace/mode/adguard"
 }).call(Mode.prototype);
 
 exports.Mode = Mode;
 });                (function() {
-                    ace.require(["ace/mode/adblock"], function(m) {
+                    ace.require(["ace/mode/adguard"], function(m) {
                         if (typeof module == "object" && typeof exports == "object" && module) {
                             module.exports = m;
                         }
