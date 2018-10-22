@@ -1,6 +1,6 @@
 import gulp from 'gulp';
-const path = require('path');
-const { runQunitPuppeteer, printOutput } = require('node-qunit-puppeteer');
+import path from 'path';
+import { runQunitPuppeteer, printOutput } from 'node-qunit-puppeteer';
 
 
 const runQunit = (testFilePath, done) => {
@@ -9,6 +9,7 @@ const runQunit = (testFilePath, done) => {
         timeout: 10000,
         redirectConsole: true,
     };
+
     runQunitPuppeteer(qunitArgs)
         .then((result) => {
             printOutput(result, console);
@@ -17,7 +18,6 @@ const runQunit = (testFilePath, done) => {
             }
         })
         .then(done)
-        // Failed to run the tests
         .catch((ex) => {
             console.error(ex);
         });
