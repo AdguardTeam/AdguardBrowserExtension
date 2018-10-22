@@ -296,8 +296,8 @@ var WhiteListFilter = function (options) {
     editor.setShowPrintMargin(false);
 
     editor.$blockScrolling = Infinity;
-    const AdBlockMode = ace.require('ace/mode/adblock').Mode;
-    editor.session.setMode(new AdBlockMode());
+    const AdguardMode = ace.require('ace/mode/adguard').Mode;
+    editor.session.setMode(new AdguardMode());
 
     const saveIndicatorElement = document.querySelector('#whiteListRulesSaveIndicator');
     const saver = new Saver({
@@ -378,8 +378,8 @@ const UserFilter = function () {
     editor.setShowPrintMargin(false);
 
     editor.$blockScrolling = Infinity;
-    const AdBlockMode = ace.require('ace/mode/adblock').Mode;
-    editor.session.setMode(new AdBlockMode());
+    const AdguardMode = ace.require('ace/mode/adguard').Mode;
+    editor.session.setMode(new AdguardMode());
 
     const saveIndicatorElement = document.querySelector('#userRulesSaveIndicator');
     const saver = new Saver({
