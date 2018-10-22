@@ -295,9 +295,9 @@ var WhiteListFilter = function (options) {
     const editor = ace.edit('whiteListRules');
     editor.setShowPrintMargin(false);
 
-    // Ace TextHighlightRules mode is edited in ace.js library file
-    editor.session.setMode('ace/mode/text_highlight_rules');
     editor.$blockScrolling = Infinity;
+    const AdBlockMode = ace.require('ace/mode/adblock').Mode;
+    editor.session.setMode(new AdBlockMode());
 
     const saveIndicatorElement = document.querySelector('#whiteListRulesSaveIndicator');
     const saver = new Saver({
@@ -377,9 +377,9 @@ const UserFilter = function () {
     const editor = ace.edit('userRules');
     editor.setShowPrintMargin(false);
 
-    // Ace TextHighlightRules mode is edited in ace.js library file
-    editor.session.setMode('ace/mode/text_highlight_rules');
     editor.$blockScrolling = Infinity;
+    const AdBlockMode = ace.require('ace/mode/adblock').Mode;
+    editor.session.setMode(new AdBlockMode());
 
     const saveIndicatorElement = document.querySelector('#userRulesSaveIndicator');
     const saver = new Saver({
