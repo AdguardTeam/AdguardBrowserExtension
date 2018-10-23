@@ -263,9 +263,7 @@
              * Forbids report-to and report-uri directives
              */
             var cspDirective = rule.cspDirective.toLowerCase();
-            if (cspDirective.indexOf('report-uri') >= 0 ||
-                cspDirective.indexOf('report-to') >= 0) {
-
+            if (cspDirective.indexOf('report-') >= 0) {
                 throw 'Forbidden CSP directive: ' + cspDirective;
             }
         }
@@ -276,20 +274,21 @@
      * @param rule options
      */
     function validateCookieRule(ruleOptions) {
-        ruleOptions.split(',').forEach(function (option) {
-            var partIndex = option.indexOf('=');
-            if (partIndex >= 0) {
-                option = option.substr(0, partIndex);
-            }
-            if (VALID_COOKIE_RULE_OPTIONS.indexOf(option) < 0) {
-                throw 'Cookie rules do not support modifier: ' + option;
-            }
-        });
+
+        /**
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/961
+         * $cookie option may be empty in case of whitelist rule, it means to disable all other $cookie rules matching the whitelist rule
+         */
+        if (!rule.whiteListRule && !rule.cookieOption) {
+            throw 'Invalid $cookie rule: Cookie option must not be empty';
+        }
     }
 
     /**
-     * Tries to convert data: or blob: rule to CSP rule
-     * @param rule Rule
+     * Tries to convert data: or blob: rule to CSP rules.
+     * Actually, this is just an ugly hotfix for Chrome where data: and blob: URLs aren't exposed to extensions.
+     * 
+     * @param rule Rule text
      * @param urlRuleText URL rule text
      */
     function tryConvertToCspRule(rule, urlRuleText) {
@@ -299,7 +298,7 @@
             return;
         }
 
-        // Firefox browser allow to intercept data: and blob: URIs
+        // Firefox browser allows to intercept data: and blob: URLs
         if (isFirefoxBrowser) {
             return;
         }
@@ -751,21 +750,11 @@
     };
 
     /**
-     * If rule has extension modifier
-     */
-    UrlFilterRule.prototype.isExtension = function () {
-        return this.isOptionEnabled(UrlFilterRule.options.EXTENSION);
-    };
-
-    /**
      * we recognize rules with $extension modifier, but
      * ignore them when create RequestFilter
      */
     UrlFilterRule.prototype.isIgnored = function () {
-        if (typeof this.isExtension === 'function') {
-            return this.isExtension();
-        }
-        return false;
+        return this.isOptionEnabled(UrlFilterRule.options.EXTENSION);
     };
 
     /**
@@ -846,7 +835,8 @@
                 case UrlFilterRule.COOKIE_OPTION:
                     this._setUrlFilterRuleOption(UrlFilterRule.options.COOKIE_RULE, true);
                     if (optionsKeyValue.length > 1) {
-                        this.cookieModifier = optionsKeyValue[1];
+                        // TODO: Introduce a CookieOption class
+                        this.cookieOption = optionsKeyValue[1];
                     }
                     break;
                 case UrlFilterRule.REPLACE_OPTION:
@@ -1146,19 +1136,6 @@
         '~COLLAPSE': true,
         '~DOCUMENT': true
     };
-
-    /**
-     * $cookie rules support a limited list of modifiers: domain, ~domain, important, third-party, ~third-party.
-     * TODO: Change to masks
-     */
-    var VALID_COOKIE_RULE_OPTIONS = [
-        UrlFilterRule.COOKIE_OPTION,
-        UrlFilterRule.DOMAIN_OPTION,
-        '~' + UrlFilterRule.DOMAIN_OPTION,
-        UrlFilterRule.IMPORTANT_OPTION,
-        UrlFilterRule.THIRD_PARTY_OPTION,
-        '~' + UrlFilterRule.THIRD_PARTY_OPTION
-    ];
 
     api.UrlFilterRule = UrlFilterRule;
 
