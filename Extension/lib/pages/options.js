@@ -142,21 +142,169 @@ var TopMenu = (function () {
 
     return {
         init: init,
-        toggleTab: toggleTab
+        toggleTab: toggleTab,
+    };
+})();
+
+const Saver = function (options) {
+    this.indicatorElement = options.indicatorElement;
+    this.editor = options.editor;
+    this.saveEventType = options.saveEventType;
+    this.omitRenderEventsCount = 0;
+
+    const states = {
+        CLEAR: 1 << 0,
+        DIRTY: 1 << 1,
+        SAVING: 1 << 2,
+        SAVED: 1 << 3,
     };
 
-})();
+    const indicatorText = {
+        [states.CLEAR]: '',
+        [states.DIRTY]: i18n.getMessage('options_editor_indicator_editing'),
+        [states.SAVING]: i18n.getMessage('options_editor_indicator_saving'),
+        [states.SAVED]: i18n.getMessage('options_editor_indicator_saved'),
+    };
+
+    this.isSaving = function () {
+        return (this.currentState & states.SAVING) === states.SAVING;
+    };
+
+    this.isDirty = function () {
+        return (this.currentState & states.DIRTY) === states.DIRTY;
+    };
+
+    this.updateIndicator = function (state) {
+        this.indicatorElement.textContent = indicatorText[state];
+        switch (state) {
+            case states.DIRTY:
+            case states.CLEAR:
+            case states.SAVING:
+                this.indicatorElement.classList.remove('filter-rules__label--saved');
+                break;
+            case states.SAVED:
+                this.indicatorElement.classList.add('filter-rules__label--saved');
+                break;
+            default:
+                break;
+        }
+    };
+
+    let timeout;
+
+    const setState = (state, skipManageState = false) => {
+        this.currentState |= state;
+        switch (state) {
+            case states.DIRTY:
+                this.currentState &= ~states.CLEAR;
+                break;
+            case states.CLEAR:
+                this.currentState &= ~states.DIRTY;
+                break;
+            case states.SAVING:
+                this.currentState &= ~states.SAVED;
+                break;
+            case states.SAVED:
+                this.currentState &= ~states.SAVING;
+                break;
+            default:
+                break;
+        }
+
+        if (!skipManageState) {
+            this.manageState();
+        }
+    };
+
+    this.manageState = function () {
+        const EDIT_TIMEOUT_MS = 1000;
+        const HIDE_INDICATOR_TIMEOUT_MS = 1500;
+
+        if (timeout) {
+            clearTimeout(timeout);
+        }
+
+        const self = this;
+
+        const isDirty = this.isDirty();
+        const isSaving = this.isSaving();
+
+        if (isDirty && !isSaving) {
+            this.updateIndicator(states.DIRTY);
+            timeout = setTimeout(() => {
+                self.saveRules();
+                setState(states.CLEAR, true);
+                setState(states.SAVING);
+            }, EDIT_TIMEOUT_MS);
+            return;
+        }
+
+        if (isDirty && isSaving) {
+            this.updateIndicator(states.DIRTY);
+            timeout = setTimeout(() => {
+                setState(states.CLEAR);
+                self.saveRules();
+            }, EDIT_TIMEOUT_MS);
+            return;
+        }
+
+        if (!isDirty && !isSaving && (this.omitRenderEventsCount === 1)) {
+            this.updateIndicator(states.SAVED);
+            timeout = setTimeout(() => {
+                self.updateIndicator(states.CLEAR);
+            }, HIDE_INDICATOR_TIMEOUT_MS);
+            return;
+        }
+
+        if (!isDirty && isSaving) {
+            this.updateIndicator(states.SAVING);
+        }
+    };
+
+    this.saveRules = function () {
+        this.omitRenderEventsCount += 1;
+        const text = this.editor.getValue();
+        contentPage.sendMessage({
+            type: this.saveEventType,
+            content: text,
+        }, () => {});
+    };
+
+    const setDirty = () => {
+        setState(states.DIRTY);
+    };
+
+    const setSaved = () => {
+        if (this.omitRenderEventsCount > 0) {
+            setState(states.SAVED);
+            this.omitRenderEventsCount -= 1;
+            return true;
+        }
+        return false;
+    };
+
+    return {
+        setDirty: setDirty,
+        setSaved: setSaved,
+    };
+};
 
 var WhiteListFilter = function (options) {
     'use strict';
-
-    let omitRenderEventsCount = 0;
 
     const editor = ace.edit('whiteListRules');
     editor.setShowPrintMargin(false);
 
     // Ace TextHighlightRules mode is edited in ace.js library file
-    editor.session.setMode("ace/mode/text_highlight_rules");
+    editor.session.setMode('ace/mode/text_highlight_rules');
+    editor.$blockScrolling = Infinity;
+
+    const saveIndicatorElement = document.querySelector('#whiteListRulesSaveIndicator');
+    const saver = new Saver({
+        editor: editor,
+        saveEventType: 'saveWhiteListDomains',
+        indicatorElement: saveIndicatorElement,
+    });
 
     const applyChangesBtn = document.querySelector('#whiteListFilterApplyChanges');
     const importWhiteListInput = document.querySelector('#importWhiteListInput');
@@ -169,35 +317,26 @@ var WhiteListFilter = function (options) {
             type: 'getWhiteListDomains',
         }, function (response) {
             editor.setValue(response.content || '');
-            applyChangesBtn.style.display = 'none';
-        });
-    }
-
-    function saveWhiteListDomains(e) {
-        e.preventDefault();
-
-        omitRenderEventsCount = 1;
-
-        editor.setReadOnly(true);
-        var text = editor.getValue();
-
-        contentPage.sendMessage({
-            type: 'saveWhiteListDomains',
-            content: text,
-        }, function () {
-            editor.setReadOnly(false);
-            applyChangesBtn.style.display = 'none';
         });
     }
 
     function updateWhiteListDomains() {
-        if (omitRenderEventsCount > 0) {
-            omitRenderEventsCount -= 1;
+        const omitRenderEvent = saver.setSaved();
+        if (omitRenderEvent) {
             return;
         }
-
         loadWhiteListDomains();
     }
+
+    const session = editor.getSession();
+    let initialChangeFired = false;
+    session.addEventListener('change', () => {
+        if (!initialChangeFired) {
+            initialChangeFired = true;
+            return;
+        }
+        saver.setDirty();
+    });
 
     function changeDefaultWhiteListMode(e) {
         e.preventDefault();
@@ -207,7 +346,6 @@ var WhiteListFilter = function (options) {
         });
     }
 
-    applyChangesBtn.addEventListener('click', saveWhiteListDomains);
     changeDefaultWhiteListModeCheckbox.addEventListener('change', changeDefaultWhiteListMode);
 
     importWhiteListBtn.addEventListener('click', (e) => {
@@ -233,58 +371,47 @@ var WhiteListFilter = function (options) {
     };
 };
 
-var UserFilter = function () {
+const UserFilter = function () {
     'use strict';
 
-    var omitRenderEventsCount = 0;
-
-    var editor = ace.edit('userRules');
+    const editor = ace.edit('userRules');
     editor.setShowPrintMargin(false);
 
     // Ace TextHighlightRules mode is edited in ace.js library file
     editor.session.setMode('ace/mode/text_highlight_rules');
+    editor.$blockScrolling = Infinity;
 
-    var applyChangesBtn = document.querySelector('#userFilterApplyChanges');
+    const saveIndicatorElement = document.querySelector('#userRulesSaveIndicator');
+    const saver = new Saver({
+        editor: editor,
+        saveEventType: 'saveUserRules',
+        indicatorElement: saveIndicatorElement,
+    });
 
     function loadUserRules() {
         contentPage.sendMessage({
             type: 'getUserRules',
         }, function (response) {
             editor.setValue(response.content || '');
-            applyChangesBtn.style.display = 'none';
-        });
-    }
-
-    function saveUserRules(e) {
-        e.preventDefault();
-
-        omitRenderEventsCount = 1;
-
-        editor.setReadOnly(true);
-        var text = editor.getValue();
-
-        contentPage.sendMessage({
-            type: 'saveUserRules',
-            content: text
-        }, function () {
-            editor.setReadOnly(false);
-            applyChangesBtn.style.display = 'none';
         });
     }
 
     function updateUserFilterRules() {
-        if (omitRenderEventsCount > 0) {
-            omitRenderEventsCount--;
+        const omitRenderEvent = saver.setSaved();
+        if (omitRenderEvent) {
             return;
         }
-
         loadUserRules();
     }
 
-    applyChangesBtn.addEventListener('click', saveUserRules);
-
-    editor.getSession().addEventListener('change', function () {
-        applyChangesBtn.style.display = 'inline-block';
+    const session = editor.getSession();
+    let initialChangeFired = false;
+    session.addEventListener('change', () => {
+        if (!initialChangeFired) {
+            initialChangeFired = true;
+            return;
+        }
+        saver.setDirty();
     });
 
     const importUserFiltersInput = document.querySelector('#importUserFilterInput');
@@ -1566,7 +1693,6 @@ var initPage = function (response) {
     EventNotifierTypes = response.constants.EventNotifierTypes;
 
     var onDocumentReady = function () {
-
         var controller = new PageController();
         controller.init();
 
@@ -1604,7 +1730,6 @@ var initPage = function (response) {
                     controller.antiBannerFilters.onFilterDownloadFinished(options);
                     break;
                 case EventNotifierTypes.UPDATE_USER_FILTER_RULES:
-                    controller.userFilter.updateUserFilterRules();
                     controller.antiBannerFilters.updateRulesCountInfo(options);
                     break;
                 case EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES:
@@ -1612,6 +1737,7 @@ var initPage = function (response) {
                     break;
                 case EventNotifierTypes.REQUEST_FILTER_UPDATED:
                     controller.antiBannerFilters.updateRulesCountInfo(options);
+                    controller.userFilter.updateUserFilterRules(options);
                     break;
                 case EventNotifierTypes.SYNC_STATUS_UPDATED:
                     controller.syncSettings.updateSyncSettings(options);

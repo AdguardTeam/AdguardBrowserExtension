@@ -275,7 +275,7 @@ QUnit.test("Regexp characters escaping", function (assert) {
     assert.ok(rule);
 });
 
-QUnit.test("Simple regexp rule", function(assert) {
+QUnit.test("Simple regexp rule", function (assert) {
     var RequestTypes = adguard.RequestTypes;
 
     var mask = "/^https?/";
@@ -637,27 +637,43 @@ QUnit.test('testReplaceToEmptyString', function (assert) {
     assert.equal(expected, output);
 });
 
+QUnit.test('testReplaceWithMoreThanOneReplaceGroups', function (assert) {
+
+    adguard.prefs.features.responseContentFilteringSupported = true;
+
+    var input = 'remove "BIG" from string';
+    var expected = 'remove "" from string';
+
+    var ruleText = '||example.com^$replace=/(remove ")[\\s\\S]*(" from string)/\\$1\\$2/';
+    var rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.ok(rule.getReplace());
+
+    var actual = rule.getReplace().apply(input);
+    assert.equal(actual, expected);
+});
+
 QUnit.test("BadFilter option", function (assert) {
     var badFilterRule = new adguard.rules.UrlFilterRule("https:*_ad_$badfilter");
 
     assert.ok(badFilterRule);
     assert.ok(badFilterRule.isBadFilter());
     assert.ok(badFilterRule.badFilter);
-    assert.equal(badFilterRule.badFilter,'https:*_ad_');
+    assert.equal(badFilterRule.badFilter, 'https:*_ad_');
 
     badFilterRule = new adguard.rules.UrlFilterRule("https:*_ad_$badfilter,image");
 
     assert.ok(badFilterRule);
     assert.ok(badFilterRule.isBadFilter());
     assert.ok(badFilterRule.badFilter);
-    assert.equal(badFilterRule.badFilter,'https:*_ad_$image');
+    assert.equal(badFilterRule.badFilter, 'https:*_ad_$image');
 
     badFilterRule = new adguard.rules.UrlFilterRule("https:*_ad_$third-party,badfilter,image");
 
     assert.ok(badFilterRule);
     assert.ok(badFilterRule.isBadFilter());
     assert.ok(badFilterRule.badFilter);
-    assert.equal(badFilterRule.badFilter,'https:*_ad_$third-party,image');
+    assert.equal(badFilterRule.badFilter, 'https:*_ad_$third-party,image');
 });
 
 QUnit.test('Test wildcard domains in the url rules', function (assert) {
@@ -677,7 +693,7 @@ QUnit.test('Test wildcard domains in the url rules', function (assert) {
     assert.ok(rule.isPermitted("www.google.de"));
     assert.ok(rule.isPermitted("www.google.co.uk"));
     assert.ok(rule.isPermitted("google.co.uk"));
-    
+
     assert.notOk(rule.isPermitted("google.uk.eu")); // non-existent tld
     assert.notOk(rule.isPermitted("nigma.ru"));
     assert.notOk(rule.isPermitted("nigma.com"));
@@ -691,7 +707,7 @@ QUnit.test("Cookie option", function (assert) {
     assert.ok(cookieRule);
     assert.ok(cookieRule.isCookieRule());
     assert.ok(cookieRule.cookieModifier);
-    assert.equal(cookieRule.cookieModifier,'c_user');
+    assert.equal(cookieRule.cookieModifier, 'c_user');
     assert.ok(cookieRule.isThirdParty());
 
     cookieRule = new adguard.rules.UrlFilterRule("$cookie=__cfduid");
@@ -699,7 +715,7 @@ QUnit.test("Cookie option", function (assert) {
     assert.ok(cookieRule);
     assert.ok(cookieRule.isCookieRule());
     assert.ok(cookieRule.cookieModifier);
-    assert.equal(cookieRule.cookieModifier,'__cfduid');
+    assert.equal(cookieRule.cookieModifier, '__cfduid');
 
     cookieRule = new adguard.rules.UrlFilterRule("$cookie=/__utm[a-z]/");
 
@@ -707,7 +723,7 @@ QUnit.test("Cookie option", function (assert) {
     assert.ok(cookieRule.isRegexRule);
     assert.ok(cookieRule.isCookieRule());
     assert.ok(cookieRule.cookieModifier);
-    assert.equal(cookieRule.cookieModifier,'/__utm[a-z]/');
+    assert.equal(cookieRule.cookieModifier, '/__utm[a-z]/');
 
     cookieRule = new adguard.rules.UrlFilterRule("@@||example.org^$cookie");
     assert.ok(cookieRule);

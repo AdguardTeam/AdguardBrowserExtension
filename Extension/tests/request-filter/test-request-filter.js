@@ -386,6 +386,30 @@ QUnit.test("BadFilter multi-options", function (assert) {
 
 });
 
+
+// https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1122
+QUnit.test('Rule with extension modifier should be omitted in request filter', function (assert) {
+
+    const rules = [
+        '@@||example.org^$extension',
+        '||example.org/favicon.ico',
+        '||example.org/badcode.js',
+    ];
+
+    const requestFilter = new adguard.RequestFilter();
+
+    const urlFilterRules = rules.map(rule => {
+        return new adguard.rules.UrlFilterRule(rule);
+    });
+
+    requestFilter.addRules(urlFilterRules);
+
+    const requesRulesLength = requestFilter.getRules().length;
+
+    assert.equal(requesRulesLength, rules.length - 1);
+
+});
+
 QUnit.test("requestFilter.findRuleForRequest performance", function (assert) {
 
     var rules = filtersFromTxt; // variable filtersFromTxt is from 'test_filter.js'
@@ -414,7 +438,7 @@ QUnit.test("requestFilter.findRuleForRequest performance", function (assert) {
     console.log("Total: " + elapsed + " ms");
     console.log("Average: " + elapsed / count + " ms");
     console.log('------------------------------------END TEST PERFORMANCE-----------------------------------');
-    
+
     // Total: 84 ms
     // Average: 0.00168 ms
 });

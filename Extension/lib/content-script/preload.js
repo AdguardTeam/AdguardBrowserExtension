@@ -140,8 +140,10 @@
     };
 
     /**
-     * We should override WebSocket constructor in the following browsers: Chrome (between 47 and 57 versions), Edge, YaBrowser, Opera and Safari (old versions)
+     * We should override WebSocket constructor in the following browsers: Chrome (between 47 and 57 versions), YaBrowser, Opera and Safari (old versions)
      * Firefox and Safari (9 or higher) can be omitted because they allow us to inspect and block WS requests.
+     * Edge doesn't provide access to websockets via onBeforeRequest API but we don't override them,
+     * because Edge behaves unpredictably when we override WebSocket.
      * This function simply checks the conditions above.
      * @returns true if WebSocket constructor should be overridden
      */
@@ -149,9 +151,6 @@
 
         var userAgent = navigator.userAgent.toLowerCase();
         var isFirefox = userAgent.indexOf('firefox') >= 0;
-
-        // Edge doesn't provide access to websockets via onBeforeRequest api
-        var isEdge = userAgent.indexOf('edge') >= 0;
 
         // Explicit check, we must not go further in case of Firefox
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/379
@@ -169,7 +168,7 @@
         var versionNumber = Number.parseInt(version.substring(0, version.indexOf('.')));
 
         // WebSockets are broken in old versions of chrome and we don't need this hack in new version cause then websocket traffic is intercepted
-        return isEdge || versionNumber >= 47 && versionNumber <= 57;
+        return versionNumber >= 47 && versionNumber <= 57;
     };
 
     /**
@@ -426,7 +425,7 @@
         if (!elementUrl ||
             elementUrl.indexOf('http') !== 0 ||
             // Some sources could not be set yet, lazy loaded images or smth.
-            // In some cases like on gog.com, collapsing these elements could break the page script loading their sources 
+            // In some cases like on gog.com, collapsing these elements could break the page script loading their sources
             elementUrl === element.baseURI) {
             return null;
         }
