@@ -14,12 +14,12 @@ const runQunit = (testFilePath, done) => {
         .then((result) => {
             printOutput(result, console);
             if (result.stats.failed > 0) {
-                throw new Error('Unit Tests Failure');
+                done('Some of the unit tests failed');
             }
         })
         .then(done)
         .catch((ex) => {
-            console.error(ex);
+            done(`Error occured while running tests: ${ex}`);
         });
 };
 
@@ -50,7 +50,7 @@ const testContent = (done) => {
 
 // Cookie filtering tests
 const testCookieFiltering = (done) => {
-    runQunit('Extension/tests/cookie-filtering/test-cookie-filtering.html', done);
+    runQunit('../Extension/tests/cookie-filtering/test-cookie-filtering.html', done);
 };
 
 // Css hits tests
@@ -73,9 +73,14 @@ const testRing = (done) => {
     runQunit('../Extension/tests/miscellaneous/test-ring-buffer.html', done);
 };
 
+// Ring buffer tests
+const testCookie = (done) => {
+    runQunit('../Extension/tests/miscellaneous/test-ring-buffer.html', done);
+};
+
 // Encoding tests
 const testEncoding = (done) => {
     runQunit('../Extension/tests/miscellaneous/test-encoding.html', done);
 };
 
-export default gulp.series(testRule, testSB, testURL, testCSSfilter, testContent, testCSShits, testReq, testEl, testRing, testEncoding);
+export default gulp.series(testRule, testSB, testURL, testCSSfilter, testContent, testCookieFiltering, testCSShits, testReq, testEl, testCookie, testRing, testEncoding);
