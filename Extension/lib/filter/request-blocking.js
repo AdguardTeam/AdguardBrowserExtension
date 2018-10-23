@@ -325,6 +325,7 @@ adguard.webRequestService = (function (adguard) {
             return null;
         }
 
+        // @@||example.org^$document or @@||example.org^$urlblock — disables all the $csp rules on all the pages matching the rule pattern.
         var whitelistRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
         if (whitelistRule && whitelistRule.isDocumentWhiteList()) {
             return null;
@@ -338,23 +339,22 @@ adguard.webRequestService = (function (adguard) {
      * @param tab           Tab
      * @param requestUrl    Request URL
      * @param referrerUrl   Referrer URL
-     * @param requestType   Request type (DOCUMENT or SUBDOCUMENT)
+     * @param requestType   Request type
      * @returns {*}         Collection of rules or null
      */
     var getCookieRules = function (tab, requestUrl, referrerUrl, requestType) {
 
-        if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab) || adguard.frames.isTabWhiteListed(tab)) {
-            //don't process request
+        if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab)) {
+            // Don't process request
             return null;
         }
 
-        // $cookie rules are not affected by regular exception rules (@@). In order to disable a $cookie rule, the exception rule should also have a $cookie modifier.
-        // TODO: Check that $cookie whitelist is found
-        var whitelistRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
-        if (whitelistRule && whitelistRule.isCookieRule()) {
+        if (adguard.frames.isTabWhiteListed(tab)) {
+            // $cookie rules are not affected by regular exception rules (@@) unless it's a $document exception.
             return null;
         }
 
+        // Get all $cookie rules matching the specified request
         return adguard.requestFilter.getCookieRules(requestUrl, referrerUrl, requestType);
     };
 
