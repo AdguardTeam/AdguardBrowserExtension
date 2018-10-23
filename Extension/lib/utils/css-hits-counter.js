@@ -56,6 +56,22 @@ var CssHitsCounter = (function () { // jshint ignore:line
     }
 
     /**
+     * Adds elements into array if they are not in the array yet
+     * @param {*} targetArray
+     * @param {*} sourceArray
+     */
+    function addUnique(targetArray, sourceArray) {
+        if (sourceArray.length > 0) {
+            for (var i = 0; i < sourceArray.length; i += 1) {
+                var sourceElement = sourceArray[i];
+                if (targetArray.indexOf(sourceElement) === -1) {
+                    targetArray.push(sourceElement);
+                }
+            }
+        }
+    }
+
+    /**
      * Serialize HTML element
      * @param element
      */
@@ -127,6 +143,9 @@ var CssHitsCounter = (function () { // jshint ignore:line
      * @returns {({filterId: Number, ruleText: String} | null)}
      */
     function getCssHitData(element) {
+        if (!(element instanceof Element)) {
+            return null;
+        }
         var style = getComputedStyle(element);
         if (!style) {
             return null;
@@ -155,7 +174,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
         start = start || 0;
         length = length || elements.length;
         var result = [];
-        for (var i = 0; i < length; i += 1) {
+        for (var i = start; i < length; i += 1) {
             var element = elements[i];
             var cssHitData = getCssHitData(element);
             if (!cssHitData) {
@@ -213,14 +232,25 @@ var CssHitsCounter = (function () { // jshint ignore:line
         }
     }
 
-    function countAllCssHits() {
-        var elements = document.querySelectorAll('*');
-        countCssHitsBatch(elements, 0, CSS_HITS_BATCH_SIZE, CSS_HITS_BATCH_SIZE, [], function (result) {
-            if (result.length > 0) {
-                onCssHitsFoundCallback(result);
+
+    var countAllCssHits = (function () {
+        // we don't start counting again all css hits till previous count process wasn't finished
+        var countIsWorking = false;
+
+        return function () {
+            if (countIsWorking) {
+                return;
             }
-        });
-    }
+            countIsWorking = true;
+            var elements = document.querySelectorAll('*');
+            countCssHitsBatch(elements, 0, CSS_HITS_BATCH_SIZE, CSS_HITS_BATCH_SIZE, [], function (result) {
+                if (result.length > 0) {
+                    onCssHitsFoundCallback(result);
+                }
+                countIsWorking = false;
+            });
+        };
+    })();
 
     function startObserver(observer) {
         observer.observe(document.documentElement, {
@@ -239,6 +269,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
         var observer = new MutationObserver(function (mutationRecords) {
             // Collect probe elements, count them, then remove from their targets
             var probeElements = [];
+            var childrenOfProbeElements = [];
             mutationRecords.forEach(function (mutationRecord) {
                 if (mutationRecord.addedNodes.length === 0) {
                     return;
@@ -250,19 +281,36 @@ var CssHitsCounter = (function () { // jshint ignore:line
                         // Most likely this is a "probe" element that was added and then immediately removed from DOM.
                         // We re-add it and check if any rule matched it
                         probeElements.push(node);
+
+                        // CSS rules could be applied to the nodes inside probe element
+                        // that's why we get all child elements of added node
+                        var nodeChildren = node.querySelectorAll('*');
+                        if (nodeChildren && nodeChildren.length > 0) {
+                            for (var childIndex = 0; childIndex < nodeChildren.length; childIndex += 1) {
+                                childrenOfProbeElements.push(nodeChildren[childIndex]);
+                            }
+                        }
+
                         observer.disconnect();
                         mutationRecord.target.appendChild(node);
-                        startObserver(observer);
                     }
                 }
             });
 
-            if (probeElements.length > 0) {
-                var result = countCssHitsForElements(probeElements);
+            var allProbeElements = [];
+
+            addUnique(allProbeElements, childrenOfProbeElements);
+            addUnique(allProbeElements, probeElements);
+
+            if (allProbeElements.length > 0) {
+                var result = countCssHitsForElements(allProbeElements);
                 if (result.length > 0) {
                     onCssHitsFoundCallback(result);
                 }
-                observer.disconnect();
+                /**
+                 * don't remove child elements of probe elements
+                 * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1096
+                 */
                 removeElements(probeElements);
                 startObserver(observer);
             }

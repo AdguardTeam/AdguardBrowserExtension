@@ -19,7 +19,6 @@
  * Filter categories service
  */
 adguard.categories = (function (adguard) {
-
     'use strict';
 
     /**

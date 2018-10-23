@@ -163,7 +163,7 @@ PopupController.prototype = {
             stack.classList.add('status-paused');
             parent.classList.add('status-paused');
         } else if (!tabInfo.canAddRemoveRule) {
-            stack.classList.add('status-error error-filter');
+            stack.classList.add('status-error', 'error-filter');
         } else if (tabInfo.documentWhiteListed) {
             stack.classList.add('status-cross');
             parent.classList.add('status-cross');
@@ -356,33 +356,34 @@ PopupController.prototype = {
                     }
                 }
                 break;
+            default:
+                break;
         }
 
         return result;
     },
 
     _selectRequestsStatsData: function (stats, range, type) {
-        var result = [];
-        const typeSelector = stats.blockedTypes[type] ? stats.blockedTypes[type] : 'total';
+        const result = [];
         switch (range) {
             case 'day':
                 stats.today.forEach(function (d) {
-                    result.push(d[typeSelector]);
+                    result.push(d[type]);
                 });
                 break;
             case 'week':
                 stats.lastWeek.forEach(function (d) {
-                    result.push(d[typeSelector]);
+                    result.push(d[type]);
                 });
                 break;
             case 'month':
                 stats.lastMonth.forEach(function (d) {
-                    result.push(d[typeSelector]);
+                    result.push(d[type]);
                 });
                 break;
             case 'year':
                 stats.lastYear.forEach(function (d) {
-                    result.push(d[typeSelector]);
+                    result.push(d[type]);
                 });
                 break;
             default:
@@ -393,13 +394,13 @@ PopupController.prototype = {
 
     DAYS_OF_WEEK: (function () {
         return this.DAYS_OF_WEEK || [
-            i18n.getMessage("popup_statistics_week_days_mon"),
-            i18n.getMessage("popup_statistics_week_days_tue"),
-            i18n.getMessage("popup_statistics_week_days_wed"),
-            i18n.getMessage("popup_statistics_week_days_thu"),
-            i18n.getMessage("popup_statistics_week_days_fri"),
-            i18n.getMessage("popup_statistics_week_days_sat"),
-            i18n.getMessage("popup_statistics_week_days_sun")
+            i18n.getMessage('popup_statistics_week_days_mon'),
+            i18n.getMessage('popup_statistics_week_days_tue'),
+            i18n.getMessage('popup_statistics_week_days_wed'),
+            i18n.getMessage('popup_statistics_week_days_thu'),
+            i18n.getMessage('popup_statistics_week_days_fri'),
+            i18n.getMessage('popup_statistics_week_days_sat'),
+            i18n.getMessage('popup_statistics_week_days_sun'),
         ];
     })(),
 
@@ -409,19 +410,19 @@ PopupController.prototype = {
 
     MONTHS_OF_YEAR: (function () {
         return this.MONTHS_OF_YEAR || [
-                i18n.getMessage("popup_statistics_months_jan"),
-                i18n.getMessage("popup_statistics_months_feb"),
-                i18n.getMessage("popup_statistics_months_mar"),
-                i18n.getMessage("popup_statistics_months_apr"),
-                i18n.getMessage("popup_statistics_months_may"),
-                i18n.getMessage("popup_statistics_months_jun"),
-                i18n.getMessage("popup_statistics_months_jul"),
-                i18n.getMessage("popup_statistics_months_aug"),
-                i18n.getMessage("popup_statistics_months_sep"),
-                i18n.getMessage("popup_statistics_months_oct"),
-                i18n.getMessage("popup_statistics_months_nov"),
-                i18n.getMessage("popup_statistics_months_dec")
-            ];
+            i18n.getMessage('popup_statistics_months_jan'),
+            i18n.getMessage('popup_statistics_months_feb'),
+            i18n.getMessage('popup_statistics_months_mar'),
+            i18n.getMessage('popup_statistics_months_apr'),
+            i18n.getMessage('popup_statistics_months_may'),
+            i18n.getMessage('popup_statistics_months_jun'),
+            i18n.getMessage('popup_statistics_months_jul'),
+            i18n.getMessage('popup_statistics_months_aug'),
+            i18n.getMessage('popup_statistics_months_sep'),
+            i18n.getMessage('popup_statistics_months_oct'),
+            i18n.getMessage('popup_statistics_months_nov'),
+            i18n.getMessage('popup_statistics_months_dec'),
+        ];
     })(),
 
     _monthsAsString: function (monthIndex) {
@@ -581,6 +582,7 @@ PopupController.prototype = {
         });
     },
 
+    // TODO remove, as unnecessary
     _localizeBlockedType: function (type) {
         if (!type) {
             return '';
@@ -589,85 +591,88 @@ PopupController.prototype = {
         return i18n.getMessage('popup_statistics_request_types_' + type.toLowerCase());
     },
 
-    _buildRequestTypesColumns: function (stats, range) {
-        var statsData = this._selectRequestTypesStatsData(stats, range);
-
-        var columns = {
-            x: ['x'],
-            values: [i18n.getMessage("popup_statistics_type_request_types")]
-        };
-
-        for (var type in stats.blockedTypes) {
-            var number = statsData[stats.blockedTypes[type]] ? statsData[stats.blockedTypes[type]] : 0;
-
-            columns.x.push(this._localizeBlockedType(type));
-            columns.values.push(number);
-        }
-
-        return columns;
-    },
-
     _renderAnalyticsBlock: function (stats, range) {
-        var statsData = this._selectRequestTypesStatsData(stats, range);
+        const statsData = this._selectRequestTypesStatsData(stats, range);
 
-        var analytics = document.querySelector('#analytics-blocked-types-values');
-        while(analytics.firstChild) {
+        const analytics = document.querySelector('#analytics-blocked-types-values');
+
+        while (analytics.firstChild) {
             analytics.removeChild(analytics.firstChild);
         }
 
-        for (var type in stats.blockedTypes) {
-            var number = statsData[stats.blockedTypes[type]] ? statsData[stats.blockedTypes[type]] : 0;
-            var blockedTypeItem = htmlToElement(`
+        const { blockedGroups } = stats;
+
+        blockedGroups.forEach((blockedGroup) => {
+            const number = statsData[blockedGroup.groupId];
+            if (number) {
+                const blockedItem = htmlToElement(`
                 <li>
-                    <span class="key">${this._localizeBlockedType(type)}</span>
+                    <span class="key">${blockedGroup.groupName}</span>
                     <span class="value">${number}</span>
                 </li>
             `);
-
-            analytics.appendChild(blockedTypeItem);
-        }
+                analytics.appendChild(blockedItem);
+            }
+        });
     },
 
     _renderStatsGraphs: function (stats, range, type) {
-        /**
-         * Blocked requests types
-         */
-        const requestTypes = {
-            adsRequests: 'ADS',
-            trackersRequests: 'TRACKERS',
-            socialRequests: 'SOCIAL',
-            otherRequests: 'OTHERS',
-            totalRequests: 'total',
-        };
-
-        this._renderRequestsGraphs(stats, range, requestTypes[type]);
+        this._renderRequestsGraphs(stats, range, type);
         this._renderAnalyticsBlock(stats, range);
     },
 
-    _renderStatsBlock: function () {
-        var timeRange = document.querySelector('.statistics-select-time').value;
-        var typeData = document.querySelector('.statistics-select-type').value;
+    _renderStatsBlock: function (stats) {
+        const timeRange = document.querySelector('.statistics-select-time').value;
+        const typeData = document.querySelector('.statistics-select-type').value;
 
-        var self = this;
-        popupPage.sendMessage({type: 'getStatisticsData'}, function (message) {
-            self._renderStatsGraphs(message.stats, timeRange, typeData);
+        if (!stats) {
+            const self = this;
+            popupPage.sendMessage({ type: 'getStatisticsData' }, function (message) {
+                self._renderStatsGraphs(message.stats, timeRange, typeData);
+            });
+        } else {
+            this._renderStatsGraphs(stats, timeRange, typeData);
+        }
+    },
+
+    _renderBlockedGroups: function (container, stats) {
+        const timeRange = document.querySelector('.statistics-select-time').value;
+        const typeSelector = container.querySelector('.statistics-select-type');
+
+        const statsData = this._selectRequestTypesStatsData(stats, timeRange);
+
+        const blockedGroups = stats.blockedGroups
+            .filter(group => statsData[group.groupId]);
+
+        const getSelectTemplate = (group) => {
+            return `<option value="${group.groupId}">${group.groupName}</option>`;
+        };
+
+        blockedGroups.forEach(group => {
+            typeSelector.insertAdjacentHTML('beforeend', getSelectTemplate(group));
         });
     },
 
     _renderStats: function (container) {
-        var template = this.filteringStatisticsTemplate;
+        const template = this.filteringStatisticsTemplate;
         this._appendTemplate(container, template);
 
-        this._renderStatsBlock();
+        const self = this;
+
+        popupPage.sendMessage({ type: 'getStatisticsData' }, function (message) {
+            const { stats } = message;
+
+            self._renderBlockedGroups(container, stats);
+            self._renderStatsBlock(stats);
+        });
     },
 
     _renderActions: function (container, tabInfo) {
-
         if (tabInfo.urlFilteringDisabled) {
             return;
         }
 
-        var el = document.createElement('div');
+        const el = document.createElement('div');
         el.classList.add('actions');
 
         this._appendTemplate(el, this.actionOpenAssistant);
@@ -820,7 +825,11 @@ PopupController.prototype = {
             });
         });
 
-        // Stats filters
+        /**
+         * Stats filters
+         * we call _renderStatsBlock function w/o stats parameter, in order to update stats on
+         * every selection of range or blockedGroup option
+         */
         this._bindAction(parent, '.statistics-select-time', 'change', function () {
             self._renderStatsBlock();
         });

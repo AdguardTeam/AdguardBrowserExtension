@@ -160,11 +160,15 @@
          */
         addRule: function (rule) {
             if (rule === null || !rule.ruleText) {
-                adguard.console.error("FilterRule must not be null");
+                adguard.console.error('FilterRule must not be null');
                 return;
             }
 
             if (rule instanceof adguard.rules.UrlFilterRule) {
+                if (typeof rule.isIgnored === 'function' && rule.isIgnored()) {
+                    adguard.console.warn(`FilterRule with $extension modifier was omitted. Rule text: "${rule.ruleText}"`);
+                    return;
+                }
                 if (rule.isCspRule()) {
                     this.cspFilter.addRule(rule);
                 } else if (rule.isCookieRule()) {
