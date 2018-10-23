@@ -38,35 +38,35 @@
      * @param {string} setCookieValue "Set-Cookie" header value to parse
      */
     function parseSetCookie(setCookieValue) {
-        var parts = setCookieValue.split(";").filter(isNonEmptyString);
-        var nameValue = parts.shift().split("=");
-        var name = nameValue.shift();
-        var value = nameValue.join("="); // everything after the first =, joined by a "=" if there was more than one part
-        var cookie = {
+        const parts = setCookieValue.split(";").filter(isNonEmptyString);
+        const nameValue = parts.shift().split("=");
+        const name = nameValue.shift();
+        const value = nameValue.join("="); // everything after the first =, joined by a "=" if there was more than one part
+        const cookie = {
             name: name, // grab everything before the first =
             value: value
         };
 
-        parts.forEach(function (part) {
-            var sides = part.split("=");
-            var key = sides
+        parts.forEach((part) => {
+            const sides = part.split("=");
+            const key = sides
                 .shift()
                 .trimLeft()
                 .toLowerCase();
-            var value = sides.join("=");
+            const optionValue = sides.join("=");
             if (key === "expires") {
-                cookie.expires = new Date(value);
+                cookie.expires = new Date(optionValue);
             } else if (key === "max-age") {
-                cookie.maxAge = parseInt(value, 10);
+                cookie.maxAge = parseInt(optionValue, 10);
             } else if (key === "secure") {
                 cookie.secure = true;
             } else if (key === "httponly") {
                 cookie.httpOnly = true;
             } else if (key === "samesite") {
-                cookie.sameSite = value;
+                cookie.sameSite = optionValue;
             } else {
                 // other keys
-                cookie[key] = value;
+                cookie[key] = optionValue;
             }
         });
 
