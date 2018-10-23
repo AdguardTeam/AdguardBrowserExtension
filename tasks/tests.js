@@ -73,9 +73,9 @@ const testRing = (done) => {
     runQunit('../Extension/tests/miscellaneous/test-ring-buffer.html', done);
 };
 
-// Ring buffer tests
+// Cookie helper tests
 const testCookie = (done) => {
-    runQunit('../Extension/tests/miscellaneous/test-ring-buffer.html', done);
+    runQunit('../Extension/tests/miscellaneous/test-cookie.html', done);
 };
 
 // Encoding tests
