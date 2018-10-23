@@ -28,18 +28,84 @@
  */
 (function (api) {
 
-    function isNonEmptyString(str) {
-        return typeof str === "string" && !!str.trim();
+    /**
+     * RegExp to match field-content in RFC 7230 sec 3.2
+     *
+     * field-content = field-vchar [ 1*( SP / HTAB ) field-vchar ]
+     * field-vchar   = VCHAR / obs-text
+     * obs-text      = %x80-FF
+     */
+    const FIELD_CONTENT_REGEX = /^[\u0009\u0020-\u007e\u0080-\u00ff]+$/;
+
+    /**
+     * @typedef Cookie
+     * @type {object}
+     * @property {string} name Cookie name
+     * @property {string} value Cookie value
+     * @property {string} path Cookie path (string or undefined)
+     * @property {string} domain Domain for the cookie (string or undefined, may begin with "." to indicate the named domain or any subdomain of it)
+     * @property {Date} expires Absolute expiration date for the cookie (Date object or undefined)
+     * @property {number} maxAge relative max age of the cookie in seconds from when the client receives it (integer or undefined)
+     * @property {boolean} secure indicates that this cookie should only be sent over HTTPs (true or undefined)
+     * @property {boolean} httpOnly indicates that this cookie should not be accessible to client-side JavaScript (true or undefined)
+     * @property {string} sameSite indicates a cookie ought not to be sent along with cross-site requests (string or undefined)
+     */
+
+    /**
+     * Parse an HTTP Cookie header string and return an object with all cookie name-value pairs.
+     *
+     * @param {string} cookieValue HTTP Cookie value
+     * @returns {Array.<{ name: String, value: String }>} Array of cookie name-value pairs
+     * @public
+     */
+    function parseCookie(cookieValue) {
+        if (adguard.utils.strings.isEmpty(cookieValue)) {
+            return null;
+        }
+
+        // Prepare the array to return
+        const cookies = [];
+
+        // Split Cookie values
+        const pairs = cookieValue.split(/; */);
+
+        for (let i = 0; i < pairs.length; i += 1) {
+
+            let pair = pairs[i];
+            let eqIdx = pair.indexOf('=');
+
+            // skip things that don't look like key=value
+            if (eqIdx < 0) {
+                continue;
+            }
+
+            let key = pair.substr(0, eqIdx).trim();
+            let value = pair.substr(++eqIdx, pair.length).trim();
+
+            cookies.push({
+                name: key,
+                value,
+            });
+        }
+
+        return cookies;
     }
 
     /**
      * Parses "Set-Cookie" header value and returns a cookie object with its properties
      * 
      * @param {string} setCookieValue "Set-Cookie" header value to parse
+     * @returns {Cookie} cookie object or null if it failed to parse the value
+     * @public
      */
     function parseSetCookie(setCookieValue) {
-        const parts = setCookieValue.split(";").filter(isNonEmptyString);
-        const nameValue = parts.shift().split("=");
+        if (adguard.utils.strings.isEmpty(setCookieValue)) {
+            return null;
+        }
+
+        const parts = setCookieValue.split(";").filter(s => !adguard.utils.strings.isEmpty(s));
+        const nameValuePart = parts.shift();
+        const nameValue = nameValuePart.split("=");
         const name = nameValue.shift();
         const value = nameValue.join("="); // everything after the first =, joined by a "=" if there was more than one part
         const cookie = {
@@ -73,11 +139,82 @@
         return cookie;
     }
 
+    /**
+     * Serializes cookie data into a string suitable for Set-Cookie header.
+     *
+     * @param {Cookie} cookie A cookie object
+     * @return {string} Set-Cookie string or null if it failed to serialize object
+     * @throws {TypeError} Thrown in case of invalid input data
+     * @public
+     */
+    function serialize(cookie) {
+        if (!cookie) {
+            throw new TypeError('empty cookie data');
+        }
 
+        // 1. Validate fields
+        if (!FIELD_CONTENT_REGEX.test(cookie.name)) {
+            throw new TypeError(`Cookie name is invalid: ${cookie.name}`);
+        }
+        if (cookie.value && !FIELD_CONTENT_REGEX.test(cookie.value)) {
+            throw new TypeError(`Cookie value is invalid: ${cookie.value}`);
+        }
+        if (cookie.domain && !FIELD_CONTENT_REGEX.test(cookie.domain)) {
+            throw new TypeError(`Cookie domain is invalid: ${cookie.domain}`);
+        }
+        if (cookie.path && !FIELD_CONTENT_REGEX.test(cookie.path)) {
+            throw new TypeError(`Cookie path is invalid: ${cookie.path}`);
+        }
+        if (cookie.expires && typeof cookie.expires.toUTCString !== 'function') {
+            throw new TypeError(`Cookie expires is invalid: ${cookie.expires}`);
+        }
+
+        // 2. Build Set-Cookie header value
+        let setCookieValue = cookie.name + '=' + cookie.value;
+
+        if (typeof cookie.maxAge === 'number' && !isNaN(cookie.maxAge)) {
+            setCookieValue += '; Max-Age=' + Math.floor(cookie.maxAge);
+        }
+        if (cookie.domain) {
+            setCookieValue += '; Domain=' + cookie.domain;
+        }
+        if (cookie.path) {
+            setCookieValue += '; Path=' + cookie.path;
+        }
+        if (cookie.expires) {
+            setCookieValue += '; Expires=' + cookie.expires.toUTCString();
+        }
+        if (cookie.httpOnly) {
+            setCookieValue += '; HttpOnly';
+        }
+        if (cookie.secure) {
+            setCookieValue += '; Secure';
+        }
+        if (!adguard.utils.strings.isEmpty(cookie.sameSite)) {
+            let sameSite = cookie.sameSite.toLowerCase();
+
+            switch (sameSite) {
+                case true:
+                    setCookieValue += '; SameSite=Strict';
+                    break;
+                case 'lax':
+                    setCookieValue += '; SameSite=Lax';
+                    break;
+                case 'strict':
+                    setCookieValue += '; SameSite=Strict';
+                    break;
+                default:
+                    throw new TypeError(`Cookie sameSite is invalid: ${cookie.sameSite}`);
+            }
+        }
+
+        return setCookieValue;
+    }
+
+    // EXPOSE
     adguard.utils.cookie = {
-
-        parseCookie: function () { },
+        parseCookie: parseCookie,
         parseSetCookie: parseSetCookie,
-        serialize: function () { },
+        serialize: serialize,
     };
 })(adguard.utils);
