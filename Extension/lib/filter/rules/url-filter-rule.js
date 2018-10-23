@@ -1100,13 +1100,13 @@
         MATCH_CASE: 1 << 9,
 
         /**
-         * defines a Cookie rule
+         * defines a CSP rule
          * For example, ||xpanama.net^$third-party,csp=connect-src 'none'
          */
         CSP_RULE: 1 << 10,
 
         /**
-         * defines a CSP rule
+         * defines a Cookie rule
          * For example, ||example.com^$third-party,cookie=c_user
          */
         COOKIE_RULE: 1 << 11,
