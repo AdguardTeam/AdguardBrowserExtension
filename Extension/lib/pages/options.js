@@ -295,9 +295,10 @@ var WhiteListFilter = function (options) {
     const editor = ace.edit('whiteListRules');
     editor.setShowPrintMargin(false);
 
-    // Ace TextHighlightRules mode is edited in ace.js library file
-    editor.session.setMode('ace/mode/text_highlight_rules');
     editor.$blockScrolling = Infinity;
+    const AdguardMode = ace.require('ace/mode/adguard').Mode;
+    editor.session.setMode(new AdguardMode());
+    editor.setOption('wrap', true);
 
     const saveIndicatorElement = document.querySelector('#whiteListRulesSaveIndicator');
     const saver = new Saver({
@@ -306,7 +307,6 @@ var WhiteListFilter = function (options) {
         indicatorElement: saveIndicatorElement,
     });
 
-    const applyChangesBtn = document.querySelector('#whiteListFilterApplyChanges');
     const importWhiteListInput = document.querySelector('#importWhiteListInput');
     const importWhiteListBtn = document.querySelector('#whiteListFiltersImport');
     const exportWhiteListBtn = document.querySelector('#whiteListFiltersExport');
@@ -362,10 +362,6 @@ var WhiteListFilter = function (options) {
 
     CheckboxUtils.updateCheckbox(changeDefaultWhiteListModeCheckbox, !options.defaultWhiteListMode);
 
-    editor.getSession().addEventListener('change', function () {
-        applyChangesBtn.style.display = 'inline-block';
-    });
-
     return {
         updateWhiteListDomains: updateWhiteListDomains,
     };
@@ -377,9 +373,10 @@ const UserFilter = function () {
     const editor = ace.edit('userRules');
     editor.setShowPrintMargin(false);
 
-    // Ace TextHighlightRules mode is edited in ace.js library file
-    editor.session.setMode('ace/mode/text_highlight_rules');
     editor.$blockScrolling = Infinity;
+    const AdguardMode = ace.require('ace/mode/adguard').Mode;
+    editor.session.setMode(new AdguardMode());
+    editor.setOption('wrap', true);
 
     const saveIndicatorElement = document.querySelector('#userRulesSaveIndicator');
     const saver = new Saver({
