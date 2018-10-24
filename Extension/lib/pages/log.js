@@ -304,7 +304,20 @@ PageController.prototype = {
                 const elementData = element.data;
                 const elementRequestUrl = elementData && elementData.requestUrl;
                 if (elementRequestUrl && elementRequestUrl === event.requestUrl) {
-                    element.parentNode.replaceChild(this._renderTemplate(event), element);
+                    const updatedElement = this._renderTemplate(event);
+                    this._handleEventShow(updatedElement);
+                    element.parentNode.replaceChild(updatedElement, element);
+                    // Bind click to show request info
+                    const self = this;
+                    updatedElement.addEventListener('click', () => {
+                        contentPage.sendMessage({ type: 'getTabFrameInfoById', tabId: self.currentTabId }, (response) => {
+                            const frameInfo = response.frameInfo;
+                            if (frameInfo) {
+                                RequestWizard.showRequestInfoModal(frameInfo, event);
+                            }
+                        });
+                    });
+                    break;
                 }
             }
         }
