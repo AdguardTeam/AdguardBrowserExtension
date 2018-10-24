@@ -298,6 +298,7 @@ var WhiteListFilter = function (options) {
     editor.$blockScrolling = Infinity;
     const AdguardMode = ace.require('ace/mode/adguard').Mode;
     editor.session.setMode(new AdguardMode());
+    editor.setOption('wrap', true);
 
     const saveIndicatorElement = document.querySelector('#whiteListRulesSaveIndicator');
     const saver = new Saver({
@@ -361,10 +362,6 @@ var WhiteListFilter = function (options) {
 
     CheckboxUtils.updateCheckbox(changeDefaultWhiteListModeCheckbox, !options.defaultWhiteListMode);
 
-    editor.getSession().addEventListener('change', function () {
-        applyChangesBtn.style.display = 'inline-block';
-    });
-
     return {
         updateWhiteListDomains: updateWhiteListDomains,
     };
@@ -379,6 +376,7 @@ const UserFilter = function () {
     editor.$blockScrolling = Infinity;
     const AdguardMode = ace.require('ace/mode/adguard').Mode;
     editor.session.setMode(new AdguardMode());
+    editor.setOption('wrap', true);
 
     const saveIndicatorElement = document.querySelector('#userRulesSaveIndicator');
     const saver = new Saver({
