@@ -701,41 +701,55 @@ QUnit.test('Test wildcard domains in the url rules', function (assert) {
     assert.notOk(rule.isPermitted("adguard.ru"));
 });
 
-QUnit.test("Cookie option", function (assert) {
-    var cookieRule = new adguard.rules.UrlFilterRule("||facebook.com^$third-party,cookie=c_user");
-
+QUnit.test("Test cookie option", function (assert) {
+    
+    let cookieRule = new adguard.rules.UrlFilterRule("||facebook.com^$third-party,cookie=c_user");
     assert.ok(cookieRule);
     assert.ok(cookieRule.isCookieRule());
-    assert.ok(cookieRule.cookieModifier);
-    assert.equal(cookieRule.cookieModifier, 'c_user');
+    assert.ok(cookieRule.cookieOption);
     assert.ok(cookieRule.isThirdParty());
+    assert.equal(cookieRule.cookieOption.cookieName, 'c_user');
+    assert.notOk(cookieRule.cookieOption.regex);
+    assert.ok(cookieRule.cookieOption.matches('c_user'));
+    assert.notOk(cookieRule.cookieOption.matches('c_user1'));
 
     cookieRule = new adguard.rules.UrlFilterRule("$cookie=__cfduid");
-
     assert.ok(cookieRule);
     assert.ok(cookieRule.isCookieRule());
-    assert.ok(cookieRule.cookieModifier);
-    assert.equal(cookieRule.cookieModifier, '__cfduid');
+    assert.ok(cookieRule.cookieOption);
+    assert.equal(cookieRule.cookieOption.cookieName, '__cfduid');
+    assert.notOk(cookieRule.cookieOption.regex);
+    assert.ok(cookieRule.cookieOption.matches('__cfduid'));
+    assert.notOk(cookieRule.cookieOption.matches('__cfduid1'));
 
     cookieRule = new adguard.rules.UrlFilterRule("$cookie=/__utm[a-z]/");
-
     assert.ok(cookieRule);
     assert.ok(cookieRule.isRegexRule);
     assert.ok(cookieRule.isCookieRule());
-    assert.ok(cookieRule.cookieModifier);
-    assert.equal(cookieRule.cookieModifier, '/__utm[a-z]/');
+    assert.ok(cookieRule.cookieOption);
+    assert.equal(cookieRule.cookieOption.regex.toString(), /__utm[a-z]/.toString());
+    assert.notOk(cookieRule.cookieOption.cookieName);
+    assert.ok(cookieRule.cookieOption.matches('__utma'));
+    assert.notOk(cookieRule.cookieOption.matches('__utm0'));
 
     cookieRule = new adguard.rules.UrlFilterRule("@@||example.org^$cookie");
     assert.ok(cookieRule);
     assert.ok(cookieRule.whiteListRule);
     assert.ok(cookieRule.isCookieRule());
-    assert.notOk(cookieRule.cookieModifier);
+    assert.ok(cookieRule.cookieOption);
+    assert.notOk(cookieRule.cookieOption.regex);
+    assert.notOk(cookieRule.cookieOption.cookieName);
+    assert.ok(cookieRule.cookieOption.matches('123'));
+    assert.ok(cookieRule.cookieOption.matches('aaaa'));
 
-    //Invalid modifier
-    try {
-        new adguard.rules.UrlFilterRule("example.com$popup,cookie=/__utm[a-z]/");
-        assert.ok(false);
-    } catch (ex) {
-        assert.ok(ex === 'Cookie rules do not support modifier: popup');
-    }
+    cookieRule = new adguard.rules.UrlFilterRule("$cookie=__cfduid;maxAge=15;sameSite=lax");
+    assert.ok(cookieRule);
+    assert.ok(cookieRule.isCookieRule());
+    assert.ok(cookieRule.cookieOption);
+    assert.equal(cookieRule.cookieOption.cookieName, '__cfduid');
+    assert.notOk(cookieRule.cookieOption.regex);
+    assert.equal(cookieRule.cookieOption.maxAge, 15);
+    assert.equal(cookieRule.cookieOption.sameSite, 'lax');
+    assert.ok(cookieRule.cookieOption.matches('__cfduid'));
+    assert.notOk(cookieRule.cookieOption.matches('123'));
 });
