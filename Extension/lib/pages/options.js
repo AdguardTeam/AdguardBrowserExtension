@@ -306,7 +306,6 @@ var WhiteListFilter = function (options) {
         indicatorElement: saveIndicatorElement,
     });
 
-    const applyChangesBtn = document.querySelector('#whiteListFilterApplyChanges');
     const importWhiteListInput = document.querySelector('#importWhiteListInput');
     const importWhiteListBtn = document.querySelector('#whiteListFiltersImport');
     const exportWhiteListBtn = document.querySelector('#whiteListFiltersExport');
