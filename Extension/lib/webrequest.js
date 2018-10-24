@@ -56,7 +56,7 @@
     /**
      * Process request
      *
-     * @param requestDetails
+     * @param {RequestDetails} requestDetails
      * @returns {boolean} False if request must be blocked
      */
     function onBeforeRequest(requestDetails) {
@@ -83,7 +83,6 @@
              */
             var tabRequestRule = adguard.frames.getFrameWhiteListRule(tab);
             adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, requestUrl, requestType, tabRequestRule, requestId);
-
             return;
         }
 
@@ -191,7 +190,6 @@
         }
 
         adguard.cookieFiltering.modifyRequestHeaders(requestDetails.requestHeaders);
-
         return {};
     }
 
