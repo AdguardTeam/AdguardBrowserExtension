@@ -295,10 +295,18 @@ PageController.prototype = {
             // don't relate to the current tab
             return;
         }
-        var element = this.logTable.querySelector('#request-' + event.requestId);
-        if (element.length > 0) {
-            var template = this._renderTemplate(event);
-            element.outerHTML = template;
+
+        const elements = this.logTable.querySelectorAll('#request-' + event.requestId);
+
+        if (elements.length > 0) {
+            for (let i = 0; i < elements.length; i += 1) {
+                const element = elements[i];
+                const elementData = element.data;
+                const elementRequestUrl = elementData && elementData.requestUrl;
+                if (elementRequestUrl && elementRequestUrl === event.requestUrl) {
+                    element.parentNode.replaceChild(this._renderTemplate(event), element);
+                }
+            }
         }
     },
 
