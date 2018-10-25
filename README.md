@@ -26,7 +26,7 @@ You can find all AdGuard Browser Extension releases here: https://github.com/Adg
 
 ### How to become a beta tester?
 
-You can get a beta version of AdGuard Browser Extension for any browser. All necessary information on this topic can be found in our [Knowledgebase article](https://kb.adguard.com/general/adguard-beta-testing-program#browser-extensions).
+You can get a beta version of AdGuard Browser Extension for any browser. All necessary information on this topic can be found on a [dedicated page](https://adguard.com/en/beta.html).
 
 ### How to build
 
