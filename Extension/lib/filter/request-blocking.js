@@ -386,30 +386,23 @@ adguard.webRequestService = (function (adguard) {
             }
         }
 
-        var requestRule = null;
-        var appendLogEvent = false;
-
-        if (adguard.integration.isSupported() && adguard.frames.isTabAdguardDetected(tab)) {
-            // Parse rule applied to request from response headers
-            requestRule = adguard.integration.parseAdguardRuleFromHeaders(responseHeaders);
-            appendLogEvent = !adguard.backend.isAdguardAppRequest(requestUrl);
-        } else if (requestType === adguard.RequestTypes.DOCUMENT) {
-            requestRule = adguard.frames.getFrameWhiteListRule(tab);
+        // add page view to stats
+        if (requestType === adguard.RequestTypes.DOCUMENT) {
             var domain = adguard.frames.getFrameDomain(tab);
             if (
                 !adguard.frames.isIncognitoTab(tab) &&
-                adguard.settings.collectHitsCount() &&
-                adguard.frames.isTabAdguardDetected(tab)
+                adguard.settings.collectHitsCount()
             ) {
-                // add page view to stats
                 adguard.hitStats.addDomainView(domain);
             }
-            appendLogEvent = true;
         }
 
-        // add event to filtering log
-        if (appendLogEvent) {
-            adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, requestType, requestRule, requestId);
+        // In integration mode, binds rule from headers or nothing to the request
+        if (adguard.integration.isSupported() && adguard.frames.isTabAdguardDetected(tab)) {
+            // Parse rule applied to request from response headers
+            var requestRule = adguard.integration.parseAdguardRuleFromHeaders(responseHeaders);
+            // adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, requestType, requestRule, requestId);
+            adguard.requestContextStorage.update(requestId, requestUrl, { requestRule });
         }
     };
 
@@ -426,7 +419,7 @@ adguard.webRequestService = (function (adguard) {
     var postProcessRequest = function (tab, requestUrl, referrerUrl, requestType, requestRule, requestId) {
 
         if (adguard.frames.isTabAdguardDetected(tab)) {
-            // Do nothing, log event will be added on response
+            // Do nothing, rules from integrated app will be processed on response
             return;
         }
 
@@ -463,9 +456,9 @@ adguard.webRequestService = (function (adguard) {
             }
         }
 
-        // main_frame record will be added onResponseReceived event
-        if (requestType !== adguard.RequestTypes.DOCUMENT) {
-            adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, requestType, requestRule, requestId);
+        // adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, requestType, requestRule, requestId);
+        if (requestRule) {
+            adguard.requestContextStorage.update(requestId, requestUrl, { requestRule });
         }
 
         // Record rule hit

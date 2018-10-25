@@ -76,13 +76,26 @@
             // Reset tab button state
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_TAB_BUTTON_STATE, tab, true);
 
+            // Record request context for the main frame
+            adguard.requestContextStorage.record(requestId, requestUrl, requestUrl, requestType, tab);
+
             /**
-             * In the case of the "about:newtab" pages we don't receive onResponseReceived event for the main_frame, so we have to append log event here.
+             * Just to remember!
+             * In the case of the "about:newtab" pages we don't receive onResponseReceived event for the main_frame
              * Also if chrome://newtab is overwritten, we won't receive any webRequest events for the main_frame
              * Unfortunately, we can't do anything in this case and just must remember about it
              */
+
+            /**
+             * Binds rule to the main_frame request
+             * In integration mode, rule from the headers will override this value
+             */
             var tabRequestRule = adguard.frames.getFrameWhiteListRule(tab);
-            adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, requestUrl, requestType, tabRequestRule, requestId);
+            // adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, requestUrl, requestType, tabRequestRule, requestId);
+            if (tabRequestRule) {
+                adguard.requestContextStorage.update(requestId, requestUrl, { requestRule: tabRequestRule });
+            }
+
             return;
         }
 
@@ -93,6 +106,9 @@
 
         var referrerUrl = getReferrerUrl(requestDetails);
         var requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
+
+        // Record request for other types
+        adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, requestType, tab);
 
         adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule, requestId);
         var response = adguard.webRequestService.getBlockedResponseByRule(requestRule, requestType);
@@ -283,6 +299,7 @@
         }
 
         var tab = requestDetails.tab;
+        var requestId = requestDetails.requestId;
         var requestUrl = requestDetails.requestUrl;
         var responseHeaders = requestDetails.responseHeaders || [];
         var requestType = requestDetails.requestType;
@@ -298,8 +315,9 @@
             });
         }
         if (legacyCspRule) {
-            adguard.webRequestService.recordRuleHit(tab, legacyCspRule, frameUrl);
-            adguard.filteringLog.addHttpRequestEvent(tab, 'content-security-policy-check', frameUrl, adguard.RequestTypes.CSP, legacyCspRule);
+            // adguard.webRequestService.recordRuleHit(tab, legacyCspRule, frameUrl);
+            // adguard.filteringLog.addHttpRequestEvent(tab, 'content-security-policy-check', frameUrl, adguard.RequestTypes.CSP, legacyCspRule);
+            adguard.requestContextStorage.update(requestId, requestUrl, { cspRules: [legacyCspRule] });
         }
 
         /**
@@ -317,9 +335,10 @@
                         value: rule.cspDirective
                     });
                 }
-                adguard.webRequestService.recordRuleHit(tab, rule, requestUrl);
-                adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, frameUrl, adguard.RequestTypes.CSP, rule);
+                // adguard.webRequestService.recordRuleHit(tab, rule, requestUrl);
+                // adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, frameUrl, adguard.RequestTypes.CSP, rule);
             }
+            adguard.requestContextStorage.update(requestId, requestUrl, { cspRules });
         }
 
         /**
@@ -886,4 +905,15 @@
             adguard.tabs.onRemoved.addListener(injections.removeTabInjection);
         })(adguard);
     }
+
+    //TODO: Request context recording
+
+    adguard.webRequest.onCompleted.addListener(({ requestId, requestUrl }) => {
+        adguard.requestContextStorage.remove(requestId, requestUrl);
+    }, ['<all_urls>']);
+
+    adguard.webRequest.onErrorOccurred.addListener(({ requestId, requestUrl }) => {
+        adguard.requestContextStorage.remove(requestId, requestUrl);
+    }, ['<all_urls>']);
+
 })(adguard);
