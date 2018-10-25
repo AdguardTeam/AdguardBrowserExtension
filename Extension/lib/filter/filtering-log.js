@@ -157,12 +157,19 @@ adguard.filteringLog = (function (adguard) {
             tabInfo.filteringEvents = [];
         }
 
-        var requestId = filteringEvent.requestId;
+        const requestId = filteringEvent.requestId;
 
         if (requestId) {
-            for (var i = 0; i < tabInfo.filteringEvents.length; i += 1) {
-                var pushedRequestId = tabInfo.filteringEvents[i].requestId;
-                if (pushedRequestId && requestId === pushedRequestId) {
+            for (let i = 0; i < tabInfo.filteringEvents.length; i += 1) {
+                const pushedEvent = tabInfo.filteringEvents[i];
+                const pushedRequestId = pushedEvent.requestId;
+                const pushedRequestUrl = pushedEvent.requestUrl;
+                /**
+                 * redirected requests in the Firefox have similar requestIds
+                 * so we check requestId and requestUrl
+                 */
+                if ((pushedRequestId && pushedRequestId === requestId)
+                    && (pushedRequestUrl && pushedRequestUrl === filteringEvent.requestUrl)) {
                     return;
                 }
             }
@@ -271,21 +278,21 @@ adguard.filteringLog = (function (adguard) {
      * @param requestRule
      * @param requestId
      */
-    var bindRuleToHttpRequestEvent = function (tab, requestRule, requestId) {
-
+    const bindRuleToHttpRequestEvent = function (tab, requestRule, requestUrl, requestId) {
         if (openedFilteringLogsPage === 0) {
             return;
         }
 
-        var tabInfo = tabsInfoMap[tab.tabId];
+        const tabInfo = tabsInfoMap[tab.tabId];
         if (!tabInfo) {
             return;
         }
 
-        var events = tabInfo.filteringEvents;
-        for (var i = 0; i < events.length; i++) {
-            var event = events[i];
-            if (event.requestId === requestId) {
+        const events = tabInfo.filteringEvents;
+        for (let i = 0; i < events.length; i += 1) {
+            const event = events[i];
+
+            if (event.requestId === requestId && event.requestUrl === requestUrl) {
                 addRuleToFilteringEvent(event, requestRule);
                 adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
                 break;
