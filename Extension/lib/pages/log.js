@@ -207,6 +207,30 @@ PageController.prototype = {
                 RequestWizard.closeModal();
             }
         });
+
+        // On click to event row show RequestInfoModal
+        this.logTable.addEventListener('click', (e) => {
+            e.preventDefault();
+            let element = e.target;
+            let foundEventRow = false;
+            while (element !== this.logTable && !foundEventRow) {
+                if (element.tagName === 'TR') {
+                    foundEventRow = true;
+                } else {
+                    element = element.parentNode;
+                }
+            }
+            const filteringEvent = foundEventRow && element.data;
+            if (filteringEvent) {
+                contentPage.sendMessage({ type: 'getTabFrameInfoById', tabId: this.currentTabId }, (response) => {
+                    const frameInfo = response.frameInfo;
+                    if (!frameInfo) {
+                        return;
+                    }
+                    RequestWizard.showRequestInfoModal(frameInfo, filteringEvent);
+                });
+            }
+        });
     },
 
     // Try to retrieve tabId from hash
@@ -307,7 +331,6 @@ PageController.prototype = {
                     const updatedTemplate = this._renderTemplate(event);
                     this._handleEventShow(updatedTemplate);
                     element.parentNode.replaceChild(updatedTemplate, element);
-                    this._bindClickToTemplate(updatedTemplate, this.currentTabId);
                     break;
                 }
             }
@@ -448,19 +471,6 @@ PageController.prototype = {
         }.bind(this));
     },
 
-    _bindClickToTemplate: function (element, currentTabId) {
-        element.addEventListener('click', () => {
-            const filteringEvent = element.data;
-            contentPage.sendMessage({ type: 'getTabFrameInfoById', tabId: currentTabId }, (response) => {
-                const frameInfo = response.frameInfo;
-                if (!frameInfo) {
-                    return;
-                }
-                RequestWizard.showRequestInfoModal(frameInfo, filteringEvent);
-            });
-        });
-    },
-
     _renderEvents: function (events) {
         if (!events || events.length === 0) {
             this._onEmptyTable();
@@ -473,12 +483,6 @@ PageController.prototype = {
             templates.push(template);
         }
         this._onNotEmptyTable();
-
-        // Bind click to show request info
-        var self = this;
-        templates.forEach(function (t) {
-            self._bindClickToTemplate(t, self.currentTabId);
-        });
 
         templates.forEach(function (t) {
             this.logTable.appendChild(t);
