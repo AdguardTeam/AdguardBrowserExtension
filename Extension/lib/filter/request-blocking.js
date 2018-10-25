@@ -378,7 +378,7 @@ adguard.webRequestService = (function (adguard) {
             if (
                 !adguard.frames.isIncognitoTab(tab) &&
                 adguard.settings.collectHitsCount() &&
-                adguard.frames.isTabAdguardDetected(tab)
+                !adguard.frames.isTabAdguardDetected(tab)
             ) {
                 // add page view to stats
                 adguard.hitStats.addDomainView(domain);
