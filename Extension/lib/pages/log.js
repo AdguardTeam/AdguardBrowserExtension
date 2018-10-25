@@ -295,10 +295,31 @@ PageController.prototype = {
             // don't relate to the current tab
             return;
         }
-        var element = this.logTable.querySelector('#request-' + event.requestId);
-        if (element.length > 0) {
-            var template = this._renderTemplate(event);
-            element.outerHTML = template;
+
+        const elements = this.logTable.querySelectorAll('#request-' + event.requestId);
+
+        if (elements.length > 0) {
+            for (let i = 0; i < elements.length; i += 1) {
+                const element = elements[i];
+                const elementData = element.data;
+                const elementRequestUrl = elementData && elementData.requestUrl;
+                if (elementRequestUrl && elementRequestUrl === event.requestUrl) {
+                    const updatedElement = this._renderTemplate(event);
+                    this._handleEventShow(updatedElement);
+                    element.parentNode.replaceChild(updatedElement, element);
+                    // Bind click to show request info
+                    const self = this;
+                    updatedElement.addEventListener('click', () => {
+                        contentPage.sendMessage({ type: 'getTabFrameInfoById', tabId: self.currentTabId }, (response) => {
+                            const frameInfo = response.frameInfo;
+                            if (frameInfo) {
+                                RequestWizard.showRequestInfoModal(frameInfo, event);
+                            }
+                        });
+                    });
+                    break;
+                }
+            }
         }
     },
 
