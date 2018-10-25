@@ -304,19 +304,10 @@ PageController.prototype = {
                 const elementData = element.data;
                 const elementRequestUrl = elementData && elementData.requestUrl;
                 if (elementRequestUrl && elementRequestUrl === event.requestUrl) {
-                    const updatedElement = this._renderTemplate(event);
-                    this._handleEventShow(updatedElement);
-                    element.parentNode.replaceChild(updatedElement, element);
-                    // Bind click to show request info
-                    const self = this;
-                    updatedElement.addEventListener('click', () => {
-                        contentPage.sendMessage({ type: 'getTabFrameInfoById', tabId: self.currentTabId }, (response) => {
-                            const frameInfo = response.frameInfo;
-                            if (frameInfo) {
-                                RequestWizard.showRequestInfoModal(frameInfo, event);
-                            }
-                        });
-                    });
+                    const updatedTemplate = this._renderTemplate(event);
+                    this._handleEventShow(updatedTemplate);
+                    element.parentNode.replaceChild(updatedTemplate, element);
+                    this._bindClickToTemplate(updatedTemplate, this.currentTabId);
                     break;
                 }
             }
@@ -457,6 +448,19 @@ PageController.prototype = {
         }.bind(this));
     },
 
+    _bindClickToTemplate: function (element, currentTabId) {
+        element.addEventListener('click', () => {
+            const filteringEvent = element.data;
+            contentPage.sendMessage({ type: 'getTabFrameInfoById', tabId: currentTabId }, (response) => {
+                const frameInfo = response.frameInfo;
+                if (!frameInfo) {
+                    return;
+                }
+                RequestWizard.showRequestInfoModal(frameInfo, filteringEvent);
+            });
+        });
+    },
+
     _renderEvents: function (events) {
         if (!events || events.length === 0) {
             this._onEmptyTable();
@@ -473,17 +477,7 @@ PageController.prototype = {
         // Bind click to show request info
         var self = this;
         templates.forEach(function (t) {
-            t.addEventListener('click', function () {
-                var filteringEvent = t.data;
-                contentPage.sendMessage({ type: 'getTabFrameInfoById', tabId: self.currentTabId }, function (response) {
-                    var frameInfo = response.frameInfo;
-                    if (!frameInfo) {
-                        return;
-                    }
-
-                    RequestWizard.showRequestInfoModal(frameInfo, filteringEvent);
-                });
-            });
+            self._bindClickToTemplate(t, self.currentTabId);
         });
 
         templates.forEach(function (t) {
