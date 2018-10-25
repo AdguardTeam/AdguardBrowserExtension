@@ -22,6 +22,19 @@ adguard.webRequestService = (function (adguard) {
     var onRequestBlockedChannel = adguard.utils.channels.newChannel();
 
     /**
+     * Checks if we can collect hit stats for this tab:
+     * Option "Collect hit stats" is enabled and tab isn't incognito and integration mode is disabled
+     * @param {object} tab
+     * @returns {boolean}
+     */
+    var canCollectHitStatsForTab = function (tab) {
+        return tab &&
+            adguard.settings.collectHitsCount() &&
+            !adguard.frames.isIncognitoTab(tab) &&
+            !adguard.frames.isTabAdguardDetected(tab);
+    };
+
+    /**
      * Records filtering rule hit
      *
      * @param tab            Tab object
@@ -30,11 +43,9 @@ adguard.webRequestService = (function (adguard) {
      */
     var recordRuleHit = function (tab, requestRule, requestUrl) {
         if (requestRule &&
-            adguard.settings.collectHitsCount() &&
             !adguard.utils.filters.isUserFilterRule(requestRule) &&
             !adguard.utils.filters.isWhiteListFilterRule(requestRule) &&
-            !adguard.frames.isIncognitoTab(tab) &&
-            !adguard.frames.isTabAdguardDetected(tab)) {
+            canCollectHitStatsForTab(tab)) {
             var domain = adguard.frames.getFrameDomain(tab);
             adguard.hitStats.addRuleHit(domain, requestRule.ruleText, requestRule.filterId, requestUrl);
         }
@@ -389,10 +400,7 @@ adguard.webRequestService = (function (adguard) {
         // add page view to stats
         if (requestType === adguard.RequestTypes.DOCUMENT) {
             var domain = adguard.frames.getFrameDomain(tab);
-            if (
-                !adguard.frames.isIncognitoTab(tab) &&
-                adguard.settings.collectHitsCount()
-            ) {
+            if (canCollectHitStatsForTab(tab)) {
                 adguard.hitStats.addDomainView(domain);
             }
         }
@@ -470,11 +478,8 @@ adguard.webRequestService = (function (adguard) {
          * Edge browser doesn't support css content attribute for node elements except :before and :after
          * Due to this we can't use cssHitsCounter for edge browser
          */
-        if (tab && adguard.frames.isTabAdguardDetected(tab)) {
-            return false;
-        }
-        return !adguard.utils.browser.isEdgeBrowser() && adguard.prefs.collectHitsCountEnabled &&
-            (adguard.settings.collectHitsCount() || adguard.filteringLog.isOpen());
+        return !adguard.utils.browser.isEdgeBrowser() &&
+            (canCollectHitStatsForTab(tab) || adguard.filteringLog.isOpen());
     };
 
     // EXPOSE
