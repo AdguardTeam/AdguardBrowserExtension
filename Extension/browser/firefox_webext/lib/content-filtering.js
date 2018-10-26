@@ -414,7 +414,7 @@ adguard.contentFiltering = (function (adguard) {
 
             if (replaceRule) {
                 content = replaceRule.getReplace().apply(content);
-                adguard.filteringLog.bindRuleToHttpRequestEvent(tab, requestRule, requestId);
+                adguard.filteringLog.bindRuleToHttpRequestEvent(tab, requestRule, requestUrl, requestId);
                 adguard.webRequestService.recordRuleHit(tab, replaceRule, requestUrl);
             }
 
