@@ -111,7 +111,7 @@
      * @returns {string}
      */
     function findShortcut(urlmask) {
-        var longest = "";
+        var longest = '';
         var parts = urlmask.split(/[*^|]/);
         for (var i = 0; i < parts.length; i++) {
             var part = parts[i];
@@ -129,7 +129,6 @@
      * @returns {string} shortcut or null if it's not possible to extract it
      */
     function extractRegexpShortcut(ruleText) {
-
         // Get the regexp text
         var match = ruleText.match(/\/(.*)\/(\$.*)?/);
         if (!match || match.length < 2) {
@@ -138,7 +137,7 @@
 
         var reText = match[1];
 
-        var specialCharacter = "...";
+        var specialCharacter = '...';
 
         if (reText.indexOf('?') !== -1) {
             // Do not mess with complex expressions which use lookahead
@@ -321,9 +320,9 @@
         this.pattern = new RegExp(parts[0], modifiers);
         this.replacement = parts[1];
 
-        this.apply = function (input) {
-            return input.replace(this.pattern, this.replacement);
-        };
+        // this.apply = function (input) {
+        //     return input.replace(this.pattern, this.replacement);
+        // };
     }
 
     /**
@@ -409,7 +408,7 @@
     // Lazy regexp source create
     UrlFilterRule.prototype.getUrlRegExpSource = function () {
         if (!this.urlRegExpSource) {
-            //parse rule text
+            // parse rule text
             var parseResult = parseRuleText(this.ruleText);
             // Creating regex source
             this.urlRegExpSource = api.SimpleRegex.createRegexText(parseResult.urlRuleText);
@@ -731,6 +730,14 @@
     };
 
     /**
+     * If rule is replace rule
+     * @returns {Boolean}
+     */
+    UrlFilterRule.prototype.isReplaceRule = function () {
+        return this.isOptionEnabled(UrlFilterRule.options.REPLACE);
+    };
+
+    /**
      * we recognize rules with $extension modifier, but
      * ignore them when create RequestFilter
      */
@@ -818,19 +825,19 @@
                     break;
                 case UrlFilterRule.REPLACE_OPTION:
                     // In case of .features or .features.responseContentFilteringSupported are not defined
-                    var responseContentFilteringSupported = adguard.prefs.features && adguard.prefs.features.responseContentFilteringSupported;
+                    const responseContentFilteringSupported = adguard.prefs.features
+                        && adguard.prefs.features.responseContentFilteringSupported;
                     if (!responseContentFilteringSupported) {
                         throw 'Unknown option: REPLACE';
                     }
-                    if (this.whiteListRule) {
-                        throw 'Replace modifier cannot be applied to a whitelist rule ' + this.ruleText;
-                    }
+                    this._setUrlFilterRuleOption(UrlFilterRule.options.REPLACE, true);
+
                     if (optionsKeyValue.length > 1) {
-                        var replaceOption = optionsKeyValue[1];
+                        let replaceOption = optionsKeyValue[1];
                         if (optionsKeyValue.length > 2) {
                             replaceOption = optionsKeyValue.slice(1).join(api.FilterRule.EQUAL);
                         }
-                        this.replace = new ReplaceOption(replaceOption);
+                        this.replaceOption = new ReplaceOption(replaceOption);
                     }
                     break;
                 case UrlFilterRule.BADFILTER_OPTION:
@@ -1076,6 +1083,12 @@
          * for example, @@||example.org^$extension
          */
         EXTENSION: 1 << 11,
+
+        /**
+         * defines rules with $replace modifier
+         * for example, "||example.org^$replace=/replace-me/replacement/i"
+         */
+        REPLACE: 1 << 12,
 
         // jshint ignore:end
     };
