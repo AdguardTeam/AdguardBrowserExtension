@@ -181,7 +181,11 @@
     function onBeforeSendHeaders(requestDetails) {
 
         var tab = requestDetails.tab;
+        var requestId = requestDetails.requestId;
+        var requestUrl = requestDetails.requestUrl;
         var headers = requestDetails.requestHeaders;
+
+        adguard.requestContextStorage.update(requestId, requestUrl, { requestHeaders: (headers || []).slice(0) });
 
         if (adguard.integration.shouldOverrideReferrer(tab)) {
             // Retrieve main frame url
@@ -226,6 +230,8 @@
         var requestId = requestDetails.requestId;
         var statusCode = requestDetails.statusCode;
         var method = requestDetails.method;
+
+        adguard.requestContextStorage.update(requestId, requestUrl, { responseHeaders: (responseHeaders || []).slice(0) });
 
         adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders, requestId);
 
@@ -905,12 +911,10 @@
 
     adguard.webRequest.onCompleted.addListener(({ requestId, requestUrl }) => {
         adguard.requestContextStorage.onRequestCompleted(requestId, requestUrl);
-        adguard.requestContextStorage.remove(requestId, requestUrl);
     }, ['<all_urls>']);
 
     adguard.webRequest.onErrorOccurred.addListener(({ requestId, requestUrl }) => {
         adguard.requestContextStorage.onRequestCompleted(requestId, requestUrl);
-        adguard.requestContextStorage.remove(requestId, requestUrl);
     }, ['<all_urls>']);
 
 })(adguard);

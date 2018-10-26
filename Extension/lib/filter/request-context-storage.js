@@ -16,7 +16,21 @@
  */
 
 /**
- * Module for managing requests context
+ * Module for managing requests context.
+ *
+ * Each request has a context with unique key: pair of requestId and requestUrl (for handling redirects and auth requests)
+ * Context contains information about this request: id, url, referrer, type, applied rules, original and modified headers
+ *
+ * This API is exposed via adguard.requestContextStorage:
+ *
+ * - get - Get context by key
+ * - record - Initialize context for request (uses in onBeforeRequest)
+ * - update - Updates context properties (headers, rules)
+ * - bindContentRule - Binds content rule and removed element to the context
+ * - onContentModificationStarted - Must be called to point that content modification is started
+ *   Following 2 methods have same logic (push rules to log, record rule hits and perform cleanup), but called in different cases:
+ * - onRequestCompleted - Finishes request processing on request complete/error event.
+ * - onContentModificationFinished - After content modification and applying all rules (replace and content)
  */
 (function (adguard) {
 
@@ -270,6 +284,7 @@
      */
     const onRequestCompleted = (requestId, requestUrl) => {
         update(requestId, requestUrl, { requestState: States.DONE });
+        remove(requestId, requestUrl);
     };
 
     /**
@@ -290,6 +305,7 @@
      */
     const onContentModificationFinished = (requestId, requestUrl) => {
         update(requestId, requestUrl, { contentModifyingState: States.DONE });
+        remove(requestId, requestUrl);
     };
 
     // Expose
@@ -297,8 +313,7 @@
         get,
         record,
         update,
-        bindContentRule: bindContentRule,
-        remove,
+        bindContentRule,
         onRequestCompleted,
         onContentModificationStarted,
         onContentModificationFinished,
