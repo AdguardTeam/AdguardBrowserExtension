@@ -10,6 +10,7 @@
     <!-- @if browser == "CHROMIUM" || browser == "EDGE" || browser == "OPERA" || browser == "FIREFOX_WEBEXT" -->
     <script type="text/javascript" src="../lib/libs/moment-with-locales.min.js"></script>
     <script type="text/javascript" src="../lib/libs/ace/ace.js"></script>
+    <script type="text/javascript" src="../lib/libs/ace/mode-adguard.js"></script>
     <script type="text/javascript" src="../lib/content-script/adguard-content.js"></script>
     <script type="text/javascript" src="../lib/content-script/common-script.js"></script>
     <script type="text/javascript" src="../lib/content-script/content-script.js"></script>
@@ -426,13 +427,12 @@
                 </div>
                 <div class="filter-rules">
                     <div id="whiteListRules" class="user-rules"></div>
-                    <div class="filter-rules__label" id="whiteListRulesSaveIndicator"></div>
                 </div>
                 <div class="settings-actions">
                     <input type="file" id="importWhiteListInput" style="display: none;" accept=".txt, text/plain"/>
                     <a class="button button--green button--link" id="whiteListFiltersImport" href="#" i18n="options_userfilter_import"></a>
                     <a class="button button--green-bd button--link" id="whiteListFiltersExport" href="#" i18n="options_userfilter_export"></a>
-                    <a class="button button--green-bd button--link" id="whiteListFilterApplyChanges" href="#" i18n="options_modal_save"></a>
+                    <div class="filter-rules__label" id="whiteListRulesSaveIndicator"></div>
                 </div>
             </div>
         </div>
@@ -445,12 +445,12 @@
                 </div>
                 <div class="filter-rules">
                     <div id="userRules" class="user-rules"></div>
-                    <div class="filter-rules__label" id="userRulesSaveIndicator"></div>
                 </div>
                 <div class="settings-actions">
                     <input type="file" id="importUserFilterInput" style="display: none;" accept=".txt, text/plain"/>
                     <a id="userFiltersImport" href="#" i18n="options_userfilter_import" class="button button--green button--link"></a>
                     <a id="userFiltersExport" href="#" i18n="options_userfilter_export" class="button button--green-bd button--link"></a>
+                    <div class="filter-rules__label" id="userRulesSaveIndicator"></div>
                 </div>
             </div>
         </div>
