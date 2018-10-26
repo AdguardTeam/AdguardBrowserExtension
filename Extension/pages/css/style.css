@@ -139,6 +139,7 @@
   margin-top: 30px;
   font-size: 14px;
   font-weight: 600;
+  position: relative;
 }
 .settings-actions a {
   padding-right: 42px;
@@ -846,12 +847,18 @@ li.active .toggler:before {
 .filter-rules {
   border: 1px solid #EDEDED;
   position: relative;
-  padding-bottom: 25px;
 }
 .filter-rules__label {
     position: absolute;
-    bottom: 7px;
-    right: 15px;
+    bottom: calc(50% - 11px);
+    right: 0;
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 22px;
 }
 .filter-rules__label--saved {
     padding-right: 20px;
@@ -860,7 +867,7 @@ li.active .toggler:before {
     content: '';
     position: absolute;
     right: 0;
-    top: 0;
+    top: 4px;
     background-image: url(../images/tick.svg);
     background-size: cover;
     width: 12px;

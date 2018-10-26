@@ -208,6 +208,30 @@ PageController.prototype = {
                 RequestWizard.closeModal();
             }
         });
+
+        // On click to event row show RequestInfoModal
+        this.logTable.addEventListener('click', (e) => {
+            e.preventDefault();
+            let element = e.target;
+            let foundEventRow = false;
+            while (element !== this.logTable && !foundEventRow) {
+                if (element.tagName === 'TR') {
+                    foundEventRow = true;
+                } else {
+                    element = element.parentNode;
+                }
+            }
+            const filteringEvent = foundEventRow && element.data;
+            if (filteringEvent) {
+                contentPage.sendMessage({ type: 'getTabFrameInfoById', tabId: this.currentTabId }, (response) => {
+                    const frameInfo = response.frameInfo;
+                    if (!frameInfo) {
+                        return;
+                    }
+                    RequestWizard.showRequestInfoModal(frameInfo, filteringEvent);
+                });
+            }
+        });
     },
 
     // Try to retrieve tabId from hash
@@ -296,10 +320,21 @@ PageController.prototype = {
             // don't relate to the current tab
             return;
         }
-        var element = this.logTable.querySelector('#request-' + event.requestId);
-        if (element.length > 0) {
-            var template = this._renderTemplate(event);
-            element.outerHTML = template;
+
+        const elements = this.logTable.querySelectorAll('#request-' + event.requestId);
+
+        if (elements.length > 0) {
+            for (let i = 0; i < elements.length; i += 1) {
+                const element = elements[i];
+                const elementData = element.data;
+                const elementRequestUrl = elementData && elementData.requestUrl;
+                if (elementRequestUrl && elementRequestUrl === event.requestUrl) {
+                    const updatedTemplate = this._renderTemplate(event);
+                    this._handleEventShow(updatedTemplate);
+                    element.parentNode.replaceChild(updatedTemplate, element);
+                    break;
+                }
+            }
         }
     },
 
@@ -449,22 +484,6 @@ PageController.prototype = {
             templates.push(template);
         }
         this._onNotEmptyTable();
-
-        // Bind click to show request info
-        var self = this;
-        templates.forEach(function (t) {
-            t.addEventListener('click', function () {
-                var filteringEvent = t.data;
-                contentPage.sendMessage({ type: 'getTabFrameInfoById', tabId: self.currentTabId }, function (response) {
-                    var frameInfo = response.frameInfo;
-                    if (!frameInfo) {
-                        return;
-                    }
-
-                    RequestWizard.showRequestInfoModal(frameInfo, filteringEvent);
-                });
-            });
-        });
 
         templates.forEach(function (t) {
             this.logTable.appendChild(t);
