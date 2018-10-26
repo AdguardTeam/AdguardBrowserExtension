@@ -38,7 +38,7 @@
      * @typedef {object} RequestContext
      * @property {string} requestId - Request identifier
      * @property {string} requestUrl - Request url
-     * @property {string> referrerUrl - Request referrer url
+     * @property {string} referrerUrl - Request referrer url
      * @property {string} requestType - Request type
      * @property {{tabId: Number}} tab - Request tab
      * @property {Array} requestHeaders - Original request headers
