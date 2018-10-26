@@ -74,3 +74,6 @@ const testEncoding = (done) => {
 };
 
 export default gulp.series(testRule, testSB, testURL, testCSSfilter, testContent, testCSShits, testReq, testEl, testRing, testEncoding);
+
+// TODO remove this line before pr merge
+// export default gulp.series(testURL);

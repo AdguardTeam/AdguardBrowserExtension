@@ -340,6 +340,27 @@ adguard.contentFiltering = (function (adguard) {
         return deleted.length > 0 ? doctype + doc.documentElement.outerHTML : null;
     }
 
+    function applyReplaceRules(content, replaceRules) {
+        // TODO implement replace rules application
+        let modifiedContent = content;
+        for (let i = 0; i < replaceRules.length; i += 1) {
+            const replaceRule = replaceRules[i];
+            const replaceOption = replaceRule.replaceOption;
+            modifiedContent = modifiedContent.replace(replaceOption.pattern, replaceOption.replacement);
+        }
+
+        if (modifiedContent) {
+            content = modifiedContent;
+        }
+
+        // TODO use this methods when rule will be applied
+        // TODO how applied rules will be displayed in the filtering log
+        // adguard.filteringLog.bindRuleToHttpRequestEvent(tab, requestRule, requestUrl, requestId);
+        // adguard.webRequestService.recordRuleHit(tab, replaceRule, requestUrl);
+
+        return content;
+    }
+
     /**
      * Applies content and replace rules to the request
      * @param tab Tab
@@ -370,8 +391,8 @@ adguard.contentFiltering = (function (adguard) {
             return;
         }
 
-        var contentRules = null;
-        var replaceRule = null;
+        let contentRules = null;
+        let replaceRules = null;
 
         if (shouldApplyContentRules(requestType)) {
             contentRules = adguard.webRequestService.getContentRules(tab, requestUrl);
@@ -381,13 +402,13 @@ adguard.contentFiltering = (function (adguard) {
         }
 
         if (shouldApplyReplaceRule(requestType, contentType)) {
-            var requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
-            if (requestRule && requestRule.getReplace()) {
-                replaceRule = requestRule;
+            replaceRules = adguard.webRequestService.getReplaceRules(tab, requestUrl, referrerUrl, requestType);
+            if (replaceRules && replaceRules.length === 0) {
+                replaceRules = null;
             }
         }
 
-        if (!contentRules && !replaceRule) {
+        if (!contentRules && !replaceRules) {
             return;
         }
 
@@ -412,10 +433,11 @@ adguard.contentFiltering = (function (adguard) {
                 return content;
             }
 
-            if (replaceRule) {
-                content = replaceRule.getReplace().apply(content);
-                adguard.filteringLog.bindRuleToHttpRequestEvent(tab, requestRule, requestUrl, requestId);
-                adguard.webRequestService.recordRuleHit(tab, replaceRule, requestUrl);
+            if (replaceRules) {
+                const modifiedContent = applyReplaceRules(content, replaceRules);
+                if (modifiedContent !== null) {
+                    content = modifiedContent;
+                }
             }
 
             return content;

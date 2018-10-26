@@ -114,6 +114,10 @@
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#csp-modifier
         this.cspFilter = new adguard.rules.CspFilter();
 
+        // Filter that applies replace rules
+        // TODO add link to rules
+        // console.log(adguard.rules.ReplaceFilter);
+        this.replaceFilter = new adguard.rules.ReplaceFilter();
 
         // Filter that applies HTML filtering rules
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#html-filtering-rules
@@ -168,6 +172,8 @@
                 }
                 if (rule.isCspRule()) {
                     this.cspFilter.addRule(rule);
+                } else if (rule.isReplaceRule()) {
+                    this.replaceFilter.addRule(rule);
                 } else {
                     if (rule.isBadFilter()) {
                         this.badFilterRules[rule.badFilter] = rule;
@@ -464,6 +470,13 @@
             return this.cspFilter.findCspRules(requestUrl, documentHost, thirdParty, requestType);
         },
 
+        findReplaceRules: function (requestUrl, documentUrl, requestType) {
+            var documentHost = adguard.utils.url.getHost(documentUrl);
+            var thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
+
+            return this.replaceFilter.findReplaceRules(requestUrl, documentHost, thirdParty, requestType);
+        },
+
         /**
          * Checks if exception rule is present for the URL/Referrer pair
          *
@@ -513,7 +526,7 @@
          */
         _findRuleForRequest: function (requestUrl, documentHost, requestType, thirdParty, documentWhiteListRule) {
 
-            adguard.console.debug("Filtering http request for url: {0}, document: {1}, requestType: {2}", requestUrl, documentHost, requestType);
+            adguard.console.debug('Filtering http request for url: {0}, document: {1}, requestType: {2}', requestUrl, documentHost, requestType);
 
             // STEP 1: Looking for exception rule, which could be applied to the current request
 

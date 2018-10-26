@@ -298,7 +298,7 @@ adguard.webRequestService = (function (adguard) {
     var getContentRules = function (tab, documentUrl) {
 
         if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab) || adguard.frames.isTabWhiteListed(tab)) {
-            //don't process request
+            // don't process request
             return null;
         }
 
@@ -321,7 +321,7 @@ adguard.webRequestService = (function (adguard) {
     var getCspRules = function (tab, requestUrl, referrerUrl, requestType) {
 
         if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab) || adguard.frames.isTabWhiteListed(tab)) {
-            //don't process request
+            // don't process request
             return null;
         }
 
@@ -331,6 +331,16 @@ adguard.webRequestService = (function (adguard) {
         }
 
         return adguard.requestFilter.getCspRules(requestUrl, referrerUrl, requestType);
+    };
+
+    const getReplaceRules = (tab, requestUrl, referrerUrl, requestType) => {
+        // TODO refactor this line, replace it with function, because it appears already above
+        if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab) || adguard.frames.isTabWhiteListed(tab)) {
+            // don't process request
+            return null;
+        }
+
+        return adguard.requestFilter.getReplaceRules(requestUrl, referrerUrl, requestType);
     };
 
     /**
@@ -471,6 +481,7 @@ adguard.webRequestService = (function (adguard) {
         getRuleForRequest: getRuleForRequest,
         getCspRules: getCspRules,
         getContentRules: getContentRules,
+        getReplaceRules: getReplaceRules,
         processRequestResponse: processRequestResponse,
         postProcessRequest: postProcessRequest,
         recordRuleHit: recordRuleHit,
