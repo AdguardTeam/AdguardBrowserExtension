@@ -445,7 +445,6 @@ adguard.contentFiltering = (function (adguard) {
                 return applyRulesToContent(tab, requestUrl, referrerUrl, requestType, requestId, contentRules, replaceRule, content);
             } finally {
                 adguard.requestContextStorage.onContentModificationFinished(requestId, requestUrl);
-                adguard.requestContextStorage.remove(requestId, requestUrl);
             }
         });
     };
