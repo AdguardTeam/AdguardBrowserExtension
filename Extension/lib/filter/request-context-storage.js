@@ -26,7 +26,7 @@
      * @property {string} requestUrl - Request url
      * @property {string> referrerUrl - Request referrer url
      * @property {string} requestType - Request type
-     * @property {object} tab Request - tab
+     * @property {{tabId: Number}} tab - Request tab
      * @property {Array} requestHeaders - Original request headers
      * @property {Array} modifiedRequestHeaders - Modified request headers
      * @property {Array} responseHeaders - Original response headers
@@ -37,22 +37,19 @@
      * @property {Array} cspRules CSP - rules
      * @property {number} requestState - Is request between onBeforeRequest and onCompleted/onErrorOccurred events
      * @property {number} contentModifyingState - Is content modification started
+     * @property {Map<object, string[]>} elements - Content rules attached elements
      */
 
     /**
      * @typedef {object} States
-     * @property {number} NONE
-     * @property {number} PROCESSING
-     * @property {number} DONE
-     * @property {function} isFinished
+     * @property {number} NONE - Ready for cleanup (not started or already finished and processed)
+     * @property {number} PROCESSING - In progress
+     * @property {number} DONE - Finished, ready for processing. Next transition to NONE and cleanup
      */
     const States = {
         NONE: 1,
         PROCESSING: 2,
-        DONE: 3,
-        isFinished: (state) => {
-            return state === States.NONE || state === States.DONE;
-        }
+        DONE: 3
     };
 
     /**
@@ -97,11 +94,11 @@
     /**
      * Records request context
      *
-     * @property {string} requestId Request identifier
-     * @property {string} requestUrl Request url
-     * @property {string> referrerUrl Request referrer url
-     * @property {string} requestType Request type
-     * @property {object} tab Request tab
+     * @param {string} requestId Request identifier
+     * @param {string} requestUrl Request url
+     * @param {string} referrerUrl Request referrer url
+     * @param {string} requestType Request type
+     * @param {object} tab Request tab
      */
     const record = (requestId, requestUrl, referrerUrl, requestType, tab) => {
 
@@ -143,7 +140,9 @@
         if ('requestRule' in update) {
             context.requestRule = update.requestRule;
         }
-        context.contentRules = appendRules(context.contentRules, update.contentRules);
+        if ('replaceRule' in update) {
+            context.replaceRule = update.replaceRule;
+        }
         context.cspRules = appendRules(context.cspRules, update.cspRules);
 
         if ('requestHeaders' in update) {
@@ -154,6 +153,36 @@
         }
         //TODO: add request/response headers updates
 
+    };
+
+    /**
+     * Binds content rule with serialized element to the request
+     *
+     * @param {string} requestId Request identifier
+     * @param {string} requestUrl Request url
+     * @param {object} rule Content rule
+     * @param {object} elementHtml Serialized HTML element
+     */
+    const bindContentRule = (requestId, requestUrl, rule, elementHtml) => {
+
+        const key = constructKey(requestId, requestUrl);
+        const context = contexts.get(key);
+
+        if (!context) {
+            return;
+        }
+
+        context.contentRules = appendRules(context.contentRules, [rule]);
+        if (!context.elements) {
+            context.elements = new Map();
+        }
+
+        let ruleElements = context.elements.get(rule);
+        if (!ruleElements) {
+            ruleElements = [];
+            context.elements.set(rule, ruleElements);
+        }
+        ruleElements.push(elementHtml);
     };
 
     /**
@@ -173,49 +202,78 @@
 
         const key = constructKey(requestId, requestUrl);
         const context = contexts.get(key);
+
         if (!context) {
             return;
         }
 
-        let rules = [];
+        const tab = context.tab;
+        const referrerUrl = context.referrerUrl;
 
-        if (context.requestState === States.PROCESSING) {
-            context.requestState = States.DONE;
+        let ruleHitsRecords = [];
+
+        if (context.requestState === States.DONE) {
+
+            context.requestState = States.NONE;
+
             if (context.requestRule) {
-                rules.push(context.requestRule);
+                adguard.filteringLog.bindRuleToHttpRequestEvent(tab, context.requestRule, requestUrl, requestId);
+                ruleHitsRecords.push(context.requestRule);
             }
+
             if (context.cspRules) {
-                rules = rules.concat(context.cspRules);
+                for (let cspRule of context.cspRules) {
+                    adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, adguard.RequestTypes.CSP, cspRule);
+                }
+                ruleHitsRecords = ruleHitsRecords.concat(context.cspRules);
             }
         }
 
-        if (context.contentModifyingState === States.PROCESSING) {
-            context.contentModifyingState = States.DONE;
+        if (context.contentModifyingState === States.DONE) {
+
+            context.contentModifyingState = States.NONE;
+
             if (context.replaceRule) {
-                rules.push(context.replaceRule);
+                adguard.filteringLog.bindRuleToHttpRequestEvent(tab, context.replaceRule, requestUrl, requestId);
+                ruleHitsRecords.push(context.replaceRule);
             }
+
             if (context.contentRules) {
-                rules = rules.concat(context.contentRules);
+                for (let contentRule of context.contentRules) {
+                    const elements = context.elements.get(contentRule) || [];
+                    for (let element of elements) {
+                        adguard.filteringLog.addCosmeticEvent(tab, element, requestUrl, context.requestType, contentRule);
+                    }
+                    context.elements.delete(contentRule);
+                }
+                ruleHitsRecords = ruleHitsRecords.concat(context.contentRules);
             }
         }
 
-        if (rules.length > 0) {
-            adguard.filteringLog.bindRuleToHttpRequestEvent(context.tab, rules[0], requestId);
-        }
-
-        for (let i = 0; i < rules.length; i++) {
-            adguard.webRequestService.recordRuleHit(context.tab, rules[i], context.requestUrl);
+        for (let i = 0; i < ruleHitsRecords.length; i++) {
+            adguard.webRequestService.recordRuleHit(tab, ruleHitsRecords[i], requestUrl);
         }
 
         // All processes finished
-        if (States.isFinished(context.requestState) &&
-            States.isFinished(context.contentModifyingState)) {
+        if (context.requestState === States.NONE &&
+            context.contentModifyingState === States.NONE) {
+
             contexts.delete(key);
         }
     };
 
     /**
-     * Indicates that content modification is started
+     * Called on request complete/error event
+     *
+     * @param {string} requestId Request identifier
+     * @param {string} requestUrl Request url
+     */
+    const onRequestCompleted = (requestId, requestUrl) => {
+        update(requestId, requestUrl, { requestState: States.DONE });
+    };
+
+    /**
+     * Indicates that content modification in progress
      *
      * @param {string} requestId Request identifier
      * @param {string} requestUrl Request url
@@ -224,13 +282,26 @@
         update(requestId, requestUrl, { contentModifyingState: States.PROCESSING });
     };
 
+    /**
+     * Indicates that content modification finished
+     *
+     * @param {string} requestId Request identifier
+     * @param {string} requestUrl Request url
+     */
+    const onContentModificationFinished = (requestId, requestUrl) => {
+        update(requestId, requestUrl, { contentModifyingState: States.DONE });
+    };
+
     // Expose
     adguard.requestContextStorage = {
         get,
         record,
         update,
+        bindContentRule: bindContentRule,
         remove,
+        onRequestCompleted,
         onContentModificationStarted,
+        onContentModificationFinished,
     }
 
 })(adguard);

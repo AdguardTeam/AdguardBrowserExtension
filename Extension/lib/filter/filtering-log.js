@@ -126,28 +126,6 @@ adguard.filteringLog = (function (adguard) {
     }
 
     /**
-     * Serialize HTML element
-     * @param element
-     */
-    function elementToString(element) {
-        var s = [];
-        s.push('<');
-        s.push(element.localName);
-        var attributes = element.attributes;
-        for (var i = 0; i < attributes.length; i++) {
-            var attr = attributes[i];
-            s.push(' ');
-            s.push(attr.name);
-            s.push('="');
-            var value = attr.value === null ? '' : attr.value.replace(/"/g, '\\"');
-            s.push(value);
-            s.push('"');
-        }
-        s.push('>');
-        return s.join('');
-    }
-
-    /**
      * Adds filtering event to log
      * @param tabInfo Tab
      * @param filteringEvent Event to add
@@ -258,7 +236,7 @@ adguard.filteringLog = (function (adguard) {
 
         var frameDomain = adguard.utils.url.getDomainName(frameUrl);
         var filteringEvent = {
-            element: typeof element === 'string' ? element : elementToString(element),
+            element: typeof element === 'string' ? element : adguard.utils.strings.elementToString(element),
             frameUrl: frameUrl,
             frameDomain: frameDomain,
             requestType: requestType,

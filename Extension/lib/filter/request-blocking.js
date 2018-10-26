@@ -409,7 +409,6 @@ adguard.webRequestService = (function (adguard) {
         if (adguard.integration.isSupported() && adguard.frames.isTabAdguardDetected(tab)) {
             // Parse rule applied to request from response headers
             var requestRule = adguard.integration.parseAdguardRuleFromHeaders(responseHeaders);
-            // adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, requestType, requestRule, requestId);
             adguard.requestContextStorage.update(requestId, requestUrl, { requestRule });
         }
     };
@@ -464,13 +463,9 @@ adguard.webRequestService = (function (adguard) {
             }
         }
 
-        // adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, requestType, requestRule, requestId);
         if (requestRule) {
             adguard.requestContextStorage.update(requestId, requestUrl, { requestRule });
         }
-
-        // Record rule hit
-        recordRuleHit(tab, requestRule, requestUrl);
     };
 
     var isCollectingCosmeticRulesHits = function (tab) {

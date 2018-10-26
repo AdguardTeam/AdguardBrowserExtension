@@ -91,7 +91,6 @@
              * In integration mode, rule from the headers will override this value
              */
             var tabRequestRule = adguard.frames.getFrameWhiteListRule(tab);
-            // adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, requestUrl, requestType, tabRequestRule, requestId);
             if (tabRequestRule) {
                 adguard.requestContextStorage.update(requestId, requestUrl, { requestRule: tabRequestRule });
             }
@@ -315,8 +314,6 @@
             });
         }
         if (legacyCspRule) {
-            // adguard.webRequestService.recordRuleHit(tab, legacyCspRule, frameUrl);
-            // adguard.filteringLog.addHttpRequestEvent(tab, 'content-security-policy-check', frameUrl, adguard.RequestTypes.CSP, legacyCspRule);
             adguard.requestContextStorage.update(requestId, requestUrl, { cspRules: [legacyCspRule] });
         }
 
@@ -335,8 +332,6 @@
                         value: rule.cspDirective
                     });
                 }
-                // adguard.webRequestService.recordRuleHit(tab, rule, requestUrl);
-                // adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, frameUrl, adguard.RequestTypes.CSP, rule);
             }
             adguard.requestContextStorage.update(requestId, requestUrl, { cspRules });
         }
@@ -909,10 +904,12 @@
     //TODO: Request context recording
 
     adguard.webRequest.onCompleted.addListener(({ requestId, requestUrl }) => {
+        adguard.requestContextStorage.onRequestCompleted(requestId, requestUrl);
         adguard.requestContextStorage.remove(requestId, requestUrl);
     }, ['<all_urls>']);
 
     adguard.webRequest.onErrorOccurred.addListener(({ requestId, requestUrl }) => {
+        adguard.requestContextStorage.onRequestCompleted(requestId, requestUrl);
         adguard.requestContextStorage.remove(requestId, requestUrl);
     }, ['<all_urls>']);
 
