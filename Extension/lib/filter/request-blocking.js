@@ -22,6 +22,19 @@ adguard.webRequestService = (function (adguard) {
     var onRequestBlockedChannel = adguard.utils.channels.newChannel();
 
     /**
+     * Checks if we can collect hit stats for this tab:
+     * Option "Collect hit stats" is enabled and tab isn't incognito and integration mode is disabled
+     * @param {object} tab
+     * @returns {boolean}
+     */
+    var canCollectHitStatsForTab = function (tab) {
+        return tab &&
+            adguard.settings.collectHitsCount() &&
+            !adguard.frames.isIncognitoTab(tab) &&
+            !adguard.frames.isTabAdguardDetected(tab);
+    };
+
+    /**
      * Records filtering rule hit
      *
      * @param tab            Tab object
@@ -30,11 +43,9 @@ adguard.webRequestService = (function (adguard) {
      */
     var recordRuleHit = function (tab, requestRule, requestUrl) {
         if (requestRule &&
-            adguard.settings.collectHitsCount() &&
             !adguard.utils.filters.isUserFilterRule(requestRule) &&
             !adguard.utils.filters.isWhiteListFilterRule(requestRule) &&
-            !adguard.frames.isIncognitoTab(tab) &&
-            !adguard.frames.isTabAdguardDetected(tab)) {
+            canCollectHitStatsForTab(tab)) {
             var domain = adguard.frames.getFrameDomain(tab);
             adguard.hitStats.addRuleHit(domain, requestRule.ruleText, requestRule.filterId, requestUrl);
         }
@@ -117,11 +128,6 @@ adguard.webRequestService = (function (adguard) {
 
         var retrieveSelectors = !elemHideFlag && (cssFilterOptions & (CssFilter.RETRIEVE_TRADITIONAL_CSS + CssFilter.RETRIEVE_EXTCSS)) !== 0;
 
-        if (retrieveSelectors) {
-            // Record rule hit
-            recordRuleHit(tab, whitelistRule, documentUrl);
-        }
-
         // It's important to check this after the recordRuleHit call
         // as otherwise we will never record $document rules hit for domain
         if (adguard.frames.isTabWhiteListed(tab)) {
@@ -161,8 +167,10 @@ adguard.webRequestService = (function (adguard) {
         }
 
         var requestRule = getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
+        requestRule = postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
 
-        postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
+        adguard.requestContextStorage.recordEmulated(requestUrl, referrerUrl, requestType, tab, requestRule);
+
         return isRequestBlockedByRule(requestRule);
     };
 
@@ -370,9 +378,9 @@ adguard.webRequestService = (function (adguard) {
      * @param referrerUrl Referrer URL
      * @param requestType Request type
      * @param responseHeaders Response headers
-     * @param requestId Request identifier
+     * @return {object} Request rule parsed from integration headers or null
      */
-    var processRequestResponse = function (tab, requestUrl, referrerUrl, requestType, responseHeaders, requestId) {
+    var processRequestResponse = function (tab, requestUrl, referrerUrl, requestType, responseHeaders) {
 
         if (requestType === adguard.RequestTypes.DOCUMENT) {
             // Check headers to detect Adguard application
@@ -386,31 +394,21 @@ adguard.webRequestService = (function (adguard) {
             }
         }
 
-        var requestRule = null;
-        var appendLogEvent = false;
-
-        if (adguard.integration.isSupported() && adguard.frames.isTabAdguardDetected(tab)) {
-            // Parse rule applied to request from response headers
-            requestRule = adguard.integration.parseAdguardRuleFromHeaders(responseHeaders);
-            appendLogEvent = !adguard.backend.isAdguardAppRequest(requestUrl);
-        } else if (requestType === adguard.RequestTypes.DOCUMENT) {
-            requestRule = adguard.frames.getFrameWhiteListRule(tab);
+        // add page view to stats
+        if (requestType === adguard.RequestTypes.DOCUMENT) {
             var domain = adguard.frames.getFrameDomain(tab);
-            if (
-                !adguard.frames.isIncognitoTab(tab) &&
-                adguard.settings.collectHitsCount() &&
-                adguard.frames.isTabAdguardDetected(tab)
-            ) {
-                // add page view to stats
+            if (canCollectHitStatsForTab(tab)) {
                 adguard.hitStats.addDomainView(domain);
             }
-            appendLogEvent = true;
         }
 
-        // add event to filtering log
-        if (appendLogEvent) {
-            adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, requestType, requestRule, requestId);
+        // In integration mode, binds rule from headers or nothing to the request
+        if (adguard.integration.isSupported() && adguard.frames.isTabAdguardDetected(tab)) {
+            // Parse rule applied to request from response headers
+            return adguard.integration.parseAdguardRuleFromHeaders(responseHeaders);
         }
+
+        return null;
     };
 
     /**
@@ -421,12 +419,12 @@ adguard.webRequestService = (function (adguard) {
      * @param referrerUrl   referrer url
      * @param requestType   one of RequestType
      * @param requestRule   rule
-     * @param requestId     request identifier
+     * @return {object} Request rule if suitable by its own type and request type or null
      */
-    var postProcessRequest = function (tab, requestUrl, referrerUrl, requestType, requestRule, requestId) {
+    var postProcessRequest = function (tab, requestUrl, referrerUrl, requestType, requestRule) {
 
         if (adguard.frames.isTabAdguardDetected(tab)) {
-            // Do nothing, log event will be added on response
+            // Do nothing, rules from integrated app will be processed on response
             return;
         }
 
@@ -463,13 +461,7 @@ adguard.webRequestService = (function (adguard) {
             }
         }
 
-        // main_frame record will be added onResponseReceived event
-        if (requestType !== adguard.RequestTypes.DOCUMENT) {
-            adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, requestType, requestRule, requestId);
-        }
-
-        // Record rule hit
-        recordRuleHit(tab, requestRule, requestUrl);
+        return requestRule;
     };
 
     var isCollectingCosmeticRulesHits = function (tab) {
@@ -477,11 +469,8 @@ adguard.webRequestService = (function (adguard) {
          * Edge browser doesn't support css content attribute for node elements except :before and :after
          * Due to this we can't use cssHitsCounter for edge browser
          */
-        if (tab && adguard.frames.isTabAdguardDetected(tab)) {
-            return false;
-        }
-        return !adguard.utils.browser.isEdgeBrowser() && adguard.prefs.collectHitsCountEnabled &&
-            (adguard.settings.collectHitsCount() || adguard.filteringLog.isOpen());
+        return !adguard.utils.browser.isEdgeBrowser() &&
+            (canCollectHitStatsForTab(tab) || adguard.filteringLog.isOpen());
     };
 
     // EXPOSE

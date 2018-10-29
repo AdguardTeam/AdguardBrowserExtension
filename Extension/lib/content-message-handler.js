@@ -95,15 +95,11 @@
         if (!adguard.webRequestService.isCollectingCosmeticRulesHits(tab)) {
             return;
         }
-        const isIncognitoTab = adguard.frames.isIncognitoTab(tab);
-        const collectHitsCount = adguard.settings.collectHitsCount();
-        var domain = adguard.frames.getFrameDomain(tab);
+        var frameUrl = adguard.frames.getMainFrameUrl(tab);
         for (let i = 0; i < stats.length; i += 1) {
             const stat = stats[i];
             const rule = adguard.rules.builder.createRule(stat.ruleText, stat.filterId);
-            if (collectHitsCount && !isIncognitoTab && !adguard.utils.filters.isUserFilterRule(rule)) {
-                adguard.hitStats.addRuleHit(domain, stat.ruleText, stat.filterId);
-            }
+            adguard.webRequestService.recordRuleHit(tab, rule, frameUrl);
             adguard.filteringLog.addCosmeticEvent(tab, stat.element, tab.url, adguard.RequestTypes.DOCUMENT, rule);
         }
     }

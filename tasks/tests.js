@@ -83,4 +83,9 @@ const testEncoding = (done) => {
     runQunit('../Extension/tests/miscellaneous/test-encoding.html', done);
 };
 
-export default gulp.series(testRule, testSB, testURL, testCSSfilter, testContent, testCookieFiltering, testCSShits, testReq, testEl, testCookie, testRing, testEncoding);
+// Request context storage test
+const testRequestContextStorage = (done) => {
+    runQunit('../Extension/tests/miscellaneous/test-request-context-storage.html', done);
+};
+
+export default gulp.series(testRule, testSB, testURL, testCSSfilter, testContent, testCookieFiltering, testCSShits, testReq, testEl, testCookie, testRing, testEncoding, testRequestContextStorage);

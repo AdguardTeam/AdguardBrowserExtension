@@ -321,20 +321,11 @@ PageController.prototype = {
             return;
         }
 
-        const elements = this.logTable.querySelectorAll('#request-' + event.requestId);
-
-        if (elements.length > 0) {
-            for (let i = 0; i < elements.length; i += 1) {
-                const element = elements[i];
-                const elementData = element.data;
-                const elementRequestUrl = elementData && elementData.requestUrl;
-                if (elementRequestUrl && elementRequestUrl === event.requestUrl) {
-                    const updatedTemplate = this._renderTemplate(event);
-                    this._handleEventShow(updatedTemplate);
-                    element.parentNode.replaceChild(updatedTemplate, element);
-                    break;
-                }
-            }
+        const element = this.logTable.querySelector('#request-' + event.eventId);
+        if (element) {
+            const updatedTemplate = this._renderTemplate(event);
+            this._handleEventShow(updatedTemplate);
+            element.parentNode.replaceChild(updatedTemplate, element);
         }
     },
 
@@ -506,8 +497,8 @@ PageController.prototype = {
                 metadata.class += ' red';
             }
         }
-        if (event.requestId) {
-            metadata.id = 'request-' + event.requestId;
+        if (event.eventId) {
+            metadata.id = 'request-' + event.eventId;
         }
 
         var requestInfo = event.requestUrl ? event.requestUrl : this._escapeHTML(event.element);

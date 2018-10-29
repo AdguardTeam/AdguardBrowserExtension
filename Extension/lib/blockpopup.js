@@ -37,6 +37,7 @@
 			//remove popup tab
 			adguard.tabs.remove(tabId);
 			adguard.webRequestService.postProcessRequest(sourceTab, requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT, requestRule);
+            adguard.requestContextStorage.recordEmulated(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT, sourceTab, requestRule);
 		}
 	}
 
