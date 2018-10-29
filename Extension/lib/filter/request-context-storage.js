@@ -96,6 +96,13 @@
     };
 
     /**
+     * Creates copy of headers array
+     * @param headers Headers to copy
+     * @return {{name: *, value: *}[]}
+     */
+    const copyHeaders = (headers) => (headers || []).map(h => ({ name: h.name, value: h.value }));
+
+    /**
      * Generates next event identifier
      * @returns {number}
      */
@@ -185,10 +192,10 @@
         context.cspRules = appendRules(context.cspRules, update.cspRules);
 
         if ('requestHeaders' in update) {
-            context.requestHeaders = (update.requestHeaders || []).slice(0);
+            context.requestHeaders = copyHeaders(update.requestHeaders);
         }
         if ('responseHeaders' in update) {
-            context.responseHeaders = (update.responseHeaders || []).slice(0);
+            context.responseHeaders = copyHeaders(update.responseHeaders);
         }
     };
 
@@ -239,7 +246,7 @@
 
         // Initialize modified headers with the original headers
         if (!context[modifiedHeadersProperty]) {
-            context[modifiedHeadersProperty] = (context[originalHeadersProperty] || []).slice(0);
+            context[modifiedHeadersProperty] = copyHeaders(context[originalHeadersProperty]);
         }
 
         let updatedHeaders = context[modifiedHeadersProperty];
