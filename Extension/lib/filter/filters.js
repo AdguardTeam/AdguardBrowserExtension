@@ -115,8 +115,7 @@
         this.cspFilter = new adguard.rules.CspFilter();
 
         // Filter that applies replace rules
-        // TODO add link to rules
-        // console.log(adguard.rules.ReplaceFilter);
+        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#replace-modifier
         this.replaceFilter = new adguard.rules.ReplaceFilter();
 
         // Filter that applies HTML filtering rules

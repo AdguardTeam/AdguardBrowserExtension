@@ -444,7 +444,7 @@ adguard.contentFiltering = (function (adguard) {
     };
 
     return {
-        apply: apply
+        apply: apply,
     };
 
 })(adguard);
