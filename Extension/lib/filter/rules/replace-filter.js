@@ -76,25 +76,39 @@
          * @param documentHost
          * @param thirdParty
          * @param requestType
-         * @returns {Array} array of filtered replace blockRules
+         * @returns {?Array} array of filtered replace blockRules or null
          */
         function findReplaceRules(url, documentHost, thirdParty, requestType) {
             const whiteRules = replaceWhiteFilter.findRules(url, documentHost, thirdParty, requestType);
             const blockRules = replaceBlockFilter.findRules(url, documentHost, thirdParty, requestType);
 
             if (!blockRules) {
-                return [];
+                return null;
             }
 
-            if (whiteRules && whiteRules.length > 0) {
-                const whiteRulesOptionText = whiteRules.map(whiteRule => whiteRule.replaceOption.optionText);
-                return blockRules.filter((blockRule) => {
+            if (!whiteRules) {
+                return blockRules;
+            }
+
+            if (whiteRules.length > 0) {
+                const whiteRulesWithEmptyOptionText = whiteRules.filter(whiteRule => whiteRule.replaceOption.optionText === '');
+
+                // @@||example.org^$replace will disable all $replace rules matching ||example.org^.
+                if (whiteRulesWithEmptyOptionText.length > 0) {
+                    return whiteRulesWithEmptyOptionText;
+                }
+
+                // whitelist rules with same option text removes block rule
+                const whiteRulesOptionTexts = whiteRules.map(whiteRule => whiteRule.replaceOption.optionText);
+                const filteredBlockRules = blockRules.filter((blockRule) => {
                     const blockRuleOptionText = blockRule.replaceOption.optionText;
-                    return whiteRulesOptionText.indexOf(blockRuleOptionText) < 0;
+                    return whiteRulesOptionTexts.indexOf(blockRuleOptionText) < 0;
                 });
+
+                return whiteRules.concat(filteredBlockRules);
             }
 
-            return blockRules;
+            return blockRules.length > 0 ? blockRules : null;
         }
 
         if (rules) {

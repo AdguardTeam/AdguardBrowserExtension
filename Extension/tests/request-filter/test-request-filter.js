@@ -407,10 +407,32 @@ QUnit.test('whitelisted replace filter with same option is omitted', function (a
     const replaceRules = requestFilter.findReplaceRules('https://example.org', '', adguard.RequestTypes.DOCUMENT);
 
     assert.ok(replaceRules);
-    assert.equal(replaceRules.length, 1);
+    assert.equal(replaceRules.length, 2);
+});
 
-    const replaceRule = replaceRules[0];
-    assert.expect(replaceRule.ruleText, expectedRule);
+QUnit.test('replace filter with empty $replace modifier should remove all other replace rules', function (assert) {
+    const rules = [
+        '||example.org^$replace=/test/test1/g',
+        '||example.org^$replace=/test1/test2/g',
+        '@@||example.org^$replace',
+    ];
+
+    const requestFilter = new adguard.RequestFilter();
+
+    adguard.prefs.features.responseContentFilteringSupported = true;
+
+    const urlFilterRules = rules.map(rule => {
+        return new adguard.rules.UrlFilterRule(rule);
+    });
+
+    requestFilter.addRules(urlFilterRules);
+
+    const replaceRules = requestFilter.findReplaceRules('https://example.org', '', adguard.RequestTypes.DOCUMENT);
+
+    assert.ok(replaceRules);
+    assert.ok(replaceRules[0].whiteListRule);
+    assert.equal(rules.length, 3);
+    assert.equal(replaceRules.length, 1);
 });
 
 

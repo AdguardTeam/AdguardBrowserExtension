@@ -344,6 +344,14 @@ adguard.webRequestService = (function (adguard) {
         return adguard.requestFilter.getCspRules(requestUrl, referrerUrl, requestType);
     };
 
+    /**
+     * Find replace rules for request
+     * @param tab
+     * @param requestUrl
+     * @param referrerUrl
+     * @param requestType
+     * @returns {*} Collection of rules or null
+     */
     const getReplaceRules = (tab, requestUrl, referrerUrl, requestType) => {
         if (shouldStopRequestProcess(tab)) {
             // don't process request
@@ -351,7 +359,7 @@ adguard.webRequestService = (function (adguard) {
         }
 
         const whitelistRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
-        if (whitelistRule && (whitelistRule.isDocumentWhiteList() || whitelistRule.isContent())) {
+        if (whitelistRule && whitelistRule.isDocumentWhiteList()) {
             return null;
         }
 
