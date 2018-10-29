@@ -81,9 +81,11 @@
         function findReplaceRules(url, documentHost, thirdParty, requestType) {
             const whiteRules = replaceWhiteFilter.findRules(url, documentHost, thirdParty, requestType);
             const blockRules = replaceBlockFilter.findRules(url, documentHost, thirdParty, requestType);
+
             if (!blockRules) {
                 return [];
             }
+
             if (whiteRules && whiteRules.length > 0) {
                 const whiteRulesOptionText = whiteRules.map(whiteRule => whiteRule.replaceOption.optionText);
                 return blockRules.filter((blockRule) => {
@@ -91,8 +93,8 @@
                     return whiteRulesOptionText.indexOf(blockRuleOptionText) < 0;
                 });
             }
+
             return blockRules;
-            // TODO add filtering rules which has $document and $content modifiers
         }
 
         if (rules) {
