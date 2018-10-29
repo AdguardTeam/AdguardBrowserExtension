@@ -92,7 +92,7 @@
              */
             var tabRequestRule = adguard.frames.getFrameWhiteListRule(tab);
             if (tabRequestRule) {
-                adguard.requestContextStorage.update(requestId, requestUrl, { requestRule: tabRequestRule });
+                adguard.requestContextStorage.update(requestId, { requestRule: tabRequestRule });
             }
 
             return;
@@ -109,7 +109,12 @@
         // Record request for other types
         adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, requestType, tab);
 
-        adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule, requestId);
+        requestRule = adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
+
+        if (requestRule) {
+            adguard.requestContextStorage.update(requestId, { requestRule });
+        }
+
         var response = adguard.webRequestService.getBlockedResponseByRule(requestRule, requestType);
 
         if (response && response.cancel) {
@@ -182,10 +187,9 @@
 
         var tab = requestDetails.tab;
         var requestId = requestDetails.requestId;
-        var requestUrl = requestDetails.requestUrl;
         var headers = requestDetails.requestHeaders;
 
-        adguard.requestContextStorage.update(requestId, requestUrl, { requestHeaders: (headers || []).slice(0) });
+        adguard.requestContextStorage.update(requestId, { requestHeaders: (headers || []).slice(0) });
 
         if (adguard.integration.shouldOverrideReferrer(tab)) {
             // Retrieve main frame url
@@ -231,9 +235,13 @@
         var statusCode = requestDetails.statusCode;
         var method = requestDetails.method;
 
-        adguard.requestContextStorage.update(requestId, requestUrl, { responseHeaders: (responseHeaders || []).slice(0) });
+        adguard.requestContextStorage.update(requestId, { responseHeaders: (responseHeaders || []).slice(0) });
 
-        adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders, requestId);
+        const requestRule = adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
+        // Overrides rule in integration mode
+        if (adguard.frames.isTabAdguardDetected(tab)) {
+            adguard.requestContextStorage.update(requestId, { requestRule });
+        }
 
         // Safebrowsing check
         if (requestType === adguard.RequestTypes.DOCUMENT &&
@@ -320,7 +328,7 @@
             });
         }
         if (legacyCspRule) {
-            adguard.requestContextStorage.update(requestId, requestUrl, { cspRules: [legacyCspRule] });
+            adguard.requestContextStorage.update(requestId, { cspRules: [legacyCspRule] });
         }
 
         /**
@@ -339,7 +347,9 @@
                     });
                 }
             }
-            adguard.requestContextStorage.update(requestId, requestUrl, { cspRules });
+            if (cspRules.length > 0) {
+                adguard.requestContextStorage.update(requestId, { cspRules });
+            }
         }
 
         /**
@@ -907,14 +917,15 @@
         })(adguard);
     }
 
-    //TODO: Request context recording
-
-    adguard.webRequest.onCompleted.addListener(({ requestId, requestUrl }) => {
-        adguard.requestContextStorage.onRequestCompleted(requestId, requestUrl);
+    /**
+     * Request context recording
+     */
+    adguard.webRequest.onCompleted.addListener(({ requestId }) => {
+        adguard.requestContextStorage.onRequestCompleted(requestId);
     }, ['<all_urls>']);
 
-    adguard.webRequest.onErrorOccurred.addListener(({ requestId, requestUrl }) => {
-        adguard.requestContextStorage.onRequestCompleted(requestId, requestUrl);
+    adguard.webRequest.onErrorOccurred.addListener(({ requestId }) => {
+        adguard.requestContextStorage.onRequestCompleted(requestId);
     }, ['<all_urls>']);
 
 })(adguard);

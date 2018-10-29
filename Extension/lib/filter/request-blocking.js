@@ -128,11 +128,6 @@ adguard.webRequestService = (function (adguard) {
 
         var retrieveSelectors = !elemHideFlag && (cssFilterOptions & (CssFilter.RETRIEVE_TRADITIONAL_CSS + CssFilter.RETRIEVE_EXTCSS)) !== 0;
 
-        if (retrieveSelectors) {
-            // Record rule hit
-            recordRuleHit(tab, whitelistRule, documentUrl);
-        }
-
         // It's important to check this after the recordRuleHit call
         // as otherwise we will never record $document rules hit for domain
         if (adguard.frames.isTabWhiteListed(tab)) {
@@ -172,8 +167,10 @@ adguard.webRequestService = (function (adguard) {
         }
 
         var requestRule = getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
+        requestRule = postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
 
-        postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
+        adguard.requestContextStorage.recordEmulated(requestUrl, referrerUrl, requestType, tab, requestRule);
+
         return isRequestBlockedByRule(requestRule);
     };
 
@@ -381,9 +378,9 @@ adguard.webRequestService = (function (adguard) {
      * @param referrerUrl Referrer URL
      * @param requestType Request type
      * @param responseHeaders Response headers
-     * @param requestId Request identifier
+     * @return {object} Request rule parsed from integration headers or null
      */
-    var processRequestResponse = function (tab, requestUrl, referrerUrl, requestType, responseHeaders, requestId) {
+    var processRequestResponse = function (tab, requestUrl, referrerUrl, requestType, responseHeaders) {
 
         if (requestType === adguard.RequestTypes.DOCUMENT) {
             // Check headers to detect Adguard application
@@ -408,9 +405,10 @@ adguard.webRequestService = (function (adguard) {
         // In integration mode, binds rule from headers or nothing to the request
         if (adguard.integration.isSupported() && adguard.frames.isTabAdguardDetected(tab)) {
             // Parse rule applied to request from response headers
-            var requestRule = adguard.integration.parseAdguardRuleFromHeaders(responseHeaders);
-            adguard.requestContextStorage.update(requestId, requestUrl, { requestRule });
+            return adguard.integration.parseAdguardRuleFromHeaders(responseHeaders);
         }
+
+        return null;
     };
 
     /**
@@ -421,9 +419,9 @@ adguard.webRequestService = (function (adguard) {
      * @param referrerUrl   referrer url
      * @param requestType   one of RequestType
      * @param requestRule   rule
-     * @param requestId     request identifier
+     * @return {object} Request rule if suitable by its own type and request type or null
      */
-    var postProcessRequest = function (tab, requestUrl, referrerUrl, requestType, requestRule, requestId) {
+    var postProcessRequest = function (tab, requestUrl, referrerUrl, requestType, requestRule) {
 
         if (adguard.frames.isTabAdguardDetected(tab)) {
             // Do nothing, rules from integrated app will be processed on response
@@ -463,9 +461,7 @@ adguard.webRequestService = (function (adguard) {
             }
         }
 
-        if (requestRule) {
-            adguard.requestContextStorage.update(requestId, requestUrl, { requestRule });
-        }
+        return requestRule;
     };
 
     var isCollectingCosmeticRulesHits = function (tab) {

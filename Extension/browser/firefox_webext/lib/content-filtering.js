@@ -330,7 +330,7 @@ adguard.contentFiltering = (function (adguard) {
                     var element = elements[j];
                     if (element.parentNode && deleted.indexOf(element) < 0) {
                         element.parentNode.removeChild(element);
-                        adguard.requestContextStorage.bindContentRule(requestId, requestUrl, rule, adguard.utils.strings.elementToString(element));
+                        adguard.requestContextStorage.bindContentRule(requestId, rule, adguard.utils.strings.elementToString(element));
                         deleted.push(element);
                     }
                 }
@@ -379,7 +379,7 @@ adguard.contentFiltering = (function (adguard) {
 
         if (replaceRule) {
             content = replaceRule.getReplace().apply(content);
-            adguard.requestContextStorage.update(requestId, requestUrl, { replaceRule });
+            adguard.requestContextStorage.update(requestId, { replaceRule });
         }
 
         return content;
@@ -438,13 +438,13 @@ adguard.contentFiltering = (function (adguard) {
         }
 
         // Call this method to prevent removing context on request complete/error event
-        adguard.requestContextStorage.onContentModificationStarted(requestId, requestUrl);
+        adguard.requestContextStorage.onContentModificationStarted(requestId);
 
         responseContentHandler.handleResponse(requestId, requestUrl, requestType, charset, (content) => {
             try {
                 return applyRulesToContent(tab, requestUrl, referrerUrl, requestType, requestId, contentRules, replaceRule, content);
             } finally {
-                adguard.requestContextStorage.onContentModificationFinished(requestId, requestUrl);
+                adguard.requestContextStorage.onContentModificationFinished(requestId);
             }
         });
     };
