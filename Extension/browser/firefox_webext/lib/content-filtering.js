@@ -341,12 +341,11 @@ adguard.contentFiltering = (function (adguard) {
     }
 
     function applyReplaceRules(content, replaceRules) {
-        // TODO implement replace rules application
         let modifiedContent = content;
         for (let i = 0; i < replaceRules.length; i += 1) {
             const replaceRule = replaceRules[i];
             const replaceOption = replaceRule.replaceOption;
-            modifiedContent = modifiedContent.replace(replaceOption.pattern, replaceOption.replacement);
+            modifiedContent = replaceOption.apply(modifiedContent);
         }
 
         if (modifiedContent) {

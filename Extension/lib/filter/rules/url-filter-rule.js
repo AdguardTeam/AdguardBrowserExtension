@@ -307,22 +307,23 @@
      */
     function ReplaceOption(option) {
 
-        var parts = adguard.utils.strings.splitByDelimiterWithEscapeCharacter(option, '/', ESCAPE_CHARACTER, true);
+        const parts = adguard.utils.strings.splitByDelimiterWithEscapeCharacter(option, '/', ESCAPE_CHARACTER, true);
 
         if (parts.length < 2 || parts.length > 3) {
             throw 'Cannot parse ' + option;
         }
 
-        var modifiers = (parts[2] || '');
+        let modifiers = (parts[2] || '');
         if (modifiers.indexOf('g') < 0) {
             modifiers += 'g';
         }
         this.pattern = new RegExp(parts[0], modifiers);
         this.replacement = parts[1];
+        this.optionText = option;
 
-        // this.apply = function (input) {
-        //     return input.replace(this.pattern, this.replacement);
-        // };
+        this.apply = function (input) {
+            return input.replace(this.pattern, this.replacement);
+        };
     }
 
     /**
@@ -424,7 +425,7 @@
      * @return Parsed $replace modifier
      */
     UrlFilterRule.prototype.getReplace = function () {
-        return this.replace;
+        return this.replaceOption;
     };
 
     // Lazy regexp creation

@@ -62,7 +62,7 @@
 
         /**
          * Returns rules from replace filter
-         * @returns rules Array of rules
+         * @returns {Array} array of rules
          */
         function getRules() {
             const whiteRules = replaceWhiteFilter.getRules();
@@ -70,17 +70,29 @@
             return whiteRules.concat(blockRules);
         }
 
+        /**
+         * Function returns filtered replace block rules
+         * @param url
+         * @param documentHost
+         * @param thirdParty
+         * @param requestType
+         * @returns {Array} array of filtered replace blockRules
+         */
         function findReplaceRules(url, documentHost, thirdParty, requestType) {
-            // TODO return rules with priority
             const whiteRules = replaceWhiteFilter.findRules(url, documentHost, thirdParty, requestType);
-            if (whiteRules) {
-                return whiteRules;
-            }
             const blockRules = replaceBlockFilter.findRules(url, documentHost, thirdParty, requestType);
-            if (blockRules) {
-                return blockRules;
+            if (!blockRules) {
+                return [];
             }
-            return null;
+            if (whiteRules && whiteRules.length > 0) {
+                const whiteRulesOptionText = whiteRules.map(whiteRule => whiteRule.replaceOption.optionText);
+                return blockRules.filter((blockRule) => {
+                    const blockRuleOptionText = blockRule.replaceOption.optionText;
+                    return whiteRulesOptionText.indexOf(blockRuleOptionText) < 0;
+                });
+            }
+            return blockRules;
+            // TODO add filtering rules which has $document and $content modifiers
         }
 
         if (rules) {
