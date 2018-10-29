@@ -470,8 +470,8 @@
         },
 
         findReplaceRules: function (requestUrl, documentUrl, requestType) {
-            var documentHost = adguard.utils.url.getHost(documentUrl);
-            var thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
+            const documentHost = adguard.utils.url.getHost(documentUrl);
+            const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
 
             return this.replaceFilter.findReplaceRules(requestUrl, documentHost, thirdParty, requestType);
         },

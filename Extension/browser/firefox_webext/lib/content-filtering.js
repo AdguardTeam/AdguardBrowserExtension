@@ -340,12 +340,14 @@ adguard.contentFiltering = (function (adguard) {
         return deleted.length > 0 ? doctype + doc.documentElement.outerHTML : null;
     }
 
-    function applyReplaceRules(content, replaceRules) {
+    function applyReplaceRules(tab, requestUrl, content, replaceRules) {
         let modifiedContent = content;
         for (let i = 0; i < replaceRules.length; i += 1) {
             const replaceRule = replaceRules[i];
-            const replaceOption = replaceRule.replaceOption;
-            modifiedContent = replaceOption.apply(modifiedContent);
+            if (!replaceRule.whiteListRule) {
+                const replaceOption = replaceRule.replaceOption;
+                modifiedContent = replaceOption.apply(modifiedContent);
+            }
         }
 
         if (modifiedContent) {
@@ -355,8 +357,9 @@ adguard.contentFiltering = (function (adguard) {
         // TODO use this methods when rule will be applied
         // TODO how applied rules will be displayed in the filtering log
         // adguard.filteringLog.bindRuleToHttpRequestEvent(tab, requestRule, requestUrl, requestId);
-        // adguard.webRequestService.recordRuleHit(tab, replaceRule, requestUrl);
-
+        replaceRules.forEach(replaceRule => {
+            adguard.webRequestService.recordRuleHit(tab, replaceRule, requestUrl);
+        });
         return content;
     }
 
@@ -433,7 +436,7 @@ adguard.contentFiltering = (function (adguard) {
             }
 
             if (replaceRules) {
-                const modifiedContent = applyReplaceRules(content, replaceRules);
+                const modifiedContent = applyReplaceRules(tab, requestUrl, content, replaceRules);
                 if (modifiedContent !== null) {
                     content = modifiedContent;
                 }

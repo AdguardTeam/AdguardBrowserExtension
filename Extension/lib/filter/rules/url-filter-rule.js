@@ -306,6 +306,11 @@
      * https://github.com/AdguardTeam/AdguardForWindows/issues/591
      */
     function ReplaceOption(option) {
+        if (!option) {
+            return {
+                optionText: '',
+            };
+        }
 
         const parts = adguard.utils.strings.splitByDelimiterWithEscapeCharacter(option, '/', ESCAPE_CHARACTER, true);
 
@@ -317,12 +322,17 @@
         if (modifiers.indexOf('g') < 0) {
             modifiers += 'g';
         }
-        this.pattern = new RegExp(parts[0], modifiers);
-        this.replacement = parts[1];
-        this.optionText = option;
 
-        this.apply = function (input) {
-            return input.replace(this.pattern, this.replacement);
+        const pattern = new RegExp(parts[0], modifiers);
+        const replacement = parts[1];
+
+        const apply = (input) => {
+            return input.replace(pattern, replacement);
+        };
+
+        return {
+            apply: apply,
+            optionText: option,
         };
     }
 
@@ -832,6 +842,11 @@
                         throw 'Unknown option: REPLACE';
                     }
                     this._setUrlFilterRuleOption(UrlFilterRule.options.REPLACE, true);
+
+                    // rule with empty modifier option text, can be applied only to whitelisted rules
+                    if (optionsKeyValue.length === 1) {
+                        this.replaceOption = new ReplaceOption();
+                    }
 
                     if (optionsKeyValue.length > 1) {
                         let replaceOption = optionsKeyValue[1];
