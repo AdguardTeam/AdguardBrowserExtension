@@ -329,10 +329,6 @@
         remove(requestId);
     };
 
-    setInterval(() => {
-        console.log(contexts.values());
-    }, 10000);
-
     // Expose
     adguard.requestContextStorage = {
         get,
