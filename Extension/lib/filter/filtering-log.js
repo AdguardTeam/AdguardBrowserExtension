@@ -135,24 +135,6 @@ adguard.filteringLog = (function (adguard) {
             tabInfo.filteringEvents = [];
         }
 
-        const requestId = filteringEvent.requestId;
-
-        if (requestId) {
-            for (let i = 0; i < tabInfo.filteringEvents.length; i += 1) {
-                const pushedEvent = tabInfo.filteringEvents[i];
-                const pushedRequestId = pushedEvent.requestId;
-                const pushedRequestUrl = pushedEvent.requestUrl;
-                /**
-                 * redirected requests in the Firefox have similar requestIds
-                 * so we check requestId and requestUrl
-                 */
-                if ((pushedRequestId && pushedRequestId === requestId)
-                    && (pushedRequestUrl && pushedRequestUrl === filteringEvent.requestUrl)) {
-                    return;
-                }
-            }
-        }
-
         tabInfo.filteringEvents.push(filteringEvent);
 
         if (tabInfo.filteringEvents.length > REQUESTS_SIZE_PER_TAB) {
@@ -178,9 +160,9 @@ adguard.filteringLog = (function (adguard) {
      * @param frameUrl
      * @param requestType
      * @param requestRule
-     * @param requestId
+     * @param eventId
      */
-    var addHttpRequestEvent = function (tab, requestUrl, frameUrl, requestType, requestRule, requestId) {
+    var addHttpRequestEvent = function (tab, requestUrl, frameUrl, requestType, requestRule, eventId) {
 
         if (openedFilteringLogsPage === 0) {
             return;
@@ -195,7 +177,7 @@ adguard.filteringLog = (function (adguard) {
         var frameDomain = adguard.utils.url.getDomainName(frameUrl);
 
         var filteringEvent = {
-            requestId: requestId,
+            eventId: eventId,
             requestUrl: requestUrl,
             requestDomain: requestDomain,
             frameUrl: frameUrl,
@@ -254,9 +236,9 @@ adguard.filteringLog = (function (adguard) {
      * We should find event for this rule and update in log UI
      * @param tab
      * @param requestRule
-     * @param requestId
+     * @param eventId
      */
-    const bindRuleToHttpRequestEvent = function (tab, requestRule, requestUrl, requestId) {
+    const bindRuleToHttpRequestEvent = function (tab, requestRule, eventId) {
         if (openedFilteringLogsPage === 0) {
             return;
         }
@@ -267,10 +249,9 @@ adguard.filteringLog = (function (adguard) {
         }
 
         const events = tabInfo.filteringEvents;
-        for (let i = 0; i < events.length; i += 1) {
+        for (let i = events.length - 1; i >= 0; i -= 1) {
             const event = events[i];
-
-            if (event.requestId === requestId && event.requestUrl === requestUrl) {
+            if (event.eventId === eventId) {
                 addRuleToFilteringEvent(event, requestRule);
                 adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
                 break;

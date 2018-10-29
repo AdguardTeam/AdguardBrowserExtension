@@ -18,7 +18,7 @@
 /**
  * Module for managing requests context.
  *
- * Each request has a context with unique key: pair of requestId and requestUrl (for handling redirects and auth requests)
+ * Each request has a context with unique key: requestId
  * Context contains information about this request: id, url, referrer, type, applied rules, original and modified headers
  *
  * This API is exposed via adguard.requestContextStorage:
@@ -49,6 +49,7 @@
      * @property {object} replaceRule - Replace rule
      * @property {Array} contentRules - Content rules
      * @property {Array} cspRules CSP - rules
+     * @property {number} eventId - Internal counter for log events
      * @property {number} requestState - Is request between onBeforeRequest and onCompleted/onErrorOccurred events
      * @property {number} contentModifyingState - Is content modification started
      * @property {Map<object, string[]>} elements - Content rules attached elements
@@ -73,14 +74,11 @@
     const contexts = new Map();
 
     /**
-     * Constructs unique request context key
-     * @param {string} requestId Request identifier
-     * @param {string} requestUrl Request url
-     * @returns {string} Request context key
+     * Event counter for pushing rules to the filtering log on request complete/error
+     * Don't use requestId, because redirected requests have the same request identifier
+     * @type {number}
      */
-    const constructKey = (requestId, requestUrl) => {
-        return requestId + '_' + requestUrl;
-    };
+    let nextEventId = 0;
 
     /**
      * Append rules to the current rules
@@ -96,13 +94,20 @@
     };
 
     /**
+     * Generates next event identifier
+     * @returns {number}
+     */
+    const getNextEventId = () => {
+        nextEventId += 1;
+        return nextEventId;
+    };
+
+    /**
      * Gets request context
      * @param {string} requestId Request identifier
-     * @param {string} requestUrl Request url
      */
-    const get = (requestId, requestUrl) => {
-        const key = constructKey(requestId, requestUrl);
-        return contexts.get(key);
+    const get = (requestId) => {
+        return contexts.get(requestId);
     };
 
     /**
@@ -116,28 +121,46 @@
      */
     const record = (requestId, requestUrl, referrerUrl, requestType, tab) => {
 
-        const key = constructKey(requestId, requestUrl);
+        const eventId = getNextEventId();
+
+        // Clears filtering log. If contexts map already contains this requests that means that we caught redirect
+        if (requestType === adguard.RequestTypes.DOCUMENT && !contexts.has(requestId)) {
+            adguard.filteringLog.clearEventsByTabId(tab.tabId);
+        }
+
         const context = {
             requestId, requestUrl, referrerUrl, requestType, tab,
+            eventId,
             requestState: States.PROCESSING,
-            contentModifyingState: States.NONE
+            contentModifyingState: States.NONE,
         };
-        contexts.set(key, context);
+        contexts.set(requestId, context);
 
-        adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, requestType, null, requestId);
+        adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, requestType, null, eventId);
+    };
+
+    /**
+     * Some "requests" can't be intercepted by webRequest API: WS and WebRTC, popups.
+     * So them don't have usual request identifier and must be processing in the other way.
+     * @param requestUrl {string} Request URL
+     * @param referrerUrl {string} Referrer
+     * @param requestType {string} Request type
+     * @param tab {object} Tab
+     * @param requestRule {object} Request rule
+     */
+    const recordEmulated = (requestUrl, referrerUrl, requestType, tab, requestRule) => {
+        adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
+        adguard.webRequestService.recordRuleHit(tab, requestRule, requestUrl);
     };
 
     /**
      * Updates request context
      * @param {string} requestId Request identifier
-     * @param {string} requestUrl Request url
      * @param {RequestContext} update
      */
-    const update = (requestId, requestUrl, update) => {
+    const update = (requestId, update) => {
 
-        const key = constructKey(requestId, requestUrl);
-        const context = contexts.get(key);
-
+        const context = contexts.get(requestId);
         if (!context) {
             return;
         }
@@ -173,15 +196,12 @@
      * Binds content rule with serialized element to the request
      *
      * @param {string} requestId Request identifier
-     * @param {string} requestUrl Request url
      * @param {object} rule Content rule
      * @param {object} elementHtml Serialized HTML element
      */
-    const bindContentRule = (requestId, requestUrl, rule, elementHtml) => {
+    const bindContentRule = (requestId, rule, elementHtml) => {
 
-        const key = constructKey(requestId, requestUrl);
-        const context = contexts.get(key);
-
+        const context = contexts.get(requestId);
         if (!context) {
             return;
         }
@@ -210,18 +230,16 @@
      * to prevent removing context for complete/error event for request
      *
      * @param {string} requestId Request identifier
-     * @param {string} requestUrl Request url
      */
-    const remove = (requestId, requestUrl) => {
+    const remove = (requestId) => {
 
-        const key = constructKey(requestId, requestUrl);
-        const context = contexts.get(key);
-
+        const context = contexts.get(requestId);
         if (!context) {
             return;
         }
 
         const tab = context.tab;
+        const requestUrl = context.requestUrl;
         const referrerUrl = context.referrerUrl;
 
         let ruleHitsRecords = [];
@@ -230,16 +248,19 @@
 
             context.requestState = States.NONE;
 
-            if (context.requestRule) {
-                adguard.filteringLog.bindRuleToHttpRequestEvent(tab, context.requestRule, requestUrl, requestId);
-                ruleHitsRecords.push(context.requestRule);
+            const requestRule = context.requestRule;
+            const cspRules = context.cspRules;
+
+            if (requestRule) {
+                adguard.filteringLog.bindRuleToHttpRequestEvent(tab, requestRule, context.eventId);
+                ruleHitsRecords.push(requestRule);
             }
 
-            if (context.cspRules) {
-                for (let cspRule of context.cspRules) {
+            if (cspRules) {
+                for (let cspRule of cspRules) {
                     adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, adguard.RequestTypes.CSP, cspRule);
                 }
-                ruleHitsRecords = ruleHitsRecords.concat(context.cspRules);
+                ruleHitsRecords = ruleHitsRecords.concat(cspRules);
             }
         }
 
@@ -247,20 +268,23 @@
 
             context.contentModifyingState = States.NONE;
 
-            if (context.replaceRule) {
-                adguard.filteringLog.bindRuleToHttpRequestEvent(tab, context.replaceRule, requestUrl, requestId);
-                ruleHitsRecords.push(context.replaceRule);
+            const replaceRule = context.replaceRule;
+            const contentRules = context.contentRules;
+
+            if (replaceRule) {
+                adguard.filteringLog.bindRuleToHttpRequestEvent(tab, replaceRule, context.eventId);
+                ruleHitsRecords.push(replaceRule);
             }
 
-            if (context.contentRules) {
-                for (let contentRule of context.contentRules) {
+            if (contentRules) {
+                for (let contentRule of contentRules) {
                     const elements = context.elements.get(contentRule) || [];
                     for (let element of elements) {
                         adguard.filteringLog.addCosmeticEvent(tab, element, requestUrl, context.requestType, contentRule);
                     }
                     context.elements.delete(contentRule);
                 }
-                ruleHitsRecords = ruleHitsRecords.concat(context.contentRules);
+                ruleHitsRecords = ruleHitsRecords.concat(contentRules);
             }
         }
 
@@ -272,7 +296,7 @@
         if (context.requestState === States.NONE &&
             context.contentModifyingState === States.NONE) {
 
-            contexts.delete(key);
+            contexts.delete(requestId);
         }
     };
 
@@ -280,38 +304,40 @@
      * Called on request complete/error event
      *
      * @param {string} requestId Request identifier
-     * @param {string} requestUrl Request url
      */
-    const onRequestCompleted = (requestId, requestUrl) => {
-        update(requestId, requestUrl, { requestState: States.DONE });
-        remove(requestId, requestUrl);
+    const onRequestCompleted = (requestId) => {
+        update(requestId, { requestState: States.DONE });
+        remove(requestId);
     };
 
     /**
      * Indicates that content modification in progress
      *
      * @param {string} requestId Request identifier
-     * @param {string} requestUrl Request url
      */
-    const onContentModificationStarted = (requestId, requestUrl) => {
-        update(requestId, requestUrl, { contentModifyingState: States.PROCESSING });
+    const onContentModificationStarted = (requestId) => {
+        update(requestId, { contentModifyingState: States.PROCESSING });
     };
 
     /**
      * Indicates that content modification finished
      *
      * @param {string} requestId Request identifier
-     * @param {string} requestUrl Request url
      */
-    const onContentModificationFinished = (requestId, requestUrl) => {
-        update(requestId, requestUrl, { contentModifyingState: States.DONE });
-        remove(requestId, requestUrl);
+    const onContentModificationFinished = (requestId) => {
+        update(requestId, { contentModifyingState: States.DONE });
+        remove(requestId);
     };
+
+    setInterval(() => {
+        console.log(contexts.values());
+    }, 10000);
 
     // Expose
     adguard.requestContextStorage = {
         get,
         record,
+        recordEmulated,
         update,
         bindContentRule,
         onRequestCompleted,
