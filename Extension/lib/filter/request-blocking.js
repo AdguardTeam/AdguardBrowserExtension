@@ -290,6 +290,17 @@ adguard.webRequestService = (function (adguard) {
     };
 
     /**
+     * Checks if we should process request further
+     * @param tab
+     * @returns {boolean}
+     */
+    const shouldStopRequestProcess = (tab) => {
+        return adguard.frames.isTabAdguardDetected(tab) ||
+            adguard.frames.isTabProtectionDisabled(tab) ||
+            adguard.frames.isTabWhiteListed(tab);
+    };
+
+    /**
      * Finds all content rules for the url
      * @param tab Tab
      * @param documentUrl Document URL
@@ -297,7 +308,7 @@ adguard.webRequestService = (function (adguard) {
      */
     var getContentRules = function (tab, documentUrl) {
 
-        if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab) || adguard.frames.isTabWhiteListed(tab)) {
+        if (shouldStopRequestProcess(tab)) {
             // don't process request
             return null;
         }
@@ -320,7 +331,7 @@ adguard.webRequestService = (function (adguard) {
      */
     var getCspRules = function (tab, requestUrl, referrerUrl, requestType) {
 
-        if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab) || adguard.frames.isTabWhiteListed(tab)) {
+        if (shouldStopRequestProcess(tab)) {
             // don't process request
             return null;
         }
@@ -334,9 +345,13 @@ adguard.webRequestService = (function (adguard) {
     };
 
     const getReplaceRules = (tab, requestUrl, referrerUrl, requestType) => {
-        // TODO refactor this line, replace it with function, because it appears already above
-        if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab) || adguard.frames.isTabWhiteListed(tab)) {
+        if (shouldStopRequestProcess(tab)) {
             // don't process request
+            return null;
+        }
+
+        const whitelistRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
+        if (whitelistRule && (whitelistRule.isDocumentWhiteList() || whitelistRule.isContent())) {
             return null;
         }
 
