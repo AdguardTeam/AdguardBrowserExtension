@@ -38,6 +38,11 @@ const testURL = (done) => {
     runQunit('../Extension/tests/url-filter/test-url-filter.html', done);
 };
 
+// Replace filter tests
+const testReplaceFilter = (done) => {
+    runQunit('../Extension/tests/replace-filter/test-replace-filter.html', done);
+};
+
 // Css filter tests
 const testCSSfilter = (done) => {
     runQunit('../Extension/tests/css-filter/test-css-filter.html', done);
@@ -73,7 +78,7 @@ const testEncoding = (done) => {
     runQunit('../Extension/tests/miscellaneous/test-encoding.html', done);
 };
 
-export default gulp.series(testRule, testSB, testURL, testCSSfilter, testContent, testCSShits, testReq, testEl, testRing, testEncoding);
+// export default gulp.series(testRule, testSB, testURL, testCSSfilter, testContent, testCSShits, testReq, testEl, testRing, testEncoding);
 
 // TODO remove this line before pr merge
-// export default gulp.series(testURL);
+export default gulp.series(testURL, testReplaceFilter, testReq);
