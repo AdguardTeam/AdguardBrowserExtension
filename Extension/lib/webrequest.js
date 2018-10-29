@@ -189,18 +189,22 @@
         var requestId = requestDetails.requestId;
         var headers = requestDetails.requestHeaders;
 
-        adguard.requestContextStorage.update(requestId, { requestHeaders: (headers || []).slice(0) });
+        adguard.requestContextStorage.update(requestId, { requestHeaders: headers });
 
         if (adguard.integration.shouldOverrideReferrer(tab)) {
             // Retrieve main frame url
             var mainFrameUrl = adguard.frames.getMainFrameUrl(tab);
             headers = adguard.utils.browser.setHeaderValue(headers, 'Referer', mainFrameUrl);
+            const modifiedHeaders = [{
+                name: 'Referer',
+                value: mainFrameUrl
+            }];
+
+            adguard.requestContextStorage.onRequestHeadersModified(requestId, modifiedHeaders);
+
             return {
                 requestHeaders: headers,
-                modifiedHeaders: [{
-                    name: 'Referer',
-                    value: mainFrameUrl
-                }]
+                modifiedHeaders: modifiedHeaders
             };
         }
 
@@ -235,7 +239,7 @@
         var statusCode = requestDetails.statusCode;
         var method = requestDetails.method;
 
-        adguard.requestContextStorage.update(requestId, { responseHeaders: (responseHeaders || []).slice(0) });
+        adguard.requestContextStorage.update(requestId, { responseHeaders });
 
         const requestRule = adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
         // Overrides rule in integration mode
@@ -352,6 +356,8 @@
             }
         }
 
+        adguard.requestContextStorage.onResponseHeadersModified(requestId, cspHeaders);
+
         /**
          * Websocket connection is blocked by connect-src directive
          * https://www.w3.org/TR/CSP2/#directive-connect-src
@@ -422,8 +428,11 @@
             var authHeaders = adguard.integration.getAuthorizationHeaders();
             var headers = details.requestHeaders;
             for (var i = 0; i < authHeaders.length; i++) {
-                headers = adguard.utils.browser.setHeaderValue(details.requestHeaders, authHeaders[i].headerName, authHeaders[i].headerValue);
+                headers = adguard.utils.browser.setHeaderValue(details.requestHeaders, authHeaders[i].name, authHeaders[i].value);
             }
+
+            adguard.requestContextStorage.update(details.requestId, { requestHeaders: headers });
+            adguard.requestContextStorage.onRequestHeadersModified(details.requestId, authHeaders);
 
             return { requestHeaders: headers };
 
