@@ -105,23 +105,37 @@ adguard.filteringLog = (function (adguard) {
         }
     }
 
+    const appendProperties = (rule, requestRule) => {
+        rule.filterId = requestRule.filterId;
+        rule.ruleText = requestRule.ruleText;
+        if (requestRule instanceof adguard.rules.ContentFilterRule) {
+            rule.contentRule = true;
+        } else if (requestRule instanceof adguard.rules.CssFilterRule) {
+            rule.cssRule = true;
+        } else if (requestRule instanceof adguard.rules.UrlFilterRule) {
+            rule.whiteListRule = requestRule.whiteListRule;
+            rule.cspRule = requestRule.isCspRule();
+            rule.cspDirective = requestRule.cspDirective;
+        }
+    };
+
     /**
      * Writes to filtering event some useful properties from the request rule
      * @param filteringEvent
-     * @param requestRule
+     * @param requestRules
      */
-    function addRuleToFilteringEvent(filteringEvent, requestRule) {
-        filteringEvent.requestRule = Object.create(null);
-        filteringEvent.requestRule.filterId = requestRule.filterId;
-        filteringEvent.requestRule.ruleText = requestRule.ruleText;
-        if (requestRule instanceof adguard.rules.ContentFilterRule) {
-            filteringEvent.requestRule.contentRule = true;
-        } else if (requestRule instanceof adguard.rules.CssFilterRule) {
-            filteringEvent.requestRule.cssRule = true;
-        } else if (requestRule instanceof adguard.rules.UrlFilterRule) {
-            filteringEvent.requestRule.whiteListRule = requestRule.whiteListRule;
-            filteringEvent.requestRule.cspRule = requestRule.isCspRule();
-            filteringEvent.requestRule.cspDirective = requestRule.cspDirective;
+    function addRuleToFilteringEvent(filteringEvent, requestRules) {
+        if (requestRules.length === 1) {
+            filteringEvent.requestRule = {};
+            const requestRule = requestRules[0];
+            appendProperties(filteringEvent.requestRule, requestRule);
+        } else {
+            filteringEvent.requestRules = [];
+            requestRules.forEach(requestRule => {
+                const tempRequestRule = {};
+                appendProperties(tempRequestRule, requestRule);
+                filteringEvent.requestRules.push(tempRequestRule);
+            });
         }
     }
 
@@ -228,7 +242,7 @@ adguard.filteringLog = (function (adguard) {
 
         if (requestRule) {
             // Copy useful properties
-            addRuleToFilteringEvent(filteringEvent, requestRule);
+            addRuleToFilteringEvent(filteringEvent, [requestRule]);
         }
 
         pushFilteringEvent(tabInfo, filteringEvent);
@@ -265,7 +279,7 @@ adguard.filteringLog = (function (adguard) {
         };
         if (requestRule) {
             // Copy useful properties
-            addRuleToFilteringEvent(filteringEvent, requestRule);
+            addRuleToFilteringEvent(filteringEvent, [requestRule]);
         }
 
         pushFilteringEvent(tabInfo, filteringEvent);
@@ -275,10 +289,11 @@ adguard.filteringLog = (function (adguard) {
      * Some rules are fired after the event was added (e.g. for replace rule)
      * We should find event for this rule and update in log UI
      * @param tab
-     * @param requestRule
+     * @param requestRules
      * @param requestId
+     * @param requestUrl
      */
-    const bindRuleToHttpRequestEvent = function (tab, requestRule, requestUrl, requestId) {
+    const bindRuleToHttpRequestEvent = function (tab, requestRules, requestUrl, requestId) {
         if (openedFilteringLogsPage === 0) {
             return;
         }
@@ -293,7 +308,7 @@ adguard.filteringLog = (function (adguard) {
             const event = events[i];
 
             if (event.requestId === requestId && event.requestUrl === requestUrl) {
-                addRuleToFilteringEvent(event, requestRule);
+                addRuleToFilteringEvent(event, requestRules);
                 adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
                 break;
             }
