@@ -339,12 +339,10 @@ adguard.contentFiltering = (function (adguard) {
 
         // Sort replace rules alphabetically
         const sortedReplaceRules = replaceRules.sort((prev, next) => {
-            const prevRuleText = prev.ruleText;
-            const nextRuleText = next.ruleText;
-            if (prevRuleText > nextRuleText) {
+            if (prev.ruleText > next.ruleText) {
                 return 1;
             }
-            if (prevRuleText < nextRuleText) {
+            if (prev.ruleText < next.ruleText) {
                 return -1;
             }
             return 0;

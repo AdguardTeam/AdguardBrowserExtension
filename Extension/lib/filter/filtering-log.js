@@ -125,11 +125,13 @@ adguard.filteringLog = (function (adguard) {
      * @param requestRules
      */
     function addRulesToFilteringEvent(filteringEvent, requestRules) {
+        filteringEvent.requestRule = {};
         if (requestRules.length === 1) {
-            filteringEvent.requestRule = {};
             const requestRule = requestRules[0];
             appendProperties(filteringEvent.requestRule, requestRule);
         } else {
+            // only replace rules can be applied together
+            filteringEvent.requestRule.replaceRule = true;
             filteringEvent.requestRules = [];
             requestRules.forEach(requestRule => {
                 const tempRequestRule = {};
