@@ -336,8 +336,22 @@ adguard.contentFiltering = (function (adguard) {
     function applyReplaceRules(tab, requestUrl, requestId, content, replaceRules) {
         let modifiedContent = content;
         let appliedRules = [];
-        for (let i = 0; i < replaceRules.length; i += 1) {
-            const replaceRule = replaceRules[i];
+
+        // Sort replace rules alphabetically
+        const sortedReplaceRules = replaceRules.sort((prev, next) => {
+            const prevRuleText = prev.ruleText;
+            const nextRuleText = next.ruleText;
+            if (prevRuleText > nextRuleText) {
+                return 1;
+            }
+            if (prevRuleText < nextRuleText) {
+                return -1;
+            }
+            return 0;
+        });
+
+        for (let i = 0; i < sortedReplaceRules.length; i += 1) {
+            const replaceRule = sortedReplaceRules[i];
             if (!replaceRule.whiteListRule) {
                 const replaceOption = replaceRule.replaceOption;
                 const isRuleApplicable = replaceOption.test(modifiedContent);

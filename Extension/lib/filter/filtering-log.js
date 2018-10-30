@@ -124,7 +124,7 @@ adguard.filteringLog = (function (adguard) {
      * @param filteringEvent
      * @param requestRules
      */
-    function addRuleToFilteringEvent(filteringEvent, requestRules) {
+    function addRulesToFilteringEvent(filteringEvent, requestRules) {
         if (requestRules.length === 1) {
             filteringEvent.requestRule = {};
             const requestRule = requestRules[0];
@@ -242,7 +242,7 @@ adguard.filteringLog = (function (adguard) {
 
         if (requestRule) {
             // Copy useful properties
-            addRuleToFilteringEvent(filteringEvent, [requestRule]);
+            addRulesToFilteringEvent(filteringEvent, [requestRule]);
         }
 
         pushFilteringEvent(tabInfo, filteringEvent);
@@ -279,7 +279,7 @@ adguard.filteringLog = (function (adguard) {
         };
         if (requestRule) {
             // Copy useful properties
-            addRuleToFilteringEvent(filteringEvent, [requestRule]);
+            addRulesToFilteringEvent(filteringEvent, [requestRule]);
         }
 
         pushFilteringEvent(tabInfo, filteringEvent);
@@ -308,7 +308,7 @@ adguard.filteringLog = (function (adguard) {
             const event = events[i];
 
             if (event.requestId === requestId && event.requestUrl === requestUrl) {
-                addRuleToFilteringEvent(event, requestRules);
+                addRulesToFilteringEvent(event, requestRules);
                 adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
                 break;
             }
