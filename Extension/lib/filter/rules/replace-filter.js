@@ -71,6 +71,22 @@
         }
 
         /**
+         * Returns suitable white rule from the list of rules
+         * @param whiteRules list of white rules
+         * @param blockRule block rule
+         * @returns {?object} suitable whiteRule or null
+         */
+        const getWhitelistingRule = (whiteRules, blockRule) => {
+            for (let i = 0; i < whiteRules.length; i += 1) {
+                const whiteRule = whiteRules[0];
+                if (whiteRule.replaceOption.optionText === blockRule.replaceOption.optionText) {
+                    return whiteRule;
+                }
+            }
+            return null;
+        };
+
+        /**
          * Function returns filtered replace block rules
          * @param url
          * @param documentHost
@@ -95,17 +111,17 @@
 
                 // @@||example.org^$replace will disable all $replace rules matching ||example.org^.
                 if (whiteRulesWithEmptyOptionText.length > 0) {
-                    return whiteRulesWithEmptyOptionText;
+                    const firstWhiteListRule = whiteRulesWithEmptyOptionText[0];
+                    return blockRules.map(blockRule => {
+                        blockRule.whitelistedBy = firstWhiteListRule;
+                        return blockRule;
+                    });
                 }
 
-                // whitelist rules with same option text removes block rule
-                const whiteRulesOptionTexts = whiteRules.map(whiteRule => whiteRule.replaceOption.optionText);
-                const filteredBlockRules = blockRules.filter((blockRule) => {
-                    const blockRuleOptionText = blockRule.replaceOption.optionText;
-                    return whiteRulesOptionTexts.indexOf(blockRuleOptionText) < 0;
+                return blockRules.map((blockRule) => {
+                    blockRule.whitelistedBy = getWhitelistingRule(whiteRules, blockRule);
+                    return blockRule;
                 });
-
-                return whiteRules.concat(filteredBlockRules);
             }
 
             return blockRules.length > 0 ? blockRules : null;

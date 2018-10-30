@@ -350,17 +350,12 @@ adguard.contentFiltering = (function (adguard) {
 
         for (let i = 0; i < sortedReplaceRules.length; i += 1) {
             const replaceRule = sortedReplaceRules[i];
-            if (!replaceRule.whiteListRule) {
-                const replaceOption = replaceRule.replaceOption;
-                const isRuleApplicable = replaceOption.test(modifiedContent);
-                if (isRuleApplicable) {
-                    modifiedContent = replaceOption.apply(modifiedContent);
-                    appliedRules.push(replaceRule);
-                    adguard.webRequestService.recordRuleHit(tab, replaceRule, requestUrl);
-                }
+            const replaceOption = replaceRule.replaceOption;
+            if (replaceRule.whitelistedBy) {
+                appliedRules.push(replaceRule.whitelistedBy);
             } else {
+                modifiedContent = replaceOption.apply(modifiedContent);
                 appliedRules.push(replaceRule);
-                adguard.webRequestService.recordRuleHit(tab, replaceRule, requestUrl);
             }
         }
 
@@ -370,8 +365,9 @@ adguard.contentFiltering = (function (adguard) {
 
         if (appliedRules.length > 0) {
             adguard.filteringLog.bindRuleToHttpRequestEvent(tab, appliedRules, requestUrl, requestId);
-            appliedRules.forEach(appliedRule =>
-                adguard.webRequestService.recordRuleHit(tab, appliedRule, requestUrl));
+            appliedRules.forEach(appliedRule => {
+                adguard.webRequestService.recordRuleHit(tab, appliedRule, requestUrl);
+            });
         }
 
         return content;
