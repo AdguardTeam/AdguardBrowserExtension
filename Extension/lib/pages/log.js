@@ -496,6 +496,9 @@ PageController.prototype = {
     },
 
     _renderTemplate: function (event) {
+        if (event.requestRules) {
+            console.log(event);
+        }
         event.filterName = event.requestRule ? RequestWizard.getFilterName(event.requestRule.filterId) : '';
         var metadata = { data: event, class: '' };
         if (event.requestRule) {
