@@ -330,13 +330,8 @@
             return input.replace(pattern, replacement);
         };
 
-        const test = (input) => {
-            return pattern.test(input);
-        };
-
         return {
             apply: apply,
-            test: test,
             optionText: option,
         };
     }

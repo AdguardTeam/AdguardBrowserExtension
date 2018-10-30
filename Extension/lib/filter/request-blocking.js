@@ -359,7 +359,8 @@ adguard.webRequestService = (function (adguard) {
         }
 
         const whitelistRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
-        if (whitelistRule && whitelistRule.isDocumentWhiteList()) {
+
+        if (whitelistRule && whitelistRule.isContent()) {
             return null;
         }
 
