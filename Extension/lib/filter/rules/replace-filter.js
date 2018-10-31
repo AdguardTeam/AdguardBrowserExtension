@@ -111,17 +111,20 @@
 
                 // @@||example.org^$replace will disable all $replace rules matching ||example.org^.
                 if (whiteRulesWithEmptyOptionText.length > 0) {
-                    const firstWhiteListRule = whiteRulesWithEmptyOptionText[0];
-                    return blockRules.map(blockRule => {
-                        blockRule.whitelistedBy = firstWhiteListRule;
-                        return blockRule;
-                    });
+                    // return first matched rule
+                    return whiteRulesWithEmptyOptionText.slice(0, 1);
                 }
 
-                return blockRules.map((blockRule) => {
-                    blockRule.whitelistedBy = getWhitelistingRule(whiteRules, blockRule);
-                    return blockRule;
+                const foundReplaceRules = [];
+                blockRules.forEach((blockRule) => {
+                    const whitelistingRule = getWhitelistingRule(whiteRules, blockRule);
+                    if (whitelistingRule) {
+                        foundReplaceRules.push(whitelistingRule);
+                    } else {
+                        foundReplaceRules.push(blockRule);
+                    }
                 });
+                return foundReplaceRules;
             }
 
             return blockRules.length > 0 ? blockRules : null;
