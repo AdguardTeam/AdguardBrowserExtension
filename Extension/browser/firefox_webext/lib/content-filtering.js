@@ -351,10 +351,10 @@ adguard.contentFiltering = (function (adguard) {
 
         for (let i = 0; i < sortedReplaceRules.length; i += 1) {
             const replaceRule = sortedReplaceRules[i];
-            const replaceOption = replaceRule.replaceOption;
-            if (replaceRule.whitelistedBy) {
-                appliedRules.push(replaceRule.whitelistedBy);
+            if (replaceRule.whiteListRule) {
+                appliedRules.push(replaceRule);
             } else {
+                const replaceOption = replaceRule.replaceOption;
                 modifiedContent = replaceOption.apply(modifiedContent);
                 appliedRules.push(replaceRule);
             }
@@ -365,7 +365,7 @@ adguard.contentFiltering = (function (adguard) {
         }
 
         if (appliedRules.length > 0) {
-            adguard.filteringLog.bindRuleToHttpRequestEvent(tab, appliedRules, requestUrl, requestId);
+            adguard.filteringLog.bindReplaceRulesToHttpRequestEvent(tab, appliedRules, requestUrl, requestId);
             appliedRules.forEach(appliedRule => {
                 adguard.webRequestService.recordRuleHit(tab, appliedRule, requestUrl);
             });
