@@ -293,37 +293,7 @@ adguard.filteringLog = (function (adguard) {
     };
 
     /**
-     * Some rules are fired after the event was added (e.g. for replace rule)
-     * We should find event for this rule and update in log UI
-     * @param tab
-     * @param requestRule
-     * @param requestId
-     * @param requestUrl
-     */
-    const bindRuleToHttpRequestEvent = function (tab, requestRule, requestUrl, requestId) {
-        if (openedFilteringLogsPage === 0) {
-            return;
-        }
-
-        const tabInfo = tabsInfoMap[tab.tabId];
-        if (!tabInfo) {
-            return;
-        }
-
-        const events = tabInfo.filteringEvents;
-        for (let i = 0; i < events.length; i += 1) {
-            const event = events[i];
-
-            if (event.requestId === requestId && event.requestUrl === requestUrl) {
-                addRuleToFilteringEvent(event, requestRule);
-                adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
-                break;
-            }
-        }
-    };
-
-    /**
-     * Some rules are fired after the event was added (e.g. for replace rule)
+     * Replace rules are fired after the event was added
      * We should find event for this rule and update in log UI
      * @param tab
      * @param replaceRules
@@ -440,8 +410,6 @@ adguard.filteringLog = (function (adguard) {
 
         getFilteringInfoByTabId: getFilteringInfoByTabId,
         addHttpRequestEvent: addHttpRequestEvent,
-        // TODO may be there is no need in this functions at all?
-        bindRuleToHttpRequestEvent: bindRuleToHttpRequestEvent,
         bindReplaceRulesToHttpRequestEvent: bindReplaceRulesToHttpRequestEvent,
         addCosmeticEvent: addCosmeticEvent,
         clearEventsByTabId: clearEventsByTabId,
