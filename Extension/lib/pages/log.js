@@ -503,10 +503,14 @@ PageController.prototype = {
             RequestWizard.getFilterName(event.requestRule.filterId) :
             '';
 
+        if (event.replaceRules) {
+            metadata.class += ' yellow';
+        }
+
         if (event.requestRule) {
             if (event.requestRule.whiteListRule) {
                 metadata.class += ' green';
-            } else if (event.requestRule.cssRule || event.requestRule.replaceRule) {
+            } else if (event.requestRule.cssRule) {
                 metadata.class += ' yellow';
             } else {
                 metadata.class += ' red';
@@ -519,18 +523,21 @@ PageController.prototype = {
 
         const requestInfo = event.requestUrl ? event.requestUrl : this._escapeHTML(event.element);
 
+        // Get rule text for requestRule or replaceRules
         let ruleText = '';
         if (event.requestRule) {
-            if (event.requestRule.replaceRule) {
-                const rulesCount = event.requestRules.length;
-                // TODO add and push this strings to onesky
-                const formOfText = rulesCount > 1 ? 'rules' : 'rule';
-                ruleText = `Modified (${rulesCount} ${formOfText})`;
-            } else if (event.requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+            if (event.requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
                 ruleText = Messages.IN_WHITELIST;
             } else {
                 ruleText = event.requestRule.ruleText;
             }
+        }
+
+        if (event.replaceRules) {
+            const rulesCount = event.replaceRules.length;
+            // TODO add and push this strings to onesky
+            const formOfText = rulesCount > 1 ? 'rules' : 'rule';
+            ruleText = `Modified (${rulesCount} ${formOfText})`;
         }
 
         let thirdPartyDetails = '';
@@ -764,7 +771,8 @@ var RequestWizard = (function () {
                 mandatoryOptions = [UrlFilterRule.WEBRTC_OPTION, UrlFilterRule.WEBSOCKET_OPTION];
             }
 
-            if (requestRule && requestRule.replaceRule) {
+            var replaceRules = filteringEvent.replaceRules;
+            if (replaceRules) {
                 mandatoryOptions = [UrlFilterRule.REPLACE_OPTION];
             }
 
@@ -943,7 +951,7 @@ var RequestWizard = (function () {
         const template = requestInfoTemplate.cloneNode(true);
 
         const requestRule = filteringEvent.requestRule;
-        const requestRules = filteringEvent.requestRules;
+        const replaceRules = filteringEvent.replaceRules;
 
         const requestUrlNode = template.querySelector('[attr-text="requestUrl"]');
         if (filteringEvent.requestUrl) {
@@ -968,26 +976,28 @@ var RequestWizard = (function () {
         if (requestRule && !requestRule.replaceRule) {
             if (requestRule.filterId !== AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
                 template.querySelector('[attr-text="requestRule"]').textContent = requestRule.ruleText;
-                template.querySelector('[attr-text="requestRules"]').closest('li').style.display = 'none';
             } else {
                 template.querySelector('[attr-text="requestRule"]').closest('li').style.display = 'none';
             }
+            template.querySelector('[attr-text="replaceRules"]').closest('li').style.display = 'none';
             template.querySelector('[attr-text="requestRuleFilter"]').textContent = getFilterName(requestRule.filterId);
         } else {
             template.querySelector('[attr-text="requestRule"]').closest('li').style.display = 'none';
             template.querySelector('[attr-text="requestRuleFilter"]').closest('li').style.display = 'none';
         }
 
-        if (requestRule.replaceRule && requestRules) {
+        if (replaceRules) {
             template.querySelector('[attr-text="requestRule"]').closest('li').style.display = 'none';
             template.querySelector('[attr-text="requestRuleFilter"]').closest('li').style.display = 'none';
-            if (requestRules.length > 0) {
-                template.querySelector('[attr-text="requestRules"]').textContent = requestRules
-                    .map(requestRule => requestRule.ruleText)
+            if (replaceRules.length > 0) {
+                template.querySelector('[attr-text="replaceRules"]').textContent = replaceRules
+                    .map(replaceRule => replaceRule.ruleText)
                     .join('\r\n');
             } else {
-                template.querySelector('[attr-text="requestRules"]').closest('li').style.display = 'none';
+                template.querySelector('[attr-text="replaceRules"]').closest('li').style.display = 'none';
             }
+        } else {
+            template.querySelector('[attr-text="replaceRules"]').closest('li').style.display = 'none';
         }
 
         if (filteringEvent.requestType === 'IMAGE') {
@@ -1007,16 +1017,16 @@ var RequestWizard = (function () {
         }
 
         // bind events
-        var openRequestButton = template.querySelector('#openRequestNewTab');
-        var blockRequestButton = template.querySelector('#blockRequest');
-        var unblockRequestButton = template.querySelector('#unblockRequest');
-        var removeWhiteListDomainButton = template.querySelector('#removeWhiteListDomain');
-        var removeUserFilterRuleButton = template.querySelector('#removeUserFilterRule');
+        const openRequestButton = template.querySelector('#openRequestNewTab');
+        const blockRequestButton = template.querySelector('#blockRequest');
+        const unblockRequestButton = template.querySelector('#unblockRequest');
+        const removeWhiteListDomainButton = template.querySelector('#removeWhiteListDomain');
+        const removeUserFilterRuleButton = template.querySelector('#removeUserFilterRule');
 
         openRequestButton.addEventListener('click', function (e) {
             e.preventDefault();
 
-            var requestUrl = filteringEvent.requestUrl;
+            let requestUrl = filteringEvent.requestUrl;
             if (requestUrl === 'content-security-policy-check') {
                 requestUrl = filteringEvent.frameUrl;
             }
