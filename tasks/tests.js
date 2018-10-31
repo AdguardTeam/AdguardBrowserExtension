@@ -73,5 +73,4 @@ const testEncoding = (done) => {
     runQunit('../Extension/tests/miscellaneous/test-encoding.html', done);
 };
 
-// export default gulp.series(testRule, testSB, testURL, testCSSfilter, testContent, testCSShits, testReq, testEl, testRing, testEncoding);
-export default gulp.series(testReq);
+export default gulp.series(testRule, testSB, testURL, testCSSfilter, testContent, testCSShits, testReq, testEl, testRing, testEncoding);

@@ -507,7 +507,7 @@ PageController.prototype = {
             metadata.class += ' yellow';
         }
 
-        if (event.requestRule) {
+        if (event.requestRule && !event.replaceRules) {
             if (event.requestRule.whiteListRule) {
                 metadata.class += ' green';
             } else if (event.requestRule.cssRule) {
@@ -795,7 +795,6 @@ var RequestWizard = (function () {
             r.addEventListener('change', updateRuleText);
         });
 
-        // TODO check why user rule doesn't appear in user rules
         // create rule event
         template.querySelector('#createRule').addEventListener('click', function (e) {
             e.preventDefault();
