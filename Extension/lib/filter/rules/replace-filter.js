@@ -78,7 +78,7 @@
          */
         const getWhitelistingRule = (whiteRules, blockRule) => {
             for (let i = 0; i < whiteRules.length; i += 1) {
-                const whiteRule = whiteRules[0];
+                const whiteRule = whiteRules[i];
                 if (whiteRule.replaceOption.optionText === blockRule.replaceOption.optionText) {
                     return whiteRule;
                 }
