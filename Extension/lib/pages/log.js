@@ -535,9 +535,7 @@ PageController.prototype = {
 
         if (event.replaceRules) {
             const rulesCount = event.replaceRules.length;
-            // TODO add and push this strings to onesky
-            const formOfText = rulesCount > 1 ? 'rules' : 'rule';
-            ruleText = `Modified (${rulesCount} ${formOfText})`;
+            ruleText = `${i18n.getMessage('filtering_log_modified_rules')} ${rulesCount}`;
         }
 
         let thirdPartyDetails = '';
