@@ -984,7 +984,7 @@ var RequestWizard = (function () {
             if (requestRules.length > 0) {
                 template.querySelector('[attr-text="requestRules"]').textContent = requestRules
                     .map(requestRule => requestRule.ruleText)
-                    .join(', ');
+                    .join('\r\n');
             } else {
                 template.querySelector('[attr-text="requestRules"]').closest('li').style.display = 'none';
             }

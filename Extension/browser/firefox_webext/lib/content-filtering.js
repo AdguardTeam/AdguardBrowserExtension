@@ -337,7 +337,8 @@ adguard.contentFiltering = (function (adguard) {
         let modifiedContent = content;
         let appliedRules = [];
 
-        // Sort replace rules alphabetically
+        // Sort replace rules alphabetically as noted here
+        // https://github.com/AdguardTeam/CoreLibs/issues/45
         const sortedReplaceRules = replaceRules.sort((prev, next) => {
             if (prev.ruleText > next.ruleText) {
                 return 1;
