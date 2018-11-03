@@ -65,6 +65,7 @@ const API_SCRIPTS = [
     'Extension/lib/filter/rules/content-filter-rule.js',
     'Extension/lib/filter/rules/content-filter.js',
     'Extension/lib/filter/rules/csp-filter.js',
+    'Extension/lib/filter/rules/replace-filter.js',
     'Extension/lib/filter/rules/filter-rule-builder.js',
     // Filters metadata and filtration modules
     'Extension/lib/filter/subscription.js',

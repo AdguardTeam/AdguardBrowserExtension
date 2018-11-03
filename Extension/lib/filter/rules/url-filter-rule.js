@@ -111,7 +111,7 @@
      * @returns {string}
      */
     function findShortcut(urlmask) {
-        var longest = "";
+        var longest = '';
         var parts = urlmask.split(/[*^|]/);
         for (var i = 0; i < parts.length; i++) {
             var part = parts[i];
@@ -129,7 +129,6 @@
      * @returns {string} shortcut or null if it's not possible to extract it
      */
     function extractRegexpShortcut(ruleText) {
-
         // Get the regexp text
         var match = ruleText.match(/\/(.*)\/(\$.*)?/);
         if (!match || match.length < 2) {
@@ -138,7 +137,7 @@
 
         var reText = match[1];
 
-        var specialCharacter = "...";
+        var specialCharacter = '...';
 
         if (reText.indexOf('?') !== -1) {
             // Do not mess with complex expressions which use lookahead
@@ -307,22 +306,33 @@
      * https://github.com/AdguardTeam/AdguardForWindows/issues/591
      */
     function ReplaceOption(option) {
+        if (!option) {
+            return {
+                optionText: '',
+            };
+        }
 
-        var parts = adguard.utils.strings.splitByDelimiterWithEscapeCharacter(option, '/', ESCAPE_CHARACTER, true);
+        const parts = adguard.utils.strings.splitByDelimiterWithEscapeCharacter(option, '/', ESCAPE_CHARACTER, true);
 
         if (parts.length < 2 || parts.length > 3) {
             throw 'Cannot parse ' + option;
         }
 
-        var modifiers = (parts[2] || '');
+        let modifiers = (parts[2] || '');
         if (modifiers.indexOf('g') < 0) {
             modifiers += 'g';
         }
-        this.pattern = new RegExp(parts[0], modifiers);
-        this.replacement = parts[1];
 
-        this.apply = function (input) {
-            return input.replace(this.pattern, this.replacement);
+        const pattern = new RegExp(parts[0], modifiers);
+        const replacement = parts[1];
+
+        const apply = (input) => {
+            return input.replace(pattern, replacement);
+        };
+
+        return {
+            apply: apply,
+            optionText: option,
         };
     }
 
@@ -409,7 +419,7 @@
     // Lazy regexp source create
     UrlFilterRule.prototype.getUrlRegExpSource = function () {
         if (!this.urlRegExpSource) {
-            //parse rule text
+            // parse rule text
             var parseResult = parseRuleText(this.ruleText);
             // Creating regex source
             this.urlRegExpSource = api.SimpleRegex.createRegexText(parseResult.urlRuleText);
@@ -425,7 +435,7 @@
      * @return Parsed $replace modifier
      */
     UrlFilterRule.prototype.getReplace = function () {
-        return this.replace;
+        return this.replaceOption;
     };
 
     // Lazy regexp creation
@@ -731,6 +741,14 @@
     };
 
     /**
+     * If rule is replace rule
+     * @returns {Boolean}
+     */
+    UrlFilterRule.prototype.isReplaceRule = function () {
+        return this.isOptionEnabled(UrlFilterRule.options.REPLACE);
+    };
+
+    /**
      * we recognize rules with $extension modifier, but
      * ignore them when create RequestFilter
      */
@@ -818,19 +836,24 @@
                     break;
                 case UrlFilterRule.REPLACE_OPTION:
                     // In case of .features or .features.responseContentFilteringSupported are not defined
-                    var responseContentFilteringSupported = adguard.prefs.features && adguard.prefs.features.responseContentFilteringSupported;
+                    const responseContentFilteringSupported = adguard.prefs.features
+                        && adguard.prefs.features.responseContentFilteringSupported;
                     if (!responseContentFilteringSupported) {
                         throw 'Unknown option: REPLACE';
                     }
-                    if (this.whiteListRule) {
-                        throw 'Replace modifier cannot be applied to a whitelist rule ' + this.ruleText;
+                    this._setUrlFilterRuleOption(UrlFilterRule.options.REPLACE, true);
+
+                    // rule with empty modifier option text, can be applied only to whitelisted rules
+                    if (optionsKeyValue.length === 1) {
+                        this.replaceOption = new ReplaceOption();
                     }
+
                     if (optionsKeyValue.length > 1) {
-                        var replaceOption = optionsKeyValue[1];
+                        let replaceOption = optionsKeyValue[1];
                         if (optionsKeyValue.length > 2) {
                             replaceOption = optionsKeyValue.slice(1).join(api.FilterRule.EQUAL);
                         }
-                        this.replace = new ReplaceOption(replaceOption);
+                        this.replaceOption = new ReplaceOption(replaceOption);
                     }
                     break;
                 case UrlFilterRule.BADFILTER_OPTION:
@@ -1076,6 +1099,12 @@
          * for example, @@||example.org^$extension
          */
         EXTENSION: 1 << 11,
+
+        /**
+         * defines rules with $replace modifier
+         * for example, "||example.org^$replace=/replace-me/replacement/i"
+         */
+        REPLACE: 1 << 12,
 
         // jshint ignore:end
     };
