@@ -133,7 +133,7 @@ QUnit.test("Test Update", function (assert) {
     const tab = { tabId: 1 };
 
     const requestRule = { filterId: 1, ruleText: 'text' };
-    const replaceRule = { filterId: 1, ruleText: 'text' };
+    const replaceRule1 = { filterId: 1, ruleText: 'text' };
     const cspRules = [{ filterId: 1, ruleText: 'text' }, { filterId: 1, ruleText: 'text' }];
     const contentRule1 = { filterId: 1, ruleText: 'text' };
     const elementHtml1 = '<script></script>';
@@ -143,7 +143,7 @@ QUnit.test("Test Update", function (assert) {
     adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, requestType, tab);
 
     adguard.requestContextStorage.update(requestId, { requestRule });
-    adguard.requestContextStorage.update(requestId, { replaceRule });
+    adguard.requestContextStorage.update(requestId, { replaceRules: [replaceRule1] });
     adguard.requestContextStorage.update(requestId, { cspRules });
     adguard.requestContextStorage.bindContentRule(requestId, contentRule1, elementHtml1);
     adguard.requestContextStorage.bindContentRule(requestId, contentRule2, elementHtml2);
@@ -151,7 +151,7 @@ QUnit.test("Test Update", function (assert) {
     const context = adguard.requestContextStorage.get(requestId);
     assert.ok(context);
     assert.equal(requestRule, context.requestRule);
-    assert.equal(replaceRule, context.replaceRule);
+    assert.equal(replaceRule1, context.replaceRules[0]);
     assert.equal(2, context.cspRules.length);
     assert.equal(cspRules[0], context.cspRules[0]);
     assert.equal(cspRules[1], context.cspRules[1]);

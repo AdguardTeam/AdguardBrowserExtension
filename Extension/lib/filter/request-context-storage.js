@@ -48,7 +48,7 @@
      * @property {Array} responseHeaders - Original response headers
      * @property {Array} modifiedResponseHeaders - Modified response headers
      * @property {object} requestRule - Request rule
-     * @property {object} replaceRule - Replace rule
+     * @property {Array} replaceRules - Applied replace rules
      * @property {Array} contentRules - Content rules
      * @property {Array} cspRules CSP - rules
      * @property {number} eventId - Internal counter for log events
@@ -186,8 +186,8 @@
         if ('requestRule' in update) {
             context.requestRule = update.requestRule;
         }
-        if ('replaceRule' in update) {
-            context.replaceRule = update.replaceRule;
+        if ('replaceRules' in update) {
+            context.replaceRules = update.replaceRules;
         }
         context.cspRules = appendRules(context.cspRules, update.cspRules);
 
@@ -326,12 +326,12 @@
 
             context.contentModifyingState = States.NONE;
 
-            const replaceRule = context.replaceRule;
+            const replaceRules = context.replaceRules;
             const contentRules = context.contentRules;
 
-            if (replaceRule) {
-                adguard.filteringLog.bindRuleToHttpRequestEvent(tab, replaceRule, context.eventId);
-                ruleHitsRecords.push(replaceRule);
+            if (replaceRules) {
+                adguard.filteringLog.bindReplaceRulesToHttpRequestEvent(tab, replaceRules, context.eventId);
+                ruleHitsRecords.push(replaceRules);
             }
 
             if (contentRules) {

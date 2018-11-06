@@ -1,8 +1,10 @@
-QUnit.test("General", function (assert) {
-    var url = "https://test.com/";
-    var referrer = "example.org";
+/* global QUnit, adguard */
 
-    var rule = new adguard.rules.UrlFilterRule("||test.com^");
+QUnit.test('General', function (assert) {
+    var url = 'https://test.com/';
+    var referrer = 'example.org';
+
+    var rule = new adguard.rules.UrlFilterRule('||test.com^');
 
     var requestFilter = new adguard.RequestFilter();
     requestFilter.addRule(rule);
@@ -12,17 +14,16 @@ QUnit.test("General", function (assert) {
     assert.equal(result.ruleText, rule.ruleText);
 });
 
-QUnit.test("Whitelist rules selecting", function (assert) {
-
+QUnit.test('Whitelist rules selecting', function (assert) {
     var RequestTypes = adguard.RequestTypes;
 
-    var url = "https://test.com/";
-    var referrer = "http://example.org";
+    var url = 'https://test.com/';
+    var referrer = 'http://example.org';
 
-    var rule = new adguard.rules.UrlFilterRule("||test.com^");
-    var whitelist = new adguard.rules.UrlFilterRule("@@||test.com^");
-    var documentRule = new adguard.rules.UrlFilterRule("@@||test.com^$document");
-    var genericHideRule = new adguard.rules.UrlFilterRule("@@||test.com^$generichide");
+    var rule = new adguard.rules.UrlFilterRule('||test.com^');
+    var whitelist = new adguard.rules.UrlFilterRule('@@||test.com^');
+    var documentRule = new adguard.rules.UrlFilterRule('@@||test.com^$document');
+    var genericHideRule = new adguard.rules.UrlFilterRule('@@||test.com^$generichide');
 
     var requestFilter = new adguard.RequestFilter();
     requestFilter.addRule(rule);
@@ -57,19 +58,18 @@ QUnit.test("Whitelist rules selecting", function (assert) {
     assert.equal(result.ruleText, genericHideRule.ruleText);
 });
 
-QUnit.test("Important modifier rules", function (assert) {
-
+QUnit.test('Important modifier rules', function (assert) {
     var RequestTypes = adguard.RequestTypes;
 
-    var url = "https://test.com/";
-    var referrer = "http://example.org";
+    var url = 'https://test.com/';
+    var referrer = 'http://example.org';
 
     var requestFilter = new adguard.RequestFilter();
 
-    var rule = new adguard.rules.UrlFilterRule("||test.com^");
-    var whitelist = new adguard.rules.UrlFilterRule("@@||test.com^");
-    var important = new adguard.rules.UrlFilterRule("||test.com^$important");
-    var documentRule = new adguard.rules.UrlFilterRule("@@||example.org^$document");
+    var rule = new adguard.rules.UrlFilterRule('||test.com^');
+    var whitelist = new adguard.rules.UrlFilterRule('@@||test.com^');
+    var important = new adguard.rules.UrlFilterRule('||test.com^$important');
+    var documentRule = new adguard.rules.UrlFilterRule('@@||example.org^$document');
 
     assert.ok(rule.isFiltered(url, true, RequestTypes.IMAGE));
     assert.ok(whitelist.isFiltered(url, true, RequestTypes.IMAGE));
@@ -99,8 +99,7 @@ QUnit.test("Important modifier rules", function (assert) {
     assert.equal(result.ruleText, documentRule.ruleText);
 });
 
-QUnit.test("CSP rules", function (assert) {
-
+QUnit.test('CSP rules', function (assert) {
     var requestFilter = new adguard.RequestFilter();
 
     var cspRule = new adguard.rules.UrlFilterRule('||xpanama.net^$third-party,csp=connect-src \'none\',domain=~example.org|merriam-webster.com');
@@ -164,11 +163,9 @@ QUnit.test("CSP rules", function (assert) {
     assert.ok(rules.length === 2);
     assert.ok(rules[0].ruleText === cspRuleAny.ruleText || rules[0].ruleText === cspRuleSubDocument.ruleText);
     assert.ok(rules[1].ruleText === cspRuleAny.ruleText || rules[1].ruleText === cspRuleSubDocument.ruleText);
-
 });
 
 QUnit.test('Test CSP invalid rules', function (assert) {
-
     // Invalid csp rules
     var invalidRule = adguard.rules.builder.createRule('||$csp=report-uri /csp-violation-report-endpoint/', 1);
     assert.ok(!invalidRule);
@@ -187,7 +184,6 @@ QUnit.test('Test CSP invalid rules', function (assert) {
 });
 
 QUnit.test('Test CSP important rules', function (assert) {
-
     // Test important rules
     var requestFilter = new adguard.RequestFilter();
 
@@ -250,7 +246,6 @@ QUnit.test("Cookie rules", function (assert) {
 
 
 QUnit.test('Test object subrequest type', function (assert) {
-
     var requestFilter = new adguard.RequestFilter();
 
     var rule1 = new adguard.rules.UrlFilterRule('blockrequest1$object-subrequest');
@@ -269,12 +264,11 @@ QUnit.test('Test object subrequest type', function (assert) {
     assert.notOk(requestFilter.findRuleForRequest('blockrequest4', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
 });
 
-QUnit.test("BadFilter option", function (assert) {
-
-    var rule = new adguard.rules.UrlFilterRule("https:*_ad_");
-    var ruleTwo = new adguard.rules.UrlFilterRule("https:*_da_");
-    var ruleThree = new adguard.rules.UrlFilterRule("https:*_ad_$match-case");
-    var badFilterRule = new adguard.rules.UrlFilterRule("https:*_ad_$badfilter");
+QUnit.test('BadFilter option', function (assert) {
+    var rule = new adguard.rules.UrlFilterRule('https:*_ad_');
+    var ruleTwo = new adguard.rules.UrlFilterRule('https:*_da_');
+    var ruleThree = new adguard.rules.UrlFilterRule('https:*_ad_$match-case');
+    var badFilterRule = new adguard.rules.UrlFilterRule('https:*_ad_$badfilter');
 
     var requestFilter = new adguard.RequestFilter();
 
@@ -306,17 +300,15 @@ QUnit.test("BadFilter option", function (assert) {
 
     assert.notOk(requestFilter.findRuleForRequest('https://google.com/_ad_agency', '', adguard.RequestTypes.SUBDOCUMENT));
     assert.ok(requestFilter.findRuleForRequest('https://google.com/_da_agency', '', adguard.RequestTypes.SUBDOCUMENT));
-
 });
 
-QUnit.test("BadFilter option whitelist", function (assert) {
+QUnit.test('BadFilter option whitelist', function (assert) {
+    var url = 'https://test.com/';
+    var referrer = 'http://example.org';
 
-    var url = "https://test.com/";
-    var referrer = "http://example.org";
-
-    var rule = new adguard.rules.UrlFilterRule("||test.com^");
-    var whitelist = new adguard.rules.UrlFilterRule("@@||test.com^");
-    var badFilterRule = new adguard.rules.UrlFilterRule("@@||test.com^$badfilter");
+    var rule = new adguard.rules.UrlFilterRule('||test.com^');
+    var whitelist = new adguard.rules.UrlFilterRule('@@||test.com^');
+    var badFilterRule = new adguard.rules.UrlFilterRule('@@||test.com^$badfilter');
 
     var requestFilter = new adguard.RequestFilter();
 
@@ -346,11 +338,10 @@ QUnit.test("BadFilter option whitelist", function (assert) {
     assert.equal(result.ruleText, rule.ruleText);
 });
 
-QUnit.test("BadFilter multi-options", function (assert) {
-
-    var rule = new adguard.rules.UrlFilterRule("||example.org^$object-subrequest");
-    var ruleTwo = new adguard.rules.UrlFilterRule("||example.org^");
-    var badFilterRule = new adguard.rules.UrlFilterRule("||example.org^$badfilter,object-subrequest");
+QUnit.test('BadFilter multi-options', function (assert) {
+    var rule = new adguard.rules.UrlFilterRule('||example.org^$object-subrequest');
+    var ruleTwo = new adguard.rules.UrlFilterRule('||example.org^');
+    var badFilterRule = new adguard.rules.UrlFilterRule('||example.org^$badfilter,object-subrequest');
 
     var requestFilter = new adguard.RequestFilter();
 
@@ -372,7 +363,7 @@ QUnit.test("BadFilter multi-options", function (assert) {
     assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.SUBDOCUMENT));
 
 
-    badFilterRule = new adguard.rules.UrlFilterRule("||example.org^$object-subrequest,badfilter");
+    badFilterRule = new adguard.rules.UrlFilterRule('||example.org^$object-subrequest,badfilter');
 
     requestFilter.addRule(badFilterRule);
 
@@ -383,13 +374,84 @@ QUnit.test("BadFilter multi-options", function (assert) {
 
     assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
     assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.SUBDOCUMENT));
+});
 
+QUnit.test('Replace filters', function (assert) {
+    const rules = [
+        '||example.org^$replace=/test/test1/g',
+        '||example.org^$replace=/test1/test2/g',
+    ];
+
+    const requestFilter = new adguard.RequestFilter();
+
+    adguard.prefs.features.responseContentFilteringSupported = true;
+
+    const urlFilterRules = rules.map(rule => {
+        return new adguard.rules.UrlFilterRule(rule);
+    });
+
+    requestFilter.addRules(urlFilterRules);
+
+    const replaceRules = requestFilter.findReplaceRules('https://example.org', '', adguard.RequestTypes.DOCUMENT);
+
+    assert.ok(replaceRules);
+    assert.equal(replaceRules.length, rules.length);
+});
+
+QUnit.test('whitelisted replace filter with same option is omitted', function (assert) {
+
+    const expectedRule = '||example.org^$replace=/test/test1/g';
+
+    const rules = [
+        expectedRule,
+        '||example.org^$replace=/test1/test2/g',
+        '@@||example.org^$replace=/test1/test2/g',
+    ];
+
+    const requestFilter = new adguard.RequestFilter();
+
+    adguard.prefs.features.responseContentFilteringSupported = true;
+
+    const urlFilterRules = rules.map(rule => {
+        return new adguard.rules.UrlFilterRule(rule);
+    });
+
+    requestFilter.addRules(urlFilterRules);
+
+    const replaceRules = requestFilter.findReplaceRules('https://example.org', '', adguard.RequestTypes.DOCUMENT);
+
+    assert.ok(replaceRules);
+    assert.equal(replaceRules.length, 2);
+});
+
+QUnit.test('replace filter with empty $replace modifier should remove all other replace rules', function (assert) {
+    const rules = [
+        '||example.org^$replace=/test/test1/g',
+        '||example.org^$replace=/test1/test2/g',
+        '@@||example.org^$replace',
+    ];
+
+    const requestFilter = new adguard.RequestFilter();
+
+    adguard.prefs.features.responseContentFilteringSupported = true;
+
+    const urlFilterRules = rules.map(rule => {
+        return new adguard.rules.UrlFilterRule(rule);
+    });
+
+    requestFilter.addRules(urlFilterRules);
+
+    const replaceRules = requestFilter.findReplaceRules('https://example.org', '', adguard.RequestTypes.DOCUMENT);
+
+    assert.ok(replaceRules);
+    assert.ok(replaceRules[0].whiteListRule);
+    assert.equal(rules.length, 3);
+    assert.equal(replaceRules.length, 1);
 });
 
 
 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1122
 QUnit.test('Rule with extension modifier should be omitted in request filter', function (assert) {
-
     const rules = [
         '@@||example.org^$extension',
         '||example.org/favicon.ico',
@@ -407,11 +469,9 @@ QUnit.test('Rule with extension modifier should be omitted in request filter', f
     const requesRulesLength = requestFilter.getRules().length;
 
     assert.equal(requesRulesLength, rules.length - 1);
-
 });
 
-QUnit.test("requestFilter.findRuleForRequest performance", function (assert) {
-
+QUnit.test('requestFilter.findRuleForRequest performance', function (assert) {
     var rules = filtersFromTxt; // variable filtersFromTxt is from 'test_filter.js'
     var requestFilter = new adguard.RequestFilter();
     for (var i = 0; i < rules.length; i++) {
@@ -421,8 +481,8 @@ QUnit.test("requestFilter.findRuleForRequest performance", function (assert) {
         }
     }
 
-    var url = "https://www.youtube.com/gaming";
-    var referrer = "http://example.org";
+    var url = 'https://www.youtube.com/gaming';
+    var referrer = 'http://example.org';
 
     var count = 50000;
     var startTime = new Date().getTime();
@@ -435,8 +495,8 @@ QUnit.test("requestFilter.findRuleForRequest performance", function (assert) {
     assert.ok(elapsed > 0);
 
     console.log('------------------------------------START TEST PERFORMANCE-----------------------------------');
-    console.log("Total: " + elapsed + " ms");
-    console.log("Average: " + elapsed / count + " ms");
+    console.log('Total: ' + elapsed + ' ms');
+    console.log('Average: ' + elapsed / count + ' ms');
     console.log('------------------------------------END TEST PERFORMANCE-----------------------------------');
 
     // Total: 84 ms

@@ -118,6 +118,10 @@
         // TODO: Add link
         this.cookieFilter = new adguard.rules.CookieFilter();
 
+        // Filter that applies replace rules
+        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#replace-modifier
+        this.replaceFilter = new adguard.rules.ReplaceFilter();
+
         // Filter that applies HTML filtering rules
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#html-filtering-rules
         this.contentFilter = new adguard.rules.ContentFilter();
@@ -173,6 +177,8 @@
                     this.cspFilter.addRule(rule);
                 } else if (rule.isCookieRule()) {
                     this.cookieFilter.addRule(rule);
+                } else if (rule.isReplaceRule()) {
+                    this.replaceFilter.addRule(rule);
                 } else {
                     if (rule.isBadFilter()) {
                         this.badFilterRules[rule.badFilter] = rule;
@@ -472,6 +478,13 @@
             return this.cspFilter.findCspRules(requestUrl, documentHost, thirdParty, requestType);
         },
 
+        findReplaceRules: function (requestUrl, documentUrl, requestType) {
+            const documentHost = adguard.utils.url.getHost(documentUrl);
+            const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
+
+            return this.replaceFilter.findReplaceRules(requestUrl, documentHost, thirdParty, requestType);
+        },
+
         /**
          * Searches for cookie rules for the specified request
          * @param requestUrl Request URL
@@ -536,7 +549,7 @@
          */
         _findRuleForRequest: function (requestUrl, documentHost, requestType, thirdParty, documentWhiteListRule) {
 
-            adguard.console.debug("Filtering http request for url: {0}, document: {1}, requestType: {2}", requestUrl, documentHost, requestType);
+            adguard.console.debug('Filtering http request for url: {0}, document: {1}, requestType: {2}', requestUrl, documentHost, requestType);
 
             // STEP 1: Looking for exception rule, which could be applied to the current request
 
