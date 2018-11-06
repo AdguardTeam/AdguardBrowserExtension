@@ -298,6 +298,17 @@ adguard.webRequestService = (function (adguard) {
     };
 
     /**
+     * Checks if we should process request further
+     * @param tab
+     * @returns {boolean}
+     */
+    const shouldStopRequestProcess = (tab) => {
+        return adguard.frames.isTabAdguardDetected(tab) ||
+            adguard.frames.isTabProtectionDisabled(tab) ||
+            adguard.frames.isTabWhiteListed(tab);
+    };
+
+    /**
      * Finds all content rules for the url
      * @param tab Tab
      * @param documentUrl Document URL
@@ -305,8 +316,8 @@ adguard.webRequestService = (function (adguard) {
      */
     var getContentRules = function (tab, documentUrl) {
 
-        if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab) || adguard.frames.isTabWhiteListed(tab)) {
-            //don't process request
+        if (shouldStopRequestProcess(tab)) {
+            // don't process request
             return null;
         }
 
@@ -328,8 +339,8 @@ adguard.webRequestService = (function (adguard) {
      */
     var getCspRules = function (tab, requestUrl, referrerUrl, requestType) {
 
-        if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab) || adguard.frames.isTabWhiteListed(tab)) {
-            //don't process request
+        if (shouldStopRequestProcess(tab)) {
+            // don't process request
             return null;
         }
 
@@ -364,6 +375,29 @@ adguard.webRequestService = (function (adguard) {
 
         // Get all $cookie rules matching the specified request
         return adguard.requestFilter.getCookieRules(requestUrl, referrerUrl, requestType);
+    };
+
+    /**
+     * Find replace rules for request
+     * @param tab
+     * @param requestUrl
+     * @param referrerUrl
+     * @param requestType
+     * @returns {*} Collection of rules or null
+     */
+    const getReplaceRules = (tab, requestUrl, referrerUrl, requestType) => {
+        if (shouldStopRequestProcess(tab)) {
+            // don't process request
+            return null;
+        }
+
+        const whitelistRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
+
+        if (whitelistRule && whitelistRule.isContent()) {
+            return null;
+        }
+
+        return adguard.requestFilter.getReplaceRules(requestUrl, referrerUrl, requestType);
     };
 
     /**
@@ -486,6 +520,7 @@ adguard.webRequestService = (function (adguard) {
         getCspRules: getCspRules,
         getCookieRules: getCookieRules,
         getContentRules: getContentRules,
+        getReplaceRules: getReplaceRules,
         processRequestResponse: processRequestResponse,
         postProcessRequest: postProcessRequest,
         recordRuleHit: recordRuleHit,

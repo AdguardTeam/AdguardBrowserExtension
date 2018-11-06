@@ -130,6 +130,7 @@ var UrlFilterRule = {
     WEBRTC_OPTION: 'webrtc',
     WEBSOCKET_OPTION: 'websocket',
     COOKIE_OPTION: 'cookie',
+    REPLACE_OPTION: 'replace',
 };
 
 PageController.prototype = {
@@ -486,9 +487,17 @@ PageController.prototype = {
     },
 
     _renderTemplate: function (event) {
-        event.filterName = event.requestRule ? RequestWizard.getFilterName(event.requestRule.filterId) : '';
-        var metadata = { data: event, class: '' };
-        if (event.requestRule) {
+        const metadata = { data: event, class: '' };
+
+        event.filterName = event.requestRule && event.requestRule.filterId ?
+            RequestWizard.getFilterName(event.requestRule.filterId) :
+            '';
+
+        if (event.replaceRules) {
+            metadata.class += ' yellow';
+        }
+
+        if (event.requestRule && !event.replaceRules) {
             if (event.requestRule.whiteListRule) {
                 metadata.class += ' green';
             } else if (event.requestRule.cssRule) {
@@ -497,13 +506,15 @@ PageController.prototype = {
                 metadata.class += ' red';
             }
         }
+
         if (event.eventId) {
             metadata.id = 'request-' + event.eventId;
         }
 
-        var requestInfo = event.requestUrl ? event.requestUrl : this._escapeHTML(event.element);
+        const requestInfo = event.requestUrl ? event.requestUrl : this._escapeHTML(event.element);
 
-        var ruleText = '';
+        // Get rule text for requestRule or replaceRules
+        let ruleText = '';
         if (event.requestRule) {
             if (event.requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
                 ruleText = Messages.IN_WHITELIST;
@@ -512,12 +523,17 @@ PageController.prototype = {
             }
         }
 
-        var thirdPartyDetails = '';
+        if (event.replaceRules) {
+            const rulesCount = event.replaceRules.length;
+            ruleText = `${i18n.getMessage('filtering_log_modified_rules')} ${rulesCount}`;
+        }
+
+        let thirdPartyDetails = '';
         if (event.requestThirdParty) {
             thirdPartyDetails = '<img src="images/chain-link.svg" class="icon-chain"><small>Third party</small>';
         }
 
-        var eventTemplate = `
+        const eventTemplate = `
             <tr ${metadata.id ? 'id="' + metadata.id + '"' : ''}
                 ${metadata.class ? 'class="' + metadata.class + '"' : ''}>
                 <td>${requestInfo}</td>
@@ -530,9 +546,10 @@ PageController.prototype = {
                     ${event.filterName}
                 </td>
                 <td>${RequestWizard.getSource(event.frameDomain)}</td>
-            </tr>`;
+            </tr>
+        `;
 
-        var element = htmlToElement(eventTemplate);
+        const element = htmlToElement(eventTemplate);
         element.data = metadata.data;
         return element;
     },
@@ -658,14 +675,14 @@ var RequestWizard = (function () {
         return ruleText;
     };
 
-    var initCreateRuleDialog = function (frameInfo, template, patterns, filteringEvent) {
-        var frameDomain = filteringEvent.frameDomain;
-        var isThirdPartyRequest = filteringEvent.requestThirdParty;
+    const initCreateRuleDialog = function (frameInfo, template, patterns, filteringEvent) {
+        const frameDomain = filteringEvent.frameDomain;
+        const isThirdPartyRequest = filteringEvent.requestThirdParty;
 
-        var rulePatternsEl = template.querySelector('#rulePatterns');
+        const rulePatternsEl = template.querySelector('#rulePatterns');
 
-        for (var i = 0; i < patterns.length; i++) {
-            var rulePatternTemplate = `
+        for (let i = 0; i < patterns.length; i += 1) {
+            const rulePatternTemplate = `
                 <li class="checkb-wrap">
                     <div class="radio">
                         <input class="radio__input" type="radio" name="rulePattern" id="pattern${i}" value="${patterns[i]}" ${i === 0 ? "checked='checked'" : ''}>
@@ -678,12 +695,12 @@ var RequestWizard = (function () {
             rulePatternsEl.appendChild(htmlToElement(rulePatternTemplate));
         }
 
-        var rulePatterns = template.querySelectorAll('[name="rulePattern"]');
-        var ruleDomainCheckbox = template.querySelector('[name="ruleDomain"]');
-        var ruleImportantCheckbox = template.querySelector('[name="ruleImportant"]');
-        var ruleMatchCaseCheckbox = template.querySelector('[name="ruleMatchCase"]');
-        var ruleThirdPartyCheckbox = template.querySelector('[name="ruleThirdParty"]');
-        var ruleTextEl = template.querySelector('[name="ruleText"]');
+        const rulePatterns = template.querySelectorAll('[name="rulePattern"]');
+        const ruleDomainCheckbox = template.querySelector('[name="ruleDomain"]');
+        const ruleImportantCheckbox = template.querySelector('[name="ruleImportant"]');
+        const ruleMatchCaseCheckbox = template.querySelector('[name="ruleMatchCase"]');
+        const ruleThirdPartyCheckbox = template.querySelector('[name="ruleThirdParty"]');
+        const ruleTextEl = template.querySelector('[name="ruleText"]');
 
         ruleDomainCheckbox.setAttribute('id', 'ruleDomain');
         ruleDomainCheckbox.parentNode.querySelector('label').setAttribute('for', 'ruleDomain');
@@ -740,6 +757,11 @@ var RequestWizard = (function () {
 
             if (filteringEvent.requestUrl === 'content-security-policy-check') {
                 mandatoryOptions = [UrlFilterRule.WEBRTC_OPTION, UrlFilterRule.WEBSOCKET_OPTION];
+            }
+
+            var replaceRules = filteringEvent.replaceRules;
+            if (replaceRules) {
+                mandatoryOptions = [UrlFilterRule.REPLACE_OPTION];
             }
 
             var ruleText;
@@ -913,18 +935,19 @@ var RequestWizard = (function () {
      * @param {Object} filteringEvent
      */
     var showRequestInfoModal = function (frameInfo, filteringEvent) {
-        var template = requestInfoTemplate.cloneNode(true);
+        const template = requestInfoTemplate.cloneNode(true);
 
-        var requestRule = filteringEvent.requestRule;
+        const requestRule = filteringEvent.requestRule;
+        const replaceRules = filteringEvent.replaceRules;
 
-        var requestUrlNode = template.querySelector('[attr-text="requestUrl"]');
+        const requestUrlNode = template.querySelector('[attr-text="requestUrl"]');
         if (filteringEvent.requestUrl) {
             requestUrlNode.textContent = filteringEvent.requestUrl;
         } else {
             requestUrlNode.parentNode.style.display = 'none';
         }
 
-        var elementNode = template.querySelector('[attr-text="element"]');
+        const elementNode = template.querySelector('[attr-text="element"]');
         if (filteringEvent.element) {
             elementNode.textContent = filteringEvent.element;
         } else {
@@ -937,16 +960,31 @@ var RequestWizard = (function () {
             template.querySelector('[attr-text="frameDomain"]').closest('li').style.display = 'none';
         }
 
-        if (requestRule) {
+        if (requestRule && !requestRule.replaceRule) {
             if (requestRule.filterId !== AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
                 template.querySelector('[attr-text="requestRule"]').textContent = requestRule.ruleText;
             } else {
                 template.querySelector('[attr-text="requestRule"]').closest('li').style.display = 'none';
             }
+            template.querySelector('[attr-text="replaceRules"]').closest('li').style.display = 'none';
             template.querySelector('[attr-text="requestRuleFilter"]').textContent = getFilterName(requestRule.filterId);
         } else {
             template.querySelector('[attr-text="requestRule"]').closest('li').style.display = 'none';
             template.querySelector('[attr-text="requestRuleFilter"]').closest('li').style.display = 'none';
+        }
+
+        if (replaceRules) {
+            template.querySelector('[attr-text="requestRule"]').closest('li').style.display = 'none';
+            template.querySelector('[attr-text="requestRuleFilter"]').closest('li').style.display = 'none';
+            if (replaceRules.length > 0) {
+                template.querySelector('[attr-text="replaceRules"]').textContent = replaceRules
+                    .map(replaceRule => replaceRule.ruleText)
+                    .join('\r\n');
+            } else {
+                template.querySelector('[attr-text="replaceRules"]').closest('li').style.display = 'none';
+            }
+        } else {
+            template.querySelector('[attr-text="replaceRules"]').closest('li').style.display = 'none';
         }
 
         if (filteringEvent.requestType === 'IMAGE') {
@@ -966,16 +1004,16 @@ var RequestWizard = (function () {
         }
 
         // bind events
-        var openRequestButton = template.querySelector('#openRequestNewTab');
-        var blockRequestButton = template.querySelector('#blockRequest');
-        var unblockRequestButton = template.querySelector('#unblockRequest');
-        var removeWhiteListDomainButton = template.querySelector('#removeWhiteListDomain');
-        var removeUserFilterRuleButton = template.querySelector('#removeUserFilterRule');
+        const openRequestButton = template.querySelector('#openRequestNewTab');
+        const blockRequestButton = template.querySelector('#blockRequest');
+        const unblockRequestButton = template.querySelector('#unblockRequest');
+        const removeWhiteListDomainButton = template.querySelector('#removeWhiteListDomain');
+        const removeUserFilterRuleButton = template.querySelector('#removeUserFilterRule');
 
         openRequestButton.addEventListener('click', function (e) {
             e.preventDefault();
 
-            var requestUrl = filteringEvent.requestUrl;
+            let requestUrl = filteringEvent.requestUrl;
             if (requestUrl === 'content-security-policy-check') {
                 requestUrl = filteringEvent.frameUrl;
             }

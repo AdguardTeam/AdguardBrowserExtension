@@ -18,7 +18,6 @@
 /* global TextDecoder, TextEncoder, DOMParser */
 
 adguard.contentFiltering = (function (adguard) {
-
     var DEFAULT_CHARSET = 'utf-8';
     var LATIN_1 = 'iso-8859-1';
     var SUPPORTED_CHARSETS = [DEFAULT_CHARSET, 'windows-1251', 'windows-1252', LATIN_1];
@@ -32,7 +31,6 @@ adguard.contentFiltering = (function (adguard) {
      * @constructor
      */
     var ContentFilter = function (requestId, requestType, charset) {
-
         this.filter = adguard.webRequest.filterResponseData(requestId);
         this.requestType = requestType;
 
@@ -152,9 +150,7 @@ adguard.contentFiltering = (function (adguard) {
      * @constructor
      */
     var ResponseContentHandler = function () {
-
         this.handleResponse = function (requestId, requestUrl, requestType, charset, callback) {
-
             var contentFilter = new ContentFilter(requestId, requestType, charset);
 
             contentFilter.getContent()
@@ -178,7 +174,6 @@ adguard.contentFiltering = (function (adguard) {
     };
 
     var DocumentParser = function () {
-
         if (typeof DOMParser === 'undefined') {
             adguard.console.info('DOMParser object is not defined');
             this.parse = function () {
@@ -190,7 +185,7 @@ adguard.contentFiltering = (function (adguard) {
         // parser and parsererrorNS could be cached on startup for efficiency
         var parser = new DOMParser();
         var errorneousParse = parser.parseFromString('<', 'text/xml');
-        var parsererrorNS = errorneousParse.getElementsByTagName("parsererror")[0].namespaceURI;
+        var parsererrorNS = errorneousParse.getElementsByTagName('parsererror')[0].namespaceURI;
 
         /**
          * Checking for parse errors
@@ -200,7 +195,7 @@ adguard.contentFiltering = (function (adguard) {
          */
         function isParseError(parsedDocument) {
             if (parsererrorNS === 'http://www.w3.org/1999/xhtml') {
-                return parsedDocument.getElementsByTagName("parsererror").length > 0;
+                return parsedDocument.getElementsByTagName('parsererror').length > 0;
             }
             return parsedDocument.getElementsByTagNameNS(parsererrorNS, 'parsererror').length > 0;
         }
@@ -211,7 +206,7 @@ adguard.contentFiltering = (function (adguard) {
          * @returns Document
          */
         this.parse = function (html) {
-            var doc = parser.parseFromString(html, "text/html");
+            var doc = parser.parseFromString(html, 'text/html');
             if (isParseError(doc)) {
                 return null;
             }
@@ -267,7 +262,6 @@ adguard.contentFiltering = (function (adguard) {
      * @returns {boolean}
      */
     var shouldApplyReplaceRule = function (requestType, contentType) {
-
         // In case of .features or .features.responseContentFilteringSupported are not defined
         var responseContentFilteringSupported = adguard.prefs.features && adguard.prefs.features.responseContentFilteringSupported;
         if (!responseContentFilteringSupported) {
@@ -295,7 +289,6 @@ adguard.contentFiltering = (function (adguard) {
      * @param requestType Request type
      */
     var shouldApplyContentRules = function (requestType) {
-
         // In case of .features or .features.responseContentFilteringSupported are not defined
         var responseContentFilteringSupported = adguard.prefs.features && adguard.prefs.features.responseContentFilteringSupported;
         if (!responseContentFilteringSupported) {
@@ -340,8 +333,46 @@ adguard.contentFiltering = (function (adguard) {
         // Add <!DOCTYPE html ... >
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/959
         // XMLSerializer is used to serialize doctype object
-        var doctype = doc.doctype ? new XMLSerializer().serializeToString(doc.doctype) + "\r\n" : "";
+        var doctype = doc.doctype ? new XMLSerializer().serializeToString(doc.doctype) + '\r\n' : '';
         return deleted.length > 0 ? doctype + doc.documentElement.outerHTML : null;
+    }
+
+    function applyReplaceRules(tab, requestUrl, requestId, content, replaceRules) {
+        let modifiedContent = content;
+        let appliedRules = [];
+
+        // Sort replace rules alphabetically as noted here
+        // https://github.com/AdguardTeam/CoreLibs/issues/45
+        const sortedReplaceRules = replaceRules.sort((prev, next) => {
+            if (prev.ruleText > next.ruleText) {
+                return 1;
+            }
+            if (prev.ruleText < next.ruleText) {
+                return -1;
+            }
+            return 0;
+        });
+
+        for (let i = 0; i < sortedReplaceRules.length; i += 1) {
+            const replaceRule = sortedReplaceRules[i];
+            if (replaceRule.whiteListRule) {
+                appliedRules.push(replaceRule);
+            } else {
+                const replaceOption = replaceRule.getReplace();
+                modifiedContent = replaceOption.apply(modifiedContent);
+                appliedRules.push(replaceRule);
+            }
+        }
+
+        if (modifiedContent) {
+            content = modifiedContent;
+        }
+
+        if (appliedRules.length > 0) {
+            adguard.requestContextStorage.update(requestId, { replaceRules: appliedRules });
+        }
+
+        return content;
     }
 
     /**
@@ -352,11 +383,11 @@ adguard.contentFiltering = (function (adguard) {
      * @param {string} requestType
      * @param {string} requestId
      * @param {Array} contentRules
-     * @param {object} replaceRule
+     * @param {Array} replaceRules
      * @param {string} content
      * @returns {string} Modified content
      */
-    const applyRulesToContent = (tab, requestUrl, referrerUrl, requestType, requestId, contentRules, replaceRule, content) => {
+    const applyRulesToContent = (tab, requestUrl, referrerUrl, requestType, requestId, contentRules, replaceRules, content) => {
 
         if (!content) {
             return content;
@@ -377,9 +408,11 @@ adguard.contentFiltering = (function (adguard) {
             return content;
         }
 
-        if (replaceRule) {
-            content = replaceRule.getReplace().apply(content);
-            adguard.requestContextStorage.update(requestId, { replaceRule });
+        if (replaceRules) {
+            const modifiedContent = applyReplaceRules(tab, requestUrl, requestId, content, replaceRules);
+            if (modifiedContent !== null) {
+                content = modifiedContent;
+            }
         }
 
         return content;
@@ -398,7 +431,6 @@ adguard.contentFiltering = (function (adguard) {
      * @param contentType Content-Type header
      */
     var apply = function (tab, requestUrl, referrerUrl, requestType, requestId, statusCode, method, contentType) {
-
         if (statusCode !== 200) {
             adguard.console.debug('Skipping request to {0} - {1} with status {2}', requestUrl, requestType, statusCode);
             return;
@@ -416,8 +448,8 @@ adguard.contentFiltering = (function (adguard) {
             return;
         }
 
-        var contentRules = null;
-        var replaceRule = null;
+        let contentRules = null;
+        let replaceRules = null;
 
         if (shouldApplyContentRules(requestType)) {
             contentRules = adguard.webRequestService.getContentRules(tab, requestUrl);
@@ -427,13 +459,13 @@ adguard.contentFiltering = (function (adguard) {
         }
 
         if (shouldApplyReplaceRule(requestType, contentType)) {
-            var requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
-            if (requestRule && requestRule.getReplace()) {
-                replaceRule = requestRule;
+            replaceRules = adguard.webRequestService.getReplaceRules(tab, requestUrl, referrerUrl, requestType);
+            if (replaceRules && replaceRules.length === 0) {
+                replaceRules = null;
             }
         }
 
-        if (!contentRules && !replaceRule) {
+        if (!contentRules && !replaceRules) {
             return;
         }
 
@@ -450,7 +482,6 @@ adguard.contentFiltering = (function (adguard) {
     };
 
     return {
-        apply: apply
+        apply: apply,
     };
-
 })(adguard);
