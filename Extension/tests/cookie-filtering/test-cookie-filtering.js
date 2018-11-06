@@ -51,8 +51,8 @@ QUnit.test("Test cookie filtering", function (assert) {
 
     // TODO: Implement tests
 
-    adguard.cookieFiltering.modifyRequestHeaders({});
-    adguard.cookieFiltering.modifyResponseHeaders({});
+    adguard.cookieFiltering.filterRequestHeaders({});
+    adguard.cookieFiltering.filterResponseHeaders({});
 
     assert.ok(true);
 });

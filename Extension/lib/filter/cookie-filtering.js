@@ -37,7 +37,7 @@
  * third-party means that there is a case (first-party) when cookies must not be removed, i.e. they can be actually useful, and removing them can be counterproductive.
  * For instance, Google and Facebook rely on their SSO cookies and forcing a browser to remove them will also automatically log you out.
  *
- * @type {{modifyRequestHeaders, modifyResponseHeaders}}
+ * @type {{filterRequestHeaders, filterResponseHeaders}}
  */
 adguard.cookieFiltering = (function (adguard) {
 
@@ -54,11 +54,11 @@ adguard.cookieFiltering = (function (adguard) {
     /**
      * Finds $cookie rules matching Set-Cookie header
      *
-     * @param setCookie {Cookie} Set cookie header value
-     * @param tab {object} Request tab
-     * @param requestUrl {string} Request URL
-     * @param referrerUrl {string} Referrer URL
-     * @param requestType {string} Request type
+     * @param {Cookie} setCookie Set cookie header value
+     * @param {object} tab Request tab
+     * @param {string} requestUrl Request URL
+     * @param {string} referrerUrl Referrer URL
+     * @param {string} requestType Request type
      * @return {Array} Collection of rules or null
      */
     const getRulesForSetCookie = (setCookie, tab, requestUrl, referrerUrl, requestType) => {
@@ -149,7 +149,7 @@ adguard.cookieFiltering = (function (adguard) {
      * @param {Array} requestHeaders Request headers
      * @return {boolean} True if headers were modified
      */
-    var modifyRequestHeaders = function (requestId, requestHeaders) {
+    var filterRequestHeaders = function (requestId, requestHeaders) {
 
         const context = adguard.requestContextStorage.get(requestId);
         if (!context) {
@@ -194,10 +194,17 @@ adguard.cookieFiltering = (function (adguard) {
     /**
      * Modifies response headers according to matching $cookie rules.
      *
-     * @param requestId
-     * @param responseHeaders
+     * @param {string} requestId Request identifier
+     * @param {Array} responseHeaders Response headers
+     * @return {boolean} True if headers were modified
      */
-    var modifyResponseHeaders = function (requestId, responseHeaders) {
+    var filterResponseHeaders = function (requestId, responseHeaders) {
+
+        /**
+         * TODO: These two issues might change the way we're going to implement this:
+         * https://bugs.chromium.org/p/chromium/issues/detail?id=827582
+         * https://bugs.chromium.org/p/chromium/issues/detail?id=898461
+         */
 
         const context = adguard.requestContextStorage.get(requestId);
         if (!context) {
@@ -263,8 +270,8 @@ adguard.cookieFiltering = (function (adguard) {
     };
 
     return {
-        modifyRequestHeaders,
-        modifyResponseHeaders
+        filterRequestHeaders,
+        filterResponseHeaders
     };
 
 })(adguard);

@@ -115,7 +115,7 @@
         this.cspFilter = new adguard.rules.CspFilter();
 
         // Filter that applies cookie rules
-        // TODO: Add link
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/961
         this.cookieFilter = new adguard.rules.CookieFilter();
 
         // Filter that applies replace rules
