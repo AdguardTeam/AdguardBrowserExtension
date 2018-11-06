@@ -363,12 +363,13 @@ adguard.webRequestService = (function (adguard) {
      */
     var getCookieRules = function (tab, requestUrl, referrerUrl, requestType) {
 
-        if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab)) {
+        if (shouldStopRequestProcess(tab)) {
             // Don't process request
             return null;
         }
 
-        if (adguard.frames.isTabWhiteListed(tab)) {
+        var whitelistRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
+        if (whitelistRule && whitelistRule.isDocumentWhiteList()) {
             // $cookie rules are not affected by regular exception rules (@@) unless it's a $document exception.
             return null;
         }

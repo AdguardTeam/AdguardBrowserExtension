@@ -27,8 +27,6 @@
  * - record - Initialize context for request (uses in onBeforeRequest)
  * - update - Updates context properties (rules)
  * - bindContentRule - Binds content rule and removed element to the context
- * - onRequestHeadersModified - Calls on request headers modification
- * - onResponseHeadersModified - Calls on response headers modification
  * - onContentModificationStarted - Must be called to point that content modification is started
  *   Following 2 methods have same logic (push rules to log, record rule hits and perform cleanup), but called in different cases:
  * - onRequestCompleted - Finishes request processing on request complete/error event.
@@ -197,6 +195,12 @@
         if ('responseHeaders' in update) {
             context.responseHeaders = copyHeaders(update.responseHeaders);
         }
+        if ('modifiedRequestHeaders' in update) {
+            context.modifiedRequestHeaders = copyHeaders(update.modifiedRequestHeaders);
+        }
+        if ('modifiedResponseHeaders' in update) {
+            context.modifiedResponseHeaders = copyHeaders(update.modifiedResponseHeaders);
+        }
     };
 
     /**
@@ -224,57 +228,6 @@
             context.elements.set(rule, ruleElements);
         }
         ruleElements.push(elementHtml);
-    };
-
-    /**
-     * Headers modification method
-     * @param requestId {string} Request identifier
-     * @param modifiedHeaders {Array} Collection of modified headers
-     * @param originalHeadersProperty {string} Property name of original headers in context
-     * @param modifiedHeadersProperty {string} Property name of modified headers in context
-     */
-    const onHeadersModified = (requestId, modifiedHeaders, originalHeadersProperty, modifiedHeadersProperty) => {
-
-        if (!modifiedHeaders || modifiedHeaders.length === 0) {
-            return;
-        }
-
-        const context = contexts.get(requestId);
-        if (!context) {
-            return;
-        }
-
-        // Initialize modified headers with the original headers
-        if (!context[modifiedHeadersProperty]) {
-            context[modifiedHeadersProperty] = copyHeaders(context[originalHeadersProperty]);
-        }
-
-        let updatedHeaders = context[modifiedHeadersProperty];
-        for (let i = 0; i < modifiedHeaders.length; i += 1) {
-            const modifiedHeader = modifiedHeaders[i];
-            updatedHeaders = adguard.utils.browser.setHeaderValue(updatedHeaders, modifiedHeader.name, modifiedHeader.value);
-        }
-
-        context[modifiedHeadersProperty] = updatedHeaders;
-    };
-
-
-    /**
-     * Record modified request headers
-     * @param requestId {string} Request identifier
-     * @param modifiedHeaders {Array} Modified request headers
-     */
-    const onRequestHeadersModified = (requestId, modifiedHeaders) => {
-        onHeadersModified(requestId, modifiedHeaders, 'requestHeaders', 'modifiedRequestHeaders');
-    };
-
-    /**
-     * Record modified response headers
-     * @param requestId {string} Request identifier
-     * @param modifiedHeaders {Array} Modified response headers
-     */
-    const onResponseHeadersModified = (requestId, modifiedHeaders) => {
-        onHeadersModified(requestId, modifiedHeaders, 'responseHeaders', 'modifiedResponseHeaders');
     };
 
     /**
@@ -394,8 +347,6 @@
         recordEmulated,
         update,
         bindContentRule,
-        onRequestHeadersModified,
-        onResponseHeadersModified,
         onRequestCompleted,
         onContentModificationStarted,
         onContentModificationFinished,

@@ -87,7 +87,7 @@ QUnit.test("Test Modify headers", function (assert) {
         name: 'header-3',
         value: 'value-3',
     }];
-    adguard.requestContextStorage.onRequestHeadersModified(requestId, modifiedRequestHeaders);
+    adguard.requestContextStorage.update(requestId, {modifiedRequestHeaders});
 
     assert.equal(1, context.requestHeaders.length);
     assert.equal('header-1', context.requestHeaders[0].name);
@@ -109,7 +109,7 @@ QUnit.test("Test Modify headers", function (assert) {
         name: 'header-4',
         value: 'value-4',
     }];
-    adguard.requestContextStorage.onResponseHeadersModified(requestId, modifiedResponseHeaders);
+    adguard.requestContextStorage.update(requestId, {modifiedResponseHeaders});
 
     assert.equal(1, context.responseHeaders.length);
     assert.equal('header-2', context.responseHeaders[0].name);

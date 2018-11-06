@@ -73,6 +73,42 @@
         }
 
         /**
+         * Finds exception rule for blocking rule
+         *
+         * @param {object} blockRule Blocking rule
+         * @param {Array} whiteListRules Whitelist rules
+         * @return {object} Found whitelist rule or null
+         */
+        function findWhiteListRule(blockRule, whiteListRules) {
+
+            for (let i = 0; i < whiteListRules.length; i++) {
+
+                const whiteRule = whiteListRules[i];
+                const whiteCookieOption = whiteRule.getCookieOption();
+
+                const blockCookieOption = blockRule.getCookieOption();
+                const blockCookieName = blockCookieOption.cookieName;
+                const blockCookieRegex = blockCookieOption.regex;
+
+                // Matches by cookie name
+                if (whiteCookieOption.matches(blockCookieName)) {
+                    return whiteRule;
+                }
+
+                // Rules have the same regex
+                if (blockCookieRegex && whiteCookieOption.regex &&
+                    String(blockCookieRegex) === String(whiteCookieOption.regex)) {
+
+                    return whiteRule;
+                }
+
+                // Blocking rule with empty $cookie option value will be unblocked by @@$cookie rule
+            }
+
+            return null;
+        }
+
+        /**
          * Searches for rules matching specified request.
          *
          * @param url           URL
@@ -82,9 +118,28 @@
          * @returns             Matching rules
          */
         function findCookieRules(url, documentHost, thirdParty, requestType) {
-            //TODO: Implement
 
-            return getRules();
+            const blockRules = cookieBlockFilter.findRules(url, documentHost, thirdParty, requestType);
+            if (!blockRules || blockRules.length === 0) {
+                return null;
+            }
+
+            const whiteRules = cookieWhiteFilter.findRules(url, documentHost, thirdParty, requestType);
+            if (!whiteRules || whiteRules.length === 0) {
+                return blockRules;
+            }
+
+            // Try to find whitelist rule with empty $cookie option => unblock all
+            const commonWhiteRule = whiteRules.filter(r => r.getCookieOption().isEmpty())[0];
+            if (commonWhiteRule) {
+                return [commonWhiteRule];
+            }
+
+            const rulesToApply = blockRules.map(blockRule => {
+                const whiteRule = findWhiteListRule(blockRule, whiteRules);
+                return whiteRule || blockRule;
+            });
+            return rulesToApply.length > 0 ? rulesToApply : null;
         }
 
         if (rules) {

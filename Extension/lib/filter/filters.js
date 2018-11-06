@@ -486,16 +486,17 @@
         },
 
         /**
-         * Searches for cookie rules for the specified request
+         * Searches for cookie rules matching specified request.
+         *
          * @param requestUrl Request URL
          * @param documentUrl Document URL
-         * @param requestType Request Type (DOCUMENT or SUBDOCUMENT)
-         * @returns Collection of CSP rules for applying to the request or null
+         * @param requestType   Request content type
+         * @returns             Matching rules
          */
         findCookieRules: function (requestUrl, documentUrl, requestType) {
 
-            var documentHost = adguard.utils.url.getHost(documentUrl);
-            var thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
+            const documentHost = adguard.utils.url.getHost(documentUrl);
+            const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
 
             return this.cookieFilter.findCookieRules(requestUrl, documentHost, thirdParty, requestType);
         },
