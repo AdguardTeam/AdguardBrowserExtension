@@ -17,16 +17,16 @@
 
 /**
  * Helper methods for parsing and extracting browser cookies from headers (both Set-Cookie and Cookie).
- * 
+ *
  * This API is exposed via adguard.utils.cookie:
- * 
+ *
  * - parseCookie    Parses "Cookie" header value and returns all the cookie key-pairs
  * - parseSetCookie Parses "Set-Cookie" header value and returns the key-pairs
  * - serialize      Serializes cookie object into a set-cookie value
- * 
+ *
  * Heavily inspired by https://github.com/nfriedly/set-cookie-parser and https://github.com/jshttp/cookie
  */
-(function (api) {
+(function (adguard) {
 
     /**
      * RegExp to match field-content in RFC 7230 sec 3.2
@@ -38,8 +38,7 @@
     const FIELD_CONTENT_REGEX = /^[\u0009\u0020-\u007e\u0080-\u00ff]+$/;
 
     /**
-     * @typedef Cookie
-     * @type {object}
+     * @typedef {object} Cookie
      * @property {string} name Cookie name
      * @property {string} value Cookie value
      * @property {string} path Cookie path (string or undefined)
@@ -93,7 +92,7 @@
 
     /**
      * Parses "Set-Cookie" header value and returns a cookie object with its properties
-     * 
+     *
      * @param {string} setCookieValue "Set-Cookie" header value to parse
      * @returns {Cookie} cookie object or null if it failed to parse the value
      * @public
@@ -217,4 +216,4 @@
         parseSetCookie: parseSetCookie,
         serialize: serialize,
     };
-})(adguard.utils);
+})(adguard);

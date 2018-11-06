@@ -253,6 +253,33 @@ adguard.filteringLog = (function (adguard) {
     };
 
     /**
+     * Binds rule to HTTP request
+     * @param tab Tab
+     * @param requestRule Request rule
+     * @param eventId Event identifier
+     */
+    const bindRuleToHttpRequestEvent = function (tab, requestRule, eventId) {
+        if (openedFilteringLogsPage === 0) {
+            return;
+        }
+
+        const tabInfo = tabsInfoMap[tab.tabId];
+        if (!tabInfo) {
+            return;
+        }
+
+        const events = tabInfo.filteringEvents;
+        for (let i = events.length - 1; i >= 0; i -= 1) {
+            const event = events[i];
+            if (event.eventId === eventId) {
+                addRuleToFilteringEvent(event, requestRule);
+                adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
+                break;
+            }
+        }
+    };
+
+    /**
      * Replace rules are fired after the event was added
      * We should find event for this rule and update in log UI
      * @param tab
@@ -368,6 +395,7 @@ adguard.filteringLog = (function (adguard) {
 
         getFilteringInfoByTabId: getFilteringInfoByTabId,
         addHttpRequestEvent: addHttpRequestEvent,
+        bindRuleToHttpRequestEvent: bindRuleToHttpRequestEvent,
         bindReplaceRulesToHttpRequestEvent: bindReplaceRulesToHttpRequestEvent,
         addCosmeticEvent: addCosmeticEvent,
         clearEventsByTabId: clearEventsByTabId,

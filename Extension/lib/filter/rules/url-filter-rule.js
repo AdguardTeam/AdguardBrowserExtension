@@ -369,7 +369,6 @@
         // Parse cookie name/regex
         const parts = this.option.split(/;/);
         let cookieName = parts[0];
-        let regex;
         if (adguard.utils.strings.startWith(cookieName, '/') && adguard.utils.strings.endsWith(cookieName, '/')) {
             let pattern = cookieName.substring(1, cookieName.length - 1);
 
@@ -389,7 +388,7 @@
 
                 if (optionName === UrlFilterRule.cookieOptions.MAX_AGE) {
                     this.maxAge = parseInt(optionValue);
-                } else if (optionName == UrlFilterRule.cookieOptions.SAME_SITE) {
+                } else if (optionName === UrlFilterRule.cookieOptions.SAME_SITE) {
                     this.sameSite = optionValue;
                 } else {
                     throw `Unknown $cookie option: ${optionName}`;
@@ -417,7 +416,15 @@
                 // Empty regex and cookieName means that we must match all cookies
                 return true;
             }
-        }
+        };
+
+        /**
+         * Checks if cookie rule has an empty $cookie option
+         * @return {boolean} True if $cookie option is empty
+         */
+        this.isEmpty = function () {
+            return !this.regex && !this.cookieName;
+        };
     }
 
     /**
@@ -520,6 +527,14 @@
      */
     UrlFilterRule.prototype.getReplace = function () {
         return this.replaceOption;
+    };
+
+    /**
+     * $cookie modifier
+     * @return {CookieOption} Parsed $cookie modifier
+     */
+    UrlFilterRule.prototype.getCookieOption = function () {
+        return this.cookieOption;
     };
 
     // Lazy regexp creation

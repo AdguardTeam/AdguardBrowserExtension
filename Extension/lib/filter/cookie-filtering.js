@@ -43,27 +43,228 @@ adguard.cookieFiltering = (function (adguard) {
 
     'use strict';
 
+    const apiRemoveCookie = () => {
+        // TODO: implement
+    };
+
+    const apiUpdateCookie = () => {
+        // TODO: implement
+    };
+
+    /**
+     * Finds $cookie rules matching Set-Cookie header
+     *
+     * @param setCookie {Cookie} Set cookie header value
+     * @param tab {object} Request tab
+     * @param requestUrl {string} Request URL
+     * @param referrerUrl {string} Referrer URL
+     * @param requestType {string} Request type
+     * @return {Array} Collection of rules or null
+     */
+    const getRulesForSetCookie = (setCookie, tab, requestUrl, referrerUrl, requestType) => {
+
+        if (setCookie.domain) {
+            let domain = setCookie.domain;
+            if (domain[0] === '.') {
+                domain = domain.substring(1);
+            }
+            requestUrl = 'http://' + domain + (setCookie.path || '/');
+        }
+
+        return adguard.webRequestService.getCookieRules(tab, requestUrl, referrerUrl, requestType);
+    };
+
+    /**
+     * Finds a rule that doesn't modify cookie: i.e. this rule cancels cookie or it's a whitelist rule.
+     *
+     * @param {string} cookieName Cookie name
+     * @param {Array} rules Matching rules
+     * @return {object} Found rule or null
+     */
+    const findNotModifyingRule = (cookieName, rules) => {
+        if (rules) {
+            return rules
+                .map(r => r.getCookieOption())
+                .filter(opt => opt.matches(cookieName))
+                .filter(opt => {
+                    return !(opt.sameSite || typeof opt.maxAge === 'number' && opt.maxAge > 0);
+                })[0];
+        }
+        return null;
+    };
+
+    /**
+     * Modifies cookie by rules
+     *
+     * @param {Cookie} setCookie Cookie to modify
+     * @param {Array} rules Found $cookie rules
+     * @return {boolean} true if cookie was modified
+     */
+    const modifySetCookieByRules = (setCookie, rules) => {
+
+        if (!rules || rules.length === 0) {
+            return false;
+        }
+
+        let modified = false;
+
+        const rule = findNotModifyingRule(setCookie.name, rules);
+        if (rule) {
+            if (!rule.whiteListRule) {
+                delete setCookie.expires;
+                setCookie.maxAge = 0;
+                return true;
+            }
+            return false;
+        }
+
+        for (let i = 0; i < rules.length; i += 1) {
+
+            const rule = rules[i];
+            const cookieOption = rule.getCookieOption();
+
+            if (!cookieOption.matches(setCookie.name)) {
+                continue;
+            }
+
+            if (cookieOption.sameSite) {
+                setCookie.sameSite = cookieOption.sameSite;
+                modified = true;
+            }
+
+            if (typeof cookieOption.maxAge === 'number') {
+                delete setCookie.expires;
+                setCookie.maxAge = cookieOption.maxAge;
+                modified = true;
+            }
+        }
+
+        return modified;
+    };
+
     /**
      * Modifies request headers according to matching $cookie rules.
      *
-     * @param requestHeaders
+     * @param {string} requestId Request identifier
+     * @param {Array} requestHeaders Request headers
+     * @return {boolean} True if headers were modified
      */
-    var modifyRequestHeaders = function (requestHeaders) {
-        //TODO: Implement
+    var modifyRequestHeaders = function (requestId, requestHeaders) {
+
+        const context = adguard.requestContextStorage.get(requestId);
+        if (!context) {
+            return false;
+        }
+
+        const tab = context.tab;
+        const requestUrl = context.requestUrl;
+        const referrerUrl = context.referrerUrl;
+        const requestType = context.requestType;
+
+        const cookieHeader = adguard.utils.browser.findHeaderByName(requestHeaders, 'Cookie');
+        const cookies = adguard.utils.cookie.parseCookie(cookieHeader ? cookieHeader.value : null);
+        if (!cookies) {
+            return false;
+        }
+
+        const rules = adguard.webRequestService.getCookieRules(tab, requestUrl, referrerUrl, requestType);
+        if (!rules || rules.length === 0) {
+            return false;
+        }
+
+        let cookieHeaderModified = false;
+
+        let iCookies = cookies.length;
+        while (iCookies--) {
+            const cookie = cookies[iCookies];
+            const rule = findNotModifyingRule(cookie.name, rules);
+            if (rule && !rule.whiteListRule) {
+                cookies.splice(iCookies, 1);
+                cookieHeaderModified = true;
+            }
+        }
+
+        if (cookieHeaderModified) {
+            cookieHeader.value = cookies.map(c => `${c.name}=${c.value}`).join('; ');
+        }
+
+        return cookieHeaderModified;
     };
 
     /**
      * Modifies response headers according to matching $cookie rules.
      *
+     * @param requestId
      * @param responseHeaders
      */
-    var modifyResponseHeaders = function (responseHeaders) {
-        //TODO: Implement
+    var modifyResponseHeaders = function (requestId, responseHeaders) {
+
+        const context = adguard.requestContextStorage.get(requestId);
+        if (!context) {
+            return false;
+        }
+
+        const tab = context.tab;
+        const requestUrl = context.requestUrl;
+        const referrerUrl = context.referrerUrl;
+        const requestType = context.requestType;
+        const requestDomain = adguard.utils.url.getDomainName(requestUrl);
+
+        let setCookieModified = false;
+
+        let iResponseHeaders = responseHeaders.length;
+        while (iResponseHeaders--) {
+            const header = responseHeaders[iResponseHeaders];
+            if (header.name.toLowerCase() !== 'set-cookie') {
+                continue;
+            }
+            const setCookie = adguard.utils.cookie.parseSetCookie(header.value);
+            if (!setCookie) {
+                continue;
+            }
+            const rules = getRulesForSetCookie(setCookie, tab, requestUrl, referrerUrl, requestType);
+            if (modifySetCookieByRules(setCookie, rules)) {
+                header.value = adguard.utils.cookie.serialize(setCookie);
+                setCookieModified = true;
+            }
+        }
+
+        const cookieHeader = adguard.utils.browser.findHeaderByName(context.requestHeaders, 'Cookie');
+        const cookies = adguard.utils.cookie.parseCookie(cookieHeader ? cookieHeader.value : null);
+        if (cookies) {
+            const rules = adguard.webRequestService.getCookieRules(tab, requestUrl, referrerUrl, requestType);
+            if (rules) {
+                for (let i = 0; i < cookies.length; i += 1) {
+                    const cookie = cookies[i];
+                    const rule = findNotModifyingRule(cookie.name, rules);
+                    if (rule) {
+                        if (!rule.whiteListRule) {
+                            const setCookie = {
+                                name: cookie.name,
+                                value: cookie.value,
+                                maxAge: 0,
+                                domain: '.' + requestDomain,
+                                path: '/'
+                            };
+                            responseHeaders.push({
+                                name: 'Set-Cookie',
+                                value: adguard.utils.cookie.serialize(setCookie)
+                            });
+                            setCookieModified = true;
+                        }
+                        // TODO: temporary for debugging
+                        adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, requestType, rule);
+                    }
+                }
+            }
+        }
+
+        return setCookieModified;
     };
 
     return {
-        modifyRequestHeaders: modifyRequestHeaders,
-        modifyResponseHeaders: modifyResponseHeaders
+        modifyRequestHeaders,
+        modifyResponseHeaders
     };
 
 })(adguard);

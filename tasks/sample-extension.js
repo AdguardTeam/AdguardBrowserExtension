@@ -39,6 +39,7 @@ const API_SCRIPTS = [
     'Extension/lib/utils/page-stats.js',
     'Extension/lib/utils/user-settings.js',
     'Extension/lib/utils/frames.js',
+    'Extension/lib/utils/cookie.js',
     // Local storage and rules storage libraries
     'Extension/browser/chrome/lib/utils/local-storage.js',
     'Extension/browser/chrome/lib/utils/rules-storage.js',
@@ -65,6 +66,7 @@ const API_SCRIPTS = [
     'Extension/lib/filter/rules/content-filter-rule.js',
     'Extension/lib/filter/rules/content-filter.js',
     'Extension/lib/filter/rules/csp-filter.js',
+    'Extension/lib/filter/rules/cookie-filter.js',
     'Extension/lib/filter/rules/replace-filter.js',
     'Extension/lib/filter/rules/filter-rule-builder.js',
     // Filters metadata and filtration modules
@@ -75,6 +77,8 @@ const API_SCRIPTS = [
     'Extension/lib/filter/filters.js',
     'Extension/lib/filter/antibanner.js',
     'Extension/lib/filter/request-blocking.js',
+    'Extension/lib/filter/cookie-filtering.js',
+    'Extension/lib/filter/request-context-storage.js',
     // Content messaging
     'Extension/lib/content-message-handler.js',
     'Extension/lib/webrequest.js',
