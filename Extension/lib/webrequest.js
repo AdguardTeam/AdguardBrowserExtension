@@ -211,7 +211,7 @@
             }
         }
 
-        if (adguard.cookieFiltering.modifyRequestHeaders(requestId, requestHeaders)) {
+        if (adguard.cookieFiltering.filterRequestHeaders(requestId, requestHeaders)) {
             requestHeadersModified = true;
         }
 
@@ -272,7 +272,7 @@
             }
         }
 
-        if (adguard.cookieFiltering.modifyResponseHeaders(requestId, responseHeaders)) {
+        if (adguard.cookieFiltering.filterResponseHeaders(requestId, responseHeaders)) {
             responseHeadersModified = true;
         }
 
