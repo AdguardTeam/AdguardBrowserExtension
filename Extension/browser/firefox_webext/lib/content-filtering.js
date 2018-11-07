@@ -474,7 +474,7 @@ adguard.contentFiltering = (function (adguard) {
 
         responseContentHandler.handleResponse(requestId, requestUrl, requestType, charset, (content) => {
             try {
-                return applyRulesToContent(tab, requestUrl, referrerUrl, requestType, requestId, contentRules, replaceRule, content);
+                return applyRulesToContent(tab, requestUrl, referrerUrl, requestType, requestId, contentRules, replaceRules, content);
             } finally {
                 adguard.requestContextStorage.onContentModificationFinished(requestId);
             }
