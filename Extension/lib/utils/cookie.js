@@ -190,12 +190,10 @@
             setCookieValue += '; Secure';
         }
         if (!adguard.utils.strings.isEmpty(cookie.sameSite)) {
-            let sameSite = cookie.sameSite.toLowerCase();
+            
+            const sameSite = cookie.sameSite.toLowerCase();
 
             switch (sameSite) {
-                case true:
-                    setCookieValue += '; SameSite=Strict';
-                    break;
                 case 'lax':
                     setCookieValue += '; SameSite=Lax';
                     break;
