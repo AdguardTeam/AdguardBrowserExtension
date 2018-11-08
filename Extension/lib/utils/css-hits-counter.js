@@ -31,6 +31,11 @@ var CssHitsCounter = (function () { // jshint ignore:line
     var CSS_HITS_BATCH_SIZE = 25;
 
     /**
+     * Maximum expected size of appended probe elements
+     */
+    var EXPECTED_PROBE_GROUPS_SIZE = 25;
+
+    /**
      * In order to find elements hidden by AdGuard we look for a `:content` pseudo-class
      * with values starting with this prefix. Filter information will be encoded in this value as well.
      */
@@ -270,6 +275,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
             // Collect probe elements, count them, then remove from their targets
             var probeElements = [];
             var childrenOfProbeElements = [];
+            var appendedProbeElements = [];
             mutationRecords.forEach(function (mutationRecord) {
                 if (mutationRecord.addedNodes.length === 0) {
                     return;
@@ -284,18 +290,35 @@ var CssHitsCounter = (function () { // jshint ignore:line
 
                         // CSS rules could be applied to the nodes inside probe element
                         // that's why we get all child elements of added node
-                        var nodeChildren = node.querySelectorAll('*');
+                        const nodeChildren = node.querySelectorAll('*');
                         if (nodeChildren && nodeChildren.length > 0) {
-                            for (var childIndex = 0; childIndex < nodeChildren.length; childIndex += 1) {
+                            for (let childIndex = 0; childIndex < nodeChildren.length; childIndex += 1) {
                                 childrenOfProbeElements.push(nodeChildren[childIndex]);
                             }
                         }
 
                         observer.disconnect();
                         mutationRecord.target.appendChild(node);
+                    } else if (node.parentNode && target && node instanceof Element) {
+                        // Sometimes probe elements are appended to the DOM
+                        appendedProbeElements.push(node);
+                        const children = node.querySelectorAll('*');
+                        if (children && children.length > 0) {
+                            for (let childIndex = 0; childIndex < children.length; childIndex += 1) {
+                                appendedProbeElements.push(children[childIndex]);
+                            }
+                        }
                     }
                 }
             });
+
+            // We assume that this groups do not have more than 25 elements, and count them immediately
+            if (appendedProbeElements.length > 0 && appendedProbeElements.length <= EXPECTED_PROBE_GROUPS_SIZE) {
+                let result = countCssHitsForElements(appendedProbeElements);
+                if (result.length > 0) {
+                    onCssHitsFoundCallback(result);
+                }
+            }
 
             var allProbeElements = [];
 
