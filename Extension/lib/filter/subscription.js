@@ -263,12 +263,12 @@ adguard.subscriptions = (function (adguard) {
             let rulesCount = rules.length;
 
             // Check if filter from this url was added before
-            var filter = filters.find(function (f) {
+            let filter = filters.find(function (f) {
                 return f.customUrl === url;
             });
 
             if (filter) {
-                if (version && adguard.utils.browser.isGreaterVersion(filter.version, version)) {
+                if (version && adguard.utils.browser.isGreaterOrEqualsVersion(filter.version, version)) {
                     // Update version is not greater
                     callback();
                     return;
@@ -564,8 +564,6 @@ adguard.subscriptions = (function (adguard) {
     adguard.listeners.addListener(function (event, payload) {
         switch (event) {
             case adguard.listeners.FILTER_ADD_REMOVE:
-                console.log('filter add remove');
-                console.log(payload);
                 if (payload && payload.removed) {
                     removeCustomFilterFromStorage(payload);
                 }
