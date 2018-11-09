@@ -246,8 +246,8 @@ adguard.subscriptions = (function (adguard) {
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, filter, rules);
 
             callback(filter.filterId);
-        }, function (request, cause) {
-            adguard.console.error('Error download filter by url {0}, cause: {1} {2}', url, request.statusText, cause || '');
+        }, function (cause) {
+            adguard.console.error(`Error download filter by url ${url}, cause: ${cause || ''}`);
             callback();
         });
     };

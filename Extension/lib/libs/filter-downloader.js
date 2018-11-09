@@ -40,16 +40,20 @@ let FileDownloadWrapper = (() => {
     const executeRequestAsync = (url, contentType) => {
 
         return new Promise((resolve, reject) => {
-
             const onRequestLoad = (response) => {
                 if (response.status !== 200 && response.status !== 0) {
-                    throw new Error("Response status is invalid: " + response.status);
+                    reject(new Error('Response status is invalid: ' + response.status));
                 }
 
                 const responseText = response.responseText ? response.responseText : response.data;
 
                 if (!responseText) {
-                    throw new Error("Response is empty");
+                    reject(new Error('Response is empty'));
+                }
+
+                const responseContentType = response.getResponseHeader('Content-Type');
+                if (!responseContentType || !responseContentType.includes(contentType)) {
+                    reject(new Error(`Response content type should be: "${contentType}"`));
                 }
 
                 const lines = responseText.trim().split(/[\r\n]+/);
@@ -58,6 +62,7 @@ let FileDownloadWrapper = (() => {
 
             const request = new XMLHttpRequest();
 
+            // TODO what kind of errors can happen in this try catch block?
             try {
                 request.open('GET', url);
                 request.setRequestHeader('Content-type', contentType);
@@ -67,8 +72,12 @@ let FileDownloadWrapper = (() => {
                 request.onload = function () {
                     onRequestLoad(request);
                 };
-                request.onerror = reject;
+                request.onerror = () => reject(new Error(`Request error happened: ${request.statusText || 'status text empty'}`));
+
+                // TODO Do we need below lines of code here?
+                // TODO Do we abort somewhere XHR request?
                 request.onabort = reject;
+                // TODO Does ontimeout event fire only when we set timeout property?
                 request.ontimeout = reject;
 
                 request.send(null);
