@@ -81,7 +81,7 @@ adguard.subscriptions = (function (adguard) {
     /**
      * Filter metadata
      */
-    var SubscriptionFilter = function (filterId, groupId, name, description, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl, tags) {
+    var SubscriptionFilter = function (filterId, groupId, name, description, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl, tags, customUrl) {
 
         this.filterId = filterId;
         this.groupId = groupId;
@@ -95,6 +95,9 @@ adguard.subscriptions = (function (adguard) {
         this.expires = expires;
         this.subscriptionUrl = subscriptionUrl;
         this.tags = tags;
+        if (customUrl) {
+            this.customUrl = customUrl;
+        }
     };
 
     /**
@@ -142,11 +145,12 @@ adguard.subscriptions = (function (adguard) {
         var languages = filter.languages;
         var displayNumber = filter.displayNumber - 0;
         var tags = filter.tags;
+        var customUrl = filter.customUrl;
         if (tags.length === 0) {
             tags.push(0);
         }
 
-        return new SubscriptionFilter(filterId, groupId, defaultName, defaultDescription, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl, tags);
+        return new SubscriptionFilter(filterId, groupId, defaultName, defaultDescription, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl, tags, customUrl);
     };
 
     /**
@@ -195,28 +199,68 @@ adguard.subscriptions = (function (adguard) {
         return max >= 1000 ? max + 1 : 1000;
     };
 
+
+    const CUSTOM_FILTERS_JSON_KEY = 'custom_filters';
+
+    /**
+     * Loads custom filters from storage
+     *
+     * @returns {Array}
+     */
+    const loadCustomFilters = () => {
+        let customFilters = adguard.localStorage.getItem(CUSTOM_FILTERS_JSON_KEY);
+        return customFilters ? JSON.parse(customFilters) : [];
+    };
+
+    /**
+     * Saves custom filter to storage
+     *
+     * @param filter
+     */
+    const saveCustomFilter = (filter) => {
+        let customFilters = loadCustomFilters();
+        customFilters.push(filter);
+        adguard.localStorage.setItem(CUSTOM_FILTERS_JSON_KEY, JSON.stringify(customFilters));
+    };
+
+    /**
+     * Remove custom filter data from storage
+     *
+     * @param filter
+     */
+    const removeCustomFilterFromStorage = (filter) => {
+        let customFilters = loadCustomFilters();
+        const updatedCustomFilters = customFilters.filter(f => {
+            if (f.filterId === filter.filterId) {
+                return filter.installed;
+            }
+            return true;
+        });
+        adguard.localStorage.setItem(CUSTOM_FILTERS_JSON_KEY, JSON.stringify(updatedCustomFilters));
+    };
+
     /**
      * Adds or updates custom filter
      *
      * @param url subscriptionUrl
      * @param callback
      */
-    var updateCustomFilter = function (url, callback) {
+    const updateCustomFilter = function (url, callback) {
         adguard.backend.loadFilterRulesBySubscriptionUrl(url, function (rules) {
-            var filterData = parseFilterDataFromHeader(rules);
-            var filterId = addFilterId();
-            var groupId = 0;
-            var defaultName = filterData.name;
-            var defaultDescription = filterData.description;
-            var homepage = filterData.homepage;
-            var version = filterData.version;
-            var timeUpdated = filterData.timeUpdated || new Date().toString();
-            var expires = filterData.expires;
-            var subscriptionUrl = url;
-            var languages = [];
-            var displayNumber = 0;
-            var tags = [0];
-            var rulesCount = rules.length;
+            const filterData = parseFilterDataFromHeader(rules);
+            const filterId = addFilterId();
+            const groupId = CUSTOM_FILTERS_GROUP_ID;
+            const defaultName = filterData.name;
+            const defaultDescription = filterData.description;
+            const homepage = filterData.homepage;
+            const version = filterData.version;
+            const timeUpdated = filterData.timeUpdated || new Date().toString();
+            const expires = filterData.expires;
+            const subscriptionUrl = url;
+            const languages = [];
+            const displayNumber = 0;
+            const tags = [0];
+            let rulesCount = rules.length;
 
             // Check if filter from this url was added before
             var filter = filters.find(function (f) {
@@ -239,6 +283,9 @@ adguard.subscriptions = (function (adguard) {
 
                 filters.push(filter);
                 filtersMap[filter.filterId] = filter;
+
+                // Save filter in separate storage
+                saveCustomFilter(filter);
 
                 adguard.listeners.notifyListeners(adguard.listeners.SUCCESS_DOWNLOAD_FILTER, filter);
             }
@@ -290,13 +337,17 @@ adguard.subscriptions = (function (adguard) {
             groups.push(customFiltersGroup);
             groupsMap[customFiltersGroup.groupId] = customFiltersGroup;
 
-            filters.sort(function (f1, f2) {
-                return f1.displayNumber - f2.displayNumber;
+            // Load custom filters
+            const customFilters = loadCustomFilters();
+            customFilters.forEach(f => {
+                const customFilter = createSubscriptionFilterFromJSON(f);
+                filters.push(customFilter);
+                filtersMap[customFilter.filterId] = customFilter;
             });
 
-            groups.sort(function (f1, f2) {
-                return f1.displayNumber - f2.displayNumber;
-            });
+            filters.sort((f1, f2) => f1.displayNumber - f2.displayNumber);
+
+            groups.sort((f1, f2) => f1.displayNumber - f2.displayNumber);
 
             adguard.console.info('Filters metadata loaded');
             successCallback();
@@ -508,6 +559,21 @@ adguard.subscriptions = (function (adguard) {
         }
         return [...new Set(filterIds)];
     };
+
+    // Add event listener to persist filter metadata to local storage
+    adguard.listeners.addListener(function (event, payload) {
+        switch (event) {
+            case adguard.listeners.FILTER_ADD_REMOVE:
+                console.log('filter add remove');
+                console.log(payload);
+                if (payload && payload.removed) {
+                    removeCustomFilterFromStorage(payload);
+                }
+                break;
+            default:
+                break;
+        }
+    });
 
     return {
         init: init,

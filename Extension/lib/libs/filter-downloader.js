@@ -62,7 +62,6 @@ let FileDownloadWrapper = (() => {
 
             const request = new XMLHttpRequest();
 
-            // TODO what kind of errors can happen in this try catch block?
             try {
                 request.open('GET', url);
                 request.setRequestHeader('Content-type', contentType);
@@ -73,12 +72,8 @@ let FileDownloadWrapper = (() => {
                     onRequestLoad(request);
                 };
                 request.onerror = () => reject(new Error(`Request error happened: ${request.statusText || 'status text empty'}`));
-
-                // TODO Do we need below lines of code here?
-                // TODO Do we abort somewhere XHR request?
-                request.onabort = reject;
-                // TODO Does ontimeout event fire only when we set timeout property?
-                request.ontimeout = reject;
+                request.onabort = () => reject(new Error(`Request was aborted with status text: ${request.statusText}`));
+                request.ontimeout = () => reject(new Error(`Request timed out with status text: ${request.statusText}`));
 
                 request.send(null);
             } catch (ex) {
