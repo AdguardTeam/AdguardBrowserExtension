@@ -285,35 +285,14 @@
     /**
      * Before the introduction of $CSP rules, we used another approach for modifying Content-Security-Policy header.
      * We are looking for URL blocking rule that matches some request type and protocol (ws:, blob:, stun:)
+     * e.g. "$webrtc,domain=hdmoza.com"
      *
      * @param tab Tab
      * @param frameUrl Frame URL
      * @returns matching rule
      */
     function findLegacyCspRule(tab, frameUrl) {
-
-        var rule = null;
-        var applyCSP = false;
-
-        /**
-         * Websocket check.
-         * If 'ws://' request is blocked for not existing domain - it's blocked for all domains.
-         * More details in these issue:
-         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/344
-         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/440
-         */
-
-        // And we don't need this check on newer than 58 chromes anymore
-        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/572
-        if (!adguard.webRequest.webSocketSupported) {
-            rule = adguard.webRequestService.getRuleForRequest(tab, 'ws://adguardwebsocket.check', frameUrl, adguard.RequestTypes.WEBSOCKET);
-            applyCSP = adguard.webRequestService.isRequestBlockedByRule(rule);
-        }
-        if (!applyCSP) {
-            rule = adguard.webRequestService.getRuleForRequest(tab, 'stun:adguardwebrtc.check', frameUrl, adguard.RequestTypes.WEBRTC);
-        }
-
-        return rule;
+        return adguard.webRequestService.getRuleForRequest(tab, 'stun:adguardwebrtc.check', frameUrl, adguard.RequestTypes.WEBRTC);
     }
 
     /**
@@ -338,11 +317,11 @@
 
         var cspHeaders = [];
 
-        var legacyCspRule = findLegacyCspRule(tab, frameUrl);
+        const legacyCspRule = findLegacyCspRule(tab, frameUrl);
         if (adguard.webRequestService.isRequestBlockedByRule(legacyCspRule)) {
             cspHeaders.push({
                 name: CSP_HEADER_NAME,
-                value: adguard.rules.CspFilter.DEFAULT_DIRECTIVE
+                value: adguard.rules.CspFilter.DEFAULT_DIRECTIVE,
             });
         }
         if (legacyCspRule) {
@@ -353,15 +332,15 @@
          * Retrieve $CSP rules specific for the request
          * https://github.com/adguardteam/adguardbrowserextension/issues/685
          */
-        var cspRules = adguard.webRequestService.getCspRules(tab, requestUrl, frameUrl, requestType);
+        const cspRules = adguard.webRequestService.getCspRules(tab, requestUrl, frameUrl, requestType);
         if (cspRules) {
-            for (var i = 0; i < cspRules.length; i++) {
-                var rule = cspRules[i];
+            for (let i = 0; i < cspRules.length; i += 1) {
+                let rule = cspRules[i];
                 // Don't forget: getCspRules returns all $csp rules, we must directly check that the rule is blocking.
                 if (adguard.webRequestService.isRequestBlockedByRule(rule)) {
                     cspHeaders.push({
                         name: CSP_HEADER_NAME,
-                        value: rule.cspDirective
+                        value: rule.cspDirective,
                     });
                 }
             }
