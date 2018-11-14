@@ -19,7 +19,6 @@
  * Object for log http requests
  */
 adguard.filteringLog = (function (adguard) {
-
     'use strict';
 
     var REQUESTS_SIZE_PER_TAB = 1000;
@@ -27,7 +26,7 @@ adguard.filteringLog = (function (adguard) {
     const backgroundTabId = adguard.BACKGROUND_TAB_ID;
     const backgroundTab = {
         tabId: backgroundTabId,
-        title: adguard.i18n.getMessage('background_tab_title')
+        title: adguard.i18n.getMessage('background_tab_title'),
     };
 
     var tabsInfoMap = Object.create(null);
@@ -58,7 +57,6 @@ adguard.filteringLog = (function (adguard) {
      * @param tab
      */
     function addTab(tab) {
-
         // Background tab can't be added
         if (tab.tabId == backgroundTabId) {
             return;
@@ -75,7 +73,6 @@ adguard.filteringLog = (function (adguard) {
      * @param tabId
      */
     function removeTabById(tabId) {
-
         // Background tab can't be removed
         if (tabId == backgroundTabId) {
             return;
@@ -93,7 +90,6 @@ adguard.filteringLog = (function (adguard) {
      * @param tab
      */
     function updateTab(tab) {
-
         // Background tab can't be updated
         if (tab.tabId == backgroundTabId) {
             return;
@@ -106,46 +102,50 @@ adguard.filteringLog = (function (adguard) {
     }
 
     /**
+     * Copy some properties from source rule to destination rule
+     * @param destinationRule
+     * @param sourceRule
+     */
+    const appendProperties = (destinationRule, sourceRule) => {
+        destinationRule.filterId = sourceRule.filterId;
+        destinationRule.ruleText = sourceRule.ruleText;
+        if (sourceRule instanceof adguard.rules.ContentFilterRule) {
+            destinationRule.contentRule = true;
+        } else if (sourceRule instanceof adguard.rules.CssFilterRule) {
+            destinationRule.cssRule = true;
+        } else if (sourceRule instanceof adguard.rules.UrlFilterRule) {
+            destinationRule.whiteListRule = sourceRule.whiteListRule;
+            destinationRule.cspRule = sourceRule.isCspRule();
+            destinationRule.cspDirective = sourceRule.cspDirective;
+        }
+    };
+
+    /**
      * Writes to filtering event some useful properties from the request rule
      * @param filteringEvent
      * @param requestRule
      */
     function addRuleToFilteringEvent(filteringEvent, requestRule) {
-        filteringEvent.requestRule = Object.create(null);
-        filteringEvent.requestRule.filterId = requestRule.filterId;
-        filteringEvent.requestRule.ruleText = requestRule.ruleText;
-        if (requestRule instanceof adguard.rules.ContentFilterRule) {
-            filteringEvent.requestRule.contentRule = true;
-        } else if (requestRule instanceof adguard.rules.CssFilterRule) {
-            filteringEvent.requestRule.cssRule = true;
-        } else if (requestRule instanceof adguard.rules.UrlFilterRule) {
-            filteringEvent.requestRule.whiteListRule = requestRule.whiteListRule;
-            filteringEvent.requestRule.cspRule = requestRule.isCspRule();
-            filteringEvent.requestRule.cspDirective = requestRule.cspDirective;
-        }
+        filteringEvent.requestRule = {};
+        appendProperties(filteringEvent.requestRule, requestRule);
     }
 
     /**
-     * Serialize HTML element
-     * @param element
+     * Writes to filtering event some useful properties from the replace rules
+     * @param filteringEvent
+     * @param replaceRules
      */
-    function elementToString(element) {
-        var s = [];
-        s.push('<');
-        s.push(element.localName);
-        var attributes = element.attributes;
-        for (var i = 0; i < attributes.length; i++) {
-            var attr = attributes[i];
-            s.push(' ');
-            s.push(attr.name);
-            s.push('="');
-            var value = attr.value === null ? '' : attr.value.replace(/"/g, '\\"');
-            s.push(value);
-            s.push('"');
-        }
-        s.push('>');
-        return s.join('');
-    }
+    const addReplaceRulesToFilteringEvent = (filteringEvent, replaceRules) => {
+        // only replace rules can be applied together
+        filteringEvent.requestRule = {};
+        filteringEvent.requestRule.replaceRule = true;
+        filteringEvent.replaceRules = [];
+        replaceRules.forEach(replaceRule => {
+            const tempRule = {};
+            appendProperties(tempRule, replaceRule);
+            filteringEvent.replaceRules.push(tempRule);
+        });
+    };
 
     /**
      * Adds filtering event to log
@@ -153,7 +153,6 @@ adguard.filteringLog = (function (adguard) {
      * @param filteringEvent Event to add
      */
     function pushFilteringEvent(tabInfo, filteringEvent) {
-
         if (!tabInfo.filteringEvents) {
             tabInfo.filteringEvents = [];
         }
@@ -161,7 +160,7 @@ adguard.filteringLog = (function (adguard) {
         tabInfo.filteringEvents.push(filteringEvent);
 
         if (tabInfo.filteringEvents.length > REQUESTS_SIZE_PER_TAB) {
-            //don't remove first item, cause it's request to main frame
+            // don't remove first item, cause it's request to main frame
             tabInfo.filteringEvents.splice(1, 1);
         }
 
@@ -183,10 +182,9 @@ adguard.filteringLog = (function (adguard) {
      * @param frameUrl
      * @param requestType
      * @param requestRule
-     * @param requestId
+     * @param eventId
      */
-    var addHttpRequestEvent = function (tab, requestUrl, frameUrl, requestType, requestRule, requestId) {
-
+    var addHttpRequestEvent = function (tab, requestUrl, frameUrl, requestType, requestRule, eventId) {
         if (openedFilteringLogsPage === 0) {
             return;
         }
@@ -200,14 +198,15 @@ adguard.filteringLog = (function (adguard) {
         var frameDomain = adguard.utils.url.getDomainName(frameUrl);
 
         var filteringEvent = {
-            requestId: requestId,
+            eventId: eventId,
             requestUrl: requestUrl,
             requestDomain: requestDomain,
             frameUrl: frameUrl,
             frameDomain: frameDomain,
             requestType: requestType,
-            requestThirdParty: adguard.utils.url.isThirdPartyRequest(requestUrl, frameUrl)
+            requestThirdParty: adguard.utils.url.isThirdPartyRequest(requestUrl, frameUrl),
         };
+
         if (requestRule) {
             // Copy useful properties
             addRuleToFilteringEvent(filteringEvent, requestRule);
@@ -240,7 +239,7 @@ adguard.filteringLog = (function (adguard) {
 
         var frameDomain = adguard.utils.url.getDomainName(frameUrl);
         var filteringEvent = {
-            element: typeof element === 'string' ? element : elementToString(element),
+            element: typeof element === 'string' ? element : adguard.utils.strings.elementToString(element),
             frameUrl: frameUrl,
             frameDomain: frameDomain,
             requestType: requestType,
@@ -254,28 +253,54 @@ adguard.filteringLog = (function (adguard) {
     };
 
     /**
-     * Some rules are fired after the event was added (e.g. for replace rule)
-     * We should find event for this rule and update in log UI
-     * @param tab
-     * @param requestRule
-     * @param requestId
+     * Binds rule to HTTP request
+     * @param tab Tab
+     * @param requestRule Request rule
+     * @param eventId Event identifier
      */
-    var bindRuleToHttpRequestEvent = function (tab, requestRule, requestId) {
-
+    const bindRuleToHttpRequestEvent = function (tab, requestRule, eventId) {
         if (openedFilteringLogsPage === 0) {
             return;
         }
 
-        var tabInfo = tabsInfoMap[tab.tabId];
+        const tabInfo = tabsInfoMap[tab.tabId];
         if (!tabInfo) {
             return;
         }
 
-        var events = tabInfo.filteringEvents;
-        for (var i = 0; i < events.length; i++) {
-            var event = events[i];
-            if (event.requestId === requestId) {
+        const events = tabInfo.filteringEvents;
+        for (let i = events.length - 1; i >= 0; i -= 1) {
+            const event = events[i];
+            if (event.eventId === eventId) {
                 addRuleToFilteringEvent(event, requestRule);
+                adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
+                break;
+            }
+        }
+    };
+
+    /**
+     * Replace rules are fired after the event was added
+     * We should find event for this rule and update in log UI
+     * @param tab
+     * @param replaceRules
+     * @param eventId
+     */
+    const bindReplaceRulesToHttpRequestEvent = function (tab, replaceRules, eventId) {
+        if (openedFilteringLogsPage === 0) {
+            return;
+        }
+
+        const tabInfo = tabsInfoMap[tab.tabId];
+        if (!tabInfo) {
+            return;
+        }
+
+        const events = tabInfo.filteringEvents;
+        for (let i = events.length - 1; i >= 0; i -= 1) {
+            const event = events[i];
+            if (event.eventId === eventId) {
+                addReplaceRulesToFilteringEvent(event, replaceRules);
                 adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
                 break;
             }
@@ -305,10 +330,10 @@ adguard.filteringLog = (function (adguard) {
                 var openTab = tabs[i];
                 var tabInfo = tabsInfoMap[openTab.tabId];
                 if (!tabInfo) {
-                    //add tab
+                    // add tab
                     addTab(openTab);
                 } else {
-                    //update tab
+                    // update tab
                     updateTab(openTab);
                 }
                 var index = tabIdsToRemove.indexOf(String(openTab.tabId));
@@ -371,6 +396,7 @@ adguard.filteringLog = (function (adguard) {
         getFilteringInfoByTabId: getFilteringInfoByTabId,
         addHttpRequestEvent: addHttpRequestEvent,
         bindRuleToHttpRequestEvent: bindRuleToHttpRequestEvent,
+        bindReplaceRulesToHttpRequestEvent: bindReplaceRulesToHttpRequestEvent,
         addCosmeticEvent: addCosmeticEvent,
         clearEventsByTabId: clearEventsByTabId,
 

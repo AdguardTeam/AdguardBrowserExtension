@@ -92,18 +92,14 @@
      * @param stats
      */
     function processSaveCssHitStats(tab, stats) {
-        if (!adguard.webRequestService.isCollectingCosmeticRulesHits()) {
+        if (!adguard.webRequestService.isCollectingCosmeticRulesHits(tab)) {
             return;
         }
-        const isIncognitoTab = adguard.frames.isIncognitoTab(tab);
-        const collectHitsCount = adguard.settings.collectHitsCount();
-        var domain = adguard.frames.getFrameDomain(tab);
+        var frameUrl = adguard.frames.getMainFrameUrl(tab);
         for (let i = 0; i < stats.length; i += 1) {
             const stat = stats[i];
             const rule = adguard.rules.builder.createRule(stat.ruleText, stat.filterId);
-            if (collectHitsCount && !isIncognitoTab && !adguard.utils.filters.isUserFilterRule(rule)) {
-                adguard.hitStats.addRuleHit(domain, stat.ruleText, stat.filterId);
-            }
+            adguard.webRequestService.recordRuleHit(tab, rule, frameUrl);
             adguard.filteringLog.addCosmeticEvent(tab, stat.element, tab.url, adguard.RequestTypes.DOCUMENT, rule);
         }
     }
@@ -149,11 +145,11 @@
             case 'removeAntiBannerFilter':
                 adguard.filters.removeFilter(message.filterId);
                 break;
-            case 'addAndEnableFiltersByGroupId':
-                adguard.categories.addAndEnableFiltersByGroupId(message.groupId);
+            case 'enableFiltersGroup':
+                adguard.categories.enableFiltersGroup(message.groupId);
                 break;
-            case 'disableAntiBannerFiltersByGroupId':
-                adguard.categories.disableAntiBannerFiltersByGroupId(message.groupId);
+            case 'disableFiltersGroup':
+                adguard.categories.disableFiltersGroup(message.groupId);
                 break;
             case 'changeDefaultWhiteListMode':
                 adguard.whitelist.changeDefaultWhiteListMode(message.enabled);
@@ -162,7 +158,7 @@
                 var whiteListDomains = adguard.whitelist.getWhiteListDomains();
                 return { content: whiteListDomains.join('\r\n') };
             case 'saveWhiteListDomains':
-                var domains = message.content.split(/[\r\n]+/);
+                const domains = message.content.split(/[\r\n]+/);
                 adguard.whitelist.updateWhiteListDomains(domains);
                 break;
             case 'getUserRules':
@@ -238,6 +234,9 @@
                 adguard.filteringLog.onCloseFilteringLogPage();
                 break;
             case 'reloadTabById':
+                if (!message.preserveLogEnabled) {
+                    adguard.filteringLog.clearEventsByTabId(message.tabId);
+                }
                 adguard.tabs.reload(message.tabId);
                 break;
             case 'clearEventsByTabId':
@@ -341,7 +340,7 @@
                 processSaveCssHitStats(sender.tab, message.stats);
                 break;
             case 'isCssHitsCounterEnabled':
-                callback(adguard.webRequestService.isCollectingCosmeticRulesHits());
+                callback(adguard.webRequestService.isCollectingCosmeticRulesHits(sender.tab));
                 break;
             // Sync messages
             case 'setSyncProvider':

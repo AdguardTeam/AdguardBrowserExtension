@@ -126,7 +126,7 @@
   -ms-flex-positive: 1;
   flex-grow: 1;
   width: 700px;
-  padding-left: 125px;
+  padding-left: 75px;
 }
 .settings-content a {
   color: #66b574;
@@ -139,6 +139,7 @@
   margin-top: 30px;
   font-size: 14px;
   font-weight: 600;
+  position: relative;
 }
 .settings-actions a {
   padding-right: 42px;
@@ -175,6 +176,10 @@
   font-size: 13px;
   line-height: 22px;
 }
+.setting-desc--sub {
+  width: 450px;
+  margin-top: 15px;
+}
 .setting-desc + .opts-list li {
   border-top: 0;
 }
@@ -207,8 +212,6 @@
 }
 .opts-list li {
   font-size: 14px;
-  font-weight: 600;
-  color: #D6D6D6;
   border: 1px solid #E7E7E7;
   border-width: 0 0 1px 0;
   padding: 10px 0;
@@ -236,6 +239,12 @@
 .opts-list li .warn-message{
   color: #D6D6D6;
 }
+.opts-list li .opt-desc {
+    opacity: 0.5;
+}
+.opts-list li.active .opt-desc {
+    opacity: 1;
+}
 .opts-list li a{
   color: #D6D6D6;
 }
@@ -251,6 +260,7 @@
 .opts-list li:first-child {
   border-top-width: 1px;
 }
+
 .opts-list .opt-name .title {
   font-size: 15px;
   font-weight: 600;
@@ -275,6 +285,12 @@
   cursor: pointer;
   text-decoration: none;
   padding-right: 70px;
+}
+.opts-list.ad-blocker li {
+  opacity: 0.5;
+}
+.opts-list.ad-blocker li.active {
+  opacity: 1;
 }
 .block-type__desc {
   display: flex;
@@ -323,13 +339,15 @@
 
 .block-type__desc-title {
   color: #66b574;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
+  font-weight: bold;
 }
 .block-type:hover .block-type__desc-title {
   text-decoration: underline;
 }
 .desc--filters {
-  color: rgba(77, 77, 77, 0.5);
+  color: #4d4d4d;
+  font-size: 12px;
 }
 .opts-list .opt-state {
   display: -webkit-box;
@@ -349,12 +367,12 @@
   display: none;
 }
 .opts-list .opt-state .desc {
-  color: #D6D6D6;
+  color: #888888;
   font-size: 12px;
   font-weight: 400;
   padding-right: 25px;
   margin-left: 0;
-  margin-top: 5px;
+  margin-top: 10px;
 }
 .opts-list .opt-state .icon-home {
   width: 18px;
@@ -365,6 +383,16 @@
   margin-right: 15px;
   margin-left: 15px;
   cursor: pointer;
+}
+.opt-state__link {
+  text-decoration: none;
+}
+.opt-state__link:hover {
+  text-decoration: underline;
+  color: #58a273;
+}
+.opts-list li .opt-state__link {
+  color: #66b574;
 }
 .opt-select {
   cursor: pointer;
@@ -818,6 +846,32 @@ li.active .toggler:before {
 /* /st */
 .filter-rules {
   border: 1px solid #EDEDED;
+  position: relative;
+}
+.filter-rules__label {
+    position: absolute;
+    bottom: calc(50% - 11px);
+    right: 0;
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 22px;
+}
+.filter-rules__label--saved {
+    padding-right: 20px;
+}
+.filter-rules__label--saved:after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 4px;
+    background-image: url(../images/tick.svg);
+    background-size: cover;
+    width: 12px;
+    height: 12px;
 }
 .filter-rules textarea {
   border: 0;
@@ -1252,7 +1306,32 @@ li.active .toggler:before {
   text-decoration: underline;
   cursor: pointer;
   position: relative;
-  top: -3px;
+  top: -1px;
+  white-space: nowrap;
+}
+
+.opts-list li .opt-name {
+    opacity: 0.5;
+}
+
+.opts-list li.active .opt-name {
+    opacity: 1;
+}
+
+.opt-input::-webkit-outer-spin-button,
+.opt-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.opt-input {
+  height: 32px;
+  border: 1px solid #888888;
+  padding: 0 15px;
+  margin-top: 15px;
+  margin-bottom: 12px;
+  width: 400px;
+  outline: none;
 }
 
 .try-premium__in {

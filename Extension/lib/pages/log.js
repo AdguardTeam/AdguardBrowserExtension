@@ -23,7 +23,7 @@ var PageController = function () {
 var Messages = {
     OPTIONS_USERFILTER: i18n.getMessage('options_userfilter'),
     OPTIONS_WHITELIST: i18n.getMessage('options_whitelist'),
-    IN_WHITELIST: i18n.getMessage('filtering_log_in_whitelist')
+    IN_WHITELIST: i18n.getMessage('filtering_log_in_whitelist'),
 };
 
 var StringUtils = {
@@ -41,7 +41,7 @@ var StringUtils = {
             return str;
         }
         var index = str.indexOf(separator);
-        return index < 0 ? "" : str.substring(index + separator.length);
+        return index < 0 ? '' : str.substring(index + separator.length);
     },
 
     substringBefore: function (str, separator) {
@@ -50,27 +50,27 @@ var StringUtils = {
         }
         var index = str.indexOf(separator);
         return index < 0 ? str : str.substring(0, index);
-    }
+    },
 };
 
 var UrlUtils = {
 
-	getProtocol: function (url) {
+    getProtocol: function (url) {
         var index = url.indexOf('//');
         if (index >= 0) {
             return url.substring(0, index);
-        } else {
-            // It's non hierarchical structured URL (e.g. stun: or turn:)
-            index = url.indexOf(':');
-            if (index >= 0) {
-                return url.substring(0, index);
-            }
         }
+        // It's non hierarchical structured URL (e.g. stun: or turn:)
+        index = url.indexOf(':');
+        if (index >= 0) {
+            return url.substring(0, index);
+        }
+
         return '';
     },
 
     /**
-	 * Removes protocol from URL
+     * Removes protocol from URL
      */
     getUrlWithoutScheme: function (url) {
         var index = url.indexOf('//');
@@ -87,13 +87,13 @@ var UrlUtils = {
     },
 
     /**
-	 * Checks the given URL whether is hierarchical or not
+     * Checks the given URL whether is hierarchical or not
      * @param url
      * @returns {boolean}
      */
-    isHierarchicUrl: function(url){
+    isHierarchicUrl: function (url) {
         return url.indexOf('//') !== -1;
-	}
+    },
 };
 
 /**
@@ -118,26 +118,27 @@ var FilterRule = {
 };
 
 var UrlFilterRule = {
-	MASK_START_URL: "||",
-	MASK_ANY_SYMBOL: "*",
-	MASK_SEPARATOR: "^",
-	DOMAIN_OPTION: "domain",
-    IMPORTANT_OPTION: "important",
-	MATCH_CASE_OPTION: "match-case",
-	THIRD_PARTY_OPTION: "third-party",
-	OPTIONS_DELIMITER: "$",
-    CSP_OPTION: "csp",
-    WEBRTC_OPTION: "webrtc",
-    WEBSOCKET_OPTION: "websocket"
+    MASK_START_URL: '||',
+    MASK_ANY_SYMBOL: '*',
+    MASK_SEPARATOR: '^',
+    DOMAIN_OPTION: 'domain',
+    IMPORTANT_OPTION: 'important',
+    MATCH_CASE_OPTION: 'match-case',
+    THIRD_PARTY_OPTION: 'third-party',
+    OPTIONS_DELIMITER: '$',
+    CSP_OPTION: 'csp',
+    WEBRTC_OPTION: 'webrtc',
+    WEBSOCKET_OPTION: 'websocket',
+    COOKIE_OPTION: 'cookie',
+    REPLACE_OPTION: 'replace',
 };
 
 PageController.prototype = {
 
     init: function () {
-
         RequestWizard.initRequestWizard();
 
-        this.logTable = document.querySelector("#logTable");
+        this.logTable = document.querySelector('#logTable');
         this.logTableEmpty = document.querySelector('#logTableEmpty');
         this.logTableHidden = true;
         this.logoIcon = document.querySelector('#logoIcon');
@@ -153,42 +154,51 @@ PageController.prototype = {
             this.onSelectedTabChange();
         }.bind(this));
 
+        // Add preserve log status checkbox
+        this.preserveLogEnabled = false;
+
         this.searchRequest = null;
         this.searchTypes = [];
         this.searchThirdParty = false;
         this.searchBlocked = false;
         this.searchWhitelisted = false;
 
-		// Bind click to reload tab
-		document.querySelector('.reloadTab').addEventListener('click', function (e) {
-			e.preventDefault();
-			if (this.currentTabId === -1) {
-                // Unable to reload "background" tab, just clear events
-                contentPage.sendMessage({type: 'clearEventsByTabId', tabId: this.currentTabId});
-                return;
-            }
-			// Unable to reload "background" tab, just clear events
+        // Bind click to reload tab
+        document.querySelector('.reloadTab').addEventListener('click', function (e) {
+            e.preventDefault();
+            // Unable to reload "background" tab, just clear events
             if (this.currentTabId === -1) {
-                contentPage.sendMessage({type: 'clearEventsByTabId', tabId: this.currentTabId});
+                if (this.preserveLogEnabled) {
+                    return;
+                }
+                contentPage.sendMessage({ type: 'clearEventsByTabId', tabId: this.currentTabId });
+                this.emptyLogTable();
                 return;
             }
-
-            contentPage.sendMessage({type: 'reloadTabById', tabId: this.currentTabId});
-		}.bind(this));
+            contentPage.sendMessage({ type: 'reloadTabById', tabId: this.currentTabId, preserveLogEnabled: this.preserveLogEnabled });
+        }.bind(this));
 
         // Bind click to clear events
         document.querySelector('#clearTabLog').addEventListener('click', function (e) {
             e.preventDefault();
-            contentPage.sendMessage({type: 'clearEventsByTabId', tabId: this.currentTabId});
+            this.emptyLogTable();
+            contentPage.sendMessage({ type: 'clearEventsByTabId', tabId: this.currentTabId });
         }.bind(this));
 
         this._bindSearchFilters();
+
+        // Bind click to preserve log
+        document.querySelector('#preserveLog').addEventListener('click', function (e) {
+            const checkbox = e.currentTarget.querySelector('.checkbox');
+            this.preserveLogEnabled = checkbox.classList.contains('active');
+        }.bind(this));
+
         this._updateTabIdFromHash();
 
         // Synchronize opened tabs
-        contentPage.sendMessage({type: 'synchronizeOpenTabs'}, function (response) {
+        contentPage.sendMessage({ type: 'synchronizeOpenTabs' }, function (response) {
             var tabs = response.tabs;
-            for (var i = 0; i < tabs.length; i++) {
+            for (let i = 0; i < tabs.length; i += 1) {
                 this.onTabUpdated(tabs[i]);
             }
             this.onSelectedTabChange();
@@ -197,6 +207,30 @@ PageController.prototype = {
         document.addEventListener('keyup', function (e) {
             if (e.keyCode === 27) {
                 RequestWizard.closeModal();
+            }
+        });
+
+        // On click to event row show RequestInfoModal
+        this.logTable.addEventListener('click', (e) => {
+            e.preventDefault();
+            let element = e.target;
+            let foundEventRow = false;
+            while (element !== this.logTable && !foundEventRow) {
+                if (element.tagName === 'TR') {
+                    foundEventRow = true;
+                } else {
+                    element = element.parentNode;
+                }
+            }
+            const filteringEvent = foundEventRow && element.data;
+            if (filteringEvent) {
+                contentPage.sendMessage({ type: 'getTabFrameInfoById', tabId: this.currentTabId }, (response) => {
+                    const frameInfo = response.frameInfo;
+                    if (!frameInfo) {
+                        return;
+                    }
+                    RequestWizard.showRequestInfoModal(frameInfo, filteringEvent);
+                });
             }
         });
     },
@@ -212,39 +246,39 @@ PageController.prototype = {
         }
     },
 
-	onTabAdded: function (tabInfo) {
-		if (tabInfo.isExtensionTab) {
-			return;
-		}
+    onTabAdded: function (tabInfo) {
+        if (tabInfo.isExtensionTab) {
+            return;
+        }
 
         var option = document.createElement('option');
-		option.textContent = tabInfo.title;
-		option.setAttribute('data-tab-id', tabInfo.tabId);
+        option.textContent = tabInfo.title;
+        option.setAttribute('data-tab-id', tabInfo.tabId);
         this.tabSelector.appendChild(option);
 
-		if (!this.currentTabId) {
-			this.onSelectedTabChange();
-		}
-	},
+        if (!this.currentTabId) {
+            this.onSelectedTabChange();
+        }
+    },
 
-	onTabUpdated: function (tabInfo) {
-		var item = this.tabSelector.querySelector('[data-tab-id="' + tabInfo.tabId + '"]');
-		if (tabInfo.isExtensionTab) {
-			this.onTabClose(tabInfo);
-			return;
-		}
+    onTabUpdated: function (tabInfo) {
+        var item = this.tabSelector.querySelector('[data-tab-id="' + tabInfo.tabId + '"]');
+        if (tabInfo.isExtensionTab) {
+            this.onTabClose(tabInfo);
+            return;
+        }
 
-		if (item) {
-			item.textContent = tabInfo.title;
-			if (tabInfo.tabId == this.currentTabId) {
+        if (item) {
+            item.textContent = tabInfo.title;
+            if (tabInfo.tabId == this.currentTabId) {
                 document.querySelector('[data-tab-id="' + this.currentTabId + '"]').selected = true;
-				//update icon logo
-				this._updateLogoIcon();
-			}
-		} else {
-			this.onTabAdded(tabInfo);
-		}
-	},
+                // update icon logo
+                this._updateLogoIcon();
+            }
+        } else {
+            this.onTabAdded(tabInfo);
+        }
+    },
 
     onTabClose: function (tabInfo) {
         var element = this.tabSelector.querySelector('[data-tab-id="' + tabInfo.tabId + '"]');
@@ -255,7 +289,7 @@ PageController.prototype = {
         element.parentNode.removeChild(element);
 
         if (this.currentTabId == tabInfo.tabId) {
-            //current tab was removed
+            // current tab was removed
             this.currentTabId = null;
             this.onSelectedTabChange();
         }
@@ -276,51 +310,53 @@ PageController.prototype = {
 
     onEventAdded: function (tabInfo, event) {
         if (this.currentTabId != tabInfo.tabId) {
-            //don't relate to the current tab
+            // don't relate to the current tab
             return;
         }
         this._renderEvents([event]);
     },
 
-	onEventUpdated: function (tabInfo, event) {
+    onEventUpdated: function (tabInfo, event) {
         if (this.currentTabId != tabInfo.tabId) {
-            //don't relate to the current tab
+            // don't relate to the current tab
             return;
         }
-        var element = this.logTable.querySelector('#request-' + event.requestId);
-        if (element.length > 0) {
-            var template = this._renderTemplate(event);
-            element.outerHTML = template;
+
+        const element = this.logTable.querySelector('#request-' + event.eventId);
+        if (element) {
+            const updatedTemplate = this._renderTemplate(event);
+            this._handleEventShow(updatedTemplate);
+            element.parentNode.replaceChild(updatedTemplate, element);
         }
     },
 
     onSelectedTabChange: function () {
-		var selectedItem = this.tabSelector.querySelector('[data-tab-id="' + this.currentTabId + '"]');
-		if (!selectedItem) {
-			selectedItem = this.tabSelector.firstChild;
-		}
+        var selectedItem = this.tabSelector.querySelector('[data-tab-id="' + this.currentTabId + '"]');
+        if (!selectedItem) {
+            selectedItem = this.tabSelector.firstChild;
+        }
 
-		var text = '';
-		var selectedTabId = null;
-		if (selectedItem) {
-			text = selectedItem.textContent;
-			selectedTabId = selectedItem.getAttribute('data-tab-id');
-		}
+        var text = '';
+        var selectedTabId = null;
+        if (selectedItem) {
+            text = selectedItem.textContent;
+            selectedTabId = selectedItem.getAttribute('data-tab-id');
+        }
 
-		this.currentTabId = selectedTabId;
+        this.currentTabId = selectedTabId;
         var selectedTab = document.querySelector('[data-tab-id="' + this.currentTabId + '"]');
         if (selectedTab) {
             selectedTab.selected = true;
         }
 
-		this._updateLogoIcon();
+        this._updateLogoIcon();
 
-		//render events
-		this._renderEventsForTab(this.currentTabId);
-	},
+        // render events
+        this._renderEventsForTab(this.currentTabId);
+    },
 
     _updateLogoIcon: function () {
-        contentPage.sendMessage({type: 'getTabFrameInfoById', tabId: this.currentTabId}, function (response) {
+        contentPage.sendMessage({ type: 'getTabFrameInfoById', tabId: this.currentTabId }, function (response) {
             var frameInfo = response.frameInfo;
             var src = 'images/icon-adguard.png';
             if (frameInfo && frameInfo.adguardDetected) {
@@ -338,16 +374,15 @@ PageController.prototype = {
     },
 
     _bindSearchFilters: function () {
-
         var self = this;
 
-        //bind click to search http request
+        // bind click to search http request
         document.querySelector('[name="searchEventRequest"]').addEventListener('keyup', function () {
             self.searchRequest = this.value.trim();
             self._filterEvents();
         });
 
-        //bind click to filter by type
+        // bind click to filter by type
         var searchEventTypeItems = document.querySelectorAll('.searchEventType');
         searchEventTypeItems.forEach(function (item) {
             item.addEventListener('click', function (e) {
@@ -385,13 +420,11 @@ PageController.prototype = {
     },
 
     _filterEvents: function () {
-
         var rows = this.logTable.childNodes;
 
         // Filters not set
         if (!this.searchRequest &&
             this.searchTypes.length === 0 && !this.searchThirdParty && !this.searchBlocked && !this.searchWhitelisted) {
-
             this.removeClass(rows, 'hidden');
             return;
         }
@@ -419,8 +452,7 @@ PageController.prototype = {
     _renderEventsForTab: function (tabId) {
         this.emptyLogTable();
 
-        contentPage.sendMessage({type: 'getFilteringInfoByTabId', tabId: tabId}, function (response) {
-
+        contentPage.sendMessage({ type: 'getFilteringInfoByTabId', tabId: tabId }, function (response) {
             var filteringInfo = response.filteringInfo;
 
             var filteringEvents = [];
@@ -429,7 +461,6 @@ PageController.prototype = {
             }
 
             this._renderEvents(filteringEvents);
-
         }.bind(this));
     },
 
@@ -446,36 +477,27 @@ PageController.prototype = {
         }
         this._onNotEmptyTable();
 
-        // Bind click to show request info
-        var self = this;
-        templates.forEach(function (t) {
-            t.addEventListener('click', function () {
-                var filteringEvent = t.data;
-                contentPage.sendMessage({type: 'getTabFrameInfoById', tabId: self.currentTabId}, function (response) {
-                    var frameInfo = response.frameInfo;
-                    if (!frameInfo) {
-                        return;
-                    }
-
-                    RequestWizard.showRequestInfoModal(frameInfo, filteringEvent);
-                });
-            });
-        });
-
         templates.forEach(function (t) {
             this.logTable.appendChild(t);
         });
     },
 
     _escapeHTML: function (text) {
-        return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     },
 
     _renderTemplate: function (event) {
+        const metadata = { data: event, class: '' };
 
-        event.filterName = event.requestRule ? RequestWizard.getFilterName(event.requestRule.filterId) : '';
-        var metadata = {data: event, class: ''};
-        if (event.requestRule) {
+        event.filterName = event.requestRule && event.requestRule.filterId ?
+            RequestWizard.getFilterName(event.requestRule.filterId) :
+            '';
+
+        if (event.replaceRules) {
+            metadata.class += ' yellow';
+        }
+
+        if (event.requestRule && !event.replaceRules) {
             if (event.requestRule.whiteListRule) {
                 metadata.class += ' green';
             } else if (event.requestRule.cssRule) {
@@ -484,13 +506,15 @@ PageController.prototype = {
                 metadata.class += ' red';
             }
         }
-        if (event.requestId) {
-            metadata.id = 'request-' + event.requestId;
+
+        if (event.eventId) {
+            metadata.id = 'request-' + event.eventId;
         }
 
-        var requestInfo = event.requestUrl ? event.requestUrl : this._escapeHTML(event.element);
+        const requestInfo = event.requestUrl ? event.requestUrl : this._escapeHTML(event.element);
 
-        var ruleText = '';
+        // Get rule text for requestRule or replaceRules
+        let ruleText = '';
         if (event.requestRule) {
             if (event.requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
                 ruleText = Messages.IN_WHITELIST;
@@ -499,12 +523,17 @@ PageController.prototype = {
             }
         }
 
-        var thirdPartyDetails = '';
-        if (event.requestThirdParty) {
-            thirdPartyDetails = `<img src="images/chain-link.svg" class="icon-chain"><small>Third party</small>`;
+        if (event.replaceRules) {
+            const rulesCount = event.replaceRules.length;
+            ruleText = `${i18n.getMessage('filtering_log_modified_rules')} ${rulesCount}`;
         }
 
-        var eventTemplate = `
+        let thirdPartyDetails = '';
+        if (event.requestThirdParty) {
+            thirdPartyDetails = '<img src="images/chain-link.svg" class="icon-chain"><small>Third party</small>';
+        }
+
+        const eventTemplate = `
             <tr ${metadata.id ? 'id="' + metadata.id + '"' : ''}
                 ${metadata.class ? 'class="' + metadata.class + '"' : ''}>
                 <td>${requestInfo}</td>
@@ -512,24 +541,24 @@ PageController.prototype = {
                     ${RequestWizard.getRequestType(event.requestType)}
                     ${thirdPartyDetails}
                 </td>
-                <td>${ruleText ? ruleText : ''}</td>
+                <td>${ruleText || ''}</td>
                 <td>
                     ${event.filterName}
                 </td>
                 <td>${RequestWizard.getSource(event.frameDomain)}</td>
-            </tr>`;
+            </tr>
+        `;
 
-        var element = htmlToElement(eventTemplate);
+        const element = htmlToElement(eventTemplate);
         element.data = metadata.data;
         return element;
     },
 
     _handleEventShow: function (el) {
-
         var filterData = el.data;
 
         var show = !this.searchRequest ||
-            StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest) || 
+            StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest) ||
             StringUtils.containsIgnoreCase(filterData.element, this.searchRequest);
 
         if (filterData.requestRule && filterData.requestRule.ruleText) {
@@ -552,7 +581,7 @@ PageController.prototype = {
         } else {
             el.classList.add('hidden');
         }
-    }
+    },
 };
 
 /**
@@ -561,8 +590,7 @@ PageController.prototype = {
  * @type {{showRequestInfoModal, closeModal, getFilterName, getRequestType, getSource}}
  */
 var RequestWizard = (function () {
-
-    //exclude domain and full request url
+    // exclude domain and full request url
     var PATTERNS_COUNT = 2;
 
     var requestInfoTemplate;
@@ -583,7 +611,6 @@ var RequestWizard = (function () {
     };
 
     var showCreateBlockRuleModal = function (frameInfo, filteringEvent) {
-
         var template = createBlockRuleTemplate.cloneNode(true);
 
         var patterns = splitToPatterns(filteringEvent.requestUrl, filteringEvent.requestDomain, false).reverse();
@@ -592,7 +619,6 @@ var RequestWizard = (function () {
     };
 
     var showCreateExceptionRuleModal = function (frameInfo, filteringEvent) {
-
         var template = createExceptionRuleTemplate.cloneNode(true);
 
         var patterns;
@@ -610,25 +636,22 @@ var RequestWizard = (function () {
         initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
     };
 
-    var generateExceptionRule = function (ruleText, mask) {
-        var insert = (str, index, value) => {
+    const generateExceptionRule = function (ruleText, mask) {
+        const insert = (str, index, value) => {
             return str.slice(0, index) + value + str.slice(index);
         };
 
-        var maskIndex = ruleText.indexOf(mask);
-        var maskLength = mask.length;
-        var rulePart = ruleText.slice(maskIndex + maskLength);
+        const maskIndex = ruleText.indexOf(mask);
+        const maskLength = mask.length;
+        const rulePart = ruleText.slice(maskIndex + maskLength);
         // insert exception mark after first char
-        var exceptionMask = insert(mask, 1, '@');
+        const exceptionMask = insert(mask, 1, '@');
         return exceptionMask + rulePart;
     };
 
-    var createExceptionCssRule = function (rule, event) {
-        var ruleText = rule.ruleText;
-        var domainPart = event.frameDomain;
-        if (ruleText.indexOf(FilterRule.MASK_CSS_RULE) > -1) {
-            return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_RULE);
-        }
+    const createExceptionCssRule = function (rule, event) {
+        const ruleText = rule.ruleText;
+        const domainPart = event.frameDomain;
         if (ruleText.indexOf(FilterRule.MASK_CSS_INJECT_RULE) > -1) {
             return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_INJECT_RULE);
         }
@@ -637,6 +660,9 @@ var RequestWizard = (function () {
         }
         if (ruleText.indexOf(FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE) > -1) {
             return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE);
+        }
+        if (ruleText.indexOf(FilterRule.MASK_CSS_RULE) > -1) {
+            return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_RULE);
         }
     };
 
@@ -649,19 +675,17 @@ var RequestWizard = (function () {
         return ruleText;
     };
 
-    var initCreateRuleDialog = function (frameInfo, template, patterns, filteringEvent) {
+    const initCreateRuleDialog = function (frameInfo, template, patterns, filteringEvent) {
+        const frameDomain = filteringEvent.frameDomain;
+        const isThirdPartyRequest = filteringEvent.requestThirdParty;
 
-        var frameDomain = filteringEvent.frameDomain;
-        var isThirdPartyRequest = filteringEvent.requestThirdParty;
+        const rulePatternsEl = template.querySelector('#rulePatterns');
 
-        var rulePatternsEl = template.querySelector('#rulePatterns');
-
-        for (var i = 0; i < patterns.length; i++) {
-
-            var rulePatternTemplate = `
+        for (let i = 0; i < patterns.length; i += 1) {
+            const rulePatternTemplate = `
                 <li class="checkb-wrap">
                     <div class="radio">
-                        <input class="radio__input" type="radio" name="rulePattern" id="pattern${i}" value="${patterns[i]}" ${i === 0 ? "checked='checked'" : ""}>
+                        <input class="radio__input" type="radio" name="rulePattern" id="pattern${i}" value="${patterns[i]}" ${i === 0 ? "checked='checked'" : ''}>
                         <label class="radio__label" for="pattern${i}">
                             ${patterns[i]}
                         </label>
@@ -671,12 +695,12 @@ var RequestWizard = (function () {
             rulePatternsEl.appendChild(htmlToElement(rulePatternTemplate));
         }
 
-        var rulePatterns = template.querySelectorAll('[name="rulePattern"]');
-        var ruleDomainCheckbox = template.querySelector('[name="ruleDomain"]');
-        var ruleImportantCheckbox = template.querySelector('[name="ruleImportant"]');
-        var ruleMatchCaseCheckbox = template.querySelector('[name="ruleMatchCase"]');
-        var ruleThirdPartyCheckbox = template.querySelector('[name="ruleThirdParty"]');
-        var ruleTextEl = template.querySelector('[name="ruleText"]');
+        const rulePatterns = template.querySelectorAll('[name="rulePattern"]');
+        const ruleDomainCheckbox = template.querySelector('[name="ruleDomain"]');
+        const ruleImportantCheckbox = template.querySelector('[name="ruleImportant"]');
+        const ruleMatchCaseCheckbox = template.querySelector('[name="ruleMatchCase"]');
+        const ruleThirdPartyCheckbox = template.querySelector('[name="ruleThirdParty"]');
+        const ruleTextEl = template.querySelector('[name="ruleText"]');
 
         ruleDomainCheckbox.setAttribute('id', 'ruleDomain');
         ruleDomainCheckbox.parentNode.querySelector('label').setAttribute('for', 'ruleDomain');
@@ -735,6 +759,11 @@ var RequestWizard = (function () {
                 mandatoryOptions = [UrlFilterRule.WEBRTC_OPTION, UrlFilterRule.WEBSOCKET_OPTION];
             }
 
+            var replaceRules = filteringEvent.replaceRules;
+            if (replaceRules) {
+                mandatoryOptions = [UrlFilterRule.REPLACE_OPTION];
+            }
+
             var ruleText;
             if (filteringEvent.element) {
                 ruleText = createCssRuleFromParams(urlPattern, permitDomain);
@@ -744,17 +773,17 @@ var RequestWizard = (function () {
             ruleTextEl.value = ruleText;
         }
 
-        //update rule text events
+        // update rule text events
         ruleDomainCheckbox.addEventListener('change', updateRuleText);
         ruleImportantCheckbox.addEventListener('change', updateRuleText);
         ruleMatchCaseCheckbox.addEventListener('change', updateRuleText);
         ruleThirdPartyCheckbox.addEventListener('change', updateRuleText);
-        //TODO: Link click on radio wrap to 'change' event on input
+        // TODO: Link click on radio wrap to 'change' event on input
         rulePatterns.forEach(function (r) {
             r.addEventListener('change', updateRuleText);
         });
 
-        //create rule event
+        // create rule event
         template.querySelector('#createRule').addEventListener('click', function (e) {
             e.preventDefault();
             var ruleText = ruleTextEl.value;
@@ -762,10 +791,10 @@ var RequestWizard = (function () {
                 return;
             }
             // Add rule to user filter
-            contentPage.sendMessage({type: 'addUserRule', ruleText: ruleText, adguardDetected: frameInfo.adguardDetected});
+            contentPage.sendMessage({ type: 'addUserRule', ruleText: ruleText, adguardDetected: frameInfo.adguardDetected });
             // Close modal
             closeModal();
-        }.bind(this));
+        });
 
         updateRuleText();
 
@@ -773,7 +802,6 @@ var RequestWizard = (function () {
     };
 
     var splitToPatterns = function (requestUrl, domain, whitelist) {
-
         var hierarchicUrl = UrlUtils.isHierarchicUrl(requestUrl);
         var protocol = UrlUtils.getProtocol(requestUrl);
 
@@ -794,7 +822,6 @@ var RequestWizard = (function () {
 
         var path = StringUtils.substringBefore(relative, '?');
         if (path) {
-
             var parts = path.split('/');
 
             var pattern = domain + '/';
@@ -809,10 +836,10 @@ var RequestWizard = (function () {
             }
         }
 
-        //add domain pattern to start
+        // add domain pattern to start
         patterns.unshift(prefix + domain + UrlFilterRule.MASK_SEPARATOR);
 
-        //push full url pattern
+        // push full url pattern
         var url = UrlUtils.getUrlWithoutScheme(requestUrl);
         if (domain + '/' !== url) { // Don't duplicate: ||example.com/ and ||example.com^
             if (patterns.indexOf(prefix + url) < 0) {
@@ -824,23 +851,22 @@ var RequestWizard = (function () {
     };
 
     var createRuleFromParams = function (urlPattern, urlDomain, matchCase, thirdParty, important, mandatoryOptions) {
-
         var ruleText = urlPattern;
         var options = [];
 
-        //add domain option
+        // add domain option
         if (urlDomain) {
             options.push(UrlFilterRule.DOMAIN_OPTION + '=' + urlDomain);
         }
-        //add important option
+        // add important option
         if (important) {
             options.push(UrlFilterRule.IMPORTANT_OPTION);
         }
-        //add match case option
+        // add match case option
         if (matchCase) {
             options.push(UrlFilterRule.MATCH_CASE_OPTION);
         }
-        //add third party option
+        // add third party option
         if (thirdParty) {
             options.push(UrlFilterRule.THIRD_PARTY_OPTION);
         }
@@ -909,18 +935,19 @@ var RequestWizard = (function () {
      * @param {Object} filteringEvent
      */
     var showRequestInfoModal = function (frameInfo, filteringEvent) {
-        var template = requestInfoTemplate.cloneNode(true);
+        const template = requestInfoTemplate.cloneNode(true);
 
-        var requestRule = filteringEvent.requestRule;
+        const requestRule = filteringEvent.requestRule;
+        const replaceRules = filteringEvent.replaceRules;
 
-        var requestUrlNode = template.querySelector('[attr-text="requestUrl"]');
+        const requestUrlNode = template.querySelector('[attr-text="requestUrl"]');
         if (filteringEvent.requestUrl) {
             requestUrlNode.textContent = filteringEvent.requestUrl;
         } else {
             requestUrlNode.parentNode.style.display = 'none';
         }
 
-        var elementNode = template.querySelector('[attr-text="element"]');
+        const elementNode = template.querySelector('[attr-text="element"]');
         if (filteringEvent.element) {
             elementNode.textContent = filteringEvent.element;
         } else {
@@ -933,20 +960,34 @@ var RequestWizard = (function () {
             template.querySelector('[attr-text="frameDomain"]').closest('li').style.display = 'none';
         }
 
-        if (requestRule) {
+        if (requestRule && !requestRule.replaceRule) {
             if (requestRule.filterId !== AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
                 template.querySelector('[attr-text="requestRule"]').textContent = requestRule.ruleText;
             } else {
                 template.querySelector('[attr-text="requestRule"]').closest('li').style.display = 'none';
             }
+            template.querySelector('[attr-text="replaceRules"]').closest('li').style.display = 'none';
             template.querySelector('[attr-text="requestRuleFilter"]').textContent = getFilterName(requestRule.filterId);
         } else {
             template.querySelector('[attr-text="requestRule"]').closest('li').style.display = 'none';
             template.querySelector('[attr-text="requestRuleFilter"]').closest('li').style.display = 'none';
         }
 
-        if (filteringEvent.requestType === "IMAGE") {
+        if (replaceRules) {
+            template.querySelector('[attr-text="requestRule"]').closest('li').style.display = 'none';
+            template.querySelector('[attr-text="requestRuleFilter"]').closest('li').style.display = 'none';
+            if (replaceRules.length > 0) {
+                template.querySelector('[attr-text="replaceRules"]').textContent = replaceRules
+                    .map(replaceRule => replaceRule.ruleText)
+                    .join('\r\n');
+            } else {
+                template.querySelector('[attr-text="replaceRules"]').closest('li').style.display = 'none';
+            }
+        } else {
+            template.querySelector('[attr-text="replaceRules"]').closest('li').style.display = 'none';
+        }
 
+        if (filteringEvent.requestType === 'IMAGE') {
             template.classList.remove('compact-view');
 
             var imagePreview = template.querySelector('[attr-src="requestUrl"]');
@@ -962,22 +1003,22 @@ var RequestWizard = (function () {
             };
         }
 
-        //bind events
-        var openRequestButton = template.querySelector('#openRequestNewTab');
-        var blockRequestButton = template.querySelector('#blockRequest');
-        var unblockRequestButton = template.querySelector('#unblockRequest');
-        var removeWhiteListDomainButton = template.querySelector('#removeWhiteListDomain');
-        var removeUserFilterRuleButton = template.querySelector('#removeUserFilterRule');
+        // bind events
+        const openRequestButton = template.querySelector('#openRequestNewTab');
+        const blockRequestButton = template.querySelector('#blockRequest');
+        const unblockRequestButton = template.querySelector('#unblockRequest');
+        const removeWhiteListDomainButton = template.querySelector('#removeWhiteListDomain');
+        const removeUserFilterRuleButton = template.querySelector('#removeUserFilterRule');
 
         openRequestButton.addEventListener('click', function (e) {
             e.preventDefault();
 
-            var requestUrl = filteringEvent.requestUrl;
+            let requestUrl = filteringEvent.requestUrl;
             if (requestUrl === 'content-security-policy-check') {
                 requestUrl = filteringEvent.frameUrl;
             }
 
-            contentPage.sendMessage({type: 'openTab', url: requestUrl, options: {inNewWindow: true}});
+            contentPage.sendMessage({ type: 'openTab', url: requestUrl, options: { inNewWindow: true } });
         });
 
         // there is nothing to open if log event reveals blocked element
@@ -999,7 +1040,7 @@ var RequestWizard = (function () {
 
         removeWhiteListDomainButton.addEventListener('click', function (e) {
             e.preventDefault();
-            contentPage.sendMessage({type: 'unWhiteListFrame', frameInfo: frameInfo});
+            contentPage.sendMessage({ type: 'unWhiteListFrame', frameInfo: frameInfo });
             closeModal();
         });
 
@@ -1008,12 +1049,12 @@ var RequestWizard = (function () {
             contentPage.sendMessage({
                 type: 'removeUserRule',
                 ruleText: requestRule.ruleText,
-                adguardDetected: frameInfo.adguardDetected
+                adguardDetected: frameInfo.adguardDetected,
             });
 
             if (frameInfo.adguardDetected) {
                 // In integration mode rule may be present in whitelist filter
-                contentPage.sendMessage({type: 'unWhiteListFrame', frameInfo: frameInfo});
+                contentPage.sendMessage({ type: 'unWhiteListFrame', frameInfo: frameInfo });
             }
 
             closeModal();
@@ -1021,19 +1062,17 @@ var RequestWizard = (function () {
 
         if (!requestRule) {
             blockRequestButton.classList.remove('hidden');
-        } else {
-            if (requestRule.filterId === AntiBannerFiltersId.USER_FILTER_ID) {
-                removeUserFilterRuleButton.classList.remove('hidden');
-                if (requestRule.whiteListRule) {
-                    blockRequestButton.classList.remove('hidden');
-                }
-            } else if (requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
-                removeWhiteListDomainButton.classList.remove('hidden');
-            } else if (!requestRule.whiteListRule) {
-                unblockRequestButton.classList.remove('hidden');
-            } else if (requestRule.whiteListRule) {
+        } else if (requestRule.filterId === AntiBannerFiltersId.USER_FILTER_ID) {
+            removeUserFilterRuleButton.classList.remove('hidden');
+            if (requestRule.whiteListRule) {
                 blockRequestButton.classList.remove('hidden');
             }
+        } else if (requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+            removeWhiteListDomainButton.classList.remove('hidden');
+        } else if (!requestRule.whiteListRule) {
+            unblockRequestButton.classList.remove('hidden');
+        } else if (requestRule.whiteListRule) {
+            blockRequestButton.classList.remove('hidden');
         }
 
         showModal(template);
@@ -1067,7 +1106,7 @@ var RequestWizard = (function () {
             return el.filterId === filterId;
         })[0];
 
-        return filterMetadata ? filterMetadata.name : "";
+        return filterMetadata ? filterMetadata.name : '';
     };
 
     /**
@@ -1085,9 +1124,8 @@ var RequestWizard = (function () {
         closeModal: closeModal,
         getFilterName: getFilterName,
         getRequestType: getRequestType,
-        getSource: getSource
+        getSource: getSource,
     };
-
 })();
 
 var userSettings;
@@ -1096,8 +1134,7 @@ var AntiBannerFiltersId;
 var EventNotifierTypes;
 var filtersMetadata;
 
-contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
-
+contentPage.sendMessage({ type: 'initializeFrameScript' }, function (response) {
     userSettings = response.userSettings;
     filtersMetadata = response.filtersMetadata;
     environmentOptions = response.environmentOptions;
@@ -1106,7 +1143,6 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
     EventNotifierTypes = response.constants.EventNotifierTypes;
 
     var onDocumentReady = function () {
-
         var pageController = new PageController();
         pageController.init();
 
@@ -1116,11 +1152,11 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
             EventNotifierTypes.TAB_CLOSE,
             EventNotifierTypes.TAB_RESET,
             EventNotifierTypes.LOG_EVENT_ADDED,
-            EventNotifierTypes.LOG_EVENT_UPDATED
+            EventNotifierTypes.LOG_EVENT_UPDATED,
         ];
 
-        //set log is open
-        contentPage.sendMessage({type: 'onOpenFilteringLogPage'});
+        // set log is open
+        contentPage.sendMessage({ type: 'onOpenFilteringLogPage' });
 
         createEventListener(events, function onEvent(event, tabInfo, filteringEvent) {
             switch (event) {
@@ -1134,7 +1170,7 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
                 case EventNotifierTypes.TAB_RESET:
                     pageController.onTabReset(tabInfo);
                     break;
-                case EventNotifierTypes.LOG_EVENT_ADDED :
+                case EventNotifierTypes.LOG_EVENT_ADDED:
                     pageController.onEventAdded(tabInfo, filteringEvent);
                     break;
                 case EventNotifierTypes.LOG_EVENT_UPDATED:
@@ -1142,12 +1178,12 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
                     break;
             }
         }, function () {
-            //set log is closed
-            contentPage.sendMessage({type: 'onCloseFilteringLogPage'});
+            // set log is closed
+            contentPage.sendMessage({ type: 'onCloseFilteringLogPage' });
         });
-	};
+    };
 
-    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+    if (document.attachEvent ? document.readyState === 'complete' : document.readyState !== 'loading') {
         onDocumentReady();
     } else {
         document.addEventListener('DOMContentLoaded', onDocumentReady);

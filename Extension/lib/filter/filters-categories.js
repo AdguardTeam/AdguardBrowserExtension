@@ -19,22 +19,14 @@
  * Filter categories service
  */
 adguard.categories = (function (adguard) {
-
     'use strict';
-
-    /**
-     * Custom filters group identifier
-     *
-     * @type {number}
-     */
-    var CUSTOM_FILTERS_GROUP_ID = 0;
 
     /**
      * @returns {Array.<*>} filters
      */
     var getFilters = function () {
         var result = adguard.subscriptions.getFilters().filter(function (f) {
-            return !f.removed && f.filterId != adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID;
+            return !f.removed;
         });
 
         var tags = adguard.tags.getTags();
@@ -66,31 +58,14 @@ adguard.categories = (function (adguard) {
     };
 
     /**
-     * Selects filters by groupId, separates recommended
+     * Selects filters by groupId
      *
      * @param groupId
      * @param filters
-     * @returns {{recommendedFilters, otherFilters: *}}
+     * @returns {Array.<SubscriptionFilter>}
      */
-    var selectFiltersByGroupId = function (groupId, filters) {
-        var groupFilters  = filters.filter(function (f) {
-            return f.groupId === groupId;
-        });
-
-        if (groupId === CUSTOM_FILTERS_GROUP_ID) {
-            return {
-                recommendedFilters: groupFilters,
-                otherFilters: []
-            };
-        }
-
-        var recommendedFilters = adguard.tags.getRecommendedFilters(groupFilters);
-        var otherFilters = adguard.utils.collections.getArraySubtraction(groupFilters, recommendedFilters);
-
-        return {
-            recommendedFilters: recommendedFilters,
-            otherFilters: otherFilters
-        };
+    const selectFiltersByGroupId = function (groupId, filters) {
+        return filters.filter(filter => filter.groupId === groupId);
     };
 
     /**
@@ -102,73 +77,78 @@ adguard.categories = (function (adguard) {
 
         var categories = [];
 
-        for (var i = 0; i < groupsMeta.length; i++) {
+        for (var i = 0; i < groupsMeta.length; i += 1) {
             var category = groupsMeta[i];
             category.filters = selectFiltersByGroupId(category.groupId, filters);
             categories.push(category);
         }
 
-        categories.push({
-            groupId: CUSTOM_FILTERS_GROUP_ID,
-            groupName: 'Custom',
-            displayNumber: 99,
-            filters: selectFiltersByGroupId(CUSTOM_FILTERS_GROUP_ID, filters)
-        });
-
         return {
-            filters: getFilters(),
-            categories: categories
+            filters: filters,
+            categories: categories,
         };
     };
 
     /**
+     * Returns recommended filters, which meet next requirements
+     * 1. filter has recommended tag
+     * 2. if filter has language tag, tag should match with user locale
      * @param groupId
      * @returns {Array} recommended filters by groupId
      */
-    var getRecommendedFilterIdsByGroupId = function (groupId) {
-        var metadata = getFiltersMetadata();
-
-        for (var i = 0; i < metadata.categories.length; i++) {
-            var category = metadata.categories[i];
+    const getRecommendedFilterIdsByGroupId = function (groupId) {
+        const metadata = getFiltersMetadata();
+        const result = [];
+        const langSuitableFilters = adguard.subscriptions.getLangSuitableFilters();
+        for (let i = 0; i < metadata.categories.length; i += 1) {
+            const category = metadata.categories[i];
             if (category.groupId === groupId) {
-                var result = [];
-                category.filters.recommendedFilters.forEach(function (f) {
-                    result.push(f.filterId);
+                category.filters.forEach(filter => {
+                    if (adguard.tags.isRecommendedFilter(filter)) {
+                        // get ids intersection to enable recommended filters matching the lang tag
+                        // only if filter has language
+                        if (filter.languages && filter.languages.length > 0) {
+                            if (langSuitableFilters.includes(filter.filterId)) {
+                                result.push(filter.filterId);
+                            }
+                        } else {
+                            result.push(filter.filterId);
+                        }
+                    }
                 });
-
                 return result;
             }
         }
-
-        return [];
+        return result;
     };
 
     /**
-     * Adds and enables recommended filters by groupId
-     *
-     * @param groupId
+     * If group doesn't have enabled property we consider that group is enabled for the first time
+     * On first group enable we add and enable recommended filters by groupId
+     * On the next calls we just enable group
+     * @param {number} groupId
      */
-    var addAndEnableFiltersByGroupId = function (groupId) {
-        var idsByTagId = getRecommendedFilterIdsByGroupId(groupId);
-
-        adguard.filters.addAndEnableFilters(idsByTagId);
+    const enableFiltersGroup = function (groupId) {
+        const group = adguard.subscriptions.getGroup(groupId);
+        if (group && typeof group.enabled === 'undefined') {
+            const recommendedFiltersIds = getRecommendedFilterIdsByGroupId(groupId);
+            adguard.filters.addAndEnableFilters(recommendedFiltersIds);
+        }
+        adguard.filters.enableGroup(groupId);
     };
 
     /**
-     * Disables recommended filters by groupId
-     *
-     * @param groupId
+     * Disables group
+     * @param {number} groupId
      */
-    var disableAntiBannerFiltersByGroupId = function (groupId) {
-        var idsByTagId = getRecommendedFilterIdsByGroupId(groupId);
-
-        adguard.filters.disableFilters(idsByTagId);
+    const disableFiltersGroup = function (groupId) {
+        adguard.filters.disableGroup(groupId);
     };
 
     return {
         getFiltersMetadata: getFiltersMetadata,
-        addAndEnableFiltersByGroupId: addAndEnableFiltersByGroupId,
-        disableAntiBannerFiltersByGroupId: disableAntiBannerFiltersByGroupId
+        enableFiltersGroup: enableFiltersGroup,
+        disableFiltersGroup: disableFiltersGroup,
     };
 })(adguard);
 

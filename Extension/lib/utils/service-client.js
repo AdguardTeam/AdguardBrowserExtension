@@ -228,27 +228,27 @@ adguard.backend = (function (adguard) {
             return;
         }
 
-        var success = function (response) {
+        const success = function (response) {
             if (response && response.responseText) {
-                var metadata = parseJson(response.responseText);
+                const metadata = parseJson(response.responseText);
                 if (!metadata) {
-                    errorCallback(response, "invalid response");
+                    errorCallback(response, 'invalid response');
                     return;
                 }
-                var filterMetadataList = [];
-                for (var i = 0; i < filterIds.length; i++) {
-                    var filter = adguard.utils.collections.find(metadata.filters, 'filterId', filterIds[i]);
+                const filterMetadataList = [];
+                for (let i = 0; i < filterIds.length; i += 1) {
+                    const filter = adguard.utils.collections.find(metadata.filters, 'filterId', filterIds[i]);
                     if (filter) {
                         filterMetadataList.push(adguard.subscriptions.createSubscriptionFilterFromJSON(filter));
                     }
                 }
                 successCallback(filterMetadataList);
             } else {
-                errorCallback(response, "empty response");
+                errorCallback(response, 'empty response');
             }
         };
 
-        executeRequestAsync(settings.filtersMetadataUrl, "application/json", success, errorCallback);
+        executeRequestAsync(settings.filtersMetadataUrl, 'application/json', success, errorCallback);
     };
 
     /**

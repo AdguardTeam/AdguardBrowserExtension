@@ -142,23 +142,171 @@ var TopMenu = (function () {
 
     return {
         init: init,
-        toggleTab: toggleTab
+        toggleTab: toggleTab,
+    };
+})();
+
+const Saver = function (options) {
+    this.indicatorElement = options.indicatorElement;
+    this.editor = options.editor;
+    this.saveEventType = options.saveEventType;
+    this.omitRenderEventsCount = 0;
+
+    const states = {
+        CLEAR: 1 << 0,
+        DIRTY: 1 << 1,
+        SAVING: 1 << 2,
+        SAVED: 1 << 3,
     };
 
-})();
+    const indicatorText = {
+        [states.CLEAR]: '',
+        [states.DIRTY]: i18n.getMessage('options_editor_indicator_editing'),
+        [states.SAVING]: i18n.getMessage('options_editor_indicator_saving'),
+        [states.SAVED]: i18n.getMessage('options_editor_indicator_saved'),
+    };
+
+    this.isSaving = function () {
+        return (this.currentState & states.SAVING) === states.SAVING;
+    };
+
+    this.isDirty = function () {
+        return (this.currentState & states.DIRTY) === states.DIRTY;
+    };
+
+    this.updateIndicator = function (state) {
+        this.indicatorElement.textContent = indicatorText[state];
+        switch (state) {
+            case states.DIRTY:
+            case states.CLEAR:
+            case states.SAVING:
+                this.indicatorElement.classList.remove('filter-rules__label--saved');
+                break;
+            case states.SAVED:
+                this.indicatorElement.classList.add('filter-rules__label--saved');
+                break;
+            default:
+                break;
+        }
+    };
+
+    let timeout;
+
+    const setState = (state, skipManageState = false) => {
+        this.currentState |= state;
+        switch (state) {
+            case states.DIRTY:
+                this.currentState &= ~states.CLEAR;
+                break;
+            case states.CLEAR:
+                this.currentState &= ~states.DIRTY;
+                break;
+            case states.SAVING:
+                this.currentState &= ~states.SAVED;
+                break;
+            case states.SAVED:
+                this.currentState &= ~states.SAVING;
+                break;
+            default:
+                break;
+        }
+
+        if (!skipManageState) {
+            this.manageState();
+        }
+    };
+
+    this.manageState = function () {
+        const EDIT_TIMEOUT_MS = 1000;
+        const HIDE_INDICATOR_TIMEOUT_MS = 1500;
+
+        if (timeout) {
+            clearTimeout(timeout);
+        }
+
+        const self = this;
+
+        const isDirty = this.isDirty();
+        const isSaving = this.isSaving();
+
+        if (isDirty && !isSaving) {
+            this.updateIndicator(states.DIRTY);
+            timeout = setTimeout(() => {
+                self.saveRules();
+                setState(states.CLEAR, true);
+                setState(states.SAVING);
+            }, EDIT_TIMEOUT_MS);
+            return;
+        }
+
+        if (isDirty && isSaving) {
+            this.updateIndicator(states.DIRTY);
+            timeout = setTimeout(() => {
+                setState(states.CLEAR);
+                self.saveRules();
+            }, EDIT_TIMEOUT_MS);
+            return;
+        }
+
+        if (!isDirty && !isSaving && (this.omitRenderEventsCount === 1)) {
+            this.updateIndicator(states.SAVED);
+            timeout = setTimeout(() => {
+                self.updateIndicator(states.CLEAR);
+            }, HIDE_INDICATOR_TIMEOUT_MS);
+            return;
+        }
+
+        if (!isDirty && isSaving) {
+            this.updateIndicator(states.SAVING);
+        }
+    };
+
+    this.saveRules = function () {
+        this.omitRenderEventsCount += 1;
+        const text = this.editor.getValue();
+        contentPage.sendMessage({
+            type: this.saveEventType,
+            content: text,
+        }, () => {});
+    };
+
+    const setDirty = () => {
+        setState(states.DIRTY);
+    };
+
+    const setSaved = () => {
+        if (this.omitRenderEventsCount > 0) {
+            setState(states.SAVED);
+            this.omitRenderEventsCount -= 1;
+            return true;
+        }
+        return false;
+    };
+
+    return {
+        setDirty: setDirty,
+        setSaved: setSaved,
+    };
+};
 
 var WhiteListFilter = function (options) {
     'use strict';
 
-    let omitRenderEventsCount = 0;
-
     const editor = ace.edit('whiteListRules');
     editor.setShowPrintMargin(false);
 
-    // Ace TextHighlightRules mode is edited in ace.js library file
-    editor.session.setMode("ace/mode/text_highlight_rules");
+    editor.$blockScrolling = Infinity;
+    const AdguardMode = ace.require('ace/mode/adguard').Mode;
+    editor.session.setMode(new AdguardMode());
+    editor.setOption('wrap', true);
 
-    const applyChangesBtn = document.querySelector('#whiteListFilterApplyChanges');
+    const saveIndicatorElement = document.querySelector('#whiteListRulesSaveIndicator');
+    const saver = new Saver({
+        editor: editor,
+        saveEventType: 'saveWhiteListDomains',
+        indicatorElement: saveIndicatorElement,
+    });
+
     const importWhiteListInput = document.querySelector('#importWhiteListInput');
     const importWhiteListBtn = document.querySelector('#whiteListFiltersImport');
     const exportWhiteListBtn = document.querySelector('#whiteListFiltersExport');
@@ -169,35 +317,26 @@ var WhiteListFilter = function (options) {
             type: 'getWhiteListDomains',
         }, function (response) {
             editor.setValue(response.content || '');
-            applyChangesBtn.style.display = 'none';
-        });
-    }
-
-    function saveWhiteListDomains(e) {
-        e.preventDefault();
-
-        omitRenderEventsCount = 1;
-
-        editor.setReadOnly(true);
-        var text = editor.getValue();
-
-        contentPage.sendMessage({
-            type: 'saveWhiteListDomains',
-            content: text,
-        }, function () {
-            editor.setReadOnly(false);
-            applyChangesBtn.style.display = 'none';
         });
     }
 
     function updateWhiteListDomains() {
-        if (omitRenderEventsCount > 0) {
-            omitRenderEventsCount -= 1;
+        const omitRenderEvent = saver.setSaved();
+        if (omitRenderEvent) {
             return;
         }
-
         loadWhiteListDomains();
     }
+
+    const session = editor.getSession();
+    let initialChangeFired = false;
+    session.addEventListener('change', () => {
+        if (!initialChangeFired) {
+            initialChangeFired = true;
+            return;
+        }
+        saver.setDirty();
+    });
 
     function changeDefaultWhiteListMode(e) {
         e.preventDefault();
@@ -207,8 +346,6 @@ var WhiteListFilter = function (options) {
         });
     }
 
-    applyChangesBtn.addEventListener('click', saveWhiteListDomains);
-    // TODO find out why rules dissapear on invert whitelist mode
     changeDefaultWhiteListModeCheckbox.addEventListener('change', changeDefaultWhiteListMode);
 
     importWhiteListBtn.addEventListener('click', (e) => {
@@ -225,67 +362,53 @@ var WhiteListFilter = function (options) {
 
     CheckboxUtils.updateCheckbox(changeDefaultWhiteListModeCheckbox, !options.defaultWhiteListMode);
 
-    editor.getSession().addEventListener('change', function () {
-        applyChangesBtn.style.display = 'inline-block';
-    });
-
     return {
         updateWhiteListDomains: updateWhiteListDomains,
     };
 };
 
-var UserFilter = function () {
+const UserFilter = function () {
     'use strict';
 
-    var omitRenderEventsCount = 0;
-
-    var editor = ace.edit('userRules');
+    const editor = ace.edit('userRules');
     editor.setShowPrintMargin(false);
 
-    // Ace TextHighlightRules mode is edited in ace.js library file
-    editor.session.setMode('ace/mode/text_highlight_rules');
+    editor.$blockScrolling = Infinity;
+    const AdguardMode = ace.require('ace/mode/adguard').Mode;
+    editor.session.setMode(new AdguardMode());
+    editor.setOption('wrap', true);
 
-    var applyChangesBtn = document.querySelector('#userFilterApplyChanges');
+    const saveIndicatorElement = document.querySelector('#userRulesSaveIndicator');
+    const saver = new Saver({
+        editor: editor,
+        saveEventType: 'saveUserRules',
+        indicatorElement: saveIndicatorElement,
+    });
 
     function loadUserRules() {
         contentPage.sendMessage({
             type: 'getUserRules',
         }, function (response) {
             editor.setValue(response.content || '');
-            applyChangesBtn.style.display = 'none';
-        });
-    }
-
-    function saveUserRules(e) {
-        e.preventDefault();
-
-        omitRenderEventsCount = 1;
-
-        editor.setReadOnly(true);
-        var text = editor.getValue();
-
-        contentPage.sendMessage({
-            type: 'saveUserRules',
-            content: text
-        }, function () {
-            editor.setReadOnly(false);
-            applyChangesBtn.style.display = 'none';
         });
     }
 
     function updateUserFilterRules() {
-        if (omitRenderEventsCount > 0) {
-            omitRenderEventsCount--;
+        const omitRenderEvent = saver.setSaved();
+        if (omitRenderEvent) {
             return;
         }
-
         loadUserRules();
     }
 
-    applyChangesBtn.addEventListener('click', saveUserRules);
-
-    editor.getSession().addEventListener('change', function () {
-        applyChangesBtn.style.display = 'inline-block';
+    const session = editor.getSession();
+    let initialChangeFired = false;
+    session.addEventListener('change', () => {
+        if (!initialChangeFired) {
+            initialChangeFired = true;
+            return;
+        }
+        saver.setDirty();
     });
 
     const importUserFiltersInput = document.querySelector('#importUserFilterInput');
@@ -316,11 +439,19 @@ var AntiBannerFilters = function (options) {
         filters: [],
         categories: [],
         filtersById: {},
+        categoriesById: {},
         lastUpdateTime: 0,
 
         initLoadedFilters: function (filters, categories) {
             this.filters = filters;
             this.categories = categories;
+
+            const categoriesById = Object.create(null);
+            for (let i = 0; i < this.categories.length; i += 1) {
+                const category = this.categories[i];
+                categoriesById[category.groupId] = category;
+            }
+            this.categoriesById = categoriesById;
 
             var lastUpdateTime = 0;
             var filtersById = Object.create(null);
@@ -341,6 +472,21 @@ var AntiBannerFilters = function (options) {
             return info && info.enabled;
         },
 
+        isCategoryEnabled: function (categoryId) {
+            const category = this.categoriesById[categoryId];
+            return category && category.enabled;
+        },
+
+        updateCategoryEnabled: function (category, enabled) {
+            const categoryInfo = this.categoriesById[category.groupId];
+            if (categoryInfo) {
+                categoryInfo.enabled = enabled;
+            } else {
+                this.categories.push(category);
+                this.categoriesById[category.groupId] = category;
+            }
+        },
+
         updateEnabled: function (filter, enabled) {
             var info = this.filtersById[filter.filterId];
             if (info) {
@@ -349,7 +495,7 @@ var AntiBannerFilters = function (options) {
                 this.filters.push(filter);
                 this.filtersById[filter.filterId] = filter;
             }
-        }
+        },
     };
 
     // Bind events
@@ -461,7 +607,10 @@ var AntiBannerFilters = function (options) {
         if (groupFiltersCount > 0) {
             element.querySelector('.desc').textContent = filtersNamesDescription;
         }
-        CheckboxUtils.updateCheckbox([checkbox], enabledFiltersCount > 0);
+
+        const isCategoryEnabled = loadedFiltersInfo.isCategoryEnabled(groupId);
+        const isCheckboxChecked = typeof isCategoryEnabled === 'undefined' ? enabledFiltersCount > 0 : isCategoryEnabled;
+        CheckboxUtils.updateCheckbox([checkbox], isCheckboxChecked);
     }
 
     function getFilterCategoryElement(category) {
@@ -486,7 +635,7 @@ var AntiBannerFilters = function (options) {
     function getFilterTemplate(filter, enabled, showDeleteButton) {
         var timeUpdated = moment(filter.timeUpdated);
         timeUpdated.locale(environmentOptions.Prefs.locale);
-        var timeUpdatedText = timeUpdated.format("D/MM/YYYY HH:mm").toLowerCase();
+        var timeUpdatedText = timeUpdated.format('D/MM/YYYY HH:mm').toLowerCase();
 
         var tagDetails = '';
         filter.tagsDetails.forEach(function (tag) {
@@ -502,8 +651,10 @@ var AntiBannerFilters = function (options) {
             <li id="filter${filter.filterId}">
                 <div class="opt-name">
                     <div class="title-wr">
-                        <div class="title">${filter.name}</div>
-                        ${deleteButton}
+                        <div class="title">
+                            ${filter.name}
+                            ${deleteButton}
+                        </div>
                     </div>
                     <div class="desc">${filter.description}</div>
                     <div class="opt-name__info">
@@ -555,9 +706,7 @@ var AntiBannerFilters = function (options) {
     }
 
     function getFiltersContentElement(category) {
-        var otherFilters = category.filters.otherFilters;
-        var recommendedFilters = category.filters.recommendedFilters;
-        var filters = [].concat(recommendedFilters, otherFilters);
+        var filters = category.filters;
         var isCustomFilters = category.groupId === 0;
 
         if (isCustomFilters &&
@@ -715,26 +864,25 @@ var AntiBannerFilters = function (options) {
     function toggleFilterState() {
         var filterId = this.value - 0;
         if (this.checked) {
-            contentPage.sendMessage({type: 'addAndEnableFilter', filterId: filterId});
+            contentPage.sendMessage({ type: 'addAndEnableFilter', filterId: filterId });
         } else {
-            contentPage.sendMessage({type: 'disableAntiBannerFilter', filterId: filterId});
+            contentPage.sendMessage({ type: 'disableAntiBannerFilter', filterId: filterId });
         }
     }
 
     function toggleGroupState() {
         var groupId = this.value - 0;
-
         if (this.checked) {
-            contentPage.sendMessage({type: 'addAndEnableFiltersByGroupId', groupId: groupId});
+            contentPage.sendMessage({ type: 'enableFiltersGroup', groupId: groupId });
         } else {
-            contentPage.sendMessage({type: 'disableAntiBannerFiltersByGroupId', groupId: groupId});
+            contentPage.sendMessage({ type: 'disableFiltersGroup', groupId: groupId });
         }
     }
 
     function updateAntiBannerFilters(e) {
         e.preventDefault();
-        contentPage.sendMessage({type: 'checkAntiBannerFiltersUpdate'}, function () {
-            //Empty
+        contentPage.sendMessage({ type: 'checkAntiBannerFiltersUpdate' }, function () {
+            // Empty
         });
     }
 
@@ -752,15 +900,16 @@ var AntiBannerFilters = function (options) {
 
         contentPage.sendMessage({
             type: 'removeAntiBannerFilter',
-            filterId: filterId
+            filterId: filterId,
         });
 
         var filterElement = getFilterElement(filterId);
         filterElement.parentNode.removeChild(filterElement);
     }
 
+    let customFilterInitialized = false;
     function renderCustomFilterPopup() {
-        var POPUP_ACTIVE_CLASS = 'option-popup__step--active';
+        const POPUP_ACTIVE_CLASS = 'option-popup__step--active';
 
         function closePopup() {
             document.querySelector('#add-custom-filter-popup').classList.remove('option-popup--active');
@@ -771,18 +920,59 @@ var AntiBannerFilters = function (options) {
             document.querySelector('#add-custom-filter-step-2').classList.remove(POPUP_ACTIVE_CLASS);
             document.querySelector('#add-custom-filter-step-3').classList.remove(POPUP_ACTIVE_CLASS);
             document.querySelector('#add-custom-filter-step-4').classList.remove(POPUP_ACTIVE_CLASS);
+            document.querySelector('#custom-filter-popup-close').style.display = 'block';
         }
+
+        function fillLoadedFilterDetails(filter) {
+            document.querySelector('#custom-filter-popup-added-title').textContent = filter.name;
+            document.querySelector('#custom-filter-popup-added-desc').textContent = filter.description;
+            document.querySelector('#custom-filter-popup-added-version').textContent = filter.version;
+            document.querySelector('#custom-filter-popup-added-rules-count').textContent = filter.rulesCount;
+            document.querySelector('#custom-filter-popup-added-homepage').textContent = filter.homepage;
+            document.querySelector('#custom-filter-popup-added-homepage').setAttribute('href', filter.homepage);
+            document.querySelector('#custom-filter-popup-added-url').textContent = filter.customUrl;
+            document.querySelector('#custom-filter-popup-added-url').setAttribute('href', filter.customUrl);
+        }
+
+        function addAndEnableFilter(filterId) {
+            contentPage.sendMessage({
+                type: 'addAndEnableFilter',
+                filterId,
+            });
+            closePopup();
+        }
+
+        function removeAntiBannerFilter(filterId) {
+            contentPage.sendMessage({
+                type: 'removeAntiBannerFilter',
+                filterId,
+            });
+        }
+
+        let onSubscribeClicked;
+        let onSubscriptionCancel;
+        let onPopupCloseClicked;
+        let onSubscribeBackClicked;
 
         function renderStepOne() {
             clearActiveStep();
             document.querySelector('#add-custom-filter-step-1').classList.add(POPUP_ACTIVE_CLASS);
 
             document.querySelector('#custom-filter-popup-url').focus();
+
+            if (onPopupCloseClicked) {
+                document.querySelector('#custom-filter-popup-close').removeEventListener('click', onPopupCloseClicked);
+            }
+
+            onPopupCloseClicked = () => closePopup();
+            document.querySelector('#custom-filter-popup-close').addEventListener('click', onPopupCloseClicked);
+            document.querySelector('#custom-filter-popup-cancel').addEventListener('click', onPopupCloseClicked);
         }
 
         function renderStepTwo() {
             clearActiveStep();
             document.querySelector('#add-custom-filter-step-2').classList.add(POPUP_ACTIVE_CLASS);
+            document.querySelector('#custom-filter-popup-close').style.display = 'none';
         }
 
         function renderStepThree() {
@@ -794,54 +984,72 @@ var AntiBannerFilters = function (options) {
             clearActiveStep();
             document.querySelector('#add-custom-filter-step-4').classList.add(POPUP_ACTIVE_CLASS);
 
-            document.querySelector('#custom-filter-popup-added-title').textContent = filter.name;
-            document.querySelector('#custom-filter-popup-added-desc').textContent = filter.description;
-            document.querySelector('#custom-filter-popup-added-version').textContent = filter.version;
-            document.querySelector('#custom-filter-popup-added-rules-count').textContent = filter.rulesCount;
-            document.querySelector('#custom-filter-popup-added-homepage').textContent = filter.homepage;
-            document.querySelector('#custom-filter-popup-added-homepage').setAttribute("href", filter.homepage);
-            document.querySelector('#custom-filter-popup-added-url').textContent = filter.customUrl;
-            document.querySelector('#custom-filter-popup-added-url').setAttribute("href", filter.customUrl);
+            fillLoadedFilterDetails(filter);
 
-            document.querySelector('#custom-filter-popup-added-back').addEventListener('click', renderStepOne);
-            document.querySelector('#custom-filter-popup-added-subscribe').removeEventListener('click', onSubscribeClicked);
+            if (onSubscribeClicked) {
+                document.querySelector('#custom-filter-popup-added-subscribe').removeEventListener('click', onSubscribeClicked);
+            }
+
+            onSubscribeClicked = () => addAndEnableFilter(filter.filterId);
             document.querySelector('#custom-filter-popup-added-subscribe').addEventListener('click', onSubscribeClicked);
 
-            document.querySelector('#custom-filter-popup-remove').addEventListener('click', function () {
-                contentPage.sendMessage({
-                    type: 'removeAntiBannerFilter',
-                    filterId: filter.filterId
-                });
+            if (onSubscriptionCancel) {
+                document.querySelector('#custom-filter-popup-remove').removeEventListener('click', onSubscriptionCancel);
+            }
+
+            onSubscriptionCancel = () => {
+                removeAntiBannerFilter(filter.filterId);
                 closePopup();
-            });
+            };
+
+            document.querySelector('#custom-filter-popup-remove').addEventListener('click', onSubscriptionCancel);
+
+            if (onSubscribeBackClicked) {
+                document.querySelector('#custom-filter-popup-added-back').removeEventListener('click', onSubscribeBackClicked);
+            }
+            onSubscribeBackClicked = () => {
+                removeAntiBannerFilter(filter.filterId);
+                renderStepOne();
+            };
+            document.querySelector('#custom-filter-popup-added-back').addEventListener('click', onSubscribeBackClicked);
+
+            if (onPopupCloseClicked) {
+                document.querySelector('#custom-filter-popup-close').removeEventListener('click', onPopupCloseClicked);
+            }
+            onPopupCloseClicked = () => {
+                removeAntiBannerFilter(filter.filterId);
+                closePopup();
+            };
+            document.querySelector('#custom-filter-popup-close').addEventListener('click', onPopupCloseClicked);
         }
 
-        function onSubscribeClicked() {
-            contentPage.sendMessage({type: 'addAndEnableFilter', filterId: filter.filterId});
-            closePopup();
+        function bindEvents() {
+            // step one events
+            document.querySelector('.custom-filter-popup-next').addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const url = document.querySelector('#custom-filter-popup-url').value;
+                contentPage.sendMessage({ type: 'loadCustomFilterInfo', url: url }, function (filter) {
+                    if (filter) {
+                        renderStepFour(filter);
+                    } else {
+                        renderStepThree();
+                    }
+                });
+
+                renderStepTwo();
+            });
+
+            // render step 3 events
+            document.querySelector('.custom-filter-popup-try-again').addEventListener('click', renderStepOne);
+        }
+
+        if (!customFilterInitialized) {
+            bindEvents();
+            customFilterInitialized = true;
         }
 
         document.querySelector('#add-custom-filter-popup').classList.add('option-popup--active');
-        document.querySelector('.option-popup__cross').addEventListener('click', closePopup);
-        document.querySelector('.custom-filter-popup-cancel').addEventListener('click', closePopup);
-
-        document.querySelector('.custom-filter-popup-next').addEventListener('click', function (e) {
-            e.preventDefault();
-
-            var url = document.querySelector('#custom-filter-popup-url').value;
-            contentPage.sendMessage({type: 'loadCustomFilterInfo', url: url}, function (filter) {
-                if (filter) {
-                    renderStepFour(filter);
-                } else {
-                    renderStepThree();
-                }
-            });
-
-            renderStepTwo();
-        });
-
-        document.querySelector('.custom-filter-popup-try-again').addEventListener('click', renderStepOne);
-
         renderStepOne();
     }
 
@@ -863,7 +1071,7 @@ var AntiBannerFilters = function (options) {
     }
 
     function updateRulesCountInfo(info) {
-        var message = i18n.getMessage("options_antibanner_info", [String(info.rulesCount || 0)]);
+        var message = i18n.getMessage('options_antibanner_info', [String(info.rulesCount || 0)]);
         document.querySelector('#filtersRulesInfo').textContent = message;
     }
 
@@ -872,19 +1080,29 @@ var AntiBannerFilters = function (options) {
         var enabled = filter.enabled;
         loadedFiltersInfo.updateEnabled(filter, enabled);
         updateCategoryFiltersInfo(filter.groupId);
-
         CheckboxUtils.updateCheckbox([getFilterCheckbox(filterId)], enabled);
+    }
+
+    function onCategoryStateChanged(category) {
+        loadedFiltersInfo.updateCategoryEnabled(category, category.enabled);
+        updateCategoryFiltersInfo(category.groupId);
     }
 
     function onFilterDownloadStarted(filter) {
         getCategoryElement(filter.groupId).querySelector('.preloader').classList.add('active');
-        getFilterElement(filter.filterId).querySelector('.preloader').classList.add('active');
+        const filterElement = getFilterElement(filter.filterId);
+        if (filterElement) {
+            filterElement.querySelector('.preloader').classList.add('active');
+        }
         document.querySelector('.settings-actions--update-filters a').classList.add('active');
     }
 
     function onFilterDownloadFinished(filter) {
         getCategoryElement(filter.groupId).querySelector('.preloader').classList.remove('active');
-        getFilterElement(filter.filterId).querySelector('.preloader').classList.remove('active');
+        const filterElement = getFilterElement(filter.filterId);
+        if (filterElement) {
+            filterElement.querySelector('.preloader').classList.remove('active');
+        }
         document.querySelector('.settings-actions--update-filters a').classList.remove('active');
         setLastUpdatedTimeText(filter.lastUpdateTime);
     }
@@ -893,6 +1111,7 @@ var AntiBannerFilters = function (options) {
         render: renderCategoriesAndFilters,
         updateRulesCountInfo: updateRulesCountInfo,
         onFilterStateChanged: onFilterStateChanged,
+        onCategoryStateChanged: onCategoryStateChanged,
         onFilterDownloadStarted: onFilterDownloadStarted,
         onFilterDownloadFinished: onFilterDownloadFinished,
     };
@@ -1471,12 +1690,12 @@ var initPage = function (response) {
     EventNotifierTypes = response.constants.EventNotifierTypes;
 
     var onDocumentReady = function () {
-
         var controller = new PageController();
         controller.init();
 
         var events = [
             EventNotifierTypes.FILTER_ENABLE_DISABLE,
+            EventNotifierTypes.FILTER_GROUP_ENABLE_DISABLE,
             EventNotifierTypes.FILTER_ADD_REMOVE,
             EventNotifierTypes.START_DOWNLOAD_FILTER,
             EventNotifierTypes.SUCCESS_DOWNLOAD_FILTER,
@@ -1494,6 +1713,9 @@ var initPage = function (response) {
                     controller.checkSubscriptionsCount();
                     controller.antiBannerFilters.onFilterStateChanged(options);
                     break;
+                case EventNotifierTypes.FILTER_GROUP_ENABLE_DISABLE:
+                    controller.antiBannerFilters.onCategoryStateChanged(options);
+                    break;
                 case EventNotifierTypes.FILTER_ADD_REMOVE:
                     controller.antiBannerFilters.render();
                     break;
@@ -1505,7 +1727,6 @@ var initPage = function (response) {
                     controller.antiBannerFilters.onFilterDownloadFinished(options);
                     break;
                 case EventNotifierTypes.UPDATE_USER_FILTER_RULES:
-                    controller.userFilter.updateUserFilterRules();
                     controller.antiBannerFilters.updateRulesCountInfo(options);
                     break;
                 case EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES:
@@ -1513,6 +1734,7 @@ var initPage = function (response) {
                     break;
                 case EventNotifierTypes.REQUEST_FILTER_UPDATED:
                     controller.antiBannerFilters.updateRulesCountInfo(options);
+                    controller.userFilter.updateUserFilterRules(options);
                     break;
                 case EventNotifierTypes.SYNC_STATUS_UPDATED:
                     controller.syncSettings.updateSyncSettings(options);

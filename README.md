@@ -19,8 +19,8 @@ To see the 'big picture', to watch current progress and to get an idea of approx
 
 ### Releases
 
-* Latest release version: [2.9.2](https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v2.9.2)
-* Latest beta version: [2.10.5](https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v2.10.5-beta)
+* Latest release version: [2.10.11](https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v2.10.11)
+* Latest beta version: [2.10.11](https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v2.10.11)
 
 You can find all AdGuard Browser Extension releases here: https://github.com/AdguardTeam/AdguardBrowserExtension/releases
 
@@ -35,7 +35,7 @@ You can get a beta version of AdGuard Browser Extension for any browser. All nec
 - [nodejs](https://nodejs.org/en/download/)
 - [yarn](https://yarnpkg.com/en/docs/install/)
 
-Install local dependencies by runnning:
+Install local dependencies by running:
 ```
   yarn install
 ```
