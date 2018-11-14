@@ -187,7 +187,9 @@
         if ('replaceRules' in update) {
             context.replaceRules = update.replaceRules;
         }
-        context.cspRules = appendRules(context.cspRules, update.cspRules);
+        if ('cspRules' in update) {
+            context.cspRules = appendRules(context.cspRules, update.cspRules);
+        }
 
         if ('requestHeaders' in update) {
             context.requestHeaders = copyHeaders(update.requestHeaders);
