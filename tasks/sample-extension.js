@@ -21,7 +21,7 @@ import zip from 'gulp-zip';
 
 const API_SCRIPTS = [
     // Third party libraries
-    'Extension/lib/libs/deferred.min.js',
+    'Extension/lib/libs/deferred.js',
     'Extension/lib/utils/sha256.patched.js',
     'Extension/lib/utils/punycode.js',
     'Extension/lib/libs/filter-downloader.js',
