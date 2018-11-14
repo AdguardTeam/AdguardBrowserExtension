@@ -489,7 +489,7 @@ PageController.prototype = {
     _renderTemplate: function (event) {
         const metadata = { data: event, class: '' };
 
-        event.filterName = event.requestRule && event.requestRule.filterId ?
+        event.filterName = event.requestRule ?
             RequestWizard.getFilterName(event.requestRule.filterId) :
             '';
 
@@ -911,6 +911,8 @@ var RequestWizard = (function () {
                 return 'WebRTC';
             case 'CSP':
                 return 'CSP';
+            case 'COOKIE':
+                return 'COOKIE';
             case 'OTHER':
                 return 'Other';
         }

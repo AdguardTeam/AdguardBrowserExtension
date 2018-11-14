@@ -335,7 +335,7 @@ adguard.webRequestService = (function (adguard) {
      * @param requestUrl    Request URL
      * @param referrerUrl   Referrer URL
      * @param requestType   Request type (DOCUMENT or SUBDOCUMENT)
-     * @returns {*}         Collection of rules or null
+     * @returns {Array}     Collection of rules or null
      */
     const getCspRules = function (tab, requestUrl, referrerUrl, requestType) {
 
@@ -359,7 +359,7 @@ adguard.webRequestService = (function (adguard) {
      * @param requestUrl    Request URL
      * @param referrerUrl   Referrer URL
      * @param requestType   Request type
-     * @returns {*}         Collection of rules or null
+     * @returns {Array}     Collection of rules or null
      */
     var getCookieRules = function (tab, requestUrl, referrerUrl, requestType) {
 
