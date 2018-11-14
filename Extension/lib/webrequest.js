@@ -215,13 +215,14 @@
             requestHeadersModified = true;
         }
 
+        if (adguard.stealthService.processRequestHeaders(requestDetails)) {
+            requestHeadersModified = true;
+        }
+
         if (requestHeadersModified) {
             adguard.requestContextStorage.update(requestId, { modifiedRequestHeaders: requestHeaders });
             return { requestHeaders };
         }
-
-        //TODO: Fix
-        adguard.stealthService.processRequestHeaders(requestDetails);
 
         return {};
     }
@@ -266,9 +267,6 @@
             adguard.contentFiltering.apply(tab, requestUrl, referrerUrl, requestType, requestId, statusCode, method, contentType);
         }
 
-        //TODO: Fix
-        adguard.stealthService.processResponseHeaders(requestDetails, referrerUrl);
-
         let responseHeadersModified = false;
 
         if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
@@ -280,6 +278,10 @@
         }
 
         if (adguard.cookieFiltering.filterResponseHeaders(requestId, responseHeaders)) {
+            responseHeadersModified = true;
+        }
+
+        if (adguard.stealthService.processResponseHeaders(requestId, responseHeaders, referrerUrl)) {
             responseHeadersModified = true;
         }
 
