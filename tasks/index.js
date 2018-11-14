@@ -2,7 +2,7 @@ import gulp from 'gulp';
 import chromium from './browser-chromium';
 import opera from './browser-opera';
 import edge from './browser-edge';
-import firefoxWebext from './browser-firefox-webext ';
+import firefoxWebext from './browser-firefox-webext';
 import firefoxAmo from './browser-firefox-amo';
 import api from './sample-extension';
 import downloadAllFilters from './download-filters';
