@@ -1,6 +1,6 @@
 /**
  * filters-downloader - Compiles filters source files
- * @version v1.0.7
+ * @version v1.0.8
  * @link http://adguard.com
  */
 /**
@@ -28,7 +28,7 @@
  * @type {{getLocalFile, getExternalFile}}
  */
 let FileDownloadWrapper = (() => {
-    "use strict";
+    'use strict';
 
     /**
      * Executes async request
@@ -40,6 +40,7 @@ let FileDownloadWrapper = (() => {
     const executeRequestAsync = (url, contentType) => {
 
         return new Promise((resolve, reject) => {
+
             const onRequestLoad = (response) => {
                 if (response.status !== 200 && response.status !== 0) {
                     reject(new Error('Response status is invalid: ' + response.status));
@@ -64,7 +65,6 @@ let FileDownloadWrapper = (() => {
 
             try {
                 request.open('GET', url);
-                request.setRequestHeader('Content-type', contentType);
                 request.setRequestHeader('Pragma', 'no-cache');
                 request.overrideMimeType(contentType);
                 request.mozBackgroundRequest = true;
@@ -104,9 +104,10 @@ let FileDownloadWrapper = (() => {
 
     return {
         getLocalFile: getLocalFile,
-        getExternalFile: getExternalFile
-    }
+        getExternalFile: getExternalFile,
+    };
 })();
+
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -474,7 +475,7 @@ const FilterDownloader = (() => {
      * Get the `filterUrlOrigin` from url for relative path resolve
      *
      * @param {string} url Filter file URL
-     * @param {string|null} filterUrlOrigin  existing origin url
+     * @param {string?} filterUrlOrigin  existing origin url
      * @returns {string} valid origin url
      */
     const getFilterUrlOrigin = (url, filterUrlOrigin) => {
@@ -496,7 +497,7 @@ const FilterDownloader = (() => {
         try {
             let filterUrlOrigin;
             if (url && REGEXP_ABSOLUTE_URL.test(url)) {
-                filterUrlOrigin = parseURL(url).origin;
+                filterUrlOrigin = getFilterUrlOrigin(url)
             }
 
             return downloadFilterRules(url, filterUrlOrigin, definedProperties);
@@ -515,7 +516,8 @@ const FilterDownloader = (() => {
         if (typeof URL !== 'undefined') {
             return new URL(url);
         } else {
-            return require('url').parse(url, true);
+            let URL = require('url').URL;
+            return new URL(url);
         }
     };
 
