@@ -71,37 +71,43 @@ adguard.stealthService = (function (adguard) {
     /**
      * Processes request headers
      *
-     * @param requestDetails
-     * @returns {{requestHeaders: Array}|undefined}
+     * @param {string} requestId Request identifier
+     * @param {Array} requestHeaders Request headers
+     * @return {boolean} True if headers were modified
      */
-    const processRequestHeaders = function (requestDetails) {
+    const processRequestHeaders = function (requestId, requestHeaders) {
 
-        const tab = requestDetails.tab;
-        const requestUrl = requestDetails.requestUrl;
-        const requestType = requestDetails.requestType;
+        const context = adguard.requestContextStorage.get(requestId);
+        if (!context) {
+            return false;
+        }
+
+        const tab = context.tab;
+        const requestUrl = context.requestUrl;
+        const requestType = context.requestType;
 
         adguard.console.debug('Stealth service processing request headers for {0}', requestUrl);
 
         if (adguard.frames.isTabWhiteListed(tab) || adguard.frames.isTabProtectionDisabled(tab)) {
             adguard.console.debug('Tab whitelisted or protection disabled');
-            return;
+            return false;
         }
 
         let sourceUrl = adguard.frames.getMainFrameUrl(tab);
         if (!sourceUrl) {
             //frame wasn't recorded in onBeforeRequest event
             adguard.console.debug('Frame was not recorded in onBeforeRequest event');
-            return;
+            return false;
         }
 
         if (requestUrl === sourceUrl) {
-            sourceUrl = getHeaderValue(requestDetails.requestHeaders, HEADERS.REFERRER);
+            sourceUrl = getHeaderValue(requestHeaders, HEADERS.REFERRER);
         }
 
         const whiteListRule = adguard.antiBannerService.getRequestFilter().findWhiteListRule(requestUrl, sourceUrl, requestType);
         if (whiteListRule) {
             adguard.console.debug('Whitelist rule found');
-            return;
+            return false;
         }
 
         //TODO: Add $stealth rules support
@@ -111,87 +117,96 @@ adguard.stealthService = (function (adguard) {
         //     return;
         // }
 
-        if (!requestDetails.requestHeaders) {
-            requestDetails.requestHeaders = [];
-        }
+        let cookieHeaderModified = false;
 
         const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, sourceUrl);
         let isMainFrame = requestType === "DOCUMENT";
 
         // Remove referrer for third-party requests
-        const hideReferrer = adguard.userSettings.getProperty(adguard.userSettings.HIDE_REFERRER);
+        const hideReferrer = adguard.settings.getProperty(adguard.settings.HIDE_REFERRER);
         if (thirdParty && hideReferrer) {
             adguard.console.debug('Remove referrer for third-party requests');
-            replaceHeader(requestDetails.requestHeaders, HEADER_VALUES.REFERRER);
+            replaceHeader(requestHeaders, HEADER_VALUES.REFERRER);
+            cookieHeaderModified = true;
         }
 
         // Hide referrer in case of search engine is referrer
-        const hideSearchQueries = adguard.userSettings.getProperty(adguard.userSettings.HIDE_SEARCH_QUERIES);
+        const hideSearchQueries = adguard.settings.getProperty(adguard.settings.HIDE_SEARCH_QUERIES);
         if (hideSearchQueries && isMainFrame && thirdParty && isSearchEngine(sourceUrl)) {
             adguard.console.debug('Hide referrer in case of search engine is referrer');
-            replaceHeader(requestDetails.requestHeaders, HEADER_VALUES.REFERRER);
+            replaceHeader(requestHeaders, HEADER_VALUES.REFERRER);
+            cookieHeaderModified = true;
         }
 
         // Remove X-Client-Data header
-        const blockChromeClientData = adguard.userSettings.getProperty(adguard.userSettings.BLOCK_CHROME_CLIENT_DATA);
+        const blockChromeClientData = adguard.settings.getProperty(adguard.settings.BLOCK_CHROME_CLIENT_DATA);
         if (blockChromeClientData) {
             adguard.console.debug('Remove X-Client-Data header');
-            removeHeader(requestDetails.requestHeaders, HEADERS.X_CLIENT_DATA);
+            removeHeader(requestHeaders, HEADERS.X_CLIENT_DATA);
+            cookieHeaderModified = true;
         }
 
         // Adding Do-Not-Track (DNT) header
-        const sendDoNotTrack = adguard.userSettings.getProperty(adguard.userSettings.SEND_DO_NOT_TRACK);
+        const sendDoNotTrack = adguard.settings.getProperty(adguard.settings.SEND_DO_NOT_TRACK);
         if (sendDoNotTrack) {
             adguard.console.debug('Adding Do-Not-Track (DNT) header');
-            requestDetails.requestHeaders.push(HEADER_VALUES.DO_NOT_TRACK);
+            requestHeaders.push(HEADER_VALUES.DO_NOT_TRACK);
+            cookieHeaderModified = true;
         }
 
         // TODO: Remove cookie header for third-party and 1st-party requests
 
         // Remove cookie header for third-party requests
-        const blockCookies = adguard.userSettings.getProperty(adguard.userSettings.SELF_DESTRUCT_FIRST_PARTY_COOKIES);
+        const blockCookies = adguard.settings.getProperty(adguard.settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES);
         if (thirdParty && blockCookies && !isMainFrame) {
-            removeHeader(requestDetails.requestHeaders, HEADERS.COOKIE);
+            removeHeader(requestHeaders, HEADERS.COOKIE);
+            cookieHeaderModified = true;
         }
 
         // // Adding Pragma: no-cache header blocks ETag header (which is used for tracking)
-        // var blockThirdPartyCache = userSettings.getProperty(userSettings.settings.BLOCK_THIRD_PARTY_CACHE);
+        // var blockThirdPartyCache = settings.getProperty(settings.settings.BLOCK_THIRD_PARTY_CACHE);
         // if (thirdParty && blockThirdPartyCache && !isMainFrame) {
         //     requestDetails.requestHeaders.push(this.headerValues.PRAGMA);
         // }
 
         adguard.console.debug('Stealth service processed request headers for {0}', requestUrl);
 
-        return {
-            requestHeaders: requestDetails.requestHeaders
-        };
+        return cookieHeaderModified;
     };
 
     /**
      * Processes response headers
      *
-     * @param requestDetails
-     * @param referrerUrl
-     * @returns {{responseHeaders: (*|string)}|undefined}
+     * @param {string} requestId Request identifier
+     * @param {Array} responseHeaders Response headers
+     * @param {Array} referrerUrl Referrer url
+     * @return {boolean} True if headers were modified
      */
-    const processResponseHeaders = function (requestDetails, referrerUrl) {
+    const processResponseHeaders = function (requestId, responseHeaders, referrerUrl) {
 
-        const tab = requestDetails.tab;
-        const requestUrl = requestDetails.requestUrl;
-        const requestType = requestDetails.requestType;
+        const context = adguard.requestContextStorage.get(requestId);
+        if (!context) {
+            return false;
+        }
+
+        const tab = context.tab;
+        const requestUrl = context.requestUrl;
+        const requestType = context.requestType;
+
+        let setCookieModified = false;
 
         adguard.console.debug('Stealth service processing response headers for {0}', requestUrl);
 
         if (adguard.frames.isTabWhiteListed(tab) || adguard.frames.isTabProtectionDisabled(tab)) {
             adguard.console.debug('Tab whitelisted or protection disabled');
-            return;
+            return false;
         }
 
         let sourceUrl = adguard.frames.getMainFrameUrl(tab);
         if (!sourceUrl) {
             //frame wasn't recorded in onBeforeRequest event
             adguard.console.debug('Frame was not recorded in onBeforeRequest event');
-            return;
+            return false;
         }
 
         if (requestUrl === sourceUrl) {
@@ -201,7 +216,7 @@ adguard.stealthService = (function (adguard) {
         const whiteListRule = adguard.antiBannerService.getRequestFilter().findWhiteListRule(requestUrl, sourceUrl, requestType);
         if (whiteListRule) {
             adguard.console.debug('Whitelist rule found');
-            return;
+            return false;
         }
 
         const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, sourceUrl);
@@ -210,17 +225,16 @@ adguard.stealthService = (function (adguard) {
         // TODO: Remove cookie header for third-party and 1st-party requests
 
         // Remove cookie header for third-party requests
-        const blockCookies = adguard.userSettings.getProperty(adguard.userSettings.SELF_DESTRUCT_THIRD_PARTY_COOKIES);
+        const blockCookies = adguard.settings.getProperty(adguard.settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES);
         if (thirdParty && blockCookies && !isMainFrame) {
-            removeHeader(requestDetails.responseHeaders, HEADERS.SET_COOKIE);
-            removeHeader(requestDetails.responseHeaders, HEADERS.ETAG);
+            removeHeader(responseHeaders, HEADERS.SET_COOKIE);
+            removeHeader(responseHeaders, HEADERS.ETAG);
+            setCookieModified = true;
         }
 
         adguard.console.debug('Stealth service processed response headers for {0}', requestUrl);
 
-        return {
-            responseHeaders: requestDetails.responseHeaders
-        };
+        return setCookieModified;
     };
 
     /**
@@ -231,6 +245,8 @@ adguard.stealthService = (function (adguard) {
      * @returns {string}
      */
     const getHeaderValue = function (headers, headerName) {
+        //TODO: Use adguard.utils.cookie
+
         if (!headers) {
             return '';
         }
@@ -252,6 +268,8 @@ adguard.stealthService = (function (adguard) {
      * @param appendIfNotExist
      */
     const replaceHeader = function (headers, header, appendIfNotExist) {
+        //TODO: Use adguard.utils.cookie
+
         let headerFound = false;
         for (let i = 0; i < headers.length; i++) {
             if (headers[i].name === header.name) {
@@ -272,6 +290,8 @@ adguard.stealthService = (function (adguard) {
      * @param headerName
      */
     const removeHeader = function (headers, headerName) {
+        //TODO: Use adguard.utils.cookie
+
         if (headers) {
             for (let i = headers.length - 1; i >= 0; i--) {
                 if (headers[i].name === headerName) {
