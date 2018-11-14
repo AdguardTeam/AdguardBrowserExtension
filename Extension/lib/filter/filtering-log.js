@@ -44,7 +44,7 @@ adguard.filteringLog = (function (adguard) {
      * @param tab
      */
     function updateTabInfo(tab) {
-        var tabInfo = tabsInfoMap[tab.tabId] || Object.create(null);
+        const tabInfo = tabsInfoMap[tab.tabId] || Object.create(null);
         tabInfo.tabId = tab.tabId;
         tabInfo.title = tab.title;
         tabInfo.isExtensionTab = tab.url && tab.url.indexOf(extensionURL) === 0;
@@ -58,11 +58,11 @@ adguard.filteringLog = (function (adguard) {
      */
     function addTab(tab) {
         // Background tab can't be added
-        if (tab.tabId == backgroundTabId) {
+        if (tab.tabId === backgroundTabId) {
             return;
         }
 
-        var tabInfo = updateTabInfo(tab);
+        const tabInfo = updateTabInfo(tab);
         if (tabInfo) {
             adguard.listeners.notifyListeners(adguard.listeners.TAB_ADDED, tabInfo);
         }
@@ -74,7 +74,7 @@ adguard.filteringLog = (function (adguard) {
      */
     function removeTabById(tabId) {
         // Background tab can't be removed
-        if (tabId == backgroundTabId) {
+        if (tabId === backgroundTabId) {
             return;
         }
 
@@ -91,11 +91,11 @@ adguard.filteringLog = (function (adguard) {
      */
     function updateTab(tab) {
         // Background tab can't be updated
-        if (tab.tabId == backgroundTabId) {
+        if (tab.tabId === backgroundTabId) {
             return;
         }
 
-        var tabInfo = updateTabInfo(tab);
+        const tabInfo = updateTabInfo(tab);
         if (tabInfo) {
             adguard.listeners.notifyListeners(adguard.listeners.TAB_UPDATE, tabInfo);
         }
@@ -326,8 +326,8 @@ adguard.filteringLog = (function (adguard) {
      * Remove log requests for tab
      * @param tabId
      */
-    var clearEventsByTabId = function (tabId) {
-        var tabInfo = tabsInfoMap[tabId];
+    const clearEventsByTabId = function (tabId) {
+        const tabInfo = tabsInfoMap[tabId];
         if (tabInfo) {
             delete tabInfo.filteringEvents;
             adguard.listeners.notifyListeners(adguard.listeners.TAB_RESET, tabInfo);
@@ -390,7 +390,7 @@ adguard.filteringLog = (function (adguard) {
         }
     };
 
-    var isOpen = function () {
+    const isOpen = function () {
         return openedFilteringLogsPage > 0;
     };
 

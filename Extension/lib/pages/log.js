@@ -238,9 +238,9 @@ PageController.prototype = {
     _updateTabIdFromHash: function () {
         // Try to retrieve tabId from hash
         if (document.location.hash) {
-            var tabId = document.location.hash.substring(1);
+            const tabId = document.location.hash.substring(1);
             if (tabId) {
-                this.currentTabId = tabId;
+                this.currentTabId = Number(tabId);
             }
         }
     },
@@ -250,7 +250,7 @@ PageController.prototype = {
             return;
         }
 
-        var option = document.createElement('option');
+        const option = document.createElement('option');
         option.textContent = tabInfo.title;
         option.setAttribute('data-tab-id', tabInfo.tabId);
         this.tabSelector.appendChild(option);
@@ -261,7 +261,8 @@ PageController.prototype = {
     },
 
     onTabUpdated: function (tabInfo) {
-        var item = this.tabSelector.querySelector('[data-tab-id="' + tabInfo.tabId + '"]');
+        const item = this.tabSelector.querySelector('[data-tab-id="' + tabInfo.tabId + '"]');
+
         if (tabInfo.isExtensionTab) {
             this.onTabClose(tabInfo);
             return;
@@ -269,7 +270,7 @@ PageController.prototype = {
 
         if (item) {
             item.textContent = tabInfo.title;
-            if (tabInfo.tabId == this.currentTabId) {
+            if (tabInfo.tabId === this.currentTabId) {
                 document.querySelector('[data-tab-id="' + this.currentTabId + '"]').selected = true;
                 // update icon logo
                 this._updateLogoIcon();
@@ -287,7 +288,7 @@ PageController.prototype = {
 
         element.parentNode.removeChild(element);
 
-        if (this.currentTabId == tabInfo.tabId) {
+        if (this.currentTabId === tabInfo.tabId) {
             // current tab was removed
             this.currentTabId = null;
             this.onSelectedTabChange();
@@ -301,22 +302,27 @@ PageController.prototype = {
     },
 
     onTabReset: function (tabInfo) {
-        if (this.currentTabId == tabInfo.tabId) {
+        if (this.currentTabId === tabInfo.tabId) {
             this.emptyLogTable();
             this._onEmptyTable();
         }
     },
 
     onEventAdded: function (tabInfo, event) {
-        if (this.currentTabId != tabInfo.tabId) {
+        if (this.currentTabId !== tabInfo.tabId) {
             // don't relate to the current tab
             return;
         }
+
+        if (event.requestType === 'DOCUMENT' && !event.element && !this.preserveLogEnabled) {
+            this.onTabReset(tabInfo);
+        }
+
         this._renderEvents([event]);
     },
 
     onEventUpdated: function (tabInfo, event) {
-        if (this.currentTabId != tabInfo.tabId) {
+        if (this.currentTabId !== tabInfo.tabId) {
             // don't relate to the current tab
             return;
         }
@@ -351,7 +357,7 @@ PageController.prototype = {
             selectedTabId = selectedItem.getAttribute('data-tab-id');
         }
 
-        this.currentTabId = selectedTabId;
+        this.currentTabId = Number(selectedTabId);
         var selectedTab = document.querySelector('[data-tab-id="' + this.currentTabId + '"]');
         if (selectedTab) {
             selectedTab.selected = true;
@@ -477,12 +483,15 @@ PageController.prototype = {
             this._onEmptyTable();
             return;
         }
-        var templates = [];
-        for (var i = 0; i < events.length; i++) {
-            var template = this._renderTemplate(events[i]);
+
+        const templates = [];
+
+        for (let i = 0; i < events.length; i += 1) {
+            const template = this._renderTemplate(events[i]);
             this._handleEventShow(template);
             templates.push(template);
         }
+
         this._onNotEmptyTable();
 
         templates.forEach(function (t) {
