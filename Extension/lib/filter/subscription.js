@@ -560,11 +560,19 @@ adguard.subscriptions = (function (adguard) {
         return [...new Set(filterIds)];
     };
 
+    const removeCustomFilter = (filter) => {
+        if (filter && filter.filterId) {
+            delete filtersMap[filter.filterId];
+            filters = filters.filter(f => f.filterId !== filter.filterId);
+        }
+    };
+
     // Add event listener to persist filter metadata to local storage
     adguard.listeners.addListener(function (event, payload) {
         switch (event) {
             case adguard.listeners.FILTER_ADD_REMOVE:
                 if (payload && payload.removed) {
+                    removeCustomFilter(payload);
                     removeCustomFilterFromStorage(payload);
                 }
                 break;
