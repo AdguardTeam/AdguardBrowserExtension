@@ -382,12 +382,8 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             adguard.tabs.sendMessage(tab.tabId, {
                 type: 'show-alert-popup',
                 title: title,
-                text: text
+                text: text,
             });
-        });
-
-        adguard.tabs.getActive(function (tab) {
-            adguard.tabs.sendMessage(tab.tabId, {type: 'show-alert-popup', title: title, text: text});
         });
     }
 
