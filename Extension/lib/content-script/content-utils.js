@@ -33,12 +33,6 @@
         return;
     }
 
-    function htmlToElement(html) {
-        let template = document.createElement('template');
-        template.innerHTML = html;
-        return template.content.firstChild;
-    }
-
     const DEFAULT_Z_INDEX = '1000';
 
     /**
@@ -150,7 +144,7 @@
             offerButtonText,
         } = message;
 
-        const updateHtml = `<head></head>
+        const updateIframeHtml = `<head></head>
                             <body>
                             <div id="adguard-new-version-popup" class="adguard-update-popup adguard-update-popup--active">
                                 <div id="adguard-new-version-popup-close" class="adguard-update-popup__close"></div>
@@ -187,7 +181,7 @@
             }
 
             if (document.body) {
-                const iframe = appendIframe(document.body, updateHtml);
+                const iframe = appendIframe(document.body, updateIframeHtml);
                 iframe.classList.add('adguard-update-iframe');
 
                 // TODO Are there better methods to remove iframe within iframe itself?
@@ -217,7 +211,7 @@
      * Reload page without cache
      */
     function noCacheReload() {
-        let xhr = new XMLHttpRequest();
+        const xhr = new XMLHttpRequest();
         xhr.open('GET', document.location.href);
         xhr.setRequestHeader('Pragma', 'no-cache');
         xhr.setRequestHeader('Expires', '-1');
