@@ -80,11 +80,9 @@
             fullText += messages[i];
         }
 
-        const alertDivHtml = `<div class="adguard-popup-alert adguard-popup-alert--active">
-                    <div class="adguard-popup-alert__in">
-                        <div class="adguard-popup-subtitle-2">
-                            ${title}
-                        </div>
+        const alertDivHtml = `<div class="adguard-popup-alert">
+                    <div class="adguard-popup-alert__desc">
+                        ${title}
                     </div>
                 </div>`;
 
