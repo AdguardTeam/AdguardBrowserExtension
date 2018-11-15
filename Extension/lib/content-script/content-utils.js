@@ -39,6 +39,8 @@
         return template.content.firstChild;
     }
 
+    const DEFAULT_Z_INDEX = '1000';
+
     /**
      * Determines maximum z-index of elements on the page and returns maximum + 1
      * @returns {String}
@@ -51,8 +53,11 @@
                 return Number(style.zIndex);
             })
             .filter(zIndex => !Number.isNaN(zIndex));
-        const maxZIndex = Math.max(...zIndexes);
-        return (maxZIndex + 1).toString();
+        if (zIndexes.length > 0) {
+            const maxZIndex = Math.max(...zIndexes);
+            return (maxZIndex + 1).toString();
+        }
+        return DEFAULT_Z_INDEX;
     };
 
     /**
@@ -185,7 +190,7 @@
                 const iframe = appendIframe(document.body, updateHtml);
                 iframe.classList.add('adguard-update-iframe');
 
-                // TODO are there better methods to remove iframe within iframe itself?
+                // TODO Are there better methods to remove iframe within iframe itself?
                 const iframeMessageHandler = (event) => {
                     if (document.location.origin !== event.origin) {
                         return;
@@ -207,17 +212,6 @@
 
         appendPopup(0);
     }
-
-    // TODO remove before merge
-    showVersionUpdatedPopup({
-        title: 'test',
-        description: 'test',
-        changelogHref: 'test',
-        changelogText: 'test',
-        offer: 'test',
-        offerButtonHref: 'test',
-        offerButtonText: 'test',
-    });
 
     /**
      * Reload page without cache
