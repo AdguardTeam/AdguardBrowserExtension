@@ -15,6 +15,31 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+@font-face {
+    font-family: 'Open Sans';
+    src: url('../../../pages/fonts/opensans-regular-webfont.woff2') format('woff2'),
+    url('../../../pages/fonts/opensans-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    src: url('../../../pages/fonts/opensans-semibold-webfont.woff2') format('woff2'),
+    url('../../../pages/fonts/opensans-semibold-webfont.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    src: url('../../../pages/fonts/opensans-bold-webfont.woff2') format('woff2'),
+    url('../../../pages/fonts/opensans-bold-webfont.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+}
+
+
 .adguard-alert-iframe {
     width: 100%;
     border: none;
@@ -25,7 +50,7 @@
 }
 
 .adguard-popup-alert {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, Arial, sans-serif;
+    font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, Arial, sans-serif;
     display: flex;
     position: absolute;
     top: 0;
@@ -55,10 +80,11 @@
     right: 10px;
     border: none;
     width: 320px;
+    min-height: 365px;
 }
 
-/*TODO add fonts*/
 .adguard-update-popup {
+    font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, Arial, sans-serif;
     font-weight: 600;
     display: -webkit-box;
     display: -ms-flexbox;
