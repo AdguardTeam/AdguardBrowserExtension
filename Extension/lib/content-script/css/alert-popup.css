@@ -14,7 +14,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-.adguard-popup-alert {
+
+iframe.adguard-iframe-popup-alert {
+    width: 100%;
+    border: none;
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+}
+
+div.adguard-popup-alert {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, Arial, sans-serif;
     display: none;
     position: fixed;
@@ -28,10 +38,12 @@
     justify-content: center;
     color: #ffffff;
 }
-.adguard-popup-alert--active {
+
+.adguard-popup-alert.adguard-popup-alert--active {
     display: flex;
 }
-.adguard-popup-alert__close {
+
+.adguard-popup-alert .adguard-popup-alert__close {
     position: absolute;
     top: 15px;
     right: 15px;
@@ -40,7 +52,8 @@
     cursor: pointer;
     /*background-image: url("../../../pages/images/cross.svg");*/
 }
-.adguard-popup-alert__in {
+
+.adguard-popup-alert .adguard-popup-alert__in {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -48,7 +61,8 @@
     -ms-flex-align: center;
     align-items: center;
 }
-.adguard-popup-alert__ico {
+
+.adguard-popup-alert .adguard-popup-alert__ico {
     width: 29px;
     height: 29px;
     flex-shrink: 0;
@@ -56,10 +70,12 @@
     background-repeat: no-repeat;
     background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMjdweCIgaGVpZ2h0PSIyN3B4IiB2aWV3Qm94PSIwIDAgMjcgMjciIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+CiAgICA8IS0tIEdlbmVyYXRvcjogU2tldGNoIDQ0LjEgKDQxNDU1KSAtIGh0dHA6Ly93d3cuYm9oZW1pYW5jb2RpbmcuY29tL3NrZXRjaCAtLT4KICAgIDx0aXRsZT5Hcm91cCA5PC90aXRsZT4KICAgIDxkZXNjPkNyZWF0ZWQgd2l0aCBTa2V0Y2guPC9kZXNjPgogICAgPGRlZnM+PC9kZWZzPgogICAgPGcgaWQ9IjAxIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4KICAgICAgICA8ZyBpZD0iQXJ0Ym9hcmQiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yMC4wMDAwMDAsIC0xNy4wMDAwMDApIj4KICAgICAgICAgICAgPGcgaWQ9Ikdyb3VwLTkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDIwLjAwMDAwMCwgMTcuMDAwMDAwKSI+CiAgICAgICAgICAgICAgICA8ZyBpZD0iR3JvdXAtOCI+CiAgICAgICAgICAgICAgICAgICAgPGcgaWQ9Ikdyb3VwLTciPgogICAgICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTMuMjMzMzE5NiwwIEM5LjA5Njk5MDQyLDAgNC4xMDc1NDM0LDAuOTY1NjgwODUxIDQuMDU4MjQ4MTNlLTA2LDMuMDkxMjEyNzcgQzQuMDU4MjQ4MTNlLTA2LDcuNjgxNzg3MjMgLTAuMDU2Njk0MjAzMywxOS4xMTgyOTc5IDEzLjIzMzMxOTYsMjYuOTMyNSBDMjYuNTIzNjI3MSwxOS4xMTgyOTc5IDI2LjQ2NzIyMjYsNy42ODE3ODcyMyAyNi40NjcyMjI2LDMuMDkxMjEyNzcgQzIyLjM1OTM4OTUsMC45NjU2ODA4NTEgMTcuMzY5OTQyNSwwIDEzLjIzMzMxOTYsMCBMMTMuMjMzMzE5NiwwIFoiIGlkPSJQYXRoIiBmaWxsPSIjNjhCQzcxIj48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0xMy4yMTk4MDE5LDI2LjkyNDU0OCBDLTAuMDU2NjU1NzUwNSwxOS4xMTA1NDExIDQuMDU4MjQ4MTNlLTA2LDcuNjgwMjMwMyA0LjA1ODI0ODEzZS0wNiwzLjA5MTIxMjc3IEM0LjEwMzA2OTg5LDAuOTY3OTk1NzYzIDkuMDg2MTIzNDgsMC4wMDIxMDQ4MTczOSAxMy4yMTk4MDE5LDMuNDM2NTMxMTJlLTA2IEwxMy4yMTk4MDE5LDI2LjkyNDU1MDcgWiIgaWQ9IkNvbWJpbmVkLVNoYXBlIiBmaWxsPSIjNjdCMjc5Ij48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgPC9nPgogICAgICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0xMi43NTA2MjAzLDE3Ljk3MDI0MDkgTDIwLjc1MzAyODIsNy4yNjI1NTM4NyBDMjAuMTY2NjI4LDYuNzk1OTI0NDkgMTkuNjUyMjcxMyw3LjEyNTI2MTg2IDE5LjM2OTEyMzgsNy4zODAyMzI3NCBMMTkuMzU4NzkyLDcuMzgxMDQ5OTUgTDEyLjY4NjM5NTYsMTQuMjcyMDczNiBMMTAuMTcyNDE0MiwxMS4yNjg1Mzg1IEM4Ljk3MzA4NjE4LDkuODkyODk0NDEgNy4zNDI2MTQ0MiwxMC45NDIxOTc2IDYuOTYxNzMzNTMsMTEuMjE5NTA1NyBMMTIuNzUwNjIwMywxNy45NzAyNDA5IiBpZD0iRmlsbC0xMSIgZmlsbD0iI0ZGRkZGRiI+PC9wYXRoPgogICAgICAgICAgICAgICAgPC9nPgogICAgICAgICAgICA8L2c+CiAgICAgICAgPC9nPgogICAgPC9nPgo8L3N2Zz4=');
 }
-.adguard-popup-alert__desc {
+
+.adguard-popup-alert .adguard-popup-alert__desc {
     font-size: 12px;
 }
-.adguard-popup-subtitle-2 {
+
+.adguard-popup-alert .adguard-popup-subtitle-2 {
     font-size: 14px;
     font-weight: 600;
 }

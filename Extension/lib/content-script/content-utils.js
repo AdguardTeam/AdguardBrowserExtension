@@ -18,7 +18,6 @@
 /* global contentPage, HTMLDocument */
 
 (function () {
-
     if (window !== window.top) {
         return;
     }
@@ -35,10 +34,26 @@
     }
 
     function htmlToElement(html) {
-        var template = document.createElement('template');
+        let template = document.createElement('template');
         template.innerHTML = html;
         return template.content.firstChild;
     }
+
+    /**
+     * Determines maximum z-index of elements on the page and returns maximum + 1
+     * @returns {String}
+     */
+    const findNextMaxZIndex = () => {
+        const elements = Array.from(document.querySelectorAll('body *'));
+        const zIndexes = elements
+            .map(element => {
+                const style = getComputedStyle(element);
+                return Number(style.zIndex);
+            })
+            .filter(zIndex => !Number.isNaN(zIndex));
+        const maxZIndex = Math.max(...zIndexes);
+        return (maxZIndex + 1).toString();
+    };
 
     /**
      * Shows alert popup.
@@ -47,46 +62,57 @@
      * @param message Message text
      */
     function showAlertPopup(message) {
+        const { text, title } = message;
 
-        var messages = [];
-        if (Array.isArray(message.text)) {
-            messages = message.text;
+        let messages = [];
+        if (Array.isArray(text)) {
+            messages = text;
         } else {
-            messages = [message.text];
+            messages = [text];
         }
 
-        var text = '';
-        for (var i = 0; i < messages.length; i++) {
+        // TODO remove if it is not necessary
+        let fullText = '';
+        for (let i = 0; i < messages.length; i += 1) {
             if (i > 0) {
-                text += ', ';
+                fullText += ', ';
             }
-            text += messages[i];
+            fullText += messages[i];
         }
 
-        var title = message.title;
+        const alertDivHtml = `<div class="adguard-popup-alert adguard-popup-alert--active">
+                    <div class="adguard-popup-alert__in">
+                        <div class="adguard-popup-subtitle-2">
+                            ${title}
+                        </div>
+                    </div>
+                </div>`;
 
-        var alertDivHtml =
-            '<div class="adguard-popup-alert adguard-popup-alert--active">' +
-                '<div class="adguard-popup-alert__in">' +
-                    '<div class="adguard-popup-subtitle-2">' +
-                        title +
-                    '</div>' +
-                '</div>' +
-            '</div>';
 
-        var triesCount = 10;
+        const appendIframe = (target, html) => {
+            const iframe = document.createElement('iframe');
+            target.insertAdjacentElement('afterbegin', iframe);
+            iframe.src = 'about:blank';
+            iframe.classList.add('adguard-iframe-popup-alert');
+            iframe.contentWindow.document.open();
+            iframe.contentWindow.document.write(html);
+            iframe.contentWindow.document.close();
+            iframe.style.zIndex = findNextMaxZIndex();
+            return iframe;
+        };
 
-        var alertDiv = htmlToElement(alertDivHtml);
+        const triesCount = 10;
 
         function appendPopup(count) {
             if (count >= triesCount) {
                 return;
             }
+
             if (document.body) {
-                document.body.appendChild(alertDiv);
+                const iframe = appendIframe(document.body, alertDivHtml);
                 setTimeout(function () {
-                    if (alertDiv && alertDiv.parentNode) {
-                        alertDiv.parentNode.removeChild(alertDiv);
+                    if (iframe && iframe.parentNode) {
+                        iframe.parentNode.removeChild(iframe);
                     }
                 }, 4000);
             } else {
@@ -106,8 +132,7 @@
      * @param {{title,description, changelogHref, changelogText, offer, offerButtonHref, offerButtonText}} message
      */
     function showVersionUpdatedPopup(message) {
-        var alertDivHtml =
-            `<div id="adguard-new-version-popup" class="adguard-update-popup adguard-update-popup--active">
+        const alertDivHtml = `<div id="adguard-new-version-popup" class="adguard-update-popup adguard-update-popup--active">
                 <div id="adguard-new-version-popup-close" class="adguard-update-popup__close"></div>
                 <div class="adguard-update-popup__logo"></div>
                 <div class="adguard-update-popup__title">
@@ -127,9 +152,9 @@
                 </a>
             </div>`;
 
-        var triesCount = 10;
+        let triesCount = 10;
 
-        var alertDiv = htmlToElement(alertDivHtml);
+        let alertDiv = htmlToElement(alertDivHtml);
 
         function appendPopup(count) {
             if (count >= triesCount) {
@@ -138,7 +163,7 @@
             if (document.body) {
                 document.body.appendChild(alertDiv);
 
-                var close = document.getElementById('adguard-new-version-popup-close');
+                let close = document.getElementById('adguard-new-version-popup-close');
                 close.addEventListener('click', function () {
                     document.body.removeChild(alertDiv);
                 });
@@ -156,7 +181,7 @@
      * Reload page without cache
      */
     function noCacheReload() {
-        var xhr = new XMLHttpRequest();
+        let xhr = new XMLHttpRequest();
         xhr.open('GET', document.location.href);
         xhr.setRequestHeader('Pragma', 'no-cache');
         xhr.setRequestHeader('Expires', '-1');
@@ -178,5 +203,4 @@
             window.location = message.url;
         }
     });
-
 })();
