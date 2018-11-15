@@ -1029,6 +1029,7 @@ var AntiBannerFilters = function (options) {
                 e.preventDefault();
 
                 const url = document.querySelector('#custom-filter-popup-url').value;
+
                 contentPage.sendMessage({ type: 'loadCustomFilterInfo', url: url }, function (filter) {
                     if (filter) {
                         renderStepFour(filter);
