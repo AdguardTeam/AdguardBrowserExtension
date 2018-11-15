@@ -56,6 +56,23 @@
     };
 
     /**
+     * Creates iframe and appends it after target open tag
+     * @param target Node where to append iframe with html
+     * @param html html string to write inside isframe
+     * @returns {HTMLElement} iframe element
+     */
+    const appendIframe = (target, html) => {
+        const iframe = document.createElement('iframe');
+        target.insertAdjacentElement('afterbegin', iframe);
+        iframe.src = 'about:blank';
+        iframe.contentWindow.document.open();
+        iframe.contentWindow.document.write(html);
+        iframe.contentWindow.document.close();
+        iframe.style.zIndex = findNextMaxZIndex();
+        return iframe;
+    };
+
+    /**
      * Shows alert popup.
      * Popup content is added right to the page content.
      *
@@ -86,19 +103,6 @@
                     </div>
                 </div>`;
 
-
-        const appendIframe = (target, html) => {
-            const iframe = document.createElement('iframe');
-            target.insertAdjacentElement('afterbegin', iframe);
-            iframe.src = 'about:blank';
-            iframe.classList.add('adguard-iframe-popup-alert');
-            iframe.contentWindow.document.open();
-            iframe.contentWindow.document.write(html);
-            iframe.contentWindow.document.close();
-            iframe.style.zIndex = findNextMaxZIndex();
-            return iframe;
-        };
-
         const triesCount = 10;
 
         function appendPopup(count) {
@@ -108,6 +112,7 @@
 
             if (document.body) {
                 const iframe = appendIframe(document.body, alertDivHtml);
+                iframe.classList.add('adguard-alert-iframe');
                 setTimeout(function () {
                     if (iframe && iframe.parentNode) {
                         iframe.parentNode.removeChild(iframe);
@@ -130,41 +135,69 @@
      * @param {{title,description, changelogHref, changelogText, offer, offerButtonHref, offerButtonText}} message
      */
     function showVersionUpdatedPopup(message) {
-        const alertDivHtml = `<div id="adguard-new-version-popup" class="adguard-update-popup adguard-update-popup--active">
-                <div id="adguard-new-version-popup-close" class="adguard-update-popup__close"></div>
-                <div class="adguard-update-popup__logo"></div>
-                <div class="adguard-update-popup__title">
-                    ${message.title}
-                </div>
-                <div class="adguard-update-popup__desc">
-                    ${message.description}
-                </div>
-                <a href="${message.changelogHref}" class="adguard-update-popup__link" target="_blank">
-                    ${message.changelogText}
-                </a>
-                <div class="adguard-update-popup__offer">
-                    ${message.offer}
-                </div>
-                <a href="${message.offerButtonHref}" class="adguard-update-popup__btn">
-                    ${message.offerButtonText}
-                </a>
-            </div>`;
+        const {
+            title,
+            description,
+            changelogHref,
+            changelogText,
+            offer,
+            offerButtonHref,
+            offerButtonText,
+        } = message;
 
-        let triesCount = 10;
+        const updateHtml = `<head></head>
+                            <body>
+                            <div id="adguard-new-version-popup" class="adguard-update-popup adguard-update-popup--active">
+                                <div id="adguard-new-version-popup-close" class="adguard-update-popup__close"></div>
+                                <div class="adguard-update-popup__logo"></div>
+                                <div class="adguard-update-popup__title">
+                                    ${title}
+                                </div>
+                                <div class="adguard-update-popup__desc">
+                                    ${description}
+                                </div>
+                                <a href="${changelogHref}" class="adguard-update-popup__link" target="_blank">
+                                    ${changelogText}
+                                </a>
+                                <div class="adguard-update-popup__offer">
+                                    ${offer}
+                                </div>
+                                <a href="${offerButtonHref}" class="adguard-update-popup__btn">
+                                    ${offerButtonText}
+                                </a>
+                            </div>
+                            <script>
+                                const close = document.querySelector('.adguard-update-popup__close');
+                                close.addEventListener('click', () => {
+                                    parent.postMessage({type: 'close.iframe'}, location.origin);
+                                });
+                            </script>
+                            </body>`;
 
-        let alertDiv = htmlToElement(alertDivHtml);
+        const triesCount = 10;
 
         function appendPopup(count) {
             if (count >= triesCount) {
                 return;
             }
-            if (document.body) {
-                document.body.appendChild(alertDiv);
 
-                let close = document.getElementById('adguard-new-version-popup-close');
-                close.addEventListener('click', function () {
-                    document.body.removeChild(alertDiv);
-                });
+            if (document.body) {
+                const iframe = appendIframe(document.body, updateHtml);
+                iframe.classList.add('adguard-update-iframe');
+
+                // TODO are there better methods to remove iframe within iframe itself?
+                const iframeMessageHandler = (event) => {
+                    if (document.location.origin !== event.origin) {
+                        return;
+                    }
+                    const { data: { type } } = event;
+                    if (type && type === 'close.iframe') {
+                        iframe.parentNode.removeChild(iframe);
+                        window.removeEventListener('message', iframeMessageHandler);
+                    }
+                };
+
+                window.addEventListener('message', iframeMessageHandler, false);
             } else {
                 setTimeout(function () {
                     appendPopup(count + 1);
@@ -174,6 +207,17 @@
 
         appendPopup(0);
     }
+
+    // TODO remove before merge
+    showVersionUpdatedPopup({
+        title: 'test',
+        description: 'test',
+        changelogHref: 'test',
+        changelogText: 'test',
+        offer: 'test',
+        offerButtonHref: 'test',
+        offerButtonText: 'test',
+    });
 
     /**
      * Reload page without cache
