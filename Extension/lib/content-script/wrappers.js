@@ -21,42 +21,38 @@
  * Function for injecting some helper API into page context, that is used by request wrappers.
  *
  * @param scriptName Unique script name
- * @param shouldOverrideWebSocket If true we should override WebSocket object
  * @param shouldOverrideWebRTC If true we should override WebRTC objects
  * @param isInjected True means that we've already injected scripts in the contentWindow, i.e. wrapped request objects and passed message channel
  */
-function injectPageScriptAPI(scriptName, shouldOverrideWebSocket, shouldOverrideWebRTC, isInjected) { // jshint ignore:line
-
+function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected) {
     'use strict';
 
     /**
      * If script have been injected into a frame via contentWindow then we can simply take the copy of messageChannel left for us by parent document
      * Otherwise creates new message channel that sends a message to the content-script to check if request should be allowed or not.
      */
-    var messageChannel = isInjected ? window[scriptName] : (function () {
-
+    const messageChannel = isInjected ? window[scriptName] : (function () {
         // Save original postMessage and addEventListener functions to prevent webpage from tampering both.
-        var postMessage = window.postMessage;
-        var addEventListener = window.addEventListener;
+        const postMessage = window.postMessage;
+        const addEventListener = window.addEventListener;
 
         // Current request ID (incremented every time we send a new message)
-        var currentRequestId = 0;
-        var requestsMap = {};
+        let currentRequestId = 0;
+        const requestsMap = {};
 
         /**
          * Handles messages sent from the content script back to the page script.
          *
          * @param event Event with necessary data
          */
-        var onMessageReceived = function (event) {
-
-            if (!event.data || !event.data.direction || event.data.direction !== "to-page-script@adguard") {
+        const onMessageReceived = function (event) {
+            if (!event.data || !event.data.direction || event.data.direction !== 'to-page-script@adguard') {
                 return;
             }
 
-            var requestData = requestsMap[event.data.requestId];
+            const requestData = requestsMap[event.data.requestId];
             if (requestData) {
-                var wrapper = requestData.wrapper;
+                const wrapper = requestData.wrapper;
                 requestData.onResponseReceived(wrapper, event.data.block);
                 delete requestsMap[event.data.requestId];
             }
@@ -68,35 +64,33 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebSocket, shouldOverride
          * @param wrapper            WebSocket wrapper instance
          * @param onResponseReceived Called when response is received
          */
-        var sendMessage = function (url, requestType, wrapper, onResponseReceived) {
-
+        const sendMessage = function (url, requestType, wrapper, onResponseReceived) {
             if (currentRequestId === 0) {
                 // Subscribe to response when this method is called for the first time
-                addEventListener.call(window, "message", onMessageReceived, false);
+                addEventListener.call(window, 'message', onMessageReceived, false);
             }
 
-            var requestId = ++currentRequestId;
+            const requestId = ++currentRequestId;
             requestsMap[requestId] = {
                 wrapper: wrapper,
-                onResponseReceived: onResponseReceived
+                onResponseReceived: onResponseReceived,
             };
 
-            var message = {
+            const message = {
                 requestId: requestId,
                 direction: 'from-page-script@adguard',
                 elementUrl: url,
                 documentUrl: document.URL,
-                requestType: requestType
+                requestType: requestType,
             };
 
             // Send a message to the background page to check if the request should be blocked
-            postMessage.call(window, message, "*");
+            postMessage.call(window, message, '*');
         };
 
         return {
-            sendMessage: sendMessage
+            sendMessage: sendMessage,
         };
-
     })();
 
     /*
@@ -105,16 +99,16 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebSocket, shouldOverride
      *
      * Based on: https://github.com/adblockplus/adblockpluschrome/commit/1aabfb3346dc0821c52dd9e97f7d61b8c99cd707
      */
-    var injectedToString = Function.prototype.toString.bind(injectPageScriptAPI);
+    const injectedToString = Function.prototype.toString.bind(injectPageScriptAPI);
 
-    var injectedFramesAdd;
-    var injectedFramesHas;
+    let injectedFramesAdd;
+    let injectedFramesHas;
     if (window.WeakSet instanceof Function) {
-        var injectedFrames = new WeakSet();
+        const injectedFrames = new WeakSet();
         injectedFramesAdd = WeakSet.prototype.add.bind(injectedFrames);
         injectedFramesHas = WeakSet.prototype.has.bind(injectedFrames);
     } else {
-        var frames = [];
+        const frames = [];
         injectedFramesAdd = function (el) {
             if (frames.indexOf(el) < 0) {
                 frames.push(el);
@@ -134,8 +128,8 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebSocket, shouldOverride
             if (contentWindow && !injectedFramesHas(contentWindow)) {
                 injectedFramesAdd(contentWindow);
                 contentWindow[scriptName] = messageChannel; // Left message channel for the injected script
-                var args = "'" + scriptName + "', " + shouldOverrideWebSocket + ", " + shouldOverrideWebRTC + ", true";
-                contentWindow.eval("(" + injectedToString() + ")(" + args + ");");
+                const args = `'${scriptName}', ${shouldOverrideWebRTC}, true`;
+                contentWindow.eval(`(${injectedToString()})(${args});`);
                 delete contentWindow[scriptName];
             }
         } catch (e) {
@@ -148,9 +142,8 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebSocket, shouldOverride
      * @param iface HTML element's interface
      */
     function overrideContentAccess(iface) {
-
-        var contentWindowDescriptor = Object.getOwnPropertyDescriptor(iface.prototype, "contentWindow");
-        var contentDocumentDescriptor = Object.getOwnPropertyDescriptor(iface.prototype, "contentDocument");
+        const contentWindowDescriptor = Object.getOwnPropertyDescriptor(iface.prototype, 'contentWindow');
+        const contentDocumentDescriptor = Object.getOwnPropertyDescriptor(iface.prototype, 'contentDocument');
 
         // Apparently in HTMLObjectElement.prototype.contentWindow does not exist
         // in older versions of Chrome such as 42.
@@ -158,11 +151,11 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebSocket, shouldOverride
             return;
         }
 
-        var getContentWindow = Function.prototype.call.bind(contentWindowDescriptor.get);
-        var getContentDocument = Function.prototype.call.bind(contentDocumentDescriptor.get);
+        const getContentWindow = Function.prototype.call.bind(contentWindowDescriptor.get);
+        const getContentDocument = Function.prototype.call.bind(contentDocumentDescriptor.get);
 
         contentWindowDescriptor.get = function () {
-            var contentWindow = getContentWindow(this);
+            const contentWindow = getContentWindow(this);
             injectPageScriptAPIInWindow(contentWindow);
             return contentWindow;
         };
@@ -171,12 +164,12 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebSocket, shouldOverride
             return getContentDocument(this);
         };
 
-        Object.defineProperty(iface.prototype, "contentWindow", contentWindowDescriptor);
-        Object.defineProperty(iface.prototype, "contentDocument", contentDocumentDescriptor);
+        Object.defineProperty(iface.prototype, 'contentWindow', contentWindowDescriptor);
+        Object.defineProperty(iface.prototype, 'contentDocument', contentDocumentDescriptor);
     }
 
-    var interfaces = [HTMLFrameElement, HTMLIFrameElement, HTMLObjectElement];
-    for (var i = 0; i < interfaces.length; i++) {
+    const interfaces = [HTMLFrameElement, HTMLIFrameElement, HTMLObjectElement];
+    for (let i = 0; i < interfaces.length; i += 1) {
         overrideContentAccess(interfaces[i]);
     }
 
@@ -186,10 +179,10 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebSocket, shouldOverride
      * @param dest Destination object
      * @param properties Properties to copy
      */
-    var copyProperties = function (src, dest, properties) {
-        for (var i = 0; i < properties.length; i++) {
-            var prop = properties[i];
-            var descriptor = Object.getOwnPropertyDescriptor(src, prop);
+    const copyProperties = function (src, dest, properties) {
+        for (let i = 0; i < properties.length; i += 1) {
+            const prop = properties[i];
+            const descriptor = Object.getOwnPropertyDescriptor(src, prop);
             // Passed property may be undefined
             if (descriptor) {
                 Object.defineProperty(dest, prop, descriptor);
@@ -203,78 +196,10 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebSocket, shouldOverride
      * @param type Request type
      * @param callback Result callback
      */
-    var checkRequest = function (url, type, callback) {
+    const checkRequest = function (url, type, callback) {
         messageChannel.sendMessage(url, type, this, function (wrapper, blockConnection) {
             callback(blockConnection);
         });
-    };
-
-    /**
-     * The function overrides window.WebSocket with our wrapper, that will check url with filters through messaging with content-script.
-     *
-     * IMPORTANT NOTE:
-     * This function is first loaded as a content script. The only purpose of it is to call
-     * the "toString" method and use resulting string as a text content for injected script.
-     */
-    var overrideWebSocket = function () { // jshint ignore:line
-
-        if (!(window.WebSocket instanceof Function)) {
-            return;
-        }
-
-        /**
-         * WebSocket wrapper implementation.
-         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/349
-         *
-         * Based on:
-         * https://github.com/adblockplus/adblockpluschrome/commit/457a336ee55a433217c3ffe5d363e5c6980f26f4
-         */
-
-        /**
-         * As far as possible we must track everything we use that could be sabotaged by the website later in order to circumvent us.
-         */
-        var RealWebSocket = WebSocket;
-        var closeWebSocket = Function.prototype.call.bind(RealWebSocket.prototype.close);
-
-        function WrappedWebSocket(url, protocols) {
-            // Throw correct exceptions if the constructor is used improperly.
-            if (!(this instanceof WrappedWebSocket)) {
-                return RealWebSocket();
-            }
-            if (arguments.length < 1) {
-                return new RealWebSocket();
-            }
-
-            /**
-             * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1090
-             * undefined 'protocols', somehow broke websocket wrapper on spotify
-             */
-            var websocket;
-            if (protocols) {
-                websocket = new RealWebSocket(url, protocols);
-            } else {
-                websocket = new RealWebSocket(url);
-            }
-
-            // This is the key point: checking if this WS should be blocked or not
-            // Don't forget that the type of 'websocket.url' is String, but 'url 'parameter might have another type.
-            checkRequest(websocket.url, 'WEBSOCKET', function (blocked) {
-                if (blocked) {
-                    closeWebSocket(websocket);
-                }
-            });
-
-            return websocket;
-        }
-
-        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/488
-        WrappedWebSocket.prototype = RealWebSocket.prototype;
-        window.WebSocket = WrappedWebSocket.bind();
-
-        copyProperties(RealWebSocket, WebSocket, ["CONNECTING", "OPEN", "CLOSING", "CLOSED", "name", "prototype"]);
-
-        RealWebSocket.prototype.constructor = WebSocket;
-
     };
 
     /**
@@ -284,11 +209,9 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebSocket, shouldOverride
      * This function is first loaded as a content script. The only purpose of it is to call
      * the "toString" method and use resulting string as a text content for injected script.
      */
-    var overrideWebRTC = function () { // jshint ignore:line
-
-
-        if (!(window.RTCPeerConnection instanceof Function) &&
-            !(window.webkitRTCPeerConnection instanceof Function)) {
+    const overrideWebRTC = function () {
+        if (!(window.RTCPeerConnection instanceof Function)
+            && !(window.webkitRTCPeerConnection instanceof Function)) {
             return;
         }
 
@@ -303,13 +226,13 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebSocket, shouldOverride
          * https://bugs.chromium.org/p/chromium/issues/detail?id=707683
          */
 
-        var RealRTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection;
-        var closeRTCPeerConnection = Function.prototype.call.bind(RealRTCPeerConnection.prototype.close);
+        const RealRTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection;
+        const closeRTCPeerConnection = Function.prototype.call.bind(RealRTCPeerConnection.prototype.close);
 
-        var RealArray = Array;
-        var RealString = String;
-        var createObject = Object.create;
-        var defineProperty = Object.defineProperty;
+        const RealArray = Array;
+        const RealString = String;
+        const createObject = Object.create;
+        const defineProperty = Object.defineProperty;
 
         /**
          * Convert passed url to string
@@ -317,7 +240,7 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebSocket, shouldOverride
          * @returns {string}
          */
         function urlToString(url) {
-            if (typeof url !== "undefined") {
+            if (typeof url !== 'undefined') {
                 return RealString(url);
             }
         }
@@ -329,21 +252,24 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebSocket, shouldOverride
          * @returns {*}
          */
         function safeCopyArray(original, transform) {
-
-            if (original === null || typeof original !== "object") {
+            if (original === null || typeof original !== 'object') {
                 return original;
             }
 
-            var immutable = RealArray(original.length);
-            for (var i = 0; i < immutable.length; i++) {
+            const immutable = RealArray(original.length);
+            for (let i = 0; i < immutable.length; i += 1) {
                 defineProperty(immutable, i, {
-                    configurable: false, enumerable: false, writable: false,
-                    value: transform(original[i])
+                    configurable: false,
+                    enumerable: false,
+                    writable: false,
+                    value: transform(original[i]),
                 });
             }
-            defineProperty(immutable, "length", {
-                configurable: false, enumerable: false, writable: false,
-                value: immutable.length
+            defineProperty(immutable, 'length', {
+                configurable: false,
+                enumerable: false,
+                writable: false,
+                value: immutable.length,
             });
             return immutable;
         }
@@ -354,41 +280,44 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebSocket, shouldOverride
          * @returns {*}
          */
         function protectConfiguration(configuration) {
-
-            if (configuration === null || typeof configuration !== "object") {
+            if (configuration === null || typeof configuration !== 'object') {
                 return configuration;
             }
 
-            var iceServers = safeCopyArray(
+            const iceServers = safeCopyArray(
                 configuration.iceServers,
                 function (iceServer) {
-
-                    var url = iceServer.url;
-                    var urls = iceServer.urls;
+                    let { url, urls } = iceServer;
 
                     // RTCPeerConnection doesn't iterate through pseudo Arrays of urls.
-                    if (typeof urls !== "undefined" && !(urls instanceof RealArray)) {
+                    if (typeof urls !== 'undefined' && !(urls instanceof RealArray)) {
                         urls = [urls];
                     }
 
                     return createObject(iceServer, {
                         url: {
-                            configurable: false, enumerable: false, writable: false,
-                            value: urlToString(url)
+                            configurable: false,
+                            enumerable: false,
+                            writable: false,
+                            value: urlToString(url),
                         },
                         urls: {
-                            configurable: false, enumerable: false, writable: false,
-                            value: safeCopyArray(urls, urlToString)
-                        }
+                            configurable: false,
+                            enumerable: false,
+                            writable: false,
+                            value: safeCopyArray(urls, urlToString),
+                        },
                     });
                 }
             );
 
             return createObject(configuration, {
                 iceServers: {
-                    configurable: false, enumerable: false, writable: false,
-                    value: iceServers
-                }
+                    configurable: false,
+                    enumerable: false,
+                    writable: false,
+                    value: iceServers,
+                },
             });
         }
 
@@ -417,15 +346,14 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebSocket, shouldOverride
          * https://developer.mozilla.org/en-US/docs/Web/API/RTCConfiguration
          */
         function checkConfiguration(connection, configuration) {
-
             if (!configuration || !configuration.iceServers) {
                 return;
             }
 
-            var iceServers = configuration.iceServers;
-            for (var i = 0; i < iceServers.length; i++) {
+            const iceServers = configuration.iceServers;
+            for (let i = 0; i < iceServers.length; i += 1) {
+                const iceServer = iceServers[i];
 
-                var iceServer = iceServers[i];
                 if (!iceServer) {
                     continue;
                 }
@@ -435,7 +363,7 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebSocket, shouldOverride
                 }
 
                 if (iceServer.urls) {
-                    for (var j = 0; j < iceServer.urls.length; j++) {
+                    for (let j = 0; j < iceServer.urls.length; j += 1) {
                         checkWebRTCRequest(connection, iceServer.urls[j]);
                     }
                 }
@@ -447,8 +375,7 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebSocket, shouldOverride
          * https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/setConfiguration
          */
         if (RealRTCPeerConnection.prototype.setConfiguration) {
-
-            var realSetConfiguration = Function.prototype.call.bind(RealRTCPeerConnection.prototype.setConfiguration);
+            const realSetConfiguration = Function.prototype.call.bind(RealRTCPeerConnection.prototype.setConfiguration);
 
             RealRTCPeerConnection.prototype.setConfiguration = function (configuration) {
                 configuration = protectConfiguration(configuration);
@@ -469,28 +396,24 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebSocket, shouldOverride
             /**
              * The old webkitRTCPeerConnection constructor takes an optional second argument and we must pass it.
              */
-            var connection = new RealRTCPeerConnection(configuration, arg);
+            const connection = new RealRTCPeerConnection(configuration, arg);
             checkConfiguration(connection, configuration);
             return connection;
         }
 
         WrappedRTCPeerConnection.prototype = RealRTCPeerConnection.prototype;
 
-        var boundWrappedRTCPeerConnection = WrappedRTCPeerConnection.bind();
-        copyProperties(RealRTCPeerConnection, boundWrappedRTCPeerConnection, ["caller", "generateCertificate", "name", "prototype"]);
+        const boundWrappedRTCPeerConnection = WrappedRTCPeerConnection.bind();
+        copyProperties(RealRTCPeerConnection, boundWrappedRTCPeerConnection, ['caller', 'generateCertificate', 'name', 'prototype']);
         RealRTCPeerConnection.prototype.constructor = boundWrappedRTCPeerConnection;
 
-        if ("RTCPeerConnection" in window) {
+        if ('RTCPeerConnection' in window) {
             window.RTCPeerConnection = boundWrappedRTCPeerConnection;
         }
-        if ("webkitRTCPeerConnection" in window) {
+        if ('webkitRTCPeerConnection' in window) {
             window.webkitRTCPeerConnection = boundWrappedRTCPeerConnection;
         }
     };
-
-    if (shouldOverrideWebSocket) {
-        overrideWebSocket();
-    }
 
     if (shouldOverrideWebRTC) {
         overrideWebRTC();
@@ -500,8 +423,7 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebSocket, shouldOverride
 /**
  * This function is executed in the content script. It starts listening to events from the page script and passes them further to the background page.
  */
-var initPageMessageListener = function () { // jshint ignore:line
-
+const initPageMessageListener = function () {
     'use strict';
 
     /**
@@ -510,20 +432,20 @@ var initPageMessageListener = function () { // jshint ignore:line
      * @param event
      */
     function pageMessageListener(event) {
-        if (!(event.source === window &&
-            event.data.direction &&
-            event.data.direction === "from-page-script@adguard" &&
-            event.data.elementUrl &&
-            event.data.documentUrl)) {
+        if (!(event.source === window
+            && event.data.direction
+            && event.data.direction === 'from-page-script@adguard'
+            && event.data.elementUrl
+            && event.data.documentUrl)) {
             return;
         }
 
-        var message = {
+        const message = {
             type: 'checkPageScriptWrapperRequest',
             elementUrl: event.data.elementUrl,
             documentUrl: event.data.documentUrl,
             requestType: event.data.requestType,
-            requestId: event.data.requestId
+            requestId: event.data.requestId,
         };
 
         contentPage.sendMessage(message, function (response) {
@@ -531,18 +453,18 @@ var initPageMessageListener = function () { // jshint ignore:line
                 return;
             }
 
-            var message = {
+            const message = {
                 direction: 'to-page-script@adguard',
                 elementUrl: event.data.elementUrl,
                 documentUrl: event.data.documentUrl,
                 requestType: event.data.requestType,
                 requestId: response.requestId,
-                block: response.block
+                block: response.block,
             };
 
             event.source.postMessage(message, event.origin);
         });
     }
 
-    window.addEventListener("message", pageMessageListener, false);
+    window.addEventListener('message', pageMessageListener, false);
 };
