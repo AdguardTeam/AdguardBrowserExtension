@@ -921,10 +921,12 @@
      * Request context recording
      */
     adguard.webRequest.onCompleted.addListener(({ requestId }) => {
+        adguard.cookieFiltering.modifyCookies(requestId);
         adguard.requestContextStorage.onRequestCompleted(requestId);
     }, ['<all_urls>']);
 
     adguard.webRequest.onErrorOccurred.addListener(({ requestId }) => {
+        adguard.cookieFiltering.modifyCookies(requestId);
         adguard.requestContextStorage.onRequestCompleted(requestId);
     }, ['<all_urls>']);
 
