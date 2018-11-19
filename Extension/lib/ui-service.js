@@ -31,6 +31,11 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                 openSiteReportTab(tab.url);
             });
         },
+        'context_complaint_website': function () {
+            adguard.tabs.getActive(function (tab) {
+                openAbuseTab(tab.url);
+            });
+        },
         'context_site_filtering_on': function () {
             adguard.tabs.getActive(unWhiteListTab);
         },
@@ -279,6 +284,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             }
             addMenu('context_open_log');
             addMenu('context_security_report');
+            addMenu('context_complaint_website');
             if (!tabInfo.adguardDetected) {
                 addSeparator();
                 addSettingsSubMenu();
