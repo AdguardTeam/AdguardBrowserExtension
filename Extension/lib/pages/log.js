@@ -699,12 +699,14 @@ var RequestWizard = (function () {
         const rulePatternsEl = template.querySelector('#rulePatterns');
 
         for (let i = 0; i < patterns.length; i += 1) {
+            const pattern = patterns[i];
+            const escapedPattern = pattern.replace(/"/g, '&quot;');
             const rulePatternTemplate = `
                 <li class="checkb-wrap">
                     <div class="radio">
-                        <input class="radio__input" type="radio" name="rulePattern" id="pattern${i}" value="${patterns[i]}" ${i === 0 ? "checked='checked'" : ''}>
+                        <input class="radio__input" type="radio" name="rulePattern" id="pattern${i}" value="${escapedPattern}" ${i === 0 ? "checked='checked'" : ''}>
                         <label class="radio__label" for="pattern${i}">
-                            ${patterns[i]}
+                            ${pattern}
                         </label>
                     </div>
                 </li>`;

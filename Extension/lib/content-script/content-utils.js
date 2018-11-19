@@ -33,31 +33,12 @@
         return;
     }
 
-    const DEFAULT_Z_INDEX = '1000';
-
-    /**
-     * Determines maximum z-index of elements on the page and returns maximum + 1
-     * @returns {String}
-     */
-    const findNextMaxZIndex = () => {
-        const elements = Array.from(document.querySelectorAll('body *'));
-        const zIndexes = elements
-            .map(element => {
-                const style = getComputedStyle(element);
-                return Number(style.zIndex);
-            })
-            .filter(zIndex => !Number.isNaN(zIndex));
-        if (zIndexes.length > 0) {
-            const maxZIndex = Math.max(...zIndexes);
-            return (maxZIndex + 1).toString();
-        }
-        return DEFAULT_Z_INDEX;
-    };
+    const MAX_Z_INDEX = '2147483647';
 
     /**
      * Creates iframe and appends it after target open tag
      * @param target Node where to append iframe with html
-     * @param html html string to write inside isframe
+     * @param html html string to write inside iframe
      * @returns {HTMLElement} iframe element
      */
     const appendIframe = (target, html) => {
@@ -67,7 +48,7 @@
         iframe.contentWindow.document.open();
         iframe.contentWindow.document.write(html);
         iframe.contentWindow.document.close();
-        iframe.style.zIndex = findNextMaxZIndex();
+        iframe.style.zIndex = MAX_Z_INDEX;
         return iframe;
     };
 
@@ -184,7 +165,6 @@
                 const iframe = appendIframe(document.body, updateIframeHtml);
                 iframe.classList.add('adguard-update-iframe');
 
-                // TODO Are there better methods to remove iframe within iframe itself?
                 const iframeMessageHandler = (event) => {
                     if (document.location.origin !== event.origin) {
                         return;
