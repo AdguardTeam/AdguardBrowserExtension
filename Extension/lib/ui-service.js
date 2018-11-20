@@ -149,7 +149,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
                 badge = adguard.utils.workaround.getBlockedCountText(blocked);
 
-                var notification = adguard.settings.getCurrentAdNotification();
+                var notification = adguard.notifications.getCurrentNotification();
                 if (notification && !tabInfo.adguardDetected) {
                     badge = badgeAdText;
                     badgeColor = badgeAdBgColor;
