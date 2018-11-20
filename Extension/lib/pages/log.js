@@ -372,9 +372,9 @@ PageController.prototype = {
     _updateLogoIcon: function () {
         contentPage.sendMessage({ type: 'getTabFrameInfoById', tabId: this.currentTabId }, function (response) {
             var frameInfo = response.frameInfo;
-            var src = 'images/icon-adguard.png';
+            var src = 'images/shield.svg';
             if (frameInfo && frameInfo.adguardDetected) {
-                src = 'skin/logpage/images/dropdown-logo-blue.png'; // TODO: integration icon
+                src = 'images/shield-blue.svg';
             }
 
             this.logoIcon.setAttribute('src', src);
