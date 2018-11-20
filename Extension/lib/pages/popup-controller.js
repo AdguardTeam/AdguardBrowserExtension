@@ -104,17 +104,18 @@ PopupController.prototype = {
         var parent = $('.widjet-popup');
         parent.empty();
 
-        //top block
+        // top block
+        this.adNotificationTemplate = this._getTemplate('ad-notification-template');
         this.siteStatsTemplate = this._getTemplate('page-stats-template');
         this.adguardDetectedMessageTemplate = this._getTemplate('adguard-detected-message-template');
         this.siteFilteringDisabledMessageTemplate = this._getTemplate('site-filtering-disabled-message-template');
         this.siteProtectionDisabledMessageTemplate = this._getTemplate('site-protection-disabled-message-template');
 
-        //middle block
+        // middle block
         this.siteFilteringExceptionMessageTemplate = this._getTemplate('site-filtering-exception-message-template');
         this.siteFilteringStateTemplate = this._getTemplate('site-filtering-checkbox-template');
 
-        //actions block
+        // actions block
         this.assistantTemplate = this._getTemplate('open-assistant-template');
         this.abuseTemplate = this._getTemplate('open-abuse-template');
         this.siteReportTemplate = this._getTemplate('site-report-template');
@@ -122,12 +123,13 @@ PopupController.prototype = {
         this.protectionDisabledTemplate = this._getTemplate('protection-disabled-template');
         this.protectionEnabledTemplate = this._getTemplate('protection-enabled-template');
 
-        //footer
+        // footer
         this.footerTemplate = this._getTemplate('popup-footer-template');
         this.footerIntegrationTemplate = this._getTemplate('popup-footer-integration-template');
 
-        //render
+        // render
         this._renderTopMessageBlock(parent, tabInfo);
+        this._renderImportantNotificationBlock(parent, this.options);
         this._renderSiteExceptionBlock(parent, tabInfo);
         this._renderFilteringCheckboxBlock(parent, tabInfo);
         this._renderActionsBlock(parent, tabInfo);
@@ -170,8 +172,26 @@ PopupController.prototype = {
         parent.append(template);
     },
 
-    _renderSiteExceptionBlock: function (parent, tabInfo) {
+    _renderImportantNotificationBlock: function (parent, options) {
+        // Do not show notification if there is no notification
+        if (!options.adNotification) {
+            return;
+        }
 
+        // Do not show notification if there is no localisation for it
+        const { messageKey, id } = options.adNotification;
+        const title = i18n.getMessage(messageKey);
+        if (!title) {
+            return;
+        }
+        const notificationTitleNode = this.adNotificationTemplate.find('.w-popup-filter-title')[0];
+        i18n.translateElement(notificationTitleNode, messageKey);
+        this.adNotificationTemplate.data({ notificationId: id });
+        parent.append(this.adNotificationTemplate);
+        popupPage.sendMessage({ type: 'setAdNotificationViewed', notificationId: id });
+    },
+
+    _renderSiteExceptionBlock: function (parent, tabInfo) {
         if (tabInfo.urlFilteringDisabled || tabInfo.applicationFilteringDisabled) {
             return;
         }
@@ -273,6 +293,22 @@ PopupController.prototype = {
             self.openAssistantInTab();
             popupPage.closePopup();
         });
+        parent.on('click', '.openAdNotification', function (e) {
+            e.preventDefault();
+            const { url } = self.options.adNotification;
+            if (url) {
+                self.openLink(url);
+                popupPage.closePopup();
+                // TODO mark notification clicked
+            }
+        });
+        parent.on('click', '.closeAdNotification', function (e) {
+            e.preventDefault();
+            var adNotification = parent.find('#adNotification');
+            if (adNotification) {
+                adNotification.hide();
+            }
+        });
         parent.on('click', '.openFilteringLog', function (e) {
             e.preventDefault();
             self.openFilteringLog();
@@ -371,10 +407,9 @@ PopupController.prototype = {
         controller.resizePopupWindow();
     });
 
-    popupPage.sendMessage({type: 'getTabInfoForPopup'}, function (message) {
+    popupPage.sendMessage({ type: 'getTabInfoForPopup' }, function (message) {
         $(document).ready(function () {
             controller.render(message.frameInfo, message.options);
         });
     });
-
 })();
