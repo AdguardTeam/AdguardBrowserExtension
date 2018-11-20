@@ -33,11 +33,24 @@ adguard.settings = (function (adguard) {
         DISABLE_COLLECT_HITS: 'hits-count-disabled',
         DISABLE_SHOW_CONTEXT_MENU: 'context-menu-disabled',
         USE_OPTIMIZED_FILTERS: 'use-optimized-filters',
-        DEFAULT_WHITE_LIST_MODE: 'default-whitelist-mode'
+        DEFAULT_WHITE_LIST_MODE: 'default-whitelist-mode',
+        AD_NOTIFICATIONS: 'ad-notifications',
     };
 
     var properties = Object.create(null);
     var propertyUpdateChannel = adguard.utils.channels.newChannel();
+
+
+    var adNotifications = {
+        blackFriday: {
+            id: 'blackFriday',
+            messageKey: 'popup_ad_notification_black_friday',
+            viewed: false,
+            url: 'https://adguard.com',
+            from: '20 Nov 2018 00:00:00',
+            to: '25 Nov 2018 23:59:59',
+        },
+    };
 
     /**
      * Lazy default properties
@@ -59,6 +72,7 @@ adguard.settings = (function (adguard) {
                 defaults[settings.DEFAULT_WHITE_LIST_MODE] = true;
                 defaults[settings.USE_OPTIMIZED_FILTERS] = adguard.utils.browser.isContentBlockerEnabled() || adguard.prefs.mobile;
                 defaults[settings.DISABLE_DETECT_FILTERS] = adguard.utils.browser.isContentBlockerEnabled();
+                defaults[settings.AD_NOTIFICATIONS] = adNotifications;
                 return defaults;
             });
         }
@@ -95,7 +109,7 @@ adguard.settings = (function (adguard) {
     };
 
     var setProperty = function (propertyName, propertyValue) {
-        adguard.localStorage.setItem(propertyName, propertyValue);
+        adguard.localStorage.setItem(propertyName, JSON.stringify(propertyValue));
         properties[propertyName] = propertyValue;
         propertyUpdateChannel.notify(propertyName, propertyValue);
     };
@@ -198,6 +212,35 @@ adguard.settings = (function (adguard) {
         setProperty(settings.DEFAULT_WHITE_LIST_MODE, enabled);
     };
 
+    // TODO add cache
+    var getCurrentAdNotification = function () {
+        var adNotifications = getProperty(settings.AD_NOTIFICATIONS);
+        var currentDate = new Date().getTime();
+        const adNotificationsKeys = Object.keys(adNotifications);
+        for (var i = 0; i < adNotificationsKeys.length; i += 1) {
+            var adNotificationKey = adNotificationsKeys[i];
+            var adNotification = adNotifications[adNotificationKey];
+            var from = new Date(adNotification.from).getTime();
+            var to = new Date(adNotification.to).getTime();
+            var viewed = adNotification.viewed;
+            if (from < currentDate && to > currentDate && !viewed) {
+                return adNotification;
+            }
+        }
+    };
+
+    var setAdNotificationViewed = function (notificationId) {
+        console.log(notificationId);
+        debugger;
+        var adNotifications = getProperty(settings.AD_NOTIFICATIONS);
+        if (adNotifications && adNotifications[notificationId]) {
+            const adNotification = adNotifications[notificationId];
+            adNotification.viewed = true;
+            adNotifications[notificationId] = adNotification;
+            setProperty(settings.AD_NOTIFICATIONS, adNotifications);
+        }
+    };
+
     var api = {};
 
     // Expose settings to api
@@ -231,6 +274,9 @@ adguard.settings = (function (adguard) {
     api.isDefaultWhiteListMode = isDefaultWhiteListMode;
     api.isUseOptimizedFiltersEnabled = isUseOptimizedFiltersEnabled;
     api.changeDefaultWhiteListMode = changeDefaultWhiteListMode;
+
+    api.getCurrentAdNotification = getCurrentAdNotification;
+    api.setAdNotificationViewed = setAdNotificationViewed;
 
     return api;
 
