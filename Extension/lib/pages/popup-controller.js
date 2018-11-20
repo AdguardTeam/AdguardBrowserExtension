@@ -105,7 +105,7 @@ PopupController.prototype = {
         parent.empty();
 
         // top block
-        this.adNotificationTemplate = this._getTemplate('ad-notification-template');
+        this.notificationTemplate = this._getTemplate('ad-notification-template');
         this.siteStatsTemplate = this._getTemplate('page-stats-template');
         this.adguardDetectedMessageTemplate = this._getTemplate('adguard-detected-message-template');
         this.siteFilteringDisabledMessageTemplate = this._getTemplate('site-filtering-disabled-message-template');
@@ -129,7 +129,7 @@ PopupController.prototype = {
 
         // render
         this._renderTopMessageBlock(parent, tabInfo);
-        this._renderImportantNotificationBlock(parent, this.options);
+        this._renderNotificationBlock(parent, this.options);
         this._renderSiteExceptionBlock(parent, tabInfo);
         this._renderFilteringCheckboxBlock(parent, tabInfo);
         this._renderActionsBlock(parent, tabInfo);
@@ -172,23 +172,29 @@ PopupController.prototype = {
         parent.append(template);
     },
 
-    _renderImportantNotificationBlock: function (parent, options) {
+    _renderNotificationBlock: function (parent, options) {
         // Do not show notification if there is no notification
-        if (!options.adNotification) {
+        if (!options.notification) {
             return;
         }
 
         // Do not show notification if there is no localisation for it
-        const { messageKey, id } = options.adNotification;
+        const {
+            messageKey,
+            id,
+            bgColor,
+            textColor
+        } = options.notification;
         const title = i18n.getMessage(messageKey);
         if (!title) {
             return;
         }
-        const notificationTitleNode = this.adNotificationTemplate.find('.w-popup-filter-title')[0];
+        const notificationTitleNode = this.notificationTemplate.find('.w-popup-filter-title')[0];
         i18n.translateElement(notificationTitleNode, messageKey);
-        this.adNotificationTemplate.data({ notificationId: id });
-        parent.append(this.adNotificationTemplate);
-        popupPage.sendMessage({ type: 'setAdNotificationViewed', notificationId: id });
+        this.notificationTemplate.data({ notificationId: id });
+        this.notificationTemplate.css({ background: bgColor, color: textColor });
+        parent.append(this.notificationTemplate);
+        popupPage.sendMessage({ type: 'markNotificationViewed', notificationId: id });
     },
 
     _renderSiteExceptionBlock: function (parent, tabInfo) {
@@ -293,13 +299,12 @@ PopupController.prototype = {
             self.openAssistantInTab();
             popupPage.closePopup();
         });
-        parent.on('click', '.openAdNotification', function (e) {
+        parent.on('click', '.openNotificationLink', function (e) {
             e.preventDefault();
-            const { url } = self.options.adNotification;
+            const { url } = self.options.notification;
             if (url) {
                 self.openLink(url);
                 popupPage.closePopup();
-                // TODO mark notification clicked
             }
         });
         parent.on('click', '.closeAdNotification', function (e) {
