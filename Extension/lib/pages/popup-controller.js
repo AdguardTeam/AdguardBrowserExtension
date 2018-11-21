@@ -105,7 +105,7 @@ PopupController.prototype = {
         parent.empty();
 
         // top block
-        this.notificationTemplate = this._getTemplate('ad-notification-template');
+        this.notificationTemplate = this._getTemplate('notification-template');
         this.siteStatsTemplate = this._getTemplate('page-stats-template');
         this.adguardDetectedMessageTemplate = this._getTemplate('adguard-detected-message-template');
         this.siteFilteringDisabledMessageTemplate = this._getTemplate('site-filtering-disabled-message-template');
@@ -194,7 +194,7 @@ PopupController.prototype = {
         this.notificationTemplate.data({ notificationId: id });
         this.notificationTemplate.css({ background: bgColor, color: textColor });
         parent.append(this.notificationTemplate);
-        popupPage.sendMessage({ type: 'markNotificationViewed', notificationId: id });
+        popupPage.sendMessage({ type: 'setNotificationViewed', notificationId: id });
     },
 
     _renderSiteExceptionBlock: function (parent, tabInfo) {
@@ -307,11 +307,11 @@ PopupController.prototype = {
                 popupPage.closePopup();
             }
         });
-        parent.on('click', '.closeAdNotification', function (e) {
+        parent.on('click', '.closeNotification', function (e) {
             e.preventDefault();
-            var adNotification = parent.find('#adNotification');
-            if (adNotification) {
-                adNotification.hide();
+            var notification = parent.find('#popup-notification');
+            if (notification) {
+                notification.hide();
             }
         });
         parent.on('click', '.openFilteringLog', function (e) {

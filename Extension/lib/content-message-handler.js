@@ -406,8 +406,8 @@
                     });
                 });
                 return true; // Async
-            case 'markNotificationViewed':
-                adguard.notifications.setNotificationViewed(message.notificationId);
+            case 'setNotificationViewed':
+                adguard.notifications.setNotificationViewed();
                 break;
             case 'resizePanelPopup':
                 adguard.browserAction.resize(message.width, message.height);
