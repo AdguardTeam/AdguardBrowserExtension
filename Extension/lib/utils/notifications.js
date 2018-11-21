@@ -105,17 +105,9 @@ adguard.notifications = (function (adguard) {
     // Prepare the notifications
     initNotifications();
 
-    let getItem = function (key) {
-        return adguard.localStorage.getItem(key);
-    };
-
-    let setItem = function (key, value) {
-        adguard.localStorage.setItem(key, value);
-    };
-
     let currentNotification;
     let notificationCheckTime;
-    let checkTimeoutMs = 10 * 60 * 1000;
+    const checkTimeoutMs = 10 * 60 * 1000; // 10 minutes
 
     /**
      * Finds out notification for current time and checks if notification wasn't shown yet
@@ -123,9 +115,9 @@ adguard.notifications = (function (adguard) {
      */
     let getCurrentNotification = function () {
         let currentTime = new Date().getTime();
+        let timeSinceLastCheck = currentTime - notificationCheckTime
 
-        if (notificationCheckTime
-            && (currentTime - notificationCheckTime) <= checkTimeoutMs) {
+        if (notificationCheckTime > 0 && timeSinceLastCheck <= checkTimeoutMs) {
             return currentNotification;
         }
 
@@ -135,7 +127,7 @@ adguard.notifications = (function (adguard) {
         let viewedNotifications;
 
         try {
-            viewedNotifications = getItem(VIEWED_NOTIFICATIONS) || [];
+            viewedNotifications = adguard.localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
         } catch (e) {
             adguard.console.error(e);
             currentNotification = null;
@@ -172,12 +164,12 @@ adguard.notifications = (function (adguard) {
         }
 
         if (currentNotification) {
-            let viewedNotifications = getItem(VIEWED_NOTIFICATIONS) || [];
+            let viewedNotifications = adguard.localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
             let id = currentNotification.id;
             if (!viewedNotifications.includes(id)) {
                 viewedNotifications.push(id);
                 try {
-                    setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
+                    adguard.localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
                     adguard.tabs.getActive(adguard.ui.updateTabIconAndContextMenu);
                     currentNotification = null;
                 } catch (e) {
