@@ -107,15 +107,11 @@ adguard.ui = (function (adguard) { // jshint ignore:line
      */
 
     function updateTabIcon(tab, options) {
-        const badgeAdBgColor = '#DF3812';
-        const badgeAdText = '!';
-        const badgeUsualBgColor = '#555';
+        let icon;
+        let badge;
+        let badgeColor = '#555';
 
         try {
-            let icon;
-            let badge;
-            let badgeColor = badgeUsualBgColor;
-
             if (options) {
                 icon = options.icon;
                 badge = options.badge;
@@ -151,8 +147,8 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
                 var notification = adguard.notifications.getCurrentNotification();
                 if (notification && !tabInfo.adguardDetected) {
-                    badge = badgeAdText;
-                    badgeColor = badgeAdBgColor;
+                    badge = notification.badgeText;
+                    badgeColor = notification.badgeBgColor;
                 }
             }
 

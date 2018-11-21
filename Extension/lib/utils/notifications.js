@@ -34,36 +34,34 @@ adguard.notifications = (function (adguard) {
      * @property {string} bgColor;
      * @property {string} textColor;
      */
-
+    // TODO add localisations and fix typedef
     var notifications = {
         blackFriday: {
             id: 'blackFriday',
             messageKey: 'popup_ad_notification_black_friday',
-            // TODO set real url
-            url: 'https://adguard.com',
-            // TODO change date to 23 Nov
-            from: '20 Nov 2018 00:00:00',
-            to: '25 Nov 2018 23:59:59',
+            url: 'https://adguard.com/forward.html?action=adguard_site&from=popup&app=browser_extension',
+            from: '23 Nov 2018 12:00:00',
+            to: '25 Nov 2018 23:59:00',
             bgColor: '#000',
             textColor: '#fff',
+            badgeBgColor: '#DF3812',
+            badgeText: '!',
         },
     };
 
     var VIEWED_NOTIFICATIONS = 'viewed-notifications';
 
-    // TODO add cache
-
     var getItem = function (key) {
-        var value = adguard.localStorage.getItem(key);
-        if (value) {
-            return JSON.parse(value);
-        }
-        return value;
+        return adguard.localStorage.getItem(key);
     };
 
     var setItem = function (key, value) {
-        adguard.localStorage.setItem(key, JSON.stringify(value));
+        adguard.localStorage.setItem(key, value);
     };
+
+    var currentNotification;
+    var notificationCheckTime;
+    var checkTimeoutMs = 10 * 60 * 1000;
 
     /**
      * Finds out notification for current time and checks if notification wasn't shown yet
@@ -71,6 +69,15 @@ adguard.notifications = (function (adguard) {
      */
     var getCurrentNotification = function () {
         var currentTime = new Date().getTime();
+
+        if (currentNotification !== undefined
+            && notificationCheckTime
+            && (currentTime - notificationCheckTime) <= checkTimeoutMs) {
+            return currentNotification;
+        }
+
+        notificationCheckTime = currentTime;
+
         var notificationsKeys = Object.keys(notifications);
         var viewedNotifications;
 
@@ -78,10 +85,9 @@ adguard.notifications = (function (adguard) {
             viewedNotifications = getItem(VIEWED_NOTIFICATIONS) || [];
         } catch (e) {
             adguard.console.error(e);
-            return;
+            currentNotification = null;
+            return currentNotification;
         }
-
-        console.log(viewedNotifications);
 
         for (var i = 0; i < notificationsKeys.length; i += 1) {
             var notificationKey = notificationsKeys[i];
@@ -92,17 +98,25 @@ adguard.notifications = (function (adguard) {
                 && to > currentTime
                 && !viewedNotifications.includes(notificationKey)
             ) {
-                return notification;
+                currentNotification = notification;
+                return currentNotification;
             }
         }
     };
 
-    var setNotificationViewed = function (notificationId) {
+    var setNotificationViewed = function () {
+        if (currentNotification === undefined
+            || currentNotification === null) {
+            return;
+        }
         var viewedNotifications = getItem(VIEWED_NOTIFICATIONS) || [];
-        if (!viewedNotifications.includes(notificationId)) {
-            viewedNotifications.push(notificationId);
+        var id = currentNotification.id;
+        if (!viewedNotifications.includes(id)) {
+            viewedNotifications.push(id);
             try {
                 setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
+                currentNotification = null;
+                adguard.tabs.getActive(adguard.ui.updateTabIconAndContextMenu);
             } catch (e) {
                 adguard.console.error(e);
             }
