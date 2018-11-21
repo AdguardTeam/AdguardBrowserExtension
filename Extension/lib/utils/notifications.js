@@ -43,11 +43,11 @@ adguard.notifications = (function (adguard) {
             id: 'blackFriday',
             locales: {
                 en: 'Black Friday: <strong>50% Off</strong> AdGuard Premium',
-                ru: 'Black Friday: -50% на AdGuard Премиум',
-                fr: 'Black Friday: -50% sur AdGuard Premium',
-                es: 'Black Friday:-50% en AdGuard Premium',
-                de: 'Black Friday: -50% auf AdGuard Premium',
-                ja: 'AdGuardプレミアム【５０％OFF】',
+                ru: 'Black Friday: <strong>-50%</strong> на AdGuard Премиум',
+                fr: 'Black Friday: <strong>-50%</strong> sur AdGuard Premium',
+                es: 'Black Friday:<strong>-50%</strong> en AdGuard Premium',
+                de: 'Black Friday: <strong>-50%</strong> auf AdGuard Premium',
+                ja: 'AdGuardプレミアム<strong>【５０％OFF】</strong>',
             },
             // This field is filled below (see initNotifications)
             text: '',
@@ -100,7 +100,7 @@ adguard.notifications = (function (adguard) {
                 delete notifications[notificationKey];
             }
         }
-    }
+    };
 
     // Prepare the notifications
     initNotifications();
@@ -155,8 +155,8 @@ adguard.notifications = (function (adguard) {
                 return currentNotification;
             }
         }
-
-        return null;
+        currentNotification = null;
+        return currentNotification;
     };
 
     const DELAY = 30 * 1000; // clear notification in 30 seconds
