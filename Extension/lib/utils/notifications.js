@@ -28,17 +28,19 @@ adguard.notifications = (function (adguard) {
      * @typedef Notification
      * @type object
      * @property {string} id
-     * @property {string} messageKey
+     * @property {object} locales
      * @property {string} url
      * @property {string} from
      * @property {string} to
      * @property {string} bgColor;
      * @property {string} textColor;
+     * @property {string} badgeBgColor;
+     * @property {string} badgeText;
      */
 
     let notifications = {
         blackFriday: {
-            id: 'blackFriday' + Math.random(),
+            id: 'blackFriday',
             locales: {
                 en: 'Black Friday: <strong>50% Off</strong> AdGuard Premium',
                 ru: 'Black Friday: -50% на AdGuard Премиум',

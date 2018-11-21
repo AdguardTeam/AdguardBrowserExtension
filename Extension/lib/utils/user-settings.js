@@ -95,7 +95,7 @@ adguard.settings = (function (adguard) {
     };
 
     var setProperty = function (propertyName, propertyValue) {
-        adguard.localStorage.setItem(propertyName, JSON.stringify(propertyValue));
+        adguard.localStorage.setItem(propertyName, propertyValue);
         properties[propertyName] = propertyValue;
         propertyUpdateChannel.notify(propertyName, propertyValue);
     };

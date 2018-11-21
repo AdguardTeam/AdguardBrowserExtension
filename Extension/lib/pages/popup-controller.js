@@ -192,8 +192,9 @@ PopupController.prototype = {
 
         const notificationTitleNode = this.notificationTemplate.find('.w-popup-filter-title').eq(0);
         notificationTitleNode.html(text);
-        this.notificationTemplate.data({ notificationId: id });
         this.notificationTemplate.css({ background: bgColor, color: textColor });
+        const cross = this.notificationTemplate.find('#cross-wr').eq(0);
+        cross.attr('stroke', textColor);
         parent.append(this.notificationTemplate);
 
         // Schedule notification removal
