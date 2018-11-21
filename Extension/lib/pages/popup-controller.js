@@ -180,21 +180,33 @@ PopupController.prototype = {
 
         // Do not show notification if there is no localisation for it
         const {
-            messageKey,
             id,
             bgColor,
-            textColor
+            textColor,
+            locales,
         } = options.notification;
-        const title = i18n.getMessage(messageKey);
+
+        const languages = navigator.languages;
+        let title;
+        for (let i = 0; i < languages.length; i += 1) {
+            let language = languages[i];
+            if (locales[language]) {
+                title = locales[language];
+                break;
+            }
+        }
+
         if (!title) {
             return;
         }
-        const notificationTitleNode = this.notificationTemplate.find('.w-popup-filter-title')[0];
-        i18n.translateElement(notificationTitleNode, messageKey);
+
+        const notificationTitleNode = this.notificationTemplate.find('.w-popup-filter-title').eq(0);
+        notificationTitleNode.html(title);
         this.notificationTemplate.data({ notificationId: id });
         this.notificationTemplate.css({ background: bgColor, color: textColor });
         parent.append(this.notificationTemplate);
-        popupPage.sendMessage({ type: 'setNotificationViewed', notificationId: id });
+        // TODO uncomment this line
+        // popupPage.sendMessage({ type: 'setNotificationViewed', notificationId: id });
     },
 
     _renderSiteExceptionBlock: function (parent, tabInfo) {
