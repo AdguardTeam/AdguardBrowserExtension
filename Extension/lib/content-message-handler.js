@@ -407,7 +407,7 @@
                 });
                 return true; // Async
             case 'setNotificationViewed':
-                adguard.notifications.setNotificationViewed();
+                adguard.notifications.setNotificationViewed(message.withDelay);
                 break;
             case 'resizePanelPopup':
                 adguard.browserAction.resize(message.width, message.height);

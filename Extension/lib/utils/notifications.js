@@ -22,6 +22,8 @@
 adguard.notifications = (function (adguard) {
     'use strict';
 
+    const VIEWED_NOTIFICATIONS = 'viewed-notifications';
+
     /**
      * @typedef Notification
      * @type object
@@ -33,19 +35,23 @@ adguard.notifications = (function (adguard) {
      * @property {string} bgColor;
      * @property {string} textColor;
      */
-    // TODO add localisations and fix typedef
+
     let notifications = {
         blackFriday: {
-            id: 'blackFriday',
+            id: 'blackFriday' + Math.random(),
             locales: {
                 en: 'Black Friday: <strong>50% Off</strong> AdGuard Premium',
-                ru: '',
-                de: '',
+                ru: 'Black Friday: -50% на AdGuard Премиум',
+                fr: 'Black Friday: -50% sur AdGuard Premium',
+                es: 'Black Friday:-50% en AdGuard Premium',
+                de: 'Black Friday: -50% auf AdGuard Premium',
+                ja: 'AdGuardプレミアム【５０％OFF】',
             },
+            // This field is filled below (see initNotifications)
+            text: '',
             url: 'https://adguard.com/forward.html?action=special_bf18&from=browser_action&app=browser_extension',
-            // TODO fix date
-            from: '20 Nov 2018 12:00:00',
-            to: '25 Nov 2018 23:59:00',
+            from: '23 Nov 2018 12:00:00',
+            to: '26 Nov 2018 23:59:00',
             bgColor: '#000',
             textColor: '#fff',
             badgeBgColor: '#DF3812',
@@ -53,7 +59,49 @@ adguard.notifications = (function (adguard) {
         },
     };
 
-    let VIEWED_NOTIFICATIONS = 'viewed-notifications';
+    /**
+     * Scans notification locales and returns the one matching navigator.language
+     * @param {*} notification notification object
+     * @returns {string} matching text or null
+     */
+    let getNotificationText = function (notification) {
+        const language = navigator.language;
+        if (!language) {
+            return null;
+        }
+
+        const languageCode = language.split('-')[0];
+        if (!languageCode) {
+            return null;
+        }
+
+        return notification.locales[language] || notification.locales[languageCode];
+    };
+
+    /**
+     * Scans notifications list and prepares them to be used (or removes expired)
+     */
+    let initNotifications = function () {
+        let notificationsKeys = Object.keys(notifications);
+
+        for (let i = 0; i < notificationsKeys.length; i += 1) {
+            let notificationKey = notificationsKeys[i];
+            let notification = notifications[notificationKey];
+
+            notification.text = getNotificationText(notification);
+
+            let to = new Date(notification.to).getTime();
+            let expired = new Date().getTime() > to;
+
+            if (!notification.text || expired) {
+                // Remove expired and invalid
+                delete notifications[notificationKey];
+            }
+        }
+    }
+
+    // Prepare the notifications
+    initNotifications();
 
     let getItem = function (key) {
         return adguard.localStorage.getItem(key);
@@ -74,8 +122,7 @@ adguard.notifications = (function (adguard) {
     let getCurrentNotification = function () {
         let currentTime = new Date().getTime();
 
-        if (currentNotification !== undefined
-            && notificationCheckTime
+        if (notificationCheckTime
             && (currentTime - notificationCheckTime) <= checkTimeoutMs) {
             return currentNotification;
         }
@@ -110,7 +157,18 @@ adguard.notifications = (function (adguard) {
         return null;
     };
 
-    let setNotificationViewed = function () {
+    const DELAY = 30 * 1000; // clear notification in 30 seconds
+    let timeoutId;
+
+    let setNotificationViewed = function (withDelay) {
+        if (withDelay) {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                setNotificationViewed(false);
+            }, DELAY);
+            return;
+        }
+
         if (currentNotification) {
             let viewedNotifications = getItem(VIEWED_NOTIFICATIONS) || [];
             let id = currentNotification.id;
