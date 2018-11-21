@@ -141,7 +141,7 @@ adguard.notifications = (function (adguard) {
             let to = new Date(notification.to).getTime();
             if (from < currentTime
                 && to > currentTime
-                && !viewedNotifications.includes(notificationKey)
+                && !viewedNotifications.includes(notification.id)
             ) {
                 currentNotification = notification;
                 return currentNotification;
