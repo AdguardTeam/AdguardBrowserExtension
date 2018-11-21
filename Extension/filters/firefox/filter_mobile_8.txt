@@ -1,8 +1,8 @@
-! Checksum: OZ5k5ReqiTFmbg6rYNKtUg
+! Checksum: pOFlXuEOlVbFhec+L7iRFg
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.0.39
-! TimeUpdated: 2018-09-03T18:09:01+00:00
+! Version: 2.0.0.41
+! TimeUpdated: 2018-10-24T10:49:29+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -1334,6 +1334,13 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 ||v.fwmrm.net/ad/g/1?$replace=/(tv\.freewheel\.SDK\._instanceQueue\['Context_[\s\S]*?'\][\s\S]*?\.requestComplete\(\{)[\s\S]*\}\);/\$1\}\);/,domain=q2.be,important
 ||tv2.no/*/homadConfig*.json$replace=/"enabled": true\,/"enabled":false\,/i,important
 ||svonm.com/*config.json$replace=/"enabled": true\,/"enabled":false\,/i,important
+nnieuws.be##.bannerbox
+nnieuws.be###block-views-vw-banners-block-2
+nnieuws.be###block-views-vw-column-partners-block
+||nnieuws.be/sites/default/files/banner-*.gif
+||nnieuws.be/sites/default/files/*-300x300*.gif
+||oozo.nl/images/zzpbanner.png
+oozo.nl##.col-md-4 > div[style^="background-image: url(/images/afvallen.jpg);"][onclick^="javascript:document.location="]
 looopings.nl###containerAd
 appletips.nl##a[href^="/adverteren-"]
 appletips.nl##.padnoshow > div[class^="block"][style^="margin-top: "]
