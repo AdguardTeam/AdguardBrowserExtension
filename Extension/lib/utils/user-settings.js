@@ -33,7 +33,7 @@ adguard.settings = (function (adguard) {
         DISABLE_COLLECT_HITS: 'hits-count-disabled',
         DISABLE_SHOW_CONTEXT_MENU: 'context-menu-disabled',
         USE_OPTIMIZED_FILTERS: 'use-optimized-filters',
-        DEFAULT_WHITE_LIST_MODE: 'default-whitelist-mode'
+        DEFAULT_WHITE_LIST_MODE: 'default-whitelist-mode',
     };
 
     var properties = Object.create(null);

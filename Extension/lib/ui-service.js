@@ -105,25 +105,24 @@ adguard.ui = (function (adguard) { // jshint ignore:line
      * @param tab Tab
      * @param options Options for icon or badge values
      */
+
     function updateTabIcon(tab, options) {
+        let icon;
+        let badge;
+        let badgeColor = '#555';
 
         try {
-            var icon, badge;
-
             if (options) {
-
                 icon = options.icon;
                 badge = options.badge;
-
             } else {
-
                 var blocked;
                 var disabled;
 
                 var tabInfo = adguard.frames.getFrameInfo(tab);
                 if (tabInfo.adguardDetected) {
                     disabled = tabInfo.documentWhiteListed;
-                    blocked = "";
+                    blocked = '';
                 } else {
                     disabled = tabInfo.applicationFilteringDisabled;
                     disabled = disabled || tabInfo.urlFilteringDisabled;
@@ -132,11 +131,9 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                     if (!disabled && adguard.settings.showPageStatistic()) {
                         blocked = tabInfo.totalBlockedTab.toString();
                     } else {
-                        blocked = "0";
+                        blocked = '0';
                     }
                 }
-
-                badge = adguard.utils.workaround.getBlockedCountText(blocked);
 
                 if (disabled) {
                     icon = adguard.prefs.ICONS.ICON_GRAY;
@@ -145,9 +142,18 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                 } else {
                     icon = adguard.prefs.ICONS.ICON_GREEN;
                 }
+
+                badge = adguard.utils.workaround.getBlockedCountText(blocked);
+
+                // If there's an active notification, indicate it on the badge
+                var notification = adguard.notifications.getCurrentNotification();
+                if (notification && !tabInfo.adguardDetected) {
+                    badge = notification.badgeText;
+                    badgeColor = notification.badgeBgColor;
+                }
             }
 
-            adguard.browserAction.setBrowserAction(tab, icon, badge, "#555", browserActionTitle);
+            adguard.browserAction.setBrowserAction(tab, icon, badge, badgeColor, browserActionTitle);
         } catch (ex) {
             adguard.console.error('Error while updating icon for tab {0}: {1}', tab.tabId, new Error(ex));
         }
@@ -279,14 +285,14 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             addMenu('popup_site_protection_disabled_android', {
                 action: 'context_enable_protection',
                 checked: true,
-                checkable: true
+                checkable: true,
             });
-            addMenu('popup_open_log_android', {action: 'context_open_log'});
-            addMenu('popup_open_settings', {action: 'context_open_settings'});
+            addMenu('popup_open_log_android', { action: 'context_open_log' });
+            addMenu('popup_open_settings', { action: 'context_open_settings' });
         } else if (tabInfo.urlFilteringDisabled) {
             addMenu('context_site_filtering_disabled');
-            addMenu('popup_open_log_android', {action: 'context_open_log'});
-            addMenu('popup_open_settings', {action: 'context_open_settings'});
+            addMenu('popup_open_log_android', { action: 'context_open_log' });
+            addMenu('popup_open_settings', { action: 'context_open_settings' });
             addMenu('context_update_antibanner_filters');
         } else {
             addMenu('popup_site_protection_disabled_android', {
@@ -482,7 +488,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     };
 
     var openThankYouPage = function () {
-
         var params = adguard.utils.browser.getExtensionParams();
         params.push('_locale=' + encodeURIComponent(adguard.app.getLocale()));
         var thankyouUrl = THANKYOU_PAGE_URL + '?' + params.join('&');
@@ -519,7 +524,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     };
 
     var whiteListTab = function (tab) {
-
         var tabInfo = adguard.frames.getFrameInfo(tab);
         adguard.whitelist.whiteListUrl(tabInfo.url);
 
@@ -534,7 +538,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     };
 
     var unWhiteListTab = function (tab) {
-
         var tabInfo = adguard.frames.getFrameInfo(tab);
         adguard.userrules.unWhiteListFrame(tabInfo);
 
@@ -583,7 +586,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     /*
      * The `openAssistant` function uses the `tabs.executeScript` function to inject the Assistant code into a page without using messaging.
      * We do it dynamically and not include assistant file into the default content scripts in order to reduce the overall memory usage.
-     * 
+     *
      * Browsers that do not support `tabs.executeScript` function use Assistant from the manifest file manually (Safari for instance).
      * After executing the Assistant code in callback the `initAssistant` function is called.
      * It sends messages to current tab and runs Assistant. Other browsers call `initAssistant` function manually.
@@ -592,7 +595,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
      */
     var openAssistant = function (selectElement) {
         if (adguard.tabs.executeScriptFile) {
-            
+
             // Load Assistant code to the activate tab immediately
             adguard.tabs.executeScriptFile(null, "/lib/content-script/assistant/js/assistant.js", function() {
                 initAssistant(selectElement);
@@ -604,7 +607,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     };
 
     var openTab = function (url, options, callback) {
-
         var activateSameTab, inNewWindow, type, inBackground;
         if (options) {
             activateSameTab = options.activateSameTab;
@@ -641,22 +643,20 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                 url: url,
                 type: type || 'normal',
                 active: !inBackground,
-                inNewWindow: inNewWindow
+                inNewWindow: inNewWindow,
             }, callback);
         });
-
     };
 
-    //update icon on event received
+    // update icon on event received
     adguard.listeners.addListener(function (event, tab, reset) {
-
         if (event !== adguard.listeners.UPDATE_TAB_BUTTON_STATE || !tab) {
             return;
         }
 
         var options;
         if (reset) {
-            options = {icon: adguard.prefs.ICONS.ICON_GRAY, badge: ''};
+            options = { icon: adguard.prefs.ICONS.ICON_GRAY, badge: '' };
         }
 
         updateTabIcon(tab, options);
@@ -698,10 +698,12 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             updateTabContextMenu(aTab);
         });
     });
+
     // Update tab icon and context menu on active tab changed
     adguard.tabs.onActivated.addListener(function (tab) {
         updateTabIconAndContextMenu(tab, true);
     });
+
     // Update tab icon and context menu on application initialization
     adguard.listeners.addListener(function (event) {
         if (event === adguard.listeners.APPLICATION_INITIALIZED) {

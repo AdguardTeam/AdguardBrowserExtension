@@ -400,11 +400,15 @@
                             showStatsSupported: !adguard.utils.browser.isContentBlockerEnabled(),
                             isSafariBrowser: adguard.utils.browser.isSafariBrowser(),
                             isFirefoxBrowser: adguard.utils.browser.isFirefoxBrowser(),
-                            isMacOs: adguard.utils.browser.isMacOs()
-                        }
+                            isMacOs: adguard.utils.browser.isMacOs(),
+                            notification: adguard.notifications.getCurrentNotification(),
+                        },
                     });
                 });
                 return true; // Async
+            case 'setNotificationViewed':
+                adguard.notifications.setNotificationViewed(message.withDelay);
+                break;
             case 'resizePanelPopup':
                 adguard.browserAction.resize(message.width, message.height);
                 break;
