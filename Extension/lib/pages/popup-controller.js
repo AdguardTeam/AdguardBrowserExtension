@@ -56,47 +56,47 @@ PopupController.prototype = {
     },
 
     addWhiteListDomain: function (url) {
-        popupPage.sendMessage({type: 'addWhiteListDomainPopup', url: url});
+        popupPage.sendMessage({ type: 'addWhiteListDomainPopup', url: url });
     },
 
     removeWhiteListDomain: function (url) {
-        popupPage.sendMessage({type: 'removeWhiteListDomainPopup', url: url});
+        popupPage.sendMessage({ type: 'removeWhiteListDomainPopup', url: url });
     },
 
     changeApplicationFilteringDisabled: function (disabled) {
-        popupPage.sendMessage({type: 'changeApplicationFilteringDisabled', disabled: disabled});
+        popupPage.sendMessage({ type: 'changeApplicationFilteringDisabled', disabled: disabled });
     },
 
     sendFeedback: function (url, topic, comment) {
-        popupPage.sendMessage({type: 'sendFeedback', url: url, topic: topic, comment: comment});
+        popupPage.sendMessage({ type: 'sendFeedback', url: url, topic: topic, comment: comment });
     },
 
     openSiteReportTab: function (url) {
-        popupPage.sendMessage({type: 'openSiteReportTab', url: url});
+        popupPage.sendMessage({ type: 'openSiteReportTab', url: url });
     },
 
     openAbuseTab: function (url) {
-        popupPage.sendMessage({type: 'openAbuseTab', url: url});
+        popupPage.sendMessage({ type: 'openAbuseTab', url: url });
     },
 
     openSettingsTab: function () {
-        popupPage.sendMessage({type: 'openSettingsTab'});
+        popupPage.sendMessage({ type: 'openSettingsTab' });
     },
 
     openAssistantInTab: function () {
-        popupPage.sendMessage({type: 'openAssistant'});
+        popupPage.sendMessage({ type: 'openAssistant' });
     },
 
     openFilteringLog: function (tabId) {
-        popupPage.sendMessage({type: 'openFilteringLog', tabId: tabId});
+        popupPage.sendMessage({ type: 'openFilteringLog', tabId: tabId });
     },
 
     resetBlockedAdsCount: function () {
-        popupPage.sendMessage({type: 'resetBlockedAdsCount'});
+        popupPage.sendMessage({ type: 'resetBlockedAdsCount' });
     },
 
     openLink: function (url) {
-        popupPage.sendMessage({type: 'openTab', url: url});
+        popupPage.sendMessage({ type: 'openTab', url: url });
     },
 
     _renderPopup: function (tabInfo) {
@@ -104,17 +104,18 @@ PopupController.prototype = {
         var parent = $('.widjet-popup');
         parent.empty();
 
-        //top block
+        // top block
+        this.notificationTemplate = this._getTemplate('notification-template');
         this.siteStatsTemplate = this._getTemplate('page-stats-template');
         this.adguardDetectedMessageTemplate = this._getTemplate('adguard-detected-message-template');
         this.siteFilteringDisabledMessageTemplate = this._getTemplate('site-filtering-disabled-message-template');
         this.siteProtectionDisabledMessageTemplate = this._getTemplate('site-protection-disabled-message-template');
 
-        //middle block
+        // middle block
         this.siteFilteringExceptionMessageTemplate = this._getTemplate('site-filtering-exception-message-template');
         this.siteFilteringStateTemplate = this._getTemplate('site-filtering-checkbox-template');
 
-        //actions block
+        // actions block
         this.assistantTemplate = this._getTemplate('open-assistant-template');
         this.abuseTemplate = this._getTemplate('open-abuse-template');
         this.siteReportTemplate = this._getTemplate('site-report-template');
@@ -122,12 +123,13 @@ PopupController.prototype = {
         this.protectionDisabledTemplate = this._getTemplate('protection-disabled-template');
         this.protectionEnabledTemplate = this._getTemplate('protection-enabled-template');
 
-        //footer
+        // footer
         this.footerTemplate = this._getTemplate('popup-footer-template');
         this.footerIntegrationTemplate = this._getTemplate('popup-footer-integration-template');
 
-        //render
+        // render
         this._renderTopMessageBlock(parent, tabInfo);
+        this._renderNotificationBlock(parent, this.options);
         this._renderSiteExceptionBlock(parent, tabInfo);
         this._renderFilteringCheckboxBlock(parent, tabInfo);
         this._renderActionsBlock(parent, tabInfo);
@@ -170,8 +172,36 @@ PopupController.prototype = {
         parent.append(template);
     },
 
-    _renderSiteExceptionBlock: function (parent, tabInfo) {
+    _renderNotificationBlock: function (parent, options) {
+        // Do not show notification if there is no notification
+        if (!options.notification) {
+            return;
+        }
 
+        // Do not show notification if there is no localisation for it
+        const {
+            id,
+            bgColor,
+            textColor,
+            text,
+        } = options.notification;
+
+        if (!text) {
+            return;
+        }
+
+        const notificationTitleNode = this.notificationTemplate.find('.w-popup-filter-title').eq(0);
+        notificationTitleNode.html(text);
+        this.notificationTemplate.css({ background: bgColor, color: textColor });
+        const cross = this.notificationTemplate.find('#cross-wr').eq(0);
+        cross.attr('stroke', textColor);
+        parent.append(this.notificationTemplate);
+
+        // Schedule notification removal
+        popupPage.sendMessage({ type: 'setNotificationViewed', withDelay: true });
+    },
+
+    _renderSiteExceptionBlock: function (parent, tabInfo) {
         if (tabInfo.urlFilteringDisabled || tabInfo.applicationFilteringDisabled) {
             return;
         }
@@ -207,7 +237,7 @@ PopupController.prototype = {
 
     _renderActionsBlock: function (parent, tabInfo) {
 
-        var el = $('<nav>', {class: 'widjet-popup-menu'});
+        var el = $('<nav>', { class: 'widjet-popup-menu' });
 
         if (!tabInfo.adguardDetected && !tabInfo.urlFilteringDisabled) {
             if (tabInfo.applicationFilteringDisabled) {
@@ -272,6 +302,23 @@ PopupController.prototype = {
             e.preventDefault();
             self.openAssistantInTab();
             popupPage.closePopup();
+        });
+        parent.on('click', '.openNotificationLink', function (e) {
+            e.preventDefault();
+            const { url } = self.options.notification;
+            if (url) {
+                self.openLink(url);
+                popupPage.sendMessage({ type: 'setNotificationViewed', withDelay: false });
+                popupPage.closePopup();
+            }
+        });
+        parent.on('click', '.closeNotification', function (e) {
+            e.preventDefault();
+            var notification = parent.find('#popup-notification');
+            if (notification) {
+                notification.hide();
+                popupPage.sendMessage({ type: 'setNotificationViewed', withDelay: false });
+            }
         });
         parent.on('click', '.openFilteringLog', function (e) {
             e.preventDefault();
@@ -371,10 +418,9 @@ PopupController.prototype = {
         controller.resizePopupWindow();
     });
 
-    popupPage.sendMessage({type: 'getTabInfoForPopup'}, function (message) {
+    popupPage.sendMessage({ type: 'getTabInfoForPopup' }, function (message) {
         $(document).ready(function () {
             controller.render(message.frameInfo, message.options);
         });
     });
-
 })();
