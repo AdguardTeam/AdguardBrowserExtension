@@ -202,11 +202,11 @@ PopupController.prototype = {
 
         const notificationTitleNode = this.notificationTemplate.find('.w-popup-filter-title').eq(0);
         notificationTitleNode.html(title);
-        this.notificationTemplate.data({ notificationId: id });
         this.notificationTemplate.css({ background: bgColor, color: textColor });
+        const cross = this.notificationTemplate.find('#cross-wr').eq(0);
+        cross.attr('stroke', textColor);
         parent.append(this.notificationTemplate);
-        // TODO uncomment this line
-        // popupPage.sendMessage({ type: 'setNotificationViewed', notificationId: id });
+        popupPage.sendMessage({ type: 'setNotificationViewed', notificationId: id });
     },
 
     _renderSiteExceptionBlock: function (parent, tabInfo) {

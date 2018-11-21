@@ -26,12 +26,14 @@ adguard.notifications = (function (adguard) {
      * @typedef Notification
      * @type object
      * @property {string} id
-     * @property {string} messageKey
+     * @property {object} locales
      * @property {string} url
      * @property {string} from
      * @property {string} to
      * @property {string} bgColor;
      * @property {string} textColor;
+     * @property {string} badgeBgColor;
+     * @property {string} badgeText;
      */
     // TODO add localisations and fix typedef
     let notifications = {
@@ -39,12 +41,14 @@ adguard.notifications = (function (adguard) {
             id: 'blackFriday',
             locales: {
                 en: 'Black Friday: <strong>50% Off</strong> AdGuard Premium',
-                ru: '',
-                de: '',
+                de: 'Black Friday: <strong>-50%</strong> auf AdGuard Premium',
+                es: 'Black Friday: <strong>-50%</strong> en AdGuard Premium',
+                ja: '【BLACK FRIDAY】AdGuardプレミアム<strong>５０％OFF</strong>',
+                fr: 'Black Friday: <strong>-50%</strong> sur AdGuard Premium',
+                ru: 'Black Friday: <strong>-50%</strong> на AdGuard Премиум',
             },
             url: 'https://adguard.com/forward.html?action=special_bf18&from=browser_action&app=browser_extension',
-            // TODO fix date
-            from: '20 Nov 2018 12:00:00',
+            from: '23 Nov 2018 12:00:00',
             to: '25 Nov 2018 23:59:00',
             bgColor: '#000',
             textColor: '#fff',
