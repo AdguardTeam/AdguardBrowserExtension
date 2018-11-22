@@ -270,6 +270,7 @@
                 var confirmText;
                 if (filterMetadata) {
                     //ok, filter found
+                    // TODO seems that these strings are redundant they are not used in the code
                     confirmText = adguard.i18n.getMessage('abp_subscribe_confirm_enable', [filterMetadata.name]);
                 } else {
                     //filter not found

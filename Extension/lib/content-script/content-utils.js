@@ -78,8 +78,11 @@
         }
 
         const alertDivHtml = `<div class="adguard-popup-alert">
-                    <div class="adguard-popup-alert__desc">
+                    <div class="adguard-popup-alert__title">
                         ${title}
+                    </div>
+                    <div class="adguard-popup-alert__desc">
+                        ${fullText}
                     </div>
                 </div>`;
 
