@@ -117,6 +117,7 @@ adguard.filteringLog = (function (adguard) {
             destinationRule.whiteListRule = sourceRule.whiteListRule;
             destinationRule.cspRule = sourceRule.isCspRule();
             destinationRule.cspDirective = sourceRule.cspDirective;
+            destinationRule.cookieRule = !!sourceRule.getCookieOption();
         }
     };
 
@@ -308,6 +309,43 @@ adguard.filteringLog = (function (adguard) {
     };
 
     /**
+     *
+     * @param {object} tab
+     * @param {string} cookieName
+     * @param {string} cookieValue
+     * @param {string} cookieDomain
+     * @param {string} requestType
+     * @param {object} cookieRule
+     * @param {boolean} thirdParty
+     */
+    const addCookieEvent = function (tab, cookieName, cookieValue, cookieDomain, requestType, cookieRule, thirdParty) {
+
+        if (openedFilteringLogsPage === 0) {
+            return;
+        }
+
+        const tabInfo = tabsInfoMap[tab.tabId];
+        if (!tabInfo) {
+            return;
+        }
+
+        const filteringEvent = {
+            frameDomain: cookieDomain,
+            requestType,
+            requestThirdParty: thirdParty,
+            cookieName,
+            cookieValue,
+        };
+
+        if (cookieRule) {
+            // Copy useful properties
+            addRuleToFilteringEvent(filteringEvent, cookieRule);
+        }
+
+        pushFilteringEvent(tabInfo, filteringEvent);
+    };
+
+    /**
      * Remove log requests for tab
      * @param tabId
      */
@@ -398,6 +436,7 @@ adguard.filteringLog = (function (adguard) {
         bindRuleToHttpRequestEvent: bindRuleToHttpRequestEvent,
         bindReplaceRulesToHttpRequestEvent: bindReplaceRulesToHttpRequestEvent,
         addCosmeticEvent: addCosmeticEvent,
+        addCookieEvent: addCookieEvent,
         clearEventsByTabId: clearEventsByTabId,
 
         isOpen: isOpen,

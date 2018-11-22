@@ -41,7 +41,8 @@ adguard.RequestTypes = {
     WEBSOCKET: "WEBSOCKET",
     WEBRTC: "WEBRTC",
     OTHER: "OTHER",
-    CSP: "CSP"
+    CSP: "CSP",
+    COOKIE: "COOKIE",
 };
 
 /**
