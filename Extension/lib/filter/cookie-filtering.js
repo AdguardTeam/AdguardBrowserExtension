@@ -49,6 +49,7 @@ adguard.cookieFiltering = (function (adguard) {
      * @typedef {object} RequestCookie
      * @property {string} url
      * @property {string} name
+     * @property {boolean} thirdParty
      */
 
     /**
@@ -61,24 +62,86 @@ adguard.cookieFiltering = (function (adguard) {
      */
 
     /**
+     * API cookie
+     *
+     * @typedef {object} BrowserApiCookie
+     * @property {string} name
+     * @property {string} value
+     * @property {string} domain
+     * @property {string} path
+     * @property {boolean} secure
+     * @property {boolean} httpOnly
+     * @property {boolean} sameSite
+     * @property {number} expirationDate
+     */
+
+    /**
      * Contains cookie to modify for each request
      * @type {Map<string, Array.<ModifyRequestCookie>>}
      */
     const cookiesMap = new Map();
 
     /**
-     * Persist cookie name for further processing
+     * Persist cookie for further processing
      *
      * @param {string} requestId
-     * @param {ModifyRequestCookie} value
+     * @param {string} name
+     * @param {string} url
+     * @param {boolean} thirdParty
+     * @param {Array} rules
+     * @param {boolean} remove
      */
-    const pushCookieForProcessing = (requestId, value) => {
+    const scheduleProcessingCookie = (requestId, name, url, thirdParty, rules, remove) => {
         let values = cookiesMap.get(requestId);
         if (!values) {
             values = [];
             cookiesMap.set(requestId, values);
         }
-        values.push(value);
+        values.push({
+            remove,
+            cookie: { name, url, thirdParty },
+            rules,
+        });
+    };
+
+    /**
+     * Removes cookies from processing
+     *
+     * @param {string} requestId
+     * @param {Array.<string>} cookieNames Cookies to remove
+     */
+    const removeProcessingCookies = (requestId, cookieNames) => {
+        const values = cookiesMap.get(requestId);
+        if (values) {
+            let iValues = values.length;
+            while (iValues--) {
+                const value = values[iValues];
+                const cookie = value.cookie;
+                if (cookieNames.indexOf(cookie.name) >= 0) {
+                    values.splice(iValues, 1);
+                }
+            }
+            if (values.length === 0) {
+                cookiesMap.delete(requestId);
+            }
+        }
+    };
+
+    /**
+     * Adds cookie rule to filtering log
+     *
+     * @callback AddCookieLogEvent
+     * @param {Object} tab
+     * @param {string} cookieName
+     * @param {string} cookieValue
+     * @param {string} cookieDomain
+     * @param {boolean} cookieThirdParty
+     * @param {Array} rules
+     */
+    const addCookieLogEvent = (tab, cookieName, cookieValue, cookieDomain, cookieThirdParty, rules) => {
+        for (let i = 0; i < rules.length; i += 1) {
+            adguard.filteringLog.addCookieEvent(tab, cookieName, cookieValue, cookieDomain, adguard.RequestTypes.COOKIE, rules[i], cookieThirdParty);
+        }
     };
 
     /**
@@ -103,7 +166,7 @@ adguard.cookieFiltering = (function (adguard) {
     /**
      * Updates cookie
      *
-     * @param {object} apiCookie Cookie for update
+     * @param {BrowserApiCookie} apiCookie Cookie for update
      * @param {string} url Cookie url
      * @return {Promise<any>}
      */
@@ -123,7 +186,7 @@ adguard.cookieFiltering = (function (adguard) {
             browser.cookies.set(update, () => {
                 const ex = browser.runtime.lastError;
                 if (ex) {
-                    adguard.console.error('Error update cookie {0} - {1}: {2}', apiCookie.name, apiCookie.url, ex);
+                    adguard.console.error('Error update cookie {0} - {1}: {2}', apiCookie.name, url, ex);
                 }
                 resolve();
             });
@@ -132,9 +195,10 @@ adguard.cookieFiltering = (function (adguard) {
 
     /**
      * Get all cookies by name and url
+     *
      * @param {string} name Cookie name
      * @param {string} url Cookie url
-     * @return {Promise<Array>} array of cookies
+     * @return {Promise<Array.<BrowserApiCookie>>} array of cookies
      */
     const apiGetCookies = (name, url) => {
         return new Promise((resolve => {
@@ -145,20 +209,51 @@ adguard.cookieFiltering = (function (adguard) {
     };
 
     /**
-     * Retrieves all cookies by name and url, modify by rules and then update
+     * Retrieves all cookies by name and url and removes its
      *
+     * @param {object} tab
      * @param {string} name Cookie name
      * @param {string} url Cookie url
+     * @param {boolean} thirdParty
+     * @param {object} rule
+     * @param {AddCookieLogEvent} addCookieLogEvent
+     * @return {Promise<any[] | never>}
+     */
+    const apiRemoveCookieByRule = (tab, name, url, thirdParty, rule, addCookieLogEvent) => {
+        return apiGetCookies(name, url).then(cookies => {
+            const promises = [];
+            if (cookies.length > 0) {
+                const cookie = cookies[0];
+                if (!rule.whiteListRule) {
+                    const promise = apiRemoveCookie(name, url);
+                    promises.push(promise);
+                }
+                addCookieLogEvent(tab, cookie.name, cookie.value, cookie.domain, thirdParty, [rule]);
+            }
+            return Promise.all(promises);
+        });
+    };
+
+    /**
+     * Retrieves all cookies by name and url, modify by rules and then update
+     *
+     * @param {object} tab
+     * @param {string} name Cookie name
+     * @param {string} url Cookie url
+     * @param {boolean} thirdParty
+     * @param {AddCookieLogEvent} addCookieLogEvent
      * @param {Array} rules Cookie matching rules
      */
-    const apiModifyCookiesWithRules = (name, url, rules) => {
+    const apiModifyCookiesWithRules = (tab, name, url, thirdParty, rules, addCookieLogEvent) => {
         return apiGetCookies(name, url).then(cookies => {
             const promises = [];
             for (let i = 0; i < cookies.length; i += 1) {
                 const cookie = cookies[i];
-                if (modifyApiCookieByRules(cookie, rules)) {
+                const mRules = modifyApiCookieByRules(cookie, rules);
+                if (mRules && mRules.length > 0) {
                     const promise = apiUpdateCookie(cookie, url);
                     promises.push(promise);
+                    addCookieLogEvent(tab, cookie.name, cookie.value, cookie.domain, thirdParty, mRules);
                 }
             }
             return Promise.all(promises);
@@ -168,19 +263,15 @@ adguard.cookieFiltering = (function (adguard) {
     /**
      * Retrieves url for cookie
      * @param {Cookie} setCookie Cookie
-     * @param {string} requestUrl Original request url
      * @return {string}
      */
-    const getCookieUrl = (setCookie, requestUrl) => {
-        if (setCookie.domain) {
-            let domain = setCookie.domain;
-            if (domain[0] === '.') {
-                domain = domain.substring(1);
-            }
-            const protocol = setCookie.secure ? 'https' : 'http';
-            requestUrl = protocol + '://' + domain + (setCookie.path || '/');
+    const getCookieUrl = (setCookie) => {
+        let domain = setCookie.domain;
+        if (domain[0] === '.') {
+            domain = domain.substring(1);
         }
-        return requestUrl;
+        const protocol = setCookie.secure ? 'https' : 'http';
+        return protocol + '://' + domain + (setCookie.path || '/');
     };
 
     /**
@@ -239,119 +330,124 @@ adguard.cookieFiltering = (function (adguard) {
     };
 
     /**
+     * Updates set-cookie maxAge value
+     * @param {Cookie} setCookie Cookie to modify
+     * @param {number} maxAge
+     * @return {boolean} if cookie was modified
+     */
+    const updateSetCookieMaxAge = (setCookie, maxAge) => {
+        const currentTimeSec = Date.now() / 1000;
+        let cookieExpiresTimeSec = null;
+        if (setCookie.maxAge) {
+            cookieExpiresTimeSec = currentTimeSec + setCookie.maxAge;
+        } else if (setCookie.expires) {
+            cookieExpiresTimeSec = setCookie.expires.getTime() / 1000;
+        }
+        const newCookieExpiresTimeSec = currentTimeSec + maxAge;
+        if (cookieExpiresTimeSec === null || cookieExpiresTimeSec > newCookieExpiresTimeSec) {
+            delete setCookie.expires;
+            setCookie.maxAge = maxAge;
+            return true;
+        }
+        return false;
+    };
+
+    /**
+     * Updates API cookie expirationDate value
+     * @param {BrowserApiCookie} cookie Cookie to modify
+     * @param {number} maxAge
+     * @return {boolean} if cookie was modified
+     */
+    const updateApiCookieMaxAge = (cookie, maxAge) => {
+        let cookieExpiresTimeSec = null;
+        if (cookie.expirationDate) {
+            cookieExpiresTimeSec = cookie.expirationDate;
+        }
+        const newCookieExpiresTimeSec = Date.now() / 1000 + maxAge;
+        if (cookieExpiresTimeSec === null || cookieExpiresTimeSec > newCookieExpiresTimeSec) {
+            cookie.expirationDate = newCookieExpiresTimeSec;
+            return true;
+        }
+        return false;
+    };
+
+    /**
      * Modifies cookie by rules
      *
      * @param {Cookie} setCookie Cookie to modify
      * @param {Array} rules Cookie matching rules
-     * @return {boolean} true if a cookie were modified
+     * @return {Array} applied rules
      */
     const modifySetCookieByRules = (setCookie, rules) => {
 
         if (!rules || rules.length === 0) {
-            return false;
+            return null;
         }
 
-        let modified = false;
+        let appliedRules = [];
         for (let i = 0; i < rules.length; i += 1) {
 
             const rule = rules[i];
             const cookieOption = rule.getCookieOption();
 
-            if (cookieOption.sameSite) {
-                setCookie.sameSite = cookieOption.sameSite;
+            let modified = false;
+
+            const sameSite = cookieOption.sameSite;
+            if (sameSite && setCookie.sameSite !== sameSite) {
+                setCookie.sameSite = sameSite;
                 modified = true;
             }
 
-            if (typeof cookieOption.maxAge === 'number') {
-                delete setCookie.expires;
-                setCookie.maxAge = cookieOption.maxAge;
+            if (typeof cookieOption.maxAge === 'number' &&
+                updateSetCookieMaxAge(setCookie, cookieOption.maxAge)) {
+
                 modified = true;
+            }
+
+            if (modified) {
+                appliedRules.push(rule);
             }
         }
 
-        return modified;
+        return appliedRules;
     };
 
     /**
      * Modifies cookie by rules (Cookie is browser.cookies.Cookie object)
      *
-     * @param {object} cookie
+     * @param {BrowserApiCookie} cookie
      * @param {Array} rules
-     * @return {boolean} true if a cookie were modified
+     * @return {Array} applied rules
      */
     const modifyApiCookieByRules = (cookie, rules) => {
 
-        let modified = false;
+        const appliedRules = [];
 
         for (let i = 0; i < rules.length; i += 1) {
 
             const rule = rules[i];
             const cookieOption = rule.getCookieOption();
 
-            if (cookieOption.sameSite) {
-                const sameSite = cookie.sameSite.toLowerCase();
-                switch (sameSite) {
-                    case 'lax':
-                    case 'strict':
-                        cookie.sameSite = sameSite;
-                        modified = true;
-                        break;
-                }
-            }
+            let modified = false;
 
-            if (typeof cookieOption.maxAge === 'number') {
-                cookie.expirationDate = Date.now() / 1000 + cookieOption.maxAge;
+            const sameSite = cookieOption.sameSite;
+            if (sameSite && cookie.sameSite !== sameSite) {
+                cookie.sameSite = sameSite;
                 modified = true;
             }
-        }
 
-        return modified;
-    };
+            if (typeof cookieOption.maxAge === 'number' &&
+                updateApiCookieMaxAge(cookie, cookieOption.maxAge)) {
 
-    /**
-     * Finds blocking cookie rule and stores this fact for further processing
-     * @param {string} requestId
-     * @param {string} name Cookie name
-     * @param {string} url
-     * @param {Array} rules
-     * @return {?object} Blocking rule or null
-     */
-    const processBlockCookie = (requestId, name, url, rules) => {
-        const rule = findNotModifyingRule(name, rules);
-        if (rule) {
-            // TODO: deal with it and logging
-            if (rule.whiteListRule) {
-                return null;
+                modified = true;
             }
-            pushCookieForProcessing(requestId, {
-                remove: true,
-                cookie: { name, url },
-                rules: [rule],
-            });
-            return rule;
-        }
-        return null;
-    };
 
-    /**
-     * Find modifying cookies rules and stores this fact for further processing
-     * @param {string} requestId
-     * @param {string} name Cookie name
-     * @param {string} url
-     * @param {Array} rules
-     * @return {?Array} Modifying rules that match cookie or null
-     */
-    const processModifyCookie = (requestId, name, url, rules) => {
-        const mRules = findModifyingRules(name, rules);
-        if (mRules && mRules.length > 0) {
-            pushCookieForProcessing(requestId, {
-                remove: false,
-                cookie: { name, url },
-                rules: mRules,
-            });
-            return mRules;
+            if (modified) {
+                appliedRules.push(rule);
+            }
         }
-        return null;
+
+        return appliedRules;
     };
 
     /**
@@ -379,6 +475,7 @@ adguard.cookieFiltering = (function (adguard) {
             return false;
         }
 
+        const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrerUrl);
         const rules = adguard.webRequestService.getCookieRules(tab, requestUrl, referrerUrl, requestType);
         if (!rules || rules.length === 0) {
             return false;
@@ -389,10 +486,19 @@ adguard.cookieFiltering = (function (adguard) {
         let iCookies = cookies.length;
         while (iCookies--) {
             const cookie = cookies[iCookies];
-            const rule = processBlockCookie(requestId, cookie.name, requestUrl, rules);
-            if (rule) {
-                cookies.splice(iCookies, 1);
-                cookieHeaderModified = true;
+            const cookieName = cookie.name;
+            const bRule = findNotModifyingRule(cookieName, rules);
+            if (bRule) {
+                if (!bRule.whiteListRule) {
+                    cookies.splice(iCookies, 1);
+                    cookieHeaderModified = true;
+                }
+                scheduleProcessingCookie(requestId, cookieName, requestUrl, thirdParty, [bRule], true);
+                continue;
+            }
+            const mRules = findModifyingRules(cookieName, rules);
+            if (mRules && mRules.length > 0) {
+                scheduleProcessingCookie(requestId, cookieName, requestUrl, thirdParty, mRules, false);
             }
         }
 
@@ -427,8 +533,15 @@ adguard.cookieFiltering = (function (adguard) {
         const requestUrl = context.requestUrl;
         const referrerUrl = context.referrerUrl;
         const requestType = context.requestType;
+        const requestHost = adguard.utils.url.getHost(requestUrl);
 
-        let setCookieModified = false;
+        /**
+         * Collects cookies that will be blocked or modified via Set-Cookie header
+         * @type {Array.<string>}
+         */
+        const processedCookies = [];
+
+        let setCookieHeaderModified = false;
 
         let iResponseHeaders = responseHeaders.length;
         while (iResponseHeaders--) {
@@ -443,26 +556,42 @@ adguard.cookieFiltering = (function (adguard) {
                 continue;
             }
 
-            const cookieUrl = getCookieUrl(setCookie, requestUrl);
+            const cookieName = setCookie.name;
+            const cookieValue = setCookie.value;
+
+            // If not specified, defaults to the host portion of the current document location
+            setCookie.domain = setCookie.domain || requestHost;
+
+            const cookieUrl = getCookieUrl(setCookie);
+            const thirdParty = adguard.utils.url.isThirdPartyRequest(cookieUrl, referrerUrl);
             const rules = adguard.webRequestService.getCookieRules(tab, cookieUrl, referrerUrl, requestType);
 
-            const bRule = processBlockCookie(requestId, setCookie.name, cookieUrl, rules);
+            const bRule = findNotModifyingRule(cookieName, rules);
             if (bRule) {
-                delete setCookie.expires;
-                setCookie.maxAge = 0;
-                header.value = adguard.utils.cookie.serialize(setCookie);
-                setCookieModified = true;
+                if (!bRule.whiteListRule) {
+                    delete setCookie.expires;
+                    setCookie.maxAge = 0;
+                    header.value = adguard.utils.cookie.serialize(setCookie);
+                    setCookieHeaderModified = true;
+                }
+                processedCookies.push(cookieName);
+                addCookieLogEvent(tab, cookieName, cookieValue, setCookie.domain, thirdParty, [bRule]);
                 continue;
             }
 
-            const mRules = processModifyCookie(requestId, setCookie.name, cookieUrl, rules);
-            if (modifySetCookieByRules(setCookie, mRules)) {
+            let mRules = findModifyingRules(cookieName, rules);
+            mRules = modifySetCookieByRules(setCookie, mRules);
+            if (mRules && mRules.length > 0) {
                 header.value = adguard.utils.cookie.serialize(setCookie);
-                setCookieModified = true;
+                setCookieHeaderModified = true;
+                processedCookies.push(cookieName);
+                addCookieLogEvent(tab, cookieName, cookieValue, setCookie.domain, thirdParty, mRules);
             }
         }
 
-        return setCookieModified;
+        removeProcessingCookies(requestId, processedCookies);
+
+        return setCookieHeaderModified;
     };
 
     /**
@@ -478,39 +607,26 @@ adguard.cookieFiltering = (function (adguard) {
         }
 
         const tab = context.tab;
-        const requestUrl = context.requestUrl;
-        const referrerUrl = context.referrerUrl;
 
         const values = cookiesMap.get(requestId);
         if (!values || values.length === 0) {
             return;
         }
 
-        // Remove cookies
         const promises = [];
         for (let i = 0; i < values.length; i += 1) {
-            const value = values[i];
-            if (value.remove) {
-                const cookie = value.cookie;
-                const rule = value.rules[0];
-                const promise = apiRemoveCookie(cookie.name, cookie.url);
-                promises.push(promise);
-                adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, 'COOKIE', rule);
-            }
-        }
 
-        // Modify cookies
-        for (let i = 0; i < values.length; i += 1) {
             const value = values[i];
-            if (!value.remove) {
-                const cookie = value.cookie;
-                const rules = value.rules;
-                const promise = apiModifyCookiesWithRules(cookie.name, cookie.url, rules);
-                for (let j = 0; j < rules.length; j += 1) {
-                    adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, 'COOKIE', rules[j]);
-                }
-                promises.push(promise);
+            const cookie = value.cookie;
+            const rules = value.rules;
+
+            let promise;
+            if (value.remove) {
+                promise = apiRemoveCookieByRule(tab, cookie.name, cookie.url, cookie.thirdParty, rules[0], addCookieLogEvent);
+            } else {
+                promise = apiModifyCookiesWithRules(tab, cookie.name, cookie.url, cookie.thirdParty, rules, addCookieLogEvent);
             }
+            promises.push(promise);
         }
 
         Promise.all(promises).then(() => {
