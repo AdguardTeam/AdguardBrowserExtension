@@ -415,15 +415,17 @@ adguard.ui = (function (adguard) { // jshint ignore:line
      * @param previousVersion
      */
     function showVersionUpdatedPopup(currentVersion, previousVersion) {
-        var message = {
+        const message = {
             type: 'show-version-updated-popup',
-            title: adguard.i18n.getMessage("options_popup_version_update_title", currentVersion),
+            title: adguard.i18n.getMessage('options_popup_version_update_title', currentVersion),
             description: getUpdateDescriptionMessage(currentVersion, previousVersion),
-            changelogHref: adguard.i18n.getMessage("options_popup_version_update_changelog_href"),
-            changelogText: adguard.i18n.getMessage("options_popup_version_update_changelog_text"),
-            offer: adguard.i18n.getMessage("options_popup_version_update_offer"),
-            offerButtonHref: adguard.i18n.getMessage("options_popup_version_update_offer_button_href"),
-            offerButtonText: adguard.i18n.getMessage("options_popup_version_update_offer_button_text")
+            // TODO add this link to TDS
+            changelogHref: 'https://github.com/AdguardTeam/AdguardBrowserExtension/releases/latest',
+            changelogText: adguard.i18n.getMessage('options_popup_version_update_changelog_text'),
+            offer: adguard.i18n.getMessage('options_popup_version_update_offer'),
+            // TODO add this link to TDS
+            offerButtonHref: 'https://adguard.com/',
+            offerButtonText: adguard.i18n.getMessage('options_popup_version_update_offer_button_text'),
         };
 
         adguard.tabs.getActive(function (tab) {
@@ -436,16 +438,16 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         var text = [];
         if (success) {
             if (updatedFilters.length === 0) {
-                title = adguard.i18n.getMessage("options_popup_update_title_not_found");
-                text.push(adguard.i18n.getMessage("options_popup_update_not_found"));
+                title = adguard.i18n.getMessage('options_popup_update_title_not_found');
+                text.push(adguard.i18n.getMessage('options_popup_update_not_found'));
             } else {
-                title = adguard.i18n.getMessage("options_popup_update_title");
+                title = adguard.i18n.getMessage('options_popup_update_title');
                 updatedFilters.sort(function (a, b) {
                     return a.displayNumber - b.displayNumber;
                 });
                 for (var i = 0; i < updatedFilters.length; i++) {
                     var filter = updatedFilters[i];
-                    text.push(adguard.i18n.getMessage("options_popup_update_updated", [filter.name, filter.version]).replace("$1", filter.name).replace("$2", filter.version));
+                    text.push(adguard.i18n.getMessage('options_popup_update_updated', [filter.name, filter.version]).replace("$1", filter.name).replace("$2", filter.version));
                 }
             }
         } else {

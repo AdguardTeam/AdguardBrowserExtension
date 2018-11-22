@@ -1479,43 +1479,49 @@ var Settings = function () {
     };
 
     var showPopup = function (title, text) {
-        contentPage.sendMessage({type: 'showAlertMessagePopup', title: title, text: text});
+        contentPage.sendMessage({ type: 'showAlertMessagePopup', title: title, text: text });
     };
 
-    var importSettingsFile = function () {
-        var input = document.createElement('input');
+    const importSettingsFile = function () {
+        const input = document.createElement('input');
         input.type = 'file';
-        var event = document.createEvent('HTMLEvents');
-        event.initEvent('click', true, false);
-        input.dispatchEvent(event);
+        input.click();
 
-        var onFileLoaded = function (content) {
-            contentPage.sendMessage({type: 'applySettingsJson', json: content});
+        const onFileLoaded = function (content) {
+            contentPage.sendMessage({ type: 'applySettingsJson', json: content });
         };
 
-        input.addEventListener('change', function () {
-            var file = e.currentTarget.files[0];
+        input.addEventListener('change', function (e) {
+            const file = e.currentTarget.files[0];
             if (file) {
-                var reader = new FileReader();
-                reader.readAsText(file, "UTF-8");
+                const reader = new FileReader();
+                reader.readAsText(file, 'UTF-8');
                 reader.onload = function (evt) {
                     onFileLoaded(evt.target.result);
                 };
-                reader.onerror = function (evt) {
+                reader.onerror = function () {
                     showPopup(i18n.getMessage('options_popup_import_error_file_title'), i18n.getMessage('options_popup_import_error_file_description'));
                 };
             }
         });
     };
 
-    document.querySelector('#importSettingsFile').addEventListener('click', function (e) {
+
+    const importSettingsHandler = (e) => {
         e.preventDefault();
         importSettingsFile();
-    }.bind(this));
+    };
+
+    const importSettingsBtn = document.querySelector('#importSettingsFile');
+
+    if (importSettingsBtn) {
+        importSettingsBtn.removeEventListener('click', importSettingsHandler);
+        importSettingsBtn.addEventListener('click', importSettingsHandler);
+    }
 
     return {
         render: render,
-        showPopup: showPopup
+        showPopup: showPopup,
     };
 };
 
@@ -1546,6 +1552,7 @@ PageController.prototype = {
     },
 
     onSettingsImported: function (success) {
+        console.log(success);
         if (success) {
             this.settings.showPopup(i18n.getMessage('options_popup_import_success_title'), i18n.getMessage('options_popup_import_success_description'));
 

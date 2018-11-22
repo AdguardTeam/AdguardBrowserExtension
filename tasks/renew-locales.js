@@ -126,9 +126,9 @@ const renewLocales = async (done) => {
             resultMessages.forEach(key => {
                 result[key] = source[key];
             });
-            console.log('existing keys length: ', chosenKeys.length);
+            console.log('existing keys length: ', resultMessages.length);
             console.log('old keys length: ', oldKeys.length);
-            const removedKeys = _.xor(chosenKeys, oldKeys);
+            const removedKeys = _.xor(resultMessages, oldKeys);
             console.log('removed keys length: ', removedKeys.length);
             console.log('removed keys: ', removedKeys);
             return writeInFile(output, result);
