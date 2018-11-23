@@ -427,12 +427,10 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             type: 'show-version-updated-popup',
             title: adguard.i18n.getMessage('options_popup_version_update_title', currentVersion),
             description: getUpdateDescriptionMessage(currentVersion, previousVersion),
-            // TODO add this link to TDS
-            changelogHref: 'https://github.com/AdguardTeam/AdguardBrowserExtension/releases/latest',
+            changelogHref: 'https://adguard.com/forward.html?action=github_version_popup&from=version_popup&app=browser_extension',
             changelogText: adguard.i18n.getMessage('options_popup_version_update_changelog_text'),
             offer: adguard.i18n.getMessage('options_popup_version_update_offer'),
-            // TODO add this link to TDS
-            offerButtonHref: 'https://adguard.com/',
+            offerButtonHref: 'https://adguard.com/forward.html?action=github_version_site&from=version_popup&app=browser_extension',
             offerButtonText: adguard.i18n.getMessage('options_popup_version_update_offer_button_text'),
         };
 

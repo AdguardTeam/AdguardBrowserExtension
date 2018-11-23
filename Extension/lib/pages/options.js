@@ -1501,7 +1501,6 @@ PageController.prototype = {
 
     init: function () {
 
-        this._customizeText();
         this._bindEvents();
         this._render();
 
@@ -1533,22 +1532,6 @@ PageController.prototype = {
         } else {
             this.settings.showPopup(i18n.getMessage('options_popup_import_error_title'), i18n.getMessage('options_popup_import_error_description'));
         }
-    },
-
-    _customizeText: function () {
-        document.querySelectorAll('a.sp-table-row-info').forEach(function (a) {
-            a.classList.add('question');
-            a.textContent = '';
-        });
-
-        document.querySelectorAll('span.sp-table-row-info').forEach(function (element) {
-            var li = element.closest('li');
-            element.parentNode.removeChild(element);
-
-            var state = li.querySelector('.opt-state');
-            element.classList.add('desc');
-            state.insertBefore(element, state.firstChild);
-        });
     },
 
     _bindEvents: function () {
