@@ -163,19 +163,30 @@ PageController.prototype = {
         this.searchWhitelisted = false;
 
         // Bind click to reload tab
-        document.querySelector('.reloadTab').addEventListener('click', function (e) {
-            e.preventDefault();
-            // Unable to reload "background" tab, just clear events
-            if (this.currentTabId === -1) {
-                if (this.preserveLogEnabled) {
+        const reloadTabs = document.querySelectorAll('.reloadTab');
+        if (reloadTabs.length <= 0) {
+            return;
+        }
+        reloadTabs.forEach(reloadTab => {
+            reloadTab.addEventListener('click', function (e) {
+                e.preventDefault();
+                // Unable to reload "background" tab, just clear events
+                if (this.currentTabId === -1) {
+                    if (this.preserveLogEnabled) {
+                        return;
+                    }
+                    contentPage.sendMessage({ type: 'clearEventsByTabId', tabId: this.currentTabId });
+                    this.emptyLogTable();
                     return;
                 }
-                contentPage.sendMessage({ type: 'clearEventsByTabId', tabId: this.currentTabId });
-                this.emptyLogTable();
-                return;
-            }
-            contentPage.sendMessage({ type: 'reloadTabById', tabId: this.currentTabId, preserveLogEnabled: this.preserveLogEnabled });
-        }.bind(this));
+                contentPage.sendMessage({
+                    type: 'reloadTabById',
+                    tabId: this.currentTabId,
+                    preserveLogEnabled: this.preserveLogEnabled,
+                });
+            }.bind(this));
+        });
+
 
         // Bind click to clear events
         document.querySelector('#clearTabLog').addEventListener('click', function (e) {

@@ -380,6 +380,13 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         return adguard.getURL('pages/' + page);
     }
 
+    const isAdguardTab = (tab) => {
+        const { url } = tab;
+        const appId = adguard.app.getId();
+        const schemeUrl = adguard.app.getUrlScheme();
+        return url.indexOf(appId) > -1 && url.indexOf(schemeUrl) > -1;
+    };
+
     function showAlertMessagePopup(title, text, showForAdguardTab) {
         adguard.tabs.getActive(function (tab) {
             if (!showForAdguardTab && adguard.frames.isTabAdguardDetected(tab)) {
@@ -387,6 +394,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             }
             adguard.tabs.sendMessage(tab.tabId, {
                 type: 'show-alert-popup',
+                isAdguardTab: isAdguardTab(tab),
                 title: title,
                 text: text,
             });
@@ -415,15 +423,15 @@ adguard.ui = (function (adguard) { // jshint ignore:line
      * @param previousVersion
      */
     function showVersionUpdatedPopup(currentVersion, previousVersion) {
-        var message = {
+        const message = {
             type: 'show-version-updated-popup',
-            title: adguard.i18n.getMessage("options_popup_version_update_title", currentVersion),
+            title: adguard.i18n.getMessage('options_popup_version_update_title', currentVersion),
             description: getUpdateDescriptionMessage(currentVersion, previousVersion),
-            changelogHref: adguard.i18n.getMessage("options_popup_version_update_changelog_href"),
-            changelogText: adguard.i18n.getMessage("options_popup_version_update_changelog_text"),
-            offer: adguard.i18n.getMessage("options_popup_version_update_offer"),
-            offerButtonHref: adguard.i18n.getMessage("options_popup_version_update_offer_button_href"),
-            offerButtonText: adguard.i18n.getMessage("options_popup_version_update_offer_button_text")
+            changelogHref: 'https://adguard.com/forward.html?action=github_version_popup&from=version_popup&app=browser_extension',
+            changelogText: adguard.i18n.getMessage('options_popup_version_update_changelog_text'),
+            offer: adguard.i18n.getMessage('options_popup_version_update_offer'),
+            offerButtonHref: 'https://adguard.com/forward.html?action=github_version_site&from=version_popup&app=browser_extension',
+            offerButtonText: adguard.i18n.getMessage('options_popup_version_update_offer_button_text'),
         };
 
         adguard.tabs.getActive(function (tab) {
@@ -436,16 +444,16 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         var text = [];
         if (success) {
             if (updatedFilters.length === 0) {
-                title = adguard.i18n.getMessage("options_popup_update_title_not_found");
-                text.push(adguard.i18n.getMessage("options_popup_update_not_found"));
+                title = adguard.i18n.getMessage('options_popup_update_title_not_found');
+                text.push(adguard.i18n.getMessage('options_popup_update_not_found'));
             } else {
-                title = adguard.i18n.getMessage("options_popup_update_title");
+                title = adguard.i18n.getMessage('options_popup_update_title');
                 updatedFilters.sort(function (a, b) {
                     return a.displayNumber - b.displayNumber;
                 });
                 for (var i = 0; i < updatedFilters.length; i++) {
                     var filter = updatedFilters[i];
-                    text.push(adguard.i18n.getMessage("options_popup_update_updated", [filter.name, filter.version]).replace("$1", filter.name).replace("$2", filter.version));
+                    text.push(adguard.i18n.getMessage('options_popup_update_updated', [filter.name, filter.version]).replace("$1", filter.name).replace("$2", filter.version));
                 }
             }
         } else {
@@ -842,7 +850,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         openAssistant: openAssistant,
         openTab: openTab,
 
-        showAlertMessagePopup: showAlertMessagePopup
+        showAlertMessagePopup: showAlertMessagePopup,
     };
 
 })(adguard);
