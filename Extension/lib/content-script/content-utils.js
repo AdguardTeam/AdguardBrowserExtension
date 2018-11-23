@@ -82,6 +82,27 @@
     };
 
     /**
+     * Generates alert html
+     * @param {string} title
+     * @param {string} text
+     * @returns {string}
+     */
+    const genAlertHtml = (title, text) => {
+        let descBlock = '';
+        if (text && text.length > 0) {
+            descBlock = `<div class="adguard-popup-alert__desc">
+                            ${text}
+                        </div>`;
+        }
+        return `<div class="adguard-popup-alert">
+                    <div class="adguard-popup-alert__title">
+                        ${title}
+                    </div>
+                    ${descBlock}
+                </div>`;
+    };
+
+    /**
      * Shows alert popup.
      * Popup content is added right to the page content.
      *
@@ -90,6 +111,10 @@
     function showAlertPopup(message) {
         const { text, title, isAdguardTab } = message;
 
+        if (!title) {
+            return;
+        }
+
         let messages = [];
         if (Array.isArray(text)) {
             messages = text;
@@ -97,7 +122,6 @@
             messages = [text];
         }
 
-        // TODO remove if it is not necessary
         let fullText = '';
         for (let i = 0; i < messages.length; i += 1) {
             if (i > 0) {
@@ -106,14 +130,7 @@
             fullText += messages[i];
         }
 
-        const alertDivHtml = `<div class="adguard-popup-alert">
-                    <div class="adguard-popup-alert__title">
-                        ${title}
-                    </div>
-                    <div class="adguard-popup-alert__desc">
-                        ${fullText}
-                    </div>
-                </div>`;
+        const alertDivHtml = genAlertHtml(title, fullText);
 
         const triesCount = 10;
 
