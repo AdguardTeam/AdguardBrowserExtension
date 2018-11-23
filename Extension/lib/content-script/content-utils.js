@@ -94,6 +94,12 @@
                             ${text}
                         </div>`;
         }
+
+        // don't show description text if it is same as title or if it is equal to undefined
+        if (title === text || text === 'undefined') {
+            descBlock = '';
+        }
+
         return `<div class="adguard-popup-alert">
                     <div class="adguard-popup-alert__title">
                         ${title}

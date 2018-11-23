@@ -1483,46 +1483,8 @@ var Settings = function () {
             type: 'showAlertMessagePopup',
             title: title,
             text: text,
-            showForAdguardTab: true,
         });
     };
-
-    const importSettingsFile = function () {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.click();
-
-        const onFileLoaded = function (content) {
-            contentPage.sendMessage({ type: 'applySettingsJson', json: content });
-        };
-
-        input.addEventListener('change', function (e) {
-            const file = e.currentTarget.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.readAsText(file, 'UTF-8');
-                reader.onload = function (evt) {
-                    onFileLoaded(evt.target.result);
-                };
-                reader.onerror = function () {
-                    showPopup(i18n.getMessage('options_popup_import_error_file_title'), i18n.getMessage('options_popup_import_error_file_description'));
-                };
-            }
-        });
-    };
-
-
-    const importSettingsHandler = (e) => {
-        e.preventDefault();
-        importSettingsFile();
-    };
-
-    const importSettingsBtn = document.querySelector('#importSettingsFile');
-
-    if (importSettingsBtn) {
-        importSettingsBtn.removeEventListener('click', importSettingsHandler);
-        importSettingsBtn.addEventListener('click', importSettingsHandler);
-    }
 
     return {
         render: render,
@@ -1561,7 +1523,7 @@ PageController.prototype = {
             this.settings.showPopup(i18n.getMessage('options_popup_import_success_title'));
 
             var self = this;
-            contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
+            contentPage.sendMessage({ type: 'initializeFrameScript' }, function (response) {
                 userSettings = response.userSettings;
                 enabledFilters = response.enabledFilters;
                 requestFilterInfo = response.requestFilterInfo;
@@ -1590,25 +1552,30 @@ PageController.prototype = {
     },
 
     _bindEvents: function () {
-
-        this.resetStatsPopup = document.querySelector("#resetStatsPopup");
+        this.resetStatsPopup = document.querySelector('#resetStatsPopup');
+        // TODO remove if not necessary
         this.tooManySubscriptionsEl = document.querySelector('#tooManySubscriptions');
 
-        document.querySelector("#resetStats").addEventListener('click', this.onResetStatsClicked.bind(this));
+        document.querySelector('#resetStats').addEventListener('click', this.onResetStatsClicked.bind(this));
 
-        document.querySelector(".openExtensionStore").addEventListener('click', function (e) {
+        document.querySelector('.openExtensionStore').addEventListener('click', function (e) {
             e.preventDefault();
-            contentPage.sendMessage({type: 'openExtensionStore'});
+            contentPage.sendMessage({ type: 'openExtensionStore' });
         });
 
-        document.querySelector("#openLog").addEventListener('click', function (e) {
+        document.querySelector('#openLog').addEventListener('click', function (e) {
             e.preventDefault();
-            contentPage.sendMessage({type: 'openFilteringLog'});
+            contentPage.sendMessage({ type: 'openFilteringLog' });
         });
+
+        const importSettingsBtn = document.querySelector('#importSettingsFile');
+
+        if (importSettingsBtn) {
+            importSettingsBtn.addEventListener('click', this.importSettingsFile.bind(this));
+        }
     },
 
     _render: function () {
-
         var defaultWhitelistMode = userSettings.values[userSettings.names.DEFAULT_WHITE_LIST_MODE];
 
         if (environmentOptions.Prefs.mobile) {
@@ -1655,6 +1622,30 @@ PageController.prototype = {
         e.preventDefault();
         contentPage.sendMessage({type: 'resetBlockedAdsCount'});
         this._onStatsReset();
+    },
+
+    importSettingsFile: function () {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.click();
+
+        const onFileLoaded = function (content) {
+            contentPage.sendMessage({ type: 'applySettingsJson', json: content });
+        };
+
+        input.addEventListener('change', function (e) {
+            const file = e.currentTarget.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.readAsText(file, 'UTF-8');
+                reader.onload = function (evt) {
+                    onFileLoaded(evt.target.result);
+                };
+                reader.onerror = function () {
+                    showPopup(i18n.getMessage('options_popup_import_error_file_title'), i18n.getMessage('options_popup_import_error_file_description'));
+                };
+            }
+        });
     },
 
     _onStatsReset: function () {
