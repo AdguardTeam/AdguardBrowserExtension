@@ -52,6 +52,35 @@
         return iframe;
     };
 
+
+    /**
+     * Creates div and appends it to the page
+     * @param target
+     * @param html
+     * @returns {any | HTMLElement}
+     */
+    const appendDiv = (target, html) => {
+        const div = document.createElement('div');
+        div.innerHTML = html;
+        target.insertAdjacentElement('afterbegin', div);
+        div.style.zIndex = MAX_Z_INDEX;
+        return div;
+    };
+
+    /**
+     * If isAdguardTab we append div, else we append iframe
+     * @param target
+     * @param html
+     * @param isAdguardTab
+     * @returns {HTMLElement}
+     */
+    const appendAlertElement = (target, html, isAdguardTab) => {
+        if (isAdguardTab) {
+            return appendDiv(target, html);
+        }
+        return appendIframe(target, html);
+    };
+
     /**
      * Shows alert popup.
      * Popup content is added right to the page content.
@@ -59,7 +88,7 @@
      * @param message Message text
      */
     function showAlertPopup(message) {
-        const { text, title } = message;
+        const { text, title, isAdguardTab } = message;
 
         let messages = [];
         if (Array.isArray(text)) {
@@ -94,11 +123,11 @@
             }
 
             if (document.body) {
-                const iframe = appendIframe(document.body, alertDivHtml);
-                iframe.classList.add('adguard-alert-iframe');
+                const alertElement = appendAlertElement(document.body, alertDivHtml, isAdguardTab);
+                alertElement.classList.add('adguard-alert-iframe');
                 setTimeout(function () {
-                    if (iframe && iframe.parentNode) {
-                        iframe.parentNode.removeChild(iframe);
+                    if (alertElement && alertElement.parentNode) {
+                        alertElement.parentNode.removeChild(alertElement);
                     }
                 }, 4000);
             } else {

@@ -1479,7 +1479,12 @@ var Settings = function () {
     };
 
     var showPopup = function (title, text) {
-        contentPage.sendMessage({ type: 'showAlertMessagePopup', title: title, text: text });
+        contentPage.sendMessage({
+            type: 'showAlertMessagePopup',
+            title: title,
+            text: text,
+            showForAdguardTab: true,
+        });
     };
 
     const importSettingsFile = function () {
@@ -1552,7 +1557,6 @@ PageController.prototype = {
     },
 
     onSettingsImported: function (success) {
-        console.log(success);
         if (success) {
             this.settings.showPopup(i18n.getMessage('options_popup_import_success_title'), i18n.getMessage('options_popup_import_success_description'));
 

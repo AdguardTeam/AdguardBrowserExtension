@@ -380,6 +380,13 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         return adguard.getURL('pages/' + page);
     }
 
+    const isAdguardTab = (tab) => {
+        const { url } = tab;
+        const appId = adguard.app.getId();
+        const schemeUrl = adguard.app.getUrlScheme();
+        return url.indexOf(appId) > -1 && url.indexOf(schemeUrl) > -1;
+    };
+
     function showAlertMessagePopup(title, text, showForAdguardTab) {
         adguard.tabs.getActive(function (tab) {
             if (!showForAdguardTab && adguard.frames.isTabAdguardDetected(tab)) {
@@ -387,6 +394,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             }
             adguard.tabs.sendMessage(tab.tabId, {
                 type: 'show-alert-popup',
+                isAdguardTab: isAdguardTab(tab),
                 title: title,
                 text: text,
             });
