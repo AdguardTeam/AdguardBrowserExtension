@@ -10,14 +10,16 @@
     "locales-download": "gulp downloadLocalesStream --require babel-register --gulpfile tasks",
     "locales-upload": "gulp uploadLocalesStream --require babel-register --gulpfile tasks",
     "build-update": "gulp buildUpdatesFilesStream --require babel-register --gulpfile tasks",
-    "resources": "gulp downloadResources --require babel-register --gulpfile tasks"
+    "resources": "gulp downloadResources --require babel-register --gulpfile tasks",
+    "rebuild-locales": "gulp rebuildLocales --require babel-register --gulpfile tasks"
   },
   "babel": {
     "presets": [
       "env"
     ],
     "plugins": [
-      "transform-runtime"
+      "transform-runtime",
+      "transform-object-rest-spread"
     ],
     "babelrc": false
   },
@@ -44,8 +46,10 @@
     "web-ext": "^2.6.0"
   },
   "devDependencies": {
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-runtime": "^6.26.0",
+    "lodash": "^4.17.11",
     "node-qunit-puppeteer": "^1.0.6",
     "punycode": "^2.1.0",
     "qunit": "^2.6.0"

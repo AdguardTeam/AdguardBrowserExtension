@@ -13,6 +13,7 @@ import buildUpdatesFiles from './build-updates-files';
 import tests from './tests';
 import clean from './clean-build-dir';
 import updatePublicSuffixList from './update-public-suffix-list';
+import renewLocales from './renew-locales';
 
 // download filters to repository
 export const downloadFilters = gulp.series(downloadAllFilters, updateLocalScriptRules, (done) => done());
@@ -40,3 +41,6 @@ export const buildRelease = gulp.series(chromium, opera, firefoxAmo, edge, clean
 
 // download resources
 export const downloadResources = gulp.series(downloadFilters, updatePublicSuffixList, (done) => done());
+
+// renew locales
+export const rebuildLocales = gulp.series(renewLocales);

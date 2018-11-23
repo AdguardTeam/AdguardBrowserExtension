@@ -52,6 +52,62 @@
         return iframe;
     };
 
+
+    /**
+     * Creates div and appends it to the page
+     * @param target
+     * @param html
+     * @returns {any | HTMLElement}
+     */
+    const appendDiv = (target, html) => {
+        const div = document.createElement('div');
+        div.innerHTML = html;
+        target.insertAdjacentElement('afterbegin', div);
+        div.style.zIndex = MAX_Z_INDEX;
+        return div;
+    };
+
+    /**
+     * If isAdguardTab we append div, else we append iframe
+     * @param target
+     * @param html
+     * @param isAdguardTab
+     * @returns {HTMLElement}
+     */
+    const appendAlertElement = (target, html, isAdguardTab) => {
+        if (isAdguardTab) {
+            return appendDiv(target, html);
+        }
+        return appendIframe(target, html);
+    };
+
+    /**
+     * Generates alert html
+     * @param {string} title
+     * @param {string} text
+     * @returns {string}
+     */
+    const genAlertHtml = (title, text) => {
+        let descBlock = '';
+        if (text && text.length > 0) {
+            descBlock = `<div class="adguard-popup-alert__desc">
+                            ${text}
+                        </div>`;
+        }
+
+        // don't show description text if it is same as title or if it is equal to undefined
+        if (title === text || text === 'undefined') {
+            descBlock = '';
+        }
+
+        return `<div class="adguard-popup-alert">
+                    <div class="adguard-popup-alert__title">
+                        ${title}
+                    </div>
+                    ${descBlock}
+                </div>`;
+    };
+
     /**
      * Shows alert popup.
      * Popup content is added right to the page content.
@@ -59,7 +115,11 @@
      * @param message Message text
      */
     function showAlertPopup(message) {
-        const { text, title } = message;
+        const { text, title, isAdguardTab } = message;
+
+        if (!title) {
+            return;
+        }
 
         let messages = [];
         if (Array.isArray(text)) {
@@ -68,7 +128,6 @@
             messages = [text];
         }
 
-        // TODO remove if it is not necessary
         let fullText = '';
         for (let i = 0; i < messages.length; i += 1) {
             if (i > 0) {
@@ -77,11 +136,7 @@
             fullText += messages[i];
         }
 
-        const alertDivHtml = `<div class="adguard-popup-alert">
-                    <div class="adguard-popup-alert__desc">
-                        ${title}
-                    </div>
-                </div>`;
+        const alertDivHtml = genAlertHtml(title, fullText);
 
         const triesCount = 10;
 
@@ -91,11 +146,11 @@
             }
 
             if (document.body) {
-                const iframe = appendIframe(document.body, alertDivHtml);
-                iframe.classList.add('adguard-alert-iframe');
+                const alertElement = appendAlertElement(document.body, alertDivHtml, isAdguardTab);
+                alertElement.classList.add('adguard-alert-iframe');
                 setTimeout(function () {
-                    if (iframe && iframe.parentNode) {
-                        iframe.parentNode.removeChild(iframe);
+                    if (alertElement && alertElement.parentNode) {
+                        alertElement.parentNode.removeChild(alertElement);
                     }
                 }, 4000);
             } else {
