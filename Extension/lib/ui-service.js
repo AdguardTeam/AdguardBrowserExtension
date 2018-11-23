@@ -852,7 +852,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         openAssistant: openAssistant,
         openTab: openTab,
 
-        showAlertMessagePopup: showAlertMessagePopup
+        showAlertMessagePopup: showAlertMessagePopup,
     };
 
 })(adguard);

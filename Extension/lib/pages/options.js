@@ -1558,7 +1558,7 @@ PageController.prototype = {
 
     onSettingsImported: function (success) {
         if (success) {
-            this.settings.showPopup(i18n.getMessage('options_popup_import_success_title'), i18n.getMessage('options_popup_import_success_description'));
+            this.settings.showPopup(i18n.getMessage('options_popup_import_success_title'));
 
             var self = this;
             contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
