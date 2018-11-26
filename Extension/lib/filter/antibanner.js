@@ -284,7 +284,6 @@ adguard.antiBannerService = (function (adguard) {
      * @param errorCallback Called if something gone wrong
      */
     var checkAntiBannerFiltersUpdate = function (forceUpdate, successCallback, errorCallback) {
-
         successCallback = successCallback || function () {
             // Empty callback
         };
