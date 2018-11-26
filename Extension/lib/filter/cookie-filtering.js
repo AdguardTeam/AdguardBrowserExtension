@@ -160,7 +160,7 @@ adguard.cookieFiltering = (function (adguard) {
                 }
                 resolve();
             });
-        })
+        });
     };
 
     /**
@@ -257,7 +257,7 @@ adguard.cookieFiltering = (function (adguard) {
                 }
             }
             return Promise.all(promises);
-        })
+        });
     };
 
     /**
