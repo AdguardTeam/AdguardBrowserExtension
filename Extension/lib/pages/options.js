@@ -1583,15 +1583,20 @@ PageController.prototype = {
         this.antiBannerFilters.render();
 
         // Initialize sync tab
-        this.syncSettings = new SyncSettings({syncStatusInfo: syncStatusInfo});
+        this.syncSettings = new SyncSettings({ syncStatusInfo: syncStatusInfo });
         this.syncSettings.renderSyncSettings();
+
+        const versionPlaceholder = document.querySelector('#about-version-placeholder');
+        if (versionPlaceholder) {
+            versionPlaceholder.textContent = `${i18n.getMessage('options_about_version')} ${environmentOptions.appVersion}`;
+        }
     },
 
     allowAcceptableAdsChange: function () {
         if (this.checked) {
             contentPage.sendMessage({
                 type: 'addAndEnableFilter',
-                filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID
+                filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID,
             });
         } else {
             contentPage.sendMessage({
