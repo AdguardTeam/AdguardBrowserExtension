@@ -289,8 +289,8 @@ adguard.integration = (function (adguard) {
      */
     var getAuthorizationHeaders = function () {
         return [{
-            headerName: 'Referer',
-            headerValue: adguard.backend.injectionsUrl
+            name: 'Referer',
+            value: adguard.backend.injectionsUrl
         }];
     };
 

@@ -275,7 +275,7 @@ QUnit.test("Regexp characters escaping", function (assert) {
     assert.ok(rule);
 });
 
-QUnit.test("Simple regexp rule", function(assert) {
+QUnit.test("Simple regexp rule", function (assert) {
     var RequestTypes = adguard.RequestTypes;
 
     var mask = "/^https?/";
@@ -652,21 +652,21 @@ QUnit.test("BadFilter option", function (assert) {
     assert.ok(badFilterRule);
     assert.ok(badFilterRule.isBadFilter());
     assert.ok(badFilterRule.badFilter);
-    assert.equal(badFilterRule.badFilter,'https:*_ad_');
+    assert.equal(badFilterRule.badFilter, 'https:*_ad_');
 
     badFilterRule = new adguard.rules.UrlFilterRule("https:*_ad_$badfilter,image");
 
     assert.ok(badFilterRule);
     assert.ok(badFilterRule.isBadFilter());
     assert.ok(badFilterRule.badFilter);
-    assert.equal(badFilterRule.badFilter,'https:*_ad_$image');
+    assert.equal(badFilterRule.badFilter, 'https:*_ad_$image');
 
     badFilterRule = new adguard.rules.UrlFilterRule("https:*_ad_$third-party,badfilter,image");
 
     assert.ok(badFilterRule);
     assert.ok(badFilterRule.isBadFilter());
     assert.ok(badFilterRule.badFilter);
-    assert.equal(badFilterRule.badFilter,'https:*_ad_$third-party,image');
+    assert.equal(badFilterRule.badFilter, 'https:*_ad_$third-party,image');
 });
 
 QUnit.test('Test wildcard domains in the url rules', function (assert) {
@@ -692,6 +692,59 @@ QUnit.test('Test wildcard domains in the url rules', function (assert) {
     assert.notOk(rule.isPermitted("nigma.com"));
     assert.notOk(rule.isPermitted("www.nigma.ru"));
     assert.notOk(rule.isPermitted("adguard.ru"));
+});
+
+QUnit.test("Test cookie option", function (assert) {
+
+    let cookieRule = new adguard.rules.UrlFilterRule("||facebook.com^$third-party,cookie=c_user");
+    assert.ok(cookieRule);
+    assert.ok(cookieRule.isCookieRule());
+    assert.ok(cookieRule.cookieOption);
+    assert.ok(cookieRule.isThirdParty());
+    assert.equal(cookieRule.cookieOption.cookieName, 'c_user');
+    assert.notOk(cookieRule.cookieOption.regex);
+    assert.ok(cookieRule.cookieOption.matches('c_user'));
+    assert.notOk(cookieRule.cookieOption.matches('c_user1'));
+
+    cookieRule = new adguard.rules.UrlFilterRule("$cookie=__cfduid");
+    assert.ok(cookieRule);
+    assert.ok(cookieRule.isCookieRule());
+    assert.ok(cookieRule.cookieOption);
+    assert.equal(cookieRule.cookieOption.cookieName, '__cfduid');
+    assert.notOk(cookieRule.cookieOption.regex);
+    assert.ok(cookieRule.cookieOption.matches('__cfduid'));
+    assert.notOk(cookieRule.cookieOption.matches('__cfduid1'));
+
+    cookieRule = new adguard.rules.UrlFilterRule("$cookie=/__utm[a-z]/");
+    assert.ok(cookieRule);
+    assert.ok(cookieRule.isRegexRule);
+    assert.ok(cookieRule.isCookieRule());
+    assert.ok(cookieRule.cookieOption);
+    assert.equal(cookieRule.cookieOption.regex.toString(), /__utm[a-z]/.toString());
+    assert.notOk(cookieRule.cookieOption.cookieName);
+    assert.ok(cookieRule.cookieOption.matches('__utma'));
+    assert.notOk(cookieRule.cookieOption.matches('__utm0'));
+
+    cookieRule = new adguard.rules.UrlFilterRule("@@||example.org^$cookie");
+    assert.ok(cookieRule);
+    assert.ok(cookieRule.whiteListRule);
+    assert.ok(cookieRule.isCookieRule());
+    assert.ok(cookieRule.cookieOption);
+    assert.notOk(cookieRule.cookieOption.regex);
+    assert.notOk(cookieRule.cookieOption.cookieName);
+    assert.ok(cookieRule.cookieOption.matches('123'));
+    assert.ok(cookieRule.cookieOption.matches('aaaa'));
+
+    cookieRule = new adguard.rules.UrlFilterRule("$cookie=__cfduid;maxAge=15;sameSite=lax");
+    assert.ok(cookieRule);
+    assert.ok(cookieRule.isCookieRule());
+    assert.ok(cookieRule.cookieOption);
+    assert.equal(cookieRule.cookieOption.cookieName, '__cfduid');
+    assert.notOk(cookieRule.cookieOption.regex);
+    assert.equal(cookieRule.cookieOption.maxAge, 15);
+    assert.equal(cookieRule.cookieOption.sameSite, 'lax');
+    assert.ok(cookieRule.cookieOption.matches('__cfduid'));
+    assert.notOk(cookieRule.cookieOption.matches('123'));
 });
 
 QUnit.test('Test replace option', (assert) => {

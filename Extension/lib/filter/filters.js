@@ -114,6 +114,10 @@
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#csp-modifier
         this.cspFilter = new adguard.rules.CspFilter();
 
+        // Filter that applies cookie rules
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/961
+        this.cookieFilter = new adguard.rules.CookieFilter();
+
         // Filter that applies replace rules
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#replace-modifier
         this.replaceFilter = new adguard.rules.ReplaceFilter();
@@ -171,6 +175,8 @@
                 }
                 if (rule.isCspRule()) {
                     this.cspFilter.addRule(rule);
+                } else if (rule.isCookieRule()) {
+                    this.cookieFilter.addRule(rule);
                 } else if (rule.isReplaceRule()) {
                     this.replaceFilter.addRule(rule);
                 } else {
@@ -209,6 +215,8 @@
             if (rule instanceof adguard.rules.UrlFilterRule) {
                 if (rule.isCspRule()) {
                     this.cspFilter.removeRule(rule);
+                } else if (rule.isCookieRule()) {
+                    this.cookieFilter.removeRule(rule);
                 } else {
                     if (rule.isBadFilter()) {
                         delete this.badFilterRules[rule.badFilter];
@@ -241,6 +249,7 @@
             result = result.concat(this.cssFilter.getRules());
             result = result.concat(this.scriptFilter.getRules());
             result = result.concat(this.cspFilter.getRules());
+            result = result.concat(this.cookieFilter.getRules());
 
             for (var badFilter in this.badFilterRules) {
                 result.push(this.badFilterRules[badFilter]);
@@ -474,6 +483,22 @@
             const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
 
             return this.replaceFilter.findReplaceRules(requestUrl, documentHost, thirdParty, requestType);
+        },
+
+        /**
+         * Searches for cookie rules matching specified request.
+         *
+         * @param requestUrl Request URL
+         * @param documentUrl Document URL
+         * @param requestType   Request content type
+         * @returns             Matching rules
+         */
+        findCookieRules: function (requestUrl, documentUrl, requestType) {
+
+            const documentHost = adguard.utils.url.getHost(documentUrl);
+            const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
+
+            return this.cookieFilter.findCookieRules(requestUrl, documentHost, thirdParty, requestType);
         },
 
         /**

@@ -262,17 +262,17 @@
              * Forbids report-to and report-uri directives
              */
             var cspDirective = rule.cspDirective.toLowerCase();
-            if (cspDirective.indexOf('report-uri') >= 0 ||
-                cspDirective.indexOf('report-to') >= 0) {
-
+            if (cspDirective.indexOf('report-') >= 0) {
                 throw 'Forbidden CSP directive: ' + cspDirective;
             }
         }
     }
 
     /**
-     * Tries to convert data: or blob: rule to CSP rule
-     * @param rule Rule
+     * Tries to convert data: or blob: rule to CSP rules.
+     * Actually, this is just an ugly hotfix for Chrome where data: and blob: URLs aren't exposed to extensions.
+     *
+     * @param rule Rule text
      * @param urlRuleText URL rule text
      */
     function tryConvertToCspRule(rule, urlRuleText) {
@@ -282,7 +282,7 @@
             return;
         }
 
-        // Firefox browser allow to intercept data: and blob: URIs
+        // Firefox browser allows to intercept data: and blob: URLs
         if (isFirefoxBrowser) {
             return;
         }
@@ -333,6 +333,97 @@
         return {
             apply: apply,
             optionText: option,
+        };
+    }
+
+    /**
+     * @typedef CookieOption
+     * @type {object}
+     * @property {RegExp} regex If not null this is a regex used to match cookie names
+     * @property {string} cookieName An exact cookie name used to match cookies by name
+     * @property {string} sameSite If not null, this is a Same-Site value to be forced for a matching cookie
+     * @property {number} maxAge If not null, this is a cookie's maximum age to be enforced
+     */
+
+    /**
+     * Represents a $cookie modifier option value.
+     *
+     * Learn more about it here:
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/961
+     *
+     * @param {string} option Option string value
+     * @see {@link CookieOption}
+     * @constructor
+     */
+    function CookieOption(option) {
+
+        // Save the source text of the option modifier
+        this.option = option || '';
+
+        // Initialize properties with null
+        this.regex = null;
+        this.cookieName = null;
+        this.sameSite = null;
+        this.maxAge = null;
+
+        // Parse cookie name/regex
+        const parts = this.option.split(/;/);
+        let cookieName = parts[0];
+        if (adguard.utils.strings.startWith(cookieName, '/') && adguard.utils.strings.endsWith(cookieName, '/')) {
+            let pattern = cookieName.substring(1, cookieName.length - 1);
+
+            // Save regex to be used further for matching cookies
+            this.regex = new RegExp(pattern);
+        } else {
+            // Match by cookie name
+            this.cookieName = cookieName;
+        }
+
+        // Parse other cookie options
+        if (parts.length > 1) {
+            for (let i = 1; i < parts.length; i += 1) {
+                let nameValue = parts[i].split('=');
+                let optionName = nameValue[0];
+                let optionValue = nameValue[1];
+
+                if (optionName === UrlFilterRule.cookieOptions.MAX_AGE) {
+                    this.maxAge = parseInt(optionValue);
+                } else if (optionName === UrlFilterRule.cookieOptions.SAME_SITE) {
+                    this.sameSite = optionValue;
+                } else {
+                    throw `Unknown $cookie option: ${optionName}`;
+                }
+            }
+        }
+
+        /**
+         * Checks if cookie with the specified name matches this option
+         *
+         * @param {string} name Cookie name
+         * @return {boolean} true if it does
+         */
+        this.matches = function (name) {
+
+            if (!name) {
+                return false;
+            }
+
+            if (this.regex) {
+                return this.regex.test(name);
+            } else if (this.cookieName) {
+                return this.cookieName === name;
+            } else {
+                // Empty regex and cookieName means that we must match all cookies
+                return true;
+            }
+        };
+
+        /**
+         * Checks if cookie rule has an empty $cookie option
+         * @return {boolean} True if $cookie option is empty
+         */
+        this.isEmpty = function () {
+            return !this.regex && !this.cookieName;
         };
     }
 
@@ -436,6 +527,14 @@
      */
     UrlFilterRule.prototype.getReplace = function () {
         return this.replaceOption;
+    };
+
+    /**
+     * $cookie modifier
+     * @return {CookieOption} Parsed $cookie modifier
+     */
+    UrlFilterRule.prototype.getCookieOption = function () {
+        return this.cookieOption;
     };
 
     // Lazy regexp creation
@@ -727,17 +826,17 @@
     };
 
     /**
+     * @returns true if this rule is cookie
+     */
+    UrlFilterRule.prototype.isCookieRule = function () {
+        return this.isOptionEnabled(UrlFilterRule.options.COOKIE_RULE);
+    };
+
+    /**
      * If rule is bad-filter returns true
      */
     UrlFilterRule.prototype.isBadFilter = function () {
         return this.badFilter != null;
-    };
-
-    /**
-     * If rule has extension modifier
-     */
-    UrlFilterRule.prototype.isExtension = function () {
-        return this.isOptionEnabled(UrlFilterRule.options.EXTENSION);
     };
 
     /**
@@ -753,10 +852,7 @@
      * ignore them when create RequestFilter
      */
     UrlFilterRule.prototype.isIgnored = function () {
-        if (typeof this.isExtension === 'function') {
-            return this.isExtension();
-        }
-        return false;
+        return this.isOptionEnabled(UrlFilterRule.options.EXTENSION);
     };
 
     /**
@@ -766,21 +862,19 @@
      */
     UrlFilterRule.prototype._loadOptions = function (options) {
 
-        var optionsParts = adguard.utils.strings.splitByDelimiterWithEscapeCharacter(options, api.FilterRule.COMA_DELIMITER, ESCAPE_CHARACTER, false);
+        let optionsParts = adguard.utils.strings.splitByDelimiterWithEscapeCharacter(options, api.FilterRule.COMA_DELIMITER, ESCAPE_CHARACTER, false);
 
-        for (var i = 0; i < optionsParts.length; i++) {
-            var option = optionsParts[i];
-            var optionsKeyValue = option.split(api.FilterRule.EQUAL);
-            var optionName = optionsKeyValue[0];
+        for (let i = 0; i < optionsParts.length; i++) {
+            let option = optionsParts[i];
+            let valueIndex = option.indexOf(api.FilterRule.EQUAL);
+            let optionName = valueIndex >= 0 ? option.substr(0, valueIndex) : option;
+            let optionValue = valueIndex >= 0 ? option.substr(valueIndex + 1) : '';
+
             switch (optionName) {
                 case UrlFilterRule.DOMAIN_OPTION:
-                    if (optionsKeyValue.length > 1) {
-                        var domains = optionsKeyValue[1];
-                        if (optionsKeyValue.length > 2) {
-                            domains = optionsKeyValue.slice(1).join(api.FilterRule.EQUAL);
-                        }
+                    if (optionValue) {
                         // Load domain option
-                        this.loadDomains(domains);
+                        this.loadDomains(optionValue);
                     }
                     break;
                 case UrlFilterRule.THIRD_PARTY_OPTION:
@@ -830,9 +924,11 @@
                     break;
                 case UrlFilterRule.CSP_OPTION:
                     this._setUrlFilterRuleOption(UrlFilterRule.options.CSP_RULE, true);
-                    if (optionsKeyValue.length > 1) {
-                        this.cspDirective = optionsKeyValue[1];
-                    }
+                    this.cspDirective = optionValue;
+                    break;
+                case UrlFilterRule.COOKIE_OPTION:
+                    this._setUrlFilterRuleOption(UrlFilterRule.options.COOKIE_RULE, true);
+                    this.cookieOption = new CookieOption(optionValue);
                     break;
                 case UrlFilterRule.REPLACE_OPTION:
                     // In case of .features or .features.responseContentFilteringSupported are not defined
@@ -842,19 +938,7 @@
                         throw 'Unknown option: REPLACE';
                     }
                     this._setUrlFilterRuleOption(UrlFilterRule.options.REPLACE, true);
-
-                    // rule with empty modifier option text, can be applied only to whitelisted rules
-                    if (optionsKeyValue.length === 1) {
-                        this.replaceOption = new ReplaceOption();
-                    }
-
-                    if (optionsKeyValue.length > 1) {
-                        let replaceOption = optionsKeyValue[1];
-                        if (optionsKeyValue.length > 2) {
-                            replaceOption = optionsKeyValue.slice(1).join(api.FilterRule.EQUAL);
-                        }
-                        this.replaceOption = new ReplaceOption(replaceOption);
-                    }
+                    this.replaceOption = new ReplaceOption(optionValue);
                     break;
                 case UrlFilterRule.BADFILTER_OPTION:
                     this.badFilter = this.ruleText
@@ -978,6 +1062,7 @@
     UrlFilterRule.REPLACE_OPTION = "replace"; // Extension doesn't support replace rules, $replace option is here only for correctly parsing
     UrlFilterRule.EXTENSION_OPTION = "extension"; // Extension doesn't support extension rules, $extension option is here only for correctly parsing
     UrlFilterRule.CSP_OPTION = "csp";
+    UrlFilterRule.COOKIE_OPTION = "cookie";
     UrlFilterRule.BADFILTER_OPTION = "badfilter";
 
     UrlFilterRule.contentTypes = {
@@ -1012,6 +1097,17 @@
             UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes[key]; // jshint ignore:line
         }
     }
+
+    /**
+     * $cookie options that can be used in the cookie rule.
+     *
+     * See here for the details:
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/961
+     */
+    UrlFilterRule.cookieOptions = {
+        MAX_AGE: 'maxAge',
+        SAME_SITE: 'sameSite'
+    };
 
     UrlFilterRule.options = {
 
@@ -1095,16 +1191,22 @@
         CSP_RULE: 1 << 10,
 
         /**
+         * defines a Cookie rule
+         * For example, ||example.com^$third-party,cookie=c_user
+         */
+        COOKIE_RULE: 1 << 11,
+
+        /*
          * defines rules with $extension modifier
          * for example, @@||example.org^$extension
          */
-        EXTENSION: 1 << 11,
+        EXTENSION: 1 << 12,
 
         /**
          * defines rules with $replace modifier
          * for example, "||example.org^$replace=/replace-me/replacement/i"
          */
-        REPLACE: 1 << 12,
+        REPLACE: 1 << 13,
 
         // jshint ignore:end
     };

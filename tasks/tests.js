@@ -14,12 +14,12 @@ const runQunit = (testFilePath, done) => {
         .then((result) => {
             printOutput(result, console);
             if (result.stats.failed > 0) {
-                throw new Error('Unit Tests Failure');
+                done('Some of the unit tests failed');
             }
         })
         .then(done)
         .catch((ex) => {
-            console.error(ex);
+            done(`Error occured while running tests: ${ex}`);
         });
 };
 
@@ -48,6 +48,11 @@ const testContent = (done) => {
     runQunit('../Extension/tests/content-filter/test-content-filter.html', done);
 };
 
+// Cookie filtering tests
+const testCookieFiltering = (done) => {
+    runQunit('../Extension/tests/cookie-filtering/test-cookie-filtering.html', done);
+};
+
 // Css hits tests
 const testCSShits = (done) => {
     runQunit('../Extension/tests/css-filter/test-css-hits.html', done);
@@ -68,9 +73,19 @@ const testRing = (done) => {
     runQunit('../Extension/tests/miscellaneous/test-ring-buffer.html', done);
 };
 
+// Cookie helper tests
+const testCookie = (done) => {
+    runQunit('../Extension/tests/miscellaneous/test-cookie.html', done);
+};
+
 // Encoding tests
 const testEncoding = (done) => {
     runQunit('../Extension/tests/miscellaneous/test-encoding.html', done);
 };
 
-export default gulp.series(testRule, testSB, testURL, testCSSfilter, testContent, testCSShits, testReq, testEl, testRing, testEncoding);
+// Request context storage test
+const testRequestContextStorage = (done) => {
+    runQunit('../Extension/tests/miscellaneous/test-request-context-storage.html', done);
+};
+
+export default gulp.series(testRule, testSB, testURL, testCSSfilter, testContent, testCookieFiltering, testCSShits, testReq, testEl, testCookie, testRing, testEncoding, testRequestContextStorage);

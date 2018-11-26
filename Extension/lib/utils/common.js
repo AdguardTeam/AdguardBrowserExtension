@@ -41,7 +41,8 @@ adguard.RequestTypes = {
     WEBSOCKET: "WEBSOCKET",
     WEBRTC: "WEBRTC",
     OTHER: "OTHER",
-    CSP: "CSP"
+    CSP: "CSP",
+    COOKIE: "COOKIE",
 };
 
 /**
@@ -223,6 +224,28 @@ adguard.utils = (function () {
 
             return parts;
         },
+
+        /**
+         * Serialize HTML element
+         * @param element
+         */
+        elementToString: function (element) {
+            var s = [];
+            s.push('<');
+            s.push(element.localName);
+            var attributes = element.attributes;
+            for (var i = 0; i < attributes.length; i++) {
+                var attr = attributes[i];
+                s.push(' ');
+                s.push(attr.name);
+                s.push('="');
+                var value = attr.value === null ? '' : attr.value.replace(/"/g, '\\"');
+                s.push(value);
+                s.push('"');
+            }
+            s.push('>');
+            return s.join('');
+        }
     };
 
     api.strings = StringUtils;
