@@ -361,30 +361,30 @@ adguard.webRequestService = (function (adguard) {
      * @param requestType   Request type
      * @returns {Array}     Collection of rules or null
      */
-    var getCookieRules = function (tab, requestUrl, referrerUrl, requestType) {
+    const getCookieRules = (tab, requestUrl, referrerUrl, requestType) => {
 
         if (shouldStopRequestProcess(tab)) {
             // Don't process request
             return null;
         }
 
-        var whitelistRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
+        const whitelistRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
         if (whitelistRule && whitelistRule.isDocumentWhiteList()) {
             // $cookie rules are not affected by regular exception rules (@@) unless it's a $document exception.
             return null;
         }
 
         // Get all $cookie rules matching the specified request
-        var cookieRules = adguard.requestFilter.getCookieRules(requestUrl, referrerUrl, requestType);
+        const cookieRules = adguard.requestFilter.getCookieRules(requestUrl, referrerUrl, requestType);
 
-        var stealthWhiteListRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.STEALTH) ||
+        const stealthWhiteListRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.STEALTH) ||
             adguard.requestFilter.findWhiteListRule(referrerUrl, referrerUrl, adguard.RequestTypes.STEALTH);
         if (stealthWhiteListRule) {
             return cookieRules;
         }
 
         // Get stealth service rules
-        var stealthServiceRules = adguard.stealthService.getCookieRules(requestUrl, referrerUrl, requestType);
+        const stealthServiceRules = adguard.stealthService.getCookieRules(requestUrl, referrerUrl, requestType);
 
         return stealthServiceRules.concat(cookieRules ? cookieRules : []);
     };
