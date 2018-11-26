@@ -150,7 +150,7 @@ adguard.stealthService = (function (adguard) {
      * @param maxAge
      */
     const generateRemoveRule = function (maxAge) {
-        const maxAgeOption = maxAge > 0 ? `;maxAge=${maxAge}` : '';
+        const maxAgeOption = maxAge > 0 ? `;maxAge=${maxAge * 60}` : '';
         return new adguard.rules.UrlFilterRule(`$cookie=/.+/${maxAgeOption}`);
     };
 
