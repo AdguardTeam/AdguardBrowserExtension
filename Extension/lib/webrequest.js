@@ -177,8 +177,8 @@
 
     /**
      * Called before request is sent to the remote endpoint.
-     * This method is used to modify request in case of working in integration mode
-     * and also to record referrer header in frame data.
+     * This method is used to modify request in case of working in integration mode,
+     * to modify headers for stealth service and also to record referrer header in frame data.
      *
      * @param requestDetails Request details
      * @returns {*} headers to send
@@ -212,6 +212,10 @@
         }
 
         if (adguard.cookieFiltering.filterRequestHeaders(requestId, requestHeaders)) {
+            requestHeadersModified = true;
+        }
+
+        if (adguard.stealthService.processRequestHeaders(requestDetails)) {
             requestHeadersModified = true;
         }
 

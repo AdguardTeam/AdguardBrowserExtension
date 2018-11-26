@@ -384,7 +384,7 @@ adguard.webRequestService = (function (adguard) {
         }
 
         // Get stealth service rules
-        var stealthServiceRules = adguard.stealthService.getRules(requestUrl, referrerUrl, requestType);
+        var stealthServiceRules = adguard.stealthService.getCookieRules(requestUrl, referrerUrl, requestType);
 
         return cookieRules.concat(stealthServiceRules);
     };
