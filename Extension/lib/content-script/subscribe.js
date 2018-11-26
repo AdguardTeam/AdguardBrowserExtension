@@ -23,6 +23,7 @@
         return;
     }
 
+    // TODO check if confirm text is not redundant
     function onCheckSubscriptionUrlResponse(url, confirmText) {
 
         if (!confirm(confirmText)) {

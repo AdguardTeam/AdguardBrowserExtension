@@ -1029,6 +1029,7 @@ var AntiBannerFilters = function (options) {
                 e.preventDefault();
 
                 const url = document.querySelector('#custom-filter-popup-url').value;
+
                 contentPage.sendMessage({ type: 'loadCustomFilterInfo', url: url }, function (filter) {
                     if (filter) {
                         renderStepFour(filter);
@@ -1478,43 +1479,16 @@ var Settings = function () {
     };
 
     var showPopup = function (title, text) {
-        contentPage.sendMessage({type: 'showAlertMessagePopup', title: title, text: text});
-    };
-
-    var importSettingsFile = function () {
-        var input = document.createElement('input');
-        input.type = 'file';
-        var event = document.createEvent('HTMLEvents');
-        event.initEvent('click', true, false);
-        input.dispatchEvent(event);
-
-        var onFileLoaded = function (content) {
-            contentPage.sendMessage({type: 'applySettingsJson', json: content});
-        };
-
-        input.addEventListener('change', function () {
-            var file = e.currentTarget.files[0];
-            if (file) {
-                var reader = new FileReader();
-                reader.readAsText(file, "UTF-8");
-                reader.onload = function (evt) {
-                    onFileLoaded(evt.target.result);
-                };
-                reader.onerror = function (evt) {
-                    showPopup(i18n.getMessage('options_popup_import_error_file_title'), i18n.getMessage('options_popup_import_error_file_description'));
-                };
-            }
+        contentPage.sendMessage({
+            type: 'showAlertMessagePopup',
+            title: title,
+            text: text,
         });
     };
 
-    document.querySelector('#importSettingsFile').addEventListener('click', function (e) {
-        e.preventDefault();
-        importSettingsFile();
-    }.bind(this));
-
     return {
         render: render,
-        showPopup: showPopup
+        showPopup: showPopup,
     };
 };
 
@@ -1527,7 +1501,6 @@ PageController.prototype = {
 
     init: function () {
 
-        this._customizeText();
         this._bindEvents();
         this._render();
 
@@ -1546,10 +1519,10 @@ PageController.prototype = {
 
     onSettingsImported: function (success) {
         if (success) {
-            this.settings.showPopup(i18n.getMessage('options_popup_import_success_title'), i18n.getMessage('options_popup_import_success_description'));
+            this.settings.showPopup(i18n.getMessage('options_popup_import_success_title'));
 
             var self = this;
-            contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
+            contentPage.sendMessage({ type: 'initializeFrameScript' }, function (response) {
                 userSettings = response.userSettings;
                 enabledFilters = response.enabledFilters;
                 requestFilterInfo = response.requestFilterInfo;
@@ -1561,42 +1534,31 @@ PageController.prototype = {
         }
     },
 
-    _customizeText: function () {
-        document.querySelectorAll('a.sp-table-row-info').forEach(function (a) {
-            a.classList.add('question');
-            a.textContent = '';
-        });
-
-        document.querySelectorAll('span.sp-table-row-info').forEach(function (element) {
-            var li = element.closest('li');
-            element.parentNode.removeChild(element);
-
-            var state = li.querySelector('.opt-state');
-            element.classList.add('desc');
-            state.insertBefore(element, state.firstChild);
-        });
-    },
-
     _bindEvents: function () {
-
-        this.resetStatsPopup = document.querySelector("#resetStatsPopup");
+        this.resetStatsPopup = document.querySelector('#resetStatsPopup');
+        // TODO remove if not necessary
         this.tooManySubscriptionsEl = document.querySelector('#tooManySubscriptions');
 
-        document.querySelector("#resetStats").addEventListener('click', this.onResetStatsClicked.bind(this));
+        document.querySelector('#resetStats').addEventListener('click', this.onResetStatsClicked.bind(this));
 
-        document.querySelector(".openExtensionStore").addEventListener('click', function (e) {
+        document.querySelector('.openExtensionStore').addEventListener('click', function (e) {
             e.preventDefault();
-            contentPage.sendMessage({type: 'openExtensionStore'});
+            contentPage.sendMessage({ type: 'openExtensionStore' });
         });
 
-        document.querySelector("#openLog").addEventListener('click', function (e) {
+        document.querySelector('#openLog').addEventListener('click', function (e) {
             e.preventDefault();
-            contentPage.sendMessage({type: 'openFilteringLog'});
+            contentPage.sendMessage({ type: 'openFilteringLog' });
         });
+
+        const importSettingsBtn = document.querySelector('#importSettingsFile');
+
+        if (importSettingsBtn) {
+            importSettingsBtn.addEventListener('click', this.importSettingsFile.bind(this));
+        }
     },
 
     _render: function () {
-
         var defaultWhitelistMode = userSettings.values[userSettings.names.DEFAULT_WHITE_LIST_MODE];
 
         if (environmentOptions.Prefs.mobile) {
@@ -1643,6 +1605,30 @@ PageController.prototype = {
         e.preventDefault();
         contentPage.sendMessage({type: 'resetBlockedAdsCount'});
         this._onStatsReset();
+    },
+
+    importSettingsFile: function () {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.click();
+
+        const onFileLoaded = function (content) {
+            contentPage.sendMessage({ type: 'applySettingsJson', json: content });
+        };
+
+        input.addEventListener('change', function (e) {
+            const file = e.currentTarget.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.readAsText(file, 'UTF-8');
+                reader.onload = function (evt) {
+                    onFileLoaded(evt.target.result);
+                };
+                reader.onerror = function () {
+                    showPopup(i18n.getMessage('options_popup_import_error_file_title'), i18n.getMessage('options_popup_import_error_file_description'));
+                };
+            }
+        });
     },
 
     _onStatsReset: function () {

@@ -277,7 +277,7 @@
 
     var init = function () {
         adguard.console.info('Initialize {0} sync provider', DROPBOX_PROVIDER_NAME);
-        dropbox = new Dropbox({accessToken: api.oauthService.getToken(DROPBOX_PROVIDER_NAME)});
+        dropbox = new Dropbox.Dropbox({accessToken: api.oauthService.getToken(DROPBOX_PROVIDER_NAME)});
         dropboxFolderState.longPollingEnabled = true;
         callListFolderLongPoll();
     };
@@ -292,12 +292,12 @@
     };
 
     var getAuthUrl = function (redirectUri, csrfState) {
-        dropbox = new Dropbox({clientId: DROPBOX_CLIENT_ID});
+        dropbox = new Dropbox.Dropbox({clientId: DROPBOX_CLIENT_ID});
         return dropbox.getAuthenticationUrl(redirectUri, csrfState);
     };
 
     var revokeToken = function (token) {
-        dropbox = new Dropbox({accessToken: token});
+        dropbox = new Dropbox.Dropbox({accessToken: token});
         dropbox.authTokenRevoke();
     };
 
