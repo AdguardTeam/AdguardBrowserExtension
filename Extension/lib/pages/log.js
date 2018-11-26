@@ -164,19 +164,30 @@ PageController.prototype = {
         this.searchWhitelisted = false;
 
         // Bind click to reload tab
-        document.querySelector('.reloadTab').addEventListener('click', function (e) {
-            e.preventDefault();
-            // Unable to reload "background" tab, just clear events
-            if (this.currentTabId === -1) {
-                if (this.preserveLogEnabled) {
+        const reloadTabs = document.querySelectorAll('.reloadTab');
+        if (reloadTabs.length <= 0) {
+            return;
+        }
+        reloadTabs.forEach(reloadTab => {
+            reloadTab.addEventListener('click', function (e) {
+                e.preventDefault();
+                // Unable to reload "background" tab, just clear events
+                if (this.currentTabId === -1) {
+                    if (this.preserveLogEnabled) {
+                        return;
+                    }
+                    contentPage.sendMessage({ type: 'clearEventsByTabId', tabId: this.currentTabId });
+                    this.emptyLogTable();
                     return;
                 }
-                contentPage.sendMessage({ type: 'clearEventsByTabId', tabId: this.currentTabId });
-                this.emptyLogTable();
-                return;
-            }
-            contentPage.sendMessage({ type: 'reloadTabById', tabId: this.currentTabId, preserveLogEnabled: this.preserveLogEnabled });
-        }.bind(this));
+                contentPage.sendMessage({
+                    type: 'reloadTabById',
+                    tabId: this.currentTabId,
+                    preserveLogEnabled: this.preserveLogEnabled,
+                });
+            }.bind(this));
+        });
+
 
         // Bind click to clear events
         document.querySelector('#clearTabLog').addEventListener('click', function (e) {
@@ -239,9 +250,9 @@ PageController.prototype = {
     _updateTabIdFromHash: function () {
         // Try to retrieve tabId from hash
         if (document.location.hash) {
-            var tabId = document.location.hash.substring(1);
+            const tabId = document.location.hash.substring(1);
             if (tabId) {
-                this.currentTabId = tabId;
+                this.currentTabId = Number(tabId);
             }
         }
     },
@@ -251,7 +262,7 @@ PageController.prototype = {
             return;
         }
 
-        var option = document.createElement('option');
+        const option = document.createElement('option');
         option.textContent = tabInfo.title;
         option.setAttribute('data-tab-id', tabInfo.tabId);
         this.tabSelector.appendChild(option);
@@ -262,7 +273,8 @@ PageController.prototype = {
     },
 
     onTabUpdated: function (tabInfo) {
-        var item = this.tabSelector.querySelector('[data-tab-id="' + tabInfo.tabId + '"]');
+        const item = this.tabSelector.querySelector('[data-tab-id="' + tabInfo.tabId + '"]');
+
         if (tabInfo.isExtensionTab) {
             this.onTabClose(tabInfo);
             return;
@@ -270,7 +282,7 @@ PageController.prototype = {
 
         if (item) {
             item.textContent = tabInfo.title;
-            if (tabInfo.tabId == this.currentTabId) {
+            if (tabInfo.tabId === this.currentTabId) {
                 document.querySelector('[data-tab-id="' + this.currentTabId + '"]').selected = true;
                 // update icon logo
                 this._updateLogoIcon();
@@ -288,7 +300,7 @@ PageController.prototype = {
 
         element.parentNode.removeChild(element);
 
-        if (this.currentTabId == tabInfo.tabId) {
+        if (this.currentTabId === tabInfo.tabId) {
             // current tab was removed
             this.currentTabId = null;
             this.onSelectedTabChange();
@@ -302,22 +314,27 @@ PageController.prototype = {
     },
 
     onTabReset: function (tabInfo) {
-        if (this.currentTabId == tabInfo.tabId) {
+        if (this.currentTabId === tabInfo.tabId) {
             this.emptyLogTable();
             this._onEmptyTable();
         }
     },
 
     onEventAdded: function (tabInfo, event) {
-        if (this.currentTabId != tabInfo.tabId) {
+        if (this.currentTabId !== tabInfo.tabId) {
             // don't relate to the current tab
             return;
         }
+
+        if (event.requestType === 'DOCUMENT' && !event.element && !this.preserveLogEnabled) {
+            this.onTabReset(tabInfo);
+        }
+
         this._renderEvents([event]);
     },
 
     onEventUpdated: function (tabInfo, event) {
-        if (this.currentTabId != tabInfo.tabId) {
+        if (this.currentTabId !== tabInfo.tabId) {
             // don't relate to the current tab
             return;
         }
@@ -343,7 +360,7 @@ PageController.prototype = {
             selectedTabId = selectedItem.getAttribute('data-tab-id');
         }
 
-        this.currentTabId = selectedTabId;
+        this.currentTabId = Number(selectedTabId);
         var selectedTab = document.querySelector('[data-tab-id="' + this.currentTabId + '"]');
         if (selectedTab) {
             selectedTab.selected = true;
@@ -358,9 +375,9 @@ PageController.prototype = {
     _updateLogoIcon: function () {
         contentPage.sendMessage({ type: 'getTabFrameInfoById', tabId: this.currentTabId }, function (response) {
             var frameInfo = response.frameInfo;
-            var src = 'images/icon-adguard.png';
+            var src = 'images/shield.svg';
             if (frameInfo && frameInfo.adguardDetected) {
-                src = 'skin/logpage/images/dropdown-logo-blue.png'; // TODO: integration icon
+                src = 'images/shield-blue.svg';
             }
 
             this.logoIcon.setAttribute('src', src);
@@ -469,12 +486,15 @@ PageController.prototype = {
             this._onEmptyTable();
             return;
         }
-        var templates = [];
-        for (var i = 0; i < events.length; i++) {
-            var template = this._renderTemplate(events[i]);
+
+        const templates = [];
+
+        for (let i = 0; i < events.length; i += 1) {
+            const template = this._renderTemplate(events[i]);
             this._handleEventShow(template);
             templates.push(template);
         }
+
         this._onNotEmptyTable();
 
         templates.forEach(function (t) {
@@ -703,12 +723,14 @@ var RequestWizard = (function () {
         const rulePatternsEl = template.querySelector('#rulePatterns');
 
         for (let i = 0; i < patterns.length; i += 1) {
+            const pattern = patterns[i];
+            const escapedPattern = pattern.replace(/"/g, '&quot;');
             const rulePatternTemplate = `
                 <li class="checkb-wrap">
                     <div class="radio">
-                        <input class="radio__input" type="radio" name="rulePattern" id="pattern${i}" value="${patterns[i]}" ${i === 0 ? "checked='checked'" : ''}>
+                        <input class="radio__input" type="radio" name="rulePattern" id="pattern${i}" value="${escapedPattern}" ${i === 0 ? "checked='checked'" : ''}>
                         <label class="radio__label" for="pattern${i}">
-                            ${patterns[i]}
+                            ${pattern}
                         </label>
                     </div>
                 </li>`;

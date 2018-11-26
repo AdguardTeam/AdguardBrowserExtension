@@ -283,13 +283,13 @@ adguard.backend = (function (adguard) {
      * @param errorCallback     Called on error
      */
     var loadFilterRulesBySubscriptionUrl = function (url, successCallback, errorCallback) {
-
         if (url in loadingSubscriptions) {
             return;
         }
+
         loadingSubscriptions[url] = true;
 
-        var success = function (lines) {
+        const success = function (lines) {
             delete loadingSubscriptions[url];
 
             if (lines[0].indexOf('[') === 0) {
@@ -300,9 +300,10 @@ adguard.backend = (function (adguard) {
             successCallback(lines);
         };
 
-        var error = function (cause) {
+        const error = function (cause) {
             delete loadingSubscriptions[url];
-            errorCallback(cause);
+            const message = cause instanceof Error ? cause.message : cause;
+            errorCallback(message);
         };
 
         FilterDownloader.download(url, FilterCompilerConditionsConstants).then(success, error);
