@@ -346,6 +346,43 @@ adguard.filteringLog = (function (adguard) {
     };
 
     /**
+     *
+     * @param tab
+     * @param rule
+     * @param headerName
+     * @param headerValue
+     * @param requestType
+     * @param thirdParty
+     * @param sourceUrl
+     */
+    const addStealthEvent = function (tab, rule, headerName, headerValue, requestType, thirdParty, sourceUrl) {
+
+        if (openedFilteringLogsPage === 0) {
+            return;
+        }
+
+        const tabInfo = tabsInfoMap[tab.tabId];
+        if (!tabInfo) {
+            return;
+        }
+
+        const filteringEvent = {
+            headerName: headerName,
+            headerValue: headerValue,
+            requestType: requestType,
+            requestThirdParty: thirdParty,
+            requestUrl: sourceUrl,
+            frameDomain: adguard.utils.url.getDomainName(sourceUrl)
+        };
+
+        if (rule) {
+            addRuleToFilteringEvent(filteringEvent, rule);
+        }
+
+        pushFilteringEvent(tabInfo, filteringEvent);
+    };
+
+    /**
      * Remove log requests for tab
      * @param tabId
      */
@@ -437,6 +474,7 @@ adguard.filteringLog = (function (adguard) {
         bindReplaceRulesToHttpRequestEvent: bindReplaceRulesToHttpRequestEvent,
         addCosmeticEvent: addCosmeticEvent,
         addCookieEvent: addCookieEvent,
+        addStealthEvent: addStealthEvent,
         clearEventsByTabId: clearEventsByTabId,
 
         isOpen: isOpen,

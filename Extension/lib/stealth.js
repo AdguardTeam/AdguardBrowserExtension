@@ -45,7 +45,8 @@ adguard.stealthService = (function (adguard) {
         USER_AGENT: 'User-Agent',
         REFERRER: 'Referer',
         ETAG: 'ETag',
-        X_CLIENT_DATA: 'X-Client-Data'
+        X_CLIENT_DATA: 'X-Client-Data',
+        DO_NOT_TRACK: 'DNT'
     };
 
     /**
@@ -155,6 +156,20 @@ adguard.stealthService = (function (adguard) {
     };
 
     /**
+     * Adds stealth event to filtering log
+     *
+     * @param {Object} tab
+     * @param {Object} rule
+     * @param {Object?} headerName
+     * @param {Object?} headerValue
+     * @param {Object?} requestType
+     * @param {Object?} thirdParty
+     */
+    const addStealthLogEvent = (tab, rule, headerName, headerValue, requestUrl, thirdParty) => {
+        adguard.filteringLog.addStealthEvent(tab, rule, headerName, headerValue, adguard.RequestTypes.STEALTH, thirdParty, requestUrl);
+    };
+
+    /**
      * Processes request headers
      *
      * @param {string} requestId Request identifier
@@ -190,6 +205,8 @@ adguard.stealthService = (function (adguard) {
             sourceUrl = getHeaderValue(requestHeaders, HEADERS.REFERRER);
         }
 
+        const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, sourceUrl);
+
         const whiteListRule = adguard.antiBannerService.getRequestFilter().findWhiteListRule(requestUrl, sourceUrl, requestType);
         if (whiteListRule) {
             adguard.console.debug('Whitelist rule found');
@@ -200,12 +217,12 @@ adguard.stealthService = (function (adguard) {
             adguard.antiBannerService.getRequestFilter().findWhiteListRule(sourceUrl, sourceUrl, adguard.RequestTypes.STEALTH);
         if (stealthWhiteListRule) {
             adguard.console.debug('Whitelist stealth rule found');
+            addStealthLogEvent(tab, stealthWhiteListRule, null, null, sourceUrl, thirdParty);
             return false;
         }
 
         let headersModified = false;
 
-        const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, sourceUrl);
         let isMainFrame = requestType === "DOCUMENT";
 
         // Remove referrer for third-party requests
@@ -213,6 +230,7 @@ adguard.stealthService = (function (adguard) {
         if (thirdParty && hideReferrer) {
             adguard.console.debug('Remove referrer for third-party requests');
             replaceHeader(requestHeaders, HEADER_VALUES.REFERRER);
+            addStealthLogEvent(tab, null, HEADER_VALUES.REFERRER.name, HEADER_VALUES.REFERRER.value, sourceUrl, thirdParty);
             headersModified = true;
         }
 
@@ -221,6 +239,7 @@ adguard.stealthService = (function (adguard) {
         if (hideSearchQueries && isMainFrame && thirdParty && isSearchEngine(sourceUrl)) {
             adguard.console.debug('Hide referrer in case of search engine is referrer');
             replaceHeader(requestHeaders, HEADER_VALUES.REFERRER);
+            addStealthLogEvent(tab, null, HEADER_VALUES.REFERRER.name, HEADER_VALUES.REFERRER.value, sourceUrl, thirdParty);
             headersModified = true;
         }
 
@@ -229,6 +248,7 @@ adguard.stealthService = (function (adguard) {
         if (blockChromeClientData) {
             adguard.console.debug('Remove X-Client-Data header');
             removeHeader(requestHeaders, HEADERS.X_CLIENT_DATA);
+            addStealthLogEvent(tab, null, HEADERS.X_CLIENT_DATA, null, sourceUrl, thirdParty);
             headersModified = true;
         }
 
@@ -237,10 +257,9 @@ adguard.stealthService = (function (adguard) {
         if (sendDoNotTrack) {
             adguard.console.debug('Adding Do-Not-Track (DNT) header');
             requestHeaders.push(HEADER_VALUES.DO_NOT_TRACK);
+            addStealthLogEvent(tab, null, HEADER_VALUES.DO_NOT_TRACK.name, HEADER_VALUES.DO_NOT_TRACK.value, sourceUrl, thirdParty);
             headersModified = true;
         }
-
-        //TODO: Add log event
 
         adguard.console.debug('Stealth service processed request headers for {0}', requestUrl);
 
