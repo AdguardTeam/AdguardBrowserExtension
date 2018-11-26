@@ -31,6 +31,11 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                 openSiteReportTab(tab.url);
             });
         },
+        'context_complaint_website': function () {
+            adguard.tabs.getActive(function (tab) {
+                openAbuseTab(tab.url);
+            });
+        },
         'context_site_filtering_on': function () {
             adguard.tabs.getActive(unWhiteListTab);
         },
@@ -220,23 +225,10 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     }
 
     function customizeContextMenu(tab) {
-
         function addSeparator() {
             adguard.contextMenus.create({
-                type: 'separator'
+                type: 'separator',
             });
-        }
-
-        function addSettingsSubMenu() {
-            nextMenuId += 1;
-            var menuId = 'adguard-settings-context-menu-' + nextMenuId;
-            addMenu('context_open_settings', {id: menuId});
-            addMenu('context_general_settings', {parentId: menuId});
-            addMenu('context_antibanner', {parentId: menuId});
-            addMenu('context_safebrowsing', {parentId: menuId});
-            addMenu('context_whitelist', {parentId: menuId});
-            addMenu('context_userfilter', {parentId: menuId});
-            addMenu('context_miscellaneous_settings', {parentId: menuId});
         }
 
         var tabInfo = adguard.frames.getFrameInfo(tab);
@@ -245,13 +237,13 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             addMenu('context_site_protection_disabled');
             addSeparator();
             addMenu('context_open_log');
-            addSettingsSubMenu();
+            addMenu('context_open_settings');
             addMenu('context_enable_protection');
         } else if (tabInfo.urlFilteringDisabled) {
             addMenu('context_site_filtering_disabled');
             addSeparator();
             addMenu('context_open_log');
-            addSettingsSubMenu();
+            addMenu('context_open_settings');
             addMenu('context_update_antibanner_filters');
         } else {
             if (tabInfo.adguardDetected) {
@@ -279,9 +271,10 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             }
             addMenu('context_open_log');
             addMenu('context_security_report');
+            addMenu('context_complaint_website');
             if (!tabInfo.adguardDetected) {
                 addSeparator();
-                addSettingsSubMenu();
+                addMenu('context_open_settings');
                 addMenu('context_update_antibanner_filters');
                 addMenu('context_disable_protection');
             }
@@ -374,6 +367,13 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         return adguard.getURL('pages/' + page);
     }
 
+    const isAdguardTab = (tab) => {
+        const { url } = tab;
+        const appId = adguard.app.getId();
+        const schemeUrl = adguard.app.getUrlScheme();
+        return url.indexOf(appId) > -1 && url.indexOf(schemeUrl) > -1;
+    };
+
     function showAlertMessagePopup(title, text, showForAdguardTab) {
         adguard.tabs.getActive(function (tab) {
             if (!showForAdguardTab && adguard.frames.isTabAdguardDetected(tab)) {
@@ -381,13 +381,10 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             }
             adguard.tabs.sendMessage(tab.tabId, {
                 type: 'show-alert-popup',
+                isAdguardTab: isAdguardTab(tab),
                 title: title,
-                text: text
+                text: text,
             });
-        });
-
-        adguard.tabs.getActive(function (tab) {
-            adguard.tabs.sendMessage(tab.tabId, {type: 'show-alert-popup', title: title, text: text});
         });
     }
 
@@ -413,15 +410,15 @@ adguard.ui = (function (adguard) { // jshint ignore:line
      * @param previousVersion
      */
     function showVersionUpdatedPopup(currentVersion, previousVersion) {
-        var message = {
+        const message = {
             type: 'show-version-updated-popup',
-            title: adguard.i18n.getMessage("options_popup_version_update_title", currentVersion),
+            title: adguard.i18n.getMessage('options_popup_version_update_title', currentVersion),
             description: getUpdateDescriptionMessage(currentVersion, previousVersion),
-            changelogHref: adguard.i18n.getMessage("options_popup_version_update_changelog_href"),
-            changelogText: adguard.i18n.getMessage("options_popup_version_update_changelog_text"),
-            offer: adguard.i18n.getMessage("options_popup_version_update_offer"),
-            offerButtonHref: adguard.i18n.getMessage("options_popup_version_update_offer_button_href"),
-            offerButtonText: adguard.i18n.getMessage("options_popup_version_update_offer_button_text")
+            changelogHref: 'https://adguard.com/forward.html?action=github_version_popup&from=version_popup&app=browser_extension',
+            changelogText: adguard.i18n.getMessage('options_popup_version_update_changelog_text'),
+            offer: adguard.i18n.getMessage('options_popup_version_update_offer'),
+            offerButtonHref: 'https://adguard.com/forward.html?action=github_version_site&from=version_popup&app=browser_extension',
+            offerButtonText: adguard.i18n.getMessage('options_popup_version_update_offer_button_text'),
         };
 
         adguard.tabs.getActive(function (tab) {
@@ -434,16 +431,16 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         var text = [];
         if (success) {
             if (updatedFilters.length === 0) {
-                title = adguard.i18n.getMessage("options_popup_update_title_not_found");
-                text.push(adguard.i18n.getMessage("options_popup_update_not_found"));
+                title = adguard.i18n.getMessage('options_popup_update_title_not_found');
+                text.push(adguard.i18n.getMessage('options_popup_update_not_found'));
             } else {
-                title = adguard.i18n.getMessage("options_popup_update_title");
+                title = adguard.i18n.getMessage('options_popup_update_title');
                 updatedFilters.sort(function (a, b) {
                     return a.displayNumber - b.displayNumber;
                 });
                 for (var i = 0; i < updatedFilters.length; i++) {
                     var filter = updatedFilters[i];
-                    text.push(adguard.i18n.getMessage("options_popup_update_updated", [filter.name, filter.version]).replace("$1", filter.name).replace("$2", filter.version));
+                    text.push(adguard.i18n.getMessage('options_popup_update_updated', [filter.name, filter.version]).replace("$1", filter.name).replace("$2", filter.version));
                 }
             }
         } else {
@@ -811,7 +808,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     //on filters updated event
     adguard.listeners.addListener(function (event, success, updatedFilters) {
         if (event === adguard.listeners.UPDATE_FILTERS_SHOW_POPUP) {
-            var result = getFiltersUpdateResultMessage(success, updatedFilters);
+            const result = getFiltersUpdateResultMessage(success, updatedFilters);
             showAlertMessagePopup(result.title, result.text);
         }
     });
@@ -840,7 +837,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         openAssistant: openAssistant,
         openTab: openTab,
 
-        showAlertMessagePopup: showAlertMessagePopup
+        showAlertMessagePopup: showAlertMessagePopup,
     };
 
 })(adguard);

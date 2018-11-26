@@ -1,4 +1,4 @@
-export const LOCALES = ['en', 'ru', 'de', 'tr', 'uk', 'pl', 'pt_BR', 'pt_PT', 'ko', 'zh_CN', 'sr-Latn', 'fr', 'sk', 'hy', 'es_419', 'it', 'id', 'nl', 'bg', 'vi', 'hr', 'hu', 'ca', 'zh_TW', 'da', 'sv', 'ms', 'ar', 'ro', 'sr', 'fa', 'ja', 'bg-BG', 'el', 'cs', 'fi', 'mk-MK', 'he', 'nb', 'be'];
+export const LOCALES = ['en', 'ru', 'de', 'es', 'fr', 'ja', 'hu', 'pl', 'da', 'uk', 'ar', 'sv', 'fa', 'it', 'pt-BR', 'pt-PT', 'id', 'sk', 'tr', 'cs', 'nl', 'zh_CN', 'zh_TW', 'hr', 'sr-Latn', 'ms', 'vi', 'hy', 'ro', 'ko', 'bg', 'ca', 'sl-Sl', 'be', 'nb', 'bg-BG', 'el', 'fi', 'mk-MK', 'he'];
 
 export const LAST_ADGUARD_FILTER_ID = 14;
 
