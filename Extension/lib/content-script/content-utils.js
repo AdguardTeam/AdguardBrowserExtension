@@ -18,7 +18,6 @@
 /* global contentPage, HTMLDocument */
 
 (function () {
-
     if (window !== window.top) {
         return;
     }
@@ -34,11 +33,80 @@
         return;
     }
 
-    function htmlToElement(html) {
-        var template = document.createElement('template');
-        template.innerHTML = html;
-        return template.content.firstChild;
-    }
+    const MAX_Z_INDEX = '2147483647';
+
+    /**
+     * Creates iframe and appends it after target open tag
+     * @param target Node where to append iframe with html
+     * @param html html string to write inside iframe
+     * @returns {HTMLElement} iframe element
+     */
+    const appendIframe = (target, html) => {
+        const iframe = document.createElement('iframe');
+        target.insertAdjacentElement('afterbegin', iframe);
+        iframe.src = 'about:blank';
+        iframe.contentWindow.document.open();
+        iframe.contentWindow.document.write(html);
+        iframe.contentWindow.document.close();
+        iframe.style.zIndex = MAX_Z_INDEX;
+        return iframe;
+    };
+
+
+    /**
+     * Creates div and appends it to the page
+     * @param target
+     * @param html
+     * @returns {any | HTMLElement}
+     */
+    const appendDiv = (target, html) => {
+        const div = document.createElement('div');
+        div.innerHTML = html;
+        target.insertAdjacentElement('afterbegin', div);
+        div.style.zIndex = MAX_Z_INDEX;
+        return div;
+    };
+
+    /**
+     * If isAdguardTab we append div, else we append iframe
+     * @param target
+     * @param html
+     * @param isAdguardTab
+     * @returns {HTMLElement}
+     */
+    const appendAlertElement = (target, html, isAdguardTab) => {
+        if (isAdguardTab) {
+            return appendDiv(target, html);
+        }
+        return appendIframe(target, html);
+    };
+
+    /**
+     * Generates alert html
+     * @param {string} title
+     * @param {string} text
+     * @returns {string}
+     */
+    const genAlertHtml = (title, text) => {
+        let descBlock = '';
+        if (text && text.length > 0) {
+            descBlock = `<div class="adguard-popup-alert__desc">
+                            ${text}
+                        </div>`;
+        }
+
+        // don't show description text if it is same as title or if it is equal to undefined
+        if (title === text || text === 'undefined') {
+            descBlock = '';
+        }
+
+        return `<div class="adguard-popup-alert">
+                    <div class="adguard-popup-alert__title">
+                        ${title}
+                    </div>
+                    ${descBlock}
+                </div>`;
+    };
 
     /**
      * Shows alert popup.
@@ -47,46 +115,42 @@
      * @param message Message text
      */
     function showAlertPopup(message) {
+        const { text, title, isAdguardTab } = message;
 
-        var messages = [];
-        if (Array.isArray(message.text)) {
-            messages = message.text;
+        if (!title) {
+            return;
+        }
+
+        let messages = [];
+        if (Array.isArray(text)) {
+            messages = text;
         } else {
-            messages = [message.text];
+            messages = [text];
         }
 
-        var text = '';
-        for (var i = 0; i < messages.length; i++) {
+        let fullText = '';
+        for (let i = 0; i < messages.length; i += 1) {
             if (i > 0) {
-                text += ', ';
+                fullText += ', ';
             }
-            text += messages[i];
+            fullText += messages[i];
         }
 
-        var title = message.title;
+        const alertDivHtml = genAlertHtml(title, fullText);
 
-        var alertDivHtml =
-            '<div class="adguard-popup-alert adguard-popup-alert--active">' +
-                '<div class="adguard-popup-alert__in">' +
-                    '<div class="adguard-popup-subtitle-2">' +
-                        title +
-                    '</div>' +
-                '</div>' +
-            '</div>';
-
-        var triesCount = 10;
-
-        var alertDiv = htmlToElement(alertDivHtml);
+        const triesCount = 10;
 
         function appendPopup(count) {
             if (count >= triesCount) {
                 return;
             }
+
             if (document.body) {
-                document.body.appendChild(alertDiv);
+                const alertElement = appendAlertElement(document.body, alertDivHtml, isAdguardTab);
+                alertElement.classList.add('adguard-alert-iframe');
                 setTimeout(function () {
-                    if (alertDiv && alertDiv.parentNode) {
-                        alertDiv.parentNode.removeChild(alertDiv);
+                    if (alertElement && alertElement.parentNode) {
+                        alertElement.parentNode.removeChild(alertElement);
                     }
                 }, 4000);
             } else {
@@ -106,42 +170,68 @@
      * @param {{title,description, changelogHref, changelogText, offer, offerButtonHref, offerButtonText}} message
      */
     function showVersionUpdatedPopup(message) {
-        var alertDivHtml =
-            `<div id="adguard-new-version-popup" class="adguard-update-popup adguard-update-popup--active">
-                <div id="adguard-new-version-popup-close" class="adguard-update-popup__close"></div>
-                <div class="adguard-update-popup__logo"></div>
-                <div class="adguard-update-popup__title">
-                    ${message.title}
-                </div>
-                <div class="adguard-update-popup__desc">
-                    ${message.description}
-                </div>
-                <a href="${message.changelogHref}" class="adguard-update-popup__link" target="_blank">
-                    ${message.changelogText}
-                </a>
-                <div class="adguard-update-popup__offer">
-                    ${message.offer}
-                </div>
-                <a href="${message.offerButtonHref}" class="adguard-update-popup__btn">
-                    ${message.offerButtonText}
-                </a>
-            </div>`;
+        const {
+            title,
+            description,
+            changelogHref,
+            changelogText,
+            offer,
+            offerButtonHref,
+            offerButtonText,
+        } = message;
 
-        var triesCount = 10;
+        const updateIframeHtml = `<head></head>
+                            <body>
+                            <div id="adguard-new-version-popup" class="adguard-update-popup adguard-update-popup--active">
+                                <div id="adguard-new-version-popup-close" class="adguard-update-popup__close"></div>
+                                <div class="adguard-update-popup__logo"></div>
+                                <div class="adguard-update-popup__title">
+                                    ${title}
+                                </div>
+                                <div class="adguard-update-popup__desc">
+                                    ${description}
+                                </div>
+                                <a href="${changelogHref}" class="adguard-update-popup__link" target="_blank">
+                                    ${changelogText}
+                                </a>
+                                <div class="adguard-update-popup__offer">
+                                    ${offer}
+                                </div>
+                                <a href="${offerButtonHref}" class="adguard-update-popup__btn">
+                                    ${offerButtonText}
+                                </a>
+                            </div>
+                            <script>
+                                const close = document.querySelector('.adguard-update-popup__close');
+                                close.addEventListener('click', () => {
+                                    parent.postMessage({type: 'close.iframe'}, location.origin);
+                                });
+                            </script>
+                            </body>`;
 
-        var alertDiv = htmlToElement(alertDivHtml);
+        const triesCount = 10;
 
         function appendPopup(count) {
             if (count >= triesCount) {
                 return;
             }
-            if (document.body) {
-                document.body.appendChild(alertDiv);
 
-                var close = document.getElementById('adguard-new-version-popup-close');
-                close.addEventListener('click', function () {
-                    document.body.removeChild(alertDiv);
-                });
+            if (document.body) {
+                const iframe = appendIframe(document.body, updateIframeHtml);
+                iframe.classList.add('adguard-update-iframe');
+
+                const iframeMessageHandler = (event) => {
+                    if (document.location.origin !== event.origin) {
+                        return;
+                    }
+                    const { data: { type } } = event;
+                    if (type && type === 'close.iframe') {
+                        iframe.parentNode.removeChild(iframe);
+                        window.removeEventListener('message', iframeMessageHandler);
+                    }
+                };
+
+                window.addEventListener('message', iframeMessageHandler, false);
             } else {
                 setTimeout(function () {
                     appendPopup(count + 1);
@@ -156,7 +246,7 @@
      * Reload page without cache
      */
     function noCacheReload() {
-        var xhr = new XMLHttpRequest();
+        const xhr = new XMLHttpRequest();
         xhr.open('GET', document.location.href);
         xhr.setRequestHeader('Pragma', 'no-cache');
         xhr.setRequestHeader('Expires', '-1');
@@ -178,5 +268,4 @@
             window.location = message.url;
         }
     });
-
 })();

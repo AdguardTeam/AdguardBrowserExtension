@@ -8,7 +8,7 @@
     <link type="text/css" rel="stylesheet" href="../lib/content-script/css/alert-popup.css">
 
     <!-- @if browser == "CHROMIUM" || browser == "EDGE" || browser == "OPERA" || browser == "FIREFOX_WEBEXT" -->
-    <script type="text/javascript" src="../lib/libs/moment-with-locales.min.js"></script>
+    <script type="text/javascript" src="../lib/libs/moment-with-locales.js"></script>
     <script type="text/javascript" src="../lib/libs/ace/ace.js"></script>
     <script type="text/javascript" src="../lib/libs/ace/mode-adguard.js"></script>
     <script type="text/javascript" src="../lib/content-script/adguard-content.js"></script>
@@ -147,7 +147,9 @@
                     <li>
                         <div class="opt-desc">
                             <div class="title" i18n="options_safebrowsing_help"></div>
-                            <div class="opt-state"></div>
+                            <div class="opt-state">
+                                <div class="sp-table-row-info desc" i18n="options_safebrowsing_help_desc"></div>
+                            </div>
                         </div>
                         <div class="opt-state input">
                             <div class="toggler-wr">
@@ -415,7 +417,9 @@
                         <li>
                             <div class="opt-desc">
                                 <div class="opt-name" i18n="options_whitelist_inverse"></div>
-                                <div class="opt-state"></div>
+                                <div class="opt-state">
+                                    <div class="sp-table-row-info desc" i18n="options_whitelist_inverse_desc"></div>
+                                </div>
                             </div>
                             <div class="opt-state input">
                                 <div class="toggler-wr">
@@ -462,7 +466,11 @@
                     <li>
                         <div class="opt-desc">
                             <div class="opt-name" i18n="options_use_optimized_filters"></div>
-                            <div class="opt-state"></div>
+                            <div class="opt-state">
+                                <div class="opt-state">
+                                    <div class="sp-table-row-info desc" i18n="options_use_optimized_filters_desc"></div>
+                                </div>
+                            </div>
                         </div>
                         <div class="opt-state input">
                             <div class="toggler-wr">
@@ -476,7 +484,7 @@
                                 <div class="title" i18n="options_disable_integration_mode"></div>
                                 <div class="opt-state">
                                     <div class="sp-table-row-info desc">
-                                        <a class="opt-state__link" href="https://adguard.com/forward.html?action=integration_mode&from=options_screen&app=browser_extension" target="_blank" i18n="options_learn_more"></a>
+                                        <a class="opt-state__link" href="https://adguard.com/forward.html?action=integration_mode_kb&from=options_screen&app=browser_extension" target="_blank" i18n="options_learn_more"></a>
                                     </div>
                                 </div>
                             </div>
@@ -596,7 +604,8 @@
                         </div>
                         <span id="lastSyncTimeInfo"></span>
                         <div class="account__btns">
-                            <a href="https://adguard.com/login.html?utm_source=extension&aid=16593" target="_blank" id="manageAccountButton"
+                            <!--TODO поменять линк, как будет готов auth service-->
+                            <a href="https://adguard.com/forward.html?action=options_login&from=options_screen&app=browser_extension" target="_blank" id="manageAccountButton"
                                class="button button--green manage-account-btn account__btn" i18n="sync_manage_account_button_text"></a>
                             <button id="signOutButton" class="button button--transparent account__btn">
                                 Disconnect
@@ -667,10 +676,10 @@
                     &copy; AdGuard, 2009-2018
                 </div>
                 <div class="links">
-                    <a href="https://adguard.com?utm_source=extension&aid=16593" target="_blank" i18n="options_site"></a>
-                    <a href="https://blog.adguard.com/?utm_source=extension?aid=16593" target="_blank" i18n="options_blog"></a>
-                    <a href="https://forum.adguard.com?utm_source=extension&aid=16593" target="_blank" i18n="options_forum"></a>
-                    <a href="https://adguard.com/discuss.html?utm_source=extension&aid=16593" target="_blank" i18n="options_feedback"></a>
+                    <a href="https://adguard.com/forward.html?action=adguard_site_option&from=options_screen&app=browser_extension" target="_blank" i18n="options_site"></a>
+                    <a href="https://adguard.com/forward.html?action=adguard_blog&from=options_screen&app=browser_extension" target="_blank" i18n="options_blog"></a>
+                    <a href="https://adguard.com/forward.html?action=forum&from=options_screen&app=browser_extension" target="_blank" i18n="options_forum"></a>
+                    <a href="https://adguard.com/forward.html?action=discuss&from=options_screen&app=browser_extension" target="_blank" i18n="options_feedback"></a>
                 </div>
             </div>
         </div>
