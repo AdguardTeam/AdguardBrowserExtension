@@ -56,7 +56,7 @@
     /**
      * Process request
      *
-     * @param requestDetails
+     * @param {RequestDetails} requestDetails
      * @returns {boolean} False if request must be blocked
      */
     function onBeforeRequest(requestDetails) {
@@ -76,13 +76,24 @@
             // Reset tab button state
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_TAB_BUTTON_STATE, tab, true);
 
+            // Record request context for the main frame
+            adguard.requestContextStorage.record(requestId, requestUrl, requestUrl, requestType, tab);
+
             /**
-             * In the case of the "about:newtab" pages we don't receive onResponseReceived event for the main_frame, so we have to append log event here.
+             * Just to remember!
+             * In the case of the "about:newtab" pages we don't receive onResponseReceived event for the main_frame
              * Also if chrome://newtab is overwritten, we won't receive any webRequest events for the main_frame
              * Unfortunately, we can't do anything in this case and just must remember about it
              */
+
+            /**
+             * Binds rule to the main_frame request
+             * In integration mode, rule from the headers will override this value
+             */
             var tabRequestRule = adguard.frames.getFrameWhiteListRule(tab);
-            adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, requestUrl, requestType, tabRequestRule, requestId);
+            if (tabRequestRule) {
+                adguard.requestContextStorage.update(requestId, { requestRule: tabRequestRule });
+            }
 
             return;
         }
@@ -95,7 +106,15 @@
         var referrerUrl = getReferrerUrl(requestDetails);
         var requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
 
-        adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule, requestId);
+        // Record request for other types
+        adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, requestType, tab);
+
+        requestRule = adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
+
+        if (requestRule) {
+            adguard.requestContextStorage.update(requestId, { requestRule });
+        }
+
         var response = adguard.webRequestService.getBlockedResponseByRule(requestRule, requestType);
 
         if (response && response.cancel) {
@@ -167,29 +186,39 @@
     function onBeforeSendHeaders(requestDetails) {
 
         var tab = requestDetails.tab;
-        var headers = requestDetails.requestHeaders;
+        var requestId = requestDetails.requestId;
+        var requestHeaders = requestDetails.requestHeaders;
+        var requestType = requestDetails.requestType;
 
-        if (adguard.integration.shouldOverrideReferrer(tab)) {
+        adguard.requestContextStorage.update(requestId, { requestHeaders });
+
+        let requestHeadersModified = false;
+
+        if (adguard.integration.shouldOverrideReferrer(tab) &&
+            (requestType === adguard.RequestTypes.DOCUMENT || adguard.frames.isTabAdguardDetected(tab))) {
+
             // Retrieve main frame url
             var mainFrameUrl = adguard.frames.getMainFrameUrl(tab);
-            headers = adguard.utils.browser.setHeaderValue(headers, 'Referer', mainFrameUrl);
-            return {
-                requestHeaders: headers,
-                modifiedHeaders: [{
-                    name: 'Referer',
-                    value: mainFrameUrl
-                }]
-            };
+            requestHeaders = adguard.utils.browser.setHeaderValue(requestHeaders, 'Referer', mainFrameUrl);
+            requestHeadersModified = true;
         }
 
-        if (requestDetails.requestType === adguard.RequestTypes.DOCUMENT) {
+        if (requestType === adguard.RequestTypes.DOCUMENT) {
             // Save ref header
-            var refHeader = adguard.utils.browser.findHeaderByName(headers, 'Referer');
+            var refHeader = adguard.utils.browser.findHeaderByName(requestHeaders, 'Referer');
             if (refHeader) {
                 adguard.frames.recordFrameReferrerHeader(tab, refHeader.value);
             }
         }
 
+        if (adguard.cookieFiltering.filterRequestHeaders(requestId, requestHeaders)) {
+            requestHeadersModified = true;
+        }
+
+        if (requestHeadersModified) {
+            adguard.requestContextStorage.update(requestId, { modifiedRequestHeaders: requestHeaders });
+            return { requestHeaders };
+        }
         return {};
     }
 
@@ -205,14 +234,20 @@
 
         var tab = requestDetails.tab;
         var requestUrl = requestDetails.requestUrl;
-        var responseHeaders = requestDetails.responseHeaders;
+        var responseHeaders = requestDetails.responseHeaders || [];
         var requestType = requestDetails.requestType;
         var referrerUrl = getReferrerUrl(requestDetails);
         var requestId = requestDetails.requestId;
         var statusCode = requestDetails.statusCode;
         var method = requestDetails.method;
 
-        adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders, requestId);
+        adguard.requestContextStorage.update(requestId, { responseHeaders });
+
+        const requestRule = adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
+        // Overrides rule in integration mode
+        if (adguard.frames.isTabAdguardDetected(tab)) {
+            adguard.requestContextStorage.update(requestId, { requestRule });
+        }
 
         // Safebrowsing check
         if (requestType === adguard.RequestTypes.DOCUMENT &&
@@ -227,8 +262,23 @@
             adguard.contentFiltering.apply(tab, requestUrl, referrerUrl, requestType, requestId, statusCode, method, contentType);
         }
 
+        let responseHeadersModified = false;
+
         if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
-            return modifyCSPHeader(requestDetails);
+            const cspHeaders = getCSPHeaders(requestDetails);
+            if (cspHeaders && cspHeaders.length > 0) {
+                responseHeaders = responseHeaders.concat(cspHeaders);
+                responseHeadersModified = true;
+            }
+        }
+
+        if (adguard.cookieFiltering.filterResponseHeaders(requestId, responseHeaders)) {
+            responseHeadersModified = true;
+        }
+
+        if (responseHeadersModified) {
+            adguard.requestContextStorage.update(requestId, { modifiedResponseHeaders: responseHeaders });
+            return { responseHeaders };
         }
     }
 
@@ -248,9 +298,9 @@
     /**
      * Modify CSP header to block WebSocket, prohibit data: and blob: frames and WebWorkers
      * @param requestDetails
-     * @returns {{responseHeaders: *}}
+     * @returns {{responseHeaders: *}} CSP headers
      */
-    function modifyCSPHeader(requestDetails) {
+    function getCSPHeaders(requestDetails) {
 
         // Please note, that we do not modify response headers in Edge before Creators update:
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/401
@@ -260,8 +310,8 @@
         }
 
         var tab = requestDetails.tab;
+        var requestId = requestDetails.requestId;
         var requestUrl = requestDetails.requestUrl;
-        var responseHeaders = requestDetails.responseHeaders || [];
         var requestType = requestDetails.requestType;
         var frameUrl = adguard.frames.getFrameUrl(tab, requestDetails.frameId);
 
@@ -275,8 +325,7 @@
             });
         }
         if (legacyCspRule) {
-            adguard.webRequestService.recordRuleHit(tab, legacyCspRule, frameUrl);
-            adguard.filteringLog.addHttpRequestEvent(tab, 'content-security-policy-check', frameUrl, adguard.RequestTypes.CSP, legacyCspRule);
+            adguard.requestContextStorage.update(requestId, { cspRules: [legacyCspRule] });
         }
 
         /**
@@ -294,8 +343,9 @@
                         value: rule.cspDirective,
                     });
                 }
-                adguard.webRequestService.recordRuleHit(tab, rule, requestUrl);
-                adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, frameUrl, adguard.RequestTypes.CSP, rule);
+            }
+            if (cspRules.length > 0) {
+                adguard.requestContextStorage.update(requestId, { cspRules });
             }
         }
 
@@ -312,13 +362,7 @@
          * We also need the frame-src restriction since CSPs are not inherited from the parent for documents with data: and blob: URLs
          * https://bugs.chromium.org/p/chromium/issues/detail?id=513860
          */
-        if (cspHeaders.length > 0) {
-            responseHeaders = responseHeaders.concat(cspHeaders);
-            return {
-                responseHeaders: responseHeaders,
-                modifiedHeaders: cspHeaders
-            };
-        }
+        return cspHeaders;
     }
 
     /**
@@ -367,12 +411,12 @@
         browser.webRequest.onBeforeSendHeaders.addListener(function callback(details) {
 
             var authHeaders = adguard.integration.getAuthorizationHeaders();
-            var headers = details.requestHeaders;
+            var requestHeaders = details.requestHeaders;
             for (var i = 0; i < authHeaders.length; i++) {
-                headers = adguard.utils.browser.setHeaderValue(details.requestHeaders, authHeaders[i].headerName, authHeaders[i].headerValue);
+                requestHeaders = adguard.utils.browser.setHeaderValue(requestHeaders, authHeaders[i].name, authHeaders[i].value);
             }
 
-            return { requestHeaders: headers };
+            return { requestHeaders };
 
         }, { urls: [adguard.integration.getIntegrationBaseUrl() + "*"] }, ["requestHeaders", "blocking"]);
     }
@@ -863,4 +907,18 @@
             adguard.tabs.onRemoved.addListener(injections.removeTabInjection);
         })(adguard);
     }
+
+    /**
+     * Request context recording
+     */
+    adguard.webRequest.onCompleted.addListener(({ requestId }) => {
+        adguard.cookieFiltering.modifyCookies(requestId);
+        adguard.requestContextStorage.onRequestCompleted(requestId);
+    }, ['<all_urls>']);
+
+    adguard.webRequest.onErrorOccurred.addListener(({ requestId }) => {
+        adguard.cookieFiltering.modifyCookies(requestId);
+        adguard.requestContextStorage.onRequestCompleted(requestId);
+    }, ['<all_urls>']);
+
 })(adguard);

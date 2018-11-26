@@ -35,7 +35,7 @@ You can get a beta version of AdGuard Browser Extension for any browser. All nec
 - [nodejs](https://nodejs.org/en/download/)
 - [yarn](https://yarnpkg.com/en/docs/install/)
 
-Install local dependencies by runnning:
+Install local dependencies by running:
 ```
   yarn install
 ```

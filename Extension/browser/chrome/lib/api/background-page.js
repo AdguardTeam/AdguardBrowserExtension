@@ -107,16 +107,16 @@ var browser = window.browser || chrome;
      * @typedef RequestDetails
      * @type {Object}
      * @property {String} requestUrl - request url
+     * @property {String} referrerUrl - the origin where the request was initiated
      * @property {{tabId: Number}} tab - request tab with tabId in property
      * @property {Number} requestId - the ID of the request
      * @property {Number} statusCode - standard HTTP status code
      * @property {String} method - standard HTTP method
      * @property {Number} frameId - ID of current frame. Frame IDs are unique within a tab.
      * @property {Number} requestFrameId - ID of frame where request is executed
-     * @property {Number} requestType - request type
+     * @property {Number} requestType - request type {@link adguard.RequestTypes}
      * @property {HttpHeaders} [requestHeaders] - the HTTP request headers
      * @property {HttpHeaders} [responseHeaders] - the HTTP response headers
-     * @property {String} [referrerUrl] - the origin where the request was initiated
      */
 
     /**
