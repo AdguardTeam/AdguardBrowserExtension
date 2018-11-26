@@ -375,7 +375,18 @@ adguard.webRequestService = (function (adguard) {
         }
 
         // Get all $cookie rules matching the specified request
-        return adguard.requestFilter.getCookieRules(requestUrl, referrerUrl, requestType);
+        var cookieRules = adguard.requestFilter.getCookieRules(requestUrl, referrerUrl, requestType);
+
+        var stealthWhiteListRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.STEALTH) ||
+            adguard.requestFilter.findWhiteListRule(referrerUrl, referrerUrl, adguard.RequestTypes.STEALTH);
+        if (stealthWhiteListRule) {
+            return cookieRules;
+        }
+
+        // Get stealth service rules
+        var stealthServiceRules = adguard.stealthService.getRules(requestUrl, referrerUrl, requestType);
+
+        return cookieRules.concat(stealthServiceRules);
     };
 
     /**

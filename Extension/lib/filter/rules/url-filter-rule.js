@@ -840,6 +840,13 @@
     };
 
     /**
+     * If rule is stealth returns true
+     */
+    UrlFilterRule.prototype.isStealth = function () {
+        return this.isOptionEnabled(UrlFilterRule.options.STEALTH);
+    };
+
+    /**
      * If rule is replace rule
      * @returns {Boolean}
      */
@@ -945,6 +952,9 @@
                         .replace(UrlFilterRule.OPTIONS_DELIMITER + UrlFilterRule.BADFILTER_OPTION + api.FilterRule.COMA_DELIMITER, UrlFilterRule.OPTIONS_DELIMITER)
                         .replace(api.FilterRule.COMA_DELIMITER + UrlFilterRule.BADFILTER_OPTION, '')
                         .replace(UrlFilterRule.OPTIONS_DELIMITER + UrlFilterRule.BADFILTER_OPTION, '');
+                    break;
+                case UrlFilterRule.STEALTH_OPTION:
+                    this._setUrlFilterRuleOption(UrlFilterRule.options.STEALTH, true);
                     break;
                 default:
                     optionName = optionName.toUpperCase();
@@ -1064,6 +1074,7 @@
     UrlFilterRule.CSP_OPTION = "csp";
     UrlFilterRule.COOKIE_OPTION = "cookie";
     UrlFilterRule.BADFILTER_OPTION = "badfilter";
+    UrlFilterRule.STEALTH_OPTION = "stealth";
 
     UrlFilterRule.contentTypes = {
 
@@ -1208,6 +1219,12 @@
          */
         REPLACE: 1 << 13,
 
+        /**
+         * defines rules with $stealth modifier
+         * for example, "@@||example.com^$stealth"
+         */
+        STEALTH: 1 << 14,
+
         // jshint ignore:end
     };
 
@@ -1215,7 +1232,8 @@
      * These options can be applied to whitelist rules only
      */
     UrlFilterRule.options.WHITELIST_OPTIONS =
-        UrlFilterRule.options.ELEMHIDE | UrlFilterRule.options.JSINJECT | UrlFilterRule.options.CONTENT | UrlFilterRule.options.GENERICHIDE | UrlFilterRule.options.GENERICBLOCK; // jshint ignore:line
+        UrlFilterRule.options.ELEMHIDE | UrlFilterRule.options.JSINJECT | UrlFilterRule.options.CONTENT |
+        UrlFilterRule.options.GENERICHIDE | UrlFilterRule.options.GENERICBLOCK | UrlFilterRule.options.STEALTH; // jshint ignore:line
 
     /**
      * These options can be applied to blacklist rules only

@@ -747,6 +747,15 @@ QUnit.test("Test cookie option", function (assert) {
     assert.notOk(cookieRule.cookieOption.matches('123'));
 });
 
+QUnit.test("Test stealth option", function (assert) {
+    var ruleText = "@@||example.com^$stealth";
+    var rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.ok(rule);
+    assert.ok(rule.whiteListRule);
+    assert.ok(rule.isStealth());
+});
+
 QUnit.test('Test replace option', (assert) => {
     adguard.prefs.features.responseContentFilteringSupported = true;
 
