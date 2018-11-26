@@ -511,7 +511,14 @@ PageController.prototype = {
             metadata.id = 'request-' + event.eventId;
         }
 
-        const requestInfo = event.requestUrl ? event.requestUrl : this._escapeHTML(event.element);
+        let requestInfo;
+        if (event.element) {
+            requestInfo = this._escapeHTML(event.element);
+        } else if (event.cookieName) {
+            requestInfo = `${event.cookieName} = ${event.cookieValue}`;
+        } else {
+            requestInfo = event.requestUrl
+        }
 
         // Get rule text for requestRule or replaceRules
         let ruleText = '';
@@ -559,7 +566,9 @@ PageController.prototype = {
 
         var show = !this.searchRequest ||
             StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest) ||
-            StringUtils.containsIgnoreCase(filterData.element, this.searchRequest);
+            StringUtils.containsIgnoreCase(filterData.element, this.searchRequest) ||
+            StringUtils.containsIgnoreCase(filterData.cookieName, this.searchRequest) ||
+            StringUtils.containsIgnoreCase(filterData.cookieValue, this.searchRequest);
 
         if (filterData.requestRule && filterData.requestRule.ruleText) {
             show |= StringUtils.containsIgnoreCase(filterData.requestRule.ruleText, this.searchRequest);
@@ -633,6 +642,10 @@ var RequestWizard = (function () {
             patterns = [createExceptionCssRule(filteringEvent.requestRule, filteringEvent)];
         }
 
+        if (filteringEvent.cookieName) {
+            patterns = [createExceptionCookieRule(filteringEvent.requestRule, filteringEvent)];
+        }
+
         initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
     };
 
@@ -664,6 +677,14 @@ var RequestWizard = (function () {
         if (ruleText.indexOf(FilterRule.MASK_CSS_RULE) > -1) {
             return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_RULE);
         }
+    };
+
+    const createExceptionCookieRule = function (rule, event) {
+        let domain = event.frameDomain;
+        if (domain[0] === '.') {
+            domain = domain.substring(1);
+        }
+        return FilterRule.MASK_WHITE_LIST + UrlFilterRule.MASK_START_URL + domain;
     };
 
     var createCssRuleFromParams = function (urlPattern, permitDomain) {
@@ -738,6 +759,16 @@ var RequestWizard = (function () {
             }
         }
 
+        if (filteringEvent.cookieName) {
+            ruleImportantCheckbox.parentNode.style.display = 'none';
+            ruleMatchCaseCheckbox.parentNode.style.display = 'none';
+            ruleDomainCheckbox.parentNode.style.display = 'none';
+            var patternsField = template.querySelector('.filtering-modal-patterns');
+            if (patternsField) {
+                patternsField.style.display = 'none';
+            }
+        }
+
         function updateRuleText() {
             var urlPattern = template.querySelector('[name="rulePattern"]:checked').value;
             var permitDomain = !ruleDomainCheckbox.checked;
@@ -755,6 +786,10 @@ var RequestWizard = (function () {
                 mandatoryOptions = [UrlFilterRule.CSP_OPTION];
             }
 
+            if (requestRule && requestRule.cookieRule) {
+                mandatoryOptions = [UrlFilterRule.COOKIE_OPTION];
+            }
+
             if (filteringEvent.requestUrl === 'content-security-policy-check') {
                 mandatoryOptions = [UrlFilterRule.WEBRTC_OPTION, UrlFilterRule.WEBSOCKET_OPTION];
             }
@@ -767,6 +802,8 @@ var RequestWizard = (function () {
             var ruleText;
             if (filteringEvent.element) {
                 ruleText = createCssRuleFromParams(urlPattern, permitDomain);
+            } else if (filteringEvent.cookieName) {
+                ruleText = createRuleFromParams(urlPattern, null, null, thirdParty, important, mandatoryOptions);
             } else {
                 ruleText = createRuleFromParams(urlPattern, domain, matchCase, thirdParty, important, mandatoryOptions);
             }
@@ -912,7 +949,7 @@ var RequestWizard = (function () {
             case 'CSP':
                 return 'CSP';
             case 'COOKIE':
-                return 'COOKIE';
+                return 'Cookie';
             case 'OTHER':
                 return 'Other';
         }
@@ -954,6 +991,13 @@ var RequestWizard = (function () {
             elementNode.textContent = filteringEvent.element;
         } else {
             elementNode.parentNode.style.display = 'none';
+        }
+
+        const cookieNode = template.querySelector('[attr-text="cookie"]');
+        if (filteringEvent.cookieName) {
+            cookieNode.textContent = `${filteringEvent.cookieName} = ${filteringEvent.cookieValue}`;
+        } else {
+            cookieNode.parentNode.style.display = 'none';
         }
 
         template.querySelector('[attr-text="requestType"]').textContent = getRequestType(filteringEvent.requestType);
