@@ -225,23 +225,10 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     }
 
     function customizeContextMenu(tab) {
-
         function addSeparator() {
             adguard.contextMenus.create({
-                type: 'separator'
+                type: 'separator',
             });
-        }
-
-        function addSettingsSubMenu() {
-            nextMenuId += 1;
-            var menuId = 'adguard-settings-context-menu-' + nextMenuId;
-            addMenu('context_open_settings', {id: menuId});
-            addMenu('context_general_settings', {parentId: menuId});
-            addMenu('context_antibanner', {parentId: menuId});
-            addMenu('context_safebrowsing', {parentId: menuId});
-            addMenu('context_whitelist', {parentId: menuId});
-            addMenu('context_userfilter', {parentId: menuId});
-            addMenu('context_miscellaneous_settings', {parentId: menuId});
         }
 
         var tabInfo = adguard.frames.getFrameInfo(tab);
@@ -250,13 +237,13 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             addMenu('context_site_protection_disabled');
             addSeparator();
             addMenu('context_open_log');
-            addSettingsSubMenu();
+            addMenu('context_open_settings');
             addMenu('context_enable_protection');
         } else if (tabInfo.urlFilteringDisabled) {
             addMenu('context_site_filtering_disabled');
             addSeparator();
             addMenu('context_open_log');
-            addSettingsSubMenu();
+            addMenu('context_open_settings');
             addMenu('context_update_antibanner_filters');
         } else {
             if (tabInfo.adguardDetected) {
@@ -287,7 +274,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             addMenu('context_complaint_website');
             if (!tabInfo.adguardDetected) {
                 addSeparator();
-                addSettingsSubMenu();
+                addMenu('context_open_settings');
                 addMenu('context_update_antibanner_filters');
                 addMenu('context_disable_protection');
             }
@@ -821,7 +808,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     //on filters updated event
     adguard.listeners.addListener(function (event, success, updatedFilters) {
         if (event === adguard.listeners.UPDATE_FILTERS_SHOW_POPUP) {
-            var result = getFiltersUpdateResultMessage(success, updatedFilters);
+            const result = getFiltersUpdateResultMessage(success, updatedFilters);
             showAlertMessagePopup(result.title, result.text);
         }
     });
