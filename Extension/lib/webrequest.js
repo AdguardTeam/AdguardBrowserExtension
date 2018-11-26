@@ -215,7 +215,7 @@
             requestHeadersModified = true;
         }
 
-        if (adguard.stealthService.processRequestHeaders(requestDetails)) {
+        if (adguard.stealthService.processRequestHeaders(requestId, requestHeaders)) {
             requestHeadersModified = true;
         }
 
