@@ -377,6 +377,11 @@ adguard.webRequestService = (function (adguard) {
         // Get all $cookie rules matching the specified request
         const cookieRules = adguard.requestFilter.getCookieRules(requestUrl, referrerUrl, requestType);
 
+        // If cookie rules found - ignore stealth cookie rules
+        if (cookieRules && cookieRules.length > 0) {
+            return cookieRules;
+        }
+
         const stealthWhiteListRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.STEALTH) ||
             adguard.requestFilter.findWhiteListRule(referrerUrl, referrerUrl, adguard.RequestTypes.STEALTH);
         if (stealthWhiteListRule) {
@@ -386,7 +391,7 @@ adguard.webRequestService = (function (adguard) {
         // Get stealth service rules
         const stealthServiceRules = adguard.stealthService.getCookieRules(requestUrl, referrerUrl, requestType);
 
-        return stealthServiceRules.concat(cookieRules ? cookieRules : []);
+        return stealthServiceRules;
     };
 
     /**
