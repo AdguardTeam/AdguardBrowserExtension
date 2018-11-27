@@ -833,6 +833,13 @@
     };
 
     /**
+     * @returns true if this rule is stealth
+     */
+    UrlFilterRule.prototype.isStealthRule = function () {
+        return this.isOptionEnabled(UrlFilterRule.options.STEALTH_OPTION);
+    };
+
+    /**
      * If rule is bad-filter returns true
      */
     UrlFilterRule.prototype.isBadFilter = function () {
