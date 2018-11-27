@@ -213,8 +213,8 @@ adguard.stealthService = (function (adguard) {
             return false;
         }
 
-        const stealthWhiteListRule = adguard.antiBannerService.getRequestFilter().findWhiteListRule(requestUrl, sourceUrl, adguard.RequestTypes.STEALTH) ||
-            adguard.antiBannerService.getRequestFilter().findWhiteListRule(sourceUrl, sourceUrl, adguard.RequestTypes.STEALTH);
+        const stealthWhiteListRule = adguard.antiBannerService.getRequestFilter().findStealthWhiteListRule(requestUrl, sourceUrl, requestType) ||
+            adguard.antiBannerService.getRequestFilter().findStealthWhiteListRule(sourceUrl, sourceUrl, requestType);
         if (stealthWhiteListRule) {
             adguard.console.debug('Whitelist stealth rule found');
             addStealthLogEvent(tab, stealthWhiteListRule, null, null, sourceUrl, thirdParty);

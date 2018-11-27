@@ -382,16 +382,15 @@ adguard.webRequestService = (function (adguard) {
             return cookieRules;
         }
 
-        const stealthWhiteListRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.STEALTH) ||
-            adguard.requestFilter.findWhiteListRule(referrerUrl, referrerUrl, adguard.RequestTypes.STEALTH);
+        const stealthWhiteListRule = adguard.requestFilter.findStealthWhiteListRule(requestUrl, referrerUrl, requestType) ||
+            adguard.requestFilter.findWhiteListRule(referrerUrl, referrerUrl, requestType);
         if (stealthWhiteListRule) {
+            adguard.console.debug('Stealth whitelist rule found.');
             return cookieRules;
         }
 
-        // Get stealth service rules
-        const stealthServiceRules = adguard.stealthService.getCookieRules(requestUrl, referrerUrl, requestType);
-
-        return stealthServiceRules;
+        // Return stealth cookie rules
+        return adguard.stealthService.getCookieRules(requestUrl, referrerUrl, requestType);
     };
 
     /**
