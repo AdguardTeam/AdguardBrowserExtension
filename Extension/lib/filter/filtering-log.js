@@ -367,6 +367,7 @@ adguard.filteringLog = (function (adguard) {
         }
 
         const filteringEvent = {
+            stealthEvent: true,
             headerName: headerName,
             headerValue: headerValue,
             requestType: requestType,
