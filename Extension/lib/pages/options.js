@@ -1393,7 +1393,7 @@ var Settings = function () {
         hidden: false
     }));
     checkboxes.push(new Checkbox('#showInfoAboutAdguardFullVersion', userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO, {
-        negate: true
+        negate: true,
     }));
     checkboxes.push(new Checkbox('#showAppUpdatedNotification', userSettings.names.DISABLE_SHOW_APP_UPDATED_NOTIFICATION, {
         negate: true
@@ -1559,7 +1559,7 @@ PageController.prototype = {
     },
 
     _render: function () {
-        var defaultWhitelistMode = userSettings.values[userSettings.names.DEFAULT_WHITE_LIST_MODE];
+        const defaultWhitelistMode = userSettings.values[userSettings.names.DEFAULT_WHITE_LIST_MODE];
 
         if (environmentOptions.Prefs.mobile) {
             document.querySelector('#resetStats').style.display = 'none';
@@ -1590,6 +1590,8 @@ PageController.prototype = {
         if (versionPlaceholder) {
             versionPlaceholder.textContent = `${i18n.getMessage('options_about_version')} ${environmentOptions.appVersion}`;
         }
+
+        updateDisplayAdguardPromo(!userSettings.values[userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO]);
     },
 
     allowAcceptableAdsChange: function () {
