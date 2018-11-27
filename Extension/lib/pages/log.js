@@ -518,7 +518,7 @@ PageController.prototype = {
             metadata.class += ' yellow';
         }
 
-        if (event.headerName) {
+        if (event.stealthEvent) {
             metadata.class += ' yellow';
         }
 
@@ -541,7 +541,7 @@ PageController.prototype = {
             requestInfo = this._escapeHTML(event.element);
         } else if (event.cookieName) {
             requestInfo = `${event.cookieName} = ${event.cookieValue}`;
-        } else if (event.headerName) {
+        } else if (event.stealthEvent && event.headerName) {
             requestInfo = `${event.headerName} = ${event.headerValue}`;
         } else {
             requestInfo = event.requestUrl;
@@ -673,7 +673,7 @@ var RequestWizard = (function () {
             patterns = [createExceptionCookieRule(filteringEvent.requestRule, filteringEvent)];
         }
 
-        if (filteringEvent.headerName) {
+        if (filteringEvent.stealthEvent) {
             patterns = [createExceptionStealthRule(filteringEvent)];
         }
 
@@ -800,7 +800,7 @@ var RequestWizard = (function () {
             }
         }
 
-        if (filteringEvent.cookieName || filteringEvent.headerName) {
+        if (filteringEvent.cookieName || filteringEvent.stealthEvent) {
             ruleImportantCheckbox.parentNode.style.display = 'none';
             ruleMatchCaseCheckbox.parentNode.style.display = 'none';
             ruleDomainCheckbox.parentNode.style.display = 'none';
@@ -831,7 +831,7 @@ var RequestWizard = (function () {
                 mandatoryOptions = [UrlFilterRule.COOKIE_OPTION];
             }
 
-            if (filteringEvent.headerName) {
+            if (filteringEvent.stealthEvent) {
                 mandatoryOptions = [UrlFilterRule.STEALTH_OPTION];
             }
 
@@ -1048,7 +1048,7 @@ var RequestWizard = (function () {
         }
 
         const headerNode = template.querySelector('[attr-text="header"]');
-        if (filteringEvent.headerName) {
+        if (filteringEvent.stealthEvent && filteringEvent.headerName) {
             headerNode.textContent = `${filteringEvent.headerName} = ${filteringEvent.headerValue}`;
         } else {
             headerNode.parentNode.style.display = 'none';
@@ -1126,7 +1126,7 @@ var RequestWizard = (function () {
             openRequestButton.style.display = 'none';
         }
 
-        if (filteringEvent.headerName) {
+        if (filteringEvent.stealthEvent) {
             openRequestButton.style.display = 'none';
         }
 
@@ -1165,7 +1165,7 @@ var RequestWizard = (function () {
         });
 
         if (!requestRule) {
-            if (filteringEvent.headerName) {
+            if (filteringEvent.stealthEvent) {
                 unblockRequestButton.classList.remove('hidden');
             } else {
                 blockRequestButton.classList.remove('hidden');
