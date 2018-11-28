@@ -60,10 +60,18 @@
                         <span i18n="options_miscellaneous_settings"></span>
                     </a>
                 </li>
-                <li>
+                <!--SYNC TAB IS HIDDEN FOR NOW-->
+                <li style="display: none">
                     <a href="#" class="nav__item" data-tab="#sync">
                         <span>
                             Sync
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav__item" data-tab="#about">
+                        <span>
+                            <span i18n="options_about">About</span>
                         </span>
                     </a>
                 </li>
@@ -101,7 +109,7 @@
                     </li>
                     <li class="active">
                         <div class="opt-desc">
-                            <div class="opt-name" i18n="options_show_blocked_ads_count"></div>
+                            <div class="title" i18n="options_show_blocked_ads_count"></div>
                         </div>
                         <div class="opt-state">
                             <div class="toggler-wr">
@@ -111,7 +119,7 @@
                     </li>
                     <li>
                         <div class="opt-desc">
-                            <div class="opt-name" i18n="options_enable_autodetect_filter"></div>
+                            <div class="title" i18n="options_enable_autodetect_filter"></div>
                         </div>
                         <div class="opt-state">
                             <div class="toggler-wr">
@@ -121,7 +129,7 @@
                     </li>
                     <li>
                         <div class="opt-desc">
-                            <div class="opt-name" i18n="options_set_update_interval"></div>
+                            <div class="title" i18n="options_set_update_interval"></div>
                         </div>
                         <select class="opt-select" id="filtersUpdatePeriodSelect"></select>
                     </li>
@@ -416,7 +424,7 @@
                     <ul class="opts-list">
                         <li>
                             <div class="opt-desc">
-                                <div class="opt-name" i18n="options_whitelist_inverse"></div>
+                                <div class="title" i18n="options_whitelist_inverse"></div>
                                 <div class="opt-state">
                                     <div class="sp-table-row-info desc" i18n="options_whitelist_inverse_desc"></div>
                                 </div>
@@ -465,7 +473,7 @@
                 <ul class="opts-list">
                     <li>
                         <div class="opt-desc">
-                            <div class="opt-name" i18n="options_use_optimized_filters"></div>
+                            <div class="title" i18n="options_use_optimized_filters"></div>
                             <div class="opt-state">
                                 <div class="opt-state">
                                     <div class="sp-table-row-info desc" i18n="options_use_optimized_filters_desc"></div>
@@ -513,7 +521,7 @@
                     </li>
                     <li class="active">
                         <div class="opt-desc">
-                            <div class="opt-name" i18n="options_show_context_menu"></div>
+                            <div class="title" i18n="options_show_context_menu"></div>
                         </div>
                         <div class="opt-state">
                             <div class="toggler-wr">
@@ -523,7 +531,7 @@
                     </li>
                     <li>
                         <div class="opt-desc">
-                            <div class="opt-name" i18n="options_show_adguard_full_version"></div>
+                            <div class="title" i18n="options_show_adguard_full_version"></div>
                         </div>
                         <div class="opt-state">
                             <div class="toggler-wr">
@@ -533,7 +541,7 @@
                     </li>
                     <li>
                         <div class="opt-desc">
-                            <div class="opt-name" i18n="options_show_app_updated_notification"></div>
+                            <div class="title" i18n="options_show_app_updated_notification"></div>
                         </div>
                         <div class="opt-state">
                             <div class="toggler-wr">
@@ -658,6 +666,42 @@
                 <!--@TODO указать хрефы -->
                 <a href="#" class="btn-app-store"></a>
                 <a href="#" class="btn-google-play"></a>
+            </div>
+        </div>
+
+        <!--about section-->
+        <div id="about" class="settings-content tab-pane">
+            <div class="page-title" i18n="options_about"></div>
+            <div class="settings-content">
+                <div class="settings-body">
+                    <div class="about-opt">
+                        <div class="logo about-opt__logo"><img src="images/logo.svg" alt=""></div>
+                        <div class="about-opt__desc">
+                            <div id="about-version-placeholder" class="about-opt__version">
+                            </div>
+                            <div class="about-opt__desc">
+                                <div class="about-opt__desc-item">
+                                    © 2009-2018 AdGuard Software Ltd.
+                                </div>
+                                <div class="about-opt__desc-item" i18n="options_copyright"></div>
+                            </div>
+                        </div>
+                        <div class="about-opt__menu">
+                            <a target="_blank"
+                               href="https://adguard.com/forward.html?action=eula&from=options_screen&app=browser_extension"
+                               i18n="options_license_agreement" class="about-opt__menu-item"></a>
+                            <a target="_blank"
+                               href="https://adguard.com/forward.html?action=privacy&from=options_screen&app=browser_extension"
+                               i18n="options_privacy_policy" class="about-opt__menu-item"></a>
+                            <a target="_blank"
+                               href="https://adguard.com/forward.html?action=acknowledgments&from=options_screen&app=browser_extension"
+                               i18n="options_acknowledgment" class="about-opt__menu-item"></a>
+                            <a target="_blank"
+                               href="https://adguard.com/forward.html?action=github_options&from=options_screen&app=browser_extension"
+                               i18n="options_github" class="about-opt__menu-item"></a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -103,15 +103,12 @@ var CheckboxUtils = (function () {
 })();
 
 function updateDisplayAdguardPromo(showPromo) {
-
     // Sometimes in FF promo block isn't rendered properly
     setTimeout(function () {
         if (showPromo) {
-            document.querySelector('.download-adguard-block').style.display = '';
-            document.querySelector('.non-download-adguard-block').style.display = 'none';
+            document.querySelector('.try-premium').style.display = '';
         } else {
-            document.querySelector('.download-adguard-block').style.display = 'none';
-            document.querySelector('.non-download-adguard-block').style.display = '';
+            document.querySelector('.try-premium').style.display = 'none';
         }
     }, 100);
 }
