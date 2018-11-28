@@ -254,7 +254,9 @@ adguard.subscriptions = (function (adguard) {
             const defaultDescription = filterData.description;
             const homepage = filterData.homepage;
             const version = filterData.version;
-            const timeUpdated = filterData.timeUpdated || new Date().toString();
+            // iso format was applied because of deprecation warning from moment.js library
+            // http://momentjs.com/guides/#/warnings/js-date/
+            const timeUpdated = filterData.timeUpdated || new Date().toISOString();
             const expires = filterData.expires;
             const subscriptionUrl = url;
             const languages = [];
