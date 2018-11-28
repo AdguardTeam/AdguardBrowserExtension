@@ -15,31 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@font-face {
-    font-family: 'Open Sans';
-    src: url('../../../pages/fonts/opensans-regular-webfont.woff2') format('woff2'),
-    url('../../../pages/fonts/opensans-regular-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Open Sans';
-    src: url('../../../pages/fonts/opensans-semibold-webfont.woff2') format('woff2'),
-    url('../../../pages/fonts/opensans-semibold-webfont.woff') format('woff');
-    font-weight: 600;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Open Sans';
-    src: url('../../../pages/fonts/opensans-bold-webfont.woff2') format('woff2'),
-    url('../../../pages/fonts/opensans-bold-webfont.woff') format('woff');
-    font-weight: bold;
-    font-style: normal;
-}
-
-
 .adguard-alert-iframe {
     width: 100%;
     border: none;
@@ -67,10 +42,17 @@
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
+    flex-direction: column;
+}
+
+.adguard-popup-alert__title,
+.adguard-popup-alert__desc {
+    font-size: 14px;
+    line-height: 14px;
 }
 
 .adguard-popup-alert__desc {
-    font-size: 14px;
+    margin-top: 10px;
     font-weight: 600;
 }
 
