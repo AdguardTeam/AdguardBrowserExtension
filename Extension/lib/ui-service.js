@@ -630,7 +630,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
      * @param callback
      */
     var loadCustomFilterInfo = function (url, callback) {
-        adguard.filters.loadCustomFilter(url, function (filter) {
+        adguard.filters.loadCustomFilter(url, {}, function (filter) {
             callback(filter);
         }, function () {
             callback();
