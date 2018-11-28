@@ -245,12 +245,13 @@ adguard.subscriptions = (function (adguard) {
      * @param url subscriptionUrl
      * @param callback
      */
-    const updateCustomFilter = function (url, callback) {
+    const updateCustomFilter = function (url, options, callback) {
+        const { title } = options;
         adguard.backend.loadFilterRulesBySubscriptionUrl(url, function (rules) {
             const filterData = parseFilterDataFromHeader(rules);
             const filterId = addFilterId();
             const groupId = CUSTOM_FILTERS_GROUP_ID;
-            const defaultName = filterData.name;
+            const defaultName = filterData.name || title;
             const defaultDescription = filterData.description;
             const homepage = filterData.homepage;
             const version = filterData.version;

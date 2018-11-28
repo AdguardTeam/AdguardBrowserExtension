@@ -23,8 +23,7 @@
         return;
     }
 
-    // TODO check if confirm text is not redundant
-    function onCheckSubscriptionUrlResponse(url, confirmText) {
+    function onCheckSubscriptionUrlResponse(url, title, confirmText) {
 
         if (!confirm(confirmText)) {
             return;
@@ -32,44 +31,46 @@
 
         contentPage.sendMessage({
             type: 'enableSubscription',
-            url: url
+            url: url,
+            title: title,
         });
     }
 
-    function getSubscriptionParams(urlParams) {
+    const getSubscriptionParams = (urlParams) => {
+        let title = null;
+        let url = null;
 
-        var title = null;
-        var url = null;
-
-        for (var i = 0; i < urlParams.length; i++) {
-            var parts = urlParams[i].split("=", 2);
+        for (let i = 0; i < urlParams.length; i += 1) {
+            const parts = urlParams[i].split('=', 2);
             if (parts.length !== 2) {
                 continue;
             }
             switch (parts[0]) {
                 case 'title':
+                case 'amp;title': // filterlists.com uses this url parameter
                     title = decodeURIComponent(parts[1]);
                     break;
                 case 'location':
                     url = decodeURIComponent(parts[1]);
+                    break;
+                default:
                     break;
             }
         }
 
         return {
             title: title,
-            url: url
+            url: url,
         };
-    }
+    };
 
-    var onLinkClicked = function (e) {
-
+    const onLinkClicked = function (e) {
         if (e.button === 2) {
-            //ignore right-click
+            // ignore right-click
             return;
         }
 
-        var target = e.target;
+        let target = e.target;
         while (target) {
             if (target instanceof HTMLAnchorElement) {
                 break;
@@ -92,18 +93,18 @@
         e.preventDefault();
         e.stopPropagation();
 
-        var urlParams;
+        let urlParams;
         if (target.search) {
             urlParams = target.search.substring(1).split('&');
         } else {
-            var href = target.href;
-            var index = href.indexOf('?');
+            const href = target.href;
+            const index = href.indexOf('?');
             urlParams = href.substring(index + 1).split('&');
         }
 
-        var subParams = getSubscriptionParams(urlParams);
-        var url = subParams.url;
-        var title = subParams.title || url;
+        const subParams = getSubscriptionParams(urlParams);
+        const url = (subParams.url).trim();
+        const title = (subParams.title || url).trim();
 
         if (!url) {
             return;
@@ -111,13 +112,12 @@
 
         contentPage.sendMessage({
             type: 'checkSubscriptionUrl',
-            url: url.trim(),
-            title: title.trim()
+            url: url,
+            title: title,
         }, function (response) {
-            onCheckSubscriptionUrlResponse(url, response.confirmText);
+            onCheckSubscriptionUrlResponse(url, title, response.confirmText);
         });
     };
 
     document.addEventListener('click', onLinkClicked);
-
 })();
