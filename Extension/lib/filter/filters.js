@@ -119,7 +119,7 @@
         this.cookieFilter = new adguard.rules.CookieFilter();
 
         // Filter that applies stealth rules
-        // TODO: add link
+        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#stealth-modifier
         this.stealthFilter = new adguard.rules.UrlFilter();
 
         // Filter that applies replace rules
