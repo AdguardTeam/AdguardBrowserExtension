@@ -908,7 +908,12 @@ var AntiBannerFilters = function (options) {
     }
 
     let customFilterInitialized = false;
-    function renderCustomFilterPopup() {
+    let onSubscribeClicked;
+    let onSubscriptionCancel;
+    let onPopupCloseClicked;
+    let onSubscribeBackClicked;
+    function renderCustomFilterPopup(abpOptions = {}) {
+        const { isAbpSubscription, title, url } = abpOptions;
         const POPUP_ACTIVE_CLASS = 'option-popup__step--active';
 
         function closePopup() {
@@ -949,11 +954,6 @@ var AntiBannerFilters = function (options) {
             });
         }
 
-        let onSubscribeClicked;
-        let onSubscriptionCancel;
-        let onPopupCloseClicked;
-        let onSubscribeBackClicked;
-
         function renderStepOne() {
             clearActiveStep();
             document.querySelector('#add-custom-filter-step-1').classList.add(POPUP_ACTIVE_CLASS);
@@ -980,7 +980,7 @@ var AntiBannerFilters = function (options) {
             document.querySelector('#add-custom-filter-step-3').classList.add(POPUP_ACTIVE_CLASS);
         }
 
-        function renderStepFour(filter) {
+        function renderStepFour(filter, isAbpSubscription) {
             clearActiveStep();
             document.querySelector('#add-custom-filter-step-4').classList.add(POPUP_ACTIVE_CLASS);
 
@@ -1004,14 +1004,21 @@ var AntiBannerFilters = function (options) {
 
             document.querySelector('#custom-filter-popup-remove').addEventListener('click', onSubscriptionCancel);
 
-            if (onSubscribeBackClicked) {
-                document.querySelector('#custom-filter-popup-added-back').removeEventListener('click', onSubscribeBackClicked);
+            const backButton = document.querySelector('#custom-filter-popup-added-back');
+
+            if (isAbpSubscription) {
+                backButton.style.display = 'none';
+            } else {
+                if (onSubscribeBackClicked) {
+                    backButton.removeEventListener('click', onSubscribeBackClicked);
+                }
+                onSubscribeBackClicked = () => {
+                    removeAntiBannerFilter(filter.filterId);
+                    renderStepOne();
+                };
+                backButton.addEventListener('click', onSubscribeBackClicked);
             }
-            onSubscribeBackClicked = () => {
-                removeAntiBannerFilter(filter.filterId);
-                renderStepOne();
-            };
-            document.querySelector('#custom-filter-popup-added-back').addEventListener('click', onSubscribeBackClicked);
+
 
             if (onPopupCloseClicked) {
                 document.querySelector('#custom-filter-popup-close').removeEventListener('click', onPopupCloseClicked);
@@ -1051,7 +1058,19 @@ var AntiBannerFilters = function (options) {
         }
 
         document.querySelector('#add-custom-filter-popup').classList.add('option-popup--active');
-        renderStepOne();
+
+        if (isAbpSubscription) {
+            contentPage.sendMessage({ type: 'loadCustomFilterInfo', url, title }, function (filter) {
+                if (filter) {
+                    renderStepFour(filter, isAbpSubscription);
+                } else {
+                    renderStepThree();
+                }
+            });
+            renderStepTwo();
+        } else {
+            renderStepOne();
+        }
     }
 
     function setLastUpdatedTimeText(lastUpdateTime) {
@@ -1115,6 +1134,7 @@ var AntiBannerFilters = function (options) {
         onCategoryStateChanged: onCategoryStateChanged,
         onFilterDownloadStarted: onFilterDownloadStarted,
         onFilterDownloadFinished: onFilterDownloadFinished,
+        renderCustomFilterPopup: renderCustomFilterPopup,
     };
 };
 
@@ -1571,7 +1591,7 @@ PageController.prototype = {
         this.settings.render();
 
         // Initialize whitelist filter
-        this.whiteListFilter = new WhiteListFilter({defaultWhiteListMode: defaultWhitelistMode});
+        this.whiteListFilter = new WhiteListFilter({ defaultWhiteListMode: defaultWhitelistMode });
         this.whiteListFilter.updateWhiteListDomains();
 
         // Initialize User filter
@@ -1579,7 +1599,7 @@ PageController.prototype = {
         this.userFilter.updateUserFilterRules();
 
         // Initialize AntiBanner filters
-        this.antiBannerFilters = new AntiBannerFilters({rulesInfo: requestFilterInfo});
+        this.antiBannerFilters = new AntiBannerFilters({ rulesInfo: requestFilterInfo });
         this.antiBannerFilters.render();
 
         // Initialize sync tab
@@ -1657,7 +1677,13 @@ PageController.prototype = {
         // } else {
         //     this.tooManySubscriptionsEl.hide();
         // }
-    }
+    },
+    addAbpSubscription: function (options) {
+        console.log(options);
+        const { url, title } = options;
+        this.antiBannerFilters.renderCustomFilterPopup({ isAbpSubscription: true, url, title });
+        console.log('add abp subscription');
+    },
 };
 
 var userSettings;
@@ -1698,6 +1724,7 @@ var initPage = function (response) {
             EventNotifierTypes.REQUEST_FILTER_UPDATED,
             EventNotifierTypes.SYNC_STATUS_UPDATED,
             EventNotifierTypes.SETTINGS_UPDATED,
+            EventNotifierTypes.ADD_ABP_SUBSCRIPTION,
         ];
 
         createEventListener(events, function (event, options) {
@@ -1734,6 +1761,11 @@ var initPage = function (response) {
                     break;
                 case EventNotifierTypes.SETTINGS_UPDATED:
                     controller.onSettingsImported(options);
+                    break;
+                case EventNotifierTypes.ADD_ABP_SUBSCRIPTION:
+                    controller.addAbpSubscription(options);
+                    break;
+                default:
                     break;
             }
         });

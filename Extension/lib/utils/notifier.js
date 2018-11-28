@@ -41,6 +41,7 @@ adguard.listeners = (function () {
         UPDATE_FILTERS_SHOW_POPUP: 'event.update.filters.show.popup',
         UPDATE_USER_FILTER_RULES: 'event.update.user.filter.rules',
         UPDATE_WHITELIST_FILTER_RULES: 'event.update.whitelist.filter.rules',
+        ADD_ABP_SUBSCRIPTION: 'event.add.abp.subscription',
         // Log events
         TAB_ADDED: 'log.tab.added',
         TAB_CLOSE: 'log.tab.close',

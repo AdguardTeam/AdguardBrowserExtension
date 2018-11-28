@@ -483,7 +483,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     };
 
     var openSettingsTab = function (anchor) {
-        openTab(getPageUrl('options.html') + (anchor ? '#' + anchor : ''), {activateSameTab: true});
+        openTab(getPageUrl('options.html') + (anchor ? '#' + anchor : ''), { activateSameTab: true });
     };
 
     var openSiteReportTab = function (url) {
@@ -629,8 +629,8 @@ adguard.ui = (function (adguard) { // jshint ignore:line
      * @param url
      * @param callback
      */
-    var loadCustomFilterInfo = function (url, callback) {
-        adguard.filters.loadCustomFilter(url, {}, function (filter) {
+    var loadCustomFilterInfo = function (url, title, callback) {
+        adguard.filters.loadCustomFilter(url, { title: title }, function (filter) {
             callback(filter);
         }, function () {
             callback();
@@ -699,7 +699,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
         url = adguard.utils.strings.contains(url, "://") ? url : adguard.getURL(url);
         adguard.tabs.getAll(function (tabs) {
-            //try to find between opened tabs
+            // try to find between opened tabs
             if (activateSameTab) {
                 for (var i = 0; i < tabs.length; i++) {
                     var tab = tabs[i];

@@ -18,22 +18,8 @@
 /* global HTMLDocument, contentPage */
 
 (function () {
-
     if (!(document instanceof HTMLDocument)) {
         return;
-    }
-
-    function onCheckSubscriptionUrlResponse(url, title, confirmText) {
-
-        if (!confirm(confirmText)) {
-            return;
-        }
-
-        contentPage.sendMessage({
-            type: 'enableSubscription',
-            url: url,
-            title: title,
-        });
     }
 
     const getSubscriptionParams = (urlParams) => {
@@ -111,11 +97,9 @@
         }
 
         contentPage.sendMessage({
-            type: 'checkSubscriptionUrl',
+            type: 'addAbpSubscription',
             url: url,
             title: title,
-        }, function (response) {
-            onCheckSubscriptionUrlResponse(url, title, response.confirmText);
         });
     };
 
