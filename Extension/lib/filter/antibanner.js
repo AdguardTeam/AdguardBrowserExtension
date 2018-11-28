@@ -1652,7 +1652,7 @@ adguard.filters = (function (adguard) {
     };
 
     /**
-     * Load rules to user filter by subscription url
+     * Add custom filter by subscription url
      * @param subscriptionUrl
      * @param loadCallback
      */
@@ -1662,13 +1662,16 @@ adguard.filters = (function (adguard) {
         if (filterMetadata) {
             addAndEnableFilters([filterMetadata.filterId]);
         } else {
-            // Load filter rules
-            adguard.backend.loadFilterRulesBySubscriptionUrl(subscriptionUrl, function (rulesText) {
-                var rules = adguard.userrules.addRules(rulesText);
-                loadCallback(rules.length);
-            }, function (request, cause) {
+            loadCustomFilter(subscriptionUrl, loadCallback, function (request, cause) {
                 adguard.console.error('Error download subscription by url {0}, cause: {1}', subscriptionUrl, cause || '');
             });
+            // Load filter rules
+            // adguard.backend.loadFilterRulesBySubscriptionUrl(subscriptionUrl, function (rulesText) {
+            //     var rules = adguard.userrules.addRules(rulesText);
+            //     loadCallback(rules.length);
+            // }, function (request, cause) {
+            //     adguard.console.error('Error download subscription by url {0}, cause: {1}', subscriptionUrl, cause || '');
+            // });
         }
     };
 
