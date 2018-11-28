@@ -21,29 +21,31 @@
 
     'use strict';
 
-    chrome.storage.local.get(null, function (items) {
-        if (adguard.prefs.chromeVersion > 47) {
-            if (items.rtcIPHandling == undefined) {
-                chrome.storage.local.set({
-                    rtcIPHandling: 'default_public_interface_only'
-                }, function () {
-                    chrome.privacy.network.webRTCIPHandlingPolicy.set({
-                        value: 'default_public_interface_only'
+    if (adguard.settings.isWebRTCDisabled()) {
+        chrome.storage.local.get(null, function (items) {
+            if (adguard.prefs.chromeVersion > 47) {
+                if (items.rtcIPHandling == undefined) {
+                    chrome.storage.local.set({
+                        rtcIPHandling: 'default_public_interface_only'
+                    }, function () {
+                        chrome.privacy.network.webRTCIPHandlingPolicy.set({
+                            value: 'default_public_interface_only'
+                        });
                     });
-                });
-            }
-        } else if (adguard.prefs.chromeVersion > 41 && adguard.prefs.chromeVersion < 48) {
-            if (items.rtcMultipleRoutes == undefined) {
-                chrome.storage.local.set({
-                    rtcMultipleRoutes: true
-                }, function () {
-                    chrome.privacy.network.webRTCMultipleRoutesEnabled.set({
-                        value: false,
-                        scope: 'regular'
+                }
+            } else if (adguard.prefs.chromeVersion > 41 && adguard.prefs.chromeVersion < 48) {
+                if (items.rtcMultipleRoutes == undefined) {
+                    chrome.storage.local.set({
+                        rtcMultipleRoutes: true
+                    }, function () {
+                        chrome.privacy.network.webRTCMultipleRoutesEnabled.set({
+                            value: false,
+                            scope: 'regular'
+                        });
                     });
-                });
+                }
             }
-        }
-    });
+        });
+    }
 
 })(adguard);
