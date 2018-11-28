@@ -15,13 +15,15 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global browser */
+/* global adguard, browser */
 
-(function () {
+(function (adguard) {
 
     'use strict';
 
-    browser.privacy.network.peerConnectionEnabled.set({ value: false });
-    browser.privacy.network.webRTCIPHandlingPolicy.set({ value: 'disable_non_proxied_udp' });
+    if (adguard.settings.isWebRTCDisabled()) {
+        browser.privacy.network.peerConnectionEnabled.set({ value: false });
+        browser.privacy.network.webRTCIPHandlingPolicy.set({ value: 'disable_non_proxied_udp' });
+    }
 
-})();
+})(adguard);

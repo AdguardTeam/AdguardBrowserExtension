@@ -44,6 +44,7 @@ adguard.settings = (function (adguard) {
         HIDE_SEARCH_QUERIES: 'stealth-hide-search-queries',
         SEND_DO_NOT_TRACK: 'stealth-send-do-not-track',
         BLOCK_CHROME_CLIENT_DATA: 'stealth-remove-x-client',
+        BLOCK_WEBRTC: 'stealth-block-webrtc',
         SELF_DESTRUCT_THIRD_PARTY_COOKIES: 'stealth-block-third-party-cookies',
         SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME: 'stealth-block-third-party-cookies-time',
         SELF_DESTRUCT_FIRST_PARTY_COOKIES: 'stealth-block-first-party-cookies',
@@ -80,6 +81,7 @@ adguard.settings = (function (adguard) {
                 defaults[settings.HIDE_SEARCH_QUERIES] = false;
                 defaults[settings.SEND_DO_NOT_TRACK] = false;
                 defaults[settings.BLOCK_CHROME_CLIENT_DATA] = false;
+                defaults[settings.BLOCK_WEBRTC] = false;
                 defaults[settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES] = false;
                 defaults[settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME] = 5;
                 defaults[settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES] = false;
@@ -253,6 +255,10 @@ adguard.settings = (function (adguard) {
         return getProperty(settings.FILTERS_UPDATE_PERIOD);
     };
 
+    var isWebRTCDisabled = function () {
+        return getProperty(settings.BLOCK_WEBRTC);
+    };
+
     var api = {};
 
     // Expose settings to api
@@ -293,6 +299,7 @@ adguard.settings = (function (adguard) {
     api.setFiltersUpdatePeriod = setFiltersUpdatePeriod;
     api.isIntegrationModeEnabled = isIntegrationModeEnabled;
     api.changeIntegrationModeEnabled = changeIntegrationModeEnabled;
+    api.isWebRTCDisabled = isWebRTCDisabled;
 
     return api;
 
