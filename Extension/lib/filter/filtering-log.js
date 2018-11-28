@@ -58,7 +58,7 @@ adguard.filteringLog = (function (adguard) {
      */
     function addTab(tab) {
         // Background tab can't be added
-        if (parseInt(tab.tabId, 10) === backgroundTabId) {
+        if (tab.tabId === backgroundTabId) {
             return;
         }
 
@@ -74,7 +74,7 @@ adguard.filteringLog = (function (adguard) {
      */
     function removeTabById(tabId) {
         // Background tab can't be removed
-        if (parseInt(tabId, 10) === backgroundTabId) {
+        if (tabId === backgroundTabId) {
             return;
         }
 
@@ -91,7 +91,7 @@ adguard.filteringLog = (function (adguard) {
      */
     function updateTab(tab) {
         // Background tab can't be updated
-        if (parseInt(tab.tabId, 10) === backgroundTabId) {
+        if (tab.tabId === backgroundTabId) {
             return;
         }
 
@@ -363,7 +363,9 @@ adguard.filteringLog = (function (adguard) {
      */
     var synchronizeOpenTabs = function (callback) {
         adguard.tabs.getAll(function (tabs) {
-            var tabIdsToRemove = Object.keys(tabsInfoMap);
+            // As Object.keys() returns strings we convert them to integers,
+            // because tabId is integer in extension API
+            var tabIdsToRemove = Object.keys(tabsInfoMap).map(id => parseInt(id, 10));
             for (var i = 0; i < tabs.length; i++) {
                 var openTab = tabs[i];
                 var tabInfo = tabsInfoMap[openTab.tabId];
@@ -374,7 +376,7 @@ adguard.filteringLog = (function (adguard) {
                     // update tab
                     updateTab(openTab);
                 }
-                var index = tabIdsToRemove.indexOf(String(openTab.tabId));
+                var index = tabIdsToRemove.indexOf(openTab.tabId);
                 if (index >= 0) {
                     tabIdsToRemove.splice(index, 1);
                 }
