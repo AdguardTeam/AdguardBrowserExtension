@@ -186,7 +186,7 @@
                 adguard.ui.checkFiltersUpdates();
                 break;
             case 'loadCustomFilterInfo':
-                adguard.ui.loadCustomFilterInfo(message.url, callback);
+                adguard.ui.loadCustomFilterInfo(message.url, message.title, callback);
                 return true;
             case 'getFiltersMetadata':
                 return adguard.categories.getFiltersMetadata();
@@ -273,6 +273,15 @@
                     confirmText = adguard.i18n.getMessage('abp_subscribe_confirm_import', [message.title]);
                 }
                 return { confirmText: confirmText };
+            case 'addAbpSubscription': {
+                const { url, title } = message;
+                adguard.ui.openSettingsTab('antibanner');
+                setTimeout(() => {
+                    // TODO check response, if no response send again after a while
+                    adguard.listeners.notifyListeners(adguard.listeners.ADD_ABP_SUBSCRIPTION, { url, title });
+                }, 1000);
+                break;
+            }
             case 'enableSubscription':
                 adguard.filters.processAbpSubscriptionUrl(message.url, message.title, function (rulesAddedCount) {
                     console.log(rulesAddedCount);
