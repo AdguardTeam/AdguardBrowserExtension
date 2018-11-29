@@ -239,7 +239,7 @@ var browser = window.browser || chrome;
     };
 
     /**
-     * Apply addition 'extraHeaders' option for request/response headers access/change. See:
+     * Apply 'extraHeaders' option for request/response headers access/change. See:
      * https://groups.google.com/a/chromium.org/forum/#!topic/chromium-extensions/vYIaeezZwfQ
      * https://chromium-review.googlesource.com/c/chromium/src/+/1338165
      */
