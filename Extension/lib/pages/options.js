@@ -312,10 +312,12 @@ var WhiteListFilter = function (options) {
     const exportWhiteListBtn = document.querySelector('#whiteListFiltersExport');
     const changeDefaultWhiteListModeCheckbox = document.querySelector('#changeDefaultWhiteListMode');
 
+    let hasContent = false;
     function loadWhiteListDomains() {
         contentPage.sendMessage({
             type: 'getWhiteListDomains',
         }, function (response) {
+            hasContent = !!response.content;
             editor.setValue(response.content || '');
         });
     }
@@ -331,7 +333,7 @@ var WhiteListFilter = function (options) {
     const session = editor.getSession();
     let initialChangeFired = false;
     session.addEventListener('change', () => {
-        if (!initialChangeFired) {
+        if (!initialChangeFired && hasContent) {
             initialChangeFired = true;
             return;
         }
@@ -385,10 +387,12 @@ const UserFilter = function () {
         indicatorElement: saveIndicatorElement,
     });
 
+    let hasContent = false;
     function loadUserRules() {
         contentPage.sendMessage({
             type: 'getUserRules',
         }, function (response) {
+            hasContent = !!response.content;
             editor.setValue(response.content || '');
         });
     }
@@ -402,9 +406,10 @@ const UserFilter = function () {
     }
 
     const session = editor.getSession();
+
     let initialChangeFired = false;
     session.addEventListener('change', () => {
-        if (!initialChangeFired) {
+        if (!initialChangeFired && hasContent) {
             initialChangeFired = true;
             return;
         }
@@ -1754,7 +1759,7 @@ var initPage = function (response) {
                     break;
                 case EventNotifierTypes.REQUEST_FILTER_UPDATED:
                     controller.antiBannerFilters.updateRulesCountInfo(options);
-                    controller.userFilter.updateUserFilterRules(options);
+                    controller.userFilter.updateUserFilterRules();
                     break;
                 case EventNotifierTypes.SYNC_STATUS_UPDATED:
                     controller.syncSettings.updateSyncSettings(options);
