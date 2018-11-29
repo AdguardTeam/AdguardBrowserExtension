@@ -737,7 +737,7 @@ var AntiBannerFilters = function (options) {
         }
 
         return htmlToElement(`
-            <div id="antibanner${category.groupId}" class="settings-content tab-pane filters-list">
+            <div id="antibanner${category.groupId}" class="settings-content tab-pane filters-list ${isCustomFilters ? 'filters-list--custom' : ''}">
                 ${pageTitleEl}
                 <div class="settings-body">
                     <div class="filters-search">
