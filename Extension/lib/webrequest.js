@@ -408,17 +408,17 @@
     if (adguard.integration.isSupported() && adguard.utils.browser.isChromium()) {
 
         /* global browser */
-        browser.webRequest.onBeforeSendHeaders.addListener(function callback(details) {
+        adguard.webRequest.onBeforeSendHeaders.addListener(function callback(requestDetails) {
 
             var authHeaders = adguard.integration.getAuthorizationHeaders();
-            var requestHeaders = details.requestHeaders;
+            var requestHeaders = requestDetails.requestHeaders;
             for (var i = 0; i < authHeaders.length; i++) {
                 requestHeaders = adguard.utils.browser.setHeaderValue(requestHeaders, authHeaders[i].name, authHeaders[i].value);
             }
 
             return { requestHeaders };
 
-        }, { urls: [adguard.integration.getIntegrationBaseUrl() + "*"] }, ["requestHeaders", "blocking"]);
+        }, [adguard.integration.getIntegrationBaseUrl() + "*"]);
     }
 
     var handlerBehaviorTimeout = null;
