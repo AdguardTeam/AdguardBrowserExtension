@@ -1641,17 +1641,6 @@ adguard.filters = (function (adguard) {
     };
 
     /**
-     * Returns filter metadata by subscription url
-     * @param subscriptionUrl - subscription url
-     * @returns {*|T}
-     */
-    var findFilterMetadataBySubscriptionUrl = function (subscriptionUrl) {
-        return adguard.subscriptions.getFilters().filter(function (f) {
-            return f.subscriptionUrl === subscriptionUrl;
-        })[0];
-    };
-
-    /**
      * Loads filter rules from url, then tries to parse header to filter metadata
      * and adds filter object to subscriptions from it.
      * These custom filters will have special attribute customUrl, from there it could be downloaded and updated.
@@ -1683,25 +1672,6 @@ adguard.filters = (function (adguard) {
         });
     };
 
-    /**
-     * Add custom filter by subscription url
-     * @param subscriptionUrl
-     * @param loadCallback
-     */
-    const processAbpSubscriptionUrl = function (subscriptionUrl, subscriptionTitle, loadCallback) {
-        const filterMetadata = findFilterMetadataBySubscriptionUrl(subscriptionUrl);
-        console.log(subscriptionUrl);
-        console.log(subscriptionTitle);
-
-        if (filterMetadata) {
-            addAndEnableFilters([filterMetadata.filterId]);
-        } else {
-            loadCustomFilter(subscriptionUrl, { title: subscriptionTitle }, loadCallback, function (request, cause) {
-                adguard.console.error('Error download subscription by url {0}, cause: {1}', subscriptionUrl, cause || '');
-            });
-        }
-    };
-
     return {
 
         start: start,
@@ -1724,9 +1694,6 @@ adguard.filters = (function (adguard) {
 
         enableGroup: enableGroup,
         disableGroup: disableGroup,
-
-        findFilterMetadataBySubscriptionUrl: findFilterMetadataBySubscriptionUrl,
-        processAbpSubscriptionUrl: processAbpSubscriptionUrl,
 
         loadCustomFilter: loadCustomFilter,
     };
