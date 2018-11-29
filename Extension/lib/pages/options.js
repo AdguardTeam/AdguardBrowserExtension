@@ -1014,6 +1014,7 @@ var AntiBannerFilters = function (options) {
             if (isAbpSubscription) {
                 backButton.style.display = 'none';
             } else {
+                backButton.style.display = '';
                 if (onSubscribeBackClicked) {
                     backButton.removeEventListener('click', onSubscribeBackClicked);
                 }
@@ -1684,10 +1685,8 @@ PageController.prototype = {
         // }
     },
     addAbpSubscription: function (options) {
-        console.log(options);
         const { url, title } = options;
         this.antiBannerFilters.renderCustomFilterPopup({ isAbpSubscription: true, url, title });
-        console.log('add abp subscription');
     },
 };
 
