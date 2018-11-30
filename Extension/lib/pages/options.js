@@ -1706,6 +1706,17 @@ var EventNotifierTypes;
 var requestFilterInfo;
 var syncStatusInfo;
 
+/**
+ * Parses hash string
+ * example: #action=add_filter_subscription&title=test&url=example.org ->
+ *          {
+ *              action: add_filter_subscription,
+ *              title: test,
+ *              url: example.org,
+ *          }
+ * @param {string} hash - document.location.hash string
+ * @returns {{}} object with options received from hash string
+ */
 const parseHash = (hash) => {
     return hash
         .slice(1) // remove first '#'
@@ -1740,7 +1751,7 @@ const handleUrlHash = () => {
 };
 
 const handleHashOptions = (controller, hashOptions) => {
-    if (!hashOptions) {
+    if (!hashOptions || !hashOptions.action) {
         return;
     }
     switch (hashOptions.action) {

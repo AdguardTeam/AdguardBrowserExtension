@@ -263,6 +263,9 @@
                 });
                 return true; // Async
             case 'addFilterSubscription': {
+                if (adguard.frames.isTabAdguardDetected(sender.tab)) {
+                    break;
+                }
                 const { url, title } = message;
                 const hashOptions = {
                     action: 'add_filter_subscription',
