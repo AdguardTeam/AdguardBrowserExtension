@@ -21,7 +21,7 @@
 adguard.filteringLog = (function (adguard) {
     'use strict';
 
-    var REQUESTS_SIZE_PER_TAB = 1000;
+    const REQUESTS_SIZE_PER_TAB = 1000;
 
     const backgroundTabId = adguard.BACKGROUND_TAB_ID;
     const backgroundTab = {
@@ -29,10 +29,10 @@ adguard.filteringLog = (function (adguard) {
         title: adguard.i18n.getMessage('background_tab_title'),
     };
 
-    var tabsInfoMap = Object.create(null);
-    var openedFilteringLogsPage = 0;
+    const tabsInfoMap = Object.create(null);
+    let openedFilteringLogsPage = 0;
 
-    var extensionURL = adguard.getURL('');
+    const extensionURL = adguard.getURL('');
 
     // Force to add background tab if it's defined
     if (adguard.prefs.features.hasBackgroundTab) {
@@ -401,7 +401,9 @@ adguard.filteringLog = (function (adguard) {
      */
     var synchronizeOpenTabs = function (callback) {
         adguard.tabs.getAll(function (tabs) {
-            var tabIdsToRemove = Object.keys(tabsInfoMap);
+            // As Object.keys() returns strings we convert them to integers,
+            // because tabId is integer in extension API
+            var tabIdsToRemove = Object.keys(tabsInfoMap).map(id => parseInt(id, 10));
             for (var i = 0; i < tabs.length; i++) {
                 var openTab = tabs[i];
                 var tabInfo = tabsInfoMap[openTab.tabId];
@@ -412,7 +414,7 @@ adguard.filteringLog = (function (adguard) {
                     // update tab
                     updateTab(openTab);
                 }
-                var index = tabIdsToRemove.indexOf(String(openTab.tabId));
+                var index = tabIdsToRemove.indexOf(openTab.tabId);
                 if (index >= 0) {
                     tabIdsToRemove.splice(index, 1);
                 }
