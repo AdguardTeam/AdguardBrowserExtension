@@ -660,7 +660,7 @@ var AntiBannerFilters = function (options) {
 
         var deleteButton = '';
         if (showDeleteButton) {
-            deleteButton = `<a href="#" filterid="${filter.filterId}" class="remove-custom-filter-button" i18n="remove_custom_filter">delete filter</a>`;
+            deleteButton = `<a href="#" filterid="${filter.filterId}" class="remove-custom-filter-button">${i18n.getMessage('options_remove_custom_filter')}</a>`;
         }
 
         return `
@@ -911,7 +911,10 @@ var AntiBannerFilters = function (options) {
 
     function removeCustomFilter(e) {
         e.preventDefault();
-
+        const result = confirm(i18n.getMessage('options_delete_filter_confirm'));
+        if (!result) {
+            return;
+        }
         var filterId = e.currentTarget.getAttribute('filterId');
 
         contentPage.sendMessage({
@@ -928,8 +931,8 @@ var AntiBannerFilters = function (options) {
     let onSubscriptionCancel;
     let onPopupCloseClicked;
     let onSubscribeBackClicked;
-    function renderCustomFilterPopup(abpOptions = {}) {
-        const { isFilterSubscription, title, url } = abpOptions;
+    function renderCustomFilterPopup(filterOptions = {}) {
+        const { isFilterSubscription, title, url } = filterOptions;
         const POPUP_ACTIVE_CLASS = 'option-popup__step--active';
 
         function closePopup() {
