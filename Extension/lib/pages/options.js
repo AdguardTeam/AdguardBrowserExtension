@@ -81,7 +81,12 @@ var TopMenu = (function () {
     var toggleTab = function () {
 
         var tabId = document.location.hash || GENERAL_SETTINGS;
-        var tab = document.querySelector(tabId);
+        var tab;
+        try {
+            tab = document.querySelector(tabId);
+        } catch (e) {
+            return;
+        }
 
         if (tabId.indexOf(ANTIBANNER) === 0 && !tab) {
             // AntiBanner groups and filters are loaded and rendered async
@@ -1698,11 +1703,39 @@ var EventNotifierTypes;
 var requestFilterInfo;
 var syncStatusInfo;
 
+const parseHash = (hash) => {
+    return hash
+        .slice(1) // remove first '#'
+        .split('&')
+        .map(part => {
+            const [key, value] = part.split('=');
+            return [key, value];
+        })
+        .reduce((acc, [key, value]) => {
+            if (key && value) {
+                acc[key] = value;
+            }
+            return acc;
+        }, {});
+};
+
+const handleUrlHash = () => {
+    const hash = document.location.hash;
+    const hashOptions = parseHash(decodeURIComponent(hash));
+    const { action, replacement } = hashOptions;
+
+    if (!action) {
+        return;
+    }
+
+    document.location.hash = replacement ? `#${replacement}` : '';
+    return hashOptions;
+};
+
 /**
  * Initializes page
  */
 var initPage = function (response) {
-
     userSettings = response.userSettings;
     enabledFilters = response.enabledFilters;
     environmentOptions = response.environmentOptions;
@@ -1713,8 +1746,25 @@ var initPage = function (response) {
     EventNotifierTypes = response.constants.EventNotifierTypes;
 
     var onDocumentReady = function () {
+
+        const hashOptions = handleUrlHash();
+
         var controller = new PageController();
         controller.init();
+
+        if (hashOptions) {
+            switch (hashOptions.action) {
+                case 'add_filter_subscription': {
+                    const { title, url } = hashOptions;
+                    if (url) {
+                        controller.addAbpSubscription({ title, url });
+                    }
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
 
         var events = [
             EventNotifierTypes.FILTER_ENABLE_DISABLE,

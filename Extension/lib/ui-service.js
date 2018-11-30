@@ -482,8 +482,34 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         openTab(getPageUrl('export.html' + (whitelist ? '#wl' : '')));
     };
 
-    var openSettingsTab = function (anchor) {
-        openTab(getPageUrl('options.html') + (anchor ? '#' + anchor : ''), { activateSameTab: true });
+    /**
+     * Open settings tab with hash parameters or without them
+     * @param anchor
+     * @param hashOptions action - is obligatory
+     */
+    var openSettingsTab = function (anchor, hashOptions) {
+        let hashPart;
+        const rawOptionsUrl = getPageUrl('options.html');
+
+        if (!anchor && !hashOptions) {
+            openTab(rawOptionsUrl, { activateSameTab: true });
+            return;
+        }
+
+        if (!hashOptions) {
+            hashPart = anchor.length > 0 ? `#${anchor}` : '';
+            openTab(rawOptionsUrl + hashPart, { activateSameTab: true });
+            return;
+        }
+
+
+        const hashString = Object.keys(hashOptions)
+            .map(key => `${key}=${hashOptions[key]}`)
+            .join('&');
+
+        hashPart = anchor.length > 0 ? `replacement=${anchor}&${hashString}` : hashString;
+        hashPart = encodeURIComponent(hashPart);
+        openTab(`${rawOptionsUrl}#${hashPart}`, { activateSameTab: true });
     };
 
     var openSiteReportTab = function (url) {

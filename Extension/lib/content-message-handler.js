@@ -264,11 +264,12 @@
                 return true; // Async
             case 'addAbpSubscription': {
                 const { url, title } = message;
-                adguard.ui.openSettingsTab('antibanner');
-                // TODO is this ok? To send notifier after 1 sec to open popup?
-                setTimeout(() => {
-                    adguard.listeners.notifyListeners(adguard.listeners.ADD_ABP_SUBSCRIPTION, { url, title });
-                }, 1000);
+                const hashOptions = {
+                    action: 'add_filter_subscription',
+                    title,
+                    url,
+                };
+                adguard.ui.openSettingsTab('antibanner', hashOptions);
                 break;
             }
             case 'showAlertMessagePopup':
