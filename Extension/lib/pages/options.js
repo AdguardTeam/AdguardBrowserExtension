@@ -923,7 +923,7 @@ var AntiBannerFilters = function (options) {
     let onPopupCloseClicked;
     let onSubscribeBackClicked;
     function renderCustomFilterPopup(abpOptions = {}) {
-        const { isAbpSubscription, title, url } = abpOptions;
+        const { isFilterSubscription, title, url } = abpOptions;
         const POPUP_ACTIVE_CLASS = 'option-popup__step--active';
 
         function closePopup() {
@@ -990,7 +990,7 @@ var AntiBannerFilters = function (options) {
             document.querySelector('#add-custom-filter-step-3').classList.add(POPUP_ACTIVE_CLASS);
         }
 
-        function renderStepFour(filter, isAbpSubscription) {
+        function renderStepFour(filter, isFilterSubscription) {
             clearActiveStep();
             document.querySelector('#add-custom-filter-step-4').classList.add(POPUP_ACTIVE_CLASS);
 
@@ -1016,7 +1016,7 @@ var AntiBannerFilters = function (options) {
 
             const backButton = document.querySelector('#custom-filter-popup-added-back');
 
-            if (isAbpSubscription) {
+            if (isFilterSubscription) {
                 backButton.style.display = 'none';
             } else {
                 backButton.style.display = '';
@@ -1070,10 +1070,10 @@ var AntiBannerFilters = function (options) {
 
         document.querySelector('#add-custom-filter-popup').classList.add('option-popup--active');
 
-        if (isAbpSubscription) {
+        if (isFilterSubscription) {
             contentPage.sendMessage({ type: 'loadCustomFilterInfo', url, title }, function (filter) {
                 if (filter) {
-                    renderStepFour(filter, isAbpSubscription);
+                    renderStepFour(filter, isFilterSubscription);
                 } else {
                     renderStepThree();
                 }
@@ -1689,9 +1689,9 @@ PageController.prototype = {
         //     this.tooManySubscriptionsEl.hide();
         // }
     },
-    addAbpSubscription: function (options) {
+    addFilterSubscription: function (options) {
         const { url, title } = options;
-        this.antiBannerFilters.renderCustomFilterPopup({ isAbpSubscription: true, url, title });
+        this.antiBannerFilters.renderCustomFilterPopup({ isFilterSubscription: true, url, title });
     },
 };
 
@@ -1757,7 +1757,7 @@ var initPage = function (response) {
                 case 'add_filter_subscription': {
                     const { title, url } = hashOptions;
                     if (url) {
-                        controller.addAbpSubscription({ title, url });
+                        controller.addFilterSubscription({ title, url });
                     }
                     break;
                 }
@@ -1817,7 +1817,7 @@ var initPage = function (response) {
                     controller.onSettingsImported(options);
                     break;
                 case EventNotifierTypes.ADD_ABP_SUBSCRIPTION:
-                    controller.addAbpSubscription(options);
+                    controller.addFilterSubscription(options);
                     break;
                 default:
                     break;
