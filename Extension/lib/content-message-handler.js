@@ -272,7 +272,7 @@
                     title,
                     url,
                 };
-                adguard.ui.openSettingsTab('antibanner', hashOptions);
+                adguard.ui.openSettingsTab('antibanner0', hashOptions);
                 break;
             }
             case 'showAlertMessagePopup':

@@ -905,7 +905,6 @@ var AntiBannerFilters = function (options) {
     function addCustomFilter(e) {
         e.preventDefault();
 
-        document.location.hash = 'antibanner';
         renderCustomFilterPopup();
     }
 
