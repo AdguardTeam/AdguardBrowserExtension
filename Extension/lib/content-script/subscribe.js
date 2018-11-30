@@ -97,7 +97,7 @@
         }
 
         contentPage.sendMessage({
-            type: 'addAbpSubscription',
+            type: 'addFilterSubscription',
             url: url,
             title: title,
         });

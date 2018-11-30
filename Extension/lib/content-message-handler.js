@@ -262,7 +262,7 @@
                     callback({ tabs: tabs });
                 });
                 return true; // Async
-            case 'addAbpSubscription': {
+            case 'addFilterSubscription': {
                 const { url, title } = message;
                 const hashOptions = {
                     action: 'add_filter_subscription',
