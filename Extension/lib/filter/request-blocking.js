@@ -382,10 +382,8 @@ adguard.webRequestService = (function (adguard) {
             return cookieRules;
         }
 
-        const stealthWhiteListRule = adguard.requestFilter.findStealthWhiteListRule(requestUrl, referrerUrl, requestType) ||
-            adguard.requestFilter.findWhiteListRule(referrerUrl, referrerUrl, requestType);
-        if (stealthWhiteListRule) {
-            adguard.console.debug('Stealth whitelist rule found.');
+        // If stealth if whitelisted
+        if (adguard.stealthService.findStealthWhitelistRule(requestUrl, referrerUrl, requestType)) {
             return cookieRules;
         }
 

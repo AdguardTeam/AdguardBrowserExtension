@@ -205,16 +205,14 @@ adguard.stealthService = (function (adguard) {
             sourceUrl = getHeaderValue(requestHeaders, HEADERS.REFERRER);
         }
 
-        const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, sourceUrl);
-
         const whiteListRule = adguard.antiBannerService.getRequestFilter().findWhiteListRule(requestUrl, sourceUrl, requestType);
-        if (whiteListRule) {
+        if (whiteListRule && whiteListRule.isDocumentWhiteList()) {
             adguard.console.debug('Whitelist rule found');
             return false;
         }
 
-        const stealthWhiteListRule = adguard.antiBannerService.getRequestFilter().findStealthWhiteListRule(requestUrl, sourceUrl, requestType) ||
-            adguard.antiBannerService.getRequestFilter().findStealthWhiteListRule(sourceUrl, sourceUrl, requestType);
+        const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, sourceUrl);
+        const stealthWhiteListRule = findStealthWhitelistRule(requestUrl, sourceUrl, requestType);
         if (stealthWhiteListRule) {
             adguard.console.debug('Whitelist stealth rule found');
             addStealthLogEvent(tab, stealthWhiteListRule, null, null, sourceUrl, thirdParty);
@@ -279,18 +277,23 @@ adguard.stealthService = (function (adguard) {
 
         adguard.console.debug('Stealth service lookup cookie rules for {0}', requestUrl);
 
-        const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrerUrl);
-        let isMainFrame = requestType === "DOCUMENT";
-
         // Remove cookie header for first-party requests
         const blockCookies = adguard.settings.getProperty(adguard.settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES);
         if (blockCookies) {
             result.push(generateRemoveRule(adguard.settings.getProperty(adguard.settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME)));
         }
 
-        // Remove cookie header for third-party requests
         const blockThirdPartyCookies = adguard.settings.getProperty(adguard.settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES);
-        if (thirdParty && blockThirdPartyCookies && !isMainFrame) {
+        if (!blockThirdPartyCookies) {
+            adguard.console.debug('Stealth service processed lookup cookie rules for {0}', requestUrl);
+            return result;
+        }
+
+        const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrerUrl);
+        let isMainFrame = requestType === "DOCUMENT";
+
+        // Remove cookie header for third-party requests
+        if (thirdParty && !isMainFrame) {
             result.push(generateRemoveRule(adguard.settings.getProperty(adguard.settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME)));
         }
 
@@ -299,9 +302,34 @@ adguard.stealthService = (function (adguard) {
         return result;
     };
 
+    /**
+     * Checks if tab if whitelisted for stealth
+     *
+     * @param requestUrl
+     * @param referrerUrl
+     * @param requestType
+     * @returns whitelist rule if found
+     */
+    const findStealthWhitelistRule = function (requestUrl, referrerUrl, requestType) {
+        const stealthDocumentWhitelistRule = adguard.requestFilter.findStealthWhiteListRule(referrerUrl, referrerUrl, requestType);
+        if (stealthDocumentWhitelistRule && stealthDocumentWhitelistRule.isDocumentWhiteList()) {
+            adguard.console.debug('Stealth document whitelist rule found.');
+            return stealthDocumentWhitelistRule;
+        }
+
+        const stealthWhiteListRule = adguard.requestFilter.findStealthWhiteListRule(requestUrl, referrerUrl, requestType);
+        if (stealthWhiteListRule) {
+            adguard.console.debug('Stealth whitelist rule found.');
+            return stealthWhiteListRule;
+        }
+
+        return null;
+    };
+
     return {
         processRequestHeaders: processRequestHeaders,
-        getCookieRules: getCookieRules
+        getCookieRules: getCookieRules,
+        findStealthWhitelistRule: findStealthWhitelistRule
     };
 
 })(adguard);
