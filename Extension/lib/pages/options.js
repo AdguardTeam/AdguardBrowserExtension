@@ -84,7 +84,9 @@ var TopMenu = (function () {
         try {
             tab = document.querySelector(tabId);
         } catch (e) {
-            return;
+            // If hash is not valid selector
+            tabId = GENERAL_SETTINGS;
+            tab = document.querySelector(GENERAL_SETTINGS);
         }
 
         if (tabId.indexOf(ANTIBANNER) === 0 && !tab) {
@@ -108,7 +110,12 @@ var TopMenu = (function () {
                 document.querySelector('[data-tab="' + prevTabId + '"]').classList.remove('active');
             }
 
-            document.querySelector(prevTabId).style.display = 'none';
+            try {
+                document.querySelector(prevTabId).style.display = 'none';
+            } catch (e) {
+                return;
+            }
+
         }
 
         if (tabId.indexOf(ANTIBANNER) === 0) {

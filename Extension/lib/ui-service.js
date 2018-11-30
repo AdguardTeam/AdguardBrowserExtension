@@ -485,31 +485,17 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     /**
      * Open settings tab with hash parameters or without them
      * @param anchor
-     * @param hashOptions action - is obligatory
+     * @param hashParameters
      */
-    var openSettingsTab = function (anchor, hashOptions) {
-        let hashPart;
-        const rawOptionsUrl = getPageUrl('options.html');
+    var openSettingsTab = function (anchor, hashParameters = {}) {
+        hashParameters.anchor = anchor;
 
-        if (!anchor && !hashOptions) {
-            openTab(rawOptionsUrl, { activateSameTab: true });
-            return;
-        }
+        const options = {
+            activateSameTab: true,
+            hashParameters,
+        };
 
-        if (!hashOptions) {
-            hashPart = anchor.length > 0 ? `#${anchor}` : '';
-            openTab(rawOptionsUrl + hashPart, { activateSameTab: true });
-            return;
-        }
-
-
-        const hashString = Object.keys(hashOptions)
-            .map(key => `${key}=${hashOptions[key]}`)
-            .join('&');
-
-        hashPart = anchor.length > 0 ? `replacement=${anchor}&${hashString}` : hashString;
-        hashPart = encodeURIComponent(hashPart);
-        openTab(`${rawOptionsUrl}#${hashPart}`, { activateSameTab: true });
+        openTab(getPageUrl('options.html'), options);
     };
 
     var openSiteReportTab = function (url) {
@@ -701,15 +687,53 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         }
     };
 
-    var openTab = function (url, options, callback) {
-
-        var activateSameTab, inNewWindow, type, inBackground;
-        if (options) {
-            activateSameTab = options.activateSameTab;
-            inBackground = options.inBackground;
-            inNewWindow = options.inNewWindow;
-            type = options.type;
+    /**
+     * Appends hash parameters if they exists
+     * @param rowUrl
+     * @param hashParameters
+     * @returns {string} prepared url
+     */
+    const appendHashParameters = (rowUrl, hashParameters) => {
+        if (!hashParameters) {
+            return rowUrl;
         }
+
+        if (rowUrl.indexOf('#') > -1) {
+            adguard.console.warn(`Hash parameters can't be applied to the url with hash: '${rowUrl}'`);
+            return rowUrl;
+        }
+
+        let hashPart;
+        const { anchor } = hashParameters;
+
+        if (anchor) {
+            delete hashParameters[anchor];
+        }
+
+        const hashString = Object.keys(hashParameters)
+            .map(key => `${key}=${hashParameters[key]}`)
+            .join('&');
+
+        if (hashString.length <= 0) {
+            hashPart = anchor && anchor.length > 0 ? `#${anchor}` : '';
+            return rowUrl + hashPart;
+        }
+
+        hashPart = anchor && anchor.length > 0 ? `replacement=${anchor}&${hashString}` : hashString;
+        hashPart = encodeURIComponent(hashPart);
+        return `${rowUrl}#${hashPart}`;
+    };
+
+    var openTab = function (url, options = {}, callback) {
+        const {
+            activateSameTab,
+            inBackground,
+            inNewWindow,
+            type,
+            hashParameters,
+        } = options;
+
+        url = appendHashParameters(url, hashParameters);
 
         function onTabFound(tab) {
             if (tab.url !== url) {
@@ -723,12 +747,12 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             }
         }
 
-        url = adguard.utils.strings.contains(url, "://") ? url : adguard.getURL(url);
+        url = adguard.utils.strings.contains(url, '://') ? url : adguard.getURL(url);
         adguard.tabs.getAll(function (tabs) {
             // try to find between opened tabs
             if (activateSameTab) {
-                for (var i = 0; i < tabs.length; i++) {
-                    var tab = tabs[i];
+                for (let i = 0; i < tabs.length; i += 1) {
+                    let tab = tabs[i];
                     if (adguard.utils.url.urlEquals(tab.url, url)) {
                         onTabFound(tab);
                         return;
@@ -739,13 +763,12 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                 url: url,
                 type: type || 'normal',
                 active: !inBackground,
-                inNewWindow: inNewWindow
+                inNewWindow: inNewWindow,
             }, callback);
         });
-
     };
 
-    //update icon on event received
+    // update icon on event received
     adguard.listeners.addListener(function (event, tab, reset) {
 
         if (event !== adguard.listeners.UPDATE_TAB_BUTTON_STATE || !tab) {
