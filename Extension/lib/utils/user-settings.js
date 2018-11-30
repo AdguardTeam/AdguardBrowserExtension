@@ -25,6 +25,8 @@ adguard.settings = (function (adguard) {
 
     // Default filters update period is set up to 48 hours
     const DEFAULT_FILTERS_UPDATE_PERIOD_MS = 48 * 60 * 60 * 1000;
+    const DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN = 2880;
+    const DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN = 30;
 
     var settings = {
         DISABLE_DETECT_FILTERS: 'detect-filters-disabled',
@@ -83,9 +85,9 @@ adguard.settings = (function (adguard) {
                 defaults[settings.BLOCK_CHROME_CLIENT_DATA] = false;
                 defaults[settings.BLOCK_WEBRTC] = false;
                 defaults[settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES] = false;
-                defaults[settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME] = 5;
+                defaults[settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME] = DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN;
                 defaults[settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES] = false;
-                defaults[settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME] = 5;
+                defaults[settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME] = DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN;
                 return defaults;
             });
         }
