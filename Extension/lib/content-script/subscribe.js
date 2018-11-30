@@ -33,7 +33,6 @@
             }
             switch (parts[0]) {
                 case 'title':
-                case 'amp;title': // filterlists.com uses this url parameter
                     title = decodeURIComponent(parts[1]);
                     break;
                 case 'location':
@@ -81,11 +80,11 @@
 
         let urlParams;
         if (target.search) {
-            urlParams = target.search.substring(1).split('&');
+            urlParams = target.search.substring(1).replace(/&amp;/g, '&').split('&');
         } else {
             const href = target.href;
             const index = href.indexOf('?');
-            urlParams = href.substring(index + 1).split('&');
+            urlParams = href.substring(index + 1).replace(/&amp;/g, '&').split('&');
         }
 
         const subParams = getSubscriptionParams(urlParams);
