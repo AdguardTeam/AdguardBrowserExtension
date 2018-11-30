@@ -79,7 +79,6 @@ var TopMenu = (function () {
     var onHashUpdatedCallback;
 
     var toggleTab = function () {
-
         var tabId = document.location.hash || GENERAL_SETTINGS;
         var tab;
         try {
@@ -1543,9 +1542,6 @@ PageController.prototype = {
                 // Doing nothing
             }.bind(this)
         });
-
-        //updateDisplayAdguardPromo(!userSettings.values[userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO]);
-        //customizePopupFooter(environmentOptions.isMacOs);
     },
 
     onSettingsImported: function (success) {
@@ -1719,6 +1715,10 @@ const parseHash = (hash) => {
         }, {});
 };
 
+/**
+ * Function handles location hash, looks for parameters
+ * @returns {*} options if they were provided in the hash
+ */
 const handleUrlHash = () => {
     const hash = document.location.hash;
     const hashOptions = parseHash(decodeURIComponent(hash));
@@ -1730,6 +1730,23 @@ const handleUrlHash = () => {
 
     document.location.hash = replacement ? `#${replacement}` : '';
     return hashOptions;
+};
+
+const handleHashOptions = (controller, hashOptions) => {
+    if (!hashOptions) {
+        return;
+    }
+    switch (hashOptions.action) {
+        case 'add_filter_subscription': {
+            const { title, url } = hashOptions;
+            if (url) {
+                controller.addFilterSubscription({ title, url });
+            }
+            break;
+        }
+        default:
+            break;
+    }
 };
 
 /**
@@ -1747,24 +1764,18 @@ var initPage = function (response) {
 
     var onDocumentReady = function () {
 
+        // handle initial url hash
         const hashOptions = handleUrlHash();
 
         var controller = new PageController();
         controller.init();
 
-        if (hashOptions) {
-            switch (hashOptions.action) {
-                case 'add_filter_subscription': {
-                    const { title, url } = hashOptions;
-                    if (url) {
-                        controller.addFilterSubscription({ title, url });
-                    }
-                    break;
-                }
-                default:
-                    break;
-            }
-        }
+        handleHashOptions(controller, hashOptions);
+
+        // handle next url hash changes
+        window.addEventListener('hashchange', () => {
+            handleHashOptions(controller, handleUrlHash());
+        });
 
         var events = [
             EventNotifierTypes.FILTER_ENABLE_DISABLE,
@@ -1778,7 +1789,6 @@ var initPage = function (response) {
             EventNotifierTypes.REQUEST_FILTER_UPDATED,
             EventNotifierTypes.SYNC_STATUS_UPDATED,
             EventNotifierTypes.SETTINGS_UPDATED,
-            EventNotifierTypes.ADD_ABP_SUBSCRIPTION,
         ];
 
         createEventListener(events, function (event, options) {
@@ -1815,9 +1825,6 @@ var initPage = function (response) {
                     break;
                 case EventNotifierTypes.SETTINGS_UPDATED:
                     controller.onSettingsImported(options);
-                    break;
-                case EventNotifierTypes.ADD_ABP_SUBSCRIPTION:
-                    controller.addFilterSubscription(options);
                     break;
                 default:
                     break;
