@@ -641,7 +641,7 @@ var AntiBannerFilters = function (options) {
                     </a>
                     <div class="opt-state">
                         <div class="preloader"></div>
-                        <div class="toggler-wr">
+                        <div class="toggler-wr" role="checkbox" tabindex="0">
                             <input type="checkbox" name="groupId" value="${category.groupId}">
                         </div>
                     </div>
@@ -686,7 +686,7 @@ var AntiBannerFilters = function (options) {
                 <div class="opt-state">
                     <div class="preloader"></div>
                     <a class="icon-home" target="_blank" href="${filter.homepage || filter.subscriptionUrl}"></a>
-                    <div class="toggler-wr">
+                    <div class="toggler-wr" role="checkbox" tabindex="0">
                         <input type="checkbox" name="filterId" value="${filter.filterId}" ${enabled ? 'checked="checked"' : ''}>
                     </div>
                 </div>
