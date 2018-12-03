@@ -186,7 +186,7 @@
                 adguard.ui.checkFiltersUpdates();
                 break;
             case 'loadCustomFilterInfo':
-                adguard.ui.loadCustomFilterInfo(message.url, callback);
+                adguard.ui.loadCustomFilterInfo(message.url, message.title, callback);
                 return true;
             case 'getFiltersMetadata':
                 return adguard.categories.getFiltersMetadata();
@@ -262,25 +262,19 @@
                     callback({ tabs: tabs });
                 });
                 return true; // Async
-            case 'checkSubscriptionUrl':
-                var filterMetadata = adguard.filters.findFilterMetadataBySubscriptionUrl(message.url);
-                var confirmText;
-                if (filterMetadata) {
-                    //ok, filter found
-                    // TODO seems that these strings are redundant they are not used in the code
-                    confirmText = adguard.i18n.getMessage('abp_subscribe_confirm_enable', [filterMetadata.name]);
-                } else {
-                    //filter not found
-                    confirmText = adguard.i18n.getMessage('abp_subscribe_confirm_import', [message.title]);
+            case 'addFilterSubscription': {
+                if (adguard.frames.isTabAdguardDetected(sender.tab)) {
+                    break;
                 }
-                return { confirmText: confirmText };
-            case 'enableSubscription':
-                adguard.filters.processAbpSubscriptionUrl(message.url, function (rulesAddedCount) {
-                    var title = adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_title');
-                    var text = adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_text', [String(rulesAddedCount)]);
-                    adguard.ui.showAlertMessagePopup(title, text);
-                });
-                return true; // Async
+                const { url, title } = message;
+                const hashOptions = {
+                    action: 'add_filter_subscription',
+                    title,
+                    url,
+                };
+                adguard.ui.openSettingsTab('antibanner0', hashOptions);
+                break;
+            }
             case 'showAlertMessagePopup':
                 adguard.ui.showAlertMessagePopup(message.title, message.text);
                 break;

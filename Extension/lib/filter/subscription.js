@@ -245,16 +245,20 @@ adguard.subscriptions = (function (adguard) {
      * @param url subscriptionUrl
      * @param callback
      */
-    const updateCustomFilter = function (url, callback) {
+    const updateCustomFilter = function (url, options, callback) {
+        const { title } = options;
         adguard.backend.loadFilterRulesBySubscriptionUrl(url, function (rules) {
             const filterData = parseFilterDataFromHeader(rules);
             const filterId = addFilterId();
             const groupId = CUSTOM_FILTERS_GROUP_ID;
-            const defaultName = filterData.name;
+            const defaultName = filterData.name || title;
             const defaultDescription = filterData.description;
             const homepage = filterData.homepage;
             const version = filterData.version;
-            const timeUpdated = filterData.timeUpdated || new Date().toString();
+            // .toISOString() method used instead of .toString() method because of
+            // moment.js library deprecation warning:
+            // http://momentjs.com/guides/#/warnings/js-date/
+            const timeUpdated = filterData.timeUpdated || new Date().toISOString();
             const expires = filterData.expires;
             const subscriptionUrl = url;
             const languages = [];

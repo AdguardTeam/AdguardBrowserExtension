@@ -377,7 +377,7 @@ adguard.antiBannerService = (function (adguard) {
             dfds.push((function (filter, filters) {
                 var dfd = new adguard.utils.Promise();
 
-                adguard.subscriptions.updateCustomFilter(filter.customUrl, function (filterId) {
+                adguard.subscriptions.updateCustomFilter(filter.customUrl, {}, function (filterId) {
                     if (filterId) {
                         filters.push(filter);
                     }
@@ -1641,47 +1641,16 @@ adguard.filters = (function (adguard) {
     };
 
     /**
-     * Returns filter metadata by subscription url
-     * @param subscriptionUrl - subscription url
-     * @returns {*|T}
-     */
-    var findFilterMetadataBySubscriptionUrl = function (subscriptionUrl) {
-        return adguard.subscriptions.getFilters().filter(function (f) {
-            return f.subscriptionUrl === subscriptionUrl;
-        })[0];
-    };
-
-    /**
-     * Load rules to user filter by subscription url
-     * @param subscriptionUrl
-     * @param loadCallback
-     */
-    var processAbpSubscriptionUrl = function (subscriptionUrl, loadCallback) {
-        const filterMetadata = findFilterMetadataBySubscriptionUrl(subscriptionUrl);
-
-        if (filterMetadata) {
-            addAndEnableFilters([filterMetadata.filterId]);
-        } else {
-            // Load filter rules
-            adguard.backend.loadFilterRulesBySubscriptionUrl(subscriptionUrl, function (rulesText) {
-                var rules = adguard.userrules.addRules(rulesText);
-                loadCallback(rules.length);
-            }, function (request, cause) {
-                adguard.console.error('Error download subscription by url {0}, cause: {1}', subscriptionUrl, cause || '');
-            });
-        }
-    };
-
-    /**
      * Loads filter rules from url, then tries to parse header to filter metadata
      * and adds filter object to subscriptions from it.
      * These custom filters will have special attribute customUrl, from there it could be downloaded and updated.
      *
      * @param url custom url, there rules are
+     * @param options object containing title of custom filter
      * @param successCallback
      * @param errorCallback
      */
-    var loadCustomFilter = function (url, successCallback, errorCallback) {
+    const loadCustomFilter = function (url, options, successCallback, errorCallback) {
         adguard.console.info('Downloading custom filter from {0}', url);
 
         if (!url) {
@@ -1689,11 +1658,11 @@ adguard.filters = (function (adguard) {
             return;
         }
 
-        adguard.subscriptions.updateCustomFilter(url, function (filterId) {
+        adguard.subscriptions.updateCustomFilter(url, options, function (filterId) {
             if (filterId) {
                 adguard.console.info('Custom filter info downloaded');
 
-                var filter = adguard.subscriptions.getFilter(filterId);
+                const filter = adguard.subscriptions.getFilter(filterId);
                 // In case filter is loaded again and was removed before
                 delete filter.removed;
                 successCallback(filter);
@@ -1725,9 +1694,6 @@ adguard.filters = (function (adguard) {
 
         enableGroup: enableGroup,
         disableGroup: disableGroup,
-
-        findFilterMetadataBySubscriptionUrl: findFilterMetadataBySubscriptionUrl,
-        processAbpSubscriptionUrl: processAbpSubscriptionUrl,
 
         loadCustomFilter: loadCustomFilter,
     };
