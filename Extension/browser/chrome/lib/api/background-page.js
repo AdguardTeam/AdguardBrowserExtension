@@ -117,6 +117,7 @@ var browser = window.browser || chrome;
      * @property {Number} requestType - request type {@link adguard.RequestTypes}
      * @property {HttpHeaders} [requestHeaders] - the HTTP request headers
      * @property {HttpHeaders} [responseHeaders] - the HTTP response headers
+     * @property {String} redirectUrl - new URL in onBeforeRedirect event
      */
 
     /**
@@ -364,6 +365,25 @@ var browser = window.browser || chrome;
         },
     };
 
+    const onBeforeRedirect = {
+        /**
+         * Wrapper for webRequest.onBeforeRedirect event
+         * It prepares requestDetails and passes them to the callback
+         * @param callback callback function receives {RequestDetails} and handles event
+         * @param {Array.<String>} urls url match pattern https://developer.chrome.com/extensions/match_patterns
+         */
+        addListener: function (callback, urls) {
+            browser.webRequest.onBeforeRedirect.addListener(function (details) {
+                if (shouldSkipRequest(details)) {
+                    return;
+                }
+                const requestDetails = getRequestDetails(details);
+                requestDetails.redirectUrl = details.redirectUrl;
+                return callback(requestDetails);
+            }, urls ? { urls: urls } : {});
+        }
+    };
+
     /**
      * Gets URL of a file that belongs to our extension
      */
@@ -416,6 +436,7 @@ var browser = window.browser || chrome;
         onHeadersReceived: onHeadersReceived,
         onBeforeSendHeaders: onBeforeSendHeaders,
         onResponseStarted: onResponseStarted,
+        onBeforeRedirect: onBeforeRedirect,
         webSocketSupported: typeof browser.webRequest.ResourceType !== 'undefined' && browser.webRequest.ResourceType['WEBSOCKET'] === 'websocket',
         filterResponseData: browser.webRequest.filterResponseData,
     };
