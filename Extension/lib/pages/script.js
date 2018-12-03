@@ -22,31 +22,35 @@
  *
  * @type {{toggleCheckbox, updateCheckbox}}
  */
-var CheckboxUtils = (function () {
+const CheckboxUtils = (function () {
     'use strict';
+
+    const updateAreaChecked = (el, checked) => {
+        if (el) {
+            el.setAttribute('aria-checked', checked);
+        }
+    };
 
     /**
      * Toggles wrapped elements with checkbox UI
      *
      * @param {Array.<Object>} elements
      */
-    var toggleCheckbox = function (elements) {
-
+    const toggleCheckbox = function (elements) {
         Array.prototype.forEach.call(elements, function (checkbox) {
-
-            if (checkbox.getAttribute("toggleCheckbox")) {
-                //already applied
+            if (checkbox.getAttribute('toggleCheckbox')) {
+                // already applied
                 return;
             }
 
-            var el = document.createElement('div');
+            let el = document.createElement('div');
             el.classList.add('toggler');
             checkbox.parentNode.insertBefore(el, checkbox.nextSibling);
 
             el.parentNode.addEventListener('click', function () {
                 checkbox.checked = !checkbox.checked;
 
-                var event = document.createEvent('HTMLEvents');
+                let event = document.createEvent('HTMLEvents');
                 event.initEvent('change', true, false);
                 checkbox.dispatchEvent(event);
             });
@@ -57,12 +61,13 @@ var CheckboxUtils = (function () {
 
             function onClicked(checked) {
                 if (checked) {
-                    el.classList.add("active");
-                    el.closest("li").classList.add("active");
+                    el.classList.add('active');
+                    el.closest('li').classList.add('active');
                 } else {
-                    el.classList.remove("active");
-                    el.closest("li").classList.remove("active");
+                    el.classList.remove('active');
+                    el.closest('li').classList.remove('active');
                 }
+                updateAreaChecked(el.closest('.toggler-wr'), checked);
             }
 
             checkbox.style.display = 'none';
@@ -78,8 +83,7 @@ var CheckboxUtils = (function () {
      * @param {Array.<Object>} elements
      * @param {boolean} checked
      */
-    var updateCheckbox = function (elements, checked) {
-
+    const updateCheckbox = function (elements, checked) {
         Array.prototype.forEach.call(elements, function (el) {
             if (!el) {
                 return;
@@ -93,6 +97,7 @@ var CheckboxUtils = (function () {
                 el.closest('li').classList.remove('active');
                 el.checked = false;
             }
+            updateAreaChecked(el.closest('.toggler-wr'), !!checked);
         });
     };
 
@@ -114,18 +119,17 @@ function updateDisplayAdguardPromo(showPromo) {
 }
 
 function customizePopupFooter(isMacOs) {
-
-    //fix title
-    var messageId = isMacOs ? 'thankyou_want_full_protection_mac' : 'thankyou_want_full_protection';
-    var title = document.querySelector('.thanks-prefooter .thanks-prefooter-title');
+    // fix title
+    let messageId = isMacOs ? 'thankyou_want_full_protection_mac' : 'thankyou_want_full_protection';
+    let title = document.querySelector('.thanks-prefooter .thanks-prefooter-title');
     i18n.translateElement(title, messageId);
 
-    //fix title in table
+    // fix title in table
     messageId = isMacOs ? 'thankyou_compare_full_title_mac' : 'thankyou_compare_full_title';
     title = document.querySelector('.thanks-prefooter .thanks-prefooter-table .tpt-head-full');
     i18n.translateElement(title, messageId);
 
-    //hide parental control feature for mac os
+    // hide parental control feature for mac os
     if (isMacOs) {
         document.querySelector('.parental-control-feature').style.display = 'none';
     } else {
@@ -140,13 +144,12 @@ function customizePopupFooter(isMacOs) {
  * @param onUnloadCallback Window unload callback
  */
 function createEventListener(events, callback, onUnloadCallback) { // jshint ignore:line
-
     function eventListener() {
         callback.apply(null, arguments);
     }
 
-    var listenerId;
-    contentPage.sendMessage({type: 'addEventListener', events: events}, function (response) {
+    let listenerId;
+    contentPage.sendMessage({ type: 'addEventListener', events: events }, function (response) {
         listenerId = response.listenerId;
     });
 
@@ -156,9 +159,9 @@ function createEventListener(events, callback, onUnloadCallback) { // jshint ign
         }
     });
 
-    var onUnload = function () {
+    const onUnload = function () {
         if (listenerId) {
-            contentPage.sendMessage({type: 'removeListener', listenerId: listenerId});
+            contentPage.sendMessage({ type: 'removeListener', listenerId: listenerId });
             listenerId = null;
             if (typeof onUnloadCallback === 'function') {
                 onUnloadCallback();
@@ -177,7 +180,7 @@ function createEventListener(events, callback, onUnloadCallback) { // jshint ign
  * @return {Element}
  */
 function htmlToElement(html) {
-    var template = document.createElement('template');
+    const template = document.createElement('template');
     html = html.trim(); // Never return a text node of whitespace as the result
     template.innerHTML = html;
     return template.content.firstChild;
