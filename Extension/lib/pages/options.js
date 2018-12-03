@@ -79,9 +79,15 @@ var TopMenu = (function () {
     var onHashUpdatedCallback;
 
     var toggleTab = function () {
-
         var tabId = document.location.hash || GENERAL_SETTINGS;
-        var tab = document.querySelector(tabId);
+        var tab;
+        try {
+            tab = document.querySelector(tabId);
+        } catch (e) {
+            // If hash is not valid selector
+            tabId = GENERAL_SETTINGS;
+            tab = document.querySelector(GENERAL_SETTINGS);
+        }
 
         if (tabId.indexOf(ANTIBANNER) === 0 && !tab) {
             // AntiBanner groups and filters are loaded and rendered async
@@ -104,7 +110,12 @@ var TopMenu = (function () {
                 document.querySelector('[data-tab="' + prevTabId + '"]').classList.remove('active');
             }
 
-            document.querySelector(prevTabId).style.display = 'none';
+            try {
+                document.querySelector(prevTabId).style.display = 'none';
+            } catch (e) {
+                return;
+            }
+
         }
 
         if (tabId.indexOf(ANTIBANNER) === 0) {
@@ -312,10 +323,12 @@ var WhiteListFilter = function (options) {
     const exportWhiteListBtn = document.querySelector('#whiteListFiltersExport');
     const changeDefaultWhiteListModeCheckbox = document.querySelector('#changeDefaultWhiteListMode');
 
+    let hasContent = false;
     function loadWhiteListDomains() {
         contentPage.sendMessage({
             type: 'getWhiteListDomains',
         }, function (response) {
+            hasContent = !!response.content;
             editor.setValue(response.content || '');
         });
     }
@@ -331,7 +344,7 @@ var WhiteListFilter = function (options) {
     const session = editor.getSession();
     let initialChangeFired = false;
     session.addEventListener('change', () => {
-        if (!initialChangeFired) {
+        if (!initialChangeFired && hasContent) {
             initialChangeFired = true;
             return;
         }
@@ -385,10 +398,12 @@ const UserFilter = function () {
         indicatorElement: saveIndicatorElement,
     });
 
+    let hasContent = false;
     function loadUserRules() {
         contentPage.sendMessage({
             type: 'getUserRules',
         }, function (response) {
+            hasContent = !!response.content;
             editor.setValue(response.content || '');
         });
     }
@@ -402,9 +417,10 @@ const UserFilter = function () {
     }
 
     const session = editor.getSession();
+
     let initialChangeFired = false;
     session.addEventListener('change', () => {
-        if (!initialChangeFired) {
+        if (!initialChangeFired && hasContent) {
             initialChangeFired = true;
             return;
         }
@@ -644,7 +660,7 @@ var AntiBannerFilters = function (options) {
 
         var deleteButton = '';
         if (showDeleteButton) {
-            deleteButton = `<a href="#" filterid="${filter.filterId}" class="remove-custom-filter-button" i18n="remove_custom_filter">delete filter</a>`;
+            deleteButton = `<a href="#" filterid="${filter.filterId}" class="remove-custom-filter-button">${i18n.getMessage('options_remove_custom_filter')}</a>`;
         }
 
         return `
@@ -652,7 +668,7 @@ var AntiBannerFilters = function (options) {
                 <div class="opt-name">
                     <div class="title-wr">
                         <div class="title">
-                            ${filter.name}
+                            ${filter.name || filter.subscriptionUrl}
                             ${deleteButton}
                         </div>
                     </div>
@@ -669,7 +685,7 @@ var AntiBannerFilters = function (options) {
                 </div>
                 <div class="opt-state">
                     <div class="preloader"></div>
-                    <a class="icon-home" target="_blank" href="${filter.homepage}"></a>
+                    <a class="icon-home" target="_blank" href="${filter.homepage || filter.subscriptionUrl}"></a>
                     <div class="toggler-wr">
                         <input type="checkbox" name="filterId" value="${filter.filterId}" ${enabled ? 'checked="checked"' : ''}>
                     </div>
@@ -732,7 +748,7 @@ var AntiBannerFilters = function (options) {
         }
 
         return htmlToElement(`
-            <div id="antibanner${category.groupId}" class="settings-content tab-pane filters-list">
+            <div id="antibanner${category.groupId}" class="settings-content tab-pane filters-list ${isCustomFilters ? 'filters-list--custom' : ''}">
                 ${pageTitleEl}
                 <div class="settings-body">
                     <div class="filters-search">
@@ -889,13 +905,15 @@ var AntiBannerFilters = function (options) {
     function addCustomFilter(e) {
         e.preventDefault();
 
-        document.location.hash = 'antibanner';
         renderCustomFilterPopup();
     }
 
     function removeCustomFilter(e) {
         e.preventDefault();
-
+        const result = confirm(i18n.getMessage('options_delete_filter_confirm'));
+        if (!result) {
+            return;
+        }
         var filterId = e.currentTarget.getAttribute('filterId');
 
         contentPage.sendMessage({
@@ -908,7 +926,12 @@ var AntiBannerFilters = function (options) {
     }
 
     let customFilterInitialized = false;
-    function renderCustomFilterPopup() {
+    let onSubscribeClicked;
+    let onSubscriptionCancel;
+    let onPopupCloseClicked;
+    let onSubscribeBackClicked;
+    function renderCustomFilterPopup(filterOptions = {}) {
+        const { isFilterSubscription, title, url } = filterOptions;
         const POPUP_ACTIVE_CLASS = 'option-popup__step--active';
 
         function closePopup() {
@@ -949,11 +972,6 @@ var AntiBannerFilters = function (options) {
             });
         }
 
-        let onSubscribeClicked;
-        let onSubscriptionCancel;
-        let onPopupCloseClicked;
-        let onSubscribeBackClicked;
-
         function renderStepOne() {
             clearActiveStep();
             document.querySelector('#add-custom-filter-step-1').classList.add(POPUP_ACTIVE_CLASS);
@@ -980,7 +998,7 @@ var AntiBannerFilters = function (options) {
             document.querySelector('#add-custom-filter-step-3').classList.add(POPUP_ACTIVE_CLASS);
         }
 
-        function renderStepFour(filter) {
+        function renderStepFour(filter, isFilterSubscription) {
             clearActiveStep();
             document.querySelector('#add-custom-filter-step-4').classList.add(POPUP_ACTIVE_CLASS);
 
@@ -1004,14 +1022,22 @@ var AntiBannerFilters = function (options) {
 
             document.querySelector('#custom-filter-popup-remove').addEventListener('click', onSubscriptionCancel);
 
-            if (onSubscribeBackClicked) {
-                document.querySelector('#custom-filter-popup-added-back').removeEventListener('click', onSubscribeBackClicked);
+            const backButton = document.querySelector('#custom-filter-popup-added-back');
+
+            if (isFilterSubscription) {
+                backButton.style.display = 'none';
+            } else {
+                backButton.style.display = '';
+                if (onSubscribeBackClicked) {
+                    backButton.removeEventListener('click', onSubscribeBackClicked);
+                }
+                onSubscribeBackClicked = () => {
+                    removeAntiBannerFilter(filter.filterId);
+                    renderStepOne();
+                };
+                backButton.addEventListener('click', onSubscribeBackClicked);
             }
-            onSubscribeBackClicked = () => {
-                removeAntiBannerFilter(filter.filterId);
-                renderStepOne();
-            };
-            document.querySelector('#custom-filter-popup-added-back').addEventListener('click', onSubscribeBackClicked);
+
 
             if (onPopupCloseClicked) {
                 document.querySelector('#custom-filter-popup-close').removeEventListener('click', onPopupCloseClicked);
@@ -1051,7 +1077,19 @@ var AntiBannerFilters = function (options) {
         }
 
         document.querySelector('#add-custom-filter-popup').classList.add('option-popup--active');
-        renderStepOne();
+
+        if (isFilterSubscription) {
+            contentPage.sendMessage({ type: 'loadCustomFilterInfo', url, title }, function (filter) {
+                if (filter) {
+                    renderStepFour(filter, isFilterSubscription);
+                } else {
+                    renderStepThree();
+                }
+            });
+            renderStepTwo();
+        } else {
+            renderStepOne();
+        }
     }
 
     function setLastUpdatedTimeText(lastUpdateTime) {
@@ -1115,6 +1153,7 @@ var AntiBannerFilters = function (options) {
         onCategoryStateChanged: onCategoryStateChanged,
         onFilterDownloadStarted: onFilterDownloadStarted,
         onFilterDownloadFinished: onFilterDownloadFinished,
+        renderCustomFilterPopup: renderCustomFilterPopup,
     };
 };
 
@@ -1512,9 +1551,6 @@ PageController.prototype = {
                 // Doing nothing
             }.bind(this)
         });
-
-        //updateDisplayAdguardPromo(!userSettings.values[userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO]);
-        //customizePopupFooter(environmentOptions.isMacOs);
     },
 
     onSettingsImported: function (success) {
@@ -1571,7 +1607,7 @@ PageController.prototype = {
         this.settings.render();
 
         // Initialize whitelist filter
-        this.whiteListFilter = new WhiteListFilter({defaultWhiteListMode: defaultWhitelistMode});
+        this.whiteListFilter = new WhiteListFilter({ defaultWhiteListMode: defaultWhitelistMode });
         this.whiteListFilter.updateWhiteListDomains();
 
         // Initialize User filter
@@ -1579,7 +1615,7 @@ PageController.prototype = {
         this.userFilter.updateUserFilterRules();
 
         // Initialize AntiBanner filters
-        this.antiBannerFilters = new AntiBannerFilters({rulesInfo: requestFilterInfo});
+        this.antiBannerFilters = new AntiBannerFilters({ rulesInfo: requestFilterInfo });
         this.antiBannerFilters.render();
 
         // Initialize sync tab
@@ -1657,7 +1693,11 @@ PageController.prototype = {
         // } else {
         //     this.tooManySubscriptionsEl.hide();
         // }
-    }
+    },
+    addFilterSubscription: function (options) {
+        const { url, title } = options;
+        this.antiBannerFilters.renderCustomFilterPopup({ isFilterSubscription: true, url, title });
+    },
 };
 
 var userSettings;
@@ -1669,10 +1709,70 @@ var requestFilterInfo;
 var syncStatusInfo;
 
 /**
+ * Parses hash string
+ * example: #action=add_filter_subscription&title=test&url=example.org ->
+ *          {
+ *              action: add_filter_subscription,
+ *              title: test,
+ *              url: example.org,
+ *          }
+ * @param {string} hash - document.location.hash string
+ * @returns {{}} object with options received from hash string
+ */
+const parseHash = (hash) => {
+    return hash
+        .slice(1) // remove first '#'
+        .split('&')
+        .map(part => {
+            const [key, value] = part.split('=');
+            return [key, value];
+        })
+        .reduce((acc, [key, value]) => {
+            if (key && value) {
+                acc[key] = value;
+            }
+            return acc;
+        }, {});
+};
+
+/**
+ * Function handles location hash, looks for parameters
+ * @returns {*} options if they were provided in the hash
+ */
+const handleUrlHash = () => {
+    const hash = document.location.hash;
+    const hashOptions = parseHash(decodeURIComponent(hash));
+    const { action, replacement } = hashOptions;
+
+    if (!action) {
+        return;
+    }
+
+    document.location.hash = replacement ? `#${replacement}` : '';
+    return hashOptions;
+};
+
+const handleHashOptions = (controller, hashOptions) => {
+    if (!hashOptions || !hashOptions.action) {
+        return;
+    }
+    switch (hashOptions.action) {
+        case 'add_filter_subscription': {
+            const { title, url } = hashOptions;
+            if (url) {
+                controller.addFilterSubscription({ title, url });
+            }
+            break;
+        }
+        default:
+            break;
+    }
+};
+
+/**
  * Initializes page
  */
 var initPage = function (response) {
-
     userSettings = response.userSettings;
     enabledFilters = response.enabledFilters;
     environmentOptions = response.environmentOptions;
@@ -1683,8 +1783,19 @@ var initPage = function (response) {
     EventNotifierTypes = response.constants.EventNotifierTypes;
 
     var onDocumentReady = function () {
+
+        // handle initial url hash
+        const hashOptions = handleUrlHash();
+
         var controller = new PageController();
         controller.init();
+
+        handleHashOptions(controller, hashOptions);
+
+        // handle next url hash changes
+        window.addEventListener('hashchange', () => {
+            handleHashOptions(controller, handleUrlHash());
+        });
 
         var events = [
             EventNotifierTypes.FILTER_ENABLE_DISABLE,
@@ -1727,13 +1838,15 @@ var initPage = function (response) {
                     break;
                 case EventNotifierTypes.REQUEST_FILTER_UPDATED:
                     controller.antiBannerFilters.updateRulesCountInfo(options);
-                    controller.userFilter.updateUserFilterRules(options);
+                    controller.userFilter.updateUserFilterRules();
                     break;
                 case EventNotifierTypes.SYNC_STATUS_UPDATED:
                     controller.syncSettings.updateSyncSettings(options);
                     break;
                 case EventNotifierTypes.SETTINGS_UPDATED:
                     controller.onSettingsImported(options);
+                    break;
+                default:
                     break;
             }
         });

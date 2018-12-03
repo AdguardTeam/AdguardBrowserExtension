@@ -75,7 +75,7 @@
                         </span>
                     </a>
                 </li>
-                <li class="try-premium">
+                <li class="try-premium" style="display: none">
                     <a href="https://adguard.com/forward.html?action=adguard_site&from=popup&app=browser_extension" target="_blank" class="try-premium__in">
                         <span class="try-premium__title">
                             Try AdGuard Premium for better protection!
@@ -173,127 +173,128 @@
             </div>
         </div>
 
-        <div id="antibanner" class="settings-content tab-pane">
-            <div id="add-custom-filter-popup" class="option-popup">
-                <div class="option-popup__in">
-                    <div id="custom-filter-popup-close" class="option-popup__cross"></div>
-                    <div id="add-custom-filter-step-1" class="option-popup__step">
-                        <div class="option-popup__title">
-                            New filter subscription
+        <div id="add-custom-filter-popup" class="option-popup">
+            <div class="option-popup__in">
+                <div id="custom-filter-popup-close" class="option-popup__cross"></div>
+                <div id="add-custom-filter-step-1" class="option-popup__step">
+                    <div class="option-popup__title">
+                        New filter subscription
+                    </div>
+                    <div class="option-popup__content">
+                        <input id="custom-filter-popup-url" type="text" class="option-popup__input" placeholder="Enter URL or path">
+                        <div class="option-popup__desc">
+                            Enter valid URL or file path of the filter into field above.
                         </div>
-                        <div class="option-popup__content">
-                            <input id="custom-filter-popup-url" type="text" class="option-popup__input" placeholder="Enter URL or path">
-                            <div class="option-popup__desc">
-                                Enter valid URL or file path of the filter into field above.
-                            </div>
-                            <div class="option-popup__desc">
-                                You will be subscribed to that filter.
-                            </div>
-                        </div>
-                        <div class="option-popup__btns option-popup__btns--sb">
-                            <div class="option-popup__btns-in">
-                                <button id="custom-filter-popup-cancel" class="button button--transparent option-popup__btn">
-                                    Cancel
-                                </button>
-                            </div>
-                            <button class="button button--green custom-filter-popup-next">
-                                Next
-                            </button>
+                        <div class="option-popup__desc">
+                            You will be subscribed to that filter.
                         </div>
                     </div>
-                    <div id="add-custom-filter-step-2" class="option-popup__step">
-                        <div class="option-popup__content">
-                            <div class="load option-popup__load"></div>
-                            <div class="option-popup__desc option-popup__desc--tac">
-                                Checking your filter
-                            </div>
-                        </div>
-                    </div>
-                    <div id="add-custom-filter-step-3" class="option-popup__step">
-                        <div class="option-popup__content">
-                            <div class="option-popup__subtitle">
-                                Check false
-                            </div>
-                            <div class="option-popup__desc option-popup__desc--false option-popup__desc--tac">
-                                Unfortunately your custom filter is not as cool as everyone else
-                            </div>
-                        </div>
-                        <div class="option-popup__btns option-popup__btns--center">
-                            <button class="button button--transparent custom-filter-popup-try-again">
-                                Try again
+                    <div class="option-popup__btns option-popup__btns--sb">
+                        <div class="option-popup__btns-in">
+                            <button id="custom-filter-popup-cancel" class="button button--transparent option-popup__btn">
+                                Cancel
                             </button>
                         </div>
+                        <button class="button button--green custom-filter-popup-next">
+                            Next
+                        </button>
                     </div>
-                    <div id="add-custom-filter-step-4" class="option-popup__step">
-                        <div class="option-popup__title">
-                            New filter subscription
-                        </div>
-                        <div class="option-popup__content">
-                            <div class="option-popup__table">
-                                <div class="option-popup__table-row">
-                                    <div class="option-popup__table-cell">
-                                        Title:
-                                    </div>
-                                    <div id="custom-filter-popup-added-title" class="option-popup__table-cell">
-                                    </div>
-                                </div>
-                                <div class="option-popup__table-row">
-                                    <div class="option-popup__table-cell">
-                                        Description:
-                                    </div>
-                                    <div id="custom-filter-popup-added-desc" class="option-popup__table-cell">
-                                    </div>
-                                </div>
-                                <div class="option-popup__table-row">
-                                    <div class="option-popup__table-cell">
-                                        Version:
-                                    </div>
-                                    <div id="custom-filter-popup-added-version" class="option-popup__table-cell">
-                                    </div>
-                                </div>
-                                <div class="option-popup__table-row">
-                                    <div class="option-popup__table-cell">
-                                        Rules Count:
-                                    </div>
-                                    <div id="custom-filter-popup-added-rules-count" class="option-popup__table-cell">
-                                    </div>
-                                </div>
-                                <div class="option-popup__table-row">
-                                    <div class="option-popup__table-cell">
-                                        Homepage:
-                                    </div>
-                                    <div class="option-popup__table-cell">
-                                        <a id="custom-filter-popup-added-homepage" href="#" target="_blank">
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="option-popup__table-row">
-                                    <div class="option-popup__table-cell">
-                                        URL:
-                                    </div>
-                                    <div class="option-popup__table-cell">
-                                        <a id="custom-filter-popup-added-url" href="#" target="_blank">
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="option-popup__btns option-popup__btns--sb">
-                            <div class="option-popup__btns-in">
-                                <button id="custom-filter-popup-added-back" class="button button--transparent option-popup__btn">
-                                    Back
-                                </button>
-                                <button id="custom-filter-popup-remove" class="button button--transparent option-popup__btn">
-                                    Cancel
-                                </button>
-                            </div>
-                            <button id="custom-filter-popup-added-subscribe" class="button button--green">
-                                Subscribe
-                            </button>
+                </div>
+                <div id="add-custom-filter-step-2" class="option-popup__step">
+                    <div class="option-popup__content">
+                        <div class="load option-popup__load"></div>
+                        <div class="option-popup__desc option-popup__desc--tac">
+                            Checking your filter
                         </div>
                     </div>
                 </div>
+                <div id="add-custom-filter-step-3" class="option-popup__step">
+                    <div class="option-popup__content">
+                        <div class="option-popup__subtitle">
+                            Check false
+                        </div>
+                        <div class="option-popup__desc option-popup__desc--false option-popup__desc--tac">
+                            Unfortunately your custom filter is not as cool as everyone else
+                        </div>
+                    </div>
+                    <div class="option-popup__btns option-popup__btns--center">
+                        <button class="button button--transparent custom-filter-popup-try-again">
+                            Try again
+                        </button>
+                    </div>
+                </div>
+                <div id="add-custom-filter-step-4" class="option-popup__step">
+                    <div class="option-popup__title">
+                        New filter subscription
+                    </div>
+                    <div class="option-popup__content">
+                        <div class="option-popup__table">
+                            <div class="option-popup__table-row">
+                                <div class="option-popup__table-cell">
+                                    Title:
+                                </div>
+                                <div id="custom-filter-popup-added-title" class="option-popup__table-cell">
+                                </div>
+                            </div>
+                            <div class="option-popup__table-row">
+                                <div class="option-popup__table-cell">
+                                    Description:
+                                </div>
+                                <div id="custom-filter-popup-added-desc" class="option-popup__table-cell">
+                                </div>
+                            </div>
+                            <div class="option-popup__table-row">
+                                <div class="option-popup__table-cell">
+                                    Version:
+                                </div>
+                                <div id="custom-filter-popup-added-version" class="option-popup__table-cell">
+                                </div>
+                            </div>
+                            <div class="option-popup__table-row">
+                                <div class="option-popup__table-cell">
+                                    Rules Count:
+                                </div>
+                                <div id="custom-filter-popup-added-rules-count" class="option-popup__table-cell">
+                                </div>
+                            </div>
+                            <div class="option-popup__table-row">
+                                <div class="option-popup__table-cell">
+                                    Homepage:
+                                </div>
+                                <div class="option-popup__table-cell">
+                                    <a id="custom-filter-popup-added-homepage" href="#" target="_blank">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="option-popup__table-row">
+                                <div class="option-popup__table-cell">
+                                    URL:
+                                </div>
+                                <div class="option-popup__table-cell">
+                                    <a id="custom-filter-popup-added-url" href="#" target="_blank">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="option-popup__btns option-popup__btns--sb">
+                        <div class="option-popup__btns-in">
+                            <button id="custom-filter-popup-added-back" class="button button--transparent option-popup__btn">
+                                Back
+                            </button>
+                            <button id="custom-filter-popup-remove" class="button button--transparent option-popup__btn">
+                                Cancel
+                            </button>
+                        </div>
+                        <button id="custom-filter-popup-added-subscribe" class="button button--green">
+                            Subscribe
+                        </button>
+                    </div>
+                </div>
             </div>
+        </div>
+
+        <div id="antibanner" class="settings-content tab-pane">
             <div class="settings-content">
                 <div class="page-title">
                     <div class="info info--rules-current" id="updateAntiBannerFilters">
