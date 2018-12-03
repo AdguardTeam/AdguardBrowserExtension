@@ -326,6 +326,70 @@ adguard.stealthService = (function (adguard) {
         return null;
     };
 
+    /**
+     * Updates browser privacy.network settings depending on blocking WebRTC or not
+     */
+    const handleWebRTCDisabled = () => {
+
+        const resetLastError = () => {
+            const ex = browser.runtime.lastError;
+            if (ex) {
+                adguard.console.error('Error updating privacy.network settings: {0}', ex);
+            }
+        };
+
+        const webRTCDisabled = adguard.settings.isWebRTCDisabled();
+
+        // Deprecated since Chrome 48
+        if (typeof browser.privacy.network.webRTCMultipleRoutesEnabled === 'object') {
+            if (webRTCDisabled) {
+                browser.privacy.network.webRTCMultipleRoutesEnabled.set({
+                    value: false,
+                    scope: 'regular',
+                }, resetLastError);
+            } else {
+                browser.privacy.network.webRTCMultipleRoutesEnabled.clear({
+                    scope: 'regular',
+                }, resetLastError);
+            }
+        }
+
+        // Since chromium 48
+        if (typeof browser.privacy.network.webRTCIPHandlingPolicy === 'object') {
+            if (webRTCDisabled) {
+                browser.privacy.network.webRTCIPHandlingPolicy.set({
+                    value: 'disable_non_proxied_udp',
+                    scope: 'regular',
+                }, resetLastError);
+            } else {
+                browser.privacy.network.webRTCIPHandlingPolicy.clear({
+                    scope: 'regular',
+                }, resetLastError);
+            }
+        }
+
+        if (typeof browser.privacy.network.peerConnectionEnabled === 'object') {
+            if (webRTCDisabled) {
+                browser.privacy.network.peerConnectionEnabled.set({
+                    value: false,
+                    scope: 'regular',
+                }, resetLastError);
+            } else {
+                browser.privacy.network.peerConnectionEnabled.clear({
+                    scope: 'regular',
+                }, resetLastError);
+            }
+        }
+    };
+
+    adguard.settings.onUpdated.addListener(function (setting) {
+        if (setting === adguard.settings.BLOCK_WEBRTC) {
+            handleWebRTCDisabled();
+        }
+    });
+
+    handleWebRTCDisabled();
+
     return {
         processRequestHeaders: processRequestHeaders,
         getCookieRules: getCookieRules,
