@@ -921,6 +921,17 @@
         adguard.requestContextStorage.onRequestCompleted(requestId);
     }, ['<all_urls>']);
 
+    /**
+     * Handles redirect separately:
+     * If a request is redirected to a data:// URL, onBeforeRedirect is the last reported event.
+     * https://developer.chrome.com/extensions/webRequest#life_cycle
+     */
+    adguard.webRequest.onBeforeRedirect.addListener(({ requestId, redirectUrl }) => {
+        if (redirectUrl && redirectUrl.indexOf('data:') === 0) {
+            adguard.requestContextStorage.onRequestCompleted(requestId);
+        }
+    }, ['<all_urls>']);
+
     adguard.webRequest.onCompleted.addListener((details) => {
         const { tab, requestType } = details;
         if ((requestType !== adguard.RequestTypes.DOCUMENT
