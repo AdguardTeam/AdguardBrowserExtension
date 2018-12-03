@@ -238,12 +238,33 @@ var browser = window.browser || chrome;
         }
     };
 
+    /**
+     * Apply 'extraHeaders' option for request/response headers access/change. See:
+     * https://groups.google.com/a/chromium.org/forum/#!topic/chromium-extensions/vYIaeezZwfQ
+     * https://chromium-review.googlesource.com/c/chromium/src/+/1338165
+     */
+
+    const onBeforeSendHeadersExtraInfoSpec = ['requestHeaders', 'blocking'];
+    const onHeadersReceivedExtraInfoSpec = ['responseHeaders', 'blocking'];
+
+    if (typeof browser.webRequest.OnBeforeSendHeadersOptions !== 'undefined' &&
+        browser.webRequest.OnBeforeSendHeadersOptions.hasOwnProperty('EXTRA_HEADERS')) {
+
+        onBeforeSendHeadersExtraInfoSpec.push('extraHeaders');
+    }
+
+    if (typeof browser.webRequest.OnHeadersReceivedOptions !== 'undefined' &&
+        browser.webRequest.OnHeadersReceivedOptions.hasOwnProperty('EXTRA_HEADERS')) {
+
+        onHeadersReceivedExtraInfoSpec.push('extraHeaders');
+    }
+
     var onHeadersReceived = {
         /**
          * Wrapper for webRequest.onHeadersReceived event
          * It prepares requestDetails and passes them to the callback
          * @param callback callback function receives {RequestDetails} and handles event
-         * @param {String} urls url match pattern https://developer.chrome.com/extensions/match_patterns
+         * @param {Array.<String>} urls url match pattern https://developer.chrome.com/extensions/match_patterns
          */
         addListener: function (callback, urls) {
 
@@ -259,7 +280,7 @@ var browser = window.browser || chrome;
                     return 'responseHeaders' in result ? { responseHeaders: result.responseHeaders } : {};
                 }
 
-            }, urls ? { urls: urls } : {}, ["responseHeaders", "blocking"]);
+            }, urls ? { urls: urls } : {}, onHeadersReceivedExtraInfoSpec);
         }
     };
 
@@ -269,7 +290,7 @@ var browser = window.browser || chrome;
          * Wrapper for webRequest.onBeforeSendHeaders event
          * It prepares requestDetails and passes them to the callback
          * @param callback callback function receives {RequestDetails} and handles event
-         * @param {String} urls url match pattern https://developer.chrome.com/extensions/match_patterns
+         * @param {Array.<String>} urls url match pattern https://developer.chrome.com/extensions/match_patterns
          */
         addListener: function (callback, urls) {
 
@@ -285,7 +306,7 @@ var browser = window.browser || chrome;
                     return 'requestHeaders' in result ? { requestHeaders: result.requestHeaders } : {};
                 }
 
-            }, urls ? { urls: urls } : {}, ["requestHeaders", "blocking"]);
+            }, urls ? { urls: urls } : {}, onBeforeSendHeadersExtraInfoSpec);
         }
     };
 
