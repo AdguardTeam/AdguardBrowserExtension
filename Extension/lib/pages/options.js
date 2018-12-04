@@ -1439,6 +1439,15 @@ var Settings = function () {
     }));
     checkboxes.push(new Checkbox('#integrationModeCheckbox', userSettings.names.DISABLE_INTEGRATION_MODE, {negate: true}));
 
+    // Privacy settings
+    checkboxes.push(new Checkbox('#hide_referrer', userSettings.names.HIDE_REFERRER));
+    checkboxes.push(new Checkbox('#hide_search_queries', userSettings.names.HIDE_SEARCH_QUERIES));
+    checkboxes.push(new Checkbox('#send_not_track', userSettings.names.SEND_DO_NOT_TRACK));
+    checkboxes.push(new Checkbox('#remove_client-data', userSettings.names.BLOCK_CHROME_CLIENT_DATA));
+    checkboxes.push(new Checkbox('#disable_webrtc', userSettings.names.BLOCK_WEBRTC));
+    checkboxes.push(new Checkbox('#third_party_cookies', userSettings.names.SELF_DESTRUCT_THIRD_PARTY_COOKIES));
+    checkboxes.push(new Checkbox('#first_party_cookies', userSettings.names.SELF_DESTRUCT_FIRST_PARTY_COOKIES));
+
     var allowAcceptableAdsCheckbox = document.querySelector("#allowAcceptableAds");
     allowAcceptableAdsCheckbox.addEventListener('change', function () {
         if (this.checked) {
@@ -1473,6 +1482,30 @@ var Settings = function () {
                 filtersUpdatePeriodSelect.parentNode.classList.add('active');
             }
         });
+    }
+
+    const thirdPartyTimeInput = document.querySelector('#third_party_time');
+    thirdPartyTimeInput.value = userSettings.values[userSettings.names.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME];
+    if (thirdPartyTimeInput) {
+        thirdPartyTimeInput.addEventListener('keyup', Utils.debounce(function (e) {
+            contentPage.sendMessage({
+                type: 'changeUserSetting',
+                key: userSettings.names.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME,
+                value: thirdPartyTimeInput.value
+            });
+        }, 1000));
+    }
+
+    const firstPartyTimeInput = document.querySelector('#first_party_time');
+    firstPartyTimeInput.value = userSettings.values[userSettings.names.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME];
+    if (firstPartyTimeInput) {
+        firstPartyTimeInput.addEventListener('keyup', Utils.debounce(function (e) {
+            contentPage.sendMessage({
+                type: 'changeUserSetting',
+                key: userSettings.names.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME,
+                value: firstPartyTimeInput.value
+            });
+        }, 1000));
     }
 
     const selectOptions = [

@@ -1209,6 +1209,10 @@ adguard.requestFilter = (function (adguard) {
         return getRequestFilter().findWhiteListRule(requestUrl, referrer, requestType);
     };
 
+    var findStealthWhiteListRule = function (requestUrl, referrer, requestType) {
+        return getRequestFilter().findStealthWhiteListRule(requestUrl, referrer, requestType);
+    };
+
     var getSelectorsForUrl = function (documentUrl, genericHideFlag) {
         return getRequestFilter().getSelectorsForUrl(documentUrl, genericHideFlag);
     };
@@ -1263,6 +1267,7 @@ adguard.requestFilter = (function (adguard) {
         getCspRules: getCspRules,
         getCookieRules: getCookieRules,
         getReplaceRules: getReplaceRules,
+        findStealthWhiteListRule: findStealthWhiteListRule,
         getRequestFilterInfo: getRequestFilterInfo
     };
 

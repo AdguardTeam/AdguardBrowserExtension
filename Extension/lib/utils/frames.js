@@ -327,6 +327,17 @@ adguard.frames = (function (adguard) {
         return adguard.tabs.isIncognito(tab.tabId);
     };
 
+    /**
+     * Checks if we should process request further
+     * @param {object} tab
+     * @returns {boolean}
+     */
+    const shouldStopRequestProcess = (tab) => {
+        return isTabAdguardDetected(tab) ||
+            isTabProtectionDisabled(tab) ||
+            isTabWhiteListed(tab);
+    };
+
     // Records frames on application initialization
     adguard.listeners.addListener(function (event) {
         if (event === adguard.listeners.APPLICATION_INITIALIZED) {
@@ -355,5 +366,6 @@ adguard.frames = (function (adguard) {
         updateBlockedAdsCount: updateBlockedAdsCount,
         resetBlockedAdsCount: resetBlockedAdsCount,
         isIncognitoTab: isIncognitoTab,
+        shouldStopRequestProcess: shouldStopRequestProcess,
     };
 })(adguard);

@@ -118,6 +118,10 @@
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/961
         this.cookieFilter = new adguard.rules.CookieFilter();
 
+        // Filter that applies stealth rules
+        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#stealth-modifier
+        this.stealthFilter = new adguard.rules.UrlFilter();
+
         // Filter that applies replace rules
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#replace-modifier
         this.replaceFilter = new adguard.rules.ReplaceFilter();
@@ -177,6 +181,8 @@
                     this.cspFilter.addRule(rule);
                 } else if (rule.isCookieRule()) {
                     this.cookieFilter.addRule(rule);
+                } else if (rule.isStealthRule()) {
+                    this.stealthFilter.addRule(rule);
                 } else if (rule.isReplaceRule()) {
                     this.replaceFilter.addRule(rule);
                 } else {
@@ -217,6 +223,8 @@
                     this.cspFilter.removeRule(rule);
                 } else if (rule.isCookieRule()) {
                     this.cookieFilter.removeRule(rule);
+                } else if (rule.isStealthRule()) {
+                    this.stealthFilter.removeRule(rule);
                 } else {
                     if (rule.isBadFilter()) {
                         delete this.badFilterRules[rule.badFilter];
@@ -250,6 +258,7 @@
             result = result.concat(this.scriptFilter.getRules());
             result = result.concat(this.cspFilter.getRules());
             result = result.concat(this.cookieFilter.getRules());
+            result = result.concat(this.stealthFilter.getRules());
 
             for (var badFilter in this.badFilterRules) {
                 result.push(this.badFilterRules[badFilter]);
@@ -366,6 +375,7 @@
             this.urlBlockingFilter.clearRules();
             this.cssFilter.clearRules();
             this.contentFilter.clearRules();
+            this.stealthFilter.clearRules();
             this.urlBlockingCache.clearRequestCache();
             this.urlExceptionsCache.clearRequestCache();
             this.badFilterRules = {};
@@ -413,6 +423,21 @@
 
             this.urlExceptionsCache.saveResultToCache(requestUrl, rule, refHost, requestType);
             return rule;
+        },
+
+        /**
+         * Searches for stealth whitelist rule for the specified pair (url/referrer)
+         *
+         * @param requestUrl  Request URL
+         * @param referrer    Referrer
+         * @param requestType Request type
+         * @returns Filter rule found or null
+         */
+        findStealthWhiteListRule: function (requestUrl, referrer, requestType) {
+            const refHost = adguard.utils.url.getHost(referrer);
+            const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrer);
+
+            return this.stealthFilter.isFiltered(requestUrl, refHost, requestType, thirdParty);
         },
 
         /**

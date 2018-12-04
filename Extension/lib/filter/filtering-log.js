@@ -270,12 +270,14 @@ adguard.filteringLog = (function (adguard) {
         }
 
         const events = tabInfo.filteringEvents;
-        for (let i = events.length - 1; i >= 0; i -= 1) {
-            const event = events[i];
-            if (event.eventId === eventId) {
-                addRuleToFilteringEvent(event, requestRule);
-                adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
-                break;
+        if (events) {
+            for (let i = events.length - 1; i >= 0; i -= 1) {
+                const event = events[i];
+                if (event.eventId === eventId) {
+                    addRuleToFilteringEvent(event, requestRule);
+                    adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
+                    break;
+                }
             }
         }
     };
@@ -298,12 +300,14 @@ adguard.filteringLog = (function (adguard) {
         }
 
         const events = tabInfo.filteringEvents;
-        for (let i = events.length - 1; i >= 0; i -= 1) {
-            const event = events[i];
-            if (event.eventId === eventId) {
-                addReplaceRulesToFilteringEvent(event, replaceRules);
-                adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
-                break;
+        if (events) {
+            for (let i = events.length - 1; i >= 0; i -= 1) {
+                const event = events[i];
+                if (event.eventId === eventId) {
+                    addReplaceRulesToFilteringEvent(event, replaceRules);
+                    adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
+                    break;
+                }
             }
         }
     };
@@ -316,9 +320,10 @@ adguard.filteringLog = (function (adguard) {
      * @param {string} cookieDomain
      * @param {string} requestType
      * @param {object} cookieRule
+     * @param {boolean} isModifyingCookieRule
      * @param {boolean} thirdParty
      */
-    const addCookieEvent = function (tab, cookieName, cookieValue, cookieDomain, requestType, cookieRule, thirdParty) {
+    const addCookieEvent = function (tab, cookieName, cookieValue, cookieDomain, requestType, cookieRule, isModifyingCookieRule, thirdParty) {
 
         if (openedFilteringLogsPage === 0) {
             return;
@@ -340,9 +345,40 @@ adguard.filteringLog = (function (adguard) {
         if (cookieRule) {
             // Copy useful properties
             addRuleToFilteringEvent(filteringEvent, cookieRule);
+            filteringEvent.requestRule.isModifyingCookieRule = isModifyingCookieRule;
         }
 
         pushFilteringEvent(tabInfo, filteringEvent);
+    };
+
+    /**
+     * Binds applied stealth actions to HTTP request
+     *
+     * @param {object} tab Request tab
+     * @param {number} actions Applied actions
+     * @param {number} eventId Event identifier
+     */
+    const bindStealthActionsToHttpRequestEvent = (tab, actions, eventId) => {
+        if (openedFilteringLogsPage === 0) {
+            return;
+        }
+
+        const tabInfo = tabsInfoMap[tab.tabId];
+        if (!tabInfo) {
+            return;
+        }
+
+        const events = tabInfo.filteringEvents;
+        if (events) {
+            for (let i = events.length - 1; i >= 0; i -= 1) {
+                const event = events[i];
+                if (event.eventId === eventId) {
+                    event.stealthActions = actions;
+                    adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
+                    break;
+                }
+            }
+        }
     };
 
     /**
@@ -439,6 +475,7 @@ adguard.filteringLog = (function (adguard) {
         bindReplaceRulesToHttpRequestEvent: bindReplaceRulesToHttpRequestEvent,
         addCosmeticEvent: addCosmeticEvent,
         addCookieEvent: addCookieEvent,
+        bindStealthActionsToHttpRequestEvent: bindStealthActionsToHttpRequestEvent,
         clearEventsByTabId: clearEventsByTabId,
 
         isOpen: isOpen,
