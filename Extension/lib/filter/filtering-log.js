@@ -346,17 +346,13 @@ adguard.filteringLog = (function (adguard) {
     };
 
     /**
+     * Binds applied stealth actions to HTTP request
      *
-     * @param tab
-     * @param rule
-     * @param headerName
-     * @param headerValue
-     * @param requestType
-     * @param thirdParty
-     * @param sourceUrl
+     * @param {object} tab Request tab
+     * @param {number} actions Applied actions
+     * @param {number} eventId Event identifier
      */
-    const addStealthEvent = function (tab, rule, headerName, headerValue, requestType, thirdParty, sourceUrl) {
-
+    const bindStealthActionsToHttpRequestEvent = (tab, actions, eventId) => {
         if (openedFilteringLogsPage === 0) {
             return;
         }
@@ -366,21 +362,15 @@ adguard.filteringLog = (function (adguard) {
             return;
         }
 
-        const filteringEvent = {
-            stealthEvent: true,
-            headerName: headerName,
-            headerValue: headerValue,
-            requestType: requestType,
-            requestThirdParty: thirdParty,
-            requestUrl: sourceUrl,
-            frameDomain: adguard.utils.url.getDomainName(sourceUrl)
-        };
-
-        if (rule) {
-            addRuleToFilteringEvent(filteringEvent, rule);
+        const events = tabInfo.filteringEvents;
+        for (let i = events.length - 1; i >= 0; i -= 1) {
+            const event = events[i];
+            if (event.eventId === eventId) {
+                event.stealthActions = actions;
+                adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
+                break;
+            }
         }
-
-        pushFilteringEvent(tabInfo, filteringEvent);
     };
 
     /**
@@ -477,7 +467,7 @@ adguard.filteringLog = (function (adguard) {
         bindReplaceRulesToHttpRequestEvent: bindReplaceRulesToHttpRequestEvent,
         addCosmeticEvent: addCosmeticEvent,
         addCookieEvent: addCookieEvent,
-        addStealthEvent: addStealthEvent,
+        bindStealthActionsToHttpRequestEvent: bindStealthActionsToHttpRequestEvent,
         clearEventsByTabId: clearEventsByTabId,
 
         isOpen: isOpen,
