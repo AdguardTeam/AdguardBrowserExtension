@@ -524,9 +524,12 @@ PageController.prototype = {
     _renderTemplate: function (event) {
         const metadata = { data: event, class: '' };
 
-        event.filterName = event.requestRule ?
-            RequestWizard.getFilterName(event.requestRule.filterId) :
-            '';
+        event.filterName = '';
+        if (event.requestRule) {
+            event.filterName = RequestWizard.getFilterName(event.requestRule.filterId);
+        } else if (event.stealthActions) {
+            event.filterName = i18n.getMessage('filtering_log_privacy_applied_rules');
+        }
 
         if (event.replaceRules) {
             metadata.class += ' yellow';
