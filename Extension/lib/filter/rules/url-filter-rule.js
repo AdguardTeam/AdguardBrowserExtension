@@ -836,7 +836,7 @@
      * @returns true if this rule is stealth
      */
     UrlFilterRule.prototype.isStealthRule = function () {
-        return this.isOptionEnabled(UrlFilterRule.options.STEALTH_OPTION);
+        return this.isOptionEnabled(UrlFilterRule.options.STEALTH);
     };
 
     /**
