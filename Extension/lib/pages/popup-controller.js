@@ -607,8 +607,8 @@ PopupController.prototype = {
             if (number) {
                 const blockedItem = htmlToElement(`
                 <li>
-                    <span class="key">${blockedGroup.groupName}</span>
-                    <span class="value">${number}</span>
+                    <span class="key" tabindex="0">${blockedGroup.groupName}</span>
+                    <span class="value" tabindex="0">${number}</span>
                 </li>
             `);
                 analytics.appendChild(blockedItem);
