@@ -43,7 +43,6 @@ adguard.RequestTypes = {
     OTHER: "OTHER",
     CSP: "CSP",
     COOKIE: "COOKIE",
-    STEALTH: "STEALTH",
 };
 
 /**

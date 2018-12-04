@@ -53,6 +53,7 @@
      * @property {number} requestState - Is request between onBeforeRequest and onCompleted/onErrorOccurred events
      * @property {number} contentModifyingState - Is content modification started
      * @property {Map<object, string[]>} elements - Content rules attached elements
+     * @property {number} stealthActions - Applied stealth actions
      */
 
     /**
@@ -190,6 +191,9 @@
         if ('cspRules' in update) {
             context.cspRules = appendRules(context.cspRules, update.cspRules);
         }
+        if ('stealthActions' in update) {
+            context.stealthActions = update.stealthActions;
+        }
 
         if ('requestHeaders' in update) {
             context.requestHeaders = copyHeaders(update.requestHeaders);
@@ -263,6 +267,7 @@
 
             const requestRule = context.requestRule;
             const cspRules = context.cspRules;
+            const stealthActions = context.stealthActions;
 
             if (requestRule) {
                 adguard.filteringLog.bindRuleToHttpRequestEvent(tab, requestRule, context.eventId);
@@ -274,6 +279,10 @@
                     adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, adguard.RequestTypes.CSP, cspRule);
                 }
                 ruleHitsRecords = ruleHitsRecords.concat(cspRules);
+            }
+
+            if (stealthActions) {
+                adguard.filteringLog.bindStealthActionsToHttpRequestEvent(tab, stealthActions, context.eventId);
             }
         }
 

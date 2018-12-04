@@ -134,6 +134,20 @@ var UrlFilterRule = {
     REPLACE_OPTION: 'replace',
 };
 
+const STEALTH_ACTIONS = {
+    HIDE_REFERRER: 1 << 0,
+    HIDE_SEARCH_QUERIES: 1 << 1,
+    BLOCK_CHROME_CLIENT_DATA: 1 << 2,
+    SEND_DO_NOT_TRACK: 1 << 3,
+};
+
+const STEALTH_ACTIONS_NAMES = {
+    HIDE_REFERRER: i18n.getMessage('options_hide_referrer_title'),
+    HIDE_SEARCH_QUERIES: i18n.getMessage('options_hide_search_queries_title'),
+    BLOCK_CHROME_CLIENT_DATA: i18n.getMessage('options_remove_client_data_title'),
+    SEND_DO_NOT_TRACK: i18n.getMessage('options_send_not_track_title'),
+};
+
 PageController.prototype = {
 
     init: function () {
@@ -518,10 +532,6 @@ PageController.prototype = {
             metadata.class += ' yellow';
         }
 
-        if (event.stealthEvent) {
-            metadata.class += ' yellow';
-        }
-
         if (event.requestRule && !event.replaceRules) {
             if (event.requestRule.whiteListRule) {
                 metadata.class += ' green';
@@ -541,8 +551,6 @@ PageController.prototype = {
             requestInfo = this._escapeHTML(event.element);
         } else if (event.cookieName) {
             requestInfo = `${event.cookieName} = ${event.cookieValue}`;
-        } else if (event.stealthEvent && event.headerName) {
-            requestInfo = `${event.headerName} = ${event.headerValue}`;
         } else {
             requestInfo = event.requestUrl;
         }
@@ -673,10 +681,6 @@ var RequestWizard = (function () {
             patterns = [createExceptionCookieRule(filteringEvent.requestRule, filteringEvent)];
         }
 
-        if (filteringEvent.stealthEvent) {
-            patterns = [createExceptionStealthRule(filteringEvent)];
-        }
-
         initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
     };
 
@@ -713,14 +717,6 @@ var RequestWizard = (function () {
     const createExceptionCookieRule = function (rule, event) {
         let domain = event.frameDomain;
         if (domain[0] === '.') {
-            domain = domain.substring(1);
-        }
-        return FilterRule.MASK_WHITE_LIST + UrlFilterRule.MASK_START_URL + domain;
-    };
-
-    const createExceptionStealthRule = function (event) {
-        let domain = event.frameDomain;
-        if (domain && domain[0] === '.') {
             domain = domain.substring(1);
         }
         return FilterRule.MASK_WHITE_LIST + UrlFilterRule.MASK_START_URL + domain;
@@ -800,7 +796,7 @@ var RequestWizard = (function () {
             }
         }
 
-        if (filteringEvent.cookieName || filteringEvent.stealthEvent) {
+        if (filteringEvent.cookieName) {
             ruleImportantCheckbox.parentNode.style.display = 'none';
             ruleMatchCaseCheckbox.parentNode.style.display = 'none';
             ruleDomainCheckbox.parentNode.style.display = 'none';
@@ -829,10 +825,6 @@ var RequestWizard = (function () {
 
             if (requestRule && requestRule.cookieRule) {
                 mandatoryOptions = [UrlFilterRule.COOKIE_OPTION];
-            }
-
-            if (filteringEvent.stealthEvent) {
-                mandatoryOptions = [UrlFilterRule.STEALTH_OPTION];
             }
 
             if (filteringEvent.requestUrl === 'content-security-policy-check') {
@@ -995,8 +987,6 @@ var RequestWizard = (function () {
                 return 'CSP';
             case 'COOKIE':
                 return 'Cookie';
-            case 'STEALTH':
-                return 'Stealth';
             case 'OTHER':
                 return 'Other';
         }
@@ -1025,6 +1015,7 @@ var RequestWizard = (function () {
 
         const requestRule = filteringEvent.requestRule;
         const replaceRules = filteringEvent.replaceRules;
+        const stealthActions = filteringEvent.stealthActions;
 
         const requestUrlNode = template.querySelector('[attr-text="requestUrl"]');
         if (filteringEvent.requestUrl) {
@@ -1045,13 +1036,6 @@ var RequestWizard = (function () {
             cookieNode.textContent = `${filteringEvent.cookieName} = ${filteringEvent.cookieValue}`;
         } else {
             cookieNode.parentNode.style.display = 'none';
-        }
-
-        const headerNode = template.querySelector('[attr-text="header"]');
-        if (filteringEvent.stealthEvent && filteringEvent.headerName) {
-            headerNode.textContent = `${filteringEvent.headerName} = ${filteringEvent.headerValue}`;
-        } else {
-            headerNode.parentNode.style.display = 'none';
         }
 
         template.querySelector('[attr-text="requestType"]').textContent = getRequestType(filteringEvent.requestType);
@@ -1085,6 +1069,12 @@ var RequestWizard = (function () {
             }
         } else {
             template.querySelector('[attr-text="replaceRules"]').closest('li').style.display = 'none';
+        }
+
+        if (stealthActions) {
+            template.querySelector('[attr-text="stealthActions"]').textContent = getStealthActionNames(stealthActions).join('\r\n');
+        } else {
+            template.querySelector('[attr-text="stealthActions"]').closest('li').style.display = 'none';
         }
 
         if (filteringEvent.requestType === 'IMAGE') {
@@ -1126,10 +1116,6 @@ var RequestWizard = (function () {
             openRequestButton.style.display = 'none';
         }
 
-        if (filteringEvent.stealthEvent) {
-            openRequestButton.style.display = 'none';
-        }
-
         blockRequestButton.addEventListener('click', function (e) {
             e.preventDefault();
             closeModal();
@@ -1165,11 +1151,7 @@ var RequestWizard = (function () {
         });
 
         if (!requestRule) {
-            if (filteringEvent.stealthEvent) {
-                unblockRequestButton.classList.remove('hidden');
-            } else {
-                blockRequestButton.classList.remove('hidden');
-            }
+            blockRequestButton.classList.remove('hidden');
         } else if (requestRule.filterId === AntiBannerFiltersId.USER_FILTER_ID) {
             removeUserFilterRuleButton.classList.remove('hidden');
             if (requestRule.whiteListRule) {
@@ -1224,6 +1206,17 @@ var RequestWizard = (function () {
         requestInfoTemplate = document.querySelector('#modal-request-info');
         createBlockRuleTemplate = document.querySelector('#modal-create-block-rule');
         createExceptionRuleTemplate = document.querySelector('#modal-create-exception-rule');
+    };
+
+    const getStealthActionNames = (actions) => {
+        const result = [];
+        for (let key in STEALTH_ACTIONS) {
+            const action = STEALTH_ACTIONS[key];
+            if ((actions & action) === action) {
+                result.push(STEALTH_ACTIONS_NAMES[key]);
+            }
+        }
+        return result;
     };
 
     return {

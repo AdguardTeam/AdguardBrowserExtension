@@ -24,7 +24,7 @@ adguard.stealthService = (function (adguard) {
     /**
      * Search engines regexps
      *
-     * @type {[*]}
+     * @type {Array.<string>}
      */
     const SEARCH_ENGINES = [
         /https?:\/\/(www\.)?google\./i,
@@ -42,35 +42,32 @@ adguard.stealthService = (function (adguard) {
      * Headers
      */
     const HEADERS = {
-        USER_AGENT: 'User-Agent',
         REFERRER: 'Referer',
-        ETAG: 'ETag',
         X_CLIENT_DATA: 'X-Client-Data',
-        DO_NOT_TRACK: 'DNT'
+        DO_NOT_TRACK: 'DNT',
     };
 
     /**
      * Header values
      */
     const HEADER_VALUES = {
-        PRAGMA: {
-            name: 'Pragma',
-            value: 'no-cache'
-        },
         DO_NOT_TRACK: {
             name: 'DNT',
             value: '1'
         },
-        REFERRER: {
-            name: 'Referer',
-            value: 'https://adguard.com/referrer.html'
-        }
+    };
+
+    const STEALTH_ACTIONS = {
+        HIDE_REFERRER: 1 << 0,
+        HIDE_SEARCH_QUERIES: 1 << 1,
+        BLOCK_CHROME_CLIENT_DATA: 1 << 2,
+        SEND_DO_NOT_TRACK: 1 << 3,
     };
 
     /**
      * Is url search engine
      *
-     * @param url
+     * @param {string} url
      * @returns {boolean}
      */
     const isSearchEngine = function (url) {
@@ -88,85 +85,13 @@ adguard.stealthService = (function (adguard) {
     };
 
     /**
-     * Header value
-     *
-     * @param headers
-     * @param headerName
-     * @returns {string}
-     */
-    const getHeaderValue = function (headers, headerName) {
-        if (!headers) {
-            return '';
-        }
-
-        for (let i = 0; i < headers.length; i++) {
-            if (headers[i].name === headerName) {
-                return headers[i].value;
-            }
-        }
-
-        return '';
-    };
-
-    /**
-     * Replaces header value in headers
-     *
-     * @param headers
-     * @param header
-     * @param appendIfNotExist
-     */
-    const replaceHeader = function (headers, header, appendIfNotExist) {
-        let headerFound = false;
-        for (let i = 0; i < headers.length; i++) {
-            if (headers[i].name === header.name) {
-                headers[i] = header;
-                headerFound = true;
-            }
-        }
-
-        if (!headerFound && appendIfNotExist) {
-            headers.push(header);
-        }
-    };
-
-    /**
-     * Removes header from headers by name
-     *
-     * @param headers
-     * @param headerName
-     */
-    const removeHeader = function (headers, headerName) {
-        if (headers) {
-            for (let i = headers.length - 1; i >= 0; i--) {
-                if (headers[i].name === headerName) {
-                    headers.splice(i, 1);
-                }
-            }
-        }
-    };
-
-    /**
      * Generates rule removing cookies
      *
-     * @param maxAge
+     * @param {number} maxAge Cookie maxAge
      */
     const generateRemoveRule = function (maxAge) {
         const maxAgeOption = maxAge > 0 ? `;maxAge=${maxAge * 60}` : '';
         return new adguard.rules.UrlFilterRule(`$cookie=/.+/${maxAgeOption}`);
-    };
-
-    /**
-     * Adds stealth event to filtering log
-     *
-     * @param {Object} tab
-     * @param {Object} rule
-     * @param {Object?} headerName
-     * @param {Object?} headerValue
-     * @param {Object?} requestType
-     * @param {Object?} thirdParty
-     */
-    const addStealthLogEvent = (tab, rule, headerName, headerValue, requestUrl, thirdParty) => {
-        adguard.filteringLog.addStealthEvent(tab, rule, headerName, headerValue, adguard.RequestTypes.STEALTH, thirdParty, requestUrl);
     };
 
     /**
@@ -189,65 +114,67 @@ adguard.stealthService = (function (adguard) {
 
         adguard.console.debug('Stealth service processing request headers for {0}', requestUrl);
 
-        if (adguard.frames.isTabWhiteListed(tab) || adguard.frames.isTabProtectionDisabled(tab)) {
+        if (adguard.frames.shouldStopRequestProcess(tab)) {
             adguard.console.debug('Tab whitelisted or protection disabled');
             return false;
         }
 
-        let sourceUrl = adguard.frames.getMainFrameUrl(tab);
-        if (!sourceUrl) {
+        let mainFrameUrl = adguard.frames.getMainFrameUrl(tab);
+        if (!mainFrameUrl) {
             //frame wasn't recorded in onBeforeRequest event
             adguard.console.debug('Frame was not recorded in onBeforeRequest event');
             return false;
         }
 
-        if (requestUrl === sourceUrl) {
-            sourceUrl = getHeaderValue(requestHeaders, HEADERS.REFERRER);
-        }
-
-        const whiteListRule = adguard.antiBannerService.getRequestFilter().findWhiteListRule(requestUrl, sourceUrl, requestType);
+        const whiteListRule = adguard.requestFilter.findWhiteListRule(requestUrl, mainFrameUrl, requestType);
         if (whiteListRule && whiteListRule.isDocumentWhiteList()) {
             adguard.console.debug('Whitelist rule found');
             return false;
         }
 
-        const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, sourceUrl);
-        const stealthWhiteListRule = findStealthWhitelistRule(requestUrl, sourceUrl, requestType);
+        const stealthWhiteListRule = findStealthWhitelistRule(requestUrl, mainFrameUrl, requestType);
         if (stealthWhiteListRule) {
             adguard.console.debug('Whitelist stealth rule found');
-            addStealthLogEvent(tab, stealthWhiteListRule, null, null, sourceUrl, thirdParty);
+            // TODO: bind rule to request
             return false;
         }
 
-        let headersModified = false;
-
-        let isMainFrame = requestType === "DOCUMENT";
+        let stealthActions = 0;
 
         // Remove referrer for third-party requests
         const hideReferrer = adguard.settings.getProperty(adguard.settings.HIDE_REFERRER);
-        if (thirdParty && hideReferrer) {
+        if (hideReferrer) {
             adguard.console.debug('Remove referrer for third-party requests');
-            replaceHeader(requestHeaders, HEADER_VALUES.REFERRER);
-            addStealthLogEvent(tab, null, HEADER_VALUES.REFERRER.name, HEADER_VALUES.REFERRER.value, sourceUrl, thirdParty);
-            headersModified = true;
+            const isThirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, mainFrameUrl);
+            const refHeader = adguard.utils.browser.findHeaderByName(requestHeaders, HEADERS.REFERRER);
+            if (refHeader && isThirdParty) {
+                refHeader.value = requestUrl;
+                stealthActions |= STEALTH_ACTIONS.HIDE_REFERRER;
+            }
         }
 
         // Hide referrer in case of search engine is referrer
+        const isMainFrame = requestType === adguard.RequestTypes.DOCUMENT;
         const hideSearchQueries = adguard.settings.getProperty(adguard.settings.HIDE_SEARCH_QUERIES);
-        if (hideSearchQueries && isMainFrame && thirdParty && isSearchEngine(sourceUrl)) {
+        if (hideSearchQueries && isMainFrame) {
             adguard.console.debug('Hide referrer in case of search engine is referrer');
-            replaceHeader(requestHeaders, HEADER_VALUES.REFERRER);
-            addStealthLogEvent(tab, null, HEADER_VALUES.REFERRER.name, HEADER_VALUES.REFERRER.value, sourceUrl, thirdParty);
-            headersModified = true;
+            const refHeader = adguard.utils.browser.findHeaderByName(requestHeaders, HEADERS.REFERRER);
+            if (refHeader &&
+                isSearchEngine(refHeader.value) &&
+                adguard.utils.url.isThirdPartyRequest(requestUrl, refHeader.value)) {
+
+                refHeader.value = requestUrl;
+                stealthActions |= STEALTH_ACTIONS.HIDE_SEARCH_QUERIES;
+            }
         }
 
         // Remove X-Client-Data header
         const blockChromeClientData = adguard.settings.getProperty(adguard.settings.BLOCK_CHROME_CLIENT_DATA);
         if (blockChromeClientData) {
             adguard.console.debug('Remove X-Client-Data header');
-            removeHeader(requestHeaders, HEADERS.X_CLIENT_DATA);
-            addStealthLogEvent(tab, null, HEADERS.X_CLIENT_DATA, null, sourceUrl, thirdParty);
-            headersModified = true;
+            if (adguard.utils.browser.removeHeader(requestHeaders, HEADERS.X_CLIENT_DATA)) {
+                stealthActions |= STEALTH_ACTIONS.BLOCK_CHROME_CLIENT_DATA;
+            }
         }
 
         // Adding Do-Not-Track (DNT) header
@@ -255,13 +182,16 @@ adguard.stealthService = (function (adguard) {
         if (sendDoNotTrack) {
             adguard.console.debug('Adding Do-Not-Track (DNT) header');
             requestHeaders.push(HEADER_VALUES.DO_NOT_TRACK);
-            addStealthLogEvent(tab, null, HEADER_VALUES.DO_NOT_TRACK.name, HEADER_VALUES.DO_NOT_TRACK.value, sourceUrl, thirdParty);
-            headersModified = true;
+            stealthActions |= STEALTH_ACTIONS.SEND_DO_NOT_TRACK;
+        }
+
+        if (stealthActions > 0) {
+            adguard.requestContextStorage.update(requestId, { stealthActions });
         }
 
         adguard.console.debug('Stealth service processed request headers for {0}', requestUrl);
 
-        return headersModified;
+        return stealthActions > 0;
     };
 
     /**
@@ -272,6 +202,12 @@ adguard.stealthService = (function (adguard) {
      * @param requestType
      */
     const getCookieRules = function (requestUrl, referrerUrl, requestType) {
+
+        // If stealth is whitelisted
+        const whiteListRule = findStealthWhitelistRule(requestUrl, referrerUrl, requestType);
+        if (whiteListRule) {
+            return null;
+        }
 
         const result = [];
 
@@ -290,7 +226,7 @@ adguard.stealthService = (function (adguard) {
         }
 
         const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrerUrl);
-        let isMainFrame = requestType === "DOCUMENT";
+        const isMainFrame = requestType === adguard.RequestTypes.DOCUMENT;
 
         // Remove cookie header for third-party requests
         if (thirdParty && !isMainFrame) {
@@ -393,7 +329,6 @@ adguard.stealthService = (function (adguard) {
     return {
         processRequestHeaders: processRequestHeaders,
         getCookieRules: getCookieRules,
-        findStealthWhitelistRule: findStealthWhitelistRule
     };
 
 })(adguard);
