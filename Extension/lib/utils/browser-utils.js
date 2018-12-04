@@ -208,6 +208,27 @@
             return headers;
         },
 
+        /**
+         * Removes header from headers by name
+         *
+         * @param {Array} headers
+         * @param {String} headerName
+         * @return {boolean} True if header were removed
+         */
+        removeHeader: function (headers, headerName) {
+            let removed = false;
+            if (headers) {
+                for (let i = headers.length - 1; i >= 0; i--) {
+                    const header = headers[i];
+                    if (header.name.toLowerCase() === headerName.toLowerCase()) {
+                        headers.splice(i, 1);
+                        removed = true;
+                    }
+                }
+            }
+            return removed;
+        },
+
         getSafebrowsingBackUrl: function (tab) {
             //https://code.google.com/p/chromium/issues/detail?id=11854
             var previousUrl = adguard.tabs.getTabMetadata(tab.tabId, 'previousUrl');
@@ -299,7 +320,6 @@
             params.push('id=' + id);
             return params;
         }
-
     };
 
     api.browser = Utils;

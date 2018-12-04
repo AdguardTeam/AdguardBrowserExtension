@@ -25,6 +25,8 @@ adguard.settings = (function (adguard) {
 
     // Default filters update period is set up to 48 hours
     const DEFAULT_FILTERS_UPDATE_PERIOD_MS = 48 * 60 * 60 * 1000;
+    const DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN = 2880;
+    const DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN = 30;
 
     var settings = {
         DISABLE_DETECT_FILTERS: 'detect-filters-disabled',
@@ -40,6 +42,15 @@ adguard.settings = (function (adguard) {
         DISABLE_SHOW_APP_UPDATED_NOTIFICATION: 'show-app-updated-disabled',
         DISABLE_INTEGRATION_MODE: 'integration-mode-disabled',
         FILTERS_UPDATE_PERIOD: 'filters-update-period',
+        HIDE_REFERRER: 'stealth-hide-referrer',
+        HIDE_SEARCH_QUERIES: 'stealth-hide-search-queries',
+        SEND_DO_NOT_TRACK: 'stealth-send-do-not-track',
+        BLOCK_CHROME_CLIENT_DATA: 'stealth-remove-x-client',
+        BLOCK_WEBRTC: 'stealth-block-webrtc',
+        SELF_DESTRUCT_THIRD_PARTY_COOKIES: 'stealth-block-third-party-cookies',
+        SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME: 'stealth-block-third-party-cookies-time',
+        SELF_DESTRUCT_FIRST_PARTY_COOKIES: 'stealth-block-first-party-cookies',
+        SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME: 'stealth-block-first-party-cookies-time',
     };
 
     var properties = Object.create(null);
@@ -68,6 +79,15 @@ adguard.settings = (function (adguard) {
                 defaults[settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION] = false;
                 defaults[settings.DISABLE_INTEGRATION_MODE] = false;
                 defaults[settings.FILTERS_UPDATE_PERIOD] = DEFAULT_FILTERS_UPDATE_PERIOD_MS;
+                defaults[settings.HIDE_REFERRER] = false;
+                defaults[settings.HIDE_SEARCH_QUERIES] = false;
+                defaults[settings.SEND_DO_NOT_TRACK] = false;
+                defaults[settings.BLOCK_CHROME_CLIENT_DATA] = false;
+                defaults[settings.BLOCK_WEBRTC] = false;
+                defaults[settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES] = false;
+                defaults[settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME] = DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN;
+                defaults[settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES] = false;
+                defaults[settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME] = DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN;
                 return defaults;
             });
         }
@@ -237,6 +257,10 @@ adguard.settings = (function (adguard) {
         return getProperty(settings.FILTERS_UPDATE_PERIOD);
     };
 
+    var isWebRTCDisabled = function () {
+        return getProperty(settings.BLOCK_WEBRTC);
+    };
+
     var api = {};
 
     // Expose settings to api
@@ -277,6 +301,7 @@ adguard.settings = (function (adguard) {
     api.setFiltersUpdatePeriod = setFiltersUpdatePeriod;
     api.isIntegrationModeEnabled = isIntegrationModeEnabled;
     api.changeIntegrationModeEnabled = changeIntegrationModeEnabled;
+    api.isWebRTCDisabled = isWebRTCDisabled;
 
     return api;
 

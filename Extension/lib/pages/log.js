@@ -130,7 +130,22 @@ var UrlFilterRule = {
     WEBRTC_OPTION: 'webrtc',
     WEBSOCKET_OPTION: 'websocket',
     COOKIE_OPTION: 'cookie',
+    STEALTH_OPTION: 'stealth',
     REPLACE_OPTION: 'replace',
+};
+
+const STEALTH_ACTIONS = {
+    HIDE_REFERRER: 1 << 0,
+    HIDE_SEARCH_QUERIES: 1 << 1,
+    BLOCK_CHROME_CLIENT_DATA: 1 << 2,
+    SEND_DO_NOT_TRACK: 1 << 3,
+};
+
+const STEALTH_ACTIONS_NAMES = {
+    HIDE_REFERRER: i18n.getMessage('options_hide_referrer_title'),
+    HIDE_SEARCH_QUERIES: i18n.getMessage('options_hide_search_queries_title'),
+    BLOCK_CHROME_CLIENT_DATA: i18n.getMessage('options_remove_client_data_title'),
+    SEND_DO_NOT_TRACK: i18n.getMessage('options_send_not_track_title'),
 };
 
 PageController.prototype = {
@@ -509,9 +524,12 @@ PageController.prototype = {
     _renderTemplate: function (event) {
         const metadata = { data: event, class: '' };
 
-        event.filterName = event.requestRule ?
-            RequestWizard.getFilterName(event.requestRule.filterId) :
-            '';
+        event.filterName = '';
+        if (event.requestRule) {
+            event.filterName = RequestWizard.getFilterName(event.requestRule.filterId);
+        } else if (event.stealthActions) {
+            event.filterName = i18n.getMessage('filtering_log_privacy_applied_rules');
+        }
 
         if (event.replaceRules) {
             metadata.class += ' yellow';
@@ -522,6 +540,12 @@ PageController.prototype = {
                 metadata.class += ' green';
             } else if (event.requestRule.cssRule) {
                 metadata.class += ' yellow';
+            } else if (event.requestRule.cookieRule) {
+                if (event.requestRule.isModifyingCookieRule) {
+                    metadata.class += ' yellow';
+                } else {
+                    metadata.class += ' red';
+                }
             } else {
                 metadata.class += ' red';
             }
@@ -537,7 +561,7 @@ PageController.prototype = {
         } else if (event.cookieName) {
             requestInfo = `${event.cookieName} = ${event.cookieValue}`;
         } else {
-            requestInfo = event.requestUrl
+            requestInfo = event.requestUrl;
         }
 
         // Get rule text for requestRule or replaceRules
@@ -1000,6 +1024,7 @@ var RequestWizard = (function () {
 
         const requestRule = filteringEvent.requestRule;
         const replaceRules = filteringEvent.replaceRules;
+        const stealthActions = filteringEvent.stealthActions;
 
         const requestUrlNode = template.querySelector('[attr-text="requestUrl"]');
         if (filteringEvent.requestUrl) {
@@ -1053,6 +1078,12 @@ var RequestWizard = (function () {
             }
         } else {
             template.querySelector('[attr-text="replaceRules"]').closest('li').style.display = 'none';
+        }
+
+        if (stealthActions) {
+            template.querySelector('[attr-text="stealthActions"]').textContent = getStealthActionNames(stealthActions).join('\r\n');
+        } else {
+            template.querySelector('[attr-text="stealthActions"]').closest('li').style.display = 'none';
         }
 
         if (filteringEvent.requestType === 'IMAGE') {
@@ -1184,6 +1215,17 @@ var RequestWizard = (function () {
         requestInfoTemplate = document.querySelector('#modal-request-info');
         createBlockRuleTemplate = document.querySelector('#modal-create-block-rule');
         createExceptionRuleTemplate = document.querySelector('#modal-create-exception-rule');
+    };
+
+    const getStealthActionNames = (actions) => {
+        const result = [];
+        for (let key in STEALTH_ACTIONS) {
+            const action = STEALTH_ACTIONS[key];
+            if ((actions & action) === action) {
+                result.push(STEALTH_ACTIONS_NAMES[key]);
+            }
+        }
+        return result;
     };
 
     return {

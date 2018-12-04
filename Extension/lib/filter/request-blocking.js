@@ -298,17 +298,6 @@ adguard.webRequestService = (function (adguard) {
     };
 
     /**
-     * Checks if we should process request further
-     * @param tab
-     * @returns {boolean}
-     */
-    const shouldStopRequestProcess = (tab) => {
-        return adguard.frames.isTabAdguardDetected(tab) ||
-            adguard.frames.isTabProtectionDisabled(tab) ||
-            adguard.frames.isTabWhiteListed(tab);
-    };
-
-    /**
      * Finds all content rules for the url
      * @param tab Tab
      * @param documentUrl Document URL
@@ -316,7 +305,7 @@ adguard.webRequestService = (function (adguard) {
      */
     var getContentRules = function (tab, documentUrl) {
 
-        if (shouldStopRequestProcess(tab)) {
+        if (adguard.frames.shouldStopRequestProcess(tab)) {
             // don't process request
             return null;
         }
@@ -339,7 +328,7 @@ adguard.webRequestService = (function (adguard) {
      */
     const getCspRules = function (tab, requestUrl, referrerUrl, requestType) {
 
-        if (shouldStopRequestProcess(tab)) {
+        if (adguard.frames.shouldStopRequestProcess(tab)) {
             // don't process request
             return null;
         }
@@ -361,21 +350,29 @@ adguard.webRequestService = (function (adguard) {
      * @param requestType   Request type
      * @returns {Array}     Collection of rules or null
      */
-    var getCookieRules = function (tab, requestUrl, referrerUrl, requestType) {
+    const getCookieRules = (tab, requestUrl, referrerUrl, requestType) => {
 
-        if (shouldStopRequestProcess(tab)) {
+        if (adguard.frames.shouldStopRequestProcess(tab)) {
             // Don't process request
             return null;
         }
 
-        var whitelistRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
+        const whitelistRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
         if (whitelistRule && whitelistRule.isDocumentWhiteList()) {
             // $cookie rules are not affected by regular exception rules (@@) unless it's a $document exception.
             return null;
         }
 
         // Get all $cookie rules matching the specified request
-        return adguard.requestFilter.getCookieRules(requestUrl, referrerUrl, requestType);
+        const cookieRules = adguard.requestFilter.getCookieRules(requestUrl, referrerUrl, requestType);
+
+        // If cookie rules found - ignore stealth cookie rules
+        if (cookieRules && cookieRules.length > 0) {
+            return cookieRules;
+        }
+
+        // Return stealth cookie rules
+        return adguard.stealthService.getCookieRules(requestUrl, referrerUrl, requestType);
     };
 
     /**
@@ -387,7 +384,7 @@ adguard.webRequestService = (function (adguard) {
      * @returns {*} Collection of rules or null
      */
     const getReplaceRules = (tab, requestUrl, referrerUrl, requestType) => {
-        if (shouldStopRequestProcess(tab)) {
+        if (adguard.frames.shouldStopRequestProcess(tab)) {
             // don't process request
             return null;
         }

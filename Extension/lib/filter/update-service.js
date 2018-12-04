@@ -284,7 +284,7 @@ adguard.applicationUpdateService = (function (adguard) {
         if (adguard.utils.browser.isEdgeBrowser() && !adguard.utils.browser.isEdgeBeforeCreatorsUpdate()) {
             methods.push(onUpdateEdgeRulesStorage);
         }
-        if (adguard.utils.browser.isGreaterVersion("2.7.4", runInfo.prevVersion) & adguard.utils.browser.isFirefoxBrowser() && typeof browser !== 'undefined') {
+        if (adguard.utils.browser.isGreaterVersion("2.7.4", runInfo.prevVersion) && adguard.utils.browser.isFirefoxBrowser() && typeof browser !== 'undefined') {
             methods.push(onUpdateFirefoxWebExtRulesStorage);
         }
 
