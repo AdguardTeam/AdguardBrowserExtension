@@ -137,10 +137,11 @@ adguard.cookieFiltering = (function (adguard) {
      * @param {string} cookieDomain
      * @param {boolean} cookieThirdParty
      * @param {Array} rules
+     * @param {boolean} isModifyingCookieRule
      */
-    const addCookieLogEvent = (tab, cookieName, cookieValue, cookieDomain, cookieThirdParty, rules) => {
+    const addCookieLogEvent = (tab, cookieName, cookieValue, cookieDomain, cookieThirdParty, rules, isModifyingCookieRule) => {
         for (let i = 0; i < rules.length; i += 1) {
-            adguard.filteringLog.addCookieEvent(tab, cookieName, cookieValue, cookieDomain, adguard.RequestTypes.COOKIE, rules[i], cookieThirdParty);
+            adguard.filteringLog.addCookieEvent(tab, cookieName, cookieValue, cookieDomain, adguard.RequestTypes.COOKIE, rules[i], isModifyingCookieRule, cookieThirdParty);
         }
     };
 
@@ -228,7 +229,7 @@ adguard.cookieFiltering = (function (adguard) {
                     const promise = apiRemoveCookie(name, url);
                     promises.push(promise);
                 }
-                addCookieLogEvent(tab, cookie.name, cookie.value, cookie.domain, thirdParty, [rule]);
+                addCookieLogEvent(tab, cookie.name, cookie.value, cookie.domain, thirdParty, [rule], false);
             }
             return Promise.all(promises);
         });
@@ -253,7 +254,7 @@ adguard.cookieFiltering = (function (adguard) {
                 if (mRules && mRules.length > 0) {
                     const promise = apiUpdateCookie(cookie, url);
                     promises.push(promise);
-                    addCookieLogEvent(tab, cookie.name, cookie.value, cookie.domain, thirdParty, mRules);
+                    addCookieLogEvent(tab, cookie.name, cookie.value, cookie.domain, thirdParty, mRules, true);
                 }
             }
             return Promise.all(promises);
@@ -575,7 +576,7 @@ adguard.cookieFiltering = (function (adguard) {
                     setCookieHeaderModified = true;
                 }
                 processedCookies.push(cookieName);
-                addCookieLogEvent(tab, cookieName, cookieValue, setCookie.domain, thirdParty, [bRule]);
+                addCookieLogEvent(tab, cookieName, cookieValue, setCookie.domain, thirdParty, [bRule], false);
                 continue;
             }
 
@@ -585,7 +586,7 @@ adguard.cookieFiltering = (function (adguard) {
                 header.value = adguard.utils.cookie.serialize(setCookie);
                 setCookieHeaderModified = true;
                 processedCookies.push(cookieName);
-                addCookieLogEvent(tab, cookieName, cookieValue, setCookie.domain, thirdParty, mRules);
+                addCookieLogEvent(tab, cookieName, cookieValue, setCookie.domain, thirdParty, mRules, true);
             }
         }
 
