@@ -320,9 +320,10 @@ adguard.filteringLog = (function (adguard) {
      * @param {string} cookieDomain
      * @param {string} requestType
      * @param {object} cookieRule
+     * @param {boolean} isModifyingCookieRule
      * @param {boolean} thirdParty
      */
-    const addCookieEvent = function (tab, cookieName, cookieValue, cookieDomain, requestType, cookieRule, thirdParty) {
+    const addCookieEvent = function (tab, cookieName, cookieValue, cookieDomain, requestType, cookieRule, isModifyingCookieRule, thirdParty) {
 
         if (openedFilteringLogsPage === 0) {
             return;
@@ -344,6 +345,7 @@ adguard.filteringLog = (function (adguard) {
         if (cookieRule) {
             // Copy useful properties
             addRuleToFilteringEvent(filteringEvent, cookieRule);
+            filteringEvent.requestRule.isModifyingCookieRule = isModifyingCookieRule;
         }
 
         pushFilteringEvent(tabInfo, filteringEvent);

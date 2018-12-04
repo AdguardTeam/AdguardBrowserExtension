@@ -537,6 +537,12 @@ PageController.prototype = {
                 metadata.class += ' green';
             } else if (event.requestRule.cssRule) {
                 metadata.class += ' yellow';
+            } else if (event.requestRule.cookieRule) {
+                if (event.requestRule.isModifyingCookieRule) {
+                    metadata.class += ' yellow';
+                } else {
+                    metadata.class += ' red';
+                }
             } else {
                 metadata.class += ' red';
             }
