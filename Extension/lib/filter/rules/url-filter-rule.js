@@ -847,13 +847,6 @@
     };
 
     /**
-     * If rule is stealth returns true
-     */
-    UrlFilterRule.prototype.isStealth = function () {
-        return this.isOptionEnabled(UrlFilterRule.options.STEALTH);
-    };
-
-    /**
      * If rule is replace rule
      * @returns {Boolean}
      */

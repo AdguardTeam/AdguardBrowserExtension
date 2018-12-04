@@ -87,10 +87,10 @@ adguard.stealthService = (function (adguard) {
     /**
      * Generates rule removing cookies
      *
-     * @param {number} maxAge Cookie maxAge
+     * @param {number} maxAgeMinutes Cookie maxAge in minutes
      */
-    const generateRemoveRule = function (maxAge) {
-        const maxAgeOption = maxAge > 0 ? `;maxAge=${maxAge * 60}` : '';
+    const generateRemoveRule = function (maxAgeMinutes) {
+        const maxAgeOption = maxAgeMinutes > 0 ? `;maxAge=${maxAgeMinutes * 60}` : '';
         return new adguard.rules.UrlFilterRule(`$cookie=/.+/${maxAgeOption}`);
     };
 
@@ -135,7 +135,7 @@ adguard.stealthService = (function (adguard) {
         const stealthWhiteListRule = findStealthWhitelistRule(requestUrl, mainFrameUrl, requestType);
         if (stealthWhiteListRule) {
             adguard.console.debug('Whitelist stealth rule found');
-            // TODO: bind rule to request
+            adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, mainFrameUrl, requestType, stealthWhiteListRule);
             return false;
         }
 
