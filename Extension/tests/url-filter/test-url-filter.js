@@ -753,7 +753,7 @@ QUnit.test("Test stealth option", function (assert) {
 
     assert.ok(rule);
     assert.ok(rule.whiteListRule);
-    assert.ok(rule.isStealth());
+    assert.ok(rule.isStealthRule());
 });
 
 QUnit.test('Test replace option', (assert) => {

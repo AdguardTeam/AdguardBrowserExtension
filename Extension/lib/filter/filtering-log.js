@@ -270,12 +270,14 @@ adguard.filteringLog = (function (adguard) {
         }
 
         const events = tabInfo.filteringEvents;
-        for (let i = events.length - 1; i >= 0; i -= 1) {
-            const event = events[i];
-            if (event.eventId === eventId) {
-                addRuleToFilteringEvent(event, requestRule);
-                adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
-                break;
+        if (events) {
+            for (let i = events.length - 1; i >= 0; i -= 1) {
+                const event = events[i];
+                if (event.eventId === eventId) {
+                    addRuleToFilteringEvent(event, requestRule);
+                    adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
+                    break;
+                }
             }
         }
     };
@@ -298,12 +300,14 @@ adguard.filteringLog = (function (adguard) {
         }
 
         const events = tabInfo.filteringEvents;
-        for (let i = events.length - 1; i >= 0; i -= 1) {
-            const event = events[i];
-            if (event.eventId === eventId) {
-                addReplaceRulesToFilteringEvent(event, replaceRules);
-                adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
-                break;
+        if (events) {
+            for (let i = events.length - 1; i >= 0; i -= 1) {
+                const event = events[i];
+                if (event.eventId === eventId) {
+                    addReplaceRulesToFilteringEvent(event, replaceRules);
+                    adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
+                    break;
+                }
             }
         }
     };
@@ -363,12 +367,14 @@ adguard.filteringLog = (function (adguard) {
         }
 
         const events = tabInfo.filteringEvents;
-        for (let i = events.length - 1; i >= 0; i -= 1) {
-            const event = events[i];
-            if (event.eventId === eventId) {
-                event.stealthActions = actions;
-                adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
-                break;
+        if (events) {
+            for (let i = events.length - 1; i >= 0; i -= 1) {
+                const event = events[i];
+                if (event.eventId === eventId) {
+                    event.stealthActions = actions;
+                    adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
+                    break;
+                }
             }
         }
     };
