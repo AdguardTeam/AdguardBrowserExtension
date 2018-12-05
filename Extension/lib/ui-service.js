@@ -506,34 +506,72 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     };
 
     /**
+     * Generates query string with stealth options information
+     * @returns {string}
+     */
+    const getStealthString = () => {
+        const stealthOptions = [
+            { queryKey: 'ext_hide_referrer', settingKey: adguard.settings.HIDE_REFERRER },
+            { queryKey: 'hide_search_queries', settingKey: adguard.settings.HIDE_SEARCH_QUERIES },
+            { queryKey: 'DNT', settingKey: adguard.settings.SEND_DO_NOT_TRACK },
+            { queryKey: 'x_client', settingKey: adguard.settings.BLOCK_CHROME_CLIENT_DATA },
+            { queryKey: 'webrtc', settingKey: adguard.settings.BLOCK_WEBRTC },
+            {
+                queryKey: 'third_party_cookies',
+                settingKey: adguard.settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES,
+                settingValueKey: adguard.settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME,
+            },
+            {
+                queryKey: 'first_party_cookies',
+                settingKey: adguard.settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES,
+                settingValueKey: adguard.settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME,
+            },
+        ];
+
+        return stealthOptions.map(option => {
+            const { queryKey, settingKey, settingValueKey } = option;
+            const setting = adguard.settings.getProperty(settingKey);
+            let settingString;
+            if (!setting) {
+                return '';
+            }
+            if (!settingValueKey) {
+                settingString = setting;
+            } else {
+                settingString = adguard.settings.getProperty(settingValueKey);
+            }
+            return `stealth.${queryKey}=${encodeURIComponent(settingString)}`;
+        })
+            .filter(string => string.length > 0)
+            .join('&');
+    };
+
+    /**
      * Opens site complaint report tab
-     *
+     * https://github.com/AdguardTeam/ReportsWebApp#pre-filling-the-app-with-query-parameters
      * @param url
      */
-    var openAbuseTab = function (url) {
-        var browser;
-        var browserDetails;
+    const openAbuseTab = function (url) {
+        let browser;
+        let browserDetails;
 
-        var supportedBrowsers = ['Chrome', 'Firefox', 'Opera', 'Safari', 'IE', 'Edge'];
-        if (supportedBrowsers.indexOf(adguard.prefs.browser) >= 0) {
+        const supportedBrowsers = ['Chrome', 'Firefox', 'Opera', 'Safari', 'IE', 'Edge'];
+        if (supportedBrowsers.includes(adguard.prefs.browser)) {
             browser = adguard.prefs.browser;
         } else {
             browser = 'Other';
             browserDetails = adguard.prefs.browser;
         }
 
-        var filters = [];
-        var enabledFilters = adguard.filters.getEnabledFilters();
-        for (var i = 0; i < enabledFilters.length; i++) {
-            var filter = enabledFilters[i];
-            filters.push(filter.filterId);
-        }
+        const filterIds = adguard.filters.getEnabledFilters().map(filter => filter.filterId);
 
-        openTab("https://reports.adguard.com/new_issue.html?product_type=Ext&product_version=" + encodeURIComponent(adguard.app.getVersion()) +
-            "&browser=" + encodeURIComponent(browser) +
-            (browserDetails ? '&browser_detail=' + encodeURIComponent(browserDetails) : '') +
-            "&url=" + encodeURIComponent(url) +
-            "&filters=" + encodeURIComponent(filters.join('.')));
+        openTab('https://reports.adguard.com/new_issue.html?product_type=Ext&product_version='
+            + encodeURIComponent(adguard.app.getVersion())
+            + '&browser=' + encodeURIComponent(browser)
+            + (browserDetails ? '&browser_detail=' + encodeURIComponent(browserDetails) : '')
+            + '&url=' + encodeURIComponent(url)
+            + '&filters=' + encodeURIComponent(filterIds.join('.'))
+            + '&stealth.enabled=true&' + getStealthString());
     };
 
     var openFilteringLog = function (tabId) {
