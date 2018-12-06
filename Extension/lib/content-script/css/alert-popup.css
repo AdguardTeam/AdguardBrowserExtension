@@ -31,7 +31,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    padding: 20px 25px 20px 25px;
+    padding: 12px 25px;
     background-color: #67B279;
     box-shadow: 0 1px 10px 0 rgba(0, 0, 0, .2);
     justify-content: center;
@@ -43,15 +43,23 @@
     -ms-flex-align: center;
     align-items: center;
     flex-direction: column;
+    text-align: center;
+    transition: 0.3s ease opacity;
+    opacity: 0.5;
 }
 
-.adguard-popup-alert__title,
+.adguard-popup-alert--show {
+    opacity: 1;
+}
+
+.adguard-popup-alert__title {
+    font-size: 16px;
+    line-height: 17px;
+}
+
 .adguard-popup-alert__desc {
     font-size: 14px;
-    line-height: 14px;
-}
-
-.adguard-popup-alert__desc {
+    line-height: 15px;
     margin-top: 10px;
     font-weight: 600;
 }
