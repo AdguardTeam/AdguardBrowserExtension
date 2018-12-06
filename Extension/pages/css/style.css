@@ -376,15 +376,28 @@
   margin-left: 0;
   margin-top: 10px;
 }
-.opts-list .opt-state .icon-home {
-  width: 18px;
-  height: 16px;
+.icon-home {
+  width: 14px;
+  height: 14px;
   background-repeat: no-repeat;
-  background-image: url(../images/home.svg);
+  background-image: url(../images/link.svg);
   background-size: contain;
-  margin-right: 15px;
-  margin-left: 15px;
+  margin-left: 8px;
   cursor: pointer;
+  display: inline-block;
+  position: relative;
+  top: 2px;
+}
+.remove-custom-filter-button {
+  font-size: 0;
+  margin-left: 8px;
+  cursor: pointer;
+  position: relative;
+  top: -4px;
+  background-image: url(../images/trash.svg);
+  width: 14px;
+  height: 17px;
+  display: inline-block;
 }
 .opt-state__link {
   text-decoration: none;
@@ -437,15 +450,6 @@
   background-color: #fff;
   margin-top: 2px;
   left: 2px;
-}
-.toggler:after {
-  content: '';
-  position: absolute;
-  top: -7px;
-  left: -25px;
-  width: 1px;
-  height: 33px;
-  background-color: #E7E7E7;
 }
 
 .toggler.on,
@@ -1296,16 +1300,6 @@ li.active .toggler:before {
 .title-wr {
   display: flex;
   align-items: flex-end;
-}
-.opts-list li .remove-custom-filter-button {
-  font-size: 12px;
-  margin-left: 12px;
-  color: #df3812;
-  text-decoration: underline;
-  cursor: pointer;
-  position: relative;
-  top: -1px;
-  white-space: nowrap;
 }
 
 .opts-list li .opt-name {
