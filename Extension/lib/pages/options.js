@@ -757,7 +757,7 @@ var AntiBannerFilters = function (options) {
                             <img src="images/magnifying-green.svg" alt="">
                         </div>
                     </div>
-                    <ul class="opts-list">
+                    <ul class="opts-list opts-list--filters">
                         ${filtersList}
                     </ul>
                 </div>
