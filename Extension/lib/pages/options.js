@@ -1509,7 +1509,7 @@ var Settings = function () {
     }
 
     const selectOptions = [
-        { name: i18n.getMessage('options_select_update_period_default'), value: Utils.hoursToMs(48) },
+        { name: i18n.getMessage('options_select_update_period_48h'), value: Utils.hoursToMs(48) },
         { name: i18n.getMessage('options_select_update_period_24h'), value: Utils.hoursToMs(24) },
         { name: i18n.getMessage('options_select_update_period_12h'), value: Utils.hoursToMs(12) },
         { name: i18n.getMessage('options_select_update_period_6h'), value: Utils.hoursToMs(6) },
@@ -1525,7 +1525,7 @@ var Settings = function () {
         }
 
         if (updatePeriod === 0) {
-            filtersUpdatePeriodSelect.parentNode.classList.remove('active')
+            filtersUpdatePeriodSelect.parentNode.classList.remove('active');
         } else {
             filtersUpdatePeriodSelect.parentNode.classList.add('active');
         }
