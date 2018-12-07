@@ -207,15 +207,21 @@
                                     ${offerButtonText}
                                 </a>
                             </div>
-                            <script>
-                                const close = document.querySelector('.adguard-update-popup__close');
-                                close.addEventListener('click', () => {
-                                    parent.postMessage({type: 'close.iframe'}, location.origin);
-                                });
-                            </script>
                             </body>`;
 
         const triesCount = 10;
+
+        const handleCloseBtn = (iframe) => {
+            let iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+            let closeBtn = iframeDocument.getElementById('adguard-new-version-popup-close');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    iframe.parentNode.removeChild(iframe);
+                });
+                return true;
+            }
+            return false;
+        };
 
         function appendPopup(count) {
             if (count >= triesCount) {
@@ -225,19 +231,12 @@
             if (document.body) {
                 const iframe = appendIframe(document.body, updateIframeHtml);
                 iframe.classList.add('adguard-update-iframe');
-
-                const iframeMessageHandler = (event) => {
-                    if (document.location.origin !== event.origin) {
-                        return;
-                    }
-                    const { data: { type } } = event;
-                    if (type && type === 'close.iframe') {
-                        iframe.parentNode.removeChild(iframe);
-                        window.removeEventListener('message', iframeMessageHandler);
-                    }
-                };
-
-                window.addEventListener('message', iframeMessageHandler, false);
+                const isListening = handleCloseBtn(iframe);
+                if (!isListening) {
+                    iframe.addEventListener('load', () => {
+                        handleCloseBtn(iframe);
+                    });
+                }
             } else {
                 setTimeout(function () {
                     appendPopup(count + 1);
