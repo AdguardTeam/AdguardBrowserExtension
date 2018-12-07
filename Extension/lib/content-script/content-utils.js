@@ -45,9 +45,15 @@
         const iframe = document.createElement('iframe');
         target.insertAdjacentElement('afterbegin', iframe);
         iframe.src = 'about:blank';
-        iframe.contentWindow.document.open();
-        iframe.contentWindow.document.write(html);
-        iframe.contentWindow.document.close();
+        if (navigator.userAgent.indexOf('Edge') > -1) {
+            // Edge doesn't allow to write html in iframe srcdoc
+            const iframedoc = iframe.contentDocument || iframe.contentWindow.document;
+            iframedoc.open();
+            iframedoc.write(html);
+            iframedoc.close();
+        } else {
+            iframe.srcdoc = html;
+        }
         iframe.style.zIndex = MAX_Z_INDEX;
         return iframe;
     };
