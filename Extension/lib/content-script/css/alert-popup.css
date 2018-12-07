@@ -45,11 +45,26 @@
     flex-direction: column;
     text-align: center;
     transition: 0.3s ease opacity;
+    animation: popup-show 4s linear;
     opacity: 0;
 }
 
-.adguard-popup-alert--show {
-    opacity: 1;
+@keyframes popup-show {
+    0% {
+        opacity: 0;
+    }
+
+    8% {
+        opacity: 1;
+    }
+
+    92% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
 }
 
 .adguard-popup-alert__title {
