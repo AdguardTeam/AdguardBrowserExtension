@@ -25,11 +25,6 @@
      * @param ruleText
      */
     const filterUnsupportedRules = function (ruleText) {
-        // Check ABP-/uBO- snippets
-        if (/#\$#[a-zA-Z-_]+/.test(ruleText) || /#\$#[a-zA-Z-_]+\(.+\)/.test(ruleText)) {
-            return false;
-        }
-
         // uBO HTML filters
         if (ruleText.includes('##^')) {
             return false;
@@ -37,6 +32,11 @@
 
         // uBO scriptlet injections
         if (ruleText.includes('##script:inject(') || ruleText.includes('##+js(')) {
+            return false;
+        }
+
+        // Check ABP-/uBO- snippets
+        if (/#\$#[a-zA-Z-_]+/.test(ruleText) || /#\$#[a-zA-Z-_]+\(.+\)/.test(ruleText)) {
             return false;
         }
 
