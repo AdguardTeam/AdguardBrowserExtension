@@ -369,9 +369,9 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
     const isAdguardTab = (tab) => {
         const { url } = tab;
-        const appId = adguard.app.getId();
+        const parsedUrl = new URL(url);
         const schemeUrl = adguard.app.getUrlScheme();
-        return url.indexOf(appId) > -1 && url.indexOf(schemeUrl) > -1;
+        return parsedUrl.protocol.indexOf(schemeUrl) > -1;
     };
 
     function showAlertMessagePopup(title, text, showForAdguardTab) {
