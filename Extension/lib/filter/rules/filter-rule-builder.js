@@ -36,8 +36,10 @@
         }
 
         // Check ABP-/uBO- snippets
-        if (/#\$#[a-zA-Z-_]+/.test(ruleText) || /#\$#[a-zA-Z-_]+\(.+\)/.test(ruleText)) {
-            return false;
+        if (ruleText.includes('#$#')) {
+            if (/#\$#[a-zA-Z-_]+/.test(ruleText) || /#\$#[a-zA-Z-_]+\(.+\)/.test(ruleText)) {
+                return false;
+            }
         }
 
         return true;
