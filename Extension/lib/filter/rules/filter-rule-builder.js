@@ -35,7 +35,7 @@
             return false;
         }
 
-        // Check ABP-/uBO- snippets
+        // Check ABP-snippets
         if (ruleText.includes('#$#')) {
             if (/#\$#[a-zA-Z-_]+/.test(ruleText) || /#\$#[a-zA-Z-_]+\(.+\)/.test(ruleText)) {
                 return false;
