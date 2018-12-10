@@ -39,6 +39,7 @@ adguard.notifications = (function (adguard) {
      */
 
     let notifications = {
+        // TODO remove this notification
         blackFriday: {
             id: 'blackFriday',
             locales: {

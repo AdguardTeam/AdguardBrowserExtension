@@ -315,6 +315,7 @@
                             isFirefoxBrowser: adguard.utils.browser.isFirefoxBrowser(),
                             isMacOs: adguard.utils.browser.isMacOs(),
                             notification: adguard.notifications.getCurrentNotification(),
+                            isDisableShowAdguardPromoInfo: adguard.settings.isDisableShowAdguardPromoInfo(),
                         },
                     });
                 });
@@ -378,6 +379,9 @@
             case 'applySettingsJson':
                 adguard.sync.settingsProvider.applySettingsBackup(message.json, callback);
                 return true; // Async
+            case 'disableGetPremiumNotification':
+                adguard.settings.disableShowAdguardPromoInfo();
+                break;
             default:
                 // Unhandled message
                 return true;

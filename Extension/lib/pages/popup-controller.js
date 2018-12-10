@@ -213,7 +213,7 @@ PopupController.prototype = {
         this._renderActions(containerBottom, tabInfo);
         this._renderMessage(containerMain, tabInfo);
         this._renderStats(containerStats);
-        this._renderFooter(parent, tabInfo);
+        this._renderFooter(parent, tabInfo, this.options);
     },
 
     _getTemplate: function (id) {
@@ -721,14 +721,14 @@ PopupController.prototype = {
         container.appendChild(el);
     },
 
-    _renderFooter: function (footerContainer, tabInfo) {
+    _renderFooter: function (footerContainer, tabInfo, options) {
         if (tabInfo.adguardDetected) {
             this._appendTemplate(footerContainer, this.footerIntegration);
         } else {
             const defaultFooter = this.footerDefault;
             const getPremium = defaultFooter.querySelector('.popup-get-premium');
             const popupFooter = defaultFooter.querySelector('.popup-footer');
-            if (true) { // TODO check if notification was already closed or if it was closed from options window
+            if (!options.isDisableShowAdguardPromoInfo) {
                 getPremium.style.display = 'block';
                 popupFooter.style.display = 'none';
             } else {
@@ -786,13 +786,14 @@ PopupController.prototype = {
         // close popup get premium notification
         this._bindAction(parent, '.popup_get_premium_close', 'click', function (e) {
             e.preventDefault();
-            const footer = parent.querySelector('.footer');
-            const getPremium = footer.querySelector('.popup-get-premium');
-            const popupFooter = footer.querySelector('.popup-footer');
+            const getPremium = parent.querySelector('.popup-get-premium');
+            const popupFooter = parent.querySelector('.popup-footer');
             if (getPremium) {
                 getPremium.style.display = 'none';
                 popupFooter.style.display = 'block';
-                // TODO turn off get premium setting and don't show this notification anymore
+                popupPage.sendMessage({
+                    type: 'disableGetPremiumNotification',
+                });
             }
         });
         this._bindAction(parent, '.openFilteringLog', 'click', function (e) {
