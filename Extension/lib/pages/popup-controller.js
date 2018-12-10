@@ -117,31 +117,36 @@ PopupController.prototype = {
     },
 
     _renderPopup: function (tabInfo) {
-        var parent = document.querySelector('.widget-popup');
+        const parent = document.querySelector('.widget-popup');
 
-        var containerHeader = document.querySelector('.widget-popup__header');
+        const containerHeader = document.querySelector('.widget-popup__header');
         while (containerHeader.firstChild) {
             containerHeader.removeChild(containerHeader.firstChild);
         }
 
-        var footer = parent.querySelector('.footer');
+        const containerNotifications = document.querySelector('.widget-popup__notifications');
+        while (containerNotifications.firstChild) {
+            containerNotifications.removeChild(containerNotifications.firstChild);
+        }
+
+        const footer = parent.querySelector('.footer');
         if (footer) {
             footer.parentNode.removeChild(footer);
         }
 
-        var stack = parent.querySelector('.tabstack');
+        const stack = parent.querySelector('.tabstack');
 
-        var containerMain = parent.querySelector('.tab-main');
+        const containerMain = parent.querySelector('.tab-main');
         while (containerMain.firstChild) {
             containerMain.removeChild(containerMain.firstChild);
         }
 
-        var containerBottom = parent.querySelector('.tabstack-bottom.tab-main');
+        const containerBottom = parent.querySelector('.tabstack-bottom.tab-main');
         while (containerBottom.firstChild) {
             containerBottom.removeChild(containerBottom.firstChild);
         }
 
-        var containerStats = parent.querySelector('.tab-statistics');
+        const containerStats = parent.querySelector('.tab-statistics');
         while (containerStats.firstChild) {
             containerStats.removeChild(containerStats.firstChild);
         }
@@ -176,6 +181,7 @@ PopupController.prototype = {
         this.filteringHeader = this._getTemplate('filtering-header-template');
         this.filteringIntegrationHeader = this._getTemplate('filtering-integration-header-template');
         this.filteringDefaultHeader = this._getTemplate('filtering-default-header-template');
+        this.notificationTemplate = this._getTemplate('notification-template');
 
         // Controls
         this.filteringControlDefault = this._getTemplate('filtering-default-control-template');
@@ -200,6 +206,7 @@ PopupController.prototype = {
         this.footerIntegration = this._getTemplate('footer-integration-template');
 
         this._renderHeader(containerHeader, tabInfo);
+        this._renderNotificationBlock(containerNotifications, tabInfo, this.options);
         this._renderMain(containerMain, tabInfo);
         this._renderFilteringControls(containerMain, tabInfo);
         this._renderStatus(containerMain, tabInfo);
@@ -220,7 +227,7 @@ PopupController.prototype = {
     },
 
     _renderHeader: function (container, tabInfo) {
-        var template = this.filteringHeader;
+        const template = this.filteringHeader;
         if (tabInfo.adguardDetected) {
             const pauseButton = template.querySelector('.pause.changeProtectionStateDisable');
             if (pauseButton) {
@@ -232,6 +239,32 @@ PopupController.prototype = {
             }
         }
         this._appendTemplate(container, template);
+    },
+
+    _renderNotificationBlock: function (container, tabInfo, options) {
+        // Do not show notification if there is no notification
+        if (!options.notification && tabInfo.adguardDetected) {
+            return;
+        }
+
+        // Do not show notification if there is no localisation for it
+        const {
+            bgColor,
+            textColor,
+            text,
+        } = options.notification;
+
+        if (!text) {
+            return;
+        }
+
+        const notificationTitleNode = this.notificationTemplate.querySelector('.popup-notification__title');
+        notificationTitleNode.innerHTML = text;
+        this.notificationTemplate.setAttribute('style', `background: ${bgColor}, color: ${textColor}`);
+        container.appendChild(this.notificationTemplate);
+
+        // Schedule notification removal
+        popupPage.sendMessage({ type: 'setNotificationViewed', withDelay: true });
     },
 
     _renderMain: function (container, tabInfo) {
@@ -692,6 +725,16 @@ PopupController.prototype = {
         if (tabInfo.adguardDetected) {
             this._appendTemplate(footerContainer, this.footerIntegration);
         } else {
+            const defaultFooter = this.footerDefault;
+            const getPremium = defaultFooter.querySelector('.popup-get-premium');
+            const popupFooter = defaultFooter.querySelector('.popup-footer');
+            if (true) { // TODO check if notification was already closed or if it was closed from options window
+                getPremium.style.display = 'block';
+                popupFooter.style.display = 'none';
+            } else {
+                getPremium.style.display = 'none';
+                popupFooter.style.display = 'block';
+            }
             this._appendTemplate(footerContainer, this.footerDefault);
         }
     },
@@ -722,6 +765,35 @@ PopupController.prototype = {
             e.preventDefault();
             self.openAssistantInTab();
             popupPage.closePopup();
+        });
+        this._bindAction(parent, '.openNotificationLink', 'click', function (e) {
+            e.preventDefault();
+            const { url } = self.options.notification;
+            if (url) {
+                self.openLink(url);
+                popupPage.sendMessage({ type: 'setNotificationViewed', withDelay: false });
+                popupPage.closePopup();
+            }
+        });
+        this._bindAction(parent, '.closeNotification', 'click', function (e) {
+            e.preventDefault();
+            const notification = parent.querySelector('#popup-notification');
+            if (notification) {
+                notification.style.display = 'none';
+                popupPage.sendMessage({ type: 'setNotificationViewed', withDelay: false });
+            }
+        });
+        // close popup get premium notification
+        this._bindAction(parent, '.popup_get_premium_close', 'click', function (e) {
+            e.preventDefault();
+            const footer = parent.querySelector('.footer');
+            const getPremium = footer.querySelector('.popup-get-premium');
+            const popupFooter = footer.querySelector('.popup-footer');
+            if (getPremium) {
+                getPremium.style.display = 'none';
+                popupFooter.style.display = 'block';
+                // TODO turn off get premium setting and don't show this notification anymore
+            }
         });
         this._bindAction(parent, '.openFilteringLog', 'click', function (e) {
             e.preventDefault();

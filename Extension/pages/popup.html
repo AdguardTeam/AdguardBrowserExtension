@@ -22,6 +22,8 @@
 <div class="widget-popup">
     <div class="widget-popup__header">
     </div>
+    <div class="widget-popup__notifications">
+    </div>
     <div class="tabstack">
         <div class="tab-main tab-main--base active tab-switch-tab" tab-switch="main"></div>
         <div class="tab-statistics tab-switch-tab" tab-switch="statistics"></div>
@@ -41,6 +43,17 @@
 </div>
 
 <!--Templates-->
+
+<!-- Notification -->
+
+<div id="notification-template" style="display: none;">
+    <a href="" id="popup-notification" class="cf popup-notification">
+        <span class="openNotificationLink popup-notification__title"></span>
+        <span class="closeNotification popup-notification__close">
+            close
+        </span>
+    </a>
+</div>
 
 <!--Headers-->
 
@@ -134,28 +147,14 @@
 <!--Footer-->
 <div id="footer-default-template" style="display: none;">
     <div class="footer">
-        <!-- @if browser == "EDGE" -->
         <div class="popup-footer">
             <span>&copy; AdGuard 2009-2018</span>
         </div>
-        <!-- @endif -->
-        <!-- @if browser != "EDGE" -->
-        <div class="title" i18n="popup_adguard_other_os"></div>
-        <div class="platforms">
-            <a href="https://adguard.com/forward.html?action=windows_about&from=popup&app=browser_extension" target="_blank" i18n-title="popup_adguard_windows" class="popup-footer-link openLink">
-                <img src="images/windows.svg" alt="" class="icon-windows">
-            </a>
-            <a href="https://adguard.com/forward.html?action=mac_about&from=popup&app=browser_extension" target="_blank" i18n-title="popup_adguard_mac" class="popup-footer-link openLink">
-                <img src="images/mac_os.svg" alt="" class="icon-osx">
-            </a>
-            <a href="https://adguard.com/forward.html?action=android_about&from=popup&app=browser_extension" target="_blank" i18n-title="popup_adguard_android" class="popup-footer-link openLink">
-                <img src="images/android.svg" alt="" class="icon-android">
-            </a>
-            <a href="https://adguard.com/forward.html?action=ios_about&from=popup&app=browser_extension" target="_blank" i18n-title="popup_adguard_ios" class="popup-footer-link openLink">
-                <img src="images/apple.svg" alt="" class="icon-apple">
-            </a>
+        <div class="popup-get-premium" style="display: none">
+            <a i18n="popup_get_premium"
+               href="https://adguard.com/forward.html?action=adguard_site&from=popup&app=browser_extension"></a>
+            <a href="#" class="popup_get_premium_close">Close</a>
         </div>
-        <!-- @endif -->
     </div>
 </div>
 
