@@ -20,21 +20,47 @@
     'use strict';
 
     /**
+     * Filters unsupported rules from third-party sources
+     *
+     * @param ruleText
+     */
+    const filterUnsupportedRules = function (ruleText) {
+        // uBO HTML filters
+        if (ruleText.includes('##^')) {
+            return false;
+        }
+
+        // uBO scriptlet injections
+        if (ruleText.includes('##script:inject(') || ruleText.includes('##+js(')) {
+            return false;
+        }
+
+        // Check ABP-snippets
+        if (ruleText.includes('#$#')) {
+            if (/#\$#[a-zA-Z-_]+/.test(ruleText) || /#\$#[a-zA-Z-_]+\(.+\)/.test(ruleText)) {
+                return false;
+            }
+        }
+
+        return true;
+    };
+
+    /**
      * Method that parses rule text and creates object of a suitable class.
      *
      * @param ruleText Rule text
      * @param filterId Filter identifier
      * @returns Filter rule object. Either UrlFilterRule or CssFilterRule or ScriptFilterRule.
      */
-    var createRule = function (ruleText, filterId) {
+    const createRule = function (ruleText, filterId) {
 
         ruleText = ruleText ? ruleText.trim() : null;
         if (!ruleText) {
             return null;
         }
-        var rule = null;
+
         try {
-            var StringUtils = adguard.utils.strings;
+            const StringUtils = adguard.utils.strings;
 
             if (StringUtils.startWith(ruleText, api.FilterRule.COMMENT) ||
                 StringUtils.contains(ruleText, api.FilterRule.OLD_INJECT_RULES) ||
@@ -44,12 +70,16 @@
                 return null;
             }
 
+            if (!filterUnsupportedRules(ruleText)) {
+                return null;
+            }
+
             if (StringUtils.startWith(ruleText, api.FilterRule.MASK_WHITE_LIST)) {
                 return new api.UrlFilterRule(ruleText, filterId);
             }
 
             if (api.FilterRule.findRuleMarker(ruleText, api.ContentFilterRule.RULE_MARKERS, api.ContentFilterRule.RULE_MARKER_FIRST_CHAR)) {
-                var responseContentFilteringSupported = adguard.prefs.features && adguard.prefs.features.responseContentFilteringSupported;
+                let responseContentFilteringSupported = adguard.prefs.features && adguard.prefs.features.responseContentFilteringSupported;
                 if (!responseContentFilteringSupported) {
                     return null;
                 }
