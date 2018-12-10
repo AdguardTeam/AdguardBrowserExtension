@@ -580,34 +580,26 @@ var AntiBannerFilters = function (options) {
 
         let enabledFiltersNamesString;
         const length = enabledFiltersNames.length;
-        switch (true) {
-            case (length > namesDisplayCount): {
-                const displayNamesString = enabledFiltersNames.slice(0, namesDisplayCount).join(', ');
-                enabledFiltersNamesString = `${i18n.getMessage(
-                    'options_filters_enabled_and_more_divider',
-                    [displayNamesString, length - namesDisplayCount]
-                )}`;
-                break;
-            }
-            case (length > 1): {
-                const lastName = enabledFiltersNames.slice(length - 1);
-                const firstNames = enabledFiltersNames.slice(0, length - 1);
-                enabledFiltersNamesString = `${i18n.getMessage(
-                    'options_filters_enabled_and_divider',
-                    [firstNames.join(', '), lastName]
-                )}`;
-                break;
-            }
-            case (length === 1): {
-                enabledFiltersNamesString = enabledFiltersNames[0];
-                break;
-            }
-            default:
-                break;
+        if (length > namesDisplayCount) {
+            const displayNamesString = enabledFiltersNames.slice(0, namesDisplayCount).join(', ');
+            enabledFiltersNamesString = i18n.getMessage(
+                'options_filters_enabled_and_more_divider',
+                [displayNamesString, (length - namesDisplayCount).toString()]
+            );
+        } else if (length > 1) {
+            const lastName = enabledFiltersNames.slice(length - 1)[0];
+            const firstNames = enabledFiltersNames.slice(0, length - 1);
+            enabledFiltersNamesString = i18n.getMessage(
+                'options_filters_enabled_and_divider',
+                [firstNames.join(', '), lastName]
+            );
+        } else if (length === 1) {
+            enabledFiltersNamesString = enabledFiltersNames[0];
         }
-        enabledFiltersNamesString = length > 0 ?
-            `${i18n.getMessage('options_filters_enabled')} ${enabledFiltersNamesString}` :
-            `${i18n.getMessage('options_filters_no_enabled')}`;
+
+        enabledFiltersNamesString = length > 0
+            ? `${i18n.getMessage('options_filters_enabled')} ${enabledFiltersNamesString}`
+            : i18n.getMessage('options_filters_no_enabled');
         return enabledFiltersNamesString;
     }
 
