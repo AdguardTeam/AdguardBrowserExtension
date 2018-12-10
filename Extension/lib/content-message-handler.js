@@ -306,7 +306,7 @@
                 break;
             case 'getTabInfoForPopup':
                 adguard.tabs.getActive(function (tab) {
-                    var frameInfo = adguard.frames.getFrameInfo(tab);
+                    const frameInfo = adguard.frames.getFrameInfo(tab);
                     frameInfo.domainName = adguard.frames.getFrameDomain(tab);
                     callback({
                         frameInfo: frameInfo,
@@ -314,10 +314,14 @@
                             showStatsSupported: true,
                             isFirefoxBrowser: adguard.utils.browser.isFirefoxBrowser(),
                             isMacOs: adguard.utils.browser.isMacOs(),
+                            notification: adguard.notifications.getCurrentNotification(),
                         },
                     });
                 });
                 return true; // Async
+            case 'setNotificationViewed':
+                adguard.notifications.setNotificationViewed(message.withDelay);
+                break;
             case 'getStatisticsData':
                 callback({
                     stats: adguard.pageStats.getStatisticsData(),

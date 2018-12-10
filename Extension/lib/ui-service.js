@@ -109,24 +109,22 @@ adguard.ui = (function (adguard) { // jshint ignore:line
      * @param options Options for icon or badge values
      */
     function updateTabIcon(tab, options) {
+        let icon;
+        let badge;
+        let badgeColor = '#555';
 
         try {
-            var icon, badge;
-
             if (options) {
-
                 icon = options.icon;
                 badge = options.badge;
-
             } else {
+                let blocked;
+                let disabled;
 
-                var blocked;
-                var disabled;
-
-                var tabInfo = adguard.frames.getFrameInfo(tab);
+                const tabInfo = adguard.frames.getFrameInfo(tab);
                 if (tabInfo.adguardDetected) {
                     disabled = tabInfo.documentWhiteListed;
-                    blocked = "";
+                    blocked = '';
                 } else {
                     disabled = tabInfo.applicationFilteringDisabled;
                     disabled = disabled || tabInfo.urlFilteringDisabled;
@@ -135,11 +133,9 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                     if (!disabled && adguard.settings.showPageStatistic()) {
                         blocked = tabInfo.totalBlockedTab.toString();
                     } else {
-                        blocked = "0";
+                        blocked = '0';
                     }
                 }
-
-                badge = adguard.utils.workaround.getBlockedCountText(blocked);
 
                 if (disabled) {
                     icon = adguard.prefs.ICONS.ICON_GRAY;
@@ -148,9 +144,18 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                 } else {
                     icon = adguard.prefs.ICONS.ICON_GREEN;
                 }
+
+                badge = adguard.utils.workaround.getBlockedCountText(blocked);
+
+                // If there's an active notification, indicate it on the badge
+                const notification = adguard.notifications.getCurrentNotification();
+                if (notification && !tabInfo.adguardDetected) {
+                    badge = notification.badgeText;
+                    badgeColor = notification.badgeBgColor;
+                }
             }
 
-            adguard.browserAction.setBrowserAction(tab, icon, badge, "#555", browserActionTitle);
+            adguard.browserAction.setBrowserAction(tab, icon, badge, badgeColor, browserActionTitle);
         } catch (ex) {
             adguard.console.error('Error while updating icon for tab {0}: {1}', tab.tabId, new Error(ex));
         }
