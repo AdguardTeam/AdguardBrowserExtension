@@ -145,9 +145,10 @@ adguard.stealthService = (function (adguard) {
         const hideReferrer = adguard.settings.getProperty(adguard.settings.HIDE_REFERRER);
         if (hideReferrer) {
             adguard.console.debug('Remove referrer for third-party requests');
-            const isThirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, mainFrameUrl);
             const refHeader = adguard.utils.browser.findHeaderByName(requestHeaders, HEADERS.REFERRER);
-            if (refHeader && isThirdParty) {
+            if (refHeader &&
+                adguard.utils.url.isThirdPartyRequest(requestUrl, refHeader.value)) {
+
                 refHeader.value = requestUrl;
                 stealthActions |= STEALTH_ACTIONS.HIDE_REFERRER;
             }
