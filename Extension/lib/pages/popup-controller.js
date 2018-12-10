@@ -242,12 +242,11 @@ PopupController.prototype = {
     },
 
     _renderNotificationBlock: function (container, tabInfo, options) {
-        // Do not show notification if there is no notification
-        if (!options.notification && tabInfo.adguardDetected) {
+        // Do not show notification
+        if (!options.notification || tabInfo.adguardDetected) {
             return;
         }
 
-        // Do not show notification if there is no localisation for it
         const {
             bgColor,
             textColor,
