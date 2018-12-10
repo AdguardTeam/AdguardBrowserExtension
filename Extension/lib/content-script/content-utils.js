@@ -106,10 +106,15 @@
             descBlock = '';
         }
 
+        let titleBlock = '';
+        if (title && title.length > 0) {
+            titleBlock = `<div class="adguard-popup-alert__title">
+                            ${title}
+                        </div>`;
+        }
+
         return `<div class="adguard-popup-alert">
-                    <div class="adguard-popup-alert__title">
-                        ${title}
-                    </div>
+                    ${titleBlock}
                     ${descBlock}
                 </div>`;
     };
