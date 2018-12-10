@@ -123,7 +123,7 @@
     function showAlertPopup(message) {
         const { text, title, isAdguardTab } = message;
 
-        if (!title) {
+        if (!title && !text) {
             return;
         }
 
