@@ -431,7 +431,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         let text = '';
         if (success) {
             if (updatedFilters.length === 0) {
-                title = adguard.i18n.getMessage('options_popup_update_title_not_found');
+                title = '';
                 text = adguard.i18n.getMessage('options_popup_update_not_found');
             } else {
                 title = '';
