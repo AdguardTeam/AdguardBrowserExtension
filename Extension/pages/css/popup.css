@@ -551,9 +551,10 @@ a {
   width: 50%;
 }
 .footer {
+  position: relative;
   display: flex;
   align-items: center;
-  height: 50px;
+  height: 40px;
   padding: 0 20px;
   background-color: #fff;
 }
@@ -687,12 +688,20 @@ img .footer .platforms:first-child {
   float: right;
 }
 
-.widget-popup__notifications {
-  position: relative;
+.banner {
+  top: 0;
+  left: 0;
+  position: absolute;
+  z-index: 2;
+  width: 100%;
   background-color: #D58C14;
   padding: 0 15px;
 }
-.popup-notification {
+.banner--blue {
+  background-color: #294551;
+  z-index: 1;
+}
+.banner__in {
   color: #ffffff;
   text-decoration: none;
   font-size: 15px;
@@ -704,13 +713,28 @@ img .footer .platforms:first-child {
   display: block;
 }
 
-.popup-notification__close {
+.banner--blue .banner__in {
+  padding-left: 30px;
+  position: relative;
+}
+
+.banner--blue .banner__in:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: calc(50% - 9px);
+  width: 18px;
+  height: 18px;
+  background-image: url(../images/star.svg);
+}
+
+.banner__close {
   font-size: 0;
   background-image: url(../images/cross-white.svg);
   background-size: cover;
   width: 12px;
   height: 12px;
   position: absolute;
-  top: calc(50% - 8px);
+  top: calc(50% - 6px);
   right: 15px;
 }
