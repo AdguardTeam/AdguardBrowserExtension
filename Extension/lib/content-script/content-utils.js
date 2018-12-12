@@ -45,9 +45,15 @@
         const iframe = document.createElement('iframe');
         target.insertAdjacentElement('afterbegin', iframe);
         iframe.src = 'about:blank';
-        iframe.contentWindow.document.open();
-        iframe.contentWindow.document.write(html);
-        iframe.contentWindow.document.close();
+        if (navigator.userAgent.indexOf('Edge') > -1) {
+            // Edge doesn't allow to write html in iframe srcdoc
+            const iframedoc = iframe.contentDocument || iframe.contentWindow.document;
+            iframedoc.open();
+            iframedoc.write(html);
+            iframedoc.close();
+        } else {
+            iframe.srcdoc = html;
+        }
         iframe.style.zIndex = MAX_Z_INDEX;
         return iframe;
     };
@@ -100,10 +106,15 @@
             descBlock = '';
         }
 
+        let titleBlock = '';
+        if (title && title.length > 0) {
+            titleBlock = `<div class="adguard-popup-alert__title">
+                            ${title}
+                        </div>`;
+        }
+
         return `<div class="adguard-popup-alert">
-                    <div class="adguard-popup-alert__title">
-                        ${title}
-                    </div>
+                    ${titleBlock}
                     ${descBlock}
                 </div>`;
     };
@@ -117,7 +128,7 @@
     function showAlertPopup(message) {
         const { text, title, isAdguardTab } = message;
 
-        if (!title) {
+        if (!title && !text) {
             return;
         }
 
@@ -201,15 +212,21 @@
                                     ${offerButtonText}
                                 </a>
                             </div>
-                            <script>
-                                const close = document.querySelector('.adguard-update-popup__close');
-                                close.addEventListener('click', () => {
-                                    parent.postMessage({type: 'close.iframe'}, location.origin);
-                                });
-                            </script>
                             </body>`;
 
         const triesCount = 10;
+
+        const handleCloseBtn = (iframe) => {
+            let iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+            let closeBtn = iframeDocument.getElementById('adguard-new-version-popup-close');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    iframe.parentNode.removeChild(iframe);
+                });
+                return true;
+            }
+            return false;
+        };
 
         function appendPopup(count) {
             if (count >= triesCount) {
@@ -219,19 +236,12 @@
             if (document.body) {
                 const iframe = appendIframe(document.body, updateIframeHtml);
                 iframe.classList.add('adguard-update-iframe');
-
-                const iframeMessageHandler = (event) => {
-                    if (document.location.origin !== event.origin) {
-                        return;
-                    }
-                    const { data: { type } } = event;
-                    if (type && type === 'close.iframe') {
-                        iframe.parentNode.removeChild(iframe);
-                        window.removeEventListener('message', iframeMessageHandler);
-                    }
-                };
-
-                window.addEventListener('message', iframeMessageHandler, false);
+                const isListening = handleCloseBtn(iframe);
+                if (!isListening) {
+                    iframe.addEventListener('load', () => {
+                        handleCloseBtn(iframe);
+                    });
+                }
             } else {
                 setTimeout(function () {
                     appendPopup(count + 1);
