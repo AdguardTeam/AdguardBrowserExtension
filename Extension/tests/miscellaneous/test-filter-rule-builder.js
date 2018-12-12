@@ -1,0 +1,33 @@
+QUnit.test("Build Rules", function(assert) {
+    let rule = adguard.rules.builder.createRule('example.com', 0);
+    assert.ok(rule);
+    assert.ok(rule instanceof adguard.rules.UrlFilterRule);
+
+    rule = adguard.rules.builder.createRule('example.com$important', 0);
+    assert.ok(rule);
+    assert.ok(rule instanceof adguard.rules.UrlFilterRule);
+
+    adguard.prefs.features.responseContentFilteringSupported = true;
+
+    rule = adguard.rules.builder.createRule('example.org$$script[data-src="banner"]', 0);
+    assert.ok(rule);
+    assert.ok(rule instanceof adguard.rules.ContentFilterRule);
+
+    rule = adguard.rules.builder.createRule('example.org#%#window.__gaq = undefined;', 0);
+    assert.ok(rule);
+    assert.ok(rule instanceof adguard.rules.ScriptFilterRule);
+});
+
+QUnit.test("Unsupported rules", function(assert) {
+    let rule = adguard.rules.builder.createRule('#$#snippet_name(param, param)', 0);
+    assert.notOk(rule);
+
+    rule = adguard.rules.builder.createRule('example.com##^script:has-text(7c9e3a5d51cdacfc)', 0);
+    assert.notOk(rule);
+
+    rule = adguard.rules.builder.createRule('example.com##script:inject(yavli-defuser.js)', 0);
+    assert.notOk(rule);
+
+    rule = adguard.rules.builder.createRule('example.com##+js(yavli-defuser.js)', 0);
+    assert.notOk(rule);
+});

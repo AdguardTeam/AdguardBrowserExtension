@@ -192,7 +192,7 @@
 }
 
 .filters-list .filters-search img {
-  height: 30px;
+  height: 24px;
 }
 
 .filters-list .filters-search input {
@@ -201,6 +201,7 @@
   background: none;
   padding: 5px 0;
   font-size: 14px;
+  outline: none;
 }
 .filters-list--custom .title {
   word-break: break-all;
@@ -216,7 +217,7 @@
   font-size: 14px;
   border: 1px solid #E7E7E7;
   border-width: 0 0 1px 0;
-  padding: 10px 0;
+  padding: 24px 0;
   min-height: 80px;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -241,20 +242,8 @@
 .opts-list li .warn-message{
   color: #D6D6D6;
 }
-.opts-list li .opt-desc {
-    opacity: 0.5;
-}
-.opts-list li.active .opt-desc {
-    opacity: 1;
-}
 .opts-list li a{
   color: #D6D6D6;
-}
-.opts-list li.active {
-  color: #454545;
-}
-.opts-list li.active .opt-name__tag{
-  color: #66b574;
 }
 .opts-list li.active .warn-message{
   color: #e85037;
@@ -264,17 +253,18 @@
 }
 
 .opts-list .opt-name .title {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   padding-right: 30px;
-  line-height: 22px;
+  line-height: 19px;
 }
 .opts-list .opt-name .desc {
-  font-size: 13px;
-  margin-top: 10px;
+  font-size: 12px;
+  margin-top: 13px;
   font-weight: 400;
-  line-height: 19px;
+  line-height: 15px;
   padding-right: 60px;
+  color: #888888;
 }
 .opts-list .block-type {
   display: -webkit-box;
@@ -287,12 +277,6 @@
   cursor: pointer;
   text-decoration: none;
   padding-right: 70px;
-}
-.opts-list.ad-blocker li {
-  opacity: 0.5;
-}
-.opts-list.ad-blocker li.active {
-  opacity: 1;
 }
 .block-type__desc {
   display: flex;
@@ -340,15 +324,18 @@
 }
 
 .block-type__desc-title {
-  color: #66b574;
+  color: #888888;
   margin-bottom: 10px;
-  font-weight: bold;
+  font-size: 16px;
+}
+li.active .block-type__desc-title {
+  color: #4d4d4d;
 }
 .block-type:hover .block-type__desc-title {
   text-decoration: underline;
 }
 .desc--filters {
-  color: #4d4d4d;
+  color: #888888;
   font-size: 12px;
 }
 .opts-list .opt-state {
@@ -376,15 +363,28 @@
   margin-left: 0;
   margin-top: 10px;
 }
-.opts-list .opt-state .icon-home {
-  width: 18px;
-  height: 16px;
+.icon-home {
+  width: 14px;
+  height: 14px;
   background-repeat: no-repeat;
-  background-image: url(../images/home.svg);
+  background-image: url(../images/link.svg);
   background-size: contain;
-  margin-right: 15px;
-  margin-left: 15px;
+  margin-left: 8px;
   cursor: pointer;
+  display: inline-block;
+  position: relative;
+  top: 2px;
+}
+.remove-custom-filter-button {
+  font-size: 0;
+  margin-left: 8px;
+  cursor: pointer;
+  position: relative;
+  top: -5px;
+  background-image: url(../images/trash.svg);
+  width: 14px;
+  height: 17px;
+  display: inline-block;
 }
 .opt-state__link {
   text-decoration: none;
@@ -438,15 +438,6 @@
   margin-top: 2px;
   left: 2px;
 }
-.toggler:after {
-  content: '';
-  position: absolute;
-  top: -7px;
-  left: -25px;
-  width: 1px;
-  height: 33px;
-  background-color: #E7E7E7;
-}
 
 .toggler.on,
 li.active .toggler {
@@ -468,6 +459,9 @@ li.active .toggler:before {
   align-items: center;
   justify-content: flex-start;
   cursor: pointer;
+}
+.opts-list--filters .toggler-wr {
+  align-items: flex-start;
 }
 .settings-footer {
   margin-top: auto;
@@ -1078,7 +1072,8 @@ li.active .toggler:before {
   font-size: 14px;
   border-bottom: 2px solid #66b574;
   margin-bottom: 22px;
-  padding: 7px 0;
+  padding: 7px 8px;
+  outline: none;
 }
 
 .option-popup__desc {
@@ -1201,13 +1196,10 @@ li.active .toggler:before {
 }
 
 .opt-name__info {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-wrap: wrap;
-  flex-wrap: wrap;
-  padding-top: 10px;
   font-weight: 400;
+  font-size: 12px;
+  line-height: 15px;
+  color: #888888;
 }
 
 .opt-name__info-labels {
@@ -1241,6 +1233,7 @@ li.active .toggler:before {
   cursor: pointer;
   margin-right: 20px;
   margin-top: 10px;
+  color: #66b574;
 }
 
 .opt-name__tag:last-child {
@@ -1297,23 +1290,14 @@ li.active .toggler:before {
   display: flex;
   align-items: flex-end;
 }
-.opts-list li .remove-custom-filter-button {
-  font-size: 12px;
-  margin-left: 12px;
-  color: #df3812;
-  text-decoration: underline;
-  cursor: pointer;
-  position: relative;
-  top: -1px;
-  white-space: nowrap;
+
+.opts-list li .title {
+  font-size: 16px;
+  color: #888888;
 }
 
-.opts-list li .opt-name {
-  opacity: 0.5;
-}
-
-.opts-list li.active .opt-name {
-  opacity: 1;
+.opts-list li.active .title {
+  color: #4d4d4d;
 }
 
 .opt-input::-webkit-outer-spin-button,
