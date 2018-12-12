@@ -661,6 +661,7 @@ var AntiBannerFilters = function (options) {
                     <div class="title-wr">
                         <div class="title">
                             ${filter.name || filter.subscriptionUrl}
+                            <a class="icon-home" target="_blank" href="${filter.homepage || filter.subscriptionUrl}"></a>
                             ${deleteButton}
                         </div>
                     </div>
@@ -677,7 +678,6 @@ var AntiBannerFilters = function (options) {
                 </div>
                 <div class="opt-state">
                     <div class="preloader"></div>
-                    <a class="icon-home" target="_blank" href="${filter.homepage || filter.subscriptionUrl}"></a>
                     <div class="toggler-wr" role="checkbox" tabindex="0">
                         <input type="checkbox" name="filterId" value="${filter.filterId}" ${enabled ? 'checked="checked"' : ''}>
                     </div>
@@ -749,7 +749,7 @@ var AntiBannerFilters = function (options) {
                             <img src="images/magnifying-green.svg" alt="">
                         </div>
                     </div>
-                    <ul class="opts-list">
+                    <ul class="opts-list opts-list--filters">
                         ${filtersList}
                     </ul>
                 </div>
@@ -1501,7 +1501,7 @@ var Settings = function () {
     }
 
     const selectOptions = [
-        { name: i18n.getMessage('options_select_update_period_default'), value: Utils.hoursToMs(48) },
+        { name: i18n.getMessage('options_select_update_period_48h'), value: Utils.hoursToMs(48) },
         { name: i18n.getMessage('options_select_update_period_24h'), value: Utils.hoursToMs(24) },
         { name: i18n.getMessage('options_select_update_period_12h'), value: Utils.hoursToMs(12) },
         { name: i18n.getMessage('options_select_update_period_6h'), value: Utils.hoursToMs(6) },
@@ -1517,7 +1517,7 @@ var Settings = function () {
         }
 
         if (updatePeriod === 0) {
-            filtersUpdatePeriodSelect.parentNode.classList.remove('active')
+            filtersUpdatePeriodSelect.parentNode.classList.remove('active');
         } else {
             filtersUpdatePeriodSelect.parentNode.classList.add('active');
         }
