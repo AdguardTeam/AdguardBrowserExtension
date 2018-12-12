@@ -356,11 +356,13 @@ button, a, .control-buttons, select, span {
   width: 100%;
 }
 .actions .action {
-  padding: 9px 20px;
-  cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: flex-start;
+  padding: 9px 20px;
+  cursor: pointer;
   transition: 0.3s ease background-color;
+  max-height: 35px;
 
 }
 .actions .action:hover {
@@ -385,6 +387,10 @@ button, a, .control-buttons, select, span {
   padding-left: 15px;
   font-size: 13px;
   color: #4d4d4d;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 .cir-btn {
   padding: 0;
