@@ -125,7 +125,7 @@ PopupController.prototype = {
         }
 
         const footerContainer = parent.querySelector('.footer');
-        if (footerContainer) {
+        while (footerContainer.firstChild) {
             footerContainer.removeChild(footerContainer.firstChild);
         }
 
@@ -257,7 +257,10 @@ PopupController.prototype = {
 
         const notificationTitleNode = this.notification.querySelector('.popup-notification__title');
         notificationTitleNode.innerHTML = text;
-        this.notification.setAttribute('style', `background: ${bgColor}, color: ${textColor}`);
+        if (bgColor && textColor) {
+            const notification = this.notification.querySelector('.notice');
+            notification.setAttribute('style', `background-color: ${bgColor}; color: ${textColor}`);
+        }
         this._appendTemplate(container, this.notification);
 
         // Schedule notification removal
@@ -722,9 +725,9 @@ PopupController.prototype = {
         if (tabInfo.adguardDetected) {
             this._appendTemplate(footerContainer, this.footerIntegration);
         } else {
-            const defaultFooter = this.footerDefault;
-            const getPremium = defaultFooter.querySelector('.popup-get-premium');
-            const popupFooter = defaultFooter.querySelector('.popup-footer');
+            const footerDefault = this.footerDefault;
+            const getPremium = footerDefault.querySelector('.popup-get-premium');
+            const popupFooter = footerDefault.querySelector('.popup-footer');
             if (!options.isDisableShowAdguardPromoInfo) {
                 getPremium.style.display = 'block';
                 popupFooter.style.display = 'none';
@@ -732,7 +735,7 @@ PopupController.prototype = {
                 getPremium.style.display = 'none';
                 popupFooter.style.display = 'block';
             }
-            this._appendTemplate(footerContainer, defaultFooter);
+            this._appendTemplate(footerContainer, footerDefault);
         }
     },
 
