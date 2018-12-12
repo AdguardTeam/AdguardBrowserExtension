@@ -426,6 +426,11 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         });
     }
 
+    // TODO remove this line before merge
+    setTimeout(() => {
+        showVersionUpdatedPopup('3.0.0', '2.10.0');
+    }, 5000);
+
     function getFiltersUpdateResultMessage(success, updatedFilters) {
         let title = '';
         let text = '';
