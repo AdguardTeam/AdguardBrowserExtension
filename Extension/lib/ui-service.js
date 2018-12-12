@@ -500,7 +500,9 @@ adguard.ui = (function (adguard) { // jshint ignore:line
      * @param hashParameters
      */
     var openSettingsTab = function (anchor, hashParameters = {}) {
-        hashParameters.anchor = anchor;
+        if (anchor) {
+            hashParameters.anchor = anchor;
+        }
 
         const options = {
             activateSameTab: true,
