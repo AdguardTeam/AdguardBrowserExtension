@@ -327,9 +327,24 @@
 
         <div id="privacy" class="settings-content tab-pane">
             <div class="page-title" i18n="options_privacy_title"></div>
-            <div class="setting-desc setting-desc--sub" i18n="options_privacy_desc"></div>
             <div class="settings-body">
-                <div class="opts-list">
+                <ul class="opts-list">
+                    <li class="active">
+                        <div class="opt-desc">
+                            <label tabindex="0" for="disable_stealth_mode" class="title" i18n="options_privacy_title"></label>
+                            <div class="opt-state">
+                                <span class="sp-table-row-info desc" i18n="options_privacy_desc"></span>
+                            </div>
+                        </div>
+                        <div class="opt-state">
+                            <div class="toggler-wr" role="checkbox" aria-checked="true" tabindex="0">
+                                <input type="checkbox" class="sp-table-row-input" id="disable_stealth_mode"/>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <div class="subtitle settings-body-subtitle" i18n="options_miscellaneous_title"></div>
+                <ul class="opts-list">
                     <li>
                         <div class="opt-desc">
                             <label tabindex="0" for="hide_referrer" class="title" i18n="options_hide_referrer_title"></label>
@@ -395,7 +410,7 @@
                             </div>
                         </div>
                     </li>
-                </div>
+                </ul>
                 <div class="subtitle settings-body-subtitle" i18n="options_cookies_title"></div>
                 <div class="opts-list">
                     <li>

@@ -1454,6 +1454,7 @@ var Settings = function () {
     checkboxes.push(new Checkbox('#integrationModeCheckbox', userSettings.names.DISABLE_INTEGRATION_MODE, {negate: true}));
 
     // Privacy settings
+    checkboxes.push(new Checkbox('#disable_stealth_mode', userSettings.names.DISABLE_STEALTH_MODE));
     checkboxes.push(new Checkbox('#hide_referrer', userSettings.names.HIDE_REFERRER));
     checkboxes.push(new Checkbox('#hide_search_queries', userSettings.names.HIDE_SEARCH_QUERIES));
     checkboxes.push(new Checkbox('#send_not_track', userSettings.names.SEND_DO_NOT_TRACK));
