@@ -255,7 +255,7 @@ PopupController.prototype = {
             return;
         }
 
-        const notificationTitleNode = this.notification.querySelector('.popup-notification__title');
+        const notificationTitleNode = this.notification.querySelector('.openNotificationLink');
         notificationTitleNode.innerHTML = text;
         if (bgColor && textColor) {
             const notification = this.notification.querySelector('.notice');
