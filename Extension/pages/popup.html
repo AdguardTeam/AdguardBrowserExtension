@@ -22,8 +22,6 @@
 <div class="widget-popup">
     <div class="widget-popup__header">
     </div>
-    <div class="widget-popup__notifications">
-    </div>
     <div class="tabstack">
         <div class="tab-main tab-main--base active tab-switch-tab" tab-switch="main"></div>
         <div class="tab-statistics tab-switch-tab" tab-switch="statistics"></div>
@@ -43,17 +41,6 @@
 </div>
 
 <!--Templates-->
-
-<!-- Notification -->
-
-<div class="banner" id="notification-template" style="display: none;">
-    <a href="" class="banner__in" id="popup-notification" class="cf popup-notification">
-        <span class="openNotificationLink popup-notification__title"></span>
-        <span class="closeNotification popup-notification__close banner__close">
-            close
-        </span>
-    </a>
-</div>
 
 <!--Headers-->
 
@@ -153,7 +140,7 @@
         <div class="popup-get-premium banner banner--blue" style="display: none">
             <a i18n="popup_get_premium" class="banner__in"
                href="https://adguard.com/forward.html?action=adguard_site&from=popup&app=browser_extension"></a>
-            <a class="banner__close" href="#" class="popup_get_premium_close">Close</a>
+            <a class="banner__close popup_get_premium_close" href="#">Close</a>
         </div>
     </div>
 </div>
@@ -163,6 +150,17 @@
         <!--TODO url in popup_adguard_footer_integration must be change soon-->
         <div class="title-integration" i18n="popup_adguard_footer_integration"></div>
     </div>
+</div>
+
+<!-- Notification -->
+
+<div class="banner" id="notification-template" style="display: none;">
+    <a href="" class="banner__in cf popup-notification" id="popup-notification">
+        <span class="openNotificationLink popup-notification__title"></span>
+        <span class="closeNotification popup-notification__close banner__close">
+            close
+        </span>
+    </a>
 </div>
 
 </body>

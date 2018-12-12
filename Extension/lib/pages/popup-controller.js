@@ -124,11 +124,6 @@ PopupController.prototype = {
             containerHeader.removeChild(containerHeader.firstChild);
         }
 
-        const containerNotifications = document.querySelector('.widget-popup__notifications');
-        while (containerNotifications.firstChild) {
-            containerNotifications.removeChild(containerNotifications.firstChild);
-        }
-
         const footer = parent.querySelector('.footer');
         if (footer) {
             footer.parentNode.removeChild(footer);
@@ -181,7 +176,6 @@ PopupController.prototype = {
         this.filteringHeader = this._getTemplate('filtering-header-template');
         this.filteringIntegrationHeader = this._getTemplate('filtering-integration-header-template');
         this.filteringDefaultHeader = this._getTemplate('filtering-default-header-template');
-        this.notificationTemplate = this._getTemplate('notification-template');
 
         // Controls
         this.filteringControlDefault = this._getTemplate('filtering-default-control-template');
@@ -205,8 +199,10 @@ PopupController.prototype = {
         this.footerDefault = this._getTemplate('footer-default-template');
         this.footerIntegration = this._getTemplate('footer-integration-template');
 
+        // Notification
+        this.notification = this._getTemplate('notification-template');
+
         this._renderHeader(containerHeader, tabInfo);
-        this._renderNotificationBlock(containerNotifications, tabInfo, this.options);
         this._renderMain(containerMain, tabInfo);
         this._renderFilteringControls(containerMain, tabInfo);
         this._renderStatus(containerMain, tabInfo);
@@ -214,6 +210,7 @@ PopupController.prototype = {
         this._renderMessage(containerMain, tabInfo);
         this._renderStats(containerStats);
         this._renderFooter(parent, tabInfo, this.options);
+        this._renderNotificationBlock(parent, tabInfo, this.options);
     },
 
     _getTemplate: function (id) {
@@ -257,10 +254,10 @@ PopupController.prototype = {
             return;
         }
 
-        const notificationTitleNode = this.notificationTemplate.querySelector('.popup-notification__title');
+        const notificationTitleNode = this.notification.querySelector('.popup-notification__title');
         notificationTitleNode.innerHTML = text;
-        this.notificationTemplate.setAttribute('style', `background: ${bgColor}, color: ${textColor}`);
-        container.appendChild(this.notificationTemplate);
+        this.notification.setAttribute('style', `background: ${bgColor}, color: ${textColor}`);
+        this._appendTemplate(container, this.notification);
 
         // Schedule notification removal
         popupPage.sendMessage({ type: 'setNotificationViewed', withDelay: true });
@@ -734,7 +731,7 @@ PopupController.prototype = {
                 getPremium.style.display = 'none';
                 popupFooter.style.display = 'block';
             }
-            this._appendTemplate(footerContainer, this.footerDefault);
+            this._appendTemplate(footerContainer, defaultFooter);
         }
     },
 
