@@ -369,9 +369,9 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
     const isAdguardTab = (tab) => {
         const { url } = tab;
-        const appId = adguard.app.getId();
+        const parsedUrl = new URL(url);
         const schemeUrl = adguard.app.getUrlScheme();
-        return url.indexOf(appId) > -1 && url.indexOf(schemeUrl) > -1;
+        return parsedUrl.protocol.indexOf(schemeUrl) > -1;
     };
 
     function showAlertMessagePopup(title, text, showForAdguardTab) {
@@ -427,30 +427,37 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     }
 
     function getFiltersUpdateResultMessage(success, updatedFilters) {
-        var title = '';
-        var text = [];
+        let title = '';
+        let text = '';
         if (success) {
             if (updatedFilters.length === 0) {
-                title = adguard.i18n.getMessage('options_popup_update_title_not_found');
-                text.push(adguard.i18n.getMessage('options_popup_update_not_found'));
+                title = '';
+                text = adguard.i18n.getMessage('options_popup_update_not_found');
             } else {
-                title = adguard.i18n.getMessage('options_popup_update_title');
-                updatedFilters.sort(function (a, b) {
-                    return a.displayNumber - b.displayNumber;
-                });
-                for (var i = 0; i < updatedFilters.length; i++) {
-                    var filter = updatedFilters[i];
-                    text.push(adguard.i18n.getMessage('options_popup_update_updated', [filter.name, filter.version]).replace("$1", filter.name).replace("$2", filter.version));
+                title = '';
+                text = updatedFilters
+                    .sort((a, b) => {
+                        if (a.groupId === b.groupId) {
+                            return a.displayNumber - b.displayNumber;
+                        }
+                        return a.groupId === b.groupId;
+                    })
+                    .map(filter => `"${filter.name}"`)
+                    .join(', ');
+                if (updatedFilters.length > 1) {
+                    text += ` ${adguard.i18n.getMessage('options_popup_update_filters')}`;
+                } else {
+                    text += ` ${adguard.i18n.getMessage('options_popup_update_filter')}`;
                 }
             }
         } else {
-            title = adguard.i18n.getMessage("options_popup_update_title_error");
-            text.push(adguard.i18n.getMessage("options_popup_update_error"));
+            title = adguard.i18n.getMessage('options_popup_update_title_error');
+            text = adguard.i18n.getMessage('options_popup_update_error');
         }
 
         return {
             title: title,
-            text: text
+            text: text,
         };
     }
 
@@ -528,7 +535,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             },
         ];
 
-        return stealthOptions.map(option => {
+        const stealthOptionsString = stealthOptions.map(option => {
             const { queryKey, settingKey, settingValueKey } = option;
             const setting = adguard.settings.getProperty(settingKey);
             let settingString;
@@ -544,6 +551,12 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         })
             .filter(string => string.length > 0)
             .join('&');
+
+        if (stealthOptionsString.length > 0) {
+            return 'true&' + stealthOptionsString;
+        }
+
+        return 'false';
     };
 
     /**
@@ -571,7 +584,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             + (browserDetails ? '&browser_detail=' + encodeURIComponent(browserDetails) : '')
             + '&url=' + encodeURIComponent(url)
             + '&filters=' + encodeURIComponent(filterIds.join('.'))
-            + '&stealth.enabled=true&' + getStealthString());
+            + '&stealth.enabled=' + getStealthString());
     };
 
     var openFilteringLog = function (tabId) {
@@ -875,7 +888,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         }
     });
 
-    //on application updated event
+    // on application updated event
     adguard.listeners.addListener(function (event, info) {
         if (event === adguard.listeners.APPLICATION_UPDATED) {
             if (adguard.settings.isShowAppUpdatedNotification()) {
@@ -884,7 +897,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         }
     });
 
-    //on filter auto-enabled event
+    // on filter auto-enabled event
     adguard.listeners.addListener(function (event, enabledFilters) {
         if (event === adguard.listeners.ENABLE_FILTER_SHOW_POPUP) {
             var result = getFiltersEnabledResultMessage(enabledFilters);
@@ -892,7 +905,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         }
     });
 
-    //on filters updated event
+    // on filters updated event
     adguard.listeners.addListener(function (event, success, updatedFilters) {
         if (event === adguard.listeners.UPDATE_FILTERS_SHOW_POPUP) {
             const result = getFiltersUpdateResultMessage(success, updatedFilters);
@@ -900,7 +913,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         }
     });
 
-    //close all page on unload
+    // close all page on unload
     adguard.unload.when(closeAllPages);
 
     return {
