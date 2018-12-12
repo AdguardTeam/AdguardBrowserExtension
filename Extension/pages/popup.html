@@ -132,27 +132,31 @@
 </div>
 
 <!--Footer-->
-<div class="footer" id="footer-default-template">
-    <!-- @if browser == "EDGE" -->
-    <a href="https://adguard.com/forward.html?action=adguard_site_popup&from=popup&app=browser_extension" class="popup-footer">
-        <span>&copy; AdGuard 2009-2018</span>
-    </a>
-    <!-- @endif -->
-    <!-- @if browser != "EDGE" -->
-    <div class="title" i18n="popup_adguard_other_os"></div>
-    <div class="platforms">
-        <a href="https://adguard.com/forward.html?action=android_about&from=popup&app=browser_extension" target="_blank" i18n-title="popup_adguard_android" class="popup-footer-link openLink">
-            <img src="images/android.svg" alt="" class="icon-android">
-        </a>
-        <a href="https://adguard.com/forward.html?action=ios_about&from=popup&app=browser_extension" target="_blank" i18n-title="popup_adguard_ios" class="popup-footer-link openLink">
-            <img src="images/apple.svg" alt="" class="icon-apple">
-        </a>
-    </div>
-    <!-- @endif -->
-    <div class="popup-get-premium banner banner--blue" style="display: none">
-        <a i18n="popup_get_premium" class="banner__in"
-           href="https://adguard.com/forward.html?action=adguard_site&from=popup&app=browser_extension"></a>
-        <a class="banner__close popup_get_premium_close" href="#">Close</a>
+<div id="footer-default-template" style="display: none;">
+    <div class="footer">
+        <!-- @if browser == "EDGE" -->
+        <div class="popup-footer">
+            <span>&copy; AdGuard 2009-2018</span>
+        </div>
+        <!-- @endif -->
+        <!-- @if browser != "EDGE" -->
+        <div class="popup-footer">
+            <span i18n="popup_adguard_footer_title"></span>
+        </div>
+        <div class="platforms">
+            <a href="https://adguard.com/forward.html?action=android_about&from=popup&app=browser_extension" target="_blank" i18n-title="popup_adguard_android" class="popup-footer-link openLink">
+                <img src="images/android.svg" alt="" class="icon-android">
+            </a>
+            <a href="https://adguard.com/forward.html?action=ios_about&from=popup&app=browser_extension" target="_blank" i18n-title="popup_adguard_ios" class="popup-footer-link openLink">
+                <img src="images/apple.svg" alt="" class="icon-apple">
+            </a>
+        </div>
+        <div class="popup-get-premium banner banner--blue" style="display: none">
+            <a i18n="popup_get_premium" class="banner__in"
+               href="https://adguard.com/forward.html?action=adguard_site&from=popup&app=browser_extension"></a>
+            <a class="banner__close popup_get_premium_close" href="#">Close</a>
+        </div>
+        <!-- @endif -->
     </div>
 </div>
 
