@@ -124,9 +124,9 @@ PopupController.prototype = {
             containerHeader.removeChild(containerHeader.firstChild);
         }
 
-        const footer = parent.querySelector('.footer');
-        if (footer) {
-            footer.parentNode.removeChild(footer);
+        const footerContainer = parent.querySelector('.footer');
+        if (footerContainer) {
+            footerContainer.removeChild(footerContainer.firstChild);
         }
 
         const stack = parent.querySelector('.tabstack');
@@ -209,8 +209,9 @@ PopupController.prototype = {
         this._renderActions(containerBottom, tabInfo);
         this._renderMessage(containerMain, tabInfo);
         this._renderStats(containerStats);
-        this._renderFooter(parent, tabInfo, this.options);
-        this._renderNotificationBlock(parent, tabInfo, this.options);
+        this._renderFooter(footerContainer, tabInfo, this.options);
+        this._renderNotificationBlock(footerContainer, tabInfo, this.options);
+
     },
 
     _getTemplate: function (id) {

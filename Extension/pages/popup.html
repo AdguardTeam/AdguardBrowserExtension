@@ -38,6 +38,9 @@
             </ul>
         </div>
     </div>
+    <div class="footer">
+
+    </div>
 </div>
 
 <!--Templates-->
@@ -133,7 +136,7 @@
 
 <!--Footer-->
 <div id="footer-default-template" style="display: none;">
-    <div class="footer">
+    <div class="footer__default">
         <!-- @if browser == "EDGE" -->
         <div class="popup-footer">
             <span>&copy; AdGuard 2009-2018</span>
@@ -161,7 +164,7 @@
 </div>
 
 <div id="footer-integration-template" style="display: none;">
-    <div class="footer integration">
+    <div class="footer__integration">
         <!--TODO url in popup_adguard_footer_integration must be change soon-->
         <div class="title-integration" i18n="popup_adguard_footer_integration"></div>
     </div>
@@ -169,13 +172,15 @@
 
 <!-- Notification -->
 
-<div class="banner" id="notification-template" style="display: none;">
-    <a href="" class="banner__in cf popup-notification" id="popup-notification">
-        <span class="openNotificationLink popup-notification__title"></span>
-        <span class="closeNotification popup-notification__close banner__close">
+<div id="notification-template" style="display: none;">
+    <div class="banner">
+        <a href="" class="banner__in cf popup-notification" id="popup-notification">
+            <span class="openNotificationLink popup-notification__title"></span>
+            <span class="closeNotification popup-notification__close banner__close">
             close
         </span>
-    </a>
+        </a>
+    </div>
 </div>
 
 </body>
