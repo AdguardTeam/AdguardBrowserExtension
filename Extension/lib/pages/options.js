@@ -344,6 +344,13 @@ var WhiteListFilter = function (options) {
     const session = editor.getSession();
     let initialChangeFired = false;
     session.addEventListener('change', () => {
+        // Do no let user export empty whitelist rules
+        if (session.getValue().length > 0) {
+            exportWhiteListBtn.classList.remove('disabled');
+        } else {
+            exportWhiteListBtn.classList.add('disabled');
+        }
+
         if (!initialChangeFired && hasContent) {
             initialChangeFired = true;
             return;
@@ -368,6 +375,9 @@ var WhiteListFilter = function (options) {
 
     exportWhiteListBtn.addEventListener('click', (event) => {
         event.preventDefault();
+        if (exportWhiteListBtn.classList.contains('disabled')) {
+            return;
+        }
         contentPage.sendMessage({ type: 'openExportRulesTab', whitelist: true });
     });
 
@@ -431,6 +441,15 @@ const UserFilter = function () {
     const importUserFiltersBtn = document.querySelector('#userFiltersImport');
     const exportUserFiltersBtn = document.querySelector('#userFiltersExport');
 
+    // Do not let to export empty user filter
+    session.addEventListener('change', () => {
+        if (session.getValue().length > 0) {
+            exportUserFiltersBtn.classList.remove('disabled');
+        } else {
+            exportUserFiltersBtn.classList.add('disabled');
+        }
+    });
+
     importUserFiltersBtn.addEventListener('click', function (event) {
         event.preventDefault();
         importUserFiltersInput.click();
@@ -440,6 +459,9 @@ const UserFilter = function () {
 
     exportUserFiltersBtn.addEventListener('click', function (event) {
         event.preventDefault();
+        if (exportUserFiltersBtn.classList.contains('disabled')) {
+            return;
+        }
         contentPage.sendMessage({ type: 'openExportRulesTab', whitelist: false });
     });
 
