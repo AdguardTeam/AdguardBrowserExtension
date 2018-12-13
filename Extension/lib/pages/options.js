@@ -1439,7 +1439,7 @@ var Settings = function () {
     checkboxes.push(new Checkbox('#useOptimizedFilters', userSettings.names.USE_OPTIMIZED_FILTERS));
     checkboxes.push(new Checkbox('#showPageStatisticCheckbox', userSettings.names.DISABLE_SHOW_PAGE_STATS, {
         negate: true,
-        hidden: environmentOptions.Prefs.mobile
+        hidden: environmentOptions.Prefs.mobile,
     }));
     checkboxes.push(new Checkbox('#enableShowContextMenu', userSettings.names.DISABLE_SHOW_CONTEXT_MENU, {
         negate: true,
@@ -1454,7 +1454,7 @@ var Settings = function () {
     checkboxes.push(new Checkbox('#integrationModeCheckbox', userSettings.names.DISABLE_INTEGRATION_MODE, {negate: true}));
 
     // Privacy settings
-    checkboxes.push(new Checkbox('#disable_stealth_mode', userSettings.names.DISABLE_STEALTH_MODE));
+    checkboxes.push(new Checkbox('#disable_stealth_mode', userSettings.names.DISABLE_STEALTH_MODE, { negate: true }));
     checkboxes.push(new Checkbox('#hide_referrer', userSettings.names.HIDE_REFERRER));
     checkboxes.push(new Checkbox('#hide_search_queries', userSettings.names.HIDE_SEARCH_QUERIES));
     checkboxes.push(new Checkbox('#send_not_track', userSettings.names.SEND_DO_NOT_TRACK));

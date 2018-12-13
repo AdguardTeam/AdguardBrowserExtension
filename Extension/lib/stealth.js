@@ -142,7 +142,7 @@ adguard.stealthService = (function (adguard) {
         let stealthActions = 0;
 
         // Remove referrer for third-party requests
-        const hideReferrer = adguard.settings.getProperty(adguard.settings.HIDE_REFERRER);
+        const hideReferrer = adguard.settings.getStealthSettingValue(adguard.settings.HIDE_REFERRER);
         if (hideReferrer) {
             adguard.console.debug('Remove referrer for third-party requests');
             const refHeader = adguard.utils.browser.findHeaderByName(requestHeaders, HEADERS.REFERRER);
@@ -156,7 +156,7 @@ adguard.stealthService = (function (adguard) {
 
         // Hide referrer in case of search engine is referrer
         const isMainFrame = requestType === adguard.RequestTypes.DOCUMENT;
-        const hideSearchQueries = adguard.settings.getProperty(adguard.settings.HIDE_SEARCH_QUERIES);
+        const hideSearchQueries = adguard.settings.getStealthSettingValue(adguard.settings.HIDE_SEARCH_QUERIES);
         if (hideSearchQueries && isMainFrame) {
             adguard.console.debug('Hide referrer in case of search engine is referrer');
             const refHeader = adguard.utils.browser.findHeaderByName(requestHeaders, HEADERS.REFERRER);
@@ -170,7 +170,7 @@ adguard.stealthService = (function (adguard) {
         }
 
         // Remove X-Client-Data header
-        const blockChromeClientData = adguard.settings.getProperty(adguard.settings.BLOCK_CHROME_CLIENT_DATA);
+        const blockChromeClientData = adguard.settings.getStealthSettingValue(adguard.settings.BLOCK_CHROME_CLIENT_DATA);
         if (blockChromeClientData) {
             adguard.console.debug('Remove X-Client-Data header');
             if (adguard.utils.browser.removeHeader(requestHeaders, HEADERS.X_CLIENT_DATA)) {
@@ -179,7 +179,7 @@ adguard.stealthService = (function (adguard) {
         }
 
         // Adding Do-Not-Track (DNT) header
-        const sendDoNotTrack = adguard.settings.getProperty(adguard.settings.SEND_DO_NOT_TRACK);
+        const sendDoNotTrack = adguard.settings.getStealthSettingValue(adguard.settings.SEND_DO_NOT_TRACK);
         if (sendDoNotTrack) {
             adguard.console.debug('Adding Do-Not-Track (DNT) header');
             requestHeaders.push(HEADER_VALUES.DO_NOT_TRACK);
@@ -215,12 +215,12 @@ adguard.stealthService = (function (adguard) {
         adguard.console.debug('Stealth service lookup cookie rules for {0}', requestUrl);
 
         // Remove cookie header for first-party requests
-        const blockCookies = adguard.settings.getProperty(adguard.settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES);
+        const blockCookies = adguard.settings.getStealthSettingValue(adguard.settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES);
         if (blockCookies) {
             result.push(generateRemoveRule(adguard.settings.getProperty(adguard.settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME)));
         }
 
-        const blockThirdPartyCookies = adguard.settings.getProperty(adguard.settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES);
+        const blockThirdPartyCookies = adguard.settings.getStealthSettingValue(adguard.settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES);
         if (!blockThirdPartyCookies) {
             adguard.console.debug('Stealth service processed lookup cookie rules for {0}', requestUrl);
             return result;
@@ -275,7 +275,7 @@ adguard.stealthService = (function (adguard) {
             }
         };
 
-        const webRTCDisabled = adguard.settings.isWebRTCDisabled();
+        const webRTCDisabled = adguard.settings.getStealthSettingValue(adguard.settings.BLOCK_WEBRTC);
 
         // Deprecated since Chrome 48
         if (typeof browser.privacy.network.webRTCMultipleRoutesEnabled === 'object') {
@@ -320,7 +320,8 @@ adguard.stealthService = (function (adguard) {
     };
 
     adguard.settings.onUpdated.addListener(function (setting) {
-        if (setting === adguard.settings.BLOCK_WEBRTC) {
+        if (setting === adguard.settings.BLOCK_WEBRTC
+            || setting === adguard.settings.DISABLE_STEALTH_MODE) {
             handleWebRTCDisabled();
         }
     });
