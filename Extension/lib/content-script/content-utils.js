@@ -189,6 +189,7 @@
             offer,
             offerButtonHref,
             offerButtonText,
+            disableNotificationText,
         } = message;
 
         const updateIframeHtml = `<head></head>
@@ -205,9 +206,8 @@
                                 <a href="${changelogHref}" class="adguard-update-popup__link close-iframe" target="_blank">
                                     ${changelogText}
                                 </a>
-                                <a href="#" class="adguard-update-popup__link close-iframe disable-notifications" target="_blank">
-                                    <!-- TODO add translations and handler -->
-                                    Disable notifications
+                                <a href="#" class="adguard-update-popup__link close-iframe disable-notifications">
+                                    ${disableNotificationText}
                                 </a>
                                 <div class="adguard-update-popup__offer">
                                     ${offer}
@@ -226,6 +226,14 @@
             if (closeElements.length > 0) {
                 closeElements.forEach(element => {
                     element.addEventListener('click', () => {
+                        if (element.classList.contains('disable-notifications')) {
+                            // disable update notifications
+                            contentPage.sendMessage({
+                                type: 'changeUserSetting',
+                                key: 'show-app-updated-disabled',
+                                value: true,
+                            });
+                        }
                         // Remove iframe after click event fire on link
                         setTimeout(() => {
                             iframe.parentNode.removeChild(iframe);
