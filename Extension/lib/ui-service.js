@@ -423,6 +423,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         };
 
         adguard.tabs.getActive(function (tab) {
+            message.isAdguardTab = isAdguardTab(tab);
             adguard.tabs.sendMessage(tab.tabId, message);
         });
     }
