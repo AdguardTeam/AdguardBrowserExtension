@@ -419,6 +419,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             offer: adguard.i18n.getMessage('options_popup_version_update_offer'),
             offerButtonHref: 'https://adguard.com/forward.html?action=github_version_site&from=version_popup&app=browser_extension',
             offerButtonText: adguard.i18n.getMessage('options_popup_version_update_offer_button_text'),
+            disableNotificationText: adguard.i18n.getMessage('options_popup_version_update_disable_notification'),
         };
 
         adguard.tabs.getActive(function (tab) {
