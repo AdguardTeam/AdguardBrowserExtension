@@ -152,19 +152,6 @@ adguard.settings = (function (adguard) {
     };
 
     /**
-     * Returns stealth setting current value, considering if global stealth setting is enabled
-     * @param stealthSettingName
-     * @returns {boolean}
-     */
-    const getStealthSettingValue = (stealthSettingName) => {
-        const stealthDisabled = getProperty(settings.DISABLE_STEALTH_MODE);
-        if (stealthDisabled) {
-            return false;
-        }
-        return getProperty(stealthSettingName);
-    };
-
-    /**
      * True if filtering is disabled globally.
      *
      * @returns {boolean} true if disabled
@@ -312,7 +299,6 @@ adguard.settings = (function (adguard) {
     api.setFiltersUpdatePeriod = setFiltersUpdatePeriod;
     api.isIntegrationModeEnabled = isIntegrationModeEnabled;
     api.changeIntegrationModeEnabled = changeIntegrationModeEnabled;
-    api.getStealthSettingValue = getStealthSettingValue;
 
     return api;
 
