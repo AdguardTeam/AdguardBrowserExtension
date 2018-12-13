@@ -203,12 +203,14 @@
                                 <div class="adguard-update-popup__desc">
                                     ${description}
                                 </div>
-                                <a href="${changelogHref}" class="adguard-update-popup__link close-iframe" target="_blank">
-                                    ${changelogText}
-                                </a>
-                                <a href="#" class="adguard-update-popup__link close-iframe disable-notifications">
-                                    ${disableNotificationText}
-                                </a>
+                                <div class="adguard-update-popup__links">
+                                    <a href="${changelogHref}" class="adguard-update-popup__link close-iframe" target="_blank">
+                                        ${changelogText}
+                                    </a>
+                                    <a href="#" class="adguard-update-popup__link adguard-update-popup__link--disable close-iframe disable-notifications">
+                                        ${disableNotificationText}
+                                    </a>
+                                </div>
                                 <div class="adguard-update-popup__offer">
                                     ${offer}
                                 </div>

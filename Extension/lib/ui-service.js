@@ -417,7 +417,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             changelogHref: 'https://adguard.com/forward.html?action=github_version_popup&from=version_popup&app=browser_extension',
             changelogText: adguard.i18n.getMessage('options_popup_version_update_changelog_text'),
             offer: adguard.i18n.getMessage('options_popup_version_update_offer'),
-            offerButtonHref: 'https://adguard.com/forward.html?action=github_version_site&from=version_popup&app=browser_extension',
+            offerButtonHref: 'https://adguard.com/forward.html?action=learn_about_adguard&from=version_popup&app=browser_extension',
             offerButtonText: adguard.i18n.getMessage('options_popup_version_update_offer_button_text'),
             disableNotificationText: adguard.i18n.getMessage('options_popup_version_update_disable_notification'),
         };
