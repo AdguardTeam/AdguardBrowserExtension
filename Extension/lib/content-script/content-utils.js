@@ -190,6 +190,7 @@
             offerButtonHref,
             offerButtonText,
             disableNotificationText,
+            isAdguardTab,
         } = message;
 
         const updateIframeHtml = `<head></head>
@@ -252,7 +253,7 @@
                 return;
             }
 
-            if (document.body) {
+            if (document.body && !isAdguardTab) {
                 const iframe = appendIframe(document.body, updateIframeHtml);
                 iframe.classList.add('adguard-update-iframe');
                 const isListening = handleCloseIframe(iframe);
