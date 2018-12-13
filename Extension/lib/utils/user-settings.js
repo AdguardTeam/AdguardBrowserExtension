@@ -42,6 +42,7 @@ adguard.settings = (function (adguard) {
         DISABLE_SHOW_APP_UPDATED_NOTIFICATION: 'show-app-updated-disabled',
         DISABLE_INTEGRATION_MODE: 'integration-mode-disabled',
         FILTERS_UPDATE_PERIOD: 'filters-update-period',
+        // TODO DO NOT FORGET TO USE THIS OPTION WHILE GENERATING LINK FOR REPORTER
         DISABLE_STEALTH_MODE: 'stealth_disable_stealth_mode',
         HIDE_REFERRER: 'stealth-hide-referrer',
         HIDE_SEARCH_QUERIES: 'stealth-hide-search-queries',
