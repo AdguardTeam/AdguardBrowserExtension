@@ -1460,8 +1460,10 @@ var Settings = function () {
     if (environmentOptions.isChrome) {
         checkboxes.push(new Checkbox('#remove_client-data', userSettings.names.BLOCK_CHROME_CLIENT_DATA));
     }
-    if (!environmentOptions.isEdge) {
+    if (environmentOptions.canBlockWebRTC) {
         // Edge doesn't support block webrtc
+        const disableWebRTCNode = document.querySelector('#disable_webrtc');
+        disableWebRTCNode.closest('li').style.display = 'flex';
         checkboxes.push(new Checkbox('#disable_webrtc', userSettings.names.BLOCK_WEBRTC));
     }
     checkboxes.push(new Checkbox('#third_party_cookies', userSettings.names.SELF_DESTRUCT_THIRD_PARTY_COOKIES));
