@@ -95,13 +95,20 @@ adguard.stealthService = (function (adguard) {
     };
 
     /**
+     * Checks if stealth mode is disabled
+     * @returns {boolean}
+     */
+    const isStealthModeDisabled = () => {
+        return adguard.settings.getProperty(adguard.settings.DISABLE_STEALTH_MODE);
+    };
+
+    /**
      * Returns stealth setting current value, considering if global stealth setting is enabled
      * @param stealthSettingName
      * @returns {boolean}
      */
     const getStealthSettingValue = (stealthSettingName) => {
-        const stealthDisabled = adguard.settings.getProperty(adguard.settings.DISABLE_STEALTH_MODE);
-        if (stealthDisabled) {
+        if (isStealthModeDisabled()) {
             return false;
         }
         return adguard.settings.getProperty(stealthSettingName);
@@ -115,6 +122,10 @@ adguard.stealthService = (function (adguard) {
      * @return {boolean} True if headers were modified
      */
     const processRequestHeaders = function (requestId, requestHeaders) {
+        // If stealth mode is disabled do not process headers
+        if (isStealthModeDisabled()) {
+            return false;
+        }
 
         const context = adguard.requestContextStorage.get(requestId);
         if (!context) {
@@ -134,7 +145,7 @@ adguard.stealthService = (function (adguard) {
 
         let mainFrameUrl = adguard.frames.getMainFrameUrl(tab);
         if (!mainFrameUrl) {
-            //frame wasn't recorded in onBeforeRequest event
+            // frame wasn't recorded in onBeforeRequest event
             adguard.console.debug('Frame was not recorded in onBeforeRequest event');
             return false;
         }
@@ -216,6 +227,10 @@ adguard.stealthService = (function (adguard) {
      * @param requestType
      */
     const getCookieRules = function (requestUrl, referrerUrl, requestType) {
+        // if stealth mode is disabled
+        if (isStealthModeDisabled()) {
+            return null;
+        }
 
         // If stealth is whitelisted
         const whiteListRule = findStealthWhitelistRule(requestUrl, referrerUrl, requestType);
