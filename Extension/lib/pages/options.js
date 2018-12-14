@@ -1458,8 +1458,15 @@ var Settings = function () {
     checkboxes.push(new Checkbox('#hide_referrer', userSettings.names.HIDE_REFERRER));
     checkboxes.push(new Checkbox('#hide_search_queries', userSettings.names.HIDE_SEARCH_QUERIES));
     checkboxes.push(new Checkbox('#send_not_track', userSettings.names.SEND_DO_NOT_TRACK));
-    checkboxes.push(new Checkbox('#remove_client-data', userSettings.names.BLOCK_CHROME_CLIENT_DATA));
-    checkboxes.push(new Checkbox('#disable_webrtc', userSettings.names.BLOCK_WEBRTC));
+    if (environmentOptions.isChrome) {
+        checkboxes.push(new Checkbox('#remove_client-data', userSettings.names.BLOCK_CHROME_CLIENT_DATA));
+    }
+    if (environmentOptions.canBlockWebRTC) {
+        // Edge doesn't support block webrtc
+        const disableWebRTCNode = document.querySelector('#disable_webrtc');
+        disableWebRTCNode.closest('li').style.display = 'flex';
+        checkboxes.push(new Checkbox('#disable_webrtc', userSettings.names.BLOCK_WEBRTC));
+    }
     checkboxes.push(new Checkbox('#third_party_cookies', userSettings.names.SELF_DESTRUCT_THIRD_PARTY_COOKIES));
     checkboxes.push(new Checkbox('#first_party_cookies', userSettings.names.SELF_DESTRUCT_FIRST_PARTY_COOKIES));
 

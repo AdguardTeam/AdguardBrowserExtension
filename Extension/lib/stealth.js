@@ -296,6 +296,12 @@ adguard.stealthService = (function (adguard) {
      */
     const handleWebRTCDisabled = () => {
 
+        // Edge doesn't support privacy api
+        // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/privacy
+        if (typeof browser.privacy === 'undefined') {
+            return;
+        }
+
         const resetLastError = () => {
             const ex = browser.runtime.lastError;
             if (ex) {
