@@ -535,6 +535,12 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             },
         ];
 
+        const stealthEnabled = !adguard.settings.getProperty(adguard.settings.DISABLE_STEALTH_MODE);
+
+        if (!stealthEnabled) {
+            return `&stealth.enabled=${stealthEnabled}`;
+        }
+
         const stealthOptionsString = stealthOptions.map(option => {
             const { queryKey, settingKey, settingValueKey } = option;
             const setting = adguard.settings.getProperty(settingKey);
@@ -552,11 +558,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             .filter(string => string.length > 0)
             .join('&');
 
-        if (stealthOptionsString.length > 0) {
-            return 'true&' + stealthOptionsString;
-        }
-
-        return 'false';
+        return `&stealth.enabled=${stealthEnabled}&${stealthOptionsString}`;
     };
 
     /**
@@ -584,7 +586,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             + (browserDetails ? '&browser_detail=' + encodeURIComponent(browserDetails) : '')
             + '&url=' + encodeURIComponent(url)
             + '&filters=' + encodeURIComponent(filterIds.join('.'))
-            + '&stealth.enabled=' + getStealthString());
+            + getStealthString());
     };
 
     var openFilteringLog = function (tabId) {
