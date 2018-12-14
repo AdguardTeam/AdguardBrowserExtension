@@ -580,7 +580,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
         const filterIds = adguard.filters.getEnabledFilters().map(filter => filter.filterId);
 
-        openTab('https://dev-reports.adguard.com/new_issue.html?product_type=Ext&product_version='
+        openTab('https://reports.adguard.com/new_issue.html?product_type=Ext&product_version='
             + encodeURIComponent(adguard.app.getVersion())
             + '&browser=' + encodeURIComponent(browser)
             + (browserDetails ? '&browser_detail=' + encodeURIComponent(browserDetails) : '')
