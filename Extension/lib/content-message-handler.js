@@ -73,6 +73,8 @@
             syncStatusInfo: adguard.sync.syncService.getSyncStatus(),
             environmentOptions: {
                 isMacOs: adguard.utils.browser.isMacOs(),
+                isEdge: adguard.utils.browser.isEdgeBrowser(),
+                isChrome: adguard.utils.browser.isChromeBrowser(),
                 Prefs: {
                     locale: adguard.app.getLocale(),
                     mobile: adguard.prefs.mobile || false,
