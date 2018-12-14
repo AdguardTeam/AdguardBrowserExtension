@@ -1561,13 +1561,16 @@ var Settings = function () {
     }
 
     function handleActiveStealthOptions(stealthModeDisabled) {
-        console.log(stealthModeDisabled);
-        const stealthOptionsContainer = document.querySelector('#stealth-options');
-        if (stealthModeDisabled) {
-            stealthOptionsContainer.classList.add('opts-list--disabled');
-        } else {
-            stealthOptionsContainer.classList.remove('opts-list--disabled');
-        }
+        const miscellaneousOptionsContainer = document.querySelector('#miscellaneous-stealth-options');
+        const cookiesOptionsContainer = document.querySelector('#cookies-stealth-options');
+        const optionsContainers = [miscellaneousOptionsContainer, cookiesOptionsContainer];
+        optionsContainers.forEach(container => {
+            if (stealthModeDisabled) {
+                container.classList.add('opts-list--disabled');
+            } else {
+                container.classList.remove('opts-list--disabled');
+            }
+        });
     }
 
     var render = function () {
