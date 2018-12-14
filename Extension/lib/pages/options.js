@@ -1478,6 +1478,12 @@ var Settings = function () {
         }
     });
 
+    const disableStealthMode = document.querySelector('#disable_stealth_mode');
+    disableStealthMode.addEventListener('change', (e) => {
+        const input = e.target;
+        handleActiveStealthOptions(!input.checked);
+    });
+
     function setFiltersUpdatePeriod(updatePeriodString) {
         contentPage.sendMessage({
             type: 'setFiltersUpdatePeriod',
@@ -1554,6 +1560,16 @@ var Settings = function () {
         filtersUpdatePeriodSelect.value = updatePeriod;
     }
 
+    function handleActiveStealthOptions(stealthModeDisabled) {
+        console.log(stealthModeDisabled);
+        const stealthOptionsContainer = document.querySelector('#stealth-options');
+        if (stealthModeDisabled) {
+            stealthOptionsContainer.classList.add('opts-list--disabled');
+        } else {
+            stealthOptionsContainer.classList.remove('opts-list--disabled');
+        }
+    }
+
     var render = function () {
         for (var i = 0; i < checkboxes.length; i++) {
             checkboxes[i].render();
@@ -1563,6 +1579,7 @@ var Settings = function () {
 
         const updatePeriod = userSettings.values[userSettings.names.FILTERS_UPDATE_PERIOD];
         renderSelectOptions(updatePeriod);
+        handleActiveStealthOptions(userSettings.values[userSettings.names.DISABLE_STEALTH_MODE]);
     };
 
     var showPopup = function (title, text) {
