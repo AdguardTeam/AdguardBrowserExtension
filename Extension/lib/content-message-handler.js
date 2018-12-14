@@ -81,8 +81,8 @@
             },
             constants: {
                 AntiBannerFiltersId: adguard.utils.filters.ids,
-                EventNotifierTypes: adguard.listeners.events
-            }
+                EventNotifierTypes: adguard.listeners.events,
+            },
         };
     }
 
