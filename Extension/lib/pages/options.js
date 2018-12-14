@@ -674,7 +674,7 @@ var AntiBannerFilters = function (options) {
 
         var deleteButton = '';
         if (showDeleteButton) {
-            deleteButton = `<a href="#" filterid="${filter.filterId}" class="remove-custom-filter-button">${i18n.getMessage('options_remove_custom_filter')}</a>`;
+            deleteButton = `<a href="#" filterid="${filter.filterId}" class="remove-custom-filter-button"></a>`;
         }
 
         return `
