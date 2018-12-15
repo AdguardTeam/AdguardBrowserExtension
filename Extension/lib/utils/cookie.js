@@ -190,7 +190,7 @@
             setCookieValue += '; Secure';
         }
         if (!adguard.utils.strings.isEmpty(cookie.sameSite)) {
-            
+
             const sameSite = cookie.sameSite.toLowerCase();
 
             switch (sameSite) {
@@ -203,6 +203,12 @@
                 default:
                     throw new TypeError(`Cookie sameSite is invalid: ${cookie.sameSite}`);
             }
+        }
+
+        // Don't affected. Let it be here just in case
+        // https://bugs.chromium.org/p/chromium/issues/detail?id=232693
+        if (cookie.priority) {
+            setCookieValue += `; Priority=${cookie.priority}`;
         }
 
         return setCookieValue;
