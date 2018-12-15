@@ -42,6 +42,7 @@ adguard.settings = (function (adguard) {
         DISABLE_SHOW_APP_UPDATED_NOTIFICATION: 'show-app-updated-disabled',
         DISABLE_INTEGRATION_MODE: 'integration-mode-disabled',
         FILTERS_UPDATE_PERIOD: 'filters-update-period',
+        DISABLE_STEALTH_MODE: 'stealth_disable_stealth_mode',
         HIDE_REFERRER: 'stealth-hide-referrer',
         HIDE_SEARCH_QUERIES: 'stealth-hide-search-queries',
         SEND_DO_NOT_TRACK: 'stealth-send-do-not-track',
@@ -79,12 +80,13 @@ adguard.settings = (function (adguard) {
                 defaults[settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION] = false;
                 defaults[settings.DISABLE_INTEGRATION_MODE] = false;
                 defaults[settings.FILTERS_UPDATE_PERIOD] = DEFAULT_FILTERS_UPDATE_PERIOD_MS;
-                defaults[settings.HIDE_REFERRER] = false;
-                defaults[settings.HIDE_SEARCH_QUERIES] = false;
-                defaults[settings.SEND_DO_NOT_TRACK] = false;
-                defaults[settings.BLOCK_CHROME_CLIENT_DATA] = false;
+                defaults[settings.DISABLE_STEALTH_MODE] = true;
+                defaults[settings.HIDE_REFERRER] = true;
+                defaults[settings.HIDE_SEARCH_QUERIES] = true;
+                defaults[settings.SEND_DO_NOT_TRACK] = true;
+                defaults[settings.BLOCK_CHROME_CLIENT_DATA] = true;
                 defaults[settings.BLOCK_WEBRTC] = false;
-                defaults[settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES] = false;
+                defaults[settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES] = true;
                 defaults[settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME] = DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN;
                 defaults[settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES] = false;
                 defaults[settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME] = DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN;
@@ -131,16 +133,15 @@ adguard.settings = (function (adguard) {
         adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
     };
 
-    var getAllSettings = function () {
-
-        var result = {
+    const getAllSettings = function () {
+        const result = {
             names: Object.create(null),
-            values: Object.create(null)
+            values: Object.create(null),
         };
 
-        for (var key in settings) {
+        for (let key in settings) {
             if (settings.hasOwnProperty(key)) {
-                var setting = settings[key];
+                const setting = settings[key];
                 result.names[key] = setting;
                 result.values[setting] = getProperty(setting);
             }
