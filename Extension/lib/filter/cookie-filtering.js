@@ -264,10 +264,11 @@ adguard.cookieFiltering = (function (adguard) {
     /**
      * Retrieves url for cookie
      * @param {Cookie} setCookie Cookie
+     * @param {string} cookieDomain Domain
      * @return {string}
      */
-    const getCookieUrl = (setCookie) => {
-        let domain = setCookie.domain;
+    const getCookieUrl = (setCookie, cookieDomain) => {
+        let domain = cookieDomain;
         if (domain[0] === '.') {
             domain = domain.substring(1);
         }
@@ -561,9 +562,9 @@ adguard.cookieFiltering = (function (adguard) {
             const cookieValue = setCookie.value;
 
             // If not specified, defaults to the host portion of the current document location
-            setCookie.domain = setCookie.domain || requestHost;
+            const cookieDomain = setCookie.domain || requestHost;
 
-            const cookieUrl = getCookieUrl(setCookie);
+            const cookieUrl = getCookieUrl(setCookie, cookieDomain);
             const thirdParty = adguard.utils.url.isThirdPartyRequest(cookieUrl, referrerUrl);
             const rules = adguard.webRequestService.getCookieRules(tab, cookieUrl, referrerUrl, requestType);
 
@@ -576,7 +577,7 @@ adguard.cookieFiltering = (function (adguard) {
                     setCookieHeaderModified = true;
                 }
                 processedCookies.push(cookieName);
-                addCookieLogEvent(tab, cookieName, cookieValue, setCookie.domain, thirdParty, [bRule], false);
+                addCookieLogEvent(tab, cookieName, cookieValue, cookieDomain, thirdParty, [bRule], false);
                 continue;
             }
 
@@ -586,7 +587,7 @@ adguard.cookieFiltering = (function (adguard) {
                 header.value = adguard.utils.cookie.serialize(setCookie);
                 setCookieHeaderModified = true;
                 processedCookies.push(cookieName);
-                addCookieLogEvent(tab, cookieName, cookieValue, setCookie.domain, thirdParty, mRules, true);
+                addCookieLogEvent(tab, cookieName, cookieValue, cookieDomain, thirdParty, mRules, true);
             }
         }
 
