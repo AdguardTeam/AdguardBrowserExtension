@@ -73,6 +73,8 @@
             syncStatusInfo: adguard.sync.syncService.getSyncStatus(),
             environmentOptions: {
                 isMacOs: adguard.utils.browser.isMacOs(),
+                canBlockWebRTC: typeof browser.privacy !== 'undefined',
+                isChrome: adguard.utils.browser.isChromeBrowser(),
                 Prefs: {
                     locale: adguard.app.getLocale(),
                     mobile: adguard.prefs.mobile || false,
@@ -81,8 +83,8 @@
             },
             constants: {
                 AntiBannerFiltersId: adguard.utils.filters.ids,
-                EventNotifierTypes: adguard.listeners.events
-            }
+                EventNotifierTypes: adguard.listeners.events,
+            },
         };
     }
 
