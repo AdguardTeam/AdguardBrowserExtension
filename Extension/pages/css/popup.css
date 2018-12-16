@@ -351,16 +351,18 @@ button, a, .control-buttons, select, span {
   width: 14px;
 }
 .actions {
-  padding-top: 15px;
-  padding-bottom: 24px;
+  padding-top: 13px;
+  padding-bottom: 13px;
   width: 100%;
 }
 .actions .action {
-  padding: 9px 20px;
-  cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: flex-start;
+  padding: 9px 20px;
+  cursor: pointer;
   transition: 0.3s ease background-color;
+  max-height: 35px;
 
 }
 .actions .action:hover {
@@ -385,6 +387,10 @@ button, a, .control-buttons, select, span {
   padding-left: 15px;
   font-size: 13px;
   color: #4d4d4d;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 .cir-btn {
   padding: 0;
@@ -497,8 +503,6 @@ button, a, .control-buttons, select, span {
 .analytics ul {
   padding-right: 20px;
   padding-top: 15px;
-  max-height: 155px;
-  overflow: auto;
 }
 .analytics li {
   margin-bottom: 15px;
@@ -559,22 +563,21 @@ button, a, .control-buttons, select, span {
   width: 50%;
 }
 .footer {
+  position: relative;
+}
+.footer__in {
   display: flex;
   align-items: center;
   height: 40px;
   padding: 0 20px;
-  text-decoration: none;
-  background-color: #f3f3f3;
+  box-shadow: 0 -2px 0 0 #f3f3f3;
+  font-size: 13px;
+  color: #4d4d4d;
 }
 .tabstack-bottom {
   background-color: #fff;
-  min-height: 181px;
-}
-.footer .title,
-.footer .title-integration {
-  color: #0c0c0c;
-  font-size: 11px;
-  opacity: 0.54;
+  height: 168px;
+  overflow: auto;
 }
 .footer .platforms {
   text-align: right;
@@ -586,7 +589,7 @@ img .footer .platforms:first-child {
 }
 .footer .platforms a {
   display: inline-block;
-  margin-left: 10px;
+  margin-left: 15px;
   vertical-align: middle;
   opacity: 0.3;
   transition: 0.3s ease opacity;
@@ -604,10 +607,6 @@ img .footer .platforms:first-child {
 }
 .footer.integration {
   justify-content: center;
-}
-.footer.integration .title-integration {
-  display: block;
-  text-align: center;
 }
 .popup-footer__copyright {
   color: #4D4D4D;
@@ -700,4 +699,55 @@ img .footer .platforms:first-child {
 }
 .statistics-select:last-child {
   float: right;
+}
+
+.notice {
+  top: 0;
+  left: 0;
+  position: absolute;
+  z-index: 2;
+  width: 100%;
+  background-color: #D58C14;
+  padding: 0 15px;
+}
+.notice--blue {
+  background-color: #294551;
+  z-index: 1;
+}
+.notice__in {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 15px;
+  line-height: 40px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 270px;
+  display: block;
+}
+
+.notice--blue .notice__in {
+  padding-left: 30px;
+  position: relative;
+}
+
+.notice--blue .notice__in:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: calc(50% - 9px);
+  width: 18px;
+  height: 18px;
+  background-image: url(../images/star.svg);
+}
+
+.notice__close {
+  font-size: 0;
+  background-image: url(../images/cross-white.svg);
+  background-size: cover;
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  top: calc(50% - 6px);
+  right: 15px;
 }
