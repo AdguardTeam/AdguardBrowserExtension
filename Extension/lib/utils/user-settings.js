@@ -258,6 +258,18 @@ adguard.settings = (function (adguard) {
         return getProperty(settings.FILTERS_UPDATE_PERIOD);
     };
 
+    var isWebRTCDisabled = function () {
+        return getProperty(settings.BLOCK_WEBRTC);
+    };
+
+    const disableShowAdguardPromoInfo = function () {
+        setProperty(settings.DISABLE_SHOW_ADGUARD_PROMO_INFO, true);
+    };
+
+    const isDisableShowAdguardPromoInfo = function () {
+        return getProperty(settings.DISABLE_SHOW_ADGUARD_PROMO_INFO);
+    };
+
     var api = {};
 
     // Expose settings to api
@@ -298,6 +310,9 @@ adguard.settings = (function (adguard) {
     api.setFiltersUpdatePeriod = setFiltersUpdatePeriod;
     api.isIntegrationModeEnabled = isIntegrationModeEnabled;
     api.changeIntegrationModeEnabled = changeIntegrationModeEnabled;
+    api.isWebRTCDisabled = isWebRTCDisabled;
+    api.disableShowAdguardPromoInfo = disableShowAdguardPromoInfo;
+    api.isDisableShowAdguardPromoInfo = isDisableShowAdguardPromoInfo;
 
     return api;
 
