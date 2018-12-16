@@ -189,12 +189,14 @@
             offer,
             offerButtonHref,
             offerButtonText,
+            disableNotificationText,
+            isAdguardTab,
         } = message;
 
         const updateIframeHtml = `<head></head>
                             <body>
                             <div id="adguard-new-version-popup" class="adguard-update-popup adguard-update-popup--active">
-                                <div id="adguard-new-version-popup-close" class="adguard-update-popup__close"></div>
+                                <div id="adguard-new-version-popup-close" class="adguard-update-popup__close close-iframe"></div>
                                 <div class="adguard-update-popup__logo"></div>
                                 <div class="adguard-update-popup__title">
                                     ${title}
@@ -202,13 +204,18 @@
                                 <div class="adguard-update-popup__desc">
                                     ${description}
                                 </div>
-                                <a href="${changelogHref}" class="adguard-update-popup__link" target="_blank">
-                                    ${changelogText}
-                                </a>
+                                <div class="adguard-update-popup__links">
+                                    <a href="${changelogHref}" class="adguard-update-popup__link close-iframe" target="_blank">
+                                        ${changelogText}
+                                    </a>
+                                    <a href="#" class="adguard-update-popup__link adguard-update-popup__link--disable close-iframe disable-notifications">
+                                        ${disableNotificationText}
+                                    </a>
+                                </div>
                                 <div class="adguard-update-popup__offer">
                                     ${offer}
                                 </div>
-                                <a href="${offerButtonHref}" class="adguard-update-popup__btn">
+                                <a href="${offerButtonHref}" class="adguard-update-popup__btn close-iframe" target="_blank">
                                     ${offerButtonText}
                                 </a>
                             </div>
@@ -216,12 +223,25 @@
 
         const triesCount = 10;
 
-        const handleCloseBtn = (iframe) => {
-            let iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-            let closeBtn = iframeDocument.getElementById('adguard-new-version-popup-close');
-            if (closeBtn) {
-                closeBtn.addEventListener('click', () => {
-                    iframe.parentNode.removeChild(iframe);
+        const handleCloseIframe = (iframe) => {
+            const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+            const closeElements = iframeDocument.querySelectorAll('.close-iframe');
+            if (closeElements.length > 0) {
+                closeElements.forEach(element => {
+                    element.addEventListener('click', () => {
+                        if (element.classList.contains('disable-notifications')) {
+                            // disable update notifications
+                            contentPage.sendMessage({
+                                type: 'changeUserSetting',
+                                key: 'show-app-updated-disabled',
+                                value: true,
+                            });
+                        }
+                        // Remove iframe after click event fire on link
+                        setTimeout(() => {
+                            iframe.parentNode.removeChild(iframe);
+                        }, 0);
+                    });
                 });
                 return true;
             }
@@ -233,13 +253,13 @@
                 return;
             }
 
-            if (document.body) {
+            if (document.body && !isAdguardTab) {
                 const iframe = appendIframe(document.body, updateIframeHtml);
                 iframe.classList.add('adguard-update-iframe');
-                const isListening = handleCloseBtn(iframe);
+                const isListening = handleCloseIframe(iframe);
                 if (!isListening) {
                     iframe.addEventListener('load', () => {
-                        handleCloseBtn(iframe);
+                        handleCloseIframe(iframe);
                     });
                 }
             } else {
