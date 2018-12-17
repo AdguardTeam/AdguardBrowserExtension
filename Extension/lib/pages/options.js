@@ -690,8 +690,12 @@ var AntiBannerFilters = function (options) {
                     <div class="desc">${filter.description}</div>
                     <div class="opt-name__info">
                         <div class="opt-name__info-labels">
-                            <div class="opt-name__info-item">version ${filter.version}</div>
-                            <div class="opt-name__info-item">updated: ${timeUpdatedText}</div>
+                            <div class="opt-name__info-item">
+                                ${i18n.getMessage('options_filters_filter_version')} ${filter.version}
+                            </div>
+                            <div class="opt-name__info-item">
+                                ${i18n.getMessage('options_filters_filter_updated')} ${timeUpdatedText}
+                            </div>
                         </div>
                         <div class="opt-name__info-labels opt-name__info-labels--tags">
                             ${tagDetails}
