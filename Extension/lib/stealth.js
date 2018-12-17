@@ -360,7 +360,14 @@ adguard.stealthService = (function (adguard) {
         }
     });
 
-    handleWebRTCDisabled();
+    adguard.listeners.addListener(function (event) {
+        switch (event) {
+            case adguard.listeners.APPLICATION_INITIALIZED:
+                handleWebRTCDisabled();
+                break;
+            default: break;
+        }
+    });
 
     return {
         processRequestHeaders: processRequestHeaders,
