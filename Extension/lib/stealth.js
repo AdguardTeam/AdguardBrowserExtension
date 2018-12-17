@@ -367,11 +367,11 @@ adguard.stealthService = (function (adguard) {
             handleWebRTCDisabled();
             return;
         }
-        if (!adguard.localStorage.isInitialized()) {
-            counter += 1;
-            setTimeout(waitLocalStorage, 1);
-        } else {
+        if (adguard.localStorage.isInitialized()) {
             handleWebRTCDisabled();
+        } else {
+            counter += 1;
+            setTimeout(waitLocalStorage, 100);
         }
     };
 
