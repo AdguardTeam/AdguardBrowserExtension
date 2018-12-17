@@ -360,7 +360,22 @@ adguard.stealthService = (function (adguard) {
         }
     });
 
-    handleWebRTCDisabled();
+    let counter = 0;
+    const waitLocalStorage = () => {
+        if (counter >= 10) {
+            // run with default parameters
+            handleWebRTCDisabled();
+            return;
+        }
+        if (!adguard.localStorage.isInitialized()) {
+            counter += 1;
+            setTimeout(waitLocalStorage, 1);
+        } else {
+            handleWebRTCDisabled();
+        }
+    };
+
+    waitLocalStorage();
 
     return {
         processRequestHeaders: processRequestHeaders,
