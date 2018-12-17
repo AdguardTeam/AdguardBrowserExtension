@@ -360,28 +360,14 @@ adguard.stealthService = (function (adguard) {
         }
     });
 
-    let counter = 0;
-
-    /**
-     * First run of handle handleWebRTCDisabled should happen after storage is initialized
-     * in order to apply right user setting
-     */
-    const waitLocalStorage = () => {
-        if (counter >= 10) {
-            // run with default parameters
-            handleWebRTCDisabled();
-            return;
+    adguard.listeners.addListener(function (event) {
+        switch (event) {
+            case adguard.listeners.APPLICATION_INITIALIZED:
+                handleWebRTCDisabled();
+                break;
+            default: break;
         }
-        if (adguard.localStorage.isInitialized()) {
-            // run with parameters from store
-            handleWebRTCDisabled();
-            return;
-        }
-        counter += 1;
-        setTimeout(waitLocalStorage, 100);
-    };
-
-    waitLocalStorage();
+    });
 
     return {
         processRequestHeaders: processRequestHeaders,
