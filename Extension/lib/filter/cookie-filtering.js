@@ -347,8 +347,11 @@ adguard.cookieFiltering = (function (adguard) {
         }
         const newCookieExpiresTimeSec = currentTimeSec + maxAge;
         if (cookieExpiresTimeSec === null || cookieExpiresTimeSec > newCookieExpiresTimeSec) {
-            delete setCookie.expires;
-            setCookie.maxAge = maxAge;
+            if (setCookie.expires) {
+                setCookie.expires = new Date(newCookieExpiresTimeSec * 1000);
+            } else {
+                setCookie.maxAge = maxAge;
+            }
             return true;
         }
         return false;
@@ -477,7 +480,7 @@ adguard.cookieFiltering = (function (adguard) {
             return false;
         }
 
-        const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrerUrl);
+        const thirdParty = referrerUrl && adguard.utils.url.isThirdPartyRequest(requestUrl, referrerUrl);
         const rules = adguard.webRequestService.getCookieRules(tab, requestUrl, referrerUrl, requestType);
         if (!rules || rules.length === 0) {
             return false;
@@ -565,7 +568,7 @@ adguard.cookieFiltering = (function (adguard) {
             const cookieDomain = setCookie.domain || requestHost;
 
             const cookieUrl = getCookieUrl(setCookie, cookieDomain);
-            const thirdParty = adguard.utils.url.isThirdPartyRequest(cookieUrl, referrerUrl);
+            const thirdParty = referrerUrl && adguard.utils.url.isThirdPartyRequest(cookieUrl, referrerUrl);
             const rules = adguard.webRequestService.getCookieRules(tab, cookieUrl, referrerUrl, requestType);
 
             const bRule = findNotModifyingRule(cookieName, rules);
