@@ -1,4 +1,4 @@
-/*! AdGuard Assistant - v4.3.4 - 2018-09-03
+/*! AdGuard Assistant - v4.3.7 - 2018-12-18
 * https://github.com/AdguardTeam/AdguardAssistant
 * Copyright (c) 2018; Licensed LGPL 3.0 */
 
@@ -20,9 +20,9 @@ var HTML = {
     'detailed_menu': "<div class=\"main\"><div class=\"close\"></div><div class=\"menu-head\"><div class=\"menu-head_title\"><span class=\"menu-head_name\"></span><div class=\"confidence-indication wot-hide\"><a class=\"wot-indicator wot-hide\" target=\"_blank\" href=\"http://adguard.com/wot-scorecard.html?domain=habrahabr.ru\"><i id=\"WotIndication\" class=\"adg-wot tooltip\" data-title=\"Site reputation indicator\"></i> </a><i id=\"ConfidenceIndication\" class=\"adg-wot-confidence tooltip\" data-title=\"Reputation Confidence Level\"></i></div></div><div class=\"menu-head_text wot-hide\" id=\"WotDescriptionText\"></div></div><div class=\"menu-filter\"><div i18n=\"menu_filtration_status\" class=\"menu-filter_lbl\"></div><div class=\"menu-filter_val\"><input type=\"checkbox\" class=\"menu-filter_input\" id=\"is-filter\"> <label for=\"is-filter\" class=\"menu-filter_label\"></label></div></div><div class=\"menu\"><div id=\"do-not-block-30-sec\" class=\"menu__btn menu__btn--clock\" i18n=\"menu_do_not_filter_30_sec\"></div><div id=\"block-ad\" class=\"menu__btn menu__btn--landscape\" i18n=\"menu_block_ad_on_site\"></div><div id=\"report-abuse\" class=\"menu__btn menu__btn--report\" i18n=\"menu_report_abuse\"></div><div id=\"site-report\" class=\"menu__btn menu__btn--security\" i18n=\"menu_site_report\"></div><div id=\"assistant-settings\" class=\"menu__btn menu__btn--settings\" i18n=\"menu_settings\"></div></div></div>",
     'selector_menu': "<div class=\"main adguard_sg_ignore\"><div class=\"close adg-close\" id=\"close-button\"></div><div class=\"head\" id=\"drag-handle\"><div i18n=\"assistant_select_element\" class=\"head_title\"></div><div i18n=\"assistant_select_element_ext\" class=\"head_text\"></div></div><div class=\"foot\"><button i18n=\"assistant_select_element_cancel\" type=\"button\" class=\"btn btn-default\" id=\"cancel-select-mode\"></button></div></div>",
     'settings_menu': "<div class=\"main\"><div class=\"close\"></div><div class=\"head\"><div i18n=\"assistant_settings\" class=\"head_title\"></div><div i18n=\"settings_choose_size_and_position\" class=\"head_text head_text--mobile-h\"></div></div><div class=\"content\"><div class=\"settings settings__horizontal\"><div class=\"settings_fieldset\"><div i18n=\"settings_position_save\" class=\"settings_fieldset_lbl\"></div><div class=\"settings_fieldset_val\"><div class=\"position-save\"><div class=\"position-save_group\"><div class=\"position-save_field\"><input class=\"form-ui-control\" id=\"all-site\" type=\"radio\" name=\"position-save\"> <label class=\"form-ui\" for=\"all-site\"><span i18n=\"settings_position_save_all\" class=\"form-ui-txt\"></span></label></div><div class=\"position-save_field\"><input class=\"form-ui-control\" id=\"this-site\" type=\"radio\" name=\"position-save\"> <label class=\"form-ui\" for=\"this-site\"><span i18n=\"settings_position_save_this\" class=\"form-ui-txt\"></span></label></div></div></div></div></div><div class=\"settings_fieldset\"><div i18n=\"settings_icon_size\" class=\"settings_fieldset_lbl\"></div><div class=\"settings_fieldset_val\"><div class=\"choice-size\"><div class=\"choice-size_group\"><div class=\"choice-size_field\"><input class=\"choice-size_input form-ui-control\" id=\"size-small\" type=\"radio\" name=\"radio\"> <label class=\"form-ui\" for=\"size-small\"><span i18n=\"settings_small\" class=\"form-ui-txt\"></span></label><div class=\"adguard-assistant-button-main-logo choice-size_logo logo__small\"></div></div><div class=\"choice-size_field\"><input class=\"choice-size_input form-ui-control\" id=\"size-big\" type=\"radio\" name=\"radio\"> <label class=\"form-ui\" for=\"size-big\"><span i18n=\"settings_big\" class=\"form-ui-txt\"></span></label><div class=\"adguard-assistant-button-main-logo choice-size_logo\"></div></div></div></div></div></div><div class=\"settings_fieldset\"><div i18n=\"settings_position\" class=\"settings_fieldset_lbl settings_fieldset_lbl__pos\"></div><div class=\"settings_fieldset_val\"><div class=\"change-position\"><div class=\"change-position_i\"><input type=\"radio\" name=\"position\" class=\"change-position_input\" id=\"position-top-left\"> <label class=\"change-position_label\" for=\"position-top-left\"><span class=\"s-position-arr-top-left\"></span></label><div i18n=\"settings_left_top\" class=\"change-position_val\"></div></div><div class=\"change-position_i\"><input type=\"radio\" name=\"position\" class=\"change-position_input\" id=\"position-top-right\"> <label class=\"change-position_label\" for=\"position-top-right\"><span class=\"s-position-arr-top-right\"></span></label><div i18n=\"settings_right_top\" class=\"change-position_val\"></div></div><div class=\"change-position_i\"><input type=\"radio\" name=\"position\" class=\"change-position_input\" id=\"position-bottom-left\"> <label class=\"change-position_label\" for=\"position-bottom-left\"><span class=\"s-position-arr-bottom-left\"></span></label><div i18n=\"settings_left_bottom\" class=\"change-position_val\"></div></div><div class=\"change-position_i\"><input type=\"radio\" name=\"position\" class=\"change-position_input\" id=\"position-bottom-right\"> <label class=\"change-position_label\" for=\"position-bottom-right\"><span class=\"s-position-arr-bottom-right\"></span></label><div i18n=\"settings_right_bottom\" class=\"change-position_val\"></div></div></div></div></div></div></div><div class=\"foot\"><div class=\"foot_action\"><div class=\"foot_action_btn\"><button i18n=\"settings_cancel\" class=\"btn btn-default\" type=\"button\" id=\"cancel\"></button> <button i18n=\"settings_save\" class=\"btn btn-primary\" type=\"button\" id=\"save-settings\"></button></div></div><div class=\"cf\"></div></div></div>",
-    'slider_menu': "<div class=\"main\"><div class=\"close adg-close\"></div><div class=\"head head--slider\"><div class=\"head_in head_in--slider\"><div i18n=\"assistant_block_element\" class=\"head_title head_title--slider\" id=\"head_title\"></div><div class=\"element-rule_more element-rule_more--mobile\"><span class=\"element-rule_expand-link\" id=\"ExtendedSettingsText\"></span> <button i18n=\"assistant_block\" type=\"button\" class=\"btn btn-cancel\" id=\"adg-accept\"></button> <button i18n=\"assistant_another_element\" type=\"button\" class=\"btn btn-default\" id=\"adg-cancel\"></button></div></div><div class=\"adg-slide-btns\"><div class=\"adg-slide-btn adg-slide-btn--minus\"></div><div class=\"adg-slide-btn adg-slide-btn--plus\"></div></div><div i18n=\"assistant_block_element_explain\" class=\"head_text head_text--mobile-h\" id=\"head_text\"></div></div><div class=\"content\" id=\"slider-area\"><div class=\"element-rule element-rule--slider\"><div i18n=\"assistant_slider_explain\" class=\"element-rule_text element-rule_text--slider\"></div><div class=\"element-rule_slider\"><div class=\"adg-slide\" id=\"slider\"><div i18n=\"assistant_slider_max\" class=\"adg-slide-clue-max\"></div><div i18n=\"assistant_slider_min\" class=\"adg-slide-clue-min\"></div></div></div><div class=\"element-rule_more\"><span class=\"element-rule_expand-link\" id=\"ExtendedSettingsText\"><span i18n=\"assistant_extended_settings\" class=\"element-rule_expand-link_txt\"></span> <span class=\"element-rule_expand-link_arr\"></span></span></div><div class=\"element-rule_form\" id=\"adv-settings\"><div class=\"element-rule_form-cont\"><div class=\"element-rule_fieldset\" id=\"one-domain-checkbox-block\"><input class=\"form-ui-control\" id=\"one-domain-checkbox\" type=\"checkbox\"> <label for=\"one-domain-checkbox\" class=\"form-ui\"><span i18n=\"assistant_apply_rule_to_all_sites\" class=\"form-ui-txt\"></span></label></div><div style=\"display:none\" class=\"element-rule_fieldset\" id=\"block-by-url-checkbox-block\"><input class=\"form-ui-control\" id=\"block-by-url-checkbox\" type=\"checkbox\"> <label for=\"block-by-url-checkbox\" class=\"form-ui\"><span i18n=\"assistant_block_by_reference\" class=\"form-ui-txt\"></span></label></div><div style=\"display:none\" class=\"element-rule_fieldset\" id=\"block-similar-checkbox-block\"><input class=\"form-ui-control\" id=\"block-similar-checkbox\" type=\"checkbox\"> <label for=\"block-similar-checkbox\" class=\"form-ui\"><span i18n=\"assistant_block_similar\" class=\"form-ui-txt\"></span></label></div><div class=\"element-rule_fieldset\"><input class=\"form-control\" id=\"filter-rule\" type=\"text\"></div></div></div></div></div><div class=\"foot foot--slider\"><button i18n=\"assistant_another_element\" type=\"button\" class=\"btn btn-default btn-another-el\" id=\"adg-cancel\"></button><div class=\"foot_action\"><div class=\"foot_action_btn\"><button i18n=\"assistant_preview\" type=\"button\" class=\"btn btn-primary\" id=\"adg-preview\"></button> <button i18n=\"assistant_block\" type=\"button\" class=\"btn btn-cancel\" id=\"adg-accept\"></button></div></div></div></div>",
+    'slider_menu': "<div class=\"main\"><div class=\"close adg-close\"></div><div class=\"head head--slider\"><div class=\"head_in head_in--slider\"><div i18n=\"assistant_block_element\" class=\"head_title head_title--slider\" id=\"head_title\"></div><div class=\"element-rule_more element-rule_more--mobile\"><span class=\"element-rule_expand-link\" id=\"ExtendedSettingsText\"></span> <button i18n=\"assistant_block\" type=\"button\" class=\"btn btn-cancel\" id=\"adg-accept\"></button> <button i18n=\"assistant_another_element\" type=\"button\" class=\"btn btn-default\" id=\"adg-cancel\"></button></div></div><div class=\"adg-slide-btns\"><div class=\"adg-slide-btn adg-slide-btn--minus\"></div><div class=\"adg-slide-btn adg-slide-btn--plus\"></div></div><div i18n=\"assistant_block_element_explain\" class=\"head_text head_text--mobile-h\" id=\"head_text\"></div></div><div class=\"content\" id=\"slider-area\"><div class=\"element-rule element-rule--slider\"><div i18n=\"assistant_slider_explain\" class=\"element-rule_text element-rule_text--slider\"></div><div class=\"element-rule_slider\"><div class=\"adg-slide\" id=\"slider\"><div i18n=\"assistant_slider_max\" class=\"adg-slide-clue-max\"></div><div i18n=\"assistant_slider_min\" class=\"adg-slide-clue-min\"></div></div></div><div class=\"element-rule_more\"><span class=\"element-rule_expand-link\" id=\"ExtendedSettingsText\"><span i18n=\"assistant_extended_settings\" class=\"element-rule_expand-link_txt\"></span> <span class=\"element-rule_expand-link_arr\"></span></span></div><div class=\"element-rule_form\" id=\"advanced-settings\"><div class=\"element-rule_form-cont\"><div class=\"element-rule_fieldset\" id=\"one-domain-checkbox-block\"><input class=\"form-ui-control\" id=\"one-domain-checkbox\" type=\"checkbox\"> <label for=\"one-domain-checkbox\" class=\"form-ui\"><span i18n=\"assistant_apply_rule_to_all_sites\" class=\"form-ui-txt\"></span></label></div><div style=\"display:none\" class=\"element-rule_fieldset\" id=\"block-by-url-checkbox-block\"><input class=\"form-ui-control\" id=\"block-by-url-checkbox\" type=\"checkbox\"> <label for=\"block-by-url-checkbox\" class=\"form-ui\"><span i18n=\"assistant_block_by_reference\" class=\"form-ui-txt\"></span></label></div><div style=\"display:none\" class=\"element-rule_fieldset\" id=\"block-similar-checkbox-block\"><input class=\"form-ui-control\" id=\"block-similar-checkbox\" type=\"checkbox\"> <label for=\"block-similar-checkbox\" class=\"form-ui\"><span i18n=\"assistant_block_similar\" class=\"form-ui-txt\"></span></label></div><div class=\"element-rule_fieldset\"><input class=\"form-control\" id=\"filter-rule\" type=\"text\"></div></div></div></div></div><div class=\"foot foot--slider\"><button i18n=\"assistant_another_element\" type=\"button\" class=\"btn btn-default btn-another-el\" id=\"adg-cancel\"></button><div class=\"foot_action\"><div class=\"foot_action_btn\"><button i18n=\"assistant_preview\" type=\"button\" class=\"btn btn-primary\" id=\"adg-preview\"></button> <button i18n=\"assistant_block\" type=\"button\" class=\"btn btn-cancel\" id=\"adg-accept\"></button></div></div></div></div>",
     'preview': "<div class=\"main\"><div class=\"close\"></div><div class=\"head\"><div i18n=\"assistant_preview_header\" class=\"head_title\"></div><div i18n=\"assistant_preview_header_info\" class=\"head_text\"></div></div><div class=\"foot\"><button i18n=\"assistant_another_element\" class=\"btn btn-default\" id=\"select-another-element\" type=\"button\"></button><div class=\"foot_action\"><div class=\"foot_action_btn\"><button i18n=\"assistant_preview_end\" class=\"btn btn-primary\" id=\"end-preview\" type=\"button\"></button> <button i18n=\"assistant_block\" class=\"btn btn-cancel\" id=\"block-element\" type=\"button\"></button></div></div></div></div>",
-    'popup': "<div class=\"main mobile main-popup\"><div class=\"main-popup__logo adguard-assistant-button-main-logo\"></div><h2 class=\"mobile-title main-popup__title\" i18n=\"assistant_select_element\"></h2><div class=\"content main-popup__content\" i18n=\"assistant_select_element_text\"></div><div class=\"footer\"><button i18n=\"assistant_select_element_start\" class=\"btn btn-active start-select-mode main-popup__btn main-popup__btn--green\"></button> <button i18n=\"assistant_select_element_cancel\" class=\"btn cancel-select-mode main-popup__btn\"></button></div><i class=\"main-version\">v4.3.4</i></div>",
+    'popup': "<div class=\"main mobile main-popup\"><div class=\"main-popup__logo adguard-assistant-button-main-logo\"></div><h2 class=\"mobile-title main-popup__title\" i18n=\"assistant_select_element\"></h2><div class=\"content main-popup__content\" i18n=\"assistant_select_element_text\"></div><div class=\"footer\"><button i18n=\"assistant_select_element_start\" class=\"btn btn-active start-select-mode main-popup__btn main-popup__btn--green\"></button> <button i18n=\"assistant_select_element_cancel\" class=\"btn cancel-select-mode main-popup__btn\"></button></div><i class=\"main-version\">v4.3.7</i></div>",
     'mobile_menu': "<div class=\"main mobile main-menu\"><button i18n-title=\"assistant_block\" class=\"adg-accept main-menu__btn main-menu__btn--accept\">accept</button> <button i18n-title=\"assistant_preview\" class=\"adg-preview main-menu__btn main-menu__btn--preview\">preview</button> <button i18n-title=\"plus\" class=\"adg-plus main-menu__btn main-menu__btn--plus\">plus</button> <button i18n-title=\"minus\" class=\"adg-minus main-menu__btn main-menu__btn--minus\">minus</button> <button i18n-title=\"close\" class=\"adg-close main-menu__btn main-menu__btn--close\">close</button></div>"
 };
 
@@ -108,22 +108,22 @@ var en = {
         "message": "Exit preview"
     },
     "wot_unknown_description": {
-        "message": "Reputation is not defined"
+        "message": "This website's reputation is not defined by"
     },
     "wot_bad_description": {
-        "message": "This website has very bad reputation\naccording to "
+        "message": "This website has a very bad reputation\naccording to "
     },
     "wot_poor_description": {
-        "message": "This website has bad reputation\naccording to "
+        "message": "This website has a bad reputation \naccording to "
     },
     "wot_unsatisfactory_description": {
-        "message": "This website has poor reputation\naccording to "
+        "message": "This website has a poor reputation\naccording to "
     },
     "wot_good_description": {
-        "message": "This website has good reputation\naccording to "
+        "message": "This website has a good reputation\naccording to "
     },
     "wot_excellent_description": {
-        "message": "This website has excellent reputation\naccording to "
+        "message": "This website has an excellent reputation\naccording to "
     },
     "settings_choose_size_and_position": {
         "message": "Adjust AdGuard Assistant size and position"
@@ -374,7 +374,7 @@ var uk = {
         "message": "\u0417\u0430\u043a\u0456\u043d\u0447\u0438\u0442\u0438 \u043f\u043e\u043f\u0435\u0440\u0435\u0434\u043d\u0456\u0439 \u043f\u0435\u0440\u0435\u0433\u043b\u044f\u0434"
     },
     "wot_unknown_description": {
-        "message": "\u0420\u0435\u043f\u0443\u0442\u0430\u0446\u0456\u044f \u043d\u0435 \u0432\u0438\u0437\u043d\u0430\u0447\u0435\u043d\u0430"
+        "message": "\u0420\u0435\u043f\u0443\u0442\u0430\u0446\u0456\u044f \u0446\u044c\u043e\u0433\u043e \u0432\u0435\u0431-\u0441\u0430\u0439\u0442\u0443 \u043d\u0435 \u0432\u0438\u0437\u043d\u0430\u0447\u0435\u043d\u0430"
     },
     "wot_bad_description": {
         "message": "\u0426\u0435\u0439 \u0441\u0430\u0439\u0442 \u043c\u0430\u0454 \u0434\u0443\u0436\u0435 \u043f\u043e\u0433\u0430\u043d\u0443 \u0440\u0435\u043f\u0443\u0442\u0430\u0446\u0456\u044e\n\u0437\u0430 \u0432\u0435\u0440\u0441\u0456\u0454\u044e "
@@ -827,23 +827,23 @@ var zh_CN = {
 var zh_TW = {
     "settings_position_save": "\u7db2\u7ad9",
     "settings_position_save_all": "\u6240\u6709\u7684\u7db2\u7ad9",
-    "settings_position_save_this": "\u6b64\u7db2\u7ad9",
+    "settings_position_save_this": "\u8a72\u7db2\u7ad9",
     "assistant_select_element_start": "\u958b\u59cb",
-    "assistant_select_element_text": "\u9078\u64c7\u65bc\u6b64\u9801\u9762\u4e0a\u4e4b\u5143\u4ef6\u4ee5\u5c01\u9396\u3002\u91cd\u65b0\u6574\u7406\u8a72\u9801\u9762\u4ee5\u53d6\u6d88\u5143\u4ef6\u5c01\u9396\u6a21\u5f0f\u3002",
+    "assistant_select_element_text": "\u9078\u64c7\u65bc\u8a72\u9801\u9762\u4e0a\u4e4b\u5143\u4ef6\u4ee5\u5c01\u9396\u3002\u91cd\u65b0\u6574\u7406\u8a72\u9801\u9762\u4ee5\u53d6\u6d88\u5143\u4ef6\u5c01\u9396\u6a21\u5f0f\u3002",
     "menu_filtration_status": {
-        "message": "\u65bc\u6b64\u7db2\u7ad9\u4e0a\u4e4b\u904e\u6ffe"
+        "message": "\u65bc\u8a72\u7db2\u7ad9\u4e0a\u4e4b\u904e\u6ffe"
     },
     "menu_do_not_filter_30_sec": {
-        "message": "\u65bc30\u79d2\u5167\u4e0d\u8981\u904e\u6ffe"
+        "message": "\u65bc30\u79d2\u5167\u4e0d\u904e\u6ffe"
     },
     "menu_block_ad_on_site": {
-        "message": "\u5c01\u9396\u65bc\u6b64\u7db2\u7ad9\u4e0a\u4e4b\u5ee3\u544a"
+        "message": "\u5c01\u9396\u65bc\u8a72\u7db2\u7ad9\u4e0a\u4e4b\u5ee3\u544a"
     },
     "menu_report_abuse": {
         "message": "\u5831\u544a\u8a72\u7db2\u7ad9"
     },
     "menu_site_report": {
-        "message": "\u7db2\u7ad9\u5b89\u5168\u5831\u544a"
+        "message": "\u7db2\u7ad9\u5b89\u5168\u6027\u5831\u544a"
     },
     "menu_settings": {
         "message": "\u52a9\u7406\u8a2d\u5b9a"
@@ -852,7 +852,7 @@ var zh_TW = {
         "message": "\u5143\u4ef6\u5c01\u9396"
     },
     "assistant_select_element_ext": {
-        "message": "\u9078\u64c7\u65bc\u6b64\u9801\u9762\u4e0a\u4e4b\u5143\u4ef6\u4ee5\u5c01\u9396"
+        "message": "\u9078\u64c7\u65bc\u8a72\u9801\u9762\u4e0a\u4e4b\u5143\u4ef6\u4ee5\u5c01\u9396"
     },
     "assistant_select_element_cancel": {
         "message": "\u53d6\u6d88"
@@ -873,10 +873,10 @@ var zh_TW = {
         "message": "\u6700\u5927"
     },
     "assistant_extended_settings": {
-        "message": "\u9032\u968e\u8a2d\u5b9a"
+        "message": "\u9032\u968e\u7684\u8a2d\u5b9a"
     },
     "assistant_apply_rule_to_all_sites": {
-        "message": "\u5957\u7528\u6b64\u5c0d\u6240\u6709\u7684\u7db2\u7ad9\u4e4b\u898f\u5247"
+        "message": "\u5c0d\u6240\u6709\u7684\u7db2\u7ad9\u5957\u7528\u8a72\u898f\u5247"
     },
     "assistant_block_by_reference": {
         "message": "\u6309\u7167\u53c3\u8003\u9023\u7d50\u5c01\u9396"
@@ -906,7 +906,7 @@ var zh_TW = {
         "message": "\u96e2\u958b\u9810\u89bd"
     },
     "wot_unknown_description": {
-        "message": "\u4fe1\u8b7d\u672a\u88ab\u754c\u5b9a"
+        "message": "\u8a72\u7db2\u7ad9\u7684\u4fe1\u8b7d\u672a\u88ab\u754c\u5b9a"
     },
     "wot_bad_description": {
         "message": "\u8a72\u7db2\u7ad9\u6709\u975e\u5e38\u58de\u7684\u4fe1\u8b7d\uff0c\u6839\u64da"
@@ -1224,9 +1224,9 @@ var it = {
     }
 }
 var fa = {
-    "settings_position_save": "Websites",
-    "settings_position_save_all": "All websites",
-    "settings_position_save_this": "This website",
+    "settings_position_save": "\u0648\u0628\u0633\u0627\u06cc\u062a",
+    "settings_position_save_all": "\u0647\u0645\u0647 \u0648\u0628\u0633\u0627\u06cc\u062a \u0647\u0627",
+    "settings_position_save_this": "\u0627\u06cc\u0646 \u0648\u0628\u0633\u0627\u06cc\u062a",
     "assistant_select_element_start": "\u0634\u0631\u0648\u0639",
     "assistant_select_element_text": "\u0639\u0646\u0635\u0631\u06cc \u062f\u0631 \u0635\u0641\u062d\u0647 \u0628\u0631\u0627\u06cc \u0645\u0633\u062f\u0648\u062f\u0633\u0627\u0632\u06cc \u0627\u0646\u062a\u062e\u0627\u0628 \u06a9\u0646\u06cc\u062f. \u0628\u0631\u0627\u06cc \u0644\u063a\u0648\u060c\u0635\u0641\u062d\u0647 \u0631\u0627 \u0631\u0641\u0631\u0634 \u06a9\u0646\u06cc\u062f.",
     "menu_filtration_status": {
@@ -1438,7 +1438,7 @@ var tr = {
         "message": "\u00d6nizlemeden \u00e7\u0131k"
     },
     "wot_unknown_description": {
-        "message": "Pop\u00fclarite belirlenmemi\u015f"
+        "message": "Bu sitenin itibar\u0131 hen\u00fcz belirlenmemi\u015f"
     },
     "wot_bad_description": {
         "message": "Bu site \u00e7ok k\u00f6t\u00fc bir itibara sahip "
@@ -1837,7 +1837,7 @@ var pt_BR = {
         "message": "Sair da pr\u00e9via"
     },
     "wot_unknown_description": {
-        "message": "Reputa\u00e7\u00e3o n\u00e3o definida"
+        "message": "A reputa\u00e7\u00e3o deste site ainda n\u00e3o foi definida por"
     },
     "wot_bad_description": {
         "message": "Este site tem uma reputa\u00e7\u00e3o muito ruim\nde acordo com "
@@ -1852,10 +1852,10 @@ var pt_BR = {
         "message": "Este site tem uma boa reputa\u00e7\u00e3o\nde acordo com "
     },
     "wot_excellent_description": {
-        "message": "Este site tem uma excelente reputa\u00e7\u00e3o\n\nde acordo com "
+        "message": "Este site tem uma excelente reputa\u00e7\u00e3o\nde acordo com "
     },
     "settings_choose_size_and_position": {
-        "message": "Ajuste o tamanho e posi\u00e7\u00e3o do AdGuard Assistente"
+        "message": "Ajuste o tamanho e posi\u00e7\u00e3o do Assistente do AdGuard"
     },
     "settings_icon_size": {
         "message": "Tamanho do \u00edcone:"
@@ -1970,7 +1970,7 @@ var pt_PT = {
         "message": "Sair da previsualiza\u00e7\u00e3o"
     },
     "wot_unknown_description": {
-        "message": "N\u00e3o foi definida qualquer reputa\u00e7\u00e3o"
+        "message": "A reputa\u00e7\u00e3o deste site n\u00e3o est\u00e1 definida por"
     },
     "wot_bad_description": {
         "message": "Este site tem uma p\u00e9ssima reputa\u00e7\u00e3o\nde acordo com"
@@ -2155,11 +2155,11 @@ var ar = {
     }
 }
 var ko = {
-    "settings_position_save": "Websites",
-    "settings_position_save_all": "All websites",
-    "settings_position_save_this": "This website",
-    "assistant_select_element_start": "Start",
-    "assistant_select_element_text": "Choose an element on the page to block. Refresh the page to cancel the element blocking mode.",
+    "settings_position_save": "\uc6f9\uc0ac\uc774\ud2b8",
+    "settings_position_save_all": "\ubaa8\ub4e0 \uc6f9\uc0ac\uc774\ud2b8",
+    "settings_position_save_this": "\uc774 \uc6f9\uc0ac\uc774\ud2b8",
+    "assistant_select_element_start": "\uc2dc\uc791",
+    "assistant_select_element_text": "\ud398\uc774\uc9c0\uc5d0\uc11c \ucc28\ub2e8\ud560 \uc694\uc18c\ub97c \uc120\ud0dd\ud558\uc138\uc694. \uc694\uc18c \ucc28\ub2e8 \ubaa8\ub4dc\ub97c \ucde8\uc18c\ud558\ub824\uba74 \ud398\uc774\uc9c0\ub97c \uc0c8\ub85c \uace0\uce68\ud558\uc138\uc694.",
     "menu_filtration_status": {
         "message": "\uc774 \uc6f9\uc0ac\uc774\ud2b8\uc5d0\uc11c\uc758 \ubcf4\ud638"
     },
@@ -2369,7 +2369,7 @@ var sk = {
         "message": "Ukon\u010denie n\u00e1h\u013eadu"
     },
     "wot_unknown_description": {
-        "message": "Reput\u00e1cia nebola definovan\u00e1"
+        "message": "Reput\u00e1cia tejto webovej str\u00e1nky nebola definovan\u00e1"
     },
     "wot_bad_description": {
         "message": "Str\u00e1nka m\u00e1 ve\u013emi zl\u00fa reput\u00e1ciu\npod\u013ea "
@@ -2560,19 +2560,19 @@ var da = {
     "assistant_select_element_start": "Start",
     "assistant_select_element_text": "V\u00e6lg et element p\u00e5 denne side som skal blokeres. Opdater siden for at annullere tilstanden for elementblokering.",
     "menu_filtration_status": {
-        "message": "Filtrering p\u00e5 denne webside"
+        "message": "Filtrering p\u00e5 denne hjemmeside"
     },
     "menu_do_not_filter_30_sec": {
         "message": "Filtrer ikke i 30 sekunder"
     },
     "menu_block_ad_on_site": {
-        "message": "Bloker annoncer p\u00e5 denne webside"
+        "message": "Bloker annoncer p\u00e5 denne hjemmeside"
     },
     "menu_report_abuse": {
-        "message": "Rapporter denne webside"
+        "message": "Rapporter denne hjemmeside"
     },
     "menu_site_report": {
-        "message": "Webside sikkerhedsrapport"
+        "message": "Sikkerhedsrapport for hjemmesiden"
     },
     "menu_settings": {
         "message": "Assistent indstillinger"
@@ -2605,7 +2605,7 @@ var da = {
         "message": "Avancerede indstillinger"
     },
     "assistant_apply_rule_to_all_sites": {
-        "message": "Anvend reglen p\u00e5 alle websider"
+        "message": "Anvend reglen p\u00e5 alle hjemmesider"
     },
     "assistant_block_by_reference": {
         "message": "Bloker ved reference link"
@@ -2635,22 +2635,22 @@ var da = {
         "message": "Exit forh\u00e5ndsvisning"
     },
     "wot_unknown_description": {
-        "message": "Omd\u00f8mmet er ikke defineret"
+        "message": "Hjemmesidens omd\u00f8mme er ikke defineret af"
     },
     "wot_bad_description": {
-        "message": "Denne webside har et meget d\u00e5rligt omd\u00f8mme if\u00f8lge"
+        "message": "Denne hjemmeside har et meget d\u00e5rligt omd\u00f8mme if\u00f8lge "
     },
     "wot_poor_description": {
-        "message": "Denne webside har et d\u00e5rligt omd\u00f8mme if\u00f8lge"
+        "message": "Denne hjemmeside har et d\u00e5rligt omd\u00f8mme if\u00f8lge "
     },
     "wot_unsatisfactory_description": {
-        "message": "Denne webside har et d\u00e5rligt omd\u00f8mme if\u00f8lge"
+        "message": "Denne hjemmeside har et d\u00e5rligt omd\u00f8mme if\u00f8lge "
     },
     "wot_good_description": {
-        "message": "Denne webside har et godt omd\u00f8mme if\u00f8lge"
+        "message": "Denne hjemmeside har et godt omd\u00f8mme if\u00f8lge "
     },
     "wot_excellent_description": {
-        "message": "Denne webside har et fremragende omd\u00f8mme if\u00f8lge"
+        "message": "Denne hjemmeside har et fremragende omd\u00f8mme if\u00f8lge "
     },
     "settings_choose_size_and_position": {
         "message": "Juster AdGuard Assistent st\u00f8rrelse og position"
@@ -2708,7 +2708,7 @@ var fr = {
         "message": "Rapport de s\u00e9curit\u00e9 du site"
     },
     "menu_settings": {
-        "message": "Assistant de param\u00e9trage "
+        "message": "R\u00e9glages de l'Assistant AdGuard"
     },
     "assistant_select_element": {
         "message": "Blocage d'\u00e9l\u00e9ments "
@@ -2756,7 +2756,7 @@ var fr = {
         "message": "Blocage "
     },
     "assistant_settings": {
-        "message": "Assistant de param\u00e9trage "
+        "message": "R\u00e9glages de l'Assistant AdGuard"
     },
     "assistant_preview_header": {
         "message": "Blocage d'\u00e9l\u00e9ments - Previsualisation "
@@ -2965,7 +2965,7 @@ var sv = {
         "message": "Pausa filtrering 30 sekunder"
     },
     "menu_block_ad_on_site": {
-        "message": "Blockera reklam p\u00e5 den h\u00e4r webbplatsen"
+        "message": "Block ad on this website"
     },
     "menu_report_abuse": {
         "message": "Rapportera webbplatsen"
@@ -3034,10 +3034,10 @@ var sv = {
         "message": "Avsluta f\u00f6rhandsgranskningen"
     },
     "wot_unknown_description": {
-        "message": "Anseende \u00e4r inte fastst\u00e4llt"
+        "message": "Den h\u00e4r sajtens anseende \u00e4r inte klarlagd av"
     },
     "wot_bad_description": {
-        "message": "Webbplatsen har d\u00e5ligt anseende\nenligt "
+        "message": "Webbplatsen har ett mycket d\u00e5ligt anseende\nenligt "
     },
     "wot_poor_description": {
         "message": "Webbplatsen har d\u00e5ligt anseende\nenligt "
@@ -3216,6 +3216,405 @@ var sr_Latn = {
     },
     "settings_save": {
         "message": "Sa\u010duvaj promene"
+    }
+}
+var cs = {
+    "settings_position_save": "Webov\u00e9 str\u00e1nky",
+    "settings_position_save_all": "V\u0161echny webov\u00e9 str\u00e1nky",
+    "settings_position_save_this": "Tato webov\u00e1 str\u00e1nka",
+    "assistant_select_element_start": "Start",
+    "assistant_select_element_text": "Vyberte prvek na str\u00e1nce, kter\u00fd chcete zablokovat. Obnovte str\u00e1nku pro zru\u0161en\u00ed re\u017eimu blokov\u00e1n\u00ed prvk\u016f.",
+    "menu_filtration_status": {
+        "message": "Filtrov\u00e1n\u00ed na t\u011bchto webov\u00fdch str\u00e1nk\u00e1ch"
+    },
+    "menu_do_not_filter_30_sec": {
+        "message": "Nefiltrovat po dobu 30 sekund"
+    },
+    "menu_block_ad_on_site": {
+        "message": "Blokovat reklamy na t\u00e9to webov\u00e9 str\u00e1nce"
+    },
+    "menu_report_abuse": {
+        "message": "Nahl\u00e1sit webovou str\u00e1nku"
+    },
+    "menu_site_report": {
+        "message": "Zpr\u00e1va o bezpe\u010dnosti webov\u00e9 str\u00e1nky"
+    },
+    "menu_settings": {
+        "message": "Nastaven\u00ed asistenta"
+    },
+    "assistant_select_element": {
+        "message": "Blokov\u00e1n\u00ed prvku"
+    },
+    "assistant_select_element_ext": {
+        "message": "Vyberte prvek na str\u00e1nce, kter\u00fd chcete zablokovat"
+    },
+    "assistant_select_element_cancel": {
+        "message": "Zru\u0161it"
+    },
+    "assistant_block_element": {
+        "message": "Blokov\u00e1n\u00ed prvku"
+    },
+    "assistant_block_element_explain": {
+        "message": "Upravit pravidlo blokov\u00e1n\u00ed prvku"
+    },
+    "assistant_slider_explain": {
+        "message": "P\u0159esunut\u00edm posuvn\u00edku zm\u011b\u0148te velikost r\u00e1mce, pro kter\u00fd bude nov\u00e9 pravidlo fungovat:"
+    },
+    "assistant_slider_min": {
+        "message": "MIN"
+    },
+    "assistant_slider_max": {
+        "message": "MAX"
+    },
+    "assistant_extended_settings": {
+        "message": "Pokro\u010dil\u00e1 nastaven\u00ed"
+    },
+    "assistant_apply_rule_to_all_sites": {
+        "message": "Pou\u017e\u00edt pravidlo pro v\u0161echny webov\u00e9 str\u00e1nky"
+    },
+    "assistant_block_by_reference": {
+        "message": "Blokovat referen\u010dn\u00edm odkazem"
+    },
+    "assistant_block_similar": {
+        "message": "Blokovat podobn\u00e9"
+    },
+    "assistant_another_element": {
+        "message": "Vyber dal\u0161\u00ed element"
+    },
+    "assistant_preview": {
+        "message": "N\u00e1hled"
+    },
+    "assistant_block": {
+        "message": "Blokovat"
+    },
+    "assistant_settings": {
+        "message": "Nastaven\u00ed asistenta"
+    },
+    "assistant_preview_header": {
+        "message": "Blokov\u00e1n\u00ed prvku - n\u00e1hled"
+    },
+    "assistant_preview_header_info": {
+        "message": "Ujist\u011bte se, \u017ee je prvek zablokov\u00e1n podle ur\u010den\u00ed"
+    },
+    "assistant_preview_end": {
+        "message": "Ukon\u010dit n\u00e1hled"
+    },
+    "wot_unknown_description": {
+        "message": "Pov\u011bst t\u00e9to webov\u00e9 str\u00e1nky nen\u00ed definov\u00e1na podle"
+    },
+    "wot_bad_description": {
+        "message": "Tato webov\u00e1 str\u00e1nka m\u00e1 velmi \u0161patnou pov\u011bst \npodle "
+    },
+    "wot_poor_description": {
+        "message": "Tato webov\u00e1 str\u00e1nka m\u00e1 \u0161patnou pov\u011bst \npodle  "
+    },
+    "wot_unsatisfactory_description": {
+        "message": "Tato webov\u00e1 str\u00e1nka m\u00e1 \u0161patnou pov\u011bst \npodle  "
+    },
+    "wot_good_description": {
+        "message": "Tato webov\u00e1 str\u00e1nka m\u00e1 dobrou pov\u011bst \npodle  "
+    },
+    "wot_excellent_description": {
+        "message": "Tato webov\u00e1 str\u00e1nka m\u00e1 v\u00fdbornou pov\u011bst \npodle  "
+    },
+    "settings_choose_size_and_position": {
+        "message": "Upravit velikost a pozici AdGuard Asistenta"
+    },
+    "settings_icon_size": {
+        "message": "Velikost ikony:"
+    },
+    "settings_small": {
+        "message": "Mal\u00e1"
+    },
+    "settings_big": {
+        "message": "Velk\u00e1"
+    },
+    "settings_position": {
+        "message": "Pozice:"
+    },
+    "settings_left_top": {
+        "message": "Vlevo naho\u0159e"
+    },
+    "settings_right_top": {
+        "message": "Vpravo naho\u0159e"
+    },
+    "settings_left_bottom": {
+        "message": "Vlevo dole"
+    },
+    "settings_right_bottom": {
+        "message": "Vpravo dole"
+    },
+    "settings_cancel": {
+        "message": "Zru\u0161it"
+    },
+    "settings_save": {
+        "message": "Ulo\u017eit zm\u011bny"
+    }
+}
+var sl_SI = {
+    "settings_position_save": "Spletne strani",
+    "settings_position_save_all": "Vse pletne strani",
+    "settings_position_save_this": "To spletno stran",
+    "assistant_select_element_start": "Za\u010dni",
+    "assistant_select_element_text": "Izberite element na strani, ki jo \u017eelite blokirati. Osve\u017eite stran, da prekli\u010dete na\u010din blokiranja elementa.",
+    "menu_filtration_status": {
+        "message": "Filtriranje na tej spletni strani"
+    },
+    "menu_do_not_filter_30_sec": {
+        "message": "Ne filtriraj 30 sekund"
+    },
+    "menu_block_ad_on_site": {
+        "message": "Blokiraj oglas na tej spletni strani"
+    },
+    "menu_report_abuse": {
+        "message": "Prijavi spletno stran"
+    },
+    "menu_site_report": {
+        "message": "Poro\u010dilo o varnosti spletne strani"
+    },
+    "menu_settings": {
+        "message": "Nastavitve Pomo\u010dnika"
+    },
+    "assistant_select_element": {
+        "message": "Blokiranje elementa"
+    },
+    "assistant_select_element_ext": {
+        "message": "Izberite element na strani, ki jo \u017eelite blokirati"
+    },
+    "assistant_select_element_cancel": {
+        "message": "Prekli\u010di"
+    },
+    "assistant_block_element": {
+        "message": "Blokiranje elementa"
+    },
+    "assistant_block_element_explain": {
+        "message": "Prilagodite pravilo za blokiranju elementa"
+    },
+    "assistant_slider_explain": {
+        "message": "Premaknite drsnik, da spremenite velikost okvira, za katerega bo delovalo novo pravilo:"
+    },
+    "assistant_slider_min": {
+        "message": "NAJM"
+    },
+    "assistant_slider_max": {
+        "message": "NAJV"
+    },
+    "assistant_extended_settings": {
+        "message": "Napredne nastavitve"
+    },
+    "assistant_apply_rule_to_all_sites": {
+        "message": "Uporabi pravilo za vse spletne strani"
+    },
+    "assistant_block_by_reference": {
+        "message": "Blokiraj z napotitveno povezavo"
+    },
+    "assistant_block_similar": {
+        "message": "Blokiraj podobno"
+    },
+    "assistant_another_element": {
+        "message": "Izberi drugi element"
+    },
+    "assistant_preview": {
+        "message": "Predogled"
+    },
+    "assistant_block": {
+        "message": "Blokiraj"
+    },
+    "assistant_settings": {
+        "message": "Nastavitve Pomo\u010dnika"
+    },
+    "assistant_preview_header": {
+        "message": "Blokiranje elementa - predogled"
+    },
+    "assistant_preview_header_info": {
+        "message": "Poskrbi, da je element blokiran, kot je bilo predvideno"
+    },
+    "assistant_preview_end": {
+        "message": "Zapusti predogled"
+    },
+    "wot_unknown_description": {
+        "message": "Ugled te spletne strani ni opredeljen"
+    },
+    "wot_bad_description": {
+        "message": "Ta spletna stran ima zelo slab ugled\nglede na "
+    },
+    "wot_poor_description": {
+        "message": "Ta spletna stran ima zelo slab ugled\nglede na "
+    },
+    "wot_unsatisfactory_description": {
+        "message": "Ta spletna stran ima zelo slab ugled\nglede na "
+    },
+    "wot_good_description": {
+        "message": "Ta spletna stran ima zelo slab ugled\nglede na "
+    },
+    "wot_excellent_description": {
+        "message": "Ta spletna stran ima zelo slab ugled\nglede na "
+    },
+    "settings_choose_size_and_position": {
+        "message": "Prilagodi velikost in polo\u017eaj AdGuard Assistanta"
+    },
+    "settings_icon_size": {
+        "message": "Velikost ikone:"
+    },
+    "settings_small": {
+        "message": "Majhna"
+    },
+    "settings_big": {
+        "message": "Velika"
+    },
+    "settings_position": {
+        "message": "Polo\u017eaj:"
+    },
+    "settings_left_top": {
+        "message": "Zgoraj levo"
+    },
+    "settings_right_top": {
+        "message": "Zgoraj desno"
+    },
+    "settings_left_bottom": {
+        "message": "Spodaj levo"
+    },
+    "settings_right_bottom": {
+        "message": "Spodaj desno"
+    },
+    "settings_cancel": {
+        "message": "Prekli\u010di"
+    },
+    "settings_save": {
+        "message": "Shrani nastavitve"
+    }
+}
+var be_BY = {
+    "settings_position_save": "\u0421\u0430\u0439\u0442\u044b",
+    "settings_position_save_all": "\u041d\u0430 \u045e\u0441\u0456\u0445",
+    "settings_position_save_this": "\u0422\u043e\u043b\u044c\u043a\u0456 \u043d\u0430 \u0433\u044d\u0442\u044b\u043c",
+    "assistant_select_element_start": "\u041f\u0430\u0447\u0430\u0446\u044c",
+    "assistant_select_element_text": "\u0410\u0431\u044f\u0440\u044b\u0446\u0435 \u043d\u0430 \u0441\u0442\u0430\u0440\u043e\u043d\u0446\u044b \u044d\u043b\u0435\u043c\u0435\u043d\u0442 \u0434\u043b\u044f \u0431\u043b\u0430\u043a\u0430\u0432\u0430\u043d\u043d\u044f. \u0410\u0431\u043d\u0430\u0432\u0456\u0446\u0435 \u0441\u0442\u0430\u0440\u043e\u043d\u043a\u0443, \u043a\u0430\u0431 \u0441\u043a\u0430\u0441\u0430\u0432\u0430\u0446\u044c \u0440\u044d\u0436\u044b\u043c \u0431\u043b\u0430\u043a\u0430\u0432\u0430\u043d\u043d\u044f \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u0430\u045e.",
+    "menu_filtration_status": {
+        "message": "\u0424\u0456\u043b\u044c\u0442\u0440\u0430\u0446\u044b\u044f \u043d\u0430 \u0433\u044d\u0442\u044b\u043c \u0441\u0430\u0439\u0446\u0435"
+    },
+    "menu_do_not_filter_30_sec": {
+        "message": "\u041d\u0435 \u0444\u0456\u043b\u044c\u0442\u0440\u0430\u0432\u0430\u0446\u044c 30 \u0441\u0435\u043a\u0443\u043d\u0434\u0430\u045e"
+    },
+    "menu_block_ad_on_site": {
+        "message": "\u0417\u0430\u0431\u043b\u0430\u043a\u0430\u0432\u0430\u0446\u044c \u0440\u044d\u043a\u043b\u0430\u043c\u0443 \u043d\u0430 \u0441\u0430\u0439\u0446\u0435"
+    },
+    "menu_report_abuse": {
+        "message": "\u041f\u0430\u0441\u043a\u0430\u0440\u0434\u0437\u0456\u0446\u0446\u0430 \u043d\u0430 \u0441\u0430\u0439\u0442"
+    },
+    "menu_site_report": {
+        "message": "\u0421\u043f\u0440\u0430\u0432\u0430\u0437\u0434\u0430\u0447\u0430 \u043f\u0440\u0430 \u0431\u044f\u0441\u043f\u0435\u043a\u0443 \u0441\u0430\u0439\u0442\u0430"
+    },
+    "menu_settings": {
+        "message": "\u041d\u0430\u043b\u0430\u0434\u0437\u0456\u0446\u044c \u043f\u0430\u043c\u043e\u0447\u043d\u0456\u043a"
+    },
+    "assistant_select_element": {
+        "message": "\u0411\u043b\u0430\u043a\u0430\u0432\u0430\u043d\u043d\u0435 \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u0430"
+    },
+    "assistant_select_element_ext": {
+        "message": "\u0410\u0431\u044f\u0440\u044b\u0446\u0435 \u043d\u0430 \u0441\u0442\u0430\u0440\u043e\u043d\u0446\u044b \u044d\u043b\u0435\u043c\u0435\u043d\u0442, \u044f\u043a\u0456 \u0442\u0440\u044d\u0431\u0430 \u0437\u0430\u0431\u043b\u0430\u043a\u0430\u0432\u0430\u0446\u044c"
+    },
+    "assistant_select_element_cancel": {
+        "message": "\u0421\u043a\u0430\u0441\u0430\u0432\u0430\u043d\u043d\u0435"
+    },
+    "assistant_block_element": {
+        "message": "\u0411\u043b\u0430\u043a\u0430\u0432\u0430\u043d\u043d\u0435 \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u0430"
+    },
+    "assistant_block_element_explain": {
+        "message": "\u041d\u0430\u043b\u0430\u0434\u0437\u044c\u0446\u0435 \u043f\u0440\u0430\u0432\u0456\u043b\u0430 \u0431\u043b\u0430\u043a\u0430\u0432\u0430\u043d\u043d\u044f \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u0430"
+    },
+    "assistant_slider_explain": {
+        "message": "\u041f\u0435\u0440\u0430\u0441\u043e\u045e\u0432\u0430\u0439\u0446\u0435 \u0431\u0435\u0433\u0443\u043d\u043e\u043a, \u043a\u0430\u0431 \u0437\u043c\u044f\u043d\u0456\u0446\u044c \u043f\u0430\u043c\u0435\u0440 \u0431\u043b\u043e\u043a\u0430, \u0434\u043b\u044f \u044f\u043a\u043e\u0433\u0430 \u0431\u0443\u0434\u0437\u0435 \u0434\u0437\u0435\u0439\u043d\u0456\u0447\u0430\u0446\u044c \u043f\u0440\u0430\u0432\u0456\u043b\u0430:"
+    },
+    "assistant_slider_min": {
+        "message": "MIN"
+    },
+    "assistant_slider_max": {
+        "message": "MAX"
+    },
+    "assistant_extended_settings": {
+        "message": "\u041f\u0430\u0448\u044b\u0440\u0430\u043d\u044b\u044f \u043d\u0430\u043b\u0430\u0434\u044b"
+    },
+    "assistant_apply_rule_to_all_sites": {
+        "message": "\u0423\u0436\u044b\u0446\u044c \u043f\u0440\u0430\u0432\u0456\u043b\u0430 \u0434\u043b\u044f \u045e\u0441\u0456\u0445 \u0441\u0430\u0439\u0442\u0430\u045e"
+    },
+    "assistant_block_by_reference": {
+        "message": "\u0411\u043b\u0430\u043a\u0430\u0432\u0430\u0446\u044c \u043f\u0430 \u0441\u043f\u0430\u0441\u044b\u043b\u0446\u044b"
+    },
+    "assistant_block_similar": {
+        "message": "\u0411\u043b\u0430\u043a\u0430\u0432\u0430\u0446\u044c \u043f\u0430\u0434\u043e\u0431\u043d\u044b\u044f"
+    },
+    "assistant_another_element": {
+        "message": "\u0410\u0431\u0440\u0430\u0446\u044c \u0456\u043d\u0448\u044b \u044d\u043b\u0435\u043c\u0435\u043d\u0442"
+    },
+    "assistant_preview": {
+        "message": "\u041f\u0435\u0440\u0430\u0434\u043f\u0440\u0430\u0433\u043b\u044f\u0434"
+    },
+    "assistant_block": {
+        "message": "\u0417\u0430\u0431\u043b\u0430\u043a\u0430\u0432\u0430\u0446\u044c"
+    },
+    "assistant_settings": {
+        "message": "\u041d\u0430\u043b\u0430\u0434\u0430 \u043f\u0430\u043c\u043e\u0447\u043d\u0456\u043a\u0430"
+    },
+    "assistant_preview_header": {
+        "message": "\u0411\u043b\u0430\u043a\u0430\u0432\u0430\u043d\u043d\u0435 \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u0430 - \u043f\u0435\u0440\u0430\u0434\u043f\u0440\u0430\u0433\u043b\u044f\u0434"
+    },
+    "assistant_preview_header_info": {
+        "message": "\u041f\u0435\u0440\u0430\u043a\u0430\u043d\u0430\u0435\u0446\u0435\u0441\u044f, \u0448\u0442\u043e \u044d\u043b\u0435\u043c\u0435\u043d\u0442 \u0437\u0430\u0431\u043b\u0430\u043a\u0430\u0432\u0430\u043d\u044b \u044f\u043a \u0437\u0430\u0434\u0443\u043c\u0430\u043d\u0430"
+    },
+    "assistant_preview_end": {
+        "message": "\u0421\u043a\u043e\u043d\u0447\u044b\u0446\u044c \u043f\u0435\u0440\u0430\u0434\u043f\u0440\u0430\u0433\u043b\u044f\u0434"
+    },
+    "wot_unknown_description": {
+        "message": "\u0420\u044d\u043f\u0443\u0442\u0430\u0446\u044b\u044f \u043d\u0435 \u0432\u044b\u0437\u043d\u0430\u0447\u0430\u043d\u0430"
+    },
+    "wot_bad_description": {
+        "message": "\u0423 \u0441\u0430\u0439\u0442\u0430 \u0432\u0435\u043b\u044c\u043c\u0456 \u0434\u0440\u044d\u043d\u043d\u0430\u044f \u0440\u044d\u043f\u0443\u0442\u0430\u0446\u044b\u044f \u043f\u0430 \u0434\u0430\u0434\u0437\u0435\u043d\u044b\u0445 "
+    },
+    "wot_poor_description": {
+        "message": "\u0423 \u0441\u0430\u0439\u0442\u0430 \u0434\u0440\u044d\u043d\u043d\u0430\u044f \u0440\u044d\u043f\u0443\u0442\u0430\u0446\u044b\u044f \u043f\u0430 \u0434\u0430\u0434\u0437\u0435\u043d\u044b\u0445 "
+    },
+    "wot_unsatisfactory_description": {
+        "message": "\u0423 \u0441\u0430\u0439\u0442\u0430 \u043d\u0435\u0437\u0434\u0430\u0432\u0430\u043b\u044c\u043d\u044f\u043b\u044c\u043d\u0430\u044f \u0440\u044d\u043f\u0443\u0442\u0430\u0446\u044b\u044f \u043f\u0430 \u0434\u0430\u0434\u0437\u0435\u043d\u044b\u0445 "
+    },
+    "wot_good_description": {
+        "message": "\u0423 \u0441\u0430\u0439\u0442\u0430 \u0434\u043e\u0431\u0440\u0430\u044f \u0440\u044d\u043f\u0443\u0442\u0430\u0446\u044b\u044f \u043f\u0430 \u0434\u0430\u0434\u0437\u0435\u043d\u044b\u0445 "
+    },
+    "wot_excellent_description": {
+        "message": "\u0423 \u0441\u0430\u0439\u0442\u0430 \u0432\u044b\u0434\u0430\u0442\u043d\u0430\u044f \u0440\u044d\u043f\u0443\u0442\u0430\u0446\u044b\u044f \u043f\u0430 \u0434\u0430\u0434\u0437\u0435\u043d\u044b\u0445 "
+    },
+    "settings_choose_size_and_position": {
+        "message": "\u041d\u0430\u043b\u0430\u0434\u0437\u044c\u0446\u0435 \u043f\u0430\u043c\u0435\u0440 \u0456 \u0441\u0442\u0430\u043d\u043e\u0432\u0456\u0448\u0447\u0430 \u043f\u0430\u043c\u043e\u0447\u043d\u0456\u043a\u0430 AdGuard"
+    },
+    "settings_icon_size": {
+        "message": "\u041f\u0430\u043c\u0435\u0440 \u0456\u043a\u043e\u043d\u043a\u0456:"
+    },
+    "settings_small": {
+        "message": "\u041c\u0430\u043b\u0435\u043d\u044c\u043a\u0430\u044f"
+    },
+    "settings_big": {
+        "message": "\u0412\u044f\u043b\u0456\u043a\u0430\u044f"
+    },
+    "settings_position": {
+        "message": "\u041c\u0435\u0441\u0446\u0430\u0432\u0430\u043d\u043d\u0435:"
+    },
+    "settings_left_top": {
+        "message": "\u0423\u0432\u0435\u0440\u0441\u0435 \u0437\u043b\u0435\u0432\u0430"
+    },
+    "settings_right_top": {
+        "message": "\u0423\u0432\u0435\u0440\u0441\u0435 \u0441\u043f\u0440\u0430\u0432\u0430"
+    },
+    "settings_left_bottom": {
+        "message": "\u0423\u043d\u0456\u0437\u0435 \u0437\u043b\u0435\u0432\u0430"
+    },
+    "settings_right_bottom": {
+        "message": "\u0423\u043d\u0456\u0437\u0435 \u0441\u043f\u0440\u0430\u0432\u0430"
+    },
+    "settings_cancel": {
+        "message": "\u0421\u043a\u0430\u0441\u0430\u0432\u0430\u0446\u044c"
+    },
+    "settings_save": {
+        "message": "\u0417\u0430\u0445\u0430\u0432\u0430\u0446\u044c \u043d\u0430\u043b\u0430\u0434\u044b"
     }
 }
 /**
@@ -4245,7 +4644,7 @@ var Settings = function (log, gmApi, UpgradeHelper, protectedApi) { // jshint ig
      */
     var DefaultConfig = {
         buttonPositionTop: false,
-        buttonPositionLeft: true,
+        buttonPositionLeft: false,
         smallIcon: false,
         personalConfig: true,
         scriptVersion: 2,
@@ -4264,7 +4663,7 @@ var Settings = function (log, gmApi, UpgradeHelper, protectedApi) { // jshint ig
         var settings;
 
         // getting config from gm storage
-        getSettings().then(function(config) {
+        getSettings().then(function (config) {
             // check and validate config data for prevent errors and backward compatibility
             var checkedConfig = config && validateSettings(config);
             if (checkedConfig) {
@@ -4291,7 +4690,7 @@ var Settings = function (log, gmApi, UpgradeHelper, protectedApi) { // jshint ig
     };
 
     var getSettings = function () {
-        return gmApi.getValue('settings').then(function(config) {
+        return gmApi.getValue('settings').then(function (config) {
             try {
                 return config && protectedApi.json.parse(config);
             } catch (ex) {
@@ -6775,9 +7174,9 @@ var Wot = function () { // jshint ignore:line
  * @returns {{getMessage: Function, translateElement: Function}}
  * @constructor
  */
-/* global en, ru, uk, pl, de, zh_CN, zh_TW, he, it, fa, tr, ja, ar, es, pt_BR, pt_PT, ko, AdguardSettings */
+/* global ar,be-BY,cs,da,de,en,es,fa,fr,he,id,it,ja,ko,no,pl,pt-PT,pt-BR,ru,sk,sl-SI,sr-Latn,sv,tr,uk,zh-CN,zh-TW, AdguardSettings */
 
-var Localization = function() { // jshint ignore:line
+var Localization = function () { // jshint ignore:line
     var currentLocale = null, locale;
     var SupportedLocales = {
         'en': en,
@@ -6786,7 +7185,7 @@ var Localization = function() { // jshint ignore:line
         'pl': pl,
         'de': de,
         'zh': zh_CN,
-        'zh-tw': zh_TW,
+        'zh-TW': zh_TW,
         'he': he,
         'it': it,
         'fa': fa,
@@ -6794,10 +7193,8 @@ var Localization = function() { // jshint ignore:line
         'ja': ja,
         'ar': ar,
         'es': es,
-        'es-419': es,
-        'es-ES': es,
-        'pt-br': pt_BR,
-        'pt': pt_PT,
+        'pt-PT': pt_PT,
+        'pt': pt_BR,
         'ko': ko,
         'sk': sk,
         'no': no,
@@ -6805,7 +7202,10 @@ var Localization = function() { // jshint ignore:line
         'fr': fr,
         'id': id,
         'sv': sv,
-        'sr': sr_Latn
+        'sr': sr_Latn,
+        'cs': cs,
+        'sl': sl_SI,
+        'be': be_BY
     };
 
     /*
@@ -7308,13 +7708,13 @@ var SliderMenuController = function ($, selector, sliderWidget, settings, adguar
     };
 
     var expandAdvanced = function () {
-        var hidden = !$(contentDocument.getElementById('adv-settings')).hasClass("open");
+        var hidden = !$(contentDocument.getElementById('advanced-settings')).hasClass("open");
         if (hidden) {
-            $(contentDocument.getElementById('adv-settings')).addClass('open');
+            $(contentDocument.getElementById('advanced-settings')).addClass('open');
             $(contentDocument.getElementById('ExtendedSettingsText')).addClass('active');
             iframeCtrl.resizeSliderMenuToAdvanced();
         } else {
-            $(contentDocument.getElementById('adv-settings')).removeClass('open');
+            $(contentDocument.getElementById('advanced-settings')).removeClass('open');
             $(contentDocument.getElementById('ExtendedSettingsText')).removeClass('active');
             iframeCtrl.resizeSliderMenuToNormal();
         }
@@ -7817,7 +8217,7 @@ var SettingsMenuController = function ($, settings, button) { // jshint ignore:l
  * @returns {{show: show, remove: remove}}
  * @constructor
  */
-var UIButton = function(log, settings, uiValidationUtils, $, gmApi, uiUtils, iframeController, protectedApi) { // jshint ignore:line
+var UIButton = function (log, settings, uiValidationUtils, $, gmApi, uiUtils, iframeController, protectedApi) { // jshint ignore:line
     var button = null;
     var buttonElement = null;
     var isFullScreenEventsRegistered = false;
@@ -7835,7 +8235,7 @@ var UIButton = function(log, settings, uiValidationUtils, $, gmApi, uiUtils, ifr
     /**
      * Shows Adguard initial button
      */
-    var show = function() {
+    var show = function () {
         if (!checkRequirements()) {
             log.info('Environment doesn\'t satisfy requirements, so don\'t show Adguard');
             return;
@@ -7850,7 +8250,7 @@ var UIButton = function(log, settings, uiValidationUtils, $, gmApi, uiUtils, ifr
         button = buttonElement.firstChild;
         var adgStylesButton;
         if (protectedApi.checkShadowDomSupport()) {
-            var shadowbuttonElement = buttonElement.attachShadow({mode: 'closed'});
+            var shadowbuttonElement = buttonElement.attachShadow({ mode: 'closed' });
             adgStylesButton = protectedApi.createStylesElement(CSS.common + CSS.button, getStyleNonce());
             shadowbuttonElement.appendChild(adgStylesButton);
             shadowbuttonElement.appendChild(button);
@@ -7873,7 +8273,7 @@ var UIButton = function(log, settings, uiValidationUtils, $, gmApi, uiUtils, ifr
      * Checking browser and other requirements.
      * @private
      */
-    var checkRequirements = function() {
+    var checkRequirements = function () {
         if (!uiValidationUtils.validateBrowser()) {
             return false;
         }
@@ -7892,8 +8292,8 @@ var UIButton = function(log, settings, uiValidationUtils, $, gmApi, uiUtils, ifr
         return true;
     };
 
-    var isButtonAlreadyInDOM = function() {
-        var already =  $('.adguard-alert').length > 0;
+    var isButtonAlreadyInDOM = function () {
+        var already = $('.adguard-alert').length > 0;
 
         if (already) {
             log.error('Assistant button is already in DOM');
@@ -7901,7 +8301,7 @@ var UIButton = function(log, settings, uiValidationUtils, $, gmApi, uiUtils, ifr
         }
     };
 
-    var setPositionSettingsToButton = function(button) {
+    var setPositionSettingsToButton = function (button) {
         var position = settings.getUserPositionForButton();
         if (settings.getIconSize()) {
             $(button).addClass('logo-small');
@@ -7927,12 +8327,12 @@ var UIButton = function(log, settings, uiValidationUtils, $, gmApi, uiUtils, ifr
         }
     };
 
-    var registerEvents = function(button) {
-        var onDragEnd = function(data) {
+    var registerEvents = function (button) {
+        var onDragEnd = function (data) {
             settings.setUserPositionForButton(data);
         };
 
-        var openMenu = function() {
+        var openMenu = function () {
             iframeController.setButtonPosition(getButtonPosition(button));
             iframeController.showDetailedMenu();
         };
@@ -7946,7 +8346,7 @@ var UIButton = function(log, settings, uiValidationUtils, $, gmApi, uiUtils, ifr
      * @returns {{left: *, top: *}}
      * @private
      */
-    var getButtonPosition = function(button) {
+    var getButtonPosition = function (button) {
         var box = button.getBoundingClientRect();
         return {
             top: box.top + button.offsetHeight / 2,
@@ -7954,14 +8354,14 @@ var UIButton = function(log, settings, uiValidationUtils, $, gmApi, uiUtils, ifr
         };
     };
 
-    var hideRestoreOnFullScreen = function() {
+    var hideRestoreOnFullScreen = function () {
         if (isFullScreenEventsRegistered) {
             return;
         }
 
         var isFullScreen = false;
 
-        $(document).on('webkitfullscreenchange mozfullscreenchange fullscreenchange', function() {
+        $(document).on('webkitfullscreenchange mozfullscreenchange fullscreenchange', function () {
             if (!isFullScreen) {
                 hideButton();
                 isFullScreen = true;
@@ -7974,21 +8374,21 @@ var UIButton = function(log, settings, uiValidationUtils, $, gmApi, uiUtils, ifr
         isFullScreenEventsRegistered = true;
     };
 
-    var hideButton = function() {
-        if (!buttonElement) {
+    var hideButton = function () {
+        if (!button) {
             return;
         }
-        buttonElement.style.setProperty('display', 'none', 'important');
+        button.style.setProperty('display', 'none', 'important');
     };
 
-    var showButton = function() {
-        if (!buttonElement) {
+    var showButton = function () {
+        if (!button) {
             return;
         }
-        buttonElement.style.setProperty('display', 'block', 'important');
+        button.style.setProperty('display', 'block', 'important');
     };
 
-    var removeButton = function() {
+    var removeButton = function () {
         if (!button) {
             return;
         }
@@ -8001,7 +8401,7 @@ var UIButton = function(log, settings, uiValidationUtils, $, gmApi, uiUtils, ifr
      * under the button there are important elements
      * issue: https://github.com/AdguardTeam/AdguardAssistant/issues/32
      */
-    var respectPageElements = function(element) {
+    var respectPageElements = function (element) {
         var buttonInRightBottom =
             $(element).hasClass('adguard-assistant-button-bottom') &&
             $(element).hasClass('adguard-assistant-button-right');
