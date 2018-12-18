@@ -16,12 +16,13 @@
  */
 
 /* global contentPage */
+const PageController = (response) => {
+    const {
+        userSettings,
+        enabledFilters,
+        constants: { AntiBannerFiltersId },
+    } = response;
 
-let userSettings;
-let AntiBannerFiltersId;
-let enabledFilters;
-
-const PageController = () => {
     let safebrowsingEnabledCheckbox;
     let trackingFilterEnabledCheckbox;
     let socialFilterEnabledCheckbox;
@@ -167,11 +168,7 @@ const PageController = () => {
 };
 
 contentPage.sendMessage({ type: 'initializeFrameScript' }, response => {
-    userSettings = response.userSettings;
-    enabledFilters = response.enabledFilters;
-    AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
-
-    const controller = PageController();
+    const controller = PageController(response);
     if (document.readyState !== 'complete') {
         document.addEventListener('DOMContentLoaded', () => {
             controller.init();
