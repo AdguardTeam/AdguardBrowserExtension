@@ -160,10 +160,13 @@
             case 'getWhiteListDomains':
                 var whiteListDomains = adguard.whitelist.getWhiteListDomains();
                 return { content: whiteListDomains.join('\r\n') };
-            case 'saveWhiteListDomains':
-                const domains = message.content.split(/[\r\n]+/);
+            case 'saveWhiteListDomains': {
+                const domains = message.content.split(/[\r\n]+/)
+                    .trim()
+                    .filter(string => string.length > 0);
                 adguard.whitelist.updateWhiteListDomains(domains);
                 break;
+            }
             case 'getUserRules':
                 adguard.userrules.getUserRulesText(function (content) {
                     callback({ content: content });
