@@ -17,25 +17,27 @@
 
 /* global contentPage */
 
-var PageController = function () {
+const PageController = function () {
     // Empty
 };
+
+let userSettings;
+let AntiBannerFiltersId;
+let enabledFilters;
 
 PageController.prototype = {
 
     init: function () {
-
         this._bindEvents();
         this._render();
     },
 
     _bindEvents: function () {
-
-        this.safebrowsingEnabledCheckbox = document.getElementById("safebrowsingEnabledCheckbox");
-        this.trackingFilterEnabledCheckbox = document.getElementById("trackingFilterEnabledCheckbox");
-        this.socialFilterEnabledCheckbox = document.getElementById("socialFilterEnabledCheckbox");
-        this.sendSafebrowsingStatsCheckbox = document.getElementById("sendSafebrowsingStatsCheckbox");
-        this.allowAcceptableAdsCheckbox = document.getElementById("allowAcceptableAds");
+        this.safebrowsingEnabledCheckbox = document.getElementById('safebrowsingEnabledCheckbox');
+        this.trackingFilterEnabledCheckbox = document.getElementById('trackingFilterEnabledCheckbox');
+        this.socialFilterEnabledCheckbox = document.getElementById('socialFilterEnabledCheckbox');
+        this.sendSafebrowsingStatsCheckbox = document.getElementById('sendSafebrowsingStatsCheckbox');
+        this.allowAcceptableAdsCheckbox = document.getElementById('allowAcceptableAds');
 
         this.safebrowsingEnabledCheckbox.addEventListener('change', this.safebrowsingEnabledChange);
         this.trackingFilterEnabledCheckbox.addEventListener('change', this.trackingFilterEnabledChange);
@@ -63,30 +65,30 @@ PageController.prototype = {
         contentPage.sendMessage({
             type: 'changeUserSetting',
             key: userSettings.names.DISABLE_SAFEBROWSING,
-            value: !this.checked
+            value: !this.checked,
         });
     },
 
     trackingFilterEnabledChange: function () {
         if (this.checked) {
-            contentPage.sendMessage({type: 'addAndEnableFilter', filterId: AntiBannerFiltersId.TRACKING_FILTER_ID});
+            contentPage.sendMessage({ type: 'addAndEnableFilter', filterId: AntiBannerFiltersId.TRACKING_FILTER_ID });
         } else {
             contentPage.sendMessage({
                 type: 'disableAntiBannerFilter',
                 filterId: AntiBannerFiltersId.TRACKING_FILTER_ID,
-                remove: true
+                remove: true,
             });
         }
     },
 
     socialFilterEnabledChange: function () {
         if (this.checked) {
-            contentPage.sendMessage({type: 'addAndEnableFilter', filterId: AntiBannerFiltersId.SOCIAL_FILTER_ID});
+            contentPage.sendMessage({ type: 'addAndEnableFilter', filterId: AntiBannerFiltersId.SOCIAL_FILTER_ID });
         } else {
             contentPage.sendMessage({
                 type: 'disableAntiBannerFilter',
                 filterId: AntiBannerFiltersId.SOCIAL_FILTER_ID,
-                remove: true
+                remove: true,
             });
         }
     },
@@ -95,12 +97,12 @@ PageController.prototype = {
         contentPage.sendMessage({
             type: 'changeUserSetting',
             key: userSettings.names.DISABLE_SEND_SAFEBROWSING_STATS,
-            value: !this.checked
+            value: !this.checked,
         });
         contentPage.sendMessage({
             type: 'changeUserSetting',
             key: userSettings.names.DISABLE_COLLECT_HITS,
-            value: !this.checked
+            value: !this.checked,
         });
     },
 
@@ -108,25 +110,24 @@ PageController.prototype = {
         if (this.checked) {
             contentPage.sendMessage({
                 type: 'addAndEnableFilter',
-                filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID
+                filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID,
             });
         } else {
             contentPage.sendMessage({
                 type: 'disableAntiBannerFilter',
                 filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID,
-                remove: true
+                remove: true,
             });
         }
     },
 
     _render: function () {
-
-        var safebrowsingEnabled = !userSettings.values[userSettings.names.DISABLE_SAFEBROWSING];
-        var sendSafebrowsingStats = !userSettings.values[userSettings.names.DISABLE_SEND_SAFEBROWSING_STATS];
-        var collectHitsCount = !userSettings.values[userSettings.names.DISABLE_COLLECT_HITS];
-        var trackingFilterEnabled = AntiBannerFiltersId.TRACKING_FILTER_ID in enabledFilters;
-        var socialFilterEnabled = AntiBannerFiltersId.SOCIAL_FILTER_ID in enabledFilters;
-        var allowAcceptableAdsEnabled = AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID in enabledFilters;
+        const safebrowsingEnabled = !userSettings.values[userSettings.names.DISABLE_SAFEBROWSING];
+        const sendSafebrowsingStats = !userSettings.values[userSettings.names.DISABLE_SEND_SAFEBROWSING_STATS];
+        const collectHitsCount = !userSettings.values[userSettings.names.DISABLE_COLLECT_HITS];
+        const trackingFilterEnabled = AntiBannerFiltersId.TRACKING_FILTER_ID in enabledFilters;
+        const socialFilterEnabled = AntiBannerFiltersId.SOCIAL_FILTER_ID in enabledFilters;
+        const allowAcceptableAdsEnabled = AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID in enabledFilters;
 
         this._renderSafebrowsingSection(safebrowsingEnabled, sendSafebrowsingStats, collectHitsCount);
         this._updateCheckbox(this.trackingFilterEnabledCheckbox, trackingFilterEnabled);
@@ -145,23 +146,21 @@ PageController.prototype = {
         } else {
             checkbox.removeAttribute('checked');
         }
-    }
+    },
 };
 
-var userSettings;
-var AntiBannerFiltersId;
-var enabledFilters;
-var environmentOptions;
-
-contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
-
+contentPage.sendMessage({ type: 'initializeFrameScript' }, response => {
     userSettings = response.userSettings;
     enabledFilters = response.enabledFilters;
-    environmentOptions = response.environmentOptions;
     AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
 
-    document.addEventListener("DOMContentLoaded", function () {
-        var controller = new PageController();
+    if (document.readyState !== 'complete') {
+        document.addEventListener('DOMContentLoaded', () => {
+            const controller = new PageController();
+            controller.init();
+        });
+    } else {
+        const controller = new PageController();
         controller.init();
-    });
+    }
 });
