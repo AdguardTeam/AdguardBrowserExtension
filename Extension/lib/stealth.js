@@ -254,7 +254,7 @@ adguard.stealthService = (function (adguard) {
             return result;
         }
 
-        const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrerUrl);
+        const thirdParty = referrerUrl && adguard.utils.url.isThirdPartyRequest(requestUrl, referrerUrl);
         const isMainFrame = requestType === adguard.RequestTypes.DOCUMENT;
 
         // Remove cookie header for third-party requests
