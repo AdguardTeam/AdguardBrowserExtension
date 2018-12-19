@@ -704,12 +704,10 @@ adguard.ui = (function (adguard) { // jshint ignore:line
      * @param title
      * @param callback
      */
-    var loadCustomFilterInfo = function (url, title, callback) {
-        adguard.filters.loadCustomFilterInfo(url, { title: title }, function (filter) {
+    var loadCustomFilterInfo = (url, title, callback) => {
+        adguard.filters.loadCustomFilterInfo(url, { title: title }, (filter) => {
             callback(filter);
-        }, function () {
-            callback();
-        });
+        }, callback);
     };
 
     /**
@@ -723,15 +721,13 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         adguard.filters.loadCustomFilter(url, options, (filter) => {
             adguard.filters.addAndEnableFilters([filter.filterId]);
             callback(filter);
-        }, function () {
-            callback();
-        });
+        }, callback);
     };
 
     var initAssistant = function (selectElement) {
         var options = {
             addRuleCallbackName: 'addUserRule',
-            selectElement: selectElement
+            selectElement: selectElement,
         };
 
         // init assistant

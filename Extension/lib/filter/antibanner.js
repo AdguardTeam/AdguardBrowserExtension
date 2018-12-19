@@ -205,15 +205,14 @@ adguard.antiBannerService = (function (adguard) {
      * @param filterId Filter identifier
      * @param callback Called when operation is finished
      */
-    var addAntiBannerFilter = function (filterId, callback) {
-
-        var filter = getFilterById(filterId);
+    var addAntiBannerFilter = (filterId, callback) => {
+        const filter = getFilterById(filterId);
         if (filter.installed) {
             callback(true);
             return;
         }
 
-        var onFilterLoaded = function (success) {
+        const onFilterLoaded = (success) => {
             if (success) {
                 filter.installed = true;
                 adguard.listeners.notifyListeners(adguard.listeners.FILTER_ADD_REMOVE, filter);
@@ -561,6 +560,9 @@ adguard.antiBannerService = (function (adguard) {
                 return;
             }
 
+            const isTrustedFilter = adguard.subscriptions.isTrustedFilter(filterId);
+            console.log(adguard.subscriptions.getFilter(filterId), isTrustedFilter, filterId);
+
             for (let i = startIdx; i < rulesTexts.length && i < endIdx; i += 1) {
                 const ruleText = rulesTexts[i];
                 if (ruleText in uniqueRules) {
@@ -568,7 +570,7 @@ adguard.antiBannerService = (function (adguard) {
                     continue;
                 }
                 uniqueRules[ruleText] = true;
-                const rule = adguard.rules.builder.createRule(ruleText, filterId);
+                const rule = adguard.rules.builder.createRule(ruleText, filterId, isTrustedFilter);
 
                 if (rule !== null) {
                     newRequestFilter.addRule(rule);
@@ -788,7 +790,7 @@ adguard.antiBannerService = (function (adguard) {
             filterEventsHistory = [];
             onFilterChangeTimeout = null;
 
-            var needCreateRequestFilter = filterEvents.some(isUpdateRequestFilterEvent);
+            const needCreateRequestFilter = filterEvents.some(isUpdateRequestFilterEvent);
 
             // Split by filterId
             const eventsByFilter = Object.create(null);
@@ -824,7 +826,7 @@ adguard.antiBannerService = (function (adguard) {
         };
 
         const processFilterEvent = function (event, filter, rules) {
-            filterEventsHistory.push({ event: event, filter: filter, rules: rules });
+            filterEventsHistory.push({ event, filter, rules });
 
             if (onFilterChangeTimeout !== null) {
                 clearTimeout(onFilterChangeTimeout);
@@ -1035,14 +1037,15 @@ adguard.antiBannerService = (function (adguard) {
      * @private
      */
     function loadFilterRules(filterMetadata, forceRemote, callback) {
-
-        var filter = getFilterById(filterMetadata.filterId);
+        const filter = getFilterById(filterMetadata.filterId);
 
         filter._isDownloading = true;
         adguard.listeners.notifyListeners(adguard.listeners.START_DOWNLOAD_FILTER, filter);
 
-        var successCallback = function (filterRules) {
-            adguard.console.info('Retrieved response from server for filter {0}, rules count: {1}', filter.filterId, filterRules.length);
+        const successCallback = (filterRules) => {
+            adguard.console.info('Retrieved response from server for filter {0}, rules count: {1}',
+                filter.filterId,
+                filterRules.length);
             delete filter._isDownloading;
             filter.version = filterMetadata.version;
             filter.lastUpdateTime = filterMetadata.timeUpdated;
@@ -1054,14 +1057,18 @@ adguard.antiBannerService = (function (adguard) {
             callback(true);
         };
 
-        var errorCallback = function (cause) {
+        const errorCallback = (cause) => {
             adguard.console.error('Error retrieved response from server for filter {0}, cause: {1}', filter.filterId, cause || '');
             delete filter._isDownloading;
             adguard.listeners.notifyListeners(adguard.listeners.ERROR_DOWNLOAD_FILTER, filter);
             callback(false);
         };
 
-        adguard.backend.loadFilterRules(filter.filterId, forceRemote, adguard.settings.isUseOptimizedFiltersEnabled(), successCallback, errorCallback);
+        adguard.backend.loadFilterRules(filter.filterId,
+            forceRemote,
+            adguard.settings.isUseOptimizedFiltersEnabled(),
+            successCallback,
+            errorCallback);
     }
 
     /**
@@ -1531,12 +1538,11 @@ adguard.filters = (function (adguard) {
      * @param callback We pass list of enabled filter identifiers to the callback
      */
     var addAndEnableFilters = function (filterIds, callback, options) {
-
         callback = callback || function () {
             // Empty callback
         };
 
-        var enabledFilters = [];
+        const enabledFilters = [];
 
         if (!filterIds || filterIds.length === 0) {
             callback(enabledFilters);
@@ -1544,16 +1550,16 @@ adguard.filters = (function (adguard) {
         }
 
         filterIds = adguard.utils.collections.removeDuplicates(filterIds.slice(0));
-        var loadNextFilter = function () {
+        const loadNextFilter = () => {
             if (filterIds.length === 0) {
                 callback(enabledFilters);
             } else {
-                var filterId = filterIds.shift();
+                const filterId = filterIds.shift();
                 antiBannerService.addAntiBannerFilter(filterId, function (success) {
                     if (success) {
-                        var changed = enableFilter(filterId, options);
+                        const changed = enableFilter(filterId, options);
                         if (changed) {
-                            var filter = adguard.subscriptions.getFilter(filterId);
+                            const filter = adguard.subscriptions.getFilter(filterId);
                             enabledFilters.push(filter);
                         }
                     }

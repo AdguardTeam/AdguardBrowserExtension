@@ -187,6 +187,8 @@ adguard.subscriptions = (function (adguard) {
         };
     };
 
+    const CUSTOM_FILTERS_START_ID = 1000;
+
     const addFilterId = () => {
         let max = 0;
         filters.forEach(function (f) {
@@ -195,7 +197,7 @@ adguard.subscriptions = (function (adguard) {
             }
         });
 
-        return max >= 1000 ? max + 1 : 1000;
+        return max >= CUSTOM_FILTERS_START_ID ? max + 1 : CUSTOM_FILTERS_START_ID;
     };
 
 
@@ -246,7 +248,7 @@ adguard.subscriptions = (function (adguard) {
      * @param callback
      */
     const updateCustomFilter = function (url, options, callback) {
-        const { title } = options;
+        const { title, trusted } = options;
         adguard.backend.loadFilterRulesBySubscriptionUrl(url, function (rules) {
             const filterData = parseFilterDataFromHeader(rules);
             const filterId = addFilterId();
@@ -284,6 +286,8 @@ adguard.subscriptions = (function (adguard) {
                 // custom filters have special fields
                 filter.customUrl = url;
                 filter.rulesCount = rulesCount;
+                // TODO check if filter is set trusted or untrusted after reload
+                filter.trusted = trusted;
 
                 filters.push(filter);
                 filtersMap[filter.filterId] = filter;
@@ -547,6 +551,14 @@ adguard.subscriptions = (function (adguard) {
         return filtersMap[filterId];
     };
 
+    const isTrustedFilter = (filterId) => {
+        if (filterId < CUSTOM_FILTERS_START_ID) {
+            return true;
+        }
+        const filter = filtersMap[filterId];
+        return !!(filter && filter.trusted && filter.trusted === true);
+    };
+
     /**
      * @returns Array of Tags metadata
      */
@@ -645,6 +657,7 @@ adguard.subscriptions = (function (adguard) {
         groupHasEnabledStatus: groupHasEnabledStatus,
         getFilters: getFilters,
         getFilter: getFilter,
+        isTrustedFilter: isTrustedFilter,
         createSubscriptionFilterFromJSON: createSubscriptionFilterFromJSON,
         updateCustomFilter: updateCustomFilter,
         getCustomFilterInfo: getCustomFilterInfo,
