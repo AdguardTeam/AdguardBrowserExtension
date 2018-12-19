@@ -81,6 +81,11 @@
         const frameId = requestDetails.frameId;
         const requestFrameId = requestDetails.requestFrameId || 0;
 
+        const cleansedUrl = checkUrlForTrackers(requestUrl, requestUrl, requestType);
+        if (cleansedUrl) {
+            return { redirectUrl: cleansedUrl };
+        }
+
         if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
             adguard.frames.recordFrame(tab, frameId, requestUrl, requestType);
         }
@@ -117,13 +122,6 @@
         }
 
         const referrerUrl = getReferrerUrl(requestDetails);
-
-        const cleansedUrl = checkUrlForTrackers(requestUrl, referrerUrl, requestType);
-        if (cleansedUrl) {
-            console.log('Url cleaned: ' + cleansedUrl);
-            return { redirectUrl: cleansedUrl };
-        }
-
         let requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
 
         // Record request for other types
