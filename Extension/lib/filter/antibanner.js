@@ -1664,12 +1664,29 @@ adguard.filters = (function (adguard) {
 
         adguard.subscriptions.updateCustomFilter(url, options, function (filterId) {
             if (filterId) {
-                adguard.console.info('Custom filter info downloaded');
+                adguard.console.info('Custom filter downloaded');
 
                 const filter = adguard.subscriptions.getFilter(filterId);
                 // In case filter is loaded again and was removed before
                 delete filter.removed;
                 successCallback(filter);
+            } else {
+                errorCallback();
+            }
+        });
+    };
+
+    const loadCustomFilterInfo = (url, options, successCallback, errorCallback) => {
+        adguard.console.info(`Downloading custom filter info from ${url}`);
+        if (!url) {
+            errorCallback();
+            return;
+        }
+
+        adguard.subscriptions.getCustomFilterInfo(url, options, (filterData) => {
+            if (filterData) {
+                adguard.console.info('Custom filter data downloaded');
+                successCallback(filterData);
             } else {
                 errorCallback();
             }
@@ -1700,6 +1717,7 @@ adguard.filters = (function (adguard) {
         disableGroup: disableGroup,
 
         loadCustomFilter: loadCustomFilter,
+        loadCustomFilterInfo: loadCustomFilterInfo,
     };
 
 })(adguard);
