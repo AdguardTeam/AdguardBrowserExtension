@@ -971,7 +971,6 @@ var AntiBannerFilters = function (options) {
 
     let customFilterInitialized = false;
     let onSubscribeClicked;
-    let onSubscribeBackClicked;
     function renderCustomFilterPopup(filterOptions = {}) {
         const { isFilterSubscription, title, url } = filterOptions;
         const POPUP_ACTIVE_CLASS = 'option-popup__step--active';
@@ -1033,11 +1032,10 @@ var AntiBannerFilters = function (options) {
             thirdStep.classList.add(POPUP_ACTIVE_CLASS);
         }
 
-        function renderStepFour(filter, isFilterSubscription) {
+        function renderStepFour(filter) {
             clearActiveStep();
             fourthStep.classList.add(POPUP_ACTIVE_CLASS);
             const subscribeButton = document.querySelector('#custom-filter-popup-added-subscribe');
-            const backButton = document.querySelector('#custom-filter-popup-added-back');
 
             fillLoadedFilterDetails(filter);
 
@@ -1046,19 +1044,6 @@ var AntiBannerFilters = function (options) {
             }
 
             subscribeButton.addEventListener('click', onSubscribeClicked);
-
-            if (isFilterSubscription) {
-                backButton.style.display = 'none';
-            } else {
-                backButton.style.display = '';
-                if (onSubscribeBackClicked) {
-                    backButton.removeEventListener('click', onSubscribeBackClicked);
-                }
-                onSubscribeBackClicked = () => {
-                    renderStepOne();
-                };
-                backButton.addEventListener('click', onSubscribeBackClicked);
-            }
         }
 
         function bindEvents() {
@@ -1094,12 +1079,6 @@ var AntiBannerFilters = function (options) {
 
             // Popup cross button clicked
             closeButton.addEventListener('click', closePopup);
-
-            // Popup cancel button clicked
-            const cancelButtons = document.querySelectorAll('.custom-filter-popup-cancel');
-            cancelButtons.forEach(button => {
-                button.addEventListener('click', closePopup);
-            });
         }
 
         if (!customFilterInitialized) {
@@ -1112,7 +1091,7 @@ var AntiBannerFilters = function (options) {
         if (isFilterSubscription) {
             contentPage.sendMessage({ type: 'loadCustomFilterInfo', url, title }, function (filter) {
                 if (filter) {
-                    renderStepFour(filter, isFilterSubscription);
+                    renderStepFour(filter);
                 } else {
                     renderStepThree();
                 }
