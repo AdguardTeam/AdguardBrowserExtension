@@ -568,6 +568,8 @@ adguard.cookieFiltering = (function (adguard) {
             const cookieDomain = setCookie.domain || requestHost;
 
             const cookieUrl = getCookieUrl(setCookie, cookieDomain);
+            // Marks requests without referrer as first-party.
+            // It's important to prevent removing google auth cookies. (for requests in background tab)
             const thirdParty = referrerUrl && adguard.utils.url.isThirdPartyRequest(cookieUrl, referrerUrl);
             const rules = adguard.webRequestService.getCookieRules(tab, cookieUrl, referrerUrl, requestType);
 
