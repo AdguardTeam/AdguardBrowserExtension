@@ -980,6 +980,7 @@ var AntiBannerFilters = function (options) {
         const thirdStep = document.querySelector('#add-custom-filter-step-3');
         const fourthStep = document.querySelector('#add-custom-filter-step-4');
         const closeButton = document.querySelector('#custom-filter-popup-close');
+        const subscribeButton = document.querySelector('#custom-filter-popup-added-subscribe');
 
         function closePopup() {
             customFilterPopup.classList.remove('option-popup--active');
@@ -1035,15 +1036,8 @@ var AntiBannerFilters = function (options) {
         function renderStepFour(filter) {
             clearActiveStep();
             fourthStep.classList.add(POPUP_ACTIVE_CLASS);
-            const subscribeButton = document.querySelector('#custom-filter-popup-added-subscribe');
 
             fillLoadedFilterDetails(filter);
-
-            if (onSubscribeClicked) {
-                subscribeButton.removeEventListener('click', onSubscribeClicked);
-            }
-
-            subscribeButton.addEventListener('click', onSubscribeClicked);
         }
 
         function bindEvents() {
@@ -1064,11 +1058,17 @@ var AntiBannerFilters = function (options) {
                 renderStepTwo();
             });
 
-            document.querySelector('#custom-filter-popup-added-subscribe').addEventListener('click', function (e) {
+            subscribeButton.addEventListener('click', function (e) {
                 e.preventDefault();
                 const url = document.querySelector('#custom-filter-popup-added-url').href;
                 const title = document.querySelector('#custom-filter-popup-added-title').textContent || '';
-                contentPage.sendMessage({ type: 'loadCustomFilter', url, title }, function (filter) {
+                const trusted = document.querySelector('#custom-filter-popup-trusted');
+                contentPage.sendMessage({
+                    type: 'loadCustomFilter',
+                    url,
+                    title,
+                    trusted: trusted.checked,
+                }, function (filter) {
                     console.log('filter added successfully', filter);
                     closePopup();
                 });
