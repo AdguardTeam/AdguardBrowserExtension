@@ -159,24 +159,23 @@ adguard.subscriptions = (function (adguard) {
      * @param rules
      * @returns object
      */
-    var parseFilterDataFromHeader = function (rules) {
-        function parseTag(tagName) {
-            var result = '';
+    const parseFilterDataFromHeader = (rules) => {
+        const parseTag = (tagName) => {
+            let result = '';
 
-            //Look up no more than 50 first lines
-            var maxLines = Math.min(50, rules.length);
-            for (var i = 0; i < maxLines; i++) {
-                var r = rules[i];
-
-                var search = '! ' + tagName + ': ';
-                var indexOf = r.indexOf(search);
-                if (indexOf >= 0) {
-                    result = r.substring(indexOf + search.length);
+            // Look up no more than 50 first lines
+            const maxLines = Math.min(50, rules.length);
+            for (let i = 0; i < maxLines; i += 1) {
+                const rule = rules[i];
+                const search = '! ' + tagName + ': ';
+                const indexOfSearch = rule.indexOf(search);
+                if (indexOfSearch >= 0) {
+                    result = rule.substring(indexOfSearch + search.length);
                 }
             }
 
             return result;
-        }
+        };
 
         return {
             name: parseTag('Title'),
@@ -184,12 +183,12 @@ adguard.subscriptions = (function (adguard) {
             homepage: parseTag('Homepage'),
             version: parseTag('Version'),
             expires: parseTag('Expires'),
-            timeUpdated: parseTag('TimeUpdated')
+            timeUpdated: parseTag('TimeUpdated'),
         };
     };
 
-    var addFilterId = function () {
-        var max = 0;
+    const addFilterId = () => {
+        let max = 0;
         filters.forEach(function (f) {
             if (f.filterId > max) {
                 max = f.filterId;
@@ -243,6 +242,7 @@ adguard.subscriptions = (function (adguard) {
      * Adds or updates custom filter
      *
      * @param url subscriptionUrl
+     * @param options
      * @param callback
      */
     const updateCustomFilter = function (url, options, callback) {
@@ -297,6 +297,57 @@ adguard.subscriptions = (function (adguard) {
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, filter, rules);
 
             callback(filter.filterId);
+        }, function (cause) {
+            adguard.console.error(`Error download filter by url ${url}, cause: ${cause || ''}`);
+            callback();
+        });
+    };
+
+    // TODO may be you should save filter data in the temp storage
+    const getCustomFilterInfo = (url, options, callback) => {
+        const { title } = options;
+
+        adguard.backend.loadFilterRulesBySubscriptionUrl(url, function (rules) {
+            let {
+                name,
+                description,
+                homepage,
+                version,
+                expires,
+                timeUpdated,
+            } = parseFilterDataFromHeader(rules);
+
+            name = name || title;
+            timeUpdated = timeUpdated || new Date().toISOString();
+
+            const filterId = addFilterId(); // TODO how to do without this method call?
+            const groupId = CUSTOM_FILTERS_GROUP_ID;
+            const subscriptionUrl = url;
+            const languages = [];
+            const displayNumber = 0;
+            const tags = [0];
+            let rulesCount = rules.length;
+
+            // Check if filter from this url was added before
+            let filter = filters.find(function (f) {
+                return f.customUrl === url;
+            });
+
+            if (filter) {
+                if (version && adguard.utils.browser.isGreaterOrEqualsVersion(filter.version, version)) {
+                    // Update version is not greater
+                    callback();
+                    return;
+                }
+            } else {
+                filter = new SubscriptionFilter(filterId, groupId, name, description, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl, tags);
+                filter.loaded = true;
+                // custom filters have special fields
+                filter.customUrl = url;
+                filter.rulesCount = rulesCount;
+            }
+
+            callback(filter);
         }, function (cause) {
             adguard.console.error(`Error download filter by url ${url}, cause: ${cause || ''}`);
             callback();
@@ -596,6 +647,7 @@ adguard.subscriptions = (function (adguard) {
         getFilter: getFilter,
         createSubscriptionFilterFromJSON: createSubscriptionFilterFromJSON,
         updateCustomFilter: updateCustomFilter,
+        getCustomFilterInfo: getCustomFilterInfo,
         getLangSuitableFilters: getLangSuitableFilters,
     };
 

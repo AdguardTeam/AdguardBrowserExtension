@@ -701,10 +701,27 @@ adguard.ui = (function (adguard) { // jshint ignore:line
      * Loads information about custom filter from url
      *
      * @param url
+     * @param title
      * @param callback
      */
     var loadCustomFilterInfo = function (url, title, callback) {
+        adguard.filters.loadCustomFilterInfo(url, { title: title }, function (filter) {
+            callback(filter);
+        }, function () {
+            callback();
+        });
+    };
+
+    /**
+     * Loads information about custom filter from url
+     *
+     * @param url
+     * @param title
+     * @param callback
+     */
+    var loadCustomFilter = function (url, title, callback) {
         adguard.filters.loadCustomFilter(url, { title: title }, function (filter) {
+            adguard.filters.addAndEnableFilters([filter.filterId]);
             callback(filter);
         }, function () {
             callback();
@@ -945,6 +962,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         changeApplicationFilteringDisabled: changeApplicationFilteringDisabled,
         checkFiltersUpdates: checkFiltersUpdates,
         loadCustomFilterInfo: loadCustomFilterInfo,
+        loadCustomFilter: loadCustomFilter,
         openAssistant: openAssistant,
         openTab: openTab,
 
