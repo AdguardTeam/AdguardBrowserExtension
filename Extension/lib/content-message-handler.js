@@ -193,9 +193,11 @@
             case 'loadCustomFilterInfo':
                 adguard.ui.loadCustomFilterInfo(message.url, message.title, callback);
                 return true;
-            case 'loadCustomFilter':
-                adguard.ui.loadCustomFilter(message.url, message.title, callback);
+            case 'loadCustomFilter': {
+                const { url, title, trusted } = message;
+                adguard.ui.loadCustomFilter(url, { title, trusted }, callback);
                 return true;
+            }
             case 'getFiltersMetadata':
                 return adguard.categories.getFiltersMetadata();
             case 'setFiltersUpdatePeriod':

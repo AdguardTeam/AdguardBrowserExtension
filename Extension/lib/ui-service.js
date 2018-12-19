@@ -716,11 +716,11 @@ adguard.ui = (function (adguard) { // jshint ignore:line
      * Loads information about custom filter from url
      *
      * @param url
-     * @param title
+     * @param options
      * @param callback
      */
-    var loadCustomFilter = function (url, title, callback) {
-        adguard.filters.loadCustomFilter(url, { title: title }, function (filter) {
+    const loadCustomFilter = (url, options, callback) => {
+        adguard.filters.loadCustomFilter(url, options, (filter) => {
             adguard.filters.addAndEnableFilters([filter.filterId]);
             callback(filter);
         }, function () {
