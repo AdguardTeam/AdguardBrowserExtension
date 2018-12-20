@@ -1075,7 +1075,7 @@ var AntiBannerFilters = function (options) {
                 const url = document.querySelector('#custom-filter-popup-added-url').href;
                 const title = document.querySelector('#custom-filter-popup-added-title').textContent || '';
                 contentPage.sendMessage({
-                    type: 'loadCustomFilter',
+                    type: 'subscribeToCustomFilter',
                     url,
                     title: title.trim(),
                     trusted: checkboxInput.checked,

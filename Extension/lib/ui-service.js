@@ -697,33 +697,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         });
     };
 
-    /**
-     * Loads information about custom filter from url
-     *
-     * @param url
-     * @param title
-     * @param callback
-     */
-    var loadCustomFilterInfo = (url, title, callback) => {
-        adguard.filters.loadCustomFilterInfo(url, { title: title }, (filter) => {
-            callback(filter);
-        }, callback);
-    };
-
-    /**
-     * Loads information about custom filter from url
-     *
-     * @param url
-     * @param options
-     * @param callback
-     */
-    const loadCustomFilter = (url, options, callback) => {
-        adguard.filters.loadCustomFilter(url, options, (filter) => {
-            adguard.filters.addAndEnableFilters([filter.filterId]);
-            callback(filter);
-        }, callback);
-    };
-
     var initAssistant = function (selectElement) {
         var options = {
             addRuleCallbackName: 'addUserRule',
@@ -957,8 +930,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
         changeApplicationFilteringDisabled: changeApplicationFilteringDisabled,
         checkFiltersUpdates: checkFiltersUpdates,
-        loadCustomFilterInfo: loadCustomFilterInfo,
-        loadCustomFilter: loadCustomFilter,
         openAssistant: openAssistant,
         openTab: openTab,
 
