@@ -174,7 +174,7 @@
 
             if (rule instanceof adguard.rules.UrlFilterRule) {
                 if (typeof rule.isIgnored === 'function' && rule.isIgnored()) {
-                    adguard.console.warn(`FilterRule with $extension modifier was omitted. Rule text: "${rule.ruleText}"`);
+                    adguard.console.debug(`FilterRule with $extension modifier was omitted. Rule text: "${rule.ruleText}"`);
                     return;
                 }
                 if (rule.isCspRule()) {

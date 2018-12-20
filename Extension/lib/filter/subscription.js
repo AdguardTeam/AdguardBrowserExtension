@@ -304,18 +304,22 @@ adguard.subscriptions = (function (adguard) {
     const updateCustomFilter = function (url, options, callback) {
         const { title, trusted } = options;
         adguard.backend.loadFilterRulesBySubscriptionUrl(url, function (rules) {
-            const filterData = parseFilterDataFromHeader(rules);
             const filterId = addFilterId();
-            const groupId = CUSTOM_FILTERS_GROUP_ID;
-            const defaultName = filterData.name || title;
-            const defaultDescription = filterData.description;
-            const homepage = filterData.homepage;
-            const version = filterData.version;
+            const filterData = parseFilterDataFromHeader(rules);
+            let {
+                name,
+                description,
+                homepage,
+                version,
+                expires,
+                timeUpdated,
+            } = filterData;
+            name = name || title;
             // .toISOString() method used instead of .toString() method because of
             // moment.js library deprecation warning:
             // http://momentjs.com/guides/#/warnings/js-date/
-            const timeUpdated = filterData.timeUpdated || new Date().toISOString();
-            const expires = filterData.expires;
+            timeUpdated = timeUpdated || new Date().toISOString();
+            const groupId = CUSTOM_FILTERS_GROUP_ID;
             const subscriptionUrl = url;
             const languages = [];
             const displayNumber = 0;
@@ -337,8 +341,8 @@ adguard.subscriptions = (function (adguard) {
                 filter = new SubscriptionFilter({
                     filterId,
                     groupId,
-                    name: defaultName,
-                    description: defaultDescription,
+                    name,
+                    description,
                     homepage,
                     version,
                     timeUpdated,
@@ -354,7 +358,9 @@ adguard.subscriptions = (function (adguard) {
                 // custom filters have special fields
                 filter.customUrl = url;
                 filter.rulesCount = rulesCount;
-                filter.trusted = trusted;
+                if (trusted) {
+                    filter.trusted = trusted;
+                }
 
                 filters.push(filter);
                 filtersMap[filter.filterId] = filter;
@@ -391,7 +397,6 @@ adguard.subscriptions = (function (adguard) {
             name = name || title;
             timeUpdated = timeUpdated || new Date().toISOString();
 
-            const filterId = addFilterId(); // TODO how to do without this method call?
             const groupId = CUSTOM_FILTERS_GROUP_ID;
             const subscriptionUrl = url;
             const languages = [];
@@ -412,7 +417,6 @@ adguard.subscriptions = (function (adguard) {
                 }
             } else {
                 filter = new SubscriptionFilter({
-                    filterId,
                     groupId,
                     name,
                     description,
