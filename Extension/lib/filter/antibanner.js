@@ -561,7 +561,6 @@ adguard.antiBannerService = (function (adguard) {
             }
 
             const isTrustedFilter = adguard.subscriptions.isTrustedFilter(filterId);
-            console.log(adguard.subscriptions.getFilter(filterId), isTrustedFilter, filterId);
 
             for (let i = startIdx; i < rulesTexts.length && i < endIdx; i += 1) {
                 const ruleText = rulesTexts[i];
