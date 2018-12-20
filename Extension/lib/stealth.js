@@ -527,10 +527,7 @@ adguard.stealthService = (function (adguard) {
 
         if (result !== requestUrl) {
             adguard.console.debug('Stealth stripped tracking parameters for url: ' + requestUrl);
-            //TODO: Fix log
-            let stealthActions = 0;
-            stealthActions |= STEALTH_ACTIONS.STRIPPED_TRACKING_URL;
-            adguard.requestContextStorage.update(requestId, { stealthActions });
+            adguard.filteringLog.bindStealthActionsToHttpRequestEvent(tab, STEALTH_ACTIONS.STRIPPED_TRACKING_URL, context.eventId);
 
             return result;
         }
