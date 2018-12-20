@@ -193,7 +193,12 @@
             if (isInjectRule) {
                 // Simple validation for css injection rules
                 if (!/{.+}/.test(cssContent)) {
-                    throw new Error("Invalid css injection rule, no style presented: " + rule);
+                    throw new Error(`Invalid css injection rule, no style presented: ${rule}`);
+                }
+                // discard css inject rules containing "url"
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1196
+                if (/url\(.*\)/gi.test(cssContent)) {
+                    throw new Error(`Css injection rule with 'url' was omitted: ${rule}`);
                 }
             }
 
