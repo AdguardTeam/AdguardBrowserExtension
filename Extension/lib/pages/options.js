@@ -598,7 +598,7 @@ var AntiBannerFilters = function (options) {
         const namesDisplayCount = 3;
         const enabledFiltersNames = filters
             .filter(filter => filter.enabled)
-            .map(filter => filter.name);
+            .map(filter => filter.name && filter.name.length > 0 ? filter.name : filter.subscriptionUrl);
 
         let enabledFiltersNamesString;
         const length = enabledFiltersNames.length;
@@ -709,11 +709,11 @@ var AntiBannerFilters = function (options) {
                     <div class="opt-name">
                         <div class="title-wr">
                             <div class="title">
-                                ${filter.name || filter.subscriptionUrl}
+                                ${filter.name && filter.name.length > 0 ? filter.name : filter.subscriptionUrl}
                                 <a class="icon-home" target="_blank" href="${filter.homepage || filter.subscriptionUrl}"></a>
                                 ${deleteButton}
                             </div>
-                        </div>
+                        </div>  
                         <div class="desc">${filter.description}</div>
                         <div class="opt-name__info">
                             <div class="opt-name__info-labels">
@@ -970,7 +970,6 @@ var AntiBannerFilters = function (options) {
     }
 
     let customFilterInitialized = false;
-    let onSubscribeClicked;
     function renderCustomFilterPopup(filterOptions = {}) {
         const { isFilterSubscription, title, url } = filterOptions;
         const POPUP_ACTIVE_CLASS = 'option-popup__step--active';
@@ -981,9 +980,15 @@ var AntiBannerFilters = function (options) {
         const fourthStep = document.querySelector('#add-custom-filter-step-4');
         const closeButton = document.querySelector('#custom-filter-popup-close');
         const subscribeButton = document.querySelector('#custom-filter-popup-added-subscribe');
+        const checkboxInput = document.querySelector('#custom-filter-popup-trusted');
+        const searchInput = document.querySelector('#custom-filter-popup-url');
 
         function closePopup() {
             customFilterPopup.classList.remove('option-popup--active');
+            // Clear search input
+            searchInput.value = '';
+            // Clear checkbox input
+            checkboxInput.checked = false;
         }
 
         function clearActiveStep() {
@@ -1018,7 +1023,7 @@ var AntiBannerFilters = function (options) {
         function renderStepOne() {
             clearActiveStep();
             firstStep.classList.add(POPUP_ACTIVE_CLASS);
-            document.querySelector('#custom-filter-popup-url').focus();
+            searchInput.focus();
         }
 
         function renderStepTwo() {
@@ -1045,9 +1050,9 @@ var AntiBannerFilters = function (options) {
             document.querySelector('.custom-filter-popup-next').addEventListener('click', function (e) {
                 e.preventDefault();
 
-                const url = document.querySelector('#custom-filter-popup-url').value;
+                const searchInputValue = searchInput.value && searchInput.value.trim();
 
-                contentPage.sendMessage({ type: 'loadCustomFilterInfo', url: url }, function (filter) {
+                contentPage.sendMessage({ type: 'loadCustomFilterInfo', url: searchInputValue }, function (filter) {
                     if (filter) {
                         renderStepFour(filter);
                     } else {
@@ -1062,12 +1067,11 @@ var AntiBannerFilters = function (options) {
                 e.preventDefault();
                 const url = document.querySelector('#custom-filter-popup-added-url').href;
                 const title = document.querySelector('#custom-filter-popup-added-title').textContent || '';
-                const trusted = document.querySelector('#custom-filter-popup-trusted');
                 contentPage.sendMessage({
                     type: 'loadCustomFilter',
                     url,
-                    title,
-                    trusted: trusted.checked,
+                    title: title.trim(),
+                    trusted: checkboxInput.checked,
                 }, function (filter) {
                     console.log('filter added successfully', filter);
                     closePopup();
