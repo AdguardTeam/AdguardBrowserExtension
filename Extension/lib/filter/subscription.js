@@ -171,7 +171,6 @@ adguard.subscriptions = (function (adguard) {
      * @param filter Object
      */
     const createSubscriptionFilterFromJSON = function (filter) {
-        console.log('json', filter);
         const filterId = filter.filterId - 0;
         const groupId = filter.groupId - 0;
         const defaultName = filter.name;
