@@ -191,11 +191,21 @@
                 adguard.ui.checkFiltersUpdates();
                 break;
             case 'loadCustomFilterInfo':
-                adguard.ui.loadCustomFilterInfo(message.url, message.title, callback);
+                adguard.filters.loadCustomFilterInfo(message.url, { title: message.title }, (filter) => {
+                    callback(filter);
+                }, () => {
+                    callback();
+                });
                 return true;
-            case 'loadCustomFilter': {
+            case 'subscribeToCustomFilter': {
                 const { url, title, trusted } = message;
-                adguard.ui.loadCustomFilter(url, { title, trusted }, callback);
+                adguard.filters.loadCustomFilter(url, { title, trusted }, (filter) => {
+                    adguard.filters.addAndEnableFilters([filter.filterId], () => {
+                        callback(filter);
+                    });
+                }, () => {
+                    callback();
+                });
                 return true;
             }
             case 'getFiltersMetadata':
