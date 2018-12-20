@@ -62,6 +62,7 @@ adguard.stealthService = (function (adguard) {
         HIDE_SEARCH_QUERIES: 1 << 1,
         BLOCK_CHROME_CLIENT_DATA: 1 << 2,
         SEND_DO_NOT_TRACK: 1 << 3,
+        STRIPPED_TRACKING_URL: 1 << 4,
     };
 
     /**
@@ -526,8 +527,10 @@ adguard.stealthService = (function (adguard) {
 
         if (result !== requestUrl) {
             adguard.console.debug('Stealth stripped tracking parameters for url: ' + requestUrl);
-            //TODO: Add log event
-            adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, mainFrameUrl, requestType, stealthWhiteListRule);
+            //TODO: Fix log
+            let stealthActions = 0;
+            stealthActions |= STEALTH_ACTIONS.STRIPPED_TRACKING_URL;
+            adguard.requestContextStorage.update(requestId, { stealthActions });
 
             return result;
         }

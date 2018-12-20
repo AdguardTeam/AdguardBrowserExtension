@@ -139,6 +139,7 @@ const STEALTH_ACTIONS = {
     HIDE_SEARCH_QUERIES: 1 << 1,
     BLOCK_CHROME_CLIENT_DATA: 1 << 2,
     SEND_DO_NOT_TRACK: 1 << 3,
+    STRIPPED_TRACKING_URL: 1 << 4,
 };
 
 const STEALTH_ACTIONS_NAMES = {
@@ -146,6 +147,7 @@ const STEALTH_ACTIONS_NAMES = {
     HIDE_SEARCH_QUERIES: i18n.getMessage('options_hide_search_queries_title'),
     BLOCK_CHROME_CLIENT_DATA: i18n.getMessage('options_remove_client_data_title'),
     SEND_DO_NOT_TRACK: i18n.getMessage('options_send_not_track_title'),
+    STRIPPED_TRACKING_URL: i18n.getMessage('options_stripped_tracking_parameters'),
 };
 
 PageController.prototype = {
