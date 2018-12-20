@@ -672,6 +672,13 @@ var AntiBannerFilters = function (options) {
             tagDetails += `<div class="opt-name__tag" data-tooltip="${tag.description}">#${tag.keyword}</div>`;
         });
 
+        if (filter.trusted) {
+            tagDetails += `<div class="opt-name__tag"
+                                data-tooltip="${i18n.getMessage('options_filters_filter_trusted_tag_desc')}">
+                                #${i18n.getMessage('options_filters_filter_trusted_tag')}
+                           </div>`;
+        }
+
         var deleteButton = '';
         if (showDeleteButton) {
             deleteButton = `<a href="#" filterid="${filter.filterId}" class="remove-custom-filter-button"></a>`;
