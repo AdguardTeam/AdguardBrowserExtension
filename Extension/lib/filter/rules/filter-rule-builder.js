@@ -37,7 +37,7 @@
 
         // Check ABP-snippets
         if (ruleText.includes('#$#')) {
-            if (/#\$#[a-zA-Z-_]+/.test(ruleText) || /#\$#[a-zA-Z-_]+\(.+\)/.test(ruleText)) {
+            if (!/#\$#.+{.*}\s*$/.test(ruleText)) {
                 return false;
             }
         }
@@ -74,7 +74,6 @@
      * @returns Filter rule object. Either UrlFilterRule or CssFilterRule or ScriptFilterRule.
      */
     const createRule = function (ruleText, filterId, isTrustedFilter) {
-
         ruleText = ruleText ? ruleText.trim() : null;
         if (!ruleText) {
             return null;

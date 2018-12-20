@@ -131,10 +131,10 @@ adguard.subscriptions = (function (adguard) {
         this.expires = expires;
         this.subscriptionUrl = subscriptionUrl;
         this.tags = tags;
-        if (customUrl) {
+        if (typeof customUrl !== 'undefined') {
             this.customUrl = customUrl;
         }
-        if (trusted) {
+        if (typeof trusted !== 'undefined') {
             this.trusted = trusted;
         }
     };
@@ -355,7 +355,6 @@ adguard.subscriptions = (function (adguard) {
                 // custom filters have special fields
                 filter.customUrl = url;
                 filter.rulesCount = rulesCount;
-                // TODO check if filter is set trusted or untrusted after reload
                 filter.trusted = trusted;
 
                 filters.push(filter);
