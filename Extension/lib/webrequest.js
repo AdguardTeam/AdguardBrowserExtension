@@ -54,19 +54,6 @@
     }
 
     /**
-     * Let's check a URL to see if there's anything to strip from it. Will return false if there was nothing to strip out
-     *
-     * @param originalUrl
-     * @param referrerUrl
-     * @param requestType
-     * @returns {boolean}
-     */
-    function checkUrlForTrackers(originalUrl, referrerUrl, requestType) {
-        const cleansedUrl = adguard.stealthService.removeTrackersFromUrl(originalUrl, referrerUrl, requestType);
-        return (cleansedUrl && cleansedUrl != originalUrl) ? cleansedUrl : false;
-    }
-
-    /**
      * Process request
      *
      * @param {RequestDetails} requestDetails
@@ -81,11 +68,6 @@
         const frameId = requestDetails.frameId;
         const requestFrameId = requestDetails.requestFrameId || 0;
 
-        const cleansedUrl = checkUrlForTrackers(requestUrl, requestUrl, requestType);
-        if (cleansedUrl) {
-            return { redirectUrl: cleansedUrl };
-        }
-
         if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
             adguard.frames.recordFrame(tab, frameId, requestUrl, requestType);
         }
@@ -96,6 +78,12 @@
 
             // Record request context for the main frame
             adguard.requestContextStorage.record(requestId, requestUrl, requestUrl, requestType, tab);
+
+            // Strip tracking parameters
+            const cleansedUrl = adguard.stealthService.removeTrackersFromUrl(requestId);
+            if (cleansedUrl) {
+                return { redirectUrl: cleansedUrl };
+            }
 
             /**
              * Just to remember!
@@ -122,11 +110,17 @@
         }
 
         const referrerUrl = getReferrerUrl(requestDetails);
-        let requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
 
         // Record request for other types
         adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, requestType, tab);
 
+        // Strip tracking parameters
+        const cleansedUrl = adguard.stealthService.removeTrackersFromUrl(requestId);
+        if (cleansedUrl) {
+            return { redirectUrl: cleansedUrl };
+        }
+
+        let requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
         requestRule = adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
 
         if (requestRule) {
