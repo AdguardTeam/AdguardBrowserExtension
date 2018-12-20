@@ -118,36 +118,6 @@
                 nameEndIndex: nameEndIndex
             };
         };
-        /**
-         * Parses rule mask
-         *
-         * @param rule
-         * @param isExtendedCss
-         * @param isInjectRule
-         */
-        var parseMask = function (rule, isExtendedCss, isInjectRule) {
-            var mask;
-            var isException;
-            if (!isExtendedCss) {
-                if (isInjectRule) {
-                    isException = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE);
-                    mask = isException ? api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE : api.FilterRule.MASK_CSS_INJECT_RULE;
-                } else {
-                    isException = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_RULE);
-                    mask = isException ? api.FilterRule.MASK_CSS_EXCEPTION_RULE : api.FilterRule.MASK_CSS_RULE;
-                }
-            } else {
-                if (isInjectRule) {
-                    isException = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE);
-                    mask = isException ? api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE : api.FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE;
-                } else {
-                    isException = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE);
-                    mask = isException ? api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE : api.FilterRule.MASK_CSS_EXTENDED_CSS_RULE;
-                }
-            }
-
-            return mask;
-        };
 
         /**
          * CssFilterRule constructor
