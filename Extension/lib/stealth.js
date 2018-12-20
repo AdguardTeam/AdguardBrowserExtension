@@ -355,114 +355,13 @@ adguard.stealthService = (function (adguard) {
     };
 
     /**
-     * More detailed string pattern suffixes, stored by their common root.
-     */
-    const TRACKERS_BY_ROOT = {
-
-        // Google's Urchin Tracking Module
-        'utm_': [
-            'source',
-            'medium',
-            'term',
-            'campaign',
-            'content',
-            'name',
-            'cid',
-            'reader',
-            'viz_id',
-            'pubreferrer',
-            'swu'
-        ],
-
-        // Adobe Omniture SiteCatalyst
-        'IC': [
-            'ID'
-        ],
-
-        // Adobe Omniture SiteCatalyst
-        'ic': [
-            'id'
-        ],
-
-        // Hubspot
-        '_hs': [
-            'enc',
-            'mi'
-        ],
-
-        // Marketo
-        'mkt_': [
-            'tok'
-        ],
-
-        // MailChimp
-        // https://developer.mailchimp.com/documentation/mailchimp/guides/getting-started-with-ecommerce/
-        'mc_': [
-            'cid',
-            'eid'
-        ],
-
-        // comScore Digital Analytix?
-        // http://www.about-digitalanalytics.com/comscore-digital-analytix-url-campaign-generator
-        'ns_': [
-            'source',
-            'mchannel',
-            'campaign',
-            'linkname',
-            'fee'
-        ],
-
-        // Simple Reach
-        'sr_': [
-            'share'
-        ],
-
-        // Vero
-        'vero_': [
-            'conv',
-            'id'
-        ],
-
-        // Non-prefixy and 1-offs
-        '': [
-            // Facebook Click Identifier
-            // http://thisinterestsme.com/facebook-fbclid-parameter/
-            'fbclid',
-            // Google Click Identifier
-            'gclid',
-            // Some other Google Click thing
-            'ocid',
-            // Unknown
-            'ncid',
-            // Unknown
-            'nr_email_referer',
-            // Generic-ish. Facebook, Product Hunt and others
-            'ref',
-            // Alibaba-family 'super position model' tracker:
-            // https://github.com/newhouse/url-tracking-stripper/issues/38
-            'spm'
-        ]
-    };
-
-
-    // Go through all the trackers by their root and turn them into a big regex...
-    const TRACKER_REGEXES_BY_ROOT = {};
-    for (let root in TRACKERS_BY_ROOT) {
-        // Old way, matching at the end 1 or unlimited times.
-        // TRACKER_REGEXES_BY_ROOT[root] = new RegExp("((^|&)" + root + "(" + TRACKERS_BY_ROOT[root].join('|') + ")=[^&#]+)", "ig");
-        // New way, matching at the end 0 or unlimited times. Hope this doesn't come back to be a problem.
-        TRACKER_REGEXES_BY_ROOT[root] = new RegExp("((^|&)" + root + "(" + TRACKERS_BY_ROOT[root].join('|') + ")=[^&#]*)", "ig");
-    }
-
-    /**
      * Strips out the tracking codes/parameters from a URL and return the cleansed URL
      *
      * @param requestId
      */
     const removeTrackersFromUrl = (requestId) => {
 
-        // If stealth mode is disabled
-        if (isStealthModeDisabled()) {
+        if (!getStealthSettingValue(adguard.settings.STRIP_TRACKING_PARAMETERS)) {
             return null;
         }
 
@@ -509,13 +408,9 @@ adguard.stealthService = (function (adguard) {
             return null;
         }
 
-        // Go through all the pattern roots
-        for (let root in TRACKER_REGEXES_BY_ROOT) {
-            // If we see the root in the params part, then we should probably try to do some replacements
-            if (urlPieces[1].indexOf(root) !== -1) {
-                urlPieces[1] = urlPieces[1].replace(TRACKER_REGEXES_BY_ROOT[root], '');
-            }
-        }
+        const trackingParameters = adguard.settings.getProperty(adguard.settings.TRACKING_PARAMETERS).split(',');
+        const trackingParametersRegExp = new RegExp("((^|&)(" + trackingParameters.join('|') + ")=[^&#]*)", "ig");
+        urlPieces[1] = urlPieces[1].replace(trackingParametersRegExp, '');
 
         // If we've collapsed the URL to the point where there's an '&' against the '?'
         // then we need to get rid of that.
