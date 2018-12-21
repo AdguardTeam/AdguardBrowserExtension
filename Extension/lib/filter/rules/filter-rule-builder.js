@@ -69,11 +69,12 @@
     /**
      * Method that parses rule text and creates object of a suitable class.
      *
-     * @param ruleText Rule text
-     * @param filterId Filter identifier
+     * @param {string} ruleText Rule text
+     * @param {number} filterId Filter identifier
+     * @param {boolean} isTrustedFilter - custom filter can be trusted and untrusted, default is true
      * @returns Filter rule object. Either UrlFilterRule or CssFilterRule or ScriptFilterRule.
      */
-    const createRule = function (ruleText, filterId, isTrustedFilter) {
+    const createRule = function (ruleText, filterId, isTrustedFilter = true) {
         ruleText = ruleText ? ruleText.trim() : null;
         if (!ruleText) {
             return null;
