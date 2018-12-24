@@ -1,4 +1,4 @@
-/*! AdGuard Assistant - v4.3.7 - 2018-12-18
+/*! AdGuard Assistant - v4.3.7 - 2018-12-24
 * https://github.com/AdguardTeam/AdguardAssistant
 * Copyright (c) 2018; Licensed LGPL 3.0 */
 
@@ -87,7 +87,7 @@ var en = {
         "message": "Block similar"
     },
     "assistant_another_element": {
-        "message": "Select another element"
+        "message": "Select a different element"
     },
     "assistant_preview": {
         "message": "Preview"
@@ -885,7 +885,7 @@ var zh_TW = {
         "message": "\u5c01\u9396\u76f8\u4f3c\u4e4b\u7269"
     },
     "assistant_another_element": {
-        "message": "\u9078\u64c7\u53e6\u4e00\u500b\u5143\u4ef6"
+        "message": "\u9078\u64c7\u4e0d\u540c\u7684\u5143\u4ef6"
     },
     "assistant_preview": {
         "message": "\u9810\u89bd"
@@ -2747,7 +2747,7 @@ var fr = {
         "message": "Blocage des objets similaires "
     },
     "assistant_another_element": {
-        "message": "S\u00e9lectionner un autre \u00e9l\u00e9ment "
+        "message": "S\u00e9lectionner un \u00e9l\u00e9ment diff\u00e9rent"
     },
     "assistant_preview": {
         "message": "Previsualisation "
@@ -2768,10 +2768,10 @@ var fr = {
         "message": "Sortir de la previsualisation "
     },
     "wot_unknown_description": {
-        "message": "Aucune d\u00e9finition de r\u00e9putation "
+        "message": "Aucune d\u00e9finition de r\u00e9putation selon "
     },
     "wot_bad_description": {
-        "message": "Ce site web a tr\u00e8s mauvaise r\u00e9putation selon :"
+        "message": "Ce site web a tr\u00e8s mauvaise r\u00e9putation selon"
     },
     "wot_poor_description": {
         "message": "Ce site web a mauvaise r\u00e9putation selon :"
