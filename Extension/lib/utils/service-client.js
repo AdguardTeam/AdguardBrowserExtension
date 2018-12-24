@@ -293,7 +293,7 @@ adguard.backend = (function (adguard) {
             delete loadingSubscriptions[url];
 
             if (lines[0].indexOf('[') === 0) {
-                //[Adblock Plus 2.0]
+                // [Adblock Plus 2.0]
                 lines.shift();
             }
 

@@ -79,9 +79,45 @@ adguard.subscriptions = (function (adguard) {
     };
 
     /**
-     * Filter metadata
+     * object containing filter data
+     * @typedef {Object} FilterData
+     * @property {number} filterId - filter id
+     * @property {number} groupId - filter group id
+     * @property {String} name - filter name
+     * @property {String} description - filter description
+     * @property {String} homepage - filter homepage url
+     * @property {String} version - filter version
+     * @property {number} timeUpdated - filter update time
+     * @property {number} displayNumber - filter display number used to sort filters in the group
+     * @property {array.<string>} languages - filter base languages
+     * @property {number} expires - filter update interval
+     * @property {String} subscriptionUrl - filter update url
+     * @property {array.<number>} tags - filter tags ids
+     * @property {String} [customUrl] - custom filter url
+     * @property {Boolean} [trusted] - filter is trusted or not
      */
-    var SubscriptionFilter = function (filterId, groupId, name, description, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl, tags, customUrl) {
+
+    /**
+     * Filter metadata
+     * @param {FilterData} filterData
+     */
+    var SubscriptionFilter = function (filterData) {
+        const {
+            filterId,
+            groupId,
+            name,
+            description,
+            homepage,
+            version,
+            timeUpdated,
+            displayNumber,
+            languages,
+            expires,
+            subscriptionUrl,
+            tags,
+            customUrl,
+            trusted,
+        } = filterData;
 
         this.filterId = filterId;
         this.groupId = groupId;
@@ -95,8 +131,11 @@ adguard.subscriptions = (function (adguard) {
         this.expires = expires;
         this.subscriptionUrl = subscriptionUrl;
         this.tags = tags;
-        if (customUrl) {
+        if (typeof customUrl !== 'undefined') {
             this.customUrl = customUrl;
+        }
+        if (typeof trusted !== 'undefined') {
+            this.trusted = trusted;
         }
     };
 
@@ -131,26 +170,41 @@ adguard.subscriptions = (function (adguard) {
      * Create filter from object
      * @param filter Object
      */
-    var createSubscriptionFilterFromJSON = function (filter) {
-
-        var filterId = filter.filterId - 0;
-        var groupId = filter.groupId - 0;
-        var defaultName = filter.name;
-        var defaultDescription = filter.description;
-        var homepage = filter.homepage;
-        var version = filter.version;
-        var timeUpdated = parseTimeUpdated(filter.timeUpdated);
-        var expires = filter.expires - 0;
-        var subscriptionUrl = filter.subscriptionUrl;
-        var languages = filter.languages;
-        var displayNumber = filter.displayNumber - 0;
-        var tags = filter.tags;
-        var customUrl = filter.customUrl;
+    const createSubscriptionFilterFromJSON = function (filter) {
+        const filterId = filter.filterId - 0;
+        const groupId = filter.groupId - 0;
+        const defaultName = filter.name;
+        const defaultDescription = filter.description;
+        const homepage = filter.homepage;
+        const version = filter.version;
+        const timeUpdated = parseTimeUpdated(filter.timeUpdated);
+        const expires = filter.expires - 0;
+        const subscriptionUrl = filter.subscriptionUrl;
+        const languages = filter.languages;
+        const displayNumber = filter.displayNumber - 0;
+        const tags = filter.tags;
+        const customUrl = filter.customUrl;
+        const trusted = filter.trusted;
         if (tags.length === 0) {
             tags.push(0);
         }
 
-        return new SubscriptionFilter(filterId, groupId, defaultName, defaultDescription, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl, tags, customUrl);
+        return new SubscriptionFilter({
+            filterId,
+            groupId,
+            name: defaultName,
+            description: defaultDescription,
+            homepage,
+            version,
+            timeUpdated,
+            displayNumber,
+            languages,
+            expires,
+            subscriptionUrl,
+            tags,
+            customUrl,
+            trusted,
+        });
     };
 
     /**
@@ -159,24 +213,23 @@ adguard.subscriptions = (function (adguard) {
      * @param rules
      * @returns object
      */
-    var parseFilterDataFromHeader = function (rules) {
-        function parseTag(tagName) {
-            var result = '';
+    const parseFilterDataFromHeader = (rules) => {
+        const parseTag = (tagName) => {
+            let result = '';
 
-            //Look up no more than 50 first lines
-            var maxLines = Math.min(50, rules.length);
-            for (var i = 0; i < maxLines; i++) {
-                var r = rules[i];
-
-                var search = '! ' + tagName + ': ';
-                var indexOf = r.indexOf(search);
-                if (indexOf >= 0) {
-                    result = r.substring(indexOf + search.length);
+            // Look up no more than 50 first lines
+            const maxLines = Math.min(50, rules.length);
+            for (let i = 0; i < maxLines; i += 1) {
+                const rule = rules[i];
+                const search = '! ' + tagName + ': ';
+                const indexOfSearch = rule.indexOf(search);
+                if (indexOfSearch >= 0) {
+                    result = rule.substring(indexOfSearch + search.length);
                 }
             }
 
             return result;
-        }
+        };
 
         return {
             name: parseTag('Title'),
@@ -184,19 +237,21 @@ adguard.subscriptions = (function (adguard) {
             homepage: parseTag('Homepage'),
             version: parseTag('Version'),
             expires: parseTag('Expires'),
-            timeUpdated: parseTag('TimeUpdated')
+            timeUpdated: parseTag('TimeUpdated'),
         };
     };
 
-    var addFilterId = function () {
-        var max = 0;
+    const CUSTOM_FILTERS_START_ID = 1000;
+
+    const addFilterId = () => {
+        let max = 0;
         filters.forEach(function (f) {
             if (f.filterId > max) {
                 max = f.filterId;
             }
         });
 
-        return max >= 1000 ? max + 1 : 1000;
+        return max >= CUSTOM_FILTERS_START_ID ? max + 1 : CUSTOM_FILTERS_START_ID;
     };
 
 
@@ -243,23 +298,28 @@ adguard.subscriptions = (function (adguard) {
      * Adds or updates custom filter
      *
      * @param url subscriptionUrl
+     * @param options
      * @param callback
      */
     const updateCustomFilter = function (url, options, callback) {
-        const { title } = options;
+        const { title, trusted } = options;
         adguard.backend.loadFilterRulesBySubscriptionUrl(url, function (rules) {
-            const filterData = parseFilterDataFromHeader(rules);
             const filterId = addFilterId();
-            const groupId = CUSTOM_FILTERS_GROUP_ID;
-            const defaultName = filterData.name || title;
-            const defaultDescription = filterData.description;
-            const homepage = filterData.homepage;
-            const version = filterData.version;
+            const filterData = parseFilterDataFromHeader(rules);
+            let {
+                name,
+                description,
+                homepage,
+                version,
+                expires,
+                timeUpdated,
+            } = filterData;
+            name = name || title;
             // .toISOString() method used instead of .toString() method because of
             // moment.js library deprecation warning:
             // http://momentjs.com/guides/#/warnings/js-date/
-            const timeUpdated = filterData.timeUpdated || new Date().toISOString();
-            const expires = filterData.expires;
+            timeUpdated = timeUpdated || new Date().toISOString();
+            const groupId = CUSTOM_FILTERS_GROUP_ID;
             const subscriptionUrl = url;
             const languages = [];
             const displayNumber = 0;
@@ -278,12 +338,29 @@ adguard.subscriptions = (function (adguard) {
                     return;
                 }
             } else {
-                filter = new SubscriptionFilter(filterId, groupId, defaultName, defaultDescription, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl, tags);
+                filter = new SubscriptionFilter({
+                    filterId,
+                    groupId,
+                    name,
+                    description,
+                    homepage,
+                    version,
+                    timeUpdated,
+                    displayNumber,
+                    languages,
+                    expires,
+                    subscriptionUrl,
+                    tags,
+                });
+
                 filter.loaded = true;
 
                 // custom filters have special fields
                 filter.customUrl = url;
                 filter.rulesCount = rulesCount;
+                if (trusted) {
+                    filter.trusted = trusted;
+                }
 
                 filters.push(filter);
                 filtersMap[filter.filterId] = filter;
@@ -297,6 +374,69 @@ adguard.subscriptions = (function (adguard) {
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, filter, rules);
 
             callback(filter.filterId);
+        }, function (cause) {
+            adguard.console.error(`Error download filter by url ${url}, cause: ${cause || ''}`);
+            callback();
+        });
+    };
+
+    // TODO may be you should save filter data in the temp storage
+    const getCustomFilterInfo = (url, options, callback) => {
+        const { title } = options;
+
+        adguard.backend.loadFilterRulesBySubscriptionUrl(url, function (rules) {
+            let {
+                name,
+                description,
+                homepage,
+                version,
+                expires,
+                timeUpdated,
+            } = parseFilterDataFromHeader(rules);
+
+            name = name || title;
+            timeUpdated = timeUpdated || new Date().toISOString();
+
+            const groupId = CUSTOM_FILTERS_GROUP_ID;
+            const subscriptionUrl = url;
+            const languages = [];
+            const displayNumber = 0;
+            const tags = [0];
+            let rulesCount = rules.length;
+
+            // Check if filter from this url was added before
+            let filter = filters.find(function (f) {
+                return f.customUrl === url;
+            });
+
+            if (filter) {
+                if (version && adguard.utils.browser.isGreaterOrEqualsVersion(filter.version, version)) {
+                    // Update version is not greater
+                    callback();
+                    return;
+                }
+            } else {
+                filter = new SubscriptionFilter({
+                    groupId,
+                    name,
+                    description,
+                    homepage,
+                    version,
+                    timeUpdated,
+                    displayNumber,
+                    languages,
+                    expires,
+                    subscriptionUrl,
+                    tags,
+                });
+
+                filter.loaded = true;
+                // custom filters have special fields
+                filter.customUrl = url;
+                filter.rulesCount = rulesCount;
+            }
+
+            callback(filter);
         }, function (cause) {
             adguard.console.error(`Error download filter by url ${url}, cause: ${cause || ''}`);
             callback();
@@ -366,7 +506,6 @@ adguard.subscriptions = (function (adguard) {
     function loadMetadataI18n(successCallback, errorCallback) {
 
         adguard.backend.loadLocalFiltersI18Metadata(function (i18nMetadata) {
-
             var tagsI18n = i18nMetadata.tags;
             var filtersI18n = i18nMetadata.filters;
             var groupsI18n = i18nMetadata.groups;
@@ -496,6 +635,14 @@ adguard.subscriptions = (function (adguard) {
         return filtersMap[filterId];
     };
 
+    const isTrustedFilter = (filterId) => {
+        if (filterId < CUSTOM_FILTERS_START_ID) {
+            return true;
+        }
+        const filter = filtersMap[filterId];
+        return !!(filter && filter.trusted && filter.trusted === true);
+    };
+
     /**
      * @returns Array of Tags metadata
      */
@@ -594,8 +741,10 @@ adguard.subscriptions = (function (adguard) {
         groupHasEnabledStatus: groupHasEnabledStatus,
         getFilters: getFilters,
         getFilter: getFilter,
+        isTrustedFilter: isTrustedFilter,
         createSubscriptionFilterFromJSON: createSubscriptionFilterFromJSON,
         updateCustomFilter: updateCustomFilter,
+        getCustomFilterInfo: getCustomFilterInfo,
         getLangSuitableFilters: getLangSuitableFilters,
     };
 
