@@ -247,17 +247,18 @@ adguard.antiBannerService = (function (adguard) {
     /**
      * Select filters for update. It depends on the time of last update.
      * @param forceUpdate Force update flag.
+     * @param filtersToUpdate Optional array of filters
      * @returns object
      */
-    function selectFilterIdsToUpdate(forceUpdate) {
-        var filterIds = [];
-        var customFilterIds = [];
-        var filters = adguard.subscriptions.getFilters();
-        for (var i = 0; i < filters.length; i++) {
-            var filter = filters[i];
+    function selectFilterIdsToUpdate(forceUpdate, filtersToUpdate) {
+        const filterIds = [];
+        const customFilterIds = [];
+        const filters = filtersToUpdate || adguard.subscriptions.getFilters();
+        for (let i = 0; i < filters.length; i++) {
+            const filter = filters[i];
             if (filter.installed && filter.enabled) {
                 // Check filters update period (or forceUpdate flag)
-                var needUpdate = forceUpdate || (!filter.lastCheckTime || (Date.now() - filter.lastCheckTime) >= filtersUpdatePeriod);
+                const needUpdate = forceUpdate || (!filter.lastCheckTime || (Date.now() - filter.lastCheckTime) >= filtersUpdatePeriod);
                 if (needUpdate) {
                     if (filter.customUrl) {
                         customFilterIds.push(filter.filterId);
@@ -281,8 +282,9 @@ adguard.antiBannerService = (function (adguard) {
      *                    true - we ignore it and check updates for all filters.
      * @param successCallback Called if filters were updated successfully
      * @param errorCallback Called if something gone wrong
+     * @param filters     Optional Array of filters to update
      */
-    var checkAntiBannerFiltersUpdate = function (forceUpdate, successCallback, errorCallback) {
+    var checkAntiBannerFiltersUpdate = function (forceUpdate, successCallback, errorCallback, filters) {
         successCallback = successCallback || function () {
             // Empty callback
         };
@@ -298,7 +300,7 @@ adguard.antiBannerService = (function (adguard) {
         adguard.console.info("Start checking filters updates");
 
         // Select filters for update
-        var toUpdate = selectFilterIdsToUpdate(forceUpdate);
+        var toUpdate = selectFilterIdsToUpdate(forceUpdate, filters);
         var filterIdsToUpdate = toUpdate.filterIds;
         var customFilterIdsToUpdate = toUpdate.customFilterIds;
 
@@ -1413,6 +1415,11 @@ adguard.filters = (function (adguard) {
 
     'use strict';
 
+    /**
+     * TImeout for recently updated filters and again enabled filters - 5 minutes
+     */
+    const ENABLED_FILTERS_SKIP_TIMEOUT = 5 * 60 * 1000;
+
     var antiBannerService = adguard.antiBannerService;
 
     var start = function (options, callback) {
@@ -1477,8 +1484,22 @@ adguard.filters = (function (adguard) {
         return filter && filter.installed;
     };
 
-    var checkFiltersUpdates = function (successCallback, errorCallback) {
-        return antiBannerService.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback);
+    /**
+     * Force checks updates for filter if specified or all filters
+     *
+     * @param successCallback
+     * @param errorCallback
+     * @param filter optional
+     */
+    const checkFiltersUpdates = function (successCallback, errorCallback, filter) {
+        if (filter) {
+            // Skip recently downloaded filters
+            if (Date.now() - filter.lastCheckTime < ENABLED_FILTERS_SKIP_TIMEOUT) {
+                return;
+            }
+        }
+
+        return antiBannerService.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback, [filter]);
     };
 
     const enableGroup = function (groupId) {
