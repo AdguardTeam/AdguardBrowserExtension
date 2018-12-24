@@ -60,13 +60,13 @@
      * @returns {boolean} False if request must be blocked
      */
     function onBeforeRequest(requestDetails) {
-        var tab = requestDetails.tab;
-        var tabId = tab.tabId;
-        var requestId = requestDetails.requestId;
-        var requestUrl = requestDetails.requestUrl;
-        var requestType = requestDetails.requestType;
-        var frameId = requestDetails.frameId;
-        var requestFrameId = requestDetails.requestFrameId || 0;
+        const tab = requestDetails.tab;
+        const tabId = tab.tabId;
+        const requestId = requestDetails.requestId;
+        const requestUrl = requestDetails.requestUrl;
+        const requestType = requestDetails.requestType;
+        const frameId = requestDetails.frameId;
+        const requestFrameId = requestDetails.requestFrameId || 0;
 
         if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
             adguard.frames.recordFrame(tab, frameId, requestUrl, requestType);
@@ -79,6 +79,12 @@
             // Record request context for the main frame
             adguard.requestContextStorage.record(requestId, requestUrl, requestUrl, requestType, tab);
 
+            // Strip tracking parameters
+            const cleansedUrl = adguard.stealthService.removeTrackersFromUrl(requestId);
+            if (cleansedUrl) {
+                return { redirectUrl: cleansedUrl };
+            }
+
             /**
              * Just to remember!
              * In the case of the "about:newtab" pages we don't receive onResponseReceived event for the main_frame
@@ -90,7 +96,7 @@
              * Binds rule to the main_frame request
              * In integration mode, rule from the headers will override this value
              */
-            var tabRequestRule = adguard.frames.getFrameWhiteListRule(tab);
+            const tabRequestRule = adguard.frames.getFrameWhiteListRule(tab);
             if (tabRequestRule) {
                 adguard.requestContextStorage.update(requestId, { requestRule: tabRequestRule });
             }
@@ -103,19 +109,25 @@
             return;
         }
 
-        var referrerUrl = getReferrerUrl(requestDetails);
-        var requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
+        const referrerUrl = getReferrerUrl(requestDetails);
 
         // Record request for other types
         adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, requestType, tab);
 
+        // Strip tracking parameters
+        const cleansedUrl = adguard.stealthService.removeTrackersFromUrl(requestId);
+        if (cleansedUrl) {
+            return { redirectUrl: cleansedUrl };
+        }
+
+        let requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
         requestRule = adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
 
         if (requestRule) {
             adguard.requestContextStorage.update(requestId, { requestRule });
         }
 
-        var response = adguard.webRequestService.getBlockedResponseByRule(requestRule, requestType);
+        const response = adguard.webRequestService.getBlockedResponseByRule(requestRule, requestType);
 
         if (response && response.cancel) {
             collapseElement(tabId, requestFrameId, requestUrl, referrerUrl, requestType);

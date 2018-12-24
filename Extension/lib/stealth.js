@@ -62,6 +62,7 @@ adguard.stealthService = (function (adguard) {
         HIDE_SEARCH_QUERIES: 1 << 1,
         BLOCK_CHROME_CLIENT_DATA: 1 << 2,
         SEND_DO_NOT_TRACK: 1 << 3,
+        STRIPPED_TRACKING_URL: 1 << 4,
     };
 
     /**
@@ -355,6 +356,86 @@ adguard.stealthService = (function (adguard) {
         }
     };
 
+    /**
+     * Strips out the tracking codes/parameters from a URL and return the cleansed URL
+     *
+     * @param requestId
+     */
+    const removeTrackersFromUrl = (requestId) => {
+
+        if (!getStealthSettingValue(adguard.settings.STRIP_TRACKING_PARAMETERS)) {
+            return null;
+        }
+
+        const context = adguard.requestContextStorage.get(requestId);
+        if (!context) {
+            return null;
+        }
+
+        const tab = context.tab;
+        const requestUrl = context.requestUrl;
+        const requestType = context.requestType;
+
+        adguard.console.debug('Stealth service processing request url for {0}', requestUrl);
+
+        if (adguard.frames.shouldStopRequestProcess(tab)) {
+            adguard.console.debug('Tab whitelisted or protection disabled');
+            return null;
+        }
+
+        const mainFrameUrl = adguard.frames.getMainFrameUrl(tab);
+        if (!mainFrameUrl) {
+            // frame wasn't recorded in onBeforeRequest event
+            adguard.console.debug('Frame was not recorded in onBeforeRequest event');
+            return null;
+        }
+
+        const whiteListRule = adguard.requestFilter.findWhiteListRule(requestUrl, mainFrameUrl, requestType);
+        if (whiteListRule && whiteListRule.isDocumentWhiteList()) {
+            adguard.console.debug('Whitelist rule found');
+            return null;
+        }
+
+        const stealthWhiteListRule = findStealthWhitelistRule(requestUrl, mainFrameUrl, requestType);
+        if (stealthWhiteListRule) {
+            adguard.console.debug('Whitelist stealth rule found');
+            adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, mainFrameUrl, requestType, stealthWhiteListRule);
+            return null;
+        }
+
+        const urlPieces = requestUrl.split('?');
+
+        // If no params, nothing to modify
+        if (urlPieces.length === 1) {
+            return null;
+        }
+
+        const trackingParameters = adguard.settings.getProperty(adguard.settings.TRACKING_PARAMETERS)
+            .trim()
+            .split(',')
+            .map(x => x.replace('=', '').replace(/\*/g, '[^&#=]*').trim())
+            .filter(x => x);
+        const trackingParametersRegExp = new RegExp("((^|&)(" + trackingParameters.join('|') + ")=[^&#]*)", "ig");
+        urlPieces[1] = urlPieces[1].replace(trackingParametersRegExp, '');
+
+        // If we've collapsed the URL to the point where there's an '&' against the '?'
+        // then we need to get rid of that.
+        while (urlPieces[1].charAt(0) === '&') {
+            urlPieces[1] = urlPieces[1].substr(1);
+        }
+
+        const result = urlPieces[1] ? urlPieces.join('?') : urlPieces[0];
+
+        if (result !== requestUrl) {
+            adguard.console.debug('Stealth stripped tracking parameters for url: ' + requestUrl);
+            adguard.filteringLog.bindStealthActionsToHttpRequestEvent(tab, STEALTH_ACTIONS.STRIPPED_TRACKING_URL, context.eventId);
+
+            return result;
+        }
+
+        return null;
+    };
+
     adguard.settings.onUpdated.addListener(function (setting) {
         if (setting === adguard.settings.BLOCK_WEBRTC
             || setting === adguard.settings.DISABLE_STEALTH_MODE) {
@@ -374,6 +455,7 @@ adguard.stealthService = (function (adguard) {
     return {
         processRequestHeaders: processRequestHeaders,
         getCookieRules: getCookieRules,
+        removeTrackersFromUrl: removeTrackersFromUrl
     };
 
 })(adguard);
