@@ -408,7 +408,11 @@ adguard.stealthService = (function (adguard) {
             return null;
         }
 
-        const trackingParameters = adguard.settings.getProperty(adguard.settings.TRACKING_PARAMETERS).split(',');
+        const trackingParameters = adguard.settings.getProperty(adguard.settings.TRACKING_PARAMETERS)
+            .trim()
+            .split(',')
+            .map(x => x.replace('=', '').replace(/\*/g, '[^&#=]*').trim())
+            .filter(x => x);
         const trackingParametersRegExp = new RegExp("((^|&)(" + trackingParameters.join('|') + ")=[^&#]*)", "ig");
         urlPieces[1] = urlPieces[1].replace(trackingParametersRegExp, '');
 
