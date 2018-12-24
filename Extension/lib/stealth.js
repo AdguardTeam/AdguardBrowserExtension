@@ -255,7 +255,9 @@ adguard.stealthService = (function (adguard) {
             return result;
         }
 
-        const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrerUrl);
+        // Marks requests without referrer as first-party.
+        // It's important to prevent removing google auth cookies. (for requests in background tab)
+        const thirdParty = referrerUrl && adguard.utils.url.isThirdPartyRequest(requestUrl, referrerUrl);
         const isMainFrame = requestType === adguard.RequestTypes.DOCUMENT;
 
         // Remove cookie header for third-party requests

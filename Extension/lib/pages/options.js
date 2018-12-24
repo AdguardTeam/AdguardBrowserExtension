@@ -598,7 +598,7 @@ var AntiBannerFilters = function (options) {
         const namesDisplayCount = 3;
         const enabledFiltersNames = filters
             .filter(filter => filter.enabled)
-            .map(filter => filter.name);
+            .map(filter => filter.name && filter.name.length > 0 ? filter.name : filter.subscriptionUrl);
 
         let enabledFiltersNamesString;
         const length = enabledFiltersNames.length;
@@ -672,43 +672,76 @@ var AntiBannerFilters = function (options) {
             tagDetails += `<div class="opt-name__tag" data-tooltip="${tag.description}">#${tag.keyword}</div>`;
         });
 
+        if (filter.trusted) {
+            tagDetails += `<div class="opt-name__tag"
+                                data-tooltip="${i18n.getMessage('options_filters_filter_trusted_tag_desc')}">
+                                #${i18n.getMessage('options_filters_filter_trusted_tag')}
+                           </div>`;
+        }
+
         var deleteButton = '';
         if (showDeleteButton) {
             deleteButton = `<a href="#" filterid="${filter.filterId}" class="remove-custom-filter-button"></a>`;
         }
 
-        return `
-            <li id="filter${filter.filterId}">
-                <div class="opt-name">
-                    <div class="title-wr">
-                        <div class="title">
-                            ${filter.name || filter.subscriptionUrl}
-                            <a class="icon-home" target="_blank" href="${filter.homepage || filter.subscriptionUrl}"></a>
-                            ${deleteButton}
-                        </div>
-                    </div>
-                    <div class="desc">${filter.description}</div>
-                    <div class="opt-name__info">
-                        <div class="opt-name__info-labels">
-                            <div class="opt-name__info-item">
-                                ${i18n.getMessage('options_filters_filter_version')} ${filter.version}
+        const getVersionText = (version) => {
+            return version
+                ? `${i18n.getMessage('options_filters_filter_version')} ${version}`
+                : '';
+        };
+
+        const getUpdatedTimeText = (updateTime) => {
+            return updateTime
+                ? `${i18n.getMessage('options_filters_filter_updated')} ${updateTime}`
+                : '';
+        };
+
+        /**
+         * Creates divs with filter details, removing empty strings
+         * @param {array.<string>} texts - array with texts
+         * @returns {string} - html string
+         */
+        const renderFilterInfo = (texts) => {
+            return texts
+                .filter(text => text.length > 0)
+                .map(text => {
+                    return `<div class="opt-name__info-item">
+                                ${text}
+                           </div>`;
+                })
+                .join('');
+        };
+
+        return `<li id="filter${filter.filterId}">
+                    <div class="opt-name">
+                        <div class="title-wr">
+                            <div class="title">
+                                ${filter.name && filter.name.length > 0 ? filter.name : filter.subscriptionUrl}
+                                <a class="icon-home" target="_blank" href="${filter.homepage || filter.subscriptionUrl}"></a>
+                                ${deleteButton}
                             </div>
-                            <div class="opt-name__info-item">
-                                ${i18n.getMessage('options_filters_filter_updated')} ${timeUpdatedText}
+                        </div>  
+                        <div class="desc">${filter.description}</div>
+                        <div class="opt-name__info">
+                            <div class="opt-name__info-labels">
+                                ${renderFilterInfo([getVersionText(filter.version), getUpdatedTimeText(timeUpdatedText)])}
+                            </div>
+                            <div class="opt-name__info-labels opt-name__info-labels--tags">
+                                ${tagDetails}
                             </div>
                         </div>
-                        <div class="opt-name__info-labels opt-name__info-labels--tags">
-                            ${tagDetails}
+                    </div>
+                    <div class="opt-state">
+                        <div class="preloader"></div>
+                        <div class="toggler-wr" role="checkbox" tabindex="0">
+                            <input
+                                type="checkbox"
+                                name="filterId"
+                                value="${filter.filterId}"
+                                ${enabled ? 'checked="checked"' : ''}>
                         </div>
                     </div>
-                </div>
-                <div class="opt-state">
-                    <div class="preloader"></div>
-                    <div class="toggler-wr" role="checkbox" tabindex="0">
-                        <input type="checkbox" name="filterId" value="${filter.filterId}" ${enabled ? 'checked="checked"' : ''}>
-                    </div>
-                </div>
-            </li>`;
+                </li>`;
     }
 
     function getPageTitleTemplate(name) {
@@ -729,10 +762,10 @@ var AntiBannerFilters = function (options) {
                     <div class="empty-filters">
                         <div class="empty-filters__logo"></div>
                         <div class="empty-filters__desc">
-                            Sorry, but you don't have any custom filters yet
+                            ${i18n.getMessage('options_empty_custom_filter')}
                         </div>
                         <button class="button button--green empty-filters__btn">
-                            Add custom filter
+                            ${i18n.getMessage('options_add_custom_filter')}
                         </button>
                     </div>
                 </div>
@@ -743,8 +776,8 @@ var AntiBannerFilters = function (options) {
         var filters = category.filters;
         var isCustomFilters = category.groupId === 0;
 
-        if (isCustomFilters &&
-            filters.length === 0) {
+        if (isCustomFilters
+            && filters.length === 0) {
             return htmlToElement(getEmptyCustomFiltersTemplate(category));
         }
 
@@ -932,139 +965,91 @@ var AntiBannerFilters = function (options) {
         if (!result) {
             return;
         }
-        var filterId = e.currentTarget.getAttribute('filterId');
+        const filterId = e.currentTarget.getAttribute('filterId');
 
         contentPage.sendMessage({
             type: 'removeAntiBannerFilter',
             filterId: filterId,
         });
 
-        var filterElement = getFilterElement(filterId);
+        const filterElement = getFilterElement(filterId);
         filterElement.parentNode.removeChild(filterElement);
     }
 
     let customFilterInitialized = false;
-    let onSubscribeClicked;
-    let onSubscriptionCancel;
-    let onPopupCloseClicked;
-    let onSubscribeBackClicked;
     function renderCustomFilterPopup(filterOptions = {}) {
         const { isFilterSubscription, title, url } = filterOptions;
         const POPUP_ACTIVE_CLASS = 'option-popup__step--active';
+        const customFilterPopup = document.querySelector('#add-custom-filter-popup');
+        const firstStep = document.querySelector('#add-custom-filter-step-1');
+        const secondStep = document.querySelector('#add-custom-filter-step-2');
+        const thirdStep = document.querySelector('#add-custom-filter-step-3');
+        const fourthStep = document.querySelector('#add-custom-filter-step-4');
+        const closeButton = document.querySelector('#custom-filter-popup-close');
+        const subscribeButton = document.querySelector('#custom-filter-popup-added-subscribe');
+        const checkboxInput = document.querySelector('#custom-filter-popup-trusted');
+        const searchInput = document.querySelector('#custom-filter-popup-url');
 
         function closePopup() {
-            document.querySelector('#add-custom-filter-popup').classList.remove('option-popup--active');
+            customFilterPopup.classList.remove('option-popup--active');
+            // Clear search input
+            searchInput.value = '';
+            // Clear checkbox input
+            checkboxInput.checked = false;
         }
 
         function clearActiveStep() {
-            document.querySelector('#add-custom-filter-step-1').classList.remove(POPUP_ACTIVE_CLASS);
-            document.querySelector('#add-custom-filter-step-2').classList.remove(POPUP_ACTIVE_CLASS);
-            document.querySelector('#add-custom-filter-step-3').classList.remove(POPUP_ACTIVE_CLASS);
-            document.querySelector('#add-custom-filter-step-4').classList.remove(POPUP_ACTIVE_CLASS);
-            document.querySelector('#custom-filter-popup-close').style.display = 'block';
+            firstStep.classList.remove(POPUP_ACTIVE_CLASS);
+            secondStep.classList.remove(POPUP_ACTIVE_CLASS);
+            thirdStep.classList.remove(POPUP_ACTIVE_CLASS);
+            fourthStep.classList.remove(POPUP_ACTIVE_CLASS);
+            closeButton.style.display = 'block';
         }
 
         function fillLoadedFilterDetails(filter) {
-            document.querySelector('#custom-filter-popup-added-title').textContent = filter.name;
-            document.querySelector('#custom-filter-popup-added-desc').textContent = filter.description;
-            document.querySelector('#custom-filter-popup-added-version').textContent = filter.version;
-            document.querySelector('#custom-filter-popup-added-rules-count').textContent = filter.rulesCount;
-            document.querySelector('#custom-filter-popup-added-homepage').textContent = filter.homepage;
-            document.querySelector('#custom-filter-popup-added-homepage').setAttribute('href', filter.homepage);
-            document.querySelector('#custom-filter-popup-added-url').textContent = filter.customUrl;
-            document.querySelector('#custom-filter-popup-added-url').setAttribute('href', filter.customUrl);
-        }
+            const handleElTextContent = (el, text, link) => {
+                if (!text) {
+                    el.closest('.option-popup__table-row').style.display = 'none';
+                    return;
+                }
+                el.textContent = text;
+                el.closest('.option-popup__table-row').style.display = 'flex';
+                if (link) {
+                    el.setAttribute('href', link);
+                }
+            };
 
-        function addAndEnableFilter(filterId) {
-            contentPage.sendMessage({
-                type: 'addAndEnableFilter',
-                filterId,
-            });
-            closePopup();
-        }
-
-        function removeAntiBannerFilter(filterId) {
-            contentPage.sendMessage({
-                type: 'removeAntiBannerFilter',
-                filterId,
-            });
+            handleElTextContent(document.querySelector('#custom-filter-popup-added-title'), filter.name);
+            handleElTextContent(document.querySelector('#custom-filter-popup-added-desc'), filter.description);
+            handleElTextContent(document.querySelector('#custom-filter-popup-added-version'), filter.version);
+            handleElTextContent(document.querySelector('#custom-filter-popup-added-rules-count'), filter.rulesCount);
+            handleElTextContent(document.querySelector('#custom-filter-popup-added-homepage'), filter.homepage, filter.homepage);
+            handleElTextContent(document.querySelector('#custom-filter-popup-added-url'), filter.customUrl, filter.customUrl);
         }
 
         function renderStepOne() {
             clearActiveStep();
-            document.querySelector('#add-custom-filter-step-1').classList.add(POPUP_ACTIVE_CLASS);
-
-            document.querySelector('#custom-filter-popup-url').focus();
-
-            if (onPopupCloseClicked) {
-                document.querySelector('#custom-filter-popup-close').removeEventListener('click', onPopupCloseClicked);
-            }
-
-            onPopupCloseClicked = () => closePopup();
-            document.querySelector('#custom-filter-popup-close').addEventListener('click', onPopupCloseClicked);
-            document.querySelector('#custom-filter-popup-cancel').addEventListener('click', onPopupCloseClicked);
+            firstStep.classList.add(POPUP_ACTIVE_CLASS);
+            searchInput.focus();
         }
 
         function renderStepTwo() {
             clearActiveStep();
-            document.querySelector('#add-custom-filter-step-2').classList.add(POPUP_ACTIVE_CLASS);
-            document.querySelector('#custom-filter-popup-close').style.display = 'none';
+            secondStep.classList.add(POPUP_ACTIVE_CLASS);
+            closeButton.style.display = 'none';
         }
 
+        // Error window step
         function renderStepThree() {
             clearActiveStep();
-            document.querySelector('#add-custom-filter-step-3').classList.add(POPUP_ACTIVE_CLASS);
+            thirdStep.classList.add(POPUP_ACTIVE_CLASS);
         }
 
-        function renderStepFour(filter, isFilterSubscription) {
+        function renderStepFour(filter) {
             clearActiveStep();
-            document.querySelector('#add-custom-filter-step-4').classList.add(POPUP_ACTIVE_CLASS);
+            fourthStep.classList.add(POPUP_ACTIVE_CLASS);
 
             fillLoadedFilterDetails(filter);
-
-            if (onSubscribeClicked) {
-                document.querySelector('#custom-filter-popup-added-subscribe').removeEventListener('click', onSubscribeClicked);
-            }
-
-            onSubscribeClicked = () => addAndEnableFilter(filter.filterId);
-            document.querySelector('#custom-filter-popup-added-subscribe').addEventListener('click', onSubscribeClicked);
-
-            if (onSubscriptionCancel) {
-                document.querySelector('#custom-filter-popup-remove').removeEventListener('click', onSubscriptionCancel);
-            }
-
-            onSubscriptionCancel = () => {
-                removeAntiBannerFilter(filter.filterId);
-                closePopup();
-            };
-
-            document.querySelector('#custom-filter-popup-remove').addEventListener('click', onSubscriptionCancel);
-
-            const backButton = document.querySelector('#custom-filter-popup-added-back');
-
-            if (isFilterSubscription) {
-                backButton.style.display = 'none';
-            } else {
-                backButton.style.display = '';
-                if (onSubscribeBackClicked) {
-                    backButton.removeEventListener('click', onSubscribeBackClicked);
-                }
-                onSubscribeBackClicked = () => {
-                    removeAntiBannerFilter(filter.filterId);
-                    renderStepOne();
-                };
-                backButton.addEventListener('click', onSubscribeBackClicked);
-            }
-
-
-            if (onPopupCloseClicked) {
-                document.querySelector('#custom-filter-popup-close').removeEventListener('click', onPopupCloseClicked);
-            }
-            onPopupCloseClicked = () => {
-                removeAntiBannerFilter(filter.filterId);
-                closePopup();
-            };
-            document.querySelector('#custom-filter-popup-close').addEventListener('click', onPopupCloseClicked);
         }
 
         function bindEvents() {
@@ -1072,9 +1057,9 @@ var AntiBannerFilters = function (options) {
             document.querySelector('.custom-filter-popup-next').addEventListener('click', function (e) {
                 e.preventDefault();
 
-                const url = document.querySelector('#custom-filter-popup-url').value;
+                const searchInputValue = searchInput.value && searchInput.value.trim();
 
-                contentPage.sendMessage({ type: 'loadCustomFilterInfo', url: url }, function (filter) {
+                contentPage.sendMessage({ type: 'loadCustomFilterInfo', url: searchInputValue }, function (filter) {
                     if (filter) {
                         renderStepFour(filter);
                     } else {
@@ -1085,8 +1070,26 @@ var AntiBannerFilters = function (options) {
                 renderStepTwo();
             });
 
+            subscribeButton.addEventListener('click', function (e) {
+                e.preventDefault();
+                const url = document.querySelector('#custom-filter-popup-added-url').href;
+                const title = document.querySelector('#custom-filter-popup-added-title').textContent || '';
+                contentPage.sendMessage({
+                    type: 'subscribeToCustomFilter',
+                    url,
+                    title: title.trim(),
+                    trusted: checkboxInput.checked,
+                }, function (filter) {
+                    console.log('filter added successfully', filter);
+                    closePopup();
+                });
+            });
+
             // render step 3 events
             document.querySelector('.custom-filter-popup-try-again').addEventListener('click', renderStepOne);
+
+            // Popup cross button clicked
+            closeButton.addEventListener('click', closePopup);
         }
 
         if (!customFilterInitialized) {
@@ -1094,12 +1097,12 @@ var AntiBannerFilters = function (options) {
             customFilterInitialized = true;
         }
 
-        document.querySelector('#add-custom-filter-popup').classList.add('option-popup--active');
+        customFilterPopup.classList.add('option-popup--active');
 
         if (isFilterSubscription) {
             contentPage.sendMessage({ type: 'loadCustomFilterInfo', url, title }, function (filter) {
                 if (filter) {
-                    renderStepFour(filter, isFilterSubscription);
+                    renderStepFour(filter);
                 } else {
                     renderStepThree();
                 }
@@ -1115,12 +1118,12 @@ var AntiBannerFilters = function (options) {
             loadedFiltersInfo.lastUpdateTime = lastUpdateTime;
         }
 
-        var updateText = "";
+        let updateText = '';
         lastUpdateTime = loadedFiltersInfo.lastUpdateTime;
         if (lastUpdateTime) {
             lastUpdateTime = moment(lastUpdateTime);
             lastUpdateTime.locale(environmentOptions.Prefs.locale);
-            updateText = lastUpdateTime.format("D MMMM YYYY HH:mm").toLowerCase();
+            updateText = lastUpdateTime.format('D MMMM YYYY HH:mm').toLowerCase();
             //TODO: localization (options_filter_version)
         }
 

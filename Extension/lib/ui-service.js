@@ -697,24 +697,10 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         });
     };
 
-    /**
-     * Loads information about custom filter from url
-     *
-     * @param url
-     * @param callback
-     */
-    var loadCustomFilterInfo = function (url, title, callback) {
-        adguard.filters.loadCustomFilter(url, { title: title }, function (filter) {
-            callback(filter);
-        }, function () {
-            callback();
-        });
-    };
-
     var initAssistant = function (selectElement) {
         var options = {
             addRuleCallbackName: 'addUserRule',
-            selectElement: selectElement
+            selectElement: selectElement,
         };
 
         // init assistant
@@ -944,7 +930,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
         changeApplicationFilteringDisabled: changeApplicationFilteringDisabled,
         checkFiltersUpdates: checkFiltersUpdates,
-        loadCustomFilterInfo: loadCustomFilterInfo,
         openAssistant: openAssistant,
         openTab: openTab,
 
