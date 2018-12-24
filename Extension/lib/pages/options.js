@@ -1476,6 +1476,7 @@ var Settings = function () {
     }
     checkboxes.push(new Checkbox('#third_party_cookies', userSettings.names.SELF_DESTRUCT_THIRD_PARTY_COOKIES));
     checkboxes.push(new Checkbox('#first_party_cookies', userSettings.names.SELF_DESTRUCT_FIRST_PARTY_COOKIES));
+    checkboxes.push(new Checkbox('#strip_tracking_params', userSettings.names.STRIP_TRACKING_PARAMETERS));
 
     var allowAcceptableAdsCheckbox = document.querySelector("#allowAcceptableAds");
     allowAcceptableAdsCheckbox.addEventListener('change', function () {
@@ -1539,6 +1540,18 @@ var Settings = function () {
                 type: 'changeUserSetting',
                 key: userSettings.names.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME,
                 value: firstPartyTimeInput.value
+            });
+        }, 1000));
+    }
+
+    const trackingParametersInput = document.querySelector('#strip_tracking_params_input');
+    trackingParametersInput.value = userSettings.values[userSettings.names.TRACKING_PARAMETERS];
+    if (trackingParametersInput) {
+        trackingParametersInput.addEventListener('keyup', Utils.debounce(function (e) {
+            contentPage.sendMessage({
+                type: 'changeUserSetting',
+                key: userSettings.names.TRACKING_PARAMETERS,
+                value: trackingParametersInput.value
             });
         }, 1000));
     }
