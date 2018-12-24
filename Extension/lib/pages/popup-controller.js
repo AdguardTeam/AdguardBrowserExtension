@@ -728,6 +728,8 @@ PopupController.prototype = {
             const footerDefault = this.footerDefault;
             const getPremium = footerDefault.querySelector('.popup-get-premium');
             const popupFooter = footerDefault.querySelector('.popup-footer');
+            const footerDefaultTitle = footerDefault.querySelector('.footer__title');
+            footerDefaultTitle.setAttribute('title', i18n.getMessage('popup_adguard_footer_title'));
             if (!options.isDisableShowAdguardPromoInfo) {
                 getPremium.style.display = 'block';
                 popupFooter.style.display = 'none';
