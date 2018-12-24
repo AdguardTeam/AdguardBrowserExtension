@@ -37,7 +37,7 @@
 
         // Check ABP-snippets
         if (ruleText.includes('#$#')) {
-            if (/#\$#[a-zA-Z-_]+/.test(ruleText) || /#\$#[a-zA-Z-_]+\(.+\)/.test(ruleText)) {
+            if (!/#\$#.+{.*}\s*$/.test(ruleText)) {
                 return false;
             }
         }
@@ -46,14 +46,35 @@
     };
 
     /**
+     * Filters untrusted rules from custom filters
+     *
+     * @param ruleText
+     */
+    const isUntrustedRule = function (ruleText) {
+        if (ruleText.includes(api.FilterRule.MASK_SCRIPT_RULE)) {
+            return true;
+        }
+
+        const optionsDelimiterIndex = ruleText.indexOf(api.UrlFilterRule.OPTIONS_DELIMITER)
+        if (optionsDelimiterIndex >= 0) {
+            const replaceOptionIndex = ruleText.indexOf(api.UrlFilterRule.REPLACE_OPTION + '=');
+            if (replaceOptionIndex > optionsDelimiterIndex) {
+                return true;
+            }
+        }
+
+        return false;
+    };
+
+    /**
      * Method that parses rule text and creates object of a suitable class.
      *
-     * @param ruleText Rule text
-     * @param filterId Filter identifier
+     * @param {string} ruleText Rule text
+     * @param {number} filterId Filter identifier
+     * @param {boolean} isTrustedFilter - custom filter can be trusted and untrusted, default is true
      * @returns Filter rule object. Either UrlFilterRule or CssFilterRule or ScriptFilterRule.
      */
-    const createRule = function (ruleText, filterId) {
-
+    const createRule = function (ruleText, filterId, isTrustedFilter = true) {
         ruleText = ruleText ? ruleText.trim() : null;
         if (!ruleText) {
             return null;
@@ -62,15 +83,19 @@
         try {
             const StringUtils = adguard.utils.strings;
 
-            if (StringUtils.startWith(ruleText, api.FilterRule.COMMENT) ||
-                StringUtils.contains(ruleText, api.FilterRule.OLD_INJECT_RULES) ||
-                StringUtils.contains(ruleText, api.FilterRule.MASK_JS_RULE)) {
+            if (StringUtils.startWith(ruleText, api.FilterRule.COMMENT)
+                || StringUtils.contains(ruleText, api.FilterRule.OLD_INJECT_RULES)
+                || StringUtils.contains(ruleText, api.FilterRule.MASK_JS_RULE)) {
                 // Empty or comment, ignore
                 // Content rules are not supported
                 return null;
             }
 
             if (!filterUnsupportedRules(ruleText)) {
+                return null;
+            }
+
+            if (!isTrustedFilter && isUntrustedRule(ruleText)) {
                 return null;
             }
 
