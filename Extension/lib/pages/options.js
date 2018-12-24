@@ -52,11 +52,13 @@ var Utils = {
                 editor.setValue(newRules);
                 fileInput.value = '';
             };
-            reader.onerror = function () {
-                console.log('Error load user rules');
-                fileInput.value = '';
+            reader.onerror = function (err) {
+                throw new Error(`${i18n.getMessage('options_popup_import_rules_unknown_error')} ${err.message}`);
             };
             const file = fileInput.files[0];
+            if (file.type !== 'text/plain') {
+                throw new Error(i18n.getMessage('options_popup_import_rules_wrong_file_extension'));
+            }
             if (file) {
                 reader.readAsText(file, 'utf-8');
             }
@@ -65,6 +67,14 @@ var Utils = {
 
     hoursToMs: function (hours) {
         return hours * 60 * 60 * 1000;
+    },
+
+    showPopup: function (title, text) {
+        contentPage.sendMessage({
+            type: 'showAlertMessagePopup',
+            title: title,
+            text: text,
+        });
     },
 };
 
@@ -381,7 +391,15 @@ var WhiteListFilter = function (options) {
         contentPage.sendMessage({ type: 'openExportRulesTab', whitelist: true });
     });
 
-    importWhiteListInput.addEventListener('change', Utils.importFromFileIntoEditor(editor));
+    importWhiteListInput.addEventListener('change', (e) => {
+        const handleFileInput = Utils.importFromFileIntoEditor(editor);
+        try {
+            handleFileInput(e);
+        } catch (err) {
+            Utils.showPopup(i18n.getMessage('options_popup_import_rules_error_title'), err.message);
+        }
+    });
+
 
     CheckboxUtils.updateCheckbox(changeDefaultWhiteListModeCheckbox, !options.defaultWhiteListMode);
 
@@ -455,7 +473,14 @@ const UserFilter = function () {
         importUserFiltersInput.click();
     });
 
-    importUserFiltersInput.addEventListener('change', Utils.importFromFileIntoEditor(editor));
+    importUserFiltersInput.addEventListener('change', function (e) {
+        const handleFileInput = Utils.importFromFileIntoEditor(editor);
+        try {
+            handleFileInput(e);
+        } catch (err) {
+            Utils.showPopup(i18n.getMessage('options_popup_import_rules_error_title'), err.message);
+        }
+    });
 
     exportUserFiltersBtn.addEventListener('click', function (event) {
         event.preventDefault();
@@ -1599,17 +1624,8 @@ var Settings = function () {
         handleActiveStealthOptions(userSettings.values[userSettings.names.DISABLE_STEALTH_MODE]);
     };
 
-    var showPopup = function (title, text) {
-        contentPage.sendMessage({
-            type: 'showAlertMessagePopup',
-            title: title,
-            text: text,
-        });
-    };
-
     return {
         render: render,
-        showPopup: showPopup,
     };
 };
 
@@ -1637,7 +1653,7 @@ PageController.prototype = {
 
     onSettingsImported: function (success) {
         if (success) {
-            this.settings.showPopup(i18n.getMessage('options_popup_import_success_title'));
+            Utils.showPopup(i18n.getMessage('options_popup_import_success_title'));
 
             var self = this;
             contentPage.sendMessage({ type: 'initializeFrameScript' }, function (response) {
@@ -1648,7 +1664,7 @@ PageController.prototype = {
                 self._render();
             });
         } else {
-            this.settings.showPopup(i18n.getMessage('options_popup_import_error_title'), i18n.getMessage('options_popup_import_error_description'));
+            Utils.showPopup(i18n.getMessage('options_popup_import_error_title'), i18n.getMessage('options_popup_import_error_description'));
         }
     },
 
@@ -1750,7 +1766,7 @@ PageController.prototype = {
                     onFileLoaded(evt.target.result);
                 };
                 reader.onerror = function () {
-                    showPopup(i18n.getMessage('options_popup_import_error_file_title'), i18n.getMessage('options_popup_import_error_file_description'));
+                    Utils.showPopup(i18n.getMessage('options_popup_import_error_file_title'), i18n.getMessage('options_popup_import_error_file_description'));
                 };
             }
         });
