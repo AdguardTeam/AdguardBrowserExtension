@@ -1,36 +1,120 @@
-# AdGuard Browser Extension [![Build Status](https://travis-ci.org/AdguardTeam/AdguardBrowserExtension.svg?branch=master)](https://travis-ci.org/AdguardTeam/AdguardBrowserExtension)
-> ### Disclaimer
-> * AdGuard Browser Extension is free. We believe that all free products should be open source, and AdGuard Browser Extension is not an exception. Its code can be found in this repository.
-> * Privacy policy: https://adguard.com/privacy/browser-extension.html (Briefly: AdGuard sends only necessary, limited information, e.g. information required for filter updates).
+# AdGuard Browser Extension 
 
-AdGuard is a fast and lightweight ad blocking browser extension that effectively blocks all types of ads on all web pages. Unlike its standalone counterparts (AG for Windows, Mac), browser extension is completely free and open source.
+&nbsp;
+<p align="center">
+  <img src="https://cdn.adguard.com/public/Adguard/Common/adguard_extension.svg" width="300px" alt="AdGuard Browser Extension" />
+</p>
+<h3 align="center">Adblock extension with advanced privacy protection features</h3>
+<p align="center">
+  AdGuard is a fast and lightweight ad blocking browser extension that effectively blocks all types of ads on all web pages.
+</p>
 
-To get more information and to download AdGuard Browser Extension, visit our website [https://adguard.com/](https://adguard.com/adguard-browser-extension/overview.html).
 
-### How to report an issue?
+<p align="center">
+    <a href="https://adguard.com/">AdGuard.com</a> |
+    <a href="https://reddit.com/r/Adguard">Reddit</a> |
+    <a href="https://twitter.com/AdGuard">Twitter</a> |
+    <a href="https://t.me/adguard_en">Telegram</a>
+    <br /><br />
+    <a href="https://travis-ci.org/AdguardTeam/AdguardBrowserExtension">
+      <img src="https://travis-ci.org/AdguardTeam/AdguardBrowserExtension.svg?branch=master" alt="Build status">
+    </a>
+    <a href="https://github.com/AdguardTeam/AdguardBrowserExtension/releases">
+        <img src="https://img.shields.io/github/release/AdguardTeam/AdguardBrowserExtension/all.svg" alt="Latest release" />
+    </a>
+</p>
+
+<br />
+
+<p align="center">
+    <img src="https://cdn.adguard.com/public/Adguard/Common/adguard_extension_settings.png" width="800" />
+</p>
+
+<hr />
+
+AdGuard is a fast and lightweight ad blocking browser extension that effectively blocks all types of ads on all web pages. Unlike its standalone counterparts (AG for Windows, Mac), the browser extension is completely free and open source. You can learn more about [the difference](https://adguard.com/compare.html) here.
+
+> <small>AdGuard does not participate in any acceptable ads programs. The only source of income we have is selling premium versions of our software, and we intend to keep it that way.</small>
+
+* [Installation](#installation)
+  * [Chrome and Chromium-based browsers](#installation-chrome)
+  * [Firefox](#installation-firefox)
+  * [Opera](#installation-opera)
+  * [Microsoft Edge](#installation-edge)
+  * [Safari](#installation-safari)
+* [Contribution](#contribution)
+  * [Translating AdGuard](#contribution-translating)
+  * [Testing AdGuard](#contribution-testing)
+  * [Reporting issues](#contribution-reporting)
+  * [Other options](#contribution-other)
+* [Development](#dev)
+  * [Requirements](#dev-requirements)
+  * [How to build](#dev-build)
+  * [Update localizations](#dev-localizations)
+
+<a id="installation"></a>
+## Installation
+
+<a id="installation-chrome"></a>
+### Chrome and Chromium-based browsers
+You can get the latest available AdGuard Extension version from the [Chrome Web Store](https://chrome.google.com/webstore/detail/bgnkhhnnamicmpeenaelnjfhikgbkllg).
+
+<a id="installation-firefox"></a>
+### Firefox
+You can get the latest version of AdGuard Extension from the [Mozilla Add-ons website](https://adguard.com/en/download-extension/firefox.html).
+
+> #### Legacy Firefox versions, Pale Moon
+> Starting with the version 3.0 we no more support the legacy versions of Firefox. Here you can get the latest version that supports legacy firefox versions here: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v.2.10.8 (look for "firefox-legacy" build).
+
+<a id="installation-opera"></a>
+### Opera
+Opera is basically a Chromium browser, but it maintains its own add-ons store. You can get AdGuard Extension [from there](https://adguard.com/en/download-extension/opera.html).
+
+<a id="installation-edge"></a>
+### Microsoft Edge
+The latest stable version of AdGuard browser extension is available in [Microsoft Store](https://adguard.com/en/download-extension/edge.html).
+
+<a id="installation-safari"></a>
+### Safari
+Due to the major changes in Safari 12, we cannot maintain the same codebase anymore for the Safari extension. That's why we launched a new [AdGuard for Safari app](https://github.com/AdguardTeam/AdGuardForSafari).
+
+> #### Legacy Safari version
+> You can get the latest legacy Safari extension version in [Safari Extensions gallery](https://safari-extensions.apple.com/details/?id=com.adguard.safari-N33TQXN8C7). Please note, that Apple is going to completely disable support for legacy extensions in future Safari versions.
+
+<a id="contribution"></a>
+## Contribution
+
+We are blessed to have a community that does not only love AdGuard, but also gives back. A lot of people volunteer in various ways to make other users' experience with AdGuard better, and you can join them!
+
+We, on our part, can only be happy to reward the most active members of the community. So, what can you do?
+
+<a id="contribution-translating"></a>
+### Translating AdGuard
+
+If you want to help with AdGuard translations, please learn more about translating our products here: https://kb.adguard.com/en/general/adguard-translations
+
+<a id="contribution-testing"></a>
+### Testing AdGuard
+
+You can get a beta version of AdGuard Browser Extension for any browser. All necessary information on this topic can be found in our [Knowledgebase article](https://kb.adguard.com/general/adguard-beta-testing-program#browser-extensions).
+
+<a id="contribution-reporting"></a>
+### Reporting issues
 
 GitHub can be used to report a bug or to submit a feature request. To do so, go to [this page](https://github.com/AdguardTeam/AdguardBrowserExtension/issues) and click the *New issue* button.
 
 >**Note:** for the filter-related issues (missed ads, false positives etc.) use the [dedicated repository](https://github.com/AdguardTeam/AdguardFilters).
 
-### Our plans
+<a id="contribution-other"></a>
+### Other options
 
-To see the 'big picture', to watch current progress and to get an idea of approximate dates for upcoming AdGuard Browser Extension releases, see this page: https://github.com/AdguardTeam/AdguardBrowserExtension/milestones
+Here is a [dedicated page](https://adguard.com/contribute.html) for those who are willing to contribute.
 
-### Releases
+<a id="dev"></a>
+## Development
 
-* Latest release version: [2.10.11](https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v2.10.11)
-* Latest beta version: [2.10.11](https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v2.10.11)
-
-You can find all AdGuard Browser Extension releases here: https://github.com/AdguardTeam/AdguardBrowserExtension/releases
-
-### How to become a beta tester?
-
-You can get a beta version of AdGuard Browser Extension for any browser. All necessary information on this topic can be found in our [Knowledgebase article](https://kb.adguard.com/general/adguard-beta-testing-program#browser-extensions).
-
-### How to build
-
-#### Requirements
+<a id="dev-requirements"></a>
+### Requirements
 
 - [nodejs](https://nodejs.org/en/download/)
 - [yarn](https://yarnpkg.com/en/docs/install/)
@@ -40,7 +124,44 @@ Install local dependencies by running:
   yarn install
 ```
 
-#### Download localizations
+<a id="dev-build"></a>
+### How to build
+
+**How to run tests**
+```
+  yarn test
+```
+
+**Building the dev version**
+
+Run the following command:
+```
+  yarn dev
+```
+
+This will create a Build directory with unpacked extensions for all browsers:
+```
+  Build/chrome-$currentVersion
+  Build/firefox-$currentVersion
+  Build/opera-$currentVersion
+```
+
+**Building the beta and release versions**
+
+Before building the release version, you should manually download necessary resources: filters and public suffix list.
+
+```
+  yarn resources
+```
+
+```
+  yarn beta
+  yarn release
+```
+You will need to put certificate.pem file to the Compiler directory. This build will create unpacked extensions and then pack them (crx for Chrome, xpi for Firefox).
+
+<a id="dev-localizations"></a>
+### Update localizations
 
 To run the task of downloading the localization files, put the `oneskyapp.json` configuration file in the root directory.
 
@@ -63,37 +184,4 @@ To download and append localizations run:
 To upload new phrases to oneskyapp you need the same file `oneskyapp.json` and file with phrases `./Extension/_locales/en/messages.json`. Then run:
 ```
   yarn locales-upload
-```
-
-#### Building the dev version
-
-Run the following command:
-```
-  yarn dev
-```
-
-This will create a Build directory with unpacked extensions for all browsers:
-```
-  Build/chrome-$currentVersion
-  Build/firefox-$currentVersion
-  Build/opera-$currentVersion
-```
-
-#### Building the beta and release versions
-
-Before building the release version, you should manually download necessary resources: filters and public suffix list.
-
-```
-  yarn resources
-```
-
-```
-  yarn beta
-  yarn release
-```
-You will need to put certificate.pem file to the Compiler directory. This build will create unpacked extensions and then pack them (crx for Chrome, xpi for Firefox).
-
-### How to run tests
-```
-  yarn test
 ```
