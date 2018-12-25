@@ -697,6 +697,14 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         });
     };
 
+    const checkFilterUpdates = (filter) => {
+        adguard.filters.checkFiltersUpdates(function (updatedFilters) {
+            adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTERS_SHOW_POPUP, true, updatedFilters);
+        }, function () {
+            // Do nothing
+        }, filter);
+    };
+
     var initAssistant = function (selectElement) {
         var options = {
             addRuleCallbackName: 'addUserRule',
@@ -899,6 +907,15 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         if (event === adguard.listeners.ENABLE_FILTER_SHOW_POPUP) {
             var result = getFiltersEnabledResultMessage(enabledFilters);
             showAlertMessagePopup(result.title, result.text);
+        }
+    });
+
+    // on filter enabled event
+    adguard.listeners.addListener(function (event, filter) {
+        if (event === adguard.listeners.FILTER_ENABLE_DISABLE) {
+            if (filter.enabled) {
+                checkFilterUpdates(filter);
+            }
         }
     });
 
