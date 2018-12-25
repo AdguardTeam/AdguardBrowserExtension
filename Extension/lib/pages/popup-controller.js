@@ -785,9 +785,7 @@ PopupController.prototype = {
                 popupPage.sendMessage({ type: 'setNotificationViewed', withDelay: false });
             }
         });
-        // close popup get premium notification
-        this._bindAction(parent, '.popup_get_premium_close', 'click', function (e) {
-            e.preventDefault();
+        const handlePopupGetPremiumClose = () => {
             const getPremium = parent.querySelector('.popup-get-premium');
             const popupFooter = parent.querySelector('.popup-footer');
             if (getPremium) {
@@ -797,6 +795,15 @@ PopupController.prototype = {
                     type: 'disableGetPremiumNotification',
                 });
             }
+        };
+        // close popup get premium notification if user clicked close button
+        this._bindAction(parent, '.popup_get_premium_close', 'click', function (e) {
+            e.preventDefault();
+            handlePopupGetPremiumClose();
+        });
+        // close popup get premium if user clicked on the link
+        this._bindAction(parent, '.popup-get-premium', 'click', function () {
+            handlePopupGetPremiumClose();
         });
         this._bindAction(parent, '.openFilteringLog', 'click', function (e) {
             e.preventDefault();
