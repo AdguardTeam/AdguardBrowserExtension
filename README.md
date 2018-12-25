@@ -42,6 +42,7 @@ AdGuard is a fast and lightweight ad blocking browser extension that effectively
   * [Opera](#installation-opera)
   * [Microsoft Edge](#installation-edge)
   * [Safari](#installation-safari)
+* [Integration mode](#integration-mode)
 * [Contribution](#contribution)
   * [Translating AdGuard](#contribution-translating)
   * [Testing AdGuard](#contribution-testing)
@@ -81,6 +82,15 @@ Due to the major changes in Safari 12, we cannot maintain the same codebase anym
 > #### Legacy Safari version
 > You can get the latest legacy Safari extension version in [Safari Extensions gallery](https://safari-extensions.apple.com/details/?id=com.adguard.safari-N33TQXN8C7). Please note, that Apple is going to completely disable support for legacy extensions in future Safari versions.
 
+<a id="integration-mode"></a>
+## Integration mode
+
+The frequently asked question is "does it make sense to use the browser extension alongside AdGuard for Windows or Mac?" Interestingly enough, the answer is "yes, if you like the integration mode".
+
+**Q: What is integration mode?** It is a special mode that the extension enters when being run along with a desktop AdGuard app (on Windows or macOS).
+
+**Q: What happens in the integration mode?** In this mode, the extension stops filitering traffic (this function lies completely on the app). Its settings are also ignored, the app's settings are applied instead. The extension's color changes to blue and it serves as a replacement for AdGuard Assistant.
+
 <a id="contribution"></a>
 ## Contribution
 
@@ -96,7 +106,7 @@ If you want to help with AdGuard translations, please learn more about translati
 <a id="contribution-testing"></a>
 ### Testing AdGuard
 
-You can get a beta version of AdGuard Browser Extension for any browser. All necessary information on this topic can be found in our [Knowledgebase article](https://kb.adguard.com/general/adguard-beta-testing-program#browser-extensions).
+You can get a beta version of AdGuard Browser Extension for any browser. All necessary information on this topic can be found on a [dedicated page on our website](https://adguard.com/beta.html).
 
 <a id="contribution-reporting"></a>
 ### Reporting issues
