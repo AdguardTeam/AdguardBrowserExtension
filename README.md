@@ -34,7 +34,7 @@
 
 AdGuard is a fast and lightweight ad blocking browser extension that effectively blocks all types of ads on all web pages. Unlike its standalone counterparts (AG for Windows, Mac), the browser extension is completely free and open source. You can learn more about [the difference](https://adguard.com/compare.html) here.
 
-> <small>AdGuard does not participate in any acceptable ads programs. The only source of income we have is selling premium versions of our software, and we intend to keep it that way.</small>
+> <small>AdGuard does not participate in any acceptable ads program. The only source of income we have is selling premium versions of our software, and we intend to keep it that way.</small>
 
 * [Installation](#installation)
   * [Chrome and Chromium-based browsers](#installation-chrome)
