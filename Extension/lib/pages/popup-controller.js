@@ -730,13 +730,18 @@ PopupController.prototype = {
             const popupFooter = footerDefault.querySelector('.popup-footer');
             const footerDefaultTitle = footerDefault.querySelector('.footer__title');
             footerDefaultTitle.setAttribute('title', i18n.getMessage('popup_adguard_footer_title'));
-            if (!options.isDisableShowAdguardPromoInfo) {
-                getPremium.style.display = 'block';
-                popupFooter.style.display = 'none';
-            } else {
-                getPremium.style.display = 'none';
-                popupFooter.style.display = 'block';
-            }
+
+            // CAUTION!
+            // Uncomment if condition bellow if you'd like to show
+            // get premium button in the action window (extension popup)
+
+            // if (!options.isDisableShowAdguardPromoInfo) {
+            //     getPremium.style.display = 'block';
+            //     popupFooter.style.display = 'none';
+            // } else {
+            //     getPremium.style.display = 'none';
+            //     popupFooter.style.display = 'block';
+            // }
             this._appendTemplate(footerContainer, footerDefault);
         }
     },
@@ -785,9 +790,7 @@ PopupController.prototype = {
                 popupPage.sendMessage({ type: 'setNotificationViewed', withDelay: false });
             }
         });
-        // close popup get premium notification
-        this._bindAction(parent, '.popup_get_premium_close', 'click', function (e) {
-            e.preventDefault();
+        const handlePopupGetPremiumClose = () => {
             const getPremium = parent.querySelector('.popup-get-premium');
             const popupFooter = parent.querySelector('.popup-footer');
             if (getPremium) {
@@ -797,6 +800,15 @@ PopupController.prototype = {
                     type: 'disableGetPremiumNotification',
                 });
             }
+        };
+        // close popup get premium notification if user clicked close button
+        this._bindAction(parent, '.popup_get_premium_close', 'click', function (e) {
+            e.preventDefault();
+            handlePopupGetPremiumClose();
+        });
+        // close popup get premium if user clicked on the link
+        this._bindAction(parent, '.popup-get-premium', 'click', function () {
+            handlePopupGetPremiumClose();
         });
         this._bindAction(parent, '.openFilteringLog', 'click', function (e) {
             e.preventDefault();

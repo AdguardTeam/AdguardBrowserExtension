@@ -1623,6 +1623,9 @@ var Settings = function () {
                 container.classList.remove('opts-list--disabled');
             }
         });
+
+        const stripTrackingTextarea = document.querySelector('#strip_tracking_params_input');
+        stripTrackingTextarea.disabled = stealthModeDisabled;
     }
 
     var render = function () {
