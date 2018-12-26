@@ -1617,19 +1617,15 @@ var Settings = function () {
         const cookiesOptionsContainer = document.querySelector('#cookies-stealth-options');
         const optionsContainers = [miscellaneousOptionsContainer, cookiesOptionsContainer];
         optionsContainers.forEach(container => {
-            const textArea = container.querySelector('textarea');
             if (stealthModeDisabled) {
                 container.classList.add('opts-list--disabled');
             } else {
                 container.classList.remove('opts-list--disabled');
             }
-            if(stealthModeDisabled && textArea) {
-                textArea.setAttribute('disabled', 'disabled')
-            }
-            if (!stealthModeDisabled && textArea) {
-                textArea.removeAttribute('disabled')
-            }
         });
+
+        const stripTrackingTextarea = document.querySelector('#strip_tracking_params_input');
+        stripTrackingTextarea.disabled = stealthModeDisabled;
     }
 
     var render = function () {
