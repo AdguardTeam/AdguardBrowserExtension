@@ -730,13 +730,18 @@ PopupController.prototype = {
             const popupFooter = footerDefault.querySelector('.popup-footer');
             const footerDefaultTitle = footerDefault.querySelector('.footer__title');
             footerDefaultTitle.setAttribute('title', i18n.getMessage('popup_adguard_footer_title'));
-            if (!options.isDisableShowAdguardPromoInfo) {
-                getPremium.style.display = 'block';
-                popupFooter.style.display = 'none';
-            } else {
-                getPremium.style.display = 'none';
-                popupFooter.style.display = 'block';
-            }
+
+            // CAUTION!
+            // Uncomment if condition bellow if you'd like to show
+            // get premium button in the action window (extension popup)
+
+            // if (!options.isDisableShowAdguardPromoInfo) {
+            //     getPremium.style.display = 'block';
+            //     popupFooter.style.display = 'none';
+            // } else {
+            //     getPremium.style.display = 'none';
+            //     popupFooter.style.display = 'block';
+            // }
             this._appendTemplate(footerContainer, footerDefault);
         }
     },
