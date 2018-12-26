@@ -271,7 +271,7 @@ adguard.frames = (function (adguard) {
         var totalBlockedTab = adguard.tabs.getTabMetadata(tabId, 'blocked') || 0;
         var totalBlocked = adguard.pageStats.getTotalBlocked();
 
-        var domainName = adguard.frames.getFrameDomain(tab);
+        var domainName = getFrameDomain(tab);
 
         return {
 
