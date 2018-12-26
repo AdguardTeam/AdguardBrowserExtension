@@ -1505,7 +1505,10 @@ adguard.filters = (function (adguard) {
             }
         }
 
-        return antiBannerService.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback, [filter]);
+        if (filter) {
+            antiBannerService.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback, [filter]);
+        }
+        antiBannerService.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback);
     };
 
     const enableGroup = function (groupId) {
