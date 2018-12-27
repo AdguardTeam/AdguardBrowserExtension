@@ -301,6 +301,7 @@
   color: #4d4d4d;
   font-size: 12px;
   line-height: 15px;
+  background-color: #ffffff;
 }
 .block-type__desc {
   display: flex;
@@ -1347,6 +1348,10 @@ li.active .toggler:before {
 }
 
 .opt-input {
+  -moz-appearance:textfield;
+}
+
+.opt-input {
   height: 32px;
   border: 1px solid #888888;
   padding: 0 15px;
@@ -1442,7 +1447,9 @@ li.active .toggler:before {
     width: 1px;
 }
 
-.opts-list.opts-list--disabled .toggler{
+.opts-list.opts-list--disabled .toggler,
+.opts-list.opts-list--disabled .opt-input,
+.opts-list.opts-list--disabled .opt-textarea__item {
   opacity: 0.5;
 }
 
