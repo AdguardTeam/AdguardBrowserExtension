@@ -990,4 +990,5 @@ PopupController.prototype = {
                 break;
         }
     });
+
 })();
