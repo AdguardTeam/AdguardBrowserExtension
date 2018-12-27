@@ -1,6 +1,6 @@
 /**
  * filters-downloader - Compiles filters source files
- * @version v1.0.9
+ * @version v1.0.10
  * @link http://adguard.com
  */
 /**
@@ -379,7 +379,7 @@ const FilterDownloader = (() => {
         if (line.indexOf(INCLUDE_DIRECTIVE) !== 0) {
             return Promise.resolve(line);
         } else {
-            const url = line.substring(INCLUDE_DIRECTIVE.length).trim();
+            const url = decodeURI(line.substring(INCLUDE_DIRECTIVE.length).trim());
             validateUrl(url, filterOrigin);
             return downloadFilterRules(url, filterOrigin, definedProperties);
         }
