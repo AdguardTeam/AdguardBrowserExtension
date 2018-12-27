@@ -301,6 +301,7 @@
   color: #4d4d4d;
   font-size: 12px;
   line-height: 15px;
+  background-color: #ffffff;
 }
 .block-type__desc {
   display: flex;
@@ -1182,8 +1183,10 @@ li.active .toggler:before {
 .option-popup__table-cell {
   font-size: 14px;
   line-height: 22px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+}
+
+.option-popup__url {
+  word-break: break-word;
 }
 
 .option-popup__table-cell:nth-child(1) {
@@ -1354,6 +1357,7 @@ li.active .toggler:before {
   margin-bottom: 12px;
   width: 400px;
   color: #4d4d4d;
+  -moz-appearance:textfield;
 }
 
 .try-premium__in {
@@ -1442,7 +1446,9 @@ li.active .toggler:before {
     width: 1px;
 }
 
-.opts-list.opts-list--disabled .toggler{
+.opts-list.opts-list--disabled .toggler,
+.opts-list.opts-list--disabled .opt-input,
+.opts-list.opts-list--disabled .opt-textarea__item {
   opacity: 0.5;
 }
 
