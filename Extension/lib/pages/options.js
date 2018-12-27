@@ -537,7 +537,7 @@ var AntiBannerFilters = function (options) {
             }
             this.categoriesById = categoriesById;
 
-            var lastUpdateTime = 0;
+            var lastUpdateTime = this.lastUpdateTime || 0;
             var filtersById = Object.create(null);
             for (var i = 0; i < this.filters.length; i++) {
                 var filter = this.filters[i];
@@ -709,7 +709,7 @@ var AntiBannerFilters = function (options) {
     }
 
     function getFilterTemplate(filter, enabled, showDeleteButton) {
-        var timeUpdated = moment(filter.timeUpdated);
+        var timeUpdated = moment(filter.lastUpdateTime || filter.timeUpdated);
         timeUpdated.locale(environmentOptions.Prefs.locale);
         var timeUpdatedText = timeUpdated.format('D/MM/YYYY HH:mm').toLowerCase();
 
@@ -731,28 +731,30 @@ var AntiBannerFilters = function (options) {
         }
 
         const getVersionText = (version) => {
-            return version
-                ? `${i18n.getMessage('options_filters_filter_version')} ${version}`
-                : '';
+            return {
+                text: version ? `${i18n.getMessage('options_filters_filter_version')} ${version}` : '',
+                className: 'filter-version-desc'
+            };
         };
 
         const getUpdatedTimeText = (updateTime) => {
-            return updateTime
-                ? `${i18n.getMessage('options_filters_filter_updated')} ${updateTime}`
-                : '';
+            return {
+                text: updateTime ? `${i18n.getMessage('options_filters_filter_updated')} ${updateTime}` : '',
+                className: 'last-update-time'
+            };
         };
 
         /**
          * Creates divs with filter details, removing empty strings
-         * @param {array.<string>} texts - array with texts
-         * @returns {string} - html string
+         * @param {array} texts array with text-classes objects
+         * @returns {string} html string
          */
         const renderFilterInfo = (texts) => {
             return texts
-                .filter(text => text.length > 0)
-                .map(text => {
-                    return `<div class="opt-name__info-item">
-                                ${text}
+                .filter(t => t.text.length > 0)
+                .map(t => {
+                    return `<div class="opt-name__info-item ${t.className}">
+                                ${t.text}
                            </div>`;
                 })
                 .join('');
@@ -995,7 +997,7 @@ var AntiBannerFilters = function (options) {
     function updateAntiBannerFilters(e) {
         e.preventDefault();
         contentPage.sendMessage({ type: 'checkAntiBannerFiltersUpdate' }, function () {
-            // Empty
+            setLastUpdatedTimeText(Date.now());
         });
     }
 
@@ -1160,32 +1162,33 @@ var AntiBannerFilters = function (options) {
     }
 
     function setLastUpdatedTimeText(lastUpdateTime) {
-        if (lastUpdateTime && lastUpdateTime > loadedFiltersInfo.lastUpdateTime) {
+        if (lastUpdateTime && lastUpdateTime >= loadedFiltersInfo.lastUpdateTime) {
             loadedFiltersInfo.lastUpdateTime = lastUpdateTime;
-        }
 
-        let updateText = '';
-        lastUpdateTime = loadedFiltersInfo.lastUpdateTime;
-        if (lastUpdateTime) {
-            lastUpdateTime = moment(lastUpdateTime);
-            lastUpdateTime.locale(environmentOptions.Prefs.locale);
-            updateText = lastUpdateTime.format('D MMMM YYYY HH:mm').toLowerCase();
-            //TODO: localization (options_filter_version)
-        }
+            let updateText = '';
+            lastUpdateTime = loadedFiltersInfo.lastUpdateTime;
+            if (lastUpdateTime) {
+                lastUpdateTime = moment(lastUpdateTime);
+                lastUpdateTime.locale(environmentOptions.Prefs.locale);
+                updateText = lastUpdateTime.format('D MMMM YYYY HH:mm').toLowerCase();
+            }
 
-        document.querySelector('#lastUpdateTime').textContent = updateText;
+            document.querySelector('#lastUpdateTime').textContent = updateText;
+        }
     }
 
     function updateRulesCountInfo(info) {
-        var message = i18n.getMessage('options_antibanner_info', [String(info.rulesCount || 0)]);
+        const message = i18n.getMessage('options_antibanner_info', [String(info.rulesCount || 0)]);
         document.querySelector('#filtersRulesInfo').textContent = message;
     }
 
     function onFilterStateChanged(filter) {
-        var filterId = filter.filterId;
-        var enabled = filter.enabled;
+        const filterId = filter.filterId;
+        let enabled = filter.enabled;
         loadedFiltersInfo.updateEnabled(filter, enabled);
         updateCategoryFiltersInfo(filter.groupId);
+        updateFilterMetadata(filter);
+
         CheckboxUtils.updateCheckbox([getFilterCheckbox(filterId)], enabled);
     }
 
@@ -1205,12 +1208,24 @@ var AntiBannerFilters = function (options) {
 
     function onFilterDownloadFinished(filter) {
         getCategoryElement(filter.groupId).querySelector('.preloader').classList.remove('active');
-        const filterElement = getFilterElement(filter.filterId);
-        if (filterElement) {
-            filterElement.querySelector('.preloader').classList.remove('active');
-        }
+        updateFilterMetadata(filter);
         document.querySelector('.settings-actions--update-filters a').classList.remove('active');
         setLastUpdatedTimeText(filter.lastUpdateTime);
+    }
+
+
+    function updateFilterMetadata(filter) {
+        const filterEl = getFilterElement(filter.filterId);
+        if (filterEl) {
+            filterEl.querySelector('.preloader').classList.remove('active');
+
+            let timeUpdated = moment(filter.lastUpdateTime || filter.timeUpdated);
+            timeUpdated.locale(environmentOptions.Prefs.locale);
+            const timeUpdatedText = timeUpdated.format('D/MM/YYYY HH:mm').toLowerCase();
+
+            filterEl.querySelector('.last-update-time').textContent = `${i18n.getMessage('options_filters_filter_updated')} ${timeUpdatedText}`;
+            filterEl.querySelector('.filter-version-desc').textContent = `${i18n.getMessage('options_filters_filter_version')} ${filter.version}`;
+        }
     }
 
     return {
