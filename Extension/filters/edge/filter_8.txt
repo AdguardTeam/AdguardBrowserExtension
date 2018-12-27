@@ -1,8 +1,8 @@
-! Checksum: xLOq7ntYo2yao6K3L/s1wg
+! Checksum: 7fKbUX6WZhdiZkh+rIT93w
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.0.39
-! TimeUpdated: 2018-09-03T18:09:01+00:00
+! Version: 2.0.0.41
+! TimeUpdated: 2018-10-24T10:49:29+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#dutch
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -1424,6 +1424,13 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 !--------------------------------------------------------!
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
+nnieuws.be##.bannerbox
+nnieuws.be###block-views-vw-banners-block-2
+nnieuws.be###block-views-vw-column-partners-block
+||nnieuws.be/sites/default/files/banner-*.gif
+||nnieuws.be/sites/default/files/*-300x300*.gif
+||oozo.nl/images/zzpbanner.png
+oozo.nl##.col-md-4 > div[style^="background-image: url(/images/afvallen.jpg);"][onclick^="javascript:document.location="]
 looopings.nl###containerAd
 appletips.nl##a[href^="/adverteren-"]
 appletips.nl##.padnoshow > div[class^="block"][style^="margin-top: "]
