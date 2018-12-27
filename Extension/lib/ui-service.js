@@ -699,7 +699,11 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
     const checkFilterUpdates = (filter) => {
         adguard.filters.checkFiltersUpdates(function (updatedFilters) {
-            adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTERS_SHOW_POPUP, true, updatedFilters);
+            if (updatedFilters.length <= 0) {
+                // Suppress no updates found for one filter update check
+            } else {
+                adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTERS_SHOW_POPUP, true, updatedFilters);
+            }
         }, function () {
             // Do nothing
         }, filter);

@@ -1050,7 +1050,7 @@ adguard.antiBannerService = (function (adguard) {
             delete filter._isDownloading;
             filter.version = filterMetadata.version;
             filter.lastUpdateTime = filterMetadata.timeUpdated;
-            filter.lastCheckTime = Date.now();
+            filter.lastCheckTime = forceRemote ? Date.now() : filterMetadata.timeUpdated;
             filter.loaded = true;
             // notify listeners
             adguard.listeners.notifyListeners(adguard.listeners.SUCCESS_DOWNLOAD_FILTER, filter);
@@ -1503,12 +1503,11 @@ adguard.filters = (function (adguard) {
             if (Date.now() - filter.lastCheckTime < ENABLED_FILTERS_SKIP_TIMEOUT) {
                 return;
             }
-        }
 
-        if (filter) {
             antiBannerService.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback, [filter]);
+        } else {
+            antiBannerService.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback);
         }
-        antiBannerService.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback);
     };
 
     const enableGroup = function (groupId) {
