@@ -56,13 +56,34 @@ var Utils = {
                 throw new Error(`${i18n.getMessage('options_popup_import_rules_unknown_error')} ${err.message}`);
             };
             const file = fileInput.files[0];
-            if (file.type !== 'text/plain') {
-                throw new Error(i18n.getMessage('options_popup_import_rules_wrong_file_extension'));
-            }
             if (file) {
+                if (file.type !== 'text/plain') {
+                    throw new Error(i18n.getMessage('options_popup_import_rules_wrong_file_extension'));
+                }
                 reader.readAsText(file, 'utf-8');
             }
         };
+    },
+
+    handleImportSettings: function (e) {
+        const onFileLoaded = function (content) {
+            contentPage.sendMessage({ type: 'applySettingsJson', json: content });
+        };
+
+        const file = e.currentTarget.files[0];
+        if (file) {
+            if (file.type !== 'application/json') {
+                throw new Error(i18n.getMessage('options_popup_import_settings_wrong_file_extension'));
+            }
+            const reader = new FileReader();
+            reader.readAsText(file, 'UTF-8');
+            reader.onload = function (evt) {
+                onFileLoaded(evt.target.result);
+            };
+            reader.onerror = function () {
+                throw new Error(i18n.getMessage('options_popup_import_error_file_description'));
+            };
+        }
     },
 
     hoursToMs: function (hours) {
@@ -1702,10 +1723,16 @@ PageController.prototype = {
         });
 
         const importSettingsBtn = document.querySelector('#importSettingsFile');
+        const importSettingsFileInput = document.querySelector('#importSettingsFileInput');
+        importSettingsBtn.addEventListener('click', this.importSettingsFile.bind(this));
 
-        if (importSettingsBtn) {
-            importSettingsBtn.addEventListener('click', this.importSettingsFile.bind(this));
-        }
+        importSettingsFileInput.addEventListener('change', function (e) {
+            try {
+                Utils.handleImportSettings(e);
+            } catch (err) {
+                Utils.showPopup(i18n.getMessage('options_popup_import_error_file_title'), err.message);
+            }
+        });
     },
 
     _render: function () {
@@ -1764,28 +1791,10 @@ PageController.prototype = {
         this._onStatsReset();
     },
 
-    importSettingsFile: function () {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.click();
-
-        const onFileLoaded = function (content) {
-            contentPage.sendMessage({ type: 'applySettingsJson', json: content });
-        };
-
-        input.addEventListener('change', function (e) {
-            const file = e.currentTarget.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.readAsText(file, 'UTF-8');
-                reader.onload = function (evt) {
-                    onFileLoaded(evt.target.result);
-                };
-                reader.onerror = function () {
-                    Utils.showPopup(i18n.getMessage('options_popup_import_error_file_title'), i18n.getMessage('options_popup_import_error_file_description'));
-                };
-            }
-        });
+    importSettingsFile: function (e) {
+        e.preventDefault();
+        const importSettingsFileInput = document.querySelector('#importSettingsFileInput');
+        importSettingsFileInput.click();
     },
 
     _onStatsReset: function () {
