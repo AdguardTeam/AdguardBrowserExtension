@@ -73,7 +73,7 @@ var Utils = {
         const file = e.currentTarget.files[0];
         if (file) {
             if (file.type !== 'application/json') {
-                throw new Error('Filename extension should be json');
+                throw new Error(i18n.getMessage('options_popup_import_settings_wrong_file_extension'));
             }
             const reader = new FileReader();
             reader.readAsText(file, 'UTF-8');
