@@ -294,14 +294,14 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             addMenu('popup_site_protection_disabled_android', {
                 action: 'context_enable_protection',
                 checked: true,
-                checkable: true
+                checkable: true,
             });
-            addMenu('popup_open_log_android', {action: 'context_open_log'});
-            addMenu('popup_open_settings', {action: 'context_open_settings'});
+            addMenu('popup_open_log_android', { action: 'context_open_log' });
+            addMenu('popup_open_settings', { action: 'context_open_settings' });
         } else if (tabInfo.urlFilteringDisabled) {
             addMenu('context_site_filtering_disabled');
-            addMenu('popup_open_log_android', {action: 'context_open_log'});
-            addMenu('popup_open_settings', {action: 'context_open_settings'});
+            addMenu('popup_open_log_android', { action: 'context_open_log' });
+            addMenu('popup_open_settings', { action: 'context_open_settings' });
             addMenu('context_update_antibanner_filters');
         } else {
             addMenu('popup_site_protection_disabled_android', {
@@ -611,7 +611,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     };
 
     var openThankYouPage = function () {
-
         var params = adguard.utils.browser.getExtensionParams();
         params.push('_locale=' + encodeURIComponent(adguard.app.getLocale()));
         var thankyouUrl = THANKYOU_PAGE_URL + '?' + params.join('&');
@@ -648,7 +647,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     };
 
     var whiteListTab = function (tab) {
-
         var tabInfo = adguard.frames.getFrameInfo(tab);
         adguard.whitelist.whiteListUrl(tabInfo.url);
 
@@ -664,7 +662,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     };
 
     var unWhiteListTab = function (tab) {
-
         var tabInfo = adguard.frames.getFrameInfo(tab);
         adguard.userrules.unWhiteListFrame(tabInfo);
 
@@ -831,14 +828,13 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
     // update icon on event received
     adguard.listeners.addListener(function (event, tab, reset) {
-
         if (event !== adguard.listeners.UPDATE_TAB_BUTTON_STATE || !tab) {
             return;
         }
 
         var options;
         if (reset) {
-            options = {icon: adguard.prefs.ICONS.ICON_GRAY, badge: ''};
+            options = { icon: adguard.prefs.ICONS.ICON_GRAY, badge: '' };
         }
 
         updateTabIcon(tab, options);
