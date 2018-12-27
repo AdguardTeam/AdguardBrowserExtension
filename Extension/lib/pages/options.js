@@ -1760,7 +1760,7 @@ PageController.prototype = {
     onResetStatsClicked: function (e) {
         e.preventDefault();
         contentPage.sendMessage({ type: 'resetBlockedAdsCount' }, () => {
-            this._onStatsReset();
+            Utils.showPopup(i18n.getMessage('options_reset_stats_done'));
         });
     },
 
@@ -1786,10 +1786,6 @@ PageController.prototype = {
                 };
             }
         });
-    },
-
-    _onStatsReset: function () {
-        Utils.showPopup(i18n.getMessage('options_reset_stats_done'));
     },
 
     checkSubscriptionsCount: function () {
