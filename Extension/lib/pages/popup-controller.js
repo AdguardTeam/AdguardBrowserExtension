@@ -71,7 +71,7 @@ PopupController.prototype = {
     },
 
     openSiteReportTab: function (url) {
-        popupPage.sendMessage({ type: 'openSiteReportTab', url: url });
+        popupPage.sendMessage({type: 'openSiteReportTab', url: url});
     },
 
     openAbuseTab: function (url) {
@@ -990,5 +990,4 @@ PopupController.prototype = {
                 break;
         }
     });
-
 })();
