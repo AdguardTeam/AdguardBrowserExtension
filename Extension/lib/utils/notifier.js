@@ -155,6 +155,4 @@ adguard.listeners = (function () {
     }
 
     return EventNotifier;
-
 })();
-
