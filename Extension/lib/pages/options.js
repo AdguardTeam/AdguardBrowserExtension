@@ -516,7 +516,7 @@ var AntiBannerFilters = function (options) {
             }
             this.categoriesById = categoriesById;
 
-            var lastUpdateTime = 0;
+            var lastUpdateTime = this.lastUpdateTime || 0;
             var filtersById = Object.create(null);
             for (var i = 0; i < this.filters.length; i++) {
                 var filter = this.filters[i];
@@ -976,10 +976,8 @@ var AntiBannerFilters = function (options) {
     function updateAntiBannerFilters(e) {
         e.preventDefault();
         contentPage.sendMessage({ type: 'checkAntiBannerFiltersUpdate' }, function () {
-            // Empty
+            setLastUpdatedTimeText(Date.now());
         });
-
-        setLastUpdatedTimeText(Date.now());
     }
 
     function addCustomFilter(e) {
@@ -1143,29 +1141,29 @@ var AntiBannerFilters = function (options) {
     }
 
     function setLastUpdatedTimeText(lastUpdateTime) {
-        if (lastUpdateTime && lastUpdateTime > loadedFiltersInfo.lastUpdateTime) {
+        if (lastUpdateTime && lastUpdateTime >= loadedFiltersInfo.lastUpdateTime) {
             loadedFiltersInfo.lastUpdateTime = lastUpdateTime;
-        }
 
-        let updateText = '';
-        lastUpdateTime = loadedFiltersInfo.lastUpdateTime;
-        if (lastUpdateTime) {
-            lastUpdateTime = moment(lastUpdateTime);
-            lastUpdateTime.locale(environmentOptions.Prefs.locale);
-            updateText = lastUpdateTime.format('D MMMM YYYY HH:mm').toLowerCase();
-        }
+            let updateText = '';
+            lastUpdateTime = loadedFiltersInfo.lastUpdateTime;
+            if (lastUpdateTime) {
+                lastUpdateTime = moment(lastUpdateTime);
+                lastUpdateTime.locale(environmentOptions.Prefs.locale);
+                updateText = lastUpdateTime.format('D MMMM YYYY HH:mm').toLowerCase();
+            }
 
-        document.querySelector('#lastUpdateTime').textContent = updateText;
+            document.querySelector('#lastUpdateTime').textContent = updateText;
+        }
     }
 
     function updateRulesCountInfo(info) {
-        var message = i18n.getMessage('options_antibanner_info', [String(info.rulesCount || 0)]);
+        const message = i18n.getMessage('options_antibanner_info', [String(info.rulesCount || 0)]);
         document.querySelector('#filtersRulesInfo').textContent = message;
     }
 
     function onFilterStateChanged(filter) {
-        var filterId = filter.filterId;
-        var enabled = filter.enabled;
+        const filterId = filter.filterId;
+        let enabled = filter.enabled;
         loadedFiltersInfo.updateEnabled(filter, enabled);
         updateCategoryFiltersInfo(filter.groupId);
         updateFilterMetadata(filter);
