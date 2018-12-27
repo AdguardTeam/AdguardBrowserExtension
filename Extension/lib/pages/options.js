@@ -1706,7 +1706,6 @@ PageController.prototype = {
     },
 
     _bindEvents: function () {
-        this.resetStatsPopup = document.querySelector('#resetStatsPopup');
         // TODO remove if not necessary
         this.tooManySubscriptionsEl = document.querySelector('#tooManySubscriptions');
 
@@ -1787,24 +1786,15 @@ PageController.prototype = {
 
     onResetStatsClicked: function (e) {
         e.preventDefault();
-        contentPage.sendMessage({type: 'resetBlockedAdsCount'});
-        this._onStatsReset();
+        contentPage.sendMessage({ type: 'resetBlockedAdsCount' }, () => {
+            Utils.showPopup(i18n.getMessage('options_reset_stats_done'));
+        });
     },
 
     importSettingsFile: function (e) {
         e.preventDefault();
         const importSettingsFileInput = document.querySelector('#importSettingsFileInput');
         importSettingsFileInput.click();
-    },
-
-    _onStatsReset: function () {
-        this.resetStatsPopup.style.display = 'block';
-        if (this.closePopupTimeoutId) {
-            clearTimeout(this.closePopupTimeoutId);
-        }
-        this.closePopupTimeoutId = setTimeout(function () {
-            this.resetStatsPopup.style.display = 'none';
-        }.bind(this), 4000);
     },
 
     checkSubscriptionsCount: function () {
