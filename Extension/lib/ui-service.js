@@ -702,7 +702,8 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             if (updatedFilters.length <= 0) {
                 // Suppress no updates found for one filter update check
             } else {
-                adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTERS_SHOW_POPUP, true, updatedFilters);
+                const updatedFilterStr = updatedFilters.map(f => `Filter ID: ${f.filterId}`).join(', ');
+                adguard.console.info(`Filters where auto updated: ${updatedFilterStr}`);
             }
         }, function () {
             // Do nothing
