@@ -311,7 +311,7 @@ adguard.stealthService = (function (adguard) {
 
         // Edge doesn't support privacy api
         // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/privacy
-        if (typeof browser.privacy === 'undefined') {
+        if (!browser.privacy) {
             return;
         }
 
@@ -465,7 +465,7 @@ adguard.stealthService = (function (adguard) {
     return {
         processRequestHeaders: processRequestHeaders,
         getCookieRules: getCookieRules,
-        removeTrackersFromUrl: removeTrackersFromUrl
+        removeTrackersFromUrl: removeTrackersFromUrl,
     };
 
 })(adguard);
