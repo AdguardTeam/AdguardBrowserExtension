@@ -1,8 +1,8 @@
-! Checksum: pOFlXuEOlVbFhec+L7iRFg
+! Checksum: RiED2k9SxHqt6+6vlyBKUw
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.0.41
-! TimeUpdated: 2018-10-24T10:49:29+00:00
+! Version: 2.0.0.44
+! TimeUpdated: 2018-12-19T00:03:03+03:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -1330,10 +1330,16 @@ ad.nl##.tile[-ext-has=">.ankeiler--advertisement"]
 gelderlander.nl##.page-content > .theme-default[-ext-has='div.ad']
 klusidee.nl##tr.table-row[-ext-has=".td-ad"]
 omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3000px!important; }
+handbalstartpunt.nl#$##advertentie-top { height: 0!important; }
 omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
 ||v.fwmrm.net/ad/g/1?$replace=/(tv\.freewheel\.SDK\._instanceQueue\['Context_[\s\S]*?'\][\s\S]*?\.requestComplete\(\{)[\s\S]*\}\);/\$1\}\);/,domain=q2.be,important
 ||tv2.no/*/homadConfig*.json$replace=/"enabled": true\,/"enabled":false\,/i,important
 ||svonm.com/*config.json$replace=/"enabled": true\,/"enabled":false\,/i,important
+||handbalstartpunt.nl/*/uploads_filemanager/Banner
+handbalstartpunt.nl##a[title="Handbal-direct"]
+gic.nl##.banners
+gic.nl##.katernbanners
+||gic.nl/uploads/fckconnector/$image
 nnieuws.be##.bannerbox
 nnieuws.be###block-views-vw-banners-block-2
 nnieuws.be###block-views-vw-column-partners-block
