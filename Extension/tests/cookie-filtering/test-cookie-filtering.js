@@ -1,5 +1,7 @@
 /* global QUnit */
 
+const browser = {};
+
 QUnit.test("Test cookie filter", function (assert) {
 
     const filter = new adguard.rules.CookieFilter();
