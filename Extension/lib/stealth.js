@@ -86,6 +86,16 @@ adguard.stealthService = (function (adguard) {
     };
 
     /**
+     * Crops url path
+     * @param url URL
+     * @return {string} URL without path
+     */
+    const getHiddenRefHeaderUrl = (url) => {
+        const host = adguard.utils.url.getHost(url);
+        return (url.indexOf('https') === 0 ? 'https://' : 'http://') + host + '/';
+    };
+
+    /**
      * Generates rule removing cookies
      *
      * @param {number} maxAgeMinutes Cookie maxAge in minutes
@@ -174,7 +184,7 @@ adguard.stealthService = (function (adguard) {
             if (refHeader &&
                 adguard.utils.url.isThirdPartyRequest(requestUrl, refHeader.value)) {
 
-                refHeader.value = requestUrl;
+                refHeader.value = getHiddenRefHeaderUrl(requestUrl);
                 stealthActions |= STEALTH_ACTIONS.HIDE_REFERRER;
             }
         }
@@ -189,7 +199,7 @@ adguard.stealthService = (function (adguard) {
                 isSearchEngine(refHeader.value) &&
                 adguard.utils.url.isThirdPartyRequest(requestUrl, refHeader.value)) {
 
-                refHeader.value = requestUrl;
+                refHeader.value = getHiddenRefHeaderUrl(requestUrl);
                 stealthActions |= STEALTH_ACTIONS.HIDE_SEARCH_QUERIES;
             }
         }
