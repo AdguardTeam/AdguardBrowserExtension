@@ -4,9 +4,9 @@
 <p align="center">
   <img src="https://cdn.adguard.com/public/Adguard/Common/adguard_extension.svg" width="300px" alt="AdGuard Browser Extension" />
 </p>
-<h3 align="center">Adblock extension with advanced privacy protection features</h3>
+<h3 align="center">Ad blocker with advanced privacy protection features</h3>
 <p align="center">
-  AdGuard is a fast and lightweight ad blocking browser extension that effectively blocks all types of ads on all web pages.
+  AdGuard is a fast and lightweight ad blocking browser extension<br/>that effectively blocks all types of ads and trackers.
 </p>
 
 
@@ -32,9 +32,9 @@
 
 <hr />
 
-AdGuard is a fast and lightweight ad blocking browser extension that effectively blocks all types of ads on all web pages. Unlike its standalone counterparts (AG for Windows, Mac), the browser extension is completely free and open source. You can learn more about [the difference](https://adguard.com/compare.html) here.
+AdGuard is a fast and lightweight ad blocking browser extension that effectively blocks all types of ads and trackers on all web pages. We focus on advanced privacy protection features to not just block known trackers, but prevent web sites from building your shadow profile. Unlike its standalone counterparts (AG for Windows, Mac), the browser extension is completely free and open source. You can learn more about [the difference](https://adguard.com/compare.html) here.
 
-> <small>AdGuard does not participate in any acceptable ads program. The only source of income we have is selling premium versions of our software, and we intend to keep it that way.</small>
+> AdGuard does not collect any information about you, and does not participate in any acceptable ads program. The only source of income we have is selling premium versions of our software, and we intend to keep it that way.
 
 * [Installation](#installation)
   * [Chrome and Chromium-based browsers](#installation-chrome)
