@@ -722,7 +722,7 @@ adguard.antiBannerService = (function (adguard) {
             for (let i = 0; i < filters.length; i += 1) {
                 const filter = filters[i];
                 const group = adguard.subscriptions.getGroup(filter.groupId);
-                if (filter.enabled && group.enabled) {
+                if (filter.enabled) {
                     dfds.push(loadFilterRulesFromStorage(filter.filterId, rulesFilterMap));
                 }
             }
