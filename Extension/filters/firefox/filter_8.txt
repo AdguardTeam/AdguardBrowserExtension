@@ -1,8 +1,8 @@
-! Checksum: y6db7tU052gZWVkxUPi7EQ
+! Checksum: gxvai1mo5a+DwiDzNom9uQ
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.0.41
-! TimeUpdated: 2018-10-24T10:49:29+00:00
+! Version: 2.0.0.44
+! TimeUpdated: 2018-12-19T00:03:03+03:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#dutch
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -1316,7 +1316,7 @@ tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
 !-------------- Anti-adblock rules -----------------------------------------!
 !---------------------------------------------------------------------------!
 !
-! These rules are against anti-adblock scripts
+! These rules are against all kinds of ad blocking reinjection/circumvention scripts
 !
 ! Prevent AdFender detection
 @@/ad_pics/*$image,domain=computerworld.nl|webwereld.nl
@@ -1400,6 +1400,8 @@ omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3
 !--------------------------------------!
 !------- CSS fixes --------------------!
 !--------------------------------------!
+! https://github.com/AdguardTeam/AdguardFilters/issues/26718
+handbalstartpunt.nl#$##advertentie-top { height: 0!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/14714
 omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
 !--------------------------------------!
@@ -1429,6 +1431,11 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 !--------------------------------------------------------!
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
+||handbalstartpunt.nl/*/uploads_filemanager/Banner
+handbalstartpunt.nl##a[title="Handbal-direct"]
+gic.nl##.banners
+gic.nl##.katernbanners
+||gic.nl/uploads/fckconnector/$image
 nnieuws.be##.bannerbox
 nnieuws.be###block-views-vw-banners-block-2
 nnieuws.be###block-views-vw-column-partners-block

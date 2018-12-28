@@ -1,8 +1,8 @@
-! Checksum: f/xFj7E8yrfLpb9TV1nSPg
+! Checksum: 7sAlwxmVs6d0Nt34ev8NoQ
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.4.19
-! TimeUpdated: 2018-11-20T09:04:01+00:00
+! Version: 2.0.4.49
+! TimeUpdated: 2018-12-27T15:30:12+03:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#mobile
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -98,6 +98,8 @@
 ||plugin.mobopay.baidu.com^
 ||mo.freeindoapp.com^
 !
+||tapdaq-adverts.global.ssl.fastly.net^
+||a.6d47c1118927cf53ba9654931df80e8d.com^
 ||rtb.appbid.com^
 ||rtapi.abbi.io^
 ||ade.clmbtech.com^
@@ -823,7 +825,6 @@
 ||richpays.com^
 ||robocat.me^
 ||rotaban.ru^
-||rs.mail.ru/pixel
 ||rtb.nexage.com^
 ||rtbimp-loadbalancer-*.amazonaws.com^
 ||rtbpop.com^
@@ -935,7 +936,7 @@
 ||west.bidtellect.com^
 ||widespace.com^
 ||wordego.com^
-||wsback*.presage.io^
+||presage.io^
 ||wtraff.com^
 ||ximad.com^
 ||yandexadexchange.net^
@@ -972,7 +973,7 @@
 !-------------- Anti-adblock rules -----------------------------------------!
 !---------------------------------------------------------------------------!
 !
-! These rules are against anti-adblock scripts
+! These rules are against all kinds of ad blocking reinjection/circumvention scripts
 !
 !--- Temporary
 ! https://github.com/AdguardTeam/AdguardForiOS/issues/255
@@ -1169,6 +1170,8 @@ nnm-club.tv,all-tor.net,free-rutor.org,lenfilm.tv,krutor.org,fast-bit.org,tor-ru
 pornhub.com#%#AG_onLoad(function() { if (typeof redirect !== 'function') return; var str = redirect.toString(); var m = str.match(/\'(\/view.*)\'/); if (m.length != 2) return; var link = m[1]; window.location.href = m[1]; });
 !#################
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/22801
+iqiyi.com#%#document.cookie = "i18nGuideApp=true";
 ! https://github.com/AdguardTeam/AdguardFilters/issues/24463
 hanime.tv#%#document.cookie = "in_m=1";
 ! https://github.com/AdguardTeam/AdguardFilters/issues/17500
@@ -1329,6 +1332,16 @@ deviantart.com#$#div[class*="dp-ad-"] {height: 0!important; width: 0!important; 
 !
 !#####################
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/26732
+@@||b92.net/a/cmt_submit.php$document
+! https://github.com/AdguardTeam/AdguardFilters/issues/26698
+@@||leanplum.com^$domain=nbc.com|leanplum.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/26520
+! https://github.com/AdguardTeam/AdguardFilters/issues/25363
+@@||redirect.appmetrica.yandex.com/?appmetrica_tracking_id=
+! https://github.com/AdguardTeam/AdguardFilters/issues/23294
+@@||79423.analytics.edgekey.net^|
+@@||79423.analytics.edgekey.net/html5/akamaihtml5-min.js$domain=nhk.or.jp
 ! https://github.com/AdguardTeam/AdguardFilters/issues/22203
 ! com.jellybtn.cashkingmobile - fixing permanent network requests
 ! https://github.com/AdguardTeam/AdguardFilters/issues/22628
@@ -1625,6 +1638,23 @@ m.news.de##.unisterAdsStart
 !+ NOT_PLATFORM(ios, ext_android_cb)
 ||mobile.donanimhaber.com/ads^
 !
+mail.yahoo.com##a[href*="beap.gemini.yahoo.com/bmclk"]
+mail.yahoo.com##form[name="showFolderForm"] > div.mb
+ndtv.com##amp-iframe[src^="https://drop.ndtv.com/common/gadgets360/pricee/pricee-widget.html?"]
+m.rp5.ru##div[onclick*="/reClickAdvert.php?key="]
+sagligabiradim.com##.mrf-adv
+digit.in##.footerCatfishAdArea
+digit.in##iframe[src^="/blockarticledetailad/"][title="Advertisement"]
+kadikoylife.com##.gabfire_ad
+atmarkit.co.jp##div[style="width:300px;height:250px;margin:10px auto 20px;"]
+atmarkit.co.jp##div[style^="width:320px;height:50px;"]
+weblio.jp##.adBkOverlayClr
+banglachotikahinii.com###mobile > div.row > div.mt_banner+span
+banglachotikahinii.com##.mt_banner
+banglachotikahinii.com##span[style="width: 320px; height: 70px;"]
+banglachotikahinii.com##span[style="width: 300px; height: 50px;"]
+banglachotikahinii.com##span[style*="text-align: center;"] > span[style="width: 300px; height: 250px;"]
+www-ndtv-com.cdn.ampproject.org##.add-section
 dict.cc##dl > div[style="margin-left:10px"] > div[id^="snhb-detail_rectangle-"][style="width:300px; height:250px; overflow:hidden"]
 ||forum.lowyat.net/random-mobile.php
 forum.lowyat.net###ipbwrapper > div[style="padding:10px 0;min-height:100px;"][align="center"]:not([class]):not([id])
@@ -1673,7 +1703,6 @@ mobile.reuters.com##amp-ad
 mobile.reuters.com##.amp-ad-container
 s.famitsu.com##.pr-container
 mainichi.jp##aside.ad
-asahi.com,mainichi.jp##amp-embed[type="outbrain"]
 bengo4.com##div[id^="ad-slot-"]
 tvbs.com.tw##.ad_320x50_mo
 tvbs.com.tw##.advertising_lightbox
@@ -1684,7 +1713,7 @@ m.doisongphapluat.com##.list_news > li div.title_news > label._mB
 m.doisongphapluat.com##.list_news > li div.title_news > a[href^="http://bit.ly/"]
 m.doisongphapluat.com##.list_news > li > div.block_image_news > .thumb > a[href^="http://bit.ly/"]
 eg.ru##amp-embed[type="smi2"]
-jp.ign.com##amp-embed[type="outbrain"]
+chip.de,asahi.com,mainichi.jp,jp.ign.com##amp-embed[type="outbrain"]
 m.dcinside.com##.adv-inner
 m.dcinside.com##.adv-group
 m.dcinside.com##.adv-groupin
@@ -1834,7 +1863,7 @@ wasabisyrup.com##.top-group
 wasabisyrup.com##.article-gallery > .article-gallery-group > .content-group
 redtube.com###content_container > div[class]:not(.show_page_modals):not([id]):not([style])
 youtube.com##ytm-promoted-video-renderer
-m.facebook.com,touch.facebook.com###m_newsfeed_stream article[data-ft*='"ei\":']
+iphone.facebook.com,m.facebook.com,touch.facebook.com###m_newsfeed_stream article[data-ft*='"ei\":']
 m.voyeurhit.com##.container > .section--normal[style*="margin-top: -15px"]
 avcanada.ca##.postbody > div[id^="post_content"] > .content ~ center
 xbabe.com###fltd
@@ -2070,7 +2099,7 @@ m.dnn.de##.pdma-adaside-declaration
 thechive.com##.phone-ad
 finance.yahoo.com###mrt-node-Col1-1-GeminiBrokerBtnsMobileWeb
 timesnownews.com,amp.focus.de##amp-fx-flying-carpet
-timesnownews.com,amp.focus.de##.amp-flying-carpet-text-border
+chip.de,timesnownews.com,amp.focus.de##.amp-flying-carpet-text-border
 amp.focus.de,m.focus.de##article[data-teaser-type="unspecified_group"]
 vorsprung-online.de##.article-content .adsbygoogle
 ||vorsprung-online.de/images/images/*/Werbung/bannermobilwerbung.jpg
@@ -2284,7 +2313,7 @@ ndtv.com##.ad-wgt
 mdaily.bhaskar.com###atf_ad
 iapps.im##.experience-zyc
 */1121482/|$domain=kissanime.ru
-timesnownews.com,biz-journal.jp,sankei.com,m.mynet.com,amp.ibtimes.co.uk,lifehacker.com,jalopnik.com,m.gadgets.ndtv.com,gizmodo.com,cnbc.com##amp-embed[type="taboola"]
+timesnownews.com,biz-journal.jp,sankei.com,m.mynet.com,amp.ibtimes.co.uk,lifehacker.com,jalopnik.com,ndtv.com,gizmodo.com,cnbc.com##amp-embed[type="taboola"]
 cnbc.com##.leaderboard_ad
 zybang.com##.qb-wgt_float-banner
 zybang.com##.cmn-zuoyebang-slogan
@@ -2394,7 +2423,7 @@ m.mangafox.la##.mobile-banner
 sciencedaily.com##.mobile-bottom-rectangle
 fishki.net##.mobile-float-nav.visible-xs.visible
 sciencedaily.com##.mobile-middle-rectangle
-eurogamer.net##.mobile-mpu-wrapper
+metabomb.net,eurogamer.net##.mobile-mpu-wrapper
 sciencedaily.com##.mobile-top-rectangle
 deviantart.com##.mobile_adhesion
 m.economictimes.com##.moreFrom
@@ -2539,6 +2568,9 @@ m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m.news.yand
 ! Google ads (be careful)
 ! Blocking of Facebook ads
 !
+!
+! https://github.com/AdguardTeam/AdguardFilters/issues/26774
+! com.edadeal.android - fixing an app
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/24782
 ||api.rvuzov.ru/images/c4ac821d-4580-4011-a402-3de5d38b5709.jpg
@@ -2943,7 +2975,6 @@ m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m.news.yand
 ||stats.appsflyer.com^
 ||t.appsflyer.com^
 ||track.appsflyer.com^
-||ipify.org^
 ||iapp-cp.nuggad.net^
 ||2o7.net^
 ||4seeresults.com^
