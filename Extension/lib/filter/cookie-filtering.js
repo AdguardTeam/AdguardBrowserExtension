@@ -469,6 +469,11 @@ adguard.cookieFiltering = (function (adguard) {
             return false;
         }
 
+        // Permission is not granted
+        if (!browser.cookies) {
+            return false;
+        }
+
         const tab = context.tab;
         const requestUrl = context.requestUrl;
         const referrerUrl = context.referrerUrl;
@@ -524,6 +529,11 @@ adguard.cookieFiltering = (function (adguard) {
      * @return {boolean} True if headers were modified
      */
     var filterResponseHeaders = function (requestId, responseHeaders) {
+
+        // Permission is not granted
+        if (!browser.cookies) {
+            return false;
+        }
 
         /**
          * TODO: These two issues might change the way we're going to implement this:
@@ -609,6 +619,11 @@ adguard.cookieFiltering = (function (adguard) {
      * @param requestId
      */
     const modifyCookies = (requestId) => {
+
+        // Permission is not granted
+        if (!browser.cookies) {
+            return false;
+        }
 
         const context = adguard.requestContextStorage.get(requestId);
         if (!context) {
