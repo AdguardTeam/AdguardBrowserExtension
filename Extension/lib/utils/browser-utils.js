@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global safari */
-
 (function (adguard, api) {
 
     /**
@@ -100,6 +98,26 @@
         },
 
         /**
+         * Returns major number of version
+         *
+         * @param version
+         */
+        getMajorVersionNumber: function (version) {
+            var v = new Version(version);
+            return v.version[0];
+        },
+
+        /**
+         * Returns minor number of version
+         *
+         * @param version
+         */
+        getMinorVersionNumber: function (version) {
+            var v = new Version(version);
+            return v.version[1];
+        },
+
+        /**
          * @returns Extension version
          */
         getAppVersion: function () {
@@ -118,17 +136,8 @@
             return adguard.prefs.browser === "Opera";
         },
 
-        isSafariBrowser: function () {
-            return adguard.prefs.browser === "Safari";
-        },
-
         isEdgeBrowser: function () {
             return adguard.prefs.browser === "Edge";
-        },
-
-        isSafari9Plus: function () {
-            return adguard.prefs.browser === "Safari" &&
-                this.isGreaterOrEqualsVersion(adguard.prefs.safariVersion, "9.0");
         },
 
         isFirefoxBrowser: function () {
@@ -149,24 +158,6 @@
 
         isMacOs: function () {
             return navigator.platform.toUpperCase().indexOf('MAC') >= 0;
-        },
-
-        /**
-         * Returns true if Safari content blocker API is supported
-         */
-        isContentBlockerEnabled: function () {
-
-            if (typeof safari === 'undefined' || !this.isSafari9Plus()) {
-                return false;
-            }
-
-            if (typeof this._useOldSafariAPI === 'undefined') {
-                // Seems that getItem returns a string
-                // Cast it to string as I don't understand why it's type randomly changes (in dev build it is string, in beta - boolean)
-                this._useOldSafariAPI = (String(safari.extension.settings.getItem('useOldSafariAPI')) === 'true');
-            }
-
-            return !this._useOldSafariAPI;
         },
 
         /**
@@ -217,6 +208,27 @@
             return headers;
         },
 
+        /**
+         * Removes header from headers by name
+         *
+         * @param {Array} headers
+         * @param {String} headerName
+         * @return {boolean} True if header were removed
+         */
+        removeHeader: function (headers, headerName) {
+            let removed = false;
+            if (headers) {
+                for (let i = headers.length - 1; i >= 0; i--) {
+                    const header = headers[i];
+                    if (header.name.toLowerCase() === headerName.toLowerCase()) {
+                        headers.splice(i, 1);
+                        removed = true;
+                    }
+                }
+            }
+            return removed;
+        },
+
         getSafebrowsingBackUrl: function (tab) {
             //https://code.google.com/p/chromium/issues/detail?id=11854
             var previousUrl = adguard.tabs.getTabMetadata(tab.tabId, 'previousUrl');
@@ -227,13 +239,8 @@
             if (referrerUrl && referrerUrl.indexOf('http') === 0) {
                 return referrerUrl;
             }
-            if (this.isFirefoxBrowser()) {
-                return 'about:newtab';
-            } else if (this.isSafariBrowser()) {
-                return 'about:blank';
-            } else {
-                return 'about:newtab';
-            }
+
+            return 'about:newtab';
         },
 
         /**
@@ -313,7 +320,6 @@
             params.push('id=' + id);
             return params;
         }
-
     };
 
     api.browser = Utils;

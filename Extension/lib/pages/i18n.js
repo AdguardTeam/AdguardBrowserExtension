@@ -15,29 +15,25 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global I18nHelper, $, i18n */
+/* global I18nHelper, i18n */
 
 i18n.translateElement = function (element, messageId, args) {
     var message = i18n.getMessage(messageId, args);
     I18nHelper.translateElement(element, message);
 };
 
-$(document).ready(function () {
-    $("[i18n]").each(function () {
-        var $el = $(this);
-        var message = i18n.getMessage($el.attr("i18n"));
-        I18nHelper.translateElement(this, message);
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("[i18n]").forEach(function (el) {
+        var message = i18n.getMessage(el.getAttribute("i18n"));
+        I18nHelper.translateElement(el, message);
     });
-    $("[i18n-plhr]").each(function () {
-        var $el = $(this);
-        $el.attr("placeholder", i18n.getMessage($el.attr("i18n-plhr")));
+    document.querySelectorAll("[i18n-plhr]").forEach(function (el) {
+        el.setAttribute("placeholder", i18n.getMessage(el.getAttribute("i18n-plhr")));
     });
-    $("[i18n-href]").each(function () {
-        var $el = $(this);
-        $el.attr("href", i18n.getMessage($el.attr("i18n-href")));
+    document.querySelectorAll("[i18n-href]").forEach(function (el) {
+        el.setAttribute("href", i18n.getMessage(el.getAttribute("i18n-href")));
     });
-    $("[i18n-title]").each(function () {
-        var $el = $(this);
-        $el.attr("title", i18n.getMessage($el.attr("i18n-title")));
+    document.querySelectorAll("[i18n-title]").forEach(function (el) {
+        el.setAttribute("title", i18n.getMessage(el.getAttribute("i18n-title")));
     });
 });

@@ -31,45 +31,23 @@ adguard.userrules = (function (adguard) {
     }
 
     /**
-     * User rules collection
-     * @type {Array}
-     */
-    var userRules = [];
-
-    /**
-     * Gets user rules
-     */
-    var getRules = function () {
-        return userRules;
-    };
-
-    /**
-     * Set user rules. Calls on filter initialization, when we have already read rules from storage.
-     * @param rules
-     */
-    var setRules = function (rules) {
-        userRules = rules;
-    };
-
-    /**
      * Adds list of rules to the user filter
      *
      * @param rulesText List of rules to add
+     * @param options
      */
-    var addRules = function (rulesText) {
-        var rules = getAntiBannerService().addFilterRules(adguard.utils.filters.USER_FILTER_ID, rulesText);
-        for (var i = 0; i < rules.length; i++) {
-            userRules.push(rules[i].ruleText);
-        }
+    var addRules = function (rulesText, options) {
+        var rules = getAntiBannerService().addUserFilterRules(rulesText);
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
         return rules;
     };
 
     /**
      * Removes all user's custom rules
      */
-    var clearRules = function () {
-        userRules = [];
-        getAntiBannerService().clearFilterRules(adguard.utils.filters.USER_FILTER_ID);
+    var clearRules = function (options) {
+        getAntiBannerService().updateUserFilterRules([]);
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
     };
 
     /**
@@ -78,8 +56,30 @@ adguard.userrules = (function (adguard) {
      * @param ruleText Rule text
      */
     var removeRule = function (ruleText) {
-        adguard.utils.collections.removeAll(userRules, ruleText);
-        getAntiBannerService().removeFilterRule(adguard.utils.filters.USER_FILTER_ID, ruleText);
+        getAntiBannerService().removeUserFilterRule(ruleText);
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED);
+    };
+
+    /**
+     * Save user rules text to storage
+     * @param content Rules text
+     * @param options
+     */
+    var updateUserRulesText = function (content, options) {
+        var lines = content.split(/[\r\n]+/) || [];
+        getAntiBannerService().updateUserFilterRules(lines);
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
+    };
+
+    /**
+     * Loads user rules text from storage
+     * @param callback Callback function
+     */
+    var getUserRulesText = function (callback) {
+        adguard.rulesStorage.read(adguard.utils.filters.USER_FILTER_ID, function (rulesText) {
+            var content = (rulesText || []).join('\n');
+            callback(content);
+        });
     };
 
     var unWhiteListFrame = function (frameInfo) {
@@ -93,11 +93,11 @@ adguard.userrules = (function (adguard) {
     };
 
     return {
-        getRules: getRules,
-        setRules: setRules,
         addRules: addRules,
         clearRules: clearRules,
         removeRule: removeRule,
+        updateUserRulesText: updateUserRulesText,
+        getUserRulesText: getUserRulesText,
         //TODO: fix
         unWhiteListFrame: unWhiteListFrame
     };

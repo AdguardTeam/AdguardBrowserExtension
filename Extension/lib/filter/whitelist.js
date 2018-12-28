@@ -100,6 +100,11 @@ adguard.whitelist = (function (adguard) {
         }
     };
 
+    function notifyWhiteListUpdated(options) {
+        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_WHITELIST_FILTER_RULES);
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
+    }
+
     /**
      * Create whitelist rule from input text
      * @param domain Domain
@@ -144,6 +149,24 @@ adguard.whitelist = (function (adguard) {
     }
 
     /**
+     * Remove domain from whitelist
+     * @param domain
+     */
+    function removeFromWhiteList(domain) {
+        var rule = createWhiteListRule(domain);
+        if (rule) {
+            if (isDefaultWhiteListMode()) {
+                getWhiteListFilter().removeRule(rule);
+            } else {
+                getBlockListFilter().removeRule(rule);
+            }
+        }
+        removeDomainFromWhiteList(domain);
+        saveDomainsToLocalStorage();
+        notifyWhiteListUpdated();
+    }
+
+    /**
      * Save domains to local storage
      */
     function saveDomainsToLocalStorage() {
@@ -183,6 +206,7 @@ adguard.whitelist = (function (adguard) {
             }
             addDomainToWhiteList(domain);
             saveDomainsToLocalStorage();
+            notifyWhiteListUpdated();
         }
     }
 
@@ -216,7 +240,7 @@ adguard.whitelist = (function (adguard) {
      */
     var changeDefaultWhiteListMode = function (defaultMode) {
         adguard.settings.changeDefaultWhiteListMode(defaultMode);
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_WHITELIST_FILTER_RULES);
+        notifyWhiteListUpdated();
     };
 
     /**
@@ -230,7 +254,6 @@ adguard.whitelist = (function (adguard) {
         } else {
             removeFromWhiteList(domain);
         }
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_WHITELIST_FILTER_RULES);
     };
 
     /**
@@ -244,65 +267,94 @@ adguard.whitelist = (function (adguard) {
         } else {
             addToWhiteList(domain);
         }
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_WHITELIST_FILTER_RULES);
+    };
+
+    /**
+     * Updates domains in whitelist
+     * @param domains
+     */
+    var updateWhiteListDomains = function (domains) {
+        domains = domains || [];
+        if (isDefaultWhiteListMode()) {
+            clearWhiteListed();
+            addWhiteListed(domains);
+        } else {
+            clearBlockListed();
+            addBlockListed(domains);
+        }
+        notifyWhiteListUpdated();
     };
 
     /**
      * Add domains to whitelist
      * @param domains
      */
-    var addToWhiteListArray = function (domains) {
+    var addWhiteListed = function (domains) {
         if (!domains) {
             return;
         }
-        var rules = [];
         for (var i = 0; i < domains.length; i++) {
             var domain = domains[i];
+            whiteListDomainsHolder.add(domain);
             var rule = createWhiteListRule(domain);
             if (rule) {
-                rules.push(rule);
-                if (isDefaultWhiteListMode()) {
-                    getWhiteListFilter().addRule(rule);
-                } else {
-                    getBlockListFilter().addRule(rule);
-                }
-                addDomainToWhiteList(domain);
+                whiteListFilter.addRule(rule);
             }
         }
         saveDomainsToLocalStorage();
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_WHITELIST_FILTER_RULES);
     };
 
     /**
-     * Remove domain from whitelist
-     * @param domain
+     * Add domains to blocklist
+     * @param domains
      */
-    var removeFromWhiteList = function (domain) {
-        var rule = createWhiteListRule(domain);
-        if (rule) {
-            if (isDefaultWhiteListMode()) {
-                getWhiteListFilter().removeRule(rule);
-            } else {
-                getBlockListFilter().removeRule(rule);
+    var addBlockListed = function (domains) {
+        if (!domains) {
+            return;
+        }
+        for (var i = 0; i < domains.length; i++) {
+            var domain = domains[i];
+            blockListDomainsHolder.add(domain);
+            var rule = createWhiteListRule(domain);
+            if (rule) {
+                blockListFilter.addRule(rule);
             }
         }
-        removeDomainFromWhiteList(domain);
         saveDomainsToLocalStorage();
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_WHITELIST_FILTER_RULES);
     };
 
     /**
-     * Clear whitelist
+     * Clear whitelisted only
      */
-    var clearWhiteList = function () {
-        if (isDefaultWhiteListMode()) {
-            adguard.localStorage.removeItem(WHITE_LIST_DOMAINS_LS_PROP);
-            adguard.lazyGetClear(whiteListDomainsHolder, 'domains');
-        } else {
-            adguard.localStorage.removeItem(BLOCK_LIST_DOMAINS_LS_PROP);
-            adguard.lazyGetClear(blockListDomainsHolder, 'domains');
-        }
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_WHITELIST_FILTER_RULES);
+    var clearWhiteListed = function () {
+        adguard.localStorage.removeItem(WHITE_LIST_DOMAINS_LS_PROP);
+        adguard.lazyGetClear(whiteListDomainsHolder, 'domains');
+        whiteListFilter = new adguard.rules.UrlFilter();
+    };
+
+    /**
+     * Clear blocklisted only
+     */
+    var clearBlockListed = function () {
+        adguard.localStorage.removeItem(BLOCK_LIST_DOMAINS_LS_PROP);
+        adguard.lazyGetClear(blockListDomainsHolder, 'domains');
+        blockListFilter = new adguard.rules.UrlFilter();
+    };
+
+    /**
+     * Configures whitelist service
+     * @param whitelist Whitelist domains
+     * @param blocklist Blocklist domains
+     * @param whiteListMode Whitelist mode
+     * @param options
+     */
+    var configure = function (whitelist, blocklist, whiteListMode, options) {
+        clearWhiteListed();
+        clearBlockListed();
+        addWhiteListed(whitelist || []);
+        addBlockListed(blocklist || []);
+        adguard.settings.changeDefaultWhiteListMode(whiteListMode);
+        notifyWhiteListUpdated(options);
     };
 
     /**
@@ -314,6 +366,20 @@ adguard.whitelist = (function (adguard) {
         } else {
             return blockListDomainsHolder.domains;
         }
+    };
+
+    /**
+     * Returns the array of whitelisted domains
+     */
+    var getWhiteListedDomains = function () {
+        return whiteListDomainsHolder.domains;
+    };
+
+    /**
+     * Returns the array of blocklisted domains, inverted mode
+     */
+    var getBlockListedDomains = function () {
+        return blockListDomainsHolder.domains;
     };
 
     /**
@@ -344,15 +410,17 @@ adguard.whitelist = (function (adguard) {
         getRules: getRules,
         getWhiteListDomains: getWhiteListDomains,
 
+        getWhiteListedDomains: getWhiteListedDomains,
+        getBlockListedDomains: getBlockListedDomains,
+
         findWhiteListRule: findWhiteListRule,
 
         whiteListUrl: whiteListUrl,
         unWhiteListUrl: unWhiteListUrl,
 
-        addToWhiteListArray: addToWhiteListArray,
+        updateWhiteListDomains: updateWhiteListDomains,
 
-        removeFromWhiteList: removeFromWhiteList,
-        clearWhiteList: clearWhiteList,
+        configure: configure,
 
         isDefaultMode: isDefaultWhiteListMode,
         changeDefaultWhiteListMode: changeDefaultWhiteListMode

@@ -15,146 +15,173 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global $, i18n */
+/* global i18n, contentPage */
 
-$(function () {
+/**
+ * UI checkboxes utils
+ *
+ * @type {{toggleCheckbox, updateCheckbox}}
+ */
+const CheckboxUtils = (function () {
+    'use strict';
 
-    $.fn.toggleCheckbox = function () {
+    const updateAreaChecked = (el, checked) => {
+        if (el) {
+            el.setAttribute('aria-checked', checked);
+        }
+    };
 
-        return this.each(function () {
-
-            var checkbox = this;
-            var $checkbox = $(this);
-
-            if ($checkbox.data("toggleCheckbox")) {
-                //already applied
+    /**
+     * Toggles wrapped elements with checkbox UI
+     *
+     * @param {Array.<Object>} elements
+     */
+    const toggleCheckbox = function (elements) {
+        Array.prototype.forEach.call(elements, function (checkbox) {
+            if (checkbox.getAttribute('toggleCheckbox')) {
+                // already applied
                 return;
             }
 
-            var el = $("<div>", {class: 'sp-table-row-pseudo'}).append($('<span>', {class: 'spt-row-pseudo-handler'}));
-            el.insertAfter(checkbox);
+            let el = document.createElement('div');
+            el.classList.add('toggler');
+            checkbox.parentNode.insertBefore(el, checkbox.nextSibling);
 
-            el.on('click', function () {
+            el.parentNode.addEventListener('click', function () {
                 checkbox.checked = !checkbox.checked;
-                $checkbox.change();
+
+                let event = document.createEvent('HTMLEvents');
+                event.initEvent('change', true, false);
+                checkbox.dispatchEvent(event);
             });
 
-            $checkbox.bind('change', function () {
+            checkbox.addEventListener('change', function () {
                 onClicked(checkbox.checked);
             });
 
             function onClicked(checked) {
                 if (checked) {
-                    el.addClass("active");
-                    el.closest(".s-page-table-row").addClass("active");
+                    el.classList.add('active');
+                    el.closest('li').classList.add('active');
                 } else {
-                    el.removeClass("active");
-                    el.closest(".s-page-table-row").removeClass("active");
+                    el.classList.remove('active');
+                    el.closest('li').classList.remove('active');
                 }
+                updateAreaChecked(el.closest('.toggler-wr'), checked);
             }
 
-            $checkbox.hide();
+            checkbox.style.display = 'none';
             onClicked(checkbox.checked);
 
-            $checkbox.data("toggleCheckbox", true);
+            checkbox.setAttribute('toggleCheckbox', 'true');
         });
     };
 
-    $.fn.updateCheckbox = function (checked) {
-
-        return this.each(function () {
-            var $this = $(this);
-            if (checked) {
-                $this.attr('checked', 'checked');
-            } else {
-                $this.removeAttr('checked');
-            }
-        });
-    };
-
-    $.fn.popupHelp = function () {
-
-        return this.each(function () {
-
-            var el = $(this);
-            var popup = $("#" + el.attr("data-popup"));
-            if (!popup || popup.length == 0) {
+    /**
+     * Updates checkbox elements according to checked parameter
+     *
+     * @param {Array.<Object>} elements
+     * @param {boolean} checked
+     */
+    const updateCheckbox = function (elements, checked) {
+        Array.prototype.forEach.call(elements, function (el) {
+            if (!el) {
                 return;
             }
-
-            var w = $(window);
-
-            function positionPopup() {
-
-                var viewport = {
-                    right: w.scrollLeft() + w.width(),
-                    bottom: w.scrollTop() + w.height()
-                };
-
-                var elBounds = el.offset();
-
-                var popupHeight = popup.outerHeight();
-                var popupWidth = popup.outerWidth();
-
-                var offsetTop = elBounds.top + 15;
-                if (viewport.bottom < offsetTop + popupHeight) {
-                    offsetTop = elBounds.top - popupHeight - 15;
-                }
-
-                var offsetLeft = elBounds.left + 15;
-                if (viewport.right < offsetLeft + popupWidth) {
-                    offsetLeft = elBounds.left - popupWidth - 15;
-                }
-
-                popup.css({
-                    top: offsetTop,
-                    left: offsetLeft
-                });
+            if (checked) {
+                el.setAttribute('checked', 'checked');
+                el.closest('li').classList.add('active');
+                el.checked = checked;
+            } else {
+                el.removeAttribute('checked');
+                el.closest('li').classList.remove('active');
+                el.checked = false;
             }
-
-            el.on({
-                mouseenter: function () {
-                    positionPopup();
-                    popup.removeClass("hidden");
-                },
-                mouseleave: function () {
-                    popup.addClass("hidden");
-                }
-            });
+            updateAreaChecked(el.closest('.toggler-wr'), !!checked);
         });
     };
-});
+
+    return {
+        toggleCheckbox: toggleCheckbox,
+        updateCheckbox: updateCheckbox,
+    };
+})();
 
 function updateDisplayAdguardPromo(showPromo) {
-
     // Sometimes in FF promo block isn't rendered properly
     setTimeout(function () {
         if (showPromo) {
-            $('.download-adguard-block').show();
-            $('.non-download-adguard-block').hide();
+            document.querySelector('.try-premium').style.display = '';
         } else {
-            $('.download-adguard-block').hide();
-            $('.non-download-adguard-block').show();
+            document.querySelector('.try-premium').style.display = 'none';
         }
     }, 100);
 }
 
 function customizePopupFooter(isMacOs) {
+    // fix title
+    let messageId = isMacOs ? 'thankyou_want_full_protection_mac' : 'thankyou_want_full_protection';
+    let title = document.querySelector('.thanks-prefooter .thanks-prefooter-title');
+    i18n.translateElement(title, messageId);
 
-    //fix title
-    var messageId = isMacOs ? 'thankyou_want_full_protection_mac' : 'thankyou_want_full_protection';
-    var title = $('.thanks-prefooter .thanks-prefooter-title');
-    i18n.translateElement(title[0], messageId);
-
-    //fix title in table
+    // fix title in table
     messageId = isMacOs ? 'thankyou_compare_full_title_mac' : 'thankyou_compare_full_title';
-    title = $('.thanks-prefooter .thanks-prefooter-table .tpt-head-full');
-    i18n.translateElement(title[0], messageId);
+    title = document.querySelector('.thanks-prefooter .thanks-prefooter-table .tpt-head-full');
+    i18n.translateElement(title, messageId);
 
-    //hide parental control feature for mac os
+    // hide parental control feature for mac os
     if (isMacOs) {
-        $('.parental-control-feature').hide();
+        document.querySelector('.parental-control-feature').style.display = 'none';
     } else {
-        $('.parental-control-feature').show();
+        document.querySelector('.parental-control-feature').style.display = '';
     }
+}
+
+/**
+ * Used to receive notifications from background page
+ * @param events Events for listening
+ * @param callback Event listener callback
+ * @param onUnloadCallback Window unload callback
+ */
+function createEventListener(events, callback, onUnloadCallback) { // jshint ignore:line
+    function eventListener() {
+        callback.apply(null, arguments);
+    }
+
+    let listenerId;
+    contentPage.sendMessage({ type: 'addEventListener', events: events }, function (response) {
+        listenerId = response.listenerId;
+    });
+
+    contentPage.onMessage.addListener(function (message) {
+        if (message.type === 'notifyListeners') {
+            eventListener.apply(this, message.args);
+        }
+    });
+
+    const onUnload = function () {
+        if (listenerId) {
+            contentPage.sendMessage({ type: 'removeListener', listenerId: listenerId });
+            listenerId = null;
+            if (typeof onUnloadCallback === 'function') {
+                onUnloadCallback();
+            }
+        }
+    };
+
+    window.addEventListener('beforeunload', onUnload);
+    window.addEventListener('unload', onUnload);
+}
+
+/**
+ * Creates HTMLElement from string
+ *
+ * @param {String} HTML representing a single element
+ * @return {Element}
+ */
+function htmlToElement(html) {
+    const template = document.createElement('template');
+    html = html.trim(); // Never return a text node of whitespace as the result
+    template.innerHTML = html;
+    return template.content.firstChild;
 }

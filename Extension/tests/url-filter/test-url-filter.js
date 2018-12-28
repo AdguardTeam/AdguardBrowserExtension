@@ -275,7 +275,7 @@ QUnit.test("Regexp characters escaping", function (assert) {
     assert.ok(rule);
 });
 
-QUnit.test("Simple regexp rule", function(assert) {
+QUnit.test("Simple regexp rule", function (assert) {
     var RequestTypes = adguard.RequestTypes;
 
     var mask = "/^https?/";
@@ -516,125 +516,134 @@ QUnit.test('Test convert CSP rules', function (assert) {
 });
 
 QUnit.test('testReplaceCyrillicText', function (assert) {
-
     adguard.prefs.features.responseContentFilteringSupported = true;
 
-    var input = "<title>Старый текст</title>";
-    var expected = "<title>Новый текст</title>";
+    const input = '<title>Старый текст</title>';
+    const expected = '<title>Новый текст</title>';
 
-    var ruleText = "||example.com^$replace=/старый ТЕКСТ/Новый текст/i";
-    var rule = new adguard.rules.UrlFilterRule(ruleText);
+    const ruleText = '||example.com^$replace=/старый ТЕКСТ/Новый текст/i';
+    const rule = new adguard.rules.UrlFilterRule(ruleText);
 
-    assert.ok(rule.getReplace());
+    assert.ok(rule.isReplaceRule());
 
-    var output = rule.getReplace().apply(input);
-    assert.equal(expected, output);
+    const actual = rule.getReplace().apply(input);
+    assert.equal(actual, expected);
 });
 
 QUnit.test('testReplaceModifierJson', function (assert) {
-
     adguard.prefs.features.responseContentFilteringSupported = true;
 
-    var input = "{\n" +
-        "    \"enabled\": true, \n" +
-        "    \"force_disabled\": false\n" +
-        "}";
+    var input = '{\n' +
+        '    "enabled": true, \n' +
+        '    "force_disabled": false\n' +
+        '}';
 
-    var expected = "{\n" +
-        "    \"enabled\": false, \n" +
-        "    \"force_disabled\": false\n" +
-        "}";
+    var expected = '{\n' +
+        '    "enabled": false, \n' +
+        '    "force_disabled": false\n' +
+        '}';
 
-    var ruleText = "||example.com^$replace=/\"enabled\": true\\,/\"enabled\": false\\,/i,~third-party,xmlhttprequest";
+    var ruleText = '||example.com^$replace=/"enabled": true\\,/"enabled": false\\,/i,~third-party,xmlhttprequest';
     var rule = new adguard.rules.UrlFilterRule(ruleText);
+    assert.ok(rule.isReplaceRule());
 
-    assert.ok(rule.getReplace());
-
-    var output = rule.replace.apply(input);
-    assert.equal(expected, output);
+    var output = rule.getReplace().apply(input);
+    assert.equal(output, expected);
 });
 
 QUnit.test('testReplaceModifierVast', function (assert) {
-
     adguard.prefs.features.responseContentFilteringSupported = true;
 
-    var input = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-        "<VAST version=\"2.0\">\n" +
-        "    <Ad id=\"VPAID\">\n" +
-        "        <InLine>\n" +
-        "            <AdSystem version=\"3.1\">LiveRail</AdSystem>\n" +
-        "            <AdTitle>VPAID Ad Manager</AdTitle>\n" +
-        "            <Impression></Impression>\n" +
-        "            <Creatives>\n" +
-        "                <Creative sequence=\"1\">\n" +
-        "                    <Linear>\n" +
-        "                        <Duration>00:00:15</Duration>\n" +
-        "                        <MediaFiles>\n" +
-        "                            <MediaFile delivery=\"progressive\" width=\"640\" height=\"480\" scalable=\"1\" type=\"application/javascript\" apiFramework=\"VPAID\"><![CDATA[http://cdn-static.liverail.com/js/LiveRail.AdManager-1.0.js?LR_PUBLISHER_ID=1331&LR_AUTOPLAY=0&LR_CONTENT=1&LR_TITLE=Foo&LR_VIDEO_ID=1234&LR_VERTICALS=international_news&LR_FORMAT=application/javascript]]></MediaFile>\n" +
-        "                        </MediaFiles>\n" +
-        "                    </Linear>\n" +
-        "                </Creative>\n" +
-        "\n" +
-        "                <Creative sequence=\"1\">\n" +
-        "                    <CompanionAds>\n" +
-        "                        <Companion width=\"300\" height=\"250\">\n" +
-        "                            <HTMLResource><![CDATA[<div id=\"lr_comp_300x250\" style=\" width: 300px; height: 250px; display: none;\"></div>]]></HTMLResource>\n" +
-        "                        </Companion>\n" +
-        "                        <Companion width=\"300\" height=\"60\">\n" +
-        "                            <HTMLResource><![CDATA[<div id=\"lr_comp_300x60\" style=\" width: 300px; height: 60px; display: none;\"></div>]]></HTMLResource>\n" +
-        "                        </Companion>\n" +
-        "                        <Companion width=\"728\" height=\"90\">\n" +
-        "                            <HTMLResource><![CDATA[<div id=\"lr_comp_728x90\" style=\" width: 728px; height: 90px; display: none;\"></div>]]></HTMLResource>\n" +
-        "                        </Companion>\n" +
-        "                    </CompanionAds>\n" +
-        "                </Creative>\n" +
-        "            </Creatives>\n" +
-        "        </InLine>\n" +
-        "    </Ad>\n" +
-        "</VAST>";
+    var input = '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<VAST version="2.0">\n' +
+        '    <Ad id="VPAID">\n' +
+        '        <InLine>\n' +
+        '            <AdSystem version="3.1">LiveRail</AdSystem>\n' +
+        '            <AdTitle>VPAID Ad Manager</AdTitle>\n' +
+        '            <Impression></Impression>\n' +
+        '            <Creatives>\n' +
+        '                <Creative sequence="1">\n' +
+        '                    <Linear>\n' +
+        '                        <Duration>00:00:15</Duration>\n' +
+        '                        <MediaFiles>\n' +
+        '                            <MediaFile delivery="progressive" width="640" height="480" scalable="1" type="application/javascript" apiFramework="VPAID"><![CDATA[http://cdn-static.liverail.com/js/LiveRail.AdManager-1.0.js?LR_PUBLISHER_ID=1331&LR_AUTOPLAY=0&LR_CONTENT=1&LR_TITLE=Foo&LR_VIDEO_ID=1234&LR_VERTICALS=international_news&LR_FORMAT=application/javascript]]></MediaFile>\n' +
+        '                        </MediaFiles>\n' +
+        '                    </Linear>\n' +
+        '                </Creative>\n' +
+        '\n' +
+        '                <Creative sequence="1">\n' +
+        '                    <CompanionAds>\n' +
+        '                        <Companion width="300" height="250">\n' +
+        '                            <HTMLResource><![CDATA[<div id="lr_comp_300x250" style=" width: 300px; height: 250px; display: none;"></div>]]></HTMLResource>\n' +
+        '                        </Companion>\n' +
+        '                        <Companion width="300" height="60">\n' +
+        '                            <HTMLResource><![CDATA[<div id="lr_comp_300x60" style=" width: 300px; height: 60px; display: none;"></div>]]></HTMLResource>\n' +
+        '                        </Companion>\n' +
+        '                        <Companion width="728" height="90">\n' +
+        '                            <HTMLResource><![CDATA[<div id="lr_comp_728x90" style=" width: 728px; height: 90px; display: none;"></div>]]></HTMLResource>\n' +
+        '                        </Companion>\n' +
+        '                    </CompanionAds>\n' +
+        '                </Creative>\n' +
+        '            </Creatives>\n' +
+        '        </InLine>\n' +
+        '    </Ad>\n' +
+        '</VAST>';
 
-    var expected = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-        "<VAST version=\"2.0\"></VAST>";
+    var expected = '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<VAST version="2.0"></VAST>';
 
-    var ruleText = "||example.com^$third-party,replace=/(<VAST[\\s\\S]*?>)[\\s\\S]*<\\/VAST>/\\$1<\\/VAST>/,object-subrequest";
+    var ruleText = '||example.com^$third-party,replace=/(<VAST[\\s\\S]*?>)[\\s\\S]*<\\/VAST>/\\$1<\\/VAST>/,object-subrequest';
     var rule = new adguard.rules.UrlFilterRule(ruleText);
 
-    assert.ok(rule.getReplace());
+    assert.ok(rule.isReplaceRule());
 
     var output = rule.getReplace().apply(input);
-    assert.equal(expected, output);
+    assert.equal(output, expected);
 });
 
 QUnit.test('testReplaceRegexpRule', function (assert) {
-
     adguard.prefs.features.responseContentFilteringSupported = true;
 
     // https://github.com/AdguardTeam/AdguardForAndroid/issues/1027
-    var input = "http://test.ru/hello/bug/test";
-    var expected = "http://test.ru/bug/bug/test";
-    var ruleText = "/.*/$replace=/hello/bug/";
+    var input = 'http://test.ru/hello/bug/test';
+    var expected = 'http://test.ru/bug/bug/test';
+    var ruleText = '/.*/$replace=/hello/bug/';
 
     var rule = new adguard.rules.UrlFilterRule(ruleText);
 
-    assert.ok(rule.getReplace());
+    assert.ok(rule.isReplaceRule());
 
     assert.equal(rule.getReplace().apply(input), expected);
 });
 
 QUnit.test('testReplaceToEmptyString', function (assert) {
-
     adguard.prefs.features.responseContentFilteringSupported = true;
 
-    var input = "Hello I am the banner image for tests";
-    var expected = "Hello I am the image for tests";
+    var input = 'Hello I am the banner image for tests';
+    var expected = 'Hello I am the image for tests';
 
-    var ruleText = "||example.com^$replace=/banner //i,~third-party,xmlhttprequest";
+    var ruleText = '||example.com^$replace=/banner //i,~third-party,xmlhttprequest';
     var rule = new adguard.rules.UrlFilterRule(ruleText);
 
-    assert.ok(rule.getReplace());
+    assert.ok(rule.isReplaceRule());
 
     var output = rule.getReplace().apply(input);
-    assert.equal(expected, output);
+    assert.equal(output, expected);
+});
+
+QUnit.test('testReplaceWithMoreThanOneReplaceGroups', function (assert) {
+    adguard.prefs.features.responseContentFilteringSupported = true;
+
+    var input = 'remove "BIG" from string';
+    var expected = 'remove "" from string';
+
+    var ruleText = '||example.com^$replace=/(remove ")[\\s\\S]*(" from string)/\\$1\\$2/';
+    var rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.ok(rule.isReplaceRule());
+
+    var actual = rule.getReplace().apply(input);
+    assert.equal(actual, expected);
 });
 
 QUnit.test("BadFilter option", function (assert) {
@@ -643,21 +652,21 @@ QUnit.test("BadFilter option", function (assert) {
     assert.ok(badFilterRule);
     assert.ok(badFilterRule.isBadFilter());
     assert.ok(badFilterRule.badFilter);
-    assert.equal(badFilterRule.badFilter,'https:*_ad_');
+    assert.equal(badFilterRule.badFilter, 'https:*_ad_');
 
     badFilterRule = new adguard.rules.UrlFilterRule("https:*_ad_$badfilter,image");
 
     assert.ok(badFilterRule);
     assert.ok(badFilterRule.isBadFilter());
     assert.ok(badFilterRule.badFilter);
-    assert.equal(badFilterRule.badFilter,'https:*_ad_$image');
+    assert.equal(badFilterRule.badFilter, 'https:*_ad_$image');
 
     badFilterRule = new adguard.rules.UrlFilterRule("https:*_ad_$third-party,badfilter,image");
 
     assert.ok(badFilterRule);
     assert.ok(badFilterRule.isBadFilter());
     assert.ok(badFilterRule.badFilter);
-    assert.equal(badFilterRule.badFilter,'https:*_ad_$third-party,image');
+    assert.equal(badFilterRule.badFilter, 'https:*_ad_$third-party,image');
 });
 
 QUnit.test('Test wildcard domains in the url rules', function (assert) {
@@ -677,10 +686,80 @@ QUnit.test('Test wildcard domains in the url rules', function (assert) {
     assert.ok(rule.isPermitted("www.google.de"));
     assert.ok(rule.isPermitted("www.google.co.uk"));
     assert.ok(rule.isPermitted("google.co.uk"));
-    
+
     assert.notOk(rule.isPermitted("google.uk.eu")); // non-existent tld
     assert.notOk(rule.isPermitted("nigma.ru"));
     assert.notOk(rule.isPermitted("nigma.com"));
     assert.notOk(rule.isPermitted("www.nigma.ru"));
     assert.notOk(rule.isPermitted("adguard.ru"));
+});
+
+QUnit.test("Test cookie option", function (assert) {
+
+    let cookieRule = new adguard.rules.UrlFilterRule("||facebook.com^$third-party,cookie=c_user");
+    assert.ok(cookieRule);
+    assert.ok(cookieRule.isCookieRule());
+    assert.ok(cookieRule.cookieOption);
+    assert.ok(cookieRule.isThirdParty());
+    assert.equal(cookieRule.cookieOption.cookieName, 'c_user');
+    assert.notOk(cookieRule.cookieOption.regex);
+    assert.ok(cookieRule.cookieOption.matches('c_user'));
+    assert.notOk(cookieRule.cookieOption.matches('c_user1'));
+
+    cookieRule = new adguard.rules.UrlFilterRule("$cookie=__cfduid");
+    assert.ok(cookieRule);
+    assert.ok(cookieRule.isCookieRule());
+    assert.ok(cookieRule.cookieOption);
+    assert.equal(cookieRule.cookieOption.cookieName, '__cfduid');
+    assert.notOk(cookieRule.cookieOption.regex);
+    assert.ok(cookieRule.cookieOption.matches('__cfduid'));
+    assert.notOk(cookieRule.cookieOption.matches('__cfduid1'));
+
+    cookieRule = new adguard.rules.UrlFilterRule("$cookie=/__utm[a-z]/");
+    assert.ok(cookieRule);
+    assert.ok(cookieRule.isRegexRule);
+    assert.ok(cookieRule.isCookieRule());
+    assert.ok(cookieRule.cookieOption);
+    assert.equal(cookieRule.cookieOption.regex.toString(), /__utm[a-z]/.toString());
+    assert.notOk(cookieRule.cookieOption.cookieName);
+    assert.ok(cookieRule.cookieOption.matches('__utma'));
+    assert.notOk(cookieRule.cookieOption.matches('__utm0'));
+
+    cookieRule = new adguard.rules.UrlFilterRule("@@||example.org^$cookie");
+    assert.ok(cookieRule);
+    assert.ok(cookieRule.whiteListRule);
+    assert.ok(cookieRule.isCookieRule());
+    assert.ok(cookieRule.cookieOption);
+    assert.notOk(cookieRule.cookieOption.regex);
+    assert.notOk(cookieRule.cookieOption.cookieName);
+    assert.ok(cookieRule.cookieOption.matches('123'));
+    assert.ok(cookieRule.cookieOption.matches('aaaa'));
+
+    cookieRule = new adguard.rules.UrlFilterRule("$cookie=__cfduid;maxAge=15;sameSite=lax");
+    assert.ok(cookieRule);
+    assert.ok(cookieRule.isCookieRule());
+    assert.ok(cookieRule.cookieOption);
+    assert.equal(cookieRule.cookieOption.cookieName, '__cfduid');
+    assert.notOk(cookieRule.cookieOption.regex);
+    assert.equal(cookieRule.cookieOption.maxAge, 15);
+    assert.equal(cookieRule.cookieOption.sameSite, 'lax');
+    assert.ok(cookieRule.cookieOption.matches('__cfduid'));
+    assert.notOk(cookieRule.cookieOption.matches('123'));
+});
+
+QUnit.test("Test stealth option", function (assert) {
+    var ruleText = "@@||example.com^$stealth";
+    var rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.ok(rule);
+    assert.ok(rule.whiteListRule);
+    assert.ok(rule.isStealthRule());
+});
+
+QUnit.test('Test replace option', (assert) => {
+    adguard.prefs.features.responseContentFilteringSupported = true;
+
+    let replaceRule = new adguard.rules.UrlFilterRule('||example.org^$replace=/test/test2/i');
+    assert.ok(replaceRule);
+    assert.ok(replaceRule.isReplaceRule());
 });

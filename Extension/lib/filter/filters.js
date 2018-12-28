@@ -114,6 +114,17 @@
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#csp-modifier
         this.cspFilter = new adguard.rules.CspFilter();
 
+        // Filter that applies cookie rules
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/961
+        this.cookieFilter = new adguard.rules.CookieFilter();
+
+        // Filter that applies stealth rules
+        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#stealth-modifier
+        this.stealthFilter = new adguard.rules.UrlFilter();
+
+        // Filter that applies replace rules
+        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#replace-modifier
+        this.replaceFilter = new adguard.rules.ReplaceFilter();
 
         // Filter that applies HTML filtering rules
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#html-filtering-rules
@@ -157,13 +168,23 @@
          */
         addRule: function (rule) {
             if (rule === null || !rule.ruleText) {
-                adguard.console.error("FilterRule must not be null");
+                adguard.console.error('FilterRule must not be null');
                 return;
             }
 
             if (rule instanceof adguard.rules.UrlFilterRule) {
+                if (typeof rule.isIgnored === 'function' && rule.isIgnored()) {
+                    adguard.console.debug(`FilterRule with $extension modifier was omitted. Rule text: "${rule.ruleText}"`);
+                    return;
+                }
                 if (rule.isCspRule()) {
                     this.cspFilter.addRule(rule);
+                } else if (rule.isCookieRule()) {
+                    this.cookieFilter.addRule(rule);
+                } else if (rule.isStealthRule()) {
+                    this.stealthFilter.addRule(rule);
+                } else if (rule.isReplaceRule()) {
+                    this.replaceFilter.addRule(rule);
                 } else {
                     if (rule.isBadFilter()) {
                         this.badFilterRules[rule.badFilter] = rule;
@@ -200,6 +221,10 @@
             if (rule instanceof adguard.rules.UrlFilterRule) {
                 if (rule.isCspRule()) {
                     this.cspFilter.removeRule(rule);
+                } else if (rule.isCookieRule()) {
+                    this.cookieFilter.removeRule(rule);
+                } else if (rule.isStealthRule()) {
+                    this.stealthFilter.removeRule(rule);
                 } else {
                     if (rule.isBadFilter()) {
                         delete this.badFilterRules[rule.badFilter];
@@ -232,6 +257,8 @@
             result = result.concat(this.cssFilter.getRules());
             result = result.concat(this.scriptFilter.getRules());
             result = result.concat(this.cspFilter.getRules());
+            result = result.concat(this.cookieFilter.getRules());
+            result = result.concat(this.stealthFilter.getRules());
 
             for (var badFilter in this.badFilterRules) {
                 result.push(this.badFilterRules[badFilter]);
@@ -348,6 +375,7 @@
             this.urlBlockingFilter.clearRules();
             this.cssFilter.clearRules();
             this.contentFilter.clearRules();
+            this.stealthFilter.clearRules();
             this.urlBlockingCache.clearRequestCache();
             this.urlExceptionsCache.clearRequestCache();
             this.badFilterRules = {};
@@ -395,6 +423,21 @@
 
             this.urlExceptionsCache.saveResultToCache(requestUrl, rule, refHost, requestType);
             return rule;
+        },
+
+        /**
+         * Searches for stealth whitelist rule for the specified pair (url/referrer)
+         *
+         * @param requestUrl  Request URL
+         * @param referrer    Referrer
+         * @param requestType Request type
+         * @returns Filter rule found or null
+         */
+        findStealthWhiteListRule: function (requestUrl, referrer, requestType) {
+            const refHost = adguard.utils.url.getHost(referrer);
+            const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrer);
+
+            return this.stealthFilter.isFiltered(requestUrl, refHost, requestType, thirdParty);
         },
 
         /**
@@ -460,6 +503,29 @@
             return this.cspFilter.findCspRules(requestUrl, documentHost, thirdParty, requestType);
         },
 
+        findReplaceRules: function (requestUrl, documentUrl, requestType) {
+            const documentHost = adguard.utils.url.getHost(documentUrl);
+            const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
+
+            return this.replaceFilter.findReplaceRules(requestUrl, documentHost, thirdParty, requestType);
+        },
+
+        /**
+         * Searches for cookie rules matching specified request.
+         *
+         * @param requestUrl Request URL
+         * @param documentUrl Document URL
+         * @param requestType   Request content type
+         * @returns             Matching rules
+         */
+        findCookieRules: function (requestUrl, documentUrl, requestType) {
+
+            const documentHost = adguard.utils.url.getHost(documentUrl);
+            const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
+
+            return this.cookieFilter.findCookieRules(requestUrl, documentHost, thirdParty, requestType);
+        },
+
         /**
          * Checks if exception rule is present for the URL/Referrer pair
          *
@@ -509,7 +575,7 @@
          */
         _findRuleForRequest: function (requestUrl, documentHost, requestType, thirdParty, documentWhiteListRule) {
 
-            adguard.console.debug("Filtering http request for url: {0}, document: {1}, requestType: {2}", requestUrl, documentHost, requestType);
+            adguard.console.debug('Filtering http request for url: {0}, document: {1}, requestType: {2}', requestUrl, documentHost, requestType);
 
             // STEP 1: Looking for exception rule, which could be applied to the current request
 

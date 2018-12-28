@@ -19,21 +19,20 @@
  * Object for log http requests
  */
 adguard.filteringLog = (function (adguard) {
-
     'use strict';
 
-    var REQUESTS_SIZE_PER_TAB = 1000;
+    const REQUESTS_SIZE_PER_TAB = 1000;
 
     const backgroundTabId = adguard.BACKGROUND_TAB_ID;
     const backgroundTab = {
         tabId: backgroundTabId,
-        title: adguard.i18n.getMessage('background_tab_title')
+        title: adguard.i18n.getMessage('background_tab_title'),
     };
 
-    var tabsInfoMap = Object.create(null);
-    var openedFilteringLogsPage = 0;
+    const tabsInfoMap = Object.create(null);
+    let openedFilteringLogsPage = 0;
 
-    var extensionURL = adguard.getURL('');
+    const extensionURL = adguard.getURL('');
 
     // Force to add background tab if it's defined
     if (adguard.prefs.features.hasBackgroundTab) {
@@ -45,7 +44,7 @@ adguard.filteringLog = (function (adguard) {
      * @param tab
      */
     function updateTabInfo(tab) {
-        var tabInfo = tabsInfoMap[tab.tabId] || Object.create(null);
+        const tabInfo = tabsInfoMap[tab.tabId] || Object.create(null);
         tabInfo.tabId = tab.tabId;
         tabInfo.title = tab.title;
         tabInfo.isExtensionTab = tab.url && tab.url.indexOf(extensionURL) === 0;
@@ -58,13 +57,12 @@ adguard.filteringLog = (function (adguard) {
      * @param tab
      */
     function addTab(tab) {
-
         // Background tab can't be added
-        if (tab.tabId == backgroundTabId) {
+        if (tab.tabId === backgroundTabId) {
             return;
         }
 
-        var tabInfo = updateTabInfo(tab);
+        const tabInfo = updateTabInfo(tab);
         if (tabInfo) {
             adguard.listeners.notifyListeners(adguard.listeners.TAB_ADDED, tabInfo);
         }
@@ -75,9 +73,8 @@ adguard.filteringLog = (function (adguard) {
      * @param tabId
      */
     function removeTabById(tabId) {
-
         // Background tab can't be removed
-        if (tabId == backgroundTabId) {
+        if (tabId === backgroundTabId) {
             return;
         }
 
@@ -93,17 +90,36 @@ adguard.filteringLog = (function (adguard) {
      * @param tab
      */
     function updateTab(tab) {
-
         // Background tab can't be updated
-        if (tab.tabId == backgroundTabId) {
+        if (tab.tabId === backgroundTabId) {
             return;
         }
 
-        var tabInfo = updateTabInfo(tab);
+        const tabInfo = updateTabInfo(tab);
         if (tabInfo) {
             adguard.listeners.notifyListeners(adguard.listeners.TAB_UPDATE, tabInfo);
         }
     }
+
+    /**
+     * Copy some properties from source rule to destination rule
+     * @param destinationRule
+     * @param sourceRule
+     */
+    const appendProperties = (destinationRule, sourceRule) => {
+        destinationRule.filterId = sourceRule.filterId;
+        destinationRule.ruleText = sourceRule.ruleText;
+        if (sourceRule instanceof adguard.rules.ContentFilterRule) {
+            destinationRule.contentRule = true;
+        } else if (sourceRule instanceof adguard.rules.CssFilterRule) {
+            destinationRule.cssRule = true;
+        } else if (sourceRule instanceof adguard.rules.UrlFilterRule) {
+            destinationRule.whiteListRule = sourceRule.whiteListRule;
+            destinationRule.cspRule = sourceRule.isCspRule();
+            destinationRule.cspDirective = sourceRule.cspDirective;
+            destinationRule.cookieRule = !!sourceRule.getCookieOption();
+        }
+    };
 
     /**
      * Writes to filtering event some useful properties from the request rule
@@ -111,41 +127,26 @@ adguard.filteringLog = (function (adguard) {
      * @param requestRule
      */
     function addRuleToFilteringEvent(filteringEvent, requestRule) {
-        filteringEvent.requestRule = Object.create(null);
-        filteringEvent.requestRule.filterId = requestRule.filterId;
-        filteringEvent.requestRule.ruleText = requestRule.ruleText;
-        if (requestRule instanceof adguard.rules.ContentFilterRule) {
-            filteringEvent.requestRule.contentRule = true;
-        } else if (requestRule instanceof adguard.rules.CssFilterRule) {
-            filteringEvent.requestRule.cssRule = true;
-        } else if (requestRule instanceof adguard.rules.UrlFilterRule) {
-            filteringEvent.requestRule.whiteListRule = requestRule.whiteListRule;
-            filteringEvent.requestRule.cspRule = requestRule.isCspRule();
-            filteringEvent.requestRule.cspDirective = requestRule.cspDirective;
-        }
+        filteringEvent.requestRule = {};
+        appendProperties(filteringEvent.requestRule, requestRule);
     }
 
     /**
-     * Serialize HTML element
-     * @param element
+     * Writes to filtering event some useful properties from the replace rules
+     * @param filteringEvent
+     * @param replaceRules
      */
-    function elementToString(element) {
-        var s = [];
-        s.push('<');
-        s.push(element.localName);
-        var attributes = element.attributes;
-        for (var i = 0; i < attributes.length; i++) {
-            var attr = attributes[i];
-            s.push(' ');
-            s.push(attr.name);
-            s.push('="');
-            var value = attr.value === null ? '' : attr.value.replace(/"/g, '\\"');
-            s.push(value);
-            s.push('"');
-        }
-        s.push('>');
-        return s.join('');
-    }
+    const addReplaceRulesToFilteringEvent = (filteringEvent, replaceRules) => {
+        // only replace rules can be applied together
+        filteringEvent.requestRule = {};
+        filteringEvent.requestRule.replaceRule = true;
+        filteringEvent.replaceRules = [];
+        replaceRules.forEach(replaceRule => {
+            const tempRule = {};
+            appendProperties(tempRule, replaceRule);
+            filteringEvent.replaceRules.push(tempRule);
+        });
+    };
 
     /**
      * Adds filtering event to log
@@ -155,17 +156,6 @@ adguard.filteringLog = (function (adguard) {
     function pushFilteringEvent(tabInfo, filteringEvent) {
         if (!tabInfo.filteringEvents) {
             tabInfo.filteringEvents = [];
-        }
-
-        var requestId = filteringEvent.requestId;
-
-        if (requestId) {
-            for (var i = 0; i < tabInfo.filteringEvents.length; i += 1) {
-                var pushedRequestId = tabInfo.filteringEvents[i].requestId;
-                if (pushedRequestId && requestId === pushedRequestId) {
-                    return;
-                }
-            }
         }
 
         tabInfo.filteringEvents.push(filteringEvent);
@@ -193,10 +183,9 @@ adguard.filteringLog = (function (adguard) {
      * @param frameUrl
      * @param requestType
      * @param requestRule
-     * @param requestId
+     * @param eventId
      */
-    var addHttpRequestEvent = function (tab, requestUrl, frameUrl, requestType, requestRule, requestId) {
-
+    var addHttpRequestEvent = function (tab, requestUrl, frameUrl, requestType, requestRule, eventId) {
         if (openedFilteringLogsPage === 0) {
             return;
         }
@@ -210,7 +199,7 @@ adguard.filteringLog = (function (adguard) {
         var frameDomain = adguard.utils.url.getDomainName(frameUrl);
 
         var filteringEvent = {
-            requestId: requestId,
+            eventId: eventId,
             requestUrl: requestUrl,
             requestDomain: requestDomain,
             frameUrl: frameUrl,
@@ -251,7 +240,7 @@ adguard.filteringLog = (function (adguard) {
 
         var frameDomain = adguard.utils.url.getDomainName(frameUrl);
         var filteringEvent = {
-            element: typeof element === 'string' ? element : elementToString(element),
+            element: typeof element === 'string' ? element : adguard.utils.strings.elementToString(element),
             frameUrl: frameUrl,
             frameDomain: frameDomain,
             requestType: requestType,
@@ -265,30 +254,129 @@ adguard.filteringLog = (function (adguard) {
     };
 
     /**
-     * Some rules are fired after the event was added (e.g. for replace rule)
+     * Binds rule to HTTP request
+     * @param tab Tab
+     * @param requestRule Request rule
+     * @param eventId Event identifier
+     */
+    const bindRuleToHttpRequestEvent = function (tab, requestRule, eventId) {
+        if (openedFilteringLogsPage === 0) {
+            return;
+        }
+
+        const tabInfo = tabsInfoMap[tab.tabId];
+        if (!tabInfo) {
+            return;
+        }
+
+        const events = tabInfo.filteringEvents;
+        if (events) {
+            for (let i = events.length - 1; i >= 0; i -= 1) {
+                const event = events[i];
+                if (event.eventId === eventId) {
+                    addRuleToFilteringEvent(event, requestRule);
+                    adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
+                    break;
+                }
+            }
+        }
+    };
+
+    /**
+     * Replace rules are fired after the event was added
      * We should find event for this rule and update in log UI
      * @param tab
-     * @param requestRule
-     * @param requestId
+     * @param replaceRules
+     * @param eventId
      */
-    var bindRuleToHttpRequestEvent = function (tab, requestRule, requestId) {
+    const bindReplaceRulesToHttpRequestEvent = function (tab, replaceRules, eventId) {
+        if (openedFilteringLogsPage === 0) {
+            return;
+        }
+
+        const tabInfo = tabsInfoMap[tab.tabId];
+        if (!tabInfo) {
+            return;
+        }
+
+        const events = tabInfo.filteringEvents;
+        if (events) {
+            for (let i = events.length - 1; i >= 0; i -= 1) {
+                const event = events[i];
+                if (event.eventId === eventId) {
+                    addReplaceRulesToFilteringEvent(event, replaceRules);
+                    adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
+                    break;
+                }
+            }
+        }
+    };
+
+    /**
+     *
+     * @param {object} tab
+     * @param {string} cookieName
+     * @param {string} cookieValue
+     * @param {string} cookieDomain
+     * @param {string} requestType
+     * @param {object} cookieRule
+     * @param {boolean} isModifyingCookieRule
+     * @param {boolean} thirdParty
+     */
+    const addCookieEvent = function (tab, cookieName, cookieValue, cookieDomain, requestType, cookieRule, isModifyingCookieRule, thirdParty) {
 
         if (openedFilteringLogsPage === 0) {
             return;
         }
 
-        var tabInfo = tabsInfoMap[tab.tabId];
+        const tabInfo = tabsInfoMap[tab.tabId];
         if (!tabInfo) {
             return;
         }
 
-        var events = tabInfo.filteringEvents;
-        for (var i = 0; i < events.length; i++) {
-            var event = events[i];
-            if (event.requestId === requestId) {
-                addRuleToFilteringEvent(event, requestRule);
-                adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
-                break;
+        const filteringEvent = {
+            frameDomain: cookieDomain,
+            requestType,
+            requestThirdParty: thirdParty,
+            cookieName,
+            cookieValue,
+        };
+
+        if (cookieRule) {
+            // Copy useful properties
+            addRuleToFilteringEvent(filteringEvent, cookieRule);
+            filteringEvent.requestRule.isModifyingCookieRule = isModifyingCookieRule;
+        }
+
+        pushFilteringEvent(tabInfo, filteringEvent);
+    };
+
+    /**
+     * Binds applied stealth actions to HTTP request
+     *
+     * @param {object} tab Request tab
+     * @param {number} actions Applied actions
+     * @param {number} eventId Event identifier
+     */
+    const bindStealthActionsToHttpRequestEvent = (tab, actions, eventId) => {
+        if (openedFilteringLogsPage === 0) {
+            return;
+        }
+
+        const tabInfo = tabsInfoMap[tab.tabId];
+        if (!tabInfo) {
+            return;
+        }
+
+        const events = tabInfo.filteringEvents;
+        if (events) {
+            for (let i = events.length - 1; i >= 0; i -= 1) {
+                const event = events[i];
+                if (event.eventId === eventId) {
+                    event.stealthActions = actions;
+                    adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
+                    break;
+                }
             }
         }
     };
@@ -297,8 +385,8 @@ adguard.filteringLog = (function (adguard) {
      * Remove log requests for tab
      * @param tabId
      */
-    var clearEventsByTabId = function (tabId) {
-        var tabInfo = tabsInfoMap[tabId];
+    const clearEventsByTabId = function (tabId) {
+        const tabInfo = tabsInfoMap[tabId];
         if (tabInfo) {
             delete tabInfo.filteringEvents;
             adguard.listeners.notifyListeners(adguard.listeners.TAB_RESET, tabInfo);
@@ -311,18 +399,20 @@ adguard.filteringLog = (function (adguard) {
      */
     var synchronizeOpenTabs = function (callback) {
         adguard.tabs.getAll(function (tabs) {
-            var tabIdsToRemove = Object.keys(tabsInfoMap);
+            // As Object.keys() returns strings we convert them to integers,
+            // because tabId is integer in extension API
+            var tabIdsToRemove = Object.keys(tabsInfoMap).map(id => parseInt(id, 10));
             for (var i = 0; i < tabs.length; i++) {
                 var openTab = tabs[i];
                 var tabInfo = tabsInfoMap[openTab.tabId];
                 if (!tabInfo) {
-                    //add tab
+                    // add tab
                     addTab(openTab);
                 } else {
-                    //update tab
+                    // update tab
                     updateTab(openTab);
                 }
-                var index = tabIdsToRemove.indexOf(String(openTab.tabId));
+                var index = tabIdsToRemove.indexOf(openTab.tabId);
                 if (index >= 0) {
                     tabIdsToRemove.splice(index, 1);
                 }
@@ -361,7 +451,7 @@ adguard.filteringLog = (function (adguard) {
         }
     };
 
-    var isOpen = function () {
+    const isOpen = function () {
         return openedFilteringLogsPage > 0;
     };
 
@@ -382,7 +472,10 @@ adguard.filteringLog = (function (adguard) {
         getFilteringInfoByTabId: getFilteringInfoByTabId,
         addHttpRequestEvent: addHttpRequestEvent,
         bindRuleToHttpRequestEvent: bindRuleToHttpRequestEvent,
+        bindReplaceRulesToHttpRequestEvent: bindReplaceRulesToHttpRequestEvent,
         addCosmeticEvent: addCosmeticEvent,
+        addCookieEvent: addCookieEvent,
+        bindStealthActionsToHttpRequestEvent: bindStealthActionsToHttpRequestEvent,
         clearEventsByTabId: clearEventsByTabId,
 
         isOpen: isOpen,

@@ -1,6 +1,6 @@
 /**
  * filters-downloader - Compiles filters source files
- * @version v1.0.7
+ * @version v1.0.10
  * @link http://adguard.com
  */
 /**
@@ -28,7 +28,18 @@
  * @type {{getLocalFile, getExternalFile}}
  */
 let FileDownloadWrapper = (() => {
-    "use strict";
+    'use strict';
+
+    /**
+     * If url protocol is not http or https return true, else false
+     * @param url
+     * @returns {boolean}
+     */
+    const isLocal = (url) => {
+        const parsedUrl = new URL(url);
+        const protocols = ['http:', 'https:'];
+        return !protocols.includes(parsedUrl.protocol);
+    };
 
     /**
      * Executes async request
@@ -43,13 +54,22 @@ let FileDownloadWrapper = (() => {
 
             const onRequestLoad = (response) => {
                 if (response.status !== 200 && response.status !== 0) {
-                    throw new Error("Response status is invalid: " + response.status);
+                    reject(new Error('Response status is invalid: ' + response.status));
                 }
 
                 const responseText = response.responseText ? response.responseText : response.data;
 
                 if (!responseText) {
-                    throw new Error("Response is empty");
+                    reject(new Error('Response is empty'));
+                }
+
+                // Don't check response headers if url is local,
+                // because edge extension doesn't provide headers for such url
+                if (!isLocal(response.responseURL)) {
+                    const responseContentType = response.getResponseHeader('Content-Type');
+                    if (!responseContentType || !responseContentType.includes(contentType)) {
+                        reject(new Error(`Response content type should be: "${contentType}"`));
+                    }
                 }
 
                 const lines = responseText.trim().split(/[\r\n]+/);
@@ -60,16 +80,15 @@ let FileDownloadWrapper = (() => {
 
             try {
                 request.open('GET', url);
-                request.setRequestHeader('Content-type', contentType);
                 request.setRequestHeader('Pragma', 'no-cache');
                 request.overrideMimeType(contentType);
                 request.mozBackgroundRequest = true;
                 request.onload = function () {
                     onRequestLoad(request);
                 };
-                request.onerror = reject;
-                request.onabort = reject;
-                request.ontimeout = reject;
+                request.onerror = () => reject(new Error(`Request error happened: ${request.statusText || 'status text empty'}`));
+                request.onabort = () => reject(new Error(`Request was aborted with status text: ${request.statusText}`));
+                request.ontimeout = () => reject(new Error(`Request timed out with status text: ${request.statusText}`));
 
                 request.send(null);
             } catch (ex) {
@@ -100,9 +119,10 @@ let FileDownloadWrapper = (() => {
 
     return {
         getLocalFile: getLocalFile,
-        getExternalFile: getExternalFile
-    }
+        getExternalFile: getExternalFile,
+    };
 })();
+
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -359,7 +379,7 @@ const FilterDownloader = (() => {
         if (line.indexOf(INCLUDE_DIRECTIVE) !== 0) {
             return Promise.resolve(line);
         } else {
-            const url = line.substring(INCLUDE_DIRECTIVE.length).trim();
+            const url = decodeURI(line.substring(INCLUDE_DIRECTIVE.length).trim());
             validateUrl(url, filterOrigin);
             return downloadFilterRules(url, filterOrigin, definedProperties);
         }
@@ -492,7 +512,7 @@ const FilterDownloader = (() => {
         try {
             let filterUrlOrigin;
             if (url && REGEXP_ABSOLUTE_URL.test(url)) {
-                filterUrlOrigin = parseURL(url).origin;
+                filterUrlOrigin = getFilterUrlOrigin(url)
             }
 
             return downloadFilterRules(url, filterUrlOrigin, definedProperties);
@@ -511,7 +531,8 @@ const FilterDownloader = (() => {
         if (typeof URL !== 'undefined') {
             return new URL(url);
         } else {
-            return require('url').parse(url, true);
+            let URL = require('url').URL;
+            return new URL(url);
         }
     };
 

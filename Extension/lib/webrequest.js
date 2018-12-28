@@ -56,17 +56,17 @@
     /**
      * Process request
      *
-     * @param requestDetails
+     * @param {RequestDetails} requestDetails
      * @returns {boolean} False if request must be blocked
      */
     function onBeforeRequest(requestDetails) {
-        var tab = requestDetails.tab;
-        var tabId = tab.tabId;
-        var requestId = requestDetails.requestId;
-        var requestUrl = requestDetails.requestUrl;
-        var requestType = requestDetails.requestType;
-        var frameId = requestDetails.frameId;
-        var requestFrameId = requestDetails.requestFrameId || 0;
+        const tab = requestDetails.tab;
+        const tabId = tab.tabId;
+        const requestId = requestDetails.requestId;
+        const requestUrl = requestDetails.requestUrl;
+        const requestType = requestDetails.requestType;
+        const frameId = requestDetails.frameId;
+        const requestFrameId = requestDetails.requestFrameId || 0;
 
         if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
             adguard.frames.recordFrame(tab, frameId, requestUrl, requestType);
@@ -76,13 +76,30 @@
             // Reset tab button state
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_TAB_BUTTON_STATE, tab, true);
 
+            // Record request context for the main frame
+            adguard.requestContextStorage.record(requestId, requestUrl, requestUrl, requestType, tab);
+
+            // Strip tracking parameters
+            const cleansedUrl = adguard.stealthService.removeTrackersFromUrl(requestId);
+            if (cleansedUrl) {
+                return { redirectUrl: cleansedUrl };
+            }
+
             /**
-             * In the case of the "about:newtab" pages we don't receive onResponseReceived event for the main_frame, so we have to append log event here.
+             * Just to remember!
+             * In the case of the "about:newtab" pages we don't receive onResponseReceived event for the main_frame
              * Also if chrome://newtab is overwritten, we won't receive any webRequest events for the main_frame
              * Unfortunately, we can't do anything in this case and just must remember about it
              */
-            var tabRequestRule = adguard.frames.getFrameWhiteListRule(tab);
-            adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, requestUrl, requestType, tabRequestRule, requestId);
+
+            /**
+             * Binds rule to the main_frame request
+             * In integration mode, rule from the headers will override this value
+             */
+            const tabRequestRule = adguard.frames.getFrameWhiteListRule(tab);
+            if (tabRequestRule) {
+                adguard.requestContextStorage.update(requestId, { requestRule: tabRequestRule });
+            }
 
             return;
         }
@@ -92,11 +109,25 @@
             return;
         }
 
-        var referrerUrl = getReferrerUrl(requestDetails);
-        var requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
+        const referrerUrl = getReferrerUrl(requestDetails);
 
-        adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule, requestId);
-        var response = adguard.webRequestService.getBlockedResponseByRule(requestRule, requestType);
+        // Record request for other types
+        adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, requestType, tab);
+
+        // Strip tracking parameters
+        const cleansedUrl = adguard.stealthService.removeTrackersFromUrl(requestId);
+        if (cleansedUrl) {
+            return { redirectUrl: cleansedUrl };
+        }
+
+        let requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
+        requestRule = adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
+
+        if (requestRule) {
+            adguard.requestContextStorage.update(requestId, { requestRule });
+        }
+
+        const response = adguard.webRequestService.getBlockedResponseByRule(requestRule, requestType);
 
         if (response && response.cancel) {
             collapseElement(tabId, requestFrameId, requestUrl, referrerUrl, requestType);
@@ -158,8 +189,8 @@
 
     /**
      * Called before request is sent to the remote endpoint.
-     * This method is used to modify request in case of working in integration mode
-     * and also to record referrer header in frame data.
+     * This method is used to modify request in case of working in integration mode,
+     * to modify headers for stealth service and also to record referrer header in frame data.
      *
      * @param requestDetails Request details
      * @returns {*} headers to send
@@ -167,27 +198,42 @@
     function onBeforeSendHeaders(requestDetails) {
 
         var tab = requestDetails.tab;
-        var headers = requestDetails.requestHeaders;
+        var requestId = requestDetails.requestId;
+        var requestHeaders = requestDetails.requestHeaders;
+        var requestType = requestDetails.requestType;
 
-        if (adguard.integration.shouldOverrideReferrer(tab)) {
+        adguard.requestContextStorage.update(requestId, { requestHeaders });
+
+        let requestHeadersModified = false;
+
+        if (adguard.integration.shouldOverrideReferrer(tab) &&
+            (requestType === adguard.RequestTypes.DOCUMENT || adguard.frames.isTabAdguardDetected(tab))) {
+
             // Retrieve main frame url
             var mainFrameUrl = adguard.frames.getMainFrameUrl(tab);
-            headers = adguard.utils.browser.setHeaderValue(headers, 'Referer', mainFrameUrl);
-            return {
-                requestHeaders: headers,
-                modifiedHeaders: [{
-                    name: 'Referer',
-                    value: mainFrameUrl
-                }]
-            };
+            requestHeaders = adguard.utils.browser.setHeaderValue(requestHeaders, 'Referer', mainFrameUrl);
+            requestHeadersModified = true;
         }
 
-        if (requestDetails.requestType === adguard.RequestTypes.DOCUMENT) {
+        if (requestType === adguard.RequestTypes.DOCUMENT) {
             // Save ref header
-            var refHeader = adguard.utils.browser.findHeaderByName(headers, 'Referer');
+            var refHeader = adguard.utils.browser.findHeaderByName(requestHeaders, 'Referer');
             if (refHeader) {
                 adguard.frames.recordFrameReferrerHeader(tab, refHeader.value);
             }
+        }
+
+        if (adguard.cookieFiltering.filterRequestHeaders(requestId, requestHeaders)) {
+            requestHeadersModified = true;
+        }
+
+        if (adguard.stealthService.processRequestHeaders(requestId, requestHeaders)) {
+            requestHeadersModified = true;
+        }
+
+        if (requestHeadersModified) {
+            adguard.requestContextStorage.update(requestId, { modifiedRequestHeaders: requestHeaders });
+            return { requestHeaders };
         }
 
         return {};
@@ -205,14 +251,20 @@
 
         var tab = requestDetails.tab;
         var requestUrl = requestDetails.requestUrl;
-        var responseHeaders = requestDetails.responseHeaders;
+        var responseHeaders = requestDetails.responseHeaders || [];
         var requestType = requestDetails.requestType;
         var referrerUrl = getReferrerUrl(requestDetails);
         var requestId = requestDetails.requestId;
         var statusCode = requestDetails.statusCode;
         var method = requestDetails.method;
 
-        adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders, requestId);
+        adguard.requestContextStorage.update(requestId, { responseHeaders });
+
+        const requestRule = adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
+        // Overrides rule in integration mode
+        if (adguard.frames.isTabAdguardDetected(tab)) {
+            adguard.requestContextStorage.update(requestId, { requestRule });
+        }
 
         // Safebrowsing check
         if (requestType === adguard.RequestTypes.DOCUMENT &&
@@ -227,51 +279,45 @@
             adguard.contentFiltering.apply(tab, requestUrl, referrerUrl, requestType, requestId, statusCode, method, contentType);
         }
 
+        let responseHeadersModified = false;
+
         if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
-            return modifyCSPHeader(requestDetails);
+            const cspHeaders = getCSPHeaders(requestDetails);
+            if (cspHeaders && cspHeaders.length > 0) {
+                responseHeaders = responseHeaders.concat(cspHeaders);
+                responseHeadersModified = true;
+            }
+        }
+
+        if (adguard.cookieFiltering.filterResponseHeaders(requestId, responseHeaders)) {
+            responseHeadersModified = true;
+        }
+
+        if (responseHeadersModified) {
+            adguard.requestContextStorage.update(requestId, { modifiedResponseHeaders: responseHeaders });
+            return { responseHeaders };
         }
     }
 
     /**
      * Before the introduction of $CSP rules, we used another approach for modifying Content-Security-Policy header.
      * We are looking for URL blocking rule that matches some request type and protocol (ws:, blob:, stun:)
+     * e.g. "$webrtc,domain=hdmoza.com"
      *
      * @param tab Tab
      * @param frameUrl Frame URL
      * @returns matching rule
      */
     function findLegacyCspRule(tab, frameUrl) {
-
-        var rule = null;
-        var applyCSP = false;
-
-        /**
-         * Websocket check.
-         * If 'ws://' request is blocked for not existing domain - it's blocked for all domains.
-         * More details in these issue:
-         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/344
-         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/440
-         */
-
-        // And we don't need this check on newer than 58 chromes anymore
-        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/572
-        if (!adguard.webRequest.webSocketSupported) {
-            rule = adguard.webRequestService.getRuleForRequest(tab, 'ws://adguardwebsocket.check', frameUrl, adguard.RequestTypes.WEBSOCKET);
-            applyCSP = adguard.webRequestService.isRequestBlockedByRule(rule);
-        }
-        if (!applyCSP) {
-            rule = adguard.webRequestService.getRuleForRequest(tab, 'stun:adguardwebrtc.check', frameUrl, adguard.RequestTypes.WEBRTC);
-        }
-
-        return rule;
+        return adguard.webRequestService.getRuleForRequest(tab, 'stun:adguardwebrtc.check', frameUrl, adguard.RequestTypes.WEBRTC);
     }
 
     /**
      * Modify CSP header to block WebSocket, prohibit data: and blob: frames and WebWorkers
      * @param requestDetails
-     * @returns {{responseHeaders: *}}
+     * @returns {{responseHeaders: *}} CSP headers
      */
-    function modifyCSPHeader(requestDetails) {
+    function getCSPHeaders(requestDetails) {
 
         // Please note, that we do not modify response headers in Edge before Creators update:
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/401
@@ -281,42 +327,42 @@
         }
 
         var tab = requestDetails.tab;
+        var requestId = requestDetails.requestId;
         var requestUrl = requestDetails.requestUrl;
-        var responseHeaders = requestDetails.responseHeaders || [];
         var requestType = requestDetails.requestType;
         var frameUrl = adguard.frames.getFrameUrl(tab, requestDetails.frameId);
 
         var cspHeaders = [];
 
-        var legacyCspRule = findLegacyCspRule(tab, frameUrl);
+        const legacyCspRule = findLegacyCspRule(tab, frameUrl);
         if (adguard.webRequestService.isRequestBlockedByRule(legacyCspRule)) {
             cspHeaders.push({
                 name: CSP_HEADER_NAME,
-                value: adguard.rules.CspFilter.DEFAULT_DIRECTIVE
+                value: adguard.rules.CspFilter.DEFAULT_DIRECTIVE,
             });
         }
         if (legacyCspRule) {
-            adguard.webRequestService.recordRuleHit(tab, legacyCspRule, frameUrl);
-            adguard.filteringLog.addHttpRequestEvent(tab, 'content-security-policy-check', frameUrl, adguard.RequestTypes.CSP, legacyCspRule);
+            adguard.requestContextStorage.update(requestId, { cspRules: [legacyCspRule] });
         }
 
         /**
          * Retrieve $CSP rules specific for the request
          * https://github.com/adguardteam/adguardbrowserextension/issues/685
          */
-        var cspRules = adguard.webRequestService.getCspRules(tab, requestUrl, frameUrl, requestType);
+        const cspRules = adguard.webRequestService.getCspRules(tab, requestUrl, frameUrl, requestType);
         if (cspRules) {
-            for (var i = 0; i < cspRules.length; i++) {
-                var rule = cspRules[i];
+            for (let i = 0; i < cspRules.length; i += 1) {
+                let rule = cspRules[i];
                 // Don't forget: getCspRules returns all $csp rules, we must directly check that the rule is blocking.
                 if (adguard.webRequestService.isRequestBlockedByRule(rule)) {
                     cspHeaders.push({
                         name: CSP_HEADER_NAME,
-                        value: rule.cspDirective
+                        value: rule.cspDirective,
                     });
                 }
-                adguard.webRequestService.recordRuleHit(tab, rule, requestUrl);
-                adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, frameUrl, adguard.RequestTypes.CSP, rule);
+            }
+            if (cspRules.length > 0) {
+                adguard.requestContextStorage.update(requestId, { cspRules });
             }
         }
 
@@ -333,13 +379,7 @@
          * We also need the frame-src restriction since CSPs are not inherited from the parent for documents with data: and blob: URLs
          * https://bugs.chromium.org/p/chromium/issues/detail?id=513860
          */
-        if (cspHeaders.length > 0) {
-            responseHeaders = responseHeaders.concat(cspHeaders);
-            return {
-                responseHeaders: responseHeaders,
-                modifiedHeaders: cspHeaders
-            };
-        }
+        return cspHeaders;
     }
 
     /**
@@ -385,17 +425,17 @@
     if (adguard.integration.isSupported() && adguard.utils.browser.isChromium()) {
 
         /* global browser */
-        browser.webRequest.onBeforeSendHeaders.addListener(function callback(details) {
+        adguard.webRequest.onBeforeSendHeaders.addListener(function callback(requestDetails) {
 
             var authHeaders = adguard.integration.getAuthorizationHeaders();
-            var headers = details.requestHeaders;
+            var requestHeaders = requestDetails.requestHeaders;
             for (var i = 0; i < authHeaders.length; i++) {
-                headers = adguard.utils.browser.setHeaderValue(details.requestHeaders, authHeaders[i].headerName, authHeaders[i].headerValue);
+                requestHeaders = adguard.utils.browser.setHeaderValue(requestHeaders, authHeaders[i].name, authHeaders[i].value);
             }
 
-            return { requestHeaders: headers };
+            return { requestHeaders };
 
-        }, { urls: [adguard.integration.getIntegrationBaseUrl() + "*"] }, ["requestHeaders", "blocking"]);
+        }, [adguard.integration.getIntegrationBaseUrl() + "*"]);
     }
 
     var handlerBehaviorTimeout = null;
@@ -884,4 +924,79 @@
             adguard.tabs.onRemoved.addListener(injections.removeTabInjection);
         })(adguard);
     }
+
+    /**
+     * Request context recording
+     */
+    adguard.webRequest.onCompleted.addListener(({ requestId }) => {
+        adguard.cookieFiltering.modifyCookies(requestId);
+        adguard.requestContextStorage.onRequestCompleted(requestId);
+    }, ['<all_urls>']);
+
+    adguard.webRequest.onErrorOccurred.addListener(({ requestId }) => {
+        adguard.cookieFiltering.modifyCookies(requestId);
+        adguard.requestContextStorage.onRequestCompleted(requestId);
+    }, ['<all_urls>']);
+
+    /**
+     * Handles redirect separately:
+     * If a request is redirected to a data:// URL, onBeforeRedirect is the last reported event.
+     * https://developer.chrome.com/extensions/webRequest#life_cycle
+     */
+    adguard.webRequest.onBeforeRedirect.addListener(({ requestId, redirectUrl }) => {
+        if (redirectUrl && redirectUrl.indexOf('data:') === 0) {
+            adguard.requestContextStorage.onRequestCompleted(requestId);
+        }
+    }, ['<all_urls>']);
+
+    const isSubscriptionSite = (url) => {
+        const subscriptionSites = [
+            'github.io',
+            'abpchina.org',
+            'abpindo.blogspot.com',
+            'abpvn.com',
+            'adblock-listefr.com',
+            'adblock.gardar.net',
+            'adblockplus.org',
+            'adblockplus.me',
+            'adguard.com',
+            'certyficate.it',
+            'code.google.com',
+            'dajbych.net',
+            'fanboy.co.nz',
+            'fredfiber.no',
+            'filterlists.com',
+            'gardar.net',
+            'github.com',
+            'henrik.schack.dk',
+            'latvian-list.site11.com',
+            'liamja.co.uk',
+            'malwaredomains.com',
+            'margevicius.lt',
+            'nauscopio.nireblog.com',
+            'nireblog.com',
+            'noads.it',
+            'schack.dk',
+            'spam404.com',
+            'stanev.org',
+            'void.gr',
+            'yoyo.org',
+            'zoso.ro',
+        ];
+        const { hostname } = new URL(url);
+        return subscriptionSites.includes(hostname);
+    };
+    // Subscribe script is executed when onCommitted event fires because this event is the most reliable
+    adguard.webNavigation.onCommitted.addListener((details) => {
+        const { tab, requestType, url } = details;
+        if ((requestType !== adguard.RequestTypes.DOCUMENT
+            && requestType !== adguard.RequestTypes.SUBDOCUMENT)
+            || adguard.frames.isTabAdguardDetected(tab)
+            || tab.tabId === adguard.BACKGROUND_TAB_ID
+            || !isSubscriptionSite(url)) {
+            return;
+        }
+        // load subscribe script on dom content load if integration mode is turned off
+        adguard.tabs.executeScriptFile(tab.tabId, '/lib/content-script/subscribe.js');
+    });
 })(adguard);

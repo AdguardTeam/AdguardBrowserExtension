@@ -289,8 +289,8 @@ adguard.integration = (function (adguard) {
      */
     var getAuthorizationHeaders = function () {
         return [{
-            headerName: 'Referer',
-            headerValue: adguard.backend.injectionsUrl
+            name: 'Referer',
+            value: adguard.backend.injectionsUrl
         }];
     };
 
@@ -313,7 +313,7 @@ adguard.integration = (function (adguard) {
          * @returns {boolean}
          */
         isEnabled: function () {
-            return !integrationModeForceDisabled;
+            return adguard.settings.isIntegrationModeEnabled() && !integrationModeForceDisabled;
         },
 
         /**

@@ -60,23 +60,10 @@ const firefoxRDFupdate = (done) => {
     firefox_updates = firefox_updates.replace(/\%VERSION\%/g, version);
     firefox_updates = firefox_updates.replace(/\%TAGNAME\%/g, getTagArg());
     firefox_updates = firefox_updates.replace(/\%STANDALONE_NAME\%/g, `firefox-standalone-beta-${version}.xpi`);
-    firefox_updates = firefox_updates.replace(/\%LEGACY_NAME\%/g, `firefox-legacy-beta-${version}.xpi`);
 
     fs.writeFileSync('./firefox_updates.rdf', firefox_updates);
 
     return done();
 };
 
-const safariUpdate = (done) => {
-    let safari_updates = fs.readFileSync('./safari_updates.xml').toString();
-
-    safari_updates = safari_updates.replace(/\%VERSION\%/g, version);
-    safari_updates = safari_updates.replace(/\%TAGNAME\%/g, getTagArg());
-    safari_updates = safari_updates.replace(/\%NAME\%/g, `safari-beta-${version}.safariextz`);
-
-    fs.writeFileSync('./safari_updates.xml', safari_updates);
-
-    return done();
-};
-
-export default gulp.series(copyFiles, chromeUpdate, firefoxJSONupdate, firefoxRDFupdate, safariUpdate);
+export default gulp.series(copyFiles, chromeUpdate, firefoxJSONupdate, firefoxRDFupdate);
