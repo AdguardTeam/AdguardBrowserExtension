@@ -528,7 +528,9 @@ PageController.prototype = {
 
         event.filterName = '';
         if (event.requestRule) {
-            event.filterName = RequestWizard.getFilterName(event.requestRule.filterId);
+            event.filterName = event.requestRule.filterId !== undefined
+                ? RequestWizard.getFilterName(event.requestRule.filterId)
+                : i18n.getMessage('filtering_log_privacy_applied_rules');
         } else if (event.stealthActions) {
             event.filterName = i18n.getMessage('filtering_log_privacy_applied_rules');
         }
