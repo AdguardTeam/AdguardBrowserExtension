@@ -83,7 +83,7 @@
         this.script = rule.substring(indexOfMask + mask.length);
         this.scriptSource = getScriptSource(filterId, rule);
 
-        // TODO check for someones scriptlet syntax
+        // todo check for someones scriptlet syntax
         // may be even not here
 
         if (this.isScriptletFilterRule()) {
@@ -99,6 +99,15 @@
      */
     ScriptFilterRule.prototype.isScriptletFilterRule = function() {
         return this.script && /\/\/(\s*)scriptlet/g.test(this.script);
+    }
+
+    /**
+     * Return text of script
+     */
+    ScriptFilterRule.prototype.getScript = function() {
+        return this.isScriptletFilterRule()
+            ? adguard.scriptlet(this.scriptlet)
+            : this.script;
     }
 
     /**
