@@ -331,7 +331,7 @@ PageController.prototype = {
     },
 
     onTabReset: function (tabInfo) {
-        if (this.currentTabId === tabInfo.tabId) {
+        if (this.currentTabId === tabInfo.tabId && !this.preserveLogEnabled) {
             this.emptyLogTable();
             this._onEmptyTable();
         }
