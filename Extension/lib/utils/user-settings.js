@@ -23,6 +23,12 @@ adguard.settings = (function (adguard) {
 
     'use strict';
 
+    // Default filters update period is set up to 48 hours
+    const DEFAULT_FILTERS_UPDATE_PERIOD_MS = 48 * 60 * 60 * 1000;
+    const DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN = 4320;
+    const DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN = 180;
+    const DEFAULT_TRACKING_PARAMETERS = 'utm_source,utm_medium,utm_term,utm_campaign,utm_content,utm_name,utm_cid,utm_reader,utm_viz_id,utm_pubreferrer,utm_swu';
+
     var settings = {
         DISABLE_DETECT_FILTERS: 'detect-filters-disabled',
         DISABLE_SHOW_PAGE_STATS: 'disable-show-page-statistic',
@@ -34,6 +40,21 @@ adguard.settings = (function (adguard) {
         DISABLE_SHOW_CONTEXT_MENU: 'context-menu-disabled',
         USE_OPTIMIZED_FILTERS: 'use-optimized-filters',
         DEFAULT_WHITE_LIST_MODE: 'default-whitelist-mode',
+        DISABLE_SHOW_APP_UPDATED_NOTIFICATION: 'show-app-updated-disabled',
+        DISABLE_INTEGRATION_MODE: 'integration-mode-disabled',
+        FILTERS_UPDATE_PERIOD: 'filters-update-period',
+        DISABLE_STEALTH_MODE: 'stealth_disable_stealth_mode',
+        HIDE_REFERRER: 'stealth-hide-referrer',
+        HIDE_SEARCH_QUERIES: 'stealth-hide-search-queries',
+        SEND_DO_NOT_TRACK: 'stealth-send-do-not-track',
+        BLOCK_CHROME_CLIENT_DATA: 'stealth-remove-x-client',
+        BLOCK_WEBRTC: 'stealth-block-webrtc',
+        SELF_DESTRUCT_THIRD_PARTY_COOKIES: 'stealth-block-third-party-cookies',
+        SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME: 'stealth-block-third-party-cookies-time',
+        SELF_DESTRUCT_FIRST_PARTY_COOKIES: 'stealth-block-first-party-cookies',
+        SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME: 'stealth-block-first-party-cookies-time',
+        STRIP_TRACKING_PARAMETERS: 'strip-tracking-parameters',
+        TRACKING_PARAMETERS: 'tracking-parameters'
     };
 
     var properties = Object.create(null);
@@ -57,8 +78,23 @@ adguard.settings = (function (adguard) {
                 defaults[settings.DISABLE_COLLECT_HITS] = true;
                 defaults[settings.DISABLE_SEND_SAFEBROWSING_STATS] = true;
                 defaults[settings.DEFAULT_WHITE_LIST_MODE] = true;
-                defaults[settings.USE_OPTIMIZED_FILTERS] = adguard.utils.browser.isContentBlockerEnabled() || adguard.prefs.mobile;
-                defaults[settings.DISABLE_DETECT_FILTERS] = adguard.utils.browser.isContentBlockerEnabled();
+                defaults[settings.USE_OPTIMIZED_FILTERS] = adguard.prefs.mobile;
+                defaults[settings.DISABLE_DETECT_FILTERS] = false;
+                defaults[settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION] = false;
+                defaults[settings.DISABLE_INTEGRATION_MODE] = false;
+                defaults[settings.FILTERS_UPDATE_PERIOD] = DEFAULT_FILTERS_UPDATE_PERIOD_MS;
+                defaults[settings.DISABLE_STEALTH_MODE] = true;
+                defaults[settings.HIDE_REFERRER] = true;
+                defaults[settings.HIDE_SEARCH_QUERIES] = true;
+                defaults[settings.SEND_DO_NOT_TRACK] = true;
+                defaults[settings.BLOCK_CHROME_CLIENT_DATA] = true;
+                defaults[settings.BLOCK_WEBRTC] = false;
+                defaults[settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES] = true;
+                defaults[settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME] = DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN;
+                defaults[settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES] = false;
+                defaults[settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME] = DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN;
+                defaults[settings.STRIP_TRACKING_PARAMETERS] = true;
+                defaults[settings.TRACKING_PARAMETERS] = DEFAULT_TRACKING_PARAMETERS;
                 return defaults;
             });
         }
@@ -94,22 +130,23 @@ adguard.settings = (function (adguard) {
         return propertyValue;
     };
 
-    var setProperty = function (propertyName, propertyValue) {
-        adguard.localStorage.setItem(propertyName, propertyValue);
+    var setProperty = function (propertyName, propertyValue, options) {
+        adguard.localStorage.setItem(propertyName, JSON.stringify(propertyValue));
         properties[propertyName] = propertyValue;
         propertyUpdateChannel.notify(propertyName, propertyValue);
+
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
     };
 
-    var getAllSettings = function () {
-
-        var result = {
+    const getAllSettings = function () {
+        const result = {
             names: Object.create(null),
-            values: Object.create(null)
+            values: Object.create(null),
         };
 
-        for (var key in settings) {
+        for (let key in settings) {
             if (settings.hasOwnProperty(key)) {
-                var setting = settings[key];
+                const setting = settings[key];
                 result.names[key] = setting;
                 result.values[setting] = getProperty(setting);
             }
@@ -135,32 +172,48 @@ adguard.settings = (function (adguard) {
         return !getProperty(settings.DISABLE_DETECT_FILTERS);
     };
 
-    var changeAutodetectFilters = function (enabled) {
-        setProperty(settings.DISABLE_DETECT_FILTERS, !enabled);
+    var changeAutodetectFilters = function (enabled, options) {
+        setProperty(settings.DISABLE_DETECT_FILTERS, !enabled, options);
     };
 
     var showPageStatistic = function () {
         return !getProperty(settings.DISABLE_SHOW_PAGE_STATS);
     };
 
-    var changeShowPageStatistic = function (enabled) {
-        setProperty(settings.DISABLE_SHOW_PAGE_STATS, !enabled);
+    var changeShowPageStatistic = function (enabled, options) {
+        setProperty(settings.DISABLE_SHOW_PAGE_STATS, !enabled, options);
     };
 
     var isShowInfoAboutAdguardFullVersion = function () {
         return !getProperty(settings.DISABLE_SHOW_ADGUARD_PROMO_INFO);
     };
 
-    var changeShowInfoAboutAdguardFullVersion = function (show) {
-        setProperty(settings.DISABLE_SHOW_ADGUARD_PROMO_INFO, !show);
+    var changeShowInfoAboutAdguardFullVersion = function (show, options) {
+        setProperty(settings.DISABLE_SHOW_ADGUARD_PROMO_INFO, !show, options);
     };
 
-    var changeEnableSafebrowsing = function (enabled) {
-        setProperty(settings.DISABLE_SAFEBROWSING, !enabled);
+    var isShowAppUpdatedNotification = function () {
+        return !getProperty(settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION);
     };
 
-    var changeSendSafebrowsingStats = function (enabled) {
-        setProperty(settings.DISABLE_SEND_SAFEBROWSING_STATS, !enabled);
+    var changeShowAppUpdatedNotification = function (show, options) {
+        setProperty(settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION, !show, options);
+    };
+
+    var isIntegrationModeEnabled = function () {
+        return !getProperty(settings.DISABLE_INTEGRATION_MODE);
+    };
+
+    var changeIntegrationModeEnabled = function (show, options) {
+        setProperty(settings.DISABLE_INTEGRATION_MODE, !show, options);
+    };
+
+    var changeEnableSafebrowsing = function (enabled, options) {
+        setProperty(settings.DISABLE_SAFEBROWSING, !enabled, options);
+    };
+
+    var changeSendSafebrowsingStats = function (enabled, options) {
+        setProperty(settings.DISABLE_SEND_SAFEBROWSING_STATS, !enabled, options);
     };
 
     var getSafebrowsingInfo = function () {
@@ -174,16 +227,16 @@ adguard.settings = (function (adguard) {
         return !getProperty(settings.DISABLE_COLLECT_HITS);
     };
 
-    var changeCollectHitsCount = function (enabled) {
-        setProperty(settings.DISABLE_COLLECT_HITS, !enabled);
+    var changeCollectHitsCount = function (enabled, options) {
+        setProperty(settings.DISABLE_COLLECT_HITS, !enabled, options);
     };
 
     var showContextMenu = function () {
         return !getProperty(settings.DISABLE_SHOW_CONTEXT_MENU);
     };
 
-    var changeShowContextMenu = function (enabled) {
-        setProperty(settings.DISABLE_SHOW_CONTEXT_MENU, !enabled);
+    var changeShowContextMenu = function (enabled, options) {
+        setProperty(settings.DISABLE_SHOW_CONTEXT_MENU, !enabled, options);
     };
 
     var isDefaultWhiteListMode = function () {
@@ -194,8 +247,32 @@ adguard.settings = (function (adguard) {
         return getProperty(settings.USE_OPTIMIZED_FILTERS);
     };
 
+    var changeUseOptimizedFiltersEnabled = function (enabled, options) {
+        setProperty(settings.USE_OPTIMIZED_FILTERS, !!enabled, options);
+    };
+
     var changeDefaultWhiteListMode = function (enabled) {
         setProperty(settings.DEFAULT_WHITE_LIST_MODE, enabled);
+    };
+
+    var setFiltersUpdatePeriod = function (period) {
+        setProperty(settings.FILTERS_UPDATE_PERIOD, period);
+    };
+
+    var getFiltersUpdatePeriod = function () {
+        return getProperty(settings.FILTERS_UPDATE_PERIOD);
+    };
+
+    var isWebRTCDisabled = function () {
+        return getProperty(settings.BLOCK_WEBRTC);
+    };
+
+    const disableShowAdguardPromoInfo = function () {
+        setProperty(settings.DISABLE_SHOW_ADGUARD_PROMO_INFO, true);
+    };
+
+    const isDisableShowAdguardPromoInfo = function () {
+        return getProperty(settings.DISABLE_SHOW_ADGUARD_PROMO_INFO);
     };
 
     var api = {};
@@ -221,6 +298,8 @@ adguard.settings = (function (adguard) {
     api.changeShowPageStatistic = changeShowPageStatistic;
     api.isShowInfoAboutAdguardFullVersion = isShowInfoAboutAdguardFullVersion;
     api.changeShowInfoAboutAdguardFullVersion = changeShowInfoAboutAdguardFullVersion;
+    api.isShowAppUpdatedNotification = isShowAppUpdatedNotification;
+    api.changeShowAppUpdatedNotification = changeShowAppUpdatedNotification;
     api.changeEnableSafebrowsing = changeEnableSafebrowsing;
     api.changeSendSafebrowsingStats = changeSendSafebrowsingStats;
     api.getSafebrowsingInfo = getSafebrowsingInfo;
@@ -230,7 +309,15 @@ adguard.settings = (function (adguard) {
     api.changeShowContextMenu = changeShowContextMenu;
     api.isDefaultWhiteListMode = isDefaultWhiteListMode;
     api.isUseOptimizedFiltersEnabled = isUseOptimizedFiltersEnabled;
+    api.changeUseOptimizedFiltersEnabled = changeUseOptimizedFiltersEnabled;
     api.changeDefaultWhiteListMode = changeDefaultWhiteListMode;
+    api.getFiltersUpdatePeriod = getFiltersUpdatePeriod;
+    api.setFiltersUpdatePeriod = setFiltersUpdatePeriod;
+    api.isIntegrationModeEnabled = isIntegrationModeEnabled;
+    api.changeIntegrationModeEnabled = changeIntegrationModeEnabled;
+    api.isWebRTCDisabled = isWebRTCDisabled;
+    api.disableShowAdguardPromoInfo = disableShowAdguardPromoInfo;
+    api.isDisableShowAdguardPromoInfo = isDisableShowAdguardPromoInfo;
 
     return api;
 

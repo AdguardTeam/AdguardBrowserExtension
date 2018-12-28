@@ -14,316 +14,1533 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global $, updateDisplayAdguardPromo, customizePopupFooter, contentPage, i18n, moment */
-var PageController = function () {
-};
 
-PageController.prototype = {
+/* global updateDisplayAdguardPromo, contentPage, i18n, moment, ace, CheckboxUtils */
 
-    DEFAULT_LIMIT: 200,
+var Utils = {
 
-    omitRenderEventsCount: 0,
-
-    linkHelper: null,
-
-    SUBSCRIPTIONS_LIMIT: 9,
-
-    init: function () {
-
-        this.linkHelper = document.createElement('a');
-
-        this._bindEvents();
-        this._render();
-        this._initTopMenu();
-
-        $(".sp-table-row-input").toggleCheckbox();
-
-        updateDisplayAdguardPromo(!userSettings.values[userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO]);
-        customizePopupFooter(environmentOptions.isMacOs);
-
-        var currentAnchor = null;
-
-        function checkAnchor() {
-            var anchor = window.location.hash;
-            if (anchor && anchor !== currentAnchor) {
-                currentAnchor = anchor;
-                $('a.top-menu-item[href="' + anchor + '"]').click();
-            }
-        }
-
-        window.onhashchange = checkAnchor;
-
-        setTimeout(function () {
-            checkAnchor();
-        }, 100);
+    debounce: function (func, wait) {
+        var timeout;
+        return function () {
+            var context = this, args = arguments;
+            var later = function () {
+                timeout = null;
+                func.apply(context, args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
     },
 
-    _bindEvents: function () {
+    escapeRegExp: (function () {
+        var matchOperatorsRe = /[|\\{}()[\]^$+*?.]/g;
+        return function (str) {
+            if (typeof str !== 'string') {
+                throw new TypeError('Expected a string');
+            }
+            return str.replace(matchOperatorsRe, '\\$&');
+        };
+    })(),
 
-        this.antiBannerFiltersList = $("#antiBannerFiltersList");
-        this.antiBannerFiltersListEmpty = $("#antiBannerFiltersListEmpty");
-        this.userFilters = $("#userFilters");
-        this.wlFilters = $("#whiteListFilters");
-        this.safebrowsingEnabledCheckbox = $("#safebrowsingEnabledCheckbox");
-        this.sendSafebrowsingStatsCheckbox = $("#sendSafebrowsingStatsCheckbox");
-        this.showPageStatisticCheckbox = $("#showPageStatisticCheckbox");
-        this.allowAcceptableAdsCheckbox = $("#allowAcceptableAds");
-        this.updateAntiBannerFiltersButton = $("#updateAntiBannerFilters");
-        this.autodetectFiltersCheckbox = $("#autodetectFiltersCheckbox");
-        this.importUserFilterInput = $("#importUserFilterInput");
-        this.clearUserFilterButton = $("#clearUserFilter");
-        this.importWlFilterInput = $("#importWhiteListFilterInput");
-        this.clearWlFilterButton = $("#clearWhiteListFilter");
-        this.userFilterSearchInput = $("#user-search");
-        this.wlFilterSearchInput = $("#white-search");
-        this.showInfoAboutAdguardFullVersionCheckbox = $("#showInfoAboutAdguardFullVersion");
-        this.enableHitsCountCheckbox = $("#enableHitsCount");
-        this.resetStatsPopup = $("#resetStatsPopup");
-        this.enableShowContextMenuCheckbox = $('#enableShowContextMenu');
-        this.useOptimizedFiltersCheckbox = $('#useOptimizedFilters');
-        this.changeDefaultWhiteListModeCheckbox = $('#changeDefaultWhiteListMode');
-        if (environmentOptions.isSafariBrowser) {
-            this.enableShowContextMenuCheckbox.closest('.s-page-table-row').hide();
-        }
-        this.subscriptionModalEl = $('#subscriptionModal');
-        this.tooManySubscriptionsEl = $('#tooManySubscriptions');
-        this.tooManyRulesEl = $('#tooManyRules');
-
-        this.safebrowsingEnabledCheckbox.on('change', this.safebrowsingEnabledChange);
-        this.sendSafebrowsingStatsCheckbox.on('change', this.sendSafebrowsingStatsChange);
-        this.showPageStatisticCheckbox.on('change', this.showPageStatisticsChange);
-        this.autodetectFiltersCheckbox.on('change', this.autodetectFiltersChange);
-        this.allowAcceptableAdsCheckbox.on('change', this.allowAcceptableAdsChange);
-        this.updateAntiBannerFiltersButton.on('click', this.updateAntiBannerFilters.bind(this));
-        this.showInfoAboutAdguardFullVersionCheckbox.on('change', this.updateShowInfoAboutAdguardFullVersion);
-        this.enableHitsCountCheckbox.on('change', this.changeEnableHitsCount);
-        this.enableShowContextMenuCheckbox.on('change', this.changeEnableShowContextMenu);
-        this.useOptimizedFiltersCheckbox.on('change', this.changeUseOptimizedFilters);
-        this.changeDefaultWhiteListModeCheckbox.on('change', this.changeDefaultWhiteListMode.bind(this));
-        $("#resetStats").on('click', this.onResetStatsClicked.bind(this));
-
-        $('.settings-page').on('click', '.editAntiBannerFilters', this._openSubscriptionModal.bind(this));
-
-        var listSettings = $(".settings-page-lists");
-        listSettings.on('click', '.addWhiteListFilter', this.onAddWhiteListFilterClicked.bind(this));
-        listSettings.on('click', '.addUserFilter', this.onAddUserFilterClicked.bind(this));
-        listSettings.on('click', '#importUserFilter', this.onImportUserFilterClicked.bind(this));
-        listSettings.on('change', '#importUserFilterInput', this.onImportUserFilterInputChange.bind(this));
-        listSettings.on('click', '#exportUserFilter', this.onExportUserFilterClicked.bind(this));
-        listSettings.on('click', '#clearUserFilter', this.onClearUserFilterClicked.bind(this));
-        listSettings.on('click', '#importWhiteListFilter', this.onImportWhiteListFilterClicked.bind(this));
-        listSettings.on('change', '#importWhiteListFilterInput', this.onImportWhiteListFilterInputChange.bind(this));
-        listSettings.on('click', '#exportWhiteListFilter', this.onExportWhiteListFilterClicked.bind(this));
-        listSettings.on('click', '#clearWhiteListFilter', this.onClearWhiteListFilterClicked.bind(this));
-
-        $(".openExtensionStore").on('click', function (e) {
-            e.preventDefault();
-            contentPage.sendMessage({type: 'openExtensionStore'});
-        });
-
-        $("#openLog").on('click', function (e) {
-            e.preventDefault();
-            contentPage.sendMessage({type: 'openFilteringLog'});
-        });
-
-        this.wlFilters.jScrollPane({
-            contentWidth: '0px',
-            mouseWheelSpeed: 20
-        });
-        this.userFilters.jScrollPane({
-            contentWidth: '0px',
-            mouseWheelSpeed: 20
-        });
-        this._renderWhiteListOverlay();
-        this._renderUserFilterListOverlay();
-
-        var initSearch = function (el, input, listEl, renderFunc) {
-            el.find(".sp-lists-user-table.sp-lists-search-table").find(".btn-search").on('click', function (e) {
-                e.preventDefault();
-                renderFunc.call(this);
-            }.bind(this));
-            input.on('keyup', this._debounce(renderFunc.bind(this), 300));
-            listEl.bind('jsp-scroll-y', function (e, posY, isAtTop, isAtBottom) {
-                if (isAtBottom) {
-                    renderFunc.call(this, true);
+    importFromFileIntoEditor: function importFromFileIntoEditor(editor) {
+        return function (event) {
+            const fileInput = event.target;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const oldRules = editor.getValue();
+                const newRules = oldRules + '\n' + e.target.result;
+                editor.setValue(newRules);
+                fileInput.value = '';
+            };
+            reader.onerror = function (err) {
+                throw new Error(`${i18n.getMessage('options_popup_import_rules_unknown_error')} ${err.message}`);
+            };
+            const file = fileInput.files[0];
+            if (file) {
+                if (file.type !== 'text/plain') {
+                    throw new Error(i18n.getMessage('options_popup_import_rules_wrong_file_extension'));
                 }
-            }.bind(this));
-        }.bind(this);
-
-        initSearch($("#whitelist"), this.wlFilterSearchInput, this.wlFilters, this._renderWhiteListFilters);
-        initSearch($("#userfilter"), this.userFilterSearchInput, this.userFilters, this._renderUserFilters);
-    },
-
-    _initTopMenu: function () {
-        var lastId;
-        var topMenu = $(".top-menu");
-        var firstItem = $("#general-settings");
-        var topMenuHeight = topMenu.outerHeight() + 25;
-        var menuItems = topMenu.find("a");
-        var scrollItems = menuItems.map(function () {
-            var item = $($(this).attr("href"));
-            if (item.length) {
-                return item;
-            }
-            return null;
-        });
-
-        menuItems.on('click', function (e) {
-            e.preventDefault();
-            var offsetTop = $(this.hash).offset().top - topMenuHeight + 1;
-            $('html, body').stop().animate({
-                scrollTop: offsetTop
-            }, 300);
-        });
-
-        var onscroll = function () {
-            var scrollTop = $(this).scrollTop();
-            var fromTop = scrollTop + topMenuHeight;
-            if (fromTop > topMenuHeight + 100) {
-                topMenu.removeClass("affix affix-top").addClass("affix");
-                firstItem.removeClass("affix affix-top").addClass("affix");
-            } else {
-                topMenu.removeClass("affix affix-top").addClass("affix-top");
-                firstItem.removeClass("affix affix-top").addClass("affix-top");
-            }
-
-            var id;
-            if ($(document).height() - $(window).height() - scrollTop < 10) {
-                //get the last item
-                id = scrollItems[scrollItems.length - 1][0].id;
-            } else {
-                // Get id of current scroll item
-                var cur = scrollItems.map(function () {
-                    if ($(this).offset().top < fromTop) {
-                        return this;
-                    }
-                    return null;
-                });
-                cur = cur[cur.length - 1];
-                id = cur && cur.length ? cur[0].id : "";
-            }
-
-            if (lastId !== id) {
-                lastId = id;
-                // Set/remove active class
-                menuItems.removeClass("active");
-                menuItems.filter("[href='#" + id + "']").addClass("active");
+                reader.readAsText(file, 'utf-8');
             }
         };
-        $(window).on('scroll', onscroll);
-        onscroll();
     },
 
-    _render: function () {
+    handleImportSettings: function (e) {
+        const onFileLoaded = function (content) {
+            contentPage.sendMessage({ type: 'applySettingsJson', json: content });
+        };
 
-        var safebrowsingEnabled = !userSettings.values[userSettings.names.DISABLE_SAFEBROWSING];
-        var sendSafebrowsingStats = !userSettings.values[userSettings.names.DISABLE_SEND_SAFEBROWSING_STATS];
-        var showPageStats = !userSettings.values[userSettings.names.DISABLE_SHOW_PAGE_STATS];
-        var autodetectFilters = !userSettings.values[userSettings.names.DISABLE_DETECT_FILTERS];
-        var showAdguardPromo = !userSettings.values[userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO];
-        var collectHitsCount = !userSettings.values[userSettings.names.DISABLE_COLLECT_HITS];
-        var showContextMenu = !userSettings.values[userSettings.names.DISABLE_SHOW_CONTEXT_MENU];
-        var useOptimizedFilters = userSettings.values[userSettings.names.USE_OPTIMIZED_FILTERS];
-        var defaultWhitelistMode = userSettings.values[userSettings.names.DEFAULT_WHITE_LIST_MODE];
-        var acceptableAdsEnabled = AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID in enabledFilters;
-
-        this._renderAntiBannerFilters();
-        this._renderUserFilters();
-        this._renderWhiteListFilters();
-        this._renderSafebrowsingSection(safebrowsingEnabled, sendSafebrowsingStats);
-        this._renderShowPageStatistics(showPageStats, environmentOptions.Prefs.mobile);
-        this._renderAllowAcceptableAds(acceptableAdsEnabled);
-        this._renderAutodetectFilters(autodetectFilters);
-        this._renderShowInfoAboutAdguardFullVersion(showAdguardPromo);
-        this._renderCollectHitsCount(collectHitsCount);
-        this._renderShowContextMenu(showContextMenu);
-        this._renderUseOptimizedFilters(useOptimizedFilters);
-        this._renderDefaultWhiteListMode(defaultWhitelistMode);
-
-        var rulesInfo = environmentOptions.isContentBlockerEnabled ? contentBlockerInfo : requestFilterInfo;
-        this.renderFilterRulesInfo(rulesInfo);
-
-        if (environmentOptions.Prefs.mobile) {
-            $('#resetStats').hide();
+        const file = e.currentTarget.files[0];
+        if (file) {
+            if (file.type !== 'application/json') {
+                throw new Error(i18n.getMessage('options_popup_import_settings_wrong_file_extension'));
+            }
+            const reader = new FileReader();
+            reader.readAsText(file, 'UTF-8');
+            reader.onload = function (evt) {
+                onFileLoaded(evt.target.result);
+            };
+            reader.onerror = function () {
+                throw new Error(i18n.getMessage('options_popup_import_error_file_description'));
+            };
         }
-        //Hide some functionality for content blocker safari browsers
-        if (environmentOptions.isContentBlockerEnabled) {
-            $('#openLog').hide();
-            $('#resetStats').hide();
-            $('.page-stats-switch-block').hide();
-        }
-        this._initializeSubscriptionModal();
-        this.checkSubscriptionsCount();
     },
 
-    _onAntiBannerFilterStateChange: function (antiBannerFilter) {
-        var el = $("input[name='filterId'][value='" + antiBannerFilter.filterId + "']").closest(".s-page-table-row");
-        var checkbox = el.find("input:checkbox");
-        var handler = checkbox.next('.sp-table-row-pseudo');
-        if (antiBannerFilter.enabled) {
-            checkbox.attr("checked", "checked");
-            handler.addClass("active");
-            handler.closest(".s-page-table-row").addClass("active");
+    hoursToMs: function (hours) {
+        return hours * 60 * 60 * 1000;
+    },
+
+    showPopup: function (title, text) {
+        contentPage.sendMessage({
+            type: 'showAlertMessagePopup',
+            title: title,
+            text: text,
+        });
+    },
+};
+
+var TopMenu = (function () {
+    'use strict';
+
+    var GENERAL_SETTINGS = '#general-settings';
+    var ANTIBANNER = '#antibanner';
+    var WHITELIST = '#whitelist';
+
+    var prevTabId;
+    var onHashUpdatedCallback;
+
+    var toggleTab = function () {
+        var tabId = document.location.hash || GENERAL_SETTINGS;
+        var tab;
+        try {
+            tab = document.querySelector(tabId);
+        } catch (e) {
+            // If hash is not valid selector
+            tabId = GENERAL_SETTINGS;
+            tab = document.querySelector(GENERAL_SETTINGS);
+        }
+
+        if (tabId.indexOf(ANTIBANNER) === 0 && !tab) {
+            // AntiBanner groups and filters are loaded and rendered async
+            return;
+        }
+
+        if (!tab) {
+            tabId = GENERAL_SETTINGS;
+            tab = document.querySelector(tabId);
+        }
+
+        var antibannerTabs = document.querySelectorAll('[data-tab="' + ANTIBANNER + '"]');
+
+        if (prevTabId) {
+            if (prevTabId.indexOf(ANTIBANNER) === 0) {
+                antibannerTabs.forEach(function (el) {
+                    el.classList.remove('active');
+                });
+            } else {
+                document.querySelector('[data-tab="' + prevTabId + '"]').classList.remove('active');
+            }
+
+            try {
+                document.querySelector(prevTabId).style.display = 'none';
+            } catch (e) {
+                return;
+            }
+
+        }
+
+        if (tabId.indexOf(ANTIBANNER) === 0) {
+            antibannerTabs.forEach(function (el) {
+                el.classList.add('active');
+            });
         } else {
-            checkbox.removeAttr("checked");
-            handler.removeClass("active");
-            handler.closest(".s-page-table-row").removeClass("active");
-        }
-    },
-
-    _updateAntiBannerFilter: function (antiBannerFilter) {
-        var el = $("input[name='filterId'][value='" + antiBannerFilter.filterId + "']").closest(".s-page-table-row");
-        if (el && el.length > 0) {
-            var rendered = this._renderAntiBannerFilter(antiBannerFilter);
-            el.replaceWith(rendered);
-        }
-    },
-
-    _showFilterLoader: function (antiBannerFilter) {
-        var el = $("input[name='filterId'][value='" + antiBannerFilter.filterId + "']").closest(".s-page-table-row");
-        var acceptableAdsFilter = antiBannerFilter.filterId == AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID; // Don't render for acceptable ads filter
-        if (el.length === 0 && !acceptableAdsFilter) {
-            el = this._renderAntiBannerFilter(antiBannerFilter);
-            this.antiBannerFiltersList.append(el);
+            document.querySelector('[data-tab="' + tabId + '"]').classList.add('active');
         }
 
-        var loader = el.find(".preloader");
-        loader.removeClass("hidden");
-    },
+        tab.style.display = 'block';
 
-    safebrowsingEnabledChange: function () {
-        contentPage.sendMessage({
-            type: 'changeUserSetting',
-            key: userSettings.names.DISABLE_SAFEBROWSING,
-            value: !this.checked
+        if (tabId === WHITELIST) {
+            if (typeof onHashUpdatedCallback === 'function') {
+                onHashUpdatedCallback(tabId);
+            }
+        }
+
+        prevTabId = tabId;
+    };
+
+    var init = function (options) {
+        onHashUpdatedCallback = options.onHashUpdated;
+
+        window.addEventListener('hashchange', toggleTab);
+        document.querySelectorAll('[data-tab]').forEach(function (el) {
+            el.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.location.hash = el.getAttribute('data-tab');
+            });
         });
-    },
 
-    sendSafebrowsingStatsChange: function () {
+        toggleTab();
+    };
+
+    return {
+        init: init,
+        toggleTab: toggleTab,
+    };
+})();
+
+const Saver = function (options) {
+    this.indicatorElement = options.indicatorElement;
+    this.editor = options.editor;
+    this.saveEventType = options.saveEventType;
+    this.omitRenderEventsCount = 0;
+
+    const states = {
+        CLEAR: 1 << 0,
+        DIRTY: 1 << 1,
+        SAVING: 1 << 2,
+        SAVED: 1 << 3,
+    };
+
+    const indicatorText = {
+        [states.CLEAR]: '',
+        [states.DIRTY]: i18n.getMessage('options_editor_indicator_editing'),
+        [states.SAVING]: i18n.getMessage('options_editor_indicator_saving'),
+        [states.SAVED]: i18n.getMessage('options_editor_indicator_saved'),
+    };
+
+    this.isSaving = function () {
+        return (this.currentState & states.SAVING) === states.SAVING;
+    };
+
+    this.isDirty = function () {
+        return (this.currentState & states.DIRTY) === states.DIRTY;
+    };
+
+    this.updateIndicator = function (state) {
+        this.indicatorElement.textContent = indicatorText[state];
+        switch (state) {
+            case states.DIRTY:
+            case states.CLEAR:
+            case states.SAVING:
+                this.indicatorElement.classList.remove('filter-rules__label--saved');
+                break;
+            case states.SAVED:
+                this.indicatorElement.classList.add('filter-rules__label--saved');
+                break;
+            default:
+                break;
+        }
+    };
+
+    let timeout;
+
+    const setState = (state, skipManageState = false) => {
+        this.currentState |= state;
+        switch (state) {
+            case states.DIRTY:
+                this.currentState &= ~states.CLEAR;
+                break;
+            case states.CLEAR:
+                this.currentState &= ~states.DIRTY;
+                break;
+            case states.SAVING:
+                this.currentState &= ~states.SAVED;
+                break;
+            case states.SAVED:
+                this.currentState &= ~states.SAVING;
+                break;
+            default:
+                break;
+        }
+
+        if (!skipManageState) {
+            this.manageState();
+        }
+    };
+
+    this.manageState = function () {
+        const EDIT_TIMEOUT_MS = 1000;
+        const HIDE_INDICATOR_TIMEOUT_MS = 1500;
+
+        if (timeout) {
+            clearTimeout(timeout);
+        }
+
+        const self = this;
+
+        const isDirty = this.isDirty();
+        const isSaving = this.isSaving();
+
+        if (isDirty && !isSaving) {
+            this.updateIndicator(states.DIRTY);
+            timeout = setTimeout(() => {
+                self.saveRules();
+                setState(states.CLEAR, true);
+                setState(states.SAVING);
+            }, EDIT_TIMEOUT_MS);
+            return;
+        }
+
+        if (isDirty && isSaving) {
+            this.updateIndicator(states.DIRTY);
+            timeout = setTimeout(() => {
+                setState(states.CLEAR);
+                self.saveRules();
+            }, EDIT_TIMEOUT_MS);
+            return;
+        }
+
+        if (!isDirty && !isSaving && (this.omitRenderEventsCount === 1)) {
+            this.updateIndicator(states.SAVED);
+            timeout = setTimeout(() => {
+                self.updateIndicator(states.CLEAR);
+            }, HIDE_INDICATOR_TIMEOUT_MS);
+            return;
+        }
+
+        if (!isDirty && isSaving) {
+            this.updateIndicator(states.SAVING);
+        }
+    };
+
+    this.saveRules = function () {
+        this.omitRenderEventsCount += 1;
+        const text = this.editor.getValue();
         contentPage.sendMessage({
-            type: 'changeUserSetting',
-            key: userSettings.names.DISABLE_SEND_SAFEBROWSING_STATS,
-            value: !this.checked
-        });
-    },
+            type: this.saveEventType,
+            content: text,
+        }, () => {});
+    };
 
-    showPageStatisticsChange: function () {
+    const setDirty = () => {
+        setState(states.DIRTY);
+    };
+
+    const setSaved = () => {
+        if (this.omitRenderEventsCount > 0) {
+            setState(states.SAVED);
+            this.omitRenderEventsCount -= 1;
+            return true;
+        }
+        return false;
+    };
+
+    return {
+        setDirty: setDirty,
+        setSaved: setSaved,
+    };
+};
+
+var WhiteListFilter = function (options) {
+    'use strict';
+
+    const editor = ace.edit('whiteListRules');
+    editor.setShowPrintMargin(false);
+
+    editor.$blockScrolling = Infinity;
+    const AdguardMode = ace.require('ace/mode/adguard').Mode;
+    editor.session.setMode(new AdguardMode());
+    editor.setOption('wrap', true);
+
+    const saveIndicatorElement = document.querySelector('#whiteListRulesSaveIndicator');
+    const saver = new Saver({
+        editor: editor,
+        saveEventType: 'saveWhiteListDomains',
+        indicatorElement: saveIndicatorElement,
+    });
+
+    const importWhiteListInput = document.querySelector('#importWhiteListInput');
+    const importWhiteListBtn = document.querySelector('#whiteListFiltersImport');
+    const exportWhiteListBtn = document.querySelector('#whiteListFiltersExport');
+    const changeDefaultWhiteListModeCheckbox = document.querySelector('#changeDefaultWhiteListMode');
+
+    let hasContent = false;
+    function loadWhiteListDomains() {
         contentPage.sendMessage({
-            type: 'changeUserSetting',
-            key: userSettings.names.DISABLE_SHOW_PAGE_STATS,
-            value: !this.checked
+            type: 'getWhiteListDomains',
+        }, function (response) {
+            hasContent = !!response.content;
+            editor.setValue(response.content || '');
         });
-    },
+    }
 
-    autodetectFiltersChange: function () {
+    function updateWhiteListDomains() {
+        const omitRenderEvent = saver.setSaved();
+        if (omitRenderEvent) {
+            return;
+        }
+        loadWhiteListDomains();
+    }
+
+    const session = editor.getSession();
+    let initialChangeFired = false;
+    session.addEventListener('change', () => {
+        // Do no let user export empty whitelist rules
+        if (session.getValue().length > 0) {
+            exportWhiteListBtn.classList.remove('disabled');
+        } else {
+            exportWhiteListBtn.classList.add('disabled');
+        }
+
+        if (!initialChangeFired && hasContent) {
+            initialChangeFired = true;
+            return;
+        }
+        saver.setDirty();
+    });
+
+    function changeDefaultWhiteListMode(e) {
+        e.preventDefault();
+
+        contentPage.sendMessage({ type: 'changeDefaultWhiteListMode', enabled: !e.currentTarget.checked }, function () {
+            updateWhiteListDomains();
+        });
+    }
+
+    changeDefaultWhiteListModeCheckbox.addEventListener('change', changeDefaultWhiteListMode);
+
+    importWhiteListBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        importWhiteListInput.click();
+    });
+
+    exportWhiteListBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        if (exportWhiteListBtn.classList.contains('disabled')) {
+            return;
+        }
+        contentPage.sendMessage({ type: 'openExportRulesTab', whitelist: true });
+    });
+
+    importWhiteListInput.addEventListener('change', (e) => {
+        const handleFileInput = Utils.importFromFileIntoEditor(editor);
+        try {
+            handleFileInput(e);
+        } catch (err) {
+            Utils.showPopup(i18n.getMessage('options_popup_import_rules_error_title'), err.message);
+        }
+    });
+
+
+    CheckboxUtils.updateCheckbox(changeDefaultWhiteListModeCheckbox, !options.defaultWhiteListMode);
+
+    return {
+        updateWhiteListDomains: updateWhiteListDomains,
+    };
+};
+
+const UserFilter = function () {
+    'use strict';
+
+    const editor = ace.edit('userRules');
+    editor.setShowPrintMargin(false);
+
+    editor.$blockScrolling = Infinity;
+    const AdguardMode = ace.require('ace/mode/adguard').Mode;
+    editor.session.setMode(new AdguardMode());
+    editor.setOption('wrap', true);
+
+    const saveIndicatorElement = document.querySelector('#userRulesSaveIndicator');
+    const saver = new Saver({
+        editor: editor,
+        saveEventType: 'saveUserRules',
+        indicatorElement: saveIndicatorElement,
+    });
+
+    let hasContent = false;
+    function loadUserRules() {
         contentPage.sendMessage({
-            type: 'changeUserSetting',
-            key: userSettings.names.DISABLE_DETECT_FILTERS,
-            value: !this.checked
+            type: 'getUserRules',
+        }, function (response) {
+            hasContent = !!response.content;
+            editor.setValue(response.content || '');
         });
-    },
+    }
 
-    allowAcceptableAdsChange: function () {
+    function updateUserFilterRules() {
+        const omitRenderEvent = saver.setSaved();
+        if (omitRenderEvent) {
+            return;
+        }
+        loadUserRules();
+    }
+
+    const session = editor.getSession();
+
+    let initialChangeFired = false;
+    session.addEventListener('change', () => {
+        if (!initialChangeFired && hasContent) {
+            initialChangeFired = true;
+            return;
+        }
+        saver.setDirty();
+    });
+
+    const importUserFiltersInput = document.querySelector('#importUserFilterInput');
+    const importUserFiltersBtn = document.querySelector('#userFiltersImport');
+    const exportUserFiltersBtn = document.querySelector('#userFiltersExport');
+
+    // Do not let to export empty user filter
+    session.addEventListener('change', () => {
+        if (session.getValue().length > 0) {
+            exportUserFiltersBtn.classList.remove('disabled');
+        } else {
+            exportUserFiltersBtn.classList.add('disabled');
+        }
+    });
+
+    importUserFiltersBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        importUserFiltersInput.click();
+    });
+
+    importUserFiltersInput.addEventListener('change', function (e) {
+        const handleFileInput = Utils.importFromFileIntoEditor(editor);
+        try {
+            handleFileInput(e);
+        } catch (err) {
+            Utils.showPopup(i18n.getMessage('options_popup_import_rules_error_title'), err.message);
+        }
+    });
+
+    exportUserFiltersBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        if (exportUserFiltersBtn.classList.contains('disabled')) {
+            return;
+        }
+        contentPage.sendMessage({ type: 'openExportRulesTab', whitelist: false });
+    });
+
+    return {
+        updateUserFilterRules: updateUserFilterRules,
+    };
+};
+
+var AntiBannerFilters = function (options) {
+    'use strict';
+
+    var loadedFiltersInfo = {
+        filters: [],
+        categories: [],
+        filtersById: {},
+        categoriesById: {},
+        lastUpdateTime: 0,
+
+        initLoadedFilters: function (filters, categories) {
+            this.filters = filters;
+            this.categories = categories;
+
+            const categoriesById = Object.create(null);
+            for (let i = 0; i < this.categories.length; i += 1) {
+                const category = this.categories[i];
+                categoriesById[category.groupId] = category;
+            }
+            this.categoriesById = categoriesById;
+
+            var lastUpdateTime = this.lastUpdateTime || 0;
+            var filtersById = Object.create(null);
+            for (var i = 0; i < this.filters.length; i++) {
+                var filter = this.filters[i];
+                filtersById[filter.filterId] = filter;
+                if (filter.lastUpdateTime && filter.lastUpdateTime > lastUpdateTime) {
+                    lastUpdateTime = filter.lastUpdateTime;
+                }
+            }
+
+            this.filtersById = filtersById;
+            this.lastUpdateTime = lastUpdateTime;
+        },
+
+        isEnabled: function (filterId) {
+            var info = this.filtersById[filterId];
+            return info && info.enabled;
+        },
+
+        isCategoryEnabled: function (categoryId) {
+            const category = this.categoriesById[categoryId];
+            return category && category.enabled;
+        },
+
+        updateCategoryEnabled: function (category, enabled) {
+            const categoryInfo = this.categoriesById[category.groupId];
+            if (categoryInfo) {
+                categoryInfo.enabled = enabled;
+            } else {
+                this.categories.push(category);
+                this.categoriesById[category.groupId] = category;
+            }
+        },
+
+        updateEnabled: function (filter, enabled) {
+            var info = this.filtersById[filter.filterId];
+            if (info) {
+                info.enabled = enabled;
+            } else {
+                this.filters.push(filter);
+                this.filtersById[filter.filterId] = filter;
+            }
+        },
+    };
+
+    // Bind events
+    document.addEventListener('change', function (e) {
+        if (e.target.getAttribute('name') === 'filterId') {
+            toggleFilterState.bind(e.target)();
+        } else if (e.target.getAttribute('name') === 'groupId') {
+            toggleGroupState.bind(e.target)();
+        }
+    });
+
+    document.querySelector('#updateAntiBannerFilters').addEventListener('click', updateAntiBannerFilters);
+
+    window.addEventListener('hashchange', clearSearchEvent);
+
+    updateRulesCountInfo(options.rulesInfo);
+
+    function getFiltersByGroupId(groupId, filters) {
+        return filters.filter(function (f) {
+            return f.groupId === groupId;
+        });
+    }
+
+    function countEnabledFilters(filters) {
+        var count = 0;
+        for (var i = 0; i < filters.length; i++) {
+            var filterId = filters[i].filterId;
+            if (loadedFiltersInfo.isEnabled(filterId)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    function getCategoryElement(groupId) {
+        return document.querySelector('#category' + groupId);
+    }
+
+    function getCategoryCheckbox(groupId) {
+        var categoryElement = getCategoryElement(groupId);
+        if (!categoryElement) {
+            return null;
+        }
+
+        return categoryElement.querySelector('input');
+    }
+
+    function getFilterElement(filterId) {
+        return document.querySelector('#filter' + filterId);
+    }
+
+    function getFilterCheckbox(filterId) {
+        var filterElement = getFilterElement(filterId);
+        if (!filterElement) {
+            return null;
+        }
+
+        return filterElement.querySelector('input');
+    }
+
+    function generateFiltersNamesDescription(filters) {
+        const namesDisplayCount = 3;
+        const enabledFiltersNames = filters
+            .filter(filter => filter.enabled)
+            .map(filter => filter.name && filter.name.length > 0 ? filter.name : filter.subscriptionUrl);
+
+        let enabledFiltersNamesString;
+        const length = enabledFiltersNames.length;
+        if (length > namesDisplayCount) {
+            const displayNamesString = enabledFiltersNames.slice(0, namesDisplayCount).join(', ');
+            enabledFiltersNamesString = i18n.getMessage(
+                'options_filters_enabled_and_more_divider',
+                [displayNamesString, (length - namesDisplayCount).toString()]
+            );
+        } else if (length > 1) {
+            const lastName = enabledFiltersNames.slice(length - 1)[0];
+            const firstNames = enabledFiltersNames.slice(0, length - 1);
+            enabledFiltersNamesString = i18n.getMessage(
+                'options_filters_enabled_and_divider',
+                [firstNames.join(', '), lastName]
+            );
+        } else if (length === 1) {
+            enabledFiltersNamesString = enabledFiltersNames[0];
+        }
+
+        enabledFiltersNamesString = length > 0
+            ? `${i18n.getMessage('options_filters_enabled')} ${enabledFiltersNamesString}`
+            : i18n.getMessage('options_filters_no_enabled');
+        return enabledFiltersNamesString;
+    }
+
+    function updateCategoryFiltersInfo(groupId) {
+        var groupFilters = getFiltersByGroupId(groupId, loadedFiltersInfo.filters);
+        var enabledFiltersCount = countEnabledFilters(groupFilters);
+        var filtersNamesDescription = generateFiltersNamesDescription(groupFilters);
+        var groupFiltersCount = groupFilters.length;
+
+        var element = getCategoryElement(groupId);
+        var checkbox = getCategoryCheckbox(groupId);
+
+        if (groupFiltersCount > 0) {
+            element.querySelector('.desc').textContent = filtersNamesDescription;
+        }
+
+        const isCategoryEnabled = loadedFiltersInfo.isCategoryEnabled(groupId);
+        const isCheckboxChecked = typeof isCategoryEnabled === 'undefined' ? enabledFiltersCount > 0 : isCategoryEnabled;
+        CheckboxUtils.updateCheckbox([checkbox], isCheckboxChecked);
+    }
+
+    function getFilterCategoryElement(category) {
+        return htmlToElement(`
+                <li id="category${category.groupId}" class="active">
+                    <a href="#antibanner${category.groupId}" class="block-type">
+                        <div class="block-type__ico block-type__ico--${category.groupId}"></div>
+                        <div class="block-type__desc">
+                            <div class="block-type__desc-title">${category.groupName}</div>
+                            <div class="desc desc--filters"></div>
+                        </div>
+                    </a>
+                    <div class="opt-state">
+                        <div class="preloader"></div>
+                        <div class="toggler-wr" role="checkbox" tabindex="0">
+                            <input type="checkbox" name="groupId" value="${category.groupId}">
+                        </div>
+                    </div>
+                </li>`);
+    }
+
+    function getFilterTemplate(filter, enabled, showDeleteButton) {
+        var timeUpdated = moment(filter.lastUpdateTime || filter.timeUpdated);
+        timeUpdated.locale(environmentOptions.Prefs.locale);
+        var timeUpdatedText = timeUpdated.format('D/MM/YYYY HH:mm').toLowerCase();
+
+        var tagDetails = '';
+        filter.tagsDetails.forEach(function (tag) {
+            tagDetails += `<div class="opt-name__tag" data-tooltip="${tag.description}">#${tag.keyword}</div>`;
+        });
+
+        if (filter.trusted) {
+            tagDetails += `<div class="opt-name__tag"
+                                data-tooltip="${i18n.getMessage('options_filters_filter_trusted_tag_desc')}">
+                                #${i18n.getMessage('options_filters_filter_trusted_tag')}
+                           </div>`;
+        }
+
+        var deleteButton = '';
+        if (showDeleteButton) {
+            deleteButton = `<a href="#" filterid="${filter.filterId}" class="remove-custom-filter-button"></a>`;
+        }
+
+        const getVersionText = (version) => {
+            return {
+                text: version ? `${i18n.getMessage('options_filters_filter_version')} ${version}` : '',
+                className: 'filter-version-desc'
+            };
+        };
+
+        const getUpdatedTimeText = (updateTime) => {
+            return {
+                text: updateTime ? `${i18n.getMessage('options_filters_filter_updated')} ${updateTime}` : '',
+                className: 'last-update-time'
+            };
+        };
+
+        /**
+         * Creates divs with filter details, removing empty strings
+         * @param {array} texts array with text-classes objects
+         * @returns {string} html string
+         */
+        const renderFilterInfo = (texts) => {
+            return texts
+                .filter(t => t.text.length > 0)
+                .map(t => {
+                    return `<div class="opt-name__info-item ${t.className}">
+                                ${t.text}
+                           </div>`;
+                })
+                .join('');
+        };
+
+        return `<li id="filter${filter.filterId}">
+                    <div class="opt-name">
+                        <div class="title-wr">
+                            <div class="title">
+                                ${filter.name && filter.name.length > 0 ? filter.name : filter.subscriptionUrl}
+                                <a class="icon-home" target="_blank" href="${filter.homepage || filter.subscriptionUrl}"></a>
+                                ${deleteButton}
+                            </div>
+                        </div>  
+                        <div class="desc">${filter.description}</div>
+                        <div class="opt-name__info">
+                            <div class="opt-name__info-labels">
+                                ${renderFilterInfo([getVersionText(filter.version), getUpdatedTimeText(timeUpdatedText)])}
+                            </div>
+                            <div class="opt-name__info-labels opt-name__info-labels--tags">
+                                ${tagDetails}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="opt-state">
+                        <div class="preloader"></div>
+                        <div class="toggler-wr" role="checkbox" tabindex="0">
+                            <input
+                                type="checkbox"
+                                name="filterId"
+                                value="${filter.filterId}"
+                                ${enabled ? 'checked="checked"' : ''}>
+                        </div>
+                    </div>
+                </li>`;
+    }
+
+    function getPageTitleTemplate(name) {
+        return `
+            <div class="page-title">
+                <a href="#antibanner">
+                    <img src="images/arrow-left.svg" class="back">
+                </a>
+                ${name}
+            </div>`;
+    }
+
+    function getEmptyCustomFiltersTemplate(category) {
+        return `
+            <div id="antibanner${category.groupId}" class="settings-content tab-pane filters-list">
+                ${getPageTitleTemplate(category.groupName)}
+                <div class="settings-body">
+                    <div class="empty-filters">
+                        <div class="empty-filters__logo"></div>
+                        <div class="empty-filters__desc">
+                            ${i18n.getMessage('options_empty_custom_filter')}
+                        </div>
+                        <button class="button button--green empty-filters__btn">
+                            ${i18n.getMessage('options_add_custom_filter')}
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+    }
+
+    function getFiltersContentElement(category) {
+        var filters = category.filters;
+        var isCustomFilters = category.groupId === 0;
+
+        if (isCustomFilters
+            && filters.length === 0) {
+            return htmlToElement(getEmptyCustomFiltersTemplate(category));
+        }
+
+        const renderOptions = () => {
+            if (isCustomFilters) {
+                return `<div class="settings-actions">
+                            <a href="#" class="add-custom-filter-button button button--green button--link" i18n="options_add_custom_filter">Add custom filter</a>
+                        </div>`;
+            }
+            return '';
+        };
+
+        var pageTitleEl = getPageTitleTemplate(category.groupName);
+
+        var filtersList = '';
+
+        for (var i = 0; i < filters.length; i += 1) {
+            filtersList += getFilterTemplate(filters[i], loadedFiltersInfo.isEnabled(filters[i].filterId), isCustomFilters);
+        }
+
+        return htmlToElement(`
+            <div id="antibanner${category.groupId}" class="settings-content tab-pane filters-list ${isCustomFilters ? 'filters-list--custom' : ''}">
+                ${pageTitleEl}
+                <div class="settings-body">
+                    <div class="filters-search">
+                        <input type="text" placeholder="${i18n.getMessage('options_filters_list_search_placeholder')}" name="searchFiltersList"/>
+                        <div class="icon-search">
+                            <img src="images/magnifying-green.svg" alt="">
+                        </div>
+                    </div>
+                    <ul class="opts-list opts-list--filters">
+                        ${filtersList}
+                    </ul>
+                </div>
+                ${renderOptions()}
+            </div>
+        `);
+    }
+
+    function renderFilterCategory(category) {
+        var categoryContentElement = document.querySelector('#antibanner' + category.groupId);
+        if (categoryContentElement) {
+            categoryContentElement.parentNode.removeChild(categoryContentElement);
+        }
+        var categoryElement = document.querySelector('#category' + category.groupId);
+        if (categoryElement) {
+            categoryElement.parentNode.removeChild(categoryElement);
+        }
+
+        categoryElement = getFilterCategoryElement(category);
+        document.querySelector('#groupsList').appendChild(categoryElement);
+        updateCategoryFiltersInfo(category.groupId);
+
+        categoryContentElement = getFiltersContentElement(category);
+        document.querySelector('#antibanner').parentNode.appendChild(categoryContentElement);
+    }
+
+    function bindControls() {
+        var emptyFiltersAddCustomButton = document.querySelector('.empty-filters__btn');
+        if (emptyFiltersAddCustomButton) {
+            emptyFiltersAddCustomButton.addEventListener('click', addCustomFilter);
+        }
+
+        document.querySelectorAll('.add-custom-filter-button').forEach((el) => {
+            el.addEventListener('click', addCustomFilter);
+        });
+
+        document.querySelectorAll('.remove-custom-filter-button').forEach(function (el) {
+            el.addEventListener('click', removeCustomFilter);
+        });
+    }
+
+    function initFiltersSearch(category) {
+        const searchInput = document.querySelector(`#antibanner${category.groupId} input[name="searchFiltersList"]`);
+        let filters = document.querySelectorAll(`#antibanner${category.groupId} .opts-list li`);
+        const SEARCH_DELAY_MS = 250;
+        if (searchInput) {
+            searchInput.addEventListener('input', Utils.debounce((e) => {
+                let searchString;
+                try {
+                    searchString = Utils.escapeRegExp(e.target.value.trim());
+                } catch (err) {
+                    console.log(err.message);
+                    return;
+                }
+                if (!searchString) {
+                    filters.forEach(filter => {
+                        filter.style.display = 'flex';
+                    });
+                    return;
+                }
+                filters.forEach(filter => {
+                    const title = filter.querySelector('.title');
+                    const regexp = new RegExp(searchString, 'gi');
+                    if (!regexp.test(title.textContent)) {
+                        filter.style.display = 'none';
+                    } else {
+                        filter.style.display = 'flex';
+                    }
+                });
+            }, SEARCH_DELAY_MS));
+        }
+    }
+
+    /**
+     * Function clears search results when user moves from category antibanner page to another page
+     * @param {*} on hashchange event
+     */
+    function clearSearchEvent(event) {
+        const regex = /#antibanner(\d+)/g;
+        const match = regex.exec(event.oldURL);
+        if (!match) {
+            return;
+        }
+        const groupId = match[1];
+        const searchInput = document.querySelector(`#antibanner${groupId} input[name="searchFiltersList"]`);
+        let filters = document.querySelectorAll(`#antibanner${groupId} .opts-list li`);
+        if (searchInput) {
+            searchInput.value = '';
+        }
+        if (filters && filters.length > 0) {
+            filters.forEach(filter => {
+                filter.style.display = 'flex';
+            });
+        }
+    }
+
+    function renderCategoriesAndFilters() {
+        contentPage.sendMessage({ type: 'getFiltersMetadata' }, function (response) {
+            loadedFiltersInfo.initLoadedFilters(response.filters, response.categories);
+            setLastUpdatedTimeText(loadedFiltersInfo.lastUpdateTime);
+
+            var categories = loadedFiltersInfo.categories;
+            for (var j = 0; j < categories.length; j += 1) {
+                var category = categories[j];
+                renderFilterCategory(category);
+                initFiltersSearch(category);
+            }
+
+            bindControls();
+            CheckboxUtils.toggleCheckbox(document.querySelectorAll('.opt-state input[type=checkbox]'));
+
+            // check document hash
+            var hash = document.location.hash;
+            if (hash && hash.indexOf('#antibanner') === 0) {
+                TopMenu.toggleTab();
+            }
+        });
+    }
+
+    function toggleFilterState() {
+        var filterId = this.value - 0;
+        if (this.checked) {
+            contentPage.sendMessage({ type: 'addAndEnableFilter', filterId: filterId });
+        } else {
+            contentPage.sendMessage({ type: 'disableAntiBannerFilter', filterId: filterId });
+        }
+    }
+
+    function toggleGroupState() {
+        var groupId = this.value - 0;
+        if (this.checked) {
+            contentPage.sendMessage({ type: 'enableFiltersGroup', groupId: groupId });
+        } else {
+            contentPage.sendMessage({ type: 'disableFiltersGroup', groupId: groupId });
+        }
+    }
+
+    function updateAntiBannerFilters(e) {
+        e.preventDefault();
+        contentPage.sendMessage({ type: 'checkAntiBannerFiltersUpdate' }, function () {
+            setLastUpdatedTimeText(Date.now());
+        });
+    }
+
+    function addCustomFilter(e) {
+        e.preventDefault();
+
+        renderCustomFilterPopup();
+    }
+
+    function removeCustomFilter(e) {
+        e.preventDefault();
+        const result = confirm(i18n.getMessage('options_delete_filter_confirm'));
+        if (!result) {
+            return;
+        }
+        const filterId = e.currentTarget.getAttribute('filterId');
+
+        contentPage.sendMessage({
+            type: 'removeAntiBannerFilter',
+            filterId: filterId,
+        });
+
+        const filterElement = getFilterElement(filterId);
+        filterElement.parentNode.removeChild(filterElement);
+    }
+
+    let customFilterInitialized = false;
+    function renderCustomFilterPopup(filterOptions = {}) {
+        const { isFilterSubscription, title, url } = filterOptions;
+        const POPUP_ACTIVE_CLASS = 'option-popup__step--active';
+        const customFilterPopup = document.querySelector('#add-custom-filter-popup');
+        const firstStep = document.querySelector('#add-custom-filter-step-1');
+        const secondStep = document.querySelector('#add-custom-filter-step-2');
+        const thirdStep = document.querySelector('#add-custom-filter-step-3');
+        const fourthStep = document.querySelector('#add-custom-filter-step-4');
+        const closeButton = document.querySelector('#custom-filter-popup-close');
+        const subscribeButton = document.querySelector('#custom-filter-popup-added-subscribe');
+        const checkboxInput = document.querySelector('#custom-filter-popup-trusted');
+        const searchInput = document.querySelector('#custom-filter-popup-url');
+
+        function closePopup() {
+            customFilterPopup.classList.remove('option-popup--active');
+            // Clear search input
+            searchInput.value = '';
+            // Clear checkbox input
+            checkboxInput.checked = false;
+        }
+
+        function clearActiveStep() {
+            firstStep.classList.remove(POPUP_ACTIVE_CLASS);
+            secondStep.classList.remove(POPUP_ACTIVE_CLASS);
+            thirdStep.classList.remove(POPUP_ACTIVE_CLASS);
+            fourthStep.classList.remove(POPUP_ACTIVE_CLASS);
+            closeButton.style.display = 'block';
+        }
+
+        function fillLoadedFilterDetails(filter) {
+            const handleElTextContent = (el, text, link) => {
+                if (!text) {
+                    el.closest('.option-popup__table-row').style.display = 'none';
+                    return;
+                }
+                el.textContent = text;
+                el.closest('.option-popup__table-row').style.display = 'flex';
+                if (link) {
+                    el.setAttribute('href', link);
+                }
+            };
+
+            handleElTextContent(document.querySelector('#custom-filter-popup-added-title'), filter.name);
+            handleElTextContent(document.querySelector('#custom-filter-popup-added-desc'), filter.description);
+            handleElTextContent(document.querySelector('#custom-filter-popup-added-version'), filter.version);
+            handleElTextContent(document.querySelector('#custom-filter-popup-added-rules-count'), filter.rulesCount);
+            handleElTextContent(document.querySelector('#custom-filter-popup-added-homepage'), filter.homepage, filter.homepage);
+            handleElTextContent(document.querySelector('#custom-filter-popup-added-url'), filter.customUrl, filter.customUrl);
+        }
+
+        function renderStepOne() {
+            clearActiveStep();
+            firstStep.classList.add(POPUP_ACTIVE_CLASS);
+            searchInput.focus();
+        }
+
+        function renderStepTwo() {
+            clearActiveStep();
+            secondStep.classList.add(POPUP_ACTIVE_CLASS);
+            closeButton.style.display = 'none';
+        }
+
+        // Error window step
+        function renderStepThree() {
+            clearActiveStep();
+            thirdStep.classList.add(POPUP_ACTIVE_CLASS);
+        }
+
+        function renderStepFour(filter) {
+            clearActiveStep();
+            fourthStep.classList.add(POPUP_ACTIVE_CLASS);
+
+            fillLoadedFilterDetails(filter);
+        }
+
+        function bindEvents() {
+            // step one events
+            document.querySelector('.custom-filter-popup-next').addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const searchInputValue = searchInput.value && searchInput.value.trim();
+
+                contentPage.sendMessage({ type: 'loadCustomFilterInfo', url: searchInputValue }, function (filter) {
+                    if (filter) {
+                        renderStepFour(filter);
+                    } else {
+                        renderStepThree();
+                    }
+                });
+
+                renderStepTwo();
+            });
+
+            subscribeButton.addEventListener('click', function (e) {
+                e.preventDefault();
+                const url = document.querySelector('#custom-filter-popup-added-url').href;
+                const title = document.querySelector('#custom-filter-popup-added-title').textContent || '';
+                contentPage.sendMessage({
+                    type: 'subscribeToCustomFilter',
+                    url,
+                    title: title.trim(),
+                    trusted: checkboxInput.checked,
+                }, function (filter) {
+                    console.log('filter added successfully', filter);
+                    closePopup();
+                });
+            });
+
+            // render step 3 events
+            document.querySelector('.custom-filter-popup-try-again').addEventListener('click', renderStepOne);
+
+            // Popup cross button clicked
+            closeButton.addEventListener('click', closePopup);
+        }
+
+        if (!customFilterInitialized) {
+            bindEvents();
+            customFilterInitialized = true;
+        }
+
+        customFilterPopup.classList.add('option-popup--active');
+
+        if (isFilterSubscription) {
+            contentPage.sendMessage({ type: 'loadCustomFilterInfo', url, title }, function (filter) {
+                if (filter) {
+                    renderStepFour(filter);
+                } else {
+                    renderStepThree();
+                }
+            });
+            renderStepTwo();
+        } else {
+            renderStepOne();
+        }
+    }
+
+    function setLastUpdatedTimeText(lastUpdateTime) {
+        if (lastUpdateTime && lastUpdateTime >= loadedFiltersInfo.lastUpdateTime) {
+            loadedFiltersInfo.lastUpdateTime = lastUpdateTime;
+
+            let updateText = '';
+            lastUpdateTime = loadedFiltersInfo.lastUpdateTime;
+            if (lastUpdateTime) {
+                lastUpdateTime = moment(lastUpdateTime);
+                lastUpdateTime.locale(environmentOptions.Prefs.locale);
+                updateText = lastUpdateTime.format('D MMMM YYYY HH:mm').toLowerCase();
+            }
+
+            document.querySelector('#lastUpdateTime').textContent = updateText;
+        }
+    }
+
+    function updateRulesCountInfo(info) {
+        const message = i18n.getMessage('options_antibanner_info', [String(info.rulesCount || 0)]);
+        document.querySelector('#filtersRulesInfo').textContent = message;
+    }
+
+    function onFilterStateChanged(filter) {
+        const filterId = filter.filterId;
+        let enabled = filter.enabled;
+        loadedFiltersInfo.updateEnabled(filter, enabled);
+        updateCategoryFiltersInfo(filter.groupId);
+        updateFilterMetadata(filter);
+
+        CheckboxUtils.updateCheckbox([getFilterCheckbox(filterId)], enabled);
+    }
+
+    function onCategoryStateChanged(category) {
+        loadedFiltersInfo.updateCategoryEnabled(category, category.enabled);
+        updateCategoryFiltersInfo(category.groupId);
+    }
+
+    function onFilterDownloadStarted(filter) {
+        getCategoryElement(filter.groupId).querySelector('.preloader').classList.add('active');
+        const filterElement = getFilterElement(filter.filterId);
+        if (filterElement) {
+            filterElement.querySelector('.preloader').classList.add('active');
+        }
+        document.querySelector('.settings-actions--update-filters a').classList.add('active');
+    }
+
+    function onFilterDownloadFinished(filter) {
+        getCategoryElement(filter.groupId).querySelector('.preloader').classList.remove('active');
+        updateFilterMetadata(filter);
+        document.querySelector('.settings-actions--update-filters a').classList.remove('active');
+        setLastUpdatedTimeText(filter.lastUpdateTime);
+    }
+
+
+    function updateFilterMetadata(filter) {
+        const filterEl = getFilterElement(filter.filterId);
+        if (filterEl) {
+            filterEl.querySelector('.preloader').classList.remove('active');
+
+            let timeUpdated = moment(filter.lastUpdateTime || filter.timeUpdated);
+            timeUpdated.locale(environmentOptions.Prefs.locale);
+            const timeUpdatedText = timeUpdated.format('D/MM/YYYY HH:mm').toLowerCase();
+
+            filterEl.querySelector('.last-update-time').textContent = `${i18n.getMessage('options_filters_filter_updated')} ${timeUpdatedText}`;
+            filterEl.querySelector('.filter-version-desc').textContent = `${i18n.getMessage('options_filters_filter_version')} ${filter.version}`;
+        }
+    }
+
+    return {
+        render: renderCategoriesAndFilters,
+        updateRulesCountInfo: updateRulesCountInfo,
+        onFilterStateChanged: onFilterStateChanged,
+        onCategoryStateChanged: onCategoryStateChanged,
+        onFilterDownloadStarted: onFilterDownloadStarted,
+        onFilterDownloadFinished: onFilterDownloadFinished,
+        renderCustomFilterPopup: renderCustomFilterPopup,
+    };
+};
+
+var SyncSettings = function (options) {
+    'use strict';
+
+    var syncStatus = options.syncStatusInfo;
+    var currentProvider = options.syncStatusInfo.currentProvider;
+
+    var unauthorizedBlock = document.querySelector('#unauthorizedBlock');
+    var authorizedBlock = document.querySelector('#authorizedBlock');
+    var signInButton = document.querySelector('#signInButton');
+    var signOutButton = document.querySelector('#signOutButton');
+    var startSyncButton = document.querySelector('#startSyncButton');
+    var syncNowButton = document.querySelector('#syncNowButton');
+    var lastSyncTimeInfo = document.querySelector('#lastSyncTimeInfo');
+    var selectProviderButton = document.querySelector('#selectProviderButton');
+
+    var providersDropdown = document.querySelector('#selectProviderDropdown');
+
+    bindControls();
+
+    function bindControls() {
+
+        selectProviderButton.addEventListener('click', function () {
+            providersDropdown.style.display = 'block';
+        });
+
+        signInButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            if (currentProvider) {
+                contentPage.sendMessage({
+                    type: 'authSync',
+                    provider: currentProvider.name
+                });
+            }
+        });
+
+        signOutButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            if (currentProvider && currentProvider.isOAuthSupported) {
+                contentPage.sendMessage({
+                    type: 'dropAuthSync',
+                    provider: currentProvider.name
+                });
+            } else {
+                contentPage.sendMessage({type: 'toggleSync'});
+            }
+        });
+
+        startSyncButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            contentPage.sendMessage({type: 'toggleSync'});
+        });
+
+        syncNowButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            updateSyncState();
+            contentPage.sendMessage({type: 'syncNow'});
+        });
+
+        document.querySelector('#changeDeviceNameButton').addEventListener('click', function (e) {
+            e.preventDefault();
+            var deviceName = document.querySelector('#deviceNameInput').value;
+            contentPage.sendMessage({
+                type: 'syncChangeDeviceName',
+                deviceName: deviceName
+            });
+        });
+
+        document.querySelector('#adguardSelectProvider').addEventListener('click', onProviderSelected('ADGUARD_SYNC'));
+        document.querySelector('#dropboxSelectProvider').addEventListener('click', onProviderSelected('DROPBOX'));
+        document.querySelector('#browserStorageSelectProvider').addEventListener('click', onProviderSelected('BROWSER_SYNC'));
+
+        document.querySelector('#sync-general-settings-checkbox').addEventListener('change', onSyncOptionsChanged);
+        document.querySelector('#sync-filters-checkbox').addEventListener('change', onSyncOptionsChanged);
+        document.querySelector('#sync-extension-specific-checkbox').addEventListener('change', onSyncOptionsChanged);
+    }
+
+    function onSyncOptionsChanged() {
+        contentPage.sendMessage({
+            type: 'setSyncOptions', options: {
+                syncGeneral: document.querySelector('#sync-general-settings-checkbox').hasAttribute('checked'),
+                syncFilters: document.querySelector('#sync-filters-checkbox').hasAttribute('checked'),
+                syncExtensionSpecific: document.querySelector('#sync-extension-specific-checkbox').hasAttribute('checked')
+            }
+        });
+    }
+
+    function onProviderSelected(providerName) {
+        return function (e) {
+            e.preventDefault();
+            providersDropdown.style.display = 'none';
+            contentPage.sendMessage({type: 'setSyncProvider', provider: providerName}, function () {
+                document.location.reload();
+            });
+        };
+    }
+
+    function renderSelectProviderBlock() {
+        unauthorizedBlock.style.display = 'block';
+        authorizedBlock.style.display = 'none';
+        signInButton.style.display = 'none';
+        startSyncButton.style.display = 'none';
+    }
+
+    function renderUnauthorizedBlock() {
+
+        unauthorizedBlock.style.display = 'block';
+        authorizedBlock.style.display = 'none';
+
+        if (currentProvider.isOAuthSupported && !currentProvider.isAuthorized) {
+            signInButton.style.display = 'block';
+        } else {
+            signInButton.style.display = 'none';
+        }
+
+        if (!syncStatus.enabled && currentProvider.isAuthorized) {
+            startSyncButton.style.display = 'block';
+        } else {
+            startSyncButton.style.display = 'none';
+        }
+
+        selectProviderButton.textContent = currentProvider.title;
+    }
+
+    function renderAuthorizedBlock() {
+
+        unauthorizedBlock.style.display = 'none';
+        authorizedBlock.style.display = 'block';
+
+        document.querySelector('#providerNameInfo').textContent = currentProvider.title;
+
+        var manageAccountButton = document.querySelector('#manageAccountButton');
+        var deviceNameBlock = document.querySelector('#deviceNameBlock');
+
+        updateSyncState();
+
+        if (currentProvider.isOAuthSupported && currentProvider.name === 'ADGUARD_SYNC') {
+            manageAccountButton.style.display = 'block';
+            deviceNameBlock.style.display = 'block';
+            document.querySelector('#deviceNameInput').value = currentProvider.deviceName;
+        } else {
+            manageAccountButton.style.display = 'none';
+            deviceNameBlock.style.display = 'none';
+        }
+
+        document.querySelector('#sync-general-settings-checkbox').setAttribute('checked', syncStatus.syncOptions.syncGeneral);
+        document.querySelector('#sync-filters-checkbox').setAttribute('checked', syncStatus.syncOptions.syncFilters);
+        document.querySelector('#sync-extension-specific-checkbox').setAttribute('checked', syncStatus.syncOptions.syncExtensionSpecific);
+    }
+
+    function renderSyncSettings() {
+
+        if (!currentProvider) {
+            renderSelectProviderBlock();
+            return;
+        }
+
+        if (!currentProvider.isAuthorized || !syncStatus.enabled) {
+            renderUnauthorizedBlock();
+        } else {
+            renderAuthorizedBlock();
+        }
+
+        var browserStorageSupported = syncStatus.providers.filter(function (p) {
+            return p.name === 'BROWSER_SYNC';
+        }).length > 0;
+
+        if (!browserStorageSupported) {
+            document.querySelector('#browserStorageSelectProvider').style.display = 'none';
+        }
+
+        if (currentProvider) {
+            var activeClass = 'dropdown__item--active';
+
+            switch (currentProvider.name) {
+                case 'ADGUARD_SYNC':
+                    document.querySelector('#adguardSelectProvider').classList.add(activeClass);
+                    break;
+                case 'DROPBOX':
+                    document.querySelector('#dropboxSelectProvider').classList.add(activeClass);
+                    break;
+                case 'BROWSER_SYNC':
+                    document.querySelector('#browserStorageSelectProvider').classList.add(activeClass);
+                    break;
+            }
+        }
+    }
+
+    function updateSyncSettings(options) {
+        syncStatus = options.status;
+        currentProvider = options.status.currentProvider;
+        renderSyncSettings();
+    }
+
+    function updateSyncState() {
+        if (syncStatus.syncInProgress) {
+            syncNowButton.setAttribute('disabled', 'disabled');
+            syncNowButton.textContent = i18n.getMessage('sync_in_progress_button_text');
+        } else {
+            syncNowButton.removeAttribute('disabled');
+            syncNowButton.textContent = i18n.getMessage('sync_now_button_text');
+        }
+
+        if (currentProvider) {
+            var lastSyncTime = currentProvider.lastSyncTime;
+            if (lastSyncTime) {
+                lastSyncTimeInfo.textContent = new Date(parseInt(lastSyncTime)).toLocaleString();
+            } else {
+                lastSyncTimeInfo.textContent = i18n.getMessage('sync_last_sync_time_never_sync_text');
+            }
+        }
+    }
+
+    return {
+        renderSyncSettings: renderSyncSettings,
+        updateSyncSettings: updateSyncSettings
+    };
+};
+
+var Settings = function () {
+    'use strict';
+
+    var Checkbox = function (id, property, options) {
+
+        options = options || {};
+        var negate = options.negate;
+        var hidden = options.hidden;
+
+        var element = document.querySelector(id);
+        if (!hidden) {
+            element.addEventListener('change', function () {
+                contentPage.sendMessage({
+                    type: 'changeUserSetting',
+                    key: property,
+                    value: negate ? !this.checked : this.checked
+                });
+
+                if (property === userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO) {
+                    updateDisplayAdguardPromo(this.checked);
+                }
+            });
+        }
+
+        var render = function () {
+            if (hidden) {
+                element.closest('li').style.display = 'none';
+                return;
+            }
+            var checked = userSettings.values[property];
+            if (negate) {
+                checked = !checked;
+            }
+
+            CheckboxUtils.updateCheckbox([element], checked);
+        };
+
+        return {
+            render: render
+        };
+    };
+
+    var checkboxes = [];
+    checkboxes.push(new Checkbox('#safebrowsingEnabledCheckbox', userSettings.names.DISABLE_SAFEBROWSING, {negate: true}));
+    checkboxes.push(new Checkbox('#sendSafebrowsingStatsCheckbox', userSettings.names.DISABLE_SEND_SAFEBROWSING_STATS, {negate: true}));
+    checkboxes.push(new Checkbox('#autodetectFiltersCheckbox', userSettings.names.DISABLE_DETECT_FILTERS, {negate: true}));
+    checkboxes.push(new Checkbox('#enableHitsCount', userSettings.names.DISABLE_COLLECT_HITS, {negate: true}));
+    checkboxes.push(new Checkbox('#useOptimizedFilters', userSettings.names.USE_OPTIMIZED_FILTERS));
+    checkboxes.push(new Checkbox('#showPageStatisticCheckbox', userSettings.names.DISABLE_SHOW_PAGE_STATS, {
+        negate: true,
+        hidden: environmentOptions.Prefs.mobile,
+    }));
+    checkboxes.push(new Checkbox('#enableShowContextMenu', userSettings.names.DISABLE_SHOW_CONTEXT_MENU, {
+        negate: true,
+        hidden: false
+    }));
+    checkboxes.push(new Checkbox('#showInfoAboutAdguardFullVersion', userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO, {
+        negate: true,
+    }));
+    checkboxes.push(new Checkbox('#showAppUpdatedNotification', userSettings.names.DISABLE_SHOW_APP_UPDATED_NOTIFICATION, {
+        negate: true
+    }));
+    checkboxes.push(new Checkbox('#integrationModeCheckbox', userSettings.names.DISABLE_INTEGRATION_MODE, {negate: true}));
+
+    // Privacy settings
+    checkboxes.push(new Checkbox('#disable_stealth_mode', userSettings.names.DISABLE_STEALTH_MODE, { negate: true }));
+    checkboxes.push(new Checkbox('#hide_referrer', userSettings.names.HIDE_REFERRER));
+    checkboxes.push(new Checkbox('#hide_search_queries', userSettings.names.HIDE_SEARCH_QUERIES));
+    checkboxes.push(new Checkbox('#send_not_track', userSettings.names.SEND_DO_NOT_TRACK));
+    if (environmentOptions.isChrome) {
+        checkboxes.push(new Checkbox('#remove_client-data', userSettings.names.BLOCK_CHROME_CLIENT_DATA));
+    }
+    if (environmentOptions.canBlockWebRTC) {
+        // Edge doesn't support block webrtc
+        const disableWebRTCNode = document.querySelector('#disable_webrtc');
+        disableWebRTCNode.closest('li').style.display = 'flex';
+        checkboxes.push(new Checkbox('#disable_webrtc', userSettings.names.BLOCK_WEBRTC));
+    }
+    checkboxes.push(new Checkbox('#third_party_cookies', userSettings.names.SELF_DESTRUCT_THIRD_PARTY_COOKIES));
+    checkboxes.push(new Checkbox('#first_party_cookies', userSettings.names.SELF_DESTRUCT_FIRST_PARTY_COOKIES));
+    checkboxes.push(new Checkbox('#strip_tracking_params', userSettings.names.STRIP_TRACKING_PARAMETERS));
+
+    var allowAcceptableAdsCheckbox = document.querySelector("#allowAcceptableAds");
+    allowAcceptableAdsCheckbox.addEventListener('change', function () {
         if (this.checked) {
             contentPage.sendMessage({
                 type: 'addAndEnableFilter',
@@ -335,875 +1552,280 @@ PageController.prototype = {
                 filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID
             });
         }
-    },
+    });
 
-    updateAntiBannerFilters: function (e) {
-        e.preventDefault();
-        contentPage.sendMessage({type: 'checkAntiBannerFiltersUpdate'}, function () {
-        });
-    },
+    const disableStealthMode = document.querySelector('#disable_stealth_mode');
+    disableStealthMode.addEventListener('change', (e) => {
+        const input = e.target;
+        handleActiveStealthOptions(!input.checked);
+    });
 
-    updateShowInfoAboutAdguardFullVersion: function (e) {
-        e.preventDefault();
-        var showPromo = this.checked;
+    function setFiltersUpdatePeriod(updatePeriodString) {
         contentPage.sendMessage({
-            type: 'changeUserSetting',
-            key: userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO,
-            value: !showPromo
+            type: 'setFiltersUpdatePeriod',
+            updatePeriod: parseInt(updatePeriodString, 10),
+        }, function () {
+            // TODO Have I do something on successful set filters update interval?
         });
-        userSettings.values[userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO] = !showPromo;
-        updateDisplayAdguardPromo(showPromo);
-    },
+    }
 
-    changeEnableHitsCount: function (e) {
-        e.preventDefault();
-        contentPage.sendMessage({
-            type: 'changeUserSetting',
-            key: userSettings.names.DISABLE_COLLECT_HITS,
-            value: !this.checked
+    const filtersUpdatePeriodSelect = document.querySelector('#filtersUpdatePeriodSelect');
+    if (filtersUpdatePeriodSelect) {
+        filtersUpdatePeriodSelect.addEventListener('change', function (e) {
+            setFiltersUpdatePeriod(e.currentTarget.value);
+            if (filtersUpdatePeriodSelect.value === '0') {
+                filtersUpdatePeriodSelect.parentNode.classList.remove('active');
+            } else {
+                filtersUpdatePeriodSelect.parentNode.classList.add('active');
+            }
+        });
+    }
+
+    const thirdPartyTimeInput = document.querySelector('#third_party_time');
+    thirdPartyTimeInput.value = userSettings.values[userSettings.names.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME];
+    if (thirdPartyTimeInput) {
+        thirdPartyTimeInput.addEventListener('keyup', Utils.debounce(function (e) {
+            contentPage.sendMessage({
+                type: 'changeUserSetting',
+                key: userSettings.names.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME,
+                value: thirdPartyTimeInput.value
+            });
+        }, 1000));
+    }
+
+    const firstPartyTimeInput = document.querySelector('#first_party_time');
+    firstPartyTimeInput.value = userSettings.values[userSettings.names.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME];
+    if (firstPartyTimeInput) {
+        firstPartyTimeInput.addEventListener('keyup', Utils.debounce(function (e) {
+            contentPage.sendMessage({
+                type: 'changeUserSetting',
+                key: userSettings.names.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME,
+                value: firstPartyTimeInput.value
+            });
+        }, 1000));
+    }
+
+    const trackingParametersInput = document.querySelector('#strip_tracking_params_input');
+    trackingParametersInput.value = userSettings.values[userSettings.names.TRACKING_PARAMETERS];
+    if (trackingParametersInput) {
+        trackingParametersInput.addEventListener('keyup', Utils.debounce(function (e) {
+            contentPage.sendMessage({
+                type: 'changeUserSetting',
+                key: userSettings.names.TRACKING_PARAMETERS,
+                value: trackingParametersInput.value
+            });
+        }, 1000));
+    }
+
+    const selectOptions = [
+        { name: i18n.getMessage('options_select_update_period_48h'), value: Utils.hoursToMs(48) },
+        { name: i18n.getMessage('options_select_update_period_24h'), value: Utils.hoursToMs(24) },
+        { name: i18n.getMessage('options_select_update_period_12h'), value: Utils.hoursToMs(12) },
+        { name: i18n.getMessage('options_select_update_period_6h'), value: Utils.hoursToMs(6) },
+        { name: i18n.getMessage('options_select_update_period_1h'), value: Utils.hoursToMs(1) },
+        { name: i18n.getMessage('options_select_update_period_disabled'), value: 0 },
+    ];
+
+    function renderSelectOptions(updatePeriod) {
+        const filtersUpdatePeriodSelect = document.querySelector('#filtersUpdatePeriodSelect');
+
+        if (!filtersUpdatePeriodSelect) {
+            return;
+        }
+
+        if (updatePeriod === 0) {
+            filtersUpdatePeriodSelect.parentNode.classList.remove('active');
+        } else {
+            filtersUpdatePeriodSelect.parentNode.classList.add('active');
+        }
+
+        const optionsSelectHtml = selectOptions.map(selectOption => {
+            const { name, value } = selectOption;
+            return `<option value="${value}">${name}</option>`;
+        }).join('\n');
+
+        filtersUpdatePeriodSelect.insertAdjacentHTML('afterbegin', optionsSelectHtml);
+        filtersUpdatePeriodSelect.value = updatePeriod;
+    }
+
+    function handleActiveStealthOptions(stealthModeDisabled) {
+        const miscellaneousOptionsContainer = document.querySelector('#miscellaneous-stealth-options');
+        const cookiesOptionsContainer = document.querySelector('#cookies-stealth-options');
+        const optionsContainers = [miscellaneousOptionsContainer, cookiesOptionsContainer];
+        optionsContainers.forEach(container => {
+            if (stealthModeDisabled) {
+                container.classList.add('opts-list--disabled');
+            } else {
+                container.classList.remove('opts-list--disabled');
+            }
+        });
+
+        const stripTrackingTextarea = document.querySelector('#strip_tracking_params_input');
+        stripTrackingTextarea.disabled = stealthModeDisabled;
+    }
+
+    var render = function () {
+        for (var i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].render();
+        }
+
+        CheckboxUtils.updateCheckbox([allowAcceptableAdsCheckbox], AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID in enabledFilters);
+
+        const updatePeriod = userSettings.values[userSettings.names.FILTERS_UPDATE_PERIOD];
+        renderSelectOptions(updatePeriod);
+        handleActiveStealthOptions(userSettings.values[userSettings.names.DISABLE_STEALTH_MODE]);
+    };
+
+    return {
+        render: render,
+    };
+};
+
+var PageController = function () {
+};
+
+PageController.prototype = {
+
+    SUBSCRIPTIONS_LIMIT: 9,
+
+    init: function () {
+
+        this._bindEvents();
+        this._render();
+
+        CheckboxUtils.toggleCheckbox(document.querySelectorAll(".opt-state input[type=checkbox]"));
+
+        // Initialize top menu
+        TopMenu.init({
+            onHashUpdated: function (tabId) {
+                // Doing nothing
+            }.bind(this)
         });
     },
 
-    changeEnableShowContextMenu: function (e) {
-        e.preventDefault();
-        contentPage.sendMessage({
-            type: 'changeUserSetting',
-            key: userSettings.names.DISABLE_SHOW_CONTEXT_MENU,
-            value: !this.checked
+    onSettingsImported: function (success) {
+        if (success) {
+            Utils.showPopup(i18n.getMessage('options_popup_import_success_title'));
+
+            var self = this;
+            contentPage.sendMessage({ type: 'initializeFrameScript' }, function (response) {
+                userSettings = response.userSettings;
+                enabledFilters = response.enabledFilters;
+                requestFilterInfo = response.requestFilterInfo;
+
+                self._render();
+            });
+        } else {
+            Utils.showPopup(i18n.getMessage('options_popup_import_error_title'), i18n.getMessage('options_popup_import_error_description'));
+        }
+    },
+
+    _bindEvents: function () {
+        // TODO remove if not necessary
+        this.tooManySubscriptionsEl = document.querySelector('#tooManySubscriptions');
+
+        document.querySelector('#resetStats').addEventListener('click', this.onResetStatsClicked.bind(this));
+
+        document.querySelector('.openExtensionStore').addEventListener('click', function (e) {
+            e.preventDefault();
+            contentPage.sendMessage({ type: 'openExtensionStore' });
+        });
+
+        document.querySelector('#openLog').addEventListener('click', function (e) {
+            e.preventDefault();
+            contentPage.sendMessage({ type: 'openFilteringLog' });
+        });
+
+        const importSettingsBtn = document.querySelector('#importSettingsFile');
+        const importSettingsFileInput = document.querySelector('#importSettingsFileInput');
+        importSettingsBtn.addEventListener('click', this.importSettingsFile.bind(this));
+
+        importSettingsFileInput.addEventListener('change', function (e) {
+            try {
+                Utils.handleImportSettings(e);
+            } catch (err) {
+                Utils.showPopup(i18n.getMessage('options_popup_import_error_file_title'), err.message);
+            }
         });
     },
 
-    changeUseOptimizedFilters: function (e) {
-        e.preventDefault();
-        contentPage.sendMessage({
-            type: 'changeUserSetting',
-            key: userSettings.names.USE_OPTIMIZED_FILTERS,
-            value: this.checked
-        });
+    _render: function () {
+        const defaultWhitelistMode = userSettings.values[userSettings.names.DEFAULT_WHITE_LIST_MODE];
+
+        if (environmentOptions.Prefs.mobile) {
+            document.querySelector('#resetStats').style.display = 'none';
+        }
+
+        this.checkSubscriptionsCount();
+
+        this.settings = new Settings();
+        this.settings.render();
+
+        // Initialize whitelist filter
+        this.whiteListFilter = new WhiteListFilter({ defaultWhiteListMode: defaultWhitelistMode });
+        this.whiteListFilter.updateWhiteListDomains();
+
+        // Initialize User filter
+        this.userFilter = new UserFilter();
+        this.userFilter.updateUserFilterRules();
+
+        // Initialize AntiBanner filters
+        this.antiBannerFilters = new AntiBannerFilters({ rulesInfo: requestFilterInfo });
+        this.antiBannerFilters.render();
+
+        // Initialize sync tab
+        this.syncSettings = new SyncSettings({ syncStatusInfo: syncStatusInfo });
+        this.syncSettings.renderSyncSettings();
+
+        const versionPlaceholder = document.querySelector('#about-version-placeholder');
+        if (versionPlaceholder) {
+            versionPlaceholder.textContent = `${i18n.getMessage('options_about_version')} ${environmentOptions.appVersion}`;
+        }
+
+        updateDisplayAdguardPromo(!userSettings.values[userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO]);
     },
 
-    changeDefaultWhiteListMode: function (e) {
-        e.preventDefault();
-        contentPage.sendMessage({type: 'changeDefaultWhiteListMode', enabled: !e.currentTarget.checked}, function () {
-            this._renderWhiteListFilters();
-        }.bind(this));
-    },
-
-    onAddWhiteListFilterClicked: function (e) {
-        e.preventDefault();
-        this._renderWhiteListFilter([null]);
-    },
-
-    onAddUserFilterClicked: function (e) {
-        e.preventDefault();
-        this._renderUserFilter([null]);
+    allowAcceptableAdsChange: function () {
+        if (this.checked) {
+            contentPage.sendMessage({
+                type: 'addAndEnableFilter',
+                filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID,
+            });
+        } else {
+            contentPage.sendMessage({
+                type: 'disableAntiBannerFilter',
+                filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID
+            });
+        }
     },
 
     onResetStatsClicked: function (e) {
         e.preventDefault();
-        contentPage.sendMessage({type: 'resetBlockedAdsCount'});
-        this._onStatsReset();
-    },
-
-    onImportUserFilterClicked: function (e) {
-        e.preventDefault();
-        this.importUserFilterInput.trigger("click");
-    },
-
-    onImportWhiteListFilterClicked: function (e) {
-        e.preventDefault();
-        this.importWlFilterInput.trigger("click");
-    },
-
-    onImportUserFilterInputChange: function () {
-        var fileInput = this.importUserFilterInput[0];
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            try {
-                this._importUserFilterRules(e.target.result);
-            } catch (ex) {
-                adguard.console.error("Error while loading user rules {0}", ex);
-            }
-            fileInput.value = '';
-        }.bind(this);
-        reader.onerror = function () {
-            adguard.console.error("Error load user rules");
-            fileInput.value = '';
-        };
-        var file = fileInput.files[0];
-        if (file) {
-            reader.readAsText(file, "utf-8");
-        }
-    },
-
-    onImportWhiteListFilterInputChange: function () {
-        var fileInput = this.importWlFilterInput[0];
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            try {
-                this._importWhiteListFilterRules(e.target.result);
-            } catch (ex) {
-                adguard.console.error("Error while loading whitelist rules {0}", ex);
-            }
-            fileInput.value = '';
-        }.bind(this);
-        reader.onerror = function () {
-            adguard.console.error("Error load whitelist rules");
-            fileInput.value = '';
-        };
-        var file = fileInput.files[0];
-        if (file) {
-            reader.readAsText(file, "utf-8");
-        }
-    },
-
-    onExportUserFilterClicked: function (e) {
-        e.preventDefault();
-        contentPage.sendMessage({type: 'openExportRulesTab', whitelist: false});
-    },
-
-    onExportWhiteListFilterClicked: function (e) {
-        e.preventDefault();
-        contentPage.sendMessage({type: 'openExportRulesTab', whitelist: true});
-    },
-
-    onClearUserFilterClicked: function (e) {
-        e.preventDefault();
-        var message = i18n.getMessage("options_userfilter_clear_confirm");
-        if (!confirm(message)) {
-            return;
-        }
-        contentPage.sendMessage({type: 'clearUserFilter'});
-    },
-
-    onClearWhiteListFilterClicked: function (e) {
-        e.preventDefault();
-        var message = i18n.getMessage("options_whitelistfilter_clear_confirm");
-        if (!confirm(message)) {
-            return;
-        }
-        contentPage.sendMessage({type: 'clearWhiteListFilter'});
-    },
-
-    /**
-     * Checks Safari content blocker rules limit, shows alert message for rules overlimit.
-     * It's important to check that limit because of Safari limitations.
-     * Content blocker with too many rules won't work at all.
-     *
-     * @param rulesOverLimit True if loaded rules more than limit
-     * @private
-     */
-    _checkSafariContentBlockerRulesLimit: function (rulesOverLimit) {
-        if (rulesOverLimit) {
-            this.tooManyRulesEl.show();
-        } else {
-            this.tooManyRulesEl.hide();
-        }
-    },
-
-    /**
-     * Renders rules info panel
-     *
-     * @param info Object contains loaded rules count
-     */
-    renderFilterRulesInfo: function (info) {
-        var el = $('.settings-page-title-info');
-        if (!info.rulesCount) {
-            el.hide();
-            return;
-        }
-
-        //Prevent translating on document loaded
-        el.removeAttr('i18n');
-
-        var message = i18n.getMessage("options_antibanner_info", [String(info.rulesCount)]);
-        el.text(message);
-        el.show();
-
-        if (environmentOptions.isContentBlockerEnabled) {
-            this._checkSafariContentBlockerRulesLimit(info.rulesOverLimit);
-        }
-    },
-
-    _renderSearchFilters: function (input, listEl, clearButton, sResult, renderFunc, searchFunc, loadNext) {
-
-        loadNext = loadNext === true;
-
-        if (!loadNext) {
-            sResult.offset = 0;
-            sResult.allLoaded = false;
-        }
-
-        if (this._isLoading || sResult.allLoaded) {
-            return;
-        }
-
-        var text = input.val().trim();
-        sResult.searchMode = text.length > 0;
-
-        contentPage.sendMessage({
-            type: searchFunc,
-            offset: sResult.offset,
-            limit: sResult.limit,
-            text: text
-        }, function (response) {
-
-            var rules = response.rules;
-            if (rules.length < sResult.limit) {
-                sResult.allLoaded = true;
-            }
-            sResult.offset += rules.length;
-            sResult._isLoading = false;
-
-            if (!loadNext) {
-                this._clearEditableFilters(listEl, clearButton, sResult.searchMode);
-            }
-            renderFunc.call(this, rules);
-            this._checkOverlayHide(listEl, clearButton, sResult.searchMode);
-
-        }.bind(this));
-    },
-
-    _renderWhiteListFilters: function (loadNext) {
-        if (!this.wlSearchResult) {
-            this.wlSearchResult = {
-                offset: 0,
-                limit: this.DEFAULT_LIMIT,
-                allLoaded: false
-            };
-        }
-        this._renderSearchFilters(this.wlFilterSearchInput, this.wlFilters, this.clearWlFilterButton, this.wlSearchResult, this._renderWhiteListFilter, 'getWhiteListDomains', loadNext);
-    },
-
-    _renderWhiteListFilter: function (whiteListFilters) {
-        var saveCallback = function (item) {
-            if (item.isNew) {
-                this.omitRenderEventsCount = 1;
-                contentPage.sendMessage({type: 'addWhiteListDomains', domains: [item.text]});
-            } else {
-                //start edit rule
-                this.omitRenderEventsCount = 2;
-                contentPage.sendMessage({type: 'removeWhiteListDomain', text: item.prevText}, function () {
-                    contentPage.sendMessage({type: 'addWhiteListDomains', domains: [item.text]});
-                });
-            }
-            return item.text;
-        }.bind(this);
-
-        var deleteCallback = function (item) {
-            this.omitRenderEventsCount = 1;
-            contentPage.sendMessage({type: 'removeWhiteListDomain', text: item.text}, function () {
-                this._removeEditableFilter(this.wlFilters, item.text, this.clearWlFilterButton, this.wlSearchResult.searchMode);
-            }.bind(this));
-        }.bind(this);
-
-        var transformInput = function (input, text) {
-            var value = input.val().trim();
-            if (!value) {
-                return;
-            }
-            if (value.indexOf('http://') < 0 && value.indexOf('https://') < 0) {
-                if (value.indexOf('//') === 0) {
-                    value = 'http:' + value;
-                } else {
-                    value = 'http://' + value;
-                }
-            }
-            this.linkHelper.href = value;
-            var host = this.linkHelper.hostname;
-            input.val(host);
-            text.text(host);
-        }.bind(this);
-
-        this._renderEditableFilter(this.wlFilters, whiteListFilters, saveCallback, deleteCallback, this.clearWlFilterButton, this.wlSearchResult.searchMode, transformInput);
-    },
-
-    _renderUserFilters: function (loadNext) {
-        if (!this.userSearchResult) {
-            this.userSearchResult = {
-                offset: 0,
-                limit: this.DEFAULT_LIMIT,
-                allLoaded: false
-            };
-        }
-        this._renderSearchFilters(this.userFilterSearchInput, this.userFilters, this.clearUserFilterButton, this.userSearchResult, this._renderUserFilter, 'getUserFilters', loadNext);
-    },
-
-    _renderUserFilter: function (userFilters) {
-        var saveCallback = function (item) {
-            if (item.isNew) {
-                this.omitRenderEventsCount = 1;
-                contentPage.sendMessage({type: 'addUserRule', ruleText: item.text});
-            } else {
-                this.omitRenderEventsCount = 2;
-                contentPage.sendMessage({type: 'removeUserRule', ruleText: item.prevText}, function () {
-                    contentPage.sendMessage({type: 'addUserRule', ruleText: item.text});
-                });
-            }
-            return item.text;
-        }.bind(this);
-
-        var deleteCallback = function (item) {
-            this.omitRenderEventsCount = 1;
-            contentPage.sendMessage({type: 'removeUserRule', ruleText: item.text}, function () {
-                this._removeEditableFilter(this.userFilters, item.text, this.clearUserFilterButton, this.userSearchResult.searchMode);
-            }.bind(this));
-        }.bind(this);
-
-        this._renderEditableFilter(this.userFilters, userFilters, saveCallback, deleteCallback, this.clearUserFilterButton, this.userSearchResult.searchMode);
-    },
-
-    _renderEditableFilter: function (listEl, rulesText, saveCallback, deleteCallback, clearButton, searchMode, transformInput) {
-
-        var jScrollPane = listEl.data('jsp');
-        if (!jScrollPane) {
-            return;
-        }
-
-        function getElementFromEvent(e) {
-            return $(e.currentTarget).closest('.spl-user-table-row');
-        }
-
-        function onEditClicked(e) {
-
-            e.preventDefault();
-
-            var el = getElementFromEvent(e);
-            var input = el.find("input[type='text']");
-
-            el.addClass("editing");
-            var ruleText = el.data("ruleText");
-            if (ruleText) {
-                input.val(ruleText);
-            }
-            input.focus();
-        }
-
-        var stopEdit = function (el) {
-            if (el.data("isNew")) {
-                el.remove();
-                jScrollPane.reinitialise();
-                this._checkOverlayHide(listEl, clearButton, searchMode);
-            } else {
-                el.removeClass("editing");
-            }
-        }.bind(this);
-
-        function onSaveClicked(e) {
-
-            e.preventDefault();
-
-            var el = getElementFromEvent(e);
-            var input = el.find("input[type='text']");
-            var text = el.find('.rule-text');
-
-            if (transformInput) {
-                transformInput(input, text);
-            }
-            var value = input.val().trim();
-            if (!value) {
-                return;
-            }
-            var newText = saveCallback({
-                isNew: el.data("isNew"),
-                text: value,
-                prevText: el.data("ruleText")
-            });
-            if (newText) {
-                el.data("isNew", false);
-                el.data("ruleText", newText);
-                text.text(newText);
-            }
-            stopEdit(el);
-        }
-
-        function onCancelEditClicked(e) {
-            e.preventDefault();
-            var el = getElementFromEvent(e);
-            stopEdit(el);
-        }
-
-        function onCancellEditAllClicked() {
-            var elements = listEl.find('.spl-user-table-row');
-            for (var i = 0; i < elements.length; i++) {
-                var el = $(elements[i]);
-                stopEdit(el);
-            }
-        }
-
-        function onDeleteClicked(e) {
-            e.preventDefault();
-            var el = getElementFromEvent(e);
-            deleteCallback({text: el.data("ruleText")});
-        }
-
-        function onKeyPressed(e) {
-            if (e.keyCode === 13) {
-                e.preventDefault();
-                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/521#issuecomment-274470832
-                $(this).blur();
-                onSaveClicked(e);
-            }
-        }
-
-        var isNewElement = false;
-
-        var fragment = document.createDocumentFragment();
-        for (var i = 0; i < rulesText.length; i++) {
-
-            var ruleText = rulesText[i];
-            if (ruleText === '') {  // Filter rules may contain empty strings
-                continue;
-            }
-
-            var el = this._getFilterRuleTemplate();
-            fragment.appendChild(el[0]);
-            if (ruleText === null) { // It means a new rule
-                el.data("isNew", true);
-                isNewElement = true;
-            } else {
-                el.data("ruleText", ruleText);
-                el.find('.rule-text').text(ruleText);
-            }
-
-            el.find('.edit').on('click', onEditClicked);
-            el.find('.save').on('click', onSaveClicked);
-            el.find("input[type='text']").on('keypress', onKeyPressed);
-            el.find('.cancel').on('click', onCancelEditClicked);
-            el.find('.delete').on('click', onDeleteClicked);
-        }
-
-        $(document).keydown(function (e) {
-            if (e.keyCode === 27) {
-                onCancellEditAllClicked();
-            }
+        contentPage.sendMessage({ type: 'resetBlockedAdsCount' }, () => {
+            Utils.showPopup(i18n.getMessage('options_reset_stats_done'));
         });
-
-        this._hideOverlay(listEl);
-        if (isNewElement) {
-            jScrollPane.getContentPane().prepend(fragment);
-        } else {
-            jScrollPane.getContentPane().append(fragment);
-        }
-        jScrollPane.reinitialise();
-
-        if (isNewElement) {
-            jScrollPane.scrollToY(0);
-            listEl.find('.spl-user-table-row:first .edit').trigger('click');
-        }
-
-        this._checkOverlayHide(listEl, clearButton, searchMode);
     },
 
-    _removeEditableFilter: function (listEl, ruleText, clearButton, searchMode) {
-
-        var jScrollPane = listEl.data('jsp');
-        if (!jScrollPane) {
-            return;
-        }
-
-        var filters = listEl.find(".spl-user-table-row");
-        $.each(filters, function (index, f) {
-            var $el = $(f);
-            if ($el.data("ruleText") === ruleText) {
-                $el.remove();
-            }
-        });
-        jScrollPane.reinitialise();
-        this._checkOverlayHide(listEl, clearButton, searchMode);
-    },
-
-    _clearEditableFilters: function (listEl, clearButton, searchMode) {
-        var jScrollPane = listEl.data('jsp');
-        if (!jScrollPane) {
-            return;
-        }
-
-        var filters = listEl.find(".spl-user-table-row");
-        filters.remove();
-        jScrollPane.reinitialise();
-        this._checkOverlayHide(listEl, clearButton, searchMode);
-    },
-
-    _renderAntiBannerFilters: function () {
-        contentPage.sendMessage({type: 'getAntiBannerFiltersForOptionsPage'}, function (response) {
-            var antiBannerFilters = response.filters.sort(function (previousFilter, currentFilter) {
-                return previousFilter.displayNumber - currentFilter.displayNumber;
-            });
-            if (antiBannerFilters.length === 0) {
-                this.antiBannerFiltersList.hide();
-                this.antiBannerFiltersListEmpty.show();
-            } else {
-                this.antiBannerFiltersListEmpty.hide();
-                this.antiBannerFiltersList.show();
-                this.antiBannerFiltersList.empty();
-                for (var i = 0; i < antiBannerFilters.length; i++) {
-                    var el = this._renderAntiBannerFilter(antiBannerFilters[i]);
-                    this.antiBannerFiltersList.append(el);
-                }
-            }
-        }.bind(this));
-    },
-
-    _renderAntiBannerFilter: function (antiBannerFilter) {
-
-        var version = this._getAntiBannerFilterVersion(antiBannerFilter);
-        var el = this._getAntiBannerFilterTemplate(antiBannerFilter.filterId, version, antiBannerFilter.name);
-
-        var checkbox = el.find("input:checkbox");
-        if (antiBannerFilter.enabled) {
-            checkbox.attr("checked", "checked");
-        } else {
-            checkbox.removeAttr("checked");
-        }
-        if (antiBannerFilter._isDownloading) {
-            el.find(".preloader").removeClass("hidden");
-        } else {
-            el.find(".preloader").addClass("hidden");
-        }
-        //apply checkbox
-        checkbox.toggleCheckbox();
-        //bind event
-        checkbox.on("change", this._onAntiBannerFilterChange);
-
-        return el;
-    },
-
-    _getAntiBannerFilterVersion: function (antiBannerFilter) {
-        var versionTitle = "";
-        if (antiBannerFilter.lastUpdateTime) {
-            var lastUpdateTime = moment(antiBannerFilter.lastUpdateTime);
-            lastUpdateTime.locale(environmentOptions.Prefs.locale);
-            var date = lastUpdateTime.format("D MMMM YYYY").toLowerCase();
-            var time = lastUpdateTime.format("HH:mm");
-            versionTitle = i18n.getMessage("options_filter_version", [antiBannerFilter.version, date, time]);
-        }
-        return versionTitle;
-    },
-
-    _onAntiBannerFilterChange: function () {
-        var filterId = this.value - 0;
-        if (this.checked) {
-            contentPage.sendMessage({type: 'addAndEnableFilter', filterId: filterId});
-        } else {
-            contentPage.sendMessage({type: 'disableAntiBannerFilter', filterId: filterId});
-        }
-    },
-
-    _renderSafebrowsingSection: function (safebrowsingEnabled, sendSafebrowsingStats) {
-        this.safebrowsingEnabledCheckbox.updateCheckbox(safebrowsingEnabled);
-        this.sendSafebrowsingStatsCheckbox.updateCheckbox(sendSafebrowsingStats);
-    },
-
-    _renderShowPageStatistics: function (showPageStatistic, isAndroid) {
-        if (isAndroid) {
-            this.showPageStatisticCheckbox.parent().hide();
-            return;
-        }
-        this.showPageStatisticCheckbox.updateCheckbox(showPageStatistic);
-    },
-
-    _renderAutodetectFilters: function (autodectedFilters) {
-        this.autodetectFiltersCheckbox.updateCheckbox(autodectedFilters);
-    },
-
-    _renderAllowAcceptableAds: function (allowAcceptableAds) {
-        this.allowAcceptableAdsCheckbox.updateCheckbox(allowAcceptableAds);
-    },
-
-    _renderShowInfoAboutAdguardFullVersion: function (show) {
-        this.showInfoAboutAdguardFullVersionCheckbox.updateCheckbox(show);
-    },
-
-    _renderCollectHitsCount: function (show) {
-        this.enableHitsCountCheckbox.updateCheckbox(show);
-    },
-
-    _renderShowContextMenu: function (show) {
-        this.enableShowContextMenuCheckbox.updateCheckbox(show);
-    },
-
-    _renderUseOptimizedFilters: function (show) {
-        this.useOptimizedFiltersCheckbox.updateCheckbox(show);
-    },
-
-    _renderDefaultWhiteListMode: function (defaultWhiteListMode) {
-        this.changeDefaultWhiteListModeCheckbox.updateCheckbox(!defaultWhiteListMode);
-    },
-
-    _renderWhiteListOverlay: function () {
-        this.wlFilters.append($('#whitelist-overlay').children());
-    },
-
-    _renderUserFilterListOverlay: function () {
-        this.userFilters.append($('#userlist-overlay').children());
-    },
-
-    _checkOverlayHide: function (listEl, clearButton, searchMode) {
-        var items = listEl.find(".spl-user-table-row");
-        if (items.length === 0) {
-            this._showOverlay(listEl, searchMode);
-            if (!searchMode) {
-                clearButton.hide();
-            }
-        } else {
-            this._hideOverlay(listEl);
-            clearButton.show();
-        }
-    },
-
-    _showOverlay: function (listEl, searchMode) {
-        this._hideOverlay(listEl);
-        if (searchMode) {
-            listEl.find(".sp-lists-table-overlay.overlay-search").removeClass("hidden");
-        } else {
-            listEl.find(".sp-lists-table-overlay:not(.overlay-search)").removeClass("hidden");
-        }
-    },
-
-    _hideOverlay: function (listEl) {
-        listEl.find(".sp-lists-table-overlay").addClass("hidden");
-    },
-
-    _importUserFilterRules: function (text) {
-        var rules = text ? text.split(/[\r\n]+/) : [];
-        contentPage.sendMessage({type: 'addUserFilterRules', rules: rules});
-    },
-
-    _importWhiteListFilterRules: function (text) {
-        var domains = text ? text.split(/[\r\n]+/) : [];
-        contentPage.sendMessage({type: 'addWhiteListDomains', domains: domains});
-    },
-
-    _onStatsReset: function () {
-        this.resetStatsPopup.show();
-        if (this.closePopupTimeoutId) {
-            clearTimeout(this.closePopupTimeoutId);
-        }
-        this.closePopupTimeoutId = setTimeout(function () {
-            this.resetStatsPopup.hide();
-        }.bind(this), 4000);
-    },
-
-    _renderFiltersMetadataModal: function () {
-
-        contentPage.sendMessage({type: 'getFiltersMetadata'}, function (response) {
-
-            var groups = response.groups;
-            var filtersMeta = response.filters;
-            var enabledFilters = response.enabledFilters;
-            var installedFilters = response.installedFilters;
-            var filter;
-
-            var homepageText = i18n.getMessage('options_modal_homepage');
-
-            var allFilters = [];
-
-            var allGroupsElements = [];
-
-            for (var i = 0; i < groups.length; i++) {
-
-                var group = groups[i];
-
-                var filtersInGroupElements = [];
-                var filters = filtersMeta[group.groupId];
-                filters.sort(function(a, b) {
-                    return a.displayNumber - b.displayNumber;
-                });
-                for (var j = 0; j < filters.length; j++) {
-
-                    filter = filters[j];
-                    allFilters.push(filter);
-
-                    var filterElement = this._getFilterMetadataTemplate(filter.filterId, filter.name, filter.description, filter.homepage, homepageText);
-                    filtersInGroupElements.push(filterElement);
-                }
-
-                var groupElement = this._getGroupMetadataTemplate(group.groupId, group.groupName, i === 0 ? 'in' : '', filtersInGroupElements);
-                allGroupsElements.push(groupElement);
-            }
-
-            var $groupsList = $('#groupsList');
-            $groupsList.append(allGroupsElements);
-
-            for (i = 0; i < allFilters.length; i++) {
-                filter = allFilters[i];
-                var checkbox = $groupsList.find('input[name="modalFilterId"][value="' + filter.filterId + '"]');
-                var installed = filter.filterId in installedFilters;
-                var enabled = filter.filterId in enabledFilters;
-                if (installed && enabled) {
-                    checkbox.attr("checked", "checked");
-                } else {
-                    checkbox.removeAttr("checked");
-                }
-                checkbox.toggleCheckbox();
-                checkbox.on("change", function (e) {
-                    this.checkSubscriptionsCount();
-                    this._renderEnabledFiltersForGroupSection($(e.currentTarget).data('groupId'));
-                }.bind(this));
-
-                checkbox.data('filterName', filter.name);
-                checkbox.data('groupId', filter.groupId);
-            }
-
-            for (i = 0; i < groups.length; i++) {
-                this._renderEnabledFiltersForGroupSection(groups[i].groupId);
-            }
-
-        }.bind(this));
-    },
-
-    _initializeSubscriptionModal: function () {
-
-        this.subscriptionModal = this.subscriptionModalEl.modal({
-            backdrop: 'static',
-            show: false
-        });
-        this.subscriptionModalEl.on('shown.bs.modal', this.checkSubscriptionsCount.bind(this));
-        this.subscriptionModalEl.on('hidden.bs.modal', this.checkSubscriptionsCount.bind(this));
-
-        this.subscriptionModalEl.find('#submitSubscriptions').on('click', function (e) {
-            e.preventDefault();
-            var selectedFilterIds = [];
-            $.each(this.subscriptionModalEl.find('input[name="modalFilterId"]:checked'), function () {
-                selectedFilterIds.push(this.value - 0);
-            });
-            this.subscriptionModalEl.modal('hide');
-            this._onSubscriptionSubmitted(selectedFilterIds);
-        }.bind(this));
-    },
-
-    _openSubscriptionModal: function (e) {
-
+    importSettingsFile: function (e) {
         e.preventDefault();
-
-        this.subscriptionModalEl.find('#groupsList').empty();
-        this._renderFiltersMetadataModal();
-        this.subscriptionModal.modal('show');
-    },
-
-    _onSubscriptionSubmitted: function (filterIds) {
-        contentPage.sendMessage({type: 'onFiltersSubscriptionChange', filterIds: filterIds});
-    },
-
-    _renderEnabledFiltersForGroupSection: function (groupId) {
-        var enabledFilterNames = [];
-        var checkboxes = $('[name="modalFilterId"]:checkbox:checked');
-        $.each(checkboxes, function () {
-            var checkbox = $(this);
-            var chGroupId = checkbox.data('groupId');
-            if (chGroupId == groupId) {
-                var filterName = checkbox.data('filterName');
-                enabledFilterNames.push(filterName.split(' ').join('\u00A0'));
-            }
-        });
-        var section = $('#group' + groupId).closest('.filter-panel').find('.spt-font-small');
-        if (enabledFilterNames.length === 0) {
-            section.empty();
-            section.hide();
-        } else {
-            section.text(enabledFilterNames.join(', '));
-            section.show();
-        }
+        const importSettingsFileInput = document.querySelector('#importSettingsFileInput');
+        importSettingsFileInput.click();
     },
 
     checkSubscriptionsCount: function () {
-        var modalOpen = this.subscriptionModalEl.is('.in');
-        if (!modalOpen) {
-            this.tooManySubscriptionsEl.hide();
-            return;
-        }
+        //TODO: Fix too many subscriptions warning
+        //var enabledCount = this.subscriptionModalEl.querySelectorAll('input[name="modalFilterId"][checked="checked"]').length;
 
-        if (environmentOptions.isContentBlockerEnabled) {
-            return;
-        }
-
-        var enabledCount = this.subscriptionModalEl.find('input[name="modalFilterId"]:checked').length;
-
-        if (enabledCount >= this.SUBSCRIPTIONS_LIMIT) {
-            this.tooManySubscriptionsEl.show();
-        } else {
-            this.tooManySubscriptionsEl.hide();
-        }
+        // if (enabledCount >= this.SUBSCRIPTIONS_LIMIT) {
+        //     this.tooManySubscriptionsEl.show();
+        // } else {
+        //     this.tooManySubscriptionsEl.hide();
+        // }
     },
-
-    _getAntiBannerFilterTemplate: function (filterId, version, description) {
-        return $('<div>', {class: 's-page-table-row cf'})
-            .append($('<div>', {
-                class: 'sp-table-row-label',
-                text: description
-            }).append($('<span>', {class: 'sp-table-row-info', text: version})))
-            .append($('<input>', {type: 'checkbox', name: 'filterId', class: 'sp-table-row-input', value: filterId}))
-            .append($('<div>', {class: 'preloader hidden'}));
+    addFilterSubscription: function (options) {
+        const { url, title } = options;
+        this.antiBannerFilters.renderCustomFilterPopup({ isFilterSubscription: true, url, title });
     },
-
-    _getFilterRuleTemplate: function () {
-
-        var el = $('<div>', {class: 'spl-user-table-row cf'})
-            .append($('<div>', {class: 'splu-table-row-label rule-text'}))
-            .append($('<input>', {class: 'splu-table-row-input', type: 'text'}));
-
-        var options = $('<div>', {class: 'splu-table-row-options'})
-            .append($('<i>', {class: 'settings-options-icon-edit edit'}))
-            .append($('<i>', {class: 'settings-options-icon-delete delete'}))
-            .append($('<i>', {class: 'settings-options-icon-tick save'}))
-            .append($('<i>', {class: 'settings-options-icon-cross cancel'}));
-
-        el.append(options);
-        return el;
-    },
-
-    _getGroupMetadataTemplate: function (groupId, groupName, collapseClass, filtersElements) {
-
-        var el = $('<div>', {class: 'panel filter-panel'});
-
-        var header = $('<div>', {class: 'settings-page-title spt-font-s'})
-            .append($('<a>', {
-                href: '#group' + groupId,
-                'data-parent': '#groupsList',
-                'data-toggle': 'collapse',
-                class: 'spt-link-dashed collapsed',
-                text: groupName
-            }))
-            .append($('<div>', {class: 'spt-font-small'}));
-
-        var group = $('<div>', {id: 'group' + groupId, class: 'panel-collapse collapse ' + collapseClass})
-            .append($('<div>', {class: 'settings-page-table'}).append(filtersElements));
-
-        el.append(header).append(group);
-        return el;
-    },
-
-    _getFilterMetadataTemplate: function (filterId, filterName, filterDescription, homepageLink, homepageText) {
-
-        return $('<div>', {class: 's-page-table-row cf'})
-            .append($('<div>', {
-                class: 'sp-table-row-label',
-            })
-            .append($('<div>', {class: 'sp-table-row-title', text: filterName, target: '_blank'}))
-            .append($('<a>', {class: 'sp-table-row-info', href: homepageLink, text: homepageText, target: '_blank'})))
-            .append($('<input>', {
-                type: 'checkbox',
-                name: 'modalFilterId',
-                value: filterId,
-                class: 'sp-table-row-input'
-            }))
-            .append($('<div>', {class: 'sp-table-row-descr', text: filterDescription}));
-
-    },
-
-    _debounce: function (func, wait) {
-        var timeout;
-        return function () {
-            var context = this, args = arguments;
-            var later = function () {
-                timeout = null;
-                func.apply(context, args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    }
 };
 
 var userSettings;
@@ -1212,107 +1834,157 @@ var environmentOptions;
 var AntiBannerFiltersId;
 var EventNotifierTypes;
 var requestFilterInfo;
-var contentBlockerInfo;
+var syncStatusInfo;
+
+/**
+ * Parses hash string
+ * example: #action=add_filter_subscription&title=test&url=example.org ->
+ *          {
+ *              action: add_filter_subscription,
+ *              title: test,
+ *              url: example.org,
+ *          }
+ * @param {string} hash - document.location.hash string
+ * @returns {{}} object with options received from hash string
+ */
+const parseHash = (hash) => {
+    return hash
+        .slice(1) // remove first '#'
+        .split('&')
+        .map(part => {
+            const [key, value] = part.split('=');
+            return [key, value];
+        })
+        .reduce((acc, [key, value]) => {
+            if (key && value) {
+                acc[key] = value;
+            }
+            return acc;
+        }, {});
+};
+
+/**
+ * Function handles location hash, looks for parameters
+ * @returns {*} options if they were provided in the hash
+ */
+const handleUrlHash = () => {
+    const hash = document.location.hash;
+    const hashOptions = parseHash(decodeURIComponent(hash));
+    const { action, replacement } = hashOptions;
+
+    if (!action) {
+        return;
+    }
+
+    document.location.hash = replacement ? `#${replacement}` : '';
+    return hashOptions;
+};
+
+const handleHashOptions = (controller, hashOptions) => {
+    if (!hashOptions || !hashOptions.action) {
+        return;
+    }
+    switch (hashOptions.action) {
+        case 'add_filter_subscription': {
+            const { title, url } = hashOptions;
+            if (url) {
+                controller.addFilterSubscription({ title, url });
+            }
+            break;
+        }
+        default:
+            break;
+    }
+};
 
 /**
  * Initializes page
  */
 var initPage = function (response) {
-
     userSettings = response.userSettings;
     enabledFilters = response.enabledFilters;
     environmentOptions = response.environmentOptions;
     requestFilterInfo = response.requestFilterInfo;
-    contentBlockerInfo = response.contentBlockerInfo;
+    syncStatusInfo = response.syncStatusInfo;
 
     AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
     EventNotifierTypes = response.constants.EventNotifierTypes;
 
-    $(document).ready(function () {
+    var onDocumentReady = function () {
+
+        // handle initial url hash
+        const hashOptions = handleUrlHash();
 
         var controller = new PageController();
         controller.init();
 
+        handleHashOptions(controller, hashOptions);
+
+        // handle next url hash changes
+        window.addEventListener('hashchange', () => {
+            handleHashOptions(controller, handleUrlHash());
+        });
+
         var events = [
             EventNotifierTypes.FILTER_ENABLE_DISABLE,
+            EventNotifierTypes.FILTER_GROUP_ENABLE_DISABLE,
             EventNotifierTypes.FILTER_ADD_REMOVE,
             EventNotifierTypes.START_DOWNLOAD_FILTER,
             EventNotifierTypes.SUCCESS_DOWNLOAD_FILTER,
             EventNotifierTypes.ERROR_DOWNLOAD_FILTER,
             EventNotifierTypes.UPDATE_USER_FILTER_RULES,
             EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES,
-            EventNotifierTypes.CONTENT_BLOCKER_UPDATED,
-            EventNotifierTypes.REQUEST_FILTER_UPDATED
+            EventNotifierTypes.REQUEST_FILTER_UPDATED,
+            EventNotifierTypes.SYNC_STATUS_UPDATED,
+            EventNotifierTypes.SETTINGS_UPDATED,
         ];
 
-        function eventListener(event, filter) {
+        createEventListener(events, function (event, options) {
             switch (event) {
                 case EventNotifierTypes.FILTER_ENABLE_DISABLE:
-                    controller._onAntiBannerFilterStateChange(filter);
                     controller.checkSubscriptionsCount();
+                    controller.antiBannerFilters.onFilterStateChanged(options);
+                    break;
+                case EventNotifierTypes.FILTER_GROUP_ENABLE_DISABLE:
+                    controller.antiBannerFilters.onCategoryStateChanged(options);
                     break;
                 case EventNotifierTypes.FILTER_ADD_REMOVE:
-                    controller._renderAntiBannerFilters();
+                    controller.antiBannerFilters.render();
                     break;
                 case EventNotifierTypes.START_DOWNLOAD_FILTER:
-                    controller._showFilterLoader(filter);
+                    controller.antiBannerFilters.onFilterDownloadStarted(options);
                     break;
                 case EventNotifierTypes.SUCCESS_DOWNLOAD_FILTER:
                 case EventNotifierTypes.ERROR_DOWNLOAD_FILTER:
-                    controller._updateAntiBannerFilter(filter);
+                    controller.antiBannerFilters.onFilterDownloadFinished(options);
                     break;
                 case EventNotifierTypes.UPDATE_USER_FILTER_RULES:
-                    if (controller.omitRenderEventsCount > 0) {
-                        controller.omitRenderEventsCount--;
-                        break;
-                    }
-                    controller._renderUserFilters();
-                    if (!environmentOptions.isContentBlockerEnabled) {
-                        controller.renderFilterRulesInfo(filter);
-                    }
+                    controller.antiBannerFilters.updateRulesCountInfo(options);
                     break;
                 case EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES:
-                    if (controller.omitRenderEventsCount > 0) {
-                        controller.omitRenderEventsCount--;
-                        break;
-                    }
-                    controller._renderWhiteListFilters();
+                    controller.whiteListFilter.updateWhiteListDomains();
                     break;
                 case EventNotifierTypes.REQUEST_FILTER_UPDATED:
-                    // Don't react on this event. If ContentBlockerEnabled CONTENT_BLOCKER_UPDATED event will be received.
-                    if (environmentOptions.isContentBlockerEnabled) {
-                        break;
-                    }
-                    controller.renderFilterRulesInfo(filter);
+                    controller.antiBannerFilters.updateRulesCountInfo(options);
+                    controller.userFilter.updateUserFilterRules();
                     break;
-                case EventNotifierTypes.CONTENT_BLOCKER_UPDATED:
-                    controller.renderFilterRulesInfo(filter);
+                case EventNotifierTypes.SYNC_STATUS_UPDATED:
+                    controller.syncSettings.updateSyncSettings(options);
                     break;
-            }
-        }
-
-        var listenerId;
-        contentPage.sendMessage({type: 'addEventListener', events: events}, function (response) {
-            listenerId = response.listenerId;
-        });
-
-        contentPage.onMessage.addListener(function (message) {
-            if (message.type == 'notifyListeners') {
-                eventListener.apply(this, message.args);
+                case EventNotifierTypes.SETTINGS_UPDATED:
+                    controller.onSettingsImported(options);
+                    break;
+                default:
+                    break;
             }
         });
+    };
 
-        var onUnload = function () {
-            if (listenerId) {
-                contentPage.sendMessage({type: 'removeListener', listenerId: listenerId});
-                listenerId = null;
-            }
-        };
-
-        // unload event
-        $(window).on('beforeunload', onUnload);
-        $(window).on('unload', onUnload);
-    });
+    if (document.attachEvent ? document.readyState === 'complete' : document.readyState !== 'loading') {
+        onDocumentReady();
+    } else {
+        document.addEventListener('DOMContentLoaded', onDocumentReady);
+    }
 };
 
-contentPage.sendMessage({type: 'initializeFrameScript'}, initPage);
+contentPage.sendMessage({ type: 'initializeFrameScript' }, initPage);

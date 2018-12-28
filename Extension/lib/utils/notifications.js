@@ -38,27 +38,28 @@ adguard.notifications = (function (adguard) {
      * @property {string} badgeText;
      */
 
-    let notifications = {
-        blackFriday: {
-            id: 'blackFriday',
-            locales: {
-                en: 'Black Friday: <strong>50% Off</strong> AdGuard Premium',
-                ru: 'Black Friday: <strong>-50%</strong> на AdGuard Премиум',
-                fr: 'Black Friday: <strong>-50%</strong> sur AdGuard Premium',
-                es: 'Black Friday:<strong>-50%</strong> en AdGuard Premium',
-                de: 'Black Friday: <strong>-50%</strong> auf AdGuard Premium',
-                ja: 'AdGuardプレミアム<strong>【５０％OFF】</strong>',
-            },
-            // This field is filled below (see initNotifications)
-            text: '',
-            url: 'https://adguard.com/forward.html?action=special_bf18&from=browser_action&app=browser_extension',
-            from: '23 Nov 2018 12:00:00',
-            to: '26 Nov 2018 23:59:00',
-            bgColor: '#000',
-            textColor: '#fff',
-            badgeBgColor: '#DF3812',
-            badgeText: '!',
-        },
+    const notifications = {
+        // Example of notification
+        // blackFriday: {
+        //     id: 'blackFriday',
+        //     locales: {
+        //         en: 'Black Friday: <strong>50% Off</strong> AdGuard Premium',
+        //         ru: 'Black Friday: <strong>-50%</strong> на AdGuard Премиум',
+        //         fr: 'Black Friday: <strong>-50%</strong> sur AdGuard Premium',
+        //         es: 'Black Friday:<strong>-50%</strong> en AdGuard Premium',
+        //         de: 'Black Friday: <strong>-50%</strong> auf AdGuard Premium',
+        //         ja: 'AdGuardプレミアム<strong>【５０％OFF】</strong>',
+        //     },
+        //     // This field is filled below (see initNotifications)
+        //     text: '',
+        //     url: 'https://adguard.com/forward.html?action=special_bf18&from=browser_action&app=browser_extension',
+        //     from: '13 Dec 2018 11:42:00',
+        //     to: '20 Dec 2018 23:59:00',
+        //     bgColor: '#000',
+        //     textColor: '#fff',
+        //     badgeBgColor: '#DF3812',
+        //     badgeText: '!',
+        // },
     };
 
     /**
@@ -66,7 +67,7 @@ adguard.notifications = (function (adguard) {
      * @param {*} notification notification object
      * @returns {string} matching text or null
      */
-    let getNotificationText = function (notification) {
+    const getNotificationText = function (notification) {
         const language = navigator.language;
         if (!language) {
             return null;
@@ -83,17 +84,17 @@ adguard.notifications = (function (adguard) {
     /**
      * Scans notifications list and prepares them to be used (or removes expired)
      */
-    let initNotifications = function () {
-        let notificationsKeys = Object.keys(notifications);
+    const initNotifications = function () {
+        const notificationsKeys = Object.keys(notifications);
 
         for (let i = 0; i < notificationsKeys.length; i += 1) {
-            let notificationKey = notificationsKeys[i];
-            let notification = notifications[notificationKey];
+            const notificationKey = notificationsKeys[i];
+            const notification = notifications[notificationKey];
 
             notification.text = getNotificationText(notification);
 
-            let to = new Date(notification.to).getTime();
-            let expired = new Date().getTime() > to;
+            const to = new Date(notification.to).getTime();
+            const expired = new Date().getTime() > to;
 
             if (!notification.text || expired) {
                 // Remove expired and invalid
@@ -113,9 +114,9 @@ adguard.notifications = (function (adguard) {
      * Finds out notification for current time and checks if notification wasn't shown yet
      * @returns {void|Notification} - notification
      */
-    let getCurrentNotification = function () {
-        let currentTime = new Date().getTime();
-        let timeSinceLastCheck = currentTime - notificationCheckTime
+    const getCurrentNotification = function () {
+        const currentTime = new Date().getTime();
+        const timeSinceLastCheck = currentTime - notificationCheckTime;
 
         if (notificationCheckTime > 0 && timeSinceLastCheck <= checkTimeoutMs) {
             return currentNotification;
@@ -123,22 +124,15 @@ adguard.notifications = (function (adguard) {
 
         notificationCheckTime = currentTime;
 
-        let notificationsKeys = Object.keys(notifications);
-        let viewedNotifications;
+        const notificationsKeys = Object.keys(notifications);
 
-        try {
-            viewedNotifications = adguard.localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
-        } catch (e) {
-            adguard.console.error(e);
-            currentNotification = null;
-            return currentNotification;
-        }
+        const viewedNotifications = adguard.localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
 
         for (let i = 0; i < notificationsKeys.length; i += 1) {
-            let notificationKey = notificationsKeys[i];
-            let notification = notifications[notificationKey];
-            let from = new Date(notification.from).getTime();
-            let to = new Date(notification.to).getTime();
+            const notificationKey = notificationsKeys[i];
+            const notification = notifications[notificationKey];
+            const from = new Date(notification.from).getTime();
+            const to = new Date(notification.to).getTime();
             if (from < currentTime
                 && to > currentTime
                 && !viewedNotifications.includes(notification.id)
@@ -154,7 +148,7 @@ adguard.notifications = (function (adguard) {
     const DELAY = 30 * 1000; // clear notification in 30 seconds
     let timeoutId;
 
-    let setNotificationViewed = function (withDelay) {
+    const setNotificationViewed = function (withDelay) {
         if (withDelay) {
             clearTimeout(timeoutId);
             timeoutId = setTimeout(() => {
@@ -164,17 +158,13 @@ adguard.notifications = (function (adguard) {
         }
 
         if (currentNotification) {
-            let viewedNotifications = adguard.localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
-            let id = currentNotification.id;
+            const viewedNotifications = adguard.localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
+            const id = currentNotification.id;
             if (!viewedNotifications.includes(id)) {
                 viewedNotifications.push(id);
-                try {
-                    adguard.localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
-                    adguard.tabs.getActive(adguard.ui.updateTabIconAndContextMenu);
-                    currentNotification = null;
-                } catch (e) {
-                    adguard.console.error(e);
-                }
+                adguard.localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
+                adguard.tabs.getActive(adguard.ui.updateTabIconAndContextMenu);
+                currentNotification = null;
             }
         }
     };

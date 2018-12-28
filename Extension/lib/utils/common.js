@@ -41,7 +41,8 @@ adguard.RequestTypes = {
     WEBSOCKET: "WEBSOCKET",
     WEBRTC: "WEBRTC",
     OTHER: "OTHER",
-    CSP: "CSP"
+    CSP: "CSP",
+    COOKIE: "COOKIE",
 };
 
 /**
@@ -61,6 +62,7 @@ adguard.utils = (function () {
 
     return {
         strings: null, // StringUtils
+        dates: null, //DateUtils
         collections: null, // CollectionUtils,
         concurrent: null, // ConcurrentUtils,
         channels: null, // EventChannels
@@ -222,9 +224,75 @@ adguard.utils = (function () {
 
             return parts;
         },
+
+        /**
+         * Serialize HTML element
+         * @param element
+         */
+        elementToString: function (element) {
+            var s = [];
+            s.push('<');
+            s.push(element.localName);
+            var attributes = element.attributes;
+            for (var i = 0; i < attributes.length; i++) {
+                var attr = attributes[i];
+                s.push(' ');
+                s.push(attr.name);
+                s.push('="');
+                var value = attr.value === null ? '' : attr.value.replace(/"/g, '\\"');
+                s.push(value);
+                s.push('"');
+            }
+            s.push('>');
+            return s.join('');
+        }
     };
 
     api.strings = StringUtils;
+
+})(adguard.utils);
+
+/**
+ * Util class for dates
+ */
+(function (api) {
+
+    var DateUtils = {
+
+        isSameHour: function (a, b) {
+            return (
+                this.isSameDay(a, b) &&
+                a.getHours() === b.getHours()
+            );
+        },
+        isSameDay: function (a, b) {
+            return (
+                this.isSameMonth(a, b) &&
+                a.getDate() === b.getDate()
+            );
+        },
+        isSameMonth: function (a, b) {
+            if (!a || !b) {
+                return false;
+            }
+
+            return (
+                a.getYear() === b.getYear() &&
+                a.getMonth() === b.getMonth()
+            );
+        },
+        getDifferenceInHours: function (a, b) {
+            return (a.getTime() - b.getTime()) / 1000 / 60 / 60;
+        },
+        getDifferenceInDays: function (a, b) {
+            return this.getDifferenceInHours(a, b) / 24;
+        },
+        getDifferenceInMonths: function (a, b) {
+            return this.getDifferenceInDays(a, b) / 30;
+        }
+    };
+
+    api.dates = DateUtils;
 
 })(adguard.utils);
 
@@ -317,6 +385,18 @@ adguard.utils = (function () {
          */
         isArray: Array.isArray || function (obj) {
             return '' + obj === '[object Array]';
+        },
+
+        /**
+         * Returns array elements of a, which is not included in b
+         *
+         * @param a
+         * @param b
+         */
+        getArraySubtraction: function (a, b) {
+            return a.filter(function (i) {
+                return b.indexOf(i) < 0;
+            });
         }
     };
 
@@ -421,11 +501,11 @@ adguard.utils = (function () {
 
     var AntiBannerFiltersId = {
         USER_FILTER_ID: 0,
+        RUSSIAN_FILTER_ID: 1,
         ENGLISH_FILTER_ID: 2,
         TRACKING_FILTER_ID: 3,
         SOCIAL_FILTER_ID: 4,
         SEARCH_AND_SELF_PROMO_FILTER_ID: 10,
-        SAFARI_FILTER: 12,
         WHITE_LIST_FILTER_ID: 100,
         EASY_PRIVACY: 118,
         FANBOY_ANNOYANCES: 122,

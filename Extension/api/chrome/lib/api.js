@@ -91,10 +91,7 @@
             adguard.whitelist.changeDefaultWhiteListMode(true);
             domains = configuration.whitelist;
         }
-        adguard.whitelist.clearWhiteList();
-        if (domains) {
-            adguard.whitelist.addToWhiteListArray(domains);
-        }
+        adguard.whitelist.updateWhiteListDomains(domains || []);
     }
 
     /**
@@ -112,8 +109,8 @@
         var filterIds = (configuration.filters || []).slice(0);
         for (var i = filterIds.length - 1; i >= 0; i--) {
             var filterId = filterIds[i];
-            var metadata = adguard.subscriptions.getFilterMetadata(filterId);
-            if (!metadata) {
+            var filter = adguard.subscriptions.getFilter(filterId);
+            if (!filter) {
                 adguard.console.error('Filter with id {0} not found. Skip it...', filterId);
                 filterIds.splice(i, 1);
             }
@@ -124,7 +121,7 @@
             for (var i = 0; i < enabledFilters.length; i++) {
                 var filter = enabledFilters[i];
                 if (filterIds.indexOf(filter.filterId) < 0) {
-                    adguard.filters.disableFilter(filter.filterId);
+                    adguard.filters.disableFilters([filter.filterId]);
                 }
             }
             callback();
@@ -141,8 +138,8 @@
             return;
         }
 
-        adguard.userrules.clearRules();
-        adguard.userrules.addRules(configuration.rules || []);
+        var content = (configuration.rules || []).join('\r\n');
+        adguard.userrules.updateUserRulesText(content);
     }
 
     /**
@@ -232,7 +229,7 @@
                 initAssistant(tabId);
             });
         } else {
-            // Manualy start assistant in safari and legacy firefox
+            // Manualy start assistant
             initAssistant(tabId);
         }
     };

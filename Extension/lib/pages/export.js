@@ -15,57 +15,52 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global $, contentPage */
+/* global contentPage */
 
-/**
- * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/541
- */
-function isFirefox51OrHigher() {
-    var userAgent = navigator.userAgent.toLowerCase();
-    var match = userAgent.match(/firefox\/([0-9]+)/);
-    var version = match ? parseInt(match[1]) : 0;
-    return version >= 51;
-}
+document.addEventListener("DOMContentLoaded", function () {
 
-$(document).ready(function () {
-
-    var callback = function (response) {
-
-        var rules = response.rules;
-
-        if (!rules || rules.length === 0) {
-            return;
-        }
-
-        var el = $('<pre/>');
-        var rulesText = rules ? rules.join('\r\n') : '';
-        el.text(rulesText);
-        $("body").append(el);
-
-        // FF (>= 51) doesn't correctly process clicking on the download link, so don't do it.
-        if (isFirefox51OrHigher()) {
-            return;
-        }
+    var callback = function (rulesText) {
+        var el = document.createElement('pre');
+        el.textContent = rulesText;
+        document.body.appendChild(el);
 
         var filename = whitelist ? 'whitelist.txt' : 'rules.txt';
+        filename = settings ? 'export.json' : filename;
         if (showSaveFunc) {
             showSaveFunc(rulesText, filename, 'text/plain;charset=utf-8');
         }
     };
 
-    var whitelist = document.location.hash == '#wl';
+    var whitelist = document.location.hash === '#wl';
+    var settings = document.location.hash === '#exs';
     var messageType;
+
+    var preProcessResponse = callback;
     if (whitelist) {
         messageType = 'getWhiteListDomains';
+        preProcessResponse = function (response) {
+            if (response.content) {
+                callback(response.content);
+            }
+        };
+    } else if (settings) {
+        messageType = 'loadSettingsJson';
+        preProcessResponse = function (response) {
+            callback(response);
+        };
     } else {
-        messageType = 'getUserFilters';
+        messageType = 'getUserRules';
+        preProcessResponse = function (response) {
+            if (response.content) {
+                callback(response.content);
+            }
+        };
     }
 
-    contentPage.sendMessage({type: messageType}, callback);
+    contentPage.sendMessage({ type: messageType }, preProcessResponse);
 });
 
 var showSaveFunc = (function () {
-
     var showSave;
     var DownloadAttributeSupport = 'download' in document.createElement('a');
 
@@ -77,7 +72,7 @@ var showSaveFunc = (function () {
 
     if (Blob && navigator.saveBlob) {
         showSave = function (data, name, mimetype) {
-            var blob = new Blob([data], {type: mimetype});
+            const blob = new Blob([data], { type: mimetype });
             if (window.saveAs) {
                 window.saveAs(blob, name);
             } else {
@@ -86,17 +81,17 @@ var showSaveFunc = (function () {
         };
     } else if (Blob && URL) {
         showSave = function (data, name, mimetype) {
-            var blob, url;
+            let url;
+            const blob = new Blob([data], { type: mimetype });
             if (DownloadAttributeSupport) {
-                blob = new Blob([data], {type: mimetype});
                 url = URL.createObjectURL(blob);
-                var link = document.createElement("a");
-                link.setAttribute("href", url);
-                link.setAttribute("download", name || "Download.bin");
-                $('body').append(link);
-                $(link).get(0).click();
+                const link = document.createElement('a');
+                link.setAttribute('href', url);
+                link.setAttribute('download', name || 'Download.bin');
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
             } else {
-                blob = new Blob([data], {type: mimetype});
                 url = URL.createObjectURL(blob);
                 window.open(url, '_blank', '');
             }

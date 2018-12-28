@@ -70,104 +70,22 @@
             enabledFilters: enabledFilters,
             filtersMetadata: adguard.subscriptions.getFilters(),
             requestFilterInfo: adguard.requestFilter.getRequestFilterInfo(),
-            contentBlockerInfo: adguard.requestFilter.getContentBlockerInfo(),
+            syncStatusInfo: adguard.sync.syncService.getSyncStatus(),
             environmentOptions: {
                 isMacOs: adguard.utils.browser.isMacOs(),
-                isSafariBrowser: adguard.utils.browser.isSafariBrowser(),
-                isContentBlockerEnabled: adguard.utils.browser.isContentBlockerEnabled(),
+                canBlockWebRTC: typeof browser.privacy !== 'undefined',
+                isChrome: adguard.utils.browser.isChromeBrowser(),
                 Prefs: {
                     locale: adguard.app.getLocale(),
-                    mobile: adguard.prefs.mobile || false
-                }
+                    mobile: adguard.prefs.mobile || false,
+                },
+                appVersion: adguard.app.getVersion(),
             },
             constants: {
                 AntiBannerFiltersId: adguard.utils.filters.ids,
-                EventNotifierTypes: adguard.listeners.events
-            }
+                EventNotifierTypes: adguard.listeners.events,
+            },
         };
-    }
-
-    /**
-     * Returns collection of filters for selected group to display for user
-     * @param groupId Group identifier
-     * @returns {*|Array} List of filters
-     */
-    function getFiltersMetadataForGroup(groupId) {
-        return adguard.subscriptions.getFilters().filter(function (f) {
-            return f.groupId == groupId &&
-                f.filterId != adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID;
-        });
-    }
-
-    /**
-     * Constructs filters metadata for options.html page
-     */
-    function processGetFiltersMetadata() {
-        var groupsMeta = adguard.subscriptions.getGroups();
-        var filtersMeta = Object.create(null);
-        var enabledFilters = Object.create(null);
-        var installedFilters = Object.create(null);
-        for (var i = 0; i < groupsMeta.length; i++) {
-            var groupId = groupsMeta[i].groupId;
-            var filters = filtersMeta[groupId] = getFiltersMetadataForGroup(groupId);
-            for (var j = 0; j < filters.length; j++) {
-                var filter = filters[j];
-                var installed = adguard.filters.isFilterInstalled(filter.filterId);
-                var enabled = adguard.filters.isFilterEnabled(filter.filterId);
-                if (installed) {
-                    installedFilters[filter.filterId] = true;
-                }
-                if (enabled) {
-                    enabledFilters[filter.filterId] = true;
-                }
-            }
-        }
-        return {
-            groups: groupsMeta,
-            filters: filtersMeta,
-            enabledFilters: enabledFilters,
-            installedFilters: installedFilters
-        };
-    }
-
-    /**
-     * Searches for whitelisted domains.
-     *
-     * @param offset Offset
-     * @param limit Limit
-     * @param text Search string
-     * @returns {Array} Domains found
-     */
-    function searchWhiteListDomains(offset, limit, text) {
-        var domains = adguard.whitelist.getWhiteListDomains();
-        var result = [];
-        for (var i = 0; i < domains.length; i++) {
-            var domain = domains[i];
-            if (!text || adguard.utils.strings.containsIgnoreCase(domain, text)) {
-                result.push(domain);
-            }
-        }
-        return limit ? result.slice(offset, offset + limit) : result;
-    }
-
-    /**
-     * Searches for user rules.
-     *
-     * @param offset Offset
-     * @param limit Limit
-     * @param text Search string
-     * @returns {Array} Rules found
-     */
-    function searchUserRules(offset, limit, text) {
-        var userRules = adguard.userrules.getRules();
-        var result = [];
-        for (var i = 0; i < userRules.length; i++) {
-            var ruleText = userRules[i];
-            if (!text || adguard.utils.strings.containsIgnoreCase(ruleText, text)) {
-                result.push(ruleText);
-            }
-        }
-        return limit ? result.slice(offset, offset + limit) : result;
     }
 
     /**
@@ -180,15 +98,11 @@
         if (!adguard.webRequestService.isCollectingCosmeticRulesHits(tab)) {
             return;
         }
-        const isIncognitoTab = adguard.frames.isIncognitoTab(tab);
-        const collectHitsCount = adguard.settings.collectHitsCount();
-        var domain = adguard.frames.getFrameDomain(tab);
+        var frameUrl = adguard.frames.getMainFrameUrl(tab);
         for (let i = 0; i < stats.length; i += 1) {
             const stat = stats[i];
             const rule = adguard.rules.builder.createRule(stat.ruleText, stat.filterId);
-            if (collectHitsCount && !isIncognitoTab && !adguard.utils.filters.isUserFilterRule(rule)) {
-                adguard.hitStats.addRuleHit(domain, stat.ruleText, stat.filterId);
-            }
+            adguard.webRequestService.recordRuleHit(tab, rule, frameUrl);
             adguard.filteringLog.addCosmeticEvent(tab, stat.element, tab.url, adguard.RequestTypes.DOCUMENT, rule);
         }
     }
@@ -226,45 +140,79 @@
                 break;
             case 'disableAntiBannerFilter':
                 if (message.remove) {
-                    adguard.filters.removeFilter(message.filterId);
+                    adguard.filters.uninstallFilters([message.filterId]);
                 } else {
-                    adguard.filters.disableFilter(message.filterId);
+                    adguard.filters.disableFilters([message.filterId]);
                 }
                 break;
-            case 'getWhiteListDomains':
-                var whiteListDomains = searchWhiteListDomains(message.offset, message.limit, message.text);
-                return { rules: whiteListDomains };
-            case 'getUserFilters':
-                var rules = searchUserRules(message.offset, message.limit, message.text);
-                return { rules: rules };
-            case 'checkAntiBannerFiltersUpdate':
-                adguard.ui.checkFiltersUpdates();
+            case 'removeAntiBannerFilter':
+                adguard.filters.removeFilter(message.filterId);
                 break;
-            case 'getAntiBannerFiltersForOptionsPage':
-                return { filters: adguard.filters.getFiltersForOptionsPage() };
+            case 'enableFiltersGroup':
+                adguard.categories.enableFiltersGroup(message.groupId);
+                break;
+            case 'disableFiltersGroup':
+                adguard.categories.disableFiltersGroup(message.groupId);
+                break;
             case 'changeDefaultWhiteListMode':
                 adguard.whitelist.changeDefaultWhiteListMode(message.enabled);
                 break;
-            case 'clearUserFilter':
-                adguard.userrules.clearRules();
+            case 'getWhiteListDomains':
+                var whiteListDomains = adguard.whitelist.getWhiteListDomains();
+                return { content: whiteListDomains.join('\r\n') };
+            case 'saveWhiteListDomains': {
+                const domains = message.content.split(/[\r\n]+/)
+                    .map(string => string.trim())
+                    .filter(string => string.length > 0);
+                adguard.whitelist.updateWhiteListDomains(domains);
                 break;
-            case 'clearWhiteListFilter':
-                adguard.whitelist.clearWhiteList();
+            }
+            case 'getUserRules':
+                adguard.userrules.getUserRulesText(function (content) {
+                    callback({ content: content });
+                });
+                return true;
+            case 'saveUserRules':
+                adguard.userrules.updateUserRulesText(message.content);
                 break;
-            case 'addWhiteListDomains':
-                adguard.whitelist.addToWhiteListArray(message.domains);
+            case 'addUserRule':
+                adguard.userrules.addRules([message.ruleText]);
+                if (message.adguardDetected || adguard.frames.isTabAdguardDetected(sender.tab)) {
+                    adguard.integration.addRuleToApp(message.ruleText);
+                }
                 break;
-            case 'removeWhiteListDomain':
-                adguard.whitelist.removeFromWhiteList(message.text);
+            case 'removeUserRule':
+                adguard.userrules.removeRule(message.ruleText);
+                if (message.adguardDetected || adguard.frames.isTabAdguardDetected(sender.tab)) {
+                    adguard.integration.removeRuleFromApp(message.ruleText);
+                }
                 break;
-            case 'addUserFilterRules':
-                adguard.userrules.addRules(message.rules);
+            case 'checkAntiBannerFiltersUpdate':
+                adguard.ui.checkFiltersUpdates();
                 break;
-            case 'onFiltersSubscriptionChange':
-                adguard.filters.onFiltersListChange(message.filterIds);
-                break;
+            case 'loadCustomFilterInfo':
+                adguard.filters.loadCustomFilterInfo(message.url, { title: message.title }, (filter) => {
+                    callback(filter);
+                }, () => {
+                    callback();
+                });
+                return true;
+            case 'subscribeToCustomFilter': {
+                const { url, title, trusted } = message;
+                adguard.filters.loadCustomFilter(url, { title, trusted }, (filter) => {
+                    adguard.filters.addAndEnableFilters([filter.filterId], () => {
+                        callback(filter);
+                    });
+                }, () => {
+                    callback();
+                });
+                return true;
+            }
             case 'getFiltersMetadata':
-                return processGetFiltersMetadata();
+                return adguard.categories.getFiltersMetadata();
+            case 'setFiltersUpdatePeriod':
+                adguard.settings.setFiltersUpdatePeriod(message.updatePeriod);
+                break;
             case 'openThankYouPage':
                 adguard.ui.openThankYouPage();
                 break;
@@ -300,18 +248,6 @@
             case 'processShouldCollapseMany':
                 var requests = adguard.webRequestService.processShouldCollapseMany(sender.tab, message.documentUrl, message.requests);
                 return { requests: requests };
-            case 'addUserRule':
-                adguard.userrules.addRules([message.ruleText]);
-                if (message.adguardDetected || adguard.frames.isTabAdguardDetected(sender.tab)) {
-                    adguard.integration.addRuleToApp(message.ruleText);
-                }
-                break;
-            case 'removeUserRule':
-                adguard.userrules.removeRule(message.ruleText);
-                if (message.adguardDetected || adguard.frames.isTabAdguardDetected(sender.tab)) {
-                    adguard.integration.removeRuleFromApp(message.ruleText);
-                }
-                break;
             case 'onOpenFilteringLogPage':
                 adguard.filteringLog.onOpenFilteringLogPage();
                 break;
@@ -338,7 +274,6 @@
                     });
                     return true; // Async
                 }
-                break;
             case 'getFilteringInfoByTabId':
                 var filteringInfo = adguard.filteringLog.getFilteringInfoByTabId(message.tabId);
                 return { filteringInfo: filteringInfo };
@@ -347,24 +282,22 @@
                     callback({ tabs: tabs });
                 });
                 return true; // Async
-            case 'checkSubscriptionUrl':
-                var filterMetadata = adguard.filters.findFilterMetadataBySubscriptionUrl(message.url);
-                var confirmText;
-                if (filterMetadata) {
-                    //ok, filter found
-                    confirmText = adguard.i18n.getMessage('abp_subscribe_confirm_enable', [filterMetadata.name]);
-                } else {
-                    //filter not found
-                    confirmText = adguard.i18n.getMessage('abp_subscribe_confirm_import', [message.title]);
+            case 'addFilterSubscription': {
+                if (adguard.frames.isTabAdguardDetected(sender.tab)) {
+                    break;
                 }
-                return { confirmText: confirmText };
-            case 'enableSubscription':
-                adguard.filters.processAbpSubscriptionUrl(message.url, function (rulesAddedCount) {
-                    var title = adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_title');
-                    var text = adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_text', [String(rulesAddedCount)]);
-                    adguard.ui.showAlertMessagePopup(title, text);
-                });
-                return true; // Async
+                const { url, title } = message;
+                const hashOptions = {
+                    action: 'add_filter_subscription',
+                    title,
+                    url,
+                };
+                adguard.ui.openSettingsTab('antibanner0', hashOptions);
+                break;
+            }
+            case 'showAlertMessagePopup':
+                adguard.ui.showAlertMessagePopup(message.title, message.text);
+                break;
             // Popup methods
             case 'addWhiteListDomainPopup':
                 adguard.tabs.getActive(function (tab) {
@@ -393,15 +326,15 @@
                 break;
             case 'getTabInfoForPopup':
                 adguard.tabs.getActive(function (tab) {
-                    var frameInfo = adguard.frames.getFrameInfo(tab);
+                    const frameInfo = adguard.frames.getFrameInfo(tab);
                     callback({
                         frameInfo: frameInfo,
                         options: {
-                            showStatsSupported: !adguard.utils.browser.isContentBlockerEnabled(),
-                            isSafariBrowser: adguard.utils.browser.isSafariBrowser(),
+                            showStatsSupported: true,
                             isFirefoxBrowser: adguard.utils.browser.isFirefoxBrowser(),
                             isMacOs: adguard.utils.browser.isMacOs(),
                             notification: adguard.notifications.getCurrentNotification(),
+                            isDisableShowAdguardPromoInfo: adguard.settings.isDisableShowAdguardPromoInfo(),
                         },
                     });
                 });
@@ -409,6 +342,11 @@
             case 'setNotificationViewed':
                 adguard.notifications.setNotificationViewed(message.withDelay);
                 break;
+            case 'getStatisticsData':
+                callback({
+                    stats: adguard.pageStats.getStatisticsData(),
+                });
+                return true;
             case 'resizePanelPopup':
                 adguard.browserAction.resize(message.width, message.height);
                 break;
@@ -423,6 +361,45 @@
                 break;
             case 'isCssHitsCounterEnabled':
                 callback(adguard.webRequestService.isCollectingCosmeticRulesHits(sender.tab));
+                break;
+            // Sync messages
+            case 'setSyncProvider':
+                adguard.sync.syncService.setSyncProvider(message.provider);
+                break;
+            case 'setOAuthToken':
+                if (adguard.sync.oauthService.setToken(message.provider, message.token, message.csrfState, message.expires)) {
+                    adguard.sync.syncService.setSyncProvider(message.provider);
+                    adguard.tabs.remove(sender.tab.tabId);
+                }
+                break;
+            case 'getSyncStatus':
+                return adguard.sync.syncService.getSyncStatus();
+            case 'authSync':
+                adguard.sync.oauthService.authorize(message.provider);
+                break;
+            case 'dropAuthSync':
+                adguard.listeners.notifyListeners(adguard.listeners.SYNC_BAD_OR_EXPIRED_TOKEN, message.provider);
+                break;
+            case 'toggleSync':
+                adguard.sync.syncService.toggleSyncStatus();
+                break;
+            case 'syncNow':
+                adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, {force: true});
+                break;
+            case 'setSyncOptions':
+                adguard.sync.syncService.setSyncOptions(message.options);
+                break;
+            case 'syncChangeDeviceName':
+                adguard.sync.syncService.changeDeviceName(message.deviceName);
+                break;
+            case 'loadSettingsJson':
+                adguard.sync.settingsProvider.loadSettingsBackup(callback);
+                return true; // Async
+            case 'applySettingsJson':
+                adguard.sync.settingsProvider.applySettingsBackup(message.json, callback);
+                return true; // Async
+            case 'disableGetPremiumNotification':
+                adguard.settings.disableShowAdguardPromoInfo();
                 break;
             default:
                 // Unhandled message

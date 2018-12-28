@@ -45,8 +45,6 @@ adguard.backend = (function (adguard) {
             return adguard.lazyGet(this, 'filtersUrl', function () {
                 if (adguard.utils.browser.isFirefoxBrowser()) {
                     return 'https://filters.adtidy.org/extension/firefox';
-                } else if (adguard.utils.browser.isSafariBrowser()) {
-                    return 'https://filters.adtidy.org/extension/safari';
                 } else if (adguard.utils.browser.isEdgeBrowser()) {
                     return 'https://filters.adtidy.org/extension/edge';
                 } else if (adguard.utils.browser.isOperaBrowser()) {
@@ -137,7 +135,7 @@ adguard.backend = (function (adguard) {
         adguard_ext_chromium: adguard.utils.browser.isChromium(),
         adguard_ext_firefox: adguard.utils.browser.isFirefoxBrowser(),
         adguard_ext_edge: adguard.utils.browser.isEdgeBrowser(),
-        adguard_ext_safari: adguard.utils.browser.isSafariBrowser(),
+        adguard_ext_safari: false,
         adguard_ext_opera: adguard.utils.browser.isOperaBrowser(),
     };
 
@@ -230,27 +228,27 @@ adguard.backend = (function (adguard) {
             return;
         }
 
-        var success = function (response) {
+        const success = function (response) {
             if (response && response.responseText) {
-                var metadata = parseJson(response.responseText);
+                const metadata = parseJson(response.responseText);
                 if (!metadata) {
-                    errorCallback(response, "invalid response");
+                    errorCallback(response, 'invalid response');
                     return;
                 }
-                var filterMetadataList = [];
-                for (var i = 0; i < filterIds.length; i++) {
-                    var filter = adguard.utils.collections.find(metadata.filters, 'filterId', filterIds[i]);
+                const filterMetadataList = [];
+                for (let i = 0; i < filterIds.length; i += 1) {
+                    const filter = adguard.utils.collections.find(metadata.filters, 'filterId', filterIds[i]);
                     if (filter) {
                         filterMetadataList.push(adguard.subscriptions.createSubscriptionFilterFromJSON(filter));
                     }
                 }
                 successCallback(filterMetadataList);
             } else {
-                errorCallback(response, "empty response");
+                errorCallback(response, 'empty response');
             }
         };
 
-        executeRequestAsync(settings.filtersMetadataUrl, "application/json", success, errorCallback);
+        executeRequestAsync(settings.filtersMetadataUrl, 'application/json', success, errorCallback);
     };
 
     /**
@@ -285,26 +283,27 @@ adguard.backend = (function (adguard) {
      * @param errorCallback     Called on error
      */
     var loadFilterRulesBySubscriptionUrl = function (url, successCallback, errorCallback) {
-
         if (url in loadingSubscriptions) {
             return;
         }
+
         loadingSubscriptions[url] = true;
 
-        var success = function (lines) {
+        const success = function (lines) {
             delete loadingSubscriptions[url];
 
             if (lines[0].indexOf('[') === 0) {
-                //[Adblock Plus 2.0]
+                // [Adblock Plus 2.0]
                 lines.shift();
             }
 
             successCallback(lines);
         };
 
-        var error = function (cause) {
+        const error = function (cause) {
             delete loadingSubscriptions[url];
-            errorCallback(cause);
+            const message = cause instanceof Error ? cause.message : cause;
+            errorCallback(message);
         };
 
         FilterDownloader.download(url, FilterCompilerConditionsConstants).then(success, error);

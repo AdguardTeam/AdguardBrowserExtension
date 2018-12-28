@@ -52,13 +52,14 @@ adguard.console = (function () {
         var str = args[0] + "";
         args = Array.prototype.slice.call(args, 1);
         var formatted = str.replace(/{(\d+)}/g, function (match, number) {
-
-            if (typeof args[number] != "undefined") {
+            if (typeof args[number] !== 'undefined') {
                 var value = args[number];
                 if (value instanceof Error) {
                     value = errorToString(value);
                 } else if (value && value.message) {
                     value = value.message;
+                } else if (typeof value === 'object') {
+                    value = JSON.stringify(value);
                 }
                 return value;
             }

@@ -31,7 +31,7 @@ adguard.prefs = (function (adguard) {
             });
         },
 
-        platform: typeof safari === 'undefined' ? "chromium" : "webkit",
+        platform: "chromium",
 
         get browser() {
             return adguard.lazyGet(Prefs, 'browser', function () {
@@ -43,27 +43,12 @@ adguard.prefs = (function (adguard) {
                     browser = "Edge";
                 } else if (userAgent.toLowerCase().indexOf("opera") >= 0 || userAgent.toLowerCase().indexOf("opr") >= 0) {
                     browser = "Opera";
-                } else if (userAgent.indexOf("Safari") >= 0 && userAgent.indexOf('Chrome') < 0) {
-                    browser = "Safari";
                 } else if (userAgent.indexOf("Firefox") >= 0) {
                     browser = "Firefox";
                 } else {
                     browser = "Chrome";
                 }
                 return browser;
-            });
-        },
-
-        get safariVersion() {
-            return adguard.lazyGet(Prefs, 'safariVersion', function () {
-                if (this.browser === 'Safari') {
-                    var i = navigator.userAgent.indexOf("Version/");
-                    if (i < 0) {
-                        return null;
-                    }
-                    return parseInt(navigator.userAgent.substring(i + 8));
-                }
-                return null;
             });
         },
 
@@ -124,12 +109,6 @@ adguard.prefs = (function (adguard) {
                 };
             });
         },
-
-        /**
-         * If user enables `Send ad filters usage stats` option (which is disabled by default) in Adguard settings, it starts collecting & sending stats on used ad filtering rules.
-         * We use these stats to get rid of redundant filtering rules and provide "optimized" filters. Details: https://adguard.com/en/filter-rules-statistics.html
-         */
-        collectHitsCountEnabled: (typeof safari === 'undefined'),
 
         // interval 60 seconds in Firefox is set so big due to excessive IO operations on every storage save
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1006

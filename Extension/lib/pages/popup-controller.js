@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global $, i18n, popupPage */
+/* global i18n, popupPage */
 
 /**
  * Controller that manages add-on popup window
@@ -31,11 +31,10 @@ PopupController.prototype = {
      * @param options
      */
     render: function (tabInfo, options) {
-
         this.tabInfo = tabInfo;
         this.options = options || {};
 
-        //render
+        // render
         this._renderPopup(tabInfo);
 
         // Bind actions
@@ -45,14 +44,14 @@ PopupController.prototype = {
     },
 
     resizePopupWindow: function () {
-        var $widjet = $('body>div:not(.hidden)');
-        var width = $widjet.outerWidth();
-        var height = $widjet.outerHeight();
+        var widget = document.querySelector('.widget-popup');
+        var width = widget.offsetWidth;
+        var height = widget.offsetHeight;
         popupPage.resizePopup(width, height);
     },
 
     afterRender: function () {
-
+        // Should be overwritten
     },
 
     addWhiteListDomain: function (url) {
@@ -72,7 +71,7 @@ PopupController.prototype = {
     },
 
     openSiteReportTab: function (url) {
-        popupPage.sendMessage({ type: 'openSiteReportTab', url: url });
+        popupPage.sendMessage({type: 'openSiteReportTab', url: url});
     },
 
     openAbuseTab: function (url) {
@@ -99,88 +98,154 @@ PopupController.prototype = {
         popupPage.sendMessage({ type: 'openTab', url: url });
     },
 
+    updateTotalBlocked: function (tabInfo) {
+        this.tabInfo = tabInfo;
+        const { totalBlockedTab, totalBlocked } = tabInfo;
+        if (totalBlockedTab) {
+            const tabBlocked = document.querySelector('.widget-popup .blocked-tab');
+            if (tabBlocked) {
+                i18n.translateElement(tabBlocked, 'popup_tab_blocked', [this._formatNumber(totalBlockedTab)]);
+            }
+        }
+
+        if (totalBlocked) {
+            const allBlocked = document.querySelector('.widget-popup .blocked-all');
+            if (allBlocked) {
+                i18n.translateElement(allBlocked, 'popup_tab_blocked_all', [this._formatNumber(totalBlocked)]);
+            }
+        }
+    },
+
     _renderPopup: function (tabInfo) {
+        const parent = document.querySelector('.widget-popup');
 
-        var parent = $('.widjet-popup');
-        parent.empty();
+        const containerHeader = document.querySelector('.widget-popup__header');
+        while (containerHeader.firstChild) {
+            containerHeader.removeChild(containerHeader.firstChild);
+        }
 
-        // top block
-        this.notificationTemplate = this._getTemplate('notification-template');
-        this.siteStatsTemplate = this._getTemplate('page-stats-template');
-        this.adguardDetectedMessageTemplate = this._getTemplate('adguard-detected-message-template');
-        this.siteFilteringDisabledMessageTemplate = this._getTemplate('site-filtering-disabled-message-template');
-        this.siteProtectionDisabledMessageTemplate = this._getTemplate('site-protection-disabled-message-template');
+        const footerContainer = parent.querySelector('.footer');
+        while (footerContainer.firstChild) {
+            footerContainer.removeChild(footerContainer.firstChild);
+        }
 
-        // middle block
-        this.siteFilteringExceptionMessageTemplate = this._getTemplate('site-filtering-exception-message-template');
-        this.siteFilteringStateTemplate = this._getTemplate('site-filtering-checkbox-template');
+        const stack = parent.querySelector('.tabstack');
 
-        // actions block
-        this.assistantTemplate = this._getTemplate('open-assistant-template');
-        this.abuseTemplate = this._getTemplate('open-abuse-template');
-        this.siteReportTemplate = this._getTemplate('site-report-template');
-        this.settingsTemplate = this._getTemplate('open-settings-template');
-        this.protectionDisabledTemplate = this._getTemplate('protection-disabled-template');
-        this.protectionEnabledTemplate = this._getTemplate('protection-enabled-template');
+        const containerMain = parent.querySelector('.tab-main');
+        while (containerMain.firstChild) {
+            containerMain.removeChild(containerMain.firstChild);
+        }
 
-        // footer
-        this.footerTemplate = this._getTemplate('popup-footer-template');
-        this.footerIntegrationTemplate = this._getTemplate('popup-footer-integration-template');
+        const containerBottom = parent.querySelector('.tabstack-bottom.tab-main');
+        while (containerBottom.firstChild) {
+            containerBottom.removeChild(containerBottom.firstChild);
+        }
 
-        // render
-        this._renderTopMessageBlock(parent, tabInfo);
-        this._renderNotificationBlock(parent, this.options);
-        this._renderSiteExceptionBlock(parent, tabInfo);
-        this._renderFilteringCheckboxBlock(parent, tabInfo);
-        this._renderActionsBlock(parent, tabInfo);
-        this._renderFooter(parent, tabInfo);
+        const containerStats = parent.querySelector('.tab-statistics');
+        while (containerStats.firstChild) {
+            containerStats.removeChild(containerStats.firstChild);
+        }
+
+        stack.setAttribute('class', 'tabstack');
+        parent.setAttribute('class', 'widget-popup');
+
+        // Hide stats for integration mode
+        if (tabInfo.adguardDetected) {
+            parent.querySelector('.tab-stats-button').style.display = 'none';
+            parent.querySelector('.tab-actions-button').classList.add('tab--integration');
+        }
+
+        // define class
+        if (tabInfo.urlFilteringDisabled) {
+            stack.classList.add('status-error');
+            stack.classList.add('error-sad');
+        } else if (tabInfo.applicationFilteringDisabled) {
+            stack.classList.add('status-paused');
+            parent.classList.add('status-paused');
+        } else if (!tabInfo.canAddRemoveRule) {
+            stack.classList.add('status-error', 'error-filter');
+        } else if (tabInfo.documentWhiteListed) {
+            stack.classList.add('status-cross');
+            parent.classList.add('status-cross');
+        } else {
+            stack.classList.add('status-checkmark');
+            parent.classList.add('status-checkmark');
+        }
+
+        // Header
+        this.filteringHeader = this._getTemplate('filtering-header-template');
+        this.filteringIntegrationHeader = this._getTemplate('filtering-integration-header-template');
+        this.filteringDefaultHeader = this._getTemplate('filtering-default-header-template');
+
+        // Controls
+        this.filteringControlDefault = this._getTemplate('filtering-default-control-template');
+
+        // Actions
+        this.actionOpenAssistant = this._getTemplate('action-open-assistant-template');
+        this.actionOpenAbuse = this._getTemplate('action-open-abuse-template');
+        this.actionOpenSiteReport = this._getTemplate('action-site-report-template');
+        this.actionOpenFilteringLog = this._getTemplate('action-open-filtering-log-template');
+
+        // Status Text
+        this.filteringStatusText = this._getTemplate('filtering-status-template');
+
+        // Message text
+        this.filteringMessageText = this._getTemplate('filtering-message-template');
+
+        // Stats
+        this.filteringStatisticsTemplate = this._getTemplate('filtering-statistics-template');
+
+        // Footer
+        this.footerDefault = this._getTemplate('footer-default-template');
+        this.footerIntegration = this._getTemplate('footer-integration-template');
+
+        // Notification
+        this.notification = this._getTemplate('notification-template');
+
+        this._renderHeader(containerHeader, tabInfo);
+        this._renderMain(containerMain, tabInfo);
+        this._renderFilteringControls(containerMain, tabInfo);
+        this._renderStatus(containerMain, tabInfo);
+        this._renderActions(containerBottom, tabInfo);
+        this._renderMessage(containerMain, tabInfo);
+        this._renderStats(containerStats);
+        this._renderFooter(footerContainer, tabInfo, this.options);
+        this._renderNotificationBlock(footerContainer, tabInfo, this.options);
+
     },
 
     _getTemplate: function (id) {
-        return $('#' + id).children().clone();
+        return document.querySelector('#' + id).cloneNode(true);
     },
 
-    _renderTopMessageBlock: function (parent, tabInfo) {
+    _appendTemplate: function (container, template) {
+        template.childNodes.forEach(function (c) {
+            container.appendChild(c.cloneNode(true));
+        });
+    },
 
-        function formatNumber(v) {
-            return v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-        }
-
-        var template;
+    _renderHeader: function (container, tabInfo) {
+        const template = this.filteringHeader;
         if (tabInfo.adguardDetected) {
-            template = this.adguardDetectedMessageTemplate;
-            if (tabInfo.adguardProductName) {
-                i18n.translateElement(template.children()[0], 'popup_ads_has_been_removed_by_adguard', [tabInfo.adguardProductName]);
-            } else {
-                i18n.translateElement(template.children()[0], 'popup_ads_has_been_removed');
+            const pauseButton = template.querySelector('.pause.changeProtectionStateDisable');
+            if (pauseButton) {
+                pauseButton.style.display = 'none';
             }
-        } else if (tabInfo.applicationFilteringDisabled) {
-            template = this.siteProtectionDisabledMessageTemplate;
-        } else if (tabInfo.urlFilteringDisabled) {
-            template = this.siteFilteringDisabledMessageTemplate;
-        } else if (this.options.showStatsSupported) {
-            template = this.siteStatsTemplate;
-            var titleBlocked = template.find('.w-popup-filter-title-blocked');
-            i18n.translateElement(titleBlocked[0], 'popup_tab_blocked', [formatNumber(tabInfo.totalBlockedTab || 0)]);
-            i18n.translateElement(template.find('.w-popup-filter-title-blocked-all')[0], 'popup_tab_blocked_all', [formatNumber(tabInfo.totalBlocked || 0)]);
-            if (tabInfo.totalBlocked >= 10000000) {
-                titleBlocked.closest('.widjet-popup-filter').addClass('db');
-            } else {
-                titleBlocked.closest('.widjet-popup-filter').removeClass('db');
+            const startButton = template.querySelector('.start.changeProtectionStateEnable');
+            if (startButton) {
+                startButton.style.display = 'none';
             }
         }
-        parent.append(template);
+        this._appendTemplate(container, template);
     },
 
-    _renderNotificationBlock: function (parent, options) {
-        // Do not show notification if there is no notification
-        if (!options.notification) {
+    _renderNotificationBlock: function (container, tabInfo, options) {
+        // Do not show notification
+        if (!options.notification || tabInfo.adguardDetected) {
             return;
         }
 
-        // Do not show notification if there is no localisation for it
         const {
-            id,
             bgColor,
             textColor,
             text,
@@ -190,120 +255,525 @@ PopupController.prototype = {
             return;
         }
 
-        const notificationTitleNode = this.notificationTemplate.find('.w-popup-filter-title').eq(0);
-        notificationTitleNode.html(text);
-        this.notificationTemplate.css({ background: bgColor, color: textColor });
-        const cross = this.notificationTemplate.find('#cross-wr').eq(0);
-        cross.attr('stroke', textColor);
-        parent.append(this.notificationTemplate);
+        const notificationTitleNode = this.notification.querySelector('.openNotificationLink');
+        notificationTitleNode.innerHTML = text;
+        if (bgColor && textColor) {
+            const notification = this.notification.querySelector('.notice');
+            notification.setAttribute('style', `background-color: ${bgColor}; color: ${textColor}`);
+        }
+        this._appendTemplate(container, this.notification);
 
         // Schedule notification removal
         popupPage.sendMessage({ type: 'setNotificationViewed', withDelay: true });
     },
 
-    _renderSiteExceptionBlock: function (parent, tabInfo) {
-        if (tabInfo.urlFilteringDisabled || tabInfo.applicationFilteringDisabled) {
-            return;
-        }
+    _renderMain: function (container, tabInfo) {
 
         var template;
-        if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
-            template = this.siteFilteringExceptionMessageTemplate;
+        if (tabInfo.adguardDetected) {
+            template = this.filteringIntegrationHeader;
+            const headTitleElement = template.querySelector('.head .msg');
+            if (tabInfo.adguardProductName.toLowerCase().includes('mac')) {
+                headTitleElement.innerHTML = i18n.getMessage('popup_integrate_mode_title_mac');
+            } else if (tabInfo.adguardProductName.toLowerCase().includes('win')) {
+                headTitleElement.innerHTML = i18n.getMessage('popup_integrate_mode_title_win');
+            } else {
+                headTitleElement.innerHTML = i18n.getMessage('popup_integrate_mode_title');
+            }
+        } else {
+            template = this.filteringDefaultHeader;
+            var tabBlocked = template.querySelector('.blocked-tab');
+            var totalBlocked = template.querySelector('.blocked-all');
+            i18n.translateElement(tabBlocked, 'popup_tab_blocked', [this._formatNumber(tabInfo.totalBlockedTab || 0)]);
+            i18n.translateElement(totalBlocked, 'popup_tab_blocked_all', [this._formatNumber(tabInfo.totalBlocked || 0)]);
+            var closestWidgetFilter = tabBlocked.closest('.widget-popup-filter');
+            if (closestWidgetFilter) {
+                if (tabInfo.totalBlocked >= 10000000) {
+                    closestWidgetFilter.classList.add('db');
+                } else {
+                    closestWidgetFilter.classList.remove('db');
+                }
+            }
         }
 
-        if (template) {
-            parent.append(template);
+        this._appendTemplate(container, template);
+    },
+
+    _renderFilteringControls: function (container, tabInfo) {
+        var template = this.filteringControlDefault;
+        if (tabInfo.urlFilteringDisabled) {
+            return;
+        }
+        this._appendTemplate(container, template);
+    },
+
+    _renderStatus: function (container, tabInfo) {
+        var template = this.filteringStatusText;
+
+        var text = '';
+        if (tabInfo.urlFilteringDisabled) {
+            text = 'popup_site_filtering_state_tab_unavailable';
+        } else if (tabInfo.applicationFilteringDisabled) {
+            text = 'popup_site_filtering_state_paused';
+        } else {
+            if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
+                text = 'popup_site_filtering_state_subscription_unavailable';
+            } else {
+                if (tabInfo.documentWhiteListed) {
+                    text = 'popup_site_filtering_state_disabled';
+                } else {
+                    text = 'popup_site_filtering_state_enabled';
+                }
+            }
+        }
+
+        var statusElement = template.querySelector('.status');
+        i18n.translateElement(statusElement, text);
+
+        var currentSiteElement = template.querySelector('.current-site');
+        currentSiteElement.textContent = tabInfo.domainName ? tabInfo.domainName : tabInfo.url;
+
+        if (tabInfo.urlFilteringDisabled) {
+            currentSiteElement.style.display = 'none';
+        }
+
+        this._appendTemplate(container, template);
+    },
+
+    _renderMessage: function (container, tabInfo) {
+        var text;
+        if (tabInfo.urlFilteringDisabled) {
+            text = 'popup_site_filtering_disabled';
+        } else if (tabInfo.applicationFilteringDisabled) {
+
+        } else {
+            if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
+                text = 'popup_site_exception_info';
+            }
+        }
+
+        var template = this.filteringMessageText;
+        if (text) {
+            i18n.translateElement(template.childNodes[1], text);
+            this._appendTemplate(container, template);
         }
     },
 
-    _renderFilteringCheckboxBlock: function (parent, tabInfo) {
+    _selectRequestTypesStatsData: function (stats, range) {
+        var result = {};
 
-        if (tabInfo.urlFilteringDisabled || tabInfo.applicationFilteringDisabled) {
+        switch (range) {
+            case 'day':
+                result = stats.lastMonth[stats.lastMonth.length - 1];
+                break;
+            case 'week':
+                for (var i = 0; i < stats.lastWeek.length; i++) {
+                    var d = stats.lastWeek[i];
+                    for (var type in d) {
+                        if (d[type]) {
+                            result[type] = (result[type] ? result[type] : 0) + d[type];
+                        }
+                    }
+                }
+                break;
+            case 'month':
+                result = stats.lastYear[stats.lastYear.length - 1];
+                break;
+            case 'year':
+                for (var i = 0; i < stats.lastYear.length; i++) {
+                    var d = stats.lastYear[i];
+                    for (var type in d) {
+                        if (d[type]) {
+                            result[type] = (result[type] ? result[type] : 0) + d[type];
+                        }
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+
+        return result;
+    },
+
+    _selectRequestsStatsData: function (stats, range, type) {
+        const result = [];
+        switch (range) {
+            case 'day':
+                stats.today.forEach(function (d) {
+                    result.push(d[type]);
+                });
+                break;
+            case 'week':
+                stats.lastWeek.forEach(function (d) {
+                    result.push(d[type]);
+                });
+                break;
+            case 'month':
+                stats.lastMonth.forEach(function (d) {
+                    result.push(d[type]);
+                });
+                break;
+            case 'year':
+                stats.lastYear.forEach(function (d) {
+                    result.push(d[type]);
+                });
+                break;
+            default:
+                break;
+        }
+        return result.map(val => val === undefined ? 0 : val);
+    },
+
+    DAYS_OF_WEEK: (function () {
+        return this.DAYS_OF_WEEK || [
+            i18n.getMessage('popup_statistics_week_days_mon'),
+            i18n.getMessage('popup_statistics_week_days_tue'),
+            i18n.getMessage('popup_statistics_week_days_wed'),
+            i18n.getMessage('popup_statistics_week_days_thu'),
+            i18n.getMessage('popup_statistics_week_days_fri'),
+            i18n.getMessage('popup_statistics_week_days_sat'),
+            i18n.getMessage('popup_statistics_week_days_sun'),
+        ];
+    })(),
+
+    _dayOfWeekAsString: function (dayIndex) {
+        return this.DAYS_OF_WEEK[dayIndex];
+    },
+
+    MONTHS_OF_YEAR: (function () {
+        return this.MONTHS_OF_YEAR || [
+            i18n.getMessage('popup_statistics_months_jan'),
+            i18n.getMessage('popup_statistics_months_feb'),
+            i18n.getMessage('popup_statistics_months_mar'),
+            i18n.getMessage('popup_statistics_months_apr'),
+            i18n.getMessage('popup_statistics_months_may'),
+            i18n.getMessage('popup_statistics_months_jun'),
+            i18n.getMessage('popup_statistics_months_jul'),
+            i18n.getMessage('popup_statistics_months_aug'),
+            i18n.getMessage('popup_statistics_months_sep'),
+            i18n.getMessage('popup_statistics_months_oct'),
+            i18n.getMessage('popup_statistics_months_nov'),
+            i18n.getMessage('popup_statistics_months_dec'),
+        ];
+    })(),
+
+    _monthsAsString: function (monthIndex) {
+        return this.MONTHS_OF_YEAR[monthIndex];
+    },
+
+    _getCategoriesLines: function (statsData, range) {
+        var now = new Date();
+        var day = now.getDay();
+        var month = now.getMonth();
+        var lastDayOfPrevMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+
+        var categories = [];
+        var lines = [];
+        switch (range) {
+            case 'day':
+                for (let i = 1; i < 25; i += 1) {
+                    if (i % 3 === 0) {
+                        const hour = (i + now.getHours()) % 24;
+                        categories.push(hour.toString());
+                        lines.push({
+                            value: i - 1,
+                        });
+                    } else {
+                        categories.push('');
+                    }
+                }
+
+                break;
+            case 'week':
+                for (let i = 0; i < 7; i += 1) {
+                    categories.push(this._dayOfWeekAsString((day + i) % 7));
+                    lines.push({
+                        value: i,
+                    });
+                }
+
+                break;
+            case 'month':
+                for (let i = 0; i < 31; i += 1) {
+                    if (i % 3 === 0) {
+                        var c = (i + now.getDate()) % lastDayOfPrevMonth + 1;
+                        categories.push(c.toString());
+                        lines.push({
+                            value: i,
+                        });
+                    } else {
+                        categories.push('');
+                    }
+                }
+
+                break;
+            case 'year':
+                for (let i = 0; i < 13; i += 1) {
+                    categories.push(this._monthsAsString((month + i) % 12));
+                    categories = categories.slice(-statsData.length);
+                    lines.push({
+                        value: i,
+                    });
+                }
+
+                break;
+        }
+
+        return {
+            categories: categories,
+            lines: lines,
+        };
+    },
+
+    _renderRequestsGraphs: function (stats, range, type) {
+        var statsData = this._selectRequestsStatsData(stats, range, type);
+        var categoriesLines = this._getCategoriesLines(statsData, range);
+        var categories = categoriesLines.categories;
+        var lines = categoriesLines.lines;
+
+        var grad1 =
+            '<linearGradient id="grad1" x1="50%" y1="0%" x2="50%" y2="100%">'+
+            '  <stop offset="0%" style="stop-color:#73BE66;stop-opacity:1" />'+
+            '  <stop offset="23%" style="stop-color:#6DBE85;stop-opacity:1" />'+
+            '  <stop offset="100%" style="stop-color:#65BDA8;stop-opacity:1" />'+
+            '</linearGradient>';
+
+        c3.generate({
+            size: {
+                height: 230,
+            },
+            data: {
+                columns: [
+                    ['data1'].concat(statsData),
+                ],
+                types: {
+                    data1: 'area-spline',
+                },
+                colors: {
+                    data1: 'url(#grad1)',
+                },
+            },
+            padding: {
+                left: 15,
+                right: 15,
+            },
+            axis: {
+                x: {
+                    show: true,
+                    type: 'category',
+                    categories: categories,
+                    tick: {
+                        outer: false,
+                        multiline: false,
+                    },
+                },
+                y: {
+                    show: false,
+                },
+            },
+            legend: {
+                show: false,
+            },
+            grid: {
+                x: {
+                    lines: lines,
+                },
+                focus: {
+                    show: true,
+                },
+            },
+            spline: {
+                interpolation: {
+                    type: 'basis',
+                },
+            },
+            point: {
+                show: false,
+            },
+            tooltip: {
+                position: function (data, width, height, element) {
+                    const chart = document.querySelector('#chart');
+                    const elementRect = element.getBoundingClientRect();
+                    const elementCenterPosition = elementRect.left + (elementRect.width / 2);
+                    const tooltipHalfWidth = chart.querySelector('.chart__tooltip').clientWidth / 2;
+                    const tooltipLeft = elementCenterPosition - tooltipHalfWidth;
+                    const top = d3.mouse(element)[1] - 50;
+                    return {
+                        top: top,
+                        left: tooltipLeft,
+                    };
+                },
+                contents: function (d) {
+                    const value = d[0].value;
+                    return `<div id="tooltip" class="chart__tooltip">${value}</div>`;
+                },
+            },
+            oninit: function () {
+                this.svg[0][0].getElementsByTagName('defs')[0].innerHTML += grad1;
+            },
+        });
+    },
+
+    // TODO remove, as unnecessary
+    _localizeBlockedType: function (type) {
+        if (!type) {
+            return '';
+        }
+
+        return i18n.getMessage('popup_statistics_request_types_' + type.toLowerCase());
+    },
+
+    _renderAnalyticsBlock: function (stats, range) {
+        const statsData = this._selectRequestTypesStatsData(stats, range);
+
+        const analytics = document.querySelector('#analytics-blocked-types-values');
+
+        while (analytics.firstChild) {
+            analytics.removeChild(analytics.firstChild);
+        }
+
+        const { blockedGroups } = stats;
+
+        blockedGroups.forEach((blockedGroup) => {
+            const number = statsData[blockedGroup.groupId];
+            if (number) {
+                const blockedItem = htmlToElement(`
+                <li>
+                    <span class="key" tabindex="0">${blockedGroup.groupName}</span>
+                    <span class="value" tabindex="0">${number}</span>
+                </li>
+            `);
+                analytics.appendChild(blockedItem);
+            }
+        });
+    },
+
+    _renderStatsGraphs: function (stats, range, type) {
+        this._renderRequestsGraphs(stats, range, type);
+        this._renderAnalyticsBlock(stats, range);
+    },
+
+    _renderStatsBlock: function (stats) {
+        const timeRange = document.querySelector('.statistics-select-time').value;
+        const typeData = document.querySelector('.statistics-select-type').value;
+
+        if (!stats) {
+            const self = this;
+            popupPage.sendMessage({ type: 'getStatisticsData' }, function (message) {
+                self._renderStatsGraphs(message.stats, timeRange, typeData);
+            });
+        } else {
+            this._renderStatsGraphs(stats, timeRange, typeData);
+        }
+    },
+
+    _renderBlockedGroups: function (container, stats) {
+        const timeRange = document.querySelector('.statistics-select-time').value;
+        const typeSelector = container.querySelector('.statistics-select-type');
+
+        const statsData = this._selectRequestTypesStatsData(stats, timeRange);
+
+        const blockedGroups = stats.blockedGroups
+            .filter(group => statsData[group.groupId]);
+
+        const getSelectTemplate = (group) => {
+            return `<option value="${group.groupId}">${group.groupName}</option>`;
+        };
+
+        blockedGroups.forEach(group => {
+            typeSelector.insertAdjacentHTML('beforeend', getSelectTemplate(group));
+        });
+    },
+
+    _renderStats: function (container) {
+        const template = this.filteringStatisticsTemplate;
+        this._appendTemplate(container, template);
+
+        const self = this;
+
+        popupPage.sendMessage({ type: 'getStatisticsData' }, function (message) {
+            const { stats } = message;
+
+            self._renderBlockedGroups(container, stats);
+            self._renderStatsBlock(stats);
+        });
+    },
+
+    _renderActions: function (container, tabInfo) {
+        if (tabInfo.urlFilteringDisabled) {
             return;
         }
 
-        var template = this.siteFilteringStateTemplate;
-        var checkbox = template.find('#siteFilteringDisabledCheckbox');
-        if (tabInfo.canAddRemoveRule) {
-            if (tabInfo.documentWhiteListed) {
-                checkbox.removeAttr('checked');
-            } else {
-                checkbox.attr('checked', 'checked');
-            }
-            checkbox.toggleCheckbox();
-            parent.append(template);
+        const el = document.createElement('div');
+        el.classList.add('actions');
+
+        this._appendTemplate(el, this.actionOpenAssistant);
+        this._appendTemplate(el, this.actionOpenFilteringLog);
+        if (tabInfo.applicationFilteringDisabled || tabInfo.documentWhiteListed) {
+            // May be show later
+            this.actionOpenAssistant.style.display = 'none';
         }
+
+        this._appendTemplate(el, this.actionOpenAbuse);
+        this._appendTemplate(el, this.actionOpenSiteReport);
+
+        container.appendChild(el);
     },
 
-    _renderActionsBlock: function (parent, tabInfo) {
-
-        var el = $('<nav>', { class: 'widjet-popup-menu' });
-
-        if (!tabInfo.adguardDetected && !tabInfo.urlFilteringDisabled) {
-            if (tabInfo.applicationFilteringDisabled) {
-                el.append(this.protectionDisabledTemplate);
-            } else {
-                el.append(this.protectionEnabledTemplate);
-            }
-        }
-
-        if (!tabInfo.urlFilteringDisabled) {
-            el.append(this.assistantTemplate);
-            if (tabInfo.applicationFilteringDisabled || tabInfo.documentWhiteListed) {
-                //may be show later
-                this.assistantTemplate.hide();
-            }
-        }
-
-        if (!tabInfo.urlFilteringDisabled) {
-            el.append(this.abuseTemplate);
-        }
-
-        if (!tabInfo.urlFilteringDisabled && !tabInfo.applicationFilteringDisabled) {
-            el.append(this.siteReportTemplate);
-        }
-
-        if (!tabInfo.adguardDetected) {
-            el.append(this.settingsTemplate);
-        }
-
-        parent.append(el);
-    },
-
-    _renderFooter: function (parent, tabInfo) {
+    _renderFooter: function (footerContainer, tabInfo, options) {
         if (tabInfo.adguardDetected) {
-            parent.append(this.footerIntegrationTemplate);
+            this._appendTemplate(footerContainer, this.footerIntegration);
         } else {
-            parent.append(this.footerTemplate);
+            const footerDefault = this.footerDefault;
+            const getPremium = footerDefault.querySelector('.popup-get-premium');
+            const popupFooter = footerDefault.querySelector('.popup-footer');
+            const footerDefaultTitle = footerDefault.querySelector('.footer__title');
+            footerDefaultTitle.setAttribute('title', i18n.getMessage('popup_adguard_footer_title'));
+
+            // CAUTION!
+            // Uncomment if condition bellow if you'd like to show
+            // get premium button in the action window (extension popup)
+
+            // if (!options.isDisableShowAdguardPromoInfo) {
+            //     getPremium.style.display = 'block';
+            //     popupFooter.style.display = 'none';
+            // } else {
+            //     getPremium.style.display = 'none';
+            //     popupFooter.style.display = 'block';
+            // }
+            this._appendTemplate(footerContainer, footerDefault);
         }
+    },
+
+    _bindAction: function (parentElement, selector, eventName, handler) {
+        const elements = parentElement.querySelectorAll(selector);
+        if (!elements || elements.length <= 0) {
+            return;
+        }
+        elements.forEach(element => element.addEventListener(eventName, handler));
     },
 
     _bindActions: function () {
-
-        var parent = $('.widjet-popup');
-
-        if (this.actionsBind === true) {
-            return;
-        }
-        this.actionsBind = true;
+        var parent = document.querySelector('.widget-popup');
 
         var self = this;
-        parent.on('click', '.siteReport', function (e) {
+        this._bindAction(parent, '.siteReport', 'click', function (e) {
             e.preventDefault();
             self.openSiteReportTab(self.tabInfo.url);
             popupPage.closePopup();
         });
-        parent.on('click', '.openSettings', function (e) {
+        this._bindAction(parent, '.openSettings', 'click', function (e) {
             e.preventDefault();
             self.openSettingsTab();
             popupPage.closePopup();
         });
-        parent.on('click', '.openAssistant', function (e) {
+        this._bindAction(parent, '.openAssistant', 'click', function (e) {
             e.preventDefault();
             self.openAssistantInTab();
             popupPage.closePopup();
         });
-        parent.on('click', '.openNotificationLink', function (e) {
+        this._bindAction(parent, '.openNotificationLink', 'click', function (e) {
             e.preventDefault();
             const { url } = self.options.notification;
             if (url) {
@@ -312,51 +782,78 @@ PopupController.prototype = {
                 popupPage.closePopup();
             }
         });
-        parent.on('click', '.closeNotification', function (e) {
+        this._bindAction(parent, '.closeNotification', 'click', function (e) {
             e.preventDefault();
-            var notification = parent.find('#popup-notification');
+            const notification = parent.querySelector('#popup-notification');
             if (notification) {
-                notification.hide();
+                notification.style.display = 'none';
                 popupPage.sendMessage({ type: 'setNotificationViewed', withDelay: false });
             }
         });
-        parent.on('click', '.openFilteringLog', function (e) {
+        const handlePopupGetPremiumClose = () => {
+            const getPremium = parent.querySelector('.popup-get-premium');
+            const popupFooter = parent.querySelector('.popup-footer');
+            if (getPremium) {
+                getPremium.style.display = 'none';
+                popupFooter.style.display = 'block';
+                popupPage.sendMessage({
+                    type: 'disableGetPremiumNotification',
+                });
+            }
+        };
+        // close popup get premium notification if user clicked close button
+        this._bindAction(parent, '.popup_get_premium_close', 'click', function (e) {
+            e.preventDefault();
+            handlePopupGetPremiumClose();
+        });
+        // close popup get premium if user clicked on the link
+        this._bindAction(parent, '.popup-get-premium', 'click', function () {
+            handlePopupGetPremiumClose();
+        });
+        this._bindAction(parent, '.openFilteringLog', 'click', function (e) {
             e.preventDefault();
             self.openFilteringLog();
             popupPage.closePopup();
         });
-        parent.on('click', '.resetStats', function (e) {
+        this._bindAction(parent, '.resetStats', 'click', function (e) {
             e.preventDefault();
             self.resetBlockedAdsCount();
-            parent.find('.w-popup-filter-title-blocked-all').text('0');
+            parent.querySelector('.w-popup-filter-title-blocked-all').textContent = '0';
         });
-        parent.on('click', '.openLink', function (e) {
+        this._bindAction(parent, '.openLink', 'click', function (e) {
             e.preventDefault();
             self.openLink(e.currentTarget.href);
             popupPage.closePopup();
         });
-        parent.on('click', '.openAbuse', function (e) {
+        this._bindAction(parent, '.openAbuse', 'click', function (e) {
             e.preventDefault();
             self.openAbuseTab(self.tabInfo.url);
             popupPage.closePopup();
         });
 
-        //checkbox
-        parent.on('change', '#siteFilteringDisabledCheckbox', function () {
+        // checkbox
+        this._bindAction(parent, '.changeDocumentWhiteListed', 'click', function (e) {
+            e.preventDefault();
             var tabInfo = self.tabInfo;
-            var isWhiteListed = !this.checked;
+            if (tabInfo.urlFilteringDisabled || tabInfo.applicationFilteringDisabled) {
+                return;
+            }
+            if (!tabInfo.canAddRemoveRule) {
+                return;
+            }
+            var isWhiteListed = tabInfo.documentWhiteListed;
             if (isWhiteListed) {
-                self.addWhiteListDomain(tabInfo.url);
-            } else {
                 self.removeWhiteListDomain(tabInfo.url);
+                isWhiteListed = false;
+            } else {
+                self.addWhiteListDomain(tabInfo.url);
+                isWhiteListed = true;
             }
             tabInfo.documentWhiteListed = isWhiteListed;
             tabInfo.userWhiteListed = isWhiteListed;
-            if (isWhiteListed) {
-                self.assistantTemplate.hide();
-            } else {
-                self.assistantTemplate.show();
-            }
+            tabInfo.totalBlockedTab = 0;
+            self._renderPopup(tabInfo);
+            self._bindActions();
             self.resizePopupWindow();
 
             if (tabInfo.adguardDetected) {
@@ -364,33 +861,85 @@ PopupController.prototype = {
             }
         });
 
-        //pause/unpause protection
-        parent.on('click', '.changeProtectionState', function (e) {
-
-            e.preventDefault();
-
-            var tabInfo = self.tabInfo;
-
-            var disabled = !tabInfo.applicationFilteringDisabled;
+        function changeProtectionState(disabled) {
+            const tabInfo = self.tabInfo;
+            if (tabInfo.applicationFilteringDisabled === disabled) {
+                return;
+            }
             self.changeApplicationFilteringDisabled(disabled);
-
             tabInfo.applicationFilteringDisabled = disabled;
+            tabInfo.totalBlockedTab = 0;
             self._renderPopup(tabInfo);
+            self._bindActions();
             self.resizePopupWindow();
+        }
+
+        // Disable filtering
+        var changeProtectionStateDisableButtons = document.querySelectorAll('.changeProtectionStateDisable');
+        changeProtectionStateDisableButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                changeProtectionState(true);
+            });
+        });
+
+        // Enable filtering
+        var changeProtectionStateEnableButtons = document.querySelectorAll('.changeProtectionStateEnable');
+        changeProtectionStateEnableButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                changeProtectionState(false);
+            });
+        });
+
+        // Tabs
+        parent.querySelectorAll('.tabbar .tab').forEach(function (t) {
+            t.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                parent.querySelectorAll('.tabbar .tab').forEach(function (tab) {
+                    tab.classList.remove('active');
+                });
+                e.target.classList.add('active');
+
+                var attr = e.target.getAttribute('tab-switch');
+                parent.querySelectorAll('.tab-switch-tab').forEach(function (tab) {
+                    tab.style.display = 'none';
+                });
+                parent.querySelectorAll('.tab-switch-tab[tab-switch="' + attr + '"]').forEach(function (tab) {
+                    tab.style.display = 'flex';
+                });
+            });
+        });
+
+        /**
+         * Stats filters
+         * we call _renderStatsBlock function w/o stats parameter, in order to update stats on
+         * every selection of range or blockedGroup option
+         */
+        this._bindAction(parent, '.statistics-select-time', 'change', function () {
+            self._renderStatsBlock();
+        });
+        this._bindAction(parent, '.statistics-select-type', 'change', function () {
+            self._renderStatsBlock();
         });
     },
 
     // http://jira.performix.ru/browse/AG-3474
     resizePopupWindowForMacOs: function () {
         var options = this.options;
-        if (options.isSafariBrowser || options.isFirefoxBrowser || !options.isMacOs) {
+        if (options.isFirefoxBrowser || !options.isMacOs) {
             return;
         }
         setTimeout(function () {
-            var block = $(".macoshackresize");
-            block.css("padding-top", "23px");
+            var block = document.querySelector(".macoshackresize");
+            block.style["padding-top"] = "4px";
         }, 1000);
-    }
+    },
+
+    _formatNumber: function (v) {
+        return v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    },
 };
 
 (function () {
@@ -407,7 +956,7 @@ PopupController.prototype = {
     controller.afterRender = function () {
         // Add some delay for show popup size properly
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/505
-        var timeout = controller.options.isSafariBrowser ? 150 : 10;
+        var timeout = 10;
         setTimeout(function () {
             controller.resizePopupWindow();
             controller.resizePopupWindowForMacOs();
@@ -419,8 +968,26 @@ PopupController.prototype = {
     });
 
     popupPage.sendMessage({ type: 'getTabInfoForPopup' }, function (message) {
-        $(document).ready(function () {
+        var onDocumentReady = function () {
             controller.render(message.frameInfo, message.options);
-        });
+        };
+
+        if (document.attachEvent ? document.readyState === 'complete' : document.readyState !== 'loading') {
+            onDocumentReady();
+        } else {
+            document.addEventListener('DOMContentLoaded', onDocumentReady);
+        }
+    });
+
+    popupPage.onMessage.addListener(function (message) {
+        switch (message.type) {
+            case 'updateTotalBlocked': {
+                const { tabInfo } = message;
+                controller.updateTotalBlocked(tabInfo);
+                break;
+            }
+            default:
+                break;
+        }
     });
 })();

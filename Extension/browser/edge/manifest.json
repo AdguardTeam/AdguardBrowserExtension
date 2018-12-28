@@ -48,7 +48,10 @@
 			"run_at": "document_start"
 		},
 		{
-			"all_frames": false,
+			"all_frames": true,
+			"css": [
+				"lib/content-script/css/alert-popup.css"
+			],
 			"js": [
 				"lib/content-script/content-utils.js"
 			],
@@ -56,6 +59,7 @@
 				"http://*/*",
 				"https://*/*"
 			],
+            "match_about_blank": true,
 			"run_at": "document_start"
 		},
 		{
@@ -73,7 +77,6 @@
 		{
 			"all_frames": false,
 			"js": [
-				"lib/libs/jquery-3.3.1.min.js",
 				"lib/pages/thankyou.js"
 			],
 			"matches": [
@@ -84,42 +87,12 @@
 		{
 			"all_frames": false,
 			"js": [
-				"lib/content-script/subscribe.js"
+				"lib/content-script/oauth.js"
 			],
 			"matches": [
-				"*://*.github.io/*",
-				"*://*.abpchina.org/*",
-				"*://*.abpindo.blogspot.com/*",
-				"*://*.abpvn.com/*",
-				"*://*.adblock-listefr.com/*",
-				"*://*.adblock.gardar.net/*",
-				"*://*.adblockplus.org/*",
-				"*://*.adblockplus.me/*",
-				"*://*.adguard.com/*",
-				"*://*.certyficate.it/*",
-				"*://*.code.google.com/*",
-				"*://*.dajbych.net/*",
-				"*://*.fanboy.co.nz/*",
-				"*://*.fredfiber.no/*",
-				"*://*.filterlists.com/*",
-				"*://*.gardar.net/*",
-				"*://*.github.com/*",
-				"*://*.henrik.schack.dk/*",
-				"*://*.latvian-list.site11.com/*",
-				"*://*.liamja.co.uk/*",
-				"*://*.malwaredomains.com/*",
-				"*://*.margevicius.lt/*",
-				"*://*.nauscopio.nireblog.com/*",
-				"*://*.nireblog.com/*",
-				"*://*.noads.it/*",
-				"*://*.schack.dk/*",
-				"*://*.spam404.com/*",
-				"*://*.stanev.org/*",
-				"*://*.void.gr/*",
-				"*://*.yoyo.org/*",
-				"*://*.zoso.ro/*"
+				"*://*.testsync.adguard.com/*"
 			],
-			"run_at": "document_idle"
+			"run_at": "document_end"
 		}
 	],
 
@@ -136,6 +109,7 @@
 		"webNavigation",
 		"storage",
 		"unlimitedStorage",
-		"contextMenus"
+		"contextMenus",
+		"cookies"
 	]
 }

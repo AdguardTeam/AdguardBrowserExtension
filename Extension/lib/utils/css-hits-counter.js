@@ -260,6 +260,20 @@ var CssHitsCounter = (function () { // jshint ignore:line
         });
     }
 
+    /**
+     * Appends node children to the array
+     * @param node - element whose children we would like to add
+     * @param arrayWithNodes - array where we add children
+     */
+    function appendChildren(node, arrayWithNodes) {
+        const children = node.querySelectorAll('*');
+        if (children && children.length > 0) {
+            for (let i = 0; i < children.length; i += 1) {
+                arrayWithNodes.push(children[i]);
+            }
+        }
+    }
+
     function countCssHitsForMutations() {
         var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
         if (!MutationObserver) {
@@ -270,6 +284,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
             // Collect probe elements, count them, then remove from their targets
             var probeElements = [];
             var childrenOfProbeElements = [];
+            var potentialProbeElements = [];
             mutationRecords.forEach(function (mutationRecord) {
                 if (mutationRecord.addedNodes.length === 0) {
                     return;
@@ -284,18 +299,25 @@ var CssHitsCounter = (function () { // jshint ignore:line
 
                         // CSS rules could be applied to the nodes inside probe element
                         // that's why we get all child elements of added node
-                        var nodeChildren = node.querySelectorAll('*');
-                        if (nodeChildren && nodeChildren.length > 0) {
-                            for (var childIndex = 0; childIndex < nodeChildren.length; childIndex += 1) {
-                                childrenOfProbeElements.push(nodeChildren[childIndex]);
-                            }
-                        }
+                        appendChildren(node, childrenOfProbeElements);
 
                         observer.disconnect();
                         mutationRecord.target.appendChild(node);
+                    } else if (node.parentNode && target && node instanceof Element) {
+                        // Sometimes probe elements are appended to the DOM
+                        potentialProbeElements.push(node);
+                        appendChildren(node, potentialProbeElements);
                     }
                 }
             });
+
+            // If the list of potential probe elements is relatively small, we can count CSS hits immediately
+            if (potentialProbeElements.length > 0 && potentialProbeElements.length <= CSS_HITS_BATCH_SIZE) {
+                let result = countCssHitsForElements(potentialProbeElements);
+                if (result.length > 0) {
+                    onCssHitsFoundCallback(result);
+                }
+            }
 
             var allProbeElements = [];
 

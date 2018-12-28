@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import pp from 'preprocess';
-import {FIREFOX_LEGACY, FIREFOX_WEBEXT, BRANCH_DEV, BRANCH_BETA, BRANCH_RELEASE} from './consts';
+import {FIREFOX_WEBEXT, BRANCH_DEV, BRANCH_BETA, BRANCH_RELEASE} from './consts';
 
 
 /**
@@ -14,13 +14,6 @@ import {FIREFOX_LEGACY, FIREFOX_WEBEXT, BRANCH_DEV, BRANCH_BETA, BRANCH_RELEASE}
  */
 export function getExtensionNamePostfix (branch, browser, allowRemoteScripts) {
     switch (browser) {
-        case FIREFOX_LEGACY:
-            if (branch == BRANCH_BETA) {
-                return ' (Legacy)';
-            } else if (branch == BRANCH_DEV) {
-                return ' (Legacy Dev)';
-            }
-            break;
         case FIREFOX_WEBEXT:
             if (allowRemoteScripts) {
                 if (branch == BRANCH_BETA) {
@@ -89,12 +82,11 @@ export function preprocessAll (dest, data, done) {
     const filesToPreprocess = [
         path.join(dest, 'pages/popup.html'),
         path.join(dest, 'pages/filter-download.html'),
-        path.join(dest, 'pages/thankyou.html'),
         path.join(dest, 'pages/export.html'),
         path.join(dest, 'pages/log.html'),
         path.join(dest, 'pages/options.html'),
         path.join(dest, 'pages/sb.html'),
-        path.join(dest, 'lib/filter/filters.js'),
+        path.join(dest, 'lib/filter/filters.js')
     ];
 
     for (const filePath of filesToPreprocess) {

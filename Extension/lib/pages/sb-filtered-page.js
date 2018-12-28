@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global $, i18n, contentPage */
+/* global i18n, contentPage */
 
 function getQueryParameters(queryString) {
     var params = Object.create(null);
@@ -28,30 +28,31 @@ function getQueryParameters(queryString) {
     return params;
 }
 function hideElements(className) {
-    $.each($("." + className), function (idx, el) {
+    var elementsToHide = document.querySelectorAll("." + className);
+    elementsToHide.forEach(function (el) {
         el.className += "-hide";
     });
 }
 function onToggleClicked(toggleButton, reportButton, goButton) {
-    toggleButton.attr('class', 'hidden');
-    reportButton.attr('class', '');
-    goButton.attr('class', 'redlink');
+    toggleButton.setAttribute('class', 'hidden');
+    reportButton.setAttribute('class', '');
+    goButton.setAttribute('class', 'redlink');
 }
 
 function isValid(param) {
     return param && param.indexOf('<') < 0;
 }
 
-$(document).ready(function () {
+document.addEventListener("DOMContentLoaded", function () {
 
-    var toggleButton = $("#toggle-button");
-    var reportButton = $("#report-button");
-    var goButton = $("#go-button");
-    var goBackButton = $("#go-back-button");
+    var toggleButton = document.getElementById("toggle-button");
+    var reportButton = document.getElementById("report-button");
+    var goButton = document.getElementById("go-button");
+    var goBackButton = document.getElementById("go-back-button");
 
     var params = getQueryParameters(document.location.search.substring(1));
     var isMalware = params.malware || true;
-    if (isMalware == "true") {
+    if (isMalware === "true") {
         hideElements("phishing");
     } else {
         hideElements("malware");
@@ -64,7 +65,7 @@ $(document).ready(function () {
     if (host) {
         var decodeHost = decodeURIComponent(host);
         if (isValid(decodeHost)) {
-            reportButton.attr("href", "https://adguard.com/site.html?domain=" + host + "&utm_source=extension&aid=16593");
+            reportButton.setAttribute("href", "https://adguard.com/site.html?domain=" + host + "&utm_source=extension&aid=16593");
             i18n.translateElement(document.getElementById("malware-text"), "sb_malware_site", [decodeHost]);
             i18n.translateElement(document.getElementById("phishing-text"), "sb_phishing_site", [decodeHost]);
         }
@@ -73,8 +74,8 @@ $(document).ready(function () {
     if (url) {
         url = decodeURIComponent(url);
         if (isValid(url)) {
-            goButton.attr("href", url);
-            goButton.on('click', function (e) {
+            goButton.setAttribute("href", url);
+            goButton.addEventListener('click', function (e) {
                 e.preventDefault();
                 contentPage.sendMessage({type: 'openSafebrowsingTrusted', url: this.href});
             });
@@ -84,15 +85,15 @@ $(document).ready(function () {
     if (ref) {
         ref = decodeURIComponent(ref);
         if (isValid(ref)) {
-            goBackButton.attr("href", ref);
-            goBackButton.on('click', function (e) {
+            goBackButton.setAttribute("href", ref);
+            goBackButton.addEventListener('click', function (e) {
                 e.preventDefault();
                 document.location = ref;
             });
         }
     }
 
-    toggleButton.on('click', function (e) {
+    toggleButton.addEventListener('click', function (e) {
         e.preventDefault();
         onToggleClicked(toggleButton, reportButton, goButton);
     });

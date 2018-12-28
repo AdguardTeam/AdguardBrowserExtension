@@ -72,7 +72,7 @@
                     return null;
                 }
 
-                if (nameStartIndex > 0 && selector.charAt(nameStartIndex - 1) == '\\') {
+                if (nameStartIndex > 0 && selector.charAt(nameStartIndex - 1) === '\\') {
                     // Escaped colon character
                     return null;
                 }
@@ -120,37 +120,6 @@
         };
 
         /**
-         * Parses rule mask
-         *
-         * @param rule
-         * @param isExtendedCss
-         * @param isInjectRule
-         */
-        var parseMask = function (rule, isExtendedCss, isInjectRule) {
-            var mask;
-            var isException;
-            if (!isExtendedCss) {
-                if (isInjectRule) {
-                    isException = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE);
-                    mask = isException ? api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE : api.FilterRule.MASK_CSS_INJECT_RULE;
-                } else {
-                    isException = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_RULE);
-                    mask = isException ? api.FilterRule.MASK_CSS_EXCEPTION_RULE : api.FilterRule.MASK_CSS_RULE;
-                }
-            } else {
-                if (isInjectRule) {
-                    isException = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE);
-                    mask = isException ? api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE : api.FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE;
-                } else {
-                    isException = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE);
-                    mask = isException ? api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE : api.FilterRule.MASK_CSS_EXTENDED_CSS_RULE;
-                }
-            }
-
-            return mask;
-        };
-
-        /**
          * CssFilterRule constructor
          */
         var constructor = function (rule, filterId) {
@@ -181,7 +150,7 @@
                 // 2. Validate pseudo-classes
                 // https://github.com/AdguardTeam/AdguardForAndroid/issues/701
                 var pseudoClass = parsePseudoClass(cssContent);
-                if (pseudoClass !== null && ":style" == pseudoClass.name) {
+                if (pseudoClass !== null && ":style" === pseudoClass.name) {
                     isInjectRule = true;
                     cssContent = convertCssInjectionRule(pseudoClass, cssContent);
                 } else if (pseudoClass !== null) {
@@ -194,7 +163,12 @@
             if (isInjectRule) {
                 // Simple validation for css injection rules
                 if (!/{.+}/.test(cssContent)) {
-                    throw new Error("Invalid css injection rule, no style presented: " + rule);
+                    throw new Error(`Invalid css injection rule, no style presented: ${rule}`);
+                }
+                // discard css inject rules containing "url"
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1196
+                if (/url\(.*\)/gi.test(cssContent)) {
+                    throw new Error(`Css injection rule with 'url' was omitted: ${rule}`);
                 }
             }
 
