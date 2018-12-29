@@ -673,7 +673,6 @@ var AntiBannerFilters = function (options) {
 
     function updateCategoryFiltersInfo(groupId) {
         var groupFilters = getFiltersByGroupId(groupId, loadedFiltersInfo.filters);
-        var enabledFiltersCount = countEnabledFilters(groupFilters);
         var filtersNamesDescription = generateFiltersNamesDescription(groupFilters);
         var groupFiltersCount = groupFilters.length;
 
@@ -685,8 +684,7 @@ var AntiBannerFilters = function (options) {
         }
 
         const isCategoryEnabled = loadedFiltersInfo.isCategoryEnabled(groupId);
-        const isCheckboxChecked = typeof isCategoryEnabled === 'undefined' ? enabledFiltersCount > 0 : isCategoryEnabled;
-        CheckboxUtils.updateCheckbox([checkbox], isCheckboxChecked);
+        CheckboxUtils.updateCheckbox([checkbox], isCategoryEnabled);
     }
 
     function getFilterCategoryElement(category) {
