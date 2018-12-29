@@ -416,7 +416,7 @@ adguard.antiBannerService = (function (adguard) {
      */
     function loadGroupsStateInfo() {
         // Load filters state from the storage
-        const groupsStateInfo = adguard.filtersState.getGroupState();
+        const groupsStateInfo = adguard.filtersState.getGroupsState();
 
         const groups = adguard.subscriptions.getGroups();
 
@@ -1405,7 +1405,7 @@ adguard.filtersState = (function (adguard) {
     return {
         getFiltersVersion: getFiltersVersion,
         getFiltersState: getFiltersState,
-        getGroupState: getGroupsState,
+        getGroupsState: getGroupsState,
         // These methods are used only for migrate from old versions
         updateFilterVersion: updateFilterVersion,
         updateFilterState: updateFilterState,
