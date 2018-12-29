@@ -248,7 +248,7 @@ adguard.applicationUpdateService = (function (adguard) {
         return dfd;
     }
 
-    function onUpdateToThirdVersion() {
+    function handleUndefinedGroupStatuses() {
         const dfd = new adguard.utils.Promise();
 
         const filters = adguard.subscriptions.getFilters();
@@ -313,8 +313,8 @@ adguard.applicationUpdateService = (function (adguard) {
         if (adguard.utils.browser.isGreaterVersion("2.7.4", runInfo.prevVersion) && adguard.utils.browser.isFirefoxBrowser() && typeof browser !== 'undefined') {
             methods.push(onUpdateFirefoxWebExtRulesStorage);
         }
-        if (adguard.utils.browser.isGreaterOrEqualsVersion('3.0.0', runInfo.prevVersion)) {
-            methods.push(onUpdateToThirdVersion);
+        if (adguard.utils.browser.isGreaterVersion('3.0.3', runInfo.prevVersion)) {
+            methods.push(handleUndefinedGroupStatuses);
         }
 
         var dfd = executeMethods(methods);
