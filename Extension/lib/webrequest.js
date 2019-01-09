@@ -949,51 +949,13 @@
         }
     }, ['<all_urls>']);
 
-    const isSubscriptionSite = (url) => {
-        const subscriptionSites = [
-            'github.io',
-            'abpchina.org',
-            'abpindo.blogspot.com',
-            'abpvn.com',
-            'adblock-listefr.com',
-            'adblock.gardar.net',
-            'adblockplus.org',
-            'adblockplus.me',
-            'adguard.com',
-            'certyficate.it',
-            'code.google.com',
-            'dajbych.net',
-            'fanboy.co.nz',
-            'fredfiber.no',
-            'filterlists.com',
-            'gardar.net',
-            'github.com',
-            'henrik.schack.dk',
-            'latvian-list.site11.com',
-            'liamja.co.uk',
-            'malwaredomains.com',
-            'margevicius.lt',
-            'nauscopio.nireblog.com',
-            'nireblog.com',
-            'noads.it',
-            'schack.dk',
-            'spam404.com',
-            'stanev.org',
-            'void.gr',
-            'yoyo.org',
-            'zoso.ro',
-        ];
-        const { hostname } = new URL(url);
-        return subscriptionSites.includes(hostname);
-    };
     // Subscribe script is executed when onCommitted event fires because this event is the most reliable
     adguard.webNavigation.onCommitted.addListener((details) => {
-        const { tab, requestType, url } = details;
+        const { tab, requestType } = details;
         if ((requestType !== adguard.RequestTypes.DOCUMENT
             && requestType !== adguard.RequestTypes.SUBDOCUMENT)
             || adguard.frames.isTabAdguardDetected(tab)
-            || tab.tabId === adguard.BACKGROUND_TAB_ID
-            || !isSubscriptionSite(url)) {
+            || tab.tabId === adguard.BACKGROUND_TAB_ID) {
             return;
         }
         // load subscribe script on dom content load if integration mode is turned off
