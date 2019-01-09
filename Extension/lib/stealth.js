@@ -378,13 +378,11 @@ adguard.stealthService = (function (adguard) {
         }
 
         const context = adguard.requestContextStorage.get(requestId);
-        if (!context) {
+        if (!context || context.requestType !== adguard.RequestTypes.DOCUMENT) {
             return null;
         }
 
-        const tab = context.tab;
-        const requestUrl = context.requestUrl;
-        const requestType = context.requestType;
+        const { requestUrl, requestType, tab } = context;
 
         adguard.console.debug('Stealth service processing request url for {0}', requestUrl);
 

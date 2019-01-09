@@ -248,6 +248,32 @@ adguard.applicationUpdateService = (function (adguard) {
         return dfd;
     }
 
+    function handleUndefinedGroupStatuses() {
+        const dfd = new adguard.utils.Promise();
+
+        const filters = adguard.subscriptions.getFilters();
+
+        const filtersState = adguard.filtersState.getFiltersState();
+
+        const enabledFilters = filters.filter(filter => {
+            const { filterId } = filter;
+            return !!(filtersState[filterId] && filtersState[filterId].enabled);
+        });
+
+        const groupState = adguard.filtersState.getGroupsState();
+
+        enabledFilters.forEach(filter => {
+            const { groupId } = filter;
+            if (typeof groupState[groupId] === 'undefined') {
+                adguard.filters.enableGroup(filter.groupId);
+            }
+        });
+
+        dfd.resolve();
+
+        return dfd;
+    }
+
     /**
      * Async returns extension run info
      *
@@ -287,6 +313,9 @@ adguard.applicationUpdateService = (function (adguard) {
         if (adguard.utils.browser.isGreaterVersion("2.7.4", runInfo.prevVersion) && adguard.utils.browser.isFirefoxBrowser() && typeof browser !== 'undefined') {
             methods.push(onUpdateFirefoxWebExtRulesStorage);
         }
+        if (adguard.utils.browser.isGreaterVersion('3.0.3', runInfo.prevVersion)) {
+            methods.push(handleUndefinedGroupStatuses);
+        }
 
         var dfd = executeMethods(methods);
         dfd.then(callback);
@@ -294,7 +323,7 @@ adguard.applicationUpdateService = (function (adguard) {
 
     return {
         getRunInfo: getRunInfo,
-        onUpdate: onUpdate
+        onUpdate: onUpdate,
     };
 
 })(adguard);
