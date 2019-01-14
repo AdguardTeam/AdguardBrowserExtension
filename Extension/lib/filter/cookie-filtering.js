@@ -633,6 +633,7 @@ adguard.cookieFiltering = (function (adguard) {
 
         if (adguard.frames.shouldStopRequestProcess(tab)) {
             adguard.console.debug('Tab is whitelisted or protection is disabled');
+            cookiesMap.delete(requestId);
             return false;
         }
 
