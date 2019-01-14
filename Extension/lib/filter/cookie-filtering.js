@@ -478,11 +478,6 @@ adguard.cookieFiltering = (function (adguard) {
         const referrerUrl = context.referrerUrl;
         const requestType = context.requestType;
 
-        if (adguard.frames.shouldStopRequestProcess(tab)) {
-            adguard.console.debug('Tab is whitelisted or protection is disabled');
-            return false;
-        }
-
         const cookieHeader = adguard.utils.browser.findHeaderByName(requestHeaders, 'Cookie');
         const cookies = adguard.utils.cookie.parseCookie(cookieHeader ? cookieHeader.value : null);
         if (!cookies) {
@@ -555,11 +550,6 @@ adguard.cookieFiltering = (function (adguard) {
         const referrerUrl = context.referrerUrl;
         const requestType = context.requestType;
         const requestHost = adguard.utils.url.getHost(requestUrl);
-
-        if (adguard.frames.shouldStopRequestProcess(tab)) {
-            adguard.console.debug('Tab is whitelisted or protection is disabled');
-            return false;
-        }
 
         /**
          * Collects cookies that will be blocked or modified via Set-Cookie header
