@@ -79,7 +79,7 @@
                     locale: adguard.app.getLocale(),
                     mobile: adguard.prefs.mobile || false,
                 },
-                appVersion: adguard.app.getVersion(),
+                appVersion: adguard.app.getVersion()
             },
             constants: {
                 AntiBannerFiltersId: adguard.utils.filters.ids,

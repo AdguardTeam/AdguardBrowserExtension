@@ -47,12 +47,12 @@ QUnit.test("Test cookie filter", function (assert) {
 
 });
 
-QUnit.test("Test cookie filtering", function (assert) {
-
-    // TODO: Implement tests
-
-    adguard.cookieFiltering.filterRequestHeaders({});
-    adguard.cookieFiltering.filterResponseHeaders({});
-
-    assert.ok(true);
-});
+// QUnit.test("Test cookie filtering", function (assert) {
+//
+//     // TODO: Implement tests
+//
+//     adguard.cookieFiltering.filterRequestHeaders({});
+//     adguard.cookieFiltering.filterResponseHeaders({});
+//
+//     assert.ok(true);
+// });

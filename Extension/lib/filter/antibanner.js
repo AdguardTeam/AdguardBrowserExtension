@@ -416,7 +416,7 @@ adguard.antiBannerService = (function (adguard) {
      */
     function loadGroupsStateInfo() {
         // Load filters state from the storage
-        const groupsStateInfo = adguard.filtersState.getGroupState();
+        const groupsStateInfo = adguard.filtersState.getGroupsState();
 
         const groups = adguard.subscriptions.getGroups();
 
@@ -722,7 +722,7 @@ adguard.antiBannerService = (function (adguard) {
             for (let i = 0; i < filters.length; i += 1) {
                 const filter = filters[i];
                 const group = adguard.subscriptions.getGroup(filter.groupId);
-                if (filter.enabled && group.enabled) {
+                if (filter.enabled) {
                     dfds.push(loadFilterRulesFromStorage(filter.filterId, rulesFilterMap));
                 }
             }
@@ -1405,7 +1405,7 @@ adguard.filtersState = (function (adguard) {
     return {
         getFiltersVersion: getFiltersVersion,
         getFiltersState: getFiltersState,
-        getGroupState: getGroupsState,
+        getGroupsState: getGroupsState,
         // These methods are used only for migrate from old versions
         updateFilterVersion: updateFilterVersion,
         updateFilterState: updateFilterState,
