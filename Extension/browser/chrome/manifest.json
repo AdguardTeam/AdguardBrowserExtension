@@ -86,16 +86,6 @@
 				"*://*.adguard.com/*/thankyou.html*"
 			],
 			"run_at": "document_start"
-		},
-		{
-			"all_frames": false,
-			"js": [
-				"lib/content-script/oauth.js"
-			],
-			"matches": [
-				"*://*.testauth.adguard.com/*"
-			],
-			"run_at": "document_end"
 		}
 	],
 
@@ -112,8 +102,11 @@
 		"webNavigation",
 		"storage",
 		"unlimitedStorage",
-		"privacy",
 		"contextMenus",
 		"cookies"
+	],
+
+	"optional_permissions": [
+		"privacy"
 	]
 }
