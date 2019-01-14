@@ -463,14 +463,13 @@ adguard.cookieFiltering = (function (adguard) {
      * @return {boolean} True if headers were modified
      */
     var filterRequestHeaders = function (requestId, requestHeaders) {
-
-        const context = adguard.requestContextStorage.get(requestId);
-        if (!context) {
+        // Permission is not granted
+        if (!browser.cookies) {
             return false;
         }
 
-        // Permission is not granted
-        if (!browser.cookies) {
+        const context = adguard.requestContextStorage.get(requestId);
+        if (!context) {
             return false;
         }
 
@@ -478,6 +477,11 @@ adguard.cookieFiltering = (function (adguard) {
         const requestUrl = context.requestUrl;
         const referrerUrl = context.referrerUrl;
         const requestType = context.requestType;
+
+        if (adguard.frames.shouldStopRequestProcess(tab)) {
+            adguard.console.debug('Tab is whitelisted or protection is disabled');
+            return false;
+        }
 
         const cookieHeader = adguard.utils.browser.findHeaderByName(requestHeaders, 'Cookie');
         const cookies = adguard.utils.cookie.parseCookie(cookieHeader ? cookieHeader.value : null);
@@ -551,6 +555,11 @@ adguard.cookieFiltering = (function (adguard) {
         const referrerUrl = context.referrerUrl;
         const requestType = context.requestType;
         const requestHost = adguard.utils.url.getHost(requestUrl);
+
+        if (adguard.frames.shouldStopRequestProcess(tab)) {
+            adguard.console.debug('Tab is whitelisted or protection is disabled');
+            return false;
+        }
 
         /**
          * Collects cookies that will be blocked or modified via Set-Cookie header
@@ -631,6 +640,11 @@ adguard.cookieFiltering = (function (adguard) {
         }
 
         const tab = context.tab;
+
+        if (adguard.frames.shouldStopRequestProcess(tab)) {
+            adguard.console.debug('Tab is whitelisted or protection is disabled');
+            return false;
+        }
 
         const values = cookiesMap.get(requestId);
         if (!values || values.length === 0) {
