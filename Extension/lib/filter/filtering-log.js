@@ -346,6 +346,9 @@ adguard.filteringLog = (function (adguard) {
             // Copy useful properties
             addRuleToFilteringEvent(filteringEvent, cookieRule);
             filteringEvent.requestRule.isModifyingCookieRule = isModifyingCookieRule;
+            if (cookieRule.stealthActions) {
+                filteringEvent.stealthActions = cookieRule.stealthActions;
+            }
         }
 
         pushFilteringEvent(tabInfo, filteringEvent);

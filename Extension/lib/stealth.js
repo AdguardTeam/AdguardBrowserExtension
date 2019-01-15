@@ -63,6 +63,8 @@ adguard.stealthService = (function (adguard) {
         BLOCK_CHROME_CLIENT_DATA: 1 << 2,
         SEND_DO_NOT_TRACK: 1 << 3,
         STRIPPED_TRACKING_URL: 1 << 4,
+        FIRST_PARTY_COOKIES: 1 << 5,
+        THIRD_PARTY_COOKIES: 1 << 6,
     };
 
     /**
@@ -99,10 +101,13 @@ adguard.stealthService = (function (adguard) {
      * Generates rule removing cookies
      *
      * @param {number} maxAgeMinutes Cookie maxAge in minutes
+     * @param {number} stealthActions stealth actions to add to the rule
      */
-    const generateRemoveRule = function (maxAgeMinutes) {
+    const generateRemoveRule = function (maxAgeMinutes, stealthActions) {
         const maxAgeOption = maxAgeMinutes > 0 ? `;maxAge=${maxAgeMinutes * 60}` : '';
-        return new adguard.rules.UrlFilterRule(`$cookie=/.+/${maxAgeOption}`);
+        const rule = new adguard.rules.UrlFilterRule(`$cookie=/.+/${maxAgeOption}`);
+        rule.addStealthActions(stealthActions);
+        return rule;
     };
 
     /**
@@ -256,7 +261,7 @@ adguard.stealthService = (function (adguard) {
         // Remove cookie header for first-party requests
         const blockCookies = getStealthSettingValue(adguard.settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES);
         if (blockCookies) {
-            result.push(generateRemoveRule(adguard.settings.getProperty(adguard.settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME)));
+            result.push(generateRemoveRule(adguard.settings.getProperty(adguard.settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME), STEALTH_ACTIONS.FIRST_PARTY_COOKIES));
         }
 
         const blockThirdPartyCookies = getStealthSettingValue(adguard.settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES);
@@ -272,7 +277,7 @@ adguard.stealthService = (function (adguard) {
 
         // Remove cookie header for third-party requests
         if (thirdParty && !isMainFrame) {
-            result.push(generateRemoveRule(adguard.settings.getProperty(adguard.settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME)));
+            result.push(generateRemoveRule(adguard.settings.getProperty(adguard.settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME), STEALTH_ACTIONS.THIRD_PARTY_COOKIES));
         }
 
         adguard.console.debug('Stealth service processed lookup cookie rules for {0}', requestUrl);

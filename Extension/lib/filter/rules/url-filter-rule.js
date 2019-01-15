@@ -518,6 +518,10 @@
         return this.urlRegExpSource;
     };
 
+    UrlFilterRule.prototype.addStealthActions = function (actions) {
+        this.stealthActions = actions;
+    };
+
     /**
      * $replace modifier.
      * Learn more about this modifier syntax here:
