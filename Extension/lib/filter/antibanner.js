@@ -627,7 +627,8 @@ adguard.antiBannerService = (function (adguard) {
             // User filter should be the last
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/117
             var userRules = rulesFilterMap[adguard.utils.filters.USER_FILTER_ID];
-            addRulesAsync(adguard.utils.filters.USER_FILTER_ID, userRules, 0, userRules.length, prevDfd || rootDfd);
+            prevDfd = addRulesAsync(adguard.utils.filters.USER_FILTER_ID, userRules, 0, userRules.length, prevDfd || rootDfd);
+            dfds.push(prevDfd);
 
             adguard.utils.Promise.all(dfds).then(function () {
                 requestFilterInitialized();
