@@ -449,6 +449,27 @@ QUnit.test('replace filter with empty $replace modifier should remove all other 
     assert.equal(replaceRules.length, 1);
 });
 
+QUnit.test('stealth rules with $badfilter modifier', function (assert) {
+
+    const whiteListRule = new adguard.rules.UrlFilterRule('@@||example.org^$stealth');
+
+    const requestFilter = new adguard.RequestFilter();
+
+    requestFilter.addRule(whiteListRule);
+
+    let result = requestFilter.findStealthWhiteListRule('https://example.org', 'https://example.org', adguard.RequestTypes.DOCUMENT);
+
+    assert.ok(result);
+    assert.equal(result.ruleText, whiteListRule.ruleText);
+    assert.ok(result.whiteListRule);
+
+    const badFilterRule = new adguard.rules.UrlFilterRule('@@||example.org^$stealth,badfilter');
+    requestFilter.addRule(badFilterRule);
+    result = requestFilter.findStealthWhiteListRule('https://example.org', 'https://example.org', adguard.RequestTypes.DOCUMENT);
+
+    assert.notOk(result);
+});
+
 
 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1122
 QUnit.test('Rule with extension modifier should be omitted in request filter', function (assert) {
