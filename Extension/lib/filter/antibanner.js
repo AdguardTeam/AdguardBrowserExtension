@@ -522,7 +522,9 @@ adguard.antiBannerService = (function (adguard) {
          */
         var requestFilterInitialized = function () {
             // Request filter is ready
+            console.log('oldRequestFilter', getRequestFilterInfo());
             requestFilter = newRequestFilter;
+            console.log('newRequestFilter', getRequestFilterInfo());
 
             if (callback && typeof callback === 'function') {
                 callback();
@@ -574,6 +576,9 @@ adguard.antiBannerService = (function (adguard) {
                 const rule = adguard.rules.builder.createRule(ruleText, filterId, isTrustedFilter);
 
                 if (rule !== null) {
+                    if (filterId === 0) {
+                        console.log(rule);
+                    }
                     newRequestFilter.addRule(rule);
                 }
             }
@@ -700,65 +705,38 @@ adguard.antiBannerService = (function (adguard) {
          * @param rulesFilterMap Map for loading rules
          * @returns {*} Deferred object
          */
-        var loadFilterRulesFromStorage = function (filterId, rulesFilterMap) {
-            var dfd = new adguard.utils.Promise();
-
-            adguard.rulesStorage.read(filterId, function (rulesText) {
-                if (rulesText) {
-                    rulesFilterMap[filterId] = rulesText;
-                }
-                dfd.resolve();
+        const loadFilterRulesFromStorage = (filterId, rulesFilterMap) => {
+            return new Promise(resolve => {
+                adguard.rulesStorage.read(filterId, (rulesText) => {
+                    if (rulesText) {
+                        rulesFilterMap[filterId] = rulesText;
+                    }
+                    resolve();
+                });
             });
-
-            return dfd;
         };
 
         /**
          * STEP 1: load all filters from the storage.
          */
         const loadFilterRules = function () {
-            const dfds = [];
+            const promises = [];
             const filters = adguard.subscriptions.getFilters();
             for (let i = 0; i < filters.length; i += 1) {
                 const filter = filters[i];
                 const group = adguard.subscriptions.getGroup(filter.groupId);
-                if (filter.enabled) {
-                    dfds.push(loadFilterRulesFromStorage(filter.filterId, rulesFilterMap));
+                if (filter.enabled && group.enabled) {
+                    promises.push(loadFilterRulesFromStorage(filter.filterId, rulesFilterMap));
                 }
             }
-            dfds.push(loadUserRulesToRequestFilter(rulesFilterMap));
+            // get user filter rules from storage
+            promises.push(loadFilterRulesFromStorage(adguard.utils.filters.USER_FILTER_ID, rulesFilterMap));
 
             // Load all filters and then recreate request filter
-            adguard.utils.Promise.all(dfds).then(loadAllFilterRulesDone);
+            Promise.all(promises).then(loadAllFilterRulesDone);
         };
 
         loadFilterRules();
-    }
-
-    /**
-     * Adds user rules (got from the storage) to request filter
-     *
-     * @param rulesFilterMap Map for loading rules
-     * @returns {*} Deferred object
-     * @private
-     */
-    function loadUserRulesToRequestFilter(rulesFilterMap) {
-
-        var dfd = new adguard.utils.Promise();
-
-        var filterId = adguard.utils.filters.USER_FILTER_ID;
-        adguard.rulesStorage.read(filterId, function (rulesText) {
-
-            if (!rulesText) {
-                dfd.resolve();
-                return;
-            }
-
-            rulesFilterMap[filterId] = rulesText;
-            dfd.resolve();
-        });
-
-        return dfd;
     }
 
     /**
