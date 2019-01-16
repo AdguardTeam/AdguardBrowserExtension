@@ -286,7 +286,7 @@ adguard.stealthService = (function (adguard) {
     };
 
     /**
-     * Checks if tab if whitelisted for stealth
+     * Checks if tab is whitelisted for stealth
      *
      * @param requestUrl
      * @param referrerUrl
