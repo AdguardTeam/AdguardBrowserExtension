@@ -436,8 +436,7 @@
         findStealthWhiteListRule: function (requestUrl, referrer, requestType) {
             const refHost = adguard.utils.url.getHost(referrer);
             const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrer);
-
-            return this.stealthFilter.isFiltered(requestUrl, refHost, requestType, thirdParty);
+            return this.stealthFilter.isFiltered(referrer, refHost, requestType, thirdParty);
         },
 
         /**
