@@ -576,66 +576,55 @@ adguard.antiBannerService = (function (adguard) {
                 const rule = adguard.rules.builder.createRule(ruleText, filterId, isTrustedFilter);
 
                 if (rule !== null) {
-                    if (filterId === 0) {
-                        console.log(rule);
-                    }
                     newRequestFilter.addRule(rule);
                 }
             }
         };
 
         /**
-         * Asyncronously adds rules to the request filter.
+         * Asynchronously adds rules to the request filter.
          */
-        var addRulesAsync = function (filterId, rulesTexts, startIdx, stopIdx, prevDfd) {
-
-            var dfd = new adguard.utils.Promise();
-
-            prevDfd.then(function () {
-                setTimeout(function () {
+        const addRulesAsync = (filterId, rulesTexts, startIdx, stopIdx, prevPromise) => new Promise(resolve => {
+            prevPromise.then(() => {
+                setTimeout(() => {
                     addRules(filterId, rulesTexts, startIdx, stopIdx);
-                    dfd.resolve();
+                    resolve();
                 }, 1);
             });
-
-            return dfd;
-        };
+        });
 
         /**
          * Asynchronously fills request filter with rules.
          */
         var fillRequestFilterAsync = function () {
-            // Async loading starts when we resolve this promise
-            var rootDfd = new adguard.utils.Promise();
-            var prevDfd = null;
-            var dfds = [];
+            const rootPromise = Promise.resolve();
+            let prevPromise = null;
+            const promises = [];
 
             // Go through all filters in the map
-            for (var filterId in rulesFilterMap) { // jshint ignore:line
+            for (let filterId in rulesFilterMap) { // jshint ignore:line
                 // To number
                 filterId = filterId - 0;
-                if (filterId != adguard.utils.filters.USER_FILTER_ID) {
-                    var rulesTexts = rulesFilterMap[filterId];
+                if (filterId !== adguard.utils.filters.USER_FILTER_ID) {
+                    const rulesTexts = rulesFilterMap[filterId];
 
-                    for (var i = 0; i < rulesTexts.length; i += asyncStep) {
-                        prevDfd = addRulesAsync(filterId, rulesTexts, i, i + asyncStep, prevDfd || rootDfd);
-                        dfds.push(prevDfd);
+                    for (let i = 0; i < rulesTexts.length; i += asyncStep) {
+                        prevPromise = addRulesAsync(filterId, rulesTexts, i, i + asyncStep, prevPromise || rootPromise);
+                        promises.push(prevPromise);
                     }
                 }
             }
 
             // User filter should be the last
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/117
-            var userRules = rulesFilterMap[adguard.utils.filters.USER_FILTER_ID];
-            prevDfd = addRulesAsync(adguard.utils.filters.USER_FILTER_ID, userRules, 0, userRules.length, prevDfd || rootDfd);
-            dfds.push(prevDfd);
+            const userFilterId = adguard.utils.filters.USER_FILTER_ID;
+            const userRules = rulesFilterMap[userFilterId];
+            prevPromise = addRulesAsync(userFilterId, userRules, 0, userRules.length, prevPromise || rootPromise);
+            promises.push(prevPromise);
 
-            adguard.utils.Promise.all(dfds).then(function () {
+            Promise.all(promises).then(function () {
                 requestFilterInitialized();
             });
-
-            // Start execution
-            rootDfd.resolve();
         };
 
         /**
