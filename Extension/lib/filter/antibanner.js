@@ -522,9 +522,7 @@ adguard.antiBannerService = (function (adguard) {
          */
         var requestFilterInitialized = function () {
             // Request filter is ready
-            console.log('oldRequestFilter', getRequestFilterInfo());
             requestFilter = newRequestFilter;
-            console.log('newRequestFilter', getRequestFilterInfo());
 
             if (callback && typeof callback === 'function') {
                 callback();
@@ -695,16 +693,14 @@ adguard.antiBannerService = (function (adguard) {
          * @param rulesFilterMap Map for loading rules
          * @returns {*} Deferred object
          */
-        const loadFilterRulesFromStorage = (filterId, rulesFilterMap) => {
-            return new Promise(resolve => {
-                adguard.rulesStorage.read(filterId, (rulesText) => {
-                    if (rulesText) {
-                        rulesFilterMap[filterId] = rulesText;
-                    }
-                    resolve();
-                });
+        const loadFilterRulesFromStorage = (filterId, rulesFilterMap) => new Promise(resolve => {
+            adguard.rulesStorage.read(filterId, (rulesText) => {
+                if (rulesText) {
+                    rulesFilterMap[filterId] = rulesText;
+                }
+                resolve();
             });
-        };
+        });
 
         /**
          * STEP 1: load all filters from the storage.
