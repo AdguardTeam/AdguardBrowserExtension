@@ -274,13 +274,16 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                 addMenu('context_block_site_ads');
                 addMenu('context_block_site_element', {contexts: ["image", "video", "audio"]});
             }
-            addMenu('context_open_log');
             addMenu('context_security_report');
             addMenu('context_complaint_website');
+            addSeparator();
             if (!tabInfo.adguardDetected) {
+                addMenu('context_update_antibanner_filters');
                 addSeparator();
                 addMenu('context_open_settings');
-                addMenu('context_update_antibanner_filters');
+            }
+            addMenu('context_open_log');
+            if (!tabInfo.adguardDetected) {
                 addMenu('context_disable_protection');
             }
         }
