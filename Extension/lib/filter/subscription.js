@@ -132,6 +132,7 @@ adguard.subscriptions = (function (adguard) {
         this.expires = expires;
         this.subscriptionUrl = subscriptionUrl;
         this.tags = tags;
+        // Custom filters data
         if (typeof customUrl !== 'undefined') {
             this.customUrl = customUrl;
         }
@@ -278,7 +279,7 @@ adguard.subscriptions = (function (adguard) {
      *
      * @param filter
      */
-    const saveCustomFilter = (filter) => {
+    const saveCustomFilterInStorage = (filter) => {
         console.log(filter);
         const customFilters = loadCustomFilters();
         // check if filter exists
@@ -340,6 +341,21 @@ adguard.subscriptions = (function (adguard) {
         return CryptoJS.MD5(rulesText).toString();
     };
 
+    const updateVersionAndHash = (version, hash, filter) => {
+        // set last hash and version
+        filter.hash = hash;
+        filter.version = version;
+        filters = filters.map(f => {
+            if (f.filterId === filter.filterId) {
+                return filter;
+            }
+            return f;
+        });
+        filtersMap[filter.filterId] = filter;
+        // Save filter in separate storage
+        saveCustomFilterInStorage(filter);
+    };
+
     /**
      * Adds or updates custom filter
      *
@@ -351,7 +367,6 @@ adguard.subscriptions = (function (adguard) {
         const { title, trusted } = options;
         adguard.backend.loadFilterRulesBySubscriptionUrl(url, function (rules) {
             const filterId = addFilterId();
-            const filterData = parseFilterDataFromHeader(rules);
             let {
                 name,
                 description,
@@ -359,18 +374,14 @@ adguard.subscriptions = (function (adguard) {
                 version,
                 expires,
                 timeUpdated,
-            } = filterData;
+            } = parseFilterDataFromHeader(rules);
             name = name || title;
-            // .toISOString() method used instead of .toString() method because of
-            // moment.js library deprecation warning:
-            // http://momentjs.com/guides/#/warnings/js-date/
             timeUpdated = timeUpdated || new Date().toISOString();
             const groupId = CUSTOM_FILTERS_GROUP_ID;
             const subscriptionUrl = url;
             const languages = [];
             const displayNumber = 0;
             const tags = [0];
-            let rulesCount = rules.length;
 
             let hash;
             if (!version) {
@@ -401,41 +412,21 @@ adguard.subscriptions = (function (adguard) {
                     expires,
                     subscriptionUrl,
                     tags,
+                    customUrl: url,
+                    hash,
+                    trusted,
                 });
 
                 filter.loaded = true;
-
-                // custom filters have special fields
-                filter.customUrl = url;
-                filter.rulesCount = rulesCount;
-                filter.hash = hash;
-                if (trusted) {
-                    filter.trusted = trusted;
-                }
-
                 filters.push(filter);
                 filtersMap[filter.filterId] = filter;
 
                 // Save filter in separate storage
-                saveCustomFilter(filter);
-
+                saveCustomFilterInStorage(filter);
                 adguard.listeners.notifyListeners(adguard.listeners.SUCCESS_DOWNLOAD_FILTER, filter);
             }
 
-            // update hash and version
-            filter.hash = hash;
-            filter.version = version;
-            filters = filters.map(f => {
-                if (f.filterId === filter.filterId) {
-                    f.hash = hash;
-                    f.version = version;
-                    return f;
-                }
-                return f;
-            });
-            filtersMap[filterId] = filter;
-            // Save filter in separate storage
-            saveCustomFilter(filter);
+            updateVersionAndHash(version, hash, filter);
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, filter, rules);
 
             callback(filter.filterId);
@@ -445,7 +436,6 @@ adguard.subscriptions = (function (adguard) {
         });
     };
 
-    // TODO may be you should save filter data in the temp storage
     const getCustomFilterInfo = (url, options, callback) => {
         const { title } = options;
 
@@ -477,8 +467,6 @@ adguard.subscriptions = (function (adguard) {
             let filter = filters.find(function (f) {
                 return f.customUrl === url;
             });
-
-            // console.log(didFilterUpdate(version, hash, filter));
 
             if (filter && !didFilterUpdate(version, hash, filter)) {
                 callback();
