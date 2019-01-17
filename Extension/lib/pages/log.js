@@ -532,7 +532,7 @@ PageController.prototype = {
 
         event.filterName = '';
 
-        if (event.requestRule && event.requestRule.filterId) {
+        if (event.requestRule && event.requestRule.filterId !== undefined) {
             event.filterName = RequestWizard.getFilterName(event.requestRule.filterId);
         } else if (event.stealthActions) {
             event.filterName = i18n.getMessage('filtering_log_privacy_applied_rules');

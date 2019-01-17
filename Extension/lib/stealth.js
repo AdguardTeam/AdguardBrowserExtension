@@ -175,7 +175,7 @@ adguard.stealthService = (function (adguard) {
         const stealthWhiteListRule = findStealthWhitelistRule(requestUrl, mainFrameUrl, requestType);
         if (stealthWhiteListRule) {
             adguard.console.debug('Whitelist stealth rule found');
-            adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, mainFrameUrl, requestType, stealthWhiteListRule);
+            adguard.requestContextStorage.update(requestId, { requestRule: stealthWhiteListRule });
             return false;
         }
 

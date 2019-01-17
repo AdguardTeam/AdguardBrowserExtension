@@ -437,7 +437,7 @@
             const refHost = adguard.utils.url.getHost(referrer);
             const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrer);
 
-            let rule = this.stealthFilter.isFiltered(requestUrl, refHost, requestType, thirdParty);
+            let rule = this.stealthFilter.isFiltered(referrer, refHost, requestType, thirdParty);
 
             rule = this._checkBadFilterExceptions(rule);
 
