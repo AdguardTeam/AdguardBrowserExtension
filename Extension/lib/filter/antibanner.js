@@ -617,7 +617,9 @@ adguard.antiBannerService = (function (adguard) {
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/117
             const userFilterId = adguard.utils.filters.USER_FILTER_ID;
             const userRules = rulesFilterMap[userFilterId];
-            prevPromise = addRulesAsync(userFilterId, userRules, 0, userRules.length, prevPromise || rootPromise);
+            const startIndex = 0;
+            const endIndex = userRules.length;
+            prevPromise = addRulesAsync(userFilterId, userRules, startIndex, endIndex, prevPromise || rootPromise);
             promises.push(prevPromise);
 
             Promise.all(promises).then(function () {
