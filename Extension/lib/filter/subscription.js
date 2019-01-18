@@ -302,9 +302,9 @@ adguard.subscriptions = (function (adguard) {
      * @param callback
      */
     const updateCustomFilter = function (url, options, callback) {
-        const { title, trusted } = options;
+        const { title, trusted, filterId: optFilterId } = options;
         adguard.backend.loadFilterRulesBySubscriptionUrl(url, function (rules) {
-            const filterId = addFilterId();
+            const filterId = optFilterId || addFilterId();
             const filterData = parseFilterDataFromHeader(rules);
             let {
                 name,
@@ -631,6 +631,10 @@ adguard.subscriptions = (function (adguard) {
         return filters;
     };
 
+    const getCustomFilters = function () {
+        return filters.filter(f => f.customUrl);
+    };
+
     /**
      * Gets filter metadata by filter identifier
      */
@@ -743,6 +747,7 @@ adguard.subscriptions = (function (adguard) {
         getGroup: getGroup,
         groupHasEnabledStatus: groupHasEnabledStatus,
         getFilters: getFilters,
+        getCustomFilters: getCustomFilters,
         getFilter: getFilter,
         isTrustedFilter: isTrustedFilter,
         createSubscriptionFilterFromJSON: createSubscriptionFilterFromJSON,
