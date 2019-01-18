@@ -117,7 +117,7 @@ adguard.subscriptions = (function (adguard) {
             tags,
             customUrl,
             trusted,
-            hash,
+            checksum,
         } = filterData;
 
         this.filterId = filterId;
@@ -139,8 +139,8 @@ adguard.subscriptions = (function (adguard) {
         if (typeof trusted !== 'undefined') {
             this.trusted = trusted;
         }
-        if (typeof hash !== 'undefined') {
-            this.hash = hash;
+        if (typeof checksum !== 'undefined') {
+            this.checksum = checksum;
         }
     };
 
@@ -190,7 +190,7 @@ adguard.subscriptions = (function (adguard) {
         const tags = filter.tags;
         const customUrl = filter.customUrl;
         const trusted = filter.trusted;
-        const hash = filter.hash;
+        const checksum = filter.checksum;
         if (tags.length === 0) {
             tags.push(0);
         }
@@ -210,7 +210,7 @@ adguard.subscriptions = (function (adguard) {
             tags,
             customUrl,
             trusted,
-            hash,
+            checksum,
         });
     };
 
@@ -313,46 +313,46 @@ adguard.subscriptions = (function (adguard) {
     };
 
     /**
-     * Compares filter version or filter hash
+     * Compares filter version or filter checksum
      * @param newVersion
-     * @param newHash
+     * @param newChecksum
      * @param oldFilter
      * @returns {*}
      */
-    function didFilterUpdate(newVersion, newHash, oldFilter) {
+    function didFilterUpdate(newVersion, newChecksum, oldFilter) {
         if (newVersion) {
             return !adguard.utils.browser.isGreaterOrEqualsVersion(oldFilter.version, newVersion);
         }
-        if (!oldFilter.hash) {
+        if (!oldFilter.checksum) {
             return true;
         }
-        return newHash !== oldFilter.hash;
+        return newChecksum !== oldFilter.checksum;
     }
 
     /**
-     * Generates hash for the filter content
+     * Count md5 checksum for the filter content
      * @param {Array<String>} rules
-     * @returns {String} hash string
+     * @returns {String} checksum string
      */
-    const generateHash = (rules) => {
+    const getChecksum = (rules) => {
         const rulesText = rules.join('\n');
         return CryptoJS.MD5(rulesText).toString();
     };
 
     /**
-     * Updates filter hash and version in the storage and internal structures
+     * Updates filter checksum and version in the storage and internal structures
      * @param version
-     * @param hash
+     * @param checksum
      * @param filter
      */
-    const updateVersionAndHash = (version, hash, filter) => {
-        // set last hash and version
-        filter.hash = hash;
+    const updateVersionAndChecksum = (version, checksum, filter) => {
+        // set last checksum and version
+        filter.checksum = checksum;
         filter.version = version;
         filters = filters.map(f => {
             if (f.filterId === filter.filterId) {
                 f.version = version;
-                f.hash = hash;
+                f.checksum = checksum;
                 return f;
             }
             return f;
@@ -388,9 +388,9 @@ adguard.subscriptions = (function (adguard) {
             const displayNumber = 0;
             const tags = [0];
 
-            let hash;
+            let checksum;
             if (!version) {
-                hash = generateHash(rules);
+                checksum = getChecksum(rules);
             }
 
             // Check if filter from this url was added before
@@ -399,7 +399,7 @@ adguard.subscriptions = (function (adguard) {
             });
 
             if (filter) {
-                if (!didFilterUpdate(version, hash, filter)) {
+                if (!didFilterUpdate(version, checksum, filter)) {
                     callback();
                     return;
                 }
@@ -418,7 +418,7 @@ adguard.subscriptions = (function (adguard) {
                     subscriptionUrl,
                     tags,
                     customUrl: url,
-                    hash,
+                    checksum,
                     trusted,
                 });
 
@@ -431,7 +431,7 @@ adguard.subscriptions = (function (adguard) {
                 adguard.listeners.notifyListeners(adguard.listeners.SUCCESS_DOWNLOAD_FILTER, filter);
             }
 
-            updateVersionAndHash(version, hash, filter);
+            updateVersionAndChecksum(version, checksum, filter);
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, filter, rules);
 
             callback(filter.filterId);
