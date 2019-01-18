@@ -280,7 +280,6 @@ adguard.subscriptions = (function (adguard) {
      * @param filter
      */
     const saveCustomFilterInStorage = (filter) => {
-        console.log(filter);
         const customFilters = loadCustomFilters();
         // check if filter exists
         let found = false;
@@ -321,7 +320,6 @@ adguard.subscriptions = (function (adguard) {
      * @returns {*}
      */
     function didFilterUpdate(newVersion, newHash, oldFilter) {
-        console.log(newVersion, newHash, oldFilter);
         if (newVersion) {
             return !adguard.utils.browser.isGreaterOrEqualsVersion(oldFilter.version, newVersion);
         }
@@ -541,7 +539,6 @@ adguard.subscriptions = (function (adguard) {
             // Load custom filters
             const customFilters = loadCustomFilters();
             customFilters.forEach(f => {
-                console.log(f);
                 const customFilter = createSubscriptionFilterFromJSON(f);
                 filters.push(customFilter);
                 filtersMap[customFilter.filterId] = customFilter;
