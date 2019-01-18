@@ -275,7 +275,7 @@ adguard.subscriptions = (function (adguard) {
     };
 
     /**
-     * Saves custom filter to storage
+     * Saves custom filter to storage or updates it if filter with same id was found
      *
      * @param filter
      */
@@ -339,6 +339,12 @@ adguard.subscriptions = (function (adguard) {
         return CryptoJS.MD5(rulesText).toString();
     };
 
+    /**
+     * Updates filter hash and version in the storage and internal structures
+     * @param version
+     * @param hash
+     * @param filter
+     */
     const updateVersionAndHash = (version, hash, filter) => {
         // set last hash and version
         filter.hash = hash;
@@ -352,7 +358,6 @@ adguard.subscriptions = (function (adguard) {
             return f;
         });
         filtersMap[filter.filterId] = filter;
-        // Save filter in separate storage
         saveCustomFilterInStorage(filter);
     };
 
