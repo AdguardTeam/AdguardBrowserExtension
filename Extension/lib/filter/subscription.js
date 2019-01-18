@@ -347,7 +347,9 @@ adguard.subscriptions = (function (adguard) {
         filter.version = version;
         filters = filters.map(f => {
             if (f.filterId === filter.filterId) {
-                return filter;
+                f.version = version;
+                f.hash = hash;
+                return f;
             }
             return f;
         });
@@ -451,10 +453,6 @@ adguard.subscriptions = (function (adguard) {
 
             name = name || title;
             timeUpdated = timeUpdated || new Date().toISOString();
-            let hash;
-            if (!version) {
-                hash = generateHash(rules);
-            }
 
             const groupId = CUSTOM_FILTERS_GROUP_ID;
             const subscriptionUrl = url;
@@ -468,7 +466,7 @@ adguard.subscriptions = (function (adguard) {
                 return f.customUrl === url;
             });
 
-            if (filter && !didFilterUpdate(version, hash, filter)) {
+            if (filter) {
                 callback();
                 return;
             }
@@ -491,7 +489,6 @@ adguard.subscriptions = (function (adguard) {
             // custom filters have special fields
             filter.customUrl = url;
             filter.rulesCount = rulesCount;
-            filter.hash = hash;
 
             callback(filter);
         }, function (cause) {
