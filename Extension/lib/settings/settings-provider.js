@@ -99,48 +99,53 @@
      * Collect enabled filters
      * @returns {Array}
      */
-    var collectEnabledFilterIds = function () {
-        // Collect enabled filters
-        var enabledFilters = adguard.filters.getEnabledFilters();
-        var enabledFilterIds = [];
-        for (var i = 0; i < enabledFilters.length; i++) {
-            var filter = enabledFilters[i];
-            enabledFilterIds.push(filter.filterId);
-        }
+    const collectEnabledFilterIds = function () {
+        const enabledFilters = adguard.filters.getEnabledFilters();
+        return enabledFilters.map(filter => filter.filterId);
+    };
 
-        return enabledFilterIds;
+    const prepareCustomFiltersData = () => {
+        const customFilters = adguard.subscriptions.getCustomFilters();
+        return customFilters.map(filter => {
+            return {
+                customUrl: filter.customUrl,
+                filterId: filter.filterId,
+                title: filter.name || '',
+                trusted: filter.trusted,
+            };
+        });
     };
 
     /**
      * Loads filters settings section
      * @param callback
      */
-    var loadFiltersSection = function (callback) {
-        var enabledFilterIds = collectEnabledFilterIds();
+    const loadFiltersSection = (callback) => {
+        const enabledFilterIds = collectEnabledFilterIds();
+        const customFiltersData = prepareCustomFiltersData();
 
         // Collect whitelist/blacklist domains and whitelist mode
-        var whitelistDomains = adguard.whitelist.getWhiteListedDomains() || [];
-        var blocklistDomains = adguard.whitelist.getBlockListedDomains() || [];
-        var defaultWhiteListMode = !!adguard.whitelist.isDefaultMode();
+        const whiteListDomains = adguard.whitelist.getWhiteListedDomains() || [];
+        const blockListDomains = adguard.whitelist.getBlockListedDomains() || [];
+        const defaultWhiteListMode = !!adguard.whitelist.isDefaultMode();
 
         // Collect user rules
+        // TODO keep track of enabled groups too
         adguard.userrules.getUserRulesText(function (content) {
-            var section = {
-                "filters": {
-                    "enabled-filters": enabledFilterIds,
-                    "custom-filters": [
-                        // Custom filters are not supported yet
-                    ],
-                    "user-filter": {
-                        "rules": content,
-                        "disabled-rules": ""
+            const section = {
+                'filters': {
+                    'enabled-filters': enabledFilterIds,
+                    'custom-filters': customFiltersData,
+                    'user-filter': {
+                        'rules': content,
+                        'disabled-rules': '',
                     },
-                    "whitelist": {
-                        "inverted": !defaultWhiteListMode,
-                        "domains": whitelistDomains,
-                        "inverted-domains": blocklistDomains
-                    }
-                }
+                    'whitelist': {
+                        'inverted': !defaultWhiteListMode,
+                        'domains': whiteListDomains,
+                        'inverted-domains': blockListDomains,
+                    },
+                },
             };
 
             callback(section);
@@ -268,35 +273,105 @@
      */
     var applyFiltersSection = function (section, callback) {
 
-        var syncSuppressOptions = {
-            syncSuppress: true
+        const syncSuppressOptions = {
+            syncSuppress: true,
         };
 
-        var whiteListSection = section.filters["whitelist"] || {}; // jshint ignore:line
-        var whitelistDomains = whiteListSection.domains || [];
-        var blacklistDomains = whiteListSection["inverted-domains"] || [];
+        const whiteListSection = section.filters['whitelist'] || {}; // jshint ignore:line
+        const whitelistDomains = whiteListSection.domains || [];
+        const blacklistDomains = whiteListSection['inverted-domains'] || [];
 
         // Apply whitelist/blacklist domains and whitelist mode
         adguard.whitelist.configure(whitelistDomains, blacklistDomains, !whiteListSection.inverted, syncSuppressOptions);
 
-        var userFilterSection = section.filters["user-filter"] || {};
-        var userRules = userFilterSection.rules || "";
+        const userFilterSection = section.filters['user-filter'] || {};
+        const userRules = userFilterSection.rules || '';
 
         // Apply user rules
         adguard.userrules.updateUserRulesText(userRules, syncSuppressOptions);
 
-        // Apply enabled filters
-        var enabledFilterIds = section.filters['enabled-filters'] || [];
-        adguard.filters.addAndEnableFilters(enabledFilterIds, function () {
-            var enabledFilters = adguard.filters.getEnabledFilters();
-            for (var i = 0; i < enabledFilters.length; i++) {
-                var filterId = enabledFilters[i].filterId;
-                if (enabledFilterIds.indexOf(filterId) < 0) {
-                    adguard.filters.disableFilters([filterId], syncSuppressOptions);
+        // Install custom filters
+
+        const customFiltersData = section.filters['custom-filters'] || [];
+        const enableCustomFilter = (customFilterData) => {
+            const {
+                customUrl, title, trusted, filterId,
+            } = customFilterData;
+            return new Promise((resolve, reject) => {
+                const options = { title, trusted, filterId };
+                adguard.filters.loadCustomFilter(
+                    customUrl,
+                    options,
+                    (filter) => {
+                        resolve(filter);
+                    },
+                    () => {
+                        reject();
+                    }
+                );
+            });
+        };
+
+        // TODO remove all custom filters before adding new custom filters
+
+        const promise = customFiltersData.reduce((promiseAcc, data) => {
+            return promiseAcc
+                .then((acc) => {
+                    return enableCustomFilter(data)
+                        .then(customFilter => {
+                            return [...acc, { error: null, filter: customFilter }];
+                        })
+                        .catch(() => {
+                            const { customUrl } = data;
+                            const message = `Some error happened while downloading: ${customUrl}`;
+                            return [...acc, { error: message }];
+                        });
+                });
+        }, Promise.resolve([]));
+
+        const enableFilters = (enabledFilterIds) => {
+            adguard.filters.addAndEnableFilters(enabledFilterIds, function () {
+                const enabledFilters = adguard.filters.getEnabledFilters();
+                console.log(enabledFilters);
+                for (let i = 0; i < enabledFilters.length; i += 1) {
+                    const filterId = enabledFilters[i].filterId;
+                    if (enabledFilterIds.indexOf(filterId) < 0) {
+                        adguard.filters.disableFilters([filterId], syncSuppressOptions);
+                    }
                 }
-            }
-            callback(true);
-        }, syncSuppressOptions);
+                callback(true);
+            }, syncSuppressOptions);
+        };
+
+        // Move this variable to the constants
+        const CUSTOM_FILTERS_MAX_ID = 1000;
+
+        promise
+            .then(customFilters => {
+                console.log(customFilters);
+                return customFilters
+                    .filter(customFilter => customFilter.error === null)
+                    .map(customFilter => customFilter.filter);
+            })
+            .then((customFilters) => {
+                const enabledFilterIds = section.filters['enabled-filters'] || [];
+                // remove custom filter which couldn't be added, because of network errors for example
+                const filteredFilterIds = enabledFilterIds.filter(filterId => {
+                    if (filterId < CUSTOM_FILTERS_MAX_ID) {
+                        return true;
+                    }
+                    const found = customFilters.find(filter => {
+                        return filter.filterId === filterId;
+                    });
+                    console.log(found);
+                    return !!found;
+                });
+                console.log(filteredFilterIds);
+                enableFilters(filteredFilterIds);
+            })
+            .catch(err => {
+                console.log(err);
+            });
     };
 
     /**
