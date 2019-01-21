@@ -1747,6 +1747,7 @@ PageController.prototype = {
             } catch (err) {
                 Utils.showPopup(i18n.getMessage('options_popup_import_error_file_title'), err.message);
             }
+            importSettingsFileInput.value = '';
         });
     },
 
