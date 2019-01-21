@@ -99,12 +99,16 @@
      * Collect enabled filters
      * @returns {Array}
      */
-    const collectEnabledFilterIds = function () {
+    const collectEnabledFilterIds = () => {
         const enabledFilters = adguard.filters.getEnabledFilters();
         return enabledFilters.map(filter => filter.filterId);
     };
 
-    const prepareCustomFiltersData = () => {
+    /**
+     * Collects data about added custom filters to the extension
+     * @returns {CustomFilterInitial} - returns data enough to import custom filter
+     */
+    const collectCustomFiltersData = () => {
         const customFilters = adguard.subscriptions.getCustomFilters();
         return customFilters.map(filter => {
             return {
@@ -116,13 +120,21 @@
         });
     };
 
+    const collectEnabledGroupIds = () => {
+        const groups = adguard.subscriptions.getGroups();
+        return groups
+            .filter(group => group.enabled)
+            .map(group => group.groupId);
+    };
+
     /**
      * Loads filters settings section
      * @param callback
      */
     const loadFiltersSection = (callback) => {
         const enabledFilterIds = collectEnabledFilterIds();
-        const customFiltersData = prepareCustomFiltersData();
+        const enabledGroupIds = collectEnabledGroupIds();
+        const customFiltersData = collectCustomFiltersData();
 
         // Collect whitelist/blacklist domains and whitelist mode
         const whiteListDomains = adguard.whitelist.getWhiteListedDomains() || [];
@@ -134,6 +146,7 @@
         adguard.userrules.getUserRulesText(function (content) {
             const section = {
                 'filters': {
+                    'enabled-groups': enabledGroupIds,
                     'enabled-filters': enabledFilterIds,
                     'custom-filters': customFiltersData,
                     'user-filter': {
@@ -390,6 +403,22 @@
             return !!found;
         });
 
+        const syncEnabledGroups = (enabledGroups) => {
+            enabledGroups.forEach(groupId => {
+                adguard.filters.enableGroup(groupId);
+            });
+            // disable groups which are not listed in the imported list
+            const groups = adguard.subscriptions.getGroups();
+
+            const groupIdsToDisable = groups
+                .map(group => group.groupId)
+                .filter(groupId => !enabledGroups.includes(groupId));
+
+            groupIdsToDisable.forEach(groupId => {
+                adguard.filters.disableGroup(groupId);
+            });
+        };
+
         // STEP 1 remove existing custom filters
         removeCustomFilters();
 
@@ -406,7 +435,9 @@
                 return syncEnabledFilters(filterIdsWithoutErrors);
             })
             .then(() => {
-                console.log('filters were enabled');
+                // STEP 4 sync enabled groups
+                const enabledGroups = section.filters['enabled-groups'] || [];
+                syncEnabledGroups(enabledGroups);
                 callback(true);
             })
             .catch(err => {
