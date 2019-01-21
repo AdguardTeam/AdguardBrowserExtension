@@ -142,7 +142,6 @@
         const defaultWhiteListMode = !!adguard.whitelist.isDefaultMode();
 
         // Collect user rules
-        // TODO keep track of enabled groups too
         adguard.userrules.getUserRulesText(function (content) {
             const section = {
                 'filters': {
@@ -303,8 +302,7 @@
         // Apply user rules
         adguard.userrules.updateUserRulesText(userRules, syncSuppressOptions);
 
-        // Install custom filters
-
+        // Add custom filters
         const customFiltersData = section.filters['custom-filters'] || [];
 
         const addCustomFilter = (customFilterData) => {
@@ -407,7 +405,7 @@
             enabledGroups.forEach(groupId => {
                 adguard.filters.enableGroup(groupId);
             });
-            // disable groups which are not listed in the imported list
+            // disable groups not listed in the imported list
             const groups = adguard.subscriptions.getGroups();
 
             const groupIdsToDisable = groups
@@ -425,7 +423,7 @@
         // STEP 2 add custom filters from imported file
         addCustomFilters(customFiltersData)
             .then(customFilters => {
-                // remove custom filters which weren't added because of errors
+                // remove custom filters weren't added because of errors
                 const addedCustomFilters = customFilters
                     .filter(customFilter => customFilter.error === null)
                     .map(customFilter => customFilter.filter);
