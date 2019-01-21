@@ -117,6 +117,7 @@ adguard.subscriptions = (function (adguard) {
             tags,
             customUrl,
             trusted,
+            checksum,
         } = filterData;
 
         this.filterId = filterId;
@@ -131,11 +132,15 @@ adguard.subscriptions = (function (adguard) {
         this.expires = expires;
         this.subscriptionUrl = subscriptionUrl;
         this.tags = tags;
+        // Custom filters data
         if (typeof customUrl !== 'undefined') {
             this.customUrl = customUrl;
         }
         if (typeof trusted !== 'undefined') {
             this.trusted = trusted;
+        }
+        if (typeof checksum !== 'undefined') {
+            this.checksum = checksum;
         }
     };
 
@@ -185,6 +190,7 @@ adguard.subscriptions = (function (adguard) {
         const tags = filter.tags;
         const customUrl = filter.customUrl;
         const trusted = filter.trusted;
+        const checksum = filter.checksum;
         if (tags.length === 0) {
             tags.push(0);
         }
@@ -204,6 +210,7 @@ adguard.subscriptions = (function (adguard) {
             tags,
             customUrl,
             trusted,
+            checksum,
         });
     };
 
@@ -263,19 +270,30 @@ adguard.subscriptions = (function (adguard) {
      * @returns {Array}
      */
     const loadCustomFilters = () => {
-        let customFilters = adguard.localStorage.getItem(CUSTOM_FILTERS_JSON_KEY);
+        const customFilters = adguard.localStorage.getItem(CUSTOM_FILTERS_JSON_KEY);
         return customFilters ? JSON.parse(customFilters) : [];
     };
 
     /**
-     * Saves custom filter to storage
+     * Saves custom filter to storage or updates it if filter with same id was found
      *
      * @param filter
      */
-    const saveCustomFilter = (filter) => {
-        let customFilters = loadCustomFilters();
-        customFilters.push(filter);
-        adguard.localStorage.setItem(CUSTOM_FILTERS_JSON_KEY, JSON.stringify(customFilters));
+    const saveCustomFilterInStorage = (filter) => {
+        const customFilters = loadCustomFilters();
+        // check if filter exists
+        let found = false;
+        const updatedCustomFilters = customFilters.map(f => {
+            if (f.filterId === filter.filterId) {
+                found = true;
+                return filter;
+            }
+            return f;
+        });
+        if (!found) {
+            updatedCustomFilters.push(filter);
+        }
+        adguard.localStorage.setItem(CUSTOM_FILTERS_JSON_KEY, JSON.stringify(updatedCustomFilters));
     };
 
     /**
@@ -295,6 +313,55 @@ adguard.subscriptions = (function (adguard) {
     };
 
     /**
+     * Compares filter version or filter checksum
+     * @param newVersion
+     * @param newChecksum
+     * @param oldFilter
+     * @returns {*}
+     */
+    function didFilterUpdate(newVersion, newChecksum, oldFilter) {
+        if (newVersion) {
+            return !adguard.utils.browser.isGreaterOrEqualsVersion(oldFilter.version, newVersion);
+        }
+        if (!oldFilter.checksum) {
+            return true;
+        }
+        return newChecksum !== oldFilter.checksum;
+    }
+
+    /**
+     * Count md5 checksum for the filter content
+     * @param {Array<String>} rules
+     * @returns {String} checksum string
+     */
+    const getChecksum = (rules) => {
+        const rulesText = rules.join('\n');
+        return CryptoJS.MD5(rulesText).toString();
+    };
+
+    /**
+     * Updates filter checksum and version in the storage and internal structures
+     * @param version
+     * @param checksum
+     * @param filter
+     */
+    const updateVersionAndChecksum = (version, checksum, filter) => {
+        // set last checksum and version
+        filter.checksum = checksum;
+        filter.version = version;
+        filters = filters.map(f => {
+            if (f.filterId === filter.filterId) {
+                f.version = version;
+                f.checksum = checksum;
+                return f;
+            }
+            return f;
+        });
+        filtersMap[filter.filterId] = filter;
+        saveCustomFilterInStorage(filter);
+    };
+
+    /**
      * Adds or updates custom filter
      *
      * @param url subscriptionUrl
@@ -305,7 +372,6 @@ adguard.subscriptions = (function (adguard) {
         const { title, trusted, filterId: optFilterId } = options;
         adguard.backend.loadFilterRulesBySubscriptionUrl(url, function (rules) {
             const filterId = optFilterId || addFilterId();
-            const filterData = parseFilterDataFromHeader(rules);
             let {
                 name,
                 description,
@@ -313,18 +379,19 @@ adguard.subscriptions = (function (adguard) {
                 version,
                 expires,
                 timeUpdated,
-            } = filterData;
+            } = parseFilterDataFromHeader(rules);
             name = name || title;
-            // .toISOString() method used instead of .toString() method because of
-            // moment.js library deprecation warning:
-            // http://momentjs.com/guides/#/warnings/js-date/
             timeUpdated = timeUpdated || new Date().toISOString();
             const groupId = CUSTOM_FILTERS_GROUP_ID;
             const subscriptionUrl = url;
             const languages = [];
             const displayNumber = 0;
             const tags = [0];
-            let rulesCount = rules.length;
+
+            let checksum;
+            if (!version) {
+                checksum = getChecksum(rules);
+            }
 
             // Check if filter from this url was added before
             let filter = filters.find(function (f) {
@@ -332,8 +399,7 @@ adguard.subscriptions = (function (adguard) {
             });
 
             if (filter) {
-                if (version && adguard.utils.browser.isGreaterOrEqualsVersion(filter.version, version)) {
-                    // Update version is not greater
+                if (!didFilterUpdate(version, checksum, filter)) {
                     callback();
                     return;
                 }
@@ -351,26 +417,21 @@ adguard.subscriptions = (function (adguard) {
                     expires,
                     subscriptionUrl,
                     tags,
+                    customUrl: url,
+                    checksum,
+                    trusted,
                 });
 
                 filter.loaded = true;
-
-                // custom filters have special fields
-                filter.customUrl = url;
-                filter.rulesCount = rulesCount;
-                if (trusted) {
-                    filter.trusted = trusted;
-                }
-
                 filters.push(filter);
                 filtersMap[filter.filterId] = filter;
 
                 // Save filter in separate storage
-                saveCustomFilter(filter);
-
+                saveCustomFilterInStorage(filter);
                 adguard.listeners.notifyListeners(adguard.listeners.SUCCESS_DOWNLOAD_FILTER, filter);
             }
 
+            updateVersionAndChecksum(version, checksum, filter);
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, filter, rules);
 
             callback(filter.filterId);
@@ -380,7 +441,6 @@ adguard.subscriptions = (function (adguard) {
         });
     };
 
-    // TODO may be you should save filter data in the temp storage
     const getCustomFilterInfo = (url, options, callback) => {
         const { title } = options;
 
@@ -402,7 +462,7 @@ adguard.subscriptions = (function (adguard) {
             const languages = [];
             const displayNumber = 0;
             const tags = [0];
-            let rulesCount = rules.length;
+            let rulesCount = rules.filter(rule => rule.trim().indexOf('!') !== 0).length;
 
             // Check if filter from this url was added before
             let filter = filters.find(function (f) {
@@ -410,31 +470,28 @@ adguard.subscriptions = (function (adguard) {
             });
 
             if (filter) {
-                if (version && adguard.utils.browser.isGreaterOrEqualsVersion(filter.version, version)) {
-                    // Update version is not greater
-                    callback();
-                    return;
-                }
-            } else {
-                filter = new SubscriptionFilter({
-                    groupId,
-                    name,
-                    description,
-                    homepage,
-                    version,
-                    timeUpdated,
-                    displayNumber,
-                    languages,
-                    expires,
-                    subscriptionUrl,
-                    tags,
-                });
-
-                filter.loaded = true;
-                // custom filters have special fields
-                filter.customUrl = url;
-                filter.rulesCount = rulesCount;
+                callback();
+                return;
             }
+
+            filter = new SubscriptionFilter({
+                groupId,
+                name,
+                description,
+                homepage,
+                version,
+                timeUpdated,
+                displayNumber,
+                languages,
+                expires,
+                subscriptionUrl,
+                tags,
+            });
+
+            filter.loaded = true;
+            // custom filters have special fields
+            filter.customUrl = url;
+            filter.rulesCount = rulesCount;
 
             callback(filter);
         }, function (cause) {
