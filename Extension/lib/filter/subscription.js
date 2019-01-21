@@ -811,6 +811,7 @@ adguard.subscriptions = (function (adguard) {
         updateCustomFilter: updateCustomFilter,
         getCustomFilterInfo: getCustomFilterInfo,
         getLangSuitableFilters: getLangSuitableFilters,
+        CUSTOM_FILTERS_START_ID: CUSTOM_FILTERS_START_ID,
     };
 
 })(adguard);
