@@ -319,12 +319,13 @@
                 .then((acc) => {
                     return addCustomFilter(customFilterInitial)
                         .then(customFilter => {
+                            adguard.console.info(`Settings sync: Was added custom filter: ${customFilter.customUrl}`);
                             return [...acc, { error: null, filter: customFilter }];
                         })
                         .catch(() => {
                             const { customUrl } = customFilterInitial;
-                            const message = `Some error happened while downloading: ${customUrl}`;
-                            adguard.console.debug(message);
+                            const message = `Settings sync: Some error happened while downloading: ${customUrl}`;
+                            adguard.console.info(message);
                             return [...acc, { error: message }];
                         });
                 });
@@ -337,6 +338,7 @@
         filterIds.forEach(filterId => {
             adguard.filters.removeFilter(filterId);
         });
+        adguard.console.info(`Settings sync: Next filters were removed: ${filterIds}`);
     };
 
     /**
@@ -372,7 +374,9 @@
         const existingCustomFiltersInitials = enrichedFiltersInitials.filter(f => f.filterId);
         const redundantExistingCustomFiltersIds = getCustomFiltersToRemove(presentCustomFilters, customFiltersInitials);
 
-        removeCustomFilters(redundantExistingCustomFiltersIds);
+        if (redundantExistingCustomFiltersIds) {
+            removeCustomFilters(redundantExistingCustomFiltersIds);
+        }
 
         if (customFiltersToAdd.length === 0) {
             return Promise.resolve(enrichedFiltersInitials.map(f => f.filterId));
@@ -385,6 +389,7 @@
                     .filter(f => f.error === null)
                     .map(f => f.filter.filterId);
 
+                adguard.console.info(`Settings sync: Were added custom filters: ${addedCustomFiltersIdsWithoutError}`);
                 const existingCustomFiltersIds = existingCustomFiltersInitials.map(f => f.filterId);
 
                 return [...existingCustomFiltersIds, ...addedCustomFiltersIdsWithoutError];
@@ -418,6 +423,7 @@
         enabledGroups.forEach(groupId => {
             adguard.filters.enableGroup(groupId);
         });
+        adguard.console.info(`Settings sync: Next groups were enabled: ${enabledGroups}`);
 
         // disable groups not listed in the imported list
         const groups = adguard.subscriptions.getGroups();
@@ -471,7 +477,7 @@
                 callback(true);
             })
             .catch(err => {
-                console.log(err);
+                adguard.console.error(err);
             });
     };
 
