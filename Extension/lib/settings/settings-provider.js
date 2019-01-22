@@ -284,7 +284,8 @@
      * Initial data needed to add custom filter from the scratch
      * @typedef {Object} CustomFilterInitial
      * @property {string} customUrl - url of the custom filter
-     * @property {number} filterId
+     * @property {boolean} enabled - state of custom filter
+     * @property {number} [filterId] - identifier of the filter
      * @property {boolean} [trusted] - trusted flag of the filter
      * @property {string} [title] - title of the filter
      */
@@ -297,12 +298,12 @@
      */
     const addCustomFilter = (customFilterData, syncSuppressOptions) => {
         const {
-            customUrl, title, trusted, filterId,
+            customUrl, title, trusted,
         } = customFilterData;
 
         const { syncSuppress } = syncSuppressOptions;
         return new Promise((resolve, reject) => {
-            const options = { title, trusted, filterId, syncSuppress };
+            const options = { title, trusted, syncSuppress };
             adguard.filters.loadCustomFilter(
                 customUrl,
                 options,
@@ -359,6 +360,7 @@
     /**
      * Adds custom filters if there were not added one by one to the subscriptions list
      * @param {Array<CustomFilterInitial>} customFiltersInitials
+     * @param {{syncSuppress: boolean}} syncSuppressOptions
      * @returns {Promise<any>} Promise object which represents array with filter ids
      */
     const syncCustomFilters = (customFiltersInitials, syncSuppressOptions) => {
