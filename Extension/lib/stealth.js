@@ -469,6 +469,7 @@ adguard.stealthService = (function (adguard) {
         processRequestHeaders: processRequestHeaders,
         getCookieRules: getCookieRules,
         removeTrackersFromUrl: removeTrackersFromUrl,
+        STEALTH_ACTIONS,
     };
 
 })(adguard);

@@ -64,6 +64,7 @@
         const tabId = tab.tabId;
         const requestId = requestDetails.requestId;
         const requestUrl = requestDetails.requestUrl;
+        const originUrl = requestDetails.originUrl;
         const requestType = requestDetails.requestType;
         const frameId = requestDetails.frameId;
         const requestFrameId = requestDetails.requestFrameId || 0;
@@ -77,7 +78,7 @@
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_TAB_BUTTON_STATE, tab, true);
 
             // Record request context for the main frame
-            adguard.requestContextStorage.record(requestId, requestUrl, requestUrl, requestType, tab);
+            adguard.requestContextStorage.record(requestId, requestUrl, requestUrl, originUrl, requestType, tab);
 
             // Strip tracking parameters
             const cleansedUrl = adguard.stealthService.removeTrackersFromUrl(requestId);
@@ -112,7 +113,7 @@
         const referrerUrl = getReferrerUrl(requestDetails);
 
         // Record request for other types
-        adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, requestType, tab);
+        adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, originUrl, requestType, tab);
 
         // Strip tracking parameters
         const cleansedUrl = adguard.stealthService.removeTrackersFromUrl(requestId);
