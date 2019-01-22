@@ -292,14 +292,17 @@
     /**
      * Add a custom filter
      * @param {CustomFilterInitial} customFilterData - initial data of imported custom filter
+     * @param {{syncSuppress: boolean}} syncSuppressOptions
      * @returns {Promise<any>} SubscriptionFilter
      */
-    const addCustomFilter = (customFilterData) => {
+    const addCustomFilter = (customFilterData, syncSuppressOptions) => {
         const {
             customUrl, title, trusted, filterId,
         } = customFilterData;
+
+        const { syncSuppress } = syncSuppressOptions;
         return new Promise((resolve, reject) => {
-            const options = { title, trusted, filterId };
+            const options = { title, trusted, filterId, syncSuppress };
             adguard.filters.loadCustomFilter(
                 customUrl,
                 options,
@@ -313,11 +316,11 @@
         });
     };
 
-    const addCustomFilters = (absentCustomFiltersInitials) => absentCustomFiltersInitials
+    const addCustomFilters = (absentCustomFiltersInitials, syncSuppressOptions) => absentCustomFiltersInitials
         .reduce((promiseAcc, customFilterInitial) => {
             return promiseAcc
                 .then((acc) => {
-                    return addCustomFilter(customFilterInitial)
+                    return addCustomFilter(customFilterInitial, syncSuppressOptions)
                         .then(customFilter => {
                             adguard.console.info(`Settings sync: Was added custom filter: ${customFilter.customUrl}`);
                             return [...acc, { error: null, filter: customFilter }];
@@ -358,7 +361,7 @@
      * @param {Array<CustomFilterInitial>} customFiltersInitials
      * @returns {Promise<any>} Promise object which represents array with filter ids
      */
-    const syncCustomFilters = (customFiltersInitials) => {
+    const syncCustomFilters = (customFiltersInitials, syncSuppressOptions) => {
         const presentCustomFilters = adguard.subscriptions.getCustomFilters();
 
         const enrichedFiltersInitials = customFiltersInitials.map(filterToAdd => {
@@ -374,7 +377,7 @@
         const existingCustomFiltersInitials = enrichedFiltersInitials.filter(f => f.filterId);
         const redundantExistingCustomFiltersIds = getCustomFiltersToRemove(presentCustomFilters, customFiltersInitials);
 
-        if (redundantExistingCustomFiltersIds) {
+        if (redundantExistingCustomFiltersIds.length > 0) {
             removeCustomFilters(redundantExistingCustomFiltersIds);
         }
 
@@ -382,7 +385,7 @@
             return Promise.resolve(enrichedFiltersInitials.map(f => f.filterId));
         }
 
-        return addCustomFilters(customFiltersToAdd)
+        return addCustomFilters(customFiltersToAdd, syncSuppressOptions)
             .then(customFiltersAddResult => {
                 // get results without errors, not to enable not existing filters
                 const addedCustomFiltersIdsWithoutError = customFiltersAddResult
@@ -417,11 +420,12 @@
 
     /**
      * Enables groups by groupId and disable those groups which were not in the list
-     * @param {array<number>}enabledGroups
+     * @param {array<number>} enabledGroups
+     * @param {{syncSuppress: boolean}} options syncSuppressOptions
      */
-    const syncEnabledGroups = (enabledGroups) => {
+    const syncEnabledGroups = (enabledGroups, options) => {
         enabledGroups.forEach(groupId => {
-            adguard.filters.enableGroup(groupId);
+            adguard.filters.enableGroup(groupId, options);
         });
         adguard.console.info(`Settings sync: Next groups were enabled: ${enabledGroups}`);
 
@@ -433,7 +437,7 @@
             .filter(groupId => !enabledGroups.includes(groupId));
 
         groupIdsToDisable.forEach(groupId => {
-            adguard.filters.disableGroup(groupId);
+            adguard.filters.disableGroup(groupId, options);
         });
     };
 
@@ -464,7 +468,7 @@
         const customFiltersData = section.filters['custom-filters'] || [];
 
         // STEP 1 sync custom filters
-        syncCustomFilters(customFiltersData)
+        syncCustomFilters(customFiltersData, syncSuppressOptions)
             .then(customFiltersIdsToEnable => {
                 // STEP 2 sync enabled filters
                 const enabledFilterIds = section.filters['enabled-filters'] || [];
@@ -473,7 +477,7 @@
             .then(() => {
                 // STEP 3 sync enabled groups
                 const enabledGroups = section.filters['enabled-groups'] || [];
-                syncEnabledGroups(enabledGroups);
+                syncEnabledGroups(enabledGroups, syncSuppressOptions);
                 callback(true);
             })
             .catch(err => {
