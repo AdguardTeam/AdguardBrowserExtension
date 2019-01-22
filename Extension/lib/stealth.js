@@ -312,8 +312,7 @@ adguard.stealthService = (function (adguard) {
     /**
      * Updates browser privacy.network settings depending on blocking WebRTC or not
      */
-    const handleWebRTCDisabled = () => {
-
+    const handleBlockWebRTC = () => {
         // Edge doesn't support privacy api
         // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/privacy
         if (!browser.privacy) {
@@ -449,17 +448,103 @@ adguard.stealthService = (function (adguard) {
         return null;
     };
 
+    /**
+     * Checks if extension has required permissions
+     * @param {Array<string>} permissions
+     * @param {Array<string>} [origins]
+     * @returns {Promise<boolean>}
+     */
+    const containsPermissions = (permissions, origins) => new Promise((resolve) => {
+        browser.permissions.contains({
+            permissions,
+            origins,
+        }, resolve);
+    });
+
+    /**
+     * Requests required permission
+     * @param {Array<string>} permissions
+     * @param {Array<string>} [origins]
+     * @returns {Promise<any>}
+     */
+    const requestPermissions = (permissions, origins) => new Promise((resolve) => {
+        browser.permissions.request({
+            permissions,
+            origins,
+        }, resolve);
+    });
+
+    /**
+     * Removes unused permissions
+     * @param {Array<string>} permissions
+     * @param {Array<string>} [origins]
+     * @returns {Promise<any>}
+     */
+    const removePermission = (permissions, origins) => new Promise((resolve) => {
+        browser.permissions.remove({
+            permissions,
+            origins,
+        }, resolve);
+    });
+
+    const handleWebRTCEnabling = () => {
+        containsPermissions(['privacy'])
+            .then(result => {
+                if (result) {
+                    return true;
+                }
+                return requestPermissions(['privacy']);
+            })
+            .then(granted => {
+                if (granted) {
+                    handleBlockWebRTC();
+                } else {
+                    // If privacy permission is not granted set block webrtc value to false
+                    // TODO find out how to update button on the options page
+                    adguard.settings.setProperty(adguard.settings.BLOCK_WEBRTC, false);
+                }
+            })
+            .catch(error => {
+                adguard.console.error(error);
+            });
+    };
+
+    const handleWebRTCDisabling = () => {
+        containsPermissions(['privacy'])
+            .then(result => {
+                if (result) {
+                    return removePermission(['privacy']);
+                }
+                const removed = true;
+                return removed;
+            });
+    };
+
+    const handlePrivacyPermissions = () => {
+        const webRTCEnabled = getStealthSettingValue(adguard.settings.BLOCK_WEBRTC);
+        if (webRTCEnabled) {
+            handleWebRTCEnabling();
+        } else {
+            handleWebRTCDisabling();
+        }
+    };
+
     adguard.settings.onUpdated.addListener(function (setting) {
         if (setting === adguard.settings.BLOCK_WEBRTC
             || setting === adguard.settings.DISABLE_STEALTH_MODE) {
-            handleWebRTCDisabled();
+            handlePrivacyPermissions();
         }
     });
 
     adguard.listeners.addListener(function (event) {
         switch (event) {
             case adguard.listeners.APPLICATION_INITIALIZED:
-                handleWebRTCDisabled();
+                containsPermissions(['privacy'])
+                    .then(result => {
+                        if (result) {
+                            handleWebRTCDisabling();
+                        }
+                    });
                 break;
             default: break;
         }

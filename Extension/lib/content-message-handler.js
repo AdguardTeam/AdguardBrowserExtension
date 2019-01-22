@@ -65,6 +65,12 @@
             }
         }
 
+        const canBlockWebRTC = () => {
+            return true;
+            // TODO check in all browsers
+            // return typeof browser.privacy !== 'undefined';
+        };
+
         return {
             userSettings: adguard.settings.getAllSettings(),
             enabledFilters: enabledFilters,
@@ -73,7 +79,7 @@
             syncStatusInfo: adguard.sync.syncService.getSyncStatus(),
             environmentOptions: {
                 isMacOs: adguard.utils.browser.isMacOs(),
-                canBlockWebRTC: typeof browser.privacy !== 'undefined',
+                canBlockWebRTC: canBlockWebRTC(),
                 isChrome: adguard.utils.browser.isChromeBrowser(),
                 Prefs: {
                     locale: adguard.app.getLocale(),
@@ -117,6 +123,7 @@
      * @returns {*}
      */
     function handleMessage(message, sender, callback) {
+        console.log('message', message);
         switch (message.type) {
             case 'unWhiteListFrame':
                 adguard.userrules.unWhiteListFrame(message.frameInfo);

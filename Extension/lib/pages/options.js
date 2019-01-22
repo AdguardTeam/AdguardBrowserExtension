@@ -1470,7 +1470,7 @@ var Settings = function () {
                 contentPage.sendMessage({
                     type: 'changeUserSetting',
                     key: property,
-                    value: negate ? !this.checked : this.checked
+                    value: negate ? !this.checked : this.checked,
                 });
 
                 if (property === userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO) {
