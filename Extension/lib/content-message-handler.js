@@ -397,7 +397,7 @@
                 return true; // Async
             case 'applySettingsJson':
                 adguard.sync.settingsProvider.applySettingsBackup(message.json, callback);
-                return true; // Async
+                break;
             case 'disableGetPremiumNotification':
                 adguard.settings.disableShowAdguardPromoInfo();
                 break;
