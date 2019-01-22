@@ -96,12 +96,14 @@
     };
 
     /**
-     * Collect enabled filters
+     * Collect enabled filters ids without custom filters
      * @returns {Array}
      */
     const collectEnabledFilterIds = () => {
         const enabledFilters = adguard.filters.getEnabledFilters();
-        return enabledFilters.map(filter => filter.filterId);
+        return enabledFilters
+            .filter(filter => !filter.customUrl)
+            .map(filter => filter.filterId);
     };
 
     /**
@@ -113,7 +115,7 @@
         return customFilters.map(filter => {
             return {
                 customUrl: filter.customUrl,
-                filterId: filter.filterId,
+                enabled: filter.enabled,
                 title: filter.name || '',
                 trusted: filter.trusted,
             };
@@ -279,12 +281,162 @@
     };
 
     /**
+     * Initial data needed to add custom filter from the scratch
+     * @typedef {Object} CustomFilterInitial
+     * @property {string} customUrl - url of the custom filter
+     * @property {number} filterId
+     * @property {boolean} [trusted] - trusted flag of the filter
+     * @property {string} [title] - title of the filter
+     */
+
+    /**
+     * Add a custom filter
+     * @param {CustomFilterInitial} customFilterData - initial data of imported custom filter
+     * @returns {Promise<any>} SubscriptionFilter
+     */
+    const addCustomFilter = (customFilterData) => {
+        const {
+            customUrl, title, trusted, filterId,
+        } = customFilterData;
+        return new Promise((resolve, reject) => {
+            const options = { title, trusted, filterId };
+            adguard.filters.loadCustomFilter(
+                customUrl,
+                options,
+                (filter) => {
+                    resolve(filter);
+                },
+                () => {
+                    reject();
+                }
+            );
+        });
+    };
+
+    const addCustomFilters = (absentCustomFiltersInitials) => absentCustomFiltersInitials
+        .reduce((promiseAcc, customFilterInitial) => {
+            return promiseAcc
+                .then((acc) => {
+                    return addCustomFilter(customFilterInitial)
+                        .then(customFilter => {
+                            return [...acc, { error: null, filter: customFilter }];
+                        })
+                        .catch(() => {
+                            const { customUrl } = customFilterInitial;
+                            const message = `Some error happened while downloading: ${customUrl}`;
+                            adguard.console.debug(message);
+                            return [...acc, { error: message }];
+                        });
+                });
+        }, Promise.resolve([]));
+
+    /**
+     * Remove existing custom filters before adding new custom filters
+     */
+    const removeCustomFilters = (filterIds) => {
+        filterIds.forEach(filterId => {
+            adguard.filters.removeFilter(filterId);
+        });
+    };
+
+    /**
+     * Returns filterId which not listed in the filtersToAdd list, but listed in the existingFilters
+     * @param existingFilters
+     * @param filtersToAdd
+     * @returns {array<number>}
+     */
+    const getCustomFiltersToRemove = (existingFilters, filtersToAdd) => {
+        const customUrlsToAdd = filtersToAdd.map(f => f.customUrl);
+        const filtersToRemove = existingFilters.filter(f => !customUrlsToAdd.includes(f.customUrl));
+        return filtersToRemove.map(f => f.filterId);
+    };
+
+    /**
+     * Adds custom filters if there were not added one by one to the subscriptions list
+     * @param {Array<CustomFilterInitial>} customFiltersInitials
+     * @returns {Promise<any>} Promise object which represents array with filter ids
+     */
+    const syncCustomFilters = (customFiltersInitials) => {
+        const presentCustomFilters = adguard.subscriptions.getCustomFilters();
+
+        const enrichedFiltersInitials = customFiltersInitials.map(filterToAdd => {
+            presentCustomFilters.forEach(existingFilter => {
+                if (existingFilter.customUrl === filterToAdd.customUrl) {
+                    filterToAdd.filterId = existingFilter.filterId;
+                }
+            });
+            return filterToAdd;
+        });
+
+        const customFiltersToAdd = enrichedFiltersInitials.filter(f => !f.filterId);
+        const existingCustomFiltersInitials = enrichedFiltersInitials.filter(f => f.filterId);
+        const redundantExistingCustomFiltersIds = getCustomFiltersToRemove(presentCustomFilters, customFiltersInitials);
+
+        removeCustomFilters(redundantExistingCustomFiltersIds);
+
+        if (customFiltersToAdd.length === 0) {
+            return Promise.resolve(enrichedFiltersInitials.map(f => f.filterId));
+        }
+
+        return addCustomFilters(customFiltersToAdd)
+            .then(customFiltersAddResult => {
+                // get results without errors, not to enable not existing filters
+                const addedCustomFiltersIdsWithoutError = customFiltersAddResult
+                    .filter(f => f.error === null)
+                    .map(f => f.filter.filterId);
+
+                const existingCustomFiltersIds = existingCustomFiltersInitials.map(f => f.filterId);
+
+                return [...existingCustomFiltersIds, ...addedCustomFiltersIdsWithoutError];
+            });
+    };
+
+    /**
+     * Enables filters by filterId and disables those filters which were not in the list of enabled filters
+     * @param {array<number>} filterIds - ids to enable
+     * @param {{syncSuppress: boolean}} syncSuppressOptions
+     * @returns {Promise<any>}
+     */
+    const syncEnabledFilters = (filterIds, syncSuppressOptions) => {
+        return new Promise(resolve => {
+            adguard.filters.addAndEnableFilters(filterIds, function () {
+                const enabledFilters = adguard.filters.getEnabledFilters();
+                const filtersToDisable = enabledFilters
+                    .filter(enabledFilter => !filterIds.includes(enabledFilter.filterId))
+                    .map(filter => filter.filterId);
+                adguard.filters.disableFilters(filtersToDisable, syncSuppressOptions);
+                resolve();
+            }, syncSuppressOptions);
+        });
+    };
+
+    /**
+     * Enables groups by groupId and disable those groups which were not in the list
+     * @param {array<number>}enabledGroups
+     */
+    const syncEnabledGroups = (enabledGroups) => {
+        enabledGroups.forEach(groupId => {
+            adguard.filters.enableGroup(groupId);
+        });
+
+        // disable groups not listed in the imported list
+        const groups = adguard.subscriptions.getGroups();
+
+        const groupIdsToDisable = groups
+            .map(group => group.groupId)
+            .filter(groupId => !enabledGroups.includes(groupId));
+
+        groupIdsToDisable.forEach(groupId => {
+            adguard.filters.disableGroup(groupId);
+        });
+    };
+
+    /**
      * Applies filters section settings to application
      * @param section Section
      * @param callback Finish callback
      */
-    var applyFiltersSection = function (section, callback) {
-
+    const applyFiltersSection = function (section, callback) {
         const syncSuppressOptions = {
             syncSuppress: true,
         };
@@ -302,138 +454,18 @@
         // Apply user rules
         adguard.userrules.updateUserRulesText(userRules, syncSuppressOptions);
 
-        // Add custom filters
+        // Apply custom filters
         const customFiltersData = section.filters['custom-filters'] || [];
 
-        const addCustomFilter = (customFilterData) => {
-            const {
-                customUrl, title, trusted, filterId,
-            } = customFilterData;
-            return new Promise((resolve, reject) => {
-                const options = { title, trusted, filterId };
-                adguard.filters.loadCustomFilter(
-                    customUrl,
-                    options,
-                    (filter) => {
-                        resolve(filter);
-                    },
-                    () => {
-                        reject();
-                    }
-                );
-            });
-        };
-
-        /**
-         * Initial data needed to add custom filter from the scratch
-         * @typedef {Object} CustomFilterInitial
-         * @property {string} customUrl - url of the custom filter
-         * @property {number} filterId
-         * @property {boolean} [trusted] - trusted flag of the filter
-         * @property {string} [title] - title of the filter
-         */
-
-        /**
-         * Adds custom filters one by one to the subscriptions list
-         * @param {Array<CustomFilterInitial>} customFilterInitials
-         * @returns {Promise} Promise object which represents array with
-         * errors and custom filters [{error: {string}, filter: {SubscriptionFilter}]
-         */
-        const addCustomFilters = (customFilterInitials) => {
-            return customFilterInitials.reduce((promiseAcc, customFilterInitial) => {
-                return promiseAcc
-                    .then((acc) => {
-                        return addCustomFilter(customFilterInitial)
-                            .then(customFilter => {
-                                return [...acc, { error: null, filter: customFilter }];
-                            })
-                            .catch(() => {
-                                const { customUrl } = customFilterInitial;
-                                const message = `Some error happened while downloading: ${customUrl}`;
-                                adguard.console.debug(message);
-                                return [...acc, { error: message }];
-                            });
-                    });
-            }, Promise.resolve([]));
-        };
-
-        /**
-         * Enables filters by filterId and disables those filters which were not in the list of enabled filters
-         * @param {array<number>} filterIds - ids to enable
-         * @returns {Promise<any>}
-         */
-        const syncEnabledFilters = (filterIds) => {
-            return new Promise(resolve => {
-                adguard.filters.addAndEnableFilters(filterIds, function () {
-                    const enabledFilters = adguard.filters.getEnabledFilters();
-                    const filtersToDisable = enabledFilters
-                        .filter(enabledFilter => !filterIds.includes(enabledFilter.filterId))
-                        .map(filter => filter.filterId);
-                    adguard.filters.disableFilters(filtersToDisable, syncSuppressOptions);
-                    resolve();
-                }, syncSuppressOptions);
-            });
-        };
-
-        /**
-         * Remove existing custom filters before adding new custom filters
-         */
-        const removeCustomFilters = () => {
-            const customFilters = adguard.subscriptions.getCustomFilters();
-            customFilters.forEach(customFilter => {
-                adguard.filters.removeFilter(customFilter.filterId);
-            });
-        };
-
-        /**
-         * Removes from imported enabled ids, custom filter ids which weren't imported due to errors
-         * @param filterIds
-         * @param customFilters
-         * @returns {array<number>} - filter ids to enable in the extension
-         */
-        const removeCustomIdsWithErrors = (filterIds, customFilters) => filterIds.filter(filterId => {
-            if (filterId < adguard.subscriptions.CUSTOM_FILTERS_START_ID) {
-                return true;
-            }
-            const found = customFilters.find(filter => {
-                return filter.filterId === filterId;
-            });
-            return !!found;
-        });
-
-        const syncEnabledGroups = (enabledGroups) => {
-            enabledGroups.forEach(groupId => {
-                adguard.filters.enableGroup(groupId);
-            });
-            // disable groups not listed in the imported list
-            const groups = adguard.subscriptions.getGroups();
-
-            const groupIdsToDisable = groups
-                .map(group => group.groupId)
-                .filter(groupId => !enabledGroups.includes(groupId));
-
-            groupIdsToDisable.forEach(groupId => {
-                adguard.filters.disableGroup(groupId);
-            });
-        };
-
-        // STEP 1 remove existing custom filters
-        removeCustomFilters();
-
-        // STEP 2 add custom filters from imported file
-        addCustomFilters(customFiltersData)
-            .then(customFilters => {
-                // remove custom filters weren't added because of errors
-                const addedCustomFilters = customFilters
-                    .filter(customFilter => customFilter.error === null)
-                    .map(customFilter => customFilter.filter);
-                // STEP 3 enable filters
+        // STEP 1 sync custom filters
+        syncCustomFilters(customFiltersData)
+            .then(customFiltersIdsToEnable => {
+                // STEP 2 sync enabled filters
                 const enabledFilterIds = section.filters['enabled-filters'] || [];
-                const filterIdsWithoutErrors = removeCustomIdsWithErrors(enabledFilterIds, addedCustomFilters);
-                return syncEnabledFilters(filterIdsWithoutErrors);
+                return syncEnabledFilters([...enabledFilterIds, ...customFiltersIdsToEnable], syncSuppressOptions);
             })
             .then(() => {
-                // STEP 4 sync enabled groups
+                // STEP 3 sync enabled groups
                 const enabledGroups = section.filters['enabled-groups'] || [];
                 syncEnabledGroups(enabledGroups);
                 callback(true);
