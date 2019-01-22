@@ -369,9 +369,9 @@ adguard.subscriptions = (function (adguard) {
      * @param callback
      */
     const updateCustomFilter = function (url, options, callback) {
-        const { title, trusted, filterId: optFilterId, syncSuppress } = options;
+        const { title, trusted, syncSuppress } = options;
         adguard.backend.loadFilterRulesBySubscriptionUrl(url, function (rules) {
-            const filterId = optFilterId || addFilterId();
+            const filterId = addFilterId();
             let {
                 name,
                 description,
