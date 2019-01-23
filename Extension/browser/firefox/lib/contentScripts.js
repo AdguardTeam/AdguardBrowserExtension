@@ -119,7 +119,6 @@
 
         // Web pages content scripts (responsible for ad blocking)
         registerPageContentScript([
-            'lib/libs/css.escape.js',
             'lib/libs/extended-css.js',
             'lib/utils/element-collapser.js',
             'lib/utils/css-hits-counter.js',

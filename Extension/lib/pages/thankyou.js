@@ -150,7 +150,7 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
     environmentOptions = response.environmentOptions;
     AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
 
-    $(document).ready(function () {
+    $(function () {
         var controller = new PageController();
         controller.init();
     });
