@@ -570,7 +570,7 @@
     /**
      * Imports settings set from json format
      */
-    var applySettingsBackupJson = function (json, callback) {
+    var applySettingsBackupJson = function (json) {
         function onFinished(success) {
             if (success) {
                 adguard.console.info('Settings import finished successfully');
@@ -579,7 +579,6 @@
             }
 
             adguard.listeners.notifyListeners(adguard.listeners.SETTINGS_UPDATED, success);
-            callback(success);
         }
 
         var input = null;
