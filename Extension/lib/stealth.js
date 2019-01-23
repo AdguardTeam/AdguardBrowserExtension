@@ -540,7 +540,7 @@ adguard.stealthService = (function (adguard) {
                 containsPermissions(['privacy'])
                     .then(result => {
                         if (result) {
-                            handleWebRTCDisabling();
+                            handleBlockWebRTC();
                         }
                     });
                 break;

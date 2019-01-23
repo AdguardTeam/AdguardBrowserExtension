@@ -422,7 +422,7 @@ var WhiteListFilter = function (options) {
     });
 
 
-    CheckboxUtils.updateCheckbox(changeDefaultWhiteListModeCheckbox, !options.defaultWhiteListMode);
+    CheckboxUtils.updateCheckbox([changeDefaultWhiteListModeCheckbox], !options.defaultWhiteListMode);
 
     return {
         updateWhiteListDomains: updateWhiteListDomains,
