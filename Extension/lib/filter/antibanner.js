@@ -1476,22 +1476,34 @@ adguard.filters = (function (adguard) {
         }
     };
 
-    const enableGroup = function (groupId) {
+    /**
+     * Enable group
+     * @param {number} groupId filter group identifier
+     * @param {{syncSuppress: boolean}} [options]
+     */
+    const enableGroup = function (groupId, options) {
         const group = adguard.subscriptions.getGroup(groupId);
         if (!group || group.enabled) {
             return;
         }
         group.enabled = true;
         adguard.listeners.notifyListeners(adguard.listeners.FILTER_GROUP_ENABLE_DISABLE, group);
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
     };
 
-    const disableGroup = function (groupId) {
+    /**
+     * Disable group
+     * @param {number} groupId filter group identifier
+     * @param {{syncSuppress: boolean}} [options]
+     */
+    const disableGroup = function (groupId, options) {
         const group = adguard.subscriptions.getGroup(groupId);
         if (!group || !group.enabled) {
             return;
         }
         group.enabled = false;
         adguard.listeners.notifyListeners(adguard.listeners.FILTER_GROUP_ENABLE_DISABLE, group);
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
     };
 
     /**
