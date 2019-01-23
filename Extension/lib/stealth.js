@@ -527,31 +527,49 @@ adguard.stealthService = (function (adguard) {
         }
     };
 
-    adguard.settings.onUpdated.addListener(function (setting) {
-        if (setting === adguard.settings.BLOCK_WEBRTC
-            || setting === adguard.settings.DISABLE_STEALTH_MODE) {
-            handlePrivacyPermissions();
-        }
-    });
+    /**
+     * Browsers api doesn't allow to get optional permissions
+     * via chrome.permissions.getAll till permission isn't enabled by the user
+     * Also we can't check privacy availability via `browser.privacy !== undefined`
+     *
+     * That's why use browsers detection
+     * Privacy methods are not working at all in the Edge
+     * Privacy methods can't be optional in the Firefox, this is why we don't use them here
+     * @returns {boolean}
+     */
+    const canBlockWebRTC = () => {
+        return !(adguard.utils.browser.isEdgeBrowser() || adguard.utils.browser.isFirefoxBrowser());
+    };
 
-    adguard.listeners.addListener(function (event) {
-        switch (event) {
-            case adguard.listeners.APPLICATION_INITIALIZED:
-                containsPermissions(['privacy'])
-                    .then(result => {
-                        if (result) {
-                            handleBlockWebRTC();
-                        }
-                    });
-                break;
-            default: break;
-        }
-    });
+    if (canBlockWebRTC()) {
+        adguard.settings.onUpdated.addListener(function (setting) {
+            if (setting === adguard.settings.BLOCK_WEBRTC
+                || setting === adguard.settings.DISABLE_STEALTH_MODE) {
+                handlePrivacyPermissions();
+            }
+        });
+
+        adguard.listeners.addListener(function (event) {
+            switch (event) {
+                case adguard.listeners.APPLICATION_INITIALIZED:
+                    containsPermissions(['privacy'])
+                        .then(result => {
+                            if (result) {
+                                handleBlockWebRTC();
+                            }
+                        });
+                    break;
+                default: break;
+            }
+        });
+    }
+
 
     return {
         processRequestHeaders: processRequestHeaders,
         getCookieRules: getCookieRules,
         removeTrackersFromUrl: removeTrackersFromUrl,
+        canBlockWebRTC: canBlockWebRTC,
     };
 
 })(adguard);

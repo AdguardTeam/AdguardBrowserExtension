@@ -65,17 +65,6 @@
             }
         }
 
-        /**
-         * Browsers api doesn't allow to get optional permissions
-         * via chrome.permissions.getAll till permission isn't enabled by the user
-         * That's why we can't check privacy availability via `browser.privacy !== undefined`
-         * But we know that browser privacy method is not working only in the Edge browser
-         * @returns {boolean}
-         */
-        const canBlockWebRTC = () => {
-            return !adguard.utils.browser.isEdgeBrowser();
-        };
-
         return {
             userSettings: adguard.settings.getAllSettings(),
             enabledFilters: enabledFilters,
@@ -84,13 +73,13 @@
             syncStatusInfo: adguard.sync.syncService.getSyncStatus(),
             environmentOptions: {
                 isMacOs: adguard.utils.browser.isMacOs(),
-                canBlockWebRTC: canBlockWebRTC(),
+                canBlockWebRTC: adguard.stealthService.canBlockWebRTC(),
                 isChrome: adguard.utils.browser.isChromeBrowser(),
                 Prefs: {
                     locale: adguard.app.getLocale(),
                     mobile: adguard.prefs.mobile || false,
                 },
-                appVersion: adguard.app.getVersion()
+                appVersion: adguard.app.getVersion(),
             },
             constants: {
                 AntiBannerFiltersId: adguard.utils.filters.ids,
