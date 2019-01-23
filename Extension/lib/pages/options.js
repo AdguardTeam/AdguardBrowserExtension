@@ -1692,7 +1692,7 @@ var Settings = function () {
         return checkboxes.filter(checkbox => checkbox.getPropertyName() === propertyName);
     };
 
-    const updateSettingValue = (propertyName, propertyValue) => {
+    const updateCheckboxValue = (propertyName, propertyValue) => {
         getSettingCheckboxes(propertyName).forEach(checkbox => {
             checkbox.updateCheckboxValue(propertyValue);
         });
@@ -1700,7 +1700,7 @@ var Settings = function () {
 
     return {
         render: render,
-        updateSettingValue: updateSettingValue,
+        updateCheckboxValue: updateCheckboxValue,
     };
 };
 
@@ -1997,7 +1997,9 @@ var initPage = function (response) {
                     break;
                 case EventNotifierTypes.SETTING_UPDATED: {
                     const { propertyName, propertyValue } = options;
-                    controller.settings.updateSettingValue(propertyName, propertyValue);
+                    if (typeof propertyValue === 'boolean') {
+                        controller.settings.updateCheckboxValue(propertyName, propertyValue);
+                    }
                     break;
                 }
                 case EventNotifierTypes.SETTINGS_UPDATED:
