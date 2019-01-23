@@ -34,33 +34,6 @@
     }
 
     /**
-     * Parse scriptlet data from script text and return
-     * 
-     * TODO need tests
-     * 
-     * @param {string} script text of script
-     */
-    function getScriptletData(script) {
-        const match = /\/\/(\s*)scriptlet\(([^\)]+)\)/g.exec(script);
-        const params = match[2]
-            .trim()
-            .replace(/['"]/g, '')
-            .split(/[,|,\s*]/)
-            .filter(i => i);
-        const name = params.shift();
-        const args = params.slice();
-
-        return {
-            name: name,
-            args: args,
-            aliases: [
-                'ubo' + name + '.js',
-                'abp' + name
-            ],
-        }
-    }
-
-    /**
      * JS injection rule:
      * http://adguard.com/en/filterrules.html#javascriptInjection
      */
@@ -69,7 +42,6 @@
         api.FilterRule.call(this, rule, filterId);
 
         this.script = null;
-        this.scriptlet = null;
         this.whiteListRule = adguard.utils.strings.contains(rule, api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE);
         var mask = this.whiteListRule ? api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE : api.FilterRule.MASK_SCRIPT_RULE;
 
@@ -81,34 +53,11 @@
         }
 
         this.script = rule.substring(indexOfMask + mask.length);
+
         this.scriptSource = getScriptSource(filterId, rule);
-
-        // todo check for someones scriptlet syntax
-        // may be even not here
-
-        if (this.isScriptletFilterRule()) {
-            this.scriptlet = getScriptletData(this.script);
-        }
     };
 
     ScriptFilterRule.prototype = Object.create(api.FilterRule.prototype);
-
-    
-    /**
-     * Check is script includes `scriptlet` tag
-     */
-    ScriptFilterRule.prototype.isScriptletFilterRule = function() {
-        return this.script && /\/\/(\s*)scriptlet/g.test(this.script);
-    }
-
-    /**
-     * Return text of script
-     */
-    ScriptFilterRule.prototype.getScript = function() {
-        return this.isScriptletFilterRule()
-            ? adguard.scriptlet(this.scriptlet)
-            : this.script;
-    }
 
     /**
      * All content rules markers start with this character

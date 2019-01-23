@@ -93,7 +93,7 @@
                 if (rule.isPermitted(domainName)) {
                     scripts.push({
                         scriptSource: rule.scriptSource,
-                        rule: rule.getScript()
+                        rule: rule.script
                     });
                 }
             }
