@@ -65,10 +65,15 @@
             }
         }
 
+        /**
+         * Browsers api doesn't allow to get optional permissions
+         * via chrome.permissions.getAll till permission isn't enabled by the user
+         * That's why we can't check privacy availability via `browser.privacy !== undefined`
+         * But we know that browser privacy method is not working only in the Edge browser
+         * @returns {boolean}
+         */
         const canBlockWebRTC = () => {
-            return true;
-            // TODO check in all browsers
-            // return typeof browser.privacy !== 'undefined';
+            return !adguard.utils.browser.isEdgeBrowser();
         };
 
         return {
@@ -123,7 +128,6 @@
      * @returns {*}
      */
     function handleMessage(message, sender, callback) {
-        console.log('message', message);
         switch (message.type) {
             case 'unWhiteListFrame':
                 adguard.userrules.unWhiteListFrame(message.frameInfo);
