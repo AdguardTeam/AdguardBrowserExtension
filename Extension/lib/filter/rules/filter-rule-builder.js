@@ -116,6 +116,7 @@
             }
 
             if (api.FilterRule.findRuleMarker(ruleText, api.ScriptFilterRule.RULE_MARKERS, api.ScriptFilterRule.RULE_MARKER_FIRST_CHAR)) {
+                if(api.FilterRule.findRuleMarker(r))
                 return new api.ScriptFilterRule(ruleText, filterId);
             }
 
