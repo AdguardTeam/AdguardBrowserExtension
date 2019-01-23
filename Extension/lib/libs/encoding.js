@@ -851,16 +851,22 @@
   }
 
   /**
-   * Searches for fallback replacement
+   * Searches for the fallback replacement configuration for the specified encoding.
+   * 
    * @param {string} name Name of the encoding.
    * @returns {{replacement: String|number|*, index: Array<number>|Array<Array<number>>}}
    */
   function fallbackReplacement(name) {
-    var fallback = global['encode-fallback-replacement'][name];
-    if (fallback) {
-      return {
-        "replacement": fallback.replacement,
-        "index": index(fallback.index)
+    var fallbackConfiguration = global['encode-fallback-replacement']
+    if (fallbackConfiguration) {
+      var fallback = fallbackConfiguration[name];
+      if (fallback) {
+        return {
+          // Character code to use for unknown characters
+          "replacement": fallback.replacement,
+          // Fallback replacement encoding
+          "index": index(fallback.index)
+        }
       }
     }
     return null;
@@ -1635,11 +1641,13 @@
       var pointer = indexPointerFor(code_point, index);
 
       // If encoding index table doesn't contain code point switch to fallback strategy
-      if (pointer == null && fallback.index) {
+      if (pointer == null && fallback && fallback.index) {
+        // Fallback encoding is specified, look for the character code there
         pointer = indexPointerFor(code_point, fallback.index);
       }
 
-      if (pointer == null) {
+      if (pointer == null && fallback) {
+        // Replacement character code is specified, return it instead
         return fallback.replacement;
       }
 
