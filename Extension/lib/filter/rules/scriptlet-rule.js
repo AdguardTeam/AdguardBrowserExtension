@@ -20,7 +20,28 @@
     'use strict';
 
     /**
+     * By the rules of AMO and addons.opera.com we cannot use remote scripts
+     * (and our JS injection rules could be considered as remote scripts).
+     *
+     * So, what we do:
+     * 1. Pre-compile all current JS rules to the add-on and mark them as 'local'. Other JS rules (new not pre-compiled) are maked as 'remote'.
+     * 2. Also we mark as 'local' rules from the "User Filter" (local filter which user can edit)
+     * 3. In case of Firefox and Opera we apply only 'local' JS rules and ignore all marked as 'remote'
+     * Note: LocalScriptRulesService may be undefined, in this case, we mark all rules as remote.
+     */
+    function getScriptSource(filterId, ruleText) {
+        return filterId == adguard.utils.filters.USER_FILTER_ID
+            || api.LocalScriptRulesService
+            && api.LocalScriptRulesService.isLocal(ruleText)
+                ? 'local'
+                : 'remote';
+    }
+
+    /**
      * Parse scriptlet data from script text and return
+     * 
+     * // Todo improve parsing and write tests
+     * 
      * @param {string} script text of script
      */
     function getScriptletData(script) {
@@ -36,7 +57,7 @@
         return {
             name: name,
             args: args,
-            aliases: [
+            aliases: [ // todo incorrect way
                 'ubo' + name + '.js',
                 'abp' + name
             ],
@@ -44,20 +65,35 @@
     }
 
     /**
-     * JS injection rule:
-     * http://adguard.com/en/filterrules.html#javascriptInjection
+     * JS Scriplet rule from scriptlet dictionary
      */
     const ScriptletRule = function (rule, filterId) {
+        api.FilterRule.call(this, rule, filterId);
+        this.script = null;
         this.scriptlet = getScriptletData(rule);
+        this.scriptSource = getScriptSource(filterId, rule);
+        this.whiteListRule = adguard.utils.strings.contains(rule, api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE);
+
+        // Todo via adguard logger
+        if (!scriptlets) {
+            console.log('No scriptlets imported');
+            return;
+        }
+        this.script = scriptlets.invoke(this.scriptlet);
     };
 
+    /**
+     * Extends BaseFilterRule
+     */
     ScriptletRule.prototype = Object.create(api.FilterRule.prototype);
 
-    
+
     /**
      * Check is script includes `scriptlet` tag
+     * 
+     * Todo add unsupported scriptlet mask rule
      */
-    ScriptletRule.prototype.isScriptletFilterRule = function(text) {
+    ScriptletRule.isScriptletRule = function (text) {
         return text && /\/\/(\s*)scriptlet\(([^\)]+)\)/g.test(text);
     }
 

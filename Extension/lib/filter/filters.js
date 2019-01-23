@@ -196,7 +196,10 @@
                 }
             } else if (rule instanceof adguard.rules.CssFilterRule) {
                 this.cssFilter.addRule(rule);
-            } else if (rule instanceof adguard.rules.ScriptFilterRule) {
+            } else if (
+                rule instanceof adguard.rules.ScriptFilterRule
+                || rule instanceof adguard.rules.ScriptletRule
+            ) {
                 this.scriptFilter.addRule(rule);
             } else if (rule instanceof adguard.rules.ContentFilterRule) {
                 this.contentFilter.addRule(rule);
@@ -236,7 +239,10 @@
                 }
             } else if (rule instanceof adguard.rules.CssFilterRule) {
                 this.cssFilter.removeRule(rule);
-            } else if (rule instanceof adguard.rules.ScriptFilterRule) {
+            } else if (
+                rule instanceof adguard.rules.ScriptFilterRule
+                || rule instanceof adguard.rules.ScriptletRule
+            ) {
                 this.scriptFilter.removeRule(rule);
             } else if (rule instanceof adguard.rules.ContentFilterRule) {
                 this.contentFilter.removeRule(rule);
