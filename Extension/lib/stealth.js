@@ -448,52 +448,13 @@ adguard.stealthService = (function (adguard) {
         return null;
     };
 
-    /**
-     * Checks if extension has required permissions
-     * @param {Array<string>} permissions
-     * @param {Array<string>} [origins]
-     * @returns {Promise<boolean>}
-     */
-    const containsPermissions = (permissions, origins) => new Promise((resolve) => {
-        browser.permissions.contains({
-            permissions,
-            origins,
-        }, resolve);
-    });
-
-    /**
-     * Requests required permission
-     * @param {Array<string>} permissions
-     * @param {Array<string>} [origins]
-     * @returns {Promise<any>}
-     */
-    const requestPermissions = (permissions, origins) => new Promise((resolve) => {
-        browser.permissions.request({
-            permissions,
-            origins,
-        }, resolve);
-    });
-
-    /**
-     * Removes unused permissions
-     * @param {Array<string>} permissions
-     * @param {Array<string>} [origins]
-     * @returns {Promise<any>}
-     */
-    const removePermission = (permissions, origins) => new Promise((resolve) => {
-        browser.permissions.remove({
-            permissions,
-            origins,
-        }, resolve);
-    });
-
     const handleWebRTCEnabling = () => {
-        containsPermissions(['privacy'])
+        adguard.utils.browser.containsPermissions(['privacy'])
             .then(result => {
                 if (result) {
                     return true;
                 }
-                return requestPermissions(['privacy']);
+                return adguard.utils.browser.requestPermissions(['privacy']);
             })
             .then(granted => {
                 if (granted) {
@@ -509,10 +470,10 @@ adguard.stealthService = (function (adguard) {
     };
 
     const handleWebRTCDisabling = () => {
-        containsPermissions(['privacy'])
+        adguard.utils.browser.containsPermissions(['privacy'])
             .then(result => {
                 if (result) {
-                    return removePermission(['privacy']);
+                    return adguard.utils.browser.removePermission(['privacy']);
                 }
                 return true;
             });
@@ -552,7 +513,7 @@ adguard.stealthService = (function (adguard) {
         adguard.listeners.addListener(function (event) {
             switch (event) {
                 case adguard.listeners.APPLICATION_INITIALIZED:
-                    containsPermissions(['privacy'])
+                    adguard.utils.browser.containsPermissions(['privacy'])
                         .then(result => {
                             if (result) {
                                 handleBlockWebRTC();
