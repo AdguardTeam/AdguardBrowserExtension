@@ -75,6 +75,10 @@
      * @returns Filter rule object. Either UrlFilterRule or CssFilterRule or ScriptFilterRule.
      */
     const createRule = function (ruleText, filterId, isTrustedFilter = true) {
+        if (ruleText.indexOf("console.log('q123123')") > -1) {
+            debugger
+        }
+
         ruleText = ruleText ? ruleText.trim() : null;
         if (!ruleText) {
             return null;
@@ -116,7 +120,9 @@
             }
 
             if (api.FilterRule.findRuleMarker(ruleText, api.ScriptFilterRule.RULE_MARKERS, api.ScriptFilterRule.RULE_MARKER_FIRST_CHAR)) {
-                if(api.FilterRule.findRuleMarker(r))
+                if (api.ScriptletRule.isScriptletRule(ruleText)) {
+                    return new api.ScriptletRule(ruleText, filterId);
+                }
                 return new api.ScriptFilterRule(ruleText, filterId);
             }
 
