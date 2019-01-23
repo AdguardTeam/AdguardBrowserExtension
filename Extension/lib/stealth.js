@@ -500,7 +500,6 @@ adguard.stealthService = (function (adguard) {
                     handleBlockWebRTC();
                 } else {
                     // If privacy permission is not granted set block webrtc value to false
-                    // TODO find out how to update button on the options page
                     adguard.settings.setProperty(adguard.settings.BLOCK_WEBRTC, false);
                 }
             })
