@@ -515,8 +515,7 @@ adguard.stealthService = (function (adguard) {
                 if (result) {
                     return removePermission(['privacy']);
                 }
-                const removed = true;
-                return removed;
+                return true;
             });
     };
 

@@ -88,6 +88,9 @@ const CheckboxUtils = (function () {
             if (!el) {
                 return;
             }
+            if (el.checked === checked) {
+                return;
+            }
             if (checked) {
                 el.setAttribute('checked', 'checked');
                 el.closest('li').classList.add('active');
