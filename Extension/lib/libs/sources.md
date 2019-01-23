@@ -55,7 +55,7 @@
 * https://github.com/ameshkov/text-encoding
 * This is a fork of the archived https://github.com/inexorabletash/text-encoding with a single change made: https://github.com/ameshkov/text-encoding/commit/ddd20a5064f622b6fd47cdc11834ca8f130cb100
 * No releases in the repo
-* Raw file: https://raw.githubusercontent.com/ameshkov/text-encoding/f7a5b65280319ecc32ab63be532e61147cab1e88/lib/encoding.js
+* Raw file: https://raw.githubusercontent.com/ameshkov/text-encoding/ddd20a5064f622b6fd47cdc11834ca8f130cb100/lib/encoding.js
 * `encoding-indexes.js` is **not** a third-party library, but definitions of encodings used by `encoding.js`
 
 #### `balalaika.js`
