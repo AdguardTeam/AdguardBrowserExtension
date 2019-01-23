@@ -319,7 +319,46 @@
             params.push('lang=' + locale);
             params.push('id=' + id);
             return params;
-        }
+        },
+
+        /**
+         * Checks if extension has required permissions
+         * @param {Array<string>} permissions
+         * @param {Array<string>} [origins]
+         * @returns {Promise<boolean>}
+         */
+        containsPermissions: (permissions, origins) => new Promise((resolve) => {
+            browser.permissions.contains({
+                permissions,
+                origins,
+            }, resolve);
+        }),
+
+        /**
+         * Requests required permission
+         * @param {Array<string>} permissions
+         * @param {Array<string>} [origins]
+         * @returns {Promise<any>}
+         */
+        requestPermissions: (permissions, origins) => new Promise((resolve) => {
+            browser.permissions.request({
+                permissions,
+                origins,
+            }, resolve);
+        }),
+
+        /**
+         * Removes unused permissions
+         * @param {Array<string>} permissions
+         * @param {Array<string>} [origins]
+         * @returns {Promise<any>}
+         */
+        removePermission: (permissions, origins) => new Promise((resolve) => {
+            browser.permissions.remove({
+                permissions,
+                origins,
+            }, resolve);
+        }),
     };
 
     api.browser = Utils;
