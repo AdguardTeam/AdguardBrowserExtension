@@ -73,7 +73,7 @@
 
 ## Not quite third-party
 
-These libs are either developed by us from scratch.
+These libs are developed by us from scratch.
 
 #### `filter-downloader.js`
 
