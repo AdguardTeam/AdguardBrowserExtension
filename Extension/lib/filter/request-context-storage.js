@@ -124,10 +124,11 @@
      * @param {string} requestId Request identifier
      * @param {string} requestUrl Request url
      * @param {string} referrerUrl Request referrer url
+     * @param {string} originUrl Request origin url (initiator)
      * @param {string} requestType Request type
      * @param {object} tab Request tab
      */
-    const record = (requestId, requestUrl, referrerUrl, requestType, tab) => {
+    const record = (requestId, requestUrl, referrerUrl, originUrl, requestType, tab) => {
 
         const eventId = getNextEventId();
 
@@ -137,7 +138,7 @@
         }
 
         const context = {
-            requestId, requestUrl, referrerUrl, requestType, tab,
+            requestId, requestUrl, referrerUrl, originUrl, requestType, tab,
             eventId,
             requestState: States.PROCESSING,
             contentModifyingState: States.NONE,
