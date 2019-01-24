@@ -48,7 +48,6 @@
 * Licence: MIT
 * Release: https://github.com/c3js/c3/tree/v0.4.15
 * Raw file: https://raw.githubusercontent.com/c3js/c3/v0.4.15/c3.js
-* Raw file: 
 
 #### `nanobar.js`
 * v0.4.2
