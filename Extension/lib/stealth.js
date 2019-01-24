@@ -490,23 +490,37 @@ adguard.stealthService = (function (adguard) {
 
     /**
      * Browsers api doesn't allow to get optional permissions
-     * via chrome.permissions.getAll till permission isn't enabled by the user
-     * Also we can't check privacy availability via `browser.privacy !== undefined`
+     * via chrome.permissions.getAll and we can't check privacy
+     * availability via `browser.privacy !== undefined` till permission
+     * isn't enabled by the user
      *
-     * That's why use browsers detection
+     * That's why use edge browser detection
      * Privacy methods are not working at all in the Edge
-     * Privacy methods can't be optional in the Firefox, this is why we don't use them here
      * @returns {boolean}
      */
     const canBlockWebRTC = () => {
-        return !(adguard.utils.browser.isEdgeBrowser() || adguard.utils.browser.isFirefoxBrowser());
+        return !adguard.utils.browser.isEdgeBrowser();
+    };
+
+    /**
+     * We handle privacy permission only for chrome
+     * In the Firefox privacy permission is available by default
+     * because they can't be optional there
+     * @returns {boolean}
+     */
+    const shouldHandlePrivacyPermission = () => {
+        return adguard.utils.browser.isChromeBrowser();
     };
 
     if (canBlockWebRTC()) {
         adguard.settings.onUpdated.addListener(function (setting) {
             if (setting === adguard.settings.BLOCK_WEBRTC
                 || setting === adguard.settings.DISABLE_STEALTH_MODE) {
-                handlePrivacyPermissions();
+                if (shouldHandlePrivacyPermission()) {
+                    handlePrivacyPermissions();
+                } else {
+                    handleBlockWebRTC();
+                }
             }
         });
 
@@ -520,7 +534,8 @@ adguard.stealthService = (function (adguard) {
                             }
                         });
                     break;
-                default: break;
+                default:
+                    break;
             }
         });
     }
