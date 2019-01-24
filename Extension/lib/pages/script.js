@@ -85,7 +85,7 @@ const CheckboxUtils = (function () {
      */
     const updateCheckbox = function (elements, checked) {
         Array.prototype.forEach.call(elements, function (el) {
-            if (!el) {
+            if (!el || el.checked === checked) {
                 return;
             }
             if (checked) {

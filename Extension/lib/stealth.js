@@ -312,8 +312,7 @@ adguard.stealthService = (function (adguard) {
     /**
      * Updates browser privacy.network settings depending on blocking WebRTC or not
      */
-    const handleWebRTCDisabled = () => {
-
+    const handleBlockWebRTC = () => {
         // Edge doesn't support privacy api
         // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/privacy
         if (!browser.privacy) {
@@ -449,26 +448,104 @@ adguard.stealthService = (function (adguard) {
         return null;
     };
 
-    adguard.settings.onUpdated.addListener(function (setting) {
-        if (setting === adguard.settings.BLOCK_WEBRTC
-            || setting === adguard.settings.DISABLE_STEALTH_MODE) {
-            handleWebRTCDisabled();
-        }
-    });
+    const handleWebRTCEnabling = () => {
+        adguard.utils.browser.containsPermissions(['privacy'])
+            .then(result => {
+                if (result) {
+                    return true;
+                }
+                return adguard.utils.browser.requestPermissions(['privacy']);
+            })
+            .then(granted => {
+                if (granted) {
+                    handleBlockWebRTC();
+                } else {
+                    // If privacy permission is not granted set block webrtc value to false
+                    adguard.settings.setProperty(adguard.settings.BLOCK_WEBRTC, false);
+                }
+            })
+            .catch(error => {
+                adguard.console.error(error);
+            });
+    };
 
-    adguard.listeners.addListener(function (event) {
-        switch (event) {
-            case adguard.listeners.APPLICATION_INITIALIZED:
-                handleWebRTCDisabled();
-                break;
-            default: break;
+    const handleWebRTCDisabling = () => {
+        adguard.utils.browser.containsPermissions(['privacy'])
+            .then(result => {
+                if (result) {
+                    return adguard.utils.browser.removePermission(['privacy']);
+                }
+                return true;
+            });
+    };
+
+    const handlePrivacyPermissions = () => {
+        const webRTCEnabled = getStealthSettingValue(adguard.settings.BLOCK_WEBRTC);
+        if (webRTCEnabled) {
+            handleWebRTCEnabling();
+        } else {
+            handleWebRTCDisabling();
         }
-    });
+    };
+
+    /**
+     * Browsers api doesn't allow to get optional permissions
+     * via chrome.permissions.getAll and we can't check privacy
+     * availability via `browser.privacy !== undefined` till permission
+     * isn't enabled by the user
+     *
+     * That's why use edge browser detection
+     * Privacy methods are not working at all in the Edge
+     * @returns {boolean}
+     */
+    const canBlockWebRTC = () => {
+        return !adguard.utils.browser.isEdgeBrowser();
+    };
+
+    /**
+     * We handle privacy permission only for chrome
+     * In the Firefox privacy permission is available by default
+     * because they can't be optional there
+     * @returns {boolean}
+     */
+    const shouldHandlePrivacyPermission = () => {
+        return adguard.utils.browser.isChromeBrowser();
+    };
+
+    if (canBlockWebRTC()) {
+        adguard.settings.onUpdated.addListener(function (setting) {
+            if (setting === adguard.settings.BLOCK_WEBRTC
+                || setting === adguard.settings.DISABLE_STEALTH_MODE) {
+                if (shouldHandlePrivacyPermission()) {
+                    handlePrivacyPermissions();
+                } else {
+                    handleBlockWebRTC();
+                }
+            }
+        });
+
+        adguard.listeners.addListener(function (event) {
+            switch (event) {
+                case adguard.listeners.APPLICATION_INITIALIZED:
+                    adguard.utils.browser.containsPermissions(['privacy'])
+                        .then(result => {
+                            if (result) {
+                                handleBlockWebRTC();
+                            }
+                        });
+                    break;
+                default:
+                    break;
+            }
+        });
+    }
+
 
     return {
         processRequestHeaders: processRequestHeaders,
         getCookieRules: getCookieRules,
         removeTrackersFromUrl: removeTrackersFromUrl,
+        canBlockWebRTC: canBlockWebRTC,
         STEALTH_ACTIONS,
     };
 
