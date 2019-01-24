@@ -1634,6 +1634,11 @@ var Settings = function () {
             return;
         }
 
+        // remove already added options
+        while (filtersUpdatePeriodSelect.firstChild) {
+            filtersUpdatePeriodSelect.removeChild(filtersUpdatePeriodSelect.firstChild);
+        }
+
         if (updatePeriod === 0) {
             filtersUpdatePeriodSelect.parentNode.classList.remove('active');
         } else {
