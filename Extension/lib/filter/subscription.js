@@ -283,7 +283,7 @@ adguard.subscriptions = (function (adguard) {
         const customFilters = loadCustomFilters();
         // check if filter exists
         let found = false;
-        let updatedCustomFilters = customFilters.map(f => {
+        const updatedCustomFilters = customFilters.map(f => {
             if (f.filterId === filter.filterId) {
                 found = true;
                 return filter;
@@ -369,7 +369,7 @@ adguard.subscriptions = (function (adguard) {
      * @param callback
      */
     const updateCustomFilter = function (url, options, callback) {
-        const { title, trusted } = options;
+        const { title, trusted, syncSuppress } = options;
         adguard.backend.loadFilterRulesBySubscriptionUrl(url, function (rules) {
             const filterId = addFilterId();
             let {
@@ -433,6 +433,7 @@ adguard.subscriptions = (function (adguard) {
 
             updateVersionAndChecksum(version, checksum, filter);
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, filter, rules);
+            adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, { syncSuppress });
 
             callback(filter.filterId);
         }, function (cause) {
@@ -688,6 +689,10 @@ adguard.subscriptions = (function (adguard) {
         return filters;
     };
 
+    const getCustomFilters = function () {
+        return filters.filter(f => f.customUrl);
+    };
+
     /**
      * Gets filter metadata by filter identifier
      */
@@ -800,12 +805,14 @@ adguard.subscriptions = (function (adguard) {
         getGroup: getGroup,
         groupHasEnabledStatus: groupHasEnabledStatus,
         getFilters: getFilters,
+        getCustomFilters: getCustomFilters,
         getFilter: getFilter,
         isTrustedFilter: isTrustedFilter,
         createSubscriptionFilterFromJSON: createSubscriptionFilterFromJSON,
         updateCustomFilter: updateCustomFilter,
         getCustomFilterInfo: getCustomFilterInfo,
         getLangSuitableFilters: getLangSuitableFilters,
+        CUSTOM_FILTERS_START_ID: CUSTOM_FILTERS_START_ID,
     };
 
 })(adguard);
