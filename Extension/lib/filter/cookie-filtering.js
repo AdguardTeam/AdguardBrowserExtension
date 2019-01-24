@@ -526,6 +526,7 @@ adguard.cookieFiltering = (function (adguard) {
 
             /**
              * Removes stealth rules (third-party maxAge cookie rules) to prevent removing auth cookies
+             * Stealth detects third-party cookies if it will be in Set-Cookie headers
              * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1245
              */
             mRules = removeStealthThirdPartyCookieRules(mRules);
