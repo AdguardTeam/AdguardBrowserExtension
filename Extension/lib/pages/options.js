@@ -1222,7 +1222,10 @@ var AntiBannerFilters = function (options) {
             const timeUpdatedText = timeUpdated.format('D/MM/YYYY HH:mm').toLowerCase();
 
             filterEl.querySelector('.last-update-time').textContent = `${i18n.getMessage('options_filters_filter_updated')} ${timeUpdatedText}`;
-            filterEl.querySelector('.filter-version-desc').textContent = `${i18n.getMessage('options_filters_filter_version')} ${filter.version}`;
+            const versionDesc = filterEl.querySelector('.filter-version-desc');
+            if (versionDesc) {
+                versionDesc.textContent = `${i18n.getMessage('options_filters_filter_version')} ${filter.version}`;
+            }
         }
     }
 
@@ -1769,6 +1772,7 @@ PageController.prototype = {
             } catch (err) {
                 Utils.showPopup(i18n.getMessage('options_popup_import_error_file_title'), err.message);
             }
+            importSettingsFileInput.value = '';
         });
     },
 
