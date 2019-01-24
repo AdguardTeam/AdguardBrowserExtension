@@ -1,5 +1,4 @@
 /*** JavaScript SHA-256 hash function. License and copyright free. ***/ 
-// Patched for CommonJS exports
 
 SHA256 = {};
 
@@ -166,8 +165,3 @@ SHA256.hash = function(message) {
 	}
     return hex;
 };
-
-// Export SHA256
-if (typeof exports != 'undefined') {
-	exports.SHA256 = SHA256;
-}
