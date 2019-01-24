@@ -170,21 +170,22 @@
      * Loads general settings section
      * @param callback
      */
-    var loadGeneralSettingsSection = function (callback) {
+    const loadGeneralSettingsSection = function (callback) {
 
-        var enabledFilterIds = collectEnabledFilterIds();
+        const enabledFilterIds = collectEnabledFilterIds();
         // TODO update self search settings on filter status change
-        var allowAcceptableAds = enabledFilterIds.indexOf(adguard.utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID) >= 0;
+        const allowAcceptableAds = enabledFilterIds.indexOf(adguard.utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID) >= 0;
 
-        var section = {
-            "general-settings": {
-                "app-language": adguard.app.getLocale(),
-                "allow-acceptable-ads": allowAcceptableAds,
-                "show-blocked-ads-count": adguard.settings.showPageStatistic(),
-                "autodetect-filters": adguard.settings.isAutodetectFilters(),
-                "safebrowsing-enabled": adguard.settings.getSafebrowsingInfo().enabled,
-                "safebrowsing-help": adguard.settings.getSafebrowsingInfo().sendStats
-            }
+        const section = {
+            'general-settings': {
+                'app-language': adguard.app.getLocale(),
+                'allow-acceptable-ads': allowAcceptableAds,
+                'show-blocked-ads-count': adguard.settings.showPageStatistic(),
+                'autodetect-filters': adguard.settings.isAutodetectFilters(),
+                'safebrowsing-enabled': adguard.settings.getSafebrowsingInfo().enabled,
+                'safebrowsing-help': adguard.settings.getSafebrowsingInfo().sendStats,
+                'filters-update-period': adguard.settings.getFiltersUpdatePeriod(),
+            },
         };
 
         callback(section);
@@ -237,19 +238,20 @@
      * @param section Section
      * @param callback Finish callback
      */
-    var applyGeneralSettingsSection = function (section, callback) {
-        var syncSuppressOptions = {
-            syncSuppress: true
+    const applyGeneralSettingsSection = function (section, callback) {
+        const syncSuppressOptions = {
+            syncSuppress: true,
         };
 
-        var set = section["general-settings"];
+        const set = section['general-settings'];
 
-        adguard.settings.changeShowPageStatistic(!!set["show-blocked-ads-count"], syncSuppressOptions);
-        adguard.settings.changeAutodetectFilters(!!set["autodetect-filters"], syncSuppressOptions);
-        adguard.settings.changeEnableSafebrowsing(!!set["safebrowsing-enabled"], syncSuppressOptions);
-        adguard.settings.changeSendSafebrowsingStats(!!set["safebrowsing-help"], syncSuppressOptions);
+        adguard.settings.changeShowPageStatistic(!!set['show-blocked-ads-count'], syncSuppressOptions);
+        adguard.settings.changeAutodetectFilters(!!set['autodetect-filters'], syncSuppressOptions);
+        adguard.settings.changeEnableSafebrowsing(!!set['safebrowsing-enabled'], syncSuppressOptions);
+        adguard.settings.changeSendSafebrowsingStats(!!set['safebrowsing-help'], syncSuppressOptions);
+        adguard.settings.setFiltersUpdatePeriod(set['filters-update-period'], syncSuppressOptions);
 
-        if (!!set["allow-acceptable-ads"]) {
+        if (!!set['allow-acceptable-ads']) {
             adguard.filters.addAndEnableFilters([adguard.utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID], function () {
                 callback(true);
             }, syncSuppressOptions);
