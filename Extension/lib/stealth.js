@@ -546,6 +546,7 @@ adguard.stealthService = (function (adguard) {
         getCookieRules: getCookieRules,
         removeTrackersFromUrl: removeTrackersFromUrl,
         canBlockWebRTC: canBlockWebRTC,
+        STEALTH_ACTIONS,
     };
 
 })(adguard);
