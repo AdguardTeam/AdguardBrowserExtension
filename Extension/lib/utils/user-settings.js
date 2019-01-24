@@ -130,12 +130,15 @@ adguard.settings = (function (adguard) {
         return propertyValue;
     };
 
-    var setProperty = function (propertyName, propertyValue, options) {
+    const setProperty = (propertyName, propertyValue, options) => {
         adguard.localStorage.setItem(propertyName, JSON.stringify(propertyValue));
         properties[propertyName] = propertyValue;
         propertyUpdateChannel.notify(propertyName, propertyValue);
 
         adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
+        if (!(options && options.syncSuppress)) {
+            adguard.listeners.notifyListeners(adguard.listeners.SETTING_UPDATED, { propertyName, propertyValue });
+        }
     };
 
     const getAllSettings = function () {
