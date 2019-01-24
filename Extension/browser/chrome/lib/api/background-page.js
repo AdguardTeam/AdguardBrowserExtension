@@ -212,6 +212,7 @@ var browser = window.browser || chrome;
             // FF uses `originUrl`: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webRequest/onBeforeRequest#Additional_objects
             requestDetails.referrerUrl = details.originUrl || details.initiator;
         }
+        requestDetails.originUrl = details.originUrl || details.initiator;
 
         return requestDetails;
     }
