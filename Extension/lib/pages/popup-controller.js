@@ -728,8 +728,11 @@ PopupController.prototype = {
             const footerDefault = this.footerDefault;
             const getPremium = footerDefault.querySelector('.popup-get-premium');
             const popupFooter = footerDefault.querySelector('.popup-footer');
+            // There is no footer title for edge
             const footerDefaultTitle = footerDefault.querySelector('.footer__title');
-            footerDefaultTitle.setAttribute('title', i18n.getMessage('popup_adguard_footer_title'));
+            if (footerDefaultTitle) {
+                footerDefaultTitle.setAttribute('title', i18n.getMessage('popup_adguard_footer_title'));
+            }
 
             // CAUTION!
             // Uncomment if condition bellow if you'd like to show
