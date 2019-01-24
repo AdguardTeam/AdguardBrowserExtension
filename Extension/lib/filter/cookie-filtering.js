@@ -456,6 +456,20 @@ adguard.cookieFiltering = (function (adguard) {
     };
 
     /**
+     * Removes from the rules stealth third-party cookie rules
+     * @param rules
+     */
+    const removeStealthThirdPartyCookieRules = (rules) => {
+        if (rules && rules.length > 0) {
+            const action = adguard.stealthService.STEALTH_ACTIONS.THIRD_PARTY_COOKIES;
+            return rules.filter(r => {
+                return typeof r.stealthActions !== 'number' || (r.stealthActions & action) !== action;
+            });
+        }
+        return null;
+    };
+
+    /**
      * Modifies request headers according to matching $cookie rules.
      *
      * @param {string} requestId Request identifier
@@ -475,7 +489,8 @@ adguard.cookieFiltering = (function (adguard) {
 
         const tab = context.tab;
         const requestUrl = context.requestUrl;
-        const referrerUrl = context.referrerUrl;
+        // Sometimes requests are fired in a refreshed tab, and leading to wrong use referrerUrl of the new tab instead of the origin initiator
+        const referrerUrl = context.originUrl || context.referrerUrl;
         const requestType = context.requestType;
 
         const cookieHeader = adguard.utils.browser.findHeaderByName(requestHeaders, 'Cookie');
@@ -507,7 +522,15 @@ adguard.cookieFiltering = (function (adguard) {
                 scheduleProcessingCookie(requestId, cookieName, requestUrl, thirdParty, [bRule], true);
                 continue;
             }
-            const mRules = findModifyingRules(cookieName, rules);
+            let mRules = findModifyingRules(cookieName, rules);
+
+            /**
+             * Removes stealth rules (third-party maxAge cookie rules) to prevent removing auth cookies
+             * Stealth detects third-party cookies if it will be in Set-Cookie headers
+             * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1245
+             */
+            mRules = removeStealthThirdPartyCookieRules(mRules);
+
             if (mRules && mRules.length > 0) {
                 scheduleProcessingCookie(requestId, cookieName, requestUrl, thirdParty, mRules, false);
             }
@@ -547,7 +570,7 @@ adguard.cookieFiltering = (function (adguard) {
 
         const tab = context.tab;
         const requestUrl = context.requestUrl;
-        const referrerUrl = context.referrerUrl;
+        const referrerUrl = context.originUrl || context.referrerUrl;
         const requestType = context.requestType;
         const requestHost = adguard.utils.url.getHost(requestUrl);
 
