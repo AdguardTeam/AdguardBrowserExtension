@@ -26,7 +26,7 @@ adguard.settings = (function (adguard) {
     // Default filters update period is set up to 48 hours
     const DEFAULT_FILTERS_UPDATE_PERIOD_MS = 48 * 60 * 60 * 1000;
     const DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN = 4320;
-    const DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN = 180;
+    const DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN = 2880;
     const DEFAULT_TRACKING_PARAMETERS = 'utm_source,utm_medium,utm_term,utm_campaign,utm_content,utm_name,utm_cid,utm_reader,utm_viz_id,utm_pubreferrer,utm_swu';
 
     var settings = {
