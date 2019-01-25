@@ -181,7 +181,7 @@
                     this.cspFilter.addRule(rule);
                 } else if (rule.isCookieRule()) {
                     this.cookieFilter.addRule(rule);
-                } else if (rule.isStealthRule()) {
+                } else if (rule.isStealthRule() && !rule.isBadFilter()) {
                     this.stealthFilter.addRule(rule);
                 } else if (rule.isReplaceRule()) {
                     this.replaceFilter.addRule(rule);
@@ -443,7 +443,11 @@
             const refHost = adguard.utils.url.getHost(referrer);
             const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrer);
 
-            return this.stealthFilter.isFiltered(requestUrl, refHost, requestType, thirdParty);
+            let rule = this.stealthFilter.isFiltered(referrer, refHost, requestType, thirdParty);
+
+            rule = this._checkBadFilterExceptions(rule);
+
+            return rule;
         },
 
         /**

@@ -10,7 +10,7 @@ QUnit.test("Test Record/Remove", function (assert) {
 
     assert.notOk(adguard.requestContextStorage.get(requestId));
 
-    adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, requestType, tab);
+    adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, referrerUrl, requestType, tab);
 
     let context = adguard.requestContextStorage.get(requestId);
     assert.ok(context);
@@ -36,13 +36,13 @@ QUnit.test("Test Content modification", function (assert) {
     const requestType = adguard.RequestTypes.DOCUMENT;
     const tab = { tabId: 1 };
 
-    adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, requestType, tab);
+    adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, referrerUrl, requestType, tab);
     adguard.requestContextStorage.onRequestCompleted(requestId);
 
     let context = adguard.requestContextStorage.get(requestId);
     assert.notOk(context);
 
-    adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, requestType, tab);
+    adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, referrerUrl, requestType, tab);
     adguard.requestContextStorage.onContentModificationStarted(requestId);
     adguard.requestContextStorage.onRequestCompleted(requestId);
 
@@ -63,7 +63,7 @@ QUnit.test("Test Modify headers", function (assert) {
     const requestType = adguard.RequestTypes.DOCUMENT;
     const tab = { tabId: 1 };
 
-    adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, requestType, tab);
+    adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, referrerUrl, requestType, tab);
 
     // allow null values
     adguard.requestContextStorage.update(requestId, { requestHeaders: null });
@@ -87,7 +87,7 @@ QUnit.test("Test Modify headers", function (assert) {
         name: 'header-3',
         value: 'value-3',
     }];
-    adguard.requestContextStorage.update(requestId, {modifiedRequestHeaders});
+    adguard.requestContextStorage.update(requestId, { modifiedRequestHeaders });
 
     assert.equal(1, context.requestHeaders.length);
     assert.equal('header-1', context.requestHeaders[0].name);
@@ -109,7 +109,7 @@ QUnit.test("Test Modify headers", function (assert) {
         name: 'header-4',
         value: 'value-4',
     }];
-    adguard.requestContextStorage.update(requestId, {modifiedResponseHeaders});
+    adguard.requestContextStorage.update(requestId, { modifiedResponseHeaders });
 
     assert.equal(1, context.responseHeaders.length);
     assert.equal('header-2', context.responseHeaders[0].name);
@@ -140,7 +140,7 @@ QUnit.test("Test Update", function (assert) {
     const contentRule2 = { filterId: 1, ruleText: 'text' };
     const elementHtml2 = '<script></script>';
 
-    adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, requestType, tab);
+    adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, referrerUrl, requestType, tab);
 
     adguard.requestContextStorage.update(requestId, { requestRule });
     adguard.requestContextStorage.update(requestId, { replaceRules: [replaceRule1] });

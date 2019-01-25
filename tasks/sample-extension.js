@@ -22,10 +22,12 @@ import zip from 'gulp-zip';
 const API_SCRIPTS = [
     // Third party libraries
     'Extension/lib/libs/deferred.js',
-    'Extension/lib/utils/sha256.patched.js',
+    'Extension/lib/libs/sha256.js',
     'Extension/lib/utils/punycode.js',
     'Extension/lib/libs/filter-downloader.js',
-    // Adguard Global and preferences
+    'Extension/lib/libs/crypto-js/core.js',
+    'Extension/lib/libs/crypto-js/md5.js',
+    // Adguard Global and preExtension/ferences
     'Extension/lib/adguard.js',
     'Extension/browser/webkit/lib/prefs.js',
     // Utils libraries

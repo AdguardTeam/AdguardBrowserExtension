@@ -580,56 +580,51 @@ adguard.antiBannerService = (function (adguard) {
         };
 
         /**
-         * Asyncronously adds rules to the request filter.
+         * Asynchronously adds rules to the request filter.
          */
-        var addRulesAsync = function (filterId, rulesTexts, startIdx, stopIdx, prevDfd) {
-
-            var dfd = new adguard.utils.Promise();
-
-            prevDfd.then(function () {
-                setTimeout(function () {
+        const addRulesAsync = (filterId, rulesTexts, startIdx, stopIdx, prevPromise) => new Promise(resolve => {
+            prevPromise.then(() => {
+                setTimeout(() => {
                     addRules(filterId, rulesTexts, startIdx, stopIdx);
-                    dfd.resolve();
+                    resolve();
                 }, 1);
             });
-
-            return dfd;
-        };
+        });
 
         /**
          * Asynchronously fills request filter with rules.
          */
         var fillRequestFilterAsync = function () {
-            // Async loading starts when we resolve this promise
-            var rootDfd = new adguard.utils.Promise();
-            var prevDfd = null;
-            var dfds = [];
+            const rootPromise = Promise.resolve();
+            let prevPromise = null;
+            const promises = [];
 
             // Go through all filters in the map
-            for (var filterId in rulesFilterMap) { // jshint ignore:line
+            for (let filterId in rulesFilterMap) { // jshint ignore:line
                 // To number
                 filterId = filterId - 0;
-                if (filterId != adguard.utils.filters.USER_FILTER_ID) {
-                    var rulesTexts = rulesFilterMap[filterId];
+                if (filterId !== adguard.utils.filters.USER_FILTER_ID) {
+                    const rulesTexts = rulesFilterMap[filterId];
 
-                    for (var i = 0; i < rulesTexts.length; i += asyncStep) {
-                        prevDfd = addRulesAsync(filterId, rulesTexts, i, i + asyncStep, prevDfd || rootDfd);
-                        dfds.push(prevDfd);
+                    for (let i = 0; i < rulesTexts.length; i += asyncStep) {
+                        prevPromise = addRulesAsync(filterId, rulesTexts, i, i + asyncStep, prevPromise || rootPromise);
+                        promises.push(prevPromise);
                     }
                 }
             }
 
             // User filter should be the last
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/117
-            var userRules = rulesFilterMap[adguard.utils.filters.USER_FILTER_ID];
-            addRulesAsync(adguard.utils.filters.USER_FILTER_ID, userRules, 0, userRules.length, prevDfd || rootDfd);
+            const userFilterId = adguard.utils.filters.USER_FILTER_ID;
+            const userRules = rulesFilterMap[userFilterId];
+            const startIndex = 0;
+            const endIndex = userRules.length;
+            prevPromise = addRulesAsync(userFilterId, userRules, startIndex, endIndex, prevPromise || rootPromise);
+            promises.push(prevPromise);
 
-            adguard.utils.Promise.all(dfds).then(function () {
+            Promise.all(promises).then(function () {
                 requestFilterInitialized();
             });
-
-            // Start execution
-            rootDfd.resolve();
         };
 
         /**
@@ -700,65 +695,36 @@ adguard.antiBannerService = (function (adguard) {
          * @param rulesFilterMap Map for loading rules
          * @returns {*} Deferred object
          */
-        var loadFilterRulesFromStorage = function (filterId, rulesFilterMap) {
-            var dfd = new adguard.utils.Promise();
-
-            adguard.rulesStorage.read(filterId, function (rulesText) {
+        const loadFilterRulesFromStorage = (filterId, rulesFilterMap) => new Promise(resolve => {
+            adguard.rulesStorage.read(filterId, (rulesText) => {
                 if (rulesText) {
                     rulesFilterMap[filterId] = rulesText;
                 }
-                dfd.resolve();
+                resolve();
             });
-
-            return dfd;
-        };
+        });
 
         /**
          * STEP 1: load all filters from the storage.
          */
         const loadFilterRules = function () {
-            const dfds = [];
+            const promises = [];
             const filters = adguard.subscriptions.getFilters();
             for (let i = 0; i < filters.length; i += 1) {
                 const filter = filters[i];
                 const group = adguard.subscriptions.getGroup(filter.groupId);
-                if (filter.enabled) {
-                    dfds.push(loadFilterRulesFromStorage(filter.filterId, rulesFilterMap));
+                if (filter.enabled && group.enabled) {
+                    promises.push(loadFilterRulesFromStorage(filter.filterId, rulesFilterMap));
                 }
             }
-            dfds.push(loadUserRulesToRequestFilter(rulesFilterMap));
+            // get user filter rules from storage
+            promises.push(loadFilterRulesFromStorage(adguard.utils.filters.USER_FILTER_ID, rulesFilterMap));
 
             // Load all filters and then recreate request filter
-            adguard.utils.Promise.all(dfds).then(loadAllFilterRulesDone);
+            Promise.all(promises).then(loadAllFilterRulesDone);
         };
 
         loadFilterRules();
-    }
-
-    /**
-     * Adds user rules (got from the storage) to request filter
-     *
-     * @param rulesFilterMap Map for loading rules
-     * @returns {*} Deferred object
-     * @private
-     */
-    function loadUserRulesToRequestFilter(rulesFilterMap) {
-
-        var dfd = new adguard.utils.Promise();
-
-        var filterId = adguard.utils.filters.USER_FILTER_ID;
-        adguard.rulesStorage.read(filterId, function (rulesText) {
-
-            if (!rulesText) {
-                dfd.resolve();
-                return;
-            }
-
-            rulesFilterMap[filterId] = rulesText;
-            dfd.resolve();
-        });
-
-        return dfd;
     }
 
     /**
@@ -1510,22 +1476,34 @@ adguard.filters = (function (adguard) {
         }
     };
 
-    const enableGroup = function (groupId) {
+    /**
+     * Enable group
+     * @param {number} groupId filter group identifier
+     * @param {{syncSuppress: boolean}} [options]
+     */
+    const enableGroup = function (groupId, options) {
         const group = adguard.subscriptions.getGroup(groupId);
         if (!group || group.enabled) {
             return;
         }
         group.enabled = true;
         adguard.listeners.notifyListeners(adguard.listeners.FILTER_GROUP_ENABLE_DISABLE, group);
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
     };
 
-    const disableGroup = function (groupId) {
+    /**
+     * Disable group
+     * @param {number} groupId filter group identifier
+     * @param {{syncSuppress: boolean}} [options]
+     */
+    const disableGroup = function (groupId, options) {
         const group = adguard.subscriptions.getGroup(groupId);
         if (!group || !group.enabled) {
             return;
         }
         group.enabled = false;
         adguard.listeners.notifyListeners(adguard.listeners.FILTER_GROUP_ENABLE_DISABLE, group);
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
     };
 
     /**

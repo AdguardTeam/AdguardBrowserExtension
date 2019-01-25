@@ -422,7 +422,7 @@ var WhiteListFilter = function (options) {
     });
 
 
-    CheckboxUtils.updateCheckbox(changeDefaultWhiteListModeCheckbox, !options.defaultWhiteListMode);
+    CheckboxUtils.updateCheckbox([changeDefaultWhiteListModeCheckbox], !options.defaultWhiteListMode);
 
     return {
         updateWhiteListDomains: updateWhiteListDomains,
@@ -1222,7 +1222,10 @@ var AntiBannerFilters = function (options) {
             const timeUpdatedText = timeUpdated.format('D/MM/YYYY HH:mm').toLowerCase();
 
             filterEl.querySelector('.last-update-time').textContent = `${i18n.getMessage('options_filters_filter_updated')} ${timeUpdatedText}`;
-            filterEl.querySelector('.filter-version-desc').textContent = `${i18n.getMessage('options_filters_filter_version')} ${filter.version}`;
+            const versionDesc = filterEl.querySelector('.filter-version-desc');
+            if (versionDesc) {
+                versionDesc.textContent = `${i18n.getMessage('options_filters_filter_version')} ${filter.version}`;
+            }
         }
     }
 
@@ -1470,7 +1473,7 @@ var Settings = function () {
                 contentPage.sendMessage({
                     type: 'changeUserSetting',
                     key: property,
-                    value: negate ? !this.checked : this.checked
+                    value: negate ? !this.checked : this.checked,
                 });
 
                 if (property === userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO) {
@@ -1492,16 +1495,30 @@ var Settings = function () {
             CheckboxUtils.updateCheckbox([element], checked);
         };
 
+        const getPropertyName = () => {
+            return property;
+        };
+
+        const updateCheckboxValue = (value) => {
+            let checked = value;
+            if (negate) {
+                checked = !checked;
+            }
+            CheckboxUtils.updateCheckbox([element], checked);
+        };
+
         return {
-            render: render
+            render: render,
+            getPropertyName: getPropertyName,
+            updateCheckboxValue: updateCheckboxValue,
         };
     };
 
-    var checkboxes = [];
-    checkboxes.push(new Checkbox('#safebrowsingEnabledCheckbox', userSettings.names.DISABLE_SAFEBROWSING, {negate: true}));
-    checkboxes.push(new Checkbox('#sendSafebrowsingStatsCheckbox', userSettings.names.DISABLE_SEND_SAFEBROWSING_STATS, {negate: true}));
-    checkboxes.push(new Checkbox('#autodetectFiltersCheckbox', userSettings.names.DISABLE_DETECT_FILTERS, {negate: true}));
-    checkboxes.push(new Checkbox('#enableHitsCount', userSettings.names.DISABLE_COLLECT_HITS, {negate: true}));
+    const checkboxes = [];
+    checkboxes.push(new Checkbox('#safebrowsingEnabledCheckbox', userSettings.names.DISABLE_SAFEBROWSING, { negate: true }));
+    checkboxes.push(new Checkbox('#sendSafebrowsingStatsCheckbox', userSettings.names.DISABLE_SEND_SAFEBROWSING_STATS, { negate: true }));
+    checkboxes.push(new Checkbox('#autodetectFiltersCheckbox', userSettings.names.DISABLE_DETECT_FILTERS, { negate: true }));
+    checkboxes.push(new Checkbox('#enableHitsCount', userSettings.names.DISABLE_COLLECT_HITS, { negate: true }));
     checkboxes.push(new Checkbox('#useOptimizedFilters', userSettings.names.USE_OPTIMIZED_FILTERS));
     checkboxes.push(new Checkbox('#showPageStatisticCheckbox', userSettings.names.DISABLE_SHOW_PAGE_STATS, {
         negate: true,
@@ -1509,15 +1526,15 @@ var Settings = function () {
     }));
     checkboxes.push(new Checkbox('#enableShowContextMenu', userSettings.names.DISABLE_SHOW_CONTEXT_MENU, {
         negate: true,
-        hidden: false
+        hidden: false,
     }));
     checkboxes.push(new Checkbox('#showInfoAboutAdguardFullVersion', userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO, {
         negate: true,
     }));
     checkboxes.push(new Checkbox('#showAppUpdatedNotification', userSettings.names.DISABLE_SHOW_APP_UPDATED_NOTIFICATION, {
-        negate: true
+        negate: true,
     }));
-    checkboxes.push(new Checkbox('#integrationModeCheckbox', userSettings.names.DISABLE_INTEGRATION_MODE, {negate: true}));
+    checkboxes.push(new Checkbox('#integrationModeCheckbox', userSettings.names.DISABLE_INTEGRATION_MODE, { negate: true }));
 
     // Privacy settings
     checkboxes.push(new Checkbox('#disable_stealth_mode', userSettings.names.DISABLE_STEALTH_MODE, { negate: true }));
@@ -1631,6 +1648,11 @@ var Settings = function () {
             return;
         }
 
+        // remove already added options
+        while (filtersUpdatePeriodSelect.firstChild) {
+            filtersUpdatePeriodSelect.removeChild(filtersUpdatePeriodSelect.firstChild);
+        }
+
         if (updatePeriod === 0) {
             filtersUpdatePeriodSelect.parentNode.classList.remove('active');
         } else {
@@ -1674,8 +1696,19 @@ var Settings = function () {
         handleActiveStealthOptions(userSettings.values[userSettings.names.DISABLE_STEALTH_MODE]);
     };
 
+    const getSettingCheckboxes = (propertyName) => {
+        return checkboxes.filter(checkbox => checkbox.getPropertyName() === propertyName);
+    };
+
+    const updateCheckboxValue = (propertyName, propertyValue) => {
+        getSettingCheckboxes(propertyName).forEach(checkbox => {
+            checkbox.updateCheckboxValue(propertyValue);
+        });
+    };
+
     return {
         render: render,
+        updateCheckboxValue: updateCheckboxValue,
     };
 };
 
@@ -1744,6 +1777,7 @@ PageController.prototype = {
             } catch (err) {
                 Utils.showPopup(i18n.getMessage('options_popup_import_error_file_title'), err.message);
             }
+            importSettingsFileInput.value = '';
         });
     },
 
@@ -1935,6 +1969,7 @@ var initPage = function (response) {
             EventNotifierTypes.REQUEST_FILTER_UPDATED,
             EventNotifierTypes.SYNC_STATUS_UPDATED,
             EventNotifierTypes.SETTINGS_UPDATED,
+            EventNotifierTypes.SETTING_UPDATED,
         ];
 
         createEventListener(events, function (event, options) {
@@ -1969,6 +2004,13 @@ var initPage = function (response) {
                 case EventNotifierTypes.SYNC_STATUS_UPDATED:
                     controller.syncSettings.updateSyncSettings(options);
                     break;
+                case EventNotifierTypes.SETTING_UPDATED: {
+                    const { propertyName, propertyValue } = options;
+                    if (typeof propertyValue === 'boolean') {
+                        controller.settings.updateCheckboxValue(propertyName, propertyValue);
+                    }
+                    break;
+                }
                 case EventNotifierTypes.SETTINGS_UPDATED:
                     controller.onSettingsImported(options);
                     break;

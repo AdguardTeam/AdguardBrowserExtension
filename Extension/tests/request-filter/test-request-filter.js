@@ -424,6 +424,57 @@ QUnit.test('whitelisted replace filter with same option is omitted', function (a
     assert.equal(replaceRules.length, 2);
 });
 
+QUnit.test('whitelist rules with $stealth modifier', function (assert) {
+    const stealthRule = new adguard.rules.UrlFilterRule('@@||example.org^$stealth');
+
+    const requestFilter = new adguard.RequestFilter();
+    requestFilter.addRule(stealthRule);
+
+    const result = requestFilter.findStealthWhiteListRule('https://example.org/test.js', 'https://example.org', adguard.RequestTypes.SCRIPT);
+
+    assert.ok(result);
+    assert.ok(result.whiteListRule);
+    assert.equal(result.textRule, stealthRule.textRule);
+
+    const thirdPartResult = requestFilter.findStealthWhiteListRule('https://other-example.org/test.js', 'https://example.org', adguard.RequestTypes.SCRIPT);
+
+    assert.ok(thirdPartResult);
+    assert.ok(thirdPartResult.whiteListRule);
+    assert.equal(thirdPartResult.textRule, stealthRule.textRule);
+});
+
+QUnit.test('whitelist rules with $stealth and $script modifier', function (assert) {
+    const stealthRule = new adguard.rules.UrlFilterRule('@@||example.org^$script,stealth');
+
+    const requestFilter = new adguard.RequestFilter();
+    requestFilter.addRule(stealthRule);
+
+    const notScriptRuleResult = requestFilter.findStealthWhiteListRule('https://example.org/test.jpg', 'https://example.org', adguard.RequestTypes.DOCUMENT);
+
+    const scriptRuleResult = requestFilter.findStealthWhiteListRule('https://example.org/test.js', 'https://example.org', adguard.RequestTypes.SCRIPT);
+
+    assert.notOk(notScriptRuleResult);
+    assert.ok(scriptRuleResult);
+    assert.ok(scriptRuleResult.whiteListRule);
+    assert.equal(scriptRuleResult.textRule, stealthRule.textRule);
+});
+
+QUnit.test('whitelist rules with $stealth and $third-party modifier', function (assert) {
+    const stealthRule = new adguard.rules.UrlFilterRule('@@||example.org^$stealth,third-party');
+
+    const requestFilter = new adguard.RequestFilter();
+    requestFilter.addRule(stealthRule);
+
+    const result = requestFilter.findStealthWhiteListRule('https://example.org/test', 'https://example.org', adguard.RequestTypes.SCRIPT);
+
+    const thirdPartyResult = requestFilter.findStealthWhiteListRule('https://third-party.org/test', 'https://example.org', adguard.RequestTypes.SCRIPT);
+
+    assert.notOk(result);
+    assert.ok(thirdPartyResult);
+    assert.ok(thirdPartyResult.whiteListRule);
+    assert.equal(thirdPartyResult.textRule, thirdPartyResult.textRule);
+});
+
 QUnit.test('replace filter with empty $replace modifier should remove all other replace rules', function (assert) {
     const rules = [
         '||example.org^$replace=/test/test1/g',
@@ -447,6 +498,27 @@ QUnit.test('replace filter with empty $replace modifier should remove all other 
     assert.ok(replaceRules[0].whiteListRule);
     assert.equal(rules.length, 3);
     assert.equal(replaceRules.length, 1);
+});
+
+QUnit.test('stealth rules with $badfilter modifier', function (assert) {
+
+    const whiteListRule = new adguard.rules.UrlFilterRule('@@||example.org^$stealth');
+
+    const requestFilter = new adguard.RequestFilter();
+
+    requestFilter.addRule(whiteListRule);
+
+    let result = requestFilter.findStealthWhiteListRule('https://example.org', 'https://example.org', adguard.RequestTypes.DOCUMENT);
+
+    assert.ok(result);
+    assert.equal(result.ruleText, whiteListRule.ruleText);
+    assert.ok(result.whiteListRule);
+
+    const badFilterRule = new adguard.rules.UrlFilterRule('@@||example.org^$stealth,badfilter');
+    requestFilter.addRule(badFilterRule);
+    result = requestFilter.findStealthWhiteListRule('https://example.org', 'https://example.org', adguard.RequestTypes.DOCUMENT);
+
+    assert.notOk(result);
 });
 
 

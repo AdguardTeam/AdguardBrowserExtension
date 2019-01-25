@@ -140,6 +140,8 @@ const STEALTH_ACTIONS = {
     BLOCK_CHROME_CLIENT_DATA: 1 << 2,
     SEND_DO_NOT_TRACK: 1 << 3,
     STRIPPED_TRACKING_URL: 1 << 4,
+    FIRST_PARTY_COOKIES: 1 << 5,
+    THIRD_PARTY_COOKIES: 1 << 6,
 };
 
 const STEALTH_ACTIONS_NAMES = {
@@ -148,6 +150,8 @@ const STEALTH_ACTIONS_NAMES = {
     BLOCK_CHROME_CLIENT_DATA: i18n.getMessage('options_remove_client_data_title'),
     SEND_DO_NOT_TRACK: i18n.getMessage('options_send_not_track_title'),
     STRIPPED_TRACKING_URL: i18n.getMessage('options_stripped_tracking_parameters'),
+    FIRST_PARTY_COOKIES: i18n.getMessage('options_modified_first_party_cookie'),
+    THIRD_PARTY_COOKIES: i18n.getMessage('options_modified_third_party_cookie'),
 };
 
 PageController.prototype = {
@@ -527,7 +531,8 @@ PageController.prototype = {
         const metadata = { data: event, class: '' };
 
         event.filterName = '';
-        if (event.requestRule) {
+
+        if (event.requestRule && event.requestRule.filterId !== undefined) {
             event.filterName = RequestWizard.getFilterName(event.requestRule.filterId);
         } else if (event.stealthActions) {
             event.filterName = i18n.getMessage('filtering_log_privacy_applied_rules');
@@ -1055,7 +1060,9 @@ var RequestWizard = (function () {
             template.querySelector('[attr-text="frameDomain"]').closest('li').style.display = 'none';
         }
 
-        if (requestRule && !requestRule.replaceRule) {
+        if (requestRule
+            && !requestRule.replaceRule
+            && typeof requestRule.filterId !== 'undefined') {
             if (requestRule.filterId !== AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
                 template.querySelector('[attr-text="requestRule"]').textContent = requestRule.ruleText;
             } else {
@@ -1122,8 +1129,8 @@ var RequestWizard = (function () {
             contentPage.sendMessage({ type: 'openTab', url: requestUrl, options: { inNewWindow: true } });
         });
 
-        // there is nothing to open if log event reveals blocked element
-        if (filteringEvent.element) {
+        // there is nothing to open if log event reveals blocked element or cookie
+        if (filteringEvent.element || filteringEvent.cookieName) {
             openRequestButton.style.display = 'none';
         }
 

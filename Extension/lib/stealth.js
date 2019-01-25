@@ -63,6 +63,8 @@ adguard.stealthService = (function (adguard) {
         BLOCK_CHROME_CLIENT_DATA: 1 << 2,
         SEND_DO_NOT_TRACK: 1 << 3,
         STRIPPED_TRACKING_URL: 1 << 4,
+        FIRST_PARTY_COOKIES: 1 << 5,
+        THIRD_PARTY_COOKIES: 1 << 6,
     };
 
     /**
@@ -99,10 +101,13 @@ adguard.stealthService = (function (adguard) {
      * Generates rule removing cookies
      *
      * @param {number} maxAgeMinutes Cookie maxAge in minutes
+     * @param {number} stealthActions stealth actions to add to the rule
      */
-    const generateRemoveRule = function (maxAgeMinutes) {
+    const generateRemoveRule = function (maxAgeMinutes, stealthActions) {
         const maxAgeOption = maxAgeMinutes > 0 ? `;maxAge=${maxAgeMinutes * 60}` : '';
-        return new adguard.rules.UrlFilterRule(`$cookie=/.+/${maxAgeOption}`);
+        const rule = new adguard.rules.UrlFilterRule(`$cookie=/.+/${maxAgeOption}`);
+        rule.addStealthActions(stealthActions);
+        return rule;
     };
 
     /**
@@ -170,7 +175,7 @@ adguard.stealthService = (function (adguard) {
         const stealthWhiteListRule = findStealthWhitelistRule(requestUrl, mainFrameUrl, requestType);
         if (stealthWhiteListRule) {
             adguard.console.debug('Whitelist stealth rule found');
-            adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, mainFrameUrl, requestType, stealthWhiteListRule);
+            adguard.requestContextStorage.update(requestId, { requestRule: stealthWhiteListRule });
             return false;
         }
 
@@ -256,7 +261,7 @@ adguard.stealthService = (function (adguard) {
         // Remove cookie header for first-party requests
         const blockCookies = getStealthSettingValue(adguard.settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES);
         if (blockCookies) {
-            result.push(generateRemoveRule(adguard.settings.getProperty(adguard.settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME)));
+            result.push(generateRemoveRule(adguard.settings.getProperty(adguard.settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME), STEALTH_ACTIONS.FIRST_PARTY_COOKIES));
         }
 
         const blockThirdPartyCookies = getStealthSettingValue(adguard.settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES);
@@ -272,7 +277,7 @@ adguard.stealthService = (function (adguard) {
 
         // Remove cookie header for third-party requests
         if (thirdParty && !isMainFrame) {
-            result.push(generateRemoveRule(adguard.settings.getProperty(adguard.settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME)));
+            result.push(generateRemoveRule(adguard.settings.getProperty(adguard.settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME), STEALTH_ACTIONS.THIRD_PARTY_COOKIES));
         }
 
         adguard.console.debug('Stealth service processed lookup cookie rules for {0}', requestUrl);
@@ -281,7 +286,7 @@ adguard.stealthService = (function (adguard) {
     };
 
     /**
-     * Checks if tab if whitelisted for stealth
+     * Checks if tab is whitelisted for stealth
      *
      * @param requestUrl
      * @param referrerUrl
@@ -307,8 +312,7 @@ adguard.stealthService = (function (adguard) {
     /**
      * Updates browser privacy.network settings depending on blocking WebRTC or not
      */
-    const handleWebRTCDisabled = () => {
-
+    const handleBlockWebRTC = () => {
         // Edge doesn't support privacy api
         // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/privacy
         if (!browser.privacy) {
@@ -444,26 +448,105 @@ adguard.stealthService = (function (adguard) {
         return null;
     };
 
-    adguard.settings.onUpdated.addListener(function (setting) {
-        if (setting === adguard.settings.BLOCK_WEBRTC
-            || setting === adguard.settings.DISABLE_STEALTH_MODE) {
-            handleWebRTCDisabled();
-        }
-    });
+    const handleWebRTCEnabling = () => {
+        adguard.utils.browser.containsPermissions(['privacy'])
+            .then(result => {
+                if (result) {
+                    return true;
+                }
+                return adguard.utils.browser.requestPermissions(['privacy']);
+            })
+            .then(granted => {
+                if (granted) {
+                    handleBlockWebRTC();
+                } else {
+                    // If privacy permission is not granted set block webrtc value to false
+                    adguard.settings.setProperty(adguard.settings.BLOCK_WEBRTC, false);
+                }
+            })
+            .catch(error => {
+                adguard.console.error(error);
+            });
+    };
 
-    adguard.listeners.addListener(function (event) {
-        switch (event) {
-            case adguard.listeners.APPLICATION_INITIALIZED:
-                handleWebRTCDisabled();
-                break;
-            default: break;
+    const handleWebRTCDisabling = () => {
+        adguard.utils.browser.containsPermissions(['privacy'])
+            .then(result => {
+                if (result) {
+                    return adguard.utils.browser.removePermission(['privacy']);
+                }
+                return true;
+            });
+    };
+
+    const handlePrivacyPermissions = () => {
+        const webRTCEnabled = getStealthSettingValue(adguard.settings.BLOCK_WEBRTC);
+        if (webRTCEnabled) {
+            handleWebRTCEnabling();
+        } else {
+            handleWebRTCDisabling();
         }
-    });
+    };
+
+    /**
+     * Browsers api doesn't allow to get optional permissions
+     * via chrome.permissions.getAll and we can't check privacy
+     * availability via `browser.privacy !== undefined` till permission
+     * isn't enabled by the user
+     *
+     * That's why use edge browser detection
+     * Privacy methods are not working at all in the Edge
+     * @returns {boolean}
+     */
+    const canBlockWebRTC = () => {
+        return !adguard.utils.browser.isEdgeBrowser();
+    };
+
+    /**
+     * We handle privacy permission only for chrome
+     * In the Firefox privacy permission is available by default
+     * because they can't be optional there
+     * @returns {boolean}
+     */
+    const shouldHandlePrivacyPermission = () => {
+        return adguard.utils.browser.isChromeBrowser();
+    };
+
+    if (canBlockWebRTC()) {
+        adguard.settings.onUpdated.addListener(function (setting) {
+            if (setting === adguard.settings.BLOCK_WEBRTC
+                || setting === adguard.settings.DISABLE_STEALTH_MODE) {
+                if (shouldHandlePrivacyPermission()) {
+                    handlePrivacyPermissions();
+                } else {
+                    handleBlockWebRTC();
+                }
+            }
+        });
+
+        adguard.listeners.addListener(function (event) {
+            switch (event) {
+                case adguard.listeners.APPLICATION_INITIALIZED:
+                    adguard.utils.browser.containsPermissions(['privacy'])
+                        .then(result => {
+                            if (result) {
+                                handleBlockWebRTC();
+                            }
+                        });
+                    break;
+                default:
+                    break;
+            }
+        });
+    }
+
 
     return {
         processRequestHeaders: processRequestHeaders,
         getCookieRules: getCookieRules,
         removeTrackersFromUrl: removeTrackersFromUrl,
+        canBlockWebRTC: canBlockWebRTC,
+        STEALTH_ACTIONS,
     };
 
 })(adguard);
