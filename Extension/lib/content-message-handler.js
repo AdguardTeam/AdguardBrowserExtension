@@ -73,13 +73,13 @@
             syncStatusInfo: adguard.sync.syncService.getSyncStatus(),
             environmentOptions: {
                 isMacOs: adguard.utils.browser.isMacOs(),
-                canBlockWebRTC: typeof browser.privacy !== 'undefined',
+                canBlockWebRTC: adguard.stealthService.canBlockWebRTC(),
                 isChrome: adguard.utils.browser.isChromeBrowser(),
                 Prefs: {
                     locale: adguard.app.getLocale(),
                     mobile: adguard.prefs.mobile || false,
                 },
-                appVersion: adguard.app.getVersion()
+                appVersion: adguard.app.getVersion(),
             },
             constants: {
                 AntiBannerFiltersId: adguard.utils.filters.ids,
@@ -396,8 +396,8 @@
                 adguard.sync.settingsProvider.loadSettingsBackup(callback);
                 return true; // Async
             case 'applySettingsJson':
-                adguard.sync.settingsProvider.applySettingsBackup(message.json, callback);
-                return true; // Async
+                adguard.sync.settingsProvider.applySettingsBackup(message.json);
+                break;
             case 'disableGetPremiumNotification':
                 adguard.settings.disableShowAdguardPromoInfo();
                 break;
