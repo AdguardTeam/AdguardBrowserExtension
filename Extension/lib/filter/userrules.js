@@ -92,6 +92,12 @@ adguard.userrules = (function (adguard) {
         }
     };
 
+    const scriptlets = function () {
+        if (window.scriptlets) {
+            return window.scriptlets;
+        }
+    }
+
     return {
         addRules: addRules,
         clearRules: clearRules,
@@ -99,7 +105,8 @@ adguard.userrules = (function (adguard) {
         updateUserRulesText: updateUserRulesText,
         getUserRulesText: getUserRulesText,
         //TODO: fix
-        unWhiteListFrame: unWhiteListFrame
+        unWhiteListFrame: unWhiteListFrame,
+        scriptlets: scriptlets,
     };
 
 })(adguard);

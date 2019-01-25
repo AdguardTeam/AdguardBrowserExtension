@@ -20,8 +20,6 @@ import concatFiles from 'gulp-concat';
 import zip from 'gulp-zip';
 
 const API_SCRIPTS = [
-    // External libraries
-    'node_modules/scriptlets/dist/bundle.js',
     // Third party libraries
     'Extension/lib/libs/deferred.js',
     'Extension/lib/utils/sha256.patched.js',

@@ -18,6 +18,7 @@ import {BUILD_DIR, BRANCH_BETA, BRANCH_RELEASE} from './consts';
 import {version} from './parse-package';
 import {updateLocalesMSGName, preprocessAll} from './helpers';
 import copyCommonFiles from './copy-common';
+import copyExternal from './copy-external';
 
 // set current type of build
 const BRANCH = process.env.NODE_ENV || '';
@@ -70,4 +71,4 @@ const createArchive = (done) => {
         .pipe(gulp.dest(dest.buildDir));
 };
 
-export default gulp.series(copyCommon, copyFilters, edge, updateManifest, localesProcess, preprocess, createArchive);
+export default gulp.series(copyExternal, copyCommon, copyFilters, edge, updateManifest, localesProcess, preprocess, createArchive);
