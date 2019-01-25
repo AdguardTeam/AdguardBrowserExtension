@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global chrome, DevToolsRulesConstructor, balalaika */
+/* global chrome, DevToolsRulesConstructor */
 
 var browser = window.browser || chrome;
 
-(function ($) {
+(function () {
     var initPanel = function () {
         initTheme();
         initElements();
@@ -62,16 +62,17 @@ var browser = window.browser || chrome;
     var initTheme = function () {
         var theme = browser.devtools.panels.themeName;
         if (theme === 'dark') {
-            $(document.body).addClass('-theme-with-dark-background');
+            var classList = document.body.classList;
+            classList.add.apply(classList, '-theme-with-dark-background');
         }
     };
 
     var initElements = function () {
-        $('#block-by-url-checkbox').get(0).checked = false;
-        $('#create-full-css-path').get(0).checked = false;
-        $('#one-domain-checkbox').get(0).checked = true;
+        document.getElementById('block-by-url-checkbox').checked = false;
+        document.getElementById('create-full-css-path').checked = false;
+        document.getElementById('one-domain-checkbox').checked = true;
 
-        $("#filter-rule-text").get(0).value = '';
+        document.getElementById("filter-rule-text").value = '';
 
         var placeholder = document.getElementById("attributes-block");
         while (placeholder.firstChild) {
@@ -120,14 +121,16 @@ var browser = window.browser || chrome;
             }
         });
 
-        $('.update-rule-block').on('click', function () {
-            updatePanelElements();
-            updateRule();
+        document.querySelectorAll('.update-rule-block').forEach(function(el) {
+            el.addEventListener('click', function() {
+                updatePanelElements();
+                updateRule();
+            })
         });
 
         document.getElementById("select-attributes-checkbox").addEventListener("click", function (e) {
             var checked = e.currentTarget.checked;
-            $('.attribute-check-box').forEach(function (el) {
+            document.querySelectorAll('.attribute-check-box').forEach(function (el) {
                 if (el) {
                     el.checked = checked;
                 }
@@ -139,29 +142,33 @@ var browser = window.browser || chrome;
     };
 
     var updatePanelElements = function () {
-        var checkboxes = $('#one-domain-checkbox, #create-full-css-path, .attribute-check-box');
+        var checkboxes = document.querySelectorAll('#one-domain-checkbox, #create-full-css-path, .attribute-check-box');
 
         //All checkboxes should be disabled if block by url is checked
-        if ($('#block-by-url-checkbox').get(0).checked) {
-            checkboxes.attr("disabled", "disabled");
+        if (document.getElementById('block-by-url-checkbox').checked) {
+            checkboxes.forEach(function(el) {
+                el.setAttribute('disabled', 'disabled');
+            });
         } else {
-            checkboxes.removeAttr("disabled");
+            checkboxes.forEach(function(el) {
+                el.removeAttribute('disabled');
+            });
         }
     };
 
     var handleShowBlockSettings = function (showBlockByUrl, createFullCssPath) {
         if (showBlockByUrl) {
-            $('#block-by-url-checkbox-block').show();
+            document.getElementById('block-by-url-checkbox-block').style['display'] = 'block';
         } else {
-            $('#block-by-url-checkbox').get(0).checked = false;
-            $('#block-by-url-checkbox-block').hide();
+            document.getElementById('block-by-url-checkbox').checked = false;
+            document.getElementById('block-by-url-checkbox-block').style['display'] = 'none';
         }
         if (createFullCssPath) {
-            $('#create-full-css-path-block').show();
-            $('#create-full-css-path').get(0).checked = false;
+            document.getElementById('create-full-css-path-block').style['display'] = 'block';
+            document.getElementById('create-full-css-path').checked = false;
         } else {
-            $('#create-full-css-path').get(0).checked = true;
-            $('#create-full-css-path-block').hide();
+            document.getElementById('create-full-css-path').checked = true;
+            document.getElementById('create-full-css-path-block').style['display'] = 'none';
         }
     };
 
@@ -172,18 +179,30 @@ var browser = window.browser || chrome;
         }
 
         var createAttributeElement = function (attributeName, attributeValue, defaultChecked) {
-            var checked = '';
-            if (defaultChecked) {
-                checked = '" checked="true"';
-            }
+            var li = document.createElement('li');
+            li.setAttribute('class', 'parent');
 
-            var el = $(
-                '<li class="parent">' +
-                '<input class="enabled-button attribute-check-box" type="checkbox" id="' + 'attribute-check-box-' + attributeName + checked + '">' +
-                '<span class="webkit-css-property">' + attributeName + '</span>: ' +
-                '<span class="value attribute-check-box-value">' + attributeValue + '</span>' +
-                '</li>');
-            return el.get(0);
+            var input = document.createElement('input');
+            input.setAttribute('class', 'enabled-button attribute-check-box');
+            input.setAttribute('type', 'checkbox');
+            input.setAttribute('id', 'attribute-check-box-' + attributeName);
+            if (defaultChecked) {
+                input.setAttribute('checked', 'true');
+            }
+            li.appendChild(input);
+
+            var spanName = document.createElement('span');
+            spanName.setAttribute('class', 'webkit-css-property');
+            spanName.innerText = attributeName;
+            li.appendChild(spanName);
+
+            li.appendChild(document.createTextNode(": "));
+
+            var spanValue = document.createElement('span');
+            spanValue.setAttribute('class', 'value attribute-check-box-value');
+            spanValue.innerText = attributeValue;
+            li.appendChild(spanValue);
+            return li;
         };
 
         placeholder.appendChild(createAttributeElement('tag', info.tagName.toLowerCase(), true));
@@ -205,9 +224,9 @@ var browser = window.browser || chrome;
         }
 
         if (placeholder.childNodes.length > 2) {
-            $("#select-attributes-checkbox").get(0).style['display'] = 'inline';
+            document.getElementById("select-attributes-checkbox").style['display'] = 'inline';
         } else {
-            $("#select-attributes-checkbox").hide();
+            document.getElementById("select-attributes-checkbox").style['display'] = 'none';
         }
     };
 
@@ -218,15 +237,15 @@ var browser = window.browser || chrome;
     };
 
     var updateFilterRuleInput = function (info, url) {
-        var isBlockByUrl = $('#block-by-url-checkbox').get(0).checked;
-        var createFullCssPath = $("#create-full-css-path").get(0).checked;
-        var isBlockOneDomain = $("#one-domain-checkbox").get(0).checked;
+        var isBlockByUrl = document.getElementById('block-by-url-checkbox').checked;
+        var createFullCssPath = document.getElementById("create-full-css-path").checked;
+        var isBlockOneDomain = document.getElementById("one-domain-checkbox").checked;
 
         var includeTagName = true;
         var includeElementId = true;
         var selectedClasses = [];
         var attributesSelector = '';
-        $('.attribute-check-box').forEach(function (el) {
+        document.querySelectorAll('.attribute-check-box').forEach(function (el) {
             if (el) {
                 var attrName = el.id.substring('attribute-check-box-'.length);
                 if (attrName === 'tag') {
@@ -305,4 +324,4 @@ var browser = window.browser || chrome;
         initPanel();
     });
 
-})(balalaika);
+})();
