@@ -16,9 +16,6 @@
  */
 
 (function (adguard, api) {
-
-    'use strict';
-
     /**
      * By the rules of AMO and addons.opera.com we cannot use remote scripts
      * (and our JS injection rules could be considered as remote scripts).
@@ -73,13 +70,7 @@
         this.scriptlet = getScriptletData(rule);
         this.scriptSource = getScriptSource(filterId, rule);
         this.whiteListRule = adguard.utils.strings.contains(rule, api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE);
-
-        // Todo via adguard logger
-        if (!scriptlets) {
-            console.log('No scriptlets imported');
-            return;
-        }
-        this.script = scriptlets.invoke(this.scriptlet);
+        this.script = scriptlets && scriptlets.invoke(this.scriptlet);
     };
 
     /**

@@ -20,6 +20,7 @@ import {updateLocalesMSGName, preprocessAll} from './helpers';
 import zip from 'gulp-zip';
 import crx from 'gulp-crx-pack';
 import copyCommonFiles from './copy-common';
+import copyExternal from './copy-external';
 
 // set current type of build
 const BRANCH = process.env.NODE_ENV || '';
@@ -89,4 +90,4 @@ const crxPack = (done) => {
         .pipe(gulp.dest(dest.buildDir));
 };
 
-export default gulp.series(copyCommon, copyFilters, chromiumMainFiles, updateManifest, localesProcess, preprocess, createArchive, crxPack);
+export default gulp.series(copyExternal, copyCommon, copyFilters, chromiumMainFiles, updateManifest, localesProcess, preprocess, createArchive, crxPack);

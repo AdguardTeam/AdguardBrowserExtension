@@ -75,10 +75,6 @@
      * @returns Filter rule object. Either UrlFilterRule or CssFilterRule or ScriptFilterRule.
      */
     const createRule = function (ruleText, filterId, isTrustedFilter = true) {
-        if (ruleText.indexOf("console.log('q123123')") > -1) {
-            debugger
-        }
-
         ruleText = ruleText ? ruleText.trim() : null;
         if (!ruleText) {
             return null;

@@ -19,6 +19,7 @@ import {version} from './parse-package';
 import {updateLocalesMSGName, preprocessAll} from './helpers';
 import webExt from 'web-ext';
 import copyCommonFiles from './copy-common';
+import copyExternal from './copy-external';
 
 // set current type of build
 const BRANCH = process.env.NODE_ENV || '';
@@ -91,4 +92,4 @@ const createWebExt = (done) => {
     });
 };
 
-export default gulp.series(copyCommon, copyFilters, firefoxWebext, updateManifest, localesProcess, preprocess, createWebExt);
+export default gulp.series(copyExternal, copyCommon, copyFilters, firefoxWebext, updateManifest, localesProcess, preprocess, createWebExt);
