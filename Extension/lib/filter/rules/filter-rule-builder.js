@@ -29,19 +29,6 @@
         if (ruleText.includes('##^')) {
             return false;
         }
-
-        // uBO scriptlet injections
-        if (ruleText.includes('##script:inject(') || ruleText.includes('##+js(')) {
-            return false;
-        }
-
-        // Check ABP-snippets
-        if (ruleText.includes('#$#')) {
-            if (!/#\$#.+{.*}\s*$/.test(ruleText)) {
-                return false;
-            }
-        }
-
         return true;
     };
 
