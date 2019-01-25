@@ -92,12 +92,6 @@ adguard.userrules = (function (adguard) {
         }
     };
 
-    const scriptlets = function () {
-        if (window.scriptlets) {
-            return window.scriptlets;
-        }
-    }
-
     return {
         addRules: addRules,
         clearRules: clearRules,
@@ -106,7 +100,6 @@ adguard.userrules = (function (adguard) {
         getUserRulesText: getUserRulesText,
         //TODO: fix
         unWhiteListFrame: unWhiteListFrame,
-        scriptlets: scriptlets,
     };
 
 })(adguard);
