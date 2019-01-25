@@ -763,3 +763,32 @@ QUnit.test('Test replace option', (assert) => {
     assert.ok(replaceRule);
     assert.ok(replaceRule.isReplaceRule());
 });
+
+
+QUnit.test('Invalid $domain options throw exception', function (assert) {
+    try {
+        const rule = new adguard.rules.UrlFilterRule('|http*$domain=|');
+        assert.notOk(rule);
+    } catch (ex) {
+        assert.ok(ex === 'Error load $domain options from "|", because after split one of them is empty');
+    }
+
+    try {
+        const rule = new adguard.rules.UrlFilterRule('|http*$script,domain=|example.org');
+        assert.notOk(rule);
+    } catch (ex) {
+        assert.ok(ex === 'Error load $domain options from "|example.org", because after split one of them is empty');
+    }
+
+    try {
+        const rule = new adguard.rules.UrlFilterRule('|http*$domain=|example.org');
+        assert.notOk(rule);
+    } catch (ex) {
+        assert.ok(ex === 'Error load $domain options from "|example.org", because after split one of them is empty');
+    }
+
+
+    const rule = new adguard.rules.UrlFilterRule('|http*$domain=example.org');
+    assert.ok(rule);
+    assert.equal(rule.permittedDomain, 'example.org');
+});
