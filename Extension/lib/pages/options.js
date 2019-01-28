@@ -1142,9 +1142,8 @@ var AntiBannerFilters = function (options) {
                 const customGroupId = 0;
                 const customGroupHash = '#antibanner' + customGroupId;
                 const newHash = new URL(e.newURL).hash;
-                const oldHash = new URL(e.oldURL).hash;
 
-                if (oldHash === customGroupHash && newHash !== customGroupHash) {
+                if (newHash !== customGroupHash) {
                     closePopup();
                 }
             });
