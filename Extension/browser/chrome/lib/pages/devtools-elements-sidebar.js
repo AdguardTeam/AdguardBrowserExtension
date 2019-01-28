@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global chrome, DevToolsRulesConstructor, balalaika */
+/* global chrome, DevToolsRulesConstructor */
 
 var browser = window.browser || chrome;
 
-(function ($) {
+(function () {
     var initPanel = function () {
         initTheme();
         initElements();
@@ -62,16 +62,15 @@ var browser = window.browser || chrome;
     var initTheme = function () {
         var theme = browser.devtools.panels.themeName;
         if (theme === 'dark') {
-            $(document.body).addClass('-theme-with-dark-background');
+            document.body.classList.add('-theme-with-dark-background');
         }
     };
 
     var initElements = function () {
-        $('#block-by-url-checkbox').get(0).checked = false;
-        $('#create-full-css-path').get(0).checked = false;
-        $('#one-domain-checkbox').get(0).checked = true;
-
-        $("#filter-rule-text").get(0).value = '';
+        document.querySelector('#block-by-url-checkbox').checked = false;
+        document.querySelector('#create-full-css-path').checked = false;
+        document.querySelector('#one-domain-checkbox').checked = true;
+        document.querySelector('#filter-rule-text').value = '';
 
         var placeholder = document.getElementById("attributes-block");
         while (placeholder.firstChild) {
@@ -120,14 +119,20 @@ var browser = window.browser || chrome;
             }
         });
 
-        $('.update-rule-block').on('click', function () {
-            updatePanelElements();
-            updateRule();
+        const updateRuleBlocks = document.querySelectorAll('.update-rule-block');
+        updateRuleBlocks.forEach(block => {
+            block.addEventListener('click', () => {
+                updatePanelElements();
+                updateRule();
+            });
         });
 
-        document.getElementById("select-attributes-checkbox").addEventListener("click", function (e) {
-            var checked = e.currentTarget.checked;
-            $('.attribute-check-box').forEach(function (el) {
+
+        document.getElementById('select-attributes-checkbox').addEventListener('click', function (e) {
+            const checked = e.currentTarget.checked;
+
+            const attributeCheckBoxes = document.querySelectorAll('.attribute-check-box');
+            attributeCheckBoxes.forEach(el => {
                 if (el) {
                     el.checked = checked;
                 }
@@ -139,54 +144,62 @@ var browser = window.browser || chrome;
     };
 
     var updatePanelElements = function () {
-        var checkboxes = $('#one-domain-checkbox, #create-full-css-path, .attribute-check-box');
+        const checkboxes = document.querySelectorAll('#one-domain-checkbox, #create-full-css-path, .attribute-check-box');
 
-        //All checkboxes should be disabled if block by url is checked
-        if ($('#block-by-url-checkbox').get(0).checked) {
-            checkboxes.attr("disabled", "disabled");
+        // All checkboxes should be disabled if block by url is checked
+        if (document.querySelector('#block-by-url-checkbox').checked) {
+            checkboxes.forEach(checkbox => {
+                checkbox.setAttribute('disabled', 'disabled');
+            });
         } else {
-            checkboxes.removeAttr("disabled");
+            checkboxes.forEach(checkbox => {
+                checkbox.removeAttribute('disabled');
+            });
         }
     };
 
     var handleShowBlockSettings = function (showBlockByUrl, createFullCssPath) {
         if (showBlockByUrl) {
-            $('#block-by-url-checkbox-block').show();
+            document.querySelector('#block-by-url-checkbox-block').style.display = 'block';
         } else {
-            $('#block-by-url-checkbox').get(0).checked = false;
-            $('#block-by-url-checkbox-block').hide();
+            document.querySelector('#block-by-url-checkbox').checked = false;
+            document.querySelector('#block-by-url-checkbox-block').style.display = 'none';
         }
         if (createFullCssPath) {
-            $('#create-full-css-path-block').show();
-            $('#create-full-css-path').get(0).checked = false;
+            document.querySelector('#create-full-css-path-block').style.display = 'block';
+            document.querySelector('#create-full-css-path').checked = false;
         } else {
-            $('#create-full-css-path').get(0).checked = true;
-            $('#create-full-css-path-block').hide();
+            document.querySelector('#create-full-css-path').checked = true;
+            document.querySelector('#create-full-css-path-block').style.display = 'none';
         }
     };
 
     var setupAttributesInfo = function (info) {
-        var placeholder = document.getElementById("attributes-block");
+        const placeholder = document.getElementById('attributes-block');
+
         while (placeholder.firstChild) {
             placeholder.removeChild(placeholder.firstChild);
         }
 
-        var createAttributeElement = function (attributeName, attributeValue, defaultChecked) {
-            var checked = '';
-            if (defaultChecked) {
-                checked = '" checked="true"';
-            }
+        const createAttributeElement = (attributeName, attributeValue, defaultChecked) => {
+            const checked = defaultChecked ? 'checked="true"' : '';
 
-            var el = $(
-                '<li class="parent">' +
-                '<input class="enabled-button attribute-check-box" type="checkbox" id="' + 'attribute-check-box-' + attributeName + checked + '">' +
-                '<span class="webkit-css-property">' + attributeName + '</span>: ' +
-                '<span class="value attribute-check-box-value">' + attributeValue + '</span>' +
-                '</li>');
-            return el.get(0);
+            const elHtml = `
+                    <li class="parent">
+                        <input class="enabled-button attribute-check-box" type="checkbox" id="attribute-check-box-${attributeName}" ${checked}>
+                        <span class="webkit-css-property">${attributeName}</span>:
+                        <span class="value attribute-check-box-value">${attributeValue}</span>
+                    </li>
+            `;
+
+            const tmpEl = document.createElement('div');
+            tmpEl.innerHTML = elHtml;
+            return tmpEl.firstElementChild;
         };
 
-        placeholder.appendChild(createAttributeElement('tag', info.tagName.toLowerCase(), true));
+        if (info.tagName) {
+            placeholder.appendChild(createAttributeElement('tag', info.tagName.toLowerCase(), true));
+        }
 
         for (var i = 0; i < info.attributes.length; i++) {
             var attribute = info.attributes[i];
@@ -205,9 +218,9 @@ var browser = window.browser || chrome;
         }
 
         if (placeholder.childNodes.length > 2) {
-            $("#select-attributes-checkbox").get(0).style['display'] = 'inline';
+            document.querySelector('#select-attributes-checkbox').style.display = 'inline';
         } else {
-            $("#select-attributes-checkbox").hide();
+            document.querySelector('#select-attributes-checkbox').style.display = 'none';
         }
     };
 
@@ -218,15 +231,15 @@ var browser = window.browser || chrome;
     };
 
     var updateFilterRuleInput = function (info, url) {
-        var isBlockByUrl = $('#block-by-url-checkbox').get(0).checked;
-        var createFullCssPath = $("#create-full-css-path").get(0).checked;
-        var isBlockOneDomain = $("#one-domain-checkbox").get(0).checked;
+        var isBlockByUrl = document.querySelector('#block-by-url-checkbox').checked;
+        var createFullCssPath = document.querySelector('#create-full-css-path').checked;
+        var isBlockOneDomain = document.querySelector('#one-domain-checkbox').checked;
 
         var includeTagName = true;
         var includeElementId = true;
         var selectedClasses = [];
         var attributesSelector = '';
-        $('.attribute-check-box').forEach(function (el) {
+        document.querySelectorAll('.attribute-check-box').forEach(function (el) {
             if (el) {
                 var attrName = el.id.substring('attribute-check-box-'.length);
                 if (attrName === 'tag') {
