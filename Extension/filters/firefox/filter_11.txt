@@ -1,8 +1,8 @@
-! Checksum: WtzAb8ZWdUXSzUjoFbpnOw
+! Checksum: 9FVvO1UxbIqBTDDQ/xmKAg
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.4.49
-! TimeUpdated: 2018-12-27T15:30:12+03:00
+! Version: 2.0.4.69
+! TimeUpdated: 2019-01-25T02:30:13+03:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#mobile
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -98,6 +98,8 @@
 ||plugin.mobopay.baidu.com^
 ||mo.freeindoapp.com^
 !
+||adsnative.com^
+||liftoff.io^
 ||tapdaq-adverts.global.ssl.fastly.net^
 ||a.6d47c1118927cf53ba9654931df80e8d.com^
 ||rtb.appbid.com^
@@ -389,7 +391,7 @@
 ||adonly.com^
 ||adotsolution.com^
 ||adotube.com^
-||adplay.vm5apis.com^
+||vm5apis.com^
 ||adprotected.com^
 ||adpublisher.s3.amazonaws.com^
 ||adquota.com^
@@ -979,6 +981,8 @@
 ! https://github.com/AdguardTeam/AdguardForiOS/issues/255
 @@||m.beautypageants.in^$elemhide
 !---
+! https://github.com/AdguardTeam/AdguardFilters/issues/27586
+@@||js.kanald.com.tr/assets/dist/js/custom/ads.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/23913
 ! nrz.de
 ! https://github.com/AdguardTeam/AdguardFilters/issues/17629
@@ -1340,6 +1344,9 @@ nasimke.ru$$script[tag-content="function show_ads"][max-length="6000"]
 !
 !#####################
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/27605
+m.veporns.com#@#.advertisment
+m.veporns.com#@##topAds
 ! https://github.com/AdguardTeam/AdguardFilters/issues/26732
 @@||b92.net/a/cmt_submit.php$document
 ! https://github.com/AdguardTeam/AdguardFilters/issues/26698
@@ -1646,10 +1653,23 @@ m.news.de##.unisterAdsStart
 !+ NOT_PLATFORM(ios, ext_android_cb)
 ||mobile.donanimhaber.com/ads^
 !
+m.sabah.com.tr##.promo
+gametech.ru##.mobadv
+dialog.ua##amp-ad
+dialog.ua###mgid_iframe
+dialog.ua##amp-iframe[src^="https://m.mixadvert.com/"]
+m.iceporn.com##.banner-full-fixed
+m.iceporn.com##.spot+p
+kanasoku.info##.adc_g_ko_sec
+egmnow.com##.pt_mobile_ad_iframe
+egmnow.com##.pt-embed-ad-single-mobile
+m.sondakika.com##.text_reklam
+carsales.com.au##.mrec-container
+m.adevarul.ro##.article > div[style="width:336px;height:280px;margin:5px auto;"]:not([id]):not([class])
 mail.yahoo.com##a[href*="beap.gemini.yahoo.com/bmclk"]
 mail.yahoo.com##form[name="showFolderForm"] > div.mb
 ndtv.com##amp-iframe[src^="https://drop.ndtv.com/common/gadgets360/pricee/pricee-widget.html?"]
-m.rp5.ru##div[onclick*="/reClickAdvert.php?key="]
+m.rp5.by,m.rp5.kz,m.rp5.ru,m.rp5.ua##div[onclick*="/reClickAdvert.php?key="]
 sagligabiradim.com##.mrf-adv
 digit.in##.footerCatfishAdArea
 digit.in##iframe[src^="/blockarticledetailad/"][title="Advertisement"]
@@ -1662,6 +1682,7 @@ banglachotikahinii.com##.mt_banner
 banglachotikahinii.com##span[style="width: 320px; height: 70px;"]
 banglachotikahinii.com##span[style="width: 300px; height: 50px;"]
 banglachotikahinii.com##span[style*="text-align: center;"] > span[style="width: 300px; height: 250px;"]
+www-ndtv-com.cdn.ampproject.org##iframe[src^="https://drop.ndtv.com/common/gadgets360/pricee/pricee-widget.html"]
 www-ndtv-com.cdn.ampproject.org##.add-section
 dict.cc##dl > div[style="margin-left:10px"] > div[id^="snhb-detail_rectangle-"][style="width:300px; height:250px; overflow:hidden"]
 ||forum.lowyat.net/random-mobile.php
@@ -2191,7 +2212,6 @@ m.sondakika.com##div > .widget_partner[style]
 m.sondakika.com###news-list-container > ul > li[style]:not([data-haber-id])
 m.katestube.com##.top-spot
 m.katestube.com##.bottom-spot
-m.katestube.com##.btn-share
 m.katestube.com##.pop-fade
 m.milliyet.com.tr##.Masthead > #div-320x100
 m.milliyet.com.tr##a[href^="http://secure.milliyet.com.tr/redirect/Default.aspx?"][target="_blank"] > article
@@ -2527,6 +2547,10 @@ pornhd.com##ul.thumbs.inside-row > li:not([data-thumbindexes])
 ! gismeteo
 gismeteo.by,gismeteo.ru##.media_height_m
 gismeteo.by##.media_height_l
+gismeteo.ru,gismeteo.kz,gismeteo.md,gismeteo.lt,gismeteo.lv,gismeteo.pl###media-m_top
+gismeteo.ru,gismeteo.kz,gismeteo.md,gismeteo.lt,gismeteo.lv,gismeteo.pl###media-m_middle
+gismeteo.ru,gismeteo.kz,gismeteo.md,gismeteo.lt,gismeteo.lv,gismeteo.pl###media-m_bottom
+gismeteo.ru,gismeteo.kz,gismeteo.md,gismeteo.lt,gismeteo.lv,gismeteo.pl,gismeteo.by##a[href^="https://www.gismeteo.ru/ref"]
 ! For Moscow subway WiFi
 auth.wi-fi.ru##.c-branding-banner
 auth.wi-fi.ru##.c-video-banner
@@ -2578,6 +2602,10 @@ m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m.news.yand
 ! Blocking of Facebook ads
 !
 !
+||api2.appscraft.mobi/banner/get_banners.php
+!
+! https://github.com/AdguardTeam/AdguardFilters/issues/25302
+||etnet.com.hk/ad/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/26774
 ! com.edadeal.android - fixing an app
 !
@@ -2830,6 +2858,7 @@ m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m.news.yand
 ||app.adjust.com^
 !
 ! For apps
+||tracking.ws.eurosport.com^
 ||tracker.rqmob.com^
 ||logconfig.polarisoffice.com
 ||analysis.polarisoffice.com
