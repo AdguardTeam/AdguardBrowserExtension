@@ -344,6 +344,8 @@ adguard.webRequestService = (function (adguard) {
 
     /**
      * Find cookie rules for request
+     * Important: Filter cookies rules are always before the stealth cookie rules in the resulted array
+     *
      * @param tab           Tab
      * @param requestUrl    Request URL
      * @param referrerUrl   Referrer URL
@@ -366,13 +368,10 @@ adguard.webRequestService = (function (adguard) {
         // Get all $cookie rules matching the specified request
         const cookieRules = adguard.requestFilter.getCookieRules(requestUrl, referrerUrl, requestType);
 
-        // If cookie rules found - ignore stealth cookie rules
-        if (cookieRules && cookieRules.length > 0) {
-            return cookieRules;
-        }
+        // Retrieve stealth cookie rules
+        const stealthCookieRules = adguard.stealthService.getCookieRules(requestUrl, referrerUrl, requestType);
 
-        // Return stealth cookie rules
-        return adguard.stealthService.getCookieRules(requestUrl, referrerUrl, requestType);
+        return (cookieRules || []).concat(stealthCookieRules || []);
     };
 
     /**
