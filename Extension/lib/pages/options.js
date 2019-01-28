@@ -1136,6 +1136,17 @@ var AntiBannerFilters = function (options) {
 
             // Popup cross button clicked
             closeButton.addEventListener('click', closePopup);
+
+            // Close popup if url changes
+            window.addEventListener('hashchange', function (e) {
+                const customGroupId = 0;
+                const customGroupHash = '#antibanner' + customGroupId;
+                const newHash = new URL(e.newURL).hash;
+
+                if (newHash !== customGroupHash) {
+                    closePopup();
+                }
+            });
         }
 
         if (!customFilterInitialized) {
@@ -1943,7 +1954,6 @@ var initPage = function (response) {
     EventNotifierTypes = response.constants.EventNotifierTypes;
 
     var onDocumentReady = function () {
-
         // handle initial url hash
         const hashOptions = handleUrlHash();
 
