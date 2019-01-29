@@ -7178,7 +7178,7 @@ var Wot = function () { // jshint ignore:line
 
 var Localization = function () { // jshint ignore:line
     var currentLocale = null, locale;
-    // keys should be in the lowercase, because they are compared bellow with lowercased found locale
+    // keys should be in the lowercase, because values will be get by found lowercased locale
     var SupportedLocales = {
         'en': en,
         'ru': ru,
