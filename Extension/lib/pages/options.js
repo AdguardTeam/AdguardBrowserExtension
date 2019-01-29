@@ -1186,7 +1186,7 @@ var AntiBannerFilters = function (options) {
             if (lastUpdateTime) {
                 lastUpdateTime = moment(lastUpdateTime);
                 lastUpdateTime.locale(environmentOptions.Prefs.locale);
-                updateText = lastUpdateTime.format('D MMMM YYYY HH:mm').toLowerCase();
+                updateText = lastUpdateTime.format('LLL').toLowerCase();
             }
 
             document.querySelector('#lastUpdateTime').textContent = updateText;
