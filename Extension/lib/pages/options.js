@@ -713,7 +713,8 @@ var AntiBannerFilters = function (options) {
 
         var tagDetails = '';
         filter.tagsDetails.forEach(function (tag) {
-            tagDetails += `<div class="opt-name__tag" data-tooltip="${tag.description}">#${tag.keyword}</div>`;
+            const tooltip = tag.description ? `data-tooltip="${tag.description}"` : '';
+            tagDetails += `<div class="opt-name__tag" ${tooltip}>#${tag.keyword}</div>`;
         });
 
         if (filter.trusted) {
