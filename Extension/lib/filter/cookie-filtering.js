@@ -262,20 +262,6 @@ adguard.cookieFiltering = (function (adguard) {
     };
 
     /**
-     * Checks if the rule is stealth cookie rule
-     * @param rule Rule to check
-     * @return {boolean}
-     */
-    const isStealthCookieRule = (rule) => {
-        const stealthActions = rule.stealthActions;
-        return typeof stealthActions === 'number' &&
-            (
-                stealthActions === adguard.stealthService.STEALTH_ACTIONS.FIRST_PARTY_COOKIES ||
-                stealthActions === adguard.stealthService.STEALTH_ACTIONS.THIRD_PARTY_COOKIES
-            );
-    };
-
-    /**
      * Retrieves url for cookie
      * @param {Cookie} setCookie Cookie
      * @param {string} cookieDomain Domain
@@ -336,11 +322,6 @@ adguard.cookieFiltering = (function (adguard) {
                 if (opt.matches(cookieName) && isModifyingRule(rule)) {
                     if (result === null) {
                         result = [];
-                    }
-                    // Ignore stealth cookie rules if we already have matching filter cookie rules
-                    // Also we can use only the first stealth cookie rule
-                    if (isStealthCookieRule(rule) && result.length > 0) {
-                        break;
                     }
                     result.push(rule);
                 }
