@@ -97,6 +97,10 @@ var Utils = {
             text: text,
         });
     },
+
+    escapeDoubleQuotes: function (string) {
+        return string.replace(/"/g, '&quot;');
+    },
 };
 
 var TopMenu = (function () {
@@ -706,6 +710,8 @@ var AntiBannerFilters = function (options) {
                 </li>`);
     }
 
+
+
     function getFilterTemplate(filter, enabled, showDeleteButton) {
         var timeUpdated = moment(filter.lastUpdateTime || filter.timeUpdated);
         timeUpdated.locale(environmentOptions.Prefs.locale);
@@ -713,7 +719,7 @@ var AntiBannerFilters = function (options) {
 
         var tagDetails = '';
         filter.tagsDetails.forEach(function (tag) {
-            const tooltip = tag.description ? `data-tooltip="${tag.description}"` : '';
+            const tooltip = tag.description ? `data-tooltip="${Utils.escapeDoubleQuotes(tag.description)}"` : '';
             tagDetails += `<div class="opt-name__tag" ${tooltip}>#${tag.keyword}</div>`;
         });
 
