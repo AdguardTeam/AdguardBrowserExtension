@@ -248,9 +248,16 @@ adguard.stealthService = (function (adguard) {
             return null;
         }
 
+        const whiteListRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, requestType);
+        if (whiteListRule && whiteListRule.isDocumentWhiteList()) {
+            adguard.console.debug('Whitelist rule found');
+            return false;
+        }
+
         // If stealth is whitelisted
-        const whiteListRule = findStealthWhitelistRule(requestUrl, referrerUrl, requestType);
-        if (whiteListRule) {
+        const stealthWhiteListRule = findStealthWhitelistRule(requestUrl, referrerUrl, requestType);
+        if (stealthWhiteListRule) {
+            adguard.console.debug('Whitelist stealth rule found');
             return null;
         }
 
