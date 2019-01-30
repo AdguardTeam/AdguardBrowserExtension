@@ -1296,11 +1296,6 @@ li.active .toggler:before {
   text-shadow: 0 -1px 2px rgba(162, 161, 161, .3);
 }
 
-.opt-name__tag:hover:after {
-  visibility: visible;
-  opacity: 1;
-}
-
 .opt-name__tag:before {
   display: block;
   position: absolute;
@@ -1325,9 +1320,16 @@ li.active .toggler:before {
   box-shadow: 0 0 10px 1px rgba(162, 161, 161, 0.3);
 }
 
+.opt-name__tag:hover:after,
 .opt-name__tag:hover:before {
   visibility: visible;
   opacity: 1;
+}
+
+.opt-name__tag:not([data-tooltip]):hover:before,
+.opt-name__tag:not([data-tooltip]):hover:after {
+  visibility: hidden;
+  opacity: 0;
 }
 .title-wr {
   display: flex;
