@@ -669,17 +669,27 @@ PopupController.prototype = {
     },
 
     _renderBlockedGroups: function (container, stats) {
+        const TOTAL_GROUP_ID = 'total';
+
         const timeRange = document.querySelector('.statistics-select-time').value;
         const typeSelector = container.querySelector('.statistics-select-type');
 
         const statsData = this._selectRequestTypesStatsData(stats, timeRange);
 
-        const blockedGroups = stats.blockedGroups
-            .filter(group => statsData[group.groupId]);
-
         const getSelectTemplate = (group) => {
             return `<option value="${group.groupId}">${group.groupName}</option>`;
         };
+
+        const blockedGroups = stats.blockedGroups
+            .filter(group => statsData[group.groupId]);
+
+        if (blockedGroups.length === 0) {
+            const [totalBlockedGroup] = stats.blockedGroups
+                .filter(({ groupId }) => groupId === TOTAL_GROUP_ID);
+
+            typeSelector.insertAdjacentHTML('beforeend', getSelectTemplate(totalBlockedGroup));
+            return;
+        }
 
         blockedGroups.forEach(group => {
             typeSelector.insertAdjacentHTML('beforeend', getSelectTemplate(group));
