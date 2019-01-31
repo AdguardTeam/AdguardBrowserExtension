@@ -1057,6 +1057,19 @@ var AntiBannerFilters = function (options) {
         }
     };
 
+    /**
+     * Returns elements containing search data:
+     * Search input, and selected display options (all/enabled/disabled)
+     * @param {Element} searchComponent
+     * @returns {{displayOptionEl: {Element}, searchInputEl: {Element}}}
+     */
+    const getSearchDataSources = (searchComponent) => {
+        return {
+            searchInputEl: searchComponent.querySelector('input[name="searchFiltersList"]'),
+            displayOptionEl: searchComponent.querySelector('#filterStatusSelection'),
+        };
+    };
+
     const mountSearchComponent = (target) => {
         // Check if component already exists in the dom
         const searchComponentEl = document.querySelector('#antibanner .filters-search');
@@ -1085,16 +1098,13 @@ var AntiBannerFilters = function (options) {
         });
     };
 
-    const applyCurrentSearchValue = (searchComponent) => {
-        const searchInputEl = searchComponent.querySelector('input[name="searchFiltersList"]');
-        const displayOptionEl = searchComponent.querySelector('#filterStatusSelection');
-
+    const applyCurrentSearchValues = (dataSources) => {
+        const { searchInputEl, displayOptionEl } = dataSources;
         applySearchValues(searchInputEl.value, getDisplayOptionValue(displayOptionEl));
     };
 
-    const bindSearchControls = (searchComponent) => {
-        const searchInputEl = searchComponent.querySelector('[name="searchFiltersList"]');
-        const displayOptionEl = searchComponent.querySelector('#filterStatusSelection');
+    const bindSearchControls = (dataSources) => {
+        const { searchInputEl, displayOptionEl } = dataSources;
 
         searchInputEl.addEventListener('input', Utils.debounce(() => {
             applySearchValues(searchInputEl.value, getDisplayOptionValue(displayOptionEl));
@@ -1108,7 +1118,8 @@ var AntiBannerFilters = function (options) {
     function renderCategoriesAndFilters() {
         const settingsBody = document.querySelector('#antibanner .settings-body');
         const searchComponent = mountSearchComponent(settingsBody);
-        bindSearchControls(searchComponent);
+        const dataSources = getSearchDataSources(searchComponent);
+        bindSearchControls(dataSources);
 
         contentPage.sendMessage({ type: 'getFiltersMetadata' }, function (response) {
             loadedFiltersInfo.initLoadedFilters(response.filters, response.categories);
@@ -1121,7 +1132,7 @@ var AntiBannerFilters = function (options) {
             });
 
             renderFiltersList(loadedFiltersInfo.filters);
-            applyCurrentSearchValue(searchComponent);
+            applyCurrentSearchValues(dataSources);
 
             bindControls();
             CheckboxUtils.toggleCheckbox(document.querySelectorAll('.opt-state input[type=checkbox]'));
