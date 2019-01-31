@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <link type="text/css" rel="stylesheet" href="css/popup.css">
     <link type="text/css" rel="stylesheet" href="css/c3.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- @if browser == "CHROMIUM" || browser == "EDGE" || browser == "OPERA" || browser == "FIREFOX_WEBEXT" -->
     <script type="text/javascript" src="../lib/libs/d3.js" charset="utf-8"></script>
@@ -136,6 +137,12 @@
 <!--Footer-->
 <div id="footer-default-template" style="display: none;">
     <div class="footer__in footer__default">
+        <!-- @if browser == "EDGE" -->
+        <div class="popup-footer">
+            <span>&copy; AdGuard 2009-2019</span>
+        </div>
+        <!-- @endif -->
+        <!-- @if browser != "EDGE" -->
         <div class="popup-footer">
             <span class="footer__title" i18n="popup_adguard_footer_title"></span>
         </div>
@@ -152,6 +159,7 @@
                href="https://adguard.com/forward.html?action=compare&from=popup&app=browser_extension" target="_blank"></a>
             <a class="notice__close popup_get_premium_close" href="#"></a>
         </div>
+        <!-- @endif -->
     </div>
 </div>
 

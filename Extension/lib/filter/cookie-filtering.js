@@ -319,12 +319,17 @@ adguard.cookieFiltering = (function (adguard) {
             for (let i = 0; i < rules.length; i += 1) {
                 const rule = rules[i];
                 const opt = rule.getCookieOption();
-                if (opt.matches(cookieName) && isModifyingRule(rule)) {
-                    if (result === null) {
-                        result = [];
-                    }
-                    result.push(rule);
+                if (!opt.matches(cookieName)) {
+                    continue;
                 }
+                // Blocking or whitelist rule exists
+                if (!isModifyingRule(rule)) {
+                    return null;
+                }
+                if (result === null) {
+                    result = [];
+                }
+                result.push(rule);
             }
             return result;
         }
@@ -418,6 +423,34 @@ adguard.cookieFiltering = (function (adguard) {
     };
 
     /**
+     * Process Set-Cookie header modification by rules.
+     * Adds corresponding event to the filtering log.
+     *
+     * @param {object} tab Tab
+     * @param {Cookie} setCookie Cookie to modify
+     * @param {string} cookieDomain Cookie domain
+     * @param {boolean} thirdParty Is Third party request
+     * @param {{name: string, value: string}} header Header to modify
+     * @param {Array} rules Cookie matching rules
+     * @return {boolean} True if Set-Cookie header were modified
+     */
+    const processModifySetCookieByRules = (tab, setCookie, cookieDomain, thirdParty, header, rules) => {
+
+        const cookieName = setCookie.name;
+        const cookieValue = setCookie.value;
+
+        rules = modifySetCookieByRules(setCookie, rules);
+
+        if (rules && rules.length > 0) {
+            header.value = adguard.utils.cookie.serialize(setCookie);
+            addCookieLogEvent(tab, cookieName, cookieValue, cookieDomain, thirdParty, rules, true);
+            return true;
+        }
+
+        return false;
+    };
+
+    /**
      * Modifies cookie by rules (Cookie is browser.cookies.Cookie object)
      *
      * @param {BrowserApiCookie} cookie
@@ -456,20 +489,6 @@ adguard.cookieFiltering = (function (adguard) {
     };
 
     /**
-     * Removes from the rules stealth third-party cookie rules
-     * @param rules
-     */
-    const removeStealthThirdPartyCookieRules = (rules) => {
-        if (rules && rules.length > 0) {
-            const action = adguard.stealthService.STEALTH_ACTIONS.THIRD_PARTY_COOKIES;
-            return rules.filter(r => {
-                return typeof r.stealthActions !== 'number' || (r.stealthActions & action) !== action;
-            });
-        }
-        return null;
-    };
-
-    /**
      * Modifies request headers according to matching $cookie rules.
      *
      * @param {string} requestId Request identifier
@@ -503,7 +522,10 @@ adguard.cookieFiltering = (function (adguard) {
         // It's important to prevent removing google auth cookies. (for requests in background tab)
         const thirdParty = referrerUrl && adguard.utils.url.isThirdPartyRequest(requestUrl, referrerUrl);
         const rules = adguard.webRequestService.getCookieRules(tab, requestUrl, referrerUrl, requestType);
-        if (!rules || rules.length === 0) {
+        const stealthRules = adguard.stealthService.getCookieRules(requestUrl, referrerUrl, requestType);
+        if ((!rules || rules.length === 0) &&
+            (!stealthRules || stealthRules.length === 0)) {
+            // Nothing to apply
             return false;
         }
 
@@ -520,19 +542,17 @@ adguard.cookieFiltering = (function (adguard) {
                     cookieHeaderModified = true;
                 }
                 scheduleProcessingCookie(requestId, cookieName, requestUrl, thirdParty, [bRule], true);
-                continue;
             }
-            let mRules = findModifyingRules(cookieName, rules);
 
-            /**
-             * Removes stealth rules (third-party maxAge cookie rules) to prevent removing auth cookies
-             * Stealth detects third-party cookies if it will be in Set-Cookie headers
-             * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1245
-             */
-            mRules = removeStealthThirdPartyCookieRules(mRules);
-
+            const mRules = findModifyingRules(cookieName, rules);
             if (mRules && mRules.length > 0) {
                 scheduleProcessingCookie(requestId, cookieName, requestUrl, thirdParty, mRules, false);
+            }
+
+            // If cookie rules found - ignore stealth cookie rules
+            const ignoreStealthRules = !!(bRule && !bRule.whiteListRule || mRules && mRules.length > 0);
+            if (!ignoreStealthRules && stealthRules && stealthRules.length > 0) {
+                scheduleProcessingCookie(requestId, cookieName, requestUrl, thirdParty, stealthRules, false);
             }
         }
 
@@ -617,16 +637,22 @@ adguard.cookieFiltering = (function (adguard) {
                 }
                 processedCookies.push(cookieName);
                 addCookieLogEvent(tab, cookieName, cookieValue, cookieDomain, thirdParty, [bRule], false);
-                continue;
             }
 
             let mRules = findModifyingRules(cookieName, rules);
-            mRules = modifySetCookieByRules(setCookie, mRules);
-            if (mRules && mRules.length > 0) {
-                header.value = adguard.utils.cookie.serialize(setCookie);
+            if (processModifySetCookieByRules(tab, setCookie, cookieDomain, thirdParty, header, mRules)) {
                 setCookieHeaderModified = true;
                 processedCookies.push(cookieName);
-                addCookieLogEvent(tab, cookieName, cookieValue, cookieDomain, thirdParty, mRules, true);
+            }
+
+            // If cookie rules found - ignore stealth cookie rules
+            const ignoreStealthRules = !!(bRule && !bRule.whiteListRule || mRules && mRules.length > 0);
+            if (!ignoreStealthRules) {
+                const stealthRules = adguard.stealthService.getCookieRules(cookieUrl, referrerUrl, requestType);
+                if (processModifySetCookieByRules(tab, setCookie, cookieDomain, thirdParty, header, stealthRules)) {
+                    setCookieHeaderModified = true;
+                    processedCookies.push(cookieName);
+                }
             }
         }
 

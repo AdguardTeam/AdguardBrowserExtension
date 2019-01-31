@@ -25,12 +25,6 @@
 * Raw file: https://raw.githubusercontent.com/ameshkov/text-encoding/ddd20a5064f622b6fd47cdc11834ca8f130cb100/lib/encoding.js
 * `encoding-indexes.js` is **not** a third-party library, but definitions of encodings used by `encoding.js`
 
-#### `balalaika.js`
-* https://github.com/finom/balalaika
-* No releases in the repo
-* Raw file: https://raw.githubusercontent.com/finom/balalaika/95003a9a5c8eea6b8168225ca4c9b985dba08e8a/balalaika.js
-* `balalaika.functions.js` is **not** a third-party library, but additional functions added by us.
-
 #### `Dropbox-sdk.js`
 * v4.0.12
 * Licence: MIT
