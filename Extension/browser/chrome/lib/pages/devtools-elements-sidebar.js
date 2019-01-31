@@ -318,4 +318,4 @@ var browser = window.browser || chrome;
         initPanel();
     });
 
-})(balalaika);
+})();
