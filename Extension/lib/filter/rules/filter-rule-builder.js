@@ -82,6 +82,10 @@
                 return null;
             }
 
+            if (api.ruleConverter.isScriptletRule(ruleText)) {
+                return api.ruleConverter.createScriptletRules(ruleText, filterId);
+            }
+
             if (!isTrustedFilter && isUntrustedRule(ruleText)) {
                 return null;
             }
@@ -103,9 +107,6 @@
             }
 
             if (api.FilterRule.findRuleMarker(ruleText, api.ScriptFilterRule.RULE_MARKERS, api.ScriptFilterRule.RULE_MARKER_FIRST_CHAR)) {
-                if (api.ScriptletRule.isScriptletRule(ruleText)) {
-                    return new api.ScriptletRule(ruleText, filterId);
-                }
                 return new api.ScriptFilterRule(ruleText, filterId);
             }
 
