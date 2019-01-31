@@ -97,6 +97,10 @@ var Utils = {
             text: text,
         });
     },
+
+    escapeDoubleQuotes: function (string) {
+        return string.replace(/"/g, '&quot;');
+    },
 };
 
 var TopMenu = (function () {
@@ -706,6 +710,8 @@ var AntiBannerFilters = function (options) {
                 </li>`);
     }
 
+
+
     function getFilterTemplate(filter, enabled, showDeleteButton) {
         var timeUpdated = moment(filter.lastUpdateTime || filter.timeUpdated);
         timeUpdated.locale(environmentOptions.Prefs.locale);
@@ -713,7 +719,8 @@ var AntiBannerFilters = function (options) {
 
         var tagDetails = '';
         filter.tagsDetails.forEach(function (tag) {
-            tagDetails += `<div class="opt-name__tag" data-tooltip="${tag.description}">#${tag.keyword}</div>`;
+            const tooltip = tag.description ? `data-tooltip="${Utils.escapeDoubleQuotes(tag.description)}"` : '';
+            tagDetails += `<div class="opt-name__tag" ${tooltip}>#${tag.keyword}</div>`;
         });
 
         if (filter.trusted) {
@@ -1136,6 +1143,17 @@ var AntiBannerFilters = function (options) {
 
             // Popup cross button clicked
             closeButton.addEventListener('click', closePopup);
+
+            // Close popup if url changes
+            window.addEventListener('hashchange', function (e) {
+                const customGroupId = 0;
+                const customGroupHash = '#antibanner' + customGroupId;
+                const newHash = new URL(e.newURL).hash;
+
+                if (newHash !== customGroupHash) {
+                    closePopup();
+                }
+            });
         }
 
         if (!customFilterInitialized) {
@@ -1168,7 +1186,7 @@ var AntiBannerFilters = function (options) {
             if (lastUpdateTime) {
                 lastUpdateTime = moment(lastUpdateTime);
                 lastUpdateTime.locale(environmentOptions.Prefs.locale);
-                updateText = lastUpdateTime.format('D MMMM YYYY HH:mm').toLowerCase();
+                updateText = lastUpdateTime.format('LLL').toLowerCase();
             }
 
             document.querySelector('#lastUpdateTime').textContent = updateText;
@@ -1943,7 +1961,6 @@ var initPage = function (response) {
     EventNotifierTypes = response.constants.EventNotifierTypes;
 
     var onDocumentReady = function () {
-
         // handle initial url hash
         const hashOptions = handleUrlHash();
 

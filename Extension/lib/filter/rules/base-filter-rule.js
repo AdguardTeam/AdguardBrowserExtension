@@ -37,38 +37,39 @@
          * @param domains List of domains. Examples: "example.com|test.com" or "example.com,test.com"
          */
         loadDomains: function (domains) {
-
             if (adguard.utils.strings.isEmpty(domains)) {
                 return;
             }
 
-            var permittedDomains = null;
-            var restrictedDomains = null;
+            let permittedDomains = null;
+            let restrictedDomains = null;
 
-            var parts = domains.split(/[,|]/);
-            try {
-                for (var i = 0; i < parts.length; i++) {
-                    var domain = parts[i], domainName;
-                    if (adguard.utils.strings.startWith(domain, "~")) {
-                        domainName = adguard.utils.url.toPunyCode(domain.substring(1).trim());
-                        if (!adguard.utils.strings.isEmpty(domainName)) {
-                            if (restrictedDomains === null) {
-                                restrictedDomains = [];
-                            }
-                            restrictedDomains.push(domainName);
+            const parts = domains.split(/[,|]/);
+
+            for (let i = 0; i < parts.length; i += 1) {
+                const domain = parts[i];
+                let domainName;
+                if (domain.trim().length === 0) {
+                    // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1242
+                    throw `Error load $domain options from "${domains}", because after split one of them is empty`;
+                }
+                if (adguard.utils.strings.startWith(domain, '~')) {
+                    domainName = adguard.utils.url.toPunyCode(domain.substring(1).trim());
+                    if (!adguard.utils.strings.isEmpty(domainName)) {
+                        if (restrictedDomains === null) {
+                            restrictedDomains = [];
                         }
-                    } else {
-                        domainName = adguard.utils.url.toPunyCode(domain.trim());
-                        if (!adguard.utils.strings.isEmpty(domainName)) {
-                            if (permittedDomains === null) {
-                                permittedDomains = [];
-                            }
-                            permittedDomains.push(domainName);
+                        restrictedDomains.push(domainName);
+                    }
+                } else {
+                    domainName = adguard.utils.url.toPunyCode(domain.trim());
+                    if (!adguard.utils.strings.isEmpty(domainName)) {
+                        if (permittedDomains === null) {
+                            permittedDomains = [];
                         }
+                        permittedDomains.push(domainName);
                     }
                 }
-            } catch (ex) {
-                adguard.console.error("Error load domains from {0}, cause {1}", domains, ex);
             }
 
             this.setPermittedDomains(permittedDomains);
