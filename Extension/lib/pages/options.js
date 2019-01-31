@@ -855,17 +855,7 @@ var AntiBannerFilters = function (options) {
             <div id="antibanner${category.groupId}" class="settings-content tab-pane filters-list ${isCustomFilters ? 'filters-list--custom' : ''}">
                 ${pageTitleEl}
                 <div class="settings-body">
-                    <div class="filters-search">
-                        <input type="text" placeholder="${i18n.getMessage('options_filters_list_search_placeholder')}" name="searchFiltersList"/>
-                        <select id="filterStatusSelection">
-                            <option value="${filterSearchGroups.ALL}">All filters</option>
-                            <option value="${filterSearchGroups.ENABLED}">Enabled</option>
-                            <option value="${filterSearchGroups.DISABLED}">Disabled</option>
-                        </select>
-                        <div class="icon-search">
-                            <img src="images/magnifying-green.svg" alt="">
-                        </div>
-                    </div>
+                    ${searchHtml}
                     <ul class="opts-list opts-list--filters">
                         ${filtersList}
                     </ul>
@@ -920,6 +910,15 @@ var AntiBannerFilters = function (options) {
             || (!filterActivated && selectionValue === filterSearchGroups.DISABLED));
     };
 
+    const escapedWildcard = '\\\*';
+    const fitsSearchString = (title, searchString) => {
+        if (searchString === escapedWildcard) {
+            return true;
+        }
+        const regexp = new RegExp(searchString, 'gi');
+        return regexp.test(title);
+    };
+
     /**
      *
      * @param {NodeList} filters
@@ -934,8 +933,8 @@ var AntiBannerFilters = function (options) {
         filters.forEach(filter => {
             const title = filter.querySelector('.title');
             const filterActivated = filter.querySelector('.toggler-wr input').checked;
-            const regexp = new RegExp(searchString, 'gi');
-            const show = regexp.test(title.textContent) && fitsFilterSearchGroup(filterActivated, filterSearchGroup);
+            const show = fitsSearchString(title.textContent, searchString)
+                && fitsFilterSearchGroup(filterActivated, filterSearchGroup);
             if (show) {
                 filter.style.display = 'flex';
             } else {
@@ -954,29 +953,29 @@ var AntiBannerFilters = function (options) {
         return result;
     };
 
-    const getFilterSearchGroupValue = (selectionNode) => {
+    const getDisplayOptionValue = (selectionNode) => {
         return [...selectionNode.options]
             .filter(o => o.selected)[0].value;
     };
 
+    const INPUT_DELAY_MS = 250;
     function initSearchInCategory(category) {
         const searchInput = document.querySelector(`#antibanner${category.groupId} input[name="searchFiltersList"]`);
         const filterSearchGroupSelectionNode = document.querySelector(`#antibanner${category.groupId} #filterStatusSelection`);
         const filters = document.querySelectorAll(`#antibanner${category.groupId} .opts-list li`);
 
-        const SEARCH_DELAY_MS = 250;
         if (searchInput) {
             searchInput.addEventListener('input', Utils.debounce((e) => {
                 const searchString = prepareSearchString(e.target.value);
-                const filterSearchGroup = getFilterSearchGroupValue(filterSearchGroupSelectionNode);
+                const filterSearchGroup = getDisplayOptionValue(filterSearchGroupSelectionNode);
                 handleFiltersVisibility(filters, searchString, filterSearchGroup);
-            }, SEARCH_DELAY_MS));
+            }, INPUT_DELAY_MS));
         }
 
         if (filterSearchGroupSelectionNode) {
             filterSearchGroupSelectionNode.addEventListener('change', () => {
                 const searchString = prepareSearchString(searchInput.value);
-                const filterSearchGroup = getFilterSearchGroupValue(filterSearchGroupSelectionNode);
+                const filterSearchGroup = getDisplayOptionValue(filterSearchGroupSelectionNode);
                 handleFiltersVisibility(filters, searchString, filterSearchGroup);
             });
         }
@@ -998,13 +997,13 @@ var AntiBannerFilters = function (options) {
             return;
         }
         const filterSearchGroupNode = document.querySelector(`#antibanner${groupId} #filterStatusSelection`);
-        const filterSearchGroup = getFilterSearchGroupValue(filterSearchGroupNode);
+        const filterSearchGroup = getDisplayOptionValue(filterSearchGroupNode);
         const filters = document.querySelectorAll(`#antibanner${groupId} .opts-list li`);
         if (searchInput) {
             searchInput.value = '';
         }
         if (filters && filters.length > 0) {
-            handleFiltersVisibility(filters, searchInput, filterSearchGroup);
+            handleFiltersVisibility(filters, searchInput.value, filterSearchGroup);
         }
     }
 
@@ -1014,18 +1013,19 @@ var AntiBannerFilters = function (options) {
                                 placeholder="${i18n.getMessage('options_filters_list_search_placeholder')}"
                                 name="searchFiltersList"
                             />
+                            <select id="filterStatusSelection">
+                                <option value="${filterSearchGroups.ALL}">All filters</option>
+                                <option value="${filterSearchGroups.ENABLED}">Enabled</option>
+                                <option value="${filterSearchGroups.DISABLED}">Disabled</option>
+                            </select>
                             <div class="icon-search">
                                 <img src="images/magnifying-green.svg" alt="">
                             </div>
                         </div>`;
 
-    const renderSearchComponent = (searchHtml) => {
-        return htmlToElement(searchHtml);
-    };
-
     const GROUPS_LIST = 'groups';
     const FILTERS_LIST = 'filters';
-    const toggleListsVisibility = (listToShow) => {
+    const changeListsVisibility = (listToShow) => {
         const groupsList = document.querySelector('#groupsList');
         const filtersList = document.querySelector('#filtersList');
         switch (listToShow) {
@@ -1040,37 +1040,31 @@ var AntiBannerFilters = function (options) {
                 break;
             }
             default: {
-                console.log('no such list', listToShow);
+                console.log('this list is not available', listToShow);
                 break;
             }
         }
     };
 
-    const applySearchString = (inputValue) => {
+    const applySearchValues = (inputValue, displayOptionValue) => {
         const searchString = prepareSearchString(inputValue);
         if (searchString.length > 0) {
-            toggleListsVisibility(FILTERS_LIST);
+            changeListsVisibility(FILTERS_LIST);
             const filters = document.querySelectorAll('#filtersList li[id^=filter]');
-            handleFiltersVisibility(filters, searchString, filterSearchGroups.ALL);
+            handleFiltersVisibility(filters, searchString, displayOptionValue);
         } else {
-            toggleListsVisibility(GROUPS_LIST);
+            changeListsVisibility(GROUPS_LIST);
         }
-    };
-
-    // handle search string input
-    const handleSearchInput = (e) => {
-        applySearchString(e.target.value);
     };
 
     const mountSearchComponent = (target) => {
-        // Check if node already exists
-        const searchComponentNode = document.querySelector('#antibanner .filters-search');
-        if (searchComponentNode) {
-            return searchComponentNode;
+        // Check if component already exists in the dom
+        const searchComponentEl = document.querySelector('#antibanner .filters-search');
+        if (searchComponentEl) {
+            return searchComponentEl;
         }
-        const searchComponent = renderSearchComponent(searchHtml);
+        const searchComponent = htmlToElement(searchHtml);
         target.insertAdjacentElement('afterbegin', searchComponent);
-        searchComponent.addEventListener('input', handleSearchInput);
         return searchComponent;
     };
 
@@ -1091,14 +1085,30 @@ var AntiBannerFilters = function (options) {
         });
     };
 
-    const applyCurrentSearchValue = (searchComponentNode) => {
-        const searchInput = searchComponentNode.querySelector('input[name="searchFiltersList"]');
-        applySearchString(searchInput.value);
+    const applyCurrentSearchValue = (searchComponent) => {
+        const searchInputEl = searchComponent.querySelector('input[name="searchFiltersList"]');
+        const displayOptionEl = searchComponent.querySelector('#filterStatusSelection');
+
+        applySearchValues(searchInputEl.value, getDisplayOptionValue(displayOptionEl));
+    };
+
+    const bindSearchControls = (searchComponent) => {
+        const searchInputEl = searchComponent.querySelector('[name="searchFiltersList"]');
+        const displayOptionEl = searchComponent.querySelector('#filterStatusSelection');
+
+        searchInputEl.addEventListener('input', Utils.debounce(() => {
+            applySearchValues(searchInputEl.value, getDisplayOptionValue(displayOptionEl));
+        }, INPUT_DELAY_MS));
+
+        displayOptionEl.addEventListener('change', () => {
+            applySearchValues(searchInputEl.value, getDisplayOptionValue(displayOptionEl));
+        });
     };
 
     function renderCategoriesAndFilters() {
         const settingsBody = document.querySelector('#antibanner .settings-body');
         const searchComponent = mountSearchComponent(settingsBody);
+        bindSearchControls(searchComponent);
 
         contentPage.sendMessage({ type: 'getFiltersMetadata' }, function (response) {
             loadedFiltersInfo.initLoadedFilters(response.filters, response.categories);
