@@ -1008,18 +1008,21 @@ var AntiBannerFilters = function (options) {
     }
 
     const searchHtml = `<div class="filters-search">
+                            <div class="icon-search">
+                                <img src="images/magnifying-green.svg" alt="">
+                            </div>
                             <input
                                 type="text"
                                 placeholder="${i18n.getMessage('options_filters_list_search_placeholder')}"
                                 name="searchFiltersList"
                             />
-                            <select id="filterStatusSelection">
+                            <select class="opt-select opt-select--input" id="filterStatusSelection">
                                 <option value="${filterSearchGroups.ALL}">All filters</option>
                                 <option value="${filterSearchGroups.ENABLED}">Enabled</option>
                                 <option value="${filterSearchGroups.DISABLED}">Disabled</option>
                             </select>
-                            <div class="icon-search">
-                                <img src="images/magnifying-green.svg" alt="">
+                            <div class="filters-search__cross">
+                                <img src="images/cross.svg" alt="">
                             </div>
                         </div>`;
 
