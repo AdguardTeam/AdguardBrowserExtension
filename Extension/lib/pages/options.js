@@ -958,15 +958,20 @@ var AntiBannerFilters = function (options) {
             .filter(o => o.selected)[0].value;
     };
 
+    const setDisplayOptionValue = (selectionNode, value) => {
+        selectionNode.value = value;
+    };
+
     const INPUT_DELAY_MS = 250;
     function initSearchInCategory(category) {
         const searchInput = document.querySelector(`#antibanner${category.groupId} input[name="searchFiltersList"]`);
         const filterSearchGroupSelectionNode = document.querySelector(`#antibanner${category.groupId} #filterStatusSelection`);
         const filters = document.querySelectorAll(`#antibanner${category.groupId} .opts-list li`);
+        const clearInputEl = document.querySelector(`#antibanner${category.groupId} .filters-search .filters-search__cross`);
 
         if (searchInput) {
-            searchInput.addEventListener('input', Utils.debounce((e) => {
-                const searchString = prepareSearchString(e.target.value);
+            searchInput.addEventListener('input', Utils.debounce(() => {
+                const searchString = prepareSearchString(searchInput.value);
                 const filterSearchGroup = getDisplayOptionValue(filterSearchGroupSelectionNode);
                 handleFiltersVisibility(filters, searchString, filterSearchGroup);
             }, INPUT_DELAY_MS));
@@ -977,6 +982,15 @@ var AntiBannerFilters = function (options) {
                 const searchString = prepareSearchString(searchInput.value);
                 const filterSearchGroup = getDisplayOptionValue(filterSearchGroupSelectionNode);
                 handleFiltersVisibility(filters, searchString, filterSearchGroup);
+            });
+        }
+
+        if (clearInputEl) {
+            clearInputEl.addEventListener('click', (e) => {
+                e.preventDefault();
+                searchInput.value = '';
+                setDisplayOptionValue(filterSearchGroupSelectionNode, filterSearchGroups.ALL);
+                handleFiltersVisibility(filters, searchInput.value, getDisplayOptionValue(filterSearchGroupSelectionNode));
             });
         }
     }
@@ -1070,6 +1084,7 @@ var AntiBannerFilters = function (options) {
         return {
             searchInputEl: searchComponent.querySelector('input[name="searchFiltersList"]'),
             displayOptionEl: searchComponent.querySelector('#filterStatusSelection'),
+            clearSearchEl: searchComponent.querySelector('.filters-search__cross'),
         };
     };
 
@@ -1107,13 +1122,19 @@ var AntiBannerFilters = function (options) {
     };
 
     const bindSearchControls = (dataSources) => {
-        const { searchInputEl, displayOptionEl } = dataSources;
+        const { searchInputEl, displayOptionEl, clearSearchEl } = dataSources;
 
         searchInputEl.addEventListener('input', Utils.debounce(() => {
             applySearchValues(searchInputEl.value, getDisplayOptionValue(displayOptionEl));
         }, INPUT_DELAY_MS));
 
         displayOptionEl.addEventListener('change', () => {
+            applySearchValues(searchInputEl.value, getDisplayOptionValue(displayOptionEl));
+        });
+
+        clearSearchEl.addEventListener('click', () => {
+            searchInputEl.value = '';
+            setDisplayOptionValue(displayOptionEl, filterSearchGroups.ALL);
             applySearchValues(searchInputEl.value, getDisplayOptionValue(displayOptionEl));
         });
     };
