@@ -303,6 +303,10 @@
     FilterRule.NOT_MARK = "~";
     FilterRule.OLD_INJECT_RULES = "adg_start_style_inject";
 
+    // external masks
+    FilterRule.MASK_UBO_RULE = '##';
+    FilterRule.MASK_ABP_SNIPPET_RULE = '#$#';
+
     api.FilterRule = FilterRule;
 
 })(adguard, adguard.rules);
