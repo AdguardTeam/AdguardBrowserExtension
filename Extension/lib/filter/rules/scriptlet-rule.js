@@ -25,6 +25,7 @@
      */
     function ScriptletRule(scriptletData, filterId) {
         api.FilterRule.call(this, scriptletData.rule, filterId);
+        this.scriptSource = 'local';
         this.scriptletData = scriptletData;
         this.whiteListRule = adguard.utils.strings.contains(scriptletData.rule, api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE);
         this.script = scriptlets && scriptlets.invoke(this.scriptletData);
