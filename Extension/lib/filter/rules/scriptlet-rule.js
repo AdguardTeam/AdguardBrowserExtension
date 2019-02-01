@@ -27,17 +27,18 @@
         api.FilterRule.call(this, scriptletData.rule, filterId);
         this.scriptSource = 'local';
         this.scriptletData = scriptletData;
-        this.whiteListRule = adguard.utils.strings.contains(scriptletData.rule, api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE);
         this.script = scriptlets && scriptlets.invoke(this.scriptletData);
-        const mask = this.whiteListRule
-            ? api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE
-            : api.FilterRule.MASK_SCRIPT_RULE;
-
-        const indexOfMask = scriptletData.rule.indexOf(mask);
-        if (indexOfMask > 0) {
-            const domains = scriptletData.rule.substring(0, indexOfMask);
-            this.loadDomains(domains);
-        }
+        this.whiteListRule = adguard.utils.strings.contains(scriptletData.rule, api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE);
+        const masks = this.whiteListRule
+            ? [api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE]
+            : [
+                api.FilterRule.MASK_SCRIPT_RULE,
+                api.FilterRule.MASK_UBO_RULE,
+                api.FilterRule.MASK_ABP_SNIPPET_RULE,
+            ];
+        const mask = masks.find(mask => scriptletData.rule.indexOf(mask) > -1);
+        const domain = adguard.utils.strings.substringBefore(scriptletData.rule, mask);
+        domain && this.loadDomains(domain);
     };
 
     /**
