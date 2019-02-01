@@ -70,21 +70,32 @@
      * @param {string} rule 
      */
     function parseABPSnippetRule(rule) {
-        return rule.split(';')
-            .map(rule => {
-                const index = rule.indexOf('#$#');
-                return index < 0 ? rule : rule.substring(index + 3, rule.length);
-            })
-            .map(rule => rule.trim())
-            .map(rule => {
-                const name = 'abp-' + rule.split(' ')[0];
-                const args = rule
-                    .match(/('.*?'|".*?"|\S+)/gm)
-                    .splice(1)
-                    .map(t => removeInnerQuotes(t));
+        const removeMask = rule => rule.indexOf('#$#') > -1
+            ? rule.substring(rule.indexOf('#$#') + 3, rule.length)
+            : rule;
+        const trim = rule => rule.trim();
+        const getName = rule => 'abp-' + rule.split(' ')[0];
+        const getArgs = rule => rule
+            .match(/('.*?'|".*?"|\S+)/gm)
+            .splice(1)
+            .map(t => removeInnerQuotes(t));
 
-                return { name: name, args: args };
-            });
+        rules = rule.split(';');
+        if (rules.length > 1) {
+            return rule.split(';')
+                .map(removeMask)
+                .map(trim)
+                .map(rule => ({ 
+                    name: getName(rule),
+                    args: getArgs(rule)
+                }));
+        }
+
+        rule = trim(removeMask(rules[0]))
+        return {
+            name: getName(rule),
+            args: getArgs(rule)
+        };
     }
 
     /**
@@ -158,11 +169,10 @@
     };
 
     /**
-     * Create ScriptletRule instance(s) with
+     * Create ScriptletRule
      * @param {string} ruleText 
      * @param {number} filterId 
      * @param {Array<Object>|Object} params if passed array of params will returns an array of ScriptletRule insctances
-     * 
      */
     function createScriptletRule(ruleText, filterId, params) {
         const extraParams = {
@@ -171,25 +181,41 @@
             version: 'testVersion', // todo add real engine version
             hit: () => console.log('Scriptlet ' + data.name + ' was executed') // todo add real hit
         };
-        if (Array.isArray(params)) {
-            return params.map(data => {
-                data = Object.assign(data, extraParams);
-                return new api.ScriptletRule(data, filterId);
-            })
-        }
 
         params = Object.assign(params, extraParams);
         return new api.ScriptletRule(params, filterId);
     }
 
     /**
+     * 
+     * @param {Array} rules 
+     */
+    function createCompositeRule(ruleText, filterId, rules) {
+        return new api.CompositeRule(ruleText, filterId, rules);
+    };
+
+    /**
+     * Create CompositeRule<ScriptletRule> instance
+     * @param {string} ruleText 
+     * @param {number} filterId 
+     * @param {Array<Object>} params for scriptlet rules
+     */
+    function createCompositeScriptletRule(ruleText, filterId, params) {
+        const rules = params.map(data => createScriptletRule(ruleText, filterId, data));
+        return createCompositeRule(ruleText, filterId, rules);
+    };
+
+    /**
      * Create ScriptletRule instances from rule text
      * @param {string} ruleText text of scriptlet rule
      * @param {number} filterId
-     * @returns {Array<ScriptletRule>}
+     * @returns {ScriptletRule|CompositeRule<ScriptletRule>}
      */
     function createScriptletRules(ruleText, filterId) {
         const params = parseScriptletRule(ruleText);
+        if (Array.isArray(params)) {
+            return createCompositeScriptletRule(ruleText, filterId, params);
+        }
         return createScriptletRule(ruleText, filterId, params);
     };
 
