@@ -60,7 +60,7 @@ QUnit.test('Parsing of Extended Css rule with parenthesis', function (assert) {
     var selectors = filter.buildCssHits('adguard.com');
     var extendedCss = selectors.extendedCss;
     // Apply extended css rules
-    new ExtendedCss(extendedCss.join('\n')).apply();
+    new ExtendedCss({ styleSheet: extendedCss.join('\n') }).apply();
 
     var elementWithParenthesis = document.querySelector('.withParenthesis');
     var styleOfElementWithParenthesis;
@@ -99,7 +99,7 @@ QUnit.test('Count css hits', function (assert) {
     }
 
     var extendedCss = selectors.extendedCss;
-    new ExtendedCss(extendedCss.join('\n')).apply();
+    new ExtendedCss({ styleSheet: extendedCss.join('\n') }).apply();
 
     var done = assert.async();
 
