@@ -1037,37 +1037,26 @@ var AntiBannerFilters = function (options) {
                             </div>
                         </div>`;
 
-    const GROUPS_LIST = 'groups';
-    const FILTERS_LIST = 'filters';
-    const changeListsVisibility = (listToShow) => {
+    const showGroupList = (show) => {
         const groupsList = document.querySelector('#groupsList');
+        groupsList.style.display = show ? 'block' : 'none';
+    };
+
+    const showFiltersList = (show) => {
         const filtersList = document.querySelector('#filtersList');
-        switch (listToShow) {
-            case FILTERS_LIST: {
-                groupsList.style.display = 'none';
-                filtersList.style.display = 'block';
-                break;
-            }
-            case GROUPS_LIST: {
-                groupsList.style.display = 'block';
-                filtersList.style.display = 'none';
-                break;
-            }
-            default: {
-                console.log('this list is not available', listToShow);
-                break;
-            }
-        }
+        filtersList.style.display = show ? 'block' : 'none';
     };
 
     const applySearchValues = (inputValue, displayOptionValue) => {
         const searchString = prepareSearchString(inputValue);
         if (searchString.length > 0) {
-            changeListsVisibility(FILTERS_LIST);
+            showFiltersList(true);
+            showGroupList(false);
             const filters = document.querySelectorAll('#filtersList li[id^=filter]');
             handleFiltersVisibility(filters, searchString, displayOptionValue);
         } else {
-            changeListsVisibility(GROUPS_LIST);
+            showFiltersList(false);
+            showGroupList(true);
         }
     };
 
