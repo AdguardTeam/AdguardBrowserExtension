@@ -370,21 +370,31 @@ var CssHitsCounter = (function () { // jshint ignore:line
 
     /**
      * Callback used to collect statistics of elements affected by extended css rules
-     * @param affectedEl
+     * @param {object} affectedEl
+     * @return {object} affectedEl
      */
     const countAffectedByExtendedCss = (affectedEl) => {
         if (typeof onCssHitsFoundCallback !== 'function') {
-            return;
+            return affectedEl;
         }
         if (affectedEl && affectedEl.rule && affectedEl.rule.style && affectedEl.rule.style.content) {
-            const { filterId, ruleText } = parseExtendedStyleInfo(affectedEl.rule.style.content);
-            const result = {
-                filterId,
-                ruleText,
-                element: elementToString(affectedEl.node),
-            };
-            onCssHitsFoundCallback([result]);
+            const styleInfo = parseExtendedStyleInfo(affectedEl.rule.style.content);
+            if (styleInfo === null) {
+                return affectedEl;
+            }
+            const { filterId, ruleText } = styleInfo;
+            if (filterId !== undefined && ruleText !== undefined) {
+                const result = {
+                    filterId,
+                    ruleText,
+                    element: elementToString(affectedEl.node),
+                };
+                onCssHitsFoundCallback([result]);
+                // clear style content
+                affectedEl.rule.style.content = '';
+            }
         }
+        return affectedEl;
     };
 
     /**
