@@ -910,8 +910,8 @@ var AntiBannerFilters = function (options) {
             || (!filterActivated && selectionValue === filtersDisplayOptions.DISABLED));
     };
 
-    const escapedWildcard = '\\\*';
     const fitsSearchString = (title, searchString) => {
+        const escapedWildcard = '\\\*';
         if (searchString === escapedWildcard) {
             return true;
         }
