@@ -1,4 +1,4 @@
-/*! extended-css - v1.1.0 - 2019-02-01
+/*! extended-css - v1.1.0 - 2019-02-04
 * https://github.com/AdguardTeam/ExtendedCss
 * Copyright (c) 2019 ; Licensed Apache License 2.0 */
 var ExtendedCss = (function(window) {
@@ -4254,10 +4254,11 @@ var ExtendedSelectorFactory = function () {
 /* global ExtendedCssParser, ExtendedSelectorFactory, StyleObserver, utils */
 
 /**
- * This callback type is called `requestCallback` and is displayed as a global symbol.
- *
- * @callback onStyleApplied
+ * This callback is used to get affected node elements and handle style properties
+ * before they are applied to them if it is necessary
+ * @callback beforeStyleApplied
  * @param {object} affectedElement - Object containing DOM node and rule to be applied
+ * @return {object} affectedElement - Same or modified object containing DOM node and rule to be applied
  */
 
 /**
@@ -4266,7 +4267,7 @@ var ExtendedSelectorFactory = function () {
  * @param {Object} configuration
  * @param {string} configuration.styleSheet - the CSS stylesheet text
  * @param {Array.<HTMLElement>} [configuration.propertyFilterIgnoreStyleNodes] - A list of stylesheet nodes that should be ignored by the StyleObserver (":properties" matching object)
- * @param {onStyleApplied} [configuration.onStyleApplied] - the callback that handles affected elements
+ * @param {beforeStyleApplied} [configuration.beforeStyleApplied] - the callback that handles affected elements
  * @constructor
  */
 function ExtendedCss(configuration) {
@@ -4277,10 +4278,10 @@ function ExtendedCss(configuration) {
 
     var styleSheet = configuration.styleSheet;
     var propertyFilterIgnoreStyleNodes = configuration.propertyFilterIgnoreStyleNodes;
-    var onStyleApplied = configuration.onStyleApplied;
+    var beforeStyleApplied = configuration.beforeStyleApplied;
 
-    if (onStyleApplied && typeof onStyleApplied !== 'function') {
-        throw "Wrong configuration. Type of 'onStyleApplied' field should be a function, received: " + typeof onStyleApplied;
+    if (beforeStyleApplied && typeof beforeStyleApplied !== 'function') {
+        throw "Wrong configuration. Type of 'beforeStyleApplied' field should be a function, received: " + typeof beforeStyleApplied;
     }
 
     var rules = [];
@@ -4387,6 +4388,11 @@ function ExtendedCss(configuration) {
             // Style is already applied and protected by the observer
             return;
         }
+
+        if (beforeStyleApplied) {
+            affectedElement = beforeStyleApplied(affectedElement);
+        }
+
         var node = affectedElement.node;
         var style = affectedElement.rule.style;
         for (var prop in style) {
@@ -4401,9 +4407,6 @@ function ExtendedCss(configuration) {
         }
         // Protect "style" attribute from changes
         affectedElement.protectionObserver = protectStyleAttribute(node);
-        if (onStyleApplied) {
-            onStyleApplied(affectedElement);
-        }
     }
 
     /**
