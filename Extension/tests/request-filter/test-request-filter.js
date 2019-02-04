@@ -574,3 +574,15 @@ QUnit.test('requestFilter.findRuleForRequest performance', function (assert) {
     // Total: 84 ms
     // Average: 0.00168 ms
 });
+
+QUnit.test('Test sciptlet aguard rule', function (assert) {
+    const ruleText = "example.org#%#//scriptlet('abort-on-property-read', 'I10C')"
+    const rule = adguard.rules.builder.createRule(ruleText, 1);
+
+    assert.ok(rule instanceof adguard.rules.ScriptletRule, 'Its ScripletRule object');
+    assert.equal(rule.ruleText, "example.org#%#//scriptlet('abort-on-property-read', 'I10C')");
+    assert.equal(rule.permittedDomain, 'example.org');
+    assert.equal(rule.scriptletData.name, 'abort-on-property-read');
+    assert.deepEqual(rule.scriptletData.args, ['I10C']);
+    assert.equal(rule.scriptSource, 'local');
+});
