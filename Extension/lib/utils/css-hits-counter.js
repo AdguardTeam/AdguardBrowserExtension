@@ -390,7 +390,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
                     element: elementToString(affectedEl.node),
                 };
                 onCssHitsFoundCallback([result]);
-                // clear style content
+                // clear style content to avoid duplicate counting
                 affectedEl.rule.style.content = '';
             }
         }
