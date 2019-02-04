@@ -288,13 +288,14 @@ var CssHitsCounter = (function () { // jshint ignore:line
         }
     }
 
+    let observer;
     function countCssHitsForMutations() {
         var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
         if (!MutationObserver) {
             return;
         }
         var timeoutId;
-        var observer = new MutationObserver(function (mutationRecords) {
+        observer = new MutationObserver(function (mutationRecords) {
             // Collect probe elements, count them, then remove from their targets
             var probeElements = [];
             var childrenOfProbeElements = [];
@@ -430,8 +431,15 @@ var CssHitsCounter = (function () { // jshint ignore:line
         }
     };
 
+    const stop = () => {
+        onCssHitsFoundCallback = () => {};
+        observer.disconnect();
+    };
+
     return {
         init: init,
         countAffectedByExtendedCss: countAffectedByExtendedCss,
+        parseExtendedStyleInfo: parseExtendedStyleInfo,
+        stop: stop,
     };
 })();

@@ -93,13 +93,12 @@ QUnit.test('Count css hits', function (assert) {
     for (var i = 0; i < css.length; i += 1) {
         var styleEl = document.createElement('style');
         styleEl.setAttribute('type', 'text/css');
-        var cssContent = css[i];
-        styleEl.textContent = cssContent;
+        styleEl.textContent = css[i];
         (document.head || document.documentElement).appendChild(styleEl);
     }
 
     var extendedCss = selectors.extendedCss;
-    new ExtendedCss({ styleSheet: extendedCss.join('\n') }).apply();
+    new ExtendedCss({ styleSheet: extendedCss.join('') }).apply();
 
     var done = assert.async();
 
@@ -118,9 +117,38 @@ QUnit.test('Count css hits', function (assert) {
         assert.equal(result[3].filterId, 1);
         assert.equal(result[4].ruleText, 'adguard.com#$#.bgcontent {display: none}');
         assert.equal(result[4].filterId, 1);
+        CssHitsCounter.stop();
         done();
     }
     CssHitsCounter.init(setCssHitsFoundCallback);
+});
+
+
+QUnit.test('Count css hits affected by extended css', function (assert) {
+    const extendedCssRule = { text: 'adguard.com##.extended[-ext-contains="ads"]', filterId: 1 };
+
+    const rules = [new adguard.rules.CssFilterRule(extendedCssRule.text, extendedCssRule.filterId)];
+
+    const filter = new adguard.rules.CssFilter(rules);
+
+    const selectors = filter.buildCssHits('adguard.com');
+
+    const done = assert.async();
+
+    const extendedCss = selectors.extendedCss;
+
+    const beforeStyleApplied = (affectedElement) => {
+        const parseResult = CssHitsCounter.parseExtendedStyleInfo(affectedElement.rule.style.content);
+        assert.equal(parseResult.filterId, extendedCssRule.filterId);
+        assert.equal(parseResult.ruleText, extendedCssRule.text);
+        done();
+        return affectedElement;
+    };
+
+    new ExtendedCss({
+        styleSheet: extendedCss.join(''),
+        beforeStyleApplied: beforeStyleApplied,
+    }).apply();
 });
 
 QUnit.test('Save css hits', function (assert) {
