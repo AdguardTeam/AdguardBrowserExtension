@@ -884,10 +884,6 @@ var AntiBannerFilters = function (options) {
         document.querySelectorAll('.add-custom-filter-button').forEach((el) => {
             el.addEventListener('click', addCustomFilter);
         });
-
-        document.querySelectorAll('.remove-custom-filter-button').forEach((el) => {
-            el.addEventListener('click', removeCustomFilter);
-        });
     }
 
     const filtersDisplayOptions = {
@@ -929,6 +925,25 @@ var AntiBannerFilters = function (options) {
             .filter(o => o.selected)[0].value;
     };
 
+    function removeCustomFilter(e) {
+        e.preventDefault();
+        const result = confirm(i18n.getMessage('options_delete_filter_confirm'));
+        if (!result) {
+            return;
+        }
+        const filterId = e.currentTarget.getAttribute('filterId');
+
+        contentPage.sendMessage({
+            type: 'removeAntiBannerFilter',
+            filterId: filterId,
+        });
+
+        const filterElements = getFilterElements(filterId);
+        filterElements.forEach(filterEl => {
+            filterEl.parentNode.removeChild(filterEl);
+        });
+    }
+
     const renderFiltersList = (target, filters, searchDataSources) => {
         // remove old elements
         while (target.firstChild) {
@@ -965,6 +980,10 @@ var AntiBannerFilters = function (options) {
         });
 
         CheckboxUtils.toggleCheckbox(target.querySelectorAll('.opt-state input[type=checkbox]'));
+
+        document.querySelectorAll('.remove-custom-filter-button').forEach((el) => {
+            el.addEventListener('click', removeCustomFilter);
+        });
     };
 
     const renderFiltersInCategory = (groupId, filters, searchDataSources) => {
@@ -1006,6 +1025,10 @@ var AntiBannerFilters = function (options) {
         const groupId = category.groupId;
         const groupSelector = `#antibanner${groupId}`;
         const searchComponent = document.querySelector(`${groupSelector} .filters-search`);
+        if (!searchComponent) {
+            return;
+        }
+
         const searchDataSources = getSearchDataSources(searchComponent);
 
         const {
@@ -1211,25 +1234,6 @@ var AntiBannerFilters = function (options) {
         renderCustomFilterPopup();
     }
 
-    function removeCustomFilter(e) {
-        e.preventDefault();
-        const result = confirm(i18n.getMessage('options_delete_filter_confirm'));
-        if (!result) {
-            return;
-        }
-        const filterId = e.currentTarget.getAttribute('filterId');
-
-        contentPage.sendMessage({
-            type: 'removeAntiBannerFilter',
-            filterId: filterId,
-        });
-
-        const filterElements = getFilterElements(filterId);
-        filterElements.forEach(filterEl => {
-            filterEl.parentNode.removeChild(filterElements);
-        });
-    }
-
     let customFilterInitialized = false;
     function renderCustomFilterPopup(filterOptions = {}) {
         const { isFilterSubscription, title, url } = filterOptions;
@@ -1405,8 +1409,10 @@ var AntiBannerFilters = function (options) {
         loadedFiltersInfo.updateEnabled(filter, enabled);
         updateCategoryFiltersInfo(filter.groupId);
         updateFilterMetadata(filter);
-
-        CheckboxUtils.updateCheckbox(getFilterCheckboxes(filterId), enabled);
+        const checkboxes = getFilterCheckboxes(filterId);
+        if (checkboxes) {
+            CheckboxUtils.updateCheckbox(getFilterCheckboxes(filterId), enabled);
+        }
     }
 
     function onCategoryStateChanged(category) {
