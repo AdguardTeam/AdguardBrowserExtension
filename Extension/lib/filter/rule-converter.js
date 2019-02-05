@@ -17,7 +17,7 @@
 
 (function (api) {
 
-    const ALL_IN_PARENTHESES_REGEX = /\(([^\[\]]*)\)/g;
+    const ALL_IN_PARENTHESES_REGEX = /\(([^\(\)]*)\)/g;
     /**
      * Returns string in which enclosed in parentheses
      * @param {string} str

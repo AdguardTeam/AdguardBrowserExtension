@@ -575,14 +575,73 @@ QUnit.test('requestFilter.findRuleForRequest performance', function (assert) {
     // Average: 0.00168 ms
 });
 
-QUnit.test('Test sciptlet aguard rule', function (assert) {
+QUnit.test('Test sciptlet adguard rule', function (assert) {
     const ruleText = "example.org#%#//scriptlet('abort-on-property-read', 'I10C')"
     const rule = adguard.rules.builder.createRule(ruleText, 1);
 
     assert.ok(rule instanceof adguard.rules.ScriptletRule, 'Its ScripletRule object');
-    assert.equal(rule.ruleText, "example.org#%#//scriptlet('abort-on-property-read', 'I10C')");
+    assert.equal(rule.ruleText, ruleText);
     assert.equal(rule.permittedDomain, 'example.org');
     assert.equal(rule.scriptletData.name, 'abort-on-property-read');
     assert.deepEqual(rule.scriptletData.args, ['I10C']);
     assert.equal(rule.scriptSource, 'local');
+});
+
+
+QUnit.test('Test sciptlet ubo rule', function (assert) {
+    const ruleText = "example.org##+js(setTimeout-defuser.js, [native code], 8000)";
+    const rule = adguard.rules.builder.createRule(ruleText, 1);
+
+    assert.ok(rule instanceof adguard.rules.ScriptletRule, 'Its ScripletRule object');
+    assert.equal(rule.ruleText, ruleText);
+    assert.equal(rule.permittedDomain, 'example.org');
+    assert.equal(rule.scriptletData.name, 'ubo-setTimeout-defuser.js');
+    assert.deepEqual(rule.scriptletData.args, ['[native code]', '8000']);
+    assert.equal(rule.scriptSource, 'local');
+});
+
+QUnit.test('Test sciptlet abp rule', function (assert) {
+    const ruleText = "example.org#$#hide-if-contains ad li.serp-item 'li.serp-item div.label'";
+    const rule = adguard.rules.builder.createRule(ruleText, 1);
+
+    assert.ok(rule instanceof adguard.rules.ScriptletRule, 'Its ScripletRule object');
+    assert.equal(rule.ruleText, ruleText);
+    assert.equal(rule.permittedDomain, 'example.org');
+    assert.equal(rule.scriptletData.name, 'abp-hide-if-contains');
+    assert.deepEqual(rule.scriptletData.args, ['ad', 'li.serp-item', 'li.serp-item div.label']);
+    assert.equal(rule.scriptSource, 'local');
+});
+
+QUnit.test('Test sciptlet composite abp rule', function (assert) {
+    const ruleText = `example.org#$#hide-if-has-and-matches-style 'abbr .timestampContent' 'div[id^="hyperfeed_story_id_"]' 'div[id*="feed_subtitle_"] > span, div[id*="feed_subtitle_"] > s' '' 'display: none'; hide-if-contains /.*/ .pagelet 'a[href^="/ad__campaign/landing.php?"]'; hide-if-contains /.*/ .pagelet 'a[href^="/ad_campaign/landing.php?"]'`;
+    const rule = adguard.rules.builder.createRule(ruleText, 1);
+
+    assert.ok(rule instanceof adguard.rules.CompositeRule, 'Its CompositeRule object');
+    assert.equal(rule.ruleText, ruleText);
+
+    const rules = rule.getRules();
+    assert.equal(rules.length, 3);
+    // check some common fields
+    rules.forEach(r => {
+        assert.ok(r instanceof adguard.rules.ScriptletRule, 'Its ScripletRule object');
+        assert.equal(r.ruleText, ruleText);
+        assert.equal(r.permittedDomain, 'example.org');
+        assert.equal(r.scriptSource, 'local');
+    })
+
+    // Specific fields
+    assert.equal(rules[0].scriptletData.name, 'abp-hide-if-has-and-matches-style');
+    assert.deepEqual(rules[0].scriptletData.args, [
+        'abbr .timestampContent',
+        'div[id^="hyperfeed_story_id_"]',
+        'div[id*="feed_subtitle_"] > span, div[id*="feed_subtitle_"] > s',
+        '',
+        'display: none'
+    ]);
+
+    assert.equal(rules[1].scriptletData.name, 'abp-hide-if-contains');
+    assert.deepEqual(rules[1].scriptletData.args, ['/.*/', '.pagelet', 'a[href^="/ad__campaign/landing.php?"]']);
+
+    assert.equal(rules[2].scriptletData.name, 'abp-hide-if-contains');
+    assert.deepEqual(rules[2].scriptletData.args, ['/.*/', '.pagelet', 'a[href^="/ad_campaign/landing.php?"]']);
 });
