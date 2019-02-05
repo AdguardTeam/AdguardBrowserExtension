@@ -576,9 +576,9 @@ var AntiBannerFilters = function (options) {
         },
 
         updateEnabled: function (filter, enabled) {
-            var info = this.filtersById[filter.filterId];
-            if (info) {
-                info.enabled = enabled;
+            const filterInfo = this.filtersById[filter.filterId];
+            if (filterInfo) {
+                filterInfo.enabled = enabled;
             } else {
                 this.filters.push(filter);
                 this.filtersById[filter.filterId] = filter;
@@ -631,17 +631,16 @@ var AntiBannerFilters = function (options) {
         return categoryElement.querySelector('input');
     }
 
-    function getFilterElement(filterId) {
-        return document.querySelector('#filter' + filterId);
+    function getFilterElements(filterId) {
+        return [].slice.call(document.querySelectorAll('#filter' + filterId));
     }
 
-    function getFilterCheckbox(filterId) {
-        var filterElement = getFilterElement(filterId);
-        if (!filterElement) {
+    function getFilterCheckboxes(filterId) {
+        const filterElements = getFilterElements(filterId);
+        if (filterElements.length === 0) {
             return null;
         }
-
-        return filterElement.querySelector('input');
+        return filterElements.map(filterElement => filterElement.querySelector('input'));
     }
 
     function generateFiltersNamesDescription(filters) {
@@ -709,8 +708,6 @@ var AntiBannerFilters = function (options) {
                     </div>
                 </li>`);
     }
-
-
 
     function getFilterTemplate(filter, enabled, showDeleteButton) {
         var timeUpdated = moment(filter.lastUpdateTime || filter.timeUpdated);
@@ -826,8 +823,8 @@ var AntiBannerFilters = function (options) {
     }
 
     function getFiltersContentElement(category) {
-        var filters = category.filters;
-        var isCustomFilters = category.groupId === 0;
+        const filters = category.filters;
+        const isCustomFilters = category.groupId === 0;
 
         if (isCustomFilters
             && filters.length === 0) {
@@ -837,32 +834,27 @@ var AntiBannerFilters = function (options) {
         const renderOptions = () => {
             if (isCustomFilters) {
                 return `<div class="settings-actions">
-                            <a href="#" class="add-custom-filter-button button button--green button--link" i18n="options_add_custom_filter">Add custom filter</a>
+                            <a
+                                href="#"
+                                class="add-custom-filter-button button button--green button--link"
+                                i18n="options_add_custom_filter"
+                            >
+                                Add custom filter
+                            </a>
                         </div>`;
             }
             return '';
         };
 
-        var pageTitleEl = getPageTitleTemplate(category.groupName);
-
-        var filtersList = '';
-
-        for (var i = 0; i < filters.length; i += 1) {
-            filtersList += getFilterTemplate(filters[i], loadedFiltersInfo.isEnabled(filters[i].filterId), isCustomFilters);
-        }
-
-        return htmlToElement(`
-            <div id="antibanner${category.groupId}" class="settings-content tab-pane filters-list ${isCustomFilters ? 'filters-list--custom' : ''}">
-                ${pageTitleEl}
+        return htmlToElement(`<div id="antibanner${category.groupId}" class="settings-content tab-pane filters-list ${isCustomFilters ? 'filters-list--custom' : ''}">
+                ${getPageTitleTemplate(category.groupName)}
                 <div class="settings-body">
                     ${searchHtml}
                     <ul class="opts-list opts-list--filters">
-                        ${filtersList}
                     </ul>
                 </div>
                 ${renderOptions()}
-            </div>
-        `);
+            </div>`);
     }
 
     function renderFilterCategory(category) {
@@ -884,7 +876,7 @@ var AntiBannerFilters = function (options) {
     }
 
     function bindControls() {
-        var emptyFiltersAddCustomButton = document.querySelector('.empty-filters__btn');
+        const emptyFiltersAddCustomButton = document.querySelector('.empty-filters__btn');
         if (emptyFiltersAddCustomButton) {
             emptyFiltersAddCustomButton.addEventListener('click', addCustomFilter);
         }
@@ -893,7 +885,7 @@ var AntiBannerFilters = function (options) {
             el.addEventListener('click', addCustomFilter);
         });
 
-        document.querySelectorAll('.remove-custom-filter-button').forEach(function (el) {
+        document.querySelectorAll('.remove-custom-filter-button').forEach((el) => {
             el.addEventListener('click', removeCustomFilter);
         });
     }
@@ -904,13 +896,16 @@ var AntiBannerFilters = function (options) {
         DISABLED: 'disabled',
     };
 
-    const fitDisplayOptionValue = (filterActivated, selectionValue) => {
+    const fitsDisplayOptionValue = (filterActivated, selectionValue) => {
         return !!((selectionValue === filtersDisplayOptions.ALL)
             || (filterActivated && selectionValue === filtersDisplayOptions.ENABLED)
             || (!filterActivated && selectionValue === filtersDisplayOptions.DISABLED));
     };
 
     const fitsSearchString = (title, searchString) => {
+        if (searchString.length === 0) {
+            return true;
+        }
         const escapedWildcard = '\\\*';
         if (searchString === escapedWildcard) {
             return true;
@@ -929,67 +924,119 @@ var AntiBannerFilters = function (options) {
         return result;
     };
 
-    /**
-     *
-     * @param {NodeList} filters
-     * @param {String} searchValue - string to filter filter.titles by
-     * @param {String} displayOptionValue - one off three values ALL, ENABLED, DISABLED
-     */
-    const handleFiltersVisibility = (filters, searchValue, displayOptionValue) => {
-        const searchString = prepareSearchString(searchValue);
-
-        if (searchString === undefined
-            || displayOptionValue === undefined) {
-            return;
-        }
-
-        filters.forEach(filter => {
-            const title = filter.querySelector('.title');
-            const isFilterOn = filter.querySelector('.toggler-wr input').checked;
-            const show = fitsSearchString(title.textContent, searchString)
-                && fitDisplayOptionValue(isFilterOn, displayOptionValue);
-            if (show) {
-                filter.style.display = 'flex';
-            } else {
-                filter.style.display = 'none';
-            }
-        });
-    };
-
     const getDisplayOptionValue = (selectionNode) => {
         return [...selectionNode.options]
             .filter(o => o.selected)[0].value;
     };
 
-    const INPUT_DELAY_MS = 250;
-    function initSearchInCategory(category) {
-        const groupSelector = `#antibanner${category.groupId}`;
-        const searchComponentSelector = `${groupSelector} .filters-search`;
-        const searchInputEl = document.querySelector(`${searchComponentSelector} input[name="searchFiltersList"]`);
-        const displayOptionEl = document.querySelector(`${searchComponentSelector} #filterStatusSelection`);
-        const clearInputEl = document.querySelector(`${searchComponentSelector} .filters-search__cross`);
+    const renderFiltersList = (target, filters, searchDataSources) => {
+        // remove old elements
+        while (target.firstChild) {
+            target.removeChild(target.firstChild);
+        }
 
-        const filters = document.querySelectorAll(`${groupSelector} .opts-list li`);
+        const { searchInputEl, displayOptionEl } = searchDataSources;
+
+        const getFilteringFunction = () => {
+            const searchString = prepareSearchString(searchInputEl.value);
+            const displayOptionValue = getDisplayOptionValue(displayOptionEl);
+
+            return (filter) => {
+                if (searchString === undefined
+                    || displayOptionValue === undefined) {
+                    return true;
+                }
+
+                return fitsSearchString(filter.name, searchString)
+                    && fitsDisplayOptionValue(filter.enabled, displayOptionValue);
+            };
+        };
+
+        const filteringFunction = getFilteringFunction(searchDataSources);
+        const filtersToRender = filters.filter(filteringFunction);
+
+        const CUSTOM_FILTERS_GROUP_ID = 0;
+
+        filtersToRender.forEach(filter => {
+            const isEnabled = loadedFiltersInfo.isEnabled(filter.filterId);
+            const isCustom = filter.groupId === CUSTOM_FILTERS_GROUP_ID;
+            const filterHtml = getFilterTemplate(filter, isEnabled, isCustom);
+            target.appendChild(htmlToElement(filterHtml));
+        });
+
+        CheckboxUtils.toggleCheckbox(target.querySelectorAll('.opt-state input[type=checkbox]'));
+    };
+
+    const renderFiltersInCategory = (groupId, filters, searchDataSources) => {
+        const groupSelector = `#antibanner${groupId}`;
+        const filtersListNode = document.querySelector(`${groupSelector} ul.opts-list--filters`);
+
+        if (!filtersListNode) {
+            return;
+        }
+
+        // remove old filters
+        while (filtersListNode.firstChild) {
+            filtersListNode.removeChild(filtersListNode.firstChild);
+        }
+
+        // get groups filters
+        const groupFilters = filters.filter(f => f.groupId === groupId);
+
+        renderFiltersList(filtersListNode, groupFilters, searchDataSources);
+    };
+
+    /**
+     * Returns elements containing search data:
+     * Search input, and selected display options (all/enabled/disabled)
+     * @param {Element} searchComponent
+     * @returns {{displayOptionEl: {Element}, searchInputEl: {Element}}}
+     */
+    const getSearchDataSources = (searchComponent) => {
+        return {
+            searchInputEl: searchComponent.querySelector('input[name="searchFiltersList"]'),
+            displayOptionEl: searchComponent.querySelector('#filterStatusSelection'),
+            clearSearchEl: searchComponent.querySelector('.filters-search__cross'),
+        };
+    };
+
+    const SEARCH_INPUT_DELAY_MS = 250;
+
+    function initSearchInCategory(category) {
+        const groupId = category.groupId;
+        const groupSelector = `#antibanner${groupId}`;
+        const searchComponent = document.querySelector(`${groupSelector} .filters-search`);
+        const searchDataSources = getSearchDataSources(searchComponent);
+
+        const {
+            searchInputEl,
+            displayOptionEl,
+            clearSearchEl,
+        } = searchDataSources;
+
+        const filters = loadedFiltersInfo.filters;
 
         if (searchInputEl) {
             searchInputEl.addEventListener('input', Utils.debounce(() => {
-                handleFiltersVisibility(filters, searchInputEl.value, getDisplayOptionValue(displayOptionEl));
-            }, INPUT_DELAY_MS));
+                renderFiltersInCategory(groupId, filters, searchDataSources);
+            }, SEARCH_INPUT_DELAY_MS));
         }
 
         if (displayOptionEl) {
             displayOptionEl.addEventListener('change', () => {
-                handleFiltersVisibility(filters, searchInputEl.value, getDisplayOptionValue(displayOptionEl));
+                renderFiltersInCategory(groupId, filters, searchDataSources);
             });
         }
 
-        if (clearInputEl) {
-            clearInputEl.addEventListener('click', () => {
+        if (clearSearchEl) {
+            clearSearchEl.addEventListener('click', () => {
                 searchInputEl.value = '';
                 displayOptionEl.value = filtersDisplayOptions.ALL;
-                handleFiltersVisibility(filters, searchInputEl.value, displayOptionEl.value);
+                renderFiltersInCategory(groupId, filters, searchDataSources);
             });
         }
+
+        return searchDataSources;
     }
     /**
      * Function clears search results when user moves from category antibanner page to another page
@@ -1001,21 +1048,25 @@ var AntiBannerFilters = function (options) {
         if (!match) {
             return;
         }
-        const groupId = match[1];
-        const searchInput = document.querySelector(`#antibanner${groupId} input[name="searchFiltersList"]`);
-        // custom groups doesn't have search input till there is no filters inside
-        if (!searchInput) {
+        const groupId = parseInt(match[1], 10);
+        if (!groupId) {
             return;
         }
-        const filterSearchGroupNode = document.querySelector(`#antibanner${groupId} #filterStatusSelection`);
-        const filterSearchGroup = getDisplayOptionValue(filterSearchGroupNode);
-        const filters = document.querySelectorAll(`#antibanner${groupId} .opts-list li`);
-        if (searchInput) {
-            searchInput.value = '';
+        const searchInputEl = document.querySelector(`#antibanner${groupId} input[name="searchFiltersList"]`);
+        // custom groups doesn't have search input till there is no filters inside
+        if (!searchInputEl || !searchInputEl.value) {
+            return;
         }
-        if (filters && filters.length > 0) {
-            handleFiltersVisibility(filters, searchInput.value, filterSearchGroup);
-        }
+        const displayOptionEl = document.querySelector(`#antibanner${groupId} #filterStatusSelection`);
+
+        searchInputEl.value = '';
+        displayOptionEl.value = filtersDisplayOptions.ALL;
+
+        const searchDataSources = {
+            searchInputEl: searchInputEl,
+            displayOptionEl: displayOptionEl,
+        };
+        renderFiltersInCategory(groupId, loadedFiltersInfo.filters, searchDataSources);
     }
 
     const searchHtml = `<div class="filters-search">
@@ -1047,31 +1098,16 @@ var AntiBannerFilters = function (options) {
         filtersList.style.display = show ? 'block' : 'none';
     };
 
-    const applySearchValues = (inputValue, displayOptionValue) => {
-        const searchString = prepareSearchString(inputValue);
+    const selectListToDisplay = (searchDataSources) => {
+        const { searchInputEl } = searchDataSources;
+        const searchString = prepareSearchString(searchInputEl.value);
         if (searchString.length > 0) {
             showFiltersList(true);
             showGroupList(false);
-            const filters = document.querySelectorAll('#filtersList li[id^=filter]');
-            handleFiltersVisibility(filters, searchString, displayOptionValue);
         } else {
             showFiltersList(false);
             showGroupList(true);
         }
-    };
-
-    /**
-     * Returns elements containing search data:
-     * Search input, and selected display options (all/enabled/disabled)
-     * @param {Element} searchComponent
-     * @returns {{displayOptionEl: {Element}, searchInputEl: {Element}}}
-     */
-    const getSearchDataSources = (searchComponent) => {
-        return {
-            searchInputEl: searchComponent.querySelector('input[name="searchFiltersList"]'),
-            displayOptionEl: searchComponent.querySelector('#filterStatusSelection'),
-            clearSearchEl: searchComponent.querySelector('.filters-search__cross'),
-        };
     };
 
     const mountSearchComponent = (target) => {
@@ -1085,64 +1121,53 @@ var AntiBannerFilters = function (options) {
         return searchComponent;
     };
 
-    const renderFiltersList = (filters) => {
-        const CUSTOM_FILTERS_GROUP_ID = 0;
+    const renderCommonFiltersList = (filters, searchDataSources) => {
         const filtersListNode = document.querySelector('#filtersList');
-
-        // if rerenders remove old elements
-        while (filtersListNode.firstChild) {
-            filtersListNode.removeChild(filtersListNode.firstChild);
+        if (!filtersListNode) {
+            return;
         }
-
-        filters.forEach(filter => {
-            const isEnabled = loadedFiltersInfo.isEnabled(filter.filterId);
-            const isCustom = filter.groupId === CUSTOM_FILTERS_GROUP_ID;
-            const filterHtml = getFilterTemplate(filter, isEnabled, isCustom);
-            filtersListNode.appendChild(htmlToElement(filterHtml));
-        });
+        renderFiltersList(filtersListNode, filters, searchDataSources);
+        selectListToDisplay(searchDataSources);
     };
 
-    const applyCurrentSearchValues = (dataSources) => {
-        const { searchInputEl, displayOptionEl } = dataSources;
-        applySearchValues(searchInputEl.value, getDisplayOptionValue(displayOptionEl));
-    };
-
-    const bindSearchControls = (dataSources) => {
-        const { searchInputEl, displayOptionEl, clearSearchEl } = dataSources;
+    const bindSearchControls = (searchDataSources) => {
+        const { searchInputEl, displayOptionEl, clearSearchEl } = searchDataSources;
 
         searchInputEl.addEventListener('input', Utils.debounce(() => {
-            applySearchValues(searchInputEl.value, getDisplayOptionValue(displayOptionEl));
-        }, INPUT_DELAY_MS));
+            renderCommonFiltersList(loadedFiltersInfo.filters, searchDataSources);
+        }, SEARCH_INPUT_DELAY_MS));
 
         displayOptionEl.addEventListener('change', () => {
-            applySearchValues(searchInputEl.value, getDisplayOptionValue(displayOptionEl));
+            renderCommonFiltersList(loadedFiltersInfo.filters, searchDataSources);
         });
 
         clearSearchEl.addEventListener('click', () => {
             searchInputEl.value = '';
             displayOptionEl.value = filtersDisplayOptions.ALL;
-            applySearchValues(searchInputEl.value, getDisplayOptionValue(displayOptionEl));
+            renderCommonFiltersList(loadedFiltersInfo.filters, searchDataSources);
         });
     };
 
     function renderCategoriesAndFilters() {
         const settingsBody = document.querySelector('#antibanner .settings-body');
         const searchComponent = mountSearchComponent(settingsBody);
-        const dataSources = getSearchDataSources(searchComponent);
-        bindSearchControls(dataSources);
+        const searchDataSources = getSearchDataSources(searchComponent);
+        bindSearchControls(searchDataSources);
 
         contentPage.sendMessage({ type: 'getFiltersMetadata' }, function (response) {
             loadedFiltersInfo.initLoadedFilters(response.filters, response.categories);
             setLastUpdatedTimeText(loadedFiltersInfo.lastUpdateTime);
 
             const categories = loadedFiltersInfo.categories;
+            const filters = loadedFiltersInfo.filters;
+
             categories.forEach((category) => {
                 renderFilterCategory(category);
-                initSearchInCategory(category);
+                const groupSearchDataSources = initSearchInCategory(category);
+                renderFiltersInCategory(category.groupId, filters, groupSearchDataSources);
             });
 
-            renderFiltersList(loadedFiltersInfo.filters);
-            applyCurrentSearchValues(dataSources);
+            renderCommonFiltersList(filters, searchDataSources);
 
             bindControls();
             CheckboxUtils.toggleCheckbox(document.querySelectorAll('.opt-state input[type=checkbox]'));
@@ -1199,8 +1224,10 @@ var AntiBannerFilters = function (options) {
             filterId: filterId,
         });
 
-        const filterElement = getFilterElement(filterId);
-        filterElement.parentNode.removeChild(filterElement);
+        const filterElements = getFilterElements(filterId);
+        filterElements.forEach(filterEl => {
+            filterEl.parentNode.removeChild(filterElements);
+        });
     }
 
     let customFilterInitialized = false;
@@ -1379,7 +1406,7 @@ var AntiBannerFilters = function (options) {
         updateCategoryFiltersInfo(filter.groupId);
         updateFilterMetadata(filter);
 
-        CheckboxUtils.updateCheckbox([getFilterCheckbox(filterId)], enabled);
+        CheckboxUtils.updateCheckbox(getFilterCheckboxes(filterId), enabled);
     }
 
     function onCategoryStateChanged(category) {
@@ -1389,10 +1416,10 @@ var AntiBannerFilters = function (options) {
 
     function onFilterDownloadStarted(filter) {
         getCategoryElement(filter.groupId).querySelector('.preloader').classList.add('active');
-        const filterElement = getFilterElement(filter.filterId);
-        if (filterElement) {
+        const filterElements = getFilterElements(filter.filterId);
+        filterElements.forEach(filterElement => {
             filterElement.querySelector('.preloader').classList.add('active');
-        }
+        });
         document.querySelector('.settings-actions--update-filters a').classList.add('active');
     }
 
@@ -1405,8 +1432,8 @@ var AntiBannerFilters = function (options) {
 
 
     function updateFilterMetadata(filter) {
-        const filterEl = getFilterElement(filter.filterId);
-        if (filterEl) {
+        const filterElements = getFilterElements(filter.filterId);
+        filterElements.forEach(filterEl => {
             filterEl.querySelector('.preloader').classList.remove('active');
 
             let timeUpdated = moment(filter.lastUpdateTime || filter.timeUpdated);
@@ -1418,7 +1445,7 @@ var AntiBannerFilters = function (options) {
             if (versionDesc) {
                 versionDesc.textContent = `${i18n.getMessage('options_filters_filter_version')} ${filter.version}`;
             }
-        }
+        });
     }
 
     return {
