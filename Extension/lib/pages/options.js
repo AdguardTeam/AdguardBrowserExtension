@@ -70,7 +70,10 @@ var Utils = {
             return undefined;
         }
         const parts = filename.split('.');
-        return parts[1];
+        if (parts.length < 2) {
+            return undefined;
+        }
+        return parts[parts.length - 1];
     },
 
     handleImportSettings: function (e) {
