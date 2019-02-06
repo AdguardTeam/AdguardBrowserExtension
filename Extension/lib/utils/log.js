@@ -21,7 +21,7 @@
 adguard.console = (function () {
 
     // Redefine if you need it
-    var CURRENT_LEVEL = "DEBUG";
+    var CURRENT_LEVEL = "INFO";
 
     var LEVELS = {
         ERROR: 1,
