@@ -1,6 +1,6 @@
-/*! extended-css - v1.0.13 - 2018-09-06
+/*! extended-css - v1.1.0 - 2019-02-05
 * https://github.com/AdguardTeam/ExtendedCss
-* Copyright (c) 2018 ; Licensed Apache License 2.0 */
+* Copyright (c) 2019 ; Licensed Apache License 2.0 */
 var ExtendedCss = (function(window) {
 /* global console */
 
@@ -4254,14 +4254,36 @@ var ExtendedSelectorFactory = function () {
 /* global ExtendedCssParser, ExtendedSelectorFactory, StyleObserver, utils */
 
 /**
+ * This callback is used to get affected node elements and handle style properties
+ * before they are applied to them if it is necessary
+ * @callback beforeStyleApplied
+ * @param {object} affectedElement - Object containing DOM node and rule to be applied
+ * @return {object} affectedElement - Same or modified object containing DOM node and rule to be applied
+ */
+
+/**
  * Extended css class
  *
- * @param {string} styleSheet CSS stylesheet text
- * @param {Array.<HTMLElement>} propertyFilterIgnoreStyleNodes A list of stylesheet nodes that should be ignored by the StyleObserver (":properties" matching object)
+ * @param {Object} configuration
+ * @param {string} configuration.styleSheet - the CSS stylesheet text
+ * @param {Array.<HTMLElement>} [configuration.propertyFilterIgnoreStyleNodes] - A list of stylesheet nodes that should be ignored by the StyleObserver (":properties" matching object)
+ * @param {beforeStyleApplied} [configuration.beforeStyleApplied] - the callback that handles affected elements
  * @constructor
  */
-function ExtendedCss(styleSheet, propertyFilterIgnoreStyleNodes) {
+function ExtendedCss(configuration) {
     // jshint ignore:line
+    if (!configuration) {
+        throw 'Configuration is not provided.';
+    }
+
+    var styleSheet = configuration.styleSheet;
+    var propertyFilterIgnoreStyleNodes = configuration.propertyFilterIgnoreStyleNodes;
+    var beforeStyleApplied = configuration.beforeStyleApplied;
+
+    if (beforeStyleApplied && typeof beforeStyleApplied !== 'function') {
+        throw "Wrong configuration. Type of 'beforeStyleApplied' field should be a function, received: " + typeof beforeStyleApplied;
+    }
+
     var rules = [];
     var affectedElements = [];
     var domObserved = void 0;
@@ -4366,6 +4388,14 @@ function ExtendedCss(styleSheet, propertyFilterIgnoreStyleNodes) {
             // Style is already applied and protected by the observer
             return;
         }
+
+        if (beforeStyleApplied) {
+            affectedElement = beforeStyleApplied(affectedElement);
+            if (!affectedElement) {
+                return;
+            }
+        }
+
         var node = affectedElement.node;
         var style = affectedElement.rule.style;
         for (var prop in style) {
@@ -4550,7 +4580,7 @@ function ExtendedCss(styleSheet, propertyFilterIgnoreStyleNodes) {
 
 /**
  * Expose querySelectorAll for debugging and validating selectors
- * 
+ *
  * @param {string} selectorText selector text
  * @param {boolean} noTiming if true -- do not print the timing to the console
  * @returns {Array<Node>|NodeList} a list of elements found
