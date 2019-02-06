@@ -967,7 +967,7 @@ var AntiBannerFilters = function (options) {
             };
         };
 
-        const filteringFunction = getFilteringFunction(searchDataSources);
+        const filteringFunction = getFilteringFunction();
         const filtersToRender = filters.filter(filteringFunction);
 
         const CUSTOM_FILTERS_GROUP_ID = 0;
@@ -1411,7 +1411,7 @@ var AntiBannerFilters = function (options) {
         updateFilterMetadata(filter);
         const checkboxes = getFilterCheckboxes(filterId);
         if (checkboxes) {
-            CheckboxUtils.updateCheckbox(getFilterCheckboxes(filterId), enabled);
+            CheckboxUtils.updateCheckbox(checkboxes, enabled);
         }
     }
 
