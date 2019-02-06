@@ -65,6 +65,14 @@ var Utils = {
         };
     },
 
+    getExtension: function getExtension(filename) {
+        if (!filename) {
+            return undefined;
+        }
+        const parts = filename.split('.');
+        return parts[1];
+    },
+
     handleImportSettings: function (e) {
         const onFileLoaded = function (content) {
             contentPage.sendMessage({ type: 'applySettingsJson', json: content });
@@ -72,7 +80,7 @@ var Utils = {
 
         const file = e.currentTarget.files[0];
         if (file) {
-            if (file.type !== 'application/json') {
+            if (this.getExtension(file.name) !== 'json') {
                 throw new Error(i18n.getMessage('options_popup_import_settings_wrong_file_extension'));
             }
             const reader = new FileReader();
