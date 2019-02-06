@@ -1,4 +1,4 @@
-/*! extended-css - v1.1.0 - 2019-02-04
+/*! extended-css - v1.1.0 - 2019-02-05
 * https://github.com/AdguardTeam/ExtendedCss
 * Copyright (c) 2019 ; Licensed Apache License 2.0 */
 var ExtendedCss = (function(window) {
@@ -4391,6 +4391,9 @@ function ExtendedCss(configuration) {
 
         if (beforeStyleApplied) {
             affectedElement = beforeStyleApplied(affectedElement);
+            if (!affectedElement) {
+                return;
+            }
         }
 
         var node = affectedElement.node;
