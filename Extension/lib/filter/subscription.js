@@ -49,6 +49,11 @@ adguard.subscriptions = (function (adguard) {
      * @returns timestamp from date string
      */
     function parseTimeUpdated(timeUpdatedString) {
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1272
+        if (Number.isInteger(timeUpdatedString)) {
+            return new Date(timeUpdatedString);
+        }
+
         // https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Date/parse
         var timeUpdated = Date.parse(timeUpdatedString);
         if (isNaN(timeUpdated)) {
