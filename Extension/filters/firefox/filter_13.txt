@@ -1,8 +1,8 @@
-! Checksum: luZ5ykmxbhJ8HCwl/9ooCg
+! Checksum: mNJyL9UAJf27tR9YTkUvEg
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.4.99
-! TimeUpdated: 2019-01-25T23:30:20+03:00
+! Version: 2.0.5.9
+! TimeUpdated: 2019-02-06T20:30:22+03:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#turkish
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -233,7 +233,6 @@
 ||revotas.com^$third-party
 ||sadecereklam.net^$third-party
 ||savoy.storage.cubecdn.net^
-||scarabresearch.com^$third-party
 ||segmentify.com^$third-party
 ||sohbetpaneli.xyz^$third-party
 ||sunucu7.com^$third-party
@@ -314,13 +313,17 @@ miuiturkiye.net,turkanime.tv,androidatesi.com,medyaradar.com,muhendisimaaslari.c
 gazetedamga.com.tr,miuiturkiye.net,turkanime.tv,androidatesi.com,medyaradar.com,muhendisimaaslari.com,androidmakale.com,guzelresimler.info,hesaplama.net,unikampus.net,saglamindir.net,globalklavye.com#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
 !--------------------------
 !--- antiblock.org g207---
-tumkarikaturler.com,trgoals.live,csgohileleri.org,brtfix.com,merlininkazani.com,serialbumler.com#%#AG_abortInlineScript(/google_ad_client/, 'document.addEventListener');
+trgoals1.live,sportbosshd2.wtf,tumkarikaturler.com,trgoals.live,csgohileleri.org,brtfix.com,merlininkazani.com,serialbumler.com#%#AG_abortInlineScript(/google_ad_client/, 'document.addEventListener');
+@@||trgoals1.live^$generichide
+@@||sportbosshd2.wtf^$generichide
 @@||tumkarikaturler.com^$generichide
 @@||trgoals.live^$generichide
 @@||merlininkazani.com^$generichide
 @@||serialbumler.com^$generichide
 !-------------------------
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/28772
+ifsalarlayasiyoruz.net#@##adsense
 ! https://github.com/AdguardTeam/AdguardFilters/issues/28643
 @@||teve2.com.tr/static_files/adframe.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/27590
@@ -635,8 +638,10 @@ memurlar.net###FlashnewsContainer > table > tbody > tr > td[style*="width:"]:has
 marketdergisi.com##.content > .pst-block-head:has(> a[href="https://www.netpakambalaj.com/"] > img)
 istikbalgazetesi.com##.col-xs-4 > div[align="center"]:contains(Reklam)
 forum.gamer.com.tr##.p-body-inner > .notices > .notice:has(> .notice-content > center > a[href^="https://bit.ly/"] > img)
+politikars.com##.headline-side:has(a[href="https://www.politikars.com/ark-proje-ofisi-563062h.htm"])
 evvelcevap.com##center > .nomobil:has(> .adsbygoogle)
 evvelcevap.com##.theiaStickySidebar > .text-html-box:has(> .adsbygoogle)
+tarihnedio.com##.td-ss-main-sidebar > .widget_text:has(> .textwidget > a )
 itemci.com#$#html.fancybox-lock:has(> body) { overflow: visible!important; }
 itemci.com#$#html.fancybox-lock:has(> body) > body { overflow: visible!important; }
 itemci.com#$#body > div.fancybox-overlay:has(> div) { display: none!important; }
@@ -1761,6 +1766,15 @@ xperua.com###video > p[style*="background-color:"]
 azginlar.party##a[href^="tel:"]
 wmporn.com###vplayer > div[style*="background"]
 !
+dizibox.pw##.box-sidebar
+dizibox.pw##.box-header-bottom
+||dizibox.pw/box/$image
+||dizibox.pw/wp-content/themes/*/assets/*/vendor/remodal.
+||play.dizibox.net/obilet.jpeg
+sportbosshd2.wtf###domainChangedBar
+sportbosshd2.wtf##img[width="468"][height="60"]
+hdfilmcehennemi2.org##.reklam-s-kodd
+forum.donanimhaber.com##a[onclick^="adThisAfterSet"]
 fullhdfilmizlesene.net###vidrek
 fullhdfilmizlesene.net###vidrekvid
 ||fullhdfilmizlesene.net/rkl/vast/jw/
@@ -1773,6 +1787,9 @@ jetfilmizle.net##a[href^="https://bit.ly/"][rel="nofollow"] > img
 fullhdfilmizleten.org##.izletenbackground
 fullhdfilmizleten.org##a[href="https://bit.ly/reispop6"]
 fullhdfilmizleten.org###vidadvreis
+||gazetem.ru/*.gif
+gazetem.ru##a[href="https://p.turkishairlines.com/"]
+gazetem.ru##a[href="https://www.cccmos.com/"]
 ||gazetedamga.com.tr/images/banner/reklam
 memurlar.net##body > #masth.PageWidth[style*="text-align:center!important"]
 ||memurlar.net/common/widget-image/trendyol/
@@ -1797,6 +1814,8 @@ ayakligazete.com##a[href="http://www.raykal.com.tr"] > img
 sadecehaber.com##.ecanlitv
 sadecehaber.com##.Startup-advert
 gazetedamga.com.tr##.mreklam
+tarihnedio.com##.td-ss-main-sidebar > .widget_text > .textwidget > a
+tarihnedio.com##.td-post-content > .code-block
 aydinses.com,gazetedamga.com.tr##.splash
 intersinema.com###musthead
 pchocasi.com.tr##a[href^="https://goo.gl"][target="_blank"][rel="nofollow"]
@@ -1832,6 +1851,7 @@ multiplayer.com.tr##.sidebar-inner > #text-10
 ||cloudinary.com^$domain=dizilab.pw
 csgohileleri.org##.lalulintas
 gamer.com.tr###pskinad
+politikars.com##.banner-side
 forum.gamer.com.tr##.notice-content > center > a[href^="https://bit.ly/"] > img
 haberturk.com##a[href^="https://adsp.haberturk.com"]
 gercekgundem.com##.ad
@@ -5214,6 +5234,8 @@ mail.yandex.com.tr##.mail-DirectLine
 !------ White list. Fixing filtration errors (false-positive)---------------!
 !---------------------------------------------------------------------------!
 !
+! https://forum.adguard.com/index.php?threads/zeichenkram-de-intro-blocked.30745/
+zeichenkram.de#@#div[id^="floatLayer"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/28139
 trgoals.live#@##ads-blog
 trgoals.live#@#.reklamUst
