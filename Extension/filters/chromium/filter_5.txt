@@ -1,8 +1,8 @@
-! Checksum: S7pF/LAIKmpl42Zq4+RyMg
+! Checksum: 9oGjl5fSHXF8LjjKciDMEw
 ! Title: AdGuard Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.0.37
-! TimeUpdated: 2018-12-14T17:03:17+03:00
+! Version: 2.0.0.39
+! TimeUpdated: 2019-02-06T14:31:10+03:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#experimental
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -177,6 +177,10 @@
 ! Rules which are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
 !
+$cookie=/blcrm|bltsr|^from\$|^los\$/,domain=24smi.org|auto.ru|avito.ru|avtovzglyad.ru|baby.ru|businessman.ru|dni.ru|drive2.com|drive2.ru|e1.ru|echo.msk.ru|fb.ru|forexpf.ru|gismeteo.by|gismeteo.kz|gismeteo.md|gismeteo.ru|gismeteo.ua|glav.su|gorodrabot.ru|infoniac.ru|it-tehnik.ru|kakprosto.ru|kinopoisk.ru|liveinternet.ru|mathb-ege.sdamgia.ru|mk.ru|nkj.ru|ohotniki.ru|oko-planet.su|otzovik.com|pikabu.ru|rambler.ru|razlozhi.ru|sdamgia.ru|syl.ru|tsargrad.tv|vz.ru
+$cookie=/blcrm|bltsr|^from\$|^los\$/,domain=yandex.by|yandex.com|yandex.com.tr|yandex.fr|yandex.kz|yandex.ru|yandex.ua
+||kino*oisk.ru^$cookie=/kpunk/
+!
 ! Whitelist
 ! http://adguard.com/filterrules.html#exclusionRules
 ! http://adguard.com/filterrules.html#hideRulesExceptions
@@ -221,6 +225,8 @@
 !+ NOT_PLATFORM(windows, mac, android)
 ! *do not enable* yandex.ru#%#AG_onLoad(function() { if (window.location.href.indexOf("pogoda") != -1 && window.location.href.indexOf("nowcast") == -1) { Object.defineProperty(HTMLScriptElement.prototype, 'src', {writable:false}) } });
 !
+! https://forum.adguard.com/index.php?threads/quora-com.30650
+quora.com##.grid_page div[class][id] > div[class*=" "] > div[id^="__"]:has(.external_link):has( span + span[style="display: none;"])
 ! https://github.com/AdguardTeam/AdguardFilters/issues/21365
 nytimes.com###site-content > div[class^="css-"][class*=" "] > div[class^="css-"][class*=" "] > div[class^="css-"][class*=" "]
 nytimes.com###app > div[class^="css-"][class*=" "]:not([data-reactroot]) > div[class^="css-"][class*=" "]

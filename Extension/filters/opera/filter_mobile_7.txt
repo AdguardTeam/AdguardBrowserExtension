@@ -1,8 +1,8 @@
-! Checksum: ZcHosXmnZcb0wCP/RNh9qw
+! Checksum: KOpf8QO4ry2qToGXIx2FKA
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.1.72
-! TimeUpdated: 2019-01-24T19:31:18+03:00
+! Version: 2.0.1.75
+! TimeUpdated: 2019-02-05T20:31:17+03:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -280,7 +280,7 @@
 ||widget.zenback.jp^$third-party
 ||w.zenback.jp^$third-party
 wpteq.org#%#(function() { var noopfn = function() {;}; var Fab = function() {}; Fab.prototype.check = noopfn; Fab.prototype.clearEvent = noopfn;  Fab.prototype.emitEvent = noopfn; Fab.prototype.on = function(a, b) { if ( !a ) { b(); } return this; }; Fab.prototype.onDetected = function() {  return this; }; Fab.prototype.onNotDetected = function(a) { a(); return this; }; Fab.prototype.setOption = noopfn; var fab = new Fab(),  getSetFab = { get: function() { return Fab; }, set: function() {} }, getsetfab = { get: function() { return fab; }, set: function() {} }; if ( window.hasOwnProperty('FuckAdBlock') ) { window.FuckAdBlock = Fab; } else { Object.defineProperty(window, 'FuckAdBlock', getSetFab); } if ( window.hasOwnProperty('BlockAdBlock') ) { window.BlockAdBlock = Fab; } else {Object.defineProperty(window, 'BlockAdBlock', getSetFab); } if ( window.hasOwnProperty('SniffAdBlock') ) { window.SniffAdBlock = Fab; } else { Object.defineProperty(window, 'SniffAdBlock', getSetFab); } if ( window.hasOwnProperty('fuckAdBlock') ) { window.fuckAdBlock = fab; } else { Object.defineProperty(window, 'fuckAdBlock', getsetfab); } if ( window.hasOwnProperty('blockAdBlock') ) { window.blockAdBlock = fab; } else { Object.defineProperty(window, 'blockAdBlock', getsetfab); } if ( window.hasOwnProperty('sniffAdBlock') ) { window.sniffAdBlock = fab; } else { Object.defineProperty(window, 'sniffAdBlock', getsetfab); } })();
-wpteq.org,d-navi004.com,gagetmatome.com,h5games.success-corp.co.jp#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
+ronron-blog.com,wpteq.org,d-navi004.com,gagetmatome.com,h5games.success-corp.co.jp#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
 @@||wpteq.org/wp-content/plugins/wp-adblock-dedect/js/dedect.js
 ||javusb.com/wp-content/uploads/*/*.js
 gadgetdamage.blog.fc2.com#%#AG_onLoad(function() { AG_removeElementBySelector('.adsbygoogle'); });
@@ -371,7 +371,6 @@ appllio.com##.sidebar > .region-inner > .block.odd:has(div[id^="div-gpt-ad"])
 mindhack2ch.com##.article-body > .ad:has(> .adsbygoogle)
 mindhack2ch.com##.article-body > .rss:has(> script)
 mindhack2ch.com##.article-post-bottom > .rss-article:has(> .rss-article-item)
-momon-ga.com##.content > .section-box[-ext-has='a[target="_blank"]']
 melos.media##.x1_article > .x1_articleArea[-ext-has='div.x1_siteTitle:contains([PR])']
 repeat-drama.info##.side_inner > .box:contains(スポンサーリンク)
 ###AD1line
@@ -517,6 +516,7 @@ iza.ne.jp#$#.sideFixedWrapper { position: relative!important; }
 /top/head_s_bnr
 /yaad.js
 _ds_adtag_
+matome.naver.jp###yads_pc_overlay
 ||free-video-movie.com/link
 hostlove.com###ad_fix
 hostlove.com###ad_mega
@@ -688,6 +688,11 @@ erogazo-ngo.com###text-41.free-widget
 sonicch.com##div[id^="livedoor_blogroll_widget"]
 bakufu.jp###prBox
 ||momon-ga.com/pickup1.html
+||momon-ga.com/pickup2.html
+||momon-ga.com/pickup3.html
+momon-ga.com###main-inner > .rss2
+momon-ga.com###main-inner > .rss3
+momon-ga.com##.repo-title:has(> strong)
 momon-ga.com###article-contents > .post-footer
 momon-ga.com##.container-inner > section[id^="comments-"] ~ div[style*="margin-bottom"]:not([id]):not([class])
 ||livelog.biz^$domain=momon-ga.com
