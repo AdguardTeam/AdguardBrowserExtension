@@ -1,8 +1,8 @@
-! Checksum: 5afAtzaJwNExL//jUoV2IA
+! Checksum: DycgYKJQz3akMvn0hzPiWg
 ! Title: AdGuard Safari filter
 ! Description: Special filter for Safari 9+ on iOS and Mac OS. We need a separate filter for Safari browser because it does not fully support our rules syntax.
-! Version: 2.0.1.23
-! TimeUpdated: 2018-12-27T20:30:14+03:00
+! Version: 2.0.1.28
+! TimeUpdated: 2019-02-06T18:30:14+03:00
 ! Expires: 2 days (update frequency)
 ||adexec.net^$popup
 ||0912701309f8ce.com^$popup
@@ -511,6 +511,9 @@ wi-fi.ru##.vb
 ||gamer.ru/alarmalarm/js/
 ||sports.ru/desktop/special/$subdocument,domain=sports.ru
 m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
+|https://$image,script,subdocument,third-party,xmlhttprequest,domain=yourporn.sexy,badfilter
+@@||yourporn.sexy/cdn*.mp4
+@@||forum.adguard.com/index.php
 @@||macitynet.it/pubblicita-
 @@||dailycaller.com/*/google-ads-
 @@||ebay-kleinanzeigen.de/s-suchanfrage.html
