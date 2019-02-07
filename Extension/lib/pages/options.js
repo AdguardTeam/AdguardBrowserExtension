@@ -932,7 +932,7 @@ var AntiBannerFilters = function (options) {
     };
 
     const getDisplayOptionValue = (selectionNode) => {
-        return [...selectionNode.options]
+        return [].slice.call(selectionNode.options)
             .filter(o => o.selected)[0].value;
     };
 
