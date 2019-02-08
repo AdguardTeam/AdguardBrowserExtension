@@ -145,10 +145,10 @@ const STEALTH_ACTIONS = {
 };
 
 const STEALTH_ACTIONS_NAMES = {
-    HIDE_REFERRER: i18n.getMessage('options_hide_referrer_title'),
-    HIDE_SEARCH_QUERIES: i18n.getMessage('options_hide_search_queries_title'),
-    BLOCK_CHROME_CLIENT_DATA: i18n.getMessage('options_remove_client_data_title'),
-    SEND_DO_NOT_TRACK: i18n.getMessage('options_send_not_track_title'),
+    HIDE_REFERRER: i18n.getMessage('filtering_log_hide_referrer'),
+    HIDE_SEARCH_QUERIES: i18n.getMessage('filtering_log_hide_search_queries'),
+    BLOCK_CHROME_CLIENT_DATA: i18n.getMessage('filtering_log_remove_client_data'),
+    SEND_DO_NOT_TRACK: i18n.getMessage('filtering_log_send_not_track'),
     STRIPPED_TRACKING_URL: i18n.getMessage('options_stripped_tracking_parameters'),
     FIRST_PARTY_COOKIES: i18n.getMessage('options_modified_first_party_cookie'),
     THIRD_PARTY_COOKIES: i18n.getMessage('options_modified_third_party_cookie'),

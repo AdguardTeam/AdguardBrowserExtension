@@ -48,7 +48,8 @@ var CssHitsCounter = (function () { // jshint ignore:line
      */
     function removeQuotes(value) {
         if (typeof value === "string" && value.length > 1 &&
-            (value[0] === '"' && value[value.length - 1] === '"' || value[0] === '\'' && value[value.length - 1] === '\'')) {
+            (value[0] === '"' && value[value.length - 1] === '"'
+                || value[0] === '\'' && value[value.length - 1] === '\'')) {
             // Remove double-quotes or single-quotes
             value = value.substring(1, value.length - 1);
         }
@@ -137,6 +138,35 @@ var CssHitsCounter = (function () { // jshint ignore:line
         },
     };
 
+    const parseInfo = (content) => {
+        if (!content || content.indexOf(CONTENT_ATTR_PREFIX) < 0) {
+            return null;
+        }
+        let filterIdAndRuleText = decodeURIComponent(content);
+        // 'content' value may include open and close quotes.
+        filterIdAndRuleText = removeQuotes(filterIdAndRuleText);
+        // Remove prefix
+        filterIdAndRuleText = filterIdAndRuleText.substring(CONTENT_ATTR_PREFIX.length);
+        // Attribute 'content' in css looks like: {content: 'adguard{filterId};{ruleText}'}
+        const index = filterIdAndRuleText.indexOf(';');
+        if (index < 0) {
+            return null;
+        }
+        const filterId = parseInt(filterIdAndRuleText.substring(0, index), 10);
+        const ruleText = filterIdAndRuleText.substring(index + 1);
+        return { filterId: filterId, ruleText: ruleText };
+    };
+
+    const parseExtendedStyleInfo = (content) => {
+        const important = '!important';
+        const indexOfImportant = content.indexOf(important);
+        if (indexOfImportant === -1) {
+            return parseInfo(content);
+        }
+        const contentWithoutImportant = content.substring(0, indexOfImportant).trim();
+        return parseInfo(contentWithoutImportant);
+    };
+
     /**
      * Function checks if elements style content attribute contains data injected with AdGuard
      * @param {Node} element
@@ -146,27 +176,11 @@ var CssHitsCounter = (function () { // jshint ignore:line
         if (!(element instanceof Element)) {
             return null;
         }
-        var style = getComputedStyle(element);
+        const style = getComputedStyle(element);
         if (!style) {
             return null;
         }
-        var content = style.content;
-        if (!content || content.indexOf(CONTENT_ATTR_PREFIX) < 0) {
-            return null;
-        }
-        var filterIdAndRuleText = decodeURIComponent(content);
-        // 'content' value may include open and close quotes.
-        filterIdAndRuleText = removeQuotes(filterIdAndRuleText);
-        // Remove prefix
-        filterIdAndRuleText = filterIdAndRuleText.substring(CONTENT_ATTR_PREFIX.length);
-        // Attribute 'content' in css looks like: {content: 'adguard{filterId};{ruleText}'}
-        var index = filterIdAndRuleText.indexOf(';');
-        if (index < 0) {
-            return null;
-        }
-        var filterId = parseInt(filterIdAndRuleText.substring(0, index), 10);
-        var ruleText = filterIdAndRuleText.substring(index + 1);
-        return { filterId: filterId, ruleText: ruleText };
+        return parseInfo(style.content);
     }
 
     function countCssHitsForElements(elements, start, length) {
@@ -274,13 +288,14 @@ var CssHitsCounter = (function () { // jshint ignore:line
         }
     }
 
+    let observer;
     function countCssHitsForMutations() {
         var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
         if (!MutationObserver) {
             return;
         }
         var timeoutId;
-        var observer = new MutationObserver(function (mutationRecords) {
+        observer = new MutationObserver(function (mutationRecords) {
             // Collect probe elements, count them, then remove from their targets
             var probeElements = [];
             var childrenOfProbeElements = [];
@@ -355,6 +370,35 @@ var CssHitsCounter = (function () { // jshint ignore:line
     }
 
     /**
+     * Callback used to collect statistics of elements affected by extended css rules
+     * @param {object} affectedEl
+     * @return {object} affectedEl
+     */
+    const countAffectedByExtendedCss = (affectedEl) => {
+        if (typeof onCssHitsFoundCallback !== 'function') {
+            return affectedEl;
+        }
+        if (affectedEl && affectedEl.rule && affectedEl.rule.style && affectedEl.rule.style.content) {
+            const styleInfo = parseExtendedStyleInfo(affectedEl.rule.style.content);
+            if (styleInfo === null) {
+                return affectedEl;
+            }
+            const { filterId, ruleText } = styleInfo;
+            if (filterId !== undefined && ruleText !== undefined) {
+                const result = {
+                    filterId,
+                    ruleText,
+                    element: elementToString(affectedEl.node),
+                };
+                onCssHitsFoundCallback([result]);
+                // clear style content to avoid duplicate counting
+                affectedEl.rule.style.content = '';
+            }
+        }
+        return affectedEl;
+    };
+
+    /**
      * This callback is called on css hits detection
      * @callback cssHitsCounterCallback
      * @param {{filterId: Number, ruleText: String, element: String}[]} stats
@@ -387,7 +431,15 @@ var CssHitsCounter = (function () { // jshint ignore:line
         }
     };
 
+    const stop = () => {
+        onCssHitsFoundCallback = () => {};
+        observer.disconnect();
+    };
+
     return {
         init: init,
+        countAffectedByExtendedCss: countAffectedByExtendedCss,
+        parseExtendedStyleInfo: parseExtendedStyleInfo,
+        stop: stop,
     };
 })();

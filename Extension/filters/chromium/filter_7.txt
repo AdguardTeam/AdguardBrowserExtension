@@ -1,8 +1,8 @@
-! Checksum: VyraRAjorclralkrpyVXFw
+! Checksum: two5nN08RC5RIYBGwPk1Kw
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.1.66
-! TimeUpdated: 2018-12-27T20:31:19+03:00
+! Version: 2.0.1.75
+! TimeUpdated: 2019-02-05T20:31:17+03:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#japanese
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -323,9 +323,14 @@
 !
 ! These rules are against all kinds of ad blocking reinjection/circumvention scripts
 !
-! FuckAdBlock CSS
-d-navi004.com,gagetmatome.com,h5games.success-corp.co.jp#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
+!--- Fuck fuckAdBlock JS ---
+wpteq.org#%#(function() { var noopfn = function() {;}; var Fab = function() {}; Fab.prototype.check = noopfn; Fab.prototype.clearEvent = noopfn;  Fab.prototype.emitEvent = noopfn; Fab.prototype.on = function(a, b) { if ( !a ) { b(); } return this; }; Fab.prototype.onDetected = function() {  return this; }; Fab.prototype.onNotDetected = function(a) { a(); return this; }; Fab.prototype.setOption = noopfn; var fab = new Fab(),  getSetFab = { get: function() { return Fab; }, set: function() {} }, getsetfab = { get: function() { return fab; }, set: function() {} }; if ( window.hasOwnProperty('FuckAdBlock') ) { window.FuckAdBlock = Fab; } else { Object.defineProperty(window, 'FuckAdBlock', getSetFab); } if ( window.hasOwnProperty('BlockAdBlock') ) { window.BlockAdBlock = Fab; } else {Object.defineProperty(window, 'BlockAdBlock', getSetFab); } if ( window.hasOwnProperty('SniffAdBlock') ) { window.SniffAdBlock = Fab; } else { Object.defineProperty(window, 'SniffAdBlock', getSetFab); } if ( window.hasOwnProperty('fuckAdBlock') ) { window.fuckAdBlock = fab; } else { Object.defineProperty(window, 'fuckAdBlock', getsetfab); } if ( window.hasOwnProperty('blockAdBlock') ) { window.blockAdBlock = fab; } else { Object.defineProperty(window, 'blockAdBlock', getsetfab); } if ( window.hasOwnProperty('sniffAdBlock') ) { window.sniffAdBlock = fab; } else { Object.defineProperty(window, 'sniffAdBlock', getsetfab); } })();
+!--- Fuck fuckAdBlock CSS ---
+ronron-blog.com,wpteq.org,d-navi004.com,gagetmatome.com,h5games.success-corp.co.jp#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/28910
+! https://github.com/AdguardTeam/AdguardFilters/issues/27939
+@@||wpteq.org/wp-content/plugins/wp-adblock-dedect/js/dedect.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/23781
 ||javusb.com/wp-content/uploads/*/*.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/23252
@@ -444,7 +449,6 @@ mindhack2ch.com##.article-body > .ad:has(> .adsbygoogle)
 mindhack2ch.com##.article-body > .rss:has(> script)
 mindhack2ch.com##.article-post-bottom > .rss-article:has(> .rss-article-item)
 !
-momon-ga.com##.content > .section-box[-ext-has='a[target="_blank"]']
 melos.media##.x1_article > .x1_articleArea[-ext-has='div.x1_siteTitle:contains([PR])']
 repeat-drama.info##.side_inner > .box:contains(スポンサーリンク)
 !---------------------------------------------------------------------------!
@@ -634,6 +638,16 @@ _ds_adtag_
 !
 ! Section contains rules for specific websites
 !
+matome.naver.jp###yads_pc_overlay
+||free-video-movie.com/link
+hostlove.com###ad_fix
+hostlove.com###ad_mega
+channel-jk.com###fam_rectp
+channel-jk.com##.rss2-iframe
+channel-jk.com##.blogroll_wrapper
+channel-jk.com##.blogroll_wrapper_kizisita
+||js.blozoo.info/js/rsstool/blogparts.js
+hosyusokuhou.jp##div.abox
 kirari-media.net##div[id][style="height:250px; width:300px;"]
 huyosoku.com###header-feed
 huyosoku.com###pickup-feed
@@ -796,6 +810,11 @@ erogazo-ngo.com###text-41.free-widget
 sonicch.com##div[id^="livedoor_blogroll_widget"]
 bakufu.jp###prBox
 ||momon-ga.com/pickup1.html
+||momon-ga.com/pickup2.html
+||momon-ga.com/pickup3.html
+momon-ga.com###main-inner > .rss2
+momon-ga.com###main-inner > .rss3
+momon-ga.com##.repo-title:has(> strong)
 momon-ga.com###article-contents > .post-footer
 momon-ga.com##.container-inner > section[id^="comments-"] ~ div[style*="margin-bottom"]:not([id]):not([class])
 ||livelog.biz^$domain=momon-ga.com
@@ -1161,7 +1180,6 @@ yahoo.co.jp##ul[class^="sponsor"]
 ||kau.li/ad.js
 ||kau.li/yad.js
 ||kazenoashiato.jp/file/index/FILECD/
-||komachi.yomiuri.co.jp^
 ||land.to/ad/
 ||livedoor.com^*/banner/
 ||livedoor.jp^*/amazon.js
@@ -1209,6 +1227,7 @@ yahoo.co.jp##ul[class^="sponsor"]
 ||zenback.jp^*/tracking.html
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/28910
 ! https://github.com/AdguardTeam/AdguardFilters/issues/20703
 ! https://github.com/AdguardTeam/AdguardFilters/issues/20116
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9091
@@ -1220,6 +1239,8 @@ yahoo.co.jp##ul[class^="sponsor"]
 !
 ! White list. Fixing filtration errors(false-positive)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/28607
+@@||fresheye.com^$domain=m-search.sponichi.co.jp
 ! https://github.com/AdguardTeam/AdguardFilters/issues/24764
 edy.rakuten.co.jp#@#div[id^="div-gpt-ad"]
 @@||ias.rakuten.co.jp/ctrl/$domain=edy.rakuten.co.jp
