@@ -244,7 +244,8 @@ adguard.antiBannerService = (function (adguard) {
     }
 
     /**
-     * Select filters for update. It depends on the time of last update.
+     * Select filters for update. It depends on the time of last update,
+     * on the filter enable status and group enable status
      * @param forceUpdate Force update flag.
      * @param filtersToUpdate Optional array of filters
      * @returns object
@@ -253,9 +254,10 @@ adguard.antiBannerService = (function (adguard) {
         const filterIds = [];
         const customFilterIds = [];
         const filters = filtersToUpdate || adguard.subscriptions.getFilters();
-        for (let i = 0; i < filters.length; i++) {
+        for (let i = 0; i < filters.length; i += 1) {
             const filter = filters[i];
-            if (filter.installed && filter.enabled) {
+            const group = adguard.subscriptions.getGroup(filter.groupId);
+            if (filter.installed && filter.enabled && group.enabled) {
                 // Check filters update period (or forceUpdate flag)
                 const needUpdate = forceUpdate || (!filter.lastCheckTime || (Date.now() - filter.lastCheckTime) >= filtersUpdatePeriod);
                 if (needUpdate) {
@@ -270,7 +272,7 @@ adguard.antiBannerService = (function (adguard) {
 
         return {
             filterIds: filterIds,
-            customFilterIds: customFilterIds
+            customFilterIds: customFilterIds,
         };
     }
 
@@ -296,7 +298,7 @@ adguard.antiBannerService = (function (adguard) {
             return;
         }
 
-        adguard.console.info("Start checking filters updates");
+        adguard.console.info('Start checking filters updates');
 
         // Select filters for update
         var toUpdate = selectFilterIdsToUpdate(forceUpdate, filters);
@@ -1463,7 +1465,7 @@ adguard.filters = (function (adguard) {
      * @param errorCallback
      * @param filter optional
      */
-    const checkFiltersUpdates = function (successCallback, errorCallback, filter) {
+    const checkFiltersUpdates = (successCallback, errorCallback, filter) => {
         if (filter) {
             // Skip recently downloaded filters
             if (Date.now() - filter.lastCheckTime < ENABLED_FILTERS_SKIP_TIMEOUT) {
