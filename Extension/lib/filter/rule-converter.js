@@ -17,18 +17,12 @@
 
 (function (api) {
 
-    const ALL_IN_PARENTHESES_REGEX = /\(([^\(\)]*)\)/g;
     /**
-     * Returns string in which enclosed in parentheses
-     * @param {string} str
+     * Acguard Scriptlet mask
      */
-    function getContentInParentheses(str) {
-        const match = str.match(ALL_IN_PARENTHESES_REGEX)[0];
-        if (!match) {
-            return '';
-        }
-        return match.slice(1, -1);
-    }
+    const ADG_SCRIPTLET_MASK = /\/\/(\s*)scriptlet/;
+    const UBO_SCRIPTLET_MASK = /##script\:inject|\+js/;
+    const ABP_SCRIPTLET_MASK = /#\$#/;
 
     /**
      * Remove duplicate quotes in string
@@ -85,7 +79,7 @@
             return rule.split(';')
                 .map(removeMask)
                 .map(trim)
-                .map(rule => ({ 
+                .map(rule => ({
                     name: getName(rule),
                     args: getArgs(rule)
                 }));
@@ -99,18 +93,122 @@
     }
 
     /**
+     * Remove all in string before and including passed regexp
+     * @param {string} str source string
+     * @param {RegExp} regx
+     */
+    function removeBeforeIncludingMatch(str, regx) {
+        if (!str || !regx) {
+            return str;
+        }
+        const index = str.search(regx);
+        if (index === -1) {
+            return str;
+        }
+        return str
+            .substring(index, str.length)
+            .replace(regx, '');
+    }
+
+    /**
      * Parse rule text and returns AdGuard scriplet data
      * @param {string} rule 
      */
-    function parseAdguardScriptletRule(rule) {
-        const params = getContentInParentheses(rule);
-        const match = params
-            .split(',')
-            .map(t => removeInnerQuotes(t))
-            .filter(t => t);
+    function parseAdguardScriptletRule(ruleText) {
+        const currentProp = '';
+        const props = [];
+        function between(rule, index) {
+            const char = rule[index];
+            switch (char) {
+                case '\'':
+                case '"':
+                    this.dispatch('param', rule, index++, char);
+                    break;
+                case ' ':
+                case '(':
+                    this.dispatch('between', rule, index++);
+                    break;
+                case ')':
+                    this.dispatch('close');
+                    break;
+                default:
+                    this.dispatch('error');
+                    break;
+            };
+        };
+        function param(rule, index, capture) {
+            const char = rule[index];
+            switch (char) {
+                case capture:
+                    props.push(currentProp);
+                    currentProp = '';
+                    this.dispatch('between', rule, index++);
+                    break;
+                case undefined:
+                    this.dispatch('error');
+                    break;
+                default:
+                    currentProp += char;
+                    this.dispatch('param', rule, index++, capture);
+                    break;
+            }
+        }
+        function close() {
+            props.push(currentProp);
+            currentProp = '';
+        };
+        function error() {
+            console.log('error');
+        }
 
-        const name = match[0];
-        const args = match.splice(1);
+        const machine = {
+            dispatch(actionName, rule, index, capture) {
+                const action = this.transitions[this.state][actionName];
+                if (action) {
+                    action.apply(this, [rule, index, capture]);
+                };
+            },
+            state: 'init',
+            transitions: {
+                'init': {
+                    between
+                    // between() {
+                    //     between.apply(this, [...arguments])
+                    // },
+                },
+                'between': {
+                    between() {
+                        between.bind(this)
+                    },
+                    'close': close.bind(this),
+                    'error': error.bind(this),
+                    'param': param.bind(this)
+                },
+                'param': {
+                    'param': param.bind(this),
+                    'between': between.bind(this),
+                    'error': error.bind(this),
+                }
+            },
+            setState: state => this.state = state,
+        }
+        console.log(props);
+
+        machine.dispatch('between', `('abort-on-property-read', 'I10C')`, 0);
+
+
+        // const res = removeBeforeIncludingMatch(rule, ADG_SCRIPTLET_MASK);
+        // const res = parseParamsByState(res, ADG_STATE_MAP);
+
+
+        // const params = getContentInParentheses(rule);
+        // const match = params
+        //     .split(',')
+        //     .map(t => removeInnerQuotes(t))
+        //     .filter(t => t);
+
+        // const name = match[0];
+        // const args = match.splice(1);
 
         return { name: name, args: args };
     }
@@ -121,31 +219,15 @@
      * @returns {Array<Object>} an array of scriptlets 
      */
     function parseScriptletRule(rule) {
+        if (isAdguardScriptletRule(rule)) {
+            return parseAdguardScriptletRule(rule);
+        }
         if (isUBOScriptletRule(rule)) {
             return parseUBOScriptletRule(rule);
         }
         if (isABPSnippetRule(rule)) {
             return parseABPSnippetRule(rule);
         }
-        if (isAdguardScriptletRule(rule)) {
-            return parseAdguardScriptletRule(rule);
-        }
-    };
-
-    /**
-     * Check is uBO scriptlet rule
-     * @param {string} ruleText rule text
-     */
-    function isUBOScriptletRule(ruleText) {
-        return ruleText.includes('##script:inject(') || ruleText.includes('##+js(');
-    };
-
-    /**
-     * Check is AdBlock Plus snippet
-     * @param {string} ruleText rule text
-     */
-    function isABPSnippetRule(ruleText) {
-        return ruleText.includes('#$#') && !/#\$#.+{.*}\s*$/.test(ruleText)
     };
 
     /**
@@ -153,7 +235,23 @@
      * @param {string} ruleText 
      */
     function isAdguardScriptletRule(ruleText) {
-        return /\/\/(\s*)scriptlet\(([^\)]+)\)/g.test(ruleText);
+        return ADG_SCRIPTLET_MASK.test(ruleText);
+    };
+
+    /**
+     * Check is uBO scriptlet rule
+     * @param {string} ruleText rule text
+     */
+    function isUBOScriptletRule(ruleText) {
+        return UBO_SCRIPTLET_MASK.test(ruleText);
+    };
+
+    /**
+     * Check is AdBlock Plus snippet
+     * @param {string} ruleText rule text
+     */
+    function isABPSnippetRule(ruleText) {
+        return ABP_SCRIPTLET_MASK.test(ruleText);
     };
 
     /**
@@ -162,66 +260,22 @@
      */
     function isScriptletRule(ruleText) {
         return ruleText && (
-            isUBOScriptletRule(ruleText)
+            isAdguardScriptletRule(ruleText)
+            || isUBOScriptletRule(ruleText)
             || isABPSnippetRule(ruleText)
-            || isAdguardScriptletRule(ruleText)
         );
     };
 
     /**
-     * Create ScriptletRule
-     * @param {string} ruleText 
-     * @param {number} filterId 
-     * @param {Array<Object>|Object} params if passed array of params will returns an array of ScriptletRule insctances
+     *
+     * @param {string} rule convert rule
      */
-    function createScriptletRule(ruleText, filterId, params) {
-        const extraParams = {
-            rule: ruleText,
-            engine: 'extension',
-            version: 'testVersion', // todo add real engine version
-            hit: () => console.log('Scriptlet ' + data.name + ' was executed') // todo add real hit
-        };
-
-        params = Object.assign(params, extraParams);
-        return new api.ScriptletRule(params, filterId);
+    function convertRule(rule) {
+        return isScriptletRule(rule)
+            ? parseScriptletRule(rule)
+            : rule;
     }
 
-    /**
-     * 
-     * @param {Array} rules 
-     */
-    function createCompositeRule(ruleText, filterId, rules) {
-        return new api.CompositeRule(ruleText, filterId, rules);
-    };
-
-    /**
-     * Create CompositeRule<ScriptletRule> instance
-     * @param {string} ruleText 
-     * @param {number} filterId 
-     * @param {Array<Object>} params for scriptlet rules
-     */
-    function createCompositeScriptletRule(ruleText, filterId, params) {
-        const rules = params.map(data => createScriptletRule(ruleText, filterId, data));
-        return createCompositeRule(ruleText, filterId, rules);
-    };
-
-    /**
-     * Create ScriptletRule instances from rule text
-     * @param {string} ruleText text of scriptlet rule
-     * @param {number} filterId
-     * @returns {ScriptletRule|CompositeRule<ScriptletRule>}
-     */
-    function createScriptletRules(ruleText, filterId) {
-        const params = parseScriptletRule(ruleText);
-        if (Array.isArray(params)) {
-            return createCompositeScriptletRule(ruleText, filterId, params);
-        }
-        return createScriptletRule(ruleText, filterId, params);
-    };
-
-    api.ruleConverter = {
-        createScriptletRules: createScriptletRules,
-        isScriptletRule: isScriptletRule
-    }
+    api.ruleConverter = { convertRule };
 
 })(adguard.rules);
