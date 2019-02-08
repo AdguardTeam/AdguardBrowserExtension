@@ -134,6 +134,7 @@ adguard.rulesStorage = (function (adguard, impl) {
      */
     var write = function (filterId, filterRules, callback) {
         var filePath = getFilePath(filterId);
+        console.trace(filterId, filterRules);
         impl.write(filePath, filterRules, function (e) {
             if (e) {
                 adguard.console.error("Error writing filters to file {0}. Cause: {1}", filePath, e);

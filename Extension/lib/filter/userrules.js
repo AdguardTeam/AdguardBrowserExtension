@@ -66,8 +66,9 @@ adguard.userrules = (function (adguard) {
      * @param options
      */
     var updateUserRulesText = function (content, options) {
-        var lines = content.split(/[\r\n]+/) || [];
-        getAntiBannerService().updateUserFilterRules(lines);
+        const lines = content.split(/[\r\n]+/) || [];
+        const filteredLines = lines.filter(line => line.length > 0);
+        getAntiBannerService().updateUserFilterRules(filteredLines);
         adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
     };
 
@@ -77,7 +78,7 @@ adguard.userrules = (function (adguard) {
      */
     var getUserRulesText = function (callback) {
         adguard.rulesStorage.read(adguard.utils.filters.USER_FILTER_ID, function (rulesText) {
-            var content = (rulesText || []).join('\n');
+            const content = (rulesText || []).join('\n');
             callback(content);
         });
     };
