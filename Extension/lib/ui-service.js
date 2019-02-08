@@ -689,8 +689,8 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         });
     };
 
-    var checkFiltersUpdates = function () {
-        adguard.filters.checkFiltersUpdates(function (updatedFilters) {
+    const checkFiltersUpdates = function () {
+        adguard.filters.checkFiltersUpdates((updatedFilters) => {
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTERS_SHOW_POPUP, true, updatedFilters);
         }, function () {
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTERS_SHOW_POPUP, false);

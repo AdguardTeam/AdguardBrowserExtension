@@ -1234,7 +1234,7 @@ var AntiBannerFilters = function (options) {
 
     function updateAntiBannerFilters(e) {
         e.preventDefault();
-        contentPage.sendMessage({ type: 'checkAntiBannerFiltersUpdate' }, function () {
+        contentPage.sendMessage({ type: 'checkAntiBannerFiltersUpdate' }, () => {
             setLastUpdatedTimeText(Date.now());
         });
     }
