@@ -67,8 +67,8 @@ adguard.userrules = (function (adguard) {
      */
     var updateUserRulesText = function (content, options) {
         const lines = content.split(/[\r\n]+/) || [];
-        const filteredLines = lines.filter(line => line.length > 0);
-        getAntiBannerService().updateUserFilterRules(filteredLines);
+        const nonEmptyLines = lines.filter(line => line.length > 0);
+        getAntiBannerService().updateUserFilterRules(nonEmptyLines);
         adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
     };
 
