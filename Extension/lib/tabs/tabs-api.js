@@ -189,6 +189,8 @@
                 tab.url = aTab.url;
                 tab.title = aTab.title;
                 tab.status = aTab.status;
+                // If the tab was updated it means that it wasn't used to send requests in the background
+                tab.synthetic = false;
                 onUpdatedChannel.notify(tab);
             }
         });
@@ -302,7 +304,9 @@
                 tab = {
                     tabId: tabId,
                     url: url,
-                    status: 'loading'
+                    status: 'loading',
+                    // We mark this tabs as synthetic because actually they may not exists
+                    synthetic: true,
                 };
                 onTabCreated(tab);
             }
