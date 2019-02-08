@@ -480,6 +480,7 @@ adguard.stealthService = (function (adguard) {
         adguard.utils.browser.containsPermissions(['privacy'])
             .then(result => {
                 if (result) {
+                    handleBlockWebRTC();
                     return adguard.utils.browser.removePermission(['privacy']);
                 }
                 return true;
