@@ -171,7 +171,7 @@
      * @param {string} rule 
      */
     function parseUBOScriptletRule(ruleText) {
-        let rule = removeBeforeIncludingMatch(ADG_SCRIPTLET_MASK, ruleText);
+        let rule = removeBeforeIncludingMatch(UBO_SCRIPTLET_MASK, ruleText);
         let currentProp = '';
         const props = [];
         const captureSymb = symb => currentProp += symb;
