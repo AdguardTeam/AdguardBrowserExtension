@@ -62,56 +62,6 @@
     }
 
     /**
-     * Parse rule text and returns uBO scriplet data
-     * @param {string} rule 
-     */
-    function parseUBOScriptletRule(rule) {
-        let params = getContentInParentheses(rule);
-        params = params
-            .split(',')
-            .map(t => removeInnerQuotes(t))
-            .filter(t => t);
-
-        const name = 'ubo-' + params[0];
-        const args = params.splice(1);
-
-        return { name: name, args: args };
-    }
-
-    /**
-     * Parse rule text and returns ABP snippet data
-     * @param {string} rule 
-     */
-    function parseABPSnippetRule(rule) {
-        const removeMask = rule => rule.indexOf('#$#') > -1
-            ? rule.substring(rule.indexOf('#$#') + 3, rule.length)
-            : rule;
-        const trim = rule => rule.trim();
-        const getName = rule => 'abp-' + rule.split(' ')[0];
-        const getArgs = rule => rule
-            .match(/('.*?'|".*?"|\S+)/gm)
-            .splice(1)
-            .map(t => removeInnerQuotes(t));
-
-        rules = rule.split(';');
-        if (rules.length > 1) {
-            return rule.split(';')
-                .map(removeMask)
-                .map(trim)
-                .map(rule => ({
-                    name: getName(rule),
-                    args: getArgs(rule)
-                }));
-        }
-
-        rule = trim(removeMask(rules[0]))
-        return {
-            name: getName(rule),
-            args: getArgs(rule)
-        };
-    }
-
-    /**
      * Remove all in string before and including passed regexp
      * @param {string} str source string
      * @param {RegExp} regx
@@ -120,7 +70,7 @@
         if (!str || !regx) {
             return str;
         }
-        const index = str.search(regx);
+        const index = str.trim().search(regx);
         if (index === -1) {
             return str;
         }
@@ -188,9 +138,9 @@
                     break;
             }
         }
-        const close = () => {};
-        const error = () => {};
-        
+        const close = () => { };
+        const error = () => { };
+
         const transitions = {
             init: {
                 betwParam
@@ -214,6 +164,131 @@
         const args = props.splice(1);
 
         return { name: name, args: args };
+    }
+
+    /**
+     * Parse rule text and returns uBO scriplet data
+     * @param {string} rule 
+     */
+    function parseUBOScriptletRule(ruleText) {
+        let rule = removeBeforeIncludingMatch(ADG_SCRIPTLET_MASK, ruleText);
+        let currentProp = '';
+        const props = [];
+        const captureSymb = symb => currentProp += symb;
+        const captureProp = () => {
+            props.push(currentProp);
+            currentProp = '';
+        };
+        const getRegexSource = (rule, start) => {
+            const end = rule.search(/\/,\s|\)$/, start);
+            if (end === -1) {
+                return;
+            }
+            rule = rule.substring(start, end - 1);
+            const source = new RegExp(rule).toString();
+            return { end, source };
+        };
+
+        const betwParam = ({ rule, index }, { dispatch }) => {
+            const char = rule[index]; index++;
+            switch (char) {
+                case '(':
+                case ' ':
+                    dispatch('inParam', { rule, index });
+                    break;
+                default:
+                    dispatch('error');
+                    break;
+            };
+        };
+        const inParam = ({ rule, index }, { dispatch }) => {
+            const char = rule[index]; index++;
+            switch (char) {
+                case ',':
+                    captureProp();
+                    dispatch('betwParam', { rule, index });
+                    break;
+                case '/':
+                    const res = getRegexSource(rule, index);
+                    if (!res) {
+                        dispatch('error');
+                    } else {
+                        captureSymb(res.source);
+                        dispatch('inParam', { rule, index: res.end + 1 });
+                    }
+                    break;
+                case undefined:
+                    dispatch('error');
+                    break;
+                case ')':
+                    captureProp();
+                    dispatch('close');
+                    break;
+                default:
+                    captureSymb(char);
+                    dispatch('inParam', { rule, index });
+                    break;
+            }
+        }
+        const close = () => { };
+        const error = () => { };
+
+        const transitions = {
+            init: {
+                betwParam
+            },
+            betwParam: {
+                inParam,
+                betwParam,
+                error,
+            },
+            inParam: {
+                inParam,
+                betwParam,
+                error,
+                close,
+            }
+        };
+        const machine = new StateMachine('init', transitions);
+        machine.dispatch('betwParam', { rule, index: 0 });
+
+        const name = 'ubo-' + props[0];
+        const args = props.splice(1);
+
+        return { name: name, args: args };
+    }
+
+    /**
+     * Parse rule text and returns ABP snippet data
+     * @param {string} rule 
+     */
+    function parseABPSnippetRule(rule) {
+        const removeMask = rule => rule.indexOf('#$#') > -1
+            ? rule.substring(rule.indexOf('#$#') + 3, rule.length)
+            : rule;
+        const trim = rule => rule.trim();
+        const getName = rule => 'abp-' + rule.split(' ')[0];
+        const getArgs = rule => rule
+            .match(/('.*?'|".*?"|\S+)/gm)
+            .splice(1)
+            .map(t => removeInnerQuotes(t));
+
+        rules = rule.split(';');
+        if (rules.length > 1) {
+            return rule.split(';')
+                .map(removeMask)
+                .map(trim)
+                .map(rule => ({
+                    name: getName(rule),
+                    args: getArgs(rule)
+                }));
+        }
+
+        rule = trim(removeMask(rules[0]))
+        return {
+            name: getName(rule),
+            args: getArgs(rule)
+        };
     }
 
     /**
