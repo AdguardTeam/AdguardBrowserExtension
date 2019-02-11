@@ -153,7 +153,7 @@
                 case ' ':
                 case '(':
                 case ',':
-                    dispatch('between', { rule, index });
+                    dispatch('betwParam', { rule, index });
                     break;
                 case ')':
                     dispatch('close');
