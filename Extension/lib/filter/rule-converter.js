@@ -134,7 +134,7 @@
      * @param {string} rule 
      */
     function parseAdguardScriptletRule(ruleText) {
-        let rule = removeBeforeIncludingMatch(ruleText);
+        let rule = removeBeforeIncludingMatch(ADG_SCRIPTLET_MASK, ruleText);
         let currentProp = '';
         const props = [];
         const captureSymb = symb => currentProp += symb;
