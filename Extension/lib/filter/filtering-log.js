@@ -58,7 +58,8 @@ adguard.filteringLog = (function (adguard) {
      */
     function addTab(tab) {
         // Background tab can't be added
-        if (tab.tabId === backgroundTabId) {
+        // Synthetic tabs are used to send initial requests from new tab in chrome
+        if (tab.tabId === backgroundTabId || tab.synthetic) {
             return;
         }
 
