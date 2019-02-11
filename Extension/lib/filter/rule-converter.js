@@ -25,6 +25,25 @@
     const ABP_SCRIPTLET_MASK = /#\$#/;
 
     /**
+     * Constuctor for state machine class
+     * Implements state machine pattern
+     * @param {string} state initial state
+     * @param {Object} transitions contains possible transitions between states
+     */
+    function StateMachine(state, transitions) {
+        this.state = state;
+        this.transitions = transitions;
+        this.dispatch = function (actionName, payload) {
+            const action = this.transitions[this.state]
+                && this.transitions[this.state][actionName];
+            if (action) {
+                this.state = actionName;
+                action(payload, { dispatch: this.dispatch.bind(this) });
+            }
+        };
+    };
+
+    /**
      * Remove duplicate quotes in string
      * @param {string} t
      */
@@ -115,100 +134,84 @@
      * @param {string} rule 
      */
     function parseAdguardScriptletRule(ruleText) {
-        const currentProp = '';
+        let rule = removeBeforeIncludingMatch(ruleText);
+        let currentProp = '';
         const props = [];
-        function between(rule, index) {
-            const char = rule[index];
-            switch (char) {
-                case '\'':
-                case '"':
-                    this.dispatch('param', rule, index++, char);
-                    break;
-                case ' ':
-                case '(':
-                    this.dispatch('between', rule, index++);
-                    break;
-                case ')':
-                    this.dispatch('close');
-                    break;
-                default:
-                    this.dispatch('error');
-                    break;
-            };
-        };
-        function param(rule, index, capture) {
-            const char = rule[index];
-            switch (char) {
-                case capture:
-                    props.push(currentProp);
-                    currentProp = '';
-                    this.dispatch('between', rule, index++);
-                    break;
-                case undefined:
-                    this.dispatch('error');
-                    break;
-                default:
-                    currentProp += char;
-                    this.dispatch('param', rule, index++, capture);
-                    break;
-            }
-        }
-        function close() {
+        const captureSymb = symb => currentProp += symb;
+        const captureProp = () => {
             props.push(currentProp);
             currentProp = '';
         };
-        function error() {
-            console.log('error');
+        const between = ({ rule, index }, { dispatch }) => {
+            const char = rule[index];
+            index++;
+            switch (char) {
+                case '\'':
+                case '"':
+                    dispatch('inParam', { rule, index, sep: char, last: char });
+                    break;
+                case ' ':
+                case '(':
+                case ',':
+                    dispatch('between', { rule, index });
+                    break;
+                case ')':
+                    dispatch('close');
+                    break;
+                default:
+                    dispatch('error');
+                    break;
+            };
+        };
+        const inParam = ({ rule, index, sep, last }, { dispatch }) => {
+            const char = rule[index];
+            index++;
+            switch (char) {
+                case sep:
+                    if (last === '\\') {
+                        captureSymb(char);
+                        dispatch('inParam', { rule, index, sep, last: char });
+                    } else {
+                        captureProp();
+                        dispatch('betwParam', { rule, index });
+                    }
+                    break;
+                case '\\':
+                    dispatch('inParam', { rule, index, sep, last: char });
+                    break;
+                case undefined:
+                    dispatch('error');
+                    break;
+                default:
+                    captureSymb(char);
+                    dispatch('inParam', { rule, index, sep, last: char });
+                    break;
+            }
         }
-
-        const machine = {
-            dispatch(actionName, rule, index, capture) {
-                const action = this.transitions[this.state][actionName];
-                if (action) {
-                    action.apply(this, [rule, index, capture]);
-                };
+        const close = () => {};
+        const error = () => {};
+        
+        const transitions = {
+            init: {
+                betwParam
             },
-            state: 'init',
-            transitions: {
-                'init': {
-                    between
-                    // between() {
-                    //     between.apply(this, [...arguments])
-                    // },
-                },
-                'between': {
-                    between() {
-                        between.bind(this)
-                    },
-                    'close': close.bind(this),
-                    'error': error.bind(this),
-                    'param': param.bind(this)
-                },
-                'param': {
-                    'param': param.bind(this),
-                    'between': between.bind(this),
-                    'error': error.bind(this),
-                }
+            betwParam: {
+                betwParam,
+                close,
+                error,
+                inParam,
             },
-            setState: state => this.state = state,
-        }
-        console.log(props);
+            inParam: {
+                inParam,
+                betwParam,
+                error,
+            }
+        };
+        const machine = new StateMachine('init', transitions);
+        machine.dispatch('betwParam', { rule, index: 0 });
 
-        machine.dispatch('between', `('abort-on-property-read', 'I10C')`, 0);
-
-
-        // const res = removeBeforeIncludingMatch(rule, ADG_SCRIPTLET_MASK);
-        // const res = parseParamsByState(res, ADG_STATE_MAP);
-
-
-        // const params = getContentInParentheses(rule);
-        // const match = params
-        //     .split(',')
-        //     .map(t => removeInnerQuotes(t))
-        //     .filter(t => t);
-
-        // const name = match[0];
-        // const args = match.splice(1);
+        const name = props[0];
+        const args = props.splice(1);
 
         return { name: name, args: args };
     }
