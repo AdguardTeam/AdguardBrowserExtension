@@ -142,7 +142,7 @@
             props.push(currentProp);
             currentProp = '';
         };
-        const between = ({ rule, index }, { dispatch }) => {
+        const betwParam = ({ rule, index }, { dispatch }) => {
             const char = rule[index];
             index++;
             switch (char) {
