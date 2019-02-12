@@ -30,6 +30,7 @@ adguard.tags = (function (adguard) {
     var PURPOSE_SECURITY_TAG_ID = 4;
     var PURPOSE_ANNOYANCES_TAG_ID = 5;
     var PURPOSE_COOKIES_TAG_ID = 6;
+    const PURPOSE_MOBILE_TAG_ID = 19;
 
     var getTags = function () {
         return adguard.subscriptions.getTags();
@@ -55,6 +56,10 @@ adguard.tags = (function (adguard) {
         return filter.tags.includes(RECOMMENDED_TAG_ID);
     };
 
+    const isMobileFilter = (filter) => {
+        return filter.tags.includes(PURPOSE_MOBILE_TAG_ID);
+    };
+
     var getPurposeGroupedFilters = function () {
         var filters = getFilters();
         var adsFilters = getFiltersByTagId(PURPOSE_ADS_TAG_ID, filters);
@@ -75,11 +80,12 @@ adguard.tags = (function (adguard) {
     };
 
     return {
-        getTags: getTags,
-        getPurposeGroupedFilters: getPurposeGroupedFilters,
-        isRecommendedFilter: isRecommendedFilter,
-        getFiltersByTagId: getFiltersByTagId,
-        getRecommendedFilters: getRecommendedFilters,
+        getTags,
+        getPurposeGroupedFilters,
+        isRecommendedFilter,
+        isMobileFilter,
+        getFiltersByTagId,
+        getRecommendedFilters,
     };
 })(adguard);
 
