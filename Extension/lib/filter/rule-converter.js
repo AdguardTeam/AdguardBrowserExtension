@@ -18,415 +18,176 @@
 (function (api) {
 
     /**
-     * Acguard Scriptlet mask
+     * AdGuard scriptlet mask
      */
-    const ADG_SCRIPTLET_MASK = /\/\/(\s*)scriptlet/;
-    const UBO_SCRIPTLET_MASK = /##script\:inject|\+js/;
-    const ABP_SCRIPTLET_MASK = /#\$#/;
+    const ADGUARD_SCRIPTLET_MASK = '${domains}#%#//scriptlet(${args})';
+    /**
+     * AdGuard scriptlet rule mask
+     */
+    const ADG_SCRIPTLET_MASK_REG = /\/\/(\s*)scriptlet/;
+    /**
+     * uBlock scriptlet rule mask
+     */
+    const UBO_SCRIPTLET_MASK_REG = /##script\:inject|##\s*\+js/;
+    /**
+     * AdBlock Plus snippet rule mask
+     */
+    const ABP_SCRIPTLET_MASK_REG = /#\$#/;
 
     /**
-     * Constuctor for state machine class
-     * Implements state machine pattern
-     * @param {string} state initial state
-     * @param {Object} transitions contains possible transitions between states
+     * Get string before regexp first match
+     * @param {string} rule
+     * @param {RegExp} mask
      */
-    function StateMachine(state, transitions) {
-        this.state = state;
-        this.transitions = transitions;
-        this.dispatch = function (actionName, payload) {
-            const action = this.transitions[this.state]
-                && this.transitions[this.state][actionName];
-            if (action) {
-                this.state = actionName;
-                action(payload, { dispatch: this.dispatch.bind(this) });
-            }
-        };
-    };
-
-    /**
-     * Remove duplicate quotes in string
-     * @param {string} t
-     */
-    function removeInnerQuotes(t) {
-        if (typeof t !== 'string') {
-            return '';
-        }
-        t = t.trim();
-
-        const first = t[0];
-        const last = t[t.length - 1];
-        if ((first === '\'' && last === '\'') || (first === '"' && last === '"')) {
-            return t.slice(1, -1);
-        }
-        return t;
+    function getBeforeRegExp(str, rx) {
+        let index = str.search(rx);
+        return str.substring(0, index);
     }
 
     /**
-     * Remove all in string before and including passed regexp
-     * @param {string} str source string
-     * @param {RegExp} regx
+     * Return part of string after first regexp match
+     * @param {string} str 
+     * @param {RegExp} rx 
      */
-    function removeBeforeIncludingMatch(str, regx) {
-        if (!str || !regx) {
+    function getAfterRegExp(str, rx) {
+        let start = str.search(rx);
+        let matchLength;
+        if (start === -1) {
             return str;
         }
-        const index = str.trim().search(regx);
-        if (index === -1) {
-            return str;
+        let match = str.match(rx);
+        if (match && match.length) {
+            matchLength = match[0].length;
         }
-        return str
-            .substring(index, str.length)
-            .replace(regx, '');
+        return str.substring(start + matchLength, str.length);
     }
-
+    
     /**
-     * Parse rule text and returns AdGuard scriplet data
-     * @param {string} rule 
+     * Return array of strings separated by space which not in quotes
+     * @param {string} str 
      */
-    function parseAdguardScriptletRule(ruleText) {
-        let rule = removeBeforeIncludingMatch(ADG_SCRIPTLET_MASK, ruleText);
-        let currentProp = '';
-        const props = [];
-        const captureSymb = symb => currentProp += symb;
-        const captureProp = () => {
-            props.push(currentProp);
-            currentProp = '';
-        };
-        const betwParam = ({ rule, index }, { dispatch }) => {
-            const char = rule[index];
-            index++;
-            switch (char) {
-                case '\'':
-                case '"':
-                    dispatch('inParam', { rule, index, sep: char, last: char });
-                    break;
-                case ' ':
-                case '(':
-                case ',':
-                    dispatch('betwParam', { rule, index });
-                    break;
-                case ')':
-                    dispatch('close');
-                    break;
-                default:
-                    dispatch('error');
-                    break;
-            };
-        };
-        const inParam = ({ rule, index, sep, last }, { dispatch }) => {
-            const char = rule[index];
-            index++;
-            switch (char) {
-                case sep:
-                    if (last === '\\') {
-                        captureSymb(char);
-                        dispatch('inParam', { rule, index, sep, last: char });
-                    } else {
-                        captureProp();
-                        dispatch('betwParam', { rule, index });
-                    }
-                    break;
-                case undefined:
-                    dispatch('error');
-                    break;
-                default:
-                    captureSymb(char);
-                    dispatch('inParam', { rule, index, sep, last: char });
-                    break;
-            }
-        }
-        const close = () => { };
-        const error = () => { };
-
-        const transitions = {
-            init: {
-                betwParam
-            },
-            betwParam: {
-                betwParam,
-                close,
-                error,
-                inParam,
-            },
-            inParam: {
-                inParam,
-                betwParam,
-                error,
-            }
-        };
-        const machine = new StateMachine('init', transitions);
-        machine.dispatch('betwParam', { rule, index: 0 });
-
-        if (machine.state === 'close') {
-            const name = props[0];
-            const args = props.splice(1);
-            return { name: name, args: args };
-        }
+    function getSentences(str) {
+        const reg = /'.*?'|".*?"|\S+/g;
+        return str.match(reg);
     }
 
     /**
-     * Parse rule text and returns uBO scriplet data
-     * @param {string} rule 
+     * Returns substring enclosed in the widest braces
+     * @param {string} str 
      */
-    function parseUBOScriptletRule(ruleText) {
-        let rule = removeBeforeIncludingMatch(UBO_SCRIPTLET_MASK, ruleText);
-        let currentProp = '';
-        const props = [];
-        const captureSymb = symb => currentProp += symb;
-        const captureProp = () => {
-            props.push(currentProp);
-            currentProp = '';
-        };
-        const getRegexSource = (rule, start) => {
-            const end = rule.search(/\/,\s|\)$/, start);
-            if (end === -1) {
-                return;
-            }
-            rule = rule.substring(start, end - 1);
-            const source = new RegExp(rule).toString();
-            return { end, source };
-        };
-
-        const betwParam = ({ rule, index }, { dispatch }) => {
-            const char = rule[index]; index++;
-            switch (char) {
-                case '(':
-                case ' ':
-                    dispatch('inParam', { rule, index });
-                    break;
-                default:
-                    dispatch('error');
-                    break;
-            };
-        };
-        const inParam = ({ rule, index }, { dispatch }) => {
-            const char = rule[index]; index++;
-            switch (char) {
-                case ',':
-                    captureProp();
-                    dispatch('betwParam', { rule, index });
-                    break;
-                case '/':
-                    const res = getRegexSource(rule, index);
-                    if (!res) {
-                        dispatch('error');
-                    } else {
-                        captureSymb(res.source);
-                        dispatch('inParam', { rule, index: res.end + 1 });
-                    }
-                    break;
-                case undefined:
-                    dispatch('error');
-                    break;
-                case ')':
-                    captureProp();
-                    dispatch('close');
-                    break;
-                default:
-                    captureSymb(char);
-                    dispatch('inParam', { rule, index });
-                    break;
-            }
-        }
-        const close = () => { };
-        const error = () => { };
-
-        const transitions = {
-            init: {
-                betwParam
-            },
-            betwParam: {
-                inParam,
-                betwParam,
-                error,
-            },
-            inParam: {
-                inParam,
-                betwParam,
-                error,
-                close,
-            }
-        };
-        const machine = new StateMachine('init', transitions);
-        machine.dispatch('betwParam', { rule, index: 0 });
-
-        if (machine.state === 'close') {
-            const name = 'ubo-' + props[0];
-            const args = props.splice(1);
-            return { name: name, args: args };
-        }
+    function getStringInBraces(str) {
+        const firstIndex = str.indexOf('(');
+        const lastIndex = str.lastIndexOf(')');
+        return str.substring(firstIndex + 1, lastIndex);
     }
 
     /**
-     * Parse rule text and returns ABP snippet data
-     * @param {string} rule 
+     * Wrap str in double qoutes and replaces single quotes if need
+     * @param {string} str 
      */
-    function parseABPSnippetRule(rule) {
-        let currentProp = '';
-        let props = [];
-        const tree = [];
-        const captureSymb = symb => currentProp += symb;
-        const captureProp = () => {
-            currentProp && props.push(currentProp);
-            currentProp = '';
-        };
-        const captureLeaf = () => {
-            tree.push([...props]);
-            props = [];
-        };
-        const betwParam = ({ rule, index }, { dispatch }) => {
-            const char = rule[index];
-            index++;
-            switch (char) {
-                case ' ':
-                    dispatch('inParam', { rule, index, sep: char });
-                    break;
-                case undefined:
-                    captureLeaf();
-                    dispatch('close');
-                    break;
-                case ';':
-                    captureLeaf();
-                    dispatch('inParam', { rule, index });
-                    break;
-                default:
-                    dispatch('error');
-                    break;
-            };
-        };
-        const inParam = ({ rule, index, sep, open }, { dispatch }) => {
-            const char = rule[index];
-            index++;
-            switch (char) {
-                case sep:
-                    captureProp(char);
-                    dispatch('betwParam', { rule, index });
-                    break;
-                case '\'':
-                case '"':
-                    if (open) {
-                        captureSymb(char);
-                        dispatch('inParam', { rule, index, sep, open });
-                    } else {
-                        dispatch('inParam', { rule, index, sep: char, open: true });
-                    }
-                    break;
-                case ' ':
-                    if (open) {
-                        captureSymb(char);
-                        dispatch('inParam', { rule, index, sep, open });
-                    } else {
-                        captureProp();
-                        dispatch('inParam', { rule, index });
-                    }
-                    break;
-                case ';':
-                    if (open) {
-                        captureSymb(char);
-                        dispatch('inParam', { rule, index, sep, open });
-                    } else {
-                        captureProp();
-                        captureLeaf();
-                        dispatch('inParam', { rule, index });
-                    }
-                    break;
-                case undefined:
-                    if (open) {
-                        dispatch('error');
-                    } else {
-                        captureProp();
-                        captureLeaf();
-                        dispatch('close');
-                    }
-                    break;
-                default:
-                    captureSymb(char);
-                    dispatch('inParam', { rule, index, sep, open });
-                    break;
-            }
+    function wrapInDoubleQuotes(str) {
+        if (str[0] === '\'' && str[str.length - 1] === '\'') {
+            str = str.substring(1, str.length - 1);
         }
-        const close = () => { };
-        const error = () => { };
-
-        const transitions = {
-            init: {
-                inParam
-            },
-            betwParam: {
-                inParam,
-                close,
-                error
-            },
-            inParam: {
-                inParam,
-                betwParam,
-                error,
-                close
-            },
-        };
-
-        const machine = new StateMachine('init', transitions);
-        machine.dispatch('inParam', { rule, index: 0 });
-
-        if (machine.state === 'close') {
-            return tree.map(props => {
-                const name = 'abp-' + props[0];
-                const args = props.splice(1);
-                return { name: name, args: args };
-            });
-        }
+        return `"${str}"`
     }
 
     /**
-     * Parse rule text and return scriptlet data
+     * Replace string with data by placeholders
+     * @param {string} str 
+     * @param {Object} data where keys is placeholdes names
+     */
+    function replacePlaceholders(str, data) {
+        return Object.keys(data).reduce((acc, key) => {
+            let reg = new RegExp(`\\$\\{${key}\\}`, 'g');
+            acc = acc.replace(reg, data[key]);
+            return acc;
+        }, str);
+    }
+
+    /**
+     * Convert string of UBO scriptlet rule to AdGuard scritlet rule
+     * @param {string} rule UBO scriptlet rule
+     */
+    function convertUBOScriptletRule(rule) {
+        const domains = getBeforeRegExp(rule, UBO_SCRIPTLET_MASK_REG);
+        const args = getStringInBraces(rule)
+            .split(/, /g)
+            .map((arg, index) => index === 0 ? `ubo-${arg}` : arg)
+            .map(arg => wrapInDoubleQuotes(arg))
+            .join(', ');
+
+        return replacePlaceholders(
+            ADGUARD_SCRIPTLET_MASK,
+            { domains, args }
+        );
+    }
+
+    /**
+     * Convert string of ABP scriptlet rule to AdGuard scritlet rule
+     * @param {string} rule UBO scriptlet rule
+     */
+    function convertABPSnippetRule(rule) {
+        const SEMICOLON_DIVIDER = /;(?=(?:(?:[^"]*"){2})*[^"]*$)/g;
+        const domains = getBeforeRegExp(rule, ABP_SCRIPTLET_MASK_REG);
+        let args = getAfterRegExp(rule, ABP_SCRIPTLET_MASK_REG);
+        return args.split(SEMICOLON_DIVIDER)
+            .map(args => getSentences(args)
+                .filter(arg => arg)
+                .map((arg, index) => index === 0 ? `abp-${arg}` : arg)
+                .map(arg => wrapInDoubleQuotes(arg))
+                .join(', ')
+            )
+            .map(args => replacePlaceholders(ADGUARD_SCRIPTLET_MASK, { domains, args }))
+    }
+
+    /**
+     * Convert rule text to Adguard scriptlet format
      * @param {string} rule text of rule
-     * @returns {Array<Object>} an array of scriptlets 
      */
-    function parseScriptletRule(rule) {
-        if (isAdguardScriptletRule(rule)) {
-            return parseAdguardScriptletRule(rule);
-        }
+    function convertScriptletRule(rule) {
         if (isUBOScriptletRule(rule)) {
-            return parseUBOScriptletRule(rule);
+            return convertUBOScriptletRule(rule);
         }
         if (isABPSnippetRule(rule)) {
-            return parseABPSnippetRule(rule);
+            return convertABPSnippetRule(rule);
         }
+        return rule;
     };
 
     /**
      * Check is AdGuard scriptlet rule
-     * @param {string} ruleText 
+     * @param {string} rule
      */
-    function isAdguardScriptletRule(ruleText) {
-        return ADG_SCRIPTLET_MASK.test(ruleText);
+    function isAdguardScriptletRule(rule) {
+        return ADG_SCRIPTLET_MASK_REG.test(rule);
     };
 
     /**
      * Check is uBO scriptlet rule
-     * @param {string} ruleText rule text
+     * @param {string} rule rule text
      */
-    function isUBOScriptletRule(ruleText) {
-        return UBO_SCRIPTLET_MASK.test(ruleText);
+    function isUBOScriptletRule(rule) {
+        return UBO_SCRIPTLET_MASK_REG.test(rule);
     };
 
     /**
      * Check is AdBlock Plus snippet
-     * @param {string} ruleText rule text
+     * @param {string} rule rule text
      */
-    function isABPSnippetRule(ruleText) {
-        return ABP_SCRIPTLET_MASK.test(ruleText);
+    function isABPSnippetRule(rule) {
+        return ABP_SCRIPTLET_MASK_REG.test(rule);
     };
 
     /**
      * Check is scriptlet rule
-     * @param {string} ruleText
+     * @param {string} rule
      */
-    function isScriptletRule(ruleText) {
-        return ruleText && (
-            isAdguardScriptletRule(ruleText)
-            || isUBOScriptletRule(ruleText)
-            || isABPSnippetRule(ruleText)
+    function isScriptletRule(rule) {
+        return rule && (
+            isAdguardScriptletRule(rule)
+            || isUBOScriptletRule(rule)
+            || isABPSnippetRule(rule)
         );
     };
 
@@ -436,7 +197,7 @@
      */
     function convertRule(rule) {
         return isScriptletRule(rule)
-            ? parseScriptletRule(rule)
+            ? convertScriptletRule(rule)
             : rule;
     }
 
