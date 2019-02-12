@@ -346,16 +346,69 @@ const Saver = function (options) {
     };
 };
 
+/**
+ * Function changes editor size while user resizes editor parent node
+ * @param editor
+ * @param {String} editorId
+ */
+const handleEditorResize = (editor, editorId) => {
+    const DRAG_TIMEOUT_MS = 100;
+
+    const saveSize = (editorContainer) => {
+        const width = editorContainer.style.width;
+        const height = editorContainer.style.height;
+        if (width && height) {
+            localStorage.setItem(editorId, JSON.stringify({ size: { width, height }}));
+        }
+    };
+
+    const restoreSize = (editorContainer) => {
+        const dataJson = localStorage.getItem(editorId);
+        if (!dataJson) {
+            return;
+        }
+        const { size } = JSON.parse(dataJson);
+        const { width, height } = size || {};
+        if (width && height) {
+            editorContainer.style.width = width;
+            editorContainer.style.height = height;
+        }
+    };
+
+    // restore size is it was set previously set;
+    restoreSize(editor.container);
+
+    const onMouseMove = Utils.debounce(() => {
+        editor.resize();
+    }, DRAG_TIMEOUT_MS);
+
+    const onMouseUp = () => {
+        saveSize(editor.container);
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    editor.container.addEventListener('mousedown', (e) => {
+        if (e.target === e.currentTarget) {
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        }
+    });
+};
+
 var WhiteListFilter = function (options) {
     'use strict';
 
-    const editor = ace.edit('whiteListRules');
+    const editorId = 'whiteListRules';
+    const editor = ace.edit(editorId);
+    handleEditorResize(editor, editorId);
+
     editor.setShowPrintMargin(false);
 
     editor.$blockScrolling = Infinity;
     const AdguardMode = ace.require('ace/mode/adguard').Mode;
     editor.session.setMode(new AdguardMode());
-    editor.setOption('wrap', true);
+    editor.renderer.setMargin(0, 0, 0, 10);
 
     const saveIndicatorElement = document.querySelector('#whiteListRulesSaveIndicator');
     const saver = new Saver({
@@ -447,13 +500,15 @@ var WhiteListFilter = function (options) {
 const UserFilter = function () {
     'use strict';
 
-    const editor = ace.edit('userRules');
+    const editorId = 'userRules';
+    const editor = ace.edit(editorId);
     editor.setShowPrintMargin(false);
+    handleEditorResize(editor, editorId);
 
     editor.$blockScrolling = Infinity;
     const AdguardMode = ace.require('ace/mode/adguard').Mode;
     editor.session.setMode(new AdguardMode());
-    editor.setOption('wrap', true);
+    editor.renderer.setMargin(0, 0, 0, 10);
 
     const saveIndicatorElement = document.querySelector('#userRulesSaveIndicator');
     const saver = new Saver({
