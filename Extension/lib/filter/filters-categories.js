@@ -90,9 +90,22 @@ adguard.categories = (function (adguard) {
     };
 
     /**
+     * If filter has mobile tag we check if platform is mobile, in other cases we do not check
+     * @param filter
+     * @returns {boolean}
+     */
+    const doesFilterMatchPlatform = (filter) => {
+        if (adguard.tags.isMobileFilter(filter)) {
+            return !!adguard.prefs.mobile;
+        }
+        return true;
+    };
+
+    /**
      * Returns recommended filters, which meet next requirements
      * 1. filter has recommended tag
      * 2. if filter has language tag, tag should match with user locale
+     * 3. filter should correspond to platform mobile or desktop
      * @param groupId
      * @returns {Array} recommended filters by groupId
      */
@@ -104,7 +117,7 @@ adguard.categories = (function (adguard) {
             const category = metadata.categories[i];
             if (category.groupId === groupId) {
                 category.filters.forEach(filter => {
-                    if (adguard.tags.isRecommendedFilter(filter)) {
+                    if (adguard.tags.isRecommendedFilter(filter) && doesFilterMatchPlatform(filter)) {
                         // get ids intersection to enable recommended filters matching the lang tag
                         // only if filter has language
                         if (filter.languages && filter.languages.length > 0) {

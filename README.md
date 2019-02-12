@@ -1,5 +1,3 @@
-# AdGuard Browser Extension 
-
 &nbsp;
 <p align="center">
   <img src="https://cdn.adguard.com/public/Adguard/Common/adguard_extension.svg" width="300px" alt="AdGuard Browser Extension" />
