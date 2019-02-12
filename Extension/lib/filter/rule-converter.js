@@ -126,9 +126,6 @@
                         dispatch('betwParam', { rule, index });
                     }
                     break;
-                case '\\':
-                    dispatch('inParam', { rule, index, sep, last: char });
-                    break;
                 case undefined:
                     dispatch('error');
                     break;
@@ -160,10 +157,11 @@
         const machine = new StateMachine('init', transitions);
         machine.dispatch('betwParam', { rule, index: 0 });
 
-        const name = props[0];
-        const args = props.splice(1);
-
-        return { name: name, args: args };
+        if (machine.state === 'close') {
+            const name = props[0];
+            const args = props.splice(1);
+            return { name: name, args: args };
+        }
     }
 
     /**
@@ -252,10 +250,11 @@
         const machine = new StateMachine('init', transitions);
         machine.dispatch('betwParam', { rule, index: 0 });
 
-        const name = 'ubo-' + props[0];
-        const args = props.splice(1);
-
-        return { name: name, args: args };
+        if (machine.state === 'close') {
+            const name = 'ubo-' + props[0];
+            const args = props.splice(1);
+            return { name: name, args: args };
+        }
     }
 
     /**
@@ -263,32 +262,119 @@
      * @param {string} rule 
      */
     function parseABPSnippetRule(rule) {
-        const removeMask = rule => rule.indexOf('#$#') > -1
-            ? rule.substring(rule.indexOf('#$#') + 3, rule.length)
-            : rule;
-        const trim = rule => rule.trim();
-        const getName = rule => 'abp-' + rule.split(' ')[0];
-        const getArgs = rule => rule
-            .match(/('.*?'|".*?"|\S+)/gm)
-            .splice(1)
-            .map(t => removeInnerQuotes(t));
-
-        rules = rule.split(';');
-        if (rules.length > 1) {
-            return rule.split(';')
-                .map(removeMask)
-                .map(trim)
-                .map(rule => ({
-                    name: getName(rule),
-                    args: getArgs(rule)
-                }));
-        }
-
-        rule = trim(removeMask(rules[0]))
-        return {
-            name: getName(rule),
-            args: getArgs(rule)
+        let currentProp = '';
+        let props = [];
+        const tree = [];
+        const captureSymb = symb => currentProp += symb;
+        const captureProp = () => {
+            currentProp && props.push(currentProp);
+            currentProp = '';
         };
+        const captureLeaf = () => {
+            tree.push([...props]);
+            props = [];
+        };
+        const betwParam = ({ rule, index }, { dispatch }) => {
+            const char = rule[index];
+            index++;
+            switch (char) {
+                case ' ':
+                    dispatch('inParam', { rule, index, sep: char });
+                    break;
+                case undefined:
+                    captureLeaf();
+                    dispatch('close');
+                    break;
+                case ';':
+                    captureLeaf();
+                    dispatch('inParam', { rule, index });
+                    break;
+                default:
+                    dispatch('error');
+                    break;
+            };
+        };
+        const inParam = ({ rule, index, sep, open }, { dispatch }) => {
+            const char = rule[index];
+            index++;
+            switch (char) {
+                case sep:
+                    captureProp(char);
+                    dispatch('betwParam', { rule, index });
+                    break;
+                case '\'':
+                case '"':
+                    if (open) {
+                        captureSymb(char);
+                        dispatch('inParam', { rule, index, sep, open });
+                    } else {
+                        dispatch('inParam', { rule, index, sep: char, open: true });
+                    }
+                    break;
+                case ' ':
+                    if (open) {
+                        captureSymb(char);
+                        dispatch('inParam', { rule, index, sep, open });
+                    } else {
+                        captureProp();
+                        dispatch('inParam', { rule, index });
+                    }
+                    break;
+                case ';':
+                    if (open) {
+                        captureSymb(char);
+                        dispatch('inParam', { rule, index, sep, open });
+                    } else {
+                        captureProp();
+                        captureLeaf();
+                        dispatch('inParam', { rule, index });
+                    }
+                    break;
+                case undefined:
+                    if (open) {
+                        dispatch('error');
+                    } else {
+                        captureProp();
+                        captureLeaf();
+                        dispatch('close');
+                    }
+                    break;
+                default:
+                    captureSymb(char);
+                    dispatch('inParam', { rule, index, sep, open });
+                    break;
+            }
+        }
+        const close = () => { };
+        const error = () => { };
+
+        const transitions = {
+            init: {
+                inParam
+            },
+            betwParam: {
+                inParam,
+                close,
+                error
+            },
+            inParam: {
+                inParam,
+                betwParam,
+                error,
+                close
+            },
+        };
+
+        const machine = new StateMachine('init', transitions);
+        machine.dispatch('inParam', { rule, index: 0 });
+
+        if (machine.state === 'close') {
+            return tree.map(props => {
+                const name = 'abp-' + props[0];
+                const args = props.splice(1);
+                return { name: name, args: args };
+            });
+        }
     }
 
     /**
