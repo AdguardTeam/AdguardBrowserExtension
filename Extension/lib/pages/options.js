@@ -380,10 +380,10 @@ const handleEditorResize = (editor, editorId) => {
 
     const onMouseMove = Utils.debounce(() => {
         editor.resize();
-        saveSize(editor.container);
     }, DRAG_TIMEOUT_MS);
 
     const onMouseUp = () => {
+        saveSize(editor.container);
         document.removeEventListener('mousemove', onMouseMove);
         document.removeEventListener('mouseup', onMouseUp);
     };
