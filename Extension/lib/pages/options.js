@@ -1288,7 +1288,13 @@ var AntiBannerFilters = function (options) {
                 }
             };
 
-            handleElTextContent(document.querySelector('#custom-filter-popup-added-title'), filter.name);
+            const titleInputEl = document.querySelector('#custom-filter-popup-added-title');
+            if (filter.name) {
+                titleInputEl.value = filter.name;
+            } else {
+                titleInputEl.value = filter.customUrl;
+            }
+
             handleElTextContent(document.querySelector('#custom-filter-popup-added-desc'), filter.description);
             handleElTextContent(document.querySelector('#custom-filter-popup-added-version'), filter.version);
             handleElTextContent(document.querySelector('#custom-filter-popup-added-rules-count'), filter.rulesCount);
@@ -1296,26 +1302,37 @@ var AntiBannerFilters = function (options) {
             handleElTextContent(document.querySelector('#custom-filter-popup-added-url'), filter.customUrl, filter.customUrl);
         }
 
-        function renderStepOne() {
+        const makeSurePopupIsActive = () => {
+            if (!customFilterPopup.classList.contains('option-popup--active')) {
+                customFilterPopup.classList.add('option-popup--active');
+            }
+        };
+
+        const prepareRendering = () => {
             clearActiveStep();
+            makeSurePopupIsActive();
+        };
+
+        function renderStepOne() {
+            prepareRendering();
             firstStep.classList.add(POPUP_ACTIVE_CLASS);
             searchInput.focus();
         }
 
         function renderStepTwo() {
-            clearActiveStep();
+            prepareRendering();
             secondStep.classList.add(POPUP_ACTIVE_CLASS);
             closeButton.style.display = 'none';
         }
 
         // Error window step
         function renderStepThree() {
-            clearActiveStep();
+            prepareRendering();
             thirdStep.classList.add(POPUP_ACTIVE_CLASS);
         }
 
         function renderStepFour(filter) {
-            clearActiveStep();
+            prepareRendering();
             fourthStep.classList.add(POPUP_ACTIVE_CLASS);
 
             fillLoadedFilterDetails(filter);
@@ -1342,7 +1359,7 @@ var AntiBannerFilters = function (options) {
             subscribeButton.addEventListener('click', function (e) {
                 e.preventDefault();
                 const url = document.querySelector('#custom-filter-popup-added-url').href;
-                const title = document.querySelector('#custom-filter-popup-added-title').textContent || '';
+                const title = document.querySelector('#custom-filter-popup-added-title').value || '';
                 contentPage.sendMessage({
                     type: 'subscribeToCustomFilter',
                     url,
