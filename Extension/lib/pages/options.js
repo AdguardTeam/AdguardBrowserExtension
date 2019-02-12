@@ -1302,26 +1302,37 @@ var AntiBannerFilters = function (options) {
             handleElTextContent(document.querySelector('#custom-filter-popup-added-url'), filter.customUrl, filter.customUrl);
         }
 
-        function renderStepOne() {
+        const makeSurePopupIsActive = () => {
+            if (!customFilterPopup.classList.contains('option-popup--active')) {
+                customFilterPopup.classList.add('option-popup--active');
+            }
+        };
+
+        const prepareRendering = () => {
             clearActiveStep();
+            makeSurePopupIsActive();
+        };
+
+        function renderStepOne() {
+            prepareRendering();
             firstStep.classList.add(POPUP_ACTIVE_CLASS);
             searchInput.focus();
         }
 
         function renderStepTwo() {
-            clearActiveStep();
+            prepareRendering();
             secondStep.classList.add(POPUP_ACTIVE_CLASS);
             closeButton.style.display = 'none';
         }
 
         // Error window step
         function renderStepThree() {
-            clearActiveStep();
+            prepareRendering();
             thirdStep.classList.add(POPUP_ACTIVE_CLASS);
         }
 
         function renderStepFour(filter) {
-            clearActiveStep();
+            prepareRendering();
             fourthStep.classList.add(POPUP_ACTIVE_CLASS);
 
             fillLoadedFilterDetails(filter);
