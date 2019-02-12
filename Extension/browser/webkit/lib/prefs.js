@@ -132,7 +132,7 @@ adguard.prefs = (function (adguard) {
         var canUseInsertCSSAndExecuteScript = (
             // Blink engine based browsers
             (Prefs.browser === 'Chrome' || Prefs.browser === 'Opera' || Prefs.browser === 'YaBrowser') &&
-            // Support for tabs.insertCSS and tabs.executeScript on chrome 
+            // Support for tabs.insertCSS and tabs.executeScript on chrome
             // requires chrome version above or equal to 39, as per documentation: https://developers.chrome.com/extensions/tabs
             // But due to a bug, it requires version >= 50
             // https://bugs.chromium.org/p/chromium/issues/detail?id=63979
@@ -141,15 +141,15 @@ adguard.prefs = (function (adguard) {
             Prefs.browser === 'Firefox' && (
                 typeof browser !== 'undefined' &&
                 typeof browser.tabs !== 'undefined' &&
-                typeof browser.tabs.insertCSS !== 'undefined' 
+                typeof browser.tabs.insertCSS !== 'undefined'
             )
         );
         // Edge browser does not support `runAt` in options of tabs.insertCSS
         // and tabs.executeScript
-          
+
         /**
          * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/extensionTypes
-         * 
+         *
          * Whether it implements cssOrigin: 'user' option.
          * Style declarations in user origin stylesheets that have `!important` priority
          * takes precedence over page styles
