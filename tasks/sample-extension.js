@@ -80,12 +80,14 @@ const API_SCRIPTS = [
     'Extension/lib/filter/antibanner.js',
     'Extension/lib/filter/request-blocking.js',
     'Extension/lib/filter/cookie-filtering.js',
+    'Extension/lib/filter/filtering-log.js',
     'Extension/lib/filter/request-context-storage.js',
     // Content messaging
     'Extension/lib/content-message-handler.js',
+    'Extension/lib/stealth.js',
     'Extension/lib/webrequest.js',
     'Extension/lib/blockpopup.js',
-    'Extension/api/chrome/lib/api.js'
+    'Extension/api/chrome/lib/api.js',
 ];
 
 // set current type of build
