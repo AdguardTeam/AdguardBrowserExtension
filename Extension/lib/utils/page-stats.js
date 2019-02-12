@@ -26,7 +26,7 @@ adguard.pageStats = (function (adguard) {
 
     const TOTAL_GROUP = {
         groupId: 'total',
-        groupName: adguard.i18n.getMessage('popup_statistics_total'),
+        groupName: adguard.i18n ? adguard.i18n.getMessage('popup_statistics_total') : 'Total',
     };
 
     const pageStatisticProperty = 'page-statistic';
