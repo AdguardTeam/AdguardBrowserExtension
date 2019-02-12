@@ -1288,7 +1288,13 @@ var AntiBannerFilters = function (options) {
                 }
             };
 
-            handleElTextContent(document.querySelector('#custom-filter-popup-added-title'), filter.name);
+            const titleInputEl = document.querySelector('#custom-filter-popup-added-title');
+            if (filter.name) {
+                titleInputEl.value = filter.name;
+            } else {
+                titleInputEl.value = filter.customUrl;
+            }
+
             handleElTextContent(document.querySelector('#custom-filter-popup-added-desc'), filter.description);
             handleElTextContent(document.querySelector('#custom-filter-popup-added-version'), filter.version);
             handleElTextContent(document.querySelector('#custom-filter-popup-added-rules-count'), filter.rulesCount);
@@ -1342,7 +1348,7 @@ var AntiBannerFilters = function (options) {
             subscribeButton.addEventListener('click', function (e) {
                 e.preventDefault();
                 const url = document.querySelector('#custom-filter-popup-added-url').href;
-                const title = document.querySelector('#custom-filter-popup-added-title').textContent || '';
+                const title = document.querySelector('#custom-filter-popup-added-title').value || '';
                 contentPage.sendMessage({
                     type: 'subscribeToCustomFilter',
                     url,
