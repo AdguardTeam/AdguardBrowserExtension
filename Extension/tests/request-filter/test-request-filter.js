@@ -582,19 +582,19 @@ QUnit.test('Test sciptlet adguard rule', function (assert) {
     const res = adguard.rules.ruleConverter.convertRule(rule);
     assert.equal(res, exp);
 });
-QUnit.test('Test sciptlet ubo rule', function (assert) {
+QUnit.test('Test convertor scriplet ubo rule', function (assert) {
     const rule = "example.org##+js(setTimeout-defuser.js, [native code], 8000)";
     const exp = 'example.org#%#//scriptlet("ubo-setTimeout-defuser.js", "[native code]", "8000")';
     const res = adguard.rules.ruleConverter.convertRule(rule);
     assert.equal(res, exp);
 });
-QUnit.test('Test sciptlet abp rule', function (assert) {
+QUnit.test('Test convertor sciptlet abp rule', function (assert) {
     const rule = "example.org#$#hide-if-contains li.serp-item 'li.serp-item div.label'";
     const exp = 'example.org#%#//scriptlet("abp-hide-if-contains", "li.serp-item", "li.serp-item div.label")';
     const res = adguard.rules.ruleConverter.convertRule(rule);
     assert.equal(res, exp);
 });
-QUnit.test('Test sciptlet multiple abp rule', function (assert) {
+QUnit.test('Test convertor sciptlet multiple abp rule', function (assert) {
     const rule = `example.org#$#hide-if-has-and-matches-style 'div[id^="hyperfeed_story_id_"]' 'div[id*="feed_subtitle_"] > span' 'display: none'; hide-if-contains /.*/ .pagelet 'a[href^="/ad__campaign/landing.php?"]'`;
     const exp1 = 'example.org#%#//scriptlet("abp-hide-if-has-and-matches-style", "div[id^="hyperfeed_story_id_"]", "div[id*="feed_subtitle_"] > span", "display: none")';
     const exp2 = 'example.org#%#//scriptlet("abp-hide-if-contains", "/.*/", ".pagelet", "a[href^="/ad__campaign/landing.php?"]")';
@@ -603,4 +603,13 @@ QUnit.test('Test sciptlet multiple abp rule', function (assert) {
     assert.equal(res.length, 2);
     assert.equal(res[0], exp1);
     assert.equal(res[1], exp2);
+});
+
+QUnit.test('Test converter css adguard rule', function (assert) {
+    // const rule = `example.org#$#html{ display: none; }`;
+    const rule = `omgmusik.com,hulkpop.com,thenerdic.com,tellmehow.co,udemycoursedownloader.net,patorjack.com,pinsystem.co.uk,sportnews.to,svipvids.com,synonymbog.com,techbii.com,darkcomet.net,firmgoogle.com#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}`;
+    const exp = `omgmusik.com,hulkpop.com,thenerdic.com,tellmehow.co,udemycoursedownloader.net,patorjack.com,pinsystem.co.uk,sportnews.to,svipvids.com,synonymbog.com,techbii.com,darkcomet.net,firmgoogle.com#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}`;
+    const res = adguard.rules.ruleConverter.convertRule(rule);
+
+    assert.equal(res, exp, 'the issue of this test that adg css rule and abp snippet rule has the same mask, but different content');
 });
