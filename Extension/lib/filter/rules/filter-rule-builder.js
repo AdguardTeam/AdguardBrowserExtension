@@ -61,7 +61,7 @@
      * @param {boolean} isTrustedFilter - custom filter can be trusted and untrusted, default is true
      * @returns Filter rule object. Either UrlFilterRule or CssFilterRule or ScriptFilterRule.
      */
-    const createRule = function (ruleText, filterId, isTrustedFilter = true) {
+    const _createRule = function (ruleText, filterId, isTrustedFilter) {
         ruleText = ruleText ? ruleText.trim() : null;
         if (!ruleText) {
             return null;
@@ -69,14 +69,6 @@
 
         try {
             const StringUtils = adguard.utils.strings;
-
-            if (StringUtils.startWith(ruleText, api.FilterRule.COMMENT)
-                || StringUtils.contains(ruleText, api.FilterRule.OLD_INJECT_RULES)
-                || StringUtils.contains(ruleText, api.FilterRule.MASK_JS_RULE)) {
-                // Empty or comment, ignore
-                // Content rules are not supported
-                return null;
-            }
 
             if (!filterUnsupportedRules(ruleText)) {
                 return null;
@@ -107,7 +99,9 @@
             }
 
             if (api.FilterRule.findRuleMarker(ruleText, api.ScriptFilterRule.RULE_MARKERS, api.ScriptFilterRule.RULE_MARKER_FIRST_CHAR)) {
-                return new api.ScriptFilterRule(ruleText, filterId);
+                return api.ScriptletRule.isAdguardScriptletRule(ruleText)
+                    ? new api.ScriptletRule(ruleText, filterId)
+                    : new api.ScriptFilterRule(ruleText, filterId);
             }
 
             return new api.UrlFilterRule(ruleText, filterId);
@@ -118,8 +112,19 @@
         return null;
     };
 
-    api.builder = {
-        createRule: createRule,
-    };
+    /**
+     * Convert rules to AdGuard syntax and create rule
+     *
+     * @param {string} ruleText Rule text
+     * @param {number} filterId Filter identifier
+     * @param {boolean} isTrustedFilter - custom filter can be trusted and untrusted, default is true
+     * @returns Filter rule object. Either UrlFilterRule or CssFilterRule or ScriptFilterRule.
+     */
+    const createRule = (ruleText, filterId, isTrustedFilter = true) => {
+        const convertedRuleText = api.ruleConverter.convertRule(ruleText);
+        return _createRule(convertedRuleText, filterId, isTrustedFilter);
+    }
+
+    api.builder = { createRule };
 
 })(adguard, adguard.rules);
