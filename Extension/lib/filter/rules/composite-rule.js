@@ -16,27 +16,19 @@
  */
 
 (function (api) {
-    'use strict';
 
     /**
-     * Receives an array of Rules to unite under one rule
-     * @param {Array<BaseFilterRule>} rules any rules which extends BaseFilterRule class
+     * Composite Rule
+     * @constructor
      */
-    function CompositeRule(ruleText, filterId, rules) {
+    function CompositeRule(ruleText, rules) {
         this.ruleText = ruleText;
-        this.filterId = filterId;
         this.rules = rules;
     };
 
     /**
-     * Returns list of rules
+     * @static ScriptletRule
      */
-    function getRules() {
-        return this.rules;
-    }
-
-    CompositeRule.prototype.getRules = getRules;
-
     api.CompositeRule = CompositeRule;
 
 })(adguard.rules);

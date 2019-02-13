@@ -29,6 +29,10 @@
      * AdBlock Plus snippet rule mask
      */
     const ABP_SCRIPTLET_MASK_REG = /#\$#/;
+    /**
+     * AdGuard CSS rule mask
+     */
+    const ADG_CSS_MASK_REG = /#\$#.+?\s*\{.*\}\s*$/g;
 
     /**
      * Get string before regexp first match
@@ -150,7 +154,7 @@
      * @param {string} rule rule text
      */
     function isABPSnippetRule(rule) {
-        return ABP_SCRIPTLET_MASK_REG.test(rule);
+        return ABP_SCRIPTLET_MASK_REG.test(rule) && rule.search(ADG_CSS_MASK_REG) === -1;
     };
 
     /**

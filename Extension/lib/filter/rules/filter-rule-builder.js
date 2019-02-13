@@ -74,10 +74,6 @@
                 return null;
             }
 
-            if (api.ruleConverter.isScriptletRule(ruleText)) {
-                return api.ruleConverter.createScriptletRules(ruleText, filterId);
-            }
-
             if (!isTrustedFilter && isUntrustedRule(ruleText)) {
                 return null;
             }
@@ -121,8 +117,12 @@
      * @returns Filter rule object. Either UrlFilterRule or CssFilterRule or ScriptFilterRule.
      */
     const createRule = (ruleText, filterId, isTrustedFilter = true) => {
-        const convertedRuleText = api.ruleConverter.convertRule(ruleText);
-        return _createRule(convertedRuleText, filterId, isTrustedFilter);
+        const convertedRule = api.ruleConverter.convertRule(ruleText);
+        if (Array.isArray(convertedRule)) {
+            const rules = convertedRule.map(rt => _createRule(rt, filterId, isTrustedFilter));
+            return new api.CompositeRule(ruleText, rules);
+        }
+        return _createRule(convertedRule, filterId, isTrustedFilter);
     }
 
     api.builder = { createRule };

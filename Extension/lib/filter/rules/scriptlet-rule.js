@@ -23,29 +23,30 @@
     const ADG_SCRIPTLET_MASK_REG = /\/\/(\s*)scriptlet/;
 
     /**
+     * 
+     * @param {*} ruleText 
+     */
+    function parseRule(ruleText) {
+
+    }
+
+    /**
      * JS Scriplet rule from scriptlet dictionary
      * @constructor ScriptletRule
      * @param {Object} source
      * @property {string}  source.name Scriptlets name
      * @property {Array<string>}  source.args Arguments which need to pass in scriptlet
      */
-    function ScriptletRule(source, filterId) {
-        // todo add info about version and engine and hit and so on
-        // remove duplication scripletdata and source and properties in this
-        api.FilterRule.call(this, source.rule, filterId);
+    function ScriptletRule(ruleText, filterId) {
+        api.FilterRule.call(this, ruleText, filterId);
         this.scriptSource = 'local';
-        this.scriptletData = { ...source };
-        this.script = scriptlets && scriptlets.invoke(this.scriptletData);
-        this.whiteListRule = adguard.utils.strings.contains(this.scriptletData.rule, api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE);
-        const masks = this.whiteListRule
-            ? [api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE]
-            : [
-                api.FilterRule.MASK_SCRIPT_RULE,
-                api.FilterRule.MASK_UBO_RULE,
-                api.FilterRule.MASK_ABP_SNIPPET_RULE,
-            ];
-        const mask = masks.find(mask => this.scriptletData.rule.indexOf(mask) > -1);
-        const domain = adguard.utils.strings.substringBefore(this.scriptletData.rule, mask);
+        // this.script = scriptlets && scriptlets.invoke(this.scriptletData);
+        this.script = '// test';
+        this.whiteListRule = adguard.utils.strings.contains(ruleText, api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE);
+        const mask = this.whiteListRule
+            ? api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE
+            : api.FilterRule.MASK_SCRIPT_RULE;
+        const domain = adguard.utils.strings.substringBefore(ruleText, mask);
         domain && this.loadDomains(domain);
     };
 
