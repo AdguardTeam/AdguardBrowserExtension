@@ -291,21 +291,14 @@
     FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE = "#@$?#";
     FilterRule.MASK_SCRIPT_RULE = "#%#";
     FilterRule.MASK_SCRIPT_EXCEPTION_RULE = "#@%#";
-    FilterRule.MASK_JS_RULE = "%%";
     FilterRule.MASK_CONTENT_RULE = "$$";
     FilterRule.MASK_CONTENT_EXCEPTION_RULE = "$@$";
     FilterRule.MASK_BANNER_RULE = "++";
     FilterRule.MASK_CONFIGURATION_RULE = "~~";
-    FilterRule.COMMENT = "!";
     FilterRule.EQUAL = "=";
     FilterRule.COMA_DELIMITER = ",";
     FilterRule.LINE_DELIMITER = "|";
     FilterRule.NOT_MARK = "~";
-    FilterRule.OLD_INJECT_RULES = "adg_start_style_inject";
-
-    // external masks
-    FilterRule.MASK_UBO_RULE = '##';
-    FilterRule.MASK_ABP_SNIPPET_RULE = '#$#';
 
     api.FilterRule = FilterRule;
 

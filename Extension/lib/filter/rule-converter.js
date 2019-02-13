@@ -22,10 +22,6 @@
      */
     const ADGUARD_SCRIPTLET_MASK = '${domains}#%#//scriptlet(${args})';
     /**
-     * AdGuard scriptlet rule mask
-     */
-    const ADG_SCRIPTLET_MASK_REG = /\/\/(\s*)scriptlet/;
-    /**
      * uBlock scriptlet rule mask
      */
     const UBO_SCRIPTLET_MASK_REG = /##script\:inject|##\s*\+js/;
@@ -61,7 +57,7 @@
         }
         return str.substring(start + matchLength, str.length);
     }
-    
+
     /**
      * Return array of strings separated by space which not in quotes
      * @param {string} str 
@@ -99,7 +95,7 @@
      */
     function replacePlaceholders(str, data) {
         return Object.keys(data).reduce((acc, key) => {
-            let reg = new RegExp(`\\$\\{${key}\\}`, 'g');
+            const reg = new RegExp(`\\$\\{${key}\\}`, 'g');
             acc = acc.replace(reg, data[key]);
             return acc;
         }, str);
@@ -142,28 +138,6 @@
     }
 
     /**
-     * Convert rule text to Adguard scriptlet format
-     * @param {string} rule text of rule
-     */
-    function convertScriptletRule(rule) {
-        if (isUBOScriptletRule(rule)) {
-            return convertUBOScriptletRule(rule);
-        }
-        if (isABPSnippetRule(rule)) {
-            return convertABPSnippetRule(rule);
-        }
-        return rule;
-    };
-
-    /**
-     * Check is AdGuard scriptlet rule
-     * @param {string} rule
-     */
-    function isAdguardScriptletRule(rule) {
-        return ADG_SCRIPTLET_MASK_REG.test(rule);
-    };
-
-    /**
      * Check is uBO scriptlet rule
      * @param {string} rule rule text
      */
@@ -180,25 +154,17 @@
     };
 
     /**
-     * Check is scriptlet rule
-     * @param {string} rule
-     */
-    function isScriptletRule(rule) {
-        return rule && (
-            isAdguardScriptletRule(rule)
-            || isUBOScriptletRule(rule)
-            || isABPSnippetRule(rule)
-        );
-    };
-
-    /**
-     *
+     * Convert externa scriptlet rule to AdGuard scriplet syntax
      * @param {string} rule convert rule
      */
     function convertRule(rule) {
-        return isScriptletRule(rule)
-            ? convertScriptletRule(rule)
-            : rule;
+        if (isUBOScriptletRule(rule)) {
+            return convertUBOScriptletRule(rule);
+        }
+        if (isABPSnippetRule(rule)) {
+            return convertABPSnippetRule(rule);
+        }
+        return rule;
     }
 
     api.ruleConverter = { convertRule };
