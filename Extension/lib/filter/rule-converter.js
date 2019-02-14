@@ -15,8 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-(function (api) {
-
+(function (adguard, api) {
+    const stringUtils = adguard.utils.strings;
     /**
      * AdGuard scriptlet mask
      */
@@ -33,34 +33,6 @@
      * AdGuard CSS rule mask
      */
     const ADG_CSS_MASK_REG = /#\$#.+?\s*\{.*\}\s*$/g;
-
-    /**
-     * Get string before regexp first match
-     * @param {string} rule
-     * @param {RegExp} mask
-     */
-    function getBeforeRegExp(str, rx) {
-        let index = str.search(rx);
-        return str.substring(0, index);
-    }
-
-    /**
-     * Return part of string after first regexp match
-     * @param {string} str 
-     * @param {RegExp} rx 
-     */
-    function getAfterRegExp(str, rx) {
-        let start = str.search(rx);
-        let matchLength;
-        if (start === -1) {
-            return str;
-        }
-        let match = str.match(rx);
-        if (match && match.length) {
-            matchLength = match[0].length;
-        }
-        return str.substring(start + matchLength, str.length);
-    }
 
     /**
      * Return array of strings separated by space which not in quotes
@@ -110,7 +82,7 @@
      * @param {string} rule UBO scriptlet rule
      */
     function convertUBOScriptletRule(rule) {
-        const domains = getBeforeRegExp(rule, UBO_SCRIPTLET_MASK_REG);
+        const domains = stringUtils.getBeforeRegExp(rule, UBO_SCRIPTLET_MASK_REG);
         const args = getStringInBraces(rule)
             .split(/, /g)
             .map((arg, index) => index === 0 ? `ubo-${arg}` : arg)
@@ -129,8 +101,8 @@
      */
     function convertABPSnippetRule(rule) {
         const SEMICOLON_DIVIDER = /;(?=(?:(?:[^"]*"){2})*[^"]*$)/g;
-        const domains = getBeforeRegExp(rule, ABP_SCRIPTLET_MASK_REG);
-        let args = getAfterRegExp(rule, ABP_SCRIPTLET_MASK_REG);
+        const domains = stringUtils.getBeforeRegExp(rule, ABP_SCRIPTLET_MASK_REG);
+        let args = stringUtils.getAfterRegExp(rule, ABP_SCRIPTLET_MASK_REG);
         return args.split(SEMICOLON_DIVIDER)
             .map(args => getSentences(args)
                 .filter(arg => arg)
@@ -173,4 +145,4 @@
 
     api.ruleConverter = { convertRule };
 
-})(adguard.rules);
+})(adguard, adguard.rules);
