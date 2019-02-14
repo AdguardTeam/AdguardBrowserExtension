@@ -96,12 +96,6 @@ adguard.pageStats = (function (adguard) {
     };
 
     /**
-     * Undefined group of blocked stats
-     * @type {number}
-     */
-    const UNDEFINED_GROUP_ID = -1;
-
-    /**
      * Object used to cache bindings between filters and groups
      * @type {{filterId: {groupId: Number, groupName: String, displayNumber: Number}}}
      */
@@ -194,7 +188,7 @@ adguard.pageStats = (function (adguard) {
         } else {
             let diffHours = adguard.utils.dates.getDifferenceInHours(now, currentDate);
 
-            while (diffHours > 1) {
+            while (diffHours > 2) {
                 result.hours.push(createStatsDataItem(null, 0));
                 diffHours -= 1;
             }
@@ -210,7 +204,7 @@ adguard.pageStats = (function (adguard) {
         } else {
             let diffDays = adguard.utils.dates.getDifferenceInDays(now, currentDate);
 
-            while (diffDays > 1) {
+            while (diffDays > 2) {
                 result.days.push(createStatsDataItem(null, 0));
                 diffDays -= 1;
             }
@@ -225,7 +219,7 @@ adguard.pageStats = (function (adguard) {
             result.months[result.months.length - 1] = updateStatsDataItem(type, blocked, result.months[result.months.length - 1]);
         } else {
             let diffMonths = adguard.utils.dates.getDifferenceInMonths(now, currentDate);
-            while (diffMonths > 1) {
+            while (diffMonths > 2) {
                 result.months.push(createStatsDataItem(null, 0));
                 diffMonths -= 1;
             }

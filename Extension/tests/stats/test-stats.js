@@ -175,7 +175,7 @@ QUnit.test("Test Page Stats", function (assert) {
         assert.equal(getLastData(data.overall).total, 1120);
         assert.equal(data.lastYear.length, 3);
 
-        // Test data is correctly added after 2 days passed
+        // Test data is correctly added after 4 days passed
         const fifthFilter = adguard.subscriptions.getFilter(5);
         const daysShift = 4;
         adguard.pageStats.updateStats(fifthFilter.filterId, 10000, new Date(now.getTime() + (daysShift * 24 * 60 * 60 * 1000)));
