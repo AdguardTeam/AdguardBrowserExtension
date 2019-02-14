@@ -950,8 +950,14 @@ PopupController.prototype = {
         }, 1000);
     },
 
-    _formatNumber: function (v) {
-        return v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    /**
+     * Formats number to the language-sensitive representation
+     * @param {number} number
+     * @returns {string}
+     * @private
+     */
+    _formatNumber: function (number) {
+        return number.toLocaleString(i18n.getUILanguage());
     },
 };
 
