@@ -21,7 +21,7 @@
     /**
      * AdGuard scriptlet rule mask
      */
-    const ADG_SCRIPTLET_MASK_REG = /\/\/(\s*)scriptlet/;
+    const ADG_SCRIPTLET_MASK_REG = /\/\/scriptlet/;
 
     /**
      * Helper to accumulate an array of strings char by char
