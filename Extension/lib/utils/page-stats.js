@@ -23,6 +23,7 @@ adguard.pageStats = (function (adguard) {
 
     const MAX_HOURS_HISTORY = 24;
     const MAX_DAYS_HISTORY = 30;
+    const MAX_MONTHS_HISTORY = 3;
 
     const TOTAL_GROUP = {
         groupId: 'total',
@@ -95,12 +96,6 @@ adguard.pageStats = (function (adguard) {
     };
 
     /**
-     * Undefined group of blocked stats
-     * @type {number}
-     */
-    const UNDEFINED_GROUP_ID = -1;
-
-    /**
      * Object used to cache bindings between filters and groups
      * @type {{filterId: {groupId: Number, groupName: String, displayNumber: Number}}}
      */
@@ -161,12 +156,12 @@ adguard.pageStats = (function (adguard) {
         }
         result.hours.push(createStatsDataItem(type, blocked));
 
-        for (var j = 1; j < MAX_DAYS_HISTORY; j++) {
+        for (let j = 1; j < MAX_DAYS_HISTORY; j += 1) {
             result.days.push(createStatsDataItem(null, 0));
         }
         result.days.push(createStatsDataItem(type, blocked));
 
-        for (let k = 1; k < 3; k += 1) {
+        for (let k = 1; k < MAX_MONTHS_HISTORY; k += 1) {
             result.months.push(createStatsDataItem(null, 0));
         }
         result.months.push(createStatsDataItem(type, blocked));
@@ -193,7 +188,7 @@ adguard.pageStats = (function (adguard) {
         } else {
             let diffHours = adguard.utils.dates.getDifferenceInHours(now, currentDate);
 
-            while (diffHours > 1) {
+            while (diffHours >= 2) {
                 result.hours.push(createStatsDataItem(null, 0));
                 diffHours -= 1;
             }
@@ -209,7 +204,7 @@ adguard.pageStats = (function (adguard) {
         } else {
             let diffDays = adguard.utils.dates.getDifferenceInDays(now, currentDate);
 
-            while (diffDays > 1) {
+            while (diffDays >= 2) {
                 result.days.push(createStatsDataItem(null, 0));
                 diffDays -= 1;
             }
@@ -224,7 +219,7 @@ adguard.pageStats = (function (adguard) {
             result.months[result.months.length - 1] = updateStatsDataItem(type, blocked, result.months[result.months.length - 1]);
         } else {
             let diffMonths = adguard.utils.dates.getDifferenceInMonths(now, currentDate);
-            while (diffMonths > 1) {
+            while (diffMonths >= 2) {
                 result.months.push(createStatsDataItem(null, 0));
                 diffMonths -= 1;
             }
@@ -306,7 +301,7 @@ adguard.pageStats = (function (adguard) {
         }
 
         if (!stats.data) {
-            stats.data = createStatsData(new Date(), UNDEFINED_GROUP_ID, 0);
+            stats.data = createStatsData(new Date(), null, 0);
             pageStatsHolder.stats.data = stats.data;
             pageStatsHolder.save();
         }
