@@ -442,7 +442,8 @@ var WhiteListFilter = function (options) {
 
     const session = editor.getSession();
     let initialChangeFired = false;
-    session.addEventListener('change', () => {
+    let whitelistModeToggled = false;
+    session.addEventListener('change', (e) => {
         // Do no let user export empty whitelist rules
         if (session.getValue().length > 0) {
             exportWhiteListBtn.classList.remove('disabled');
@@ -454,15 +455,21 @@ var WhiteListFilter = function (options) {
             initialChangeFired = true;
             return;
         }
+        // On whitelist mode toggle, editor receives two change events
+        // "remove" and "insert", we omit them both and stop omit on the insert e.action
+        if (whitelistModeToggled) {
+            if (e.action === 'insert') {
+                whitelistModeToggled = false;
+            }
+            return;
+        }
         saver.setDirty();
     });
 
     function changeDefaultWhiteListMode(e) {
         e.preventDefault();
-
-        contentPage.sendMessage({ type: 'changeDefaultWhiteListMode', enabled: !e.currentTarget.checked }, function () {
-            updateWhiteListDomains();
-        });
+        whitelistModeToggled = true;
+        contentPage.sendMessage({ type: 'changeDefaultWhiteListMode', enabled: !e.currentTarget.checked });
     }
 
     changeDefaultWhiteListModeCheckbox.addEventListener('change', changeDefaultWhiteListMode);
@@ -1168,9 +1175,15 @@ var AntiBannerFilters = function (options) {
                                 name="searchFiltersList"
                             />
                             <select class="opt-select opt-select--input" id="filterStatusSelection">
-                                <option value="${filtersDisplayOptions.ALL}">All filters</option>
-                                <option value="${filtersDisplayOptions.ENABLED}">Enabled</option>
-                                <option value="${filtersDisplayOptions.DISABLED}">Disabled</option>
+                                <option value="${filtersDisplayOptions.ALL}">
+                                    ${i18n.getMessage("options_filters_list_search_display_option_all")}
+                                </option>
+                                <option value="${filtersDisplayOptions.ENABLED}">
+                                    ${i18n.getMessage("options_filters_list_search_display_option_enabled")}
+                                </option>
+                                <option value="${filtersDisplayOptions.DISABLED}">
+                                    ${i18n.getMessage("options_filters_list_search_display_option_disabled")}
+                                </option>
                             </select>
                             <div class="filters-search__cross">
                                 <img src="images/cross.svg" alt="">
