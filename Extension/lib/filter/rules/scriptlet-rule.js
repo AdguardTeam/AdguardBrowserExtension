@@ -88,7 +88,9 @@
                     sep.symb = char;
                     return TRANSTION.PARAM
                 case ')':
-                    return TRANSTION.CLOSED;
+                    return index === rule.length - 1
+                        ? TRANSTION.CLOSED
+                        : TRANSTION.OPENED;
             };
         };
         /**
