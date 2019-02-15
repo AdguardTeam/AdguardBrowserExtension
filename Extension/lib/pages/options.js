@@ -1168,9 +1168,15 @@ var AntiBannerFilters = function (options) {
                                 name="searchFiltersList"
                             />
                             <select class="opt-select opt-select--input" id="filterStatusSelection">
-                                <option value="${filtersDisplayOptions.ALL}">All filters</option>
-                                <option value="${filtersDisplayOptions.ENABLED}">Enabled</option>
-                                <option value="${filtersDisplayOptions.DISABLED}">Disabled</option>
+                                <option value="${filtersDisplayOptions.ALL}">
+                                    ${i18n.getMessage("options_filters_list_search_display_option_all")}
+                                </option>
+                                <option value="${filtersDisplayOptions.ENABLED}">
+                                    ${i18n.getMessage("options_filters_list_search_display_option_enabled")}
+                                </option>
+                                <option value="${filtersDisplayOptions.DISABLED}">
+                                    ${i18n.getMessage("options_filters_list_search_display_option_disabled")}
+                                </option>
                             </select>
                             <div class="filters-search__cross">
                                 <img src="images/cross.svg" alt="">
