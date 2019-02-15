@@ -153,7 +153,8 @@ QUnit.test("Test Page Stats", function (assert) {
         // Test data is correctly added after 3 hours passed
         const fourthFilter = adguard.subscriptions.getFilter(4);
         const hoursShift = 3;
-        adguard.pageStats.updateStats(fourthFilter.filterId, 1000, new Date(now.getTime() + (hoursShift * 60 * 60 * 1000)));
+        const hoursShiftTime = new Date(now.getTime() + (hoursShift * 60 * 60 * 1000));
+        adguard.pageStats.updateStats(fourthFilter.filterId, 1000, hoursShiftTime);
         data = adguard.pageStats.getStatisticsData();
         assert.ok(data);
         assert.equal(data.today.length, 24);
@@ -178,7 +179,8 @@ QUnit.test("Test Page Stats", function (assert) {
         // Test data is correctly added after 4 days passed
         const fifthFilter = adguard.subscriptions.getFilter(5);
         const daysShift = 4;
-        adguard.pageStats.updateStats(fifthFilter.filterId, 10000, new Date(now.getTime() + (daysShift * 24 * 60 * 60 * 1000)));
+        const daysShiftTime = new Date(hoursShiftTime.getTime() + (daysShift * 24 * 60 * 60 * 1000));
+        adguard.pageStats.updateStats(fifthFilter.filterId, 10000, daysShiftTime);
         data = adguard.pageStats.getStatisticsData();
         assert.ok(data);
         assert.equal(data.today.length, 24);
@@ -202,7 +204,8 @@ QUnit.test("Test Page Stats", function (assert) {
 
         // Test data is correctly added after 4 months passed
         const monthsShift = 2;
-        adguard.pageStats.updateStats(secondFilter.filterId, 200, new Date(now.getTime() + (monthsShift * 30 * 24 * 60 * 60 * 1000)));
+        const monthsShiftTime = new Date(daysShiftTime.getTime() + (monthsShift * 30 * 24 * 60 * 60 * 1000));
+        adguard.pageStats.updateStats(secondFilter.filterId, 200, monthsShiftTime);
         data = adguard.pageStats.getStatisticsData();
         assert.ok(data);
         assert.equal(data.today.length, 24);
