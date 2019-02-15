@@ -442,7 +442,8 @@ var WhiteListFilter = function (options) {
 
     const session = editor.getSession();
     let initialChangeFired = false;
-    session.addEventListener('change', () => {
+    let whitelistModeToggled = false;
+    session.addEventListener('change', (e) => {
         // Do no let user export empty whitelist rules
         if (session.getValue().length > 0) {
             exportWhiteListBtn.classList.remove('disabled');
@@ -454,15 +455,21 @@ var WhiteListFilter = function (options) {
             initialChangeFired = true;
             return;
         }
+        // On whitelist mode toggle, editor receives two change events
+        // "remove" and "insert", we omit them both and stop omit on the insert e.action
+        if (whitelistModeToggled) {
+            if (e.action === 'insert') {
+                whitelistModeToggled = false;
+            }
+            return;
+        }
         saver.setDirty();
     });
 
     function changeDefaultWhiteListMode(e) {
         e.preventDefault();
-
-        contentPage.sendMessage({ type: 'changeDefaultWhiteListMode', enabled: !e.currentTarget.checked }, function () {
-            updateWhiteListDomains();
-        });
+        whitelistModeToggled = true;
+        contentPage.sendMessage({ type: 'changeDefaultWhiteListMode', enabled: !e.currentTarget.checked });
     }
 
     changeDefaultWhiteListModeCheckbox.addEventListener('change', changeDefaultWhiteListMode);
