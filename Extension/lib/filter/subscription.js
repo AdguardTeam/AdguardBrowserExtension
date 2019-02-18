@@ -385,7 +385,7 @@ adguard.subscriptions = (function (adguard) {
                 expires,
                 timeUpdated,
             } = parseFilterDataFromHeader(rules);
-            name = name || title;
+            name = title;
             timeUpdated = timeUpdated || new Date().toISOString();
             const groupId = CUSTOM_FILTERS_GROUP_ID;
             const subscriptionUrl = url;
