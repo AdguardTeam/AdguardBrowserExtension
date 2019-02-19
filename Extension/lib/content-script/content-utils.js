@@ -191,7 +191,13 @@
             offerButtonText,
             disableNotificationText,
             isAdguardTab,
+            isTabAdguardDetected,
         } = message;
+
+        // Do not show update message in the integration mode
+        if (isTabAdguardDetected) {
+            return;
+        }
 
         const updateIframeHtml = `<head></head>
                             <body>
