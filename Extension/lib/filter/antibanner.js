@@ -47,7 +47,7 @@ adguard.antiBannerService = (function (adguard) {
     /**
      * Delay on application updated event
      */
-    var APP_UPDATED_NOTIFICATION_DELAY = 10000;
+    var APP_UPDATED_NOTIFICATION_DELAY = 60 * 1000;
 
     var FILTERS_CHANGE_DEBOUNCE_PERIOD = 1000;
     var RELOAD_FILTERS_DEBOUNCE_PERIOD = 1000;
