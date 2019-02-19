@@ -1691,13 +1691,13 @@ adguard.filters = (function (adguard) {
             return;
         }
 
-        adguard.subscriptions.getCustomFilterInfo(url, options, (filterData) => {
-            if (filterData) {
+        adguard.subscriptions.getCustomFilterInfo(url, options, (result = {}) => {
+            const { error, filter } = result;
+            if (filter) {
                 adguard.console.info('Custom filter data downloaded');
-                successCallback(filterData);
-            } else {
-                errorCallback();
+                successCallback(filter);
             }
+            errorCallback(error);
         });
     };
 

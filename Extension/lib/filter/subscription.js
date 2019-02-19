@@ -476,7 +476,7 @@ adguard.subscriptions = (function (adguard) {
             });
 
             if (filter) {
-                callback();
+                callback({ error: adguard.i18n.getMessage('options_antibanner_custom_filter_already_exists') });
                 return;
             }
 
@@ -499,7 +499,7 @@ adguard.subscriptions = (function (adguard) {
             filter.customUrl = url;
             filter.rulesCount = rulesCount;
 
-            callback(filter);
+            callback({ filter });
         }, function (cause) {
             adguard.console.error(`Error download filter by url ${url}, cause: ${cause || ''}`);
             callback();
