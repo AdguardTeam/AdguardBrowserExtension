@@ -151,7 +151,7 @@ PopupController.prototype = {
 
         // Hide stats for integration mode
         if (tabInfo.adguardDetected) {
-            parent.querySelector('.tab-stats-button').style.display = 'none';
+            parent.querySelector('.tabbar').style.display = 'none';
             parent.querySelector('.tab-actions-button').classList.add('tab--integration');
         }
 
@@ -227,13 +227,9 @@ PopupController.prototype = {
     _renderHeader: function (container, tabInfo) {
         const template = this.filteringHeader;
         if (tabInfo.adguardDetected) {
-            const pauseButton = template.querySelector('.pause.changeProtectionStateDisable');
-            if (pauseButton) {
-                pauseButton.style.display = 'none';
-            }
-            const startButton = template.querySelector('.start.changeProtectionStateEnable');
-            if (startButton) {
-                startButton.style.display = 'none';
+            const headerButtons = template.querySelector('.widget-popup__header-btns');
+            if (headerButtons) {
+                headerButtons.style.display = 'none';
             }
         }
         this._appendTemplate(container, template);
