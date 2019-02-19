@@ -192,9 +192,9 @@
                 break;
             case 'loadCustomFilterInfo':
                 adguard.filters.loadCustomFilterInfo(message.url, { title: message.title }, (filter) => {
-                    callback(filter);
-                }, () => {
-                    callback();
+                    callback({ filter });
+                }, (error) => {
+                    callback({ error });
                 });
                 return true;
             case 'subscribeToCustomFilter': {

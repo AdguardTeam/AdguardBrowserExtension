@@ -1370,6 +1370,16 @@ var AntiBannerFilters = function (options) {
             handleElTextContent(document.querySelector('#custom-filter-popup-added-url'), filter.customUrl, filter.customUrl);
         }
 
+        function fillErrorMessage(error) {
+            const errorMessageNode = document.querySelector('.custom-filter-error-message');
+            if (error) {
+                errorMessageNode.textContent = error;
+            } else {
+                // Set default error message
+                errorMessageNode.textContent = i18n.getMessage('options_popup_check_false_description');
+            }
+        }
+
         const makeSurePopupIsActive = () => {
             if (!customFilterPopup.classList.contains('option-popup--active')) {
                 customFilterPopup.classList.add('option-popup--active');
@@ -1394,9 +1404,10 @@ var AntiBannerFilters = function (options) {
         }
 
         // Error window step
-        function renderStepThree() {
+        function renderStepThree(error) {
             prepareRendering();
             thirdStep.classList.add(POPUP_ACTIVE_CLASS);
+            fillErrorMessage(error);
         }
 
         function renderStepFour(filter) {
@@ -1413,11 +1424,12 @@ var AntiBannerFilters = function (options) {
 
                 const searchInputValue = searchInput.value && searchInput.value.trim();
 
-                contentPage.sendMessage({ type: 'loadCustomFilterInfo', url: searchInputValue }, function (filter) {
+                contentPage.sendMessage({ type: 'loadCustomFilterInfo', url: searchInputValue }, function (result) {
+                    const { filter, error } = result;
                     if (filter) {
                         renderStepFour(filter);
                     } else {
-                        renderStepThree();
+                        renderStepThree(error);
                     }
                 });
 
@@ -1465,11 +1477,12 @@ var AntiBannerFilters = function (options) {
         customFilterPopup.classList.add('option-popup--active');
 
         if (isFilterSubscription) {
-            contentPage.sendMessage({ type: 'loadCustomFilterInfo', url, title }, function (filter) {
+            contentPage.sendMessage({ type: 'loadCustomFilterInfo', url, title }, function (result) {
+                const { filter, error } = result;
                 if (filter) {
                     renderStepFour(filter);
                 } else {
-                    renderStepThree();
+                    renderStepThree(error);
                 }
             });
             renderStepTwo();
