@@ -1040,8 +1040,26 @@ var AntiBannerFilters = function (options) {
             };
         };
 
+        const sortingFunction = (f1, f2) => {
+            let result = 0;
+            try {
+                if (f1.groupId !== f2.groupId) {
+                    result = f1.groupId - f2.groupId;
+                } else if (f1.displayNumber !== f2.displayNumber) {
+                    result = f1.displayNumber - f2.displayNumber;
+                } else {
+                    result = f1.name.toLowerCase() > f2.name.toLowerCase() ? 1 : -1;
+                }
+            } catch (e) {
+                console.log(e);
+            }
+            return result;
+        };
+
         const filteringFunction = getFilteringFunction();
-        const filtersToRender = filters.filter(filteringFunction);
+        const filtersToRender = filters
+            .filter(filteringFunction)
+            .sort(sortingFunction);
 
         const CUSTOM_FILTERS_GROUP_ID = 0;
 
