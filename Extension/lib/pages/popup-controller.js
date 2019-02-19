@@ -227,7 +227,7 @@ PopupController.prototype = {
     _renderHeader: function (container, tabInfo) {
         const template = this.filteringHeader;
         if (tabInfo.adguardDetected) {
-            const headerButtons = template.querySelector('.widget-popup__header-btns');
+            const headerButtons = template.querySelector('#popup-header-buttons');
             if (headerButtons) {
                 headerButtons.style.display = 'none';
             }
