@@ -1040,6 +1040,7 @@ var AntiBannerFilters = function (options) {
             };
         };
 
+        // Orders filters by groupId, displayNumber, name
         const sortingFunction = (f1, f2) => {
             let result = 0;
             try {
