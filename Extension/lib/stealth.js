@@ -248,7 +248,6 @@ adguard.stealthService = (function (adguard) {
         if (isStealthModeDisabled()) {
             return null;
         }
-        console.trace('cookie');
 
         const whiteListRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, requestType);
         if (whiteListRule && whiteListRule.isDocumentWhiteList()) {
