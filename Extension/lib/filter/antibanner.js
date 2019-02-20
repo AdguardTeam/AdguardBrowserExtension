@@ -1696,6 +1696,7 @@ adguard.filters = (function (adguard) {
             if (filter) {
                 adguard.console.info('Custom filter data downloaded');
                 successCallback(filter);
+                return;
             }
             errorCallback(error);
         });
