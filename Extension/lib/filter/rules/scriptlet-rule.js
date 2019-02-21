@@ -156,6 +156,7 @@
         domain && this.loadDomains(domain);
         const scriptletParam = {
             engine: 'extension',
+            version: adguard.app.getVersion(),
             ...parseRule(ruleText),
         };
         this.script = scriptlets && scriptlets.invoke(scriptletParam);
