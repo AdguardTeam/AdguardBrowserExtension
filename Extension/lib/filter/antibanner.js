@@ -1438,9 +1438,14 @@ adguard.filters = (function (adguard) {
 
     const getEnabledFiltersFromEnabledGroups = () => {
         const filters = adguard.subscriptions.getFilters();
+        const enabledGroupsIds = adguard.subscriptions.getGroups()
+            .filter(g => g.enabled)
+            .map(g => g.groupId);
         return filters.filter((f) => {
-            const group = adguard.subscriptions.getGroup(f.groupId);
-            return f.enabled && group.enabled;
+            if (f.enabled) {
+                return enabledGroupsIds.includes(f.groupId);
+            }
+            return false;
         });
     };
 
