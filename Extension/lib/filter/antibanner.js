@@ -911,6 +911,19 @@ adguard.antiBannerService = (function (adguard) {
                 scheduleFiltersUpdate();
             }
         });
+
+        // on application initialization we should recheck filter update interval
+        adguard.listeners.addListener(function (event) {
+            switch (event) {
+                case adguard.listeners.APPLICATION_INITIALIZED: {
+                    filtersUpdatePeriod = adguard.settings.getFiltersUpdatePeriod();
+                    scheduleFiltersUpdate();
+                    break;
+                }
+                default:
+                    break;
+            }
+        });
     }
 
     // Scheduling job
