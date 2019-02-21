@@ -115,7 +115,8 @@ adguard.stealthService = (function (adguard) {
      * @returns {boolean}
      */
     const isStealthModeDisabled = () => {
-        return adguard.settings.getProperty(adguard.settings.DISABLE_STEALTH_MODE);
+        return adguard.settings.getProperty(adguard.settings.DISABLE_STEALTH_MODE)
+            || adguard.settings.isFilteringDisabled();
     };
 
     /**
