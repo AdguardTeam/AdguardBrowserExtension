@@ -1441,12 +1441,7 @@ adguard.filters = (function (adguard) {
         const enabledGroupsIds = adguard.subscriptions.getGroups()
             .filter(g => g.enabled)
             .map(g => g.groupId);
-        return filters.filter((f) => {
-            if (f.enabled) {
-                return enabledGroupsIds.includes(f.groupId);
-            }
-            return false;
-        });
+        return filters.filter(f => f.enabled && enabledGroupsIds.includes(f.groupId));
     };
 
     /**
