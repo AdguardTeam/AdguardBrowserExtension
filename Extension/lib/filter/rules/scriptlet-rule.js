@@ -156,7 +156,6 @@
         domain && this.loadDomains(domain);
         const scriptletParam = {
             engine: 'extension',
-            version: '1.0.0',
             ...parseRule(ruleText),
         };
         this.script = scriptlets && scriptlets.invoke(scriptletParam);
