@@ -85,7 +85,7 @@
         const domains = stringUtils.getBeforeRegExp(rule, UBO_SCRIPTLET_MASK_REG);
         const args = getStringInBraces(rule)
             .split(/, /g)
-            .map((arg, index) => index === 0 ? `ubo-${arg}` : arg)
+            .map((arg, index) => index === 0 ? `ubo-${arg}.js` : arg)
             .map(arg => wrapInDoubleQuotes(arg))
             .join(', ');
 
