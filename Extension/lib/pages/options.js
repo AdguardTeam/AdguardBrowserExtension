@@ -351,7 +351,8 @@ const Saver = function (options) {
  * @param editor
  * @param {String} editorId
  */
-const handleEditorResize = (editor, editorId) => {
+const handleEditorResize = ( editor, editorId) => {
+    console.log()
     const DRAG_TIMEOUT_MS = 100;
 
     const saveSize = (editorContainer) => {
@@ -408,7 +409,8 @@ var WhiteListFilter = function (options) {
     editor.$blockScrolling = Infinity;
     const AdguardMode = ace.require('ace/mode/adguard').Mode;
     editor.session.setMode(new AdguardMode());
-    editor.renderer.setMargin(0, 0, 0, 10);
+    editor.renderer.setMargin(0, 10, 0, 10);
+    editor.renderer.setScrollMargin(0, 10, 0, 0);
 
     const saveIndicatorElement = document.querySelector('#whiteListRulesSaveIndicator');
     const saver = new Saver({
@@ -515,7 +517,8 @@ const UserFilter = function () {
     editor.$blockScrolling = Infinity;
     const AdguardMode = ace.require('ace/mode/adguard').Mode;
     editor.session.setMode(new AdguardMode());
-    editor.renderer.setMargin(0, 0, 0, 10);
+    editor.renderer.setMargin(0, 10, 0, 10);
+    editor.renderer.setScrollMargin(0, 10, 0, 0);
 
     const saveIndicatorElement = document.querySelector('#userRulesSaveIndicator');
     const saver = new Saver({
