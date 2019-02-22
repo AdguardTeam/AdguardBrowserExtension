@@ -37,7 +37,7 @@ adguard.antiBannerService = (function (adguard) {
     var applicationInitialized = false;
 
     // Get filters update period
-    var filtersUpdatePeriod = adguard.settings.getFiltersUpdatePeriod();
+    let filtersUpdatePeriod = adguard.settings.getFiltersUpdatePeriod();
 
     /**
      * Delay before doing first filters update check -- 5 minutes
@@ -139,7 +139,6 @@ adguard.antiBannerService = (function (adguard) {
                 // Init RequestFilter object
                 initRequestFilter();
             }
-
             // Schedule filters update job
             scheduleFiltersUpdate(runInfo.isFirstRun);
         };
@@ -907,7 +906,6 @@ adguard.antiBannerService = (function (adguard) {
                 getRequestFilter().cssFilter.dirty = true;
             }
             if (setting === adguard.settings.FILTERS_UPDATE_PERIOD) {
-                filtersUpdatePeriod = adguard.settings.getFiltersUpdatePeriod();
                 scheduleFiltersUpdate();
             }
         });
@@ -940,6 +938,7 @@ adguard.antiBannerService = (function (adguard) {
      * @private
      */
     function scheduleFiltersUpdate(isFirstRun) {
+        filtersUpdatePeriod = adguard.settings.getFiltersUpdatePeriod();
         // First run delay
         if (isFirstRun) {
             setTimeout(checkAntiBannerFiltersUpdate, UPDATE_FILTERS_DELAY, isFirstRun);
