@@ -351,8 +351,7 @@ const Saver = function (options) {
  * @param editor
  * @param {String} editorId
  */
-const handleEditorResize = ( editor, editorId) => {
-    console.log()
+const handleEditorResize = (editor, editorId) => {
     const DRAG_TIMEOUT_MS = 100;
 
     const saveSize = (editorContainer) => {
