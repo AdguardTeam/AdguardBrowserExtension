@@ -140,6 +140,8 @@ adguard.antiBannerService = (function (adguard) {
                 initRequestFilter();
             }
 
+            // renew filters update period because on extension init it gets default values
+            filtersUpdatePeriod = adguard.settings.getFiltersUpdatePeriod();
             // Schedule filters update job
             scheduleFiltersUpdate(runInfo.isFirstRun);
         };
@@ -909,19 +911,6 @@ adguard.antiBannerService = (function (adguard) {
             if (setting === adguard.settings.FILTERS_UPDATE_PERIOD) {
                 filtersUpdatePeriod = adguard.settings.getFiltersUpdatePeriod();
                 scheduleFiltersUpdate();
-            }
-        });
-
-        // on application initialization we should recheck filter update interval
-        adguard.listeners.addListener(function (event) {
-            switch (event) {
-                case adguard.listeners.APPLICATION_INITIALIZED: {
-                    filtersUpdatePeriod = adguard.settings.getFiltersUpdatePeriod();
-                    scheduleFiltersUpdate();
-                    break;
-                }
-                default:
-                    break;
             }
         });
     }
