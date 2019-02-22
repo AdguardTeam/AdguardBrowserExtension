@@ -546,6 +546,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                 settingKey: adguard.settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES,
                 settingValueKey: adguard.settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME,
             },
+            { queryKey: 'strip_url', settingKey: adguard.settings.STRIP_TRACKING_PARAMETERS },
         ];
 
         const stealthEnabled = !adguard.settings.getProperty(adguard.settings.DISABLE_STEALTH_MODE);
