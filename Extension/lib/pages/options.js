@@ -49,7 +49,7 @@ var Utils = {
             reader.onload = function (e) {
                 const oldRules = editor.getValue();
                 const newRules = oldRules + '\n' + e.target.result;
-                editor.setValue(newRules);
+                editor.setValue(newRules.trim());
                 fileInput.value = '';
             };
             reader.onerror = function (err) {
