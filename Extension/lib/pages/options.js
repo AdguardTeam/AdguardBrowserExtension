@@ -353,16 +353,17 @@ const Saver = function (options) {
  */
 const handleEditorResize = (editor, editorId) => {
     const DRAG_TIMEOUT_MS = 100;
+    const editorParent = editor.container.parentNode;
 
-    const saveSize = (editorContainer) => {
-        const width = editorContainer.style.width;
-        const height = editorContainer.style.height;
+    const saveSize = (editorParent) => {
+        const width = editorParent.style.width;
+        const height = editorParent.style.height;
         if (width && height) {
             localStorage.setItem(editorId, JSON.stringify({ size: { width, height }}));
         }
     };
 
-    const restoreSize = (editorContainer) => {
+    const restoreSize = (editorParent) => {
         const dataJson = localStorage.getItem(editorId);
         if (!dataJson) {
             return;
@@ -370,25 +371,25 @@ const handleEditorResize = (editor, editorId) => {
         const { size } = JSON.parse(dataJson);
         const { width, height } = size || {};
         if (width && height) {
-            editorContainer.style.width = width;
-            editorContainer.style.height = height;
+            editorParent.style.width = width;
+            editorParent.style.height = height;
         }
     };
 
     // restore size is it was set previously set;
-    restoreSize(editor.container);
+    restoreSize(editorParent);
 
     const onMouseMove = Utils.debounce(() => {
         editor.resize();
     }, DRAG_TIMEOUT_MS);
 
     const onMouseUp = () => {
-        saveSize(editor.container);
+        saveSize(editorParent);
         document.removeEventListener('mousemove', onMouseMove);
         document.removeEventListener('mouseup', onMouseUp);
     };
 
-    editor.container.addEventListener('mousedown', (e) => {
+    editorParent.addEventListener('mousedown', (e) => {
         if (e.target === e.currentTarget) {
             document.addEventListener('mousemove', onMouseMove);
             document.addEventListener('mouseup', onMouseUp);
@@ -408,7 +409,6 @@ var WhiteListFilter = function (options) {
     editor.$blockScrolling = Infinity;
     const AdguardMode = ace.require('ace/mode/adguard').Mode;
     editor.session.setMode(new AdguardMode());
-    editor.renderer.setMargin(0, 0, 0, 10);
 
     const saveIndicatorElement = document.querySelector('#whiteListRulesSaveIndicator');
     const saver = new Saver({
@@ -515,7 +515,6 @@ const UserFilter = function () {
     editor.$blockScrolling = Infinity;
     const AdguardMode = ace.require('ace/mode/adguard').Mode;
     editor.session.setMode(new AdguardMode());
-    editor.renderer.setMargin(0, 0, 0, 10);
 
     const saveIndicatorElement = document.querySelector('#userRulesSaveIndicator');
     const saver = new Saver({
