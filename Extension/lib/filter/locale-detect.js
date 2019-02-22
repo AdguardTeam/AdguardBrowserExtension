@@ -149,7 +149,7 @@
      * @param url    Page URL
      */
     function detectTabLanguage(tab, url) {
-        if (!adguard.settings.isAutodetectFilters()) {
+        if (!adguard.settings.isAutodetectFilters() || adguard.settings.isFilteringDisabled()) {
             return;
         }
 
