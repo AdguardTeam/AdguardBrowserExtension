@@ -728,7 +728,7 @@ adguard.subscriptions = (function (adguard) {
     /**
      * @returns Group metadata
      */
-    const getGroup = (groupId) => groupsMap[groupId];
+    const getGroup = groupId => groupsMap[groupId];
 
     /**
      * Checks if group has enabled status true or false

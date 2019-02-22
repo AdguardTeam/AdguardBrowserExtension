@@ -1436,6 +1436,14 @@ adguard.filters = (function (adguard) {
         });
     };
 
+    const getEnabledFiltersFromEnabledGroups = () => {
+        const filters = adguard.subscriptions.getFilters();
+        const enabledGroupsIds = adguard.subscriptions.getGroups()
+            .filter(g => g.enabled)
+            .map(g => g.groupId);
+        return filters.filter(f => f.enabled && enabledGroupsIds.includes(f.groupId));
+    };
+
     /**
      * Checks if specified filter is enabled
      *
@@ -1727,6 +1735,7 @@ adguard.filters = (function (adguard) {
 
         loadCustomFilter: loadCustomFilter,
         loadCustomFilterInfo: loadCustomFilterInfo,
+        getEnabledFiltersFromEnabledGroups,
     };
 
 })(adguard);
