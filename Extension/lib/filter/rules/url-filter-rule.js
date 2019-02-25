@@ -1257,7 +1257,9 @@
         // Unused modifiers
         'COLLAPSE': true,
         '~COLLAPSE': true,
-        '~DOCUMENT': true
+        '~DOCUMENT': true,
+        'EXTENSION': true,
+        '~EXTENSION': true,
     };
 
     api.UrlFilterRule = UrlFilterRule;
