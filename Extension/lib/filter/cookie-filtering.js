@@ -73,6 +73,7 @@ adguard.cookieFiltering = (function (adguard) {
      * @property {boolean} httpOnly
      * @property {boolean} sameSite
      * @property {number} expirationDate
+     * @property {boolean} hostOnly
      */
 
     /**
@@ -183,6 +184,14 @@ adguard.cookieFiltering = (function (adguard) {
             sameSite: apiCookie.sameSite,
             expirationDate: apiCookie.expirationDate,
         };
+        /**
+         * Removes domain for host-only cookies:
+         * https://developer.chrome.com/extensions/cookies#method-set
+         * The domain of the cookie. If omitted, the cookie becomes a host-only cookie.
+         */
+        if (apiCookie.hostOnly) {
+            delete update.domain;
+        }
         return new Promise((resolve => {
             browser.cookies.set(update, () => {
                 const ex = browser.runtime.lastError;
