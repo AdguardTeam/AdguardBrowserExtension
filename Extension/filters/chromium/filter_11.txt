@@ -1,8 +1,8 @@
-! Checksum: AIx0avz8PsIZxPhxcFEymQ
+! Checksum: Bg5KQGOr2SIIFM+1KDnqzA
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.4.81
-! TimeUpdated: 2019-02-05T19:30:13+03:00
+! Version: 2.0.5.1
+! TimeUpdated: 2019-02-22T16:30:12+03:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#mobile
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -98,6 +98,11 @@
 ||plugin.mobopay.baidu.com^
 ||mo.freeindoapp.com^
 !
+||data2.doodlemobile.com^
+||d239g0z67jcted.cloudfront.net^
+||newfeatureview.perfectionholic.com^
+||featured.perfectionholic.com^
+||crosspromo.voodoo.io^
 ||abtest.mistat.intl.xiaomi.com^
 ||abtest.mistat.xiaomi.com^
 ||adsnative.com^
@@ -1060,7 +1065,10 @@ westseattleblog.com#@#.header-ad
 !
 ! Extended CSS rules
 !
-! 4pda.ru - main page
+! https://github.com/AdguardTeam/AdguardFilters/issues/29888
+obozrevatel.com##div[style^="position:"][style*="relative"]:has(> [src^="https://i.obozrevatel.com/banners/"])
+! https://github.com/AdguardTeam/AdguardFilters/issues/29451
+nytimes.com###site-content > div[class^="css-"] > div[class^="css-"] > div[class^="css-"] > div[class^="css-"] > div[class^="css-"] > div[class^="css-"][-ext-has='> div[class^="css-"] > div[class^="css-"]:contains(Advertisement) + div[class*="dfp-ad-"]']
 ! https://github.com/AdguardTeam/AdguardFilters/issues/24411
 bunshun.jp##.sp-list-thumb > li[-ext-has='.pr']
 ! https://github.com/AdguardTeam/AdguardFilters/issues/24412
@@ -1216,6 +1224,12 @@ sasisa.ru#%#AG_onLoad(function() { window.Umobi = function() {}; });
 !-------CSS---------
 !-------------------
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/28542
+timeanddate.com#$#body.mob > .wrapper > .header__wrapper { height: 0!important; }
+! rbc.ru - ad popup
+rbc.ru#$#div[class^="banners__mobile"] { display: none!important; }
+rbc.ru#$#body.g-lockscroll { overflow: visible!important; }
+rbc.ru#$#html.g-lockscroll { overflow: visible!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/23669
 m.saostar.vn#$#.article-thumb { padding-bottom: 0!important; }
 m.saostar.vn#$##page { top: 0!important; }
@@ -1258,6 +1272,7 @@ deviantart.com#$#div[class*="dp-ad-"] {height: 0!important; width: 0!important; 
 !-------------------
 !-------HTML--------
 !-------------------
+! 4pda.ru - main page
 ! https://github.com/AdguardTeam/AdguardFilters/issues/28322
 ! https://github.com/AdguardTeam/AdguardFilters/issues/17500
 ! Yandex search
@@ -1647,6 +1662,11 @@ m.news.de##.unisterAdsStart
 !+ NOT_PLATFORM(ios, ext_android_cb)
 ||mobile.donanimhaber.com/ads^
 !
+obozrevatel.com##.banner-premium
+cnn.com###social-share_gig_containerParent .PartnerZone
+mobile.donanimhaber.com##body > div[style="float: left;width:100%;"] > div[style="margin:10px auto; text-align:center; width:300px; height:250px;"]
+techrum.vn###revive_banner_mobile_div
+scotsman.com##.slab--bottommobilebanner
 amp.fakty.ua##amp-iframe
 obozrevatel.com##amp-iframe.branding
 m.sabah.com.tr##.promo
@@ -1658,11 +1678,14 @@ m.iceporn.com##.banner-full-fixed
 m.iceporn.com##.spot+p
 m.discuss.com.hk##.MFV
 kanasoku.info##.adc_g_ko_sec
+techbang.com###related-posts
 egmnow.com##.pt_mobile_ad_iframe
 egmnow.com##.pt-embed-ad-single-mobile
 m.sondakika.com##.text_reklam
+jayisgames.com##.widget-support
 newtoki.com###hd_pop
 carsales.com.au##.mrec-container
+m.bulbapedia.bulbagarden.net##a[href="http://playiconoclasts.com/"]
 m.adevarul.ro##.article > div[style="width:336px;height:280px;margin:5px auto;"]:not([id]):not([class])
 mail.yahoo.com##a[href*="beap.gemini.yahoo.com/bmclk"]
 mail.yahoo.com##form[name="showFolderForm"] > div.mb
@@ -2351,7 +2374,6 @@ timesnownews.com,biz-journal.jp,sankei.com,m.mynet.com,amp.ibtimes.co.uk,lifehac
 cnbc.com##.leaderboard_ad
 zybang.com##.qb-wgt_float-banner
 zybang.com##.cmn-zuoyebang-slogan
-rbc.ru##.banners__wrap-article
 m.timesofindia.com##.ad1
 eenaduindia.com##[class^="Adv-"]
 eenaduindia.com##div[style="width:100%;text-align:center;margin:10px 0;"]
@@ -2607,14 +2629,17 @@ m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m.news.yand
 ! Blocking of Facebook ads
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/29964
+! https://github.com/AdguardTeam/AdguardFilters/issues/29913
 ! https://github.com/AdguardTeam/AdguardFilters/issues/28297
 !
 ||api2.appscraft.mobi/banner/get_banners.php
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/25302
 ||etnet.com.hk/ad/
+! https://github.com/AdguardTeam/AdguardFilters/issues/26940
+! https://github.com/AdguardTeam/AdguardFilters/issues/27245
 ! https://github.com/AdguardTeam/AdguardFilters/issues/26774
-! com.edadeal.android - fixing an app
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/24782
 ||api.rvuzov.ru/images/c4ac821d-4580-4011-a402-3de5d38b5709.jpg
@@ -2870,6 +2895,7 @@ m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m.news.yand
 !+ NOT_PLATFORM(ios, ext_safari, ext_android_cb)
 ||adj.st^
 !
+||track.tenjin.io^
 ||stats.abbi.io^
 ||api.goodbarber.net/statsapi/
 ||tr.snapchat.com^
@@ -2891,7 +2917,6 @@ m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m.news.yand
 ||helpshift.com/api/lib/2/events/
 ||mobileapptracking.com^
 ||mobile.bigfishgames.com/telemetry/
-||startup.mobile.yandex.net^
 ||ilyonanalytics.herokuapp.com^
 ||register.appsflyer.com^
 ||kaffnet.com^
