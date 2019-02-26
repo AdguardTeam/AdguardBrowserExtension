@@ -1,8 +1,8 @@
-! Checksum: EYEu3QoUQFbRrg+KurS6Dw
+! Checksum: iOd+2zvdZ2mTQUeZojUYsA
 ! Title: AdGuard Safari filter
 ! Description: Special filter for Safari 9+ on iOS and Mac OS. We need a separate filter for Safari browser because it does not fully support our rules syntax.
-! Version: 2.0.1.28
-! TimeUpdated: 2019-02-06T18:30:14+03:00
+! Version: 2.0.1.30
+! TimeUpdated: 2019-02-21T14:30:15+03:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#safari
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -13,26 +13,6 @@
 !
 ! Section contains list of advertising networks
 !
-||adexec.net^$popup
-||0912701309f8ce.com^$popup
-||d71e6dd31a026d45.com*^$popup
-||307cc283bab2ffdec92.com^
-||xdbwc.com^
-! https://github.com/AdguardTeam/AdguardFilters/issues/22373
-!+ NOT_OPTIMIZED
-||smintmouse.com^$third-party
-! https://github.com/AdguardTeam/AdguardFilters/issues/3656
-||cb8717377086c72d.com^$popup
-||go.mobiprotg.com^$popup
-||partners.parimatch.net^$popup
-! https://github.com/AdguardTeam/AdguardFilters/issues/2780
-||wrmcfyzl.com^
-! https://github.com/AdguardTeam/AdguardFilters/issues/2406
-||adrunnr.com^$popup
-||large-format.net^$popup
-||november-lax.com^$popup
-! Temporary, look here for details: https://github.com/AdguardTeam/ExperimentalFilter/issues/1192
-||media.innity.net^$third-party
 !---------------------------------------------------------------------------!
 !-------------- Anti-adblock rules -----------------------------------------!
 !---------------------------------------------------------------------------!
@@ -801,6 +781,8 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 !
 ! White list. Fixing content blocking API issues.
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/29537
+@@||baidu.com/it/u=$domain=baijiahao.baidu.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/24917
 |https://$image,script,subdocument,third-party,xmlhttprequest,domain=yourporn.sexy,badfilter
 @@||yourporn.sexy/cdn*.mp4

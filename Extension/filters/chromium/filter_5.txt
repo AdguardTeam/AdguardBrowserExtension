@@ -1,8 +1,8 @@
-! Checksum: 9oGjl5fSHXF8LjjKciDMEw
+! Checksum: NV3Kt3nU5No2EfdIMc+eig
 ! Title: AdGuard Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.0.39
-! TimeUpdated: 2019-02-06T14:31:10+03:00
+! Version: 2.0.0.44
+! TimeUpdated: 2019-02-18T23:31:09+03:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#experimental
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -179,7 +179,9 @@
 !
 $cookie=/blcrm|bltsr|^from\$|^los\$/,domain=24smi.org|auto.ru|avito.ru|avtovzglyad.ru|baby.ru|businessman.ru|dni.ru|drive2.com|drive2.ru|e1.ru|echo.msk.ru|fb.ru|forexpf.ru|gismeteo.by|gismeteo.kz|gismeteo.md|gismeteo.ru|gismeteo.ua|glav.su|gorodrabot.ru|infoniac.ru|it-tehnik.ru|kakprosto.ru|kinopoisk.ru|liveinternet.ru|mathb-ege.sdamgia.ru|mk.ru|nkj.ru|ohotniki.ru|oko-planet.su|otzovik.com|pikabu.ru|rambler.ru|razlozhi.ru|sdamgia.ru|syl.ru|tsargrad.tv|vz.ru
 $cookie=/blcrm|bltsr|^from\$|^los\$/,domain=yandex.by|yandex.com|yandex.com.tr|yandex.fr|yandex.kz|yandex.ru|yandex.ua
+$cookie=/BgeeyNoBJuyII|YvUVZgzQ|^adequate\$|^telecommunications\$/,domain=yandex.by|yandex.com|yandex.com.tr|yandex.fr|yandex.kz|yandex.ru|yandex.ua
 ||kino*oisk.ru^$cookie=/kpunk/
+$cookie=has_adblock,domain=24smi.org
 !
 ! Whitelist
 ! http://adguard.com/filterrules.html#exclusionRules
@@ -227,6 +229,7 @@ $cookie=/blcrm|bltsr|^from\$|^los\$/,domain=yandex.by|yandex.com|yandex.com.tr|y
 !
 ! https://forum.adguard.com/index.php?threads/quora-com.30650
 quora.com##.grid_page div[class][id] > div[class*=" "] > div[id^="__"]:has(.external_link):has( span + span[style="display: none;"])
+quora.com##.grid_page div[class][id] > div[class*=" "] > div[id^="__"]:has(.link_overlay):has( span + span[style="display: none;"])
 ! https://github.com/AdguardTeam/AdguardFilters/issues/21365
 nytimes.com###site-content > div[class^="css-"][class*=" "] > div[class^="css-"][class*=" "] > div[class^="css-"][class*=" "]
 nytimes.com###app > div[class^="css-"][class*=" "]:not([data-reactroot]) > div[class^="css-"][class*=" "]
