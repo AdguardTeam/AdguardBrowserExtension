@@ -1,8 +1,8 @@
-! Checksum: Bg5KQGOr2SIIFM+1KDnqzA
+! Checksum: R3hKJE91fd9zmfMTSayL0g
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.5.1
-! TimeUpdated: 2019-02-22T16:30:12+03:00
+! Version: 2.0.5.10
+! TimeUpdated: 2019-03-03T13:30:10+03:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#mobile
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -1089,11 +1089,6 @@ yahoo.com###YDC-Stream > ul.Wow\(bw\) > .js-stream-content > .controller:has(> [
 m.prohardver.hu##.defcnt > h2 + p[align="center"][-ext-has='a[href][target="_blank"]']
 ! https://github.com/AdguardTeam/AdguardFilters/issues/17262
 gsmarena.com##.homepage-news-list > div > div[style^="display:"][-ext-has='ins.adsbygoogle']
-! https://github.com/AdguardTeam/AdguardFilters/issues/16637
-mobile.nytimes.com##div[class^="Home-desktop--"] > div[class^="css-"]:has(> div > div[class^="MobileFlexframe-"] > div.ad)
-mobile.nytimes.com##body > div#app > div[class^="Home-stickyContainer--"]:has(div[class^="MobileFlexframe-"] > div.ad)
-mobile.nytimes.com##body > div#app > div > main#site-content > div[class^="Home-smartphone-"] > div[class^="css-"]:has(> div > div[class^="MobileFlexframe-"] > div.ad)
-mobile.nytimes.com##div[class^="Home-smartphone--"] > div >  div[class^="css-"]:has(> div > div[class^="MobileFlexframe-"] > div.ad)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/16642
 news.yahoo.co.jp##.listModBox > .listModBoxS[-ext-has='a[href^="https://app-adforce.jp"]']
 ! https://github.com/AdguardTeam/AdguardFilters/issues/16535
@@ -1662,6 +1657,10 @@ m.news.de##.unisterAdsStart
 !+ NOT_PLATFORM(ios, ext_android_cb)
 ||mobile.donanimhaber.com/ads^
 !
+fangraphs.com##div[id^="ra-mobile-unit-"]
+korrespondent.net##amp-iframe[src^="https://recreativ.ru/"]
+korrespondent.net##amp-iframe[src*=".lun.ua/"]
+www-spiegel-de.cdn.ampproject.org##.ampads
 obozrevatel.com##.banner-premium
 cnn.com###social-share_gig_containerParent .PartnerZone
 mobile.donanimhaber.com##body > div[style="float: left;width:100%;"] > div[style="margin:10px auto; text-align:center; width:300px; height:250px;"]
@@ -1771,7 +1770,7 @@ m.doisongphapluat.com##.list_news > li div.title_news > label._mB
 m.doisongphapluat.com##.list_news > li div.title_news > a[href^="http://bit.ly/"]
 m.doisongphapluat.com##.list_news > li > div.block_image_news > .thumb > a[href^="http://bit.ly/"]
 eg.ru##amp-embed[type="smi2"]
-chip.de,asahi.com,mainichi.jp,jp.ign.com##amp-embed[type="outbrain"]
+express.co.uk,chip.de,asahi.com,mainichi.jp,jp.ign.com##amp-embed[type="outbrain"]
 m.dcinside.com##.adv-inner
 m.dcinside.com##.adv-group
 m.dcinside.com##.adv-groupin
@@ -1827,7 +1826,6 @@ akket-com.cdn.ampproject.org##.ad_amp
 spiceworks.com##.mobile-topic_card-slot
 spiceworks.com##.mobile-topic_leaderboard-slot
 nytimes.com###site-content > div[class] > div[class^="css-"][class*=" e1"][class*="pa"]
-nytimes.com###app > div[class^="css-"][class*=" e1"][class*="pa"]
 nytimes.com##.css-p3qvdn
 elespanol.com###homeMobileAdvertising2
 ||m.ithome.com/api/lapin/
@@ -2167,9 +2165,6 @@ m.op-marburg.de,m.ln-online.de,m.dnn.de,m.maz-online.de,m.sn-online.de,m.paz-onl
 money.cnn.com##.ob-widget-section.ob-first
 wsj.com###AD_RAIL1.wsj-ad
 wsj.com##p > #deloitte_column > [data-module-zone="deloitte_insights"] > .deloitte-insights
-mobile.nytimes.com##[class^="ResponsiveAd-topAd--"]
-mobile.nytimes.com##[class^="ResponsiveAd-storyBodyAd--"]
-mobile.nytimes.com##[class^="ResponsiveAd-bottomAd--"]
 money.cnn.com##iframe[src^="http://money.cnn.com/.element/ssi/partners/"]
 m.3movs.com##.banner
 m.3movs.com###fltd.p-ig
@@ -2895,6 +2890,7 @@ m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m.news.yand
 !+ NOT_PLATFORM(ios, ext_safari, ext_android_cb)
 ||adj.st^
 !
+||appmetr.com^
 ||track.tenjin.io^
 ||stats.abbi.io^
 ||api.goodbarber.net/statsapi/
@@ -2932,7 +2928,6 @@ m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m.news.yand
 ||imp.startappservice.com^
 ||tracking.intl.miui.com^
 ||storeconfig.mistat.intl.xiaomi.com^
-||urbanairship.com^
 ||ploy.batmobi.net^
 ||an.batmobi.net^
 ||ustat.batmobi.net^
@@ -3076,6 +3071,7 @@ m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m.news.yand
 ||api.apptentive.com^
 ||api.branch.io^
 ||api.crittercism.com^
+||rubick.gameanalytics.com^
 ||api.gameanalytics.com^
 ||api.gimbal.com^
 ||api.sec.miui.com^
