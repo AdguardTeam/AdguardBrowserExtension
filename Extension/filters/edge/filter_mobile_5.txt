@@ -1,8 +1,8 @@
-! Checksum: O8z3vTxnL8fLeG2mJ2Dy0A
+! Checksum: yc21xuMcw81Xfm02/CUL5Q
 ! Title: AdGuard Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.0.44
-! TimeUpdated: 2019-02-18T23:31:09+03:00
+! Version: 2.0.0.45
+! TimeUpdated: 2019-02-27T00:02:54+03:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -25,8 +25,6 @@ $cookie=has_adblock,domain=24smi.org
 ~junodownload.com#%#document.onmouseout = null; window.onbeforeunload = null; window.blur = null;
 quora.com##.grid_page div[class][id] > div[class*=" "] > div[id^="__"]:has(.external_link):has( span + span[style="display: none;"])
 quora.com##.grid_page div[class][id] > div[class*=" "] > div[id^="__"]:has(.link_overlay):has( span + span[style="display: none;"])
-nytimes.com###site-content > div[class^="css-"][class*=" "] > div[class^="css-"][class*=" "] > div[class^="css-"][class*=" "]
-nytimes.com###app > div[class^="css-"][class*=" "]:not([data-reactroot]) > div[class^="css-"][class*=" "]
 wp.pl###section_topnews > div > div > ul[data-st-area="Glonews"] + div[class^="_"]
 wp.pl##ul[data-st-area="Wiadomosci"] > div > li[data-st-area="Wiadomosci"] + div[class^="_"]
 wp.pl###section_celebrities > div[class] > div[class] > div[class]:not([id]):not([style])

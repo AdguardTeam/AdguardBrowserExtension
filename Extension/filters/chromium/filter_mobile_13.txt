@@ -1,8 +1,8 @@
-! Checksum: 8wNb0/+Ikm69LGbuedgYuA
+! Checksum: IjgaBwQNlVJ0i5JnwtZOnw
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.5.33
-! TimeUpdated: 2019-02-22T16:30:19+03:00
+! Version: 2.0.5.47
+! TimeUpdated: 2019-03-04T17:30:13+03:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -11,6 +11,7 @@
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
 #%#var AG_abortInlineScript=function(d,e,f){var c;if("currentScript"in document)var b=function(){return document.currentScript};else b=function(){var a=document.getElementsByTagName("script");return a[a.length-1]},window.addEventListener("DOMContentLoaded",function(){b=function(){return null}});AG_defineProperty(e,{beforeGet:function(){var a=b();if(a&&a!==c&&(c=a,""===a.src&&d.test(a.textContent)))throw setTimeout(function(){console.warn("AdGuard aborted an execution of an inline script")}),null;}},f)};
 #%#var AG_defineProperty=function(){var p,q=Object.defineProperty;if("function"==typeof WeakMap)p=WeakMap;else{var r=0,t=function(){this.a=(r+=Math.random()).toString()};t.prototype.set=function(a,b){var d=a[this.a];d&&d[0]===a?d[1]=b:q(a,this.a,{value:[a,b],writable:!0});return this};t.prototype.get=function(a){var b;return(b=a[this.a])&&b[0]===a?b[1]:void 0};t.prototype.has=function(a){var b=a[this.a];return b?b[0]===a:!1};p=t}function u(a){this.b=a;this.h=Object.create(null)}function v(a,b,d,e){this.a=a;this.i=b;this.c=d;this.f=e}function w(){this.g=/^([^\\\.]|\\.)*?\./;this.j=/\\(.)/g;this.a=new p}function x(a,b){var d=b.f;if(d&&!("beforeGet"in d||"beforeSet"in d))return z(d);var e={get:function(){var c=b.f;c&&c.beforeGet&&c.beforeGet.call(this,b.a.b);a:if(c=b.g)c=A(c)?c.value:c.get?c.get.call(this):void 0;else{c=b.a.b;if(b.i in c&&(c=B(c),null!==c)){var d=C.call(c,b.i);c=d?d.call(this):c[b.i];break a}c=void 0}(this===b.a.b||D.call(b.a.b,this))&&E(a,c,b.c);return c},set:function(c){if(this===b.a.b||D.call(b.a.b,this)){b.f&&b.f.beforeSet&&(c=b.f.beforeSet.call(this,c,this));var d=b.g;d&&A(d)&&d.value===c?c=!0:(d=F(b,c,this),G(c)&&(c=H(a,c),I(a,c,b.c)),c=d)}else c=F(b,c,this);return c}};d&&J(d,e,K);return e}function I(a,b,d){for(var e in d.h){var c=d.h[e];if(b.h[e]){var h=a,g=b.h[e],k=c;!k.f||g.f||"undefined"===typeof g.a.b||g.g||(g.g=z(k.f));g.c&&k.c&&g.c!==k.c&&I(h,g.c,k.c)}else{g=h=void 0;k=a;var f=b,l=c.i,m="undefined"!==typeof f.b,y=!1;m&&(g=L(f.b,l))&&!g.configurable&&(y=!0,h=f.b[l]);var n=y?H(k,h):new u(c.c.b);I(k,n,c.c);n=new v(f,l,n,c.f);f.h[l]=n;m&&(n.g=g,m=x(k,n),y?E(k,h,c.c):(q(f.b,l,m),g&&A(g)&&(M(m,g.value,f.b),E(k,g.value,c.c))))}}}function E(a,b,d){G(b)&&(b=H(a,b),I(a,b,d))}function F(a,b,d){var e=a.g;if(!e){e=B(a.a.b);if(null!==e&&(e=N.call(e,a.i)))return e.call(d,b);if(!O(a.a.b))return!1;a.g={value:b,configurable:!0,writable:!0,enumerable:!0};return!0}return M(e,b,d)}function H(a,b){var d=a.a.get(b);d||(d=new u(b),a.a.set(b,d));return d}function A(a){return"undefined"!==typeof a.writable}function J(a,b,d){for(var e=0,c=d.length;e<c;e++){var h=d[e];h in a&&(b[h]=a[h])}}function z(a){if(a){var b={};J(a,b,P);return b}}function M(a,b,d){if(A(a))return a.writable?(a.value=b,!0):!1;if(!a.set)return!1;a.set.call(d,b);return!0}var P="configurable enumerable value get set writable".split(" "),K=P.slice(0,2),L=Object.getOwnPropertyDescriptor,O=Object.isExtensible,B=Object.getPrototypeOf,D=Object.prototype.isPrototypeOf,C=Object.prototype.__lookupGetter__||function(a){return(a=Q(this,a))&&a.get?a.get:void 0},N=Object.prototype.__lookupSetter__||function(a){return(a=Q(this,a))&&a.set?a.set:void 0};function Q(a,b){if(b in a){for(;!w.hasOwnProperty.call(a,b);)a=B(a);return L(a,b)}}function G(a){var b=typeof a;return"function"===b||"object"===b&&null!==a?!0:!1}var R;return function(a,b,d){R||(R=new w);var e=R;d=d||window;var c=new u;a+=".";var h=c||new u;for(var g=e.g,k=e.j,f,l,m;a;){f=g.exec(a);if(null===f)throw 1;f=f[0].length;l=a.slice(0,f-1).replace(k,"$1");a=a.slice(f);(f=h.h[l])?m=f.c:(m=new u,f=new v(h,l,m),h.h[l]=f);h=m}if(!f)throw 1;a=f;a.f=b;E(e,d,c)};}();
+||dogus-ads-cdn.dygdigital.com^$third-party
 ||adimage.media^$third-party
 ||adnatro.com^$third-party
 ||betkanyon100.com^$third-party
@@ -284,6 +285,7 @@ masonlar.org,ogznet.com,tercihiniyap.net,mertcangokgoz.com,hdturk.de,dizired.com
 miuiturkiye.net,turkanime.tv,androidatesi.com,medyaradar.com,muhendisimaaslari.com,hesaplama.net,unikampus.net,saglamindir.net,globalklavye.com#%#(function() { var noopfn = function() {;}; var Fab = function() {}; Fab.prototype.check = noopfn; Fab.prototype.clearEvent = noopfn;  Fab.prototype.emitEvent = noopfn; Fab.prototype.on = function(a, b) { if ( !a ) { b(); } return this; }; Fab.prototype.onDetected = function() {  return this; }; Fab.prototype.onNotDetected = function(a) { a(); return this; }; Fab.prototype.setOption = noopfn; var fab = new Fab(),  getSetFab = { get: function() { return Fab; }, set: function() {} }, getsetfab = { get: function() { return fab; }, set: function() {} }; if ( window.hasOwnProperty('FuckAdBlock') ) { window.FuckAdBlock = Fab; } else { Object.defineProperty(window, 'FuckAdBlock', getSetFab); } if ( window.hasOwnProperty('BlockAdBlock') ) { window.BlockAdBlock = Fab; } else {Object.defineProperty(window, 'BlockAdBlock', getSetFab); } if ( window.hasOwnProperty('SniffAdBlock') ) { window.SniffAdBlock = Fab; } else { Object.defineProperty(window, 'SniffAdBlock', getSetFab); } if ( window.hasOwnProperty('fuckAdBlock') ) { window.fuckAdBlock = fab; } else { Object.defineProperty(window, 'fuckAdBlock', getsetfab); } if ( window.hasOwnProperty('blockAdBlock') ) { window.blockAdBlock = fab; } else { Object.defineProperty(window, 'blockAdBlock', getsetfab); } if ( window.hasOwnProperty('sniffAdBlock') ) { window.sniffAdBlock = fab; } else { Object.defineProperty(window, 'sniffAdBlock', getsetfab); } })();
 gazetedamga.com.tr,miuiturkiye.net,turkanime.tv,androidatesi.com,medyaradar.com,muhendisimaaslari.com,androidmakale.com,guzelresimler.info,hesaplama.net,unikampus.net,saglamindir.net,globalklavye.com#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
 sportbosshd3.wtf,trgoals1.live,sportbosshd2.wtf,tumkarikaturler.com,trgoals.live,csgohileleri.org,brtfix.com,merlininkazani.com,serialbumler.com#%#AG_abortInlineScript(/google_ad_client/, 'document.addEventListener');
+intekno.net#@##adcontent
 @@||findflac.com/d/show_ads.js
 ifsalarlayasiyoruz.net#@##adsense
 @@||teve2.com.tr/static_files/adframe.js
@@ -774,6 +776,7 @@ fullhdfilmizlesene.org#%#window.local = true;
 dizimag.net#%#Object.defineProperty(window, '_pop', { get: function() { return {}; } });
 fullhdfilmizlesene.org,ultrahdfilmizle.org#%#AG_onLoad(function() { window.startScript = function() {}; });
 mp3bedavam.com#%#window.zfgloadedpopup = true;
+canlimacyayini.net#%#document.cookie = "popup=true; path=/;";
 technopat.net#%#Object.defineProperty(window, 'td_ad_background_click_link', { get: function() { return ""; } });
 aydinses.com#%#AG_onLoad(function() { if (window.location.pathname.indexOf('/tanitim.php') > -1) { document.cookie = "cookbanner=8saniye; path=/;"; var el = document.querySelector('.giris > a[href^="http://www.aydinses.com/?hid="][href$="&interstitial=true"]'); if(el) { el.click(); } } });
 gazetedamga.com.tr#%#AG_onLoad(function() { if (window.location.pathname.indexOf('/tanitim.php') > -1) { document.cookie = "modalads=yes; path=/;"; var el = document.querySelector('.giris > a[href^="https://www.gazetedamga.com.tr/?hid="][href$="&interstitial=true"]'); if(el) { el.click(); } } });
@@ -841,6 +844,7 @@ finikeakdeniz.com.tr#%#AG_onLoad(function() { if (window.location.href.indexOf("
 altyazilifilmizle.org#%#AG_onLoad(function() { psrklm_kpt(); });
 denizliguncel.com#%#AG_onLoad(function() { window.number.innerHTML = 1; });
 mackolik.com,sahadan.com#%#setTimeout ("HideFloatAdBanner()", 1000);
+indirin.co#$#a[href^="https://ads.lnklnk.com"] { position: absolute!important; left: -3000px!important; }
 technopat.net#$#body.td-ad-background-link { background-image: none!important; }
 technopat.net#$#body.td-ad-background-link #td-outer-wrap { cursor: auto!important; }
 fullhdfilmizlesene.net#$#body > div.orta:has(> div) { margin:20px auto 0!important; }
@@ -1212,6 +1216,7 @@ onlinefilm.co#$#.tab-reklam { display: none!important; }
 sinemapol.org#$##video-oncesi { display: none!important; }
 sinemapol.org#$##video { display: block!important; }
 720p-izle.com#$##reklami { display: none!important; }
+canlimacyayini.net#$#body { background-color: #000!important; }
 dizilab.pw#$#body { background: #2f2f2f!important; }
 itemci.com#$#body { background: none!important; }
 canli.bahislet1.com,sporpark.tv,1mac24.tv#$#body { background: #143a00!important; }
@@ -1385,7 +1390,7 @@ izlemeyedeger.com#$#.remodal-is-locked {overflow:visible!important}
 /wp-content/uploads/*_reklam.
 ||media.*.com/renderimage.aspx?pid=$third-party
 ||wingobet10.com/banner/$third-party
-://i.hizliresim.com^$domain=filmizle.movie|sporpark.tv|dizilla.com|iddaanet.com|dizipas.net|bifilmizlesene.net|dizison.com|radardizi.com|sekfilmizle.com|filmslab.co|sinefilm.net|filmexpresi2.com|fulldiziizleyin.org|fanfilmizle.com|hdizletekpart.net|gameinsano.com|hddiziizlez.com|xsportv2.com|pornfilmi.info|filmtadim.net|filmizleburda.org|filmizlepix.com|fullhdfilmtekpart.com|diziizleyin.org|filmizleburda.net|filmexpresi2.com|sozlerisozu.com|bedavamacizle.tv|filmkeyif.com|unutulmazfilmler.co|ispor.net|macizlesene.tv|tekparthd.net|canlihddizi.com|pasgol.tv|trdublajizle.net|seyirlikfilm.org|hdfilmizlemelisin.com|hdfilmekani.com|ilkhdfilmcehennemi.com|fulldizi7.com|filmkorku.org|fullhdfilm.gen.tr|filmizletekparca.com|filmifullhizliizle.com|ajans32.com|sezonlukdizi.net|hdfilmgecesi.co|filmionlineizle.net|higshoes.com|filmotoru.org|canlimaclar.co|sendeizlesene.net|filmihizliizle.com|limitsizfilmizle.net|hizlifullfilmizle.com|4ia.net|filmifullizle.org|bankotahminler2.org|hintfilmi.net|720pfilmizle.tv|asyafanatikleri.net|diziay.com|fullfilmihdizlesene.com|haber32.com.tr|hdfilmarenasi.com|sinemapol.org|sports.gool7.net|tekparthdkeyfi.com|fullfilmsitesi.com|hdfilmakinasi.com|filmizle.ninja
+://i.hizliresim.com^$domain=fiilmizleyeni.com|filmizle.movie|sporpark.tv|dizilla.com|iddaanet.com|dizipas.net|bifilmizlesene.net|dizison.com|radardizi.com|sekfilmizle.com|filmslab.co|sinefilm.net|filmexpresi2.com|fulldiziizleyin.org|fanfilmizle.com|hdizletekpart.net|gameinsano.com|hddiziizlez.com|xsportv2.com|pornfilmi.info|filmtadim.net|filmizleburda.org|filmizlepix.com|fullhdfilmtekpart.com|diziizleyin.org|filmizleburda.net|filmexpresi2.com|sozlerisozu.com|bedavamacizle.tv|filmkeyif.com|unutulmazfilmler.co|ispor.net|macizlesene.tv|tekparthd.net|canlihddizi.com|pasgol.tv|trdublajizle.net|seyirlikfilm.org|hdfilmizlemelisin.com|hdfilmekani.com|ilkhdfilmcehennemi.com|fulldizi7.com|filmkorku.org|fullhdfilm.gen.tr|filmizletekparca.com|filmifullhizliizle.com|ajans32.com|sezonlukdizi.net|hdfilmgecesi.co|filmionlineizle.net|higshoes.com|filmotoru.org|canlimaclar.co|sendeizlesene.net|filmihizliizle.com|limitsizfilmizle.net|hizlifullfilmizle.com|4ia.net|filmifullizle.org|bankotahminler2.org|hintfilmi.net|720pfilmizle.tv|asyafanatikleri.net|diziay.com|fullfilmihdizlesene.com|haber32.com.tr|hdfilmarenasi.com|sinemapol.org|sports.gool7.net|tekparthdkeyfi.com|fullfilmsitesi.com|hdfilmakinasi.com|filmizle.ninja
 ://i.resimyukle.xyz^$domain=rexfilmizle.com|sporpark.tv
 ||i.hizliresim.com/z0rBkR.png
 ||i.hizliresim.com/oOyRAo.gif
@@ -1426,6 +1431,35 @@ azginlar.party##a[href^="tel:"]
 wmporn.com###vplayer > div[style*="background"]
 !+ NOT_PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
 ||yeniasya.com.tr/sites/yeniasya/static/*-kampanya
+sahadan.com##.widget-idda-tuttur
+timeturk.com##div[style="margin:10px 0px;"] > fieldset[style="border: 1px solid!important;padding:10px;color:8a8a8a;"]
+gazetekarinca.com##a[href="https://www.modasahnesi.com/"] > img
+mackolik.com##.widget-iddaa-tuttur-onebytwo
+harpersbazaar.com.tr,samdan.com.tr,esquire.com.tr##.gl-advert
+harpersbazaar.com.tr,samdan.com.tr,esquire.com.tr##div[data-wbzone$="extlink"] > div#id_m_textlink
+harpersbazaar.com.tr,samdan.com.tr,esquire.com.tr##div[data-mbzone$="extlink"] > div#id_d_textlink
+fiilmizleyeni.com##.r-uc-i
+fiilmizleyeni.com##.r-yedi-u
+fiilmizleyeni.com###\37 28x90_footer
+ntv.com.tr##.mitsubishi-link
+||f5haber.com/includes/sagNewsMerged.aspx
+f5haber.com###mastheadReklamDiv
+||f5haber.com/includes/onedio_frame.aspx
+canlimacyayini.net##.footer-nav
+canlimacyayini.net##.make-coupon
+canlimacyayini.net##div[align="center"] > a[href][target="_blank"] > img
+canlimacyayini.net##.navbar-nav > li:not(.home):not(.video):not(.dropdown) > a[href][target="_blank"]
+||imgbox.com/*.gif$domain=canlimacyayini.net
+||canlimacyayini.net/assets/uploads/banners/
+paylasaninsanlar.blogspot.com###main > #HTML1
+paylasaninsanlar.blogspot.com###headads
+paylasaninsanlar.blogspot.com###koddostureklamkodu
+paylasaninsanlar.blogspot.com##.sidebar > #HTML2
+paylasaninsanlar.blogspot.com##.sidebar > #HTML4
+bianet.org##.banner_main
+bianet.org##.ad52-container
+akillitelefon.com##.adace-slot-wrapper
+||gittigidiyor.com/affiliate_*.js
 cimri.com###main_container a[id^="product_detail_ad_"]
 cimri.com###main_container > a[href][style][data-type="page_skins"][rel="nofollow noopener"]
 larende.com##.frontendAd
@@ -2427,7 +2461,7 @@ hurriyet.com.tr##.ban300x250
 patronlardunyasi.com##div[style^="width:1000px;"] div[style*="width:300px;"][style*="height:250px;"]
 wikipedia.kim##.band-alert
 ||milligazete.com.tr/service/advertchannels^
-aspor.com.tr,sabah.com.tr##.adControl
+harpersbazaar.com.tr,samdan.com.tr,esquire.com.tr,aspor.com.tr,sabah.com.tr##.adControl
 akampus.com##div[id][data-ads]
 ||malatyahaber.com/wp-content/uploads/*/ARFEN-TUR-KAYA-AJANSSS
 malatyahaber.com##a[href^="http://gucyapiinsaat.com.tr"]
