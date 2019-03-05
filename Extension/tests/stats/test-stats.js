@@ -86,6 +86,7 @@ QUnit.test("Test Page Stats", function (assert) {
         assert.equal(totalBlocked, 24);
 
         const now = new Date();
+        now.setHours(0, 0, 0, 0);
 
         // test adding first filter data
         const firstFilter = adguard.subscriptions.getFilter(1);
