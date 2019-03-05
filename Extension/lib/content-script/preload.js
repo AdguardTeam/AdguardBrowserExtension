@@ -181,20 +181,24 @@
      * Processes response from the background page containing CSS and JS injections
      * @param response Response from the background page
      */
-    var processCssAndScriptsResponse = function (response) {
+    const processCssAndScriptsResponse = (response) => {
         if (!response || response.requestFilterReady === false) {
             /**
              * This flag (requestFilterReady) means that we should wait for a while, because the
              * request filter is not ready yet. This is possible only on browser startup.
              * In this case we'll delay injections until extension is fully initialized.
              */
-            setTimeout(function () {
-                tryLoadCssAndScripts();
-            }, 100);
-
+            setTimeout(tryLoadCssAndScripts, 100);
             return;
-        } else if (response.collapseAllElements) {
+        }
 
+        if (response.collectRulesHits) {
+            CssHitsCounter.init((stats) => {
+                getContentPage().sendMessage({ type: 'saveCssHitStats', stats });
+            });
+        }
+
+        if (response.collapseAllElements) {
             /**
              * This flag (collapseAllElements) means that we should check all page elements
              * and collapse them if needed. Why? On browser startup we can't block some
@@ -208,13 +212,6 @@
             applySelectors(response.selectors);
             applyScripts(response.scripts);
         }
-        getContentPage().sendMessage({ type: 'isCssHitsCounterEnabled' }, function (response) {
-            if (response && response === true) {
-                CssHitsCounter.init(function (stats) {
-                    getContentPage().sendMessage({ type: 'saveCssHitStats', stats: stats });
-                });
-            }
-        });
     };
 
     /**

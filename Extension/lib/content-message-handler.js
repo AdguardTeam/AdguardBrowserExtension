@@ -359,9 +359,6 @@
             case 'saveCssHitStats':
                 processSaveCssHitStats(sender.tab, message.stats);
                 break;
-            case 'isCssHitsCounterEnabled':
-                callback(adguard.webRequestService.isCollectingCosmeticRulesHits(sender.tab));
-                break;
             // Sync messages
             case 'setSyncProvider':
                 adguard.sync.syncService.setSyncProvider(message.provider);
