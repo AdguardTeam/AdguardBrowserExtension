@@ -147,6 +147,8 @@ adguard.webRequestService = (function (adguard) {
             }
         }
 
+        result.collectRulesHits = adguard.webRequestService.isCollectingCosmeticRulesHits(tab);
+
         return result;
     };
 
