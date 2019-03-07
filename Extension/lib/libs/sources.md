@@ -75,9 +75,9 @@ These libs are developed by us from scratch.
 * Library source: https://github.com/AdguardTeam/FiltersDownloader/tree/18dfa7edddb26dfbe7e86c0d29fa38a4800c5b7d
 ​
 #### `extended-css.js`
-* v1.1.0
+* v1.1.1
 * Licence: MIT
-* Library source: https://github.com/AdguardTeam/ExtendedCss/tree/1.1.0
+* Library source: https://github.com/AdguardTeam/ExtendedCss/tree/1.1.1
 ​
 #### `lib/content-script/assistant.js`
 * v4.3.8
