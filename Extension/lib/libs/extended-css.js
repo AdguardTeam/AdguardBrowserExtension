@@ -1,4 +1,4 @@
-/*! extended-css - v1.1.0 - 2019-03-01
+/*! extended-css - v1.1.1 - 2019-03-07
 * https://github.com/AdguardTeam/ExtendedCss
 * Copyright (c) 2019 ; Licensed Apache License 2.0 */
 var ExtendedCss = (function(window) {
@@ -4406,6 +4406,7 @@ function ExtendedCss(configuration) {
             document.addEventListener('DOMAttrModified', callback, false);
         }
     }
+
     function disconnectDocument(callback) {
         if (domMutationObserver) {
             domMutationObserver.disconnect();
@@ -4600,6 +4601,10 @@ function ExtendedCss(configuration) {
      */
     function applyRules() {
         var elementsIndex = [];
+        // some rules could make call - selector.querySelectorAll() temporarily to change node id attribute
+        // this caused MutationObserver to call recursively
+        // https://github.com/AdguardTeam/ExtendedCss/issues/81
+        stopObserve();
 
         for (var _i4 = 0, _rules = rules; _i4 < _rules.length; _i4++) {
             var rule = _rules[_i4];
@@ -4619,7 +4624,8 @@ function ExtendedCss(configuration) {
                 affectedElements.splice(l, 1);
             }
         }
-
+        // After styles are applied we can start observe again
+        observe();
         printTimingInfo();
     }
 
@@ -4637,9 +4643,16 @@ function ExtendedCss(configuration) {
         observeDocument(mainCallback);
     }
 
+    function stopObserve() {
+        if (!domObserved) {
+            return;
+        }
+        domObserved = false;
+        disconnectDocument(mainCallback);
+    }
+
     function apply() {
         applyRules();
-        observe();
 
         if (document.readyState !== "complete") {
             document.addEventListener("DOMContentLoaded", applyRules);
@@ -4650,10 +4663,7 @@ function ExtendedCss(configuration) {
      * Disposes ExtendedCss and removes our styles from matched elements
      */
     function dispose() {
-        if (domObserved) {
-            disconnectDocument(mainCallback);
-            domObserved = false;
-        }
+        stopObserve();
 
         for (var _i5 = 0; _i5 < affectedElements.length; _i5++) {
             var obj = affectedElements[_i5];
