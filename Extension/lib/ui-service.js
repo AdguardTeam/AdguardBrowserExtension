@@ -403,12 +403,12 @@ adguard.ui = (function (adguard) { // jshint ignore:line
      * @param previousVersion
      */
     function getUpdateDescriptionMessage(currentVersion, previousVersion) {
-        if (adguard.utils.browser.getMajorVersionNumber(currentVersion) > adguard.utils.browser.getMajorVersionNumber(previousVersion) ||
-            adguard.utils.browser.getMinorVersionNumber(currentVersion) > adguard.utils.browser.getMinorVersionNumber(previousVersion)) {
-            return adguard.i18n.getMessage("options_popup_version_update_description_major");
+        if (adguard.utils.browser.isMajorUpdate(currentVersion, previousVersion)) {
+            return adguard.i18n.getMessage('options_popup_version_update_description_major');
         }
-
-        return adguard.i18n.getMessage("options_popup_version_update_description_minor");
+        if (adguard.utils.browser.isMinorUpdate(currentVersion, previousVersion)) {
+            return adguard.i18n.getMessage('options_popup_version_update_description_minor');
+        }
     }
 
     /**
@@ -418,6 +418,10 @@ adguard.ui = (function (adguard) { // jshint ignore:line
      * @param previousVersion
      */
     function showVersionUpdatedPopup(currentVersion, previousVersion) {
+        // Do not show update popup for patch updates
+        if (adguard.utils.browser.isPatchUpdate(currentVersion, previousVersion)) {
+            return;
+        }
         const message = {
             type: 'show-version-updated-popup',
             title: adguard.i18n.getMessage('options_popup_version_update_title', currentVersion),

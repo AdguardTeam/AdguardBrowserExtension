@@ -118,6 +118,48 @@
         },
 
         /**
+         * Returns patch number of version
+         *
+         * @param version
+         */
+        getPatchVersionNumber: function (version) {
+            var v = new Version(version);
+            return v.version[2];
+        },
+
+        updateTypes: {
+            MAJOR: 'major',
+            MINOR: 'minor',
+            PATCH: 'patch',
+            OTHER: 'other',
+        },
+
+        getUpdateType: function (currentVersion, previousVersion) {
+            if (this.getMajorVersionNumber(currentVersion) > this.getMajorVersionNumber(previousVersion)) {
+                return this.updateTypes.MAJOR;
+            }
+            if (this.getMinorVersionNumber(currentVersion) > this.getMinorVersionNumber(previousVersion)) {
+                return this.updateTypes.MINOR;
+            }
+            if (this.getPatchVersionNumber(currentVersion) > this.getPatchVersionNumber(previousVersion)) {
+                return this.updateTypes.PATCH;
+            }
+            return this.updateTypes.OTHER;
+        },
+
+        isMajorUpdate: function (curVersion, prevVersion) {
+            return this.getUpdateType(curVersion, prevVersion) === this.updateTypes.MAJOR;
+        },
+
+        isMinorUpdate: function (curVersion, prevVersion) {
+            return this.getUpdateType(curVersion, prevVersion) === this.updateTypes.MINOR;
+        },
+
+        isPatchUpdate: function (curVersion, prevVersion) {
+            return this.getUpdateType(curVersion, prevVersion) === this.updateTypes.PATCH;
+        },
+
+        /**
          * @returns Extension version
          */
         getAppVersion: function () {
