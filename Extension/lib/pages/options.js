@@ -145,7 +145,7 @@ var TopMenu = (function () {
             tab = document.querySelector(tabId);
         }
 
-        var antibannerTabs = document.querySelectorAll('[data-tab="' + ANTIBANNER + '"]');
+        var antibannerTabs = [].slice.call(document.querySelectorAll('[data-tab="' + ANTIBANNER + '"]'));
 
         if (prevTabId) {
             if (prevTabId.indexOf(ANTIBANNER) === 0) {
@@ -187,8 +187,8 @@ var TopMenu = (function () {
         onHashUpdatedCallback = options.onHashUpdated;
 
         window.addEventListener('hashchange', toggleTab);
-        document.querySelectorAll('[data-tab]').forEach(function (el) {
-            el.addEventListener('click', function (e) {
+        [].slice.call(document.querySelectorAll('[data-tab]')).forEach((el) => {
+            el.addEventListener('click', (e) => {
                 e.preventDefault();
                 document.location.hash = el.getAttribute('data-tab');
             });
@@ -953,7 +953,7 @@ var AntiBannerFilters = function (options) {
             emptyFiltersAddCustomButton.addEventListener('click', addCustomFilter);
         }
 
-        document.querySelectorAll('.add-custom-filter-button').forEach((el) => {
+        [].slice.call(document.querySelectorAll('.add-custom-filter-button')).forEach((el) => {
             el.addEventListener('click', addCustomFilter);
         });
     }
@@ -1072,7 +1072,7 @@ var AntiBannerFilters = function (options) {
 
         CheckboxUtils.toggleCheckbox(target.querySelectorAll('.opt-state input[type=checkbox]'));
 
-        document.querySelectorAll('.remove-custom-filter-button').forEach((el) => {
+        [].slice.call(document.querySelectorAll('.remove-custom-filter-button')).forEach((el) => {
             el.addEventListener('click', removeCustomFilter);
         });
     };

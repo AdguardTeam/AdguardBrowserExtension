@@ -185,7 +185,7 @@ PageController.prototype = {
         this.searchWhitelisted = false;
 
         // Bind click to reload tab
-        const reloadTabs = document.querySelectorAll('.reloadTab');
+        const reloadTabs = [].slice.call(document.querySelectorAll('.reloadTab'));
         if (reloadTabs.length <= 0) {
             return;
         }
@@ -421,9 +421,9 @@ PageController.prototype = {
         });
 
         // bind click to filter by type
-        var searchEventTypeItems = document.querySelectorAll('.searchEventType');
-        searchEventTypeItems.forEach(function (item) {
-            item.addEventListener('click', function (e) {
+        const searchEventTypeItems = [].slice.call(document.querySelectorAll('.searchEventType'));
+        searchEventTypeItems.forEach((item) => {
+            item.addEventListener('click', (e) => {
                 e.preventDefault();
 
                 self.removeClass(searchEventTypeItems, 'active');
@@ -437,9 +437,9 @@ PageController.prototype = {
             });
         });
 
-        var radioWraps = document.querySelectorAll('.checkb-wrap');
-        radioWraps.forEach(function (w) {
-            w.addEventListener('click', function () {
+        const radioWraps = [].slice.call(document.querySelectorAll('.checkb-wrap'));
+        radioWraps.forEach((w) => {
+            w.addEventListener('click', () => {
                 var checkbox = w.querySelector('.checkbox');
                 checkbox.classList.toggle('active');
 
@@ -769,7 +769,7 @@ var RequestWizard = (function () {
             rulePatternsEl.appendChild(htmlToElement(rulePatternTemplate));
         }
 
-        const rulePatterns = template.querySelectorAll('[name="rulePattern"]');
+        const rulePatterns = [].slice.call(template.querySelectorAll('[name="rulePattern"]'));
         const ruleDomainCheckbox = template.querySelector('[name="ruleDomain"]');
         const ruleImportantCheckbox = template.querySelector('[name="ruleImportant"]');
         const ruleMatchCaseCheckbox = template.querySelector('[name="ruleMatchCase"]');
