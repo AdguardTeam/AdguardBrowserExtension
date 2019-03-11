@@ -20,7 +20,7 @@
 /**
  * Controller that manages add-on popup window
  */
-const PopupController = function () {
+var PopupController = function () {
 };
 
 PopupController.prototype = {
@@ -30,7 +30,7 @@ PopupController.prototype = {
      * @param tabInfo
      * @param options
      */
-    render(tabInfo, options) {
+    render: function (tabInfo, options) {
         this.tabInfo = tabInfo;
         this.options = options || {};
 
@@ -43,64 +43,62 @@ PopupController.prototype = {
         this.afterRender();
     },
 
-    resizePopupWindow() {
-        const widget = document.querySelector('.widget-popup');
-        const width = widget.offsetWidth;
-        const height = widget.offsetHeight;
+    resizePopupWindow: function () {
+        var widget = document.querySelector('.widget-popup');
+        var width = widget.offsetWidth;
+        var height = widget.offsetHeight;
         popupPage.resizePopup(width, height);
     },
 
-    afterRender() {
+    afterRender: function () {
         // Should be overwritten
     },
 
-    addWhiteListDomain(url) {
-        popupPage.sendMessage({ type: 'addWhiteListDomainPopup', url });
+    addWhiteListDomain: function (url) {
+        popupPage.sendMessage({ type: 'addWhiteListDomainPopup', url: url });
     },
 
-    removeWhiteListDomain(url) {
-        popupPage.sendMessage({ type: 'removeWhiteListDomainPopup', url });
+    removeWhiteListDomain: function (url) {
+        popupPage.sendMessage({ type: 'removeWhiteListDomainPopup', url: url });
     },
 
-    changeApplicationFilteringDisabled(disabled) {
-        popupPage.sendMessage({ type: 'changeApplicationFilteringDisabled', disabled });
+    changeApplicationFilteringDisabled: function (disabled) {
+        popupPage.sendMessage({ type: 'changeApplicationFilteringDisabled', disabled: disabled });
     },
 
-    sendFeedback(url, topic, comment) {
-        popupPage.sendMessage({
-            type: 'sendFeedback', url, topic, comment,
-        });
+    sendFeedback: function (url, topic, comment) {
+        popupPage.sendMessage({ type: 'sendFeedback', url: url, topic: topic, comment: comment });
     },
 
-    openSiteReportTab(url) {
-        popupPage.sendMessage({ type: 'openSiteReportTab', url });
+    openSiteReportTab: function (url) {
+        popupPage.sendMessage({type: 'openSiteReportTab', url: url});
     },
 
-    openAbuseTab(url) {
-        popupPage.sendMessage({ type: 'openAbuseTab', url });
+    openAbuseTab: function (url) {
+        popupPage.sendMessage({ type: 'openAbuseTab', url: url });
     },
 
-    openSettingsTab() {
+    openSettingsTab: function () {
         popupPage.sendMessage({ type: 'openSettingsTab' });
     },
 
-    openAssistantInTab() {
+    openAssistantInTab: function () {
         popupPage.sendMessage({ type: 'openAssistant' });
     },
 
-    openFilteringLog(tabId) {
-        popupPage.sendMessage({ type: 'openFilteringLog', tabId });
+    openFilteringLog: function (tabId) {
+        popupPage.sendMessage({ type: 'openFilteringLog', tabId: tabId });
     },
 
-    resetBlockedAdsCount() {
+    resetBlockedAdsCount: function () {
         popupPage.sendMessage({ type: 'resetBlockedAdsCount' });
     },
 
-    openLink(url) {
-        popupPage.sendMessage({ type: 'openTab', url });
+    openLink: function (url) {
+        popupPage.sendMessage({ type: 'openTab', url: url });
     },
 
-    updateTotalBlocked(tabInfo) {
+    updateTotalBlocked: function (tabInfo) {
         this.tabInfo = tabInfo;
         const { totalBlockedTab, totalBlocked } = tabInfo;
         if (totalBlockedTab) {
@@ -118,7 +116,7 @@ PopupController.prototype = {
         }
     },
 
-    _renderPopup(tabInfo) {
+    _renderPopup: function (tabInfo) {
         const parent = document.querySelector('.widget-popup');
 
         const containerHeader = document.querySelector('.widget-popup__header');
@@ -213,19 +211,20 @@ PopupController.prototype = {
         this._renderStats(containerStats);
         this._renderFooter(footerContainer, tabInfo, this.options);
         this._renderNotificationBlock(footerContainer, tabInfo, this.options);
+
     },
 
-    _getTemplate(id) {
-        return document.querySelector(`#${id}`).cloneNode(true);
+    _getTemplate: function (id) {
+        return document.querySelector('#' + id).cloneNode(true);
     },
 
-    _appendTemplate(container, template) {
-        Array.from(template.childNodes).forEach((c) => {
+    _appendTemplate: function (container, template) {
+        [].slice.call(template.childNodes).forEach(function (c) {
             container.appendChild(c.cloneNode(true));
         });
     },
 
-    _renderHeader(container, tabInfo) {
+    _renderHeader: function (container, tabInfo) {
         const template = this.filteringHeader;
         if (tabInfo.adguardDetected) {
             const headerButtons = template.querySelector('#popup-header-buttons');
@@ -236,7 +235,7 @@ PopupController.prototype = {
         this._appendTemplate(container, template);
     },
 
-    _renderNotificationBlock(container, tabInfo, options) {
+    _renderNotificationBlock: function (container, tabInfo, options) {
         // Do not show notification
         if (!options.notification || tabInfo.adguardDetected) {
             return;
@@ -264,8 +263,9 @@ PopupController.prototype = {
         popupPage.sendMessage({ type: 'setNotificationViewed', withDelay: true });
     },
 
-    _renderMain(container, tabInfo) {
-        let template;
+    _renderMain: function (container, tabInfo) {
+
+        var template;
         if (tabInfo.adguardDetected) {
             template = this.filteringIntegrationHeader;
             const headTitleElement = template.querySelector('.head .msg');
@@ -278,11 +278,11 @@ PopupController.prototype = {
             }
         } else {
             template = this.filteringDefaultHeader;
-            const tabBlocked = template.querySelector('.blocked-tab');
-            const totalBlocked = template.querySelector('.blocked-all');
+            var tabBlocked = template.querySelector('.blocked-tab');
+            var totalBlocked = template.querySelector('.blocked-all');
             i18n.translateElement(tabBlocked, 'popup_tab_blocked', [this._formatNumber(tabInfo.totalBlockedTab || 0)]);
             i18n.translateElement(totalBlocked, 'popup_tab_blocked_all', [this._formatNumber(tabInfo.totalBlocked || 0)]);
-            const closestWidgetFilter = tabBlocked.closest('.widget-popup-filter');
+            var closestWidgetFilter = tabBlocked.closest('.widget-popup-filter');
             if (closestWidgetFilter) {
                 if (tabInfo.totalBlocked >= 10000000) {
                     closestWidgetFilter.classList.add('db');
@@ -295,34 +295,38 @@ PopupController.prototype = {
         this._appendTemplate(container, template);
     },
 
-    _renderFilteringControls(container, tabInfo) {
-        const template = this.filteringControlDefault;
+    _renderFilteringControls: function (container, tabInfo) {
+        var template = this.filteringControlDefault;
         if (tabInfo.urlFilteringDisabled) {
             return;
         }
         this._appendTemplate(container, template);
     },
 
-    _renderStatus(container, tabInfo) {
-        const template = this.filteringStatusText;
+    _renderStatus: function (container, tabInfo) {
+        var template = this.filteringStatusText;
 
-        let text = '';
+        var text = '';
         if (tabInfo.urlFilteringDisabled) {
             text = 'popup_site_filtering_state_tab_unavailable';
         } else if (tabInfo.applicationFilteringDisabled) {
             text = 'popup_site_filtering_state_paused';
-        } else if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
-            text = 'popup_site_filtering_state_subscription_unavailable';
-        } else if (tabInfo.documentWhiteListed) {
-            text = 'popup_site_filtering_state_disabled';
         } else {
-            text = 'popup_site_filtering_state_enabled';
+            if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
+                text = 'popup_site_filtering_state_subscription_unavailable';
+            } else {
+                if (tabInfo.documentWhiteListed) {
+                    text = 'popup_site_filtering_state_disabled';
+                } else {
+                    text = 'popup_site_filtering_state_enabled';
+                }
+            }
         }
 
-        const statusElement = template.querySelector('.status');
+        var statusElement = template.querySelector('.status');
         i18n.translateElement(statusElement, text);
 
-        const currentSiteElement = template.querySelector('.current-site');
+        var currentSiteElement = template.querySelector('.current-site');
         currentSiteElement.textContent = tabInfo.domainName ? tabInfo.domainName : tabInfo.url;
 
         if (tabInfo.urlFilteringDisabled) {
@@ -332,25 +336,27 @@ PopupController.prototype = {
         this._appendTemplate(container, template);
     },
 
-    _renderMessage(container, tabInfo) {
-        let text;
+    _renderMessage: function (container, tabInfo) {
+        var text;
         if (tabInfo.urlFilteringDisabled) {
             text = 'popup_site_filtering_disabled';
         } else if (tabInfo.applicationFilteringDisabled) {
 
-        } else if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
-            text = 'popup_site_exception_info';
+        } else {
+            if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
+                text = 'popup_site_exception_info';
+            }
         }
 
-        const template = this.filteringMessageText;
+        var template = this.filteringMessageText;
         if (text) {
             i18n.translateElement(template.childNodes[1], text);
             this._appendTemplate(container, template);
         }
     },
 
-    _selectRequestTypesStatsData(stats, range) {
-        let result = {};
+    _selectRequestTypesStatsData: function (stats, range) {
+        var result = {};
 
         switch (range) {
             case 'day':
@@ -386,33 +392,33 @@ PopupController.prototype = {
         return result;
     },
 
-    _selectRequestsStatsData(stats, range, type) {
+    _selectRequestsStatsData: function (stats, range, type) {
         const result = [];
         switch (range) {
             case 'day':
-                stats.today.forEach((d) => {
+                stats.today.forEach(function (d) {
                     result.push(d[type]);
                 });
                 break;
             case 'week':
-                stats.lastWeek.forEach((d) => {
+                stats.lastWeek.forEach(function (d) {
                     result.push(d[type]);
                 });
                 break;
             case 'month':
-                stats.lastMonth.forEach((d) => {
+                stats.lastMonth.forEach(function (d) {
                     result.push(d[type]);
                 });
                 break;
             case 'year':
-                stats.lastYear.forEach((d) => {
+                stats.lastYear.forEach(function (d) {
                     result.push(d[type]);
                 });
                 break;
             default:
                 break;
         }
-        return result.map(val => (val === undefined ? 0 : val));
+        return result.map(val => val === undefined ? 0 : val);
     },
 
     DAYS_OF_WEEK: (function () {
@@ -425,9 +431,9 @@ PopupController.prototype = {
             i18n.getMessage('popup_statistics_week_days_sat'),
             i18n.getMessage('popup_statistics_week_days_sun'),
         ];
-    }()),
+    })(),
 
-    _dayOfWeekAsString(dayIndex) {
+    _dayOfWeekAsString: function (dayIndex) {
         return this.DAYS_OF_WEEK[dayIndex];
     },
 
@@ -446,20 +452,20 @@ PopupController.prototype = {
             i18n.getMessage('popup_statistics_months_nov'),
             i18n.getMessage('popup_statistics_months_dec'),
         ];
-    }()),
+    })(),
 
-    _monthsAsString(monthIndex) {
+    _monthsAsString: function (monthIndex) {
         return this.MONTHS_OF_YEAR[monthIndex];
     },
 
-    _getCategoriesLines(statsData, range) {
-        const now = new Date();
-        const day = now.getDay();
-        const month = now.getMonth();
-        const lastDayOfPrevMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+    _getCategoriesLines: function (statsData, range) {
+        var now = new Date();
+        var day = now.getDay();
+        var month = now.getMonth();
+        var lastDayOfPrevMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
 
-        let categories = [];
-        const lines = [];
+        var categories = [];
+        var lines = [];
         switch (range) {
             case 'day':
                 for (let i = 1; i < 25; i += 1) {
@@ -487,7 +493,7 @@ PopupController.prototype = {
             case 'month':
                 for (let i = 0; i < 31; i += 1) {
                     if (i % 3 === 0) {
-                        const c = (i + now.getDate()) % lastDayOfPrevMonth + 1;
+                        var c = (i + now.getDate()) % lastDayOfPrevMonth + 1;
                         categories.push(c.toString());
                         lines.push({
                             value: i,
@@ -511,22 +517,23 @@ PopupController.prototype = {
         }
 
         return {
-            categories,
-            lines,
+            categories: categories,
+            lines: lines,
         };
     },
 
-    _renderRequestsGraphs(stats, range, type) {
-        const statsData = this._selectRequestsStatsData(stats, range, type);
-        const categoriesLines = this._getCategoriesLines(statsData, range);
-        const categories = categoriesLines.categories;
-        const lines = categoriesLines.lines;
+    _renderRequestsGraphs: function (stats, range, type) {
+        var statsData = this._selectRequestsStatsData(stats, range, type);
+        var categoriesLines = this._getCategoriesLines(statsData, range);
+        var categories = categoriesLines.categories;
+        var lines = categoriesLines.lines;
 
-        const grad1 = '<linearGradient id="grad1" x1="50%" y1="0%" x2="50%" y2="100%">'
-            + '  <stop offset="0%" style="stop-color:#73BE66;stop-opacity:1" />'
-            + '  <stop offset="23%" style="stop-color:#6DBE85;stop-opacity:1" />'
-            + '  <stop offset="100%" style="stop-color:#65BDA8;stop-opacity:1" />'
-            + '</linearGradient>';
+        var grad1 =
+            '<linearGradient id="grad1" x1="50%" y1="0%" x2="50%" y2="100%">'+
+            '  <stop offset="0%" style="stop-color:#73BE66;stop-opacity:1" />'+
+            '  <stop offset="23%" style="stop-color:#6DBE85;stop-opacity:1" />'+
+            '  <stop offset="100%" style="stop-color:#65BDA8;stop-opacity:1" />'+
+            '</linearGradient>';
 
         c3.generate({
             size: {
@@ -551,7 +558,7 @@ PopupController.prototype = {
                 x: {
                     show: true,
                     type: 'category',
-                    categories,
+                    categories: categories,
                     tick: {
                         outer: false,
                         multiline: false,
@@ -566,7 +573,7 @@ PopupController.prototype = {
             },
             grid: {
                 x: {
-                    lines,
+                    lines: lines,
                 },
                 focus: {
                     show: true,
@@ -581,7 +588,7 @@ PopupController.prototype = {
                 show: false,
             },
             tooltip: {
-                position(data, width, height, element) {
+                position: function (data, width, height, element) {
                     const chart = document.querySelector('#chart');
                     const elementRect = element.getBoundingClientRect();
                     const elementCenterPosition = elementRect.left + (elementRect.width / 2);
@@ -589,31 +596,31 @@ PopupController.prototype = {
                     const tooltipLeft = elementCenterPosition - tooltipHalfWidth;
                     const top = d3.mouse(element)[1] - 50;
                     return {
-                        top,
+                        top: top,
                         left: tooltipLeft,
                     };
                 },
-                contents(d) {
+                contents: function (d) {
                     const value = d[0].value;
                     return `<div id="tooltip" class="chart__tooltip">${value}</div>`;
                 },
             },
-            oninit() {
+            oninit: function () {
                 this.svg[0][0].getElementsByTagName('defs')[0].innerHTML += grad1;
             },
         });
     },
 
     // TODO remove, as unnecessary
-    _localizeBlockedType(type) {
+    _localizeBlockedType: function (type) {
         if (!type) {
             return '';
         }
 
-        return i18n.getMessage(`popup_statistics_request_types_${type.toLowerCase()}`);
+        return i18n.getMessage('popup_statistics_request_types_' + type.toLowerCase());
     },
 
-    _renderAnalyticsBlock(stats, range) {
+    _renderAnalyticsBlock: function (stats, range) {
         const statsData = this._selectRequestTypesStatsData(stats, range);
 
         const analytics = document.querySelector('#analytics-blocked-types-values');
@@ -638,18 +645,18 @@ PopupController.prototype = {
         });
     },
 
-    _renderStatsGraphs(stats, range, type) {
+    _renderStatsGraphs: function (stats, range, type) {
         this._renderRequestsGraphs(stats, range, type);
         this._renderAnalyticsBlock(stats, range);
     },
 
-    _renderStatsBlock(stats) {
+    _renderStatsBlock: function (stats) {
         const timeRange = document.querySelector('.statistics-select-time').value;
         const typeData = document.querySelector('.statistics-select-type').value;
 
         if (!stats) {
             const self = this;
-            popupPage.sendMessage({ type: 'getStatisticsData' }, (message) => {
+            popupPage.sendMessage({ type: 'getStatisticsData' }, function (message) {
                 self._renderStatsGraphs(message.stats, timeRange, typeData);
             });
         } else {
@@ -657,7 +664,7 @@ PopupController.prototype = {
         }
     },
 
-    _renderBlockedGroups(container, stats) {
+    _renderBlockedGroups: function (container, stats) {
         const TOTAL_GROUP_ID = 'total';
 
         const timeRange = document.querySelector('.statistics-select-time').value;
@@ -665,7 +672,9 @@ PopupController.prototype = {
 
         const statsData = this._selectRequestTypesStatsData(stats, timeRange);
 
-        const getSelectTemplate = group => `<option value="${group.groupId}">${group.groupName}</option>`;
+        const getSelectTemplate = (group) => {
+            return `<option value="${group.groupId}">${group.groupName}</option>`;
+        };
 
         const blockedGroups = stats.blockedGroups
             .filter(group => statsData[group.groupId]);
@@ -678,18 +687,18 @@ PopupController.prototype = {
             return;
         }
 
-        blockedGroups.forEach((group) => {
+        blockedGroups.forEach(group => {
             typeSelector.insertAdjacentHTML('beforeend', getSelectTemplate(group));
         });
     },
 
-    _renderStats(container) {
+    _renderStats: function (container) {
         const template = this.filteringStatisticsTemplate;
         this._appendTemplate(container, template);
 
         const self = this;
 
-        popupPage.sendMessage({ type: 'getStatisticsData' }, (message) => {
+        popupPage.sendMessage({ type: 'getStatisticsData' }, function (message) {
             const { stats } = message;
 
             self._renderBlockedGroups(container, stats);
@@ -697,7 +706,7 @@ PopupController.prototype = {
         });
     },
 
-    _renderActions(container, tabInfo) {
+    _renderActions: function (container, tabInfo) {
         if (tabInfo.urlFilteringDisabled) {
             return;
         }
@@ -718,7 +727,7 @@ PopupController.prototype = {
         container.appendChild(el);
     },
 
-    _renderFooter(footerContainer, tabInfo, options) {
+    _renderFooter: function (footerContainer, tabInfo, options) {
         if (tabInfo.adguardDetected) {
             this._appendTemplate(footerContainer, this.footerIntegration);
         } else {
@@ -746,7 +755,7 @@ PopupController.prototype = {
         }
     },
 
-    _bindAction(parentElement, selector, eventName, handler) {
+    _bindAction: function (parentElement, selector, eventName, handler) {
         const elements = [].slice.call(parentElement.querySelectorAll(selector));
         if (!elements || elements.length <= 0) {
             return;
@@ -754,26 +763,26 @@ PopupController.prototype = {
         elements.forEach(element => element.addEventListener(eventName, handler));
     },
 
-    _bindActions() {
-        const parent = document.querySelector('.widget-popup');
+    _bindActions: function () {
+        var parent = document.querySelector('.widget-popup');
 
-        const self = this;
-        this._bindAction(parent, '.siteReport', 'click', (e) => {
+        var self = this;
+        this._bindAction(parent, '.siteReport', 'click', function (e) {
             e.preventDefault();
             self.openSiteReportTab(self.tabInfo.url);
             popupPage.closePopup();
         });
-        this._bindAction(parent, '.openSettings', 'click', (e) => {
+        this._bindAction(parent, '.openSettings', 'click', function (e) {
             e.preventDefault();
             self.openSettingsTab();
             popupPage.closePopup();
         });
-        this._bindAction(parent, '.openAssistant', 'click', (e) => {
+        this._bindAction(parent, '.openAssistant', 'click', function (e) {
             e.preventDefault();
             self.openAssistantInTab();
             popupPage.closePopup();
         });
-        this._bindAction(parent, '.openNotificationLink', 'click', (e) => {
+        this._bindAction(parent, '.openNotificationLink', 'click', function (e) {
             e.preventDefault();
             const { url } = self.options.notification;
             if (url) {
@@ -782,7 +791,7 @@ PopupController.prototype = {
                 popupPage.closePopup();
             }
         });
-        this._bindAction(parent, '.closeNotification', 'click', (e) => {
+        this._bindAction(parent, '.closeNotification', 'click', function (e) {
             e.preventDefault();
             const notification = parent.querySelector('#popup-notification');
             if (notification) {
@@ -802,46 +811,46 @@ PopupController.prototype = {
             }
         };
         // close popup get premium notification if user clicked close button
-        this._bindAction(parent, '.popup_get_premium_close', 'click', (e) => {
+        this._bindAction(parent, '.popup_get_premium_close', 'click', function (e) {
             e.preventDefault();
             handlePopupGetPremiumClose();
         });
         // close popup get premium if user clicked on the link
-        this._bindAction(parent, '.popup-get-premium', 'click', () => {
+        this._bindAction(parent, '.popup-get-premium', 'click', function () {
             handlePopupGetPremiumClose();
         });
-        this._bindAction(parent, '.openFilteringLog', 'click', (e) => {
+        this._bindAction(parent, '.openFilteringLog', 'click', function (e) {
             e.preventDefault();
             self.openFilteringLog();
             popupPage.closePopup();
         });
-        this._bindAction(parent, '.resetStats', 'click', (e) => {
+        this._bindAction(parent, '.resetStats', 'click', function (e) {
             e.preventDefault();
             self.resetBlockedAdsCount();
             parent.querySelector('.w-popup-filter-title-blocked-all').textContent = '0';
         });
-        this._bindAction(parent, '.openLink', 'click', (e) => {
+        this._bindAction(parent, '.openLink', 'click', function (e) {
             e.preventDefault();
             self.openLink(e.currentTarget.href);
             popupPage.closePopup();
         });
-        this._bindAction(parent, '.openAbuse', 'click', (e) => {
+        this._bindAction(parent, '.openAbuse', 'click', function (e) {
             e.preventDefault();
             self.openAbuseTab(self.tabInfo.url);
             popupPage.closePopup();
         });
 
         // checkbox
-        this._bindAction(parent, '.changeDocumentWhiteListed', 'click', (e) => {
+        this._bindAction(parent, '.changeDocumentWhiteListed', 'click', function (e) {
             e.preventDefault();
-            const tabInfo = self.tabInfo;
+            var tabInfo = self.tabInfo;
             if (tabInfo.urlFilteringDisabled || tabInfo.applicationFilteringDisabled) {
                 return;
             }
             if (!tabInfo.canAddRemoveRule) {
                 return;
             }
-            let isWhiteListed = tabInfo.documentWhiteListed;
+            var isWhiteListed = tabInfo.documentWhiteListed;
             if (isWhiteListed) {
                 self.removeWhiteListDomain(tabInfo.url);
                 isWhiteListed = false;
@@ -875,8 +884,8 @@ PopupController.prototype = {
         }
 
         // Disable filtering
-        const changeProtectionStateDisableButtons = [].slice.call(document.querySelectorAll('.changeProtectionStateDisable'));
-        changeProtectionStateDisableButtons.forEach((button) => {
+        var changeProtectionStateDisableButtons = [].slice.call(document.querySelectorAll('.changeProtectionStateDisable'));
+        changeProtectionStateDisableButtons.forEach(button => {
             button.addEventListener('click', (e) => {
                 e.preventDefault();
                 changeProtectionState(true);
@@ -884,8 +893,8 @@ PopupController.prototype = {
         });
 
         // Enable filtering
-        const changeProtectionStateEnableButtons = [].slice.call(document.querySelectorAll('.changeProtectionStateEnable'));
-        changeProtectionStateEnableButtons.forEach((button) => {
+        var changeProtectionStateEnableButtons = [].slice.call(document.querySelectorAll('.changeProtectionStateEnable'));
+        changeProtectionStateEnableButtons.forEach(button => {
             button.addEventListener('click', (e) => {
                 e.preventDefault();
                 changeProtectionState(false);
@@ -902,11 +911,11 @@ PopupController.prototype = {
                 });
                 e.target.classList.add('active');
 
-                const attr = e.target.getAttribute('tab-switch');
+                var attr = e.target.getAttribute('tab-switch');
                 [].slice.call(parent.querySelectorAll('.tab-switch-tab')).forEach((tab) => {
                     tab.style.display = 'none';
                 });
-                [].slice.call(parent.querySelectorAll(`.tab-switch-tab[tab-switch="${attr}"]`)).forEach((tab) => {
+                [].slice.call(parent.querySelectorAll('.tab-switch-tab[tab-switch="' + attr + '"]')).forEach((tab) => {
                     tab.style.display = 'flex';
                 });
             });
@@ -917,23 +926,23 @@ PopupController.prototype = {
          * we call _renderStatsBlock function w/o stats parameter, in order to update stats on
          * every selection of range or blockedGroup option
          */
-        this._bindAction(parent, '.statistics-select-time', 'change', () => {
+        this._bindAction(parent, '.statistics-select-time', 'change', function () {
             self._renderStatsBlock();
         });
-        this._bindAction(parent, '.statistics-select-type', 'change', () => {
+        this._bindAction(parent, '.statistics-select-type', 'change', function () {
             self._renderStatsBlock();
         });
     },
 
     // http://jira.performix.ru/browse/AG-3474
-    resizePopupWindowForMacOs() {
-        const options = this.options;
+    resizePopupWindowForMacOs: function () {
+        var options = this.options;
         if (options.isFirefoxBrowser || !options.isMacOs) {
             return;
         }
-        setTimeout(() => {
-            const block = document.querySelector('.macoshackresize');
-            block.style['padding-top'] = '4px';
+        setTimeout(function () {
+            var block = document.querySelector(".macoshackresize");
+            block.style["padding-top"] = "4px";
         }, 1000);
     },
 
@@ -943,12 +952,13 @@ PopupController.prototype = {
      * @returns {string}
      * @private
      */
-    _formatNumber(number) {
+    _formatNumber: function (number) {
         return number.toLocaleString(i18n.getUILanguage());
     },
 };
 
 (function () {
+
     /**
      * TODO: check the following EDGE issue
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/551
@@ -957,23 +967,23 @@ PopupController.prototype = {
      * setTimeout allows us to resolve this "race condition".
      */
 
-    const controller = new PopupController();
+    var controller = new PopupController();
     controller.afterRender = function () {
         // Add some delay for show popup size properly
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/505
-        const timeout = 10;
-        setTimeout(() => {
+        var timeout = 10;
+        setTimeout(function () {
             controller.resizePopupWindow();
             controller.resizePopupWindowForMacOs();
         }, timeout);
     };
 
-    document.addEventListener('resizePopup', () => {
+    document.addEventListener('resizePopup', function () {
         controller.resizePopupWindow();
     });
 
-    popupPage.sendMessage({ type: 'getTabInfoForPopup' }, (message) => {
-        const onDocumentReady = function () {
+    popupPage.sendMessage({ type: 'getTabInfoForPopup' }, function (message) {
+        var onDocumentReady = function () {
             controller.render(message.frameInfo, message.options);
         };
 
@@ -984,7 +994,7 @@ PopupController.prototype = {
         }
     });
 
-    popupPage.onMessage.addListener((message) => {
+    popupPage.onMessage.addListener(function (message) {
         switch (message.type) {
             case 'updateTotalBlocked': {
                 const { tabInfo } = message;
@@ -995,4 +1005,4 @@ PopupController.prototype = {
                 break;
         }
     });
-}());
+})();
