@@ -346,18 +346,19 @@ adguard.subscriptions = (function (adguard) {
 
     /**
      * Updates filter checksum and version in the storage and internal structures
-     * @param version
-     * @param checksum
      * @param filter
+     * @param updateData
      */
-    const updateVersionAndChecksum = (version, checksum, filter) => {
+    const updateCustomFilterInfo = (filter, { version, checksum, timeUpdated }) => {
         // set last checksum and version
         filter.checksum = checksum;
         filter.version = version;
+        filter.timeUpdated = timeUpdated;
         filters = filters.map(f => {
             if (f.filterId === filter.filterId) {
                 f.version = version;
                 f.checksum = checksum;
+                f.timeUpdated = timeUpdated;
                 return f;
             }
             return f;
@@ -385,7 +386,7 @@ adguard.subscriptions = (function (adguard) {
                 expires,
                 timeUpdated,
             } = parseFilterDataFromHeader(rules);
-            name = name || title;
+            name = title;
             timeUpdated = timeUpdated || new Date().toISOString();
             const groupId = CUSTOM_FILTERS_GROUP_ID;
             const subscriptionUrl = url;
@@ -403,6 +404,7 @@ adguard.subscriptions = (function (adguard) {
                 return f.customUrl === url;
             });
 
+            let updateFilter = true;
             if (filter) {
                 if (!didFilterUpdate(version, checksum, filter)) {
                     callback();
@@ -433,10 +435,14 @@ adguard.subscriptions = (function (adguard) {
 
                 // Save filter in separate storage
                 saveCustomFilterInStorage(filter);
-                adguard.listeners.notifyListeners(adguard.listeners.SUCCESS_DOWNLOAD_FILTER, filter);
+                updateFilter = false;
             }
 
-            updateVersionAndChecksum(version, checksum, filter);
+            if (updateFilter) {
+                updateCustomFilterInfo(filter, {version, checksum, timeUpdated});
+            }
+
+            adguard.listeners.notifyListeners(adguard.listeners.SUCCESS_DOWNLOAD_FILTER, filter);
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, filter, rules);
             adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, { syncSuppress });
 
@@ -476,7 +482,7 @@ adguard.subscriptions = (function (adguard) {
             });
 
             if (filter) {
-                callback();
+                callback({ error: adguard.i18n.getMessage('options_antibanner_custom_filter_already_exists') });
                 return;
             }
 
@@ -499,7 +505,7 @@ adguard.subscriptions = (function (adguard) {
             filter.customUrl = url;
             filter.rulesCount = rulesCount;
 
-            callback(filter);
+            callback({ filter });
         }, function (cause) {
             adguard.console.error(`Error download filter by url ${url}, cause: ${cause || ''}`);
             callback();
@@ -728,7 +734,7 @@ adguard.subscriptions = (function (adguard) {
     /**
      * @returns Group metadata
      */
-    const getGroup = (groupId) => groupsMap[groupId];
+    const getGroup = groupId => groupsMap[groupId];
 
     /**
      * Checks if group has enabled status true or false
