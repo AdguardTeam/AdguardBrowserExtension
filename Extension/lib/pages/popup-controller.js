@@ -953,7 +953,7 @@ PopupController.prototype = {
      * @private
      */
     _formatNumber: function (number) {
-        return number.toLocaleString(i18n.getUILanguage());
+        return number.toLocaleString();
     },
 };
 
