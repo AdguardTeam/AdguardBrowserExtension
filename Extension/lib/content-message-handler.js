@@ -192,9 +192,9 @@
                 break;
             case 'loadCustomFilterInfo':
                 adguard.filters.loadCustomFilterInfo(message.url, { title: message.title }, (filter) => {
-                    callback(filter);
-                }, () => {
-                    callback();
+                    callback({ filter });
+                }, (error) => {
+                    callback({ error });
                 });
                 return true;
             case 'subscribeToCustomFilter': {
@@ -358,9 +358,6 @@
                 break;
             case 'saveCssHitStats':
                 processSaveCssHitStats(sender.tab, message.stats);
-                break;
-            case 'isCssHitsCounterEnabled':
-                callback(adguard.webRequestService.isCollectingCosmeticRulesHits(sender.tab));
                 break;
             // Sync messages
             case 'setSyncProvider':

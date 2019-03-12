@@ -403,12 +403,12 @@ adguard.ui = (function (adguard) { // jshint ignore:line
      * @param previousVersion
      */
     function getUpdateDescriptionMessage(currentVersion, previousVersion) {
-        if (adguard.utils.browser.getMajorVersionNumber(currentVersion) > adguard.utils.browser.getMajorVersionNumber(previousVersion) ||
-            adguard.utils.browser.getMinorVersionNumber(currentVersion) > adguard.utils.browser.getMinorVersionNumber(previousVersion)) {
-            return adguard.i18n.getMessage("options_popup_version_update_description_major");
+        if (adguard.utils.browser.getMajorVersionNumber(currentVersion) > adguard.utils.browser.getMajorVersionNumber(previousVersion)
+          || adguard.utils.browser.getMinorVersionNumber(currentVersion) > adguard.utils.browser.getMinorVersionNumber(previousVersion)) {
+            return adguard.i18n.getMessage('options_popup_version_update_description_major');
         }
 
-        return adguard.i18n.getMessage("options_popup_version_update_description_minor");
+        return adguard.i18n.getMessage('options_popup_version_update_description_minor');
     }
 
     /**
@@ -418,6 +418,12 @@ adguard.ui = (function (adguard) { // jshint ignore:line
      * @param previousVersion
      */
     function showVersionUpdatedPopup(currentVersion, previousVersion) {
+        // Suppress for v3.0 hotfix
+        // TODO: Remove this in the next update
+        if (adguard.utils.browser.getMajorVersionNumber(currentVersion) == adguard.utils.browser.getMajorVersionNumber(previousVersion) &&
+          adguard.utils.browser.getMinorVersionNumber(currentVersion) == adguard.utils.browser.getMinorVersionNumber(previousVersion)) {
+            return;
+        }
         const message = {
             type: 'show-version-updated-popup',
             title: adguard.i18n.getMessage('options_popup_version_update_title', currentVersion),
@@ -432,6 +438,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
         adguard.tabs.getActive(function (tab) {
             message.isAdguardTab = isAdguardTab(tab);
+            message.isTabAdguardDetected = adguard.frames.isTabAdguardDetected(tab);
             adguard.tabs.sendMessage(tab.tabId, message);
         });
     }
@@ -545,6 +552,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                 settingKey: adguard.settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES,
                 settingValueKey: adguard.settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME,
             },
+            { queryKey: 'strip_url', settingKey: adguard.settings.STRIP_TRACKING_PARAMETERS },
         ];
 
         const stealthEnabled = !adguard.settings.getProperty(adguard.settings.DISABLE_STEALTH_MODE);
@@ -590,7 +598,8 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             browserDetails = adguard.prefs.browser;
         }
 
-        const filterIds = adguard.filters.getEnabledFilters().map(filter => filter.filterId);
+        const filterIds = adguard.filters.getEnabledFiltersFromEnabledGroups()
+            .map(filter => filter.filterId);
 
         openTab('https://reports.adguard.com/new_issue.html?product_type=Ext&product_version='
             + encodeURIComponent(adguard.app.getVersion())

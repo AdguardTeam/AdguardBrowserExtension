@@ -1,4 +1,4 @@
-/*! extended-css - v1.1.0 - 2019-02-05
+/*! extended-css - v1.1.1 - 2019-03-07
 * https://github.com/AdguardTeam/ExtendedCss
 * Copyright (c) 2019 ; Licensed Apache License 2.0 */
 var ExtendedCss = (function(window) {
@@ -300,7 +300,7 @@ utils.Set = typeof Set !== 'undefined' ? Set : function () {
      * Only supports methods that are supported in IE11.
      * {@link https://docs.microsoft.com/en-us/scripting/javascript/reference/set-object-javascript}
      * Assumes that 'key's are all objects, not primitives such as a number.
-     * 
+     *
      * @param {Array} items Initial items in this set
      */
     var Set = function (items) {
@@ -412,6 +412,42 @@ utils.logInfo = typeof console !== 'undefined' && console.info && Function.proto
 function isNumber(obj) {
     return typeof obj === 'number';
 }
+
+/**
+ * Returns path to element we will use as element identifier
+ * @param {Element} el
+ * @returns {string} - path to the element
+ */
+utils.getNodeSelector = function (el) {
+    if (!(el instanceof Element)) {
+        throw new Error('Function received argument with wrong type');
+    }
+
+    var path = [];
+    while (el.nodeType === Node.ELEMENT_NODE) {
+        var selector = el.nodeName.toLowerCase();
+        if (el.id && typeof el.id === 'string') {
+            selector += '#' + el.id;
+            path.unshift(selector);
+            break;
+        } else {
+            var sibling = el;
+            var nth = 1;
+            while (sibling.previousSibling) {
+                sibling = sibling.previousSibling;
+                if (sibling.nodeType === Node.ELEMENT_NODE && sibling.nodeName.toLowerCase() === selector) {
+                    nth++;
+                }
+            }
+            if (nth !== 1) {
+                selector += ":nth-of-type(" + nth + ")";
+            }
+        }
+        path.unshift(selector);
+        el = el.parentNode;
+    }
+    return path.join(" > ");
+};
 
 /* global initializeSizzle, Sizzle, ExtendedSelectorFactory, utils */
 
@@ -4284,23 +4320,85 @@ function ExtendedCss(configuration) {
         throw "Wrong configuration. Type of 'beforeStyleApplied' field should be a function, received: " + typeof beforeStyleApplied;
     }
 
+    // We use EventTracker to track the event that is likely to cause the mutation.
+    // The problem is that we cannot use `window.event` directly from the mutation observer call
+    // as we're not in the event handler context anymore.
+    var EventTracker = function () {
+
+        var ignoredEventTypes = ['mouseover', 'mouseleave', 'mouseenter', 'mouseout'];
+        var LAST_EVENT_TIMEOUT_MS = 10;
+
+        var TRACKED_EVENTS = [
+        // keyboard events
+        "keydown", "keypress", "keyup",
+        // mouse events
+        "auxclick", "click", "contextmenu", "dblclick", "mousedown", "mouseenter", "mouseleave", "mousemove", "mouseover", "mouseout", "mouseup", "pointerlockchange", "pointerlockerror", "select", "wheel"];
+
+        var lastEventType = void 0;
+        var lastEventTime = void 0;
+
+        var trackEvent = function (e) {
+            lastEventType = e.type;
+            lastEventTime = Date.now();
+        };
+
+        for (var _i = 0; _i < TRACKED_EVENTS.length; _i++) {
+            var evName = TRACKED_EVENTS[_i];
+            document.documentElement.addEventListener(evName, trackEvent, true);
+        }
+
+        var getLastEventType = function () {
+            return lastEventType;
+        };
+
+        var getTimeSinceLastEvent = function () {
+            return Date.now() - lastEventTime;
+        };
+
+        return {
+            isIgnoredEventType: function () {
+                return ignoredEventTypes.includes(getLastEventType()) && getTimeSinceLastEvent() < LAST_EVENT_TIMEOUT_MS;
+            }
+        };
+    }();
+
     var rules = [];
     var affectedElements = [];
+    var removalsStatistic = {};
     var domObserved = void 0;
     var eventListenerSupported = window.addEventListener;
     var domMutationObserver = void 0;
 
     function observeDocument(callback) {
+        // We are trying to limit the number of callback calls by not calling it on all kind of "hover" events.
+        // The rationale behind this is that "hover" events often cause attributes modification,
+        // but re-applying extCSS rules will be useless as these attribute changes are usually transient.
+        var isIgnoredMutation = function (mutations) {
+            for (var i = 0; i < mutations.length; i += 1) {
+                if (mutations.type !== 'attributes') {
+                    return false;
+                }
+            }
+            return true;
+        };
+
         if (utils.MutationObserver) {
             domMutationObserver = new utils.MutationObserver(function (mutations) {
-                if (mutations && mutations.length) {
-                    callback();
+                if (!mutations || mutations.length === 0) {
+                    return;
                 }
+
+                if (EventTracker.isIgnoredEventType() && isIgnoredMutation(mutations)) {
+                    return;
+                }
+
+                callback();
             });
+
             domMutationObserver.observe(document.documentElement, {
                 childList: true,
                 subtree: true,
-                attributes: false
+                attributeFilter: ['id', 'class']
             });
         } else if (eventListenerSupported) {
             document.addEventListener('DOMNodeInserted', callback, false);
@@ -4308,6 +4406,7 @@ function ExtendedCss(configuration) {
             document.addEventListener('DOMAttrModified', callback, false);
         }
     }
+
     function disconnectDocument(callback) {
         if (domMutationObserver) {
             domMutationObserver.disconnect();
@@ -4336,6 +4435,8 @@ function ExtendedCss(configuration) {
         target.setAttribute('style', mutation.oldValue);
         if (++observer.styleProtectionCount < MAX_STYLE_PROTECTION_COUNT) {
             observer.observe(target, protectionObserverOption);
+        } else {
+            utils.logError('ExtendedCss: infinite loop protection for style');
         }
     }
 
@@ -4369,14 +4470,34 @@ function ExtendedCss(configuration) {
      * @returns     affectedElement found or null
      */
     function findAffectedElement(node) {
-        for (var _i = 0; _i < affectedElements.length; _i++) {
-            var affectedElement = affectedElements[_i];
+        for (var _i2 = 0; _i2 < affectedElements.length; _i2++) {
+            var affectedElement = affectedElements[_i2];
             if (affectedElement.node === node) {
                 return affectedElement;
             }
         }
 
         return null;
+    }
+
+    function removeElement(affectedElement) {
+        var node = affectedElement.node;
+
+        var elementSelector = utils.getNodeSelector(node);
+
+        // check if the element has been already removed earlier
+        var elementRemovalsCounter = removalsStatistic[elementSelector] || 0;
+
+        // if removals attempts happened more than specified we do not try to remove node again
+        if (elementRemovalsCounter > MAX_STYLE_PROTECTION_COUNT) {
+            utils.logError('ExtendedCss: infinite loop protection for SELECTOR', elementSelector);
+            return;
+        }
+
+        if (node.parentNode) {
+            node.parentNode.removeChild(node);
+            removalsStatistic[elementSelector] = elementRemovalsCounter + 1;
+        }
     }
 
     /**
@@ -4398,6 +4519,11 @@ function ExtendedCss(configuration) {
 
         var node = affectedElement.node;
         var style = affectedElement.rule.style;
+        if (style['remove'] === 'true') {
+            removeElement(affectedElement);
+            return;
+        }
+
         for (var prop in style) {
             // Apply this style only to existing properties
             // We can't use hasOwnProperty here (does not work in FF)
@@ -4437,8 +4563,8 @@ function ExtendedCss(configuration) {
         var selector = rule.selector;
         var nodes = selector.querySelectorAll();
 
-        for (var _i2 = 0; _i2 < nodes.length; _i2++) {
-            var node = nodes[_i2];
+        for (var _i3 = 0; _i3 < nodes.length; _i3++) {
+            var node = nodes[_i3];
             var affectedElement = findAffectedElement(node);
 
             if (affectedElement) {
@@ -4475,9 +4601,13 @@ function ExtendedCss(configuration) {
      */
     function applyRules() {
         var elementsIndex = [];
+        // some rules could make call - selector.querySelectorAll() temporarily to change node id attribute
+        // this caused MutationObserver to call recursively
+        // https://github.com/AdguardTeam/ExtendedCss/issues/81
+        stopObserve();
 
-        for (var _i3 = 0, _rules = rules; _i3 < _rules.length; _i3++) {
-            var rule = _rules[_i3];
+        for (var _i4 = 0, _rules = rules; _i4 < _rules.length; _i4++) {
+            var rule = _rules[_i4];
             var nodes = applyRule(rule);
             Array.prototype.push.apply(elementsIndex, nodes);
         }
@@ -4494,7 +4624,8 @@ function ExtendedCss(configuration) {
                 affectedElements.splice(l, 1);
             }
         }
-
+        // After styles are applied we can start observe again
+        observe();
         printTimingInfo();
     }
 
@@ -4512,9 +4643,16 @@ function ExtendedCss(configuration) {
         observeDocument(mainCallback);
     }
 
+    function stopObserve() {
+        if (!domObserved) {
+            return;
+        }
+        domObserved = false;
+        disconnectDocument(mainCallback);
+    }
+
     function apply() {
         applyRules();
-        observe();
 
         if (document.readyState !== "complete") {
             document.addEventListener("DOMContentLoaded", applyRules);
@@ -4525,13 +4663,10 @@ function ExtendedCss(configuration) {
      * Disposes ExtendedCss and removes our styles from matched elements
      */
     function dispose() {
-        if (domObserved) {
-            disconnectDocument(mainCallback);
-            domObserved = false;
-        }
+        stopObserve();
 
-        for (var _i4 = 0; _i4 < affectedElements.length; _i4++) {
-            var obj = affectedElements[_i4];
+        for (var _i5 = 0; _i5 < affectedElements.length; _i5++) {
+            var obj = affectedElements[_i5];
             revertStyle(obj);
         }
     }

@@ -37,7 +37,7 @@ adguard.antiBannerService = (function (adguard) {
     var applicationInitialized = false;
 
     // Get filters update period
-    var filtersUpdatePeriod = adguard.settings.getFiltersUpdatePeriod();
+    let filtersUpdatePeriod = adguard.settings.getFiltersUpdatePeriod();
 
     /**
      * Delay before doing first filters update check -- 5 minutes
@@ -47,7 +47,7 @@ adguard.antiBannerService = (function (adguard) {
     /**
      * Delay on application updated event
      */
-    var APP_UPDATED_NOTIFICATION_DELAY = 10000;
+    var APP_UPDATED_NOTIFICATION_DELAY = 60 * 1000;
 
     var FILTERS_CHANGE_DEBOUNCE_PERIOD = 1000;
     var RELOAD_FILTERS_DEBOUNCE_PERIOD = 1000;
@@ -139,7 +139,6 @@ adguard.antiBannerService = (function (adguard) {
                 // Init RequestFilter object
                 initRequestFilter();
             }
-
             // Schedule filters update job
             scheduleFiltersUpdate(runInfo.isFirstRun);
         };
@@ -907,7 +906,6 @@ adguard.antiBannerService = (function (adguard) {
                 getRequestFilter().cssFilter.dirty = true;
             }
             if (setting === adguard.settings.FILTERS_UPDATE_PERIOD) {
-                filtersUpdatePeriod = adguard.settings.getFiltersUpdatePeriod();
                 scheduleFiltersUpdate();
             }
         });
@@ -940,6 +938,7 @@ adguard.antiBannerService = (function (adguard) {
      * @private
      */
     function scheduleFiltersUpdate(isFirstRun) {
+        filtersUpdatePeriod = adguard.settings.getFiltersUpdatePeriod();
         // First run delay
         if (isFirstRun) {
             setTimeout(checkAntiBannerFiltersUpdate, UPDATE_FILTERS_DELAY, isFirstRun);
@@ -1436,6 +1435,14 @@ adguard.filters = (function (adguard) {
         });
     };
 
+    const getEnabledFiltersFromEnabledGroups = () => {
+        const filters = adguard.subscriptions.getFilters();
+        const enabledGroupsIds = adguard.subscriptions.getGroups()
+            .filter(g => g.enabled)
+            .map(g => g.groupId);
+        return filters.filter(f => f.enabled && enabledGroupsIds.includes(f.groupId));
+    };
+
     /**
      * Checks if specified filter is enabled
      *
@@ -1691,13 +1698,14 @@ adguard.filters = (function (adguard) {
             return;
         }
 
-        adguard.subscriptions.getCustomFilterInfo(url, options, (filterData) => {
-            if (filterData) {
+        adguard.subscriptions.getCustomFilterInfo(url, options, (result = {}) => {
+            const { error, filter } = result;
+            if (filter) {
                 adguard.console.info('Custom filter data downloaded');
-                successCallback(filterData);
-            } else {
-                errorCallback();
+                successCallback(filter);
+                return;
             }
+            errorCallback(error);
         });
     };
 
@@ -1726,6 +1734,7 @@ adguard.filters = (function (adguard) {
 
         loadCustomFilter: loadCustomFilter,
         loadCustomFilterInfo: loadCustomFilterInfo,
+        getEnabledFiltersFromEnabledGroups,
     };
 
 })(adguard);

@@ -49,7 +49,7 @@ var Utils = {
             reader.onload = function (e) {
                 const oldRules = editor.getValue();
                 const newRules = oldRules + '\n' + e.target.result;
-                editor.setValue(newRules);
+                editor.setValue(newRules.trim());
                 fileInput.value = '';
             };
             reader.onerror = function (err) {
@@ -353,16 +353,17 @@ const Saver = function (options) {
  */
 const handleEditorResize = (editor, editorId) => {
     const DRAG_TIMEOUT_MS = 100;
+    const editorParent = editor.container.parentNode;
 
-    const saveSize = (editorContainer) => {
-        const width = editorContainer.style.width;
-        const height = editorContainer.style.height;
+    const saveSize = (editorParent) => {
+        const width = editorParent.style.width;
+        const height = editorParent.style.height;
         if (width && height) {
             localStorage.setItem(editorId, JSON.stringify({ size: { width, height }}));
         }
     };
 
-    const restoreSize = (editorContainer) => {
+    const restoreSize = (editorParent) => {
         const dataJson = localStorage.getItem(editorId);
         if (!dataJson) {
             return;
@@ -370,25 +371,25 @@ const handleEditorResize = (editor, editorId) => {
         const { size } = JSON.parse(dataJson);
         const { width, height } = size || {};
         if (width && height) {
-            editorContainer.style.width = width;
-            editorContainer.style.height = height;
+            editorParent.style.width = width;
+            editorParent.style.height = height;
         }
     };
 
     // restore size is it was set previously set;
-    restoreSize(editor.container);
+    restoreSize(editorParent);
 
     const onMouseMove = Utils.debounce(() => {
         editor.resize();
     }, DRAG_TIMEOUT_MS);
 
     const onMouseUp = () => {
-        saveSize(editor.container);
+        saveSize(editorParent);
         document.removeEventListener('mousemove', onMouseMove);
         document.removeEventListener('mouseup', onMouseUp);
     };
 
-    editor.container.addEventListener('mousedown', (e) => {
+    editorParent.addEventListener('mousedown', (e) => {
         if (e.target === e.currentTarget) {
             document.addEventListener('mousemove', onMouseMove);
             document.addEventListener('mouseup', onMouseUp);
@@ -408,7 +409,6 @@ var WhiteListFilter = function (options) {
     editor.$blockScrolling = Infinity;
     const AdguardMode = ace.require('ace/mode/adguard').Mode;
     editor.session.setMode(new AdguardMode());
-    editor.renderer.setMargin(0, 0, 0, 10);
 
     const saveIndicatorElement = document.querySelector('#whiteListRulesSaveIndicator');
     const saver = new Saver({
@@ -515,7 +515,6 @@ const UserFilter = function () {
     editor.$blockScrolling = Infinity;
     const AdguardMode = ace.require('ace/mode/adguard').Mode;
     editor.session.setMode(new AdguardMode());
-    editor.renderer.setMargin(0, 0, 0, 10);
 
     const saveIndicatorElement = document.querySelector('#userRulesSaveIndicator');
     const saver = new Saver({
@@ -1040,8 +1039,27 @@ var AntiBannerFilters = function (options) {
             };
         };
 
+        // Orders filters by groupId, displayNumber, name
+        const sortingFunction = (f1, f2) => {
+            let result = 0;
+            try {
+                if (f1.groupId !== f2.groupId) {
+                    result = f1.groupId - f2.groupId;
+                } else if (f1.displayNumber !== f2.displayNumber) {
+                    result = f1.displayNumber - f2.displayNumber;
+                } else {
+                    result = f1.name.toLowerCase() > f2.name.toLowerCase() ? 1 : -1;
+                }
+            } catch (e) {
+                console.log(e);
+            }
+            return result;
+        };
+
         const filteringFunction = getFilteringFunction();
-        const filtersToRender = filters.filter(filteringFunction);
+        const filtersToRender = filters
+            .filter(filteringFunction)
+            .sort(sortingFunction);
 
         const CUSTOM_FILTERS_GROUP_ID = 0;
 
@@ -1370,6 +1388,16 @@ var AntiBannerFilters = function (options) {
             handleElTextContent(document.querySelector('#custom-filter-popup-added-url'), filter.customUrl, filter.customUrl);
         }
 
+        function fillErrorMessage(error) {
+            const errorMessageNode = document.querySelector('.custom-filter-error-message');
+            if (error) {
+                errorMessageNode.textContent = error;
+            } else {
+                // Set default error message
+                errorMessageNode.textContent = i18n.getMessage('options_popup_check_false_description');
+            }
+        }
+
         const makeSurePopupIsActive = () => {
             if (!customFilterPopup.classList.contains('option-popup--active')) {
                 customFilterPopup.classList.add('option-popup--active');
@@ -1394,9 +1422,10 @@ var AntiBannerFilters = function (options) {
         }
 
         // Error window step
-        function renderStepThree() {
+        function renderStepThree(error) {
             prepareRendering();
             thirdStep.classList.add(POPUP_ACTIVE_CLASS);
+            fillErrorMessage(error);
         }
 
         function renderStepFour(filter) {
@@ -1413,11 +1442,12 @@ var AntiBannerFilters = function (options) {
 
                 const searchInputValue = searchInput.value && searchInput.value.trim();
 
-                contentPage.sendMessage({ type: 'loadCustomFilterInfo', url: searchInputValue }, function (filter) {
+                contentPage.sendMessage({ type: 'loadCustomFilterInfo', url: searchInputValue }, function (result) {
+                    const { filter, error } = result;
                     if (filter) {
                         renderStepFour(filter);
                     } else {
-                        renderStepThree();
+                        renderStepThree(error);
                     }
                 });
 
@@ -1465,11 +1495,12 @@ var AntiBannerFilters = function (options) {
         customFilterPopup.classList.add('option-popup--active');
 
         if (isFilterSubscription) {
-            contentPage.sendMessage({ type: 'loadCustomFilterInfo', url, title }, function (filter) {
+            contentPage.sendMessage({ type: 'loadCustomFilterInfo', url, title }, function (result) {
+                const { filter, error } = result;
                 if (filter) {
                     renderStepFour(filter);
                 } else {
-                    renderStepThree();
+                    renderStepThree(error);
                 }
             });
             renderStepTwo();

@@ -378,7 +378,10 @@ var CssHitsCounter = (function () { // jshint ignore:line
         if (typeof onCssHitsFoundCallback !== 'function') {
             return affectedEl;
         }
-        if (affectedEl && affectedEl.rule && affectedEl.rule.style && affectedEl.rule.style.content) {
+        if (affectedEl
+          && affectedEl.rule
+          && affectedEl.rule.style
+          && affectedEl.rule.style.content) {
             const styleInfo = parseExtendedStyleInfo(affectedEl.rule.style.content);
             if (styleInfo === null) {
                 return affectedEl;
