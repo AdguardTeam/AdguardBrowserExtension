@@ -219,7 +219,7 @@ PopupController.prototype = {
     },
 
     _appendTemplate: function (container, template) {
-        template.childNodes.forEach(function (c) {
+        [].slice.call(template.childNodes).forEach(function (c) {
             container.appendChild(c.cloneNode(true));
         });
     },
@@ -756,7 +756,7 @@ PopupController.prototype = {
     },
 
     _bindAction: function (parentElement, selector, eventName, handler) {
-        const elements = parentElement.querySelectorAll(selector);
+        const elements = [].slice.call(parentElement.querySelectorAll(selector));
         if (!elements || elements.length <= 0) {
             return;
         }
@@ -884,7 +884,7 @@ PopupController.prototype = {
         }
 
         // Disable filtering
-        var changeProtectionStateDisableButtons = document.querySelectorAll('.changeProtectionStateDisable');
+        var changeProtectionStateDisableButtons = [].slice.call(document.querySelectorAll('.changeProtectionStateDisable'));
         changeProtectionStateDisableButtons.forEach(button => {
             button.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -893,7 +893,7 @@ PopupController.prototype = {
         });
 
         // Enable filtering
-        var changeProtectionStateEnableButtons = document.querySelectorAll('.changeProtectionStateEnable');
+        var changeProtectionStateEnableButtons = [].slice.call(document.querySelectorAll('.changeProtectionStateEnable'));
         changeProtectionStateEnableButtons.forEach(button => {
             button.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -902,20 +902,20 @@ PopupController.prototype = {
         });
 
         // Tabs
-        parent.querySelectorAll('.tabbar .tab').forEach(function (t) {
-            t.addEventListener('click', function (e) {
+        [].slice.call(parent.querySelectorAll('.tabbar .tab')).forEach((t) => {
+            t.addEventListener('click', (e) => {
                 e.preventDefault();
 
-                parent.querySelectorAll('.tabbar .tab').forEach(function (tab) {
+                [].slice.call(parent.querySelectorAll('.tabbar .tab')).forEach((tab) => {
                     tab.classList.remove('active');
                 });
                 e.target.classList.add('active');
 
                 var attr = e.target.getAttribute('tab-switch');
-                parent.querySelectorAll('.tab-switch-tab').forEach(function (tab) {
+                [].slice.call(parent.querySelectorAll('.tab-switch-tab')).forEach((tab) => {
                     tab.style.display = 'none';
                 });
-                parent.querySelectorAll('.tab-switch-tab[tab-switch="' + attr + '"]').forEach(function (tab) {
+                [].slice.call(parent.querySelectorAll('.tab-switch-tab[tab-switch="' + attr + '"]')).forEach((tab) => {
                     tab.style.display = 'flex';
                 });
             });
@@ -953,7 +953,7 @@ PopupController.prototype = {
      * @private
      */
     _formatNumber: function (number) {
-        return number.toLocaleString(i18n.getUILanguage());
+        return number.toLocaleString();
     },
 };
 

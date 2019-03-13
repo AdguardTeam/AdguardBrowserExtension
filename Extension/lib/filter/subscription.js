@@ -545,11 +545,9 @@ adguard.subscriptions = (function (adguard) {
                 groupsMap[group.groupId] = group;
             }
 
-            const customFiltersGroup = new SubscriptionGroup(
-                CUSTOM_FILTERS_GROUP_ID,
+            const customFiltersGroup = new SubscriptionGroup(CUSTOM_FILTERS_GROUP_ID,
                 adguard.i18n.getMessage('options_antibanner_custom_group'),
-                CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER,
-            );
+                CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER);
             groups.push(customFiltersGroup);
             groupsMap[customFiltersGroup.groupId] = customFiltersGroup;
 

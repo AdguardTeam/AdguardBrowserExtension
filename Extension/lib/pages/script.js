@@ -37,25 +37,25 @@ const CheckboxUtils = (function () {
      * @param {Array.<Object>} elements
      */
     const toggleCheckbox = function (elements) {
-        Array.prototype.forEach.call(elements, function (checkbox) {
+        Array.prototype.forEach.call(elements, (checkbox) => {
             if (checkbox.getAttribute('toggleCheckbox')) {
                 // already applied
                 return;
             }
 
-            let el = document.createElement('div');
+            const el = document.createElement('div');
             el.classList.add('toggler');
             checkbox.parentNode.insertBefore(el, checkbox.nextSibling);
 
-            el.parentNode.addEventListener('click', function () {
+            el.parentNode.addEventListener('click', () => {
                 checkbox.checked = !checkbox.checked;
 
-                let event = document.createEvent('HTMLEvents');
+                const event = document.createEvent('HTMLEvents');
                 event.initEvent('change', true, false);
                 checkbox.dispatchEvent(event);
             });
 
-            checkbox.addEventListener('change', function () {
+            checkbox.addEventListener('change', () => {
                 onClicked(checkbox.checked);
             });
 
