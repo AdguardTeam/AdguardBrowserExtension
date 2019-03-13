@@ -207,7 +207,6 @@ const Saver = function (options) {
     this.indicatorElement = options.indicatorElement;
     this.editor = options.editor;
     this.saveEventType = options.saveEventType;
-    this.omitRenderEventsCount = 0;
 
     const states = {
         CLEAR: 1 << 0,
@@ -231,6 +230,10 @@ const Saver = function (options) {
         return (this.currentState & states.DIRTY) === states.DIRTY;
     };
 
+    this.isSaved = function () {
+        return (this.currentState & states.SAVED) === states.SAVED;
+    };
+
     this.updateIndicator = function (state) {
         this.indicatorElement.textContent = indicatorText[state];
         switch (state) {
@@ -250,23 +253,29 @@ const Saver = function (options) {
     let timeout;
 
     const setState = (state, skipManageState = false) => {
-        this.currentState |= state;
         switch (state) {
             case states.DIRTY:
                 this.currentState &= ~states.CLEAR;
                 break;
             case states.CLEAR:
                 this.currentState &= ~states.DIRTY;
+                this.currentState &= ~states.SAVED;
                 break;
             case states.SAVING:
                 this.currentState &= ~states.SAVED;
                 break;
             case states.SAVED:
+                // transition to SAVED is possible only after SAVING
+                if ((this.currentState & states.SAVING) !== states.SAVING) {
+                    return;
+                }
                 this.currentState &= ~states.SAVING;
                 break;
             default:
                 break;
         }
+
+        this.currentState |= state;
 
         if (!skipManageState) {
             this.manageState();
@@ -305,9 +314,10 @@ const Saver = function (options) {
             return;
         }
 
-        if (!isDirty && !isSaving && (this.omitRenderEventsCount === 1)) {
+        if (!isDirty && !isSaving) {
             this.updateIndicator(states.SAVED);
             timeout = setTimeout(() => {
+                setState(states.CLEAR);
                 self.updateIndicator(states.CLEAR);
             }, HIDE_INDICATOR_TIMEOUT_MS);
             return;
@@ -319,7 +329,6 @@ const Saver = function (options) {
     };
 
     this.saveRules = function () {
-        this.omitRenderEventsCount += 1;
         const text = this.editor.getValue();
         contentPage.sendMessage({
             type: this.saveEventType,
@@ -332,15 +341,13 @@ const Saver = function (options) {
     };
 
     const setSaved = () => {
-        if (this.omitRenderEventsCount > 0) {
-            setState(states.SAVED);
-            this.omitRenderEventsCount -= 1;
-            return true;
-        }
-        return false;
+        setState(states.SAVED);
     };
 
+    const canUpdate = () => !(this.isSaved() || this.isSaving() || this.isDirty());
+
     return {
+        canUpdate: canUpdate,
         setDirty: setDirty,
         setSaved: setSaved,
     };
@@ -426,18 +433,17 @@ var WhiteListFilter = function (options) {
     function loadWhiteListDomains() {
         contentPage.sendMessage({
             type: 'getWhiteListDomains',
-        }, function (response) {
+        }, (response) => {
             hasContent = !!response.content;
             editor.setValue(response.content || '');
         });
     }
 
     function updateWhiteListDomains() {
-        const omitRenderEvent = saver.setSaved();
-        if (omitRenderEvent) {
-            return;
+        if (saver.canUpdate()) {
+            loadWhiteListDomains();
         }
-        loadWhiteListDomains();
+        saver.setSaved();
     }
 
     const session = editor.getSession();
@@ -527,18 +533,19 @@ const UserFilter = function () {
     function loadUserRules() {
         contentPage.sendMessage({
             type: 'getUserRules',
-        }, function (response) {
+        }, (response) => {
             hasContent = !!response.content;
-            editor.setValue(response.content || '');
+            if (editor.getValue() !== response.content) {
+                editor.setValue(response.content || '');
+            }
         });
     }
 
     function updateUserFilterRules() {
-        const omitRenderEvent = saver.setSaved();
-        if (omitRenderEvent) {
-            return;
+        if (saver.canUpdate()) {
+            loadUserRules();
         }
-        loadUserRules();
+        saver.setSaved();
     }
 
     const session = editor.getSession();
