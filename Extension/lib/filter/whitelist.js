@@ -170,8 +170,10 @@ adguard.whitelist = (function (adguard) {
      * Save domains to local storage
      */
     function saveDomainsToLocalStorage() {
-        adguard.localStorage.setItem(WHITE_LIST_DOMAINS_LS_PROP, JSON.stringify(whiteListDomainsHolder.domains));
-        adguard.localStorage.setItem(BLOCK_LIST_DOMAINS_LS_PROP, JSON.stringify(blockListDomainsHolder.domains));
+        adguard.localStorage.setItem(WHITE_LIST_DOMAINS_LS_PROP,
+            JSON.stringify(whiteListDomainsHolder.domains));
+        adguard.localStorage.setItem(BLOCK_LIST_DOMAINS_LS_PROP,
+            JSON.stringify(blockListDomainsHolder.domains));
     }
 
     /**

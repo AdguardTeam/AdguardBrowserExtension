@@ -168,7 +168,7 @@
                 break;
             }
             case 'getUserRules':
-                adguard.userrules.getUserRulesText(function (content) {
+                adguard.userrules.getUserRulesText((content) => {
                     callback({ content: content });
                 });
                 return true;
