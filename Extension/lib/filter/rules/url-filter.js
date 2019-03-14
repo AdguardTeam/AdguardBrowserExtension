@@ -24,10 +24,11 @@
      * Read here for details:
      * http://adguard.com/en/filterrules.html#baseRules
      */
-    var UrlFilter = function (rules) {
+    var UrlFilter = function (rules, badFilterRules) {
 
         this.basicRulesTable = new api.UrlFilterRuleLookupTable();
         this.importantRulesTable = new api.UrlFilterRuleLookupTable();
+        this.badFilterRules = badFilterRules;
 
         if (rules) {
             for (var i = 0; i < rules.length; i++) {
@@ -86,9 +87,19 @@
          */
         isFiltered: function (url, documentHost, requestType, thirdParty, skipGenericRules) {
             // First looking for the rule marked with $important modifier
-            var rule = this.importantRulesTable.findRule(url, documentHost, thirdParty, requestType, !skipGenericRules);
+            var rule = this.importantRulesTable.findRule(url,
+                documentHost,
+                thirdParty,
+                requestType,
+                !skipGenericRules,
+                this.badFilterRules);
             if (!rule) {
-                rule = this.basicRulesTable.findRule(url, documentHost, thirdParty, requestType, !skipGenericRules);
+                rule = this.basicRulesTable.findRule(url,
+                    documentHost,
+                    thirdParty,
+                    requestType,
+                    !skipGenericRules,
+                    this.badFilterRules);
             }
             return rule;
         },
