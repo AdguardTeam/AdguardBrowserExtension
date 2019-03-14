@@ -28,7 +28,6 @@
      * @param thirdParty          Is request third-party or not
      * @param requestType         Request type
      * @param genericRulesAllowed If true - generic rules are allowed
-
      * @return {Boolean}          If rule should filter this request
      */
     function isFiltered(rule, url, referrerHost, thirdParty, requestType, genericRulesAllowed) {
