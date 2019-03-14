@@ -90,17 +90,17 @@
      */
     var RequestFilter = function () {
 
-        // Filter that applies URL blocking rules
-        // Basic rules: https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#basic-rules
-        this.urlBlockingFilter = new adguard.rules.UrlFilter();
-
-        // Filter that applies whitelist rules
-        // Exception rules: https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#exceptions-modifiers
-        this.urlWhiteFilter = new adguard.rules.UrlFilter();
-
         // Bad-filter rules collection
         // TODO: add link
         this.badFilterRules = {};
+
+        // Filter that applies URL blocking rules
+        // Basic rules: https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#basic-rules
+        this.urlBlockingFilter = new adguard.rules.UrlFilter([], this.badFilterRules);
+
+        // Filter that applies whitelist rules
+        // Exception rules: https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#exceptions-modifiers
+        this.urlWhiteFilter = new adguard.rules.UrlFilter([], this.badFilterRules);
 
         // Filter that applies CSS rules
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#cosmetic-rules
@@ -120,7 +120,7 @@
 
         // Filter that applies stealth rules
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#stealth-modifier
-        this.stealthFilter = new adguard.rules.UrlFilter();
+        this.stealthFilter = new adguard.rules.UrlFilter([], this.badFilterRules);
 
         // Filter that applies replace rules
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#replace-modifier
