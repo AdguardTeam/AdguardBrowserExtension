@@ -91,7 +91,7 @@
     var RequestFilter = function () {
 
         // Bad-filter rules collection
-        // TODO: add link
+        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#badfilter-modifier
         this.badFilterRules = {};
 
         // Filter that applies URL blocking rules
@@ -365,20 +365,6 @@
                 }\
             })();");
             return scriptsToApply.join('\r\n');
-        },
-
-        /**
-         * Clears RequestFilter
-         */
-        clearRules: function () {
-            this.urlWhiteFilter.clearRules();
-            this.urlBlockingFilter.clearRules();
-            this.cssFilter.clearRules();
-            this.contentFilter.clearRules();
-            this.stealthFilter.clearRules();
-            this.urlBlockingCache.clearRequestCache();
-            this.urlExceptionsCache.clearRequestCache();
-            this.badFilterRules = {};
         },
 
         /**

@@ -28,25 +28,16 @@
      * @param thirdParty          Is request third-party or not
      * @param requestType         Request type
      * @param genericRulesAllowed If true - generic rules are allowed
+     * @param badFilterRules      Link to the badFilterRules
      * @return {Boolean}          If rule should filter this request
      */
-    function isFiltered(rule, url, referrerHost, thirdParty, requestType, genericRulesAllowed) {
+    function isFiltered(rule, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules) {
+        if (badFilterRules && badFilterRules[rule.ruleText]) {
+            return false;
+        }
         return rule.isPermitted(referrerHost) &&
             (genericRulesAllowed || !rule.isGeneric()) &&
             rule.isFiltered(url, thirdParty, requestType);
-    }
-
-    /**
-     * Checks if filter is bad filter
-     * @param rule
-     * @param badFilterRules
-     * @returns {boolean}
-     */
-    function isBadFilterRule(rule, badFilterRules) {
-        if (!badFilterRules) {
-            return false;
-        }
-        return !!badFilterRules[rule.ruleText];
     }
 
     /**
@@ -73,8 +64,7 @@
             for (i = 0; i < rules.length; i += 1) {
                 rule = rules[i];
                 if (rule.isDocumentLevel()
-                    && !isBadFilterRule(rule, badFilterRules)
-                    && isFiltered(rule, url, referrerHost, thirdParty, requestType, genericRulesAllowed)) {
+                    && isFiltered(rule, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules)) {
                     if (findFirst) {
                         return rule;
                     }
@@ -89,8 +79,7 @@
 
         for (i = 0; i < rules.length; i += 1) {
             rule = rules[i];
-            if (!isBadFilterRule(rule, badFilterRules)
-                && isFiltered(rule, url, referrerHost, thirdParty, requestType, genericRulesAllowed)) {
+            if (isFiltered(rule, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules)) {
                 if (findFirst) {
                     return rule;
                 }
