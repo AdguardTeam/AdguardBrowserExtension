@@ -1,4 +1,4 @@
-/*! extended-css - v1.1.1 - 2019-03-07
+/*! extended-css - v1.1.2 - 2019-03-14
 * https://github.com/AdguardTeam/ExtendedCss
 * Copyright (c) 2019 ; Licensed Apache License 2.0 */
 var ExtendedCss = (function(window) {
@@ -4398,6 +4398,7 @@ function ExtendedCss(configuration) {
             domMutationObserver.observe(document.documentElement, {
                 childList: true,
                 subtree: true,
+                attributes: true,
                 attributeFilter: ['id', 'class']
             });
         } else if (eventListenerSupported) {
