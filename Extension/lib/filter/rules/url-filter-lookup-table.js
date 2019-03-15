@@ -31,9 +31,9 @@
      * @return true if rule should filter this request
      */
     function isFiltered(rule, url, referrerHost, thirdParty, requestType, genericRulesAllowed) {
-        return rule.isPermitted(referrerHost) &&
-            (genericRulesAllowed || !rule.isGeneric()) &&
-            rule.isFiltered(url, thirdParty, requestType);
+        return (genericRulesAllowed || !rule.isGeneric()) &&
+            rule.isFiltered(url, thirdParty, requestType) &&
+            rule.isPermitted(referrerHost);
     }
 
     /**
