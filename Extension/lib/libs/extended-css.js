@@ -4102,6 +4102,7 @@ var ExtendedSelectorFactory = function () {
      * +--------+                     simple
      *           +                    relation
      *            +-----------------+ complex
+     * We split selector only when the last selector is complex
      * @param {string} selectorText
      * @param {string} simple
      * @param {string} relation
@@ -4149,69 +4150,52 @@ var ExtendedSelectorFactory = function () {
                 break;
             case ">":
                 {
-                    // buffer array
-                    var childNodes = [];
-
                     for (var _i2 = 0, _simpleNodes2 = simpleNodes; _i2 < _simpleNodes2.length; _i2++) {
                         var _node = _simpleNodes2[_i2];
-                        this.relativeSearch(_node, childNodes);
-
-                        for (var _i3 = 0; _i3 < childNodes.length; _i3++) {
-                            var childNode = childNodes[_i3];
-                            if (childNode.parentNode === _node) {
+                        for (var _i3 = 0, _node$children = _node.children; _i3 < _node$children.length; _i3++) {
+                            var childNode = _node$children[_i3];
+                            if (this.matches(childNode)) {
                                 resultNodes.push(childNode);
                             }
                         }
-
-                        childNodes.length = 0; // clears the buffer
                     }
 
                     break;
                 }
             case "+":
                 {
-                    var _childNodes = [];
-
                     for (var _i4 = 0, _simpleNodes3 = simpleNodes; _i4 < _simpleNodes3.length; _i4++) {
                         var _node2 = _simpleNodes3[_i4];
                         var parentNode = _node2.parentNode;
                         if (!parentNode) {
                             continue;
                         }
-                        this.relativeSearch(parentNode, _childNodes);
 
-                        for (var _i5 = 0; _i5 < _childNodes.length; _i5++) {
-                            var _childNode = _childNodes[_i5];
-                            if (_childNode.previousElementSibling === _node2) {
+                        for (var _i5 = 0, _parentNode$children = parentNode.children; _i5 < _parentNode$children.length; _i5++) {
+                            var _childNode = _parentNode$children[_i5];
+                            if (this.matches(_childNode) && _childNode.previousElementSibling === _node2) {
                                 resultNodes.push(_childNode);
                             }
                         }
-
-                        _childNodes.length = 0;
                     }
 
                     break;
                 }
             case "~":
                 {
-                    var _childNodes2 = [];
-
                     for (var _i6 = 0, _simpleNodes4 = simpleNodes; _i6 < _simpleNodes4.length; _i6++) {
                         var _node3 = _simpleNodes4[_i6];
                         var _parentNode = _node3.parentNode;
                         if (!_parentNode) {
                             continue;
                         }
-                        this.relativeSearch(_parentNode, _childNodes2);
 
-                        for (var _i7 = 0; _i7 < _childNodes2.length; _i7++) {
-                            var _childNode2 = _childNodes2[_i7];
-                            if (_childNode2.parentNode === _parentNode && _node3.compareDocumentPosition(_childNode2) === 4) {
+                        for (var _i7 = 0, _parentNode$children2 = _parentNode.children; _i7 < _parentNode$children2.length; _i7++) {
+                            var _childNode2 = _parentNode$children2[_i7];
+                            if (this.matches(_childNode2) && _node3.compareDocumentPosition(_childNode2) === 4) {
                                 resultNodes.push(_childNode2);
                             }
                         }
-
-                        _childNodes2.length = 0;
                     }
                 }
         }
