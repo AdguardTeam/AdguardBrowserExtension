@@ -68,14 +68,6 @@
         },
 
         /**
-         * Removes all rules from UrlFilter
-         */
-        clearRules: function () {
-            this.basicRulesTable.clearRules();
-            this.importantRulesTable.clearRules();
-        },
-
-        /**
          * Searches for first rule matching specified request
          *
          * @param url           Request url
