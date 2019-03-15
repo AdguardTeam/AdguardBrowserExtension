@@ -20,25 +20,64 @@
     'use strict';
 
     // Constants
-    const SHORTCUT_LENGTH = 6;
-    const ANY_URL_SHORTCUTS = [
-        'http:/',
-        'https:',
-        '|https',
-        '|http:',
-    ];
+    const SHORTCUT_LENGTH = 5;
 
     /**
-     * Retrieves shortcut for rule
-     * @param rule
+     * Gets a list of shortcuts that can be used for the lookup table
+     * 
+     * @param {UrlFilterRule} rule basic rule
+     * @returns {Array<string>} a list of applicable shortcuts or null if no shortcuts found
      */
-    function getRuleShortcut(rule) {
+    function getRuleShortcuts(rule) {
         if (!rule.shortcut || rule.shortcut.length < SHORTCUT_LENGTH) {
             return null;
         }
-        return rule.shortcut.substring(0, SHORTCUT_LENGTH);
+        let shortcuts = [];
+        for (let i = 0; i <= rule.shortcut.length - SHORTCUT_LENGTH; i++) {
+            let shortcut = rule.shortcut.substring(i, i + SHORTCUT_LENGTH);
+            shortcuts.push(shortcut);
+        }
+        return shortcuts;
     }
 
+    /**
+     * Avoid adding rules that match too many URLs.
+     * We'd better use DomainsLookupTable for them.
+     * 
+     * @param {UrlFilterRule} rule rule to check
+     */
+    function isAnyUrlShortcut(rule) {
+        if (!rule.shortcut) {
+            return true;
+        }
+
+        if (rule.shortcut.length < 6 && rule.shortcut.indexOf('ws:') === 0) {
+            return true;
+        }
+
+        if (rule.shortcut.length < 7 && rule.shortcut.indexOf('|ws:') === 0) {
+            return true;
+        }
+
+        if (rule.shortcut.length < 9 && rule.shortcut.indexOf('http') === 0) {
+            return true;
+        }
+
+        if (rule.shortcut.length < 10 && rule.shortcut.indexOf('|http') === 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * djb2 hash algorithm
+     * 
+     * @param {String} str string
+     * @param {Number} begin start index
+     * @param {Number} end end index
+     * @param {Number} hash value
+     */
     function djb2HashBetween(str, begin, end) {
         let hash = 5381;
         for (let i = begin; i < end; i += 1) {
@@ -47,6 +86,12 @@
         return hash >>> 0;
     }
 
+    /**
+     * djb2 hash algorithm
+     * 
+     * @param {String} str string
+     * @returns {Number} hash value
+     */
     function djb2Hash(str) {
         if (!str) {
             return 0;
@@ -60,6 +105,7 @@
     const ShortcutsLookupTable = function (rules) {
 
         this.lookupTable = new Map();
+        this.histogram = new Map();
 
         if (rules) {
             for (let i = 0; i < rules.length; i++) {
@@ -71,20 +117,36 @@
     ShortcutsLookupTable.prototype = {
 
         /**
-         * Adds rule to shortcuts lookup table
+         * Adds rule to the shortcuts lookup table
          *
-         * @param rule Rule to add to the table
-         * @return boolean true if rule shortcut is applicable and rule was added
+         * @param {UrlFilterRule} rule Rule to add to the table
+         * @return {Boolean} true if the rule shortcut is applicable and the rule was added
          */
         addRule: function (rule) {
-            const shortcut = getRuleShortcut(rule);
-
-            if (!shortcut || ANY_URL_SHORTCUTS.indexOf(shortcut) !== -1) {
-                // Shortcut does not exists or it is too short
+            if (isAnyUrlShortcut(rule)) {
                 return false;
             }
 
-            const shortcutHash = djb2Hash(shortcut);
+            let shortcuts = getRuleShortcuts(rule);
+            if (!shortcuts) {
+                return false;
+            }
+
+            // Find the applicable shortcut (the least used)
+            let shortcutHash;
+            let minCount = Number.MAX_SAFE_INTEGER;
+            for (let shortcutToCheck of shortcuts) {
+                let hash = djb2Hash(shortcutToCheck);
+                let count = this.histogram.get(hash) || 0;
+                if (count < minCount) {
+                    minCount = count;
+                    shortcutHash = hash;
+                }
+            }
+
+            // Increment the histogram
+            const count = this.histogram.get(shortcutHash) || 0;
+            this.histogram.set(shortcutHash, count+1);
 
             if (!this.lookupTable.has(shortcutHash)) {
                 // Array is too "memory-hungry" so we try to store one rule instead
@@ -108,24 +170,24 @@
          * @param rule Rule to remove
          */
         removeRule: function (rule) {
-            const shortcut = getRuleShortcut(rule);
-
-            if (!shortcut) {
-                // Shortcut does not exists or it is too short
-                return;
+            let shortcuts = getRuleShortcuts(rule);
+            if (!shortcuts) {
+                return false;
             }
 
-            const shortcutHash = djb2Hash(shortcut);
+            for (let shortcut of shortcuts) {
+                const shortcutHash = djb2Hash(shortcut);
 
-            if (this.lookupTable.has(shortcutHash)) {
-                const obj = this.lookupTable.get(shortcutHash);
-                if (adguard.utils.collections.isArray(obj)) {
-                    adguard.utils.collections.removeRule(obj, rule);
-                    if (obj.length === 0) {
+                if (this.lookupTable.has(shortcutHash)) {
+                    const obj = this.lookupTable.get(shortcutHash);
+                    if (adguard.utils.collections.isArray(obj)) {
+                        adguard.utils.collections.removeRule(obj, rule);
+                        if (obj.length === 0) {
+                            this.lookupTable.delete(shortcutHash);
+                        }
+                    } else if (obj.ruleText === rule.ruleText) {
                         this.lookupTable.delete(shortcutHash);
                     }
-                } else {
-                    this.lookupTable.delete(shortcutHash);
                 }
             }
         },
@@ -135,6 +197,7 @@
          */
         clearRules: function () {
             this.lookupTable.clear();
+            this.histogram.clear();
         },
 
         /**
@@ -177,7 +240,7 @@
          * @returns {Array} rules in lookup table
          */
         getRules: function () {
-            let result = [];
+            const result = [];
             this.lookupTable.forEach((value) => {
                 if (value) {
                     if (adguard.utils.collections.isArray(value)) {
