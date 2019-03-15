@@ -20,9 +20,13 @@
     'use strict';
 
     // Constants
-    var SHORTCUT_LENGTH = 6;
-    var ANY_HTTP_URL = "http:/";
-    var ANY_HTTPS_URL = "https:";
+    const SHORTCUT_LENGTH = 6;
+    const ANY_URL_SHORTCUTS = [
+        'http:/',
+        'https:',
+        '|https',
+        '|http:',
+    ];
 
     /**
      * Retrieves shortcut for rule
@@ -32,18 +36,33 @@
         if (!rule.shortcut || rule.shortcut.length < SHORTCUT_LENGTH) {
             return null;
         }
-        return rule.shortcut.substring(rule.shortcut.length - SHORTCUT_LENGTH);
+        return rule.shortcut.substring(0, SHORTCUT_LENGTH);
     }
+
+    function djb2HashBetween(str, begin, end) {
+        let hash = 5381;
+        for (let i = begin; i < end; i += 1) {
+            hash = (hash * 33) ^ str.charCodeAt(i);
+        }
+        return hash >>> 0;
+    }
+
+    function djb2Hash(str) {
+        if (!str) {
+            return 0;
+        }
+        return djb2HashBetween(str, 0, str.length);
+    }    
 
     /**
      * Special hash table that greatly increases speed of searching url filter rule by its shortcut
      */
-    var ShortcutsLookupTable = function (rules) {
+    const ShortcutsLookupTable = function (rules) {
 
-        this.lookupTable = Object.create(null);
+        this.lookupTable = new Map();
 
         if (rules) {
-            for (var i = 0; i < rules.length; i++) {
+            for (let i = 0; i < rules.length; i++) {
                 this.addRule(rules[i]);
             }
         }
@@ -58,26 +77,25 @@
          * @return boolean true if rule shortcut is applicable and rule was added
          */
         addRule: function (rule) {
+            const shortcut = getRuleShortcut(rule);
 
-            var shortcut = getRuleShortcut(rule);
-
-            if (!shortcut ||
-                shortcut == ANY_HTTP_URL ||
-                shortcut == ANY_HTTPS_URL) {
+            if (!shortcut || ANY_URL_SHORTCUTS.indexOf(shortcut) !== -1) {
                 // Shortcut does not exists or it is too short
                 return false;
             }
 
-            if (!(shortcut in this.lookupTable)) {
+            const shortcutHash = djb2Hash(shortcut);
+
+            if (!this.lookupTable.has(shortcutHash)) {
                 // Array is too "memory-hungry" so we try to store one rule instead
-                this.lookupTable[shortcut] = rule;
+                this.lookupTable.set(shortcutHash, rule);
             } else {
-                var obj = this.lookupTable[shortcut];
+                const obj = this.lookupTable.get(shortcutHash);
                 if (adguard.utils.collections.isArray(obj)) {
                     // That is popular shortcut, more than one rule
                     obj.push(rule);
                 } else {
-                    this.lookupTable[shortcut] = [obj, rule];
+                    this.lookupTable.set(shortcutHash, [obj, rule]);
                 }
             }
 
@@ -90,23 +108,24 @@
          * @param rule Rule to remove
          */
         removeRule: function (rule) {
-
-            var shortcut = getRuleShortcut(rule);
+            const shortcut = getRuleShortcut(rule);
 
             if (!shortcut) {
                 // Shortcut does not exists or it is too short
                 return;
             }
 
-            if (shortcut in this.lookupTable) {
-                var obj = this.lookupTable[shortcut];
+            const shortcutHash = djb2Hash(shortcut);
+
+            if (this.lookupTable.has(shortcutHash)) {
+                const obj = this.lookupTable.get(shortcutHash);
                 if (adguard.utils.collections.isArray(obj)) {
                     adguard.utils.collections.removeRule(obj, rule);
                     if (obj.length === 0) {
-                        delete this.lookupTable[shortcut];
+                        this.lookupTable.delete(shortcutHash);
                     }
                 } else {
-                    delete this.lookupTable[shortcut];
+                    this.lookupTable.delete(shortcutHash);
                 }
             }
         },
@@ -115,7 +134,7 @@
          * Clears lookup table
          */
         clearRules: function () {
-            this.lookupTable = Object.create(null);
+            this.lookupTable.clear();
         },
 
         /**
@@ -125,22 +144,28 @@
          * @return List of filter rules or null if nothing found
          */
         lookupRules: function (url) {
+            let result = null;
+            for (let i = 0; i <= url.length - SHORTCUT_LENGTH; i++) {
+                const hash = djb2HashBetween(url, i, i +SHORTCUT_LENGTH);
+                const value = this.lookupTable.get(hash);
 
-            var result = null;
-            for (var i = 0; i <= url.length - SHORTCUT_LENGTH; i++) {
-                var hash = url.substring(i, i + SHORTCUT_LENGTH);
-                var value = this.lookupTable[hash];
                 if (value) {
                     if (adguard.utils.collections.isArray(value)) {
                         if (result === null) {
                             result = [];
                         }
-                        result = result.concat(value);
+                        for (let rule of value) {
+                            if (url.indexOf(rule.shortcut) !== -1) {
+                                result.push(rule);
+                            }
+                        }
                     } else {
                         if (result === null) {
                             result = [];
                         }
-                        result.push(value);
+                        if (url.indexOf(value.shortcut) !== -1) {
+                            result.push(value);
+                        }
                     }
                 }
             }
@@ -152,9 +177,8 @@
          * @returns {Array} rules in lookup table
          */
         getRules: function () {
-            var result = [];
-            for (var r in this.lookupTable) { // jshint ignore:line
-                var value = this.lookupTable[r];
+            let result = [];
+            this.lookupTable.forEach((value) => {
                 if (value) {
                     if (adguard.utils.collections.isArray(value)) {
                         result = result.concat(value);
@@ -162,8 +186,7 @@
                         result.push(value);
                     }
                 }
-            }
-
+            });
             return result;
         }
     };
@@ -171,4 +194,3 @@
     api.ShortcutsLookupTable = ShortcutsLookupTable;
 
 })(adguard, adguard.rules);
-
