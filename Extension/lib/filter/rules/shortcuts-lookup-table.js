@@ -52,6 +52,7 @@
         }
 
         // Sorry for magic numbers
+        // The numbers are basically ("PROTO://".length + 1)
 
         if (rule.shortcut.length < 6 && rule.shortcut.indexOf('ws:') === 0) {
             return true;
