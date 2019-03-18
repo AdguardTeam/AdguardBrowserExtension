@@ -47,9 +47,11 @@
      * @param {UrlFilterRule} rule rule to check
      */
     function isAnyUrlShortcut(rule) {
-        if (!rule.shortcut) {
+        if (!rule.shortcut || rule.shortcut.length < SHORTCUT_LENGTH) {
             return true;
         }
+
+        // Sorry for magic numbers
 
         if (rule.shortcut.length < 6 && rule.shortcut.indexOf('ws:') === 0) {
             return true;
@@ -97,7 +99,7 @@
             return 0;
         }
         return djb2HashBetween(str, 0, str.length);
-    }    
+    }
 
     /**
      * Special hash table that greatly increases speed of searching url filter rule by its shortcut
@@ -146,7 +148,7 @@
 
             // Increment the histogram
             const count = this.histogram.get(shortcutHash) || 0;
-            this.histogram.set(shortcutHash, count+1);
+            this.histogram.set(shortcutHash, count + 1);
 
             if (!this.lookupTable.has(shortcutHash)) {
                 // Array is too "memory-hungry" so we try to store one rule instead
@@ -208,8 +210,9 @@
          */
         lookupRules: function (url) {
             let result = null;
+
             for (let i = 0; i <= url.length - SHORTCUT_LENGTH; i++) {
-                const hash = djb2HashBetween(url, i, i +SHORTCUT_LENGTH);
+                const hash = djb2HashBetween(url, i, i + SHORTCUT_LENGTH);
                 const value = this.lookupTable.get(hash);
 
                 if (value) {
