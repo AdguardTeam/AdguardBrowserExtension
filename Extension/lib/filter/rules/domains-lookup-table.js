@@ -102,34 +102,33 @@
          * @return List of filter rules or null if nothing found
          */
         lookupRules: function (domainName) {
-
             if (!domainName) {
                 return null;
             }
 
-            var parts = domainName.split('.');
+            let parts = domainName.split('.');
             if (parts.length === 0) {
                 return null;
             }
 
-            // Resulting list
-            var urlFilterRules = null;
+            // Resulting list of rules
+            let result = null;
 
             // Iterate over all sub-domains
-            var host = parts[parts.length - 1];
-            for (var i = parts.length - 2; i >= 0; i--) {
+            let host = parts[parts.length - 1];
+            for (let i = parts.length - 2; i >= 0; i--) {
                 host = parts[i] + "." + host;
-                var rules = this.lookupTable[host];
+                let rules = this.lookupTable[host];
                 if (rules && rules.length > 0) {
-                    if (urlFilterRules === null) {
+                    if (result === null) {
                         // Lazy initialization of the resulting list
-                        urlFilterRules = [];
+                        result = [];
                     }
-                    urlFilterRules = urlFilterRules.concat(rules);
+                    result = result.concat(rules);
                 }
             }
 
-            return urlFilterRules;
+            return result;
         },
 
         /**
