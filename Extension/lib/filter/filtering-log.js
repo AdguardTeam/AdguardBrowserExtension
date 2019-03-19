@@ -459,6 +459,11 @@ adguard.filteringLog = (function (adguard) {
         return openedFilteringLogsPage > 0;
     };
 
+    /**
+     * We should synchronize open tabs and add listeners to the tabs after application
+     * is initialized. Otherwise updating tabs can return wrong stats values and
+     * overwrite them with wrong data
+     */
     const init = () => {
         // Initialize filtering log
         synchronizeOpenTabs();

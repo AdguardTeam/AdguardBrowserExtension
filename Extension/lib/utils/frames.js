@@ -227,6 +227,9 @@ adguard.frames = (function (adguard) {
 
         const localStorageInitialized = adguard.localStorage.isInitialized();
         const urlFilteringDisabled = !adguard.utils.url.isHttpRequest(url);
+
+        // application is available for tabs where url is with http schema
+        // and when localstorage is initialized
         const applicationAvailable = localStorageInitialized && !urlFilteringDisabled;
         var applicationFilteringDisabled;
         var documentWhiteListed = false;
