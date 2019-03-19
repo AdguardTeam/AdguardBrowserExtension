@@ -40,7 +40,7 @@ adguard.pageStats = (function (adguard) {
          * @private
          */
         get stats() {
-            return adguard.lazyGet(pageStatsHolder, 'stats', function () {
+            return adguard.lazyGet(pageStatsHolder, 'stats', () => {
                 let stats;
                 try {
                     const json = adguard.localStorage.getItem(pageStatisticProperty);

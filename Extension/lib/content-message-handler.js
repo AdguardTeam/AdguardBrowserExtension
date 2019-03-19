@@ -18,7 +18,7 @@
 /**
  *  Initialize Content => BackgroundPage messaging
  */
-(function (adguard) {
+adguard.messaging = (function (adguard) {
 
     'use strict';
 
@@ -343,6 +343,10 @@
                 adguard.notifications.setNotificationViewed(message.withDelay);
                 break;
             case 'getStatisticsData':
+                // There can't be data till localstorage is initialized
+                if (!adguard.localStorage.isInitialized()) {
+                    return {};
+                }
                 callback({
                     stats: adguard.pageStats.getStatisticsData(),
                 });

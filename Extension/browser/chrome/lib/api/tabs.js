@@ -422,7 +422,7 @@ adguard.tabsImpl = (function (adguard) {
     const userCSSSupport = adguard.prefs.features.userCSSSupport;
 
     /**
-     * The only purpose of this callback is to read `lastError` and prevent 
+     * The only purpose of this callback is to read `lastError` and prevent
      * unnecessary console warnings (can happen with Chrome preloaded tabs).
      * See https://stackoverflow.com/questions/43665470/cannot-call-chrome-tabs-executescript-into-preloaded-tab-is-this-a-bug-in-chr
      */
@@ -433,7 +433,7 @@ adguard.tabsImpl = (function (adguard) {
     /**
      * Inserts CSS using the `browser.tabs.insertCSS` under the hood.
      * This method always injects CSS using `runAt: document_start`/
-     * 
+     *
      * @param {number} tabId Tab id or null if you want to inject into the active tab
      * @param {number} requestFrameId Target frame id (CSS will be inserted into that frame)
      * @param {number} code CSS code to insert
@@ -457,7 +457,7 @@ adguard.tabsImpl = (function (adguard) {
     /**
      * Executes the specified JS code using `browser.tabs.executeScript` under the hood.
      * This method forces `runAt: document_start`.
-     * 
+     *
      * @param {number} tabId Tab id or null if you want to inject into the active tab
      * @param {requestFrameId} requestFrameId Target frame id (script will be injected into that frame)
      * @param {requestFrameId} code Javascript code to execute
@@ -474,7 +474,7 @@ adguard.tabsImpl = (function (adguard) {
     /**
      * Executes the specified javascript file in the top frame of the specified tab.
      * This method forces `runAt: document_start`.
-     * 
+     *
      * @param {number} tabId Tab id or null if you want to inject into the active tab
      * @param {filePath} filePath Path to the javascript file
      * @param {function} callback Called when the script injection is complete
