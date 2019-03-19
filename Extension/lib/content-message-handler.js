@@ -18,7 +18,7 @@
 /**
  *  Initialize Content => BackgroundPage messaging
  */
-adguard.messaging = (function (adguard) {
+(function (adguard) {
 
     'use strict';
 

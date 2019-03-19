@@ -844,7 +844,7 @@ PopupController.prototype = {
         this._bindAction(parent, '.changeDocumentWhiteListed', 'click', function (e) {
             e.preventDefault();
             var tabInfo = self.tabInfo;
-            if (!tabInfo.applicationAvailable) {
+            if (!tabInfo.applicationAvailable || tabInfo.applicationFilteringDisabled) {
                 return;
             }
             if (!tabInfo.canAddRemoveRule) {
