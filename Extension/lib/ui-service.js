@@ -838,19 +838,40 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         });
     };
 
-    // update icon on event received
-    adguard.listeners.addListener(function (event, tab, reset) {
-        if (event !== adguard.listeners.UPDATE_TAB_BUTTON_STATE || !tab) {
-            return;
-        }
+    const init = () => {
+        // update icon on event received
+        adguard.listeners.addListener(function (event, tab, reset) {
+            if (event !== adguard.listeners.UPDATE_TAB_BUTTON_STATE || !tab) {
+                return;
+            }
 
-        var options;
-        if (reset) {
-            options = { icon: adguard.prefs.ICONS.ICON_GRAY, badge: '' };
-        }
+            var options;
+            if (reset) {
+                options = { icon: adguard.prefs.ICONS.ICON_GRAY, badge: '' };
+            }
 
-        updateTabIcon(tab, options);
-    });
+            updateTabIcon(tab, options);
+        });
+
+        // Update tab icon and context menu while loading
+        adguard.tabs.onUpdated.addListener(function (tab) {
+            var tabId = tab.tabId;
+            // BrowserAction is set separately for each tab
+            updateTabIcon(tab);
+            adguard.tabs.getActive(function (aTab) {
+                if (aTab.tabId !== tabId) {
+                    return;
+                }
+                // ContextMenu is set for all tabs, so update it only for current tab
+                updateTabContextMenu(aTab);
+            });
+        });
+
+        // Update tab icon and context menu on active tab changed
+        adguard.tabs.onActivated.addListener(function (tab) {
+            updateTabIconAndContextMenu(tab, true);
+        });
+    };
 
     // Update icon and popup stats on ads blocked
     adguard.listeners.addListener(function (event, rule, tab, blocked) {
@@ -882,23 +903,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         }
     });
 
-    // Update tab icon and context menu while loading
-    adguard.tabs.onUpdated.addListener(function (tab) {
-        var tabId = tab.tabId;
-        // BrowserAction is set separately for each tab
-        updateTabIcon(tab);
-        adguard.tabs.getActive(function (aTab) {
-            if (aTab.tabId !== tabId) {
-                return;
-            }
-            // ContextMenu is set for all tabs, so update it only for current tab
-            updateTabContextMenu(aTab);
-        });
-    });
-    // Update tab icon and context menu on active tab changed
-    adguard.tabs.onActivated.addListener(function (tab) {
-        updateTabIconAndContextMenu(tab, true);
-    });
     // Update tab icon and context menu on application initialization
     adguard.listeners.addListener(function (event) {
         if (event === adguard.listeners.APPLICATION_INITIALIZED) {
@@ -944,6 +948,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     adguard.unload.when(closeAllPages);
 
     return {
+        init: init,
         openExportRulesTab: openExportRulesTab,
         openSettingsTab: openSettingsTab,
         openSiteReportTab: openSiteReportTab,

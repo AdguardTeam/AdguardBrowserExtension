@@ -26,10 +26,12 @@ adguard.initialize = function () {
 
         // Initialize popup button
         adguard.browserAction.setPopup({
-            popup: adguard.getURL('pages/popup.html')
+            popup: adguard.getURL('pages/popup.html'),
         });
 
         adguard.whitelist.init();
+        adguard.filteringLog.init();
+        adguard.ui.init();
 
         /**
          * Start application
