@@ -185,7 +185,6 @@ adguard.integration = (function (adguard) {
 
         // Check for X-Adguard-Filtered header
         var adguardAppHeaderValue = adguard.utils.browser.getHeaderValueByName(headers, ADGUARD_APP_HEADER);
-
         if (!adguardAppHeaderValue) {
             // No X-Adguard-Filtered header, disable integration mode for this tab
             adguard.frames.recordAdguardIntegrationForTab(tab, false, false, false, null, null, false);
