@@ -269,9 +269,9 @@ PopupController.prototype = {
         if (tabInfo.adguardDetected) {
             template = this.filteringIntegrationHeader;
             const headTitleElement = template.querySelector('.head .msg');
-            if (tabInfo.adguardProductName.toLowerCase().includes('mac')) {
+            if (tabInfo.adguardProductName && tabInfo.adguardProductName.toLowerCase().includes('mac')) {
                 headTitleElement.innerHTML = i18n.getMessage('popup_integrate_mode_title_mac');
-            } else if (tabInfo.adguardProductName.toLowerCase().includes('win')) {
+            } else if (tabInfo.adguardProductName && tabInfo.adguardProductName.toLowerCase().includes('win')) {
                 headTitleElement.innerHTML = i18n.getMessage('popup_integrate_mode_title_win');
             } else {
                 headTitleElement.innerHTML = i18n.getMessage('popup_integrate_mode_title');
