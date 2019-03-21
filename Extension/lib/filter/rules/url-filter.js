@@ -45,7 +45,6 @@
          * @param rule Rule object
          */
         addRule: function (rule) {
-
             if (rule.isImportant) {
                 this.importantRulesTable.addRule(rule);
             } else {
@@ -59,7 +58,6 @@
          * @param rule Rule to remove
          */
         removeRule: function (rule) {
-
             if (rule.isImportant) {
                 this.importantRulesTable.removeRule(rule);
             } else {
@@ -79,7 +77,7 @@
          */
         isFiltered: function (url, documentHost, requestType, thirdParty, skipGenericRules) {
             // First looking for the rule marked with $important modifier
-            var rule = this.importantRulesTable.findRule(url,
+            let rule = this.importantRulesTable.findRule(url,
                 documentHost,
                 thirdParty,
                 requestType,
