@@ -426,7 +426,6 @@
             let rule = this.stealthFilter.isFiltered(referrer, refHost, requestType, thirdParty);
 
             rule = this._checkBadFilterExceptions(rule);
-
             return rule;
         },
 
@@ -440,18 +439,16 @@
          * @returns Rule found or null
          */
         findRuleForRequest: function (requestUrl, documentUrl, requestType, documentWhitelistRule) {
+            const documentHost = adguard.utils.url.getHost(documentUrl);
+            const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
 
-            var documentHost = adguard.utils.url.getHost(documentUrl);
-            var thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
-
-            var cacheItem = this.urlBlockingCache.searchRequestCache(requestUrl, documentHost, requestType);
-
+            const cacheItem = this.urlBlockingCache.searchRequestCache(requestUrl, documentHost, requestType);
             if (cacheItem) {
                 // Element with zero index is a filter rule found last time
                 return cacheItem[0];
             }
 
-            var rule = this._findRuleForRequest(requestUrl, documentHost, requestType, thirdParty, documentWhitelistRule);
+            let rule = this._findRuleForRequest(requestUrl, documentHost, requestType, thirdParty, documentWhitelistRule);
             rule = this._checkBadFilterExceptions(rule);
 
             this.urlBlockingCache.saveResultToCache(requestUrl, rule, documentHost, requestType);
@@ -464,7 +461,7 @@
          * @returns Collection of content rules
          */
         getContentRulesForUrl: function (documentUrl) {
-            var documentHost = adguard.utils.url.getHost(documentUrl);
+            const documentHost = adguard.utils.url.getHost(documentUrl);
             return this.contentFilter.getRulesForDomain(documentHost);
         },
 
@@ -486,10 +483,8 @@
          * @returns Collection of CSP rules for applying to the request or null
          */
         findCspRules: function (requestUrl, documentUrl, requestType) {
-
-            var documentHost = adguard.utils.url.getHost(documentUrl);
-            var thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
-
+            const documentHost = adguard.utils.url.getHost(documentUrl);
+            const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
             return this.cspFilter.findCspRules(requestUrl, documentHost, thirdParty, requestType);
         },
 
@@ -570,18 +565,18 @@
             // STEP 1: Looking for exception rule, which could be applied to the current request
 
             // Checks white list for a rule for this RequestUrl. If something is found - returning it.
-            var urlWhiteListRule = this._checkWhiteList(requestUrl, documentHost, requestType, thirdParty);
+            let urlWhiteListRule = this._checkWhiteList(requestUrl, documentHost, requestType, thirdParty);
             urlWhiteListRule = this._checkBadFilterExceptions(urlWhiteListRule);
 
             // If UrlBlock is set - than we should not use UrlBlockingFilter against this request.
             // Now check if document rule has $genericblock or $urlblock modifier
-            var genericRulesAllowed = !documentWhiteListRule || !documentWhiteListRule.isGenericBlock();
-            var urlRulesAllowed = !documentWhiteListRule || !documentWhiteListRule.isUrlBlock();
+            let genericRulesAllowed = !documentWhiteListRule || !documentWhiteListRule.isGenericBlock();
+            let urlRulesAllowed = !documentWhiteListRule || !documentWhiteListRule.isUrlBlock();
 
             // STEP 2: Looking for blocking rule, which could be applied to the current request
 
             // Look for blocking rules
-            var blockingRule = this._checkUrlBlockingList(requestUrl, documentHost, requestType, thirdParty, genericRulesAllowed);
+            const blockingRule = this._checkUrlBlockingList(requestUrl, documentHost, requestType, thirdParty, genericRulesAllowed);
 
             // STEP 3: Analyze results, first - basic exception rule
 

@@ -35,9 +35,9 @@
         if (badFilterRules && badFilterRules[rule.ruleText]) {
             return false;
         }
-        return rule.isPermitted(referrerHost) &&
-            (genericRulesAllowed || !rule.isGeneric()) &&
-            rule.isFiltered(url, thirdParty, requestType);
+        return (genericRulesAllowed || !rule.isGeneric()) &&
+            rule.isFiltered(url, thirdParty, requestType) &&
+            rule.isPermitted(referrerHost);
     }
 
     /**
@@ -54,15 +54,12 @@
      * @return Collection of matching rules or first matching rule or null if nothing found
      */
     function filterRules(rules, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules, findFirst) {
-
-        var rule, i;
-
-        var result = null;
+        let result = null;
 
         if (requestType === adguard.RequestTypes.DOCUMENT) {
             // Looking for document level rules
-            for (i = 0; i < rules.length; i += 1) {
-                rule = rules[i];
+            for (let i = 0; i < rules.length; i += 1) {
+                let rule = rules[i];
                 if (rule.isDocumentLevel()
                     && isFiltered(rule, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules)) {
                     if (findFirst) {
@@ -77,8 +74,8 @@
             }
         }
 
-        for (i = 0; i < rules.length; i += 1) {
-            rule = rules[i];
+        for (let i = 0; i < rules.length; i += 1) {
+            let rule = rules[i];
             if (isFiltered(rule, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules)) {
                 if (findFirst) {
                     return rule;
@@ -187,19 +184,16 @@
          * @return First matching rule or null if no match found
          */
         findRule: function (url, documentHost, thirdParty, requestType, genericRulesAllowed, badFilterRules) {
-
             if (!url) {
                 return null;
             }
 
-            var rule;
-
-            var urlLowerCase = url.toLowerCase();
-            var rules = this.shortcutsLookupTable.lookupRules(urlLowerCase);
+            const urlLowerCase = url.toLowerCase();
+            let rules = this.shortcutsLookupTable.lookupRules(urlLowerCase);
 
             // Check against rules with shortcuts
             if (rules && rules.length > 0) {
-                rule = findFirstRule(rules,
+                let rule = findFirstRule(rules,
                     url,
                     documentHost,
                     thirdParty,
@@ -213,7 +207,7 @@
 
             rules = this.domainsLookupTable.lookupRules(documentHost);
             if (rules && rules.length > 0) {
-                rule = findFirstRule(rules,
+                let rule = findFirstRule(rules,
                     url,
                     documentHost,
                     thirdParty,
@@ -227,7 +221,7 @@
 
             // Check against rules without shortcuts
             if (this.rulesWithoutShortcuts.length > 0) {
-                rule = findFirstRule(this.rulesWithoutShortcuts,
+                let rule = findFirstRule(this.rulesWithoutShortcuts,
                     url,
                     documentHost,
                     thirdParty,

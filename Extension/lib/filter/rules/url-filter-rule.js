@@ -111,14 +111,15 @@
      * @returns {string}
      */
     function findShortcut(urlmask) {
-        var longest = '';
-        var parts = urlmask.split(/[*^|]/);
+        let longest = '';
+        let parts = urlmask.split(/[*^|]/);
         for (var i = 0; i < parts.length; i++) {
             var part = parts[i];
             if (part.length > longest.length) {
                 longest = part;
             }
         }
+
         return longest ? longest.toLowerCase() : null;
     }
 
@@ -492,7 +493,7 @@
             // Extract shortcut from regexp rule
             this.shortcut = extractRegexpShortcut(urlRuleText);
         } else {
-            // Searching for shortcut
+            // Searching for the rule shortcut
             this.shortcut = findShortcut(urlRuleText);
         }
 
@@ -618,16 +619,16 @@
             return false;
         }
 
-        // Shortcut is always in lower case
-        if (this.shortcut !== null && requestUrl.toLowerCase().indexOf(this.shortcut) < 0) {
-            return false;
-        }
-
         if (!this.checkContentType(requestType)) {
             return false;
         }
 
-        var regexp = this.getUrlRegExp();
+        // Shortcut is always in lower case
+        if (this.shortcut !== null && requestUrl.toLowerCase().indexOf(this.shortcut) === -1) {
+            return false;
+        }
+
+        let regexp = this.getUrlRegExp();
         if (!regexp) {
             //malformed regexp rule
             return false;
@@ -642,7 +643,7 @@
      * @return true if request matches this content type
      */
     UrlFilterRule.prototype.checkContentType = function (contentType) {
-        var contentTypeMask = UrlFilterRule.contentTypes[contentType];
+        let contentTypeMask = UrlFilterRule.contentTypes[contentType];
         if (!contentTypeMask) {
             throw 'Unsupported content type ' + contentType;
         }
