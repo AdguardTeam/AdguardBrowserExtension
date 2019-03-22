@@ -928,7 +928,7 @@ adguard.antiBannerService = (function (adguard) {
                 adguard.console.error('Error update filters, cause {0}', ex);
             }
             scheduleUpdate();
-        }, filtersUpdatePeriod);
+        }, 1000 * 60 * 30); // TODO: Rework this, see #1347
     }
 
     /**
