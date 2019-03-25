@@ -225,7 +225,12 @@ adguard.frames = (function (adguard) {
             url = frame.url;
         }
 
-        var urlFilteringDisabled = !adguard.utils.url.isHttpRequest(url);
+        const localStorageInitialized = adguard.localStorage.isInitialized();
+        const urlFilteringDisabled = !adguard.utils.url.isHttpRequest(url);
+
+        // application is available for tabs where url is with http schema
+        // and when localstorage is initialized
+        const applicationAvailable = localStorageInitialized && !urlFilteringDisabled;
         var applicationFilteringDisabled;
         var documentWhiteListed = false;
         var userWhiteListed = false;
@@ -234,8 +239,12 @@ adguard.frames = (function (adguard) {
 
         var adguardDetected = isTabAdguardDetected(tab);
         var adguardProductName = '';
+        let totalBlockedTab;
+        let totalBlocked;
 
-        if (!urlFilteringDisabled) {
+        if (applicationAvailable) {
+            totalBlockedTab = adguard.tabs.getTabMetadata(tabId, 'blocked');
+            totalBlocked = adguard.pageStats.getTotalBlocked();
             if (adguardDetected) {
                 adguardProductName = adguard.tabs.getTabMetadata(tabId, 'adguardProductName');
 
@@ -268,14 +277,13 @@ adguard.frames = (function (adguard) {
             }
         }
 
-        var totalBlockedTab = adguard.tabs.getTabMetadata(tabId, 'blocked') || 0;
-        var totalBlocked = adguard.pageStats.getTotalBlocked();
-
         var domainName = getFrameDomain(tab);
 
         return {
 
             url: url,
+
+            applicationAvailable: applicationAvailable,
 
             domainName: domainName,
             applicationFilteringDisabled: applicationFilteringDisabled,

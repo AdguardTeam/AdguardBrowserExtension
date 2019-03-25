@@ -156,7 +156,7 @@ PopupController.prototype = {
         }
 
         // define class
-        if (tabInfo.urlFilteringDisabled) {
+        if (!tabInfo.applicationAvailable) {
             stack.classList.add('status-error');
             stack.classList.add('error-sad');
         } else if (tabInfo.applicationFilteringDisabled) {
@@ -269,9 +269,9 @@ PopupController.prototype = {
         if (tabInfo.adguardDetected) {
             template = this.filteringIntegrationHeader;
             const headTitleElement = template.querySelector('.head .msg');
-            if (tabInfo.adguardProductName.toLowerCase().includes('mac')) {
+            if (tabInfo.adguardProductName && tabInfo.adguardProductName.toLowerCase().includes('mac')) {
                 headTitleElement.innerHTML = i18n.getMessage('popup_integrate_mode_title_mac');
-            } else if (tabInfo.adguardProductName.toLowerCase().includes('win')) {
+            } else if (tabInfo.adguardProductName && tabInfo.adguardProductName.toLowerCase().includes('win')) {
                 headTitleElement.innerHTML = i18n.getMessage('popup_integrate_mode_title_win');
             } else {
                 headTitleElement.innerHTML = i18n.getMessage('popup_integrate_mode_title');
@@ -297,7 +297,7 @@ PopupController.prototype = {
 
     _renderFilteringControls: function (container, tabInfo) {
         var template = this.filteringControlDefault;
-        if (tabInfo.urlFilteringDisabled) {
+        if (!tabInfo.applicationAvailable) {
             return;
         }
         this._appendTemplate(container, template);
@@ -307,7 +307,7 @@ PopupController.prototype = {
         var template = this.filteringStatusText;
 
         var text = '';
-        if (tabInfo.urlFilteringDisabled) {
+        if (!tabInfo.applicationAvailable) {
             text = 'popup_site_filtering_state_tab_unavailable';
         } else if (tabInfo.applicationFilteringDisabled) {
             text = 'popup_site_filtering_state_paused';
@@ -329,7 +329,7 @@ PopupController.prototype = {
         var currentSiteElement = template.querySelector('.current-site');
         currentSiteElement.textContent = tabInfo.domainName ? tabInfo.domainName : tabInfo.url;
 
-        if (tabInfo.urlFilteringDisabled) {
+        if (!tabInfo.applicationAvailable) {
             currentSiteElement.style.display = 'none';
         }
 
@@ -338,7 +338,7 @@ PopupController.prototype = {
 
     _renderMessage: function (container, tabInfo) {
         var text;
-        if (tabInfo.urlFilteringDisabled) {
+        if (!tabInfo.applicationAvailable) {
             text = 'popup_site_filtering_disabled';
         } else if (tabInfo.applicationFilteringDisabled) {
 
@@ -656,7 +656,7 @@ PopupController.prototype = {
 
         if (!stats) {
             const self = this;
-            popupPage.sendMessage({ type: 'getStatisticsData' }, function (message) {
+            popupPage.sendMessage({ type: 'getStatisticsData' }, (message) => {
                 self._renderStatsGraphs(message.stats, timeRange, typeData);
             });
         } else {
@@ -707,7 +707,7 @@ PopupController.prototype = {
     },
 
     _renderActions: function (container, tabInfo) {
-        if (tabInfo.urlFilteringDisabled) {
+        if (!tabInfo.applicationAvailable) {
             return;
         }
 
@@ -844,7 +844,7 @@ PopupController.prototype = {
         this._bindAction(parent, '.changeDocumentWhiteListed', 'click', function (e) {
             e.preventDefault();
             var tabInfo = self.tabInfo;
-            if (tabInfo.urlFilteringDisabled || tabInfo.applicationFilteringDisabled) {
+            if (!tabInfo.applicationAvailable || tabInfo.applicationFilteringDisabled) {
                 return;
             }
             if (!tabInfo.canAddRemoveRule) {
@@ -982,8 +982,8 @@ PopupController.prototype = {
         controller.resizePopupWindow();
     });
 
-    popupPage.sendMessage({ type: 'getTabInfoForPopup' }, function (message) {
-        var onDocumentReady = function () {
+    popupPage.sendMessage({ type: 'getTabInfoForPopup' }, (message) => {
+        const onDocumentReady = () => {
             controller.render(message.frameInfo, message.options);
         };
 
@@ -994,7 +994,7 @@ PopupController.prototype = {
         }
     });
 
-    popupPage.onMessage.addListener(function (message) {
+    popupPage.onMessage.addListener((message) => {
         switch (message.type) {
             case 'updateTotalBlocked': {
                 const { tabInfo } = message;

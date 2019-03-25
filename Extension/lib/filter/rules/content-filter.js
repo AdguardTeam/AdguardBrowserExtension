@@ -114,15 +114,6 @@
         },
 
         /**
-         * Clears ContentFilter
-         */
-        clearRules: function () {
-            this.contentRules = [];
-            this.exceptionRulesMap.clear();
-            this.dirty = true;
-        },
-
-        /**
          * Searches for the content rules
          *
          * @param domainName Domain

@@ -338,7 +338,7 @@ QUnit.test('BadFilter option whitelist', function (assert) {
     assert.equal(result.ruleText, rule.ruleText);
 });
 
-QUnit.test('BadFilter multi-options', function (assert) {
+QUnit.test('BadFilter multi-options', (assert) => {
     var rule = new adguard.rules.UrlFilterRule('||example.org^$object-subrequest');
     var ruleTwo = new adguard.rules.UrlFilterRule('||example.org^');
     var badFilterRule = new adguard.rules.UrlFilterRule('||example.org^$badfilter,object-subrequest');
@@ -353,9 +353,10 @@ QUnit.test('BadFilter multi-options', function (assert) {
 
 
     requestFilter.addRule(badFilterRule);
-
-    assert.notOk(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
+    assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
     assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.SUBDOCUMENT));
+    assert.strictEqual(ruleTwo, requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
+    assert.strictEqual(ruleTwo, requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.SUBDOCUMENT));
 
     requestFilter.removeRule(badFilterRule);
 
@@ -367,13 +368,52 @@ QUnit.test('BadFilter multi-options', function (assert) {
 
     requestFilter.addRule(badFilterRule);
 
-    assert.notOk(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
+    assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
     assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.SUBDOCUMENT));
+    assert.strictEqual(ruleTwo, requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
+    assert.strictEqual(ruleTwo, requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.SUBDOCUMENT));
 
     requestFilter.removeRule(badFilterRule);
 
     assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
     assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.SUBDOCUMENT));
+});
+
+QUnit.test('BadFilter doesn stop looking for other rules', (assert) => {
+    const rule = new adguard.rules.UrlFilterRule('||example.org^$third-party');
+    const ruleTwo = new adguard.rules.UrlFilterRule('||example.org^$xmlhttprequest');
+    var badFilterRule = new adguard.rules.UrlFilterRule('||example.org^$third-party,badfilter');
+
+    var requestFilter = new adguard.RequestFilter();
+
+    requestFilter.addRule(rule);
+    requestFilter.addRule(ruleTwo);
+    assert.ok(requestFilter.findRuleForRequest('https://example.org', 'https://third-party.com', adguard.RequestTypes.DOCUMENT));
+    assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.XMLHTTPREQUEST));
+
+
+    requestFilter.addRule(badFilterRule);
+
+    assert.notOk(requestFilter.findRuleForRequest('https://example.org', 'https://third-party.com', adguard.RequestTypes.DOCUMENT));
+    assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.XMLHTTPREQUEST));
+
+    requestFilter.removeRule(badFilterRule);
+
+    assert.ok(requestFilter.findRuleForRequest('https://example.org', 'https://third-party.com', adguard.RequestTypes.DOCUMENT));
+    assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.XMLHTTPREQUEST));
+
+
+    badFilterRule = new adguard.rules.UrlFilterRule('||example.org^$xmlhttprequest,badfilter');
+
+    requestFilter.addRule(badFilterRule);
+
+    assert.ok(requestFilter.findRuleForRequest('https://example.org', 'https://third-party.com', adguard.RequestTypes.DOCUMENT));
+    assert.notOk(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.XMLHTTPREQUEST));
+
+    requestFilter.removeRule(badFilterRule);
+
+    assert.ok(requestFilter.findRuleForRequest('https://example.org', 'https://third-party.com', adguard.RequestTypes.DOCUMENT));
+    assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.XMLHTTPREQUEST));
 });
 
 QUnit.test('Replace filters', function (assert) {

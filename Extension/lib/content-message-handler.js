@@ -168,7 +168,7 @@
                 break;
             }
             case 'getUserRules':
-                adguard.userrules.getUserRulesText(function (content) {
+                adguard.userrules.getUserRulesText((content) => {
                     callback({ content: content });
                 });
                 return true;
@@ -343,6 +343,10 @@
                 adguard.notifications.setNotificationViewed(message.withDelay);
                 break;
             case 'getStatisticsData':
+                // There can't be data till localstorage is initialized
+                if (!adguard.localStorage.isInitialized()) {
+                    return {};
+                }
                 callback({
                     stats: adguard.pageStats.getStatisticsData(),
                 });
