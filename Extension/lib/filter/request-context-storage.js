@@ -185,6 +185,9 @@
         // Updates rules for request
         if ('requestRule' in update) {
             context.requestRule = update.requestRule;
+            adguard.filteringLog.bindRuleToHttpRequestEvent(context.tab,
+                context.requestRule,
+                context.eventId);
         }
         if ('replaceRules' in update) {
             context.replaceRules = update.replaceRules;
