@@ -1,7 +1,8 @@
 /* global QUnit */
 
-QUnit.test("Test Record/Remove", function (assert) {
+adguard.filteringLog.bindRuleToHttpRequestEvent = () => {};
 
+QUnit.test("Test Record/Remove", function (assert) {
     const requestId = '1';
     const requestUrl = 'http://example.org/image.png';
     const referrerUrl = 'https://example.org';
@@ -125,6 +126,7 @@ QUnit.test("Test Modify headers", function (assert) {
 });
 
 QUnit.test("Test Update", function (assert) {
+
 
     const requestId = '1';
     const requestUrl = 'http://example.org/image.png';
