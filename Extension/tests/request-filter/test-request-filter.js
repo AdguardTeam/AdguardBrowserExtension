@@ -499,6 +499,22 @@ QUnit.test('whitelist rules with $stealth and $script modifier', function (asser
     assert.equal(scriptRuleResult.textRule, stealthRule.textRule);
 });
 
+QUnit.test('whitelist rules with $stealth and $domain modifiers', (assert) => {
+    const stealthRule = new adguard.rules.UrlFilterRule('@@||hdslb.com^$domain=bilibili.com,stealth');
+
+    const requestFilter = new adguard.RequestFilter();
+    requestFilter.addRule(stealthRule);
+
+    const thirdPartyRule = requestFilter.findStealthWhiteListRule('https://hdslb.com/test.js', 'https://bilibili.com', adguard.RequestTypes.SCRIPT);
+
+    const ruleForDifferentDomain = requestFilter.findStealthWhiteListRule('https://mail.com/test.js', 'https://bilibili.com', adguard.RequestTypes.SCRIPT);
+
+    assert.ok(thirdPartyRule);
+    assert.ok(thirdPartyRule.whiteListRule);
+    assert.notOk(ruleForDifferentDomain);
+    assert.equal(thirdPartyRule.textRule, stealthRule.textRule);
+});
+
 QUnit.test('whitelist rules with $stealth and $third-party modifier', function (assert) {
     const stealthRule = new adguard.rules.UrlFilterRule('@@||example.org^$stealth,third-party');
 
