@@ -185,6 +185,8 @@
         // Updates rules for request
         if ('requestRule' in update) {
             context.requestRule = update.requestRule;
+            // Some requests may execute for a long time, that's why we update filtering log when
+            // we get a request rule
             adguard.filteringLog.bindRuleToHttpRequestEvent(context.tab,
                 context.requestRule,
                 context.eventId);
