@@ -98,18 +98,6 @@
         },
 
         /**
-         * Clears CssFilter
-         */
-        clearRules: function () {
-            this.commonRules = [];
-            this.domainSensitiveRules = [];
-            this.exceptionRules = [];
-            this.extendedCssRules = [];
-            this.commonCss = null;
-            this.dirty = true;
-        },
-
-        /**
          * Returns the array of loaded rules
          */
         getRules: function () {
@@ -118,13 +106,13 @@
         },
 
         /**
-         * An object with the information on the CSS and ExtendedCss stylesheets which 
+         * An object with the information on the CSS and ExtendedCss stylesheets which
          * need to be injected into a web page.
-         * 
+         *
          * @typedef {Object} CssFilterBuildResult
          * @property {Array.<string>} css Regular CSS stylesheets
          * @property {Array.<string>} extendedCss ExtendedCSS stylesheets
-         */        
+         */
 
         /**
          * Builds CSS to be injected to the page.

@@ -459,19 +459,27 @@ adguard.filteringLog = (function (adguard) {
         return openedFilteringLogsPage > 0;
     };
 
-    // Initialize filtering log
-    synchronizeOpenTabs();
+    /**
+     * We should synchronize open tabs and add listeners to the tabs after application
+     * is initialized. Otherwise updating tabs can return wrong stats values and
+     * overwrite them with wrong data
+     */
+    const init = () => {
+        // Initialize filtering log
+        synchronizeOpenTabs();
 
-    // Bind to tab events
-    adguard.tabs.onCreated.addListener(addTab);
-    adguard.tabs.onUpdated.addListener(updateTab);
-    adguard.tabs.onRemoved.addListener(function (tab) {
-        removeTabById(tab.tabId);
-    });
+        // Bind to tab events
+        adguard.tabs.onCreated.addListener(addTab);
+        adguard.tabs.onUpdated.addListener(updateTab);
+        adguard.tabs.onRemoved.addListener((tab) => {
+            removeTabById(tab.tabId);
+        });
+    };
 
     return {
 
         synchronizeOpenTabs: synchronizeOpenTabs,
+        init: init,
 
         getFilteringInfoByTabId: getFilteringInfoByTabId,
         addHttpRequestEvent: addHttpRequestEvent,
