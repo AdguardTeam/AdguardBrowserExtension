@@ -253,13 +253,19 @@ adguard.antiBannerService = (function (adguard) {
         const filterIds = [];
         const customFilterIds = [];
         const filters = filtersToUpdate || adguard.subscriptions.getFilters();
+
+        const needUpdate = (lastCheckTime) => {
+            if (!lastCheckTime) {
+                return true;
+            }
+            return (Date.now() - lastCheckTime) >= filtersUpdatePeriod;
+        };
+
         for (let i = 0; i < filters.length; i += 1) {
             const filter = filters[i];
             const group = adguard.subscriptions.getGroup(filter.groupId);
             if (filter.installed && filter.enabled && group.enabled) {
-                // Check filters update period (or forceUpdate flag)
-                const needUpdate = forceUpdate || (!filter.lastCheckTime || (Date.now() - filter.lastCheckTime) >= filtersUpdatePeriod);
-                if (needUpdate) {
+                if (forceUpdate || needUpdate(filter.lastCheckTime)) {
                     if (filter.customUrl) {
                         customFilterIds.push(filter.filterId);
                     } else {
@@ -913,7 +919,7 @@ adguard.antiBannerService = (function (adguard) {
         if (filtersUpdatePeriod === 0) {
             return;
         }
-        scheduleUpdateTimeoutId = setTimeout(function () {
+        scheduleUpdateTimeoutId = setTimeout(() => {
             try {
                 checkAntiBannerFiltersUpdate();
             } catch (ex) {
@@ -1400,9 +1406,12 @@ adguard.filters = (function (adguard) {
      * Offer filters on extension install, select default filters and filters by locale and country
      * @param callback
      */
-    const offerFilters = function (callback) {
+    const offerFilters = (callback) => {
         // These filters are enabled by default
-        let filterIds = [adguard.utils.filters.ENGLISH_FILTER_ID, adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID];
+        const filterIds = [
+            adguard.utils.filters.ENGLISH_FILTER_ID,
+            adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID
+        ];
         filterIds.concat(adguard.subscriptions.getLangSuitableFilters());
         callback(filterIds);
     };
@@ -1413,11 +1422,8 @@ adguard.filters = (function (adguard) {
      *
      * @returns {Array} List of enabled filters
      */
-    var getEnabledFilters = function () {
-        return adguard.subscriptions.getFilters().filter(function (f) {
-            return f.installed && f.enabled;
-        });
-    };
+    const getEnabledFilters = () => adguard.subscriptions.getFilters()
+        .filter(f => f.installed && f.enabled);
 
     const getEnabledFiltersFromEnabledGroups = () => {
         const filters = adguard.subscriptions.getFilters();
