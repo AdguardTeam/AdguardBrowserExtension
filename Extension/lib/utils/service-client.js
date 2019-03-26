@@ -221,14 +221,13 @@ adguard.backend = (function (adguard) {
      * @param successCallback   Called on success
      * @param errorCallback     Called on error
      */
-    var loadFiltersMetadata = function (filterIds, successCallback, errorCallback) {
-
+    const loadFiltersMetadata = (filterIds, successCallback, errorCallback) => {
         if (!filterIds || filterIds.length === 0) {
             successCallback([]);
             return;
         }
 
-        const success = function (response) {
+        const success = (response) => {
             if (response && response.responseText) {
                 const metadata = parseJson(response.responseText);
                 if (!metadata) {

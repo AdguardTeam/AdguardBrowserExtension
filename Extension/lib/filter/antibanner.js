@@ -270,8 +270,8 @@ adguard.antiBannerService = (function (adguard) {
         }
 
         return {
-            filterIds: filterIds,
-            customFilterIds: customFilterIds,
+            filterIds,
+            customFilterIds
         };
     }
 
@@ -284,13 +284,10 @@ adguard.antiBannerService = (function (adguard) {
      * @param errorCallback Called if something gone wrong
      * @param filters     Optional Array of filters to update
      */
-    var checkAntiBannerFiltersUpdate = function (forceUpdate, successCallback, errorCallback, filters) {
-        successCallback = successCallback || function () {
-            // Empty callback
-        };
-        errorCallback = errorCallback || function () {
-            // Empty callback
-        };
+    const checkAntiBannerFiltersUpdate = (forceUpdate, successCallback, errorCallback, filters) => {
+        const noop = () => {}; // empty callback
+        successCallback = successCallback || noop;
+        errorCallback = errorCallback || noop;
 
         // Don't update in background if request filter isn't running
         if (!forceUpdate && !applicationRunning) {
@@ -300,31 +297,25 @@ adguard.antiBannerService = (function (adguard) {
         adguard.console.info('Start checking filters updates');
 
         // Select filters for update
-        var toUpdate = selectFilterIdsToUpdate(forceUpdate, filters);
-        var filterIdsToUpdate = toUpdate.filterIds;
-        var customFilterIdsToUpdate = toUpdate.customFilterIds;
+        const toUpdate = selectFilterIdsToUpdate(forceUpdate, filters);
+        const filterIdsToUpdate = toUpdate.filterIds;
+        const customFilterIdsToUpdate = toUpdate.customFilterIds;
 
-        var totalToUpdate = filterIdsToUpdate.length + customFilterIdsToUpdate.length;
+        const totalToUpdate = filterIdsToUpdate.length + customFilterIdsToUpdate.length;
         if (totalToUpdate === 0) {
-            if (successCallback) {
-                successCallback([]);
-                return;
-            }
+            successCallback([]);
+            return;
         }
 
-        adguard.console.info("Checking updates for {0} filters", totalToUpdate);
+        adguard.console.info('Checking updates for {0} filters', totalToUpdate);
 
         // Load filters with changed version
         const loadFiltersFromBackendCallback = (filterMetadataList) => {
             loadFiltersFromBackend(filterMetadataList, (success, filterIds) => {
                 if (success) {
-                    const filters = [];
-                    for (let i = 0; i < filterIds.length; i += 1) {
-                        const filter = adguard.subscriptions.getFilter(filterIds[i]);
-                        if (filter) {
-                            filters.push(filter);
-                        }
-                    }
+                    const filters = filterIds
+                        .map(adguard.subscriptions.getFilter)
+                        .filter(f => f);
 
                     updateCustomFilters(customFilterIdsToUpdate, (customFilters) => {
                         successCallback(filters.concat(customFilters));
@@ -971,14 +962,15 @@ adguard.antiBannerService = (function (adguard) {
      * @private
      */
     function loadFiltersFromBackend(filterMetadataList, callback) {
-        const promises = filterMetadataList.map(filterMetadata => new Promise((resolve, reject) => {
-            loadFilterRules(filterMetadata, true, (success) => {
-                if (!success) {
-                    reject();
-                }
-                resolve(filterMetadata.filterId);
-            });
-        }));
+        const promises = filterMetadataList
+            .map(filterMetadata => new Promise((resolve, reject) => {
+                loadFilterRules(filterMetadata, true, (success) => {
+                    if (!success) {
+                        reject();
+                    }
+                    resolve(filterMetadata.filterId);
+                });
+            }));
 
         Promise.all(promises)
             .then((filterIds) => {
@@ -1044,12 +1036,12 @@ adguard.antiBannerService = (function (adguard) {
             return;
         }
 
-        var loadSuccess = function (filterMetadataList) {
+        const loadSuccess = (filterMetadataList) => {
             adguard.console.debug('Retrieved response from server for {0} filters, result: {1} metadata', filterIds.length, filterMetadataList.length);
             callback(true, filterMetadataList);
         };
 
-        var loadError = function (request, cause) {
+        const loadError = (request, cause) => {
             adguard.console.error('Error retrieved response from server for filters {0}, cause: {1} {2}', filterIds, request.statusText, cause || '');
             callback(false);
         };
