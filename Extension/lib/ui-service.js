@@ -930,9 +930,9 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     });
 
     // on filter auto-enabled event
-    adguard.listeners.addListener(function (event, enabledFilters) {
+    adguard.listeners.addListener((event, enabledFilters) => {
         if (event === adguard.listeners.ENABLE_FILTER_SHOW_POPUP) {
-            var result = getFiltersEnabledResultMessage(enabledFilters);
+            const result = getFiltersEnabledResultMessage(enabledFilters);
             showAlertMessagePopup(result.title, result.text);
         }
     });
@@ -942,7 +942,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         switch (event) {
             case adguard.listeners.FILTER_ENABLE_DISABLE:
                 if (payload.enabled) {
-                    checkFiltersUpdates([payload]);
+                    checkFiltersUpdates([payload], false);
                 }
                 break;
             case adguard.listeners.FILTER_GROUP_ENABLE_DISABLE:
@@ -957,7 +957,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     });
 
     // on filters updated event
-    adguard.listeners.addListener(function (event, success, updatedFilters) {
+    adguard.listeners.addListener((event, success, updatedFilters) => {
         if (event === adguard.listeners.UPDATE_FILTERS_SHOW_POPUP) {
             const result = getFiltersUpdateResultMessage(success, updatedFilters);
             showAlertMessagePopup(result.title, result.text);
