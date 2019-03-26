@@ -254,25 +254,24 @@ adguard.backend = (function (adguard) {
     /**
      * Downloads filter rules by filter ID
      *
-     * @param filterId            Filter identifier
-     * @param forceRemote         Force download filter rules from remote server
-     * @param useOptimizedFilters    Download optimized filters flag
-     * @param successCallback    Called on success
-     * @param errorCallback        Called on error
+     * @param filterId              Filter identifier
+     * @param forceRemote           Force download filter rules from remote server
+     * @param useOptimizedFilters   Download optimized filters flag
+     * @returns {Promise<string>}   Downloaded rules
      */
-    var loadFilterRules = function (filterId, forceRemote, useOptimizedFilters, successCallback, errorCallback) {
+    const loadFilterRules = (filterId, forceRemote, useOptimizedFilters) => {
+        let url;
 
-        var url;
         if (forceRemote || settings.localFilterIds.indexOf(filterId) < 0) {
             url = getUrlForDownloadFilterRules(filterId, useOptimizedFilters);
         } else {
-            url = adguard.getURL(settings.localFiltersFolder + "/filter_" + filterId + ".txt");
+            url = adguard.getURL(`${settings.localFiltersFolder}/filter_${filterId}.txt`);
             if (useOptimizedFilters) {
-                url = adguard.getURL(settings.localFiltersFolder + "/filter_mobile_" + filterId + ".txt");
+                url = adguard.getURL(`${settings.localFiltersFolder}/filter_mobile_${filterId}.txt`);
             }
         }
 
-        FilterDownloader.download(url, FilterCompilerConditionsConstants).then(successCallback, errorCallback);
+        return FilterDownloader.download(url, FilterCompilerConditionsConstants);
     };
 
     /**
