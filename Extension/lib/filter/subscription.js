@@ -376,7 +376,7 @@ adguard.subscriptions = (function (adguard) {
      */
     const updateCustomFilter = function (url, options, callback) {
         const { title, trusted, syncSuppress } = options;
-        adguard.backend.loadFilterRulesBySubscriptionUrl(url, function (rules) {
+        adguard.backend.loadFilterRulesBySubscriptionUrl(url, (rules) => {
             const filterId = addFilterId();
             let {
                 name,
@@ -400,7 +400,7 @@ adguard.subscriptions = (function (adguard) {
             }
 
             // Check if filter from this url was added before
-            let filter = filters.find(function (f) {
+            let filter = filters.find((f) => {
                 return f.customUrl === url;
             });
 
@@ -439,7 +439,7 @@ adguard.subscriptions = (function (adguard) {
             }
 
             if (updateFilter) {
-                updateCustomFilterInfo(filter, {version, checksum, timeUpdated});
+                updateCustomFilterInfo(filter, { version, checksum, timeUpdated });
             }
 
             adguard.listeners.notifyListeners(adguard.listeners.SUCCESS_DOWNLOAD_FILTER, filter);
@@ -447,7 +447,7 @@ adguard.subscriptions = (function (adguard) {
             adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, { syncSuppress });
 
             callback(filter.filterId);
-        }, function (cause) {
+        }, (cause) => {
             adguard.console.error(`Error download filter by url ${url}, cause: ${cause || ''}`);
             callback();
         });
