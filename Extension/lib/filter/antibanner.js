@@ -1480,8 +1480,12 @@ adguard.filters = (function (adguard) {
                 : true));
 
             if (outdatedFilter.length > 0) {
-                antiBannerService.checkAntiBannerFiltersUpdate(true,
-                    successCallback, errorCallback, filters);
+                antiBannerService.checkAntiBannerFiltersUpdate(
+                    true,
+                    successCallback,
+                    errorCallback,
+                    filters
+                );
             }
         } else {
             antiBannerService.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback);
