@@ -21,7 +21,7 @@
     /**
      * AdGuard scriptlet rule mask
      */
-    const ADG_SCRIPTLET_MASK_REG = /\/\/scriptlet/;
+    const ADG_SCRIPTLET_MASK = '//scriptlet';
 
     /**
      * Helper to accumulate an array of strings char by char
@@ -59,7 +59,7 @@
      * @returns {{name: string, args: Array<string>}}
      */
     function parseRule(ruleText) {
-        ruleText = stringUtils.getAfterRegExp(ruleText, ADG_SCRIPTLET_MASK_REG);
+        ruleText = stringUtils.substringAfter(ruleText, ADG_SCRIPTLET_MASK);
         /**
          * Transition names
          */
@@ -166,7 +166,7 @@
      * Check is AdGuard scriptlet rule
      * @static
      */
-    ScriptletRule.isAdguardScriptletRule = rule => ADG_SCRIPTLET_MASK_REG.test(rule);
+    ScriptletRule.isAdguardScriptletRule = rule => rule.indexOf(ADG_SCRIPTLET_MASK) > -1;
 
     /**
      * Extends BaseFilterRule
