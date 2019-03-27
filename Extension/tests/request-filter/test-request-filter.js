@@ -631,26 +631,26 @@ QUnit.test('requestFilter.findRuleForRequest performance', function (assert) {
     // Average: 0.00168 ms
 });
 
-QUnit.module('Rule convertor')
+QUnit.module('Rule converter')
 QUnit.test('Test sciptlet adguard rule', function (assert) {
     const rule = "example.org#%#//scriptlet('abort-on-property-read', 'I10C')";
     const exp = "example.org#%#//scriptlet('abort-on-property-read', 'I10C')";
     const res = adguard.rules.ruleConverter.convertRule(rule);
     assert.equal(res, exp);
 });
-QUnit.test('Test convertor scriplet ubo rule', function (assert) {
+QUnit.test('Test converter scriplet ubo rule', function (assert) {
     const rule = "example.org##+js(setTimeout-defuser.js, [native code], 8000)";
     const exp = 'example.org#%#//scriptlet("ubo-setTimeout-defuser.js", "[native code]", "8000")';
     const res = adguard.rules.ruleConverter.convertRule(rule);
     assert.equal(res, exp);
 });
-QUnit.test('Test convertor sciptlet abp rule', function (assert) {
+QUnit.test('Test converter sciptlet abp rule', function (assert) {
     const rule = "example.org#$#hide-if-contains li.serp-item 'li.serp-item div.label'";
     const exp = 'example.org#%#//scriptlet("abp-hide-if-contains", "li.serp-item", "li.serp-item div.label")';
     const res = adguard.rules.ruleConverter.convertRule(rule);
     assert.equal(res, exp);
 });
-QUnit.test('Test convertor sciptlet multiple abp rule', function (assert) {
+QUnit.test('Test converter sciptlet multiple abp rule', function (assert) {
     const rule = `example.org#$#hide-if-has-and-matches-style 'div[id^="hyperfeed_story_id_"]' 'div[id*="feed_subtitle_"] > span' 'display: none'; hide-if-contains /.*/ .pagelet 'a[href^="/ad__campaign/landing.php?"]'`;
     const exp1 = 'example.org#%#//scriptlet("abp-hide-if-has-and-matches-style", "div[id^="hyperfeed_story_id_"]", "div[id*="feed_subtitle_"] > span", "display: none")';
     const exp2 = 'example.org#%#//scriptlet("abp-hide-if-contains", "/.*/", ".pagelet", "a[href^="/ad__campaign/landing.php?"]")';
