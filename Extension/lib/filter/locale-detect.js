@@ -100,11 +100,17 @@
         if (!filterIds) {
             return;
         }
-        adguard.filters.addAndEnableFilters(filterIds, function (enabledFilters) {
+
+        const onSuccess = (enabledFilters) => {
             if (enabledFilters.length > 0) {
-                adguard.listeners.notifyListeners(adguard.listeners.ENABLE_FILTER_SHOW_POPUP, enabledFilters);
+                adguard.listeners.notifyListeners(
+                    adguard.listeners.ENABLE_FILTER_SHOW_POPUP,
+                    enabledFilters
+                );
             }
-        });
+        };
+
+        adguard.filters.addAndEnableFilters(filterIds, onSuccess, { forceGroupEnable: true });
     }
 
     /**
