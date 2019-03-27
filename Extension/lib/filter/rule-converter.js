@@ -25,10 +25,12 @@
      * uBlock scriptlet rule mask
      */
     const UBO_SCRIPTLET_MASK_REG = /##script\:inject|##\s*\+js/;
+    const UBO_SCRIPTLET_MASK_1 = '##+js';
+    const UBO_SCRIPTLET_MASK_2 = '##script:inject';
     /**
      * AdBlock Plus snippet rule mask
      */
-    const ABP_SCRIPTLET_MASK_REG = /#\$#/;
+    const ABP_SCRIPTLET_MASK = '#$#';
     /**
      * AdGuard CSS rule mask
      */
@@ -101,8 +103,8 @@
      */
     function convertABPSnippetRule(rule) {
         const SEMICOLON_DIVIDER = /;(?=(?:(?:[^"]*"){2})*[^"]*$)/g;
-        const domains = stringUtils.getBeforeRegExp(rule, ABP_SCRIPTLET_MASK_REG);
-        let args = stringUtils.getAfterRegExp(rule, ABP_SCRIPTLET_MASK_REG);
+        const domains = stringUtils.substringBefore(rule, ABP_SCRIPTLET_MASK);
+        let args = stringUtils.substringAfter(rule, ABP_SCRIPTLET_MASK);
         return args.split(SEMICOLON_DIVIDER)
             .map(args => getSentences(args)
                 .filter(arg => arg)
@@ -118,7 +120,11 @@
      * @param {string} rule rule text
      */
     function isUBOScriptletRule(rule) {
-        return UBO_SCRIPTLET_MASK_REG.test(rule);
+        return (
+            rule.indexOf(UBO_SCRIPTLET_MASK_1) > -1
+            || rule.indexOf(UBO_SCRIPTLET_MASK_2) > -1
+        )
+        && UBO_SCRIPTLET_MASK_REG.test(rule);
     };
 
     /**
@@ -126,7 +132,7 @@
      * @param {string} rule rule text
      */
     function isABPSnippetRule(rule) {
-        return ABP_SCRIPTLET_MASK_REG.test(rule) && rule.search(ADG_CSS_MASK_REG) === -1;
+        return rule.indexOf(ABP_SCRIPTLET_MASK) > -1 && rule.search(ADG_CSS_MASK_REG) === -1;
     };
 
     /**
