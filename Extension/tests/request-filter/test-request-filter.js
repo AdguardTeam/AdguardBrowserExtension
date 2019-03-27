@@ -638,6 +638,12 @@ QUnit.test('Test sciptlet adguard rule', function (assert) {
     const res = adguard.rules.ruleConverter.convertRule(rule);
     assert.equal(res, exp);
 });
+QUnit.test('Test sciptlet adguard rule exception', function (assert) {
+    const rule = "example.org#@%#//scriptlet('abort-on-property-read', 'I10C')";
+    const exp = "example.org#@%#//scriptlet('abort-on-property-read', 'I10C')";
+    const res = adguard.rules.ruleConverter.convertRule(rule);
+    assert.equal(res, exp);
+});
 QUnit.test('Test converter scriplet ubo rule', function (assert) {
     const rule = "example.org##+js(setTimeout-defuser.js, [native code], 8000)";
     const exp = 'example.org#%#//scriptlet("ubo-setTimeout-defuser.js", "[native code]", "8000")';
