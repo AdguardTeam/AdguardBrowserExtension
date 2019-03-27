@@ -1466,20 +1466,27 @@ adguard.filters = (function (adguard) {
     };
 
     /**
-     * Force checks updates for filter if specified or all filters
+     * Force checks updates for filters if specified or all filters
      *
      * @param successCallback
      * @param errorCallback
-     * @param filter optional
+     * @param {Object[]} [filters] optional list of filters
      */
-    const checkFiltersUpdates = (successCallback, errorCallback, filter) => {
-        if (filter) {
+    const checkFiltersUpdates = (successCallback, errorCallback, filters) => {
+        if (filters) {
             // Skip recently downloaded filters
-            if (Date.now() - filter.lastCheckTime < ENABLED_FILTERS_SKIP_TIMEOUT) {
-                return;
-            }
+            const outdatedFilter = filters.filter(f => (f.lastCheckTime
+                ? Date.now() - f.lastCheckTime > ENABLED_FILTERS_SKIP_TIMEOUT
+                : true));
 
-            antiBannerService.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback, [filter]);
+            if (outdatedFilter.length > 0) {
+                antiBannerService.checkAntiBannerFiltersUpdate(
+                    true,
+                    successCallback,
+                    errorCallback,
+                    outdatedFilter
+                );
+            }
         } else {
             antiBannerService.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback);
         }
@@ -1519,10 +1526,10 @@ adguard.filters = (function (adguard) {
      * Enable filter
      *
      * @param {Number} filterId Filter identifier
-     * @param {{syncSuppress}} [options]
+     * @param {{syncSuppress: boolean, forceGroupEnable: boolean}} [options]
      * @returns {boolean} true if filter was enabled successfully
      */
-    const enableFilter = function (filterId, options) {
+    const enableFilter = (filterId, options) => {
         const filter = adguard.subscriptions.getFilter(filterId);
         if (!filter || filter.enabled || !filter.installed) {
             return false;
@@ -1531,9 +1538,10 @@ adguard.filters = (function (adguard) {
         /**
          * we enable group if it was never enabled or disabled early
          */
-        const groupId = filter.groupId;
-        if (!adguard.subscriptions.groupHasEnabledStatus(filter.groupId)) {
-            enableGroup(groupId);
+        const { groupId } = filter;
+        const forceGroupEnable = options && options.forceGroupEnable;
+        if (!adguard.subscriptions.groupHasEnabledStatus(groupId) || forceGroupEnable) {
+            enableGroup(groupId, options);
         }
         adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
         adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
@@ -1543,13 +1551,11 @@ adguard.filters = (function (adguard) {
     /**
      * Successively add filters from filterIds and then enable successfully added filters
      * @param filterIds Filter identifiers
-     * @param {{syncSuppress}} [options]
+     * @param {{syncSuppress: boolean, forceGroupEnable: boolean}} [options]
      * @param callback We pass list of enabled filter identifiers to the callback
      */
-    var addAndEnableFilters = function (filterIds, callback, options) {
-        callback = callback || function () {
-            // Empty callback
-        };
+    const addAndEnableFilters = (filterIds, callback, options) => {
+        callback = callback || function noop() {}; // empty callback
 
         const enabledFilters = [];
 
@@ -1564,7 +1570,7 @@ adguard.filters = (function (adguard) {
                 callback(enabledFilters);
             } else {
                 const filterId = filterIds.shift();
-                antiBannerService.addAntiBannerFilter(filterId, function (success) {
+                antiBannerService.addAntiBannerFilter(filterId, (success) => {
                     if (success) {
                         const changed = enableFilter(filterId, options);
                         if (changed) {

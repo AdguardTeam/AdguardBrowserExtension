@@ -698,25 +698,34 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         });
     };
 
-    const checkFiltersUpdates = function () {
-        adguard.filters.checkFiltersUpdates((updatedFilters) => {
-            adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTERS_SHOW_POPUP, true, updatedFilters);
-        }, function () {
-            adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTERS_SHOW_POPUP, false);
-        });
-    };
-
-    const checkFilterUpdates = (filter) => {
-        adguard.filters.checkFiltersUpdates(function (updatedFilters) {
-            if (updatedFilters.length <= 0) {
-                // Suppress no updates found for one filter update check
-            } else {
-                const updatedFilterStr = updatedFilters.map(f => `Filter ID: ${f.filterId}`).join(', ');
-                adguard.console.info(`Filters were auto updated: ${updatedFilterStr}`);
+    /**
+     * Checks filters updates
+     * @param {Object[]} [filters] optional list of filters
+     * @param {boolean} [showPopup = true] show update filters popup
+     */
+    const checkFiltersUpdates = (filters, showPopup = true) => {
+        const showPopupEvent = adguard.listeners.UPDATE_FILTERS_SHOW_POPUP;
+        const successCallback = showPopup
+            ? (updatedFilters) => {
+                adguard.listeners.notifyListeners(showPopupEvent, true, updatedFilters);
             }
-        }, function () {
-            // Do nothing
-        }, filter);
+            : (updatedFilters) => {
+                if (updatedFilters && updatedFilters.length > 0) {
+                    const updatedFilterStr = updatedFilters.map(f => `Filter ID: ${f.filterId}`).join(', ');
+                    adguard.console.info(`Filters were auto updated: ${updatedFilterStr}`);
+                }
+            };
+        const errorCallback = showPopup
+            ? () => {
+                adguard.listeners.notifyListeners(showPopupEvent, false);
+            }
+            : () => {};
+
+        if (filters) {
+            adguard.filters.checkFiltersUpdates(successCallback, errorCallback, filters);
+        } else {
+            adguard.filters.checkFiltersUpdates(successCallback, errorCallback);
+        }
     };
 
     var initAssistant = function (selectElement) {
@@ -920,24 +929,34 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     });
 
     // on filter auto-enabled event
-    adguard.listeners.addListener(function (event, enabledFilters) {
+    adguard.listeners.addListener((event, enabledFilters) => {
         if (event === adguard.listeners.ENABLE_FILTER_SHOW_POPUP) {
-            var result = getFiltersEnabledResultMessage(enabledFilters);
+            const result = getFiltersEnabledResultMessage(enabledFilters);
             showAlertMessagePopup(result.title, result.text);
         }
     });
 
     // on filter enabled event
-    adguard.listeners.addListener(function (event, filter) {
-        if (event === adguard.listeners.FILTER_ENABLE_DISABLE) {
-            if (filter.enabled) {
-                checkFilterUpdates(filter);
-            }
+    adguard.listeners.addListener((event, payload) => {
+        switch (event) {
+            case adguard.listeners.FILTER_ENABLE_DISABLE:
+                if (payload.enabled) {
+                    checkFiltersUpdates([payload], false);
+                }
+                break;
+            case adguard.listeners.FILTER_GROUP_ENABLE_DISABLE:
+                if (payload.enabled && payload.filters) {
+                    const enabledFilters = payload.filters.filter(f => f.enabled);
+                    checkFiltersUpdates(enabledFilters, false);
+                }
+                break;
+            default:
+                break;
         }
     });
 
     // on filters updated event
-    adguard.listeners.addListener(function (event, success, updatedFilters) {
+    adguard.listeners.addListener((event, success, updatedFilters) => {
         if (event === adguard.listeners.UPDATE_FILTERS_SHOW_POPUP) {
             const result = getFiltersUpdateResultMessage(success, updatedFilters);
             showAlertMessagePopup(result.title, result.text);
