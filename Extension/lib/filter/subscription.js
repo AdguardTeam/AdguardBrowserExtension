@@ -347,22 +347,31 @@ adguard.subscriptions = (function (adguard) {
     /**
      * Updates filter checksum and version in the storage and internal structures
      * @param filter
-     * @param updateData
+     * @param {object} info
      */
-    const updateCustomFilterInfo = (filter, { version, checksum, timeUpdated }) => {
+    const updateCustomFilterInfo = (filter, info) => {
+        const {
+            checksum,
+            version,
+            timeUpdated,
+            lastCheckTime,
+        } = info;
         // set last checksum and version
-        filter.checksum = checksum;
-        filter.version = version;
-        filter.timeUpdated = timeUpdated;
+        filter.checksum = checksum || filter.checksum;
+        filter.version = version || filter.version;
+        filter.timeUpdated = timeUpdated || filter.timeUpdated;
+        filter.lastCheckTime = lastCheckTime || filter.lastCheckTime;
         filters = filters.map(f => {
             if (f.filterId === filter.filterId) {
-                f.version = version;
-                f.checksum = checksum;
-                f.timeUpdated = timeUpdated;
+                f.version = version || f.version;
+                f.checksum = checksum || f.checksum;
+                f.timeUpdated = timeUpdated || f.timeUpdated;
+                f.lastCheckTime = lastCheckTime || filter.lastCheckTime;
                 return f;
             }
             return f;
         });
+
         filtersMap[filter.filterId] = filter;
         saveCustomFilterInStorage(filter);
     };
@@ -376,7 +385,7 @@ adguard.subscriptions = (function (adguard) {
      */
     const updateCustomFilter = function (url, options, callback) {
         const { title, trusted, syncSuppress } = options;
-        adguard.backend.loadFilterRulesBySubscriptionUrl(url, function (rules) {
+        adguard.backend.loadFilterRulesBySubscriptionUrl(url, (rules) => {
             const filterId = addFilterId();
             let {
                 name,
@@ -400,14 +409,13 @@ adguard.subscriptions = (function (adguard) {
             }
 
             // Check if filter from this url was added before
-            let filter = filters.find(function (f) {
-                return f.customUrl === url;
-            });
+            let filter = filters.find(f => f.customUrl === url);
 
             let updateFilter = true;
             if (filter) {
                 if (!didFilterUpdate(version, checksum, filter)) {
                     callback();
+                    updateCustomFilterInfo(filter, { lastCheckTime: Date.now() });
                     return;
                 }
             } else {
@@ -439,15 +447,21 @@ adguard.subscriptions = (function (adguard) {
             }
 
             if (updateFilter) {
-                updateCustomFilterInfo(filter, {version, checksum, timeUpdated});
+                updateCustomFilterInfo(filter, {
+                    version,
+                    checksum,
+                    timeUpdated,
+                });
             }
+
+            updateCustomFilterInfo(filter, { lastCheckTime: Date.now() });
 
             adguard.listeners.notifyListeners(adguard.listeners.SUCCESS_DOWNLOAD_FILTER, filter);
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, filter, rules);
             adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, { syncSuppress });
 
             callback(filter.filterId);
-        }, function (cause) {
+        }, (cause) => {
             adguard.console.error(`Error download filter by url ${url}, cause: ${cause || ''}`);
             callback();
         });
