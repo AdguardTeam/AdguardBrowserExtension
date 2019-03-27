@@ -1466,20 +1466,27 @@ adguard.filters = (function (adguard) {
     };
 
     /**
-     * Force checks updates for filter if specified or all filters
+     * Force checks updates for filters if specified or all filters
      *
      * @param successCallback
      * @param errorCallback
-     * @param filter optional
+     * @param {Object[]} [filters] optional list of filters
      */
-    const checkFiltersUpdates = (successCallback, errorCallback, filter) => {
-        if (filter) {
+    const checkFiltersUpdates = (successCallback, errorCallback, filters) => {
+        if (filters) {
             // Skip recently downloaded filters
-            if (Date.now() - filter.lastCheckTime < ENABLED_FILTERS_SKIP_TIMEOUT) {
-                return;
-            }
+            const outdatedFilter = filters.filter(f => (f.lastCheckTime
+                ? Date.now() - f.lastCheckTime > ENABLED_FILTERS_SKIP_TIMEOUT
+                : true));
 
-            antiBannerService.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback, [filter]);
+            if (outdatedFilter.length > 0) {
+                antiBannerService.checkAntiBannerFiltersUpdate(
+                    true,
+                    successCallback,
+                    errorCallback,
+                    outdatedFilter
+                );
+            }
         } else {
             antiBannerService.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback);
         }
