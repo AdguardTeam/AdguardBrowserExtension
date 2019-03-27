@@ -554,7 +554,6 @@
 
             // Checks white list for a rule for this RequestUrl. If something is found - returning it.
             let urlWhiteListRule = this._checkWhiteList(requestUrl, documentHost, requestType, thirdParty);
-            // urlWhiteListRule = this._checkBadFilterExceptions(urlWhiteListRule);
 
             // If UrlBlock is set - than we should not use UrlBlockingFilter against this request.
             // Now check if document rule has $genericblock or $urlblock modifier
