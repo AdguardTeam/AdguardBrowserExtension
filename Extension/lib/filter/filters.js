@@ -423,9 +423,16 @@
             const refHost = adguard.utils.url.getHost(referrer);
             const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrer);
 
+            // Check if request is whitelisted with document wide rule
+            // e.g. "@@||example.org^$stealth"
             let rule = this.stealthFilter.isFiltered(referrer, refHost, requestType, thirdParty);
 
-            rule = this._checkBadFilterExceptions(rule);
+            if (!rule) {
+                // Check if request is whitelisted with third-party request
+                // e.g. "@@||example.org^$domain=ya.ru,stealth"
+                rule = this.stealthFilter.isFiltered(requestUrl, refHost, requestType, thirdParty);
+            }
+
             return rule;
         },
 
