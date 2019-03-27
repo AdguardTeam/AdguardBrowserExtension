@@ -1484,7 +1484,7 @@ adguard.filters = (function (adguard) {
                     true,
                     successCallback,
                     errorCallback,
-                    filters
+                    outdatedFilter
                 );
             }
         } else {
