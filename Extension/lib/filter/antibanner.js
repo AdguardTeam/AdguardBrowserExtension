@@ -376,9 +376,9 @@ adguard.antiBannerService = (function (adguard) {
             const filter = adguard.subscriptions.getFilter(filterId);
             const onUpdate = (updatedFilterId) => {
                 if (updatedFilterId) {
-                    resolve(filter);
+                    return resolve(filter);
                 }
-                resolve();
+                return resolve();
             };
             adguard.subscriptions.updateCustomFilter(filter.customUrl, {}, onUpdate);
         }));
@@ -972,9 +972,9 @@ adguard.antiBannerService = (function (adguard) {
             .map(filterMetadata => new Promise((resolve, reject) => {
                 loadFilterRules(filterMetadata, true, (success) => {
                     if (!success) {
-                        reject();
+                        return reject();
                     }
-                    resolve(filterMetadata.filterId);
+                    return resolve(filterMetadata.filterId);
                 });
             }));
 
