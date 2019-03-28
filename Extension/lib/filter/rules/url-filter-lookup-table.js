@@ -243,6 +243,7 @@
          * @param documentHost        Request document host
          * @param thirdParty          Is request third-party or not
          * @param requestType         Request type
+         * @param badFilterRules      object with collection of bad filters
          * @return All matching rules or null if no match found
          */
         findRules: function (url, documentHost, thirdParty, requestType, badFilterRules) {
