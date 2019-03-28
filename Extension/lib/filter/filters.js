@@ -124,7 +124,7 @@
 
         // Filter that applies replace rules
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#replace-modifier
-        this.replaceFilter = new adguard.rules.ReplaceFilter();
+        this.replaceFilter = new adguard.rules.ReplaceFilter([], this.badFilterRules);
 
         // Filter that applies HTML filtering rules
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#html-filtering-rules
@@ -183,7 +183,7 @@
                     this.cookieFilter.addRule(rule);
                 } else if (rule.isStealthRule() && !rule.isBadFilter()) {
                     this.stealthFilter.addRule(rule);
-                } else if (rule.isReplaceRule()) {
+                } else if (rule.isReplaceRule() && !rule.isBadFilter()) {
                     this.replaceFilter.addRule(rule);
                 } else {
                     if (rule.isBadFilter()) {
@@ -376,23 +376,6 @@
         },
 
         /**
-         * Checks if the rule is in bad filter exceptions
-         *
-         * @param rule
-         * @returns {*}
-         */
-        _checkBadFilterExceptions: function (rule) {
-            if (rule && rule instanceof adguard.rules.UrlFilterRule) {
-                if (rule.ruleText in this.badFilterRules) {
-                    // Removed with bad-filter rule
-                    return null;
-                }
-            }
-
-            return rule;
-        },
-
-        /**
          * Searches for the whitelist rule for the specified pair (url/referrer)
          *
          * @param requestUrl  Request URL
@@ -413,7 +396,6 @@
             }
 
             var rule = this._checkWhiteList(requestUrl, refHost, requestType, thirdParty);
-            rule = this._checkBadFilterExceptions(rule);
 
             this.urlExceptionsCache.saveResultToCache(requestUrl, rule, refHost, requestType);
             return rule;
@@ -464,7 +446,6 @@
             }
 
             let rule = this._findRuleForRequest(requestUrl, documentHost, requestType, thirdParty, documentWhitelistRule);
-            rule = this._checkBadFilterExceptions(rule);
 
             this.urlBlockingCache.saveResultToCache(requestUrl, rule, documentHost, requestType);
             return rule;
@@ -581,7 +562,6 @@
 
             // Checks white list for a rule for this RequestUrl. If something is found - returning it.
             let urlWhiteListRule = this._checkWhiteList(requestUrl, documentHost, requestType, thirdParty);
-            urlWhiteListRule = this._checkBadFilterExceptions(urlWhiteListRule);
 
             // If UrlBlock is set - than we should not use UrlBlockingFilter against this request.
             // Now check if document rule has $genericblock or $urlblock modifier

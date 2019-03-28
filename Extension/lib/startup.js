@@ -49,7 +49,7 @@ adguard.initialize = function () {
 
 
                 // Retrieve filters and install them
-                adguard.filters.offerFilters(function (filterIds) {
+                adguard.filters.offerFilters((filterIds) => {
                     adguard.filters.addAndEnableFilters(filterIds, callback);
                 });
             }
