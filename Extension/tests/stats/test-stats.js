@@ -61,7 +61,11 @@ QUnit.test("Test Page Stats", function (assert) {
     adguard.localStorage.init(function () {
         // test that data is empty
         adguard.pageStats.resetStats();
-        let data = adguard.pageStats.getStatisticsData();
+
+        const now = new Date(2019, 0);
+        now.setHours(0, 0, 0, 0);
+
+        let data = adguard.pageStats.getStatisticsData(now);
 
         const nonEmptyTodayData = getNonEmptyData(data.today);
         assert.equal(nonEmptyTodayData.length, 0);
@@ -84,9 +88,6 @@ QUnit.test("Test Page Stats", function (assert) {
         adguard.pageStats.updateTotalBlocked(24);
         totalBlocked = adguard.pageStats.getTotalBlocked();
         assert.equal(totalBlocked, 24);
-
-        const now = new Date();
-        now.setHours(0, 0, 0, 0);
 
         // test adding first filter data
         const firstFilter = adguard.subscriptions.getFilter(1);
