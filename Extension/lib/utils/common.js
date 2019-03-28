@@ -165,24 +165,6 @@ adguard.utils = (function () {
         },
 
         /**
-         * Return part of string after first regexp match
-         * @param {string} str 
-         * @param {RegExp} rx 
-         */
-        getAfterRegExp: function (str, rx) {
-            let start = str.search(rx);
-            let matchLength;
-            if (start === -1) {
-                return str;
-            }
-            let match = str.match(rx);
-            if (match && match.length) {
-                matchLength = match[0].length;
-            }
-            return str.substring(start + matchLength, str.length);
-        },
-
-        /**
          * Look for any symbol from "chars" array starting at "start" index or from the start of the string
          *
          * @param str   String to search
