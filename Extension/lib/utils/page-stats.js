@@ -293,15 +293,16 @@ adguard.pageStats = (function (adguard) {
 
     /**
      * Returns statistics data object
+     * @param {Date} [date] - used in the tests to provide time of stats object creation
      */
-    const getStatisticsData = () => {
+    const getStatisticsData = (date = new Date()) => {
         let stats = pageStatsHolder.stats;
         if (!stats) {
             stats = {};
         }
 
         if (!stats.data) {
-            stats.data = createStatsData(new Date(), null, 0);
+            stats.data = createStatsData(date, null, 0);
             pageStatsHolder.stats.data = stats.data;
             pageStatsHolder.save();
         }
