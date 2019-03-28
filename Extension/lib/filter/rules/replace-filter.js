@@ -19,9 +19,10 @@
     /**
      * Filter for replace filter rules
      * @param rules
+     * @param badFilterRules
      * @constructor
      */
-    api.ReplaceFilter = function (rules) {
+    api.ReplaceFilter = function (rules, badFilterRules) {
         const replaceWhiteFilter = new api.UrlFilterRuleLookupTable();
         const replaceBlockFilter = new api.UrlFilterRuleLookupTable();
 
@@ -95,13 +96,13 @@
          * @returns {?Array} array of filtered replace blockRules or null
          */
         function findReplaceRules(url, documentHost, thirdParty, requestType) {
-            const whiteRules = replaceWhiteFilter.findRules(url, documentHost, thirdParty, requestType);
-            const blockRules = replaceBlockFilter.findRules(url, documentHost, thirdParty, requestType);
+            const blockRules = replaceBlockFilter.findRules(url, documentHost, thirdParty, requestType, badFilterRules);
 
             if (!blockRules) {
                 return null;
             }
 
+            const whiteRules = replaceWhiteFilter.findRules(url, documentHost, thirdParty, requestType, badFilterRules);
             if (!whiteRules) {
                 return blockRules;
             }

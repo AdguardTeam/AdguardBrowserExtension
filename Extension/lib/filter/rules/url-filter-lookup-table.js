@@ -243,9 +243,10 @@
          * @param documentHost        Request document host
          * @param thirdParty          Is request third-party or not
          * @param requestType         Request type
+         * @param badFilterRules      object with collection of bad filters
          * @return All matching rules or null if no match found
          */
-        findRules: function (url, documentHost, thirdParty, requestType) {
+        findRules: function (url, documentHost, thirdParty, requestType, badFilterRules) {
 
             if (!url) {
                 return null;
@@ -268,7 +269,7 @@
             allRules = allRules.concat(this.rulesWithoutShortcuts);
 
             if (allRules && allRules.length > 0) {
-                return findAllRules(allRules, url, documentHost, thirdParty, requestType, true);
+                return findAllRules(allRules, url, documentHost, thirdParty, requestType, true, badFilterRules);
             }
 
             return null;
