@@ -63,7 +63,7 @@
         /**
          * Transition names
          */
-        const TRANSTION = {
+        const TRANSITION = {
             OPENED: 'opened',
             PARAM: 'param',
             CLOSED: 'closed',
@@ -82,15 +82,15 @@
                 case ' ':
                 case '(':
                 case ',':
-                    return TRANSTION.OPENED;
+                    return TRANSITION.OPENED;
                 case '\'':
                 case '"':
                     sep.symb = char;
-                    return TRANSTION.PARAM
+                    return TRANSITION.PARAM
                 case ')':
                     return index === rule.length - 1
-                        ? TRANSTION.CLOSED
-                        : TRANSTION.OPENED;
+                        ? TRANSITION.CLOSED
+                        : TRANSITION.OPENED;
             };
         };
         /**
@@ -110,21 +110,21 @@
                     if (char === sep.symb && before !== '\\') {
                         sep.symb = null;
                         saver.saveStr();
-                        return TRANSTION.OPENED;
+                        return TRANSITION.OPENED;
                     }
                 default:
                     saver.saveSymb(char);
-                    return TRANSTION.PARAM;
+                    return TRANSITION.PARAM;
             }
         }
         const transitions = { 
-            [TRANSTION.OPENED]: opened, 
-            [TRANSTION.PARAM]: param,
-            [TRANSTION.CLOSED]: () => { }
+            [TRANSITION.OPENED]: opened, 
+            [TRANSITION.PARAM]: param,
+            [TRANSITION.CLOSED]: () => { }
         };
         const sep = { symb: null };
         const saver = wordSaver();
-        const state = iterateWithTransitions(ruleText, transitions, TRANSTION.OPENED, { sep, saver });
+        const state = iterateWithTransitions(ruleText, transitions, TRANSITION.OPENED, { sep, saver });
         if (state !== 'closed') {
             throw new Error(`Invalid scriptlet rule ${ruleText}`);
         }
