@@ -680,9 +680,9 @@ QUnit.test('Test converter scriptlet abp rule', function (assert) {
     assert.equal(res, exp);
 });
 QUnit.test('Test converter scriptlet multiple abp rule', function (assert) {
-    const rule = `example.org#$#hide-if-has-and-matches-style 'div[id^="hyperfeed_story_id_"]' 'div[id*="feed_subtitle_"] > span' 'display: none'; hide-if-contains /.*/ .pagelet 'a[href^="/ad__campaign/landing.php?"]'`;
-    const exp1 = 'example.org#%#//scriptlet("abp-hide-if-has-and-matches-style", "div[id^="hyperfeed_story_id_"]", "div[id*="feed_subtitle_"] > span", "display: none")';
-    const exp2 = 'example.org#%#//scriptlet("abp-hide-if-contains", "/.*/", ".pagelet", "a[href^="/ad__campaign/landing.php?"]")';
+    const rule = `example.org#$#hide-if-has-and-matches-style 'd[id^="_"]' 'div > s' 'display: none'; hide-if-contains /.*/ .p 'a[href^="/ad__c?"]'`;
+    const exp1 = 'example.org#%#//scriptlet("abp-hide-if-has-and-matches-style", "d[id^="_"]", "div > s", "display: none")';
+    const exp2 = 'example.org#%#//scriptlet("abp-hide-if-contains", "/.*/", ".p", "a[href^="/ad__c?"]")';
     const res = adguard.rules.ruleConverter.convertRule(rule);
 
     assert.equal(res.length, 2);
@@ -691,9 +691,8 @@ QUnit.test('Test converter scriptlet multiple abp rule', function (assert) {
 });
 
 QUnit.test('Test converter css adguard rule', function (assert) {
-    // const rule = `example.org#$#html{ display: none; }`;
-    const rule = `omgmusik.com,hulkpop.com,thenerdic.com,tellmehow.co,udemycoursedownloader.net,patorjack.com,pinsystem.co.uk,sportnews.to,svipvids.com,synonymbog.com,techbii.com,darkcomet.net,firmgoogle.com#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}`;
-    const exp = `omgmusik.com,hulkpop.com,thenerdic.com,tellmehow.co,udemycoursedownloader.net,patorjack.com,pinsystem.co.uk,sportnews.to,svipvids.com,synonymbog.com,techbii.com,darkcomet.net,firmgoogle.com#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}`;
+    const rule = `firmgoogle.com#$#.pub_300x250 {display:block!important;}`;
+    const exp = `firmgoogle.com#$#.pub_300x250 {display:block!important;}`;
     const res = adguard.rules.ruleConverter.convertRule(rule);
 
     assert.equal(res, exp, 'the issue of this test that adg css rule and abp snippet rule has the same mask, but different content');
