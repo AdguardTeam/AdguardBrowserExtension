@@ -138,11 +138,10 @@
 
 
     /**
-     * JS Scriplet rule from scriptlet dictionary
+     * JS Scriplet rule constructor
      * @constructor ScriptletRule
-     * @param {Object} source
-     * @property {string}  source.name Scriptlets name
-     * @property {Array<string>}  source.args Arguments which need to pass in scriptlet
+     * @property {string} ruleText
+     * @property {number|string} filterId
      */
     function ScriptletRule(ruleText, filterId) {
         this.ruleText = ruleText;
