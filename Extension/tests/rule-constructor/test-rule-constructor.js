@@ -1,4 +1,4 @@
-QUnit.test("Rules Constructor for Assistant", function(assert) {
+QUnit.test('Rules Constructor for Assistant', function (assert) {
     var element = document.getElementById('test-div');
     var elementHref = document.getElementsByClassName('a-test-class')[0];
 
@@ -7,7 +7,7 @@ QUnit.test("Rules Constructor for Assistant", function(assert) {
         urlMask: 'test.com/page',
         cssSelectorType: 'STRICT_FULL',
         isBlockOneDomain: false,
-        url: 'http://example.org/test-page.html?param=p1'
+        url: 'http://example.org/test-page.html?param=p1',
     };
 
     var ruleText = DevToolsRulesConstructor.constructRuleText(element, options);
@@ -36,7 +36,7 @@ QUnit.test("Rules Constructor for Assistant", function(assert) {
     assert.equal(ruleText, '###test-div > a.a-test-class.a-test-class-two.a-test-class-three:first-child');
 });
 
-QUnit.test("Rules Constructor for DevTools", function(assert) {
+QUnit.test('Rules Constructor for DevTools', function (assert) {
     var element = document.getElementById('test-div');
     var elementHref = document.getElementsByClassName('a-test-class')[0];
 
@@ -47,7 +47,7 @@ QUnit.test("Rules Constructor for DevTools", function(assert) {
         isBlockOneDomain: false,
         url: 'http://example.org/test-page.html?param=p1',
         attributes: '',
-        excludeId: false
+        excludeId: false,
     };
 
     var ruleText = DevToolsRulesConstructor.constructRuleText(element, options);
@@ -99,7 +99,7 @@ QUnit.test("Rules Constructor for DevTools", function(assert) {
     assert.equal(ruleText, '###test-div > .a-test-class-two.a-test-class-three:first-child');
 });
 
-QUnit.test("Rules Constructor DevTools Id Elements Special Cases", function(assert) {
+QUnit.test('Rules Constructor DevTools Id Elements Special Cases', function (assert) {
     var element = document.getElementById('test-div');
     var elementHref = document.getElementsByClassName('a-test-class')[0];
 
@@ -110,7 +110,7 @@ QUnit.test("Rules Constructor DevTools Id Elements Special Cases", function(asse
         isBlockOneDomain: false,
         url: 'http://example.org/test-page.html?param=p1',
         attributes: '',
-        excludeId: false
+        excludeId: false,
     };
 
     var ruleText = DevToolsRulesConstructor.constructRuleText(element, options);
@@ -138,8 +138,8 @@ QUnit.test("Rules Constructor DevTools Id Elements Special Cases", function(asse
     assert.equal(ruleText, 'example.org###test-div > a.a-test-class.a-test-class-two.a-test-class-three:first-child[title=\"Share on Twitter\"]');
 });
 
-QUnit.test("Rules Constructor for special elements", function(assert) {
-    var elementHref = document.querySelector("#test-div h2");
+QUnit.test('Rules Constructor for special elements', function (assert) {
+    var elementHref = document.querySelector('#test-div h2');
     var options = {
         ruleType: 'CSS',
         urlMask: null,
@@ -148,7 +148,7 @@ QUnit.test("Rules Constructor for special elements", function(assert) {
         url: 'https://lenta.ru/',
         attributes: '',
         excludeTagName: false,
-        classList: null
+        classList: null,
     };
 
     var ruleText = DevToolsRulesConstructor.constructRuleText(elementHref, options);
@@ -164,7 +164,7 @@ QUnit.test("Rules Constructor for special elements", function(assert) {
         attributes: '',
         excludeTagName: true,
         classList: null,
-        excludeId: false
+        excludeId: false,
     };
 
     ruleText = DevToolsRulesConstructor.constructRuleText(elementDivId, options);
@@ -188,7 +188,7 @@ QUnit.test("Rules Constructor for special elements", function(assert) {
     assert.equal(ruleText, 'lenta.ru##div#test-id-div.test-class-two');
 });
 
-QUnit.test("Rules Constructor for CSS selector", function(assert) {
+QUnit.test('Rules Constructor for CSS selector', function (assert) {
     var selector;
     selector = DevToolsRulesConstructor.constructRuleCssSelector('lenta.ru##div.test-class-two#test-id-div$domain=example.org');
     assert.equal('div.test-class-two#test-id-div', selector);
@@ -200,17 +200,17 @@ QUnit.test("Rules Constructor for CSS selector", function(assert) {
     assert.equal('div#test-id-div[title="Share on Twitter"]', selector);
 
     selector = DevToolsRulesConstructor.constructRuleCssSelector('http://test.com/page$domain=example.org');
-    assert.equal(selector, "[src*=\"http://test.com/page\"]");
+    assert.equal(selector, '[src*="http://test.com/page"]');
 
     selector = DevToolsRulesConstructor.constructRuleCssSelector('||http://rutorads.com^$popup');
-    assert.equal(selector, "[src*=\"http://rutorads.com\"]");
+    assert.equal(selector, '[src*="http://rutorads.com"]');
 
-    selector = DevToolsRulesConstructor.constructRuleCssSelector("#%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };");
+    selector = DevToolsRulesConstructor.constructRuleCssSelector('#%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener(\'DOMContentLoaded\', func); } };');
     assert.equal(selector);
 });
 
-QUnit.test("SVG Elements", function(assert) {
-    var element = document.querySelector(".b-header-main__logo-icon use");
+QUnit.test('SVG Elements', function (assert) {
+    var element = document.querySelector('.b-header-main__logo-icon use');
     assert.ok(element != null);
 
     var options = {
@@ -221,15 +221,15 @@ QUnit.test("SVG Elements", function(assert) {
         url: 'https://lenta.ru/',
         attributes: '',
         excludeTagName: false,
-        classList: null
+        classList: null,
     };
 
     var ruleText = DevToolsRulesConstructor.constructRuleText(element, options);
     assert.equal(ruleText, 'lenta.ru###test-id-div > svg.b-header-main__logo-icon:nth-child(2) > use');
 });
 
-QUnit.test("Dot Classes", function(assert) {
-    var element = document.querySelector(".test-div-dot-class");
+QUnit.test('Dot Classes', function (assert) {
+    var element = document.querySelector('.test-div-dot-class');
     var options = {
         ruleType: 'CSS',
         urlMask: null,
@@ -238,15 +238,36 @@ QUnit.test("Dot Classes", function(assert) {
         url: 'https://lenta.ru/',
         attributes: '',
         excludeTagName: false,
-        classList: null
+        classList: null,
     };
 
     var ruleText = DevToolsRulesConstructor.constructRuleText(element, options);
     assert.equal(ruleText, 'lenta.ru###test-id-div > div.good-class.bad\\.class:last-child > div.test-div-dot-class');
 
-    element = document.querySelector(".good-class");
+    element = document.querySelector('.good-class');
 
     options.cssSelectorType = 'SIMILAR';
     var selector = DevToolsRulesConstructor.constructRuleText(element, options);
     assert.equal(selector, 'lenta.ru##.good-class, .bad\\.class');
+});
+
+QUnit.test('Body selector', (assert) => {
+    const element = document.querySelector('body');
+    const options = {
+        ruleType: 'CSS',
+        urlMask: null,
+        cssSelectorType: 'STRICT_FULL',
+        isBlockOneDomain: false,
+        url: 'https://lenta.ru/',
+        attributes: '',
+        excludeTagName: false,
+        classList: null,
+    };
+
+    const ruleText = DevToolsRulesConstructor.constructRuleText(element, options);
+    assert.equal(ruleText, 'lenta.ru##body');
+
+    options.attributes = '[bgcolor="#ffffff"]';
+    const selector = DevToolsRulesConstructor.constructRuleText(element, options);
+    assert.equal(selector, 'lenta.ru##body[bgcolor="#ffffff"]');
 });
