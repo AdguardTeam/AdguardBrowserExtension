@@ -136,7 +136,7 @@
     };
 
     /**
-     * Convert externa scriptlet rule to AdGuard scriptlet syntax
+     * Convert external scriptlet rule to AdGuard scriptlet syntax
      * @param {string} rule convert rule
      */
     function convertRule(rule) {
