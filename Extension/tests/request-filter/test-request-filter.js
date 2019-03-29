@@ -697,3 +697,19 @@ QUnit.test('Test converter css adguard rule', function (assert) {
 
     assert.equal(res, exp, 'the issue of this test that adg css rule and abp snippet rule has the same mask, but different content');
 });
+
+QUnit.test('Composite rules', (assert) => {
+    const requestFilter = new adguard.RequestFilter();
+    const rule = `example.org#$#hide-if-has-and-matches-style 'd[id^="_"]' 'div > s' 'display: none'; hide-if-contains /.*/ .p 'a[href^="/ad__c?"]'`;
+    const compositeRule = adguard.rules.builder.createRule(rule);
+
+    assert.ok(compositeRule);
+    assert.ok(compositeRule instanceof adguard.rules.CompositeRule);
+
+    requestFilter.addRule(compositeRule);
+    const found = requestFilter.findRuleForRequest('http://example.org');
+    console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
+    console.log(found);
+    console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
+
+});
