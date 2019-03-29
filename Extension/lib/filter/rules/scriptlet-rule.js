@@ -29,12 +29,12 @@
     function wordSaver() {
         let str = '';
         let strs = [];
-        saveSymb = (s) => str += s;
-        saveStr = () => {
+        const saveSymb = (s) => str += s;
+        const saveStr = () => {
             strs.push(str);
             str = '';
         };
-        getAll = () => [...strs];
+        const getAll = () => [...strs];
         return { saveSymb, saveStr, getAll };
     };
 
