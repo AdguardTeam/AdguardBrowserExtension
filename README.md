@@ -49,6 +49,7 @@ AdGuard is a fast and lightweight ad blocking browser extension that effectively
 * [Development](#dev)
   * [Requirements](#dev-requirements)
   * [How to build](#dev-build)
+  * [Linter](#dev-linter)
   * [Update localizations](#dev-localizations)
 
 <a id="installation"></a>
@@ -167,6 +168,11 @@ Before building the release version, you should manually download necessary reso
   yarn release
 ```
 You will need to put certificate.pem file to the Compiler directory. This build will create unpacked extensions and then pack them (crx for Chrome, xpi for Firefox).
+
+<a id="dev-linter"></a>
+### Linter
+Despite our code my not currently comply with new style configuration,
+please, setup `eslint` in your editor to follow up with it `.eslintrc`
 
 <a id="dev-localizations"></a>
 ### Update localizations
