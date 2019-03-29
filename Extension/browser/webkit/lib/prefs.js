@@ -26,7 +26,7 @@ adguard.prefs = (function (adguard) {
     var Prefs = {
 
         get mobile() {
-            return adguard.lazyGet(Prefs, 'mobile', function () {
+            return adguard.lazyGet(Prefs, 'mobile', () => {
                 return navigator.userAgent.indexOf('Android') >= 0;
             });
         },

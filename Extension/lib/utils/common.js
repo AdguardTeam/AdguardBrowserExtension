@@ -520,7 +520,8 @@ adguard.utils = (function () {
         EASY_PRIVACY: 118,
         FANBOY_ANNOYANCES: 122,
         FANBOY_SOCIAL: 123,
-        FANBOY_ENHANCED: 215
+        FANBOY_ENHANCED: 215,
+        MOBILE_ADS_FILTER_ID: 11,
     };
 
     var FilterUtils = {

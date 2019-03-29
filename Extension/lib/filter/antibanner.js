@@ -1410,8 +1410,11 @@ adguard.filters = (function (adguard) {
         // These filters are enabled by default
         const filterIds = [
             adguard.utils.filters.ENGLISH_FILTER_ID,
-            adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID
+            adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID,
         ];
+        if (adguard.prefs.mobile) {
+            filterIds.push(adguard.utils.filters.MOBILE_ADS_FILTER_ID);
+        }
         filterIds.concat(adguard.subscriptions.getLangSuitableFilters());
         callback(filterIds);
     };
