@@ -62,9 +62,14 @@
     function wrapInDoubleQuotes(str) {
         if (str[0] === '\'' && str[str.length - 1] === '\'') {
             str = str.substring(1, str.length - 1);
+            str = str.replace(/\"/g, '\\"');
+        } else if (str[0] === '"' && str[str.length - 1] === '"') {
+            str = str.substring(1, str.length - 1);
+            str = str.replace(/\'/g, '\\\'');
         }
         return `"${str}"`
     }
+
 
     /**
      * Replace string with data by placeholders

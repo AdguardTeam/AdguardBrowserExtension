@@ -245,7 +245,7 @@
             } else if (rule instanceof adguard.rules.ScriptletRule) {
                 this.scriptFilter.removeRule(rule);
             } else if (rule instanceof adguard.rules.CompositeRule) {
-                ruls.rules.forEach(this.removeRule.bind(this))
+                rule.rules.forEach(this.removeRule.bind(this))
             } else if (rule instanceof adguard.rules.ContentFilterRule) {
                 this.contentFilter.removeRule(rule);
             }

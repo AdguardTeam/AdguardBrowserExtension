@@ -681,8 +681,8 @@ QUnit.test('Test converter scriptlet abp rule', function (assert) {
 });
 QUnit.test('Test converter scriptlet multiple abp rule', function (assert) {
     const rule = `example.org#$#hide-if-has-and-matches-style 'd[id^="_"]' 'div > s' 'display: none'; hide-if-contains /.*/ .p 'a[href^="/ad__c?"]'`;
-    const exp1 = 'example.org#%#//scriptlet("abp-hide-if-has-and-matches-style", "d[id^="_"]", "div > s", "display: none")';
-    const exp2 = 'example.org#%#//scriptlet("abp-hide-if-contains", "/.*/", ".p", "a[href^="/ad__c?"]")';
+    const exp1 = 'example.org#%#//scriptlet("abp-hide-if-has-and-matches-style", "d[id^=\\"_\\"]", "div > s", "display: none")';
+    const exp2 = 'example.org#%#//scriptlet("abp-hide-if-contains", "/.*/", ".p", "a[href^=\\"/ad__c?\\"]")';
     const res = adguard.rules.ruleConverter.convertRule(rule);
 
     assert.equal(res.length, 2);
@@ -701,15 +701,16 @@ QUnit.test('Test converter css adguard rule', function (assert) {
 QUnit.test('Composite rules', (assert) => {
     const requestFilter = new adguard.RequestFilter();
     const rule = `example.org#$#hide-if-has-and-matches-style 'd[id^="_"]' 'div > s' 'display: none'; hide-if-contains /.*/ .p 'a[href^="/ad__c?"]'`;
-    const compositeRule = adguard.rules.builder.createRule(rule);
+    const compositeRule = adguard.rules.builder.createRule(rule, 0);
 
     assert.ok(compositeRule);
     assert.ok(compositeRule instanceof adguard.rules.CompositeRule);
 
     requestFilter.addRule(compositeRule);
-    const found = requestFilter.findRuleForRequest('http://example.org');
-    console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
-    console.log(found);
-    console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
+    const rules = requestFilter.getRules();
+    assert.equal(rules.length, 2);
 
+    requestFilter.removeRule(compositeRule);
+    const rules1 = requestFilter.getRules();
+    assert.equal(rules1, 0);
 });
