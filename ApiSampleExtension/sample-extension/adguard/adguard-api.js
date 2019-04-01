@@ -16701,10 +16701,7 @@ adguard.userrules = (function (adguard) {
                 }
             } else if (rule instanceof adguard.rules.CssFilterRule) {
                 this.cssFilter.addRule(rule);
-            } else if (
-                rule instanceof adguard.rules.ScriptFilterRule
-                || rule instanceof adguard.rules.ScriptletRule
-            ) {
+            } else if (rule instanceof adguard.rules.ScriptFilterRule) {
                 this.scriptFilter.addRule(rule);
             } else if (rule instanceof adguard.rules.ContentFilterRule) {
                 this.contentFilter.addRule(rule);
