@@ -155,7 +155,7 @@
         domain && this.loadDomains(domain);
         const scriptletParam = {
             engine: 'extension',
-            version: adguard.app.getVersion(),
+            version: adguard.app && adguard.app.getVersion && adguard.app.getVersion(),
             ...parseRule(ruleText),
         };
         this.script = scriptlets && scriptlets.invoke(scriptletParam);
@@ -171,6 +171,7 @@
      * Extends BaseFilterRule
      */
     ScriptletRule.prototype = Object.create(api.FilterRule.prototype);
+    ScriptletRule.prototype.constructor = ScriptletRule;
 
     /**
      * @static ScriptletRule
@@ -178,4 +179,3 @@
     api.ScriptletRule = ScriptletRule;
 
 })(adguard, adguard.rules);
-
