@@ -222,14 +222,14 @@
      * Opens assistant dialog in the specified tab
      * @param tabId Tab identifier
      */
-    var openAssistant = function (tabId) {
+    const openAssistant = (tabId) => {
         if (adguard.tabs.executeScriptFile) {
             // Load Assistant code to the activate tab immediately
-            adguard.tabs.executeScriptFile(null, "/adguard/assistant/assistant.js", function() {
+            adguard.tabs.executeScriptFile(null, { file: '/adguard/assistant/assistant.js' }, () => {
                 initAssistant(tabId);
             });
         } else {
-            // Manualy start assistant
+            // Manually start assistant
             initAssistant(tabId);
         }
     };
