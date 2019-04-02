@@ -477,7 +477,7 @@ adguard.tabsImpl = (function (adguard) {
      *
      * @param {number} tabId Tab id or null if you want to inject into the active tab
      * @param {Object} options
-     * @param {string} options.filePath - Path to the javascript file
+     * @param {string} options.file - Path to the javascript file
      * @param {number} [options.frameId=0] - id of the frame, default to the 0;
      * @param {function} callback Called when the script injection is complete
      */
