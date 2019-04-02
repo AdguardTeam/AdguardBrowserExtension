@@ -950,9 +950,14 @@
         }
     }, ['<all_urls>']);
 
-    // Subscribe script is executed when onCommitted event fires because this event is the most reliable
+    // Subscribe script is executed when onCommitted event fires,
+    // because this event is the most reliable
+    /**
+     * Subscribe script is executed when onCommitted event fires,
+     * because this event is the most reliable
+     */
     adguard.webNavigation.onCommitted.addListener((details) => {
-        const { tab, requestType } = details;
+        const { tab, requestType, frameId } = details;
         if ((requestType !== adguard.RequestTypes.DOCUMENT
             && requestType !== adguard.RequestTypes.SUBDOCUMENT)
             || adguard.frames.isTabAdguardDetected(tab)
@@ -960,6 +965,6 @@
             return;
         }
         // load subscribe script on dom content load if integration mode is turned off
-        adguard.tabs.executeScriptFile(tab.tabId, '/lib/content-script/subscribe.js');
+        adguard.tabs.executeScriptFile(tab.tabId, { file: '/lib/content-script/subscribe.js', frameId });
     });
 })(adguard);
