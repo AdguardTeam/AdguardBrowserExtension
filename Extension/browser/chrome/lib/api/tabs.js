@@ -476,20 +476,28 @@ adguard.tabsImpl = (function (adguard) {
      * This method forces `runAt: document_start`.
      *
      * @param {number} tabId Tab id or null if you want to inject into the active tab
-     * @param {filePath} filePath Path to the javascript file
+     * @param {Object} options
+     * @param {string} options.file - Path to the javascript file
+     * @param {number} [options.frameId=0] - id of the frame, default to the 0;
      * @param {function} callback Called when the script injection is complete
      */
-    const executeScriptFile = !browser.tabs.executeScript ? undefined : function (tabId, filePath, callback) {
-        browser.tabs.executeScript(tabId, {
-            file: filePath,
-            runAt: 'document_start'
-        }, function () {
-            noopCallback();
-            if (callback) {
-                callback();
-            }
-        });
-    };
+    const executeScriptFile = !browser.tabs.executeScript
+        ? undefined
+        : (tabId, options, callback) => {
+            const { file, frameId = 0 } = options;
+            const executeScriptOptions = {
+                file,
+                frameId,
+                runAt: 'document_start',
+            };
+
+            browser.tabs.executeScript(tabId, executeScriptOptions, () => {
+                noopCallback();
+                if (callback) {
+                    callback();
+                }
+            });
+        };
 
     return {
 
