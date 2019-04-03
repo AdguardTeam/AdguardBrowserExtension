@@ -155,6 +155,16 @@ adguard.utils = (function () {
         },
 
         /**
+         * Get string before regexp first match
+         * @param {string} str
+         * @param {RegExp} rx
+         */
+        getBeforeRegExp: function (str, rx) {
+            let index = str.search(rx);
+            return str.substring(0, index);
+        },
+
+        /**
          * Look for any symbol from "chars" array starting at "start" index or from the start of the string
          *
          * @param str   String to search
@@ -872,7 +882,7 @@ adguard.utils.RingBuffer = function (size) { // jshint ignore:line
 
     var i = ringBuffer.length;
     while (i--) {
-        ringBuffer[i] = {processedKey: null}; // 'if not null' means this item hasn't been processed yet.
+        ringBuffer[i] = { processedKey: null }; // 'if not null' means this item hasn't been processed yet.
     }
 
     /**
@@ -944,7 +954,7 @@ adguard.utils.RingBuffer = function (size) { // jshint ignore:line
         itemWritePointer = 0;
         var i = ringBuffer.length;
         while (i--) {
-            ringBuffer[i] = {processedKey: null};
+            ringBuffer[i] = { processedKey: null };
         }
     };
 
