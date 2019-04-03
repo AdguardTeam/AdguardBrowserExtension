@@ -29,19 +29,6 @@
         if (ruleText.includes('##^')) {
             return false;
         }
-
-        // uBO scriptlet injections
-        if (ruleText.includes('##script:inject(') || ruleText.includes('##+js(')) {
-            return false;
-        }
-
-        // Check ABP-snippets
-        if (ruleText.includes('#$#')) {
-            if (!/#\$#.+{.*}\s*$/.test(ruleText)) {
-                return false;
-            }
-        }
-
         return true;
     };
 
@@ -74,7 +61,7 @@
      * @param {boolean} isTrustedFilter - custom filter can be trusted and untrusted, default is true
      * @returns Filter rule object. Either UrlFilterRule or CssFilterRule or ScriptFilterRule.
      */
-    const createRule = function (ruleText, filterId, isTrustedFilter = true) {
+    const _createRule = function (ruleText, filterId, isTrustedFilter) {
         ruleText = ruleText ? ruleText.trim() : null;
         if (!ruleText) {
             return null;
@@ -82,14 +69,6 @@
 
         try {
             const StringUtils = adguard.utils.strings;
-
-            if (StringUtils.startWith(ruleText, api.FilterRule.COMMENT)
-                || StringUtils.contains(ruleText, api.FilterRule.OLD_INJECT_RULES)
-                || StringUtils.contains(ruleText, api.FilterRule.MASK_JS_RULE)) {
-                // Empty or comment, ignore
-                // Content rules are not supported
-                return null;
-            }
 
             if (!filterUnsupportedRules(ruleText)) {
                 return null;
@@ -116,7 +95,9 @@
             }
 
             if (api.FilterRule.findRuleMarker(ruleText, api.ScriptFilterRule.RULE_MARKERS, api.ScriptFilterRule.RULE_MARKER_FIRST_CHAR)) {
-                return new api.ScriptFilterRule(ruleText, filterId);
+                return api.ScriptletRule.isAdguardScriptletRule(ruleText)
+                    ? new api.ScriptletRule(ruleText, filterId)
+                    : new api.ScriptFilterRule(ruleText, filterId);
             }
 
             return new api.UrlFilterRule(ruleText, filterId);
@@ -127,8 +108,23 @@
         return null;
     };
 
-    api.builder = {
-        createRule: createRule,
-    };
+    /**
+     * Convert rules to AdGuard syntax and create rule
+     *
+     * @param {string} ruleText Rule text
+     * @param {number} filterId Filter identifier
+     * @param {boolean} isTrustedFilter - custom filter can be trusted and untrusted, default is true
+     * @returns Filter rule object. Either UrlFilterRule or CssFilterRule or ScriptFilterRule.
+     */
+    const createRule = (ruleText, filterId, isTrustedFilter = true) => {
+        const convertedRule = api.ruleConverter.convertRule(ruleText);
+        if (Array.isArray(convertedRule)) {
+            const rules = convertedRule.map(rt => _createRule(rt, filterId, isTrustedFilter));
+            return new api.CompositeRule(ruleText, rules);
+        }
+        return _createRule(convertedRule, filterId, isTrustedFilter);
+    }
+
+    api.builder = { createRule };
 
 })(adguard, adguard.rules);

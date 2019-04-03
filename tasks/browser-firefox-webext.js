@@ -18,6 +18,7 @@ import {version} from './parse-package';
 import {updateLocalesMSGName, preprocessAll} from './helpers';
 import zip from 'gulp-zip';
 import copyCommonFiles from './copy-common';
+import copyExternal from './copy-external';
 
 // set current type of build
 const BRANCH = process.env.NODE_ENV || '';
@@ -88,4 +89,4 @@ const createArchive = (done) => {
         .pipe(gulp.dest(dest.buildDir));
 };
 
-export default gulp.series(copyCommon, copyFilters, firefoxWebext, updateManifest, localesProcess, preprocess, createArchive);
+export default gulp.series(copyExternal, copyCommon, copyFilters, firefoxWebext, updateManifest, localesProcess, preprocess, createArchive);

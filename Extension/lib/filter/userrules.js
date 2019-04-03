@@ -99,7 +99,7 @@ adguard.userrules = (function (adguard) {
         updateUserRulesText: updateUserRulesText,
         getUserRulesText: getUserRulesText,
         //TODO: fix
-        unWhiteListFrame: unWhiteListFrame
+        unWhiteListFrame: unWhiteListFrame,
     };
 
 })(adguard);

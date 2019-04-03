@@ -198,6 +198,10 @@
                 this.cssFilter.addRule(rule);
             } else if (rule instanceof adguard.rules.ScriptFilterRule) {
                 this.scriptFilter.addRule(rule);
+            } else if (rule instanceof adguard.rules.ScriptletRule) {
+                this.scriptFilter.addRule(rule);
+            } else if (rule instanceof adguard.rules.CompositeRule) {
+                rule.rules.forEach(this.addRule.bind(this));
             } else if (rule instanceof adguard.rules.ContentFilterRule) {
                 this.contentFilter.addRule(rule);
             }
@@ -238,6 +242,10 @@
                 this.cssFilter.removeRule(rule);
             } else if (rule instanceof adguard.rules.ScriptFilterRule) {
                 this.scriptFilter.removeRule(rule);
+            } else if (rule instanceof adguard.rules.ScriptletRule) {
+                this.scriptFilter.removeRule(rule);
+            } else if (rule instanceof adguard.rules.CompositeRule) {
+                rule.rules.forEach(this.removeRule.bind(this))
             } else if (rule instanceof adguard.rules.ContentFilterRule) {
                 this.contentFilter.removeRule(rule);
             }

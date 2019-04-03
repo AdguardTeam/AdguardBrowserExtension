@@ -653,3 +653,64 @@ QUnit.test('requestFilter.findRuleForRequest performance', function (assert) {
     // Total: 84 ms
     // Average: 0.00168 ms
 });
+
+QUnit.module('Rule converter')
+QUnit.test('Test scriptlet adguard rule', function (assert) {
+    const rule = "example.org#%#//scriptlet('abort-on-property-read', 'I10C')";
+    const exp = "example.org#%#//scriptlet('abort-on-property-read', 'I10C')";
+    const res = adguard.rules.ruleConverter.convertRule(rule);
+    assert.equal(res, exp);
+});
+QUnit.test('Test scriptlet adguard rule exception', function (assert) {
+    const rule = "example.org#@%#//scriptlet('abort-on-property-read', 'I10C')";
+    const exp = "example.org#@%#//scriptlet('abort-on-property-read', 'I10C')";
+    const res = adguard.rules.ruleConverter.convertRule(rule);
+    assert.equal(res, exp);
+});
+QUnit.test('Test converter scriptlet ubo rule', function (assert) {
+    const rule = "example.org##+js(setTimeout-defuser.js, [native code], 8000)";
+    const exp = 'example.org#%#//scriptlet("ubo-setTimeout-defuser.js", "[native code]", "8000")';
+    const res = adguard.rules.ruleConverter.convertRule(rule);
+    assert.equal(res, exp);
+});
+QUnit.test('Test converter scriptlet abp rule', function (assert) {
+    const rule = "example.org#$#hide-if-contains li.serp-item 'li.serp-item div.label'";
+    const exp = 'example.org#%#//scriptlet("abp-hide-if-contains", "li.serp-item", "li.serp-item div.label")';
+    const res = adguard.rules.ruleConverter.convertRule(rule);
+    assert.equal(res, exp);
+});
+QUnit.test('Test converter scriptlet multiple abp rule', function (assert) {
+    const rule = `example.org#$#hide-if-has-and-matches-style 'd[id^="_"]' 'div > s' 'display: none'; hide-if-contains /.*/ .p 'a[href^="/ad__c?"]'`;
+    const exp1 = 'example.org#%#//scriptlet("abp-hide-if-has-and-matches-style", "d[id^=\\"_\\"]", "div > s", "display: none")';
+    const exp2 = 'example.org#%#//scriptlet("abp-hide-if-contains", "/.*/", ".p", "a[href^=\\"/ad__c?\\"]")';
+    const res = adguard.rules.ruleConverter.convertRule(rule);
+
+    assert.equal(res.length, 2);
+    assert.equal(res[0], exp1);
+    assert.equal(res[1], exp2);
+});
+
+QUnit.test('Test converter css adguard rule', function (assert) {
+    const rule = `firmgoogle.com#$#.pub_300x250 {display:block!important;}`;
+    const exp = `firmgoogle.com#$#.pub_300x250 {display:block!important;}`;
+    const res = adguard.rules.ruleConverter.convertRule(rule);
+
+    assert.equal(res, exp, 'the issue of this test that adg css rule and abp snippet rule has the same mask, but different content');
+});
+
+QUnit.test('Composite rules', (assert) => {
+    const requestFilter = new adguard.RequestFilter();
+    const rule = `example.org#$#hide-if-has-and-matches-style 'd[id^="_"]' 'div > s' 'display: none'; hide-if-contains /.*/ .p 'a[href^="/ad__c?"]'`;
+    const compositeRule = adguard.rules.builder.createRule(rule, 0);
+
+    assert.ok(compositeRule);
+    assert.ok(compositeRule instanceof adguard.rules.CompositeRule);
+
+    requestFilter.addRule(compositeRule);
+    const rules = requestFilter.getRules();
+    assert.equal(rules.length, 2);
+
+    requestFilter.removeRule(compositeRule);
+    const rules1 = requestFilter.getRules();
+    assert.equal(rules1, 0);
+});
