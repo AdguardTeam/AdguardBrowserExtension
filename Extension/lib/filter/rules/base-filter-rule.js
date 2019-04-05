@@ -295,6 +295,7 @@
     FilterRule.MASK_CONTENT_EXCEPTION_RULE = "$@$";
     FilterRule.MASK_BANNER_RULE = "++";
     FilterRule.MASK_CONFIGURATION_RULE = "~~";
+    FilterRule.COMMENT = "!";
     FilterRule.EQUAL = "=";
     FilterRule.COMA_DELIMITER = ",";
     FilterRule.LINE_DELIMITER = "|";

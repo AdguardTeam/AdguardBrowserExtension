@@ -70,6 +70,10 @@
         try {
             const StringUtils = adguard.utils.strings;
 
+            if (StringUtils.startWith(ruleText, api.FilterRule.COMMENT)) {
+                return null;
+            }
+
             if (!filterUnsupportedRules(ruleText)) {
                 return null;
             }
