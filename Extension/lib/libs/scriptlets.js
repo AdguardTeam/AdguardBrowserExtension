@@ -391,14 +391,15 @@
           return;
         }
 
+        var currentValue = base[prop];
         setPropertyAccess(base, prop, {
           set: function set(value) {
             abort();
-            base = value;
+            currentValue = value;
           },
           get: function get() {
             abort();
-            return base;
+            return currentValue;
           }
         });
       };
@@ -629,6 +630,56 @@
     }
     preventBab.names = ['prevent-bab', 'ubo-bab-defuser.js'];
 
+    /* eslint-disable no-new-func, no-unused-vars, no-extra-bind, no-console, func-names */
+
+    /**
+     * Disables WebRTC via blocking calls to the RTCPeerConnection()
+     *
+     * @param {Source} source
+     */
+    function nowebrtc(source) {
+      var hit = source.hit ? new Function(source.hit) : function () {};
+      var propertyName = '';
+
+      if (window.RTCPeerConnection) {
+        propertyName = 'RTCPeerConnection';
+      } else if (window.webkitRTCPeerConnection) {
+        propertyName = 'webkitRTCPeerConnection';
+      }
+
+      if (propertyName === '') {
+        return;
+      }
+
+      var log = console.log.bind(console);
+
+      var rtcReplacement = function rtcReplacement(config) {
+        hit();
+        log('Document tried to create an RTCPeerConnection: %o', config);
+      };
+
+      var noop = function noop() {};
+
+      rtcReplacement.prototype = {
+        close: noop,
+        createDataChannel: noop,
+        createOffer: noop,
+        setRemoteDescription: noop
+      };
+      var rtc = window[propertyName];
+      window[propertyName] = rtcReplacement;
+
+      if (rtc.prototype) {
+        rtc.prototype.createDataChannel = function (a, b) {
+          return {
+            close: noop,
+            send: noop
+          };
+        }.bind(null);
+      }
+    }
+    nowebrtc.names = ['nowebrtc', 'ubo-nowebrtc.js'];
+
     /**
      * This file must export all scriptlets which should be accessible
      */
@@ -643,7 +694,8 @@
         abortCurrentInlineScript: abortCurrentInlineScript,
         setConstant: setConstant,
         preventAddEventListener: preventAddEventListener,
-        preventBab: preventBab
+        preventBab: preventBab,
+        nowebrtc: nowebrtc
     });
 
     /**
