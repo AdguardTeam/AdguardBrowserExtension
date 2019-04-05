@@ -654,7 +654,6 @@ QUnit.test('requestFilter.findRuleForRequest performance', function (assert) {
     // Average: 0.00168 ms
 });
 
-QUnit.module('Rule converter')
 QUnit.test('Test scriptlet adguard rule', function (assert) {
     const rule = "example.org#%#//scriptlet('abort-on-property-read', 'I10C')";
     const exp = "example.org#%#//scriptlet('abort-on-property-read', 'I10C')";
@@ -713,4 +712,13 @@ QUnit.test('Composite rules', (assert) => {
     requestFilter.removeRule(compositeRule);
     const rules1 = requestFilter.getRules();
     assert.equal(rules1, 0);
+});
+
+QUnit.test('Comment rule', assert => {
+    const requestFilter = new adguard.RequestFilter();
+    const rule = '! example.com#$#.pub_300x250 {display:block!important;}';
+
+    requestFilter.addRule(rule);
+    const rules = requestFilter.getRules();
+    assert.equal(rules.length, 0, 'Commented rule should be ignored');
 });
