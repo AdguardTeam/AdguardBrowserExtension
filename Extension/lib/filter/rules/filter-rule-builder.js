@@ -123,11 +123,17 @@
     const createRule = (ruleText, filterId, isTrustedFilter = true) => {
         const convertedRule = api.ruleConverter.convertRule(ruleText);
         if (Array.isArray(convertedRule)) {
-            const rules = convertedRule.map(rt => _createRule(rt, filterId, isTrustedFilter));
+            const rules = convertedRule
+                .map(rt => _createRule(rt, filterId, isTrustedFilter))
+                .filter(rule => rule !== null);
+            // composite rule shouldn't be with without rules inside it
+            if (rules.length === 0) {
+                return null;
+            }
             return new api.CompositeRule(ruleText, rules);
         }
         return _createRule(convertedRule, filterId, isTrustedFilter);
-    }
+    };
 
     api.builder = { createRule };
 

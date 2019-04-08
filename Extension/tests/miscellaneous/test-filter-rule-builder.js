@@ -27,11 +27,7 @@ QUnit.test('Build Rules', function (assert) {
     assert.ok(rule);
 });
 
-QUnit.test('Unsupported rules', function (assert) {
-    let rule = adguard.rules.builder.createRule('#$#snippet_name param param', 0);
-    assert.ok(rule);
-    assert.ok(rule instanceof adguard.rules.CompositeRule);
-
+QUnit.test('Unsupported rules', (assert) => {
     rule = adguard.rules.builder.createRule('#$#body { background: black }', 0);
     assert.ok(rule);
     assert.ok(rule instanceof adguard.rules.CssFilterRule);
