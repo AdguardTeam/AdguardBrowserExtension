@@ -1901,7 +1901,9 @@ var Settings = function () {
     checkboxes.push(new Checkbox('#hide_search_queries', userSettings.names.HIDE_SEARCH_QUERIES));
     checkboxes.push(new Checkbox('#send_not_track', userSettings.names.SEND_DO_NOT_TRACK));
     if (environmentOptions.isChrome) {
-        checkboxes.push(new Checkbox('#remove_client-data', userSettings.names.BLOCK_CHROME_CLIENT_DATA));
+        const removeClientDataInput = document.querySelector('#remove-client-data');
+        removeClientDataInput.closest('li').style.display = 'flex';
+        checkboxes.push(new Checkbox('#remove-client-data', userSettings.names.BLOCK_CHROME_CLIENT_DATA));
     }
     if (environmentOptions.canBlockWebRTC) {
         // Edge doesn't support block webrtc
