@@ -714,11 +714,10 @@ QUnit.test('Composite rules', (assert) => {
     assert.equal(rules1, 0);
 });
 
-QUnit.test('Comment rule', assert => {
-    const requestFilter = new adguard.RequestFilter();
-    const rule = '! example.com#$#.pub_300x250 {display:block!important;}';
+QUnit.test('Comments in rule', (assert) => {
+    let rule = adguard.rules.builder.createRule('! example.com#$#.pub_300x250 {display:block!important;}', 0);
+    assert.notOk(rule, 'rule with comment mask should return null');
 
-    requestFilter.addRule(rule);
-    const rules = requestFilter.getRules();
-    assert.equal(rules.length, 0, 'Commented rule should be ignored');
+    rule = adguard.rules.builder.createRule('! ain.ua#$#body - удаление брендированного фона, отступа сверху', 0);
+    assert.notOk(rule, 'rule with comment mask should return null');
 });
