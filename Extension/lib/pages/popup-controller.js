@@ -278,11 +278,15 @@ PopupController.prototype = {
             }
         } else {
             template = this.filteringDefaultHeader;
-            var tabBlocked = template.querySelector('.blocked-tab');
-            var totalBlocked = template.querySelector('.blocked-all');
+            if (this.options.showInfoAboutFullVersion) {
+                const headerCtaLink = template.querySelector('#header-cta-link');
+                headerCtaLink.style.display = 'block';
+            }
+            const tabBlocked = template.querySelector('.blocked-tab');
+            const totalBlocked = template.querySelector('.blocked-all');
             i18n.translateElement(tabBlocked, 'popup_tab_blocked', [this._formatNumber(tabInfo.totalBlockedTab || 0)]);
             i18n.translateElement(totalBlocked, 'popup_tab_blocked_all', [this._formatNumber(tabInfo.totalBlocked || 0)]);
-            var closestWidgetFilter = tabBlocked.closest('.widget-popup-filter');
+            const closestWidgetFilter = tabBlocked.closest('.widget-popup-filter');
             if (closestWidgetFilter) {
                 if (tabInfo.totalBlocked >= 10000000) {
                     closestWidgetFilter.classList.add('db');

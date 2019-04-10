@@ -107,17 +107,6 @@ const CheckboxUtils = (function () {
     };
 })();
 
-function updateDisplayAdguardPromo(showPromo) {
-    // Sometimes in FF promo block isn't rendered properly
-    setTimeout(function () {
-        if (showPromo) {
-            document.querySelector('.try-premium').style.display = '';
-        } else {
-            document.querySelector('.try-premium').style.display = 'none';
-        }
-    }, 100);
-}
-
 function customizePopupFooter(isMacOs) {
     // fix title
     let messageId = isMacOs ? 'thankyou_want_full_protection_mac' : 'thankyou_want_full_protection';

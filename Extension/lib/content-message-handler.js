@@ -332,6 +332,7 @@
                         options: {
                             showStatsSupported: true,
                             isFirefoxBrowser: adguard.utils.browser.isFirefoxBrowser(),
+                            showInfoAboutFullVersion: adguard.settings.isShowInfoAboutAdguardFullVersion(),
                             isMacOs: adguard.utils.browser.isMacOs(),
                             notification: adguard.notifications.getCurrentNotification(),
                             isDisableShowAdguardPromoInfo: adguard.settings.isDisableShowAdguardPromoInfo(),
