@@ -278,7 +278,7 @@ PopupController.prototype = {
             }
         } else {
             template = this.filteringDefaultHeader;
-            if (!this.options.isEdgeBrowser) {
+            if (this.options.showInfoAboutFullVersion) {
                 const headerCtaLink = template.querySelector('#header-cta-link');
                 headerCtaLink.style.display = 'block';
             }
