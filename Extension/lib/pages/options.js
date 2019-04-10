@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global updateDisplayAdguardPromo, contentPage, i18n, moment, ace, CheckboxUtils */
+/* global contentPage, i18n, moment, ace, CheckboxUtils */
 
 var Utils = {
 
@@ -1834,10 +1834,6 @@ var Settings = function () {
                     key: property,
                     value: negate ? !this.checked : this.checked,
                 });
-
-                if (property === userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO) {
-                    updateDisplayAdguardPromo(this.checked);
-                }
             });
         }
 
@@ -2174,8 +2170,6 @@ PageController.prototype = {
         if (versionPlaceholder) {
             versionPlaceholder.textContent = `${i18n.getMessage('options_about_version')} ${environmentOptions.appVersion}`;
         }
-
-        updateDisplayAdguardPromo(!userSettings.values[userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO]);
     },
 
     allowAcceptableAdsChange: function () {
