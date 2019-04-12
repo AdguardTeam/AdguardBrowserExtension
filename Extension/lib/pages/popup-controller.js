@@ -938,18 +938,6 @@ PopupController.prototype = {
         });
     },
 
-    // http://jira.performix.ru/browse/AG-3474
-    resizePopupWindowForMacOs: function () {
-        var options = this.options;
-        if (options.isFirefoxBrowser || !options.isMacOs) {
-            return;
-        }
-        setTimeout(function () {
-            var block = document.querySelector(".macoshackresize");
-            block.style["padding-top"] = "4px";
-        }, 1000);
-    },
-
     /**
      * Formats number to the language-sensitive representation
      * @param {number} number
@@ -978,7 +966,6 @@ PopupController.prototype = {
         var timeout = 10;
         setTimeout(function () {
             controller.resizePopupWindow();
-            controller.resizePopupWindowForMacOs();
         }, timeout);
     };
 
