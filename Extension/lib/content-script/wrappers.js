@@ -435,8 +435,22 @@ const initPageMessageListener = function () {
         if (!(event.source === window
             && event.data.direction
             && event.data.direction === 'from-page-script@adguard'
-            && event.data.elementUrl
-            && event.data.documentUrl)) {
+        )) {
+            return;
+        }
+
+        if (event.data.scriptletMessage) {
+            const message = {
+                type: 'scriptletMessage',
+                message: event.data.scriptletMessage,
+            };
+
+            contentPage.sendMessage(message);
+            return;
+        }
+
+
+        if (!(event.data.elementUrl && event.data.documentUrl)) {
             return;
         }
 

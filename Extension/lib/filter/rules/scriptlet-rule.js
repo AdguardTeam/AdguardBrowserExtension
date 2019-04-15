@@ -55,7 +55,7 @@
 
     /**
      * Parse and validate scriptlet rule
-     * @param {*} ruleText 
+     * @param {*} ruleText
      * @returns {{name: string, args: Array<string>}}
      */
     function parseRule(ruleText) {
@@ -71,8 +71,8 @@
 
         /**
          * Transition function: the current index position in start, end or between params
-         * @param {string} rule 
-         * @param {number} index 
+         * @param {string} rule
+         * @param {number} index
          * @param {Object} Object
          * @property {Object} Object.sep contains prop symb with current separator char
          */
@@ -117,8 +117,8 @@
                     return TRANSITION.PARAM;
             }
         }
-        const transitions = { 
-            [TRANSITION.OPENED]: opened, 
+        const transitions = {
+            [TRANSITION.OPENED]: opened,
             [TRANSITION.PARAM]: param,
             [TRANSITION.CLOSED]: () => { }
         };
@@ -132,7 +132,7 @@
         const args = saver.getAll();
         return {
             name: args[0],
-            args: args.slice(1)
+            args: args.slice(1),
         };
     }
 
@@ -152,11 +152,22 @@
             ? api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE
             : api.FilterRule.MASK_SCRIPT_RULE;
         const domain = adguard.utils.strings.substringBefore(ruleText, mask);
-        domain && this.loadDomains(domain);
+        if (domain) {
+            this.loadDomains(domain);
+        }
+        const { name, args } = parseRule(ruleText);
         const scriptletParam = {
+            name,
+            args,
             engine: 'extension',
             version: adguard.app && adguard.app.getVersion && adguard.app.getVersion(),
-            ...parseRule(ruleText),
+            hit: function (id) {
+                const message = {
+                    direction: 'from-page-script@adguard',
+                    scriptletMessage: id
+                };
+                window.postMessage && window.postMessage(message);
+            },
         };
         this.script = scriptlets && scriptlets.invoke(scriptletParam);
     };
