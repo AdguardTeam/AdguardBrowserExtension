@@ -114,16 +114,16 @@ const PageController = (response) => {
         allowAcceptableAdsCheckbox.addEventListener('change', allowAcceptableAdsChange);
 
         const openExtensionStoreBtns = [].slice.call(document.querySelectorAll('.openExtensionStore'));
-        openExtensionStoreBtns.forEach(openExtensionStoreBtn => {
-            openExtensionStoreBtn.addEventListener('click', function (e) {
+        openExtensionStoreBtns.forEach((openExtensionStoreBtn) => {
+            openExtensionStoreBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 contentPage.sendMessage({ type: 'openExtensionStore' });
             });
         });
 
         const openSettingsBtns = [].slice.call(document.querySelectorAll('.openSettings'));
-        openSettingsBtns.forEach(openSettingsBtn => {
-            openSettingsBtn.addEventListener('click', function (e) {
+        openSettingsBtns.forEach((openSettingsBtn) => {
+            openSettingsBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 contentPage.sendMessage({ type: 'openSettingsTab' });
             });
@@ -167,9 +167,9 @@ const PageController = (response) => {
     };
 };
 
-contentPage.sendMessage({ type: 'initializeFrameScript' }, response => {
+contentPage.sendMessage({ type: 'initializeFrameScript' }, (response) => {
     const controller = PageController(response);
-    if (document.readyState !== 'complete') {
+    if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
             controller.init();
         });
