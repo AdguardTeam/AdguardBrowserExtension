@@ -908,9 +908,8 @@ var AntiBannerFilters = function (options) {
                             <a
                                 href="#"
                                 class="add-custom-filter-button button button--green button--link"
-                                i18n="options_add_custom_filter"
                             >
-                                Add custom filter
+                                ${i18n.getMessage('options_add_custom_filter')}
                             </a>
                         </div>`;
             }
@@ -1277,7 +1276,7 @@ var AntiBannerFilters = function (options) {
             loadedFiltersInfo.initLoadedFilters(response.filters, response.categories);
             setLastUpdatedTimeText(loadedFiltersInfo.lastUpdateTime);
 
-            const { categories, filters } = loadedFiltersInfo.categories;
+            const { categories, filters } = loadedFiltersInfo;
 
             categories.forEach((category) => {
                 renderFilterCategory(category);
