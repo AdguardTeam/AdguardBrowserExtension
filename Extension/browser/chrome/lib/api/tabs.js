@@ -487,9 +487,14 @@ adguard.tabsImpl = (function (adguard) {
             const { file, frameId = 0 } = options;
             const executeScriptOptions = {
                 file,
-                frameId,
                 runAt: 'document_start',
             };
+
+            // Chrome 49 throws an exception if browser.tabs.executeScript is called
+            // with a frameId equal to 0
+            if (frameId !== 0) {
+                executeScriptOptions.frameId = frameId;
+            }
 
             browser.tabs.executeScript(tabId, executeScriptOptions, () => {
                 noopCallback();
