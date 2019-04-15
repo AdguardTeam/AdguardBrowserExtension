@@ -1277,7 +1277,7 @@ var AntiBannerFilters = function (options) {
             loadedFiltersInfo.initLoadedFilters(response.filters, response.categories);
             setLastUpdatedTimeText(loadedFiltersInfo.lastUpdateTime);
 
-            const { categories, filters } = loadedFiltersInfo.categories;
+            const { categories, filters } = loadedFiltersInfo;
 
             categories.forEach((category) => {
                 renderFilterCategory(category);

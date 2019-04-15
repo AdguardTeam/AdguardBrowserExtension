@@ -186,17 +186,19 @@
         }
 
         // Detecting language by top-level domain if extension API language detection is unavailable
-        var host = adguard.utils.url.getHost(url);
-        if (host) {
-            var parts = host ? host.split('.') : [];
-            var tld = parts[parts.length - 1];
-            var lang = domainToLanguagesMap[tld];
+        // Ignore hostnames which length is less or equal to 8
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1354
+        const host = adguard.utils.url.getHost(url);
+        if (host && host.length > 8) {
+            const parts = host ? host.split('.') : [];
+            const tld = parts[parts.length - 1];
+            const lang = domainToLanguagesMap[tld];
             detectLanguage(lang);
         }
     }
 
     // Locale detect
-    adguard.tabs.onUpdated.addListener(function (tab) {
+    adguard.tabs.onUpdated.addListener((tab) => {
         if (tab.status === 'complete') {
             detectTabLanguage(tab, tab.url);
         }
