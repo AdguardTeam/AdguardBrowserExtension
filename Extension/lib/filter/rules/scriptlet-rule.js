@@ -162,6 +162,14 @@
             engine: 'extension',
             version: adguard.app && adguard.app.getVersion && adguard.app.getVersion(),
         };
+        if (adguard.filteringLog.isOpen()) {
+            scriptletParam.hit = function (id) {
+                console.log('---------- ' + id + ' trace start ----------');
+                console.trace && console.trace();
+                console.log('---------- ' + id + ' trace end ----------');
+            };
+        }
+
         this.script = scriptlets && scriptlets.invoke(scriptletParam);
     };
 
