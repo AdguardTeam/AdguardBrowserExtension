@@ -789,12 +789,11 @@ var AntiBannerFilters = function (options) {
     }
 
     function getFilterTemplate(filter, enabled, showDeleteButton) {
-        var timeUpdated = moment(filter.lastUpdateTime || filter.timeUpdated);
-        timeUpdated.locale(environmentOptions.Prefs.locale);
-        var timeUpdatedText = timeUpdated.format('D/MM/YYYY HH:mm').toLowerCase();
+        const timeUpdatedText = convertDateToLocaleString(filter.lastUpdateTime
+            || filter.timeUpdated);
 
-        var tagDetails = '';
-        filter.tagsDetails.forEach(function (tag) {
+        let tagDetails = '';
+        filter.tagsDetails.forEach((tag) => {
             const tooltip = tag.description ? `data-tooltip="${Utils.escapeDoubleQuotes(tag.description)}"` : '';
             tagDetails += `<div class="opt-name__tag" ${tooltip}>#${tag.keyword}</div>`;
         });
@@ -806,24 +805,19 @@ var AntiBannerFilters = function (options) {
                            </div>`;
         }
 
-        var deleteButton = '';
-        if (showDeleteButton) {
-            deleteButton = `<a href="#" filterid="${filter.filterId}" class="remove-custom-filter-button"></a>`;
-        }
+        const deleteButton = showDeleteButton
+            ? `<a href="#" filterid="${filter.filterId}" class="remove-custom-filter-button"></a>`
+            : '';
 
-        const getVersionText = (version) => {
-            return {
-                text: version ? `${i18n.getMessage('options_filters_filter_version')} ${version}` : '',
-                className: 'filter-version-desc'
-            };
-        };
+        const getVersionText = version => ({
+            text: version ? `${i18n.getMessage('options_filters_filter_version')} ${version}` : '',
+            className: 'filter-version-desc',
+        });
 
-        const getUpdatedTimeText = (updateTime) => {
-            return {
-                text: updateTime ? `${i18n.getMessage('options_filters_filter_updated')} ${updateTime}` : '',
-                className: 'last-update-time'
-            };
-        };
+        const getUpdatedTimeText = updateTime => ({
+            text: updateTime ? `${i18n.getMessage('options_filters_filter_updated')} ${updateTime}` : '',
+            className: 'last-update-time',
+        });
 
         /**
          * Creates divs with filter details, removing empty strings
@@ -833,11 +827,9 @@ var AntiBannerFilters = function (options) {
         const renderFilterInfo = (texts) => {
             return texts
                 .filter(t => t.text.length > 0)
-                .map(t => {
-                    return `<div class="opt-name__info-item ${t.className}">
+                .map(t => `<div class="opt-name__info-item ${t.className}">
                                 ${t.text}
-                           </div>`;
-                })
+                           </div>`)
                 .join('');
         };
 
@@ -916,9 +908,8 @@ var AntiBannerFilters = function (options) {
                             <a
                                 href="#"
                                 class="add-custom-filter-button button button--green button--link"
-                                i18n="options_add_custom_filter"
                             >
-                                Add custom filter
+                                ${i18n.getMessage('options_add_custom_filter')}
                             </a>
                         </div>`;
             }
@@ -1281,12 +1272,11 @@ var AntiBannerFilters = function (options) {
         const searchDataSources = getSearchDataSources(searchComponent);
         bindSearchControls(searchDataSources);
 
-        contentPage.sendMessage({ type: 'getFiltersMetadata' }, function (response) {
+        contentPage.sendMessage({ type: 'getFiltersMetadata' }, (response) => {
             loadedFiltersInfo.initLoadedFilters(response.filters, response.categories);
             setLastUpdatedTimeText(loadedFiltersInfo.lastUpdateTime);
 
-            const categories = loadedFiltersInfo.categories;
-            const filters = loadedFiltersInfo.filters;
+            const { categories, filters } = loadedFiltersInfo;
 
             categories.forEach((category) => {
                 renderFilterCategory(category);
@@ -1516,30 +1506,47 @@ var AntiBannerFilters = function (options) {
         }
     }
 
-    function setLastUpdatedTimeText(lastUpdateTime) {
+    const convertDateToLocaleString = (date) => {
+        if (date) {
+            const lastUpdateTime = moment(date);
+            lastUpdateTime.locale(environmentOptions.Prefs.locale);
+            return lastUpdateTime.format('LLL').toLowerCase();
+        }
+        return '';
+    };
+
+    /**
+     * Current time in numeric value
+     * @param {number} lastUpdateTime
+     */
+    const setLastUpdatedTimeText = (lastUpdateTime) => {
         if (lastUpdateTime && lastUpdateTime >= loadedFiltersInfo.lastUpdateTime) {
             loadedFiltersInfo.lastUpdateTime = lastUpdateTime;
-
-            let updateText = '';
-            lastUpdateTime = loadedFiltersInfo.lastUpdateTime;
-            if (lastUpdateTime) {
-                lastUpdateTime = moment(lastUpdateTime);
-                lastUpdateTime.locale(environmentOptions.Prefs.locale);
-                updateText = lastUpdateTime.format('LLL').toLowerCase();
-            }
-
-            document.querySelector('#lastUpdateTime').textContent = updateText;
+            document.querySelector('#lastUpdateTime').textContent = convertDateToLocaleString(lastUpdateTime);
         }
-    }
+    };
 
     function updateRulesCountInfo(info) {
         const message = i18n.getMessage('options_antibanner_info', [String(info.rulesCount || 0)]);
         document.querySelector('#filtersRulesInfo').textContent = message;
     }
 
+    function updateFilterMetadata(filter) {
+        const filterElements = getFilterElements(filter.filterId);
+        filterElements.forEach((filterEl) => {
+            filterEl.querySelector('.preloader').classList.remove('active');
+            const localeDateString = convertDateToLocaleString(filter.lastUpdateTime
+                || filter.timeUpdated);
+            filterEl.querySelector('.last-update-time').textContent = `${i18n.getMessage('options_filters_filter_updated')} ${localeDateString}`;
+            const versionDesc = filterEl.querySelector('.filter-version-desc');
+            if (versionDesc) {
+                versionDesc.textContent = `${i18n.getMessage('options_filters_filter_version')} ${filter.version}`;
+            }
+        });
+    }
+
     function onFilterStateChanged(filter) {
-        const filterId = filter.filterId;
-        let enabled = filter.enabled;
+        const { filterId, enabled } = filter;
         loadedFiltersInfo.updateEnabled(filter, enabled);
         updateCategoryFiltersInfo(filter.groupId);
         updateFilterMetadata(filter);
@@ -1557,7 +1564,7 @@ var AntiBannerFilters = function (options) {
     function onFilterDownloadStarted(filter) {
         getCategoryElement(filter.groupId).querySelector('.preloader').classList.add('active');
         const filterElements = getFilterElements(filter.filterId);
-        filterElements.forEach(filterElement => {
+        filterElements.forEach((filterElement) => {
             filterElement.querySelector('.preloader').classList.add('active');
         });
         document.querySelector('.settings-actions--update-filters a').classList.add('active');
@@ -1570,32 +1577,14 @@ var AntiBannerFilters = function (options) {
         setLastUpdatedTimeText(filter.lastUpdateTime);
     }
 
-
-    function updateFilterMetadata(filter) {
-        const filterElements = getFilterElements(filter.filterId);
-        filterElements.forEach(filterEl => {
-            filterEl.querySelector('.preloader').classList.remove('active');
-
-            let timeUpdated = moment(filter.lastUpdateTime || filter.timeUpdated);
-            timeUpdated.locale(environmentOptions.Prefs.locale);
-            const timeUpdatedText = timeUpdated.format('D/MM/YYYY HH:mm').toLowerCase();
-
-            filterEl.querySelector('.last-update-time').textContent = `${i18n.getMessage('options_filters_filter_updated')} ${timeUpdatedText}`;
-            const versionDesc = filterEl.querySelector('.filter-version-desc');
-            if (versionDesc) {
-                versionDesc.textContent = `${i18n.getMessage('options_filters_filter_version')} ${filter.version}`;
-            }
-        });
-    }
-
     return {
         render: renderCategoriesAndFilters,
-        updateRulesCountInfo: updateRulesCountInfo,
-        onFilterStateChanged: onFilterStateChanged,
-        onCategoryStateChanged: onCategoryStateChanged,
-        onFilterDownloadStarted: onFilterDownloadStarted,
-        onFilterDownloadFinished: onFilterDownloadFinished,
-        renderCustomFilterPopup: renderCustomFilterPopup,
+        updateRulesCountInfo,
+        onFilterStateChanged,
+        onCategoryStateChanged,
+        onFilterDownloadStarted,
+        onFilterDownloadFinished,
+        renderCustomFilterPopup,
     };
 };
 
