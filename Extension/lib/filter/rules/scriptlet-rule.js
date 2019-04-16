@@ -159,19 +159,22 @@
         const scriptletParam = {
             name,
             args,
+            ruleText,
             engine: 'extension',
             version: adguard.app && adguard.app.getVersion && adguard.app.getVersion(),
         };
+        /* eslint-disable no-unused-expressions, no-console, prefer-template */
         if (adguard.filteringLog.isOpen()) {
-            scriptletParam.hit = function (id) {
-                console.log('---------- ' + id + ' trace start ----------');
+            scriptletParam.hit = function (ruleText) {
+                console.log('---------- ' + ruleText + ' trace start ----------');
                 console.trace && console.trace();
-                console.log('---------- ' + id + ' trace end ----------');
+                console.log('---------- ' + ruleText + ' trace end ----------');
             };
         }
+        /* eslint-enable no-unused-expressions, no-console, prefer-template */
 
         this.script = scriptlets && scriptlets.invoke(scriptletParam);
-    };
+    }
 
     /**
      * Check is AdGuard scriptlet rule
