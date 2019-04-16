@@ -403,9 +403,6 @@
             case 'disableGetPremiumNotification':
                 adguard.settings.disableShowAdguardPromoInfo();
                 break;
-            case 'scriptletMessage':
-                // todo тут делаем логирование как-то по message.id
-                break;
             default:
                 // Unhandled message
                 return true;

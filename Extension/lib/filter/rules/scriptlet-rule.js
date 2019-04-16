@@ -161,13 +161,6 @@
             args,
             engine: 'extension',
             version: adguard.app && adguard.app.getVersion && adguard.app.getVersion(),
-            hit: function (id) {
-                const message = {
-                    direction: 'from-page-script@adguard',
-                    scriptletMessage: id
-                };
-                window.postMessage && window.postMessage(message);
-            },
         };
         this.script = scriptlets && scriptlets.invoke(scriptletParam);
     };
