@@ -82,6 +82,7 @@ const API_SCRIPTS = [
     'Extension/lib/filter/cookie-filtering.js',
     'Extension/lib/filter/filtering-log.js',
     'Extension/lib/filter/request-context-storage.js',
+    'Extension/lib/filter/rule-converter.js',
     // Content messaging
     'Extension/lib/content-message-handler.js',
     'Extension/lib/stealth.js',
