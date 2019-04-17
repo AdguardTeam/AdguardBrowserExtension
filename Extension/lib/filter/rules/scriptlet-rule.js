@@ -156,24 +156,32 @@
             this.loadDomains(domain);
         }
         const { name, args } = parseRule(ruleText);
-        const scriptletParam = {
-            name,
-            args,
-            ruleText,
-            engine: 'extension',
-            version: adguard.app && adguard.app.getVersion && adguard.app.getVersion(),
-        };
-        /* eslint-disable no-unused-expressions, no-console, prefer-template */
-        if (adguard.filteringLog.isOpen()) {
-            scriptletParam.hit = function (ruleText) {
-                console.log('---------- ' + ruleText + ' trace start ----------');
-                console.trace && console.trace();
-                console.log('---------- ' + ruleText + ' trace end ----------');
-            };
-        }
-        /* eslint-enable no-unused-expressions, no-console, prefer-template */
 
-        this.script = scriptlets && scriptlets.invoke(scriptletParam);
+        this.getScript = (debug) => {
+            if (!scriptlets) { // eslint-disable-line no-undef
+                return null;
+            }
+
+            const scriptletParam = {
+                name,
+                args,
+                ruleText,
+                engine: 'extension',
+                version: adguard.app && adguard.app.getVersion && adguard.app.getVersion(),
+            };
+
+            /* eslint-disable no-unused-expressions, no-console */
+            if (debug) {
+                scriptletParam.hit = function (ruleTxt) {
+                    console.log(`${ruleTxt} trace start`);
+                    console.trace && console.trace();
+                    console.log(`${ruleTxt} trace start`);
+                };
+            }
+            /* eslint-enable no-unused-expressions, no-console */
+
+            return scriptlets.invoke(scriptletParam); // eslint-disable-line no-undef
+        };
     }
 
     /**
