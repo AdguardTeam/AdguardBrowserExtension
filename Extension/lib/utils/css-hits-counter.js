@@ -159,7 +159,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
 
     const parseExtendedStyleInfo = (content) => {
         const important = '!important';
-        const indexOfImportant = content.indexOf(important);
+        const indexOfImportant = content.lastIndexOf(important);
         if (indexOfImportant === -1) {
             return parseInfo(content);
         }
