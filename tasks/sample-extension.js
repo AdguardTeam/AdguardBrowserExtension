@@ -71,6 +71,8 @@ const API_SCRIPTS = [
     'Extension/lib/filter/rules/cookie-filter.js',
     'Extension/lib/filter/rules/replace-filter.js',
     'Extension/lib/filter/rules/filter-rule-builder.js',
+    'Extension/lib/filter/rules/scriptlet-rule.js',
+    'Extension/lib/filter/rules/composite-rule.js',
     // Filters metadata and filtration modules
     'Extension/lib/filter/subscription.js',
     'Extension/lib/filter/update-service.js',
@@ -82,6 +84,7 @@ const API_SCRIPTS = [
     'Extension/lib/filter/cookie-filtering.js',
     'Extension/lib/filter/filtering-log.js',
     'Extension/lib/filter/request-context-storage.js',
+    'Extension/lib/filter/rule-converter.js',
     // Content messaging
     'Extension/lib/content-message-handler.js',
     'Extension/lib/stealth.js',
