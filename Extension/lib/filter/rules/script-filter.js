@@ -86,14 +86,15 @@
          * @param domainName Domain name
          * @returns {Array.<{{scriptSource: string, rule: string}}>} List of scripts to be applied and scriptSource
          */
-        buildScript: function (domainName) {
-            var scripts = [];
-            for (var i = 0; i < this.scriptRules.length; i++) {
-                var rule = this.scriptRules[i];
+        buildScript(domainName) {
+            const scripts = [];
+            const debugMode = adguard.filteringLog.isOpen();
+            for (let i = 0; i < this.scriptRules.length; i += 1) {
+                const rule = this.scriptRules[i];
                 if (rule.isPermitted(domainName)) {
                     scripts.push({
                         scriptSource: rule.scriptSource,
-                        rule: rule.script
+                        rule: rule.getScript(debugMode),
                     });
                 }
             }

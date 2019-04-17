@@ -37,22 +37,25 @@
      * JS injection rule:
      * http://adguard.com/en/filterrules.html#javascriptInjection
      */
-    var ScriptFilterRule = function (rule, filterId) {
-
+    function ScriptFilterRule(rule, filterId) {
         api.FilterRule.call(this, rule, filterId);
 
         this.script = null;
-        this.whiteListRule = adguard.utils.strings.contains(rule, api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE);
-        var mask = this.whiteListRule ? api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE : api.FilterRule.MASK_SCRIPT_RULE;
+        this.whiteListRule = adguard.utils.strings
+            .contains(rule, api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE);
 
-        var indexOfMask = rule.indexOf(mask);
+        const mask = this.whiteListRule
+            ? api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE
+            : api.FilterRule.MASK_SCRIPT_RULE;
+
+        const indexOfMask = rule.indexOf(mask);
         if (indexOfMask > 0) {
             // domains are specified, parsing
-            var domains = rule.substring(0, indexOfMask);
+            const domains = rule.substring(0, indexOfMask);
             this.loadDomains(domains);
         }
 
-        this.script = rule.substring(indexOfMask + mask.length);
+        this.getScript = () => rule.substring(indexOfMask + mask.length);
 
         this.scriptSource = getScriptSource(filterId, rule);
     };
