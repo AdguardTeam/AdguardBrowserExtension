@@ -15,6 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global adguard */
+
 /**
  * Extension initialize logic. Called from start.js
  */
@@ -27,6 +29,16 @@ adguard.initialize = function () {
         // Initialize popup button
         adguard.browserAction.setPopup({
             popup: adguard.getURL('pages/popup.html'),
+        });
+
+        // Set uninstall page url
+        const uninstallUrl = 'https://dev-welcome.adguard.com/uninstall-ext.html';
+        adguard.runtime.setUninstallURL(uninstallUrl, () => {
+            if (adguard.runtime.lastError) {
+                adguard.console.error(adguard.runtime.lastError);
+                return;
+            }
+            adguard.console.info(`Uninstall urls was set to: ${adguard.runtime.lastError}`);
         });
 
         adguard.whitelist.init();
