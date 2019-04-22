@@ -391,6 +391,9 @@ PageController.prototype = {
 
         // render events
         this._renderEventsForTab(this.currentTabId);
+
+        // Close modal if it was open
+        RequestWizard.closeModal();
     },
 
     _updateLogoIcon: function () {
