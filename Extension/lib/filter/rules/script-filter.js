@@ -88,13 +88,12 @@
          */
         buildScript(domainName) {
             const scripts = [];
-            const debugMode = adguard.filteringLog.isOpen();
             for (let i = 0; i < this.scriptRules.length; i += 1) {
                 const rule = this.scriptRules[i];
                 if (rule.isPermitted(domainName)) {
                     scripts.push({
                         scriptSource: rule.scriptSource,
-                        rule: rule.getScript(debugMode),
+                        rule: rule.script,
                     });
                 }
             }
