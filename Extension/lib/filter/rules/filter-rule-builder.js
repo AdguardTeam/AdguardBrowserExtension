@@ -99,9 +99,15 @@
             }
 
             if (api.FilterRule.findRuleMarker(ruleText, api.ScriptFilterRule.RULE_MARKERS, api.ScriptFilterRule.RULE_MARKER_FIRST_CHAR)) {
-                return api.ScriptletRule.isAdguardScriptletRule(ruleText)
-                    ? new api.ScriptletRule(ruleText, filterId)
-                    : new api.ScriptFilterRule(ruleText, filterId);
+
+                if (api.ScriptletRule.isAdguardScriptletRule(ruleText)) {
+                    const version = adguard.app && adguard.app.getVersion && adguard.app.getVersion();
+                    const engine = 'extension';
+                    const debugMode = adguard.filteringLog && adguard.filteringLog.isOpen();
+                    return new api.ScriptletRule(ruleText, filterId, version, engine, debugMode);
+                }
+
+                return new api.ScriptFilterRule(ruleText, filterId);
             }
 
             return new api.UrlFilterRule(ruleText, filterId);

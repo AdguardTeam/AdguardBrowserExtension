@@ -136,6 +136,25 @@
         };
     }
 
+    const getScriptletCode = ({ name, args, ruleText, engine, version, debug }) => {
+        if (!scriptlets) { // eslint-disable-line no-undef
+            return null;
+        }
+        const scriptletParam = { name, args, ruleText, engine, version };
+
+        /* eslint-disable no-unused-expressions, no-console */
+        if (debug) {
+            scriptletParam.hit = function (ruleTxt) {
+                console.log(`${ruleTxt} trace start`);
+                console.trace && console.trace();
+                console.log(`${ruleTxt} trace start`);
+            };
+        }
+        /* eslint-enable no-unused-expressions, no-console */
+
+        return scriptlets.invoke(scriptletParam); // eslint-disable-line no-undef
+    };
+
 
     /**
      * JS Scriplet rule constructor
@@ -143,7 +162,7 @@
      * @property {string} ruleText
      * @property {number|string} filterId
      */
-    function ScriptletRule(ruleText, filterId) {
+    function ScriptletRule(ruleText, filterId, version, engine, debug) {
         this.ruleText = ruleText;
         this.filterId = filterId;
         this.scriptSource = 'local';
@@ -155,33 +174,9 @@
         if (domain) {
             this.loadDomains(domain);
         }
+
         const { name, args } = parseRule(ruleText);
-
-        this.getScript = (debug) => {
-            if (!scriptlets) { // eslint-disable-line no-undef
-                return null;
-            }
-
-            const scriptletParam = {
-                name,
-                args,
-                ruleText,
-                engine: 'extension',
-                version: adguard.app && adguard.app.getVersion && adguard.app.getVersion(),
-            };
-
-            /* eslint-disable no-unused-expressions, no-console */
-            if (debug) {
-                scriptletParam.hit = function (ruleTxt) {
-                    console.log(`${ruleTxt} trace start`);
-                    console.trace && console.trace();
-                    console.log(`${ruleTxt} trace start`);
-                };
-            }
-            /* eslint-enable no-unused-expressions, no-console */
-
-            return scriptlets.invoke(scriptletParam); // eslint-disable-line no-undef
-        };
+        this.script = getScriptletCode({ name, args, ruleText, version, engine, debug });
     }
 
     /**
