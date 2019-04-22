@@ -38,7 +38,7 @@ adguard.initialize = function () {
                 adguard.console.error(adguard.runtime.lastError);
                 return;
             }
-            adguard.console.info(`Uninstall urls was set to: ${adguard.runtime.lastError}`);
+            adguard.console.info(`Uninstall url was set to: ${uninstallUrl}`);
         });
 
         adguard.whitelist.init();
