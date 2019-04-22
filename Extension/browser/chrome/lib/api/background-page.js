@@ -49,10 +49,11 @@ var browser = window.browser || chrome;
         };
 
         return {
+            setUninstallURL: browser.runtime.setUninstallURL,
             onMessage: onMessage,
             get lastError() {
                 return browser.runtime.lastError;
-            }
+            },
         };
     })();
 
