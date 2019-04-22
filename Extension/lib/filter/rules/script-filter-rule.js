@@ -55,7 +55,7 @@
             this.loadDomains(domains);
         }
 
-        this.getScript = () => rule.substring(indexOfMask + mask.length);
+        this.script = rule.substring(indexOfMask + mask.length);
 
         this.scriptSource = getScriptSource(filterId, rule);
     };
