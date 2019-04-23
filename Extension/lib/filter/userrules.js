@@ -19,6 +19,8 @@
  * Class for manage user rules
  */
 adguard.userrules = (function (adguard) {
+    'use strict';
+
     /**
      * Wraps access to getter. AntiBannerService hasn't been defined yet.
      * @returns {*}

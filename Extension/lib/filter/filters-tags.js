@@ -19,6 +19,8 @@
  * Filter tags service
  */
 adguard.tags = (function (adguard) {
+    'use strict';
+
     const RECOMMENDED_TAG_ID = 10;
 
     const PURPOSE_ADS_TAG_ID = 1;
