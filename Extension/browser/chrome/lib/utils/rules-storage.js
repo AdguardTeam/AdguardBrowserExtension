@@ -15,19 +15,16 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global browser */
-
 /**
  * Filter rules storage implementation
  */
 adguard.rulesStorageImpl = (function () {
-
     /**
      * Checks runtime.lastError and calls "callback" if so.
      *
-     * @returns true if operation caused error
+     * @returns {boolean} true if operation caused error
      */
-    var checkLastError = function (callback) {
+    const checkLastError = function (callback) {
         if (browser.runtime.lastError) {
             callback(browser.runtime.lastError);
             return true;
@@ -36,11 +33,11 @@ adguard.rulesStorageImpl = (function () {
         return false;
     };
 
-    var read = function (path, callback) {
+    const read = function (path, callback) {
         try {
-            browser.storage.local.get(path, function (results) {
+            browser.storage.local.get(path, (results) => {
                 if (!checkLastError(callback)) {
-                    var lines = [];
+                    let lines = [];
 
                     if (results && results[path] instanceof Array) {
                         lines = results[path];
@@ -54,11 +51,11 @@ adguard.rulesStorageImpl = (function () {
         }
     };
 
-    var write = function (path, data, callback) {
-        var item = {};
+    const write = function (path, data, callback) {
+        const item = {};
         item[path] = data;
         try {
-            browser.storage.local.set(item, function () {
+            browser.storage.local.set(item, () => {
                 if (!checkLastError(callback)) {
                     callback();
                 }
@@ -68,14 +65,13 @@ adguard.rulesStorageImpl = (function () {
         }
     };
 
-    var remove = function (path, successCallback) {
+    const remove = function (path, successCallback) {
         browser.storage.local.remove(path, successCallback);
     };
 
     return {
-        read: read,
-        write: write,
-        remove: remove
+        read,
+        write,
+        remove,
     };
-
 })();

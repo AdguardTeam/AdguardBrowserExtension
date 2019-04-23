@@ -19,9 +19,6 @@
  * Class for manage user rules
  */
 adguard.userrules = (function (adguard) {
-
-    'use strict';
-
     /**
      * Wraps access to getter. AntiBannerService hasn't been defined yet.
      * @returns {*}
@@ -36,8 +33,8 @@ adguard.userrules = (function (adguard) {
      * @param rulesText List of rules to add
      * @param options
      */
-    var addRules = function (rulesText, options) {
-        var rules = getAntiBannerService().addUserFilterRules(rulesText);
+    const addRules = function (rulesText, options) {
+        const rules = getAntiBannerService().addUserFilterRules(rulesText);
         adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
         return rules;
     };
@@ -45,7 +42,7 @@ adguard.userrules = (function (adguard) {
     /**
      * Removes all user's custom rules
      */
-    var clearRules = function (options) {
+    const clearRules = function (options) {
         getAntiBannerService().updateUserFilterRules([]);
         adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
     };
@@ -55,7 +52,7 @@ adguard.userrules = (function (adguard) {
      *
      * @param ruleText Rule text
      */
-    var removeRule = function (ruleText) {
+    const removeRule = function (ruleText) {
         getAntiBannerService().removeUserFilterRule(ruleText);
         adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED);
     };
@@ -75,14 +72,14 @@ adguard.userrules = (function (adguard) {
      * Loads user rules text from storage
      * @param callback Callback function
      */
-    var getUserRulesText = function (callback) {
-        adguard.rulesStorage.read(adguard.utils.filters.USER_FILTER_ID, function (rulesText) {
+    const getUserRulesText = function (callback) {
+        adguard.rulesStorage.read(adguard.utils.filters.USER_FILTER_ID, (rulesText) => {
             const content = (rulesText || []).join('\n');
             callback(content);
         });
     };
 
-    var unWhiteListFrame = function (frameInfo) {
+    const unWhiteListFrame = function (frameInfo) {
         if (frameInfo.frameRule) {
             if (frameInfo.frameRule.filterId === adguard.utils.filters.WHITE_LIST_FILTER_ID) {
                 adguard.whitelist.unWhiteListUrl(frameInfo.url);
@@ -93,13 +90,12 @@ adguard.userrules = (function (adguard) {
     };
 
     return {
-        addRules: addRules,
-        clearRules: clearRules,
-        removeRule: removeRule,
-        updateUserRulesText: updateUserRulesText,
-        getUserRulesText: getUserRulesText,
-        //TODO: fix
-        unWhiteListFrame: unWhiteListFrame,
+        addRules,
+        clearRules,
+        removeRule,
+        updateUserRulesText,
+        getUserRulesText,
+        // TODO: fix
+        unWhiteListFrame,
     };
-
 })(adguard);

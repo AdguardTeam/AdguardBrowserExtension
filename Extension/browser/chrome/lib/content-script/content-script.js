@@ -18,14 +18,10 @@
 /* global adguardContent */
 
 (function (adguard) {
-
-    'use strict';
-
     window.i18n = adguard.i18n;
 
     window.contentPage = {
         sendMessage: adguard.runtimeImpl.sendMessage,
-        onMessage: adguard.runtimeImpl.onMessage
+        onMessage: adguard.runtimeImpl.onMessage,
     };
-
 })(adguardContent);

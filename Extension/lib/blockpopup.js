@@ -16,69 +16,78 @@
  */
 
 (function (adguard) {
+    const tabsLoading = Object.create(null);
 
-	'use strict';
+    function checkPopupBlockedRule(tabId, requestUrl, referrerUrl, sourceTab) {
+        // Tab isn't ready
+        if (!requestUrl) {
+            return;
+        }
 
-	var tabsLoading = Object.create(null);
+        delete tabsLoading[tabId];
 
-	function checkPopupBlockedRule(tabId, requestUrl, referrerUrl, sourceTab) {
-
-		// Tab isn't ready
-		if (!requestUrl) {
-			return;
-		}
-
-		delete tabsLoading[tabId];
-
-		var requestRule = adguard.webRequestService.getRuleForRequest(sourceTab, requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
+        const requestRule = adguard.webRequestService.getRuleForRequest(
+            sourceTab,
+            requestUrl,
+            referrerUrl,
+            adguard.RequestTypes.DOCUMENT
+        );
 
         if (adguard.webRequestService.isPopupBlockedByRule(requestRule)) {
+            // remove popup tab
+            adguard.tabs.remove(tabId);
+            adguard.webRequestService.postProcessRequest(
+                sourceTab,
+                requestUrl,
+                referrerUrl,
+                adguard.RequestTypes.DOCUMENT,
+                requestRule
+            );
+            adguard.requestContextStorage.recordEmulated(
+                requestUrl,
+                referrerUrl,
+                adguard.RequestTypes.DOCUMENT,
+                sourceTab,
+                requestRule
+            );
+        }
+    }
 
-			//remove popup tab
-			adguard.tabs.remove(tabId);
-			adguard.webRequestService.postProcessRequest(sourceTab, requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT, requestRule);
-            adguard.requestContextStorage.recordEmulated(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT, sourceTab, requestRule);
-		}
-	}
+    adguard.webNavigation.onCreatedNavigationTarget.addListener((details) => {
+        const sourceTab = { tabId: details.sourceTabId };
 
-	adguard.webNavigation.onCreatedNavigationTarget.addListener(function (details) {
+        // Don't process this request
+        if (adguard.frames.isTabAdguardDetected(sourceTab)) {
+            return;
+        }
 
-		var sourceTab = {tabId: details.sourceTabId};
+        // webRequest.onBeforeRequest event may hasn't been received yet.
+        const referrerUrl = adguard.frames.getMainFrameUrl(sourceTab) || details.url;
+        if (!adguard.utils.url.isHttpRequest(referrerUrl)) {
+            return;
+        }
 
-		// Don't process this request
-		if (adguard.frames.isTabAdguardDetected(sourceTab)) {
-			return;
-		}
+        const { tabId } = details;
+        tabsLoading[tabId] = {
+            referrerUrl,
+            sourceTab,
+        };
 
-		// webRequest.onBeforeRequest event may hasn't been received yet.
-		var referrerUrl = adguard.frames.getMainFrameUrl(sourceTab) || details.url;
-		if (!adguard.utils.url.isHttpRequest(referrerUrl)) {
-			return;
-		}
+        checkPopupBlockedRule(tabId, details.url, referrerUrl, sourceTab);
+    });
 
-		var tabId = details.tabId;
-		tabsLoading[tabId] = {
-			referrerUrl: referrerUrl,
-			sourceTab: sourceTab
-		};
+    adguard.tabs.onUpdated.addListener((tab) => {
+        const { tabId } = tab;
 
-		checkPopupBlockedRule(tabId, details.url, referrerUrl, sourceTab);
-	});
+        if (!(tabId in tabsLoading)) {
+            return;
+        }
 
-	adguard.tabs.onUpdated.addListener(function (tab) {
-
-		var tabId = tab.tabId;
-
-		if (!(tabId in tabsLoading)) {
-			return;
-		}
-
-		if (tab.url) {
-			var tabInfo = tabsLoading[tabId];
-			if (tabInfo) {
-				checkPopupBlockedRule(tabId, tab.url, tabInfo.referrerUrl, tabInfo.sourceTab);
-			}
-		}
-	});
-
+        if (tab.url) {
+            const tabInfo = tabsLoading[tabId];
+            if (tabInfo) {
+                checkPopupBlockedRule(tabId, tab.url, tabInfo.referrerUrl, tabInfo.sourceTab);
+            }
+        }
+    });
 })(adguard);
