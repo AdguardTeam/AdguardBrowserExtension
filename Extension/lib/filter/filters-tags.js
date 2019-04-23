@@ -19,55 +19,45 @@
  * Filter tags service
  */
 adguard.tags = (function (adguard) {
+    const RECOMMENDED_TAG_ID = 10;
 
-    'use strict';
-
-    var RECOMMENDED_TAG_ID = 10;
-
-    var PURPOSE_ADS_TAG_ID = 1;
-    var PURPOSE_PRIVACY_TAG_ID = 2;
-    var PURPOSE_SOCIAL_TAG_ID = 3;
-    var PURPOSE_SECURITY_TAG_ID = 4;
-    var PURPOSE_ANNOYANCES_TAG_ID = 5;
-    var PURPOSE_COOKIES_TAG_ID = 6;
+    const PURPOSE_ADS_TAG_ID = 1;
+    const PURPOSE_PRIVACY_TAG_ID = 2;
+    const PURPOSE_SOCIAL_TAG_ID = 3;
+    const PURPOSE_SECURITY_TAG_ID = 4;
+    const PURPOSE_ANNOYANCES_TAG_ID = 5;
+    const PURPOSE_COOKIES_TAG_ID = 6;
     const PURPOSE_MOBILE_TAG_ID = 19;
 
-    var getTags = function () {
+    const getTags = function () {
         return adguard.subscriptions.getTags();
     };
 
-    var getFilters = function () {
-        return adguard.subscriptions.getFilters().filter(function (f) {
-            return f.filterId != adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID;
-        });
+    const getFilters = function () {
+        return adguard.subscriptions.getFilters()
+            .filter(f => f.filterId !== adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID);
     };
 
-    var getFiltersByTagId = function (tagId, filters) {
-        return filters.filter(function (f) {
-            return f.tags.indexOf(tagId) >= 0;
-        });
+    const getFiltersByTagId = function (tagId, filters) {
+        return filters.filter(f => f.tags.indexOf(tagId) >= 0);
     };
 
-    var getRecommendedFilters = function (filters) {
+    const getRecommendedFilters = function (filters) {
         return getFiltersByTagId(RECOMMENDED_TAG_ID, filters);
     };
 
-    const isRecommendedFilter = (filter) => {
-        return filter.tags.includes(RECOMMENDED_TAG_ID);
-    };
+    const isRecommendedFilter = filter => filter.tags.includes(RECOMMENDED_TAG_ID);
 
-    const isMobileFilter = (filter) => {
-        return filter.tags.includes(PURPOSE_MOBILE_TAG_ID);
-    };
+    const isMobileFilter = filter => filter.tags.includes(PURPOSE_MOBILE_TAG_ID);
 
-    var getPurposeGroupedFilters = function () {
-        var filters = getFilters();
-        var adsFilters = getFiltersByTagId(PURPOSE_ADS_TAG_ID, filters);
-        var socialFilters = getFiltersByTagId(PURPOSE_SOCIAL_TAG_ID, filters);
-        var privacyFilters = getFiltersByTagId(PURPOSE_PRIVACY_TAG_ID, filters);
-        var annoyancesFilters = getFiltersByTagId(PURPOSE_ANNOYANCES_TAG_ID, filters);
-        var cookiesFilters = getFiltersByTagId(PURPOSE_COOKIES_TAG_ID, filters);
-        var securityFilters = getFiltersByTagId(PURPOSE_SECURITY_TAG_ID, filters);
+    const getPurposeGroupedFilters = function () {
+        const filters = getFilters();
+        const adsFilters = getFiltersByTagId(PURPOSE_ADS_TAG_ID, filters);
+        const socialFilters = getFiltersByTagId(PURPOSE_SOCIAL_TAG_ID, filters);
+        const privacyFilters = getFiltersByTagId(PURPOSE_PRIVACY_TAG_ID, filters);
+        const annoyancesFilters = getFiltersByTagId(PURPOSE_ANNOYANCES_TAG_ID, filters);
+        const cookiesFilters = getFiltersByTagId(PURPOSE_COOKIES_TAG_ID, filters);
+        const securityFilters = getFiltersByTagId(PURPOSE_SECURITY_TAG_ID, filters);
 
         return {
             ads: adsFilters,
@@ -88,4 +78,3 @@ adguard.tags = (function (adguard) {
         getRecommendedFilters,
     };
 })(adguard);
-

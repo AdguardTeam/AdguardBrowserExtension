@@ -44,8 +44,8 @@
         }
 
         return {
-            title: title,
-            url: url,
+            title,
+            url,
         };
     };
 
@@ -55,7 +55,7 @@
             return;
         }
 
-        let target = e.target;
+        let { target } = e;
         while (target) {
             if (target instanceof HTMLAnchorElement) {
                 break;
@@ -82,7 +82,7 @@
         if (target.search) {
             urlParams = target.search.substring(1).replace(/&amp;/g, '&').split('&');
         } else {
-            const href = target.href;
+            const { href } = target;
             const index = href.indexOf('?');
             urlParams = href.substring(index + 1).replace(/&amp;/g, '&').split('&');
         }
@@ -97,8 +97,8 @@
 
         contentPage.sendMessage({
             type: 'addFilterSubscription',
-            url: url,
-            title: title,
+            url,
+            title,
         });
     };
 
