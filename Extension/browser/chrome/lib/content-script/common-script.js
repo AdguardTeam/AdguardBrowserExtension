@@ -18,6 +18,8 @@
 /* global adguardContent */
 
 (function (adguard, self) {
+    'use strict';
+
     /**
      * https://bugs.chromium.org/p/project-zero/issues/detail?id=1225&desc=6
      * Page script can inject global variables into the DOM,

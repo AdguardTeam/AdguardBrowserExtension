@@ -16,6 +16,8 @@
  */
 
 (function (adguard) {
+    'use strict';
+
     const tabsLoading = Object.create(null);
 
     function checkPopupBlockedRule(tabId, requestUrl, referrerUrl, sourceTab) {

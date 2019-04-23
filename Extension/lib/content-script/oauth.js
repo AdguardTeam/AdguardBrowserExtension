@@ -18,6 +18,8 @@
 /* global contentPage */
 
 (function () {
+    'use strict';
+
     function getParams(queryString) {
         if (!queryString) {
             return {};

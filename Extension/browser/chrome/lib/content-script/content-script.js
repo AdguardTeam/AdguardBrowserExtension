@@ -18,6 +18,8 @@
 /* global adguardContent */
 
 (function (adguard) {
+    'use strict';
+
     window.i18n = adguard.i18n;
 
     window.contentPage = {

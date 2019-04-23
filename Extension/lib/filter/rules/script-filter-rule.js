@@ -16,6 +16,8 @@
  */
 
 (function (adguard, api) {
+    'use strict';
+
     /**
      * By the rules of AMO and addons.opera.com we cannot use remote scripts
      * (and our JS injection rules could be considered as remote scripts).

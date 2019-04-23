@@ -16,6 +16,8 @@
  */
 
 (function (api) {
+    'use strict';
+
     /**
      * Filter for Url filter rules.
      * Read here for details:
