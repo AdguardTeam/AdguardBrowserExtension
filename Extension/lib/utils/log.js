@@ -20,7 +20,7 @@
 /**
  * Simple logger with log levels
  */
-adguard.console = (function (...args) {
+adguard.console = (function () {
     // Redefine if you need it
     const CURRENT_LEVEL = 'INFO';
 
@@ -77,19 +77,19 @@ adguard.console = (function (...args) {
      * Expose public API
      */
     return {
-        debug() {
+        debug(...args) {
             print('DEBUG', 'log', args);
         },
 
-        info() {
+        info(...args) {
             print('INFO', 'info', args);
         },
 
-        warn() {
+        warn(...args) {
             print('WARN', 'info', args);
         },
 
-        error() {
+        error(...args) {
             print('ERROR', 'error', args);
         },
     };

@@ -4,6 +4,10 @@
     "node": true
   },
   "extends": "airbnb-base",
+  "globals": {
+    "adguard": true,
+    "chrome": true
+  },
   "rules": {
     "import/no-extraneous-dependencies": 0,
     "indent": [
@@ -59,9 +63,33 @@
     "no-useless-escape": "off",
     "no-param-reassign": "off",
     "wrap-iife": "off",
-    "func-names": "off"
-  },
-  "globals": {
-    "adguard": true
+    "func-names": "off",
+    "no-shadow": "off",
+    "no-multi-spaces": [
+      "error",
+      {
+        "ignoreEOLComments": true
+      }
+    ],
+    // Prefer destructuring from arrays and objects
+    // https://eslint.org/docs/rules/prefer-destructuring
+    "prefer-destructuring": [
+      "error",
+      {
+        "VariableDeclarator": {
+          "array": false,
+          "object": true
+        },
+        "AssignmentExpression": {
+          "array": true,
+          "object": false
+        }
+      },
+      {
+        "enforceForRenamedProperties": false
+      }
+    ],
+    "consistent-return": "off",
+    "no-prototype-builtins": "off"
   }
 }
