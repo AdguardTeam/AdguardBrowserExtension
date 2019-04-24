@@ -18,7 +18,6 @@
 /* global contentPage, adguardAssistant */
 
 (function () {
-
     if (window.top !== window || !(document.documentElement instanceof HTMLElement)) {
         return;
     }
@@ -26,31 +25,32 @@
     /**
      * `contentPage` may be undefined on the extension startup in FF browser.
      *
-     * Different browsers have different strategies of the content scripts injections on extension startup.
+     * Different browsers have different strategies of the content scripts
+     * injections on extension startup.
      * For example, FF injects content scripts in already opened tabs, but Chrome doesn't do it.
-     * In the case of the FF browser, content scripts with the `document_start` option won't injected into opened tabs, so we have to directly check this case.
+     * In the case of the FF browser, content scripts with the `document_start`
+     * option won't injected into opened tabs, so we have to directly check this case.
      */
     if (typeof contentPage === 'undefined') {
         return;
     }
 
-    var assistant;
+    let assistant;
 
-    //save right-clicked element for assistant
-    var clickedEl = null;
-    document.addEventListener('mousedown', function (event) {
+    // save right-clicked element for assistant
+    let clickedEl = null;
+    document.addEventListener('mousedown', (event) => {
         if (event.button === 2) {
             clickedEl = event.target;
         }
     });
 
-    contentPage.onMessage.addListener(function (message) {
+    contentPage.onMessage.addListener((message) => {
         switch (message.type) {
-            case 'initAssistant':
-                var options = message.options;
-                var addRuleCallbackName = options.addRuleCallbackName;
-
-                var selectedElement = null;
+            case 'initAssistant': {
+                const { options } = message;
+                const { addRuleCallbackName } = options;
+                let selectedElement = null;
                 if (clickedEl && options.selectElement) {
                     selectedElement = clickedEl;
                 }
@@ -61,11 +61,13 @@
                     assistant.close();
                 }
 
-                assistant.start(selectedElement, function(rules) {
-                    contentPage.sendMessage({type: addRuleCallbackName, ruleText: rules});
+                assistant.start(selectedElement, (rules) => {
+                    contentPage.sendMessage({ type: addRuleCallbackName, ruleText: rules });
                 });
-            break;
+                break;
+            }
+            default:
+                break;
         }
     });
-
 })();

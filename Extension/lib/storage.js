@@ -19,7 +19,6 @@
  * localStorage interface. Implementation depends on browser
  */
 adguard.localStorageImpl = adguard.localStorageImpl || (function () {
-
     function notImplemented() {
         throw new Error('Not implemented');
     }
@@ -28,7 +27,7 @@ adguard.localStorageImpl = adguard.localStorageImpl || (function () {
         getItem: notImplemented,
         setItem: notImplemented,
         removeItem: notImplemented,
-        hasItem: notImplemented
+        hasItem: notImplemented,
     };
 })();
 
@@ -36,28 +35,27 @@ adguard.localStorageImpl = adguard.localStorageImpl || (function () {
  * This class manages local storage
  */
 adguard.localStorage = (function (adguard, impl) {
-
-    var getItem = function (key) {
+    const getItem = function (key) {
         return impl.getItem(key);
     };
 
-    var setItem = function (key, value) {
+    const setItem = function (key, value) {
         try {
             impl.setItem(key, value);
         } catch (ex) {
-            adguard.console.error("Error while saving item {0} to the localStorage: {1}", key, ex);
+            adguard.console.error(`Error while saving item ${key} to the localStorage: ${ex}`);
         }
     };
 
-    var removeItem = function (key) {
+    const removeItem = function (key) {
         impl.removeItem(key);
     };
 
-    var hasItem = function (key) {
+    const hasItem = function (key) {
         return impl.hasItem(key);
     };
 
-    var init = function (callback) {
+    const init = function (callback) {
         if (typeof impl.init === 'function') {
             impl.init(callback);
         } else {
@@ -65,7 +63,7 @@ adguard.localStorage = (function (adguard, impl) {
         }
     };
 
-    var isInitialized = function () {
+    const isInitialized = function () {
         // WebExtension storage has async initialization
         if (typeof impl.isInitialized === 'function') {
             return impl.isInitialized();
@@ -74,39 +72,35 @@ adguard.localStorage = (function (adguard, impl) {
     };
 
     return {
-        getItem: getItem,
-        setItem: setItem,
-        removeItem: removeItem,
-        hasItem: hasItem,
-        init: init,
-        isInitialized: isInitialized
+        getItem,
+        setItem,
+        removeItem,
+        hasItem,
+        init,
+        isInitialized,
     };
-
 })(adguard, adguard.localStorageImpl);
 
 /**
  * Rules storage interface. Implementation depends on browser
  */
 adguard.rulesStorageImpl = adguard.rulesStorageImpl || (function () {
-
     function notImplemented() {
         throw new Error('Not implemented');
     }
 
     return {
         read: notImplemented,
-        write: notImplemented
+        write: notImplemented,
     };
-
 })();
 
 /**
  * This class manages storage for filters.
  */
 adguard.rulesStorage = (function (adguard, impl) {
-
     function getFilePath(filterId) {
-        return "filterrules_" + filterId + ".txt";
+        return `filterrules_${filterId}.txt`;
     }
 
     /**
@@ -115,11 +109,11 @@ adguard.rulesStorage = (function (adguard, impl) {
      * @param filterId  Filter identifier
      * @param callback  Called when file content has been loaded
      */
-    var read = function (filterId, callback) {
-        var filePath = getFilePath(filterId);
-        impl.read(filePath, function (e, rules) {
+    const read = function (filterId, callback) {
+        const filePath = getFilePath(filterId);
+        impl.read(filePath, (e, rules) => {
             if (e) {
-                adguard.console.error("Error while reading rules from file {0} cause: {1}", filePath, e);
+                adguard.console.error(`Error while reading rules from file ${filePath} cause: ${e}`);
             }
             callback(rules);
         });
@@ -132,11 +126,11 @@ adguard.rulesStorage = (function (adguard, impl) {
      * @param filterRules   Filter rules
      * @param callback      Called when save operation is finished
      */
-    var write = function (filterId, filterRules, callback) {
-        var filePath = getFilePath(filterId);
-        impl.write(filePath, filterRules, function (e) {
+    const write = function (filterId, filterRules, callback) {
+        const filePath = getFilePath(filterId);
+        impl.write(filePath, filterRules, (e) => {
             if (e) {
-                adguard.console.error("Error writing filters to file {0}. Cause: {1}", filePath, e);
+                adguard.console.error(`Error writing filters to file ${filePath}. Cause: ${e}`);
             }
             callback();
         });
@@ -144,13 +138,14 @@ adguard.rulesStorage = (function (adguard, impl) {
 
     /**
      * IndexedDB implementation of the rules storage requires async initialization.
-     * Also in some cases IndexedDB isn't supported, so we have to replace implementation with the browser.storage
+     * Also in some cases IndexedDB isn't supported, so we have to replace implementation
+     * with the browser.storage
      *
      * @param callback
      */
-    var init = function (callback) {
+    const init = function (callback) {
         if (typeof impl.init === 'function') {
-            impl.init(function (api) {
+            impl.init((api) => {
                 impl = api;
                 callback();
             });
@@ -160,9 +155,8 @@ adguard.rulesStorage = (function (adguard, impl) {
     };
 
     return {
-        read: read,
-        write: write,
-        init: init
+        read,
+        write,
+        init,
     };
-
 })(adguard, adguard.rulesStorageImpl);

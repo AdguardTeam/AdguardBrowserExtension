@@ -23,40 +23,38 @@
  * https://developer.chrome.com/extensions/devtools_inspectedWindow#method-eval
  *
  */
-var DevToolsHelper = (function () { // jshint ignore:line
-
-    var PREVIEW_STYLE_ID = "adguard-preview-style";
+const DevToolsHelper = (function () { // eslint-disable-line
+    const PREVIEW_STYLE_ID = 'adguard-preview-style';
 
     /**
      * Add user rule
      * @param options Object {ruleText: 'ruleText'}
      */
-    var addRule = function (options) {
-        contentPage.sendMessage({type: 'addUserRule', ruleText: options.ruleText});
+    const addRule = function (options) {
+        contentPage.sendMessage({ type: 'addUserRule', ruleText: options.ruleText });
     };
 
     /**
      * Add rule preview
      * @param options Object {ruleText: 'ruleText'}
      */
-    var applyPreview = function (options) {
+    const applyPreview = function (options) {
+        const { ruleText } = options;
 
-        var ruleText = options.ruleText;
-
-        var head = document.getElementsByTagName('head')[0];
+        const head = document.getElementsByTagName('head')[0];
         if (!head) {
             return;
         }
 
-        var selector = DevToolsRulesConstructor.constructRuleCssSelector(ruleText);
+        const selector = DevToolsRulesConstructor.constructRuleCssSelector(ruleText);
         if (!selector) {
             return;
         }
 
-        var style = document.createElement("style");
-        style.setAttribute("type", "text/css");
-        style.setAttribute("id", PREVIEW_STYLE_ID);
-        style.appendChild(document.createTextNode(selector + " {display: none !important;}"));
+        const style = document.createElement('style');
+        style.setAttribute('type', 'text/css');
+        style.setAttribute('id', PREVIEW_STYLE_ID);
+        style.appendChild(document.createTextNode(`${selector} {display: none !important;}`));
 
         head.appendChild(style);
     };
@@ -64,21 +62,20 @@ var DevToolsHelper = (function () { // jshint ignore:line
     /**
      * Cancel early applied preview
      */
-    var cancelPreview = function () {
-        var head = document.getElementsByTagName('head')[0];
+    const cancelPreview = function () {
+        const head = document.getElementsByTagName('head')[0];
         if (!head) {
             return;
         }
-        var style = document.getElementById(PREVIEW_STYLE_ID);
+        const style = document.getElementById(PREVIEW_STYLE_ID);
         if (style) {
             head.removeChild(style);
         }
     };
 
     return {
-        addRule: addRule,
-        applyPreview: applyPreview,
-        cancelPreview: cancelPreview
+        addRule,
+        applyPreview,
+        cancelPreview,
     };
-
 })();

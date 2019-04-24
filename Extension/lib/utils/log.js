@@ -15,33 +15,34 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* eslint-disable no-console */
+
 /**
  * Simple logger with log levels
  */
 adguard.console = (function () {
-
     // Redefine if you need it
-    var CURRENT_LEVEL = "INFO";
+    const CURRENT_LEVEL = 'INFO';
 
-    var LEVELS = {
+    const LEVELS = {
         ERROR: 1,
         WARN: 2,
         INFO: 3,
-        DEBUG: 4
+        DEBUG: 4,
     };
 
     /**
      * Pretty-print javascript error
      */
-    var errorToString = function (error) {
-        return error.toString() + "\nStack trace:\n" + error.stack;
+    const errorToString = function (error) {
+        return `${error.toString()}\nStack trace:\n${error.stack}`;
     };
 
     /**
      * Prints log message
      */
-    var print = function (level, method, args) {
-        //check log level
+    const print = function (level, method, args) {
+        // check log level
         if (LEVELS[CURRENT_LEVEL] < LEVELS[level]) {
             return;
         }
@@ -49,11 +50,11 @@ adguard.console = (function () {
             return;
         }
 
-        var str = args[0] + "";
+        const str = `${args[0]}`;
         args = Array.prototype.slice.call(args, 1);
-        var formatted = str.replace(/{(\d+)}/g, function (match, number) {
+        let formatted = str.replace(/{(\d+)}/g, (match, number) => {
             if (typeof args[number] !== 'undefined') {
-                var value = args[number];
+                let value = args[number];
                 if (value instanceof Error) {
                     value = errorToString(value);
                 } else if (value && value.message) {
@@ -67,8 +68,8 @@ adguard.console = (function () {
             return match;
         });
 
-        var now = new Date();
-        formatted = now.toISOString() + ": " + formatted;
+        const now = new Date();
+        formatted = `${now.toISOString()}: ${formatted}`;
         console[method](formatted);
     };
 
@@ -76,20 +77,20 @@ adguard.console = (function () {
      * Expose public API
      */
     return {
-        debug: function () {
-            print("DEBUG", "log", arguments);
+        debug(...args) {
+            print('DEBUG', 'log', args);
         },
 
-        info: function () {
-            print("INFO", "info", arguments);
+        info(...args) {
+            print('INFO', 'info', args);
         },
 
-        warn: function () {
-            print("WARN", "info", arguments);
+        warn(...args) {
+            print('WARN', 'info', args);
         },
 
-        error: function () {
-            print("ERROR", "error", arguments);
-        }
+        error(...args) {
+            print('ERROR', 'error', args);
+        },
     };
 })();

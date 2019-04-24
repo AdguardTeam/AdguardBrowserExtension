@@ -18,8 +18,7 @@
 /**
  * Global adguard object
  */
-var adguard = (function () { // jshint ignore:line
-
+var adguard = (function () { // eslint-disable-line
     /**
      * This function allows cache property in object. Use with javascript getter.
      *
@@ -37,12 +36,12 @@ var adguard = (function () { // jshint ignore:line
      * @param calculateFunc Calculation function
      * @returns {*}
      */
-    var lazyGet = function (object, prop, calculateFunc) {
-        var cachedProp = '_' + prop;
+    const lazyGet = function (object, prop, calculateFunc) {
+        const cachedProp = `_${prop}`;
         if (cachedProp in object) {
             return object[cachedProp];
         }
-        var value = calculateFunc.apply(object);
+        const value = calculateFunc.apply(object);
         object[cachedProp] = value;
         return value;
     };
@@ -52,45 +51,45 @@ var adguard = (function () { // jshint ignore:line
      * @param object Object
      * @param prop Original property name
      */
-    var lazyGetClear = function (object, prop) {
-        delete object['_' + prop];
+    const lazyGetClear = function (object, prop) {
+        delete object[`_${prop}`];
     };
 
     function notImplemented() {
         return false;
     }
 
-    var hitStatsModule = {
+    const hitStatsModule = {
         addRuleHit: notImplemented,
         addDomainView: notImplemented,
-        cleanup: notImplemented
+        cleanup: notImplemented,
     };
 
-    var filteringLogModule = {
+    const filteringLogModule = {
         addHttpRequestEvent: notImplemented,
         clearEventsByTabId: notImplemented,
         isOpen: notImplemented,
     };
 
-    var safebrowsingModule = {
-        checkSafebrowsingFilter: notImplemented
+    const safebrowsingModule = {
+        checkSafebrowsingFilter: notImplemented,
     };
 
-    var integrationModule = {
+    const integrationModule = {
         isSupported: notImplemented,
         isEnabled: notImplemented,
         isIntegrationRequest: notImplemented,
-        shouldOverrideReferrer: notImplemented
+        shouldOverrideReferrer: notImplemented,
     };
 
-    var syncModule = {
+    const syncModule = {
         syncService: notImplemented(),
-        settingsProvider: notImplemented()
+        settingsProvider: notImplemented(),
     };
 
     return {
-        lazyGet: lazyGet,
-        lazyGetClear: lazyGetClear,
+        lazyGet,
+        lazyGetClear,
 
         /**
          * Define dummy modules.
@@ -100,7 +99,6 @@ var adguard = (function () { // jshint ignore:line
         filteringLog: filteringLogModule,
         safebrowsing: safebrowsingModule,
         integration: integrationModule,
-        sync: syncModule
+        sync: syncModule,
     };
-
 })();
