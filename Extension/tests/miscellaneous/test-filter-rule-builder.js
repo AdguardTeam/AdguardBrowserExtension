@@ -1,4 +1,4 @@
-QUnit.test('Build Rules', function (assert) {
+QUnit.test('Build Rules', (assert) => {
     let rule = adguard.rules.builder.createRule('example.com', 0);
     assert.ok(rule);
     assert.ok(rule instanceof adguard.rules.UrlFilterRule);
@@ -28,7 +28,7 @@ QUnit.test('Build Rules', function (assert) {
 });
 
 QUnit.test('Unsupported rules', (assert) => {
-    rule = adguard.rules.builder.createRule('#$#body { background: black }', 0);
+    let rule = adguard.rules.builder.createRule('#$#body { background: black }', 0);
     assert.ok(rule);
     assert.ok(rule instanceof adguard.rules.CssFilterRule);
 

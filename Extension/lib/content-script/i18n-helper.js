@@ -14,10 +14,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var I18nHelper = { // jshint ignore:line
+const I18nHelper = { // eslint-disable-line
 
-    translateElement: function (element, message) {
-
+    translateElement(element, message) {
         try {
             while (element.lastChild) {
                 element.removeChild(element.lastChild);
@@ -29,14 +28,12 @@ var I18nHelper = { // jshint ignore:line
         }
     },
 
-    processString: function (str, element) {
+    processString(str, element) {
+        let el;
 
-        var el;
-
-        var match1 = /^([^]*?)<(a|strong|span|i)([^>]*)>(.*?)<\/\2>([^]*)$/m.exec(str);
-        var match2 = /^([^]*?)<(br|input)([^>]*)\/?>([^]*)$/m.exec(str);
+        const match1 = /^([^]*?)<(a|strong|span|i)([^>]*)>(.*?)<\/\2>([^]*)$/m.exec(str);
+        const match2 = /^([^]*?)<(br|input)([^>]*)\/?>([^]*)$/m.exec(str);
         if (match1) {
-
             this.processString(match1[1], element);
 
             el = this.createElement(match1[2], match1[3]);
@@ -45,37 +42,33 @@ var I18nHelper = { // jshint ignore:line
             element.appendChild(el);
 
             this.processString(match1[5], element);
-
         } else if (match2) {
-
             this.processString(match2[1], element);
 
             el = this.createElement(match2[2], match2[3]);
             element.appendChild(el);
 
             this.processString(match2[4], element);
-
         } else {
             element.appendChild(document.createTextNode(str.replace(/&nbsp;/g, '\u00A0')));
         }
     },
 
-    createElement: function (tagName, attributes) {
-
-        var el = document.createElement(tagName);
+    createElement(tagName, attributes) {
+        const el = document.createElement(tagName);
         if (!attributes) {
             return el;
         }
 
-        var attrs = attributes.split(/([a-z]+='[^']+')/);
-        for (var i = 0; i < attrs.length; i++) {
-            var attr = attrs[i].trim();
+        const attrs = attributes.split(/([a-z]+='[^']+')/);
+        for (let i = 0; i < attrs.length; i += 1) {
+            const attr = attrs[i].trim();
             if (!attr) {
                 continue;
             }
-            var index = attr.indexOf("=");
-            var attrName;
-            var attrValue;
+            const index = attr.indexOf('=');
+            let attrName;
+            let attrValue;
             if (index > 0) {
                 attrName = attr.substring(0, index);
                 attrValue = attr.substring(index + 2, attr.length - 1);
@@ -86,5 +79,5 @@ var I18nHelper = { // jshint ignore:line
         }
 
         return el;
-    }
+    },
 };

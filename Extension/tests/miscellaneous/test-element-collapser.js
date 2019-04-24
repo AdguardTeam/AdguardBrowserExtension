@@ -1,10 +1,12 @@
-QUnit.test("Test Element Collapser", function(assert) {
+/* global ElementCollapser */
+
+QUnit.test('Test Element Collapser', (assert) => {
     ElementCollapser.clear();
 
-    assert.ok(ElementCollapser != null);
+    assert.ok(ElementCollapser !== null);
 
-    var element = document.getElementById('test-div');
-    var style = window.getComputedStyle(element);
+    const element = document.getElementById('test-div');
+    let style = window.getComputedStyle(element);
     assert.equal(style.display, 'block');
     assert.notOk(ElementCollapser.isCollapsed(element));
 
@@ -16,12 +18,12 @@ QUnit.test("Test Element Collapser", function(assert) {
     element.removeAttribute('style');
 });
 
-QUnit.test("Test Collapse by src", function(assert) {
+QUnit.test('Test Collapse by src', (assert) => {
     ElementCollapser.clear();
 
-    var element = document.getElementById('test-image');
+    const element = document.getElementById('test-image');
 
-    var style = window.getComputedStyle(element);
+    let style = window.getComputedStyle(element);
     assert.equal(style.display, 'inline');
     assert.notOk(ElementCollapser.isCollapsed(element));
 

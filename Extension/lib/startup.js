@@ -19,9 +19,7 @@
  * Extension initialize logic. Called from start.js
  */
 adguard.initialize = function () {
-
     function onLocalStorageLoaded() {
-
         adguard.console.info('Starting adguard... Version: {0}. Id: {1}', adguard.app.getVersion(), adguard.app.getId());
 
         // Initialize popup button
@@ -37,28 +35,24 @@ adguard.initialize = function () {
          * Start application
          */
         adguard.filters.start({
-
-            onInstall: function (callback) {
-
+            onInstall(callback) {
                 // Process installation
-
                 /**
                  * Show UI installation page
                  */
                 adguard.ui.openFiltersDownloadPage();
 
-
                 // Retrieve filters and install them
                 adguard.filters.offerFilters((filterIds) => {
                     adguard.filters.addAndEnableFilters(filterIds, callback);
                 });
-            }
-        }, function () {
+            },
+        }, () => {
             // Doing nothing
         });
     }
 
-    adguard.rulesStorage.init(function () {
+    adguard.rulesStorage.init(() => {
         adguard.localStorage.init(onLocalStorageLoaded);
     });
 };
