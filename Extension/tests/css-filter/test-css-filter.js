@@ -278,16 +278,6 @@ QUnit.test('Some Complex Selector Rules', (assert) => {
     assert.equal(cssFilterRule.cssSelector, '.container-fluid > section.noBorder[-ext-has=\">.recommended-story>.recommended-list>ul>li:not([class]):empty\"]');
 });
 
-QUnit.test('Invalid Style Syntax', (assert) => {
-    try {
-        const ruleText = 'yandex.ru##body:style()';
-        adguard.rules.builder.createRule(ruleText);
-        throw new Error('Rule should not be parsed successfully');
-    } catch (ex) {
-        assert.equal(ex.message, 'Empty :style pseudo class: body:style()');
-    }
-});
-
 QUnit.test('Invalid Css Injection Rules', (assert) => {
     try {
         // Invalid rule - lacking of css style
