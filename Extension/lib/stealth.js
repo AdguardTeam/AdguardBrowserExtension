@@ -518,7 +518,7 @@ adguard.stealthService = (function (adguard) {
      * @returns {boolean}
      */
     const shouldHandlePrivacyPermission = () => {
-        return adguard.utils.browser.isChromeBrowser();
+        return adguard.utils.browser.isChromium();
     };
 
     if (canBlockWebRTC()) {
