@@ -512,7 +512,7 @@ adguard.stealthService = (function (adguard) {
     };
 
     /**
-     * We handle privacy permission only for chrome
+     * We handle privacy permission only for chromium browsers
      * In the Firefox privacy permission is available by default
      * because they can't be optional there
      * @returns {boolean}
