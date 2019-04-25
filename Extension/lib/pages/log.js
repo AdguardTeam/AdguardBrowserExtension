@@ -1067,7 +1067,11 @@ var RequestWizard = (function () {
             && !requestRule.replaceRule
             && typeof requestRule.filterId !== 'undefined') {
             if (requestRule.filterId !== AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
-                template.querySelector('[attr-text="requestRule"]').textContent = requestRule.ruleText;
+                const requestRuleNode = template.querySelector('[attr-text="requestRule"]');
+                requestRuleNode.textContent = requestRule.ruleText;
+                if (requestRule.convertedRuleText) {
+                    requestRuleNode.insertAdjacentHTML('beforeend', `&nbsp<i>(Converted to: ${requestRule.convertedRuleText})</i>`);
+                }
             } else {
                 template.querySelector('[attr-text="requestRule"]').closest('li').style.display = 'none';
             }
