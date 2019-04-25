@@ -18,17 +18,16 @@
 /* global contentPage */
 
 (function () {
-
     'use strict';
 
     function getParams(queryString) {
         if (!queryString) {
             return {};
         }
-        var params = {};
-        var regex = /([^&=]+)=([^&]*)/g;
-        var part;
-        while (part = regex.exec(queryString)) { // jshint ignore:line
+        const params = {};
+        const regex = /([^&=]+)=([^&]*)/g;
+        let part;
+        while (part = regex.exec(queryString)) { // eslint-disable-line
             params[decodeURIComponent(part[1])] = decodeURIComponent(part[2]);
         }
         return params;
@@ -37,32 +36,32 @@
     function showError(error, description) {
         if (description) {
             description = description.replace(/\+/g, ' ');
-            var element = document.getElementById('errorDescription');
+            const element = document.getElementById('errorDescription');
             if (element) {
                 element.appendChild(document.createTextNode(description));
             }
         }
     }
 
-    var hash = window.location.hash;
+    let { hash } = window.location;
     if (hash) {
         hash = hash.substring(1);
     }
-    var search = window.location.search;
+    let { search } = window.location;
     if (search) {
         search = search.substring(1);
     }
-    var hashParams = getParams(hash);
-    var searchParams = getParams(search);
+    const hashParams = getParams(hash);
+    const searchParams = getParams(search);
 
-    var provider = searchParams.provider;
-    var token = hashParams.access_token;
-    var csrfState = hashParams.state ? hashParams.state : searchParams.state;
-    var error = hashParams.error;
-    var expires = hashParams.expires_in;
+    const { provider } = searchParams;
+    const token = hashParams.access_token;
+    const csrfState = hashParams.state ? hashParams.state : searchParams.state;
+    const { error } = hashParams;
+    const expires = hashParams.expires_in;
 
     if (error) {
-        var errorDescription = hashParams.error_description;
+        const errorDescription = hashParams.error_description;
         showError(error, errorDescription);
         // TODO[SYNC]: handle this case
         return;
@@ -71,11 +70,10 @@
     if (token && provider) {
         contentPage.sendMessage({
             type: 'setOAuthToken',
-            provider: provider,
-            token: token,
-            csrfState: csrfState,
-            expires: expires
+            provider,
+            token,
+            csrfState,
+            expires,
         });
     }
-
 })();
