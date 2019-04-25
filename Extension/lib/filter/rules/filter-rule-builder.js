@@ -143,7 +143,8 @@
         }
         const rule = _createRule(convertedRule, filterId, isTrustedFilter);
         if (convertedRule !== ruleText) {
-            rule.originalRuleText = ruleText;
+            rule.ruleText = ruleText;
+            rule.convertedRuleText = convertedRule;
         }
         return rule;
     };
