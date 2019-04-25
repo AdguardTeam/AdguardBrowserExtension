@@ -27,34 +27,6 @@
      * http://adguard.com/en/filterrules.html#cssInjection
      */
     var CssFilterRule = (function () {
-
-        /**
-         * Tries to convert CSS injections rules from uBlock syntax to our own
-         * https://github.com/AdguardTeam/AdguardForAndroid/issues/701
-         *
-         * @param pseudoClass :style pseudo class
-         * @param cssContent  CSS content
-         * @return String CSS content if it is a :style rule or null otherwise
-         */
-        var convertCssInjectionRule = function (pseudoClass, cssContent) {
-
-            var selector = cssContent.substring(0, pseudoClass.nameStartIndex);
-            var styleStart = pseudoClass.nameStartIndex + pseudoClass.name.length + 1;
-            var styleEnd = cssContent.length - 1;
-
-            if (styleEnd <= styleStart) {
-                throw new Error("Empty :style pseudo class: " + cssContent);
-            }
-
-            var style = cssContent.substring(styleStart, styleEnd);
-
-            if (adguard.utils.strings.isEmpty(selector) || adguard.utils.strings.isEmpty(style)) {
-                throw new Error("Wrong :style pseudo-element syntax: " + cssContent);
-            }
-
-            return selector + " { " + style + " }";
-        };
-
         /**
          * Parses first pseudo class from the specified CSS selector
          *
@@ -145,17 +117,12 @@
             var cssContent = rule.substring(indexOfMask + mask.length);
 
             if (!isInjectRule) {
-                // We need this for two things:
-                // 1. Convert uBlock-style CSS injection rules
-                // 2. Validate pseudo-classes
+                // We need to validate pseudo-classes
                 // https://github.com/AdguardTeam/AdguardForAndroid/issues/701
-                var pseudoClass = parsePseudoClass(cssContent);
-                if (pseudoClass !== null && ":style" === pseudoClass.name) {
-                    isInjectRule = true;
-                    cssContent = convertCssInjectionRule(pseudoClass, cssContent);
-                } else if (pseudoClass !== null) {
+                const pseudoClass = parsePseudoClass(cssContent);
+                if (pseudoClass !== null) {
                     if (CssFilterRule.SUPPORTED_PSEUDO_CLASSES.indexOf(pseudoClass.name) < 0) {
-                        throw new Error("Unknown pseudo class: " + cssContent);
+                        throw new Error(`Unknown pseudo class: ${cssContent}`);
                     }
                 }
             }
@@ -230,7 +197,7 @@
         api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE,
         api.FilterRule.MASK_CSS_EXTENDED_CSS_RULE,
         api.FilterRule.MASK_CSS_EXCEPTION_RULE,
-        api.FilterRule.MASK_CSS_RULE
+        api.FilterRule.MASK_CSS_RULE,
     ];
 
     /**

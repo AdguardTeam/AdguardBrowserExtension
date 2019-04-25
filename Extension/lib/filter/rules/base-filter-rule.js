@@ -227,12 +227,11 @@
      * @return boolean true if it does start
      */
     function startsAtIndexWith(str, startIndex, substr) {
-
         if (str.length - startIndex < substr.length) {
             return false;
         }
 
-        for (var i = 0; i < substr.length; i++) {
+        for (let i = 0; i < substr.length; i += 1) {
             if (str.charAt(startIndex + i) !== substr.charAt(i)) {
                 return false;
             }
@@ -250,14 +249,13 @@
      * @return rule marker found
      */
     FilterRule.findRuleMarker = function (ruleText, markers, firstMarkerChar) {
-
-        var startIndex = ruleText.indexOf(firstMarkerChar);
+        const startIndex = ruleText.indexOf(firstMarkerChar);
         if (startIndex === -1) {
             return null;
         }
 
-        for (var i = 0; i < markers.length; i++) {
-            var marker = markers[i];
+        for (let i = 0; i < markers.length; i += 1) {
+            const marker = markers[i];
             if (startsAtIndexWith(ruleText, startIndex, marker)) {
                 return marker;
             }
