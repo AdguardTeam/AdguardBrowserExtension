@@ -75,8 +75,8 @@
         /**
          * Returns the array of loaded rules
          */
-        getRules: function () {
-            var result = [];
+        getRules() {
+            const result = [];
             return result.concat(this.scriptRules).concat(this.exceptionsRules);
         },
 
@@ -84,16 +84,18 @@
          * Builds script for the specified domain to be injected
          *
          * @param domainName Domain name
-         * @returns {Array.<{{scriptSource: string, rule: string}}>} List of scripts to be applied and scriptSource
+         * @param {Object} debugConfig // TODO describe config type
+         * @returns {{scriptSource: string, rule: string}[]} List of scripts to be applied
+         * and scriptSource
          */
-        buildScript(domainName) {
+        buildScript(domainName, debugConfig) {
             const scripts = [];
             for (let i = 0; i < this.scriptRules.length; i += 1) {
                 const rule = this.scriptRules[i];
                 if (rule.isPermitted(domainName)) {
                     scripts.push({
                         scriptSource: rule.scriptSource,
-                        rule: rule.script,
+                        rule: rule.getScript(debugConfig),
                     });
                 }
             }
