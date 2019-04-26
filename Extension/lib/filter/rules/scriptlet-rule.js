@@ -182,8 +182,17 @@
     }
 
     /**
+     * Debug config provided to build rules with debug possibilities
+     * @typedef {Object} DebugConfig
+     * @property {boolean} debug - indicates whether debug mode is enabled or not
+     * @property {Object} params
+     * @param {string} params.engine - engine identifier
+     * @param {string} params.version - engine version;
+     */
+
+    /**
      * Returns script. If debug enabled, rebuilds script with new parameters
-     * @param debugConfig
+     * @param {DebugConfig} debugConfig
      * @return {string | null | *}
      */
     function getScript(debugConfig) {
@@ -194,7 +203,7 @@
             {},
             this.scriptletParams,
             debugConfig.params,
-            { debug: debugConfig }
+            { debug: debugConfig.debug }
         );
         return getScriptletCode(scriptletParams);
     }
