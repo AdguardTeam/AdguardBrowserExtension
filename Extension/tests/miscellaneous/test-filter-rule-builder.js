@@ -38,11 +38,8 @@ QUnit.test('Unsupported rules', (assert) => {
 
 
 QUnit.test('Invalid Style Syntax', (assert) => {
-    try {
-        const ruleText = 'yandex.ru##body:style()';
+    const ruleText = 'yandex.ru##body:style()';
+    assert.throws(() => {
         adguard.rules.ruleConverter.convertRule(ruleText);
-        throw new Error('Rule should not be parsed successfully');
-    } catch (ex) {
-        assert.equal(ex.message, 'Empty :style pseudo class: body:style()');
-    }
-})
+    }, new Error('Empty :style pseudo class: body:style()'));
+});
