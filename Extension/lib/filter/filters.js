@@ -321,12 +321,8 @@
          */
         getScriptsForUrl(url) {
             const domain = adguard.utils.url.getHost(url);
-            const debugModeEnabled = adguard.filteringLog && adguard.filteringLog.isOpen();
-            const params = {
-                engine: 'extension',
-                version: adguard.app && adguard.app.getVersion && adguard.app.getVersion(),
-            };
-            return this.scriptFilter.buildScript(domain, { debug: debugModeEnabled, params });
+            const isDebugEnabled = adguard.filteringLog && adguard.filteringLog.isOpen();
+            return this.scriptFilter.buildScript(domain, { debug: isDebugEnabled });
         },
 
         /**

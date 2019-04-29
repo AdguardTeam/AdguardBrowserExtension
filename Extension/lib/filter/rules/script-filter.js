@@ -83,7 +83,7 @@
          * Builds script for the specified domain to be injected
          *
          * @param domainName Domain name
-         * @param {DebugConfig} debugConfig
+         * @param {{debug: boolean}} debugConfig
          * @returns {{scriptSource: string, rule: string}[]} List of scripts to be applied
          * and scriptSource
          */

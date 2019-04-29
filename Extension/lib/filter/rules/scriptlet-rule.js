@@ -166,8 +166,11 @@
      * @constructor ScriptletRule
      * @property {string} ruleText
      * @property {number|string} filterId
+     * @property {Object} config - app data
+     * @property {string} config.engine - engine name
+     * @property {string} config.version - current app version
      */
-    function ScriptletRule(ruleText, filterId) {
+    function ScriptletRule(ruleText, filterId, config) {
         this.ruleText = ruleText;
         this.filterId = filterId;
         this.scriptSource = 'local';
@@ -177,7 +180,7 @@
             : api.FilterRule.MASK_SCRIPT_RULE;
         const domain = adguard.utils.strings.substringBefore(ruleText, mask);
         domain && this.loadDomains(domain);
-        this.scriptletParams = parseRule(ruleText);
+        this.scriptletParams = Object.assign({}, config, parseRule(ruleText));
         this.script = getScriptletCode(this.scriptletParams);
     }
 
@@ -185,15 +188,12 @@
      * Debug config provided to build rules with debug possibilities
      * @typedef {Object} DebugConfig
      * @property {boolean} debug - indicates whether debug mode is enabled or not
-     * @property {Object} params
-     * @param {string} params.engine - engine identifier
-     * @param {string} params.version - engine version;
      */
 
     /**
      * Returns script. If debug enabled, rebuilds script with new parameters
      * @param {DebugConfig} debugConfig
-     * @return {string | null | *}
+     * @return {string | null}
      */
     function getScript(debugConfig) {
         if (!debugConfig || !debugConfig.debug) {
@@ -202,7 +202,6 @@
         const scriptletParams = Object.assign(
             {},
             this.scriptletParams,
-            debugConfig.params,
             { debug: debugConfig.debug }
         );
         return getScriptletCode(scriptletParams);
