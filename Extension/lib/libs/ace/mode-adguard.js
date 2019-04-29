@@ -734,13 +734,13 @@ ace.define("ace/mode/csp_highlight_rules",[], function(require, exports, module)
         this.$rules = {
             start: [{
                 token: "string.link",
-                regex: /https?:[^;\s]*/
+                regex: /https?:[^;\s,]*/
             }, {
                 token: "operator.punctuation",
                 regex: /;/
             }, {
                 token: keywordMapper,
-                regex: /[^\s;]+/
+                regex: /[^\s;,]+/
             }]
         };
     };
