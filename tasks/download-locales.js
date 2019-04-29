@@ -2,7 +2,6 @@
  * Update locales in repository
  */
 
-/* global __dirname */
 import fs from 'fs';
 import path from 'path';
 import gulp from 'gulp';
@@ -12,7 +11,7 @@ import { LOCALES, LOCALES_DIR, PRIVATE_FILES } from './consts';
 import Logs from './log';
 
 /**
- * We use this pairs because we have different locale codes in the onesky and the extension
+ * We use this pairs because we have different locale codes in the oneskyapp and the extension
  */
 export const LOCALE_PAIRS = {
     /**
@@ -24,18 +23,16 @@ export const LOCALE_PAIRS = {
     /**
      * Belarusian language locale code in oneskyapp is 'be-BY'
      * chrome doesn't recognize belarusian language at all
-     * firefox regognizes 'be' code
+     * firefox recognizes 'be' code
      */
     be: 'be-BY',
 };
 
 const logs = new Logs();
 
-const hashString = (stringContent) => {
-    return md5({
-        content: stringContent
-    });
-};
+const hashString = stringContent => md5({
+    content: stringContent,
+});
 
 const prepare = () => {
     let options = {
@@ -54,11 +51,11 @@ const prepare = () => {
 
     options = Object.assign(options, oneskyapp);
 
-    let urls = [];
+    const urls = [];
 
     options.locales.forEach((localization) => {
         const timestamp = Math.round(new Date().getTime() / 1000);
-        let url = [];
+        const url = [];
 
         /**
          * GET oneskyapp locale code
@@ -66,12 +63,12 @@ const prepare = () => {
         const oneSkyLocalization = LOCALE_PAIRS[localization] || localization;
 
         url.push(options.url + options.projectId);
-        url.push('/translations?locale=' + oneSkyLocalization);
-        url.push('&source_file_name=' + options.sourceFile);
-        url.push('&export_file_name=' + oneSkyLocalization + '.json');
-        url.push('&api_key=' + options.apiKey);
-        url.push('&timestamp=' + timestamp);
-        url.push('&dev_hash=' + hashString(timestamp + options.secretKey));
+        url.push(`/translations?locale=${oneSkyLocalization}`);
+        url.push(`&source_file_name=${options.sourceFile}`);
+        url.push(`&export_file_name=${oneSkyLocalization}.json`);
+        url.push(`&api_key=${options.apiKey}`);
+        url.push(`&timestamp=${timestamp}`);
+        url.push(`&dev_hash=${hashString(timestamp + options.secretKey)}`);
 
         // choose locale code for the extension
         urls.push({
