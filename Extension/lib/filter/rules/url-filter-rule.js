@@ -270,37 +270,6 @@
     }
 
     /**
-     * Tries to convert data: or blob: rule to CSP rules.
-     * Actually, this is just an ugly hotfix for Chrome where data: and blob: URLs aren't exposed to extensions.
-     *
-     * @param rule Rule text
-     * @param urlRuleText URL rule text
-     */
-    function tryConvertToCspRule(rule, urlRuleText) {
-
-        // Convert only blocking domain-specific rules
-        if (rule.whiteListRule || !rule.hasPermittedDomains()) {
-            return;
-        }
-
-        // Firefox browser allows to intercept data: and blob: URLs
-        if (isFirefoxBrowser) {
-            return;
-        }
-
-        if (urlRuleText.indexOf('data:') === 0 || urlRuleText.indexOf('|data:') === 0 ||
-            urlRuleText.indexOf('blob:') === 0 || urlRuleText.indexOf('|blob:') === 0) {
-
-            rule._setUrlFilterRuleOption(UrlFilterRule.options.CSP_RULE, true);
-            rule.cspDirective = api.CspFilter.DEFAULT_DIRECTIVE;
-
-            rule.urlRegExpSource = UrlFilterRule.MASK_ANY_SYMBOL;
-            rule.shortcut = null;
-            rule.permittedContentType = UrlFilterRule.contentTypes.ALL;
-        }
-    }
-
-    /**
      * Represents a $replace modifier value.
      * <p/>
      * Learn more about this modifier syntax here:
@@ -495,10 +464,6 @@
         } else {
             // Searching for the rule shortcut
             this.shortcut = findShortcut(urlRuleText);
-        }
-
-        if (!this.isCspRule()) {
-            tryConvertToCspRule(this, urlRuleText);
         }
 
         if (this.isCspRule()) {
