@@ -76,14 +76,15 @@
          * Returns the array of loaded rules
          */
         getRules() {
-            return [].concat(this.scriptRules).concat(this.exceptionsRules);
+            const result = [];
+            return result.concat(this.scriptRules).concat(this.exceptionsRules);
         },
 
         /**
          * Builds script for the specified domain to be injected
          *
          * @param domainName Domain name
-         * @param {DebugConfig} debugConfig
+         * @param {Object} debugConfig // TODO describe config type
          * @returns {{scriptSource: string, rule: string}[]} List of scripts to be applied
          * and scriptSource
          */
