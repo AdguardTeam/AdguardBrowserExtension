@@ -23,11 +23,15 @@ adguard.webRequestService = (function (adguard) {
 
     /**
      * Checks if we can collect hit stats for this tab:
-     * Option "Collect hit stats" is enabled and tab isn't incognito and integration mode is disabled
+     * Option "Send ad filters usage" is enabled and tab isn't incognito and integration mode is disabled
      * @param {object} tab
      * @returns {boolean}
      */
     var canCollectHitStatsForTab = function (tab) {
+        if (!tab) {
+            return adguard.settings.collectHitsCount();
+        }
+
         return tab &&
             adguard.settings.collectHitsCount() &&
             !adguard.frames.isIncognitoTab(tab) &&
