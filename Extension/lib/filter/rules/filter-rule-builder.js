@@ -53,11 +53,6 @@
         return false;
     };
 
-    const CONFIG = {
-        engine: 'extension',
-        version: adguard.app && adguard.app.getVersion && adguard.app.getVersion(),
-    };
-
     /**
      * Method that parses rule text and creates object of a suitable class.
      *
@@ -105,7 +100,7 @@
 
             if (api.FilterRule.findRuleMarker(ruleText, api.ScriptFilterRule.RULE_MARKERS, api.ScriptFilterRule.RULE_MARKER_FIRST_CHAR)) {
                 if (api.ScriptletRule.isAdguardScriptletRule(ruleText)) {
-                    return new api.ScriptletRule(ruleText, filterId, CONFIG);
+                    return new api.ScriptletRule(ruleText, filterId);
                 }
 
                 return new api.ScriptFilterRule(ruleText, filterId);
