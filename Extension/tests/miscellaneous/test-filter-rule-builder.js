@@ -35,3 +35,11 @@ QUnit.test('Unsupported rules', (assert) => {
     rule = adguard.rules.builder.createRule('example.com##^script:has-text(7c9e3a5d51cdacfc)', 0);
     assert.notOk(rule);
 });
+
+
+QUnit.test('Invalid Style Syntax', (assert) => {
+    const ruleText = 'yandex.ru##body:style()';
+    assert.throws(() => {
+        adguard.rules.ruleConverter.convertRule(ruleText);
+    }, new Error('Empty :style pseudo class: body:style()'));
+});
