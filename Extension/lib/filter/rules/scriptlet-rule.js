@@ -181,7 +181,7 @@
     }
 
     /**
-     * Debug config provided to build rules with debug possibilities
+     * Scriptlet config provided to build rules with debug capabilities
      * @typedef {Object} ScriptletConfig
      * @property {boolean} debug - indicates whether debug mode is enabled or not
      * @param {string} engine - engine identifier

@@ -84,7 +84,7 @@
          * Builds script for the specified domain to be injected
          *
          * @param domainName Domain name
-         * @param {Object} debugConfig // TODO describe config type
+         * @param {Object} debugConfig
          * @returns {{scriptSource: string, rule: string}[]} List of scripts to be applied
          * and scriptSource
          */

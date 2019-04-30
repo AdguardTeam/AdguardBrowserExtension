@@ -320,7 +320,6 @@
          * @returns {{scriptSource: string, rule: string}[]} Javascript for the specified URL
          */
         getScriptsForUrl(url) {
-            debugger;
             const domain = adguard.utils.url.getHost(url);
             const config = {
                 debug: adguard.filteringLog && adguard.filteringLog.isOpen(),
