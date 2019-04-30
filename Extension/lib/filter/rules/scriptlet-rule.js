@@ -178,34 +178,36 @@
         const domain = adguard.utils.strings.substringBefore(ruleText, mask);
         domain && this.loadDomains(domain);
         this.scriptletParams = parseRule(ruleText);
-        this.script = getScriptletCode(this.scriptletParams);
     }
 
     /**
      * Debug config provided to build rules with debug possibilities
-     * @typedef {Object} DebugConfig
+     * @typedef {Object} ScriptletConfig
      * @property {boolean} debug - indicates whether debug mode is enabled or not
-     * @property {Object} params
-     * @param {string} params.engine - engine identifier
-     * @param {string} params.version - engine version;
+     * @param {string} engine - engine identifier
+     * @param {string} version - engine version
      */
 
     /**
      * Returns script. If debug enabled, rebuilds script with new parameters
-     * @param {DebugConfig} debugConfig
+     * @param {ScriptletConfig} scriptletConfig
      * @return {string | null}
      */
-    function getScript(debugConfig) {
-        if (!debugConfig || !debugConfig.debug) {
+    function getScript(scriptletConfig) {
+        const debugMode = !!(scriptletConfig && scriptletConfig.debug);
+
+        if (debugMode === !!this.scriptletParams.debug && this.script) {
             return this.script;
         }
-        const scriptletParams = Object.assign(
+
+        this.scriptletParams = Object.assign(
             {},
             this.scriptletParams,
-            debugConfig.params,
-            { debug: debugConfig.debug }
+            scriptletConfig
         );
-        return getScriptletCode(scriptletParams);
+
+        this.script = getScriptletCode(this.scriptletParams);
+        return this.script;
     }
 
     /**

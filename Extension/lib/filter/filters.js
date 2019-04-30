@@ -320,9 +320,14 @@
          * @returns {{scriptSource: string, rule: string}[]} Javascript for the specified URL
          */
         getScriptsForUrl(url) {
+            debugger;
             const domain = adguard.utils.url.getHost(url);
-            const isDebugEnabled = adguard.filteringLog && adguard.filteringLog.isOpen();
-            return this.scriptFilter.buildScript(domain, { debug: isDebugEnabled });
+            const config = {
+                debug: adguard.filteringLog && adguard.filteringLog.isOpen(),
+                engine: 'extension',
+                version: adguard.app && adguard.app.getVersion && adguard.app.getVersion(),
+            };
+            return this.scriptFilter.buildScript(domain, config);
         },
 
         /**
