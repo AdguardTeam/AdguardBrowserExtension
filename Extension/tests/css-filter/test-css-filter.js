@@ -192,14 +192,16 @@ QUnit.test('Css GenericHide Exception Rules', (assert) => {
 QUnit.test('Ublock Css Injection Syntax Support', (assert) => {
     let ruleText = 'yandex.ru##body:style(background:inherit;)';
     let cssFilterRule = adguard.rules.builder.createRule(ruleText, 0);
-    assert.equal(cssFilterRule.ruleText, 'yandex.ru#$#body { background:inherit; }');
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.equal(cssFilterRule.convertedRuleText, 'yandex.ru#$#body { background:inherit; }');
     assert.ok(cssFilterRule.isInjectRule);
     assert.notOk(cssFilterRule.whiteListRule);
     assert.equal(cssFilterRule.cssSelector, 'body { background:inherit; }');
 
     ruleText = 'yandex.ru#@#body:style(background:inherit;)';
     cssFilterRule = adguard.rules.builder.createRule(ruleText, 0);
-    assert.equal(cssFilterRule.ruleText, 'yandex.ru#@$#body { background:inherit; }');
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.equal(cssFilterRule.convertedRuleText, 'yandex.ru#@$#body { background:inherit; }');
     assert.ok(cssFilterRule.isInjectRule);
     assert.ok(cssFilterRule.whiteListRule);
     assert.equal(cssFilterRule.cssSelector, 'body { background:inherit; }');
@@ -213,14 +215,16 @@ QUnit.test('Ublock Css Injection Syntax Support', (assert) => {
 
     ruleText = "yandex.ru##[role='main']:style(display: none;)";
     cssFilterRule = adguard.rules.builder.createRule(ruleText, 0);
-    assert.equal(cssFilterRule.ruleText, 'yandex.ru#$#[role=\'main\'] { display: none; }');
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.equal(cssFilterRule.convertedRuleText, 'yandex.ru#$#[role=\'main\'] { display: none; }');
     assert.ok(cssFilterRule.isInjectRule);
     assert.notOk(cssFilterRule.whiteListRule);
     assert.equal(cssFilterRule.cssSelector, "[role='main'] { display: none; }");
 
     ruleText = 'example.com##a[target="_blank"][href^="http://api.taboola.com/"]:style(display: none;)';
     cssFilterRule = adguard.rules.builder.createRule(ruleText, 0);
-    assert.equal(cssFilterRule.ruleText, 'example.com#$#a[target="_blank"][href^="http://api.taboola.com/"] { display: none; }');
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.equal(cssFilterRule.convertedRuleText, 'example.com#$#a[target="_blank"][href^="http://api.taboola.com/"] { display: none; }');
     assert.equal(cssFilterRule.cssSelector, 'a[target="_blank"][href^="http://api.taboola.com/"] { display: none; }');
 });
 
@@ -276,16 +280,6 @@ QUnit.test('Some Complex Selector Rules', (assert) => {
 
     assert.equal(cssFilterRule.ruleText, ruleText);
     assert.equal(cssFilterRule.cssSelector, '.container-fluid > section.noBorder[-ext-has=\">.recommended-story>.recommended-list>ul>li:not([class]):empty\"]');
-});
-
-QUnit.test('Invalid Style Syntax', (assert) => {
-    try {
-        const ruleText = 'yandex.ru##body:style()';
-        adguard.rules.builder.createRule(ruleText);
-        throw new Error('Rule should not be parsed successfully');
-    } catch (ex) {
-        assert.equal(ex.message, 'Empty :style pseudo class: body:style()');
-    }
 });
 
 QUnit.test('Invalid Css Injection Rules', (assert) => {
