@@ -99,9 +99,11 @@
             }
 
             if (api.FilterRule.findRuleMarker(ruleText, api.ScriptFilterRule.RULE_MARKERS, api.ScriptFilterRule.RULE_MARKER_FIRST_CHAR)) {
-                return api.ScriptletRule.isAdguardScriptletRule(ruleText)
-                    ? new api.ScriptletRule(ruleText, filterId)
-                    : new api.ScriptFilterRule(ruleText, filterId);
+                if (api.ScriptletRule.isAdguardScriptletRule(ruleText)) {
+                    return new api.ScriptletRule(ruleText, filterId);
+                }
+
+                return new api.ScriptFilterRule(ruleText, filterId);
             }
 
             return new api.UrlFilterRule(ruleText, filterId);

@@ -28,15 +28,15 @@
      */
     function wordSaver() {
         let str = '';
-        let strs = [];
-        const saveSymb = (s) => str += s;
+        const strs = [];
+        const saveSymb = s => str += s;
         const saveStr = () => {
             strs.push(str);
             str = '';
         };
         const getAll = () => [...strs];
         return { saveSymb, saveStr, getAll };
-    };
+    }
 
     /**
      * Iterate over iterable argument and evaluate current state with transitions
@@ -55,7 +55,7 @@
 
     /**
      * Parse and validate scriptlet rule
-     * @param {*} ruleText 
+     * @param {*} ruleText
      * @returns {{name: string, args: Array<string>}}
      */
     function parseRule(ruleText) {
@@ -71,8 +71,8 @@
 
         /**
          * Transition function: the current index position in start, end or between params
-         * @param {string} rule 
-         * @param {number} index 
+         * @param {string} rule
+         * @param {number} index
          * @param {Object} Object
          * @property {Object} Object.sep contains prop symb with current separator char
          */
@@ -86,17 +86,17 @@
                 case '\'':
                 case '"':
                     sep.symb = char;
-                    return TRANSITION.PARAM
+                    return TRANSITION.PARAM;
                 case ')':
                     return index === rule.length - 1
                         ? TRANSITION.CLOSED
                         : TRANSITION.OPENED;
-            };
+            }
         };
         /**
          * Transition function: the current index position inside param
-         * @param {string} rule 
-         * @param {number} index 
+         * @param {string} rule
+         * @param {number} index
          * @param {Object} Object
          * @property {Object} Object.sep contains prop `symb` with current separator char
          * @property {Object} Object.saver helper which allow to save strings by car by char
@@ -116,11 +116,11 @@
                     saver.saveSymb(char);
                     return TRANSITION.PARAM;
             }
-        }
-        const transitions = { 
-            [TRANSITION.OPENED]: opened, 
+        };
+        const transitions = {
+            [TRANSITION.OPENED]: opened,
             [TRANSITION.PARAM]: param,
-            [TRANSITION.CLOSED]: () => { }
+            [TRANSITION.CLOSED]: () => { },
         };
         const sep = { symb: null };
         const saver = wordSaver();
@@ -132,9 +132,33 @@
         const args = saver.getAll();
         return {
             name: args[0],
-            args: args.slice(1)
+            args: args.slice(1),
         };
     }
+
+    const getScriptletCode = (params) => {
+        const {
+            name, args, ruleText, engine, version, debug,
+        } = params;
+        if (!scriptlets) { // eslint-disable-line no-undef
+            return null;
+        }
+        const scriptletParam = {
+            name, args, ruleText, engine, version,
+        };
+
+        /* eslint-disable no-unused-expressions, no-console */
+        if (debug) {
+            scriptletParam.hit = function (ruleTxt) {
+                console.log(`${ruleTxt} trace start`);
+                console.trace && console.trace();
+                console.log(`${ruleTxt} trace end`);
+            };
+        }
+        /* eslint-enable no-unused-expressions, no-console */
+
+        return scriptlets.invoke(scriptletParam); // eslint-disable-line no-undef
+    };
 
 
     /**
@@ -153,13 +177,38 @@
             : api.FilterRule.MASK_SCRIPT_RULE;
         const domain = adguard.utils.strings.substringBefore(ruleText, mask);
         domain && this.loadDomains(domain);
-        const scriptletParam = {
-            engine: 'extension',
-            version: adguard.app && adguard.app.getVersion && adguard.app.getVersion(),
-            ...parseRule(ruleText),
-        };
-        this.script = scriptlets && scriptlets.invoke(scriptletParam);
-    };
+        this.scriptletParams = parseRule(ruleText);
+    }
+
+    /**
+     * Scriptlet config provided to build rules with debug capabilities
+     * @typedef {Object} ScriptletConfig
+     * @property {boolean} debug - indicates whether debug mode is enabled or not
+     * @param {string} engine - engine identifier
+     * @param {string} version - engine version
+     */
+
+    /**
+     * Returns script. If debug enabled, rebuilds script with new parameters
+     * @param {ScriptletConfig} scriptletConfig
+     * @return {string | null}
+     */
+    function getScript(scriptletConfig) {
+        const debugMode = !!(scriptletConfig && scriptletConfig.debug);
+
+        if (debugMode === !!this.scriptletParams.debug && this.script) {
+            return this.script;
+        }
+
+        this.scriptletParams = Object.assign(
+            {},
+            this.scriptletParams,
+            scriptletConfig
+        );
+
+        this.script = getScriptletCode(this.scriptletParams);
+        return this.script;
+    }
 
     /**
      * Check is AdGuard scriptlet rule
@@ -173,9 +222,10 @@
     ScriptletRule.prototype = Object.create(api.FilterRule.prototype);
     ScriptletRule.prototype.constructor = ScriptletRule;
 
+    ScriptletRule.prototype.getScript = getScript;
+
     /**
      * @static ScriptletRule
      */
     api.ScriptletRule = ScriptletRule;
-
 })(adguard, adguard.rules);
