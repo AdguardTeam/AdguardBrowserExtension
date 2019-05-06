@@ -317,16 +317,22 @@
          * http://adguard.com/en/filterrules.html#javascriptInjection
          *
          * @param url Page URL
-         * @returns {Array.<{{scriptSource: string, rule: string}}>} Javascript for the specified URL
+         * @returns {{scriptSource: string, rule: string}[]} Javascript for the specified URL
          */
-        getScriptsForUrl: function (url) {
-            var domain = adguard.utils.url.getHost(url);
-            return this.scriptFilter.buildScript(domain);
+        getScriptsForUrl(url) {
+            const domain = adguard.utils.url.getHost(url);
+            const config = {
+                debug: adguard.filteringLog && adguard.filteringLog.isOpen(),
+                engine: 'extension',
+                version: adguard.app && adguard.app.getVersion && adguard.app.getVersion(),
+            };
+            return this.scriptFilter.buildScript(domain, config);
         },
 
         /**
          * Builds the final output string for the specified page.
-         * Depending on the browser we either allow or forbid the new remote rules (see how `scriptSource` is used).
+         * Depending on the browser we either allow or forbid the new remote rules
+         * (see how `scriptSource` is used).
          *
          * @param {string} url Page URL
          * @returns {string} Script to be applied
