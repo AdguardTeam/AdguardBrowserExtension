@@ -953,7 +953,6 @@ ace.define("ace/mode/adguard_highlight_rules",[], function (require, exports, mo
     }, {
         token: "keyword.control",
         regex: /scriptlet/,
-        next: "start",
     }]);
 
     this.normalizeRules();
