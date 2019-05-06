@@ -342,6 +342,7 @@ PageController.prototype = {
     },
 
     onEventAdded: function (tabInfo, event) {
+        console.log(tabInfo, event);
         if (this.currentTabId !== tabInfo.tabId) {
             // don't relate to the current tab
             return;
