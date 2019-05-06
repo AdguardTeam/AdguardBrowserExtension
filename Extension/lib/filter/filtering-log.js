@@ -79,7 +79,7 @@ adguard.filteringLog = (function (adguard) {
             return;
         }
 
-        var tabInfo = tabsInfoMap[tabId];
+        const tabInfo = tabsInfoMap[tabId];
         if (tabInfo) {
             adguard.listeners.notifyListeners(adguard.listeners.TAB_CLOSE, tabInfo);
         }
@@ -145,7 +145,7 @@ adguard.filteringLog = (function (adguard) {
         filteringEvent.requestRule = {};
         filteringEvent.requestRule.replaceRule = true;
         filteringEvent.replaceRules = [];
-        replaceRules.forEach(replaceRule => {
+        replaceRules.forEach((replaceRule) => {
             const tempRule = {};
             appendProperties(tempRule, replaceRule);
             filteringEvent.replaceRules.push(tempRule);
@@ -169,6 +169,8 @@ adguard.filteringLog = (function (adguard) {
             tabInfo.filteringEvents.splice(1, 1);
         }
 
+        console.log(tabInfo, filteringEvent);
+
         adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_ADDED, tabInfo, filteringEvent);
     }
 
@@ -176,7 +178,7 @@ adguard.filteringLog = (function (adguard) {
      * Get filtering info for tab
      * @param tabId
      */
-    var getFilteringInfoByTabId = function (tabId) {
+    const getFilteringInfoByTabId = function (tabId) {
         return tabsInfoMap[tabId];
     };
 
@@ -189,26 +191,26 @@ adguard.filteringLog = (function (adguard) {
      * @param requestRule
      * @param eventId
      */
-    var addHttpRequestEvent = function (tab, requestUrl, frameUrl, requestType, requestRule, eventId) {
+    const addHttpRequestEvent = function (tab, requestUrl, frameUrl, requestType, requestRule, eventId) {
         if (openedFilteringLogsPage === 0) {
             return;
         }
 
-        var tabInfo = tabsInfoMap[tab.tabId];
+        const tabInfo = tabsInfoMap[tab.tabId];
         if (!tabInfo) {
             return;
         }
 
-        var requestDomain = adguard.utils.url.getDomainName(requestUrl);
-        var frameDomain = adguard.utils.url.getDomainName(frameUrl);
+        const requestDomain = adguard.utils.url.getDomainName(requestUrl);
+        const frameDomain = adguard.utils.url.getDomainName(frameUrl);
 
-        var filteringEvent = {
-            eventId: eventId,
-            requestUrl: requestUrl,
-            requestDomain: requestDomain,
-            frameUrl: frameUrl,
-            frameDomain: frameDomain,
-            requestType: requestType,
+        const filteringEvent = {
+            eventId,
+            requestUrl,
+            requestDomain,
+            frameUrl,
+            frameDomain,
+            requestType,
             requestThirdParty: adguard.utils.url.isThirdPartyRequest(requestUrl, frameUrl),
         };
 
@@ -228,7 +230,7 @@ adguard.filteringLog = (function (adguard) {
      * @param {String} requestType - Request type
      * @param {{ruleText: String, filterId: Number, isInjectRule: Boolean}} requestRule - Request rule
      */
-    var addCosmeticEvent = function (tab, element, frameUrl, requestType, requestRule) {
+    const addCosmeticEvent = function (tab, element, frameUrl, requestType, requestRule) {
         if (openedFilteringLogsPage === 0) {
             return;
         }
@@ -237,23 +239,46 @@ adguard.filteringLog = (function (adguard) {
             return;
         }
 
-        var tabInfo = tabsInfoMap[tab.tabId];
+        const tabInfo = tabsInfoMap[tab.tabId];
         if (!tabInfo) {
             return;
         }
 
-        var frameDomain = adguard.utils.url.getDomainName(frameUrl);
-        var filteringEvent = {
+        const frameDomain = adguard.utils.url.getDomainName(frameUrl);
+        const filteringEvent = {
             element: typeof element === 'string' ? element : adguard.utils.strings.elementToString(element),
-            frameUrl: frameUrl,
-            frameDomain: frameDomain,
-            requestType: requestType,
+            frameUrl,
+            frameDomain,
+            requestType,
         };
         if (requestRule) {
             // Copy useful properties
             addRuleToFilteringEvent(filteringEvent, requestRule);
         }
 
+        pushFilteringEvent(tabInfo, filteringEvent);
+    };
+
+    const addScriptInjectionEvent = (tab, frameUrl, requestType, rule) => {
+        console.log(tab);
+        if (openedFilteringLogsPage === 0) {
+            return;
+        }
+        if (!rule) {
+            return;
+        }
+        const tabInfo = tabsInfoMap[tab.tabId];
+        if (!tabInfo) {
+            return;
+        }
+        const frameDomain = adguard.utils.url.getDomainName(frameUrl);
+        const filteringEvent = {
+            requestUrl: frameUrl,
+            frameUrl,
+            frameDomain,
+            requestType,
+        };
+        addRuleToFilteringEvent(filteringEvent, rule);
         pushFilteringEvent(tabInfo, filteringEvent);
     };
 
@@ -328,7 +353,6 @@ adguard.filteringLog = (function (adguard) {
      * @param {boolean} thirdParty
      */
     const addCookieEvent = function (tab, cookieName, cookieValue, cookieDomain, requestType, cookieRule, isModifyingCookieRule, thirdParty) {
-
         if (openedFilteringLogsPage === 0) {
             return;
         }
@@ -404,14 +428,14 @@ adguard.filteringLog = (function (adguard) {
      * Synchronize currently opened tabs with out state
      * @param callback
      */
-    var synchronizeOpenTabs = function (callback) {
-        adguard.tabs.getAll(function (tabs) {
+    const synchronizeOpenTabs = function (callback) {
+        adguard.tabs.getAll((tabs) => {
             // As Object.keys() returns strings we convert them to integers,
             // because tabId is integer in extension API
-            var tabIdsToRemove = Object.keys(tabsInfoMap).map(id => parseInt(id, 10));
-            for (var i = 0; i < tabs.length; i++) {
-                var openTab = tabs[i];
-                var tabInfo = tabsInfoMap[openTab.tabId];
+            const tabIdsToRemove = Object.keys(tabsInfoMap).map(id => parseInt(id, 10));
+            for (let i = 0; i < tabs.length; i++) {
+                const openTab = tabs[i];
+                const tabInfo = tabsInfoMap[openTab.tabId];
                 if (!tabInfo) {
                     // add tab
                     addTab(openTab);
@@ -419,17 +443,17 @@ adguard.filteringLog = (function (adguard) {
                     // update tab
                     updateTab(openTab);
                 }
-                var index = tabIdsToRemove.indexOf(openTab.tabId);
+                const index = tabIdsToRemove.indexOf(openTab.tabId);
                 if (index >= 0) {
                     tabIdsToRemove.splice(index, 1);
                 }
             }
-            for (var j = 0; j < tabIdsToRemove.length; j++) {
+            for (let j = 0; j < tabIdsToRemove.length; j++) {
                 removeTabById(tabIdsToRemove[j]);
             }
             if (typeof callback === 'function') {
-                var syncTabs = [];
-                for (var tabId in tabsInfoMap) { // jshint ignore:line
+                const syncTabs = [];
+                for (const tabId in tabsInfoMap) { // jshint ignore:line
                     syncTabs.push(tabsInfoMap[tabId]);
                 }
                 callback(syncTabs);
@@ -440,19 +464,19 @@ adguard.filteringLog = (function (adguard) {
     /**
      * We collect filtering events if opened at least one page of log
      */
-    var onOpenFilteringLogPage = function () {
+    const onOpenFilteringLogPage = function () {
         openedFilteringLogsPage++;
     };
 
     /**
      * Cleanup when last page of log closes
      */
-    var onCloseFilteringLogPage = function () {
+    const onCloseFilteringLogPage = function () {
         openedFilteringLogsPage = Math.max(openedFilteringLogsPage - 1, 0);
         if (openedFilteringLogsPage === 0) {
             // Clear events
-            for (var tabId in tabsInfoMap) { // jshint ignore:line
-                var tabInfo = tabsInfoMap[tabId];
+            for (const tabId in tabsInfoMap) { // jshint ignore:line
+                const tabInfo = tabsInfoMap[tabId];
                 delete tabInfo.filteringEvents;
             }
         }
@@ -481,20 +505,21 @@ adguard.filteringLog = (function (adguard) {
 
     return {
 
-        synchronizeOpenTabs: synchronizeOpenTabs,
-        init: init,
+        synchronizeOpenTabs,
+        init,
 
-        getFilteringInfoByTabId: getFilteringInfoByTabId,
-        addHttpRequestEvent: addHttpRequestEvent,
-        bindRuleToHttpRequestEvent: bindRuleToHttpRequestEvent,
-        bindReplaceRulesToHttpRequestEvent: bindReplaceRulesToHttpRequestEvent,
-        addCosmeticEvent: addCosmeticEvent,
-        addCookieEvent: addCookieEvent,
-        bindStealthActionsToHttpRequestEvent: bindStealthActionsToHttpRequestEvent,
-        clearEventsByTabId: clearEventsByTabId,
+        getFilteringInfoByTabId,
+        addHttpRequestEvent,
+        bindRuleToHttpRequestEvent,
+        bindReplaceRulesToHttpRequestEvent,
+        addCosmeticEvent,
+        addCookieEvent,
+        addScriptInjectionEvent,
+        bindStealthActionsToHttpRequestEvent,
+        clearEventsByTabId,
 
-        isOpen: isOpen,
-        onOpenFilteringLogPage: onOpenFilteringLogPage,
-        onCloseFilteringLogPage: onCloseFilteringLogPage,
+        isOpen,
+        onOpenFilteringLogPage,
+        onCloseFilteringLogPage,
     };
 })(adguard);
