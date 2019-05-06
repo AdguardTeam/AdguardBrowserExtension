@@ -16,7 +16,6 @@
  */
 
 (function (api) {
-
     'use strict';
 
     /**
@@ -24,14 +23,13 @@
      * Read here for details:
      * http://adguard.com/en/filterrules.html#baseRules
      */
-    var UrlFilter = function (rules, badFilterRules) {
-
+    const UrlFilter = function (rules, badFilterRules) {
         this.basicRulesTable = new api.UrlFilterRuleLookupTable();
         this.importantRulesTable = new api.UrlFilterRuleLookupTable();
         this.badFilterRules = badFilterRules;
 
         if (rules) {
-            for (var i = 0; i < rules.length; i++) {
+            for (let i = 0; i < rules.length; i += 1) {
                 this.addRule(rules[i]);
             }
         }
@@ -44,7 +42,7 @@
          *
          * @param rule Rule object
          */
-        addRule: function (rule) {
+        addRule(rule) {
             if (rule.isImportant) {
                 this.importantRulesTable.addRule(rule);
             } else {
@@ -57,7 +55,7 @@
          *
          * @param rule Rule to remove
          */
-        removeRule: function (rule) {
+        removeRule(rule) {
             if (rule.isImportant) {
                 this.importantRulesTable.removeRule(rule);
             } else {
@@ -75,7 +73,7 @@
          * @param skipGenericRules    skip generic rules
          * @return matching rule or null if no match found
          */
-        isFiltered: function (url, documentHost, requestType, thirdParty, skipGenericRules) {
+        isFiltered(url, documentHost, requestType, thirdParty, skipGenericRules) {
             // First looking for the rule marked with $important modifier
             let rule = this.importantRulesTable.findRule(url,
                 documentHost,
@@ -97,13 +95,11 @@
         /**
          * Returns the array of loaded rules
          */
-        getRules: function () {
-            var rules = this.basicRulesTable.getRules();
+        getRules() {
+            const rules = this.basicRulesTable.getRules();
             return rules.concat(this.importantRulesTable.getRules());
-        }
+        },
     };
 
     api.UrlFilter = UrlFilter;
-
 })(adguard.rules);
-

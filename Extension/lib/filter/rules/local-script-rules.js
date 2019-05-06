@@ -27,23 +27,21 @@
  */
 
 (function (api) {
-
-    var DEFAULT_SCRIPT_RULES = Object.create(null);
+    let DEFAULT_SCRIPT_RULES = Object.create(null);
 
     /**
      * Saves local script rules to object
      * @param json JSON object loaded from the filters/local_script_rules.json file
      */
-    var setLocalScriptRules = function (json) {
+    const setLocalScriptRules = function (json) {
 
         DEFAULT_SCRIPT_RULES = Object.create(null);
 
-        var rules = json.rules;
-        for (var i = 0; i < rules.length; i++) {
-            var rule = rules[i];
-            var domains = rule.domains;
-            var script = rule.script;
-            var ruleText = '';
+        const rules = json;
+        for (let i = 0; i < rules.length; i += 1) {
+            const rule = rules[i];
+            const { domains, script } = rule;
+            let ruleText = '';
             if (domains !== '<any>') {
                 ruleText = domains;
             }
@@ -57,13 +55,12 @@
      * @param ruleText Rule text
      * @returns {boolean}
      */
-    var isLocal = function (ruleText) {
+    const isLocal = function (ruleText) {
         return ruleText in DEFAULT_SCRIPT_RULES;
     };
 
     api.LocalScriptRulesService = {
-        setLocalScriptRules: setLocalScriptRules,
-        isLocal: isLocal
+        setLocalScriptRules,
+        isLocal,
     };
-
 })(adguard.rules);

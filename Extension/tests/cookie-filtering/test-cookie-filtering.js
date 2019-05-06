@@ -1,7 +1,6 @@
 /* global QUnit */
 
-QUnit.test("Test cookie filter", function (assert) {
-
+QUnit.test('Test cookie filter', (assert) => {
     const filter = new adguard.rules.CookieFilter();
     const rule1 = new adguard.rules.UrlFilterRule('$cookie=/__utm[a-z]/');
     const rule2 = new adguard.rules.UrlFilterRule('$cookie=__cfduid');
@@ -44,7 +43,6 @@ QUnit.test("Test cookie filter", function (assert) {
     assert.equal(2, rules.length);
     assert.equal(rule3.ruleText, rules[0].ruleText);
     assert.equal(rule6.ruleText, rules[1].ruleText);
-
 });
 
 // QUnit.test("Test cookie filtering", function (assert) {

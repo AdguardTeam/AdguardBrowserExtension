@@ -18,31 +18,27 @@
 /**
  * Sync settings provider
  */
-(function (api, adguard) { // jshint ignore:line
+(function (api, adguard) {
+    const requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
 
-    var requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
-
-    var readFile = function (path, callback) {
-
-        var errorHandler = function (e) {
+    const readFile = function (path, callback) {
+        const errorHandler = function (e) {
             adguard.console.error(e);
 
             callback(false);
         };
 
-        var onInitFs = function (fs) {
-            fs.root.getFile(path, {}, function (fileEntry) {
-                fileEntry.file(function (file) {
-                    var reader = new FileReader();
+        const onInitFs = function (fs) {
+            fs.root.getFile(path, {}, (fileEntry) => {
+                fileEntry.file((file) => {
+                    const reader = new FileReader();
 
-                    reader.onloadend = function (e) {
+                    reader.onloadend = function () {
                         callback(JSON.parse(this.result));
                     };
 
                     reader.readAsText(file);
-
                 }, errorHandler);
-
             }, errorHandler);
         };
 
@@ -56,21 +52,19 @@
      * @param data
      * @param callback
      */
-    var saveFile = function (path, data, callback) {
-        var errorHandler = function (e) {
+    const saveFile = function (path, data, callback) {
+        const errorHandler = function (e) {
             adguard.console.error(e);
 
             callback(false);
         };
 
-        var onInitFs = function (fs) {
-            fs.root.getFile(path, {create: true}, function (fileEntry) {
-
+        const onInitFs = function (fs) {
+            fs.root.getFile(path, { create: true }, (fileEntry) => {
                 // Create a FileWriter object for our FileEntry (log.txt).
-                fileEntry.createWriter(function (fileWriter) {
-
-                    var truncated = false;
-                    fileWriter.onwriteend = function (e) {
+                fileEntry.createWriter((fileWriter) => {
+                    let truncated = false;
+                    fileWriter.onwriteend = function () {
                         if (!truncated) {
                             truncated = true;
                             this.truncate(this.position);
@@ -85,9 +79,8 @@
                         callback(false);
                     };
 
-                    var blob = new Blob([JSON.stringify(data)], {type: 'text/plain'});
+                    const blob = new Blob([JSON.stringify(data)], { type: 'text/plain' });
                     fileWriter.write(blob);
-
                 }, errorHandler);
             }, errorHandler);
         };
@@ -97,18 +90,17 @@
 
 
     // API
-    var load = function (filePath, callback) {
+    const load = function (filePath, callback) {
         readFile(filePath, callback);
     };
 
-    var save = function (filePath, data, callback) {
+    const save = function (filePath, data, callback) {
         saveFile(filePath, data, callback);
     };
 
     // EXPOSE
     api.syncProviders.register('FILE', {
-        load: load,
-        save: save
+        load,
+        save,
     });
-
 })(adguard.sync, adguard);

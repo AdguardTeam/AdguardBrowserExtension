@@ -25,10 +25,10 @@
     window.popupPage = {
         sendMessage: adguard.runtimeImpl.sendMessage,
         onMessage: adguard.runtimeImpl.onMessage,
-        closePopup: function () {
+        closePopup() {
             window.close();
         },
-        resizePopup: function () {
+        resizePopup() {
             // Doing nothing
         },
     };

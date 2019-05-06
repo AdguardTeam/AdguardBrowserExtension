@@ -18,4 +18,4 @@
 /**
  * Global object for content scripts
  */
-var adguardContent = {}; // jshint ignore:line
+const adguardContent = {}; // eslint-disable-line no-unused-vars
