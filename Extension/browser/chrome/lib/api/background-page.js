@@ -15,29 +15,25 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global chrome */
-
-var browser = window.browser || chrome;
+const browser = window.browser || chrome;
 
 (function (adguard, browser) {
-
     'use strict';
 
     adguard.runtime = (function () {
-
-        var onMessage = {
-            addListener: function (callback) {
+        const onMessage = {
+            addListener(callback) {
                 // https://developer.chrome.com/extensions/runtime#event-onMessage
-                adguard.runtimeImpl.onMessage.addListener(function (message, sender, sendResponse) {
-                    var senderOverride = Object.create(null);
+                adguard.runtimeImpl.onMessage.addListener((message, sender, sendResponse) => {
+                    const senderOverride = Object.create(null);
                     if (sender.tab) {
                         senderOverride.tab = adguard.tabsImpl.fromChromeTab(sender.tab);
                     }
                     if (typeof sender.frameId !== 'undefined') {
                         senderOverride.frameId = sender.frameId;
                     }
-                    var response = callback(message, senderOverride, sendResponse);
-                    var async = response === true;
+                    const response = callback(message, senderOverride, sendResponse);
+                    const async = response === true;
                     // If async sendResponse will be invoked later
                     if (!async) {
                         sendResponse(response);
@@ -45,12 +41,12 @@ var browser = window.browser || chrome;
                     // Don't forget return callback result for asynchronous message passing
                     return async;
                 });
-            }
+            },
         };
 
         return {
             setUninstallURL: browser.runtime.setUninstallURL,
-            onMessage: onMessage,
+            onMessage,
             get lastError() {
                 return browser.runtime.lastError;
             },
@@ -59,8 +55,8 @@ var browser = window.browser || chrome;
 
     // Calculates absolute URL of this extension
     const extensionProtocol = (function () {
-        var url = browser.extension.getURL("");
-        var index = url.indexOf('://');
+        const url = browser.extension.getURL('');
+        const index = url.indexOf('://');
         if (index > 0) {
             return url.substring(0, index);
         }
@@ -68,15 +64,17 @@ var browser = window.browser || chrome;
     })();
 
     /**
-     * We are skipping requests to internal resources of extensions (e.g. chrome-extension:// or moz-extension://... etc.)
+     * We are skipping requests to internal resources of extensions
+     * (e.g. chrome-extension:// or moz-extension://... etc.)
      * @param details Request details
      * @returns {boolean}
      */
     function shouldSkipRequest(details) {
-        return details.tabId === adguard.BACKGROUND_TAB_ID && details.url.indexOf(extensionProtocol) === 0;
+        return details.tabId === adguard.BACKGROUND_TAB_ID
+            && details.url.indexOf(extensionProtocol) === 0;
     }
 
-    var linkHelper = document.createElement('a');
+    const linkHelper = document.createElement('a');
 
     /**
      * Fixing request type:
@@ -87,8 +85,8 @@ var browser = window.browser || chrome;
      */
     function parseRequestTypeFromUrl(url) {
         linkHelper.href = url;
-        var path = linkHelper.pathname;
-        var requestType = adguard.utils.browser.parseContentTypeFromUrlPath(path);
+        const path = linkHelper.pathname;
+        let requestType = adguard.utils.browser.parseContentTypeFromUrlPath(path);
         if (requestType === null) {
             // https://code.google.com/p/chromium/issues/detail?id=410382
             requestType = adguard.RequestTypes.OBJECT;
@@ -98,7 +96,8 @@ var browser = window.browser || chrome;
 
     /**
      * An array of HTTP headers.
-     * Each header is represented as a dictionary containing the keys name and either value or binaryValue.
+     * Each header is represented as a dictionary containing the keys name
+     * and either value or binaryValue.
      * https://developer.chrome.com/extensions/webRequest#type-HttpHeaders
      * @typedef HttpHeaders
      * @type {Array.<{ name: String, value: String, binaryValue }>}
@@ -135,37 +134,39 @@ var browser = window.browser || chrome;
      * @returns {RequestDetails} prepared request details
      */
     function getRequestDetails(details) {
-        var tab = { tabId: details.tabId };
+        const tab = { tabId: details.tabId };
 
         /**
          * FF sends http instead of ws protocol at the http-listeners layer
-         * Although this is expected, as the Upgrade request is indeed an HTTP request, we use a chromium based approach in this case.
+         * Although this is expected, as the Upgrade request is indeed an HTTP request,
+         * we use a chromium based approach in this case.
          */
         if (details.type === 'websocket' && details.url.indexOf('http') === 0) {
             details.url = details.url.replace(/^http(s)?:/, 'ws$1:');
         }
 
         // https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
-        var requestDetails = {
-            requestUrl: details.url,    //request url
-            tab: tab,                   //request tab,
+        const requestDetails = {
+            requestUrl: details.url,    // request url
+            tab,                        // request tab,
             requestId: details.requestId,
             statusCode: details.statusCode,
-            method: details.method
+            method: details.method,
         };
 
-        var frameId = 0;        //id of this frame (only for main_frame and sub_frame types)
-        var requestFrameId = 0; //id of frame where request is executed
-        var requestType;        //request type
+        let frameId = 0;        // id of this frame (only for main_frame and sub_frame types)
+        let requestFrameId = 0; // id of frame where request is executed
+        let requestType;        // request type
 
         switch (details.type) {
-            case "main_frame":
+            case 'main_frame':
                 frameId = 0;
                 requestType = adguard.RequestTypes.DOCUMENT;
                 break;
-            case "sub_frame":
+            case 'sub_frame':
                 frameId = details.frameId;
-                requestFrameId = details.parentFrameId; //for sub_frame use parentFrameId as id of frame that wraps this frame
+                // for sub_frame use parentFrameId as id of frame that wraps this frame
+                requestFrameId = details.parentFrameId;
                 requestType = adguard.RequestTypes.SUBDOCUMENT;
                 break;
             default:
@@ -218,27 +219,24 @@ var browser = window.browser || chrome;
         return requestDetails;
     }
 
-    var onBeforeRequest = {
+    const onBeforeRequest = {
         /**
          * Wrapper for webRequest.onBeforeRequest event
          * It prepares requestDetails and passes them to the callback
          * @param callback callback function receives {RequestDetails} and handles event
          * @param {String} urls url match pattern https://developer.chrome.com/extensions/match_patterns
          */
-        addListener: function (callback, urls) {
-
+        addListener(callback, urls) {
             // https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
-            browser.webRequest.onBeforeRequest.addListener(function (details) {
-
+            browser.webRequest.onBeforeRequest.addListener((details) => {
                 if (shouldSkipRequest(details)) {
                     return;
                 }
 
-                var requestDetails = getRequestDetails(details);
+                const requestDetails = getRequestDetails(details);
                 return callback(requestDetails);
-
-            }, urls ? { urls: urls } : {}, ["blocking"]);
-        }
+            }, urls ? { urls } : {}, ['blocking']);
+        },
     };
 
     /**
@@ -250,120 +248,111 @@ var browser = window.browser || chrome;
     const onBeforeSendHeadersExtraInfoSpec = ['requestHeaders', 'blocking'];
     const onHeadersReceivedExtraInfoSpec = ['responseHeaders', 'blocking'];
 
-    if (typeof browser.webRequest.OnBeforeSendHeadersOptions !== 'undefined' &&
-        browser.webRequest.OnBeforeSendHeadersOptions.hasOwnProperty('EXTRA_HEADERS')) {
-
+    if (typeof browser.webRequest.OnBeforeSendHeadersOptions !== 'undefined'
+        && browser.webRequest.OnBeforeSendHeadersOptions.hasOwnProperty('EXTRA_HEADERS')) {
         onBeforeSendHeadersExtraInfoSpec.push('extraHeaders');
     }
 
-    if (typeof browser.webRequest.OnHeadersReceivedOptions !== 'undefined' &&
-        browser.webRequest.OnHeadersReceivedOptions.hasOwnProperty('EXTRA_HEADERS')) {
-
+    if (typeof browser.webRequest.OnHeadersReceivedOptions !== 'undefined'
+        && browser.webRequest.OnHeadersReceivedOptions.hasOwnProperty('EXTRA_HEADERS')) {
         onHeadersReceivedExtraInfoSpec.push('extraHeaders');
     }
 
-    var onHeadersReceived = {
+    const onHeadersReceived = {
         /**
          * Wrapper for webRequest.onHeadersReceived event
          * It prepares requestDetails and passes them to the callback
          * @param callback callback function receives {RequestDetails} and handles event
          * @param {Array.<String>} urls url match pattern https://developer.chrome.com/extensions/match_patterns
          */
-        addListener: function (callback, urls) {
-
-            browser.webRequest.onHeadersReceived.addListener(function (details) {
-
+        addListener(callback, urls) {
+            browser.webRequest.onHeadersReceived.addListener((details) => {
                 if (shouldSkipRequest(details)) {
                     return;
                 }
 
-                var requestDetails = getRequestDetails(details);
-                var result = callback(requestDetails);
+                const requestDetails = getRequestDetails(details);
+                const result = callback(requestDetails);
                 if (result) {
                     return 'responseHeaders' in result ? { responseHeaders: result.responseHeaders } : {};
                 }
-
-            }, urls ? { urls: urls } : {}, onHeadersReceivedExtraInfoSpec);
-        }
+            }, urls ? { urls } : {}, onHeadersReceivedExtraInfoSpec);
+        },
     };
 
-    var onBeforeSendHeaders = {
-
+    const onBeforeSendHeaders = {
         /**
          * Wrapper for webRequest.onBeforeSendHeaders event
          * It prepares requestDetails and passes them to the callback
          * @param callback callback function receives {RequestDetails} and handles event
          * @param {Array.<String>} urls url match pattern https://developer.chrome.com/extensions/match_patterns
          */
-        addListener: function (callback, urls) {
-
-            browser.webRequest.onBeforeSendHeaders.addListener(function (details) {
-
+        addListener(callback, urls) {
+            browser.webRequest.onBeforeSendHeaders.addListener((details) => {
                 if (shouldSkipRequest(details)) {
                     return;
                 }
 
-                var requestDetails = getRequestDetails(details);
-                var result = callback(requestDetails);
+                const requestDetails = getRequestDetails(details);
+                const result = callback(requestDetails);
                 if (result) {
                     return 'requestHeaders' in result ? { requestHeaders: result.requestHeaders } : {};
                 }
-
-            }, urls ? { urls: urls } : {}, onBeforeSendHeadersExtraInfoSpec);
-        }
+            }, urls ? { urls } : {}, onBeforeSendHeadersExtraInfoSpec);
+        },
     };
 
-    var onResponseStarted = {
+    const onResponseStarted = {
         /**
          * Wrapper for webRequest.onResponseStarted event
          * It prepares requestDetails and passes them to the callback
          * @param callback callback function receives {RequestDetails} and handles event
          * @param {String} urls url match pattern https://developer.chrome.com/extensions/match_patterns
          */
-        addListener: function (callback, urls) {
-            browser.webRequest.onResponseStarted.addListener(function (details) {
+        addListener(callback, urls) {
+            browser.webRequest.onResponseStarted.addListener((details) => {
                 if (shouldSkipRequest(details)) {
                     return;
                 }
-                var requestDetails = getRequestDetails(details);
+                const requestDetails = getRequestDetails(details);
                 return callback(requestDetails);
-            }, urls ? { urls: urls } : {}, ['responseHeaders']);
+            }, urls ? { urls } : {}, ['responseHeaders']);
         },
     };
 
-    var onErrorOccurred = {
+    const onErrorOccurred = {
         /**
          * Wrapper for webRequest.onErrorOccurred event
          * It prepares requestDetails and passes them to the callback
          * @param callback callback function receives {RequestDetails} and handles event
          * @param {String} urls url match pattern https://developer.chrome.com/extensions/match_patterns
          */
-        addListener: function (callback, urls) {
-            browser.webRequest.onErrorOccurred.addListener(function (details) {
+        addListener(callback, urls) {
+            browser.webRequest.onErrorOccurred.addListener((details) => {
                 if (shouldSkipRequest(details)) {
                     return;
                 }
-                var requestDetails = getRequestDetails(details);
+                const requestDetails = getRequestDetails(details);
                 return callback(requestDetails);
-            }, urls ? { urls: urls } : {});
+            }, urls ? { urls } : {});
         },
     };
 
-    var onCompleted = {
+    const onCompleted = {
         /**
          * Wrapper for webRequest.onCompleted event
          * It prepares requestDetails and passes them to the callback
          * @param callback callback function receives {RequestDetails} and handles event
          * @param {String} urls url match pattern https://developer.chrome.com/extensions/match_patterns
          */
-        addListener: function (callback, urls) {
-            browser.webRequest.onCompleted.addListener(function (details) {
+        addListener(callback, urls) {
+            browser.webRequest.onCompleted.addListener((details) => {
                 if (shouldSkipRequest(details)) {
                     return;
                 }
-                var requestDetails = getRequestDetails(details);
+                const requestDetails = getRequestDetails(details);
                 return callback(requestDetails);
-            }, urls ? { urls: urls } : {}, ['responseHeaders']);
+            }, urls ? { urls } : {}, ['responseHeaders']);
         },
     };
 
@@ -374,16 +363,16 @@ var browser = window.browser || chrome;
          * @param callback callback function receives {RequestDetails} and handles event
          * @param {Array.<String>} urls url match pattern https://developer.chrome.com/extensions/match_patterns
          */
-        addListener: function (callback, urls) {
-            browser.webRequest.onBeforeRedirect.addListener(function (details) {
+        addListener(callback, urls) {
+            browser.webRequest.onBeforeRedirect.addListener((details) => {
                 if (shouldSkipRequest(details)) {
                     return;
                 }
                 const requestDetails = getRequestDetails(details);
                 requestDetails.redirectUrl = details.redirectUrl;
                 return callback(requestDetails);
-            }, urls ? { urls: urls } : {});
-        }
+            }, urls ? { urls } : {});
+        },
     };
 
     /**
@@ -401,7 +390,7 @@ var browser = window.browser || chrome;
         /**
          * Extension ID
          */
-        getId: function () {
+        getId() {
             return browser.runtime.id;
         },
 
@@ -409,51 +398,50 @@ var browser = window.browser || chrome;
          * Gets extension scheme
          * @returns "chrome-extension" for Chrome," ms-browser-extension" for Edge
          */
-        getUrlScheme: function () {
-            var url = adguard.getURL('test.html');
-            var index = url.indexOf('://');
+        getUrlScheme() {
+            const url = adguard.getURL('test.html');
+            const index = url.indexOf('://');
             return url.substring(0, index);
         },
 
         /**
          * Extension version
          */
-        getVersion: function () {
+        getVersion() {
             return browser.runtime.getManifest().version;
         },
 
         /**
          * Extension UI locale
          */
-        getLocale: function () {
+        getLocale() {
             return browser.i18n.getUILanguage();
-        }
+        },
     };
 
     adguard.webRequest = {
-        onBeforeRequest: onBeforeRequest,
+        onBeforeRequest,
         handlerBehaviorChanged: browser.webRequest.handlerBehaviorChanged,
-        onCompleted: onCompleted,
-        onErrorOccurred: onErrorOccurred,
-        onHeadersReceived: onHeadersReceived,
-        onBeforeSendHeaders: onBeforeSendHeaders,
-        onResponseStarted: onResponseStarted,
-        onBeforeRedirect: onBeforeRedirect,
-        webSocketSupported: typeof browser.webRequest.ResourceType !== 'undefined' && browser.webRequest.ResourceType['WEBSOCKET'] === 'websocket',
+        onCompleted,
+        onErrorOccurred,
+        onHeadersReceived,
+        onBeforeSendHeaders,
+        onResponseStarted,
+        onBeforeRedirect,
+        webSocketSupported: typeof browser.webRequest.ResourceType !== 'undefined'
+            && browser.webRequest.ResourceType.WEBSOCKET === 'websocket',
         filterResponseData: browser.webRequest.filterResponseData,
     };
 
-    var onCreatedNavigationTarget = {
+    const onCreatedNavigationTarget = {
 
-        addListener: function (callback) {
-
+        addListener(callback) {
             // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webNavigation/onCreatedNavigationTarget#Browser_compatibility
             if (typeof browser.webNavigation.onCreatedNavigationTarget === 'undefined') {
                 return;
             }
 
-            browser.webNavigation.onCreatedNavigationTarget.addListener(function (details) {
-
+            browser.webNavigation.onCreatedNavigationTarget.addListener((details) => {
                 if (details.tabId === adguard.BACKGROUND_TAB_ID) {
                     return;
                 }
@@ -461,82 +449,84 @@ var browser = window.browser || chrome;
                 callback({
                     tabId: details.tabId,
                     sourceTabId: details.sourceTabId,
-                    url: details.url
+                    url: details.url,
                 });
             });
-        }
+        },
     };
 
-    var onCommitted = {
+    const onCommitted = {
         /**
          * Wrapper for webNavigation.onCommitted event
          * It prepares webNavigation details and passes them to the callback
-         * @param callback callback function receives object similar to {RequestDetails} and handles event
+         * @param callback callback function receives object similar to {RequestDetails}
+         * and handles event
          */
-        addListener: function (callback) {
+        addListener(callback) {
             // https://developer.chrome.com/extensions/webNavigation#event-onCommitted
-            browser.webNavigation.onCommitted.addListener(function (details) {
-                // makes webNavigation.onCommited details similar to webRequestDetails
-                details.requestType = details.frameId === 0 ? adguard.RequestTypes.DOCUMENT : adguard.RequestTypes.SUBDOCUMENT;
+            browser.webNavigation.onCommitted.addListener((details) => {
+                // makes webNavigation.onCommitted details similar to webRequestDetails
+                details.requestType = details.frameId === 0
+                    ? adguard.RequestTypes.DOCUMENT
+                    : adguard.RequestTypes.SUBDOCUMENT;
                 details.tab = { tabId: details.tabId };
                 details.requestUrl = details.url;
                 callback(details);
             }, {
                 url: [{
-                    urlPrefix: 'http'
+                    urlPrefix: 'http',
                 }, {
-                    urlPrefix: 'https'
-                }]
+                    urlPrefix: 'https',
+                }],
             });
-        }
+        },
     };
 
     // https://developer.chrome.com/extensions/webNavigation
     adguard.webNavigation = {
-        onCreatedNavigationTarget: onCreatedNavigationTarget,
-        onCommitted: onCommitted,
+        onCreatedNavigationTarget,
+        onCommitted,
         onDOMContentLoaded: browser.webNavigation.onDOMContentLoaded,
     };
 
-    var browserActionSupported = typeof browser.browserAction.setIcon !== 'undefined';
+    const browserActionSupported = typeof browser.browserAction.setIcon !== 'undefined';
     if (!browserActionSupported && browser.browserAction.onClicked) {
         // Open settings menu
-        browser.browserAction.onClicked.addListener(function () {
+        browser.browserAction.onClicked.addListener(() => {
             adguard.ui.openSettingsTab();
         });
     }
 
-    //noinspection JSUnusedLocalSymbols,JSHint
     adguard.browserAction = {
-
-        setBrowserAction: function (tab, icon, badge, badgeColor, title) {
-
+        /* eslint-disable-next-line no-unused-vars */
+        setBrowserAction(tab, icon, badge, badgeColor, title) {
             if (!browserActionSupported) {
                 return;
             }
 
-            var tabId = tab.tabId;
+            const { tabId } = tab;
 
-            var onIconReady = function () {
+            const onIconReady = function () {
                 if (browser.runtime.lastError) {
                     return;
                 }
-                browser.browserAction.setBadgeText({ tabId: tabId, text: badge });
+                browser.browserAction.setBadgeText({ tabId, text: badge });
 
                 if (browser.runtime.lastError) {
                     return;
                 }
                 if (badge) {
-                    browser.browserAction.setBadgeBackgroundColor({ tabId: tabId, color: badgeColor });
+                    browser.browserAction.setBadgeBackgroundColor({ tabId, color: badgeColor });
                 }
 
-                //title setup via manifest.json file
-                //chrome.browserAction.setTitle({tabId: tabId, title: title});
+                // title setup via manifest.json file
+                // chrome.browserAction.setTitle({tabId: tabId, title: title});
             };
 
             /**
              * Workaround for MS Edge.
-             * For some reason Edge changes the inner state of the "icon" object and adds a tabId property inside.
+             * For some reason Edge changes the inner state of the "icon"
+             * object and adds a tabId property inside.
              */
             delete icon.tabId;
 
@@ -544,19 +534,18 @@ var browser = window.browser || chrome;
                 return;
             }
 
-            browser.browserAction.setIcon({ tabId: tabId, path: icon }, onIconReady);
+            browser.browserAction.setIcon({ tabId, path: icon }, onIconReady);
         },
-        setPopup: function () {
+        setPopup() {
             // Do nothing. Popup is already installed in manifest file
         },
-        resize: function () {
+        resize() {
             // Do nothing
         },
-        close: function () {
+        close() {
             // Do nothing
-        }
+        },
     };
 
     adguard.contextMenus = browser.contextMenus;
-
 })(adguard, browser);

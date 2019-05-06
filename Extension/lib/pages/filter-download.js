@@ -15,8 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 /* global Nanobar, contentPage */
-document.addEventListener("DOMContentLoaded", function () {
-    var nanobar = new Nanobar({
+document.addEventListener('DOMContentLoaded', () => {
+    const nanobar = new Nanobar({
         classname: 'adg-progress-bar',
     });
 
@@ -24,15 +24,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function onLoaded() {
         nanobar.go(100);
-        setTimeout(function () {
+        setTimeout(() => {
             if (window) {
-                contentPage.sendMessage({type: 'openThankYouPage'});
+                contentPage.sendMessage({ type: 'openThankYouPage' });
             }
         }, 1000);
     }
 
     function checkRequestFilterReady() {
-        contentPage.sendMessage({type: 'checkRequestFilterReady'}, function (response) {
+        contentPage.sendMessage({ type: 'checkRequestFilterReady' }, (response) => {
             if (response.ready) {
                 onLoaded();
             } else {

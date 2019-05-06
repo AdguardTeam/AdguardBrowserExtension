@@ -1,127 +1,125 @@
-var manifestPath = 'manifest.json';
+/* eslint-disable no-console, no-unused-vars */
 
-var manifest = {
-    "timestamp": "1472817032841",
-    "protocol-version": "1.0",
-    "min-compatible-version": "1.0",
-    "app-id": "adguard-browser-extension",
-    "sections": [
+const manifestPath = 'manifest.json';
+
+const manifest = {
+    'timestamp': '1472817032841',
+    'protocol-version': '1.0',
+    'min-compatible-version': '1.0',
+    'app-id': 'adguard-browser-extension',
+    'sections': [
         {
-            "name": "filters.json",
-            "timestamp": 123123123213
+            'name': 'filters.json',
+            'timestamp': 123123123213,
         },
         {
-            "name": "general-settings.json",
-            "timestamp": 123123123213
-        }
-    ]
+            'name': 'general-settings.json',
+            'timestamp': 123123123213,
+        },
+    ],
 };
 
-var filtersPath = 'filters.json';
+const filtersPath = 'filters.json';
 
-var filters = {
-    "filters": {
-        "enabled-filters": [
+const filters = {
+    'filters': {
+        'enabled-filters': [
             1,
             2,
-            4
+            4,
         ],
-        "custom-filters": [
-            "http://filter-url"
+        'custom-filters': [
+            'http://filter-url',
         ],
-        "user-filter": {
-            "rules": "||test1.org/$script\n||test2.org/$script",
-            "disabled-rules": ""
+        'user-filter': {
+            'rules': '||test1.org/$script\n||test2.org/$script',
+            'disabled-rules': '',
         },
-        "whitelist": {
-            "inverted": false,
-            "domains": [
-                "whitelisted-domain"
+        'whitelist': {
+            'inverted': false,
+            'domains': [
+                'whitelisted-domain',
             ],
-            "inverted-domains": []
-        }
-    }
+            'inverted-domains': [],
+        },
+    },
 };
 
-var generalSettingsPath = 'general-settings.json';
+const generalSettingsPath = 'general-settings.json';
 
-var generalSettings = {
-    "general-settings": {
-        "app-language": "en-US",
-        "allow-acceptable-ads": true,
-        "show-blocked-ads-count": true,
-        "autodetect-filters": true,
-        "safebrowsing-enabled": true,
-        "safebrowsing-help": true
-    }
+const generalSettings = {
+    'general-settings': {
+        'app-language': 'en-US',
+        'allow-acceptable-ads': true,
+        'show-blocked-ads-count': true,
+        'autodetect-filters': true,
+        'safebrowsing-enabled': true,
+        'safebrowsing-help': true,
+    },
 };
 
 adguard.i18n = {
-    getMessage: function () {
+    getMessage() {
         return '';
-    }
+    },
 };
 
 adguard.listeners = {
-    notifyListeners: function () {
-        //Do nothing
-    }
+    notifyListeners() {
+        // Do nothing
+    },
 };
 
-var checkManifestData = function (assert, data) {
+const checkManifestData = function (assert, data) {
     assert.ok(data != null);
     assert.equal(data.timestamp, manifest.timestamp);
-    assert.equal(data["protocol-version"], manifest["protocol-version"]);
-    assert.equal(data["min-compatible-version"], manifest["min-compatible-version"]);
-    assert.equal(data["app-id"], manifest["app-id"]);
-    assert.equal(data["sections"].length, 2);
-    assert.equal(data["sections"][0].name, manifest["sections"][0].name);
-    assert.equal(data["sections"][0].timestamp, manifest["sections"][0].timestamp);
-    assert.equal(data["sections"][1].name, manifest["sections"][1].name);
-    assert.equal(data["sections"][1].timestamp, manifest["sections"][1].timestamp);
+    assert.equal(data['protocol-version'], manifest['protocol-version']);
+    assert.equal(data['min-compatible-version'], manifest['min-compatible-version']);
+    assert.equal(data['app-id'], manifest['app-id']);
+    assert.equal(data['sections'].length, 2);
+    assert.equal(data['sections'][0].name, manifest['sections'][0].name);
+    assert.equal(data['sections'][0].timestamp, manifest['sections'][0].timestamp);
+    assert.equal(data['sections'][1].name, manifest['sections'][1].name);
+    assert.equal(data['sections'][1].timestamp, manifest['sections'][1].timestamp);
 };
 
-
-var requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
+const requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
 
 function errorHandler(e) {
     console.error(e);
 }
 
-function createFile(path, data, callback) {
-    var onInitFs = function (fs) {
-        fs.root.getFile(path, {create: true}, function (fileEntry) {
-
-            // Create a FileWriter object for our FileEntry (log.txt).
-            fileEntry.createWriter(function (fileWriter) {
-
-                fileWriter.onwriteend = function (e) {
-                    callback();
-                };
-
-                fileWriter.onerror = function (e) {
-                    console.log('Write failed: ' + e.toString());
-                };
-
-                var blob = new Blob([JSON.stringify(data)], {type: 'text/plain'});
-
-                fileWriter.write(blob);
-
-            }, errorHandler);
-        }, errorHandler);
-    };
-
-    deleteFile(path, function () {
-        requestFileSystem(window.TEMPORARY, 1024 * 1024, onInitFs, errorHandler);
-    });
-}
-
 function deleteFile(path, successCallback) {
-    var onInitFs = function (fs) {
-        fs.root.getFile(path, {create: true}, function (fileEntry) {
+    const onInitFs = function (fs) {
+        fs.root.getFile(path, { create: true }, (fileEntry) => {
             fileEntry.remove(successCallback, errorHandler);
         }, errorHandler);
     };
 
     requestFileSystem(window.TEMPORARY, 1024 * 1024, onInitFs, errorHandler);
+}
+
+function createFile(path, data, callback) {
+    const onInitFs = function (fs) {
+        fs.root.getFile(path, { create: true }, (fileEntry) => {
+            // Create a FileWriter object for our FileEntry (log.txt).
+            fileEntry.createWriter((fileWriter) => {
+                fileWriter.onwriteend = function () {
+                    callback();
+                };
+
+                fileWriter.onerror = function (e) {
+                    console.log(`Write failed: ${e.toString()}`);
+                };
+
+                const blob = new Blob([JSON.stringify(data)], { type: 'text/plain' });
+
+                fileWriter.write(blob);
+            }, errorHandler);
+        }, errorHandler);
+    };
+
+    deleteFile(path, () => {
+        requestFileSystem(window.TEMPORARY, 1024 * 1024, onInitFs, errorHandler);
+    });
 }

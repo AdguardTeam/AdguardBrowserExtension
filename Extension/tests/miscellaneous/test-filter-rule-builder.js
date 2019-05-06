@@ -1,4 +1,4 @@
-QUnit.test('Build Rules', function (assert) {
+QUnit.test('Build Rules', (assert) => {
     let rule = adguard.rules.builder.createRule('example.com', 0);
     assert.ok(rule);
     assert.ok(rule instanceof adguard.rules.UrlFilterRule);
@@ -28,10 +28,18 @@ QUnit.test('Build Rules', function (assert) {
 });
 
 QUnit.test('Unsupported rules', (assert) => {
-    rule = adguard.rules.builder.createRule('#$#body { background: black }', 0);
+    let rule = adguard.rules.builder.createRule('#$#body { background: black }', 0);
     assert.ok(rule);
     assert.ok(rule instanceof adguard.rules.CssFilterRule);
 
     rule = adguard.rules.builder.createRule('example.com##^script:has-text(7c9e3a5d51cdacfc)', 0);
     assert.notOk(rule);
+});
+
+
+QUnit.test('Invalid Style Syntax', (assert) => {
+    const ruleText = 'yandex.ru##body:style()';
+    assert.throws(() => {
+        adguard.rules.ruleConverter.convertRule(ruleText);
+    }, new Error('Empty :style pseudo class: body:style()'));
 });
