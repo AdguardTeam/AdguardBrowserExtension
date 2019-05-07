@@ -102,6 +102,9 @@ adguard.filteringLog = (function (adguard) {
         }
     }
 
+    const isScriptRule = rule => rule instanceof adguard.rules.ScriptFilterRule
+        || rule instanceof adguard.rules.ScriptletRule;
+
     /**
      * Copy some properties from source rule to destination rule
      * @param destinationRule
@@ -117,6 +120,8 @@ adguard.filteringLog = (function (adguard) {
             destinationRule.contentRule = true;
         } else if (sourceRule instanceof adguard.rules.CssFilterRule) {
             destinationRule.cssRule = true;
+        } else if (isScriptRule(sourceRule)) {
+            destinationRule.scriptRule = true;
         } else if (sourceRule instanceof adguard.rules.UrlFilterRule) {
             destinationRule.whiteListRule = sourceRule.whiteListRule;
             destinationRule.cspRule = sourceRule.isCspRule();
@@ -259,8 +264,10 @@ adguard.filteringLog = (function (adguard) {
         pushFilteringEvent(tabInfo, filteringEvent);
     };
 
+    // TODO
+    // 1 add description
+    // 2 check how it works on the sites with iframes
     const addScriptInjectionEvent = (tab, frameUrl, requestType, rule) => {
-        console.log(tab);
         if (openedFilteringLogsPage === 0) {
             return;
         }
@@ -273,6 +280,7 @@ adguard.filteringLog = (function (adguard) {
         }
         const frameDomain = adguard.utils.url.getDomainName(frameUrl);
         const filteringEvent = {
+            type: 'script_injection',
             requestUrl: frameUrl,
             frameUrl,
             frameDomain,

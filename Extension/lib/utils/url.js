@@ -16,23 +16,22 @@
  */
 
 (function (api, global) {
-
     /**
      * Helper methods to work with URLs
      */
-    var UrlUtils = {
+    const UrlUtils = {
 
-        isHttpRequest: function (url) {
+        isHttpRequest(url) {
             return url && url.indexOf('http') === 0;
         },
 
-        isHttpOrWsRequest: function (url) {
+        isHttpOrWsRequest(url) {
             return url && (url.indexOf('http') === 0 || url.indexOf('ws') === 0);
         },
 
-        toPunyCode: function (domain) {
+        toPunyCode(domain) {
             if (!domain) {
-                return "";
+                return '';
             }
             if (/^[\x00-\x7F]+$/.test(domain)) {
                 return domain;
@@ -40,59 +39,58 @@
             return global.punycode.toASCII(domain);
         },
 
-        isThirdPartyRequest: function (requestUrl, referrer) {
-            var domainName = this._get2NdLevelDomainName(requestUrl);
-            var refDomainName = this._get2NdLevelDomainName(referrer);
+        isThirdPartyRequest(requestUrl, referrer) {
+            const domainName = this._get2NdLevelDomainName(requestUrl);
+            const refDomainName = this._get2NdLevelDomainName(referrer);
             return domainName != refDomainName;
         },
 
         /**
          * Retrieves hostname from URL
          */
-        getHost: function (url) {
-
+        getHost(url) {
             if (!url) {
                 return null;
             }
 
-            var firstIdx = url.indexOf("//");
+            let firstIdx = url.indexOf('//');
             if (firstIdx === -1) {
                 /**
                  * It's non hierarchical structured URL (e.g. stun: or turn:)
                  * https://tools.ietf.org/html/rfc4395#section-2.2
                  * https://tools.ietf.org/html/draft-nandakumar-rtcweb-stun-uri-08#appendix-B
                  */
-                firstIdx = url.indexOf(":");
+                firstIdx = url.indexOf(':');
                 if (firstIdx === -1) {
                     return null;
                 }
-                firstIdx = firstIdx - 1;
+                firstIdx -= 1;
             }
 
-            var nextSlashIdx = url.indexOf("/", firstIdx + 2);
-            var startParamsIdx = url.indexOf("?", firstIdx + 2);
+            const nextSlashIdx = url.indexOf('/', firstIdx + 2);
+            const startParamsIdx = url.indexOf('?', firstIdx + 2);
 
-            var lastIdx = nextSlashIdx;
+            let lastIdx = nextSlashIdx;
             if (startParamsIdx > 0 && (startParamsIdx < nextSlashIdx || nextSlashIdx < 0)) {
                 lastIdx = startParamsIdx;
             }
 
-            var host = lastIdx === -1 ? url.substring(firstIdx + 2) : url.substring(firstIdx + 2, lastIdx);
+            const host = lastIdx === -1 ? url.substring(firstIdx + 2) : url.substring(firstIdx + 2, lastIdx);
 
-            var portIndex = host.indexOf(":");
+            const portIndex = host.indexOf(':');
             return portIndex === -1 ? host : host.substring(0, portIndex);
         },
 
-        getDomainName: function (url) {
-            var host = this.getHost(url);
+        getDomainName(url) {
+            const host = this.getHost(url);
             return this.getCroppedDomainName(host);
         },
 
-        getCroppedDomainName: function (host) {
-            return api.strings.startWith(host, "www.") ? host.substring(4) : host;
+        getCroppedDomainName(host) {
+            return api.strings.startWith(host, 'www.') ? host.substring(4) : host;
         },
 
-        isIpv4: function (address) {
+        isIpv4(address) {
             if (RE_V4.test(address)) {
                 return true;
             }
@@ -105,13 +103,12 @@
             return false;
         },
 
-        isIpv6: function (address) {
-
-            var a4addon = 0;
-            var address4 = address.match(RE_V4inV6);
+        isIpv6(address) {
+            let a4addon = 0;
+            const address4 = address.match(RE_V4inV6);
             if (address4) {
-                var temp4 = address4[0].split('.');
-                for (var i = 0; i < 4; i++) {
+                const temp4 = address4[0].split('.');
+                for (let i = 0; i < 4; i++) {
                     if (/^0[0-9]+/.test(temp4[i])) {
                         return false;
                     }
@@ -121,7 +118,7 @@
                     return false;
                 }
 
-                address = address + temp4.join(':');
+                address += temp4.join(':');
                 a4addon = 2;
             }
 
@@ -134,10 +131,10 @@
             }
 
             function count(string, substring) {
-                return (string.length - string.replace(new RegExp(substring, "g"), '').length) / substring.length;
+                return (string.length - string.replace(new RegExp(substring, 'g'), '').length) / substring.length;
             }
 
-            var halves = count(address, '::');
+            const halves = count(address, '::');
             if (halves == 1 && count(address, ':') <= 6 + 2 + a4addon) {
                 return true;
             }
@@ -149,7 +146,7 @@
             return false;
         },
 
-        urlEquals: function (u1, u2) {
+        urlEquals(u1, u2) {
             if (!u1 || !u2) {
                 return false;
             }
@@ -164,12 +161,12 @@
          * @param domainNames List of domain names
          * @returns boolean true if there is suitable domain in domainNames
          */
-        isDomainOrSubDomainOfAny: function (domainNameToCheck, domainNames) {
-            if (!domainNames || domainNames.length == 0) {
+        isDomainOrSubDomainOfAny(domainNameToCheck, domainNames) {
+            if (!domainNames || domainNames.length === 0) {
                 return false;
             }
 
-            for (var i = 0; i < domainNames.length; i++) {
+            for (let i = 0; i < domainNames.length; i += 1) {
                 if (this.isDomainOrSubDomain(domainNameToCheck, domainNames[i])) {
                     return true;
                 }
@@ -188,13 +185,13 @@
         isDomainOrSubDomain: (function () {
             /**
              * Extract from domain name tld if exists
-             * 
-             * @param {string} domainName 
+             *
+             * @param {string} domainName
              * @returns {string} string is empty if tld doesn't exist
              */
             function extractTld(domainName) {
-                var guess = domainName;
-                var dotIndex = guess.indexOf('.');
+                let guess = domainName;
+                let dotIndex = guess.indexOf('.');
                 while (dotIndex >= 0) {
                     if (guess in RESERVED_DOMAINS) {
                         return guess;
@@ -207,27 +204,27 @@
                 }
                 return '';
             }
-            
+
             /**
              * Generates from domain tld wildcard e.g. google.com -> google.* ; youtube.co.uk -> youtube.*
-             * 
-             * @param {string} domainName 
+             *
+             * @param {string} domainName
              * @returns {string} string is empty if tld for provided domain name doesn't exists
              */
             function genTldWildcard(domainName) {
-                var tld = extractTld(domainName);
+                const tld = extractTld(domainName);
                 if (tld) {
-                    return domainName.slice(0, domainName.indexOf('.' + tld)) + '.*';
+                    return `${domainName.slice(0, domainName.indexOf(`.${tld}`))}.*`;
                 }
                 return '';
             }
-            
+
             function matchAsWildcard(wildcard, domainNameToCheck) {
-                var wildcardedDomainToCheck = genTldWildcard(domainNameToCheck);
-                if(wildcardedDomainToCheck) {
-                    return wildcardedDomainToCheck === wildcard || 
-                        api.strings.endsWith(wildcardedDomainToCheck, wildcard) &&
-                        api.strings.endsWith(wildcardedDomainToCheck, "." + wildcard);
+                const wildcardedDomainToCheck = genTldWildcard(domainNameToCheck);
+                if (wildcardedDomainToCheck) {
+                    return wildcardedDomainToCheck === wildcard
+                        || api.strings.endsWith(wildcardedDomainToCheck, wildcard)
+                        && api.strings.endsWith(wildcardedDomainToCheck, `.${wildcard}`);
                 }
                 return false;
             }
@@ -244,29 +241,28 @@
                 }
                 // Double endsWith check is memory optimization
                 // Works in android, not sure if it makes sense here
-                return domainName == domainNameToCheck ||
-                    api.strings.endsWith(domainNameToCheck, domainName) &&
-                    api.strings.endsWith(domainNameToCheck, "." + domainName);
+                return domainName == domainNameToCheck
+                    || api.strings.endsWith(domainNameToCheck, domainName)
+                    && api.strings.endsWith(domainNameToCheck, `.${domainName}`);
             };
         })(),
 
-        _get2NdLevelDomainName: function (url) {
-
-            var host = this.getHost(url);
+        _get2NdLevelDomainName(url) {
+            const host = this.getHost(url);
 
             if (!host) {
                 return null;
             }
 
-            var parts = host.split(".");
+            const parts = host.split('.');
             if (parts.length <= 2) {
                 return host;
             }
 
-            var twoPartDomain = parts[parts.length - 2] + "." + parts[parts.length - 1];
-            var isContainsTwoLvlPostfix = (twoPartDomain in RESERVED_DOMAINS);
+            const twoPartDomain = `${parts[parts.length - 2]}.${parts[parts.length - 1]}`;
+            const isContainsTwoLvlPostfix = (twoPartDomain in RESERVED_DOMAINS);
 
-            var threePartDomain = parts[parts.length - 3] + "." + twoPartDomain;
+            const threePartDomain = `${parts[parts.length - 3]}.${twoPartDomain}`;
             if (parts.length == 3 && isContainsTwoLvlPostfix) {
                 return threePartDomain;
             }
@@ -274,11 +270,11 @@
                 if (parts.length == 3) {
                     return threePartDomain;
                 }
-                return parts[parts.length - 4] + "." + threePartDomain;
+                return `${parts[parts.length - 4]}.${threePartDomain}`;
             }
 
             return isContainsTwoLvlPostfix ? threePartDomain : twoPartDomain;
-        }
+        },
     };
 
     var RE_V4 = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|0x[0-9a-f][0-9a-f]?|0[0-7]{3})\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|0x[0-9a-f][0-9a-f]?|0[0-7]{3})$/i;
@@ -293,5 +289,4 @@
     var RESERVED_DOMAINS = api.publicSuffixes;
 
     api.url = UrlUtils;
-
 })(adguard.utils, window);
