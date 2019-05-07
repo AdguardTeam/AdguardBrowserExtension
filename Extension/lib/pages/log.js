@@ -342,13 +342,15 @@ PageController.prototype = {
     },
 
     onEventAdded: function (tabInfo, event) {
-        console.log(tabInfo, event);
         if (this.currentTabId !== tabInfo.tabId) {
             // don't relate to the current tab
             return;
         }
 
-        if (event.requestType === 'DOCUMENT' && !event.element && !this.preserveLogEnabled) {
+        if (event.requestType === 'DOCUMENT'
+            && !event.element
+            && !(event.type === 'script_injection')
+            && !this.preserveLogEnabled) {
             this.onTabReset(tabInfo);
         }
 

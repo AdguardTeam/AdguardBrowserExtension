@@ -367,13 +367,16 @@
             });
 
             if (debug) {
+                const domainName = adguard.utils.url.getDomainName(url);
                 scriptRules.forEach((scriptRule) => {
-                    adguard.filteringLog.addScriptInjectionEvent(
-                        tab,
-                        url,
-                        adguard.RequestTypes.DOCUMENT,
-                        scriptRule.rule
-                    );
+                    if (scriptRule.rule.isDomainSpecific(domainName)) {
+                        adguard.filteringLog.addScriptInjectionEvent(
+                            tab,
+                            url,
+                            adguard.RequestTypes.DOCUMENT,
+                            scriptRule.rule
+                        );
+                    }
                 });
             }
 
