@@ -186,6 +186,11 @@
             return true;
         },
 
+        /**
+         * Checks if rule is domain specific for provided domain
+         * @param {string} domainName
+         * @return {boolean}
+         */
         isDomainSpecific(domainName) {
             if (!domainName) {
                 return false;

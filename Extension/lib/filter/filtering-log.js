@@ -174,8 +174,6 @@ adguard.filteringLog = (function (adguard) {
             tabInfo.filteringEvents.splice(1, 1);
         }
 
-        console.log(tabInfo, filteringEvent);
-
         adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_ADDED, tabInfo, filteringEvent);
     }
 
@@ -264,14 +262,15 @@ adguard.filteringLog = (function (adguard) {
         pushFilteringEvent(tabInfo, filteringEvent);
     };
 
-    // TODO
-    // 1 add description
-    // 2 check how it works on the sites with iframes
+    /**
+     * Add script event to log with the corresponding rule
+     * @param {{tabId: Number}} tab - Tab object with one of properties tabId
+     * @param {String} frameUrl - Frame url
+     * @param {String} requestType - Request type
+     * @param {Object} rule - script rule
+     */
     const addScriptInjectionEvent = (tab, frameUrl, requestType, rule) => {
-        if (openedFilteringLogsPage === 0) {
-            return;
-        }
-        if (!rule) {
+        if (openedFilteringLogsPage === 0 || !rule) {
             return;
         }
         const tabInfo = tabsInfoMap[tab.tabId];
