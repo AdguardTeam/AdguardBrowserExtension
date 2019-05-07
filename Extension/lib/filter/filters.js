@@ -301,8 +301,7 @@
                  * build CSS with enabled hits stats. In this case style contains "content"
                  * with filter identifier and rule text.
                  */
-                const selectors = this.cssFilter.buildCssHits(domain, options);
-                return selectors;
+                return this.cssFilter.buildCssHits(domain, options);
             }
             return this.cssFilter.buildCss(domain, options);
         },
