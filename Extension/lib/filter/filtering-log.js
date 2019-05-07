@@ -280,7 +280,7 @@ adguard.filteringLog = (function (adguard) {
         }
         const frameDomain = adguard.utils.url.getDomainName(frameUrl);
         const filteringEvent = {
-            type: 'script_injection',
+            script: true,
             requestUrl: frameUrl,
             frameUrl,
             frameDomain,
