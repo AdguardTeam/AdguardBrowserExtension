@@ -16,13 +16,12 @@
  */
 
 (function (adguard, api) {
-
     'use strict';
 
     /**
      * Base class for all filter rules
      */
-    var FilterRule = function (text, filterId) {
+    const FilterRule = function (text, filterId) {
         this.ruleText = text;
         this.filterId = filterId;
     };
@@ -36,7 +35,7 @@
          *
          * @param domains List of domains. Examples: "example.com|test.com" or "example.com,test.com"
          */
-        loadDomains: function (domains) {
+        loadDomains(domains) {
             if (adguard.utils.strings.isEmpty(domains)) {
                 return;
             }
@@ -76,23 +75,21 @@
             this.setRestrictedDomains(restrictedDomains);
         },
 
-        getPermittedDomains: function () {
+        getPermittedDomains() {
             if (this.permittedDomain) {
                 return [this.permittedDomain];
-            } else {
-                return this.permittedDomains;
             }
+            return this.permittedDomains;
         },
 
-        getRestrictedDomains: function () {
+        getRestrictedDomains() {
             if (this.restrictedDomain) {
                 return [this.restrictedDomain];
-            } else {
-                return this.restrictedDomains;
             }
+            return this.restrictedDomains;
         },
 
-        setPermittedDomains: function (permittedDomains) {
+        setPermittedDomains(permittedDomains) {
             if (!permittedDomains || permittedDomains.length === 0) {
                 delete this.permittedDomain;
                 delete this.permittedDomains;
@@ -107,7 +104,7 @@
             }
         },
 
-        setRestrictedDomains: function (restrictedDomains) {
+        setRestrictedDomains(restrictedDomains) {
             if (!restrictedDomains || restrictedDomains.length === 0) {
                 delete this.restrictedDomain;
                 delete this.restrictedDomains;
@@ -126,7 +123,7 @@
          * Checks if rule is domain-sensitive
          * @returns boolean true if $domain option is present. Otherwise false.
          */
-        isDomainSensitive: function () {
+        isDomainSensitive() {
             return this.hasRestrictedDomains() || this.hasPermittedDomains();
         },
 
@@ -134,22 +131,35 @@
          * Checks whether this rule is generic or domain specific
          * @returns boolean true if rule is generic, otherwise false
          */
-        isGeneric: function () {
+        isGeneric() {
             return (!this.hasPermittedDomains());
         },
 
         /**
          * @returns boolean true if rule has permitted domains
          */
-        hasPermittedDomains: function () {
+        hasPermittedDomains() {
             return (this.permittedDomain || (this.permittedDomains && this.permittedDomains.length > 0));
         },
 
         /**
          * @returns boolean true if rule has restricted domains
          */
-        hasRestrictedDomains: function () {
-            return (this.restrictedDomain || (this.restrictedDomains && this.restrictedDomains.length > 0));
+        hasRestrictedDomains() {
+            return (this.restrictedDomain
+                || (this.restrictedDomains && this.restrictedDomains.length > 0));
+        },
+
+        isRestricted(domainName) {
+            if (!domainName) { return false; }
+            const restrictedDomains = this.getRestrictedDomains();
+            if (restrictedDomains) {
+                return adguard.utils.url.isDomainOrSubDomainOfAny(
+                    domainName,
+                    restrictedDomains
+                );
+            }
+            return false;
         },
 
         /**
@@ -158,26 +168,40 @@
          * @param domainName Domain name
          * @returns boolean true if rule is permitted
          */
-        isPermitted: function (domainName) {
+        isPermitted(domainName) {
             if (!domainName) { return false; }
 
-            if (this.restrictedDomain && adguard.utils.url.isDomainOrSubDomain(domainName, this.restrictedDomain)) {
+            if (this.isRestricted(domainName)) {
                 return false;
             }
 
-            if (this.restrictedDomains && adguard.utils.url.isDomainOrSubDomainOfAny(domainName, this.restrictedDomains)) {
-                return false;
-            }
-
-            if (this.hasPermittedDomains()) {
-                if (this.permittedDomain && adguard.utils.url.isDomainOrSubDomain(domainName, this.permittedDomain)) {
-                    return true;
-                }
-
-                return adguard.utils.url.isDomainOrSubDomainOfAny(domainName, this.permittedDomains);
+            const permittedDomains = this.getPermittedDomains();
+            if (permittedDomains) {
+                return adguard.utils.url.isDomainOrSubDomainOfAny(
+                    domainName,
+                    permittedDomains
+                );
             }
 
             return true;
+        },
+
+        /**
+         * Checks if rule is domain specific for provided domain
+         * @param {string} domainName
+         * @return {boolean}
+         */
+        isDomainSpecific(domainName) {
+            if (!domainName) {
+                return false;
+            }
+            const permitted = this.getPermittedDomains() || [];
+            const restricted = this.getRestrictedDomains() || [];
+
+            return adguard.utils.url.isDomainOrSubDomainOfAny(
+                domainName,
+                [...permitted, ...restricted]
+            );
         },
 
         /**
@@ -185,18 +209,16 @@
          *
          * @param domains List of domains
          */
-        addRestrictedDomains: function (domains) {
+        addRestrictedDomains(domains) {
             if (domains) {
                 if (this.hasPermittedDomains()) {
-                    var self = this;
+                    const self = this;
                     // If a rule already has permitted domains, we should check that
                     // these restricted domains make any sense
-                    domains = domains.filter(function (domainName) {
-                        return self.isPermitted(domainName);
-                    });
+                    domains = domains.filter(domainName => self.isPermitted(domainName));
                 }
 
-                var restrictedDomains = this.getRestrictedDomains();
+                let restrictedDomains = this.getRestrictedDomains();
                 restrictedDomains = adguard.utils.collections.removeDuplicates((restrictedDomains || []).concat(domains));
                 this.setRestrictedDomains(restrictedDomains);
             }
@@ -207,15 +229,15 @@
          *
          * @param domains List of domains
          */
-        removeRestrictedDomains: function (domains) {
+        removeRestrictedDomains(domains) {
             if (domains) {
-                var restrictedDomains = this.getRestrictedDomains();
-                for (var i = 0; i < domains.length; i++) {
+                const restrictedDomains = this.getRestrictedDomains();
+                for (let i = 0; i < domains.length; i++) {
                     adguard.utils.collections.remove(restrictedDomains, domains[i]);
                 }
                 this.setRestrictedDomains(restrictedDomains);
             }
-        }
+        },
     };
 
     /**
@@ -273,32 +295,31 @@
      */
     FilterRule.escapeRule = function (ruleText) {
         return encodeURIComponent(ruleText)
-            .replace(/['()]/g, function (match) { return { "'": '%27', '(': '%28', ')': '%29' }[match]; });
+            .replace(/['()]/g, match => ({ "'": '%27', '(': '%28', ')': '%29' }[match]));
     };
 
-    FilterRule.PARAMETER_START = "[";
-    FilterRule.PARAMETER_END = "]";
-    FilterRule.MASK_WHITE_LIST = "@@";
-    FilterRule.MASK_CSS_RULE = "##";
-    FilterRule.MASK_CSS_EXCEPTION_RULE = "#@#";
-    FilterRule.MASK_CSS_INJECT_RULE = "#$#";
-    FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE = "#@$#";
-    FilterRule.MASK_CSS_EXTENDED_CSS_RULE = "#?#";
-    FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE = "#@?#";
-    FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE = "#$?#";
-    FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE = "#@$?#";
-    FilterRule.MASK_SCRIPT_RULE = "#%#";
-    FilterRule.MASK_SCRIPT_EXCEPTION_RULE = "#@%#";
-    FilterRule.MASK_CONTENT_RULE = "$$";
-    FilterRule.MASK_CONTENT_EXCEPTION_RULE = "$@$";
-    FilterRule.MASK_BANNER_RULE = "++";
-    FilterRule.MASK_CONFIGURATION_RULE = "~~";
-    FilterRule.COMMENT = "!";
-    FilterRule.EQUAL = "=";
-    FilterRule.COMA_DELIMITER = ",";
-    FilterRule.LINE_DELIMITER = "|";
-    FilterRule.NOT_MARK = "~";
+    FilterRule.PARAMETER_START = '[';
+    FilterRule.PARAMETER_END = ']';
+    FilterRule.MASK_WHITE_LIST = '@@';
+    FilterRule.MASK_CSS_RULE = '##';
+    FilterRule.MASK_CSS_EXCEPTION_RULE = '#@#';
+    FilterRule.MASK_CSS_INJECT_RULE = '#$#';
+    FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE = '#@$#';
+    FilterRule.MASK_CSS_EXTENDED_CSS_RULE = '#?#';
+    FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE = '#@?#';
+    FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE = '#$?#';
+    FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE = '#@$?#';
+    FilterRule.MASK_SCRIPT_RULE = '#%#';
+    FilterRule.MASK_SCRIPT_EXCEPTION_RULE = '#@%#';
+    FilterRule.MASK_CONTENT_RULE = '$$';
+    FilterRule.MASK_CONTENT_EXCEPTION_RULE = '$@$';
+    FilterRule.MASK_BANNER_RULE = '++';
+    FilterRule.MASK_CONFIGURATION_RULE = '~~';
+    FilterRule.COMMENT = '!';
+    FilterRule.EQUAL = '=';
+    FilterRule.COMA_DELIMITER = ',';
+    FilterRule.LINE_DELIMITER = '|';
+    FilterRule.NOT_MARK = '~';
 
     api.FilterRule = FilterRule;
-
 })(adguard, adguard.rules);
