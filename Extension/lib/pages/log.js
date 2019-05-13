@@ -115,6 +115,7 @@ var FilterRule = {
     MASK_CSS_INJECT_RULE: '#$#',
     MASK_CSS_EXTENDED_CSS_RULE: '#?#',
     MASK_CSS_INJECT_EXTENDED_CSS_RULE: '#$?#',
+    MASK_SCRIPT_RULE: '#%#',
 };
 
 var UrlFilterRule = {
@@ -347,7 +348,10 @@ PageController.prototype = {
             return;
         }
 
-        if (event.requestType === 'DOCUMENT' && !event.element && !this.preserveLogEnabled) {
+        if (event.requestType === 'DOCUMENT'
+            && !event.element
+            && !event.script
+            && !this.preserveLogEnabled) {
             this.onTabReset(tabInfo);
         }
 
@@ -548,7 +552,7 @@ PageController.prototype = {
         if (event.requestRule && !event.replaceRules) {
             if (event.requestRule.whiteListRule) {
                 metadata.class += ' green';
-            } else if (event.requestRule.cssRule) {
+            } else if (event.requestRule.cssRule || event.requestRule.scriptRule) {
                 metadata.class += ' yellow';
             } else if (event.requestRule.cookieRule) {
                 if (event.requestRule.isModifyingCookieRule) {
@@ -681,28 +685,6 @@ var RequestWizard = (function () {
         initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
     };
 
-    var showCreateExceptionRuleModal = function (frameInfo, filteringEvent) {
-        var template = createExceptionRuleTemplate.cloneNode(true);
-
-        var patterns;
-        if (filteringEvent.requestUrl) {
-            patterns = splitToPatterns(filteringEvent.requestUrl, filteringEvent.requestDomain, true).reverse();
-        }
-        if (filteringEvent.requestUrl === 'content-security-policy-check') {
-            patterns = [FilterRule.MASK_WHITE_LIST];
-        }
-
-        if (filteringEvent.element) {
-            patterns = [createExceptionCssRule(filteringEvent.requestRule, filteringEvent)];
-        }
-
-        if (filteringEvent.cookieName) {
-            patterns = [createExceptionCookieRule(filteringEvent.requestRule, filteringEvent)];
-        }
-
-        initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
-    };
-
     const generateExceptionRule = function (ruleText, mask) {
         const insert = (str, index, value) => {
             return str.slice(0, index) + value + str.slice(index);
@@ -717,19 +699,32 @@ var RequestWizard = (function () {
     };
 
     const createExceptionCssRule = function (rule, event) {
-        const ruleText = rule.ruleText;
+        const { ruleText } = rule;
         const domainPart = event.frameDomain;
         if (ruleText.indexOf(FilterRule.MASK_CSS_INJECT_RULE) > -1) {
             return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_INJECT_RULE);
         }
         if (ruleText.indexOf(FilterRule.MASK_CSS_EXTENDED_CSS_RULE) > -1) {
-            return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_EXTENDED_CSS_RULE);
+            return domainPart + generateExceptionRule(
+                ruleText,
+                FilterRule.MASK_CSS_EXTENDED_CSS_RULE
+            );
         }
         if (ruleText.indexOf(FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE) > -1) {
-            return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE);
+            return domainPart + generateExceptionRule(
+                ruleText, FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE
+            );
         }
         if (ruleText.indexOf(FilterRule.MASK_CSS_RULE) > -1) {
             return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_RULE);
+        }
+    };
+
+    const createExceptionScriptRule = function (rule, event) {
+        const { ruleText } = rule;
+        const domainPart = event.frameDomain;
+        if (ruleText.indexOf(FilterRule.MASK_SCRIPT_RULE) > -1) {
+            return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_SCRIPT_RULE);
         }
     };
 
@@ -741,8 +736,38 @@ var RequestWizard = (function () {
         return FilterRule.MASK_WHITE_LIST + UrlFilterRule.MASK_START_URL + domain;
     };
 
-    var createCssRuleFromParams = function (urlPattern, permitDomain) {
-        var ruleText = urlPattern;
+    const showCreateExceptionRuleModal = function (frameInfo, filteringEvent) {
+        const template = createExceptionRuleTemplate.cloneNode(true);
+
+        let patterns;
+        if (filteringEvent.requestUrl) {
+            patterns = splitToPatterns(
+                filteringEvent.requestUrl,
+                filteringEvent.requestDomain,
+                true
+            ).reverse();
+        }
+        if (filteringEvent.requestUrl === 'content-security-policy-check') {
+            patterns = [FilterRule.MASK_WHITE_LIST];
+        }
+
+        if (filteringEvent.element) {
+            patterns = [createExceptionCssRule(filteringEvent.requestRule, filteringEvent)];
+        }
+
+        if (filteringEvent.cookieName) {
+            patterns = [createExceptionCookieRule(filteringEvent.requestRule, filteringEvent)];
+        }
+
+        if (filteringEvent.script) {
+            patterns = [createExceptionScriptRule(filteringEvent.requestRule, filteringEvent)];
+        }
+
+        initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
+    };
+
+    const createCssRuleFromParams = function (urlPattern, permitDomain) {
+        let ruleText = urlPattern;
         if (!permitDomain) {
             ruleText = ruleText.slice(ruleText.indexOf('#'));
         }
@@ -751,7 +776,7 @@ var RequestWizard = (function () {
     };
 
     const initCreateRuleDialog = function (frameInfo, template, patterns, filteringEvent) {
-        const frameDomain = filteringEvent.frameDomain;
+        const { frameDomain } = filteringEvent;
         const isThirdPartyRequest = filteringEvent.requestThirdParty;
 
         const rulePatternsEl = template.querySelector('#rulePatterns');
@@ -801,7 +826,7 @@ var RequestWizard = (function () {
             ruleThirdPartyCheckbox.setAttribute('checked', 'checked');
         }
 
-        if (filteringEvent.element) {
+        if (filteringEvent.element || filteringEvent.script) {
             ruleImportantCheckbox.parentNode.style.display = 'none';
             ruleMatchCaseCheckbox.parentNode.style.display = 'none';
             ruleThirdPartyCheckbox.parentNode.style.display = 'none';
@@ -860,6 +885,8 @@ var RequestWizard = (function () {
                 ruleText = createCssRuleFromParams(urlPattern, permitDomain);
             } else if (filteringEvent.cookieName) {
                 ruleText = createRuleFromParams(urlPattern, null, null, thirdParty, important, mandatoryOptions);
+            } else if (filteringEvent.script) {
+                ruleText = createRuleFromParams(urlPattern);
             } else {
                 ruleText = createRuleFromParams(urlPattern, domain, matchCase, thirdParty, important, mandatoryOptions);
             }
@@ -1137,7 +1164,7 @@ var RequestWizard = (function () {
         });
 
         // there is nothing to open if log event reveals blocked element or cookie
-        if (filteringEvent.element || filteringEvent.cookieName) {
+        if (filteringEvent.element || filteringEvent.cookieName || filteringEvent.script) {
             openRequestButton.style.display = 'none';
         }
 

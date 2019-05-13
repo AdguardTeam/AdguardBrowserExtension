@@ -1186,8 +1186,8 @@ adguard.requestFilter = (function (adguard) {
     var getScriptsForUrl = function (documentUrl) {
         return getRequestFilter().getScriptsForUrl(documentUrl);
     };
-    var getScriptsStringForUrl = function (documentUrl) {
-        return getRequestFilter().getScriptsStringForUrl(documentUrl);
+    var getScriptsStringForUrl = function (documentUrl, tab) {
+        return getRequestFilter().getScriptsStringForUrl(documentUrl, tab);
     };
     var getContentRulesForUrl = function (documentUrl) {
         return getRequestFilter().getContentRulesForUrl(documentUrl);

@@ -76,8 +76,7 @@
          * Returns the array of loaded rules
          */
         getRules() {
-            const result = [];
-            return result.concat(this.scriptRules).concat(this.exceptionsRules);
+            return this.scriptRules.concat(this.exceptionsRules);
         },
 
         /**
@@ -95,7 +94,8 @@
                 if (rule.isPermitted(domainName)) {
                     scripts.push({
                         scriptSource: rule.scriptSource,
-                        rule: rule.getScript(debugConfig),
+                        script: rule.getScript(debugConfig),
+                        rule,
                     });
                 }
             }

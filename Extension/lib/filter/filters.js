@@ -16,15 +16,13 @@
  */
 
 (function (adguard) {
-
     'use strict';
 
     /**
      * Simple request cache
      * @param requestCacheMaxSize Max cache size
      */
-    var RequestCache = function (requestCacheMaxSize) {
-
+    const RequestCache = function (requestCacheMaxSize) {
         this.requestCache = Object.create(null);
         this.requestCacheSize = 0;
         this.requestCacheMaxSize = requestCacheMaxSize;
@@ -37,12 +35,12 @@
          * @param requestType Request type
          */
         this.searchRequestCache = function (requestUrl, refHost, requestType) {
-            var cacheItem = this.requestCache[requestUrl];
+            const cacheItem = this.requestCache[requestUrl];
             if (!cacheItem) {
                 return null;
             }
 
-            var c = cacheItem[requestType];
+            const c = cacheItem[requestType];
             if (c && c[1] === refHost) {
                 return c;
             }
@@ -64,10 +62,11 @@
             }
             if (!this.requestCache[requestUrl]) {
                 this.requestCache[requestUrl] = Object.create(null);
-                this.requestCacheSize++;
+                this.requestCacheSize += 1;
             }
 
-            //Two-levels gives us an ability to not to override cached item for different request types with the same url
+            // Two-levels gives us an ability to not to override cached item for
+            // different request types with the same url
             this.requestCache[requestUrl][requestType] = [rule, refHost];
         };
 
@@ -88,8 +87,7 @@
      *
      * @type {Function}
      */
-    var RequestFilter = function () {
-
+    const RequestFilter = function () {
         // Bad-filter rules collection
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#badfilter-modifier
         this.badFilterRules = {};
@@ -150,11 +148,11 @@
          *
          * @param rules List of rules to add
          */
-        addRules: function (rules) {
+        addRules(rules) {
             if (!rules) {
                 return;
             }
-            for (var i = 0; i < rules.length; i++) {
+            for (let i = 0; i < rules.length; i += 1) {
                 this.addRule(rules[i]);
             }
         },
@@ -166,7 +164,7 @@
          * @param rule     Rule to add. Rule should be an object of
          *                 one of these classes: UrlFilterRule, CssFilterRule, ScriptFilterRule
          */
-        addRule: function (rule) {
+        addRule(rule) {
             if (rule === null || !rule.ruleText) {
                 adguard.console.error('FilterRule must not be null');
                 return;
@@ -185,14 +183,12 @@
                     this.stealthFilter.addRule(rule);
                 } else if (rule.isReplaceRule() && !rule.isBadFilter()) {
                     this.replaceFilter.addRule(rule);
+                } else if (rule.isBadFilter()) {
+                    this.badFilterRules[rule.badFilter] = rule;
+                } else if (rule.whiteListRule) {
+                    this.urlWhiteFilter.addRule(rule);
                 } else {
-                    if (rule.isBadFilter()) {
-                        this.badFilterRules[rule.badFilter] = rule;
-                    } else if (rule.whiteListRule) {
-                        this.urlWhiteFilter.addRule(rule);
-                    } else {
-                        this.urlBlockingFilter.addRule(rule);
-                    }
+                    this.urlBlockingFilter.addRule(rule);
                 }
             } else if (rule instanceof adguard.rules.CssFilterRule) {
                 this.cssFilter.addRule(rule);
@@ -217,9 +213,9 @@
          *
          * @param rule Rule to be removed
          */
-        removeRule: function (rule) {
+        removeRule(rule) {
             if (rule === null) {
-                adguard.console.error("FilterRule must not be null");
+                adguard.console.error('FilterRule must not be null');
                 return;
             }
             if (rule instanceof adguard.rules.UrlFilterRule) {
@@ -229,14 +225,12 @@
                     this.cookieFilter.removeRule(rule);
                 } else if (rule.isStealthRule()) {
                     this.stealthFilter.removeRule(rule);
+                } else if (rule.isBadFilter()) {
+                    delete this.badFilterRules[rule.badFilter];
+                } else if (rule.whiteListRule) {
+                    this.urlWhiteFilter.removeRule(rule);
                 } else {
-                    if (rule.isBadFilter()) {
-                        delete this.badFilterRules[rule.badFilter];
-                    } else if (rule.whiteListRule) {
-                        this.urlWhiteFilter.removeRule(rule);
-                    } else {
-                        this.urlBlockingFilter.removeRule(rule);
-                    }
+                    this.urlBlockingFilter.removeRule(rule);
                 }
             } else if (rule instanceof adguard.rules.CssFilterRule) {
                 this.cssFilter.removeRule(rule);
@@ -245,11 +239,11 @@
             } else if (rule instanceof adguard.rules.ScriptletRule) {
                 this.scriptFilter.removeRule(rule);
             } else if (rule instanceof adguard.rules.CompositeRule) {
-                rule.rules.forEach(this.removeRule.bind(this))
+                rule.rules.forEach(this.removeRule.bind(this));
             } else if (rule instanceof adguard.rules.ContentFilterRule) {
                 this.contentFilter.removeRule(rule);
             }
-            this.rulesCount--;
+            this.rulesCount -= 1;
             this.urlBlockingCache.clearRequestCache();
             this.urlExceptionsCache.clearRequestCache();
         },
@@ -257,8 +251,8 @@
         /**
          * Returns the array of loaded rules
          */
-        getRules: function () {
-            var result = [];
+        getRules() {
+            let result = [];
 
             result = result.concat(this.urlWhiteFilter.getRules());
             result = result.concat(this.urlBlockingFilter.getRules());
@@ -268,7 +262,7 @@
             result = result.concat(this.cookieFilter.getRules());
             result = result.concat(this.stealthFilter.getRules());
 
-            for (var badFilter in this.badFilterRules) {
+            for (const badFilter in this.badFilterRules) {
                 result.push(this.badFilterRules[badFilter]);
             }
 
@@ -282,7 +276,8 @@
          * @typedef {Object} SelectorsData
          * @property {Array.<string>} css Regular CSS stylesheets
          * @property {Array.<string>} extendedCss ExtendedCSS stylesheets
-         * @property {boolean} cssHitsCounterEnabled If true -- collecting CSS rules hits stats is enabled
+         * @property {boolean} cssHitsCounterEnabled If true - collecting CSS rules hits stats
+         * is enabled
          */
 
         /**
@@ -293,21 +288,20 @@
          * @param {number} options CssFilter bitmask
          * @returns {SelectorsData} CSS and ExtCss data for the webpage
          */
-        getSelectorsForUrl: function (url, options) {
-            var domain = adguard.utils.url.getHost(url);
+        getSelectorsForUrl(url, options) {
+            const domain = adguard.utils.url.getHost(url);
 
-            var CSS_INJECTION_ONLY = adguard.rules.CssFilter.CSS_INJECTION_ONLY;
-            var cssInjectionOnly = (options & CSS_INJECTION_ONLY) === CSS_INJECTION_ONLY;
+            const { CSS_INJECTION_ONLY } = adguard.rules.CssFilter;
+            const cssInjectionOnly = (options & CSS_INJECTION_ONLY) === CSS_INJECTION_ONLY;
 
-            if (!cssInjectionOnly &&
-                adguard.webRequestService.isCollectingCosmeticRulesHits()) {
+            if (!cssInjectionOnly
+                && adguard.webRequestService.isCollectingCosmeticRulesHits()) {
                 /**
                  * If user has enabled "Send statistics for ad filters usage" option we
                  * build CSS with enabled hits stats. In this case style contains "content"
                  * with filter identifier and rule text.
                  */
-                var selectors = this.cssFilter.buildCssHits(domain, options);
-                return selectors;
+                return this.cssFilter.buildCssHits(domain, options);
             }
             return this.cssFilter.buildCss(domain, options);
         },
@@ -317,12 +311,13 @@
          * http://adguard.com/en/filterrules.html#javascriptInjection
          *
          * @param url Page URL
+         * @param {boolean} debug enabled or disabled debug
          * @returns {{scriptSource: string, rule: string}[]} Javascript for the specified URL
          */
-        getScriptsForUrl(url) {
+        getScriptsForUrl(url, debug) {
             const domain = adguard.utils.url.getHost(url);
             const config = {
-                debug: adguard.filteringLog && adguard.filteringLog.isOpen(),
+                debug,
                 engine: 'extension',
                 version: adguard.app && adguard.app.getVersion && adguard.app.getVersion(),
             };
@@ -337,48 +332,64 @@
          * @param {string} url Page URL
          * @returns {string} Script to be applied
          */
-        getScriptsStringForUrl: function (url) {
-            var scripts = this.getScriptsForUrl(url);
+        getScriptsStringForUrl(url, tab) {
+            const debug = adguard.filteringLog && adguard.filteringLog.isOpen();
+            const scriptRules = this.getScriptsForUrl(url, debug);
 
-            var isFirefox = adguard.utils.browser.isFirefoxBrowser();
-            var isOpera = adguard.utils.browser.isOperaBrowser();
+            const isFirefox = adguard.utils.browser.isFirefoxBrowser();
+            const isOpera = adguard.utils.browser.isOperaBrowser();
 
-            var scriptsToApply = [];
-
-            for (var i = 0, l = scripts.length; i < l; i++) {
-                var scriptRule = scripts[i];
-                switch (scriptRule.scriptSource) {
-                    case 'local':
-                        scriptsToApply.push(scriptRule.rule);
-                        break;
-                    case 'remote':
-                        /**
-                         * Note (!) (Firefox, Opera):
-                         * In case of Firefox and Opera add-ons, JS filtering rules are hardcoded into add-on code.
-                         * Look at ScriptFilterRule.getScriptSource to learn more.
-                         */
-                        /* @if remoteScripts == false */
-                        if (!isFirefox && !isOpera) {
-                            scriptsToApply.push(scriptRule.rule);
-                        }
-                        /* @endif*/
-
-                        /* @if remoteScripts == true */
-                        if (!isOpera) {
-                            scriptsToApply.push(scriptRule.rule);
-                        }
-                        /* @endif*/
-                        break;
+            const selectedScriptRules = scriptRules.filter((scriptRule) => {
+                if (scriptRule.scriptSource === 'local') {
+                    return true;
                 }
+                if (scriptRule.scriptSource === 'remote') {
+                    /**
+                     * Note (!) (Firefox, Opera):
+                     * In case of Firefox and Opera add-ons,
+                     * JS filtering rules are hardcoded into add-on code.
+                     * Look at ScriptFilterRule.getScriptSource to learn more.
+                     */
+                    /* @if remoteScripts == false */
+                    if (!isFirefox && !isOpera) {
+                        return true;
+                    }
+                    /* @endif */
+
+                    /* @if remoteScripts == true */
+                    if (!isOpera) {
+                        return true;
+                    }
+                    /* @endif */
+                }
+                return false;
+            });
+
+            if (debug) {
+                const domainName = adguard.utils.url.getDomainName(url);
+                scriptRules.forEach((scriptRule) => {
+                    if (scriptRule.rule.isDomainSpecific(domainName)) {
+                        adguard.filteringLog.addScriptInjectionEvent(
+                            tab,
+                            url,
+                            adguard.RequestTypes.DOCUMENT,
+                            scriptRule.rule
+                        );
+                    }
+                });
             }
-            scriptsToApply.unshift("( function () {\
-                try {");
-            scriptsToApply.push("\
-                } catch (ex) {\
-                    console.error('Error executing AG js: ' + ex);\
-                }\
-            })();");
-            return scriptsToApply.join('\r\n');
+
+            const scriptsCode = selectedScriptRules.map(scriptRule => scriptRule.script).join('\r\n');
+
+            return `
+            (function () {
+                try {
+                    ${scriptsCode}
+                } catch (ex) {
+                    console.error('Error executing AG js: ' + ex);
+                }
+            })();
+            `;
         },
 
         /**
@@ -389,19 +400,18 @@
          * @param requestType Request type
          * @returns Filter rule found or null
          */
-        findWhiteListRule: function (requestUrl, referrer, requestType) {
+        findWhiteListRule(requestUrl, referrer, requestType) {
+            const refHost = adguard.utils.url.getHost(referrer);
+            const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrer);
 
-            var refHost = adguard.utils.url.getHost(referrer);
-            var thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrer);
-
-            var cacheItem = this.urlExceptionsCache.searchRequestCache(requestUrl, refHost, requestType);
+            const cacheItem = this.urlExceptionsCache.searchRequestCache(requestUrl, refHost, requestType);
 
             if (cacheItem) {
                 // Element with zero index is a filter rule found last time
                 return cacheItem[0];
             }
 
-            var rule = this._checkWhiteList(requestUrl, refHost, requestType, thirdParty);
+            const rule = this._checkWhiteList(requestUrl, refHost, requestType, thirdParty);
 
             this.urlExceptionsCache.saveResultToCache(requestUrl, rule, refHost, requestType);
             return rule;
@@ -415,7 +425,7 @@
          * @param requestType Request type
          * @returns Filter rule found or null
          */
-        findStealthWhiteListRule: function (requestUrl, referrer, requestType) {
+        findStealthWhiteListRule(requestUrl, referrer, requestType) {
             const refHost = adguard.utils.url.getHost(referrer);
             const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrer);
 
@@ -441,7 +451,7 @@
          * @param documentWhitelistRule (optional) Document-level whitelist rule
          * @returns Rule found or null
          */
-        findRuleForRequest: function (requestUrl, documentUrl, requestType, documentWhitelistRule) {
+        findRuleForRequest(requestUrl, documentUrl, requestType, documentWhitelistRule) {
             const documentHost = adguard.utils.url.getHost(documentUrl);
             const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
 
@@ -451,7 +461,7 @@
                 return cacheItem[0];
             }
 
-            let rule = this._findRuleForRequest(requestUrl, documentHost, requestType, thirdParty, documentWhitelistRule);
+            const rule = this._findRuleForRequest(requestUrl, documentHost, requestType, thirdParty, documentWhitelistRule);
 
             this.urlBlockingCache.saveResultToCache(requestUrl, rule, documentHost, requestType);
             return rule;
@@ -462,7 +472,7 @@
          * @param documentUrl Document URL
          * @returns Collection of content rules
          */
-        getContentRulesForUrl: function (documentUrl) {
+        getContentRulesForUrl(documentUrl) {
             const documentHost = adguard.utils.url.getHost(documentUrl);
             return this.contentFilter.getRulesForDomain(documentHost);
         },
@@ -473,7 +483,7 @@
          * @param rules Content rules
          * @returns Matched elements
          */
-        getMatchedElementsForContentRules: function (doc, rules) {
+        getMatchedElementsForContentRules(doc, rules) {
             return this.contentFilter.getMatchedElementsForRules(doc, rules);
         },
 
@@ -484,13 +494,13 @@
          * @param requestType Request Type (DOCUMENT or SUBDOCUMENT)
          * @returns Collection of CSP rules for applying to the request or null
          */
-        findCspRules: function (requestUrl, documentUrl, requestType) {
+        findCspRules(requestUrl, documentUrl, requestType) {
             const documentHost = adguard.utils.url.getHost(documentUrl);
             const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
             return this.cspFilter.findCspRules(requestUrl, documentHost, thirdParty, requestType);
         },
 
-        findReplaceRules: function (requestUrl, documentUrl, requestType) {
+        findReplaceRules(requestUrl, documentUrl, requestType) {
             const documentHost = adguard.utils.url.getHost(documentUrl);
             const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
 
@@ -505,8 +515,7 @@
          * @param requestType   Request content type
          * @returns             Matching rules
          */
-        findCookieRules: function (requestUrl, documentUrl, requestType) {
-
+        findCookieRules(requestUrl, documentUrl, requestType) {
             const documentHost = adguard.utils.url.getHost(documentUrl);
             const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
 
@@ -523,7 +532,7 @@
          * @returns Filter rule found or null
          * @private
          */
-        _checkWhiteList: function (requestUrl, documentHost, requestType, thirdParty) {
+        _checkWhiteList(requestUrl, documentHost, requestType, thirdParty) {
             if (this.urlWhiteFilter === null || !requestUrl) {
                 return null;
             }
@@ -541,7 +550,7 @@
          * @returns Filter rule found or null
          * @private
          */
-        _checkUrlBlockingList: function (requestUrl, refHost, requestType, thirdParty, genericRulesAllowed) {
+        _checkUrlBlockingList(requestUrl, refHost, requestType, thirdParty, genericRulesAllowed) {
             if (this.urlBlockingFilter === null || !requestUrl) {
                 return null;
             }
@@ -560,19 +569,18 @@
          * @returns Filter rule found or null
          * @private
          */
-        _findRuleForRequest: function (requestUrl, documentHost, requestType, thirdParty, documentWhiteListRule) {
-
+        _findRuleForRequest(requestUrl, documentHost, requestType, thirdParty, documentWhiteListRule) {
             adguard.console.debug('Filtering http request for url: {0}, document: {1}, requestType: {2}', requestUrl, documentHost, requestType);
 
             // STEP 1: Looking for exception rule, which could be applied to the current request
 
             // Checks white list for a rule for this RequestUrl. If something is found - returning it.
-            let urlWhiteListRule = this._checkWhiteList(requestUrl, documentHost, requestType, thirdParty);
+            const urlWhiteListRule = this._checkWhiteList(requestUrl, documentHost, requestType, thirdParty);
 
             // If UrlBlock is set - than we should not use UrlBlockingFilter against this request.
             // Now check if document rule has $genericblock or $urlblock modifier
-            let genericRulesAllowed = !documentWhiteListRule || !documentWhiteListRule.isGenericBlock();
-            let urlRulesAllowed = !documentWhiteListRule || !documentWhiteListRule.isUrlBlock();
+            const genericRulesAllowed = !documentWhiteListRule || !documentWhiteListRule.isGenericBlock();
+            const urlRulesAllowed = !documentWhiteListRule || !documentWhiteListRule.isUrlBlock();
 
             // STEP 2: Looking for blocking rule, which could be applied to the current request
 
@@ -581,16 +589,16 @@
 
             // STEP 3: Analyze results, first - basic exception rule
 
-            if (urlWhiteListRule &&
+            if (urlWhiteListRule
                 // Please note, that if blocking rule has $important modifier, it could
                 // overcome existing exception rule
-                (urlWhiteListRule.isImportant || !blockingRule || !blockingRule.isImportant)) {
-                adguard.console.debug("White list rule found {0} for url: {1} document: {2}, requestType: {3}", urlWhiteListRule.ruleText, requestUrl, documentHost, requestType);
+                && (urlWhiteListRule.isImportant || !blockingRule || !blockingRule.isImportant)) {
+                adguard.console.debug('White list rule found {0} for url: {1} document: {2}, requestType: {3}', urlWhiteListRule.ruleText, requestUrl, documentHost, requestType);
                 return urlWhiteListRule;
             }
 
             if (!genericRulesAllowed || !urlRulesAllowed) {
-                adguard.console.debug("White list rule {0} found for document: {1}", documentWhiteListRule.ruleText, documentHost);
+                adguard.console.debug('White list rule {0} found for document: {1}', documentWhiteListRule.ruleText, documentHost);
             }
 
             if (!urlRulesAllowed) {
@@ -599,13 +607,12 @@
             }
 
             if (blockingRule) {
-                adguard.console.debug("Black list rule {0} found for url: {1}, document: {2}, requestType: {3}", blockingRule.ruleText, requestUrl, documentHost, requestType);
+                adguard.console.debug('Black list rule {0} found for url: {1}, document: {2}, requestType: {3}', blockingRule.ruleText, requestUrl, documentHost, requestType);
             }
 
             return blockingRule;
-        }
+        },
     };
 
     adguard.RequestFilter = RequestFilter;
-
 })(adguard);
