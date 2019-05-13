@@ -447,10 +447,6 @@ li.active .block-type__desc-title {
   width: 42px;
   height: 20px;
   margin-left: 20px;
-  background-image: url(../images/toggler-bg.svg);
-  background-position: 5px, 23px;
-  background-size: 29px;
-  background-repeat: no-repeat;
   position: relative;
   border-radius: 4px;
   -webkit-transition: background-color 0.2s;
@@ -468,6 +464,18 @@ li.active .block-type__desc-title {
   background-color: #fff;
   margin-top: 2px;
   left: 2px;
+}
+
+.toggler:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 42px;
+  height: 20px;
+  background-position: 4px 50%;
+  background-repeat: no-repeat;
+  background-image: url(../images/toggler-bg.svg);
 }
 
 .toggler.on,
