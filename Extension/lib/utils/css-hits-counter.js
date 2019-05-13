@@ -15,41 +15,41 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var CssHitsCounter = (function () { // jshint ignore:line
-
+const CssHitsCounter = (function () {
     'use strict';
 
     /**
      * We split CSS hits counting into smaller batches of elements
      * and schedule them one by one using setTimeout
      */
-    var COUNT_CSS_HITS_BATCH_DELAY = 5;
+    const COUNT_CSS_HITS_BATCH_DELAY = 5;
 
     /**
      * Size of small batches of elements we count
      */
-    var CSS_HITS_BATCH_SIZE = 25;
+    const CSS_HITS_BATCH_SIZE = 25;
 
     /**
      * In order to find elements hidden by AdGuard we look for a `:content` pseudo-class
-     * with values starting with this prefix. Filter information will be encoded in this value as well.
+     * with values starting with this prefix. Filter information will be
+     * encoded in this value as well.
      */
-    var CONTENT_ATTR_PREFIX = 'adguard';
+    const CONTENT_ATTR_PREFIX = 'adguard';
 
     /**
      * We delay countAllCssHits function if it was called too frequently from mutationObserver
      */
-    var COUNT_ALL_CSS_HITS_TIMEOUT_MS = 500;
+    const COUNT_ALL_CSS_HITS_TIMEOUT_MS = 500;
 
-    var onCssHitsFoundCallback;
+    let onCssHitsFoundCallback;
 
     /**
      * Unquotes specified value
      */
     function removeQuotes(value) {
-        if (typeof value === "string" && value.length > 1 &&
-            (value[0] === '"' && value[value.length - 1] === '"'
-                || value[0] === '\'' && value[value.length - 1] === '\'')) {
+        if (typeof value === 'string' && value.length > 1
+            && ((value[0] === '"' && value[value.length - 1] === '"')
+                || (value[0] === '\'' && value[value.length - 1] === '\''))) {
             // Remove double-quotes or single-quotes
             value = value.substring(1, value.length - 1);
         }
@@ -63,8 +63,8 @@ var CssHitsCounter = (function () { // jshint ignore:line
      */
     function addUnique(targetArray, sourceArray) {
         if (sourceArray.length > 0) {
-            for (var i = 0; i < sourceArray.length; i += 1) {
-                var sourceElement = sourceArray[i];
+            for (let i = 0; i < sourceArray.length; i += 1) {
+                const sourceElement = sourceArray[i];
                 if (targetArray.indexOf(sourceElement) === -1) {
                     targetArray.push(sourceElement);
                 }
@@ -77,16 +77,16 @@ var CssHitsCounter = (function () { // jshint ignore:line
      * @param element
      */
     function elementToString(element) {
-        var s = [];
+        const s = [];
         s.push('<');
         s.push(element.localName);
-        var attributes = element.attributes;
-        for (var i = 0; i < attributes.length; i++) {
-            var attr = attributes[i];
+        const { attributes } = element;
+        for (let i = 0; i < attributes.length; i += 1) {
+            const attr = attributes[i];
             s.push(' ');
             s.push(attr.name);
             s.push('="');
-            var value = attr.value === null ? '' : attr.value.replace(/"/g, '\\"');
+            const value = attr.value === null ? '' : attr.value.replace(/"/g, '\\"');
             s.push(value);
             s.push('"');
         }
@@ -100,11 +100,11 @@ var CssHitsCounter = (function () { // jshint ignore:line
      * @returns {String} - random key with desired length
      */
     function generateRandomKey(length) {
-        var DEFAULT_LENGTH = 10;
+        const DEFAULT_LENGTH = 10;
         length = (typeof length !== 'undefined') ? length : DEFAULT_LENGTH;
-        var result = '';
-        var possibleValues = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        for (var i = 0; i < length; i += 1) {
+        let result = '';
+        const possibleValues = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        for (let i = 0; i < length; i += 1) {
             result += possibleValues.charAt(Math.floor(Math.random() * possibleValues.length));
         }
         return result;
@@ -114,25 +114,25 @@ var CssHitsCounter = (function () { // jshint ignore:line
      * This storage is used to keep track of counted rules
      * regarding to node elements
      */
-    var HitsCounterStorage = {
+    const HitsCounterStorage = {
         counter: 0,
         randomKey: generateRandomKey(),
-        isCounted: function (element, rule) {
-            var hitAddress = element[this.randomKey];
+        isCounted(element, rule) {
+            const hitAddress = element[this.randomKey];
             if (hitAddress) {
-                var countedHit = this[hitAddress];
+                const countedHit = this[hitAddress];
                 if (countedHit) {
                     return countedHit.element === element && countedHit.rule === rule;
                 }
             }
             return false;
         },
-        setCounted: function (element, rule) {
-            var counter = this.getCounter();
+        setCounted(element, rule) {
+            const counter = this.getCounter();
             element[this.randomKey] = counter;
-            this[counter] = { element: element, rule: rule };
+            this[counter] = { element, rule };
         },
-        getCounter: function () {
+        getCounter() {
             this.counter = this.counter + 1;
             return this.counter;
         },
@@ -154,7 +154,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
         }
         const filterId = parseInt(filterIdAndRuleText.substring(0, index), 10);
         const ruleText = filterIdAndRuleText.substring(index + 1);
-        return { filterId: filterId, ruleText: ruleText };
+        return { filterId, ruleText };
     };
 
     const parseExtendedStyleInfo = (content) => {
@@ -184,26 +184,26 @@ var CssHitsCounter = (function () { // jshint ignore:line
     }
 
     function countCssHitsForElements(elements, start, length) {
-        var RULE_FILTER_SEPARATOR = ';';
+        const RULE_FILTER_SEPARATOR = ';';
         start = start || 0;
         length = length || elements.length;
-        var result = [];
-        for (var i = start; i < length; i += 1) {
-            var element = elements[i];
-            var cssHitData = getCssHitData(element);
+        const result = [];
+        for (let i = start; i < length; i += 1) {
+            const element = elements[i];
+            const cssHitData = getCssHitData(element);
             if (!cssHitData) {
                 continue;
             }
-            var filterId = cssHitData.filterId;
-            var ruleText = cssHitData.ruleText;
-            var ruleAndFilterString = filterId + RULE_FILTER_SEPARATOR + ruleText;
+            const { filterId } = cssHitData;
+            const { ruleText } = cssHitData;
+            const ruleAndFilterString = filterId + RULE_FILTER_SEPARATOR + ruleText;
             if (HitsCounterStorage.isCounted(element, ruleAndFilterString)) {
                 continue;
             }
             HitsCounterStorage.setCounted(element, ruleAndFilterString);
             result.push({
-                filterId: filterId,
-                ruleText: ruleText,
+                filterId,
+                ruleText,
                 element: elementToString(element),
             });
         }
@@ -213,7 +213,8 @@ var CssHitsCounter = (function () { // jshint ignore:line
     /**
      * Main calculation function.
      * 1. Select sub collection from elements.
-     * 2. For each element from sub collection: retrieve calculated css 'content' attribute and if it contains 'adguard'
+     * 2. For each element from sub collection: retrieve calculated css 'content'
+     * attribute and if it contains 'adguard'
      * marker then retrieve rule text and filter identifier.
      * 3. Start next task with some delay.
      *
@@ -225,7 +226,7 @@ var CssHitsCounter = (function () { // jshint ignore:line
      * @param callback Finish callback
      */
     function countCssHitsBatch(elements, start, end, step, result, callback) {
-        var length = Math.min(end, elements.length);
+        const length = Math.min(end, elements.length);
         result = result.concat(countCssHitsForElements(elements, start, length));
         if (length === elements.length) {
             callback(result);
@@ -234,35 +235,42 @@ var CssHitsCounter = (function () { // jshint ignore:line
         start = end;
         end += step;
         // Start next task with some delay
-        setTimeout(function () {
+        setTimeout(() => {
             countCssHitsBatch(elements, start, end, step, result, callback);
         }, COUNT_CSS_HITS_BATCH_DELAY);
     }
 
     function removeElements(elements) {
-        for (var i = 0; i < elements.length; i += 1) {
-            var element = elements[i];
+        for (let i = 0; i < elements.length; i += 1) {
+            const element = elements[i];
             element.remove();
         }
     }
 
 
-    var countAllCssHits = (function () {
+    const countAllCssHits = (function () {
         // we don't start counting again all css hits till previous count process wasn't finished
-        var countIsWorking = false;
+        let countIsWorking = false;
 
         return function () {
             if (countIsWorking) {
                 return;
             }
             countIsWorking = true;
-            var elements = document.querySelectorAll('*');
-            countCssHitsBatch(elements, 0, CSS_HITS_BATCH_SIZE, CSS_HITS_BATCH_SIZE, [], function (result) {
-                if (result.length > 0) {
-                    onCssHitsFoundCallback(result);
+            const elements = document.querySelectorAll('*');
+            countCssHitsBatch(
+                elements,
+                0,
+                CSS_HITS_BATCH_SIZE,
+                CSS_HITS_BATCH_SIZE,
+                [],
+                (result) => {
+                    if (result.length > 0) {
+                        onCssHitsFoundCallback(result);
+                    }
+                    countIsWorking = false;
                 }
-                countIsWorking = false;
-            });
+            );
         };
     })();
 
@@ -290,25 +298,26 @@ var CssHitsCounter = (function () { // jshint ignore:line
 
     let observer;
     function countCssHitsForMutations() {
-        var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+        const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
         if (!MutationObserver) {
             return;
         }
-        var timeoutId;
-        observer = new MutationObserver(function (mutationRecords) {
+        let timeoutId;
+        observer = new MutationObserver(((mutationRecords) => {
             // Collect probe elements, count them, then remove from their targets
-            var probeElements = [];
-            var childrenOfProbeElements = [];
-            var potentialProbeElements = [];
-            mutationRecords.forEach(function (mutationRecord) {
+            const probeElements = [];
+            const childrenOfProbeElements = [];
+            const potentialProbeElements = [];
+            mutationRecords.forEach((mutationRecord) => {
                 if (mutationRecord.addedNodes.length === 0) {
                     return;
                 }
-                for (var i = 0; i < mutationRecord.addedNodes.length; i += 1) {
-                    var node = mutationRecord.addedNodes[i];
-                    var target = mutationRecord.target;
+                for (let i = 0; i < mutationRecord.addedNodes.length; i += 1) {
+                    const node = mutationRecord.addedNodes[i];
+                    const { target } = mutationRecord;
                     if (!node.parentNode && target && node instanceof Element) {
-                        // Most likely this is a "probe" element that was added and then immediately removed from DOM.
+                        // Most likely this is a "probe" element that was added and then
+                        // immediately removed from DOM.
                         // We re-add it and check if any rule matched it
                         probeElements.push(node);
 
@@ -326,21 +335,23 @@ var CssHitsCounter = (function () { // jshint ignore:line
                 }
             });
 
-            // If the list of potential probe elements is relatively small, we can count CSS hits immediately
-            if (potentialProbeElements.length > 0 && potentialProbeElements.length <= CSS_HITS_BATCH_SIZE) {
-                let result = countCssHitsForElements(potentialProbeElements);
+            // If the list of potential probe elements is relatively small,
+            // we can count CSS hits immediately
+            if (potentialProbeElements.length > 0
+                && potentialProbeElements.length <= CSS_HITS_BATCH_SIZE) {
+                const result = countCssHitsForElements(potentialProbeElements);
                 if (result.length > 0) {
                     onCssHitsFoundCallback(result);
                 }
             }
 
-            var allProbeElements = [];
+            const allProbeElements = [];
 
             addUnique(allProbeElements, childrenOfProbeElements);
             addUnique(allProbeElements, probeElements);
 
             if (allProbeElements.length > 0) {
-                var result = countCssHitsForElements(allProbeElements);
+                const result = countCssHitsForElements(allProbeElements);
                 if (result.length > 0) {
                     onCssHitsFoundCallback(result);
                 }
@@ -356,11 +367,11 @@ var CssHitsCounter = (function () { // jshint ignore:line
             if (timeoutId) {
                 clearTimeout(timeoutId);
             }
-            timeoutId = setTimeout(function () {
+            timeoutId = setTimeout(() => {
                 countAllCssHits();
                 clearTimeout(timeoutId);
             }, COUNT_ALL_CSS_HITS_TIMEOUT_MS);
-        });
+        }));
         startObserver(observer);
     }
 
@@ -412,22 +423,22 @@ var CssHitsCounter = (function () { // jshint ignore:line
      * We are waiting for 'load' event and start calculation.
      * @param {cssHitsCounterCallback} callback - handles counted css hits
      */
-    var init = function (callback) {
+    const init = function (callback) {
         if (typeof callback !== 'function') {
             throw new Error('AdGuard Extension: "callback" parameter is not a function');
         }
         onCssHitsFoundCallback = callback;
 
         function startCounter() {
-            if (document.readyState === 'interactive' ||
-                document.readyState === 'complete') {
+            if (document.readyState === 'interactive'
+                || document.readyState === 'complete') {
                 countCssHits();
                 document.removeEventListener('readystatechange', startCounter);
             }
         }
 
-        if (document.readyState === 'complete' ||
-            document.readyState === 'interactive') {
+        if (document.readyState === 'complete'
+            || document.readyState === 'interactive') {
             countCssHits();
         } else {
             document.addEventListener('readystatechange', startCounter);
@@ -440,9 +451,9 @@ var CssHitsCounter = (function () { // jshint ignore:line
     };
 
     return {
-        init: init,
-        countAffectedByExtendedCss: countAffectedByExtendedCss,
-        parseExtendedStyleInfo: parseExtendedStyleInfo,
-        stop: stop,
+        init,
+        countAffectedByExtendedCss,
+        parseExtendedStyleInfo,
+        stop,
     };
 })();
