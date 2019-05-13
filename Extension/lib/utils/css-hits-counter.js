@@ -296,6 +296,14 @@ const CssHitsCounter = (function () {
         }
     }
 
+    const isIgnoredNodeTag = (nodeTag) => {
+        if (!nodeTag) {
+            return false;
+        }
+        const ignoredTags = ['script'];
+        return ignoredTags.includes(nodeTag.toLowerCase());
+    };
+
     let observer;
     function countCssHitsForMutations() {
         const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
@@ -314,8 +322,11 @@ const CssHitsCounter = (function () {
                 }
                 for (let i = 0; i < mutationRecord.addedNodes.length; i += 1) {
                     const node = mutationRecord.addedNodes[i];
+                    if (!(node instanceof Element) || isIgnoredNodeTag(node.tagName)) {
+                        continue;
+                    }
                     const { target } = mutationRecord;
-                    if (!node.parentNode && target && node instanceof Element) {
+                    if (!node.parentNode && target) {
                         // Most likely this is a "probe" element that was added and then
                         // immediately removed from DOM.
                         // We re-add it and check if any rule matched it
@@ -327,7 +338,7 @@ const CssHitsCounter = (function () {
 
                         observer.disconnect();
                         mutationRecord.target.appendChild(node);
-                    } else if (node.parentNode && target && node instanceof Element) {
+                    } else if (node.parentNode && target) {
                         // Sometimes probe elements are appended to the DOM
                         potentialProbeElements.push(node);
                         appendChildren(node, potentialProbeElements);
