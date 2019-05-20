@@ -494,13 +494,24 @@ adguard.webRequestService = (function (adguard) {
         return requestRule;
     };
 
-    var isCollectingCosmeticRulesHits = function (tab) {
+    const isCollectingCosmeticRulesHits = (tab) => {
         /**
-         * Edge browser doesn't support css content attribute for node elements except :before and :after
+         * Edge browser doesn't support css content attribute for node elements except
+         * :before and :after
          * Due to this we can't use cssHitsCounter for edge browser
          */
-        return !adguard.utils.browser.isEdgeBrowser() &&
-            (canCollectHitStatsForTab(tab) || adguard.filteringLog.isOpen());
+
+        /**
+         * In the Firefox with version lower than 55 Mutation observer isn't working as expected
+         * Seems like it doesn't stop in time, thus nodes added after stop appear
+         * in mutations records again
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1337
+         */
+        const firefoxLower55 = adguard.prefs.browser === 'Firefox'
+            && adguard.prefs.firefoxVersion < 55;
+        return !adguard.utils.browser.isEdgeBrowser()
+            && !firefoxLower55
+            && (canCollectHitStatsForTab(tab) || adguard.filteringLog.isOpen());
     };
 
     // EXPOSE
