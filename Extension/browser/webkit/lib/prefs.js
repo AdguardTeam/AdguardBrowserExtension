@@ -59,6 +59,13 @@ adguard.prefs = (function (adguard) {
             });
         },
 
+        get firefoxVersion() {
+            return adguard.lazyGet(Prefs, 'firefoxVersion', () => {
+                const match = /\sFirefox\/(\d+)\./.exec(navigator.userAgent);
+                return match === null ? null : Number.parseInt(match[1], 10);
+            });
+        },
+
         /**
          * https://msdn.microsoft.com/ru-ru/library/hh869301(v=vs.85).aspx
          * @returns {*}
