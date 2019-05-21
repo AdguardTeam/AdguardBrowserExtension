@@ -71,7 +71,7 @@ adguard.notifications = (function (adguard) {
             },
             // This field is filled below (see initNotifications)
             text: '',
-            url: 'https://adguard.com/forward.html?action=special_bf18&from=browser_action&app=browser_extension',
+            url: 'https://adguard.com/forward.html?action=special_ten&from=browser_action&app=browser_extension',
             from: '21 May 2019 12:03:00', // TODO fix dates
             to: '22 May 2019 12:59:00',
             // from: '1 June 2019 00:00:00',
