@@ -60,6 +60,26 @@ adguard.notifications = (function (adguard) {
         //     badgeBgColor: '#DF3812',
         //     badgeText: '!',
         // },
+        tenYear: {
+            id: 'tenYear',
+            locales: {
+                en: 'Ten years: <strong>50% Off</strong> AdGuard Premium', // TODO change text
+                ru: 'Black Friday: <strong>-50%</strong> на AdGuard Премиум',
+                fr: 'Black Friday: <strong>-50%</strong> sur AdGuard Premium',
+                es: 'Black Friday:<strong>-50%</strong> en AdGuard Premium',
+                de: 'Black Friday: <strong>-50%</strong> auf AdGuard Premium',
+                ja: 'AdGuardプレミアム<strong>【５０％OFF】</strong>',
+            },
+            // This field is filled below (see initNotifications)
+            text: '',
+            url: 'https://adguard.com/forward.html?action=special_bf18&from=browser_action&app=browser_extension',
+            from: '21 May 2019 12:03:00', // TODO fix dates
+            to: '22 May 2019 12:59:00',
+            bgColor: '#67b279',
+            textColor: '#fff',
+            badgeBgColor: '#DF3812',
+            badgeText: '!',
+        },
     };
 
     /**
@@ -108,7 +128,8 @@ adguard.notifications = (function (adguard) {
 
     let currentNotification;
     let notificationCheckTime;
-    const checkTimeoutMs = 10 * 60 * 1000; // 10 minutes
+    // const checkTimeoutMs = 10 * 60 * 1000; // 10 minutes
+    const checkTimeoutMs = 1000; // TODO remove and uncomment above
 
     /**
      * Finds out notification for current time and checks if notification wasn't shown yet
@@ -118,6 +139,7 @@ adguard.notifications = (function (adguard) {
         const currentTime = new Date().getTime();
         const timeSinceLastCheck = currentTime - notificationCheckTime;
 
+        // Check not often than once in 10 minutes
         if (notificationCheckTime > 0 && timeSinceLastCheck <= checkTimeoutMs) {
             return currentNotification;
         }
