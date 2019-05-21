@@ -45,6 +45,7 @@ const browser = window.browser || chrome;
         };
 
         return {
+            setUninstallURL: browser.runtime.setUninstallURL,
             onMessage,
             get lastError() {
                 return browser.runtime.lastError;
