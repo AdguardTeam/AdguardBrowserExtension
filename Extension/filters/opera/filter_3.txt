@@ -1,8 +1,8 @@
-! Checksum: C25uQyoqCwU61vLula6fPw
+! Checksum: GLn6/WwjMWpF2uP+jf7Qlg
 ! Title: AdGuard Tracking Protection filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. Use this filter if you do not want your actions on the Internet to be tracked.
-! Version: 2.0.6.6
-! TimeUpdated: 2019-03-07T17:38:30+03:00
+! Version: 2.0.7.9
+! TimeUpdated: 2019-05-20T16:31:07+03:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#privacy
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -20,27 +20,57 @@
 ! AG_removeCookie
 ! Examples: AG_removeCookie('/REGEX/') or AG_removeCookie('part of the cookie name')
 !
-#%#var AG_removeCookie=function(b){var c=/./;/^\/.+\/$/.test(b)?c=new RegExp(b.slice(1,-1)):""!==b&&(c=new RegExp(b.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")));b=function(){for(var b=document.cookie.split(";"),d=b.length;d--;){cookieStr=b[d];var a=cookieStr.indexOf("=");if(-1!==a&&(a=cookieStr.slice(0,a).trim(),c.test(a))){a+="=";var e="; domain="+document.location.hostname,f="; domain=."+document.location.hostname;document.cookie=a+"; expires=Thu, 01 Jan 1970 00:00:00 GMT";document.cookie=a+e+"; expires=Thu, 01 Jan 1970 00:00:00 GMT";document.cookie=a+f+"; expires=Thu, 01 Jan 1970 00:00:00 GMT";document.cookie=a+"; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";document.cookie=a+e+"; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";document.cookie=a+f+"; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"}}};b();window.addEventListener("beforeunload",b)};
+#%#var AG_removeCookie=function(a){var e=/./;/^\/.+\/$/.test(a)?e=new RegExp(a.slice(1,-1)):""!==a&&(e=new RegExp(a.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")));a=function(){for(var a=document.cookie.split(";"),g=a.length;g--;){cookieStr=a[g];var d=cookieStr.indexOf("=");if(-1!==d&&(d=cookieStr.slice(0,d).trim(),e.test(d)))for(var h=document.location.hostname.split("."),f=0;f<h.length-1;f++){var b=h.slice(f).join(".");if(b){var c=d+"=",k="; domain="+b;b="; domain=."+b;document.cookie=c+"; expires=Thu, 01 Jan 1970 00:00:00 GMT";document.cookie=c+k+"; expires=Thu, 01 Jan 1970 00:00:00 GMT";document.cookie=c+b+"; expires=Thu, 01 Jan 1970 00:00:00 GMT";document.cookie=c+"; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";document.cookie=c+k+"; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";document.cookie=c+b+"; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"}}}};a();window.addEventListener("beforeunload",a)};
 !
 ! AG_defineProperty
 ! See https://github.com/AdguardTeam/deep-override
 !
 #%#var AG_defineProperty=function(){var p,q=Object.defineProperty;if("function"==typeof WeakMap)p=WeakMap;else{var r=0,t=function(){this.a=(r+=Math.random()).toString()};t.prototype.set=function(a,b){var d=a[this.a];d&&d[0]===a?d[1]=b:q(a,this.a,{value:[a,b],writable:!0});return this};t.prototype.get=function(a){var b;return(b=a[this.a])&&b[0]===a?b[1]:void 0};t.prototype.has=function(a){var b=a[this.a];return b?b[0]===a:!1};p=t}function u(a){this.b=a;this.h=Object.create(null)}function v(a,b,d,e){this.a=a;this.i=b;this.c=d;this.f=e}function w(){this.g=/^([^\\\.]|\\.)*?\./;this.j=/\\(.)/g;this.a=new p}function x(a,b){var d=b.f;if(d&&!("beforeGet"in d||"beforeSet"in d))return z(d);var e={get:function(){var c=b.f;c&&c.beforeGet&&c.beforeGet.call(this,b.a.b);a:if(c=b.g)c=A(c)?c.value:c.get?c.get.call(this):void 0;else{c=b.a.b;if(b.i in c&&(c=B(c),null!==c)){var d=C.call(c,b.i);c=d?d.call(this):c[b.i];break a}c=void 0}(this===b.a.b||D.call(b.a.b,this))&&E(a,c,b.c);return c},set:function(c){if(this===b.a.b||D.call(b.a.b,this)){b.f&&b.f.beforeSet&&(c=b.f.beforeSet.call(this,c,this));var d=b.g;d&&A(d)&&d.value===c?c=!0:(d=F(b,c,this),G(c)&&(c=H(a,c),I(a,c,b.c)),c=d)}else c=F(b,c,this);return c}};d&&J(d,e,K);return e}function I(a,b,d){for(var e in d.h){var c=d.h[e];if(b.h[e]){var h=a,g=b.h[e],k=c;!k.f||g.f||"undefined"===typeof g.a.b||g.g||(g.g=z(k.f));g.c&&k.c&&g.c!==k.c&&I(h,g.c,k.c)}else{g=h=void 0;k=a;var f=b,l=c.i,m="undefined"!==typeof f.b,y=!1;m&&(g=L(f.b,l))&&!g.configurable&&(y=!0,h=f.b[l]);var n=y?H(k,h):new u(c.c.b);I(k,n,c.c);n=new v(f,l,n,c.f);f.h[l]=n;m&&(n.g=g,m=x(k,n),y?E(k,h,c.c):(q(f.b,l,m),g&&A(g)&&(M(m,g.value,f.b),E(k,g.value,c.c))))}}}function E(a,b,d){G(b)&&(b=H(a,b),I(a,b,d))}function F(a,b,d){var e=a.g;if(!e){e=B(a.a.b);if(null!==e&&(e=N.call(e,a.i)))return e.call(d,b);if(!O(a.a.b))return!1;a.g={value:b,configurable:!0,writable:!0,enumerable:!0};return!0}return M(e,b,d)}function H(a,b){var d=a.a.get(b);d||(d=new u(b),a.a.set(b,d));return d}function A(a){return"undefined"!==typeof a.writable}function J(a,b,d){for(var e=0,c=d.length;e<c;e++){var h=d[e];h in a&&(b[h]=a[h])}}function z(a){if(a){var b={};J(a,b,P);return b}}function M(a,b,d){if(A(a))return a.writable?(a.value=b,!0):!1;if(!a.set)return!1;a.set.call(d,b);return!0}var P="configurable enumerable value get set writable".split(" "),K=P.slice(0,2),L=Object.getOwnPropertyDescriptor,O=Object.isExtensible,B=Object.getPrototypeOf,D=Object.prototype.isPrototypeOf,C=Object.prototype.__lookupGetter__||function(a){return(a=Q(this,a))&&a.get?a.get:void 0},N=Object.prototype.__lookupSetter__||function(a){return(a=Q(this,a))&&a.set?a.set:void 0};function Q(a,b){if(b in a){for(;!w.hasOwnProperty.call(a,b);)a=B(a);return L(a,b)}}function G(a){var b=typeof a;return"function"===b||"object"===b&&null!==a?!0:!1}var R;return function(a,b,d){R||(R=new w);var e=R;d=d||window;var c=new u;a+=".";var h=c||new u;for(var g=e.g,k=e.j,f,l,m;a;){f=g.exec(a);if(null===f)throw 1;f=f[0].length;l=a.slice(0,f-1).replace(k,"$1");a=a.slice(f);(f=h.h[l])?m=f.c:(m=new u,f=new v(h,l,m),h.h[l]=f);h=m}if(!f)throw 1;a=f;a.f=b;E(e,d,c)};}();
 !
-! AG_abortInlineScript(functionRegex, 'property.chain')
-! Aborts execution of a function that matches "functionRegex" when accessing a property defined by "property.chain"
-! Based on AG_defineProperty
+! AG_abortOnPropertyWrite(property, debug)
+! Aborts execution of a script when it attempts to write the specified property.
+! Based on AG_defineProperty (https://github.com/AdguardTeam/deep-override)
+!
+! Examples:
+! AG_abortOnPropertyWrite('String.fromCharCode');
+!
+! @param property property or properties chain
+! @param debug optional, if true - we will print warning when script is aborted.
+!
+#%#var AG_abortOnPropertyWrite=function(a,b){var c=Math.random().toString(36).substr(2,8);AG_defineProperty(a,{beforeSet:function(){b&&console.warn("AdGuard aborted property write: "+a);throw new ReferenceError(c);}});var d=window.onerror;window.onerror=function(e){if("string"===typeof e&&-1!==e.indexOf(c))return b&&console.warn("AdGuard has caught window.onerror: "+a),!0;if(d instanceof Function)return d.apply(this,arguments)}};
+!
+! AG_abortOnPropertyRead(property, debug)
+! Aborts execution of a script when it attempts to read the specified property.
+! Based on AG_defineProperty (https://github.com/AdguardTeam/deep-override)
+!
+! Examples:
+! AG_abortOnPropertyRead('String.fromCharCode');
+!
+! @param property property or properties chain
+! @param debug optional, if true - we will print warning when script is aborted.
+!
+#%#var AG_abortOnPropertyRead=function(a,b){var c=Math.random().toString(36).substr(2,8);AG_defineProperty(a,{beforeGet:function(){b&&console.warn("AdGuard aborted property read: "+a);throw new ReferenceError(c);}});var d=window.onerror;window.onerror=function(e){if("string"===typeof e&&-1!==e.indexOf(c))return b&&console.warn("AdGuard has caught window.onerror: "+a),!0;if(d instanceof Function)return d.apply(this,arguments)}};
+!
+! AG_abortInlineScript(regex, property, debug)
+! Aborts execution of an inline script when it attempts to access the specified property
+! AND content of the <script> element matches specified regular expression.
+! Based on AG_defineProperty (https://github.com/AdguardTeam/deep-override)
 !
 ! Examples:
 ! AG_abortInlineScript(/zfgloadedpopup|zfgloadedpushopt/, 'String.fromCharCode');
 !
-#%#var AG_abortInlineScript=function(d,e,f){var c;if("currentScript"in document)var b=function(){return document.currentScript};else b=function(){var a=document.getElementsByTagName("script");return a[a.length-1]},window.addEventListener("DOMContentLoaded",function(){b=function(){return null}});AG_defineProperty(e,{beforeGet:function(){var a=b();if(a&&a!==c&&(c=a,""===a.src&&d.test(a.textContent)))throw setTimeout(function(){console.warn("AdGuard aborted an execution of an inline script")}),null;}},f)};
+! @param regex regular expression that the inline script contents must match
+! @param property property or properties chain
+! @param debug optional, if true - we will print warning when script is aborted.
+!
+#%#var AG_abortInlineScript=function(g,b,c){var d=function(){if("currentScript"in document)return document.currentScript;var a=document.getElementsByTagName("script");return a[a.length-1]},e=Math.random().toString(36).substr(2,8),h=d();AG_defineProperty(b,{beforeGet:function(){var a=d();if(a instanceof HTMLScriptElement&&a!==h&&""===a.src&&g.test(a.textContent))throw c&&console.warn("AdGuard aborted execution of an inline script"),new ReferenceError(e);}});var f=window.onerror;window.onerror=function(a){if("string"===typeof a&&-1!==a.indexOf(e))return c&&console.warn("AdGuard has caught window.onerror: "+b),!0;if(f instanceof Function)return f.apply(this,arguments)}};
 !
 ! AG_setConstant('property.chain', 'true') // defines boolean (true), same for false;
 ! AG_setConstant('property.chain', '123') // defines Number 123;
 ! AG_setConstant('property.chain', 'noopFunc') // defines function(){};
 ! AG_setConstant('property.chain', 'trueFunc') // defines function(){return true};
 ! AG_setConstant('property.chain', 'falseFunc') // defines function(){return false};
+!
 #%#var AG_setConstant=function(e,a){if("undefined"===a)a=void 0;else if("false"===a)a=!1;else if("true"===a)a=!0;else if("noopFunc"===a)a=function(){};else if("trueFunc"===a)a=function(){return!0};else if("falseFunc"===a)a=function(){return!1};else if(/^\d+$/.test(a)){if(a=parseFloat(a),isNaN(a)||32767<Math.abs(a))return}else return;var b=!1;AG_defineProperty(e,{get:function(){return a},set:function(c){if(b)var d=!0;else void 0!==c&&void 0!==a&&typeof c!==typeof a&&(b=!0),d=b;d&&(a=c)}})};
 ! JS API FINISH
 !-------------------------------------------------------------------------------!
@@ -50,8 +80,11 @@
 !-------JS----------
 !-------------------
 !
-! facebook.com - removing tracking parameter
-facebook.com,facebookcorewwwi.onion#%#(function() { var observer=new MutationObserver(hide);observer.observe(document,{childList:!0,subtree:!0});function hide(){var e=document.querySelectorAll('a[target="_blank"]');e.forEach(function(e){e.setAttribute("href", e.href.split("?fbclid")[0]);e.setAttribute("href", e.href.split("%3Ffbclid")[0]);e.setAttribute("href", e.href.split("&fbclid")[0]); e.setAttribute("href", e.href.split("%26fbclid")[0]); e.setAttribute("href", e.href.split("%3Futm")[0]); e.setAttribute("href", e.href.split("?utm")[0]); e.setAttribute("href", e.href.split("&fbc=")[0]); })} })();
+!! facebook.com - removing tracking parameter
+!! external links
+facebook.com,facebookcorewwwi.onion#%#new MutationObserver(function(){document.querySelectorAll('a[target="_blank"]').forEach(function(t){if(t.href.contains("?fbclid")||t.href.contains("%3Ffbclid")||t.href.contains("&fbclid")||t.href.contains("%26fbclid")||t.href.contains("%3Futm")||t.href.contains("?utm")||t.href.contains("&fbc=")||t.href.contains("%26fbc%3D")||t.href.contains("?share=")||t.href.contains("%3Fshare%3D")||t.href.contains("%3F__twitter_impression%3D")||t.href.contains("?__twitter_impression=")){var e=t.href.split("#!")[1];if(!e)var e=t.href.split("%23%21")[1];if(!e)var e="";t.href.contains("#!")&&(e="#!"+e),t.href.contains("%23%21")&&(e="%23%21"+e),t.setAttribute("href",t.href.split("?fbclid")[0]+e),t.setAttribute("href",t.href.split("%3Ffbclid")[0]+e),t.setAttribute("href",t.href.split("&fbclid")[0]+e),t.setAttribute("href",t.href.split("%26fbclid")[0]+e),t.setAttribute("href",t.href.split("%3Futm")[0]+e),t.setAttribute("href",t.href.split("?utm")[0]+e),t.setAttribute("href",t.href.split("&fbc=")[0]+e),t.setAttribute("href",t.href.split("%26fbc%3D")[0]+e),t.setAttribute("href",t.href.split("?share=")[0]+e),t.setAttribute("href",t.href.split("%3Fshare%3D")[0]+e),t.setAttribute("href",t.href.split("%3F__twitter_impression%3D")[0]+e),t.setAttribute("href",t.href.split("?__twitter_impression=")[0]+e)}})}).observe(document,{childList:!0,subtree:!0});
+!! internal links
+facebook.com,facebookcorewwwi.onion#%#new MutationObserver(function(){document.querySelectorAll('div[id^="hyperfeed_story_id_"] a:not([target="_blank"])').forEach(function(t){(t.href.contains("&eid=")||t.href.contains("%26eid%3D")||t.href.contains("?__tn__=")||t.href.contains("%3F%5F%5Ftn%5F%5F%3D")||t.href.contains("&__tn__=")||t.href.contains("%26%5F%5Ftn%5F%5F%3D")||t.href.contains("?source=")||t.href.contains("%3Fsource%3D")||t.href.contains("?__xts__")||t.href.contains("%3F%5F%5Fxts%5F%5F")||t.href.contains("&__xts__")||t.href.contains("%26%5F%5Fxts%5F%5F")||t.href.contains("&amp;__xts__%5B")||t.href.contains("?ref=")||t.href.contains("%3Fref%3D")||t.href.contains("?fref=")||t.href.contains("%3Ffref%3D")||t.href.contains("?epa=")||t.href.contains("%3Fepa%3D"))&&(t.setAttribute("href",t.href.split("&eid=")[0]),t.setAttribute("href",t.href.split("%26eid%3D")[0]),t.setAttribute("href",t.href.split("?__tn__=")[0]),t.setAttribute("href",t.href.split("%3F%5F%5Ftn%5F%5F%3D")[0]),t.setAttribute("href",t.href.split("&__tn__=")[0]),t.setAttribute("href",t.href.split("%26%5F%5Ftn%5F%5F%3D")[0]),t.setAttribute("href",t.href.split("?__xts__")[0]),t.setAttribute("href",t.href.split("%3F%5F%5Fxts%5F%5F")[0]),t.setAttribute("href",t.href.split("&__xts__")[0]),t.setAttribute("href",t.href.split("%26%5F%5Fxts%5F%5F")[0]),t.setAttribute("href",t.href.split("&amp;__xts__%5B")[0]),t.setAttribute("href",t.href.split("?source=")[0]),t.setAttribute("href",t.href.split("%3Fsource%3D")[0]),t.setAttribute("href",t.href.split("?ref=")[0]),t.setAttribute("href",t.href.split("%3Fref%3D")[0]),t.setAttribute("href",t.href.split("?fref=")[0]),t.setAttribute("href",t.href.split("%3Ffref%3D")[0]),t.setAttribute("href",t.href.split("?epa=")[0]),t.setAttribute("href",t.href.split("%3Fepa%3D")[0]))})}).observe(document,{childList:!0,subtree:!0});
 ! Google Contributor tracking domains
 elpais.com,chip.de,moviepilot.com,madison.com,promiflash.de,trendblog.net,qctimes.com,missoulian.com,chip.eu,promiflash.tv,bix7.com,7riversmarketplace.com,azstarnet.com,huskerextra.com,hawkmania.com,casperstartribune.com,justselect.ru,xonio.com,autosocut.de,thebettendorfnews.com,netcive.com,autocout24.de,lmagazinelincoln.com,lincolnrestaurantweek.com,napavalleywheels.com,thisistucson.com,download.de,billingsgazette.net,autoscount24.de,chipxonio.biz,tucsonestrella.us,teilescout24.eu,celebratenebraska.com,autoscunt.de,mopedscout.com,auto-sout24.de,autocsout24.de,promiflasch.de,autoteilescout.ch,aotoscout.de,motoscout.in,autoscoter24.de,autoskaud.de,ersatzteile-scout24.de,chipxonio.info,kfzscout24.de,reifenscout24.eu,harpers.de,aptshowcase.com,tyrescout24.com,tucsonestrella.org,houstonconews.com,mastercar.de,autoteilescout.net,bikescout24.eu,autoscout25.de,aut0scout.de,zubehoerscout24.de,autosout-24.de,rivervalleybusinessreport.com,teilescout24.net,motor-scout24.eu,unfall-scout.de,tuning-scout24.eu,motoscount24.de,autoascout24.de,reifen-scout24.de,autoteilescout24.org,autoteilescout24.info,motoscout.us,moviecritter.de,autoscouet24.de,utoscout24.de,motor-scout.ch,autoscout23.de,motorrad-scout.net,moto-scout24.pl,motorradscaut24.de,macfrage.net,bikerscout.info,motorscout24.eu,gzlincoln.com,chipxonio.net,automobilscaut.de,capitalnewspapers.com,fahrzeugscout.de,autoscout22.de,motoradscout.eu,motoscout24.mx,motoscout.ro,motoskout.de,ersatzteilscout.de,autoteilescout.de,neighborhoodextra.com,autiscout24.de,motoscout.mx,danceshoppenebraska.com,autoscouting24.de,workbakken.com,auto-scout-2.de,billingsgazzette.com,livewellwyoming.com,autoscont24.de,autoskaud24.de,auto-scount.de,carscout24.de,moto-scout24.mobi,ersatzteilscout24.de,autoscott-24.de,dailystarcalendar.com,montanamessenger.com,tuningscout24.de,notoscout24.de,automobilscout24.de,auto-skout-24.de,it-whitepaper.net,spearfishcommunity.com,atoscout-24.de,autosgout24.de,auto-scouts.de,reifenscout24.com,wyoworks.com,motoscout24.mobi,wheelsforyoukansas.com,motorrad-scout24.info,teilescout24.at,autscout24.de,auto-scaut24.de,teile-scout.com,autoscod24.de,teile-scout.ch,autocout-24.de,chip-video.de,moto-scout.com.cn,lincoln-living.com,motorradscout24.net,ms24.biz,flipsideonline.com,moto-scout24.ro,auotoscout24.de,www-auto-scout24.de,motorradscout24.org,rollerscout.de,kfz-teilescout.de,auto-skout.de,autohausscout24.eu,xonio.at,autohausscout24.de,autoscuot.de,downloadchip.de,autoteile-scout24.info,outdoorboatsrvsmore.com,motorrad-scout24.ch,motoscot.de,as24autocredit.de,auto-scott-24.de,auto-scot-24.de,autoskout-24.de,autosgaud24.de,it-whitepaper.at,elektroautoscout.de,autoscput24.de,motorradscout.eu,autosout.de,foto-video.eu,chip-fotovideo.de,unfallscout24.de,quadscout24.de,motorradscout.org,autos-scout.de,motoscout24.ro,motoscout24.co,teile-scout.net,autodcout24.de,autosccout24.de,autoscout4.de,autoscout-online.de,autoteile-scout.com,aotoscout24.de,audosgaut.de,auto-shout.de,autosckut24.de,game-critter.com,autoscoutvierundzwanzig.de,motorscout24.de,insidenapavalley.com,southernillinoisan.com,audosgaud.de,motorrad-scout24.net,outdoorwheels.com,autoteile-scout.info,autoscaund24.de,autosgaud.de,laestrelladetucson.us,teilescout.org,autoteile-scout.at,autoteilescout24.ch,otoscout.de,auto-skaut24.de,auto-sout-24.de,ersatzteil-scout-24.de,teilescout.com,auto-cout-24.de,wyovarsity.com,aotoscaut.de,autoteile-scout.org,wheelsforyouomaha.com,promiflash.net,gebrauchtwagen-scout.de,motoscout-24.com,motosout24.com,ms24.mobi,autoscout2.de,outoscout24.de,auto-scout24.de,foodcritter.com,promiflash.org,walkacrosswyoming.com,autoteile-scout24.ch,mtfires.com,musicritter.com,mtinbusiness.com,motoscout.info,starcitygolfer.com,autoteilescout24.net,autohausscout.de,autoacout24.de,moto-scout.info,wi-elections.com,auto-skout24.de,autoshot24.de,motosocut24.de,autoscout27.de,chipdigital.de,autoscout24-online.de,teilescout.info,autoscout-xl.de,teilescout24.org,ersatzteilescout-24.at,it-whitepaper.org,krombach24.de,automobilscout.de,finderads.com,freakfestlive.com,ellsworthcommunity.com,motor-scout.de,moto-scout.ch,uatoscout24.de,autoscouts.de,moto-scout24.net,autoscaut24.de,auotscout24.de,ersatzteilescout-24.de,quadcityvarsity.com,motorradscout.ch,unfallautoscout24.com,ersatzteilescout.de,promi-flash.de,estrelladetucson.com,salukigameday.com,autosco24.de,autoteilescout.eu,ersatzteilescout-24.com,download-chip.de,autoscuot-24.de,motorrad-scout24.biz,wwwautoscout.de,motoradscout24.com,wheelsforyounebraska.com,motoscout-24.de,teile-scout24.biz,autoteile-scout.biz,reifenscout.net,auto-skut24.de,auto-scout.de,atoscout.de,chip-fotovideo.eu,chipxonio.org,qcvarsity.com,reifenscout.at,auto-scout-24.de,mooscout24.de,estrelladetucson.net,teile-scout.org,download-chip.mobi,promi-flash.ch,elektroauto-scout.de,woodfordcountyjournal.com,autoscoot24.de,familie-kellers.de,teile-scout24.org,autoscaut-24.de,ersatzteil-scout.de,wheelsforyoumissouri.com,movie-critter.com,tarif.de,auto-scuot-24.de,tuningscout24.net,kfzscout.eu,fahrzeugscout24.de,corridormag.com,autoscout24de.de,oldiescout24.de,autoscount-24.de,autoscaunt.de,car-scout24.de,autosscout24.de,billinggazette.com,autohaus-adermann.de,missoulianentertainer.com,wiprepzone.com,missoulian.net,oldtimer-scout24.de,monsoonalerts.com,xn--motorrderscout24-0nb.de,motoscout24.cn,moto-scout24.de,starcityhealth.com,audoscout24.de,motorradscout24.ch,pc-frage.net,motorradscout.net,xonio.mobi,ms24.cn,motorrad-scout.org,ihrautoscout.com,newjobsnd.com,auto-scout4.de,auttoscout24.de,autocscout24.de,autuscaut.de,autoteile-scout24.biz,autoscoud.de,autosc0ut24.de,ms24.us,moto-scout24.eu,lincolnjournalstar.com,motorrad-scout.mobi,promiflash.ch,unfallscout.de,walkerwatch.net,teilescout24.ch,auto-scou.de,emptystockingclub.com,motoscout2.de,xonio.eu,teilescout.eu,www-autoscout24.de,motorad-scout.eu,ahtoscout.de,utoscout.de,it-whitepaper.info,autoscout20.de,kfzteilescout24.de,mastercar.com,ms24.com.cn,officefrage.net,unfallautoscout24.de,autos-scout24.de,moto-scout.mobi,farmercityjournal.com,teilescout.net,chip-germany.de,kchaiyo.com,moto-scout24.us,moto-scout.in,tuningmarkt.eu,seelakegeorge.com,ascout24.de,motoscuot.de,motorad-scout.de,autoscout-2.de,autosckot.de,motoscout24.net,autoschaut24.de,tyrescout24.eu,poststar.org,bikerscout24.com,audosgaut24.de,motorradscout24.eu,wyomingwheelsforyou.com,autoscouts24.de,tucsonestrella.com,digitalcritter.com,77square.com,autoshout24.de,moto-scout24.biz,reifenscout.ch,autoskaut-24.de,reifen-scout24.com,wwwautoscout-24.de,motoscout24.com,reifenscout24.de,mietwagenscout.com,auto-scot.de,moto-scout24.cn,autoscott24.de,teile-scout.de,autoteilescout24.eu,auoscout24.de,motorbikescout.com,motorradscout.biz,c.de,jahreswagenscout24.de,moto-scout.com,chip-foto-video.eu,autoscuout24.de,motoradscout.net,motorradscout.info,auto-skaut-24.de,auto-scott.de,champions.co,teile-scout24.at,as24.de,www-auto-scout.de,autoteile-scout24.com,autoscott.de,motorradscout-24.de,wwwauto-scout.de,mtoscout24.de,autoscoutt.de,ms24.info,www-autoscout.de,carscout.de,gebrauchtwagen-sout.de,starcitybridal.com,missoulien.com,myautoscout24.de,oldiescout.de,autoteile-scout.ch,motorad-scout24.de,ersatzteilescout.eu,auto-scut24.de,motoscout.biz,auto-scaut-24.de,auto-scount-24.de,chip.at,motoscuot24.de,musiccritter.com,motscout24.de,motor-scout.com,laestrelladetucson.org,crashscout24.de,autoskout24.de,werkstattscout24.com,ahl-freiberg.de,autoscond24.de,chip-linux.com,reifenscout24.info,autooscout24.de,motoscut24.de,motorscout.ch,wyopreps.net,oldtimerscout24.de,promiflash-images.de,a-scout.de,badgerbeat.com,youngtimerscout24.ch,testlabor.de,motorradscout24.com,chiplog.de,blackhillsjournal.net,car-scout-24.de,motoscout.org,autoscoutde.de,autosscout.de,autosout24.de,gebrauchtwagenscout.de,lifeandstylesi.net,motoscout.com,saddlebagnotes.com,autoscuont24.de,meadecountytimestribune.com,motorad-scout.ch,uatoscout.de,autoscuot24.de,motoradscout.de,winecountrysi.com,motorrad-scout-24.net,togetherapartmadison.com,auto-shout24.de,bike-scout24.de,as24shop.de,moto-scout.cn,wyovarsity.net,motoscout24.eu,autoscout28.de,moto-scout.de,kfz-teilescout24.de,bike-scout24.eu,qcpreps.com,sellitnebraska.com,motorbikescout24.eu,autoreifenscout.de,promi-flash.com,evo7.de,missoulian.us,auto-scou24.de,autosocut24.de,auto-scoud.de#%#AG_abortInlineScript(/propertyIsEnumerable.*window\.stop.*\/[A-Za-z0-9\-_]{100}/, 'navigator');
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4253
@@ -122,10 +155,24 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 !-------------- Tracking servers list  -----------------------------------------!
 !-------------------------------------------------------------------------------!
 !
-! Temporary commented due to https://github.com/AdguardTeam/AdguardForAndroid/issues/1334#issuecomment-319302543
-! Should be uncommented once v2.10 goes live
+! Blocking Firebase crash reporting is quite problematic:
+! https://github.com/AdguardTeam/AdguardForAndroid/issues/1334#issuecomment-319302543
 ! ||app-measurement.com^
 !
+! Crashlytics is commented by @ameshkov.
+! The reason for unblocking crashlytics is to not make developers life worse by breaking crash reporting.
+! In a hostile network like when an ad blocker is present, apps might be crashing, and these errors need to be
+! reported to devs, otherwise they won't learn about the issue and won't fix it.
+! Also, it is not a common third-party analytics tracker, Crashlytics is not used for collecting users' data.
+! ||e.crashlytics.com^
+! ||settings.crashlytics.com^
+!
+||profusesupport.com^
+||logger.pw^$third-party
+||log-ird.outbrain.com^
+||sb.voicefive.com^
+||mrb.upapi.net^$third-party
+||analytics*.clickdimensions.com^
 ||pngme.ru^$third-party
 ||qoopler.ru^$third-party
 ||s.clicktex.ru^$third-party
@@ -163,7 +210,6 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 ||bm.adentifi.com^$third-party
 ||prvsz4pe.micpn.com^$third-party
 ||target.mixi.media^$third-party
-||rs.mail.ru^$third-party,domain=~account.mail.ru
 ||analytics.servogram.io^
 ||checkmygeo.com^$third-party
 ||collector-*.perimeterx.net^$third-party
@@ -197,7 +243,6 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 ||rdstation.com^$third-party
 ||rdstation.com.br^$third-party
 ||analytic.rocks^
-||settings.crashlytics.com^
 ||ip-api.com^
 ||client-api.matchinguu.com^
 ||counter.log24.ru^$third-party
@@ -1544,7 +1589,6 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 ||iperceptions.com^$third-party
 ||ipfingerprint.com^$third-party
 ||ipfrom.com^$third-party
-||api.ipify.org^$third-party
 ||ipinfo.info^$third-party
 ||ipinfodb.com^$third-party
 ||ipinyou.com.cn^$third-party
@@ -2803,7 +2847,6 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 ||useronlinecounter.com^$third-party
 ||userreport.com^$third-party
 ||users.51.la^$third-party
-||userzoom.com^$third-party
 ||usuarios-online.com^$third-party
 ||uzrating.com^$third-party
 ||v.shopify.com^
@@ -3074,6 +3117,12 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 ! Admiral domains
 ! These domains are used for tracking purposes according to the data that is being sent there.
 ! More info: https://getadmiral.com/products/measure
+||lumberamount.com^$third-party
+||brothersbucket.com^$third-party
+||spottednoise.com^$third-party
+||squirrelhands.com^$third-party
+||unequalbrake.com^$third-party
+||unbecominghall.com^$third-party
 ||attractivecap.com^$third-party
 ||forecasttiger.com^$third-party
 ||sicksmash.com^$third-party
@@ -3375,6 +3424,14 @@ nethunt.com/api/v1/track/email/$image
 ||collection-endpoint-staging.herokuapp.com^
 ! end:
 !
+||1dmp.io^$third-party
+||marketing.net.brillen.de^
+||app.airtrack.jp^
+||xray.mail.ru^
+||rs.mail.ru^$domain=~account.mail.ru
+||tracking.linda.de^
+||cdn.odoscope.cloud^$third-party
+||sanalytics.ncaa.com^
 ||analytics.cn.ru^
 ||pa.tns-ua.com^
 ||r.rbc.ru^
@@ -3794,7 +3851,6 @@ nethunt.com/api/v1/track/email/$image
 ||stats.visistat.com^
 ||stats.vulture.com^
 ||stats.wwd.com^
-||stats.wwitv.com^
 ||stats.ynet.co.il^
 ||stats.zmags.com^
 ||statscol.pond5.com^
@@ -3924,7 +3980,6 @@ nethunt.com/api/v1/track/email/$image
 ||track.leadhit.io^$third-party
 ||applog.ucdns.uc.cn^
 ||t.frtyi.com^$third-party
-||static.1dmp.io^$third-party
 ||ssp*.rtb.beeline.ru^$third-party
 ||tracker.twenga.pl^
 ||analytics.ceneo.pl^
@@ -4367,7 +4422,6 @@ nethunt.com/api/v1/track/email/$image
 ||trck.cyberport.de^
 ||abc.esprit.de^
 ||tr.outbrain.com^
-||tracking.epicgames.com^
 ||analytics.shop.hisense.com^
 ||statistics.aldi-international.com^
 ||statistics.11880.com^
@@ -4675,6 +4729,7 @@ charlestownwyllie.oaklawnnonantum.com^
 ||metric.timewarnercable.com^$third-party
 ||metrics.toysrus.com^
 ||mevents.trusteer.com^$third-party
+||mtp.spcs.me^
 ||mtp.spaces.ru^
 ||o.addthis.com^
 ||onclickpredictiv.com^$third-party
@@ -4737,6 +4792,7 @@ charlestownwyllie.oaklawnnonantum.com^
 .sg/t.gif?
 .uk/t.gif?
 !
+/zaius.gif?
 /common/tracking/webtrekk
 /greenoaks.gif?
 /uedata?
@@ -4748,7 +4804,6 @@ charlestownwyllie.oaklawnnonantum.com^
 /playertracking/*
 /analyticsmediator.js
 .cloudfront.net/atrk.js$third-party
-/wp-content/plugins/google-analytics-for-wordpress/*
 /includes/fbevents.js
 /pixel.*/track/*
 /mendelstats.
@@ -4975,9 +5030,50 @@ _tracking.php?b=
 ! index.ru alternative way of loading (loads index.ru first, then /tnc.js from the same domain, see roem.ru for example)
 /tnc.js?h=
 !
-||api.radio.net/info/*/user/playlog
+! ||sa.etp-prod.com/analytics.js^ - breaks player on crunchyroll.com
+! ||api.radio.*/info/*/user/playlog - breaks playing radio
+||fstrk.net/api/tracker/
+||massdrop.com/*/pixelrb?
+||crunchyroll.com/versioned_assets/js/tracking^
+||app.huawei.com/hwa-c/configresource/js/general/ha.js
+||app.huawei.com/hwa-c*&action=
+||toptracker.ru/buttons/counter.gif
+||d2c7xlmseob604.cloudfront.net/tracker.min.js
+reddit.com##a[href="#pixel"]
+||heyhelga.net/analytics.js
+||analytics-cms.whitebeard.me/js/
+||skroutz.gr/analytics/srecord/
+||bol.com/tracking/*.gif
+||voonik.com/analytics.min.js
+||topshop.com/wcsstore/ConsumerDirectStorefrontAssetStore/images/trans_pixel.gif
+tap.az##.links-sites > .counters
+||freepornq.com/counter/
+||analdin.com/js/analytics.js
+||tracking.pinflix.com/static/smt.js
+||api.radio.*/info/*/user/log?event
+||melonstube.com/js/analytics
+||track.avt.pl/collector.js
+||d.sudouest.fr/logs^
+||api.permutive.com/*/events^
+||zeit.de/cre-*/tracking^
+||unagi-*.amazon.com/1/events^
+||amazon.*/1/p13n-shared-components/*/batch/action
+||amazon.*/gp/sponsored-products/logging^
+||webtv.bundestag.de/iptv/js/youbora^
+.ru/stat/?c=$domain=ucoz.net
+levashove.ru##.footer-four > section#custom_html-5
+||citycost.matomo.cloud/matomo.js
+||d1gofkrkum4ehe.cloudfront.net/tracker.js
+||cloudfront.net/sso.js
+||graph.instagram.com/logging_client_events
+||vc.ru/hit^
+||tracker.departapp.com/api/collect?
+||open.spotify.com/log/analytics
+||amazon.de/gp/uedata*adblk
+||userzoom.com/uz.js$third-party
+||wieistmeineip.de/ip-adresse/$third-party
+||7days.ru/statistics/*/hit?id=
 ||reklama.lv/services/collect.php
-||theverge.com/services/entry_stats?id=
 ||anal.audio.sex/matomo.js
 ||corebipublic.blob.core.windows.net/*/corebi.event.js
 ||medium.com/_/stat?event=pixel.load
@@ -5009,10 +5105,12 @@ tensaigakkou.ru###custom_html-16
 ||static.canal-plus.net/*/trcking.min.js
 ||d2-apps.net/*/impressions/log
 ||businesswire.com/js/videojs.ga.min.js
+||organicfruitapps.com/analytics
 ||cdn.d2-apps.net/js/tr.js
 ||gittigidiyor.com/external-static/dtm/dtm.js
 ||sumo.com/apps/heatmaps/
 ||sumo.com/api/event/
+||naver.net/wcslog.js$domain=~m.tv.naver.com
 ||rumble.com/l/$image
 ||extremetech.com/sbs/beacon.js
 ||myfonts.net/count
@@ -5050,7 +5148,7 @@ tensaigakkou.ru###custom_html-16
 ||d.line-cdn.net/*/torimochi.js/*/torimochi.js
 ||d.line-scdn.net/*/torimochi.js/*/torimochi.js
 /counter?$domain=amazon.com|amazon.de|amazon.it|amazon.com.tr
-/batch*$domain=amazon.com|amazon.de|amazon.it
+||amazon.*/batch/*uedata=$image
 ||medyaradar.com/Tools/AddHit.aspx?
 ||static.gazeta.pl/info/http/xgemius-min.jsgz
 ||onecount.net/onecount/oc_track/
@@ -5716,8 +5814,8 @@ computerbild.de##.articleAdditional > .mehrthema
 ||xtraffstat.com/js/ktr.js
 ||zapcdn.space/zapret.js
 ||patreon.com/api/tracking^
-/index/ping^$domain=uclaut.net|atabencot.net|thouth.net|cinebo.net|baymaleti.net|briskgram.net|ad.bdcraft.net|swiftviz.net|ad.sapixmedia.com|activetect.net|brightvar.bid|clearload.bid|restorecosm.bid|bee.anime-loads.org|threadsphere.bid|queuecosm.bid|yoitect.com|skamaker.com|adf.ly|ay.gy|cracksurl.com|tinyium.com|skamason.com|redir2.auto-login-xxx.com|dl.underclassblog.com|special.picons.eu|quainator.com|yoalizer.com|kibuilder.com|kimechanic.com|zo.ee|viahold.com|tinyical.com|mmoity.com|pintient.com|riffhold.com|picocurl.com|bitigee.com|picocurl.com|atomcurve.com|atominik.com|battleate.com|kaitect.com|simizer.com|coginator.com|cogismith.com|twineer.com|yobuilder.com|go.awanpc.me|viwright.com|yabuilder.com|yamechanic.com|kializer.com|yoineer.com
-/callback/*$domain=uclaut.net|atabencot.net|thouth.net|cinebo.net|baymaleti.net|briskgram.net|ad.bdcraft.net|swiftviz.net|ad.sapixmedia.com|activetect.net|brightvar.bid|clearload.bid|restorecosm.bid|bee.anime-loads.org|threadsphere.bid|queuecosm.bid|yoitect.com|skamaker.com|adf.ly|ay.gy|cracksurl.com|tinyium.com|skamason.com|redir2.auto-login-xxx.com|dl.underclassblog.com|special.picons.eu|quainator.com|yoalizer.com|kibuilder.com|kimechanic.com|zo.ee|viahold.com|tinyical.com|mmoity.com|pintient.com|riffhold.com|picocurl.com|bitigee.com|picocurl.com|atomcurve.com|atominik.com|battleate.com|kaitect.com|simizer.com|coginator.com|cogismith.com|twineer.com|yobuilder.com|go.awanpc.me|viwright.com|yabuilder.com|yamechanic.com|kializer.com|yoineer.com
+/index/ping^$domain=gloyah.net|uclaut.net|atabencot.net|thouth.net|cinebo.net|baymaleti.net|briskgram.net|ad.bdcraft.net|swiftviz.net|ad.sapixmedia.com|activetect.net|brightvar.bid|clearload.bid|restorecosm.bid|bee.anime-loads.org|threadsphere.bid|queuecosm.bid|yoitect.com|skamaker.com|adf.ly|ay.gy|cracksurl.com|tinyium.com|skamason.com|redir2.auto-login-xxx.com|dl.underclassblog.com|special.picons.eu|quainator.com|yoalizer.com|kibuilder.com|kimechanic.com|zo.ee|viahold.com|tinyical.com|mmoity.com|pintient.com|riffhold.com|picocurl.com|bitigee.com|picocurl.com|atomcurve.com|atominik.com|battleate.com|kaitect.com|simizer.com|coginator.com|cogismith.com|twineer.com|yobuilder.com|go.awanpc.me|viwright.com|yabuilder.com|yamechanic.com|kializer.com|yoineer.com
+/callback/*$domain=gloyah.net|uclaut.net|atabencot.net|thouth.net|cinebo.net|baymaleti.net|briskgram.net|ad.bdcraft.net|swiftviz.net|ad.sapixmedia.com|activetect.net|brightvar.bid|clearload.bid|restorecosm.bid|bee.anime-loads.org|threadsphere.bid|queuecosm.bid|yoitect.com|skamaker.com|adf.ly|ay.gy|cracksurl.com|tinyium.com|skamason.com|redir2.auto-login-xxx.com|dl.underclassblog.com|special.picons.eu|quainator.com|yoalizer.com|kibuilder.com|kimechanic.com|zo.ee|viahold.com|tinyical.com|mmoity.com|pintient.com|riffhold.com|picocurl.com|bitigee.com|picocurl.com|atomcurve.com|atominik.com|battleate.com|kaitect.com|simizer.com|coginator.com|cogismith.com|twineer.com|yobuilder.com|go.awanpc.me|viwright.com|yabuilder.com|yamechanic.com|kializer.com|yoineer.com
 ||tracking-opi.fonpit.de/tracking/
 ||cdn3.net/pixe/
 ||dig.ultimedia.com^
@@ -5892,7 +5990,7 @@ washingtonpost.com##.social-tools-wrapper-bottom
 espreso.tv##.wrap-footer .counter
 vse42.ru##.ya-metrika
 /smarttag.js$domain=faz.net|heute.de|zdf.de|zdfinfo.de|zdfkultur.de|zdfneo.de|zdfsport.de
-pb.wtf,piratbit.org,piratbit.pw##a[href="//www.liveinternet.ru/click"]
+pb.wtf,piratbit.org,piratbit.pw,piratbit.top##a[href="//www.liveinternet.ru/click"]
 hotstuff.com.ua,mobivid.net,theplanet.ws##a[href="http://mycounter.com.ua/"]
 infoorel.ru##a[href="http://www.infoorel.ru/stat/stat.php"]
 armyrecognition.com##a[href^="http://cqcounter.com/"]
@@ -5961,9 +6059,9 @@ dreamprogs.net##td[width="88"][height="31"]
 ||app.link/_r?sdk=*&callback=branch_callback
 ||appdynamics.com/geo/$third-party
 ||apple.com/metrics/
-||arcpublishing.com^$domain=washingtonpost.com
+||arcpublishing.com^*/datapoint/save
 ||assets-jpcust.jwpsrv.com/*/ping.js
-||assets.adobedtm.com^$domain=algida.com.tr|bmw-motorrad.co.uk|cif.com.tr|clearhaircare.com|domestos.com|dove.com|elidor.com.tr|f1sport.autorevue.cz|geico.com|gittigidiyor.com|hellmanns.com.tr|herkessofraya.com|johnsonsbaby.com.tr|lipton.com|lnk.to|lux.com|magnumicecream.com|neutrogena.com.tr|omo.com|rexona.com|samsung.com|sap.com|schwarzkopf.com.tr|signalturkiye.com
+||assets.adobedtm.com^$domain=sacbee.com|charlotteobserver.com|newsobserver.com|miamiherald.com|ef.ru|algida.com.tr|bmw-motorrad.co.uk|cif.com.tr|clearhaircare.com|domestos.com|dove.com|elidor.com.tr|f1sport.autorevue.cz|geico.com|gittigidiyor.com|hellmanns.com.tr|herkessofraya.com|johnsonsbaby.com.tr|lipton.com|lnk.to|lux.com|magnumicecream.com|neutrogena.com.tr|omo.com|rexona.com|samsung.com|sap.com|schwarzkopf.com.tr|signalturkiye.com
 ||at.mklaud.com/at/at_log_*.php
 ||auto-bild.de/*/gaEvents
 ||auto-motor-und-sport.de/js/sophus3/logging.js
@@ -6467,9 +6565,101 @@ link.gmapp*.net$image
 !
 !
 !-------------------------------------------------------------------------------!
+!-------------- Cookies --------------------------------------------------------!
+!-------------------------------------------------------------------------------!
+!
+! Section contains the rules for blocking cookies
+!
+!------------------------------
+!---- Domain pecific rules ----
+!------------------------------
+!
+! https://forum.adguard.com/index.php?threads/31364/
+||moniteurautomobile.be^$cookie=/_dc_gtm_|_gat_/
+!
+||vc.ru/$cookie=fingerprint
+||vc.ru^$cookie=adblock-state
+! onthe.io cookies
+||vc.ru^$cookie=/^__io/
+||vc.ru^$cookie=/^io_/
+!------------------------------
+!---- Generic rules -----------
+!------------------------------
+!
+!-------------------------------------------------------------------------------!
 !-------------- Whitelist ------------------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/33999
+@@||galt.hit.gemius.pl/gplayer.js$domain=lrt.lt
+! https://github.com/AdguardTeam/AdguardFilters/issues/33932
+@@||google-analytics.com/analytics.js$domain=hanime.tv
+! https://github.com/AdguardTeam/AdguardFilters/issues/33715
+@@||stc.za.zaloapp.com/v*/za.js$domain=news.zing.vn
+! https://github.com/AdguardTeam/AdguardFilters/issues/33291
+@@||dpm.demdex.net/id?$domain=ups.com
+@@||omtrdc.net/rest/v*/delivery?client=$domain=ups.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/33253
+@@||dpm.demdex.net/id?$domain=schwab.com
+@@||omtrdc.net/rest/v*/delivery?client=$domain=schwab.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/28292
+@@||googletagmanager.com/gtm.js$domain=manager-magazin.de
+! https://github.com/AdguardTeam/AdguardFilters/issues/32828
+@@||static.www.turnto.com^$domain=monoprice.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/32877
+@@||omtrdc.net/id?$domain=subaru.com
+@@||omtrdc.net/rest/v*/delivery?client=$domain=subaru.com
+@@||dpm.demdex.net/id?$domain=subaru.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/32530
+@@||tags.tiqcdn.com/utag/lmi/lmii/prod/utag.js$domain=support.logmeininc.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/32696
+@@||google-analytics.com/plugins/ua/ec.js$domain=uspoloassn.com
+@@||google-analytics.com/analytics.js$domain=uspoloassn.com
+@@||googletagmanager.com/gtm.js$domain=uspoloassn.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/32695
+@@||se.visilabs.net/Target.js$domain=boyner.com.tr
+! https://github.com/AdguardTeam/AdguardFilters/issues/32345
+@@||googletagmanager.com/gtm.js$domain=capital.fr
+! t-online.de - broken links in article
+@@||googletagmanager.com/gtm.js$domain=t-online.de
+! https://github.com/AdguardTeam/AdguardFilters/issues/32560
+@@||tags.tiqcdn.com/utag/globo/editoraglobo/prod/utag.js$domain=vogue.globo.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/30787
+@@||tags.tiqcdn.com/utag/newsltd/news/prod/utag.js$domain=news.com.au
+@@||tags.news.com.au/prod/tad/tad.js$domain=news.com.au
+! ntvplus.tv - fixing player
+@@||google-analytics.com/analytics.js$domain=ntvplus.tv
+! https://github.com/AdguardTeam/AdguardFilters/issues/32043
+@@||googletagmanager.com/gtm.js^$domain=capterra.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/32086
+@@||google-analytics.com/analytics.js$domain=beinsports.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/31822
+@@||naver.net/wcslog.js$domain=jbe.go.kr
+! https://forum.adguard.com/index.php?threads/31364/
+@@||googletagmanager.com/gtm.js$domain=moniteurautomobile.be
+@@||google-analytics.com/analytics.js$domain=moniteurautomobile.be
+! https://github.com/AdguardTeam/AdguardFilters/issues/31598
+@@||track.nzz.ch/cre-*/tracking/tracking.js
+! https://github.com/AdguardTeam/AdguardFilters/issues/30065
+@@||tags.tiqcdn.com/utag/tegna^$domain=kvue.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/30497
+@@||wilko.com/_ui/shared/js/analyticsmediator.js
+! https://github.com/AdguardTeam/AdguardFilters/issues/33135
+! https://github.com/AdguardTeam/AdguardFilters/issues/31097
+@@||marketo.com/js/forms$domain=kaspersky.com|workspace.circuitmaker.com
+@@||marketo.com/index.php/form/$domain=kaspersky.com|workspace.circuitmaker.com
+! https://forum.adguard.com/index.php?threads/31245/
+@@||ssl.google-analytics.com/ga.js$domain=gmail.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/30981
+@@||googletagmanager.com/gtm.js$domain=reuters.com
+@@||google-analytics.com/analytics.js$domain=reuters.com
+@@||google-analytics.com/gtm/js?id=$domain=reuters.com
+@@||google-analytics.com/plugins/ua/linkid.js$domain=reuters.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/30136
+@@||cdn.amplitude.com/libs/amplitude-*-min.gz.js$domain=crunchyroll.com|elconfidencial.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/33440
+! https://github.com/AdguardTeam/AdguardFilters/issues/30806
+@@||tags.bluekai.com/site/*?ret=$domain=6abc.com|abc7.com|abc7news.com|abc7chicago.com|abc13.com|abc7ny.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/30337
 @@||google-analytics.com/analytics.js$domain=outdoorchannel.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/30339
@@ -6736,8 +6926,6 @@ kizi.com#%#window.google_trackConversion = function() {};
 @@||akamaihd.net/worldwide_analytics/tagcommander/UbisoftConnect^$domain=account.ubisoft.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/18449
 @@||googletagmanager.com/gtm.js$domain=givingfuel.com|regfox.com|ticketspice.com|redpodium.com
-! https://github.com/AdguardTeam/AdguardFilters/issues/18302
-@@||whiteshine.nl/wp-content/plugins/google-analytics-for-wordpress^
 ! https://github.com/AdguardTeam/AdguardFilters/issues/18178
 @@||googletagmanager.com/gtm.js$domain=teb.com.tr
 @@||googletagmanager.com/gtag/js^$domain=teb.com.tr
@@ -7165,6 +7353,8 @@ kizi.com#%#window.google_trackConversion = function() {};
 @@||images*.engageya.com^$image,domain=popmech.ru
 ! https://forum.adguard.com/index.php?threads/23539/
 @@||google-analytics.com/analytics.js$domain=piriform.com
+! communities.vmware.com - fixing blank page
+@@||dpm.demdex.net/id^$domain=communities.vmware.com
 ! https://forum.adguard.com/index.php?threads/23537/
 @@||tags.tiqcdn.com/utag/vmware/myvmware/prod/utag.js$domain=my.vmware.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4004
