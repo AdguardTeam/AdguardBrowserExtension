@@ -112,6 +112,7 @@ button, a, .control-buttons, select, span {
 .tabstack {
   color: #fff;
   min-height: 230px;
+  position: relative;
 }
 .tabstack .tab-main,
 .tabstack .tab-statistics
@@ -124,10 +125,10 @@ button, a, .control-buttons, select, span {
 .tabstack.status-cross .tab-main {
   background-image: radial-gradient(circle at 50% 54%, #7A3232, #253440);
 }
-.tabstack > div {
+.tabstack > .tab-switch-tab {
   display: none;
 }
-.tabstack > div.active {
+.tabstack > .tab-switch-tab.active {
   display: flex;
 }
 .tabstack.status-paused .head .msg {
@@ -744,10 +745,8 @@ img .footer .platforms:first-child {
   color: #ffffff;
   text-decoration: none;
   font-size: 15px;
-  line-height: 40px;
-  white-space: nowrap;
+  padding: 10px 0;
   overflow: hidden;
-  text-overflow: ellipsis;
   max-width: 270px;
   display: block;
 }
@@ -774,6 +773,6 @@ img .footer .platforms:first-child {
   width: 12px;
   height: 12px;
   position: absolute;
-  top: calc(50% - 6px);
+  top: 14px;
   right: 15px;
 }
