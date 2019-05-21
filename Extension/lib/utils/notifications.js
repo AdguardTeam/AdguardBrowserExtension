@@ -39,27 +39,6 @@ adguard.notifications = (function (adguard) {
      */
 
     const notifications = {
-        // Example of notification
-        // blackFriday: {
-        //     id: 'blackFriday',
-        //     locales: {
-        //         en: 'Black Friday: <strong>50% Off</strong> AdGuard Premium',
-        //         ru: 'Black Friday: <strong>-50%</strong> на AdGuard Премиум',
-        //         fr: 'Black Friday: <strong>-50%</strong> sur AdGuard Premium',
-        //         es: 'Black Friday:<strong>-50%</strong> en AdGuard Premium',
-        //         de: 'Black Friday: <strong>-50%</strong> auf AdGuard Premium',
-        //         ja: 'AdGuardプレミアム<strong>【５０％OFF】</strong>',
-        //     },
-        //     // This field is filled below (see initNotifications)
-        //     text: '',
-        //     url: 'https://adguard.com/forward.html?action=special_bf18&from=browser_action&app=browser_extension',
-        //     from: '13 Dec 2018 11:42:00',
-        //     to: '20 Dec 2018 23:59:00',
-        //     bgColor: '#000',
-        //     textColor: '#fff',
-        //     badgeBgColor: '#DF3812',
-        //     badgeText: '!',
-        // },
         tenYear: {
             id: 'tenYear',
             locales: {
@@ -72,10 +51,8 @@ adguard.notifications = (function (adguard) {
             // This field is filled below (see initNotifications)
             text: '',
             url: 'https://adguard.com/forward.html?action=special_ten&from=browser_action&app=browser_extension',
-            from: '21 May 2019 12:03:00', // TODO fix dates
-            to: '22 May 2019 12:59:00',
-            // from: '1 June 2019 00:00:00',
-            // to: '3 June 2019 23:59:00',
+            from: '1 June 2019 00:00:00',
+            to: '3 June 2019 23:59:00',
             bgColor: '#67b279',
             textColor: '#fff',
             badgeBgColor: '#DF3812',
