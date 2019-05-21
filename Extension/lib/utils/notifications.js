@@ -39,27 +39,25 @@ adguard.notifications = (function (adguard) {
      */
 
     const notifications = {
-        // Example of notification
-        // blackFriday: {
-        //     id: 'blackFriday',
-        //     locales: {
-        //         en: 'Black Friday: <strong>50% Off</strong> AdGuard Premium',
-        //         ru: 'Black Friday: <strong>-50%</strong> на AdGuard Премиум',
-        //         fr: 'Black Friday: <strong>-50%</strong> sur AdGuard Premium',
-        //         es: 'Black Friday:<strong>-50%</strong> en AdGuard Premium',
-        //         de: 'Black Friday: <strong>-50%</strong> auf AdGuard Premium',
-        //         ja: 'AdGuardプレミアム<strong>【５０％OFF】</strong>',
-        //     },
-        //     // This field is filled below (see initNotifications)
-        //     text: '',
-        //     url: 'https://adguard.com/forward.html?action=special_bf18&from=browser_action&app=browser_extension',
-        //     from: '13 Dec 2018 11:42:00',
-        //     to: '20 Dec 2018 23:59:00',
-        //     bgColor: '#000',
-        //     textColor: '#fff',
-        //     badgeBgColor: '#DF3812',
-        //     badgeText: '!',
-        // },
+        tenYear: {
+            id: 'tenYear',
+            locales: {
+                en: '10th Anniversary 50% Sale and a Giveaway! Learn more',
+                de: '50% Rabatt und eine Verlosung zum 10. Geburtstag von AdGuard! Erfahren Sie mehr',
+                fr: 'Réduction de 50% et Giveaway pour notre 10-éme Anniversaire ! En savoir plus',
+                ru: 'Скидка 50% и розыгрыш призов в честь 10-летия AdGuard! Узнайте больше',
+                ja: '【10周年】半額セール & プレゼント抽選！詳細はこちら',
+            },
+            // This field is filled below (see initNotifications)
+            text: '',
+            url: 'https://adguard.com/forward.html?action=special_ten&from=browser_action&app=browser_extension',
+            from: '1 June 2019 00:00:00',
+            to: '3 June 2019 23:59:00',
+            bgColor: '#67b279',
+            textColor: '#fff',
+            badgeBgColor: '#DF3812',
+            badgeText: '!',
+        },
     };
 
     /**
@@ -118,6 +116,7 @@ adguard.notifications = (function (adguard) {
         const currentTime = new Date().getTime();
         const timeSinceLastCheck = currentTime - notificationCheckTime;
 
+        // Check not often than once in 10 minutes
         if (notificationCheckTime > 0 && timeSinceLastCheck <= checkTimeoutMs) {
             return currentNotification;
         }
