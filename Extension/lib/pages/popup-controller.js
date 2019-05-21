@@ -132,6 +132,7 @@ PopupController.prototype = {
         const stack = parent.querySelector('.tabstack');
 
         const containerMain = parent.querySelector('.tab-main');
+
         while (containerMain.firstChild) {
             containerMain.removeChild(containerMain.firstChild);
         }
@@ -203,6 +204,7 @@ PopupController.prototype = {
         this.notification = this._getTemplate('notification-template');
 
         this._renderHeader(containerHeader, tabInfo);
+        this._renderNotificationBlock(stack, tabInfo, this.options);
         this._renderMain(containerMain, tabInfo);
         this._renderFilteringControls(containerMain, tabInfo);
         this._renderStatus(containerMain, tabInfo);
@@ -210,7 +212,6 @@ PopupController.prototype = {
         this._renderMessage(containerMain, tabInfo);
         this._renderStats(containerStats);
         this._renderFooter(footerContainer, tabInfo, this.options);
-        this._renderNotificationBlock(footerContainer, tabInfo, this.options);
 
     },
 
@@ -969,7 +970,7 @@ PopupController.prototype = {
         }, timeout);
     };
 
-    document.addEventListener('resizePopup', function () {
+    document.addEventListener('resizePopup', () => {
         controller.resizePopupWindow();
     });
 
