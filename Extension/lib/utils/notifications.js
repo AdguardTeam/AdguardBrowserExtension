@@ -106,8 +106,7 @@ adguard.notifications = (function (adguard) {
 
     let currentNotification;
     let notificationCheckTime;
-    // const checkTimeoutMs = 10 * 60 * 1000; // 10 minutes
-    const checkTimeoutMs = 1000; // TODO remove and uncomment above
+    const checkTimeoutMs = 10 * 60 * 1000; // 10 minutes
 
     /**
      * Finds out notification for current time and checks if notification wasn't shown yet
