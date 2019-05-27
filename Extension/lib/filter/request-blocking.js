@@ -150,8 +150,8 @@ adguard.webRequestService = (function (adguard) {
                 result.scripts = adguard.requestFilter.getScriptsStringForUrl(documentUrl, tab);
             }
         }
-
-        result.collectRulesHits = adguard.webRequestService.isCollectingCosmeticRulesHits(tab);
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1337
+        result.collectRulesHits = elemHideFlag ? false : adguard.webRequestService.isCollectingCosmeticRulesHits(tab);
 
         return result;
     };
@@ -500,17 +500,7 @@ adguard.webRequestService = (function (adguard) {
          * :before and :after
          * Due to this we can't use cssHitsCounter for edge browser
          */
-
-        /**
-         * In the Firefox with version lower than 55 Mutation observer isn't working as expected
-         * Seems like it doesn't stop in time, thus nodes added after stop appear
-         * in mutations records again
-         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1337
-         */
-        const firefoxLower55 = adguard.prefs.browser === 'Firefox'
-            && adguard.prefs.firefoxVersion < 55;
         return !adguard.utils.browser.isEdgeBrowser()
-            && !firefoxLower55
             && (canCollectHitStatsForTab(tab) || adguard.filteringLog.isOpen());
     };
 
