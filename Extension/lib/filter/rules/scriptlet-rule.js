@@ -217,6 +217,13 @@
      */
     ScriptletRule.isAdguardScriptletRule = rule => rule.indexOf(ADG_SCRIPTLET_MASK) > -1;
 
+
+    /**
+     * returns rule content after mask
+     * e.g. "example.org#%#//scriptlet("abort-on-property-read", "alert")" ->
+     * -> "//scriptlet("abort-on-property-read", "alert")"
+     * @return {string}
+     */
     function getRuleContent() {
         return this.ruleContent;
     }
