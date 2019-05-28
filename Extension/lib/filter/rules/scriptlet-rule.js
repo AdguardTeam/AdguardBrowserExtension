@@ -149,14 +149,13 @@
 
         /* eslint-disable no-unused-expressions, no-console */
         if (debug) {
-            scriptletParam.hit = function (ruleTxt) {
-                console.log(`${ruleTxt} trace start`);
+            scriptletParam.hit = function (source) {
+                console.log(`${source.ruleText} trace start`);
                 console.trace && console.trace();
-                console.log(`${ruleTxt} trace end`);
+                console.log(`${source.ruleText} trace end`);
             };
         }
         /* eslint-enable no-unused-expressions, no-console */
-
         return scriptlets.invoke(scriptletParam); // eslint-disable-line no-undef
     };
 
@@ -203,7 +202,8 @@
         this.scriptletParams = Object.assign(
             {},
             this.scriptletParams,
-            scriptletConfig
+            scriptletConfig,
+            { ruleText: this.ruleText }
         );
 
         this.script = getScriptletCode(this.scriptletParams);
