@@ -144,7 +144,7 @@
             return new api.CompositeRule(ruleText, rules);
         }
         const rule = _createRule(conversionResult, filterId, isTrustedFilter);
-        if (conversionResult !== ruleText) {
+        if (rule && conversionResult !== ruleText) {
             rule.ruleText = ruleText;
             rule.convertedRuleText = conversionResult;
         }
