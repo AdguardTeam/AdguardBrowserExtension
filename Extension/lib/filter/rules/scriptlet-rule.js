@@ -174,8 +174,9 @@
         const mask = this.whiteListRule
             ? api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE
             : api.FilterRule.MASK_SCRIPT_RULE;
-        const domain = adguard.utils.strings.substringBefore(ruleText, mask);
+        const domain = stringUtils.substringBefore(ruleText, mask);
         domain && this.loadDomains(domain);
+        this.ruleContent = stringUtils.substringAfter(ruleText, mask);
         this.scriptletParams = parseRule(ruleText);
     }
 
@@ -216,6 +217,10 @@
      */
     ScriptletRule.isAdguardScriptletRule = rule => rule.indexOf(ADG_SCRIPTLET_MASK) > -1;
 
+    function getRuleContent() {
+        return this.ruleContent;
+    }
+
     /**
      * Extends BaseFilterRule
      */
@@ -223,6 +228,8 @@
     ScriptletRule.prototype.constructor = ScriptletRule;
 
     ScriptletRule.prototype.getScript = getScript;
+
+    ScriptletRule.prototype.getRuleContent = getRuleContent;
 
     /**
      * @static ScriptletRule

@@ -21,12 +21,20 @@
      * AdGuard scriptlet mask
      */
     const ADGUARD_SCRIPTLET_MASK = '${domains}#%#//scriptlet(${args})';
+
+    /**
+     * AdGuard scriptlet exception mask
+     */
+    const ADGUARD_SCRIPTLET_EXCEPTION_MASK = '${domains}#@%#//scriptlet(${args})';
+
     /**
      * uBlock scriptlet rule mask
      */
-    const UBO_SCRIPTLET_MASK_REG = /##script\:inject|##\s*\+js/;
+    const UBO_SCRIPTLET_MASK_REG = /##script\:inject|#@?#\s*\+js/;
     const UBO_SCRIPTLET_MASK_1 = '##+js';
     const UBO_SCRIPTLET_MASK_2 = '##script:inject';
+    const UBO_SCRIPTLET_EXCEPTION_MASK_1 = '#@#+js';
+    const UBO_SCRIPTLET_EXCEPTION_MASK_2 = '#@#script:inject';
     /**
      * AdBlock Plus snippet rule mask
      */
@@ -90,6 +98,13 @@
      */
     function convertUboScriptletRule(rule) {
         const domains = stringUtils.getBeforeRegExp(rule, UBO_SCRIPTLET_MASK_REG);
+        const mask = rule.match(UBO_SCRIPTLET_MASK_REG)[0];
+        let template;
+        if (mask.indexOf('@') > -1) {
+            template = ADGUARD_SCRIPTLET_EXCEPTION_MASK;
+        } else {
+            template = ADGUARD_SCRIPTLET_MASK;
+        }
         const args = getStringInBraces(rule)
             .split(/, /g)
             .map((arg, index) => (index === 0 ? `ubo-${arg}` : arg))
@@ -97,7 +112,7 @@
             .join(', ');
 
         return replacePlaceholders(
-            ADGUARD_SCRIPTLET_MASK,
+            template,
             { domains, args }
         );
     }
@@ -126,9 +141,11 @@
     function isUboScriptletRule(rule) {
         return (
             rule.indexOf(UBO_SCRIPTLET_MASK_1) > -1
-            || rule.indexOf(UBO_SCRIPTLET_MASK_2) > -1
+                || rule.indexOf(UBO_SCRIPTLET_MASK_2) > -1
+                || rule.indexOf(UBO_SCRIPTLET_EXCEPTION_MASK_1) > -1
+                || rule.indexOf(UBO_SCRIPTLET_EXCEPTION_MASK_2) > -1
         )
-        && UBO_SCRIPTLET_MASK_REG.test(rule);
+            && UBO_SCRIPTLET_MASK_REG.test(rule);
     }
 
     /**
@@ -194,10 +211,20 @@
     }
 
     /**
+     * Checks if rule text is comment e.g. !!example.org##+js(set-constant.js, test, false)
+     * @param {string} rule
+     * @return {boolean}
+     */
+    const isComment = rule => stringUtils.startWith(rule, api.FilterRule.COMMENT);
+
+    /**
      * Convert external scriptlet rule to AdGuard scriptlet syntax
      * @param {string} rule convert rule
      */
     function convertRule(rule) {
+        if (isComment(rule)) {
+            return rule;
+        }
         if (isUboScriptletRule(rule)) {
             return convertUboScriptletRule(rule);
         }

@@ -69,9 +69,15 @@
         return this.script;
     }
 
+    function getRuleContent() {
+        return this.script;
+    }
+
     ScriptFilterRule.prototype = Object.create(api.FilterRule.prototype);
 
     ScriptFilterRule.prototype.getScript = getScript;
+
+    ScriptFilterRule.prototype.getRuleContent = getRuleContent;
 
     /**
      * All content rules markers start with this character
