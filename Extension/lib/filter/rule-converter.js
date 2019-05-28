@@ -39,6 +39,8 @@
      * AdBlock Plus snippet rule mask
      */
     const ABP_SCRIPTLET_MASK = '#$#';
+    const ABP_SCRIPTLET_EXCEPTION_MASK = '#@$#';
+
     /**
      * AdGuard CSS rule mask
      */
@@ -123,15 +125,21 @@
      */
     function convertAbpSnippetRule(rule) {
         const SEMICOLON_DIVIDER = /;(?=(?:(?:[^"]*"){2})*[^"]*$)/g;
-        const domains = stringUtils.substringBefore(rule, ABP_SCRIPTLET_MASK);
-        const args = stringUtils.substringAfter(rule, ABP_SCRIPTLET_MASK);
+        const mask = rule.indexOf(ABP_SCRIPTLET_MASK) > -1
+            ? ABP_SCRIPTLET_MASK
+            : ABP_SCRIPTLET_EXCEPTION_MASK;
+        const template = mask === ABP_SCRIPTLET_MASK
+            ? ADGUARD_SCRIPTLET_MASK
+            : ADGUARD_SCRIPTLET_EXCEPTION_MASK;
+        const domains = stringUtils.substringBefore(rule, mask);
+        const args = stringUtils.substringAfter(rule, mask);
         return args.split(SEMICOLON_DIVIDER)
             .map(args => getSentences(args)
                 .filter(arg => arg)
                 .map((arg, index) => (index === 0 ? `abp-${arg}` : arg))
                 .map(arg => wrapInDoubleQuotes(arg))
                 .join(', '))
-            .map(args => replacePlaceholders(ADGUARD_SCRIPTLET_MASK, { domains, args }));
+            .map(args => replacePlaceholders(template, { domains, args }));
     }
 
     /**
@@ -153,7 +161,10 @@
      * @param {string} rule rule text
      */
     function isAbpSnippetRule(rule) {
-        return rule.indexOf(ABP_SCRIPTLET_MASK) > -1 && rule.search(ADG_CSS_MASK_REG) === -1;
+        return (
+            rule.indexOf(ABP_SCRIPTLET_MASK) > -1
+            || rule.indexOf(ABP_SCRIPTLET_EXCEPTION_MASK) > -1
+        ) && rule.search(ADG_CSS_MASK_REG) === -1;
     }
 
     /**
