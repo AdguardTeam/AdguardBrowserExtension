@@ -69,6 +69,12 @@
         return this.script;
     }
 
+    /**
+     * returns rule content after mask
+     * e.g. example.org#%#window.AG_onLoad = function(func) {} ->
+     * -> #%#window.AG_onLoad = function(func) {}
+     * @return {string}
+     */
     function getRuleContent() {
         return this.script;
     }
