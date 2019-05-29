@@ -117,7 +117,7 @@
 
             for (var i = 0; i < this.scriptRules.length; i++) {
                 var scriptRule = this.scriptRules[i];
-                if (scriptRule.script === exceptionRule.script) {
+                if (scriptRule.getRuleContent() === exceptionRule.getRuleContent()) {
                     scriptRule.removeRestrictedDomains(exceptionRule.getPermittedDomains());
                 }
             }
@@ -150,8 +150,7 @@
         },
 
         _removeExceptionDomains: function (scriptRule, exceptionRule) {
-
-            if (scriptRule.script !== exceptionRule.script) {
+            if (scriptRule.getRuleContent() !== exceptionRule.getRuleContent()) {
                 return;
             }
 

@@ -147,13 +147,8 @@
             name, args, ruleText, engine, version,
         };
 
-        /* eslint-disable no-unused-expressions, no-console */
         if (debug) {
-            scriptletParam.hit = function (source) {
-                console.log(`${source.ruleText} trace start`);
-                console.trace && console.trace();
-                console.log(`${source.ruleText} trace end`);
-            };
+            scriptletParam.verbose = true;
         }
         /* eslint-enable no-unused-expressions, no-console */
         return scriptlets.invoke(scriptletParam); // eslint-disable-line no-undef
@@ -174,8 +169,9 @@
         const mask = this.whiteListRule
             ? api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE
             : api.FilterRule.MASK_SCRIPT_RULE;
-        const domain = adguard.utils.strings.substringBefore(ruleText, mask);
+        const domain = stringUtils.substringBefore(ruleText, mask);
         domain && this.loadDomains(domain);
+        this.ruleContent = stringUtils.substringAfter(ruleText, mask);
         this.scriptletParams = parseRule(ruleText);
     }
 
@@ -216,6 +212,17 @@
      */
     ScriptletRule.isAdguardScriptletRule = rule => rule.indexOf(ADG_SCRIPTLET_MASK) > -1;
 
+
+    /**
+     * returns rule content after mask
+     * e.g. "example.org#%#//scriptlet("abort-on-property-read", "alert")" ->
+     * -> "//scriptlet("abort-on-property-read", "alert")"
+     * @return {string}
+     */
+    function getRuleContent() {
+        return this.ruleContent;
+    }
+
     /**
      * Extends BaseFilterRule
      */
@@ -223,6 +230,8 @@
     ScriptletRule.prototype.constructor = ScriptletRule;
 
     ScriptletRule.prototype.getScript = getScript;
+
+    ScriptletRule.prototype.getRuleContent = getRuleContent;
 
     /**
      * @static ScriptletRule

@@ -21,16 +21,26 @@
      * AdGuard scriptlet mask
      */
     const ADGUARD_SCRIPTLET_MASK = '${domains}#%#//scriptlet(${args})';
+
+    /**
+     * AdGuard scriptlet exception mask
+     */
+    const ADGUARD_SCRIPTLET_EXCEPTION_MASK = '${domains}#@%#//scriptlet(${args})';
+
     /**
      * uBlock scriptlet rule mask
      */
-    const UBO_SCRIPTLET_MASK_REG = /##script\:inject|##\s*\+js/;
+    const UBO_SCRIPTLET_MASK_REG = /##script\:inject|#@?#\s*\+js/;
     const UBO_SCRIPTLET_MASK_1 = '##+js';
     const UBO_SCRIPTLET_MASK_2 = '##script:inject';
+    const UBO_SCRIPTLET_EXCEPTION_MASK_1 = '#@#+js';
+    const UBO_SCRIPTLET_EXCEPTION_MASK_2 = '#@#script:inject';
     /**
      * AdBlock Plus snippet rule mask
      */
     const ABP_SCRIPTLET_MASK = '#$#';
+    const ABP_SCRIPTLET_EXCEPTION_MASK = '#@$#';
+
     /**
      * AdGuard CSS rule mask
      */
@@ -90,6 +100,13 @@
      */
     function convertUboScriptletRule(rule) {
         const domains = stringUtils.getBeforeRegExp(rule, UBO_SCRIPTLET_MASK_REG);
+        const mask = rule.match(UBO_SCRIPTLET_MASK_REG)[0];
+        let template;
+        if (mask.indexOf('@') > -1) {
+            template = ADGUARD_SCRIPTLET_EXCEPTION_MASK;
+        } else {
+            template = ADGUARD_SCRIPTLET_MASK;
+        }
         const args = getStringInBraces(rule)
             .split(/, /g)
             .map((arg, index) => (index === 0 ? `ubo-${arg}` : arg))
@@ -97,7 +114,7 @@
             .join(', ');
 
         return replacePlaceholders(
-            ADGUARD_SCRIPTLET_MASK,
+            template,
             { domains, args }
         );
     }
@@ -108,15 +125,21 @@
      */
     function convertAbpSnippetRule(rule) {
         const SEMICOLON_DIVIDER = /;(?=(?:(?:[^"]*"){2})*[^"]*$)/g;
-        const domains = stringUtils.substringBefore(rule, ABP_SCRIPTLET_MASK);
-        const args = stringUtils.substringAfter(rule, ABP_SCRIPTLET_MASK);
+        const mask = rule.indexOf(ABP_SCRIPTLET_MASK) > -1
+            ? ABP_SCRIPTLET_MASK
+            : ABP_SCRIPTLET_EXCEPTION_MASK;
+        const template = mask === ABP_SCRIPTLET_MASK
+            ? ADGUARD_SCRIPTLET_MASK
+            : ADGUARD_SCRIPTLET_EXCEPTION_MASK;
+        const domains = stringUtils.substringBefore(rule, mask);
+        const args = stringUtils.substringAfter(rule, mask);
         return args.split(SEMICOLON_DIVIDER)
             .map(args => getSentences(args)
                 .filter(arg => arg)
                 .map((arg, index) => (index === 0 ? `abp-${arg}` : arg))
                 .map(arg => wrapInDoubleQuotes(arg))
                 .join(', '))
-            .map(args => replacePlaceholders(ADGUARD_SCRIPTLET_MASK, { domains, args }));
+            .map(args => replacePlaceholders(template, { domains, args }));
     }
 
     /**
@@ -126,9 +149,11 @@
     function isUboScriptletRule(rule) {
         return (
             rule.indexOf(UBO_SCRIPTLET_MASK_1) > -1
-            || rule.indexOf(UBO_SCRIPTLET_MASK_2) > -1
+                || rule.indexOf(UBO_SCRIPTLET_MASK_2) > -1
+                || rule.indexOf(UBO_SCRIPTLET_EXCEPTION_MASK_1) > -1
+                || rule.indexOf(UBO_SCRIPTLET_EXCEPTION_MASK_2) > -1
         )
-        && UBO_SCRIPTLET_MASK_REG.test(rule);
+            && UBO_SCRIPTLET_MASK_REG.test(rule);
     }
 
     /**
@@ -136,7 +161,10 @@
      * @param {string} rule rule text
      */
     function isAbpSnippetRule(rule) {
-        return rule.indexOf(ABP_SCRIPTLET_MASK) > -1 && rule.search(ADG_CSS_MASK_REG) === -1;
+        return (
+            rule.indexOf(ABP_SCRIPTLET_MASK) > -1
+            || rule.indexOf(ABP_SCRIPTLET_EXCEPTION_MASK) > -1
+        ) && rule.search(ADG_CSS_MASK_REG) === -1;
     }
 
     /**
@@ -194,10 +222,20 @@
     }
 
     /**
+     * Checks if rule text is comment e.g. !!example.org##+js(set-constant.js, test, false)
+     * @param {string} rule
+     * @return {boolean}
+     */
+    const isComment = rule => stringUtils.startWith(rule, api.FilterRule.COMMENT);
+
+    /**
      * Convert external scriptlet rule to AdGuard scriptlet syntax
      * @param {string} rule convert rule
      */
     function convertRule(rule) {
+        if (isComment(rule)) {
+            return rule;
+        }
         if (isUboScriptletRule(rule)) {
             return convertUboScriptletRule(rule);
         }
