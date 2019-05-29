@@ -116,6 +116,7 @@ var FilterRule = {
     MASK_CSS_EXTENDED_CSS_RULE: '#?#',
     MASK_CSS_INJECT_EXTENDED_CSS_RULE: '#$?#',
     MASK_SCRIPT_RULE: '#%#',
+    MASK_SCRIPT_RULE_UBO: '##',
 };
 
 var UrlFilterRule = {
@@ -725,6 +726,9 @@ var RequestWizard = (function () {
         const domainPart = event.frameDomain;
         if (ruleText.indexOf(FilterRule.MASK_SCRIPT_RULE) > -1) {
             return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_SCRIPT_RULE);
+        }
+        if (ruleText.indexOf(FilterRule.MASK_SCRIPT_RULE_UBO) > -1) {
+            return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_SCRIPT_RULE_UBO);
         }
     };
 
