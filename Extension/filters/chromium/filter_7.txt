@@ -1,8 +1,8 @@
-! Checksum: QnHyaTBOLiCowAcSPIRr7A
+! Checksum: lFT6bCdresQLjzIolX+CLw
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.1.89
-! TimeUpdated: 2019-05-20T18:03:31+03:00
+! Version: 2.0.1.91
+! TimeUpdated: 2019-05-28T15:31:02+03:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#japanese
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -386,6 +386,9 @@ xn--f9jh4f4b4993b66s.tokyo#%#AG_abortInlineScript(/,displayMessage:/, 'document.
 cowboy.blog.jp,eikaiwamastery.blogspot.com,wakudan.seesaa.net,kamikiyuki.hatenablog.com,omutulove.seesaa.net,omutulove.blog.fc2.com,akb48gnittimatome.com,gtoys.blog48.fc2.com,halchim.jp#%#AG_abortInlineScript(/google_ad_client/, 'document.addEventListener');
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/34365
+fe-siken.com#$#.adsbygoogle { remove: true; }
+fe-siken.com#%#(function(){var b=window.setTimeout;window.setTimeout=function(a,c){if(!/'opacity:\.05/.test(a.toString()))return b(a,c)};})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/33968
 ! https://github.com/AdguardTeam/AdguardFilters/issues/28910
 ! https://github.com/AdguardTeam/AdguardFilters/issues/27939
@@ -689,6 +692,7 @@ _ds_adtag_
 !
 ! Section contains rules for specific websites
 !
+shopping.yahoo.co.jp##.mdNorthBuyee
 javmix.tv##.__isboostOverContent
 top.togeko.net##a[href^="https://book.dmm.co.jp"]
 ||top.togeko.net/*/randomad*.js
