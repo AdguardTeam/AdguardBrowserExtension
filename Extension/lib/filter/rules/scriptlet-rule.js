@@ -147,13 +147,8 @@
             name, args, ruleText, engine, version,
         };
 
-        /* eslint-disable no-unused-expressions, no-console */
         if (debug) {
-            scriptletParam.hit = function (source) {
-                console.log(`${source.ruleText} trace start`);
-                console.trace && console.trace();
-                console.log(`${source.ruleText} trace end`);
-            };
+            scriptletParam.verbose = 'true';
         }
         /* eslint-enable no-unused-expressions, no-console */
         return scriptlets.invoke(scriptletParam); // eslint-disable-line no-undef

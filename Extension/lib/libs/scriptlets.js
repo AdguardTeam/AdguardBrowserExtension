@@ -130,20 +130,49 @@
      */
     var noop = function noop() {};
 
-    /* eslint-disable no-new-func, prefer-spread */
+    /* eslint-disable no-new-func, prefer-spread, no-console */
 
     /**
-     * takes source and creates hit function from source.hit
-     * then binds to this function source
+     * Takes source and returns log function if verbose is true
+     * or returns hit function if verbose if false and hit function is provided
+     * hit function is used only for the test purposes
      * @param {Source} source
-     * @return {Function} returns function
+     * @return {Function} returns log or hit function
      */
-    var createHitFunction = function createHitFunction(source) {
+    var createLogFunction = function createLogFunction(source) {
+      if (!source) {
+        return function () {};
+      }
+
+      if (source.verbose === 'true') {
+        return function () {
+          console.log("".concat(source.ruleText, " trace start"));
+
+          if (console.trace) {
+            console.trace();
+          }
+
+          console.log("".concat(source.ruleText, " trace end"));
+        };
+      }
+      /**
+       * Attention!!!
+       * For now source hit is used only for test purposes it can't be used for debug purposes in the
+       * real products because it can be broken because of csp policy set up by our rules or by
+       * website
+       */
+
+
+      if (!source.hit) {
+        return function () {};
+      }
       /**
        * Returns body of the function
        * @param {function|string} [func] function or string
        * @returns {string}
        */
+
+
       var getFuncBody = function getFuncBody(func) {
         var regexp = /(?:(?:\((?:.*)\))|(?:(?:[^ ]*) *=>))\s?({?[\s\S]*}?)/;
         var funcString = func.toString();
@@ -200,8 +229,7 @@
         return new Function("(".concat(str, ")()"));
       };
 
-      var hit = source.hit;
-      var func = stringToFunc(hit);
+      var func = stringToFunc(source.hit);
       return func.bind(null, source);
     };
 
@@ -217,7 +245,7 @@
         toRegExp: toRegExp,
         createOnErrorHandler: createOnErrorHandler,
         noop: noop,
-        createHitFunction: createHitFunction
+        createLogFunction: createLogFunction
     });
 
     /**
@@ -245,11 +273,11 @@
         return;
       }
 
-      var hit = createHitFunction(source);
+      var log = createLogFunction(source);
       var rid = randomId();
 
       var abort = function abort() {
-        hit();
+        log();
         throw new ReferenceError(rid);
       };
 
@@ -287,7 +315,7 @@
       window.onerror = createOnErrorHandler(rid).bind();
     }
     abortOnPropertyRead.names = ['abort-on-property-read', 'ubo-abort-on-property-read.js', 'abp-abort-on-property-read'];
-    abortOnPropertyRead.injections = [randomId, setPropertyAccess, getPropertyInChain, createOnErrorHandler, createHitFunction];
+    abortOnPropertyRead.injections = [randomId, setPropertyAccess, getPropertyInChain, createOnErrorHandler, createLogFunction];
 
     /**
      * Abort property writing
@@ -301,11 +329,11 @@
         return;
       }
 
-      var hit = createHitFunction(source);
+      var log = createLogFunction(source);
       var rid = randomId();
 
       var abort = function abort() {
-        hit();
+        log();
         throw new ReferenceError(rid);
       };
 
@@ -342,7 +370,7 @@
       window.onerror = createOnErrorHandler(rid).bind();
     }
     abortOnPropertyWrite.names = ['abort-on-property-write', 'ubo-abort-on-property-write.js', 'abp-abort-on-property-write'];
-    abortOnPropertyWrite.injections = [randomId, setPropertyAccess, getPropertyInChain, createOnErrorHandler, createHitFunction];
+    abortOnPropertyWrite.injections = [randomId, setPropertyAccess, getPropertyInChain, createOnErrorHandler, createLogFunction];
 
     /**
      * Prevent calls to setTimeout for specified matching in passed callback and delay
@@ -354,7 +382,7 @@
      */
 
     function preventSetTimeout(source, match, delay) {
-      var hit = createHitFunction(source);
+      var log = createLogFunction(source);
       var nativeTimeout = window.setTimeout;
       delay = parseInt(delay, 10);
       delay = Number.isNaN(delay) ? null : delay;
@@ -362,7 +390,7 @@
 
       var timeoutWrapper = function timeoutWrapper(cb, d) {
         if ((!delay || d === delay) && match.test(cb.toString())) {
-          hit();
+          log();
           return nativeTimeout(function () {}, d);
         }
 
@@ -376,7 +404,7 @@
       window.setTimeout = timeoutWrapper;
     }
     preventSetTimeout.names = ['prevent-setTimeout', 'ubo-setTimeout-defuser.js'];
-    preventSetTimeout.injections = [toRegExp, createHitFunction];
+    preventSetTimeout.injections = [toRegExp, createLogFunction];
 
     /**
      * Prevent calls to setInterval for specified matching in passed callback and delay
@@ -388,7 +416,7 @@
      */
 
     function preventSetInterval(source, match, interval) {
-      var hit = createHitFunction(source);
+      var log = createLogFunction(source);
       var nativeInterval = window.setInterval;
       interval = parseInt(interval, 10);
       interval = Number.isNaN(interval) ? null : interval;
@@ -396,7 +424,7 @@
 
       var intervalWrapper = function intervalWrapper(cb, d) {
         if ((!interval || d === interval) && match.test(cb.toString())) {
-          hit();
+          log();
           return nativeInterval(function () {}, d);
         }
 
@@ -410,7 +438,7 @@
       window.setInterval = intervalWrapper;
     }
     preventSetInterval.names = ['prevent-setInterval', 'ubo-setInterval-defuser.js'];
-    preventSetInterval.injections = [toRegExp, createHitFunction];
+    preventSetInterval.injections = [toRegExp, createLogFunction];
 
     /**
      * Prevent calls `window.open` when URL match or not match with passed params
@@ -423,7 +451,7 @@
       var inverse = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
       var match = arguments.length > 2 ? arguments[2] : undefined;
       var nativeOpen = window.open;
-      var hit = createHitFunction(source);
+      var log = createLogFunction(source);
       inverse = inverse ? !+inverse : inverse;
       match = match ? toRegExp(match) : toRegExp('/.?/'); // eslint-disable-next-line consistent-return
 
@@ -436,20 +464,20 @@
           return nativeOpen.apply(window, [str].concat(args));
         }
 
-        hit();
+        log();
       };
 
       window.open = openWrapper;
     }
     preventWindowOpen.names = ['prevent-window-open', 'ubo-window.open-defuser.js'];
-    preventWindowOpen.injections = [toRegExp, createHitFunction];
+    preventWindowOpen.injections = [toRegExp, createLogFunction];
 
     /* eslint-disable no-new-func */
     function abortCurrentInlineScript(source, property) {
       var search = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
       var regex = search ? toRegExp(search) : null;
       var rid = randomId();
-      var hit = createHitFunction(source);
+      var log = createLogFunction(source);
 
       var getCurrentScript = function getCurrentScript() {
         if (!document.currentScript) {
@@ -466,7 +494,7 @@
         var scriptEl = getCurrentScript();
 
         if (scriptEl instanceof HTMLScriptElement && scriptEl.textContent.length > 0 && scriptEl !== ourScript && (!regex || regex.test(scriptEl.textContent))) {
-          hit();
+          log();
           throw new ReferenceError(rid);
         }
       };
@@ -512,7 +540,7 @@
       window.onerror = createOnErrorHandler(rid).bind();
     }
     abortCurrentInlineScript.names = ['abort-current-inline-script', 'ubo-abort-current-inline-script.js', 'abp-abort-current-inline-script'];
-    abortCurrentInlineScript.injections = [randomId, setPropertyAccess, getPropertyInChain, toRegExp, createOnErrorHandler, createHitFunction];
+    abortCurrentInlineScript.injections = [randomId, setPropertyAccess, getPropertyInChain, toRegExp, createOnErrorHandler, createLogFunction];
 
     function setConstant(source, property, value) {
       if (!property) {
@@ -555,7 +583,7 @@
         return;
       }
 
-      var hit = createHitFunction(source);
+      var log = createLogFunction(source);
       var canceled = false;
 
       var mustCancel = function mustCancel(value) {
@@ -595,7 +623,7 @@
           return;
         }
 
-        hit();
+        log();
         setPropertyAccess(base, prop, {
           get: function get() {
             return constantValue;
@@ -611,7 +639,7 @@
       setChainPropAccess(window, property);
     }
     setConstant.names = ['set-constant', 'ubo-set-constant.js'];
-    setConstant.injections = [getPropertyInChain, setPropertyAccess, createHitFunction];
+    setConstant.injections = [getPropertyInChain, setPropertyAccess, createLogFunction];
 
     /**
      * Removes current page cookies specified by name.
@@ -621,7 +649,7 @@
      */
 
     function removeCookie(source, match) {
-      var hit = createHitFunction(source);
+      var log = createLogFunction(source);
       var regex = match ? toRegExp(match) : toRegExp('/.?/');
 
       var removeCookieFromHost = function removeCookieFromHost(cookieName, hostName) {
@@ -636,7 +664,7 @@
         document.cookie = cookieSpec + path + expiration;
         document.cookie = cookieSpec + domain1 + path + expiration;
         document.cookie = cookieSpec + domain2 + path + expiration;
-        hit();
+        log();
       };
 
       var rmCookie = function rmCookie() {
@@ -669,7 +697,7 @@
       window.addEventListener('beforeunload', rmCookie);
     }
     removeCookie.names = ['remove-cookie', 'ubo-cookie-remover.js'];
-    removeCookie.injections = [toRegExp, createHitFunction];
+    removeCookie.injections = [toRegExp, createLogFunction];
 
     /**
      * Prevents adding event listeners
@@ -680,14 +708,14 @@
      */
 
     function preventAddEventListener(source, event, funcStr) {
-      var hit = createHitFunction(source);
+      var log = createLogFunction(source);
       event = event ? toRegExp(event) : toRegExp('/.?/');
       funcStr = funcStr ? toRegExp(funcStr) : toRegExp('/.?/');
       var nativeAddEventListener = window.EventTarget.prototype.addEventListener;
 
       function addEventListenerWrapper(eventName, callback) {
         if (event.test(eventName.toString()) && funcStr.test(callback.toString())) {
-          hit();
+          log();
           return undefined;
         }
 
@@ -701,7 +729,7 @@
       window.EventTarget.prototype.addEventListener = addEventListenerWrapper;
     }
     preventAddEventListener.names = ['prevent-addEventListener', 'ubo-addEventListener-defuser.js'];
-    preventAddEventListener.injections = [toRegExp, createHitFunction];
+    preventAddEventListener.injections = [toRegExp, createLogFunction];
 
     /* eslint-disable consistent-return, no-eval */
     /**
@@ -713,7 +741,7 @@
     function preventBab(source) {
       var _this = this;
 
-      var hit = createHitFunction(source);
+      var log = createLogFunction(source);
       var nativeSetTimeout = window.setTimeout;
       var babRegex = /\.bab_elementid.$/;
 
@@ -726,7 +754,7 @@
           return nativeSetTimeout.call.apply(nativeSetTimeout, [_this, callback].concat(args));
         }
 
-        hit();
+        log();
       };
 
       var signatures = [['blockadblock'], ['babasbm'], [/getItem\('babn'\)/], ['getElementById', 'String.fromCharCode', 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', 'charAt', 'DOMContentLoaded', 'AdBlock', 'addEventListener', 'doScroll', 'fromCharCode', '<<2|r>>4', 'sessionStorage', 'clientWidth', 'localStorage', 'Math', 'random']];
@@ -760,7 +788,7 @@
           return nativeEval(str);
         }
 
-        hit();
+        log();
         var bodyEl = document.body;
 
         if (bodyEl) {
@@ -775,7 +803,7 @@
       };
     }
     preventBab.names = ['prevent-bab', 'ubo-bab-defuser.js'];
-    preventBab.injections = [createHitFunction];
+    preventBab.injections = [createLogFunction];
 
     /* eslint-disable no-unused-vars, no-extra-bind, func-names */
     /**
@@ -785,7 +813,7 @@
      */
 
     function nowebrtc(source) {
-      var hit = createHitFunction(source);
+      var log = createLogFunction(source);
       var propertyName = '';
 
       if (window.RTCPeerConnection) {
@@ -799,7 +827,7 @@
       }
 
       var rtcReplacement = function rtcReplacement(config) {
-        hit("Document tried to create an RTCPeerConnection: ".concat(config));
+        log("Document tried to create an RTCPeerConnection: ".concat(config));
       };
 
       var noop$$1 = function noop$$1() {};
@@ -823,7 +851,7 @@
       }
     }
     nowebrtc.names = ['nowebrtc', 'ubo-nowebrtc.js'];
-    nowebrtc.injections = [createHitFunction];
+    nowebrtc.injections = [createLogFunction];
 
     /* eslint-disable no-console */
     /**
@@ -833,13 +861,13 @@
      */
 
     function logAddEventListener(source) {
-      var hit = createHitFunction(source);
-      var log = console.log.bind(console);
+      var log = createLogFunction(source);
+      var nativeConsole = console.log.bind(console);
       var nativeAddEventListener = window.EventTarget.prototype.addEventListener;
 
       function addEventListenerWrapper(eventName, callback) {
-        log("addEventListener(\"".concat(eventName, "\", ").concat(callback.toString(), ")"));
-        hit();
+        nativeConsole("addEventListener(\"".concat(eventName, "\", ").concat(callback.toString(), ")"));
+        log();
 
         for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
           args[_key - 2] = arguments[_key];
@@ -851,7 +879,7 @@
       window.EventTarget.prototype.addEventListener = addEventListenerWrapper;
     }
     logAddEventListener.names = ['log-addEventListener', 'addEventListener-logger.js'];
-    logAddEventListener.injections = [createHitFunction];
+    logAddEventListener.injections = [createLogFunction];
 
     /* eslint-disable no-console */
     /**
@@ -861,13 +889,13 @@
      */
 
     function logSetInterval(source) {
-      var hit = createHitFunction(source);
+      var log = createLogFunction(source);
       var nativeSetInterval = window.setInterval;
-      var log = console.log.bind(console);
+      var nativeConsole = console.log.bind(console);
 
       function setIntervalWrapper(callback, timeout) {
-        hit();
-        log("setInterval(\"".concat(callback.toString(), "\", ").concat(timeout, ")"));
+        log();
+        nativeConsole("setInterval(\"".concat(callback.toString(), "\", ").concat(timeout, ")"));
 
         for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
           args[_key - 2] = arguments[_key];
@@ -879,7 +907,7 @@
       window.setInterval = setIntervalWrapper;
     }
     logSetInterval.names = ['log-setInterval', 'setInterval-logger.js'];
-    logSetInterval.injections = [createHitFunction];
+    logSetInterval.injections = [createLogFunction];
 
     /* eslint-disable no-console */
     /**
@@ -889,13 +917,13 @@
      */
 
     function logSetTimeout(source) {
-      var hit = createHitFunction(source);
+      var log = createLogFunction(source);
       var nativeSetTimeout = window.setTimeout;
-      var log = console.log.bind(console);
+      var nativeConsole = console.log.bind(console);
 
       function setTimeoutWrapper(callback, timeout) {
-        hit();
-        log("setTimeout(\"".concat(callback.toString(), "\", ").concat(timeout, ")"));
+        log();
+        nativeConsole("setTimeout(\"".concat(callback.toString(), "\", ").concat(timeout, ")"));
 
         for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
           args[_key - 2] = arguments[_key];
@@ -907,7 +935,7 @@
       window.setTimeout = setTimeoutWrapper;
     }
     logSetTimeout.names = ['log-setTimeout', 'setTimeout-logger.js'];
-    logSetTimeout.injections = [createHitFunction];
+    logSetTimeout.injections = [createLogFunction];
 
     /* eslint-disable no-console, no-eval */
     /**
@@ -917,14 +945,14 @@
      */
 
     function logEval(source) {
-      var hit = createHitFunction(source);
-      var log = console.log.bind(console); // wrap eval function
+      var log = createLogFunction(source);
+      var nativeConsole = console.log.bind(console); // wrap eval function
 
       var nativeEval = window.eval;
 
       function evalWrapper(str) {
-        hit();
-        log("eval(\"".concat(str, "\")"));
+        log();
+        nativeConsole("eval(\"".concat(str, "\")"));
         return nativeEval(str);
       }
 
@@ -933,13 +961,13 @@
       var nativeFunction = window.Function;
 
       function FunctionWrapper() {
-        hit();
+        log();
 
         for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
           args[_key] = arguments[_key];
         }
 
-        log("new Function(".concat(args.join(', '), ")"));
+        nativeConsole("new Function(".concat(args.join(', '), ")"));
         return nativeFunction.apply(this, [].concat(args));
       }
 
@@ -948,7 +976,7 @@
       window.Function = FunctionWrapper;
     }
     logEval.names = ['log-eval'];
-    logEval.injections = [createHitFunction];
+    logEval.injections = [createLogFunction];
 
     /* eslint-disable no-eval, no-extra-bind */
     /**
@@ -958,14 +986,14 @@
      */
 
     function noeval(source) {
-      var hit = createHitFunction(source);
+      var log = createLogFunction(source);
 
       window.eval = function evalWrapper(s) {
-        hit("AdGuard has prevented eval:\n".concat(s));
+        log("AdGuard has prevented eval:\n".concat(s));
       }.bind();
     }
     noeval.names = ['noeval.js', 'silent-noeval.js', 'noeval'];
-    noeval.injections = [createHitFunction];
+    noeval.injections = [createLogFunction];
 
     /* eslint-disable no-eval, no-extra-bind, func-names */
     /**
@@ -975,7 +1003,7 @@
      */
 
     function preventEvalIf(source, search) {
-      var hit = createHitFunction(source);
+      var log = createLogFunction(source);
       search = search ? toRegExp(search) : toRegExp('/.?/');
       var nativeEval = window.eval;
 
@@ -984,12 +1012,12 @@
           return nativeEval.call(window, payload);
         }
 
-        hit(payload);
+        log(payload);
         return undefined;
       }.bind(window);
     }
     preventEvalIf.names = ['noeval-if.js', 'prevent-eval-if'];
-    preventEvalIf.injections = [toRegExp, createHitFunction];
+    preventEvalIf.injections = [toRegExp, createLogFunction];
 
     /* eslint-disable no-console, func-names, no-multi-assign */
     /**
@@ -999,8 +1027,8 @@
      */
 
     function preventFab(source) {
-      var hit = createHitFunction(source);
-      hit();
+      var log = createLogFunction(source);
+      log();
 
       var Fab = function Fab() {};
 
@@ -1031,7 +1059,7 @@
       window.fuckAdBlock = window.blockAdBlock = new Fab();
     }
     preventFab.names = ['prevent-fab-3.2.0', 'fuckadblock.js-3.2.0'];
-    preventFab.injections = [noop, createHitFunction];
+    preventFab.injections = [noop, createLogFunction];
 
     /* eslint-disable no-console, func-names, no-multi-assign */
     /**
@@ -1041,26 +1069,26 @@
      */
 
     function setPopadsDummy(source) {
-      var hit = createHitFunction(source);
+      var log = createLogFunction(source);
       delete window.PopAds;
       delete window.popns;
       Object.defineProperties(window, {
         PopAds: {
           get: function get() {
-            hit();
+            log();
             return {};
           }
         },
         popns: {
           get: function get() {
-            hit();
+            log();
             return {};
           }
         }
       });
     }
     setPopadsDummy.names = ['set-popads-dummy', 'popads-dummy.js'];
-    setPopadsDummy.injections = [createHitFunction];
+    setPopadsDummy.injections = [createLogFunction];
 
     /**
      * Aborts on property write (PopAds, popns), throws reference error with random id
@@ -1069,7 +1097,7 @@
      */
 
     function preventPopadsNet(source) {
-      var hit = createHitFunction(source);
+      var log = createLogFunction(source);
       var rid = randomId();
 
       var throwError = function throwError() {
@@ -1087,10 +1115,10 @@
         }
       });
       window.onerror = createOnErrorHandler(rid).bind();
-      hit();
+      log();
     }
     preventPopadsNet.names = ['prevent-popads-net', 'popads.net.js'];
-    preventPopadsNet.injections = [createOnErrorHandler, randomId, createHitFunction];
+    preventPopadsNet.injections = [createOnErrorHandler, randomId, createLogFunction];
 
     /* eslint-disable func-names */
     /**
@@ -1099,7 +1127,7 @@
      */
 
     function preventAdfly(source) {
-      var hit = createHitFunction(source);
+      var log = createLogFunction(source);
 
       var isDigit = function isDigit(data) {
         return /^\d$/.test(data);
@@ -1169,13 +1197,13 @@
       });
 
       if (result) {
-        hit();
+        log();
       } else {
         window.console.error('Failed to set up prevent-adfly scriptlet');
       }
     }
     preventAdfly.names = ['prevent-adfly', 'adfly-defuser.js'];
-    preventAdfly.injections = [setPropertyAccess, createHitFunction];
+    preventAdfly.injections = [setPropertyAccess, createLogFunction];
 
     /**
      * This file must export all scriptlets which should be accessible
