@@ -770,6 +770,11 @@ ace.define("ace/mode/adguard_highlight_rules",[], function (require, exports, mo
           token: "keyword.control"
         },
         {
+          regex: /#@?#\+js/,
+          next: "javascript-start",
+          token: "constant"
+        },
+        {
           regex: /#@?\$\??#/,
           next: "css-start",
           token: "constant"
