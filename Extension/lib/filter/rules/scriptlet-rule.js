@@ -148,7 +148,7 @@
         };
 
         if (debug) {
-            scriptletParam.verbose = 'true';
+            scriptletParam.verbose = true;
         }
         /* eslint-enable no-unused-expressions, no-console */
         return scriptlets.invoke(scriptletParam); // eslint-disable-line no-undef
