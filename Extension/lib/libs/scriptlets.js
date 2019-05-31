@@ -1,7 +1,7 @@
 
 /**
  * AdGuard Scriptlets
- * Version 1.0.3
+ * Version 1.0.4
  */
 
 (function () {
@@ -1208,7 +1208,10 @@
      */
 
     function getScriptletByName(name) {
-      return Object.values(scriptletList).find(function (s) {
+      var scriptlets = Object.keys(scriptletList).map(function (key) {
+        return scriptletList[key];
+      });
+      return scriptlets.find(function (s) {
         return s.names && s.names.includes(name);
       });
     }
