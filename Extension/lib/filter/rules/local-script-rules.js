@@ -34,10 +34,9 @@
      * @param json JSON object loaded from the filters/local_script_rules.json file
      */
     const setLocalScriptRules = function (json) {
-
         DEFAULT_SCRIPT_RULES = Object.create(null);
 
-        const rules = json;
+        const rules = json.rules;
         for (let i = 0; i < rules.length; i += 1) {
             const rule = rules[i];
             const { domains, script } = rule;
