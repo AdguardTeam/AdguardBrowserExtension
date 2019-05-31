@@ -1,8 +1,8 @@
-! Checksum: AlqAkspbwwHAjzj8znRhIw
+! Checksum: lZFDEHFvRF4PBEDQHBaztQ
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.6.0
-! TimeUpdated: 2019-05-21T13:30:10+03:00
+! Version: 2.0.6.10
+! TimeUpdated: 2019-05-29T03:30:10+03:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -63,6 +63,12 @@
 ||54.222.186.106^
 ||plugin.mobopay.baidu.com^
 ||mo.freeindoapp.com^
+||activity.browser.intl.miui.com^
+||api.brs.intl.miui.com^
+||api.newsfeed.intl.miui.com^
+||huangye.miui.com^
+||file.market.xiaomi.com^
+||adv.sec.intl.miui.com^
 ||zhfosenghtr.com^$third-party
 ||ads.edadeal.ru^
 ||adsrvr.io^
@@ -350,7 +356,6 @@
 ||adkmob.com^
 ||adleads.com^
 ||adlibr.com^
-||admail.am^
 ||adman.gr^
 ||admarketing.yahoo.net^
 ||admarvel.s3.amazonaws.com^
@@ -1317,6 +1322,13 @@ m.news.de##.unisterAdsStart
 9to5google.com,9to5toys.com,9to5mac.com,electrek.co##.post-content > .inlinead ~ div[class*=" "]:not([id]):not([style])
 !+ NOT_PLATFORM(ios, ext_android_cb)
 ||mobile.donanimhaber.com/ads^
+theinventory.com,thetakeout.com,theonion.com,splinternews.com,clickhole.com,avclub.com,deadspin.com,gizmodo.com,jalopnik.com,jezebel.com,kotaku.com,lifehacker.com,theroot.com##.inline-ad-container
+rbc.ru##.banners__mobile-freeze
+rbc.ru##.banners__yandex__article
+lifo.gr##.ad_inside > .sticky-wrap
+eporner.com###ad-top-2
+||eporner.com/dotm/pop2.php
+outlook.live.com###topLevelItemsExceptFolderPane > main > div[class*=" "] > div[class^="_"]:not([role="group"])
 ficbook.net##.rkl-stick-to-bottom
 ck101.com###mobile_backgroundAD
 atlasobscura.com##.ad-background-intra-body
@@ -1360,7 +1372,7 @@ fangraphs.com##div[id^="ra-mobile-unit-"]
 korrespondent.net##amp-iframe[src^="https://recreativ.ru/"]
 pravda.com.ua,korrespondent.net##amp-iframe[src*=".lun.ua/"]
 www-spiegel-de.cdn.ampproject.org##.ampads
-obozrevatel.com##.banner-premium
+obozrevatel.com##div.banner-premium
 cnn.com###social-share_gig_containerParent .PartnerZone
 mobile.donanimhaber.com##body > div[style="float: left;width:100%;"] > div[style="margin:10px auto; text-align:center; width:300px; height:250px;"]
 techrum.vn###revive_banner_mobile_div
@@ -1368,6 +1380,8 @@ scotsman.com##.slab--bottommobilebanner
 usatooday.com##.partner-placement
 denverpost.com###mobile-adhesion
 tubewolf.com##.banner-top
+m.humoruniv.com###ddn_ad_128
+m.humoruniv.com##body > div[id$="_wrap"]
 m.humoruniv.com###read > div[id$="_wrap"]
 m.humoruniv.com##div[style="margin:10px 0 10px 0;"] > div[style*="height:250px"]
 gadgets.ndtv.com,amp.fakty.ua##amp-iframe

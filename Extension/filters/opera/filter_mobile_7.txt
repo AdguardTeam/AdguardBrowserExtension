@@ -1,8 +1,8 @@
-! Checksum: 2xvvx4729s/MPlWiOshIkQ
+! Checksum: f1DB6yWRY6OJ4xJ0CYTEXA
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.1.89
-! TimeUpdated: 2019-05-20T18:03:31+03:00
+! Version: 2.0.1.91
+! TimeUpdated: 2019-05-28T15:31:02+03:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -296,6 +296,8 @@ cowboy.blog.jp,eikaiwamastery.blogspot.com,wakudan.seesaa.net,kamikiyuki.hatenab
 @@||omutulove.seesaa.net^$generichide
 @@||kamikiyuki.hatenablog.com^$generichide
 @@||wakudan.seesaa.net^$generichide
+fe-siken.com#$#.adsbygoogle { remove: true; }
+fe-siken.com#%#(function(){var b=window.setTimeout;window.setTimeout=function(a,c){if(!/'opacity:\.05/.test(a.toString()))return b(a,c)};})();
 !+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_safari, ext_ublock)
 @@||xn--f9jh4f4b4993b66s.tokyo^$generichide
 !+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_safari, ext_ublock)
@@ -518,6 +520,7 @@ iza.ne.jp#$#.sideFixedWrapper { position: relative!important; }
 /top/head_s_bnr
 /yaad.js
 _ds_adtag_
+shopping.yahoo.co.jp##.mdNorthBuyee
 javmix.tv##.__isboostOverContent
 top.togeko.net##a[href^="https://book.dmm.co.jp"]
 ||top.togeko.net/*/randomad*.js
