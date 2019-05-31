@@ -164,6 +164,9 @@
     function ScriptletRule(ruleText, filterId) {
         this.ruleText = ruleText;
         this.filterId = filterId;
+        // Scriptlet rules are marked as "local" because the scriptlets code is built-in
+        // the extension
+        // See "lib/libs/scriptlets.js" for the details
         this.scriptSource = 'local';
         this.whiteListRule = ruleText.includes(api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE);
         const mask = this.whiteListRule

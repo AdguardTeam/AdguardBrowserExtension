@@ -1,7 +1,7 @@
 
 /**
  * AdGuard Scriptlets
- * Version 1.0.2
+ * Version 1.0.4
  */
 
 (function () {
@@ -782,7 +782,7 @@
 
       window.EventTarget.prototype.addEventListener = addEventListenerWrapper;
     }
-    logAddEventListener.names = ['hit-addEventListener', 'addEventListener-logger.js'];
+    logAddEventListener.names = ['log-addEventListener', 'addEventListener-logger.js'];
     logAddEventListener.injections = [hit];
 
     /* eslint-disable no-console */
@@ -809,7 +809,7 @@
 
       window.setInterval = setIntervalWrapper;
     }
-    logSetInterval.names = ['hit-setInterval', 'setInterval-logger.js'];
+    logSetInterval.names = ['log-setInterval', 'setInterval-logger.js'];
     logSetInterval.injections = [hit];
 
     /* eslint-disable no-console */
@@ -836,7 +836,7 @@
 
       window.setTimeout = setTimeoutWrapper;
     }
-    logSetTimeout.names = ['hit-setTimeout', 'setTimeout-logger.js'];
+    logSetTimeout.names = ['log-setTimeout', 'setTimeout-logger.js'];
     logSetTimeout.injections = [hit];
 
     /* eslint-disable no-console, no-eval */
@@ -876,7 +876,7 @@
       FunctionWrapper.prototype.constructor = FunctionWrapper;
       window.Function = FunctionWrapper;
     }
-    logEval.names = ['hit-eval'];
+    logEval.names = ['log-eval'];
     logEval.injections = [hit];
 
     /**
@@ -1208,7 +1208,10 @@
      */
 
     function getScriptletByName(name) {
-      return Object.values(scriptletList).find(function (s) {
+      var scriptlets = Object.keys(scriptletList).map(function (key) {
+        return scriptletList[key];
+      });
+      return scriptlets.find(function (s) {
         return s.names && s.names.includes(name);
       });
     }
