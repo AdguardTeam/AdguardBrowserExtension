@@ -196,9 +196,11 @@
 
         const UBO_CSS_STYLE_PSEUDO_CLASS = ':style(';
 
+        const uboMarkers = Object.keys(UBO_CSS_RULE_MARKERS).map(key => UBO_CSS_RULE_MARKERS[key]);
+
         const mask = api.FilterRule.findRuleMarker(
             ruleText,
-            Object.values(UBO_CSS_RULE_MARKERS),
+            uboMarkers,
             RULE_MARKER_FIRST_CHAR
         );
         if (!mask) {
