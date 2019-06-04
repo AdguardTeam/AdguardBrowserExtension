@@ -1554,6 +1554,10 @@ var AntiBannerFilters = function (options) {
         if (checkboxes) {
             CheckboxUtils.updateCheckbox(checkboxes, enabled);
         }
+        if (filterId === AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID) {
+            const allowAcceptableAdsCheckbox = document.querySelector('#allowAcceptableAds');
+            CheckboxUtils.updateCheckbox([allowAcceptableAdsCheckbox], filter.enabled);
+        }
     }
 
     function onCategoryStateChanged(category) {
@@ -1900,17 +1904,17 @@ var Settings = function () {
     checkboxes.push(new Checkbox('#first_party_cookies', userSettings.names.SELF_DESTRUCT_FIRST_PARTY_COOKIES));
     checkboxes.push(new Checkbox('#strip_tracking_params', userSettings.names.STRIP_TRACKING_PARAMETERS));
 
-    var allowAcceptableAdsCheckbox = document.querySelector("#allowAcceptableAds");
+    const allowAcceptableAdsCheckbox = document.querySelector('#allowAcceptableAds');
     allowAcceptableAdsCheckbox.addEventListener('change', function () {
         if (this.checked) {
             contentPage.sendMessage({
                 type: 'addAndEnableFilter',
-                filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID
+                filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID,
             });
         } else {
             contentPage.sendMessage({
                 type: 'disableAntiBannerFilter',
-                filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID
+                filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID,
             });
         }
     });
@@ -2158,20 +2162,6 @@ PageController.prototype = {
         const versionPlaceholder = document.querySelector('#about-version-placeholder');
         if (versionPlaceholder) {
             versionPlaceholder.textContent = `${i18n.getMessage('options_about_version')} ${environmentOptions.appVersion}`;
-        }
-    },
-
-    allowAcceptableAdsChange: function () {
-        if (this.checked) {
-            contentPage.sendMessage({
-                type: 'addAndEnableFilter',
-                filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID,
-            });
-        } else {
-            contentPage.sendMessage({
-                type: 'disableAntiBannerFilter',
-                filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID
-            });
         }
     },
 
