@@ -146,9 +146,10 @@ adguard.antiBannerService = (function (adguard) {
         /**
          * Init extension common info.
          */
-        adguard.applicationUpdateService.getRunInfo(function (runInfo) {
+        adguard.applicationUpdateService.getRunInfo(async (runInfo) => {
             // Load subscription from the storage
-            adguard.subscriptions.init(onSubscriptionLoaded.bind(null, runInfo));
+            await adguard.subscriptions.init();
+            onSubscriptionLoaded(runInfo);
         });
     }
 

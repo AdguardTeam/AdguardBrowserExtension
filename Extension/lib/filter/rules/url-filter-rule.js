@@ -403,8 +403,8 @@
      * @param option Option
      */
     function containsOption(options, option) {
-        return options !== null &&
-            (options & option) === option; // jshint ignore:line
+        return options !== null
+            && (options & option) === option;
     }
 
     /**
@@ -629,13 +629,15 @@
             return true;
         }
 
-        // Checking that either all content types are permitted or request content type is in the permitted list
-        var matchesPermitted = this.permittedContentType === UrlFilterRule.contentTypes.ALL ||
-            (this.permittedContentType & contentTypeMask) !== 0; // jshint ignore:line
+        // Checking that either all content types are permitted or request content type
+        // is in the permitted list
+        var matchesPermitted = this.permittedContentType === UrlFilterRule.contentTypes.ALL
+            || (this.permittedContentType & contentTypeMask) !== 0;
 
-        // Checking that either no content types are restricted or request content type is not in the restricted list
-        var notMatchesRestricted = this.restrictedContentType === 0 ||
-            (this.restrictedContentType & contentTypeMask) === 0; // jshint ignore:line
+        // Checking that either no content types are restricted or request content type
+        // is not in the restricted list
+        var notMatchesRestricted = this.restrictedContentType === 0
+            || (this.restrictedContentType & contentTypeMask) === 0;
 
         return matchesPermitted && notMatchesRestricted;
     };
@@ -803,6 +805,13 @@
     };
 
     /**
+     * @returns true if this rule is redirect rule
+     */
+    UrlFilterRule.prototype.isRedirectRule = function () {
+        return this.isOptionEnabled(UrlFilterRule.options.REDIRECT);
+    };
+
+    /**
      * @returns true if this rule is stealth
      */
     UrlFilterRule.prototype.isStealthRule = function () {
@@ -907,6 +916,11 @@
                     this._setUrlFilterRuleOption(UrlFilterRule.options.COOKIE_RULE, true);
                     this.cookieOption = new CookieOption(optionValue);
                     break;
+                case UrlFilterRule.REDIRECT_OPTION: {
+                    this._setUrlFilterRuleOption(UrlFilterRule.options.REDIRECT, true);
+                    this.redirect = optionValue;
+                    break;
+                }
                 case UrlFilterRule.REPLACE_OPTION:
                     // In case of .features or .features.responseContentFilteringSupported are not defined
                     const responseContentFilteringSupported = adguard.prefs.features
@@ -950,24 +964,27 @@
             }
         }
 
-        // Rules of this types can be applied to documents only
-        // $jsinject, $elemhide, $urlblock, $genericblock, $generichide and $content for whitelist rules.
-        // $popup - for url blocking
-        if (this.isOptionEnabled(UrlFilterRule.options.JSINJECT) ||
-            this.isOptionEnabled(UrlFilterRule.options.ELEMHIDE) ||
-            this.isOptionEnabled(UrlFilterRule.options.CONTENT) ||
-            this.isOptionEnabled(UrlFilterRule.options.URLBLOCK) ||
-            this.isOptionEnabled(UrlFilterRule.options.BLOCK_POPUPS) ||
-            this.isOptionEnabled(UrlFilterRule.options.GENERICBLOCK) ||
-            this.isOptionEnabled(UrlFilterRule.options.GENERICHIDE)) {
-
+        /**
+         * Rules of this types can be applied to documents only
+         * for whitelist rules: $jsinject, $elemhide, $urlblock, $genericblock,
+         * $generichide and $content
+         * for url blocking: $popup
+         */
+        if (this.isOptionEnabled(UrlFilterRule.options.JSINJECT)
+            || this.isOptionEnabled(UrlFilterRule.options.ELEMHIDE)
+            || this.isOptionEnabled(UrlFilterRule.options.CONTENT)
+            || this.isOptionEnabled(UrlFilterRule.options.URLBLOCK)
+            || this.isOptionEnabled(UrlFilterRule.options.BLOCK_POPUPS)
+            || this.isOptionEnabled(UrlFilterRule.options.GENERICBLOCK)
+            || this.isOptionEnabled(UrlFilterRule.options.GENERICHIDE)) {
             this.permittedContentType = UrlFilterRule.contentTypes.DOCUMENT;
             this.documentLevelRule = true;
         }
     };
 
     /**
-     * Appends new content type value to permitted list (depending on the current permitted content types)
+     * Appends new content type value to permitted list
+     * (depending on the current permitted content types)
      *
      * @param contentType Content type to append
      */
@@ -975,12 +992,13 @@
         if (this.permittedContentType === UrlFilterRule.contentTypes.ALL) {
             this.permittedContentType = contentType;
         } else {
-            this.permittedContentType |= contentType; // jshint ignore:line
+            this.permittedContentType |= contentType;
         }
     };
 
     /**
-     * Appends new content type to restricted list (depending on the current restricted content types)
+     * Appends new content type to restricted list
+     * (depending on the current restricted content types)
      *
      * @param contentType Content type to append
      */
@@ -988,7 +1006,7 @@
         if (this.restrictedContentType === 0) {
             this.restrictedContentType = contentType;
         } else {
-            this.restrictedContentType |= contentType; // jshint ignore:line
+            this.restrictedContentType |= contentType;
         }
     };
 
@@ -1001,54 +1019,53 @@
     UrlFilterRule.prototype._setUrlFilterRuleOption = function (option, enabled) {
 
         if (enabled) {
-
             if ((this.whiteListRule && containsOption(UrlFilterRule.options.BLACKLIST_OPTIONS, option)) ||
                 !this.whiteListRule && containsOption(UrlFilterRule.options.WHITELIST_OPTIONS, option)) {
-
                 throw option + ' cannot be applied to this type of rule';
             }
 
             if (this.enabledOptions === null) {
                 this.enabledOptions = option;
             } else {
-                this.enabledOptions |= option; // jshint ignore:line
+                this.enabledOptions |= option;
             }
         } else {
             if (this.disabledOptions === null) {
                 this.disabledOptions = option;
             } else {
-                this.disabledOptions |= option; // jshint ignore:line
+                this.disabledOptions |= option;
             }
         }
     };
 
-    UrlFilterRule.OPTIONS_DELIMITER = "$";
-    UrlFilterRule.DOMAIN_OPTION = "domain";
-    UrlFilterRule.THIRD_PARTY_OPTION = "third-party";
-    UrlFilterRule.MATCH_CASE_OPTION = "match-case";
-    UrlFilterRule.DOCUMENT_OPTION = "document";
-    UrlFilterRule.ELEMHIDE_OPTION = "elemhide";
-    UrlFilterRule.GENERICHIDE_OPTION = "generichide";
-    UrlFilterRule.URLBLOCK_OPTION = "urlblock";
-    UrlFilterRule.GENERICBLOCK_OPTION = "genericblock";
-    UrlFilterRule.JSINJECT_OPTION = "jsinject";
-    UrlFilterRule.CONTENT_OPTION = "content";
-    UrlFilterRule.POPUP_OPTION = "popup";
-    UrlFilterRule.IMPORTANT_OPTION = "important";
-    UrlFilterRule.MASK_REGEX_RULE = "/";
-    UrlFilterRule.MASK_ANY_SYMBOL = "*";
-    UrlFilterRule.REGEXP_ANY_SYMBOL = ".*";
-    UrlFilterRule.EMPTY_OPTION = "empty";
-    UrlFilterRule.REPLACE_OPTION = "replace"; // Extension doesn't support replace rules, $replace option is here only for correctly parsing
-    UrlFilterRule.EXTENSION_OPTION = "extension"; // Extension doesn't support extension rules, $extension option is here only for correctly parsing
-    UrlFilterRule.CSP_OPTION = "csp";
-    UrlFilterRule.COOKIE_OPTION = "cookie";
-    UrlFilterRule.BADFILTER_OPTION = "badfilter";
-    UrlFilterRule.STEALTH_OPTION = "stealth";
+    UrlFilterRule.OPTIONS_DELIMITER = '$';
+    UrlFilterRule.DOMAIN_OPTION = 'domain';
+    UrlFilterRule.THIRD_PARTY_OPTION = 'third-party';
+    UrlFilterRule.MATCH_CASE_OPTION = 'match-case';
+    UrlFilterRule.DOCUMENT_OPTION = 'document';
+    UrlFilterRule.ELEMHIDE_OPTION = 'elemhide';
+    UrlFilterRule.GENERICHIDE_OPTION = 'generichide';
+    UrlFilterRule.URLBLOCK_OPTION = 'urlblock';
+    UrlFilterRule.GENERICBLOCK_OPTION = 'genericblock';
+    UrlFilterRule.JSINJECT_OPTION = 'jsinject';
+    UrlFilterRule.CONTENT_OPTION = 'content';
+    UrlFilterRule.POPUP_OPTION = 'popup';
+    UrlFilterRule.IMPORTANT_OPTION = 'important';
+    UrlFilterRule.MASK_REGEX_RULE = '/';
+    UrlFilterRule.MASK_ANY_SYMBOL = '*';
+    UrlFilterRule.REGEXP_ANY_SYMBOL = '.*';
+    UrlFilterRule.EMPTY_OPTION = 'empty';
+    // Extension doesn't support replace rules, $replace option is here only for correct parsing
+    UrlFilterRule.REPLACE_OPTION = 'replace';
+    // Extension doesn't support extension rules, $extension option is here only for correct parsing
+    UrlFilterRule.EXTENSION_OPTION = 'extension';
+    UrlFilterRule.CSP_OPTION = 'csp';
+    UrlFilterRule.COOKIE_OPTION = 'cookie';
+    UrlFilterRule.BADFILTER_OPTION = 'badfilter';
+    UrlFilterRule.STEALTH_OPTION = 'stealth';
+    UrlFilterRule.REDIRECT_OPTION = 'redirect';
 
     UrlFilterRule.contentTypes = {
-
-        // jshint ignore:start
         OTHER: 1 << 0,
         SCRIPT: 1 << 1,
         IMAGE: 1 << 2,
@@ -1062,20 +1079,18 @@
         WEBSOCKET: 1 << 10,
         WEBRTC: 1 << 11,
         DOCUMENT: 1 << 12,
-        // jshint ignore:end
     };
 
     // https://code.google.com/p/chromium/issues/detail?id=410382
-    if (adguard.prefs.platform === 'chromium' ||
-        adguard.prefs.platform === 'webkit') {
-
+    if (adguard.prefs.platform === 'chromium'
+        || adguard.prefs.platform === 'webkit') {
         UrlFilterRule.contentTypes.OBJECT_SUBREQUEST = UrlFilterRule.contentTypes.OBJECT;
     }
 
     UrlFilterRule.contentTypes.ALL = 0;
     for (var key in UrlFilterRule.contentTypes) {
         if (UrlFilterRule.contentTypes.hasOwnProperty(key)) {
-            UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes[key]; // jshint ignore:line
+            UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes[key];
         }
     }
 
@@ -1087,13 +1102,10 @@
      */
     UrlFilterRule.cookieOptions = {
         MAX_AGE: 'maxAge',
-        SAME_SITE: 'sameSite'
+        SAME_SITE: 'sameSite',
     };
 
     UrlFilterRule.options = {
-
-        // jshint ignore:start
-
         /**
          * $elemhide modifier.
          * it makes sense to use this parameter for exceptions only.
@@ -1135,8 +1147,11 @@
          * It makes sense to use this parameter for exceptions only.
          * It prohibits the blocking of requests from pages
          * affected by the current rule.
+         *
+         * This attribute is only for exception rules. If true - do not use urlblocking rules
+         * for urls where referrer satisfies this rule.
          */
-        URLBLOCK: 1 << 5,  // This attribute is only for exception rules. If true - do not use urlblocking rules for urls where referrer satisfies this rule.
+        URLBLOCK: 1 << 5,
 
         /**
          * it makes sense to use this parameter for exceptions only.
@@ -1177,7 +1192,7 @@
          */
         COOKIE_RULE: 1 << 11,
 
-        /*
+        /**
          * defines rules with $extension modifier
          * for example, @@||example.org^$extension
          */
@@ -1195,15 +1210,22 @@
          */
         STEALTH: 1 << 14,
 
-        // jshint ignore:end
+        /**
+         * defines rules with $redirect modifier
+         * for example, "||example.com/someadd.js^$redirect=noopjs"
+         */
+        REDIRECT: 1 << 15,
     };
 
     /**
      * These options can be applied to whitelist rules only
      */
-    UrlFilterRule.options.WHITELIST_OPTIONS =
-        UrlFilterRule.options.ELEMHIDE | UrlFilterRule.options.JSINJECT | UrlFilterRule.options.CONTENT |
-        UrlFilterRule.options.GENERICHIDE | UrlFilterRule.options.GENERICBLOCK | UrlFilterRule.options.STEALTH; // jshint ignore:line
+    UrlFilterRule.options.WHITELIST_OPTIONS = UrlFilterRule.options.ELEMHIDE
+        | UrlFilterRule.options.JSINJECT
+        | UrlFilterRule.options.CONTENT
+        | UrlFilterRule.options.GENERICHIDE
+        | UrlFilterRule.options.GENERICBLOCK
+        | UrlFilterRule.options.STEALTH;
 
     /**
      * These options can be applied to blacklist rules only
@@ -1213,8 +1235,10 @@
     /**
      * These options define a document whitelisted rule
      */
-    UrlFilterRule.options.DOCUMENT_WHITELIST =
-        UrlFilterRule.options.ELEMHIDE | UrlFilterRule.options.URLBLOCK | UrlFilterRule.options.JSINJECT | UrlFilterRule.options.CONTENT; // jshint ignore:line
+    UrlFilterRule.options.DOCUMENT_WHITELIST = UrlFilterRule.options.ELEMHIDE
+        | UrlFilterRule.options.URLBLOCK
+        | UrlFilterRule.options.JSINJECT
+        | UrlFilterRule.options.CONTENT;
 
     UrlFilterRule.ignoreOptions = {
         // Deprecated modifiers
@@ -1229,5 +1253,4 @@
     };
 
     api.UrlFilterRule = UrlFilterRule;
-
 })(adguard, adguard.rules);
