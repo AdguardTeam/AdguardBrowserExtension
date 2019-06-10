@@ -682,12 +682,18 @@ QUnit.test('Test converter scriptlet multiple abp rule', function (assert) {
     assert.equal(res[1], exp2);
 });
 
-QUnit.test('Test converter css adguard rule', function (assert) {
-    const rule = `firmgoogle.com#$#.pub_300x250 {display:block!important;}`;
-    const exp = `firmgoogle.com#$#.pub_300x250 {display:block!important;}`;
+QUnit.test('Test converter css adguard rule', (assert) => {
+    const rule = 'firmgoogle.com#$#.pub_300x250 {display:block!important;}';
+    const exp = 'firmgoogle.com#$#.pub_300x250 {display:block!important;}';
     const res = adguard.rules.ruleConverter.convertRule(rule);
 
     assert.equal(res, exp, 'the issue of this test that adg css rule and abp snippet rule has the same mask, but different content');
+
+    // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1412
+    const whitelistCssRule = 'example.com#@$#h1 { display: none!important; }';
+    const expected = 'example.com#@$#h1 { display: none!important; }';
+    const actual = adguard.rules.ruleConverter.convertRule(whitelistCssRule);
+    assert.equal(actual, expected, 'AG CSS whitelist rules should not be parsed as ABP scriptlet rule');
 });
 
 QUnit.test('Composite rules', (assert) => {
