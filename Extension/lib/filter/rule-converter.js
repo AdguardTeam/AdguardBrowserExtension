@@ -44,7 +44,7 @@
     /**
      * AdGuard CSS rule mask
      */
-    const ADG_CSS_MASK_REG = /#\$#.+?\s*\{.*\}\s*$/g;
+    const ADG_CSS_MASK_REG = /#@?\$#.+?\s*\{.*\}\s*$/g;
 
     /**
      * Return array of strings separated by space which not in quotes
