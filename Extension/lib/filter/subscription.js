@@ -528,107 +528,51 @@ adguard.subscriptions = (function (adguard) {
 
     /**
      * Load groups and filters metadata
-     *
-     * @param successCallback
-     * @param errorCallback
-     * @private
+     * @returns {Promise} returns promise
      */
-    function loadMetadata(successCallback, errorCallback) {
+    async function loadMetadata() {
+        const metadata = await adguard.backend.loadLocalFiltersMetadata();
+        tags = [];
+        groups = [];
+        groupsMap = {};
+        filters = [];
+        filtersMap = {};
 
-        adguard.backend.loadLocalFiltersMetadata(function (metadata) {
-
-            tags = [];
-            groups = [];
-            groupsMap = {};
-            filters = [];
-            filtersMap = {};
-
-            for (var i = 0; i < metadata.tags.length; i++) {
-                tags.push(createFilterTagFromJSON(metadata.tags[i]));
-            }
-
-            for (var j = 0; j < metadata.filters.length; j += 1) {
-                var filter = createSubscriptionFilterFromJSON(metadata.filters[j]);
-                filters.push(filter);
-                filtersMap[filter.filterId] = filter;
-            }
-
-            for (let k = 0; k < metadata.groups.length; k += 1) {
-                const group = createSubscriptionGroupFromJSON(metadata.groups[k]);
-                groups.push(group);
-                groupsMap[group.groupId] = group;
-            }
-
-            const customFiltersGroup = new SubscriptionGroup(CUSTOM_FILTERS_GROUP_ID,
-                adguard.i18n.getMessage('options_antibanner_custom_group'),
-                CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER);
-            groups.push(customFiltersGroup);
-            groupsMap[customFiltersGroup.groupId] = customFiltersGroup;
-
-            // Load custom filters
-            const customFilters = loadCustomFilters();
-            customFilters.forEach(f => {
-                const customFilter = createSubscriptionFilterFromJSON(f);
-                filters.push(customFilter);
-                filtersMap[customFilter.filterId] = customFilter;
-            });
-
-            filters.sort((f1, f2) => f1.displayNumber - f2.displayNumber);
-
-            groups.sort((f1, f2) => f1.displayNumber - f2.displayNumber);
-
-            adguard.console.info('Filters metadata loaded');
-            successCallback();
-        }, errorCallback);
-    }
-
-    /**
-     * Loads groups and filters localizations
-     * @param successCallback
-     * @param errorCallback
-     */
-    function loadMetadataI18n(successCallback, errorCallback) {
-
-        adguard.backend.loadLocalFiltersI18Metadata(function (i18nMetadata) {
-            var tagsI18n = i18nMetadata.tags;
-            var filtersI18n = i18nMetadata.filters;
-            var groupsI18n = i18nMetadata.groups;
-
-            for (var i = 0; i < tags.length; i++) {
-                applyFilterTagLocalization(tags[i], tagsI18n);
-            }
-
-            for (var j = 0; j < filters.length; j++) {
-                applyFilterLocalization(filters[j], filtersI18n);
-            }
-
-            for (var k = 0; k < groups.length; k++) {
-                applyGroupLocalization(groups[k], groupsI18n);
-            }
-
-            adguard.console.info('Filters i18n metadata loaded');
-            successCallback();
-
-        }, errorCallback);
-    }
-
-
-    /**
-     * Loads script rules from local file
-     * @returns {exports.Promise}
-     * @private
-     */
-    function loadLocalScriptRules(successCallback, errorCallback) {
-        var localScriptRulesService = adguard.rules.LocalScriptRulesService;
-        if (typeof localScriptRulesService !== 'undefined') {
-            adguard.backend.loadLocalScriptRules(function (json) {
-                localScriptRulesService.setLocalScriptRules(json);
-                successCallback();
-            }, errorCallback);
-        } else {
-            // LocalScriptRulesService may be undefined, in this case don't load local script rules
-            successCallback();
+        for (let i = 0; i < metadata.tags.length; i += 1) {
+            tags.push(createFilterTagFromJSON(metadata.tags[i]));
         }
+
+        for (let j = 0; j < metadata.filters.length; j += 1) {
+            const filter = createSubscriptionFilterFromJSON(metadata.filters[j]);
+            filters.push(filter);
+            filtersMap[filter.filterId] = filter;
+        }
+
+        for (let k = 0; k < metadata.groups.length; k += 1) {
+            const group = createSubscriptionGroupFromJSON(metadata.groups[k]);
+            groups.push(group);
+            groupsMap[group.groupId] = group;
+        }
+
+        const customFiltersGroup = new SubscriptionGroup(CUSTOM_FILTERS_GROUP_ID,
+            adguard.i18n.getMessage('options_antibanner_custom_group'),
+            CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER);
+        groups.push(customFiltersGroup);
+        groupsMap[customFiltersGroup.groupId] = customFiltersGroup;
+
+        // Load custom filters
+        const customFilters = loadCustomFilters();
+        customFilters.forEach((f) => {
+            const customFilter = createSubscriptionFilterFromJSON(f);
+            filters.push(customFilter);
+            filtersMap[customFilter.filterId] = customFilter;
+        });
+
+        filters.sort((f1, f2) => f1.displayNumber - f2.displayNumber);
+
+        groups.sort((f1, f2) => f1.displayNumber - f2.displayNumber);
+
+        adguard.console.info('Filters metadata loaded');
     }
 
     /**
@@ -638,32 +582,14 @@ adguard.subscriptions = (function (adguard) {
      * @private
      */
     function applyFilterTagLocalization(tag, i18nMetadata) {
-        var tagId = tag.tagId;
-        var localizations = i18nMetadata[tagId];
+        const { tagId } = tag;
+        const localizations = i18nMetadata[tagId];
         if (localizations) {
-            var locale = adguard.utils.i18n.normalize(localizations, adguard.app.getLocale());
-            var localization = localizations[locale];
+            const locale = adguard.utils.i18n.normalize(localizations, adguard.app.getLocale());
+            const localization = localizations[locale];
             if (localization) {
                 tag.name = localization.name;
                 tag.description = localization.description;
-            }
-        }
-    }
-
-    /**
-     * Localize group
-     * @param group
-     * @param i18nMetadata
-     * @private
-     */
-    function applyGroupLocalization(group, i18nMetadata) {
-        var groupId = group.groupId;
-        var localizations = i18nMetadata[groupId];
-        if (localizations) {
-            var locale = adguard.utils.i18n.normalize(localizations, adguard.app.getLocale());
-            var localization = localizations[locale];
-            if (localization) {
-                group.groupName = localization.name;
             }
         }
     }
@@ -675,11 +601,11 @@ adguard.subscriptions = (function (adguard) {
      * @private
      */
     function applyFilterLocalization(filter, i18nMetadata) {
-        var filterId = filter.filterId;
-        var localizations = i18nMetadata[filterId];
+        const { filterId } = filter;
+        const localizations = i18nMetadata[filterId];
         if (localizations) {
-            var locale = adguard.utils.i18n.normalize(localizations, adguard.app.getLocale());
-            var localization = localizations[locale];
+            const locale = adguard.utils.i18n.normalize(localizations, adguard.app.getLocale());
+            const localization = localizations[locale];
             if (localization) {
                 filter.name = localization.name;
                 filter.description = localization.description;
@@ -688,21 +614,89 @@ adguard.subscriptions = (function (adguard) {
     }
 
     /**
-     * Initialize subscription service, loading local filters metadata
-     *
-     * @param callback Called on operation success
+     * Localize group
+     * @param group
+     * @param i18nMetadata
+     * @private
      */
-    var init = function (callback) {
+    function applyGroupLocalization(group, i18nMetadata) {
+        const { groupId } = group;
+        const localizations = i18nMetadata[groupId];
+        if (localizations) {
+            const locale = adguard.utils.i18n.normalize(localizations, adguard.app.getLocale());
+            const localization = localizations[locale];
+            if (localization) {
+                group.groupName = localization.name;
+            }
+        }
+    }
 
-        var errorCallback = function (request, cause) {
-            adguard.console.error('Error loading metadata, cause: {0} {1}', request.statusText, cause);
-        };
+    /**
+     * Loads groups and filters localizations
+     * @return {Promise} returns promise
+     */
+    async function loadMetadataI18n() {
+        const i18nMetadata = await adguard.backend.loadLocalFiltersI18Metadata();
+        const tagsI18n = i18nMetadata.tags;
+        const filtersI18n = i18nMetadata.filters;
+        const groupsI18n = i18nMetadata.groups;
 
-        loadMetadata(function () {
-            loadMetadataI18n(function () {
-                loadLocalScriptRules(callback, errorCallback);
-            }, errorCallback);
-        }, errorCallback);
+        for (let i = 0; i < tags.length; i += 1) {
+            applyFilterTagLocalization(tags[i], tagsI18n);
+        }
+
+        for (let j = 0; j < filters.length; j += 1) {
+            applyFilterLocalization(filters[j], filtersI18n);
+        }
+
+        for (let k = 0; k < groups.length; k += 1) {
+            applyGroupLocalization(groups[k], groupsI18n);
+        }
+
+        adguard.console.info('Filters i18n metadata loaded');
+    }
+
+    /**
+     * Loads script rules from local file
+     * @returns {Promise}
+     * @private
+     */
+    async function loadLocalScriptRules() {
+        const localScriptRulesService = adguard.rules.LocalScriptRulesService;
+        if (typeof localScriptRulesService !== 'undefined') {
+            const json = await adguard.backend.loadLocalScriptRules();
+            localScriptRulesService.setLocalScriptRules(json);
+            adguard.console.info('Filters local script rules loaded');
+        }
+    }
+
+    /**
+     * Loads redirect sources from local file
+     * @returns {Promise}
+     * @private
+     */
+    async function loadRedirectSources() {
+        const redirectSourcesService = adguard.rules.RedirectFilterService;
+        if (typeof redirectSourcesService !== 'undefined') {
+            const txt = await adguard.backend.loadRedirectSources();
+            redirectSourcesService.setRedirectSources(txt);
+            adguard.console.info('Filters redirect sources loaded');
+        }
+    }
+
+    /**
+     * Initialize subscription service, loading local filters metadata
+     * @return {Promise}
+     */
+    const init = async function () {
+        try {
+            await loadMetadata();
+            await loadMetadataI18n();
+            await loadLocalScriptRules();
+            await loadRedirectSources();
+        } catch (e) {
+            adguard.console.error(`Error loading metadata, cause: ${e.message}`);
+        }
     };
 
     /**

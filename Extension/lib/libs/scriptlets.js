@@ -735,13 +735,13 @@
         hit(source, "Document tried to create an RTCPeerConnection: ".concat(config));
       };
 
-      var noop$$1 = function noop$$1() {};
+      var noop = function noop() {};
 
       rtcReplacement.prototype = {
-        close: noop$$1,
-        createDataChannel: noop$$1,
-        createOffer: noop$$1,
-        setRemoteDescription: noop$$1
+        close: noop,
+        createDataChannel: noop,
+        createOffer: noop,
+        setRemoteDescription: noop
       };
       var rtc = window[propertyName];
       window[propertyName] = rtcReplacement;
@@ -749,8 +749,8 @@
       if (rtc.prototype) {
         rtc.prototype.createDataChannel = function (a, b) {
           return {
-            close: noop$$1,
-            send: noop$$1
+            close: noop,
+            send: noop
           };
         }.bind(null);
       }

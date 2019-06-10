@@ -121,6 +121,10 @@ adguard.backend = (function (adguard) {
         get localFiltersFolder() {
             return 'filters';
         },
+        // Path to the redirect sources
+        get redirectSourcesFile() {
+            return 'lib/libs/redirects1.yml';
+        },
         // Array of filter identifiers, that have local file with rules. Range from 1 to 14 by default
         get localFilterIds() {
             return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
@@ -152,8 +156,7 @@ adguard.backend = (function (adguard) {
      * @param errorCallback error callback
      */
     function executeRequestAsync(url, contentType, successCallback, errorCallback) {
-
-        var request = new XMLHttpRequest();
+        const request = new XMLHttpRequest();
         try {
             request.open('GET', url);
             request.setRequestHeader('Content-type', contentType);
@@ -166,7 +169,7 @@ adguard.backend = (function (adguard) {
                 };
             }
             if (errorCallback) {
-                var errorCallbackWrapper = function () {
+                const errorCallbackWrapper = function () {
                     errorCallback(request);
                 };
                 request.onerror = errorCallbackWrapper;
@@ -309,76 +312,99 @@ adguard.backend = (function (adguard) {
 
     /**
      * Loads filter groups metadata
-     *
-     * @param successCallback   Called on success
-     * @param errorCallback     Called on error
      */
-    var loadLocalFiltersMetadata = function (successCallback, errorCallback) {
-
-        var success = function (response) {
-            if (response && response.responseText) {
-                var metadata = parseJson(response.responseText);
-                if (!metadata) {
-                    errorCallback(response, 'invalid response');
-                    return;
+    const loadLocalFiltersMetadata = function loadLocalFiltersMetadata() {
+        return new Promise((resolve, reject) => {
+            const success = function (response) {
+                if (response && response.responseText) {
+                    const metadata = parseJson(response.responseText);
+                    if (!metadata) {
+                        reject(response, 'invalid response');
+                        return;
+                    }
+                    resolve(metadata);
+                } else {
+                    reject(response, 'empty response'); // TODO [maximtop] correctly handle errors
                 }
-                successCallback(metadata);
-            } else {
-                errorCallback(response, 'empty response');
-            }
-        };
+            };
 
-        var url = adguard.getURL(settings.localFiltersFolder + '/filters.json');
-        executeRequestAsync(url, 'application/json', success, errorCallback);
+            const url = adguard.getURL(`${settings.localFiltersFolder}/filters.json`);
+            executeRequestAsync(url, 'application/json', success, reject);
+        });
+
+
     };
 
     /**
      * Loads filter groups metadata from local file
-     *
-     * @param successCallback   Called on success
-     * @param errorCallback     Called on error
+     * @returns {Promise}
      */
-    var loadLocalFiltersI18Metadata = function (successCallback, errorCallback) {
-
-        var success = function (response) {
-            if (response && response.responseText) {
-                var metadata = parseJson(response.responseText);
-                if (!metadata) {
-                    errorCallback(response, 'invalid response');
-                    return;
+    const loadLocalFiltersI18Metadata = function loadLocalFiltersI18Metadata() {
+        return new Promise((resolve, reject) => {
+            const success = function (response) {
+                if (response && response.responseText) {
+                    const metadata = parseJson(response.responseText);
+                    if (!metadata) {
+                        reject(response, 'invalid response');
+                        return;
+                    }
+                    resolve(metadata);
+                } else {
+                    reject(response, 'empty response'); // TODO [maximtop] correctly handle errors
                 }
-                successCallback(metadata);
-            } else {
-                errorCallback(response, 'empty response');
-            }
-        };
+            };
 
-        var url = adguard.getURL(settings.localFiltersFolder + '/filters_i18n.json');
-        executeRequestAsync(url, 'application/json', success, errorCallback);
+            const url = adguard.getURL(`${settings.localFiltersFolder}/filters_i18n.json`);
+            executeRequestAsync(url, 'application/json', success, reject);
+        });
     };
 
     /**
      * Loads script rules from local file
-     *
-     * @param successCallback   Called on success
-     * @param errorCallback     Called on error
+     * @returns {Promise}
      */
-    var loadLocalScriptRules = function (successCallback, errorCallback) {
-        var success = function (response) {
-            if (response && response.responseText) {
-                var metadata = parseJson(response.responseText);
-                if (!metadata) {
-                    errorCallback(response, 'invalid response');
-                    return;
+    const loadLocalScriptRules = function loadLocalScriptRules() {
+        return new Promise((resolve, reject) => {
+            const success = (response) => {
+                if (response && response.responseText) {
+                    const metadata = parseJson(response.responseText);
+                    if (!metadata) {
+                        reject(response, 'invalid response');
+                        return;
+                    }
+                    resolve(metadata);
+                } else {
+                    reject(response, 'empty response'); // TODO [maximtop] correctly handle errors
                 }
-                successCallback(metadata);
+            };
+            const url = adguard.getURL(`${settings.localFiltersFolder}/local_script_rules.json`);
+            executeRequestAsync(url, 'application/json', success, reject);
+        });
+    };
+
+    /**
+     * Loads redirect sources from local file
+     * @returns {Promise}
+     */
+    const loadRedirectSources = () => new Promise((resolve, reject) => {
+        const url = adguard.getURL(settings.redirectSourcesFile);
+
+        const success = (response) => {
+            if (response && response.responseText) {
+                resolve(response.responseText);
             } else {
-                errorCallback(response, 'empty response');
+                reject(new Error(`Empty response while making loadRedirectSources request to "${url}"`));
             }
         };
-        var url = adguard.getURL(settings.localFiltersFolder + '/local_script_rules.json');
-        executeRequestAsync(url, 'application/json', success, errorCallback);
-    };
+
+        const error = (request, ex) => {
+            reject(new Error(`Error while making loadRedirectSources request to ${url};
+                                \nStatus: ${request.statusText};
+                                \nError: ${ex.message}`));
+        };
+
+        executeRequestAsync(url, 'application/x-yaml', success, error);
+    });
 
     /**
      * Checks specified host hashes with our safebrowsing service
@@ -571,30 +597,30 @@ adguard.backend = (function (adguard) {
         adguardAppUrl: settings.adguardAppUrl,
         injectionsUrl: settings.injectionsUrl,
 
-        loadFiltersMetadata: loadFiltersMetadata,
-        loadFilterRules: loadFilterRules,
+        loadFiltersMetadata,
+        loadFilterRules,
 
-        loadFilterRulesBySubscriptionUrl: loadFilterRulesBySubscriptionUrl,
+        loadFilterRulesBySubscriptionUrl,
 
-        loadLocalFiltersMetadata: loadLocalFiltersMetadata,
-        loadLocalFiltersI18Metadata: loadLocalFiltersI18Metadata,
-        loadLocalScriptRules: loadLocalScriptRules,
+        loadLocalFiltersMetadata,
+        loadLocalFiltersI18Metadata,
+        loadLocalScriptRules,
+        loadRedirectSources,
 
-        adguardAppAddRule: adguardAppAddRule,
-        adguardAppAddRuleOld: adguardAppAddRuleOld,
-        adguardAppRemoveRule: adguardAppRemoveRule,
+        adguardAppAddRule,
+        adguardAppAddRuleOld,
+        adguardAppRemoveRule,
 
-        lookupSafebrowsing: lookupSafebrowsing,
-        trackSafebrowsingStats: trackSafebrowsingStats,
+        lookupSafebrowsing,
+        trackSafebrowsingStats,
 
-        sendUrlReport: sendUrlReport,
-        sendHitStats: sendHitStats,
+        sendUrlReport,
+        sendHitStats,
 
-        isAdguardAppRequest: isAdguardAppRequest,
+        isAdguardAppRequest,
+        getResponseHeaders,
 
-        getResponseHeaders: getResponseHeaders,
-
-        configure: configure
+        configure,
     };
 
 })(adguard);
