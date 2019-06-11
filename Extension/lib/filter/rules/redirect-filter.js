@@ -26,7 +26,7 @@
      * Filter for redirect filter rules
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1367
      */
-    api.RedirectFilter = function (rules) {
+    function RedirectFilter(rules) {
         const redirectWhiteFilter = new api.UrlFilterRuleLookupTable();
         const redirectBlockFilter = new api.UrlFilterRuleLookupTable();
 
@@ -83,7 +83,7 @@
          * @param requestType   Request content type
          * @returns             Matching rules
          */
-        function findRedirectRule(url, documentHost, thirdParty, requestType) {
+        function findRedirectRules(url, documentHost, thirdParty, requestType) {
             const blockRules = redirectBlockFilter.findRule(
                 url,
                 documentHost,
@@ -117,25 +117,73 @@
             addRule,
             removeRule,
             getRules,
-            findRedirectRule,
+            findRedirectRules,
         };
-    };
+    }
 
-    api.RedirectFilterService = (function () {
+    const RedirectFilterService = (function RedirectFilterService() {
         function setRedirectSources(rawYaml) {
             redirects = new Redirects(rawYaml);
         }
 
-        function getSource(rule) {
+        function getSourceContent(rule) {
             if (rule && rule.redirect) {
-                return redirects.getSource(rule.redirect);
+                return redirects.getContent(rule.redirect);
+            }
+            return null;
+        }
+
+        function buildRedirectUrl(rule) {
+            if (rule && rule.redirect) {
+                const { redirect } = rule;
+                const contentType = redirects.getContentType(redirect);
+                const content = redirects.getContent(redirect);
+                // FIXME [maximtop]
+                //  - if contentType doesn't contain base64 than convert content to base64 string
+                //  - check that all redirect sources work as expected
+                return `data:${contentType},${content}`;
+            }
+            return null;
+        }
+
+        function getRedirectUrl(requestId) {
+            const requestContext = adguard.requestContextStorage.get(requestId);
+            if (!requestContext) {
+                return false;
+            }
+
+            const {
+                tab,
+                requestUrl,
+                referrerUrl,
+                requestType,
+            } = requestContext;
+
+            const redirectRule = adguard.webRequestService.getRedirectRules(
+                tab,
+                requestUrl,
+                referrerUrl,
+                requestType
+            );
+
+            if (!redirectRule) {
+                return null;
+            }
+            const redirectUrl = buildRedirectUrl(redirectRule);
+            if (redirectUrl) {
+                return redirectUrl;
             }
             return null;
         }
 
         return {
             setRedirectSources,
-            getSource,
+            getSource: getSourceContent,
+            getRedirectUrl,
         };
     })();
+
+
+    api.RedirectFilter = RedirectFilter;
+    api.RedirectFilterService = RedirectFilterService;
 })(adguard, adguard.rules);

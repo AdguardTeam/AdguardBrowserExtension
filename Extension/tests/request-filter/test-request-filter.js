@@ -247,9 +247,9 @@ QUnit.test('Redirect rules', (assert) => {
     const redirectRule = new adguard.rules.UrlFilterRule('example.org/ads.js$script,redirect=noopjs', 0);
     const blockRedirectRule = new adguard.rules.UrlFilterRule('||example.org/*.png$image,redirect=1x1-transparent.gif', 0);
     requestFilter.addRules([redirectRule, blockRedirectRule]);
-    const rule = requestFilter.findRedirectRule('http://example.org/ads.js', 'http://example.org/', adguard.RequestTypes.SCRIPT);
+    const rule = requestFilter.findRedirectRules('http://example.org/ads.js', 'http://example.org/', adguard.RequestTypes.SCRIPT);
     assert.equal(rule.redirect, 'noopjs');
-    const imgRule = requestFilter.findRedirectRule('http://example.org/ad.png', 'http://example.org/', adguard.RequestTypes.IMAGE);
+    const imgRule = requestFilter.findRedirectRules('http://example.org/ad.png', 'http://example.org/', adguard.RequestTypes.IMAGE);
     assert.equal(imgRule.redirect, '1x1-transparent.gif');
 });
 

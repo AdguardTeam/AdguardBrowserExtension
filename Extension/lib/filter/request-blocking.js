@@ -396,6 +396,25 @@ adguard.webRequestService = (function (adguard) {
         return adguard.requestFilter.getReplaceRules(requestUrl, referrerUrl, requestType);
     };
 
+    const getRedirectRules = (tab, requestUrl, referrerUrl, requestType) => {
+        if (adguard.frames.shouldStopRequestProcess(tab)) {
+            // don't process request
+            return null;
+        }
+
+        const whitelistRule = adguard.requestFilter.findWhiteListRule(
+            requestUrl,
+            referrerUrl,
+            adguard.RequestTypes.DOCUMENT
+        );
+
+        if (whitelistRule && whitelistRule.isDocumentWhiteList()) {
+            return null;
+        }
+
+        return adguard.requestFilter.getRedirectRules(requestUrl, referrerUrl, requestType);
+    };
+
     /**
      * Processes HTTP response.
      * It could do the following:
@@ -504,25 +523,27 @@ adguard.webRequestService = (function (adguard) {
             && (canCollectHitStatsForTab(tab) || adguard.filteringLog.isOpen());
     };
 
+
     // EXPOSE
     return {
-        processGetSelectorsAndScripts: processGetSelectorsAndScripts,
-        checkPageScriptWrapperRequest: checkPageScriptWrapperRequest,
-        processShouldCollapse: processShouldCollapse,
-        processShouldCollapseMany: processShouldCollapseMany,
-        isRequestBlockedByRule: isRequestBlockedByRule,
-        isPopupBlockedByRule: isPopupBlockedByRule,
-        getBlockedResponseByRule: getBlockedResponseByRule,
-        getRuleForRequest: getRuleForRequest,
-        getCspRules: getCspRules,
-        getCookieRules: getCookieRules,
-        getContentRules: getContentRules,
-        getReplaceRules: getReplaceRules,
-        processRequestResponse: processRequestResponse,
-        postProcessRequest: postProcessRequest,
-        recordRuleHit: recordRuleHit,
+        processGetSelectorsAndScripts,
+        checkPageScriptWrapperRequest,
+        processShouldCollapse,
+        processShouldCollapseMany,
+        isRequestBlockedByRule,
+        isPopupBlockedByRule,
+        getBlockedResponseByRule,
+        getRuleForRequest,
+        getCspRules,
+        getCookieRules,
+        getContentRules,
+        getReplaceRules,
+        getRedirectRules,
+        processRequestResponse,
+        postProcessRequest,
+        recordRuleHit,
         onRequestBlocked: onRequestBlockedChannel,
-        isCollectingCosmeticRulesHits: isCollectingCosmeticRulesHits,
+        isCollectingCosmeticRulesHits,
     };
 
 })(adguard);

@@ -3865,12 +3865,30 @@ var Redirects = (function () {
 
   var jsYaml$1 = jsYaml;
 
+  /**
+   * RedirectSource
+   * e.g.
+   * {
+   *      title: 1x1-transparent.gif
+   *      comment: http://probablyprogramming.com/2009/03/15/the-tiniest-gif-ever
+   *      contentType: image/gif;base64
+   *      content: R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
+   * }
+   * @typedef {Object} RedirectSource
+   * @property {string} title
+   * @property {string} comment
+   * @property {string} content
+   * @property {string} contentType
+   */
+
   var Redirects =
   /*#__PURE__*/
   function () {
     /**
      * Converts rawYaml into JS object with sources titles used as keys
      * @param rawYaml
+     * @returns {Object<RedirectSource>} - return object with titles in the keys and RedirectSources
+     * in the values
      */
     function Redirects(rawYaml) {
       classCallCheck(this, Redirects);
@@ -3887,16 +3905,49 @@ var Redirects = (function () {
       }
     }
     /**
-     * Returns string representation of source by title
+     * Returns redirect source object
      * @param {string} title
-     * @return {string}
+     * @return {RedirectSource}
      */
 
 
     createClass(Redirects, [{
       key: "getSource",
       value: function getSource(title) {
+        return this.redirects[title];
+      }
+      /**
+       * Returns content of source object by title
+       * @param {string} title
+       * @returns {string}
+       */
+
+    }, {
+      key: "getContent",
+      value: function getContent(title) {
         return this.redirects[title].content;
+      }
+      /**
+       * Returns contentType of source object by title
+       * @param {string} title
+       * @returns {string}
+       */
+
+    }, {
+      key: "getContentType",
+      value: function getContentType(title) {
+        return this.redirects[title].contentType;
+      }
+      /**
+       * Returns comment of source object by title
+       * @param {string} title
+       * @returns {string}
+       */
+
+    }, {
+      key: "getCommentType",
+      value: function getCommentType(title) {
+        return this.redirects[title].comment;
       }
     }]);
 

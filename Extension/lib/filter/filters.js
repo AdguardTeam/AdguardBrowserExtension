@@ -538,10 +538,10 @@
          * @param requestType       Request content type
          * @return                  Matching rules
          */
-        findRedirectRule(requestUrl, documentUrl, requestType) {
+        findRedirectRules(requestUrl, documentUrl, requestType) {
             const documentHost = adguard.utils.url.getHost(documentUrl);
             const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
-            return this.redirectFilter.findRedirectRule(
+            return this.redirectFilter.findRedirectRules(
                 requestUrl,
                 documentHost,
                 thirdParty,
