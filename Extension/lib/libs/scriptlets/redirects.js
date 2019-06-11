@@ -3866,7 +3866,7 @@ var Redirects = (function () {
   var jsYaml$1 = jsYaml;
 
   /**
-   * RedirectSource
+   * Redirect - object used to redirect some requests
    * e.g.
    * {
    *      title: 1x1-transparent.gif
@@ -3874,7 +3874,7 @@ var Redirects = (function () {
    *      contentType: image/gif;base64
    *      content: R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
    * }
-   * @typedef {Object} RedirectSource
+   * @typedef {Object} Redirect
    * @property {string} title
    * @property {string} comment
    * @property {string} content
@@ -3887,7 +3887,7 @@ var Redirects = (function () {
     /**
      * Converts rawYaml into JS object with sources titles used as keys
      * @param rawYaml
-     * @returns {Object<RedirectSource>} - return object with titles in the keys and RedirectSources
+     * @returns {Object<Redirect>} - return object with titles in the keys and RedirectSources
      * in the values
      */
     function Redirects(rawYaml) {
@@ -3907,47 +3907,78 @@ var Redirects = (function () {
     /**
      * Returns redirect source object
      * @param {string} title
-     * @return {RedirectSource}
+     * @return {Redirect}
      */
 
 
     createClass(Redirects, [{
-      key: "getSource",
-      value: function getSource(title) {
-        return this.redirects[title];
+      key: "getRedirect",
+      value: function getRedirect(title) {
+        if (Object.prototype.hasOwnProperty.call(this.redirects, title)) {
+          return this.redirects[title];
+        } // look title among aliases
+
+
+        return Object.keys(this.redirects).find(function (redirect) {
+          var aliases = redirect.aliases;
+
+          if (!aliases) {
+            return false;
+          }
+
+          return aliases.includes(title);
+        });
       }
       /**
        * Returns content of source object by title
        * @param {string} title
-       * @returns {string}
+       * @returns {string|null}
        */
 
     }, {
       key: "getContent",
       value: function getContent(title) {
-        return this.redirects[title].content;
+        var redirect = this.getRedirect(title);
+
+        if (redirect) {
+          return redirect.content;
+        }
+
+        return null;
       }
       /**
        * Returns contentType of source object by title
        * @param {string} title
-       * @returns {string}
+       * @returns {string|null}
        */
 
     }, {
       key: "getContentType",
       value: function getContentType(title) {
-        return this.redirects[title].contentType;
+        var redirect = this.getRedirect(title);
+
+        if (redirect) {
+          return redirect.contentType;
+        }
+
+        return null;
       }
       /**
        * Returns comment of source object by title
        * @param {string} title
-       * @returns {string}
+       * @returns {string|null}µ
        */
 
     }, {
-      key: "getCommentType",
-      value: function getCommentType(title) {
-        return this.redirects[title].comment;
+      key: "getComment",
+      value: function getComment(title) {
+        var redirect = this.getRedirect(title);
+
+        if (redirect) {
+          return redirect.contentType;
+        }
+
+        return null;
       }
     }]);
 

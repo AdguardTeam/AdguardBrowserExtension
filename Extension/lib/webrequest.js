@@ -117,6 +117,7 @@
         // Record request for other types
         adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, originUrl, requestType, tab);
 
+        // TODO [maximtop] !!!FIX redirect rule should be inside adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl,s requestType);
         const redirectUrl = adguard.rules.RedirectFilterService.getRedirectUrl(requestId);
         if (redirectUrl) {
             return { redirectUrl };

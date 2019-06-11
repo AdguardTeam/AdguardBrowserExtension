@@ -139,7 +139,7 @@
                 const contentType = redirects.getContentType(redirect);
                 const content = redirects.getContent(redirect);
                 // FIXME [maximtop]
-                //  - if contentType doesn't contain base64 than convert content to base64 string
+                //  - if contentType doesn't contain base64 then convert content to base64 string
                 //  - check that all redirect sources work as expected
                 return `data:${contentType},${content}`;
             }
