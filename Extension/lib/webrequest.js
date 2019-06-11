@@ -57,7 +57,7 @@
      * Process request
      *
      * @param {RequestDetails} requestDetails
-     * @returns {boolean} False if request must be blocked
+     * @returns {boolean|{Object}} False if request must be blocked, object if url was redirected
      */
     function onBeforeRequest(requestDetails) {
         const tab = requestDetails.tab;
@@ -79,6 +79,8 @@
 
             // Record request context for the main frame
             adguard.requestContextStorage.record(requestId, requestUrl, requestUrl, originUrl, requestType, tab);
+
+            // TODO [maximtop] would redirect rules work with document requests?
 
             // Strip tracking parameters
             const cleansedUrl = adguard.stealthService.removeTrackersFromUrl(requestId);
@@ -114,6 +116,11 @@
 
         // Record request for other types
         adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, originUrl, requestType, tab);
+
+        const redirectUrl = adguard.rules.RedirectFilterService.getRedirectUrl(requestId);
+        if (redirectUrl) {
+            return { redirectUrl };
+        }
 
         // Strip tracking parameters
         const cleansedUrl = adguard.stealthService.removeTrackersFromUrl(requestId);
