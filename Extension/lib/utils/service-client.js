@@ -123,7 +123,7 @@ adguard.backend = (function (adguard) {
         },
         // Path to the redirect sources
         get redirectSourcesFile() {
-            return 'lib/libs/redirects1.yml';
+            return 'lib/libs/redirects.yml';
         },
         // Array of filter identifiers, that have local file with rules. Range from 1 to 14 by default
         get localFilterIds() {
@@ -310,77 +310,91 @@ adguard.backend = (function (adguard) {
         FilterDownloader.download(url, FilterCompilerConditionsConstants).then(success, error);
     };
 
+    const createError = (message, url, response) => {
+        const errorMessage = `
+        error:                    ${message}
+        requested url:            ${url}
+        request status text:      ${response.statusText}`;
+        return new Error(errorMessage);
+    };
+
     /**
      * Loads filter groups metadata
      */
-    const loadLocalFiltersMetadata = function loadLocalFiltersMetadata() {
-        return new Promise((resolve, reject) => {
-            const success = function (response) {
-                if (response && response.responseText) {
-                    const metadata = parseJson(response.responseText);
-                    if (!metadata) {
-                        reject(response, 'invalid response');
-                        return;
-                    }
-                    resolve(metadata);
-                } else {
-                    reject(response, 'empty response'); // TODO [maximtop] correctly handle errors
+    const loadLocalFiltersMetadata = () => new Promise((resolve, reject) => {
+        const url = adguard.getURL(`${settings.localFiltersFolder}/filters.json`);
+        const success = function (response) {
+            if (response && response.responseText) {
+                const metadata = parseJson(response.responseText);
+                if (!metadata) {
+                    reject(createError('invalid response', url, response));
+                    return;
                 }
-            };
+                resolve(metadata);
+            } else {
+                reject(createError('empty response', url, response));
+            }
+        };
 
-            const url = adguard.getURL(`${settings.localFiltersFolder}/filters.json`);
-            executeRequestAsync(url, 'application/json', success, reject);
-        });
+        const error = (request, ex) => {
+            reject(createError(ex.message, url, request));
+        };
 
-
-    };
+        executeRequestAsync(url, 'application/json', success, error);
+    });
 
     /**
      * Loads filter groups metadata from local file
      * @returns {Promise}
      */
-    const loadLocalFiltersI18Metadata = function loadLocalFiltersI18Metadata() {
-        return new Promise((resolve, reject) => {
-            const success = function (response) {
-                if (response && response.responseText) {
-                    const metadata = parseJson(response.responseText);
-                    if (!metadata) {
-                        reject(response, 'invalid response');
-                        return;
-                    }
-                    resolve(metadata);
-                } else {
-                    reject(response, 'empty response'); // TODO [maximtop] correctly handle errors
+    const loadLocalFiltersI18Metadata = () => new Promise((resolve, reject) => {
+        const url = adguard.getURL(`${settings.localFiltersFolder}/filters_i18n.json`);
+        const success = function (response) {
+            if (response && response.responseText) {
+                const metadata = parseJson(response.responseText);
+                if (!metadata) {
+                    reject(createError('invalid response', url, response));
+                    return;
                 }
-            };
+                resolve(metadata);
+            } else {
+                reject(createError('empty response', url, response));
+            }
+        };
 
-            const url = adguard.getURL(`${settings.localFiltersFolder}/filters_i18n.json`);
-            executeRequestAsync(url, 'application/json', success, reject);
-        });
-    };
+        const error = (request, ex) => {
+            reject(createError(ex.message, url, request));
+        };
+
+        executeRequestAsync(url, 'application/json', success, error);
+    });
 
     /**
      * Loads script rules from local file
      * @returns {Promise}
      */
-    const loadLocalScriptRules = function loadLocalScriptRules() {
-        return new Promise((resolve, reject) => {
-            const success = (response) => {
-                if (response && response.responseText) {
-                    const metadata = parseJson(response.responseText);
-                    if (!metadata) {
-                        reject(response, 'invalid response');
-                        return;
-                    }
-                    resolve(metadata);
-                } else {
-                    reject(response, 'empty response'); // TODO [maximtop] correctly handle errors
+    const loadLocalScriptRules = () => new Promise((resolve, reject) => {
+        const url = adguard.getURL(`${settings.localFiltersFolder}/local_script_rules.json`);
+
+        const success = (response) => {
+            if (response && response.responseText) {
+                const metadata = parseJson(response.responseText);
+                if (!metadata) {
+                    reject(createError('invalid response', url, response));
+                    return;
                 }
-            };
-            const url = adguard.getURL(`${settings.localFiltersFolder}/local_script_rules.json`);
-            executeRequestAsync(url, 'application/json', success, reject);
-        });
-    };
+                resolve(metadata);
+            } else {
+                reject(createError('empty response', url, response));
+            }
+        };
+
+        const error = (request, ex) => {
+            reject(createError(ex.message, url, request));
+        };
+
+        executeRequestAsync(url, 'application/json', success, error);
+    });
 
     /**
      * Loads redirect sources from local file
@@ -393,14 +407,12 @@ adguard.backend = (function (adguard) {
             if (response && response.responseText) {
                 resolve(response.responseText);
             } else {
-                reject(new Error(`Empty response while making loadRedirectSources request to "${url}"`));
+                reject(createError('empty response', url, response));
             }
         };
 
         const error = (request, ex) => {
-            reject(new Error(`Error while making loadRedirectSources request to ${url};
-                                \nStatus: ${request.statusText};
-                                \nError: ${ex.message}`));
+            reject(createError(ex.message, url, request));
         };
 
         executeRequestAsync(url, 'application/x-yaml', success, error);
