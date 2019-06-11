@@ -276,7 +276,7 @@ adguard.webRequestService = (function (adguard) {
     var getRuleForRequest = function (tab, requestUrl, referrerUrl, requestType) {
 
         if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab)) {
-            //don't process request
+            // don't process request
             return null;
         }
         let whitelistRule;

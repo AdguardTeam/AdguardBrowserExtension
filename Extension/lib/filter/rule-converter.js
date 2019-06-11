@@ -248,6 +248,7 @@
         if (uboCssStyleRule) {
             return uboCssStyleRule;
         }
+        // TODO [maximtop] convert redirect rules
         return rule;
     }
 
