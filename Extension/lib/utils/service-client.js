@@ -123,7 +123,7 @@ adguard.backend = (function (adguard) {
         },
         // Path to the redirect sources
         get redirectSourcesFile() {
-            return 'lib/libs/redirects.yml';
+            return 'lib/libs/scriptlets/redirects.yml';
         },
         // Array of filter identifiers, that have local file with rules. Range from 1 to 14 by default
         get localFilterIds() {
