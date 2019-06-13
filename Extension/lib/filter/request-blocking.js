@@ -415,6 +415,10 @@ adguard.webRequestService = (function (adguard) {
         return adguard.requestFilter.getRedirectRules(requestUrl, referrerUrl, requestType);
     };
 
+    const getRedirectResponseByRule = function (redirectRule) {
+        return adguard.rules.RedirectFilterService.buildRedirectUrl(redirectRule);
+    };
+
     /**
      * Processes HTTP response.
      * It could do the following:
@@ -430,7 +434,6 @@ adguard.webRequestService = (function (adguard) {
      * @return {object} Request rule parsed from integration headers or null
      */
     var processRequestResponse = function (tab, requestUrl, referrerUrl, requestType, responseHeaders) {
-
         if (requestType === adguard.RequestTypes.DOCUMENT) {
             // Check headers to detect Adguard application
             if (adguard.integration.isSupported() && // Integration module may be missing
@@ -540,6 +543,7 @@ adguard.webRequestService = (function (adguard) {
         getReplaceRules,
         getRedirectRules,
         processRequestResponse,
+        getRedirectResponseByRule,
         postProcessRequest,
         recordRuleHit,
         onRequestBlocked: onRequestBlockedChannel,
