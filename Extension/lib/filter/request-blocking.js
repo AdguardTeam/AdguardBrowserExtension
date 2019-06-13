@@ -250,16 +250,15 @@ adguard.webRequestService = (function (adguard) {
      * @param requestType Request type
      * @returns {*} Blocked response or null
      */
-    var getBlockedResponseByRule = function (requestRule, requestType) {
-        if (isRequestBlockedByRule(requestRule) &&
+    const getBlockedResponseByRule = function (requestRule, requestType) {
+        if (isRequestBlockedByRule(requestRule)
             // Don't block main_frame request
-            requestType !== adguard.RequestTypes.DOCUMENT) {
-
-            if (requestRule.isEmptyResponse()) {
-                return { redirectUrl: 'data:,' };
-            } else {
-                return { cancel: true };
+            && requestType !== adguard.RequestTypes.DOCUMENT) {
+            if (requestRule.isRedirectRule()) {
+                const redirectUrl = adguard.rules.RedirectFilterService.buildRedirectUrl(requestRule);
+                return { redirectUrl };
             }
+            return { cancel: true };
         }
         return null;
     };

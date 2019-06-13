@@ -237,20 +237,49 @@ QUnit.test("Cookie rules", function (assert) {
     //TODO: Add cases and other tests
 });
 
-// FIXME [maximtop]
-//  - check that wild cards work too "*/ads.js$script,redirect=noopjs"
-//  - think about similar rules: "example.org/ads.js$script,redirect=noopjs" and
-//  "example.org/*.js$script,redirect=noopjs"
-//  - test work with whitelist rules
 QUnit.test('Redirect rules', (assert) => {
     const requestFilter = new adguard.RequestFilter();
     const redirectRule = new adguard.rules.UrlFilterRule('example.org/ads.js$script,redirect=noopjs', 0);
     const blockRedirectRule = new adguard.rules.UrlFilterRule('||example.org/*.png$image,redirect=1x1-transparent.gif', 0);
     requestFilter.addRules([redirectRule, blockRedirectRule]);
-    const rule = requestFilter.findRedirectRule('http://example.org/ads.js', 'http://example.org/', adguard.RequestTypes.SCRIPT);
+    const rule = requestFilter.findRuleForRequest('http://example.org/ads.js', 'http://example.org/', adguard.RequestTypes.SCRIPT);
     assert.equal(rule.redirect, 'noopjs');
-    const imgRule = requestFilter.findRedirectRule('http://example.org/ad.png', 'http://example.org/', adguard.RequestTypes.IMAGE);
+    const imgRule = requestFilter.findRuleForRequest('http://example.org/ad.png', 'http://example.org/', adguard.RequestTypes.IMAGE);
     assert.equal(imgRule.redirect, '1x1-transparent.gif');
+});
+
+QUnit.test('Redirect rules are validated before creation', (assert) => {
+    const invalidTitle = 'space';
+    const validTitle = 'noopjs';
+    const noopJsContent = '(function() {})()';
+    const jsContentType = 'application/javascript';
+    const requestFilter = new adguard.RequestFilter();
+    const yaml = `
+        - title: noopcss
+          aliases:
+            - blank-css
+          contentType: text/css
+          content: ''
+        
+        - title: noopjs
+          aliases:
+            - blank-js
+          contentType: ${jsContentType}
+          content: ${noopJsContent}`;
+    adguard.rules.RedirectFilterService.setRedirectSources(yaml);
+    const validRule = new adguard.rules.UrlFilterRule(`example.org/ads.js$script,redirect=${validTitle}`, 0);
+    const url = adguard.rules.RedirectFilterService.buildRedirectUrl(validRule);
+    const [rawContentType, base64str] = url.split(',');
+    assert.equal(atob(base64str), noopJsContent, 'decoded string should be equal with source');
+
+    const [contentType] = rawContentType.split(';');
+
+    assert.equal(contentType, `data:${jsContentType}`);
+
+    assert.throws(() => {
+        const invalidRule = new adguard.rules.UrlFilterRule(`example.org/ads.js$script,redirect=${invalidTitle}`, 0);
+        requestFilter.addRule(invalidRule);
+    }, new Error(`Unknown redirect source title: ${invalidTitle}`), 'invalid redirect rules should throw error');
 });
 
 QUnit.test('Test object subrequest type', function (assert) {

@@ -22,108 +22,7 @@
 
     let redirects = {};
 
-    /**
-     * Filter for redirect filter rules
-     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1367
-     */
-    function RedirectFilter(rules) {
-        const redirectWhiteFilter = new api.UrlFilterRuleLookupTable();
-        const redirectBlockFilter = new api.UrlFilterRuleLookupTable();
-
-        /**
-         * Add rule to filter
-         * @param rule Rule object
-         */
-        function addRule(rule) {
-            if (rule.whiteListRule) {
-                redirectWhiteFilter.addRule(rule);
-            } else {
-                redirectBlockFilter.addRule(rule);
-            }
-        }
-
-        /**
-         * Add rules to filter
-         * @param rules Collection of rules
-         */
-        function addRules(rules) {
-            rules.forEach((rule) => {
-                addRule(rule);
-            });
-        }
-
-        /**
-         * Removes from filter
-         * @param rule Rule to remove
-         */
-        function removeRule(rule) {
-            if (rule.whiteListRule) {
-                redirectWhiteFilter.removeRule(rule);
-            } else {
-                redirectBlockFilter.removeRule(rule);
-            }
-        }
-
-        /**
-         * All rules in filter
-         *
-         * @returns {*|Array.<T>|string|Buffer}
-         */
-        function getRules() {
-            const rules = redirectBlockFilter.getRules();
-            return rules.concat(redirectWhiteFilter.getRules());
-        }
-
-        /**
-         * Searches for rules matching specified request.
-         *
-         * @param url                   URL
-         * @param documentHost          document host
-         * @param thirdParty            true if request is third-party
-         * @param requestType           request content type
-         * @param genericRulesAllowed   generic rules allowed
-         * @returns             Matching rules
-         */
-        function findRedirectRule(url, documentHost, thirdParty, requestType, genericRulesAllowed) {
-            const blockRule = redirectBlockFilter.findRule(
-                url,
-                documentHost,
-                thirdParty,
-                requestType,
-                genericRulesAllowed
-            );
-            if (!blockRule || blockRule.length === 0) {
-                return null;
-            }
-
-            const whiteRules = redirectWhiteFilter.findRules(
-                url,
-                documentHost,
-                thirdParty,
-                requestType,
-                genericRulesAllowed
-            );
-
-            // TODO [maximtop] improve whitelist rules search
-            if (!whiteRules || whiteRules.length === 0) {
-                return blockRule;
-            }
-        }
-
-        if (rules) {
-            addRules(rules);
-        }
-
-        return {
-            addRules,
-            addRule,
-            removeRule,
-            getRules,
-            findRedirectRule,
-        };
-    }
-
-    const RedirectFilterService = (function RedirectFilterService() {
+    api.RedirectFilterService = (function RedirectFilterService() {
         function setRedirectSources(rawYaml) {
             redirects = new Redirects(rawYaml);
         }
@@ -150,13 +49,14 @@
             return `data:${contentType},${content}`;
         }
 
+        function hasRedirect(title) {
+            return !!redirects.getRedirect(title);
+        }
+
         return {
             setRedirectSources,
             buildRedirectUrl,
+            hasRedirect,
         };
     })();
-
-
-    api.RedirectFilter = RedirectFilter;
-    api.RedirectFilterService = RedirectFilterService;
 })(adguard, adguard.rules);
