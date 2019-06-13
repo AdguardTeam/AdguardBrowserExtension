@@ -238,7 +238,29 @@ QUnit.test("Cookie rules", function (assert) {
 });
 
 QUnit.test('Redirect rules', (assert) => {
+    const invalidTitle = 'space';
+    const validTitle = 'noopjs';
+    const noopJsContent = '(function() {})()';
+    const jsContentType = 'application/javascript';
+
+    const rawYaml = `
+        - title: 1x1-transparent.gif
+          aliases:
+            - 1x1-transparent-gif
+          comment: 'http://probablyprogramming.com/2009/03/15/the-tiniest-gif-ever'
+          contentType: image/gif;base64
+          content: R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
+        
+        - title: noopjs
+          aliases:
+            - blank-js
+          contentType: ${jsContentType}
+          content: ${noopJsContent}`;
+
+    adguard.rules.RedirectFilterService.setRedirectSources(rawYaml);
     const requestFilter = new adguard.RequestFilter();
+
+    // Test rules creation
     const redirectRule = new adguard.rules.UrlFilterRule('example.org/ads.js$script,redirect=noopjs', 0);
     const blockRedirectRule = new adguard.rules.UrlFilterRule('||example.org/*.png$image,redirect=1x1-transparent.gif', 0);
     requestFilter.addRules([redirectRule, blockRedirectRule]);
@@ -246,36 +268,16 @@ QUnit.test('Redirect rules', (assert) => {
     assert.equal(rule.redirect, 'noopjs');
     const imgRule = requestFilter.findRuleForRequest('http://example.org/ad.png', 'http://example.org/', adguard.RequestTypes.IMAGE);
     assert.equal(imgRule.redirect, '1x1-transparent.gif');
-});
 
-QUnit.test('Redirect rules are validated before creation', (assert) => {
-    const invalidTitle = 'space';
-    const validTitle = 'noopjs';
-    const noopJsContent = '(function() {})()';
-    const jsContentType = 'application/javascript';
-    const requestFilter = new adguard.RequestFilter();
-    const yaml = `
-        - title: noopcss
-          aliases:
-            - blank-css
-          contentType: text/css
-          content: ''
-        
-        - title: noopjs
-          aliases:
-            - blank-js
-          contentType: ${jsContentType}
-          content: ${noopJsContent}`;
-    adguard.rules.RedirectFilterService.setRedirectSources(yaml);
+    // Test that rule correct url has been build
     const validRule = new adguard.rules.UrlFilterRule(`example.org/ads.js$script,redirect=${validTitle}`, 0);
     const url = adguard.rules.RedirectFilterService.buildRedirectUrl(validRule);
     const [rawContentType, base64str] = url.split(',');
     assert.equal(atob(base64str), noopJsContent, 'decoded string should be equal with source');
-
     const [contentType] = rawContentType.split(';');
-
     assert.equal(contentType, `data:${jsContentType}`);
 
+    // Test that rules with invalid redirect option throw error
     assert.throws(() => {
         const invalidRule = new adguard.rules.UrlFilterRule(`example.org/ads.js$script,redirect=${invalidTitle}`, 0);
         requestFilter.addRule(invalidRule);
