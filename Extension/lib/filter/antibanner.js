@@ -1213,7 +1213,7 @@ adguard.requestFilter = (function (adguard) {
     };
 
     const getRedirectRules = function (requestUrl, referrer, requestType) {
-        return getRequestFilter().findRedirectRules(requestUrl, referrer, requestType);
+        return getRequestFilter().findRedirectRule(requestUrl, referrer, requestType);
     };
 
     const getReplaceRules = function (requestUrl, referrer, requestType) {

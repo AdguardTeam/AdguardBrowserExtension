@@ -396,10 +396,6 @@ adguard.webRequestService = (function (adguard) {
         return adguard.requestFilter.getReplaceRules(requestUrl, referrerUrl, requestType);
     };
 
-    const getRedirectResponseByRule = function (redirectRule) {
-        return adguard.rules.RedirectFilterService.buildRedirectUrl(redirectRule);
-    };
-
     /**
      * Processes HTTP response.
      * It could do the following:
@@ -523,7 +519,6 @@ adguard.webRequestService = (function (adguard) {
         getContentRules,
         getReplaceRules,
         processRequestResponse,
-        getRedirectResponseByRule,
         postProcessRequest,
         recordRuleHit,
         onRequestBlocked: onRequestBlockedChannel,
