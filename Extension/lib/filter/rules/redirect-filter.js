@@ -77,21 +77,22 @@
         /**
          * Searches for rules matching specified request.
          *
-         * @param url           URL
-         * @param documentHost  Document Host
-         * @param thirdParty    true if request is third-party
-         * @param requestType   Request content type
+         * @param url                   URL
+         * @param documentHost          document host
+         * @param thirdParty            true if request is third-party
+         * @param requestType           request content type
+         * @param genericRulesAllowed   generic rules allowed
          * @returns             Matching rules
          */
-        function findRedirectRules(url, documentHost, thirdParty, requestType, genericRulesAllowed) {
-            const blockRules = redirectBlockFilter.findRule(
+        function findRedirectRule(url, documentHost, thirdParty, requestType, genericRulesAllowed) {
+            const blockRule = redirectBlockFilter.findRule(
                 url,
                 documentHost,
                 thirdParty,
                 requestType,
                 genericRulesAllowed
             );
-            if (!blockRules || blockRules.length === 0) {
+            if (!blockRule || blockRule.length === 0) {
                 return null;
             }
 
@@ -105,7 +106,7 @@
 
             // TODO [maximtop] improve whitelist rules search
             if (!whiteRules || whiteRules.length === 0) {
-                return blockRules;
+                return blockRule;
             }
         }
 
@@ -118,7 +119,7 @@
             addRule,
             removeRule,
             getRules,
-            findRedirectRules,
+            findRedirectRule,
         };
     }
 
@@ -135,18 +136,17 @@
             const { redirect: redirectTitle } = rule;
             const redirectSource = redirects.getRedirect(redirectTitle);
             if (!redirectSource) {
-                adguard.console.debug(`There is no redirect source with title ${redirectTitle}`);
+                adguard.console.debug(`There is no redirect source with title: "${redirectTitle}"`);
+                return null;
             }
             let { content, contentType } = redirectSource;
             // if contentType does not include "base64" string we convert it to base64
-            const base64 = 'base64';
-            if (!contentType.includes(base64)) {
+            const BASE_64 = 'base64';
+            if (!contentType.includes(BASE_64)) {
                 content = window.btoa(content);
-                contentType = `${contentType};${base64}`;
+                contentType = `${contentType};${BASE_64}`;
             }
 
-            // FIXME [maximtop]
-            //  - check that all redirect sources work as expected
             return `data:${contentType},${content}`;
         }
 

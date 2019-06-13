@@ -80,8 +80,6 @@
             // Record request context for the main frame
             adguard.requestContextStorage.record(requestId, requestUrl, requestUrl, originUrl, requestType, tab);
 
-            // TODO [maximtop] would redirect rules work with document requests?
-
             // Strip tracking parameters
             const cleansedUrl = adguard.stealthService.removeTrackersFromUrl(requestId);
             if (cleansedUrl) {
@@ -143,13 +141,16 @@
         }
 
         if (requestRule && requestRule.isRedirectRule()) {
-            const redirectUrl = adguard.webRequestService.getRedirectResponseByRule(requestRule);
+            const redirectUrl = adguard.rules.RedirectFilterService.buildRedirectUrl(requestRule);
             if (redirectUrl) {
                 return { redirectUrl }; // https://developer.chrome.com/extensions/webRequest#property-BlockingResponse-redirectUrl
             }
         }
 
-        const response = adguard.webRequestService.getBlockedResponseByRule(requestRule, requestType);
+        const response = adguard.webRequestService.getBlockedResponseByRule(
+            requestRule,
+            requestType
+        );
 
         if (response && response.cancel) {
             collapseElement(tabId, requestFrameId, requestUrl, referrerUrl, requestType);
