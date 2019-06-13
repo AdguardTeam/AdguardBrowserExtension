@@ -224,6 +224,23 @@
     }
 
     /**
+     * Converts abp rule into ag rule
+     * e.g.
+     * from:    "||example.org^$rewrite=abp-resource:blank-mp3"
+     * to:      "||example.org^$redirect:blank-mp3"
+     * @param {string} rule
+     * @returns {string|null}
+     */
+    function convertAbpRedirectRule(rule) {
+        const ABP_REDIRECT_KEYWORD = 'rewrite=abp-resource:';
+        const AG_REDIRECT_KEYWORD = 'redirect=';
+        if (!rule.includes(ABP_REDIRECT_KEYWORD)) {
+            return null;
+        }
+        return rule.replace(ABP_REDIRECT_KEYWORD, AG_REDIRECT_KEYWORD);
+    }
+
+    /**
      * Checks if rule text is comment e.g. !!example.org##+js(set-constant.js, test, false)
      * @param {string} rule
      * @return {boolean}
@@ -248,7 +265,13 @@
         if (uboCssStyleRule) {
             return uboCssStyleRule;
         }
-        // TODO [maximtop] convert redirect rules
+
+        // Convert abp redirect rule
+        const abpRedirectRule = convertAbpRedirectRule(rule);
+        if (abpRedirectRule) {
+            return abpRedirectRule;
+        }
+
         return rule;
     }
 
