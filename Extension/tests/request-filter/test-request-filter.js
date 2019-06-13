@@ -729,3 +729,17 @@ QUnit.test('Comments in rule', (assert) => {
     rule = adguard.rules.builder.createRule('! ain.ua#$#body - удаление брендированного фона, отступа сверху', 0);
     assert.notOk(rule, 'rule with comment mask should return null');
 });
+
+QUnit.test('Converts ABP rules into AG compatible rule', (assert) => {
+    let actual = adguard.rules.ruleConverter.convertRule('||e9377f.com^$rewrite=abp-resource:blank-mp3,domain=eastday.com');
+    let expected = '||e9377f.com^$redirect=blank-mp3,domain=eastday.com';
+    assert.equal(actual, expected);
+
+    actual = adguard.rules.ruleConverter.convertRule('||lcok.net/2019/ad/$domain=huaren.tv,rewrite=abp-resource:blank-mp3');
+    expected = '||lcok.net/2019/ad/$domain=huaren.tv,redirect=blank-mp3';
+    assert.equal(actual, expected);
+
+    actual = adguard.rules.ruleConverter.convertRule('||lcok.net/2019/ad/$domain=huaren.tv');
+    expected = '||lcok.net/2019/ad/$domain=huaren.tv';
+    assert.equal(actual, expected);
+});

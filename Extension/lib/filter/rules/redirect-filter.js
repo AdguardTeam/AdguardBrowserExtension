@@ -132,9 +132,12 @@
                 return null;
             }
 
-            const { redirect } = rule;
-            let contentType = redirects.getContentType(redirect);
-            let content = redirects.getContent(redirect);
+            const { redirect: redirectTitle } = rule;
+            const redirectSource = redirects.getRedirect(redirectTitle);
+            if (!redirectSource) {
+                adguard.console.debug(`There is no redirect source with title ${redirectTitle}`);
+            }
+            let { content, contentType } = redirectSource;
             // if contentType does not include "base64" string we convert it to base64
             const base64 = 'base64';
             if (!contentType.includes(base64)) {

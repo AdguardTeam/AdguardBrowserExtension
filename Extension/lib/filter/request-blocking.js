@@ -396,25 +396,6 @@ adguard.webRequestService = (function (adguard) {
         return adguard.requestFilter.getReplaceRules(requestUrl, referrerUrl, requestType);
     };
 
-    const getRedirectRules = (tab, requestUrl, referrerUrl, requestType) => {
-        if (adguard.frames.shouldStopRequestProcess(tab)) {
-            // don't process request
-            return null;
-        }
-
-        const whitelistRule = adguard.requestFilter.findWhiteListRule(
-            requestUrl,
-            referrerUrl,
-            adguard.RequestTypes.DOCUMENT
-        );
-
-        if (whitelistRule && whitelistRule.isDocumentWhiteList()) {
-            return null;
-        }
-
-        return adguard.requestFilter.getRedirectRules(requestUrl, referrerUrl, requestType);
-    };
-
     const getRedirectResponseByRule = function (redirectRule) {
         return adguard.rules.RedirectFilterService.buildRedirectUrl(redirectRule);
     };
@@ -541,7 +522,6 @@ adguard.webRequestService = (function (adguard) {
         getCookieRules,
         getContentRules,
         getReplaceRules,
-        getRedirectRules,
         processRequestResponse,
         getRedirectResponseByRule,
         postProcessRequest,
