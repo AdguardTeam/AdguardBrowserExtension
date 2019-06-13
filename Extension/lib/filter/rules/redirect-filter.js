@@ -127,29 +127,28 @@
             redirects = new Redirects(rawYaml);
         }
 
-        function getSourceContent(rule) {
-            if (rule && rule.redirect) {
-                return redirects.getContent(rule.redirect);
-            }
-            return null;
-        }
-
         function buildRedirectUrl(rule) {
-            if (rule && rule.redirect) {
-                const { redirect } = rule;
-                const contentType = redirects.getContentType(redirect);
-                const content = redirects.getContent(redirect);
-                // FIXME [maximtop]
-                //  - if contentType doesn't contain base64 then convert content to base64 string
-                //  - check that all redirect sources work as expected
-                return `data:${contentType},${content}`;
+            if (!(rule && rule.redirect)) {
+                return null;
             }
-            return null;
+
+            const { redirect } = rule;
+            let contentType = redirects.getContentType(redirect);
+            let content = redirects.getContent(redirect);
+            // if contentType does not include "base64" string we convert it to base64
+            const base64 = 'base64';
+            if (!contentType.includes(base64)) {
+                content = window.btoa(content);
+                contentType = `${contentType};${base64}`;
+            }
+
+            // FIXME [maximtop]
+            //  - check that all redirect sources work as expected
+            return `data:${contentType},${content}`;
         }
 
         return {
             setRedirectSources,
-            getSourceContent,
             buildRedirectUrl,
         };
     })();
