@@ -117,23 +117,36 @@
         // Record request for other types
         adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, originUrl, requestType, tab);
 
-        // TODO [maximtop] !!!FIX redirect rule should be inside adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl,s requestType);
-        const redirectUrl = adguard.rules.RedirectFilterService.getRedirectUrl(requestId);
-        if (redirectUrl) {
-            return { redirectUrl };
-        }
-
         // Strip tracking parameters
+        // TODO [maximtop] Is it correct not to look for blocking rules after tracking parameters removed?
         const cleansedUrl = adguard.stealthService.removeTrackersFromUrl(requestId);
         if (cleansedUrl) {
             return { redirectUrl: cleansedUrl };
         }
 
-        let requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
-        requestRule = adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
+        let requestRule = adguard.webRequestService.getRuleForRequest(
+            tab,
+            requestUrl,
+            referrerUrl,
+            requestType
+        );
+        requestRule = adguard.webRequestService.postProcessRequest(
+            tab,
+            requestUrl,
+            referrerUrl,
+            requestType,
+            requestRule
+        );
 
         if (requestRule) {
             adguard.requestContextStorage.update(requestId, { requestRule });
+        }
+
+        if (requestRule && requestRule.redirect) {
+            const redirectUrl = adguard.webRequestService.getRedirectResponseByRule(requestRule);
+            if (redirectUrl) {
+                return { redirectUrl }; // https://developer.chrome.com/extensions/webRequest#property-BlockingResponse-redirectUrl
+            }
         }
 
         const response = adguard.webRequestService.getBlockedResponseByRule(requestRule, requestType);

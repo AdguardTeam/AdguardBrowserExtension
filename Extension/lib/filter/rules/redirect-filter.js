@@ -83,13 +83,13 @@
          * @param requestType   Request content type
          * @returns             Matching rules
          */
-        function findRedirectRules(url, documentHost, thirdParty, requestType) {
+        function findRedirectRules(url, documentHost, thirdParty, requestType, genericRulesAllowed) {
             const blockRules = redirectBlockFilter.findRule(
                 url,
                 documentHost,
                 thirdParty,
                 requestType,
-                true
+                genericRulesAllowed
             );
             if (!blockRules || blockRules.length === 0) {
                 return null;
@@ -99,7 +99,8 @@
                 url,
                 documentHost,
                 thirdParty,
-                requestType
+                requestType,
+                genericRulesAllowed
             );
 
             // TODO [maximtop] improve whitelist rules search
@@ -146,40 +147,10 @@
             return null;
         }
 
-        function getRedirectUrl(requestId) {
-            const requestContext = adguard.requestContextStorage.get(requestId);
-            if (!requestContext) {
-                return false;
-            }
-
-            const {
-                tab,
-                requestUrl,
-                referrerUrl,
-                requestType,
-            } = requestContext;
-
-            const redirectRule = adguard.webRequestService.getRedirectRules(
-                tab,
-                requestUrl,
-                referrerUrl,
-                requestType
-            );
-
-            if (!redirectRule) {
-                return null;
-            }
-            const redirectUrl = buildRedirectUrl(redirectRule);
-            if (redirectUrl) {
-                return redirectUrl;
-            }
-            return null;
-        }
-
         return {
             setRedirectSources,
-            getSource: getSourceContent,
-            getRedirectUrl,
+            getSourceContent,
+            buildRedirectUrl,
         };
     })();
 
