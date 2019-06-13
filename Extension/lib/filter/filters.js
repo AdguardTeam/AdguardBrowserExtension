@@ -128,11 +128,6 @@
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#html-filtering-rules
         this.contentFilter = new adguard.rules.ContentFilter();
 
-        // Filter that applies redirect rules
-        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1367
-        // TODO [maximtop] change link to the source with full description
-        this.redirectFilter = new adguard.rules.RedirectFilter();
-
         // Rules count (includes all types of rules)
         this.rulesCount = 0;
 
@@ -184,8 +179,6 @@
                     this.cspFilter.addRule(rule);
                 } else if (rule.isCookieRule()) {
                     this.cookieFilter.addRule(rule);
-                } else if (rule.isRedirectRule()) {
-                    this.redirectFilter.addRule(rule);
                 } else if (rule.isStealthRule() && !rule.isBadFilter()) {
                     this.stealthFilter.addRule(rule);
                 } else if (rule.isReplaceRule() && !rule.isBadFilter()) {
@@ -230,8 +223,6 @@
                     this.cspFilter.removeRule(rule);
                 } else if (rule.isCookieRule()) {
                     this.cookieFilter.removeRule(rule);
-                } else if (rule.isRedirectRule()) {
-                    this.redirectFilter.removeRule();
                 } else if (rule.isStealthRule()) {
                     this.stealthFilter.removeRule(rule);
                 } else if (rule.isBadFilter()) {
@@ -532,24 +523,6 @@
         },
 
         /**
-         * Searches for redirect rules matching request
-         * @param requestUrl        Request URL
-         * @param documentUrl       Document URL
-         * @param requestType       Request content type
-         * @return                  Matching rules
-         */
-        findRedirectRule(requestUrl, documentUrl, requestType) {
-            const documentHost = adguard.utils.url.getHost(documentUrl);
-            const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
-            return this.redirectFilter.findRedirectRule(
-                requestUrl,
-                documentHost,
-                thirdParty,
-                requestType
-            );
-        },
-
-        /**
          * Checks if exception rule is present for the URL/Referrer pair
          *
          * @param requestUrl    Request URL
@@ -591,19 +564,6 @@
             );
         },
 
-        _checkRedirectList(requestUrl, refHost, requestType, thirdParty, genericRulesAllowed) {
-            if (this.redirectFilter === null || !requestUrl) {
-                return null;
-            }
-            return this.redirectFilter.findRedirectRule(
-                requestUrl,
-                refHost,
-                thirdParty,
-                requestType,
-                genericRulesAllowed
-            );
-        },
-
         /**
          * Searches the rule for request.
          *
@@ -637,27 +597,14 @@
             const urlRulesAllowed = !documentWhiteListRule || !documentWhiteListRule.isUrlBlock();
 
             // STEP 2: Looking for blocking rule, which could be applied to the current request
-            let ruleForRequest;
 
-            // Look for redirect rules
-            ruleForRequest = this._checkRedirectList(
+            const ruleForRequest = this._checkUrlBlockingList(
                 requestUrl,
                 documentHost,
                 requestType,
                 thirdParty,
                 genericRulesAllowed
             );
-
-            // If no redirect rules than look for blocking rules
-            if (!ruleForRequest) {
-                ruleForRequest = this._checkUrlBlockingList(
-                    requestUrl,
-                    documentHost,
-                    requestType,
-                    thirdParty,
-                    genericRulesAllowed
-                );
-            }
 
             // STEP 3: Analyze results, first - basic exception rule
 

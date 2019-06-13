@@ -140,13 +140,6 @@
             adguard.requestContextStorage.update(requestId, { requestRule });
         }
 
-        if (requestRule && requestRule.isRedirectRule()) {
-            const redirectUrl = adguard.rules.RedirectFilterService.buildRedirectUrl(requestRule);
-            if (redirectUrl) {
-                return { redirectUrl }; // https://developer.chrome.com/extensions/webRequest#property-BlockingResponse-redirectUrl
-            }
-        }
-
         const response = adguard.webRequestService.getBlockedResponseByRule(
             requestRule,
             requestType

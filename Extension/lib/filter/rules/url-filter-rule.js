@@ -500,6 +500,11 @@
     };
 
     /**
+     * $redirect modifier
+     * @return $redirect modifier
+     */
+
+    /**
      * $cookie modifier
      * @return {CookieOption} Parsed $cookie modifier
      */
@@ -917,6 +922,11 @@
                     this.cookieOption = new CookieOption(optionValue);
                     break;
                 case UrlFilterRule.REDIRECT_OPTION: {
+                    // In case if redirect source doesn't exists, throw error;
+                    const redirectSource = adguard.rules.RedirectFilterService.hasRedirect(optionValue);
+                    if (!redirectSource) {
+                        throw new Error(`Unknown redirect source title: ${optionValue}`);
+                    }
                     this._setUrlFilterRuleOption(UrlFilterRule.options.REDIRECT, true);
                     this.redirect = optionValue;
                     break;
