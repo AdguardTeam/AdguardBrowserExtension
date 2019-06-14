@@ -265,9 +265,9 @@ QUnit.test('Redirect rules', (assert) => {
     const blockRedirectRule = new adguard.rules.UrlFilterRule('||example.org/*.png$image,redirect=1x1-transparent.gif', 0);
     requestFilter.addRules([redirectRule, blockRedirectRule]);
     const rule = requestFilter.findRuleForRequest('http://example.org/ads.js', 'http://example.org/', adguard.RequestTypes.SCRIPT);
-    assert.equal(rule.redirect, 'noopjs');
+    assert.equal(rule.getRedirect().redirectTitle, 'noopjs');
     const imgRule = requestFilter.findRuleForRequest('http://example.org/ad.png', 'http://example.org/', adguard.RequestTypes.IMAGE);
-    assert.equal(imgRule.redirect, '1x1-transparent.gif');
+    assert.equal(imgRule.getRedirect().redirectTitle, '1x1-transparent.gif');
 
     // Test that rule correct url has been build
     const validRule = new adguard.rules.UrlFilterRule(`example.org/ads.js$script,redirect=${validTitle}`, 0);
@@ -773,5 +773,19 @@ QUnit.test('Converts ABP rules into AG compatible rule', (assert) => {
 
     actual = adguard.rules.ruleConverter.convertRule('||lcok.net/2019/ad/$domain=huaren.tv');
     expected = '||lcok.net/2019/ad/$domain=huaren.tv';
+    assert.equal(actual, expected);
+});
+
+QUnit.test('converts empty and mp4 modifiers into redirect rules', (assert) => {
+    let actual = adguard.rules.ruleConverter.convertRule('/(pagead2)/$domain=vsetv.com,empty,important');
+    let expected = '/(pagead2)/$domain=vsetv.com,redirect=noopjs,important';
+    assert.equal(actual, expected);
+
+    actual = adguard.rules.ruleConverter.convertRule('||fastmap33.com^$empty');
+    expected = '||fastmap33.com^$redirect=noopjs';
+    assert.equal(actual, expected);
+
+    actual = adguard.rules.ruleConverter.convertRule('||anyporn.com/xml^$media,mp4');
+    expected = adguard.rules.ruleConverter.convertRule('||anyporn.com/xml^$media,redirect=noopmp4-1s');
     assert.equal(actual, expected);
 });
