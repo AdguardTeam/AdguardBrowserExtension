@@ -1,7 +1,7 @@
 import gulp from 'gulp';
 
 const copyExternal = () => {
-    const scriptletsDist = 'Extension/lib/libs/scriptlets';
+    const scriptletsDist = 'Extension/lib/filter/rules/scriptlets';
     const scriptletSources = [
         'node_modules/scriptlets/dist/scriptlets.js',
         'node_modules/scriptlets/dist/redirects.yml',

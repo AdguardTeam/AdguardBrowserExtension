@@ -306,6 +306,11 @@
         };
     }
 
+    function RedirectOption(option) {
+        const getRedirectUrl = () => adguard.rules.RedirectFilterService.buildRedirectUrl(option);
+        return { getRedirectUrl, redirectTitle: option };
+    }
+
     /**
      * @typedef CookieOption
      * @type {object}
@@ -501,8 +506,14 @@
 
     /**
      * $redirect modifier
-     * @return $redirect modifier
+     * Learn more about this modifier syntax here:
+     * TODO [maximtop] add link to the description
+     *
+     * @returns parsed $redirect modifier
      */
+    UrlFilterRule.prototype.getRedirect = function () {
+        return this.redirectOption;
+    };
 
     /**
      * $cookie modifier
@@ -928,7 +939,7 @@
                         throw new Error(`Unknown redirect source title: ${optionValue}`);
                     }
                     this._setUrlFilterRuleOption(UrlFilterRule.options.REDIRECT, true);
-                    this.redirect = optionValue;
+                    this.redirectOption = new RedirectOption(optionValue);
                     break;
                 }
                 case UrlFilterRule.REPLACE_OPTION:

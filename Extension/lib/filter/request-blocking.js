@@ -251,14 +251,17 @@ adguard.webRequestService = (function (adguard) {
      * @returns {*} Blocked response or null
      */
     const getBlockedResponseByRule = function (requestRule, requestType) {
-        if (isRequestBlockedByRule(requestRule)
-            // Don't block main_frame request
-            && requestType !== adguard.RequestTypes.DOCUMENT) {
+        if (isRequestBlockedByRule(requestRule)) {
             if (requestRule.isRedirectRule()) {
-                const redirectUrl = adguard.rules.RedirectFilterService.buildRedirectUrl(requestRule);
+                const redirectOption = requestRule.getRedirect();
+                const redirectUrl = redirectOption.getRedirectUrl();
                 return { redirectUrl };
             }
-            return { cancel: true };
+
+            // Don't block main_frame request
+            if (requestType !== adguard.RequestTypes.DOCUMENT) {
+                return { cancel: true };
+            }
         }
         return null;
     };

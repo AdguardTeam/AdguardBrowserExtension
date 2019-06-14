@@ -20,22 +20,21 @@
 (function (adguard, api) {
     'use strict';
 
-    let redirects = {};
+    let redirects;
 
     api.RedirectFilterService = (function RedirectFilterService() {
         function setRedirectSources(rawYaml) {
             redirects = new Redirects(rawYaml);
         }
 
-        function buildRedirectUrl(rule) {
-            if (!(rule && rule.redirect)) {
+        function buildRedirectUrl(title) {
+            if (!title) {
                 return null;
             }
 
-            const { redirect: redirectTitle } = rule;
-            const redirectSource = redirects.getRedirect(redirectTitle);
+            const redirectSource = redirects.getRedirect(title);
             if (!redirectSource) {
-                adguard.console.debug(`There is no redirect source with title: "${redirectTitle}"`);
+                adguard.console.debug(`There is no redirect source with title: "${title}"`);
                 return null;
             }
             let { content, contentType } = redirectSource;
@@ -55,8 +54,8 @@
 
         return {
             setRedirectSources,
-            buildRedirectUrl,
             hasRedirect,
+            buildRedirectUrl,
         };
     })();
 })(adguard, adguard.rules);
