@@ -1212,10 +1212,6 @@ adguard.requestFilter = (function (adguard) {
         return getRequestFilter().findCookieRules(requestUrl, referrer, requestType);
     };
 
-    const getRedirectRules = function (requestUrl, referrer, requestType) {
-        return getRequestFilter().findRedirectRule(requestUrl, referrer, requestType);
-    };
-
     const getReplaceRules = function (requestUrl, referrer, requestType) {
         return getRequestFilter().findReplaceRules(requestUrl, referrer, requestType);
     };
@@ -1242,7 +1238,6 @@ adguard.requestFilter = (function (adguard) {
         getCspRules,
         getCookieRules,
         getReplaceRules,
-        getRedirectRules,
         findStealthWhiteListRule,
         getRequestFilterInfo,
     };

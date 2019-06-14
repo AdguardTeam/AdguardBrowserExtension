@@ -116,7 +116,6 @@
         adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, originUrl, requestType, tab);
 
         // Strip tracking parameters
-        // TODO [maximtop] Is it correct not to look for blocking rules after tracking parameters removed?
         const cleansedUrl = adguard.stealthService.removeTrackersFromUrl(requestId);
         if (cleansedUrl) {
             return { redirectUrl: cleansedUrl };

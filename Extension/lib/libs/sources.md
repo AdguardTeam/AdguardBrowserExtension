@@ -85,3 +85,10 @@ These libs are developed by us from scratch.
 `assistant.embedded.js` build is being used.
 
 
+[//]: # (TODO [maximtop] update scriptlets description before release)
+#### `lib/filter/rules/scriptlets/`
+* v
+* Library source https://
+
+
+

@@ -271,7 +271,8 @@ QUnit.test('Redirect rules', (assert) => {
 
     // Test that rule correct url has been build
     const validRule = new adguard.rules.UrlFilterRule(`example.org/ads.js$script,redirect=${validTitle}`, 0);
-    const url = adguard.rules.RedirectFilterService.buildRedirectUrl(validRule);
+    const redirectOption = validRule.getRedirect();
+    const url = redirectOption.getRedirectUrl();
     const [rawContentType, base64str] = url.split(',');
     assert.equal(atob(base64str), noopJsContent, 'decoded string should be equal with source');
     const [contentType] = rawContentType.split(';');
