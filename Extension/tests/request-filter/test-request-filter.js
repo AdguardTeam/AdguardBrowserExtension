@@ -261,7 +261,7 @@ QUnit.test('Redirect rules', (assert) => {
     const requestFilter = new adguard.RequestFilter();
 
     // Test rules creation
-    const redirectRule = new adguard.rules.UrlFilterRule('example.org/ads.js$script,redirect=noopjs', 0);
+    let redirectRule = new adguard.rules.UrlFilterRule('example.org/ads.js$script,redirect=noopjs', 0);
     const blockRedirectRule = new adguard.rules.UrlFilterRule('||example.org/*.png$image,redirect=1x1-transparent.gif', 0);
     requestFilter.addRules([redirectRule, blockRedirectRule]);
     const rule = requestFilter.findRuleForRequest('http://example.org/ads.js', 'http://example.org/', adguard.RequestTypes.SCRIPT);
@@ -283,6 +283,23 @@ QUnit.test('Redirect rules', (assert) => {
         const invalidRule = new adguard.rules.UrlFilterRule(`example.org/ads.js$script,redirect=${invalidTitle}`, 0);
         requestFilter.addRule(invalidRule);
     }, new Error(`Unknown redirect source title: ${invalidTitle}`), 'invalid redirect rules should throw error');
+
+    // Test that redirect rules has higher priority than basic rules
+    redirectRule = new adguard.rules.UrlFilterRule('||8s8.eu^*fa.js$script,redirect=noopjs');
+    const basicRule = new adguard.rules.UrlFilterRule('||8s8.eu^*fa.js$script');
+
+    assert.ok(redirectRule.isFiltered('http://8s8.eu/bla-fa.js', true, adguard.RequestTypes.SCRIPT));
+    // assert.ok(redirectRule.isPermitted('test.com'));
+    assert.ok(basicRule.isFiltered('http://8s8.eu/bla-fa.js', true, adguard.RequestTypes.SCRIPT));
+    // assert.ok(basicRule.isPermitted('http://example.com'));
+
+    const urlFilter = new adguard.rules.UrlFilter();
+    urlFilter.addRule(basicRule);
+    urlFilter.addRule(redirectRule);
+
+    const result = urlFilter.isFiltered('http://8s8.eu/bla-fa.js', 'test.com', adguard.RequestTypes.SCRIPT, true);
+    assert.ok(result !== null);
+    assert.equal(result.ruleText, redirectRule.ruleText);
 });
 
 QUnit.test('Test object subrequest type', function (assert) {

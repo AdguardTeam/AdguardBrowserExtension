@@ -585,7 +585,7 @@
      * @param requestUrl            Request url
      * @param thirdParty            true if request is third-party
      * @param requestType           Request type (one of adguard.RequestTypes)
-     * @return true if request url matches this rule
+     * @return {boolean} true if request url matches this rule
      */
     UrlFilterRule.prototype.isFiltered = function (requestUrl, thirdParty, requestType) {
 
@@ -609,9 +609,9 @@
             return false;
         }
 
-        let regexp = this.getUrlRegExp();
+        const regexp = this.getUrlRegExp();
         if (!regexp) {
-            //malformed regexp rule
+            // malformed regexp rule
             return false;
         }
         return regexp.test(requestUrl);

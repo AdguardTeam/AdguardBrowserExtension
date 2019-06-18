@@ -25,7 +25,6 @@
      */
     const UrlFilter = function (rules, badFilterRules) {
         this.basicRulesTable = new api.UrlFilterRuleLookupTable();
-        this.importantRulesTable = new api.UrlFilterRuleLookupTable();
         this.badFilterRules = badFilterRules;
 
         if (rules) {
@@ -43,11 +42,7 @@
          * @param rule Rule object
          */
         addRule(rule) {
-            if (rule.isImportant) {
-                this.importantRulesTable.addRule(rule);
-            } else {
-                this.basicRulesTable.addRule(rule);
-            }
+            this.basicRulesTable.addRule(rule);
         },
 
         /**
@@ -56,11 +51,7 @@
          * @param rule Rule to remove
          */
         removeRule(rule) {
-            if (rule.isImportant) {
-                this.importantRulesTable.removeRule(rule);
-            } else {
-                this.basicRulesTable.removeRule(rule);
-            }
+            this.basicRulesTable.removeRule(rule);
         },
 
         /**
@@ -74,30 +65,19 @@
          * @return matching rule or null if no match found
          */
         isFiltered(url, documentHost, requestType, thirdParty, skipGenericRules) {
-            // First looking for the rule marked with $important modifier
-            let rule = this.importantRulesTable.findRule(url,
+            return this.basicRulesTable.findRule(url,
                 documentHost,
                 thirdParty,
                 requestType,
                 !skipGenericRules,
                 this.badFilterRules);
-            if (!rule) {
-                rule = this.basicRulesTable.findRule(url,
-                    documentHost,
-                    thirdParty,
-                    requestType,
-                    !skipGenericRules,
-                    this.badFilterRules);
-            }
-            return rule;
         },
 
         /**
          * Returns the array of loaded rules
          */
         getRules() {
-            const rules = this.basicRulesTable.getRules();
-            return rules.concat(this.importantRulesTable.getRules());
+            return this.basicRulesTable.getRules();
         },
     };
 
