@@ -735,13 +735,13 @@
         hit(source, "Document tried to create an RTCPeerConnection: ".concat(config));
       };
 
-      var noop$$1 = function noop$$1() {};
+      var noop = function noop() {};
 
       rtcReplacement.prototype = {
-        close: noop$$1,
-        createDataChannel: noop$$1,
-        createOffer: noop$$1,
-        setRemoteDescription: noop$$1
+        close: noop,
+        createDataChannel: noop,
+        createOffer: noop,
+        setRemoteDescription: noop
       };
       var rtc = window[propertyName];
       window[propertyName] = rtcReplacement;
@@ -749,8 +749,8 @@
       if (rtc.prototype) {
         rtc.prototype.createDataChannel = function (a, b) {
           return {
-            close: noop$$1,
-            send: noop$$1
+            close: noop,
+            send: noop
           };
         }.bind(null);
       }
@@ -1112,6 +1112,259 @@
     preventAdfly.injections = [setPropertyAccess, hit];
 
     /**
+     * Call debugger on property reading
+     *
+     * @param {Source} source
+     * @param {string} property property name
+     */
+
+    function debugOnPropertyRead(source, property) {
+      if (!property) {
+        return;
+      }
+
+      var rid = randomId();
+
+      var abort = function abort() {
+        hit(source); // eslint-disable-next-line no-debugger
+
+        debugger;
+      };
+
+      var setChainPropAccess = function setChainPropAccess(owner, property) {
+        var chainInfo = getPropertyInChain(owner, property);
+        var base = chainInfo.base;
+        var prop = chainInfo.prop,
+            chain = chainInfo.chain;
+
+        if (chain) {
+          var setter = function setter(a) {
+            base = a;
+
+            if (a instanceof Object) {
+              setChainPropAccess(a, chain);
+            }
+          };
+
+          Object.defineProperty(owner, prop, {
+            get: function get() {
+              return base;
+            },
+            set: setter
+          });
+          return;
+        }
+
+        setPropertyAccess(base, prop, {
+          get: abort,
+          set: function set() {}
+        });
+      };
+
+      setChainPropAccess(window, property);
+      window.onerror = createOnErrorHandler(rid).bind();
+    }
+    debugOnPropertyRead.names = ['debug-on-property-read'];
+    debugOnPropertyRead.injections = [randomId, setPropertyAccess, getPropertyInChain, createOnErrorHandler, hit];
+
+    /**
+     * Call debugger on property writing
+     *
+     * @param {Source} source
+     * @param {string} property propery name
+     */
+
+    function debugOnPropertyWrite(source, property) {
+      if (!property) {
+        return;
+      }
+
+      var rid = randomId();
+
+      var abort = function abort() {
+        hit(source); // eslint-disable-next-line no-debugger
+
+        debugger;
+      };
+
+      var setChainPropAccess = function setChainPropAccess(owner, property) {
+        var chainInfo = getPropertyInChain(owner, property);
+        var base = chainInfo.base;
+        var prop = chainInfo.prop,
+            chain = chainInfo.chain;
+
+        if (chain) {
+          var setter = function setter(a) {
+            base = a;
+
+            if (a instanceof Object) {
+              setChainPropAccess(a, chain);
+            }
+          };
+
+          Object.defineProperty(owner, prop, {
+            get: function get() {
+              return base;
+            },
+            set: setter
+          });
+          return;
+        }
+
+        setPropertyAccess(base, prop, {
+          set: abort
+        });
+      };
+
+      setChainPropAccess(window, property);
+      window.onerror = createOnErrorHandler(rid).bind();
+    }
+    debugOnPropertyWrite.names = ['debug-on-property-write'];
+    debugOnPropertyWrite.injections = [randomId, setPropertyAccess, getPropertyInChain, createOnErrorHandler, hit];
+
+    /* eslint-disable no-new-func */
+    function debugCurrentInlineScript(source, property) {
+      var search = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+      var regex = search ? toRegExp(search) : null;
+      var rid = randomId();
+
+      var getCurrentScript = function getCurrentScript() {
+        if (!document.currentScript) {
+          var scripts = document.getElementsByTagName('script');
+          return scripts[scripts.length - 1];
+        }
+
+        return document.currentScript;
+      };
+
+      var ourScript = getCurrentScript();
+
+      var abort = function abort() {
+        var scriptEl = getCurrentScript();
+
+        if (scriptEl instanceof HTMLScriptElement && scriptEl.textContent.length > 0 && scriptEl !== ourScript && (!regex || regex.test(scriptEl.textContent))) {
+          hit(source); // eslint-disable-next-line no-debugger
+
+          debugger;
+        }
+      };
+
+      var setChainPropAccess = function setChainPropAccess(owner, property) {
+        var chainInfo = getPropertyInChain(owner, property);
+        var base = chainInfo.base;
+        var prop = chainInfo.prop,
+            chain = chainInfo.chain;
+
+        if (chain) {
+          var setter = function setter(a) {
+            base = a;
+
+            if (a instanceof Object) {
+              setChainPropAccess(a, chain);
+            }
+          };
+
+          Object.defineProperty(owner, prop, {
+            get: function get() {
+              return base;
+            },
+            set: setter
+          });
+          return;
+        }
+
+        var currentValue = base[prop];
+        setPropertyAccess(base, prop, {
+          set: function set(value) {
+            abort();
+            currentValue = value;
+          },
+          get: function get() {
+            abort();
+            return currentValue;
+          }
+        });
+      };
+
+      setChainPropAccess(window, property);
+      window.onerror = createOnErrorHandler(rid).bind();
+    }
+    debugCurrentInlineScript.names = ['debug-current-inline-script'];
+    debugCurrentInlineScript.injections = [randomId, setPropertyAccess, getPropertyInChain, toRegExp, createOnErrorHandler, hit];
+
+    /**
+     * Removes attributes from DOM nodes. Will run only once after page load.
+     *
+     * @param {Source} source
+     * @param {string} attrs attributes names separated by `|` which should be removed
+     * @param {string} selector CSS selector specifies nodes from which attributes should be removed
+     */
+
+    function removeAttr(source, attrs, selector) {
+      if (!attrs) {
+        return;
+      }
+
+      attrs = attrs.split(/\s*\|\s*/);
+
+      if (!selector) {
+        selector = "[".concat(attrs.join('],['), "]");
+      }
+
+      var rmattr = function rmattr(ev) {
+        if (ev) {
+          window.removeEventListener(ev.type, rmattr, true);
+        }
+
+        var nodes = document.querySelectorAll(selector);
+        var removed = false;
+        Array.from(nodes).forEach(function (node) {
+          attrs.forEach(function (attr) {
+            node.removeAttribute(attr);
+            removed = true;
+          });
+        });
+
+        if (removed) {
+          hit(source);
+        }
+      };
+
+      if (document.readyState === 'loading') {
+        window.addEventListener('DOMContentLoaded', rmattr, true);
+      } else {
+        rmattr();
+      }
+    }
+    removeAttr.names = ['remove-attr', 'ubo-remove-attr.js'];
+    removeAttr.injections = [hit];
+
+    /**
+     * Prevents opening new tabs and windows if there is `target` attribute in element
+     *
+     * @param {Source} source
+     */
+
+    function disableNewtabLinks(source) {
+      document.addEventListener('click', function (ev) {
+        var target = ev.target;
+
+        while (target !== null) {
+          if (target.localName === 'a' && target.hasAttribute('target')) {
+            ev.stopPropagation();
+            ev.preventDefault();
+            hit(source);
+            break;
+          }
+
+          target = target.parentNode;
+        }
+      });
+    }
+    disableNewtabLinks.names = ['disable-newtab-links', 'ubo-disable-newtab-links.js'];
+    disableNewtabLinks.injections = [hit];
+
+    /**
      * This file must export all scriptlets which should be accessible
      */
 
@@ -1137,7 +1390,12 @@
         preventFab: preventFab,
         setPopadsDummy: setPopadsDummy,
         preventPopadsNet: preventPopadsNet,
-        preventAdfly: preventAdfly
+        preventAdfly: preventAdfly,
+        debugOnPropertyRead: debugOnPropertyRead,
+        debugOnPropertyWrite: debugOnPropertyWrite,
+        debugCurrentInlineScript: debugCurrentInlineScript,
+        removeAttr: removeAttr,
+        disableNewtabLinks: disableNewtabLinks
     });
 
     /**

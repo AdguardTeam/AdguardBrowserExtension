@@ -134,6 +134,7 @@ var UrlFilterRule = {
     COOKIE_OPTION: 'cookie',
     STEALTH_OPTION: 'stealth',
     REPLACE_OPTION: 'replace',
+    REDIRECT_OPTION: 'redirect',
 };
 
 const STEALTH_ACTIONS = {

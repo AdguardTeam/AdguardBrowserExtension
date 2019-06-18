@@ -16,7 +16,6 @@
  */
 
 (function (adguard, api) {
-
     'use strict';
 
     /**
@@ -35,9 +34,45 @@
         if (badFilterRules && badFilterRules[rule.ruleText]) {
             return false;
         }
-        return (genericRulesAllowed || !rule.isGeneric()) &&
-            rule.isFiltered(url, thirdParty, requestType) &&
-            rule.isPermitted(referrerHost);
+        return (genericRulesAllowed || !rule.isGeneric())
+            && rule.isFiltered(url, thirdParty, requestType)
+            && rule.isPermitted(referrerHost);
+    }
+
+    /**
+     * Returns rules priority considering the following chain
+     * (whitelist + $important) > $important > whitelist > $redirect > basic rules
+     * @param rule
+     * @returns {number}
+     */
+    const getPriority = (rule) => {
+        if (rule.isImportant && rule.whiteListRule) {
+            return 4;
+        }
+        if (rule.isImportant) {
+            return 3;
+        }
+        if (rule.whiteListRule) {
+            return 2;
+        }
+        if (rule.isRedirectRule()) {
+            return 1;
+        }
+        return 0;
+    };
+
+    /**
+     * Compare rules by priorities
+     * if ruleA has higher or equal priority returns ruleA else returns ruleB
+     * view getPriority function
+     * @param ruleA
+     * @param ruleB
+     * @returns {object} rule with higher priority
+     */
+    function isHigherPriority(ruleA, ruleB) {
+        const priorityA = getPriority(ruleA);
+        const priorityB = getPriority(ruleB);
+        return priorityA >= priorityB ? ruleA : ruleB;
     }
 
     /**
@@ -50,22 +85,25 @@
      * @param requestType         Request type
      * @param genericRulesAllowed If true - generic rules are allowed
      * @param badFilterRules      Link to the bad rules
-     * @param findFirst           If true - find first matching rule and return it, otherwise continue search
-     * @return Collection of matching rules or first matching rule or null if nothing found
+     * @return Collection of matching rules
      */
-    function filterRules(rules, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules, findFirst) {
+    function filterRules(rules, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules) {
         let result = null;
 
         if (requestType === adguard.RequestTypes.DOCUMENT) {
             // Looking for document level rules
             for (let i = 0; i < rules.length; i += 1) {
-                let rule = rules[i];
+                const rule = rules[i];
                 if (rule.isDocumentLevel()
-                    && isFiltered(rule, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules)) {
-                    if (findFirst) {
-                        return rule;
-                    }
-                    // Add matching rule
+                    && isFiltered(
+                        rule,
+                        url,
+                        referrerHost,
+                        thirdParty,
+                        requestType,
+                        genericRulesAllowed,
+                        badFilterRules
+                    )) {
                     if (!result) {
                         result = [];
                     }
@@ -75,12 +113,16 @@
         }
 
         for (let i = 0; i < rules.length; i += 1) {
-            let rule = rules[i];
-            if (isFiltered(rule, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules)) {
-                if (findFirst) {
-                    return rule;
-                }
-                // Add matching rule
+            const rule = rules[i];
+            if (isFiltered(
+                rule,
+                url,
+                referrerHost,
+                thirdParty,
+                requestType,
+                genericRulesAllowed,
+                badFilterRules
+            )) {
                 if (!result) {
                     result = [];
                 }
@@ -92,7 +134,7 @@
     }
 
     /**
-     * Find first matching rule
+     * Iterates through matching rules and returns the first one with higher priority
      * @param rules Rules to check
      * @param url URL
      * @param referrerHost Referrer Host
@@ -102,7 +144,21 @@
      * @param badFilterRules Link to the badFilterRules
      */
     function findFirstRule(rules, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules) {
-        return filterRules(rules, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules, true);
+        const matchingRules = filterRules(
+            rules,
+            url,
+            referrerHost,
+            thirdParty,
+            requestType,
+            genericRulesAllowed,
+            badFilterRules
+        );
+
+        if (!matchingRules) {
+            return null;
+        }
+
+        return matchingRules.reduce(isHigherPriority);
     }
 
     /**
@@ -116,13 +172,13 @@
      * @param badFilterRules Link to the badFilterRules
      */
     function findAllRules(rules, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules) {
-        return filterRules(rules, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules, false);
+        return filterRules(rules, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules);
     }
 
     /**
      * Special lookup table
      */
-    var UrlFilterRuleLookupTable = function () {
+    const UrlFilterRuleLookupTable = function () {
         this.shortcutsLookupTable = new api.ShortcutsLookupTable();
         this.domainsLookupTable = new api.DomainsLookupTable();
         this.rulesWithoutShortcuts = [];
@@ -134,7 +190,7 @@
          *
          * @param rule Rule to add
          */
-        addRule: function (rule) {
+        addRule(rule) {
             if (!this.shortcutsLookupTable.addRule(rule)) {
                 if (!this.domainsLookupTable.addRule(rule)) {
                     this.rulesWithoutShortcuts.push(rule);
@@ -147,7 +203,7 @@
          *
          * @param rule Rule to remove
          */
-        removeRule: function (rule) {
+        removeRule(rule) {
             this.shortcutsLookupTable.removeRule(rule);
             this.domainsLookupTable.removeRule(rule);
             adguard.utils.collections.removeRule(this.rulesWithoutShortcuts, rule);
@@ -156,14 +212,14 @@
         /**
          * Clears rules
          */
-        clearRules: function () {
+        clearRules() {
             this.shortcutsLookupTable.clearRules();
             this.domainsLookupTable.clearRules();
             this.rulesWithoutShortcuts = [];
         },
 
-        getRules: function () {
-            var rules = [];
+        getRules() {
+            let rules = [];
 
             rules = rules.concat(this.rulesWithoutShortcuts);
             rules = rules.concat(this.shortcutsLookupTable.getRules());
@@ -181,53 +237,43 @@
          * @param requestType         Request type
          * @param genericRulesAllowed If true - generic rules are allowed
          * @param badFilterRules      Link to the bad filters
-         * @return First matching rule or null if no match found
+         * @return {object} First matching rule or null if no match found
          */
-        findRule: function (url, documentHost, thirdParty, requestType, genericRulesAllowed, badFilterRules) {
+        findRule(url, documentHost, thirdParty, requestType, genericRulesAllowed, badFilterRules) {
             if (!url) {
                 return null;
             }
 
             const urlLowerCase = url.toLowerCase();
-            let rules = this.shortcutsLookupTable.lookupRules(urlLowerCase);
+            let matchedRules = [];
 
             // Check against rules with shortcuts
+            let rules = this.shortcutsLookupTable.lookupRules(urlLowerCase);
             if (rules && rules.length > 0) {
-                let rule = findFirstRule(rules,
-                    url,
-                    documentHost,
-                    thirdParty,
-                    requestType,
-                    genericRulesAllowed,
-                    badFilterRules);
-                if (rule) {
-                    return rule;
-                }
+                matchedRules = matchedRules.concat(rules);
             }
 
+            // Check against rules with domains
             rules = this.domainsLookupTable.lookupRules(documentHost);
             if (rules && rules.length > 0) {
-                let rule = findFirstRule(rules,
-                    url,
-                    documentHost,
-                    thirdParty,
-                    requestType,
-                    genericRulesAllowed,
-                    badFilterRules);
-                if (rule) {
-                    return rule;
-                }
+                matchedRules = matchedRules.concat(rules);
             }
 
             // Check against rules without shortcuts
             if (this.rulesWithoutShortcuts.length > 0) {
-                let rule = findFirstRule(this.rulesWithoutShortcuts,
+                matchedRules = matchedRules.concat(this.rulesWithoutShortcuts);
+            }
+
+            if (matchedRules.length > 0) {
+                const rule = findFirstRule(
+                    matchedRules,
                     url,
                     documentHost,
                     thirdParty,
                     requestType,
                     genericRulesAllowed,
-                    badFilterRules);
+                    badFilterRules
+                );
                 if (rule) {
                     return rule;
                 }
@@ -246,17 +292,15 @@
          * @param badFilterRules      object with collection of bad filters
          * @return All matching rules or null if no match found
          */
-        findRules: function (url, documentHost, thirdParty, requestType, badFilterRules) {
-
+        findRules(url, documentHost, thirdParty, requestType, badFilterRules) {
             if (!url) {
                 return null;
             }
 
+            let allRules = [];
 
-            var allRules = [];
-
-            var urlLowerCase = url.toLowerCase();
-            var rules = this.shortcutsLookupTable.lookupRules(urlLowerCase);
+            const urlLowerCase = url.toLowerCase();
+            let rules = this.shortcutsLookupTable.lookupRules(urlLowerCase);
             if (rules) {
                 allRules = allRules.concat(rules);
             }
@@ -273,10 +317,8 @@
             }
 
             return null;
-        }
+        },
     };
 
     api.UrlFilterRuleLookupTable = UrlFilterRuleLookupTable;
-
 })(adguard, adguard.rules);
-

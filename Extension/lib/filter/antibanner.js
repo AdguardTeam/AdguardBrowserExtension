@@ -146,9 +146,10 @@ adguard.antiBannerService = (function (adguard) {
         /**
          * Init extension common info.
          */
-        adguard.applicationUpdateService.getRunInfo(function (runInfo) {
+        adguard.applicationUpdateService.getRunInfo(async (runInfo) => {
             // Load subscription from the storage
-            adguard.subscriptions.init(onSubscriptionLoaded.bind(null, runInfo));
+            await adguard.subscriptions.init();
+            onSubscriptionLoaded(runInfo);
         });
     }
 
@@ -1163,76 +1164,82 @@ adguard.requestFilter = (function (adguard) {
         return (requestFilterInitTime > 0) && (requestFilterInitTime + 5000 > new Date().getTime());
     };
 
-    var getRules = function () {
+    const getRules = function () {
         return getRequestFilter().getRules();
     };
-    var findRuleForRequest = function (requestUrl, documentUrl, requestType, documentWhitelistRule) {
+
+    const findRuleForRequest = function (requestUrl, documentUrl, requestType, documentWhitelistRule) {
         return getRequestFilter().findRuleForRequest(requestUrl, documentUrl, requestType, documentWhitelistRule);
     };
-    var findWhiteListRule = function (requestUrl, referrer, requestType) {
+
+    const findWhiteListRule = function (requestUrl, referrer, requestType) {
         return getRequestFilter().findWhiteListRule(requestUrl, referrer, requestType);
     };
 
-    var findStealthWhiteListRule = function (requestUrl, referrer, requestType) {
+    const findStealthWhiteListRule = function (requestUrl, referrer, requestType) {
         return getRequestFilter().findStealthWhiteListRule(requestUrl, referrer, requestType);
     };
 
-    var getSelectorsForUrl = function (documentUrl, genericHideFlag) {
+    const getSelectorsForUrl = function (documentUrl, genericHideFlag) {
         return getRequestFilter().getSelectorsForUrl(documentUrl, genericHideFlag);
     };
-    var getInjectedSelectorsForUrl = function (documentUrl, genericHideFlag) {
+
+    const getInjectedSelectorsForUrl = function (documentUrl, genericHideFlag) {
         return getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideFlag);
     };
-    var getScriptsForUrl = function (documentUrl) {
+
+    const getScriptsForUrl = function (documentUrl) {
         return getRequestFilter().getScriptsForUrl(documentUrl);
     };
-    var getScriptsStringForUrl = function (documentUrl, tab) {
+
+    const getScriptsStringForUrl = function (documentUrl, tab) {
         return getRequestFilter().getScriptsStringForUrl(documentUrl, tab);
     };
-    var getContentRulesForUrl = function (documentUrl) {
+
+    const getContentRulesForUrl = function (documentUrl) {
         return getRequestFilter().getContentRulesForUrl(documentUrl);
     };
 
-    var getMatchedElementsForContentRules = function (doc, rules) {
+    const getMatchedElementsForContentRules = function (doc, rules) {
         return getRequestFilter().getMatchedElementsForContentRules(doc, rules);
     };
 
-    var getCspRules = function (requestUrl, referrer, requestType) {
+    const getCspRules = function (requestUrl, referrer, requestType) {
         return getRequestFilter().findCspRules(requestUrl, referrer, requestType);
     };
 
-    var getCookieRules = function (requestUrl, referrer, requestType) {
+    const getCookieRules = function (requestUrl, referrer, requestType) {
         return getRequestFilter().findCookieRules(requestUrl, referrer, requestType);
     };
 
-    var getReplaceRules = function (requestUrl, referrer, requestType) {
+    const getReplaceRules = function (requestUrl, referrer, requestType) {
         return getRequestFilter().findReplaceRules(requestUrl, referrer, requestType);
     };
 
-    var getRequestFilterInfo = function () {
+    const getRequestFilterInfo = function () {
         return antiBannerService.getRequestFilterInfo();
     };
 
     return {
 
-        isReady: isReady,
-        shouldCollapseAllElements: shouldCollapseAllElements,
+        isReady,
+        shouldCollapseAllElements,
 
-        getRules: getRules,
-        findRuleForRequest: findRuleForRequest,
-        findWhiteListRule: findWhiteListRule,
+        getRules,
+        findRuleForRequest,
+        findWhiteListRule,
 
-        getSelectorsForUrl: getSelectorsForUrl,
-        getInjectedSelectorsForUrl: getInjectedSelectorsForUrl,
-        getScriptsForUrl: getScriptsForUrl,
-        getScriptsStringForUrl: getScriptsStringForUrl,
-        getContentRulesForUrl: getContentRulesForUrl,
-        getMatchedElementsForContentRules: getMatchedElementsForContentRules,
-        getCspRules: getCspRules,
-        getCookieRules: getCookieRules,
-        getReplaceRules: getReplaceRules,
-        findStealthWhiteListRule: findStealthWhiteListRule,
-        getRequestFilterInfo: getRequestFilterInfo
+        getSelectorsForUrl,
+        getInjectedSelectorsForUrl,
+        getScriptsForUrl,
+        getScriptsStringForUrl,
+        getContentRulesForUrl,
+        getMatchedElementsForContentRules,
+        getCspRules,
+        getCookieRules,
+        getReplaceRules,
+        findStealthWhiteListRule,
+        getRequestFilterInfo,
     };
 
 })(adguard);

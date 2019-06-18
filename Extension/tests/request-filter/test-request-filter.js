@@ -237,6 +237,70 @@ QUnit.test("Cookie rules", function (assert) {
     //TODO: Add cases and other tests
 });
 
+QUnit.test('Redirect rules', (assert) => {
+    const invalidTitle = 'space';
+    const validTitle = 'noopjs';
+    const noopJsContent = '(function() {})()';
+    const jsContentType = 'application/javascript';
+
+    const rawYaml = `
+        - title: 1x1-transparent.gif
+          aliases:
+            - 1x1-transparent-gif
+          comment: 'http://probablyprogramming.com/2009/03/15/the-tiniest-gif-ever'
+          contentType: image/gif;base64
+          content: R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
+        
+        - title: noopjs
+          aliases:
+            - blank-js
+          contentType: ${jsContentType}
+          content: ${noopJsContent}`;
+
+    adguard.rules.RedirectFilterService.setRedirectSources(rawYaml);
+    const requestFilter = new adguard.RequestFilter();
+
+    // Test rules creation
+    let redirectRule = new adguard.rules.UrlFilterRule('example.org/ads.js$script,redirect=noopjs', 0);
+    const blockRedirectRule = new adguard.rules.UrlFilterRule('||example.org/*.png$image,redirect=1x1-transparent.gif', 0);
+    requestFilter.addRules([redirectRule, blockRedirectRule]);
+    const rule = requestFilter.findRuleForRequest('http://example.org/ads.js', 'http://example.org/', adguard.RequestTypes.SCRIPT);
+    assert.equal(rule.getRedirect().redirectTitle, 'noopjs');
+    const imgRule = requestFilter.findRuleForRequest('http://example.org/ad.png', 'http://example.org/', adguard.RequestTypes.IMAGE);
+    assert.equal(imgRule.getRedirect().redirectTitle, '1x1-transparent.gif');
+
+    // Test that rule correct url has been build
+    const validRule = new adguard.rules.UrlFilterRule(`example.org/ads.js$script,redirect=${validTitle}`, 0);
+    const redirectOption = validRule.getRedirect();
+    const url = redirectOption.getRedirectUrl();
+    const [rawContentType, base64str] = url.split(',');
+    assert.equal(atob(base64str), noopJsContent, 'decoded string should be equal with source');
+    const [contentType] = rawContentType.split(';');
+    assert.equal(contentType, `data:${jsContentType}`);
+
+    // Test that rules with invalid redirect option throw error
+    assert.throws(() => {
+        const invalidRule = new adguard.rules.UrlFilterRule(`example.org/ads.js$script,redirect=${invalidTitle}`, 0);
+        requestFilter.addRule(invalidRule);
+    }, new Error(`Unknown redirect source title: ${invalidTitle}`), 'invalid redirect rules should throw error');
+
+    // Test that redirect rules has higher priority than basic rules
+    redirectRule = new adguard.rules.UrlFilterRule('||8s8.eu^*fa.js$script,redirect=noopjs');
+    const basicRule = new adguard.rules.UrlFilterRule('||8s8.eu^*fa.js$script');
+
+    assert.ok(redirectRule.isFiltered('http://8s8.eu/bla-fa.js', true, adguard.RequestTypes.SCRIPT));
+    // assert.ok(redirectRule.isPermitted('test.com'));
+    assert.ok(basicRule.isFiltered('http://8s8.eu/bla-fa.js', true, adguard.RequestTypes.SCRIPT));
+    // assert.ok(basicRule.isPermitted('http://example.com'));
+
+    const urlFilter = new adguard.rules.UrlFilter();
+    urlFilter.addRule(basicRule);
+    urlFilter.addRule(redirectRule);
+
+    const result = urlFilter.isFiltered('http://8s8.eu/bla-fa.js', 'test.com', adguard.RequestTypes.SCRIPT, true);
+    assert.ok(result !== null);
+    assert.equal(result.ruleText, redirectRule.ruleText);
+});
 
 QUnit.test('Test object subrequest type', function (assert) {
     var requestFilter = new adguard.RequestFilter();
@@ -719,4 +783,32 @@ QUnit.test('Comments in rule', (assert) => {
 
     rule = adguard.rules.builder.createRule('! ain.ua#$#body - удаление брендированного фона, отступа сверху', 0);
     assert.notOk(rule, 'rule with comment mask should return null');
+});
+
+QUnit.test('Converts ABP rules into AG compatible rule', (assert) => {
+    let actual = adguard.rules.ruleConverter.convertRule('||e9377f.com^$rewrite=abp-resource:blank-mp3,domain=eastday.com');
+    let expected = '||e9377f.com^$redirect=blank-mp3,domain=eastday.com';
+    assert.equal(actual, expected);
+
+    actual = adguard.rules.ruleConverter.convertRule('||lcok.net/2019/ad/$domain=huaren.tv,rewrite=abp-resource:blank-mp3');
+    expected = '||lcok.net/2019/ad/$domain=huaren.tv,redirect=blank-mp3';
+    assert.equal(actual, expected);
+
+    actual = adguard.rules.ruleConverter.convertRule('||lcok.net/2019/ad/$domain=huaren.tv');
+    expected = '||lcok.net/2019/ad/$domain=huaren.tv';
+    assert.equal(actual, expected);
+});
+
+QUnit.test('converts empty and mp4 modifiers into redirect rules', (assert) => {
+    let actual = adguard.rules.ruleConverter.convertRule('/(pagead2)/$domain=vsetv.com,empty,important');
+    let expected = '/(pagead2)/$domain=vsetv.com,redirect=noopjs,important';
+    assert.equal(actual, expected);
+
+    actual = adguard.rules.ruleConverter.convertRule('||fastmap33.com^$empty');
+    expected = '||fastmap33.com^$redirect=noopjs';
+    assert.equal(actual, expected);
+
+    actual = adguard.rules.ruleConverter.convertRule('||anyporn.com/xml^$media,mp4');
+    expected = adguard.rules.ruleConverter.convertRule('||anyporn.com/xml^$media,redirect=noopmp4-1s');
+    assert.equal(actual, expected);
 });

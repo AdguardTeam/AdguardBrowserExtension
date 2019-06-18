@@ -224,6 +224,70 @@
     }
 
     /**
+     * Converts abp rule into ag rule
+     * e.g.
+     * from:    "||example.org^$rewrite=abp-resource:blank-mp3"
+     * to:      "||example.org^$redirect:blank-mp3"
+     * @param {string} rule
+     * @returns {string|null}
+     */
+    function convertAbpRedirectRule(rule) {
+        const ABP_REDIRECT_KEYWORD = 'rewrite=abp-resource:';
+        const AG_REDIRECT_KEYWORD = 'redirect=';
+        if (!rule.includes(ABP_REDIRECT_KEYWORD)) {
+            return null;
+        }
+        return rule.replace(ABP_REDIRECT_KEYWORD, AG_REDIRECT_KEYWORD);
+    }
+
+    function convertModifiers(rule) {
+        const OPTIONS_DELIMITER = '$';
+        const ESCAPE_CHARACTER = '\\';
+        const EMPTY_OPTION = 'empty';
+        const MP4_OPTION = 'mp4';
+
+        let options;
+        let domainPart;
+
+        // Start looking from the prev to the last symbol
+        // If dollar sign is the last symbol - we simply ignore it.
+        for (let i = (rule.length - 2); i >= 0; i -= 1) {
+            const currChar = rule.charAt(i);
+            if (currChar !== OPTIONS_DELIMITER) {
+                continue;
+            }
+            if (i > 0 && rule.charAt(i - 1) !== ESCAPE_CHARACTER) {
+                domainPart = rule.substring(0, i);
+                options = rule.substring(i + 1);
+                // Options delimiter was found, doing nothing
+                break;
+            }
+        }
+        if (!options) {
+            return null;
+        }
+        const optionsParts = options.split(',');
+        let optionsConverted = false;
+        const updatedOptions = optionsParts.map((option) => {
+            if (stringUtils.startWith(option, EMPTY_OPTION)) {
+                optionsConverted = true;
+                return 'redirect=noopjs';
+            }
+            if (stringUtils.startWith(option, MP4_OPTION)) {
+                optionsConverted = true;
+                return 'redirect=noopmp4-1s';
+            }
+            return option;
+        }).join(',');
+
+        if (optionsConverted) {
+            return `${domainPart}\$${updatedOptions}`;
+        }
+
+        return null;
+    }
+
+    /**
      * Checks if rule text is comment e.g. !!example.org##+js(set-constant.js, test, false)
      * @param {string} rule
      * @return {boolean}
@@ -248,6 +312,19 @@
         if (uboCssStyleRule) {
             return uboCssStyleRule;
         }
+
+        // Convert abp redirect rule
+        const abpRedirectRule = convertAbpRedirectRule(rule);
+        if (abpRedirectRule) {
+            return abpRedirectRule;
+        }
+
+        // Convert $mp4, $empty modifiers to redirect rules
+        const redirectRule = convertModifiers(rule);
+        if (redirectRule) {
+            return redirectRule;
+        }
+
         return rule;
     }
 

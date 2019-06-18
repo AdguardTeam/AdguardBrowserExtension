@@ -555,7 +555,13 @@
                 return null;
             }
 
-            return this.urlBlockingFilter.isFiltered(requestUrl, refHost, requestType, thirdParty, !genericRulesAllowed);
+            return this.urlBlockingFilter.isFiltered(
+                requestUrl,
+                refHost,
+                requestType,
+                thirdParty,
+                !genericRulesAllowed
+            );
         },
 
         /**
@@ -574,31 +580,56 @@
 
             // STEP 1: Looking for exception rule, which could be applied to the current request
 
-            // Checks white list for a rule for this RequestUrl. If something is found - returning it.
-            const urlWhiteListRule = this._checkWhiteList(requestUrl, documentHost, requestType, thirdParty);
+            // Checks white list for a rule for this RequestUrl.
+            // If something is found - returning it.
+            const urlWhiteListRule = this._checkWhiteList(
+                requestUrl,
+                documentHost,
+                requestType,
+                thirdParty
+            );
 
             // If UrlBlock is set - than we should not use UrlBlockingFilter against this request.
             // Now check if document rule has $genericblock or $urlblock modifier
-            const genericRulesAllowed = !documentWhiteListRule || !documentWhiteListRule.isGenericBlock();
+            const genericRulesAllowed = !documentWhiteListRule
+                || !documentWhiteListRule.isGenericBlock();
+
             const urlRulesAllowed = !documentWhiteListRule || !documentWhiteListRule.isUrlBlock();
 
             // STEP 2: Looking for blocking rule, which could be applied to the current request
 
-            // Look for blocking rules
-            const blockingRule = this._checkUrlBlockingList(requestUrl, documentHost, requestType, thirdParty, genericRulesAllowed);
+            const ruleForRequest = this._checkUrlBlockingList(
+                requestUrl,
+                documentHost,
+                requestType,
+                thirdParty,
+                genericRulesAllowed
+            );
 
             // STEP 3: Analyze results, first - basic exception rule
 
             if (urlWhiteListRule
                 // Please note, that if blocking rule has $important modifier, it could
                 // overcome existing exception rule
-                && (urlWhiteListRule.isImportant || !blockingRule || !blockingRule.isImportant)) {
-                adguard.console.debug('White list rule found {0} for url: {1} document: {2}, requestType: {3}', urlWhiteListRule.ruleText, requestUrl, documentHost, requestType);
+                && (urlWhiteListRule.isImportant
+                    || !ruleForRequest
+                    || !ruleForRequest.isImportant)) {
+                adguard.console.debug(
+                    'White list rule found {0} for url: {1} document: {2}, requestType: {3}',
+                    urlWhiteListRule.ruleText,
+                    requestUrl,
+                    documentHost,
+                    requestType
+                );
                 return urlWhiteListRule;
             }
 
             if (!genericRulesAllowed || !urlRulesAllowed) {
-                adguard.console.debug('White list rule {0} found for document: {1}', documentWhiteListRule.ruleText, documentHost);
+                adguard.console.debug(
+                    'White list rule {0} found for document: {1}',
+                    documentWhiteListRule.ruleText,
+                    documentHost
+                );
             }
 
             if (!urlRulesAllowed) {
@@ -606,11 +637,17 @@
                 return documentWhiteListRule;
             }
 
-            if (blockingRule) {
-                adguard.console.debug('Black list rule {0} found for url: {1}, document: {2}, requestType: {3}', blockingRule.ruleText, requestUrl, documentHost, requestType);
+            if (ruleForRequest) {
+                adguard.console.debug(
+                    'Black list rule {0} found for url: {1}, document: {2}, requestType: {3}',
+                    ruleForRequest.ruleText,
+                    requestUrl,
+                    documentHost,
+                    requestType
+                );
             }
 
-            return blockingRule;
+            return ruleForRequest;
         },
     };
 

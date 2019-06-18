@@ -57,7 +57,7 @@
      * Process request
      *
      * @param {RequestDetails} requestDetails
-     * @returns {boolean} False if request must be blocked
+     * @returns {boolean|{Object}} False if request must be blocked, object if url was redirected
      */
     function onBeforeRequest(requestDetails) {
         const tab = requestDetails.tab;
@@ -121,14 +121,28 @@
             return { redirectUrl: cleansedUrl };
         }
 
-        let requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
-        requestRule = adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
+        let requestRule = adguard.webRequestService.getRuleForRequest(
+            tab,
+            requestUrl,
+            referrerUrl,
+            requestType
+        );
+        requestRule = adguard.webRequestService.postProcessRequest(
+            tab,
+            requestUrl,
+            referrerUrl,
+            requestType,
+            requestRule
+        );
 
         if (requestRule) {
             adguard.requestContextStorage.update(requestId, { requestRule });
         }
 
-        const response = adguard.webRequestService.getBlockedResponseByRule(requestRule, requestType);
+        const response = adguard.webRequestService.getBlockedResponseByRule(
+            requestRule,
+            requestType
+        );
 
         if (response && response.cancel) {
             collapseElement(tabId, requestFrameId, requestUrl, referrerUrl, requestType);
