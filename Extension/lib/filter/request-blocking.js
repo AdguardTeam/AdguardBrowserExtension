@@ -250,14 +250,16 @@ adguard.webRequestService = (function (adguard) {
      * @param requestType Request type
      * @returns {*} Blocked response or null
      */
-    var getBlockedResponseByRule = function (requestRule, requestType) {
-        if (isRequestBlockedByRule(requestRule) &&
-            // Don't block main_frame request
-            requestType !== adguard.RequestTypes.DOCUMENT) {
+    const getBlockedResponseByRule = function (requestRule, requestType) {
+        if (isRequestBlockedByRule(requestRule)) {
+            if (requestRule.isRedirectRule()) {
+                const redirectOption = requestRule.getRedirect();
+                const redirectUrl = redirectOption.getRedirectUrl();
+                return { redirectUrl };
+            }
 
-            if (requestRule.isEmptyResponse()) {
-                return { redirectUrl: 'data:,' };
-            } else {
+            // Don't block main_frame request
+            if (requestType !== adguard.RequestTypes.DOCUMENT) {
                 return { cancel: true };
             }
         }
@@ -276,7 +278,7 @@ adguard.webRequestService = (function (adguard) {
     var getRuleForRequest = function (tab, requestUrl, referrerUrl, requestType) {
 
         if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab)) {
-            //don't process request
+            // don't process request
             return null;
         }
         let whitelistRule;
@@ -411,7 +413,6 @@ adguard.webRequestService = (function (adguard) {
      * @return {object} Request rule parsed from integration headers or null
      */
     var processRequestResponse = function (tab, requestUrl, referrerUrl, requestType, responseHeaders) {
-
         if (requestType === adguard.RequestTypes.DOCUMENT) {
             // Check headers to detect Adguard application
             if (adguard.integration.isSupported() && // Integration module may be missing
@@ -504,25 +505,26 @@ adguard.webRequestService = (function (adguard) {
             && (canCollectHitStatsForTab(tab) || adguard.filteringLog.isOpen());
     };
 
+
     // EXPOSE
     return {
-        processGetSelectorsAndScripts: processGetSelectorsAndScripts,
-        checkPageScriptWrapperRequest: checkPageScriptWrapperRequest,
-        processShouldCollapse: processShouldCollapse,
-        processShouldCollapseMany: processShouldCollapseMany,
-        isRequestBlockedByRule: isRequestBlockedByRule,
-        isPopupBlockedByRule: isPopupBlockedByRule,
-        getBlockedResponseByRule: getBlockedResponseByRule,
-        getRuleForRequest: getRuleForRequest,
-        getCspRules: getCspRules,
-        getCookieRules: getCookieRules,
-        getContentRules: getContentRules,
-        getReplaceRules: getReplaceRules,
-        processRequestResponse: processRequestResponse,
-        postProcessRequest: postProcessRequest,
-        recordRuleHit: recordRuleHit,
+        processGetSelectorsAndScripts,
+        checkPageScriptWrapperRequest,
+        processShouldCollapse,
+        processShouldCollapseMany,
+        isRequestBlockedByRule,
+        isPopupBlockedByRule,
+        getBlockedResponseByRule,
+        getRuleForRequest,
+        getCspRules,
+        getCookieRules,
+        getContentRules,
+        getReplaceRules,
+        processRequestResponse,
+        postProcessRequest,
+        recordRuleHit,
         onRequestBlocked: onRequestBlockedChannel,
-        isCollectingCosmeticRulesHits: isCollectingCosmeticRulesHits,
+        isCollectingCosmeticRulesHits,
     };
 
 })(adguard);

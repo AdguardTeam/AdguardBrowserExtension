@@ -1,0 +1,403 @@
+#
+#    AdGuard Scriptlets (Redirects Source)
+#    Version 1.0.4
+#
+- title: 1x1-transparent.gif
+  aliases:
+    - 1x1-transparent-gif
+  comment: 'http://probablyprogramming.com/2009/03/15/the-tiniest-gif-ever'
+  contentType: image/gif;base64
+  content: R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
+
+- title: 2x2-transparent.png
+  aliases:
+    - 2x2-transparent-png
+  contentType: image/png;base64
+  content: >
+    iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAC0lEQVQI12NgQAcAABIAAe+JVKQAAAAA
+    SUVORK5CYII=
+
+- title: 3x2-transparent.png
+  aliases:
+    - 3x2-transparent-png
+  contentType: image/png;base64
+  content: >
+    iVBORw0KGgoAAAANSUhEUgAAAAMAAAACCAYAAACddGYaAAAAC0lEQVQI12NgwAUAABoAASRETuUAAAAA
+    SUVORK5CYII=
+
+- title: 32x32-transparent.png
+  aliases:
+    - 32x32-transparent-png
+  contentType: image/png;base64
+  content: >
+    iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAGklEQVRYw+3BAQEAAACCIP+vbkhAAQAA
+    AO8GECAAAZf3V9cAAAAASUVORK5CYII=
+
+- title: noopframe
+  aliases:
+    - blank-html
+  contentType: text/html
+  content: |-
+    <!DOCTYPE html>
+    <html>
+        <head><title></title></head>
+        <body></body>
+    </html>
+
+- title: noopcss
+  aliases:
+    - blank-css
+  contentType: text/css
+  content: ''
+
+- title: noopjs
+  aliases:
+    - blank-js
+  contentType: application/javascript
+  content: '(function() {})()'
+
+- title: nooptext
+  aliases:
+    - blank-text
+  contentType: text/plain
+  content: ''
+
+- title: noopmp3-0.1s
+  aliases:
+    - blank-mp3
+  comment: >
+    From:
+    https://ubuntuforums.org/showthread.php?t=1911430&p=11624471#post11624471
+    ffmpeg -ar 48000 -t 0.1 -f s16le -acodec pcm_s16le -ac 2 -i /dev/zero
+    -acodec libmp3lame -aq 4 output.mp3 But with 0.1 (second) instead of 60.
+  contentType: audio/mp3;base64
+  content: >
+    SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU2LjQwLjEwMQAAAAAAAAAAAAAA//tUAAAAAAAAAAAAAAAA
+    AAAAAAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAAGAAADAABgYGBgYGBgYGBgYGBgYGBggICAgICA
+    gICAgICAgICAgICgoKCgoKCgoKCgoKCgoKCgwMDAwMDAwMDAwMDAwMDAwMDg4ODg4ODg4ODg4ODg4ODg
+    4P////////////////////8AAAAATGF2YzU2LjYwAAAAAAAAAAAAAAAAJAAAAAAAAAAAAwDNZKlY//sU
+    ZAAP8AAAaQAAAAgAAA0gAAABAAABpAAAACAAADSAAAAETEFNRTMuOTkuNVVVVVVVVVVVVVVVVVVVVVVV
+    VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sUZB4P8AAAaQAAAAgAAA0gAAABAAABpAAA
+    ACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+    VVVVVVVVVVVV//sUZDwP8AAAaQAAAAgAAA0gAAABAAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVV
+    VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sUZFoP8AAAaQAAAAgA
+    AA0gAAABAAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+    VVVVVVVVVVVVVVVVVVVVVVVVVVVV//sUZHgP8AAAaQAAAAgAAA0gAAABAAABpAAAACAAADSAAAAEVVVV
+    VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sU
+    ZJYP8AAAaQAAAAgAAA0gAAABAAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+    VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+
+- title: noopmp4-1s
+  aliases:
+    - blank-mp4
+  comment: |
+    From https://github.com/kud/blank-video
+  contentType: video/mp4;base64
+  content: >
+    AAAAHGZ0eXBNNFYgAAACAGlzb21pc28yYXZjMQAAAAhmcmVlAAAGF21kYXTeBAAAbGliZmFhYyAxLjI4
+    AABCAJMgBDIARwAAArEGBf//rdxF6b3m2Ui3lizYINkj7u94MjY0IC0gY29yZSAxNDIgcjIgOTU2Yzhk
+    OCAtIEguMjY0L01QRUctNCBBVkMgY29kZWMgLSBDb3B5bGVmdCAyMDAzLTIwMTQgLSBodHRwOi8vd3d3
+    LnZpZGVvbGFuLm9yZy94MjY0Lmh0bWwgLSBvcHRpb25zOiBjYWJhYz0wIHJlZj0zIGRlYmxvY2s9MTow
+    OjAgYW5hbHlzZT0weDE6MHgxMTEgbWU9aGV4IHN1Ym1lPTcgcHN5PTEgcHN5X3JkPTEuMDA6MC4wMCBt
+    aXhlZF9yZWY9MSBtZV9yYW5nZT0xNiBjaHJvbWFfbWU9MSB0cmVsbGlzPTEgOHg4ZGN0PTAgY3FtPTAg
+    ZGVhZHpvbmU9MjEsMTEgZmFzdF9wc2tpcD0xIGNocm9tYV9xcF9vZmZzZXQ9LTIgdGhyZWFkcz02IGxv
+    b2thaGVhZF90aHJlYWRzPTEgc2xpY2VkX3RocmVhZHM9MCBucj0wIGRlY2ltYXRlPTEgaW50ZXJsYWNl
+    ZD0wIGJsdXJheV9jb21wYXQ9MCBjb25zdHJhaW5lZF9pbnRyYT0wIGJmcmFtZXM9MCB3ZWlnaHRwPTAg
+    a2V5aW50PTI1MCBrZXlpbnRfbWluPTI1IHNjZW5lY3V0PTQwIGludHJhX3JlZnJlc2g9MCByY19sb29r
+    YWhlYWQ9NDAgcmM9Y3JmIG1idHJlZT0xIGNyZj0yMy4wIHFjb21wPTAuNjAgcXBtaW49MCBxcG1heD02
+    OSBxcHN0ZXA9NCB2YnZfbWF4cmF0ZT03NjggdmJ2X2J1ZnNpemU9MzAwMCBjcmZfbWF4PTAuMCBuYWxf
+    aHJkPW5vbmUgZmlsbGVyPTAgaXBfcmF0aW89MS40MCBhcT0xOjEuMDAAgAAAAFZliIQL8mKAAKvMnJyc
+    nJycnJycnXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    XXXXXXXXXXXXXXXXXiEASZACGQAjgCEASZACGQAjgAAAAAdBmjgX4GSAIQBJkAIZACOAAAAAB0GaVAX4
+    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
+    xAAAAAAALWhkbHIAAAAAAAAAAHNvdW4AAAAAAAAAAAAAAABTb3VuZEhhbmRsZXIAAAADi21pbmYAAAAQ
+    c21oZAAAAAAAAAAAAAAAJGRpbmYAAAAcZHJlZgAAAAAAAAABAAAADHVybCAAAAABAAADT3N0YmwAAABn
+    c3RzZAAAAAAAAAABAAAAV21wNGEAAAAAAAAAAQAAAAAAAAAAAAIAEAAAAAC7gAAAAAAAM2VzZHMAAAAA
+    A4CAgCIAAgAEgICAFEAVBbjYAAu4AAAADcoFgICAAhGQBoCAgAECAAAAIHN0dHMAAAAAAAAAAgAAADIA
+    AAQAAAAAAQAAAkAAAAFUc3RzYwAAAAAAAAAbAAAAAQAAAAEAAAABAAAAAgAAAAIAAAABAAAAAwAAAAEA
+    AAABAAAABAAAAAIAAAABAAAABgAAAAEAAAABAAAABwAAAAIAAAABAAAACAAAAAEAAAABAAAACQAAAAIA
+    AAABAAAACgAAAAEAAAABAAAACwAAAAIAAAABAAAADQAAAAEAAAABAAAADgAAAAIAAAABAAAADwAAAAEA
+    AAABAAAAEAAAAAIAAAABAAAAEQAAAAEAAAABAAAAEgAAAAIAAAABAAAAFAAAAAEAAAABAAAAFQAAAAIA
+    AAABAAAAFgAAAAEAAAABAAAAFwAAAAIAAAABAAAAGAAAAAEAAAABAAAAGQAAAAIAAAABAAAAGgAAAAEA
+    AAABAAAAGwAAAAIAAAABAAAAHQAAAAEAAAABAAAAHgAAAAIAAAABAAAAHwAAAAQAAAABAAAA4HN0c3oA
+    AAAAAAAAAAAAADMAAAAaAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkA
+    AAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkA
+    AAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkA
+    AAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAACMc3RjbwAAAAAAAAAfAAAALAAAA1UA
+    AANyAAADhgAAA6IAAAO+AAAD0QAAA+0AAAQAAAAEHAAABC8AAARLAAAEZwAABHoAAASWAAAEqQAABMUA
+    AATYAAAE9AAABRAAAAUjAAAFPwAABVIAAAVuAAAFgQAABZ0AAAWwAAAFzAAABegAAAX7AAAGFwAAAGJ1
+    ZHRhAAAAWm1ldGEAAAAAAAAAIWhkbHIAAAAAAAAAAG1kaXJhcHBsAAAAAAAAAAAAAAAALWlsc3QAAAAl
+    qXRvbwAAAB1kYXRhAAAAAQAAAABMYXZmNTUuMzMuMTAw
+
+- title: prevent-fab-3.2.0
+  comment: Fuckadblock 3.2.0 defuser
+  aliases:
+    - fuckadblock.js-3.2.0
+  contentType: application/javascript
+  content: |-
+    (function(source, args){
+    function preventFab(source) {
+        hit(source);
+
+        var Fab = function Fab() {};
+
+        Fab.prototype.check = noop;
+        Fab.prototype.clearEvent = noop;
+        Fab.prototype.emitEvent = noop;
+
+        Fab.prototype.on = function (a, b) {
+          if (!a) {
+            b();
+          }
+
+          return this;
+        };
+
+        Fab.prototype.onDetected = function () {
+          return this;
+        };
+
+        Fab.prototype.onNotDetected = function (a) {
+          a();
+          return this;
+        };
+
+        Fab.prototype.setOption = noop;
+        window.FuckAdBlock = window.BlockAdBlock = Fab; //
+
+        window.fuckAdBlock = window.blockAdBlock = new Fab();
+      }
+    function noop() {}
+    function hit(source, message) {
+        if (source.verbose !== true) {
+          return;
+        }
+
+        var log = console.log.bind(console);
+        var trace = console.trace.bind(console);
+
+        if (message) {
+          log("".concat(source.ruleText, " message:\n").concat(message));
+        }
+
+        log("".concat(source.ruleText, " trace start"));
+
+        if (trace) {
+          trace();
+        }
+
+        log("".concat(source.ruleText, " trace end")); // This is necessary for unit-tests only!
+
+        if (typeof window.__debugScriptlets === 'function') {
+          window.__debugScriptlets(source);
+        }
+      };
+            const updatedArgs = args ? [].concat(source).concat(args) : [source];
+            preventFab.apply(this, updatedArgs);
+        
+    })({"name":"prevent-fab-3.2.0"});
+
+- title: set-popads-dummy
+  comment: Sets static properties PopAds and popns
+  aliases:
+    - popads-dummy.js
+  contentType: application/javascript
+  content: |-
+    (function(source, args){
+    function setPopadsDummy(source) {
+        delete window.PopAds;
+        delete window.popns;
+        Object.defineProperties(window, {
+          PopAds: {
+            get: function get() {
+              hit(source);
+              return {};
+            }
+          },
+          popns: {
+            get: function get() {
+              hit(source);
+              return {};
+            }
+          }
+        });
+      }
+    function hit(source, message) {
+        if (source.verbose !== true) {
+          return;
+        }
+
+        var log = console.log.bind(console);
+        var trace = console.trace.bind(console);
+
+        if (message) {
+          log("".concat(source.ruleText, " message:\n").concat(message));
+        }
+
+        log("".concat(source.ruleText, " trace start"));
+
+        if (trace) {
+          trace();
+        }
+
+        log("".concat(source.ruleText, " trace end")); // This is necessary for unit-tests only!
+
+        if (typeof window.__debugScriptlets === 'function') {
+          window.__debugScriptlets(source);
+        }
+      };
+            const updatedArgs = args ? [].concat(source).concat(args) : [source];
+            setPopadsDummy.apply(this, updatedArgs);
+        
+    })({"name":"set-popads-dummy"});
+
+- title: prevent-popads-net
+  comment: >-
+    Aborts on property write (PopAds, popns), throws reference error with random
+    id
+  aliases:
+    - popads.net.js
+  contentType: application/javascript
+  content: |-
+    (function(source, args){
+    function preventPopadsNet(source) {
+        var rid = randomId();
+
+        var throwError = function throwError() {
+          throw new ReferenceError(rid);
+        };
+
+        delete window.PopAds;
+        delete window.popns;
+        Object.defineProperties(window, {
+          PopAds: {
+            set: throwError
+          },
+          popns: {
+            set: throwError
+          }
+        });
+        window.onerror = createOnErrorHandler(rid).bind();
+        hit(source);
+      }
+    function createOnErrorHandler(rid) {
+        // eslint-disable-next-line consistent-return
+        var nativeOnError = window.onerror;
+        return function onError(error) {
+          if (typeof error === 'string' && error.indexOf(rid) !== -1) {
+            return true;
+          }
+
+          if (nativeOnError instanceof Function) {
+            for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+              args[_key - 1] = arguments[_key];
+            }
+
+            return nativeOnError.apply(this, [error].concat(args));
+          }
+
+          return false;
+        };
+      }
+    function randomId() {
+        return Math.random().toString(36).substr(2, 9);
+      }
+    function hit(source, message) {
+        if (source.verbose !== true) {
+          return;
+        }
+
+        var log = console.log.bind(console);
+        var trace = console.trace.bind(console);
+
+        if (message) {
+          log("".concat(source.ruleText, " message:\n").concat(message));
+        }
+
+        log("".concat(source.ruleText, " trace start"));
+
+        if (trace) {
+          trace();
+        }
+
+        log("".concat(source.ruleText, " trace end")); // This is necessary for unit-tests only!
+
+        if (typeof window.__debugScriptlets === 'function') {
+          window.__debugScriptlets(source);
+        }
+      };
+            const updatedArgs = args ? [].concat(source).concat(args) : [source];
+            preventPopadsNet.apply(this, updatedArgs);
+        
+    })({"name":"prevent-popads-net"});
+
+- title: noeval.js
+  comment: Prevents page to use eval.
+  aliases:
+    - silent-noeval.js
+    - noeval
+  contentType: application/javascript
+  content: |-
+    (function(source, args){
+    function noeval(source) {
+        window.eval = function evalWrapper(s) {
+          hit(source, "AdGuard has prevented eval:\n".concat(s));
+        }.bind();
+      }
+    function hit(source, message) {
+        if (source.verbose !== true) {
+          return;
+        }
+
+        var log = console.log.bind(console);
+        var trace = console.trace.bind(console);
+
+        if (message) {
+          log("".concat(source.ruleText, " message:\n").concat(message));
+        }
+
+        log("".concat(source.ruleText, " trace start"));
+
+        if (trace) {
+          trace();
+        }
+
+        log("".concat(source.ruleText, " trace end")); // This is necessary for unit-tests only!
+
+        if (typeof window.__debugScriptlets === 'function') {
+          window.__debugScriptlets(source);
+        }
+      };
+            const updatedArgs = args ? [].concat(source).concat(args) : [source];
+            noeval.apply(this, updatedArgs);
+        
+    })({"name":"noeval.js"});
