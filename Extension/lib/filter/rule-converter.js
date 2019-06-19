@@ -20,11 +20,13 @@
     /**
      * AdGuard scriptlet mask
      */
+    // eslint-disable-next-line no-template-curly-in-string
     const ADGUARD_SCRIPTLET_MASK = '${domains}#%#//scriptlet(${args})';
 
     /**
      * AdGuard scriptlet exception mask
      */
+    // eslint-disable-next-line no-template-curly-in-string
     const ADGUARD_SCRIPTLET_EXCEPTION_MASK = '${domains}#@%#//scriptlet(${args})';
 
     /**
@@ -35,6 +37,7 @@
     const UBO_SCRIPTLET_MASK_2 = '##script:inject';
     const UBO_SCRIPTLET_EXCEPTION_MASK_1 = '#@#+js';
     const UBO_SCRIPTLET_EXCEPTION_MASK_2 = '#@#script:inject';
+    const UBO_SCRIPT_MASK = '##^script';
     /**
      * AdBlock Plus snippet rule mask
      */
@@ -149,9 +152,9 @@
     function isUboScriptletRule(rule) {
         return (
             rule.indexOf(UBO_SCRIPTLET_MASK_1) > -1
-                || rule.indexOf(UBO_SCRIPTLET_MASK_2) > -1
-                || rule.indexOf(UBO_SCRIPTLET_EXCEPTION_MASK_1) > -1
-                || rule.indexOf(UBO_SCRIPTLET_EXCEPTION_MASK_2) > -1
+            || rule.indexOf(UBO_SCRIPTLET_MASK_2) > -1
+            || rule.indexOf(UBO_SCRIPTLET_EXCEPTION_MASK_1) > -1
+            || rule.indexOf(UBO_SCRIPTLET_EXCEPTION_MASK_2) > -1
         )
             && UBO_SCRIPTLET_MASK_REG.test(rule);
     }
@@ -165,6 +168,25 @@
             rule.indexOf(ABP_SCRIPTLET_MASK) > -1
             || rule.indexOf(ABP_SCRIPTLET_EXCEPTION_MASK) > -1
         ) && rule.search(ADG_CSS_MASK_REG) === -1;
+    }
+
+    /**
+     * Converts UBO Script rule
+     * @param {string} ruleText rule text
+     * @returns {string} converted rule
+     */
+    function convertUboScriptRule(ruleText) {
+        if (ruleText.indexOf(UBO_SCRIPT_MASK) === -1) {
+            return null;
+        }
+
+        // We convert only one case ##^script:has-text at now
+        const uboHasTextRule = `${UBO_SCRIPT_MASK}:has-text`;
+        if (ruleText.indexOf(uboHasTextRule) === -1) {
+            return ruleText;
+        }
+        // js converts $$ to "$", so we need to use $$$$ to convert it to "$$"
+        return ruleText.replace(uboHasTextRule, '$$$$script[tag-contains]');
     }
 
     /**
@@ -308,6 +330,12 @@
         if (isAbpSnippetRule(rule)) {
             return convertAbpSnippetRule(rule);
         }
+
+        const uboScriptRule = convertUboScriptRule(rule);
+        if (uboScriptRule) {
+            return uboScriptRule;
+        }
+
         const uboCssStyleRule = convertUboCssStyleRule(rule);
         if (uboCssStyleRule) {
             return uboCssStyleRule;
