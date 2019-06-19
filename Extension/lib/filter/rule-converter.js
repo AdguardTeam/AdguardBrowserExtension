@@ -37,7 +37,7 @@
     const UBO_SCRIPTLET_MASK_2 = '##script:inject';
     const UBO_SCRIPTLET_EXCEPTION_MASK_1 = '#@#+js';
     const UBO_SCRIPTLET_EXCEPTION_MASK_2 = '#@#script:inject';
-    const UBO_SCRIPT_MASK = '##^script';
+    const UBO_SCRIPT_TAG_MASK = '##^script';
     /**
      * AdBlock Plus snippet rule mask
      */
@@ -175,18 +175,35 @@
      * @param {string} ruleText rule text
      * @returns {string} converted rule
      */
-    function convertUboScriptRule(ruleText) {
-        if (ruleText.indexOf(UBO_SCRIPT_MASK) === -1) {
+    function convertUboScriptTagRule(ruleText) {
+        if (ruleText.indexOf(UBO_SCRIPT_TAG_MASK) === -1) {
             return null;
         }
 
         // We convert only one case ##^script:has-text at now
-        const uboHasTextRule = `${UBO_SCRIPT_MASK}:has-text`;
-        if (ruleText.indexOf(uboHasTextRule) === -1) {
-            return ruleText;
+        const uboHasTextRule = ':has-text';
+        const adgSriptTag = '$$script';
+        const uboScriptTag = '##^script';
+
+        const isRegExp = str => str[0] === '/' && str[str.length - 1] === '/';
+
+        const match = ruleText.split(uboHasTextRule);
+        if (match.length === 1) {
+            return null;
         }
-        // js converts $$ to "$", so we need to use $$$$ to convert it to "$$"
-        return ruleText.replace(uboHasTextRule, '$$$$script[tag-contains]');
+
+        const domains = match[0].replace(uboScriptTag, '');
+        const rules = [];
+        for (let i = 1; i < match.length; i += 1) {
+            const attr = match[i].slice(1, -1);
+            if (isRegExp(attr)) {
+                rules.push(`${domains}${uboScriptTag}${uboHasTextRule}(${attr})`);
+            } else {
+                rules.push(`${domains}${adgSriptTag}[tag-content="${attr}"]`);
+            }
+        }
+
+        return rules;
     }
 
     /**
@@ -331,7 +348,7 @@
             return convertAbpSnippetRule(rule);
         }
 
-        const uboScriptRule = convertUboScriptRule(rule);
+        const uboScriptRule = convertUboScriptTagRule(rule);
         if (uboScriptRule) {
             return uboScriptRule;
         }
