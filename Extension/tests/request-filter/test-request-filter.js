@@ -812,3 +812,20 @@ QUnit.test('converts empty and mp4 modifiers into redirect rules', (assert) => {
     expected = adguard.rules.ruleConverter.convertRule('||anyporn.com/xml^$media,redirect=noopmp4-1s');
     assert.equal(actual, expected);
 });
+
+QUnit.test('converts empty and mp4 modifiers into redirect rules', (assert) => {
+    let rule = 'example.com##^script:some-another-rule(test)';
+    let actual = adguard.rules.ruleConverter.convertRule(rule);
+    assert.equal(actual, rule, 'Shold returns the same rule');
+
+    rule = 'example.com##^script:has-text(12313)';
+    actual = adguard.rules.ruleConverter.convertRule(rule);
+    assert.equal(actual.length, 1, 'Single rule check');
+    assert.equal(actual[0], 'example.com$$script[tag-content="12313"]', 'Should be conceverted to adg rule');
+
+    rule = 'example.com##^script:has-text(===):has-text(/[\w\W]{16000}/)';
+    actual = adguard.rules.ruleConverter.convertRule(rule);
+    assert.equal(actual.length, 2, 'Two rules, one of then nor supporting');
+    assert.equal(actual[0], 'example.com$$script[tag-content="==="]', 'Should be converted to adg rule');
+    assert.equal(actual[1], 'example.com##^script:has-text(/[wW]{16000}/)', 'Should be separated to ubo rule');
+});

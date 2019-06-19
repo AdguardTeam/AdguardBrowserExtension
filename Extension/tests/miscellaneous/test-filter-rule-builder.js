@@ -28,12 +28,9 @@ QUnit.test('Build Rules', (assert) => {
 });
 
 QUnit.test('Unsupported rules', (assert) => {
-    let rule = adguard.rules.builder.createRule('#$#body { background: black }', 0);
+    const rule = adguard.rules.builder.createRule('#$#body { background: black }', 0);
     assert.ok(rule);
     assert.ok(rule instanceof adguard.rules.CssFilterRule);
-
-    rule = adguard.rules.builder.createRule('example.com##^script:has-text(7c9e3a5d51cdacfc)', 0);
-    assert.notOk(rule);
 });
 
 
