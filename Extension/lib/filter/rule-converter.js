@@ -226,13 +226,13 @@
             RULE_MARKER_FIRST_CHAR
         );
         if (!mask) {
-            return false;
+            return null;
         }
         const maskIndex = ruleText.indexOf(mask);
         const cssContent = ruleText.substring(maskIndex + mask.length);
         const shouldConvert = cssContent.indexOf(UBO_CSS_STYLE_PSEUDO_CLASS) > -1;
         if (!shouldConvert) {
-            return false;
+            return null;
         }
 
         const domainsPart = ruleText.substring(0, maskIndex);
