@@ -20,11 +20,13 @@
     /**
      * AdGuard scriptlet mask
      */
+    // eslint-disable-next-line no-template-curly-in-string
     const ADGUARD_SCRIPTLET_MASK = '${domains}#%#//scriptlet(${args})';
 
     /**
      * AdGuard scriptlet exception mask
      */
+    // eslint-disable-next-line no-template-curly-in-string
     const ADGUARD_SCRIPTLET_EXCEPTION_MASK = '${domains}#@%#//scriptlet(${args})';
 
     /**
@@ -35,6 +37,7 @@
     const UBO_SCRIPTLET_MASK_2 = '##script:inject';
     const UBO_SCRIPTLET_EXCEPTION_MASK_1 = '#@#+js';
     const UBO_SCRIPTLET_EXCEPTION_MASK_2 = '#@#script:inject';
+    const UBO_SCRIPT_TAG_MASK = '##^script';
     /**
      * AdBlock Plus snippet rule mask
      */
@@ -149,9 +152,9 @@
     function isUboScriptletRule(rule) {
         return (
             rule.indexOf(UBO_SCRIPTLET_MASK_1) > -1
-                || rule.indexOf(UBO_SCRIPTLET_MASK_2) > -1
-                || rule.indexOf(UBO_SCRIPTLET_EXCEPTION_MASK_1) > -1
-                || rule.indexOf(UBO_SCRIPTLET_EXCEPTION_MASK_2) > -1
+            || rule.indexOf(UBO_SCRIPTLET_MASK_2) > -1
+            || rule.indexOf(UBO_SCRIPTLET_EXCEPTION_MASK_1) > -1
+            || rule.indexOf(UBO_SCRIPTLET_EXCEPTION_MASK_2) > -1
         )
             && UBO_SCRIPTLET_MASK_REG.test(rule);
     }
@@ -165,6 +168,42 @@
             rule.indexOf(ABP_SCRIPTLET_MASK) > -1
             || rule.indexOf(ABP_SCRIPTLET_EXCEPTION_MASK) > -1
         ) && rule.search(ADG_CSS_MASK_REG) === -1;
+    }
+
+    /**
+     * Converts UBO Script rule
+     * @param {string} ruleText rule text
+     * @returns {string} converted rule
+     */
+    function convertUboScriptTagRule(ruleText) {
+        if (ruleText.indexOf(UBO_SCRIPT_TAG_MASK) === -1) {
+            return null;
+        }
+
+        // We convert only one case ##^script:has-text at now
+        const uboHasTextRule = ':has-text';
+        const adgSriptTag = '$$script';
+        const uboScriptTag = '##^script';
+
+        const isRegExp = str => str[0] === '/' && str[str.length - 1] === '/';
+
+        const match = ruleText.split(uboHasTextRule);
+        if (match.length === 1) {
+            return null;
+        }
+
+        const domains = match[0].replace(uboScriptTag, '');
+        const rules = [];
+        for (let i = 1; i < match.length; i += 1) {
+            const attr = match[i].slice(1, -1);
+            if (isRegExp(attr)) {
+                rules.push(`${domains}${uboScriptTag}${uboHasTextRule}(${attr})`);
+            } else {
+                rules.push(`${domains}${adgSriptTag}[tag-content="${attr}"]`);
+            }
+        }
+
+        return rules;
     }
 
     /**
@@ -204,13 +243,13 @@
             RULE_MARKER_FIRST_CHAR
         );
         if (!mask) {
-            return false;
+            return null;
         }
         const maskIndex = ruleText.indexOf(mask);
         const cssContent = ruleText.substring(maskIndex + mask.length);
         const shouldConvert = cssContent.indexOf(UBO_CSS_STYLE_PSEUDO_CLASS) > -1;
         if (!shouldConvert) {
-            return false;
+            return null;
         }
 
         const domainsPart = ruleText.substring(0, maskIndex);
@@ -308,6 +347,12 @@
         if (isAbpSnippetRule(rule)) {
             return convertAbpSnippetRule(rule);
         }
+
+        const uboScriptRule = convertUboScriptTagRule(rule);
+        if (uboScriptRule) {
+            return uboScriptRule;
+        }
+
         const uboCssStyleRule = convertUboCssStyleRule(rule);
         if (uboCssStyleRule) {
             return uboCssStyleRule;
