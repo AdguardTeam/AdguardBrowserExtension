@@ -1,8 +1,8 @@
-! Checksum: SybLAmJNvRdFnXLYJFb7AA
+! Checksum: eh0Rn8wzEOK2B+QBARg9aQ
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.1.91
-! TimeUpdated: 2019-05-28T15:31:02+03:00
+! Version: 2.0.1.95
+! TimeUpdated: 2019-06-18T15:03:14+03:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -347,6 +347,7 @@ mindhack2ch.com##.article-body > .rss:has(> script)
 mindhack2ch.com##.article-post-bottom > .rss-article:has(> .rss-article-item)
 melos.media##.x1_article > .x1_articleArea[-ext-has='div.x1_siteTitle:contains([PR])']
 repeat-drama.info##.side_inner > .box:contains(スポンサーリンク)
+momon-ga.com##.repo-title:has(> strong)
 ###AD1line
 ###AD2line
 ###ADInterest
@@ -420,6 +421,9 @@ repeat-drama.info##.side_inner > .box:contains(スポンサーリンク)
 ##a[href^="http://ad2.trafficgate.net/"]
 ##a[href^="http://www.rssad.jp/"]
 xbooks.to#%#document.cookie = "pop=1";
+blog.esuteru.com#$#.siteContent { margin-top: 0!important; }
+blog.esuteru.com#$#.siteRanking-main { margin-left: 0!important; }
+hostlove.com#$##index_nav > h1 { padding-top: 30px!important; }
 appllio.com#$#body > #page-upper { min-height: 0!important; }
 weblio.jp#$#body[onload=""] { padding-bottom: 0!important; }
 ogeji.hatenablog.com#$#.sleeping-ads {position: absolute!important; left: -3000px!important; }
@@ -490,6 +494,13 @@ iza.ne.jp#$#.sideFixedWrapper { position: relative!important; }
 /top/head_s_bnr
 /yaad.js
 _ds_adtag_
+news-us.org##.adspc
+news-us.org##.ps-300-250
+news-us.org##div[itemtype="https://schema.org/WPAdBlock"]
+blog.esuteru.com##a.jackFix
+blog.esuteru.com##.ad-aside > a[target="_blank"]
+blog.esuteru.com##.ad-siteRanking
+blog.esuteru.com##.article-main .rss.clearfix
 shopping.yahoo.co.jp##.mdNorthBuyee
 javmix.tv##.__isboostOverContent
 top.togeko.net##a[href^="https://book.dmm.co.jp"]
@@ -673,7 +684,6 @@ bakufu.jp###prBox
 ||momon-ga.com/pickup3.html
 momon-ga.com###main-inner > .rss2
 momon-ga.com###main-inner > .rss3
-momon-ga.com##.repo-title:has(> strong)
 momon-ga.com###article-contents > .post-footer
 momon-ga.com##.container-inner > section[id^="comments-"] ~ div[style*="margin-bottom"]:not([id]):not([class])
 ||livelog.biz^$domain=momon-ga.com
