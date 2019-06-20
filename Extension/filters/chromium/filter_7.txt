@@ -1,8 +1,8 @@
-! Checksum: lFT6bCdresQLjzIolX+CLw
+! Checksum: WupZEHllhoz7rcL+ZtmpSg
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.1.91
-! TimeUpdated: 2019-05-28T15:31:02+03:00
+! Version: 2.0.1.95
+! TimeUpdated: 2019-06-18T15:03:14+03:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#japanese
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -505,6 +505,7 @@ mindhack2ch.com##.article-post-bottom > .rss-article:has(> .rss-article-item)
 !
 melos.media##.x1_article > .x1_articleArea[-ext-has='div.x1_siteTitle:contains([PR])']
 repeat-drama.info##.side_inner > .box:contains(スポンサーリンク)
+momon-ga.com##.repo-title:has(> strong)
 !---------------------------------------------------------------------------!
 !-------------- General element hiding rules -------------------------------!
 !---------------------------------------------------------------------------!
@@ -600,6 +601,11 @@ xbooks.to#%#document.cookie = "pop=1";
 !-------CSS---------
 !-------------------
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/34774
+blog.esuteru.com#$#.siteContent { margin-top: 0!important; }
+blog.esuteru.com#$#.siteRanking-main { margin-left: 0!important; }
+! https://github.com/AdguardTeam/AdguardFilters/issues/26823
+hostlove.com#$##index_nav > h1 { padding-top: 30px!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/23925
 appllio.com#$#body > #page-upper { min-height: 0!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/23113
@@ -692,6 +698,13 @@ _ds_adtag_
 !
 ! Section contains rules for specific websites
 !
+news-us.org##.adspc
+news-us.org##.ps-300-250
+news-us.org##div[itemtype="https://schema.org/WPAdBlock"]
+blog.esuteru.com##a.jackFix
+blog.esuteru.com##.ad-aside > a[target="_blank"]
+blog.esuteru.com##.ad-siteRanking
+blog.esuteru.com##.article-main .rss.clearfix
 shopping.yahoo.co.jp##.mdNorthBuyee
 javmix.tv##.__isboostOverContent
 top.togeko.net##a[href^="https://book.dmm.co.jp"]
@@ -875,7 +888,6 @@ bakufu.jp###prBox
 ||momon-ga.com/pickup3.html
 momon-ga.com###main-inner > .rss2
 momon-ga.com###main-inner > .rss3
-momon-ga.com##.repo-title:has(> strong)
 momon-ga.com###article-contents > .post-footer
 momon-ga.com##.container-inner > section[id^="comments-"] ~ div[style*="margin-bottom"]:not([id]):not([class])
 ||livelog.biz^$domain=momon-ga.com

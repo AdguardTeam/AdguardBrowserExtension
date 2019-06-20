@@ -1,8 +1,8 @@
-! Checksum: Ks1FxjkqvXTYD5VZL8TkAw
+! Checksum: +ML38qxDM+Le5fcNAPwc4w
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.0.56
-! TimeUpdated: 2019-05-15T13:31:09+03:00
+! Version: 2.0.0.57
+! TimeUpdated: 2019-06-18T15:03:17+03:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -1326,6 +1326,7 @@ telegraaf.nl#%#window.canRunAds = true;
 @@||static.buienradar.nl/resources/js/advertisement.js
 biernet.nl#@#.afs_ads
 @@||telegraaf.tcdn.nl/javascript/showads*.js
+turksemedia.nl#$?#div[class="sidebar_item"][style="padding-bottom: 16px;"]:has(> a > img[width="276"]) { remove: true; }
 appletips.nl##.padnoshow > div[class^="block"][-ext-has='#kpwrfeatured']
 sceptr.net##.td-main-sidebar > .td-ss-main-sidebar > .widget_text:has(> h4.block-title > span:contains(ADVERTENTIE))
 androidplanet.nl##.sidebar > .widget_static_device_widget:has(.device-ad)
@@ -1340,6 +1341,7 @@ klusidee.nl##tr.table-row[-ext-has=".td-ad"]
 omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3000px!important; }
 handbalstartpunt.nl#$##advertentie-top { height: 0!important; }
 omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
+turksemedia.nl##div[class="sidebar_item"][style="padding-bottom: 16px;"] > a > img[width="276"]
 filmtotaal.nl##.ad-centering
 marktplaats.nl##.banner-viptop
 marktplaats.nl##.mp-adsense-header
