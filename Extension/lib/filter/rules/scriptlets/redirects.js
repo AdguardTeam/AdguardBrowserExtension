@@ -3914,19 +3914,24 @@ var Redirects = (function () {
     createClass(Redirects, [{
       key: "getRedirect",
       value: function getRedirect(title) {
+        var _this = this;
+
         if (Object.prototype.hasOwnProperty.call(this.redirects, title)) {
           return this.redirects[title];
         } // look title among aliases
 
 
-        return Object.values(this.redirects).find(function (redirect) {
+        var values = Object.keys(this.redirects).map(function (key) {
+          return _this.redirects[key];
+        });
+        return values.find(function (redirect) {
           var aliases = redirect.aliases;
 
           if (!aliases) {
             return false;
           }
 
-          return aliases.includes(title);
+          return aliases.indexOf(title) > -1;
         });
       }
     }]);
