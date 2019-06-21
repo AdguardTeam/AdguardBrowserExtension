@@ -246,6 +246,7 @@
 
     adguard.backend.configure({
         localFiltersFolder: 'adguard',
+        redirectSourcesFolder: 'adguard',
         localFilterIds: []
     });
 
