@@ -27,6 +27,8 @@ const API_SCRIPTS = [
     'Extension/lib/libs/filter-downloader.js',
     'Extension/lib/libs/crypto-js/core.js',
     'Extension/lib/libs/crypto-js/md5.js',
+    'Extension/lib/filter/rules/scriptlets/redirects.js',
+    'Extension/lib/filter/rules/scriptlets/scriptlets.js',
     // Adguard Global and preExtension/ferences
     'Extension/lib/adguard.js',
     'Extension/browser/webkit/lib/prefs.js',
@@ -73,6 +75,7 @@ const API_SCRIPTS = [
     'Extension/lib/filter/rules/replace-filter.js',
     'Extension/lib/filter/rules/filter-rule-builder.js',
     'Extension/lib/filter/rules/scriptlet-rule.js',
+    'Extension/lib/filter/rules/redirect-filter.js',
     'Extension/lib/filter/rules/composite-rule.js',
     // Filters metadata and filtration modules
     'Extension/lib/filter/subscription.js',
@@ -105,9 +108,12 @@ const paths = {
     contentScriptsStartFile: path.join('adguard/adguard-content.js'),
     filters: [
         path.join('Extension/filters/chromium/filters_i18n.json'),
-        path.join('Extension/filters/chromium/filters.json')
+        path.join('Extension/filters/chromium/filters.json'),
     ],
-    dest: path.join(BUILD_DIR, BRANCH, `adguard-api-${version}`)
+    redirects: [
+        path.join('Extension/lib/filter/rules/scriptlets/redirects.yml'),
+    ],
+    dest: path.join(BUILD_DIR, BRANCH, `adguard-api-${version}`),
 };
 
 const dest = {
@@ -126,6 +132,9 @@ const copyAssistant = () => gulp.src(paths.assistant).pipe(gulp.dest(dest.assist
 
 //  copy filters
 const copyFilters = () => gulp.src(paths.filters).pipe(gulp.dest(dest.adguard));
+
+// copy redirects sources
+const copyRedirects = () => gulp.src(paths.redirects).pipe(gulp.dest(dest.adguard));
 
 const concatStartFiles = () => concat('document_start', 'adguard-content.js');
 const concatEndFiles = () => concat('document_end', 'adguard-assistant.js');
@@ -180,4 +189,4 @@ const createArchive = (done) => {
         .pipe(gulp.dest(dest.buildDir));
 };
 
-export default gulp.series(copyAssistant, sampleApi, concatStartFiles, concatEndFiles, apiConcat, copyFilters, updateManifest, createArchive);
+export default gulp.series(copyAssistant, sampleApi, concatStartFiles, concatEndFiles, apiConcat, copyFilters, copyRedirects, updateManifest, createArchive);
