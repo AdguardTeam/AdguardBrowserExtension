@@ -16,31 +16,31 @@ import updatePublicSuffixList from './update-public-suffix-list';
 import renewLocales from './renew-locales';
 
 // download filters to repository
-export const downloadFilters = gulp.series(downloadAllFilters, updateLocalScriptRules, (done) => done());
+export const downloadFilters = gulp.series(downloadAllFilters, updateLocalScriptRules, done => done());
 
 // download localizations to repository
-export const downloadLocalesStream = gulp.series(downloadLocales, (done) => done());
+export const downloadLocalesStream = gulp.series(downloadLocales, done => done());
 
 // upload localizations to oneskyapp
-export const uploadLocalesStream = gulp.series(uploadLocales, (done) => done());
+export const uploadLocalesStream = gulp.series(uploadLocales, done => done());
 
 // tests
-export const runTests = gulp.series(tests, (done) => done());
+export const runTests = gulp.series(tests, done => done());
 
 // build updates files
-export const buildUpdatesFilesStream = gulp.series(buildUpdatesFiles, (done) => done());
+export const buildUpdatesFilesStream = gulp.series(buildUpdatesFiles, done => done());
 
 // dev build
-export const buildDev = gulp.series(chromium, firefoxAmo, firefoxWebext, edge, api, (done) => done());
+export const buildDev = gulp.series(chromium, firefoxAmo, firefoxWebext, edge, api, done => done());
 
 // beta build
-export const buildBeta = gulp.series(chromium, firefoxWebext, edge, api, clean, (done) => done());
+export const buildBeta = gulp.series(chromium, firefoxWebext, edge, api, clean, done => done());
 
 // release build
-export const buildRelease = gulp.series(chromium, opera, firefoxAmo, edge, clean, (done) => done());
+export const buildRelease = gulp.series(chromium, opera, firefoxAmo, edge, clean, done => done());
 
 // download resources
-export const downloadResources = gulp.series(downloadFilters, updatePublicSuffixList, (done) => done());
+export const downloadResources = gulp.series(downloadFilters, updatePublicSuffixList, done => done());
 
 // renew locales
 export const rebuildLocales = gulp.series(renewLocales);
