@@ -122,8 +122,8 @@ adguard.backend = (function (adguard) {
             return 'filters';
         },
         // Path to the redirect sources
-        get redirectSourcesFile() {
-            return 'lib/filter/rules/scriptlets/redirects.yml';
+        get redirectSourcesFolder() {
+            return 'lib/filter/rules/scriptlets';
         },
         // Array of filter identifiers, that have local file with rules. Range from 1 to 14 by default
         get localFilterIds() {
@@ -337,7 +337,8 @@ adguard.backend = (function (adguard) {
         };
 
         const error = (request, ex) => {
-            reject(createError(ex.message, url, request));
+            const exMessage = (ex && ex.message) || 'couldn\'t load local filters metadata';
+            reject(createError(exMessage, url, request));
         };
 
         executeRequestAsync(url, 'application/json', success, error);
@@ -363,7 +364,8 @@ adguard.backend = (function (adguard) {
         };
 
         const error = (request, ex) => {
-            reject(createError(ex.message, url, request));
+            const exMessage = (ex && ex.message) || 'couldn\'t load local filters i18n metadata';
+            reject(createError(exMessage, url, request));
         };
 
         executeRequestAsync(url, 'application/json', success, error);
@@ -390,7 +392,8 @@ adguard.backend = (function (adguard) {
         };
 
         const error = (request, ex) => {
-            reject(createError(ex.message, url, request));
+            const exMessage = (ex && ex.message) || 'couldn\'t load local script rules';
+            reject(createError(exMessage, url, request));
         };
 
         executeRequestAsync(url, 'application/json', success, error);
@@ -401,7 +404,7 @@ adguard.backend = (function (adguard) {
      * @returns {Promise}
      */
     const loadRedirectSources = () => new Promise((resolve, reject) => {
-        const url = adguard.getURL(settings.redirectSourcesFile);
+        const url = `${adguard.getURL(settings.redirectSourcesFolder)}/redirects.yml`;
 
         const success = (response) => {
             if (response && response.responseText) {
@@ -412,7 +415,8 @@ adguard.backend = (function (adguard) {
         };
 
         const error = (request, ex) => {
-            reject(createError(ex.message, url, request));
+            const exMessage = (ex && ex.message) || 'couldn\'t load redirect sources';
+            reject(createError(exMessage, url, request));
         };
 
         executeRequestAsync(url, 'application/x-yaml', success, error);
@@ -594,6 +598,16 @@ adguard.backend = (function (adguard) {
                 }
             });
         }
+
+        const { redirectSourcesFolder } = configuration;
+        if (redirectSourcesFolder) {
+            Object.defineProperty(settings, 'redirectSourcesFolder', {
+                get() {
+                    return redirectSourcesFolder;
+                },
+            });
+        }
+
         var localFilterIds = configuration.localFilterIds;
         if (localFilterIds) {
             Object.defineProperty(settings, 'localFilterIds', {
