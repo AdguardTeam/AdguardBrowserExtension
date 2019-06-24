@@ -1,8 +1,8 @@
-! Checksum: ONSkFOukvicDWu0zQ0TBWw
+! Checksum: lZhcJ1RnYlXXTXB+fGmwGA
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.0.56
-! TimeUpdated: 2019-05-15T13:31:09+03:00
+! Version: 2.0.0.57
+! TimeUpdated: 2019-06-18T15:03:17+03:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#dutch
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -1422,6 +1422,8 @@ biernet.nl#@#.afs_ads
 !
 ! Extended CSS rules
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/35383
+turksemedia.nl#$?#div[class="sidebar_item"][style="padding-bottom: 16px;"]:has(> a > img[width="276"]) { remove: true; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/21777
 appletips.nl##.padnoshow > div[class^="block"][-ext-has='#kpwrfeatured']
 ! https://github.com/AdguardTeam/AdguardFilters/issues/20572
@@ -1483,6 +1485,7 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 !--------------------------------------------------------!
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
+turksemedia.nl##div[class="sidebar_item"][style="padding-bottom: 16px;"] > a > img[Width="276"]
 filmtotaal.nl##.ad-centering
 marktplaats.nl##.banner-viptop
 marktplaats.nl##.mp-adsense-header

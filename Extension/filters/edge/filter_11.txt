@@ -1,8 +1,8 @@
-! Checksum: lnsXJmlMr3vgNQkfz5nxnQ
+! Checksum: dk8OcZMnFLziSNCINPZE/Q
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.6.10
-! TimeUpdated: 2019-05-29T03:30:10+03:00
+! Version: 2.0.6.37
+! TimeUpdated: 2019-06-19T22:30:12+03:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#mobile
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -130,6 +130,14 @@
 ||criteo.com^
 ||criteo.net^
 !
+||ad.auditude.com^
+||adfiles.auditude.com^
+||cdn.auditude.com^
+||cdn2.auditude.com^
+||otcdn2.auditude.com^
+||www.auditude.com^
+||manifest.auditude.com^$domain=~not_for_sdn_filter.com
+!
 ! DU ads
 /adunion/*
 ||mblapi.ssl2.duapps.com^
@@ -155,6 +163,7 @@
 ||plugin.mobopay.baidu.com^
 ||mo.freeindoapp.com^
 !
+||promoted.soundcloud.com^
 ||activity.browser.intl.miui.com^
 ||api.brs.intl.miui.com^
 ||api.newsfeed.intl.miui.com^
@@ -575,7 +584,6 @@
 ||atemda.com^
 ||ato.mx^
 ||atti.com^
-||auditude.com^
 ||avazutracking.net^
 ||awltovhc.com^
 ||axonix.com^
@@ -1132,6 +1140,8 @@ westseattleblog.com#@#.header-ad
 !
 ! Extended CSS rules
 !
+!
+momon-ga.com##.section-box:has(.list-box)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/28776
 dailynkjp.com#$?##im_interstitial_panel { remove: true; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/28416
@@ -1203,7 +1213,8 @@ lifehack.org##.visible-xs[style^="background-color: rgb"]:has([id^="lifehack_m_"
 ! https://github.com/AdguardTeam/AdguardFilters/issues/7074
 womenshealth.de##body > .list__header:contains(Sponsored Section)
 ! https://forum.adguard.com/index.php?threads/25726/
-drive2.ru##.l-main.js-main div.o-grid-row > div[-ext-has='> div > div[style^="min-height: calc"]']
+drive2.ru##main > div.l-container > div[class]:not([id]):not([data-id]):not([data-type])[-ext-has=">div.o-group--top > h3:contains(Предложения компаний)"]
+drive2.ru##main > div.l-container > div.js-entity[-ext-has=">div[class] > div[class] > div.c-author > div.c-author__body > div.c-author__date > a.c-link.c-link--gray:contains(Продвигаемая запись)"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/7048
 m.bild.de##.txt > .element[-ext-has=">.tsr-info > h3:contains(Auch Interessant)"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6804
@@ -1432,6 +1443,7 @@ deviantart.com#$#div[class*="dp-ad-"] {height: 0!important; width: 0!important; 
 !
 !#####################
 !
+! https://forum.adguard.com/index.php?threads/www-dailymotion-com.31223
 ! https://github.com/AdguardTeam/AdguardFilters/issues/31426
 ! https://github.com/AdguardTeam/AdguardFilters/issues/31225
 ! https://github.com/AdguardTeam/AdguardFilters/issues/28826
@@ -1744,9 +1756,30 @@ m.news.de##.unisterAdsStart
 !+ NOT_PLATFORM(ios, ext_android_cb)
 ||mobile.donanimhaber.com/ads^
 !
+hochu.ua##.exp_300x250
+vg247.com##div[id^="mobile-mpu-"]
+woman.ru##.mob-in__container
+woman.ru##.notification__ad
+woman.ru##div[data-name="MobListVideo"]
+ebay.de,ebay.com###itemDiv > div > a[href^="https://pulsar.ebay."]
+pcgames.de##.strr_slot
+news-us.org##.adssmp
+nakkheeran.in##.post-block .auto-responsive-ad
+netzwelt.de###leaderboard_mobile
+deviantart.com##.mobile_instream_ad_resizable
+banazguncelhaber.com##.mobil_advert
+milliyetemlak.com##a[href][target="_blank"].sno-itunes.external > img
+pdalife.ru##.js-banner
+anifresh.com###minpack-sticker-frame
+stockingfetishvideo.com##.happy-header-mobile
+mobil.stern.de##.flying-carpet-element__ad-label + amp-fx-flying-carpet
+mobil.stern.de##.flying-carpet-element__ad-label
+mobil.stern.de##.ad-container
+jianshu.com##.dt-open-bg[data-scene="leftBtn"]
+jianshu.com##.note-comment-above-ad-wrap
+theinventory.com,thetakeout.com,theonion.com,splinternews.com,clickhole.com,avclub.com,deadspin.com,gizmodo.com,jalopnik.com,jezebel.com,kotaku.com,lifehacker.com,theroot.com##main > div > script[type="application/ld+json"] ~ div[class*="-1 "][class*="-0 "]
 theinventory.com,thetakeout.com,theonion.com,splinternews.com,clickhole.com,avclub.com,deadspin.com,gizmodo.com,jalopnik.com,jezebel.com,kotaku.com,lifehacker.com,theroot.com##.inline-ad-container
 rbc.ru##.banners__mobile-freeze
-rbc.ru##.banners__yandex__article
 lifo.gr##.ad_inside > .sticky-wrap
 eporner.com###ad-top-2
 ||eporner.com/dotm/pop2.php
@@ -1796,6 +1829,7 @@ pravda.com.ua,korrespondent.net##amp-iframe[src*=".lun.ua/"]
 www-spiegel-de.cdn.ampproject.org##.ampads
 obozrevatel.com##div.banner-premium
 cnn.com###social-share_gig_containerParent .PartnerZone
+mobile.donanimhaber.com###pop-container > .konular h3 > a[href^="https://www.n11.com/kampanyalar/"]
 mobile.donanimhaber.com##body > div[style="float: left;width:100%;"] > div[style="margin:10px auto; text-align:center; width:300px; height:250px;"]
 techrum.vn###revive_banner_mobile_div
 scotsman.com##.slab--bottommobilebanner
@@ -1845,7 +1879,6 @@ sagligabiradim.com##.mrf-adv
 ||momon-ga.com/*/pickup1.js
 ||momon-ga.com/*/pickup2.js
 momon-ga.com###lite_link > .list-box
-momon-ga.com##.section-box:has(.list-box)
 momon-ga.com##.section-box > .plugin-blogroll
 momon-ga.com##.article-body-more > .post-footer
 momon-ga.com##.content > div[style="margin-bottom:12px;"]
@@ -1965,7 +1998,7 @@ dongtw.com##.adfixWp
 dongtw.com##.jeg_ad
 motherless.com###advertisement-below-menu
 ||motherless.com/floater_iframe.php
-motherless.com##._ln-floater
+imagebam.com,motherless.com##._ln-floater
 kp.ru###mobile_push_bottom
 anyporn.com##.inplb
 anyporn.com###mh-ad
@@ -2126,7 +2159,7 @@ mobile.linuxtoday.com###m_imuAd
 mobile.linuxtoday.com###article-body > #ic_imu-1
 m.takvim.com.tr##div[ad="id_m_textlink"]
 m.benzinga.com##.benzinga-content-container > .item.columns.ad:empty
-magazinkafe.com##.mobil_advert
+ashaber.com,batialanya.com,omedyam.com,sakaryahaber.com,kemergozcu.com,magazinkafe.com##.mobil_advert
 m.iguides.ru##.banner_in_list
 m.takvim.com.tr###id_m_textlink[style^="height:525px; width:320px;"]
 eurogamer.net###portable-homepage-leaderboard
