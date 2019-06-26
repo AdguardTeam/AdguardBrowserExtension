@@ -54,16 +54,4 @@ const firefoxJSONupdate = (done) => {
     return done();
 };
 
-const firefoxRDFupdate = (done) => {
-    let firefox_updates = fs.readFileSync('./firefox_updates.rdf').toString();
-
-    firefox_updates = firefox_updates.replace(/\%VERSION\%/g, version);
-    firefox_updates = firefox_updates.replace(/\%TAGNAME\%/g, getTagArg());
-    firefox_updates = firefox_updates.replace(/\%STANDALONE_NAME\%/g, `firefox-standalone-beta-${version}.xpi`);
-
-    fs.writeFileSync('./firefox_updates.rdf', firefox_updates);
-
-    return done();
-};
-
-export default gulp.series(copyFiles, chromeUpdate, firefoxJSONupdate, firefoxRDFupdate);
+export default gulp.series(copyFiles, chromeUpdate, firefoxJSONupdate);
