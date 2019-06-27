@@ -322,7 +322,7 @@ PopupController.prototype = {
         if (messageKey) {
             i18n.translateElement(statusElement, messageKey);
         } else {
-            statusElement.display = 'none';
+            statusElement.classList.add('status--hide');
         }
 
         const currentSiteElement = template.querySelector('.current-site');
