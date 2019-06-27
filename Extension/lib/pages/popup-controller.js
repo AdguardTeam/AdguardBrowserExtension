@@ -160,6 +160,9 @@ PopupController.prototype = {
         if (tabInfo.applicationFilteringDisabled) {
             stack.classList.add('status-paused');
             parent.classList.add('status-paused');
+        } else if (!tabInfo.applicationAvailable) {
+            stack.classList.add('status-inner');
+            parent.classList.add('status-checkmark');
         } else if (!tabInfo.canAddRemoveRule) {
             stack.classList.add('status-error');
             parent.classList.add('status-checkmark');
