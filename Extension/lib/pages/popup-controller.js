@@ -306,8 +306,9 @@ PopupController.prototype = {
         const template = this.filteringStatusText;
 
         let messageKey = '';
-        if (!tabInfo.applicationAvailable
-            || (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed)) {
+        if (!tabInfo.applicationAvailable) {
+            messageKey = 'popup_site_filtering_state_secure_page';
+        } else if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
             messageKey = '';
         } else if (tabInfo.applicationFilteringDisabled) {
             messageKey = 'popup_site_filtering_state_paused';
@@ -337,7 +338,7 @@ PopupController.prototype = {
     _renderMessage: function (container, tabInfo) {
         let messageKey;
         if (!tabInfo.applicationAvailable) {
-            messageKey = 'popup_site_exception_internal_pages';
+            messageKey = '';
         } else if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
             messageKey = 'popup_site_exception_info';
         }
