@@ -231,17 +231,17 @@ adguard.frames = (function (adguard) {
         // application is available for tabs where url is with http schema
         // and when localstorage is initialized
         const applicationAvailable = localStorageInitialized && !urlFilteringDisabled;
-        var applicationFilteringDisabled;
-        var documentWhiteListed = false;
-        var userWhiteListed = false;
-        var canAddRemoveRule = false;
-        var frameRule;
+        let documentWhiteListed = false;
+        let userWhiteListed = false;
+        let canAddRemoveRule = false;
+        let frameRule;
 
-        var adguardDetected = isTabAdguardDetected(tab);
-        var adguardProductName = '';
+        let adguardProductName = '';
 
+        const adguardDetected = isTabAdguardDetected(tab);
         const totalBlocked = adguard.pageStats.getTotalBlocked() || 0;
         const totalBlockedTab = adguard.tabs.getTabMetadata(tabId, 'blocked') || 0;
+        let applicationFilteringDisabled = adguard.tabs.getTabMetadata(tabId, 'applicationFilteringDisabled');
 
         if (applicationAvailable) {
             if (adguardDetected) {
@@ -261,8 +261,6 @@ adguard.frames = (function (adguard) {
                     };
                 }
             } else {
-                applicationFilteringDisabled = adguard.tabs.getTabMetadata(tabId, 'applicationFilteringDisabled');
-
                 documentWhiteListed = isTabWhiteListed(tab);
                 if (documentWhiteListed) {
                     const rule = getFrameWhiteListRule(tab);
