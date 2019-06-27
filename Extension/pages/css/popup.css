@@ -135,11 +135,13 @@ button, a, .control-buttons, select, span {
 .tabstack.status-paused .head .msg {
   display: block;
 }
-.tabstack.status-paused .center-switch {
+.tabstack.status-paused .center-switch,
+.tabstack.status-error .center-switch {
   background: none;
   box-shadow: none;
 }
-.tabstack.status-paused .switch-btn {
+.tabstack.status-paused .switch-btn,
+.tabstack.status-error .switch-btn {
   left: 16px;
 }
 .tabstack.status-paused .switch-btn:before {
@@ -158,11 +160,13 @@ button, a, .control-buttons, select, span {
   right: -30px;
 }
 .tabstack.status-checkmark .switch-btn:before,
-.tabstack.status-checkmark-disabled .switch-btn:before {
+.tabstack.status-checkmark-disabled .switch-btn:before,
+.tabstack.status-error .switch-btn:before {
   background-image: linear-gradient(to bottom, #64beb0, #74be64);
 }
 .tabstack.status-checkmark .switch-btn:after,
-.tabstack.status-checkmark-disabled .switch-btn:after {
+.tabstack.status-checkmark-disabled .switch-btn:after,
+.tabstack.status-error .switch-btn:after {
   background-image: url(../images/icon-checkmark.svg);
   background-position: 10px 13px;
 }
@@ -270,6 +274,9 @@ button, a, .control-buttons, select, span {
   padding-bottom: 8px;
   text-align: center;
 }
+.tab-main .status--hide {
+  display: none;
+}
 .tab-main--base {
   height: 300px;
   flex-direction: column;
@@ -279,7 +286,7 @@ button, a, .control-buttons, select, span {
 .current-site {
   font-size: 16px;
   padding-top: 35px;
-  padding-bottom: 8px;
+  padding-bottom: 2px;
   max-width: 260px;
   text-align: center;
   margin: 0 auto;
