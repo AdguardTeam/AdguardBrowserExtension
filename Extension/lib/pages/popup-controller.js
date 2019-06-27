@@ -161,7 +161,8 @@ PopupController.prototype = {
             stack.classList.add('status-paused');
             parent.classList.add('status-paused');
         } else if (!tabInfo.canAddRemoveRule) {
-            stack.classList.add('status-error', 'error-filter');
+            stack.classList.add('status-error');
+            parent.classList.add('status-checkmark');
         } else if (tabInfo.documentWhiteListed) {
             stack.classList.add('status-cross');
             parent.classList.add('status-cross');
@@ -882,8 +883,7 @@ PopupController.prototype = {
 
         function changeProtectionState(disabled) {
             const { tabInfo } = self;
-            if (!tabInfo.applicationAvailable
-                || tabInfo.applicationFilteringDisabled === disabled) {
+            if (tabInfo.applicationFilteringDisabled === disabled) {
                 return;
             }
             self.changeApplicationFilteringDisabled(disabled);
