@@ -241,7 +241,7 @@ adguard.frames = (function (adguard) {
         const adguardDetected = isTabAdguardDetected(tab);
         const totalBlocked = adguard.pageStats.getTotalBlocked() || 0;
         const totalBlockedTab = adguard.tabs.getTabMetadata(tabId, 'blocked') || 0;
-        let applicationFilteringDisabled = adguard.tabs.getTabMetadata(tabId, 'applicationFilteringDisabled');
+        let applicationFilteringDisabled = adguard.settings.isFilteringDisabled();
 
         if (applicationAvailable) {
             if (adguardDetected) {

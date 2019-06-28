@@ -1,8 +1,8 @@
-! Checksum: CD0sG6IiafolhnNpKMJyjw
+! Checksum: lfU6/z/cvSeKgm7SRCDhvQ
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.6.37
-! TimeUpdated: 2019-06-19T22:30:12+03:00
+! Version: 2.0.6.45
+! TimeUpdated: 2019-06-28T13:30:10+03:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -70,6 +70,7 @@
 ||54.222.186.106^
 ||plugin.mobopay.baidu.com^
 ||mo.freeindoapp.com^
+||vennala.pw^$empty
 ||promoted.soundcloud.com^
 ||activity.browser.intl.miui.com^
 ||api.brs.intl.miui.com^
@@ -998,6 +999,8 @@ blogdoiphone.com#@#.header-ad
 blogdoiphone.com#@#.custom-ad
 westseattleblog.com#@#.custom-ad
 westseattleblog.com#@#.header-ad
+merkur.de##.id-SiteMain > .id-g > div[data-id-module]:has(> .id-Container--hasNoHeadline > div > div[data-id-advertdfpconf])
+merkur.de##.id-Container-content > .id-Teaser > div[class]:has(> div[data-id-advertdfpconf])
 momon-ga.com##.section-box:has(.list-box)
 dailynkjp.com#$?##im_interstitial_panel { remove: true; }
 mobile.donanimhaber.com##div[style^="width: 100%; float: left; position: relative;"] > div[style*="margin: 10px auto; text-align: center; width: 320px; height: 100px;"]:has(> div[id^="div-gpt-ad-"])
@@ -1155,6 +1158,7 @@ deviantart.com#$#div[class*="dp-ad-"] {height: 0!important; width: 0!important; 
 ||graph.facebook.com/network_ads
 @@||xda-cdn.com
 @@||tf-robots.nl^$elemhide,jsinject,content
+@@||kocaelibarisgazetesi.com/images/banner/l3oo.jpg
 m.veporns.com#@#.advertisment
 m.veporns.com#@##topAds
 @@||b92.net/a/cmt_submit.php$document
@@ -1322,11 +1326,17 @@ m.news.de##.unisterAdsStart
 9to5google.com,9to5toys.com,9to5mac.com,electrek.co##.post-content > .inlinead ~ div[class*=" "]:not([id]):not([style])
 !+ NOT_PLATFORM(ios, ext_android_cb)
 ||mobile.donanimhaber.com/ads^
+mobil.ksta.de##.is-ad
+sueddeutsche.de##power-stories-embed
+mbasic.facebook.com##div[role="article"][data-ft*='"originated_from_recommendation":"1"']
+mobil.macwelt.de,mobil.pcwelt.de##.mobile_mpu
+noticias.uol.com.br##.text > div[style*="height: 20px!important;line-height: 20px!important;"]
 hochu.ua##.exp_300x250
 vg247.com##div[id^="mobile-mpu-"]
 woman.ru##.mob-in__container
 woman.ru##.notification__ad
 woman.ru##div[data-name="MobListVideo"]
+hdblog.it,hdmotori.it##.banner_news_bottom_box
 ebay.de,ebay.com###itemDiv > div > a[href^="https://pulsar.ebay."]
 pcgames.de##.strr_slot
 news-us.org##.adssmp
@@ -1532,6 +1542,8 @@ ameblo.jp##._eP0GEh2C
 9ketsuki.info##.adsbygoogle
 sonicch.com###text-127
 sonicch.com###gn_interstitial_area
+||e.z091u.cn^$domain=shenpinwu.com
+||m.sdxlglm.cn^$domain=shenpinwu.com
 ||blog-sokuhou.com^$domain=bakufu.jp
 bakufu.jp##.adList
 bakufu.jp##a[href^="http://ad.dmm.com"]
@@ -1836,7 +1848,7 @@ mobile.donanimhaber.com##iframe[src^="/ads/"]
 mobile.donanimhaber.com##.content > #news-container[style*="width: 100%; float: left"][style*="height:"]
 izlesene.com##[id^="ad_320_100_container_"]
 ||61saat.com/_themes/hs-rush-php/mobil/scripts/modal.js
-kamudanhaber.net,kamupersoneli.net,61saat.com##.mreklam
+kocaelibarisgazetesi.com,gazetedamga.com.tr,haber61.net,kamudanhaber.net,kamupersoneli.net,61saat.com##.mreklam
 61saat.com##a[href^="http://www.trabzonspor.com.tr"]
 vgtimes.ru##.fullb
 mp4mania.mobi##a[href^="http://abc.gogooffer.online"]
@@ -2093,7 +2105,6 @@ m.gadgets.ndtv.com##amp-iframe
 ://*.rbc.ru/*/?target-ref=*&
 rbc.ru##.g-banner__main
 rbc.ru##.g-banner__main__width-240+div[class="g-tabletVisible"]
-taxidrivermovie.com##.mask
 ndtv.com##.ad-wgt
 mdaily.bhaskar.com###atf_ad
 iapps.im##.experience-zyc
