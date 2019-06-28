@@ -231,29 +231,29 @@ adguard.frames = (function (adguard) {
         // application is available for tabs where url is with http schema
         // and when localstorage is initialized
         const applicationAvailable = localStorageInitialized && !urlFilteringDisabled;
-        var applicationFilteringDisabled;
-        var documentWhiteListed = false;
-        var userWhiteListed = false;
-        var canAddRemoveRule = false;
-        var frameRule;
+        let documentWhiteListed = false;
+        let userWhiteListed = false;
+        let canAddRemoveRule = false;
+        let frameRule;
 
-        var adguardDetected = isTabAdguardDetected(tab);
-        var adguardProductName = '';
-        let totalBlockedTab;
-        let totalBlocked;
+        let adguardProductName = '';
+
+        const adguardDetected = isTabAdguardDetected(tab);
+        const totalBlocked = adguard.pageStats.getTotalBlocked() || 0;
+        const totalBlockedTab = adguard.tabs.getTabMetadata(tabId, 'blocked') || 0;
+        let applicationFilteringDisabled = adguard.tabs.getTabMetadata(tabId, 'applicationFilteringDisabled');
 
         if (applicationAvailable) {
-            totalBlockedTab = adguard.tabs.getTabMetadata(tabId, 'blocked');
-            totalBlocked = adguard.pageStats.getTotalBlocked();
             if (adguardDetected) {
                 adguardProductName = adguard.tabs.getTabMetadata(tabId, 'adguardProductName');
 
                 documentWhiteListed = adguard.tabs.getTabMetadata(tabId, 'adguardDocumentWhiteListed');
                 userWhiteListed = adguard.tabs.getTabMetadata(tabId, 'adguardUserWhiteListed');
-                canAddRemoveRule = !adguard.tabs.getTabMetadata(tabId, 'adguardRemoveRuleNotSupported') && !(documentWhiteListed && !userWhiteListed);
+                canAddRemoveRule = !adguard.tabs.getTabMetadata(tabId, 'adguardRemoveRuleNotSupported')
+                    && !(documentWhiteListed && !userWhiteListed);
                 applicationFilteringDisabled = false;
 
-                var adguardWhiteListRule = adguard.tabs.getTabMetadata(tabId, 'adguardWhiteListRule');
+                const adguardWhiteListRule = adguard.tabs.getTabMetadata(tabId, 'adguardWhiteListRule');
                 if (adguardWhiteListRule) {
                     frameRule = {
                         filterId: adguard.utils.filters.WHITE_LIST_FILTER_ID,
@@ -261,12 +261,11 @@ adguard.frames = (function (adguard) {
                     };
                 }
             } else {
-                applicationFilteringDisabled = adguard.tabs.getTabMetadata(tabId, 'applicationFilteringDisabled');
-
                 documentWhiteListed = isTabWhiteListed(tab);
                 if (documentWhiteListed) {
-                    var rule = getFrameWhiteListRule(tab);
-                    userWhiteListed = adguard.utils.filters.isWhiteListFilterRule(rule) || adguard.utils.filters.isUserFilterRule(rule);
+                    const rule = getFrameWhiteListRule(tab);
+                    userWhiteListed = adguard.utils.filters.isWhiteListFilterRule(rule)
+                        || adguard.utils.filters.isUserFilterRule(rule);
                     frameRule = {
                         filterId: rule.filterId,
                         ruleText: rule.ruleText,
@@ -277,28 +276,22 @@ adguard.frames = (function (adguard) {
             }
         }
 
-        var domainName = getFrameDomain(tab);
+        const domainName = getFrameDomain(tab);
 
         return {
-
-            url: url,
-
-            applicationAvailable: applicationAvailable,
-
-            domainName: domainName,
-            applicationFilteringDisabled: applicationFilteringDisabled,
-            urlFilteringDisabled: urlFilteringDisabled,
-
-            documentWhiteListed: documentWhiteListed,
-            userWhiteListed: userWhiteListed,
-            canAddRemoveRule: canAddRemoveRule,
-            frameRule: frameRule,
-
-            adguardDetected: adguardDetected,
-            adguardProductName: adguardProductName,
-
-            totalBlockedTab: totalBlockedTab || 0,
-            totalBlocked: totalBlocked || 0,
+            url,
+            applicationAvailable,
+            domainName,
+            applicationFilteringDisabled,
+            urlFilteringDisabled,
+            documentWhiteListed,
+            userWhiteListed,
+            canAddRemoveRule,
+            frameRule,
+            adguardDetected,
+            adguardProductName,
+            totalBlockedTab,
+            totalBlocked,
         };
     };
 

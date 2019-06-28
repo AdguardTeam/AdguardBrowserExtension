@@ -157,14 +157,15 @@ PopupController.prototype = {
         }
 
         // define class
-        if (!tabInfo.applicationAvailable) {
-            stack.classList.add('status-error');
-            stack.classList.add('error-sad');
-        } else if (tabInfo.applicationFilteringDisabled) {
+        if (tabInfo.applicationFilteringDisabled) {
             stack.classList.add('status-paused');
             parent.classList.add('status-paused');
+        } else if (!tabInfo.applicationAvailable) {
+            stack.classList.add('status-inner');
+            parent.classList.add('status-checkmark');
         } else if (!tabInfo.canAddRemoveRule) {
-            stack.classList.add('status-error', 'error-filter');
+            stack.classList.add('status-error');
+            parent.classList.add('status-checkmark');
         } else if (tabInfo.documentWhiteListed) {
             stack.classList.add('status-cross');
             parent.classList.add('status-cross');
@@ -206,13 +207,12 @@ PopupController.prototype = {
         this._renderHeader(containerHeader, tabInfo);
         this._renderNotificationBlock(stack, tabInfo, this.options);
         this._renderMain(containerMain, tabInfo);
-        this._renderFilteringControls(containerMain, tabInfo);
+        this._renderFilteringControls(containerMain);
         this._renderStatus(containerMain, tabInfo);
         this._renderActions(containerBottom, tabInfo);
         this._renderMessage(containerMain, tabInfo);
         this._renderStats(containerStats);
         this._renderFooter(footerContainer, tabInfo, this.options);
-
     },
 
     _getTemplate: function (id) {
@@ -300,62 +300,55 @@ PopupController.prototype = {
         this._appendTemplate(container, template);
     },
 
-    _renderFilteringControls: function (container, tabInfo) {
-        var template = this.filteringControlDefault;
-        if (!tabInfo.applicationAvailable) {
-            return;
-        }
+    _renderFilteringControls(container) {
+        const template = this.filteringControlDefault;
         this._appendTemplate(container, template);
     },
 
     _renderStatus: function (container, tabInfo) {
-        var template = this.filteringStatusText;
+        const template = this.filteringStatusText;
 
-        var text = '';
+        let messageKey = '';
         if (!tabInfo.applicationAvailable) {
-            text = 'popup_site_filtering_state_tab_unavailable';
+            messageKey = 'popup_site_filtering_state_secure_page';
+        } else if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
+            messageKey = '';
         } else if (tabInfo.applicationFilteringDisabled) {
-            text = 'popup_site_filtering_state_paused';
+            messageKey = 'popup_site_filtering_state_paused';
+        } else if (tabInfo.documentWhiteListed) {
+            messageKey = 'popup_site_filtering_state_disabled';
         } else {
-            if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
-                text = 'popup_site_filtering_state_subscription_unavailable';
-            } else {
-                if (tabInfo.documentWhiteListed) {
-                    text = 'popup_site_filtering_state_disabled';
-                } else {
-                    text = 'popup_site_filtering_state_enabled';
-                }
-            }
+            messageKey = 'popup_site_filtering_state_enabled';
         }
 
-        var statusElement = template.querySelector('.status');
-        i18n.translateElement(statusElement, text);
+        const statusElement = template.querySelector('.status');
+        if (messageKey) {
+            i18n.translateElement(statusElement, messageKey);
+        } else {
+            statusElement.classList.add('status--hide');
+        }
 
-        var currentSiteElement = template.querySelector('.current-site');
-        currentSiteElement.textContent = tabInfo.domainName ? tabInfo.domainName : tabInfo.url;
-
-        if (!tabInfo.applicationAvailable) {
-            currentSiteElement.style.display = 'none';
+        const currentSiteElement = template.querySelector('.current-site');
+        if (tabInfo.applicationAvailable) {
+            currentSiteElement.textContent = tabInfo.domainName ? tabInfo.domainName : tabInfo.url;
+        } else {
+            currentSiteElement.textContent = tabInfo.url;
         }
 
         this._appendTemplate(container, template);
     },
 
     _renderMessage: function (container, tabInfo) {
-        var text;
+        let messageKey;
         if (!tabInfo.applicationAvailable) {
-            text = 'popup_site_filtering_disabled';
-        } else if (tabInfo.applicationFilteringDisabled) {
-
-        } else {
-            if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
-                text = 'popup_site_exception_info';
-            }
+            messageKey = '';
+        } else if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
+            messageKey = 'popup_site_exception_info';
         }
 
-        var template = this.filteringMessageText;
-        if (text) {
-            i18n.translateElement(template.childNodes[1], text);
+        const template = this.filteringMessageText;
+        if (messageKey) {
+            i18n.translateElement(template.childNodes[1], messageKey);
             this._appendTemplate(container, template);
         }
     },
@@ -712,22 +705,26 @@ PopupController.prototype = {
     },
 
     _renderActions: function (container, tabInfo) {
-        if (!tabInfo.applicationAvailable) {
-            return;
-        }
-
         const el = document.createElement('div');
         el.classList.add('actions');
 
         this._appendTemplate(el, this.actionOpenAssistant);
         this._appendTemplate(el, this.actionOpenFilteringLog);
         if (tabInfo.applicationFilteringDisabled || tabInfo.documentWhiteListed) {
-            // May be show later
+            // May be shown later
             this.actionOpenAssistant.style.display = 'none';
         }
 
         this._appendTemplate(el, this.actionOpenAbuse);
         this._appendTemplate(el, this.actionOpenSiteReport);
+
+        if (!tabInfo.applicationAvailable) {
+            const disabledActionsSelectors = ['.openAssistant', '.siteReport', '.openAbuse'];
+            disabledActionsSelectors.forEach((selector) => {
+                const action = el.querySelector(selector);
+                action.classList.add('action_disabled');
+            });
+        }
 
         container.appendChild(el);
     },
@@ -772,22 +769,31 @@ PopupController.prototype = {
         var parent = document.querySelector('.widget-popup');
 
         var self = this;
-        this._bindAction(parent, '.siteReport', 'click', function (e) {
+        this._bindAction(parent, '.siteReport', 'click', (e) => {
             e.preventDefault();
+            if (!self.tabInfo.applicationAvailable) {
+                return;
+            }
             self.openSiteReportTab(self.tabInfo.url);
             popupPage.closePopup();
         });
-        this._bindAction(parent, '.openSettings', 'click', function (e) {
+
+        this._bindAction(parent, '.openSettings', 'click', (e) => {
             e.preventDefault();
             self.openSettingsTab();
             popupPage.closePopup();
         });
-        this._bindAction(parent, '.openAssistant', 'click', function (e) {
+
+        this._bindAction(parent, '.openAssistant', 'click', (e) => {
             e.preventDefault();
+            if (!self.tabInfo.applicationAvailable) {
+                return;
+            }
             self.openAssistantInTab();
             popupPage.closePopup();
         });
-        this._bindAction(parent, '.openNotificationLink', 'click', function (e) {
+
+        this._bindAction(parent, '.openNotificationLink', 'click', (e) => {
             e.preventDefault();
             const { url } = self.options.notification;
             if (url) {
@@ -796,6 +802,7 @@ PopupController.prototype = {
                 popupPage.closePopup();
             }
         });
+
         this._bindAction(parent, '.closeNotification', 'click', function (e) {
             e.preventDefault();
             const notification = parent.querySelector('#popup-notification');
@@ -816,46 +823,49 @@ PopupController.prototype = {
             }
         };
         // close popup get premium notification if user clicked close button
-        this._bindAction(parent, '.popup_get_premium_close', 'click', function (e) {
+        this._bindAction(parent, '.popup_get_premium_close', 'click', (e) => {
             e.preventDefault();
             handlePopupGetPremiumClose();
         });
         // close popup get premium if user clicked on the link
-        this._bindAction(parent, '.popup-get-premium', 'click', function () {
+        this._bindAction(parent, '.popup-get-premium', 'click', () => {
             handlePopupGetPremiumClose();
         });
-        this._bindAction(parent, '.openFilteringLog', 'click', function (e) {
+        this._bindAction(parent, '.openFilteringLog', 'click', (e) => {
             e.preventDefault();
             self.openFilteringLog();
             popupPage.closePopup();
         });
-        this._bindAction(parent, '.resetStats', 'click', function (e) {
+        this._bindAction(parent, '.resetStats', 'click', (e) => {
             e.preventDefault();
             self.resetBlockedAdsCount();
             parent.querySelector('.w-popup-filter-title-blocked-all').textContent = '0';
         });
-        this._bindAction(parent, '.openLink', 'click', function (e) {
+        this._bindAction(parent, '.openLink', 'click', (e) => {
             e.preventDefault();
             self.openLink(e.currentTarget.href);
             popupPage.closePopup();
         });
-        this._bindAction(parent, '.openAbuse', 'click', function (e) {
+        this._bindAction(parent, '.openAbuse', 'click', (e) => {
             e.preventDefault();
+            if (!self.tabInfo.applicationAvailable) {
+                return;
+            }
             self.openAbuseTab(self.tabInfo.url);
             popupPage.closePopup();
         });
 
         // checkbox
-        this._bindAction(parent, '.changeDocumentWhiteListed', 'click', function (e) {
+        this._bindAction(parent, '.changeDocumentWhiteListed', 'click', (e) => {
             e.preventDefault();
-            var tabInfo = self.tabInfo;
+            const { tabInfo } = self;
             if (!tabInfo.applicationAvailable || tabInfo.applicationFilteringDisabled) {
                 return;
             }
             if (!tabInfo.canAddRemoveRule) {
                 return;
             }
-            var isWhiteListed = tabInfo.documentWhiteListed;
+            let isWhiteListed = tabInfo.documentWhiteListed;
             if (isWhiteListed) {
                 self.removeWhiteListDomain(tabInfo.url);
                 isWhiteListed = false;
@@ -876,7 +886,7 @@ PopupController.prototype = {
         });
 
         function changeProtectionState(disabled) {
-            const tabInfo = self.tabInfo;
+            const { tabInfo } = self;
             if (tabInfo.applicationFilteringDisabled === disabled) {
                 return;
             }
@@ -889,8 +899,9 @@ PopupController.prototype = {
         }
 
         // Disable filtering
-        var changeProtectionStateDisableButtons = [].slice.call(document.querySelectorAll('.changeProtectionStateDisable'));
-        changeProtectionStateDisableButtons.forEach(button => {
+        const changeProtectionStateDisableButtons = [].slice
+            .call(document.querySelectorAll('.changeProtectionStateDisable'));
+        changeProtectionStateDisableButtons.forEach((button) => {
             button.addEventListener('click', (e) => {
                 e.preventDefault();
                 changeProtectionState(true);
@@ -898,8 +909,9 @@ PopupController.prototype = {
         });
 
         // Enable filtering
-        var changeProtectionStateEnableButtons = [].slice.call(document.querySelectorAll('.changeProtectionStateEnable'));
-        changeProtectionStateEnableButtons.forEach(button => {
+        const changeProtectionStateEnableButtons = [].slice
+            .call(document.querySelectorAll('.changeProtectionStateEnable'));
+        changeProtectionStateEnableButtons.forEach((button) => {
             button.addEventListener('click', (e) => {
                 e.preventDefault();
                 changeProtectionState(false);
@@ -951,12 +963,12 @@ PopupController.prototype = {
 };
 
 (function () {
-
     /**
      * TODO: check the following EDGE issue
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/551
      * MS Edge unexpectedly crashes on opening the popup.
-     * We do not quite understand the reason for this behavior, but we assume it happens due to code flow execution and changing the DOM.
+     * We do not quite understand the reason for this behavior,
+     * but we assume it happens due to code flow execution and changing the DOM.
      * setTimeout allows us to resolve this "race condition".
      */
 
