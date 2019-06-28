@@ -1,8 +1,8 @@
-! Checksum: RPwB7558okBe+BeO2PBtjw
+! Checksum: oMW6z1AHAYLN+fUYp9eDiw
 ! Title: AdGuard Tracking Protection filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. Use this filter if you do not want your actions on the Internet to be tracked.
-! Version: 2.0.7.45
-! TimeUpdated: 2019-06-19T19:30:55+03:00
+! Version: 2.0.7.56
+! TimeUpdated: 2019-06-28T15:02:40+03:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#privacy
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -1549,7 +1549,6 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 ||intelimet.com^$third-party
 ||intelli-direct.com^$third-party
 ||intelli-tracker.com^$third-party
-||intelliad-tracking.com^$third-party
 ||intelliad.de^$third-party
 ||intelligencefocus.com^$third-party
 ||intentmedia.net^$third-party
@@ -1668,7 +1667,6 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 ||lead-123.com^$third-party
 ||lead-converter.com^$third-party
 ||lead-or-call.ru^$third-party
-||lead-tracking.biz^$third-party
 ||leadforce1.com^$third-party
 ||leadforensics.com^$third-party
 ||leadformix.com^$third-party
@@ -1696,7 +1694,6 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 ||link-smart.com^$third-party
 ||linkconnector.com^$third-party
 ||linkpulse.com^$third-party
-||linktausch-pagerank.de^$third-party
 ||linktausch.li^$third-party
 ||linkxchanger.com^$third-party
 ||listrakbi.com^$third-party
@@ -1743,7 +1740,6 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 ||lumatag.co.uk^$third-party
 ||luminate.com^$third-party
 ||lxtrack.com^$third-party
-||lymantriacypresdoctrine.biz^$third-party
 ||lypn.com^$third-party
 ||lypn.net^$third-party
 ||lytics.io^$third-party
@@ -3420,6 +3416,7 @@ nethunt.com/api/v1/track/email/$image
 ||collection-endpoint-staging.herokuapp.com^
 ! end:
 !
+||player-feedback-v1.glomex.com^
 ||track.sohu.com^
 ||pw.gigazine.net^
 ||marketing.net.brillen.de^
@@ -4010,7 +4007,6 @@ nethunt.com/api/v1/track/email/$image
 ||api.amplitude.com^$third-party
 ||mastertag.effiliation.com^$third-party
 ||abs.proxistore.com^$third-party
-||cdn.tagcommander.com^$third-party
 ||mc.webvisor.org^
 ||phen.fabricmedia.ru^$third-party
 ||m.dubcm.com^$third-party
@@ -5032,6 +5028,10 @@ _tracking.php?b=
 !
 ! ||sa.etp-prod.com/analytics.js^ - breaks player on crunchyroll.com
 ! ||api.radio.*/info/*/user/playlog - breaks playing radio
+!
+||instadp.com/track
+||weser-kurier.de/REST/frontend/itemstatistics^
+||facebook.com/sem_pixel^
 ||s.kbb.com/static/js/global/app-measurement
 ||event-analytics.yesware.com/main.js
 kinotan.ru##.counts
@@ -5131,6 +5131,7 @@ tensaigakkou.ru###custom_html-16
 ||track.tagesanzeiger.ch/cre*/static/tracking^
 ||injapan.com/rest/*/track?*&callback=
 ||youlead.pl/track?
+||api.code.com.tr/analytics
 ||smp.sankei.co.jp/js/analytics^
 ||tms.marriott.com/error/e.gif
 ||kodik.cc/stats
@@ -5803,7 +5804,6 @@ mp3.run.az###lsidebar > .mpblok:last-child
 ||abendblatt.de/stats
 ||online.hentai-share.me/templates/anime-share2/js/metrika.js
 ||online.hentai-share.me/templates/anime-share2/js/liveinternet.js
-||noktafilmizle.net/analyticsjs.js
 ||news.cn/webdig.js
 ||iphonesoft.fr/js/analytics
 ||pornscum.com*&action=js_stats
@@ -5828,7 +5828,7 @@ m.lenta.ru##.b-footer_counters
 ||r.nnm.me/api/server
 ||88688.ru/api/geoip/
 ||openculture.com/wp-admin/admin-ajax.php*^action=rxn_
-||googletagservices.com/tag/js/gpt.js$domain=sinoptik.ua|gutefrage.net|qtv.ua|dt.ua
+||googletagservices.com/tag/js/gpt.js$domain=sinoptik.ua|gutefrage.net|qtv.ua|dt.ua|ngs.ru
 ||imagecrest.com/asset/view/stats.php
 ||uaswitcher.org/logic/page/data
 ||success.trendmicro.com/jslibrary/*/NetworkTracking.js
@@ -6593,6 +6593,14 @@ link.gmapp*.net$image
 !-------------- Whitelist ------------------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+! sloggi.com - fixing navigation
+@@||googletagmanager.com/gtm.js$domain=sloggi.com
+@@||cdn.cquotient.com/js/*/gretel.min.js$domain=sloggi.com
+@@||e.cquotient.com/recs/*?callback=$domain=sloggi.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/29115
+@@||googletagmanager.com/gtm.js$domain=duolingo.com
+! tf1.fr - fixing player
+@@||cdn.tagcommander.com/cmp-api/cmp.js$domain=tf1.fr
 ! https://github.com/AdguardTeam/AdguardFilters/issues/35439
 @@||deprisa.com/scripts/tracking/tracking.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/35324
