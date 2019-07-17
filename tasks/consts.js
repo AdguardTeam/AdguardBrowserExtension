@@ -1,4 +1,8 @@
-export const LOCALES = ['en', 'ru', 'de', 'es', 'fr', 'ja', 'hu', 'pl', 'da', 'uk', 'ar', 'sv', 'fa', 'it', 'pt_BR', 'pt_PT', 'id', 'sk', 'tr', 'cs', 'nl', 'zh_CN', 'zh_TW', 'hr', 'sr-Latn', 'ms', 'vi', 'hy', 'ro', 'ko', 'bg', 'ca', 'sl', 'be', 'nb', 'bg-BG', 'el', 'fi', 'mk-MK', 'he', 'lt'];
+export const LOCALES_DOWNLOAD_URL = 'https://twosky.adtidy.org/api/v1/download?project=browser-extension';
+
+export const LOCALES_UPLOAD_URL = 'https://twosky.adtidy.org/api/v1/upload';
+
+export const LOCALES = ['en', 'ru', 'de', 'es', 'fr', 'ja', 'hu', 'pl', 'da', 'uk', 'ar', 'sv', 'fa', 'it', 'pt_BR', 'pt_PT', 'id', 'sk', 'tr', 'cs', 'nl', 'zh_CN', 'zh_TW', 'hr', 'sr-Latn', 'ms', 'hy', 'vi', 'ro', 'ko', 'bg', 'ca', 'sl', 'be', 'nb', 'bg-BG', 'el', 'lt'];
 
 export const LAST_ADGUARD_FILTER_ID = 14;
 

@@ -7,7 +7,7 @@
     "beta": "NODE_ENV=beta gulp buildBeta --require babel-register --gulpfile tasks",
     "release": "NODE_ENV=release gulp buildRelease --require babel-register --gulpfile tasks",
     "test": "gulp runTests --require babel-register --gulpfile tasks",
-    "locales-download": "gulp downloadLocalesStream --require babel-register --gulpfile tasks",
+    "locales-download": "gulp updateLocalesStream --require babel-register --gulpfile tasks",
     "locales-upload": "gulp uploadLocalesStream --require babel-register --gulpfile tasks",
     "build-update": "gulp buildUpdatesFilesStream --require babel-register --gulpfile tasks",
     "resources": "gulp downloadResources --require babel-register --gulpfile tasks",
@@ -31,6 +31,7 @@
   "author": "adguard@adguard.com",
   "license": "LGPL-3.0",
   "devDependencies": {
+    "axios": "^0.19.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
