@@ -2,7 +2,7 @@ export const LOCALES_DOWNLOAD_URL = 'https://twosky.adtidy.org/api/v1/download?p
 
 export const LOCALES_UPLOAD_URL = 'https://twosky.adtidy.org/api/v1/upload';
 
-export const LOCALES = ['en', 'ru', 'de', 'es', 'fr', 'ja', 'hu', 'pl', 'da', 'uk', 'ar', 'sv', 'fa', 'it', 'pt_BR', 'pt_PT', 'id', 'sk', 'tr', 'cs', 'nl', 'zh_CN', 'zh_TW', 'hr', 'sr-Latn', 'ms', 'hy', 'vi', 'ro', 'ko', 'bg', 'ca', 'sl', 'be', 'nb', 'bg-BG', 'el', 'lt'];
+export const LOCALES = ['en', 'ru', 'de', 'es', 'fr', 'ja', 'hu', 'pl', 'da', 'uk', 'ar', 'sv', 'fa', 'it', 'pt_BR', 'pt_PT', 'id', 'sk', 'tr', 'cs', 'nl', 'zh_CN', 'zh_TW', 'hr', 'sr-Latn', 'ms', 'hy', 'vi', 'ro', 'ko', 'bg', 'ca', 'sl', 'be', 'nb', 'bg-BG', 'el', 'lt', 'es_419'];
 
 export const LAST_ADGUARD_FILTER_ID = 14;
 
