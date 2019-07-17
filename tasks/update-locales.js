@@ -20,6 +20,10 @@ const LOCALE_PAIRS = {
      * Firefox recognizes only 'nb'
      */
     nb: 'no',
+    /**
+     * We duplicate es language for Spanish (Latin America and Caribbean)
+     */
+    es_419: 'es',
 };
 
 const FILE_NAME = 'messages.json';

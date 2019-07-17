@@ -177,25 +177,12 @@ please, setup `eslint` in your editor to follow up with it `.eslintrc`
 <a id="dev-localizations"></a>
 ### Update localizations
 
-To run the task of downloading the localization files, put the `oneskyapp.json` configuration file in the root directory.
-
-The configuration file looks like:
-
-    {
-        "url": "url of localizations",
-        "project_id": "some id",
-        "secret_key": "some key",
-        "api_key": "some api key"
-    }
-
-For security reasons, this file is ignored by .gitignore settings.
-
 To download and append localizations run:
 ```
   yarn locales-download
 ```
 
-To upload new phrases to oneskyapp you need the same file `oneskyapp.json` and file with phrases `./Extension/_locales/en/messages.json`. Then run:
+To upload new phrases to crowdin you need the file with phrases `./Extension/_locales/en/messages.json`. Then run:
 ```
   yarn locales-upload
 ```
