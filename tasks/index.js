@@ -7,7 +7,7 @@ import firefoxAmo from './browser-firefox-amo';
 import api from './sample-extension';
 import downloadAllFilters from './download-filters';
 import updateLocalScriptRules from './update-local-script-rules';
-import downloadLocales from './download-locales';
+import updateLocales from './update-locales';
 import uploadLocales from './upload-locales';
 import buildUpdatesFiles from './build-updates-files';
 import tests from './tests';
@@ -19,7 +19,7 @@ import renewLocales from './renew-locales';
 export const downloadFilters = gulp.series(downloadAllFilters, updateLocalScriptRules, done => done());
 
 // download localizations to repository
-export const downloadLocalesStream = gulp.series(downloadLocales, done => done());
+export const updateLocalesStream = gulp.series(updateLocales, done => done());
 
 // upload localizations to oneskyapp
 export const uploadLocalesStream = gulp.series(uploadLocales, done => done());
