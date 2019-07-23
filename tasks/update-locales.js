@@ -5,7 +5,12 @@ import axios from 'axios';
 import path from 'path';
 import fs from 'fs';
 import Log from './log';
-import { LOCALES, LOCALES_DIR, LOCALES_DOWNLOAD_URL } from './consts';
+import {
+    LOCALES,
+    LOCALES_DIR,
+    LOCALES_DOWNLOAD_URL,
+    LOCALES_PROJECT_NAME,
+} from './consts';
 
 const fsPromises = fs.promises;
 const log = new Log();
@@ -43,7 +48,9 @@ const downloadMessagesByUrl = async (url) => {
 const downloadLocales = async () => {
     const localeUrlPairs = LOCALES.map((locale) => {
         const crowdinLocale = LOCALE_PAIRS[locale] || locale;
-        return { locale, url: `${LOCALES_DOWNLOAD_URL}&language=${crowdinLocale}&filename=${FILE_NAME}` };
+        // eslint-disable-next-line max-len
+        const downloadUrl = `${LOCALES_DOWNLOAD_URL}?project=${LOCALES_PROJECT_NAME}&language=${crowdinLocale}&filename=${FILE_NAME}`;
+        return { locale, url: downloadUrl };
     });
 
     const localeDataPairs = [];
