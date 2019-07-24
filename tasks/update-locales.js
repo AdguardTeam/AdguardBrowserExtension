@@ -4,8 +4,14 @@
 import axios from 'axios';
 import path from 'path';
 import fs from 'fs';
+import querystring from 'querystring';
 import Log from './log';
-import { LOCALES, LOCALES_DIR, LOCALES_DOWNLOAD_URL } from './consts';
+import {
+    LOCALES,
+    LOCALES_DIR,
+    LOCALES_DOWNLOAD_URL,
+    LOCALES_PROJECT_NAME,
+} from './consts';
 
 const fsPromises = fs.promises;
 const log = new Log();
@@ -35,15 +41,35 @@ const downloadMessagesByUrl = async (url) => {
         response = await axios.get(url, { responseType: 'arraybuffer' });
         log.info('Url downloaded successfully!');
     } catch (e) {
-        log.error(`Unable to download by url: ${url} with error ${JSON.stringify(e.response.data)}`);
+        let errorMessage;
+        if (e.response && e.response.data) {
+            const decoder = new TextDecoder();
+            errorMessage = decoder.decode(e.response.data);
+        } else {
+            errorMessage = e.message;
+        }
+        log.error(`Error occurred: ${errorMessage}, while downloading: ${url}`);
+        // log.error(`Unable to download by url: ${url} with error ${JSON.stringify(e.response.data)}`);
     }
     return response.data;
+};
+
+const getQueryString = (lang) => {
+    const options = {
+        project: LOCALES_PROJECT_NAME,
+        language: lang,
+        format: 'json',
+        filename: FILE_NAME,
+    };
+    return querystring.stringify(options);
 };
 
 const downloadLocales = async () => {
     const localeUrlPairs = LOCALES.map((locale) => {
         const crowdinLocale = LOCALE_PAIRS[locale] || locale;
-        return { locale, url: `${LOCALES_DOWNLOAD_URL}&language=${crowdinLocale}&filename=${FILE_NAME}` };
+        // eslint-disable-next-line max-len
+        const downloadUrl = `${LOCALES_DOWNLOAD_URL}?${getQueryString(crowdinLocale)}`;
+        return { locale, url: downloadUrl };
     });
 
     const localeDataPairs = [];
