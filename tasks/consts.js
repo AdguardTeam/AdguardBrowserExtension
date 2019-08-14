@@ -1,11 +1,6 @@
 const LOCALES_BASE_URL = 'https://twosky.adtidy.org/api/v1';
 export const LOCALES_DOWNLOAD_URL = `${LOCALES_BASE_URL}/download`;
 export const LOCALES_UPLOAD_URL = `${LOCALES_BASE_URL}/upload`;
-export const LOCALES_PROJECT_NAME = 'browser-extension';
-
-export const LOCALES = ['en', 'ru', 'de', 'es', 'fr', 'ja', 'hu', 'pl', 'da', 'uk', 'ar', 'sv', 'fa', 'it', 'pt_BR', 'pt_PT', 'id', 'sk', 'tr', 'cs', 'nl', 'zh_CN', 'zh_TW', 'hr', 'sr-Latn', 'ms', 'hy', 'vi', 'ro', 'ko', 'bg', 'ca', 'sl', 'be', 'nb', 'el', 'lt', 'es_419'];
-
-export const BASE_LOCALE = 'en';
 
 export const LAST_ADGUARD_FILTER_ID = 14;
 
