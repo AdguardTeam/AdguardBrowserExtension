@@ -5,11 +5,12 @@ import Logs from './log';
 import {
     LOCALES_DIR,
     LOCALES_UPLOAD_URL,
-    LOCALES_PROJECT_NAME,
-    BASE_LOCALE,
 } from './consts';
 
 const FormData = require('form-data');
+const twoskyConfig = require('../.twosky.json')[0];
+
+const { base_locale: baseLocale, project_id: projectId } = twoskyConfig;
 
 const logs = new Logs();
 
@@ -34,7 +35,7 @@ const prepare = (locale) => {
     formData.append('format', 'json');
     formData.append('language', LOCALE_PAIRS[locale] || locale);
     formData.append('filename', 'messages.json');
-    formData.append('project', LOCALES_PROJECT_NAME);
+    formData.append('project', projectId);
     formData.append('file', fs.createReadStream(path.resolve(LOCALES_DIR, `${locale}/messages.json`)));
     const headers = {
         ...formData.getHeaders(),
@@ -54,7 +55,7 @@ const uploadLocale = async (locale) => {
 };
 
 const uploadBaseLocale = async () => {
-    await uploadLocale(BASE_LOCALE);
+    await uploadLocale(baseLocale);
 };
 
 export default uploadBaseLocale;

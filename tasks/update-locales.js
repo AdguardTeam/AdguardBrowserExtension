@@ -7,11 +7,14 @@ import fs from 'fs';
 import querystring from 'querystring';
 import Log from './log';
 import {
-    LOCALES,
     LOCALES_DIR,
     LOCALES_DOWNLOAD_URL,
-    LOCALES_PROJECT_NAME,
 } from './consts';
+
+const twoskyConfig = require('../.twosky.json')[0];
+
+const { project_id: projectId, languages } = twoskyConfig;
+const locales = Object.keys(languages);
 
 const fsPromises = fs.promises;
 const log = new Log();
@@ -56,7 +59,7 @@ const downloadMessagesByUrl = async (url) => {
 
 const getQueryString = (lang) => {
     const options = {
-        project: LOCALES_PROJECT_NAME,
+        project: projectId,
         language: lang,
         format: 'json',
         filename: FILE_NAME,
@@ -65,7 +68,7 @@ const getQueryString = (lang) => {
 };
 
 const downloadLocales = async () => {
-    const localeUrlPairs = LOCALES.map((locale) => {
+    const localeUrlPairs = locales.map((locale) => {
         const crowdinLocale = LOCALE_PAIRS[locale] || locale;
         // eslint-disable-next-line max-len
         const downloadUrl = `${LOCALES_DOWNLOAD_URL}?${getQueryString(crowdinLocale)}`;
