@@ -46,7 +46,38 @@ adguard.frames = (function (adguard) {
         adguard.tabs.recordTabFrame(tab.tabId, frameId, url, adguard.utils.url.getDomainName(url));
 
         if (type === adguard.RequestTypes.DOCUMENT) {
-            adguard.tabs.updateTabMetadata(tab.tabId, { previousUrl: previousUrl });
+            adguard.tabs.updateTabMetadata(tab.tabId, { previousUrl });
+            reloadFrameData(tab);
+        }
+    };
+
+    /**
+     * This method reloads frame data and updates previous url if necessary
+     * We use it in the webRequest.onCommit event because when websites uses service worker
+     * some requests could not fire in the webRequest events
+     * @param tab
+     * @param frameId
+     * @param url
+     * @param type
+     */
+    const checkFrameUrl = (tab, frameId, url, type) => {
+        if (type !== adguard.RequestTypes.DOCUMENT) {
+            return;
+        }
+
+        const frame = adguard.tabs.getTabFrame(tab.tabId, frameId);
+
+        if (!frame) {
+            adguard.tabs.recordTabFrame(tab.tabId, frameId, url, adguard.utils.url.getDomainName(url));
+            reloadFrameData(tab);
+            return;
+        }
+
+        let previousUrl = '';
+        if (frame && frame.url !== url) {
+            previousUrl = frame.url;
+            adguard.tabs.recordTabFrame(tab.tabId, frameId, url, adguard.utils.url.getDomainName(url));
+            adguard.tabs.updateTabMetadata(tab.tabId, { previousUrl });
             reloadFrameData(tab);
         }
     };
@@ -207,7 +238,7 @@ adguard.frames = (function (adguard) {
      * @param referrerUrl Referrer to record
      */
     var recordFrameReferrerHeader = function (tab, referrerUrl) {
-        adguard.tabs.updateTabMetadata(tab.tabId, { referrerUrl: referrerUrl });
+        adguard.tabs.updateTabMetadata(tab.tabId, { referrerUrl });
     };
 
     /**
@@ -352,24 +383,25 @@ adguard.frames = (function (adguard) {
     });
 
     return {
-        recordFrame: recordFrame,
-        getFrameUrl: getFrameUrl,
-        getMainFrameUrl: getMainFrameUrl,
-        getFrameDomain: getFrameDomain,
-        isTabWhiteListed: isTabWhiteListed,
-        isTabWhiteListedForSafebrowsing: isTabWhiteListedForSafebrowsing,
-        isTabProtectionDisabled: isTabProtectionDisabled,
-        isTabAdguardDetected: isTabAdguardDetected,
-        isTabAdguardWhiteListed: isTabAdguardWhiteListed,
-        getTabAdguardUserWhiteListRule: getTabAdguardUserWhiteListRule,
-        recordAdguardIntegrationForTab: recordAdguardIntegrationForTab,
-        getFrameWhiteListRule: getFrameWhiteListRule,
-        reloadFrameData: reloadFrameData,
-        recordFrameReferrerHeader: recordFrameReferrerHeader,
-        getFrameInfo: getFrameInfo,
-        updateBlockedAdsCount: updateBlockedAdsCount,
-        resetBlockedAdsCount: resetBlockedAdsCount,
-        isIncognitoTab: isIncognitoTab,
-        shouldStopRequestProcess: shouldStopRequestProcess,
+        recordFrame,
+        getFrameUrl,
+        getMainFrameUrl,
+        getFrameDomain,
+        isTabWhiteListed,
+        isTabWhiteListedForSafebrowsing,
+        isTabProtectionDisabled,
+        isTabAdguardDetected,
+        isTabAdguardWhiteListed,
+        getTabAdguardUserWhiteListRule,
+        recordAdguardIntegrationForTab,
+        getFrameWhiteListRule,
+        reloadFrameData,
+        recordFrameReferrerHeader,
+        getFrameInfo,
+        updateBlockedAdsCount,
+        resetBlockedAdsCount,
+        isIncognitoTab,
+        shouldStopRequestProcess,
+        checkFrameUrl,
     };
 })(adguard);
