@@ -772,3 +772,17 @@ QUnit.test('Test wildcard domains in the css rules', (assert) => {
     assert.notOk(rule2.isPermitted('www.yandex.ru'));
     assert.notOk(rule2.isPermitted('www.adguard.com'));
 });
+
+QUnit.test('Test inject rules containing url in the css content', (assert) => {
+    const ruleText = 'example.com#$#body { background: url(http://example.org/empty.gif) }';
+    assert.throws(() => {
+        const rule = new adguard.rules.CssFilterRule(ruleText);
+    }, `Css injection rule with 'url' was omitted: ${ruleText}`);
+});
+
+QUnit.test('Inject rules with backslash should be omitted', (assert) => {
+    const ruleText = 'example.com#$#body { background: \\75 rl(http://example.org/empty.gif) }';
+    assert.throws(() => {
+        const rule = new adguard.rules.CssFilterRule(ruleText);
+    }, `Css injection rule with '\\' was omitted: ${ruleText}`);
+});
