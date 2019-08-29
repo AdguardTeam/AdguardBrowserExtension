@@ -565,7 +565,7 @@ QUnit.test('testReplaceModifierVast', (assert) => {
     const expected = '<?xml version="1.0" encoding="utf-8"?>\n'
         + '<VAST version="2.0"></VAST>';
 
-    const ruleText = '||example.com^$third-party,replace=/(<VAST[\\s\\S]*?>)[\\s\\S]*<\\/VAST>/\\$1<\\/VAST>/,object-subrequest';
+    const ruleText = '||example.com^$third-party,replace=/(<VAST[\\s\\S]*?>)[\\s\\S]*<\\/VAST>/\\$1<\\/VAST>/,object';
     const rule = new adguard.rules.UrlFilterRule(ruleText);
 
     assert.ok(rule.isReplaceRule());
