@@ -1025,7 +1025,6 @@ var RequestWizard = (function () {
             case 'IMAGE':
                 return 'Image';
             case 'OBJECT':
-            case 'OBJECT_SUBREQUEST':
             case 'MEDIA':
                 return 'Media';
             case 'FONT':
