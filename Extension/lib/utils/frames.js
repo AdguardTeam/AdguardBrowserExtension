@@ -53,31 +53,39 @@ adguard.frames = (function (adguard) {
 
     /**
      * This method reloads frame data and updates previous url if necessary
-     * We use it in the webRequest.onCommit event because when websites uses service worker
-     * some requests could not fire in the webRequest events
+     * We use it in the webRequest.onCommit event because when website uses service worker
+     * main_frame request can not fire in the webRequest events
      * @param tab
      * @param frameId
      * @param url
      * @param type
      */
-    const checkFrameUrl = (tab, frameId, url, type) => {
+    const checkAndRecordMainFrame = (tab, frameId, url, type) => {
         if (type !== adguard.RequestTypes.DOCUMENT) {
             return;
         }
 
-        const frame = adguard.tabs.getTabFrame(tab.tabId, frameId);
+        const { tabId } = tab;
 
+        const frame = adguard.tabs.getTabFrame(tabId, frameId);
+
+        // If no main_frame in tab, than we consider this as a new page load
         if (!frame) {
-            adguard.tabs.recordTabFrame(tab.tabId, frameId, url, adguard.utils.url.getDomainName(url));
+            adguard.tabs.clearTabFrames(tabId);
+            adguard.tabs.clearTabMetadata(tabId);
+            adguard.tabs.recordTabFrame(tabId, frameId, url, adguard.utils.url.getDomainName(url));
             reloadFrameData(tab);
             return;
         }
 
+        // if frame has different rule, then we consider this as a new page load
         let previousUrl = '';
         if (frame && frame.url !== url) {
             previousUrl = frame.url;
-            adguard.tabs.recordTabFrame(tab.tabId, frameId, url, adguard.utils.url.getDomainName(url));
-            adguard.tabs.updateTabMetadata(tab.tabId, { previousUrl });
+            adguard.tabs.clearTabFrames(tabId);
+            adguard.tabs.clearTabMetadata(tabId);
+            adguard.tabs.recordTabFrame(tabId, frameId, url, adguard.utils.url.getDomainName(url));
+            adguard.tabs.updateTabMetadata(tabId, { previousUrl });
             reloadFrameData(tab);
         }
     };
@@ -402,6 +410,6 @@ adguard.frames = (function (adguard) {
         resetBlockedAdsCount,
         isIncognitoTab,
         shouldStopRequestProcess,
-        checkFrameUrl,
+        checkAndRecordMainFrame,
     };
 })(adguard);
