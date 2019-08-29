@@ -776,13 +776,19 @@ QUnit.test('Test wildcard domains in the css rules', (assert) => {
 QUnit.test('Test inject rules containing url in the css content', (assert) => {
     const ruleText = 'example.com#$#body { background: url(http://example.org/empty.gif) }';
     assert.throws(() => {
+        // eslint-disable-next-line no-unused-vars
         const rule = new adguard.rules.CssFilterRule(ruleText);
     }, `Css injection rule with 'url' was omitted: ${ruleText}`);
 });
 
+// https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1444
 QUnit.test('Inject rules with backslash should be omitted', (assert) => {
     const ruleText = 'example.com#$#body { background: \\75 rl(http://example.org/empty.gif) }';
+    const ruleText2 = 'example.com#$#body { background: black; }';
     assert.throws(() => {
+        // eslint-disable-next-line no-unused-vars
         const rule = new adguard.rules.CssFilterRule(ruleText);
     }, `Css injection rule with '\\' was omitted: ${ruleText}`);
+    const rule2 = new adguard.rules.CssFilterRule(ruleText2);
+    assert.ok(rule2 !== null);
 });
