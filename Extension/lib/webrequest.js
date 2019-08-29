@@ -449,11 +449,11 @@
         } = details;
 
         if (requestType !== adguard.RequestTypes.DOCUMENT
-            || adguard.frames.isTabAdguardDetected(tab)
             || tab.tabId === adguard.BACKGROUND_TAB_ID) {
             return;
         }
-        adguard.frames.checkFrameUrl(tab, frameId, requestUrl, requestType);
+
+        adguard.frames.checkAndRecordMainFrame(tab, frameId, requestUrl, requestType);
     };
 
     adguard.webNavigation.onCommitted.addListener(onCommittedCheckFrameUrl);
