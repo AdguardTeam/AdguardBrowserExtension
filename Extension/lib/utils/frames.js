@@ -71,8 +71,6 @@ adguard.frames = (function (adguard) {
 
         // If no main_frame in tab, than we consider this as a new page load
         if (!frame) {
-            adguard.tabs.clearTabFrames(tabId);
-            adguard.tabs.clearTabMetadata(tabId);
             adguard.tabs.recordTabFrame(tabId, frameId, url, adguard.utils.url.getDomainName(url));
             reloadFrameData(tab);
             return;
