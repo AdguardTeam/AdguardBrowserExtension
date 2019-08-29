@@ -302,23 +302,12 @@ QUnit.test('Redirect rules', (assert) => {
     assert.equal(result.ruleText, redirectRule.ruleText);
 });
 
-QUnit.test('Test object subrequest type', function (assert) {
-    var requestFilter = new adguard.RequestFilter();
-
-    var rule1 = new adguard.rules.UrlFilterRule('blockrequest1$object-subrequest');
-    var rule2 = new adguard.rules.UrlFilterRule('blockrequest2$object_subrequest');
-    var rule3 = new adguard.rules.UrlFilterRule('blockrequest3$~object-subrequest');
-    var rule4 = new adguard.rules.UrlFilterRule('blockrequest4$~object_subrequest');
-
-    requestFilter.addRule(rule1);
-    requestFilter.addRule(rule2);
-    requestFilter.addRule(rule3);
-    requestFilter.addRule(rule4);
-
-    assert.ok(requestFilter.findRuleForRequest('blockrequest1', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
-    assert.ok(requestFilter.findRuleForRequest('blockrequest2', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
-    assert.notOk(requestFilter.findRuleForRequest('blockrequest3', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
-    assert.notOk(requestFilter.findRuleForRequest('blockrequest4', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
+// https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1453
+QUnit.test('$object subrequest modifier should be unknown', (assert) => {
+    assert.throws(() => {
+        // eslint-disable-next-line no-unused-vars
+        const rule = new adguard.rules.UrlFilterRule('example.org/blockrequest$object-subrequest');
+    }, 'Unknown option: OBJECT-SUBREQUEST');
 });
 
 QUnit.test('BadFilter option', function (assert) {
@@ -396,43 +385,43 @@ QUnit.test('BadFilter option whitelist', function (assert) {
 });
 
 QUnit.test('BadFilter multi-options', (assert) => {
-    var rule = new adguard.rules.UrlFilterRule('||example.org^$object-subrequest');
+    var rule = new adguard.rules.UrlFilterRule('||example.org^$object');
     var ruleTwo = new adguard.rules.UrlFilterRule('||example.org^');
-    var badFilterRule = new adguard.rules.UrlFilterRule('||example.org^$badfilter,object-subrequest');
+    var badFilterRule = new adguard.rules.UrlFilterRule('||example.org^$badfilter,object');
 
     var requestFilter = new adguard.RequestFilter();
 
     requestFilter.addRule(rule);
     requestFilter.addRule(ruleTwo);
 
-    assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
+    assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT));
     assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.SUBDOCUMENT));
 
 
     requestFilter.addRule(badFilterRule);
-    assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
+    assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT));
     assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.SUBDOCUMENT));
-    assert.strictEqual(ruleTwo, requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
+    assert.strictEqual(ruleTwo, requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT));
     assert.strictEqual(ruleTwo, requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.SUBDOCUMENT));
 
     requestFilter.removeRule(badFilterRule);
 
-    assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
+    assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT));
     assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.SUBDOCUMENT));
 
 
-    badFilterRule = new adguard.rules.UrlFilterRule('||example.org^$object-subrequest,badfilter');
+    badFilterRule = new adguard.rules.UrlFilterRule('||example.org^$object,badfilter');
 
     requestFilter.addRule(badFilterRule);
 
-    assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
+    assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT));
     assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.SUBDOCUMENT));
-    assert.strictEqual(ruleTwo, requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
+    assert.strictEqual(ruleTwo, requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT));
     assert.strictEqual(ruleTwo, requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.SUBDOCUMENT));
 
     requestFilter.removeRule(badFilterRule);
 
-    assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
+    assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT));
     assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.SUBDOCUMENT));
 });
 
