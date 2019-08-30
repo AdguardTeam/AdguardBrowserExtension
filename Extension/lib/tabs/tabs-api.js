@@ -403,7 +403,7 @@
 
             insertCssCode: insertCssCode,
             executeScriptCode: executeScriptCode,
-            executeScriptFile: executeScriptFile
+            executeScriptFile: executeScriptFile,
         };
 
     })(adguard.tabsImpl);

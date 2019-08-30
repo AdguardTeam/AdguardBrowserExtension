@@ -211,7 +211,6 @@
      * @returns {*} headers to send
      */
     function onBeforeSendHeaders(requestDetails) {
-
         var tab = requestDetails.tab;
         var requestId = requestDetails.requestId;
         var requestHeaders = requestDetails.requestHeaders;
@@ -333,7 +332,6 @@
      * @returns {{responseHeaders: *}} CSP headers
      */
     function getCSPHeaders(requestDetails) {
-
         // Please note, that we do not modify response headers in Edge before Creators update:
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/401
         // https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8796739/
@@ -435,6 +433,31 @@
     adguard.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeaders, ["<all_urls>"]);
     adguard.webRequest.onHeadersReceived.addListener(onHeadersReceived, ["<all_urls>"]);
 
+    /**
+     * If page uses service worker then it can do not fire main DOCUMENT request, that's why we check
+     * frame data before scripts are injected
+     * This listener should be added before any other listener of onCommitted event
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1459
+     * @param details
+     */
+    const onCommittedCheckFrameUrl = (details) => {
+        const {
+            tab,
+            requestType,
+            frameId,
+            requestUrl,
+        } = details;
+
+        if (requestType !== adguard.RequestTypes.DOCUMENT
+            || tab.tabId === adguard.BACKGROUND_TAB_ID) {
+            return;
+        }
+
+        adguard.frames.checkAndRecordMainFrame(tab, frameId, requestUrl, requestType);
+    };
+
+    adguard.webNavigation.onCommitted.addListener(onCommittedCheckFrameUrl);
+
     // AG for Windows and Mac checks either request signature or request Referer to authorize request.
     // Referer cannot be forged by the website so it's ok for add-on authorization.
     if (adguard.integration.isSupported() && adguard.utils.browser.isChromium()) {
@@ -479,7 +502,7 @@
          * event because we can't detect adguard application headers early in order to know should extension inject scripts or no),
          * save it and try to inject twice:
          * first time onResponseStarted event - this event fires early, but is not reliable
-         * second time onCommited event - this event fires on when part of document has been received, this event is reliable
+         * second time onCommitted event - this event fires on when part of document has been received, this event is reliable
          * Every time we try to inject script we check if script wasn't yet executed
          * We use browser.tabs.insertCSS and browser.tabs.executeScript functions to inject our CSS/JS rules.
          * This method can be used in modern Chrome and FF only.
@@ -501,7 +524,7 @@
                                             |                              |
                                             +------------------------------+
 
-            onCommited event belongs to      +------------------------------+
+            onCommitted event belongs to     +------------------------------+
             WebNavigation events and fires   |                              |
             independently from               | webNavigation.onCommitted    |     Inject JS and CSS
             onResponseStarted event.         |                              |     Remove injection
@@ -516,9 +539,9 @@
 
                                                 Firefox flow description
 
-            onCommited event in Firefox for  +------------------------------+
+            onCommitted event in Firefox for +------------------------------+
             sub_frames fires before          |                              |
-            onHeadersReceived event          | webNavigation.onCommited     |
+            onHeadersReceived event          | webNavigation.onCommitted     |
             That's why we inject our code    |                              |
             on onCompletedEvent              +------------------------------+
 
@@ -536,7 +559,7 @@
 
                                             +------------------------------+
                                             |                              |
-                                            | webNavigation.onCommited     |      Inject JS and CSS for main_frame
+                                            | webNavigation.onCommitted     |      Inject JS and CSS for main_frame
                                             |                              |      Remove injection
                                             +------------------------------+
 
@@ -571,10 +594,6 @@
              * After injection corresponding js and css texts are removed from the object
              */
             let injections = {
-                createKey: function (tabId, frameId) {
-                    return tabId + '-' + frameId;
-                },
-
                 /**
                  * @typedef Injection
                  * @property {Boolean} ready value depends on are css and js texts ready or not. If false we should retry get them later
@@ -584,6 +603,8 @@
 
                 /**
                  * Saves css, js and ready flag in injection object
+                 * @param tabId
+                 * @param frameId
                  * @param {Injection} injection
                  */
                 set: function (tabId, frameId, injection) {
@@ -758,7 +779,6 @@
                 }
                 let frameId = details.frameId;
                 let url = details.requestUrl;
-
                 let cssFilterOption = adguard.rules.CssFilter.RETRIEVE_TRADITIONAL_CSS;
                 const retrieveScripts = true;
                 let result = adguard.webRequestService.processGetSelectorsAndScripts({ tabId: tabId }, url, cssFilterOption, retrieveScripts);
@@ -772,6 +792,7 @@
                         ready: true,
                         jsScriptText: buildScriptText(result.scripts),
                         cssText: buildCssText(result.selectors),
+                        url,
                     });
                 }
             }
@@ -795,6 +816,19 @@
             }
 
             /**
+             * Function checks is injection corresponds for url
+             * This check could be useful when injections were prepared in the onBeforeRequest
+             * or onHeadersReceived events and then there was redirection and document request
+             * didn't fired in webRequest events
+             * @param injection
+             * @param url
+             * @returns {boolean}
+             */
+            function isInjectionForUrl(injection, url) {
+                return injection && injection.ready && injection.url === url;
+            }
+
+            /**
              * Injects necessary CSS and scripts into the web page.
              * @param {RequestDetails} details Details about the navigation event
              * @param {String} eventName Event name
@@ -813,16 +847,19 @@
                  * webRequest api doesn't see requests served from service worker like they are served from the cache
                  * https://bugs.chromium.org/p/chromium/issues/detail?id=766433
                  * that's why we can't prepare injections when webRequest events fire
+                 * also we should check if injection url is correct
                  * so we try to prepare this injection in the onCommit event again
                  */
-                if (requestType === adguard.RequestTypes.DOCUMENT && !injection) {
+                if (requestType === adguard.RequestTypes.DOCUMENT
+                    && (!injection || !isInjectionForUrl(injection, frameUrl))
+                ) {
                     prepareInjection(details);
                     tryInject(details);
                     return;
                 }
                 /**
-                 * Sometimes it can happen that onCommited event fires earlier than onHeadersReceived
-                 * for example onCommited event for iframes in Firefox
+                 * Sometimes it can happen that onCommitted event fires earlier than onHeadersReceived
+                 * for example onCommitted event for iframes in Firefox
                  */
                 if (!injection) {
                     return;
@@ -830,7 +867,7 @@
                 if (!injection.ready) {
                     /**
                      * If injection is not ready yet, we call prepareScripts and tryInject functions again
-                     * setTimeout callback lambda function accepts onCommited details and eventName
+                     * setTimeout callback lambda function accepts onCommitted details and eventName
                      */
                     setTimeout(function (details, eventName) {
                         prepareInjection(details);
@@ -845,9 +882,9 @@
                 if (injection.cssText) {
                     adguard.tabs.insertCssCode(tabId, frameId, injection.cssText);
                 }
-                const mainFrameUrl = adguard.frames.getMainFrameUrl({ tabId: tabId });
+                const mainFrameUrl = adguard.frames.getMainFrameUrl({ tabId });
                 if (isIframeWithoutSrc(frameUrl, frameId, mainFrameUrl)) {
-                    adguard.console.warn('Unexpected onCommited event from this frame - frameId: {0}, frameUrl: {1}. See https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1046', frameId, frameUrl);
+                    adguard.console.warn('Unexpected onCommitted event from this frame - frameId: {0}, frameUrl: {1}. See https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1046', frameId, frameUrl);
                 }
                 injections.removeTabFrameInjection(tabId, frameId);
             }
@@ -929,7 +966,8 @@
             adguard.webNavigation.onCommitted.addListener(tryInject);
             adguard.webRequest.onErrorOccurred.addListener(removeInjection, ['<all_urls>']);
             adguard.webNavigation.onDOMContentLoaded.addListener(tryInjectInIframesWithoutSrc);
-            // In the current Firefox version (60.0.2), the onCommitted even fires earlier than onHeadersReceived for SUBDOCUMENT requests
+            // In the current Firefox version (60.0.2), the onCommitted even fires earlier than
+            // onHeadersReceived for SUBDOCUMENT requests
             // This is true only for SUBDOCUMENTS i.e. iframes
             // so we inject code when onCompleted event fires
             if (adguard.utils.browser.isFirefoxBrowser()) {
