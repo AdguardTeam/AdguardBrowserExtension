@@ -167,7 +167,6 @@ Request mime type. Possible values are listed below.
 * `OBJECT`
 * `IMAGE`
 * `XMLHTTPREQUEST`
-* `OBJECT_SUBREQUEST`
 * `MEDIA`
 * `FONT`
 * `WEBSOCKET`

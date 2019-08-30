@@ -1004,14 +1004,6 @@
                 default:
                     optionName = optionName.toUpperCase();
 
-                    /**
-                     * Convert $object-subrequest modifier to UrlFilterRule.contentTypes.OBJECT_SUBREQUEST
-                     */
-                    if (optionName === 'OBJECT-SUBREQUEST') {
-                        optionName = 'OBJECT_SUBREQUEST';
-                    } else if (optionName === '~OBJECT-SUBREQUEST') {
-                        optionName = '~OBJECT_SUBREQUEST';
-                    }
                     if (optionName in UrlFilterRule.contentTypes) {
                         this._appendPermittedContentType(UrlFilterRule.contentTypes[optionName]);
                     } else if (optionName[0] === api.FilterRule.NOT_MARK && optionName.substring(1) in UrlFilterRule.contentTypes) {
@@ -1137,19 +1129,12 @@
         OBJECT: 1 << 4,
         SUBDOCUMENT: 1 << 5,
         XMLHTTPREQUEST: 1 << 6,
-        OBJECT_SUBREQUEST: 1 << 7,
-        MEDIA: 1 << 8,
-        FONT: 1 << 9,
-        WEBSOCKET: 1 << 10,
-        WEBRTC: 1 << 11,
-        DOCUMENT: 1 << 12,
+        MEDIA: 1 << 7,
+        FONT: 1 << 8,
+        WEBSOCKET: 1 << 9,
+        WEBRTC: 1 << 10,
+        DOCUMENT: 1 << 11,
     };
-
-    // https://code.google.com/p/chromium/issues/detail?id=410382
-    if (adguard.prefs.platform === 'chromium'
-        || adguard.prefs.platform === 'webkit') {
-        UrlFilterRule.contentTypes.OBJECT_SUBREQUEST = UrlFilterRule.contentTypes.OBJECT;
-    }
 
     UrlFilterRule.contentTypes.ALL = 0;
     for (var key in UrlFilterRule.contentTypes) {
