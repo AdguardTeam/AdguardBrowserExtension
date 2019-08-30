@@ -860,7 +860,7 @@ ace.define("ace/mode/adguard_highlight_rules",[], function (require, exports, mo
           token: "keyword.control"
         },
         {
-          regex: /stylesheet|subdocument|xmlhttprequest|font|image|media|object-subrequest|object|script|other|websocket/,
+          regex: /stylesheet|subdocument|xmlhttprequest|font|image|media|object|script|other|websocket/,
           token: "keyword.control"
         },
         {
