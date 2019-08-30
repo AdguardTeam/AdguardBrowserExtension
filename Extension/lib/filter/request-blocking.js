@@ -97,7 +97,7 @@ adguard.webRequestService = (function (adguard) {
         // Looking for the whitelist rule
         var whitelistRule = adguard.frames.getFrameWhiteListRule(tab);
         if (!whitelistRule) {
-            //Check whitelist for current frame
+            // Check whitelist for current frame
             var mainFrameUrl = adguard.frames.getMainFrameUrl(tab);
             whitelistRule = adguard.requestFilter.findWhiteListRule(documentUrl, mainFrameUrl, adguard.RequestTypes.DOCUMENT);
         }
