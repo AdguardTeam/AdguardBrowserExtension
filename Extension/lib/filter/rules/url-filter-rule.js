@@ -880,6 +880,11 @@
         return OPTION_ALIASES_MAP[upperCaseOptionName] || optionName;
     };
 
+    /**
+     * Extracts options and their values from string
+     * @param options
+     * @returns {{optionName: string, optionValue: string}[]}
+     */
     const extractOptionsAndValues = (options) => {
         const optionsParts = adguard.utils.strings.splitByDelimiterWithEscapeCharacter(
             options,
