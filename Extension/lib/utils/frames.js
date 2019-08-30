@@ -46,7 +46,44 @@ adguard.frames = (function (adguard) {
         adguard.tabs.recordTabFrame(tab.tabId, frameId, url, adguard.utils.url.getDomainName(url));
 
         if (type === adguard.RequestTypes.DOCUMENT) {
-            adguard.tabs.updateTabMetadata(tab.tabId, { previousUrl: previousUrl });
+            adguard.tabs.updateTabMetadata(tab.tabId, { previousUrl });
+            reloadFrameData(tab);
+        }
+    };
+
+    /**
+     * This method reloads frame data and updates previous url if necessary
+     * We use it in the webRequest.onCommit event because when website uses service worker
+     * main_frame request can not fire in the webRequest events
+     * @param tab
+     * @param frameId
+     * @param url
+     * @param type
+     */
+    const checkAndRecordMainFrame = (tab, frameId, url, type) => {
+        if (type !== adguard.RequestTypes.DOCUMENT) {
+            return;
+        }
+
+        const { tabId } = tab;
+
+        const frame = adguard.tabs.getTabFrame(tabId, frameId);
+
+        // If no main_frame in tab, than we consider this as a new page load
+        if (!frame) {
+            adguard.tabs.recordTabFrame(tabId, frameId, url, adguard.utils.url.getDomainName(url));
+            reloadFrameData(tab);
+            return;
+        }
+
+        // if frame has different rule, then we consider this as a new page load
+        let previousUrl = '';
+        if (frame && frame.url !== url) {
+            previousUrl = frame.url;
+            adguard.tabs.clearTabFrames(tabId);
+            adguard.tabs.clearTabMetadata(tabId);
+            adguard.tabs.recordTabFrame(tabId, frameId, url, adguard.utils.url.getDomainName(url));
+            adguard.tabs.updateTabMetadata(tabId, { previousUrl });
             reloadFrameData(tab);
         }
     };
@@ -207,7 +244,7 @@ adguard.frames = (function (adguard) {
      * @param referrerUrl Referrer to record
      */
     var recordFrameReferrerHeader = function (tab, referrerUrl) {
-        adguard.tabs.updateTabMetadata(tab.tabId, { referrerUrl: referrerUrl });
+        adguard.tabs.updateTabMetadata(tab.tabId, { referrerUrl });
     };
 
     /**
@@ -352,24 +389,25 @@ adguard.frames = (function (adguard) {
     });
 
     return {
-        recordFrame: recordFrame,
-        getFrameUrl: getFrameUrl,
-        getMainFrameUrl: getMainFrameUrl,
-        getFrameDomain: getFrameDomain,
-        isTabWhiteListed: isTabWhiteListed,
-        isTabWhiteListedForSafebrowsing: isTabWhiteListedForSafebrowsing,
-        isTabProtectionDisabled: isTabProtectionDisabled,
-        isTabAdguardDetected: isTabAdguardDetected,
-        isTabAdguardWhiteListed: isTabAdguardWhiteListed,
-        getTabAdguardUserWhiteListRule: getTabAdguardUserWhiteListRule,
-        recordAdguardIntegrationForTab: recordAdguardIntegrationForTab,
-        getFrameWhiteListRule: getFrameWhiteListRule,
-        reloadFrameData: reloadFrameData,
-        recordFrameReferrerHeader: recordFrameReferrerHeader,
-        getFrameInfo: getFrameInfo,
-        updateBlockedAdsCount: updateBlockedAdsCount,
-        resetBlockedAdsCount: resetBlockedAdsCount,
-        isIncognitoTab: isIncognitoTab,
-        shouldStopRequestProcess: shouldStopRequestProcess,
+        recordFrame,
+        getFrameUrl,
+        getMainFrameUrl,
+        getFrameDomain,
+        isTabWhiteListed,
+        isTabWhiteListedForSafebrowsing,
+        isTabProtectionDisabled,
+        isTabAdguardDetected,
+        isTabAdguardWhiteListed,
+        getTabAdguardUserWhiteListRule,
+        recordAdguardIntegrationForTab,
+        getFrameWhiteListRule,
+        reloadFrameData,
+        recordFrameReferrerHeader,
+        getFrameInfo,
+        updateBlockedAdsCount,
+        resetBlockedAdsCount,
+        isIncognitoTab,
+        shouldStopRequestProcess,
+        checkAndRecordMainFrame,
     };
 })(adguard);
