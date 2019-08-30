@@ -763,3 +763,101 @@ QUnit.test('Invalid $domain options throw exception', (assert) => {
     assert.ok(rule);
     assert.equal(rule.permittedDomain, 'example.org');
 });
+
+QUnit.test('Non-basic $first-party modifier', (assert) => {
+    const { RequestTypes } = adguard;
+
+    const ruleText = '||example.org$first-party';
+    const rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    // Check rule properties
+    assert.notOk(rule.isThirdParty());
+
+    // Check rule work
+    assert.ok(rule.isFiltered('https://example.org/icon.ico', false, RequestTypes.IMAGE));
+    assert.notOk(rule.isFiltered('https://test.ru/script.js', true, RequestTypes.SCRIPT));
+});
+
+QUnit.test('Non-basic "$xhr" modifier', (assert) => {
+    const { RequestTypes } = adguard;
+
+    const ruleText = '||example.org$xhr';
+    const rule = new adguard.rules.UrlFilterRule(ruleText);
+    assert.ok(rule.isFiltered('http://example.org/?ololo=ololo', false, RequestTypes.XMLHTTPREQUEST));
+});
+
+QUnit.test('Non-basic "$popunder" modifier', (assert) => {
+    const { RequestTypes } = adguard;
+    const ruleText = '||example.org$popunder';
+    const rule = new adguard.rules.UrlFilterRule(ruleText);
+    assert.ok(rule.isBlockPopups());
+    assert.ok(rule.isDocumentLevel());
+    assert.ok(rule.isFiltered('http://example.org/?ololo=ololo', false, RequestTypes.DOCUMENT));
+});
+
+QUnit.test('Non-basic "$1p" modifier', (assert) => {
+    const { RequestTypes } = adguard;
+
+    const ruleText = '||example.org$1p';
+    const rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    // Check rule properties
+    assert.notOk(rule.isThirdParty());
+
+    // Check rule work
+    assert.ok(rule.isFiltered('https://example.org/icon.ico', false, RequestTypes.IMAGE));
+    assert.notOk(rule.isFiltered('https://test.ru/script.js', true, RequestTypes.SCRIPT));
+});
+
+QUnit.test('Non-basic "$3p" modifier', (assert) => {
+    const { RequestTypes } = adguard;
+
+    const ruleText = '||test.ru/$domain=google.com,3p';
+    const rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    // Check rule properties
+    assert.ok(rule.isThirdParty());
+
+    // Check rule work
+    assert.ok(rule.isFiltered('http://test.ru/', true, RequestTypes.DOCUMENT));
+    // TODO [maximtop] should this work or not?
+    // assert.notOk(rule.isFiltered('http://test.ru/', true, RequestTypes.SUBDOCUMENT));
+    assert.ok(rule.isPermitted('google.com'));
+});
+
+QUnit.test('Non-basic "$all" modifier', (assert) => {
+    const { RequestTypes } = adguard;
+
+    const rule = new adguard.rules.UrlFilterRule('||example.com^$all');
+    console.log(rule);
+    assert.ok(rule.checkContentType(RequestTypes.OTHER));
+    assert.ok(rule.checkContentType(RequestTypes.SCRIPT));
+    assert.ok(rule.checkContentType(RequestTypes.IMAGE));
+    assert.ok(rule.checkContentType(RequestTypes.STYLESHEET));
+    assert.ok(rule.checkContentType(RequestTypes.OBJECT));
+    assert.ok(rule.checkContentType(RequestTypes.SUBDOCUMENT));
+    assert.ok(rule.checkContentType(RequestTypes.XMLHTTPREQUEST));
+    assert.ok(rule.checkContentType(RequestTypes.OBJECT_SUBREQUEST));
+    assert.ok(rule.checkContentType(RequestTypes.MEDIA));
+    assert.ok(rule.checkContentType(RequestTypes.FONT));
+    assert.ok(rule.checkContentType(RequestTypes.WEBSOCKET));
+    assert.ok(rule.checkContentType(RequestTypes.WEBRTC));
+    assert.ok(rule.checkContentType(RequestTypes.DOCUMENT));
+});
+
+QUnit.test('Non-basic "$css" modifier', (assert) => {
+    const { RequestTypes } = adguard;
+
+    const rule = new adguard.rules.UrlFilterRule('||example.org^$css');
+    assert.ok(rule.checkContentType(RequestTypes.STYLESHEET));
+    assert.ok(rule.isFiltered('https://example.org/styles.css', false, RequestTypes.STYLESHEET));
+});
+
+QUnit.test('Non-basic "$frame" modifier', (assert) => {
+    const { RequestTypes } = adguard;
+
+    const rule = new adguard.rules.UrlFilterRule('||example.org^$frame');
+    assert.ok(rule.checkContentType(RequestTypes.SUBDOCUMENT));
+    assert.notOk(rule.checkContentType(RequestTypes.DOCUMENT));
+    assert.ok(rule.isFiltered('https://example.org/foo', false, RequestTypes.SUBDOCUMENT));
+});
