@@ -354,7 +354,7 @@
      * Adds custom filters if there were not added one by one to the subscriptions list
      * @param {Array<CustomFilterInitial>} customFiltersInitials
      * @param {{syncSuppress: boolean}} syncSuppressOptions
-     * @returns {Promise<any>} Promise object which represents array with filter ids
+     * @returns {Promise<any>} Promise object which represents array with filters
      */
     const syncCustomFilters = (customFiltersInitials, syncSuppressOptions) => {
         const presentCustomFilters = adguard.subscriptions.getCustomFilters();
@@ -369,7 +369,7 @@
         });
 
         const customFiltersToAdd = enrichedFiltersInitials.filter(f => !f.filterId);
-        const existingCustomFiltersInitials = enrichedFiltersInitials.filter(f => f.filterId);
+        const existingCustomFilters = enrichedFiltersInitials.filter(f => f.filterId);
         const redundantExistingCustomFiltersIds = getCustomFiltersToRemove(presentCustomFilters, customFiltersInitials);
 
         if (redundantExistingCustomFiltersIds.length > 0) {
@@ -377,20 +377,20 @@
         }
 
         if (customFiltersToAdd.length === 0) {
-            return Promise.resolve(enrichedFiltersInitials.map(f => f.filterId));
+            return Promise.resolve(enrichedFiltersInitials);
         }
 
         return addCustomFilters(customFiltersToAdd, syncSuppressOptions)
             .then((customFiltersAddResult) => {
-                // get results without errors, not to enable not existing filters
-                const addedCustomFiltersIdsWithoutError = customFiltersAddResult
+                // get results without errors, in order to do not enable filters with errors
+                const addedCustomFiltersWithoutError = customFiltersAddResult
                     .filter(f => f.error === null)
-                    .map(f => f.filter.filterId);
+                    .map(f => f.filter);
 
-                adguard.console.info(`Settings sync: Were added custom filters: ${addedCustomFiltersIdsWithoutError}`);
-                const existingCustomFiltersIds = existingCustomFiltersInitials.map(f => f.filterId);
+                const addedCustomFiltersIds = addedCustomFiltersWithoutError.map(f => f.filterId);
+                adguard.console.info(`Settings sync: Were added custom filters: ${addedCustomFiltersIds}`);
 
-                return [...existingCustomFiltersIds, ...addedCustomFiltersIdsWithoutError];
+                return [...existingCustomFilters, ...addedCustomFiltersWithoutError];
             });
     };
 
@@ -462,19 +462,27 @@
 
         // STEP 1 sync custom filters
         syncCustomFilters(customFiltersData, syncSuppressOptions)
-            .then((customFiltersIdsToEnable) => {
-                const customEnabledOnly = customFiltersIdsToEnable
-                    .filter((filterId) => {
+            .then((availableCustomFilters) => {
+                // STEP 2 get filters with enabled flag from export data
+                const customFilterIdsToEnable = availableCustomFilters
+                    .filter((availableCustomFilter) => {
                         const filterData = customFiltersData
-                            .find(filter => filter.filterId === filterId);
+                            .find((filter) => {
+                                if (!filter.customUrl) {
+                                    // eslint-disable-next-line max-len
+                                    throw new Error(`Custom filter should always have custom URL: ${JSON.stringify(filter)}`);
+                                }
+                                return filter.customUrl === availableCustomFilter.customUrl
+                            });
                         return filterData && filterData.enabled;
-                    });
-                // STEP 2 sync enabled filters
+                    })
+                    .map(filter => filter.filterId);
+                // STEP 3 sync enabled filters
                 const enabledFilterIds = section.filters['enabled-filters'] || [];
-                return syncEnabledFilters([...enabledFilterIds, ...customEnabledOnly], syncSuppressOptions);
+                return syncEnabledFilters([...enabledFilterIds, ...customFilterIdsToEnable], syncSuppressOptions);
             })
             .then(() => {
-                // STEP 3 sync enabled groups
+                // STEP 4 sync enabled groups
                 const enabledGroups = section.filters['enabled-groups'] || [];
                 syncEnabledGroups(enabledGroups, syncSuppressOptions);
                 callback(true);
