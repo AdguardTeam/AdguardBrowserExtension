@@ -820,8 +820,7 @@ QUnit.test('Non-basic "$3p" modifier', (assert) => {
 
     // Check rule work
     assert.ok(rule.isFiltered('http://test.ru/', true, RequestTypes.DOCUMENT));
-    // TODO [maximtop] should this work or not?
-    assert.notOk(rule.isFiltered('http://test.ru/', true, RequestTypes.SUBDOCUMENT));
+    assert.ok(rule.isFiltered('http://test.ru/index.js', true, RequestTypes.SCRIPT));
     assert.ok(rule.isPermitted('google.com'));
 });
 
