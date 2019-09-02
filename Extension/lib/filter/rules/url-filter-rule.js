@@ -870,7 +870,6 @@
             'POPUNDER': UrlFilterRule.POPUP_OPTION,
             '1P': api.FilterRule.NOT_MARK + UrlFilterRule.THIRD_PARTY_OPTION,
             '3P': UrlFilterRule.THIRD_PARTY_OPTION,
-            'ALL': UrlFilterRule.ALL_OPTION,
             'CSS': UrlFilterRule.STYLESHEET_OPTION,
             'FRAME': UrlFilterRule.SUBDOCUMENT_OPTION,
         };
@@ -1122,7 +1121,6 @@
     UrlFilterRule.STEALTH_OPTION = 'stealth';
     UrlFilterRule.REDIRECT_OPTION = 'redirect';
     UrlFilterRule.XMLHTTPREQUEST_OPTION = 'xmlhttprequest';
-    UrlFilterRule.ALL_OPTION = 'all';
     UrlFilterRule.STYLESHEET_OPTION = 'stylesheet';
     UrlFilterRule.SUBDOCUMENT_OPTION = 'subdocument';
 

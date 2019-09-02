@@ -821,27 +821,8 @@ QUnit.test('Non-basic "$3p" modifier', (assert) => {
     // Check rule work
     assert.ok(rule.isFiltered('http://test.ru/', true, RequestTypes.DOCUMENT));
     // TODO [maximtop] should this work or not?
-    // assert.notOk(rule.isFiltered('http://test.ru/', true, RequestTypes.SUBDOCUMENT));
+    assert.notOk(rule.isFiltered('http://test.ru/', true, RequestTypes.SUBDOCUMENT));
     assert.ok(rule.isPermitted('google.com'));
-});
-
-QUnit.test('Non-basic "$all" modifier', (assert) => {
-    const { RequestTypes } = adguard;
-
-    const rule = new adguard.rules.UrlFilterRule('||example.com^$all');
-    console.log(rule);
-    assert.ok(rule.checkContentType(RequestTypes.OTHER));
-    assert.ok(rule.checkContentType(RequestTypes.SCRIPT));
-    assert.ok(rule.checkContentType(RequestTypes.IMAGE));
-    assert.ok(rule.checkContentType(RequestTypes.STYLESHEET));
-    assert.ok(rule.checkContentType(RequestTypes.OBJECT));
-    assert.ok(rule.checkContentType(RequestTypes.SUBDOCUMENT));
-    assert.ok(rule.checkContentType(RequestTypes.XMLHTTPREQUEST));
-    assert.ok(rule.checkContentType(RequestTypes.MEDIA));
-    assert.ok(rule.checkContentType(RequestTypes.FONT));
-    assert.ok(rule.checkContentType(RequestTypes.WEBSOCKET));
-    assert.ok(rule.checkContentType(RequestTypes.WEBRTC));
-    assert.ok(rule.checkContentType(RequestTypes.DOCUMENT));
 });
 
 QUnit.test('Non-basic "$css" modifier', (assert) => {
