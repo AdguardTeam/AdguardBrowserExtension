@@ -17,46 +17,46 @@
 
 /* global i18n, contentPage, createEventListener, htmlToElement */
 
-var PageController = function () {
+const PageController = function () {
 };
 
-var Messages = {
+const Messages = {
     OPTIONS_USERFILTER: i18n.getMessage('options_userfilter'),
     OPTIONS_WHITELIST: i18n.getMessage('options_whitelist'),
     IN_WHITELIST: i18n.getMessage('filtering_log_in_whitelist'),
 };
 
-var StringUtils = {
+const StringUtils = {
 
-    startWith: function (str, prefix) {
+    startWith(str, prefix) {
         return str && str.indexOf(prefix) === 0;
     },
 
-    containsIgnoreCase: function (str, searchString) {
+    containsIgnoreCase(str, searchString) {
         return str && searchString && str.toUpperCase().indexOf(searchString.toUpperCase()) >= 0;
     },
 
-    substringAfter: function (str, separator) {
+    substringAfter(str, separator) {
         if (!str) {
             return str;
         }
-        var index = str.indexOf(separator);
+        const index = str.indexOf(separator);
         return index < 0 ? '' : str.substring(index + separator.length);
     },
 
-    substringBefore: function (str, separator) {
+    substringBefore(str, separator) {
         if (!str || !separator) {
             return str;
         }
-        var index = str.indexOf(separator);
+        const index = str.indexOf(separator);
         return index < 0 ? str : str.substring(0, index);
     },
 };
 
-var UrlUtils = {
+const UrlUtils = {
 
-    getProtocol: function (url) {
-        var index = url.indexOf('//');
+    getProtocol(url) {
+        let index = url.indexOf('//');
         if (index >= 0) {
             return url.substring(0, index);
         }
@@ -72,8 +72,8 @@ var UrlUtils = {
     /**
      * Removes protocol from URL
      */
-    getUrlWithoutScheme: function (url) {
-        var index = url.indexOf('//');
+    getUrlWithoutScheme(url) {
+        let index = url.indexOf('//');
         if (index >= 0) {
             url = url.substring(index + 2);
         } else {
@@ -91,7 +91,7 @@ var UrlUtils = {
      * @param url
      * @returns {boolean}
      */
-    isHierarchicUrl: function (url) {
+    isHierarchicUrl(url) {
         return url.indexOf('//') !== -1;
     },
 };
@@ -99,17 +99,17 @@ var UrlUtils = {
 /**
  * Modal window utils
  */
-var ModalUtils = {
-    showModal: function (element) {
+const ModalUtils = {
+    showModal(element) {
         element.style.display = 'block';
     },
 
-    closeModal: function (element) {
+    closeModal(element) {
         element.remove();
     },
 };
 
-var FilterRule = {
+const FilterRule = {
     MASK_WHITE_LIST: '@@',
     MASK_CSS_RULE: '##',
     MASK_CSS_INJECT_RULE: '#$#',
@@ -119,7 +119,7 @@ var FilterRule = {
     MASK_SCRIPT_RULE_UBO: '##',
 };
 
-var UrlFilterRule = {
+const UrlFilterRule = {
     MASK_START_URL: '||',
     MASK_ANY_SYMBOL: '*',
     MASK_SEPARATOR: '^',
@@ -135,6 +135,7 @@ var UrlFilterRule = {
     STEALTH_OPTION: 'stealth',
     REPLACE_OPTION: 'replace',
     REDIRECT_OPTION: 'redirect',
+    BADFILTER_OPTION: 'badfilter',
 };
 
 const STEALTH_ACTIONS = {
@@ -159,7 +160,7 @@ const STEALTH_ACTIONS_NAMES = {
 
 PageController.prototype = {
 
-    init: function () {
+    init() {
         RequestWizard.initRequestWizard();
 
         this.logTable = document.querySelector('#logTable');
@@ -168,15 +169,15 @@ PageController.prototype = {
         this.logoIcon = document.querySelector('#logoIcon');
 
         this.tabSelector = document.querySelector('#tabSelector');
-        this.tabSelector.addEventListener('change', function (e) {
-            document.location.hash = '#' + e.target.selectedOptions[0].getAttribute('data-tab-id');
+        this.tabSelector.addEventListener('change', (e) => {
+            document.location.hash = `#${e.target.selectedOptions[0].getAttribute('data-tab-id')}`;
         });
 
         // bind location hash change
-        window.addEventListener('hashchange', function () {
+        window.addEventListener('hashchange', () => {
             this._updateTabIdFromHash();
             this.onSelectedTabChange();
-        }.bind(this));
+        });
 
         // Add preserve log status checkbox
         this.preserveLogEnabled = false;
@@ -192,8 +193,8 @@ PageController.prototype = {
         if (reloadTabs.length <= 0) {
             return;
         }
-        reloadTabs.forEach(reloadTab => {
-            reloadTab.addEventListener('click', function (e) {
+        reloadTabs.forEach((reloadTab) => {
+            reloadTab.addEventListener('click', (e) => {
                 e.preventDefault();
                 // Unable to reload "background" tab, just clear events
                 if (this.currentTabId === -1) {
@@ -209,37 +210,37 @@ PageController.prototype = {
                     tabId: this.currentTabId,
                     preserveLogEnabled: this.preserveLogEnabled,
                 });
-            }.bind(this));
+            });
         });
 
 
         // Bind click to clear events
-        document.querySelector('#clearTabLog').addEventListener('click', function (e) {
+        document.querySelector('#clearTabLog').addEventListener('click', (e) => {
             e.preventDefault();
             this.emptyLogTable();
             contentPage.sendMessage({ type: 'clearEventsByTabId', tabId: this.currentTabId });
-        }.bind(this));
+        });
 
         this._bindSearchFilters();
 
         // Bind click to preserve log
-        document.querySelector('#preserveLog').addEventListener('click', function (e) {
+        document.querySelector('#preserveLog').addEventListener('click', (e) => {
             const checkbox = e.currentTarget.querySelector('.checkbox');
             this.preserveLogEnabled = checkbox.classList.contains('active');
-        }.bind(this));
+        });
 
         this._updateTabIdFromHash();
 
         // Synchronize opened tabs
-        contentPage.sendMessage({ type: 'synchronizeOpenTabs' }, function (response) {
-            var tabs = response.tabs;
+        contentPage.sendMessage({ type: 'synchronizeOpenTabs' }, (response) => {
+            const { tabs } = response;
             for (let i = 0; i < tabs.length; i += 1) {
                 this.onTabUpdated(tabs[i]);
             }
             this.onSelectedTabChange();
-        }.bind(this));
+        });
 
-        document.addEventListener('keyup', function (e) {
+        document.addEventListener('keyup', (e) => {
             if (e.keyCode === 27) {
                 RequestWizard.closeModal();
             }
@@ -260,7 +261,7 @@ PageController.prototype = {
             const filteringEvent = foundEventRow && element.data;
             if (filteringEvent) {
                 contentPage.sendMessage({ type: 'getTabFrameInfoById', tabId: this.currentTabId }, (response) => {
-                    const frameInfo = response.frameInfo;
+                    const { frameInfo } = response;
                     if (!frameInfo) {
                         return;
                     }
@@ -271,7 +272,7 @@ PageController.prototype = {
     },
 
     // Try to retrieve tabId from hash
-    _updateTabIdFromHash: function () {
+    _updateTabIdFromHash() {
         // Try to retrieve tabId from hash
         if (document.location.hash) {
             const tabId = document.location.hash.substring(1);
@@ -281,7 +282,7 @@ PageController.prototype = {
         }
     },
 
-    onTabAdded: function (tabInfo) {
+    onTabAdded(tabInfo) {
         if (tabInfo.isExtensionTab) {
             return;
         }
@@ -296,8 +297,8 @@ PageController.prototype = {
         }
     },
 
-    onTabUpdated: function (tabInfo) {
-        const item = this.tabSelector.querySelector('[data-tab-id="' + tabInfo.tabId + '"]');
+    onTabUpdated(tabInfo) {
+        const item = this.tabSelector.querySelector(`[data-tab-id="${tabInfo.tabId}"]`);
 
         if (tabInfo.isExtensionTab) {
             this.onTabClose(tabInfo);
@@ -307,7 +308,7 @@ PageController.prototype = {
         if (item) {
             item.textContent = tabInfo.title;
             if (tabInfo.tabId === this.currentTabId) {
-                document.querySelector('[data-tab-id="' + this.currentTabId + '"]').selected = true;
+                document.querySelector(`[data-tab-id="${this.currentTabId}"]`).selected = true;
                 // update icon logo
                 this._updateLogoIcon();
             }
@@ -316,8 +317,8 @@ PageController.prototype = {
         }
     },
 
-    onTabClose: function (tabInfo) {
-        var element = this.tabSelector.querySelector('[data-tab-id="' + tabInfo.tabId + '"]');
+    onTabClose(tabInfo) {
+        const element = this.tabSelector.querySelector(`[data-tab-id="${tabInfo.tabId}"]`);
         if (!element) {
             return;
         }
@@ -331,20 +332,20 @@ PageController.prototype = {
         }
     },
 
-    emptyLogTable: function () {
+    emptyLogTable() {
         while (this.logTable.firstChild) {
             this.logTable.removeChild(this.logTable.firstChild);
         }
     },
 
-    onTabReset: function (tabInfo) {
+    onTabReset(tabInfo) {
         if (this.currentTabId === tabInfo.tabId && !this.preserveLogEnabled) {
             this.emptyLogTable();
             this._onEmptyTable();
         }
     },
 
-    onEventAdded: function (tabInfo, event) {
+    onEventAdded(tabInfo, event) {
         if (this.currentTabId !== tabInfo.tabId) {
             // don't relate to the current tab
             return;
@@ -360,13 +361,13 @@ PageController.prototype = {
         this._renderEvents([event]);
     },
 
-    onEventUpdated: function (tabInfo, event) {
+    onEventUpdated(tabInfo, event) {
         if (this.currentTabId !== tabInfo.tabId) {
             // don't relate to the current tab
             return;
         }
 
-        const element = this.logTable.querySelector('#request-' + event.eventId);
+        const element = this.logTable.querySelector(`#request-${event.eventId}`);
         if (element) {
             const updatedTemplate = this._renderTemplate(event);
             this._handleEventShow(updatedTemplate);
@@ -374,21 +375,21 @@ PageController.prototype = {
         }
     },
 
-    onSelectedTabChange: function () {
-        var selectedItem = this.tabSelector.querySelector('[data-tab-id="' + this.currentTabId + '"]');
+    onSelectedTabChange() {
+        let selectedItem = this.tabSelector.querySelector(`[data-tab-id="${this.currentTabId}"]`);
         if (!selectedItem) {
             selectedItem = this.tabSelector.firstChild;
         }
 
-        var text = '';
-        var selectedTabId = null;
+        let text = '';
+        let selectedTabId = null;
         if (selectedItem) {
             text = selectedItem.textContent;
             selectedTabId = selectedItem.getAttribute('data-tab-id');
         }
 
         this.currentTabId = Number(selectedTabId);
-        var selectedTab = document.querySelector('[data-tab-id="' + this.currentTabId + '"]');
+        const selectedTab = document.querySelector(`[data-tab-id="${this.currentTabId}"]`);
         if (selectedTab) {
             selectedTab.selected = true;
         }
@@ -402,26 +403,26 @@ PageController.prototype = {
         RequestWizard.closeModal();
     },
 
-    _updateLogoIcon: function () {
-        contentPage.sendMessage({ type: 'getTabFrameInfoById', tabId: this.currentTabId }, function (response) {
-            var frameInfo = response.frameInfo;
-            var src = 'images/shield.svg';
+    _updateLogoIcon() {
+        contentPage.sendMessage({ type: 'getTabFrameInfoById', tabId: this.currentTabId }, (response) => {
+            const { frameInfo } = response;
+            let src = 'images/shield.svg';
             if (frameInfo && frameInfo.adguardDetected) {
                 src = 'images/shield-blue.svg';
             }
 
             this.logoIcon.setAttribute('src', src);
-        }.bind(this));
+        });
     },
 
-    removeClass: function (elements, className) {
-        elements.forEach(function (el) {
+    removeClass(elements, className) {
+        elements.forEach((el) => {
             el.classList.remove(className);
         });
     },
 
-    _bindSearchFilters: function () {
-        var self = this;
+    _bindSearchFilters() {
+        const self = this;
 
         // bind click to search http request
         document.querySelector('[name="searchEventRequest"]').addEventListener('keyup', function () {
@@ -437,9 +438,9 @@ PageController.prototype = {
 
                 self.removeClass(searchEventTypeItems, 'active');
 
-                var selectedItem = e.currentTarget;
+                const selectedItem = e.currentTarget;
                 selectedItem.classList.add('active');
-                var selectedValue = selectedItem.getAttribute('attr-type');
+                const selectedValue = selectedItem.getAttribute('attr-type');
 
                 self.searchTypes = selectedValue ? selectedValue.split(',') : [];
                 self._filterEvents();
@@ -449,10 +450,10 @@ PageController.prototype = {
         const radioWraps = [].slice.call(document.querySelectorAll('.checkb-wrap'));
         radioWraps.forEach((w) => {
             w.addEventListener('click', () => {
-                var checkbox = w.querySelector('.checkbox');
+                const checkbox = w.querySelector('.checkbox');
                 checkbox.classList.toggle('active');
 
-                var active = checkbox.classList.contains('active');
+                const active = checkbox.classList.contains('active');
                 if (w.classList.contains('searchEventThirdParty')) {
                     self.searchThirdParty = active;
                 } else if (w.classList.contains('searchEventBlocked')) {
@@ -466,29 +467,29 @@ PageController.prototype = {
         });
     },
 
-    _filterEvents: function () {
-        var rows = this.logTable.childNodes;
+    _filterEvents() {
+        const rows = this.logTable.childNodes;
 
         // Filters not set
-        if (!this.searchRequest &&
-            this.searchTypes.length === 0 && !this.searchThirdParty && !this.searchBlocked && !this.searchWhitelisted) {
+        if (!this.searchRequest
+            && this.searchTypes.length === 0 && !this.searchThirdParty && !this.searchBlocked && !this.searchWhitelisted) {
             this.removeClass(rows, 'hidden');
             return;
         }
 
-        var self = this;
-        rows.forEach(function (row) {
+        const self = this;
+        rows.forEach((row) => {
             self._handleEventShow(row);
         });
     },
 
-    _onEmptyTable: function () {
+    _onEmptyTable() {
         this.logTableHidden = true;
         this.logTable.classList.add('hidden');
         this.logTableEmpty.classList.remove('hidden');
     },
 
-    _onNotEmptyTable: function () {
+    _onNotEmptyTable() {
         if (this.logTableHidden) {
             this.logTableHidden = false;
             this.logTableEmpty.classList.add('hidden');
@@ -496,22 +497,22 @@ PageController.prototype = {
         }
     },
 
-    _renderEventsForTab: function (tabId) {
+    _renderEventsForTab(tabId) {
         this.emptyLogTable();
 
-        contentPage.sendMessage({ type: 'getFilteringInfoByTabId', tabId: tabId }, function (response) {
-            var filteringInfo = response.filteringInfo;
+        contentPage.sendMessage({ type: 'getFilteringInfoByTabId', tabId }, (response) => {
+            const { filteringInfo } = response;
 
-            var filteringEvents = [];
+            let filteringEvents = [];
             if (filteringInfo) {
                 filteringEvents = filteringInfo.filteringEvents || [];
             }
 
             this._renderEvents(filteringEvents);
-        }.bind(this));
+        });
     },
 
-    _renderEvents: function (events) {
+    _renderEvents(events) {
         if (!events || events.length === 0) {
             this._onEmptyTable();
             return;
@@ -532,11 +533,11 @@ PageController.prototype = {
         });
     },
 
-    _escapeHTML: function (text) {
+    _escapeHTML(text) {
         return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     },
 
-    _renderTemplate: function (event) {
+    _renderTemplate(event) {
         const metadata = { data: event, class: '' };
 
         event.filterName = '';
@@ -568,7 +569,7 @@ PageController.prototype = {
         }
 
         if (event.eventId) {
-            metadata.id = 'request-' + event.eventId;
+            metadata.id = `request-${event.eventId}`;
         }
 
         let requestInfo;
@@ -601,8 +602,8 @@ PageController.prototype = {
         }
 
         const eventTemplate = `
-            <tr ${metadata.id ? 'id="' + metadata.id + '"' : ''}
-                ${metadata.class ? 'class="' + metadata.class + '"' : ''}>
+            <tr ${metadata.id ? `id="${metadata.id}"` : ''}
+                ${metadata.class ? `class="${metadata.class}"` : ''}>
                 <td>${requestInfo}</td>
                 <td>
                     ${RequestWizard.getRequestType(event.requestType)}
@@ -621,14 +622,14 @@ PageController.prototype = {
         return element;
     },
 
-    _handleEventShow: function (el) {
-        var filterData = el.data;
+    _handleEventShow(el) {
+        const filterData = el.data;
 
-        var show = !this.searchRequest ||
-            StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest) ||
-            StringUtils.containsIgnoreCase(filterData.element, this.searchRequest) ||
-            StringUtils.containsIgnoreCase(filterData.cookieName, this.searchRequest) ||
-            StringUtils.containsIgnoreCase(filterData.cookieValue, this.searchRequest);
+        let show = !this.searchRequest
+            || StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest)
+            || StringUtils.containsIgnoreCase(filterData.element, this.searchRequest)
+            || StringUtils.containsIgnoreCase(filterData.cookieName, this.searchRequest)
+            || StringUtils.containsIgnoreCase(filterData.cookieValue, this.searchRequest);
 
         if (filterData.requestRule && filterData.requestRule.ruleText) {
             show |= StringUtils.containsIgnoreCase(filterData.requestRule.ruleText, this.searchRequest);
@@ -639,7 +640,7 @@ PageController.prototype = {
         }
         show &= this.searchTypes.length === 0 || this.searchTypes.indexOf(filterData.requestType) >= 0; // jshint ignore:line
 
-        var checkboxes = true;
+        let checkboxes = true;
         checkboxes &= !this.searchWhitelisted || (filterData.requestRule && filterData.requestRule.whiteListRule); // jshint ignore:line
         checkboxes &= !this.searchBlocked || (filterData.requestRule && !filterData.requestRule.whiteListRule); // jshint ignore:line
         checkboxes &= !this.searchThirdParty || filterData.requestThirdParty; // jshint ignore:line
@@ -660,15 +661,15 @@ PageController.prototype = {
  */
 var RequestWizard = (function () {
     // exclude domain and full request url
-    var PATTERNS_COUNT = 2;
+    const PATTERNS_COUNT = 2;
 
-    var requestInfoTemplate;
-    var createBlockRuleTemplate;
-    var createExceptionRuleTemplate;
+    let requestInfoTemplate;
+    let createBlockRuleTemplate;
+    let createExceptionRuleTemplate;
 
-    var currentModal;
+    let currentModal;
 
-    var showModal = function (template) {
+    const showModal = function (template) {
         closeModal();
 
         document.body.appendChild(template);
@@ -679,18 +680,28 @@ var RequestWizard = (function () {
         currentModal = template;
     };
 
-    var showCreateBlockRuleModal = function (frameInfo, filteringEvent) {
-        var template = createBlockRuleTemplate.cloneNode(true);
+    const createDocumentLevelBlockRule = (rule) => {
+        const { ruleText } = rule;
+        if (ruleText.indexOf(UrlFilterRule.OPTIONS_DELIMITER) > -1) {
+            return `${ruleText},${UrlFilterRule.BADFILTER_OPTION}`;
+        }
+        return ruleText + UrlFilterRule.OPTIONS_DELIMITER + UrlFilterRule.BADFILTER_OPTION;
+    };
 
-        var patterns = splitToPatterns(filteringEvent.requestUrl, filteringEvent.requestDomain, false).reverse();
+    const showCreateBlockRuleModal = function (frameInfo, filteringEvent) {
+        const template = createBlockRuleTemplate.cloneNode(true);
+
+        let patterns = splitToPatterns(filteringEvent.requestUrl, filteringEvent.requestDomain, false).reverse();
+
+        if (filteringEvent.requestRule && filteringEvent.requestRule.documentLevelRule) {
+            patterns = [createDocumentLevelBlockRule(filteringEvent.requestRule)];
+        }
 
         initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
     };
 
     const generateExceptionRule = function (ruleText, mask) {
-        const insert = (str, index, value) => {
-            return str.slice(0, index) + value + str.slice(index);
-        };
+        const insert = (str, index, value) => str.slice(0, index) + value + str.slice(index);
 
         const maskIndex = ruleText.indexOf(mask);
         const maskLength = mask.length;
@@ -817,8 +828,8 @@ var RequestWizard = (function () {
 
         ruleImportantCheckbox.setAttribute('id', 'ruleImportant');
         ruleImportantCheckbox.parentNode.querySelector('label').setAttribute('for', 'ruleImportant');
-        if (filteringEvent.requestRule &&
-            filteringEvent.requestRule.whiteListRule) {
+        if (filteringEvent.requestRule
+            && filteringEvent.requestRule.whiteListRule) {
             ruleImportantCheckbox.setAttribute('checked', 'checked');
         }
 
@@ -839,7 +850,7 @@ var RequestWizard = (function () {
             if (patternsField) {
                 patternsField.style.display = 'none';
             }
-            var optionsField = template.querySelector('.filtering-modal-options');
+            const optionsField = template.querySelector('.filtering-modal-options');
             if (optionsField) {
                 optionsField.style.display = 'none';
             }
@@ -855,19 +866,29 @@ var RequestWizard = (function () {
             }
         }
 
+        if (filteringEvent.requestRule && filteringEvent.requestRule.documentLevelRule) {
+            const optionsField = template.querySelector('.filtering-modal-options');
+            console.log(optionsField);
+            if (optionsField) {
+                optionsField.style.display = 'none';
+            }
+            ruleDomainCheckbox.setAttribute('checked', 'checked');
+            ruleImportantCheckbox.removeAttribute('checked');
+        }
+
         function updateRuleText() {
-            var urlPattern = template.querySelector('[name="rulePattern"]:checked').value;
-            var permitDomain = !ruleDomainCheckbox.checked;
-            var important = !!ruleImportantCheckbox.checked;
-            var matchCase = !!ruleMatchCaseCheckbox.checked;
-            var thirdParty = !!ruleThirdPartyCheckbox.checked;
+            const urlPattern = template.querySelector('[name="rulePattern"]:checked').value;
+            const permitDomain = !ruleDomainCheckbox.checked;
+            const important = !!ruleImportantCheckbox.checked;
+            const matchCase = !!ruleMatchCaseCheckbox.checked;
+            const thirdParty = !!ruleThirdPartyCheckbox.checked;
 
-            var domain = permitDomain ? frameDomain : null;
+            const domain = permitDomain ? frameDomain : null;
 
-            var mandatoryOptions = null;
+            let mandatoryOptions = null;
 
             // Deal with csp rule
-            var requestRule = filteringEvent.requestRule;
+            const { requestRule } = filteringEvent;
             if (requestRule && requestRule.cspRule) {
                 mandatoryOptions = [UrlFilterRule.CSP_OPTION];
             }
@@ -880,12 +901,12 @@ var RequestWizard = (function () {
                 mandatoryOptions = [UrlFilterRule.WEBRTC_OPTION, UrlFilterRule.WEBSOCKET_OPTION];
             }
 
-            var replaceRules = filteringEvent.replaceRules;
+            const { replaceRules } = filteringEvent;
             if (replaceRules) {
                 mandatoryOptions = [UrlFilterRule.REPLACE_OPTION];
             }
 
-            var ruleText;
+            let ruleText;
             if (filteringEvent.element) {
                 ruleText = createCssRuleFromParams(urlPattern, permitDomain);
             } else if (filteringEvent.cookieName) {
@@ -904,19 +925,19 @@ var RequestWizard = (function () {
         ruleMatchCaseCheckbox.addEventListener('change', updateRuleText);
         ruleThirdPartyCheckbox.addEventListener('change', updateRuleText);
         // TODO: Link click on radio wrap to 'change' event on input
-        rulePatterns.forEach(function (r) {
+        rulePatterns.forEach((r) => {
             r.addEventListener('change', updateRuleText);
         });
 
         // create rule event
-        template.querySelector('#createRule').addEventListener('click', function (e) {
+        template.querySelector('#createRule').addEventListener('click', (e) => {
             e.preventDefault();
-            var ruleText = ruleTextEl.value;
+            const ruleText = ruleTextEl.value;
             if (!ruleText) {
                 return;
             }
             // Add rule to user filter
-            contentPage.sendMessage({ type: 'addUserRule', ruleText: ruleText, adguardDetected: frameInfo.adguardDetected });
+            contentPage.sendMessage({ type: 'addUserRule', ruleText, adguardDetected: frameInfo.adguardDetected });
             // Close modal
             closeModal();
         });
@@ -927,34 +948,34 @@ var RequestWizard = (function () {
     };
 
     var splitToPatterns = function (requestUrl, domain, whitelist) {
-        var hierarchicUrl = UrlUtils.isHierarchicUrl(requestUrl);
-        var protocol = UrlUtils.getProtocol(requestUrl);
+        const hierarchicUrl = UrlUtils.isHierarchicUrl(requestUrl);
+        const protocol = UrlUtils.getProtocol(requestUrl);
 
-        var prefix;
+        let prefix;
         if (hierarchicUrl) {
             prefix = UrlFilterRule.MASK_START_URL; // Covers default protocols: http, ws
         } else {
-            prefix = protocol + ':'; // Covers non-default protocols: stun, turn
+            prefix = `${protocol}:`; // Covers non-default protocols: stun, turn
         }
 
         if (whitelist) {
             prefix = FilterRule.MASK_WHITE_LIST + prefix;
         }
 
-        var patterns = [];
+        const patterns = [];
 
-        var relative = StringUtils.substringAfter(requestUrl, domain + '/');
+        const relative = StringUtils.substringAfter(requestUrl, `${domain}/`);
 
-        var path = StringUtils.substringBefore(relative, '?');
+        const path = StringUtils.substringBefore(relative, '?');
         if (path) {
-            var parts = path.split('/');
+            const parts = path.split('/');
 
-            var pattern = domain + '/';
-            for (var i = 0; i < Math.min(parts.length - 1, PATTERNS_COUNT); i++) {
-                pattern += parts[i] + '/';
+            let pattern = `${domain}/`;
+            for (let i = 0; i < Math.min(parts.length - 1, PATTERNS_COUNT); i++) {
+                pattern += `${parts[i]}/`;
                 patterns.push(prefix + pattern + UrlFilterRule.MASK_ANY_SYMBOL);
             }
-            var file = parts[parts.length - 1];
+            const file = parts[parts.length - 1];
             if (file && patterns.length < PATTERNS_COUNT) {
                 pattern += file;
                 patterns.push(prefix + pattern);
@@ -965,8 +986,8 @@ var RequestWizard = (function () {
         patterns.unshift(prefix + domain + UrlFilterRule.MASK_SEPARATOR);
 
         // push full url pattern
-        var url = UrlUtils.getUrlWithoutScheme(requestUrl);
-        if (domain + '/' !== url) { // Don't duplicate: ||example.com/ and ||example.com^
+        const url = UrlUtils.getUrlWithoutScheme(requestUrl);
+        if (`${domain}/` !== url) { // Don't duplicate: ||example.com/ and ||example.com^
             if (patterns.indexOf(prefix + url) < 0) {
                 patterns.push(prefix + url);
             }
@@ -976,12 +997,12 @@ var RequestWizard = (function () {
     };
 
     var createRuleFromParams = function (urlPattern, urlDomain, matchCase, thirdParty, important, mandatoryOptions) {
-        var ruleText = urlPattern;
-        var options = [];
+        let ruleText = urlPattern;
+        let options = [];
 
         // add domain option
         if (urlDomain) {
-            options.push(UrlFilterRule.DOMAIN_OPTION + '=' + urlDomain);
+            options.push(`${UrlFilterRule.DOMAIN_OPTION}=${urlDomain}`);
         }
         // add important option
         if (important) {
@@ -1011,7 +1032,7 @@ var RequestWizard = (function () {
      * @param {String} requestType
      * @returns {String}
      */
-    var getRequestType = function (requestType) {
+    const getRequestType = function (requestType) {
         switch (requestType) {
             case 'DOCUMENT':
             case 'SUBDOCUMENT':
@@ -1050,7 +1071,7 @@ var RequestWizard = (function () {
      * @param {String} frameDomain
      * @returns {String}
      */
-    var getSource = function (frameDomain) {
+    const getSource = function (frameDomain) {
         return frameDomain || '';
     };
 
@@ -1060,12 +1081,12 @@ var RequestWizard = (function () {
      * @param {Object} frameInfo
      * @param {Object} filteringEvent
      */
-    var showRequestInfoModal = function (frameInfo, filteringEvent) {
+    const showRequestInfoModal = function (frameInfo, filteringEvent) {
         const template = requestInfoTemplate.cloneNode(true);
 
-        const requestRule = filteringEvent.requestRule;
-        const replaceRules = filteringEvent.replaceRules;
-        const stealthActions = filteringEvent.stealthActions;
+        const { requestRule } = filteringEvent;
+        const { replaceRules } = filteringEvent;
+        const { stealthActions } = filteringEvent;
 
         const requestUrlNode = template.querySelector('[attr-text="requestUrl"]');
         if (filteringEvent.requestUrl) {
@@ -1136,12 +1157,12 @@ var RequestWizard = (function () {
         if (filteringEvent.requestType === 'IMAGE') {
             template.classList.remove('compact-view');
 
-            var imagePreview = template.querySelector('[attr-src="requestUrl"]');
-            var image = new Image();
+            const imagePreview = template.querySelector('[attr-src="requestUrl"]');
+            const image = new Image();
             image.src = filteringEvent.requestUrl;
             image.onload = function () {
-                var width = this.width;
-                var height = this.height;
+                const { width } = this;
+                const { height } = this;
                 if (width > 1 && height > 1) {
                     imagePreview.setAttribute('src', filteringEvent.requestUrl);
                     imagePreview.parentNode.style.display = 'block';
@@ -1156,10 +1177,10 @@ var RequestWizard = (function () {
         const removeWhiteListDomainButton = template.querySelector('#removeWhiteListDomain');
         const removeUserFilterRuleButton = template.querySelector('#removeUserFilterRule');
 
-        openRequestButton.addEventListener('click', function (e) {
+        openRequestButton.addEventListener('click', (e) => {
             e.preventDefault();
 
-            let requestUrl = filteringEvent.requestUrl;
+            let { requestUrl } = filteringEvent;
             if (requestUrl === 'content-security-policy-check') {
                 requestUrl = filteringEvent.frameUrl;
             }
@@ -1172,25 +1193,25 @@ var RequestWizard = (function () {
             openRequestButton.style.display = 'none';
         }
 
-        blockRequestButton.addEventListener('click', function (e) {
+        blockRequestButton.addEventListener('click', (e) => {
             e.preventDefault();
             closeModal();
             showCreateBlockRuleModal(frameInfo, filteringEvent);
         });
 
-        unblockRequestButton.addEventListener('click', function (e) {
+        unblockRequestButton.addEventListener('click', (e) => {
             e.preventDefault();
             closeModal();
             showCreateExceptionRuleModal(frameInfo, filteringEvent);
         });
 
-        removeWhiteListDomainButton.addEventListener('click', function (e) {
+        removeWhiteListDomainButton.addEventListener('click', (e) => {
             e.preventDefault();
-            contentPage.sendMessage({ type: 'unWhiteListFrame', frameInfo: frameInfo });
+            contentPage.sendMessage({ type: 'unWhiteListFrame', frameInfo });
             closeModal();
         });
 
-        removeUserFilterRuleButton.addEventListener('click', function (e) {
+        removeUserFilterRuleButton.addEventListener('click', (e) => {
             e.preventDefault();
             contentPage.sendMessage({
                 type: 'removeUserRule',
@@ -1200,7 +1221,7 @@ var RequestWizard = (function () {
 
             if (frameInfo.adguardDetected) {
                 // In integration mode rule may be present in whitelist filter
-                contentPage.sendMessage({ type: 'unWhiteListFrame', frameInfo: frameInfo });
+                contentPage.sendMessage({ type: 'unWhiteListFrame', frameInfo });
             }
 
             closeModal();
@@ -1248,9 +1269,7 @@ var RequestWizard = (function () {
             return Messages.OPTIONS_WHITELIST;
         }
 
-        var filterMetadata = filtersMetadata.filter(function (el) {
-            return el.filterId === filterId;
-        })[0];
+        const filterMetadata = filtersMetadata.filter(el => el.filterId === filterId)[0];
 
         return filterMetadata ? filterMetadata.name : '';
     };
@@ -1258,7 +1277,7 @@ var RequestWizard = (function () {
     /**
      * Initialization
      */
-    var initRequestWizard = function () {
+    const initRequestWizard = function () {
         requestInfoTemplate = document.querySelector('#modal-request-info');
         createBlockRuleTemplate = document.querySelector('#modal-create-block-rule');
         createExceptionRuleTemplate = document.querySelector('#modal-create-exception-rule');
@@ -1266,7 +1285,7 @@ var RequestWizard = (function () {
 
     const getStealthActionNames = (actions) => {
         const result = [];
-        for (let key in STEALTH_ACTIONS) {
+        for (const key in STEALTH_ACTIONS) {
             const action = STEALTH_ACTIONS[key];
             if ((actions & action) === action) {
                 result.push(STEALTH_ACTIONS_NAMES[key]);
@@ -1276,22 +1295,22 @@ var RequestWizard = (function () {
     };
 
     return {
-        initRequestWizard: initRequestWizard,
-        showRequestInfoModal: showRequestInfoModal,
-        closeModal: closeModal,
-        getFilterName: getFilterName,
-        getRequestType: getRequestType,
-        getSource: getSource,
+        initRequestWizard,
+        showRequestInfoModal,
+        closeModal,
+        getFilterName,
+        getRequestType,
+        getSource,
     };
 })();
 
-var userSettings;
-var environmentOptions;
-var AntiBannerFiltersId;
-var EventNotifierTypes;
-var filtersMetadata;
+let userSettings;
+let environmentOptions;
+let AntiBannerFiltersId;
+let EventNotifierTypes;
+let filtersMetadata;
 
-contentPage.sendMessage({ type: 'initializeFrameScript' }, function (response) {
+contentPage.sendMessage({ type: 'initializeFrameScript' }, (response) => {
     userSettings = response.userSettings;
     filtersMetadata = response.filtersMetadata;
     environmentOptions = response.environmentOptions;
@@ -1299,11 +1318,11 @@ contentPage.sendMessage({ type: 'initializeFrameScript' }, function (response) {
     AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
     EventNotifierTypes = response.constants.EventNotifierTypes;
 
-    var onDocumentReady = function () {
-        var pageController = new PageController();
+    const onDocumentReady = function () {
+        const pageController = new PageController();
         pageController.init();
 
-        var events = [
+        const events = [
             EventNotifierTypes.TAB_ADDED,
             EventNotifierTypes.TAB_UPDATE,
             EventNotifierTypes.TAB_CLOSE,
@@ -1315,7 +1334,7 @@ contentPage.sendMessage({ type: 'initializeFrameScript' }, function (response) {
         // set log is open
         contentPage.sendMessage({ type: 'onOpenFilteringLogPage' });
 
-        createEventListener(events, function onEvent(event, tabInfo, filteringEvent) {
+        createEventListener(events, (event, tabInfo, filteringEvent) => {
             switch (event) {
                 case EventNotifierTypes.TAB_ADDED:
                 case EventNotifierTypes.TAB_UPDATE:
@@ -1334,7 +1353,7 @@ contentPage.sendMessage({ type: 'initializeFrameScript' }, function (response) {
                     pageController.onEventUpdated(tabInfo, filteringEvent);
                     break;
             }
-        }, function () {
+        }, () => {
             // set log is closed
             contentPage.sendMessage({ type: 'onCloseFilteringLogPage' });
         });
