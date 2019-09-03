@@ -858,19 +858,63 @@
     };
 
     /**
+     * Function gets options name, checks if there are alternative variants of this name
+     * and returns it if found. If not found returns same name.
+     * @param {string} optionName
+     * @returns {string} options names in array
+     */
+    const checkAndReplaceIfAlias = (optionName) => {
+        const OPTION_ALIASES_MAP = {
+            'FIRST-PARTY': api.FilterRule.NOT_MARK + UrlFilterRule.THIRD_PARTY_OPTION,
+            'XHR': UrlFilterRule.XMLHTTPREQUEST_OPTION,
+            'POPUNDER': UrlFilterRule.POPUP_OPTION,
+            '1P': api.FilterRule.NOT_MARK + UrlFilterRule.THIRD_PARTY_OPTION,
+            '3P': UrlFilterRule.THIRD_PARTY_OPTION,
+            'CSS': UrlFilterRule.STYLESHEET_OPTION,
+            'FRAME': UrlFilterRule.SUBDOCUMENT_OPTION,
+        };
+
+        const upperCaseOptionName = optionName.toUpperCase();
+
+        return OPTION_ALIASES_MAP[upperCaseOptionName] || optionName;
+    };
+
+    /**
+     * Extracts options and their values from string
+     * @param options
+     * @returns {{optionName: string, optionValue: string}[]}
+     */
+    const extractOptionsAndValues = (options) => {
+        const optionsParts = adguard.utils.strings.splitByDelimiterWithEscapeCharacter(
+            options,
+            api.FilterRule.COMA_DELIMITER,
+            ESCAPE_CHARACTER,
+            false
+        );
+
+        return optionsParts.reduce((acc, optionPart) => {
+            const valueIndex = optionPart.indexOf(api.FilterRule.EQUAL);
+            let optionName = valueIndex >= 0 ? optionPart.substr(0, valueIndex) : optionPart;
+            const optionValue = valueIndex >= 0 ? optionPart.substr(valueIndex + 1) : '';
+            optionName = checkAndReplaceIfAlias(optionName);
+
+            acc.push({ optionName, optionValue });
+
+            return acc;
+        }, []);
+    };
+
+    /**
      * Loads rule options
      * @param options Options string
      * @private
      */
     UrlFilterRule.prototype._loadOptions = function (options) {
+        const optionsParts = extractOptionsAndValues(options);
 
-        let optionsParts = adguard.utils.strings.splitByDelimiterWithEscapeCharacter(options, api.FilterRule.COMA_DELIMITER, ESCAPE_CHARACTER, false);
-
-        for (let i = 0; i < optionsParts.length; i++) {
-            let option = optionsParts[i];
-            let valueIndex = option.indexOf(api.FilterRule.EQUAL);
-            let optionName = valueIndex >= 0 ? option.substr(0, valueIndex) : option;
-            let optionValue = valueIndex >= 0 ? option.substr(valueIndex + 1) : '';
+        for (let i = 0; i < optionsParts.length; i += 1) {
+            // eslint-disable-next-line prefer-const
+            let { optionName, optionValue } = optionsParts[i];
 
             switch (optionName) {
                 case UrlFilterRule.DOMAIN_OPTION:
@@ -1076,6 +1120,9 @@
     UrlFilterRule.BADFILTER_OPTION = 'badfilter';
     UrlFilterRule.STEALTH_OPTION = 'stealth';
     UrlFilterRule.REDIRECT_OPTION = 'redirect';
+    UrlFilterRule.XMLHTTPREQUEST_OPTION = 'xmlhttprequest';
+    UrlFilterRule.STYLESHEET_OPTION = 'stylesheet';
+    UrlFilterRule.SUBDOCUMENT_OPTION = 'subdocument';
 
     UrlFilterRule.contentTypes = {
         OTHER: 1 << 0,
