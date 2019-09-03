@@ -1,8 +1,8 @@
-! Checksum: aNJ8HYY6GNp2QYDz3ltrjw
+! Checksum: rMjRItjIdfCMx0geV2kgpQ
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.1.96
-! TimeUpdated: 2019-06-27T16:31:26+03:00
+! Version: 2.0.2.19
+! TimeUpdated: 2019-08-29T16:30:56+03:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -54,6 +54,8 @@
 ||adimp.excite.co.jp^
 ||adimpkwd.excite.co.jp^
 ||adingo.jp.eimg.jp^
+||speee-ad.akamaized.net^$third-party
+||candy.smv.to^$third-party
 ||aaacompany.net^$third-party
 ||ad.adpon.jp^$third-party
 ||sdqoi2d.com^$third-party
@@ -283,11 +285,9 @@
 ||webtracker.jp^
 ||widget.zenback.jp^$third-party
 ||w.zenback.jp^$third-party
-wpteq.org#%#(function() { var noopfn = function() {;}; var Fab = function() {}; Fab.prototype.check = noopfn; Fab.prototype.clearEvent = noopfn;  Fab.prototype.emitEvent = noopfn; Fab.prototype.on = function(a, b) { if ( !a ) { b(); } return this; }; Fab.prototype.onDetected = function() {  return this; }; Fab.prototype.onNotDetected = function(a) { a(); return this; }; Fab.prototype.setOption = noopfn; var fab = new Fab(),  getSetFab = { get: function() { return Fab; }, set: function() {} }, getsetfab = { get: function() { return fab; }, set: function() {} }; if ( window.hasOwnProperty('FuckAdBlock') ) { window.FuckAdBlock = Fab; } else { Object.defineProperty(window, 'FuckAdBlock', getSetFab); } if ( window.hasOwnProperty('BlockAdBlock') ) { window.BlockAdBlock = Fab; } else {Object.defineProperty(window, 'BlockAdBlock', getSetFab); } if ( window.hasOwnProperty('SniffAdBlock') ) { window.SniffAdBlock = Fab; } else { Object.defineProperty(window, 'SniffAdBlock', getSetFab); } if ( window.hasOwnProperty('fuckAdBlock') ) { window.fuckAdBlock = fab; } else { Object.defineProperty(window, 'fuckAdBlock', getsetfab); } if ( window.hasOwnProperty('blockAdBlock') ) { window.blockAdBlock = fab; } else { Object.defineProperty(window, 'blockAdBlock', getsetfab); } if ( window.hasOwnProperty('sniffAdBlock') ) { window.sniffAdBlock = fab; } else { Object.defineProperty(window, 'sniffAdBlock', getsetfab); } })();
-ronron-blog.com,wpteq.org,d-navi004.com,gagetmatome.com,h5games.success-corp.co.jp#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
-xn--f9jh4f4b4993b66s.tokyo#%#AG_abortInlineScript(/,displayMessage:/, 'document.addEventListener');
-cowboy.blog.jp,eikaiwamastery.blogspot.com,wakudan.seesaa.net,kamikiyuki.hatenablog.com,omutulove.seesaa.net,omutulove.blog.fc2.com,akb48gnittimatome.com,gtoys.blog48.fc2.com,halchim.jp#%#AG_abortInlineScript(/google_ad_client/, 'document.addEventListener');
-fe-siken.com#$#.adsbygoogle { remove: true; }
+itpassportsiken.com#$?#.adsbygoogle { remove: true; }
+itpassportsiken.com#%#(function(){var b=window.setTimeout;window.setTimeout=function(a,c){if(!/'opacity:\.05/.test(a.toString()))return b(a,c)};})();
+fe-siken.com#$?#.adsbygoogle { remove: true; }
 fe-siken.com#%#(function(){var b=window.setTimeout;window.setTimeout=function(a,c){if(!/'opacity:\.05/.test(a.toString()))return b(a,c)};})();
 @@||wpteq.org/wp-content/plugins/wp-adblock-dedect/js/dedect.js
 ||javusb.com/wp-content/uploads/*/*.js
@@ -328,7 +328,6 @@ socom.yokohama#@#.an-sponsored
 nasubiblog.com,kyukyoku-matome.com##.widget_pc_ad
 @@||mushinavi.com^$generichide
 off-soft.net#@#.adsbygoogle
-nazolog.com#%#(function(b){Object.defineProperty(Element.prototype,"innerHTML",{get:function(){return b.get.call(this)},set:function(a){/^(?:<([abisuq]) id="[^"]*"><\/\1>)*$/.test(a)||b.set.call(this,a)},enumerable:!0,configurable:!0})})(Object.getOwnPropertyDescriptor(Element.prototype,"innerHTML"));
 anipo.jp#@#.adbanner
 blogs.yahoo.co.jp##.timelineArticle > ul.timelineArticle__list > li.timelineArticle__item:has(> div[id^="ad"]:empty)
 sankei.com##.entry_column > .entry_list > .entry:has(> .entry_content > .entry_meta > i.yellow:contains(Sponsored))
@@ -345,6 +344,7 @@ appllio.com##.sidebar > .region-inner > .block.odd:has(div[id^="div-gpt-ad"])
 mindhack2ch.com##.article-body > .ad:has(> .adsbygoogle)
 mindhack2ch.com##.article-body > .rss:has(> script)
 mindhack2ch.com##.article-post-bottom > .rss-article:has(> .rss-article-item)
+nijinchu.com#?#article > div.entry_content > h3:contains(おすすめ商品)
 melos.media##.x1_article > .x1_articleArea[-ext-has='div.x1_siteTitle:contains([PR])']
 repeat-drama.info##.side_inner > .box:contains(スポンサーリンク)
 momon-ga.com##.repo-title:has(> strong)
@@ -464,7 +464,6 @@ iza.ne.jp#$#.sideFixedWrapper { position: relative!important; }
 /analysis2.
 /banana/600x
 /banimg/*
-/banner/banner_
 /beacon.php3?
 /beacon.php?
 /clicktrack/*
@@ -494,6 +493,27 @@ iza.ne.jp#$#.sideFixedWrapper { position: relative!important; }
 /top/head_s_bnr
 /yaad.js
 _ds_adtag_
+headlines.yahoo.co.jp###lrec
+||vipsister23.com/vipsister.html
+yomiuri.co.jp###rt_popup_overlay_yolyp_popup
+yomiuri.co.jp###yolyp_popup
+nijinchu.com##div[class*="adv"]
+||cdn.exaf.jp/dmm/js^$domain=nijinchu.com
+vipsister23.com###share2
+av.movie##div[class*="-banner"]
+av.movie##[class$="-ads"]
+av.movie##a[href^="https://theporndude.com/"]
+85cc.net##a[href*="mm786.com/"]
+85cc.net##.menu > a.item[target="_blank"]
+creive.me###sidebar1 > .add > #custom_html-2
+sojson.com##div[class^="pl0 pr0 banner"]
+mudainodocument.com##a[href^="https://recott.me/"]
+ibbs.info##.ad_data
+embed.share-videos.se###ad_html
+smv.to##.pc_content_tt_adsterra
+smv.to##div[style^="width:900px;"][style*="height: 250px;"]
+smv.to##.ad_movieupdown
+blog.esuteru.com,jin115.com###gStickyAd
 news-us.org##.adspc
 news-us.org##.ps-300-250
 news-us.org##div[itemtype="https://schema.org/WPAdBlock"]
@@ -502,6 +522,8 @@ blog.esuteru.com##.ad-aside > a[target="_blank"]
 blog.esuteru.com##.ad-siteRanking
 blog.esuteru.com##.article-main .rss.clearfix
 shopping.yahoo.co.jp##.mdNorthBuyee
+||macotakara.jp/banaer/
+macotakara.jp##iframe[src^="http://ad.jp.ap.valuecommerce.com"]
 javmix.tv##.__isboostOverContent
 top.togeko.net##a[href^="https://book.dmm.co.jp"]
 ||top.togeko.net/*/randomad*.js
@@ -1089,11 +1111,13 @@ yahoo.co.jp##ul[class^="sponsor"]
 ||xrea.com/banner
 ||y-bbs.net/k/
 ||yahoo.co.jp/js/sq.js
-||yimg.jp/bdv/$image,object,subdocument
 ||yimg.jp/images/*img/banner
 ||yjaxc.yahoo.co.jp^
 ||yomiuri.co.jp/ad/
 ||zenback.jp^*/tracking.html
+!+ NOT_OPTIMIZED
+||yimg.jp/bdv/
+@@||s.yimg.jp/bdv/yahoo/darla/*/js/darla-secure-beacons-min.js$domain=mail.yahoo.co.jp
 @@||fresheye.com^$domain=m-search.sponichi.co.jp
 edy.rakuten.co.jp#@#div[id^="div-gpt-ad"]
 @@||ias.rakuten.co.jp/ctrl/$domain=edy.rakuten.co.jp
