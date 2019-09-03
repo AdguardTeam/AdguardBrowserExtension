@@ -19,48 +19,47 @@
  * Application settings provider.
  */
 (function (api, adguard) { // jshint ignore:line
+    const PROTOCOL_VERSION = '1.0';
+    const APP_ID = 'adguard-browser-extension';
 
-    var PROTOCOL_VERSION = "1.0";
-    var APP_ID = "adguard-browser-extension";
+    const FILTERS_SECTION = 'filters.json';
+    const GENERAL_SECTION = 'general-settings.json';
+    const EXTENSION_SPECIFIC_SECTION = 'extension-specific-settings.json';
 
-    var FILTERS_SECTION = "filters.json";
-    var GENERAL_SECTION = "general-settings.json";
-    var EXTENSION_SPECIFIC_SECTION = "extension-specific-settings.json";
+    const SYNC_MANIFEST_PROP = 'sync-manifest';
 
-    var SYNC_MANIFEST_PROP = "sync-manifest";
-
-    var BACKUP_PROTOCOL_VERSION = "1.0";
+    const BACKUP_PROTOCOL_VERSION = '1.0';
 
     /**
      * Loads local manifest object
      */
-    var loadLocalManifest = function () {
-        var manifest = {
-            "protocol-version": PROTOCOL_VERSION,
-            "min-compatible-version": PROTOCOL_VERSION,
-            "app-id": APP_ID,
-            "timestamp": 0,
-            "sections": [
+    const loadLocalManifest = function () {
+        const manifest = {
+            'protocol-version': PROTOCOL_VERSION,
+            'min-compatible-version': PROTOCOL_VERSION,
+            'app-id': APP_ID,
+            'timestamp': 0,
+            'sections': [
                 {
-                    "name": FILTERS_SECTION,
-                    "timestamp": 0
+                    'name': FILTERS_SECTION,
+                    'timestamp': 0,
                 },
                 {
-                    "name": GENERAL_SECTION,
-                    "timestamp": 0
+                    'name': GENERAL_SECTION,
+                    'timestamp': 0,
                 },
                 {
-                    "name": EXTENSION_SPECIFIC_SECTION,
-                    "timestamp": 0
-                }
-            ]
+                    'name': EXTENSION_SPECIFIC_SECTION,
+                    'timestamp': 0,
+                },
+            ],
         };
-        var item = adguard.localStorage.getItem(SYNC_MANIFEST_PROP);
+        const item = adguard.localStorage.getItem(SYNC_MANIFEST_PROP);
         if (!item) {
             return manifest;
         }
         try {
-            var localManifest = JSON.parse(item);
+            const localManifest = JSON.parse(item);
             manifest.timestamp = localManifest.timestamp;
             manifest.sections = localManifest.sections;
         } catch (ex) {
@@ -72,26 +71,26 @@
     /**
      * Creates empty settings manifest.
      */
-    var getEmptyLocalManifest = function () {
+    const getEmptyLocalManifest = function () {
         return {
-            "protocol-version": PROTOCOL_VERSION,
-            "min-compatible-version": PROTOCOL_VERSION,
-            "app-id": APP_ID,
-            "timestamp": 0,
-            "sections": [
+            'protocol-version': PROTOCOL_VERSION,
+            'min-compatible-version': PROTOCOL_VERSION,
+            'app-id': APP_ID,
+            'timestamp': 0,
+            'sections': [
                 {
-                    "name": FILTERS_SECTION,
-                    "timestamp": 0
+                    'name': FILTERS_SECTION,
+                    'timestamp': 0,
                 },
                 {
-                    "name": GENERAL_SECTION,
-                    "timestamp": 0
+                    'name': GENERAL_SECTION,
+                    'timestamp': 0,
                 },
                 {
-                    "name": EXTENSION_SPECIFIC_SECTION,
-                    "timestamp": 0
-                }
-            ]
+                    'name': EXTENSION_SPECIFIC_SECTION,
+                    'timestamp': 0,
+                },
+            ],
         };
     };
 
@@ -112,14 +111,12 @@
      */
     const collectCustomFiltersData = () => {
         const customFilters = adguard.subscriptions.getCustomFilters();
-        return customFilters.map(filter => {
-            return {
-                customUrl: filter.customUrl,
-                enabled: filter.enabled,
-                title: filter.name || '',
-                trusted: filter.trusted,
-            };
-        });
+        return customFilters.map(filter => ({
+            customUrl: filter.customUrl,
+            enabled: filter.enabled,
+            title: filter.name || '',
+            trusted: filter.trusted,
+        }));
     };
 
     const collectEnabledGroupIds = () => {
@@ -144,7 +141,7 @@
         const defaultWhiteListMode = !!adguard.whitelist.isDefaultMode();
 
         // Collect user rules
-        adguard.userrules.getUserRulesText(function (content) {
+        adguard.userrules.getUserRulesText((content) => {
             const section = {
                 'filters': {
                     'enabled-groups': enabledGroupIds,
@@ -171,7 +168,6 @@
      * @param callback
      */
     const loadGeneralSettingsSection = function (callback) {
-
         const enabledFilterIds = collectEnabledFilterIds();
         // TODO update self search settings on filter status change
         const allowAcceptableAds = enabledFilterIds.indexOf(adguard.utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID) >= 0;
@@ -195,16 +191,15 @@
      * Loads extension specific settings section
      * @param callback
      */
-    var loadExtensionSpecificSettingsSection = function (callback) {
-
-        var section = {
-            "extension-specific-settings": {
-                "use-optimized-filters": adguard.settings.isUseOptimizedFiltersEnabled(),
-                "collect-hits-count": adguard.settings.collectHitsCount(),
-                "show-context-menu": adguard.settings.showContextMenu(),
-                "show-info-about-adguard": adguard.settings.isShowInfoAboutAdguardFullVersion(),
-                "show-app-updated-info": adguard.settings.isShowAppUpdatedNotification()
-            }
+    const loadExtensionSpecificSettingsSection = function (callback) {
+        const section = {
+            'extension-specific-settings': {
+                'use-optimized-filters': adguard.settings.isUseOptimizedFiltersEnabled(),
+                'collect-hits-count': adguard.settings.collectHitsCount(),
+                'show-context-menu': adguard.settings.showContextMenu(),
+                'show-info-about-adguard': adguard.settings.isShowInfoAboutAdguardFullVersion(),
+                'show-app-updated-info': adguard.settings.isShowAppUpdatedNotification(),
+            },
         };
 
         callback(section);
@@ -216,11 +211,11 @@
      * @param syncTime Synchronization time
      * @param sections updated sections names array
      */
-    var syncLocalManifest = function (manifest, syncTime, sections) {
+    const syncLocalManifest = function (manifest, syncTime, sections) {
         if (syncTime) {
             manifest.timestamp = syncTime;
-            for (var i = 0; i < manifest.sections.length; i++) {
-                var section = manifest.sections[i];
+            for (let i = 0; i < manifest.sections.length; i++) {
+                const section = manifest.sections[i];
                 if (sections) {
                     if (sections.indexOf(section.name) >= 0) {
                         section.timestamp = syncTime;
@@ -251,8 +246,8 @@
         adguard.settings.changeSendSafebrowsingStats(!!set['safebrowsing-help'], syncSuppressOptions);
         adguard.settings.setFiltersUpdatePeriod(set['filters-update-period'], syncSuppressOptions);
 
-        if (!!set['allow-acceptable-ads']) {
-            adguard.filters.addAndEnableFilters([adguard.utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID], function () {
+        if (set['allow-acceptable-ads']) {
+            adguard.filters.addAndEnableFilters([adguard.utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID], () => {
                 callback(true);
             }, syncSuppressOptions);
         } else {
@@ -266,18 +261,18 @@
      * @param section
      * @param callback
      */
-    var applyExtensionSpecificSettingsSection = function (section, callback) {
-        var syncSuppressOptions = {
-            syncSuppress: true
+    const applyExtensionSpecificSettingsSection = function (section, callback) {
+        const syncSuppressOptions = {
+            syncSuppress: true,
         };
 
-        var set = section["extension-specific-settings"];
+        const set = section['extension-specific-settings'];
 
-        adguard.settings.changeUseOptimizedFiltersEnabled(!!set["use-optimized-filters"], syncSuppressOptions);
-        adguard.settings.changeCollectHitsCount(!!set["collect-hits-count"], syncSuppressOptions);
-        adguard.settings.changeShowContextMenu(!!set["show-context-menu"], syncSuppressOptions);
-        adguard.settings.changeShowInfoAboutAdguardFullVersion(!!set["show-info-about-adguard"], syncSuppressOptions);
-        adguard.settings.changeShowAppUpdatedNotification(!!set["show-app-updated-info"], syncSuppressOptions);
+        adguard.settings.changeUseOptimizedFiltersEnabled(!!set['use-optimized-filters'], syncSuppressOptions);
+        adguard.settings.changeCollectHitsCount(!!set['collect-hits-count'], syncSuppressOptions);
+        adguard.settings.changeShowContextMenu(!!set['show-context-menu'], syncSuppressOptions);
+        adguard.settings.changeShowInfoAboutAdguardFullVersion(!!set['show-info-about-adguard'], syncSuppressOptions);
+        adguard.settings.changeShowAppUpdatedNotification(!!set['show-app-updated-info'], syncSuppressOptions);
 
         callback(true);
     };
@@ -320,28 +315,24 @@
     };
 
     const addCustomFilters = (absentCustomFiltersInitials, syncSuppressOptions) => absentCustomFiltersInitials
-        .reduce((promiseAcc, customFilterInitial) => {
-            return promiseAcc
-                .then((acc) => {
-                    return addCustomFilter(customFilterInitial, syncSuppressOptions)
-                        .then(customFilter => {
-                            adguard.console.info(`Settings sync: Was added custom filter: ${customFilter.customUrl}`);
-                            return [...acc, { error: null, filter: customFilter }];
-                        })
-                        .catch(() => {
-                            const { customUrl } = customFilterInitial;
-                            const message = `Settings sync: Some error happened while downloading: ${customUrl}`;
-                            adguard.console.info(message);
-                            return [...acc, { error: message }];
-                        });
-                });
-        }, Promise.resolve([]));
+        .reduce((promiseAcc, customFilterInitial) => promiseAcc
+            .then(acc => addCustomFilter(customFilterInitial, syncSuppressOptions)
+                .then((customFilter) => {
+                    adguard.console.info(`Settings sync: Was added custom filter: ${customFilter.customUrl}`);
+                    return [...acc, { error: null, filter: customFilter }];
+                })
+                .catch(() => {
+                    const { customUrl } = customFilterInitial;
+                    const message = `Settings sync: Some error happened while downloading: ${customUrl}`;
+                    adguard.console.info(message);
+                    return [...acc, { error: message }];
+                })), Promise.resolve([]));
 
     /**
      * Remove existing custom filters before adding new custom filters
      */
     const removeCustomFilters = (filterIds) => {
-        filterIds.forEach(filterId => {
+        filterIds.forEach((filterId) => {
             adguard.filters.removeFilter(filterId);
         });
         adguard.console.info(`Settings sync: Next filters were removed: ${filterIds}`);
@@ -363,13 +354,13 @@
      * Adds custom filters if there were not added one by one to the subscriptions list
      * @param {Array<CustomFilterInitial>} customFiltersInitials
      * @param {{syncSuppress: boolean}} syncSuppressOptions
-     * @returns {Promise<any>} Promise object which represents array with filter ids
+     * @returns {Promise<any>} Promise object which represents array with filters
      */
     const syncCustomFilters = (customFiltersInitials, syncSuppressOptions) => {
         const presentCustomFilters = adguard.subscriptions.getCustomFilters();
 
-        const enrichedFiltersInitials = customFiltersInitials.map(filterToAdd => {
-            presentCustomFilters.forEach(existingFilter => {
+        const enrichedFiltersInitials = customFiltersInitials.map((filterToAdd) => {
+            presentCustomFilters.forEach((existingFilter) => {
                 if (existingFilter.customUrl === filterToAdd.customUrl) {
                     filterToAdd.filterId = existingFilter.filterId;
                 }
@@ -378,7 +369,7 @@
         });
 
         const customFiltersToAdd = enrichedFiltersInitials.filter(f => !f.filterId);
-        const existingCustomFiltersInitials = enrichedFiltersInitials.filter(f => f.filterId);
+        const existingCustomFilters = enrichedFiltersInitials.filter(f => f.filterId);
         const redundantExistingCustomFiltersIds = getCustomFiltersToRemove(presentCustomFilters, customFiltersInitials);
 
         if (redundantExistingCustomFiltersIds.length > 0) {
@@ -386,20 +377,20 @@
         }
 
         if (customFiltersToAdd.length === 0) {
-            return Promise.resolve(enrichedFiltersInitials.map(f => f.filterId));
+            return Promise.resolve(enrichedFiltersInitials);
         }
 
         return addCustomFilters(customFiltersToAdd, syncSuppressOptions)
-            .then(customFiltersAddResult => {
-                // get results without errors, not to enable not existing filters
-                const addedCustomFiltersIdsWithoutError = customFiltersAddResult
+            .then((customFiltersAddResult) => {
+                // get results without errors, in order to do not enable filters with errors
+                const addedCustomFiltersWithoutError = customFiltersAddResult
                     .filter(f => f.error === null)
-                    .map(f => f.filter.filterId);
+                    .map(f => f.filter);
 
-                adguard.console.info(`Settings sync: Were added custom filters: ${addedCustomFiltersIdsWithoutError}`);
-                const existingCustomFiltersIds = existingCustomFiltersInitials.map(f => f.filterId);
+                const addedCustomFiltersIds = addedCustomFiltersWithoutError.map(f => f.filterId);
+                adguard.console.info(`Settings sync: Were added custom filters: ${addedCustomFiltersIds}`);
 
-                return [...existingCustomFiltersIds, ...addedCustomFiltersIdsWithoutError];
+                return [...existingCustomFilters, ...addedCustomFiltersWithoutError];
             });
     };
 
@@ -409,18 +400,16 @@
      * @param {{syncSuppress: boolean}} syncSuppressOptions
      * @returns {Promise<any>}
      */
-    const syncEnabledFilters = (filterIds, syncSuppressOptions) => {
-        return new Promise(resolve => {
-            adguard.filters.addAndEnableFilters(filterIds, function () {
-                const enabledFilters = adguard.filters.getEnabledFilters();
-                const filtersToDisable = enabledFilters
-                    .filter(enabledFilter => !filterIds.includes(enabledFilter.filterId))
-                    .map(filter => filter.filterId);
-                adguard.filters.disableFilters(filtersToDisable, syncSuppressOptions);
-                resolve();
-            }, syncSuppressOptions);
-        });
-    };
+    const syncEnabledFilters = (filterIds, syncSuppressOptions) => new Promise((resolve) => {
+        adguard.filters.addAndEnableFilters(filterIds, () => {
+            const enabledFilters = adguard.filters.getEnabledFilters();
+            const filtersToDisable = enabledFilters
+                .filter(enabledFilter => !filterIds.includes(enabledFilter.filterId))
+                .map(filter => filter.filterId);
+            adguard.filters.disableFilters(filtersToDisable, syncSuppressOptions);
+            resolve();
+        }, syncSuppressOptions);
+    });
 
     /**
      * Enables groups by groupId and disable those groups which were not in the list
@@ -428,7 +417,7 @@
      * @param {{syncSuppress: boolean}} options syncSuppressOptions
      */
     const syncEnabledGroups = (enabledGroups, options) => {
-        enabledGroups.forEach(groupId => {
+        enabledGroups.forEach((groupId) => {
             adguard.filters.enableGroup(groupId, options);
         });
         adguard.console.info(`Settings sync: Next groups were enabled: ${enabledGroups}`);
@@ -440,7 +429,7 @@
             .map(group => group.groupId)
             .filter(groupId => !enabledGroups.includes(groupId));
 
-        groupIdsToDisable.forEach(groupId => {
+        groupIdsToDisable.forEach((groupId) => {
             adguard.filters.disableGroup(groupId, options);
         });
     };
@@ -473,18 +462,32 @@
 
         // STEP 1 sync custom filters
         syncCustomFilters(customFiltersData, syncSuppressOptions)
-            .then(customFiltersIdsToEnable => {
-                // STEP 2 sync enabled filters
+            .then((availableCustomFilters) => {
+                // STEP 2 get filters with enabled flag from export data
+                const customFilterIdsToEnable = availableCustomFilters
+                    .filter((availableCustomFilter) => {
+                        const filterData = customFiltersData
+                            .find((filter) => {
+                                if (!filter.customUrl) {
+                                    // eslint-disable-next-line max-len
+                                    throw new Error(`Custom filter should always have custom URL: ${JSON.stringify(filter)}`);
+                                }
+                                return filter.customUrl === availableCustomFilter.customUrl
+                            });
+                        return filterData && filterData.enabled;
+                    })
+                    .map(filter => filter.filterId);
+                // STEP 3 sync enabled filters
                 const enabledFilterIds = section.filters['enabled-filters'] || [];
-                return syncEnabledFilters([...enabledFilterIds, ...customFiltersIdsToEnable], syncSuppressOptions);
+                return syncEnabledFilters([...enabledFilterIds, ...customFilterIdsToEnable], syncSuppressOptions);
             })
             .then(() => {
-                // STEP 3 sync enabled groups
+                // STEP 4 sync enabled groups
                 const enabledGroups = section.filters['enabled-groups'] || [];
                 syncEnabledGroups(enabledGroups, syncSuppressOptions);
                 callback(true);
             })
-            .catch(err => {
+            .catch((err) => {
                 adguard.console.error(err);
             });
     };
@@ -493,7 +496,7 @@
      * Checks section is supported
      * @param sectionName Section name
      */
-    var isSectionSupported = function (sectionName) {
+    const isSectionSupported = function (sectionName) {
         return sectionName === FILTERS_SECTION
             || sectionName === GENERAL_SECTION
             || sectionName === EXTENSION_SPECIFIC_SECTION;
@@ -504,7 +507,7 @@
      * @param sectionName Section name
      * @param callback Finish callback
      */
-    var loadSection = function (sectionName, callback) {
+    const loadSection = function (sectionName, callback) {
         switch (sectionName) {
             case FILTERS_SECTION:
                 loadFiltersSection(callback);
@@ -528,7 +531,7 @@
      * @param section Section object
      * @param callback Finish callback
      */
-    var applySection = function (sectionName, section, callback) {
+    const applySection = function (sectionName, section, callback) {
         switch (sectionName) {
             case FILTERS_SECTION:
                 applyFiltersSection(section, callback);
@@ -548,20 +551,19 @@
     /**
      * Exports settings set in json format
      */
-    var loadSettingsBackupJson = function (callback) {
-
-        var result = {
-            "protocol-version": BACKUP_PROTOCOL_VERSION
+    const loadSettingsBackupJson = function (callback) {
+        const result = {
+            'protocol-version': BACKUP_PROTOCOL_VERSION,
         };
 
-        loadGeneralSettingsSection(function (section) {
-            result["general-settings"] = section["general-settings"];
+        loadGeneralSettingsSection((section) => {
+            result['general-settings'] = section['general-settings'];
 
-            loadExtensionSpecificSettingsSection(function (section) {
-                result["extension-specific-settings"] = section["extension-specific-settings"];
+            loadExtensionSpecificSettingsSection((section) => {
+                result['extension-specific-settings'] = section['extension-specific-settings'];
 
-                loadFiltersSection(function (section) {
-                    result["filters"] = section["filters"];
+                loadFiltersSection((section) => {
+                    result['filters'] = section['filters'];
 
                     callback(JSON.stringify(result));
                 });
@@ -572,7 +574,7 @@
     /**
      * Imports settings set from json format
      */
-    var applySettingsBackupJson = function (json) {
+    const applySettingsBackupJson = function (json) {
         function onFinished(success) {
             if (success) {
                 adguard.console.info('Settings import finished successfully');
@@ -583,7 +585,7 @@
             adguard.listeners.notifyListeners(adguard.listeners.SETTINGS_UPDATED, success);
         }
 
-        var input = null;
+        let input = null;
 
         try {
             input = JSON.parse(json);
@@ -599,19 +601,19 @@
             return;
         }
 
-        applyGeneralSettingsSection(input, function (success) {
+        applyGeneralSettingsSection(input, (success) => {
             if (!success) {
                 onFinished(false);
                 return;
             }
 
-            applyExtensionSpecificSettingsSection(input, function (success) {
+            applyExtensionSpecificSettingsSection(input, (success) => {
                 if (!success) {
                     onFinished(false);
                     return;
                 }
 
-                applyFiltersSection(input, function (success) {
+                applyFiltersSection(input, (success) => {
                     onFinished(success);
                 });
             });
@@ -624,32 +626,32 @@
         /**
          * Loads app settings manifest
          */
-        loadLocalManifest: loadLocalManifest,
+        loadLocalManifest,
 
         /**
          * Gets empty settings manifest
          */
-        getEmptyLocalManifest: getEmptyLocalManifest,
+        getEmptyLocalManifest,
 
         /**
          * Saves manifest to local storage
          */
-        syncLocalManifest: syncLocalManifest,
+        syncLocalManifest,
 
         /**
          * Checks section is supported
          */
-        isSectionSupported: isSectionSupported,
+        isSectionSupported,
 
         /**
          * Loads section of app settings
          */
-        loadSection: loadSection,
+        loadSection,
 
         /**
          * Apply section to application
          */
-        applySection: applySection,
+        applySection,
 
         /**
          * Loads settings backup json
@@ -659,7 +661,6 @@
         /**
          * Applies settings backup json
          */
-        applySettingsBackup: applySettingsBackupJson
+        applySettingsBackup: applySettingsBackupJson,
     };
-
 })(adguard.sync, adguard);
