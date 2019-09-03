@@ -116,6 +116,9 @@ adguard.filteringLog = (function (adguard) {
         if (sourceRule.convertedRuleText) {
             destinationRule.convertedRuleText = sourceRule.convertedRuleText;
         }
+        if (sourceRule.documentLevelRule) {
+            destinationRule.documentLevelRule = sourceRule.documentLevelRule;
+        }
         if (sourceRule instanceof adguard.rules.ContentFilterRule) {
             destinationRule.contentRule = true;
         } else if (sourceRule instanceof adguard.rules.CssFilterRule) {
