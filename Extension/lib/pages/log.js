@@ -17,96 +17,15 @@
 
 /* global i18n, contentPage, createEventListener, htmlToElement */
 
-const PageController = function () {
-};
+// variables used to spread data received on script initialize
+let AntiBannerFiltersId;
+let EventNotifierTypes;
+let filtersMetadata;
 
 const Messages = {
     OPTIONS_USERFILTER: i18n.getMessage('options_userfilter'),
     OPTIONS_WHITELIST: i18n.getMessage('options_whitelist'),
     IN_WHITELIST: i18n.getMessage('filtering_log_in_whitelist'),
-};
-
-const StringUtils = {
-
-    startWith(str, prefix) {
-        return str && str.indexOf(prefix) === 0;
-    },
-
-    containsIgnoreCase(str, searchString) {
-        return str && searchString && str.toUpperCase().indexOf(searchString.toUpperCase()) >= 0;
-    },
-
-    substringAfter(str, separator) {
-        if (!str) {
-            return str;
-        }
-        const index = str.indexOf(separator);
-        return index < 0 ? '' : str.substring(index + separator.length);
-    },
-
-    substringBefore(str, separator) {
-        if (!str || !separator) {
-            return str;
-        }
-        const index = str.indexOf(separator);
-        return index < 0 ? str : str.substring(0, index);
-    },
-};
-
-const UrlUtils = {
-
-    getProtocol(url) {
-        let index = url.indexOf('//');
-        if (index >= 0) {
-            return url.substring(0, index);
-        }
-        // It's non hierarchical structured URL (e.g. stun: or turn:)
-        index = url.indexOf(':');
-        if (index >= 0) {
-            return url.substring(0, index);
-        }
-
-        return '';
-    },
-
-    /**
-     * Removes protocol from URL
-     */
-    getUrlWithoutScheme(url) {
-        let index = url.indexOf('//');
-        if (index >= 0) {
-            url = url.substring(index + 2);
-        } else {
-            // It's non hierarchical structured URL (e.g. stun: or turn:)
-            index = url.indexOf(':');
-            if (index >= 0) {
-                url = url.substring(index + 1);
-            }
-        }
-        return StringUtils.startWith(url, 'www.') ? url.substring(4) : url;
-    },
-
-    /**
-     * Checks the given URL whether is hierarchical or not
-     * @param url
-     * @returns {boolean}
-     */
-    isHierarchicUrl(url) {
-        return url.indexOf('//') !== -1;
-    },
-};
-
-/**
- * Modal window utils
- */
-const ModalUtils = {
-    showModal(element) {
-        element.style.display = 'block';
-    },
-
-    closeModal(element) {
-        element.remove();
-    },
 };
 
 const FilterRule = {
@@ -156,6 +75,759 @@ const STEALTH_ACTIONS_NAMES = {
     STRIPPED_TRACKING_URL: i18n.getMessage('options_stripped_tracking_parameters'),
     FIRST_PARTY_COOKIES: i18n.getMessage('options_modified_first_party_cookie'),
     THIRD_PARTY_COOKIES: i18n.getMessage('options_modified_third_party_cookie'),
+};
+
+/**
+ * String utils
+ * @type {{substringAfter, containsIgnoreCase, substringBefore, startWith}}
+ */
+const StringUtils = {
+
+    startWith(str, prefix) {
+        return !!(str && str.indexOf(prefix) === 0);
+    },
+
+    containsIgnoreCase(str, searchString) {
+        return !!(str && searchString && str.toUpperCase().indexOf(searchString.toUpperCase()) >= 0);
+    },
+
+    substringAfter(str, separator) {
+        if (!str) {
+            return str;
+        }
+        const index = str.indexOf(separator);
+        return index < 0 ? '' : str.substring(index + separator.length);
+    },
+
+    substringBefore(str, separator) {
+        if (!str || !separator) {
+            return str;
+        }
+        const index = str.indexOf(separator);
+        return index < 0 ? str : str.substring(0, index);
+    },
+};
+
+/**
+ * Url utils
+ * @type {{getUrlWithoutScheme, isHierarchicUrl, getProtocol}}
+ */
+const UrlUtils = {
+
+    getProtocol(url) {
+        let index = url.indexOf('//');
+        if (index >= 0) {
+            return url.substring(0, index);
+        }
+        // It's non hierarchical structured URL (e.g. stun: or turn:)
+        index = url.indexOf(':');
+        if (index >= 0) {
+            return url.substring(0, index);
+        }
+
+        return '';
+    },
+
+    /**
+     * Removes protocol from URL
+     */
+    getUrlWithoutScheme(url) {
+        let index = url.indexOf('//');
+        if (index >= 0) {
+            url = url.substring(index + 2);
+        } else {
+            // It's non hierarchical structured URL (e.g. stun: or turn:)
+            index = url.indexOf(':');
+            if (index >= 0) {
+                url = url.substring(index + 1);
+            }
+        }
+        return StringUtils.startWith(url, 'www.') ? url.substring(4) : url;
+    },
+
+    /**
+     * Checks the given URL whether is hierarchical or not
+     * @param url
+     * @returns {boolean}
+     */
+    isHierarchicUrl(url) {
+        return url.indexOf('//') !== -1;
+    },
+};
+
+/**
+ * Modal window utils
+ * @type {{closeModal, showModal}}
+ */
+const ModalUtils = {
+    showModal(element) {
+        element.style.display = 'block';
+    },
+
+    closeModal(element) {
+        element.remove();
+    },
+};
+
+/**
+ * Request wizard
+ *
+ * @type {{showRequestInfoModal, closeModal, getFilterName, getRequestType, getSource}}
+ */
+const RequestWizard = (function () {
+    // exclude domain and full request url
+    const PATTERNS_COUNT = 2;
+
+    let requestInfoTemplate;
+    let createBlockRuleTemplate;
+    let createExceptionRuleTemplate;
+
+    let currentModal;
+
+    /**
+     * Closes current open modal
+     */
+    const closeModal = function () {
+        if (currentModal) {
+            ModalUtils.closeModal(currentModal);
+            currentModal = null;
+        }
+    };
+
+    const showModal = function (template) {
+        closeModal();
+
+        document.body.appendChild(template);
+        ModalUtils.showModal(template);
+
+        template.querySelector('.close').addEventListener('click', closeModal);
+
+        currentModal = template;
+    };
+
+    const createDocumentLevelBlockRule = (rule) => {
+        const { ruleText } = rule;
+        if (ruleText.indexOf(UrlFilterRule.OPTIONS_DELIMITER) > -1) {
+            return `${ruleText},${UrlFilterRule.BADFILTER_OPTION}`;
+        }
+        return ruleText + UrlFilterRule.OPTIONS_DELIMITER + UrlFilterRule.BADFILTER_OPTION;
+    };
+
+    const splitToPatterns = function (requestUrl, domain, whitelist) {
+        const hierarchicUrl = UrlUtils.isHierarchicUrl(requestUrl);
+        const protocol = UrlUtils.getProtocol(requestUrl);
+
+        let prefix;
+        if (hierarchicUrl) {
+            prefix = UrlFilterRule.MASK_START_URL; // Covers default protocols: http, ws
+        } else {
+            prefix = `${protocol}:`; // Covers non-default protocols: stun, turn
+        }
+
+        if (whitelist) {
+            prefix = FilterRule.MASK_WHITE_LIST + prefix;
+        }
+
+        const patterns = [];
+
+        const relative = StringUtils.substringAfter(requestUrl, `${domain}/`);
+
+        const path = StringUtils.substringBefore(relative, '?');
+        if (path) {
+            const parts = path.split('/');
+
+            let pattern = `${domain}/`;
+            for (let i = 0; i < Math.min(parts.length - 1, PATTERNS_COUNT); i += 1) {
+                pattern += `${parts[i]}/`;
+                patterns.push(prefix + pattern + UrlFilterRule.MASK_ANY_SYMBOL);
+            }
+            const file = parts[parts.length - 1];
+            if (file && patterns.length < PATTERNS_COUNT) {
+                pattern += file;
+                patterns.push(prefix + pattern);
+            }
+        }
+
+        // add domain pattern to start
+        patterns.unshift(prefix + domain + UrlFilterRule.MASK_SEPARATOR);
+
+        // push full url pattern
+        const url = UrlUtils.getUrlWithoutScheme(requestUrl);
+        if (`${domain}/` !== url) { // Don't duplicate: ||example.com/ and ||example.com^
+            if (patterns.indexOf(prefix + url) < 0) {
+                patterns.push(prefix + url);
+            }
+        }
+
+        return patterns;
+    };
+
+    const createCssRuleFromParams = function (urlPattern, permitDomain) {
+        let ruleText = urlPattern;
+        if (!permitDomain) {
+            ruleText = ruleText.slice(ruleText.indexOf('#'));
+        }
+
+        return ruleText;
+    };
+
+    const createRuleFromParams = (urlPattern, urlDomain, matchCase, thirdParty, important, mandatoryOptions) => {
+        let ruleText = urlPattern;
+        let options = [];
+
+        // add domain option
+        if (urlDomain) {
+            options.push(`${UrlFilterRule.DOMAIN_OPTION}=${urlDomain}`);
+        }
+        // add important option
+        if (important) {
+            options.push(UrlFilterRule.IMPORTANT_OPTION);
+        }
+        // add match case option
+        if (matchCase) {
+            options.push(UrlFilterRule.MATCH_CASE_OPTION);
+        }
+        // add third party option
+        if (thirdParty) {
+            options.push(UrlFilterRule.THIRD_PARTY_OPTION);
+        }
+        if (mandatoryOptions) {
+            options = options.concat(mandatoryOptions);
+        }
+        if (options.length > 0) {
+            ruleText += UrlFilterRule.OPTIONS_DELIMITER + options.join(',');
+        }
+
+        return ruleText;
+    };
+
+    const initCreateRuleDialog = function (frameInfo, template, patterns, filteringEvent) {
+        const { frameDomain } = filteringEvent;
+        const isThirdPartyRequest = filteringEvent.requestThirdParty;
+
+        const rulePatternsEl = template.querySelector('#rulePatterns');
+
+        for (let i = 0; i < patterns.length; i += 1) {
+            const pattern = patterns[i];
+            const escapedPattern = pattern.replace(/"/g, '&quot;');
+            const rulePatternTemplate = `
+                <li class="checkb-wrap">
+                    <div class="radio">
+                        <input
+                            class="radio__input"
+                            type="radio"
+                            name="rulePattern"
+                            id="pattern${i}"
+                            value="${escapedPattern}"
+                            ${i === 0 ? "checked='checked'" : ''}
+                        >
+                        <label class="radio__label" for="pattern${i}">
+                            ${pattern}
+                        </label>
+                    </div>
+                </li>`;
+
+            rulePatternsEl.appendChild(htmlToElement(rulePatternTemplate));
+        }
+
+        const rulePatterns = [].slice.call(template.querySelectorAll('[name="rulePattern"]'));
+        const ruleDomainCheckbox = template.querySelector('[name="ruleDomain"]');
+        const ruleImportantCheckbox = template.querySelector('[name="ruleImportant"]');
+        const ruleMatchCaseCheckbox = template.querySelector('[name="ruleMatchCase"]');
+        const ruleThirdPartyCheckbox = template.querySelector('[name="ruleThirdParty"]');
+        const ruleTextEl = template.querySelector('[name="ruleText"]');
+
+        ruleDomainCheckbox.setAttribute('id', 'ruleDomain');
+        ruleDomainCheckbox.parentNode.querySelector('label').setAttribute('for', 'ruleDomain');
+        if (!frameDomain) {
+            ruleDomainCheckbox.closest('.checkbox').style.display = 'none';
+        }
+
+        ruleImportantCheckbox.setAttribute('id', 'ruleImportant');
+        ruleImportantCheckbox.parentNode.querySelector('label').setAttribute('for', 'ruleImportant');
+        if (filteringEvent.requestRule
+            && filteringEvent.requestRule.whiteListRule) {
+            ruleImportantCheckbox.setAttribute('checked', 'checked');
+        }
+
+        ruleMatchCaseCheckbox.setAttribute('id', 'ruleMatchCase');
+        ruleMatchCaseCheckbox.parentNode.querySelector('label').setAttribute('for', 'ruleMatchCase');
+
+        ruleThirdPartyCheckbox.setAttribute('id', 'ruleThirdParty');
+        ruleThirdPartyCheckbox.parentNode.querySelector('label').setAttribute('for', 'ruleThirdParty');
+        if (isThirdPartyRequest) {
+            ruleThirdPartyCheckbox.setAttribute('checked', 'checked');
+        }
+
+        if (filteringEvent.element || filteringEvent.script) {
+            ruleImportantCheckbox.parentNode.style.display = 'none';
+            ruleMatchCaseCheckbox.parentNode.style.display = 'none';
+            ruleThirdPartyCheckbox.parentNode.style.display = 'none';
+            const patternsField = template.querySelector('.filtering-modal-patterns');
+            if (patternsField) {
+                patternsField.style.display = 'none';
+            }
+            const optionsField = template.querySelector('.filtering-modal-options');
+            if (optionsField) {
+                optionsField.style.display = 'none';
+            }
+        }
+
+        if (filteringEvent.cookieName) {
+            ruleImportantCheckbox.parentNode.style.display = 'none';
+            ruleMatchCaseCheckbox.parentNode.style.display = 'none';
+            ruleDomainCheckbox.parentNode.style.display = 'none';
+            const patternsField = template.querySelector('.filtering-modal-patterns');
+            if (patternsField) {
+                patternsField.style.display = 'none';
+            }
+        }
+
+        if (filteringEvent.requestRule && filteringEvent.requestRule.documentLevelRule) {
+            const optionsField = template.querySelector('.filtering-modal-options');
+            if (optionsField) {
+                optionsField.style.display = 'none';
+            }
+            ruleDomainCheckbox.setAttribute('checked', 'checked');
+            ruleImportantCheckbox.removeAttribute('checked');
+        }
+
+        function updateRuleText() {
+            const urlPattern = template.querySelector('[name="rulePattern"]:checked').value;
+            const permitDomain = !ruleDomainCheckbox.checked;
+            const important = !!ruleImportantCheckbox.checked;
+            const matchCase = !!ruleMatchCaseCheckbox.checked;
+            const thirdParty = !!ruleThirdPartyCheckbox.checked;
+
+            const domain = permitDomain ? frameDomain : null;
+
+            let mandatoryOptions = null;
+
+            // Deal with csp rule
+            const { requestRule } = filteringEvent;
+            if (requestRule && requestRule.cspRule) {
+                mandatoryOptions = [UrlFilterRule.CSP_OPTION];
+            }
+
+            if (requestRule && requestRule.cookieRule) {
+                mandatoryOptions = [UrlFilterRule.COOKIE_OPTION];
+            }
+
+            if (filteringEvent.requestUrl === 'content-security-policy-check') {
+                mandatoryOptions = [UrlFilterRule.WEBRTC_OPTION, UrlFilterRule.WEBSOCKET_OPTION];
+            }
+
+            const { replaceRules } = filteringEvent;
+            if (replaceRules) {
+                mandatoryOptions = [UrlFilterRule.REPLACE_OPTION];
+            }
+
+            let ruleText;
+            if (filteringEvent.element) {
+                ruleText = createCssRuleFromParams(urlPattern, permitDomain);
+            } else if (filteringEvent.cookieName) {
+                ruleText = createRuleFromParams(urlPattern, null, null, thirdParty, important, mandatoryOptions);
+            } else if (filteringEvent.script) {
+                ruleText = createRuleFromParams(urlPattern);
+            } else {
+                ruleText = createRuleFromParams(urlPattern, domain, matchCase, thirdParty, important, mandatoryOptions);
+            }
+            ruleTextEl.value = ruleText;
+        }
+
+        // update rule text events
+        ruleDomainCheckbox.addEventListener('change', updateRuleText);
+        ruleImportantCheckbox.addEventListener('change', updateRuleText);
+        ruleMatchCaseCheckbox.addEventListener('change', updateRuleText);
+        ruleThirdPartyCheckbox.addEventListener('change', updateRuleText);
+        // TODO: Link click on radio wrap to 'change' event on input
+        rulePatterns.forEach((r) => {
+            r.addEventListener('change', updateRuleText);
+        });
+
+        // create rule event
+        template.querySelector('#createRule').addEventListener('click', (e) => {
+            e.preventDefault();
+            const ruleText = ruleTextEl.value;
+            if (!ruleText) {
+                return;
+            }
+            // Add rule to user filter
+            contentPage.sendMessage({ type: 'addUserRule', ruleText, adguardDetected: frameInfo.adguardDetected });
+            // Close modal
+            closeModal();
+        });
+
+        updateRuleText();
+
+        showModal(template);
+    };
+
+    const showCreateBlockRuleModal = function (frameInfo, filteringEvent) {
+        const template = createBlockRuleTemplate.cloneNode(true);
+
+        let patterns = splitToPatterns(filteringEvent.requestUrl, filteringEvent.requestDomain, false).reverse();
+
+        if (filteringEvent.requestRule && filteringEvent.requestRule.documentLevelRule) {
+            patterns = [createDocumentLevelBlockRule(filteringEvent.requestRule)];
+        }
+
+        initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
+    };
+
+    const generateExceptionRule = function (ruleText, mask) {
+        const insert = (str, index, value) => str.slice(0, index) + value + str.slice(index);
+
+        const maskIndex = ruleText.indexOf(mask);
+        const maskLength = mask.length;
+        const rulePart = ruleText.slice(maskIndex + maskLength);
+        // insert exception mark after first char
+        const exceptionMask = insert(mask, 1, '@');
+        return exceptionMask + rulePart;
+    };
+
+    const createExceptionCssRule = function (rule, event) {
+        const { ruleText } = rule;
+        const domainPart = event.frameDomain;
+        if (ruleText.indexOf(FilterRule.MASK_CSS_INJECT_RULE) > -1) {
+            return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_INJECT_RULE);
+        }
+        if (ruleText.indexOf(FilterRule.MASK_CSS_EXTENDED_CSS_RULE) > -1) {
+            return domainPart + generateExceptionRule(
+                ruleText,
+                FilterRule.MASK_CSS_EXTENDED_CSS_RULE
+            );
+        }
+        if (ruleText.indexOf(FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE) > -1) {
+            return domainPart + generateExceptionRule(
+                ruleText, FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE
+            );
+        }
+        if (ruleText.indexOf(FilterRule.MASK_CSS_RULE) > -1) {
+            return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_RULE);
+        }
+    };
+
+    const createExceptionScriptRule = function (rule, event) {
+        const { ruleText } = rule;
+        const domainPart = event.frameDomain;
+        if (ruleText.indexOf(FilterRule.MASK_SCRIPT_RULE) > -1) {
+            return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_SCRIPT_RULE);
+        }
+        if (ruleText.indexOf(FilterRule.MASK_SCRIPT_RULE_UBO) > -1) {
+            return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_SCRIPT_RULE_UBO);
+        }
+    };
+
+    const createExceptionCookieRule = function (rule, event) {
+        let domain = event.frameDomain;
+        if (domain[0] === '.') {
+            domain = domain.substring(1);
+        }
+        return FilterRule.MASK_WHITE_LIST + UrlFilterRule.MASK_START_URL + domain;
+    };
+
+    const showCreateExceptionRuleModal = function (frameInfo, filteringEvent) {
+        const template = createExceptionRuleTemplate.cloneNode(true);
+
+        let patterns;
+        if (filteringEvent.requestUrl) {
+            patterns = splitToPatterns(
+                filteringEvent.requestUrl,
+                filteringEvent.requestDomain,
+                true
+            ).reverse();
+        }
+        if (filteringEvent.requestUrl === 'content-security-policy-check') {
+            patterns = [FilterRule.MASK_WHITE_LIST];
+        }
+
+        if (filteringEvent.element) {
+            patterns = [createExceptionCssRule(filteringEvent.requestRule, filteringEvent)];
+        }
+
+        if (filteringEvent.cookieName) {
+            patterns = [createExceptionCookieRule(filteringEvent.requestRule, filteringEvent)];
+        }
+
+        if (filteringEvent.script) {
+            patterns = [createExceptionScriptRule(filteringEvent.requestRule, filteringEvent)];
+        }
+
+        initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
+    };
+
+    /**
+     * Request type map
+     *
+     * @param {String} requestType
+     * @returns {String}
+     */
+    const getRequestType = function (requestType) {
+        switch (requestType) {
+            case 'DOCUMENT':
+            case 'SUBDOCUMENT':
+                return 'HTML';
+            case 'STYLESHEET':
+                return 'CSS';
+            case 'SCRIPT':
+                return 'JavaScript';
+            case 'XMLHTTPREQUEST':
+                return 'Ajax';
+            case 'IMAGE':
+                return 'Image';
+            case 'OBJECT':
+            case 'MEDIA':
+                return 'Media';
+            case 'FONT':
+                return 'Font';
+            case 'WEBSOCKET':
+                return 'WebSocket';
+            case 'WEBRTC':
+                return 'WebRTC';
+            case 'CSP':
+                return 'CSP';
+            case 'COOKIE':
+                return 'Cookie';
+            case 'OTHER':
+                return 'Other';
+            default:
+                return '';
+        }
+    };
+
+    /**
+     * Frame domain
+     *
+     * @param {String} frameDomain
+     * @returns {String}
+     */
+    const getSource = function (frameDomain) {
+        return frameDomain || '';
+    };
+
+    /**
+     * Filter's name for filterId
+     *
+     * @param {Number} filterId
+     * @returns {String}
+     */
+    const getFilterName = function (filterId) {
+        if (filterId === AntiBannerFiltersId.USER_FILTER_ID) {
+            return Messages.OPTIONS_USERFILTER;
+        }
+        if (filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+            return Messages.OPTIONS_WHITELIST;
+        }
+
+        const filterMetadata = filtersMetadata.filter(el => el.filterId === filterId)[0];
+
+        return filterMetadata ? filterMetadata.name : '';
+    };
+
+    const getStealthActionNames = (actions) => {
+        const result = [];
+        Object.keys(STEALTH_ACTIONS).forEach((key) => {
+            const action = STEALTH_ACTIONS[key];
+            if ((actions & action) === action) {
+                result.push(STEALTH_ACTIONS_NAMES[key]);
+            }
+        });
+        return result;
+    };
+
+    /**
+     * Shows request info
+     *
+     * @param {Object} frameInfo
+     * @param {Object} filteringEvent
+     */
+    const showRequestInfoModal = function (frameInfo, filteringEvent) {
+        const template = requestInfoTemplate.cloneNode(true);
+
+        const { requestRule } = filteringEvent;
+        const { replaceRules } = filteringEvent;
+        const { stealthActions } = filteringEvent;
+
+        const requestUrlNode = template.querySelector('[attr-text="requestUrl"]');
+        if (filteringEvent.requestUrl) {
+            requestUrlNode.textContent = filteringEvent.requestUrl;
+        } else {
+            requestUrlNode.parentNode.style.display = 'none';
+        }
+
+        const elementNode = template.querySelector('[attr-text="element"]');
+        if (filteringEvent.element) {
+            elementNode.textContent = filteringEvent.element;
+        } else {
+            elementNode.parentNode.style.display = 'none';
+        }
+
+        const cookieNode = template.querySelector('[attr-text="cookie"]');
+        if (filteringEvent.cookieName) {
+            cookieNode.textContent = `${filteringEvent.cookieName} = ${filteringEvent.cookieValue}`;
+        } else {
+            cookieNode.parentNode.style.display = 'none';
+        }
+
+        template.querySelector('[attr-text="requestType"]').textContent = getRequestType(filteringEvent.requestType);
+        template.querySelector('[attr-text="frameDomain"]').textContent = getSource(filteringEvent.frameDomain);
+        if (!filteringEvent.frameDomain) {
+            template.querySelector('[attr-text="frameDomain"]').closest('li').style.display = 'none';
+        }
+
+        if (requestRule
+            && !requestRule.replaceRule
+            && typeof requestRule.filterId !== 'undefined') {
+            if (requestRule.filterId !== AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+                const requestRuleNode = template.querySelector('[attr-text="requestRule"]');
+                requestRuleNode.textContent = requestRule.ruleText;
+                if (requestRule.convertedRuleText) {
+                    const convertedRuleHtml = `&nbsp<i>(Converted to: ${requestRule.convertedRuleText})</i>`;
+                    requestRuleNode.insertAdjacentHTML('beforeend', convertedRuleHtml);
+                }
+            } else {
+                template.querySelector('[attr-text="requestRule"]').closest('li').style.display = 'none';
+            }
+            template.querySelector('[attr-text="replaceRules"]').closest('li').style.display = 'none';
+            template.querySelector('[attr-text="requestRuleFilter"]').textContent = getFilterName(requestRule.filterId);
+        } else {
+            template.querySelector('[attr-text="requestRule"]').closest('li').style.display = 'none';
+            template.querySelector('[attr-text="requestRuleFilter"]').closest('li').style.display = 'none';
+        }
+
+        if (replaceRules) {
+            template.querySelector('[attr-text="requestRule"]').closest('li').style.display = 'none';
+            template.querySelector('[attr-text="requestRuleFilter"]').closest('li').style.display = 'none';
+            if (replaceRules.length > 0) {
+                template.querySelector('[attr-text="replaceRules"]').textContent = replaceRules
+                    .map(replaceRule => replaceRule.ruleText)
+                    .join('\r\n');
+            } else {
+                template.querySelector('[attr-text="replaceRules"]').closest('li').style.display = 'none';
+            }
+        } else {
+            template.querySelector('[attr-text="replaceRules"]').closest('li').style.display = 'none';
+        }
+
+        if (stealthActions) {
+            template.querySelector('[attr-text="stealthActions"]').textContent = getStealthActionNames(stealthActions)
+                .join('\r\n');
+        } else {
+            template.querySelector('[attr-text="stealthActions"]').closest('li').style.display = 'none';
+        }
+
+        if (filteringEvent.requestType === 'IMAGE') {
+            template.classList.remove('compact-view');
+
+            const imagePreview = template.querySelector('[attr-src="requestUrl"]');
+            const image = new Image();
+            image.src = filteringEvent.requestUrl;
+            image.onload = function () {
+                const { width } = this;
+                const { height } = this;
+                if (width > 1 && height > 1) {
+                    imagePreview.setAttribute('src', filteringEvent.requestUrl);
+                    imagePreview.parentNode.style.display = 'block';
+                }
+            };
+        }
+
+        // bind events
+        const openRequestButton = template.querySelector('#openRequestNewTab');
+        const blockRequestButton = template.querySelector('#blockRequest');
+        const unblockRequestButton = template.querySelector('#unblockRequest');
+        const removeWhiteListDomainButton = template.querySelector('#removeWhiteListDomain');
+        const removeUserFilterRuleButton = template.querySelector('#removeUserFilterRule');
+
+        openRequestButton.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            let { requestUrl } = filteringEvent;
+            if (requestUrl === 'content-security-policy-check') {
+                requestUrl = filteringEvent.frameUrl;
+            }
+
+            contentPage.sendMessage({ type: 'openTab', url: requestUrl, options: { inNewWindow: true } });
+        });
+
+        // there is nothing to open if log event reveals blocked element or cookie
+        if (filteringEvent.element || filteringEvent.cookieName || filteringEvent.script) {
+            openRequestButton.style.display = 'none';
+        }
+
+        blockRequestButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeModal();
+            showCreateBlockRuleModal(frameInfo, filteringEvent);
+        });
+
+        unblockRequestButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeModal();
+            showCreateExceptionRuleModal(frameInfo, filteringEvent);
+        });
+
+        removeWhiteListDomainButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            contentPage.sendMessage({ type: 'unWhiteListFrame', frameInfo });
+            closeModal();
+        });
+
+        removeUserFilterRuleButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            contentPage.sendMessage({
+                type: 'removeUserRule',
+                ruleText: requestRule.ruleText,
+                adguardDetected: frameInfo.adguardDetected,
+            });
+
+            if (frameInfo.adguardDetected) {
+                // In integration mode rule may be present in whitelist filter
+                contentPage.sendMessage({ type: 'unWhiteListFrame', frameInfo });
+            }
+
+            closeModal();
+        });
+
+        if (!requestRule) {
+            blockRequestButton.classList.remove('hidden');
+        } else if (requestRule.filterId === AntiBannerFiltersId.USER_FILTER_ID) {
+            removeUserFilterRuleButton.classList.remove('hidden');
+            if (requestRule.whiteListRule) {
+                blockRequestButton.classList.remove('hidden');
+            }
+        } else if (requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+            removeWhiteListDomainButton.classList.remove('hidden');
+        } else if (!requestRule.whiteListRule) {
+            unblockRequestButton.classList.remove('hidden');
+        } else if (requestRule.whiteListRule) {
+            blockRequestButton.classList.remove('hidden');
+        }
+
+        showModal(template);
+    };
+
+    /**
+     * Initialization
+     */
+    const initRequestWizard = function () {
+        requestInfoTemplate = document.querySelector('#modal-request-info');
+        createBlockRuleTemplate = document.querySelector('#modal-create-block-rule');
+        createExceptionRuleTemplate = document.querySelector('#modal-create-exception-rule');
+    };
+
+    return {
+        initRequestWizard,
+        showRequestInfoModal,
+        closeModal,
+        getFilterName,
+        getRequestType,
+        getSource,
+    };
+})();
+
+const PageController = function () {
 };
 
 PageController.prototype = {
@@ -381,10 +1053,8 @@ PageController.prototype = {
             selectedItem = this.tabSelector.firstChild;
         }
 
-        let text = '';
         let selectedTabId = null;
         if (selectedItem) {
-            text = selectedItem.textContent;
             selectedTabId = selectedItem.getAttribute('data-tab-id');
         }
 
@@ -472,14 +1142,16 @@ PageController.prototype = {
 
         // Filters not set
         if (!this.searchRequest
-            && this.searchTypes.length === 0 && !this.searchThirdParty && !this.searchBlocked && !this.searchWhitelisted) {
+            && this.searchTypes.length === 0
+            && !this.searchThirdParty
+            && !this.searchBlocked
+            && !this.searchWhitelisted) {
             this.removeClass(rows, 'hidden');
             return;
         }
 
-        const self = this;
         rows.forEach((row) => {
-            self._handleEventShow(row);
+            this._handleEventShow(row);
         });
     },
 
@@ -638,13 +1310,13 @@ PageController.prototype = {
         if (filterData.filterName) {
             show |= StringUtils.containsIgnoreCase(filterData.filterName, this.searchRequest);
         }
-        show &= this.searchTypes.length === 0 || this.searchTypes.indexOf(filterData.requestType) >= 0; // jshint ignore:line
+        show &= this.searchTypes.length === 0 || this.searchTypes.indexOf(filterData.requestType) >= 0;
 
         let checkboxes = true;
-        checkboxes &= !this.searchWhitelisted || (filterData.requestRule && filterData.requestRule.whiteListRule); // jshint ignore:line
-        checkboxes &= !this.searchBlocked || (filterData.requestRule && !filterData.requestRule.whiteListRule); // jshint ignore:line
-        checkboxes &= !this.searchThirdParty || filterData.requestThirdParty; // jshint ignore:line
-        show &= !(this.searchWhitelisted || this.searchBlocked || this.searchThirdParty) || checkboxes; // jshint ignore:line
+        checkboxes &= !this.searchWhitelisted || (filterData.requestRule && filterData.requestRule.whiteListRule);
+        checkboxes &= !this.searchBlocked || (filterData.requestRule && !filterData.requestRule.whiteListRule);
+        checkboxes &= !this.searchThirdParty || filterData.requestThirdParty;
+        show &= !(this.searchWhitelisted || this.searchBlocked || this.searchThirdParty) || checkboxes;
 
         if (show) {
             el.classList.remove('hidden');
@@ -654,667 +1326,8 @@ PageController.prototype = {
     },
 };
 
-/**
- * Request wizard
- *
- * @type {{showRequestInfoModal, closeModal, getFilterName, getRequestType, getSource}}
- */
-var RequestWizard = (function () {
-    // exclude domain and full request url
-    const PATTERNS_COUNT = 2;
-
-    let requestInfoTemplate;
-    let createBlockRuleTemplate;
-    let createExceptionRuleTemplate;
-
-    let currentModal;
-
-    const showModal = function (template) {
-        closeModal();
-
-        document.body.appendChild(template);
-        ModalUtils.showModal(template);
-
-        template.querySelector('.close').addEventListener('click', closeModal);
-
-        currentModal = template;
-    };
-
-    const createDocumentLevelBlockRule = (rule) => {
-        const { ruleText } = rule;
-        if (ruleText.indexOf(UrlFilterRule.OPTIONS_DELIMITER) > -1) {
-            return `${ruleText},${UrlFilterRule.BADFILTER_OPTION}`;
-        }
-        return ruleText + UrlFilterRule.OPTIONS_DELIMITER + UrlFilterRule.BADFILTER_OPTION;
-    };
-
-    const showCreateBlockRuleModal = function (frameInfo, filteringEvent) {
-        const template = createBlockRuleTemplate.cloneNode(true);
-
-        let patterns = splitToPatterns(filteringEvent.requestUrl, filteringEvent.requestDomain, false).reverse();
-
-        if (filteringEvent.requestRule && filteringEvent.requestRule.documentLevelRule) {
-            patterns = [createDocumentLevelBlockRule(filteringEvent.requestRule)];
-        }
-
-        initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
-    };
-
-    const generateExceptionRule = function (ruleText, mask) {
-        const insert = (str, index, value) => str.slice(0, index) + value + str.slice(index);
-
-        const maskIndex = ruleText.indexOf(mask);
-        const maskLength = mask.length;
-        const rulePart = ruleText.slice(maskIndex + maskLength);
-        // insert exception mark after first char
-        const exceptionMask = insert(mask, 1, '@');
-        return exceptionMask + rulePart;
-    };
-
-    const createExceptionCssRule = function (rule, event) {
-        const { ruleText } = rule;
-        const domainPart = event.frameDomain;
-        if (ruleText.indexOf(FilterRule.MASK_CSS_INJECT_RULE) > -1) {
-            return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_INJECT_RULE);
-        }
-        if (ruleText.indexOf(FilterRule.MASK_CSS_EXTENDED_CSS_RULE) > -1) {
-            return domainPart + generateExceptionRule(
-                ruleText,
-                FilterRule.MASK_CSS_EXTENDED_CSS_RULE
-            );
-        }
-        if (ruleText.indexOf(FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE) > -1) {
-            return domainPart + generateExceptionRule(
-                ruleText, FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE
-            );
-        }
-        if (ruleText.indexOf(FilterRule.MASK_CSS_RULE) > -1) {
-            return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_RULE);
-        }
-    };
-
-    const createExceptionScriptRule = function (rule, event) {
-        const { ruleText } = rule;
-        const domainPart = event.frameDomain;
-        if (ruleText.indexOf(FilterRule.MASK_SCRIPT_RULE) > -1) {
-            return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_SCRIPT_RULE);
-        }
-        if (ruleText.indexOf(FilterRule.MASK_SCRIPT_RULE_UBO) > -1) {
-            return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_SCRIPT_RULE_UBO);
-        }
-    };
-
-    const createExceptionCookieRule = function (rule, event) {
-        let domain = event.frameDomain;
-        if (domain[0] === '.') {
-            domain = domain.substring(1);
-        }
-        return FilterRule.MASK_WHITE_LIST + UrlFilterRule.MASK_START_URL + domain;
-    };
-
-    const showCreateExceptionRuleModal = function (frameInfo, filteringEvent) {
-        const template = createExceptionRuleTemplate.cloneNode(true);
-
-        let patterns;
-        if (filteringEvent.requestUrl) {
-            patterns = splitToPatterns(
-                filteringEvent.requestUrl,
-                filteringEvent.requestDomain,
-                true
-            ).reverse();
-        }
-        if (filteringEvent.requestUrl === 'content-security-policy-check') {
-            patterns = [FilterRule.MASK_WHITE_LIST];
-        }
-
-        if (filteringEvent.element) {
-            patterns = [createExceptionCssRule(filteringEvent.requestRule, filteringEvent)];
-        }
-
-        if (filteringEvent.cookieName) {
-            patterns = [createExceptionCookieRule(filteringEvent.requestRule, filteringEvent)];
-        }
-
-        if (filteringEvent.script) {
-            patterns = [createExceptionScriptRule(filteringEvent.requestRule, filteringEvent)];
-        }
-
-        initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
-    };
-
-    const createCssRuleFromParams = function (urlPattern, permitDomain) {
-        let ruleText = urlPattern;
-        if (!permitDomain) {
-            ruleText = ruleText.slice(ruleText.indexOf('#'));
-        }
-
-        return ruleText;
-    };
-
-    const initCreateRuleDialog = function (frameInfo, template, patterns, filteringEvent) {
-        const { frameDomain } = filteringEvent;
-        const isThirdPartyRequest = filteringEvent.requestThirdParty;
-
-        const rulePatternsEl = template.querySelector('#rulePatterns');
-
-        for (let i = 0; i < patterns.length; i += 1) {
-            const pattern = patterns[i];
-            const escapedPattern = pattern.replace(/"/g, '&quot;');
-            const rulePatternTemplate = `
-                <li class="checkb-wrap">
-                    <div class="radio">
-                        <input class="radio__input" type="radio" name="rulePattern" id="pattern${i}" value="${escapedPattern}" ${i === 0 ? "checked='checked'" : ''}>
-                        <label class="radio__label" for="pattern${i}">
-                            ${pattern}
-                        </label>
-                    </div>
-                </li>`;
-
-            rulePatternsEl.appendChild(htmlToElement(rulePatternTemplate));
-        }
-
-        const rulePatterns = [].slice.call(template.querySelectorAll('[name="rulePattern"]'));
-        const ruleDomainCheckbox = template.querySelector('[name="ruleDomain"]');
-        const ruleImportantCheckbox = template.querySelector('[name="ruleImportant"]');
-        const ruleMatchCaseCheckbox = template.querySelector('[name="ruleMatchCase"]');
-        const ruleThirdPartyCheckbox = template.querySelector('[name="ruleThirdParty"]');
-        const ruleTextEl = template.querySelector('[name="ruleText"]');
-
-        ruleDomainCheckbox.setAttribute('id', 'ruleDomain');
-        ruleDomainCheckbox.parentNode.querySelector('label').setAttribute('for', 'ruleDomain');
-        if (!frameDomain) {
-            ruleDomainCheckbox.closest('.checkbox').style.display = 'none';
-        }
-
-        ruleImportantCheckbox.setAttribute('id', 'ruleImportant');
-        ruleImportantCheckbox.parentNode.querySelector('label').setAttribute('for', 'ruleImportant');
-        if (filteringEvent.requestRule
-            && filteringEvent.requestRule.whiteListRule) {
-            ruleImportantCheckbox.setAttribute('checked', 'checked');
-        }
-
-        ruleMatchCaseCheckbox.setAttribute('id', 'ruleMatchCase');
-        ruleMatchCaseCheckbox.parentNode.querySelector('label').setAttribute('for', 'ruleMatchCase');
-
-        ruleThirdPartyCheckbox.setAttribute('id', 'ruleThirdParty');
-        ruleThirdPartyCheckbox.parentNode.querySelector('label').setAttribute('for', 'ruleThirdParty');
-        if (isThirdPartyRequest) {
-            ruleThirdPartyCheckbox.setAttribute('checked', 'checked');
-        }
-
-        if (filteringEvent.element || filteringEvent.script) {
-            ruleImportantCheckbox.parentNode.style.display = 'none';
-            ruleMatchCaseCheckbox.parentNode.style.display = 'none';
-            ruleThirdPartyCheckbox.parentNode.style.display = 'none';
-            var patternsField = template.querySelector('.filtering-modal-patterns');
-            if (patternsField) {
-                patternsField.style.display = 'none';
-            }
-            const optionsField = template.querySelector('.filtering-modal-options');
-            if (optionsField) {
-                optionsField.style.display = 'none';
-            }
-        }
-
-        if (filteringEvent.cookieName) {
-            ruleImportantCheckbox.parentNode.style.display = 'none';
-            ruleMatchCaseCheckbox.parentNode.style.display = 'none';
-            ruleDomainCheckbox.parentNode.style.display = 'none';
-            var patternsField = template.querySelector('.filtering-modal-patterns');
-            if (patternsField) {
-                patternsField.style.display = 'none';
-            }
-        }
-
-        if (filteringEvent.requestRule && filteringEvent.requestRule.documentLevelRule) {
-            const optionsField = template.querySelector('.filtering-modal-options');
-            console.log(optionsField);
-            if (optionsField) {
-                optionsField.style.display = 'none';
-            }
-            ruleDomainCheckbox.setAttribute('checked', 'checked');
-            ruleImportantCheckbox.removeAttribute('checked');
-        }
-
-        function updateRuleText() {
-            const urlPattern = template.querySelector('[name="rulePattern"]:checked').value;
-            const permitDomain = !ruleDomainCheckbox.checked;
-            const important = !!ruleImportantCheckbox.checked;
-            const matchCase = !!ruleMatchCaseCheckbox.checked;
-            const thirdParty = !!ruleThirdPartyCheckbox.checked;
-
-            const domain = permitDomain ? frameDomain : null;
-
-            let mandatoryOptions = null;
-
-            // Deal with csp rule
-            const { requestRule } = filteringEvent;
-            if (requestRule && requestRule.cspRule) {
-                mandatoryOptions = [UrlFilterRule.CSP_OPTION];
-            }
-
-            if (requestRule && requestRule.cookieRule) {
-                mandatoryOptions = [UrlFilterRule.COOKIE_OPTION];
-            }
-
-            if (filteringEvent.requestUrl === 'content-security-policy-check') {
-                mandatoryOptions = [UrlFilterRule.WEBRTC_OPTION, UrlFilterRule.WEBSOCKET_OPTION];
-            }
-
-            const { replaceRules } = filteringEvent;
-            if (replaceRules) {
-                mandatoryOptions = [UrlFilterRule.REPLACE_OPTION];
-            }
-
-            let ruleText;
-            if (filteringEvent.element) {
-                ruleText = createCssRuleFromParams(urlPattern, permitDomain);
-            } else if (filteringEvent.cookieName) {
-                ruleText = createRuleFromParams(urlPattern, null, null, thirdParty, important, mandatoryOptions);
-            } else if (filteringEvent.script) {
-                ruleText = createRuleFromParams(urlPattern);
-            } else {
-                ruleText = createRuleFromParams(urlPattern, domain, matchCase, thirdParty, important, mandatoryOptions);
-            }
-            ruleTextEl.value = ruleText;
-        }
-
-        // update rule text events
-        ruleDomainCheckbox.addEventListener('change', updateRuleText);
-        ruleImportantCheckbox.addEventListener('change', updateRuleText);
-        ruleMatchCaseCheckbox.addEventListener('change', updateRuleText);
-        ruleThirdPartyCheckbox.addEventListener('change', updateRuleText);
-        // TODO: Link click on radio wrap to 'change' event on input
-        rulePatterns.forEach((r) => {
-            r.addEventListener('change', updateRuleText);
-        });
-
-        // create rule event
-        template.querySelector('#createRule').addEventListener('click', (e) => {
-            e.preventDefault();
-            const ruleText = ruleTextEl.value;
-            if (!ruleText) {
-                return;
-            }
-            // Add rule to user filter
-            contentPage.sendMessage({ type: 'addUserRule', ruleText, adguardDetected: frameInfo.adguardDetected });
-            // Close modal
-            closeModal();
-        });
-
-        updateRuleText();
-
-        showModal(template);
-    };
-
-    var splitToPatterns = function (requestUrl, domain, whitelist) {
-        const hierarchicUrl = UrlUtils.isHierarchicUrl(requestUrl);
-        const protocol = UrlUtils.getProtocol(requestUrl);
-
-        let prefix;
-        if (hierarchicUrl) {
-            prefix = UrlFilterRule.MASK_START_URL; // Covers default protocols: http, ws
-        } else {
-            prefix = `${protocol}:`; // Covers non-default protocols: stun, turn
-        }
-
-        if (whitelist) {
-            prefix = FilterRule.MASK_WHITE_LIST + prefix;
-        }
-
-        const patterns = [];
-
-        const relative = StringUtils.substringAfter(requestUrl, `${domain}/`);
-
-        const path = StringUtils.substringBefore(relative, '?');
-        if (path) {
-            const parts = path.split('/');
-
-            let pattern = `${domain}/`;
-            for (let i = 0; i < Math.min(parts.length - 1, PATTERNS_COUNT); i++) {
-                pattern += `${parts[i]}/`;
-                patterns.push(prefix + pattern + UrlFilterRule.MASK_ANY_SYMBOL);
-            }
-            const file = parts[parts.length - 1];
-            if (file && patterns.length < PATTERNS_COUNT) {
-                pattern += file;
-                patterns.push(prefix + pattern);
-            }
-        }
-
-        // add domain pattern to start
-        patterns.unshift(prefix + domain + UrlFilterRule.MASK_SEPARATOR);
-
-        // push full url pattern
-        const url = UrlUtils.getUrlWithoutScheme(requestUrl);
-        if (`${domain}/` !== url) { // Don't duplicate: ||example.com/ and ||example.com^
-            if (patterns.indexOf(prefix + url) < 0) {
-                patterns.push(prefix + url);
-            }
-        }
-
-        return patterns;
-    };
-
-    var createRuleFromParams = function (urlPattern, urlDomain, matchCase, thirdParty, important, mandatoryOptions) {
-        let ruleText = urlPattern;
-        let options = [];
-
-        // add domain option
-        if (urlDomain) {
-            options.push(`${UrlFilterRule.DOMAIN_OPTION}=${urlDomain}`);
-        }
-        // add important option
-        if (important) {
-            options.push(UrlFilterRule.IMPORTANT_OPTION);
-        }
-        // add match case option
-        if (matchCase) {
-            options.push(UrlFilterRule.MATCH_CASE_OPTION);
-        }
-        // add third party option
-        if (thirdParty) {
-            options.push(UrlFilterRule.THIRD_PARTY_OPTION);
-        }
-        if (mandatoryOptions) {
-            options = options.concat(mandatoryOptions);
-        }
-        if (options.length > 0) {
-            ruleText += UrlFilterRule.OPTIONS_DELIMITER + options.join(',');
-        }
-
-        return ruleText;
-    };
-
-    /**
-     * Request type map
-     *
-     * @param {String} requestType
-     * @returns {String}
-     */
-    const getRequestType = function (requestType) {
-        switch (requestType) {
-            case 'DOCUMENT':
-            case 'SUBDOCUMENT':
-                return 'HTML';
-            case 'STYLESHEET':
-                return 'CSS';
-            case 'SCRIPT':
-                return 'JavaScript';
-            case 'XMLHTTPREQUEST':
-                return 'Ajax';
-            case 'IMAGE':
-                return 'Image';
-            case 'OBJECT':
-            case 'MEDIA':
-                return 'Media';
-            case 'FONT':
-                return 'Font';
-            case 'WEBSOCKET':
-                return 'WebSocket';
-            case 'WEBRTC':
-                return 'WebRTC';
-            case 'CSP':
-                return 'CSP';
-            case 'COOKIE':
-                return 'Cookie';
-            case 'OTHER':
-                return 'Other';
-        }
-
-        return '';
-    };
-
-    /**
-     * Frame domain
-     *
-     * @param {String} frameDomain
-     * @returns {String}
-     */
-    const getSource = function (frameDomain) {
-        return frameDomain || '';
-    };
-
-    /**
-     * Shows request info
-     *
-     * @param {Object} frameInfo
-     * @param {Object} filteringEvent
-     */
-    const showRequestInfoModal = function (frameInfo, filteringEvent) {
-        const template = requestInfoTemplate.cloneNode(true);
-
-        const { requestRule } = filteringEvent;
-        const { replaceRules } = filteringEvent;
-        const { stealthActions } = filteringEvent;
-
-        const requestUrlNode = template.querySelector('[attr-text="requestUrl"]');
-        if (filteringEvent.requestUrl) {
-            requestUrlNode.textContent = filteringEvent.requestUrl;
-        } else {
-            requestUrlNode.parentNode.style.display = 'none';
-        }
-
-        const elementNode = template.querySelector('[attr-text="element"]');
-        if (filteringEvent.element) {
-            elementNode.textContent = filteringEvent.element;
-        } else {
-            elementNode.parentNode.style.display = 'none';
-        }
-
-        const cookieNode = template.querySelector('[attr-text="cookie"]');
-        if (filteringEvent.cookieName) {
-            cookieNode.textContent = `${filteringEvent.cookieName} = ${filteringEvent.cookieValue}`;
-        } else {
-            cookieNode.parentNode.style.display = 'none';
-        }
-
-        template.querySelector('[attr-text="requestType"]').textContent = getRequestType(filteringEvent.requestType);
-        template.querySelector('[attr-text="frameDomain"]').textContent = getSource(filteringEvent.frameDomain);
-        if (!filteringEvent.frameDomain) {
-            template.querySelector('[attr-text="frameDomain"]').closest('li').style.display = 'none';
-        }
-
-        if (requestRule
-            && !requestRule.replaceRule
-            && typeof requestRule.filterId !== 'undefined') {
-            if (requestRule.filterId !== AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
-                const requestRuleNode = template.querySelector('[attr-text="requestRule"]');
-                requestRuleNode.textContent = requestRule.ruleText;
-                if (requestRule.convertedRuleText) {
-                    requestRuleNode.insertAdjacentHTML('beforeend', `&nbsp<i>(Converted to: ${requestRule.convertedRuleText})</i>`);
-                }
-            } else {
-                template.querySelector('[attr-text="requestRule"]').closest('li').style.display = 'none';
-            }
-            template.querySelector('[attr-text="replaceRules"]').closest('li').style.display = 'none';
-            template.querySelector('[attr-text="requestRuleFilter"]').textContent = getFilterName(requestRule.filterId);
-        } else {
-            template.querySelector('[attr-text="requestRule"]').closest('li').style.display = 'none';
-            template.querySelector('[attr-text="requestRuleFilter"]').closest('li').style.display = 'none';
-        }
-
-        if (replaceRules) {
-            template.querySelector('[attr-text="requestRule"]').closest('li').style.display = 'none';
-            template.querySelector('[attr-text="requestRuleFilter"]').closest('li').style.display = 'none';
-            if (replaceRules.length > 0) {
-                template.querySelector('[attr-text="replaceRules"]').textContent = replaceRules
-                    .map(replaceRule => replaceRule.ruleText)
-                    .join('\r\n');
-            } else {
-                template.querySelector('[attr-text="replaceRules"]').closest('li').style.display = 'none';
-            }
-        } else {
-            template.querySelector('[attr-text="replaceRules"]').closest('li').style.display = 'none';
-        }
-
-        if (stealthActions) {
-            template.querySelector('[attr-text="stealthActions"]').textContent = getStealthActionNames(stealthActions).join('\r\n');
-        } else {
-            template.querySelector('[attr-text="stealthActions"]').closest('li').style.display = 'none';
-        }
-
-        if (filteringEvent.requestType === 'IMAGE') {
-            template.classList.remove('compact-view');
-
-            const imagePreview = template.querySelector('[attr-src="requestUrl"]');
-            const image = new Image();
-            image.src = filteringEvent.requestUrl;
-            image.onload = function () {
-                const { width } = this;
-                const { height } = this;
-                if (width > 1 && height > 1) {
-                    imagePreview.setAttribute('src', filteringEvent.requestUrl);
-                    imagePreview.parentNode.style.display = 'block';
-                }
-            };
-        }
-
-        // bind events
-        const openRequestButton = template.querySelector('#openRequestNewTab');
-        const blockRequestButton = template.querySelector('#blockRequest');
-        const unblockRequestButton = template.querySelector('#unblockRequest');
-        const removeWhiteListDomainButton = template.querySelector('#removeWhiteListDomain');
-        const removeUserFilterRuleButton = template.querySelector('#removeUserFilterRule');
-
-        openRequestButton.addEventListener('click', (e) => {
-            e.preventDefault();
-
-            let { requestUrl } = filteringEvent;
-            if (requestUrl === 'content-security-policy-check') {
-                requestUrl = filteringEvent.frameUrl;
-            }
-
-            contentPage.sendMessage({ type: 'openTab', url: requestUrl, options: { inNewWindow: true } });
-        });
-
-        // there is nothing to open if log event reveals blocked element or cookie
-        if (filteringEvent.element || filteringEvent.cookieName || filteringEvent.script) {
-            openRequestButton.style.display = 'none';
-        }
-
-        blockRequestButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            closeModal();
-            showCreateBlockRuleModal(frameInfo, filteringEvent);
-        });
-
-        unblockRequestButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            closeModal();
-            showCreateExceptionRuleModal(frameInfo, filteringEvent);
-        });
-
-        removeWhiteListDomainButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            contentPage.sendMessage({ type: 'unWhiteListFrame', frameInfo });
-            closeModal();
-        });
-
-        removeUserFilterRuleButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            contentPage.sendMessage({
-                type: 'removeUserRule',
-                ruleText: requestRule.ruleText,
-                adguardDetected: frameInfo.adguardDetected,
-            });
-
-            if (frameInfo.adguardDetected) {
-                // In integration mode rule may be present in whitelist filter
-                contentPage.sendMessage({ type: 'unWhiteListFrame', frameInfo });
-            }
-
-            closeModal();
-        });
-
-        if (!requestRule) {
-            blockRequestButton.classList.remove('hidden');
-        } else if (requestRule.filterId === AntiBannerFiltersId.USER_FILTER_ID) {
-            removeUserFilterRuleButton.classList.remove('hidden');
-            if (requestRule.whiteListRule) {
-                blockRequestButton.classList.remove('hidden');
-            }
-        } else if (requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
-            removeWhiteListDomainButton.classList.remove('hidden');
-        } else if (!requestRule.whiteListRule) {
-            unblockRequestButton.classList.remove('hidden');
-        } else if (requestRule.whiteListRule) {
-            blockRequestButton.classList.remove('hidden');
-        }
-
-        showModal(template);
-    };
-
-    /**
-     * Closes current open modal
-     */
-    var closeModal = function () {
-        if (currentModal) {
-            ModalUtils.closeModal(currentModal);
-            currentModal = null;
-        }
-    };
-
-    /**
-     * Filter's name for filterId
-     *
-     * @param {Number} filterId
-     * @returns {String}
-     */
-    var getFilterName = function (filterId) {
-        if (filterId === AntiBannerFiltersId.USER_FILTER_ID) {
-            return Messages.OPTIONS_USERFILTER;
-        }
-        if (filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
-            return Messages.OPTIONS_WHITELIST;
-        }
-
-        const filterMetadata = filtersMetadata.filter(el => el.filterId === filterId)[0];
-
-        return filterMetadata ? filterMetadata.name : '';
-    };
-
-    /**
-     * Initialization
-     */
-    const initRequestWizard = function () {
-        requestInfoTemplate = document.querySelector('#modal-request-info');
-        createBlockRuleTemplate = document.querySelector('#modal-create-block-rule');
-        createExceptionRuleTemplate = document.querySelector('#modal-create-exception-rule');
-    };
-
-    const getStealthActionNames = (actions) => {
-        const result = [];
-        for (const key in STEALTH_ACTIONS) {
-            const action = STEALTH_ACTIONS[key];
-            if ((actions & action) === action) {
-                result.push(STEALTH_ACTIONS_NAMES[key]);
-            }
-        }
-        return result;
-    };
-
-    return {
-        initRequestWizard,
-        showRequestInfoModal,
-        closeModal,
-        getFilterName,
-        getRequestType,
-        getSource,
-    };
-})();
-
-let userSettings;
-let environmentOptions;
-let AntiBannerFiltersId;
-let EventNotifierTypes;
-let filtersMetadata;
-
 contentPage.sendMessage({ type: 'initializeFrameScript' }, (response) => {
-    userSettings = response.userSettings;
     filtersMetadata = response.filtersMetadata;
-    environmentOptions = response.environmentOptions;
-
     AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
     EventNotifierTypes = response.constants.EventNotifierTypes;
 
@@ -1351,6 +1364,8 @@ contentPage.sendMessage({ type: 'initializeFrameScript' }, (response) => {
                     break;
                 case EventNotifierTypes.LOG_EVENT_UPDATED:
                     pageController.onEventUpdated(tabInfo, filteringEvent);
+                    break;
+                default:
                     break;
             }
         }, () => {
