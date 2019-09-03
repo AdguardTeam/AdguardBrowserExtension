@@ -137,6 +137,12 @@
                 if (/url\(.*\)/gi.test(cssContent)) {
                     throw new Error(`Css injection rule with 'url' was omitted: ${rule}`);
                 }
+
+                // Prohibit "\" character in CSS injection rules
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1444
+                if (cssContent.indexOf('\\') > -1) {
+                    throw new Error(`Css injection rule with '\\' was omitted: ${rule}`);
+                }
             }
 
             // Extended CSS selectors support
