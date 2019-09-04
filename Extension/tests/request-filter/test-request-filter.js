@@ -713,10 +713,15 @@ QUnit.test('Test scriptlet adguard rule exception', function (assert) {
     assert.equal(res, exp);
 });
 QUnit.test('Test converter scriptlet ubo rule', function (assert) {
-    const rule = "example.org##+js(setTimeout-defuser.js, [native code], 8000)";
+    // blocking rule
+    const rule = 'example.org##+js(setTimeout-defuser.js, [native code], 8000)';
     const exp = 'example.org#%#//scriptlet("ubo-setTimeout-defuser.js", "[native code]", "8000")';
     const res = adguard.rules.ruleConverter.convertRule(rule);
     assert.equal(res, exp);
+    // whitelist rule
+    const whitelistRule = 'example.org#@#+js(setTimeout-defuser.js, [native code], 8000)';
+    const expectedResult = 'example.org#@%#//scriptlet("ubo-setTimeout-defuser.js", "[native code]", "8000")';
+    assert.equal(adguard.rules.ruleConverter.convertRule(whitelistRule), expectedResult);
 });
 QUnit.test('Test converter scriptlet abp rule', function (assert) {
     const rule = "example.org#$#hide-if-contains li.serp-item 'li.serp-item div.label'";
@@ -790,15 +795,37 @@ QUnit.test('Converts ABP rules into AG compatible rule', (assert) => {
 
 QUnit.test('converts empty and mp4 modifiers into redirect rules', (assert) => {
     let actual = adguard.rules.ruleConverter.convertRule('/(pagead2)/$domain=vsetv.com,empty,important');
-    let expected = '/(pagead2)/$domain=vsetv.com,redirect=noopjs,important';
+    let expected = '/(pagead2)/$domain=vsetv.com,redirect=nooptext,important';
     assert.equal(actual, expected);
 
     actual = adguard.rules.ruleConverter.convertRule('||fastmap33.com^$empty');
-    expected = '||fastmap33.com^$redirect=noopjs';
+    expected = '||fastmap33.com^$redirect=nooptext';
     assert.equal(actual, expected);
 
     actual = adguard.rules.ruleConverter.convertRule('||anyporn.com/xml^$media,mp4');
     expected = adguard.rules.ruleConverter.convertRule('||anyporn.com/xml^$media,redirect=noopmp4-1s');
+    assert.equal(actual, expected);
+});
+
+QUnit.test('$mp4 modifier should always go with $media modifier together', (assert) => {
+    let rule = '||video.example.org^$mp4';
+    let actual = adguard.rules.ruleConverter.convertRule(rule);
+    let expected = '||video.example.org^$redirect=noopmp4-1s,media';
+    assert.equal(actual, expected);
+
+    rule = '||video.example.org^$media,mp4';
+    actual = adguard.rules.ruleConverter.convertRule(rule);
+    expected = '||video.example.org^$media,redirect=noopmp4-1s';
+    assert.equal(actual, expected);
+
+    rule = '||video.example.org^$media,mp4,domain=example.org';
+    actual = adguard.rules.ruleConverter.convertRule(rule);
+    expected = '||video.example.org^$media,redirect=noopmp4-1s,domain=example.org';
+    assert.equal(actual, expected);
+
+    rule = '||video.example.org^$mp4,domain=example.org,media';
+    actual = adguard.rules.ruleConverter.convertRule(rule);
+    expected = '||video.example.org^$redirect=noopmp4-1s,domain=example.org,media';
     assert.equal(actual, expected);
 });
 
@@ -817,4 +844,51 @@ QUnit.test('converts empty and mp4 modifiers into redirect rules', (assert) => {
     assert.equal(actual.length, 2, 'Two rules, one of then nor supporting');
     assert.equal(actual[0], 'example.com$$script[tag-content="==="]', 'Should be converted to adg rule');
     assert.equal(actual[1], 'example.com##^script:has-text(/[wW]{16000}/)', 'Should be separated to ubo rule');
+});
+
+QUnit.test('converts inline-script modifier into csp rule', (assert) => {
+    let rule = '||vcrypt.net^$inline-script';
+    let actual = adguard.rules.ruleConverter.convertRule(rule);
+    // eslint-disable-next-line max-len
+    let expected = '||vcrypt.net^$csp=script-src \'self\' \'unsafe-eval\' http: https: data: blob: mediastream: filesystem:';
+    assert.equal(actual, expected);
+
+    // test rules with more modifiers
+    rule = '||vcrypt.net^$frame,inline-script';
+    actual = adguard.rules.ruleConverter.convertRule(rule);
+    expected = '||vcrypt.net^$frame,csp=script-src \'self\' \'unsafe-eval\' http: https: data: blob: mediastream: filesystem:';
+    assert.equal(actual, expected);
+});
+
+QUnit.test('converts inline-font modifier into csp rule', (assert) => {
+    const rule = '||vcrypt.net^$inline-font';
+    const actual = adguard.rules.ruleConverter.convertRule(rule);
+    // eslint-disable-next-line max-len
+    const expected = '||vcrypt.net^$csp=font-src \'self\' \'unsafe-eval\' http: https: data: blob: mediastream: filesystem:';
+    assert.equal(actual, expected);
+});
+
+QUnit.test('converts rules with $all modifier into 3 rules with: $document, $popup and $csp', (assert) => {
+    // test simple rule;
+    let rule = '||example.org^$all';
+    let actual = adguard.rules.ruleConverter.convertRule(rule);
+    let exp1 = '||example.org^$document';
+    let exp2 = '||example.org^$popup';
+    let exp3 = '||example.org^$csp';
+
+    assert.equal(actual.length, 3);
+    assert.ok(actual.includes(exp1));
+    assert.ok(actual.includes(exp2));
+    assert.ok(actual.includes(exp3));
+
+    // test rule with more options
+    rule = '||example.org^$all,important';
+    actual = adguard.rules.ruleConverter.convertRule(rule);
+    exp1 = '||example.org^$document,important';
+    exp2 = '||example.org^$popup,important';
+    exp3 = '||example.org^$csp,important';
+    assert.equal(actual.length, 3);
+    assert.ok(actual.includes(exp1));
+    assert.ok(actual.includes(exp2));
+    assert.ok(actual.includes(exp3));
 });
