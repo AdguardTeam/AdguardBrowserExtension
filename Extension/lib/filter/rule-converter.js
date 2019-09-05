@@ -282,6 +282,7 @@
     function convertOptions(rule) {
         const OPTIONS_DELIMITER = '$';
         const ESCAPE_CHARACTER = '\\';
+        const NAME_VALUE_SPLITTER = '=';
         const EMPTY_OPTION = 'empty';
         const MP4_OPTION = 'mp4';
         const CSP_OPTION = 'csp';
@@ -324,7 +325,7 @@
         const optionsParts = options.split(',');
         let optionsConverted = false;
 
-        const updatedOptionsParts = optionsParts.map((optionsPart) => {
+        let updatedOptionsParts = optionsParts.map((optionsPart) => {
             let convertedOptionsPart = conversionMap[optionsPart];
 
             // if option is $mp4, than it should go with $media option together
@@ -344,18 +345,43 @@
             return optionsPart;
         });
 
+        // if has more than one csp modifiers, we merge them into one;
+        const cspParts = updatedOptionsParts.filter(optionsPart => stringUtils.startWith(optionsPart, CSP_OPTION));
+
+        if (cspParts.length > 1) {
+            const allButCsp = updatedOptionsParts
+                .filter(optionsPart => !stringUtils.startWith(optionsPart, CSP_OPTION));
+
+            const cspValues = cspParts.map((cspPart) => {
+                // eslint-disable-next-line no-unused-vars
+                const [_, value] = cspPart.split(NAME_VALUE_SPLITTER);
+                return value;
+            });
+
+            const updatedCspOption = `${CSP_OPTION}${NAME_VALUE_SPLITTER}${cspValues.join('; ')}`;
+            updatedOptionsParts = allButCsp.concat(updatedCspOption);
+        }
+
         // options without all modifier
         const hasAllOption = updatedOptionsParts.indexOf(ALL_OPTION) > -1;
 
         if (hasAllOption) {
-            const allOptionReplacers = [DOCUMENT_OPTION, POPUP_OPTION, CSP_OPTION];
+            const allOptionReplacers = [
+                DOCUMENT_OPTION,
+                POPUP_OPTION,
+                INLINE_SCRIPT_OPTION,
+                INLINE_FONT_OPTION,
+            ];
             return allOptionReplacers.map((replacer) => {
                 // remove replacer and all option from the list
                 const optionsButAllAndReplacer = updatedOptionsParts
                     .filter(option => !(option === replacer || option === ALL_OPTION));
 
+                // try get converted values, used for INLINE_SCRIPT_OPTION, INLINE_FONT_OPTION
+                const convertedReplacer = conversionMap[replacer] || replacer;
+
                 // add replacer to the list of options
-                const updatedOptionsString = [replacer, ...optionsButAllAndReplacer].join(',');
+                const updatedOptionsString = [convertedReplacer, ...optionsButAllAndReplacer].join(',');
 
                 // create a new rule
                 return `${domainPart}\$${updatedOptionsString}`;
