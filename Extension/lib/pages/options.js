@@ -316,6 +316,9 @@ const Saver = function (options) {
 
         if (!isDirty && !isSaving) {
             this.updateIndicator(states.SAVED);
+            if (!this.isSaved()) {
+                return;
+            }
             timeout = setTimeout(() => {
                 setState(states.CLEAR);
                 self.updateIndicator(states.CLEAR);
