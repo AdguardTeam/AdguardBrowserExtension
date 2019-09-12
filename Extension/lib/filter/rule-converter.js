@@ -182,7 +182,7 @@
 
         // We convert only one case ##^script:has-text at now
         const uboHasTextRule = ':has-text';
-        const adgSriptTag = '$$script';
+        const adgScriptTag = '$$script';
         const uboScriptTag = '##^script';
 
         const isRegExp = str => str[0] === '/' && str[str.length - 1] === '/';
@@ -199,7 +199,7 @@
             if (isRegExp(attr)) {
                 rules.push(`${domains}${uboScriptTag}${uboHasTextRule}(${attr})`);
             } else {
-                rules.push(`${domains}${adgSriptTag}[tag-content="${attr}"]`);
+                rules.push(`${domains}${adgScriptTag}[tag-content="${attr}"]`);
             }
         }
 
@@ -279,11 +279,28 @@
         return rule.replace(ABP_REDIRECT_KEYWORD, AG_REDIRECT_KEYWORD);
     }
 
-    function convertModifiers(rule) {
+    function convertOptions(rule) {
         const OPTIONS_DELIMITER = '$';
         const ESCAPE_CHARACTER = '\\';
+        const NAME_VALUE_SPLITTER = '=';
         const EMPTY_OPTION = 'empty';
         const MP4_OPTION = 'mp4';
+        const CSP_OPTION = 'csp';
+        const INLINE_SCRIPT_OPTION = 'inline-script';
+        const INLINE_FONT_OPTION = 'inline-font';
+        const MEDIA_OPTION = 'media';
+        const ALL_OPTION = 'all';
+        const POPUP_OPTION = 'popup';
+        const DOCUMENT_OPTION = 'document';
+
+        /* eslint-disable max-len */
+        const conversionMap = {
+            [EMPTY_OPTION]: 'redirect=nooptext',
+            [MP4_OPTION]: 'redirect=noopmp4-1s',
+            [INLINE_SCRIPT_OPTION]: `${CSP_OPTION}=script-src 'self' 'unsafe-eval' http: https: data: blob: mediastream: filesystem:`,
+            [INLINE_FONT_OPTION]: `${CSP_OPTION}=font-src 'self' 'unsafe-eval' http: https: data: blob: mediastream: filesystem:`,
+        };
+        /* eslint-enable max-len */
 
         let options;
         let domainPart;
@@ -307,19 +324,72 @@
         }
         const optionsParts = options.split(',');
         let optionsConverted = false;
-        const updatedOptions = optionsParts.map((option) => {
-            if (stringUtils.startWith(option, EMPTY_OPTION)) {
-                optionsConverted = true;
-                return 'redirect=noopjs';
+
+        let updatedOptionsParts = optionsParts.map((optionsPart) => {
+            let convertedOptionsPart = conversionMap[optionsPart];
+
+            // if option is $mp4, than it should go with $media option together
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1452
+            if (optionsPart === MP4_OPTION) {
+                // check if media is not already among options
+                if (!optionsParts.some(option => option === MEDIA_OPTION)) {
+                    convertedOptionsPart = `${convertedOptionsPart},media`;
+                }
             }
-            if (stringUtils.startWith(option, MP4_OPTION)) {
+
+            if (convertedOptionsPart) {
                 optionsConverted = true;
-                return 'redirect=noopmp4-1s';
+                return convertedOptionsPart;
             }
-            return option;
-        }).join(',');
+
+            return optionsPart;
+        });
+
+        // if has more than one csp modifiers, we merge them into one;
+        const cspParts = updatedOptionsParts.filter(optionsPart => stringUtils.startWith(optionsPart, CSP_OPTION));
+
+        if (cspParts.length > 1) {
+            const allButCsp = updatedOptionsParts
+                .filter(optionsPart => !stringUtils.startWith(optionsPart, CSP_OPTION));
+
+            const cspValues = cspParts.map((cspPart) => {
+                // eslint-disable-next-line no-unused-vars
+                const [_, value] = cspPart.split(NAME_VALUE_SPLITTER);
+                return value;
+            });
+
+            const updatedCspOption = `${CSP_OPTION}${NAME_VALUE_SPLITTER}${cspValues.join('; ')}`;
+            updatedOptionsParts = allButCsp.concat(updatedCspOption);
+        }
+
+        // options without all modifier
+        const hasAllOption = updatedOptionsParts.indexOf(ALL_OPTION) > -1;
+
+        if (hasAllOption) {
+            const allOptionReplacers = [
+                DOCUMENT_OPTION,
+                POPUP_OPTION,
+                INLINE_SCRIPT_OPTION,
+                INLINE_FONT_OPTION,
+            ];
+            return allOptionReplacers.map((replacer) => {
+                // remove replacer and all option from the list
+                const optionsButAllAndReplacer = updatedOptionsParts
+                    .filter(option => !(option === replacer || option === ALL_OPTION));
+
+                // try get converted values, used for INLINE_SCRIPT_OPTION, INLINE_FONT_OPTION
+                const convertedReplacer = conversionMap[replacer] || replacer;
+
+                // add replacer to the list of options
+                const updatedOptionsString = [convertedReplacer, ...optionsButAllAndReplacer].join(',');
+
+                // create a new rule
+                return `${domainPart}\$${updatedOptionsString}`;
+            });
+        }
 
         if (optionsConverted) {
+            const updatedOptions = updatedOptionsParts.join(',');
             return `${domainPart}\$${updatedOptions}`;
         }
 
@@ -364,10 +434,10 @@
             return abpRedirectRule;
         }
 
-        // Convert $mp4, $empty modifiers to redirect rules
-        const redirectRule = convertModifiers(rule);
-        if (redirectRule) {
-            return redirectRule;
+        // Convert options
+        const ruleWithConvertedOptions = convertOptions(rule);
+        if (ruleWithConvertedOptions) {
+            return ruleWithConvertedOptions;
         }
 
         return rule;
