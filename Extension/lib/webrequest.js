@@ -101,8 +101,6 @@
             if (tabRequestRule) {
                 adguard.requestContextStorage.update(requestId, { requestRule: tabRequestRule });
             }
-
-            return;
         }
 
         if (!adguard.utils.url.isHttpOrWsRequest(requestUrl)) {
@@ -141,7 +139,9 @@
 
         const response = adguard.webRequestService.getBlockedResponseByRule(
             requestRule,
-            requestType
+            requestType,
+            requestUrl,
+            referrerUrl,
         );
 
         if (response && response.cancel) {

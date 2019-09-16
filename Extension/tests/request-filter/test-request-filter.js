@@ -700,6 +700,7 @@ QUnit.test('requestFilter.findRuleForRequest performance', function (assert) {
     // Average: 0.00168 ms
 });
 
+// TODO [maximtop] move convertRules into separate file
 QUnit.test('Test scriptlet adguard rule', function (assert) {
     const rule = "example.org#%#//scriptlet('abort-on-property-read', 'I10C')";
     const exp = "example.org#%#//scriptlet('abort-on-property-read', 'I10C')";
@@ -774,6 +775,7 @@ QUnit.test('Comments in rule', (assert) => {
     assert.notOk(rule, 'rule with comment mask should return null');
 });
 
+// TODO [maximtop] move convert rules into separate file
 QUnit.test('Converts ABP rules into AG compatible rule', (assert) => {
     let actual = adguard.rules.ruleConverter.convertRule('||e9377f.com^$rewrite=abp-resource:blank-mp3,domain=eastday.com');
     let expected = '||e9377f.com^$redirect=blank-mp3,domain=eastday.com';
@@ -817,4 +819,14 @@ QUnit.test('converts empty and mp4 modifiers into redirect rules', (assert) => {
     assert.equal(actual.length, 2, 'Two rules, one of then nor supporting');
     assert.equal(actual[0], 'example.com$$script[tag-content="==="]', 'Should be converted to adg rule');
     assert.equal(actual[1], 'example.com##^script:has-text(/[wW]{16000}/)', 'Should be separated to ubo rule');
+});
+
+QUnit.test('$document rules', (assert) => {
+    const rule = new adguard.rules.UrlFilterRule('||example.org^$document');
+
+    const requestFilter = new adguard.RequestFilter();
+
+    requestFilter.addRule(rule);
+
+    assert.ok(requestFilter.findRuleForRequest('https://example.org', 'https://example.org', adguard.RequestTypes.DOCUMENT));
 });

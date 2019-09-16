@@ -3,7 +3,6 @@ import path from 'path';
 import pp from 'preprocess';
 import {FIREFOX_WEBEXT, BRANCH_DEV, BRANCH_BETA, BRANCH_RELEASE} from './consts';
 
-
 /**
  * Get the extension name postfix
  *
@@ -78,7 +77,7 @@ export function updateLocalesMSGName (branch, dest, done, browser, allowRemoteSc
  * @param done   stream
  * @return done
  */
-export function preprocessAll (dest, data, done) {
+export function preprocessAll(dest, data, done) {
     const filesToPreprocess = [
         path.join(dest, 'pages/popup.html'),
         path.join(dest, 'pages/filter-download.html'),
@@ -86,7 +85,7 @@ export function preprocessAll (dest, data, done) {
         path.join(dest, 'pages/log.html'),
         path.join(dest, 'pages/options.html'),
         path.join(dest, 'pages/sb.html'),
-        path.join(dest, 'lib/filter/filters.js')
+        path.join(dest, 'lib/filter/filters.js'),
     ];
 
     for (const filePath of filesToPreprocess) {
