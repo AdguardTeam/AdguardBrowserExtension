@@ -22,7 +22,6 @@
  */
 
 adguard.safebrowsing = (function (adguard, global) {
-
     /**
      * Cache with maxCacheSize stored in local storage.
      *
@@ -30,25 +29,24 @@ adguard.safebrowsing = (function (adguard, global) {
      * @param size          Max cache size
      */
 
-    var LocalStorageCache = function (lsProperty, size) {
+    const LocalStorageCache = function (lsProperty, size) {
+        const CACHE_SIZE = 1000;
 
-        var CACHE_SIZE = 1000;
+        const maxCacheSize = size || CACHE_SIZE;
 
-        var maxCacheSize = size || CACHE_SIZE;
-
-        var cache;
-        var cacheSize;
+        let cache;
+        let cacheSize;
 
         function getCacheFromLocalStorage() {
-            var data = Object.create(null);
+            let data = Object.create(null);
             try {
-                var json = adguard.localStorage.getItem(lsProperty);
+                const json = adguard.localStorage.getItem(lsProperty);
                 if (json) {
                     data = JSON.parse(json);
                 }
             } catch (ex) {
-                //ignore
-                adguard.console.error("Error read from {0} cache, cause: {1}", lsProperty, ex);
+                // ignore
+                adguard.console.error('Error read from {0} cache, cause: {1}', lsProperty, ex);
                 adguard.localStorage.removeItem(lsProperty);
             }
             return data;
@@ -58,15 +56,15 @@ adguard.safebrowsing = (function (adguard, global) {
             try {
                 adguard.localStorage.setItem(lsProperty, JSON.stringify(cache));
             } catch (ex) {
-                adguard.console.error("Error save to {0} cache, cause: {1}", lsProperty, ex);
+                adguard.console.error('Error save to {0} cache, cause: {1}', lsProperty, ex);
             }
         }
 
         function getItem(key, ttl) {
-            ttl = isNaN(ttl) ? 0 : ttl;
-            var value = cache[key];
+            ttl = Number.isNaN(ttl) ? 0 : ttl;
+            const value = cache[key];
             if (value !== undefined) {
-                var expired = value.expired - 0;
+                const expired = value.expired - 0;
                 if (Date.now() >= expired - ttl) {
                     return null;
                 }
@@ -77,18 +75,21 @@ adguard.safebrowsing = (function (adguard, global) {
 
 
         function cleanup() {
-            var key;
-            for (key in cache) { // jshint ignore:line
-                var foundItem = getItem(key);
+            const keys = Object.keys(cache);
+            for (let i = 0; i < keys.length; i += 1) {
+                const key = keys[i];
+                const foundItem = getItem(key);
                 if (!foundItem) {
                     delete cache[key];
-                    cacheSize--;
+                    cacheSize -= 1;
                 }
             }
             if (cacheSize > maxCacheSize / 2) {
-                for (key in cache) { // jshint ignore:line
+                const keys = Object.keys(cache);
+                for (let i = 0; i < keys.length; i += 1) {
+                    const key = keys[i];
                     delete cache[key];
-                    cacheSize--;
+                    cacheSize -= 1;
                     if (cacheSize <= maxCacheSize / 2) {
                         break;
                     }
@@ -97,12 +98,12 @@ adguard.safebrowsing = (function (adguard, global) {
             saveCacheToLocalStorage();
         }
 
-        var getValue = function (value) {
-            var foundItem = getItem(value);
+        const getValue = function (value) {
+            const foundItem = getItem(value);
             return foundItem ? foundItem.match : null;
         };
 
-        var saveValue = function (value, match, expired) {
+        const saveValue = function (value, match, expired) {
             if (!value) {
                 return;
             }
@@ -110,10 +111,10 @@ adguard.safebrowsing = (function (adguard, global) {
                 cleanup();
             }
             cache[value] = {
-                match: match,
-                expired: expired
+                match,
+                expired,
             };
-            cacheSize++;
+            cacheSize += 1;
 
             if (cacheSize % 20 === 0) {
                 saveCacheToLocalStorage();
@@ -127,38 +128,36 @@ adguard.safebrowsing = (function (adguard, global) {
         cleanup();
 
         return {
-            getValue: getValue,
-            saveValue: saveValue
+            getValue,
+            saveValue,
         };
     };
 
     // Lazy initialized safebrowsing cache
     var safebrowsingCache = {
         get cache() {
-            return adguard.lazyGet(safebrowsingCache, 'cache', function () {
-                return new LocalStorageCache("sb-cache");
-            });
-        }
+            return adguard.lazyGet(safebrowsingCache, 'cache', () => new LocalStorageCache('sb-cache'));
+        },
     };
 
-    var suspendedFromProperty = "safebrowsing-suspended-from";
+    const suspendedFromProperty = 'safebrowsing-suspended-from';
 
     /**
      * If we've got an error response from the backend, suspend requests for
      * this time: 40 minutes
      */
-    var SUSPEND_TTL = 40 * 60 * 1000;
+    const SUSPEND_TTL = 40 * 60 * 1000;
 
     /**
      * SB cache ttl: 40 minutes
      */
-    var SB_TTL = 40 * 60 * 1000;
+    const SB_TTL = 40 * 60 * 1000;
 
     /**
      * If user ignores warning - do not check SB for 40 minutes
      */
-    var TRUSTED_TTL = 40 * 60 * 1000;
-    var SB_WHITE_LIST = "whitelist";
+    const TRUSTED_TTL = 40 * 60 * 1000;
+    const SB_WHITE_LIST = 'whitelist';
 
     /**
      * Parses safebrowsing service response
@@ -169,17 +168,16 @@ adguard.safebrowsing = (function (adguard, global) {
      * @private
      */
     function processSbResponse(responseText, hashesMap) {
-
         if (!responseText || responseText.length > 10 * 1024) {
             return null;
         }
 
         try {
-            var lines = responseText.split('\n');
-            for (var i = 0; i < lines.length; i++) {
-                var r = lines[i].split(":");
-                var hash = r[2];
-                var host = hashesMap[hash];
+            const lines = responseText.split('\n');
+            for (let i = 0; i < lines.length; i += 1) {
+                const r = lines[i].split(':');
+                const hash = r[2];
+                const host = hashesMap[hash];
                 if (host) {
                     return r[0];
                 }
@@ -187,7 +185,7 @@ adguard.safebrowsing = (function (adguard, global) {
 
             return null;
         } catch (ex) {
-            adguard.console.error("Error parse safebrowsing response, cause {0}", ex);
+            adguard.console.error('Error parse safebrowsing response, cause {0}', ex);
         }
         return null;
     }
@@ -199,7 +197,7 @@ adguard.safebrowsing = (function (adguard, global) {
      * @private
      */
     function createResponse(sbList) {
-        return (sbList == SB_WHITE_LIST) ? null : sbList;
+        return (sbList === SB_WHITE_LIST) ? null : sbList;
     }
 
     /**
@@ -226,8 +224,8 @@ adguard.safebrowsing = (function (adguard, global) {
      * @private
      */
     function checkHostsInSbCache(hosts) {
-        for (var i = 0; i < hosts.length; i++) {
-            var sbList = safebrowsingCache.cache.getValue(hosts[i]);
+        for (let i = 0; i < hosts.length; i += 1) {
+            const sbList = safebrowsingCache.cache.getValue(hosts[i]);
             if (sbList) {
                 return sbList;
             }
@@ -244,19 +242,18 @@ adguard.safebrowsing = (function (adguard, global) {
      * @private
      */
     function extractHosts(host) {
-
-        var hosts = [];
+        const hosts = [];
         if (adguard.utils.url.isIpv4(host) || adguard.utils.url.isIpv6(host)) {
             hosts.push(host);
             return hosts;
         }
 
-        var parts = host.split(".");
+        const parts = host.split('.');
         if (parts.length <= 2) {
             hosts.push(host);
         } else {
-            for (var i = 0; i <= parts.length - 2; i++) {
-                hosts.push(adguard.utils.strings.join(parts, ".", i, parts.length));
+            for (let i = 0; i <= parts.length - 2; i += 1) {
+                hosts.push(adguard.utils.strings.join(parts, '.', i, parts.length));
             }
         }
 
@@ -272,17 +269,102 @@ adguard.safebrowsing = (function (adguard, global) {
      * @private
      */
     function createHashesMap(hosts) {
+        const result = Object.create(null);
 
-        var result = Object.create(null);
-
-        for (var i = 0; i < hosts.length; i++) {
-            var host = hosts[i];
-            var hash = global.SHA256.hash(host + '/');
+        for (let i = 0; i < hosts.length; i += 1) {
+            const host = hosts[i];
+            const hash = global.SHA256.hash(`${host}/`);
             result[hash.toUpperCase()] = host;
         }
 
         return result;
     }
+
+    /**
+     * Access Denied page URL
+     *
+     * @param requestUrl    Request URL
+     * @param referrerUrl   Referrer URL
+     * @param sbList        Safebrowsing list
+     * @returns page URL
+     */
+    const getErrorPageURL = function (requestUrl, referrerUrl, sbList) {
+        const listName = sbList || 'malware';
+        const isMalware = adguard.utils.strings.contains(listName, 'malware');
+        let url = 'pages/blocking-pages/safebrowsing.html';
+        url += `?malware=${isMalware}`;
+        url += `&host=${encodeURIComponent(adguard.utils.url.getHost(requestUrl))}`;
+        url += `&url=${encodeURIComponent(requestUrl)}`;
+        url += `&ref=${encodeURIComponent(referrerUrl)}`;
+        return adguard.getURL(url);
+    };
+
+    /**
+     * Performs lookup to safebrowsing service
+     *
+     * @param requestUrl        Request URL
+     * @param lookupUrlCallback Called on successful check
+     */
+    const lookupUrlWithCallback = function (requestUrl, lookupUrlCallback) {
+        const host = adguard.utils.url.getHost(requestUrl);
+        if (!host) {
+            return;
+        }
+
+        const hosts = extractHosts(host);
+        if (!hosts || hosts.length === 0) {
+            return;
+        }
+
+        // try find request url in cache
+        const sbList = checkHostsInSbCache(hosts);
+        if (sbList) {
+            lookupUrlCallback(createResponse(sbList));
+            return;
+        }
+
+        // check safebrowsing is active
+        const now = Date.now();
+        const suspendedFrom = adguard.localStorage.getItem(suspendedFromProperty) - 0;
+        if (suspendedFrom && (now - suspendedFrom) < SUSPEND_TTL) {
+            return;
+        }
+
+        const hashesMap = createHashesMap(hosts);
+
+        const successCallback = function (response) {
+            if (response.status >= 500) {
+                // Error on server side, suspend request
+                // eslint-disable-next-line max-len
+                adguard.console.error('Error response status {0} received from safebrowsing lookup server.', response.status);
+                suspendSafebrowsing();
+                return;
+            }
+            resumeSafebrowsing();
+
+            let sbList = SB_WHITE_LIST;
+            if (response.status !== 204) {
+                sbList = processSbResponse(response.responseText, hashesMap) || SB_WHITE_LIST;
+            }
+
+            safebrowsingCache.cache.saveValue(host, sbList, Date.now() + SB_TTL);
+
+            lookupUrlCallback(createResponse(sbList));
+        };
+
+        const errorCallback = function () {
+            adguard.console.error('Error response from safebrowsing lookup server for {0}', host);
+            suspendSafebrowsing();
+        };
+
+        const hashes = Object.keys(hashesMap);
+        const shortHashes = [];
+        for (let i = 0; i < hashes.length; i += 1) {
+            shortHashes.push(hashes[i].substring(0, 8));
+        }
+
+        adguard.backend.lookupSafebrowsing(shortHashes, successCallback, errorCallback);
+    };
 
     /**
      * Checks URL with safebrowsing filter.
@@ -293,97 +375,26 @@ adguard.safebrowsing = (function (adguard, global) {
      * @param safebrowsingCallback Called when check has been finished
      * @param incognitoTab Tab incognito mode
      */
-    var checkSafebrowsingFilter = function (requestUrl, referrerUrl, safebrowsingCallback, incognitoTab) {
-
+    const checkSafebrowsingFilter = function (requestUrl, referrerUrl, safebrowsingCallback, incognitoTab) {
         if (!adguard.settings.getSafebrowsingInfo().enabled) {
             return;
         }
 
-        adguard.console.debug("Checking safebrowsing filter for {0}", requestUrl);
+        adguard.console.debug('Checking safebrowsing filter for {0}', requestUrl);
 
-        var callback = function (sbList) {
-
+        const callback = function (sbList) {
             if (!sbList) {
-                adguard.console.debug("No safebrowsing rule found");
+                adguard.console.debug('No safebrowsing rule found');
                 return;
             }
-            adguard.console.debug("Following safebrowsing filter has been fired: {0}", sbList);
+            adguard.console.debug('Following safebrowsing filter has been fired: {0}', sbList);
             if (!incognitoTab && adguard.settings.getSafebrowsingInfo().sendStats) {
                 adguard.backend.trackSafebrowsingStats(requestUrl);
             }
             safebrowsingCallback(getErrorPageURL(requestUrl, referrerUrl, sbList));
-
         };
 
         lookupUrlWithCallback(requestUrl, callback);
-    };
-
-    /**
-     * Performs lookup to safebrowsing service
-     *
-     * @param requestUrl        Request URL
-     * @param lookupUrlCallback Called on successful check
-     */
-    var lookupUrlWithCallback = function (requestUrl, lookupUrlCallback) {
-
-        var host = adguard.utils.url.getHost(requestUrl);
-        if (!host) {
-            return;
-        }
-
-        var hosts = extractHosts(host);
-        if (!hosts || hosts.length === 0) {
-            return;
-        }
-
-        // try find request url in cache
-        var sbList = checkHostsInSbCache(hosts);
-        if (sbList) {
-            lookupUrlCallback(createResponse(sbList));
-            return;
-        }
-
-        // check safebrowsing is active
-        var now = Date.now();
-        var suspendedFrom = adguard.localStorage.getItem(suspendedFromProperty) - 0;
-        if (suspendedFrom && (now - suspendedFrom) < SUSPEND_TTL) {
-            return;
-        }
-
-        var hashesMap = createHashesMap(hosts);
-
-        var successCallback = function (response) {
-            if (response.status >= 500) {
-                // Error on server side, suspend request
-                adguard.console.error("Error response status {0} received from safebrowsing lookup server.", response.status);
-                suspendSafebrowsing();
-                return;
-            }
-            resumeSafebrowsing();
-
-            var sbList = SB_WHITE_LIST;
-            if (response.status != 204) {
-                sbList = processSbResponse(response.responseText, hashesMap) || SB_WHITE_LIST;
-            }
-
-            safebrowsingCache.cache.saveValue(host, sbList, Date.now() + SB_TTL);
-
-            lookupUrlCallback(createResponse(sbList));
-
-        };
-
-        var errorCallback = function () {
-            adguard.console.error("Error response from safebrowsing lookup server for {0}", host);
-            suspendSafebrowsing();
-        };
-
-        var hashes = Object.keys(hashesMap);
-        var shortHashes = [];
-        for (var i = 0; i < hashes.length; i++) {
-            shortHashes.push(hashes[i].substring(0, 8));
-        }
-
-        adguard.backend.lookupSafebrowsing(shortHashes, successCallback, errorCallback);
     };
 
     /**
@@ -392,43 +403,21 @@ adguard.safebrowsing = (function (adguard, global) {
      *
      * @param url URL
      */
-    var addToSafebrowsingTrusted = function (url) {
-        var host = adguard.utils.url.getHost(url);
+    const addToSafebrowsingTrusted = function (url) {
+        const host = adguard.utils.url.getHost(url);
         if (!host) {
             return;
         }
         safebrowsingCache.cache.saveValue(host, SB_WHITE_LIST, Date.now() + TRUSTED_TTL);
     };
 
-    /**
-     * Access Denied page URL
-     *
-     * @param requestUrl    Request URL
-     * @param referrerUrl   Referrer URL
-     * @param sbList        Safebrowsing list
-     * @returns page URL
-     */
-    var getErrorPageURL = function (requestUrl, referrerUrl, sbList) {
-        var listName = sbList || "malware";
-        var isMalware = adguard.utils.strings.contains(listName, "malware");
-        var url = 'pages/sb.html';
-        url += "?malware=" + isMalware;
-        url += "&host=" + encodeURIComponent(adguard.utils.url.getHost(requestUrl));
-        url += "&url=" + encodeURIComponent(requestUrl);
-        url += "&ref=" + encodeURIComponent(referrerUrl);
-        return adguard.getURL(url);
-    };
-
     return {
-
-        checkSafebrowsingFilter: checkSafebrowsingFilter,
-        lookupUrlWithCallback: lookupUrlWithCallback,
-        addToSafebrowsingTrusted: addToSafebrowsingTrusted,
-        getErrorPageURL: getErrorPageURL,
-
-        extractHosts: extractHosts,
-        createHashesMap: createHashesMap,
-        processSbResponse: processSbResponse
+        checkSafebrowsingFilter,
+        lookupUrlWithCallback,
+        addToSafebrowsingTrusted,
+        getErrorPageURL,
+        extractHosts,
+        createHashesMap,
+        processSbResponse,
     };
-
 })(adguard, window);
