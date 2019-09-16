@@ -404,8 +404,9 @@ const browser = window.browser || chrome;
 
     /**
      * Gets URL of a file that belongs to our extension
+     * https://developer.chrome.com/apps/runtime#method-getURL
      */
-    adguard.getURL = browser.extension.getURL;
+    adguard.getURL = browser.runtime.getURL;
 
     adguard.backgroundPage = {};
     adguard.backgroundPage.getWindow = function () {
