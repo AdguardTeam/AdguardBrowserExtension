@@ -134,15 +134,15 @@ QUnit.test('$mp4 modifier should always go with $media modifier together', (asse
     assert.equal(actual, expected);
 });
 
-QUnit.test('converts empty and mp4 modifiers into redirect rules', (assert) => {
+QUnit.test('script[has-text] and script[tag-content] should be converted', (assert) => {
     let rule = 'example.com##^script:some-another-rule(test)';
     let actual = adguard.rules.ruleConverter.convertRule(rule);
-    assert.equal(actual, rule, 'Shold returns the same rule');
+    assert.equal(actual, rule, 'Should return the same rule');
 
     rule = 'example.com##^script:has-text(12313)';
     actual = adguard.rules.ruleConverter.convertRule(rule);
     assert.equal(actual.length, 1, 'Single rule check');
-    assert.equal(actual[0], 'example.com$$script[tag-content="12313"]', 'Should be conceverted to adg rule');
+    assert.equal(actual[0], 'example.com$$script[tag-content="12313"]', 'Should be converted to adg rule');
 
     rule = 'example.com##^script:has-text(===):has-text(/[\w\W]{16000}/)';
     actual = adguard.rules.ruleConverter.convertRule(rule);
@@ -221,7 +221,6 @@ QUnit.test('converts rules with $all modifier into 3 rules with: $document, $pop
     assert.ok(actual.includes(exp3));
     assert.ok(actual.includes(exp4));
 });
-
 
 QUnit.test('$document rules', (assert) => {
     const rule = new adguard.rules.UrlFilterRule('||example.org^$document');
