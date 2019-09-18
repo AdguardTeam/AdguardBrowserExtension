@@ -31,8 +31,14 @@
      * @return {Boolean}          If rule should filter this request
      */
     function isFiltered(rule, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules) {
-        if (badFilterRules && badFilterRules[rule.ruleText]) {
-            return false;
+        if (badFilterRules) {
+            // if rule was converted we should lookup for converted rule text in the badFilterRules table
+            if (rule.convertedRuleText && badFilterRules[rule.convertedRuleText]) {
+                return false;
+            }
+            if (badFilterRules[rule.ruleText]) {
+                return false;
+            }
         }
         return (genericRulesAllowed || !rule.isGeneric())
             && rule.isFiltered(url, thirdParty, requestType)

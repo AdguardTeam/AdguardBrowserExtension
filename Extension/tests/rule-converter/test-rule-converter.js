@@ -221,3 +221,10 @@ QUnit.test('converts rules with $all modifier into 3 rules with: $document, $pop
     assert.ok(actual.includes(exp3));
     assert.ok(actual.includes(exp4));
 });
+
+QUnit.test('$badfilter is not omitted after rule conversion', (assert) => {
+    const badfilterRule = '||example.org/favicon.ico$domain=example.org,empty,important,badfilter';
+    const actual = adguard.rules.ruleConverter.convertRule(badfilterRule);
+    const expected = '||example.org/favicon.ico$domain=example.org,redirect=nooptext,important,badfilter';
+    assert.equal(actual, expected);
+});
