@@ -21,7 +21,8 @@ test('document filter service returns url for not trusted url', (assert) => {
 
 test('document filter service adds pages to trusted', (assert) => {
     const url = 'https://example.org/';
+    const ruleText = '||example.org^$document';
     documentFilterService.addToTrusted(url);
-    const blockingUrl = documentFilterService.getDocumentBlockedPage(url);
+    const blockingUrl = documentFilterService.getDocumentBlockedPage(url, ruleText);
     assert.equal(blockingUrl, null);
 });

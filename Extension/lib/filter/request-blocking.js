@@ -259,11 +259,18 @@ adguard.webRequestService = (function (adguard) {
                 return { redirectUrl };
             }
 
-            if (requestRule.isDocumentRule()) {
-                const documentBlockedPage = adguard.rules.documentFilterService.getDocumentBlockedPage(requestUrl, requestRule.ruleText);
+            const isDocumentLevel = requestType === adguard.RequestTypes.DOCUMENT
+                || requestType === adguard.RequestTypes.SUBDOCUMENT;
+            if (isDocumentLevel && requestRule.isDocumentRule()) {
+                const documentBlockedPage = adguard.rules.documentFilterService.getDocumentBlockedPage(
+                    requestUrl,
+                    requestRule.ruleText
+                );
+
                 if (documentBlockedPage) {
                     return { redirectUrl: documentBlockedPage };
                 }
+
                 return null;
             }
 
