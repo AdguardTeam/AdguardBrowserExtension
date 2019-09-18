@@ -324,6 +324,9 @@ const Saver = function (options) {
 
         if (!isDirty && !isSaving) {
             this.updateIndicator(states.SAVED);
+            if (!this.isSaved()) {
+                return;
+            }
             timeout = setTimeout(() => {
                 setState(states.CLEAR);
                 self.updateIndicator(states.CLEAR);
@@ -355,9 +358,9 @@ const Saver = function (options) {
     const canUpdate = () => !(this.isSaved() || this.isSaving() || this.isDirty());
 
     return {
-        canUpdate: canUpdate,
-        setDirty: setDirty,
-        setSaved: setSaved,
+        canUpdate,
+        setDirty,
+        setSaved,
     };
 };
 
@@ -549,9 +552,18 @@ const UserFilter = function () {
         });
     }
 
+    const DEFFER_TIMEOUT_MS = 200;
+    let timeoutId;
     function updateUserFilterRules() {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
         if (saver.canUpdate()) {
             loadUserRules();
+        } else {
+            timeoutId = setTimeout(() => {
+                updateUserFilterRules();
+            }, DEFFER_TIMEOUT_MS);
         }
         saver.setSaved();
     }
