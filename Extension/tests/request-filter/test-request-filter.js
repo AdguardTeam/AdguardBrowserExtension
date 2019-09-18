@@ -699,3 +699,32 @@ QUnit.test('requestFilter.findRuleForRequest performance', function (assert) {
     // Total: 84 ms
     // Average: 0.00168 ms
 });
+
+QUnit.test('redirect rules are removed with $badfilter modifier', (assert) => {
+    const ruleText = '||example.org/favicon.ico$domain=example.org,empty,important';
+    const badfilterRuleText = '||example.org/favicon.ico$domain=example.org,empty,important,badfilter';
+    const rawYaml = `
+    - title: nooptext
+      aliases:
+        - blank-text
+      contentType: text/plain
+      content: ''`;
+    adguard.rules.RedirectFilterService.setRedirectSources(rawYaml);
+    const requestFilter = new adguard.RequestFilter();
+    const rule = adguard.rules.builder.createRule(ruleText, 1);
+    requestFilter.addRule(rule);
+    let result = requestFilter.findRuleForRequest(
+        'https://example.org/favicon.ico',
+        'https://example.org',
+        adguard.RequestTypes.IMAGE
+    );
+    assert.ok(result, 'rule should be found');
+    const badfilterRule = adguard.rules.builder.createRule(badfilterRuleText, 1);
+    requestFilter.addRule(badfilterRule);
+    result = requestFilter.findRuleForRequest(
+        'https://example.org/favicon.ico',
+        'https://example.org',
+        adguard.RequestTypes.IMAGE
+    );
+    assert.notOk(result, 'rule should be blocked by badfilter rule');
+});
