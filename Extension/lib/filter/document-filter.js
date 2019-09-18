@@ -20,70 +20,14 @@
 (function (adguard, api) {
     const { utils: { url: urlUtils } } = adguard;
 
-    const trustedCache = (() => {
-        const MAX_CACHE_SIZE = 1000;
-        const CLEANING_INTERVAL = 50;
-        const cache = {};
-        let savesNumberSinceCleaning = 0;
-
-        const cleanExpired = () => {
-            const keys = Object.keys(cache);
-            const currentTime = Date.now();
-            keys.forEach((key) => {
-                const value = cache[key];
-                const { expires } = value;
-                if (expires < currentTime) {
-                    delete cache[key];
-                }
-            });
-        };
-
-        /**
-         * Checks size and clears expired values when size of cache is too big and values
-         * were saved more than defined number of times
-         */
-        const checkSize = () => {
-            const size = Object.keys(cache).length;
-            if (size < MAX_CACHE_SIZE
-                && savesNumberSinceCleaning < CLEANING_INTERVAL) {
-                return;
-            }
-            cleanExpired();
-            savesNumberSinceCleaning = 0;
-        };
-
-        /**
-         * Saves host in the cache
-         * @param host
-         * @param expires
-         */
-        const saveValue = (host, expires) => {
-            cache[host] = { host, expires };
-            savesNumberSinceCleaning += 1;
-            checkSize();
-        };
-
-        /**
-         * Returns value from hash by host
-         * @param host
-         * @returns {null|*}
-         */
-        const getValue = (host) => {
-            const value = cache[host];
-            if (!value) {
-                return null;
-            }
-            return value;
-        };
-
-        return {
-            saveValue,
-            getValue,
-        };
-    })();
+    const trustedCache = {
+        get cache() {
+            return adguard.lazyGet(trustedCache, 'cache', () => new adguard.utils.AutoCleaningCache('sb-cache'));
+        },
+    };
 
     function documentFilterService() {
-        const TRUSTED_TTL = 1000 * 60 * 40;
+        const TRUSTED_TTL_MS = 1000 * 60 * 40; // 40 minutes
         const DOCUMENT_BLOCKED_URL = 'pages/blocking-pages/adBlockedPage.html';
 
         /**
@@ -96,8 +40,8 @@
             if (!host) {
                 return false;
             }
-            const value = trustedCache.getValue(host);
-            return !!(value && value.expires > Date.now());
+            const value = trustedCache.cache.getValue(host);
+            return !!(value);
         };
 
         /**
@@ -128,7 +72,7 @@
             if (!host) {
                 return;
             }
-            trustedCache.saveValue(host, Date.now() + TRUSTED_TTL);
+            trustedCache.cache.saveValue(host, { host }, Date.now() + TRUSTED_TTL_MS);
 
             // Reloads ad-blocked page with trusted url
             adguard.tabs.getActive((tab) => {
