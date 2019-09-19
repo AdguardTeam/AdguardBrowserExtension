@@ -221,13 +221,3 @@ QUnit.test('converts rules with $all modifier into 3 rules with: $document, $pop
     assert.ok(actual.includes(exp3));
     assert.ok(actual.includes(exp4));
 });
-
-QUnit.test('$document rules', (assert) => {
-    const rule = new adguard.rules.UrlFilterRule('||example.org^$document');
-
-    const requestFilter = new adguard.RequestFilter();
-
-    requestFilter.addRule(rule);
-
-    assert.ok(requestFilter.findRuleForRequest('https://example.org', 'https://example.org', adguard.RequestTypes.DOCUMENT));
-});
