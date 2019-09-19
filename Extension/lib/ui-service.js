@@ -502,8 +502,8 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         updateTabContextMenu(tab);
     };
 
-    var openExportRulesTab = function (whitelist) {
-        openTab(getPageUrl('export.html' + (whitelist ? '#wl' : '')));
+    var openExportRulesTab = function (hash) {
+        openTab(getPageUrl('export.html' + '#' + hash));
     };
 
     /**
