@@ -698,3 +698,17 @@ QUnit.test('requestFilter.findRuleForRequest performance', function (assert) {
     // Total: 84 ms
     // Average: 0.00168 ms
 });
+
+QUnit.test('$document modifier', (assert) => {
+    const rule = new adguard.rules.UrlFilterRule('||example.org^$document');
+
+    const requestFilter = new adguard.RequestFilter();
+
+    requestFilter.addRule(rule);
+
+    assert.ok(requestFilter.findRuleForRequest(
+        'https://example.org',
+        'https://example.org',
+        adguard.RequestTypes.DOCUMENT
+    ));
+});

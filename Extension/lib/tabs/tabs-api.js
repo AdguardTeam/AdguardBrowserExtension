@@ -237,6 +237,11 @@
             tabsImpl.reload(tabId, url);
         };
 
+        // Updates tab url
+        const updateUrl = (tabId, url) => {
+            tabsImpl.updateUrl(tabId, url);
+        };
+
         // Sends message to tab
         var sendMessage = function (tabId, message, responseCallback, options) {
             tabsImpl.sendMessage(tabId, message, responseCallback, options);
@@ -390,6 +395,7 @@
             forEach: forEach,
             getActive: getActive,
             isIncognito: isIncognito,
+            updateUrl: updateUrl,
 
             // Frames
             recordTabFrame: recordTabFrame,

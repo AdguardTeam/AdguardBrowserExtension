@@ -73,16 +73,34 @@
                 return;
             }
             trustedCache.cache.saveValue(host, { host }, Date.now() + TRUSTED_TTL_MS);
-
             // Reloads ad-blocked page with trusted url
             adguard.tabs.getActive((tab) => {
                 adguard.tabs.reload(tab.tabId, url);
             });
         };
 
+        /**
+         * Shows blocked page template
+         * @param tabId
+         * @param url
+         */
+        const showBlockedPage = (tabId, url) => {
+            const incognitoTab = adguard.frames.isIncognitoTab({ tabId });
+            // Chrome doesn't allow to show extension pages in incognito mode
+            if (adguard.utils.browser.isChromium() && incognitoTab) {
+                // Closing tab before opening a new one may lead to browser crash (Chromium)
+                adguard.ui.openTab(url, {}, () => {
+                    adguard.tabs.remove(tabId);
+                });
+            } else {
+                adguard.tabs.updateUrl(tabId, url);
+            }
+        };
+
         return {
             getDocumentBlockedPage,
             addToTrusted,
+            showBlockedPage,
         };
     }
 

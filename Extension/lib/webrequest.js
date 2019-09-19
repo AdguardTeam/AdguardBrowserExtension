@@ -140,9 +140,13 @@
         const response = adguard.webRequestService.getBlockedResponseByRule(
             requestRule,
             requestType,
-            requestUrl,
-            referrerUrl,
+            requestUrl
         );
+
+        if (response && response.documentBlockedPage) {
+            adguard.rules.documentFilterService.showBlockedPage(tabId, response.documentBlockedPage);
+            return { cancel: true };
+        }
 
         if (response && response.cancel) {
             collapseElement(tabId, requestFrameId, requestUrl, referrerUrl, requestType);

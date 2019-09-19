@@ -17,11 +17,10 @@
 
 /* global chrome */
 
-const api = window.browser || chrome;
-
 let adguard;
 
 const getAdguard = () => new Promise((resolve) => {
+    const api = window.browser || chrome;
     api.runtime.getBackgroundPage((bgPage) => {
         resolve(bgPage.adguard);
     });

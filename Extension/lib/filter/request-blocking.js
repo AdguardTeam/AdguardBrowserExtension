@@ -245,10 +245,11 @@ adguard.webRequestService = (function (adguard) {
 
     /**
      * Gets blocked response by rule
-     * See https://developer.chrome.com/extensions/webRequest#type-BlockingResponse or https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webRequest/BlockingResponse for details
-     * @param requestRule Request rule or null
-     * @param requestType Request type
-     * @param requestUrl
+     * For details see https://developer.chrome.com/extensions/webRequest#type-BlockingResponse
+     * or https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webRequest/BlockingResponse
+     * @param requestRule   Request rule or null
+     * @param requestType   Request type
+     * @param requestUrl    Request url
      * @returns {*} Blocked response or null
      */
     const getBlockedResponseByRule = function (requestRule, requestType, requestUrl) {
@@ -261,6 +262,7 @@ adguard.webRequestService = (function (adguard) {
 
             const isDocumentLevel = requestType === adguard.RequestTypes.DOCUMENT
                 || requestType === adguard.RequestTypes.SUBDOCUMENT;
+
             if (isDocumentLevel && requestRule.isDocumentRule()) {
                 const documentBlockedPage = adguard.rules.documentFilterService.getDocumentBlockedPage(
                     requestUrl,
@@ -268,7 +270,7 @@ adguard.webRequestService = (function (adguard) {
                 );
 
                 if (documentBlockedPage) {
-                    return { redirectUrl: documentBlockedPage };
+                    return { documentBlockedPage };
                 }
 
                 return null;
