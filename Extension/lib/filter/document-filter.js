@@ -80,11 +80,11 @@
         };
 
         /**
-         * Shows blocked page template
+         * Shows document block page
          * @param tabId
          * @param url
          */
-        const showBlockedPage = (tabId, url) => {
+        const showDocumentBlockPage = (tabId, url) => {
             const incognitoTab = adguard.frames.isIncognitoTab({ tabId });
             // Chrome doesn't allow to show extension pages in incognito mode
             if (adguard.utils.browser.isChromium() && incognitoTab) {
@@ -100,7 +100,7 @@
         return {
             getDocumentBlockedPage,
             addToTrusted,
-            showBlockedPage,
+            showDocumentBlockPage,
         };
     }
 

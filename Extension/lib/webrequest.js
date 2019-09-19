@@ -144,7 +144,7 @@
         );
 
         if (response && response.documentBlockedPage) {
-            adguard.rules.documentFilterService.showBlockedPage(tabId, response.documentBlockedPage);
+            adguard.rules.documentFilterService.showDocumentBlockPage(tabId, response.documentBlockedPage);
             return { cancel: true };
         }
 
