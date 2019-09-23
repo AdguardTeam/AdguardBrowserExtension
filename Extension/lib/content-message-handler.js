@@ -157,9 +157,12 @@
             case 'changeDefaultWhiteListMode':
                 adguard.whitelist.changeDefaultWhiteListMode(message.enabled);
                 break;
-            case 'getWhiteListDomains':
-                var whiteListDomains = adguard.whitelist.getWhiteListDomains();
-                return { content: whiteListDomains.join('\r\n') };
+            case 'getWhiteListDomains': {
+                const whiteListDomains = adguard.whitelist.getWhiteListDomains();
+                const appVersion = adguard.app.getVersion();
+                callback({ content: whiteListDomains.join('\r\n'), appVersion });
+                break;
+            }
             case 'saveWhiteListDomains': {
                 const domains = message.content.split(/[\r\n]+/)
                     .map(string => string.trim())
@@ -169,7 +172,8 @@
             }
             case 'getUserRules':
                 adguard.userrules.getUserRulesText((content) => {
-                    callback({ content: content });
+                    const appVersion = adguard.app.getVersion();
+                    callback({ content, appVersion });
                 });
                 return true;
             case 'saveUserRules':
@@ -223,7 +227,7 @@
                 adguard.ui.openFilteringLog(message.tabId);
                 break;
             case 'openExportRulesTab':
-                adguard.ui.openExportRulesTab(message.whitelist);
+                adguard.ui.openExportRulesTab(message.hash);
                 break;
             case 'openSafebrowsingTrusted':
                 adguard.safebrowsing.addToSafebrowsingTrusted(message.url);
@@ -394,9 +398,14 @@
             case 'syncChangeDeviceName':
                 adguard.sync.syncService.changeDeviceName(message.deviceName);
                 break;
-            case 'loadSettingsJson':
-                adguard.sync.settingsProvider.loadSettingsBackup(callback);
+            case 'loadSettingsJson': {
+                const appVersion = adguard.app.getVersion();
+                const settingsCb = (json) => {
+                    callback({ content: json, appVersion });
+                };
+                adguard.sync.settingsProvider.loadSettingsBackup(settingsCb);
                 return true; // Async
+            }
             case 'applySettingsJson':
                 adguard.sync.settingsProvider.applySettingsBackup(message.json);
                 break;
