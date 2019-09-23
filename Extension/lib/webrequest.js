@@ -144,6 +144,8 @@
         );
 
         if (response && response.documentBlockedPage) {
+            // Here we do not use redirectUrl because it is not working in firefox without specifying it
+            // as the web_accessible_resources.
             adguard.rules.documentFilterService.showDocumentBlockPage(tabId, response.documentBlockedPage);
             return { cancel: true };
         }

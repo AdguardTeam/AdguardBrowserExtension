@@ -950,7 +950,7 @@
                     break;
                 case UrlFilterRule.DOCUMENT_OPTION:
                     this._setUrlFilterRuleOption(UrlFilterRule.options.DOCUMENT_WHITELIST, true);
-                    this._setUrlFilterRuleOption(UrlFilterRule.options.DOCUMENT, true)
+                    this._setUrlFilterRuleOption(UrlFilterRule.options.DOCUMENT, true);
                     break;
                 case UrlFilterRule.POPUP_OPTION:
                     this._setUrlFilterRuleOption(UrlFilterRule.options.BLOCK_POPUPS, true);
@@ -1063,11 +1063,9 @@
      * @param enabled Enabled or not
      */
     UrlFilterRule.prototype._setUrlFilterRuleOption = function (option, enabled) {
-
         if (enabled) {
-            if ((this.whiteListRule && containsOption(UrlFilterRule.options.BLACKLIST_OPTIONS, option)) ||
-                !this.whiteListRule && containsOption(UrlFilterRule.options.WHITELIST_OPTIONS, option)) {
-                throw option + ' cannot be applied to this type of rule';
+            if (!this.whiteListRule && containsOption(UrlFilterRule.options.WHITELIST_OPTIONS, option)) {
+                throw new Error(`${option} cannot be applied to this type of rule`);
             }
 
             if (this.enabledOptions === null) {

@@ -426,9 +426,9 @@ adguard.tabsImpl = (function (adguard) {
     };
 
     /**
-     * Updates tab
-     * @param tabId
-     * @param url
+     * Updates tab url
+     * @param {number} tabId
+     * @param {string} url
      */
     const updateUrl = (tabId, url) => {
         if (tabId === 0) {

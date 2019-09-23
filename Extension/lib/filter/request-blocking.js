@@ -229,9 +229,10 @@ adguard.webRequestService = (function (adguard) {
      * @returns {*|boolean}
      */
     var isRequestBlockedByRule = function (requestRule) {
-        return requestRule && !requestRule.whiteListRule &&
-            !requestRule.getReplace() &&
-            !requestRule.isBlockPopups();
+        return requestRule
+            && !requestRule.whiteListRule
+            && !requestRule.getReplace()
+            && !requestRule.isBlockPopups();
     };
 
     /**
@@ -264,7 +265,7 @@ adguard.webRequestService = (function (adguard) {
                 || requestType === adguard.RequestTypes.SUBDOCUMENT;
 
             if (isDocumentLevel && requestRule.isDocumentRule()) {
-                const documentBlockedPage = adguard.rules.documentFilterService.getDocumentBlockedPage(
+                const documentBlockedPage = adguard.rules.documentFilterService.getDocumentBlockPageUrl(
                     requestUrl,
                     requestRule.ruleText
                 );
@@ -478,15 +479,17 @@ adguard.webRequestService = (function (adguard) {
         }
 
         if (requestRule && !requestRule.whiteListRule) {
-
             var isRequestBlockingRule = isRequestBlockedByRule(requestRule);
             var isPopupBlockingRule = isPopupBlockedByRule(requestRule);
             var isReplaceRule = !!requestRule.getReplace();
 
             // Url blocking rules are not applicable to the main_frame
-            // if (isRequestBlockingRule && requestType === adguard.RequestTypes.DOCUMENT) {
-            //     requestRule = null;
-            // }
+            if (isRequestBlockingRule && requestType === adguard.RequestTypes.DOCUMENT) {
+                // except document rule $document
+                if (!requestRule.isDocumentRule()) {
+                    requestRule = null;
+                }
+            }
             // Popup blocking rules are applicable to the main_frame only
             if (isPopupBlockingRule && requestType !== adguard.RequestTypes.DOCUMENT) {
                 requestRule = null;

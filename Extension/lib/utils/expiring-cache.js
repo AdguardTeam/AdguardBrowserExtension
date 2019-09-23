@@ -22,7 +22,7 @@
      * @param {string} storagePropertyName      Name of the local storage property.
      * @param {number} size                     Max cache size
      */
-    function AutoCleaningCache(storagePropertyName, size) {
+    function ExpiringCache(storagePropertyName, size) {
         const CACHE_SIZE = 1000;
 
         const maxCacheSize = size || CACHE_SIZE;
@@ -124,5 +124,5 @@
         };
     }
 
-    adguard.utils.AutoCleaningCache = AutoCleaningCache;
+    adguard.utils.ExpiringCache = ExpiringCache;
 })(adguard);

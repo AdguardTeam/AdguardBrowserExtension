@@ -22,7 +22,11 @@
 
     const trustedCache = {
         get cache() {
-            return adguard.lazyGet(trustedCache, 'cache', () => new adguard.utils.AutoCleaningCache('sb-cache'));
+            return adguard.lazyGet(
+                trustedCache,
+                'cache',
+                () => new adguard.utils.ExpiringCache('document-block-cache')
+            );
         },
     };
 
@@ -50,7 +54,7 @@
          * @param ruleText
          * @returns {null|string}
          */
-        const getDocumentBlockedPage = (url, ruleText) => {
+        const getDocumentBlockPageUrl = (url, ruleText) => {
             if (isTrusted(url)) {
                 return null;
             }
@@ -64,7 +68,7 @@
         };
 
         /**
-         * Gets url host and adds it the cache of trusted domains
+         * Gets url host and adds it to the cache of trusted domains
          * @param url
          */
         const addToTrusted = (url) => {
@@ -98,7 +102,7 @@
         };
 
         return {
-            getDocumentBlockedPage,
+            getDocumentBlockPageUrl,
             addToTrusted,
             showDocumentBlockPage,
         };
