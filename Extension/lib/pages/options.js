@@ -498,10 +498,11 @@ var WhiteListFilter = function (options) {
 
     exportWhiteListBtn.addEventListener('click', (event) => {
         event.preventDefault();
+        const WHITELIST_HASH = 'wl';
         if (exportWhiteListBtn.classList.contains('disabled')) {
             return;
         }
-        contentPage.sendMessage({ type: 'openExportRulesTab', whitelist: true });
+        contentPage.sendMessage({ type: 'openExportRulesTab', hash: WHITELIST_HASH });
     });
 
     importWhiteListInput.addEventListener('change', (e) => {
@@ -608,10 +609,11 @@ const UserFilter = function () {
 
     exportUserFiltersBtn.addEventListener('click', function (event) {
         event.preventDefault();
+        const USER_FILTER_HASH = 'uf';
         if (exportUserFiltersBtn.classList.contains('disabled')) {
             return;
         }
-        contentPage.sendMessage({ type: 'openExportRulesTab', whitelist: false });
+        contentPage.sendMessage({ type: 'openExportRulesTab', hash: USER_FILTER_HASH });
     });
 
     return {
