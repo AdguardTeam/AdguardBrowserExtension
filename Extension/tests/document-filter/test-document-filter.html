@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-    <title>Filter Rule Builder Tests</title>
+    <title>Cookie Filtering Tests</title>
     <link rel="stylesheet" href="../qunit/qunit-2.0.1.css">
 </head>
 
@@ -14,16 +14,16 @@
 <script src="../qunit/qunit-2.0.1.js"></script>
 
 <script type="text/javascript" src="../../lib/adguard.js"></script>
+<script type="text/javascript" src="../local-storage-impl.js"></script>
+<script type="text/javascript" src="../../lib/storage.js"></script>
 <script type="text/javascript" src="../../lib/utils/punycode.js"></script>
 <script type="text/javascript" src="../../lib/utils/common.js"></script>
-<script type="text/javascript" src="../../lib/utils/browser-utils.js"></script>
 <script type="text/javascript" src="../../lib/utils/public-suffixes.js"></script>
 <script type="text/javascript" src="../../lib/utils/url.js"></script>
 <script type="text/javascript" src="../../lib/utils/log.js"></script>
-<script type="text/javascript" src="../../lib/filter/safebrowsing-filter.js"></script>
 <script type="text/javascript" src="../../browser/webkit/lib/prefs.js"></script>
-
-<script type="text/javascript" src="../../browser/webkit/lib/prefs.js"></script>
+<script type="text/javascript" src="../../lib/utils/browser-utils.js"></script>
+<script type="text/javascript" src="../../lib/utils/expiring-cache.js"></script>
 
 <script type="text/javascript" src="../../lib/filter/rules/rules.js"></script>
 <script type="text/javascript" src="../../lib/filter/rules/domains-lookup-table.js"></script>
@@ -33,23 +33,13 @@
 <script type="text/javascript" src="../../lib/filter/rules/base-filter-rule.js"></script>
 <script type="text/javascript" src="../../lib/filter/rules/filter-rule-builder.js"></script>
 <script type="text/javascript" src="../../lib/filter/rules/url-filter-rule.js"></script>
-<script type="text/javascript" src="../../lib/filter/rules/url-filter.js"></script>
-<script type="text/javascript" src="../../lib/filter/rules/css-filter-rule.js"></script>
-<script type="text/javascript" src="../../lib/filter/rules/css-filter.js"></script>
-<script type="text/javascript" src="../../lib/filter/rules/script-filter-rule.js"></script>
-<script type="text/javascript" src="../../lib/filter/rules/script-filter.js"></script>
-<script type="text/javascript" src="../../lib/filter/rules/content-filter-rule.js"></script>
-<script type="text/javascript" src="../../lib/filter/rules/content-filter.js"></script>
-<script type="text/javascript" src="../../lib/filter/rules/csp-filter.js"></script>
-<script type="text/javascript" src="../../lib/filter/rules/cookie-filter.js"></script>
-<script type="text/javascript" src="../../lib/filter/rules/replace-filter.js"></script>
-<script type="text/javascript" src="../../lib/filter/rules/filter-rule-builder.js"></script>
-<script type="text/javascript" src="../../lib/filter/rules/scriptlet-rule.js"></script>
-<script type="text/javascript" src="../../lib/filter/rules/composite-rule.js"></script>
-<script type="text/javascript" src="../../lib/filter/safebrowsing-filter.js"></script>
-<script type="text/javascript" src="../../lib/filter/rule-converter.js"></script>
 
-<script type="text/javascript" src="test-filter-rule-builder.js"></script>
+<script type="text/javascript" src="../../lib/filter/rules/cookie-filter.js"></script>
+
+<script type="text/javascript" src="../../lib/filter/request-context-storage.js"></script>
+<script type="text/javascript" src="../../lib/filter/document-filter.js"></script>
+
+<script type="text/javascript" src="test-document-filter.js"></script>
 </body>
 
 </html>

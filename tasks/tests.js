@@ -98,4 +98,26 @@ const testStatsCollection = (done) => {
     runQunit('../Extension/tests/stats/test-stats.html', done);
 };
 
-export default gulp.series(testRule, testSB, testURL, testCSSfilter, testContent, testCookieFiltering, testCSShits, testReq, testEl, testCookie, testRing, testEncoding, testRequestContextStorage, testFilterRuleBuilder, testStatsCollection);
+// Document filter
+const testDocumentFilter = (done) => {
+    runQunit('../Extension/tests/document-filter/test-document-filter.html', done);
+};
+
+export default gulp.series(
+    testRule,
+    testSB,
+    testURL,
+    testCSSfilter,
+    testContent,
+    testCookieFiltering,
+    testCSShits,
+    testReq,
+    testEl,
+    testCookie,
+    testRing,
+    testEncoding,
+    testRequestContextStorage,
+    testFilterRuleBuilder,
+    testStatsCollection,
+    testDocumentFilter
+);
