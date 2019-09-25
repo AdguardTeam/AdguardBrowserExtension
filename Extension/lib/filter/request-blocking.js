@@ -229,9 +229,10 @@ adguard.webRequestService = (function (adguard) {
      * @returns {*|boolean}
      */
     var isRequestBlockedByRule = function (requestRule) {
-        return requestRule && !requestRule.whiteListRule &&
-            !requestRule.getReplace() &&
-            !requestRule.isBlockPopups();
+        return requestRule
+            && !requestRule.whiteListRule
+            && !requestRule.getReplace()
+            && !requestRule.isBlockPopups();
     };
 
     /**
@@ -245,17 +246,35 @@ adguard.webRequestService = (function (adguard) {
 
     /**
      * Gets blocked response by rule
-     * See https://developer.chrome.com/extensions/webRequest#type-BlockingResponse or https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webRequest/BlockingResponse for details
-     * @param requestRule Request rule or null
-     * @param requestType Request type
+     * For details see https://developer.chrome.com/extensions/webRequest#type-BlockingResponse
+     * or https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webRequest/BlockingResponse
+     * @param requestRule   Request rule or null
+     * @param requestType   Request type
+     * @param requestUrl    Request url
      * @returns {*} Blocked response or null
      */
-    const getBlockedResponseByRule = function (requestRule, requestType) {
+    const getBlockedResponseByRule = function (requestRule, requestType, requestUrl) {
         if (isRequestBlockedByRule(requestRule)) {
             if (requestRule.isRedirectRule()) {
                 const redirectOption = requestRule.getRedirect();
                 const redirectUrl = redirectOption.getRedirectUrl();
                 return { redirectUrl };
+            }
+
+            const isDocumentLevel = requestType === adguard.RequestTypes.DOCUMENT
+                || requestType === adguard.RequestTypes.SUBDOCUMENT;
+
+            if (isDocumentLevel && requestRule.isDocumentRule()) {
+                const documentBlockedPage = adguard.rules.documentFilterService.getDocumentBlockPageUrl(
+                    requestUrl,
+                    requestRule.ruleText
+                );
+
+                if (documentBlockedPage) {
+                    return { documentBlockedPage };
+                }
+
+                return null;
             }
 
             // Don't block main_frame request
@@ -460,14 +479,16 @@ adguard.webRequestService = (function (adguard) {
         }
 
         if (requestRule && !requestRule.whiteListRule) {
-
             var isRequestBlockingRule = isRequestBlockedByRule(requestRule);
             var isPopupBlockingRule = isPopupBlockedByRule(requestRule);
             var isReplaceRule = !!requestRule.getReplace();
 
             // Url blocking rules are not applicable to the main_frame
             if (isRequestBlockingRule && requestType === adguard.RequestTypes.DOCUMENT) {
-                requestRule = null;
+                // except document rule $document
+                if (!requestRule.isDocumentRule()) {
+                    requestRule = null;
+                }
             }
             // Popup blocking rules are applicable to the main_frame only
             if (isPopupBlockingRule && requestType !== adguard.RequestTypes.DOCUMENT) {
