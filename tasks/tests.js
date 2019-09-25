@@ -103,6 +103,11 @@ const testDocumentFilter = (done) => {
     runQunit('../Extension/tests/document-filter/test-document-filter.html', done);
 };
 
+// Rules converter
+const testConverter = (done) => {
+    runQunit('../Extension/tests/rule-converter/test-rule-converter.html', done);
+};
+
 export default gulp.series(
     testRule,
     testSB,
@@ -119,5 +124,6 @@ export default gulp.series(
     testRequestContextStorage,
     testFilterRuleBuilder,
     testStatsCollection,
-    testDocumentFilter
+    testDocumentFilter,
+    testConverter
 );
