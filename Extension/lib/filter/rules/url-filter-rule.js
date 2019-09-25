@@ -21,8 +21,6 @@
 
     var ESCAPE_CHARACTER = '\\';
 
-    var isFirefoxBrowser = adguard.utils.browser.isFirefoxBrowser();
-
     /**
      * Searches for domain name in rule text and transforms it to punycode if needed.
      *
@@ -525,7 +523,7 @@
 
     // Lazy regexp creation
     UrlFilterRule.prototype.getUrlRegExp = function () {
-        //check already compiled but not successful
+        // check already compiled but not successful
         if (this.wrongUrlRegExp) {
             return null;
         }
@@ -779,16 +777,6 @@
     };
 
     /**
-     * If empty is true than Adguard will return empty response
-     * when request is blocked by such rule
-     *
-     * @return true if $empty option is enabled
-     */
-    UrlFilterRule.prototype.isEmptyResponse = function () {
-        return this.isOptionEnabled(UrlFilterRule.options.EMPTY_RESPONSE);
-    };
-
-    /**
      * If rule is case sensitive returns true
      *
      * @return true if rule is case sensitive
@@ -825,6 +813,10 @@
      */
     UrlFilterRule.prototype.isRedirectRule = function () {
         return this.isOptionEnabled(UrlFilterRule.options.REDIRECT);
+    };
+
+    UrlFilterRule.prototype.isDocumentRule = function () {
+        return this.isOptionEnabled(UrlFilterRule.options.DOCUMENT);
     };
 
     /**
@@ -958,12 +950,10 @@
                     break;
                 case UrlFilterRule.DOCUMENT_OPTION:
                     this._setUrlFilterRuleOption(UrlFilterRule.options.DOCUMENT_WHITELIST, true);
+                    this._setUrlFilterRuleOption(UrlFilterRule.options.DOCUMENT, true);
                     break;
                 case UrlFilterRule.POPUP_OPTION:
                     this._setUrlFilterRuleOption(UrlFilterRule.options.BLOCK_POPUPS, true);
-                    break;
-                case UrlFilterRule.EMPTY_OPTION:
-                    this._setUrlFilterRuleOption(UrlFilterRule.options.EMPTY_RESPONSE, true);
                     break;
                 case UrlFilterRule.EXTENSION_OPTION:
                     this._setUrlFilterRuleOption(UrlFilterRule.options.EXTENSION, true);
@@ -1073,11 +1063,9 @@
      * @param enabled Enabled or not
      */
     UrlFilterRule.prototype._setUrlFilterRuleOption = function (option, enabled) {
-
         if (enabled) {
-            if ((this.whiteListRule && containsOption(UrlFilterRule.options.BLACKLIST_OPTIONS, option)) ||
-                !this.whiteListRule && containsOption(UrlFilterRule.options.WHITELIST_OPTIONS, option)) {
-                throw option + ' cannot be applied to this type of rule';
+            if (!this.whiteListRule && containsOption(UrlFilterRule.options.WHITELIST_OPTIONS, option)) {
+                throw new Error(`${option} cannot be applied to this type of rule`);
             }
 
             if (this.enabledOptions === null) {
@@ -1219,54 +1207,54 @@
         BLOCK_POPUPS: 1 << 7,
 
         /**
-         * For any address matching blocking rule with this option
-         * Adguard will return internal redirect response (307)
-         */
-        EMPTY_RESPONSE: 1 << 8,
-
-        /**
          * defines a rule applied only to addresses with exact letter case matches.
          * For example, /BannerAd.gif$match-case will block http://example.com/BannerAd.gif,
          * but not http://example.com/bannerad.gif.
          * By default, the letter case is not matched.
          */
-        MATCH_CASE: 1 << 9,
+        MATCH_CASE: 1 << 8,
 
         /**
          * defines a CSP rule
          * For example, ||xpanama.net^$third-party,csp=connect-src 'none'
          */
-        CSP_RULE: 1 << 10,
+        CSP_RULE: 1 << 9,
 
         /**
          * defines a Cookie rule
          * For example, ||example.com^$third-party,cookie=c_user
          */
-        COOKIE_RULE: 1 << 11,
+        COOKIE_RULE: 1 << 10,
 
         /**
          * defines rules with $extension modifier
          * for example, @@||example.org^$extension
          */
-        EXTENSION: 1 << 12,
+        EXTENSION: 1 << 11,
 
         /**
          * defines rules with $replace modifier
          * for example, "||example.org^$replace=/replace-me/replacement/i"
          */
-        REPLACE: 1 << 13,
+        REPLACE: 1 << 12,
 
         /**
          * defines rules with $stealth modifier
          * for example, "@@||example.com^$stealth"
          */
-        STEALTH: 1 << 14,
+        STEALTH: 1 << 13,
 
         /**
          * defines rules with $redirect modifier
          * for example, "||example.com/someadd.js^$redirect=noopjs"
          */
-        REDIRECT: 1 << 15,
+        REDIRECT: 1 << 14,
+
+        /**
+         * defines rules with $document modifier
+         * for example, "||example.org$document"
+         */
+        DOCUMENT: 1 << 15,
     };
 
     /**
@@ -1278,11 +1266,6 @@
         | UrlFilterRule.options.GENERICHIDE
         | UrlFilterRule.options.GENERICBLOCK
         | UrlFilterRule.options.STEALTH;
-
-    /**
-     * These options can be applied to blacklist rules only
-     */
-    UrlFilterRule.options.BLACKLIST_OPTIONS = UrlFilterRule.options.EMPTY_RESPONSE;
 
     /**
      * These options define a document whitelisted rule

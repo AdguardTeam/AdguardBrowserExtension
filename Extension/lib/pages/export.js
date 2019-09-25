@@ -17,55 +17,12 @@
 
 /* global contentPage */
 
-document.addEventListener("DOMContentLoaded", function () {
+const showSaveFunc = (function () {
+    let showSave;
+    const DownloadAttributeSupport = 'download' in document.createElement('a');
 
-    var callback = function (rulesText) {
-        var el = document.createElement('pre');
-        el.textContent = rulesText;
-        document.body.appendChild(el);
-
-        var filename = whitelist ? 'whitelist.txt' : 'rules.txt';
-        filename = settings ? 'export.json' : filename;
-        if (showSaveFunc) {
-            showSaveFunc(rulesText, filename, 'text/plain;charset=utf-8');
-        }
-    };
-
-    var whitelist = document.location.hash === '#wl';
-    var settings = document.location.hash === '#exs';
-    var messageType;
-
-    var preProcessResponse = callback;
-    if (whitelist) {
-        messageType = 'getWhiteListDomains';
-        preProcessResponse = function (response) {
-            if (response.content) {
-                callback(response.content);
-            }
-        };
-    } else if (settings) {
-        messageType = 'loadSettingsJson';
-        preProcessResponse = function (response) {
-            callback(response);
-        };
-    } else {
-        messageType = 'getUserRules';
-        preProcessResponse = function (response) {
-            if (response.content) {
-                callback(response.content);
-            }
-        };
-    }
-
-    contentPage.sendMessage({ type: messageType }, preProcessResponse);
-});
-
-var showSaveFunc = (function () {
-    var showSave;
-    var DownloadAttributeSupport = 'download' in document.createElement('a');
-
-    var Blob = window.Blob || window.WebKitBlob || window.MozBlob;
-    var URL = window.URL || window.webkitURL || window.mozURL;
+    const Blob = window.Blob || window.WebKitBlob || window.MozBlob;
+    const URL = window.URL || window.webkitURL || window.mozURL;
 
     navigator.saveBlob = navigator.saveBlob || navigator.mozSaveBlob || navigator.webkitSaveBlob || navigator.msSaveBlob;
     window.saveAs = window.saveAs || window.webkitSaveAs || window.mozSaveAs || window.msSaveAs;
@@ -95,10 +52,70 @@ var showSaveFunc = (function () {
                 url = URL.createObjectURL(blob);
                 window.open(url, '_blank', '');
             }
-            setTimeout(function () {
+            setTimeout(() => {
                 URL.revokeObjectURL(url);
             }, 250);
         };
     }
     return showSave;
 })();
+
+document.addEventListener('DOMContentLoaded', () => {
+    const exportTypeMap = {
+        '#uf': {
+            title: 'user_filter',
+            messageType: 'getUserRules',
+            filename: 'rules',
+            ext: 'txt',
+        },
+        '#wl': {
+            title: 'whitelist',
+            messageType: 'getWhiteListDomains',
+            filename: 'whitelist',
+            ext: 'txt',
+        },
+        '#exs': {
+            title: 'settings',
+            messageType: 'loadSettingsJson',
+            filename: 'settings',
+            ext: 'json',
+        },
+    };
+
+    const exportType = exportTypeMap[document.location.hash];
+
+    const formatToTwoDigits = (num) => {
+        if (num < 10) {
+            return `0${num}`;
+        }
+        return `${num}`;
+    };
+
+    const getCurrentTimeFormatted = () => {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = formatToTwoDigits(date.getMonth() + 1);
+        const day = formatToTwoDigits(date.getDate());
+        const hours = formatToTwoDigits(date.getHours());
+        const minutes = formatToTwoDigits(date.getMinutes());
+        const seconds = formatToTwoDigits(date.getSeconds());
+        return `${year}${month}${day}_${hours}${minutes}${seconds}`;
+    };
+
+    const addContentToPage = (content) => {
+        const el = document.createElement('pre');
+        el.textContent = content;
+        document.body.appendChild(el);
+    };
+
+    const callback = function ({ content, appVersion }) {
+        addContentToPage(content);
+        const currentTimeStr = getCurrentTimeFormatted();
+        const filename = `${currentTimeStr}_adg_ext_${exportType.title}_${appVersion}.${exportType.ext}`;
+        if (showSaveFunc) {
+            showSaveFunc(content, filename, 'text/plain;charset=utf-8');
+        }
+    };
+
+    contentPage.sendMessage({ type: exportType.messageType }, callback);
+});
