@@ -417,11 +417,6 @@ adguard.tabsImpl = (function (adguard) {
     };
 
     /**
-     * True if `browser.tabs.insertCSS` supports `cssOrigin: "user"`.
-     */
-    const userCSSSupport = adguard.prefs.features.userCSSSupport;
-
-    /**
      * The only purpose of this callback is to read `lastError` and prevent
      * unnecessary console warnings (can happen with Chrome preloaded tabs).
      * See https://stackoverflow.com/questions/43665470/cannot-call-chrome-tabs-executescript-into-preloaded-tab-is-this-a-bug-in-chr
@@ -429,6 +424,23 @@ adguard.tabsImpl = (function (adguard) {
     const noopCallback = function () {
         adguard.runtime.lastError;
     };
+
+    /**
+     * Updates tab url
+     * @param {number} tabId
+     * @param {string} url
+     */
+    const updateUrl = (tabId, url) => {
+        if (tabId === 0) {
+            return;
+        }
+        browser.tabs.update(tabId, { url }, noopCallback);
+    };
+
+    /**
+     * True if `browser.tabs.insertCSS` supports `cssOrigin: "user"`.
+     */
+    const userCSSSupport = adguard.prefs.features.userCSSSupport;
 
     /**
      * Inserts CSS using the `browser.tabs.insertCSS` under the hood.
@@ -519,6 +531,7 @@ adguard.tabsImpl = (function (adguard) {
         getAll: getAll,
         getActive: getActive,
         get: get,
+        updateUrl: updateUrl,
 
         insertCssCode: insertCssCode,
         executeScriptCode: executeScriptCode,

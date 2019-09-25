@@ -324,6 +324,9 @@ const Saver = function (options) {
 
         if (!isDirty && !isSaving) {
             this.updateIndicator(states.SAVED);
+            if (!this.isSaved()) {
+                return;
+            }
             timeout = setTimeout(() => {
                 setState(states.CLEAR);
                 self.updateIndicator(states.CLEAR);
@@ -355,9 +358,9 @@ const Saver = function (options) {
     const canUpdate = () => !(this.isSaved() || this.isSaving() || this.isDirty());
 
     return {
-        canUpdate: canUpdate,
-        setDirty: setDirty,
-        setSaved: setSaved,
+        canUpdate,
+        setDirty,
+        setSaved,
     };
 };
 
@@ -495,10 +498,11 @@ var WhiteListFilter = function (options) {
 
     exportWhiteListBtn.addEventListener('click', (event) => {
         event.preventDefault();
+        const WHITELIST_HASH = 'wl';
         if (exportWhiteListBtn.classList.contains('disabled')) {
             return;
         }
-        contentPage.sendMessage({ type: 'openExportRulesTab', whitelist: true });
+        contentPage.sendMessage({ type: 'openExportRulesTab', hash: WHITELIST_HASH });
     });
 
     importWhiteListInput.addEventListener('change', (e) => {
@@ -549,9 +553,18 @@ const UserFilter = function () {
         });
     }
 
+    const DEFFER_TIMEOUT_MS = 200;
+    let timeoutId;
     function updateUserFilterRules() {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
         if (saver.canUpdate()) {
             loadUserRules();
+        } else {
+            timeoutId = setTimeout(() => {
+                updateUserFilterRules();
+            }, DEFFER_TIMEOUT_MS);
         }
         saver.setSaved();
     }
@@ -596,10 +609,11 @@ const UserFilter = function () {
 
     exportUserFiltersBtn.addEventListener('click', function (event) {
         event.preventDefault();
+        const USER_FILTER_HASH = 'uf';
         if (exportUserFiltersBtn.classList.contains('disabled')) {
             return;
         }
-        contentPage.sendMessage({ type: 'openExportRulesTab', whitelist: false });
+        contentPage.sendMessage({ type: 'openExportRulesTab', hash: USER_FILTER_HASH });
     });
 
     return {

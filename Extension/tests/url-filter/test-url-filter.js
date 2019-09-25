@@ -840,3 +840,13 @@ QUnit.test('Non-basic "$frame" modifier', (assert) => {
     assert.notOk(rule.checkContentType(RequestTypes.DOCUMENT));
     assert.ok(rule.isFiltered('https://example.org/foo', false, RequestTypes.SUBDOCUMENT));
 });
+
+QUnit.test('$document modifier', (assert) => {
+    const { RequestTypes } = adguard;
+
+    const rule = new adguard.rules.UrlFilterRule('||example.org^$document');
+    assert.ok(rule.checkContentType(RequestTypes.DOCUMENT));
+    assert.ok(rule.isFiltered('https://example.org/foo', false, RequestTypes.DOCUMENT));
+    assert.ok(rule.isFiltered('https://example.org', false, RequestTypes.DOCUMENT));
+    assert.notOk(rule.isFiltered('https://example.org', false, RequestTypes.SCRIPT));
+});

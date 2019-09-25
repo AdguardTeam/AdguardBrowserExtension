@@ -683,7 +683,6 @@ QUnit.test('requestFilter.findRuleForRequest performance', function (assert) {
 
     var count = 50000;
     var startTime = new Date().getTime();
-    var results = [];
     for (var k = 0; k < count; k++) {
         requestFilter.findRuleForRequest(url, referrer, adguard.RequestTypes.SUBDOCUMENT);
     }
@@ -698,6 +697,20 @@ QUnit.test('requestFilter.findRuleForRequest performance', function (assert) {
 
     // Total: 84 ms
     // Average: 0.00168 ms
+});
+
+QUnit.test('$document modifier', (assert) => {
+    const rule = new adguard.rules.UrlFilterRule('||example.org^$document');
+
+    const requestFilter = new adguard.RequestFilter();
+
+    requestFilter.addRule(rule);
+
+    assert.ok(requestFilter.findRuleForRequest(
+        'https://example.org',
+        'https://example.org',
+        adguard.RequestTypes.DOCUMENT
+    ));
 });
 
 QUnit.test('redirect rules are removed with $badfilter modifier', (assert) => {
