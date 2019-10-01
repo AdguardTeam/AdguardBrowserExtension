@@ -391,6 +391,13 @@
             return null;
         }
 
+        // truncate too long urls
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1493
+        const MAX_URL_LENGTH = 16 * 1024;
+        if (elementUrl.length > MAX_URL_LENGTH) {
+            elementUrl = elementUrl.slice(0, MAX_URL_LENGTH);
+        }
+
         return elementUrl;
     };
 
