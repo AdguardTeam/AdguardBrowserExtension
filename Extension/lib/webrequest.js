@@ -63,7 +63,7 @@
         const tab = requestDetails.tab;
         const tabId = tab.tabId;
         const requestId = requestDetails.requestId;
-        const requestUrl = requestDetails.requestUrl;
+        let requestUrl = requestDetails.requestUrl;
         const originUrl = requestDetails.originUrl;
         const requestType = requestDetails.requestType;
         const frameId = requestDetails.frameId;
@@ -109,6 +109,13 @@
         }
 
         const referrerUrl = getReferrerUrl(requestDetails);
+
+        // truncate too long urls
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1493
+        const MAX_URL_LENGTH = 1024 * 16;
+        if (requestUrl.length > MAX_URL_LENGTH) {
+            requestUrl = requestUrl.slice(0, MAX_URL_LENGTH);
+        }
 
         // Record request for other types
         adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, originUrl, requestType, tab);
