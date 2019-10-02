@@ -457,6 +457,7 @@
                 throw 'Illegal regexp rule';
             }
 
+            // TODO [maximtop] fix RegExp instance never would be equal to string, add test
             if (UrlFilterRule.REGEXP_ANY_SYMBOL === regexp && !this.hasPermittedDomains()) {
                 // Rule matches everything and does not have any domain restriction
                 throw ("Too wide basic rule: " + urlRuleText);
@@ -505,7 +506,7 @@
     /**
      * $redirect modifier
      * Learn more about this modifier syntax here:
-     * TODO [maximtop] add link to the description
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1367
      *
      * @returns parsed $redirect modifier
      */
@@ -548,6 +549,20 @@
         }
 
         return this.urlRegExp;
+    };
+
+    /**
+     * Checks if rule has any url pattern
+     * @returns {boolean}
+     */
+    UrlFilterRule.prototype.isForAnyUrl = function () {
+        const regexpStr = this.getUrlRegExp().toString();
+        // TODO [maximtop] move to string utils
+        const BACK_SLASH = '/';
+        const firstIndex = regexpStr.indexOf(BACK_SLASH);
+        const secondIndex = regexpStr.indexOf(BACK_SLASH, firstIndex + 1);
+        const regexpExprStr = regexpStr.slice(firstIndex + 1, secondIndex);
+        return regexpExprStr === UrlFilterRule.REGEXP_ANY_SYMBOL;
     };
 
     /**

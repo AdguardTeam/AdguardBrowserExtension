@@ -30,7 +30,7 @@
      * @param badFilterRules      Link to the badFilterRules
      * @return {Boolean}          If rule should filter this request
      */
-    function isFiltered(rule, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules) {
+    function isFiltered(rule, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules, useDomainRestriction) {
         if (badFilterRules) {
             // if rule was converted we should lookup for converted rule text in the badFilterRules table
             if (rule.convertedRuleText && badFilterRules[rule.convertedRuleText]) {
@@ -38,6 +38,21 @@
             }
             if (badFilterRules[rule.ruleText]) {
                 return false;
+            }
+        }
+
+        if (useDomainRestriction) {
+            if (rule.isForAnyUrl()
+                && rule.hasPermittedDomains()
+                && (requestType === adguard.RequestTypes.DOCUMENT
+                    || requestType === adguard.RequestTypes.SUBDOCUMENT)) {
+
+                const referrerHost = adguard.utils.url.getHost(url);
+                const thirdParty = false;
+
+                return (genericRulesAllowed || !rule.isGeneric())
+                    && rule.isFiltered(url, thirdParty, requestType)
+                    && rule.isPermitted(referrerHost);
             }
         }
         return (genericRulesAllowed || !rule.isGeneric())
@@ -93,7 +108,7 @@
      * @param badFilterRules      Link to the bad rules
      * @return Collection of matching rules
      */
-    function filterRules(rules, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules) {
+    function filterRules(rules, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules, useDomainRestriction) {
         let result = null;
 
         if (requestType === adguard.RequestTypes.DOCUMENT) {
@@ -108,7 +123,8 @@
                         thirdParty,
                         requestType,
                         genericRulesAllowed,
-                        badFilterRules
+                        badFilterRules,
+                        useDomainRestriction,
                     )) {
                     if (!result) {
                         result = [];
@@ -127,7 +143,8 @@
                 thirdParty,
                 requestType,
                 genericRulesAllowed,
-                badFilterRules
+                badFilterRules,
+                useDomainRestriction
             )) {
                 if (!result) {
                     result = [];
@@ -148,8 +165,10 @@
      * @param requestType Request type
      * @param genericRulesAllowed If true - generic rules are allowed
      * @param badFilterRules Link to the badFilterRules
+     * @param {boolean} useDomainRestriction flag if rule should use domain
+     * restriction semantics - https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1474
      */
-    function findFirstRule(rules, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules) {
+    function findFirstRule(rules, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules, useDomainRestriction) {
         const matchingRules = filterRules(
             rules,
             url,
@@ -157,7 +176,8 @@
             thirdParty,
             requestType,
             genericRulesAllowed,
-            badFilterRules
+            badFilterRules,
+            useDomainRestriction
         );
 
         if (!matchingRules) {
@@ -177,8 +197,8 @@
      * @param genericRulesAllowed If true - generic rules are allowed
      * @param badFilterRules Link to the badFilterRules
      */
-    function findAllRules(rules, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules) {
-        return filterRules(rules, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules);
+    function findAllRules(rules, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules, useDomainRestriction) {
+        return filterRules(rules, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules, useDomainRestriction);
     }
 
     /**
@@ -250,6 +270,8 @@
                 return null;
             }
 
+            let useDomainRestriction = false;
+
             const urlLowerCase = url.toLowerCase();
             let matchedRules = [];
 
@@ -259,11 +281,23 @@
                 matchedRules = matchedRules.concat(rules);
             }
 
+            // if document host is null, get host from url
+            // thus we can find rules using domain restriction
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1474
+            if (documentHost === null) {
+                const urlHost = adguard.utils.url.getHost(url);
+                rules = this.domainsLookupTable.lookupRules(urlHost);
+                if (rules && rules.length > 0) {
+                    matchedRules = matchedRules.concat(rules);
+                }
+                useDomainRestriction = true;
+            }
             // Check against rules with domains
             rules = this.domainsLookupTable.lookupRules(documentHost);
             if (rules && rules.length > 0) {
                 matchedRules = matchedRules.concat(rules);
             }
+
 
             // Check against rules without shortcuts
             if (this.rulesWithoutShortcuts.length > 0) {
@@ -278,7 +312,8 @@
                     thirdParty,
                     requestType,
                     genericRulesAllowed,
-                    badFilterRules
+                    badFilterRules,
+                    useDomainRestriction
                 );
                 if (rule) {
                     return rule;
@@ -304,6 +339,7 @@
             }
 
             let allRules = [];
+            let useDomainRestriction = false;
 
             const urlLowerCase = url.toLowerCase();
             let rules = this.shortcutsLookupTable.lookupRules(urlLowerCase);
@@ -311,6 +347,17 @@
                 allRules = allRules.concat(rules);
             }
 
+            // if document host is null, get host from url
+            // thus we can find rules using domain restriction
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1474
+            if (documentHost === null) {
+                const urlHost = adguard.utils.url.getHost(url);
+                rules = this.domainsLookupTable.lookupRules(urlHost);
+                if (rules && rules.length > 0) {
+                    allRules = allRules.concat(rules);
+                }
+                useDomainRestriction = true;
+            }
             rules = this.domainsLookupTable.lookupRules(documentHost);
             if (rules) {
                 allRules = allRules.concat(rules);
@@ -319,7 +366,7 @@
             allRules = allRules.concat(this.rulesWithoutShortcuts);
 
             if (allRules && allRules.length > 0) {
-                return findAllRules(allRules, url, documentHost, thirdParty, requestType, true, badFilterRules);
+                return findAllRules(allRules, url, documentHost, thirdParty, requestType, true, badFilterRules, useDomainRestriction);
             }
 
             return null;
