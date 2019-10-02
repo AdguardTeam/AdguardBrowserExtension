@@ -1,6 +1,6 @@
 #
 #    AdGuard Scriptlets (Redirects Source)
-#    Version 1.0.4
+#    Version 1.0.10
 #
 - title: 1x1-transparent.gif
   aliases:
@@ -61,6 +61,14 @@
     - blank-text
   contentType: text/plain
   content: ''
+
+- title: noopvast-2.0
+  contentType: text/xml
+  content: <VAST version="2.0"></VAST>
+
+- title: noopvast-3.0
+  contentType: text/xml
+  content: <VAST version="3.0"></VAST>
 
 - title: noopmp3-0.1s
   aliases:
@@ -162,6 +170,7 @@
   comment: Fuckadblock 3.2.0 defuser
   aliases:
     - fuckadblock.js-3.2.0
+    - ubo-fuckadblock.js-3.2.0
   contentType: application/javascript
   content: |-
     (function(source, args){
@@ -202,20 +211,26 @@
           return;
         }
 
-        var log = console.log.bind(console);
-        var trace = console.trace.bind(console);
+        try {
+          var log = console.log.bind(console);
+          var trace = console.trace.bind(console);
 
-        if (message) {
-          log("".concat(source.ruleText, " message:\n").concat(message));
-        }
+          if (message) {
+            log("".concat(source.ruleText, " message:\n").concat(message));
+          }
 
-        log("".concat(source.ruleText, " trace start"));
+          log("".concat(source.ruleText, " trace start"));
 
-        if (trace) {
-          trace();
-        }
+          if (trace) {
+            trace();
+          }
 
-        log("".concat(source.ruleText, " trace end")); // This is necessary for unit-tests only!
+          log("".concat(source.ruleText, " trace end"));
+        } catch (e) {} // try catch for Edge 15
+        // In according to this issue https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/14495220/
+        // console.log throws an error
+        // This is necessary for unit-tests only!
+
 
         if (typeof window.__debugScriptlets === 'function') {
           window.__debugScriptlets(source);
@@ -230,6 +245,7 @@
   comment: Sets static properties PopAds and popns
   aliases:
     - popads-dummy.js
+    - ubo-popads-dummy.js
   contentType: application/javascript
   content: |-
     (function(source, args){
@@ -256,20 +272,26 @@
           return;
         }
 
-        var log = console.log.bind(console);
-        var trace = console.trace.bind(console);
+        try {
+          var log = console.log.bind(console);
+          var trace = console.trace.bind(console);
 
-        if (message) {
-          log("".concat(source.ruleText, " message:\n").concat(message));
-        }
+          if (message) {
+            log("".concat(source.ruleText, " message:\n").concat(message));
+          }
 
-        log("".concat(source.ruleText, " trace start"));
+          log("".concat(source.ruleText, " trace start"));
 
-        if (trace) {
-          trace();
-        }
+          if (trace) {
+            trace();
+          }
 
-        log("".concat(source.ruleText, " trace end")); // This is necessary for unit-tests only!
+          log("".concat(source.ruleText, " trace end"));
+        } catch (e) {} // try catch for Edge 15
+        // In according to this issue https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/14495220/
+        // console.log throws an error
+        // This is necessary for unit-tests only!
+
 
         if (typeof window.__debugScriptlets === 'function') {
           window.__debugScriptlets(source);
@@ -286,6 +308,7 @@
     id
   aliases:
     - popads.net.js
+    - ubo-popads.net.js
   contentType: application/javascript
   content: |-
     (function(source, args){
@@ -336,20 +359,26 @@
           return;
         }
 
-        var log = console.log.bind(console);
-        var trace = console.trace.bind(console);
+        try {
+          var log = console.log.bind(console);
+          var trace = console.trace.bind(console);
 
-        if (message) {
-          log("".concat(source.ruleText, " message:\n").concat(message));
-        }
+          if (message) {
+            log("".concat(source.ruleText, " message:\n").concat(message));
+          }
 
-        log("".concat(source.ruleText, " trace start"));
+          log("".concat(source.ruleText, " trace start"));
 
-        if (trace) {
-          trace();
-        }
+          if (trace) {
+            trace();
+          }
 
-        log("".concat(source.ruleText, " trace end")); // This is necessary for unit-tests only!
+          log("".concat(source.ruleText, " trace end"));
+        } catch (e) {} // try catch for Edge 15
+        // In according to this issue https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/14495220/
+        // console.log throws an error
+        // This is necessary for unit-tests only!
+
 
         if (typeof window.__debugScriptlets === 'function') {
           window.__debugScriptlets(source);
@@ -360,11 +389,13 @@
         
     })({"name":"prevent-popads-net"});
 
-- title: noeval.js
+- title: noeval
   comment: Prevents page to use eval.
   aliases:
+    - noeval.js
     - silent-noeval.js
-    - noeval
+    - ubo-noeval.js
+    - ubo-silent-noeval.js
   contentType: application/javascript
   content: |-
     (function(source, args){
@@ -378,20 +409,26 @@
           return;
         }
 
-        var log = console.log.bind(console);
-        var trace = console.trace.bind(console);
+        try {
+          var log = console.log.bind(console);
+          var trace = console.trace.bind(console);
 
-        if (message) {
-          log("".concat(source.ruleText, " message:\n").concat(message));
-        }
+          if (message) {
+            log("".concat(source.ruleText, " message:\n").concat(message));
+          }
 
-        log("".concat(source.ruleText, " trace start"));
+          log("".concat(source.ruleText, " trace start"));
 
-        if (trace) {
-          trace();
-        }
+          if (trace) {
+            trace();
+          }
 
-        log("".concat(source.ruleText, " trace end")); // This is necessary for unit-tests only!
+          log("".concat(source.ruleText, " trace end"));
+        } catch (e) {} // try catch for Edge 15
+        // In according to this issue https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/14495220/
+        // console.log throws an error
+        // This is necessary for unit-tests only!
+
 
         if (typeof window.__debugScriptlets === 'function') {
           window.__debugScriptlets(source);
@@ -400,4 +437,879 @@
             const updatedArgs = args ? [].concat(source).concat(args) : [source];
             noeval.apply(this, updatedArgs);
         
-    })({"name":"noeval.js"});
+    })({"name":"noeval"});
+
+- title: googlesyndication-adsbygoogle
+  comment: Mocks Google AdSense API
+  aliases:
+    - ubo-googlesyndication_adsbygoogle.js
+    - googlesyndication_adsbygoogle.js
+  contentType: application/javascript
+  content: |-
+    (function(source, args){
+    function GoogleSyndicationAdsByGoogle(source) {
+        window.adsbygoogle = window.adsbygoogle || {
+          length: 0,
+          loaded: true,
+          push: function push() {
+            this.length += 1;
+          }
+        };
+        var adElems = document.querySelectorAll('.adsbygoogle');
+        var css = 'height:1px!important;max-height:1px!important;max-width:1px!important;width:1px!important;';
+        var executed = false;
+
+        for (var i = 0; i < adElems.length; i += 1) {
+          var frame = document.createElement('iframe');
+          frame.id = "aswift_".concat(i + 1);
+          frame.style = css;
+          var childFrame = document.createElement('iframe');
+          childFrame.id = "google_ads_frame".concat(i);
+          frame.appendChild(childFrame);
+          document.body.appendChild(frame);
+          executed = true;
+        }
+
+        if (executed) {
+          hit(source);
+        }
+      }
+    function hit(source, message) {
+        if (source.verbose !== true) {
+          return;
+        }
+
+        try {
+          var log = console.log.bind(console);
+          var trace = console.trace.bind(console);
+
+          if (message) {
+            log("".concat(source.ruleText, " message:\n").concat(message));
+          }
+
+          log("".concat(source.ruleText, " trace start"));
+
+          if (trace) {
+            trace();
+          }
+
+          log("".concat(source.ruleText, " trace end"));
+        } catch (e) {} // try catch for Edge 15
+        // In according to this issue https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/14495220/
+        // console.log throws an error
+        // This is necessary for unit-tests only!
+
+
+        if (typeof window.__debugScriptlets === 'function') {
+          window.__debugScriptlets(source);
+        }
+      };
+            const updatedArgs = args ? [].concat(source).concat(args) : [source];
+            GoogleSyndicationAdsByGoogle.apply(this, updatedArgs);
+        
+    })({"name":"googlesyndication-adsbygoogle"});
+
+- title: googletagmanager-gtm
+  comment: Mocks Google Tag Manager API
+  aliases:
+    - ubo-googletagmanager_gtm.js
+    - googletagmanager_gtm.js
+  contentType: application/javascript
+  content: |-
+    (function(source, args){
+    function GoogleTagManagerGtm(source) {
+        window.ga = window.ga || noop;
+        var _window = window,
+            dataLayer = _window.dataLayer;
+
+        if (dataLayer instanceof Object === false) {
+          return;
+        }
+
+        if (dataLayer.hide instanceof Object && typeof dataLayer.hide.end === 'function') {
+          dataLayer.hide.end();
+        }
+
+        if (typeof dataLayer.push === 'function') {
+          dataLayer.push = function (data) {
+            if (data instanceof Object && typeof data.eventCallback === 'function') {
+              setTimeout(data.eventCallback, 1);
+            }
+          };
+        }
+
+        hit(source);
+      }
+    function hit(source, message) {
+        if (source.verbose !== true) {
+          return;
+        }
+
+        try {
+          var log = console.log.bind(console);
+          var trace = console.trace.bind(console);
+
+          if (message) {
+            log("".concat(source.ruleText, " message:\n").concat(message));
+          }
+
+          log("".concat(source.ruleText, " trace start"));
+
+          if (trace) {
+            trace();
+          }
+
+          log("".concat(source.ruleText, " trace end"));
+        } catch (e) {} // try catch for Edge 15
+        // In according to this issue https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/14495220/
+        // console.log throws an error
+        // This is necessary for unit-tests only!
+
+
+        if (typeof window.__debugScriptlets === 'function') {
+          window.__debugScriptlets(source);
+        }
+      }
+    function noop() {};
+            const updatedArgs = args ? [].concat(source).concat(args) : [source];
+            GoogleTagManagerGtm.apply(this, updatedArgs);
+        
+    })({"name":"googletagmanager-gtm"});
+
+- title: google-analytics
+  comment: Mocks Google Analytics API
+  aliases:
+    - ubo-google-analytics_analytics.js
+    - google-analytics_analytics.js
+  contentType: application/javascript
+  content: |-
+    (function(source, args){
+    function GoogleAnalytics(source) {
+        // eslint-disable-next-line func-names
+        var Tracker = function Tracker() {}; // constructor
+
+
+        var proto = Tracker.prototype;
+        proto.get = noop;
+        proto.set = noop;
+        proto.send = noop;
+        var googleAnalyticsName = window.GoogleAnalyticsObject || 'ga';
+
+        function ga() {
+          var len = arguments.length;
+
+          if (len === 0) {
+            return;
+          } // eslint-disable-next-line prefer-rest-params
+
+
+          var lastArg = arguments[len - 1];
+
+          if (typeof lastArg !== 'object' || lastArg === null || typeof lastArg.hitCallback !== 'function') {
+            return;
+          }
+
+          try {
+            lastArg.hitCallback(); // eslint-disable-next-line no-empty
+          } catch (ex) {}
+        }
+
+        ga.create = function () {
+          return new Tracker();
+        };
+
+        ga.getByName = noopNull;
+
+        ga.getAll = function () {
+          return [];
+        };
+
+        ga.remove = noop;
+        ga.loaded = true;
+        window[googleAnalyticsName] = ga;
+        var _window = window,
+            dataLayer = _window.dataLayer;
+
+        if (dataLayer instanceof Object && dataLayer.hide instanceof Object && typeof dataLayer.hide.end === 'function') {
+          dataLayer.hide.end();
+        }
+
+        hit(source);
+      }
+    function hit(source, message) {
+        if (source.verbose !== true) {
+          return;
+        }
+
+        try {
+          var log = console.log.bind(console);
+          var trace = console.trace.bind(console);
+
+          if (message) {
+            log("".concat(source.ruleText, " message:\n").concat(message));
+          }
+
+          log("".concat(source.ruleText, " trace start"));
+
+          if (trace) {
+            trace();
+          }
+
+          log("".concat(source.ruleText, " trace end"));
+        } catch (e) {} // try catch for Edge 15
+        // In according to this issue https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/14495220/
+        // console.log throws an error
+        // This is necessary for unit-tests only!
+
+
+        if (typeof window.__debugScriptlets === 'function') {
+          window.__debugScriptlets(source);
+        }
+      }
+    function noop() {}
+    function noopNull() {
+        return null;
+      };
+            const updatedArgs = args ? [].concat(source).concat(args) : [source];
+            GoogleAnalytics.apply(this, updatedArgs);
+        
+    })({"name":"google-analytics"});
+
+- title: scorecardresearch-beacon
+  comment: Mocks Scorecard Research API
+  aliases:
+    - ubo-scorecardresearch_beacon.js
+    - scorecardresearch_beacon.js
+  contentType: application/javascript
+  content: |-
+    (function(source, args){
+    function ScoreCardResearchBeacon(source) {
+        window.COMSCORE = {
+          purge: function purge() {
+            // eslint-disable-next-line no-underscore-dangle
+            window._comscore = [];
+          },
+          beacon: function beacon() {}
+        };
+        hit(source);
+      }
+    function hit(source, message) {
+        if (source.verbose !== true) {
+          return;
+        }
+
+        try {
+          var log = console.log.bind(console);
+          var trace = console.trace.bind(console);
+
+          if (message) {
+            log("".concat(source.ruleText, " message:\n").concat(message));
+          }
+
+          log("".concat(source.ruleText, " trace start"));
+
+          if (trace) {
+            trace();
+          }
+
+          log("".concat(source.ruleText, " trace end"));
+        } catch (e) {} // try catch for Edge 15
+        // In according to this issue https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/14495220/
+        // console.log throws an error
+        // This is necessary for unit-tests only!
+
+
+        if (typeof window.__debugScriptlets === 'function') {
+          window.__debugScriptlets(source);
+        }
+      };
+            const updatedArgs = args ? [].concat(source).concat(args) : [source];
+            ScoreCardResearchBeacon.apply(this, updatedArgs);
+        
+    })({"name":"scorecardresearch-beacon"});
+
+- title: google-analytics-ga
+  comment: Mocks old Google analytics library
+  aliases:
+    - ubo-google-analytics_ga.js
+    - google-analytics_ga.js
+  contentType: application/javascript
+  content: |-
+    (function(source, args){
+    function GoogleAnalyticsGa(source) {
+        // Gaq constructor
+        function Gaq() {}
+
+        Gaq.prototype.Na = noop;
+        Gaq.prototype.O = noop;
+        Gaq.prototype.Sa = noop;
+        Gaq.prototype.Ta = noop;
+        Gaq.prototype.Va = noop;
+        Gaq.prototype._createAsyncTracker = noop;
+        Gaq.prototype._getAsyncTracker = noop;
+        Gaq.prototype._getPlugin = noop;
+
+        Gaq.prototype.push = function (data) {
+          if (typeof data === 'function') {
+            data();
+            return;
+          }
+
+          if (Array.isArray(data) === false) {
+            return;
+          } // https://developers.google.com/analytics/devguides/collection/gajs/methods/gaJSApiDomainDirectory#_gat.GA_Tracker_._link
+
+
+          if (data[0] === '_link' && typeof data[1] === 'string') {
+            window.location.assign(data[1]);
+          } // https://github.com/gorhill/uBlock/issues/2162
+
+
+          if (data[0] === '_set' && data[1] === 'hitCallback' && typeof data[2] === 'function') {
+            data[2]();
+          }
+        };
+
+        var gaq = new Gaq();
+        var asyncTrackers = window._gaq || [];
+
+        if (Array.isArray(asyncTrackers)) {
+          while (asyncTrackers[0]) {
+            gaq.push(asyncTrackers.shift());
+          }
+        } // eslint-disable-next-line no-multi-assign
+
+
+        window._gaq = gaq.qf = gaq; // Gat constructor
+
+        function Gat() {} // Mock tracker api
+
+
+        var api = ['_addIgnoredOrganic', '_addIgnoredRef', '_addItem', '_addOrganic', '_addTrans', '_clearIgnoredOrganic', '_clearIgnoredRef', '_clearOrganic', '_cookiePathCopy', '_deleteCustomVar', '_getName', '_setAccount', '_getAccount', '_getClientInfo', '_getDetectFlash', '_getDetectTitle', '_getLinkerUrl', '_getLocalGifPath', '_getServiceMode', '_getVersion', '_getVisitorCustomVar', '_initData', '_link', '_linkByPost', '_setAllowAnchor', '_setAllowHash', '_setAllowLinker', '_setCampContentKey', '_setCampMediumKey', '_setCampNameKey', '_setCampNOKey', '_setCampSourceKey', '_setCampTermKey', '_setCampaignCookieTimeout', '_setCampaignTrack', '_setClientInfo', '_setCookiePath', '_setCookiePersistence', '_setCookieTimeout', '_setCustomVar', '_setDetectFlash', '_setDetectTitle', '_setDomainName', '_setLocalGifPath', '_setLocalRemoteServerMode', '_setLocalServerMode', '_setReferrerOverride', '_setRemoteServerMode', '_setSampleRate', '_setSessionTimeout', '_setSiteSpeedSampleRate', '_setSessionCookieTimeout', '_setVar', '_setVisitorCookieTimeout', '_trackEvent', '_trackPageLoadTime', '_trackPageview', '_trackSocial', '_trackTiming', '_trackTrans', '_visitCode'];
+        var tracker = api.reduce(function (res, funcName) {
+          res[funcName] = noop;
+          return res;
+        }, {});
+
+        tracker._getLinkerUrl = function (a) {
+          return a;
+        };
+
+        Gat.prototype._anonymizeIP = noop;
+        Gat.prototype._createTracker = noop;
+        Gat.prototype._forceSSL = noop;
+        Gat.prototype._getPlugin = noop;
+
+        Gat.prototype._getTracker = function () {
+          return tracker;
+        };
+
+        Gat.prototype._getTrackerByName = function () {
+          return tracker;
+        };
+
+        Gat.prototype._getTrackers = noop;
+        Gat.prototype.aa = noop;
+        Gat.prototype.ab = noop;
+        Gat.prototype.hb = noop;
+        Gat.prototype.la = noop;
+        Gat.prototype.oa = noop;
+        Gat.prototype.pa = noop;
+        Gat.prototype.u = noop;
+        var gat = new Gat();
+        window._gat = gat;
+        hit(source);
+      }
+    function hit(source, message) {
+        if (source.verbose !== true) {
+          return;
+        }
+
+        try {
+          var log = console.log.bind(console);
+          var trace = console.trace.bind(console);
+
+          if (message) {
+            log("".concat(source.ruleText, " message:\n").concat(message));
+          }
+
+          log("".concat(source.ruleText, " trace start"));
+
+          if (trace) {
+            trace();
+          }
+
+          log("".concat(source.ruleText, " trace end"));
+        } catch (e) {} // try catch for Edge 15
+        // In according to this issue https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/14495220/
+        // console.log throws an error
+        // This is necessary for unit-tests only!
+
+
+        if (typeof window.__debugScriptlets === 'function') {
+          window.__debugScriptlets(source);
+        }
+      }
+    function noop() {};
+            const updatedArgs = args ? [].concat(source).concat(args) : [source];
+            GoogleAnalyticsGa.apply(this, updatedArgs);
+        
+    })({"name":"google-analytics-ga"});
+
+- title: googletagservices-gpt
+  comment: Mocks Google Publisher Tag API
+  aliases:
+    - ubo-googletagservices_gpt.js
+    - googletagservices_gpt.js
+  contentType: application/javascript
+  content: |-
+    (function(source, args){
+    function GoogleTagServicesGpt(source) {
+        var companionAdsService = {
+          addEventListener: noopThis,
+          enableSyncLoading: noop,
+          setRefreshUnfilledSlots: noop
+        };
+        var contentService = {
+          addEventListener: noopThis,
+          setContent: noop
+        };
+
+        function PassbackSlot() {} // constructor
+
+
+        PassbackSlot.prototype.display = noop;
+        PassbackSlot.prototype.get = noopNull;
+        PassbackSlot.prototype.set = noopThis;
+        PassbackSlot.prototype.setClickUrl = noopThis;
+        PassbackSlot.prototype.setTagForChildDirectedTreatment = noopThis;
+        PassbackSlot.prototype.setTargeting = noopThis;
+        PassbackSlot.prototype.updateTargetingFromMap = noopThis;
+
+        function SizeMappingBuilder() {} // constructor
+
+
+        SizeMappingBuilder.prototype.addSize = noopThis;
+        SizeMappingBuilder.prototype.build = noopNull;
+
+        function Slot() {} // constructor
+
+
+        Slot.prototype.addService = noopThis;
+        Slot.prototype.clearCategoryExclusions = noopThis;
+        Slot.prototype.clearTargeting = noopThis;
+        Slot.prototype.defineSizeMapping = noopThis;
+        Slot.prototype.get = noopNull;
+        Slot.prototype.getAdUnitPath = noopArray;
+        Slot.prototype.getAttributeKeys = noopArray;
+        Slot.prototype.getCategoryExclusions = noopArray;
+        Slot.prototype.getDomId = noopStr;
+        Slot.prototype.getSlotElementId = noopStr;
+        Slot.prototype.getSlotId = noopThis;
+        Slot.prototype.getTargeting = noopArray;
+        Slot.prototype.getTargetingKeys = noopArray;
+        Slot.prototype.set = noopThis;
+        Slot.prototype.setCategoryExclusion = noopThis;
+        Slot.prototype.setClickUrl = noopThis;
+        Slot.prototype.setCollapseEmptyDiv = noopThis;
+        Slot.prototype.setTargeting = noopThis;
+        var pubAdsService = {
+          addEventListener: noopThis,
+          clear: noop,
+          clearCategoryExclusions: noopThis,
+          clearTagForChildDirectedTreatment: noopThis,
+          clearTargeting: noopThis,
+          collapseEmptyDivs: noop,
+          defineOutOfPagePassback: function defineOutOfPagePassback() {
+            return new PassbackSlot();
+          },
+          definePassback: function definePassback() {
+            return new PassbackSlot();
+          },
+          disableInitialLoad: noop,
+          display: noop,
+          enableAsyncRendering: noop,
+          enableSingleRequest: noop,
+          enableSyncRendering: noop,
+          enableVideoAds: noop,
+          get: noopNull,
+          getAttributeKeys: noopArray,
+          getTargeting: noop,
+          getTargetingKeys: noopArray,
+          getSlots: noopArray,
+          refresh: noop,
+          set: noopThis,
+          setCategoryExclusion: noopThis,
+          setCentering: noop,
+          setCookieOptions: noopThis,
+          setForceSafeFrame: noopThis,
+          setLocation: noopThis,
+          setPublisherProvidedId: noopThis,
+          setRequestNonPersonalizedAds: noopThis,
+          setSafeFrameConfig: noopThis,
+          setTagForChildDirectedTreatment: noopThis,
+          setTargeting: noopThis,
+          setVideoContent: noopThis,
+          updateCorrelator: noop
+        };
+        var _window = window,
+            _window$googletag = _window.googletag,
+            googletag = _window$googletag === void 0 ? {} : _window$googletag;
+        var _googletag$cmd = googletag.cmd,
+            cmd = _googletag$cmd === void 0 ? [] : _googletag$cmd;
+        googletag.apiReady = true;
+        googletag.cmd = [];
+
+        googletag.cmd.push = function (a) {
+          try {
+            a(); // eslint-disable-next-line no-empty
+          } catch (ex) {}
+
+          return 1;
+        };
+
+        googletag.companionAds = function () {
+          return companionAdsService;
+        };
+
+        googletag.content = function () {
+          return contentService;
+        };
+
+        googletag.defineOutOfPageSlot = function () {
+          return new Slot();
+        };
+
+        googletag.defineSlot = function () {
+          return new Slot();
+        };
+
+        googletag.destroySlots = noop;
+        googletag.disablePublisherConsole = noop;
+        googletag.display = noop;
+        googletag.enableServices = noop;
+        googletag.getVersion = noopStr;
+
+        googletag.pubads = function () {
+          return pubAdsService;
+        };
+
+        googletag.pubadsReady = true;
+        googletag.setAdIframeTitle = noop;
+
+        googletag.sizeMapping = function () {
+          return new SizeMappingBuilder();
+        };
+
+        window.googletag = googletag;
+
+        while (cmd.length !== 0) {
+          googletag.cmd.push(cmd.shift());
+        }
+
+        hit(source);
+      }
+    function hit(source, message) {
+        if (source.verbose !== true) {
+          return;
+        }
+
+        try {
+          var log = console.log.bind(console);
+          var trace = console.trace.bind(console);
+
+          if (message) {
+            log("".concat(source.ruleText, " message:\n").concat(message));
+          }
+
+          log("".concat(source.ruleText, " trace start"));
+
+          if (trace) {
+            trace();
+          }
+
+          log("".concat(source.ruleText, " trace end"));
+        } catch (e) {} // try catch for Edge 15
+        // In according to this issue https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/14495220/
+        // console.log throws an error
+        // This is necessary for unit-tests only!
+
+
+        if (typeof window.__debugScriptlets === 'function') {
+          window.__debugScriptlets(source);
+        }
+      }
+    function noop() {}
+    function noopThis() {
+        return this;
+      }
+    function noopNull() {
+        return null;
+      }
+    function noopArray() {
+        return [];
+      }
+    function noopStr() {
+        return '';
+      };
+            const updatedArgs = args ? [].concat(source).concat(args) : [source];
+            GoogleTagServicesGpt.apply(this, updatedArgs);
+        
+    })({"name":"googletagservices-gpt"});
+
+- title: metrika-yandex-watch
+  comment: Mocks the old Yandex Metrika API
+  aliases: []
+  contentType: application/javascript
+  content: |-
+    (function(source, args){
+    function metrikaYandexWatch(source) {
+        var cbName = 'yandex_metrika_callbacks';
+        /**
+         * Gets callback and its context from options and call it in async way
+         * @param {Object} options Yandex Metrika API options
+         */
+
+        var asyncCallbackFromOptions = function asyncCallbackFromOptions() {
+          var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+          var callback = options.callback;
+          var ctx = options.ctx;
+
+          if (typeof callback === 'function') {
+            callback = ctx !== undefined ? callback.bind(ctx) : callback;
+            setTimeout(function () {
+              return callback();
+            });
+          }
+        };
+
+        function Metrika() {} // constructor
+        // Methods without options
+
+
+        Metrika.prototype.addFileExtension = noop;
+        Metrika.prototype.getClientID = noop;
+        Metrika.prototype.setUserID = noop;
+        Metrika.prototype.userParams = noop; // Methods with options
+        // The order of arguments should be kept in according to API
+
+        Metrika.prototype.extLink = function (url, options) {
+          asyncCallbackFromOptions(options);
+        };
+
+        Metrika.prototype.file = function (url, options) {
+          asyncCallbackFromOptions(options);
+        };
+
+        Metrika.prototype.hit = function (url, options) {
+          asyncCallbackFromOptions(options);
+        };
+
+        Metrika.prototype.reachGoal = function (target, params, cb, ctx) {
+          asyncCallbackFromOptions({
+            callback: cb,
+            ctx: ctx
+          });
+        };
+
+        Metrika.prototype.notBounce = asyncCallbackFromOptions;
+
+        if (window.Ya) {
+          window.Ya.Metrika = Metrika;
+        } else {
+          window.Ya = {
+            Metrika: Metrika
+          };
+        }
+
+        if (window[cbName] && Array.isArray(window[cbName])) {
+          window[cbName].forEach(function (func) {
+            if (typeof func === 'function') {
+              func();
+            }
+          });
+        }
+
+        hit(source);
+      }
+    function hit(source, message) {
+        if (source.verbose !== true) {
+          return;
+        }
+
+        try {
+          var log = console.log.bind(console);
+          var trace = console.trace.bind(console);
+
+          if (message) {
+            log("".concat(source.ruleText, " message:\n").concat(message));
+          }
+
+          log("".concat(source.ruleText, " trace start"));
+
+          if (trace) {
+            trace();
+          }
+
+          log("".concat(source.ruleText, " trace end"));
+        } catch (e) {} // try catch for Edge 15
+        // In according to this issue https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/14495220/
+        // console.log throws an error
+        // This is necessary for unit-tests only!
+
+
+        if (typeof window.__debugScriptlets === 'function') {
+          window.__debugScriptlets(source);
+        }
+      }
+    function noop() {};
+            const updatedArgs = args ? [].concat(source).concat(args) : [source];
+            metrikaYandexWatch.apply(this, updatedArgs);
+        
+    })({"name":"metrika-yandex-watch"});
+
+- title: metrika-yandex-tag
+  comment: Mocks Yandex Metrika API
+  aliases: []
+  contentType: application/javascript
+  content: |-
+    (function(source, args){
+    function metrikaYandexTag(source) {
+        var asyncCallbackFromOptions = function asyncCallbackFromOptions(param) {
+          var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+          var callback = options.callback;
+          var ctx = options.ctx;
+
+          if (typeof callback === 'function') {
+            callback = ctx !== undefined ? callback.bind(ctx) : callback;
+            setTimeout(function () {
+              return callback();
+            });
+          }
+        };
+
+        var init = noop;
+        /**
+         * https://yandex.ru/support/metrica/objects/addfileextension.html
+         */
+
+        var addFileExtension = noop;
+        /**
+         * https://yandex.ru/support/metrica/objects/extlink.html
+         */
+
+        var extLink = asyncCallbackFromOptions;
+        /**
+         * https://yandex.ru/support/metrica/objects/file.html
+         */
+
+        var file = asyncCallbackFromOptions;
+        /**
+         * https://yandex.ru/support/metrica/objects/get-client-id.html
+         * @param {Function} cb
+         */
+
+        var getClientID = function getClientID(cb) {
+          setTimeout(cb(null));
+        };
+        /**
+         * https://yandex.ru/support/metrica/objects/hit.html
+         */
+
+
+        var hitFunc = asyncCallbackFromOptions;
+        /**
+         * https://yandex.ru/support/metrica/objects/notbounce.html
+         */
+
+        var notBounce = asyncCallbackFromOptions;
+        /**
+         * https://yandex.ru/support/metrica/objects/params-method.html
+         */
+
+        var params = noop;
+        /**
+         * https://yandex.ru/support/metrica/objects/reachgoal.html
+         * @param {string} target
+         * @param {Object} params
+         * @param {Function} callback
+         * @param {any} ctx
+         */
+
+        var reachGoal = function reachGoal(target, params, callback, ctx) {
+          asyncCallbackFromOptions(null, {
+            callback: callback,
+            ctx: ctx
+          });
+        };
+        /**
+         * https://yandex.ru/support/metrica/objects/set-user-id.html
+         */
+
+
+        var setUserID = noop;
+        /**
+         * https://yandex.ru/support/metrica/objects/user-params.html
+         */
+
+        var userParams = noop;
+        var api = {
+          init: init,
+          addFileExtension: addFileExtension,
+          extLink: extLink,
+          file: file,
+          getClientID: getClientID,
+          hit: hitFunc,
+          notBounce: notBounce,
+          params: params,
+          reachGoal: reachGoal,
+          setUserID: setUserID,
+          userParams: userParams
+        };
+
+        function ym(id, funcName) {
+          for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+            args[_key - 2] = arguments[_key];
+          }
+
+          return api[funcName] && api[funcName].apply(api, args);
+        }
+
+        window.ym = ym;
+        hit(source);
+      }
+    function hit(source, message) {
+        if (source.verbose !== true) {
+          return;
+        }
+
+        try {
+          var log = console.log.bind(console);
+          var trace = console.trace.bind(console);
+
+          if (message) {
+            log("".concat(source.ruleText, " message:\n").concat(message));
+          }
+
+          log("".concat(source.ruleText, " trace start"));
+
+          if (trace) {
+            trace();
+          }
+
+          log("".concat(source.ruleText, " trace end"));
+        } catch (e) {} // try catch for Edge 15
+        // In according to this issue https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/14495220/
+        // console.log throws an error
+        // This is necessary for unit-tests only!
+
+
+        if (typeof window.__debugScriptlets === 'function') {
+          window.__debugScriptlets(source);
+        }
+      }
+    function noop() {};
+            const updatedArgs = args ? [].concat(source).concat(args) : [source];
+            metrikaYandexTag.apply(this, updatedArgs);
+        
+    })({"name":"metrika-yandex-tag"});
