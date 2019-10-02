@@ -741,3 +741,27 @@ QUnit.test('redirect rules are removed with $badfilter modifier', (assert) => {
     );
     assert.notOk(result, 'rule should be blocked by badfilter rule');
 });
+
+QUnit.test('domain restriction semantic', (assert) => {
+    const url = 'https://example.org/';
+    const referrer = null;
+
+    const cspRule = new adguard.rules.UrlFilterRule('$domain=example.org,csp=script-src \'none\'');
+    const cookieRule = new adguard.rules.UrlFilterRule('$cookie=test,domain=example.org');
+
+    const requestFilter = new adguard.RequestFilter();
+    requestFilter.addRules([cspRule, cookieRule]);
+
+    const cspResultDocument = requestFilter.findCspRules(url, referrer, adguard.RequestTypes.DOCUMENT);
+    console.log(cspResultDocument);
+    assert.equal(cspResultDocument.length, 1);
+    assert.equal(cspResultDocument[0].ruleText, cspRule.ruleText);
+
+    const cspResultSubDocument = requestFilter.findCspRules(url, referrer, adguard.RequestTypes.SUBDOCUMENT);
+    assert.equal(cspResultSubDocument.length, 1);
+    assert.equal(cspResultSubDocument[0].ruleText, cspRule.ruleText);
+
+    const cookieResult = requestFilter.findCookieRules(url, referrer, adguard.RequestTypes.DOCUMENT);
+    assert.equal(cookieResult.length, 1);
+    assert.equal(cookieResult[0].ruleText, cookieRule.ruleText);
+});
