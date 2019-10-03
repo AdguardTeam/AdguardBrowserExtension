@@ -314,9 +314,9 @@ QUnit.test('Test UrlFilterRule Matching Everything', (assert) => {
     rule = new adguard.rules.UrlFilterRule('$domain=example.org');
     assert.ok(rule.isFiltered('http://test.com', true, RequestTypes.SUBDOCUMENT));
 
-    rule = new adguard.rules.UrlFilterRule('*$websocket');
-    // Rule is too wide, it will be considered invalid
-    assert.notOk(rule.isFiltered('http://test.com', true, RequestTypes.SUBDOCUMENT));
+    assert.throws(() => {
+        rule = new adguard.rules.UrlFilterRule('*$websocket');
+    }, /Too wide basic rule/, 'should throw error');
 });
 
 QUnit.test('Test UrlFilterRule Matching Any Url', (assert) => {
@@ -384,6 +384,14 @@ QUnit.test('Test UrlFilterRule Matching Any Url', (assert) => {
     assert.equal(1, rule.getPermittedDomains().length);
     assert.notOk(rule.shortcut);
     assert.ok(rule.isFiltered('http://example.com', true, adguard.RequestTypes.SCRIPT));
+});
+
+QUnit.test('Test UrlFilterRule Matching Any Url without permitted domain throws error', (assert) => {
+    const ruleText = '*$important';
+    assert.throws(() => {
+        // eslint-disable-next-line no-unused-vars
+        const rule = new adguard.rules.UrlFilterRule(ruleText);
+    }, /Too wide basic rule:/, 'throws error');
 });
 
 QUnit.test('Important modifier rules', (assert) => {
@@ -580,7 +588,7 @@ QUnit.test('testReplaceRegexpRule', (assert) => {
     // https://github.com/AdguardTeam/AdguardForAndroid/issues/1027
     const input = 'http://test.ru/hello/bug/test';
     const expected = 'http://test.ru/bug/bug/test';
-    const ruleText = '/.*/$replace=/hello/bug/';
+    const ruleText = '/.*/$replace=/hello/bug/,domain=example.org';
 
     const rule = new adguard.rules.UrlFilterRule(ruleText);
 

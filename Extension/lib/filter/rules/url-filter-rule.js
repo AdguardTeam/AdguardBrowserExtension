@@ -454,13 +454,16 @@
             // Pre compile regex rules
             var regexp = this.getUrlRegExp();
             if (!regexp) {
-                throw 'Illegal regexp rule';
+                throw Error('Illegal regexp rule');
             }
 
-            // TODO [maximtop] fix RegExp instance never would be equal to string, add test
-            if (UrlFilterRule.REGEXP_ANY_SYMBOL === regexp && !this.hasPermittedDomains()) {
+            const regexpInner = adguard.utils.strings.getBetween(regexp.toString(), '/', '/');
+
+            // Except cookie rules, they have their own atmosphere
+            if (!this.isCookieRule()
+                && UrlFilterRule.REGEXP_ANY_SYMBOL === regexpInner && !this.hasPermittedDomains()) {
                 // Rule matches everything and does not have any domain restriction
-                throw ("Too wide basic rule: " + urlRuleText);
+                throw Error(`Too wide basic rule: ${urlRuleText}`);
             }
 
             // Extract shortcut from regexp rule
@@ -552,17 +555,16 @@
     };
 
     /**
-     * Checks if rule has any url pattern
+     * Lazy check if rule has ANY_SYMBOL url pattern
      * @returns {boolean}
      */
-    UrlFilterRule.prototype.isForAnyUrl = function () {
-        const regexpStr = this.getUrlRegExp().toString();
-        // TODO [maximtop] move to string utils
-        const BACK_SLASH = '/';
-        const firstIndex = regexpStr.indexOf(BACK_SLASH);
-        const secondIndex = regexpStr.indexOf(BACK_SLASH, firstIndex + 1);
-        const regexpExprStr = regexpStr.slice(firstIndex + 1, secondIndex);
-        return regexpExprStr === UrlFilterRule.REGEXP_ANY_SYMBOL;
+    UrlFilterRule.prototype.getIsForAnyUrl = function () {
+        if (!this.isForAnyUrl) {
+            const regexpStr = this.getUrlRegExp().toString();
+            const regexpExprStr = adguard.utils.strings.getBetween(regexpStr, '/', '/');
+            this.isForAnyUrl = regexpExprStr === UrlFilterRule.REGEXP_ANY_SYMBOL;
+        }
+        return this.isForAnyUrl;
     };
 
     /**
