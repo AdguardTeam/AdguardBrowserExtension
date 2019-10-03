@@ -1,7 +1,7 @@
 
 /**
  * AdGuard Scriptlets
- * Version 1.0.4
+ * Version 1.0.10
  */
 
 (function () {
@@ -129,6 +129,34 @@
      * Noop function
      */
     var noop = function noop() {};
+    /**
+     * Function returns null
+     */
+
+    var noopNull = function noopNull() {
+      return null;
+    };
+    /**
+     * Function returns this
+     */
+
+    function noopThis() {
+      return this;
+    }
+    /**
+     * Function returns empty array
+     */
+
+    var noopArray = function noopArray() {
+      return [];
+    };
+    /**
+     * Function returns empty string
+     */
+
+    var noopStr = function noopStr() {
+      return '';
+    };
 
     /* eslint-disable no-console, no-underscore-dangle */
 
@@ -142,20 +170,26 @@
         return;
       }
 
-      var log = console.log.bind(console);
-      var trace = console.trace.bind(console);
+      try {
+        var log = console.log.bind(console);
+        var trace = console.trace.bind(console);
 
-      if (message) {
-        log("".concat(source.ruleText, " message:\n").concat(message));
-      }
+        if (message) {
+          log("".concat(source.ruleText, " message:\n").concat(message));
+        }
 
-      log("".concat(source.ruleText, " trace start"));
+        log("".concat(source.ruleText, " trace start"));
 
-      if (trace) {
-        trace();
-      }
+        if (trace) {
+          trace();
+        }
 
-      log("".concat(source.ruleText, " trace end")); // This is necessary for unit-tests only!
+        log("".concat(source.ruleText, " trace end"));
+      } catch (e) {} // try catch for Edge 15
+      // In according to this issue https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/14495220/
+      // console.log throws an error
+      // This is necessary for unit-tests only!
+
 
       if (typeof window.__debugScriptlets === 'function') {
         window.__debugScriptlets(source);
@@ -174,11 +208,21 @@
         toRegExp: toRegExp,
         createOnErrorHandler: createOnErrorHandler,
         noop: noop,
+        noopNull: noopNull,
+        noopThis: noopThis,
+        noopArray: noopArray,
+        noopStr: noopStr,
         hit: hit
     });
 
     /**
      * Abort property reading even if it doesn't exist in execution moment
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#abort-on-property-readjs-
+     *
+     * Related ABP source:
+     * https://github.com/adblockplus/adblockpluscore/blob/6b2a309054cc23432102b85d13f12559639ef495/lib/content/snippets.js#L864
      *
      * @param {Source} source
      * @param {string} property property name
@@ -229,11 +273,17 @@
       setChainPropAccess(window, property);
       window.onerror = createOnErrorHandler(rid).bind();
     }
-    abortOnPropertyRead.names = ['abort-on-property-read', 'ubo-abort-on-property-read.js', 'abp-abort-on-property-read'];
+    abortOnPropertyRead.names = ['abort-on-property-read', 'abort-on-property-read.js', 'ubo-abort-on-property-read.js', 'abp-abort-on-property-read'];
     abortOnPropertyRead.injections = [randomId, setPropertyAccess, getPropertyInChain, createOnErrorHandler, hit];
 
     /**
      * Abort property writing
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#abort-on-property-writejs-
+     *
+     * Related ABP source:
+     * https://github.com/adblockplus/adblockpluscore/blob/6b2a309054cc23432102b85d13f12559639ef495/lib/content/snippets.js#L896
      *
      * @param {Source} source
      * @param {string} property propery name
@@ -283,12 +333,15 @@
       setChainPropAccess(window, property);
       window.onerror = createOnErrorHandler(rid).bind();
     }
-    abortOnPropertyWrite.names = ['abort-on-property-write', 'ubo-abort-on-property-write.js', 'abp-abort-on-property-write'];
+    abortOnPropertyWrite.names = ['abort-on-property-write', 'abort-on-property-write.js', 'ubo-abort-on-property-write.js', 'abp-abort-on-property-write'];
     abortOnPropertyWrite.injections = [randomId, setPropertyAccess, getPropertyInChain, createOnErrorHandler, hit];
 
     /**
      * Prevent calls to setTimeout for specified matching in passed callback and delay
      * by setting callback to empty function
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#settimeout-defuserjs-
      *
      * @param {Source} source
      * @param {string|RegExp} match matching in string of callback function
@@ -318,12 +371,15 @@
 
       window.setTimeout = timeoutWrapper;
     }
-    preventSetTimeout.names = ['prevent-setTimeout', 'ubo-setTimeout-defuser.js'];
+    preventSetTimeout.names = ['prevent-setTimeout', 'setTimeout-defuser.js', 'ubo-setTimeout-defuser.js'];
     preventSetTimeout.injections = [toRegExp, hit];
 
     /**
      * Prevent calls to setInterval for specified matching in passed callback and delay
      * by setting callback to empty function
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#setinterval-defuserjs-
      *
      * @param {Source} source
      * @param {string|RegExp} match matching in string of callback function
@@ -353,11 +409,15 @@
 
       window.setInterval = intervalWrapper;
     }
-    preventSetInterval.names = ['prevent-setInterval', 'ubo-setInterval-defuser.js'];
+    preventSetInterval.names = ['prevent-setInterval', 'setInterval-defuser.js', 'ubo-setInterval-defuser.js'];
     preventSetInterval.injections = [toRegExp, hit];
 
     /**
      * Prevent calls `window.open` when URL match or not match with passed params
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#windowopen-defuserjs-
+     *
      * @param {Source} source
      * @param {number|string} [inverse] inverse matching
      * @param {string} [match] matching with URL
@@ -382,10 +442,26 @@
 
       window.open = openWrapper;
     }
-    preventWindowOpen.names = ['prevent-window-open', 'ubo-window.open-defuser.js'];
+    preventWindowOpen.names = ['prevent-window-open', 'window.open-defuser.js', 'ubo-window.open-defuser.js'];
     preventWindowOpen.injections = [toRegExp, hit];
 
     /* eslint-disable no-new-func */
+    /**
+     * Aborts an inline script when it attempts to **read** the specified property
+     * AND when the contents of the `<script>` element contains the specified
+     * text or matches the regular expression.
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#abort-current-inline-scriptjs-
+     *
+     * Related ABP source:
+     * https://github.com/adblockplus/adblockpluscore/blob/6b2a309054cc23432102b85d13f12559639ef495/lib/content/snippets.js#L928
+     *
+     * @param {Source} source
+     * @param {string} property path to a property
+     * @param {string} search must match the inline script contents
+     */
+
     function abortCurrentInlineScript(source, property) {
       var search = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
       var regex = search ? toRegExp(search) : null;
@@ -405,8 +481,14 @@
 
       var abort = function abort() {
         var scriptEl = getCurrentScript();
+        var content = scriptEl.textContent;
 
-        if (scriptEl instanceof HTMLScriptElement && scriptEl.textContent.length > 0 && scriptEl !== ourScript && (!regex || regex.test(scriptEl.textContent))) {
+        try {
+          var textContentGetter = Object.getOwnPropertyDescriptor(Node.prototype, 'textContent').get;
+          content = textContentGetter.call(scriptEl); // eslint-disable-next-line no-empty
+        } catch (e) {}
+
+        if (scriptEl instanceof HTMLScriptElement && content.length > 0 && scriptEl !== ourScript && (!regex || regex.test(scriptEl.textContent))) {
           hit(source);
           throw new ReferenceError(rid);
         }
@@ -452,8 +534,19 @@
       setChainPropAccess(window, property);
       window.onerror = createOnErrorHandler(rid).bind();
     }
-    abortCurrentInlineScript.names = ['abort-current-inline-script', 'ubo-abort-current-inline-script.js', 'abp-abort-current-inline-script'];
+    abortCurrentInlineScript.names = ['abort-current-inline-script', 'abort-current-inline-script.js', 'ubo-abort-current-inline-script.js', 'abp-abort-current-inline-script'];
     abortCurrentInlineScript.injections = [randomId, setPropertyAccess, getPropertyInChain, toRegExp, createOnErrorHandler, hit];
+
+    /**
+     * Creates a constant property and assigns it one of the values from the predefined list.
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#set-constantjs-
+     *
+     * @param {Source} source
+     * @param {string} property path to a property
+     * @param {string} value
+     */
 
     function setConstant(source, property, value) {
       if (!property) {
@@ -552,12 +645,16 @@
 
       setChainPropAccess(window, property);
     }
-    setConstant.names = ['set-constant', 'ubo-set-constant.js'];
+    setConstant.names = ['set-constant', 'set-constant.js', 'ubo-set-constant.js'];
     setConstant.injections = [getPropertyInChain, setPropertyAccess, hit];
 
     /**
      * Removes current page cookies specified by name.
      * For current domain, subdomains on load and before unload.
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#cookie-removerjs-
+     *
      * @param {Source} source
      * @param {string} match string for matching with cookie name
      */
@@ -596,7 +693,7 @@
 
           var hostParts = document.location.hostname.split('.');
 
-          for (var i = 0; i < hostParts.length - 1; i += 1) {
+          for (var i = 0; i <= hostParts.length - 1; i += 1) {
             var hostName = hostParts.slice(i).join('.');
 
             if (hostName) {
@@ -609,11 +706,14 @@
       rmCookie();
       window.addEventListener('beforeunload', rmCookie);
     }
-    removeCookie.names = ['remove-cookie', 'ubo-cookie-remover.js'];
+    removeCookie.names = ['remove-cookie', 'cookie-remover.js', 'ubo-cookie-remover.js'];
     removeCookie.injections = [toRegExp, hit];
 
     /**
      * Prevents adding event listeners
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#addeventlistener-defuserjs-
      *
      * @param {Source} source
      * @param {string|RegExp} [event] - event name or regexp matching event name
@@ -640,12 +740,15 @@
 
       window.EventTarget.prototype.addEventListener = addEventListenerWrapper;
     }
-    preventAddEventListener.names = ['prevent-addEventListener', 'ubo-addEventListener-defuser.js'];
+    preventAddEventListener.names = ['prevent-addEventListener', 'addEventListener-defuser.js', 'ubo-addEventListener-defuser.js'];
     preventAddEventListener.injections = [toRegExp, hit];
 
     /* eslint-disable consistent-return, no-eval */
     /**
      * Prevents BlockAdblock
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#bab-defuserjs-
      *
      * @param {Source} source
      */
@@ -713,12 +816,15 @@
         }
       };
     }
-    preventBab.names = ['prevent-bab', 'ubo-bab-defuser.js'];
+    preventBab.names = ['prevent-bab', 'bab-defuser.js', 'ubo-bab-defuser.js'];
     preventBab.injections = [hit];
 
     /* eslint-disable no-unused-vars, no-extra-bind, func-names */
     /**
      * Disables WebRTC via blocking calls to the RTCPeerConnection()
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#nowebrtcjs-
      *
      * @param {Source} source
      */
@@ -760,12 +866,15 @@
         }.bind(null);
       }
     }
-    nowebrtc.names = ['nowebrtc', 'ubo-nowebrtc.js'];
+    nowebrtc.names = ['nowebrtc', 'nowebrtc.js', 'ubo-nowebrtc.js'];
     nowebrtc.injections = [hit];
 
     /* eslint-disable no-console */
     /**
      * Logs add event listener calls
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#addeventlistener-loggerjs-
      *
      * @param {Source} source
      */
@@ -787,12 +896,15 @@
 
       window.EventTarget.prototype.addEventListener = addEventListenerWrapper;
     }
-    logAddEventListener.names = ['log-addEventListener', 'addEventListener-logger.js'];
+    logAddEventListener.names = ['log-addEventListener', 'addEventListener-logger.js', 'ubo-addEventListener-logger.js'];
     logAddEventListener.injections = [hit];
 
     /* eslint-disable no-console */
     /**
      * Logs setInterval calls
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#setinterval-loggerjs-
      *
      * @param {Source} source
      */
@@ -814,12 +926,15 @@
 
       window.setInterval = setIntervalWrapper;
     }
-    logSetInterval.names = ['log-setInterval', 'setInterval-logger.js'];
+    logSetInterval.names = ['log-setInterval', 'setInterval-logger.js', 'ubo-setInterval-logger.js'];
     logSetInterval.injections = [hit];
 
     /* eslint-disable no-console */
     /**
      * Logs setTimeout calls
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#settimeout-loggerjs-
      *
      * @param {Source} source
      */
@@ -841,7 +956,7 @@
 
       window.setTimeout = setTimeoutWrapper;
     }
-    logSetTimeout.names = ['log-setTimeout', 'setTimeout-logger.js'];
+    logSetTimeout.names = ['log-setTimeout', 'setTimeout-logger.js', 'ubo-setTimeout-logger.js'];
     logSetTimeout.injections = [hit];
 
     /* eslint-disable no-console, no-eval */
@@ -901,6 +1016,11 @@
     /**
      * Prevents page to use eval.
      * Notifies about attempts in the console
+     *
+     * Related UBO scriptlets:
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#noevaljs-
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#silent-noevaljs-
+     *
      * @param {Source} source
      */
 
@@ -909,12 +1029,16 @@
         hit(source, "AdGuard has prevented eval:\n".concat(s));
       }.bind();
     }
-    noeval.names = ['noeval.js', 'silent-noeval.js', 'noeval'];
+    noeval.names = ['noeval', 'noeval.js', 'silent-noeval.js', 'ubo-noeval.js', 'ubo-silent-noeval.js'];
     noeval.injections = [hit];
 
     /* eslint-disable no-eval, no-extra-bind, func-names */
     /**
      * Prevents page to use eval matching payload
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#noeval-ifjs-
+     *
      * @param {Source} source
      * @param {string|RegExp} [search] string or regexp matching stringified eval payload
      */
@@ -932,12 +1056,15 @@
         return undefined;
       }.bind(window);
     }
-    preventEvalIf.names = ['noeval-if.js', 'prevent-eval-if'];
+    preventEvalIf.names = ['prevent-eval-if', 'noeval-if.js', 'ubo-noeval-if.js'];
     preventEvalIf.injections = [toRegExp, hit];
 
     /* eslint-disable no-console, func-names, no-multi-assign */
     /**
      * Fuckadblock 3.2.0 defuser
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#fuckadblockjs-320-
      *
      * @param {Source} source
      */
@@ -973,12 +1100,15 @@
 
       window.fuckAdBlock = window.blockAdBlock = new Fab();
     }
-    preventFab.names = ['prevent-fab-3.2.0', 'fuckadblock.js-3.2.0'];
+    preventFab.names = ['prevent-fab-3.2.0', 'fuckadblock.js-3.2.0', 'ubo-fuckadblock.js-3.2.0'];
     preventFab.injections = [noop, hit];
 
     /* eslint-disable no-console, func-names, no-multi-assign */
     /**
      * Sets static properties PopAds and popns.
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#popads-dummyjs-
      *
      * @param {Source} source
      */
@@ -1001,11 +1131,14 @@
         }
       });
     }
-    setPopadsDummy.names = ['set-popads-dummy', 'popads-dummy.js'];
+    setPopadsDummy.names = ['set-popads-dummy', 'popads-dummy.js', 'ubo-popads-dummy.js'];
     setPopadsDummy.injections = [hit];
 
     /**
      * Aborts on property write (PopAds, popns), throws reference error with random id
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#popadsnetjs-
      *
      * @param {Source} source
      */
@@ -1030,12 +1163,16 @@
       window.onerror = createOnErrorHandler(rid).bind();
       hit(source);
     }
-    preventPopadsNet.names = ['prevent-popads-net', 'popads.net.js'];
+    preventPopadsNet.names = ['prevent-popads-net', 'popads.net.js', 'ubo-popads.net.js'];
     preventPopadsNet.injections = [createOnErrorHandler, randomId, hit];
 
     /* eslint-disable func-names */
     /**
      * Prevents anti-adblock scripts on adfly short links.
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#adfly-defuserjs-
+     *
      * @param {Source} source
      */
 
@@ -1120,7 +1257,7 @@
         window.console.error('Failed to set up prevent-adfly scriptlet');
       }
     }
-    preventAdfly.names = ['prevent-adfly', 'adfly-defuser.js'];
+    preventAdfly.names = ['prevent-adfly', 'adfly-defuser.js', 'ubo-adfly-defuser.js'];
     preventAdfly.injections = [setPropertyAccess, hit];
 
     /**
@@ -1235,6 +1372,14 @@
     debugOnPropertyWrite.injections = [randomId, setPropertyAccess, getPropertyInChain, createOnErrorHandler, hit];
 
     /* eslint-disable no-new-func */
+    /**
+     * Call debugger when script should be aborted
+     *
+     * @param {Source} source
+     * @param {string} property path to a property
+     * @param {string} search must match the inline script contents
+     */
+
     function debugCurrentInlineScript(source, property) {
       var search = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
       var regex = search ? toRegExp(search) : null;
@@ -1308,6 +1453,9 @@
     /**
      * Removes attributes from DOM nodes. Will run only once after page load.
      *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#remove-attrjs-
+     *
      * @param {Source} source
      * @param {string} attrs attributes names separated by `|` which should be removed
      * @param {string} selector CSS selector specifies nodes from which attributes should be removed
@@ -1349,11 +1497,14 @@
         rmattr();
       }
     }
-    removeAttr.names = ['remove-attr', 'ubo-remove-attr.js'];
+    removeAttr.names = ['remove-attr', 'remove-attr.js', 'ubo-remove-attr.js'];
     removeAttr.injections = [hit];
 
     /**
      * Prevents opening new tabs and windows if there is `target` attribute in element
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#disable-newtab-linksjs-
      *
      * @param {Source} source
      */
@@ -1374,11 +1525,15 @@
         }
       });
     }
-    disableNewtabLinks.names = ['disable-newtab-links', 'ubo-disable-newtab-links.js'];
+    disableNewtabLinks.names = ['disable-newtab-links', 'disable-newtab-links.js', 'ubo-disable-newtab-links.js'];
     disableNewtabLinks.injections = [hit];
 
     /**
      * Adjusts interval for specified setInterval() callbacks.
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#nano-setinterval-boosterjs-
+     *
      * @param {Source} source
      * @param {string|RegExp} match matching in string of callback function
      * @param {string|number} interval matching interval
@@ -1420,11 +1575,15 @@
 
       window.setInterval = intervalWrapper;
     }
-    adjustSetInterval.names = ['adjust-setInterval', 'ubo-nano-setInterval-booster.js'];
+    adjustSetInterval.names = ['adjust-setInterval', 'nano-setInterval-booster.js', 'ubo-nano-setInterval-booster.js'];
     adjustSetInterval.injections = [toRegExp, hit];
 
     /**
      * Adjusts timeout for specified setTimout() callbacks.
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#nano-settimeout-boosterjs-
+     *
      * @param {Source} source
      * @param {string|RegExp} match matching in string of callback function
      * @param {string|number} timeout matching timeout
@@ -1466,12 +1625,16 @@
 
       window.setTimeout = timeoutWrapper;
     }
-    adjustSetTimeout.names = ['adjust-setTimeout', 'ubo-nano-setTimeout-booster.js'];
+    adjustSetTimeout.names = ['adjust-setTimeout', 'nano-setTimeout-booster.js', 'ubo-nano-setTimeout-booster.js'];
     adjustSetTimeout.injections = [toRegExp, hit];
 
     /**
      * Wraps the `console.dir` API to call the `toString`
      * method of the argument.
+     *
+     * Related ABP source:
+     * https://github.com/adblockplus/adblockpluscore/blob/6b2a309054cc23432102b85d13f12559639ef495/lib/content/snippets.js#L766
+     *
      * @param {Source} source
      * @param {string|number} times the number of times to call the
      * `toString` method of the argument to `console.dir`.
@@ -1503,6 +1666,599 @@
     }
     dirString.names = ['dir-string', 'abp-dir-string'];
     dirString.injections = [hit];
+
+    /**
+     * Mocks Google AdSense API
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/blob/a94df7f3b27080ae2dcb3b914ace39c0c294d2f6/src/web_accessible_resources/googlesyndication_adsbygoogle.js
+     */
+
+    function GoogleSyndicationAdsByGoogle(source) {
+      window.adsbygoogle = window.adsbygoogle || {
+        length: 0,
+        loaded: true,
+        push: function push() {
+          this.length += 1;
+        }
+      };
+      var adElems = document.querySelectorAll('.adsbygoogle');
+      var css = 'height:1px!important;max-height:1px!important;max-width:1px!important;width:1px!important;';
+      var executed = false;
+
+      for (var i = 0; i < adElems.length; i += 1) {
+        var frame = document.createElement('iframe');
+        frame.id = "aswift_".concat(i + 1);
+        frame.style = css;
+        var childFrame = document.createElement('iframe');
+        childFrame.id = "google_ads_frame".concat(i);
+        frame.appendChild(childFrame);
+        document.body.appendChild(frame);
+        executed = true;
+      }
+
+      if (executed) {
+        hit(source);
+      }
+    }
+    GoogleSyndicationAdsByGoogle.names = ['googlesyndication-adsbygoogle', 'ubo-googlesyndication_adsbygoogle.js', 'googlesyndication_adsbygoogle.js'];
+    GoogleSyndicationAdsByGoogle.injections = [hit];
+
+    /**
+     * Mocks Google Tag Maneger API
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/blob/a94df7f3b27080ae2dcb3b914ace39c0c294d2f6/src/web_accessible_resources/googletagmanager_gtm.js
+     */
+
+    function GoogleTagManagerGtm(source) {
+      window.ga = window.ga || noop;
+      var _window = window,
+          dataLayer = _window.dataLayer;
+
+      if (dataLayer instanceof Object === false) {
+        return;
+      }
+
+      if (dataLayer.hide instanceof Object && typeof dataLayer.hide.end === 'function') {
+        dataLayer.hide.end();
+      }
+
+      if (typeof dataLayer.push === 'function') {
+        dataLayer.push = function (data) {
+          if (data instanceof Object && typeof data.eventCallback === 'function') {
+            setTimeout(data.eventCallback, 1);
+          }
+        };
+      }
+
+      hit(source);
+    }
+    GoogleTagManagerGtm.names = ['googletagmanager-gtm', 'ubo-googletagmanager_gtm.js', 'googletagmanager_gtm.js'];
+    GoogleTagManagerGtm.injections = [hit, noop];
+
+    /**
+     * Mocks Google Analytics API
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/blob/a94df7f3b27080ae2dcb3b914ace39c0c294d2f6/src/web_accessible_resources/google-analytics_analytics.js
+     */
+
+    function GoogleAnalytics(source) {
+      // eslint-disable-next-line func-names
+      var Tracker = function Tracker() {}; // constructor
+
+
+      var proto = Tracker.prototype;
+      proto.get = noop;
+      proto.set = noop;
+      proto.send = noop;
+      var googleAnalyticsName = window.GoogleAnalyticsObject || 'ga';
+
+      function ga() {
+        var len = arguments.length;
+
+        if (len === 0) {
+          return;
+        } // eslint-disable-next-line prefer-rest-params
+
+
+        var lastArg = arguments[len - 1];
+
+        if (typeof lastArg !== 'object' || lastArg === null || typeof lastArg.hitCallback !== 'function') {
+          return;
+        }
+
+        try {
+          lastArg.hitCallback(); // eslint-disable-next-line no-empty
+        } catch (ex) {}
+      }
+
+      ga.create = function () {
+        return new Tracker();
+      };
+
+      ga.getByName = noopNull;
+
+      ga.getAll = function () {
+        return [];
+      };
+
+      ga.remove = noop;
+      ga.loaded = true;
+      window[googleAnalyticsName] = ga;
+      var _window = window,
+          dataLayer = _window.dataLayer;
+
+      if (dataLayer instanceof Object && dataLayer.hide instanceof Object && typeof dataLayer.hide.end === 'function') {
+        dataLayer.hide.end();
+      }
+
+      hit(source);
+    }
+    GoogleAnalytics.names = ['google-analytics', 'ubo-google-analytics_analytics.js', 'google-analytics_analytics.js'];
+    GoogleAnalytics.injections = [hit, noop, noopNull];
+
+    /**
+     * Mocks Scorecard Research API
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/blob/a94df7f3b27080ae2dcb3b914ace39c0c294d2f6/src/web_accessible_resources/scorecardresearch_beacon.js
+     */
+
+    function ScoreCardResearchBeacon(source) {
+      window.COMSCORE = {
+        purge: function purge() {
+          // eslint-disable-next-line no-underscore-dangle
+          window._comscore = [];
+        },
+        beacon: function beacon() {}
+      };
+      hit(source);
+    }
+    ScoreCardResearchBeacon.names = ['scorecardresearch-beacon', 'ubo-scorecardresearch_beacon.js', 'scorecardresearch_beacon.js'];
+    ScoreCardResearchBeacon.injections = [hit];
+
+    /* eslint-disable no-underscore-dangle */
+    /**
+     * Mocks old Google analytics library
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/blob/a94df7f3b27080ae2dcb3b914ace39c0c294d2f6/src/web_accessible_resources/google-analytics_ga.js
+     */
+
+    function GoogleAnalyticsGa(source) {
+      // Gaq constructor
+      function Gaq() {}
+
+      Gaq.prototype.Na = noop;
+      Gaq.prototype.O = noop;
+      Gaq.prototype.Sa = noop;
+      Gaq.prototype.Ta = noop;
+      Gaq.prototype.Va = noop;
+      Gaq.prototype._createAsyncTracker = noop;
+      Gaq.prototype._getAsyncTracker = noop;
+      Gaq.prototype._getPlugin = noop;
+
+      Gaq.prototype.push = function (data) {
+        if (typeof data === 'function') {
+          data();
+          return;
+        }
+
+        if (Array.isArray(data) === false) {
+          return;
+        } // https://developers.google.com/analytics/devguides/collection/gajs/methods/gaJSApiDomainDirectory#_gat.GA_Tracker_._link
+
+
+        if (data[0] === '_link' && typeof data[1] === 'string') {
+          window.location.assign(data[1]);
+        } // https://github.com/gorhill/uBlock/issues/2162
+
+
+        if (data[0] === '_set' && data[1] === 'hitCallback' && typeof data[2] === 'function') {
+          data[2]();
+        }
+      };
+
+      var gaq = new Gaq();
+      var asyncTrackers = window._gaq || [];
+
+      if (Array.isArray(asyncTrackers)) {
+        while (asyncTrackers[0]) {
+          gaq.push(asyncTrackers.shift());
+        }
+      } // eslint-disable-next-line no-multi-assign
+
+
+      window._gaq = gaq.qf = gaq; // Gat constructor
+
+      function Gat() {} // Mock tracker api
+
+
+      var api = ['_addIgnoredOrganic', '_addIgnoredRef', '_addItem', '_addOrganic', '_addTrans', '_clearIgnoredOrganic', '_clearIgnoredRef', '_clearOrganic', '_cookiePathCopy', '_deleteCustomVar', '_getName', '_setAccount', '_getAccount', '_getClientInfo', '_getDetectFlash', '_getDetectTitle', '_getLinkerUrl', '_getLocalGifPath', '_getServiceMode', '_getVersion', '_getVisitorCustomVar', '_initData', '_link', '_linkByPost', '_setAllowAnchor', '_setAllowHash', '_setAllowLinker', '_setCampContentKey', '_setCampMediumKey', '_setCampNameKey', '_setCampNOKey', '_setCampSourceKey', '_setCampTermKey', '_setCampaignCookieTimeout', '_setCampaignTrack', '_setClientInfo', '_setCookiePath', '_setCookiePersistence', '_setCookieTimeout', '_setCustomVar', '_setDetectFlash', '_setDetectTitle', '_setDomainName', '_setLocalGifPath', '_setLocalRemoteServerMode', '_setLocalServerMode', '_setReferrerOverride', '_setRemoteServerMode', '_setSampleRate', '_setSessionTimeout', '_setSiteSpeedSampleRate', '_setSessionCookieTimeout', '_setVar', '_setVisitorCookieTimeout', '_trackEvent', '_trackPageLoadTime', '_trackPageview', '_trackSocial', '_trackTiming', '_trackTrans', '_visitCode'];
+      var tracker = api.reduce(function (res, funcName) {
+        res[funcName] = noop;
+        return res;
+      }, {});
+
+      tracker._getLinkerUrl = function (a) {
+        return a;
+      };
+
+      Gat.prototype._anonymizeIP = noop;
+      Gat.prototype._createTracker = noop;
+      Gat.prototype._forceSSL = noop;
+      Gat.prototype._getPlugin = noop;
+
+      Gat.prototype._getTracker = function () {
+        return tracker;
+      };
+
+      Gat.prototype._getTrackerByName = function () {
+        return tracker;
+      };
+
+      Gat.prototype._getTrackers = noop;
+      Gat.prototype.aa = noop;
+      Gat.prototype.ab = noop;
+      Gat.prototype.hb = noop;
+      Gat.prototype.la = noop;
+      Gat.prototype.oa = noop;
+      Gat.prototype.pa = noop;
+      Gat.prototype.u = noop;
+      var gat = new Gat();
+      window._gat = gat;
+      hit(source);
+    }
+    GoogleAnalyticsGa.names = ['google-analytics-ga', 'ubo-google-analytics_ga.js', 'google-analytics_ga.js'];
+    GoogleAnalyticsGa.injections = [hit, noop];
+
+    /**
+     * Mocks Google Publisher Tag API
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/blob/a94df7f3b27080ae2dcb3b914ace39c0c294d2f6/src/web_accessible_resources/googletagservices_gpt.js
+     */
+
+    function GoogleTagServicesGpt(source) {
+      var companionAdsService = {
+        addEventListener: noopThis,
+        enableSyncLoading: noop,
+        setRefreshUnfilledSlots: noop
+      };
+      var contentService = {
+        addEventListener: noopThis,
+        setContent: noop
+      };
+
+      function PassbackSlot() {} // constructor
+
+
+      PassbackSlot.prototype.display = noop;
+      PassbackSlot.prototype.get = noopNull;
+      PassbackSlot.prototype.set = noopThis;
+      PassbackSlot.prototype.setClickUrl = noopThis;
+      PassbackSlot.prototype.setTagForChildDirectedTreatment = noopThis;
+      PassbackSlot.prototype.setTargeting = noopThis;
+      PassbackSlot.prototype.updateTargetingFromMap = noopThis;
+
+      function SizeMappingBuilder() {} // constructor
+
+
+      SizeMappingBuilder.prototype.addSize = noopThis;
+      SizeMappingBuilder.prototype.build = noopNull;
+
+      function Slot() {} // constructor
+
+
+      Slot.prototype.addService = noopThis;
+      Slot.prototype.clearCategoryExclusions = noopThis;
+      Slot.prototype.clearTargeting = noopThis;
+      Slot.prototype.defineSizeMapping = noopThis;
+      Slot.prototype.get = noopNull;
+      Slot.prototype.getAdUnitPath = noopArray;
+      Slot.prototype.getAttributeKeys = noopArray;
+      Slot.prototype.getCategoryExclusions = noopArray;
+      Slot.prototype.getDomId = noopStr;
+      Slot.prototype.getSlotElementId = noopStr;
+      Slot.prototype.getSlotId = noopThis;
+      Slot.prototype.getTargeting = noopArray;
+      Slot.prototype.getTargetingKeys = noopArray;
+      Slot.prototype.set = noopThis;
+      Slot.prototype.setCategoryExclusion = noopThis;
+      Slot.prototype.setClickUrl = noopThis;
+      Slot.prototype.setCollapseEmptyDiv = noopThis;
+      Slot.prototype.setTargeting = noopThis;
+      var pubAdsService = {
+        addEventListener: noopThis,
+        clear: noop,
+        clearCategoryExclusions: noopThis,
+        clearTagForChildDirectedTreatment: noopThis,
+        clearTargeting: noopThis,
+        collapseEmptyDivs: noop,
+        defineOutOfPagePassback: function defineOutOfPagePassback() {
+          return new PassbackSlot();
+        },
+        definePassback: function definePassback() {
+          return new PassbackSlot();
+        },
+        disableInitialLoad: noop,
+        display: noop,
+        enableAsyncRendering: noop,
+        enableSingleRequest: noop,
+        enableSyncRendering: noop,
+        enableVideoAds: noop,
+        get: noopNull,
+        getAttributeKeys: noopArray,
+        getTargeting: noop,
+        getTargetingKeys: noopArray,
+        getSlots: noopArray,
+        refresh: noop,
+        set: noopThis,
+        setCategoryExclusion: noopThis,
+        setCentering: noop,
+        setCookieOptions: noopThis,
+        setForceSafeFrame: noopThis,
+        setLocation: noopThis,
+        setPublisherProvidedId: noopThis,
+        setRequestNonPersonalizedAds: noopThis,
+        setSafeFrameConfig: noopThis,
+        setTagForChildDirectedTreatment: noopThis,
+        setTargeting: noopThis,
+        setVideoContent: noopThis,
+        updateCorrelator: noop
+      };
+      var _window = window,
+          _window$googletag = _window.googletag,
+          googletag = _window$googletag === void 0 ? {} : _window$googletag;
+      var _googletag$cmd = googletag.cmd,
+          cmd = _googletag$cmd === void 0 ? [] : _googletag$cmd;
+      googletag.apiReady = true;
+      googletag.cmd = [];
+
+      googletag.cmd.push = function (a) {
+        try {
+          a(); // eslint-disable-next-line no-empty
+        } catch (ex) {}
+
+        return 1;
+      };
+
+      googletag.companionAds = function () {
+        return companionAdsService;
+      };
+
+      googletag.content = function () {
+        return contentService;
+      };
+
+      googletag.defineOutOfPageSlot = function () {
+        return new Slot();
+      };
+
+      googletag.defineSlot = function () {
+        return new Slot();
+      };
+
+      googletag.destroySlots = noop;
+      googletag.disablePublisherConsole = noop;
+      googletag.display = noop;
+      googletag.enableServices = noop;
+      googletag.getVersion = noopStr;
+
+      googletag.pubads = function () {
+        return pubAdsService;
+      };
+
+      googletag.pubadsReady = true;
+      googletag.setAdIframeTitle = noop;
+
+      googletag.sizeMapping = function () {
+        return new SizeMappingBuilder();
+      };
+
+      window.googletag = googletag;
+
+      while (cmd.length !== 0) {
+        googletag.cmd.push(cmd.shift());
+      }
+
+      hit(source);
+    }
+    GoogleTagServicesGpt.names = ['googletagservices-gpt', 'ubo-googletagservices_gpt.js', 'googletagservices_gpt.js'];
+    GoogleTagServicesGpt.injections = [hit, noop, noopThis, noopNull, noopArray, noopStr];
+
+    /**
+     * Mocks the old Yandex Metrika API
+     *
+     * @param {Source} source
+     */
+
+    function metrikaYandexWatch(source) {
+      var cbName = 'yandex_metrika_callbacks';
+      /**
+       * Gets callback and its context from options and call it in async way
+       * @param {Object} options Yandex Metrika API options
+       */
+
+      var asyncCallbackFromOptions = function asyncCallbackFromOptions() {
+        var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+        var callback = options.callback;
+        var ctx = options.ctx;
+
+        if (typeof callback === 'function') {
+          callback = ctx !== undefined ? callback.bind(ctx) : callback;
+          setTimeout(function () {
+            return callback();
+          });
+        }
+      };
+
+      function Metrika() {} // constructor
+      // Methods without options
+
+
+      Metrika.prototype.addFileExtension = noop;
+      Metrika.prototype.getClientID = noop;
+      Metrika.prototype.setUserID = noop;
+      Metrika.prototype.userParams = noop; // Methods with options
+      // The order of arguments should be kept in according to API
+
+      Metrika.prototype.extLink = function (url, options) {
+        asyncCallbackFromOptions(options);
+      };
+
+      Metrika.prototype.file = function (url, options) {
+        asyncCallbackFromOptions(options);
+      };
+
+      Metrika.prototype.hit = function (url, options) {
+        asyncCallbackFromOptions(options);
+      };
+
+      Metrika.prototype.reachGoal = function (target, params, cb, ctx) {
+        asyncCallbackFromOptions({
+          callback: cb,
+          ctx: ctx
+        });
+      };
+
+      Metrika.prototype.notBounce = asyncCallbackFromOptions;
+
+      if (window.Ya) {
+        window.Ya.Metrika = Metrika;
+      } else {
+        window.Ya = {
+          Metrika: Metrika
+        };
+      }
+
+      if (window[cbName] && Array.isArray(window[cbName])) {
+        window[cbName].forEach(function (func) {
+          if (typeof func === 'function') {
+            func();
+          }
+        });
+      }
+
+      hit(source);
+    }
+    metrikaYandexWatch.names = ['metrika-yandex-watch'];
+    metrikaYandexWatch.injections = [hit, noop];
+
+    /**
+     * Mocks Yandex Metrika API
+     * https://yandex.ru/support/metrica/objects/method-reference.html
+     * @param {Source} source
+     */
+
+    function metrikaYandexTag(source) {
+      var asyncCallbackFromOptions = function asyncCallbackFromOptions(param) {
+        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        var callback = options.callback;
+        var ctx = options.ctx;
+
+        if (typeof callback === 'function') {
+          callback = ctx !== undefined ? callback.bind(ctx) : callback;
+          setTimeout(function () {
+            return callback();
+          });
+        }
+      };
+
+      var init = noop;
+      /**
+       * https://yandex.ru/support/metrica/objects/addfileextension.html
+       */
+
+      var addFileExtension = noop;
+      /**
+       * https://yandex.ru/support/metrica/objects/extlink.html
+       */
+
+      var extLink = asyncCallbackFromOptions;
+      /**
+       * https://yandex.ru/support/metrica/objects/file.html
+       */
+
+      var file = asyncCallbackFromOptions;
+      /**
+       * https://yandex.ru/support/metrica/objects/get-client-id.html
+       * @param {Function} cb
+       */
+
+      var getClientID = function getClientID(cb) {
+        setTimeout(cb(null));
+      };
+      /**
+       * https://yandex.ru/support/metrica/objects/hit.html
+       */
+
+
+      var hitFunc = asyncCallbackFromOptions;
+      /**
+       * https://yandex.ru/support/metrica/objects/notbounce.html
+       */
+
+      var notBounce = asyncCallbackFromOptions;
+      /**
+       * https://yandex.ru/support/metrica/objects/params-method.html
+       */
+
+      var params = noop;
+      /**
+       * https://yandex.ru/support/metrica/objects/reachgoal.html
+       * @param {string} target
+       * @param {Object} params
+       * @param {Function} callback
+       * @param {any} ctx
+       */
+
+      var reachGoal = function reachGoal(target, params, callback, ctx) {
+        asyncCallbackFromOptions(null, {
+          callback: callback,
+          ctx: ctx
+        });
+      };
+      /**
+       * https://yandex.ru/support/metrica/objects/set-user-id.html
+       */
+
+
+      var setUserID = noop;
+      /**
+       * https://yandex.ru/support/metrica/objects/user-params.html
+       */
+
+      var userParams = noop;
+      var api = {
+        init: init,
+        addFileExtension: addFileExtension,
+        extLink: extLink,
+        file: file,
+        getClientID: getClientID,
+        hit: hitFunc,
+        notBounce: notBounce,
+        params: params,
+        reachGoal: reachGoal,
+        setUserID: setUserID,
+        userParams: userParams
+      };
+
+      function ym(id, funcName) {
+        for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+          args[_key - 2] = arguments[_key];
+        }
+
+        return api[funcName] && api[funcName].apply(api, args);
+      }
+
+      window.ym = ym;
+      hit(source);
+    }
+    metrikaYandexTag.names = ['metrika-yandex-tag'];
+    metrikaYandexTag.injections = [hit, noop];
 
     /**
      * This file must export all scriptlets which should be accessible
@@ -1538,7 +2294,15 @@
         disableNewtabLinks: disableNewtabLinks,
         adjustSetInterval: adjustSetInterval,
         adjustSetTimeout: adjustSetTimeout,
-        dirString: dirString
+        dirString: dirString,
+        GoogleSyndicationAdsByGoogle: GoogleSyndicationAdsByGoogle,
+        GoogleTagManagerGtm: GoogleTagManagerGtm,
+        GoogleAnalytics: GoogleAnalytics,
+        ScoreCardResearchBeacon: ScoreCardResearchBeacon,
+        GoogleAnalyticsGa: GoogleAnalyticsGa,
+        GoogleTagServicesGpt: GoogleTagServicesGpt,
+        metrikaYandexWatch: metrikaYandexWatch,
+        metrikaYandexTag: metrikaYandexTag
     });
 
     /**
