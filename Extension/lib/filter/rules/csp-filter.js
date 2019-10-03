@@ -123,9 +123,9 @@
         function findCspRules(url, documentHost, thirdParty, requestType) {
 
             /**
-             * CSP rules support only $SUBDOCUMENT request type modifier. If it presents, we should match this rule when an iframe is loaded.
+             * CSP rules support only $SUBDOCUMENT and $DOCUMENT request type modifiers.
+             * If it presents, we should match this rule when an iframe is loaded.
              * If a main_frame is loaded we should match rules without $SUBDOCUMENT modifier (or with negation $~SUBDOCUMENT)
-             * We can't pass `adguard.RequestTypes.DOCUMENT` to findRules `function`, because $DOCUMENT modifier has other meaning for the rules.
              * So if we pass `adguard.RequestTypes.OTHER` we won't match rules with $SUBDOCUMENT modifier, as we expected
              *
              * For example:
@@ -134,6 +134,7 @@
              * rule3 = '||$csp,~subdocument'
              * findCspRules(adguard.RequestTypes.SUBDOCUMENT) = [rule1, rule2];
              * findCspRules(adguard.RequestTypes.DOCUMENT) = [rule1, rule3];
+             * view test
              */
             if (requestType !== adguard.RequestTypes.DOCUMENT
                 && requestType !== adguard.RequestTypes.SUBDOCUMENT) {
