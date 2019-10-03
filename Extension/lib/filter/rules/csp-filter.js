@@ -134,15 +134,12 @@
              * rule3 = '||$csp,~subdocument'
              * findCspRules(adguard.RequestTypes.SUBDOCUMENT) = [rule1, rule2];
              * findCspRules(adguard.RequestTypes.DOCUMENT) = [rule1, rule3];
-             * view test
+             * view test "CSP rules are found correctly"
              */
             if (requestType !== adguard.RequestTypes.DOCUMENT
                 && requestType !== adguard.RequestTypes.SUBDOCUMENT) {
                 requestType = adguard.RequestTypes.OTHER;
             }
-
-            // TODO [maximtop] Why DOCUMENT type was converted into OTHER?
-            // requestType = requestType === adguard.RequestTypes.SUBDOCUMENT ? requestType : adguard.RequestTypes.OTHER;
 
             var whiteRules = cspWhiteFilter.findRules(url, documentHost, thirdParty, requestType);
 
