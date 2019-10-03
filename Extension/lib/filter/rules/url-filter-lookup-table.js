@@ -42,7 +42,6 @@
         }
 
         // if rules dont have domain patterns and have $domain modifier
-        // and referrerHost is not defined
         // we should check rules with request urls hosts
         if (rule.isAnyUrl()
             && rule.hasPermittedDomains()
