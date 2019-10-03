@@ -366,7 +366,7 @@
             });
 
             if (debug) {
-                const domainName = adguard.utils.url.getDomainName(url);
+                const domainName = adguard.utils.url.getHost(url);
                 scriptRules.forEach((scriptRule) => {
                     if (scriptRule.rule.isDomainSpecific(domainName)) {
                         adguard.filteringLog.addScriptInjectionEvent(
