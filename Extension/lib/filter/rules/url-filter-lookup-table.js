@@ -44,14 +44,12 @@
         // if rules dont have domain patterns and have $domain modifier
         // and referrerHost is not defined
         // we should check rules with request urls hosts
-        if (rule.getIsForAnyUrl()
+        if (rule.isAnyUrl()
             && rule.hasPermittedDomains()
             && (requestType === adguard.RequestTypes.DOCUMENT
                 || requestType === adguard.RequestTypes.SUBDOCUMENT)) {
-            if (!referrerHost) {
-                referrerHost = adguard.utils.url.getHost(url);
-                thirdParty = false;
-            }
+            referrerHost = adguard.utils.url.getHost(url);
+            thirdParty = false;
         }
 
         return (genericRulesAllowed || !rule.isGeneric())
