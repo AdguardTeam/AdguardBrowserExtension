@@ -162,7 +162,6 @@
      * @param requestType Request type
      * @param genericRulesAllowed If true - generic rules are allowed
      * @param badFilterRules Link to the badFilterRules
-     * restriction semantics - https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1474
      */
     function findFirstRule(rules, url, referrerHost, thirdParty, requestType, genericRulesAllowed, badFilterRules) {
         const matchingRules = filterRules(
