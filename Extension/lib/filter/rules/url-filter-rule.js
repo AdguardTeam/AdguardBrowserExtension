@@ -457,11 +457,9 @@
                 throw Error('Illegal regexp rule');
             }
 
-            const regexpInner = adguard.utils.strings.getBetween(regexp.toString(), '/', '/');
-
             // Except cookie rules, they have their own atmosphere
             if (!this.isCookieRule()
-                && UrlFilterRule.REGEXP_ANY_SYMBOL === regexpInner && !this.hasPermittedDomains()) {
+                && UrlFilterRule.ANY_URL_REGEX === regexp && !this.hasPermittedDomains()) {
                 // Rule matches everything and does not have any domain restriction
                 throw Error(`Too wide basic rule: ${urlRuleText}`);
             }
@@ -537,7 +535,7 @@
             try {
                 if (!urlRegExpSource || UrlFilterRule.MASK_ANY_SYMBOL === urlRegExpSource) {
                     // Match any symbol
-                    this.urlRegExp = new RegExp(UrlFilterRule.REGEXP_ANY_SYMBOL);
+                    this.urlRegExp = UrlFilterRule.ANY_URL_REGEX;
                 } else {
                     this.urlRegExp = new RegExp(urlRegExpSource, this.isMatchCase() ? "" : "i");
                 }
@@ -555,16 +553,12 @@
     };
 
     /**
-     * Lazy check if rule has ANY_SYMBOL url pattern
+     * Checks if url is for any url
      * @returns {boolean}
      */
-    UrlFilterRule.prototype.getIsForAnyUrl = function () {
-        if (!this.isForAnyUrl) {
-            const regexpStr = this.getUrlRegExp().toString();
-            const regexpExprStr = adguard.utils.strings.getBetween(regexpStr, '/', '/');
-            this.isForAnyUrl = regexpExprStr === UrlFilterRule.REGEXP_ANY_SYMBOL;
-        }
-        return this.isForAnyUrl;
+    UrlFilterRule.prototype.isAnyUrl = function () {
+        return this.shortcut === null
+            && this.getUrlRegExp() === UrlFilterRule.ANY_URL_REGEX;
     };
 
     /**
@@ -1114,7 +1108,7 @@
     UrlFilterRule.IMPORTANT_OPTION = 'important';
     UrlFilterRule.MASK_REGEX_RULE = '/';
     UrlFilterRule.MASK_ANY_SYMBOL = '*';
-    UrlFilterRule.REGEXP_ANY_SYMBOL = '.*';
+    UrlFilterRule.ANY_URL_REGEX = /.*/;
     UrlFilterRule.EMPTY_OPTION = 'empty';
     // Extension doesn't support replace rules, $replace option is here only for correct parsing
     UrlFilterRule.REPLACE_OPTION = 'replace';

@@ -255,32 +255,6 @@ adguard.utils = (function () {
             s.push('>');
             return s.join('');
         },
-        /**
-         * Returns substring between two chars
-         * if start char was not found in the string it's index is considered 0
-         * if end char was not fount in the string it's index is considered string length - 1
-         * @param {string} str
-         * @param {string} startChar
-         * @param {string} endChar
-         * @returns {string}
-         */
-        getBetween: function (str, startChar, endChar) {
-            if (str.length === 0) {
-                return str;
-            }
-
-            let firstIndex = str.indexOf(startChar);
-            if (firstIndex === -1) {
-                firstIndex = 0;
-            }
-
-            let secondIndex = str.indexOf(endChar, firstIndex + 1);
-            if (secondIndex === -1) {
-                secondIndex = str.length - 1;
-            }
-
-            return str.slice(firstIndex + 1, secondIndex);
-        },
     };
 
     api.strings = StringUtils;
