@@ -40,6 +40,17 @@
                 return false;
             }
         }
+
+        // if rules dont have domain patterns and have $domain modifier
+        // we should check rules with request urls hosts
+        if (rule.isAnyUrl()
+            && rule.hasPermittedDomains()
+            && (requestType === adguard.RequestTypes.DOCUMENT
+                || requestType === adguard.RequestTypes.SUBDOCUMENT)) {
+            referrerHost = adguard.utils.url.getHost(url);
+            thirdParty = false;
+        }
+
         return (genericRulesAllowed || !rule.isGeneric())
             && rule.isFiltered(url, thirdParty, requestType)
             && rule.isPermitted(referrerHost);
@@ -259,11 +270,23 @@
                 matchedRules = matchedRules.concat(rules);
             }
 
+            // if document host is null, get host from url
+            // thus we can find rules and check them using domain restriction later
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1474
+            if (documentHost === null) {
+                const urlHost = adguard.utils.url.getHost(url);
+                rules = this.domainsLookupTable.lookupRules(urlHost);
+                if (rules && rules.length > 0) {
+                    matchedRules = matchedRules.concat(rules);
+                }
+            }
+
             // Check against rules with domains
             rules = this.domainsLookupTable.lookupRules(documentHost);
             if (rules && rules.length > 0) {
                 matchedRules = matchedRules.concat(rules);
             }
+
 
             // Check against rules without shortcuts
             if (this.rulesWithoutShortcuts.length > 0) {
@@ -309,6 +332,17 @@
             let rules = this.shortcutsLookupTable.lookupRules(urlLowerCase);
             if (rules) {
                 allRules = allRules.concat(rules);
+            }
+
+            // if document host is null, get host from url
+            // thus we can find rules and check this rules using domain restriction later
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1474
+            if (documentHost === null) {
+                const urlHost = adguard.utils.url.getHost(url);
+                rules = this.domainsLookupTable.lookupRules(urlHost);
+                if (rules && rules.length > 0) {
+                    allRules = allRules.concat(rules);
+                }
             }
 
             rules = this.domainsLookupTable.lookupRules(documentHost);

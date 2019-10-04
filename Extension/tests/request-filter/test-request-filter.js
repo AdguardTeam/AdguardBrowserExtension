@@ -741,3 +741,54 @@ QUnit.test('redirect rules are removed with $badfilter modifier', (assert) => {
     );
     assert.notOk(result, 'rule should be blocked by badfilter rule');
 });
+
+QUnit.test('domain restriction semantic', (assert) => {
+    const url = 'https://example.org/';
+    const referrer = null;
+
+    const cspRule = new adguard.rules.UrlFilterRule('$domain=example.org,csp=script-src \'none\'');
+    const cookieRule = new adguard.rules.UrlFilterRule('$cookie=test,domain=example.org');
+
+    const requestFilter = new adguard.RequestFilter();
+    requestFilter.addRules([cspRule, cookieRule]);
+
+    const cspResultDocument = requestFilter.findCspRules(url, referrer, adguard.RequestTypes.DOCUMENT);
+    assert.equal(cspResultDocument.length, 1);
+    assert.equal(cspResultDocument[0].ruleText, cspRule.ruleText);
+
+    const cspResultSubDocument = requestFilter.findCspRules(url, referrer, adguard.RequestTypes.SUBDOCUMENT);
+    assert.equal(cspResultSubDocument.length, 1);
+    assert.equal(cspResultSubDocument[0].ruleText, cspRule.ruleText);
+
+    const cookieResult = requestFilter.findCookieRules(url, referrer, adguard.RequestTypes.DOCUMENT);
+    assert.equal(cookieResult.length, 1);
+    assert.equal(cookieResult[0].ruleText, cookieRule.ruleText);
+});
+
+QUnit.test('CSP rules are found correctly', (assert) => {
+    /**
+     * For example:
+     * rule1 = '||$csp'
+     * rule2 = '||$csp,subdocument'
+     * rule3 = '||$csp,~subdocument'
+     * findCspRules(adguard.RequestTypes.SUBDOCUMENT) = [rule1, rule2];
+     * findCspRules(adguard.RequestTypes.DOCUMENT) = [rule1, rule3];
+     */
+    const ruleText1 = '||example.org^$csp=default-src \'none\'';
+    const ruleText2 = '||example.org^$csp=script-src \'none\',subdocument';
+    const ruleText3 = '||example.org^$csp=connect-src \'none\',~subdocument';
+    const url = 'https://example.org/blabla';
+    const rule1 = new adguard.rules.UrlFilterRule(ruleText1);
+    const rule2 = new adguard.rules.UrlFilterRule(ruleText2);
+    const rule3 = new adguard.rules.UrlFilterRule(ruleText3);
+    const requestFilter = new adguard.RequestFilter();
+    requestFilter.addRules([rule1, rule2, rule3]);
+    const search1 = requestFilter.findCspRules(url, null, adguard.RequestTypes.SUBDOCUMENT);
+    assert.ok(search1.includes(rule1));
+    assert.ok(search1.includes(rule2));
+    assert.notOk(search1.includes(rule3));
+    const search2 = requestFilter.findCspRules(url, null, adguard.RequestTypes.DOCUMENT);
+    assert.ok(search2.includes(rule1));
+    assert.notOk(search2.includes(rule2));
+    assert.ok(search2.includes(rule3));
+});
