@@ -1,4 +1,23 @@
 QUnit.test('Build Rules', (assert) => {
+    const scriptFilter = new adguard.rules.ScriptFilter();
+
+    const ruleText = 'www.example.org#%#//scriptlet("set-constant", "test", "true")';
+    const rule = new adguard.rules.ScriptletRule(ruleText);
+    scriptFilter.addRule(rule);
+
+    assert.equal(scriptFilter.getRules().length, 1, 'Rule added');
+
+    const whiteRuleText = 'example.org#@%#//scriptlet("set-constant", "test", "true")';
+    const whiteRule = new adguard.rules.ScriptletRule(whiteRuleText);
+    scriptFilter.addRule(whiteRule);
+
+    assert.equal(scriptFilter.getRules().length, 2, 'Rule added');
+
+    assert.notOk(rule.isPermitted('example.org'));
+    assert.notOk(rule.isPermitted('www.example.org'));
+});
+
+QUnit.test('Build Rules', (assert) => {
     let rule = adguard.rules.builder.createRule('example.com', 0);
     assert.ok(rule);
     assert.ok(rule instanceof adguard.rules.UrlFilterRule);
