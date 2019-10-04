@@ -84,11 +84,9 @@ These libs are developed by us from scratch.
 * Library source: https://github.com/AdguardTeam/AdguardAssistant/tree/v4.3.8
 `assistant.embedded.js` build is being used.
 
-
-[//]: # (TODO [maximtop] update scriptlets description before release)
 #### `lib/filter/rules/scriptlets/`
-* v
-* Library source https://
+* v1.0.10
+* Library source https://github.com/AdguardTeam/Scriptlets/releases
 
 
 

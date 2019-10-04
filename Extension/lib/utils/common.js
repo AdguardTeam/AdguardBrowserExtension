@@ -254,7 +254,7 @@ adguard.utils = (function () {
             }
             s.push('>');
             return s.join('');
-        }
+        },
     };
 
     api.strings = StringUtils;
