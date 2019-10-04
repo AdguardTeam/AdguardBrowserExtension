@@ -792,3 +792,14 @@ QUnit.test('Inject rules with backslash should be omitted', (assert) => {
     const rule2 = new adguard.rules.CssFilterRule(ruleText2);
     assert.ok(rule2 !== null);
 });
+
+QUnit.test('Css Filter Rule for wp.pl domain', (assert) => {
+    const ruleText = 'www.example.org,~example.org##.test';
+    const rule = new adguard.rules.CssFilterRule(ruleText);
+
+    assert.ok(rule.getRestrictedDomains().length > 0, 'Restricted domain was added');
+    assert.equal(1, rule.getRestrictedDomains().length);
+    assert.ok(rule.getPermittedDomains().indexOf('www.example.org') >= 0, 'Permitted domain was added');
+    assert.ok(rule.getRestrictedDomains().indexOf('example.org') >= 0, 'Restricted domain is equal to wp.pl');
+    assert.equal('.test', rule.cssSelector);
+});
