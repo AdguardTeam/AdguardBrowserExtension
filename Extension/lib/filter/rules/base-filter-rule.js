@@ -210,18 +210,12 @@
          * @param domains List of domains
          */
         addRestrictedDomains(domains) {
-            if (domains) {
-                if (this.hasPermittedDomains()) {
-                    const self = this;
-                    // If a rule already has permitted domains, we should check that
-                    // these restricted domains make any sense
-                    domains = domains.filter(domainName => self.isPermitted(domainName));
-                }
-
-                let restrictedDomains = this.getRestrictedDomains();
-                restrictedDomains = adguard.utils.collections.removeDuplicates((restrictedDomains || []).concat(domains));
-                this.setRestrictedDomains(restrictedDomains);
+            if (!domains || !domains.length) {
+                return;
             }
+            let restrictedDomains = this.getRestrictedDomains();
+            restrictedDomains = adguard.utils.collections.removeDuplicates((restrictedDomains || []).concat(domains));
+            this.setRestrictedDomains(restrictedDomains);
         },
 
         /**
