@@ -797,9 +797,9 @@ QUnit.test('Css Filter Rule for wp.pl domain', (assert) => {
     const ruleText = 'www.example.org,~example.org##.test';
     const rule = new adguard.rules.CssFilterRule(ruleText);
 
-    assert.ok(rule.getRestrictedDomains().length > 0, 'Restricted domain was added');
+    assert.ok(rule.getRestrictedDomains().length > 0, 'Restricted domain has been added');
     assert.equal(1, rule.getRestrictedDomains().length);
-    assert.ok(rule.getPermittedDomains().indexOf('www.example.org') >= 0, 'Permitted domain was added');
-    assert.ok(rule.getRestrictedDomains().indexOf('example.org') >= 0, 'Restricted domain is equal to wp.pl');
+    assert.ok(rule.getPermittedDomains().indexOf('www.example.org') >= 0, 'Permitted domain has been added');
+    assert.ok(rule.getRestrictedDomains().indexOf('example.org') >= 0, 'Restricted domain is equal to example.org');
     assert.equal('.test', rule.cssSelector);
 });
