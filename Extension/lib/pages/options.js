@@ -1339,6 +1339,7 @@ var AntiBannerFilters = function (options) {
 
     function updateAntiBannerFilters(e) {
         e.preventDefault();
+        document.querySelector('.settings-actions--update-filters a').classList.add('active');
         contentPage.sendMessage({ type: 'checkAntiBannerFiltersUpdate' }, () => {
             setLastUpdatedTimeText(Date.now());
         });
@@ -1593,14 +1594,16 @@ var AntiBannerFilters = function (options) {
         filterElements.forEach((filterElement) => {
             filterElement.querySelector('.preloader').classList.add('active');
         });
-        document.querySelector('.settings-actions--update-filters a').classList.add('active');
     }
 
     function onFilterDownloadFinished(filter) {
         getCategoryElement(filter.groupId).querySelector('.preloader').classList.remove('active');
         updateFilterMetadata(filter);
-        document.querySelector('.settings-actions--update-filters a').classList.remove('active');
         setLastUpdatedTimeText(filter.lastUpdateTime);
+    }
+
+    function onFiltersUpdateCheckReady() {
+        document.querySelector('.settings-actions--update-filters a').classList.remove('active');
     }
 
     return {
@@ -1611,6 +1614,7 @@ var AntiBannerFilters = function (options) {
         onFilterDownloadStarted,
         onFilterDownloadFinished,
         renderCustomFilterPopup,
+        onFiltersUpdateCheckReady,
     };
 };
 
@@ -2325,6 +2329,7 @@ var initPage = function (response) {
             EventNotifierTypes.SYNC_STATUS_UPDATED,
             EventNotifierTypes.SETTINGS_UPDATED,
             EventNotifierTypes.SETTING_UPDATED,
+            EventNotifierTypes.FILTERS_UPDATE_CHECK_READY,
         ];
 
         createEventListener(events, function (event, options) {
@@ -2369,6 +2374,10 @@ var initPage = function (response) {
                 case EventNotifierTypes.SETTINGS_UPDATED:
                     controller.onSettingsImported(options);
                     break;
+                case EventNotifierTypes.FILTERS_UPDATE_CHECK_READY: {
+                    controller.antiBannerFilters.onFiltersUpdateCheckReady();
+                    break;
+                }
                 default:
                     break;
             }

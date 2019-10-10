@@ -42,6 +42,7 @@ adguard.listeners = (function () {
         UPDATE_USER_FILTER_RULES: 'event.update.user.filter.rules',
         UPDATE_WHITELIST_FILTER_RULES: 'event.update.whitelist.filter.rules',
         SETTING_UPDATED: 'event.update.setting.value',
+        FILTERS_UPDATE_CHECK_READY: 'event.update.filters.check',
         // Log events
         TAB_ADDED: 'log.tab.added',
         TAB_CLOSE: 'log.tab.close',
