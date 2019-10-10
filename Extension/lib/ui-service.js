@@ -707,6 +707,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         const successCallback = showPopup
             ? (updatedFilters) => {
                 adguard.listeners.notifyListeners(showPopupEvent, true, updatedFilters);
+                adguard.listeners.notifyListeners(adguard.listeners.FILTERS_UPDATE_CHECK_READY);
             }
             : (updatedFilters) => {
                 if (updatedFilters && updatedFilters.length > 0) {
@@ -717,6 +718,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         const errorCallback = showPopup
             ? () => {
                 adguard.listeners.notifyListeners(showPopupEvent, false);
+                adguard.listeners.notifyListeners(adguard.listeners.FILTERS_UPDATE_CHECK_READY);
             }
             : () => {};
 
