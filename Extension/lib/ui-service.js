@@ -127,7 +127,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                     blocked = '';
                 } else {
                     disabled = tabInfo.applicationFilteringDisabled;
-                    disabled = disabled || tabInfo.urlFilteringDisabled;
                     disabled = disabled || tabInfo.documentWhiteListed;
 
                     if (!disabled && adguard.settings.showPageStatistic()) {
@@ -708,6 +707,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         const successCallback = showPopup
             ? (updatedFilters) => {
                 adguard.listeners.notifyListeners(showPopupEvent, true, updatedFilters);
+                adguard.listeners.notifyListeners(adguard.listeners.FILTERS_UPDATE_CHECK_READY);
             }
             : (updatedFilters) => {
                 if (updatedFilters && updatedFilters.length > 0) {
@@ -718,6 +718,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         const errorCallback = showPopup
             ? () => {
                 adguard.listeners.notifyListeners(showPopupEvent, false);
+                adguard.listeners.notifyListeners(adguard.listeners.FILTERS_UPDATE_CHECK_READY);
             }
             : () => {};
 
@@ -859,7 +860,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
             var options;
             if (reset) {
-                options = { icon: adguard.prefs.ICONS.ICON_GRAY, badge: '' };
+                options = { icon: adguard.prefs.ICONS.ICON_GREEN, badge: '' };
             }
 
             updateTabIcon(tab, options);
