@@ -1339,7 +1339,7 @@ var AntiBannerFilters = function (options) {
 
     function updateAntiBannerFilters(e) {
         e.preventDefault();
-        document.querySelector('.settings-actions--update-filters a').classList.add('active');
+        document.querySelector('.settings-actions--update-filters .update-button').classList.add('active');
         contentPage.sendMessage({ type: 'checkAntiBannerFiltersUpdate' }, () => {
             setLastUpdatedTimeText(Date.now());
         });
@@ -1603,7 +1603,7 @@ var AntiBannerFilters = function (options) {
     }
 
     function onFiltersUpdateCheckReady() {
-        document.querySelector('.settings-actions--update-filters a').classList.remove('active');
+        document.querySelector('.settings-actions--update-filters .update-button').classList.remove('active');
     }
 
     return {
