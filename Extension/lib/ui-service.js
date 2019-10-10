@@ -127,7 +127,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                     blocked = '';
                 } else {
                     disabled = tabInfo.applicationFilteringDisabled;
-                    disabled = disabled || tabInfo.urlFilteringDisabled;
                     disabled = disabled || tabInfo.documentWhiteListed;
 
                     if (!disabled && adguard.settings.showPageStatistic()) {
@@ -859,7 +858,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
             var options;
             if (reset) {
-                options = { icon: adguard.prefs.ICONS.ICON_GRAY, badge: '' };
+                options = { icon: adguard.prefs.ICONS.ICON_GREEN, badge: '' };
             }
 
             updateTabIcon(tab, options);
