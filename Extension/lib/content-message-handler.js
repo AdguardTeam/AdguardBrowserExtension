@@ -241,8 +241,17 @@
             case 'resetBlockedAdsCount':
                 adguard.frames.resetBlockedAdsCount();
                 break;
-            case 'getSelectorsAndScripts':
-                return adguard.webRequestService.processGetSelectorsAndScripts(sender.tab, message.documentUrl) || {};
+            case 'getSelectorsAndScripts': {
+                let urlForSelectors;
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1498
+                // when document url for iframe is about:blank then we use tab url
+                if (!adguard.utils.url.isHttpOrWsRequest(message.documentUrl) && sender.frameId !== 0) {
+                    urlForSelectors = sender.tab.url;
+                } else {
+                    urlForSelectors = message.documentUrl;
+                }
+                return adguard.webRequestService.processGetSelectorsAndScripts(sender.tab, urlForSelectors) || {};
+            }
             case 'checkPageScriptWrapperRequest':
                 var block = adguard.webRequestService.checkPageScriptWrapperRequest(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
                 return { block: block, requestId: message.requestId };
