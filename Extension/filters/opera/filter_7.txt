@@ -1,8 +1,8 @@
-! Checksum: kyp/la3Q8QT8RD1AaocwrQ
+! Checksum: Am/BGSyv/5aMFIOi4KSW5w
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.2.19
-! TimeUpdated: 2019-08-29T16:30:56+03:00
+! Version: 2.0.2.30
+! TimeUpdated: 2019-10-01T21:02:47+03:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#japanese
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -416,8 +416,9 @@ video.tv-tokyo.co.jp#@##adspace
 avgirl.online#@#.google-ad
 ! https://github.com/AdguardTeam/AdguardFilters/issues/7918
 !! for safety due to possible ban
-@@||avgle.com/video/$genericblock,generichide
-@@||avgle.com/embed/$genericblock,generichide
+! disabled these rules and `@@||s10.histats.com/js15_as.js$domain=avgle.com` in https://forum.adguard.com/index.php?threads/34852/
+!@@||avgle.com/video/$genericblock,generichide
+!@@||avgle.com/embed/$genericblock,generichide
 !!
 avgle.com#@#.adsBox
 avgle.com#@#.pub_300x250
@@ -496,33 +497,37 @@ anipo.jp#@#.adbanner
 !---------------------------------------------------------------------------!
 !
 ! Extended CSS rules
+! https://github.com/AdguardTeam/AdguardFilters/issues/40218
+! https://github.com/AdguardTeam/AdguardFilters/issues/23716
+ascii.jp#?#body > #jpWrap > #header:has(> .adsize728)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/24644
-blogs.yahoo.co.jp##.timelineArticle > ul.timelineArticle__list > li.timelineArticle__item:has(> div[id^="ad"]:empty)
+blogs.yahoo.co.jp#?#.timelineArticle > ul.timelineArticle__list > li.timelineArticle__item:has(> div[id^="ad"]:empty)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/24647
-sankei.com##.entry_column > .entry_list > .entry:has(> .entry_content > .entry_meta > i.yellow:contains(Sponsored))
+sankei.com#?#.entry_column > .entry_list > .entry:has(> .entry_content > .entry_meta > i.yellow:contains(Sponsored))
 ! https://github.com/AdguardTeam/AdguardFilters/issues/23282
-erogazou-s.com###sougo:has(> div.eromannga)
+erogazou-s.com#?##sougo:has(> div.eromannga)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/24163
-withnews.jp##.articleList > .articleBox:has(> #ad1)
-withnews.jp##.articleList > .articleBox:has(> #ad_article)
-withnews.jp##section > .sInner > .boxmatome:not([id]):has(> .OUTBRAIN)
+withnews.jp#?#.articleList > .articleBox:has(> #ad1)
+withnews.jp#?#.articleList > .articleBox:has(> #ad_article)
+withnews.jp#?#section > .sInner > .boxmatome:not([id]):has(> .OUTBRAIN)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/23927
-toyokeizai.net###sub-column > #information:has(> .title-parts > span.ad)
-toyokeizai.net###main-column > #trend-library:has(> .title-parts > span.ad)
-toyokeizai.net###article-body > #topic-board.subsection:has(> .title-parts > span.ad)
-toyokeizai.net###article-bottom > #trend-library.subsection:has(> .title-parts > span.ad)
+toyokeizai.net#?##sub-column > #information:has(> .title-parts > span.ad)
+toyokeizai.net#?##main-column > #trend-library:has(> .title-parts > span.ad)
+toyokeizai.net#?##article-body > #topic-board.subsection:has(> .title-parts > span.ad)
+toyokeizai.net#?##article-bottom > #trend-library.subsection:has(> .title-parts > span.ad)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/23925
-appllio.com###main-content > #content > .block.odd:has(aside[id^="div-gpt-ad"])
-appllio.com##.sidebar > .region-inner > .block.odd:has(div[id^="div-gpt-ad"])
+appllio.com#?##main-content > #content > .block.odd:has(aside[id^="div-gpt-ad"])
+appllio.com#?#.sidebar > .region-inner > .block.odd:has(div[id^="div-gpt-ad"])
 ! https://github.com/AdguardTeam/AdguardFilters/issues/23120
-mindhack2ch.com##.article-body > .ad:has(> .adsbygoogle)
-mindhack2ch.com##.article-body > .rss:has(> script)
-mindhack2ch.com##.article-post-bottom > .rss-article:has(> .rss-article-item)
+mindhack2ch.com#?#.article-body > .ad:has(> .adsbygoogle)
+mindhack2ch.com#?#.article-body > .rss:has(> script)
+mindhack2ch.com#?#.article-post-bottom > .rss-article:has(> .rss-article-item)
 !
+ascii2d.net#?#.col-lg-4 > .p-t-1:has(> h5:contains(広告))
 nijinchu.com#?#article > div.entry_content > h3:contains(おすすめ商品)
-melos.media##.x1_article > .x1_articleArea[-ext-has='div.x1_siteTitle:contains([PR])']
-repeat-drama.info##.side_inner > .box:contains(スポンサーリンク)
-momon-ga.com##.repo-title:has(> strong)
+melos.media#?#.x1_article > .x1_articleArea[-ext-has='div.x1_siteTitle:contains([PR])']
+repeat-drama.info#?#.side_inner > .box:contains(スポンサーリンク)
+momon-ga.com#?#.repo-title:has(> strong)
 !---------------------------------------------------------------------------!
 !-------------- General element hiding rules -------------------------------!
 !---------------------------------------------------------------------------!
@@ -613,6 +618,8 @@ xbooks.to#%#document.cookie = "pop=1";
 ! https://github.com/AdguardTeam/AdguardFilters/issues/11687
 ! avgle.com#%#window.open = function() {};
 ! avgle.com#%#AG_onLoad(function() { setTimeout(function() { $("#player_3x2_close > *").click(); }, 300); });
+! https://forum.adguard.com/index.php?threads/34852/
+avgle.com#%#AG_onLoad(function() { closeAd(); });
 !
 !-------------------
 !-------CSS---------
@@ -715,6 +722,12 @@ _ds_adtag_
 ! Section contains rules for specific websites
 !
 ! /banner/banner_ - if it is necessary, make this rule domain specific
+epochtimes.jp##.margin-Ad-B20
+ascii2d.net##.amazon
+audioreview.m1001.coreserver.jp###side-fixed > #custom_html-23
+audioreview.m1001.coreserver.jp###list > .posts-list-upper-widget
+audioreview.m1001.coreserver.jp###side-fixed a[href^="//af.moshimo.com/af/c/click?"]
+kashi-mo.com##.rectangle_bnr
 headlines.yahoo.co.jp###lrec
 ||vipsister23.com/vipsister.html
 yomiuri.co.jp###rt_popup_overlay_yolyp_popup
@@ -722,6 +735,7 @@ yomiuri.co.jp###yolyp_popup
 nijinchu.com##div[class*="adv"]
 ||cdn.exaf.jp/dmm/js^$domain=nijinchu.com
 vipsister23.com###share2
+.gif$third-party,domain=av.movie
 av.movie##div[class*="-banner"]
 av.movie##[class$="-ads"]
 av.movie##a[href^="https://theporndude.com/"]
@@ -774,11 +788,8 @@ mindhack2ch.com##.ad
 ||mv-mindhack2ch.up.seesaa.net/common/image_feed.js
 localplace.jp###bannerList
 karapaia.com##.ads
-hoikuen-ranking.com##.banner
 oricon.co.jp##aside.top-inline-banner
 oricon.co.jp##aside.block-header-banner
-.info/*/*/*/*/$domain=avgle.com
-/:\/\/sub\.avgle\.com\/.+\/[0-9a-h]{20,}\.js/$domain=avgle.com
 erogazo-ngo.com##p > a[rel="nofollow"]
 erogazo-ngo.com##a[href^="http://newmofu.doorblog.jp/archives/"]
 dot.asahi.com##section.gAreaTrendAd
@@ -862,7 +873,6 @@ tokyomotion.net##.nva-center
 ||pc-koubou.jp^$domain=ascii.jp,image
 ascii.jp###sideR > .ban
 ascii.jp##.banR
-ascii.jp##body:not(#jpHome) > #jpWrap > #header
 gendai.ismedia.jp###GB_pc_inread_mov + div[style="min-height: 250px; overflow: hidden;"]
 gendai.ismedia.jp###GB_pc_inread_mov
 famitsu.com##.ad-super-jack-link-container
@@ -963,9 +973,6 @@ watch.impress.co.jp##.ad.billboard
 ||juicyads.com^$domain=adserver.juicyads.com
 ||ads.adxadserv.com^$domain=adserver.juicyads.com
 gagetmatome.com###ad-bottom-oya
-||rationalan.pro^$domain=avgle.com
-/sound?cver*refer*avgle.com$popup
-||avgle.com$popup,domain=avgle.com
 ||blog.livedoor.jp/diet2channel/js/adarea.js
 jin115.com##.dix_ad_n
 vippers.jp##.ad
@@ -983,17 +990,11 @@ sponichi.co.jp###annex_pc_entertainment_mid_rect
 alba.co.jp##.kakomi_gr
 mukulog.com###mybox > .ad
 dengekionline.com###rectangleBanner
-$popup,domain=avgle.com,third-party
 itmedia.co.jp##iframe[id^="cxWidget_"]
 tvbok.com##a[href^="https://rpx.a8.net"]
 tvbok.com###left_fix_out #left_box3
 tvbok.com###right_2nd > .right_box2
 dlbooks.to##div[id^="ad_"]
-avgle.com##.container > div[style*="overflow: hidden"]
-||avgle.com/images/av/*.mp4
-||avgle.com/templates/frontend/videojs-aortsyxr.js
-avgle.com##body > div[style*="z-index"]:not([id]):not([class])
-||static.avgle.com/media/av^
 bookbang.jp###footer_ban
 evidus.com##.module__adheadion
 nicovideo.jp##.realdabista_banner
@@ -1008,7 +1009,7 @@ noaboutsnote.hatenablog.com##.hatena-asin-detail
 ogeji.hatenablog.com##.entry-content > .code ~ table[style*="width:300px"]
 cyg-server.playing.wiki,seesaawiki.jp###seesaa-bnr
 wiki.seesaa.jp##.ad-boomapp
-jp.msn.com,dengekionline.com,wiki.seesaa.jp##.banner
+ascii2d.net,hoikuen-ranking.com,jp.msn.com,dengekionline.com,wiki.seesaa.jp##.banner
 ejje.weblio.jp###learning-level-table-wrap > #leadBtnWrp
 ejje.weblio.jp##body > #contentWrp ~ #outerSideLeft
 ejje.weblio.jp##.free-reg-banner
@@ -1338,6 +1339,25 @@ yahoo.co.jp##ul[class^="sponsor"]
 ||yomiuri.co.jp/ad/
 ||zenback.jp^*/tracking.html
 !
+||avgle.com/avideos.js
+||avgle.com/images.php
+||sub2.avgle.com/67/1d/ba/671dbadbf37814e321f252eac8aa2500.js
+avgle.com##.col-sm-5 > a[class="btn btn-primary"][target="_blank"]
+avgle.com##div[class*="__bn-container"]
+avgle.com##.well#ps32-container
+avgle.com###aoverlay
+.info/*/*/*/*/$domain=avgle.com
+/:\/\/sub\.avgle\.com\/.+\/[0-9a-h]{20,}\.js/$domain=avgle.com
+||rationalan.pro^$domain=avgle.com
+/sound?cver*refer*avgle.com$popup
+||avgle.com$popup,domain=avgle.com
+$popup,domain=avgle.com,third-party
+avgle.com##.container > div[style*="overflow: hidden"]
+||avgle.com/images/av/*.mp4
+||avgle.com/templates/frontend/videojs-aortsyxr.js
+avgle.com##body > div[style*="z-index"]:not([id]):not([class])
+||static.avgle.com/media/av^
+!
 !+ NOT_OPTIMIZED
 ||yimg.jp/bdv/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/35721
@@ -1363,8 +1383,11 @@ gtoys.blog48.fc2.com###adright
 !
 ! White list. Fixing filtration errors(false-positive)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/41169
+! https://github.com/AdguardTeam/AdguardFilters/issues/39988
+@@||jp.popin.cc/popin_discovery/$domain=livedoor.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/39382
-@@||s.yimg.jp/bdv/yahoo/darla/*/js/darla-secure-beacons-min.js$domain=mail.yahoo.co.jp
+@@||s.yimg.jp/bdv/yahoo/darla/*/js/darla-secure-*.js$domain=mail.yahoo.co.jp
 ! https://github.com/AdguardTeam/AdguardFilters/issues/28607
 @@||fresheye.com^$domain=m-search.sponichi.co.jp
 ! https://github.com/AdguardTeam/AdguardFilters/issues/24764

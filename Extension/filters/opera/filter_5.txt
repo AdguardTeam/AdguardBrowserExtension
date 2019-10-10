@@ -1,8 +1,8 @@
-! Checksum: q+OTWiYmAc5BP/g5oNs/tw
+! Checksum: Z5gbQW21K/2eSuhGnLJc+w
 ! Title: AdGuard Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.0.50
-! TimeUpdated: 2019-03-12T15:40:22+03:00
+! Version: 2.0.0.51
+! TimeUpdated: 2019-09-14T01:30:50+03:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#experimental
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -274,8 +274,8 @@
 ! *do not enable* yandex.ru#%#AG_onLoad(function() { if (window.location.href.indexOf("pogoda") != -1 && window.location.href.indexOf("nowcast") == -1) { Object.defineProperty(HTMLScriptElement.prototype, 'src', {writable:false}) } });
 !
 ! https://forum.adguard.com/index.php?threads/quora-com.30650
-quora.com##.grid_page div[class][id] > div[class*=" "] > div[id^="__"]:has(.external_link):has( span + span[style="display: none;"])
-quora.com##.grid_page div[class][id] > div[class*=" "] > div[id^="__"]:has(.link_overlay):has( span + span[style="display: none;"])
+quora.com#?#.grid_page div[class][id] > div[class*=" "] > div[id^="__"]:has(.external_link):has( span + span[style="display: none;"])
+quora.com#?#.grid_page div[class][id] > div[class*=" "] > div[id^="__"]:has(.link_overlay):has( span + span[style="display: none;"])
 ! https://github.com/AdguardTeam/AdguardFilters/issues/21246
 wp.pl###section_topnews > div > div > ul[data-st-area="Glonews"] + div[class^="_"]
 wp.pl##ul[data-st-area="Wiadomosci"] > div > li[data-st-area="Wiadomosci"] + div[class^="_"]
@@ -284,7 +284,7 @@ wp.pl##body > div[class] > div[class][style="height: 60px;"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/20681
 ||delivery.porn.com^$important
 ! schnittberichte.com amazon ads
-schnittberichte.com##table .sideboxes[-ext-has='a[href*="out.php?"] > img']
+schnittberichte.com#?#table .sideboxes[-ext-has='a[href*="out.php?"] > img']
 ! https://github.com/AdguardTeam/AdguardFilters/issues/11848
 redtube.com###content_container > div[class]:not(.section_wrapper):not([id]):not([style]):not(.show_page_modals)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9442

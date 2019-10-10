@@ -1,8 +1,8 @@
-! Checksum: 0sOJiA4GUDVe3NrW+LsNsw
+! Checksum: lvcsj8jjloj+tlrmxs1/pA
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.0.60
-! TimeUpdated: 2019-07-30T16:31:16+03:00
+! Version: 2.0.0.64
+! TimeUpdated: 2019-09-29T03:02:43+03:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -1299,6 +1299,7 @@ tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
 ||widget.igcdn.nl^$third-party
 ||wwa.pacific-yield.com^$third-party
 @@/ad_pics/*$image,domain=computerworld.nl|webwereld.nl
+||knack.be/js/responsive/rmgAdCheck.js
 indeleiderstrui.nl#%#Object.defineProperty(Object.prototype, 'disableAb', { get: function() { throw null; }, set: function() { throw null; } });
 indeleiderstrui.nl#%#AG_abortInlineScript(/Flags\.newInject/, 'window.Math');
 @@||indeleiderstrui.nl/media/$image
@@ -1326,20 +1327,24 @@ telegraaf.nl#%#window.canRunAds = true;
 biernet.nl#@#.afs_ads
 @@||telegraaf.tcdn.nl/javascript/showads*.js
 turksemedia.nl#$?#div[class="sidebar_item"][style="padding-bottom: 16px;"]:has(> a > img[width="276"]) { remove: true; }
-appletips.nl##.padnoshow > div[class^="block"][-ext-has='#kpwrfeatured']
-sceptr.net##.td-main-sidebar > .td-ss-main-sidebar > .widget_text:has(> h4.block-title > span:contains(ADVERTENTIE))
-androidplanet.nl##.sidebar > .widget_static_device_widget:has(.device-ad)
-androidplanet.nl##.pd-results-container > .results-inner > .pd-advisor-offer-container:first-child:has(> .pd-advisor-offer > .result-badge:contains(Adv.))
-pcmweb.nl##.site__sidebar > .block[-ext-has='div.banner']
-pcmweb.nl##.site__sidebar > .block[-ext-has='div#marketingcarrousseluitingen']
-computertotaal.nl###sidebar > .sidebarBlock[-ext-has='div#marketingcarrousseluitingen']
-computertotaal.nl###sidebar > .sidebarBlock[-ext-has='div.banner']
-ad.nl##.tile[-ext-has=">.ankeiler--advertisement"]
-gelderlander.nl##.page-content > .theme-default[-ext-has='div.ad']
-klusidee.nl##tr.table-row[-ext-has=".td-ad"]
+appletips.nl#?#.padnoshow > div[class^="block"][-ext-has='#kpwrfeatured']
+sceptr.net#?#.td-main-sidebar > .td-ss-main-sidebar > .widget_text:has(> h4.block-title > span:contains(ADVERTENTIE))
+androidplanet.nl#?#.sidebar > .widget_static_device_widget:has(.device-ad)
+androidplanet.nl#?#.pd-results-container > .results-inner > .pd-advisor-offer-container:first-child:has(> .pd-advisor-offer > .result-badge:contains(Adv.))
+pcmweb.nl#?#.site__sidebar > .block[-ext-has='div.banner']
+pcmweb.nl#?#.site__sidebar > .block[-ext-has='div#marketingcarrousseluitingen']
+computertotaal.nl#?##sidebar > .sidebarBlock[-ext-has='div#marketingcarrousseluitingen']
+computertotaal.nl#?##sidebar > .sidebarBlock[-ext-has='div.banner']
+ad.nl#?#.tile[-ext-has=">.ankeiler--advertisement"]
+gelderlander.nl#?#.page-content > .theme-default[-ext-has='div.ad']
+klusidee.nl#?#tr.table-row[-ext-has=".td-ad"]
 omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3000px!important; }
 handbalstartpunt.nl#$##advertentie-top { height: 0!important; }
 omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
+telegraaf.nl##.SectionPage__bannerWrapper
+telegraaf.nl##.ArticleBodyBlocks__inlineArticleSpotXBanner
+telegraaf.nl##.TextArticlePage__bannerWrapper
+telegraaf.nl##.ArticlePageWrapper__banner
 weeronline.nl##section[class*="wol-banner-module__banner"]
 turksemedia.nl##div[class="sidebar_item"][style="padding-bottom: 16px;"] > a > img[Width="276"]
 filmtotaal.nl##.ad-centering
@@ -1374,7 +1379,6 @@ androidplanet.nl##.sidebar > .widget_ad_html
 ||unity.nu/media/*/BANNERS/
 ||topomania.net/sites/topomania.net/images/pacnum-promo.png
 ondertitel.com##.billboard_ad_new
-mediamarkt.nl###colorbox
 ||pornozot.com/js/compiled/exo-
 ||pornozot.com/js/compiled/custom-vendor.js
 pornozot.com##.banners-footer
