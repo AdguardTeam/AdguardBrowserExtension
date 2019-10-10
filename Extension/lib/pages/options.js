@@ -1339,7 +1339,7 @@ var AntiBannerFilters = function (options) {
 
     function updateAntiBannerFilters(e) {
         e.preventDefault();
-        document.querySelector('.settings-actions--update-filters .settings-actions__update-button').classList.add('settings-actions__update-button--spinning');
+        document.querySelector('.settings-actions__update-button').classList.add('settings-actions__update-button--spinning');
         contentPage.sendMessage({ type: 'checkAntiBannerFiltersUpdate' }, () => {
             setLastUpdatedTimeText(Date.now());
         });
@@ -1603,7 +1603,7 @@ var AntiBannerFilters = function (options) {
     }
 
     function onFiltersUpdateCheckReady() {
-        document.querySelector('.settings-actions--update-filters .settings-actions__update-button').classList.remove('settings-actions__update-button--spinning');
+        document.querySelector('.settings-actions__update-button').classList.remove('settings-actions__update-button--spinning');
     }
 
     return {
