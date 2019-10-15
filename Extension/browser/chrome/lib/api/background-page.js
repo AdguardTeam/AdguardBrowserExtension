@@ -73,6 +73,7 @@ const browser = window.browser || chrome;
      * If referrer of request contains full url of extension,
      * than this request is considered as extension's own request
      * (e.g. request for filter downloading)
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1437
      * @param details
      * @returns {boolean}
      */
@@ -92,11 +93,12 @@ const browser = window.browser || chrome;
      * (e.g. chrome-extension:// or moz-extension://... etc.)
      * and requests made from extension itself
      * @param details Request details
+     * @param {boolean} [skipOwn=true] - flag if should skip own requests
      * @returns {boolean}
      */
-    function shouldSkipRequest(details) {
+    function shouldSkipRequest(details, skipOwn = true) {
         if (details.tabId === adguard.BACKGROUND_TAB_ID) {
-            return details.url.indexOf(extensionScheme) === 0 || isOwnRequest(details);
+            return details.url.indexOf(extensionScheme) === 0 || (isOwnRequest(details) && skipOwn);
         }
         return false;
     }
@@ -316,7 +318,9 @@ const browser = window.browser || chrome;
          */
         addListener(callback, urls) {
             browser.webRequest.onBeforeSendHeaders.addListener((details) => {
-                if (shouldSkipRequest(details)) {
+                // we should not skip own requests onBeforeSendHeaders because here we set authorisation headers
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1505
+                if (shouldSkipRequest(details, false)) {
                     return;
                 }
 
