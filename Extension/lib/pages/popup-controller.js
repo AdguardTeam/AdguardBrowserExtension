@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global i18n, popupPage */
+/* global i18n, popupPage, lottie */
 
 /**
  * Controller that manages add-on popup window
@@ -1008,5 +1008,13 @@ PopupController.prototype = {
             default:
                 break;
         }
+    });
+
+    lottie.loadAnimation({
+        container: document.querySelector('.holiday-notify__ico'),
+        renderer: 'svg',
+        loop: false,
+        autoplay: true,
+        path: 'lottie/pumpkin.json',
     });
 })();
