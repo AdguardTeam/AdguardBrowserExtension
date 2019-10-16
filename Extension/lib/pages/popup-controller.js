@@ -241,7 +241,7 @@ PopupController.prototype = {
     _renderAnimatedNotification: function (container, tabInfo, options) {
         const { notification } = options;
         // Do not show
-        if (!notification || tabInfo.adguardDetected) {
+        if (!notification) {
             return;
         }
 
