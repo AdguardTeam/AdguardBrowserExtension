@@ -63,44 +63,16 @@ const browser = window.browser || chrome;
         return url;
     })();
 
-    // Calculates extension full url
-    const extensionUrl = (function () {
-        const url = browser.extension.getURL('');
-        return url.substring(0, url.length - 1);
-    })();
-
-    /**
-     * If referrer of request contains full url of extension,
-     * than this request is considered as extension's own request
-     * (e.g. request for filter downloading)
-     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1437
-     * @param details
-     * @returns {boolean}
-     */
-    const isOwnRequest = (details) => {
-        // Chrome uses `initiator`: https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
-        // eslint-disable-next-line max-len
-        // FF uses `originUrl`: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webRequest/onBeforeRequest#Additional_objects
-        const referrerUrl = details.originUrl || details.initiator;
-        if (!referrerUrl) {
-            return false;
-        }
-        return referrerUrl.indexOf(extensionUrl) === 0;
-    };
-
     /**
      * We are skipping requests to internal resources of extensions
      * (e.g. chrome-extension:// or moz-extension://... etc.)
      * and requests made from extension itself
      * @param details Request details
-     * @param {boolean} [skipOwn=true] - flag if should skip own requests
      * @returns {boolean}
      */
-    function shouldSkipRequest(details, skipOwn = true) {
-        if (details.tabId === adguard.BACKGROUND_TAB_ID) {
-            return details.url.indexOf(extensionScheme) === 0 || (isOwnRequest(details) && skipOwn);
-        }
-        return false;
+    function shouldSkipRequest(details) {
+        return details.tabId === adguard.BACKGROUND_TAB_ID
+            && details.url.indexOf(extensionScheme) === 0;
     }
 
     const linkHelper = document.createElement('a');
