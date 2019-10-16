@@ -27,12 +27,11 @@ adguard.notifications = (function (adguard) {
     const halloweenNotification = {
         id: 'halloween',
         locales: {
-            en: 'Trick or treat?',
+            en: 'Trick or Treat',
         },
         text: '',
         url: 'https://adguard.com/forward.html?action=adguard_site_notify&from=holiday_notify&app=browser_extension',
-        // TODO [maximtop] set correct date
-        from: '15 October 2019 00:00:00',
+        from: '29 October 2019 00:00:00',
         to: '1 November 2019 23:59:00',
         type: 'animated',
         get icons() {
