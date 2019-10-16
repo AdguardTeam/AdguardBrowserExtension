@@ -674,6 +674,14 @@ QUnit.test('Test wildcard domains in the url rules', (assert) => {
     assert.notOk(rule.isPermitted('adguard.ru'));
 });
 
+QUnit.test('$document and $popup rule together', (assert) => {
+    const ruleText = '||example.org^$document,popup';
+    const rule = new adguard.rules.UrlFilterRule(ruleText);
+    assert.ok(rule);
+    assert.ok(rule.isDocumentLevel());
+    assert.ok(rule.isBlockPopups());
+});
+
 QUnit.test('Test cookie option', (assert) => {
     let cookieRule = new adguard.rules.UrlFilterRule('||facebook.com^$third-party,cookie=c_user');
     assert.ok(cookieRule);
