@@ -245,7 +245,8 @@ PopupController.prototype = {
             return;
         }
 
-        if (notification.type !== 'animated') {
+        // Do not show notification if the type is not animated or there is no text
+        if (notification.type !== 'animated' || !notification.text) {
             return;
         }
 
