@@ -66,7 +66,6 @@ const browser = window.browser || chrome;
     /**
      * We are skipping requests to internal resources of extensions
      * (e.g. chrome-extension:// or moz-extension://... etc.)
-     * and requests made from extension itself
      * @param details Request details
      * @returns {boolean}
      */
