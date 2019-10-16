@@ -366,25 +366,33 @@
         const hasAllOption = updatedOptionsParts.indexOf(ALL_OPTION) > -1;
 
         if (hasAllOption) {
+            // $all modifier should be converted in 4 rules
+            // ||example.org^$document,popup
+            // ||example.org^
+            // ||example.org^$inline-font
+            // ||example.org^$inline-script
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1506
             const allOptionReplacers = [
-                DOCUMENT_OPTION,
-                POPUP_OPTION,
-                INLINE_SCRIPT_OPTION,
-                INLINE_FONT_OPTION,
+                [DOCUMENT_OPTION, POPUP_OPTION],
+                [INLINE_SCRIPT_OPTION],
+                [INLINE_FONT_OPTION],
+                [''], //
             ];
-            return allOptionReplacers.map((replacer) => {
+            return allOptionReplacers.map((replacers) => {
                 // remove replacer and all option from the list
                 const optionsButAllAndReplacer = updatedOptionsParts
-                    .filter(option => !(option === replacer || option === ALL_OPTION));
+                    .filter(option => !(replacers.includes(option) || option === ALL_OPTION));
 
                 // try get converted values, used for INLINE_SCRIPT_OPTION, INLINE_FONT_OPTION
-                const convertedReplacer = conversionMap[replacer] || replacer;
+                const convertedReplacers = replacers.map(replacer => conversionMap[replacer] || replacer);
 
                 // add replacer to the list of options
-                const updatedOptionsString = [convertedReplacer, ...optionsButAllAndReplacer].join(',');
+                const updatedOptionsString = [...convertedReplacers, ...optionsButAllAndReplacer]
+                    .filter(entity => entity)
+                    .join(',');
 
                 // create a new rule
-                return `${domainPart}\$${updatedOptionsString}`;
+                return updatedOptionsString.length < 1 ? domainPart : `${domainPart}\$${updatedOptionsString}`;
             });
         }
 

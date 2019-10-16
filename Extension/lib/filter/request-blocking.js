@@ -196,7 +196,7 @@ adguard.webRequestService = (function (adguard) {
         }
 
         var requestRule = getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
-        return isRequestBlockedByRule(requestRule);
+        return isRequestBlockedByRule(requestRule) && !requestRule.isRedirectRule();
     };
 
     /**
@@ -216,7 +216,7 @@ adguard.webRequestService = (function (adguard) {
         for (var i = 0; i < collapseRequests.length; i++) {
             var request = collapseRequests[i];
             var requestRule = getRuleForRequest(tab, request.elementUrl, referrerUrl, request.requestType);
-            request.collapse = isRequestBlockedByRule(requestRule);
+            request.collapse = isRequestBlockedByRule(requestRule) && !requestRule.isRedirectRule();
         }
 
         return collapseRequests;
@@ -231,8 +231,7 @@ adguard.webRequestService = (function (adguard) {
     var isRequestBlockedByRule = function (requestRule) {
         return requestRule
             && !requestRule.whiteListRule
-            && !requestRule.getReplace()
-            && !requestRule.isBlockPopups();
+            && !requestRule.getReplace();
     };
 
     /**
