@@ -149,8 +149,16 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                 // If there's an active notification, indicate it on the badge
                 const notification = adguard.notifications.getCurrentNotification();
                 if (notification && !tabInfo.adguardDetected) {
-                    badge = notification.badgeText;
-                    badgeColor = notification.badgeBgColor;
+                    badge = notification.badgeText || badge;
+                    badgeColor = notification.badgeBgColor || badgeColor;
+
+                    if (disabled) {
+                        icon = notification.icons.ICON_GRAY;
+                    } else if (tabInfo.adguardDetected) {
+                        icon = notification.icons.ICON_BLUE;
+                    } else {
+                        icon = notification.icons.ICON_GREEN;
+                    }
                 }
             }
 

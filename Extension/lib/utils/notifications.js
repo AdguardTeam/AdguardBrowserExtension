@@ -24,20 +24,50 @@ adguard.notifications = (function (adguard) {
 
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
 
+    const halloweenNotification = {
+        id: 'halloween',
+        locales: {
+            en: 'Trick or treat?',
+        },
+        text: '',
+        url: 'https://adguard.com/forward.html?action=adguard_site_notify&from=holiday_notify&app=browser_extension',
+        // TODO [maximtop] set correct date
+        from: '15 October 2019 00:00:00',
+        to: '1 November 2019 23:59:00',
+        type: 'animated',
+        get icons() {
+            return adguard.lazyGet(halloweenNotification, 'icons', () => ({
+                ICON_BLUE: {
+                    '19': adguard.getURL('icons/blue-19-halloween.png'),
+                    '38': adguard.getURL('icons/blue-38-halloween.png'),
+                },
+                ICON_GREEN: {
+                    '19': adguard.getURL('icons/green-19-halloween.png'),
+                    '38': adguard.getURL('icons/green-38-halloween.png'),
+                },
+                ICON_GRAY: {
+                    '19': adguard.getURL('icons/gray-19-halloween.png'),
+                    '38': adguard.getURL('icons/gray-38-halloween.png'),
+                },
+            }));
+        },
+    };
+
     /**
      * @typedef Notification
      * @type object
      * @property {string} id
      * @property {object} locales
      * @property {string} url
+     * @property {string} text
      * @property {string} from
      * @property {string} to
      * @property {string} bgColor;
      * @property {string} textColor;
      * @property {string} badgeBgColor;
      * @property {string} badgeText;
+     * @property {string} type;
      */
-
     const notifications = {
         tenYear: {
             id: 'tenYear',
@@ -57,7 +87,9 @@ adguard.notifications = (function (adguard) {
             textColor: '#fff',
             badgeBgColor: '#DF3812',
             badgeText: '!',
+            type: 'simple',
         },
+        halloween: halloweenNotification,
     };
 
     /**
@@ -66,7 +98,7 @@ adguard.notifications = (function (adguard) {
      * @returns {string} matching text or null
      */
     const getNotificationText = function (notification) {
-        const language = navigator.language;
+        const { language } = navigator;
         if (!language) {
             return null;
         }
@@ -158,7 +190,7 @@ adguard.notifications = (function (adguard) {
 
         if (currentNotification) {
             const viewedNotifications = adguard.localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
-            const id = currentNotification.id;
+            const { id } = currentNotification;
             if (!viewedNotifications.includes(id)) {
                 viewedNotifications.push(id);
                 adguard.localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
@@ -169,7 +201,7 @@ adguard.notifications = (function (adguard) {
     };
 
     return {
-        getCurrentNotification: getCurrentNotification,
-        setNotificationViewed: setNotificationViewed,
+        getCurrentNotification,
+        setNotificationViewed,
     };
 })(adguard);

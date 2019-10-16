@@ -10,7 +10,8 @@
     <!-- @if browser == "CHROMIUM" || browser == "EDGE" || browser == "OPERA" || browser == "FIREFOX_WEBEXT" -->
     <script type="text/javascript" src="../lib/libs/d3.js" charset="utf-8"></script>
     <script type="text/javascript" src="../lib/libs/c3.js"></script>
-    <script type="text/javascript" src="../lib/libs/lottie.js"></script>
+    <script type="text/javascript" src="../lib/libs/lottie/lottie.js"></script>
+    <script type="text/javascript" src="../lib/libs/lottie/animations.js"></script>
     <script type="text/javascript" src="../lib/content-script/adguard-content.js"></script>
     <script type="text/javascript" src="../lib/content-script/common-script.js"></script>
     <script type="text/javascript" src="../lib/content-script/popup-script.js"></script>
@@ -41,15 +42,6 @@
         </div>
     </div>
     <div class="footer">
-    </div>
-    <div class="holiday-notify">
-        <div class="holiday-notify__close"></div>
-        <div class="holiday-notify__content">
-            <div class="holiday-notify__btns">
-                <a href="https://adguard.com/forward.html?action=adguard_site_notify&from=holiday_notify&app=browser_extension" target="_blank" i18n="halloween_notify_btn" class="holiday-notify__btn"></a>
-            </div>
-            <div class="holiday-notify__ico"></div>
-        </div>
     </div>
 </div>
 
@@ -199,6 +191,19 @@
         </a>
     </div>
 </div>
+
+<div id="animated-notification-template" style="display: none">
+    <div class="holiday-notify">
+        <div class="holiday-notify__close"></div>
+        <div class="holiday-notify__content">
+            <div class="holiday-notify__btns">
+                <button class="holiday-notify__btn"></button>
+            </div>
+            <div class="holiday-notify__ico"></div>
+        </div>
+    </div>
+</div>
+
 
 </body>
 </html>
