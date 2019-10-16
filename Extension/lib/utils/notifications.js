@@ -27,7 +27,13 @@ adguard.notifications = (function (adguard) {
     const halloweenNotification = {
         id: 'halloween',
         locales: {
-            en: 'Trick or Treat',
+            en: 'Trick or Treat?',
+            de: 'Süßes oder Saures?',
+            ru: 'Кошелек или жизнь?',
+            fr: 'Bonbons ou bâtons ?',
+            it: 'Dolcetto o scherzetto?',
+            ja: 'トリック・オア・トリート',
+            ko: '트릭 오어 트릿',
         },
         text: '',
         url: 'https://adguard.com/forward.html?action=adguard_site_notify&from=holiday_notify&app=browser_extension',
