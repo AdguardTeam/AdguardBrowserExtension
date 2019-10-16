@@ -290,9 +290,7 @@ const browser = window.browser || chrome;
          */
         addListener(callback, urls) {
             browser.webRequest.onBeforeSendHeaders.addListener((details) => {
-                // we should not skip own requests onBeforeSendHeaders because here we set authorisation headers
-                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1505
-                if (shouldSkipRequest(details, false)) {
+                if (shouldSkipRequest(details)) {
                     return;
                 }
 
