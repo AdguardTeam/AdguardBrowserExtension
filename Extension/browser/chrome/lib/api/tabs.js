@@ -470,7 +470,6 @@ adguard.tabsImpl = (function (adguard) {
             const errorMessage = e.message || e;
             // Some browsers do not support user css origin
             if (/\bcssOrigin\b/.test(errorMessage)) {
-                console.log('set to false');
                 userCSSSupport = false;
             }
         }
