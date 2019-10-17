@@ -46,9 +46,9 @@ adguard.notifications = (function (adguard) {
                     '19': adguard.getURL('icons/blue-19-halloween.png'),
                     '38': adguard.getURL('icons/blue-38-halloween.png'),
                 },
-                ICON_GREEN: {
-                    '19': adguard.getURL('icons/green-19-halloween.png'),
-                    '38': adguard.getURL('icons/green-38-halloween.png'),
+                ICON_YELLOW: {
+                    '19': adguard.getURL('icons/yellow-19-halloween.png'),
+                    '38': adguard.getURL('icons/yellow-38-halloween.png'),
                 },
                 ICON_GRAY: {
                     '19': adguard.getURL('icons/gray-19-halloween.png'),
