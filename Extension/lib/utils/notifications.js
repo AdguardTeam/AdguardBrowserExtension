@@ -25,7 +25,7 @@ adguard.notifications = (function (adguard) {
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
 
     const halloweenNotification = {
-        id: 'halloween',
+        id: 'halloween2019',
         locales: {
             en: 'Trick or Treat?',
             de: 'Süßes oder Saures?',
@@ -74,26 +74,6 @@ adguard.notifications = (function (adguard) {
      * @property {string} type;
      */
     const notifications = {
-        tenYear: {
-            id: 'tenYear',
-            locales: {
-                en: '10th Anniversary 50% Sale and a Giveaway! Learn more',
-                de: '50% Rabatt und eine Verlosung zum 10. Geburtstag von AdGuard! Erfahren Sie mehr',
-                fr: 'Réduction de 50% et Giveaway pour notre 10-éme Anniversaire ! En savoir plus',
-                ru: 'Скидка 50% и розыгрыш призов в честь 10-летия AdGuard! Узнайте больше',
-                ja: '【10周年】半額セール & プレゼント抽選！詳細はこちら',
-            },
-            // This field is filled below (see initNotifications)
-            text: '',
-            url: 'https://adguard.com/forward.html?action=special_ten&from=browser_action&app=browser_extension',
-            from: '1 June 2019 00:00:00',
-            to: '3 June 2019 23:59:00',
-            bgColor: '#67b279',
-            textColor: '#fff',
-            badgeBgColor: '#DF3812',
-            badgeText: '!',
-            type: 'simple',
-        },
         halloween: halloweenNotification,
     };
 
