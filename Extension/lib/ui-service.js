@@ -157,7 +157,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                     } else if (tabInfo.adguardDetected) {
                         icon = notification.icons.ICON_BLUE;
                     } else {
-                        icon = notification.icons.ICON_GREEN;
+                        icon = notification.icons.ICON_YELLOW;
                     }
                 }
             }
