@@ -1,8 +1,8 @@
-! Checksum: /t6bSZYi5QrFxk3ozlmCsQ
+! Checksum: 9+4UGG7+dqi9t3hKMiCxkw
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.8.6
-! TimeUpdated: 2019-10-03T05:30:07+03:00
+! Version: 2.0.8.20
+! TimeUpdated: 2019-10-17T16:30:11+03:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#mobile
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -91,6 +91,9 @@
 ||coinhive.com^
 ||coin-hive.com^
 !
+! Micromax India
+||ads.go2reach.com^
+||mimicromax.com^
 ! 3B Meteo
 ||feed.4wnet.com^
 ! Duodian
@@ -181,6 +184,14 @@
 ||plugin.mobopay.baidu.com^
 ||mo.freeindoapp.com^
 !
+||92kyxiz5xg.execute-api.us-west-2.amazonaws.com^
+||0jkro0unul.execute-api.us-west-2.amazonaws.com^
+||d19xf4taj229i8.cloudfront.net^
+||ad999.biz^$third-party
+||cafe-latte.myshoplus.com^
+||luckyforworlds.com^
+||cdn-adn.rayjump.com^
+||cdn-adn-*.rayjump.com^
 ||buysellads.com^
 ||casino-ad-mediation.me2zengame.com^
 ||postut.cn^$third-party
@@ -1089,7 +1100,7 @@
 ! https://github.com/AdguardTeam/AdguardFilters/issues/27586
 @@||js.kanald.com.tr/assets/dist/js/custom/ads.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/23913
-! nrz.de
+! wr.de/wp.de/nrz.de
 ! https://github.com/AdguardTeam/AdguardFilters/issues/17629
 @@||pagead2.googlesyndication.com/pagead/show_ads.js$domain=thebrickfan.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/16544
@@ -1163,6 +1174,8 @@ westseattleblog.com#@#.header-ad
 !
 ! Extended CSS rules
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/42401
+eksisozluk.com#$?#.ad-mobilewebinterstitial { remove: true; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/34257
 m.empflix.com#$?##flixPlayer > div[id="inttt"][style*="z-index:"] { remove: true; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/39800
@@ -1497,6 +1510,8 @@ deviantart.com#$#div[class*="dp-ad-"] {height: 0!important; width: 0!important; 
 @@||xda-cdn.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3707
 @@||tf-robots.nl^$elemhide,jsinject,content
+! https://github.com/AdguardTeam/AdguardForAndroid/issues/3080
+@@||yohalabs.com^
 !
 !#####################
 !
@@ -1727,8 +1742,6 @@ arseblog.com#@#.header-ad
 @@||google-analytics.com^$domain=wtf.nl
 @@||securepubads.g.doubleclick.net/gampad/ads$domain=wtf.nl
 @@||ad.360yield.com/adj?p=$domain=wtf.nl
-! https://github.com/AdguardTeam/AdguardFilters/issues/2298
-@@||ad.admitad.com/*/?ulp=
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2263
 @@||relap.io/api/*/head.js?$domain=surfingbird.ru
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1986
@@ -1835,6 +1848,12 @@ m.news.de##.unisterAdsStart
 !+ NOT_PLATFORM(ios, ext_android_cb)
 ||mobile.donanimhaber.com/ads^
 !
+forbes.com##.ad-unit
+||media-imdb.com/images/*/imdbads/js/collections/admobileweb-*._*_.js
+kolodischi.by###mainRespAd
+theverge.com##.m-ad
+geeksokuhou.net##a[href^="https://link-a.net/gate.php"]
+geeksokuhou.net##section#text-28
 prohockeyrumors.com,hoopsrumors.com,profootballrumors.com,mlbtraderumors.com###gweinifooterAdSpace
 m.eprice.com.hk##div[class^="ad-"]
 m.eprice.com.hk###popup-ad-overlay
@@ -2694,7 +2713,7 @@ phonearena.com##div[style="min-width:300px; min-height:250px; overflow: hidden; 
 wired.com##.amp-wp-banner-ad
 wired.com##.amp-wp-inline-ad
 wired.com##.amp-wp-footer-ad
-auto-swiat.pl,dialog.ua,mobile.reuters.com,spiegel.de,amp.welt.de,forum.xda-developers.com,sueddeutsche.de,amp.usatoday.com,m.gadgets.ndtv.com##amp-ad
+forbes.com,auto-swiat.pl,dialog.ua,mobile.reuters.com,spiegel.de,amp.welt.de,forum.xda-developers.com,sueddeutsche.de,amp.usatoday.com,m.gadgets.ndtv.com##amp-ad
 m.gadgets.ndtv.com##.top_ad
 ||api.kostprice.com/api/amp-widget$domain=m.gadgets.ndtv.com
 m.gadgets.ndtv.com##amp-iframe
@@ -2974,6 +2993,8 @@ livejournal.com##.mdspost-aside__item--banner
 ! Blocking Facebook mobile ads
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/42029
+! https://github.com/AdguardTeam/AdguardFilters/issues/41592
 ! https://github.com/AdguardTeam/AdguardFilters/issues/41572
 ! https://github.com/AdguardTeam/AdguardFilters/pull/41533/
 ! Duodian
@@ -3271,6 +3292,10 @@ livejournal.com##.mdspost-aside__item--banner
 !+ NOT_PLATFORM(ios, ext_safari, ext_android_cb)
 ||adj.st^
 !
+||cdn-adn.rayjump.com^
+||sg01.rayjump.com^
+||cafe-log.myshoplus.com^
+||de01.rayjump.com^
 ||stat.m.360.cn^
 ||stats-a.maxthon.com^
 ||pgapi.ksmobile.com^
@@ -3598,6 +3623,8 @@ livejournal.com##.mdspost-aside__item--banner
 ||analy.qq.com^
 ||appsupport.qq.com/cgi-bin/appstage/mstats_batch_report
 ||monitor.uu.qq.com/analytics/
+! Google News
+||play.google.com/newsstand/api/*/people/me/analytics^
 !------------------ Content replacement rules ----------------------------------!
 !-------------------------------------------------------------------------------!
 !
