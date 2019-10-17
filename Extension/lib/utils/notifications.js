@@ -36,7 +36,7 @@ adguard.notifications = (function (adguard) {
             ko: '트릭 오어 트릿',
         },
         text: '',
-        url: 'https://adguard.com/forward.html?action=adguard_site_notify&from=holiday_notify&app=browser_extension',
+        url: 'https://adguard.com/forward.html?action=holiday_notify&from=popup&app=browser_extension',
         from: '29 October 2019 00:00:00',
         to: '1 November 2019 23:59:00',
         type: 'animated',
