@@ -193,12 +193,12 @@ QUnit.test('converts union of inline-font,inline-script modifier into csp rule',
     assert.equal(actual, expected);
 });
 
-QUnit.test('converts rules with $all modifier into 3 rules with: $document, $popup and $csp', (assert) => {
+QUnit.test('converts rules with $all modifier into 4 rules', (assert) => {
     // test simple rule;
     let rule = '||example.org^$all';
     let actual = adguard.rules.ruleConverter.convertRule(rule);
-    let exp1 = '||example.org^$document';
-    let exp2 = '||example.org^$popup';
+    let exp1 = '||example.org^$document,popup';
+    let exp2 = '||example.org^';
     let exp3 = '||example.org^$csp=script-src \'self\' \'unsafe-eval\' http: https: data: blob: mediastream: filesystem:';
     let exp4 = '||example.org^$csp=font-src \'self\' \'unsafe-eval\' http: https: data: blob: mediastream: filesystem:';
 
@@ -211,8 +211,8 @@ QUnit.test('converts rules with $all modifier into 3 rules with: $document, $pop
     // test rule with more options
     rule = '||example.org^$all,important';
     actual = adguard.rules.ruleConverter.convertRule(rule);
-    exp1 = '||example.org^$document,important';
-    exp2 = '||example.org^$popup,important';
+    exp1 = '||example.org^$document,popup,important';
+    exp2 = '||example.org^$important';
     exp3 = '||example.org^$csp=script-src \'self\' \'unsafe-eval\' http: https: data: blob: mediastream: filesystem:,important';
     exp4 = '||example.org^$csp=font-src \'self\' \'unsafe-eval\' http: https: data: blob: mediastream: filesystem:,important';
     assert.equal(actual.length, 4);

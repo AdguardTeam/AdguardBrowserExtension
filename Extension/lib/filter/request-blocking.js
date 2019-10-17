@@ -224,6 +224,7 @@ adguard.webRequestService = (function (adguard) {
 
     /**
      * Checks if request is blocked by rule
+     * Do not allow redirect rules because they can't be used in collapse check functions
      *
      * @param requestRule
      * @returns {*|boolean}
@@ -232,7 +233,7 @@ adguard.webRequestService = (function (adguard) {
         return requestRule
             && !requestRule.whiteListRule
             && !requestRule.getReplace()
-            && !requestRule.isBlockPopups();
+            && !requestRule.isRedirectRule();
     };
 
     /**
@@ -255,12 +256,6 @@ adguard.webRequestService = (function (adguard) {
      */
     const getBlockedResponseByRule = function (requestRule, requestType, requestUrl) {
         if (isRequestBlockedByRule(requestRule)) {
-            if (requestRule.isRedirectRule()) {
-                const redirectOption = requestRule.getRedirect();
-                const redirectUrl = redirectOption.getRedirectUrl();
-                return { redirectUrl };
-            }
-
             const isDocumentLevel = requestType === adguard.RequestTypes.DOCUMENT
                 || requestType === adguard.RequestTypes.SUBDOCUMENT;
 
@@ -281,6 +276,11 @@ adguard.webRequestService = (function (adguard) {
             if (requestType !== adguard.RequestTypes.DOCUMENT) {
                 return { cancel: true };
             }
+        // check if request rule is blocked by rule and is redirect rule
+        } else if (requestRule && !requestRule.whiteListRule && requestRule.isRedirectRule()) {
+            const redirectOption = requestRule.getRedirect();
+            const redirectUrl = redirectOption.getRedirectUrl();
+            return { redirectUrl };
         }
         return null;
     };
