@@ -24,40 +24,57 @@ adguard.notifications = (function (adguard) {
 
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
 
+    const halloweenNotification = {
+        id: 'halloween2019',
+        locales: {
+            en: 'Trick or Treat?',
+            de: 'Süßes oder Saures?',
+            ru: 'Кошелек или жизнь?',
+            fr: 'Bonbons ou bâtons ?',
+            it: 'Dolcetto o scherzetto?',
+            ja: 'トリック・オア・トリート',
+            ko: '트릭 오어 트릿',
+        },
+        text: '',
+        url: 'https://adguard.com/forward.html?action=holiday_notify&from=popup&app=browser_extension',
+        from: '29 October 2019 00:00:00',
+        to: '1 November 2019 23:59:00',
+        type: 'animated',
+        get icons() {
+            return adguard.lazyGet(halloweenNotification, 'icons', () => ({
+                ICON_BLUE: {
+                    '19': adguard.getURL('icons/blue-19-halloween.png'),
+                    '38': adguard.getURL('icons/blue-38-halloween.png'),
+                },
+                ICON_YELLOW: {
+                    '19': adguard.getURL('icons/yellow-19-halloween.png'),
+                    '38': adguard.getURL('icons/yellow-38-halloween.png'),
+                },
+                ICON_GRAY: {
+                    '19': adguard.getURL('icons/gray-19-halloween.png'),
+                    '38': adguard.getURL('icons/gray-38-halloween.png'),
+                },
+            }));
+        },
+    };
+
     /**
      * @typedef Notification
      * @type object
      * @property {string} id
      * @property {object} locales
      * @property {string} url
+     * @property {string} text
      * @property {string} from
      * @property {string} to
      * @property {string} bgColor;
      * @property {string} textColor;
      * @property {string} badgeBgColor;
      * @property {string} badgeText;
+     * @property {string} type;
      */
-
     const notifications = {
-        tenYear: {
-            id: 'tenYear',
-            locales: {
-                en: '10th Anniversary 50% Sale and a Giveaway! Learn more',
-                de: '50% Rabatt und eine Verlosung zum 10. Geburtstag von AdGuard! Erfahren Sie mehr',
-                fr: 'Réduction de 50% et Giveaway pour notre 10-éme Anniversaire ! En savoir plus',
-                ru: 'Скидка 50% и розыгрыш призов в честь 10-летия AdGuard! Узнайте больше',
-                ja: '【10周年】半額セール & プレゼント抽選！詳細はこちら',
-            },
-            // This field is filled below (see initNotifications)
-            text: '',
-            url: 'https://adguard.com/forward.html?action=special_ten&from=browser_action&app=browser_extension',
-            from: '1 June 2019 00:00:00',
-            to: '3 June 2019 23:59:00',
-            bgColor: '#67b279',
-            textColor: '#fff',
-            badgeBgColor: '#DF3812',
-            badgeText: '!',
-        },
+        halloween: halloweenNotification,
     };
 
     /**
@@ -66,7 +83,7 @@ adguard.notifications = (function (adguard) {
      * @returns {string} matching text or null
      */
     const getNotificationText = function (notification) {
-        const language = navigator.language;
+        const { language } = navigator;
         if (!language) {
             return null;
         }
@@ -158,7 +175,7 @@ adguard.notifications = (function (adguard) {
 
         if (currentNotification) {
             const viewedNotifications = adguard.localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
-            const id = currentNotification.id;
+            const { id } = currentNotification;
             if (!viewedNotifications.includes(id)) {
                 viewedNotifications.push(id);
                 adguard.localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
@@ -169,7 +186,7 @@ adguard.notifications = (function (adguard) {
     };
 
     return {
-        getCurrentNotification: getCurrentNotification,
-        setNotificationViewed: setNotificationViewed,
+        getCurrentNotification,
+        setNotificationViewed,
     };
 })(adguard);

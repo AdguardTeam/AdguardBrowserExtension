@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global i18n, popupPage */
+/* global i18n, popupPage, lottie, AGAnimations */
 
 /**
  * Controller that manages add-on popup window
@@ -203,6 +203,7 @@ PopupController.prototype = {
 
         // Notification
         this.notification = this._getTemplate('notification-template');
+        this.animatedNotification = this._getTemplate('animated-notification-template');
 
         this._renderHeader(containerHeader, tabInfo);
         this._renderNotificationBlock(stack, tabInfo, this.options);
@@ -213,6 +214,7 @@ PopupController.prototype = {
         this._renderMessage(containerMain, tabInfo);
         this._renderStats(containerStats);
         this._renderFooter(footerContainer, tabInfo, this.options);
+        this._renderAnimatedNotification(parent, tabInfo, this.options);
     },
 
     _getTemplate: function (id) {
@@ -236,9 +238,39 @@ PopupController.prototype = {
         this._appendTemplate(container, template);
     },
 
+    _renderAnimatedNotification: function (container, tabInfo, options) {
+        const { notification } = options;
+        // Do not show
+        if (!notification) {
+            return;
+        }
+
+        // Do not show notification if the type is not animated or there is no text
+        if (notification.type !== 'animated' || !notification.text) {
+            return;
+        }
+
+        const button = this.animatedNotification.querySelector('.holiday-notify__btn');
+        button.innerText = notification.text;
+
+        this._appendTemplate(container, this.animatedNotification);
+
+        lottie.loadAnimation({
+            container: container.querySelector('.holiday-notify__ico'),
+            renderer: 'svg',
+            autoplay: true,
+            animationData: JSON.parse(AGAnimations[notification.id]),
+        });
+    },
+
     _renderNotificationBlock: function (container, tabInfo, options) {
+        const { notification } = options;
         // Do not show notification
-        if (!options.notification || tabInfo.adguardDetected) {
+        if (!notification || tabInfo.adguardDetected) {
+            return;
+        }
+
+        if (notification.type !== 'simple') {
             return;
         }
 
@@ -246,7 +278,7 @@ PopupController.prototype = {
             bgColor,
             textColor,
             text,
-        } = options.notification;
+        } = notification;
 
         if (!text) {
             return;
@@ -811,6 +843,26 @@ PopupController.prototype = {
                 popupPage.sendMessage({ type: 'setNotificationViewed', withDelay: false });
             }
         });
+
+        this._bindAction(parent, '.holiday-notify__btn', 'click', (e) => {
+            e.preventDefault();
+            const { url } = self.options.notification;
+            if (url) {
+                self.openLink(url);
+                popupPage.sendMessage({ type: 'setNotificationViewed', withDelay: false });
+                popupPage.closePopup();
+            }
+        });
+
+        this._bindAction(parent, '.holiday-notify__close', 'click', (e) => {
+            e.preventDefault();
+            const notification = parent.querySelector('.holiday-notify');
+            if (notification) {
+                notification.style.display = 'none';
+                popupPage.sendMessage({ type: 'setNotificationViewed', withDelay: false });
+            }
+        });
+
         const handlePopupGetPremiumClose = () => {
             const getPremium = parent.querySelector('.popup-get-premium');
             const popupFooter = parent.querySelector('.popup-footer');
