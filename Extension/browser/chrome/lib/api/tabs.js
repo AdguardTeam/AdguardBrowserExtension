@@ -440,7 +440,7 @@ adguard.tabsImpl = (function (adguard) {
     /**
      * True if `browser.tabs.insertCSS` supports `cssOrigin: "user"`.
      */
-    const userCSSSupport = adguard.prefs.features.userCSSSupport;
+    let userCSSSupport = true;
 
     /**
      * Inserts CSS using the `browser.tabs.insertCSS` under the hood.
@@ -451,8 +451,8 @@ adguard.tabsImpl = (function (adguard) {
      * @param {number} code CSS code to insert
      */
     const insertCssCode = !browser.tabs.insertCSS ? undefined : function (tabId, requestFrameId, code) {
-        let injectDetails = {
-            code: code,
+        const injectDetails = {
+            code,
             runAt: 'document_start',
             frameId: requestFrameId,
             matchAboutBlank: true,
@@ -463,7 +463,17 @@ adguard.tabsImpl = (function (adguard) {
             injectDetails.cssOrigin = 'user';
         }
 
-        browser.tabs.insertCSS(tabId, injectDetails, noopCallback);
+        try {
+            browser.tabs.insertCSS(tabId, injectDetails, noopCallback);
+        } catch (e) {
+            // e.message in edge is undefined
+            const errorMessage = e.message || e;
+            // Some browsers do not support user css origin
+            if (/\bcssOrigin\b/.test(errorMessage)) {
+                console.log('set to false');
+                userCSSSupport = false;
+            }
+        }
     };
 
     /**
