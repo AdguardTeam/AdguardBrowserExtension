@@ -154,22 +154,9 @@ adguard.prefs = (function (adguard) {
         // Edge browser does not support `runAt` in options of tabs.insertCSS
         // and tabs.executeScript
 
-        /**
-         * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/extensionTypes
-         *
-         * Whether it implements cssOrigin: 'user' option.
-         * Style declarations in user origin stylesheets that have `!important` priority
-         * takes precedence over page styles
-         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/Cascade#Cascading_order}
-         */
-        var userCSSSupport = typeof browser !== 'undefined' &&
-            typeof browser.extensionTypes === 'object' &&
-            typeof browser.extensionTypes.CSSOrigin !== 'undefined';
-
         return {
-            responseContentFilteringSupported: responseContentFilteringSupported,
-            canUseInsertCSSAndExecuteScript: canUseInsertCSSAndExecuteScript,
-            userCSSSupport: userCSSSupport,
+            responseContentFilteringSupported,
+            canUseInsertCSSAndExecuteScript,
             hasBackgroundTab: typeof browser !== 'undefined' // Background requests have sense only in case of webext
         };
     })();
