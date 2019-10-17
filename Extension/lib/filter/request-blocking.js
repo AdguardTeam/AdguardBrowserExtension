@@ -196,7 +196,7 @@ adguard.webRequestService = (function (adguard) {
         }
 
         var requestRule = getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
-        return isRequestBlockedByRule(requestRule) && !requestRule.isRedirectRule();
+        return isRequestBlockedByRule(requestRule);
     };
 
     /**
@@ -216,7 +216,7 @@ adguard.webRequestService = (function (adguard) {
         for (var i = 0; i < collapseRequests.length; i++) {
             var request = collapseRequests[i];
             var requestRule = getRuleForRequest(tab, request.elementUrl, referrerUrl, request.requestType);
-            request.collapse = isRequestBlockedByRule(requestRule) && !requestRule.isRedirectRule();
+            request.collapse = isRequestBlockedByRule(requestRule);
         }
 
         return collapseRequests;
@@ -224,6 +224,7 @@ adguard.webRequestService = (function (adguard) {
 
     /**
      * Checks if request is blocked by rule
+     * Do not allow redirect rules because they can't be used in collapse check functions
      *
      * @param requestRule
      * @returns {*|boolean}
@@ -231,7 +232,8 @@ adguard.webRequestService = (function (adguard) {
     var isRequestBlockedByRule = function (requestRule) {
         return requestRule
             && !requestRule.whiteListRule
-            && !requestRule.getReplace();
+            && !requestRule.getReplace()
+            && !requestRule.isRedirectRule();
     };
 
     /**
@@ -254,12 +256,6 @@ adguard.webRequestService = (function (adguard) {
      */
     const getBlockedResponseByRule = function (requestRule, requestType, requestUrl) {
         if (isRequestBlockedByRule(requestRule)) {
-            if (requestRule.isRedirectRule()) {
-                const redirectOption = requestRule.getRedirect();
-                const redirectUrl = redirectOption.getRedirectUrl();
-                return { redirectUrl };
-            }
-
             const isDocumentLevel = requestType === adguard.RequestTypes.DOCUMENT
                 || requestType === adguard.RequestTypes.SUBDOCUMENT;
 
@@ -280,6 +276,11 @@ adguard.webRequestService = (function (adguard) {
             if (requestType !== adguard.RequestTypes.DOCUMENT) {
                 return { cancel: true };
             }
+        // check if request rule is blocked by rule and is redirect rule
+        } else if (requestRule && !requestRule.whiteListRule && requestRule.isRedirectRule()) {
+            const redirectOption = requestRule.getRedirect();
+            const redirectUrl = redirectOption.getRedirectUrl();
+            return { redirectUrl };
         }
         return null;
     };
