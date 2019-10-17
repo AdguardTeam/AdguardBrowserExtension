@@ -1,8 +1,8 @@
-! Checksum: Am/BGSyv/5aMFIOi4KSW5w
+! Checksum: TdXgIrjR2aV5GHVsJRIyHQ
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.2.30
-! TimeUpdated: 2019-10-01T21:02:47+03:00
+! Version: 2.0.2.33
+! TimeUpdated: 2019-10-16T20:31:26+03:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#japanese
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -523,6 +523,7 @@ mindhack2ch.com#?#.article-body > .ad:has(> .adsbygoogle)
 mindhack2ch.com#?#.article-body > .rss:has(> script)
 mindhack2ch.com#?#.article-post-bottom > .rss-article:has(> .rss-article-item)
 !
+geeksokuhou.net#?#.main-image-in > .blogroll-wrapper:has(> .blogroll-column > b > script:contains(blogroll_channel_id))
 ascii2d.net#?#.col-lg-4 > .p-t-1:has(> h5:contains(広告))
 nijinchu.com#?#article > div.entry_content > h3:contains(おすすめ商品)
 melos.media#?#.x1_article > .x1_articleArea[-ext-has='div.x1_siteTitle:contains([PR])']
@@ -722,12 +723,14 @@ _ds_adtag_
 ! Section contains rules for specific websites
 !
 ! /banner/banner_ - if it is necessary, make this rule domain specific
+applion.jp##a[href^="http://www.amazon."][href*="/obidos/ASIN/"]
 epochtimes.jp##.margin-Ad-B20
 ascii2d.net##.amazon
 audioreview.m1001.coreserver.jp###side-fixed > #custom_html-23
 audioreview.m1001.coreserver.jp###list > .posts-list-upper-widget
 audioreview.m1001.coreserver.jp###side-fixed a[href^="//af.moshimo.com/af/c/click?"]
 kashi-mo.com##.rectangle_bnr
+geeksokuhou.net##.main-image-in > .blogroll-wrapper + table[width]:not([id]):not([class])
 headlines.yahoo.co.jp###lrec
 ||vipsister23.com/vipsister.html
 yomiuri.co.jp###rt_popup_overlay_yolyp_popup
@@ -1383,6 +1386,8 @@ gtoys.blog48.fc2.com###adright
 !
 ! White list. Fixing filtration errors(false-positive)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/42183
+@@||focal.com/sites/*/themes/focal/js/popin.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/41169
 ! https://github.com/AdguardTeam/AdguardFilters/issues/39988
 @@||jp.popin.cc/popin_discovery/$domain=livedoor.com

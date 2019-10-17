@@ -1,8 +1,8 @@
-! Checksum: VtBMyk/oiyjdUv69+EXNhw
+! Checksum: cn+lvsJy4x7URdZl8K3t9A
 ! Title: AdGuard Tracking Protection filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. Use this filter if you do not want your actions on the Internet to be tracked.
-! Version: 2.0.9.52
-! TimeUpdated: 2019-10-04T13:30:48+03:00
+! Version: 2.0.9.79
+! TimeUpdated: 2019-10-17T16:31:10+03:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#privacy
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -146,6 +146,9 @@ vol.az#?##footer > .column-one-fourth[-ext-has=".line > span:contains(Sayğac)"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5449
 donnerwetter.de#?#.col-xs-12 > div.block.prepend-top[-ext-has='> div.blocktitle-brand > h2 > span.blocktitle-brand:contains(weitere Wetter-Nachrichten)']
 !
+hdreactor.club,hdreactor.su,hdreactor.tv,hdreactor.net#?#.sidebar > div.menu-wrap > div.menu-head:contains(Счетчики)
+hdreactor.club,hdreactor.su,hdreactor.tv,hdreactor.net#?#.sidebar > div.menu-wrap > div.menu-head:contains(Счетчики) + div.menu-head1
+!
 novate.ru#?##right > div.bordered:has(> script:contains(relap))
 novate.ru#?##right > h2:contains(Рекомендуем)
 luxhard.com#?##sidebar-primary > .widget-container:has(a[href^="https://metrika.yandex.ru/stat/"])
@@ -170,6 +173,9 @@ journal-plaza.net#?#.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч
 ! ||e.crashlytics.com^
 ! ||settings.crashlytics.com^
 !
+||distiltag.com^$third-party
+||deep.bi^$third-party
+||lists-tracking.komando.com^
 ||js.hsadspixel.net^$third-party
 ||opentracking.ru^$third-party
 ||clickanalytics208.com^$third-party
@@ -297,7 +303,6 @@ journal-plaza.net#?#.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч
 ||adnz.co^$third-party
 ||cloud.roistat.com^$third-party
 ||nrich.ai^$third-party
-||turnto.com^$third-party
 ||adoric.com^$third-party
 ||rfksrv.com^$third-party
 ||stack-sonar.com^$third-party
@@ -1035,7 +1040,6 @@ journal-plaza.net#?#.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч
 ||crosswalkmail.com^$third-party
 ||crowdscience.com^$third-party
 ||crowdskout.com^$third-party
-||crowdtwist.com^$third-party
 ||crsspxl.com^$third-party
 ||crwdcntrl.net^$third-party
 ||csdata1.com^$third-party
@@ -3433,6 +3437,7 @@ returnpath.net/pixel.gif$image
 nethunt.com/api/v1/track/email/$image
 ! JiveOn tracking
 /mpss/o/*$image
+! end: Mail Tracking
 !
 !+ NOT_PLATFORM (windows, mac, android)
 ||artfut.com^$empty,important
@@ -3458,6 +3463,15 @@ nethunt.com/api/v1/track/email/$image
 !+ NOT_PLATFORM(ios, ext_safari, ext_android_cb)
 ||tags.news.com.au^$~script
 !
+||kiupoo.stroeerdp.de^$third-party
+||phiesi.stroeerdp.de^$third-party
+||ohcohz.stroeerdp.de^$third-party
+||harvester.hbpl.co.uk^
+||harvester.eu.square-enix.com^
+||harvester.ext.square-enix-europe.com^
+||harvester.hnonline.sk^
+||d5nxst8fruw4z.cloudfront.net^
+||stats.guiamais.com.br^
 ||d2yh8t8mdj4l9x.cloudfront.net^
 ||detwzgl8cvciv.cloudfront.net^
 ||events-collector.spot.im^
@@ -4856,6 +4870,7 @@ charlestownwyllie.oaklawnnonantum.com^
 ! dynaTrace Monitor
 /ruxitagentjs_
 !
+/pixel/?block_id=*&hash=*&host=
 /VisitorIdentification.js
 .demandbase.*.js
 /zaius.gif?
@@ -5108,6 +5123,13 @@ _tracking.php?b=
 .demdex.net/id^$empty,important
 ||omtrdc.net/id^$empty,important
 !
+||experience.tinypass.com/xbuilder/experience/execute?aid=
+||piano.io/tracker/
+||strm.yandex.ru/log?
+||pitomec.ru/top.gif
+||cdn.gamer-network.net/*/scripts/mormont
+||crowdtwist.com/trck/
+||turnto.com/webEvent/$third-party
 ||ardmediathek.de/rdpmaf.js
 jaiefra.com###Stats10_content
 ||spiegel.de/static/sys/pixel.gif
@@ -5115,7 +5137,7 @@ jaiefra.com###Stats10_content
 ||spiegel.de/static/sys/spltcs/js/spmetrics.js
 ||spiegel.de/static/sys/dimensionspixel.gif
 ||giphy.com/*/xhr/api/*/collector
-||dn-magiclinks.trackonomics.net/client^$third-party
+||cdn-magiclinks.trackonomics.net/client^$third-party
 ||api.github.com/_private/browser/stats$important
 ||webim.ru/*/track.php
 ||api.mindbox.ru/scripts/*/tracker.js
@@ -5693,7 +5715,6 @@ abp?type=js&session$domain=prosieben.de|sat1.de|kabeleins.de|sixx.de|prosiebenma
 ||pandanetwork.club/le/in.php^$third-party
 ||medicalnewstoday.com/counters.php^
 ||medicalnewstoday.com/structure/javascript/cache/beacon.js
-||homeless-thrill.date/stats
 ||trendmd.com/events
 ||salesmanago.pl/api/r.gif
 ||utrack.buybox.click/analytics.js
@@ -5965,7 +5986,7 @@ m.lenta.ru##.b-footer_counters
 ||r.nnm.me/api/server
 ||88688.ru/api/geoip/
 ||openculture.com/wp-admin/admin-ajax.php*^action=rxn_
-||googletagservices.com/tag/js/gpt.js$domain=sinoptik.ua|gutefrage.net|qtv.ua|dt.ua|ngs.ru|unian.net|easybib.com|bohenon.com|linuxtopia.org|newsroom.kh.ua|hclips.com|noticierodigital.com|northumberlandgazette.co.uk|mywebtimes.com|watchuseek.com|telekritika.ua|gamepedia.com|fontanka.ru|vesti.ua|bhub.com.ua|guhoyas.com|rst.ua
+||googletagservices.com/tag/js/gpt.js$domain=sinoptik.ua|gutefrage.net|qtv.ua|dt.ua|ngs.ru|unian.net|easybib.com|bohenon.com|linuxtopia.org|newsroom.kh.ua|hclips.com|noticierodigital.com|northumberlandgazette.co.uk|mywebtimes.com|watchuseek.com|telekritika.ua|gamepedia.com|fontanka.ru|vesti.ua|bhub.com.ua|guhoyas.com|rst.ua|hh.ru|buhgalter.com.ua|unocero.com|autonews.com|metropoles.com
 ||imagecrest.com/asset/view/stats.php
 ||uaswitcher.org/logic/page/data
 ||success.trendmicro.com/jslibrary/*/NetworkTracking.js
@@ -6728,6 +6749,24 @@ link.gmapp*.net$image
 !-------------- Whitelist ------------------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/42417
+@@||cdn.segmentify.com/*/segmentify.js$domain=gittigidiyor.com
+@@||segmentify.com//get/key/v*.json?$domain=gittigidiyor.com
+@@||segmentify.com//add/events/v*.json?apiKey=$domain=gittigidiyor.com
+! factor.ua - slow loading
+@@||google-analytics.com/analytics.js$domain=factor.ua
+! 24timezones.com - slow loading
+@@||google-analytics.com/analytics.js$domain=24timezones.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/41944
+@@||apple.com/metrics/data-relay/*/scripts/data-relay.js
+! unblock Flops personal account Balance info
+@@||panel.flops.ru/js/member/evercookie_init.js
+! https://github.com/AdguardTeam/AdguardFilters/issues/41847
+@@||googletagmanager.com/gtag/js$domain=hitta.se
+! https://github.com/AdguardTeam/AdguardFilters/issues/41793
+@@||googletagmanager.com/gtm.js$domain=gumtree.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/41821
+@@||googletagmanager.com/gtm.js$domain=domains.google
 ! https://github.com/AdguardTeam/AdguardFilters/issues/41517
 ! fix carousel on the main page
 @@||cdn.retailrocket.ru/content/javascript/tracking.js$domain=mirkorma.ru
@@ -6877,8 +6916,6 @@ link.gmapp*.net$image
 @@||stc.za.zaloapp.com/v*/za.js$domain=news.zing.vn
 ! https://github.com/AdguardTeam/AdguardFilters/issues/28292
 @@||googletagmanager.com/gtm.js$domain=manager-magazin.de
-! https://github.com/AdguardTeam/AdguardFilters/issues/32828
-@@||static.www.turnto.com^$domain=monoprice.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/32696
 @@||google-analytics.com/plugins/ua/ec.js$domain=uspoloassn.com
 @@||google-analytics.com/analytics.js$domain=uspoloassn.com
@@ -7179,8 +7216,6 @@ kizi.com#%#window.google_trackConversion = function() {};
 @@||recommender.scarabresearch.com/js^$domain=digikala.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/18090
 @@||googletagmanager.com/gtm.js^$domain=la7.it
-! https://github.com/AdguardTeam/AdguardFilters/issues/17816
-@@||googletagmanager.com/gtm.js$domain=slidetomac.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/17846
 @@||rv.treehousei.com/prm/js/*/public.min.js$domain=partnerportal.fortinet.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/17098

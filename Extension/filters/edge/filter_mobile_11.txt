@@ -1,8 +1,8 @@
-! Checksum: RonYY1qr4357xWrUpmcjAA
+! Checksum: CLOILhedrF/V87wRvkVtMA
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.8.6
-! TimeUpdated: 2019-10-03T05:30:07+03:00
+! Version: 2.0.8.20
+! TimeUpdated: 2019-10-17T16:30:11+03:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -19,6 +19,8 @@
 ||banners.mobile.yandex.net^
 ||coinhive.com^
 ||coin-hive.com^
+||ads.go2reach.com^
+||mimicromax.com^
 ||feed.4wnet.com^
 ||bi.yeshen.com^
 ||launcher.us.yeshen.com^
@@ -82,6 +84,14 @@
 ||54.222.186.106^
 ||plugin.mobopay.baidu.com^
 ||mo.freeindoapp.com^
+||92kyxiz5xg.execute-api.us-west-2.amazonaws.com^
+||0jkro0unul.execute-api.us-west-2.amazonaws.com^
+||d19xf4taj229i8.cloudfront.net^
+||ad999.biz^$third-party
+||cafe-latte.myshoplus.com^
+||luckyforworlds.com^
+||cdn-adn.rayjump.com^
+||cdn-adn-*.rayjump.com^
 ||buysellads.com^
 ||casino-ad-mediation.me2zengame.com^
 ||postut.cn^$third-party
@@ -1015,6 +1025,7 @@ blogdoiphone.com#@#.header-ad
 blogdoiphone.com#@#.custom-ad
 westseattleblog.com#@#.custom-ad
 westseattleblog.com#@#.header-ad
+eksisozluk.com#$?#.ad-mobilewebinterstitial { remove: true; }
 m.empflix.com#$?##flixPlayer > div[id="inttt"][style*="z-index:"] { remove: true; }
 healthline.com#?#div > div[class^="css-"]:has(> div[id^="ym_"])
 healthline.com#?#aside[class^="css-"]:has(> div[class] > div[class] > div#mlb1__slot)
@@ -1196,6 +1207,7 @@ deviantart.com#$#div[class*="dp-ad-"] {height: 0!important; width: 0!important; 
 !##### TEMPORARY #####
 @@||xda-cdn.com
 @@||tf-robots.nl^$elemhide,jsinject,content
+@@||yohalabs.com^
 !#####################
 @@||etimg.com/js_etsub/*minify-*.cms$domain=m.economictimes.com
 niji-gazo.com#@#.ad-block
@@ -1316,7 +1328,6 @@ arseblog.com#@#.header-ad
 @@||google-analytics.com^$domain=wtf.nl
 @@||securepubads.g.doubleclick.net/gampad/ads$domain=wtf.nl
 @@||ad.360yield.com/adj?p=$domain=wtf.nl
-@@||ad.admitad.com/*/?ulp=
 @@||relap.io/api/*/head.js?$domain=surfingbird.ru
 @@||ad.doubleclick.net/ddm/clk/*?https://creditcards.chase.com/
 @@||auto-api.yelp.com
@@ -1376,6 +1387,12 @@ m.news.de##.unisterAdsStart
 9to5google.com,9to5toys.com,9to5mac.com,electrek.co##.post-content > .inlinead ~ div[class*=" "]:not([id]):not([style])
 !+ NOT_PLATFORM(ios, ext_android_cb)
 ||mobile.donanimhaber.com/ads^
+forbes.com##.ad-unit
+||media-imdb.com/images/*/imdbads/js/collections/admobileweb-*._*_.js
+kolodischi.by###mainRespAd
+theverge.com##.m-ad
+geeksokuhou.net##a[href^="https://link-a.net/gate.php"]
+geeksokuhou.net##section#text-28
 prohockeyrumors.com,hoopsrumors.com,profootballrumors.com,mlbtraderumors.com###gweinifooterAdSpace
 m.eprice.com.hk##div[class^="ad-"]
 m.eprice.com.hk###popup-ad-overlay
@@ -2235,7 +2252,7 @@ phonearena.com##div[style="min-width:300px; min-height:250px; overflow: hidden; 
 wired.com##.amp-wp-banner-ad
 wired.com##.amp-wp-inline-ad
 wired.com##.amp-wp-footer-ad
-auto-swiat.pl,dialog.ua,mobile.reuters.com,spiegel.de,amp.welt.de,forum.xda-developers.com,sueddeutsche.de,amp.usatoday.com,m.gadgets.ndtv.com##amp-ad
+forbes.com,auto-swiat.pl,dialog.ua,mobile.reuters.com,spiegel.de,amp.welt.de,forum.xda-developers.com,sueddeutsche.de,amp.usatoday.com,m.gadgets.ndtv.com##amp-ad
 m.gadgets.ndtv.com##.top_ad
 ||api.kostprice.com/api/amp-widget$domain=m.gadgets.ndtv.com
 m.gadgets.ndtv.com##amp-iframe
@@ -2593,6 +2610,10 @@ livejournal.com##.mdspost-aside__item--banner
 ||graph.facebook.com/*?fields=supports_implicit_sdk_logging
 !+ NOT_PLATFORM(ios, ext_safari, ext_android_cb)
 ||adj.st^
+||cdn-adn.rayjump.com^
+||sg01.rayjump.com^
+||cafe-log.myshoplus.com^
+||de01.rayjump.com^
 ||stat.m.360.cn^
 ||stats-a.maxthon.com^
 ||pgapi.ksmobile.com^
@@ -2918,5 +2939,6 @@ livejournal.com##.mdspost-aside__item--banner
 ||analy.qq.com^
 ||appsupport.qq.com/cgi-bin/appstage/mstats_batch_report
 ||monitor.uu.qq.com/analytics/
+||play.google.com/newsstand/api/*/people/me/analytics^
 ||mangaapi.manhuaren.com/*/public/getRecommendedGame^
 ||ads.adfox.ru/*/getCode?p1=$domain=auth.wi-fi.ru,replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\$1<\/VAST>/,important
