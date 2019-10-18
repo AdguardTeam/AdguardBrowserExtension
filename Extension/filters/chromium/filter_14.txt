@@ -1,8 +1,8 @@
-! Checksum: wTA7r2ApAD4NmWGYqqYEMw
+! Checksum: jVJCDRFESoJpw4AR+OfuuA
 ! Title: AdGuard Annoyances filter
 ! Description: Blocks irritating elements on web pages including cookie notices, third-party widgets and in-page pop-ups.
-! Version: 2.0.31.8
-! TimeUpdated: 2019-10-17T18:30:26+03:00
+! Version: 2.0.31.11
+! TimeUpdated: 2019-10-18T12:03:21+03:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#annoyances
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -2272,7 +2272,7 @@ auto-motor-i-sport.pl,menshealth.pl,motocykl-online.pl,runners-world.pl,womenshe
 ! END: FuckAdBlock
 !
 ! Evolok ev-dab.js (.pub_300x25)
-sunderlandecho.com,blackpoolgazette.co.uk,derbyshiretimes.co.uk,lep.co.uk,yorkshireeveningpost.co.uk,yorkshirepost.co.uk,peterboroughtoday.co.uk#$#.pub_300x25.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
+skegnessstandard.co.uk,sunderlandecho.com,blackpoolgazette.co.uk,derbyshiretimes.co.uk,lep.co.uk,yorkshireeveningpost.co.uk,yorkshirepost.co.uk,peterboroughtoday.co.uk#$#.pub_300x25.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
 !
 ! NoAdBlock (CloudflareApps)
 ! #%#!function(b,a){AG_defineProperty('CloudflareApps.installs',{get:function(){return a instanceof Object&&Object.getOwnPropertyNames(a).forEach(function(c){a[c].appId=='ziT6U3epKObS'&&Object.defineProperty(a[c],'URLPatterns',{value:b})}),a},set:function(b){a=b}})}(Object.seal([/(?!)/]));
@@ -5425,6 +5425,7 @@ tripadvisor.be,tripadvisor.ca,tripadvisor.co,tripadvisor.co.id,tripadvisor.co.uk
 ! ###cross-dialog
 dziennikbaltycki.pl,dzienniklodzki.pl,dziennikpolski24.pl,dziennikzachodni.pl,echodnia.eu,expressbydgoski.pl,expressilustrowany.pl,gazetakrakowska.pl,gazetalubuska.pl,gazetawroclawska.pl,gk24.pl,gloswielkopolski.pl,gol24.pl,gp24.pl,gratka.pl,gs24.pl,katowice.naszemiasto.pl,kurierlubelski.pl,motofakty.pl,naszemiasto.pl,nowiny24.pl,nowosci.com.pl,nto.pl,polskatimes.pl,pomorska.pl,poranny.pl,sportowy24.pl,strefaagro.pl,strefabiznesu.pl,stronakobiet.pl,telemagazyn.pl,to.com.pl,wspolczesna.pl###cross-dialog
 !
+dzieciom.pl##.JS_cookieBar
 cdr.cz,diit.cz###AiraGdprDialog
 sklep.myapple.pl###polityka
 telefonnyjdovidnyk.com.ua###cookie-line
@@ -8220,6 +8221,8 @@ partsnl.nl#%#AG_onLoad(function() { if(document.cookie.indexOf("CPV") == -1) { s
 sportdiver.com,wakeboardingmag.com#%#document.cookie = "CookieConsent=1";
 gamepedia.com,fandom.com#%#document.cookie = "tracking-opt-in-status=rejected";
 egged.co.il#%#document.cookie = "hideSlide=true";
+!+ NOT_PLATFORM(windows, mac, android)
+o2.pl,wp.pl#%#AG_onLoad(function(){if(-1==document.cookie.indexOf("WPdp")){var a=new MutationObserver(function(){var b=document.evaluate("//button[contains(text(), 'PRZECHODZ')]",document,null,XPathResult.ANY_TYPE,null).iterateNext();b&&(b.click(),a.disconnect())});a.observe(document,{childList:!0,subtree:!0});setTimeout(function(){a.disconnect()},1E4)}});
 homebook.pl,abczdrowie.pl,autokult.pl,dobramama.pl,dobreprogramy.pl,echirurgia.pl,fotoblogia.pl,gadzetomania.pl,jejswiat.pl,kafeteria.pl,kafeteria.tv,komorkomania.pl,luxlux.pl,medycyna24.pl,mixer.pl,money.pl,nocowanie.pl,open.fm,parenting.pl,pinger.pl,pogodnie.pl,pytamy.pl,samosia.pl,snobka.pl,testwiedzy.pl#%#Object.defineProperty(window, '__wpjslib__', { get: function() { return []; }, set: function() { return []; } });
 sklep.infor.pl#%#document.cookie = "inforCookieWallCacheVal=15"; document.cookie = "inforCookieWallGlobalVal=15";
 hm.com#%#document.cookie = "hm_gdpr_read=true";
@@ -9806,6 +9809,7 @@ tencentgamingbuddy.co#$#.sgpb-popup-overlay { display: none!important; }
 tencentgamingbuddy.co#$##sgpb-popup-dialog-main-div-wrapper { display: none!important; }
 eurodicas.com.br#$#html.pum-open-overlay { overflow: visible!important; }
 eurodicas.com.br#$#.pum-overlay[data-popmake*="eud-newsletter"] { display: none!important; }
+receivesms.co###subbscribe
 bethowen.ru##body > div[data-href$="/landings/season_sale/"]
 diadora.com##div[aria-describedby="newsletter-popup"]
 yapokupayu.ru##.post-feed-popup
