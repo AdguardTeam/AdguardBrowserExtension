@@ -1,8 +1,8 @@
-! Checksum: VgREkK9lG8RkKsv0ZyLkPA
+! Checksum: 6JnALsyHcq6zjSEI+2X6mg
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.2.30
-! TimeUpdated: 2019-10-01T21:02:47+03:00
+! Version: 2.0.2.33
+! TimeUpdated: 2019-10-16T20:31:26+03:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -343,6 +343,7 @@ appllio.com#?#.sidebar > .region-inner > .block.odd:has(div[id^="div-gpt-ad"])
 mindhack2ch.com#?#.article-body > .ad:has(> .adsbygoogle)
 mindhack2ch.com#?#.article-body > .rss:has(> script)
 mindhack2ch.com#?#.article-post-bottom > .rss-article:has(> .rss-article-item)
+geeksokuhou.net#?#.main-image-in > .blogroll-wrapper:has(> .blogroll-column > b > script:contains(blogroll_channel_id))
 ascii2d.net#?#.col-lg-4 > .p-t-1:has(> h5:contains(広告))
 nijinchu.com#?#article > div.entry_content > h3:contains(おすすめ商品)
 melos.media#?#.x1_article > .x1_articleArea[-ext-has='div.x1_siteTitle:contains([PR])']
@@ -494,12 +495,14 @@ iza.ne.jp#$#.sideFixedWrapper { position: relative!important; }
 /top/head_s_bnr
 /yaad.js
 _ds_adtag_
+applion.jp##a[href^="http://www.amazon."][href*="/obidos/ASIN/"]
 epochtimes.jp##.margin-Ad-B20
 ascii2d.net##.amazon
 audioreview.m1001.coreserver.jp###side-fixed > #custom_html-23
 audioreview.m1001.coreserver.jp###list > .posts-list-upper-widget
 audioreview.m1001.coreserver.jp###side-fixed a[href^="//af.moshimo.com/af/c/click?"]
 kashi-mo.com##.rectangle_bnr
+geeksokuhou.net##.main-image-in > .blogroll-wrapper + table[width]:not([id]):not([class])
 headlines.yahoo.co.jp###lrec
 ||vipsister23.com/vipsister.html
 yomiuri.co.jp###rt_popup_overlay_yolyp_popup
@@ -1130,6 +1133,7 @@ avgle.com##body > div[style*="z-index"]:not([id]):not([class])
 ||static.avgle.com/media/av^
 !+ NOT_OPTIMIZED
 ||yimg.jp/bdv/
+@@||focal.com/sites/*/themes/focal/js/popin.js
 @@||jp.popin.cc/popin_discovery/$domain=livedoor.com
 @@||s.yimg.jp/bdv/yahoo/darla/*/js/darla-secure-*.js$domain=mail.yahoo.co.jp
 @@||fresheye.com^$domain=m-search.sponichi.co.jp
