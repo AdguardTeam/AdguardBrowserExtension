@@ -38,7 +38,7 @@ adguard.notifications = (function (adguard) {
         text: '',
         url: 'https://adguard.com/forward.html?action=holiday_notify&from=popup&app=browser_extension',
         from: '29 October 2019 00:00:00',
-        to: '1 November 2019 23:59:00',
+        to: '2 November 2019 23:59:00',
         type: 'animated',
         get icons() {
             return adguard.lazyGet(halloweenNotification, 'icons', () => ({
