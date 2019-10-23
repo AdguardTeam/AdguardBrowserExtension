@@ -132,7 +132,7 @@ function (_BrowserExtension) {
     _classCallCheck(this, AdBlockedPage);
 
     var defaultConfiguration = {
-      locale: 'en'
+      locale: navigator.language || navigator.browserLanguage
     };
     return _possibleConstructorReturn(this, _getPrototypeOf(AdBlockedPage).call(this, defaultConfiguration));
   }
@@ -349,7 +349,7 @@ function (_BrowserExtension) {
     _classCallCheck(this, SafeBrowsing);
 
     var defaultConfiguration = {
-      locale: 'en'
+      locale: navigator.language || navigator.browserLanguage
     };
     return _possibleConstructorReturn(this, _getPrototypeOf(SafeBrowsing).call(this, defaultConfiguration));
   }
@@ -583,6 +583,17 @@ module.exports = {"malware":"این صفحه وب در <strong>(var.Host)</stron
 
 /***/ }),
 
+/***/ "./locales/fi/messages.json":
+/*!**********************************!*\
+  !*** ./locales/fi/messages.json ***!
+  \**********************************/
+/*! exports provided: malware, phishing, advancedButton, moreInfoButton, pageTitle, safeHeaderTitle, safeContentTitle, parentalHeaderTitle, parentalContentTitle, parentalDescOne, parentalDnsDescTwo, blockedContentTitle, ruleHeaderTitle, ruleContentTitle, btnGoBack, btnFeedback, btnProceed, btnProceedTo, inputPassword, errorPageHeader, summary, suggestionsHeader, suggestion1, suggestion2, suggestion3, suggestion4, showDetails, wrongPassword, somethingWrong, errorPageTitle, default */
+/***/ (function(module) {
+
+module.exports = {"malware":"Tämä sivusto <strong>(var.Host)</strong> on ilmoitettu olevan haittaohjelmasivusto ja se on estetty sinun turvallisuusasetusten perusteella.","phishing":"Tämä sivusto <strong>(var.Host)</strong> on ilmoitettu olevan tietojenkalastelusivusto ja se on estetty sinun turvallisuusasetusten perusteella.","advancedButton":"Lisäasetukset","moreInfoButton":"Lisätiedot","pageTitle":"Pääsy estetty","safeHeaderTitle":"AdGuard on estänyt pääsyn tälle sivulle","safeContentTitle":"Tämä sivusto on ilmoitettu olevan haittaohjelmasivusto ja se on estetty sinun turvallisuusasetusten perusteella.","parentalHeaderTitle":"Lapsilukko","parentalContentTitle":"Estimme tämän sivun lapsilukon suodatusrajoituksien takia.","parentalDescOne":"Oletko riittävän vanha? Syötä salasana","parentalDnsDescTwo":"Yrität tavoitella verkkosivustoa, jonka AdGuard on luetteloinut sopimattomaksi lapsille. Jos olet aikuinen, voit poistaa lapsilukon käytöstä asetuksista tai lisätä tämän verkkosivuston sallittuun luetteloon.","blockedContentTitle":"Suodatussääntö esti pyynnön sivustoon {site}. Jos haluat päästä tälle sivustolle, lisää se poikkeuksiin.","ruleHeaderTitle":"Estetty AdGuardilla","ruleContentTitle":"AdGuard esti tätä sivustoa lataamasta seuraavan suodatinsäännön takia","btnGoBack":"Palaa takaisin","btnFeedback":"Lähetä palaute","btnProceed":"Jatka silti","btnProceedTo":"Jatka sivustolle","inputPassword":"Syötä salasana","errorPageHeader":"Verkkosivusto ei ole saatavilla","summary":"Verkkosivusto osoittessa <strong>(var.PageUrl)</strong> saattaa olla hetkellisesti alhaalla tai se on siirretty toiseen verkko-osoitteeseen.","suggestionsHeader":"Tässä joitakin ehdotuksia","suggestion1":"Yritä <a href='(var.PageUrl)'>päivittää</a> tämä verkkosivusto myöhemmin.","suggestion2":"Tarkista että olet kirjoittanut verkko-osoiteen oikein.","suggestion3":"Tarkista palomuurin asetukset. Kaikki yhteydet tulisi sallia AdGuardille.","suggestion4":"Tarkista välityspalvelinasetukset jos käytät välityspalvelinta.","showDetails":"Näytä tiedot","wrongPassword":"Väärä salasana","somethingWrong":"Jokin meni pieleen. Yritä myöhemmin uudelleen tai ota yhteyttä tukipalveluumme.","errorPageTitle":"Virhe"};
+
+/***/ }),
+
 /***/ "./locales/fr/messages.json":
 /*!**********************************!*\
   !*** ./locales/fr/messages.json ***!
@@ -628,36 +639,49 @@ var _locales_en_messages_json__WEBPACK_IMPORTED_MODULE_4___namespace = /*#__PURE
 var _locales_es_messages_json__WEBPACK_IMPORTED_MODULE_5___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/es/messages.json */ "./locales/es/messages.json", 1);
 /* harmony import */ var _locales_fa_messages_json__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../locales/fa/messages.json */ "./locales/fa/messages.json");
 var _locales_fa_messages_json__WEBPACK_IMPORTED_MODULE_6___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/fa/messages.json */ "./locales/fa/messages.json", 1);
-/* harmony import */ var _locales_fr_messages_json__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../locales/fr/messages.json */ "./locales/fr/messages.json");
-var _locales_fr_messages_json__WEBPACK_IMPORTED_MODULE_7___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/fr/messages.json */ "./locales/fr/messages.json", 1);
-/* harmony import */ var _locales_id_messages_json__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../locales/id/messages.json */ "./locales/id/messages.json");
-var _locales_id_messages_json__WEBPACK_IMPORTED_MODULE_8___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/id/messages.json */ "./locales/id/messages.json", 1);
-/* harmony import */ var _locales_it_messages_json__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../locales/it/messages.json */ "./locales/it/messages.json");
-var _locales_it_messages_json__WEBPACK_IMPORTED_MODULE_9___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/it/messages.json */ "./locales/it/messages.json", 1);
-/* harmony import */ var _locales_ja_messages_json__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../locales/ja/messages.json */ "./locales/ja/messages.json");
-var _locales_ja_messages_json__WEBPACK_IMPORTED_MODULE_10___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/ja/messages.json */ "./locales/ja/messages.json", 1);
-/* harmony import */ var _locales_pl_messages_json__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../locales/pl/messages.json */ "./locales/pl/messages.json");
-var _locales_pl_messages_json__WEBPACK_IMPORTED_MODULE_11___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/pl/messages.json */ "./locales/pl/messages.json", 1);
-/* harmony import */ var _locales_pt_BR_messages_json__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../locales/pt-BR/messages.json */ "./locales/pt-BR/messages.json");
-var _locales_pt_BR_messages_json__WEBPACK_IMPORTED_MODULE_12___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/pt-BR/messages.json */ "./locales/pt-BR/messages.json", 1);
-/* harmony import */ var _locales_pt_PT_messages_json__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../locales/pt-PT/messages.json */ "./locales/pt-PT/messages.json");
-var _locales_pt_PT_messages_json__WEBPACK_IMPORTED_MODULE_13___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/pt-PT/messages.json */ "./locales/pt-PT/messages.json", 1);
-/* harmony import */ var _locales_ru_messages_json__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../locales/ru/messages.json */ "./locales/ru/messages.json");
-var _locales_ru_messages_json__WEBPACK_IMPORTED_MODULE_14___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/ru/messages.json */ "./locales/ru/messages.json", 1);
-/* harmony import */ var _locales_sk_messages_json__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../locales/sk/messages.json */ "./locales/sk/messages.json");
-var _locales_sk_messages_json__WEBPACK_IMPORTED_MODULE_15___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/sk/messages.json */ "./locales/sk/messages.json", 1);
-/* harmony import */ var _locales_sl_messages_json__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../locales/sl/messages.json */ "./locales/sl/messages.json");
-var _locales_sl_messages_json__WEBPACK_IMPORTED_MODULE_16___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/sl/messages.json */ "./locales/sl/messages.json", 1);
-/* harmony import */ var _locales_sr_messages_json__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../locales/sr/messages.json */ "./locales/sr/messages.json");
-var _locales_sr_messages_json__WEBPACK_IMPORTED_MODULE_17___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/sr/messages.json */ "./locales/sr/messages.json", 1);
-/* harmony import */ var _locales_sv_messages_json__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../locales/sv/messages.json */ "./locales/sv/messages.json");
-var _locales_sv_messages_json__WEBPACK_IMPORTED_MODULE_18___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/sv/messages.json */ "./locales/sv/messages.json", 1);
-/* harmony import */ var _locales_tr_messages_json__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../locales/tr/messages.json */ "./locales/tr/messages.json");
-var _locales_tr_messages_json__WEBPACK_IMPORTED_MODULE_19___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/tr/messages.json */ "./locales/tr/messages.json", 1);
-/* harmony import */ var _locales_zh_CN_messages_json__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ../locales/zh-CN/messages.json */ "./locales/zh-CN/messages.json");
-var _locales_zh_CN_messages_json__WEBPACK_IMPORTED_MODULE_20___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/zh-CN/messages.json */ "./locales/zh-CN/messages.json", 1);
-/* harmony import */ var _locales_zh_TW_messages_json__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ../locales/zh-TW/messages.json */ "./locales/zh-TW/messages.json");
-var _locales_zh_TW_messages_json__WEBPACK_IMPORTED_MODULE_21___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/zh-TW/messages.json */ "./locales/zh-TW/messages.json", 1);
+/* harmony import */ var _locales_fi_messages_json__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../locales/fi/messages.json */ "./locales/fi/messages.json");
+var _locales_fi_messages_json__WEBPACK_IMPORTED_MODULE_7___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/fi/messages.json */ "./locales/fi/messages.json", 1);
+/* harmony import */ var _locales_fr_messages_json__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../locales/fr/messages.json */ "./locales/fr/messages.json");
+var _locales_fr_messages_json__WEBPACK_IMPORTED_MODULE_8___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/fr/messages.json */ "./locales/fr/messages.json", 1);
+/* harmony import */ var _locales_id_messages_json__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../locales/id/messages.json */ "./locales/id/messages.json");
+var _locales_id_messages_json__WEBPACK_IMPORTED_MODULE_9___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/id/messages.json */ "./locales/id/messages.json", 1);
+/* harmony import */ var _locales_it_messages_json__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../locales/it/messages.json */ "./locales/it/messages.json");
+var _locales_it_messages_json__WEBPACK_IMPORTED_MODULE_10___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/it/messages.json */ "./locales/it/messages.json", 1);
+/* harmony import */ var _locales_ja_messages_json__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../locales/ja/messages.json */ "./locales/ja/messages.json");
+var _locales_ja_messages_json__WEBPACK_IMPORTED_MODULE_11___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/ja/messages.json */ "./locales/ja/messages.json", 1);
+/* harmony import */ var _locales_ko_messages_json__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../locales/ko/messages.json */ "./locales/ko/messages.json");
+var _locales_ko_messages_json__WEBPACK_IMPORTED_MODULE_12___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/ko/messages.json */ "./locales/ko/messages.json", 1);
+/* harmony import */ var _locales_lt_messages_json__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../locales/lt/messages.json */ "./locales/lt/messages.json");
+var _locales_lt_messages_json__WEBPACK_IMPORTED_MODULE_13___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/lt/messages.json */ "./locales/lt/messages.json", 1);
+/* harmony import */ var _locales_pl_messages_json__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../locales/pl/messages.json */ "./locales/pl/messages.json");
+var _locales_pl_messages_json__WEBPACK_IMPORTED_MODULE_14___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/pl/messages.json */ "./locales/pl/messages.json", 1);
+/* harmony import */ var _locales_pt_BR_messages_json__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../locales/pt-BR/messages.json */ "./locales/pt-BR/messages.json");
+var _locales_pt_BR_messages_json__WEBPACK_IMPORTED_MODULE_15___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/pt-BR/messages.json */ "./locales/pt-BR/messages.json", 1);
+/* harmony import */ var _locales_pt_PT_messages_json__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../locales/pt-PT/messages.json */ "./locales/pt-PT/messages.json");
+var _locales_pt_PT_messages_json__WEBPACK_IMPORTED_MODULE_16___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/pt-PT/messages.json */ "./locales/pt-PT/messages.json", 1);
+/* harmony import */ var _locales_ru_messages_json__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../locales/ru/messages.json */ "./locales/ru/messages.json");
+var _locales_ru_messages_json__WEBPACK_IMPORTED_MODULE_17___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/ru/messages.json */ "./locales/ru/messages.json", 1);
+/* harmony import */ var _locales_sk_messages_json__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../locales/sk/messages.json */ "./locales/sk/messages.json");
+var _locales_sk_messages_json__WEBPACK_IMPORTED_MODULE_18___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/sk/messages.json */ "./locales/sk/messages.json", 1);
+/* harmony import */ var _locales_sl_messages_json__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../locales/sl/messages.json */ "./locales/sl/messages.json");
+var _locales_sl_messages_json__WEBPACK_IMPORTED_MODULE_19___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/sl/messages.json */ "./locales/sl/messages.json", 1);
+/* harmony import */ var _locales_sr_messages_json__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ../locales/sr/messages.json */ "./locales/sr/messages.json");
+var _locales_sr_messages_json__WEBPACK_IMPORTED_MODULE_20___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/sr/messages.json */ "./locales/sr/messages.json", 1);
+/* harmony import */ var _locales_sv_messages_json__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ../locales/sv/messages.json */ "./locales/sv/messages.json");
+var _locales_sv_messages_json__WEBPACK_IMPORTED_MODULE_21___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/sv/messages.json */ "./locales/sv/messages.json", 1);
+/* harmony import */ var _locales_tr_messages_json__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ../locales/tr/messages.json */ "./locales/tr/messages.json");
+var _locales_tr_messages_json__WEBPACK_IMPORTED_MODULE_22___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/tr/messages.json */ "./locales/tr/messages.json", 1);
+/* harmony import */ var _locales_uk_messages_json__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ../locales/uk/messages.json */ "./locales/uk/messages.json");
+var _locales_uk_messages_json__WEBPACK_IMPORTED_MODULE_23___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/uk/messages.json */ "./locales/uk/messages.json", 1);
+/* harmony import */ var _locales_zh_CN_messages_json__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ../locales/zh-CN/messages.json */ "./locales/zh-CN/messages.json");
+var _locales_zh_CN_messages_json__WEBPACK_IMPORTED_MODULE_24___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/zh-CN/messages.json */ "./locales/zh-CN/messages.json", 1);
+/* harmony import */ var _locales_zh_TW_messages_json__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ../locales/zh-TW/messages.json */ "./locales/zh-TW/messages.json");
+var _locales_zh_TW_messages_json__WEBPACK_IMPORTED_MODULE_25___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../locales/zh-TW/messages.json */ "./locales/zh-TW/messages.json", 1);
+// TODO import list of langs from .twosky.json
+
+
+
+
 
 
 
@@ -688,21 +712,25 @@ var _locales_zh_TW_messages_json__WEBPACK_IMPORTED_MODULE_21___namespace = /*#__
   en: _locales_en_messages_json__WEBPACK_IMPORTED_MODULE_4__,
   es: _locales_es_messages_json__WEBPACK_IMPORTED_MODULE_5__,
   fa: _locales_fa_messages_json__WEBPACK_IMPORTED_MODULE_6__,
-  fr: _locales_fr_messages_json__WEBPACK_IMPORTED_MODULE_7__,
-  id: _locales_id_messages_json__WEBPACK_IMPORTED_MODULE_8__,
-  it: _locales_it_messages_json__WEBPACK_IMPORTED_MODULE_9__,
-  ja: _locales_ja_messages_json__WEBPACK_IMPORTED_MODULE_10__,
-  pl: _locales_pl_messages_json__WEBPACK_IMPORTED_MODULE_11__,
-  'pt-br': _locales_pt_BR_messages_json__WEBPACK_IMPORTED_MODULE_12__,
-  'pt-pt': _locales_pt_PT_messages_json__WEBPACK_IMPORTED_MODULE_13__,
-  ru: _locales_ru_messages_json__WEBPACK_IMPORTED_MODULE_14__,
-  sk: _locales_sk_messages_json__WEBPACK_IMPORTED_MODULE_15__,
-  sl: _locales_sl_messages_json__WEBPACK_IMPORTED_MODULE_16__,
-  sr: _locales_sr_messages_json__WEBPACK_IMPORTED_MODULE_17__,
-  sv: _locales_sv_messages_json__WEBPACK_IMPORTED_MODULE_18__,
-  tr: _locales_tr_messages_json__WEBPACK_IMPORTED_MODULE_19__,
-  'zh-cn': _locales_zh_CN_messages_json__WEBPACK_IMPORTED_MODULE_20__,
-  'zh-tw': _locales_zh_TW_messages_json__WEBPACK_IMPORTED_MODULE_21__
+  fi: _locales_fi_messages_json__WEBPACK_IMPORTED_MODULE_7__,
+  fr: _locales_fr_messages_json__WEBPACK_IMPORTED_MODULE_8__,
+  id: _locales_id_messages_json__WEBPACK_IMPORTED_MODULE_9__,
+  it: _locales_it_messages_json__WEBPACK_IMPORTED_MODULE_10__,
+  ja: _locales_ja_messages_json__WEBPACK_IMPORTED_MODULE_11__,
+  ko: _locales_ko_messages_json__WEBPACK_IMPORTED_MODULE_12__,
+  lt: _locales_lt_messages_json__WEBPACK_IMPORTED_MODULE_13__,
+  pl: _locales_pl_messages_json__WEBPACK_IMPORTED_MODULE_14__,
+  'pt-br': _locales_pt_BR_messages_json__WEBPACK_IMPORTED_MODULE_15__,
+  'pt-pt': _locales_pt_PT_messages_json__WEBPACK_IMPORTED_MODULE_16__,
+  ru: _locales_ru_messages_json__WEBPACK_IMPORTED_MODULE_17__,
+  sk: _locales_sk_messages_json__WEBPACK_IMPORTED_MODULE_18__,
+  sl: _locales_sl_messages_json__WEBPACK_IMPORTED_MODULE_19__,
+  sr: _locales_sr_messages_json__WEBPACK_IMPORTED_MODULE_20__,
+  sv: _locales_sv_messages_json__WEBPACK_IMPORTED_MODULE_21__,
+  tr: _locales_tr_messages_json__WEBPACK_IMPORTED_MODULE_22__,
+  uk: _locales_uk_messages_json__WEBPACK_IMPORTED_MODULE_23__,
+  'zh-cn': _locales_zh_CN_messages_json__WEBPACK_IMPORTED_MODULE_24__,
+  'zh-tw': _locales_zh_TW_messages_json__WEBPACK_IMPORTED_MODULE_25__
 });
 
 /***/ }),
@@ -726,6 +754,28 @@ module.exports = {"malware":"Questa pagina web su <strong>(var.Host)</strong> è
 /***/ (function(module) {
 
 module.exports = {"malware":"<strong>(var.Host)</strong> はマルウェアのページとして報告されています。セキュリティの設定に基づいてブロックされました。","phishing":"<strong>(var.Host)</strong> はフィッシング詐欺のページとして報告されており、セキュリティの設定に基づいてブロックれました。","advancedButton":"高度な設定","moreInfoButton":"詳細","pageTitle":"アクセス拒否","safeHeaderTitle":"AdGuardはこのページへのアクセスをブロックしました","safeContentTitle":"このページはマルウェアのページとして報告されています。セキュリティの設定に基づいてブロックされました。","parentalHeaderTitle":"ペアレンタルコントロール","parentalContentTitle":"このページはペアレンタルコントロールによってブロックされました。","parentalDescOne":"大人の方はパスワードを入力してください。","parentalDnsDescTwo":"子どもに不適切なウェブサイトとしてAdGuardに登録されているサイトにアクセスしようとしています。設定を行った保護者の方は設定からペアレンタルコントロールをオフにするか、このウェブサイトをホワイトリストに追加することができます。","blockedContentTitle":"{site}へのリクエストはフィルタルールによってブロックされました。サイトにアクセスしたい場合は例外に追加してください。","ruleHeaderTitle":"AdGuardによってブロックされました","ruleContentTitle":"AdGuardは以下のフィルタリング・ルールに従って、このページの読み込みを防止しました。","btnGoBack":"戻る","btnFeedback":"フィードバックを送る","btnProceed":"そのまま続行する","btnProceedTo":"サイトへ続行する","inputPassword":"パスワードを入力","errorPageHeader":"ウェブページは利用できません","summary":"<strong>(var.PageUrl)</strong> にあるウェブページが一時的にダウンしているか、新しいウェブアドレスに移動している可能性があります。","suggestionsHeader":"問題を解決するために、次の操作をお試しください","suggestion1":"後ほどこのウェブページを<a href='(var.PageUrl)'>リロード</a>してみてください。","suggestion2":"Webページのアドレスが正しく入力してあるかを確認してください。","suggestion3":"ファイアウォールの設定を確認してください。 AdGuard接続のすべてが許可されている必要があります。","suggestion4":"プロキシサーバーを使用している場合は、プロキシ設定を確認してください。","showDetails":"詳細を表示","wrongPassword":"パスワードが間違っています","somethingWrong":"原因不明の問題が起きました。 後でもう一度お試しいただくか、サポートサービスにご連絡ください。","errorPageTitle":"エラー"};
+
+/***/ }),
+
+/***/ "./locales/ko/messages.json":
+/*!**********************************!*\
+  !*** ./locales/ko/messages.json ***!
+  \**********************************/
+/*! exports provided: malware, phishing, advancedButton, moreInfoButton, pageTitle, safeHeaderTitle, safeContentTitle, parentalHeaderTitle, parentalContentTitle, parentalDescOne, parentalDnsDescTwo, blockedContentTitle, ruleHeaderTitle, ruleContentTitle, btnGoBack, btnFeedback, btnProceed, btnProceedTo, inputPassword, errorPageHeader, summary, suggestionsHeader, suggestion1, suggestion2, suggestion3, suggestion4, showDetails, wrongPassword, somethingWrong, errorPageTitle, default */
+/***/ (function(module) {
+
+module.exports = {"malware":"이 웹 페이지 <strong>(var.Host)</strong>는 악성 페이지로 보고되어, 설정하신 보안 설정에 따라 차단되었습니다.","phishing":"이 웹 페이지 <strong>(var.Host)</strong>는 피싱 페이지로 보고되어, 설정하신 보안 설정에 따라 차단되었습니다.","advancedButton":"고급 설정","moreInfoButton":"추가 정보","pageTitle":"접근 거부됨","safeHeaderTitle":"AdGuard가 이 페이지 접근을 차단하였습니다.","safeContentTitle":"이 웹 페이지는 악성 페이지로 보고되어, 설정하신 보안 설정에 따라 차단되었습니다.","parentalHeaderTitle":"자녀 보호","parentalContentTitle":"이 페이지는 자녀 보호 필터 제한으로 차단되었습니다.","parentalDescOne":"자녀 보호 모드를 해제하려면 비밀번호를 입력하세요.","parentalDnsDescTwo":"지금 AdGuard에서 지정한 어린이들에게 부적절한 웹 사이트에 접속하려고 합니다. 성인인 경우 설정에서 자녀 보호를 해제하거나 이 웹 사이트를 화이트리스트에 추가할 수 있습니다.","blockedContentTitle":"{site} 페이지는 필터 규칙에 의해 차단 되었습니다. 이 사이트에 접근하고 싶다면 예외 항목에 추가 하세요.","ruleHeaderTitle":"AdGuard에 의해 차단됨","ruleContentTitle":"다음 필터 규칙으로 인해 AdGuard에서 이 페이지를 로드하지 못했습니다.","btnGoBack":"뒤로가기","btnFeedback":"피드백 전송","btnProceed":"그래도 계속하기","btnProceedTo":"사이트 접속하기","inputPassword":"비밀번호 입력","errorPageHeader":"웹페이지를 사용할 수 없습니다.","summary":"<strong>(var.PageUrl)</strong> 웹 페이지는 일시적으로 다운되었거나 다른 웹 주소로 변경되었을 수 있습니다.","suggestionsHeader":"여기에 몇가지 제안이 있습니다.","suggestion1":"잠시 후 이 웹 페이지를 <a href='(var.PageUrl)'>새로고침</a>하세요.","suggestion2":"웹 페이지 주소를 올바르게 입력했는지 확인하세요.","suggestion3":"방화벽 설정을 확인하세요. AdGuard의 모든 연결은 허용되어 있어야 합니다.","suggestion4":"프록시 서버를 사용 하시면 프록시 설정을 확인 하세요.","showDetails":"자세히 보기","wrongPassword":"비밀번호가 맞지 않습니다.","somethingWrong":"알 수 없는 오류가 발생했습니다. 다시 시도하거나 고객 지원에 문의해주세요.","errorPageTitle":"오류"};
+
+/***/ }),
+
+/***/ "./locales/lt/messages.json":
+/*!**********************************!*\
+  !*** ./locales/lt/messages.json ***!
+  \**********************************/
+/*! exports provided: malware, phishing, advancedButton, moreInfoButton, pageTitle, safeHeaderTitle, safeContentTitle, parentalHeaderTitle, parentalContentTitle, parentalDescOne, parentalDnsDescTwo, blockedContentTitle, ruleHeaderTitle, ruleContentTitle, btnGoBack, btnFeedback, btnProceed, btnProceedTo, inputPassword, errorPageHeader, summary, suggestionsHeader, suggestion1, suggestion2, suggestion3, suggestion4, showDetails, wrongPassword, somethingWrong, errorPageTitle, default */
+/***/ (function(module) {
+
+module.exports = {"malware":"Šis tinklalapis, adresu <strong>(var.Host)</strong>, buvo pažymėtas kaip kenkėjiškų programų puslapis ir buvo užblokuotas atsižvelgiant į jūsų saugos nuostatas.","phishing":"Šis tinklalapis, adresu <strong>(var.Host)</strong>, buvo pažymėtas kaip sukčiavimo puslapis ir buvo užblokuotas atsižvelgiant į jūsų saugos nuostatas.","advancedButton":"Papildomai","moreInfoButton":"Daugiau informacijos","pageTitle":"Prieiga neleidžiama","safeHeaderTitle":"AdGuard užblokavo prieigą prie šio puslapio","safeContentTitle":"Šis tinklalapis buvo pažymėtas kaip kenkėjiškų programų puslapis ir buvo užblokuotas atsižvelgiant į jūsų saugos nuostatas.","parentalHeaderTitle":"Tėvų kontrolė","parentalContentTitle":"Užblokavome šį puslapį dėl tėvų kontrolės filtrų apribojimų.","parentalDescOne":"Ar esate suaugęs? Įveskite slaptažodį","parentalDnsDescTwo":"Bandote pasiekti svetainę, kurią AdGuard laiko kaip netinkamą vaikams. Jei esate suaugęs, nustatymuose galite išjungti tėvų kontrolę arba įtraukti šią svetainę į baltąjį sąrašą.","blockedContentTitle":"Užklausą į {site} buvo užblokuota filtravimo taisyklės. Jei norite pasiekti šią svetainę, pridėkite ją prie išimčių.","ruleHeaderTitle":"Užblokavo AdGuard","ruleContentTitle":"AdGuard neleido įkelti šio puslapio dėl šios filtravimo taisyklės","btnGoBack":"Grįžti","btnFeedback":"Grįžtamasis ryšys","btnProceed":"Tęsti vis tiek","btnProceedTo":"Pereiti į svetainę","inputPassword":"Įveskite slaptažodį","errorPageHeader":"Tinklalapis nepasiekiamas","summary":"Tinklalapis <strong>(var.PageUrl)</strong> laikinai nepasiekiamas arba neegzistuoja.","suggestionsHeader":"Štai keletas prielaidų","suggestion1":"Pabandykite<a href='(var.PageUrl)'>įkelti</a> šį tinklalapį vėliau.","suggestion2":"Patikrinkite svetainės adresą, kad įsitikintumėte, jog jį teisingai įvedėte.","suggestion3":"Patikrinkite užkardos nustatymus. Visos jungtys turi būti leidžiamos AdGuard.","suggestion4":"Patikrinkite savo proxy nustatymus, jei jūs naudojate proxy serverį.","showDetails":"Rodyti išsamią informaciją","wrongPassword":"Neteisingas slaptažodis","somethingWrong":"Kažkas negerai. Pabandykite dar kartą vėliau arba susisiekite su mūsų palaikymo tarnyba.","errorPageTitle":"Klaida"};
 
 /***/ }),
 
@@ -791,7 +841,7 @@ module.exports = {"malware":"Táto stránka bola na <strong>(var.Host)</strong> 
 /*! exports provided: malware, phishing, advancedButton, moreInfoButton, pageTitle, safeHeaderTitle, safeContentTitle, parentalHeaderTitle, parentalContentTitle, parentalDescOne, parentalDnsDescTwo, blockedContentTitle, ruleHeaderTitle, ruleContentTitle, btnGoBack, btnFeedback, btnProceed, btnProceedTo, inputPassword, errorPageHeader, summary, suggestionsHeader, suggestion1, suggestion2, suggestion3, suggestion4, showDetails, wrongPassword, somethingWrong, errorPageTitle, default */
 /***/ (function(module) {
 
-module.exports = {"malware":"Ta spletna stran v <strong>(var.Host)</strong> je bila prijavljena kot stran s slonamernimi programi in je bila blokirana glede na vaše varnostne nastavitve.","phishing":"Ta spletna stran v <strong>(var.Host)</strong> je bila prijavljena kot lažna stran in je bila blokirana glede na vaše varnostne nastavitve.","advancedButton":"Napredno","moreInfoButton":"Več informacij","pageTitle":"Dostop zavrnjen","safeHeaderTitle":"AdGuard je blokiral dostop do te strani","safeContentTitle":"Ta spletna stran je bila prijavljena kot stran s slonamernimi programi in je bila blokirana glede na vaše varnostne nastavitve.","parentalHeaderTitle":"Starševski nadzor","parentalContentTitle":"To stran smo blokirali zaradi omejitev Starševskega filtra.","parentalDescOne":"Ste dovolj stari? Vnesite geslo","parentalDnsDescTwo":"Poskušate doseči spletno stran, ki ga je AdGuard navedel kot neprimerno za otroke. Če ste odrasli, lahko v nastavitvah izklopite Starševski nadzor ali dodate to spletno stran na seznam dovoljenih.","blockedContentTitle":"Zahteva za {site} je blokirana s pravilom filtra. Če želite dostopati do te strani, jo dodajte izjemam.","ruleHeaderTitle":"Blokirana z AdGuardom","ruleContentTitle":"AdGuard je preprečil nalaganje te strani zaradi naslednjega pravila filtriranja","btnGoBack":"Pojdi nazaj","btnFeedback":"Pošlji povratne informacije","btnProceed":"Vseeno nadaljuj","btnProceedTo":"Pojdi na spletno stran","inputPassword":"Vnesite geslo","errorPageHeader":"Spletna stran ni na voljo","summary":"Spletna stran na <strong>(var.PageUrl)</strong>  je morda začasno onemogočena ali pa je morda prestavljena na nov spletni naslov.","suggestionsHeader":"Tukaj je nekaj predlogov","suggestion1":"Poskusite kasneje <a href='(var.PageUrl)'>ponovno naložiti</a> to spletno stran.","suggestion2":"Preverite naslov spletne strani in se prepričajte, da ste ga pravilno vnesli.","suggestion3":"Preverite svoje nastavitve požarnega zidu. Vse povezave je treba dovoliti za AdGuard.","suggestion4":"Preverite nastavitve Proxy strežnika, če ga uporabljate.","showDetails":"Prikaži podrobnosti","wrongPassword":"Napačno geslo","somethingWrong":"Nekaj je šlo narobe. Poskusite znova pozneje ali se obrnite na našo službo za podporo.","errorPageTitle":"Napaka"};
+module.exports = {"malware":"Ta spletna stran v <strong>(var.Host)</strong> je bila prijavljena kot stran s slonamernimi programi in je bila onemogočena glede na vaše varnostne nastavitve.","phishing":"Ta spletna stran v <strong>(var.Host)</strong> je bila prijavljena kot lažna stran in je bila onemogočena glede na vaše varnostne nastavitve.","advancedButton":"Napredno","moreInfoButton":"Več informacij","pageTitle":"Dostop zavrnjen","safeHeaderTitle":"AdGuard je onemogočil dostop do te strani","safeContentTitle":"Ta spletna stran je bila prijavljena kot stran s slonamernimi programi in je bila onemogočena glede na vaše varnostne nastavitve.","parentalHeaderTitle":"Starševski nadzor","parentalContentTitle":"To stran smo onemogočili zaradi omejitev Starševskega filtra.","parentalDescOne":"Ste dovolj stari? Vnesite geslo","parentalDnsDescTwo":"Poskušate doseči spletno stran, ki ga je AdGuard navedel kot neprimerno za otroke. Če ste odrasli, lahko v nastavitvah izklopite Starševski nadzor ali dodate to spletno stran na seznam dovoljenih.","blockedContentTitle":"Zahteva za {site} je onemogočena s pravilom filtra. Če želite dostopati do te strani, jo dodajte izjemam.","ruleHeaderTitle":"Onemogočeno z AdGuardom","ruleContentTitle":"AdGuard je preprečil nalaganje te strani zaradi naslednjega pravila filtriranja","btnGoBack":"Pojdi nazaj","btnFeedback":"Pošlji povratne informacije","btnProceed":"Vseeno nadaljuj","btnProceedTo":"Pojdi na spletno stran","inputPassword":"Vnesite geslo","errorPageHeader":"Spletna stran ni na voljo","summary":"Spletna stran na <strong>(var.PageUrl)</strong>  je morda začasno onemogočena ali pa je morda prestavljena na nov spletni naslov.","suggestionsHeader":"Tukaj je nekaj predlogov","suggestion1":"Poskusite kasneje <a href='(var.PageUrl)'>ponovno naložiti</a> to spletno stran.","suggestion2":"Preverite naslov spletne strani in se prepričajte, da ste ga pravilno vnesli.","suggestion3":"Preverite svoje nastavitve požarnega zidu. Vse povezave je treba dovoliti za AdGuard.","suggestion4":"Preverite nastavitve Proxy strežnika, če ga uporabljate.","showDetails":"Prikaži podrobnosti","wrongPassword":"Napačno geslo","somethingWrong":"Nekaj je šlo narobe. Poskusite znova pozneje ali se obrnite na našo službo za podporo.","errorPageTitle":"Napaka"};
 
 /***/ }),
 
@@ -825,6 +875,17 @@ module.exports = {"malware":"Den här webbsidan, på <strong>(var.Host)</strong>
 /***/ (function(module) {
 
 module.exports = {"malware":"<strong>(var.Host)</strong> adresindeki bu site kötü amaçlı yazılım sitesi olarak rapor edildi ve güvenlik tercihlerinize göre engellendi.","phishing":"<strong>(var.Host)</strong> adresindeki bu site kimlik avı sitesi olarak rapor edildi ve güvenlik tercihlerinize bağlı olarak engellendi.","advancedButton":"Gelişmiş","moreInfoButton":"Daha fazla bilgi","pageTitle":"Erişim engellendi","safeHeaderTitle":"AdGuard bu sayfaya erişimi engelledi","safeContentTitle":"Bu site kötü amaçlı yazılım içeren bir site olarak rapor edildi ve güvenlik tercihlerinize göre engellendi.","parentalHeaderTitle":"Ebeveyn kontrolü","parentalContentTitle":"Bu sayfayı ebeveyn filtresi kısıtlamaları nedeniyle engelledik.","parentalDescOne":"Yeterli yaşa sahip misin? Lütfen şifreyi girin","parentalDnsDescTwo":"AdGuard tarafından çocuklar için uygun olmayan bir web sitesine ulaşmaya çalışıyorsunuz. Yetişkin iseniz ayarlarda ebeveyn kontrolünü kapatabilir veya bu web sitesini beyaz listeye ekleyebilirsiniz.","blockedContentTitle":"{site} isteği, bir filtre kuralı tarafından engellendi. Bu siteye erişmek istiyorsanız, istisnalara ekleyin.","ruleHeaderTitle":"AdGuard tarafından engellendi","ruleContentTitle":"AdGuard, aşağıdaki filtre kuralı nedeniyle bu sayfanın yüklenmesini engelledi","btnGoBack":"Geri git","btnFeedback":"Geribildirim gönder","btnProceed":"Yine de devam et","btnProceedTo":"Siteye gir","inputPassword":"Parolayı girin","errorPageHeader":"Bu sayfa mevcut değil","summary":"Buradaki <strong>(var.PageUrl)</strong> websitesi geçici olarak devredışı olabilir ya da yeni bir web adresine taşınmış olabilir.","suggestionsHeader":"İşte birkaç öneri","suggestion1":"Bu web sayfasını daha sonra <a href='(var.PageUrl)'> yeniden yüklemeyi</a> deneyin.","suggestion2":"Web sayfasının adresini doğru girdiğinizden emin olun","suggestion3":"Güvenlik duvarı ayarlarınızı kontrol edin. AdGuard için tüm bağlantılara izin verilmelidir.","suggestion4":"Eğer bir proxy sunucusu kullanıyorsanız proxy ayarlarınızı kontol edin.","showDetails":"Detayları göster","wrongPassword":"Yanlış şifre girdiniz","somethingWrong":"Bir sorun oluştu. Lütfen daha sonra tekrar deneyiniz ya da destek servisimizle iletişime geçin.","errorPageTitle":"Hata"};
+
+/***/ }),
+
+/***/ "./locales/uk/messages.json":
+/*!**********************************!*\
+  !*** ./locales/uk/messages.json ***!
+  \**********************************/
+/*! exports provided: malware, phishing, advancedButton, moreInfoButton, pageTitle, safeHeaderTitle, safeContentTitle, parentalHeaderTitle, parentalContentTitle, parentalDescOne, parentalDnsDescTwo, blockedContentTitle, ruleHeaderTitle, ruleContentTitle, btnGoBack, btnFeedback, btnProceed, btnProceedTo, inputPassword, errorPageHeader, summary, suggestionsHeader, suggestion1, suggestion2, suggestion3, suggestion4, showDetails, wrongPassword, somethingWrong, errorPageTitle, default */
+/***/ (function(module) {
+
+module.exports = {"malware":"Веб-сторінка <strong>(var.Host)</strong> відома, як зловмисна і була заблокована згідно з вашими налаштуваннями безпеки.","phishing":"Веб-сторінка <strong>(var.Host)</strong> відома, як шахрайська і була заблокована згідно з вашими налаштуваннями безпеки.","advancedButton":"Додатково","moreInfoButton":"Докладніша інформація","pageTitle":"Доступ заборонено","safeHeaderTitle":"AdGuard заблокував доступ до цієї сторінки","safeContentTitle":"Ця веб-сторінка відома, як зловмисна і була заблокована згідно з вашими налаштуваннями безпеки.","parentalHeaderTitle":"Батьківський контроль","parentalContentTitle":"Цю сторінку заблоковано у зв'язку з обмеженнями батьківського контролю.","parentalDescOne":"Якщо ви повнолітні, введіть пароль","parentalDnsDescTwo":"Ви намагаєтесь отримати доступ до веб-сайту, який в AdGuard позначений неприйнятним для дітей. Якщо ви повнолітні, ви можете вимкнути батьківський контроль в налаштуваннях, або додати цей веб-сайт до білого списку.","blockedContentTitle":"Запит до {site} було заблоковано правилом фільтру. Якщо ви хочете отримати доступ до цього сайту, додайте його до винятків.","ruleHeaderTitle":"Заблоковано AdGuard","ruleContentTitle":"AdGuard не дозволив цій сторінці завантажитись, у зв'язку з таким правилом фільтру","btnGoBack":"Назад","btnFeedback":"Надіслати відгук","btnProceed":"Продовжити в будь-якому разі","btnProceedTo":"Перейти на сайт","inputPassword":"Уведіть пароль","errorPageHeader":"Веб-сторінка недоступна","summary":"Веб-сторінка <strong>(var.PageUrl)</strong>, ймовірно, тимчасово недоступна, або її адреса змінилася.","suggestionsHeader":"Ось декілька пропозицій","suggestion1":"Спробуйте <a href='(var.PageUrl)'>перезавантажити</a> цю сторінку пізніше.","suggestion2":"Перевірте правильність введення адреси веб-сторінки.","suggestion3":"Перевірте налаштування мережевого екрану. Слід дозволити всі з'єднання для AdGuard.","suggestion4":"Перевірте ваші налаштування проксі-сервера, якщо ви його використовуєте.","showDetails":"Показати деталі","wrongPassword":"Хибний пароль","somethingWrong":"Щось пішло не так. Будь ласка, повторіть спробу пізніше або зверніться до нашої служби підтримки.","errorPageTitle":"Помилка"};
 
 /***/ }),
 
