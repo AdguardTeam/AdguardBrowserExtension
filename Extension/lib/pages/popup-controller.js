@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global i18n, popupPage, lottie, AGAnimations */
+/* global i18n, popupPage */
 
 /**
  * Controller that manages add-on popup window
@@ -258,6 +258,9 @@ PopupController.prototype = {
         button.innerText = notification.text.btn;
 
         this._appendTemplate(container, this.animatedNotification);
+
+        // Schedule notification removal
+        popupPage.sendMessage({ type: 'setNotificationViewed', withDelay: true });
     },
 
     _renderNotificationBlock: function (container, tabInfo, options) {
