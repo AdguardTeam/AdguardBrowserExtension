@@ -24,43 +24,10 @@ adguard.notifications = (function (adguard) {
 
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
 
-    const halloweenNotification = {
-        id: 'halloween2019',
-        locales: {
-            en: 'Trick or Treat?',
-            de: 'Süßes oder Saures?',
-            ru: 'Кошелек или жизнь?',
-            fr: 'Bonbons ou bâtons ?',
-            it: 'Dolcetto o scherzetto?',
-            ja: 'トリック・オア・トリート',
-            ko: '트릭 오어 트릿',
-        },
-        text: '',
-        url: 'https://adguard.com/forward.html?action=holiday_notify&from=popup&app=browser_extension',
-        from: '29 October 2019 00:00:00',
-        to: '2 November 2019 23:59:00',
-        type: 'animated',
-        get icons() {
-            return adguard.lazyGet(halloweenNotification, 'icons', () => ({
-                ICON_BLUE: {
-                    '19': adguard.getURL('icons/blue-19-halloween.png'),
-                    '38': adguard.getURL('icons/blue-38-halloween.png'),
-                },
-                ICON_YELLOW: {
-                    '19': adguard.getURL('icons/yellow-19-halloween.png'),
-                    '38': adguard.getURL('icons/yellow-38-halloween.png'),
-                },
-                ICON_GRAY: {
-                    '19': adguard.getURL('icons/gray-19-halloween.png'),
-                    '38': adguard.getURL('icons/gray-38-halloween.png'),
-                },
-            }));
-        },
-    };
-
     const blackFridayNotification = {
         id: 'blackFriday2019',
         locales: {
+            // TODO [maximtop] fix en text
             en: {
                 title: 'Sconti Black Friday',
                 desc: '(fino a -60%)',
@@ -98,11 +65,15 @@ adguard.notifications = (function (adguard) {
             },
         },
         text: '',
-        url: 'https://adguard.com/license.html',
-        // TODO FIX date
-        from: '29 October 2019 00:00:00',
-        to: '29 November 2019 23:59:00',
+        // TODO [maximtop] check link
+        url: 'https://adguard.com/forward.html?action=holiday_notify&from=popup&app=browser_extension',
+        // TODO [maximtop] fix dates
+        from: '11 November 2019 00:00:00',
+        // from: '29 November 2019 00:00:00',
+        to: '2 December 2019 00:00:00',
         type: 'animated',
+        badgeText: '%',
+        badgeColor: '#000000',
     };
 
     /**
@@ -121,7 +92,6 @@ adguard.notifications = (function (adguard) {
      * @property {string} type;
      */
     const notifications = {
-        halloween: halloweenNotification,
         blackFriday: blackFridayNotification,
     };
 
