@@ -250,17 +250,14 @@ PopupController.prototype = {
             return;
         }
 
+        const title = this.animatedNotification.querySelector('.holiday-notify__title');
+        const desc = this.animatedNotification.querySelector('.holiday-notify__desc');
         const button = this.animatedNotification.querySelector('.holiday-notify__btn');
-        button.innerText = notification.text;
+        title.innerText = notification.text.title;
+        desc.innerText = notification.text.desc;
+        button.innerText = notification.text.btn;
 
         this._appendTemplate(container, this.animatedNotification);
-
-        lottie.loadAnimation({
-            container: container.querySelector('.holiday-notify__ico'),
-            renderer: 'svg',
-            autoplay: true,
-            animationData: JSON.parse(AGAnimations[notification.id]),
-        });
     },
 
     _renderNotificationBlock: function (container, tabInfo, options) {
