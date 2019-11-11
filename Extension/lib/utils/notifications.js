@@ -61,7 +61,11 @@ adguard.notifications = (function (adguard) {
     const blackFridayNotification = {
         id: 'blackFriday2019',
         locales: {
-            en: 'Trick or Treat?',
+            en: {
+                title: 'Sconti Black Friday',
+                desc: '(fino a -60%)',
+                btn: 'Migliora la protezione',
+            },
             de: {
                 title: 'BLACK FRIDAY SALE',
                 desc: '(bis zu 60% Rabatt)',
