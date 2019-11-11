@@ -58,6 +58,49 @@ adguard.notifications = (function (adguard) {
         },
     };
 
+    const blackFridayNotification = {
+        id: 'blackFriday2019',
+        locales: {
+            en: 'Trick or Treat?',
+            de: {
+                title: 'BLACK FRIDAY SALE',
+                desc: '(bis zu 60% Rabatt)',
+                btn: 'Den Schutz upgraden',
+            },
+            ru: {
+                title: 'ЧЁРНАЯ ПЯТНИЦА:',
+                desc: 'СКИДКИ до 60%!',
+                btn: 'Улучшить защиту',
+            },
+            fr: {
+                title: 'PROMO BLACK FRIDAY',
+                desc: '(jusqu’à -60%)',
+                btn: 'Améliorer la protection',
+            },
+            it: {
+                title: 'SCONTI BLACK FRIDAY',
+                desc: '(fino a -60%)',
+                btn: 'Migliora la protezione',
+            },
+            ja: {
+                title: 'BLACK FRIDAY SALE',
+                desc: '(最大60%OFF)',
+                btn: 'パワーアップ',
+            },
+            ko: {
+                title: 'BLACK FRIDAY SALE',
+                desc: '(60% 할인)',
+                btn: '보호 업그레이드',
+            },
+        },
+        text: '',
+        url: 'https://adguard.com/license.html',
+        // TODO FIX date
+        from: '29 October 2019 00:00:00',
+        to: '29 November 2019 23:59:00',
+        type: 'animated',
+    };
+
     /**
      * @typedef Notification
      * @type object
@@ -75,6 +118,7 @@ adguard.notifications = (function (adguard) {
      */
     const notifications = {
         halloween: halloweenNotification,
+        blackFriday: blackFridayNotification,
     };
 
     /**
