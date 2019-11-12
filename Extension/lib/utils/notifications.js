@@ -27,11 +27,10 @@ adguard.notifications = (function (adguard) {
     const blackFridayNotification = {
         id: 'blackFriday2019',
         locales: {
-            // TODO [maximtop] fix en text
             en: {
-                title: 'Sconti Black Friday',
-                desc: '(fino a -60%)',
-                btn: 'Migliora la protezione',
+                title: 'BLACK FRIDAY SALE ',
+                desc: '(save up to 60%)',
+                btn: 'Upgrade protection',
             },
             de: {
                 title: 'BLACK FRIDAY SALE',
@@ -65,10 +64,9 @@ adguard.notifications = (function (adguard) {
             },
         },
         text: '',
-        // TODO [maximtop] check link
         url: 'https://adguard.com/forward.html?action=holiday_notify&from=popup&app=browser_extension',
         // TODO [maximtop] fix dates
-        from: '11 November 2019 00:00:00',
+        from: '12 November 2019 17:30:00',
         // from: '29 November 2019 00:00:00',
         to: '2 December 2019 00:00:00',
         type: 'animated',
