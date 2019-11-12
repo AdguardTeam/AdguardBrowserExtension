@@ -64,9 +64,9 @@ adguard.notifications = (function (adguard) {
             },
         },
         text: '',
-        url: 'https://adguard.com/forward.html?action=holiday_notify&from=popup&app=browser_extension',
+        url: 'https://adguard.com/forward.html?action=bf2019_notify&from=popup&app=browser_extension',
         // TODO [maximtop] fix dates
-        from: '12 November 2019 17:30:00',
+        from: '11 November 2019 00:00:00',
         // from: '29 November 2019 00:00:00',
         to: '2 December 2019 00:00:00',
         type: 'animated',
