@@ -858,7 +858,7 @@ PopupController.prototype = {
             e.preventDefault();
             const notification = parent.querySelector('.holiday-notify');
             if (notification) {
-                notification.style.display = 'none';
+                notification.classList.add('holiday-notify--close');
                 popupPage.sendMessage({ type: 'setNotificationViewed', withDelay: false });
             }
         });
