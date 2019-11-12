@@ -65,7 +65,7 @@ adguard.userrules = (function (adguard) {
      * @param options
      */
     const updateUserRulesText = function (content, options) {
-        const lines = content.length > 0 ? content.split(/[\r\n]/) : [];
+        const lines = content.length > 0 ? content.split(/\n/) : [];
         getAntiBannerService().updateUserFilterRules(lines);
         adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
     };
