@@ -806,7 +806,12 @@ img .footer .platforms:first-child {
   background-color: #000;
   z-index: 2;
   width: 100%;
-  animation: notify-show 2s linear;
+  animation: notify-show 0.3s ease-in;
+}
+
+.holiday-notify--close {
+  animation: notify-show-reverse 0.3s ease-out;
+  animation-fill-mode: forwards;
 }
 
 @keyframes notify-show {
@@ -816,6 +821,16 @@ img .footer .platforms:first-child {
 
   100% {
     transform: translateY(0);
+  }
+}
+
+@keyframes notify-show-reverse {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(200px);
   }
 }
 
