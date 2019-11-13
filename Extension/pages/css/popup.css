@@ -803,57 +803,98 @@ img .footer .platforms:first-child {
   bottom: 0;
   left: 0;
   position: absolute;
+  background-color: #000;
   z-index: 2;
   width: 100%;
+  animation: notify-show 0.3s ease-in;
+}
+
+.holiday-notify--close {
+  animation: notify-show-reverse 0.3s ease-out;
+  animation-fill-mode: forwards;
+}
+
+@keyframes notify-show {
+  0% {
+    transform: translateY(200px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes notify-show-reverse {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(200px);
+  }
 }
 
 .holiday-notify__close {
-  top: 0;
+  top: 15px;
   right: 15px;
   position: absolute;
   z-index: 2;
-  width: 30px;
-  height: 30px;
+  width: 15px;
+  height: 15px;
   background-repeat: no-repeat;
   background-position: 50%;
   background-size: 15px;
-  background-image: url(../images/cross.svg);
+  background-image: url(../images/cross-white.svg);
   cursor: pointer;
-}
-
-.holiday-notify__ico {
-  position: relative;
-  top: -65px;
-  left: 15px;
 }
 
 .holiday-notify__content {
   width: 100%;
-  height: 92px;
-  display: flex;
-  align-items: center;
-  padding: 0 15px;
-  margin-top: 45px;
-  background-color: #302E2B;
-  background-image: url(../images/halloween-bg.svg);
+  padding: 30px 5px;
+  font-weight: bold;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.holiday-notify__content:after {
+  content: "";
+  width: 500px;
+  height: 140px;
+  position: absolute;
+  background: #181818;
+  left: -60px;
+  top: -90px;
+  z-index: -1;
+  transform: rotate(-15deg);
+
+}
+
+.holiday-notify__title {
+  font-size: 30px;
+  line-height: 39px;
+  color: #ff6161;
+}
+
+.holiday-notify__desc {
+  font-size: 24px;
+  line-height: 32px;
+  margin-bottom: 20px;
+  color: #fff;
 }
 
 .holiday-notify__btn {
   display: inline-block;
   text-align: center;
   padding: 0 5px;
-  min-width: 175px;
-  line-height: 37px;
-  background-color: #FFA552;
-  font-size: 14px;
-  color: #4B4237;
+  min-width: 255px;
+  line-height: 44px;
+  font-size: 16px;
   border: 0;
   cursor: pointer;
   border-radius: 25px;
+  background: linear-gradient(to bottom, rgba(81,147,143,1) 0%,rgba(72,150,91,1) 100%);
+  color: #fff;
   font-weight: bold;
-  transition: 0.3s ease background-color;
-}
-
-.holiday-notify__btn:hover {
-  background-color: #eb9a4f;
+  text-transform: uppercase;
 }
