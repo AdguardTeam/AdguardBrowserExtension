@@ -98,15 +98,6 @@
         const frameId = requestDetails.frameId;
         const requestFrameId = requestDetails.requestFrameId || 0;
 
-
-        // this flag is calculated before recordFrame because we want to get previous tab state
-        // used to suppose that this tab is $popup
-        let supposedPopupRequest;
-        if (requestType === adguard.RequestTypes.DOCUMENT) {
-            const tabInfo = adguard.tabs.getTabInfo(tabId);
-            supposedPopupRequest = !!(tabInfo && (tabInfo.url === '' || tabInfo.url === 'about:blank'));
-        }
-
         if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
             adguard.frames.recordFrame(tab, frameId, requestUrl, requestType);
         }
@@ -189,9 +180,16 @@
             requestUrl
         );
 
-        if (requestRule && requestRule.isBlockPopups() && supposedPopupRequest) {
-            adguard.tabs.remove(tabId);
-            return { cancel: true };
+        if (requestRule && requestRule.isBlockPopups() && requestType === adguard.RequestTypes.DOCUMENT) {
+            const tabInfo = adguard.tabs.getTabInfo(tabId);
+            // this flag is calculated because we want to get previous tab state
+            // and is used to suppose that this tab is $popup
+            const supposedPopupRequest = !!(tabInfo && (tabInfo.url === '' || tabInfo.url === 'about:blank'));
+
+            if (supposedPopupRequest) {
+                adguard.tabs.remove(tabId);
+                return { cancel: true };
+            }
         }
 
         if (response && response.documentBlockedPage) {
