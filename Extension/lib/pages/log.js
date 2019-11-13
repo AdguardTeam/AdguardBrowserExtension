@@ -346,7 +346,7 @@ const RequestWizard = (function () {
         ruleImportantCheckbox.setAttribute('id', 'ruleImportant');
         ruleImportantCheckbox.parentNode.querySelector('label').setAttribute('for', 'ruleImportant');
         if (filteringEvent.requestRule
-            && filteringEvent.requestRule.whiteListRule) {
+            && (filteringEvent.requestRule.whiteListRule || filteringEvent.requestRule.isImportant)) {
             ruleImportantCheckbox.setAttribute('checked', 'checked');
         }
 
@@ -355,7 +355,7 @@ const RequestWizard = (function () {
 
         ruleThirdPartyCheckbox.setAttribute('id', 'ruleThirdParty');
         ruleThirdPartyCheckbox.parentNode.querySelector('label').setAttribute('for', 'ruleThirdParty');
-        if (isThirdPartyRequest) {
+        if (isThirdPartyRequest && !frameDomain) {
             ruleThirdPartyCheckbox.setAttribute('checked', 'checked');
         }
 
