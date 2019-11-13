@@ -98,6 +98,15 @@
         const frameId = requestDetails.frameId;
         const requestFrameId = requestDetails.requestFrameId || 0;
 
+
+        // this flag is calculated before recordFrame because we want to get previous tab state
+        // used to suppose that this tab is $popup
+        let supposedPopupRequest;
+        if (requestType === adguard.RequestTypes.DOCUMENT) {
+            const tabInfo = adguard.tabs.getTabInfo(tabId);
+            supposedPopupRequest = !!(tabInfo && (tabInfo.url === '' || tabInfo.url === 'about:blank'));
+        }
+
         if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
             adguard.frames.recordFrame(tab, frameId, requestUrl, requestType);
         }
@@ -161,6 +170,7 @@
             referrerUrl,
             requestType
         );
+
         requestRule = adguard.webRequestService.postProcessRequest(
             tab,
             requestUrl,
@@ -179,14 +189,12 @@
             requestUrl
         );
 
+        if (requestRule && requestRule.isBlockPopups() && supposedPopupRequest) {
+            adguard.tabs.remove(tabId);
+            return { cancel: true };
+        }
+
         if (response && response.documentBlockedPage) {
-            // for rules like "||example.org^$document,popup" if website calls window.open('about:blank')
-            // and then sets url "http://example.org" we cant apply combined rule with document and popup modifier
-            // that is why we close such tabs immediately
-            if (requestRule.isBlockPopups()) {
-                adguard.tabs.remove(tabId);
-                return { cancel: true };
-            }
             // Here we do not use redirectUrl because it is not working in firefox without specifying it
             // as the web_accessible_resources.
             adguard.rules.documentFilterService.showDocumentBlockPage(tabId, response.documentBlockedPage);

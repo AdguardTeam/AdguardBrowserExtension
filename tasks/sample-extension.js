@@ -93,7 +93,6 @@ const API_SCRIPTS = [
     'Extension/lib/content-message-handler.js',
     'Extension/lib/stealth.js',
     'Extension/lib/webrequest.js',
-    'Extension/lib/blockpopup.js',
     'Extension/api/chrome/lib/api.js',
 ];
 

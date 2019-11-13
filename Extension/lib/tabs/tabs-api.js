@@ -342,6 +342,14 @@
             return null;
         };
 
+        const getTabInfo = function (tabId) {
+            const tab = tabs[tabId];
+            if (tab) {
+                return tab;
+            }
+            return null;
+        };
+
         // Update tab metadata
         var updateTabMetadata = function (tabId, values) {
             var tab = tabs[tabId];
@@ -401,6 +409,7 @@
             recordTabFrame: recordTabFrame,
             clearTabFrames: clearTabFrames,
             getTabFrame: getTabFrame,
+            getTabInfo: getTabInfo,
 
             // Other
             updateTabMetadata: updateTabMetadata,
