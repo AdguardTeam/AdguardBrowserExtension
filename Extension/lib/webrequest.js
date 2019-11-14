@@ -161,6 +161,7 @@
             referrerUrl,
             requestType
         );
+
         requestRule = adguard.webRequestService.postProcessRequest(
             tab,
             requestUrl,
@@ -178,6 +179,14 @@
             requestType,
             requestUrl
         );
+
+        if (requestRule && requestRule.isBlockPopups() && requestType === adguard.RequestTypes.DOCUMENT) {
+            const isNewTab = adguard.tabs.isNewPopupTab(tabId);
+            if (isNewTab) {
+                adguard.tabs.remove(tabId);
+                return { cancel: true };
+            }
+        }
 
         if (response && response.documentBlockedPage) {
             // Here we do not use redirectUrl because it is not working in firefox without specifying it
