@@ -181,12 +181,8 @@
         );
 
         if (requestRule && requestRule.isBlockPopups() && requestType === adguard.RequestTypes.DOCUMENT) {
-            const tabInfo = adguard.tabs.getTabInfo(tabId);
-            // this flag is calculated because we want to get previous tab state
-            // and is used to suppose that this tab is $popup
-            const supposedPopupRequest = !!(tabInfo && (tabInfo.url === '' || tabInfo.url === 'about:blank'));
-
-            if (supposedPopupRequest) {
+            const isNewTab = adguard.tabs.isNewPopupTab(tabId);
+            if (isNewTab) {
                 adguard.tabs.remove(tabId);
                 return { cancel: true };
             }
