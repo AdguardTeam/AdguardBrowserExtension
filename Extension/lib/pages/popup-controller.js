@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global i18n, popupPage, lottie, AGAnimations */
+/* global i18n, popupPage */
 
 /**
  * Controller that manages add-on popup window
@@ -250,17 +250,17 @@ PopupController.prototype = {
             return;
         }
 
+        const title = this.animatedNotification.querySelector('.holiday-notify__title');
+        const desc = this.animatedNotification.querySelector('.holiday-notify__desc');
         const button = this.animatedNotification.querySelector('.holiday-notify__btn');
-        button.innerText = notification.text;
+        title.innerText = notification.text.title;
+        desc.innerText = notification.text.desc;
+        button.innerText = notification.text.btn;
 
         this._appendTemplate(container, this.animatedNotification);
 
-        lottie.loadAnimation({
-            container: container.querySelector('.holiday-notify__ico'),
-            renderer: 'svg',
-            autoplay: true,
-            animationData: JSON.parse(AGAnimations[notification.id]),
-        });
+        // Schedule notification removal
+        popupPage.sendMessage({ type: 'setNotificationViewed', withDelay: true });
     },
 
     _renderNotificationBlock: function (container, tabInfo, options) {
@@ -858,7 +858,7 @@ PopupController.prototype = {
             e.preventDefault();
             const notification = parent.querySelector('.holiday-notify');
             if (notification) {
-                notification.style.display = 'none';
+                notification.classList.add('holiday-notify--close');
                 popupPage.sendMessage({ type: 'setNotificationViewed', withDelay: false });
             }
         });
