@@ -113,6 +113,9 @@ adguard.filteringLog = (function (adguard) {
     const appendProperties = (destinationRule, sourceRule) => {
         destinationRule.filterId = sourceRule.filterId;
         destinationRule.ruleText = sourceRule.ruleText;
+        if (sourceRule.isImportant) {
+            destinationRule.isImportant = sourceRule.isImportant;
+        }
         if (sourceRule.convertedRuleText) {
             destinationRule.convertedRuleText = sourceRule.convertedRuleText;
         }

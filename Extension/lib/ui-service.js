@@ -152,12 +152,16 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                     badge = notification.badgeText || badge;
                     badgeColor = notification.badgeBgColor || badgeColor;
 
-                    if (disabled) {
-                        icon = notification.icons.ICON_GRAY;
-                    } else if (tabInfo.adguardDetected) {
-                        icon = notification.icons.ICON_BLUE;
-                    } else {
-                        icon = notification.icons.ICON_YELLOW;
+                    const hasSpecialIcons = !!notification.icons;
+
+                    if (hasSpecialIcons) {
+                        if (disabled) {
+                            icon = notification.icons.ICON_GRAY;
+                        } else if (tabInfo.adguardDetected) {
+                            icon = notification.icons.ICON_BLUE;
+                        } else {
+                            icon = notification.icons.ICON_GREEN;
+                        }
                     }
                 }
             }

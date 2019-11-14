@@ -88,9 +88,5 @@ These libs are developed by us from scratch.
 * v1.0.10
 * Library source https://github.com/AdguardTeam/Scriptlets/releases
 
-#### `lib/libs/lottie/lottie.js`
-* v5.5.9
-* Library source https://github.com/airbnb/lottie-web/blob/v5.5.9/build/player/lottie.js
-
 
 

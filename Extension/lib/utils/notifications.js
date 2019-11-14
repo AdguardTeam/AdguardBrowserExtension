@@ -24,38 +24,52 @@ adguard.notifications = (function (adguard) {
 
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
 
-    const halloweenNotification = {
-        id: 'halloween2019',
+    const blackFridayNotification = {
+        id: 'blackFriday2019',
         locales: {
-            en: 'Trick or Treat?',
-            de: 'Süßes oder Saures?',
-            ru: 'Кошелек или жизнь?',
-            fr: 'Bonbons ou bâtons ?',
-            it: 'Dolcetto o scherzetto?',
-            ja: 'トリック・オア・トリート',
-            ko: '트릭 오어 트릿',
+            en: {
+                title: 'BLACK FRIDAY SALE ',
+                desc: '(save up to 60%)',
+                btn: 'Upgrade protection',
+            },
+            de: {
+                title: 'BLACK FRIDAY SALE',
+                desc: '(bis zu 60% Rabatt)',
+                btn: 'Den Schutz upgraden',
+            },
+            ru: {
+                title: 'ЧЁРНАЯ ПЯТНИЦА:',
+                desc: 'СКИДКИ до 60%!',
+                btn: 'Улучшить защиту',
+            },
+            fr: {
+                title: 'PROMO BLACK FRIDAY',
+                desc: '(jusqu’à -60%)',
+                btn: 'Améliorer la protection',
+            },
+            it: {
+                title: 'SCONTI BLACK FRIDAY',
+                desc: '(fino a -60%)',
+                btn: 'Migliora la protezione',
+            },
+            ja: {
+                title: 'BLACK FRIDAY SALE',
+                desc: '(最大60%OFF)',
+                btn: 'パワーアップ',
+            },
+            ko: {
+                title: 'BLACK FRIDAY SALE',
+                desc: '(60% 할인)',
+                btn: '보호 업그레이드',
+            },
         },
         text: '',
-        url: 'https://adguard.com/forward.html?action=holiday_notify&from=popup&app=browser_extension',
-        from: '29 October 2019 00:00:00',
-        to: '2 November 2019 23:59:00',
+        url: 'https://adguard.com/forward.html?action=bf2019_notify&from=popup&app=browser_extension',
+        from: '29 November 2019 00:00:00',
+        to: '2 December 2019 00:00:00',
         type: 'animated',
-        get icons() {
-            return adguard.lazyGet(halloweenNotification, 'icons', () => ({
-                ICON_BLUE: {
-                    '19': adguard.getURL('icons/blue-19-halloween.png'),
-                    '38': adguard.getURL('icons/blue-38-halloween.png'),
-                },
-                ICON_YELLOW: {
-                    '19': adguard.getURL('icons/yellow-19-halloween.png'),
-                    '38': adguard.getURL('icons/yellow-38-halloween.png'),
-                },
-                ICON_GRAY: {
-                    '19': adguard.getURL('icons/gray-19-halloween.png'),
-                    '38': adguard.getURL('icons/gray-38-halloween.png'),
-                },
-            }));
-        },
+        badgeText: '%',
+        badgeColor: '#000000',
     };
 
     /**
@@ -74,7 +88,7 @@ adguard.notifications = (function (adguard) {
      * @property {string} type;
      */
     const notifications = {
-        halloween: halloweenNotification,
+        blackFriday: blackFridayNotification,
     };
 
     /**
