@@ -342,12 +342,18 @@
             return null;
         };
 
-        const getTabInfo = function (tabId) {
+        /**
+         * Checks if the tab is new tab for popup or not
+         * May be false positive for FF at least because new tab url in FF is "about:blank" too
+         * @param tabId
+         * @returns {boolean}
+         */
+        const isNewPopupTab = (tabId) => {
             const tab = tabs[tabId];
-            if (tab) {
-                return tab;
+            if (!tab) {
+                return false;
             }
-            return null;
+            return !!(tab.url === '' || tab.url === 'about:blank');
         };
 
         // Update tab metadata
@@ -409,7 +415,7 @@
             recordTabFrame: recordTabFrame,
             clearTabFrames: clearTabFrames,
             getTabFrame: getTabFrame,
-            getTabInfo: getTabInfo,
+            isNewPopupTab: isNewPopupTab,
 
             // Other
             updateTabMetadata: updateTabMetadata,
