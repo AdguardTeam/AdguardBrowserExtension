@@ -485,15 +485,12 @@ adguard.webRequestService = (function (adguard) {
 
             // Url blocking rules are not applicable to the main_frame
             if (isRequestBlockingRule && requestType === adguard.RequestTypes.DOCUMENT) {
-                // except document rule $document
-                if (!requestRule.isDocumentRule()) {
+                // except rules with $document and $popup modifiers
+                if (!requestRule.isDocumentRule() && !isPopupBlockingRule) {
                     requestRule = null;
                 }
             }
-            // Popup blocking rules are applicable to the main_frame only
-            if (isPopupBlockingRule && requestType !== adguard.RequestTypes.DOCUMENT) {
-                requestRule = null;
-            }
+
             // Replace rules are processed in content-filtering.js
             if (isReplaceRule) {
                 requestRule = null;
