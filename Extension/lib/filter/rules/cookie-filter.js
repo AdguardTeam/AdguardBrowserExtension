@@ -16,7 +16,6 @@
  */
 
 (function (adguard, api) {
-
     'use strict';
 
     /**
@@ -24,19 +23,8 @@
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/961
      */
     api.CookieFilter = function (rules) {
-
-        var cookieWhiteFilter = new api.UrlFilterRuleLookupTable();
-        var cookieBlockFilter = new api.UrlFilterRuleLookupTable();
-
-        /**
-         * Add rules to filter
-         * @param rules Collection of rules
-         */
-        function addRules(rules) {
-            for (var i = 0; i < rules.length; i++) {
-                addRule(rules[i]);
-            }
-        }
+        const cookieWhiteFilter = new api.UrlFilterRuleLookupTable();
+        const cookieBlockFilter = new api.UrlFilterRuleLookupTable();
 
         /**
          * Add rule to filter
@@ -47,6 +35,16 @@
                 cookieWhiteFilter.addRule(rule);
             } else {
                 cookieBlockFilter.addRule(rule);
+            }
+        }
+
+        /**
+         * Add rules to filter
+         * @param rules Collection of rules
+         */
+        function addRules(rules) {
+            for (let i = 0; i < rules.length; i += 1) {
+                addRule(rules[i]);
             }
         }
 
@@ -68,7 +66,7 @@
          * @returns {*|Array.<T>|string|Buffer}
          */
         function getRules() {
-            var rules = cookieWhiteFilter.getRules();
+            const rules = cookieWhiteFilter.getRules();
             return rules.concat(cookieBlockFilter.getRules());
         }
 
@@ -80,9 +78,7 @@
          * @return {object} Found whitelist rule or null
          */
         function findWhiteListRule(blockRule, whiteListRules) {
-
-            for (let i = 0; i < whiteListRules.length; i++) {
-
+            for (let i = 0; i < whiteListRules.length; i += 1) {
                 const whiteRule = whiteListRules[i];
                 const whiteCookieOption = whiteRule.getCookieOption();
 
@@ -96,9 +92,8 @@
                 }
 
                 // Rules have the same regex
-                if (blockCookieRegex && whiteCookieOption.regex &&
-                    String(blockCookieRegex) === String(whiteCookieOption.regex)) {
-
+                if (blockCookieRegex && whiteCookieOption.regex
+                    && String(blockCookieRegex) === String(whiteCookieOption.regex)) {
                     return whiteRule;
                 }
 
@@ -118,7 +113,6 @@
          * @returns             Matching rules
          */
         function findCookieRules(url, documentHost, thirdParty, requestType) {
-
             const blockRules = cookieBlockFilter.findRules(url, documentHost, thirdParty, requestType);
             if (!blockRules || blockRules.length === 0) {
                 return null;
@@ -135,7 +129,7 @@
                 return [commonWhiteRule];
             }
 
-            const rulesToApply = blockRules.map(blockRule => {
+            const rulesToApply = blockRules.map((blockRule) => {
                 const whiteRule = findWhiteListRule(blockRule, whiteRules);
                 return whiteRule || blockRule;
             });
@@ -147,12 +141,11 @@
         }
 
         return {
-            addRules: addRules,
-            addRule: addRule,
-            removeRule: removeRule,
-            getRules: getRules,
-            findCookieRules: findCookieRules
+            addRules,
+            addRule,
+            removeRule,
+            getRules,
+            findCookieRules,
         };
     };
-
 })(adguard, adguard.rules);
