@@ -23,6 +23,7 @@ adguard.notifications = (function (adguard) {
     'use strict';
 
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
+    const LAST_NOTIFICATION_TIME = 'viewed-notification-time';
 
     const blackFridayNotification = {
         id: 'blackFriday2019',
@@ -69,7 +70,7 @@ adguard.notifications = (function (adguard) {
         to: '2 December 2019 00:00:00',
         type: 'animated',
         badgeText: '%',
-        badgeColor: '#000000',
+        badgeBgColor: '#ff0000',
     };
 
     /**
@@ -89,6 +90,19 @@ adguard.notifications = (function (adguard) {
      */
     const notifications = {
         blackFriday: blackFridayNotification,
+    };
+
+    /**
+     * Gets the last time a notification was shown.
+     * If it was not shown yet, initialized with the current time.
+     */
+    const getLastNotificationTime = function () {
+        let lastTime = adguard.localStorage.getItem(LAST_NOTIFICATION_TIME) || 0
+        if (lastTime === 0) {
+            lastTime = new Date().getTime();
+            adguard.localStorage.setItem(LAST_NOTIFICATION_TIME, lastTime);
+        }
+        return lastTime;
     };
 
     /**
@@ -138,6 +152,7 @@ adguard.notifications = (function (adguard) {
     let currentNotification;
     let notificationCheckTime;
     const checkTimeoutMs = 10 * 60 * 1000; // 10 minutes
+    const minPeriod = 30 * 60 * 1000; // 30 minutes
 
     /**
      * Finds out notification for current time and checks if notification wasn't shown yet
@@ -145,17 +160,21 @@ adguard.notifications = (function (adguard) {
      */
     const getCurrentNotification = function () {
         const currentTime = new Date().getTime();
-        const timeSinceLastCheck = currentTime - notificationCheckTime;
+        const timeSinceLastNotification = currentTime - getLastNotificationTime();
+        if (timeSinceLastNotification < minPeriod) {
+            // Just a check to not show the notification too often
+            return null;
+        }
 
         // Check not often than once in 10 minutes
+        const timeSinceLastCheck = currentTime - notificationCheckTime;
         if (notificationCheckTime > 0 && timeSinceLastCheck <= checkTimeoutMs) {
             return currentNotification;
         }
-
+        // Update the last notification check time
         notificationCheckTime = currentTime;
 
         const notificationsKeys = Object.keys(notifications);
-
         const viewedNotifications = adguard.localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
 
         for (let i = 0; i < notificationsKeys.length; i += 1) {
