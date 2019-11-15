@@ -196,8 +196,8 @@ adguard.notifications = (function (adguard) {
         }
 
         if (frameInfo && frameInfo.adguardDetected) {
-            notifications.forEach((notification) => {
-                currentNotification = notification;
+            Object.keys(notifications).forEach((key) => {
+                currentNotification = notifications[key];
                 setNotificationViewed(false);
             });
             notifications = {};
