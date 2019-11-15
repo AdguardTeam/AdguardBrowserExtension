@@ -88,7 +88,7 @@ adguard.notifications = (function (adguard) {
      * @property {string} badgeText;
      * @property {string} type;
      */
-    const notifications = {
+    let notifications = {
         blackFriday: blackFridayNotification,
     };
 
@@ -97,7 +97,7 @@ adguard.notifications = (function (adguard) {
      * If it was not shown yet, initialized with the current time.
      */
     const getLastNotificationTime = function () {
-        let lastTime = adguard.localStorage.getItem(LAST_NOTIFICATION_TIME) || 0
+        let lastTime = adguard.localStorage.getItem(LAST_NOTIFICATION_TIME) || 0;
         if (lastTime === 0) {
             lastTime = new Date().getTime();
             adguard.localStorage.setItem(LAST_NOTIFICATION_TIME, lastTime);
@@ -153,16 +153,54 @@ adguard.notifications = (function (adguard) {
     let notificationCheckTime;
     const checkTimeoutMs = 10 * 60 * 1000; // 10 minutes
     const minPeriod = 30 * 60 * 1000; // 30 minutes
+    const DELAY = 30 * 1000; // clear notification in 30 seconds
+    let timeoutId;
+
+    /**
+     * Marks current notification as viewed
+     * @param {boolean} withDelay if true, do this after a 30 sec delay
+     */
+    const setNotificationViewed = function (withDelay) {
+        if (withDelay) {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                setNotificationViewed(false);
+            }, DELAY);
+            return;
+        }
+
+        if (currentNotification) {
+            const viewedNotifications = adguard.localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
+            const { id } = currentNotification;
+            if (!viewedNotifications.includes(id)) {
+                viewedNotifications.push(id);
+                adguard.localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
+                adguard.tabs.getActive(adguard.ui.updateTabIconAndContextMenu);
+                currentNotification = null;
+            }
+        }
+    };
 
     /**
      * Finds out notification for current time and checks if notification wasn't shown yet
+     *
+     * @param {*} - (optional) frameInfo from `adguard.frames`
      * @returns {void|Notification} - notification
      */
-    const getCurrentNotification = function () {
+    const getCurrentNotification = function (frameInfo) {
         const currentTime = new Date().getTime();
         const timeSinceLastNotification = currentTime - getLastNotificationTime();
         if (timeSinceLastNotification < minPeriod) {
             // Just a check to not show the notification too often
+            return null;
+        }
+
+        if (frameInfo && frameInfo.adguardDetected) {
+            notifications.forEach((notification) => {
+                currentNotification = notification;
+                setNotificationViewed(false);
+            });
+            notifications = {};
             return null;
         }
 
@@ -192,30 +230,6 @@ adguard.notifications = (function (adguard) {
         }
         currentNotification = null;
         return currentNotification;
-    };
-
-    const DELAY = 30 * 1000; // clear notification in 30 seconds
-    let timeoutId;
-
-    const setNotificationViewed = function (withDelay) {
-        if (withDelay) {
-            clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => {
-                setNotificationViewed(false);
-            }, DELAY);
-            return;
-        }
-
-        if (currentNotification) {
-            const viewedNotifications = adguard.localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
-            const { id } = currentNotification;
-            if (!viewedNotifications.includes(id)) {
-                viewedNotifications.push(id);
-                adguard.localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
-                adguard.tabs.getActive(adguard.ui.updateTabIconAndContextMenu);
-                currentNotification = null;
-            }
-        }
     };
 
     return {
