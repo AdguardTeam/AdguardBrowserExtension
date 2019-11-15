@@ -201,6 +201,7 @@ adguard.notifications = (function (adguard) {
                 setNotificationViewed(false);
             });
             notifications = {};
+            currentNotification = null;
             return null;
         }
 
