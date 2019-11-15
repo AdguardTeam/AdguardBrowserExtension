@@ -147,7 +147,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                 badge = adguard.utils.workaround.getBlockedCountText(blocked);
 
                 // If there's an active notification, indicate it on the badge
-                const notification = adguard.notifications.getCurrentNotification();
+                const notification = adguard.notifications.getCurrentNotification(tabInfo);
                 if (notification) {
                     badge = notification.badgeText || badge;
                     badgeColor = notification.badgeBgColor || badgeColor;
@@ -264,7 +264,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         } else {
             if (tabInfo.adguardDetected) {
                 if (tabInfo.adguardProductName) {
-                    addMenu('context_ads_has_been_removed_by_adguard', {messageArgs: [tabInfo.adguardProductName]});
+                    addMenu('context_ads_has_been_removed_by_adguard', { messageArgs: [tabInfo.adguardProductName] });
                 } else {
                     addMenu('context_ads_has_been_removed');
                 }
@@ -283,7 +283,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
             if (!tabInfo.documentWhiteListed) {
                 addMenu('context_block_site_ads');
-                addMenu('context_block_site_element', {contexts: ["image", "video", "audio"]});
+                addMenu('context_block_site_element', { contexts: ["image", "video", "audio"] });
             }
             addMenu('context_security_report');
             addMenu('context_complaint_website');
@@ -342,11 +342,11 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             }
 
             if (!tabInfo.documentWhiteListed) {
-                addMenu('popup_block_site_ads_android', {action: 'context_block_site_ads'});
+                addMenu('popup_block_site_ads_android', { action: 'context_block_site_ads' });
             }
-            addMenu('popup_open_log_android', {action: 'context_open_log'});
-            addMenu('popup_security_report_android', {action: 'context_security_report'});
-            addMenu('popup_open_settings', {action: 'context_open_settings'});
+            addMenu('popup_open_log_android', { action: 'context_open_log' });
+            addMenu('popup_security_report_android', { action: 'context_security_report' });
+            addMenu('popup_open_settings', { action: 'context_open_settings' });
             addMenu('context_update_antibanner_filters');
         }
     }
@@ -415,7 +415,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
      */
     function getUpdateDescriptionMessage(currentVersion, previousVersion) {
         if (adguard.utils.browser.getMajorVersionNumber(currentVersion) > adguard.utils.browser.getMajorVersionNumber(previousVersion)
-          || adguard.utils.browser.getMinorVersionNumber(currentVersion) > adguard.utils.browser.getMinorVersionNumber(previousVersion)) {
+            || adguard.utils.browser.getMinorVersionNumber(currentVersion) > adguard.utils.browser.getMinorVersionNumber(previousVersion)) {
             return adguard.i18n.getMessage('options_popup_version_update_description_major');
         }
 
@@ -432,7 +432,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         // Suppress for v3.0 hotfix
         // TODO: Remove this in the next update
         if (adguard.utils.browser.getMajorVersionNumber(currentVersion) == adguard.utils.browser.getMajorVersionNumber(previousVersion) &&
-          adguard.utils.browser.getMinorVersionNumber(currentVersion) == adguard.utils.browser.getMinorVersionNumber(previousVersion)) {
+            adguard.utils.browser.getMinorVersionNumber(currentVersion) == adguard.utils.browser.getMinorVersionNumber(previousVersion)) {
             return;
         }
         const message = {
@@ -622,7 +622,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     };
 
     var openFilteringLog = function (tabId) {
-        var options = {activateSameTab: true, type: "popup"};
+        var options = { activateSameTab: true, type: "popup" };
         if (!tabId) {
             adguard.tabs.getActive(function (tab) {
                 var tabId = tab.tabId;
@@ -666,7 +666,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     };
 
     var openFiltersDownloadPage = function () {
-        openTab(getPageUrl('filter-download.html'), {inBackground: adguard.utils.browser.isYaBrowser()});
+        openTab(getPageUrl('filter-download.html'), { inBackground: adguard.utils.browser.isYaBrowser() });
     };
 
     var whiteListTab = function (tab) {
@@ -676,7 +676,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         if (adguard.frames.isTabAdguardDetected(tab)) {
             var domain = adguard.utils.url.getHost(tab.url);
             adguard.integration.addRuleToApp("@@//" + domain + "^$document", function () {
-                adguard.tabs.sendMessage(tab.tabId, {type: 'no-cache-reload'});
+                adguard.tabs.sendMessage(tab.tabId, { type: 'no-cache-reload' });
             });
         } else {
             updateTabIconAndContextMenu(tab, true);
@@ -692,7 +692,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             var rule = adguard.frames.getTabAdguardUserWhiteListRule(tab);
             if (rule) {
                 adguard.integration.removeRuleFromApp(rule.ruleText, function () {
-                    adguard.tabs.sendMessage(tab.tabId, {type: 'no-cache-reload'});
+                    adguard.tabs.sendMessage(tab.tabId, { type: 'no-cache-reload' });
                 });
             }
         } else {
@@ -732,7 +732,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                 adguard.listeners.notifyListeners(showPopupEvent, false);
                 adguard.listeners.notifyListeners(adguard.listeners.FILTERS_UPDATE_CHECK_READY);
             }
-            : () => {};
+            : () => { };
 
         if (filters) {
             adguard.filters.checkFiltersUpdates(successCallback, errorCallback, filters);

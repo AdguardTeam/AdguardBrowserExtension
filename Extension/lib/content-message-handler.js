@@ -338,16 +338,16 @@
                 adguard.ui.openAssistant();
                 break;
             case 'getTabInfoForPopup':
-                adguard.tabs.getActive(function (tab) {
+                adguard.tabs.getActive((tab) => {
                     const frameInfo = adguard.frames.getFrameInfo(tab);
                     callback({
-                        frameInfo: frameInfo,
+                        frameInfo,
                         options: {
                             showStatsSupported: true,
                             isFirefoxBrowser: adguard.utils.browser.isFirefoxBrowser(),
                             showInfoAboutFullVersion: adguard.settings.isShowInfoAboutAdguardFullVersion(),
                             isMacOs: adguard.utils.browser.isMacOs(),
-                            notification: adguard.notifications.getCurrentNotification(),
+                            notification: adguard.notifications.getCurrentNotification(frameInfo),
                             isDisableShowAdguardPromoInfo: adguard.settings.isDisableShowAdguardPromoInfo(),
                         },
                     });
