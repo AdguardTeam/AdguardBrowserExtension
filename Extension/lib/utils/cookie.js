@@ -75,7 +75,7 @@
 
         for (let i = 0; i < pairs.length; i += 1) {
             const pair = pairs[i];
-            let eqIdx = pair.indexOf('=');
+            const eqIdx = pair.indexOf('=');
 
             // skip things that don't look like key=value
             if (eqIdx < 0) {
@@ -83,8 +83,7 @@
             }
 
             const key = pair.substr(0, eqIdx).trim();
-            // eslint-disable-next-line no-plusplus
-            const value = pair.substr(++eqIdx, pair.length).trim();
+            const value = pair.substr(eqIdx + 1, pair.length).trim();
 
             cookies.push({
                 name: key,
