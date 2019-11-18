@@ -1,3 +1,4 @@
+/* eslint-disable prefer-template */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -27,7 +28,6 @@
  * Heavily inspired by https://github.com/nfriedly/set-cookie-parser and https://github.com/jshttp/cookie
  */
 (function (adguard) {
-
     /**
      * RegExp to match field-content in RFC 7230 sec 3.2
      *
@@ -35,6 +35,7 @@
      * field-vchar   = VCHAR / obs-text
      * obs-text      = %x80-FF
      */
+    // eslint-disable-next-line no-control-regex
     const FIELD_CONTENT_REGEX = /^[\u0009\u0020-\u007e\u0080-\u00ff]+$/;
 
     /**
@@ -42,12 +43,16 @@
      * @property {string} name Cookie name
      * @property {string} value Cookie value
      * @property {string} path Cookie path (string or undefined)
-     * @property {string} domain Domain for the cookie (string or undefined, may begin with "." to indicate the named domain or any subdomain of it)
+     * @property {string} domain Domain for the cookie (string or undefined,
+     *                           may begin with "." to indicate the named domain or any subdomain of it)
      * @property {Date} expires Absolute expiration date for the cookie (Date object or undefined)
-     * @property {number} maxAge relative max age of the cookie in seconds from when the client receives it (integer or undefined)
+     * @property {number} maxAge relative max age of the cookie in seconds from when the client
+     *                           receives it (integer or undefined)
      * @property {boolean} secure indicates that this cookie should only be sent over HTTPs (true or undefined)
-     * @property {boolean} httpOnly indicates that this cookie should not be accessible to client-side JavaScript (true or undefined)
-     * @property {string} sameSite indicates a cookie ought not to be sent along with cross-site requests (string or undefined)
+     * @property {boolean} httpOnly indicates that this cookie should not be accessible to client-side
+     *                              JavaScript (true or undefined)
+     * @property {string} sameSite indicates a cookie ought not to be sent along with cross-site requests
+     *                             (string or undefined)
      */
 
     /**
@@ -69,8 +74,7 @@
         const pairs = cookieValue.split(/; */);
 
         for (let i = 0; i < pairs.length; i += 1) {
-
-            let pair = pairs[i];
+            const pair = pairs[i];
             let eqIdx = pair.indexOf('=');
 
             // skip things that don't look like key=value
@@ -78,8 +82,9 @@
                 continue;
             }
 
-            let key = pair.substr(0, eqIdx).trim();
-            let value = pair.substr(++eqIdx, pair.length).trim();
+            const key = pair.substr(0, eqIdx).trim();
+            // eslint-disable-next-line no-plusplus
+            const value = pair.substr(++eqIdx, pair.length).trim();
 
             cookies.push({
                 name: key,
@@ -102,32 +107,33 @@
             return null;
         }
 
-        const parts = setCookieValue.split(";").filter(s => !adguard.utils.strings.isEmpty(s));
+        const parts = setCookieValue.split(';').filter(s => !adguard.utils.strings.isEmpty(s));
         const nameValuePart = parts.shift();
-        const nameValue = nameValuePart.split("=");
+        const nameValue = nameValuePart.split('=');
         const name = nameValue.shift();
-        const value = nameValue.join("="); // everything after the first =, joined by a "=" if there was more than one part
+        // everything after the first =, joined by a "=" if there was more than one part
+        const value = nameValue.join('=');
         const cookie = {
-            name: name, // grab everything before the first =
-            value: value
+            name, // grab everything before the first =
+            value,
         };
 
         parts.forEach((part) => {
-            const sides = part.split("=");
+            const sides = part.split('=');
             const key = sides
                 .shift()
                 .trimLeft()
                 .toLowerCase();
-            const optionValue = sides.join("=");
-            if (key === "expires") {
+            const optionValue = sides.join('=');
+            if (key === 'expires') {
                 cookie.expires = new Date(optionValue);
-            } else if (key === "max-age") {
+            } else if (key === 'max-age') {
                 cookie.maxAge = parseInt(optionValue, 10);
-            } else if (key === "secure") {
+            } else if (key === 'secure') {
                 cookie.secure = true;
-            } else if (key === "httponly") {
+            } else if (key === 'httponly') {
                 cookie.httpOnly = true;
-            } else if (key === "samesite") {
+            } else if (key === 'samesite') {
                 cookie.sameSite = optionValue;
             } else {
                 // other keys
@@ -171,6 +177,7 @@
         // 2. Build Set-Cookie header value
         let setCookieValue = cookie.name + '=' + cookie.value;
 
+        // eslint-disable-next-line no-restricted-globals
         if (typeof cookie.maxAge === 'number' && !isNaN(cookie.maxAge)) {
             setCookieValue += '; Max-Age=' + Math.floor(cookie.maxAge);
         }
@@ -190,7 +197,6 @@
             setCookieValue += '; Secure';
         }
         if (!adguard.utils.strings.isEmpty(cookie.sameSite)) {
-
             const sameSite = cookie.sameSite.toLowerCase();
 
             switch (sameSite) {
@@ -199,6 +205,9 @@
                     break;
                 case 'strict':
                     setCookieValue += '; SameSite=Strict';
+                    break;
+                case 'none':
+                    setCookieValue += '; SameSite=None';
                     break;
                 default:
                     throw new TypeError(`Cookie sameSite is invalid: ${cookie.sameSite}`);
@@ -216,8 +225,8 @@
 
     // EXPOSE
     adguard.utils.cookie = {
-        parseCookie: parseCookie,
-        parseSetCookie: parseSetCookie,
-        serialize: serialize,
+        parseCookie,
+        parseSetCookie,
+        serialize,
     };
 })(adguard);
