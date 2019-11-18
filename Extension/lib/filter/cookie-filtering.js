@@ -625,7 +625,7 @@ adguard.cookieFiltering = (function (adguard) {
         // eslint-disable-next-line no-cond-assign
         while (iResponseHeaders -= 1) {
             const header = responseHeaders[iResponseHeaders];
-            if (header.name.toLowerCase() !== 'set-cookie') {
+            if (!header.name || header.name.toLowerCase() !== 'set-cookie') {
                 continue;
             }
 
