@@ -177,8 +177,7 @@
         // 2. Build Set-Cookie header value
         let setCookieValue = cookie.name + '=' + cookie.value;
 
-        // eslint-disable-next-line no-restricted-globals
-        if (typeof cookie.maxAge === 'number' && !isNaN(cookie.maxAge)) {
+        if (typeof cookie.maxAge === 'number' && !Number.isNaN(cookie.maxAge)) {
             setCookieValue += '; Max-Age=' + Math.floor(cookie.maxAge);
         }
         if (cookie.domain) {
