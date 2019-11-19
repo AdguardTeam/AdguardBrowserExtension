@@ -1,6 +1,6 @@
 /**
  * filters-downloader - Compiles filters source files
- * @version v1.0.10
+ * @version v1.0.11
  * @link http://adguard.com
  */
 /**
@@ -359,9 +359,10 @@ const FilterDownloader = (() => {
             if (REGEXP_ABSOLUTE_URL.test(url)) {
 
                 // Include url is absolute
-                let origin = parseURL(url).origin;
-                if (origin !== filterUrlOrigin) {
-                    throw new Error('Include url is rejected with origin: ' + origin);
+                const urlOrigin = parseURL(url).origin;
+                const filterOrigin = parseURL(filterUrlOrigin).origin;
+                if (urlOrigin !== filterOrigin) {
+                    throw new Error('Include url is rejected with origin: ' + urlOrigin);
                 }
             }
         }
@@ -460,13 +461,16 @@ const FilterDownloader = (() => {
      * @returns {Promise} A promise that returns {string} with rules when if resolved and {Error} if rejected.
      */
     const externalDownload = (url, filterUrlOrigin, definedProperties) => {
+
         // getting absolute url for external file with relative url
         if (!REGEXP_ABSOLUTE_URL.test(url) && REGEXP_ABSOLUTE_URL.test(filterUrlOrigin)) {
             url = `${filterUrlOrigin}/${url}`;
         }
 
         return FileDownloadWrapper.getExternalFile(url, filterUrlOrigin, definedProperties).then((lines) => {
-            filterUrlOrigin = getFilterUrlOrigin(url, filterUrlOrigin);
+            // Filter origin could change in case url contains subdirectories
+            // https://github.com/AdguardTeam/FiltersRegistry/pull/256
+            filterUrlOrigin = getFilterUrlOrigin(url, null);
             return resolveIncludes(lines, filterUrlOrigin, definedProperties);
         });
     };
@@ -480,8 +484,14 @@ const FilterDownloader = (() => {
      * @returns {Promise} A promise that returns {string} with rules when if resolved and {Error} if rejected.
      */
     const getLocalFile = (url, filterUrlOrigin, definedProperties) => {
+        if (filterUrlOrigin) {
+            url = `${filterUrlOrigin}/${url}`;
+        }
+
         filterUrlOrigin = getFilterUrlOrigin(url, filterUrlOrigin);
+
         return FileDownloadWrapper.getLocalFile(url, filterUrlOrigin, definedProperties).then((lines) => {
+            filterUrlOrigin = getFilterUrlOrigin(url, null);
             return resolveIncludes(lines, filterUrlOrigin, definedProperties);
         });
     };
