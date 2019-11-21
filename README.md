@@ -14,8 +14,8 @@
     <a href="https://twitter.com/AdGuard">Twitter</a> |
     <a href="https://t.me/adguard_en">Telegram</a>
     <br /><br />
-    <a href="https://travis-ci.org/AdguardTeam/AdguardBrowserExtension">
-      <img src="https://travis-ci.org/AdguardTeam/AdguardBrowserExtension.svg?branch=master" alt="Build status">
+    <a href="https://travis-ci.com/AdguardTeam/AdguardBrowserExtension">
+      <img src="https://travis-ci.com/AdguardTeam/AdguardBrowserExtension.svg?branch=master" alt="Build status">
     </a>
     <a href="https://github.com/AdguardTeam/AdguardBrowserExtension/releases">
         <img src="https://img.shields.io/github/release/AdguardTeam/AdguardBrowserExtension/all.svg" alt="Latest release" />
