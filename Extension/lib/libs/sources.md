@@ -71,8 +71,8 @@
 These libs are developed by us from scratch.
 ​
 #### `filter-downloader.js`
-* v1.0.10
-* Library source: https://github.com/AdguardTeam/FiltersDownloader/tree/18dfa7edddb26dfbe7e86c0d29fa38a4800c5b7d
+* v1.0.11
+* Library source: https://github.com/AdguardTeam/FiltersDownloader/tree/v1.0.11
 ​
 #### `extended-css.js`
 * v1.1.5
