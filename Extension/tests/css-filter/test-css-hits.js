@@ -138,7 +138,7 @@ QUnit.test('Count css hits affected by extended css', function (assert) {
     const extendedCss = selectors.extendedCss;
 
     const beforeStyleApplied = (affectedElement) => {
-        const parseResult = CssHitsCounter.parseExtendedStyleInfo(affectedElement.rule.style.content);
+        const parseResult = CssHitsCounter.parseExtendedStyleInfo(affectedElement.rules[0].style.content);
         assert.equal(parseResult.filterId, extendedCssRule.filterId);
         assert.equal(parseResult.ruleText, extendedCssRule.text);
         done();

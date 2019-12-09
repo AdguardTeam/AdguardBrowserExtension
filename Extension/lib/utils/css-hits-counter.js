@@ -400,26 +400,34 @@ const CssHitsCounter = (function () {
         if (typeof onCssHitsFoundCallback !== 'function') {
             return affectedEl;
         }
-        if (affectedEl
-          && affectedEl.rule
-          && affectedEl.rule.style
-          && affectedEl.rule.style.content) {
-            const styleInfo = parseExtendedStyleInfo(affectedEl.rule.style.content);
-            if (styleInfo === null) {
-                return affectedEl;
+
+        if (affectedEl && affectedEl.rules && affectedEl.rules.length > 0) {
+
+            const result = [];
+
+            for (let rule of affectedEl.rules) {
+                if (rule.style && rule.style.content) {
+                    const styleInfo = parseExtendedStyleInfo(rule.style.content);
+                    if (styleInfo === null) {
+                        continue;
+                    }
+
+                    const { filterId, ruleText } = styleInfo;
+                    if (filterId !== undefined && ruleText !== undefined) {
+                        result.push({
+                            filterId,
+                            ruleText,
+                            element: elementToString(affectedEl.node),
+                        });
+                        // clear style content to avoid duplicate counting
+                        rule.style.content = '';
+                    }
+                }
             }
-            const { filterId, ruleText } = styleInfo;
-            if (filterId !== undefined && ruleText !== undefined) {
-                const result = {
-                    filterId,
-                    ruleText,
-                    element: elementToString(affectedEl.node),
-                };
-                onCssHitsFoundCallback([result]);
-                // clear style content to avoid duplicate counting
-                affectedEl.rule.style.content = '';
-            }
+
+            onCssHitsFoundCallback(result);
         }
+
         return affectedEl;
     };
 
