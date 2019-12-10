@@ -1972,29 +1972,43 @@ var Settings = function () {
         });
     }
 
-    const thirdPartyTimeInput = document.querySelector('#third_party_time');
-    thirdPartyTimeInput.value = userSettings.values[userSettings.names.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME];
-    if (thirdPartyTimeInput) {
-        thirdPartyTimeInput.addEventListener('keyup', Utils.debounce(function (e) {
-            contentPage.sendMessage({
-                type: 'changeUserSetting',
-                key: userSettings.names.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME,
-                value: thirdPartyTimeInput.value
-            });
-        }, 1000));
-    }
+    // set SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME and SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME values
+    const selectorsMap = {
+        thirdParty: { selector: '#third_party_time', settingKey: 'SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME' },
+        firstParty: { selector: '#first_party_time', settingKey: 'SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME' },
+    };
 
-    const firstPartyTimeInput = document.querySelector('#first_party_time');
-    firstPartyTimeInput.value = userSettings.values[userSettings.names.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME];
-    if (firstPartyTimeInput) {
-        firstPartyTimeInput.addEventListener('keyup', Utils.debounce(function (e) {
-            contentPage.sendMessage({
-                type: 'changeUserSetting',
-                key: userSettings.names.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME,
-                value: firstPartyTimeInput.value
-            });
-        }, 1000));
-    }
+    const normalizeCookieTime = (value, defaultValue) => {
+        if (value === '') {
+            return defaultValue;
+        }
+
+        value = Number.parseFloat(value);
+        if (value < 0) {
+            return defaultValue;
+        }
+
+        return value;
+    };
+
+    Object.values(selectorsMap).forEach(({ selector, settingKey }) => {
+        // eslint-disable-next-line no-use-before-define
+        const { names, values, defaultValues } = userSettings;
+        settingKey = names[settingKey];
+        const defaultValue = defaultValues[settingKey];
+        const input = document.querySelector(selector);
+        if (input) {
+            input.value = values[settingKey];
+            input.setAttribute('placeholder', defaultValue);
+            input.addEventListener('keyup', Utils.debounce(() => {
+                contentPage.sendMessage({
+                    type: 'changeUserSetting',
+                    key: settingKey,
+                    value: normalizeCookieTime(input.value, defaultValue),
+                });
+            }, 1000));
+        }
+    });
 
     const trackingParametersInput = document.querySelector('#strip_tracking_params_input');
     trackingParametersInput.value = userSettings.values[userSettings.names.TRACKING_PARAMETERS];
