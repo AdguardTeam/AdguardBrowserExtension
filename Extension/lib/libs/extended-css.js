@@ -1,4 +1,4 @@
-/*! extended-css - v1.1.5 - 2019-10-15
+/*! extended-css - v1.1.6 - 2019-12-09
 * https://github.com/AdguardTeam/ExtendedCss
 * Copyright (c) 2019 ; Licensed Apache License 2.0 */
 var ExtendedCss = (function(window) {
@@ -483,10 +483,10 @@ var ExtendedCssParser = function () {
     // Sizzle's parsing of pseudo class arguments is buggy on certain circumstances
     // We support following form of arguments:
     // 1. for :matches-css, those of a form {propertyName}: /.*/
-    // 2. for :contains and :properties, those of a form /.*/
+    // 2. for :contains, those of a form /.*/
     // We transform such cases in a way that Sizzle has no ambiguity in parsing arguments.
     var reMatchesCss = /\:(matches-css(?:-after|-before)?)\(([a-z-\s]*\:\s*\/(?:\\.|[^\/])*?\/\s*)\)/g;
-    var reContains = /:(?:-abp-)?(contains|has-text|properties)\((\s*\/(?:\\.|[^\/])*?\/\s*)\)/g;
+    var reContains = /:(?:-abp-)?(contains|has-text)\((\s*\/(?:\\.|[^\/])*?\/\s*)\)/g;
     // Note that we require `/` character in regular expressions to be escaped.
 
     /**
@@ -3067,573 +3067,6 @@ var initializeSizzle = function () {
 	}
 };
 
-/* global utils, CSSRule */
-
-/**
- * `:properties(propertyFilter)` pseudo class support works by looking up
- * selectors that are applied to styles whose style declaration matches
- * arguments passed to the pseudo class.
- * `sheetToFilterSelectorMap` contains a data mapping (stylesheets, filter)
- * -> selector.
- */
-var StyleObserver = function () {
-    // jshint ignore:line
-
-    // Utility functions
-    var styleSelector = 'style';
-
-    /**
-     * A set of stylesheet nodes that should be ignored by the StyleObserver.
-     * This field is essential in the case of AdGuard products that add regular stylesheets
-     * in order to apply CSS rules
-     *
-     * @type {Set.<HTMLElement>}
-     */
-    var ignoredStyleNodes = void 0;
-
-    /**
-     * The flag is used for the StyleObserver lazy initialization
-     */
-    var initialized = false;
-
-    var searchTree = function (node, selector) {
-        if (node.nodeType !== Node.ELEMENT_NODE) {
-            return;
-        }
-        var nodes = node.querySelectorAll(selector);
-        if (node[utils.matchesPropertyName](selector)) {
-            nodes = Array.prototype.slice.call(nodes);
-            nodes.push(node);
-        }
-        return nodes;
-    };
-
-    var isSameOriginStyle = function (styleSheet) {
-        var href = styleSheet.href;
-        if (href === null) {
-            return true;
-        }
-        return utils.isSameOrigin(href, location, document.domain);
-    };
-
-    /**
-     * 'rel' attribute is a ASCII-whitespace separated list of keywords.
-     * {@link https://html.spec.whatwg.org/multipage/links.html#linkTypes}
-     */
-    var reStylesheetRel = /(?:^|\s)stylesheet(?:$|\s)/;
-
-    var eventTargetIsLinkStylesheet = function (target) {
-        return target instanceof Element && target.nodeName === 'LINK' && reStylesheetRel.test(target.rel);
-    };
-
-    // Functions constituting mutation handler functions
-    var onStyleAdd = function (style) {
-        if (!sheetToFilterSelectorMap.has(style.sheet)) {
-            pendingStyles.add(style);
-            observeStyleModification(style);
-        }
-    };
-    var onStyleRemove = function (style) {
-        pendingStyles.delete(style);
-    };
-    var onAddedNode = function (addedNode) {
-        if (addedNode.nodeType !== Node.ELEMENT_NODE) {
-            return;
-        }
-        var styles = searchTree(addedNode, styleSelector);
-        if (styles) {
-            for (var _i = 0; _i < styles.length; _i++) {
-                var style = styles[_i];
-                onStyleAdd(style);
-            }
-        }
-    };
-    var onRemovedNode = function (removedNode) {
-        if (removedNode.nodeType !== Node.ELEMENT_NODE) {
-            return;
-        }
-        var styles = searchTree(removedNode, styleSelector);
-        if (styles) {
-            for (var _i2 = 0; _i2 < styles.length; _i2++) {
-                var style = styles[_i2];
-                onStyleRemove(style);
-            }
-        }
-    };
-
-    // Mutation handler functions
-    var styleModHandler = function (mutations) {
-        if (mutations.length) {
-            for (var _i3 = 0; _i3 < mutations.length; _i3++) {
-                var mutation = mutations[_i3];
-                var target = void 0;
-                if (mutation.type === 'characterData') {
-                    target = mutation.target.parentNode;
-                } else {
-                    target = mutation.target;
-                }
-                pendingStyles.add(target);
-            }
-
-            examineStylesScheduler.run();
-            invalidateScheduler.run();
-        }
-    };
-    var styleModListenerFallback = function (event) {
-        pendingStyles.add(event.target.parentNode);
-        examineStylesScheduler.run();
-        invalidateScheduler.run();
-    };
-    var styleAdditionHandler = function (mutations) {
-        var hasPendingStyles = false;
-
-        for (var _i4 = 0; _i4 < mutations.length; _i4++) {
-            var mutation = mutations[_i4];
-            var addedNodes = mutation.addedNodes,
-                removedNodes = mutation.removedNodes;
-            if (addedNodes) {
-                for (var _i5 = 0; _i5 < addedNodes.length; _i5++) {
-                    var addedNode = addedNodes[_i5];
-                    hasPendingStyles = true;
-                    onAddedNode(addedNode);
-                }
-            }
-            if (removedNodes) {
-                for (var _i6 = 0; _i6 < removedNodes.length; _i6++) {
-                    var removedNode = removedNodes[_i6];
-                    onRemovedNode(removedNode);
-                }
-            }
-        }
-
-        if (hasPendingStyles) {
-            examineStylesScheduler.run();
-            invalidateScheduler.run();
-        }
-    };
-    var styleAdditionListenerFallback = function (event) {
-        onAddedNode(event.target);
-        examineStylesScheduler.run();
-        invalidateScheduler.run();
-    };
-    var styleRemovalListenerFallback = function (event) {
-        onRemovedNode(event.target);
-        examineStylesScheduler.run();
-        invalidateScheduler.run();
-    };
-
-    var collectLoadedLinkStyle = function (evt) {
-        var target = evt.target;
-        if (!eventTargetIsLinkStylesheet(target)) {
-            return;
-        }
-        pendingStyles.add(target);
-        examineStylesScheduler.run();
-    };
-    var discardErroredLinkStyle = function (evt) {
-        var target = evt.target;
-        if (!eventTargetIsLinkStylesheet(target)) {
-            return;
-        }
-        pendingStyles.remove(target);
-        examineStylesScheduler.run();
-    };
-
-    // MutationObserver instances to be used in this class.
-    // Since we start calling `.observe()` on those when we are compiling filters,
-    // we can ensure that mutation callbacks for those will be called before those
-    // in extended-css.js.
-    var styleAdditionObserver = void 0;
-    var styleModObserver = void 0;
-    var observing = false;
-
-    var observeStyle = function () {
-        if (observing) {
-            return;
-        }
-        observing = true;
-        if (utils.MutationObserver) {
-            styleAdditionObserver = new utils.MutationObserver(styleAdditionHandler);
-            styleModObserver = new utils.MutationObserver(styleModHandler);
-            styleAdditionObserver.observe(document.documentElement, { childList: true, subtree: true });
-        } else {
-            document.documentElement.addEventListener('DOMNodeInserted', styleAdditionListenerFallback);
-            document.documentElement.addEventListener('DOMNodeRemoved', styleRemovalListenerFallback);
-        }
-        document.addEventListener('load', collectLoadedLinkStyle, true);
-        document.addEventListener('error', discardErroredLinkStyle, true);
-    };
-
-    var observeStyleModification = function (styleNode) {
-        if (utils.MutationObserver) {
-            styleModObserver.observe(styleNode, { childList: true, subtree: true, characterData: true });
-        } else {
-            styleNode.addEventListener('DOMNodeInserted', styleModListenerFallback);
-            styleNode.addEventListener('DOMNodeRemoved', styleModListenerFallback);
-            styleNode.addEventListener('DOMCharacterDataModified', styleModListenerFallback);
-        }
-    };
-
-    /**
-     * Disconnects above mutation observers: styleAdditionObserver styleModObserver
-     * and remove event listeners.
-     */
-    var disconnectObservers = function () {
-        if (utils.MutationObserver) {
-            if (styleAdditionObserver) {
-                styleAdditionObserver.disconnect();
-            }
-            if (styleModObserver) {
-                styleModObserver.disconnect();
-            }
-        } else {
-            document.documentElement.removeEventListener('DOMNodeInserted', styleAdditionListenerFallback);
-            document.documentElement.removeEventListener('DOMNodeRemoved', styleRemovalListenerFallback);
-
-            var styles = document.querySelectorAll(styleSelector);
-
-            for (var _i7 = 0; _i7 < styles.length; _i7++) {
-                var style = styles[_i7];
-                style.removeEventListener('DOMNodeInserted', styleModListenerFallback);
-                style.removeEventListener('DOMNodeRemoved', styleModListenerFallback);
-                style.removeEventListener('DOMCharacterDataModified', styleModListenerFallback);
-            }
-        }
-        document.removeEventListener('load', collectLoadedLinkStyle);
-        document.removeEventListener('error', discardErroredLinkStyle);
-        observing = false;
-    };
-
-    /**
-     * @type {Set<HTMLStyleElement|HTMLLinkElement>}
-     */
-    var pendingStyles = new utils.Set();
-
-    /**
-     * sheetToFilterSelectorMap contains a data that maps
-     * styleSheet -> ( filter -> selectors ).
-     * @type {WeakMap<CSSStyleSheet,Object<string,string>>}
-     */
-    var sheetToFilterSelectorMap = void 0;
-
-    var anyStyleWasUpdated = void 0; // A boolean flag to be accessed in `examineStyles`
-    // and `readStyleSheetContent` calls.
-    var examinePendingStyles = function () {
-        anyStyleWasUpdated = false;
-        pendingStyles.forEach(readStyleNodeContent);
-        // Invalidates cache if needed.
-        if (anyStyleWasUpdated) {
-            invalidateScheduler.runImmediately();
-        }
-        pendingStyles.clear();
-    };
-
-    var examineStylesScheduler = new utils.AsyncWrapper(examinePendingStyles);
-
-    /** @param {HTMLStyleElement} styleNode */
-    var readStyleNodeContent = function (styleNode) {
-        var sheet = styleNode.sheet;
-        if (!sheet) {
-            // This can happen when an appended style or a loaded linked stylesheet is
-            // detached from the document by now.
-            return;
-        }
-        readStyleSheetContent(sheet);
-    };
-    /**
-     * Populates sheetToFilterSelectorMap from styleSheet's content.
-     * @param {CSSStyleSheet} styleSheet
-     */
-    var readStyleSheetContent = function (styleSheet) {
-        if (!isSameOriginStyle(styleSheet)) {
-            return;
-        }
-        if (isIgnored(styleSheet.ownerNode)) {
-            return;
-        }
-        var rules = styleSheet.cssRules;
-        var map = Object.create(null);
-
-        for (var _i8 = 0; _i8 < rules.length; _i8++) {
-            var rule = rules[_i8];
-            if (rule.type !== CSSRule.STYLE_RULE) {
-                /**
-                 * Ignore media rules; this behavior is compatible with ABP.
-                 * @todo Media query support
-                 */
-                continue;
-            }
-            var stringifiedStyle = stringifyStyle(rule);
-
-            for (var _i9 = 0; _i9 < parsedFilters.length; _i9++) {
-                var parsedFilter = parsedFilters[_i9];
-                var re = parsedFilter.re;
-
-                if (!re.test(stringifiedStyle)) {
-                    continue;
-                }
-
-                anyStyleWasUpdated = true;
-                // Strips out psedo elements
-                // https://adblockplus.org/en/filters#elemhide-emulation
-                var selectorText = rule.selectorText.replace(/::(?:after|before)/, '');
-                var filter = parsedFilter.filter;
-
-                if (typeof map[filter] === 'undefined') {
-                    map[filter] = [selectorText];
-                } else {
-                    map[filter].push(selectorText);
-                }
-            }
-        }
-
-        sheetToFilterSelectorMap.set(styleSheet, map);
-    };
-
-    /**
-     * Stringifies a CSSRule instances in a canonical way, compatible with ABP,
-     * to be used in matching against regexes.
-     * @param {CSSStyleRule} rule
-     * @return {string}
-     */
-    var stringifyStyle = function (rule) {
-        var styles = [];
-        var style = rule.style;
-        var i = void 0,
-            l = void 0;
-        for (i = 0, l = style.length; i < l; i++) {
-            styles.push(style[i]);
-        }
-        styles.sort();
-        for (i = 0; i < l; i++) {
-            var property = styles[i];
-            var value = style.getPropertyValue(property);
-            var priority = style.getPropertyPriority(property);
-            styles[i] += ': ' + value;
-            if (priority.length) {
-                styles[i] += '!' + priority;
-            }
-        }
-        return styles.join(" ");
-    };
-
-    /**
-     * A main function, to be used in Sizzle matcher.
-     * returns a selector text that is
-     * @param {string} filter
-     * @return {Array<string>} a selector.
-     */
-    var getSelector = function (filter) {
-
-        // Lazy-initialize the StyleObserver
-        initialize();
-
-        // getSelector will be triggered via mutation observer callbacks
-        // and we assume that those are already throttled.
-        examineStylesScheduler.runImmediately();
-        invalidateScheduler.runImmediately();
-        invalidateScheduler.runAsap();
-
-        if (getSelectorCache[filter]) {
-            return getSelectorCache[filter];
-        }
-        var styleSheets = document.styleSheets;
-        var selectors = [];
-
-        for (var _i10 = 0; _i10 < styleSheets.length; _i10++) {
-            var styleSheet = styleSheets[_i10];
-            if (styleSheet.disabled) {
-                continue;
-            } // Ignore disabled stylesheets.
-            var map = sheetToFilterSelectorMap.get(styleSheet);
-            if (typeof map === 'undefined') {
-                // This can happen with cross-origin styles.
-                continue;
-            }
-            Array.prototype.push.apply(selectors, map[filter]);
-        }
-
-        getSelectorCache[filter] = selectors;
-        getSelectorCacheHasData = true;
-        return selectors;
-    };
-
-    /**
-     * Caching is based on following assumptions:
-     *
-     *  - Content of stylesheets does not change often.
-     *  - Stylesheets' disabled state does not change often.
-     *
-     * For each fresh `getSelector` call, one has to iterate over document.styleSheets,
-     * because one has to exclude disabled stylesheets.
-     * getSelector will be called a lot in MutationObserver callbacks, and we assume that
-     * stylesheets critical in `:properties` pseudo class are toggled on and off during it.
-     * We use AsyncWrapper.runAsap to schedule cache invalidation in the most imminent
-     * microtask queue.
-     *
-     * This requires thorough testing of StyleObserver for mutation-heavy environments.
-     * This has a possibility of less granular cache refresh on IE, for IE11 incorrectly
-     * implements microtasks and IE10's setImmediate is not that immediate.
-     */
-    var getSelectorCache = Object.create(null);
-    var getSelectorCacheHasData = false;
-    var invalidateCache = function () {
-        if (getSelectorCacheHasData) {
-            getSelectorCache = Object.create(null);
-            getSelectorCacheHasData = false;
-        }
-    };
-    var invalidateScheduler = new utils.AsyncWrapper(invalidateCache, 0);
-
-    var reRegexRule = /^\/(.*)\/$/;
-
-    var parsedFilters = [];
-    var registeredFiltersMap = Object.create(null);
-
-    var registerStylePropertyFilter = function (filter) {
-        filter = filter.trim();
-        if (registeredFiltersMap[filter]) {
-            return;
-        }
-        var re = void 0;
-        if (reRegexRule.test(filter)) {
-            filter = filter.slice(1, -1);
-            re = utils.pseudoArgToRegex(filter);
-        } else {
-            re = utils.createURLRegex(filter);
-        }
-        parsedFilters.push({
-            filter: filter,
-            re: re
-        });
-        registeredFiltersMap[filter] = true;
-
-        /**
-         * Mark StyleObserver as not initialized right after
-         * the new property filter is registered
-         */
-        initialized = false;
-
-        // It is also necessary to invalidate getSelectorCache right away
-        invalidateCache();
-    };
-
-    /**
-     * Initialization means:
-     *
-     *  - Initial processing of stylesheets in documents.
-     *  - Starting to observe addition of styles.
-     *
-     * This function should be called only after all selectors are compiled.
-     * @return {boolean} Whether it had to be initialized. If it returns false,
-     * We can clear StyleObserver from the memory.
-     */
-    var initialize = function () {
-        if (initialized) {
-            return;
-        }
-        initialized = true;
-
-        // If there is no `:properties` selector registered, indicates it
-        // by returning false.
-        if (parsedFilters.length === 0) {
-            return false;
-        }
-
-        sheetToFilterSelectorMap = new utils.WeakMap();
-        pendingStyles = new utils.Set();
-
-        // Initial processing
-        observeStyle();
-        var sheets = document.styleSheets;
-
-        for (var _i11 = 0; _i11 < sheets.length; _i11++) {
-            var sheet = sheets[_i11];
-            readStyleSheetContent(sheet);
-            if (sheet.ownerNode.nodeName === 'STYLE' && !isIgnored(sheet.ownerNode)) {
-                observeStyleModification(sheet.ownerNode);
-            }
-        }
-
-        return true;
-    };
-
-    /**
-     * Exported method to disconnect existing mutation observers and remove
-     * event listeners, clear collections and caches.
-     */
-    var clear = function () {
-        if (!initialized) {
-            return;
-        }
-        initialized = false;
-        invalidateCache();
-        disconnectObservers();
-        if (pendingStyles) {
-            pendingStyles.clear();
-        }
-        sheetToFilterSelectorMap = pendingStyles = ignoredStyleNodes = null;
-    };
-
-    /**
-     * Creates a new pseudo-class and registers it in Sizzle
-     */
-    var extendSizzle = function (Sizzle) {
-        Sizzle.selectors.pseudos["properties"] = Sizzle.selectors.pseudos["-abp-properties"] = Sizzle.selectors.createPseudo(function (propertyFilter) {
-            registerStylePropertyFilter(propertyFilter);
-            return function (element) {
-                var selectors = getSelector(propertyFilter);
-                if (selectors.length === 0) {
-                    return false;
-                }
-
-                for (var _i12 = 0; _i12 < selectors.length; _i12++) {
-                    var selector = selectors[_i12];
-                    if (element[utils.matchesPropertyName](selector)) {
-                        return true;
-                    }
-                }
-
-                return false;
-            };
-        });
-    };
-
-    /**
-     * Checks if stylesheet node is in the list of ignored
-     * @param {HTMLElement} styleNode Stylesheet owner node
-     */
-    var isIgnored = function (styleNode) {
-        return ignoredStyleNodes && ignoredStyleNodes.has(styleNode);
-    };
-
-    /**
-     * Sets a list of stylesheet nodes that must be ignored by the StyleObserver.
-     *
-     * @param {Array.<HTMLElement>} styleNodesToIgnore A list of stylesheet nodes. Can be empty or null.
-     */
-    var setIgnoredStyleNodes = function (styleNodesToIgnore) {
-
-        // StyleObserver should be fully reinitialized after that
-        if (initialized || observing) {
-            clear();
-        }
-
-        if (styleNodesToIgnore) {
-            ignoredStyleNodes = new utils.Set(styleNodesToIgnore);
-        } else {
-            ignoredStyleNodes = null;
-        }
-    };
-
-    return {
-        clear: clear,
-        extendSizzle: extendSizzle,
-        getSelector: getSelector,
-        setIgnoredStyleNodes: setIgnoredStyleNodes
-    };
-}();
-
 /* global utils */
 /**
  * Class that extends Sizzle and adds support for "matches-css" pseudo element.
@@ -3785,7 +3218,7 @@ var StylePropertyMatcher = function (window, document) {
     };
 }(window, document);
 
-/* global Sizzle, StylePropertyMatcher, ExtendedCssParser, initializeSizzle, StyleObserver, utils */
+/* global Sizzle, StylePropertyMatcher, ExtendedCssParser, initializeSizzle, utils */
 
 /**
  * Extended selector factory module, for creating extended selector classes.
@@ -3797,7 +3230,7 @@ var StylePropertyMatcher = function (window, document) {
 var ExtendedSelectorFactory = function () {
     // jshint ignore:line
 
-    var PSEUDO_EXTENSIONS_MARKERS = [":has", ":contains", ":has-text", ":matches-css", ":properties", ":-abp-has", ":-abp-has-text", ":-abp-properties", ":if", ":if-not"];
+    var PSEUDO_EXTENSIONS_MARKERS = [":has", ":contains", ":has-text", ":matches-css", ":-abp-has", ":-abp-has-text", ":if", ":if-not"];
     var initialized = false;
     /**
      * Lazy initialization of the ExtendedSelectorFactory and objects that might be necessary for creating and applying styles.
@@ -3848,9 +3281,6 @@ var ExtendedSelectorFactory = function () {
                 return Sizzle(selector, elem).length === 0; // jshint ignore:line
             };
         });
-
-        // Add :properties, :-abp-properties support
-        StyleObserver.extendSizzle(Sizzle);
     }
 
     /**
@@ -3886,26 +3316,6 @@ var ExtendedSelectorFactory = function () {
     }
 
     /**
-     * A selector obtained from `:properties` pseudo usually contains id or class selector;
-     * We apply 'properties reverse search' when `:properties` is the most specific part.
-     */
-    function tokenHasHigherSpecificityThanPropertiesPseudo(token) {
-        var type = token.type;
-        return type === 'ID' || type === 'CLASS';
-    }
-
-    function isPropertiesPseudo(token) {
-        var type = token.type;
-        if (type === "PSEUDO") {
-            var pseudo = token.matches[0];
-            if (pseudo === '-abp-properties' || pseudo === 'properties') {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * ExtendedSelectorParser is a helper class for creating various selector instances which
      * all shares a method `querySelectorAll()` and `matches()` implementing different search strategies
      * depending on a type of selector.
@@ -3915,12 +3325,6 @@ var ExtendedSelectorFactory = function () {
      *    - we directly feed selector strings to Sizzle.
      *  A splitted extended selector
      *    - such as #container #feedItem:has(.ads), where it is splitted to `#container` and `#feedItem:has(.ads)`.
-     *  A properties-heavy extended selector
-     *    - such as `*:properties(background-image:/data\:/), where we apply "Properties Reverse Search".
-     *
-     * For a compound selector `X:-abp-properties(Y)`, we apply the reverse search iff `X` does not contain
-     * an id selector or a class selector. This is based on an observation that in most of use cases, a selector
-     * obtained from `-abp-properties(Y)` contains id or class selectors.
      */
     function ExtendedSelectorParser(selectorText, tokens, debug) {
         initialize();
@@ -3976,17 +3380,10 @@ var ExtendedSelectorFactory = function () {
                 relation = tokens[i++].type;
             }
             // i is pointing to the start of a complex part.
-            var firstPropertiesPseudoIndex = this.getHeavyPropertiesPseudoIndex(i);
             for (; i < l; i++) {
-                if (i === firstPropertiesPseudoIndex) {
-                    continue;
-                }
                 complex += tokens[i].value;
             }
-            if (firstPropertiesPseudoIndex !== -1) {
-                var propertyFilter = tokens[firstPropertiesPseudoIndex].matches[1];
-                return new PropertiesHeavySelector(selectorText, simple, relation, complex, propertyFilter, debug);
-            }
+
             return lastRelTokenInd === -1 ? new TraitLessSelector(selectorText, debug) : new SplittedSelector(selectorText, simple, relation, complex, debug);
         },
         /**
@@ -4018,30 +3415,6 @@ var ExtendedSelectorFactory = function () {
                 return;
             }
             return latestRelationTokenIndex;
-        },
-        /**
-         * @private
-         * @return {number} An index of the first "heavy" properties pseudo, from startIndex.
-         * -1 if there is no properties pseudo after then, or there is a token that is heavier than
-         * the properties pseudo.
-         */
-        getHeavyPropertiesPseudoIndex: function (startIndex) {
-            var tokens = this.tokens[0];
-            var haveMetTokenSpecificEnough = false;
-            var firstPropertiesPseudoIndex = -1;
-            for (var i = startIndex, l = tokens.length; i < l; i++) {
-                var token = tokens[i];
-                if (!haveMetTokenSpecificEnough && tokenHasHigherSpecificityThanPropertiesPseudo(token)) {
-                    haveMetTokenSpecificEnough = true;
-                }
-                if (firstPropertiesPseudoIndex === -1 && isPropertiesPseudo(token)) {
-                    firstPropertiesPseudoIndex = i;
-                }
-            }
-            if (haveMetTokenSpecificEnough) {
-                return -1;
-            }
-            return firstPropertiesPseudoIndex;
         }
     };
 
@@ -4142,7 +3515,7 @@ var ExtendedSelectorFactory = function () {
 
         switch (relation) {
             case " ":
-                for (var _i = 0, _simpleNodes = simpleNodes; _i < _simpleNodes.length; _i++) {
+                for (var _i = 0, _simpleNodes = simpleNodes, _length = _simpleNodes.length; _i < _length; _i++) {
                     var node = _simpleNodes[_i];
                     this.relativeSearch(node, resultNodes);
                 }
@@ -4150,9 +3523,9 @@ var ExtendedSelectorFactory = function () {
                 break;
             case ">":
                 {
-                    for (var _i2 = 0, _simpleNodes2 = simpleNodes; _i2 < _simpleNodes2.length; _i2++) {
+                    for (var _i2 = 0, _simpleNodes2 = simpleNodes, _length2 = _simpleNodes2.length; _i2 < _length2; _i2++) {
                         var _node = _simpleNodes2[_i2];
-                        for (var _i3 = 0, _node$children = _node.children; _i3 < _node$children.length; _i3++) {
+                        for (var _i3 = 0, _node$children = _node.children, _length3 = _node$children.length; _i3 < _length3; _i3++) {
                             var childNode = _node$children[_i3];
                             if (this.matches(childNode)) {
                                 resultNodes.push(childNode);
@@ -4164,14 +3537,14 @@ var ExtendedSelectorFactory = function () {
                 }
             case "+":
                 {
-                    for (var _i4 = 0, _simpleNodes3 = simpleNodes; _i4 < _simpleNodes3.length; _i4++) {
+                    for (var _i4 = 0, _simpleNodes3 = simpleNodes, _length4 = _simpleNodes3.length; _i4 < _length4; _i4++) {
                         var _node2 = _simpleNodes3[_i4];
                         var parentNode = _node2.parentNode;
                         if (!parentNode) {
                             continue;
                         }
 
-                        for (var _i5 = 0, _parentNode$children = parentNode.children; _i5 < _parentNode$children.length; _i5++) {
+                        for (var _i5 = 0, _parentNode$children = parentNode.children, _length5 = _parentNode$children.length; _i5 < _length5; _i5++) {
                             var _childNode = _parentNode$children[_i5];
                             if (this.matches(_childNode) && _childNode.previousElementSibling === _node2) {
                                 resultNodes.push(_childNode);
@@ -4183,14 +3556,14 @@ var ExtendedSelectorFactory = function () {
                 }
             case "~":
                 {
-                    for (var _i6 = 0, _simpleNodes4 = simpleNodes; _i6 < _simpleNodes4.length; _i6++) {
+                    for (var _i6 = 0, _simpleNodes4 = simpleNodes, _length6 = _simpleNodes4.length; _i6 < _length6; _i6++) {
                         var _node3 = _simpleNodes4[_i6];
                         var _parentNode = _node3.parentNode;
                         if (!_parentNode) {
                             continue;
                         }
 
-                        for (var _i7 = 0, _parentNode$children2 = _parentNode.children; _i7 < _parentNode$children2.length; _i7++) {
+                        for (var _i7 = 0, _parentNode$children2 = _parentNode.children, _length7 = _parentNode$children2.length; _i7 < _length7; _i7++) {
                             var _childNode2 = _parentNode$children2[_i7];
                             if (this.matches(_childNode2) && _node3.compareDocumentPosition(_childNode2) === 4) {
                                 resultNodes.push(_childNode2);
@@ -4212,48 +3585,6 @@ var ExtendedSelectorFactory = function () {
         Sizzle(this.complex, node, results); // jshint ignore:line
     };
 
-    /**
-     * A properties-heavy extended selector class.
-     *
-     * @param {string} selectorText
-     * @param {string} simple
-     * @param {string} rel
-     * @param {string} complex
-     * @param {string} propertyFilter
-     * @param {boolean=} debug
-     * @constructor
-     * @extends SplittedSelector
-     */
-    function PropertiesHeavySelector(selectorText, simple, rel, complex, propertyFilter, debug) {
-        SplittedSelector.call(this, selectorText, simple, rel, complex, debug);
-        this.propertyFilter = propertyFilter;
-    }
-
-    PropertiesHeavySelector.prototype = Object.create(SplittedSelector.prototype);
-    PropertiesHeavySelector.prototype.constructor = PropertiesHeavySelector;
-    /**
-     * @param {Node[]} result an array to append search result.
-     * @override
-     */
-    PropertiesHeavySelector.prototype.relativeSearch = function (node, results) {
-        if (!node) {
-            node = document;
-        }
-        var selectors = StyleObserver.getSelector(this.propertyFilter);
-        if (selectors.length === 0) {
-            return;
-        }
-
-        var nodes = node.querySelectorAll(selectors.join(','));
-
-        for (var _i8 = 0; _i8 < nodes.length; _i8++) {
-            var _node4 = nodes[_i8];
-            if (!this.complex.length || Sizzle.matchesSelector(_node4, this.complex)) {
-                results.push(_node4);
-            }
-        }
-    };
-
     return {
         /**
          * Wraps the inner class so that the instance is not exposed.
@@ -4271,7 +3602,7 @@ var ExtendedSelectorFactory = function () {
     };
 }();
 
-/* global ExtendedCssParser, ExtendedSelectorFactory, StyleObserver, utils */
+/* global ExtendedCssParser, ExtendedSelectorFactory, utils */
 
 /**
  * This callback is used to get affected node elements and handle style properties
@@ -4286,7 +3617,6 @@ var ExtendedSelectorFactory = function () {
  *
  * @param {Object} configuration
  * @param {string} configuration.styleSheet - the CSS stylesheet text
- * @param {Array.<HTMLElement>} [configuration.propertyFilterIgnoreStyleNodes] - A list of stylesheet nodes that should be ignored by the StyleObserver (":properties" matching object)
  * @param {beforeStyleApplied} [configuration.beforeStyleApplied] - the callback that handles affected elements
  * @constructor
  */
@@ -4297,7 +3627,6 @@ function ExtendedCss(configuration) {
     }
 
     var styleSheet = configuration.styleSheet;
-    var propertyFilterIgnoreStyleNodes = configuration.propertyFilterIgnoreStyleNodes;
     var beforeStyleApplied = configuration.beforeStyleApplied;
 
     if (beforeStyleApplied && typeof beforeStyleApplied !== 'function') {
@@ -4326,7 +3655,7 @@ function ExtendedCss(configuration) {
             lastEventTime = Date.now();
         };
 
-        for (var _i = 0; _i < TRACKED_EVENTS.length; _i++) {
+        for (var _i = 0, _length = TRACKED_EVENTS.length; _i < _length; _i++) {
             var evName = TRACKED_EVENTS[_i];
             document.documentElement.addEventListener(evName, trackEvent, true);
         }
@@ -4410,31 +3739,47 @@ function ExtendedCss(configuration) {
         attributeFilter: ['style']
     };
 
-    function protectionFunction(mutations, observer) {
-        if (!mutations.length) {
-            return;
+    /**
+     * Creates MutationObserver protection function
+     *
+     * @param styles
+     * @return {protectionFunction}
+     */
+    function createProtectionFunction(styles) {
+        function protectionFunction(mutations, observer) {
+            if (!mutations.length) {
+                return;
+            }
+            var mutation = mutations[0];
+            var target = mutation.target;
+            observer.disconnect();
+            styles.forEach(function (style) {
+                setStyleToElement(target, style);
+            });
+            if (++observer.styleProtectionCount < MAX_STYLE_PROTECTION_COUNT) {
+                observer.observe(target, protectionObserverOption);
+            } else {
+                utils.logError('ExtendedCss: infinite loop protection for style');
+            }
         }
-        var mutation = mutations[0];
-        var target = mutation.target;
-        observer.disconnect();
-        target.setAttribute('style', mutation.oldValue);
-        if (++observer.styleProtectionCount < MAX_STYLE_PROTECTION_COUNT) {
-            observer.observe(target, protectionObserverOption);
-        } else {
-            utils.logError('ExtendedCss: infinite loop protection for style');
-        }
+
+        return protectionFunction;
     }
 
     /**
      * Sets up a MutationObserver which protects style attributes from changes
      * @param node DOM node
+     * @param rules rules
      * @returns Mutation observer used to protect attribute or null if there's nothing to protect
      */
-    function protectStyleAttribute(node) {
+    function protectStyleAttribute(node, rules) {
         if (!utils.MutationObserver) {
             return null;
         }
-        var protectionObserver = new utils.MutationObserver(protectionFunction);
+        var styles = rules.map(function (r) {
+            return r.style;
+        });
+        var protectionObserver = new utils.MutationObserver(createProtectionFunction(styles));
         protectionObserver.observe(node, protectionObserverOption);
         // Adds an expando to the observer to keep 'style fix counts'.
         protectionObserver.styleProtectionCount = 0;
@@ -4455,7 +3800,7 @@ function ExtendedCss(configuration) {
      * @returns     affectedElement found or null
      */
     function findAffectedElement(node) {
-        for (var _i2 = 0; _i2 < affectedElements.length; _i2++) {
+        for (var _i2 = 0, _length2 = affectedElements.length; _i2 < _length2; _i2++) {
             var affectedElement = affectedElements[_i2];
             if (affectedElement.node === node) {
                 return affectedElement;
@@ -4467,6 +3812,8 @@ function ExtendedCss(configuration) {
 
     function removeElement(affectedElement) {
         var node = affectedElement.node;
+
+        affectedElement.removed = true;
 
         var elementSelector = utils.getNodeSelector(node);
 
@@ -4503,12 +3850,23 @@ function ExtendedCss(configuration) {
         }
 
         var node = affectedElement.node;
-        var style = affectedElement.rule.style;
-        if (style['remove'] === 'true') {
-            removeElement(affectedElement);
-            return;
-        }
+        for (var i = 0; i < affectedElement.rules.length; i++) {
+            var style = affectedElement.rules[i].style;
+            if (style['remove'] === 'true') {
+                removeElement(affectedElement);
+                return;
+            }
 
+            setStyleToElement(node, style);
+        }
+    }
+
+    /**
+     * Sets style to the specified DOM node
+     * @param node element
+     * @param style style
+     */
+    function setStyleToElement(node, style) {
         for (var prop in style) {
             // Apply this style only to existing properties
             // We can't use hasOwnProperty here (does not work in FF)
@@ -4519,8 +3877,6 @@ function ExtendedCss(configuration) {
                 node.style.setProperty(prop, value, "important");
             }
         }
-        // Protect "style" attribute from changes
-        affectedElement.protectionObserver = protectStyleAttribute(node);
     }
 
     /**
@@ -4548,20 +3904,19 @@ function ExtendedCss(configuration) {
         var selector = rule.selector;
         var nodes = selector.querySelectorAll();
 
-        for (var _i3 = 0; _i3 < nodes.length; _i3++) {
+        for (var _i3 = 0, _length3 = nodes.length; _i3 < _length3; _i3++) {
             var node = nodes[_i3];
             var affectedElement = findAffectedElement(node);
 
             if (affectedElement) {
-                // We have already applied style to this node
-                // Let's re-apply style to it
+                affectedElement.rules.push(rule);
                 applyStyle(affectedElement);
             } else {
                 // Applying style first time
                 var originalStyle = node.style.cssText;
                 affectedElement = {
                     node: node, // affected DOM node
-                    rule: rule, // rule to be applied
+                    rules: [rule], // rules to be applied
                     originalStyle: originalStyle, // original node style
                     protectionObserver: null // style attribute observer
                 };
@@ -4591,7 +3946,7 @@ function ExtendedCss(configuration) {
         // https://github.com/AdguardTeam/ExtendedCss/issues/81
         stopObserve();
 
-        for (var _i4 = 0, _rules = rules; _i4 < _rules.length; _i4++) {
+        for (var _i4 = 0, _rules = rules, _length4 = _rules.length; _i4 < _length4; _i4++) {
             var rule = _rules[_i4];
             var nodes = applyRule(rule);
             Array.prototype.push.apply(elementsIndex, nodes);
@@ -4607,6 +3962,14 @@ function ExtendedCss(configuration) {
                 // Time to revert style
                 revertStyle(obj);
                 affectedElements.splice(l, 1);
+            } else {
+                if (!obj.removed) {
+                    // Add style protection observer
+                    // Protect "style" attribute from changes
+                    if (!obj.protectionObserver) {
+                        obj.protectionObserver = protectStyleAttribute(obj.node, obj.rules);
+                    }
+                }
             }
         }
         // After styles are applied we can start observe again
@@ -4614,7 +3977,7 @@ function ExtendedCss(configuration) {
         printTimingInfo();
     }
 
-    var APPLY_RULES_DELAY = 50;
+    var APPLY_RULES_DELAY = 150;
     var applyRulesScheduler = new utils.AsyncWrapper(applyRules, APPLY_RULES_DELAY);
     var mainCallback = applyRulesScheduler.run.bind(applyRulesScheduler);
 
@@ -4650,7 +4013,7 @@ function ExtendedCss(configuration) {
     function dispose() {
         stopObserve();
 
-        for (var _i5 = 0; _i5 < affectedElements.length; _i5++) {
+        for (var _i5 = 0, _length5 = affectedElements.length; _i5 < _length5; _i5++) {
             var obj = affectedElements[_i5];
             revertStyle(obj);
         }
@@ -4681,9 +4044,6 @@ function ExtendedCss(configuration) {
         // Add location.href to the message to distinguish frames
         utils.logInfo("[ExtendedCss] Timings for %o:\n%o (in milliseconds)", location.href, timings);
     }
-
-    // Let StyleObserver know which stylesheets should not be used for :properties matching
-    StyleObserver.setIgnoredStyleNodes(propertyFilterIgnoreStyleNodes);
 
     // First of all parse the stylesheet
     rules = ExtendedCssParser.parseCss(styleSheet);
@@ -4717,8 +4077,6 @@ ExtendedCss.query = function (selectorText, noTiming) {
     try {
         return ExtendedSelectorFactory.createSelector(selectorText).querySelectorAll();
     } finally {
-        StyleObserver.clear();
-
         var end = now();
         if (!noTiming) {
             utils.logInfo('[ExtendedCss] Elapsed: ' + Math.round((end - start) * 1000) + ' μs.');
