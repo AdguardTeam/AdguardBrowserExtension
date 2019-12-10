@@ -145,6 +145,7 @@ adguard.settings = (function (adguard) {
         const result = {
             names: Object.create(null),
             values: Object.create(null),
+            defaultValues: Object.create(null),
         };
 
         for (let key in settings) {
@@ -152,6 +153,7 @@ adguard.settings = (function (adguard) {
                 const setting = settings[key];
                 result.names[key] = setting;
                 result.values[setting] = getProperty(setting);
+                result.defaultValues[setting] = defaultProperties.defaults[setting];
             }
         }
 
