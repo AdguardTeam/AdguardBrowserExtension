@@ -6,7 +6,7 @@ import { runQunitPuppeteer, printOutput } from 'node-qunit-puppeteer';
 const runQunit = (testFilePath, done) => {
     const qunitArgs = {
         targetUrl: `file://${path.resolve(__dirname, testFilePath)}`,
-        timeout: 10000,
+        timeout: 20000,
         redirectConsole: true,
     };
 
@@ -19,7 +19,7 @@ const runQunit = (testFilePath, done) => {
         })
         .then(done)
         .catch((ex) => {
-            done(`Error occured while running tests: ${ex}`);
+            done(`Error occurred while running tests: ${ex}`);
         });
 };
 
