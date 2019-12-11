@@ -180,7 +180,10 @@
             requestUrl
         );
 
-        if (requestRule && requestRule.isBlockPopups() && requestType === adguard.RequestTypes.DOCUMENT) {
+        if (requestRule
+            && !requestRule.whiteListRule
+            && requestRule.isBlockPopups()
+            && requestType === adguard.RequestTypes.DOCUMENT) {
             const isNewTab = adguard.tabs.isNewPopupTab(tabId);
             if (isNewTab) {
                 adguard.tabs.remove(tabId);
