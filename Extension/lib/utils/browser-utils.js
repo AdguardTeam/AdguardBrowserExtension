@@ -16,17 +16,15 @@
  */
 
 (function (adguard, api) {
-
     /**
      * Extension version (x.x.x)
      * @param version
      * @constructor
      */
-    var Version = function (version) {
-
+    const Version = function (version) {
         this.version = Object.create(null);
 
-        var parts = String(version || "").split(".");
+        const parts = String(version || '').split('.');
 
         function parseVersionPart(part) {
             if (isNaN(part)) {
@@ -35,7 +33,7 @@
             return Math.max(part - 0, 0);
         }
 
-        for (var i = 3; i >= 0; i--) {
+        for (let i = 3; i >= 0; i--) {
             this.version[i] = parseVersionPart(parts[i]);
         }
     };
@@ -46,37 +44,36 @@
      * @returns {number}
      */
     Version.prototype.compare = function (o) {
-        for (var i = 0; i < 4; i++) {
+        for (let i = 0; i < 4; i++) {
             if (this.version[i] > o.version[i]) {
                 return 1;
-            } else if (this.version[i] < o.version[i]) {
+            } if (this.version[i] < o.version[i]) {
                 return -1;
             }
         }
         return 0;
     };
 
-    var objectContentTypes = '.jar.swf.';
-    var mediaContentTypes = '.mp4.flv.avi.m3u.webm.mpeg.3gp.3gpp.3g2.3gpp2.ogg.mov.qt.';
-    var fontContentTypes = '.ttf.otf.woff.woff2.eot.';
-    var imageContentTypes = '.ico.png.gif.jpg.jpeg.webp.';
+    const objectContentTypes = '.jar.swf.';
+    const mediaContentTypes = '.mp4.flv.avi.m3u.webm.mpeg.3gp.3gpp.3g2.3gpp2.ogg.mov.qt.';
+    const fontContentTypes = '.ttf.otf.woff.woff2.eot.';
+    const imageContentTypes = '.ico.png.gif.jpg.jpeg.webp.';
 
-    //noinspection UnnecessaryLocalVariableJS
-    var Utils = {
+    // noinspection UnnecessaryLocalVariableJS
+    const Utils = {
 
-        getClientId: function () {
-
-            var clientId = adguard.localStorage.getItem("client-id");
+        getClientId() {
+            let clientId = adguard.localStorage.getItem('client-id');
             if (!clientId) {
-                var result = [];
-                var suffix = (Date.now()) % 1e8;
-                var symbols = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567890';
-                for (var i = 0; i < 8; i++) {
-                    var symbol = symbols[Math.floor(Math.random() * symbols.length)];
+                const result = [];
+                const suffix = (Date.now()) % 1e8;
+                const symbols = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567890';
+                for (let i = 0; i < 8; i++) {
+                    const symbol = symbols[Math.floor(Math.random() * symbols.length)];
                     result.push(symbol);
                 }
                 clientId = result.join('') + suffix;
-                adguard.localStorage.setItem("client-id", clientId);
+                adguard.localStorage.setItem('client-id', clientId);
             }
 
             return clientId;
@@ -85,15 +82,15 @@
         /**
          * Checks if left version is greater than the right version
          */
-        isGreaterVersion: function (leftVersion, rightVersion) {
-            var left = new Version(leftVersion);
-            var right = new Version(rightVersion);
+        isGreaterVersion(leftVersion, rightVersion) {
+            const left = new Version(leftVersion);
+            const right = new Version(rightVersion);
             return left.compare(right) > 0;
         },
 
-        isGreaterOrEqualsVersion: function (leftVersion, rightVersion) {
-            var left = new Version(leftVersion);
-            var right = new Version(rightVersion);
+        isGreaterOrEqualsVersion(leftVersion, rightVersion) {
+            const left = new Version(leftVersion);
+            const right = new Version(rightVersion);
             return left.compare(right) >= 0;
         },
 
@@ -102,8 +99,8 @@
          *
          * @param version
          */
-        getMajorVersionNumber: function (version) {
-            var v = new Version(version);
+        getMajorVersionNumber(version) {
+            const v = new Version(version);
             return v.version[0];
         },
 
@@ -112,51 +109,55 @@
          *
          * @param version
          */
-        getMinorVersionNumber: function (version) {
-            var v = new Version(version);
+        getMinorVersionNumber(version) {
+            const v = new Version(version);
             return v.version[1];
         },
 
         /**
          * @returns Extension version
          */
-        getAppVersion: function () {
-            return adguard.localStorage.getItem("app-version");
+        getAppVersion() {
+            return adguard.localStorage.getItem('app-version');
         },
 
-        setAppVersion: function (version) {
-            adguard.localStorage.setItem("app-version", version);
+        setAppVersion(version) {
+            adguard.localStorage.setItem('app-version', version);
         },
 
-        isYaBrowser: function () {
-            return adguard.prefs.browser === "YaBrowser";
+        isYaBrowser() {
+            return adguard.prefs.browser === 'YaBrowser';
         },
 
-        isOperaBrowser: function () {
-            return adguard.prefs.browser === "Opera";
+        isOperaBrowser() {
+            return adguard.prefs.browser === 'Opera';
         },
 
-        isEdgeBrowser: function () {
-            return adguard.prefs.browser === "Edge";
+        isEdgeBrowser() {
+            return adguard.prefs.browser === 'Edge';
         },
 
-        isFirefoxBrowser: function () {
-            return adguard.prefs.browser === "Firefox";
+        isEdgeChromiumBrowser() {
+            return adguard.prefs.browser === 'EdgeChromium';
         },
 
-        isChromeBrowser: function () {
-            return adguard.prefs.browser === "Chrome";
+        isFirefoxBrowser() {
+            return adguard.prefs.browser === 'Firefox';
         },
 
-        isChromium: function () {
+        isChromeBrowser() {
+            return adguard.prefs.browser === 'Chrome';
+        },
+
+        isChromium() {
             return adguard.prefs.platform === 'chromium';
         },
 
-        isWindowsOs: function () {
-            return navigator.userAgent.toLowerCase().indexOf("win") >= 0;
+        isWindowsOs() {
+            return navigator.userAgent.toLowerCase().indexOf('win') >= 0;
         },
 
-        isMacOs: function () {
+        isMacOs() {
             return navigator.platform.toUpperCase().indexOf('MAC') >= 0;
         },
 
@@ -166,10 +167,10 @@
          * @param headerName Header name
          * @returns {*}
          */
-        findHeaderByName: function (headers, headerName) {
+        findHeaderByName(headers, headerName) {
             if (headers) {
-                for (var i = 0; i < headers.length; i++) {
-                    var header = headers[i];
+                for (let i = 0; i < headers.length; i++) {
+                    const header = headers[i];
                     if (header.name.toLowerCase() === headerName.toLowerCase()) {
                         return header;
                     }
@@ -184,8 +185,8 @@
          * @param headerName Header name
          * @returns {null}
          */
-        getHeaderValueByName: function (headers, headerName) {
-            var header = this.findHeaderByName(headers, headerName);
+        getHeaderValueByName(headers, headerName) {
+            const header = this.findHeaderByName(headers, headerName);
             return header ? header.value : null;
         },
 
@@ -195,15 +196,15 @@
          * @param headerName
          * @param headerValue
          */
-        setHeaderValue: function (headers, headerName, headerValue) {
+        setHeaderValue(headers, headerName, headerValue) {
             if (!headers) {
                 headers = [];
             }
-            var header = this.findHeaderByName(headers, headerName);
+            const header = this.findHeaderByName(headers, headerName);
             if (header) {
                 header.value = headerValue;
             } else {
-                headers.push({name: headerName, value: headerValue});
+                headers.push({ name: headerName, value: headerValue });
             }
             return headers;
         },
@@ -215,7 +216,7 @@
          * @param {String} headerName
          * @return {boolean} True if header were removed
          */
-        removeHeader: function (headers, headerName) {
+        removeHeader(headers, headerName) {
             let removed = false;
             if (headers) {
                 for (let i = headers.length - 1; i >= 0; i--) {
@@ -229,13 +230,13 @@
             return removed;
         },
 
-        getSafebrowsingBackUrl: function (tab) {
-            //https://code.google.com/p/chromium/issues/detail?id=11854
-            var previousUrl = adguard.tabs.getTabMetadata(tab.tabId, 'previousUrl');
+        getSafebrowsingBackUrl(tab) {
+            // https://code.google.com/p/chromium/issues/detail?id=11854
+            const previousUrl = adguard.tabs.getTabMetadata(tab.tabId, 'previousUrl');
             if (previousUrl && previousUrl.indexOf('http') === 0) {
                 return previousUrl;
             }
-            var referrerUrl = adguard.tabs.getTabMetadata(tab.tabId, 'referrerUrl');
+            const referrerUrl = adguard.tabs.getTabMetadata(tab.tabId, 'referrerUrl');
             if (referrerUrl && referrerUrl.indexOf('http') === 0) {
                 return referrerUrl;
             }
@@ -248,17 +249,16 @@
          * @param path Path
          * @returns {*} content type (adguard.RequestTypes.*) or null
          */
-        parseContentTypeFromUrlPath: function (path) {
-
-            var ext = path.slice(-6);
-            var pos = ext.lastIndexOf('.');
+        parseContentTypeFromUrlPath(path) {
+            let ext = path.slice(-6);
+            const pos = ext.lastIndexOf('.');
 
             // Unable to parse extension from url
             if (pos === -1) {
                 return null;
             }
 
-            ext = ext.slice(pos) + '.';
+            ext = `${ext.slice(pos)}.`;
             if (objectContentTypes.indexOf(ext) !== -1) {
                 return adguard.RequestTypes.OBJECT;
             }
@@ -280,8 +280,8 @@
          * @param limit Limit of preferred languages
          * @returns {Array}
          */
-        getNavigatorLanguages: function (limit) {
-            var languages = [];
+        getNavigatorLanguages(limit) {
+            let languages = [];
             // https://developer.mozilla.org/ru/docs/Web/API/NavigatorLanguage/languages
             if (adguard.utils.collections.isArray(navigator.languages)) {
                 languages = navigator.languages.slice(0, limit);
@@ -301,23 +301,23 @@
          */
         EDGE_CREATORS_UPDATE: 15063,
 
-        isEdgeBeforeCreatorsUpdate: function () {
+        isEdgeBeforeCreatorsUpdate() {
             return this.isEdgeBrowser() && adguard.prefs.edgeVersion.build < this.EDGE_CREATORS_UPDATE;
         },
 
         /**
          * Returns extension params: clientId, version and locale
          */
-        getExtensionParams: function () {
-            var clientId = encodeURIComponent(this.getClientId());
-            var locale = encodeURIComponent(adguard.app.getLocale());
-            var version = encodeURIComponent(adguard.app.getVersion());
-            var id = encodeURIComponent(adguard.app.getId());
-            var params = [];
-            params.push('v=' + version);
-            params.push('cid=' + clientId);
-            params.push('lang=' + locale);
-            params.push('id=' + id);
+        getExtensionParams() {
+            const clientId = encodeURIComponent(this.getClientId());
+            const locale = encodeURIComponent(adguard.app.getLocale());
+            const version = encodeURIComponent(adguard.app.getVersion());
+            const id = encodeURIComponent(adguard.app.getId());
+            const params = [];
+            params.push(`v=${version}`);
+            params.push(`cid=${clientId}`);
+            params.push(`lang=${locale}`);
+            params.push(`id=${id}`);
             return params;
         },
 
@@ -362,5 +362,4 @@
     };
 
     api.browser = Utils;
-
 })(adguard, adguard.utils);

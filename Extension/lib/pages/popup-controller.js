@@ -770,8 +770,17 @@ PopupController.prototype = {
             const popupFooter = footerDefault.querySelector('.popup-footer');
             // There is no footer title for edge
             const footerDefaultTitle = footerDefault.querySelector('.footer__title');
-            if (footerDefaultTitle) {
-                footerDefaultTitle.setAttribute('title', i18n.getMessage('popup_adguard_footer_title'));
+            if (popupFooter && footerDefaultTitle) {
+                if (options.isEdgeBrowser) {
+                    popupFooter.innerHTML = `<div class="popup-footer--edge">© 2009-${new Date().getFullYear()} AdGuard Software Ltd</div>`;
+                    // hide mobile app icons - https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1543
+                    const platforms = footerDefault.querySelector('.platforms');
+                    if (platforms) {
+                        platforms.style.display = 'none';
+                    }
+                } else {
+                    footerDefaultTitle.setAttribute('title', i18n.getMessage('popup_adguard_footer_title'));
+                }
             }
 
             // CAUTION!

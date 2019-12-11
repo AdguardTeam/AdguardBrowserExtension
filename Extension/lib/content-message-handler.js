@@ -347,6 +347,8 @@
                             isFirefoxBrowser: adguard.utils.browser.isFirefoxBrowser(),
                             showInfoAboutFullVersion: adguard.settings.isShowInfoAboutAdguardFullVersion(),
                             isMacOs: adguard.utils.browser.isMacOs(),
+                            isEdgeBrowser: adguard.utils.browser.isEdgeBrowser()
+                                || adguard.utils.browser.isEdgeChromiumBrowser(),
                             notification: adguard.notifications.getCurrentNotification(frameInfo),
                             isDisableShowAdguardPromoInfo: adguard.settings.isDisableShowAdguardPromoInfo(),
                         },
