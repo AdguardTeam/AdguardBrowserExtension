@@ -15,13 +15,14 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global CryptoJS */
+
 /**
  * Service that loads and parses filters metadata from backend server.
  * For now we just store filters metadata in an XML file within the extension.
  * In future we'll add an opportunity to update metadata along with filter rules update.
  */
 adguard.subscriptions = (function (adguard) {
-
     'use strict';
 
     /**
@@ -38,11 +39,11 @@ adguard.subscriptions = (function (adguard) {
      */
     const CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER = 99;
 
-    var tags = [];
-    var groups = [];
-    var groupsMap = {};
-    var filters = [];
-    var filtersMap = {};
+    let tags = [];
+    let groups = [];
+    let groupsMap = {};
+    let filters = [];
+    let filtersMap = {};
 
     /**
      * @param timeUpdatedString String in format 'yyyy-MM-dd'T'HH:mm:ssZ'
@@ -55,12 +56,12 @@ adguard.subscriptions = (function (adguard) {
         }
 
         // https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Date/parse
-        var timeUpdated = Date.parse(timeUpdatedString);
-        if (isNaN(timeUpdated)) {
+        let timeUpdated = Date.parse(timeUpdatedString);
+        if (Number.isNaN(timeUpdated)) {
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/478
-            timeUpdated = Date.parse(timeUpdatedString.replace(/\+(\d{2})(\d{2})$/, "+$1:$2"));
+            timeUpdated = Date.parse(timeUpdatedString.replace(/\+(\d{2})(\d{2})$/, '+$1:$2'));
         }
-        if (isNaN(timeUpdated)) {
+        if (Number.isNaN(timeUpdated)) {
             timeUpdated = new Date().getTime();
         }
         return timeUpdated;
@@ -69,7 +70,7 @@ adguard.subscriptions = (function (adguard) {
     /**
      * Tag metadata
      */
-    var FilterTag = function (tagId, keyword) {
+    const FilterTag = function (tagId, keyword) {
         this.tagId = tagId;
         this.keyword = keyword;
     };
@@ -77,7 +78,7 @@ adguard.subscriptions = (function (adguard) {
     /**
      * Group metadata
      */
-    var SubscriptionGroup = function (groupId, groupName, displayNumber) {
+    const SubscriptionGroup = function (groupId, groupName, displayNumber) {
         this.groupId = groupId;
         this.groupName = groupName;
         this.displayNumber = displayNumber;
@@ -106,7 +107,7 @@ adguard.subscriptions = (function (adguard) {
      * Filter metadata
      * @param {FilterData} filterData
      */
-    var SubscriptionFilter = function (filterData) {
+    const SubscriptionFilter = function (filterData) {
         const {
             filterId,
             groupId,
@@ -155,9 +156,8 @@ adguard.subscriptions = (function (adguard) {
      * @returns {FilterTag}
      */
     function createFilterTagFromJSON(tag) {
-
-        var tagId = tag.tagId - 0;
-        var keyword = tag.keyword;
+        const tagId = tag.tagId - 0;
+        const { keyword } = tag;
 
         return new FilterTag(tagId, keyword);
     }
@@ -168,10 +168,9 @@ adguard.subscriptions = (function (adguard) {
      * @returns {SubscriptionGroup}
      */
     function createSubscriptionGroupFromJSON(group) {
-
-        var groupId = group.groupId - 0;
-        var defaultGroupName = group.groupName;
-        var displayNumber = group.displayNumber - 0;
+        const groupId = group.groupId - 0;
+        const defaultGroupName = group.groupName;
+        const displayNumber = group.displayNumber - 0;
 
         return new SubscriptionGroup(groupId, defaultGroupName, displayNumber);
     }
@@ -185,17 +184,17 @@ adguard.subscriptions = (function (adguard) {
         const groupId = filter.groupId - 0;
         const defaultName = filter.name;
         const defaultDescription = filter.description;
-        const homepage = filter.homepage;
-        const version = filter.version;
+        const { homepage } = filter;
+        const { version } = filter;
         const timeUpdated = parseTimeUpdated(filter.timeUpdated);
         const expires = filter.expires - 0;
-        const subscriptionUrl = filter.subscriptionUrl;
-        const languages = filter.languages;
+        const { subscriptionUrl } = filter;
+        const { languages } = filter;
         const displayNumber = filter.displayNumber - 0;
-        const tags = filter.tags;
-        const customUrl = filter.customUrl;
-        const trusted = filter.trusted;
-        const checksum = filter.checksum;
+        const { tags } = filter;
+        const { customUrl } = filter;
+        const { trusted } = filter;
+        const { checksum } = filter;
         if (tags.length === 0) {
             tags.push(0);
         }
@@ -233,7 +232,7 @@ adguard.subscriptions = (function (adguard) {
             const maxLines = Math.min(50, rules.length);
             for (let i = 0; i < maxLines; i += 1) {
                 const rule = rules[i];
-                const search = '! ' + tagName + ': ';
+                const search = `! ${tagName}: `;
                 const indexOfSearch = rule.indexOf(search);
                 if (indexOfSearch >= 0) {
                     result = rule.substring(indexOfSearch + search.length);
@@ -257,7 +256,7 @@ adguard.subscriptions = (function (adguard) {
 
     const addFilterId = () => {
         let max = 0;
-        filters.forEach(function (f) {
+        filters.forEach((f) => {
             if (f.filterId > max) {
                 max = f.filterId;
             }
@@ -288,7 +287,7 @@ adguard.subscriptions = (function (adguard) {
         const customFilters = loadCustomFilters();
         // check if filter exists
         let found = false;
-        const updatedCustomFilters = customFilters.map(f => {
+        const updatedCustomFilters = customFilters.map((f) => {
             if (f.filterId === filter.filterId) {
                 found = true;
                 return filter;
@@ -307,8 +306,8 @@ adguard.subscriptions = (function (adguard) {
      * @param filter
      */
     const removeCustomFilterFromStorage = (filter) => {
-        let customFilters = loadCustomFilters();
-        const updatedCustomFilters = customFilters.filter(f => {
+        const customFilters = loadCustomFilters();
+        const updatedCustomFilters = customFilters.filter((f) => {
             if (f.filterId === filter.filterId) {
                 return filter.installed;
             }
@@ -361,7 +360,7 @@ adguard.subscriptions = (function (adguard) {
         filter.version = version || filter.version;
         filter.timeUpdated = timeUpdated || filter.timeUpdated;
         filter.lastCheckTime = lastCheckTime || filter.lastCheckTime;
-        filters = filters.map(f => {
+        filters = filters.map((f) => {
             if (f.filterId === filter.filterId) {
                 f.version = version || f.version;
                 f.checksum = checksum || f.checksum;
@@ -387,15 +386,17 @@ adguard.subscriptions = (function (adguard) {
         const { title, trusted, syncSuppress } = options;
         adguard.backend.loadFilterRulesBySubscriptionUrl(url, (rules) => {
             const filterId = addFilterId();
-            let {
-                name,
+            const parsedData = parseFilterDataFromHeader(rules);
+            let { timeUpdated } = parsedData;
+            const {
                 description,
                 homepage,
                 version,
                 expires,
-                timeUpdated,
-            } = parseFilterDataFromHeader(rules);
-            name = title;
+            } = parsedData;
+
+            const name = title;
+
             timeUpdated = timeUpdated || new Date().toISOString();
             const groupId = CUSTOM_FILTERS_GROUP_ID;
             const subscriptionUrl = url;
@@ -470,15 +471,15 @@ adguard.subscriptions = (function (adguard) {
     const getCustomFilterInfo = (url, options, callback) => {
         const { title } = options;
 
-        adguard.backend.loadFilterRulesBySubscriptionUrl(url, function (rules) {
-            let {
-                name,
+        adguard.backend.loadFilterRulesBySubscriptionUrl(url, (rules) => {
+            const parsedData = parseFilterDataFromHeader(rules);
+            let { name, timeUpdated } = parsedData;
+            const {
                 description,
                 homepage,
                 version,
                 expires,
-                timeUpdated,
-            } = parseFilterDataFromHeader(rules);
+            } = parsedData;
 
             name = name || title;
             timeUpdated = timeUpdated || new Date().toISOString();
@@ -488,12 +489,10 @@ adguard.subscriptions = (function (adguard) {
             const languages = [];
             const displayNumber = 0;
             const tags = [0];
-            let rulesCount = rules.filter(rule => rule.trim().indexOf('!') !== 0).length;
+            const rulesCount = rules.filter(rule => rule.trim().indexOf('!') !== 0).length;
 
             // Check if filter from this url was added before
-            let filter = filters.find(function (f) {
-                return f.customUrl === url;
-            });
+            let filter = filters.find(f => f.customUrl === url);
 
             if (filter) {
                 callback({ error: adguard.i18n.getMessage('options_antibanner_custom_filter_already_exists') });
@@ -520,7 +519,7 @@ adguard.subscriptions = (function (adguard) {
             filter.rulesCount = rulesCount;
 
             callback({ filter });
-        }, function (cause) {
+        }, (cause) => {
             adguard.console.error(`Error download filter by url ${url}, cause: ${cause || ''}`);
             callback();
         });
@@ -702,7 +701,7 @@ adguard.subscriptions = (function (adguard) {
     /**
      * @returns Array of Filters metadata
      */
-    var getFilters = function () {
+    const getFilters = function () {
         return filters;
     };
 
@@ -713,7 +712,7 @@ adguard.subscriptions = (function (adguard) {
     /**
      * Gets filter metadata by filter identifier
      */
-    var getFilter = function (filterId) {
+    const getFilter = function (filterId) {
         return filtersMap[filterId];
     };
 
@@ -728,7 +727,7 @@ adguard.subscriptions = (function (adguard) {
     /**
      * @returns Array of Tags metadata
      */
-    var getTags = function () {
+    const getTags = function () {
         return tags;
     };
 
@@ -758,16 +757,16 @@ adguard.subscriptions = (function (adguard) {
      * @param locale Locale to check
      * @returns {Array} List of filters identifiers
      */
-    var getFilterIdsForLanguage = function (locale) {
+    const getFilterIdsForLanguage = function (locale) {
         if (!locale) {
             return [];
         }
-        var filterIds = [];
-        for (var i = 0; i < filters.length; i++) {
-            var filter = filters[i];
-            var languages = filter.languages;
+        const filterIds = [];
+        for (let i = 0; i < filters.length; i += 1) {
+            const filter = filters[i];
+            const { languages } = filter;
             if (languages && languages.length > 0) {
-                var language = adguard.utils.i18n.normalize(languages, locale);
+                const language = adguard.utils.i18n.normalize(languages, locale);
                 if (language) {
                     filterIds.push(filter.filterId);
                 }
@@ -801,7 +800,7 @@ adguard.subscriptions = (function (adguard) {
     };
 
     // Add event listener to persist filter metadata to local storage
-    adguard.listeners.addListener(function (event, payload) {
+    adguard.listeners.addListener((event, payload) => {
         switch (event) {
             case adguard.listeners.FILTER_ADD_REMOVE:
                 if (payload && payload.removed) {
@@ -815,22 +814,20 @@ adguard.subscriptions = (function (adguard) {
     });
 
     return {
-        init: init,
-        getFilterIdsForLanguage: getFilterIdsForLanguage,
-        getTags: getTags,
-        getGroups: getGroups,
-        getGroup: getGroup,
-        groupHasEnabledStatus: groupHasEnabledStatus,
-        getFilters: getFilters,
-        getCustomFilters: getCustomFilters,
-        getFilter: getFilter,
-        isTrustedFilter: isTrustedFilter,
-        createSubscriptionFilterFromJSON: createSubscriptionFilterFromJSON,
-        updateCustomFilter: updateCustomFilter,
-        getCustomFilterInfo: getCustomFilterInfo,
-        getLangSuitableFilters: getLangSuitableFilters,
-        CUSTOM_FILTERS_START_ID: CUSTOM_FILTERS_START_ID,
+        init,
+        getFilterIdsForLanguage,
+        getTags,
+        getGroups,
+        getGroup,
+        groupHasEnabledStatus,
+        getFilters,
+        getCustomFilters,
+        getFilter,
+        isTrustedFilter,
+        createSubscriptionFilterFromJSON,
+        updateCustomFilter,
+        getCustomFilterInfo,
+        getLangSuitableFilters,
+        CUSTOM_FILTERS_START_ID,
     };
-
 })(adguard);
-

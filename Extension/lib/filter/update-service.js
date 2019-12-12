@@ -20,29 +20,24 @@
  * extension update. For instance we may need to change storage schema on update.
  */
 adguard.applicationUpdateService = (function (adguard) {
-
     /**
      * File storage adapter
      * @Deprecated Used now only to upgrade from versions older than v2.3.5
      */
-    var FileStorage = {
+    const FileStorage = {
 
         LINE_BREAK: '\n',
-        FILE_PATH: "filters.ini",
+        FILE_PATH: 'filters.ini',
 
-        readFromFile: function (path, callback) {
-
-            var successCallback = function (fs, fileEntry) {
-
-                fileEntry.file(function (file) {
-
-                    var reader = new FileReader();
+        readFromFile(path, callback) {
+            const successCallback = function (fs, fileEntry) {
+                fileEntry.file((file) => {
+                    const reader = new FileReader();
                     reader.onloadend = function () {
-
                         if (reader.error) {
                             callback(reader.error);
                         } else {
-                            var lines = [];
+                            let lines = [];
                             if (reader.result) {
                                 lines = reader.result.split(/[\r\n]+/);
                             }
@@ -55,30 +50,28 @@ adguard.applicationUpdateService = (function (adguard) {
                     };
 
                     reader.readAsText(file);
-
                 }, callback);
             };
 
             this._getFile(path, true, successCallback, callback);
         },
 
-        _getFile: function (path, create, successCallback, errorCallback) {
+        _getFile(path, create, successCallback, errorCallback) {
+            path = path.replace(/^.*[\/\\]/, '');
 
-            path = path.replace(/^.*[\/\\]/, "");
-
-            var requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
-            requestFileSystem(window.PERSISTENT, 1024 * 1024 * 1024, function (fs) {
-                fs.root.getFile(path, {create: create}, function (fileEntry) {
+            const requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
+            requestFileSystem(window.PERSISTENT, 1024 * 1024 * 1024, (fs) => {
+                fs.root.getFile(path, { create }, (fileEntry) => {
                     successCallback(fs, fileEntry);
                 }, errorCallback);
             }, errorCallback);
         },
 
-        removeFile: function (path, successCallback, errorCallback) {
-            this._getFile(path, false, function (fs, fileEntry) {
+        removeFile(path, successCallback, errorCallback) {
+            this._getFile(path, false, (fs, fileEntry) => {
                 fileEntry.remove(successCallback, errorCallback);
             }, errorCallback);
-        }
+        },
     };
 
     /**
@@ -89,15 +82,14 @@ adguard.applicationUpdateService = (function (adguard) {
      * @private
      */
     function executeMethods(methods) {
-
-        var mainDfd = new adguard.utils.Promise();
+        const mainDfd = new adguard.utils.Promise();
 
         var executeNextMethod = function () {
             if (methods.length === 0) {
                 mainDfd.resolve();
             } else {
-                var method = methods.shift();
-                var dfd = method();
+                const method = methods.shift();
+                const dfd = method();
                 dfd.then(executeNextMethod);
             }
         };
@@ -115,32 +107,31 @@ adguard.applicationUpdateService = (function (adguard) {
      * @private
      */
     function onUpdateChromiumStorage() {
-
         adguard.console.info('Call update to version 2.3.5');
 
-        var dfd = new adguard.utils.Promise();
+        const dfd = new adguard.utils.Promise();
 
-        var filterId = adguard.utils.filters.USER_FILTER_ID;
-        var filePath = "filterrules_" + filterId + ".txt";
+        const filterId = adguard.utils.filters.USER_FILTER_ID;
+        const filePath = `filterrules_${filterId}.txt`;
 
-        FileStorage.readFromFile(filePath, function (e, rules) {
+        FileStorage.readFromFile(filePath, (e, rules) => {
             if (e) {
-                adguard.console.error("Error while reading rules from file {0} cause: {1}", filePath, e);
+                adguard.console.error('Error while reading rules from file {0} cause: {1}', filePath, e);
                 return;
             }
 
-            var onTransferCompleted = function () {
-                adguard.console.info("Rules have been transferred to local storage for filter {0}", filterId);
+            const onTransferCompleted = function () {
+                adguard.console.info('Rules have been transferred to local storage for filter {0}', filterId);
 
-                FileStorage.removeFile(filePath, function () {
-                    adguard.console.info("File removed for filter {0}", filterId);
-                }, function () {
-                    adguard.console.error("File remove error for filter {0}", filterId);
+                FileStorage.removeFile(filePath, () => {
+                    adguard.console.info('File removed for filter {0}', filterId);
+                }, () => {
+                    adguard.console.error('File remove error for filter {0}', filterId);
                 });
             };
 
             if (rules) {
-                adguard.console.info('Found rules:' + rules.length);
+                adguard.console.info(`Found rules:${rules.length}`);
             }
 
             adguard.rulesStorage.write(filterId, rules, onTransferCompleted);
@@ -155,17 +146,16 @@ adguard.applicationUpdateService = (function (adguard) {
      * Version > 2.7.3
      */
     function onUpdateFirefoxWebExtRulesStorage() {
-
-        var dfd = new adguard.utils.Promise();
+        const dfd = new adguard.utils.Promise();
 
         function writeFilterRules(keys, items) {
             if (keys.length === 0) {
                 dfd.resolve();
             } else {
-                var key = keys.shift();
-                var lines = items[key] || [];
-                var linesLength = lines.length;
-                adguard.rulesStorageImpl.write(key, lines, function () {
+                const key = keys.shift();
+                const lines = items[key] || [];
+                const linesLength = lines.length;
+                adguard.rulesStorageImpl.write(key, lines, () => {
                     adguard.console.info('Adguard filter "{0}" has been migrated. Rules: {1}', key, linesLength);
                     browser.storage.local.remove(key);
                     writeFilterRules(keys, items);
@@ -174,13 +164,11 @@ adguard.applicationUpdateService = (function (adguard) {
         }
 
         function migrate() {
-
             adguard.console.info('Call update to use indexedDB instead of storage.local for Firefox browser');
 
-            browser.storage.local.get(null, function (items) {
-
-                var keys = [];
-                for (var key in items) {
+            browser.storage.local.get(null, (items) => {
+                const keys = [];
+                for (const key in items) {
                     if (items.hasOwnProperty(key) && key.indexOf('filterrules_') === 0) {
                         keys.push(key);
                     }
@@ -207,10 +195,9 @@ adguard.applicationUpdateService = (function (adguard) {
      * See https://github.com/AdguardTeam/AdguardBrowserExtension/issues/566
      */
     function onUpdateEdgeRulesStorage() {
+        const dfd = new adguard.utils.Promise();
 
-        var dfd = new adguard.utils.Promise();
-
-        var fixProperty = 'edge-storage-local-fix-build' + adguard.utils.browser.EDGE_CREATORS_UPDATE;
+        const fixProperty = `edge-storage-local-fix-build${adguard.utils.browser.EDGE_CREATORS_UPDATE}`;
         if (adguard.localStorage.getItem(fixProperty)) {
             dfd.resolve();
             return dfd;
@@ -218,8 +205,8 @@ adguard.applicationUpdateService = (function (adguard) {
 
         adguard.console.info('Call update to use storage.local for Edge browser');
 
-        var keys = [];
-        for (var key in localStorage) {
+        const keys = [];
+        for (const key in localStorage) {
             if (localStorage.hasOwnProperty(key) && key.indexOf('filterrules_') === 0) {
                 keys.push(key);
             }
@@ -230,13 +217,13 @@ adguard.applicationUpdateService = (function (adguard) {
                 adguard.localStorage.setItem(fixProperty, true);
                 dfd.resolve();
             } else {
-                var key = keys.shift();
-                var lines = [];
-                var value = localStorage.getItem(key);
+                const key = keys.shift();
+                let lines = [];
+                const value = localStorage.getItem(key);
                 if (value) {
                     lines = value.split(/[\r\n]+/);
                 }
-                adguard.rulesStorageImpl.write(key, lines, function () {
+                adguard.rulesStorageImpl.write(key, lines, () => {
                     localStorage.removeItem(key);
                     writeFilterRules();
                 });
@@ -255,14 +242,14 @@ adguard.applicationUpdateService = (function (adguard) {
 
         const filtersState = adguard.filtersState.getFiltersState();
 
-        const enabledFilters = filters.filter(filter => {
+        const enabledFilters = filters.filter((filter) => {
             const { filterId } = filter;
             return !!(filtersState[filterId] && filtersState[filterId].enabled);
         });
 
         const groupState = adguard.filtersState.getGroupsState();
 
-        enabledFilters.forEach(filter => {
+        enabledFilters.forEach((filter) => {
             const { groupId } = filter;
             if (typeof groupState[groupId] === 'undefined') {
                 adguard.filters.enableGroup(filter.groupId);
@@ -274,25 +261,37 @@ adguard.applicationUpdateService = (function (adguard) {
         return dfd;
     }
 
+    function handleDefaultUpdatePeriodSetting() {
+        const dfd = new adguard.utils.Promise();
+        const previousDefaultValue = 48 * 60 * 60 * 1000;
+
+        const currentUpdatePeriod = adguard.settings.getFiltersUpdatePeriod();
+
+        if (Number.parseInt(currentUpdatePeriod, 10) === previousDefaultValue) {
+            adguard.settings.setFiltersUpdatePeriod('default');
+        }
+
+        return dfd;
+    }
+
     /**
      * Async returns extension run info
      *
      * @param callback Run info callback with passed object {{isFirstRun: boolean, isUpdate: (boolean|*), currentVersion: (Prefs.version|*), prevVersion: *}}
      */
-    var getRunInfo = function (callback) {
-
-        var prevVersion = adguard.utils.browser.getAppVersion();
-        var currentVersion = adguard.app.getVersion();
+    const getRunInfo = function (callback) {
+        const prevVersion = adguard.utils.browser.getAppVersion();
+        const currentVersion = adguard.app.getVersion();
         adguard.utils.browser.setAppVersion(currentVersion);
 
-        var isFirstRun = (currentVersion !== prevVersion && !prevVersion);
-        var isUpdate = !!(currentVersion !== prevVersion && prevVersion);
+        const isFirstRun = (currentVersion !== prevVersion && !prevVersion);
+        const isUpdate = !!(currentVersion !== prevVersion && prevVersion);
 
         callback({
-            isFirstRun: isFirstRun,
-            isUpdate: isUpdate,
-            currentVersion: currentVersion,
-            prevVersion: prevVersion
+            isFirstRun,
+            isUpdate,
+            currentVersion,
+            prevVersion,
         });
     };
 
@@ -301,32 +300,33 @@ adguard.applicationUpdateService = (function (adguard) {
      * @param runInfo   Run info
      * @param callback  Called after update was handled
      */
-    var onUpdate = function (runInfo, callback) {
-
-        var methods = [];
-        if (adguard.utils.browser.isGreaterVersion("2.3.5", runInfo.prevVersion) && adguard.utils.browser.isChromium()) {
+    const onUpdate = function (runInfo, callback) {
+        const methods = [];
+        if (adguard.utils.browser.isGreaterVersion('2.3.5', runInfo.prevVersion)
+            && adguard.utils.browser.isChromium()) {
             methods.push(onUpdateChromiumStorage);
         }
         if (adguard.utils.browser.isEdgeBrowser() && !adguard.utils.browser.isEdgeBeforeCreatorsUpdate()) {
             methods.push(onUpdateEdgeRulesStorage);
         }
-        if (adguard.utils.browser.isGreaterVersion("2.7.4", runInfo.prevVersion) && adguard.utils.browser.isFirefoxBrowser() && typeof browser !== 'undefined') {
+        if (adguard.utils.browser.isGreaterVersion('2.7.4', runInfo.prevVersion)
+            && adguard.utils.browser.isFirefoxBrowser() && typeof browser !== 'undefined') {
             methods.push(onUpdateFirefoxWebExtRulesStorage);
         }
         if (adguard.utils.browser.isGreaterVersion('3.0.3', runInfo.prevVersion)) {
             methods.push(handleUndefinedGroupStatuses);
         }
 
-        var dfd = executeMethods(methods);
+        if (adguard.utils.browser.isGreaterVersion('3.3.5', runInfo.prevVersion)) {
+            methods.push(handleDefaultUpdatePeriodSetting);
+        }
+
+        const dfd = executeMethods(methods);
         dfd.then(callback);
     };
 
     return {
-        getRunInfo: getRunInfo,
-        onUpdate: onUpdate,
+        getRunInfo,
+        onUpdate,
     };
-
 })(adguard);
-
-
-
