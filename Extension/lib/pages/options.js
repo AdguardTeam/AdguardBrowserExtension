@@ -1936,10 +1936,8 @@ const Settings = function () {
     function setFiltersUpdatePeriod(updatePeriodString) {
         contentPage.sendMessage({
             type: 'setFiltersUpdatePeriod',
-            updatePeriod: parseInt(updatePeriodString, 10),
-        }, () => {
-            // TODO Have I do something on successful set filters update interval?
-        });
+            updatePeriod: updatePeriodString,
+        }, () => {});
     }
 
     const filtersUpdatePeriodSelect = document.querySelector('#filtersUpdatePeriodSelect');
@@ -2005,6 +2003,7 @@ const Settings = function () {
     }
 
     const selectOptions = [
+        { name: i18n.getMessage('options_select_update_period_default'), value: 'default' },
         { name: i18n.getMessage('options_select_update_period_48h'), value: Utils.hoursToMs(48) },
         { name: i18n.getMessage('options_select_update_period_24h'), value: Utils.hoursToMs(24) },
         { name: i18n.getMessage('options_select_update_period_12h'), value: Utils.hoursToMs(12) },
@@ -2013,7 +2012,7 @@ const Settings = function () {
         { name: i18n.getMessage('options_select_update_period_disabled'), value: 0 },
     ];
 
-    function renderSelectOptions(updatePeriod) {
+    function renderSelectOptions(selectorValue) {
         const filtersUpdatePeriodSelect = document.querySelector('#filtersUpdatePeriodSelect');
 
         if (!filtersUpdatePeriodSelect) {
@@ -2025,7 +2024,7 @@ const Settings = function () {
             filtersUpdatePeriodSelect.removeChild(filtersUpdatePeriodSelect.firstChild);
         }
 
-        if (updatePeriod === 0) {
+        if (selectorValue === 0) {
             filtersUpdatePeriodSelect.parentNode.classList.remove('active');
         } else {
             filtersUpdatePeriodSelect.parentNode.classList.add('active');
@@ -2037,7 +2036,7 @@ const Settings = function () {
         }).join('\n');
 
         filtersUpdatePeriodSelect.insertAdjacentHTML('afterbegin', optionsSelectHtml);
-        filtersUpdatePeriodSelect.value = updatePeriod;
+        filtersUpdatePeriodSelect.value = selectorValue;
     }
 
     function handleActiveStealthOptions(stealthModeDisabled) {
