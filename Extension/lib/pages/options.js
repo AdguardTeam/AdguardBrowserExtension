@@ -25,13 +25,14 @@ moment.updateLocale('zh-cn', {
     },
 });
 
-var Utils = {
+const Utils = {
 
-    debounce: function (func, wait) {
-        var timeout;
+    debounce(func, wait) {
+        let timeout;
         return function () {
-            var context = this, args = arguments;
-            var later = function () {
+            const context = this; const
+                args = arguments;
+            const later = function () {
                 timeout = null;
                 func.apply(context, args);
             };
@@ -41,7 +42,7 @@ var Utils = {
     },
 
     escapeRegExp: (function () {
-        var matchOperatorsRe = /[|\\{}()[\]^$+*?.]/g;
+        const matchOperatorsRe = /[|\\{}()[\]^$+*?.]/g;
         return function (str) {
             if (typeof str !== 'string') {
                 throw new TypeError('Expected a string');
@@ -56,7 +57,7 @@ var Utils = {
             const reader = new FileReader();
             reader.onload = function (e) {
                 const oldRules = editor.getValue();
-                const newRules = oldRules + '\n' + e.target.result;
+                const newRules = `${oldRules}\n${e.target.result}`;
                 editor.setValue(newRules.trim());
                 fileInput.value = '';
             };
@@ -84,7 +85,7 @@ var Utils = {
         return parts[parts.length - 1];
     },
 
-    handleImportSettings: function (e) {
+    handleImportSettings(e) {
         const onFileLoaded = function (content) {
             contentPage.sendMessage({ type: 'applySettingsJson', json: content });
         };
@@ -105,36 +106,36 @@ var Utils = {
         }
     },
 
-    hoursToMs: function (hours) {
+    hoursToMs(hours) {
         return hours * 60 * 60 * 1000;
     },
 
-    showPopup: function (title, text) {
+    showPopup(title, text) {
         contentPage.sendMessage({
             type: 'showAlertMessagePopup',
-            title: title,
-            text: text,
+            title,
+            text,
         });
     },
 
-    escapeDoubleQuotes: function (string) {
+    escapeDoubleQuotes(string) {
         return string.replace(/"/g, '&quot;');
     },
 };
 
-var TopMenu = (function () {
+const TopMenu = (function () {
     'use strict';
 
-    var GENERAL_SETTINGS = '#general-settings';
-    var ANTIBANNER = '#antibanner';
-    var WHITELIST = '#whitelist';
+    const GENERAL_SETTINGS = '#general-settings';
+    const ANTIBANNER = '#antibanner';
+    const WHITELIST = '#whitelist';
 
-    var prevTabId;
-    var onHashUpdatedCallback;
+    let prevTabId;
+    let onHashUpdatedCallback;
 
-    var toggleTab = function () {
-        var tabId = document.location.hash || GENERAL_SETTINGS;
-        var tab;
+    const toggleTab = function () {
+        let tabId = document.location.hash || GENERAL_SETTINGS;
+        let tab;
         try {
             tab = document.querySelector(tabId);
         } catch (e) {
@@ -153,15 +154,15 @@ var TopMenu = (function () {
             tab = document.querySelector(tabId);
         }
 
-        var antibannerTabs = [].slice.call(document.querySelectorAll('[data-tab="' + ANTIBANNER + '"]'));
+        const antibannerTabs = [].slice.call(document.querySelectorAll(`[data-tab="${ANTIBANNER}"]`));
 
         if (prevTabId) {
             if (prevTabId.indexOf(ANTIBANNER) === 0) {
-                antibannerTabs.forEach(function (el) {
+                antibannerTabs.forEach((el) => {
                     el.classList.remove('active');
                 });
             } else {
-                document.querySelector('[data-tab="' + prevTabId + '"]').classList.remove('active');
+                document.querySelector(`[data-tab="${prevTabId}"]`).classList.remove('active');
             }
 
             try {
@@ -169,15 +170,14 @@ var TopMenu = (function () {
             } catch (e) {
                 return;
             }
-
         }
 
         if (tabId.indexOf(ANTIBANNER) === 0) {
-            antibannerTabs.forEach(function (el) {
+            antibannerTabs.forEach((el) => {
                 el.classList.add('active');
             });
         } else {
-            document.querySelector('[data-tab="' + tabId + '"]').classList.add('active');
+            document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
         }
 
         tab.style.display = 'block';
@@ -191,7 +191,7 @@ var TopMenu = (function () {
         prevTabId = tabId;
     };
 
-    var init = function (options) {
+    const init = function (options) {
         onHashUpdatedCallback = options.onHashUpdated;
 
         window.addEventListener('hashchange', toggleTab);
@@ -206,8 +206,8 @@ var TopMenu = (function () {
     };
 
     return {
-        init: init,
-        toggleTab: toggleTab,
+        init,
+        toggleTab,
     };
 })();
 
@@ -374,10 +374,10 @@ const handleEditorResize = (editor, editorId) => {
     const editorParent = editor.container.parentNode;
 
     const saveSize = (editorParent) => {
-        const width = editorParent.style.width;
-        const height = editorParent.style.height;
+        const { width } = editorParent.style;
+        const { height } = editorParent.style;
         if (width && height) {
-            localStorage.setItem(editorId, JSON.stringify({ size: { width, height }}));
+            localStorage.setItem(editorId, JSON.stringify({ size: { width, height } }));
         }
     };
 
@@ -415,7 +415,7 @@ const handleEditorResize = (editor, editorId) => {
     });
 };
 
-var WhiteListFilter = function (options) {
+const WhiteListFilter = function (options) {
     'use strict';
 
     const editorId = 'whiteListRules';
@@ -430,7 +430,7 @@ var WhiteListFilter = function (options) {
 
     const saveIndicatorElement = document.querySelector('#whiteListRulesSaveIndicator');
     const saver = new Saver({
-        editor: editor,
+        editor,
         saveEventType: 'saveWhiteListDomains',
         indicatorElement: saveIndicatorElement,
     });
@@ -518,7 +518,7 @@ var WhiteListFilter = function (options) {
     CheckboxUtils.updateCheckbox([changeDefaultWhiteListModeCheckbox], !options.defaultWhiteListMode);
 
     return {
-        updateWhiteListDomains: updateWhiteListDomains,
+        updateWhiteListDomains,
     };
 };
 
@@ -536,7 +536,7 @@ const UserFilter = function () {
 
     const saveIndicatorElement = document.querySelector('#userRulesSaveIndicator');
     const saver = new Saver({
-        editor: editor,
+        editor,
         saveEventType: 'saveUserRules',
         indicatorElement: saveIndicatorElement,
     });
@@ -593,12 +593,12 @@ const UserFilter = function () {
         }
     });
 
-    importUserFiltersBtn.addEventListener('click', function (event) {
+    importUserFiltersBtn.addEventListener('click', (event) => {
         event.preventDefault();
         importUserFiltersInput.click();
     });
 
-    importUserFiltersInput.addEventListener('change', function (e) {
+    importUserFiltersInput.addEventListener('change', (e) => {
         const handleFileInput = Utils.importFromFileIntoEditor(editor);
         try {
             handleFileInput(e);
@@ -607,7 +607,7 @@ const UserFilter = function () {
         }
     });
 
-    exportUserFiltersBtn.addEventListener('click', function (event) {
+    exportUserFiltersBtn.addEventListener('click', (event) => {
         event.preventDefault();
         const USER_FILTER_HASH = 'uf';
         if (exportUserFiltersBtn.classList.contains('disabled')) {
@@ -617,21 +617,21 @@ const UserFilter = function () {
     });
 
     return {
-        updateUserFilterRules: updateUserFilterRules,
+        updateUserFilterRules,
     };
 };
 
-var AntiBannerFilters = function (options) {
+const AntiBannerFilters = function (options) {
     'use strict';
 
-    var loadedFiltersInfo = {
+    const loadedFiltersInfo = {
         filters: [],
         categories: [],
         filtersById: {},
         categoriesById: {},
         lastUpdateTime: 0,
 
-        initLoadedFilters: function (filters, categories) {
+        initLoadedFilters(filters, categories) {
             this.filters = filters;
             this.categories = categories;
 
@@ -642,10 +642,10 @@ var AntiBannerFilters = function (options) {
             }
             this.categoriesById = categoriesById;
 
-            var lastUpdateTime = this.lastUpdateTime || 0;
-            var filtersById = Object.create(null);
-            for (var i = 0; i < this.filters.length; i++) {
-                var filter = this.filters[i];
+            let lastUpdateTime = this.lastUpdateTime || 0;
+            const filtersById = Object.create(null);
+            for (let i = 0; i < this.filters.length; i++) {
+                const filter = this.filters[i];
                 filtersById[filter.filterId] = filter;
                 if (filter.lastUpdateTime && filter.lastUpdateTime > lastUpdateTime) {
                     lastUpdateTime = filter.lastUpdateTime;
@@ -656,17 +656,17 @@ var AntiBannerFilters = function (options) {
             this.lastUpdateTime = lastUpdateTime;
         },
 
-        isEnabled: function (filterId) {
-            var info = this.filtersById[filterId];
+        isEnabled(filterId) {
+            const info = this.filtersById[filterId];
             return info && info.enabled;
         },
 
-        isCategoryEnabled: function (categoryId) {
+        isCategoryEnabled(categoryId) {
             const category = this.categoriesById[categoryId];
             return category && category.enabled;
         },
 
-        updateCategoryEnabled: function (category, enabled) {
+        updateCategoryEnabled(category, enabled) {
             const categoryInfo = this.categoriesById[category.groupId];
             if (categoryInfo) {
                 categoryInfo.enabled = enabled;
@@ -676,7 +676,7 @@ var AntiBannerFilters = function (options) {
             }
         },
 
-        updateEnabled: function (filter, enabled) {
+        updateEnabled(filter, enabled) {
             const filterInfo = this.filtersById[filter.filterId];
             if (filterInfo) {
                 filterInfo.enabled = enabled;
@@ -688,7 +688,7 @@ var AntiBannerFilters = function (options) {
     };
 
     // Bind events
-    document.addEventListener('change', function (e) {
+    document.addEventListener('change', (e) => {
         if (e.target.getAttribute('name') === 'filterId') {
             toggleFilterState.bind(e.target)();
         } else if (e.target.getAttribute('name') === 'groupId') {
@@ -703,15 +703,13 @@ var AntiBannerFilters = function (options) {
     updateRulesCountInfo(options.rulesInfo);
 
     function getFiltersByGroupId(groupId, filters) {
-        return filters.filter(function (f) {
-            return f.groupId === groupId;
-        });
+        return filters.filter(f => f.groupId === groupId);
     }
 
     function countEnabledFilters(filters) {
-        var count = 0;
-        for (var i = 0; i < filters.length; i++) {
-            var filterId = filters[i].filterId;
+        let count = 0;
+        for (let i = 0; i < filters.length; i++) {
+            const { filterId } = filters[i];
             if (loadedFiltersInfo.isEnabled(filterId)) {
                 count++;
             }
@@ -720,11 +718,11 @@ var AntiBannerFilters = function (options) {
     }
 
     function getCategoryElement(groupId) {
-        return document.querySelector('#category' + groupId);
+        return document.querySelector(`#category${groupId}`);
     }
 
     function getCategoryCheckbox(groupId) {
-        var categoryElement = getCategoryElement(groupId);
+        const categoryElement = getCategoryElement(groupId);
         if (!categoryElement) {
             return null;
         }
@@ -733,7 +731,7 @@ var AntiBannerFilters = function (options) {
     }
 
     function getFilterElements(filterId) {
-        return [].slice.call(document.querySelectorAll('#filter' + filterId));
+        return [].slice.call(document.querySelectorAll(`#filter${filterId}`));
     }
 
     function getFilterCheckboxes(filterId) {
@@ -748,10 +746,10 @@ var AntiBannerFilters = function (options) {
         const namesDisplayCount = 3;
         const enabledFiltersNames = filters
             .filter(filter => filter.enabled)
-            .map(filter => filter.name && filter.name.length > 0 ? filter.name : filter.subscriptionUrl);
+            .map(filter => (filter.name && filter.name.length > 0 ? filter.name : filter.subscriptionUrl));
 
         let enabledFiltersNamesString;
-        const length = enabledFiltersNames.length;
+        const { length } = enabledFiltersNames;
         if (length > namesDisplayCount) {
             const displayNamesString = enabledFiltersNames.slice(0, namesDisplayCount).join(', ');
             enabledFiltersNamesString = i18n.getMessage(
@@ -776,12 +774,12 @@ var AntiBannerFilters = function (options) {
     }
 
     function updateCategoryFiltersInfo(groupId) {
-        var groupFilters = getFiltersByGroupId(groupId, loadedFiltersInfo.filters);
-        var filtersNamesDescription = generateFiltersNamesDescription(groupFilters);
-        var groupFiltersCount = groupFilters.length;
+        const groupFilters = getFiltersByGroupId(groupId, loadedFiltersInfo.filters);
+        const filtersNamesDescription = generateFiltersNamesDescription(groupFilters);
+        const groupFiltersCount = groupFilters.length;
 
-        var element = getCategoryElement(groupId);
-        var checkbox = getCategoryCheckbox(groupId);
+        const element = getCategoryElement(groupId);
+        const checkbox = getCategoryCheckbox(groupId);
 
         if (groupFiltersCount > 0) {
             element.querySelector('.desc').textContent = filtersNamesDescription;
@@ -846,14 +844,12 @@ var AntiBannerFilters = function (options) {
          * @param {array} texts array with text-classes objects
          * @returns {string} html string
          */
-        const renderFilterInfo = (texts) => {
-            return texts
-                .filter(t => t.text.length > 0)
-                .map(t => `<div class="opt-name__info-item ${t.className}">
+        const renderFilterInfo = texts => texts
+            .filter(t => t.text.length > 0)
+            .map(t => `<div class="opt-name__info-item ${t.className}">
                                 ${t.text}
                            </div>`)
-                .join('');
-        };
+            .join('');
 
         return `<li id="filter${filter.filterId}">
                     <div class="opt-name">
@@ -916,7 +912,7 @@ var AntiBannerFilters = function (options) {
     }
 
     function getFiltersContentElement(category) {
-        const filters = category.filters;
+        const { filters } = category;
         const isCustomFilters = category.groupId === 0;
 
         if (isCustomFilters
@@ -950,11 +946,11 @@ var AntiBannerFilters = function (options) {
     }
 
     function renderFilterCategory(category) {
-        let categoryContentElement = document.querySelector('#antibanner' + category.groupId);
+        let categoryContentElement = document.querySelector(`#antibanner${category.groupId}`);
         if (categoryContentElement) {
             categoryContentElement.parentNode.removeChild(categoryContentElement);
         }
-        let categoryElement = document.querySelector('#category' + category.groupId);
+        let categoryElement = document.querySelector(`#category${category.groupId}`);
         if (categoryElement) {
             categoryElement.parentNode.removeChild(categoryElement);
         }
@@ -984,11 +980,9 @@ var AntiBannerFilters = function (options) {
         DISABLED: 'disabled',
     };
 
-    const fitsDisplayOptionValue = (filterActivated, selectionValue) => {
-        return !!((selectionValue === filtersDisplayOptions.ALL)
+    const fitsDisplayOptionValue = (filterActivated, selectionValue) => !!((selectionValue === filtersDisplayOptions.ALL)
             || (filterActivated && selectionValue === filtersDisplayOptions.ENABLED)
             || (!filterActivated && selectionValue === filtersDisplayOptions.DISABLED));
-    };
 
     const fitsSearchString = (title, searchString) => {
         if (searchString.length === 0) {
@@ -1012,10 +1006,8 @@ var AntiBannerFilters = function (options) {
         return result;
     };
 
-    const getDisplayOptionValue = (selectionNode) => {
-        return [].slice.call(selectionNode.options)
-            .filter(o => o.selected)[0].value;
-    };
+    const getDisplayOptionValue = selectionNode => [].slice.call(selectionNode.options)
+        .filter(o => o.selected)[0].value;
 
     function removeCustomFilter(e) {
         e.preventDefault();
@@ -1027,11 +1019,11 @@ var AntiBannerFilters = function (options) {
 
         contentPage.sendMessage({
             type: 'removeAntiBannerFilter',
-            filterId: filterId,
+            filterId,
         });
 
         const filterElements = getFilterElements(filterId);
-        filterElements.forEach(filterEl => {
+        filterElements.forEach((filterEl) => {
             filterEl.parentNode.removeChild(filterEl);
         });
     }
@@ -1083,7 +1075,7 @@ var AntiBannerFilters = function (options) {
 
         const CUSTOM_FILTERS_GROUP_ID = 0;
 
-        filtersToRender.forEach(filter => {
+        filtersToRender.forEach((filter) => {
             const isEnabled = loadedFiltersInfo.isEnabled(filter.filterId);
             const isCustom = filter.groupId === CUSTOM_FILTERS_GROUP_ID;
             const filterHtml = getFilterTemplate(filter, isEnabled, isCustom);
@@ -1122,18 +1114,16 @@ var AntiBannerFilters = function (options) {
      * @param {Element} searchComponent
      * @returns {{displayOptionEl: {Element}, searchInputEl: {Element}}}
      */
-    const getSearchDataSources = (searchComponent) => {
-        return {
-            searchInputEl: searchComponent.querySelector('input[name="searchFiltersList"]'),
-            displayOptionEl: searchComponent.querySelector('#filterStatusSelection'),
-            clearSearchEl: searchComponent.querySelector('.filters-search__cross'),
-        };
-    };
+    const getSearchDataSources = searchComponent => ({
+        searchInputEl: searchComponent.querySelector('input[name="searchFiltersList"]'),
+        displayOptionEl: searchComponent.querySelector('#filterStatusSelection'),
+        clearSearchEl: searchComponent.querySelector('.filters-search__cross'),
+    });
 
     const SEARCH_INPUT_DELAY_MS = 250;
 
     function initSearchInCategory(category) {
-        const groupId = category.groupId;
+        const { groupId } = category;
         const groupSelector = `#antibanner${groupId}`;
         const searchComponent = document.querySelector(`${groupSelector} .filters-search`);
         if (!searchComponent) {
@@ -1148,7 +1138,7 @@ var AntiBannerFilters = function (options) {
             clearSearchEl,
         } = searchDataSources;
 
-        const filters = loadedFiltersInfo.filters;
+        const { filters } = loadedFiltersInfo;
 
         if (searchInputEl) {
             searchInputEl.addEventListener('input', Utils.debounce(() => {
@@ -1197,8 +1187,8 @@ var AntiBannerFilters = function (options) {
         displayOptionEl.value = filtersDisplayOptions.ALL;
 
         const searchDataSources = {
-            searchInputEl: searchInputEl,
-            displayOptionEl: displayOptionEl,
+            searchInputEl,
+            displayOptionEl,
         };
         renderFiltersInCategory(groupId, loadedFiltersInfo.filters, searchDataSources);
     }
@@ -1214,13 +1204,13 @@ var AntiBannerFilters = function (options) {
                             />
                             <select class="opt-select opt-select--input" id="filterStatusSelection">
                                 <option value="${filtersDisplayOptions.ALL}">
-                                    ${i18n.getMessage("options_filters_list_search_display_option_all")}
+                                    ${i18n.getMessage('options_filters_list_search_display_option_all')}
                                 </option>
                                 <option value="${filtersDisplayOptions.ENABLED}">
-                                    ${i18n.getMessage("options_filters_list_search_display_option_enabled")}
+                                    ${i18n.getMessage('options_filters_list_search_display_option_enabled')}
                                 </option>
                                 <option value="${filtersDisplayOptions.DISABLED}">
-                                    ${i18n.getMessage("options_filters_list_search_display_option_disabled")}
+                                    ${i18n.getMessage('options_filters_list_search_display_option_disabled')}
                                 </option>
                             </select>
                             <div class="filters-search__cross">
@@ -1312,7 +1302,7 @@ var AntiBannerFilters = function (options) {
             CheckboxUtils.toggleCheckbox(document.querySelectorAll('.opt-state input[type=checkbox]'));
 
             // check document hash
-            const hash = document.location.hash;
+            const { hash } = document.location;
             if (hash && hash.indexOf('#antibanner') === 0) {
                 TopMenu.toggleTab();
             }
@@ -1320,20 +1310,20 @@ var AntiBannerFilters = function (options) {
     }
 
     function toggleFilterState() {
-        var filterId = this.value - 0;
+        const filterId = this.value - 0;
         if (this.checked) {
-            contentPage.sendMessage({ type: 'addAndEnableFilter', filterId: filterId });
+            contentPage.sendMessage({ type: 'addAndEnableFilter', filterId });
         } else {
-            contentPage.sendMessage({ type: 'disableAntiBannerFilter', filterId: filterId });
+            contentPage.sendMessage({ type: 'disableAntiBannerFilter', filterId });
         }
     }
 
     function toggleGroupState() {
-        var groupId = this.value - 0;
+        const groupId = this.value - 0;
         if (this.checked) {
-            contentPage.sendMessage({ type: 'enableFiltersGroup', groupId: groupId });
+            contentPage.sendMessage({ type: 'enableFiltersGroup', groupId });
         } else {
-            contentPage.sendMessage({ type: 'disableFiltersGroup', groupId: groupId });
+            contentPage.sendMessage({ type: 'disableFiltersGroup', groupId });
         }
     }
 
@@ -1457,12 +1447,12 @@ var AntiBannerFilters = function (options) {
 
         function bindEvents() {
             // step one events
-            document.querySelector('.custom-filter-popup-next').addEventListener('click', function (e) {
+            document.querySelector('.custom-filter-popup-next').addEventListener('click', (e) => {
                 e.preventDefault();
 
                 const searchInputValue = searchInput.value && searchInput.value.trim();
 
-                contentPage.sendMessage({ type: 'loadCustomFilterInfo', url: searchInputValue }, function (result) {
+                contentPage.sendMessage({ type: 'loadCustomFilterInfo', url: searchInputValue }, (result) => {
                     const { filter, error } = result;
                     if (filter) {
                         renderStepFour(filter);
@@ -1474,7 +1464,7 @@ var AntiBannerFilters = function (options) {
                 renderStepTwo();
             });
 
-            subscribeButton.addEventListener('click', function (e) {
+            subscribeButton.addEventListener('click', (e) => {
                 e.preventDefault();
                 const url = document.querySelector('#custom-filter-popup-added-url').href;
                 const title = document.querySelector('#custom-filter-popup-added-title').value || '';
@@ -1483,7 +1473,7 @@ var AntiBannerFilters = function (options) {
                     url,
                     title: title.trim(),
                     trusted: checkboxInput.checked,
-                }, function (filter) {
+                }, (filter) => {
                     console.log('filter added successfully', filter);
                     closePopup();
                 });
@@ -1496,9 +1486,9 @@ var AntiBannerFilters = function (options) {
             closeButton.addEventListener('click', closePopup);
 
             // Close popup if url changes
-            window.addEventListener('hashchange', function (e) {
+            window.addEventListener('hashchange', (e) => {
                 const customGroupId = 0;
-                const customGroupHash = '#antibanner' + customGroupId;
+                const customGroupHash = `#antibanner${customGroupId}`;
                 const newHash = new URL(e.newURL).hash;
 
                 if (newHash !== customGroupHash) {
@@ -1515,7 +1505,7 @@ var AntiBannerFilters = function (options) {
         customFilterPopup.classList.add('option-popup--active');
 
         if (isFilterSubscription) {
-            contentPage.sendMessage({ type: 'loadCustomFilterInfo', url, title }, function (result) {
+            contentPage.sendMessage({ type: 'loadCustomFilterInfo', url, title }, (result) => {
                 const { filter, error } = result;
                 if (filter) {
                     renderStepFour(filter);
@@ -1618,70 +1608,69 @@ var AntiBannerFilters = function (options) {
     };
 };
 
-var SyncSettings = function (options) {
+const SyncSettings = function (options) {
     'use strict';
 
-    var syncStatus = options.syncStatusInfo;
-    var currentProvider = options.syncStatusInfo.currentProvider;
+    let syncStatus = options.syncStatusInfo;
+    let { currentProvider } = options.syncStatusInfo;
 
-    var unauthorizedBlock = document.querySelector('#unauthorizedBlock');
-    var authorizedBlock = document.querySelector('#authorizedBlock');
-    var signInButton = document.querySelector('#signInButton');
-    var signOutButton = document.querySelector('#signOutButton');
-    var startSyncButton = document.querySelector('#startSyncButton');
-    var syncNowButton = document.querySelector('#syncNowButton');
-    var lastSyncTimeInfo = document.querySelector('#lastSyncTimeInfo');
-    var selectProviderButton = document.querySelector('#selectProviderButton');
+    const unauthorizedBlock = document.querySelector('#unauthorizedBlock');
+    const authorizedBlock = document.querySelector('#authorizedBlock');
+    const signInButton = document.querySelector('#signInButton');
+    const signOutButton = document.querySelector('#signOutButton');
+    const startSyncButton = document.querySelector('#startSyncButton');
+    const syncNowButton = document.querySelector('#syncNowButton');
+    const lastSyncTimeInfo = document.querySelector('#lastSyncTimeInfo');
+    const selectProviderButton = document.querySelector('#selectProviderButton');
 
-    var providersDropdown = document.querySelector('#selectProviderDropdown');
+    const providersDropdown = document.querySelector('#selectProviderDropdown');
 
     bindControls();
 
     function bindControls() {
-
-        selectProviderButton.addEventListener('click', function () {
+        selectProviderButton.addEventListener('click', () => {
             providersDropdown.style.display = 'block';
         });
 
-        signInButton.addEventListener('click', function (e) {
+        signInButton.addEventListener('click', (e) => {
             e.preventDefault();
             if (currentProvider) {
                 contentPage.sendMessage({
                     type: 'authSync',
-                    provider: currentProvider.name
+                    provider: currentProvider.name,
                 });
             }
         });
 
-        signOutButton.addEventListener('click', function (e) {
+        signOutButton.addEventListener('click', (e) => {
             e.preventDefault();
             if (currentProvider && currentProvider.isOAuthSupported) {
                 contentPage.sendMessage({
                     type: 'dropAuthSync',
-                    provider: currentProvider.name
+                    provider: currentProvider.name,
                 });
             } else {
-                contentPage.sendMessage({type: 'toggleSync'});
+                contentPage.sendMessage({ type: 'toggleSync' });
             }
         });
 
-        startSyncButton.addEventListener('click', function (e) {
+        startSyncButton.addEventListener('click', (e) => {
             e.preventDefault();
-            contentPage.sendMessage({type: 'toggleSync'});
+            contentPage.sendMessage({ type: 'toggleSync' });
         });
 
-        syncNowButton.addEventListener('click', function (e) {
+        syncNowButton.addEventListener('click', (e) => {
             e.preventDefault();
             updateSyncState();
-            contentPage.sendMessage({type: 'syncNow'});
+            contentPage.sendMessage({ type: 'syncNow' });
         });
 
-        document.querySelector('#changeDeviceNameButton').addEventListener('click', function (e) {
+        document.querySelector('#changeDeviceNameButton').addEventListener('click', (e) => {
             e.preventDefault();
-            var deviceName = document.querySelector('#deviceNameInput').value;
+            const deviceName = document.querySelector('#deviceNameInput').value;
             contentPage.sendMessage({
                 type: 'syncChangeDeviceName',
-                deviceName: deviceName
+                deviceName,
             });
         });
 
@@ -1696,11 +1685,12 @@ var SyncSettings = function (options) {
 
     function onSyncOptionsChanged() {
         contentPage.sendMessage({
-            type: 'setSyncOptions', options: {
+            type: 'setSyncOptions',
+            options: {
                 syncGeneral: document.querySelector('#sync-general-settings-checkbox').hasAttribute('checked'),
                 syncFilters: document.querySelector('#sync-filters-checkbox').hasAttribute('checked'),
-                syncExtensionSpecific: document.querySelector('#sync-extension-specific-checkbox').hasAttribute('checked')
-            }
+                syncExtensionSpecific: document.querySelector('#sync-extension-specific-checkbox').hasAttribute('checked'),
+            },
         });
     }
 
@@ -1708,7 +1698,7 @@ var SyncSettings = function (options) {
         return function (e) {
             e.preventDefault();
             providersDropdown.style.display = 'none';
-            contentPage.sendMessage({type: 'setSyncProvider', provider: providerName}, function () {
+            contentPage.sendMessage({ type: 'setSyncProvider', provider: providerName }, () => {
                 document.location.reload();
             });
         };
@@ -1722,7 +1712,6 @@ var SyncSettings = function (options) {
     }
 
     function renderUnauthorizedBlock() {
-
         unauthorizedBlock.style.display = 'block';
         authorizedBlock.style.display = 'none';
 
@@ -1742,14 +1731,13 @@ var SyncSettings = function (options) {
     }
 
     function renderAuthorizedBlock() {
-
         unauthorizedBlock.style.display = 'none';
         authorizedBlock.style.display = 'block';
 
         document.querySelector('#providerNameInfo').textContent = currentProvider.title;
 
-        var manageAccountButton = document.querySelector('#manageAccountButton');
-        var deviceNameBlock = document.querySelector('#deviceNameBlock');
+        const manageAccountButton = document.querySelector('#manageAccountButton');
+        const deviceNameBlock = document.querySelector('#deviceNameBlock');
 
         updateSyncState();
 
@@ -1768,7 +1756,6 @@ var SyncSettings = function (options) {
     }
 
     function renderSyncSettings() {
-
         if (!currentProvider) {
             renderSelectProviderBlock();
             return;
@@ -1780,16 +1767,14 @@ var SyncSettings = function (options) {
             renderAuthorizedBlock();
         }
 
-        var browserStorageSupported = syncStatus.providers.filter(function (p) {
-            return p.name === 'BROWSER_SYNC';
-        }).length > 0;
+        const browserStorageSupported = syncStatus.providers.filter(p => p.name === 'BROWSER_SYNC').length > 0;
 
         if (!browserStorageSupported) {
             document.querySelector('#browserStorageSelectProvider').style.display = 'none';
         }
 
         if (currentProvider) {
-            var activeClass = 'dropdown__item--active';
+            const activeClass = 'dropdown__item--active';
 
             switch (currentProvider.name) {
                 case 'ADGUARD_SYNC':
@@ -1821,7 +1806,7 @@ var SyncSettings = function (options) {
         }
 
         if (currentProvider) {
-            var lastSyncTime = currentProvider.lastSyncTime;
+            const { lastSyncTime } = currentProvider;
             if (lastSyncTime) {
                 lastSyncTimeInfo.textContent = new Date(parseInt(lastSyncTime)).toLocaleString();
             } else {
@@ -1831,21 +1816,20 @@ var SyncSettings = function (options) {
     }
 
     return {
-        renderSyncSettings: renderSyncSettings,
-        updateSyncSettings: updateSyncSettings
+        renderSyncSettings,
+        updateSyncSettings,
     };
 };
 
-var Settings = function () {
+const Settings = function () {
     'use strict';
 
-    var Checkbox = function (id, property, options) {
-
+    const Checkbox = function (id, property, options) {
         options = options || {};
-        var negate = options.negate;
-        var hidden = options.hidden;
+        const { negate } = options;
+        const { hidden } = options;
 
-        var element = document.querySelector(id);
+        const element = document.querySelector(id);
         if (!hidden) {
             element.addEventListener('change', function () {
                 contentPage.sendMessage({
@@ -1856,12 +1840,12 @@ var Settings = function () {
             });
         }
 
-        var render = function () {
+        const render = function () {
             if (hidden) {
                 element.closest('li').style.display = 'none';
                 return;
             }
-            var checked = userSettings.values[property];
+            let checked = userSettings.values[property];
             if (negate) {
                 checked = !checked;
             }
@@ -1869,9 +1853,7 @@ var Settings = function () {
             CheckboxUtils.updateCheckbox([element], checked);
         };
 
-        const getPropertyName = () => {
-            return property;
-        };
+        const getPropertyName = () => property;
 
         const updateCheckboxValue = (value) => {
             let checked = value;
@@ -1882,9 +1864,9 @@ var Settings = function () {
         };
 
         return {
-            render: render,
-            getPropertyName: getPropertyName,
-            updateCheckboxValue: updateCheckboxValue,
+            render,
+            getPropertyName,
+            updateCheckboxValue,
         };
     };
 
@@ -1955,14 +1937,14 @@ var Settings = function () {
         contentPage.sendMessage({
             type: 'setFiltersUpdatePeriod',
             updatePeriod: parseInt(updatePeriodString, 10),
-        }, function () {
+        }, () => {
             // TODO Have I do something on successful set filters update interval?
         });
     }
 
     const filtersUpdatePeriodSelect = document.querySelector('#filtersUpdatePeriodSelect');
     if (filtersUpdatePeriodSelect) {
-        filtersUpdatePeriodSelect.addEventListener('change', function (e) {
+        filtersUpdatePeriodSelect.addEventListener('change', (e) => {
             setFiltersUpdatePeriod(e.currentTarget.value);
             if (filtersUpdatePeriodSelect.value === '0') {
                 filtersUpdatePeriodSelect.parentNode.classList.remove('active');
@@ -2013,11 +1995,11 @@ var Settings = function () {
     const trackingParametersInput = document.querySelector('#strip_tracking_params_input');
     trackingParametersInput.value = userSettings.values[userSettings.names.TRACKING_PARAMETERS];
     if (trackingParametersInput) {
-        trackingParametersInput.addEventListener('keyup', Utils.debounce(function (e) {
+        trackingParametersInput.addEventListener('keyup', Utils.debounce((e) => {
             contentPage.sendMessage({
                 type: 'changeUserSetting',
                 key: userSettings.names.TRACKING_PARAMETERS,
-                value: trackingParametersInput.value
+                value: trackingParametersInput.value,
             });
         }, 1000));
     }
@@ -2049,7 +2031,7 @@ var Settings = function () {
             filtersUpdatePeriodSelect.parentNode.classList.add('active');
         }
 
-        const optionsSelectHtml = selectOptions.map(selectOption => {
+        const optionsSelectHtml = selectOptions.map((selectOption) => {
             const { name, value } = selectOption;
             return `<option value="${value}">${name}</option>`;
         }).join('\n');
@@ -2062,7 +2044,7 @@ var Settings = function () {
         const miscellaneousOptionsContainer = document.querySelector('#miscellaneous-stealth-options');
         const cookiesOptionsContainer = document.querySelector('#cookies-stealth-options');
         const optionsContainers = [miscellaneousOptionsContainer, cookiesOptionsContainer];
-        optionsContainers.forEach(container => {
+        optionsContainers.forEach((container) => {
             if (stealthModeDisabled) {
                 container.classList.add('opts-list--disabled');
             } else {
@@ -2074,8 +2056,8 @@ var Settings = function () {
         stripTrackingTextarea.disabled = stealthModeDisabled;
     }
 
-    var render = function () {
-        for (var i = 0; i < checkboxes.length; i++) {
+    const render = function () {
+        for (let i = 0; i < checkboxes.length; i++) {
             checkboxes[i].render();
         }
 
@@ -2086,50 +2068,47 @@ var Settings = function () {
         handleActiveStealthOptions(userSettings.values[userSettings.names.DISABLE_STEALTH_MODE]);
     };
 
-    const getSettingCheckboxes = (propertyName) => {
-        return checkboxes.filter(checkbox => checkbox.getPropertyName() === propertyName);
-    };
+    const getSettingCheckboxes = propertyName => checkboxes.filter(checkbox => checkbox.getPropertyName() === propertyName);
 
     const updateCheckboxValue = (propertyName, propertyValue) => {
-        getSettingCheckboxes(propertyName).forEach(checkbox => {
+        getSettingCheckboxes(propertyName).forEach((checkbox) => {
             checkbox.updateCheckboxValue(propertyValue);
         });
     };
 
     return {
-        render: render,
-        updateCheckboxValue: updateCheckboxValue,
+        render,
+        updateCheckboxValue,
     };
 };
 
-var PageController = function () {
+const PageController = function () {
 };
 
 PageController.prototype = {
 
     SUBSCRIPTIONS_LIMIT: 9,
 
-    init: function () {
-
+    init() {
         this._bindEvents();
         this._render();
 
-        CheckboxUtils.toggleCheckbox(document.querySelectorAll(".opt-state input[type=checkbox]"));
+        CheckboxUtils.toggleCheckbox(document.querySelectorAll('.opt-state input[type=checkbox]'));
 
         // Initialize top menu
         TopMenu.init({
-            onHashUpdated: function (tabId) {
+            onHashUpdated(tabId) {
                 // Doing nothing
-            }.bind(this)
+            },
         });
     },
 
-    onSettingsImported: function (success) {
+    onSettingsImported(success) {
         if (success) {
             Utils.showPopup(i18n.getMessage('options_popup_import_success_title'));
 
-            var self = this;
-            contentPage.sendMessage({ type: 'initializeFrameScript' }, function (response) {
+            const self = this;
+            contentPage.sendMessage({ type: 'initializeFrameScript' }, (response) => {
                 userSettings = response.userSettings;
                 enabledFilters = response.enabledFilters;
                 requestFilterInfo = response.requestFilterInfo;
@@ -2141,18 +2120,18 @@ PageController.prototype = {
         }
     },
 
-    _bindEvents: function () {
+    _bindEvents() {
         // TODO remove if not necessary
         this.tooManySubscriptionsEl = document.querySelector('#tooManySubscriptions');
 
         document.querySelector('#resetStats').addEventListener('click', this.onResetStatsClicked.bind(this));
 
-        document.querySelector('.openExtensionStore').addEventListener('click', function (e) {
+        document.querySelector('.openExtensionStore').addEventListener('click', (e) => {
             e.preventDefault();
             contentPage.sendMessage({ type: 'openExtensionStore' });
         });
 
-        document.querySelector('#openLog').addEventListener('click', function (e) {
+        document.querySelector('#openLog').addEventListener('click', (e) => {
             e.preventDefault();
             contentPage.sendMessage({ type: 'openFilteringLog' });
         });
@@ -2161,7 +2140,7 @@ PageController.prototype = {
         const importSettingsFileInput = document.querySelector('#importSettingsFileInput');
         importSettingsBtn.addEventListener('click', this.importSettingsFile.bind(this));
 
-        importSettingsFileInput.addEventListener('change', function (e) {
+        importSettingsFileInput.addEventListener('change', (e) => {
             try {
                 Utils.handleImportSettings(e);
             } catch (err) {
@@ -2171,7 +2150,7 @@ PageController.prototype = {
         });
     },
 
-    _render: function () {
+    _render() {
         const defaultWhitelistMode = userSettings.values[userSettings.names.DEFAULT_WHITE_LIST_MODE];
 
         if (environmentOptions.Prefs.mobile) {
@@ -2196,7 +2175,7 @@ PageController.prototype = {
         this.antiBannerFilters.render();
 
         // Initialize sync tab
-        this.syncSettings = new SyncSettings({ syncStatusInfo: syncStatusInfo });
+        this.syncSettings = new SyncSettings({ syncStatusInfo });
         this.syncSettings.renderSyncSettings();
 
         const versionPlaceholder = document.querySelector('#about-version-placeholder');
@@ -2205,22 +2184,22 @@ PageController.prototype = {
         }
     },
 
-    onResetStatsClicked: function (e) {
+    onResetStatsClicked(e) {
         e.preventDefault();
         contentPage.sendMessage({ type: 'resetBlockedAdsCount' }, () => {
             Utils.showPopup(i18n.getMessage('options_reset_stats_done'));
         });
     },
 
-    importSettingsFile: function (e) {
+    importSettingsFile(e) {
         e.preventDefault();
         const importSettingsFileInput = document.querySelector('#importSettingsFileInput');
         importSettingsFileInput.click();
     },
 
-    checkSubscriptionsCount: function () {
-        //TODO: Fix too many subscriptions warning
-        //var enabledCount = this.subscriptionModalEl.querySelectorAll('input[name="modalFilterId"][checked="checked"]').length;
+    checkSubscriptionsCount() {
+        // TODO: Fix too many subscriptions warning
+        // var enabledCount = this.subscriptionModalEl.querySelectorAll('input[name="modalFilterId"][checked="checked"]').length;
 
         // if (enabledCount >= this.SUBSCRIPTIONS_LIMIT) {
         //     this.tooManySubscriptionsEl.show();
@@ -2228,19 +2207,19 @@ PageController.prototype = {
         //     this.tooManySubscriptionsEl.hide();
         // }
     },
-    addFilterSubscription: function (options) {
+    addFilterSubscription(options) {
         const { url, title } = options;
         this.antiBannerFilters.renderCustomFilterPopup({ isFilterSubscription: true, url, title });
     },
 };
 
-var userSettings;
-var enabledFilters;
-var environmentOptions;
-var AntiBannerFiltersId;
-var EventNotifierTypes;
-var requestFilterInfo;
-var syncStatusInfo;
+let userSettings;
+let enabledFilters;
+let environmentOptions;
+let AntiBannerFiltersId;
+let EventNotifierTypes;
+let requestFilterInfo;
+let syncStatusInfo;
 
 /**
  * Parses hash string
@@ -2253,28 +2232,26 @@ var syncStatusInfo;
  * @param {string} hash - document.location.hash string
  * @returns {{}} object with options received from hash string
  */
-const parseHash = (hash) => {
-    return hash
-        .slice(1) // remove first '#'
-        .split('&')
-        .map(part => {
-            const [key, value] = part.split('=');
-            return [key, value];
-        })
-        .reduce((acc, [key, value]) => {
-            if (key && value) {
-                acc[key] = value;
-            }
-            return acc;
-        }, {});
-};
+const parseHash = hash => hash
+    .slice(1) // remove first '#'
+    .split('&')
+    .map((part) => {
+        const [key, value] = part.split('=');
+        return [key, value];
+    })
+    .reduce((acc, [key, value]) => {
+        if (key && value) {
+            acc[key] = value;
+        }
+        return acc;
+    }, {});
 
 /**
  * Function handles location hash, looks for parameters
  * @returns {*} options if they were provided in the hash
  */
 const handleUrlHash = () => {
-    const hash = document.location.hash;
+    const { hash } = document.location;
     const hashOptions = parseHash(decodeURIComponent(hash));
     const { action, replacement } = hashOptions;
 
@@ -2306,7 +2283,7 @@ const handleHashOptions = (controller, hashOptions) => {
 /**
  * Initializes page
  */
-var initPage = function (response) {
+const initPage = function (response) {
     userSettings = response.userSettings;
     enabledFilters = response.enabledFilters;
     environmentOptions = response.environmentOptions;
@@ -2316,11 +2293,11 @@ var initPage = function (response) {
     AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
     EventNotifierTypes = response.constants.EventNotifierTypes;
 
-    var onDocumentReady = function () {
+    const onDocumentReady = function () {
         // handle initial url hash
         const hashOptions = handleUrlHash();
 
-        var controller = new PageController();
+        const controller = new PageController();
         controller.init();
 
         handleHashOptions(controller, hashOptions);
@@ -2330,7 +2307,7 @@ var initPage = function (response) {
             handleHashOptions(controller, handleUrlHash());
         });
 
-        var events = [
+        const events = [
             EventNotifierTypes.FILTER_ENABLE_DISABLE,
             EventNotifierTypes.FILTER_GROUP_ENABLE_DISABLE,
             EventNotifierTypes.FILTER_ADD_REMOVE,
@@ -2346,7 +2323,7 @@ var initPage = function (response) {
             EventNotifierTypes.FILTERS_UPDATE_CHECK_READY,
         ];
 
-        createEventListener(events, function (event, options) {
+        createEventListener(events, (event, options) => {
             switch (event) {
                 case EventNotifierTypes.FILTER_ENABLE_DISABLE:
                     controller.checkSubscriptionsCount();
