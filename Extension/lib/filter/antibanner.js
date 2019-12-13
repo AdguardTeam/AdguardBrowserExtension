@@ -279,11 +279,11 @@ adguard.antiBannerService = (function (adguard) {
             }
 
             expires = normalizeExpires(expires);
-            if (filtersUpdatePeriod === 'default') {
-                return lastCheckTime + expires > Date.now();
+            if (filtersUpdatePeriod === adguard.settings.DEFAULT_FILTERS_UPDATE_PERIOD) {
+                return lastCheckTime + expires <= Date.now();
             }
 
-            return (Date.now() - lastCheckTime) >= Number.parseInt(filtersUpdatePeriod, 10);
+            return lastCheckTime + filtersUpdatePeriod <= Date.now();
         };
 
         for (let i = 0; i < filters.length; i += 1) {
@@ -335,6 +335,7 @@ adguard.antiBannerService = (function (adguard) {
         const totalToUpdate = filterIdsToUpdate.length + customFilterIdsToUpdate.length;
         if (totalToUpdate === 0) {
             successCallback([]);
+            adguard.console.info('There is no filters to update');
             return;
         }
 
@@ -373,6 +374,9 @@ adguard.antiBannerService = (function (adguard) {
                     if (filter && filterMetadata.version && adguard.utils.browser.isGreaterVersion(filterMetadata.version, filter.version)) {
                         adguard.console.info(`Updating filter ${filter.filterId} to version ${filterMetadata.version}`);
                         filterMetadataListToUpdate.push(filterMetadata);
+                    } else {
+                        // remember that this filter version was checked
+                        filter.lastCheckTime = Date.now();
                     }
                 }
                 loadFiltersFromBackendCallback(filterMetadataListToUpdate);
@@ -943,7 +947,7 @@ adguard.antiBannerService = (function (adguard) {
         }
 
         // don't update filters if filters update period is equal to 0
-        if (Number.parseInt(filtersUpdatePeriod, 10) === 0) {
+        if (filtersUpdatePeriod === 0) {
             return;
         }
 
@@ -954,7 +958,7 @@ adguard.antiBannerService = (function (adguard) {
                 adguard.console.error('Error update filters, cause {0}', ex);
             }
             scheduleUpdate();
-        }, checkTimeout); // TODO: Rework this, see #1347
+        }, checkTimeout);
     }
 
     /**
@@ -1039,6 +1043,7 @@ adguard.antiBannerService = (function (adguard) {
             filter.lastUpdateTime = filterMetadata.timeUpdated;
             filter.lastCheckTime = forceRemote ? Date.now() : filterMetadata.timeUpdated;
             filter.loaded = true;
+            filter.expires = filterMetadata.expires;
             // notify listeners
             adguard.listeners.notifyListeners(adguard.listeners.SUCCESS_DOWNLOAD_FILTER, filter);
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, filter, filterRules);
@@ -1047,7 +1052,7 @@ adguard.antiBannerService = (function (adguard) {
 
         const errorCallback = (cause) => {
             adguard.console.error(
-                'Error retrieved response from server for filter {0}, cause: {1}',
+                'Error retrieving response from the server for filter {0}, cause: {1}:',
                 filter.filterId,
                 cause || ''
             );
