@@ -218,6 +218,36 @@ adguard.subscriptions = (function (adguard) {
         });
     };
 
+    const parseExpiresStr = (str) => {
+        const regexp = /(\d+)\s+(day|hour)/;
+
+        const parseRes = str.match(regexp);
+
+        if (!parseRes) {
+            const parsed = Number.parseInt(str, 10);
+            return Number.isNaN(parsed) ? 0 : parsed;
+        }
+
+        const [, num, period] = parseRes;
+
+        let multiplier = 1;
+        switch (period) {
+            case 'day': {
+                multiplier = 24 * 60 * 60;
+                break;
+            }
+            case 'hour': {
+                multiplier = 60 * 60;
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+
+        return num * multiplier;
+    };
+
     /**
      * Parses filter metadata from rules header
      *
@@ -237,6 +267,10 @@ adguard.subscriptions = (function (adguard) {
                 if (indexOfSearch >= 0) {
                     result = rule.substring(indexOfSearch + search.length);
                 }
+            }
+
+            if (tagName === 'Expires') {
+                result = parseExpiresStr(result);
             }
 
             return result;
@@ -354,18 +388,22 @@ adguard.subscriptions = (function (adguard) {
             version,
             timeUpdated,
             lastCheckTime,
+            expires,
         } = info;
         // set last checksum and version
         filter.checksum = checksum || filter.checksum;
         filter.version = version || filter.version;
         filter.timeUpdated = timeUpdated || filter.timeUpdated;
         filter.lastCheckTime = lastCheckTime || filter.lastCheckTime;
+        filter.expires = expires || filter.expires;
+
         filters = filters.map((f) => {
             if (f.filterId === filter.filterId) {
                 f.version = version || f.version;
                 f.checksum = checksum || f.checksum;
                 f.timeUpdated = timeUpdated || f.timeUpdated;
                 f.lastCheckTime = lastCheckTime || filter.lastCheckTime;
+                f.expires = expires || filter.expires;
                 return f;
             }
             return f;
@@ -452,6 +490,7 @@ adguard.subscriptions = (function (adguard) {
                     version,
                     checksum,
                     timeUpdated,
+                    expires,
                 });
             }
 

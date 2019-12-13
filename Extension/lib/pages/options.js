@@ -2003,7 +2003,7 @@ const Settings = function () {
     }
 
     const selectOptions = [
-        { name: i18n.getMessage('options_select_update_period_default'), value: 'default' },
+        { name: i18n.getMessage('options_select_update_period_default'), value: -1 },
         { name: i18n.getMessage('options_select_update_period_48h'), value: Utils.hoursToMs(48) },
         { name: i18n.getMessage('options_select_update_period_24h'), value: Utils.hoursToMs(24) },
         { name: i18n.getMessage('options_select_update_period_12h'), value: Utils.hoursToMs(12) },

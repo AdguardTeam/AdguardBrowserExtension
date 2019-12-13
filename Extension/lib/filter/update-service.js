@@ -267,8 +267,8 @@ adguard.applicationUpdateService = (function (adguard) {
 
         const currentUpdatePeriod = adguard.settings.getFiltersUpdatePeriod();
 
-        if (Number.parseInt(currentUpdatePeriod, 10) === previousDefaultValue) {
-            adguard.settings.setFiltersUpdatePeriod('default');
+        if (currentUpdatePeriod === previousDefaultValue) {
+            adguard.settings.setFiltersUpdatePeriod(adguard.settings.DEFAULT_FILTERS_UPDATE_PERIOD);
         }
 
         return dfd;
