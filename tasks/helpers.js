@@ -1,7 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import pp from 'preprocess';
-import {FIREFOX_WEBEXT, BRANCH_DEV, BRANCH_BETA, BRANCH_RELEASE} from './consts';
+import {
+    FIREFOX_WEBEXT, BRANCH_DEV, BRANCH_BETA, BRANCH_RELEASE,
+} from './consts';
 
 /**
  * Get the extension name postfix
@@ -11,26 +13,26 @@ import {FIREFOX_WEBEXT, BRANCH_DEV, BRANCH_BETA, BRANCH_RELEASE} from './consts'
  * @param allowRemoteScripts   param for Firefox browser
  * @return {string}  postfix
  */
-export function getExtensionNamePostfix (branch, browser, allowRemoteScripts) {
+export function getExtensionNamePostfix(branch, browser, allowRemoteScripts) {
     switch (browser) {
         case FIREFOX_WEBEXT:
             if (allowRemoteScripts) {
                 if (branch == BRANCH_BETA) {
                     return ' (Standalone)';
-                } else if (branch == BRANCH_DEV) {
+                } if (branch == BRANCH_DEV) {
                     return ' (Standalone Dev)';
                 }
             } else {
                 if (branch == BRANCH_BETA) {
                     return ' (Beta)';
-                } else if (branch == BRANCH_DEV) {
+                } if (branch == BRANCH_DEV) {
                     return ' (AMO Dev)';
                 }
             }
             break;
         default:
             if (branch != BRANCH_RELEASE) {
-                return ' (' + capitalize(branch) + ')';
+                return ` (${capitalize(branch)})`;
             }
             break;
     }
@@ -46,14 +48,14 @@ export function getExtensionNamePostfix (branch, browser, allowRemoteScripts) {
  * @param allowRemoteScripts   param for Firefox browser
  * @return done
  */
-export function updateLocalesMSGName (branch, dest, done, browser, allowRemoteScripts) {
-    let extensionNamePostfix = getExtensionNamePostfix(branch, browser, allowRemoteScripts) || '';
+export function updateLocalesMSGName(branch, dest, done, browser, allowRemoteScripts) {
+    const extensionNamePostfix = getExtensionNamePostfix(branch, browser, allowRemoteScripts) || '';
 
     const locales = fs.readdirSync(path.join(dest, '_locales'));
 
     for (const i of locales) {
-        let file = path.join(dest, '_locales', i, 'messages.json');
-        let messages = JSON.parse(fs.readFileSync(file));
+        const file = path.join(dest, '_locales', i, 'messages.json');
+        const messages = JSON.parse(fs.readFileSync(file));
 
         if (messages.name) {
             messages.name.message = messages.name.message + extensionNamePostfix;
@@ -97,3 +99,12 @@ export function preprocessAll(dest, data, done) {
 export function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+export const chunkArray = (arr, size) => arr.reduce((chunks, el, idx) => {
+    if (idx % size === 0) {
+        chunks.push([el]);
+    } else {
+        chunks[chunks.length - 1].push(el);
+    }
+    return chunks;
+}, []);
