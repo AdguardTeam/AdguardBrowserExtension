@@ -6,6 +6,7 @@ import path from 'path';
 import fs from 'fs';
 import querystring from 'querystring';
 import Log from './log';
+import { chunkArray } from './helpers';
 import {
     LOCALES_DIR,
     LOCALES_DOWNLOAD_URL,
@@ -42,7 +43,7 @@ const downloadMessagesByUrl = async (url) => {
     try {
         log.info(`Downloading url: ${url}...`);
         response = await axios.get(url, { responseType: 'arraybuffer' });
-        log.info('Url downloaded successfully!');
+        log.info(`Downloaded: ${url}`);
     } catch (e) {
         let errorMessage;
         if (e.response && e.response.data) {
@@ -52,7 +53,6 @@ const downloadMessagesByUrl = async (url) => {
             errorMessage = e.message;
         }
         log.error(`Error occurred: ${errorMessage}, while downloading: ${url}`);
-        // log.error(`Unable to download by url: ${url} with error ${JSON.stringify(e.response.data)}`);
     }
     return response.data;
 };
@@ -67,25 +67,38 @@ const getQueryString = (lang) => {
     return querystring.stringify(options);
 };
 
+const promiseBatchMap = async (arr, batchSize, handler) => {
+    const batches = chunkArray(arr, batchSize);
+
+    const result = [];
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const batch of batches) {
+        const promises = batch.map(handler);
+        // eslint-disable-next-line no-await-in-loop
+        const data = await Promise.all(promises);
+        result.push(data);
+    }
+
+    return result.flat(Infinity);
+};
+
 const downloadLocales = async () => {
     const localeUrlPairs = locales.map((locale) => {
         const crowdinLocale = LOCALE_PAIRS[locale] || locale;
-        // eslint-disable-next-line max-len
         const downloadUrl = `${LOCALES_DOWNLOAD_URL}?${getQueryString(crowdinLocale)}`;
         return { locale, url: downloadUrl };
     });
 
-    const localeDataPairs = [];
+    // Decrease this value if you encounter error:
+    // "Maximum number of concurrent requests for this endpoint is reached"
+    const LOCALES_DOWNLOAD_BATCH_SIZE = 20;
 
-    // eslint-disable-next-line no-restricted-syntax
-    for (const localeUrlPair of localeUrlPairs) {
+    return promiseBatchMap(localeUrlPairs, LOCALES_DOWNLOAD_BATCH_SIZE, async (localeUrlPair) => {
         const { locale, url } = localeUrlPair;
-        // eslint-disable-next-line no-await-in-loop
         const data = await downloadMessagesByUrl(url);
-        localeDataPairs.push({ locale, data });
-    }
-
-    return localeDataPairs;
+        return { locale, data };
+    });
 };
 
 const saveFile = async (path, data) => {
