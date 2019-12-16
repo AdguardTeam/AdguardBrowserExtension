@@ -32,6 +32,30 @@ adguard.notifications = (function (adguard) {
                 title: 'AdGuard wishes you happy holidays',
                 btn: 'Get your present',
             },
+            de: {
+                title: 'AdGuard wünscht Ihnen frohe Festtage!',
+                btn: 'HOLEN SIE SICH IHR GESCHENK',
+            },
+            ko: {
+                title: 'AdGuard는 행복한 크리스마스가 되길 바랍니다',
+                btn: '선물 받기',
+            },
+            ru: {
+                title: 'AdGuard поздравляет вас с праздниками',
+                btn: 'Получить подарок!',
+            },
+            ja: {
+                title: 'AdGuardからのクリスマスプレゼント',
+                btn: 'プレゼントをGET',
+            },
+            fr: {
+                title: 'AdGuard vous souhaite de joyeuses fêtes !',
+                btn: 'VOIR CADEAU',
+            },
+            it: {
+                title: 'AdGuard vi augura buone feste!',
+                btn: 'VEDERE IL REGALO',
+            },
         },
         text: '',
         url: 'https://adguard.com/forward.html?action=ny2020_notify&from=popup&app=browser_extension',
@@ -40,10 +64,6 @@ adguard.notifications = (function (adguard) {
         type: 'animated',
         get icons() {
             return adguard.lazyGet(newYearNotification, 'icons', () => ({
-                ICON_BLUE: {
-                    '19': adguard.getURL('icons/blue-19-ny.png'),
-                    '38': adguard.getURL('icons/blue-38-ny.png'),
-                },
                 ICON_GREEN: {
                     '19': adguard.getURL('icons/green-19-ny.png'),
                     '38': adguard.getURL('icons/green-38-ny.png'),
@@ -74,7 +94,7 @@ adguard.notifications = (function (adguard) {
      * @property {string} type;
      */
     let notifications = {
-        newYear: newYearNotification,
+        newYear2020: newYearNotification,
     };
 
     /**
