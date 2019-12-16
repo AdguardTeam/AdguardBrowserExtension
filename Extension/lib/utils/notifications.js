@@ -74,7 +74,7 @@ adguard.notifications = (function (adguard) {
                 },
             }));
         },
-        badgeBgColor: '#ff0000',
+        // badgeBgColor: '#ff0000',
     };
 
     /**
