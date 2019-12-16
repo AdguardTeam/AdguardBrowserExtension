@@ -38,6 +38,13 @@ adguard.console = (function () {
         return `${error.toString()}\nStack trace:\n${error.stack}`;
     };
 
+    const getLocalTimeString = (date) => {
+        const ONE_MINUTE_MS = 60 * 1000;
+        const timeZoneOffsetMs = date.getTimezoneOffset() * ONE_MINUTE_MS;
+        const localTime = new Date(date - timeZoneOffsetMs);
+        return localTime.toISOString().replace('Z', '');
+    };
+
     /**
      * Prints log message
      */
@@ -68,8 +75,7 @@ adguard.console = (function () {
             return match;
         });
 
-        const now = new Date();
-        formatted = `${now.toISOString()}: ${formatted}`;
+        formatted = `${getLocalTimeString(new Date())}: ${formatted}`;
         console[method](formatted);
     };
 
