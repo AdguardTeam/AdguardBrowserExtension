@@ -25,50 +25,35 @@ adguard.notifications = (function (adguard) {
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
     const LAST_NOTIFICATION_TIME = 'viewed-notification-time';
 
-    const blackFridayNotification = {
-        id: 'blackFriday2019',
+    const newYearNotification = {
+        id: 'newYear2020',
         locales: {
             en: {
-                title: 'BLACK FRIDAY SALE ',
-                desc: '(save up to 60%)',
-                btn: 'Upgrade protection',
-            },
-            de: {
-                title: 'BLACK FRIDAY SALE',
-                desc: '(bis zu 60% Rabatt)',
-                btn: 'Den Schutz upgraden',
-            },
-            ru: {
-                title: 'ЧЁРНАЯ ПЯТНИЦА:',
-                desc: 'СКИДКИ до 60%!',
-                btn: 'Улучшить защиту',
-            },
-            fr: {
-                title: 'PROMO BLACK FRIDAY',
-                desc: '(jusqu’à -60%)',
-                btn: 'Améliorer la protection',
-            },
-            it: {
-                title: 'SCONTI BLACK FRIDAY',
-                desc: '(fino a -60%)',
-                btn: 'Migliora la protezione',
-            },
-            ja: {
-                title: 'BLACK FRIDAY SALE',
-                desc: '(最大60%OFF)',
-                btn: 'パワーアップ',
-            },
-            ko: {
-                title: 'BLACK FRIDAY SALE',
-                desc: '(60% 할인)',
-                btn: '보호 업그레이드',
+                title: 'AdGuard wishes you happy holidays',
+                btn: 'Get your present',
             },
         },
         text: '',
-        url: 'https://adguard.com/forward.html?action=bf2019_notify&from=popup&app=browser_extension',
-        from: '29 November 2019 00:00:00',
-        to: '2 December 2019 00:00:00',
+        url: 'https://adguard.com/forward.html?action=ny2020_notify&from=popup&app=browser_extension',
+        from: '24 December 2019 00:00:00',
+        to: '1 January 2020 00:00:00',
         type: 'animated',
+        get icons() {
+            return adguard.lazyGet(newYearNotification, 'icons', () => ({
+                ICON_BLUE: {
+                    '19': adguard.getURL('icons/blue-19-ny.png'),
+                    '38': adguard.getURL('icons/blue-38-ny.png'),
+                },
+                ICON_GREEN: {
+                    '19': adguard.getURL('icons/green-19-ny.png'),
+                    '38': adguard.getURL('icons/green-38-ny.png'),
+                },
+                ICON_GRAY: {
+                    '19': adguard.getURL('icons/gray-19-ny.png'),
+                    '38': adguard.getURL('icons/gray-38-ny.png'),
+                },
+            }));
+        },
         badgeText: '%',
         badgeBgColor: '#ff0000',
     };
@@ -89,7 +74,7 @@ adguard.notifications = (function (adguard) {
      * @property {string} type;
      */
     let notifications = {
-        blackFriday: blackFridayNotification,
+        newYear: newYearNotification,
     };
 
     /**

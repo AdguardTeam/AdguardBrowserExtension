@@ -251,10 +251,8 @@ PopupController.prototype = {
         }
 
         const title = this.animatedNotification.querySelector('.holiday-notify__title');
-        const desc = this.animatedNotification.querySelector('.holiday-notify__desc');
         const button = this.animatedNotification.querySelector('.holiday-notify__btn');
         title.innerText = notification.text.title;
-        desc.innerText = notification.text.desc;
         button.innerText = notification.text.btn;
 
         this._appendTemplate(container, this.animatedNotification);
