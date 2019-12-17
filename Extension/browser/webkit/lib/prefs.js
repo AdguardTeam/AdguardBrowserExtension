@@ -42,7 +42,7 @@ adguard.prefs = (function (adguard) {
                 } else if (userAgent.indexOf('opera') >= 0
                     || userAgent.indexOf('opr') >= 0) {
                     browser = 'Opera';
-                } else if (userAgent.indexOf('Firefox') >= 0) {
+                } else if (userAgent.indexOf('firefox') >= 0) {
                     browser = 'Firefox';
                 } else {
                     browser = 'Chrome';
