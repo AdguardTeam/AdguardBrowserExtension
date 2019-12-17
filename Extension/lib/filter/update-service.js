@@ -271,6 +271,8 @@ adguard.applicationUpdateService = (function (adguard) {
             adguard.settings.setFiltersUpdatePeriod(adguard.settings.DEFAULT_FILTERS_UPDATE_PERIOD);
         }
 
+        dfd.resolve();
+
         return dfd;
     }
 

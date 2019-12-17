@@ -1,8 +1,8 @@
-! Checksum: H+g2f2rIC8XcIPQU2t7l2g
+! Checksum: 5cPXAesrrs0xGGnJ2em0Kg
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.2.33
-! TimeUpdated: 2019-10-16T20:31:26+03:00
+! Version: 2.0.2.48
+! TimeUpdated: 2019-12-10T20:31:32+03:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#japanese
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -378,6 +378,11 @@
 !
 ! These rules are against all kinds of ad blocking reinjection/circumvention scripts
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/45195
+@@||helpsupport.blog.fc2.com^$generichide
+! https://github.com/AdguardTeam/AdguardFilters/issues/44504
+@@||imasdk.googleapis.com/pal/sdkloader/pal.js$domain=dplay.jp
+@@||v.fwmrm.net/ad/g/1?$domain=dplay.jp
 ! https://github.com/AdguardTeam/AdguardFilters/issues/35930
 ! https://github.com/AdguardTeam/AdguardFilters/issues/36696
 itpassportsiken.com#$?#.adsbygoogle { remove: true; }
@@ -476,9 +481,19 @@ anipo.jp#@#.adbanner
 !---------------------------------------------------------------------------!
 !
 ! Extended CSS rules
+!
+! https://github.com/AdguardTeam/AdguardFilters/issues/45195
+helpsupport.blog.fc2.com#?#.mdl-quigo > div[style^="height:"][style*="margin-bottom:"]:not([class]):not([id]):has(> script:first-child:contains(amzn_assoc_ad_type))
+! https://github.com/AdguardTeam/AdguardFilters/issues/43602
+hosyusokuhou.jp#?##side > div.sidewrapper:has(> div.sidetitle:contains(★スポンサー))
 ! https://github.com/AdguardTeam/AdguardFilters/issues/40218
 ! https://github.com/AdguardTeam/AdguardFilters/issues/23716
 ascii.jp#?#body > #jpWrap > #header:has(> .adsize728)
+! https://github.com/AdguardTeam/AdguardFilters/issues/45540
+macsoft.jp#?#.neko:has(> a[href^="http://www.jirokichi.co.jp/"])
+macsoft.jp#?#.frame:has(> tbody > tr > td > div.K12:contains(Parallels Desktop))
+macsoft.jp#?#.flame:has(> tbody > tr > td > font > a[href^="http://aos.prf.hn/click/"])
+||macsoft.jp/img/Banner1/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/24644
 blogs.yahoo.co.jp#?#.timelineArticle > ul.timelineArticle__list > li.timelineArticle__item:has(> div[id^="ad"]:empty)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/24647
@@ -502,6 +517,7 @@ mindhack2ch.com#?#.article-body > .ad:has(> .adsbygoogle)
 mindhack2ch.com#?#.article-body > .rss:has(> script)
 mindhack2ch.com#?#.article-post-bottom > .rss-article:has(> .rss-article-item)
 !
+followcheck.itby.net#?#.uk-grid > div[class^="uk-width-medium-"]:has(> div > ins.adsbygoogle)
 geeksokuhou.net#?#.main-image-in > .blogroll-wrapper:has(> .blogroll-column > b > script:contains(blogroll_channel_id))
 ascii2d.net#?#.col-lg-4 > .p-t-1:has(> h5:contains(広告))
 nijinchu.com#?#article > div.entry_content > h3:contains(おすすめ商品)
@@ -571,7 +587,7 @@ momon-ga.com#?#.repo-title:has(> strong)
 ##.ad_thumbnail_header
 ##.ad_top
 ##.adgoogle
-##.adlist
+~hgh14x.com##.adlist
 ##.adrect
 ##.ads-by-google-0
 ##.ads_468
@@ -702,6 +718,16 @@ _ds_adtag_
 ! Section contains rules for specific websites
 !
 ! /banner/banner_ - if it is necessary, make this rule domain specific
+macsoft.jp##table[Width="96%"] + div[class="K12"] > div[align="left"] > br + br + center
+gpoint.co.jp###footerbnr
+helpsupport.blog.fc2.com##.adsbygoogle
+javkun.com##.adsvideo
+||1dy2.com/js/zq.js
+69re.tv###wrapper > div.container > div[style="width: 100%"] > a[target="_blank"] > img
+hosyusokuhou.jp###side > div.sidewrapper[style^="width: 218px; margin-bottom: 0px; position:"] a[target="_blank"] > img
+hosyusokuhou.jp##.abanner
+twi55.com##.affi-banner
+fightingirl.com###clsys_hover_box
 applion.jp##a[href^="http://www.amazon."][href*="/obidos/ASIN/"]
 epochtimes.jp##.margin-Ad-B20
 ascii2d.net##.amazon
@@ -766,7 +792,6 @@ workingnews.blog117.fc2.com###mainBlock > div.free_area
 cherio199.blog120.fc2.com##.free_space_body
 cherio199.blog120.fc2.com##center > table[Width="750"][bordercolor="8b0000"][cellpadding="6"]
 mindhack2ch.com##.free-area > aside.rss
-mindhack2ch.com##.ad
 ||mv-mindhack2ch.up.seesaa.net/common/image_feed.js
 localplace.jp###bannerList
 karapaia.com##.ads
@@ -957,7 +982,6 @@ watch.impress.co.jp##.ad.billboard
 gagetmatome.com###ad-bottom-oya
 ||blog.livedoor.jp/diet2channel/js/adarea.js
 jin115.com##.dix_ad_n
-vippers.jp##.ad
 footballnews.jp##.ads
 seesaa.jp##.banner-footer
 auone.jp##.side__ad-box
@@ -1009,7 +1033,7 @@ javegg.com##.sidebar > .widget_text.sidebar-wrapper
 jadult.net##a[href^="https://goo.gl"]
 jadult.net##a[href^="http://www.adxpansion"]
 jadult.net##.icon_fb
-repeat-drama.info##.ad
+twi55.com,mindhack2ch.com,vippers.jp,repeat-drama.info##.ad
 mukulog.com##.theContentWrap-ccc > .head-cons2-pc
 mukulog.com##div[id^="side_ad"]
 kyukyoku-matome.com###list > .widgets
@@ -1355,6 +1379,10 @@ avgle.com##body > div[style*="z-index"]:not([id]):not([class])
 !
 ! White list. Fixing filtration errors(false-positive)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/43771
+signal-flag-z.blogspot.com#@#.vertical-ads
+! https://github.com/AdguardTeam/AdguardFilters/issues/41967
+@@||order.shopping.yahoo.co.jp/cgi-bin/order-form$document
 ! https://github.com/AdguardTeam/AdguardFilters/issues/42183
 @@||focal.com/sites/*/themes/focal/js/popin.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/41169

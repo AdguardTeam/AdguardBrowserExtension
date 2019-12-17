@@ -1,8 +1,8 @@
-! Checksum: 9DlJHT8nvWd/tw5mHh9UeA
+! Checksum: eeQiPpvWInPdd/jB0VyThQ
 ! Title: Filter unblocking search ads and self-promotion
 ! Description: Filter that unblocks search (Duckduckgo, Google, Bing, Yahoo) and self-promo ads. Self-promotion definition: when an ad on a website is promoting this very website or other websites/social media/etc closely related to it, such ad is considered a self-promoting one.
-! Version: 2.0.0.81
-! TimeUpdated: 2019-09-30T07:30:05+03:00
+! Version: 2.0.0.95
+! TimeUpdated: 2019-12-10T03:02:26+03:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/whitelist.html
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -93,7 +93,7 @@
 !
 ! *** CAUTION: all rules below are wrapped by AG directive. Don't remove it, and don't add another directives***
 !
-!#safari_cb_affinity(general)
+!---#safari_cb_affinity(general)
 !
 ! Search.Avira.com
 !
@@ -110,6 +110,7 @@ bing.com#@#.sb_adTA
 bing.com#@#.b_adPATitleBlock
 bing.com#@#.b_adPATitleBlock + div
 bing.com#@##b_content > main > #b_results > li:not(.b_algo):not(.b_ans):not(.b_mop):not(.b_pag)
+bing.com#@?##b_results > li.b_algo:has(> .b_caption > p:matches-css-before(content: /^(Ad|Ann\.|Annonce|Anúncio|Anzeige|Reklama|Реклама|Reclamă|Publicidade)$/))
 @@||r.bat.bing.com/?ld=
 !
 ! Yahoo
@@ -183,6 +184,9 @@ amazon.in,amazon.fr,amazon.co.uk,amazon.de#@#.s-result-list > li[id^="result_"][
 amazon.de#@#div[data-cel-widget="desktop-rhf_SponsoredProductsRemoteRHFSearchEXPSubsK2ClickPagination"]
 amazon.com,amazon.de#@##huc-first-upsell-row
 amazon.com#@?##huc-page-container > div[role="complementary"]:has(a[href*="ref=huc_sponsor"])
+amazon.de#@#div[data-p13n-asin-metadata*="adId"]
+amazon.de#@?##sc-checkout-prefetch + .a-section + .a-section > .a-section:has(> .a-section > div[data-p13n-asin-metadata*="adId"] )
+amazon.de#@##detailILMPercolate_feature_div
 ! Mediafire premium upgrade
 mediafire.com#@##upsellBox
 ! Startpage
@@ -195,12 +199,28 @@ irr.ru#@#.ad-link
 nigma.ru#@#.ad-link
 @@||an.yandex.ru$domain=nigma.ru
 ! Mail.ru
-go.mail.ru#@#.response___wrapper > #js-topBar > div > div[class*="p"][class*="t"][class*="o"] > style + div
-go.mail.ru#@#.response___wrapper > #js-bottomBar > div > div[class*="b"][class*="o"][class*="t"] > style + div
-go.mail.ru#@$#.response___wrapper > #js-topBar > div > div[class*="p"][class*="t"][class*="o"] > style + div { position: absolute!important; left: -3000px!important; }
-go.mail.ru#@$#.response___wrapper > #js-bottomBar > div > div[class*="b"][class*="o"][class*="t"] > style + div { position: absolute!important; left: -3000px!important; }
+go.mail.ru#@#.response___wrapper > #js-topBar > div > div[class*="p"][class*="t"] > style + div
+go.mail.ru#@#.response___wrapper > #js-bottomBar > div > div[class*="b"][class*="t"] > style + div
+go.mail.ru#$#.response___wrapper > #js-topBar > div > div[class*="p"][class*="t"] > style + div { position: absolute!important; left: -3000px!important; }
+go.mail.ru#$#.response___wrapper > #js-bottomBar > div > div[class*="b"][class*="t"] > style + div { position: absolute!important; left: -3000px!important; }
 ! go.mail.ru - ads in search results
 !
+! Ebay
+ebay.co.uk,ebay.com,ebay.com.au#@?#.mfe-reco-ct:-abp-has(.mfe-promoted-label)
+ebay.co.uk,ebay.com,ebay.de#@?#ul.mfe-recos > li.mfe-reco-ct[-ext-has='div.mfe-promoted-label']
+ebay.co.uk,ebay.com,ebay.de#@?##ListViewInner > li.sresult[-ext-has='div.promoted-lv']
+ebay.co.uk,ebay.com,ebay.com.au#@?#li.s-item:-abp-has(span:-abp-contains(/S[^P]*?P[^O]*?O[^N]*?N[^S]*?S[^O]*?O[^R]*?R[^E]*?E[^D]*?D/))
+ebay.co.uk,ebay.com,ebay.com.au#@?#.b-module:-abp-has(h2:-abp-contains(Sponsored))
+ebay.co.uk,ebay.com,ebay.com.au#@?#.mfe-lex:-abp-has(h2:-abp-contains(sponsored))
+ebay.com,ebay.co.uk,ebay.com.au#@?#.srp-list > .s-item:has(> div > .s-item__info > a > div[style="display:flex;"] span[role="text"] > span:contains(S) ~ span:contains(P) ~ span:contains(O))
+ebay.de#@?#.srp-list > .s-item:has(> div > .s-item__info > a > div[style="display:flex;"] span[role="text"] > span:contains(A) ~ span:contains(N) ~ span:contains(Z))
+ebay.com,ebay.co.uk,ebay.com.au#@?#div[itemtype="https://schema.org/Product"] div[id^="merch_html_"]:has(> div[id] .mfe-header > h2.mfe-pull-left:contains(Sponsored))
+ebay.com,ebay.co.uk,ebay.com.au#@?#div[itemtype="https://schema.org/Product"] div[id^="merch_html_"]:has(> div[id] h2.mfe-card-group-title:contains(sponsored))
+!
+! n-tv.de -- coupons
+n-tv.de#@#.sparwelt
+! https://github.com/AdguardTeam/AdguardFilters/issues/43719
+etsy.com#@?#.responsive-listing-grid > li:has( > div > a div > .ad-iindicator)
 ! Search.Tut.By
 search.tut.by#@#.ad-link
 @@||an.yandex.ru$domain=search.tut.by
@@ -258,8 +278,11 @@ mercurynews.com#@#div.info-box[id^="ConneXt_Action_Id-"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/38865
 etsy.com#@#div[data-behat-search-results-lg] .listing-link.logged:not([data-shop-id])
 !
+! stuttgarter-nachrichten.de - whitelisting Verlagsangebot
+stuttgarter-nachrichten.de#@#.ga_hptta .content > a[data-tags="Verlagsangebot"]
+stuttgarter-nachrichten.de#@?#.ga_hptta > .item:has(> .content > a[data-tags="Verlagsangebot"])
 ! https://github.com/AdguardTeam/AdguardFilters/issues/33697
 baidu.com#@#.bds-list-ads
 ! https://github.com/AdguardTeam/AdguardFilters/issues/40808
 search.naver.com#@#.sp_power
-!#safari_cb_affinity
+!---#safari_cb_affinity

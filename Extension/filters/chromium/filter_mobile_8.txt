@@ -1,8 +1,8 @@
-! Checksum: x0R9CQYC9GltxsMrU4fiWA
+! Checksum: 1RekzKwQgZx3hnOy96mlYw
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.0.64
-! TimeUpdated: 2019-09-29T03:02:43+03:00
+! Version: 2.0.0.68
+! TimeUpdated: 2019-11-20T17:31:32+03:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -1296,6 +1296,7 @@ amonis.be#@#.text-ad
 kamernet.nl#@#.topAdd
 voetbalnieuws.be#@#a[href^="http://adserving.unibet.com/"]
 tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
+||adconfigproxy.azurewebsites.net^$third-party
 ||widget.igcdn.nl^$third-party
 ||wwa.pacific-yield.com^$third-party
 @@/ad_pics/*$image,domain=computerworld.nl|webwereld.nl
@@ -1306,7 +1307,9 @@ indeleiderstrui.nl#%#AG_abortInlineScript(/Flags\.newInject/, 'window.Math');
 @@||videoplayer.persgroep.be/*/ad_smartads_.js$domain=vtm.be
 ||a.medialaancdn.be^
 @@||embed.kijk.nl/talpa-jw-skin/js/adsbygoogle.js$script,domain=embed.kijk.nl
-@@||looopings.nl/adsbygoogle.js
+@@||looopings.nl/ad*.js
+!+ NOT_PLATFORM(windows, mac, android)
+looopings.nl#%#//scriptlet('abort-current-inline-script', 'document.getElementById', '"tester"')
 windowstechblog.nl#@#.an-advert-banner
 windowstechblog.nl#@##adsense
 windowstechblog.nl#@#.an-sponsored
@@ -1341,6 +1344,9 @@ klusidee.nl#?#tr.table-row[-ext-has=".td-ad"]
 omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3000px!important; }
 handbalstartpunt.nl#$##advertentie-top { height: 0!important; }
 omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
+||developers.affiliateprogramma.eu/content-wrapper/general.js$domain=autobahn.eu
+||cdn.ster.nl/banners^
+tijd.be##.c-sitenavPlaceholder__ad
 telegraaf.nl##.SectionPage__bannerWrapper
 telegraaf.nl##.ArticleBodyBlocks__inlineArticleSpotXBanner
 telegraaf.nl##.TextArticlePage__bannerWrapper
