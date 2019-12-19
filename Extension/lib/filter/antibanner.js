@@ -480,6 +480,7 @@ adguard.antiBannerService = (function (adguard) {
                 filter.version = versionInfo.version;
                 filter.lastCheckTime = versionInfo.lastCheckTime;
                 filter.lastUpdateTime = versionInfo.lastUpdateTime;
+                filter.expires = versionInfo.expires;
             }
             if (stateInfo) {
                 filter.enabled = stateInfo.enabled;
@@ -1355,6 +1356,7 @@ adguard.filtersState = (function (adguard) {
             version: filter.version,
             lastCheckTime: filter.lastCheckTime,
             lastUpdateTime: filter.lastUpdateTime,
+            expires: filter.expires,
         };
         adguard.localStorage.setItem(FILTERS_VERSION_PROP, JSON.stringify(filters));
     };
