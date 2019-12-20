@@ -6,8 +6,8 @@ QUnit.test('Punycode rules', (assert) => {
     const rule = new adguard.rules.UrlFilterRule(ruleText);
     assert.ok(rule);
 
-    assert.equal('^(http|https|ws|wss)://([a-z0-9-_.]+\\.)?xn--d1acpjx3f\\.xn--p1ai([^ a-zA-Z0-9.%]|$)', rule.getUrlRegExpSource());
-    assert.equal('/^(http|https|ws|wss):\\/\\/([a-z0-9-_.]+\\.)?xn--d1acpjx3f\\.xn--p1ai([^ a-zA-Z0-9.%]|$)/i', rule.getUrlRegExp().toString());
+    assert.equal('^(http|https|ws|wss)://([a-z0-9-_.]+\\.)?xn--d1acpjx3f\\.xn--p1ai([^ a-zA-Z0-9.%_-]|$)', rule.getUrlRegExpSource());
+    assert.equal('/^(http|https|ws|wss):\\/\\/([a-z0-9-_.]+\\.)?xn--d1acpjx3f\\.xn--p1ai([^ a-zA-Z0-9.%_-]|$)/i', rule.getUrlRegExp().toString());
     assert.equal('xn--80a1acny.xn--p1ai', rule.getPermittedDomains()[0]);
 });
 
@@ -156,8 +156,8 @@ QUnit.test('Url blocking rule', (assert) => {
     assert.equal('test.ru/', rule.shortcut);
     assert.equal('google.com', rule.getPermittedDomains()[0]);
     assert.equal('nigma.ru', rule.getRestrictedDomains()[0]);
-    assert.equal('^(http|https|ws|wss)://([a-z0-9-_.]+\\.)?test\\.ru\\/([^ a-zA-Z0-9.%]|$)', rule.getUrlRegExpSource());
-    assert.equal('/^(http|https|ws|wss):\\/\\/([a-z0-9-_.]+\\.)?test\\.ru\\/([^ a-zA-Z0-9.%]|$)/', rule.getUrlRegExp().toString());
+    assert.equal('^(http|https|ws|wss)://([a-z0-9-_.]+\\.)?test\\.ru\\/([^ a-zA-Z0-9.%_-]|$)', rule.getUrlRegExpSource());
+    assert.equal('/^(http|https|ws|wss):\\/\\/([a-z0-9-_.]+\\.)?test\\.ru\\/([^ a-zA-Z0-9.%_-]|$)/', rule.getUrlRegExp().toString());
 
     // Check rule work
     assert.ok(rule.isBlockPopups());
