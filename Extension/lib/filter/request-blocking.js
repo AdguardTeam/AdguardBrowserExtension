@@ -515,12 +515,22 @@ adguard.webRequestService = (function (adguard) {
 
     const isCollectingCosmeticRulesHits = (tab) => {
         /**
-         * Edge browser doesn't support css content attribute for node elements except
+         * Edge Legacy browser doesn't support css content attribute for node elements except
          * :before and :after
          * Due to this we can't use cssHitsCounter for edge browser
          */
-        return !adguard.utils.browser.isEdgeBrowser()
-            && (canCollectHitStatsForTab(tab) || adguard.filteringLog.isOpen());
+        if (adguard.utils.browser.isEdgeBrowser()) {
+            return false;
+        }
+
+        // Temporary disabled for Edge Chromium:
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1558
+        // TODO: Figure out what's wrong exactly
+        if (adguard.utils.browser.isEdgeChromiumBrowser()) {
+            return false;
+        }
+
+        return canCollectHitStatsForTab(tab) || adguard.filteringLog.isOpen();
     };
 
 
