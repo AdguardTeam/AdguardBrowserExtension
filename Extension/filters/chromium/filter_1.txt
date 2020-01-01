@@ -19891,3 +19891,9 @@ pososushka.ru#@##reklama
 @@||chaosroad.com^$document
 @@||static.censor.net.ua/js/main.*.js
 88files.net,bukkit.org#@#.ad-box
+! Блокировка боковой рекламы в списке писем.
+e.mail.ru#?#div:matches-css(z-index: |100|)
+! Уменьшение пустоты после блокировки боковой рекламы.
+e.mail.ru#$#div[style^="max-width:"] > div:first-child + div { margin-right: 0 !important; }
+! Исправление стиля для возврата кнопки "Фильтр" на место.
+e.mail.ru#$#.portal-menu__group_float { float: left !important; }
