@@ -115,7 +115,6 @@ adguard.antiBannerService = (function (adguard) {
         const onSubscriptionLoaded = function (runInfo) {
             // Subscribe to events which lead to update filters (e.g. switсh to optimized and back to default)
             subscribeToFiltersChangeEvents();
-            adguard.applicationUpdateService.onUpdate(runInfo, initRequestFilter);
 
             if (runInfo.isFirstRun) {
                 // Add event listener for filters change
