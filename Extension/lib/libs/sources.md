@@ -76,7 +76,7 @@ These libs are developed by us from scratch.
 ​
 #### `extended-css.js`
 * v1.2.0
-* Licence: MIT
+* Licence: LGPL-3.0
 * Library source: https://github.com/AdguardTeam/ExtendedCss/releases/tag/v1.2.0
 ​
 #### `lib/content-script/assistant.js`
