@@ -22,8 +22,12 @@ QUnit.test('Test converter scriptlet ubo rule', (assert) => {
     const res = adguard.rules.ruleConverter.convertRule(rule);
     assert.equal(res, exp);
     // whitelist rule
-    const whitelistRule = 'example.org#@#+js(setTimeout-defuser.js, [native code], 8000)';
-    const expectedResult = 'example.org#@%#//scriptlet("ubo-setTimeout-defuser.js", "[native code]", "8000")';
+    let whitelistRule = 'example.org#@#+js(setTimeout-defuser.js, [native code], 8000)';
+    let expectedResult = 'example.org#@%#//scriptlet("ubo-setTimeout-defuser.js", "[native code]", "8000")';
+    assert.equal(adguard.rules.ruleConverter.convertRule(whitelistRule), expectedResult);
+
+    whitelistRule = 'example.org#@#script:inject(abort-on-property-read.js, some.prop)';
+    expectedResult = 'example.org#@%#//scriptlet("ubo-abort-on-property-read.js", "some.prop")';
     assert.equal(adguard.rules.ruleConverter.convertRule(whitelistRule), expectedResult);
 });
 
