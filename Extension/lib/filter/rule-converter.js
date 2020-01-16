@@ -32,7 +32,7 @@
     /**
      * uBlock scriptlet rule mask
      */
-    const UBO_SCRIPTLET_MASK_REG = /##script\:inject|#@?#\s*\+js/;
+    const UBO_SCRIPTLET_MASK_REG = /#@?#script:inject|#@?#\s*\+js/;
     const UBO_SCRIPTLET_MASK_1 = '##+js';
     const UBO_SCRIPTLET_MASK_2 = '##script:inject';
     const UBO_SCRIPTLET_EXCEPTION_MASK_1 = '#@#+js';
