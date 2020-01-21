@@ -1,4 +1,4 @@
-/*! extended-css - v1.2.0 - Sat Jan 11 2020
+/*! extended-css - v1.2.1 - Mon Jan 20 2020
 * https://github.com/AdguardTeam/ExtendedCss
 * Copyright (c) 2020 Adguard ; Licensed LGPL-3.0
 */
@@ -3042,12 +3042,15 @@ var ExtendedCss = (function () {
         StylePropertyMatcher.extendSizzle(Sizzle); // Add :contains, :has-text, :-abp-contains support
 
         const containsPseudo = Sizzle.selectors.createPseudo(text => {
-          if (/^\s*\/.*\/\s*$/.test(text)) {
-            text = text.trim().slice(1, -1).replace(/\\([\\"])/g, '$1');
+          if (/^\s*\/.*\/[gmisuy]*\s*$/.test(text)) {
+            text = text.trim();
+            const flagsIndex = text.lastIndexOf('/');
+            const flags = text.substring(flagsIndex + 1);
+            text = text.substr(0, flagsIndex + 1).slice(1, -1).replace(/\\([\\"])/g, '$1');
             let regex;
 
             try {
-              regex = new RegExp(text);
+              regex = new RegExp(text, flags);
             } catch (e) {
               throw new Error(`Invalid argument of :contains pseudo class: ${text}`);
             }
