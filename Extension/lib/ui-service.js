@@ -113,6 +113,10 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         let badge;
         let badgeColor = '#555';
 
+        if (tab.tabId === adguard.BACKGROUND_TAB_ID) {
+            return;
+        }
+
         try {
             if (options) {
                 icon = options.icon;
