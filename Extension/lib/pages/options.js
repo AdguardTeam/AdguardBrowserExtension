@@ -1055,7 +1055,9 @@ const AntiBannerFilters = function (options) {
         const sortingFunction = (f1, f2) => {
             let result = 0;
             try {
-                if (f1.groupId !== f2.groupId) {
+                if (f1.enabled !== f2.enabled) {
+                    result = f1.enabled ? -1 : 1;
+                } else if (f1.groupId !== f2.groupId) {
                     result = f1.groupId - f2.groupId;
                 } else if (f1.displayNumber !== f2.displayNumber) {
                     result = f1.displayNumber - f2.displayNumber;
@@ -1121,6 +1123,7 @@ const AntiBannerFilters = function (options) {
     });
 
     const SEARCH_INPUT_DELAY_MS = 250;
+    const TOGGLE_DELAY_MS = 500;
 
     function initSearchInCategory(category) {
         const { groupId } = category;
@@ -1159,6 +1162,16 @@ const AntiBannerFilters = function (options) {
                 renderFiltersInCategory(groupId, filters, searchDataSources);
             });
         }
+
+        // handle checkbox toggle for filters in the categories
+        const toggleHandler = Utils.debounce((e) => {
+            const attributeName = e.target.getAttribute('name');
+            if (attributeName === 'filterId') {
+                renderFiltersInCategory(groupId, filters, searchDataSources);
+            }
+        }, TOGGLE_DELAY_MS);
+        document.removeEventListener('change', toggleHandler);
+        document.addEventListener('change', toggleHandler);
 
         return searchDataSources;
     }
@@ -1276,6 +1289,16 @@ const AntiBannerFilters = function (options) {
             displayOptionEl.value = filtersDisplayOptions.ALL;
             renderCommonFiltersList(loadedFiltersInfo.filters, searchDataSources);
         });
+
+        // handle checkbox toggle for filters in common filters list
+        const toggleHandler = Utils.debounce((e) => {
+            const attributeName = e.target.getAttribute('name');
+            if (attributeName === 'filterId') {
+                renderCommonFiltersList(loadedFiltersInfo.filters, searchDataSources);
+            }
+        }, TOGGLE_DELAY_MS);
+        document.removeEventListener('change', toggleHandler);
+        document.addEventListener('change', toggleHandler);
     };
 
     function renderCategoriesAndFilters() {
