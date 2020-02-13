@@ -249,6 +249,17 @@ QUnit.test('Content-specific URL blocking', (assert) => {
     assert.notOk(rule.isFiltered('http://test.ru/script.js', false, RequestTypes.SCRIPT));
 });
 
+QUnit.test('Ping specific request is blocked', (assert) => {
+    const ruleText = 'example.org$ping';
+    const rule = new adguard.rules.UrlFilterRule(ruleText, 1);
+    assert.ok(rule.isFiltered('http://example.org/', false, adguard.RequestTypes.PING));
+    assert.notOk(rule.isFiltered('http://example.org/', false, adguard.RequestTypes.DOCUMENT));
+    assert.notOk(rule.isFiltered('http://example.org/', false, adguard.RequestTypes.SUBDOCUMENT));
+    assert.notOk(rule.isFiltered('http://example.org/', false, adguard.RequestTypes.SCRIPT));
+    assert.notOk(rule.isFiltered('http://example.org/', false, adguard.RequestTypes.WEBSOCKET));
+    assert.notOk(rule.isFiltered('http://example.org/', false, adguard.RequestTypes.OTHER));
+});
+
 QUnit.test('UrlFilter class tests', (assert) => {
     const { RequestTypes } = adguard;
 
@@ -474,12 +485,11 @@ QUnit.test('Many rules in one rule filter', (assert) => {
 QUnit.test('Escaped ampersand symbol in options', (assert) => {
     adguard.prefs.features.responseContentFilteringSupported = false;
 
-    try {
+    assert.throws(() => {
+        // eslint-disable-next-line no-new
         new adguard.rules.UrlFilterRule('||goodgame.ru/*.php?script=*vastInlineBannerTypeHtml$important,replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\\$1<\/VAST>/', 1);
-        assert.ok(false);
-    } catch (ex) {
-        assert.ok(ex === 'Unknown option: REPLACE');
-    }
+        // assert.ok(false);
+    }, new Error('Unknown option: REPLACE'));
 });
 
 QUnit.test('RegExp Rules Parsing', (assert) => {
@@ -488,12 +498,10 @@ QUnit.test('RegExp Rules Parsing', (assert) => {
     assert.ok(new adguard.rules.UrlFilterRule('/(.jpg)$/').isFiltered('http://test.ru/foo.jpg', false, adguard.RequestTypes.IMAGE));
     assert.notOk(new adguard.rules.UrlFilterRule('/(.jpg)$/').isFiltered('http://test.ru/foo.png', false, adguard.RequestTypes.IMAGE));
 
-    try {
+    assert.throws(() => {
+        // eslint-disable-next-line no-new
         new adguard.rules.UrlFilterRule('/.*/$replace=/hello/bug/');
-        assert.ok(false);
-    } catch (ex) {
-        assert.ok(ex === 'Unknown option: REPLACE');
-    }
+    }, new Error('Unknown option: REPLACE'));
 });
 
 QUnit.test('testReplaceCyrillicText', (assert) => {
