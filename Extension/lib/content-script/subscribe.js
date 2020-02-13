@@ -71,7 +71,8 @@
             if (target.host !== 'subscribe.adblockplus.org' || target.pathname !== '/') {
                 return;
             }
-        } else if (!/^abp:\/*subscribe\/*\?/i.test(target.href)) {
+        } else if (!(/^abp:\/*subscribe\/*\?/i.test(target.href)
+            || /^adguard:\/*subscribe\/*\?/i.test(target.href))) {
             return;
         }
 
