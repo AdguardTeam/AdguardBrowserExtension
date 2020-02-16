@@ -23,25 +23,26 @@ adguard.RequestTypes = {
     /**
      * Document that is loaded for a top-level frame
      */
-    DOCUMENT: "DOCUMENT",
+    DOCUMENT: 'DOCUMENT',
 
     /**
      * Document that is loaded for an embedded frame (iframe)
      */
-    SUBDOCUMENT: "SUBDOCUMENT",
+    SUBDOCUMENT: 'SUBDOCUMENT',
 
-    SCRIPT: "SCRIPT",
-    STYLESHEET: "STYLESHEET",
-    OBJECT: "OBJECT",
-    IMAGE: "IMAGE",
-    XMLHTTPREQUEST: "XMLHTTPREQUEST",
-    MEDIA: "MEDIA",
-    FONT: "FONT",
-    WEBSOCKET: "WEBSOCKET",
-    WEBRTC: "WEBRTC",
-    OTHER: "OTHER",
-    CSP: "CSP",
-    COOKIE: "COOKIE",
+    SCRIPT: 'SCRIPT',
+    STYLESHEET: 'STYLESHEET',
+    OBJECT: 'OBJECT',
+    IMAGE: 'IMAGE',
+    XMLHTTPREQUEST: 'XMLHTTPREQUEST',
+    MEDIA: 'MEDIA',
+    FONT: 'FONT',
+    WEBSOCKET: 'WEBSOCKET',
+    WEBRTC: 'WEBRTC',
+    OTHER: 'OTHER',
+    CSP: 'CSP',
+    COOKIE: 'COOKIE',
+    PING: 'PING',
 };
 
 /**
@@ -58,10 +59,9 @@ adguard.MAIN_FRAME_ID = 0;
  * Utilities namespace
  */
 adguard.utils = (function () {
-
     return {
         strings: null, // StringUtils
-        dates: null, //DateUtils
+        dates: null, // DateUtils
         collections: null, // CollectionUtils,
         concurrent: null, // ConcurrentUtils,
         channels: null, // EventChannels
@@ -70,70 +70,68 @@ adguard.utils = (function () {
         workaround: null, // WorkaroundUtils
         i18n: null, // I18nUtils
         StopWatch: null,
-        Promise: null // Deferred,
+        Promise: null, // Deferred,
     };
-
 })();
 
 /**
  * Util class for work with strings
  */
 (function (api) {
-
     if (!String.prototype.endsWith) {
         String.prototype.endsWith = function (suffix) { // jshint ignore:line
-            var index = this.lastIndexOf(suffix);
+            const index = this.lastIndexOf(suffix);
             return index !== -1 && index === this.length - suffix.length;
         };
     }
 
-    //noinspection UnnecessaryLocalVariableJS
-    var StringUtils = {
+    // noinspection UnnecessaryLocalVariableJS
+    const StringUtils = {
 
-        isEmpty: function (str) {
+        isEmpty(str) {
             return !str || str.trim().length === 0;
         },
 
-        startWith: function (str, prefix) {
+        startWith(str, prefix) {
             return str && str.indexOf(prefix) === 0;
         },
 
-        endsWith: function (str, postfix) {
+        endsWith(str, postfix) {
             return str.endsWith(postfix);
         },
 
-        substringAfter: function (str, separator) {
+        substringAfter(str, separator) {
             if (!str) {
                 return str;
             }
-            var index = str.indexOf(separator);
-            return index < 0 ? "" : str.substring(index + separator.length);
+            const index = str.indexOf(separator);
+            return index < 0 ? '' : str.substring(index + separator.length);
         },
 
-        substringBefore: function (str, separator) {
+        substringBefore(str, separator) {
             if (!str || !separator) {
                 return str;
             }
-            var index = str.indexOf(separator);
+            const index = str.indexOf(separator);
             return index < 0 ? str : str.substring(0, index);
         },
 
-        contains: function (str, searchString) {
+        contains(str, searchString) {
             return str && str.indexOf(searchString) >= 0;
         },
 
-        containsIgnoreCase: function (str, searchString) {
+        containsIgnoreCase(str, searchString) {
             return str && searchString && str.toUpperCase().indexOf(searchString.toUpperCase()) >= 0;
         },
 
-        replaceAll: function (str, find, replace) {
+        replaceAll(str, find, replace) {
             if (!str) {
                 return str;
             }
             return str.split(find).join(replace);
         },
 
-        join: function (array, separator, startIndex, endIndex) {
+        join(array, separator, startIndex, endIndex) {
             if (!array) {
                 return null;
             }
@@ -144,10 +142,10 @@ adguard.utils = (function () {
                 endIndex = array.length;
             }
             if (startIndex >= endIndex) {
-                return "";
+                return '';
             }
-            var buf = [];
-            for (var i = startIndex; i < endIndex; i++) {
+            const buf = [];
+            for (let i = startIndex; i < endIndex; i++) {
                 buf.push(array[i]);
             }
             return buf.join(separator);
@@ -158,8 +156,8 @@ adguard.utils = (function () {
          * @param {string} str
          * @param {RegExp} rx
          */
-        getBeforeRegExp: function (str, rx) {
-            let index = str.search(rx);
+        getBeforeRegExp(str, rx) {
+            const index = str.search(rx);
             return str.substring(0, index);
         },
 
@@ -171,16 +169,15 @@ adguard.utils = (function () {
          * @param start Start index (optional, inclusive)
          * @return int Index of the element found or null
          */
-        indexOfAny: function (str, chars, start) {
-
+        indexOfAny(str, chars, start) {
             start = start || 0;
 
             if (typeof str === 'string' && str.length <= start) {
                 return -1;
             }
 
-            for (var i = start; i < str.length; i++) {
-                var c = str.charAt(i);
+            for (let i = start; i < str.length; i++) {
+                const c = str.charAt(i);
                 if (chars.indexOf(c) > -1) {
                     return i;
                 }
@@ -196,18 +193,16 @@ adguard.utils = (function () {
          * @param escapeCharacter   Escape character
          * @param preserveAllTokens If true - preserve empty entries.
          */
-        splitByDelimiterWithEscapeCharacter: function (str, delimiter, escapeCharacter, preserveAllTokens) {
-
-            var parts = [];
+        splitByDelimiterWithEscapeCharacter(str, delimiter, escapeCharacter, preserveAllTokens) {
+            const parts = [];
 
             if (adguard.utils.strings.isEmpty(str)) {
                 return parts;
             }
 
-            var sb = [];
-            for (var i = 0; i < str.length; i++) {
-
-                var c = str.charAt(i);
+            let sb = [];
+            for (let i = 0; i < str.length; i++) {
+                const c = str.charAt(i);
 
                 if (c === delimiter) {
                     if (i === 0) { // jshint ignore:line
@@ -215,12 +210,10 @@ adguard.utils = (function () {
                     } else if (str.charAt(i - 1) === escapeCharacter) {
                         sb.splice(sb.length - 1, 1);
                         sb.push(c);
-                    } else {
-                        if (preserveAllTokens || sb.length > 0) {
-                            var part = sb.join('');
-                            parts.push(part);
-                            sb = [];
-                        }
+                    } else if (preserveAllTokens || sb.length > 0) {
+                        const part = sb.join('');
+                        parts.push(part);
+                        sb = [];
                     }
                 } else {
                     sb.push(c);
@@ -238,17 +231,17 @@ adguard.utils = (function () {
          * Serialize HTML element
          * @param element
          */
-        elementToString: function (element) {
-            var s = [];
+        elementToString(element) {
+            const s = [];
             s.push('<');
             s.push(element.localName);
-            var attributes = element.attributes;
-            for (var i = 0; i < attributes.length; i++) {
-                var attr = attributes[i];
+            const { attributes } = element;
+            for (let i = 0; i < attributes.length; i++) {
+                const attr = attributes[i];
                 s.push(' ');
                 s.push(attr.name);
                 s.push('="');
-                var value = attr.value === null ? '' : attr.value.replace(/"/g, '\\"');
+                const value = attr.value === null ? '' : attr.value.replace(/"/g, '\\"');
                 s.push(value);
                 s.push('"');
             }
@@ -258,108 +251,102 @@ adguard.utils = (function () {
     };
 
     api.strings = StringUtils;
-
 })(adguard.utils);
 
 /**
  * Util class for dates
  */
 (function (api) {
+    const DateUtils = {
 
-    var DateUtils = {
-
-        isSameHour: function (a, b) {
+        isSameHour(a, b) {
             return (
-                this.isSameDay(a, b) &&
-                a.getHours() === b.getHours()
+                this.isSameDay(a, b)
+                && a.getHours() === b.getHours()
             );
         },
-        isSameDay: function (a, b) {
+        isSameDay(a, b) {
             return (
-                this.isSameMonth(a, b) &&
-                a.getDate() === b.getDate()
+                this.isSameMonth(a, b)
+                && a.getDate() === b.getDate()
             );
         },
-        isSameMonth: function (a, b) {
+        isSameMonth(a, b) {
             if (!a || !b) {
                 return false;
             }
 
             return (
-                a.getYear() === b.getYear() &&
-                a.getMonth() === b.getMonth()
+                a.getYear() === b.getYear()
+                && a.getMonth() === b.getMonth()
             );
         },
-        getDifferenceInHours: function (a, b) {
+        getDifferenceInHours(a, b) {
             return (a.getTime() - b.getTime()) / 1000 / 60 / 60;
         },
-        getDifferenceInDays: function (a, b) {
+        getDifferenceInDays(a, b) {
             return this.getDifferenceInHours(a, b) / 24;
         },
-        getDifferenceInMonths: function (a, b) {
+        getDifferenceInMonths(a, b) {
             return this.getDifferenceInDays(a, b) / 30;
-        }
+        },
     };
 
     api.dates = DateUtils;
-
 })(adguard.utils);
 
 /**
  * Util class for work with collections
  */
 (function (api) {
+    // noinspection UnnecessaryLocalVariableJS
+    const CollectionUtils = {
 
-    //noinspection UnnecessaryLocalVariableJS
-    var CollectionUtils = {
-
-        remove: function (collection, element) {
+        remove(collection, element) {
             if (!element || !collection) {
                 return;
             }
-            var index = collection.indexOf(element);
+            const index = collection.indexOf(element);
             if (index >= 0) {
                 collection.splice(index, 1);
             }
         },
 
-        removeAll: function (collection, element) {
+        removeAll(collection, element) {
             if (!element || !collection) {
                 return;
             }
-            for (var i = collection.length - 1; i >= 0; i--) {
+            for (let i = collection.length - 1; i >= 0; i--) {
                 if (collection[i] == element) {
                     collection.splice(i, 1);
                 }
             }
         },
 
-        removeRule: function (collection, rule) {
+        removeRule(collection, rule) {
             if (!rule || !collection) {
                 return;
             }
-            for (var i = collection.length - 1; i >= 0; i--) {
+            for (let i = collection.length - 1; i >= 0; i--) {
                 if (rule.ruleText === collection[i].ruleText) {
                     collection.splice(i, 1);
                 }
             }
         },
 
-        removeDuplicates: function (arr) {
+        removeDuplicates(arr) {
             if (!arr || arr.length == 1) {
                 return arr;
             }
-            return arr.filter(function (elem, pos) {
-                return arr.indexOf(elem) == pos;
-            });
+            return arr.filter((elem, pos) => arr.indexOf(elem) == pos);
         },
 
-        getRulesText: function (collection) {
-            var text = [];
+        getRulesText(collection) {
+            const text = [];
             if (!collection) {
                 return text;
             }
-            for (var i = 0; i < collection.length; i++) {
+            for (let i = 0; i < collection.length; i++) {
                 text.push(collection[i].ruleText);
             }
             return text;
@@ -372,14 +359,12 @@ adguard.utils = (function () {
          * @param value
          * @returns {*}
          */
-        find: function (array, property, value) {
+        find(array, property, value) {
             if (typeof array.find === 'function') {
-                return array.find(function (a) {
-                    return a[property] === value;
-                });
+                return array.find(a => a[property] === value);
             }
-            for (var i = 0; i < array.length; i++) {
-                var elem = array[i];
+            for (let i = 0; i < array.length; i++) {
+                const elem = array[i];
                 if (elem[property] === value) {
                     return elem;
                 }
@@ -393,7 +378,7 @@ adguard.utils = (function () {
          * @param obj Object
          */
         isArray: Array.isArray || function (obj) {
-            return '' + obj === '[object Array]';
+            return `${obj}` === '[object Array]';
         },
 
         /**
@@ -402,41 +387,36 @@ adguard.utils = (function () {
          * @param a
          * @param b
          */
-        getArraySubtraction: function (a, b) {
-            return a.filter(function (i) {
-                return b.indexOf(i) < 0;
-            });
-        }
+        getArraySubtraction(a, b) {
+            return a.filter(i => b.indexOf(i) < 0);
+        },
     };
 
     api.collections = CollectionUtils;
-
 })(adguard.utils);
 
 /**
  * Util class for support timeout, retry operations, debounce
  */
 (function (api) {
+    // noinspection UnnecessaryLocalVariableJS
+    const ConcurrentUtils = {
 
-    //noinspection UnnecessaryLocalVariableJS
-    var ConcurrentUtils = {
-
-        runAsync: function (callback, context) {
-            var params = Array.prototype.slice.call(arguments, 2);
-            setTimeout(function () {
+        runAsync(callback, context) {
+            const params = Array.prototype.slice.call(arguments, 2);
+            setTimeout(() => {
                 callback.apply(context, params);
             }, 0);
         },
 
-        retryUntil: function (predicate, main, details) {
-
+        retryUntil(predicate, main, details) {
             if (typeof details !== 'object') {
                 details = {};
             }
 
-            var now = 0;
-            var next = details.next || 200;
-            var until = details.until || 2000;
+            let now = 0;
+            const next = details.next || 200;
+            const until = details.until || 2000;
 
             var check = function () {
                 if (predicate() === true || now >= until) {
@@ -450,11 +430,12 @@ adguard.utils = (function () {
             setTimeout(check, 1);
         },
 
-        debounce: function (func, wait) {
-            var timeout;
+        debounce(func, wait) {
+            let timeout;
             return function () {
-                var context = this, args = arguments;
-                var later = function () {
+                const context = this; const
+                    args = arguments;
+                const later = function () {
                     timeout = null;
                     func.apply(context, args);
                 };
@@ -471,9 +452,10 @@ adguard.utils = (function () {
          * @param {Number} wait Number of milliseconds that must elapse between `func` invocations.
          * @return {Function} A new function that wraps the `func` function passed in.
          */
-        throttle: function (func, wait) {
-            var ctx, args, rtn, timeoutID; // caching
-            var last = 0;
+        throttle(func, wait) {
+            let ctx; let args; let rtn; let
+                timeoutID; // caching
+            let last = 0;
 
             function call() {
                 timeoutID = 0;
@@ -486,7 +468,7 @@ adguard.utils = (function () {
             return function throttled() {
                 ctx = this;
                 args = arguments;
-                var delta = new Date() - last;
+                const delta = new Date() - last;
                 if (!timeoutID) {
                     if (delta >= wait) {
                         call();
@@ -496,19 +478,17 @@ adguard.utils = (function () {
                 }
                 return rtn;
             };
-        }
+        },
     };
 
     api.concurrent = ConcurrentUtils;
-
 })(adguard.utils);
 
 /**
  * Util class for detect filter type. Includes various filter identifiers
  */
 (function (api) {
-
-    var AntiBannerFiltersId = {
+    const AntiBannerFiltersId = {
         USER_FILTER_ID: 0,
         RUSSIAN_FILTER_ID: 1,
         ENGLISH_FILTER_ID: 2,
@@ -523,76 +503,69 @@ adguard.utils = (function () {
         MOBILE_ADS_FILTER_ID: 11,
     };
 
-    var FilterUtils = {
+    const FilterUtils = {
 
-        isUserFilterRule: function (rule) {
+        isUserFilterRule(rule) {
             return rule.filterId == AntiBannerFiltersId.USER_FILTER_ID;
         },
 
-        isWhiteListFilterRule: function (rule) {
+        isWhiteListFilterRule(rule) {
             return rule.filterId == AntiBannerFiltersId.WHITE_LIST_FILTER_ID;
-        }
+        },
     };
 
     // Make accessible only constants without functions. They will be passed to content-page
     FilterUtils.ids = AntiBannerFiltersId;
 
     // Copy filter ids to api
-    for (var key in AntiBannerFiltersId) {
+    for (const key in AntiBannerFiltersId) {
         if (AntiBannerFiltersId.hasOwnProperty(key)) {
             FilterUtils[key] = AntiBannerFiltersId[key];
         }
     }
 
     api.filters = FilterUtils;
-
 })(adguard.utils);
 
 /**
  * Simple time measurement utils
  */
 (function (api) {
-
-    var StopWatch = function (name) {
+    const StopWatch = function (name) {
         this.name = name;
     };
 
     StopWatch.prototype = {
 
-        start: function () {
+        start() {
             this.startTime = Date.now();
         },
 
-        stop: function () {
+        stop() {
             this.stopTime = Date.now();
         },
 
-        print: function () {
-            var elapsed = this.stopTime - this.startTime;
-            console.log(this.name + "[elapsed: " + elapsed + " ms]");
-        }
+        print() {
+            const elapsed = this.stopTime - this.startTime;
+            console.log(`${this.name}[elapsed: ${elapsed} ms]`);
+        },
     };
 
     api.StopWatch = StopWatch;
-
 })(adguard.utils);
 
 /**
  * Simple publish-subscribe implementation
  */
 (function (api) {
-
-    //noinspection UnnecessaryLocalVariableJS
-    var EventChannels = (function () {
-
+    const EventChannels = (function () {
         'use strict';
 
-        var EventChannel = function () {
+        const EventChannel = function () {
+            let listeners = null;
+            let listenerCallback = null;
 
-            var listeners = null;
-            var listenerCallback = null;
-
-            var addListener = function (callback) {
+            const addListener = function (callback) {
                 if (typeof callback !== 'function') {
                     throw new Error('Illegal callback');
                 }
@@ -610,137 +583,132 @@ adguard.utils = (function () {
                 }
             };
 
-            var removeListener = function (callback) {
+            const removeListener = function (callback) {
                 if (listenerCallback !== null) {
                     listenerCallback = null;
                 } else {
-                    var index = listeners.indexOf(callback);
+                    const index = listeners.indexOf(callback);
                     if (index >= 0) {
                         listeners.splice(index, 1);
                     }
                 }
             };
 
-            var notify = function () {
+            const notify = function () {
                 if (listenerCallback !== null) {
                     return listenerCallback.apply(listenerCallback, arguments);
                 }
                 if (listeners !== null) {
-                    for (var i = 0; i < listeners.length; i++) {
-                        var listener = listeners[i];
+                    for (let i = 0; i < listeners.length; i++) {
+                        const listener = listeners[i];
                         listener.apply(listener, arguments);
                     }
                 }
             };
 
-            var notifyInReverseOrder = function () {
+            const notifyInReverseOrder = function () {
                 if (listenerCallback !== null) {
                     return listenerCallback.apply(listenerCallback, arguments);
                 }
                 if (listeners !== null) {
-                    for (var i = listeners.length - 1; i >= 0; i--) {
-                        var listener = listeners[i];
+                    for (let i = listeners.length - 1; i >= 0; i--) {
+                        const listener = listeners[i];
                         listener.apply(listener, arguments);
                     }
                 }
             };
 
             return {
-                addListener: addListener,
-                removeListener: removeListener,
-                notify: notify,
-                notifyInReverseOrder: notifyInReverseOrder
+                addListener,
+                removeListener,
+                notify,
+                notifyInReverseOrder,
             };
         };
 
-        var namedChannels = Object.create(null);
+        const namedChannels = Object.create(null);
 
-        var newChannel = function () {
+        const newChannel = function () {
             return new EventChannel();
         };
 
-        var newNamedChannel = function (name) {
-            var channel = newChannel();
+        const newNamedChannel = function (name) {
+            const channel = newChannel();
             namedChannels[name] = channel;
             return channel;
         };
 
-        var getNamedChannel = function (name) {
+        const getNamedChannel = function (name) {
             return namedChannels[name];
         };
 
         return {
-            newChannel: newChannel,
-            newNamedChannel: newNamedChannel,
-            getNamedChannel: getNamedChannel
+            newChannel,
+            newNamedChannel,
+            getNamedChannel,
         };
     })();
 
     api.channels = EventChannels;
-
 })(adguard.utils);
 
 /**
  * Promises wrapper
  */
 (function (api, global) {
-
     'use strict';
 
-    var defer = global.Deferred;
-    var deferAll = function (arr) {
+    const defer = global.Deferred;
+    const deferAll = function (arr) {
         return global.Deferred.when.apply(global.Deferred, arr);
     };
 
-    var Promise = function () {
-
-        var deferred = defer();
-        var promise;
+    const Promise = function () {
+        const deferred = defer();
+        let promise;
         if (typeof deferred.promise === 'function') {
             promise = deferred.promise();
         } else {
             promise = deferred.promise;
         }
 
-        var resolve = function (arg) {
+        const resolve = function (arg) {
             deferred.resolve(arg);
         };
 
-        var reject = function (arg) {
+        const reject = function (arg) {
             deferred.reject(arg);
         };
 
-        var then = function (onSuccess, onReject) {
+        const then = function (onSuccess, onReject) {
             promise.then(onSuccess, onReject);
         };
 
         return {
-            promise: promise,
-            resolve: resolve,
-            reject: reject,
-            then: then
+            promise,
+            resolve,
+            reject,
+            then,
         };
     };
 
     Promise.all = function (promises) {
-        var defers = [];
-        for (var i = 0; i < promises.length; i++) {
+        const defers = [];
+        for (let i = 0; i < promises.length; i++) {
             defers.push(promises[i].promise);
         }
         return deferAll(defers);
     };
 
     api.Promise = Promise;
-
 })(adguard.utils, window);
 
 /**
  * We collect here all workarounds and ugly hacks:)
  */
 (function (api) {
-
-    //noinspection UnnecessaryLocalVariableJS
-    var WorkaroundUtils = {
+    // noinspection UnnecessaryLocalVariableJS
+    const WorkaroundUtils = {
 
         /**
          * Converts blocked counter to the badge text.
@@ -748,25 +716,23 @@ adguard.utils = (function () {
          *
          * @param blocked Blocked requests count
          */
-        getBlockedCountText: function (blocked) {
-            var blockedText = blocked == "0" ? "" : blocked;
+        getBlockedCountText(blocked) {
+            let blockedText = blocked == '0' ? '' : blocked;
             if (blocked - 0 > 99) {
                 blockedText = '\u221E';
             }
 
             return blockedText;
-        }
+        },
     };
 
     api.workaround = WorkaroundUtils;
-
 })(adguard.utils);
 
 /**
  * Simple i18n utils
  */
 (function (api) {
-
     function isArrayElement(array, elem) {
         return array.indexOf(elem) >= 0;
     }
@@ -783,16 +749,15 @@ adguard.utils = (function () {
          * @param locale Locale (e.g. en, en_GB, pt_BR)
          * @returns matched locale from the locales collection or null
          */
-        normalize: function (locales, locale) {
-
+        normalize(locales, locale) {
             if (!locale) {
                 return null;
             }
 
             // Transform Language-Country => Language_Country
-            locale = locale.replace("-", "_");
+            locale = locale.replace('-', '_');
 
-            var search;
+            let search;
 
             if (api.collections.isArray(locales)) {
                 search = isArrayElement;
@@ -805,16 +770,15 @@ adguard.utils = (function () {
             }
 
             // Try to search by the language
-            var parts = locale.split('_');
-            var language = parts[0];
+            const parts = locale.split('_');
+            const language = parts[0];
             if (search(locales, language)) {
                 return language;
             }
 
             return null;
-        }
+        },
     };
-
 })(adguard.utils);
 
 /**
@@ -823,16 +787,15 @@ adguard.utils = (function () {
  * @type {{when, fireUnload}}
  */
 adguard.unload = (function (adguard) {
-
     'use strict';
 
-    var unloadChannel = adguard.utils.channels.newChannel();
+    const unloadChannel = adguard.utils.channels.newChannel();
 
-    var when = function (callback) {
+    const when = function (callback) {
         if (typeof callback !== 'function') {
             return;
         }
-        unloadChannel.addListener(function () {
+        unloadChannel.addListener(() => {
             try {
                 callback();
             } catch (ex) {
@@ -842,16 +805,15 @@ adguard.unload = (function (adguard) {
         });
     };
 
-    var fireUnload = function (reason) {
-        console.info('Unload is fired: ' + reason);
+    const fireUnload = function (reason) {
+        console.info(`Unload is fired: ${reason}`);
         unloadChannel.notifyInReverseOrder(reason);
     };
 
     return {
-        when: when,
-        fireUnload: fireUnload
+        when,
+        fireUnload,
     };
-
 })(adguard);
 
 /**
@@ -860,7 +822,6 @@ adguard.unload = (function (adguard) {
  * Details are stored in some ring buffer. For each key corresponding item are retrieved in LIFO order.
  */
 adguard.utils.RingBuffer = function (size) { // jshint ignore:line
-
     if (typeof Map === 'undefined') {
         throw new Error('Unable to create RingBuffer');
     }
@@ -871,15 +832,15 @@ adguard.utils.RingBuffer = function (size) { // jshint ignore:line
      * index = position of item in ringBuffer
      */
     /* global Map */
-    var itemKeyToIndex = new Map();
-    var itemWritePointer = 0; // Current write position
+    let itemKeyToIndex = new Map();
+    let itemWritePointer = 0; // Current write position
 
     /**
      * ringBuffer: Array [0:item][1:item]...[size-1:item]
      */
-    var ringBuffer = new Array(size);
+    const ringBuffer = new Array(size);
 
-    var i = ringBuffer.length;
+    let i = ringBuffer.length;
     while (i--) {
         ringBuffer[i] = { processedKey: null }; // 'if not null' means this item hasn't been processed yet.
     }
@@ -892,13 +853,12 @@ adguard.utils.RingBuffer = function (size) { // jshint ignore:line
      * @param key Key
      * @param value Object
      */
-    var put = function (key, value) {
-
-        var index = itemWritePointer;
+    const put = function (key, value) {
+        const index = itemWritePointer;
         itemWritePointer = (index + 1) % size;
 
-        var item = ringBuffer[index];
-        var indexes;
+        let item = ringBuffer[index];
+        let indexes;
 
         // Cleanup unprocessed item
         if (item.processedKey !== null) {
@@ -907,7 +867,7 @@ adguard.utils.RingBuffer = function (size) { // jshint ignore:line
                 // It's last item with this key
                 itemKeyToIndex.delete(item.processedKey);
             } else {
-                var pos = indexes.indexOf(index);
+                const pos = indexes.indexOf(index);
                 if (pos >= 0) {
                     indexes.splice(pos, 1);
                 }
@@ -933,34 +893,33 @@ adguard.utils.RingBuffer = function (size) { // jshint ignore:line
      * 2. Gets first index from indexes, then gets item from ringBuffer by this index
      * @param key Key for searching
      */
-    var pop = function (key) {
-        var indexes = itemKeyToIndex.get(key);
+    const pop = function (key) {
+        const indexes = itemKeyToIndex.get(key);
         if (indexes === undefined) {
             return null;
         }
-        var index = indexes.shift();
+        const index = indexes.shift();
         if (indexes.length === 0) {
             itemKeyToIndex.delete(key);
         }
-        var item = ringBuffer[index];
+        const item = ringBuffer[index];
         // Mark as processed
         item.processedKey = null;
         return item;
     };
 
-    var clear = function () {
+    const clear = function () {
         itemKeyToIndex = new Map();
         itemWritePointer = 0;
-        var i = ringBuffer.length;
+        let i = ringBuffer.length;
         while (i--) {
             ringBuffer[i] = { processedKey: null };
         }
     };
 
     return {
-        put: put,
-        pop: pop,
-        clear: clear
+        put,
+        pop,
+        clear,
     };
-
 };
