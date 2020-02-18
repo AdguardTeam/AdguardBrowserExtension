@@ -794,7 +794,7 @@ const AntiBannerFilters = function (options) {
                 <li id="category${category.groupId}" class="active">
                     <a href="#antibanner${category.groupId}" class="block-type">
                         <div class="block-type__ico block-type__ico--${category.groupId}"></div>
-                        <div class="block-type__desc">
+                        <div id="aria-category${category.groupId}" class="block-type__desc">
                             <div class="block-type__desc-title">${category.groupName}</div>
                             <div class="desc desc--filters"></div>
                         </div>
@@ -802,7 +802,8 @@ const AntiBannerFilters = function (options) {
                     <div class="opt-state">
                         <div class="preloader"></div>
                         <div class="toggler-wr" role="checkbox" tabindex="0">
-                            <input type="checkbox" name="groupId" value="${category.groupId}">
+                        <input aria-labelledby="aria-category${category.groupId}" aria-hidden="false"
+                         type="checkbox" name="groupId" value="${category.groupId}">
                         </div>
                     </div>
                 </li>`);
@@ -877,7 +878,10 @@ const AntiBannerFilters = function (options) {
                                 type="checkbox"
                                 name="filterId"
                                 value="${filter.filterId}"
-                                ${enabled ? 'checked="checked"' : ''}>
+                                ${enabled ? 'checked="checked"' : ''}
+                                aria-labelledby="filter${filter.filterId}"
+                                aria-hidden="false"
+                                >
                         </div>
                     </div>
                 </li>`;
