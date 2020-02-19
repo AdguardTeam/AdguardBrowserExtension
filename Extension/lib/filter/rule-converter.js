@@ -292,6 +292,8 @@
         const ALL_OPTION = 'all';
         const POPUP_OPTION = 'popup';
         const DOCUMENT_OPTION = 'document';
+        const GENERICHIDE_OPTION = 'generichide';
+        const ELEMHIDE_OPTION = 'elemhide';
 
         /* eslint-disable max-len */
         const conversionMap = {
@@ -299,6 +301,8 @@
             [MP4_OPTION]: 'redirect=noopmp4-1s',
             [INLINE_SCRIPT_OPTION]: `${CSP_OPTION}=script-src 'self' 'unsafe-eval' http: https: data: blob: mediastream: filesystem:`,
             [INLINE_FONT_OPTION]: `${CSP_OPTION}=font-src 'self' 'unsafe-eval' http: https: data: blob: mediastream: filesystem:`,
+            ['ghide']: GENERICHIDE_OPTION,
+            ['ehide']: ELEMHIDE_OPTION,
         };
         /* eslint-enable max-len */
 
