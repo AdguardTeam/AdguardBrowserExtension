@@ -118,7 +118,7 @@ PopupController.prototype = {
 
     _renderPopup: function (tabInfo) {
         const parent = document.querySelector('.widget-popup');
-
+        const templateSwitcher = document.querySelector('#filtering-default-control-template > div.control-buttons');
         const containerHeader = document.querySelector('.widget-popup__header');
         while (containerHeader.firstChild) {
             containerHeader.removeChild(containerHeader.firstChild);
@@ -160,18 +160,22 @@ PopupController.prototype = {
         if (tabInfo.applicationFilteringDisabled) {
             stack.classList.add('status-paused');
             parent.classList.add('status-paused');
+            templateSwitcher.setAttribute('aria-checked', 'false');
         } else if (!tabInfo.applicationAvailable) {
             stack.classList.add('status-inner');
             parent.classList.add('status-checkmark');
+            templateSwitcher.setAttribute('aria-hidden', 'true');
         } else if (!tabInfo.canAddRemoveRule) {
             stack.classList.add('status-error');
             parent.classList.add('status-checkmark');
         } else if (tabInfo.documentWhiteListed) {
             stack.classList.add('status-cross');
             parent.classList.add('status-cross');
+            templateSwitcher.setAttribute('aria-checked', 'false');
         } else {
             stack.classList.add('status-checkmark');
             parent.classList.add('status-checkmark');
+            templateSwitcher.setAttribute('aria-checked', 'true');
         }
 
         // Header
@@ -753,6 +757,7 @@ PopupController.prototype = {
             disabledActionsSelectors.forEach((selector) => {
                 const action = el.querySelector(selector);
                 action.classList.add('action_disabled');
+                action.setAttribute('aria-hidden', 'true');
             });
         }
 
@@ -777,7 +782,7 @@ PopupController.prototype = {
                         platforms.style.display = 'none';
                     }
                 } else {
-                    footerDefaultTitle.setAttribute('title', i18n.getMessage('popup_adguard_footer_title'));
+                    footerDefaultTitle.setAttribute('value', i18n.getMessage('popup_adguard_footer_title'));
                 }
             }
 
