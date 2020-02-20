@@ -232,3 +232,20 @@ QUnit.test('$badfilter is not omitted after rule conversion', (assert) => {
     const expected = '||example.org/favicon.ico$domain=example.org,redirect=nooptext,important,badfilter';
     assert.equal(actual, expected);
 });
+
+QUnit.test('converts ghide, ehide options', (assert) => {
+    let rule = '@@||example.com^$ghide';
+    let actual = adguard.rules.ruleConverter.convertRule(rule);
+    let expected = '@@||example.com^$generichide';
+    assert.equal(actual, expected);
+
+    rule = '@@||example.com^$ehide';
+    actual = adguard.rules.ruleConverter.convertRule(rule);
+    expected = '@@||example.com^$elemhide';
+    assert.equal(actual, expected);
+
+    rule = '@@||example.com^$ehide,jsinject';
+    actual = adguard.rules.ruleConverter.convertRule(rule);
+    expected = '@@||example.com^$elemhide,jsinject';
+    assert.equal(actual, expected);
+});
