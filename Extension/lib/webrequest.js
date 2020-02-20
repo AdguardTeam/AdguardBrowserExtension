@@ -368,19 +368,6 @@
     }
 
     /**
-     * Before the introduction of $CSP rules, we used another approach for modifying Content-Security-Policy header.
-     * We are looking for URL blocking rule that matches some request type and protocol (ws:, blob:, stun:)
-     * e.g. "$webrtc,domain=hdmoza.com"
-     *
-     * @param tab Tab
-     * @param frameUrl Frame URL
-     * @returns matching rule
-     */
-    function findLegacyCspRule(tab, frameUrl) {
-        return adguard.webRequestService.getRuleForRequest(tab, 'stun:adguardwebrtc.check', frameUrl, adguard.RequestTypes.WEBRTC);
-    }
-
-    /**
      * Modify CSP header to block WebSocket, prohibit data: and blob: frames and WebWorkers
      * @param requestDetails
      * @returns {{responseHeaders: *}} CSP headers
@@ -400,17 +387,6 @@
         const frameUrl = adguard.frames.getFrameUrl(tab, requestDetails.frameId);
 
         const cspHeaders = [];
-
-        const legacyCspRule = findLegacyCspRule(tab, frameUrl);
-        if (adguard.webRequestService.isRequestBlockedByRule(legacyCspRule)) {
-            cspHeaders.push({
-                name: CSP_HEADER_NAME,
-                value: adguard.rules.CspFilter.DEFAULT_DIRECTIVE,
-            });
-        }
-        if (legacyCspRule) {
-            adguard.requestContextStorage.update(requestId, { cspRules: [legacyCspRule] });
-        }
 
         /**
          * Retrieve $CSP rules specific for the request
