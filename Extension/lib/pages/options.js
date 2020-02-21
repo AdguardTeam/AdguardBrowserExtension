@@ -2315,6 +2315,11 @@ const initPage = function (response) {
     AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
     EventNotifierTypes = response.constants.EventNotifierTypes;
 
+    Array.from(document.getElementsByClassName('current-year'))
+        .forEach((el) => {
+            el.innerHTML = new Date().getFullYear().toString();
+        });
+
     const onDocumentReady = function () {
         // handle initial url hash
         const hashOptions = handleUrlHash();
