@@ -2182,6 +2182,11 @@ PageController.prototype = {
     _render() {
         const defaultWhitelistMode = userSettings.values[userSettings.names.DEFAULT_WHITE_LIST_MODE];
 
+        const currentYearElements = document.getElementsByClassName('current-year');
+
+        Array.prototype.forEach.call(currentYearElements,
+            (el) => { el.innerText = new Date().getFullYear().toString(); });
+
         if (environmentOptions.Prefs.mobile) {
             document.querySelector('#resetStats').style.display = 'none';
         }
