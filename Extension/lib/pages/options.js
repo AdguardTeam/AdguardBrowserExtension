@@ -2175,6 +2175,11 @@ PageController.prototype = {
     _render() {
         const defaultWhitelistMode = userSettings.values[userSettings.names.DEFAULT_WHITE_LIST_MODE];
 
+        const currentYearElements = document.getElementsByClassName('current-year');
+
+        Array.prototype.forEach.call(currentYearElements,
+            (el) => { el.innerText = new Date().getFullYear().toString(); });
+
         if (environmentOptions.Prefs.mobile) {
             document.querySelector('#resetStats').style.display = 'none';
         }
@@ -2314,11 +2319,6 @@ const initPage = function (response) {
 
     AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
     EventNotifierTypes = response.constants.EventNotifierTypes;
-
-    Array.from(document.getElementsByClassName('current-year'))
-        .forEach((el) => {
-            el.innerHTML = new Date().getFullYear().toString();
-        });
 
     const onDocumentReady = function () {
         // handle initial url hash
