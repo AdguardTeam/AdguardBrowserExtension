@@ -57,8 +57,11 @@ const Utils = {
             const reader = new FileReader();
             reader.onload = function (e) {
                 const oldRules = editor.getValue();
-                const newRules = `${oldRules}\n${e.target.result}`;
-                editor.setValue(newRules.trim());
+                const newRules = `${oldRules}\n${e.target.result}`.split('\n');
+                const trimmedRules = newRules.map(rule => rule.trim());
+                const ruleSet = new Set(trimmedRules);
+                const uniqueRules = Array.from(ruleSet).join('\n');
+                editor.setValue(uniqueRules.trim());
                 fileInput.value = '';
             };
             reader.onerror = function (err) {
