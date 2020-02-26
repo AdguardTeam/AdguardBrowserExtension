@@ -146,12 +146,12 @@ QUnit.test('script[has-text] and script[tag-content] should be converted', (asse
     rule = 'example.com##^script:has-text(12313)';
     actual = adguard.rules.ruleConverter.convertRule(rule);
     assert.equal(actual.length, 1, 'Single rule check');
-    assert.equal(actual[0], 'example.com$$script[tag-content="12313"]', 'Should be converted to adg rule');
+    assert.equal(actual[0], 'example.com$$script[tag-content="12313"][max-length="262144"]', 'Should be converted to adg rule');
 
     rule = 'example.com##^script:has-text(===):has-text(/[\w\W]{16000}/)';
     actual = adguard.rules.ruleConverter.convertRule(rule);
     assert.equal(actual.length, 2, 'Two rules, one of then nor supporting');
-    assert.equal(actual[0], 'example.com$$script[tag-content="==="]', 'Should be converted to adg rule');
+    assert.equal(actual[0], 'example.com$$script[tag-content="==="][max-length="262144"]', 'Should be converted to adg rule');
     assert.equal(actual[1], 'example.com##^script:has-text(/[wW]{16000}/)', 'Should be separated to ubo rule');
 });
 
