@@ -523,13 +523,6 @@ adguard.webRequestService = (function (adguard) {
             return false;
         }
 
-        // Temporary disabled for Edge Chromium:
-        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1558
-        // TODO: Figure out what's wrong exactly
-        if (adguard.utils.browser.isEdgeChromiumBrowser()) {
-            return false;
-        }
-
         return canCollectHitStatsForTab(tab) || adguard.filteringLog.isOpen();
     };
 
