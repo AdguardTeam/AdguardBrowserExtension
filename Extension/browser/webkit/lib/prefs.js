@@ -134,7 +134,7 @@ adguard.prefs = (function (adguard) {
 
         const canUseInsertCSSAndExecuteScript = (
             // Blink engine based browsers
-            (Prefs.browser === 'Chrome' || Prefs.browser === 'Opera' || Prefs.browser === 'YaBrowser')
+            (Prefs.browser === 'Chrome' || Prefs.browser === 'Opera' || Prefs.browser === 'YaBrowser' || Prefs.browser === 'EdgeChromium')
             // Support for tabs.insertCSS and tabs.executeScript on chrome
             // requires chrome version above or equal to 39, as per documentation: https://developers.chrome.com/extensions/tabs
             // But due to a bug, it requires version >= 50
