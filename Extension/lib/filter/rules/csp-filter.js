@@ -67,7 +67,7 @@
      * Filter for CSP filter rules
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/685
      */
-    api.CspFilter = function (rules) {
+    api.CspFilter = function (rules, badFilterRules) {
 
         var cspWhiteFilter = new api.UrlFilterRuleLookupTable();
         var cspBlockFilter = new api.UrlFilterRuleLookupTable();
@@ -141,7 +141,7 @@
                 requestType = adguard.RequestTypes.OTHER;
             }
 
-            var whiteRules = cspWhiteFilter.findRules(url, documentHost, thirdParty, requestType);
+            var whiteRules = cspWhiteFilter.findRules(url, documentHost, thirdParty, requestType, badFilterRules);
 
             var whitelistedRulesByDirective = Object.create(null);
 
@@ -158,7 +158,7 @@
                 }
             }
 
-            var blockingRules = cspBlockFilter.findRules(url, documentHost, thirdParty, requestType);
+            var blockingRules = cspBlockFilter.findRules(url, documentHost, thirdParty, requestType, badFilterRules);
 
             var rulesByDirective = Object.create(null);
 
