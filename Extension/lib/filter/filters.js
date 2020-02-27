@@ -110,7 +110,7 @@
 
         // Filter that applies CSP rules
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#csp-modifier
-        this.cspFilter = new adguard.rules.CspFilter();
+        this.cspFilter = new adguard.rules.CspFilter([], this.badFilterRules);
 
         // Filter that applies cookie rules
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/961
@@ -175,7 +175,7 @@
                     adguard.console.debug(`FilterRule with $extension modifier was omitted. Rule text: "${rule.ruleText}"`);
                     return;
                 }
-                if (rule.isCspRule()) {
+                if (rule.isCspRule() && !rule.isBadFilter()) {
                     this.cspFilter.addRule(rule);
                 } else if (rule.isCookieRule()) {
                     this.cookieFilter.addRule(rule);
