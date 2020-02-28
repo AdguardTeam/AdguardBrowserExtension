@@ -39,6 +39,10 @@
     const UBO_SCRIPTLET_EXCEPTION_MASK_2 = '#@#script:inject';
     const UBO_SCRIPT_TAG_MASK = '##^script';
     /**
+     * AdGuard max-length tag for uBlock scripts conversion
+     */
+    const ADGUARD_SCRIPT_MAX_LENGTH = '[max-length="262144"]';
+    /**
      * AdBlock Plus snippet rule mask
      */
     const ABP_SCRIPTLET_MASK = '#$#';
@@ -199,7 +203,7 @@
             if (isRegExp(attr)) {
                 rules.push(`${domains}${uboScriptTag}${uboHasTextRule}(${attr})`);
             } else {
-                rules.push(`${domains}${adgScriptTag}[tag-content="${attr}"]`);
+                rules.push(`${domains}${adgScriptTag}[tag-content="${attr}"]${ADGUARD_SCRIPT_MAX_LENGTH}`);
             }
         }
 
