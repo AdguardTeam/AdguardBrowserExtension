@@ -75,10 +75,19 @@
                 lastIdx = startParamsIdx;
             }
 
-            const host = lastIdx === -1 ? url.substring(firstIdx + 2) : url.substring(firstIdx + 2, lastIdx);
+            let host = lastIdx === -1 ? url.substring(firstIdx + 2) : url.substring(firstIdx + 2, lastIdx);
 
             const portIndex = host.indexOf(':');
-            return portIndex === -1 ? host : host.substring(0, portIndex);
+
+            host = portIndex === -1 ? host : host.substring(0, portIndex);
+
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1586
+            const lastChar = host.charAt(host.length - 1);
+            if (lastChar === '.') {
+                host = host.slice(0, -1);
+            }
+
+            return host;
         },
 
         getDomainName(url) {
