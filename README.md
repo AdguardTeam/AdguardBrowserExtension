@@ -186,3 +186,10 @@ To upload new phrases to crowdin you need the file with phrases `./Extension/_lo
 ```
   yarn locales-upload
 ```
+## Minimum supported browser versions
+| Browser                 	| Version 	|
+|-------------------------	|:-------:	|
+| Chromium Based Browsers 	|    55   	|
+| Firefox                 	|    52   	|
+| Opera                   	|    42   	|
+| Edge                    	|    15.14942/39.14942   	|
