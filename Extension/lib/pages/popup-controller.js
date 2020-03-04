@@ -47,6 +47,11 @@ PopupController.prototype = {
         var widget = document.querySelector('.widget-popup');
         var width = widget.offsetWidth;
         var height = widget.offsetHeight;
+
+        const popupZoom = ((window.outerWidth - 8) / window.innerWidth) - 0.02;
+        const userSettingsZoom = popupZoom.toFixed(popupZoom < 3 ? 2 : 1);
+        document.body.style.zoom = 1 / userSettingsZoom;
+
         popupPage.resizePopup(width, height);
     },
 
