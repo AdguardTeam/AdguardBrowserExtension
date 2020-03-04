@@ -41,19 +41,27 @@
             }
         }
 
-        // if rules dont have domain patterns and have $domain modifier
-        // we should check rules with request urls hosts
-        if (rule.isAnyUrl()
-            && rule.hasPermittedDomains()
+        const urlHost = adguard.utils.url.getHost(url);
+        let isPermitted = rule.isPermitted(referrerHost);
+
+        if (rule.hasPermittedDomains()
             && (requestType === adguard.RequestTypes.DOCUMENT
-                || requestType === adguard.RequestTypes.SUBDOCUMENT)) {
-            referrerHost = adguard.utils.url.getHost(url);
-            thirdParty = false;
+            || requestType === adguard.RequestTypes.SUBDOCUMENT)) {
+            if (rule.isAnyUrl()) {
+                // if rules dont have domain patterns and have $domain modifier
+                // we should check rules with request urls hosts
+                isPermitted = rule.isPermitted(urlHost);
+                thirdParty = false;
+            } else {
+                // for DOCUMENT and SUBDOCUMENT requests
+                // rules with request urls hosts are permitted as well
+                isPermitted = isPermitted || rule.isPermitted(urlHost);
+            }
         }
 
         return (genericRulesAllowed || !rule.isGeneric())
             && rule.isFiltered(url, thirdParty, requestType)
-            && rule.isPermitted(referrerHost);
+            && isPermitted;
     }
 
     /**
@@ -246,6 +254,21 @@
         },
 
         /**
+         * Concat arrays with necessary checks
+         *
+         * @param rules
+         * @param toAdd
+         * @return {*|WordArray|Array|Buffer|any[]|string}
+         */
+        concatRules(rules, toAdd) {
+            if (toAdd && toAdd.length > 0) {
+                return rules.concat(toAdd);
+            }
+
+            return rules;
+        },
+
+        /**
          * Returns filtering rule if request is filtered or NULL if nothing found
          *
          * @param url                 Url to check
@@ -266,32 +289,29 @@
 
             // Check against rules with shortcuts
             let rules = this.shortcutsLookupTable.lookupRules(urlLowerCase);
-            if (rules && rules.length > 0) {
-                matchedRules = matchedRules.concat(rules);
-            }
+            matchedRules = this.concatRules(matchedRules, rules);
 
+            let hostToCheck = documentHost;
+            const urlHost = adguard.utils.url.getHost(url);
             // if document host is null, get host from url
             // thus we can find rules and check them using domain restriction later
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1474
-            if (documentHost === null) {
-                const urlHost = adguard.utils.url.getHost(url);
+            if (hostToCheck === null) {
+                hostToCheck = urlHost;
+            } else if (requestType === adguard.RequestTypes.DOCUMENT
+                || requestType === adguard.RequestTypes.SUBDOCUMENT) {
+                // In case DOCUMENT request type look up rules for request url host
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1534
                 rules = this.domainsLookupTable.lookupRules(urlHost);
-                if (rules && rules.length > 0) {
-                    matchedRules = matchedRules.concat(rules);
-                }
+                matchedRules = this.concatRules(matchedRules, rules);
             }
 
             // Check against rules with domains
-            rules = this.domainsLookupTable.lookupRules(documentHost);
-            if (rules && rules.length > 0) {
-                matchedRules = matchedRules.concat(rules);
-            }
-
+            rules = this.domainsLookupTable.lookupRules(hostToCheck);
+            matchedRules = this.concatRules(matchedRules, rules);
 
             // Check against rules without shortcuts
-            if (this.rulesWithoutShortcuts.length > 0) {
-                matchedRules = matchedRules.concat(this.rulesWithoutShortcuts);
-            }
+            matchedRules = this.concatRules(matchedRules, this.rulesWithoutShortcuts);
 
             if (matchedRules.length > 0) {
                 const rule = findFirstRule(
