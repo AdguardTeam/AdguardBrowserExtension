@@ -47,6 +47,15 @@ PopupController.prototype = {
         var widget = document.querySelector('.widget-popup');
         var width = widget.offsetWidth;
         var height = widget.offsetHeight;
+
+        /**
+         * Compensation for zooming in or out of the default window scale by multiplying by the inverse scale
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1529
+         */
+        const popupZoom = ((window.outerWidth - 8) / window.innerWidth) - 0.02;
+        const userSettingsZoom = popupZoom.toFixed(popupZoom < 3 ? 2 : 1);
+        document.body.style.zoom = 1 / userSettingsZoom;
+
         popupPage.resizePopup(width, height);
     },
 
