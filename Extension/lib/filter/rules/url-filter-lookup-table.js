@@ -41,27 +41,34 @@
             }
         }
 
-        const urlHost = adguard.utils.url.getHost(url);
-        let isPermitted = rule.isPermitted(referrerHost);
-
-        if (rule.hasPermittedDomains()
-            && (requestType === adguard.RequestTypes.DOCUMENT
-            || requestType === adguard.RequestTypes.SUBDOCUMENT)) {
-            if (rule.isAnyUrl()) {
-                // if rules dont have domain patterns and have $domain modifier
-                // we should check rules with request urls hosts
-                isPermitted = rule.isPermitted(urlHost);
-                thirdParty = false;
-            } else {
-                // for DOCUMENT and SUBDOCUMENT requests
-                // rules with request urls hosts are permitted as well
-                isPermitted = isPermitted || rule.isPermitted(urlHost);
-            }
+        if (!genericRulesAllowed && rule.isGeneric()) {
+            return false;
         }
 
-        return (genericRulesAllowed || !rule.isGeneric())
-            && rule.isFiltered(url, thirdParty, requestType)
-            && isPermitted;
+        if (!rule.hasPermittedDomains()) {
+            return rule.isFiltered(url, thirdParty, requestType)
+                && rule.isPermitted(referrerHost);
+        }
+
+        if (requestType !== adguard.RequestTypes.DOCUMENT
+            && requestType !== adguard.RequestTypes.SUBDOCUMENT) {
+            return rule.isFiltered(url, thirdParty, requestType)
+                && rule.isPermitted(referrerHost);
+        }
+
+        let isPermitted = rule.isPermitted(referrerHost);
+        if (rule.isAnyUrl()) {
+            // if rules dont have domain patterns and have $domain modifier
+            // we should check rules with request urls hosts
+            isPermitted = rule.isPermitted(adguard.utils.url.getHost(url));
+            thirdParty = false;
+        } else {
+            // for DOCUMENT and SUBDOCUMENT requests
+            // rules with request urls hosts are permitted as well
+            isPermitted = isPermitted || rule.isPermitted(adguard.utils.url.getHost(url));
+        }
+
+        return rule.isFiltered(url, thirdParty, requestType) && isPermitted;
     }
 
     /**
@@ -292,17 +299,16 @@
             matchedRules = this.concatRules(matchedRules, rules);
 
             let hostToCheck = documentHost;
-            const urlHost = adguard.utils.url.getHost(url);
             // if document host is null, get host from url
             // thus we can find rules and check them using domain restriction later
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1474
             if (hostToCheck === null) {
-                hostToCheck = urlHost;
+                hostToCheck = adguard.utils.url.getHost(url);
             } else if (requestType === adguard.RequestTypes.DOCUMENT
                 || requestType === adguard.RequestTypes.SUBDOCUMENT) {
                 // In case DOCUMENT request type look up rules for request url host
                 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1534
-                rules = this.domainsLookupTable.lookupRules(urlHost);
+                rules = this.domainsLookupTable.lookupRules(adguard.utils.url.getHost(url));
                 matchedRules = this.concatRules(matchedRules, rules);
             }
 
