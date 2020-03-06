@@ -16,7 +16,6 @@
  */
 
 (function (adguard, api) {
-
     'use strict';
 
     /**
@@ -42,15 +41,27 @@
             return true;
         }
 
-        const optionsDelimiterIndex = ruleText.indexOf(api.UrlFilterRule.OPTIONS_DELIMITER)
+        const optionsDelimiterIndex = ruleText.indexOf(api.UrlFilterRule.OPTIONS_DELIMITER);
         if (optionsDelimiterIndex >= 0) {
-            const replaceOptionIndex = ruleText.indexOf(api.UrlFilterRule.REPLACE_OPTION + '=');
+            const replaceOptionIndex = ruleText.indexOf(`${api.UrlFilterRule.REPLACE_OPTION}=`);
             if (replaceOptionIndex > optionsDelimiterIndex) {
                 return true;
             }
         }
 
         return false;
+    };
+
+    /**
+     * Checks if rule length is less than minimum rule length.
+     * Rules with length less than 4 are ignored
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1600
+     * @param ruleText
+     * @returns {boolean}
+     */
+    const isRuleTooSmall = function (ruleText) {
+        const MIN_RULE_LENGTH = 4;
+        return ruleText.length < MIN_RULE_LENGTH;
     };
 
     /**
@@ -74,6 +85,10 @@
                 return null;
             }
 
+            if (isRuleTooSmall(ruleText)) {
+                return null;
+            }
+
             if (!filterUnsupportedRules(ruleText)) {
                 return null;
             }
@@ -87,7 +102,7 @@
             }
 
             if (api.FilterRule.findRuleMarker(ruleText, api.ContentFilterRule.RULE_MARKERS, api.ContentFilterRule.RULE_MARKER_FIRST_CHAR)) {
-                let responseContentFilteringSupported = adguard.prefs.features && adguard.prefs.features.responseContentFilteringSupported;
+                const responseContentFilteringSupported = adguard.prefs.features && adguard.prefs.features.responseContentFilteringSupported;
                 if (!responseContentFilteringSupported) {
                     return null;
                 }
@@ -152,5 +167,4 @@
     };
 
     api.builder = { createRule };
-
 })(adguard, adguard.rules);
