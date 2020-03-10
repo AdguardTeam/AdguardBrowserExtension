@@ -1,6 +1,6 @@
 #
 #    AdGuard Scriptlets (Redirects Source)
-#    Version 1.1.0
+#    Version 1.1.5
 #
 - title: 1x1-transparent.gif
   description: |-
@@ -9,6 +9,7 @@
     ||example.org^$image,redirect=1x1-transparent.gif
     ```
   aliases:
+    - 1x1.gif
     - 1x1-transparent-gif
   comment: 'http://probablyprogramming.com/2009/03/15/the-tiniest-gif-ever'
   contentType: image/gif;base64
@@ -21,6 +22,7 @@
     ||example.org^$image,redirect=2x2-transparent.png
     ```
   aliases:
+    - 2x2.png
     - 2x2-transparent-png
   contentType: image/png;base64
   content: >
@@ -34,6 +36,7 @@
     ||example.org^$image,redirect=3x2-transparent.png
     ```
   aliases:
+    - 3x2.png
     - 3x2-transparent-png
   contentType: image/png;base64
   content: >
@@ -47,6 +50,7 @@
     ||example.org^$image,redirect=32x32-transparent.png
     ```
   aliases:
+    - 32x32.png
     - 32x32-transparent-png
   contentType: image/png;base64
   content: >
@@ -60,6 +64,7 @@
     ||example.com^$subdocument,redirect=noopframe,domain=example.org
     ```
   aliases:
+    - noop.html
     - blank-html
   contentType: text/html
   content: |-
@@ -73,7 +78,7 @@
   description: |-
     **Example**
     ```
-    ||example.org^$stylesheet,redirect=noopcss
+    ||example.org/style.css$stylesheet,redirect=noopcss
     ```
   aliases:
     - blank-css
@@ -84,9 +89,10 @@
   description: |-
     **Example**
     ```
-    ||example.org^$script,redirect=noopjs
+    ||example.org/advert.js$script,redirect=noopjs
     ```
   aliases:
+    - noop.js
     - blank-js
   contentType: application/javascript
   content: '(function() {})()'
@@ -95,19 +101,34 @@
   description: |-
     **Example**
     ```
-    ||example.org^$xmlhttprequest,redirect=nooptext
+    ||example.org/advert.js$xmlhttprequest,redirect=nooptext
     ```
   aliases:
+    - noop.txt
     - blank-text
   contentType: text/plain
   content: ''
 
+- title: noopvmap-1.0
+  description: |-
+    Redirects request to an empty VMAP response.
+
+    **Example**
+    ```
+    ||example.org/vmap01.xml$xmlhttprequest,redirect=noopvmap-1.0
+    ```
+  contentType: text/xml
+  content: >-
+    <vmap:VMAP xmlns:vmap="http://www.iab.net/videosuite/vmap"
+    version="1.0"></vmap:VMAP>
+
 - title: noopvast-2.0
   description: |-
     Redirects request to an empty VAST response.
+
     **Example**
     ```
-    ||example.org^$xmlhttprequest,redirect=noopvast-2.0
+    ||example.org/vast02.xml^$xmlhttprequest,redirect=noopvast-2.0
     ```
   contentType: text/xml
   content: <VAST version="2.0"></VAST>
@@ -115,9 +136,10 @@
 - title: noopvast-3.0
   description: |-
     Redirects request to an empty VAST response.
+
     **Example**
     ```
-    ||example.org^$xmlhttprequest,redirect=noopvast-3.0
+    ||example.org/vast03.xml^$xmlhttprequest,redirect=noopvast-3.0
     ```
   contentType: text/xml
   content: <VAST version="3.0"></VAST>
@@ -126,9 +148,10 @@
   description: |-
     **Example**
     ```
-    ||example.org^$media,redirect=noopmp3-0.1s
+    ||example.org/advert.mp3$media,redirect=noopmp3-0.1s
     ```
   aliases:
+    - noopmp3-0.1s
     - blank-mp3
   comment: >
     From:
@@ -156,9 +179,10 @@
   description: |-
     **Example**
     ```
-    ||example.org^$media,redirect=noopmp4-1s
+    ||example.org/advert.mp4$media,redirect=noopmp4-1s
     ```
   aliases:
+    - noop-1s.mp4
     - blank-mp4
   comment: |
     From https://github.com/kud/blank-video
@@ -1115,6 +1139,8 @@
   aliases:
     - fuckadblock.js-3.2.0
     - ubo-fuckadblock.js-3.2.0
+    - nofab.js
+    - ubo-nofab.js
   contentType: application/javascript
   content: |-
     (function(source, args){
