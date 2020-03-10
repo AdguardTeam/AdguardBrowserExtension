@@ -1,9 +1,9 @@
-! Checksum: BA6fZ8O+vQlxap2IUSRa5g
+! Checksum: yv3q9pTEnMZm24L22j0mkA
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.0.68
-! TimeUpdated: 2019-11-20T17:31:32+03:00
-! Expires: 2 days (update frequency)
+! Version: 2.0.0.76
+! TimeUpdated: 2020-03-05T17:32:09+03:00
+! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -137,6 +137,7 @@ _advertentieleaderboardhome.
 ||delivery.at5.nl^
 ||ganaar.gertibaldi.com^
 ||mooieplaatjes.bierdopje.com^
+.nl/adurl/$xmlhttprequest,domain=start-player.npo.nl
 ||109.70.1.61/bannersystem/
 ||actiecode.nl/dynamics/modules/spub$third-party
 ||adslwinkel.nl/templates/adslwinkel/images/adslnl.gif$domain=htforum.nl
@@ -1317,10 +1318,10 @@ icttipsandtricks.nl##body > div[style^="position: fixed; top:"][style*="z-index:
 icttipsandtricks.nl#%#Object.defineProperty(window, 'ai_adb_detected', { get: function() { return function() {}; } });
 @@||static.webwereld.nl/javascripts/advert.js
 @@||v.fwmrm.net/ad/g/1$domain=player.medialaancdn.be|vtm.be
-player.medialaancdn.be,vtm.be#$#.pub300x250.pub300x250m.pub728x90.text-ad.textAd.textad.textads.text-ads.text-ad-links {display:block!important;}
+player.medialaancdn.be,vtm.be#$#.pub300x250.pub300x250m.pub728x90.text-ad.textAd.textad.textads.text-ads.text-ad-links { display: block !important; }
 voetbalwedstrijdenvandaag.nl#@##sponsorText
 @@||v.fwmrm.net/ad/g/1$domain=q2.be
-q2.be#$#.pub300x250.pub300x250m.pub728x90.text-ad.textAd.textad.textads.text-ads.text-ad-links {display:block!important;}
+q2.be#$#.pub300x250.pub300x250m.pub728x90.text-ad.textAd.textad.textads.text-ads.text-ad-links { display: block !important; }
 icttipsandtricks.nl##body #adblock_screen
 @@||gamekings.tv/wp-content/themes/*/js/ads.js
 vogelgeluid.nl#@##banner_ad
@@ -1329,6 +1330,8 @@ telegraaf.nl#%#window.canRunAds = true;
 @@||static.buienradar.nl/resources/js/advertisement.js
 biernet.nl#@#.afs_ads
 @@||telegraaf.tcdn.nl/javascript/showads*.js
+marktplaats.nl#?#.mp-Page-element > .mp-Listings + div:not([class]):not([id]):has(> .mp-Listings__admarktTitle)
+marktplaats.nl#?#ul.mp-Listings > li.mp-Listing:has(> .mp-Listing-coverLink > .mp-Listing-group > .mp-Listing-group--price-date-feature > span.mp-Listing-priority > span:contains(/^Topadvertentie$/))
 turksemedia.nl#$?#div[class="sidebar_item"][style="padding-bottom: 16px;"]:has(> a > img[width="276"]) { remove: true; }
 appletips.nl#?#.padnoshow > div[class^="block"][-ext-has='#kpwrfeatured']
 sceptr.net#?#.td-main-sidebar > .td-ss-main-sidebar > .widget_text:has(> h4.block-title > span:contains(ADVERTENTIE))
@@ -1344,6 +1347,13 @@ klusidee.nl#?#tr.table-row[-ext-has=".td-ad"]
 omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3000px!important; }
 handbalstartpunt.nl#$##advertentie-top { height: 0!important; }
 omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
+almere-nieuws.nl##header #mvp-leader-wrap
+almere-nieuws.nl###footer-container > #footer-banners + #footer-text
+||almere-nieuws.nl/banners_*.html
+frontpage.fok.nl##.commercial_space
+marktplaats.nl###banner-top-dt
+marktplaats.nl##.vip-banner-top-sticky-container
+hardware.info##.sidebar_right_top
 ||developers.affiliateprogramma.eu/content-wrapper/general.js$domain=autobahn.eu
 ||cdn.ster.nl/banners^
 tijd.be##.c-sitenavPlaceholder__ad
@@ -1379,6 +1389,7 @@ hln.be##.ktsjing-row--leader
 hln.be##.ktsjing-row--sky
 hln.be##aside[data-prefix="Advertentie"]
 sceptr.net##.td-main-sidebar > .td-ss-main-sidebar > .widget_sp_image
+androidplanet.nl##.dynamic-content[data-nosnippet]
 androidplanet.nl###featured-header[data-campaign]
 androidplanet.nl##.sidebar > .widget_ad_html
 ||mediareader.omroepwest.nl/gaslicht^
@@ -1441,6 +1452,10 @@ klusidee.nl##td.td-ad
 ||serving-sys.com/*.mp4^$domain=kijk.nl
 ||totaaltv.nl/upload/Banner-sep-astrasat.gif
 ||vlinderscrime.nl/wp-content/uploads/*/*banner*.
+@@||securepubads.g.doubleclick.net/gpt/pubads_impl_*.js$domain=standaard.be
+@@||securepubads.g.doubleclick.net/tag/js/gpt.js$domain=standaard.be
+@@||markup.standaard.be/extra/assets/advertising/dfp-setup.js
+@@||markup.standaard.be/extra/assets/advertising/prebid.js
 @@||player.ooyala.com/static/*/ad-plugin/$domain=qmusic.nl
 @@||kpn.com^$third-party
 @@||diodrogist.nl^$generichide

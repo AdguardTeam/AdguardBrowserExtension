@@ -1,9 +1,9 @@
-! Checksum: mfYuCNxi4Oa018JAu3GlIA
+! Checksum: SSFGcYwyAzlkpSKGwwLRdg
 ! Title: AdGuard Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.0.53
-! TimeUpdated: 2019-10-14T12:31:20+03:00
-! Expires: 2 days (update frequency)
+! Version: 2.0.0.55
+! TimeUpdated: 2020-01-13T14:31:29+03:00
+! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -17,10 +17,9 @@
 #%#var AG_setConstant=function(e,a){if("undefined"===a)a=void 0;else if("false"===a)a=!1;else if("true"===a)a=!0;else if("noopFunc"===a)a=function(){};else if("trueFunc"===a)a=function(){return!0};else if("falseFunc"===a)a=function(){return!1};else if(/^\d+$/.test(a)){if(a=parseFloat(a),isNaN(a)||32767<Math.abs(a))return}else return;var b=!1;AG_defineProperty(e,{get:function(){return a},set:function(c){if(b)var d=!0;else void 0!==c&&void 0!==a&&typeof c!==typeof a&&(b=!0),d=b;d&&(a=c)}})};
 /fbevents.js^
 /ads/beacon-
-/AppMeasurement-$script
+/AppMeasurement-$script,domain=~mlb.com
 ||chrome.test.filter.com^$third-party
 !#######################################################
 !######### The list of dangerous rules #################
 !#######################################################
 !################## For advertisement ##################
-schnittberichte.com#?#table .sideboxes[-ext-has='a[href*="out.php?"] > img']
