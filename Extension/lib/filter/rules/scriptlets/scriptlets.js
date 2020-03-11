@@ -1,7 +1,7 @@
 
 /**
  * AdGuard Scriptlets
- * Version 1.1.0
+ * Version 1.1.5
  */
 
 (function () {
@@ -40,14 +40,17 @@
     /**
      * Check is property exist in base object recursively
      *
-     * If property doesn't exist in base object
-     * defines this property and returns base, property name and remaining part of property chain
+     * If property doesn't exist in base object,
+     * defines this property (for addProp = true)
+     * and returns base, property name and remaining part of property chain
      *
      * @param {Object} base
      * @param {string} chain
+     * @param {Booleam} addProp - defines is nonexistent base property should be assigned as 'undefined'
      * @returns {Chain}
      */
     function getPropertyInChain(base, chain) {
+      var addProp = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
       var pos = chain.indexOf('.');
 
       if (pos === -1) {
@@ -62,7 +65,11 @@
       chain = chain.slice(pos + 1);
 
       if (own !== undefined) {
-        return getPropertyInChain(own, chain);
+        return getPropertyInChain(own, chain, addProp);
+      }
+
+      if (!addProp) {
+        return false;
       }
 
       Object.defineProperty(base, prop, {
@@ -97,6 +104,63 @@
 
       var escaped = str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       return new RegExp(escaped);
+    };
+    /**
+     * Get string before regexp first match
+     * @param {string} str
+     * @param {RegExp} rx
+     */
+
+    var getBeforeRegExp = function getBeforeRegExp(str, rx) {
+      var index = str.search(rx);
+      return str.substring(0, index);
+    };
+    var startsWith = function startsWith(str, prefix) {
+      return str && str.indexOf(prefix) === 0;
+    };
+    var substringAfter = function substringAfter(str, separator) {
+      if (!str) {
+        return str;
+      }
+
+      var index = str.indexOf(separator);
+      return index < 0 ? '' : str.substring(index + separator.length);
+    };
+    var substringBefore = function substringBefore(str, separator) {
+      if (!str || !separator) {
+        return str;
+      }
+
+      var index = str.indexOf(separator);
+      return index < 0 ? str : str.substring(0, index);
+    };
+    /**
+     * Wrap str in double qoutes and replaces single quotes if need
+     * @param {string} str
+     */
+
+    var wrapInDoubleQuotes = function wrapInDoubleQuotes(str) {
+      if (str[0] === '\'' && str[str.length - 1] === '\'') {
+        str = str.substring(1, str.length - 1); // eslint-disable-next-line no-useless-escape
+
+        str = str.replace(/\"/g, '\\"');
+      } else if (str[0] === '"' && str[str.length - 1] === '"') {
+        str = str.substring(1, str.length - 1); // eslint-disable-next-line no-useless-escape
+
+        str = str.replace(/\'/g, '\\\'');
+      }
+
+      return "\"".concat(str, "\"");
+    };
+    /**
+     * Returns substring enclosed in the widest braces
+     * @param {string} str
+     */
+
+    var getStringInBraces = function getStringInBraces(str) {
+      var firstIndex = str.indexOf('(');
+      var lastIndex = str.lastIndexOf(')');
+      return str.substring(firstIndex + 1, lastIndex);
     };
 
     /**
@@ -163,7 +227,7 @@
     /**
      * Hit used only for debug purposes now
      * @param {Source} source
-     * @param {String} message optional message
+     * @param {string} message optional message
      */
     var hit = function hit(source, message) {
       if (source.verbose !== true) {
@@ -198,6 +262,92 @@
     };
 
     /**
+     * DOM tree changes observer. Used for 'remove-attr' and 'remove-class' scriptlets
+     * @param {Function} callback
+     * @param {Boolean} observeAttrs - optional parameter - should observer check attibutes changes
+     */
+    var observeDOMChanges = function observeDOMChanges(callback) {
+      var observeAttrs = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      var attrsToObserv = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+
+      /**
+       * Returns a wrapper, passing the call to 'method' at maximum once per 'delay' milliseconds.
+       * Those calls that fall into the "cooldown" period, are ignored
+       * @param {Function} method
+       * @param {Number} delay - milliseconds
+       */
+      var throttle = function throttle(method, delay) {
+        var wait = false;
+        var savedArgs;
+
+        var wrapper = function wrapper() {
+          for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+          }
+
+          if (wait) {
+            savedArgs = args;
+            return;
+          }
+
+          method.apply(void 0, args);
+          wait = true;
+          setTimeout(function () {
+            wait = false;
+
+            if (savedArgs) {
+              wrapper(savedArgs);
+              savedArgs = null;
+            }
+          }, delay);
+        };
+
+        return wrapper;
+      };
+      /**
+       * 'delay' in milliseconds for 'throttle' method
+       */
+
+
+      var THROTTLE_DELAY_MS = 20;
+      /**
+       * Used for remove-class
+       */
+      // eslint-disable-next-line no-use-before-define
+
+      var observer = new MutationObserver(throttle(callbackWrapper, THROTTLE_DELAY_MS));
+
+      var connect = function connect() {
+        if (attrsToObserv.length > 0) {
+          observer.observe(document.documentElement, {
+            childList: true,
+            subtree: true,
+            attributes: observeAttrs,
+            attributeFilter: attrsToObserv
+          });
+        } else {
+          observer.observe(document.documentElement, {
+            childList: true,
+            subtree: true,
+            attributes: observeAttrs
+          });
+        }
+      };
+
+      var disconnect = function disconnect() {
+        observer.disconnect();
+      };
+
+      function callbackWrapper() {
+        disconnect();
+        callback();
+        connect();
+      }
+
+      connect();
+    };
+
+    /**
      * This file must export all used dependencies
      */
 
@@ -208,13 +358,20 @@
         getPropertyInChain: getPropertyInChain,
         escapeRegExp: escapeRegExp,
         toRegExp: toRegExp,
+        getBeforeRegExp: getBeforeRegExp,
+        startsWith: startsWith,
+        substringAfter: substringAfter,
+        substringBefore: substringBefore,
+        wrapInDoubleQuotes: wrapInDoubleQuotes,
+        getStringInBraces: getStringInBraces,
         createOnErrorHandler: createOnErrorHandler,
         noop: noop,
         noopNull: noopNull,
         noopThis: noopThis,
         noopArray: noopArray,
         noopStr: noopStr,
-        hit: hit
+        hit: hit,
+        observeDOMChanges: observeDOMChanges
     });
 
     /**
@@ -279,6 +436,255 @@
     function wrapInNonameFunc(code) {
       return "function(source, args){\n".concat(code, "\n}");
     }
+
+    function _arrayWithHoles(arr) {
+      if (Array.isArray(arr)) return arr;
+    }
+
+    var arrayWithHoles = _arrayWithHoles;
+
+    function _iterableToArrayLimit(arr, i) {
+      if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) {
+        return;
+      }
+
+      var _arr = [];
+      var _n = true;
+      var _d = false;
+      var _e = undefined;
+
+      try {
+        for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+          _arr.push(_s.value);
+
+          if (i && _arr.length === i) break;
+        }
+      } catch (err) {
+        _d = true;
+        _e = err;
+      } finally {
+        try {
+          if (!_n && _i["return"] != null) _i["return"]();
+        } finally {
+          if (_d) throw _e;
+        }
+      }
+
+      return _arr;
+    }
+
+    var iterableToArrayLimit = _iterableToArrayLimit;
+
+    function _nonIterableRest() {
+      throw new TypeError("Invalid attempt to destructure non-iterable instance");
+    }
+
+    var nonIterableRest = _nonIterableRest;
+
+    function _slicedToArray(arr, i) {
+      return arrayWithHoles(arr) || iterableToArrayLimit(arr, i) || nonIterableRest();
+    }
+
+    var slicedToArray = _slicedToArray;
+
+    function _defineProperty(obj, key, value) {
+      if (key in obj) {
+        Object.defineProperty(obj, key, {
+          value: value,
+          enumerable: true,
+          configurable: true,
+          writable: true
+        });
+      } else {
+        obj[key] = value;
+      }
+
+      return obj;
+    }
+
+    var defineProperty = _defineProperty;
+
+    /**
+     * Iterate over iterable argument and evaluate current state with transitions
+     * @param {string} init first transition name
+     * @param {Array|Collection|string} iterable
+     * @param {Object} transitions transtion functions
+     * @param {any} args arguments which should be passed to transition functions
+     */
+    function iterateWithTransitions(iterable, transitions, init, args) {
+      var state = init || Object.keys(transitions)[0];
+
+      for (var i = 0; i < iterable.length; i += 1) {
+        state = transitions[state](iterable, i, args);
+      }
+
+      return state;
+    }
+    /**
+     * AdGuard scriptlet rule mask
+     */
+
+
+    var ADG_SCRIPTLET_MASK = '#//scriptlet';
+    /**
+     * Helper to accumulate an array of strings char by char
+     */
+
+    var wordSaver = function wordSaver() {
+      var str = '';
+      var strs = [];
+
+      var saveSymb = function saveSymb(s) {
+        str += s;
+        return str;
+      };
+
+      var saveStr = function saveStr() {
+        strs.push(str);
+        str = '';
+      };
+
+      var getAll = function getAll() {
+        return [].concat(strs);
+      };
+
+      return {
+        saveSymb: saveSymb,
+        saveStr: saveStr,
+        getAll: getAll
+      };
+    };
+
+    var substringAfter$1 = function substringAfter(str, separator) {
+      if (!str) {
+        return str;
+      }
+
+      var index = str.indexOf(separator);
+      return index < 0 ? '' : str.substring(index + separator.length);
+    };
+    /**
+     * Parse and validate scriptlet rule
+     * @param {*} ruleText
+     * @returns {{name: string, args: Array<string>}}
+     */
+
+
+    var parseRule = function parseRule(ruleText) {
+      var _transitions;
+
+      ruleText = substringAfter$1(ruleText, ADG_SCRIPTLET_MASK);
+      /**
+       * Transition names
+       */
+
+      var TRANSITION = {
+        OPENED: 'opened',
+        PARAM: 'param',
+        CLOSED: 'closed'
+      };
+      /**
+       * Transition function: the current index position in start, end or between params
+       * @param {string} rule
+       * @param {number} index
+       * @param {Object} Object
+       * @property {Object} Object.sep contains prop symb with current separator char
+       */
+
+      var opened = function opened(rule, index, _ref) {
+        var sep = _ref.sep;
+        var char = rule[index];
+        var transition;
+
+        switch (char) {
+          case ' ':
+          case '(':
+          case ',':
+            {
+              transition = TRANSITION.OPENED;
+              break;
+            }
+
+          case '\'':
+          case '"':
+            {
+              sep.symb = char;
+              transition = TRANSITION.PARAM;
+              break;
+            }
+
+          case ')':
+            {
+              transition = index === rule.length - 1 ? TRANSITION.CLOSED : TRANSITION.OPENED;
+              break;
+            }
+
+          default:
+            {
+              throw new Error('The rule is not a scriptlet');
+            }
+        }
+
+        return transition;
+      };
+      /**
+       * Transition function: the current index position inside param
+       * @param {string} rule
+       * @param {number} index
+       * @param {Object} Object
+       * @property {Object} Object.sep contains prop `symb` with current separator char
+       * @property {Object} Object.saver helper which allow to save strings by car by char
+       */
+
+
+      var param = function param(rule, index, _ref2) {
+        var saver = _ref2.saver,
+            sep = _ref2.sep;
+        var char = rule[index];
+
+        switch (char) {
+          case '\'':
+          case '"':
+            {
+              var preIndex = index - 1;
+              var before = rule[preIndex];
+
+              if (char === sep.symb && before !== '\\') {
+                sep.symb = null;
+                saver.saveStr();
+                return TRANSITION.OPENED;
+              }
+            }
+          // eslint-disable-next-line no-fallthrough
+
+          default:
+            {
+              saver.saveSymb(char);
+              return TRANSITION.PARAM;
+            }
+        }
+      };
+
+      var transitions = (_transitions = {}, defineProperty(_transitions, TRANSITION.OPENED, opened), defineProperty(_transitions, TRANSITION.PARAM, param), defineProperty(_transitions, TRANSITION.CLOSED, function () {}), _transitions);
+      var sep = {
+        symb: null
+      };
+      var saver = wordSaver();
+      var state = iterateWithTransitions(ruleText, transitions, TRANSITION.OPENED, {
+        sep: sep,
+        saver: saver
+      });
+
+      if (state !== 'closed') {
+        throw new Error("Invalid scriptlet rule ".concat(ruleText));
+      }
+
+      var args = saver.getAll();
+      return {
+        name: args[0],
+        args: args.slice(1)
+      };
+    };
 
     /* eslint-disable max-len */
 
@@ -359,7 +765,7 @@
       setChainPropAccess(window, property);
       window.onerror = createOnErrorHandler(rid).bind();
     }
-    abortOnPropertyRead.names = ['abort-on-property-read', 'abort-on-property-read.js', 'ubo-abort-on-property-read.js', 'abp-abort-on-property-read'];
+    abortOnPropertyRead.names = ['abort-on-property-read', 'abort-on-property-read.js', 'ubo-abort-on-property-read.js', 'aopr.js', 'ubo-aopr.js', 'abp-abort-on-property-read'];
     abortOnPropertyRead.injections = [randomId, setPropertyAccess, getPropertyInChain, createOnErrorHandler, hit];
 
     /* eslint-disable max-len */
@@ -438,7 +844,7 @@
       setChainPropAccess(window, property);
       window.onerror = createOnErrorHandler(rid).bind();
     }
-    abortOnPropertyWrite.names = ['abort-on-property-write', 'abort-on-property-write.js', 'ubo-abort-on-property-write.js', 'abp-abort-on-property-write'];
+    abortOnPropertyWrite.names = ['abort-on-property-write', 'abort-on-property-write.js', 'ubo-abort-on-property-write.js', 'aopw.js', 'ubo-aopw.js', 'abp-abort-on-property-write'];
     abortOnPropertyWrite.injections = [randomId, setPropertyAccess, getPropertyInChain, createOnErrorHandler, hit];
 
     /* eslint-disable max-len */
@@ -447,10 +853,13 @@
      * @scriptlet prevent-setTimeout
      *
      * @description
-     * Prevents a `setTimeout` call if the text of the callback is matching the specified search string/regexp and (optionally) have the specified delay.
+     * Prevents a `setTimeout` call if:
+     * 1) the text of the callback is matching the specified search string/regexp which does not start with `!`;
+     * otherwise mismatched calls should be defused;
+     * 2) the timeout is matching the specified delay; otherwise mismatched calls should be defused.
      *
      * Related UBO scriptlet:
-     * https://github.com/gorhill/uBlock/wiki/Resources-Library#settimeout-defuserjs-
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#no-settimeout-ifjs-
      *
      * **Syntax**
      * ```
@@ -458,33 +867,86 @@
      * ```
      *
      * **Parameters**
-     * - `search` (optional) string or regular expression that must match the stringified callback . If not set, prevents all `setTimeout` calls.
-     * - `delay` (optional) must be an integer. If set, it matches the delay passed to the `setTimeout` call.
+     *
+     * Call with no arguments will log calls to setTimeout while debugging (`log-setTimeout` superseding),
+     * so production filter lists' rules definitely require at least one of the parameters:
+     * - `search` (optional) string or regular expression.
+     * If starts with `!`, scriptlet will not match the stringified callback but all other will be defused.
+     * If do not start with `!`, the stringified callback will be matched.
+     * If not set, prevents all `setTimeout` calls due to specified `delay`.
+     * - `delay` (optional) must be an integer.
+     * If starts with `!`, scriptlet will not match the delay but all other will be defused.
+     * If do not start with `!`, the delay passed to the `setTimeout` call will be matched.
      *
      * **Examples**
      *
-     * 1. Prevents `setTimeout` calls if the callback contains `value` and the delay is set to `300`.
-     *     ```
-     *     example.org#%#//scriptlet("prevent-setTimeout", "value", "300")
-     *     ```
-     *
-     *     For instance, the followiing call will be prevented:
-     *     ```javascript
-     *     setTimeout(function () {
-     *         window.test = "value";
-     *     }, 300);
-     *     ```
-     *
-     * 2. Prevents `setTimeout` calls if the callback matches `/\.test/` regardless of the delay.
+     * 1. Prevents `setTimeout` calls if the callback matches `/\.test/` regardless of the delay.
      *     ```bash
      *     example.org#%#//scriptlet("prevent-setTimeout", "/\.test/")
      *     ```
      *
-     *     For instance, the followiing call will be prevented:
+     *     For instance, the following call will be prevented:
      *     ```javascript
      *     setTimeout(function () {
      *         window.test = "value";
      *     }, 100);
+     *     ```
+     *
+     * 2. Prevents `setTimeout` calls if the callback does not contain `value`.
+     *     ```
+     *     example.org#%#//scriptlet("prevent-setTimeout", "!value")
+     *     ```
+     *
+     *     For instance, only the first of the following calls will be prevented:
+     *     ```javascript
+     *     setTimeout(function () {
+     *         window.test = "test -- prevented";
+     *     }, 300);
+     *     setTimeout(function () {
+     *         window.test = "value -- executed";
+     *     }, 400);
+     *     setTimeout(function () {
+     *         window.value = "test -- executed";
+     *     }, 500);
+     *     ```
+     *
+     * 3. Prevents `setTimeout` calls if the callback contains `value` and the delay is not set to `300`.
+     *     ```
+     *     example.org#%#//scriptlet("prevent-setTimeout", "value", "!300")
+     *     ```
+     *
+     *     For instance, only the first of the following calls will not be prevented:
+     *     ```javascript
+     *     setTimeout(function () {
+     *         window.test = "value 1 -- executed";
+     *     }, 300);
+     *     setTimeout(function () {
+     *         window.test = "value 2 -- prevented";
+     *     }, 400);
+     *     setTimeout(function () {
+     *         window.test = "value 3 -- prevented";
+     *     }, 500);
+     *     ```
+     *
+     * 4. Prevents `setTimeout` calls if the callback does not contain `value` and the delay is not set to `300`.
+     *     ```
+     *     example.org#%#//scriptlet("prevent-setTimeout", "!value", "!300")
+     *     ```
+     *
+     *     For instance, only the second of the following calls will be prevented:
+     *     ```javascript
+     *     setTimeout(function () {
+     *         window.test = "test -- executed";
+     *     }, 300);
+     *     setTimeout(function () {
+     *         window.test = "test -- prevented";
+     *     }, 400);
+     *     setTimeout(function () {
+     *         window.test = "value -- executed";
+     *     }, 400);
+     *     setTimeout(function () {
+     *         window.value = "test -- executed";
+     *     }, 500);
      *     ```
      */
 
@@ -494,27 +956,61 @@
       var nativeTimeout = window.setTimeout;
       var nativeIsNaN = Number.isNaN || window.isNaN; // eslint-disable-line compat/compat
 
+      var log = console.log.bind(console); // eslint-disable-line no-console
+      // logs setTimeouts to console if no arguments have been specified
+
+      var shouldLog = typeof match === 'undefined' && typeof delay === 'undefined';
+      var INVERT_MARKER = '!';
+      var isNotMatch = startsWith(match, INVERT_MARKER);
+
+      if (isNotMatch) {
+        match = match.slice(1);
+      }
+
+      var isNotDelay = startsWith(delay, INVERT_MARKER);
+
+      if (isNotDelay) {
+        delay = delay.slice(1);
+      }
+
       delay = parseInt(delay, 10);
       delay = nativeIsNaN(delay) ? null : delay;
       match = match ? toRegExp(match) : toRegExp('/.?/');
 
-      var timeoutWrapper = function timeoutWrapper(cb, d) {
-        if ((!delay || d === delay) && match.test(cb.toString())) {
+      var timeoutWrapper = function timeoutWrapper(callback, timeout) {
+        var shouldPrevent = false;
+
+        if (shouldLog) {
           hit(source);
-          return nativeTimeout(function () {}, d);
+          log("setTimeout(\"".concat(callback.toString(), "\", ").concat(timeout, ")"));
+        } else if (!delay) {
+          shouldPrevent = match.test(callback.toString()) !== isNotMatch;
+        } else if (match === '/.?/') {
+          shouldPrevent = timeout === delay !== isNotDelay;
+        } else {
+          shouldPrevent = match.test(callback.toString()) !== isNotMatch && timeout === delay !== isNotDelay;
+        }
+
+        if (shouldPrevent) {
+          hit(source);
+          return nativeTimeout(function () {}, timeout);
         }
 
         for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
           args[_key - 2] = arguments[_key];
         }
 
-        return nativeTimeout.apply(window, [cb, d].concat(args));
+        return nativeTimeout.apply(window, [callback, timeout].concat(args));
       };
 
       window.setTimeout = timeoutWrapper;
     }
-    preventSetTimeout.names = ['prevent-setTimeout', 'setTimeout-defuser.js', 'ubo-setTimeout-defuser.js'];
-    preventSetTimeout.injections = [toRegExp, hit];
+    preventSetTimeout.names = ['prevent-setTimeout', 'no-setTimeout-if.js', // new implementation of setTimeout-defuser.js
+    'ubo-no-setTimeout-if.js', 'setTimeout-defuser.js', // old name should be supported as well
+    'ubo-setTimeout-defuser.js', 'nostif.js', // new short name of no-setTimeout-if
+    'ubo-nostif.js', 'std.js', // old short scriptlet name
+    'ubo-std.js'];
+    preventSetTimeout.injections = [toRegExp, startsWith, hit];
 
     /* eslint-disable max-len */
 
@@ -522,74 +1018,164 @@
      * @scriptlet prevent-setInterval
      *
      * @description
-     * Prevents a `setInterval` call if the text of the callback is matching the specified search string/regexp and (optionally) have the specified interval.
+     * Prevents a `setInterval` call if:
+     * 1) the text of the callback is matching the specified `search` string/regexp which does not start with `!`;
+     * otherwise mismatched calls should be defused;
+     * 2) the interval is matching the specified `delay`; otherwise mismatched calls should be defused.
      *
      * Related UBO scriptlet:
-     * https://github.com/gorhill/uBlock/wiki/Resources-Library#setinterval-defuserjs-
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#no-setinterval-ifjs-
      *
      * **Syntax**
      * ```
-     * example.org#%#//scriptlet("prevent-setInterval"[, <search>[, <interval>]])
+     * example.org#%#//scriptlet("prevent-setInterval"[, <search>[, <delay>]])
      * ```
      *
      * **Parameters**
-     * - `search` (optional) string or regular expression that must match the stringified callback . If not set, prevents all `setInterval` calls.
-     * - `interval` (optional) must be an integer. If set, it matches the interval passed to the `setInterval` call.
      *
-     * **Example**
+     * Call with no arguments will log calls to setInterval while debugging (`log-setInterval` superseding),
+     * so production filter lists' rules definitely require at least one of the parameters:
+     * - `search` (optional) string or regular expression.
+     * If starts with `!`, scriptlet will not match the stringified callback but all other will be defused.
+     * If do not start with `!`, the stringified callback will be matched.
+     * If not set, prevents all `setInterval` calls due to specified `delay`.
+     * - `delay` (optional) must be an integer.
+     * If starts with `!`, scriptlet will not match the delay but all other will be defused.
+     * If do not start with `!`, the delay passed to the `setInterval` call will be matched.
      *
-     * 1. Prevents `setInterval` calls if the callback contains `value` and the interval is set to `300`.
-     *     ```
-     *     example.org#%#//scriptlet("prevent-setInterval", "value", "300")
-     *     ```
+     *  **Examples**
      *
-     *     For instance, the followiing call will be prevented:
-     *     ```javascript
-     *     setInterval(function () {
-     *         window.test = "value";
-     *     }, 300);
-     *     ```
-     *
-     * 2. Prevents `setInterval` calls if the callback matches `/\.test/` regardless of the interval.
-     *     ```
+     * 1. Prevents `setInterval` calls if the callback matches `/\.test/` regardless of the delay.
+     *     ```bash
      *     example.org#%#//scriptlet("prevent-setInterval", "/\.test/")
      *     ```
      *
-     *     For instance, the followiing call will be prevented:
+     *     For instance, the following call will be prevented:
      *     ```javascript
      *     setInterval(function () {
      *         window.test = "value";
      *     }, 100);
      *     ```
+     *
+     * 2. Prevents `setInterval` calls if the callback does not contain `value`.
+     *     ```
+     *     example.org#%#//scriptlet("prevent-setInterval", "!value")
+     *     ```
+     *
+     *     For instance, only the first of the following calls will be prevented:
+     *     ```javascript
+     *     setInterval(function () {
+     *         window.test = "test -- prevented";
+     *     }, 300);
+     *     setInterval(function () {
+     *         window.test = "value -- executed";
+     *     }, 400);
+     *     setInterval(function () {
+     *         window.value = "test -- executed";
+     *     }, 500);
+     *     ```
+     *
+     * 3. Prevents `setInterval` calls if the callback contains `value` and the delay is not set to `300`.
+     *     ```
+     *     example.org#%#//scriptlet("prevent-setInterval", "value", "!300")
+     *     ```
+     *
+     *     For instance, only the first of the following calls will not be prevented:
+     *     ```javascript
+     *     setInterval(function () {
+     *         window.test = "value 1 -- executed";
+     *     }, 300);
+     *     setInterval(function () {
+     *         window.test = "value 2 -- prevented";
+     *     }, 400);
+     *     setInterval(function () {
+     *         window.test = "value 3 -- prevented";
+     *     }, 500);
+     *     ```
+     *
+     * 4. Prevents `setInterval` calls if the callback does not contain `value` and the delay is not set to `300`.
+     *     ```
+     *     example.org#%#//scriptlet("prevent-setInterval", "!value", "!300")
+     *     ```
+     *
+     *     For instance, only the second of the following calls will be prevented:
+     *     ```javascript
+     *     setInterval(function () {
+     *         window.test = "test -- executed";
+     *     }, 300);
+     *     setInterval(function () {
+     *         window.test = "test -- prevented";
+     *     }, 400);
+     *     setInterval(function () {
+     *         window.test = "value -- executed";
+     *     }, 400);
+     *     setInterval(function () {
+     *         window.value = "test -- executed";
+     *     }, 500);
+     *     ```
      */
 
     /* eslint-enable max-len */
 
-    function preventSetInterval(source, match, interval) {
+    function preventSetInterval(source, match, delay) {
       var nativeInterval = window.setInterval;
       var nativeIsNaN = Number.isNaN || window.isNaN; // eslint-disable-line compat/compat
 
-      interval = parseInt(interval, 10);
-      interval = nativeIsNaN(interval) ? null : interval;
+      var log = console.log.bind(console); // eslint-disable-line no-console
+      // logs setIntervals to console if no arguments have been specified
+
+      var shouldLog = typeof match === 'undefined' && typeof delay === 'undefined';
+      var INVERT_MARKER = '!';
+      var isNotMatch = startsWith(match, INVERT_MARKER);
+
+      if (isNotMatch) {
+        match = match.slice(1);
+      }
+
+      var isNotDelay = startsWith(delay, INVERT_MARKER);
+
+      if (isNotDelay) {
+        delay = delay.slice(1);
+      }
+
+      delay = parseInt(delay, 10);
+      delay = nativeIsNaN(delay) ? null : delay;
       match = match ? toRegExp(match) : toRegExp('/.?/');
 
-      var intervalWrapper = function intervalWrapper(cb, d) {
-        if ((!interval || d === interval) && match.test(cb.toString())) {
+      var intervalWrapper = function intervalWrapper(callback, interval) {
+        var shouldPrevent = false;
+
+        if (shouldLog) {
           hit(source);
-          return nativeInterval(function () {}, d);
+          log("setInterval(\"".concat(callback.toString(), "\", ").concat(interval, ")"));
+        } else if (!delay) {
+          shouldPrevent = match.test(callback.toString()) !== isNotMatch;
+        } else if (match === '/.?/') {
+          shouldPrevent = interval === delay !== isNotDelay;
+        } else {
+          shouldPrevent = match.test(callback.toString()) !== isNotMatch && interval === delay !== isNotDelay;
+        }
+
+        if (shouldPrevent) {
+          hit(source);
+          return nativeInterval(function () {}, interval);
         }
 
         for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
           args[_key - 2] = arguments[_key];
         }
 
-        return nativeInterval.apply(window, [cb, d].concat(args));
+        return nativeInterval.apply(window, [callback, interval].concat(args));
       };
 
       window.setInterval = intervalWrapper;
     }
-    preventSetInterval.names = ['prevent-setInterval', 'setInterval-defuser.js', 'ubo-setInterval-defuser.js'];
-    preventSetInterval.injections = [toRegExp, hit];
+    preventSetInterval.names = ['prevent-setInterval', 'no-setInterval-if.js', // new implementation of setInterval-defuser.js
+    'ubo-no-setInterval-if.js', 'setInterval-defuser.js', // old name should be supported as well
+    'ubo-setInterval-defuser.js', 'nosiif.js', // new short name of no-setInterval-if
+    'ubo-nosiif.js', 'sid.js', // old short scriptlet name
+    'ubo-sid.js'];
+    preventSetInterval.injections = [toRegExp, startsWith, hit];
 
     /* eslint-disable max-len */
 
@@ -793,7 +1379,7 @@
       setChainPropAccess(window, property);
       window.onerror = createOnErrorHandler(rid).bind();
     }
-    abortCurrentInlineScript.names = ['abort-current-inline-script', 'abort-current-inline-script.js', 'ubo-abort-current-inline-script.js', 'abp-abort-current-inline-script'];
+    abortCurrentInlineScript.names = ['abort-current-inline-script', 'abort-current-inline-script.js', 'ubo-abort-current-inline-script.js', 'acis.js', 'ubo-acis.js', 'abp-abort-current-inline-script'];
     abortCurrentInlineScript.injections = [randomId, setPropertyAccess, getPropertyInChain, toRegExp, createOnErrorHandler, hit];
 
     /* eslint-disable max-len */
@@ -827,6 +1413,7 @@
      *         - `trueFunc` - function returning true
      *         - `falseFunc` - function returning false
      *         - `''` - empty string
+     *         - `-1` - number value `-1`
      *
      * **Examples**
      * ```
@@ -939,7 +1526,7 @@
 
       setChainPropAccess(window, property);
     }
-    setConstant.names = ['set-constant', 'set-constant.js', 'ubo-set-constant.js'];
+    setConstant.names = ['set-constant', 'set-constant.js', 'ubo-set-constant.js', 'set.js', 'ubo-set.js'];
     setConstant.injections = [getPropertyInChain, setPropertyAccess, hit];
 
     /* eslint-disable max-len */
@@ -1091,7 +1678,7 @@
 
       window.EventTarget.prototype.addEventListener = addEventListenerWrapper;
     }
-    preventAddEventListener.names = ['prevent-addEventListener', 'addEventListener-defuser.js', 'ubo-addEventListener-defuser.js'];
+    preventAddEventListener.names = ['prevent-addEventListener', 'addEventListener-defuser.js', 'ubo-addEventListener-defuser.js', 'aeld.js', 'ubo-aeld.js'];
     preventAddEventListener.injections = [toRegExp, hit];
 
     /* eslint-disable consistent-return, no-eval */
@@ -1173,7 +1760,7 @@
         }
       };
     }
-    preventBab.names = ['prevent-bab', 'bab-defuser.js', 'ubo-bab-defuser.js'];
+    preventBab.names = ['prevent-bab', 'bab-defuser.js', 'ubo-bab-defuser.js', 'nobab.js', 'ubo-nobab.js'];
     preventBab.injections = [hit];
 
     /* eslint-disable no-unused-vars, no-extra-bind, func-names */
@@ -1269,80 +1856,8 @@
 
       window.EventTarget.prototype.addEventListener = addEventListenerWrapper;
     }
-    logAddEventListener.names = ['log-addEventListener', 'addEventListener-logger.js', 'ubo-addEventListener-logger.js'];
+    logAddEventListener.names = ['log-addEventListener', 'addEventListener-logger.js', 'ubo-addEventListener-logger.js', 'aell.js', 'ubo-aell.js'];
     logAddEventListener.injections = [hit];
-
-    /* eslint-disable no-console */
-    /**
-     * @scriptlet log-setInterval
-     *
-     * @description
-     * Logs all setInterval calls to the console.
-     *
-     * Related UBO scriptlet:
-     * https://github.com/gorhill/uBlock/wiki/Resources-Library#setinterval-loggerjs-
-     *
-     * **Syntax**
-     * ```
-     * example.org#%#//scriptlet("log-setInterval")
-     * ```
-     */
-
-    function logSetInterval(source) {
-      var log = console.log.bind(console);
-      var nativeSetInterval = window.setInterval;
-
-      function setIntervalWrapper(callback, timeout) {
-        hit(source);
-        log("setInterval(\"".concat(callback.toString(), "\", ").concat(timeout, ")"));
-
-        for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-          args[_key - 2] = arguments[_key];
-        }
-
-        return nativeSetInterval.apply(window, [callback, timeout].concat(args));
-      }
-
-      window.setInterval = setIntervalWrapper;
-    }
-    logSetInterval.names = ['log-setInterval', 'setInterval-logger.js', 'ubo-setInterval-logger.js'];
-    logSetInterval.injections = [hit];
-
-    /* eslint-disable no-console */
-    /**
-     * @scriptlet log-setTimeout
-     *
-     * @description
-     * Logs all setTimeout call to the console.
-     *
-     * Related UBO scriptlet:
-     * https://github.com/gorhill/uBlock/wiki/Resources-Library#settimeout-loggerjs-
-     *
-     * **Syntax**
-     * ```
-     * example.org#%#//scriptlet("log-setTimeout")
-     * ```
-     */
-
-    function logSetTimeout(source) {
-      var log = console.log.bind(console);
-      var nativeSetTimeout = window.setTimeout;
-
-      function setTimeoutWrapper(callback, timeout) {
-        hit(source);
-        log("setTimeout(\"".concat(callback.toString(), "\", ").concat(timeout, ")"));
-
-        for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-          args[_key - 2] = arguments[_key];
-        }
-
-        return nativeSetTimeout.apply(window, [callback, timeout].concat(args));
-      }
-
-      window.setTimeout = setTimeoutWrapper;
-    }
-    logSetTimeout.names = ['log-setTimeout', 'setTimeout-logger.js', 'ubo-setTimeout-logger.js'];
-    logSetTimeout.injections = [hit];
 
     /* eslint-disable no-console, no-eval */
     /**
@@ -1519,7 +2034,7 @@
 
       window.fuckAdBlock = window.blockAdBlock = new Fab();
     }
-    preventFab.names = ['prevent-fab-3.2.0', 'fuckadblock.js-3.2.0', 'ubo-fuckadblock.js-3.2.0'];
+    preventFab.names = ['prevent-fab-3.2.0', 'fuckadblock.js-3.2.0', 'ubo-fuckadblock.js-3.2.0', 'nofab.js', 'ubo-nofab.js'];
     preventFab.injections = [noop, hit];
 
     /* eslint-disable no-console, func-names, no-multi-assign */
@@ -1922,11 +2437,14 @@
     debugCurrentInlineScript.names = ['debug-current-inline-script'];
     debugCurrentInlineScript.injections = [randomId, setPropertyAccess, getPropertyInChain, toRegExp, createOnErrorHandler, hit];
 
+    /* eslint-disable max-len */
+
     /**
      * @scriptlet remove-attr
      *
      * @description
-     * Removes attributes from DOM nodes. Will run only once after page load.
+     * Removes the specified attributes from DOM nodes. This scriptlet runs once when the page loads
+     * and after that periodically in order to DOM tree changes.
      *
      * Related UBO scriptlet:
      * https://github.com/gorhill/uBlock/wiki/Resources-Library#remove-attrjs-
@@ -1936,8 +2454,8 @@
      * example.org#%#//scriptlet("remove-attr", attrs[, selector])
      * ```
      *
-     * - `attrs` - required, attribute or list of attributes joined by |
-     * - `selector` - optional, CSS selector, specifies nodes from which attributes will be removed
+     * - `attrs` — required, attribute or list of attributes joined by '|';
+     * - `selector` — optional, CSS selector, specifies DOM nodes from which the attributes will be removed
      *
      * **Examples**
      * 1.  Removes by attribute
@@ -1971,6 +2489,8 @@
      *     ```
      */
 
+    /* eslint-enable max-len */
+
     function removeAttr(source, attrs, selector) {
       if (!attrs) {
         return;
@@ -1982,11 +2502,7 @@
         selector = "[".concat(attrs.join('],['), "]");
       }
 
-      var rmattr = function rmattr(ev) {
-        if (ev) {
-          window.removeEventListener(ev.type, rmattr, true);
-        }
-
+      var rmattr = function rmattr() {
         var nodes = [].slice.call(document.querySelectorAll(selector));
         var removed = false;
         nodes.forEach(function (node) {
@@ -2001,14 +2517,125 @@
         }
       };
 
-      if (document.readyState === 'loading') {
-        window.addEventListener('DOMContentLoaded', rmattr, true);
-      } else {
-        rmattr();
-      }
+      rmattr(); // 'true' for observing attributes
+
+      observeDOMChanges(rmattr, true);
     }
-    removeAttr.names = ['remove-attr', 'remove-attr.js', 'ubo-remove-attr.js'];
-    removeAttr.injections = [hit];
+    removeAttr.names = ['remove-attr', 'remove-attr.js', 'ubo-remove-attr.js', 'ra.js', 'ubo-ra.js'];
+    removeAttr.injections = [hit, observeDOMChanges];
+
+    /* eslint-disable max-len */
+
+    /**
+     * @scriptlet remove-class
+     *
+     * @description
+     * Removes the specified classes from DOM nodes. This scriptlet runs once after the page loads
+     * and after that periodically in order to DOM tree changes.
+     *
+     * **Syntax**
+     * ```
+     * example.org#%#//scriptlet("remove-class", classes[, selector])
+     * ```
+     *
+     * - `classes` — required, class or list of classes separated by '|';
+     * - `selector` — optional, CSS selector, specifies DOM nodes from which the classes will be removed;
+     * if there is no selector, every class independently will be removed from all nodes which has one
+     *
+     * **Examples**
+     * 1.  Removes by classes
+     *     ```
+     *     example.org#%#//scriptlet("remove-class", "example|test")
+     *     ```
+     *
+     *     ```html
+     *     <!-- before  -->
+     *     <div id="first" class="nice test">Some text</div>
+     *     <div id="second" class="rare example for test">Some text</div>
+     *     <div id="third" class="testing better example">Some text</div>
+     *
+     *     <!-- after -->
+     *     <div id="first" class="nice">Some text</div>
+     *     <div id="second" class="rare for">Some text</div>
+     *     <div id="third" class="testing better">Some text</div>
+     *     ```
+     *
+     * 2. Removes with specified selector
+     *     ```
+     *     example.org#%#//scriptlet("remove-class", "branding", ".inner")
+     *     ```
+     *
+     *     ```html
+     *     <!-- before -->
+     *     <div class="wrapper true branding">
+     *         <div class="inner bad branding">Some text</div>
+     *     </div>
+     *
+     *     <!-- after -->
+     *     <div class="wrapper true branding">
+     *         <div class="inner bad">Some text</div>
+     *     </div>
+     *     ```
+     */
+
+    /* eslint-enable max-len */
+
+    function removeClass(source, classNames, selector) {
+      if (!classNames) {
+        return;
+      }
+
+      classNames = classNames.split(/\s*\|\s*/);
+      var selectors = [];
+
+      if (!selector) {
+        selectors = classNames.map(function (className) {
+          return ".".concat(className);
+        });
+      }
+
+      var removeClassHandler = function removeClassHandler() {
+        var nodes = new Set();
+
+        if (selector) {
+          var foundedNodes = [].slice.call(document.querySelectorAll(selector));
+          foundedNodes.forEach(function (n) {
+            return nodes.add(n);
+          });
+        } else if (selectors.length > 0) {
+          selectors.forEach(function (s) {
+            var elements = document.querySelectorAll(s);
+
+            for (var i = 0; i < elements.length; i += 1) {
+              var element = elements[i];
+              nodes.add(element);
+            }
+          });
+        }
+
+        var removed = false;
+        nodes.forEach(function (node) {
+          classNames.forEach(function (className) {
+            if (node.classList.contains(className)) {
+              node.classList.remove(className);
+              removed = true;
+            }
+          });
+        });
+
+        if (removed) {
+          hit(source);
+        }
+      };
+
+      removeClassHandler();
+      var CLASS_ATTR_NAME = ['class']; // 'true' for observing attributes
+      // 'class' for observing only classes
+
+      observeDOMChanges(removeClassHandler, true, CLASS_ATTR_NAME);
+    }
+    removeClass.names = ['remove-class'];
+    removeClass.injections = [hit, observeDOMChanges];
 
     /**
      * @scriptlet disable-newtab-links
@@ -2123,7 +2750,7 @@
 
       window.setInterval = intervalWrapper;
     }
-    adjustSetInterval.names = ['adjust-setInterval', 'nano-setInterval-booster.js', 'ubo-nano-setInterval-booster.js'];
+    adjustSetInterval.names = ['adjust-setInterval', 'nano-setInterval-booster.js', 'ubo-nano-setInterval-booster.js', 'nano-sib.js', 'ubo-nano-sib.js'];
     adjustSetInterval.injections = [toRegExp, hit];
 
     /* eslint-disable max-len */
@@ -2205,7 +2832,7 @@
 
       window.setTimeout = timeoutWrapper;
     }
-    adjustSetTimeout.names = ['adjust-setTimeout', 'nano-setTimeout-booster.js', 'ubo-nano-setTimeout-booster.js'];
+    adjustSetTimeout.names = ['adjust-setTimeout', 'nano-setTimeout-booster.js', 'ubo-nano-setTimeout-booster.js', 'nano-stb.js', 'ubo-nano-stb.js'];
     adjustSetTimeout.injections = [toRegExp, hit];
 
     /* eslint-disable max-len */
@@ -2325,12 +2952,16 @@
       var needlePaths = requiredInitialProps !== undefined && requiredInitialProps !== '' ? requiredInitialProps.split(/ +/) : [];
 
       function isPruningNeeded(root) {
+        if (!root) {
+          return false;
+        }
+
         for (var i = 0; i < needlePaths.length; i += 1) {
           var needlePath = needlePaths[i];
-          var details = getPropertyInChain(root, needlePath);
+          var details = getPropertyInChain(root, needlePath, false);
           var nestedPropName = needlePath.split('').pop();
 
-          if (details.base[nestedPropName] === undefined) {
+          if (details && details.base[nestedPropName] === undefined) {
             return false;
           }
         }
@@ -2357,8 +2988,11 @@
         }
 
         prunePaths.forEach(function (path) {
-          var ownerObj = getPropertyInChain(r, path);
-          delete ownerObj.base[ownerObj.prop];
+          var ownerObj = getPropertyInChain(r, path, false);
+
+          if (ownerObj !== undefined && ownerObj.base) {
+            delete ownerObj.base[ownerObj.prop];
+          }
         });
         hit(source);
         return r;
@@ -2373,7 +3007,7 @@
      * This file must export all scriptlets which should be accessible
      */
 
-    var scriptletsList = /*#__PURE__*/Object.freeze({
+    var scriptletList = /*#__PURE__*/Object.freeze({
         __proto__: null,
         abortOnPropertyRead: abortOnPropertyRead,
         abortOnPropertyWrite: abortOnPropertyWrite,
@@ -2387,8 +3021,6 @@
         preventBab: preventBab,
         nowebrtc: nowebrtc,
         logAddEventListener: logAddEventListener,
-        logSetInterval: logSetInterval,
-        logSetTimeout: logSetTimeout,
         logEval: logEval,
         log: log,
         noeval: noeval,
@@ -2401,12 +3033,1350 @@
         debugOnPropertyWrite: debugOnPropertyWrite,
         debugCurrentInlineScript: debugCurrentInlineScript,
         removeAttr: removeAttr,
+        removeClass: removeClass,
         disableNewtabLinks: disableNewtabLinks,
         adjustSetInterval: adjustSetInterval,
         adjustSetTimeout: adjustSetTimeout,
         dirString: dirString,
         jsonPrune: jsonPrune
     });
+
+    const redirects=[{adg:"1x1-transparent.gif",ubo:"1x1.gif",abp:"1x1-transparent-gif"},{adg:"2x2-transparent.png",ubo:"2x2.png",abp:"2x2-transparent-png"},{adg:"3x2-transparent.png",ubo:"3x2.png",abp:"3x2-transparent-png"},{adg:"32x32-transparent.png",ubo:"32x32.png",abp:"32x32-transparent-png"},{adg:"google-analytics",ubo:"google-analytics_analytics.js"},{adg:"google-analytics-ga",ubo:"google-analytics_ga.js"},{adg:"googlesyndication-adsbygoogle",ubo:"googlesyndication_adsbygoogle.js"},{adg:"googletagmanager-gtm",ubo:"googletagmanager_gtm.js"},{adg:"googletagservices-gpt",ubo:"googletagservices_gpt.js"},{adg:"metrika-yandex-watch"},{adg:"metrika-yandex-tag"},{adg:"noeval",ubo:"noeval-silent.js"},{adg:"noopcss",abp:"blank-css"},{adg:"noopframe",ubo:"noop.html",abp:"blank-html"},{adg:"noopjs",ubo:"noop.js",abp:"blank-js"},{adg:"nooptext",ubo:"noop.txt",abp:"blank-text"},{adg:"noopmp3.0.1s",ubo:"noop-0.1s.mp3",abp:"blank-mp3"},{adg:"noopmp4-1s",ubo:"noop-1s.mp4",abp:"blank-mp4"},{adg:"noopvast-2.0"},{adg:"noopvast-3.0"},{adg:"prevent-fab-3.2.0",ubo:"nofab.js"},{adg:"prevent-popads-net",ubo:"popads.js"},{adg:"scorecardresearch-beacon",ubo:"scorecardresearch_beacon.js"},{adg:"set-popads-dummy",ubo:"popads-dummy.js"},{ubo:"addthis_widget.js"},{ubo:"amazon_ads.js"},{ubo:"ampproject_v0.js"},{ubo:"chartbeat.js"},{ubo:"disqus_embed.js"},{ubo:"disqus_forums_embed.js"},{ubo:"doubleclick_instream_ad_status.js"},{ubo:"empty"},{ubo:"google-analytics_cx_api.js"},{ubo:"google-analytics_inpage_linkid.js"},{ubo:"hd-main.js"},{ubo:"ligatus_angular-tag.js"},{ubo:"monkeybroker.js"},{ubo:"outbrain-widget.js"},{ubo:"window.open-defuser.js"},{ubo:"nobab.js"},{ubo:"noeval.js"}];
+
+    var COMMENT_MARKER = '!';
+    /**
+     * Checks if rule text is comment e.g. !!example.org##+js(set-constant.js, test, false)
+     * @param {string} rule
+     * @return {boolean}
+     */
+
+    var isComment = function isComment(rule) {
+      return startsWith(rule, COMMENT_MARKER);
+    };
+    /* ************************************************************************
+     *
+     * Scriptlets
+     *
+     ************************************************************************** */
+
+    /**
+     * uBlock scriptlet rule mask
+     */
+
+
+    var UBO_SCRIPTLET_MASK_REG = /#@?#script:inject|#@?#\s*\+js/;
+    var UBO_SCRIPTLET_MASK_1 = '##+js';
+    var UBO_SCRIPTLET_MASK_2 = '##script:inject';
+    var UBO_SCRIPTLET_EXCEPTION_MASK_1 = '#@#+js';
+    var UBO_SCRIPTLET_EXCEPTION_MASK_2 = '#@#script:inject';
+    /**
+     * AdBlock Plus snippet rule mask
+     */
+
+    var ABP_SCRIPTLET_MASK = '#$#';
+    var ABP_SCRIPTLET_EXCEPTION_MASK = '#@$#';
+    /**
+     * AdGuard CSS rule mask
+     */
+
+    var ADG_CSS_MASK_REG = /#@?\$#.+?\s*\{.*\}\s*$/g;
+    /**
+     * Checks if the `rule` is AdGuard scriptlet rule
+     * @param {string} rule - rule text
+     */
+
+    var isAdgScriptletRule = function isAdgScriptletRule(rule) {
+      return !isComment(rule) && rule.indexOf(ADG_SCRIPTLET_MASK) > -1;
+    };
+    /**
+     * Checks if the `rule` is uBO scriptlet rule
+     * @param {string} rule rule text
+     */
+
+
+    var isUboScriptletRule = function isUboScriptletRule(rule) {
+      return (rule.indexOf(UBO_SCRIPTLET_MASK_1) > -1 || rule.indexOf(UBO_SCRIPTLET_MASK_2) > -1 || rule.indexOf(UBO_SCRIPTLET_EXCEPTION_MASK_1) > -1 || rule.indexOf(UBO_SCRIPTLET_EXCEPTION_MASK_2) > -1) && UBO_SCRIPTLET_MASK_REG.test(rule) && !isComment(rule);
+    };
+    /**
+     * Checks if the `rule` is AdBlock Plus snippet
+     * @param {string} rule rule text
+     */
+
+
+    var isAbpSnippetRule = function isAbpSnippetRule(rule) {
+      return (rule.indexOf(ABP_SCRIPTLET_MASK) > -1 || rule.indexOf(ABP_SCRIPTLET_EXCEPTION_MASK) > -1) && rule.search(ADG_CSS_MASK_REG) === -1 && !isComment(rule);
+    };
+    /**
+     * Finds scriptlet by it's name
+     * @param {string} name - scriptlet name
+     */
+
+
+    var getScriptletByName = function getScriptletByName(name) {
+      var scriptlets = Object.keys(scriptletList).map(function (key) {
+        return scriptletList[key];
+      });
+      return scriptlets.find(function (s) {
+        return s.names && s.names.indexOf(name) > -1;
+      });
+    };
+    /**
+     * Checks if the scriptlet name is valid
+     * @param {string} name - Scriptlet name
+     */
+
+
+    var isValidScriptletName = function isValidScriptletName(name) {
+      if (!name) {
+        return false;
+      }
+
+      var scriptlet = getScriptletByName(name);
+
+      if (!scriptlet) {
+        return false;
+      }
+
+      return true;
+    };
+    /* ************************************************************************
+     *
+     * Redirects
+     *
+     ************************************************************************** */
+
+    /**
+     * Redirect resources markers
+     */
+
+
+    var ADG_UBO_REDIRECT_MARKER = 'redirect=';
+    var ABP_REDIRECT_MARKER = 'rewrite=abp-resource:';
+    var VALID_SOURCE_TYPES = ['image', 'subdocument', 'stylesheet', 'script', 'xmlhttprequest', 'media'];
+    var validAdgRedirects = redirects.filter(function (el) {
+      return el.adg;
+    });
+    /**
+     * Converts array of pairs to object.
+     * Sort of Object.fromEntries() polyfill.
+     * @param {Array} pairs - array of pairs
+     * @returns {Object}
+     */
+
+    var objFromEntries = function objFromEntries(pairs) {
+      var output = pairs.reduce(function (acc, el) {
+        var _el = slicedToArray(el, 2),
+            key = _el[0],
+            value = _el[1];
+
+        acc[key] = value;
+        return acc;
+      }, {});
+      return output;
+    };
+    /**
+     * Compatibility object where KEYS = UBO redirect names and VALUES = ADG redirect names
+     * It's used for UBO -> ADG  converting
+     */
+
+
+    var uboToAdgCompatibility = objFromEntries(validAdgRedirects.filter(function (el) {
+      return el.ubo;
+    }).map(function (el) {
+      return [el.ubo, el.adg];
+    }));
+    /**
+     * Compatibility object where KEYS = ABP redirect names and VALUES = ADG redirect names
+     * It's used for ABP -> ADG  converting
+     */
+
+    var abpToAdgCompatibility = objFromEntries(validAdgRedirects.filter(function (el) {
+      return el.abp;
+    }).map(function (el) {
+      return [el.abp, el.adg];
+    }));
+    /**
+     * Compatibility object where KEYS = UBO redirect names and VALUES = ADG redirect names
+     * It's used for ADG -> UBO  converting
+     */
+
+    var adgToUboCompatibility = objFromEntries(validAdgRedirects.filter(function (el) {
+      return el.ubo;
+    }).map(function (el) {
+      return [el.adg, el.ubo];
+    }));
+    var REDIRECT_RULE_TYPES = {
+      ADG: {
+        marker: ADG_UBO_REDIRECT_MARKER,
+        compatibility: adgToUboCompatibility
+      },
+      UBO: {
+        marker: ADG_UBO_REDIRECT_MARKER,
+        compatibility: uboToAdgCompatibility
+      },
+      ABP: {
+        marker: ABP_REDIRECT_MARKER,
+        compatibility: abpToAdgCompatibility
+      }
+    };
+    /**
+     * Parses redirect rule modifiers
+     * @param {string} rule
+     * @returns {Array}
+     */
+
+    var parseModifiers = function parseModifiers(rule) {
+      return substringAfter(rule, '$').split(',');
+    };
+    /**
+     * Gets redirect resource name
+     * @param {string} rule
+     * @param {string} marker - specific Adg/Ubo or Abp redirect resources marker
+     * @returns {string} - redirect resource name
+     */
+
+
+    var getRedirectName = function getRedirectName(rule, marker) {
+      var ruleModifiers = parseModifiers(rule);
+      var redirectNamePart = ruleModifiers.find(function (el) {
+        return el.indexOf(marker) > -1;
+      });
+      return substringAfter(redirectNamePart, marker);
+    };
+    /**
+     * Checks if the `rule` satisfies the `type`
+     * @param {string} rule - rule text
+     * @param {'ADG'|'UBO'|'ABP'} type - type of a redirect rule
+     */
+
+
+    var isRedirectRuleByType = function isRedirectRuleByType(rule, type) {
+      var _REDIRECT_RULE_TYPES$ = REDIRECT_RULE_TYPES[type],
+          marker = _REDIRECT_RULE_TYPES$.marker,
+          compatibility = _REDIRECT_RULE_TYPES$.compatibility;
+
+      if (!isComment(rule) && rule.indexOf(marker) > -1) {
+        var redirectName = getRedirectName(rule, marker);
+        return redirectName === Object.keys(compatibility).find(function (el) {
+          return el === redirectName;
+        });
+      }
+
+      return false;
+    };
+    /**
+    * Checks if the `rule` is AdGuard redirect resource rule
+    * @param {string} rule - rule text
+    * @returns {boolean}
+    */
+
+
+    var isAdgRedirectRule = function isAdgRedirectRule(rule) {
+      return isRedirectRuleByType(rule, 'ADG');
+    };
+    /**
+    * Checks if the `rule` is Ubo redirect resource rule
+    * @param {string} rule - rule text
+    * @returns {boolean}
+    */
+
+
+    var isUboRedirectRule = function isUboRedirectRule(rule) {
+      return isRedirectRuleByType(rule, 'UBO');
+    };
+    /**
+    * Checks if the `rule` is Abp redirect resource rule
+    * @param {string} rule - rule text
+    * @returns {boolean}
+    */
+
+
+    var isAbpRedirectRule = function isAbpRedirectRule(rule) {
+      return isRedirectRuleByType(rule, 'ABP');
+    };
+    /**
+     * Validates any redirect rule
+     * @param {string} rule - can be Adguard or Ubo or Abp redirect rule
+     * @returns {boolean}
+     */
+
+
+    var isValidRedirectRule = function isValidRedirectRule(rule) {
+      return isAdgRedirectRule(rule) || isUboRedirectRule(rule) || isAbpRedirectRule(rule);
+    };
+    /**
+     * Checks if the rule has specified content type before Adg -> Ubo conversion.
+     *
+     * Used ONLY for Adg -> Ubo conversion
+     * because Ubo redirect rules must contain content type, but Adg and Abp must not.
+     *
+     * Also source type can not be added automatically because of such valid rules:
+     * ! Abp:
+     * $rewrite=abp-resource:blank-js,xmlhttprequest
+     * ! Adg:
+     * $script,redirect=noopvast-2.0
+     * $xmlhttprequest,redirect=noopvast-2.0
+     *
+     * @param {string} rule
+     * @returns {boolean}
+     */
+
+
+    var hasValidContentType = function hasValidContentType(rule) {
+      if (isRedirectRuleByType(rule, 'ADG')) {
+        var ruleModifiers = parseModifiers(rule);
+        var sourceType = ruleModifiers.find(function (el) {
+          return VALID_SOURCE_TYPES.indexOf(el) > -1;
+        });
+        return sourceType !== undefined;
+      }
+
+      return false;
+    };
+
+    var validator = {
+      UBO_SCRIPTLET_MASK_REG: UBO_SCRIPTLET_MASK_REG,
+      ABP_SCRIPTLET_MASK: ABP_SCRIPTLET_MASK,
+      ABP_SCRIPTLET_EXCEPTION_MASK: ABP_SCRIPTLET_EXCEPTION_MASK,
+      isComment: isComment,
+      isAdgScriptletRule: isAdgScriptletRule,
+      isUboScriptletRule: isUboScriptletRule,
+      isAbpSnippetRule: isAbpSnippetRule,
+      getScriptletByName: getScriptletByName,
+      isValidScriptletName: isValidScriptletName,
+      REDIRECT_RULE_TYPES: REDIRECT_RULE_TYPES,
+      isValidRedirectRule: isValidRedirectRule,
+      isAdgRedirectRule: isAdgRedirectRule,
+      isUboRedirectRule: isUboRedirectRule,
+      isAbpRedirectRule: isAbpRedirectRule,
+      parseModifiers: parseModifiers,
+      getRedirectName: getRedirectName,
+      hasValidContentType: hasValidContentType
+    };
+
+    function _iterableToArray(iter) {
+      if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+    }
+
+    var iterableToArray = _iterableToArray;
+
+    function _toArray(arr) {
+      return arrayWithHoles(arr) || iterableToArray(arr) || nonIterableRest();
+    }
+
+    var toArray = _toArray;
+
+    /**
+     * AdGuard scriptlet rule
+     */
+
+    var ADGUARD_SCRIPTLET_MASK_REG = /#@?%#\/\/scriptlet\(.+\)/; // eslint-disable-next-line no-template-curly-in-string
+
+    var ADGUARD_SCRIPTLET_TEMPLATE = '${domains}#%#//scriptlet(${args})'; // eslint-disable-next-line no-template-curly-in-string
+
+    var ADGUARD_SCRIPTLET_EXCEPTION_TEMPLATE = '${domains}#@%#//scriptlet(${args})';
+    /**
+     * uBlock scriptlet rule mask
+     */
+    // eslint-disable-next-line no-template-curly-in-string
+
+    var UBO_SCRIPTLET_TEMPLATE = '${domains}##+js(${args})'; // eslint-disable-next-line no-template-curly-in-string
+
+    var UBO_SCRIPTLET_EXCEPTION_TEMPLATE = '${domains}#@#+js(${args})';
+    var UBO_ALIAS_NAME_MARKER = 'ubo-'; // https://github.com/gorhill/uBlock/wiki/Static-filter-syntax#xhr
+
+    var UBO_XHR_TYPE = 'xhr';
+    var ADG_XHR_TYPE = 'xmlhttprequest';
+    /**
+     * Returns array of strings separated by space which not in quotes
+     * @param {string} str
+     */
+
+    var getSentences = function getSentences(str) {
+      var reg = /'.*?'|".*?"|\S+/g;
+      return str.match(reg);
+    };
+    /**
+     * Replaces string with data by placeholders
+     * @param {string} str
+     * @param {Object} data - where keys are placeholders names
+     */
+
+
+    var replacePlaceholders = function replacePlaceholders(str, data) {
+      return Object.keys(data).reduce(function (acc, key) {
+        var reg = new RegExp("\\$\\{".concat(key, "\\}"), 'g');
+        acc = acc.replace(reg, data[key]);
+        return acc;
+      }, str);
+    };
+    /**
+     * Converts string of UBO scriptlet rule to AdGuard scritlet rule
+     * @param {string} rule - UBO scriptlet rule
+     * @returns {Array} - array with one AdGuard scriptlet rule
+     */
+
+
+    var convertUboScriptletToAdg = function convertUboScriptletToAdg(rule) {
+      var domains = getBeforeRegExp(rule, validator.UBO_SCRIPTLET_MASK_REG);
+      var mask = rule.match(validator.UBO_SCRIPTLET_MASK_REG)[0];
+      var template;
+
+      if (mask.indexOf('@') > -1) {
+        template = ADGUARD_SCRIPTLET_EXCEPTION_TEMPLATE;
+      } else {
+        template = ADGUARD_SCRIPTLET_TEMPLATE;
+      }
+
+      var args = getStringInBraces(rule).split(/, /g).map(function (arg, index) {
+        var outputArg;
+
+        if (index === 0) {
+          outputArg = arg.indexOf('.js') > -1 ? "ubo-".concat(arg) : "ubo-".concat(arg, ".js");
+        } else {
+          outputArg = arg;
+        }
+
+        return outputArg;
+      }).map(function (arg) {
+        return wrapInDoubleQuotes(arg);
+      }).join(', ');
+      var adgRule = replacePlaceholders(template, {
+        domains: domains,
+        args: args
+      });
+      return [adgRule];
+    };
+    /**
+     * Convert string of ABP snippet rule to AdGuard scritlet rule
+     * @param {string} rule - ABP snippet rule
+     * @returns {Array} - array of AdGuard scriptlet rules -
+     * one or few items depends on Abp-rule
+     */
+
+    var convertAbpSnippetToAdg = function convertAbpSnippetToAdg(rule) {
+      var SEMICOLON_DIVIDER = /;(?=(?:(?:[^"]*"){2})*[^"]*$)/g;
+      var mask = rule.indexOf(validator.ABP_SCRIPTLET_MASK) > -1 ? validator.ABP_SCRIPTLET_MASK : validator.ABP_SCRIPTLET_EXCEPTION_MASK;
+      var template = mask === validator.ABP_SCRIPTLET_MASK ? ADGUARD_SCRIPTLET_TEMPLATE : ADGUARD_SCRIPTLET_EXCEPTION_TEMPLATE;
+      var domains = substringBefore(rule, mask);
+      var args = substringAfter(rule, mask);
+      return args.split(SEMICOLON_DIVIDER).map(function (args) {
+        return getSentences(args).filter(function (arg) {
+          return arg;
+        }).map(function (arg, index) {
+          return index === 0 ? "abp-".concat(arg) : arg;
+        }).map(function (arg) {
+          return wrapInDoubleQuotes(arg);
+        }).join(', ');
+      }).map(function (args) {
+        return replacePlaceholders(template, {
+          domains: domains,
+          args: args
+        });
+      });
+    };
+    /**
+     * Converts scriptlet rule to AdGuard one
+     * @param {string} rule
+     * @returns {Array} - array of AdGuard scriptlet rules -
+     * one item for Adg and Ubo or few items for Abp
+     */
+
+    var convertScriptletToAdg = function convertScriptletToAdg(rule) {
+      var result;
+
+      if (validator.isUboScriptletRule(rule)) {
+        result = convertUboScriptletToAdg(rule);
+      } else if (validator.isAbpSnippetRule(rule)) {
+        result = convertAbpSnippetToAdg(rule);
+      } else if (validator.isAdgScriptletRule(rule) || validator.isComment(rule)) {
+        result = [rule];
+      }
+
+      return result;
+    };
+    /**
+     * Converts UBO scriptlet rule to AdGuard one
+     * @param {string} rule - AdGuard scriptlet rule
+     * @returns {string} - UBO scriptlet rule
+     */
+
+    var convertAdgScriptletToUbo = function convertAdgScriptletToUbo(rule) {
+      var res;
+
+      if (validator.isAdgScriptletRule(rule)) {
+        var _parseRule = parseRule(rule),
+            parsedName = _parseRule.name,
+            parsedParams = _parseRule.args; // object of name and aliases for the Adg-scriptlet
+
+
+        var adgScriptletObject = Object.keys(scriptletList).map(function (el) {
+          return scriptletList[el];
+        }).map(function (s) {
+          var _s$names = toArray(s.names),
+              name = _s$names[0],
+              aliases = _s$names.slice(1);
+
+          return {
+            name: name,
+            aliases: aliases
+          };
+        }).find(function (el) {
+          return el.name === parsedName || el.aliases.indexOf(parsedName) >= 0;
+        });
+        var aliases = adgScriptletObject.aliases;
+
+        if (aliases.length > 0) {
+          var uboAlias = adgScriptletObject.aliases // eslint-disable-next-line no-restricted-properties
+          .find(function (alias) {
+            return alias.includes(UBO_ALIAS_NAME_MARKER);
+          });
+
+          if (uboAlias) {
+            var mask = rule.match(ADGUARD_SCRIPTLET_MASK_REG)[0];
+            var template;
+
+            if (mask.indexOf('@') > -1) {
+              template = UBO_SCRIPTLET_EXCEPTION_TEMPLATE;
+            } else {
+              template = UBO_SCRIPTLET_TEMPLATE;
+            }
+
+            var domains = getBeforeRegExp(rule, ADGUARD_SCRIPTLET_MASK_REG);
+            var uboName = uboAlias.replace(UBO_ALIAS_NAME_MARKER, '') // '.js' in the Ubo scriptlet name can be omitted
+            // https://github.com/gorhill/uBlock/wiki/Resources-Library#general-purpose-scriptlets
+            .replace('.js', '');
+            var args = parsedParams.length > 0 ? "".concat(uboName, ", ").concat(parsedParams.join(', ')) : uboName;
+            var uboRule = replacePlaceholders(template, {
+              domains: domains,
+              args: args
+            });
+            res = uboRule;
+          }
+        }
+      }
+
+      return res;
+    };
+    /**
+     * Validates any scriptlet rule
+     * @param {string} input - can be Adguard or Ubo or Abp scriptlet rule
+     */
+
+    var isValidScriptletRule = function isValidScriptletRule(input) {
+      if (!input) {
+        return false;
+      } // ABP 'input' rule may contain more than one snippet
+
+
+      var rulesArray = convertScriptletToAdg(input); // checking if each of parsed scriptlets is valid
+      // if at least one of them is not valid - whole 'input' rule is not valid too
+
+      var isValid = rulesArray.reduce(function (acc, rule) {
+        var parsedRule = parseRule(rule);
+        return validator.isValidScriptletName(parsedRule.name) && acc;
+      }, true);
+      return isValid;
+    };
+    /**
+     * Converts Ubo redirect rule to Adg one
+     * @param {string} rule
+     * @returns {string}
+     */
+
+    var convertUboRedirectToAdg = function convertUboRedirectToAdg(rule) {
+      var firstPartOfRule = substringBefore(rule, '$');
+      var uboModifiers = validator.parseModifiers(rule);
+      var adgModifiers = uboModifiers.map(function (el) {
+        if (el.indexOf(validator.REDIRECT_RULE_TYPES.UBO.marker) > -1) {
+          var uboName = substringAfter(el, validator.REDIRECT_RULE_TYPES.UBO.marker);
+          var adgName = validator.REDIRECT_RULE_TYPES.UBO.compatibility[uboName];
+          return "".concat(validator.REDIRECT_RULE_TYPES.ADG.marker).concat(adgName);
+        }
+
+        if (el === UBO_XHR_TYPE) {
+          return ADG_XHR_TYPE;
+        }
+
+        return el;
+      }).join(',');
+      return "".concat(firstPartOfRule, "$").concat(adgModifiers);
+    };
+    /**
+     * Converts Abp redirect rule to Adg one
+     * @param {string} rule
+     * @returns {string}
+     */
+
+    var convertAbpRedirectToAdg = function convertAbpRedirectToAdg(rule) {
+      var firstPartOfRule = substringBefore(rule, '$');
+      var abpModifiers = validator.parseModifiers(rule);
+      var adgModifiers = abpModifiers.map(function (el) {
+        if (el.indexOf(validator.REDIRECT_RULE_TYPES.ABP.marker) > -1) {
+          var abpName = substringAfter(el, validator.REDIRECT_RULE_TYPES.ABP.marker);
+          var adgName = validator.REDIRECT_RULE_TYPES.ABP.compatibility[abpName];
+          return "".concat(validator.REDIRECT_RULE_TYPES.ADG.marker).concat(adgName);
+        }
+
+        return el;
+      }).join(',');
+      return "".concat(firstPartOfRule, "$").concat(adgModifiers);
+    };
+    /**
+     * Converts redirect rule to AdGuard one
+     * @param {string} rule
+     * @returns {string}
+     */
+
+    var convertRedirectToAdg = function convertRedirectToAdg(rule) {
+      var result;
+
+      if (validator.isUboRedirectRule(rule)) {
+        result = convertUboRedirectToAdg(rule);
+      } else if (validator.isAbpRedirectRule(rule)) {
+        result = convertAbpRedirectToAdg(rule);
+      } else if (validator.isAdgRedirectRule(rule) || validator.isComment(rule)) {
+        result = rule;
+      }
+
+      return result;
+    };
+    /**
+     * Converts Adg redirect rule to Ubo one
+     * @param {string} rule
+     * @returns {string}
+     */
+
+    var convertAdgRedirectToUbo = function convertAdgRedirectToUbo(rule) {
+      if (!validator.hasValidContentType(rule)) {
+        throw new Error("Rule is not valid for converting to Ubo. Source type is not specified in the rule: ".concat(rule));
+      } else {
+        var firstPartOfRule = substringBefore(rule, '$');
+        var uboModifiers = validator.parseModifiers(rule);
+        var adgModifiers = uboModifiers.map(function (el) {
+          if (el.indexOf(validator.REDIRECT_RULE_TYPES.ADG.marker) > -1) {
+            var adgName = substringAfter(el, validator.REDIRECT_RULE_TYPES.ADG.marker);
+            var uboName = validator.REDIRECT_RULE_TYPES.ADG.compatibility[adgName];
+            return "".concat(validator.REDIRECT_RULE_TYPES.UBO.marker).concat(uboName);
+          }
+
+          return el;
+        }).join(',');
+        return "".concat(firstPartOfRule, "$").concat(adgModifiers);
+      }
+    };
+
+    /**
+     * @redirect google-analytics
+     *
+     * @description
+     * Mocks Google Analytics API.
+     *
+     * Related UBO redirect resource:
+     * https://github.com/gorhill/uBlock/blob/a94df7f3b27080ae2dcb3b914ace39c0c294d2f6/src/web_accessible_resources/google-analytics_analytics.js
+     *
+     * **Example**
+     * ```
+     * ||google-analytics.com/analytics.js$script,redirect=google-analytics
+     * ```
+     */
+
+    function GoogleAnalytics(source) {
+      // eslint-disable-next-line func-names
+      var Tracker = function Tracker() {}; // constructor
+
+
+      var proto = Tracker.prototype;
+      proto.get = noop;
+      proto.set = noop;
+      proto.send = noop;
+      var googleAnalyticsName = window.GoogleAnalyticsObject || 'ga';
+
+      function ga() {
+        var len = arguments.length;
+
+        if (len === 0) {
+          return;
+        } // eslint-disable-next-line prefer-rest-params
+
+
+        var lastArg = arguments[len - 1];
+
+        if (typeof lastArg !== 'object' || lastArg === null || typeof lastArg.hitCallback !== 'function') {
+          return;
+        }
+
+        try {
+          lastArg.hitCallback(); // eslint-disable-next-line no-empty
+        } catch (ex) {}
+      }
+
+      ga.create = function () {
+        return new Tracker();
+      };
+
+      ga.getByName = noopNull;
+
+      ga.getAll = function () {
+        return [];
+      };
+
+      ga.remove = noop;
+      ga.loaded = true;
+      window[googleAnalyticsName] = ga;
+      var _window = window,
+          dataLayer = _window.dataLayer;
+
+      if (dataLayer instanceof Object && dataLayer.hide instanceof Object && typeof dataLayer.hide.end === 'function') {
+        dataLayer.hide.end();
+      }
+
+      hit(source);
+    }
+    GoogleAnalytics.names = ['google-analytics', 'ubo-google-analytics_analytics.js', 'google-analytics_analytics.js'];
+    GoogleAnalytics.injections = [hit, noop, noopNull];
+
+    /* eslint-disable no-underscore-dangle */
+    /**
+     * @redirect google-analytics-ga
+     *
+     * @description
+     * Mocks old Google Analytics API.
+     *
+     * Related UBO redirect resource:
+     * https://github.com/gorhill/uBlock/blob/a94df7f3b27080ae2dcb3b914ace39c0c294d2f6/src/web_accessible_resources/google-analytics_ga.js
+     *
+     * **Example**
+     * ```
+     * ||google-analytics.com/ga.js$script,redirect=google-analytics-ga
+     * ```
+     */
+
+    function GoogleAnalyticsGa(source) {
+      // Gaq constructor
+      function Gaq() {}
+
+      Gaq.prototype.Na = noop;
+      Gaq.prototype.O = noop;
+      Gaq.prototype.Sa = noop;
+      Gaq.prototype.Ta = noop;
+      Gaq.prototype.Va = noop;
+      Gaq.prototype._createAsyncTracker = noop;
+      Gaq.prototype._getAsyncTracker = noop;
+      Gaq.prototype._getPlugin = noop;
+
+      Gaq.prototype.push = function (data) {
+        if (typeof data === 'function') {
+          data();
+          return;
+        }
+
+        if (Array.isArray(data) === false) {
+          return;
+        } // https://developers.google.com/analytics/devguides/collection/gajs/methods/gaJSApiDomainDirectory#_gat.GA_Tracker_._link
+
+
+        if (data[0] === '_link' && typeof data[1] === 'string') {
+          window.location.assign(data[1]);
+        } // https://github.com/gorhill/uBlock/issues/2162
+
+
+        if (data[0] === '_set' && data[1] === 'hitCallback' && typeof data[2] === 'function') {
+          data[2]();
+        }
+      };
+
+      var gaq = new Gaq();
+      var asyncTrackers = window._gaq || [];
+
+      if (Array.isArray(asyncTrackers)) {
+        while (asyncTrackers[0]) {
+          gaq.push(asyncTrackers.shift());
+        }
+      } // eslint-disable-next-line no-multi-assign
+
+
+      window._gaq = gaq.qf = gaq; // Gat constructor
+
+      function Gat() {} // Mock tracker api
+
+
+      var api = ['_addIgnoredOrganic', '_addIgnoredRef', '_addItem', '_addOrganic', '_addTrans', '_clearIgnoredOrganic', '_clearIgnoredRef', '_clearOrganic', '_cookiePathCopy', '_deleteCustomVar', '_getName', '_setAccount', '_getAccount', '_getClientInfo', '_getDetectFlash', '_getDetectTitle', '_getLinkerUrl', '_getLocalGifPath', '_getServiceMode', '_getVersion', '_getVisitorCustomVar', '_initData', '_link', '_linkByPost', '_setAllowAnchor', '_setAllowHash', '_setAllowLinker', '_setCampContentKey', '_setCampMediumKey', '_setCampNameKey', '_setCampNOKey', '_setCampSourceKey', '_setCampTermKey', '_setCampaignCookieTimeout', '_setCampaignTrack', '_setClientInfo', '_setCookiePath', '_setCookiePersistence', '_setCookieTimeout', '_setCustomVar', '_setDetectFlash', '_setDetectTitle', '_setDomainName', '_setLocalGifPath', '_setLocalRemoteServerMode', '_setLocalServerMode', '_setReferrerOverride', '_setRemoteServerMode', '_setSampleRate', '_setSessionTimeout', '_setSiteSpeedSampleRate', '_setSessionCookieTimeout', '_setVar', '_setVisitorCookieTimeout', '_trackEvent', '_trackPageLoadTime', '_trackPageview', '_trackSocial', '_trackTiming', '_trackTrans', '_visitCode'];
+      var tracker = api.reduce(function (res, funcName) {
+        res[funcName] = noop;
+        return res;
+      }, {});
+
+      tracker._getLinkerUrl = function (a) {
+        return a;
+      };
+
+      Gat.prototype._anonymizeIP = noop;
+      Gat.prototype._createTracker = noop;
+      Gat.prototype._forceSSL = noop;
+      Gat.prototype._getPlugin = noop;
+
+      Gat.prototype._getTracker = function () {
+        return tracker;
+      };
+
+      Gat.prototype._getTrackerByName = function () {
+        return tracker;
+      };
+
+      Gat.prototype._getTrackers = noop;
+      Gat.prototype.aa = noop;
+      Gat.prototype.ab = noop;
+      Gat.prototype.hb = noop;
+      Gat.prototype.la = noop;
+      Gat.prototype.oa = noop;
+      Gat.prototype.pa = noop;
+      Gat.prototype.u = noop;
+      var gat = new Gat();
+      window._gat = gat;
+      hit(source);
+    }
+    GoogleAnalyticsGa.names = ['google-analytics-ga', 'ubo-google-analytics_ga.js', 'google-analytics_ga.js'];
+    GoogleAnalyticsGa.injections = [hit, noop];
+
+    /* eslint-disable max-len */
+
+    /**
+     * @redirect googlesyndication-adsbygoogle
+     *
+     * @description
+     * Mocks Google AdSense API.
+     *
+     * Related UBO redirect resource:
+     * https://github.com/gorhill/uBlock/blob/a94df7f3b27080ae2dcb3b914ace39c0c294d2f6/src/web_accessible_resources/googlesyndication_adsbygoogle.js
+     *
+     * **Example**
+     * ```
+     * ||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$script,redirect=googlesyndication-adsbygoogle
+     * ```
+     */
+
+    /* eslint-enable max-len */
+
+    function GoogleSyndicationAdsByGoogle(source) {
+      window.adsbygoogle = window.adsbygoogle || {
+        length: 0,
+        loaded: true,
+        push: function push() {
+          this.length += 1;
+        }
+      };
+      var adElems = document.querySelectorAll('.adsbygoogle');
+      var css = 'height:1px!important;max-height:1px!important;max-width:1px!important;width:1px!important;';
+      var executed = false;
+
+      for (var i = 0; i < adElems.length; i += 1) {
+        var frame = document.createElement('iframe');
+        frame.id = "aswift_".concat(i + 1);
+        frame.style = css;
+        var childFrame = document.createElement('iframe');
+        childFrame.id = "google_ads_frame".concat(i);
+        frame.appendChild(childFrame);
+        document.body.appendChild(frame);
+        executed = true;
+      }
+
+      if (executed) {
+        hit(source);
+      }
+    }
+    GoogleSyndicationAdsByGoogle.names = ['googlesyndication-adsbygoogle', 'ubo-googlesyndication_adsbygoogle.js', 'googlesyndication_adsbygoogle.js'];
+    GoogleSyndicationAdsByGoogle.injections = [hit];
+
+    /**
+     * @redirect googletagmanager-gtm
+     *
+     * @description
+     * Mocks Google Tag Manager API.
+     *
+     * Related UBO redirect resource:
+     * https://github.com/gorhill/uBlock/blob/a94df7f3b27080ae2dcb3b914ace39c0c294d2f6/src/web_accessible_resources/googletagmanager_gtm.js
+     *
+     * **Example**
+     * ```
+     * ||googletagmanager.com/gtm.js$script,redirect=googletagmanager-gtm
+     * ```
+     */
+
+    function GoogleTagManagerGtm(source) {
+      window.ga = window.ga || noop;
+      var _window = window,
+          dataLayer = _window.dataLayer;
+
+      if (dataLayer instanceof Object === false) {
+        return;
+      }
+
+      if (dataLayer.hide instanceof Object && typeof dataLayer.hide.end === 'function') {
+        dataLayer.hide.end();
+      }
+
+      if (typeof dataLayer.push === 'function') {
+        dataLayer.push = function (data) {
+          if (data instanceof Object && typeof data.eventCallback === 'function') {
+            setTimeout(data.eventCallback, 1);
+          }
+        };
+      }
+
+      hit(source);
+    }
+    GoogleTagManagerGtm.names = ['googletagmanager-gtm', 'ubo-googletagmanager_gtm.js', 'googletagmanager_gtm.js'];
+    GoogleTagManagerGtm.injections = [hit, noop];
+
+    /**
+     * @redirect googletagservices-gpt
+     *
+     * @description
+     * Mocks Google Publisher Tag API.
+     *
+     * Related UBO redirect resource:
+     * https://github.com/gorhill/uBlock/blob/a94df7f3b27080ae2dcb3b914ace39c0c294d2f6/src/web_accessible_resources/googletagservices_gpt.js
+     *
+     * **Example**
+     * ```
+     * ||googletagservices.com/tag/js/gpt.js$script,redirect=googletagservices-gpt
+     * ```
+     */
+
+    function GoogleTagServicesGpt(source) {
+      var companionAdsService = {
+        addEventListener: noopThis,
+        enableSyncLoading: noop,
+        setRefreshUnfilledSlots: noop
+      };
+      var contentService = {
+        addEventListener: noopThis,
+        setContent: noop
+      };
+
+      function PassbackSlot() {} // constructor
+
+
+      PassbackSlot.prototype.display = noop;
+      PassbackSlot.prototype.get = noopNull;
+      PassbackSlot.prototype.set = noopThis;
+      PassbackSlot.prototype.setClickUrl = noopThis;
+      PassbackSlot.prototype.setTagForChildDirectedTreatment = noopThis;
+      PassbackSlot.prototype.setTargeting = noopThis;
+      PassbackSlot.prototype.updateTargetingFromMap = noopThis;
+
+      function SizeMappingBuilder() {} // constructor
+
+
+      SizeMappingBuilder.prototype.addSize = noopThis;
+      SizeMappingBuilder.prototype.build = noopNull;
+
+      function Slot() {} // constructor
+
+
+      Slot.prototype.addService = noopThis;
+      Slot.prototype.clearCategoryExclusions = noopThis;
+      Slot.prototype.clearTargeting = noopThis;
+      Slot.prototype.defineSizeMapping = noopThis;
+      Slot.prototype.get = noopNull;
+      Slot.prototype.getAdUnitPath = noopArray;
+      Slot.prototype.getAttributeKeys = noopArray;
+      Slot.prototype.getCategoryExclusions = noopArray;
+      Slot.prototype.getDomId = noopStr;
+      Slot.prototype.getSlotElementId = noopStr;
+      Slot.prototype.getSlotId = noopThis;
+      Slot.prototype.getTargeting = noopArray;
+      Slot.prototype.getTargetingKeys = noopArray;
+      Slot.prototype.set = noopThis;
+      Slot.prototype.setCategoryExclusion = noopThis;
+      Slot.prototype.setClickUrl = noopThis;
+      Slot.prototype.setCollapseEmptyDiv = noopThis;
+      Slot.prototype.setTargeting = noopThis;
+      var pubAdsService = {
+        addEventListener: noopThis,
+        clear: noop,
+        clearCategoryExclusions: noopThis,
+        clearTagForChildDirectedTreatment: noopThis,
+        clearTargeting: noopThis,
+        collapseEmptyDivs: noop,
+        defineOutOfPagePassback: function defineOutOfPagePassback() {
+          return new PassbackSlot();
+        },
+        definePassback: function definePassback() {
+          return new PassbackSlot();
+        },
+        disableInitialLoad: noop,
+        display: noop,
+        enableAsyncRendering: noop,
+        enableSingleRequest: noop,
+        enableSyncRendering: noop,
+        enableVideoAds: noop,
+        get: noopNull,
+        getAttributeKeys: noopArray,
+        getTargeting: noop,
+        getTargetingKeys: noopArray,
+        getSlots: noopArray,
+        refresh: noop,
+        set: noopThis,
+        setCategoryExclusion: noopThis,
+        setCentering: noop,
+        setCookieOptions: noopThis,
+        setForceSafeFrame: noopThis,
+        setLocation: noopThis,
+        setPublisherProvidedId: noopThis,
+        setRequestNonPersonalizedAds: noopThis,
+        setSafeFrameConfig: noopThis,
+        setTagForChildDirectedTreatment: noopThis,
+        setTargeting: noopThis,
+        setVideoContent: noopThis,
+        updateCorrelator: noop
+      };
+      var _window = window,
+          _window$googletag = _window.googletag,
+          googletag = _window$googletag === void 0 ? {} : _window$googletag;
+      var _googletag$cmd = googletag.cmd,
+          cmd = _googletag$cmd === void 0 ? [] : _googletag$cmd;
+      googletag.apiReady = true;
+      googletag.cmd = [];
+
+      googletag.cmd.push = function (a) {
+        try {
+          a(); // eslint-disable-next-line no-empty
+        } catch (ex) {}
+
+        return 1;
+      };
+
+      googletag.companionAds = function () {
+        return companionAdsService;
+      };
+
+      googletag.content = function () {
+        return contentService;
+      };
+
+      googletag.defineOutOfPageSlot = function () {
+        return new Slot();
+      };
+
+      googletag.defineSlot = function () {
+        return new Slot();
+      };
+
+      googletag.destroySlots = noop;
+      googletag.disablePublisherConsole = noop;
+      googletag.display = noop;
+      googletag.enableServices = noop;
+      googletag.getVersion = noopStr;
+
+      googletag.pubads = function () {
+        return pubAdsService;
+      };
+
+      googletag.pubadsReady = true;
+      googletag.setAdIframeTitle = noop;
+
+      googletag.sizeMapping = function () {
+        return new SizeMappingBuilder();
+      };
+
+      window.googletag = googletag;
+
+      while (cmd.length !== 0) {
+        googletag.cmd.push(cmd.shift());
+      }
+
+      hit(source);
+    }
+    GoogleTagServicesGpt.names = ['googletagservices-gpt', 'ubo-googletagservices_gpt.js', 'googletagservices_gpt.js'];
+    GoogleTagServicesGpt.injections = [hit, noop, noopThis, noopNull, noopArray, noopStr];
+
+    /**
+     * @redirect scorecardresearch-beacon
+     *
+     * @description
+     * Mocks Scorecard Research API.
+     *
+     * Related UBO redirect resource:
+     * https://github.com/gorhill/uBlock/blob/a94df7f3b27080ae2dcb3b914ace39c0c294d2f6/src/web_accessible_resources/scorecardresearch_beacon.js
+     *
+     * **Example**
+     * ```
+     * ||sb.scorecardresearch.com/beacon.js$script,redirect=scorecardresearch-beacon
+     * ```
+     */
+
+    function ScoreCardResearchBeacon(source) {
+      window.COMSCORE = {
+        purge: function purge() {
+          // eslint-disable-next-line no-underscore-dangle
+          window._comscore = [];
+        },
+        beacon: function beacon() {}
+      };
+      hit(source);
+    }
+    ScoreCardResearchBeacon.names = ['scorecardresearch-beacon', 'ubo-scorecardresearch_beacon.js', 'scorecardresearch_beacon.js'];
+    ScoreCardResearchBeacon.injections = [hit];
+
+    /**
+     * @redirect metrika-yandex-tag
+     *
+     * @description
+     * Mocks Yandex Metrika API.
+     * https://yandex.ru/support/metrica/objects/method-reference.html
+     *
+     * **Example**
+     * ```
+     * ||mc.yandex.ru/metrika/tag.js$script,redirect=metrika-yandex-tag
+     * ```
+     */
+
+    function metrikaYandexTag(source) {
+      var asyncCallbackFromOptions = function asyncCallbackFromOptions(param) {
+        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        var callback = options.callback;
+        var ctx = options.ctx;
+
+        if (typeof callback === 'function') {
+          callback = ctx !== undefined ? callback.bind(ctx) : callback;
+          setTimeout(function () {
+            return callback();
+          });
+        }
+      };
+
+      var init = noop;
+      /**
+       * https://yandex.ru/support/metrica/objects/addfileextension.html
+       */
+
+      var addFileExtension = noop;
+      /**
+       * https://yandex.ru/support/metrica/objects/extlink.html
+       */
+
+      var extLink = asyncCallbackFromOptions;
+      /**
+       * https://yandex.ru/support/metrica/objects/file.html
+       */
+
+      var file = asyncCallbackFromOptions;
+      /**
+       * https://yandex.ru/support/metrica/objects/get-client-id.html
+       * @param {Function} cb
+       */
+
+      var getClientID = function getClientID(cb) {
+        setTimeout(cb(null));
+      };
+      /**
+       * https://yandex.ru/support/metrica/objects/hit.html
+       */
+
+
+      var hitFunc = asyncCallbackFromOptions;
+      /**
+       * https://yandex.ru/support/metrica/objects/notbounce.html
+       */
+
+      var notBounce = asyncCallbackFromOptions;
+      /**
+       * https://yandex.ru/support/metrica/objects/params-method.html
+       */
+
+      var params = noop;
+      /**
+       * https://yandex.ru/support/metrica/objects/reachgoal.html
+       * @param {string} target
+       * @param {Object} params
+       * @param {Function} callback
+       * @param {any} ctx
+       */
+
+      var reachGoal = function reachGoal(target, params, callback, ctx) {
+        asyncCallbackFromOptions(null, {
+          callback: callback,
+          ctx: ctx
+        });
+      };
+      /**
+       * https://yandex.ru/support/metrica/objects/set-user-id.html
+       */
+
+
+      var setUserID = noop;
+      /**
+       * https://yandex.ru/support/metrica/objects/user-params.html
+       */
+
+      var userParams = noop;
+      var api = {
+        init: init,
+        addFileExtension: addFileExtension,
+        extLink: extLink,
+        file: file,
+        getClientID: getClientID,
+        hit: hitFunc,
+        notBounce: notBounce,
+        params: params,
+        reachGoal: reachGoal,
+        setUserID: setUserID,
+        userParams: userParams
+      };
+
+      function ym(id, funcName) {
+        for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+          args[_key - 2] = arguments[_key];
+        }
+
+        return api[funcName] && api[funcName].apply(api, args);
+      }
+
+      window.ym = ym;
+      hit(source);
+    }
+    metrikaYandexTag.names = ['metrika-yandex-tag'];
+    metrikaYandexTag.injections = [hit, noop];
+
+    /**
+     * @redirect metrika-yandex-watch
+     *
+     * @description
+     * Mocks the old Yandex Metrika API.
+     * https://yandex.ru/support/metrica/objects/_method-reference.html
+     *
+     * **Example**
+     * ```
+     * ||mc.yandex.ru/metrika/watch.js$script,redirect=metrika-yandex-watch
+     * ```
+     */
+
+    function metrikaYandexWatch(source) {
+      var cbName = 'yandex_metrika_callbacks';
+      /**
+       * Gets callback and its context from options and call it in async way
+       * @param {Object} options Yandex Metrika API options
+       */
+
+      var asyncCallbackFromOptions = function asyncCallbackFromOptions() {
+        var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+        var callback = options.callback;
+        var ctx = options.ctx;
+
+        if (typeof callback === 'function') {
+          callback = ctx !== undefined ? callback.bind(ctx) : callback;
+          setTimeout(function () {
+            return callback();
+          });
+        }
+      };
+
+      function Metrika() {} // constructor
+      // Methods without options
+
+
+      Metrika.prototype.addFileExtension = noop;
+      Metrika.prototype.getClientID = noop;
+      Metrika.prototype.setUserID = noop;
+      Metrika.prototype.userParams = noop; // Methods with options
+      // The order of arguments should be kept in according to API
+
+      Metrika.prototype.extLink = function (url, options) {
+        asyncCallbackFromOptions(options);
+      };
+
+      Metrika.prototype.file = function (url, options) {
+        asyncCallbackFromOptions(options);
+      };
+
+      Metrika.prototype.hit = function (url, options) {
+        asyncCallbackFromOptions(options);
+      };
+
+      Metrika.prototype.reachGoal = function (target, params, cb, ctx) {
+        asyncCallbackFromOptions({
+          callback: cb,
+          ctx: ctx
+        });
+      };
+
+      Metrika.prototype.notBounce = asyncCallbackFromOptions;
+
+      if (window.Ya) {
+        window.Ya.Metrika = Metrika;
+      } else {
+        window.Ya = {
+          Metrika: Metrika
+        };
+      }
+
+      if (window[cbName] && Array.isArray(window[cbName])) {
+        window[cbName].forEach(function (func) {
+          if (typeof func === 'function') {
+            func();
+          }
+        });
+      }
+
+      hit(source);
+    }
+    metrikaYandexWatch.names = ['metrika-yandex-watch'];
+    metrikaYandexWatch.injections = [hit, noop];
+
+
+
+    var redirectsList = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        preventFab: preventFab,
+        setPopadsDummy: setPopadsDummy,
+        preventPopadsNet: preventPopadsNet,
+        noeval: noeval,
+        GoogleAnalytics: GoogleAnalytics,
+        GoogleAnalyticsGa: GoogleAnalyticsGa,
+        GoogleSyndicationAdsByGoogle: GoogleSyndicationAdsByGoogle,
+        GoogleTagManagerGtm: GoogleTagManagerGtm,
+        GoogleTagServicesGpt: GoogleTagServicesGpt,
+        ScoreCardResearchBeacon: ScoreCardResearchBeacon,
+        metrikaYandexTag: metrikaYandexTag,
+        metrikaYandexWatch: metrikaYandexWatch
+    });
+
+    /**
+     * Finds redirect resource by it's name
+     * @param {string} name - redirect name
+     */
+
+    var getRedirectByName = function getRedirectByName(name) {
+      var redirects = Object.keys(redirectsList).map(function (key) {
+        return redirectsList[key];
+      });
+      return redirects.find(function (r) {
+        return r.names && r.names.indexOf(name) > -1;
+      });
+    };
+
+    var getRedirectCode = function getRedirectCode(name) {
+      var redirect = getRedirectByName(name);
+      var result = attachDependencies(redirect);
+      result = addCall(redirect, result);
+      return passSourceAndProps({
+        name: name
+      }, result);
+    };
+
+    var redirectsCjs = {
+      getCode: getRedirectCode,
+      isValidRedirectRule: validator.isValidRedirectRule,
+      isAdgRedirectRule: validator.isAdgRedirectRule,
+      isUboRedirectRule: validator.isUboRedirectRule,
+      isAbpRedirectRule: validator.isAbpRedirectRule,
+      convertUboRedirectToAdg: convertUboRedirectToAdg,
+      convertAbpRedirectToAdg: convertAbpRedirectToAdg,
+      convertRedirectToAdg: convertRedirectToAdg,
+      convertAdgRedirectToUbo: convertAdgRedirectToUbo
+    };
 
     /**
      * @typedef {Object} Source - scriptlet properties
@@ -2419,49 +4389,16 @@
      */
 
     /**
-     * Find scriptlet by it's name
-     * @param {string} name
-     */
-
-    function getScriptletByName(name) {
-      var scriptlets = Object.keys(scriptletsList).map(function (key) {
-        return scriptletsList[key];
-      });
-      return scriptlets.find(function (s) {
-        return s.names && s.names.indexOf(name) > -1;
-      });
-    }
-    /**
-     * Check is scriptlet params valid
-     * @param {Object} source
-     */
-
-
-    function isValidScriptletSource(source) {
-      if (!source.name) {
-        return false;
-      }
-
-      var scriptlet = getScriptletByName(source.name);
-
-      if (!scriptlet) {
-        return false;
-      }
-
-      return true;
-    }
-    /**
     * Returns scriptlet code by param
     * @param {Source} source
     */
 
-
     function getScriptletCode(source) {
-      if (!isValidScriptletSource(source)) {
+      if (!validator.isValidScriptletName(source.name)) {
         return null;
       }
 
-      var scriptlet = getScriptletByName(source.name);
+      var scriptlet = validator.getScriptletByName(source.name);
       var result = attachDependencies(scriptlet);
       result = addCall(scriptlet, result);
       result = source.engine === 'corelibs' ? wrapInNonameFunc(result) : passSourceAndProps(source, result);
@@ -2470,16 +4407,29 @@
     /**
      * Global scriptlet variable
      *
-     * @returns {Object} object with method `invoke`
+     * @returns {Object} object with methods:
      * `invoke` method receives one argument with `Source` type
+     * `validate` method receives one argument with `String` type
      */
+    // eslint-disable-next-line no-undef
 
 
     scriptlets = function () {
       return {
-        invoke: getScriptletCode
+        invoke: getScriptletCode,
+        isValidScriptletName: validator.isValidScriptletName,
+        isValidScriptletRule: isValidScriptletRule,
+        isAdgScriptletRule: validator.isAdgScriptletRule,
+        isUboScriptletRule: validator.isUboScriptletRule,
+        isAbpSnippetRule: validator.isAbpSnippetRule,
+        convertUboToAdg: convertUboScriptletToAdg,
+        convertAbpToAdg: convertAbpSnippetToAdg,
+        convertScriptletToAdg: convertScriptletToAdg,
+        convertAdgToUbo: convertAdgScriptletToUbo,
+        redirects: redirectsCjs
       };
-    }(); // eslint-disable-line no-undef
+    }();
+     // eslint-disable-line no-undef
 
 }());
 
