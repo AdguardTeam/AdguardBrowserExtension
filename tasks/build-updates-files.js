@@ -4,10 +4,9 @@
  * Tagname is provides by the command with --tag argument (e.g. yarn build-update --tag v2.6.1-beta)
  */
 
-/* global process */
 import fs from 'fs';
 import gulp from 'gulp';
-import {version} from './parse-package';
+import { version } from './parse-package';
 import Logs from './log';
 
 const logs = new Logs();
@@ -27,7 +26,7 @@ const getTagArg = () => {
         logs.error('Missing value after argument. Make sure that the command call looks like `yarn build-update --tag v2.6.1-beta`)');
     }
 
-    return tag  ;
+    return tag;
 };
 
 const chromeUpdate = (done) => {
