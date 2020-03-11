@@ -79,7 +79,7 @@ const createArchive = (done) => {
         .pipe(zip('chrome.zip'))
         .pipe(gulp.dest(BUILD_DIR));
 
-    // th
+    // edge-chromium build
     const artifactsEdgeChromiumBuild = gulp.src(dest.inner)
         .pipe(zip('edge.zip'))
         .pipe(gulp.dest(BUILD_DIR));
