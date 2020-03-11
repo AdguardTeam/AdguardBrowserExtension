@@ -9,7 +9,6 @@
  * 7. Creating zip archive of an extension
  */
 
-/* global process */
 import fs from 'fs';
 import path from 'path';
 import gulp from 'gulp';
