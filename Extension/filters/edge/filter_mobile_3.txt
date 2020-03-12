@@ -1,9 +1,9 @@
-! Checksum: kV0+I+w8zBFBhWyEuZFlew
+! Checksum: iIB3nq8YoVZwlptZSB3MSw
 ! Title: AdGuard Tracking Protection filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. Use this filter if you do not want your actions on the Internet to be tracked.
-! Version: 2.0.11.3
-! TimeUpdated: 2019-12-16T17:31:06+03:00
-! Expires: 2 days (update frequency)
+! Version: 2.0.12.58
+! TimeUpdated: 2020-03-10T02:31:31+03:00
+! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -15,7 +15,7 @@
 #%#var AG_abortOnPropertyRead=function(a,b){var c=Math.random().toString(36).substr(2,8);AG_defineProperty(a,{beforeGet:function(){b&&console.warn("AdGuard aborted property read: "+a);throw new ReferenceError(c);}});var d=window.onerror;window.onerror=function(e){if("string"===typeof e&&-1!==e.indexOf(c))return b&&console.warn("AdGuard has caught window.onerror: "+a),!0;if(d instanceof Function)return d.apply(this,arguments)}};
 #%#var AG_abortInlineScript=function(g,b,c){var d=function(){if("currentScript"in document)return document.currentScript;var a=document.getElementsByTagName("script");return a[a.length-1]},e=Math.random().toString(36).substr(2,8),h=d();AG_defineProperty(b,{beforeGet:function(){var a=d();if(a instanceof HTMLScriptElement&&a!==h&&""===a.src&&g.test(a.textContent))throw c&&console.warn("AdGuard aborted execution of an inline script"),new ReferenceError(e);}});var f=window.onerror;window.onerror=function(a){if("string"===typeof a&&-1!==a.indexOf(e))return c&&console.warn("AdGuard has caught window.onerror: "+b),!0;if(f instanceof Function)return f.apply(this,arguments)}};
 #%#var AG_setConstant=function(e,a){if("undefined"===a)a=void 0;else if("false"===a)a=!1;else if("true"===a)a=!0;else if("noopFunc"===a)a=function(){};else if("trueFunc"===a)a=function(){return!0};else if("falseFunc"===a)a=function(){return!1};else if(/^\d+$/.test(a)){if(a=parseFloat(a),isNaN(a)||32767<Math.abs(a))return}else return;var b=!1;AG_defineProperty(e,{get:function(){return a},set:function(c){if(b)var d=!0;else void 0!==c&&void 0!==a&&typeof c!==typeof a&&(b=!0),d=b;d&&(a=c)}})};
-facebook.com,facebookcorewwwi.onion#%#new MutationObserver(function(){var t=["?fbclid","%3Ffbclid","&fbclid","%26fbclid","%3Futm","?utm","&fbc=","%26fbc%3D","?share=","%3Fshare%3D","%3F__twitter_impression%3D","?__twitter_impression=","?wtmc=","%3Fwtmc%3D","?originalReferrer=","%3ForiginalReferrer%3D","?wtrid=","%3Fwtrid%3D","?trbo=","%3Ftrbo%3D","?GEPC=","%3FGEPC%3D","?whatsapp=","%3Fwhatsapp%3D","?fbc=","%3Ffbc%3D","?dmcid=","%3Fdmcid%3D"];document.querySelectorAll('a[target="_blank"]').forEach(function(e){for(i=0;i<t.length;i++)if(e.href.includes(t[i])){if(!(r=e.href.split("#!")[1]))var r=e.href.split("%23%21")[1];if(!r)var r="";if(e.href.contains("#!")&&(r="#!"+r),e.href.contains("%23%21")&&(r="%23%21"+r),!(r=e.href.split("&feature=share&")[1]))r=e.href.split("%26feature%3Dshare%26")[1];if(!r)r="";e.href.contains("&feature=share&")&&(r="?"+r),e.href.contains("%26feature%3Dshare%26")&&(r="%3F"+r),e.setAttribute("href",e.href.split(t[i])[0]+r)}})}).observe(document,{childList:!0,subtree:!0});
+facebook.com,facebookcorewwi.onion#%#new MutationObserver(function(){var t=["?fbclid","%3Ffbclid","&fbclid","%26fbclid","%3Futm","?utm","&fbc=","%26fbc%3D","?share=","%3Fshare%3D","%3F__twitter_impression%3D","?__twitter_impression=","?wtmc=","%3Fwtmc%3D","?originalReferrer=","%3ForiginalReferrer%3D","?wtrid=","%3Fwtrid%3D","?trbo=","%3Ftrbo%3D","?GEPC=","%3FGEPC%3D","?whatsapp=","%3Fwhatsapp%3D","?fbc=","%3Ffbc%3D","?dmcid=","%3Fdmcid%3D"];document.querySelectorAll('a[target="_blank"]').forEach(function(e){for(i=0;i<t.length;i++)if(e.href.includes(t[i])){if(!(r=e.href.split("#!")[1]))var r=e.href.split("%23%21")[1];if(!r)var r="";if(e.href.includes("#!")&&(r="#!"+r),e.href.includes("%23%21")&&(r="%23%21"+r),!(r=e.href.split("&feature=share&")[1]))r=e.href.split("%26feature%3Dshare%26")[1];if(!r)r="";e.href.includes("&feature=share&")&&(r="?"+r),e.href.includes("%26feature%3Dshare%26")&&(r="%3F"+r),e.setAttribute("href",e.href.split(t[i])[0]+r)}})}).observe(document,{childList:!0,subtree:!0});
 facebook.com,facebookcorewwwi.onion#%#new MutationObserver(function(){document.querySelectorAll('div[id^="hyperfeed_story_id_"] a:not([target="_blank"])').forEach(function(t){(t.href.contains("&eid=")||t.href.contains("%26eid%3D")||t.href.contains("?__tn__=")||t.href.contains("%3F%5F%5Ftn%5F%5F%3D")||t.href.contains("&__tn__=")||t.href.contains("%26%5F%5Ftn%5F%5F%3D")||t.href.contains("?source=")||t.href.contains("%3Fsource%3D")||t.href.contains("?__xts__")||t.href.contains("%3F%5F%5Fxts%5F%5F")||t.href.contains("&__xts__")||t.href.contains("%26%5F%5Fxts%5F%5F")||t.href.contains("&amp;__xts__%5B")||t.href.contains("?ref=")||t.href.contains("%3Fref%3D")||t.href.contains("?fref=")||t.href.contains("%3Ffref%3D")||t.href.contains("?epa=")||t.href.contains("%3Fepa%3D"))&&(t.setAttribute("href",t.href.split("&eid=")[0]),t.setAttribute("href",t.href.split("%26eid%3D")[0]),t.setAttribute("href",t.href.split("?__tn__=")[0]),t.setAttribute("href",t.href.split("%3F%5F%5Ftn%5F%5F%3D")[0]),t.setAttribute("href",t.href.split("&__tn__=")[0]),t.setAttribute("href",t.href.split("%26%5F%5Ftn%5F%5F%3D")[0]),t.setAttribute("href",t.href.split("?__xts__")[0]),t.setAttribute("href",t.href.split("%3F%5F%5Fxts%5F%5F")[0]),t.setAttribute("href",t.href.split("&__xts__")[0]),t.setAttribute("href",t.href.split("%26%5F%5Fxts%5F%5F")[0]),t.setAttribute("href",t.href.split("&amp;__xts__%5B")[0]),t.setAttribute("href",t.href.split("?source=")[0]),t.setAttribute("href",t.href.split("%3Fsource%3D")[0]),t.setAttribute("href",t.href.split("?ref=")[0]),t.setAttribute("href",t.href.split("%3Fref%3D")[0]),t.setAttribute("href",t.href.split("?fref=")[0]),t.setAttribute("href",t.href.split("%3Ffref%3D")[0]),t.setAttribute("href",t.href.split("?epa=")[0]),t.setAttribute("href",t.href.split("%3Fepa%3D")[0]))})}).observe(document,{childList:!0,subtree:!0});
 elpais.com,chip.de,moviepilot.com,madison.com,promiflash.de,trendblog.net,qctimes.com,missoulian.com,chip.eu,promiflash.tv,bix7.com,7riversmarketplace.com,azstarnet.com,huskerextra.com,hawkmania.com,casperstartribune.com,justselect.ru,xonio.com,autosocut.de,thebettendorfnews.com,netcive.com,autocout24.de,lmagazinelincoln.com,lincolnrestaurantweek.com,napavalleywheels.com,thisistucson.com,download.de,billingsgazette.net,autoscount24.de,chipxonio.biz,tucsonestrella.us,teilescout24.eu,celebratenebraska.com,autoscunt.de,mopedscout.com,auto-sout24.de,autocsout24.de,promiflasch.de,autoteilescout.ch,aotoscout.de,motoscout.in,autoscoter24.de,autoskaud.de,ersatzteile-scout24.de,chipxonio.info,kfzscout24.de,reifenscout24.eu,harpers.de,aptshowcase.com,tyrescout24.com,tucsonestrella.org,houstonconews.com,mastercar.de,autoteilescout.net,bikescout24.eu,autoscout25.de,aut0scout.de,zubehoerscout24.de,autosout-24.de,rivervalleybusinessreport.com,teilescout24.net,motor-scout24.eu,unfall-scout.de,tuning-scout24.eu,motoscount24.de,autoascout24.de,reifen-scout24.de,autoteilescout24.org,autoteilescout24.info,motoscout.us,moviecritter.de,autoscouet24.de,utoscout24.de,motor-scout.ch,autoscout23.de,motorrad-scout.net,moto-scout24.pl,motorradscaut24.de,macfrage.net,bikerscout.info,motorscout24.eu,gzlincoln.com,chipxonio.net,automobilscaut.de,capitalnewspapers.com,fahrzeugscout.de,autoscout22.de,motoradscout.eu,motoscout24.mx,motoscout.ro,motoskout.de,ersatzteilscout.de,autoteilescout.de,neighborhoodextra.com,autiscout24.de,motoscout.mx,danceshoppenebraska.com,autoscouting24.de,workbakken.com,auto-scout-2.de,billingsgazzette.com,livewellwyoming.com,autoscont24.de,autoskaud24.de,auto-scount.de,carscout24.de,moto-scout24.mobi,ersatzteilscout24.de,autoscott-24.de,dailystarcalendar.com,montanamessenger.com,tuningscout24.de,notoscout24.de,automobilscout24.de,auto-skout-24.de,it-whitepaper.net,spearfishcommunity.com,atoscout-24.de,autosgout24.de,auto-scouts.de,reifenscout24.com,wyoworks.com,motoscout24.mobi,wheelsforyoukansas.com,motorrad-scout24.info,teilescout24.at,autscout24.de,auto-scaut24.de,teile-scout.com,autoscod24.de,teile-scout.ch,autocout-24.de,chip-video.de,moto-scout.com.cn,lincoln-living.com,motorradscout24.net,ms24.biz,flipsideonline.com,moto-scout24.ro,auotoscout24.de,www-auto-scout24.de,motorradscout24.org,rollerscout.de,kfz-teilescout.de,auto-skout.de,autohausscout24.eu,xonio.at,autohausscout24.de,autoscuot.de,downloadchip.de,autoteile-scout24.info,outdoorboatsrvsmore.com,motorrad-scout24.ch,motoscot.de,as24autocredit.de,auto-scott-24.de,auto-scot-24.de,autoskout-24.de,autosgaud24.de,it-whitepaper.at,elektroautoscout.de,autoscput24.de,motorradscout.eu,autosout.de,foto-video.eu,chip-fotovideo.de,unfallscout24.de,quadscout24.de,motorradscout.org,autos-scout.de,motoscout24.ro,motoscout24.co,teile-scout.net,autodcout24.de,autosccout24.de,autoscout4.de,autoscout-online.de,autoteile-scout.com,aotoscout24.de,audosgaut.de,auto-shout.de,autosckut24.de,game-critter.com,autoscoutvierundzwanzig.de,motorscout24.de,insidenapavalley.com,southernillinoisan.com,audosgaud.de,motorrad-scout24.net,outdoorwheels.com,autoteile-scout.info,autoscaund24.de,autosgaud.de,laestrelladetucson.us,teilescout.org,autoteile-scout.at,autoteilescout24.ch,otoscout.de,auto-skaut24.de,auto-sout-24.de,ersatzteil-scout-24.de,teilescout.com,auto-cout-24.de,wyovarsity.com,aotoscaut.de,autoteile-scout.org,wheelsforyouomaha.com,promiflash.net,gebrauchtwagen-scout.de,motoscout-24.com,motosout24.com,ms24.mobi,autoscout2.de,outoscout24.de,auto-scout24.de,foodcritter.com,promiflash.org,walkacrosswyoming.com,autoteile-scout24.ch,mtfires.com,musicritter.com,mtinbusiness.com,motoscout.info,starcitygolfer.com,autoteilescout24.net,autohausscout.de,autoacout24.de,moto-scout.info,wi-elections.com,auto-skout24.de,autoshot24.de,motosocut24.de,autoscout27.de,chipdigital.de,autoscout24-online.de,teilescout.info,autoscout-xl.de,teilescout24.org,ersatzteilescout-24.at,it-whitepaper.org,krombach24.de,automobilscout.de,finderads.com,freakfestlive.com,ellsworthcommunity.com,motor-scout.de,moto-scout.ch,uatoscout24.de,autoscouts.de,moto-scout24.net,autoscaut24.de,auotscout24.de,ersatzteilescout-24.de,quadcityvarsity.com,motorradscout.ch,unfallautoscout24.com,ersatzteilescout.de,promi-flash.de,estrelladetucson.com,salukigameday.com,autosco24.de,autoteilescout.eu,ersatzteilescout-24.com,download-chip.de,autoscuot-24.de,motorrad-scout24.biz,wwwautoscout.de,motoradscout24.com,wheelsforyounebraska.com,motoscout-24.de,teile-scout24.biz,autoteile-scout.biz,reifenscout.net,auto-skut24.de,auto-scout.de,atoscout.de,chip-fotovideo.eu,chipxonio.org,qcvarsity.com,reifenscout.at,auto-scout-24.de,mooscout24.de,estrelladetucson.net,teile-scout.org,download-chip.mobi,promi-flash.ch,elektroauto-scout.de,woodfordcountyjournal.com,autoscoot24.de,familie-kellers.de,teile-scout24.org,autoscaut-24.de,ersatzteil-scout.de,wheelsforyoumissouri.com,movie-critter.com,tarif.de,auto-scuot-24.de,tuningscout24.net,kfzscout.eu,fahrzeugscout24.de,corridormag.com,autoscout24de.de,oldiescout24.de,autoscount-24.de,autoscaunt.de,car-scout24.de,autosscout24.de,billinggazette.com,autohaus-adermann.de,missoulianentertainer.com,wiprepzone.com,missoulian.net,oldtimer-scout24.de,monsoonalerts.com,xn--motorrderscout24-0nb.de,motoscout24.cn,moto-scout24.de,starcityhealth.com,audoscout24.de,motorradscout24.ch,pc-frage.net,motorradscout.net,xonio.mobi,ms24.cn,motorrad-scout.org,ihrautoscout.com,newjobsnd.com,auto-scout4.de,auttoscout24.de,autocscout24.de,autuscaut.de,autoteile-scout24.biz,autoscoud.de,autosc0ut24.de,ms24.us,moto-scout24.eu,lincolnjournalstar.com,motorrad-scout.mobi,promiflash.ch,unfallscout.de,walkerwatch.net,teilescout24.ch,auto-scou.de,emptystockingclub.com,motoscout2.de,xonio.eu,teilescout.eu,www-autoscout24.de,motorad-scout.eu,ahtoscout.de,utoscout.de,it-whitepaper.info,autoscout20.de,kfzteilescout24.de,mastercar.com,ms24.com.cn,officefrage.net,unfallautoscout24.de,autos-scout24.de,moto-scout.mobi,farmercityjournal.com,teilescout.net,chip-germany.de,kchaiyo.com,moto-scout24.us,moto-scout.in,tuningmarkt.eu,seelakegeorge.com,ascout24.de,motoscuot.de,motorad-scout.de,autoscout-2.de,autosckot.de,motoscout24.net,autoschaut24.de,tyrescout24.eu,poststar.org,bikerscout24.com,audosgaut24.de,motorradscout24.eu,wyomingwheelsforyou.com,autoscouts24.de,tucsonestrella.com,digitalcritter.com,77square.com,autoshout24.de,moto-scout24.biz,reifenscout.ch,autoskaut-24.de,reifen-scout24.com,wwwautoscout-24.de,motoscout24.com,reifenscout24.de,mietwagenscout.com,auto-scot.de,moto-scout24.cn,autoscott24.de,teile-scout.de,autoteilescout24.eu,auoscout24.de,motorbikescout.com,motorradscout.biz,c.de,jahreswagenscout24.de,moto-scout.com,chip-foto-video.eu,autoscuout24.de,motoradscout.net,motorradscout.info,auto-skaut-24.de,auto-scott.de,champions.co,teile-scout24.at,as24.de,www-auto-scout.de,autoteile-scout24.com,autoscott.de,motorradscout-24.de,wwwauto-scout.de,mtoscout24.de,autoscoutt.de,ms24.info,www-autoscout.de,carscout.de,gebrauchtwagen-sout.de,starcitybridal.com,missoulien.com,myautoscout24.de,oldiescout.de,autoteile-scout.ch,motorad-scout24.de,ersatzteilescout.eu,auto-scut24.de,motoscout.biz,auto-scaut-24.de,auto-scount-24.de,chip.at,motoscuot24.de,musiccritter.com,motscout24.de,motor-scout.com,laestrelladetucson.org,crashscout24.de,autoskout24.de,werkstattscout24.com,ahl-freiberg.de,autoscond24.de,chip-linux.com,reifenscout24.info,autooscout24.de,motoscut24.de,motorscout.ch,wyopreps.net,oldtimerscout24.de,promiflash-images.de,a-scout.de,badgerbeat.com,youngtimerscout24.ch,testlabor.de,motorradscout24.com,chiplog.de,blackhillsjournal.net,car-scout-24.de,motoscout.org,autoscoutde.de,autosscout.de,autosout24.de,gebrauchtwagenscout.de,lifeandstylesi.net,motoscout.com,saddlebagnotes.com,autoscuont24.de,meadecountytimestribune.com,motorad-scout.ch,uatoscout.de,autoscuot24.de,motoradscout.de,winecountrysi.com,motorrad-scout-24.net,togetherapartmadison.com,auto-shout24.de,bike-scout24.de,as24shop.de,moto-scout.cn,wyovarsity.net,motoscout24.eu,autoscout28.de,moto-scout.de,kfz-teilescout24.de,bike-scout24.eu,qcpreps.com,sellitnebraska.com,motorbikescout24.eu,autoreifenscout.de,promi-flash.com,evo7.de,missoulian.us,auto-scou24.de,autosocut24.de,auto-scoud.de#%#AG_abortInlineScript(/propertyIsEnumerable.*window\.stop.*\/[A-Za-z0-9\-_]{100}/, 'navigator');
 mebelkmk.ru#%#window.yaCounter27017517 ={ reachGoal: function() {} };
@@ -47,6 +47,7 @@ vol.az#?##footer > .column-one-fourth[-ext-has=".line > span:contains(Sayğac)"]
 donnerwetter.de#?#.col-xs-12 > div.block.prepend-top[-ext-has='> div.blocktitle-brand > h2 > span.blocktitle-brand:contains(weitere Wetter-Nachrichten)']
 hdreactor.club,hdreactor.su,hdreactor.tv,hdreactor.net#?#.sidebar > div.menu-wrap > div.menu-head:contains(Счетчики)
 hdreactor.club,hdreactor.su,hdreactor.tv,hdreactor.net#?#.sidebar > div.menu-wrap > div.menu-head:contains(Счетчики) + div.menu-head1
+elmundo.es#?#body > main[role="main"] > div.ue-l-article:has(> div.ue-l-article__inner > div.ue-l-article__main-column > aside > div[id^="taboola"])
 uniongang.org#?#td[align="center"][height="27"]:contains(Счётчики)
 novate.ru#?##right > div.bordered:has(> script:contains(relap))
 novate.ru#?##right > h2:contains(Рекомендуем)
@@ -56,6 +57,60 @@ kinoman.me#?##extra_block > div.extra_mod > div.extra_mod:has(> div.extra_mod_ti
 latino-serialo.tv#?##sidebar-left > div.block[-ext-has="> div.box > h2:contains(Счетчик)"]
 prjaga.ru#?##right > div#right_nav > h3:contains(Онлайн статистика)
 journal-plaza.net#?#.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Счетчик)"]
+||mc.admetrica.ru^
+||hybrid.ai^$third-party
+||shopnetic.com^$third-party
+||e-contenta.com^$third-party
+||ad-srv-track.com^$third-party
+||trk.techtarget.com^
+||toecircle.com^$third-party
+||qzxmtyy.com^$third-party
+||adinsight.co.kr^$third-party
+||adpies.com^$third-party
+||altg.widerplanet.com^
+||astg.widerplanet.com^
+||asp22.http.or.kr^
+||cm-exchange.toast.com^
+||log.mediacategory.com^
+||analytic.press^
+||analytics.getaim.info^$third-party
+||d1tracker.ru^
+||bagbeam.com^$third-party
+||irxcm.com^$third-party
+||unid.go.com^$third-party
+||v3.fstats.xyz^
+||dataxpand.com^$third-party
+||connectif.cloud^$third-party
+||admetric.io^$third-party
+||bandborder.com^$third-party
+||lumitos.com^$third-party
+||dynameex.com^$third-party
+||seedtag.com^$third-party
+||minisrclink.cool^
+||quantummetric.com^$third-party
+||mediator.mail.ru^$third-party
+||bluecore.com^$third-party
+||track.pnicnik.live^
+||deliver.ptgncdn.com^
+||u-on.eu^$third-party
+||steadfastsystem.com^$third-party
+||monetate.net^$third-party
+||instana.io^$third-party
+||sitelabweb.com^$third-party
+||scripts.jixie.io^$third-party
+||tr.jixie.io^$third-party
+||betohomeall.com^$third-party
+||mc.yandex.ru^
+||track.segmentstream.com^$third-party
+||vboro.de^$third-party
+||barddfvgkhctch11.ru^$third-party
+||tr.webantenna.info^$third-party
+||trkn.us^$third-party
+||counter.pixplug.in^
+||referer.pixplug.in^
+||visitor.pixplug.in^
+||collector.mazeberry.com^
+||email-reflex.com^$third-party
 ||tracker.azet.sk^
 ||videoevents.outbrain.com^
 ||ringsrecord.com^$third-party
@@ -301,7 +356,6 @@ journal-plaza.net#?#.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч
 ||izooto.com^$third-party
 ||userreplay.net^$third-party
 ||smartlook.com^$third-party
-||honeybadger.io^$third-party
 ||adclicks.io^$third-party
 ||getmygeo.com^$third-party
 ||trvtrk.com^$third-party
@@ -2151,7 +2205,6 @@ journal-plaza.net#?#.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч
 ||prostats.it^$third-party
 ||provenpixel.com^$third-party
 ||providence.voxmedia.com^$third-party
-||proxad.net^$third-party
 ||prtracker.com^$third-party
 ||pstats.com^$third-party
 ||psyma-statistics.com^$third-party
@@ -3049,6 +3102,10 @@ journal-plaza.net#?#.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч
 ||zqtk.net^$third-party
 ||zroitracker.com^$third-party
 ||functionalclam.com^$third-party
+||acidpigs.com^$third-party
+||farshake.com^$third-party
+||fadedsnow.com^$third-party
+||nervoussummer.com^$third-party
 ||horsenectar.com^$third-party
 ||symbolizebeast.com^$third-party
 ||cannontwin.com^$third-party
@@ -3343,6 +3400,19 @@ nethunt.com/api/v1/track/email/$image
 ||collection-endpoint-staging.herokuapp.com^
 !+ NOT_PLATFORM(ios, ext_safari, ext_android_cb)
 ||tags.news.com.au^$~script
+||videostats.kakao.com^
+||stat.tiara.daum.net^
+||webid.ad.daum.net^
+||wt.soundestlink.com^
+||pixelzirkus.gameforge.com^
+||pixel.parsely.com^
+||apv-launcher.minute.ly^$third-party
+||counter.pr-cy.ru^
+||journey.unicef.de^
+||telemetry.art19.com^
+||infinityid.condenastdigital.com^$third-party
+||track.berliner-kurier.de^
+||collect.usefathom.com^
 ||wwwlog.thebell.co.kr^
 ||d1miwkthq39xj8.cloudfront.net^$third-party
 ||stats1.wpmudev.com^$third-party
@@ -3562,7 +3632,6 @@ nethunt.com/api/v1/track/email/$image
 ||c.x.oanda.com^
 ||clck.yandex.com^
 ||click.aliexpress.com^$image,script
-||click.engage.xbox.com^
 ||click.jasmin.com^
 ||click.livejasmin.com^
 ||click.mmosite.com^
@@ -3913,7 +3982,6 @@ nethunt.com/api/v1/track/email/$image
 ||track.slideshare.net^
 ||track.thesaurus.com^
 ||track.ugamezone.com^
-||track.webgains.com^
 ||track.websiteceo.com^
 ||track.wildblue.com^
 ||track.workablemetro.com^
@@ -4310,7 +4378,7 @@ nethunt.com/api/v1/track/email/$image
 ||r.movad.de^$third-party
 ||truehits1.gits.net.th^$third-party
 ||truehits3.gits.net.th^$third-party
-||try.abtasty.com^$third-party
+||ariane.abtasty.com^$third-party
 ||trk*.vidible.tv^
 ||triggertag.gorillanation.com^$third-party
 ||trck.spoteffects.net^$third-party
@@ -4612,6 +4680,7 @@ charlestownwyllie.oaklawnnonantum.com^
 ||track.zappos.com^
 ||track.price.ru^
 ||kraken.rambler.ru^$third-party
+||dkhywqapojyk7.cloudfront.net^
 ||d169bbxks24g2u.cloudfront.net^
 ||d1cdnlzf6usiff.cloudfront.net^
 ||d1cerpgff739r9.cloudfront.net^
@@ -4750,6 +4819,7 @@ charlestownwyllie.oaklawnnonantum.com^
 ||metrics.toysrus.com^
 ||mevents.trusteer.com^$third-party
 ||mtp.spcs.me^
+||mtp.spaces.im^
 ||mtp.spaces.ru^
 ||o.addthis.com^
 ||onclickpredictiv.com^$third-party
@@ -4810,6 +4880,15 @@ charlestownwyllie.oaklawnnonantum.com^
 .uk/t.gif?
 /ruxitagentjs_
 /log_event?
+/log-nt/*
+-unbxdAnalytics.
+/ux_analytics/*
+/ux_analytics_
+/owa.tracker-combined-min.js
+/Web_JS_Stats.
+/mip-stats-cnzz/*
+/rtoaster.js
+/fbevents.js
 /js/sync?visitor_id=
 /partner-analytics/*
 /friendbuy.min.js
@@ -4828,7 +4907,6 @@ charlestownwyllie.oaklawnnonantum.com^
 /playertracking/*
 /analyticsmediator.js
 .cloudfront.net/atrk.js$third-party
-/includes/fbevents.js
 /pixel.*/track/*
 /mendelstats.
 /clarity-*.js
@@ -5049,6 +5127,50 @@ _tracking.php?b=
 ||omtrdc.net/id^$empty,important
 ||nd.demdex.net/event?d_mid=$empty,important,domain=9now.com.au
 ||adc.nine.com.au/?token=$empty,important,domain=9now.com.au
+||pixlee.com/assets/pixlee_events.js
+||content.mql5.com/tr?
+||responder.wt.heise.de/resp/api/
+||sbm.nate.com/setCookie?
+||assiatv.com/css/stat.js
+||fresnel.vimeocdn.com/add/player-test-impression?beacon
+||exelator.com/pixel.gif
+||api-js.mixpanel.com/track^
+||try.abtasty.com/*.js$third-party
+||analytics.*.*/*.php
+||notebookinfo.de/javascript/*/collector.js
+||bmw-connecteddrive.de/z.gif?x=
+||cdn.merklesearch.com/merkle_track.js
+||abcotvs.net^*/fban_
+||z.cdn.turner.com/analytics/cnnvan/jsmd.min.js
+||newsource-cdn-static.ns.cnn.com/prd/analytics/1.0.1/cnnvan-omniture.min.js
+setafi.com##.footer_bl-3
+||gamejolt.com/tick/
+||chaturbate.com/api/adblocker/
+||evgnet.com/beacon/
+||51nongyao.net/js/analytics.js
+kanobu.ru##a[href^="https://www.liveinternet.ru/click"]
+||a24.biz/pixel/
+||preved.tut.by/1px.gif
+||tp-link.com^*/addHits.html
+||comgood.me/1px/
+||cdn.branch.io^$domain=underarmour.com
+||static.rebates.jp/rc/static/js/external/loggly.tracker-*.min.js
+||google-analytics.com^$domain=promiflash.de,empty,important
+||csi.gstatic.com^$domain=promiflash.de,empty,important
+||bilder-a.akamaihd.net/ip/js/ipdvdc/dbav.js
+||js-agent.newrelic.com^$domain=chaturbate.com,empty,important
+||api-js.datadome.co/js/
+||subscribe.washingtonpost.com/acquisition/views/tracking
+||a.nytimes.com/svc/nyt/data-layer?sourceApp
+||a.pr-cy.ru/assets/js/counter.sqi.min.js
+||a.pr-cy.ru/assets/img/analysis-counter.png$third-party
+||ir.ebaystatic.com/rs/c/makeebayfasterscript-src-scripts-logger-cbdc5549.js
+||r.nikkei.com/.resources/tracking/
+beauty.ua##.footer-counters
+ctvnews.ca##img[alt="comscorebeacon"]
+||s.pixfs.net/visitor.pixplug.in/
+||siteoid.com/matomo/matomo.js
+jQA0lQV6Uh93m3ldI29eI2guUFOdHFg5mPuslh5sk20eH$domain=9to5google.com|9to5mac.com|9to5toys.com|electrek.co
 ||s.aimg.sk/livemonitor/js/aztracker.js
 ||vidazoo.com/aggregate?
 ||vidazoo.com/event/
@@ -5271,7 +5393,6 @@ tensaigakkou.ru###custom_html-16
 ||d.line-cdn.net/*/torimochi.js/*/torimochi.js
 ||d.line-scdn.net/*/torimochi.js/*/torimochi.js
 /counter?$domain=amazon.com|amazon.de|amazon.it|amazon.com.tr
-||amazon.*/batch/*uedata=$image
 ||medyaradar.com/Tools/AddHit.aspx?
 ||static.gazeta.pl/info/http/xgemius-min.jsgz
 ||onecount.net/onecount/oc_track/
@@ -5471,11 +5592,6 @@ abp?type=js&session$domain=prosieben.de|sat1.de|kabeleins.de|sixx.de|prosiebenma
 ||metka.ru/counter/^$third-party
 ||metaprom.ru/top100/counter.php
 ||mediachat.ru/cnt
-||mc.yandex.ru/clmap$third-party
-||mc.yandex.ru/informer$third-party
-||mc.yandex.ru/metrika$third-party,domain=~mp3poisk.ru
-||mc.yandex.ru/watch$third-party
-||mc.yandex.ru/webvisor$third-party
 ||mail.ebay.com/img/*.gif
 ||mail.ru/grstat^$third-party
 ||mail.ru/gstat^$third-party
@@ -5681,8 +5797,6 @@ abp?type=js&session$domain=prosieben.de|sat1.de|kabeleins.de|sixx.de|prosiebenma
 ||istanbul.com/ui/js/analytics.js
 ||turkcell.com.tr/static_lib/assets/scripts/turkcell/google-analytics^
 ||mod.calltouch.ru/callback_event.php?*&analyticsId=
-||mediator.mail.ru/script/*/?cid=
-||mc.yandex.ru/metrika/tag.js
 ||iqiyi.com/pixel
 ||iqiyi.com/track
 ||winfuture.de/ajax/pixel^
@@ -5748,8 +5862,6 @@ dizibey.com##.sidebar > #text-19
 ||dawanda.com/trck^
 ||dawanda.com/uo/trck.gif
 ||dawanda.com/_strck^
-||api.hdfilmizle8.com/my.php^
-hdfilmizle8.com##iframe[src^="https://api.hdfilmizle8.com/my.php"]
 ||akamai.net/*.huluim.com/*/plustracking/
 ||vortex.hulu.com/*/events|
 ||instamp3.tv/js/analytics.js
@@ -5853,7 +5965,6 @@ utorrent.games,borfilm.com,hronika.info##.count
 ||immobilien-zeitung.de/backend/commons/js/analytics_config.js
 ||anapixel.elmundo.es/ter.gif
 ||pixelcounter.marca.com/pixelcontabilizacion/pixelcontabilizacion.gif
-||connect.facebook.net^*/fbevents.js$third-party
 ||poznamka.ru/ametrix.js
 ||gamesgames.com/wdg/tracking-active
 ||gamesgames.com/wdg/performance_tracker-active
@@ -5932,8 +6043,8 @@ computerbild.de##.articleAdditional > .mehrthema
 ||xtraffstat.com/js/ktr.js
 ||zapcdn.space/zapret.js
 ||patreon.com/api/tracking^
-/index/ping^$domain=cowner.net|xterca.net|gloyah.net|uclaut.net|atabencot.net|thouth.net|cinebo.net|baymaleti.net|briskgram.net|ad.bdcraft.net|swiftviz.net|ad.sapixmedia.com|activetect.net|brightvar.bid|clearload.bid|restorecosm.bid|bee.anime-loads.org|threadsphere.bid|queuecosm.bid|yoitect.com|skamaker.com|adf.ly|ay.gy|cracksurl.com|tinyium.com|skamason.com|redir2.auto-login-xxx.com|dl.underclassblog.com|special.picons.eu|quainator.com|yoalizer.com|kibuilder.com|kimechanic.com|zo.ee|viahold.com|tinyical.com|mmoity.com|pintient.com|riffhold.com|picocurl.com|bitigee.com|picocurl.com|atomcurve.com|atominik.com|battleate.com|kaitect.com|simizer.com|coginator.com|cogismith.com|twineer.com|yobuilder.com|go.awanpc.me|viwright.com|yabuilder.com|yamechanic.com|kializer.com|yoineer.com
-/callback/*$domain=cowner.net|xterca.net|gloyah.net|uclaut.net|atabencot.net|thouth.net|cinebo.net|baymaleti.net|briskgram.net|ad.bdcraft.net|swiftviz.net|ad.sapixmedia.com|activetect.net|brightvar.bid|clearload.bid|restorecosm.bid|bee.anime-loads.org|threadsphere.bid|queuecosm.bid|yoitect.com|skamaker.com|adf.ly|ay.gy|cracksurl.com|tinyium.com|skamason.com|redir2.auto-login-xxx.com|dl.underclassblog.com|special.picons.eu|quainator.com|yoalizer.com|kibuilder.com|kimechanic.com|zo.ee|viahold.com|tinyical.com|mmoity.com|pintient.com|riffhold.com|picocurl.com|bitigee.com|picocurl.com|atomcurve.com|atominik.com|battleate.com|kaitect.com|simizer.com|coginator.com|cogismith.com|twineer.com|yobuilder.com|go.awanpc.me|viwright.com|yabuilder.com|yamechanic.com|kializer.com|yoineer.com
+/index/ping^$domain=gatustox.net|scuseami.net|gusimp.net|cowner.net|xterca.net|gloyah.net|uclaut.net|atabencot.net|thouth.net|cinebo.net|baymaleti.net|briskgram.net|ad.bdcraft.net|swiftviz.net|ad.sapixmedia.com|activetect.net|brightvar.bid|clearload.bid|restorecosm.bid|bee.anime-loads.org|threadsphere.bid|queuecosm.bid|yoitect.com|skamaker.com|adf.ly|ay.gy|cracksurl.com|tinyium.com|skamason.com|redir2.auto-login-xxx.com|dl.underclassblog.com|special.picons.eu|quainator.com|yoalizer.com|kibuilder.com|kimechanic.com|zo.ee|viahold.com|tinyical.com|mmoity.com|pintient.com|riffhold.com|picocurl.com|bitigee.com|picocurl.com|atomcurve.com|atominik.com|battleate.com|kaitect.com|simizer.com|coginator.com|cogismith.com|twineer.com|yobuilder.com|go.awanpc.me|viwright.com|yabuilder.com|yamechanic.com|kializer.com|yoineer.com
+/callback/*$domain=gatustox.net|scuseami.net|gusimp.net|cowner.net|xterca.net|gloyah.net|uclaut.net|atabencot.net|thouth.net|cinebo.net|baymaleti.net|briskgram.net|ad.bdcraft.net|swiftviz.net|ad.sapixmedia.com|activetect.net|brightvar.bid|clearload.bid|restorecosm.bid|bee.anime-loads.org|threadsphere.bid|queuecosm.bid|yoitect.com|skamaker.com|adf.ly|ay.gy|cracksurl.com|tinyium.com|skamason.com|redir2.auto-login-xxx.com|dl.underclassblog.com|special.picons.eu|quainator.com|yoalizer.com|kibuilder.com|kimechanic.com|zo.ee|viahold.com|tinyical.com|mmoity.com|pintient.com|riffhold.com|picocurl.com|bitigee.com|picocurl.com|atomcurve.com|atominik.com|battleate.com|kaitect.com|simizer.com|coginator.com|cogismith.com|twineer.com|yobuilder.com|go.awanpc.me|viwright.com|yabuilder.com|yamechanic.com|kializer.com|yoineer.com
 ||tracking-opi.fonpit.de/tracking/
 ||cdn3.net/pixe/
 ||dig.ultimedia.com^
@@ -6699,11 +6810,16 @@ link.gmapp*.net$image
 ||track.appsflyer.com^
 !+ NOT_PLATFORM(ios, ext_safari, ext_android_cb)
 ||adj.st^
+||stat.meitudata.com^
+||collect.media.jio.com^
+||log.apk.v-mate.mobi^
+||track.mobshark.net^
+||dsp-adcreative.mobshark.net^
+||dsptrack.mobshark.net^
 ||analytics.metrix.ir^
 ||hwstats.unity3d.com^
 ||dsp-tracking.unityads.unity3d.com^
 ||installtracker.unityads.unity3d.com^
-||issuetracker.unity3d.com^
 ||tracking.adsx.unityads.unity3d.com^
 ||tracking.prd.mz.internal.unity3d.com^
 ||publisher-event.ads.prd.ie.internal.unity3d.com^
@@ -6786,7 +6902,6 @@ link.gmapp*.net$image
 ||omni-ads.omni.news^
 ||npario-inc.net^
 ||engine.mobileapptracking.com^
-||open.oneplus.net^
 ||wzrkt.com^
 ||analytics-events.inshorts.com^
 ||e-ssl.apsalar.com^
@@ -6804,6 +6919,7 @@ link.gmapp*.net$image
 ||analytics-tracker.thescore.com^
 ||app.roximity.com^
 ||dc.webtrends.com^
+||rosenberg.appmetrica.webvisor.com^
 ||report*.appmetrica.webvisor.com^
 ||api.oneaudience.com^
 ||api.gameofwhales.com^
@@ -7056,6 +7172,88 @@ link.gmapp*.net$image
 @@||googletagmanager.com/gtm.js$domain=saturn.de
 @@||metrics.us.playstation.com/b/ss/
 @@||app.adjust.com^$domain=dawanda.com
+@@||scdn.cxense.com/cx.js$domain=digisport.ro
+@@||collect.igodigital.com/collect.js$domain=wilsonparking.com.au
+@@||p.typekit.net/*.css$domain=store.steampowered.com
+@@||bose.tt.omtrdc.net/*/bose/mbox/json?$domain=bose.fr
+@@||mc.yandex.ru/metrika/watch.js$domain=lingvasto.com
+@@||googletagmanager.com/gtm.js$domain=digitaltrends.com
+@@||googletagmanager.com/gtm.js$domain=realestate.co.nz
+@@||cdn.ampproject.org/v0.js$domain=amp.fakty.ua
+@@||cdn.turner.com/analytics/cnnvan/jsmd.min.js$domain=6abc.com
+@@||newsource-cdn-static.ns.cnn.com/prd/analytics/*/cnnvan-omniture.min.js$domain=6abc.com
+@@||try.abtasty.com/403fb16c20596e4691fbe9ec5db9720e.js$domain=shop.euromaster.de
+@@||intersport.peerius.com^|$domain=intersport.de
+@@||intersport.peerius.com/tracker/*.page$domain=intersport.de
+@@||app-*.marketo.com/js/forms2^$domain=gonitro.com
+@@||app-*.marketo.com/index.php/form^$domain=gonitro.com
+@@||googletagmanager.com/gtm.js$domain=incehesap.com
+@@||google-analytics.com/analytics.js$domain=incehesap.com
+@@||google-analytics.com/plugins/ua/ec.js$domain=incehesap.com
+@@||google-analytics.com/gtm/js?id=$domain=incehesap.com
+@@||googletagmanager.com/gtm.js$domain=ucicinemas.pt
+@@||mopas.com.tr/_ui/shared/js/analyticsmediator.js$domain=mopas.com.tr
+@@||googletagmanager.com/gtm.js$domain=teddyfood.com
+@@||google-analytics.com/analytics.js$domain=teddyfood.com
+@@||google-analytics.com/plugins/ua/ec.js$domain=teddyfood.com
+@@||mc.yandex.ru/metrika/tag.js$domain=kuchenland.ru
+@@||app-*.marketo.com/*/form$domain=pdftoword.com
+@@||analytics.edgekey.net/ma_library/html5/html5_malibrary.js$domain=mxplayer.in
+@@||conversion.im/images/icons/google-analytics.png
+@@||googletagmanager.com/gtm.js$domain=chainreactioncycles.com
+@@||googletagmanager.com/gtag/js?id=$domain=chainreactioncycles.com
+@@||google-analytics.com/analytics.js$domain=chainreactioncycles.com
+@@||google-analytics.com/gtm/js?id=$domain=chainreactioncycles.com
+@@||googletagmanager.com/gtm.js$domain=scotsman.com
+@@||tag.aticdn.net/*/smarttag.js$domain=rte.ie
+@@||cdn.blueconic.net/salemmediagroup.js$domain=biblestudytools.com
+@@||cdn.trackjs.com/releases/current/tracker.js$domain=express.com
+@@||cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/*/fingerprint2.min.js$domain=moretvtime.com
+@@||googletagmanager.com/gtm.js$domain=beterbed.nl
+@@||mtdataweb1.supertaxi.com/webclient/Scripts/tracking/tracking.js
+@@||mc.yandex.ru/metrika/watch.js$domain=yaplakal.com|yap.ru
+@@||dw.cbsi.com/anonc.js$domain=cbs.com
+@@||googletagmanager.com/gtag/js$domain=nbc.com
+@@||jssdkcdns.mparticle.com/js/v*/*/mparticle.js$domain=cwtv.com
+@@||google-analytics.com/gtm/js?id=$domain=15min.lt
+@@||google-analytics.com/analytics.js$domain=15min.lt
+@@||t2.hulu.com/*/adinteraction^$domain=player.hulu.com
+@@||google-analytics.com/gtm/js?id=$domain=joblo.com
+@@||google-analytics.com/analytics.js$domain=joblo.com
+@@||cdn.petametrics.com/*.js$domain=lanacion.com.ar
+@@||query1.petametrics.com/*&sdk=bc-jsonp$domain=lanacion.com.ar
+@@||googletagservices.com/tag/js/gpt.js$domain=gentside.com|gentside.de|gentside.co.uk|gentside.com.br|esgentside.com|maxisciences.com|ohmymag.com|ohmymag.de|ohmymag.com.br|ohmirevista.com
+@@||googletagmanager.com/gtm.js$domain=easycredit.de
+@@||google-analytics.com/analytics.js$domain=easycredit.de
+@@||google-analytics.com/gtm/js?id=$domain=easycredit.de
+@@||gaua.hit.gemius.pl/gplayer.js$domain=1plus1.video
+@@||cdn.taboola.com/libtrc/alluremedia-network/loader.js$domain=gizmodo.com.au
+@@||cdn.taboola.com/libtrc/impl.*-RELEASE.js$domain=gizmodo.com.au
+@@||trc.taboola.com/alluremedia-gizmodoau/trc/*$domain=gizmodo.com.au
+@@||googletagmanager.com/gtm.js$domain=wibc.com
+@@||tracfone.inq.com/tagserver/postToServer.min.htm$domain=totalwireless.com
+!+ PLATFORM(ios, ext_android_cb, ext_safari, ext_edge, ext_ublock)
+@@||google-analytics.com/analytics.js$domain=rzd.ru
+@@||ngastatic.com/*/tracker.js$domain=ads.allegro.pl
+@@||googletagmanager.com/gtm.js$domain=ads.allegro.pl
+@@||googletagmanager.com/gtm.js$domain=info.lifecell.ua
+@@||googletagmanager.com/gtm.js$domain=malltina.com
+@@||googletagmanager.com/gtag/js$domain=malltina.com
+@@||googletagmanager.com/gtm.js$domain=sciencesetavenir.fr
+@@||cedexis.com/zones/*/customers/*/apps/*/decision$domain=play.history.com
+@@||googletagmanager.com/gtag/js^$domain=timparty.tim.it
+@@||googletagmanager.com/gtm.js$domain=nunnbush.com
+@@||scdn.cxense.com/cx.js$domain=13.cl
+@@||api.cxense.com/public/widget/data?json=$domain=pcgames.de
+@@||scdn.cxense.com/cx.js$domain=pcgames.de
+@@||scdn.cxense.com/cx.cce.js$domain=pcgames.de
+@@||gapl.hit.gemius.pl/gplayer.js$domain=player.antyradio.pl
+@@||hit.gemius.pl/*gemius.js$domain=player.antyradio.pl
+@@||google-analytics.com/analytics.js$domain=dmax.com.tr
+@@||googletagmanager.com/gtm.js^$domain=dmax.com.tr
+@@||marketo.com/*/form$domain=orcad.com
+@@||cdn.petametrics.com^$domain=telegraph.co.uk
+@@||connect.facebook.net^*/fbevents.js$domain=elinoi.com
 @@||asadcdn.com/adlib/pages/sport1.js$domain=sport1.de
 @@||player-feedback-v1.glomex.com/pf/|$domain=player.glomex.com
 @@||identity.mparticle.com/v*/identify$domain=cwseed.com
@@ -7080,6 +7278,7 @@ link.gmapp*.net$image
 @@||static.webclicks24.com/js/app.min.js$domain=sweetshow.com
 @@||embeddedanalytics.com/updateeakpi.html$domain=brocardi.it
 @@||experience.tinypass.com/xbuilder/experience/execute?aid=$domain=diepresse.com
+||googletagservices.com/tag/js/gpt.js$domain=epaper.timesgroup.com,redirect=googletagservices-gpt,important
 @@||googletagservices.com/tag/js/gpt.js$domain=epaper.timesgroup.com
 @@||cloudflare.com/ajax/libs/fingerprintjs2/*/fingerprint2.min.js$domain=nfmovies.com
 @@||cleverbridge.com/*/cleveranalytics.js^$domain=secure.ccleaner.com
@@ -7099,10 +7298,10 @@ link.gmapp*.net$image
 @@||cdn-gl.imrworldwide.com/novms/*/ggng*.js$domain=couriermail.com.au
 @@||cdn-gl.imrworldwide.com/novms/*/ggng*.js$domain=bodyandsoul.com.au|whimn.com.au
 @@||cdn-gl.imrworldwide.com/novms/*/ggng*.js$domain=taste.com.au
-@@||relap.io/api/v*/head.js$domain=briefly.ru
-@@||relap.io/api/v*/similar_pages.js$domain=briefly.ru
-@@||cdn.relap.io^$image,domain=briefly.ru
-@@||relap.io/css/api/v*/block.css$domain=briefly.ru
+@@||relap.io/api/v*/head.js$domain=briefly.ru|kulturologia.ru
+@@||relap.io/api/v*/similar_pages.js$domain=briefly.ru|kulturologia.ru
+@@||cdn.relap.io^$image,domain=briefly.ru|kulturologia.ru
+@@||relap.io/css/api/v*/block.css$domain=briefly.ru|kulturologia.ru
 @@||repco.com.au/_ui/shared/js/analyticsmediator.js
 @@||googletagmanager.com/gtm.js$domain=shop.mango.com
 @@||googletagmanager.com/gtm.js$domain=migros.com.tr
@@ -7127,7 +7326,6 @@ link.gmapp*.net$image
 @@||diginetica.net^$domain=reg.megabitcomp.ru
 @@||googletagmanager.com/gtm.js$domain=youfoodz.com
 @@||bnc.lt/a/key_live$domain=pinterest.co.kr|pinterest.com|pinterest.de|pinterest.com.au|pinterest.com.mx|pinterest.es|pinterest.jp|pinterest.it|pinterest.ca|pinterest.co.uk|pinterest.ru|pinterest.ch|pinterest.fr|pinterest.cl|pinterest.at|pinterest.pt|pinterest.nz|pinterest.dk|pinterest.se|pinterest.ie|pinterest.ph|pinterest.info
-@@||mc.yandex.ru/metrika/tag.js$domain=pilotlive.ru
 @@||cdn-gl.imrworldwide.com/conf/*.js#name=nlsnInstance$domain=joyn.de
 @@||cdn-gl.imrworldwide.com/novms/js/*/nlsSDK*.eu.bundle.min.js$domain=joyn.de
 @@||marketo.com/js/forms$domain=pages.addigy.com
@@ -7137,7 +7335,6 @@ link.gmapp*.net$image
 @@||cdn.amplitude.com/libs/amplitude-*-min.gz.js$domain=agroros.ru
 @@||google-analytics.com/analytics.js$domain=keepassium.com
 @@||reutersmedia.net/resources_v*/js/rcom-scroll-tracker.js$domain=reuters.com
-@@||js.honeybadger.io/v*/honeybadger.min.js$domain=player.tubia.com
 @@||google-analytics.com/analytics.js$domain=haz.de
 @@||google-analytics.com/gtm/js?id=$domain=haz.de
 @@||ups.com/*/tracking.cgi
@@ -7182,7 +7379,6 @@ link.gmapp*.net$image
 @@||pp.lp4.io/app^$domain=berliner-zeitung.de
 @@||relap.io/api/v*/similar_pages_jsonp.js$domain=adme.ru
 @@/tracking.php?id$domain=a1.express
-@@||cdn.optimizely.com/js/*.js$domain=dubizzle.com
 @@||stats.g.doubleclick.net/dc.js$domain=dubizzle.com
 @@||googletagmanager.com/gtm.js$domain=sloggi.com
 @@||cdn.cquotient.com/js/*/gretel.min.js$domain=sloggi.com
@@ -7516,10 +7712,6 @@ kizi.com#%#window.google_trackConversion = function() {};
 @@||googletagmanager.com/gtm.js$domain=tagesanzeiger.ch
 @@||googletagmanager.com/gtm.js$domain=highsnobiety.com
 @@||google-analytics.com/analytics.js$domain=highsnobiety.com
-@@||engageya.com/rec-api/getrecs.json$domain=donanimhaber.com
-@@||widget.engageya.com/engageya_loader.js^$domain=donanimhaber.com
-@@||images*.engageya.com^$domain=donanimhaber.com
-@@||engageya.com/gas-api/click.json^$domain=donanimhaber.com
 @@||googletagmanager.com/gtm.js$domain=20min.ch
 @@||googletagmanager.com/gtm.js$domain=tr.beinsports.com
 @@||vodafonelimited.tt.omtrdc.net^
@@ -7576,7 +7768,6 @@ kizi.com#%#window.google_trackConversion = function() {};
 @@||google-analytics.com/analytics.js$domain=cgv.co.kr
 @@||static.criteo.net/js/ld/publishertag.js$domain=novayagazeta.ru
 @@||bat.bing.com/bat.js$domain=airbnb.ru
-@@||cdn.optimizely.com/js/*.js$domain=casper.com
 @@||webstat.channel4.com/b/ss/channel4dotcom/$domain=channel4.com
 @@||schwarzwaelder-bote.de/*/adbl/adframe.js^
 @@||ticketmaster.sc.omtrdc.net/b/ss/
@@ -7672,7 +7863,6 @@ epicwow.com#@#img[Width="88"][height="31"]
 @@||spot.im/api/tracker/spot/$domain=russian.rt.com
 @@||track.atom-data.io/report$domain=russian.rt.com
 @@||googletagmanager.com/gtm.js$domain=tehnosila.ru
-@@||partner.googleadservices.com/gpt/pubads_impl_$domain=posta.com.tr
 @@||mc.yandex.ru/metrika/watch.js$domain=optbaza.ru
 @@||googletagmanager.com/gtm.js$domain=forum.worldoftanks.ru
 @@||online-metrix.net/*/tags.js$domain=smartsource.com
@@ -7697,7 +7887,7 @@ epicwow.com#@#img[Width="88"][height="31"]
 @@||google-analytics.com/plugins/ua/ec.js$domain=mediamarkt.nl
 @@||partner.googleadservices.com/gpt/pubads_impl_$domain=ukr.net
 @@||cdn.retailrocket.ru^$domain=azerty.nl
-@@||cdn.optimizely.com/js/*.js$domain=ns.nl|compassion.com|creditsesame.com|forbes.com|freeshipping.com|heroku.com|hotukdeals.com|imageshack.com|lifelock.com|malwarebytes.org|policymic.com|ricardo.ch|spotify.com|techrepublic.com|zdnet.com|olx.ua
+@@||cdn.optimizely.com/js/*.js$domain=ns.nl|compassion.com|creditsesame.com|forbes.com|freeshipping.com|heroku.com|hotukdeals.com|imageshack.com|lifelock.com|malwarebytes.org|policymic.com|ricardo.ch|spotify.com|techrepublic.com|zdnet.com|olx.ua|casper.com|dubizzle.com|pullandbear.com
 @@||mc.yandex.ru/metrika/watch.js$domain=101.ru
 @@||mc.yandex.ru/metrika/watch.js$domain=smartresponder.ru
 @@||cdn.webclicks24.com^$image
@@ -7712,6 +7902,7 @@ epicwow.com#@#img[Width="88"][height="31"]
 @@||google-analytics.com/plugins/ua/ec.js$domain=mediamarkt.de
 @@||vidible.tv^*/ComScore.StreamSense.js
 @@||vidible.tv^*/ComScore.Viewability.js
+@@||pixel.facebook.com^$domain=pixel.facebook.com
 @@||pixel.facebook.com/ajax/gigaboxx/endpoint/UpdateLastSeenTime.php?$image
 @@||pixel.facebook.com/ajax/notifications/mark_read.php?*&alert_ids%$image
 @@||gaua.hit.gemius.pl/gplayer.js$domain=ovva.tv
