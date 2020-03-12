@@ -1,9 +1,9 @@
-! Checksum: Wq8PZQwnQfnPAy255FZLNg
+! Checksum: dBQYU+nqwsNJXLf0qavJlg
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.2.48
-! TimeUpdated: 2019-12-10T20:31:32+03:00
-! Expires: 2 days (update frequency)
+! Version: 2.0.2.67
+! TimeUpdated: 2020-03-05T17:32:05+03:00
+! Expires: 4 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#japanese
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
 !
@@ -88,7 +88,6 @@
 ||smartads.mobile.yahoo.co.jp^
 ||rd.yahoo.co.jp^
 ||ard.yahoo.co.jp^
-||bc.geocities.yahoo.co.jp^
 ||ov.yahoo.co.jp^
 ||yeas.yahoo.co.jp^
 ||logoole.yahoo.co.jp^
@@ -141,6 +140,7 @@
 ! Eimg.jp
 ||adingo.jp.eimg.jp^
 !
+||js.gsspcln.jp^$third-party
 ||speee-ad.akamaized.net^$third-party
 ||candy.smv.to^$third-party
 ||aaacompany.net^$third-party
@@ -378,6 +378,21 @@
 !
 ! These rules are against all kinds of ad blocking reinjection/circumvention scripts
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/50977
+server-setting.info#@#.adsbygoogle
+! https://github.com/AdguardTeam/AdguardFilters/issues/49015
+gendai.ismedia.jp#$#.fc-ab-root { display: none !important; }
+gendai.ismedia.jp#$#body { overflow: visible !important; }
+! https://github.com/AdguardTeam/AdguardFilters/issues/49430
+applion.jp#@#.ads-ad
+applion.jp#$##adcheck.ads-ad { display: block!important; }
+! https://github.com/AdguardTeam/AdguardFilters/issues/48715
+gigaho.com#$##unblk { display: none!important; }
+gigaho.com#$#.entry-content { display: block!important; }
+gigaho.com#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links { display:block!important; }
+gigaho.com#%#AG_onLoad(function() { var el=document.querySelector('ins.adsbygoogle'); var ce=document.createElement('iframe'); ce.style = 'width: 0px !important; border: none !important;'; if(el) { el.appendChild(ce); } });
+! https://github.com/AdguardTeam/AdguardFilters/issues/46430
+manga1001.com#%#//scriptlet("abort-current-inline-script", "onload", "checkads")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/45195
 @@||helpsupport.blog.fc2.com^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/44504
@@ -482,6 +497,8 @@ anipo.jp#@#.adbanner
 !
 ! Extended CSS rules
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/47356
+himasoku.com#?#.article-body > center:has(> a[href^="https://wu."] > img)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/45195
 helpsupport.blog.fc2.com#?#.mdl-quigo > div[style^="height:"][style*="margin-bottom:"]:not([class]):not([id]):has(> script:first-child:contains(amzn_assoc_ad_type))
 ! https://github.com/AdguardTeam/AdguardFilters/issues/43602
@@ -494,8 +511,6 @@ macsoft.jp#?#.neko:has(> a[href^="http://www.jirokichi.co.jp/"])
 macsoft.jp#?#.frame:has(> tbody > tr > td > div.K12:contains(Parallels Desktop))
 macsoft.jp#?#.flame:has(> tbody > tr > td > font > a[href^="http://aos.prf.hn/click/"])
 ||macsoft.jp/img/Banner1/
-! https://github.com/AdguardTeam/AdguardFilters/issues/24644
-blogs.yahoo.co.jp#?#.timelineArticle > ul.timelineArticle__list > li.timelineArticle__item:has(> div[id^="ad"]:empty)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/24647
 sankei.com#?#.entry_column > .entry_list > .entry:has(> .entry_content > .entry_meta > i.yellow:contains(Sponsored))
 ! https://github.com/AdguardTeam/AdguardFilters/issues/23282
@@ -649,7 +664,6 @@ iza.ne.jp#$#.sideFixedWrapper { position: relative!important; }
 .com/ufo/$script
 .com/Zen?
 .jp/ads/$image
-.jp/adsv/
 .jp/affiliate/
 .jp/analyze/
 .jp/bana/
@@ -718,6 +732,29 @@ _ds_adtag_
 ! Section contains rules for specific websites
 !
 ! /banner/banner_ - if it is necessary, make this rule domain specific
+!
+server-setting.info##.adsbygoogle[data-ad-client]
+style.nikkei.com###list1 > div[class^="sc-"] > div[class^="sc-"] > div[class^="sc-"]:not(.sc-1earddw-0)[id*="_q"]:empty
+magnet.so###p_ad
+magnet.so###AD
+ceron.jp##div[style="width:320px;min-height:100px;margin: 0 auto;background:#eee;"]
+itmedia.co.jp###cmsBody > div.inner > div > div[style="text-align:center;margin:40px 0;"]
+gendai.ismedia.jp##div.articleBottomSns + div[style="min-height: 250px; overflow: hidden;"]
+||sp.hazardlab.jp/imgs/banner/
+sp.hazardlab.jp##div[id^="SP-NEWS_"]
+hazardlab.jp##div[id*="banner_"]
+applion.jp##a[href^="https://www.amazon.co.jp/exec/obidos/"][target="_blank"]
+search.yahoo.co.jp##.sw-Card.Ad
+sukebei.nyaa.si##.servers-cost-money1
+||gendai.ismedia.jp/common/bluebacks/images/sample/bnr_
+humoruniv.com##div[style^="width:300px;height:250px;"]
+gigaho.com##.box_drc
+gigaho.com##.amaw_box
+gigaho.com##.entry-content > span[style="display: block;"] > div[style="font-size:75%; color:#00BBDD;text-align: center;"]
+de-baystars.doorblog.jp##.blogroll_wrapper
+followcheck.itby.net##.mms.uk-margin-top
+japan.zdnet.com##.ad-bnr-rect
+forbesjapan.com##.pop2
 macsoft.jp##table[width="96%"] + div[class="K12"] > div[align="left"] > br + br + center
 gpoint.co.jp###footerbnr
 helpsupport.blog.fc2.com##.adsbygoogle
@@ -1175,7 +1212,6 @@ omg99.net##.hbanner
 nikkeibp.co.jp##.header-banner
 sponichi.co.jp##.heading-pr-relation
 4gamer.net##.hot_game_now
-blogs.yahoo.co.jp##.interestMatchWrap
 livedoor.com##.large-showcase
 mainichi.jp##.leftFPR
 mainichi.jp##.leftPR
@@ -1345,6 +1381,12 @@ yahoo.co.jp##ul[class^="sponsor"]
 ||yomiuri.co.jp/ad/
 ||zenback.jp^*/tracking.html
 !
+||adserver.juicyads.com/js/jads.js$domain=avgle.com
+||ads.adxadserv.com$domain=avgle.com
+avgle.com##a[href^="http://adult.contents.fc2.com/"]
+avgle.com##a[href^="http://adult.contents.fc2.com/"] + div#ps32-container.well
+||sub2.avgle.com^$script,domain=avgle.com
+avgle.com##.video-banner
 ||avgle.com/avideos.js
 ||avgle.com/images.php
 ||sub2.avgle.com/67/1d/ba/671dbadbf37814e321f252eac8aa2500.js
@@ -1379,6 +1421,8 @@ avgle.com##body > div[style*="z-index"]:not([id]):not([class])
 !
 ! White list. Fixing filtration errors(false-positive)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/47520
+@@||static.rebates.jp/img/*_300x250.
 ! https://github.com/AdguardTeam/AdguardFilters/issues/43771
 signal-flag-z.blogspot.com#@#.vertical-ads
 ! https://github.com/AdguardTeam/AdguardFilters/issues/41967
@@ -1400,7 +1444,6 @@ edy.rakuten.co.jp#@#div[id^="div-gpt-ad"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/24812
 @@||lprs*.fr/assets/js/app/modules/popin.js$domain=leparisien.fr
 !
-@@||blogs.yahoo.co.jp^
 tver.jp#@#.adspace
 @@||nazolog.com^$generichide
 publicdomainq.net#@#.adsbygoogle
