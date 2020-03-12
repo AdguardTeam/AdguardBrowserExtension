@@ -4,7 +4,6 @@
  * and include Opera filters files. To zip Opera build folder if release.
  */
 
-/* global process */
 import fs from 'fs';
 import path from 'path';
 import gulp from 'gulp';
@@ -12,6 +11,7 @@ import modifyFile from 'gulp-modify-file';
 import crx from 'gulp-crx-pack';
 import { BUILD_DIR, BRANCH_RELEASE, PRIVATE_FILES } from './consts';
 import { version } from './parse-package';
+import zip from 'gulp-zip';
 
 // set current type of build
 const BRANCH = process.env.NODE_ENV || '';
@@ -49,6 +49,10 @@ const modifyManifest = () => gulp
     }))
     .pipe(gulp.dest(paths.dest));
 
+const createArtifactBuild = () => gulp.src(dest.inner)
+    .pipe(zip('opera.zip'))
+    .pipe(gulp.dest(BUILD_DIR));
+
 const crxPack = (done) => {
     if (BRANCH !== BRANCH_RELEASE) {
         return done();
@@ -62,4 +66,4 @@ const crxPack = (done) => {
         .pipe(gulp.dest(dest.buildDir));
 };
 
-export default gulp.series(copyChromiumFiles, copyFiltersOpera, modifyManifest, crxPack);
+export default gulp.series(copyChromiumFiles, copyFiltersOpera, modifyManifest, createArtifactBuild, crxPack);

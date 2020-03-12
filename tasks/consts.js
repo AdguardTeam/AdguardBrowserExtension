@@ -4,7 +4,7 @@ export const LOCALES_UPLOAD_URL = `${LOCALES_BASE_URL}/upload`;
 
 export const LAST_ADGUARD_FILTER_ID = 14;
 
-export const BUILD_DIR = 'Build';
+export const BUILD_DIR = 'build';
 
 export const LOCALES_DIR = './Extension/_locales/';
 

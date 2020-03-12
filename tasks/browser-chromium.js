@@ -10,17 +10,24 @@
  * 8. Creating crx pack
  */
 
-/* global process */
 import fs from 'fs';
 import path from 'path';
 import gulp from 'gulp';
-import {BUILD_DIR, BRANCH_BETA, BRANCH_RELEASE, BRANCH_DEV, PRIVATE_FILES, CHROME_UPDATE_URL} from './consts';
-import {version} from './parse-package';
-import {updateLocalesMSGName, preprocessAll} from './helpers';
 import zip from 'gulp-zip';
 import crx from 'gulp-crx-pack';
+import {
+    BUILD_DIR,
+    BRANCH_BETA,
+    BRANCH_RELEASE,
+    BRANCH_DEV,
+    PRIVATE_FILES,
+    CHROME_UPDATE_URL,
+} from './consts';
+import { version } from './parse-package';
+import { updateLocalesMSGName, preprocessAll } from './helpers';
 import copyCommonFiles from './copy-common';
 import copyExternal from './copy-external';
+import mergeStream from 'merge-stream';
 
 // set current type of build
 const BRANCH = process.env.NODE_ENV || '';
@@ -30,14 +37,14 @@ const paths = {
     filters: path.join('Extension/filters/chromium/**/*'),
     webkitFiles: path.join('Extension/browser/webkit/**/*'),
     cert: path.join(PRIVATE_FILES, 'certificate.pem'),
-    dest: path.join(BUILD_DIR, BRANCH, `chrome-${version}`)
+    dest: path.join(BUILD_DIR, BRANCH, `chrome-${version}`),
 };
 
 const dest = {
     filters: path.join(paths.dest, 'filters'),
     inner: path.join(paths.dest, '**/*'),
     buildDir: path.join(BUILD_DIR, BRANCH),
-    manifest: path.join(paths.dest, 'manifest.json')
+    manifest: path.join(paths.dest, 'manifest.json'),
 };
 
 // copy common files
@@ -50,10 +57,10 @@ const copyFilters = () => gulp.src(paths.filters).pipe(gulp.dest(dest.filters));
 const chromiumMainFiles = () => gulp.src([paths.webkitFiles, paths.chrome]).pipe(gulp.dest(paths.dest));
 
 // preprocess with params
-const preprocess = (done) => preprocessAll(paths.dest, {browser: 'CHROMIUM', remoteScripts: true}, done);
+const preprocess = done => preprocessAll(paths.dest, { browser: 'CHROMIUM', remoteScripts: true }, done);
 
 // change the extension name based on a type of a build (dev, beta or release)
-const localesProcess = (done) => updateLocalesMSGName(BRANCH, paths.dest, done);
+const localesProcess = done => updateLocalesMSGName(BRANCH, paths.dest, done);
 
 // update current version of extension
 const updateManifest = (done) => {
@@ -68,9 +75,20 @@ const createArchive = (done) => {
         return done();
     }
 
-    return gulp.src(dest.inner)
+    const artifactsChromeBuild = gulp.src(dest.inner)
+        .pipe(zip('chrome.zip'))
+        .pipe(gulp.dest(BUILD_DIR));
+
+    // edge-chromium build
+    const artifactsEdgeChromiumBuild = gulp.src(dest.inner)
+        .pipe(zip('edge.zip'))
+        .pipe(gulp.dest(BUILD_DIR));
+
+    const currentBuild = gulp.src(dest.inner)
         .pipe(zip(`chrome-${BRANCH}-${version}.zip`))
         .pipe(gulp.dest(dest.buildDir));
+
+    return mergeStream(artifactsChromeBuild, artifactsEdgeChromiumBuild, currentBuild);
 };
 
 const crxPack = (done) => {
@@ -85,9 +103,19 @@ const crxPack = (done) => {
     return gulp.src(paths.dest)
         .pipe(crx({
             privateKey: fs.readFileSync(paths.cert, 'utf8'),
-            filename: `chrome-standalone-${BRANCH}-${version}.crx`
+            filename: `chrome-standalone-${BRANCH}-${version}.crx`,
         }))
         .pipe(gulp.dest(dest.buildDir));
 };
 
-export default gulp.series(copyExternal, copyCommon, copyFilters, chromiumMainFiles, updateManifest, localesProcess, preprocess, createArchive, crxPack);
+export default gulp.series(
+    copyExternal,
+    copyCommon,
+    copyFilters,
+    chromiumMainFiles,
+    updateManifest,
+    localesProcess,
+    preprocess,
+    createArchive,
+    crxPack
+);

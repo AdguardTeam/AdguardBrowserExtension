@@ -10,14 +10,23 @@
  * 7. Creating firefox web-extension pack
  */
 
-/* global process */
 import fs from 'fs';
 import path from 'path';
 import gulp from 'gulp';
-import {BUILD_DIR, BRANCH_DEV, BRANCH_BETA, BRANCH_RELEASE, FIREFOX_WEBEXT, FIREFOX_EXTENSION_ID_BETA, FIREFOX_EXTENSION_ID_RELEASE, FIREFOX_EXTENSION_ID_DEV} from './consts';
-import {version} from './parse-package';
-import {updateLocalesMSGName, preprocessAll} from './helpers';
 import webExt from 'web-ext';
+import zip from 'gulp-zip';
+import {
+    BUILD_DIR,
+    BRANCH_DEV,
+    BRANCH_BETA,
+    BRANCH_RELEASE,
+    FIREFOX_WEBEXT,
+    FIREFOX_EXTENSION_ID_BETA,
+    FIREFOX_EXTENSION_ID_RELEASE,
+    FIREFOX_EXTENSION_ID_DEV,
+} from './consts';
+import { version } from './parse-package';
+import { updateLocalesMSGName, preprocessAll } from './helpers';
 import copyCommonFiles from './copy-common';
 import copyExternal from './copy-external';
 
@@ -29,7 +38,9 @@ const paths = {
     filters: path.join('Extension/filters/firefox/**/*'),
     chromeFiles: path.join('Extension/browser/chrome/**/*'),
     webkitFiles: path.join('Extension/browser/webkit/**/*'),
-    dest: path.join(BUILD_DIR, BRANCH, (BRANCH === BRANCH_DEV) ? `firefox-amo-${version}` : `firefox-amo-${BRANCH}-${version}-unsigned`)
+    dest: path.join(BUILD_DIR, BRANCH, (BRANCH === BRANCH_DEV)
+        ? `firefox-amo-${version}`
+        : `firefox-amo-${BRANCH}-${version}-unsigned`),
 };
 
 const dest = {
@@ -37,7 +48,7 @@ const dest = {
     inner: path.join(paths.dest, '**/*'),
     buildDir: path.join(BUILD_DIR, BRANCH),
     manifest: path.join(paths.dest, 'manifest.json'),
-    webext: path.join(BUILD_DIR, BRANCH, `firefox-amo-${BRANCH}-${version}-unsigned.zip`)
+    webext: path.join(BUILD_DIR, BRANCH, `firefox-amo-${BRANCH}-${version}-unsigned.zip`),
 };
 
 // copy common files
@@ -47,13 +58,14 @@ const copyCommon = () => copyCommonFiles(paths.dest);
 const copyFilters = () => gulp.src(paths.filters).pipe(gulp.dest(dest.filters));
 
 // copy chromium, webkit files and firefox_webext files
-const firefoxWebext = () => gulp.src([paths.webkitFiles, paths.chromeFiles, paths.firefox_webext]).pipe(gulp.dest(paths.dest));
+const firefoxWebext = () => gulp.src([paths.webkitFiles, paths.chromeFiles, paths.firefox_webext])
+    .pipe(gulp.dest(paths.dest));
 
 // preprocess with params
-const preprocess = (done) => preprocessAll(paths.dest, {browser: FIREFOX_WEBEXT, remoteScripts: false}, done);
+const preprocess = done => preprocessAll(paths.dest, { browser: FIREFOX_WEBEXT, remoteScripts: false }, done);
 
 // change the extension name based on a type of a build (dev, beta or release)
-const localesProcess = (done) => updateLocalesMSGName(BRANCH, paths.dest, done, FIREFOX_WEBEXT);
+const localesProcess = done => updateLocalesMSGName(BRANCH, paths.dest, done, FIREFOX_WEBEXT);
 
 const updateManifest = (done) => {
     const manifest = JSON.parse(fs.readFileSync(dest.manifest));
@@ -69,6 +81,9 @@ const updateManifest = (done) => {
             break;
         case BRANCH_DEV:
             extensionID = FIREFOX_EXTENSION_ID_DEV;
+            break;
+        default:
+            throw new Error(`This is impossible branch: ${BRANCH}`);
     }
 
     manifest.version = version;
@@ -76,6 +91,10 @@ const updateManifest = (done) => {
     fs.writeFileSync(dest.manifest, JSON.stringify(manifest, null, 4));
     return done();
 };
+
+const createArtifactBuild = () => gulp.src(dest.inner)
+    .pipe(zip('firefox.zip'))
+    .pipe(gulp.dest(BUILD_DIR));
 
 const createWebExt = (done) => {
     if (BRANCH !== BRANCH_BETA && BRANCH !== BRANCH_RELEASE) {
@@ -85,11 +104,21 @@ const createWebExt = (done) => {
     return webExt.cmd.build({
         sourceDir: paths.dest,
         artifactsDir: dest.buildDir,
-        overwriteDest: true
+        overwriteDest: true,
     }).then((file) => {
         fs.renameSync(file.extensionPath, dest.webext);
         done();
     });
 };
 
-export default gulp.series(copyExternal, copyCommon, copyFilters, firefoxWebext, updateManifest, localesProcess, preprocess, createWebExt);
+export default gulp.series(
+    copyExternal,
+    copyCommon,
+    copyFilters,
+    firefoxWebext,
+    updateManifest,
+    localesProcess,
+    preprocess,
+    createArtifactBuild,
+    createWebExt
+);
