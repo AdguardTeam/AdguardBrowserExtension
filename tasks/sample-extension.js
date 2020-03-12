@@ -9,15 +9,13 @@
  * 7. Creating zip archive of an extension
  */
 
-/* global process */
-
 import fs from 'fs';
 import path from 'path';
 import gulp from 'gulp';
-import {BUILD_DIR, LOCALES_DIR, BRANCH_BETA} from './consts';
-import {version} from './parse-package';
 import concatFiles from 'gulp-concat';
 import zip from 'gulp-zip';
+import { BUILD_DIR, LOCALES_DIR, BRANCH_BETA } from './consts';
+import { version } from './parse-package';
 
 const API_SCRIPTS = [
     // Third party libraries
@@ -102,7 +100,7 @@ const BRANCH = process.env.NODE_ENV || '';
 const paths = {
     sample: path.join('Extension/api/sample-extension/**/*'),
     assistant: path.join('Extension/lib/content-script/assistant/js/assistant.js'),
-    locales: path.join(LOCALES_DIR + '**/*'),
+    locales: path.join(`${LOCALES_DIR}**/*`),
     sourceManifest: path.join('Extension/api/chrome/manifest.json'),
     contentScriptsStartFile: path.join('adguard/adguard-content.js'),
     filters: [
@@ -120,7 +118,7 @@ const dest = {
     assistant: path.join(paths.dest, 'adguard', 'assistant'),
     inner: path.join(paths.dest, '**/*'),
     buildDir: path.join(BUILD_DIR, BRANCH),
-    manifest: path.join(paths.dest, 'manifest.json')
+    manifest: path.join(paths.dest, 'manifest.json'),
 };
 
 // copy sample files
@@ -158,12 +156,11 @@ const concat = (runAt, srcFileName) => {
         }
     }
 
-    files = files.map(file => {
-        if(file.indexOf('common-script.js') > 0 || file.indexOf('content-script.js') > 0) {
-            return 'Extension/browser/chrome/' + file;
-        } else {
-            return 'Extension/' + file;
+    files = files.map((file) => {
+        if (file.indexOf('common-script.js') > 0 || file.indexOf('content-script.js') > 0) {
+            return `Extension/browser/chrome/${file}`;
         }
+        return `Extension/${file}`;
     });
 
     return gulp.src(files)
