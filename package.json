@@ -1,6 +1,6 @@
 {
   "name": "browser-extension",
-  "version": "3.4.0",
+  "version": "3.4.6",
   "description": "AdGuard Extension",
   "scripts": {
     "dev": "NODE_ENV=dev gulp buildDev --require babel-register --gulpfile tasks",
@@ -12,7 +12,8 @@
     "build-update": "gulp buildUpdatesFilesStream --require babel-register --gulpfile tasks",
     "resources": "gulp downloadResources --require babel-register --gulpfile tasks",
     "rebuild-locales": "gulp rebuildLocales --require babel-register --gulpfile tasks",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "increment": "yarn version --patch --no-git-tag-version"
   },
   "babel": {
     "presets": [
@@ -39,6 +40,7 @@
     "babel-preset-env": "^1.6.1",
     "babel-runtime": "^6.26.0",
     "checksum": "^0.1.1",
+    "crx": "^5.0.1",
     "del": "^4.1.0",
     "eslint": "^5.15.3",
     "eslint-config-airbnb-base": "^13.1.0",
@@ -46,14 +48,13 @@
     "form-data": "^2.5.0",
     "gulp": "^4.0.0",
     "gulp-concat": "^2.6.1",
-    "gulp-crx-pack": "^1.0.2",
     "gulp-download2": "^1.0.2",
     "gulp-file": "^0.4.0",
     "gulp-hash-creator": "^0.2.0",
     "gulp-modify-file": "^1.0.1",
+    "gulp-rename": "^2.0.0",
     "gulp-zip": "^4.1.0",
     "lodash": "^4.17.11",
-    "merge-stream": "^2.0.0",
     "node-qunit-puppeteer": "^1.0.6",
     "preprocess": "^3.1.0",
     "punycode": "^2.1.0",

@@ -34,8 +34,12 @@ export const FIREFOX_EXTENSION_ID_BETA = 'adguardadblockerbeta@adguard.com';
 export const FIREFOX_EXTENSION_ID_RELEASE = 'adguardadblocker@adguard.com';
 
 // Update urls
-export const CHROME_UPDATE_URL = 'https://adguardteam.github.io/AdguardBrowserExtension/chrome_updates.xml';
-export const FIREFOX_WEBEXT_UPDATE_URL = 'https://adguardteam.github.io/AdguardBrowserExtension/firefox_updates.json';
+export const CHROME_UPDATE_URL = 'https://static.adguard.com/extensions/adguardadblocker/beta/update.xml';
+export const FIREFOX_WEBEXT_UPDATE_URL = 'https://static.adguard.com/extensions/adguardadblocker/beta/update.json';
+
+// Codebase urls
+export const CHROME_CODEBASE_URL = 'https://static.adguard.com/extensions/adguardadblocker/beta/chrome.crx';
+export const FIREFOX_CODEBASE_URL = 'https://static.adguard.com/extensions/adguardadblocker/beta/firefox.xpi';
 
 export const FIREFOX_WEBEXT = 'FIREFOX_WEBEXT';
 

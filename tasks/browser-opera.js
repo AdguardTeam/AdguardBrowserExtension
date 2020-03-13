@@ -8,10 +8,12 @@ import fs from 'fs';
 import path from 'path';
 import gulp from 'gulp';
 import modifyFile from 'gulp-modify-file';
-import crx from 'gulp-crx-pack';
-import { BUILD_DIR, BRANCH_RELEASE, PRIVATE_FILES } from './consts';
-import { version } from './parse-package';
 import zip from 'gulp-zip';
+import Crx from 'crx';
+import {
+    BUILD_DIR, BRANCH_RELEASE, PRIVATE_FILES,
+} from './consts';
+import { version } from './parse-package';
 
 // set current type of build
 const BRANCH = process.env.NODE_ENV || '';
@@ -53,17 +55,25 @@ const createArtifactBuild = () => gulp.src(dest.inner)
     .pipe(zip('opera.zip'))
     .pipe(gulp.dest(BUILD_DIR));
 
-const crxPack = (done) => {
+const crxPack = async (done) => {
     if (BRANCH !== BRANCH_RELEASE) {
         return done();
     }
 
-    return gulp.src(paths.dest)
-        .pipe(crx({
-            privateKey: fs.readFileSync(paths.cert, 'utf8'),
-            filename: `opera-${BRANCH}-${version}.crx`,
-        }))
-        .pipe(gulp.dest(dest.buildDir));
+    const privateKey = await fs.promises.readFile(paths.cert, 'utf-8');
+
+    const crx = new Crx({
+        privateKey,
+    });
+
+    await crx.load(paths.dest);
+    const crxBuffer = await crx.pack();
+
+    const crxBuildFilename = `opera-${BRANCH}-${version}.crx`;
+    const crxBuildPath = path.join(dest.buildDir, crxBuildFilename);
+    await fs.promises.writeFile(crxBuildPath, crxBuffer);
+
+    return done;
 };
 
 export default gulp.series(copyChromiumFiles, copyFiltersOpera, modifyManifest, createArtifactBuild, crxPack);
