@@ -14,7 +14,8 @@ import fs from 'fs';
 import path from 'path';
 import gulp from 'gulp';
 import zip from 'gulp-zip';
-import crx from 'gulp-crx-pack';
+import Crx from 'crx';
+import rename from 'gulp-rename';
 import {
     BUILD_DIR,
     BRANCH_BETA,
@@ -22,12 +23,12 @@ import {
     BRANCH_DEV,
     PRIVATE_FILES,
     CHROME_UPDATE_URL,
+    CHROME_CODEBASE_URL,
 } from './consts';
 import { version } from './parse-package';
 import { updateLocalesMSGName, preprocessAll } from './helpers';
 import copyCommonFiles from './copy-common';
 import copyExternal from './copy-external';
-import mergeStream from 'merge-stream';
 
 // set current type of build
 const BRANCH = process.env.NODE_ENV || '';
@@ -75,37 +76,47 @@ const createArchive = (done) => {
         return done();
     }
 
-    const artifactsChromeBuild = gulp.src(dest.inner)
-        .pipe(zip('chrome.zip'))
-        .pipe(gulp.dest(BUILD_DIR));
-
-    // edge-chromium build
-    const artifactsEdgeChromiumBuild = gulp.src(dest.inner)
-        .pipe(zip('edge.zip'))
-        .pipe(gulp.dest(BUILD_DIR));
-
-    const currentBuild = gulp.src(dest.inner)
+    return gulp.src(dest.inner)
         .pipe(zip(`chrome-${BRANCH}-${version}.zip`))
-        .pipe(gulp.dest(dest.buildDir));
-
-    return mergeStream(artifactsChromeBuild, artifactsEdgeChromiumBuild, currentBuild);
+        .pipe(gulp.dest(dest.buildDir))
+        // chrome.zip artifact
+        .pipe(rename('chrome.zip'))
+        .pipe(gulp.dest(BUILD_DIR))
+        // edge.zip artifact
+        .pipe(rename('edge.zip'))
+        .pipe(gulp.dest(BUILD_DIR));
 };
 
-const crxPack = (done) => {
+const crxPack = async (done) => {
     if (BRANCH === BRANCH_DEV || BRANCH === BRANCH_RELEASE) {
         return done();
     }
 
-    const manifest = JSON.parse(fs.readFileSync(dest.manifest));
+    const manifest = JSON.parse(await fs.promises.readFile(dest.manifest));
     manifest.update_url = CHROME_UPDATE_URL;
-    fs.writeFileSync(dest.manifest, JSON.stringify(manifest, null, 4));
+    await fs.promises.writeFile(dest.manifest, JSON.stringify(manifest, null, 4));
 
-    return gulp.src(paths.dest)
-        .pipe(crx({
-            privateKey: fs.readFileSync(paths.cert, 'utf8'),
-            filename: `chrome-standalone-${BRANCH}-${version}.crx`,
-        }))
-        .pipe(gulp.dest(dest.buildDir));
+    const privateKey = await fs.promises.readFile(paths.cert, 'utf-8');
+
+    const crx = new Crx({
+        codebase: CHROME_CODEBASE_URL,
+        privateKey,
+    });
+
+    await crx.load(paths.dest);
+    const crxBuffer = await crx.pack();
+    const updateXml = await crx.generateUpdateXML();
+
+    const crxBuildFilename = `chrome-standalone-${BRANCH}-${version}.crx`;
+    const crxBuildPath = path.join(dest.buildDir, crxBuildFilename);
+    const updateXmlPath = path.join(dest.buildDir, 'update.xml');
+    await fs.promises.writeFile(crxBuildPath, crxBuffer);
+    await fs.promises.writeFile(updateXmlPath, updateXml);
+
+    return gulp.src(crxBuildPath)
+        .pipe(rename('chrome.crx'))
+        .pipe(gulp.src(updateXmlPath))
+        .pipe(gulp.dest(BUILD_DIR));
 };
 
 export default gulp.series(

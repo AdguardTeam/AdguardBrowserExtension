@@ -1,56 +1,28 @@
 /**
  * Build files for browsers updating.
- * Version and file name getting automatically from package.json.
- * Tagname is provides by the command with --tag argument (e.g. yarn build-update --tag v2.6.1-beta)
+ * Version received automatically from package.json.
  */
+
+// TODO remove this task for builds after v3.5.0
 
 import fs from 'fs';
 import gulp from 'gulp';
 import { version } from './parse-package';
-import Logs from './log';
-
-const logs = new Logs();
 
 const copyFiles = () => gulp.src('./tasks/resources/**').pipe(gulp.dest('./'));
 
-const getTagArg = () => {
-    const tagIndex = process.argv.indexOf('--tag');
-
-    if (tagIndex < 0) {
-        logs.error('You need to pass a version tag name in a --tag argument (e.g. --tag v2.6.1-beta)');
-    }
-
-    const tag = process.argv[tagIndex + 1];
-
-    if (!tag) {
-        logs.error('Missing value after argument. Make sure that the command call looks like `yarn build-update --tag v2.6.1-beta`)');
-    }
-
-    return tag;
-};
-
 const chromeUpdate = (done) => {
-    let chrome_updates = fs.readFileSync('./chrome_updates.xml').toString();
-
-    chrome_updates = chrome_updates.replace(/\%VERSION\%/g, version);
-    chrome_updates = chrome_updates.replace(/\%TAGNAME\%/g, getTagArg());
-    chrome_updates = chrome_updates.replace(/\%NAME\%/g, `chrome-standalone-beta-${version}.crx`);
-
-    fs.writeFileSync('./chrome_updates.xml', chrome_updates);
-
+    let chromeUpdates = fs.readFileSync('./chrome_updates.xml').toString();
+    chromeUpdates = chromeUpdates.replace(/\%VERSION\%/g, version);
+    fs.writeFileSync('./chrome_updates.xml', chromeUpdates);
     return done();
 };
 
-const firefoxJSONupdate = (done) => {
-    let firefox_updates = fs.readFileSync('./firefox_updates.json').toString();
-
-    firefox_updates = firefox_updates.replace(/\%VERSION\%/g, version);
-    firefox_updates = firefox_updates.replace(/\%TAGNAME\%/g, getTagArg());
-    firefox_updates = firefox_updates.replace(/\%STANDALONE_NAME\%/g, `firefox-standalone-beta-${version}.xpi`);
-
-    fs.writeFileSync('./firefox_updates.json', firefox_updates);
-
+const firefoxJSONUpdate = (done) => {
+    let firefoxUpdates = fs.readFileSync('./firefox_updates.json').toString();
+    firefoxUpdates = firefoxUpdates.replace(/\%VERSION\%/g, version);
+    fs.writeFileSync('./firefox_updates.json', firefoxUpdates);
     return done();
 };
 
-export default gulp.series(copyFiles, chromeUpdate, firefoxJSONupdate);
+export default gulp.series(copyFiles, chromeUpdate, firefoxJSONUpdate);

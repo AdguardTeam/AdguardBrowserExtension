@@ -13,7 +13,8 @@ import fs from 'fs';
 import path from 'path';
 import gulp from 'gulp';
 import zip from 'gulp-zip';
-import mergeStream from 'merge-stream';
+import rename from 'gulp-rename';
+import webExt from 'web-ext';
 import {
     BUILD_DIR,
     FIREFOX_WEBEXT_UPDATE_URL,
@@ -78,6 +79,8 @@ const updateManifest = (done) => {
         case BRANCH_DEV:
             extensionID = FIREFOX_EXTENSION_ID_DEV;
             break;
+        default:
+            throw new Error(`This task used only in dev and beta builds and received: ${process.env.NODE_ENV}`);
     }
 
     manifest.applications.gecko.id = extensionID;
@@ -89,20 +92,60 @@ const updateManifest = (done) => {
     return done();
 };
 
+const createUpdateJson = async (done) => {
+    const templatePath = path.resolve(__dirname, './resources/firefox_updates.json');
+    let updateJsonTemplate = (await fs.promises.readFile(templatePath)).toString();
+    updateJsonTemplate = updateJsonTemplate.replace(/\%VERSION\%/g, version);
+    await fs.promises.writeFile(path.join(BUILD_DIR, 'update.json'), updateJsonTemplate);
+    return done;
+};
+
+const createArtifact = async (done) => {
+    // eslint-disable-next-line global-require
+    const credentialsPath = path.resolve(__dirname, '../private/AdguardBrowserExtension/mozilla_credentials.json');
+    const { apiKey, apiSecret } = JSON.parse(await fs.promises.readFile(credentialsPath));
+    const { downloadedFiles } = await webExt.cmd.sign({
+        apiKey,
+        apiSecret,
+        sourceDir: paths.dest,
+        artifactsDir: BUILD_DIR,
+        timeout: 5 * 60 * 1000, // 5 minutes
+    }, {
+        shouldExitProgram: false,
+    });
+
+    if (downloadedFiles) {
+        const [downloadedXpi] = downloadedFiles;
+        // Rename
+        const basePath = path.dirname(downloadedXpi);
+        const xpiPath = path.join(basePath, 'firefox.xpi');
+        await fs.promises.rename(downloadedXpi, xpiPath);
+    }
+    return done;
+};
+
 const createArchive = (done) => {
     if (BRANCH !== BRANCH_BETA && BRANCH !== BRANCH_RELEASE) {
         return done();
     }
 
-    const artifactsBuild = gulp.src(dest.inner)
-        .pipe(zip('firefox.zip'))
-        .pipe(gulp.dest(BUILD_DIR));
-
-    const currentBuild = gulp.src(dest.inner)
+    return gulp.src(dest.inner)
         .pipe(zip(`firefox-standalone-${BRANCH}-${version}-unsigned.zip`))
-        .pipe(gulp.dest(dest.buildDir));
-
-    return mergeStream(currentBuild, artifactsBuild);
+        .pipe(gulp.dest(dest.buildDir))
+        // copy artifact in the build dir
+        .pipe(rename('firefox.zip'))
+        .pipe(gulp.dest(BUILD_DIR));
 };
 
-export default gulp.series(copyExternal, copyCommon, copyFilters, firefoxWebext, updateManifest, localesProcess, preprocess, createArchive);
+export default gulp.series(
+    copyExternal,
+    copyCommon,
+    copyFilters,
+    firefoxWebext,
+    updateManifest,
+    localesProcess,
+    preprocess,
+    createArtifact,
+    createArchive,
+    createUpdateJson
+);
