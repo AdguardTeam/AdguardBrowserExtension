@@ -93,6 +93,9 @@ const updateManifest = (done) => {
 };
 
 const createUpdateJson = async (done) => {
+    if (BRANCH !== BRANCH_BETA && BRANCH !== BRANCH_RELEASE) {
+        return done();
+    }
     const templatePath = path.resolve(__dirname, './resources/firefox_updates.json');
     let updateJsonTemplate = (await fs.promises.readFile(templatePath)).toString();
     updateJsonTemplate = updateJsonTemplate.replace(/\%VERSION\%/g, version);
@@ -101,6 +104,9 @@ const createUpdateJson = async (done) => {
 };
 
 const createArtifact = async (done) => {
+    if (BRANCH !== BRANCH_BETA && BRANCH !== BRANCH_RELEASE) {
+        return done();
+    }
     // eslint-disable-next-line global-require
     const credentialsPath = path.resolve(__dirname, '../private/AdguardBrowserExtension/mozilla_credentials.json');
     const { apiKey, apiSecret } = JSON.parse(await fs.promises.readFile(credentialsPath));

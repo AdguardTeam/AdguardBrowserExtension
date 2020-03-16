@@ -55,14 +55,18 @@ const dest = {
 const copyCommon = () => copyCommonFiles(paths.dest);
 
 // copy firefox filters
-const copyFilters = () => gulp.src(paths.filters).pipe(gulp.dest(dest.filters));
+const copyFilters = () => gulp.src(paths.filters)
+    .pipe(gulp.dest(dest.filters));
 
 // copy chromium, webkit files and firefox_webext files
 const firefoxWebext = () => gulp.src([paths.webkitFiles, paths.chromeFiles, paths.firefox_webext])
     .pipe(gulp.dest(paths.dest));
 
 // preprocess with params
-const preprocess = done => preprocessAll(paths.dest, { browser: FIREFOX_WEBEXT, remoteScripts: false }, done);
+const preprocess = done => preprocessAll(paths.dest, {
+    browser: FIREFOX_WEBEXT,
+    remoteScripts: false,
+}, done);
 
 // change the extension name based on a type of a build (dev, beta or release)
 const localesProcess = done => updateLocalesMSGName(BRANCH, paths.dest, done, FIREFOX_WEBEXT);
@@ -92,9 +96,14 @@ const updateManifest = (done) => {
     return done();
 };
 
-const createArtifactBuild = () => gulp.src(dest.inner)
-    .pipe(zip('firefox.zip'))
-    .pipe(gulp.dest(BUILD_DIR));
+const createArtifactBuild = (done) => {
+    if (BRANCH !== BRANCH_BETA && BRANCH !== BRANCH_RELEASE) {
+        return done();
+    }
+    return gulp.src(dest.inner)
+        .pipe(zip('firefox.zip'))
+        .pipe(gulp.dest(BUILD_DIR));
+};
 
 const createWebExt = (done) => {
     if (BRANCH !== BRANCH_BETA && BRANCH !== BRANCH_RELEASE) {
