@@ -701,7 +701,7 @@ const AntiBannerFilters = function (options) {
 
     document.querySelector('#updateAntiBannerFilters').addEventListener('click', updateAntiBannerFilters);
 
-    window.addEventListener('hashchange', clearSearchInput);
+    window.addEventListener('hashchange', handleHashSwitch);
 
     updateRulesCountInfo(options.rulesInfo);
 
@@ -1130,7 +1130,6 @@ const AntiBannerFilters = function (options) {
     });
 
     const SEARCH_INPUT_DELAY_MS = 250;
-    const TOGGLE_DELAY_MS = 500;
 
     function initSearchInCategory(category) {
         const { groupId } = category;
@@ -1170,23 +1169,14 @@ const AntiBannerFilters = function (options) {
             });
         }
 
-        // handle checkbox toggle for filters in the categories
-        const toggleHandler = Utils.debounce((e) => {
-            const attributeName = e.target.getAttribute('name');
-            if (attributeName === 'filterId') {
-                renderFiltersInCategory(groupId, filters, searchDataSources);
-            }
-        }, TOGGLE_DELAY_MS);
-        document.removeEventListener('change', toggleHandler);
-        document.addEventListener('change', toggleHandler);
-
         return searchDataSources;
     }
     /**
      * Function clears search results when user moves from category antibanner page to another page
+     * and re-renders filters in category (in order to keep right order)
      * @param {*} event hashchange event
      */
-    function clearSearchInput(event) {
+    function handleHashSwitch(event) {
         const regex = /#antibanner(\d+)/g;
         const match = regex.exec(event.oldURL);
         if (!match) {
@@ -1196,9 +1186,10 @@ const AntiBannerFilters = function (options) {
         if (!groupId) {
             return;
         }
+
         const searchInputEl = document.querySelector(`#antibanner${groupId} input[name="searchFiltersList"]`);
         // custom groups doesn't have search input till there is no filters inside
-        if (!searchInputEl || !searchInputEl.value) {
+        if (!searchInputEl) {
             return;
         }
         const displayOptionEl = document.querySelector(`#antibanner${groupId} #filterStatusSelection`);
@@ -1210,6 +1201,7 @@ const AntiBannerFilters = function (options) {
             searchInputEl,
             displayOptionEl,
         };
+
         renderFiltersInCategory(groupId, loadedFiltersInfo.filters, searchDataSources);
     }
 
@@ -1296,16 +1288,6 @@ const AntiBannerFilters = function (options) {
             displayOptionEl.value = filtersDisplayOptions.ALL;
             renderCommonFiltersList(loadedFiltersInfo.filters, searchDataSources);
         });
-
-        // handle checkbox toggle for filters in common filters list
-        const toggleHandler = Utils.debounce((e) => {
-            const attributeName = e.target.getAttribute('name');
-            if (attributeName === 'filterId') {
-                renderCommonFiltersList(loadedFiltersInfo.filters, searchDataSources);
-            }
-        }, TOGGLE_DELAY_MS);
-        document.removeEventListener('change', toggleHandler);
-        document.addEventListener('change', toggleHandler);
     };
 
     function renderCategoriesAndFilters() {
@@ -2367,7 +2349,12 @@ const initPage = function (response) {
                     controller.antiBannerFilters.onCategoryStateChanged(options);
                     break;
                 case EventNotifierTypes.FILTER_ADD_REMOVE:
-                    controller.antiBannerFilters.render();
+                    // re-render fully only if custom filter was added,
+                    // if re-render every time, then filters move inconsistently because of sorting
+                    // on first filter enabling, when this event fires
+                    if (options && options.customUrl) {
+                        controller.antiBannerFilters.render();
+                    }
                     break;
                 case EventNotifierTypes.START_DOWNLOAD_FILTER:
                     controller.antiBannerFilters.onFilterDownloadStarted(options);
