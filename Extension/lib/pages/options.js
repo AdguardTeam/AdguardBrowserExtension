@@ -191,6 +191,8 @@ const TopMenu = (function () {
             }
         }
 
+        // Scroll to the top on every tab switch
+        window.scrollTo(0, 0);
         prevTabId = tabId;
     };
 
