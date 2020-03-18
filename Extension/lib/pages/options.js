@@ -1180,7 +1180,7 @@ const AntiBannerFilters = function (options) {
      */
     function handleHashSwitch(event) {
         const regex = /#antibanner(\d+)/g;
-        const match = regex.exec(event.oldURL);
+        const match = regex.exec(event.oldURL) || regex.exec(event.newURL);
         if (!match) {
             return;
         }
