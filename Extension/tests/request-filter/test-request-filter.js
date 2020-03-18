@@ -1,7 +1,8 @@
+/* eslint-disable max-len */
 /* global QUnit, adguard */
 
 adguard.webRequestService = adguard.webRequestService || {
-    isCollectingCosmeticRulesHits: () => false
+    isCollectingCosmeticRulesHits: () => false,
 };
 
 QUnit.test('General', (assert) => {
@@ -808,7 +809,7 @@ QUnit.test('Request filter finds rules for domains with "." in the end', (assert
 
     const requestFilter = new adguard.RequestFilter();
     requestFilter.addRules([cssRule]);
-    const {css: [firstCss]} = requestFilter.getSelectorsForUrl('http://www.benchmark.pl./', 1);
+    const { css: [firstCss] } = requestFilter.getSelectorsForUrl('http://www.benchmark.pl./', 1);
     assert.ok(firstCss.indexOf(`${selector} { display: none!important; }`) > -1);
 
     const urlRuleText = '||cdn.benchmark.pl^$domain=benchmark.pl';
@@ -875,4 +876,20 @@ QUnit.test('In case request has "DOCUMENT" type - $domain modifier will match as
     );
 
     assert.notOk(rule);
+});
+
+QUnit.test('Invalid scriptlets are not added to the scripts string', (assert) => {
+    const validScriptletRuleText = 'example.org#%#//scriptlet("adjust-setTimeout", "example", "400")';
+    const validScriptletRule = new adguard.rules.ScriptletRule(validScriptletRuleText);
+
+    const invalidScriptletRuleText = 'example.org#%#//scriptlet("adjust-setTimeout-invalid", "example", "400")';
+    const invalidScriptletRule = new adguard.rules.ScriptletRule(invalidScriptletRuleText);
+
+    const requestFilter = new adguard.RequestFilter();
+    requestFilter.addRules([validScriptletRule, invalidScriptletRule]);
+
+    const scripts = requestFilter.getScriptsForUrl('https://example.org', true);
+
+    assert.equal(scripts.length, 1, 'length of results should be one');
+    assert.equal(scripts[0].rule.ruleText, validScriptletRuleText, 'valid rule should be in results');
 });
