@@ -1,7 +1,7 @@
 
 /**
  * AdGuard Scriptlets
- * Version 1.1.5
+ * Version 1.1.9
  */
 
 (function () {
@@ -135,22 +135,18 @@
       return index < 0 ? str : str.substring(0, index);
     };
     /**
-     * Wrap str in double qoutes and replaces single quotes if need
+     * Wrap str in single qoutes and replaces single quotes to doudle one
      * @param {string} str
      */
 
-    var wrapInDoubleQuotes = function wrapInDoubleQuotes(str) {
-      if (str[0] === '\'' && str[str.length - 1] === '\'') {
-        str = str.substring(1, str.length - 1); // eslint-disable-next-line no-useless-escape
+    var wrapInSingleQuotes = function wrapInSingleQuotes(str) {
+      if (str[0] === '\'' && str[str.length - 1] === '\'' || str[0] === '"' && str[str.length - 1] === '"') {
+        str = str.substring(1, str.length - 1);
+      } // eslint-disable-next-line no-useless-escape
 
-        str = str.replace(/\"/g, '\\"');
-      } else if (str[0] === '"' && str[str.length - 1] === '"') {
-        str = str.substring(1, str.length - 1); // eslint-disable-next-line no-useless-escape
 
-        str = str.replace(/\'/g, '\\\'');
-      }
-
-      return "\"".concat(str, "\"");
+      str = str.replace(/\'/g, '"');
+      return "'".concat(str, "'");
     };
     /**
      * Returns substring enclosed in the widest braces
@@ -362,7 +358,7 @@
         startsWith: startsWith,
         substringAfter: substringAfter,
         substringBefore: substringBefore,
-        wrapInDoubleQuotes: wrapInDoubleQuotes,
+        wrapInSingleQuotes: wrapInSingleQuotes,
         getStringInBraces: getStringInBraces,
         createOnErrorHandler: createOnErrorHandler,
         noop: noop,
@@ -2579,6 +2575,7 @@
      */
 
     /* eslint-enable max-len */
+    // TODO: add related UBO scriptlet link after they add description to their doc
 
     function removeClass(source, classNames, selector) {
       if (!classNames) {
@@ -2959,7 +2956,7 @@
         for (var i = 0; i < needlePaths.length; i += 1) {
           var needlePath = needlePaths[i];
           var details = getPropertyInChain(root, needlePath, false);
-          var nestedPropName = needlePath.split('').pop();
+          var nestedPropName = needlePath.split('.').pop();
 
           if (details && details.base[nestedPropName] === undefined) {
             return false;
@@ -3244,6 +3241,16 @@
       return substringAfter(redirectNamePart, marker);
     };
     /**
+     * Checks if the `rule` is AdGuard redirect rule.
+     * Discards comments and checks if the `rule` has 'redirect' modifier.
+     * @param {string} rule - rule text
+     */
+
+
+    var isAdgRedirectRule = function isAdgRedirectRule(rule) {
+      return !isComment(rule) && rule.indexOf(REDIRECT_RULE_TYPES.ADG.marker) > -1;
+    };
+    /**
      * Checks if the `rule` satisfies the `type`
      * @param {string} rule - rule text
      * @param {'ADG'|'UBO'|'ABP'} type - type of a redirect rule
@@ -3271,7 +3278,7 @@
     */
 
 
-    var isAdgRedirectRule = function isAdgRedirectRule(rule) {
+    var isValidAdgRedirectRule = function isValidAdgRedirectRule(rule) {
       return isRedirectRuleByType(rule, 'ADG');
     };
     /**
@@ -3281,7 +3288,7 @@
     */
 
 
-    var isUboRedirectRule = function isUboRedirectRule(rule) {
+    var isValidUboRedirectRule = function isValidUboRedirectRule(rule) {
       return isRedirectRuleByType(rule, 'UBO');
     };
     /**
@@ -3291,7 +3298,7 @@
     */
 
 
-    var isAbpRedirectRule = function isAbpRedirectRule(rule) {
+    var isValidAbpRedirectRule = function isValidAbpRedirectRule(rule) {
       return isRedirectRuleByType(rule, 'ABP');
     };
     /**
@@ -3302,7 +3309,7 @@
 
 
     var isValidRedirectRule = function isValidRedirectRule(rule) {
-      return isAdgRedirectRule(rule) || isUboRedirectRule(rule) || isAbpRedirectRule(rule);
+      return isValidAdgRedirectRule(rule) || isValidUboRedirectRule(rule) || isValidAbpRedirectRule(rule);
     };
     /**
      * Checks if the rule has specified content type before Adg -> Ubo conversion.
@@ -3345,10 +3352,11 @@
       getScriptletByName: getScriptletByName,
       isValidScriptletName: isValidScriptletName,
       REDIRECT_RULE_TYPES: REDIRECT_RULE_TYPES,
-      isValidRedirectRule: isValidRedirectRule,
       isAdgRedirectRule: isAdgRedirectRule,
-      isUboRedirectRule: isUboRedirectRule,
-      isAbpRedirectRule: isAbpRedirectRule,
+      isValidRedirectRule: isValidRedirectRule,
+      isValidAdgRedirectRule: isValidAdgRedirectRule,
+      isValidUboRedirectRule: isValidUboRedirectRule,
+      isValidAbpRedirectRule: isValidAbpRedirectRule,
       parseModifiers: parseModifiers,
       getRedirectName: getRedirectName,
       hasValidContentType: hasValidContentType
@@ -3435,11 +3443,16 @@
           outputArg = arg.indexOf('.js') > -1 ? "ubo-".concat(arg) : "ubo-".concat(arg, ".js");
         } else {
           outputArg = arg;
+        } // for example: dramaserial.xyz##+js(abort-current-inline-script, $, popup)
+
+
+        if (arg === '$') {
+          outputArg = '$$';
         }
 
         return outputArg;
       }).map(function (arg) {
-        return wrapInDoubleQuotes(arg);
+        return wrapInSingleQuotes(arg);
       }).join(', ');
       var adgRule = replacePlaceholders(template, {
         domains: domains,
@@ -3466,7 +3479,7 @@
         }).map(function (arg, index) {
           return index === 0 ? "abp-".concat(arg) : arg;
         }).map(function (arg) {
-          return wrapInDoubleQuotes(arg);
+          return wrapInSingleQuotes(arg);
         }).join(', ');
       }).map(function (args) {
         return replacePlaceholders(template, {
@@ -3631,11 +3644,11 @@
     var convertRedirectToAdg = function convertRedirectToAdg(rule) {
       var result;
 
-      if (validator.isUboRedirectRule(rule)) {
+      if (validator.isValidUboRedirectRule(rule)) {
         result = convertUboRedirectToAdg(rule);
-      } else if (validator.isAbpRedirectRule(rule)) {
+      } else if (validator.isValidAbpRedirectRule(rule)) {
         result = convertAbpRedirectToAdg(rule);
-      } else if (validator.isAdgRedirectRule(rule) || validator.isComment(rule)) {
+      } else if (validator.isValidAdgRedirectRule(rule) || validator.isComment(rule)) {
         result = rule;
       }
 
@@ -4368,10 +4381,11 @@
 
     var redirectsCjs = {
       getCode: getRedirectCode,
-      isValidRedirectRule: validator.isValidRedirectRule,
       isAdgRedirectRule: validator.isAdgRedirectRule,
-      isUboRedirectRule: validator.isUboRedirectRule,
-      isAbpRedirectRule: validator.isAbpRedirectRule,
+      isValidRedirectRule: validator.isValidRedirectRule,
+      isValidAdgRedirectRule: validator.isValidAdgRedirectRule,
+      isValidUboRedirectRule: validator.isValidUboRedirectRule,
+      isValidAbpRedirectRule: validator.isValidAbpRedirectRule,
       convertUboRedirectToAdg: convertUboRedirectToAdg,
       convertAbpRedirectToAdg: convertAbpRedirectToAdg,
       convertRedirectToAdg: convertRedirectToAdg,
