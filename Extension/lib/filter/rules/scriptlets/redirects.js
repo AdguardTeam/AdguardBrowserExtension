@@ -1,3 +1,9 @@
+
+/**
+ * AdGuard Scriptlets
+ * Version 1.1.9
+ */
+
 var Redirects = (function () {
   function _defineProperty(obj, key, value) {
     if (key in obj) {
