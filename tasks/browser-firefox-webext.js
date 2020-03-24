@@ -103,8 +103,11 @@ const createUpdateJson = async (done) => {
     return done;
 };
 
+// IMPORTANT!!!
+// Signing artifacts for Mozilla publishes build to the store simultaneously
+// We sign only beta build, because we do not publish it the AMO store
 const createArtifact = async (done) => {
-    if (BRANCH !== BRANCH_BETA && BRANCH !== BRANCH_RELEASE) {
+    if (BRANCH !== BRANCH_BETA) {
         return done();
     }
     // eslint-disable-next-line global-require
