@@ -14,6 +14,7 @@ import path from 'path';
 import gulp from 'gulp';
 import concatFiles from 'gulp-concat';
 import zip from 'gulp-zip';
+import rename from 'gulp-rename';
 import { BUILD_DIR, LOCALES_DIR, BRANCH_BETA } from './consts';
 import { version } from './parse-package';
 
@@ -133,9 +134,6 @@ const copyFilters = () => gulp.src(paths.filters).pipe(gulp.dest(dest.adguard));
 // copy redirects sources
 const copyRedirects = () => gulp.src(paths.redirects).pipe(gulp.dest(dest.adguard));
 
-const concatStartFiles = () => concat('document_start', 'adguard-content.js');
-const concatEndFiles = () => concat('document_end', 'adguard-assistant.js');
-
 const apiConcat = () => gulp.src(API_SCRIPTS).pipe(concatFiles('adguard-api.js')).pipe(gulp.dest(dest.adguard));
 
 /**
@@ -150,6 +148,7 @@ const apiConcat = () => gulp.src(API_SCRIPTS).pipe(concatFiles('adguard-api.js')
 const concat = (runAt, srcFileName) => {
     const manifest = JSON.parse(fs.readFileSync(paths.sourceManifest));
     let files = [];
+    // eslint-disable-next-line no-restricted-syntax
     for (const i of manifest.content_scripts) {
         if (i.run_at === runAt) {
             files = i.js;
@@ -168,6 +167,9 @@ const concat = (runAt, srcFileName) => {
         .pipe(gulp.dest(dest.adguard));
 };
 
+const concatStartFiles = () => concat('document_start', 'adguard-content.js');
+const concatEndFiles = () => concat('document_end', 'adguard-assistant.js');
+
 const updateManifest = (done) => {
     const manifest = JSON.parse(fs.readFileSync(dest.manifest));
     manifest.version = version;
@@ -182,7 +184,20 @@ const createArchive = (done) => {
 
     return gulp.src(dest.inner)
         .pipe(zip(`adguard-api-${BRANCH}-${version}.zip`))
+        .pipe(gulp.dest(dest.buildDir))
+        // adguard-api.zip artifact
+        .pipe(rename('adguard-api.zip'))
         .pipe(gulp.dest(dest.buildDir));
 };
 
-export default gulp.series(copyAssistant, sampleApi, concatStartFiles, concatEndFiles, apiConcat, copyFilters, copyRedirects, updateManifest, createArchive);
+export default gulp.series(
+    copyAssistant,
+    sampleApi,
+    concatStartFiles,
+    concatEndFiles,
+    apiConcat,
+    copyFilters,
+    copyRedirects,
+    updateManifest,
+    createArchive
+);
