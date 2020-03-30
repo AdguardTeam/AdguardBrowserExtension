@@ -187,7 +187,7 @@ const createArchive = (done) => {
         .pipe(gulp.dest(dest.buildDir))
         // adguard-api.zip artifact
         .pipe(rename('adguard-api.zip'))
-        .pipe(gulp.dest(dest.buildDir));
+        .pipe(gulp.dest(BUILD_DIR));
 };
 
 export default gulp.series(
