@@ -80,12 +80,12 @@ These libs are developed by us from scratch.
 * Library source: https://github.com/AdguardTeam/ExtendedCss/releases/tag/v1.2.1
 ​
 #### `lib/content-script/assistant.js`
-* v4.3.8
+* v4.3.27
 * Library source: https://github.com/AdguardTeam/AdguardAssistant/tree/v4.3.8
 `assistant.embedded.js` build is being used.
 
 #### `lib/filter/rules/scriptlets/`
-* v1.0.10
+* v1.1.11
 * Library source https://github.com/AdguardTeam/Scriptlets/releases
 
 

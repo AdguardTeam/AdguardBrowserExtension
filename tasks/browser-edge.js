@@ -35,6 +35,7 @@ const dest = {
     inner: path.join(paths.dest, '**/*'),
     buildDir: path.join(BUILD_DIR, BRANCH),
     manifest: path.join(paths.dest, 'manifest.json'),
+    assistant: path.join(paths.dest, 'lib', 'content-script', 'assistant', 'js'),
 };
 
 // copy common filters
@@ -70,4 +71,13 @@ const createArchive = (done) => {
         .pipe(gulp.dest(dest.buildDir));
 };
 
-export default gulp.series(copyExternal, copyCommon, copyFilters, edge, updateManifest, localesProcess, preprocess, createArchive);
+export default gulp.series(
+    () => copyExternal(dest.assistant),
+    copyCommon,
+    copyFilters,
+    edge,
+    updateManifest,
+    localesProcess,
+    preprocess,
+    createArchive
+);

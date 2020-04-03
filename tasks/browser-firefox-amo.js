@@ -49,6 +49,7 @@ const dest = {
     buildDir: path.join(BUILD_DIR, BRANCH),
     manifest: path.join(paths.dest, 'manifest.json'),
     webext: path.join(BUILD_DIR, BRANCH, `firefox-amo-${BRANCH}-${version}-unsigned.zip`),
+    assistant: path.join(paths.dest, 'lib', 'content-script', 'assistant', 'js'),
 };
 
 // copy common files
@@ -121,7 +122,7 @@ const createWebExt = (done) => {
 };
 
 export default gulp.series(
-    copyExternal,
+    () => copyExternal(dest.assistant),
     copyCommon,
     copyFilters,
     firefoxWebext,
