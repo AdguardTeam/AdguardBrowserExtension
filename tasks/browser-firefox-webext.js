@@ -48,6 +48,7 @@ const dest = {
     inner: path.join(paths.dest, '**/*'),
     buildDir: path.join(BUILD_DIR, BRANCH),
     manifest: path.join(paths.dest, 'manifest.json'),
+    assistant: path.join(paths.dest, 'lib', 'content-script', 'assistant', 'js'),
 };
 
 // copy common files
@@ -147,7 +148,7 @@ const createArchive = (done) => {
 };
 
 export default gulp.series(
-    copyExternal,
+    () => copyExternal(dest.assistant),
     copyCommon,
     copyFilters,
     firefoxWebext,
