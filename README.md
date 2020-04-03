@@ -39,8 +39,6 @@ AdGuard is a fast and lightweight ad blocking browser extension that effectively
   * [Firefox](#installation-firefox)
   * [Opera](#installation-opera)
   * [Microsoft Edge](#installation-edge)
-  * [Safari](#installation-safari)
-* [Integration mode](#integration-mode)
 * [Contribution](#contribution)
   * [Translating AdGuard](#contribution-translating)
   * [Testing AdGuard](#contribution-testing)
@@ -57,38 +55,19 @@ AdGuard is a fast and lightweight ad blocking browser extension that effectively
 
 <a id="installation-chrome"></a>
 ### Chrome and Chromium-based browsers
-You can get the latest available AdGuard Extension version from the [Chrome Web Store](https://chrome.google.com/webstore/detail/bgnkhhnnamicmpeenaelnjfhikgbkllg).
+You can get the latest available AdGuard Extension version from the [Chrome Web Store](https://agrd.io/extension_chrome).
 
 <a id="installation-firefox"></a>
 ### Firefox
-You can get the latest version of AdGuard Extension from the [Mozilla Add-ons website](https://adguard.com/en/download-extension/firefox.html).
-
-> #### Legacy Firefox versions, Pale Moon
-> Starting with the version 3.0 we no more support the legacy versions of Firefox. Here you can get the latest version that supports legacy firefox versions here: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v.2.10.8 (look for "firefox-legacy" build).
+You can get the latest version of AdGuard Extension from the [Mozilla Add-ons website](https://agrd.io/extension_firefox).
 
 <a id="installation-opera"></a>
 ### Opera
-Opera is basically a Chromium browser, but it maintains its own add-ons store. You can get AdGuard Extension [from there](https://adguard.com/en/download-extension/opera.html).
+Opera is basically a Chromium browser, but it maintains its own add-ons store. You can get AdGuard Extension [from there](https://agrd.io/extension_opera).
 
 <a id="installation-edge"></a>
 ### Microsoft Edge
-The latest stable version of AdGuard browser extension is available in [Microsoft Store](https://adguard.com/en/download-extension/edge.html).
-
-<a id="installation-safari"></a>
-### Safari
-Due to the major changes in Safari 12, we cannot maintain the same codebase anymore for the Safari extension. That's why we launched a new [AdGuard for Safari app](https://github.com/AdguardTeam/AdGuardForSafari).
-
-> #### Legacy Safari version
-> You can get the latest legacy Safari extension version in [Safari Extensions gallery](https://safari-extensions.apple.com/details/?id=com.adguard.safari-N33TQXN8C7). Please note, that Apple is going to completely disable support for legacy extensions in future Safari versions.
-
-<a id="integration-mode"></a>
-## Integration mode
-
-The frequently asked question is "does it make sense to use the browser extension alongside AdGuard for Windows or Mac?" Interestingly enough, the answer is "yes, if you like the integration mode".
-
-**Q: What is integration mode?** It is a special mode that the extension enters when being run along with a desktop AdGuard app (on Windows or macOS).
-
-**Q: What happens in the integration mode?** In this mode, the extension stops filitering traffic (this function lies completely on the app). Its settings are also ignored, the app's settings are applied instead. The extension's color changes to blue and it serves as a replacement for AdGuard Assistant.
+The latest stable version of AdGuard browser extension is available in [Microsoft Store](https://agrd.io/extension_edge).
 
 <a id="contribution"></a>
 ## Contribution
