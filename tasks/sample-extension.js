@@ -128,7 +128,6 @@ const sampleApi = () => gulp.src(paths.sample)
 
 // copy assistant files
 const copyAssistant = () => gulp.src(paths.assistant)
-    .pipe(rename('assistant.js'))
     .pipe(gulp.dest(dest.assistant));
 
 //  copy filters
