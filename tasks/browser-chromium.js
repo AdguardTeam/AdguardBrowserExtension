@@ -46,7 +46,6 @@ const dest = {
     inner: path.join(paths.dest, '**/*'),
     buildDir: path.join(BUILD_DIR, BRANCH),
     manifest: path.join(paths.dest, 'manifest.json'),
-    assistant: path.join(paths.dest, 'lib', 'content-script', 'assistant', 'js'),
 };
 
 // copy common files
@@ -126,7 +125,7 @@ const crxPack = async (done) => {
 };
 
 export default gulp.series(
-    () => copyExternal(dest.assistant),
+    copyExternal,
     copyCommon,
     copyFilters,
     chromiumMainFiles,
