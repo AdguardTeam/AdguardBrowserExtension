@@ -123,18 +123,24 @@ const dest = {
 };
 
 // copy sample files
-const sampleApi = () => gulp.src(paths.sample).pipe(gulp.dest(paths.dest));
+const sampleApi = () => gulp.src(paths.sample)
+    .pipe(gulp.dest(paths.dest));
 
 // copy assistant files
-const copyAssistant = () => gulp.src(paths.assistant).pipe(gulp.dest(dest.assistant));
+const copyAssistant = () => gulp.src(paths.assistant)
+    .pipe(gulp.dest(dest.assistant));
 
 //  copy filters
-const copyFilters = () => gulp.src(paths.filters).pipe(gulp.dest(dest.adguard));
+const copyFilters = () => gulp.src(paths.filters)
+    .pipe(gulp.dest(dest.adguard));
 
 // copy redirects sources
-const copyRedirects = () => gulp.src(paths.redirects).pipe(gulp.dest(dest.adguard));
+const copyRedirects = () => gulp.src(paths.redirects)
+    .pipe(gulp.dest(dest.adguard));
 
-const apiConcat = () => gulp.src(API_SCRIPTS).pipe(concatFiles('adguard-api.js')).pipe(gulp.dest(dest.adguard));
+const apiConcat = () => gulp.src(API_SCRIPTS)
+    .pipe(concatFiles('adguard-api.js'))
+    .pipe(gulp.dest(dest.adguard));
 
 /**
  * Concat scripts from `document_start` and `document_end` params getting from manifest.json

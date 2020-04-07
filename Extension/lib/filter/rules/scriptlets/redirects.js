@@ -1,7 +1,7 @@
 
 /**
  * AdGuard Scriptlets
- * Version 1.1.9
+ * Version 1.1.11
  */
 
 var Redirects = (function () {
@@ -3869,9 +3869,7 @@ var Redirects = (function () {
    * @property {string} contentType
    */
 
-  var Redirects =
-  /*#__PURE__*/
-  function () {
+  var Redirects = /*#__PURE__*/function () {
     /**
      * Converts rawYaml into JS object with sources titles used as keys
      * @param rawYaml
