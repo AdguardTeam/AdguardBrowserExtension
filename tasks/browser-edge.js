@@ -70,4 +70,13 @@ const createArchive = (done) => {
         .pipe(gulp.dest(dest.buildDir));
 };
 
-export default gulp.series(copyExternal, copyCommon, copyFilters, edge, updateManifest, localesProcess, preprocess, createArchive);
+export default gulp.series(
+    copyExternal,
+    copyCommon,
+    copyFilters,
+    edge,
+    updateManifest,
+    localesProcess,
+    preprocess,
+    createArchive
+);

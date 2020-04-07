@@ -52,13 +52,18 @@ const dest = {
 const copyCommon = () => copyCommonFiles(paths.dest);
 
 // copy chromium filters
-const copyFilters = () => gulp.src(paths.filters).pipe(gulp.dest(dest.filters));
+const copyFilters = () => gulp.src(paths.filters)
+    .pipe(gulp.dest(dest.filters));
 
 // copy chromium and webkit files
-const chromiumMainFiles = () => gulp.src([paths.webkitFiles, paths.chrome]).pipe(gulp.dest(paths.dest));
+const chromiumMainFiles = () => gulp.src([paths.webkitFiles, paths.chrome])
+    .pipe(gulp.dest(paths.dest));
 
 // preprocess with params
-const preprocess = done => preprocessAll(paths.dest, { browser: 'CHROMIUM', remoteScripts: true }, done);
+const preprocess = done => preprocessAll(paths.dest, {
+    browser: 'CHROMIUM',
+    remoteScripts: true,
+}, done);
 
 // change the extension name based on a type of a build (dev, beta or release)
 const localesProcess = done => updateLocalesMSGName(BRANCH, paths.dest, done);
