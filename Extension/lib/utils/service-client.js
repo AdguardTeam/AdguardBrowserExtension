@@ -68,7 +68,7 @@ adguard.backend = (function (adguard) {
         // URL for checking filter updates
         get filtersMetadataUrl() {
             var params = adguard.utils.browser.getExtensionParams();
-            return this.filtersUrl + '/filters.json?' + params.join('&');
+            return this.filtersUrl + '/filters.js?' + params.join('&');
         },
 
         // URL for user complaints on missed ads or malware/phishing websites
