@@ -79,24 +79,19 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         },
     };
 
-    const nextMenuId = 0;
-
     const extensionStoreLink = (function () {
-        const urlBuilder = ['https://adguard.com/extension-page.html'];
-        urlBuilder.push('?browser=');
+        let browser = 'chrome';
         if (adguard.utils.browser.isOperaBrowser()) {
-            urlBuilder.push('opera');
+            browser = 'opera';
         } else if (adguard.utils.browser.isFirefoxBrowser()) {
-            urlBuilder.push('firefox');
-        } else if (adguard.utils.browser.isYaBrowser()) {
-            urlBuilder.push('yabrowser');
-        } else if (adguard.utils.browser.isEdgeBrowser()) {
-            urlBuilder.push('edge');
-        } else {
-            urlBuilder.push('chrome');
+            browser = 'firefox';
+        } else if (adguard.utils.browser.isEdgeChromiumBrowser()) {
+            browser = 'edge';
         }
 
-        return urlBuilder.join('');
+        const action = `${browser}_store`;
+
+        return `https://adguard.com/forward.html?action=${action}&from=options_screen&app=browser_extension`;
     })();
 
     const THANKYOU_PAGE_URL = 'https://welcome.adguard.com/v2/thankyou.html';
