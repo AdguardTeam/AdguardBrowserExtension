@@ -7,10 +7,12 @@ import request from 'request';
 import fs from 'fs';
 import fse from 'fs-extra';
 import crypto from 'crypto';
-import Logs from './log';
 import gulp from 'gulp';
+import Logs from './log';
 import 'babel-polyfill';
-import {METADATA_DOWNLOAD_URL_FORMAT, FILTERS_DEST, METADATA_I18N_DOWNLOAD_URL_FORMAT, LAST_ADGUARD_FILTER_ID, FILTER_DOWNLOAD_URL_FORMAT, OPTIMIZED_FILTER_DOWNLOAD_URL_FORMAT} from './consts';
+import {
+    METADATA_DOWNLOAD_URL_FORMAT, FILTERS_DEST, METADATA_I18N_DOWNLOAD_URL_FORMAT, LAST_ADGUARD_FILTER_ID, FILTER_DOWNLOAD_URL_FORMAT, OPTIMIZED_FILTER_DOWNLOAD_URL_FORMAT,
+} from './consts';
 
 const CHECKSUM_PATTERN = /^\s*!\s*checksum[\s-:]+([\w\+/=]+).*[\r\n]+/i;
 const logs = new Logs();
@@ -28,32 +30,32 @@ const filtersList = (browser) => {
 
     meta.push({
         url: METADATA_DOWNLOAD_URL_FORMAT.replace('%browser', browser),
-        file: 'filters.json'
+        file: 'filters.json',
     });
 
     meta.push({
         url: METADATA_I18N_DOWNLOAD_URL_FORMAT.replace('%browser', browser),
-        file: 'filters_i18n.json'
+        file: 'filters_i18n.json',
     });
 
     for (let i = 1; i <= LAST_ADGUARD_FILTER_ID; i++) {
         filters.push({
             url: FILTER_DOWNLOAD_URL_FORMAT.replace('%browser', browser).replace('%filter', i),
             file: `filter_${i}.txt`,
-            validate: true
+            validate: true,
         });
 
         filtersMobile.push({
             url: OPTIMIZED_FILTER_DOWNLOAD_URL_FORMAT.replace('%browser', browser).replace('%s', i),
             file: `filter_mobile_${i}.txt`,
-            validate: true
+            validate: true,
         });
     }
 
     return [
         ...meta,
         ...filters,
-        ...filtersMobile
+        ...filtersMobile,
     ];
 };
 
@@ -66,14 +68,14 @@ const filtersList = (browser) => {
  * @throws Error
  */
 const validateChecksum = (url, body) => {
-    const partOfResponse = body.substring(0,200);
+    const partOfResponse = body.substring(0, 200);
     const checksumMatch = partOfResponse.match(CHECKSUM_PATTERN);
 
     if (!checksumMatch[1]) {
         logs.error(`Filter rules from ${url.url} doesn't contain a checksum ${partOfResponse}`);
     }
 
-    const bodyChecksum = crypto.createHash('md5').update(normalizeResponse(body)).digest('base64').replace(/=/g,'');
+    const bodyChecksum = crypto.createHash('md5').update(normalizeResponse(body)).digest('base64').replace(/=/g, '');
 
     if (bodyChecksum !== checksumMatch[1]) {
         logs.error(`Wrong checksum: found ${bodyChecksum}, expected ${checksumMatch[1]}`);
@@ -109,14 +111,14 @@ const startDownload = async (browser, done) => {
     }
 
     return done();
-}
+};
 
 const downloadFilters = (url, browser) => {
     const filtersDir = FILTERS_DEST.replace('%browser', browser);
 
     fse.ensureDirSync(filtersDir);
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         logs.info(`Download ${url.url}...`);
         request(url, (error, response, body) => {
             if (url.validate) {
@@ -126,13 +128,13 @@ const downloadFilters = (url, browser) => {
             logs.info('Done');
             resolve();
         })
-        .pipe(fs.createWriteStream(path.join(filtersDir, url.file)));
+            .pipe(fs.createWriteStream(path.join(filtersDir, url.file)));
     });
 };
 
-const chromium = (done) => startDownload('chromium', done);
-const edge = (done) => startDownload('edge', done);
-const firefox = (done) => startDownload('firefox', done);
-const opera = (done) => startDownload('opera', done);
+const chromium = done => startDownload('chromium', done);
+const edge = done => startDownload('edge', done);
+const firefox = done => startDownload('firefox', done);
+const opera = done => startDownload('opera', done);
 
 export default gulp.series(chromium, edge, firefox, opera);
