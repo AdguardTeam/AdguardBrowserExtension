@@ -90,6 +90,7 @@
             for (let i = 0; i < this.scriptRules.length; i += 1) {
                 const rule = this.scriptRules[i];
                 if (rule.isPermitted(domainName)) {
+                    debugConfig['domainName'] = domainName;
                     const script = rule.getScript(debugConfig);
                     if (script) {
                         scripts.push({
