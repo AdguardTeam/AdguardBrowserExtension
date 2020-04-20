@@ -318,6 +318,7 @@
             const domain = adguard.utils.url.getHost(url);
             const config = {
                 debug,
+                domainName: domain,
                 engine: 'extension',
                 version: adguard.app && adguard.app.getVersion && adguard.app.getVersion(),
             };
