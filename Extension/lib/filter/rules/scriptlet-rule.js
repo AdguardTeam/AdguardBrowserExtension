@@ -138,13 +138,13 @@
 
     const getScriptletCode = (params) => {
         const {
-            name, args, ruleText, engine, version, debug,
+            name, args, ruleText, domainName, engine, version, debug,
         } = params;
         if (!scriptlets) { // eslint-disable-line no-undef
             return null;
         }
         const scriptletParam = {
-            name, args, ruleText, engine, version,
+            name, args, ruleText, domainName, engine, version,
         };
 
         if (debug) {
