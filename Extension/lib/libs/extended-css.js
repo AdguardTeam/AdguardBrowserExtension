@@ -1,4 +1,4 @@
-/*! extended-css - v1.2.4 - Thu Apr 23 2020
+/*! extended-css - v1.2.5 - Fri Apr 24 2020
 * https://github.com/AdguardTeam/ExtendedCss
 * Copyright (c) 2020 AdGuard ; Licensed LGPL-3.0
 */
@@ -3022,7 +3022,7 @@ var ExtendedCss = (function () {
    */
 
   const ExtendedSelectorFactory = function () {
-    const PSEUDO_EXTENSIONS_MARKERS = [':has', ':contains', ':has-text', ':matches-css', ':-abp-has', ':-abp-has-text', ':if', ':if-not', ':xpath'];
+    const PSEUDO_EXTENSIONS_MARKERS = [':has', ':contains', ':has-text', ':matches-css', ':-abp-has', ':-abp-has-text', ':if', ':if-not', ':xpath', ':nth-ancestor'];
     let initialized = false;
     let Sizzle;
     /**
