@@ -352,10 +352,16 @@
         try {
           var log = console.log.bind(console);
           var trace = console.trace.bind(console);
-          var prefix = source.ruleText || '';
+          var prefix = source.ruleText || ''; // Used to check if scriptlet uses 'hit' function for logging
+
+          var LOG_MARKER = 'log: ';
 
           if (message) {
-            log("".concat(prefix, " message:\n").concat(message));
+            if (message.indexOf(LOG_MARKER) === -1) {
+              log("".concat(prefix, " message:\n").concat(message));
+            } else {
+              log(message.slice(LOG_MARKER.length));
+            }
           }
 
           log("".concat(prefix, " trace start"));
@@ -445,10 +451,16 @@
         try {
           var log = console.log.bind(console);
           var trace = console.trace.bind(console);
-          var prefix = source.ruleText || '';
+          var prefix = source.ruleText || ''; // Used to check if scriptlet uses 'hit' function for logging
+
+          var LOG_MARKER = 'log: ';
 
           if (message) {
-            log("".concat(prefix, " message:\n").concat(message));
+            if (message.indexOf(LOG_MARKER) === -1) {
+              log("".concat(prefix, " message:\n").concat(message));
+            } else {
+              log(message.slice(LOG_MARKER.length));
+            }
           }
 
           log("".concat(prefix, " trace start"));
@@ -525,10 +537,16 @@
         try {
           var log = console.log.bind(console);
           var trace = console.trace.bind(console);
-          var prefix = source.ruleText || '';
+          var prefix = source.ruleText || ''; // Used to check if scriptlet uses 'hit' function for logging
+
+          var LOG_MARKER = 'log: ';
 
           if (message) {
-            log("".concat(prefix, " message:\n").concat(message));
+            if (message.indexOf(LOG_MARKER) === -1) {
+              log("".concat(prefix, " message:\n").concat(message));
+            } else {
+              log(message.slice(LOG_MARKER.length));
+            }
           }
 
           log("".concat(prefix, " trace start"));
@@ -592,10 +610,16 @@
         try {
           var log = console.log.bind(console);
           var trace = console.trace.bind(console);
-          var prefix = source.ruleText || '';
+          var prefix = source.ruleText || ''; // Used to check if scriptlet uses 'hit' function for logging
+
+          var LOG_MARKER = 'log: ';
 
           if (message) {
-            log("".concat(prefix, " message:\n").concat(message));
+            if (message.indexOf(LOG_MARKER) === -1) {
+              log("".concat(prefix, " message:\n").concat(message));
+            } else {
+              log(message.slice(LOG_MARKER.length));
+            }
           }
 
           log("".concat(prefix, " trace start"));
@@ -782,10 +806,16 @@
         try {
           var log = console.log.bind(console);
           var trace = console.trace.bind(console);
-          var prefix = source.ruleText || '';
+          var prefix = source.ruleText || ''; // Used to check if scriptlet uses 'hit' function for logging
+
+          var LOG_MARKER = 'log: ';
 
           if (message) {
-            log("".concat(prefix, " message:\n").concat(message));
+            if (message.indexOf(LOG_MARKER) === -1) {
+              log("".concat(prefix, " message:\n").concat(message));
+            } else {
+              log(message.slice(LOG_MARKER.length));
+            }
           }
 
           log("".concat(prefix, " trace start"));
@@ -941,10 +971,16 @@
         try {
           var log = console.log.bind(console);
           var trace = console.trace.bind(console);
-          var prefix = source.ruleText || '';
+          var prefix = source.ruleText || ''; // Used to check if scriptlet uses 'hit' function for logging
+
+          var LOG_MARKER = 'log: ';
 
           if (message) {
-            log("".concat(prefix, " message:\n").concat(message));
+            if (message.indexOf(LOG_MARKER) === -1) {
+              log("".concat(prefix, " message:\n").concat(message));
+            } else {
+              log(message.slice(LOG_MARKER.length));
+            }
           }
 
           log("".concat(prefix, " trace start"));
@@ -1053,10 +1089,16 @@
         try {
           var log = console.log.bind(console);
           var trace = console.trace.bind(console);
-          var prefix = source.ruleText || '';
+          var prefix = source.ruleText || ''; // Used to check if scriptlet uses 'hit' function for logging
+
+          var LOG_MARKER = 'log: ';
 
           if (message) {
-            log("".concat(prefix, " message:\n").concat(message));
+            if (message.indexOf(LOG_MARKER) === -1) {
+              log("".concat(prefix, " message:\n").concat(message));
+            } else {
+              log(message.slice(LOG_MARKER.length));
+            }
           }
 
           log("".concat(prefix, " trace start"));
@@ -1107,10 +1149,16 @@
         try {
           var log = console.log.bind(console);
           var trace = console.trace.bind(console);
-          var prefix = source.ruleText || '';
+          var prefix = source.ruleText || ''; // Used to check if scriptlet uses 'hit' function for logging
+
+          var LOG_MARKER = 'log: ';
 
           if (message) {
-            log("".concat(prefix, " message:\n").concat(message));
+            if (message.indexOf(LOG_MARKER) === -1) {
+              log("".concat(prefix, " message:\n").concat(message));
+            } else {
+              log(message.slice(LOG_MARKER.length));
+            }
           }
 
           log("".concat(prefix, " trace start"));
@@ -1161,10 +1209,16 @@
         try {
           var log = console.log.bind(console);
           var trace = console.trace.bind(console);
-          var prefix = source.ruleText || '';
+          var prefix = source.ruleText || ''; // Used to check if scriptlet uses 'hit' function for logging
+
+          var LOG_MARKER = 'log: ';
 
           if (message) {
-            log("".concat(prefix, " message:\n").concat(message));
+            if (message.indexOf(LOG_MARKER) === -1) {
+              log("".concat(prefix, " message:\n").concat(message));
+            } else {
+              log(message.slice(LOG_MARKER.length));
+            }
           }
 
           log("".concat(prefix, " trace start"));
