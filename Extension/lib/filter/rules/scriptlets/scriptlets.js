@@ -46,7 +46,8 @@
      *
      * @param {Object} base
      * @param {string} chain
-     * @param {Booleam} addProp - defines is nonexistent base property should be assigned as 'undefined'
+     * @param {boolean} [addProp=true]
+     * defines is nonexistent base property should be assigned as 'undefined'
      * @returns {Chain}
      */
     function getPropertyInChain(base, chain) {
@@ -240,7 +241,9 @@
     /**
      * Hit used only for debug purposes now
      * @param {Source} source
-     * @param {string} message optional message
+     * @param {string} [message] - optional message;
+     * use LOG_MARKER = 'log: ' at the start of a message
+     * for logging scriptlets
      */
     var hit = function hit(source, message) {
       if (source.verbose !== true) {
@@ -252,8 +255,32 @@
         var trace = console.trace.bind(console);
         var prefix = source.ruleText || '';
 
+        if (source.domainName) {
+          var AG_SCRIPTLET_MARKER = '#%#//';
+          var UBO_SCRIPTLET_MARKER = '##+js';
+          var ruleStartIndex;
+
+          if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+            ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+          } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+            ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+          } // delete all domains from ruleText and leave just rule part
+
+
+          var rulePart = source.ruleText.slice(ruleStartIndex); // prepare applied scriptlet rule for specific domain
+
+          prefix = "".concat(source.domainName).concat(rulePart);
+        } // Used to check if scriptlet uses 'hit' function for logging
+
+
+        var LOG_MARKER = 'log: ';
+
         if (message) {
-          log("".concat(prefix, " message:\n").concat(message));
+          if (message.indexOf(LOG_MARKER) === -1) {
+            log("".concat(prefix, " message:\n").concat(message));
+          } else {
+            log(message.slice(LOG_MARKER.length));
+          }
         }
 
         log("".concat(prefix, " trace start"));
@@ -460,10 +487,7 @@
     var arrayWithHoles = _arrayWithHoles;
 
     function _iterableToArrayLimit(arr, i) {
-      if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) {
-        return;
-      }
-
+      if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
       var _arr = [];
       var _n = true;
       var _d = false;
@@ -491,14 +515,37 @@
 
     var iterableToArrayLimit = _iterableToArrayLimit;
 
+    function _arrayLikeToArray(arr, len) {
+      if (len == null || len > arr.length) len = arr.length;
+
+      for (var i = 0, arr2 = new Array(len); i < len; i++) {
+        arr2[i] = arr[i];
+      }
+
+      return arr2;
+    }
+
+    var arrayLikeToArray = _arrayLikeToArray;
+
+    function _unsupportedIterableToArray(o, minLen) {
+      if (!o) return;
+      if (typeof o === "string") return arrayLikeToArray(o, minLen);
+      var n = Object.prototype.toString.call(o).slice(8, -1);
+      if (n === "Object" && o.constructor) n = o.constructor.name;
+      if (n === "Map" || n === "Set") return Array.from(n);
+      if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return arrayLikeToArray(o, minLen);
+    }
+
+    var unsupportedIterableToArray = _unsupportedIterableToArray;
+
     function _nonIterableRest() {
-      throw new TypeError("Invalid attempt to destructure non-iterable instance");
+      throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
     }
 
     var nonIterableRest = _nonIterableRest;
 
     function _slicedToArray(arr, i) {
-      return arrayWithHoles(arr) || iterableToArrayLimit(arr, i) || nonIterableRest();
+      return arrayWithHoles(arr) || iterableToArrayLimit(arr, i) || unsupportedIterableToArray(arr, i) || nonIterableRest();
     }
 
     var slicedToArray = _slicedToArray;
@@ -718,7 +765,7 @@
      *
      * **Syntax**
      * ```
-     * example.org#%#//scriptlet("abort-on-property-read", <property>)
+     * example.org#%#//scriptlet('abort-on-property-read', <property>)
      * ```
      *
      * **Parameters**
@@ -727,10 +774,10 @@
      * **Examples**
      * ```
      * ! Aborts script when it tries to access `window.alert`
-     * example.org#%#//scriptlet("abort-on-property-read", "alert")
+     * example.org#%#//scriptlet('abort-on-property-read', 'alert')
      *
      * ! Aborts script when it tries to access `navigator.language`
-     * example.org#%#//scriptlet("abort-on-property-read", "navigator.language")
+     * example.org#%#//scriptlet('abort-on-property-read', 'navigator.language')
      * ```
      */
 
@@ -800,7 +847,7 @@
      *
      * **Syntax**
      * ```
-     * example.org#%#//scriptlet("abort-on-property-write", <property>)
+     * example.org#%#//scriptlet('abort-on-property-write', <property>)
      * ```
      *
      * **Parameters**
@@ -808,9 +855,8 @@
      *
      * **Examples**
      * ```
-     * ! Aborts all inline scripts trying to access `window.alert`
-     * utils.escape('<script></script>')
-     * // => '&lt;script&gt;&lt;/script&gt;'
+     * ! Aborts script when it tries to set `window.adblock` value
+     * example.org#%#//scriptlet('abort-on-property-write', 'adblock')
      * ```
      */
 
@@ -1731,13 +1777,22 @@
 
     /* eslint-enable max-len */
 
-    function preventAddEventListener(source, event, funcStr) {
-      event = event ? toRegExp(event) : toRegExp('/.?/');
-      funcStr = funcStr ? toRegExp(funcStr) : toRegExp('/.?/');
+    function preventAddEventListener(source, eventSearch, funcSearch) {
+      eventSearch = eventSearch ? toRegExp(eventSearch) : toRegExp('/.?/');
+      funcSearch = funcSearch ? toRegExp(funcSearch) : toRegExp('/.?/');
       var nativeAddEventListener = window.EventTarget.prototype.addEventListener;
 
       function addEventListenerWrapper(eventName, callback) {
-        if (event.test(eventName.toString()) && funcStr.test(callback.toString())) {
+        // The scriptlet might cause a website broke
+        // if the website uses test addEventListener with callback = null
+        // https://github.com/AdguardTeam/Scriptlets/issues/76
+        var funcToCheck = callback;
+
+        if (callback && typeof callback === 'function') {
+          funcToCheck = callback.toString();
+        }
+
+        if (eventSearch.test(eventName.toString()) && funcSearch.test(funcToCheck)) {
           hit(source);
           return undefined;
         }
@@ -1915,8 +1970,17 @@
       var nativeAddEventListener = window.EventTarget.prototype.addEventListener;
 
       function addEventListenerWrapper(eventName, callback) {
-        hit(source);
-        log("addEventListener(\"".concat(eventName, "\", ").concat(callback.toString(), ")"));
+        hit(source); // The scriptlet might cause a website broke
+        // if the website uses test addEventListener with callback = null
+        // https://github.com/AdguardTeam/Scriptlets/issues/76
+
+        var callbackToLog = callback;
+
+        if (callback && typeof callback === 'function') {
+          callbackToLog = callback.toString();
+        }
+
+        log("addEventListener(\"".concat(eventName, "\", ").concat(callbackToLog, ")"));
 
         for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
           args[_key - 2] = arguments[_key];
@@ -2012,7 +2076,7 @@
      *
      * **Syntax**
      * ```
-     * example.org#%#//scriptlet("noeval")
+     * example.org#%#//scriptlet('noeval')
      * ```
      */
 
@@ -2034,12 +2098,19 @@
      * Related UBO scriptlet:
      * https://github.com/gorhill/uBlock/wiki/Resources-Library#noeval-ifjs-
      *
+     * **Syntax**
+     * ```
+     * example.org#%#//scriptlet('prevent-eval-if'[, <search>])
+     * ```
+     *
      * **Parameters**
-     * - `search` string or regexp matching stringified eval payload
+     * - `search` - optional string or regexp for matching stringified eval payload.
+     * If 'search is not specified — all stringified eval payload will be matched.
      *
      * **Examples**
      * ```
-     * !
+     * ! Prevents eval if it matches 'test'
+     * example.org#%#//scriptlet('prevent-eval-if', 'test')
      * ```
      *
      * @param {string|RegExp} [search] string or regexp matching stringified eval payload
@@ -2073,12 +2144,12 @@
      *
      * **Syntax**
      * ```
-     * example.org#%#//scriptlet("prevent-fab-3.2.0")
+     * example.org#%#//scriptlet('prevent-fab-3.2.0')
      * ```
      */
 
     function preventFab(source) {
-      hit(source);
+      hit(source); // redefines Fab function for adblock detection
 
       var Fab = function Fab() {};
 
@@ -2102,9 +2173,56 @@
       };
 
       Fab.prototype.setOption = noopFunc;
-      window.FuckAdBlock = window.BlockAdBlock = Fab; //
+      var fab = new Fab();
+      var getSetFab = {
+        get: function get() {
+          return Fab;
+        },
+        set: function set() {}
+      };
+      var getsetfab = {
+        get: function get() {
+          return fab;
+        },
+        set: function set() {}
+      }; // redefined Fab data properties which if 'FuckAdBlock' variable exists
 
-      window.fuckAdBlock = window.blockAdBlock = new Fab();
+      if (Object.prototype.hasOwnProperty.call(window, 'FuckAdBlock')) {
+        window.FuckAdBlock = Fab;
+      } else {
+        // or redefined Fab accessor properties
+        Object.defineProperty(window, 'FuckAdBlock', getSetFab);
+      }
+
+      if (Object.prototype.hasOwnProperty.call(window, 'BlockAdBlock')) {
+        window.BlockAdBlock = Fab;
+      } else {
+        Object.defineProperty(window, 'BlockAdBlock', getSetFab);
+      }
+
+      if (Object.prototype.hasOwnProperty.call(window, 'SniffAdBlock')) {
+        window.SniffAdBlock = Fab;
+      } else {
+        Object.defineProperty(window, 'SniffAdBlock', getSetFab);
+      }
+
+      if (Object.prototype.hasOwnProperty.call(window, 'fuckAdBlock')) {
+        window.fuckAdBlock = fab;
+      } else {
+        Object.defineProperty(window, 'fuckAdBlock', getsetfab);
+      }
+
+      if (Object.prototype.hasOwnProperty.call(window, 'blockAdBlock')) {
+        window.blockAdBlock = fab;
+      } else {
+        Object.defineProperty(window, 'blockAdBlock', getsetfab);
+      }
+
+      if (Object.prototype.hasOwnProperty.call(window, 'sniffAdBlock')) {
+        window.sniffAdBlock = fab;
+      } else {
+        Object.defineProperty(window, 'sniffAdBlock', getsetfab);
+      }
     }
     preventFab.names = ['prevent-fab-3.2.0', 'nofab.js', 'ubo-nofab.js', 'fuckadblock.js-3.2.0', 'ubo-fuckadblock.js-3.2.0'];
     preventFab.injections = [hit, noopFunc, noopThis];
@@ -2636,7 +2754,7 @@
      *
      * 2. Removes with specified selector
      *     ```
-     *     example.org#%#//scriptlet('remove-class', 'branding', 'div[class="inner"]')
+     *     example.org#%#//scriptlet('remove-class', 'branding', 'div[class^="inner"]')
      *     ```
      *
      *     ```html
@@ -2708,7 +2826,7 @@
 
       observeDOMChanges(removeClassHandler, true, CLASS_ATTR_NAME);
     }
-    removeClass.names = ['remove-class'];
+    removeClass.names = ['remove-class', 'remove-class.js', 'ubo-remove-class.js', 'rc.js', 'ubo-rc.js'];
     removeClass.injections = [hit, observeDOMChanges];
 
     /**
@@ -3077,6 +3195,121 @@
     jsonPrune.names = ['json-prune', 'json-prune.js', 'ubo-json-prune.js'];
     jsonPrune.injections = [hit, getPropertyInChain];
 
+    /* eslint-disable max-len */
+
+    /**
+     * @scriptlet prevent-requestAnimationFrame
+     *
+     * @description
+     * Prevents a `requestAnimationFrame` call
+     * if the text of the callback is matching the specified search string which does not start with `!`;
+     * otherwise mismatched calls should be defused.
+     *
+     * Related UBO scriptlet:
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#no-requestanimationframe-ifjs-
+     *
+     * **Syntax**
+     * ```
+     * example.org#%#//scriptlet('prevent-requestAnimationFrame'[, <search>])
+     * ```
+     *
+     * **Parameters**
+     *
+     * - `search` (optional) string or regular expression.
+     * If starts with `!`, scriptlet will not match the stringified callback but all other will be defused.
+     * If do not start with `!`, the stringified callback will be matched.
+     *
+     * Call with no argument will log all requestAnimationFrame calls while debugging.
+     * So do not use the scriptlet without any parameter in production filter lists.
+     *
+     * **Examples**
+     *
+     * 1. Prevents `requestAnimationFrame` calls if the callback matches `/\.test/`.
+     *     ```bash
+     *     example.org#%#//scriptlet('prevent-requestAnimationFrame', '/\.test/')
+     *     ```
+     *
+     *     For instance, the following call will be prevented:
+     *     ```javascript
+     *     var times = 0;
+     *     requestAnimationFrame(function change() {
+     *         window.test = 'new value';
+     *         if (times < 2) {
+     *             times += 1;
+     *             requestAnimationFrame(change);
+     *         }
+     *     });
+     *     ```
+     * 2. Prevents `requestAnimationFrame` calls if **does not match** 'check'.
+     *     ```bash
+     *     example.org#%#//scriptlet('prevent-requestAnimationFrame', '!check')
+     *     ```
+     *
+     *     For instance, only the first call will be prevented:
+     *
+     *     ```javascript
+     *     var timesFirst = 0;
+     *     requestAnimationFrame(function changeFirst() {
+     *         window.check = 'should not be prevented';
+     *         if (timesFirst < 2) {
+     *             timesFirst += 1;
+     *             requestAnimationFrame(changeFirst);
+     *         }
+     *     });
+     *
+     *     var timesSecond = 0;
+     *     requestAnimationFrame(function changeSecond() {
+     *         window.second = 'should be prevented';
+     *         if (timesSecond < 2) {
+     *             timesSecond += 1;
+     *             requestAnimationFrame(changeSecond);
+     *         }
+     *     });
+     *     ```
+     */
+
+    /* eslint-enable max-len */
+
+    function preventRequestAnimationFrame(source, match) {
+      var nativeRequestAnimationFrame = window.requestAnimationFrame; // logs requestAnimationFrame to console if no arguments have been specified
+
+      var shouldLog = typeof match === 'undefined';
+      var INVERT_MARKER = '!';
+      var doNotMatch = startsWith(match, INVERT_MARKER);
+
+      if (doNotMatch) {
+        match = match.slice(1);
+      }
+
+      match = match ? toRegExp(match) : toRegExp('/.?/');
+
+      var rafWrapper = function rafWrapper(callback) {
+        var shouldPrevent = false;
+
+        if (shouldLog) {
+          var logMessage = "log: requestAnimationFrame(\"".concat(callback.toString(), "\")");
+          hit(source, logMessage);
+        } else {
+          shouldPrevent = match.test(callback.toString()) !== doNotMatch;
+        }
+
+        if (shouldPrevent) {
+          hit(source);
+          return nativeRequestAnimationFrame(noopFunc);
+        }
+
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments[_key];
+        }
+
+        return nativeRequestAnimationFrame.apply(window, [callback].concat(args));
+      };
+
+      window.requestAnimationFrame = rafWrapper;
+    }
+    preventRequestAnimationFrame.names = ['prevent-requestAnimationFrame', 'no-requestAnimationFrame-if.js', 'ubo-no-requestAnimationFrame-if.js', 'norafif.js', 'ubo-norafif.js', 'ubo-no-requestAnimationFrame-if', 'ubo-norafif'];
+    preventRequestAnimationFrame.injections = [hit, startsWith, toRegExp, noopFunc];
+
     /**
      * This file must export all scriptlets which should be accessible
      */
@@ -3112,11 +3345,13 @@
         adjustSetInterval: adjustSetInterval,
         adjustSetTimeout: adjustSetTimeout,
         dirString: dirString,
-        jsonPrune: jsonPrune
+        jsonPrune: jsonPrune,
+        preventRequestAnimationFrame: preventRequestAnimationFrame
     });
 
     const redirects=[{adg:"1x1-transparent.gif",ubo:"1x1.gif",abp:"1x1-transparent-gif"},{adg:"2x2-transparent.png",ubo:"2x2.png",abp:"2x2-transparent-png"},{adg:"3x2-transparent.png",ubo:"3x2.png",abp:"3x2-transparent-png"},{adg:"32x32-transparent.png",ubo:"32x32.png",abp:"32x32-transparent-png"},{adg:"google-analytics",ubo:"google-analytics_analytics.js"},{adg:"google-analytics-ga",ubo:"google-analytics_ga.js"},{adg:"googlesyndication-adsbygoogle",ubo:"googlesyndication_adsbygoogle.js"},{adg:"googletagmanager-gtm",ubo:"googletagmanager_gtm.js"},{adg:"googletagservices-gpt",ubo:"googletagservices_gpt.js"},{adg:"metrika-yandex-watch"},{adg:"metrika-yandex-tag"},{adg:"noeval",ubo:"noeval-silent.js"},{adg:"noopcss",abp:"blank-css"},{adg:"noopframe",ubo:"noop.html",abp:"blank-html"},{adg:"noopjs",ubo:"noop.js",abp:"blank-js"},{adg:"nooptext",ubo:"noop.txt",abp:"blank-text"},{adg:"noopmp3-0.1s",ubo:"noop-0.1s.mp3",abp:"blank-mp3"},{adg:"noopmp4-1s",ubo:"noop-1s.mp4",abp:"blank-mp4"},{adg:"noopvmap-1.0"},{adg:"noopvast-2.0"},{adg:"noopvast-3.0"},{adg:"prevent-fab-3.2.0",ubo:"nofab.js"},{adg:"prevent-popads-net",ubo:"popads.js"},{adg:"scorecardresearch-beacon",ubo:"scorecardresearch_beacon.js"},{adg:"set-popads-dummy",ubo:"popads-dummy.js"},{ubo:"addthis_widget.js"},{ubo:"amazon_ads.js"},{ubo:"ampproject_v0.js"},{ubo:"chartbeat.js"},{ubo:"disqus_embed.js"},{ubo:"disqus_forums_embed.js"},{ubo:"doubleclick_instream_ad_status.js"},{ubo:"empty"},{ubo:"google-analytics_cx_api.js"},{ubo:"google-analytics_inpage_linkid.js"},{ubo:"hd-main.js"},{ubo:"ligatus_angular-tag.js"},{ubo:"monkeybroker.js"},{ubo:"outbrain-widget.js"},{ubo:"window.open-defuser.js"},{ubo:"nobab.js"},{ubo:"noeval.js"}];
 
+    var JS_RULE_MASK = '#%#';
     var COMMENT_MARKER = '!';
     /**
      * Checks if rule text is comment e.g. !!example.org##+js(set-constant.js, test, false)
@@ -3331,13 +3566,14 @@
     };
     /**
      * Checks if the `rule` is AdGuard redirect rule.
-     * Discards comments and checks if the `rule` has 'redirect' modifier.
+     * Discards comments and JS rules and checks if the `rule` has 'redirect' modifier.
      * @param {string} rule - rule text
      */
 
 
     var isAdgRedirectRule = function isAdgRedirectRule(rule) {
-      return !isComment(rule) && rule.indexOf(REDIRECT_RULE_TYPES.ADG.marker) > -1;
+      return !isComment(rule) // some js rules may have 'redirect=' in it, so we should get rid of them
+      && !rule.indexOf(JS_RULE_MASK) > -1 && rule.indexOf(REDIRECT_RULE_TYPES.ADG.marker) > -1;
     };
     /**
      * Checks if the `rule` satisfies the `type`
@@ -3361,7 +3597,7 @@
       return false;
     };
     /**
-    * Checks if the `rule` is AdGuard redirect resource rule
+    * Checks if the `rule` is **valid** AdGuard redirect resource rule
     * @param {string} rule - rule text
     * @returns {boolean}
     */
@@ -3371,34 +3607,34 @@
       return isRedirectRuleByType(rule, 'VALID_ADG');
     };
     /**
-    * Checks if the `rule` is Ubo redirect resource rule and valid for conversion to Adg
-    * @param {string} rule - rule text
-    * @returns {boolean}
+    * Checks if the AdGuard redirect `rule` has Ubo analog. Needed for Adg->Ubo conversion
+    * @param {string} rule - AdGuard rule text
+    * @returns {boolean} - true if the rule can be converted to Ubo
     */
 
 
-    var isValidUboRedirectRule = function isValidUboRedirectRule(rule) {
+    var isAdgRedirectCompatibleWithUbo = function isAdgRedirectCompatibleWithUbo(rule) {
+      return isRedirectRuleByType(rule, 'ADG');
+    };
+    /**
+    * Checks if the Ubo redirect `rule` has AdGuard analog. Needed for Ubo->Adg conversion
+    * @param {string} rule - Ubo rule text
+    * @returns {boolean} - true if the rule can be converted to AdGuard
+    */
+
+
+    var isUboRedirectCompatibleWithAdg = function isUboRedirectCompatibleWithAdg(rule) {
       return isRedirectRuleByType(rule, 'UBO');
     };
     /**
-    * Checks if the `rule` is Abp redirect resource rule
-    * @param {string} rule - rule text
-    * @returns {boolean}
+    * Checks if the Abp redirect `rule` has AdGuard analog. Needed for Abp->Adg conversion
+    * @param {string} rule - Abp rule text
+    * @returns {boolean} - true if the rule can be converted to AdGuard
     */
 
 
-    var isValidAbpRedirectRule = function isValidAbpRedirectRule(rule) {
+    var isAbpRedirectCompatibleWithAdg = function isAbpRedirectCompatibleWithAdg(rule) {
       return isRedirectRuleByType(rule, 'ABP');
-    };
-    /**
-     * Validates any redirect rule
-     * @param {string} rule - can be Adguard or Ubo or Abp redirect rule
-     * @returns {boolean}
-     */
-
-
-    var isValidRedirectRule = function isValidRedirectRule(rule) {
-      return isValidAdgRedirectRule(rule) || isValidUboRedirectRule(rule) || isValidAbpRedirectRule(rule);
     };
     /**
      * Checks if the rule has specified content type before Adg -> Ubo conversion.
@@ -3442,23 +3678,23 @@
       isValidScriptletName: isValidScriptletName,
       REDIRECT_RULE_TYPES: REDIRECT_RULE_TYPES,
       isAdgRedirectRule: isAdgRedirectRule,
-      isValidRedirectRule: isValidRedirectRule,
       isValidAdgRedirectRule: isValidAdgRedirectRule,
-      isValidUboRedirectRule: isValidUboRedirectRule,
-      isValidAbpRedirectRule: isValidAbpRedirectRule,
+      isAdgRedirectCompatibleWithUbo: isAdgRedirectCompatibleWithUbo,
+      isUboRedirectCompatibleWithAdg: isUboRedirectCompatibleWithAdg,
+      isAbpRedirectCompatibleWithAdg: isAbpRedirectCompatibleWithAdg,
       parseModifiers: parseModifiers,
       getRedirectName: getRedirectName,
       hasValidContentType: hasValidContentType
     };
 
     function _iterableToArray(iter) {
-      if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+      if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
     }
 
     var iterableToArray = _iterableToArray;
 
     function _toArray(arr) {
-      return arrayWithHoles(arr) || iterableToArray(arr) || nonIterableRest();
+      return arrayWithHoles(arr) || iterableToArray(arr) || unsupportedIterableToArray(arr) || nonIterableRest();
     }
 
     var toArray = _toArray;
@@ -3733,11 +3969,11 @@
     var convertRedirectToAdg = function convertRedirectToAdg(rule) {
       var result;
 
-      if (validator.isValidUboRedirectRule(rule)) {
+      if (validator.isUboRedirectCompatibleWithAdg(rule)) {
         result = convertUboRedirectToAdg(rule);
-      } else if (validator.isValidAbpRedirectRule(rule)) {
+      } else if (validator.isAbpRedirectCompatibleWithAdg(rule)) {
         result = convertAbpRedirectToAdg(rule);
-      } else if (validator.isValidAdgRedirectRule(rule) || validator.isComment(rule)) {
+      } else if (validator.isValidAdgRedirectRule(rule)) {
         result = rule;
       }
 
@@ -4437,7 +4673,10 @@
         GoogleTagServicesGpt: GoogleTagServicesGpt,
         ScoreCardResearchBeacon: ScoreCardResearchBeacon,
         metrikaYandexTag: metrikaYandexTag,
-        metrikaYandexWatch: metrikaYandexWatch
+        metrikaYandexWatch: metrikaYandexWatch,
+        preventFab: preventFab,
+        setPopadsDummy: setPopadsDummy,
+        preventPopadsNet: preventPopadsNet
     });
 
     /**
@@ -4465,13 +4704,16 @@
     /**
      * Returns redirect code by param
      * @param {Source} source
+     * @returns {string} redirect code
      */
 
 
     var getRedirectCode = function getRedirectCode(source) {
       var redirect = getRedirectByName(source.name);
       var result = attachDependencies(redirect);
-      result = addCall(redirect, result);
+      result = addCall(redirect, result); // redirect code for different sources is checked in tests
+      // so it should be just a code without any source and props passed
+
       result = source.engine === 'test' ? wrapInNonameFunc(result) : passSourceAndProps(source, result);
       return result;
     };
@@ -4479,10 +4721,10 @@
     var redirectsCjs = {
       getCode: getRedirectCode,
       isAdgRedirectRule: validator.isAdgRedirectRule,
-      isValidRedirectRule: validator.isValidRedirectRule,
       isValidAdgRedirectRule: validator.isValidAdgRedirectRule,
-      isValidUboRedirectRule: validator.isValidUboRedirectRule,
-      isValidAbpRedirectRule: validator.isValidAbpRedirectRule,
+      isAdgRedirectCompatibleWithUbo: validator.isAdgRedirectCompatibleWithUbo,
+      isUboRedirectCompatibleWithAdg: validator.isUboRedirectCompatibleWithAdg,
+      isAbpRedirectCompatibleWithAdg: validator.isAbpRedirectCompatibleWithAdg,
       convertUboRedirectToAdg: convertUboRedirectToAdg,
       convertAbpRedirectToAdg: convertAbpRedirectToAdg,
       convertRedirectToAdg: convertRedirectToAdg,
@@ -4493,16 +4735,19 @@
      * @typedef {Object} Source - scriptlet properties
      * @property {string} name Scriptlet name
      * @property {Array<string>} args Arguments for scriptlet function
-     * @property {'extension'|'corelibs'} engine Defines the final form of scriptlet string presentation
+     * @property {'extension'|'corelibs'|'test'} engine -
+     * Defines the final form of scriptlet string presentation
      * @property {string} [version]
      * @property {boolean} [verbose] flag to enable printing to console debug information
      * @property {string} [ruleText] Source rule text is used for debugging purposes
+     * @property {string} [domainName] domain name where scriptlet is applied; for debugging purposes
      */
 
     /**
-    * Returns scriptlet code by param
-    * @param {Source} source
-    */
+     * Returns scriptlet code by param
+     * @param {Source} source
+     * @returns {string} scriptlet code
+     */
 
     function getScriptletCode(source) {
       if (!validator.isValidScriptletName(source.name)) {
@@ -4512,7 +4757,7 @@
       var scriptlet = validator.getScriptletByName(source.name);
       var result = attachDependencies(scriptlet);
       result = addCall(scriptlet, result);
-      result = source.engine === 'corelibs' ? wrapInNonameFunc(result) : passSourceAndProps(source, result);
+      result = source.engine === 'corelibs' || source.engine === 'test' ? wrapInNonameFunc(result) : passSourceAndProps(source, result);
       return result;
     }
     /**
