@@ -1,7 +1,7 @@
 
 /**
  * AdGuard Scriptlets
- * Version 1.1.13
+ * Version 1.2.0
  */
 
 (function () {
@@ -253,7 +253,25 @@
       try {
         var log = console.log.bind(console);
         var trace = console.trace.bind(console);
-        var prefix = source.ruleText || ''; // Used to check if scriptlet uses 'hit' function for logging
+        var prefix = source.ruleText || '';
+
+        if (source.domainName) {
+          var AG_SCRIPTLET_MARKER = '#%#//';
+          var UBO_SCRIPTLET_MARKER = '##+js';
+          var ruleStartIndex;
+
+          if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+            ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+          } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+            ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+          } // delete all domains from ruleText and leave just rule part
+
+
+          var rulePart = source.ruleText.slice(ruleStartIndex); // prepare applied scriptlet rule for specific domain
+
+          prefix = "".concat(source.domainName).concat(rulePart);
+        } // Used to check if scriptlet uses 'hit' function for logging
+
 
         var LOG_MARKER = 'log: ';
 
@@ -469,10 +487,7 @@
     var arrayWithHoles = _arrayWithHoles;
 
     function _iterableToArrayLimit(arr, i) {
-      if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) {
-        return;
-      }
-
+      if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
       var _arr = [];
       var _n = true;
       var _d = false;
@@ -500,14 +515,37 @@
 
     var iterableToArrayLimit = _iterableToArrayLimit;
 
+    function _arrayLikeToArray(arr, len) {
+      if (len == null || len > arr.length) len = arr.length;
+
+      for (var i = 0, arr2 = new Array(len); i < len; i++) {
+        arr2[i] = arr[i];
+      }
+
+      return arr2;
+    }
+
+    var arrayLikeToArray = _arrayLikeToArray;
+
+    function _unsupportedIterableToArray(o, minLen) {
+      if (!o) return;
+      if (typeof o === "string") return arrayLikeToArray(o, minLen);
+      var n = Object.prototype.toString.call(o).slice(8, -1);
+      if (n === "Object" && o.constructor) n = o.constructor.name;
+      if (n === "Map" || n === "Set") return Array.from(n);
+      if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return arrayLikeToArray(o, minLen);
+    }
+
+    var unsupportedIterableToArray = _unsupportedIterableToArray;
+
     function _nonIterableRest() {
-      throw new TypeError("Invalid attempt to destructure non-iterable instance");
+      throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
     }
 
     var nonIterableRest = _nonIterableRest;
 
     function _slicedToArray(arr, i) {
-      return arrayWithHoles(arr) || iterableToArrayLimit(arr, i) || nonIterableRest();
+      return arrayWithHoles(arr) || iterableToArrayLimit(arr, i) || unsupportedIterableToArray(arr, i) || nonIterableRest();
     }
 
     var slicedToArray = _slicedToArray;
@@ -2106,12 +2144,12 @@
      *
      * **Syntax**
      * ```
-     * example.org#%#//scriptlet("prevent-fab-3.2.0")
+     * example.org#%#//scriptlet('prevent-fab-3.2.0')
      * ```
      */
 
     function preventFab(source) {
-      hit(source);
+      hit(source); // redefines Fab function for adblock detection
 
       var Fab = function Fab() {};
 
@@ -2135,9 +2173,56 @@
       };
 
       Fab.prototype.setOption = noopFunc;
-      window.FuckAdBlock = window.BlockAdBlock = Fab; //
+      var fab = new Fab();
+      var getSetFab = {
+        get: function get() {
+          return Fab;
+        },
+        set: function set() {}
+      };
+      var getsetfab = {
+        get: function get() {
+          return fab;
+        },
+        set: function set() {}
+      }; // redefined Fab data properties which if 'FuckAdBlock' variable exists
 
-      window.fuckAdBlock = window.blockAdBlock = new Fab();
+      if (Object.prototype.hasOwnProperty.call(window, 'FuckAdBlock')) {
+        window.FuckAdBlock = Fab;
+      } else {
+        // or redefined Fab accessor properties
+        Object.defineProperty(window, 'FuckAdBlock', getSetFab);
+      }
+
+      if (Object.prototype.hasOwnProperty.call(window, 'BlockAdBlock')) {
+        window.BlockAdBlock = Fab;
+      } else {
+        Object.defineProperty(window, 'BlockAdBlock', getSetFab);
+      }
+
+      if (Object.prototype.hasOwnProperty.call(window, 'SniffAdBlock')) {
+        window.SniffAdBlock = Fab;
+      } else {
+        Object.defineProperty(window, 'SniffAdBlock', getSetFab);
+      }
+
+      if (Object.prototype.hasOwnProperty.call(window, 'fuckAdBlock')) {
+        window.fuckAdBlock = fab;
+      } else {
+        Object.defineProperty(window, 'fuckAdBlock', getsetfab);
+      }
+
+      if (Object.prototype.hasOwnProperty.call(window, 'blockAdBlock')) {
+        window.blockAdBlock = fab;
+      } else {
+        Object.defineProperty(window, 'blockAdBlock', getsetfab);
+      }
+
+      if (Object.prototype.hasOwnProperty.call(window, 'sniffAdBlock')) {
+        window.sniffAdBlock = fab;
+      } else {
+        Object.defineProperty(window, 'sniffAdBlock', getsetfab);
+      }
     }
     preventFab.names = ['prevent-fab-3.2.0', 'nofab.js', 'ubo-nofab.js', 'fuckadblock.js-3.2.0', 'ubo-fuckadblock.js-3.2.0'];
     preventFab.injections = [hit, noopFunc, noopThis];
@@ -2791,32 +2876,36 @@
      *
      * **Syntax**
      * ```
-     * example.org#%#//scriptlet("adjust-setInterval"[, match [, interval[, boost]]])
+     * example.org#%#//scriptlet('adjust-setInterval'[, match [, interval[, boost]]])
      * ```
      *
      * - `match` - optional, string/regular expression, matching in stringified callback function
-     * - `interval` - optional, defaults to 1000, decimal integer, matching interval
-     * - `boost` - optional, default to 0.05, float, capped at 50 times for up and down, interval multiplier
+     * - `interval` - optional, defaults to 1000, decimal integer, matching setInterval delay
+     * - `boost` - optional, default to 0.05, float, capped at 50 times for up and down (0.02...50), interval multiplier
      *
      * **Examples**
      * 1. Adjust all setInterval() x20 times where interval equal 1000ms:
      *     ```
-     *     example.org#%#//scriptlet("adjust-setInterval")
+     *     example.org#%#//scriptlet('adjust-setInterval')
      *     ```
      *
      * 2. Adjust all setInterval() x20 times where callback mathed with `example` and interval equal 1000ms
      *     ```
-     *     example.org#%#//scriptlet("adjust-setInterval", "example")
+     *     example.org#%#//scriptlet('adjust-setInterval', 'example')
      *     ```
      *
      * 3. Adjust all setInterval() x20 times where callback mathed with `example` and interval equal 400ms
      *     ```
-     *     example.org#%#//scriptlet("adjust-setInterval", "example", "400")
+     *     example.org#%#//scriptlet('adjust-setInterval', 'example', '400')
      *     ```
      *
-     * 4. Slow down setInterval() x2 times where callback matched with `example` and interval equal 400ms
+     * 4. Slow down setInterval() x2 times where callback matched with `example` and interval equal 1000ms
      *     ```
-     *     example.org#%#//scriptlet("adjust-setInterval", "example", "400", "2")
+     *     example.org#%#//scriptlet('adjust-setInterval', 'example', '', '2')
+     *     ```
+     * 5.  Adjust all setInterval() x50 times where interval equal 2000ms
+     *     ```
+     *     example.org#%#//scriptlet('adjust-setInterval', '', '2000', '0.02')
      *     ```
      */
 
@@ -2830,8 +2919,8 @@
 
       interval = parseInt(interval, 10);
       interval = nativeIsNaN(interval) ? 1000 : interval;
-      boost = parseInt(boost, 10);
-      boost = nativeIsNaN(interval) || !nativeIsFinite(boost) ? 0.05 : boost;
+      boost = parseFloat(boost);
+      boost = nativeIsNaN(boost) || !nativeIsFinite(boost) ? 0.05 : boost;
       match = match ? toRegExp(match) : toRegExp('/.?/');
 
       if (boost < 0.02) {
@@ -2877,28 +2966,32 @@
      * ```
      *
      * - `match` - optional, string/regular expression, matching in stringified callback function
-     * - `timeout` - optional, defaults to 1000, decimal integer, matching interval
-     * - `boost` - optional, default to 0.05, float, capped at 50 times for up and down, interval multiplier
+     * - `timeout` - optional, defaults to 1000, decimal integer, matching setTimout delay
+     * - `boost` - optional, default to 0.05, float, capped at 50 times for up and down (0.02...50), timeout multiplier
      *
      * **Examples**
-     * 1. Adjust all setTimeout() x20 times where interval equal 1000ms:
+     * 1. Adjust all setTimeout() x20 times where timeout equal 1000ms:
      *     ```
-     *     example.org#%#//scriptlet("adjust-setTimeout")
-     *     ```
-     *
-     * 2. Adjust all setTimeout() x20 times where callback mathed with `example` and interval equal 1000ms
-     *     ```
-     *     example.org#%#//scriptlet("adjust-setTimeout", "example")
+     *     example.org#%#//scriptlet('adjust-setTimeout')
      *     ```
      *
-     * 3. Adjust all setTimeout() x20 times where callback mathed with `example` and interval equal 400ms
+     * 2. Adjust all setTimeout() x20 times where callback mathed with `example` and timeout equal 1000ms
      *     ```
-     *     example.org#%#//scriptlet("adjust-setTimeout", "example", "400")
+     *     example.org#%#//scriptlet('adjust-setTimeout', 'example')
      *     ```
      *
-     * 4. Slow down setTimeout() x2 times where callback matched with `example` and interval equal 400ms
+     * 3. Adjust all setTimeout() x20 times where callback mathed with `example` and timeout equal 400ms
      *     ```
-     *     example.org#%#//scriptlet("adjust-setTimeout", "example", "400", "2")
+     *     example.org#%#//scriptlet('adjust-setTimeout', 'example', '400')
+     *     ```
+     *
+     * 4. Slow down setTimeout() x2 times where callback matched with `example` and timeout equal 1000ms
+     *     ```
+     *     example.org#%#//scriptlet('adjust-setTimeout', 'example', '', '2')
+     *     ```
+     * 5.  Adjust all setTimeout() x50 times where timeout equal 2000ms
+     *     ```
+     *     example.org#%#//scriptlet('adjust-setTimeout', '', '2000', '0.02')
      *     ```
      */
 
@@ -2912,8 +3005,8 @@
 
       timeout = parseInt(timeout, 10);
       timeout = nativeIsNaN(timeout) ? 1000 : timeout;
-      boost = parseInt(boost, 10);
-      boost = nativeIsNaN(timeout) || !nativeIsFinite(boost) ? 0.05 : boost;
+      boost = parseFloat(boost);
+      boost = nativeIsNaN(boost) || !nativeIsFinite(boost) ? 0.05 : boost;
       match = match ? toRegExp(match) : toRegExp('/.?/');
 
       if (boost < 0.02) {
@@ -3121,7 +3214,7 @@
      * otherwise mismatched calls should be defused.
      *
      * Related UBO scriptlet:
-     * https://github.com/gorhill/uBlock/wiki/Resources-Library#requestanimationframe-ifjs-
+     * https://github.com/gorhill/uBlock/wiki/Resources-Library#no-requestanimationframe-ifjs-
      *
      * **Syntax**
      * ```
@@ -3222,7 +3315,7 @@
 
       window.requestAnimationFrame = rafWrapper;
     }
-    preventRequestAnimationFrame.names = ['prevent-requestAnimationFrame', 'requestAnimationFrame-if.js', 'ubo-requestAnimationFrame-if.js', 'raf-if.js', 'ubo-raf-if.js'];
+    preventRequestAnimationFrame.names = ['prevent-requestAnimationFrame', 'no-requestAnimationFrame-if.js', 'ubo-no-requestAnimationFrame-if.js', 'norafif.js', 'ubo-norafif.js', 'ubo-no-requestAnimationFrame-if', 'ubo-norafif'];
     preventRequestAnimationFrame.injections = [hit, startsWith, toRegExp, noopFunc];
 
     /**
@@ -3341,7 +3434,9 @@
         return scriptletList[key];
       });
       return scriptlets.find(function (s) {
-        return s.names && s.names.indexOf(name) > -1;
+        return s.names // full match name checking
+        && (s.names.indexOf(name) > -1 // or check ubo alias name without '.js' at the end
+        || !endsWith(name, '.js') && s.names.indexOf("".concat(name, ".js")) > -1);
       });
     };
     /**
@@ -3603,13 +3698,13 @@
     };
 
     function _iterableToArray(iter) {
-      if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+      if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
     }
 
     var iterableToArray = _iterableToArray;
 
     function _toArray(arr) {
-      return arrayWithHoles(arr) || iterableToArray(arr) || nonIterableRest();
+      return arrayWithHoles(arr) || iterableToArray(arr) || unsupportedIterableToArray(arr) || nonIterableRest();
     }
 
     var toArray = _toArray;
@@ -4117,19 +4212,39 @@
       };
       var adElems = document.querySelectorAll('.adsbygoogle');
       var css = 'height:1px!important;max-height:1px!important;max-width:1px!important;width:1px!important;';
+      var statusAttrName = 'data-adsbygoogle-status';
+      var ASWIFT_IFRAME_MARKER = 'aswift_';
+      var GOOGLE_ADS_IFRAME_MARKER = 'google_ads_iframe_';
       var executed = false;
 
       for (var i = 0; i < adElems.length; i += 1) {
-        adElems[i].setAttribute('data-adsbygoogle-status', 'done');
-        var aswiftIframe = document.createElement('iframe');
-        aswiftIframe.id = "aswift_".concat(i + 1);
-        aswiftIframe.style = css;
-        adElems[i].appendChild(aswiftIframe);
-        var googleadsIframe = document.createElement('iframe');
-        googleadsIframe.id = "google_ads_iframe_".concat(i);
-        googleadsIframe.style = css;
-        adElems[i].appendChild(googleadsIframe);
-        executed = true;
+        var adElemChildNodes = adElems[i].childNodes;
+        var childNodesQuantity = adElemChildNodes.length; // childNodes of .adsbygoogle can be defined if scriptlet was executed before
+        // so we should check are that childNodes exactly defined by us
+        // TODO: remake after scriptlets context developing in 1.3
+
+        var areIframesDefined = false;
+
+        if (childNodesQuantity > 0) {
+          // it should be only 2 child iframes if scriptlet was executed
+          areIframesDefined = childNodesQuantity === 2 // the first of child nodes should be aswift iframe
+          && adElemChildNodes[0].tagName.toLowerCase() === 'iframe' && adElemChildNodes[0].id.indexOf(ASWIFT_IFRAME_MARKER) > -1 // the second of child nodes should be google_ads iframe
+          && adElemChildNodes[1].tagName.toLowerCase() === 'iframe' && adElemChildNodes[1].id.indexOf(GOOGLE_ADS_IFRAME_MARKER) > -1;
+        }
+
+        if (!areIframesDefined) {
+          // here we do the job if scriptlet has not been executed earlier
+          adElems[i].setAttribute(statusAttrName, 'done');
+          var aswiftIframe = document.createElement('iframe');
+          aswiftIframe.id = "".concat(ASWIFT_IFRAME_MARKER).concat(i + 1);
+          aswiftIframe.style = css;
+          adElems[i].appendChild(aswiftIframe);
+          var googleadsIframe = document.createElement('iframe');
+          googleadsIframe.id = "".concat(GOOGLE_ADS_IFRAME_MARKER).concat(i + 1);
+          googleadsIframe.style = css;
+          adElems[i].appendChild(googleadsIframe);
+          executed = true;
+        }
       }
 
       if (executed) {
@@ -4588,7 +4703,10 @@
         GoogleTagServicesGpt: GoogleTagServicesGpt,
         ScoreCardResearchBeacon: ScoreCardResearchBeacon,
         metrikaYandexTag: metrikaYandexTag,
-        metrikaYandexWatch: metrikaYandexWatch
+        metrikaYandexWatch: metrikaYandexWatch,
+        preventFab: preventFab,
+        setPopadsDummy: setPopadsDummy,
+        preventPopadsNet: preventPopadsNet
     });
 
     /**
@@ -4652,6 +4770,7 @@
      * @property {string} [version]
      * @property {boolean} [verbose] flag to enable printing to console debug information
      * @property {string} [ruleText] Source rule text is used for debugging purposes
+     * @property {string} [domainName] domain name where scriptlet is applied; for debugging purposes
      */
 
     /**
