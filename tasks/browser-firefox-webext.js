@@ -112,7 +112,12 @@ const createArtifact = async (done) => {
     }
     // eslint-disable-next-line global-require
     const credentialsPath = path.resolve(__dirname, '../private/AdguardBrowserExtension/mozilla_credentials.json');
-    const { apiKey, apiSecret } = JSON.parse(await fs.promises.readFile(credentialsPath));
+
+    // require called here in order to escape errors, until this module is really necessary
+    // eslint-disable-next-line global-require
+    const cryptor = require('../private/cryptor/dist');
+    const credentialsContent = await cryptor(process.env.CREDENTIALS_PASSWORD).getDecryptedContent(credentialsPath);
+    const { apiKey, apiSecret } = JSON.parse(credentialsContent);
     const { downloadedFiles } = await webExt.cmd.sign({
         apiKey,
         apiSecret,
