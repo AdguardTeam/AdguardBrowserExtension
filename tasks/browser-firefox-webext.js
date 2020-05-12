@@ -29,7 +29,6 @@ import { version } from './parse-package';
 import { updateLocalesMSGName, preprocessAll } from './helpers';
 import copyCommonFiles from './copy-common';
 import copyExternal from './copy-external';
-import cryptor from '../private/cryptor/dist';
 
 // set current type of build
 const BRANCH = process.env.NODE_ENV || '';
@@ -113,6 +112,10 @@ const createArtifact = async (done) => {
     }
     // eslint-disable-next-line global-require
     const credentialsPath = path.resolve(__dirname, '../private/AdguardBrowserExtension/mozilla_credentials.json');
+
+    // require called here in order to escape errors, until this module is really necessary
+    // eslint-disable-next-line global-require
+    const cryptor = require('../private/cryptor/dist');
     const credentialsContent = await cryptor(process.env.CREDENTIALS_PASSWORD).getDecryptedContent(credentialsPath);
     const { apiKey, apiSecret } = JSON.parse(credentialsContent);
     const { downloadedFiles } = await webExt.cmd.sign({
