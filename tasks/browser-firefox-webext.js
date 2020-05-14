@@ -40,7 +40,7 @@ const paths = {
     lib: path.join('Extension/lib/**/*'),
     chromeFiles: path.join('Extension/browser/chrome/**/*'),
     webkitFiles: path.join('Extension/browser/webkit/**/*'),
-    dest: path.join(BUILD_DIR, BRANCH, `firefox-standalone-${version}`),
+    dest: path.join(BUILD_DIR, BRANCH, 'firefox-standalone'),
 };
 
 const dest = {
@@ -144,7 +144,7 @@ const createArchive = (done) => {
     }
 
     return gulp.src(dest.inner)
-        .pipe(zip(`firefox-standalone-${BRANCH}-${version}-unsigned.zip`))
+        .pipe(zip(`firefox-standalone-${BRANCH}-unsigned.zip`))
         .pipe(gulp.dest(dest.buildDir))
         // copy artifact in the build dir
         .pipe(rename('firefox.zip'))
