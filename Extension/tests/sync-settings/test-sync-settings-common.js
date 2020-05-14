@@ -54,7 +54,6 @@ const generalSettings = {
         'show-blocked-ads-count': true,
         'autodetect-filters': true,
         'safebrowsing-enabled': true,
-        'safebrowsing-help': true,
     },
 };
 

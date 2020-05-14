@@ -262,10 +262,9 @@ adguard.safebrowsing = (function (adguard, global) {
      * @param requestUrl Request URL
      * @param referrerUrl Referrer URL
      * @param safebrowsingCallback Called when check has been finished
-     * @param incognitoTab Tab incognito mode
      */
-    const checkSafebrowsingFilter = function (requestUrl, referrerUrl, safebrowsingCallback, incognitoTab) {
-        if (!adguard.settings.getSafebrowsingInfo().enabled) {
+    const checkSafebrowsingFilter = function (requestUrl, referrerUrl, safebrowsingCallback) {
+        if (!adguard.settings.safebrowsingInfoEnabled()) {
             return;
         }
 
@@ -277,9 +276,6 @@ adguard.safebrowsing = (function (adguard, global) {
                 return;
             }
             adguard.console.debug('Following safebrowsing filter has been fired: {0}', sbList);
-            if (!incognitoTab && adguard.settings.getSafebrowsingInfo().sendStats) {
-                adguard.backend.trackSafebrowsingStats(requestUrl);
-            }
             safebrowsingCallback(getErrorPageURL(requestUrl, referrerUrl, sbList));
         };
 
