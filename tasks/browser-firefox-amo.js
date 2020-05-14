@@ -39,8 +39,8 @@ const paths = {
     chromeFiles: path.join('Extension/browser/chrome/**/*'),
     webkitFiles: path.join('Extension/browser/webkit/**/*'),
     dest: path.join(BUILD_DIR, BRANCH, (BRANCH === BRANCH_DEV)
-        ? `firefox-amo-${version}`
-        : `firefox-amo-${BRANCH}-${version}-unsigned`),
+        ? 'firefox-amo'
+        : `firefox-amo-${BRANCH}-unsigned`),
 };
 
 const dest = {
@@ -48,7 +48,7 @@ const dest = {
     inner: path.join(paths.dest, '**/*'),
     buildDir: path.join(BUILD_DIR, BRANCH),
     manifest: path.join(paths.dest, 'manifest.json'),
-    webext: path.join(BUILD_DIR, BRANCH, `firefox-amo-${BRANCH}-${version}-unsigned.zip`),
+    webext: path.join(BUILD_DIR, BRANCH, `firefox-amo-${BRANCH}-unsigned.zip`),
 };
 
 // copy common files

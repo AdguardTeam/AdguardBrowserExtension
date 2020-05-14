@@ -129,9 +129,9 @@ Run the following command:
 
 This will create a Build directory with unpacked extensions for all browsers:
 ```
-  Build/chrome-$currentVersion
-  Build/firefox-$currentVersion
-  Build/opera-$currentVersion
+  Build/dev/chrome
+  Build/dev/firefox
+  Build/dev/edge
 ```
 
 **Building the beta and release versions**
