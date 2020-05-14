@@ -17,7 +17,6 @@
 
 /* global FilterDownloader */
 adguard.backend = (function (adguard) {
-
     'use strict';
 
     /**
@@ -29,51 +28,50 @@ adguard.backend = (function (adguard) {
     /**
      * Settings
      */
-    var settings = {
+    const settings = {
 
         // Base url of our backend server
         get backendUrl() {
-            return "https://chrome.adtidy.org";
+            return 'https://chrome.adtidy.org';
         },
 
         get apiKey() {
-            return "4DDBE80A3DA94D819A00523252FB6380";
+            return '4DDBE80A3DA94D819A00523252FB6380';
         },
 
         // Url for load filters metadata and rules
         get filtersUrl() {
-            return adguard.lazyGet(this, 'filtersUrl', function () {
+            return adguard.lazyGet(this, 'filtersUrl', () => {
                 if (adguard.utils.browser.isFirefoxBrowser()) {
                     return 'https://filters.adtidy.org/extension/firefox';
-                } else if (adguard.utils.browser.isEdgeBrowser()) {
+                } if (adguard.utils.browser.isEdgeBrowser()) {
                     return 'https://filters.adtidy.org/extension/edge';
-                } else if (adguard.utils.browser.isOperaBrowser()) {
+                } if (adguard.utils.browser.isOperaBrowser()) {
                     return 'https://filters.adtidy.org/extension/opera';
-                } else {
-                    return 'https://filters.adtidy.org/extension/chromium';
                 }
+                return 'https://filters.adtidy.org/extension/chromium';
             });
         },
 
         // URL for downloading AG filters
         get filterRulesUrl() {
-            return this.filtersUrl + "/filters/{filter_id}.txt";
+            return `${this.filtersUrl}/filters/{filter_id}.txt`;
         },
 
         // URL for downloading optimized AG filters
         get optimizedFilterRulesUrl() {
-            return this.filtersUrl + "/filters/{filter_id}_optimized.txt";
+            return `${this.filtersUrl}/filters/{filter_id}_optimized.txt`;
         },
 
         // URL for checking filter updates
         get filtersMetadataUrl() {
-            var params = adguard.utils.browser.getExtensionParams();
-            return this.filtersUrl + '/filters.js?' + params.join('&');
+            const params = adguard.utils.browser.getExtensionParams();
+            return `${this.filtersUrl}/filters.js?${params.join('&')}`;
         },
 
         // URL for user complaints on missed ads or malware/phishing websites
         get reportUrl() {
-            return this.backendUrl + "/url-report.html";
+            return `${this.backendUrl}/url-report.html`;
         },
 
         /**
@@ -84,14 +82,14 @@ adguard.backend = (function (adguard) {
          * http://adguard.com/en/filter-rules-statistics.html
          */
         get ruleStatsUrl() {
-            return this.backendUrl + "/rulestats.html";
+            return `${this.backendUrl}/rulestats.html`;
         },
 
         /**
          * Browsing Security lookups. In case of Firefox lookups are disabled for HTTPS urls.
          */
         get safebrowsingLookupUrl() {
-            return "https://sb.adtidy.org/safebrowsing-lookup-hash.html";
+            return 'https://sb.adtidy.org/safebrowsing-lookup-hash.html';
         },
 
         /**
@@ -100,22 +98,22 @@ adguard.backend = (function (adguard) {
          * For now - blocked urls are reported only.
          */
         get safebrowsingStatsUrl() {
-            return "https://sb.adtidy.org/sb-report.html";
+            return 'https://sb.adtidy.org/sb-report.html';
         },
 
         // This url is used in integration mode. Adguard for Windows/Mac/Android intercepts requests to injections.adguard.com host.
         // It is not used for remote requests, requests are intercepted by the desktop version of Adguard.
         get injectionsUrl() {
-            return "https://injections.adguard.com";
+            return 'https://injections.adguard.com';
         },
 
         // URLs used when add-on works in integration mode.
         // @deprecated
         get adguardAppUrlOld() {
-            return this.injectionsUrl + "/adguard-ajax-crossdomain-hack/api?";
+            return `${this.injectionsUrl}/adguard-ajax-crossdomain-hack/api?`;
         },
         get adguardAppUrl() {
-            return this.injectionsUrl + "/adguard-ajax-api/api?";
+            return `${this.injectionsUrl}/adguard-ajax-api/api?`;
         },
         // Folder that contains filters metadata and files with rules. 'filters' by default
         get localFiltersFolder() {
@@ -128,13 +126,13 @@ adguard.backend = (function (adguard) {
         // Array of filter identifiers, that have local file with rules. Range from 1 to 14 by default
         get localFilterIds() {
             return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
-        }
+        },
     };
 
     /**
      * FilterDownloader constants
      */
-    var FilterCompilerConditionsConstants = {
+    const FilterCompilerConditionsConstants = {
         adguard: true,
         adguard_ext_chromium: adguard.utils.browser.isChromium(),
         adguard_ext_firefox: adguard.utils.browser.isFirefoxBrowser(),
@@ -146,7 +144,7 @@ adguard.backend = (function (adguard) {
     /**
      * Loading subscriptions map
      */
-    var loadingSubscriptions = Object.create(null);
+    const loadingSubscriptions = Object.create(null);
 
     /**
      * Executes async request
@@ -192,7 +190,7 @@ adguard.backend = (function (adguard) {
      * @private
      */
     function getUrlForDownloadFilterRules(filterId, useOptimizedFilters) {
-        var url = useOptimizedFilters ? settings.optimizedFilterRulesUrl : settings.filterRulesUrl;
+        const url = useOptimizedFilters ? settings.optimizedFilterRulesUrl : settings.filterRulesUrl;
         return adguard.utils.strings.replaceAll(url, '{filter_id}', filterId);
     }
 
@@ -200,7 +198,7 @@ adguard.backend = (function (adguard) {
      * Appends request key to url
      */
     function addKeyParameter(url) {
-        return url + "&key=" + settings.apiKey;
+        return `${url}&key=${settings.apiKey}`;
     }
 
     /**
@@ -283,7 +281,7 @@ adguard.backend = (function (adguard) {
      * @param successCallback   Called on success
      * @param errorCallback     Called on error
      */
-    var loadFilterRulesBySubscriptionUrl = function (url, successCallback, errorCallback) {
+    const loadFilterRulesBySubscriptionUrl = function (url, successCallback, errorCallback) {
         if (url in loadingSubscriptions) {
             return;
         }
@@ -429,9 +427,9 @@ adguard.backend = (function (adguard) {
      * @param successCallback       Called on success
      * @param errorCallback         Called on error
      */
-    var lookupSafebrowsing = function (hashes, successCallback, errorCallback) {
-        var url = settings.safebrowsingLookupUrl + "?prefixes=" + encodeURIComponent(hashes.join('/'));
-        executeRequestAsync(url, "application/json", successCallback, errorCallback);
+    const lookupSafebrowsing = function (hashes, successCallback, errorCallback) {
+        const url = `${settings.safebrowsingLookupUrl}?prefixes=${encodeURIComponent(hashes.join('/'))}`;
+        executeRequestAsync(url, 'application/json', successCallback, errorCallback);
     };
 
     /**
@@ -439,12 +437,12 @@ adguard.backend = (function (adguard) {
      *
      * @param url - filtered url by safebrowsing
      */
-    var trackSafebrowsingStats = function (url) {
-        var trackUrl = settings.safebrowsingStatsUrl + "?url=" + encodeURIComponent(url);
-        trackUrl += "&locale=" + adguard.app.getLocale();
-        trackUrl += "&referrer=";
-        trackUrl += "&r=" + Math.random();
-        executeRequestAsync(trackUrl, "text/plain");
+    const trackSafebrowsingStats = function (url) {
+        let trackUrl = `${settings.safebrowsingStatsUrl}?url=${encodeURIComponent(url)}`;
+        trackUrl += `&locale=${adguard.app.getLocale()}`;
+        trackUrl += '&referrer=';
+        trackUrl += `&r=${Math.random()}`;
+        executeRequestAsync(trackUrl, 'text/plain');
     };
 
     /**
@@ -454,16 +452,15 @@ adguard.backend = (function (adguard) {
      * @param messageType   Message type
      * @param comment       Message text
      */
-    var sendUrlReport = function (url, messageType, comment) {
-
-        var params = "url=" + encodeURIComponent(url);
-        params += "&messageType=" + encodeURIComponent(messageType);
+    const sendUrlReport = function (url, messageType, comment) {
+        let params = `url=${encodeURIComponent(url)}`;
+        params += `&messageType=${encodeURIComponent(messageType)}`;
         if (comment) {
-            params += "&comment=" + encodeURIComponent(comment);
+            params += `&comment=${encodeURIComponent(comment)}`;
         }
         params = addKeyParameter(params);
 
-        var request = new XMLHttpRequest();
+        const request = new XMLHttpRequest();
         request.open('POST', settings.reportUrl);
         request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         request.send(params);
@@ -476,8 +473,8 @@ adguard.backend = (function (adguard) {
      * @param successCallback   Called on success
      * @param errorCallback     Called on error
      */
-    var adguardAppAddRule = function (ruleText, successCallback, errorCallback) {
-        executeRequestAsync(settings.adguardAppUrl + "type=add&rule=" + encodeURIComponent(ruleText), "text/plain", successCallback, errorCallback);
+    const adguardAppAddRule = function (ruleText, successCallback, errorCallback) {
+        executeRequestAsync(`${settings.adguardAppUrl}type=add&rule=${encodeURIComponent(ruleText)}`, 'text/plain', successCallback, errorCallback);
     };
 
     /**
@@ -487,8 +484,8 @@ adguard.backend = (function (adguard) {
      * @param successCallback
      * @param errorCallback
      */
-    var adguardAppRemoveRule = function (ruleText, successCallback, errorCallback) {
-        executeRequestAsync(settings.adguardAppUrl + "type=remove&rule=" + encodeURIComponent(ruleText), "text/plain", successCallback, errorCallback);
+    const adguardAppRemoveRule = function (ruleText, successCallback, errorCallback) {
+        executeRequestAsync(`${settings.adguardAppUrl}type=remove&rule=${encodeURIComponent(ruleText)}`, 'text/plain', successCallback, errorCallback);
     };
 
     /**
@@ -499,8 +496,8 @@ adguard.backend = (function (adguard) {
      * @param errorCallback     Called on error
      * @deprecated
      */
-    var adguardAppAddRuleOld = function (ruleText, successCallback, errorCallback) {
-        executeRequestAsync(settings.adguardAppUrlOld + "type=add&rule=" + encodeURIComponent(ruleText), "text/plain", successCallback, errorCallback);
+    const adguardAppAddRuleOld = function (ruleText, successCallback, errorCallback) {
+        executeRequestAsync(`${settings.adguardAppUrlOld}type=add&rule=${encodeURIComponent(ruleText)}`, 'text/plain', successCallback, errorCallback);
     };
 
     /**
@@ -512,20 +509,19 @@ adguard.backend = (function (adguard) {
      * @param stats             Stats
      * @param enabledFilters    List of enabled filters
      */
-    var sendHitStats = function (stats, enabledFilters) {
-
-        var params = "stats=" + encodeURIComponent(stats);
-        params += "&v=" + encodeURIComponent(adguard.app.getVersion());
-        params += "&b=" + encodeURIComponent(adguard.prefs.browser);
+    const sendHitStats = function (stats, enabledFilters) {
+        let params = `stats=${encodeURIComponent(stats)}`;
+        params += `&v=${encodeURIComponent(adguard.app.getVersion())}`;
+        params += `&b=${encodeURIComponent(adguard.prefs.browser)}`;
         if (enabledFilters) {
-            for (var i = 0; i < enabledFilters.length; i++) {
-                var filter = enabledFilters[i];
-                params += "&f=" + encodeURIComponent(filter.filterId + "," + filter.version);
+            for (let i = 0; i < enabledFilters.length; i++) {
+                const filter = enabledFilters[i];
+                params += `&f=${encodeURIComponent(`${filter.filterId},${filter.version}`)}`;
             }
         }
         params = addKeyParameter(params);
 
-        var request = new XMLHttpRequest();
+        const request = new XMLHttpRequest();
         request.open('POST', settings.ruleStatsUrl);
         request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         request.send(params);
@@ -535,7 +531,7 @@ adguard.backend = (function (adguard) {
      * @param requestUrl
      * @returns true if request to adguard application
      */
-    var isAdguardAppRequest = function (requestUrl) {
+    const isAdguardAppRequest = function (requestUrl) {
         return requestUrl && (requestUrl.indexOf('/adguard-ajax-crossdomain-hack/') > 0 || requestUrl.indexOf('/adguard-ajax-api/') > 0);
     };
 
@@ -544,23 +540,23 @@ adguard.backend = (function (adguard) {
      * @param url URL
      * @param callback Callback with headers or null in the case of error
      */
-    var getResponseHeaders = function (url, callback) {
-        executeRequestAsync(url, 'text/plain', function (request) {
-            var arr = request.getAllResponseHeaders().trim().split(/[\r\n]+/);
-            var headers = arr.map(function (line) {
-                var parts = line.split(': ');
-                var header = parts.shift();
-                var value = parts.join(': ');
+    const getResponseHeaders = function (url, callback) {
+        executeRequestAsync(url, 'text/plain', (request) => {
+            const arr = request.getAllResponseHeaders().trim().split(/[\r\n]+/);
+            const headers = arr.map((line) => {
+                const parts = line.split(': ');
+                const header = parts.shift();
+                const value = parts.join(': ');
                 return {
                     name: header,
-                    value: value
+                    value,
                 };
             });
             callback(headers);
-        }, function (request) {
-            adguard.console.error("Error retrieved response from {0}, cause: {1}", url, request.statusText);
+        }, (request) => {
+            adguard.console.error('Error retrieved response from {0}, cause: {1}', url, request.statusText);
             callback(null);
-        })
+        });
     };
 
     /**
@@ -573,29 +569,29 @@ adguard.backend = (function (adguard) {
      *  localFilterIds: []
      * }
      */
-    var configure = function (configuration) {
-        var filtersMetadataUrl = configuration.filtersMetadataUrl;
+    const configure = function (configuration) {
+        const { filtersMetadataUrl } = configuration;
         if (filtersMetadataUrl) {
             Object.defineProperty(settings, 'filtersMetadataUrl', {
-                get: function () {
+                get() {
                     return filtersMetadataUrl;
-                }
+                },
             });
         }
-        var filterRulesUrl = configuration.filterRulesUrl;
+        const { filterRulesUrl } = configuration;
         if (filterRulesUrl) {
             Object.defineProperty(settings, 'filterRulesUrl', {
-                get: function () {
+                get() {
                     return filterRulesUrl;
-                }
+                },
             });
         }
-        var localFiltersFolder = configuration.localFiltersFolder;
+        const { localFiltersFolder } = configuration;
         if (localFiltersFolder) {
             Object.defineProperty(settings, 'localFiltersFolder', {
-                get: function () {
+                get() {
                     return localFiltersFolder;
-                }
+                },
             });
         }
 
@@ -608,12 +604,12 @@ adguard.backend = (function (adguard) {
             });
         }
 
-        var localFilterIds = configuration.localFilterIds;
+        const { localFilterIds } = configuration;
         if (localFilterIds) {
             Object.defineProperty(settings, 'localFilterIds', {
-                get: function () {
+                get() {
                     return localFilterIds;
-                }
+                },
             });
         }
     };
@@ -648,5 +644,4 @@ adguard.backend = (function (adguard) {
 
         configure,
     };
-
 })(adguard);
