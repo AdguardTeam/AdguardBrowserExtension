@@ -110,7 +110,10 @@ const PageController = (response) => {
         safebrowsingEnabledCheckbox.addEventListener('change', safebrowsingEnabledChange);
         trackingFilterEnabledCheckbox.addEventListener('change', trackingFilterEnabledChange);
         socialFilterEnabledCheckbox.addEventListener('change', socialFilterEnabledChange);
-        sendSafebrowsingStatsCheckbox.addEventListener('change', sendSafebrowsingStatsChange);
+        // ignore Firefox, see task AG-2322
+        if (!navigator.userAgent.includes('Firefox')) {
+            sendSafebrowsingStatsCheckbox.addEventListener('change', sendSafebrowsingStatsChange);
+        }
         allowAcceptableAdsCheckbox.addEventListener('change', allowAcceptableAdsChange);
 
         const openExtensionStoreBtns = [].slice.call(document.querySelectorAll('.openExtensionStore'));
