@@ -92,15 +92,6 @@ adguard.backend = (function (adguard) {
             return 'https://sb.adtidy.org/safebrowsing-lookup-hash.html';
         },
 
-        /**
-         * URL for collecting Browsing Security stats.
-         * We do not collect it by default, unless user is willing to help.
-         * For now - blocked urls are reported only.
-         */
-        get safebrowsingStatsUrl() {
-            return 'https://sb.adtidy.org/sb-report.html';
-        },
-
         // This url is used in integration mode. Adguard for Windows/Mac/Android intercepts requests to injections.adguard.com host.
         // It is not used for remote requests, requests are intercepted by the desktop version of Adguard.
         get injectionsUrl() {
@@ -433,19 +424,6 @@ adguard.backend = (function (adguard) {
     };
 
     /**
-     * Track safebrowsing stats
-     *
-     * @param url - filtered url by safebrowsing
-     */
-    const trackSafebrowsingStats = function (url) {
-        let trackUrl = `${settings.safebrowsingStatsUrl}?url=${encodeURIComponent(url)}`;
-        trackUrl += `&locale=${adguard.app.getLocale()}`;
-        trackUrl += '&referrer=';
-        trackUrl += `&r=${Math.random()}`;
-        executeRequestAsync(trackUrl, 'text/plain');
-    };
-
-    /**
      * Sends feedback from the user to our server
      *
      * @param url           URL
@@ -634,7 +612,6 @@ adguard.backend = (function (adguard) {
         adguardAppRemoveRule,
 
         lookupSafebrowsing,
-        trackSafebrowsingStats,
 
         sendUrlReport,
         sendHitStats,

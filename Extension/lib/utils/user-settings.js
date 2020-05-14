@@ -32,7 +32,6 @@ adguard.settings = (function (adguard) {
         DISABLE_SHOW_PAGE_STATS: 'disable-show-page-statistic',
         DISABLE_SHOW_ADGUARD_PROMO_INFO: 'show-info-about-adguard-disabled',
         DISABLE_SAFEBROWSING: 'safebrowsing-disabled',
-        DISABLE_SEND_SAFEBROWSING_STATS: 'safebrowsing-stats-disabled',
         DISABLE_FILTERING: 'adguard-disabled',
         DISABLE_COLLECT_HITS: 'hits-count-disabled',
         DISABLE_SHOW_CONTEXT_MENU: 'context-menu-disabled',
@@ -74,7 +73,6 @@ adguard.settings = (function (adguard) {
                 defaults[settings.DISABLE_SHOW_ADGUARD_PROMO_INFO] = (!adguard.utils.browser.isWindowsOs() && !adguard.utils.browser.isMacOs()) || adguard.utils.browser.isEdgeBrowser();
                 defaults[settings.DISABLE_SAFEBROWSING] = true;
                 defaults[settings.DISABLE_COLLECT_HITS] = true;
-                defaults[settings.DISABLE_SEND_SAFEBROWSING_STATS] = true;
                 defaults[settings.DEFAULT_WHITE_LIST_MODE] = true;
                 defaults[settings.USE_OPTIMIZED_FILTERS] = adguard.prefs.mobile;
                 defaults[settings.DISABLE_DETECT_FILTERS] = false;
@@ -214,15 +212,8 @@ adguard.settings = (function (adguard) {
         setProperty(settings.DISABLE_SAFEBROWSING, !enabled, options);
     };
 
-    const changeSendSafebrowsingStats = function (enabled, options) {
-        setProperty(settings.DISABLE_SEND_SAFEBROWSING_STATS, !enabled, options);
-    };
-
-    const getSafebrowsingInfo = function () {
-        return {
-            enabled: !getProperty(settings.DISABLE_SAFEBROWSING),
-            sendStats: !getProperty(settings.DISABLE_SEND_SAFEBROWSING_STATS),
-        };
+    const safebrowsingInfoEnabled = function () {
+        return !getProperty(settings.DISABLE_SAFEBROWSING);
     };
 
     const collectHitsCount = function () {
@@ -320,8 +311,7 @@ adguard.settings = (function (adguard) {
     api.isShowAppUpdatedNotification = isShowAppUpdatedNotification;
     api.changeShowAppUpdatedNotification = changeShowAppUpdatedNotification;
     api.changeEnableSafebrowsing = changeEnableSafebrowsing;
-    api.changeSendSafebrowsingStats = changeSendSafebrowsingStats;
-    api.getSafebrowsingInfo = getSafebrowsingInfo;
+    api.safebrowsingInfoEnabled = safebrowsingInfoEnabled;
     api.collectHitsCount = collectHitsCount;
     api.changeCollectHitsCount = changeCollectHitsCount;
     api.showContextMenu = showContextMenu;

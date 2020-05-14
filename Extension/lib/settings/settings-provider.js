@@ -178,8 +178,7 @@
                 'allow-acceptable-ads': allowAcceptableAds,
                 'show-blocked-ads-count': adguard.settings.showPageStatistic(),
                 'autodetect-filters': adguard.settings.isAutodetectFilters(),
-                'safebrowsing-enabled': adguard.settings.getSafebrowsingInfo().enabled,
-                'safebrowsing-help': adguard.settings.getSafebrowsingInfo().sendStats,
+                'safebrowsing-enabled': adguard.settings.safebrowsingInfoEnabled(),
                 'filters-update-period': adguard.settings.getFiltersUpdatePeriod(),
             },
         };
@@ -243,7 +242,6 @@
         adguard.settings.changeShowPageStatistic(!!set['show-blocked-ads-count'], syncSuppressOptions);
         adguard.settings.changeAutodetectFilters(!!set['autodetect-filters'], syncSuppressOptions);
         adguard.settings.changeEnableSafebrowsing(!!set['safebrowsing-enabled'], syncSuppressOptions);
-        adguard.settings.changeSendSafebrowsingStats(!!set['safebrowsing-help'], syncSuppressOptions);
         adguard.settings.setFiltersUpdatePeriod(set['filters-update-period'], syncSuppressOptions);
 
         if (set['allow-acceptable-ads']) {
