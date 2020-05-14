@@ -452,7 +452,7 @@
             } else {
                 adguard.tabs.reload(tab.tabId, safebrowsingUrl);
             }
-        }, incognitoTab);
+        });
     }
 
     /**

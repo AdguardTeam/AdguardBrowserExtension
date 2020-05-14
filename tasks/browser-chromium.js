@@ -38,7 +38,7 @@ const paths = {
     filters: path.join('Extension/filters/chromium/**/*'),
     webkitFiles: path.join('Extension/browser/webkit/**/*'),
     cert: path.join(PRIVATE_FILES, 'certificate.pem'),
-    dest: path.join(BUILD_DIR, BRANCH, `chrome-${version}`),
+    dest: path.join(BUILD_DIR, BRANCH, 'chrome'),
 };
 
 const dest = {
@@ -82,7 +82,7 @@ const createArchive = (done) => {
     }
 
     return gulp.src(dest.inner)
-        .pipe(zip(`chrome-${BRANCH}-${version}.zip`))
+        .pipe(zip(`chrome-${BRANCH}.zip`))
         .pipe(gulp.dest(dest.buildDir))
         // chrome.zip artifact
         .pipe(rename('chrome.zip'))
@@ -112,7 +112,7 @@ const crxPack = async (done) => {
     const crxBuffer = await crx.pack();
     const updateXml = await crx.generateUpdateXML();
 
-    const crxBuildFilename = `chrome-standalone-${BRANCH}-${version}.crx`;
+    const crxBuildFilename = `chrome-standalone-${BRANCH}.crx`;
     const crxBuildPath = path.join(dest.buildDir, crxBuildFilename);
     const updateXmlPath = path.join(dest.buildDir, 'update.xml');
     await fs.promises.writeFile(crxBuildPath, crxBuffer);

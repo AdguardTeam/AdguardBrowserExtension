@@ -26,7 +26,7 @@ const PageController = (response) => {
     let safebrowsingEnabledCheckbox;
     let trackingFilterEnabledCheckbox;
     let socialFilterEnabledCheckbox;
-    let sendSafebrowsingStatsCheckbox;
+    let sendStatsCheckbox;
     let allowAcceptableAdsCheckbox;
 
     const safebrowsingEnabledChange = (e) => {
@@ -70,13 +70,8 @@ const PageController = (response) => {
         }
     };
 
-    const sendSafebrowsingStatsChange = (e) => {
+    const sendStatsCheckboxChange = (e) => {
         const checkbox = e.currentTarget;
-        contentPage.sendMessage({
-            type: 'changeUserSetting',
-            key: userSettings.names.DISABLE_SEND_SAFEBROWSING_STATS,
-            value: !checkbox.checked,
-        });
         contentPage.sendMessage({
             type: 'changeUserSetting',
             key: userSettings.names.DISABLE_COLLECT_HITS,
@@ -104,13 +99,17 @@ const PageController = (response) => {
         safebrowsingEnabledCheckbox = document.getElementById('safebrowsingEnabledCheckbox');
         trackingFilterEnabledCheckbox = document.getElementById('trackingFilterEnabledCheckbox');
         socialFilterEnabledCheckbox = document.getElementById('socialFilterEnabledCheckbox');
-        sendSafebrowsingStatsCheckbox = document.getElementById('sendSafebrowsingStatsCheckbox');
+        // sendSafebrowsingStatsCheckbox - id saved, because it should be changed on thankyou page
+        sendStatsCheckbox = document.getElementById('sendSafebrowsingStatsCheckbox');
         allowAcceptableAdsCheckbox = document.getElementById('allowAcceptableAds');
 
         safebrowsingEnabledCheckbox.addEventListener('change', safebrowsingEnabledChange);
         trackingFilterEnabledCheckbox.addEventListener('change', trackingFilterEnabledChange);
         socialFilterEnabledCheckbox.addEventListener('change', socialFilterEnabledChange);
-        sendSafebrowsingStatsCheckbox.addEventListener('change', sendSafebrowsingStatsChange);
+        // ignore Firefox, see task AG-2322
+        if (!navigator.userAgent.includes('Firefox')) {
+            sendStatsCheckbox.addEventListener('change', sendStatsCheckboxChange);
+        }
         allowAcceptableAdsCheckbox.addEventListener('change', allowAcceptableAdsChange);
 
         const openExtensionStoreBtns = [].slice.call(document.querySelectorAll('.openExtensionStore'));
@@ -138,20 +137,19 @@ const PageController = (response) => {
         }
     };
 
-    const renderSafebrowsingSection = (safebrowsingEnabled, sendSafebrowsingStats, collectHitStats) => {
+    const renderSafebrowsingSection = (safebrowsingEnabled, collectHitStats) => {
         updateCheckbox(safebrowsingEnabledCheckbox, safebrowsingEnabled);
-        updateCheckbox(sendSafebrowsingStatsCheckbox, sendSafebrowsingStats || collectHitStats);
+        updateCheckbox(sendStatsCheckbox, collectHitStats);
     };
 
     const render = () => {
         const safebrowsingEnabled = !userSettings.values[userSettings.names.DISABLE_SAFEBROWSING];
-        const sendSafebrowsingStats = !userSettings.values[userSettings.names.DISABLE_SEND_SAFEBROWSING_STATS];
         const collectHitsCount = !userSettings.values[userSettings.names.DISABLE_COLLECT_HITS];
         const trackingFilterEnabled = AntiBannerFiltersId.TRACKING_FILTER_ID in enabledFilters;
         const socialFilterEnabled = AntiBannerFiltersId.SOCIAL_FILTER_ID in enabledFilters;
         const allowAcceptableAdsEnabled = AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID in enabledFilters;
 
-        renderSafebrowsingSection(safebrowsingEnabled, sendSafebrowsingStats, collectHitsCount);
+        renderSafebrowsingSection(safebrowsingEnabled, collectHitsCount);
         updateCheckbox(trackingFilterEnabledCheckbox, trackingFilterEnabled);
         updateCheckbox(socialFilterEnabledCheckbox, socialFilterEnabled);
         updateCheckbox(allowAcceptableAdsCheckbox, allowAcceptableAdsEnabled);

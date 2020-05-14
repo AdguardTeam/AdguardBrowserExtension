@@ -111,7 +111,7 @@ const paths = {
     redirects: [
         path.join('Extension/lib/filter/rules/scriptlets/redirects.yml'),
     ],
-    dest: path.join(BUILD_DIR, BRANCH, `adguard-api-${version}`),
+    dest: path.join(BUILD_DIR, BRANCH, 'adguard-api'),
 };
 
 const dest = {
@@ -189,7 +189,7 @@ const createArchive = (done) => {
     }
 
     return gulp.src(dest.inner)
-        .pipe(zip(`adguard-api-${BRANCH}-${version}.zip`))
+        .pipe(zip(`adguard-api-${BRANCH}.zip`))
         .pipe(gulp.dest(dest.buildDir))
         // adguard-api.zip artifact
         .pipe(rename('adguard-api.zip'))

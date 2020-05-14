@@ -27,7 +27,7 @@ const paths = {
     filters: path.join('Extension/filters/edge/**/*'),
     chromeFiles: path.join('Extension/browser/chrome/**/*'),
     webkitFiles: path.join('Extension/browser/webkit/**/*'),
-    dest: path.join(BUILD_DIR, BRANCH, `edge-${version}`),
+    dest: path.join(BUILD_DIR, BRANCH, 'edge'),
 };
 
 const dest = {
@@ -66,7 +66,7 @@ const createArchive = (done) => {
     }
 
     return gulp.src(dest.inner)
-        .pipe(zip(`edge-${BRANCH}-${version}.zip`))
+        .pipe(zip(`edge-${BRANCH}.zip`))
         .pipe(gulp.dest(dest.buildDir));
 };
 

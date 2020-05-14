@@ -13,17 +13,16 @@ import Crx from 'crx';
 import {
     BUILD_DIR, BRANCH_RELEASE, PRIVATE_FILES,
 } from './consts';
-import { version } from './parse-package';
 
 // set current type of build
 const BRANCH = process.env.NODE_ENV || '';
 
 const paths = {
     filtersOpera: path.join('Extension/filters/opera/**/*'),
-    chromium: path.join(BUILD_DIR, BRANCH, `chrome-${version}`, '**/*'),
-    chromiumManifest: path.join(BUILD_DIR, BRANCH, `chrome-${version}`, 'manifest.json'),
+    chromium: path.join(BUILD_DIR, BRANCH, 'chrome', '**/*'),
+    chromiumManifest: path.join(BUILD_DIR, BRANCH, 'chrome', 'manifest.json'),
     cert: path.join(PRIVATE_FILES, 'certificate.pem'),
-    dest: path.join(BUILD_DIR, BRANCH, `opera-${version}`),
+    dest: path.join(BUILD_DIR, BRANCH, 'opera'),
 };
 
 const dest = {
@@ -69,7 +68,7 @@ const crxPack = async (done) => {
     await crx.load(paths.dest);
     const crxBuffer = await crx.pack();
 
-    const crxBuildFilename = `opera-${BRANCH}-${version}.crx`;
+    const crxBuildFilename = `opera-${BRANCH}.crx`;
     const crxBuildPath = path.join(dest.buildDir, crxBuildFilename);
     await fs.promises.writeFile(crxBuildPath, crxBuffer);
 

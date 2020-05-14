@@ -34,7 +34,6 @@
             "show-blocked-ads-count": false,
             "autodetect-filters": false,
             "safebrowsing-enabled": true,
-            "safebrowsing-help": true
         }
     };
 
@@ -93,7 +92,6 @@ QUnit.test("Test local to remote", function (assert) {
                     assert.equal(section['general-settings']["allow-acceptable-ads"], false);
                     assert.equal(section['general-settings']["autodetect-filters"], false);
                     assert.equal(section['general-settings']["safebrowsing-enabled"], true);
-                    assert.equal(section['general-settings']["safebrowsing-help"], true);
                     assert.equal(section['general-settings']["show-blocked-ads-count"], false);
 
                     cleanUp(done);
@@ -194,7 +192,6 @@ QUnit.test("Test remote to local", function (assert) {
                             assert.equal(section['general-settings']["allow-acceptable-ads"], true);
                             assert.equal(section['general-settings']["autodetect-filters"], true);
                             assert.equal(section['general-settings']["safebrowsing-enabled"], true);
-                            assert.equal(section['general-settings']["safebrowsing-help"], true);
                             assert.equal(section['general-settings']["show-blocked-ads-count"], true);
 
                             cleanUp(done);
