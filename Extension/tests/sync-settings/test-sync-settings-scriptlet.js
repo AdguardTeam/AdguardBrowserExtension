@@ -2,90 +2,89 @@
  * The contents of this file should be pasted to extension background console.
  */
 
-var manifestPath = 'manifest.json';
-var filtersPath = 'filters.json';
+const manifestPath = 'manifest.json';
+const filtersPath = 'filters.json';
 
-var assert = {
-    ok: function (v) {
+const assert = {
+    ok(v) {
         if (!v) {
             console.error('Assert failed!');
         }
     },
-    equal: function (a, b) {
+    equal(a, b) {
         if (a != b) {
-            console.error('Assert failed: ' + a + ' != ' + b);
+            console.error(`Assert failed: ${a} != ${b}`);
         }
-    }
+    },
 };
 
-var testSettingsProvider = function (callback) {
-
-    var before = adguard.sync.settingsProvider.loadLocalManifest();
+const testSettingsProvider = function (callback) {
+    const before = adguard.sync.settingsProvider.loadLocalManifest();
     assert.ok(before != null);
-    //assert.ok(before.timestamp);
-    assert.ok(before["protocol-version"]);
-    assert.ok(before["min-compatible-version"]);
-    assert.ok(before["app-id"]);
-    assert.ok(before["sections"].length > 0);
+    // assert.ok(before.timestamp);
+    assert.ok(before['protocol-version']);
+    assert.ok(before['min-compatible-version']);
+    assert.ok(before['app-id']);
+    assert.ok(before['sections'].length > 0);
 
-    var timestamp = Date.now();
+    const timestamp = Date.now();
     adguard.sync.settingsProvider.syncLocalManifest(before, timestamp);
 
-    var updated = adguard.sync.settingsProvider.loadLocalManifest();
+    const updated = adguard.sync.settingsProvider.loadLocalManifest();
     assert.ok(updated != null);
     assert.equal(updated.timestamp, timestamp);
-    assert.equal(updated["protocol-version"], before["protocol-version"]);
-    assert.equal(updated["min-compatible-version"], before["min-compatible-version"]);
-    assert.equal(updated["app-id"], before["app-id"]);
-    assert.equal(updated["sections"].length, before["sections"].length);
+    assert.equal(updated['protocol-version'], before['protocol-version']);
+    assert.equal(updated['min-compatible-version'], before['min-compatible-version']);
+    assert.equal(updated['app-id'], before['app-id']);
+    assert.equal(updated['sections'].length, before['sections'].length);
 
-    var onSectionUpdated = function (section) {
+    const onSectionUpdated = function (section) {
         assert.ok(section);
-        assert.ok(section.filters["enabled-filters"].length > 0);
+        assert.ok(section.filters['enabled-filters'].length > 0);
 
-        var userRules = section.filters["user-filter"].rules.split('\n');
+        const userRules = section.filters['user-filter'].rules.split('\n');
         assert.ok(userRules.length > 0);
         assert.ok(userRules.indexOf('test-add-rule') > -1);
 
-        assert.ok(section.filters["whitelist"].domains.length > 0);
-        assert.ok(section.filters["whitelist"].domains.indexOf('whitelisted-domain-two.com') > -1);
-        assert.equal(section.filters["whitelist"].inverted, true);
+        assert.ok(section.filters['whitelist'].domains.length > 0);
+        assert.ok(section.filters['whitelist'].domains.indexOf('whitelisted-domain-two.com') > -1);
+        assert.equal(section.filters['whitelist'].inverted, true);
 
         // Return back
-        var rules = section.filters["user-filter"].rules;
-        section.filters["user-filter"].rules = rules.substring(rules.lastIndexOf('test-add-rule'));
-        section.filters["enabled-filters"].pop();
-        var i = section.filters["whitelist"].domains.indexOf('whitelisted-domain-two.com');
-        section.filters["whitelist"].domains.splice(i, 1);
-        section.filters["whitelist"].inverted = false;
+        const { rules } = section.filters['user-filter'];
+        section.filters['user-filter'].rules = rules.substring(rules.lastIndexOf('test-add-rule'));
+        section.filters['enabled-filters'].pop();
+        const i = section.filters['whitelist'].domains.indexOf('whitelisted-domain-two.com');
+        section.filters['whitelist'].domains.splice(i, 1);
+        section.filters['whitelist'].inverted = false;
 
-        adguard.sync.settingsProvider.applySection(filtersPath, section, function () {
+        adguard.sync.settingsProvider.applySection(filtersPath, section, () => {
             callback('OK!');
         });
     };
 
-    var onSectionSaved = function (result) {
+    const onSectionSaved = function (result) {
         assert.ok(result);
 
         adguard.sync.settingsProvider.loadSection(filtersPath, onSectionUpdated);
     };
 
-    var onSectionLoaded = function (section) {
+    const onSectionLoaded = function (section) {
         console.log(section);
 
         assert.ok(section);
         assert.ok(section.filters);
-        assert.ok(section.filters["custom-filters"]);
-        assert.ok(section.filters["enabled-filters"]);
-        assert.ok(section.filters["user-filter"]);
-        assert.ok(section.filters["whitelist"]);
+        assert.ok(section.filters['custom-filters']);
+        assert.ok(section.filters['enabled-filters']);
+        assert.ok(section.filters['user-filter']);
+        assert.ok(section.filters['whitelist']);
 
         // Modify
-        section.filters["user-filter"].rules += '\ntest-add-rule';
-        section.filters["enabled-filters"].push(1);
-        section.filters["enabled-filters"].push(2);
-        section.filters["whitelist"].domains.push('whitelisted-domain-two.com');
-        section.filters["whitelist"].inverted = true;
+        section.filters['user-filter'].rules += '\ntest-add-rule';
+        section.filters['enabled-filters'].push(1);
+        section.filters['enabled-filters'].push(2);
+        section.filters['whitelist'].domains.push('whitelisted-domain-two.com');
+        section.filters['whitelist'].inverted = true;
 
         adguard.sync.settingsProvider.applySection(filtersPath, section, onSectionSaved);
     };
@@ -93,6 +92,6 @@ var testSettingsProvider = function (callback) {
     adguard.sync.settingsProvider.loadSection(filtersPath, onSectionLoaded);
 };
 
-testSettingsProvider(function (r) {
+testSettingsProvider((r) => {
     console.log(r);
 });
