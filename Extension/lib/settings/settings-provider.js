@@ -233,23 +233,19 @@
      * @param callback Finish callback
      */
     const applyGeneralSettingsSection = function (section, callback) {
-        const syncSuppressOptions = {
-            syncSuppress: true,
-        };
-
         const set = section['general-settings'];
 
-        adguard.settings.changeShowPageStatistic(!!set['show-blocked-ads-count'], syncSuppressOptions);
-        adguard.settings.changeAutodetectFilters(!!set['autodetect-filters'], syncSuppressOptions);
-        adguard.settings.changeEnableSafebrowsing(!!set['safebrowsing-enabled'], syncSuppressOptions);
-        adguard.settings.setFiltersUpdatePeriod(set['filters-update-period'], syncSuppressOptions);
+        adguard.settings.changeShowPageStatistic(!!set['show-blocked-ads-count']);
+        adguard.settings.changeAutodetectFilters(!!set['autodetect-filters']);
+        adguard.settings.changeEnableSafebrowsing(!!set['safebrowsing-enabled']);
+        adguard.settings.setFiltersUpdatePeriod(set['filters-update-period']);
 
         if (set['allow-acceptable-ads']) {
             adguard.filters.addAndEnableFilters([adguard.utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID], () => {
                 callback(true);
-            }, syncSuppressOptions);
+            });
         } else {
-            adguard.filters.disableFilters([adguard.utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID], syncSuppressOptions);
+            adguard.filters.disableFilters([adguard.utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID]);
             callback(true);
         }
     };
@@ -260,17 +256,13 @@
      * @param callback
      */
     const applyExtensionSpecificSettingsSection = function (section, callback) {
-        const syncSuppressOptions = {
-            syncSuppress: true,
-        };
-
         const set = section['extension-specific-settings'];
 
-        adguard.settings.changeUseOptimizedFiltersEnabled(!!set['use-optimized-filters'], syncSuppressOptions);
-        adguard.settings.changeCollectHitsCount(!!set['collect-hits-count'], syncSuppressOptions);
-        adguard.settings.changeShowContextMenu(!!set['show-context-menu'], syncSuppressOptions);
-        adguard.settings.changeShowInfoAboutAdguardFullVersion(!!set['show-info-about-adguard'], syncSuppressOptions);
-        adguard.settings.changeShowAppUpdatedNotification(!!set['show-app-updated-info'], syncSuppressOptions);
+        adguard.settings.changeUseOptimizedFiltersEnabled(!!set['use-optimized-filters']);
+        adguard.settings.changeCollectHitsCount(!!set['collect-hits-count']);
+        adguard.settings.changeShowContextMenu(!!set['show-context-menu']);
+        adguard.settings.changeShowInfoAboutAdguardFullVersion(!!set['show-info-about-adguard']);
+        adguard.settings.changeShowAppUpdatedNotification(!!set['show-app-updated-info']);
 
         callback(true);
     };
@@ -288,17 +280,15 @@
     /**
      * Add a custom filter
      * @param {CustomFilterInitial} customFilterData - initial data of imported custom filter
-     * @param {{syncSuppress: boolean}} syncSuppressOptions
      * @returns {Promise<any>} SubscriptionFilter
      */
-    const addCustomFilter = (customFilterData, syncSuppressOptions) => {
+    const addCustomFilter = (customFilterData) => {
         const {
             customUrl, title, trusted,
         } = customFilterData;
 
-        const { syncSuppress } = syncSuppressOptions;
         return new Promise((resolve, reject) => {
-            const options = { title, trusted, syncSuppress };
+            const options = { title, trusted };
             adguard.filters.loadCustomFilter(
                 customUrl,
                 options,
@@ -312,9 +302,9 @@
         });
     };
 
-    const addCustomFilters = (absentCustomFiltersInitials, syncSuppressOptions) => absentCustomFiltersInitials
+    const addCustomFilters = (absentCustomFiltersInitials) => absentCustomFiltersInitials
         .reduce((promiseAcc, customFilterInitial) => promiseAcc
-            .then(acc => addCustomFilter(customFilterInitial, syncSuppressOptions)
+            .then(acc => addCustomFilter(customFilterInitial)
                 .then((customFilter) => {
                     adguard.console.info(`Settings sync: Was added custom filter: ${customFilter.customUrl}`);
                     return [...acc, { error: null, filter: customFilter }];
@@ -351,10 +341,9 @@
     /**
      * Adds custom filters if there were not added one by one to the subscriptions list
      * @param {Array<CustomFilterInitial>} customFiltersInitials
-     * @param {{syncSuppress: boolean}} syncSuppressOptions
      * @returns {Promise<any>} Promise object which represents array with filters
      */
-    const syncCustomFilters = (customFiltersInitials, syncSuppressOptions) => {
+    const syncCustomFilters = (customFiltersInitials) => {
         const presentCustomFilters = adguard.subscriptions.getCustomFilters();
 
         const enrichedFiltersInitials = customFiltersInitials.map((filterToAdd) => {
@@ -378,7 +367,7 @@
             return Promise.resolve(enrichedFiltersInitials);
         }
 
-        return addCustomFilters(customFiltersToAdd, syncSuppressOptions)
+        return addCustomFilters(customFiltersToAdd)
             .then((customFiltersAddResult) => {
                 // get results without errors, in order to do not enable filters with errors
                 const addedCustomFiltersWithoutError = customFiltersAddResult
@@ -395,28 +384,26 @@
     /**
      * Enables filters by filterId and disables those filters which were not in the list of enabled filters
      * @param {array<number>} filterIds - ids to enable
-     * @param {{syncSuppress: boolean}} syncSuppressOptions
      * @returns {Promise<any>}
      */
-    const syncEnabledFilters = (filterIds, syncSuppressOptions) => new Promise((resolve) => {
+    const syncEnabledFilters = (filterIds) => new Promise((resolve) => {
         adguard.filters.addAndEnableFilters(filterIds, () => {
             const enabledFilters = adguard.filters.getEnabledFilters();
             const filtersToDisable = enabledFilters
                 .filter(enabledFilter => !filterIds.includes(enabledFilter.filterId))
                 .map(filter => filter.filterId);
-            adguard.filters.disableFilters(filtersToDisable, syncSuppressOptions);
+            adguard.filters.disableFilters(filtersToDisable);
             resolve();
-        }, syncSuppressOptions);
+        });
     });
 
     /**
      * Enables groups by groupId and disable those groups which were not in the list
      * @param {array<number>} enabledGroups
-     * @param {{syncSuppress: boolean}} options syncSuppressOptions
      */
-    const syncEnabledGroups = (enabledGroups, options) => {
+    const syncEnabledGroups = (enabledGroups) => {
         enabledGroups.forEach((groupId) => {
-            adguard.filters.enableGroup(groupId, options);
+            adguard.filters.enableGroup(groupId);
         });
         adguard.console.info(`Settings sync: Next groups were enabled: ${enabledGroups}`);
 
@@ -428,7 +415,7 @@
             .filter(groupId => !enabledGroups.includes(groupId));
 
         groupIdsToDisable.forEach((groupId) => {
-            adguard.filters.disableGroup(groupId, options);
+            adguard.filters.disableGroup(groupId);
         });
     };
 
@@ -438,28 +425,24 @@
      * @param callback Finish callback
      */
     const applyFiltersSection = function (section, callback) {
-        const syncSuppressOptions = {
-            syncSuppress: true,
-        };
-
-        const whiteListSection = section.filters['whitelist'] || {}; // jshint ignore:line
+        const whiteListSection = section.filters['whitelist'] || {};
         const whitelistDomains = whiteListSection.domains || [];
         const blacklistDomains = whiteListSection['inverted-domains'] || [];
 
         // Apply whitelist/blacklist domains and whitelist mode
-        adguard.whitelist.configure(whitelistDomains, blacklistDomains, !whiteListSection.inverted, syncSuppressOptions);
+        adguard.whitelist.configure(whitelistDomains, blacklistDomains, !whiteListSection.inverted);
 
         const userFilterSection = section.filters['user-filter'] || {};
         const userRules = userFilterSection.rules || '';
 
         // Apply user rules
-        adguard.userrules.updateUserRulesText(userRules, syncSuppressOptions);
+        adguard.userrules.updateUserRulesText(userRules);
 
         // Apply custom filters
         const customFiltersData = section.filters['custom-filters'] || [];
 
         // STEP 1 sync custom filters
-        syncCustomFilters(customFiltersData, syncSuppressOptions)
+        syncCustomFilters(customFiltersData)
             .then((availableCustomFilters) => {
                 // STEP 2 get filters with enabled flag from export data
                 const customFilterIdsToEnable = availableCustomFilters
@@ -470,19 +453,19 @@
                                     // eslint-disable-next-line max-len
                                     throw new Error(`Custom filter should always have custom URL: ${JSON.stringify(filter)}`);
                                 }
-                                return filter.customUrl === availableCustomFilter.customUrl
+                                return filter.customUrl === availableCustomFilter.customUrl;
                             });
                         return filterData && filterData.enabled;
                     })
                     .map(filter => filter.filterId);
                 // STEP 3 sync enabled filters
                 const enabledFilterIds = section.filters['enabled-filters'] || [];
-                return syncEnabledFilters([...enabledFilterIds, ...customFilterIdsToEnable], syncSuppressOptions);
+                return syncEnabledFilters([...enabledFilterIds, ...customFilterIdsToEnable]);
             })
             .then(() => {
                 // STEP 4 sync enabled groups
                 const enabledGroups = section.filters['enabled-groups'] || [];
-                syncEnabledGroups(enabledGroups, syncSuppressOptions);
+                syncEnabledGroups(enabledGroups);
                 callback(true);
             })
             .catch((err) => {

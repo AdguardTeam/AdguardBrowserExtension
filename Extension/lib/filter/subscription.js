@@ -421,7 +421,7 @@ adguard.subscriptions = (function (adguard) {
      * @param callback
      */
     const updateCustomFilter = function (url, options, callback) {
-        const { title, trusted, syncSuppress } = options;
+        const { title, trusted } = options;
         adguard.backend.loadFilterRulesBySubscriptionUrl(url, (rules) => {
             const filterId = addFilterId();
             const parsedData = parseFilterDataFromHeader(rules);
@@ -498,7 +498,6 @@ adguard.subscriptions = (function (adguard) {
 
             adguard.listeners.notifyListeners(adguard.listeners.SUCCESS_DOWNLOAD_FILTER, filter);
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, filter, rules);
-            adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, { syncSuppress });
 
             callback(filter.filterId);
         }, (cause) => {

@@ -33,20 +33,17 @@ adguard.userrules = (function (adguard) {
      * Adds list of rules to the user filter
      *
      * @param rulesText List of rules to add
-     * @param options
      */
-    const addRules = function (rulesText, options) {
+    const addRules = function (rulesText) {
         const rules = getAntiBannerService().addUserFilterRules(rulesText);
-        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
         return rules;
     };
 
     /**
      * Removes all user's custom rules
      */
-    const clearRules = function (options) {
+    const clearRules = function () {
         getAntiBannerService().updateUserFilterRules([]);
-        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
     };
 
     /**
@@ -56,18 +53,15 @@ adguard.userrules = (function (adguard) {
      */
     const removeRule = function (ruleText) {
         getAntiBannerService().removeUserFilterRule(ruleText);
-        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED);
     };
 
     /**
      * Save user rules text to storage
      * @param content Rules text
-     * @param options
      */
-    const updateUserRulesText = function (content, options) {
+    const updateUserRulesText = function (content) {
         const lines = content.length > 0 ? content.split(/\n/) : [];
         getAntiBannerService().updateUserFilterRules(lines);
-        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
     };
 
     /**

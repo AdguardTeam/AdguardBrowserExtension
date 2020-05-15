@@ -100,9 +100,8 @@ adguard.whitelist = (function (adguard) {
         }
     };
 
-    function notifyWhiteListUpdated(options) {
+    function notifyWhiteListUpdated() {
         adguard.listeners.notifyListeners(adguard.listeners.UPDATE_WHITELIST_FILTER_RULES);
-        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
     }
 
     /**
@@ -348,15 +347,14 @@ adguard.whitelist = (function (adguard) {
      * @param whitelist Whitelist domains
      * @param blocklist Blocklist domains
      * @param whiteListMode Whitelist mode
-     * @param options
      */
-    var configure = function (whitelist, blocklist, whiteListMode, options) {
+    var configure = function (whitelist, blocklist, whiteListMode) {
         clearWhiteListed();
         clearBlockListed();
         addWhiteListed(whitelist || []);
         addBlockListed(blocklist || []);
         adguard.settings.changeDefaultWhiteListMode(whiteListMode);
-        notifyWhiteListUpdated(options);
+        notifyWhiteListUpdated();
     };
 
     /**

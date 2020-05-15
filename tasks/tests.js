@@ -132,5 +132,4 @@ export default gulp.series(
     testStatsCollection,
     testDocumentFilter,
     testConverter,
-    testSettingsProvider
 );
