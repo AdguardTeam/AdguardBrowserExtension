@@ -51,7 +51,6 @@ adguard.listeners = (function () {
         LOG_EVENT_ADDED: 'log.event.added',
         LOG_EVENT_UPDATED: 'log.event.updated',
         // Sync events
-        SYNC_REQUIRED: 'event.sync.required',
         SETTINGS_UPDATED: 'event.sync.finished',
     };
 
