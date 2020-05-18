@@ -108,11 +108,10 @@ const testConverter = (done) => {
     runQunit('../Extension/tests/rule-converter/test-rule-converter.html', done);
 };
 
-// TODO fix tests
 // Settings provider
-// const testSettingsProvider = (done) => {
-//     runQunit('../Extension/tests/sync-settings/test-sync-settings.html', done);
-// };
+const testSettingsProvider = (done) => {
+    runQunit('../Extension/tests/settings/test-settings.html', done);
+};
 
 export default gulp.series(
     testRule,
@@ -132,4 +131,5 @@ export default gulp.series(
     testStatsCollection,
     testDocumentFilter,
     testConverter,
+    testSettingsProvider
 );

@@ -1,3 +1,5 @@
+/* global settingsJsonStr */
+
 QUnit.test('exports settings in json', (assert) => {
     const done = assert.async();
     adguard.sync.settingsProvider.loadSettingsBackup((json) => {
@@ -13,10 +15,7 @@ QUnit.test('exports settings in json', (assert) => {
 
 QUnit.test('updates settings from json', async (assert) => {
     const done = assert.async();
-    const response = await fetch('./adg_ext_settings.json');
-    const jsonText = await response.text();
-
-    adguard.sync.settingsProvider.applySettingsBackup(jsonText, (success) => {
+    adguard.sync.settingsProvider.applySettingsBackup(settingsJsonStr, (success) => {
         assert.ok(success, 'should successfully apply');
         done();
     });
