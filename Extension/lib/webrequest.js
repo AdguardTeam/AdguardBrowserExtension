@@ -806,7 +806,12 @@
                 const url = details.requestUrl;
                 const cssFilterOption = adguard.rules.CssFilter.RETRIEVE_TRADITIONAL_CSS;
                 const retrieveScripts = true;
-                const result = adguard.webRequestService.processGetSelectorsAndScripts({ tabId }, url, cssFilterOption, retrieveScripts);
+                const result = adguard.webRequestService.processGetSelectorsAndScripts(
+                    { tabId },
+                    url,
+                    cssFilterOption,
+                    retrieveScripts
+                );
 
                 if (result.requestFilterReady === false) {
                     injections.set(tabId, frameId, {
@@ -841,7 +846,7 @@
             }
 
             /**
-             * Function checks is injection corresponds for url
+             * Function checks if injection corresponds to url
              * This check could be useful when injections were prepared in the onBeforeRequest
              * or onHeadersReceived events and then there was redirection and document request
              * didn't fired in webRequest events
@@ -878,8 +883,13 @@
                 if (requestType === adguard.RequestTypes.DOCUMENT
                     && (!injection || !isInjectionForUrl(injection, frameUrl))
                 ) {
-                    prepareInjection(details);
-                    tryInject(details);
+                    // In order to avoid "Maximum call stack size exceeded" error - see AG-2366
+                    // recursive call is made inside setTimeout
+                    setTimeout(() => {
+                        prepareInjection(details);
+                        tryInject(details, eventName);
+                    }, REQUEST_FILTER_READY_TIMEOUT);
+                    injections.removeTabFrameInjection(tabId, frameId);
                     return;
                 }
                 /**
