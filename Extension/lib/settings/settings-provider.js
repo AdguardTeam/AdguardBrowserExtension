@@ -18,10 +18,7 @@
 /**
  * Application settings provider.
  */
-(function (api, adguard) { // jshint ignore:line
-    const PROTOCOL_VERSION = '1.0';
-    const APP_ID = 'adguard-browser-extension';
-
+(function (api, adguard) {
     const FILTERS_SECTION = 'filters.json';
     const GENERAL_SECTION = 'general-settings.json';
     const EXTENSION_SPECIFIC_SECTION = 'extension-specific-settings.json';
@@ -29,70 +26,6 @@
     const SYNC_MANIFEST_PROP = 'sync-manifest';
 
     const BACKUP_PROTOCOL_VERSION = '1.0';
-
-    /**
-     * Loads local manifest object
-     */
-    const loadLocalManifest = function () {
-        const manifest = {
-            'protocol-version': PROTOCOL_VERSION,
-            'min-compatible-version': PROTOCOL_VERSION,
-            'app-id': APP_ID,
-            'timestamp': 0,
-            'sections': [
-                {
-                    'name': FILTERS_SECTION,
-                    'timestamp': 0,
-                },
-                {
-                    'name': GENERAL_SECTION,
-                    'timestamp': 0,
-                },
-                {
-                    'name': EXTENSION_SPECIFIC_SECTION,
-                    'timestamp': 0,
-                },
-            ],
-        };
-        const item = adguard.localStorage.getItem(SYNC_MANIFEST_PROP);
-        if (!item) {
-            return manifest;
-        }
-        try {
-            const localManifest = JSON.parse(item);
-            manifest.timestamp = localManifest.timestamp;
-            manifest.sections = localManifest.sections;
-        } catch (ex) {
-            adguard.console.error('Error parsing local manifest {0}, {1}', item, ex);
-        }
-        return manifest;
-    };
-
-    /**
-     * Creates empty settings manifest.
-     */
-    const getEmptyLocalManifest = function () {
-        return {
-            'protocol-version': PROTOCOL_VERSION,
-            'min-compatible-version': PROTOCOL_VERSION,
-            'app-id': APP_ID,
-            'timestamp': 0,
-            'sections': [
-                {
-                    'name': FILTERS_SECTION,
-                    'timestamp': 0,
-                },
-                {
-                    'name': GENERAL_SECTION,
-                    'timestamp': 0,
-                },
-                {
-                    'name': EXTENSION_SPECIFIC_SECTION,
-                    'timestamp': 0,
-                },
-            ],
-        };
-    };
 
     /**
      * Collect enabled filters ids without custom filters
@@ -205,29 +138,6 @@
     };
 
     /**
-     * Saves manifest and its sections timestamps. If syncTime is passed, timestamps are updated with this value
-     * @param manifest Manifest
-     * @param syncTime Synchronization time
-     * @param sections updated sections names array
-     */
-    const syncLocalManifest = function (manifest, syncTime, sections) {
-        if (syncTime) {
-            manifest.timestamp = syncTime;
-            for (let i = 0; i < manifest.sections.length; i++) {
-                const section = manifest.sections[i];
-                if (sections) {
-                    if (sections.indexOf(section.name) >= 0) {
-                        section.timestamp = syncTime;
-                    }
-                } else {
-                    section.timestamp = syncTime;
-                }
-            }
-        }
-        adguard.localStorage.setItem(SYNC_MANIFEST_PROP, JSON.stringify(manifest));
-    };
-
-    /**
      * Applies general section settings to application
      * @param section Section
      * @param callback Finish callback
@@ -302,7 +212,7 @@
         });
     };
 
-    const addCustomFilters = (absentCustomFiltersInitials) => absentCustomFiltersInitials
+    const addCustomFilters = absentCustomFiltersInitials => absentCustomFiltersInitials
         .reduce((promiseAcc, customFilterInitial) => promiseAcc
             .then(acc => addCustomFilter(customFilterInitial)
                 .then((customFilter) => {
@@ -386,7 +296,7 @@
      * @param {array<number>} filterIds - ids to enable
      * @returns {Promise<any>}
      */
-    const syncEnabledFilters = (filterIds) => new Promise((resolve) => {
+    const syncEnabledFilters = filterIds => new Promise((resolve) => {
         adguard.filters.addAndEnableFilters(filterIds, () => {
             const enabledFilters = adguard.filters.getEnabledFilters();
             const filtersToDisable = enabledFilters
@@ -474,62 +384,6 @@
     };
 
     /**
-     * Checks section is supported
-     * @param sectionName Section name
-     */
-    const isSectionSupported = function (sectionName) {
-        return sectionName === FILTERS_SECTION
-            || sectionName === GENERAL_SECTION
-            || sectionName === EXTENSION_SPECIFIC_SECTION;
-    };
-
-    /**
-     * Constructs section from application settings
-     * @param sectionName Section name
-     * @param callback Finish callback
-     */
-    const loadSection = function (sectionName, callback) {
-        switch (sectionName) {
-            case FILTERS_SECTION:
-                loadFiltersSection(callback);
-                break;
-            case GENERAL_SECTION:
-                loadGeneralSettingsSection(callback);
-                break;
-            case EXTENSION_SPECIFIC_SECTION:
-                loadExtensionSpecificSettingsSection(callback);
-                break;
-            default:
-                adguard.console.error('Section {0} is not supported', sectionName);
-                callback(false);
-        }
-    };
-
-    /**
-     * Apply section to application.
-     *
-     * @param sectionName Section name
-     * @param section Section object
-     * @param callback Finish callback
-     */
-    const applySection = function (sectionName, section, callback) {
-        switch (sectionName) {
-            case FILTERS_SECTION:
-                applyFiltersSection(section, callback);
-                break;
-            case GENERAL_SECTION:
-                applyGeneralSettingsSection(section, callback);
-                break;
-            case EXTENSION_SPECIFIC_SECTION:
-                applyExtensionSpecificSettingsSection(section, callback);
-                break;
-            default:
-                adguard.console.error('Section {0} is not supported', sectionName);
-                callback(false);
-        }
-    };
-
-    /**
      * Exports settings set in json format
      */
     const loadSettingsBackupJson = function (callback) {
@@ -554,8 +408,10 @@
 
     /**
      * Imports settings set from json format
+     * @param {string} json
+     * @param {function} cb
      */
-    const applySettingsBackupJson = function (json) {
+    const applySettingsBackupJson = function (json, cb) {
         function onFinished(success) {
             if (success) {
                 adguard.console.info('Settings import finished successfully');
@@ -564,6 +420,10 @@
             }
 
             adguard.listeners.notifyListeners(adguard.listeners.SETTINGS_UPDATED, success);
+
+            if (cb) {
+                cb(success);
+            }
         }
 
         let input = null;
@@ -603,37 +463,6 @@
 
     // EXPOSE
     api.settingsProvider = {
-
-        /**
-         * Loads app settings manifest
-         */
-        loadLocalManifest,
-
-        /**
-         * Gets empty settings manifest
-         */
-        getEmptyLocalManifest,
-
-        /**
-         * Saves manifest to local storage
-         */
-        syncLocalManifest,
-
-        /**
-         * Checks section is supported
-         */
-        isSectionSupported,
-
-        /**
-         * Loads section of app settings
-         */
-        loadSection,
-
-        /**
-         * Apply section to application
-         */
-        applySection,
-
         /**
          * Loads settings backup json
          */
