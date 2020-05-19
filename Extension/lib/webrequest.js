@@ -895,9 +895,8 @@
                  * also we should check if injection url is correct
                  * so we try to prepare this injection in the onCommit event again
                  */
-                if (injection
-                    && requestType === adguard.RequestTypes.DOCUMENT
-                    && !isInjectionForUrl(injection, frameUrl)) {
+                if (requestType === adguard.RequestTypes.DOCUMENT
+                    && (!injection || !isInjectionForUrl(injection, frameUrl))) {
                     prepareInjection(details);
                     tryInject(details, eventName);
                     return;
