@@ -83,7 +83,6 @@ var adguard = (function () { // eslint-disable-line
     };
 
     const syncModule = {
-        syncService: notImplemented(),
         settingsProvider: notImplemented(),
     };
 

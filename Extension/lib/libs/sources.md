@@ -25,12 +25,6 @@
 * Raw file: https://raw.githubusercontent.com/ameshkov/text-encoding/ddd20a5064f622b6fd47cdc11834ca8f130cb100/lib/encoding.js
 * `encoding-indexes.js` is **not** a third-party library, but definitions of encodings used by `encoding.js`
 
-#### `Dropbox-sdk.js`
-* v4.0.12
-* Licence: MIT
-* Release: https://github.com/dropbox/dropbox-sdk-js/tree/v4.0.12
-* `Dropbox-sdk.js` build is being used
-
 #### `d3.js`
 * v3.5.17
 * Licence: BSD 3-Clause

@@ -221,7 +221,8 @@ adguard.antiBannerService = (function (adguard) {
         }
 
         /**
-         * TODO: when we want to load filter from backend, we should retrieve metadata from backend too, but not from local file.
+         * TODO: when we want to load filter from backend,
+         *  we should retrieve metadata from backend too, but not from local file.
          */
         loadFilterRules(filter, false, onFilterLoaded);
     };
@@ -1537,38 +1538,34 @@ adguard.filters = (function (adguard) {
     /**
      * Enable group
      * @param {number} groupId filter group identifier
-     * @param {{syncSuppress: boolean}} [options]
      */
-    const enableGroup = function (groupId, options) {
+    const enableGroup = function (groupId) {
         const group = adguard.subscriptions.getGroup(groupId);
         if (!group || group.enabled) {
             return;
         }
         group.enabled = true;
         adguard.listeners.notifyListeners(adguard.listeners.FILTER_GROUP_ENABLE_DISABLE, group);
-        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
     };
 
     /**
      * Disable group
      * @param {number} groupId filter group identifier
-     * @param {{syncSuppress: boolean}} [options]
      */
-    const disableGroup = function (groupId, options) {
+    const disableGroup = function (groupId) {
         const group = adguard.subscriptions.getGroup(groupId);
         if (!group || !group.enabled) {
             return;
         }
         group.enabled = false;
         adguard.listeners.notifyListeners(adguard.listeners.FILTER_GROUP_ENABLE_DISABLE, group);
-        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
     };
 
     /**
      * Enable filter
      *
      * @param {Number} filterId Filter identifier
-     * @param {{syncSuppress: boolean, forceGroupEnable: boolean}} [options]
+     * @param {{forceGroupEnable: boolean}} [options]
      * @returns {boolean} true if filter was enabled successfully
      */
     const enableFilter = (filterId, options) => {
@@ -1583,17 +1580,16 @@ adguard.filters = (function (adguard) {
         const { groupId } = filter;
         const forceGroupEnable = options && options.forceGroupEnable;
         if (!adguard.subscriptions.groupHasEnabledStatus(groupId) || forceGroupEnable) {
-            enableGroup(groupId, options);
+            enableGroup(groupId);
         }
         adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
-        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
         return true;
     };
 
     /**
      * Successively add filters from filterIds and then enable successfully added filters
      * @param filterIds Filter identifiers
-     * @param {{syncSuppress: boolean, forceGroupEnable: boolean}} [options]
+     * @param {{forceGroupEnable: boolean}} [options]
      * @param callback We pass list of enabled filter identifiers to the callback
      */
     const addAndEnableFilters = (filterIds, callback, options) => {
@@ -1632,11 +1628,11 @@ adguard.filters = (function (adguard) {
      * Disables filters by id
      *
      * @param {Array.<Number>} filterIds Filter identifiers
-     * @param {{syncSuppress}} [options]
      * @returns {boolean} true if filter was disabled successfully
      */
-    const disableFilters = function (filterIds, options) {
-        filterIds = adguard.utils.collections.removeDuplicates(filterIds.slice(0)); // Copy array to prevent parameter mutation
+    const disableFilters = function (filterIds) {
+        // Copy array to prevent parameter mutation
+        filterIds = adguard.utils.collections.removeDuplicates(filterIds.slice(0));
         for (let i = 0; i < filterIds.length; i += 1) {
             const filterId = filterIds[i];
             const filter = adguard.subscriptions.getFilter(filterId);
@@ -1646,19 +1642,17 @@ adguard.filters = (function (adguard) {
             filter.enabled = false;
             adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
         }
-
-        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
     };
 
     /**
      * Uninstalls filters
      *
      * @param {Array.<Number>} filterIds Filter identifiers
-     * @param {{syncSuppress}} [options]
      * @returns {boolean} true if filter was removed successfully
      */
-    const uninstallFilters = function (filterIds, options) {
-        filterIds = adguard.utils.collections.removeDuplicates(filterIds.slice(0)); // Copy array to prevent parameter mutation
+    const uninstallFilters = function (filterIds) {
+        // Copy array to prevent parameter mutation
+        filterIds = adguard.utils.collections.removeDuplicates(filterIds.slice(0));
 
         for (let i = 0; i < filterIds.length; i += 1) {
             const filterId = filterIds[i];
@@ -1674,17 +1668,14 @@ adguard.filters = (function (adguard) {
             adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
             adguard.listeners.notifyListeners(adguard.listeners.FILTER_ADD_REMOVE, filter);
         }
-
-        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
     };
 
     /**
      * Removes filter
      *
      * @param {Number} filterId Filter identifier
-     * @param {{syncSuppress}} [options]
      */
-    const removeFilter = function (filterId, options) {
+    const removeFilter = function (filterId) {
         const filter = adguard.subscriptions.getFilter(filterId);
         if (!filter || filter.removed) {
             return;
@@ -1702,8 +1693,6 @@ adguard.filters = (function (adguard) {
         filter.removed = true;
         adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
         adguard.listeners.notifyListeners(adguard.listeners.FILTER_ADD_REMOVE, filter);
-
-        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
     };
 
     /**
