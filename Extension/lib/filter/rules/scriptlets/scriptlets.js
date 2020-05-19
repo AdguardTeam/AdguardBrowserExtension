@@ -1,7 +1,7 @@
 
 /**
  * AdGuard Scriptlets
- * Version 1.2.0
+ * Version 1.2.1
  */
 
 (function () {
@@ -765,11 +765,12 @@
      *
      * **Syntax**
      * ```
-     * example.org#%#//scriptlet('abort-on-property-read', <property>)
+     * example.org#%#//scriptlet('abort-on-property-read', property[, stack])
      * ```
      *
      * **Parameters**
-     * - `property` (required) path to a property (joined with `.` if needed). The property must be attached to `window`.
+     * - `property` (required) path to a property (joined with `.` if needed). The property must be attached to `window`
+     * - `stack` (optional) string or regular expression that must match the current function call stack trace
      *
      * **Examples**
      * ```
@@ -847,11 +848,12 @@
      *
      * **Syntax**
      * ```
-     * example.org#%#//scriptlet('abort-on-property-write', <property>)
+     * example.org#%#//scriptlet('abort-on-property-write', property[, stack])
      * ```
      *
      * **Parameters**
-     * - `property` (required) path to a property (joined with `.` if needed). The property must be attached to `window`.
+     * - `property` (required) path to a property (joined with `.` if needed). The property must be attached to `window`
+     * - `stack` (optional) string or regular expression that must match the current function call stack trace
      *
      * **Examples**
      * ```
