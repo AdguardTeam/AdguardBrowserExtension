@@ -855,7 +855,7 @@
              * @returns {boolean}
              */
             function isInjectionForUrl(injection, url) {
-                return injection && injection.ready && injection.url === url;
+                return injection && injection.url === url;
             }
 
             /**
@@ -874,25 +874,6 @@
                 }
                 const injection = injections.get(tabId, frameId);
                 /**
-                 * webRequest api doesn't see requests served from service worker like they are served from the cache
-                 * https://bugs.chromium.org/p/chromium/issues/detail?id=766433
-                 * that's why we can't prepare injections when webRequest events fire
-                 * also we should check if injection url is correct
-                 * so we try to prepare this injection in the onCommit event again
-                 */
-                if (requestType === adguard.RequestTypes.DOCUMENT
-                    && (!injection || !isInjectionForUrl(injection, frameUrl))
-                ) {
-                    // In order to avoid "Maximum call stack size exceeded" error - see AG-2366
-                    // recursive call is made inside setTimeout
-                    setTimeout(() => {
-                        prepareInjection(details);
-                        tryInject(details, eventName);
-                    }, REQUEST_FILTER_READY_TIMEOUT);
-                    injections.removeTabFrameInjection(tabId, frameId);
-                    return;
-                }
-                /**
                  * Sometimes it can happen that onCommitted event fires earlier than onHeadersReceived
                  * for example onCommitted event for iframes in Firefox
                  */
@@ -909,6 +890,19 @@
                         tryInject(details, eventName);
                     }, REQUEST_FILTER_READY_TIMEOUT, details, eventName);
                     injections.removeTabFrameInjection(tabId, frameId);
+                    return;
+                }
+                /**
+                 * webRequest api doesn't see requests served from service worker like they are served from the cache
+                 * https://bugs.chromium.org/p/chromium/issues/detail?id=766433
+                 * that's why we can't prepare injections when webRequest events fire
+                 * also we should check if injection url is correct
+                 * so we try to prepare this injection in the onCommit event again
+                 */
+                if (requestType === adguard.RequestTypes.DOCUMENT
+                    && !isInjectionForUrl(injection, frameUrl)) {
+                    prepareInjection(details);
+                    tryInject(details, eventName);
                     return;
                 }
                 if (injection.jsScriptText) {
