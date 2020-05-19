@@ -872,15 +872,10 @@
                 if (shouldSkipInjection(requestType, tabId, eventName)) {
                     return;
                 }
+
                 const injection = injections.get(tabId, frameId);
-                /**
-                 * Sometimes it can happen that onCommitted event fires earlier than onHeadersReceived
-                 * for example onCommitted event for iframes in Firefox
-                 */
-                if (!injection) {
-                    return;
-                }
-                if (!injection.ready) {
+
+                if (injection && !injection.ready) {
                     /**
                      * If injection is not ready yet, we call prepareScripts and tryInject functions again
                      * setTimeout callback lambda function accepts onCommitted details and eventName
@@ -892,6 +887,7 @@
                     injections.removeTabFrameInjection(tabId, frameId);
                     return;
                 }
+
                 /**
                  * webRequest api doesn't see requests served from service worker like they are served from the cache
                  * https://bugs.chromium.org/p/chromium/issues/detail?id=766433
@@ -899,22 +895,34 @@
                  * also we should check if injection url is correct
                  * so we try to prepare this injection in the onCommit event again
                  */
-                if (requestType === adguard.RequestTypes.DOCUMENT
+                if (injection
+                    && requestType === adguard.RequestTypes.DOCUMENT
                     && !isInjectionForUrl(injection, frameUrl)) {
                     prepareInjection(details);
                     tryInject(details, eventName);
                     return;
                 }
+
+                /**
+                 * Sometimes it can happen that onCommitted event fires earlier than onHeadersReceived
+                 * for example onCommitted event for iframes in Firefox
+                 */
+                if (!injection) {
+                    return;
+                }
+
                 if (injection.jsScriptText) {
                     adguard.tabs.executeScriptCode(tabId, frameId, injection.jsScriptText);
                 }
                 if (injection.cssText) {
                     adguard.tabs.insertCssCode(tabId, frameId, injection.cssText);
                 }
+
                 const mainFrameUrl = adguard.frames.getMainFrameUrl({ tabId });
                 if (isIframeWithoutSrc(frameUrl, frameId, mainFrameUrl)) {
                     adguard.console.warn('Unexpected onCommitted event from this frame - frameId: {0}, frameUrl: {1}. See https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1046', frameId, frameUrl);
                 }
+
                 injections.removeTabFrameInjection(tabId, frameId);
             }
 
