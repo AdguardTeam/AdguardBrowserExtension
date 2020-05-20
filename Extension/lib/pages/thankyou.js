@@ -130,6 +130,9 @@ const PageController = (response) => {
     };
 
     const updateCheckbox = (checkbox, enabled) => {
+        if (!checkbox) {
+            return;
+        }
         if (enabled) {
             checkbox.setAttribute('checked', 'checked');
         } else {
@@ -165,13 +168,33 @@ const PageController = (response) => {
     };
 };
 
-contentPage.sendMessage({ type: 'initializeFrameScript' }, (response) => {
-    const controller = PageController(response);
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            controller.init();
-        });
-    } else {
-        controller.init();
+let timeoutId;
+let counter = 0;
+const MAX_WAIT_RETRY = 10;
+const RETRY_TIMEOUT_MS = 100;
+const waitContentPage = () => {
+    if (typeof contentPage === 'undefined') {
+        if (counter > MAX_WAIT_RETRY) {
+            clearTimeout(timeoutId);
+            return;
+        }
+        timeoutId = setTimeout(waitContentPage, RETRY_TIMEOUT_MS);
+        counter += 1;
+        return;
     }
-});
+
+    clearTimeout(timeoutId);
+
+    contentPage.sendMessage({ type: 'initializeFrameScript' }, (response) => {
+        const controller = PageController(response);
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                controller.init();
+            });
+        } else {
+            controller.init();
+        }
+    });
+};
+
+waitContentPage();
