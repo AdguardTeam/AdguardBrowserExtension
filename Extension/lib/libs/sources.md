@@ -67,12 +67,12 @@ These libs are developed by us from scratch.
 #### `filter-downloader.js`
 * v1.0.11
 * Library source: https://github.com/AdguardTeam/FiltersDownloader/tree/v1.0.11
-​
+
 #### `extended-css.js`
-* v1.2.5
+* v1.2.8
 * Licence: LGPL-3.0
-* Library source: https://github.com/AdguardTeam/ExtendedCss/releases/tag/v1.2.5
-​
+* Library source: https://github.com/AdguardTeam/ExtendedCss/releases/tag/v1.2.8
+
 #### `lib/content-script/assistant.js`
 * v4.3.32
 * Library source: https://github.com/AdguardTeam/AdguardAssistant/tree/v4.3.32
