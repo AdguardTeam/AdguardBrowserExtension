@@ -1,9 +1,23 @@
-/*! extended-css - v1.2.5 - Fri Apr 24 2020
+/*! extended-css - v1.2.8 - Wed May 20 2020
 * https://github.com/AdguardTeam/ExtendedCss
 * Copyright (c) 2020 AdGuard ; Licensed LGPL-3.0
 */
 var ExtendedCss = (function () {
   'use strict';
+
+  function _typeof(obj) {
+    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+      _typeof = function (obj) {
+        return typeof obj;
+      };
+    } else {
+      _typeof = function (obj) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+      };
+    }
+
+    return _typeof(obj);
+  }
 
   /**
    * Copyright 2016 Adguard Software Ltd
@@ -22,7 +36,7 @@ var ExtendedCss = (function () {
    */
 
   /* eslint-disable no-console */
-  const utils = {};
+  var utils = {};
   utils.MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
   /**
    * Converts regular expressions passed as pseudo class arguments into RegExp instances.
@@ -42,7 +56,7 @@ var ExtendedCss = (function () {
 
   utils.createURLRegex = function () {
     // Constants
-    const regexConfiguration = {
+    var regexConfiguration = {
       maskStartUrl: '||',
       maskPipe: '|',
       maskSeparator: '^',
@@ -56,21 +70,21 @@ var ExtendedCss = (function () {
     // should be escaped . * + ? ^ $ { } ( ) | [ ] / \
     // except of * | ^
 
-    const specials = ['.', '+', '?', '$', '{', '}', '(', ')', '[', ']', '\\', '/'];
-    const specialsRegex = new RegExp(`[${specials.join('\\')}]`, 'g');
+    var specials = ['.', '+', '?', '$', '{', '}', '(', ')', '[', ']', '\\', '/'];
+    var specialsRegex = new RegExp("[".concat(specials.join('\\'), "]"), 'g');
     /**
      * Escapes regular expression string
      */
 
-    const escapeRegExp = function (str) {
+    var escapeRegExp = function escapeRegExp(str) {
       return str.replace(specialsRegex, '\\$&');
     };
 
-    const startsWith = function (str, prefix) {
+    var startsWith = function startsWith(str, prefix) {
       return str && str.indexOf(prefix) === 0;
     };
 
-    const endsWith = function (str, postfix) {
+    var endsWith = function endsWith(str, postfix) {
       if (!str || !postfix) {
         return false;
       }
@@ -79,12 +93,12 @@ var ExtendedCss = (function () {
         return str.endsWith(postfix);
       }
 
-      const t = String(postfix);
-      const index = str.lastIndexOf(t);
+      var t = String(postfix);
+      var index = str.lastIndexOf(t);
       return index >= 0 && index === str.length - t.length;
     };
 
-    const replaceAll = function (str, find, replace) {
+    var replaceAll = function replaceAll(str, find, replace) {
       if (!str) {
         return str;
       }
@@ -98,8 +112,8 @@ var ExtendedCss = (function () {
      */
 
 
-    const createRegexText = function (str) {
-      let regex = escapeRegExp(str);
+    var createRegexText = function createRegexText(str) {
+      var regex = escapeRegExp(str);
 
       if (startsWith(regex, regexConfiguration.maskStartUrl)) {
         regex = regex.substring(0, regexConfiguration.maskStartUrl.length) + replaceAll(regex.substring(regexConfiguration.maskStartUrl.length, regex.length - 1), '\|', '\\|') + regex.substring(regex.length - 1);
@@ -136,7 +150,7 @@ var ExtendedCss = (function () {
 
 
   utils.createLocation = function (href) {
-    const anchor = document.createElement('a');
+    var anchor = document.createElement('a');
     anchor.href = href;
 
     if (anchor.host === '') {
@@ -155,7 +169,7 @@ var ExtendedCss = (function () {
 
 
   utils.isSameOrigin = function (urlA, locationB, domainB) {
-    const locationA = utils.createLocation(urlA); // eslint-disable-next-line no-script-url
+    var locationA = utils.createLocation(urlA); // eslint-disable-next-line no-script-url
 
     if (locationA.protocol === 'javascript:' || locationA.href === 'about:blank') {
       return true;
@@ -177,10 +191,10 @@ var ExtendedCss = (function () {
      * PhantomJS passes a wrong timestamp to the requestAnimationFrame callback and that breaks the AsyncWrapper logic
      * https://github.com/ariya/phantomjs/issues/14832
      */
-    const supported = typeof window.requestAnimationFrame !== 'undefined' && !/phantom/i.test(navigator.userAgent);
-    const rAF = supported ? requestAnimationFrame : setTimeout;
-    const cAF = supported ? cancelAnimationFrame : clearTimeout;
-    const perf = supported ? performance : Date;
+    var supported = typeof window.requestAnimationFrame !== 'undefined' && !/phantom/i.test(navigator.userAgent);
+    var rAF = supported ? requestAnimationFrame : setTimeout;
+    var cAF = supported ? cancelAnimationFrame : clearTimeout;
+    var perf = supported ? performance : Date;
     /**
      * @param {Function} callback
      * @param {number} throttle number, the provided callback should be executed twice
@@ -225,7 +239,7 @@ var ExtendedCss = (function () {
       }
 
       if (typeof this.lastRun !== 'undefined') {
-        const elapsed = perf.now() - this.lastRun;
+        var elapsed = perf.now() - this.lastRun;
 
         if (elapsed < this.throttle) {
           this.timerId = setTimeout(this.wrappedCallback, this.throttle - elapsed);
@@ -298,15 +312,15 @@ var ExtendedCss = (function () {
   utils.defineProperty = Object.defineProperty;
   utils.WeakMap = typeof WeakMap !== 'undefined' ? WeakMap : function () {
     /** Originally based on {@link https://github.com/Polymer/WeakMap} */
-    let counter = Date.now() % 1e9;
+    var counter = Date.now() % 1e9;
 
-    const WeakMap = function () {
-      this.name = `__st${Math.random() * 1e9 >>> 0}${counter++}__`;
+    var WeakMap = function WeakMap() {
+      this.name = "__st".concat(Math.random() * 1e9 >>> 0).concat(counter++, "__");
     };
 
     WeakMap.prototype = {
-      set(key, value) {
-        const entry = key[this.name];
+      set: function set(key, value) {
+        var entry = key[this.name];
 
         if (entry && entry[0] === key) {
           entry[1] = value;
@@ -319,27 +333,24 @@ var ExtendedCss = (function () {
 
         return this;
       },
-
-      get(key) {
-        const entry = key[this.name];
+      get: function get(key) {
+        var entry = key[this.name];
         return entry && entry[0] === key ? entry[1] : undefined;
       },
-
-      delete(key) {
-        const entry = key[this.name];
+      delete: function _delete(key) {
+        var entry = key[this.name];
 
         if (!entry) {
           return false;
         }
 
-        const hasValue = entry[0] === key;
+        var hasValue = entry[0] === key;
         delete entry[0];
         delete entry[1];
         return hasValue;
       },
-
-      has(key) {
-        const entry = key[this.name];
+      has: function has(key) {
+        var entry = key[this.name];
 
         if (!entry) {
           return false;
@@ -347,12 +358,11 @@ var ExtendedCss = (function () {
 
         return entry[0] === key;
       }
-
     };
     return WeakMap;
   }();
   utils.Set = typeof Set !== 'undefined' ? Set : function () {
-    let counter = Date.now() % 1e9;
+    var counter = Date.now() % 1e9;
     /**
      * A polyfill which covers only the basic usage.
      * Only supports methods that are supported in IE11.
@@ -362,12 +372,12 @@ var ExtendedCss = (function () {
      * @param {Array} items Initial items in this set
      */
 
-    const Set = function (items) {
-      this.name = `__st${Math.random() * 1e9 >>> 0}${counter++}__`;
+    var Set = function Set(items) {
+      this.name = "__st".concat(Math.random() * 1e9 >>> 0).concat(counter++, "__");
       this.keys = [];
 
       if (items && items.length) {
-        let iItems = items.length;
+        var iItems = items.length;
 
         while (iItems--) {
           this.add(items[iItems]);
@@ -376,49 +386,45 @@ var ExtendedCss = (function () {
     };
 
     Set.prototype = {
-      add(key) {
+      add: function add(key) {
         if (!isNumber(key[this.name])) {
-          const index = this.keys.push(key) - 1;
+          var index = this.keys.push(key) - 1;
           utils.defineProperty(key, this.name, {
             value: index,
             writable: true
           });
         }
       },
-
-      delete(key) {
+      delete: function _delete(key) {
         if (isNumber(key[this.name])) {
-          const index = key[this.name];
+          var index = key[this.name];
           delete this.keys[index];
           key[this.name] = undefined;
         }
       },
-
-      has(key) {
+      has: function has(key) {
         return isNumber(key[this.name]);
       },
-
-      clear() {
+      clear: function clear() {
         this.keys.forEach(function (key) {
           key[this.name] = undefined;
         });
         this.keys.length = 0;
       },
-
-      forEach(cb) {
-        const that = this;
-        this.keys.forEach(value => {
+      forEach: function forEach(cb) {
+        var that = this;
+        this.keys.forEach(function (value) {
           cb(value, value, that);
         });
       }
-
     };
     utils.defineProperty(Set.prototype, 'size', {
-      get() {
+      get: function get() {
         // Skips holes.
-        return this.keys.reduce(acc => acc + 1, 0);
+        return this.keys.reduce(function (acc) {
+          return acc + 1;
+        }, 0);
       }
-
     });
     return Set;
   }();
@@ -427,9 +433,9 @@ var ExtendedCss = (function () {
    */
 
   utils.matchesPropertyName = function () {
-    const props = ['matches', 'matchesSelector', 'mozMatchesSelector', 'msMatchesSelector', 'oMatchesSelector', 'webkitMatchesSelector'];
+    var props = ['matches', 'matchesSelector', 'mozMatchesSelector', 'msMatchesSelector', 'oMatchesSelector', 'webkitMatchesSelector'];
 
-    for (let i = 0; i < 6; i++) {
+    for (var i = 0; i < 6; i++) {
       if (Element.prototype.hasOwnProperty(props[i])) {
         return props[i];
       }
@@ -446,7 +452,7 @@ var ExtendedCss = (function () {
     /** @member {number} */
 
     this.length = 0;
-    const zeroDescriptor = {
+    var zeroDescriptor = {
       value: 0,
       writable: true
     };
@@ -498,18 +504,18 @@ var ExtendedCss = (function () {
       throw new Error('Function received argument with wrong type');
     }
 
-    const path = [];
+    var path = [];
 
     while (el.nodeType === Node.ELEMENT_NODE) {
-      let selector = el.nodeName.toLowerCase();
+      var selector = el.nodeName.toLowerCase();
 
       if (el.id && typeof el.id === 'string') {
-        selector += `#${el.id}`;
+        selector += "#".concat(el.id);
         path.unshift(selector);
         break;
       } else {
-        let sibling = el;
-        let nth = 1;
+        var sibling = el;
+        var nth = 1;
 
         while (sibling.previousSibling) {
           sibling = sibling.previousSibling;
@@ -520,7 +526,7 @@ var ExtendedCss = (function () {
         }
 
         if (nth !== 1) {
-          selector += `:nth-of-type(${nth})`;
+          selector += ":nth-of-type(".concat(nth, ")");
         }
       }
 
@@ -552,11 +558,11 @@ var ExtendedCss = (function () {
    *
    * @type {{normalize}}
    */
-  const cssUtils = (() => {
+  var cssUtils = function () {
     /**
      * Regex that matches AdGuard's backward compatible syntaxes.
      */
-    const reAttrFallback = /\[-(?:ext|abp)-([a-z-_]+)=(["'])((?:(?=(\\?))\4.)*?)\2\]/g;
+    var reAttrFallback = /\[-(?:ext|abp)-([a-z-_]+)=(["'])((?:(?=(\\?))\4.)*?)\2\]/g;
     /**
      * Complex replacement function.
      * Unescapes quote characters inside of an extended selector.
@@ -567,11 +573,11 @@ var ExtendedCss = (function () {
      * @param value     Group 3
      */
 
-    const evaluateMatch = function (match, name, quoteChar, value) {
+    var evaluateMatch = function evaluateMatch(match, name, quoteChar, value) {
       // Unescape quotes
-      const re = new RegExp(`([^\\\\]|^)\\\\${quoteChar}`, 'g');
-      value = value.replace(re, `$1${quoteChar}`);
-      return `:${name}(${value})`;
+      var re = new RegExp("([^\\\\]|^)\\\\".concat(quoteChar), 'g');
+      value = value.replace(re, "$1".concat(quoteChar));
+      return ":".concat(name, "(").concat(value, ")");
     }; // Sizzle's parsing of pseudo class arguments is buggy on certain circumstances
     // We support following form of arguments:
     // 1. for :matches-css, those of a form {propertyName}: /.*/
@@ -579,15 +585,15 @@ var ExtendedCss = (function () {
     // We transform such cases in a way that Sizzle has no ambiguity in parsing arguments.
 
 
-    const reMatchesCss = /\:(matches-css(?:-after|-before)?)\(([a-z-\s]*\:\s*\/(?:\\.|[^\/])*?\/\s*)\)/g;
-    const reContains = /:(?:-abp-)?(contains|has-text)\((\s*\/(?:\\.|[^\/])*?\/\s*)\)/g; // Note that we require `/` character in regular expressions to be escaped.
+    var reMatchesCss = /\:(matches-css(?:-after|-before)?)\(([a-z-\s]*\:\s*\/(?:\\.|[^\/])*?\/\s*)\)/g;
+    var reContains = /:(?:-abp-)?(contains|has-text)\((\s*\/(?:\\.|[^\/])*?\/\s*)\)/g; // Note that we require `/` character in regular expressions to be escaped.
 
     /**
      * Used for pre-processing pseudo-classes values with above two regexes.
      */
 
-    const addQuotes = function (_, c1, c2) {
-      return `:${c1}("${c2.replace(/["\\]/g, '\\$&')}")`;
+    var addQuotes = function addQuotes(_, c1, c2) {
+      return ":".concat(c1, "(\"").concat(c2.replace(/["\\]/g, '\\$&'), "\")");
     };
     /**
      * Normalizes specified css text in a form that can be parsed by the
@@ -601,7 +607,7 @@ var ExtendedCss = (function () {
      */
 
 
-    const normalize = function (cssText) {
+    var normalize = function normalize(cssText) {
       cssText = cssText.replace(reAttrFallback, evaluateMatch);
       cssText = cssText.replace(reMatchesCss, addQuotes);
       cssText = cssText.replace(reContains, addQuotes);
@@ -609,9 +615,9 @@ var ExtendedCss = (function () {
     };
 
     return {
-      normalize
+      normalize: normalize
     };
-  })();
+  }();
 
   /*!
    * Sizzle CSS Selector Engine v2.3.4-pre-adguard
@@ -644,7 +650,7 @@ var ExtendedCss = (function () {
    * :even, :odd, :lt, :gt, :nth, :radio, :checkbox, :file,
    * :password, :image, :submit, :reset
    */
-  let Sizzle;
+  var Sizzle;
   /**
    * Initializes Sizzle object.
    * In the case of AdGuard ExtendedCss we want to avoid initializing Sizzle right away
@@ -684,7 +690,7 @@ var ExtendedCss = (function () {
             tokenCache = createCache(),
             compilerCache = createCache(),
             nonnativeSelectorCache = createCache(),
-            sortOrder = function (a, b) {
+            sortOrder = function sortOrder(a, b) {
           if (a === b) {
             hasDuplicate = true;
           }
@@ -700,7 +706,7 @@ var ExtendedCss = (function () {
             slice = arr.slice,
             // Use a stripped-down indexOf as it's faster than native
         // https://jsperf.com/thor-indexof-vs-for/5
-        indexOf = function (list, elem) {
+        indexOf = function indexOf(list, elem) {
           var i = 0,
               len = list.length;
 
@@ -753,7 +759,7 @@ var ExtendedCss = (function () {
             // CSS escapes
         // http://www.w3.org/TR/CSS21/syndata.html#escaped-characters
         runescape = new RegExp("\\\\([\\da-f]{1,6}" + whitespace + "?|(" + whitespace + ")|.)", "ig"),
-            funescape = function (_, escaped, escapedWhitespace) {
+            funescape = function funescape(_, escaped, escapedWhitespace) {
           var high = "0x" + escaped - 0x10000; // NaN means non-codepoint
           // Support: Firefox<24
           // Workaround erroneous numeric interpretation of +"0x"
@@ -765,7 +771,7 @@ var ExtendedCss = (function () {
             // CSS string/identifier serialization
         // https://drafts.csswg.org/cssom/#common-serializing-idioms
         rcssescape = /([\0-\x1f\x7f]|^-?\d)|^-$|[^\0-\x1f\x7f-\uFFFF\w-]/g,
-            fcssescape = function (ch, asCodePoint) {
+            fcssescape = function fcssescape(ch, asCodePoint) {
           if (asCodePoint) {
             // U+0000 NULL becomes U+FFFD REPLACEMENT CHARACTER
             if (ch === "\0") {
@@ -783,7 +789,7 @@ var ExtendedCss = (function () {
         // See setDocument()
         // Removing the function wrapper causes a "Permission Denied"
         // error in IE
-        unloadHandler = function () {
+        unloadHandler = function unloadHandler() {
           setDocument();
         },
             inDisabledFieldset = addCombinator(function (elem) {
@@ -1610,7 +1616,7 @@ var ExtendedCss = (function () {
             }
           },
           preFilter: {
-            "ATTR": function (match) {
+            "ATTR": function ATTR(match) {
               match[1] = match[1].replace(runescape, funescape); // Move the given value to match[3] whether quoted or unquoted
 
               match[3] = (match[3] || match[4] || match[5] || "").replace(runescape, funescape);
@@ -1621,16 +1627,16 @@ var ExtendedCss = (function () {
 
               return match.slice(0, 4);
             },
-            "CHILD": function (match) {
+            "CHILD": function CHILD(match) {
               /* matches from matchExpr["CHILD"]
-                1 type (only|nth|...)
-                2 what (child|of-type)
-                3 argument (even|odd|\d*|\d*n([+-]\d+)?|...)
-                4 xn-component of xn+y argument ([+-]?\d*n|)
-                5 sign of xn-component
-                6 x of xn-component
-                7 sign of y-component
-                8 y of y-component
+              	1 type (only|nth|...)
+              	2 what (child|of-type)
+              	3 argument (even|odd|\d*|\d*n([+-]\d+)?|...)
+              	4 xn-component of xn+y argument ([+-]?\d*n|)
+              	5 sign of xn-component
+              	6 x of xn-component
+              	7 sign of y-component
+              	8 y of y-component
               */
               match[1] = match[1].toLowerCase();
 
@@ -1650,7 +1656,7 @@ var ExtendedCss = (function () {
 
               return match;
             },
-            "PSEUDO": function (match) {
+            "PSEUDO": function PSEUDO(match) {
               var excess,
                   unquoted = !match[6] && match[2];
 
@@ -1674,7 +1680,7 @@ var ExtendedCss = (function () {
             }
           },
           filter: {
-            "TAG": function (nodeNameSelector) {
+            "TAG": function TAG(nodeNameSelector) {
               var nodeName = nodeNameSelector.replace(runescape, funescape).toLowerCase();
               return nodeNameSelector === "*" ? function () {
                 return true;
@@ -1682,13 +1688,13 @@ var ExtendedCss = (function () {
                 return elem.nodeName && elem.nodeName.toLowerCase() === nodeName;
               };
             },
-            "CLASS": function (className) {
+            "CLASS": function CLASS(className) {
               var pattern = classCache[className + " "];
               return pattern || (pattern = new RegExp("(^|" + whitespace + ")" + className + "(" + whitespace + "|$)")) && classCache(className, function (elem) {
                 return pattern.test(typeof elem.className === "string" && elem.className || typeof elem.getAttribute !== "undefined" && elem.getAttribute("class") || "");
               });
             },
-            "ATTR": function (name, operator, check) {
+            "ATTR": function ATTR(name, operator, check) {
               return function (elem) {
                 var result = Sizzle.attr(elem, name);
 
@@ -1704,7 +1710,7 @@ var ExtendedCss = (function () {
                 return operator === "=" ? result === check : operator === "!=" ? result !== check : operator === "^=" ? check && result.indexOf(check) === 0 : operator === "*=" ? check && result.indexOf(check) > -1 : operator === "$=" ? check && result.slice(-check.length) === check : operator === "~=" ? (" " + result.replace(rwhitespace, " ") + " ").indexOf(check) > -1 : operator === "|=" ? result === check || result.slice(0, check.length + 1) === check + "-" : false;
               };
             },
-            "CHILD": function (type, what, argument, first, last) {
+            "CHILD": function CHILD(type, what, argument, first, last) {
               var simple = type.slice(0, 3) !== "nth",
                   forward = type.slice(-4) !== "last",
                   ofType = what === "of-type";
@@ -1809,7 +1815,7 @@ var ExtendedCss = (function () {
                 }
               };
             },
-            "PSEUDO": function (pseudo, argument) {
+            "PSEUDO": function PSEUDO(pseudo, argument) {
               // pseudo-class names are case-insensitive
               // http://www.w3.org/TR/selectors/#pseudo-classes
               // Prioritize by case sensitivity in case custom pseudos are added with uppercase letters
@@ -1908,26 +1914,26 @@ var ExtendedCss = (function () {
               };
             }),
             // Miscellaneous
-            "target": function (elem) {
+            "target": function target(elem) {
               var hash = window.location && window.location.hash;
               return hash && hash.slice(1) === elem.id;
             },
-            "root": function (elem) {
+            "root": function root(elem) {
               return elem === docElem;
             },
-            "focus": function (elem) {
+            "focus": function focus(elem) {
               return elem === document.activeElement && (!document.hasFocus || document.hasFocus()) && !!(elem.type || elem.href || ~elem.tabIndex);
             },
             // Boolean properties
             "enabled": createDisabledPseudo(false),
             "disabled": createDisabledPseudo(true),
-            "checked": function (elem) {
+            "checked": function checked(elem) {
               // In CSS3, :checked should return both checked and selected elements
               // http://www.w3.org/TR/2011/REC-css3-selectors-20110929/#checked
               var nodeName = elem.nodeName.toLowerCase();
               return nodeName === "input" && !!elem.checked || nodeName === "option" && !!elem.selected;
             },
-            "selected": function (elem) {
+            "selected": function selected(elem) {
               // Accessing this property makes selected-by-default
               // options in Safari work properly
               if (elem.parentNode) {
@@ -1937,7 +1943,7 @@ var ExtendedCss = (function () {
               return elem.selected === true;
             },
             // Contents
-            "empty": function (elem) {
+            "empty": function empty(elem) {
               // http://www.w3.org/TR/selectors/#empty-pseudo
               // :empty is negated by element (1) or content nodes (text: 3; cdata: 4; entity ref: 5),
               //   but not by others (comment: 8; processing instruction: 7; etc.)
@@ -1972,7 +1978,7 @@ var ExtendedCss = (function () {
            * @param {*} tokens Tokens to split into groups
            * @returns an array consisting of token groups (arrays) and relation tokens.
            */
-          var splitCompoundSelector = function (tokens) {
+          var splitCompoundSelector = function splitCompoundSelector(tokens) {
             var groups = [];
             var currentTokensGroup = [];
             var maxIdx = tokens.length - 1;
@@ -2012,7 +2018,7 @@ var ExtendedCss = (function () {
            * Returns a value lesser than 0 if "left" is less than "right".
            */
 
-          var compareFunction = function (left, right) {
+          var compareFunction = function compareFunction(left, right) {
             var leftValue = TOKEN_TYPES_VALUES[left.type];
             var rightValue = TOKEN_TYPES_VALUES[right.type];
             return leftValue - rightValue;
@@ -2023,7 +2029,7 @@ var ExtendedCss = (function () {
            */
 
 
-          var isSortable = function (tokens) {
+          var isSortable = function isSortable(tokens) {
             var iTokens = tokens.length;
 
             while (iTokens--) {
@@ -2050,7 +2056,7 @@ var ExtendedCss = (function () {
            */
 
 
-          var sortTokens = function (tokens) {
+          var sortTokens = function sortTokens(tokens) {
             if (!tokens || tokens.length === 1) {
               return tokens;
             }
@@ -2083,7 +2089,7 @@ var ExtendedCss = (function () {
            */
 
 
-          var sortTokenGroups = function (groups) {
+          var sortTokenGroups = function sortTokenGroups(groups) {
             var sortedGroups = [];
             var len = groups.length;
             var i = 0;
@@ -2545,7 +2551,7 @@ var ExtendedCss = (function () {
         function matcherFromGroupMatchers(elementMatchers, setMatchers) {
           var bySet = setMatchers.length > 0,
               byElement = elementMatchers.length > 0,
-              superMatcher = function (seed, context, xml, results, outermost) {
+              superMatcher = function superMatcher(seed, context, xml, results, outermost) {
             var elem,
                 j,
                 matcher,
@@ -2844,17 +2850,17 @@ var ExtendedCss = (function () {
    * Class that extends Sizzle and adds support for "matches-css" pseudo element.
    */
 
-  const StylePropertyMatcher = function (window) {
-    const isSafari = navigator.vendor && navigator.vendor.indexOf('Apple') > -1 && navigator.userAgent && !navigator.userAgent.match('CriOS');
-    const isPhantom = !!window._phantom;
-    const useFallback = isPhantom && !!window.getMatchedCSSRules;
+  var StylePropertyMatcher = function (window) {
+    var isSafari = navigator.vendor && navigator.vendor.indexOf('Apple') > -1 && navigator.userAgent && !navigator.userAgent.match('CriOS');
+    var isPhantom = !!window._phantom;
+    var useFallback = isPhantom && !!window.getMatchedCSSRules;
     /**
      * Unquotes specified value
      * Webkit-based browsers singlequotes <string> content property values
      * Other browsers doublequotes content property values.
      */
 
-    const removeContentQuotes = function (value) {
+    var removeContentQuotes = function removeContentQuotes(value) {
       if (typeof value === 'string') {
         return value.replace(/^(["'])([\s\S]*)\1$/, '$2');
       }
@@ -2867,17 +2873,17 @@ var ExtendedCss = (function () {
      */
 
 
-    const removeUrlQuotes = function (value) {
+    var removeUrlQuotes = function removeUrlQuotes(value) {
       if (typeof value !== 'string' || value.indexOf('url("') < 0) {
         return value;
       }
 
-      const re = /url\(\"(.*?)\"\)/g;
+      var re = /url\(\"(.*?)\"\)/g;
       return value.replace(re, 'url($1)');
     };
 
-    const getComputedStyle = window.getComputedStyle.bind(window);
-    const getMatchedCSSRules = useFallback ? window.getMatchedCSSRules.bind(window) : null;
+    var getComputedStyle = window.getComputedStyle.bind(window);
+    var getMatchedCSSRules = useFallback ? window.getMatchedCSSRules.bind(window) : null;
     /**
      * There is an issue in browsers based on old webkit:
      * getComputedStyle(el, ":before") is empty if element is not visible.
@@ -2893,18 +2899,18 @@ var ExtendedCss = (function () {
      * @param propertyName  CSS property name
      */
 
-    const getComputedStylePropertyValue = function (element, pseudoElement, propertyName) {
-      let value = '';
+    var getComputedStylePropertyValue = function getComputedStylePropertyValue(element, pseudoElement, propertyName) {
+      var value = '';
 
       if (useFallback && pseudoElement) {
-        const cssRules = getMatchedCSSRules(element, pseudoElement) || [];
-        let i = cssRules.length;
+        var cssRules = getMatchedCSSRules(element, pseudoElement) || [];
+        var i = cssRules.length;
 
         while (i-- > 0 && !value) {
           value = cssRules[i].style.getPropertyValue(propertyName);
         }
       } else {
-        const style = getComputedStyle(element, pseudoElement);
+        var style = getComputedStyle(element, pseudoElement);
 
         if (style) {
           value = style.getPropertyValue(propertyName); // https://bugs.webkit.org/show_bug.cgi?id=93445
@@ -2931,13 +2937,13 @@ var ExtendedCss = (function () {
      */
 
 
-    const Matcher = function (propertyFilter, pseudoElement) {
+    var Matcher = function Matcher(propertyFilter, pseudoElement) {
       this.pseudoElement = pseudoElement;
 
       try {
-        const index = propertyFilter.indexOf(':');
+        var index = propertyFilter.indexOf(':');
         this.propertyName = propertyFilter.substring(0, index).trim();
-        let pattern = propertyFilter.substring(index + 1).trim(); // Unescaping pattern
+        var pattern = propertyFilter.substring(index + 1).trim(); // Unescaping pattern
         // For non-regex patterns, (,),[,] should be unescaped, because we require escaping them in filter rules.
         // For regex patterns, ",\ should be escaped, because we manually escape those in extended-css-selector.js.
 
@@ -2949,7 +2955,7 @@ var ExtendedCss = (function () {
           this.regex = utils.createURLRegex(pattern);
         }
       } catch (ex) {
-        utils.logError(`StylePropertyMatcher: invalid match string ${propertyFilter}`);
+        utils.logError("StylePropertyMatcher: invalid match string ".concat(propertyFilter));
       }
     };
     /**
@@ -2963,7 +2969,7 @@ var ExtendedCss = (function () {
         return false;
       }
 
-      const value = getComputedStylePropertyValue(element, this.pseudoElement, this.propertyName);
+      var value = getComputedStylePropertyValue(element, this.pseudoElement, this.propertyName);
       return value && this.regex.test(value);
     };
     /**
@@ -2971,22 +2977,22 @@ var ExtendedCss = (function () {
      */
 
 
-    const extendSizzle = function (sizzle) {
+    var extendSizzle = function extendSizzle(sizzle) {
       // First of all we should prepare Sizzle engine
-      sizzle.selectors.pseudos['matches-css'] = sizzle.selectors.createPseudo(propertyFilter => {
-        const matcher = new Matcher(propertyFilter);
+      sizzle.selectors.pseudos['matches-css'] = sizzle.selectors.createPseudo(function (propertyFilter) {
+        var matcher = new Matcher(propertyFilter);
         return function (element) {
           return matcher.matches(element);
         };
       });
-      sizzle.selectors.pseudos['matches-css-before'] = sizzle.selectors.createPseudo(propertyFilter => {
-        const matcher = new Matcher(propertyFilter, ':before');
+      sizzle.selectors.pseudos['matches-css-before'] = sizzle.selectors.createPseudo(function (propertyFilter) {
+        var matcher = new Matcher(propertyFilter, ':before');
         return function (element) {
           return matcher.matches(element);
         };
       });
-      sizzle.selectors.pseudos['matches-css-after'] = sizzle.selectors.createPseudo(propertyFilter => {
-        const matcher = new Matcher(propertyFilter, ':after');
+      sizzle.selectors.pseudos['matches-css-after'] = sizzle.selectors.createPseudo(function (propertyFilter) {
+        var matcher = new Matcher(propertyFilter, ':after');
         return function (element) {
           return matcher.matches(element);
         };
@@ -2995,7 +3001,7 @@ var ExtendedCss = (function () {
 
 
     return {
-      extendSizzle
+      extendSizzle: extendSizzle
     };
   }(window);
 
@@ -3021,10 +3027,13 @@ var ExtendedCss = (function () {
    * https://github.com/AdguardTeam/ExtendedCss/blob/master/README.md
    */
 
-  const ExtendedSelectorFactory = function () {
-    const PSEUDO_EXTENSIONS_MARKERS = [':has', ':contains', ':has-text', ':matches-css', ':-abp-has', ':-abp-has-text', ':if', ':if-not', ':xpath', ':nth-ancestor'];
-    let initialized = false;
-    let Sizzle;
+  var ExtendedSelectorFactory = function () {
+    // while addind new markers, AdGuard extension code also should be corrected:
+    // 'CssFilterRule.SUPPORTED_PSEUDO_CLASSES' and 'CssFilterRule.EXTENDED_CSS_MARKERS'
+    // at Extension/lib/filter/rules/css-filter-rule.js
+    var PSEUDO_EXTENSIONS_MARKERS = [':has', ':contains', ':has-text', ':matches-css', ':-abp-has', ':-abp-has-text', ':if', ':if-not', ':xpath', ':nth-ancestor', ':upward'];
+    var initialized = false;
+    var Sizzle;
     /**
      * Lazy initialization of the ExtendedSelectorFactory and objects that might be necessary for creating and applying styles.
      * This method extends Sizzle engine that we use under the hood with our custom pseudo-classes.
@@ -3041,18 +3050,18 @@ var ExtendedCss = (function () {
 
       StylePropertyMatcher.extendSizzle(Sizzle); // Add :contains, :has-text, :-abp-contains support
 
-      const containsPseudo = Sizzle.selectors.createPseudo(text => {
+      var containsPseudo = Sizzle.selectors.createPseudo(function (text) {
         if (/^\s*\/.*\/[gmisuy]*\s*$/.test(text)) {
           text = text.trim();
-          const flagsIndex = text.lastIndexOf('/');
-          const flags = text.substring(flagsIndex + 1);
+          var flagsIndex = text.lastIndexOf('/');
+          var flags = text.substring(flagsIndex + 1);
           text = text.substr(0, flagsIndex + 1).slice(1, -1).replace(/\\([\\"])/g, '$1');
-          let regex;
+          var regex;
 
           try {
             regex = new RegExp(text, flags);
           } catch (e) {
-            throw new Error(`Invalid argument of :contains pseudo class: ${text}`);
+            throw new Error("Invalid argument of :contains pseudo class: ".concat(text));
           }
 
           return function (elem) {
@@ -3072,7 +3081,7 @@ var ExtendedCss = (function () {
       Sizzle.selectors.pseudos['if'] = Sizzle.selectors.pseudos['has'];
       Sizzle.selectors.pseudos['-abp-has'] = Sizzle.selectors.pseudos['has']; // Add :if-not support
 
-      Sizzle.selectors.pseudos['if-not'] = Sizzle.selectors.createPseudo(selector => {
+      Sizzle.selectors.pseudos['if-not'] = Sizzle.selectors.createPseudo(function (selector) {
         if (typeof selector === 'string') {
           Sizzle.compile(selector);
         }
@@ -3082,23 +3091,38 @@ var ExtendedCss = (function () {
         };
       }); // Define :xpath support in Sizzle, to make tokenize work properly
 
-      Sizzle.selectors.pseudos['xpath'] = Sizzle.selectors.createPseudo(selector => {
+      Sizzle.selectors.pseudos['xpath'] = Sizzle.selectors.createPseudo(function (selector) {
         try {
           document.createExpression(selector, null);
         } catch (e) {
-          throw new Error(`Invalid argument of :nth-ancestor pseudo class: ${selector}`);
+          throw new Error("Invalid argument of :xpath pseudo class: ".concat(selector));
         }
 
-        return () => true;
+        return function () {
+          return true;
+        };
       });
-      Sizzle.selectors.pseudos['nth-ancestor'] = Sizzle.selectors.createPseudo(selector => {
-        const deep = Number(selector);
+      Sizzle.selectors.pseudos['nth-ancestor'] = Sizzle.selectors.createPseudo(function (selector) {
+        var deep = Number(selector);
 
-        if (Number.isNaN(deep) || deep <= 0 || deep >= 256) {
-          throw new Error(`Invalid argument of :nth-ancestor pseudo class: ${selector}`);
+        if (Number.isNaN(deep) || deep < 1 || deep >= 256) {
+          throw new Error("Invalid argument of :nth-ancestor pseudo class: ".concat(selector));
         }
 
-        return () => true;
+        return function () {
+          return true;
+        };
+      });
+      Sizzle.selectors.pseudos['upward'] = Sizzle.selectors.createPseudo(function (input) {
+        if (input === '') {
+          throw new Error("Invalid argument of :upward pseudo class: ".concat(input));
+        } else if (Number.isInteger(input) && (input < 1 || input >= 256)) {
+          throw new Error("Invalid argument of :upward pseudo class: ".concat(input));
+        }
+
+        return function () {
+          return true;
+        };
       });
     }
     /**
@@ -3107,9 +3131,7 @@ var ExtendedCss = (function () {
 
 
     function isSimpleToken(token) {
-      const {
-        type
-      } = token;
+      var type = token.type;
 
       if (type === 'ID' || type === 'CLASS' || type === 'ATTR' || type === 'TAG' || type === 'CHILD') {
         // known simple tokens
@@ -3118,7 +3140,7 @@ var ExtendedCss = (function () {
 
       if (type === 'PSEUDO') {
         // check if value contains any of extended pseudo classes
-        let i = PSEUDO_EXTENSIONS_MARKERS.length;
+        var i = PSEUDO_EXTENSIONS_MARKERS.length;
 
         while (i--) {
           if (token.value.indexOf(PSEUDO_EXTENSIONS_MARKERS[i]) >= 0) {
@@ -3138,9 +3160,7 @@ var ExtendedCss = (function () {
 
 
     function isRelationToken(token) {
-      const {
-        type
-      } = token;
+      var type = token.type;
       return type === ' ' || type === '>' || type === '+' || type === '~';
     }
     /**
@@ -3181,31 +3201,42 @@ var ExtendedCss = (function () {
        * The main method, creates a selector instance depending on the type of a selector.
        * @public
        */
-      createSelector() {
-        const {
-          debug
-        } = this;
-        let {
-          tokens
-        } = this;
-        const {
-          selectorText
-        } = this;
+      createSelector: function createSelector() {
+        var debug = this.debug;
+        var tokens = this.tokens;
+        var selectorText = this.selectorText;
 
         if (tokens.length !== 1) {
           // Comma-separate selector - can't optimize further
           return new TraitLessSelector(selectorText, debug);
         }
 
-        const xpathPart = this.getXpathPart();
+        var xpathPart = this.getXpathPart();
 
         if (typeof xpathPart !== 'undefined') {
           return new XpathSelector(selectorText, xpathPart, debug);
         }
 
+        var upwardPart = this.getUpwardPart();
+
+        if (typeof upwardPart !== 'undefined') {
+          var output;
+          var upwardDeep = parseInt(upwardPart, 10); // if upward parameter is not a number, we consider it as a selector
+
+          if (Number.isNaN(upwardDeep)) {
+            output = new UpwardSelector(selectorText, upwardPart, debug);
+          } else {
+            // upward works like nth-ancestor
+            var xpath = this.convertNthAncestorToken(upwardDeep);
+            output = new XpathSelector(selectorText, xpath, debug);
+          }
+
+          return output;
+        }
+
         tokens = tokens[0];
-        const l = tokens.length;
-        const lastRelTokenInd = this.getSplitPoint();
+        var l = tokens.length;
+        var lastRelTokenInd = this.getSplitPoint();
 
         if (typeof lastRelTokenInd === 'undefined') {
           try {
@@ -3217,10 +3248,10 @@ var ExtendedCss = (function () {
           return new NotAnExtendedSelector(selectorText, debug);
         }
 
-        let simple = '';
-        let relation = null;
-        let complex = '';
-        let i = 0;
+        var simple = '';
+        var relation = null;
+        var complex = '';
+        var i = 0;
 
         for (; i < lastRelTokenInd; i++) {
           // build simple part
@@ -3247,15 +3278,15 @@ var ExtendedCss = (function () {
        * or it is not eligible for splitting.
        * Otherwise returns an integer indicating the index of the last relation token.
        */
-      getSplitPoint() {
-        const tokens = this.tokens[0]; // We split selector only when the last compound selector
+      getSplitPoint: function getSplitPoint() {
+        var tokens = this.tokens[0]; // We split selector only when the last compound selector
         // is the only extended selector.
 
-        let latestRelationTokenIndex = -1;
-        let haveMetComplexToken = false;
+        var latestRelationTokenIndex = -1;
+        var haveMetComplexToken = false;
 
-        for (let i = 0, l = tokens.length; i < l; i++) {
-          const token = tokens[i];
+        for (var i = 0, l = tokens.length; i < l; i++) {
+          var token = tokens[i];
 
           if (isRelationToken(token)) {
             if (haveMetComplexToken) {
@@ -3280,21 +3311,19 @@ var ExtendedCss = (function () {
        * @return {string|undefined} xpath selector part if exists
        * returns undefined if the selector does not contain xpath tokens
        */
-      getXpathPart() {
-        const tokens = this.tokens[0];
+      getXpathPart: function getXpathPart() {
+        var tokens = this.tokens[0];
 
-        for (let i = 0, tokensLength = tokens.length; i < tokensLength; i++) {
-          const token = tokens[i];
+        for (var i = 0, tokensLength = tokens.length; i < tokensLength; i++) {
+          var token = tokens[i];
 
           if (token.type === 'PSEUDO') {
-            const {
-              matches
-            } = token;
+            var matches = token.matches;
 
             if (matches && matches.length > 1) {
               if (matches[0] === 'xpath') {
                 if (i + 1 !== tokensLength) {
-                  throw new Error('Invalid pseudo: selector should finish with :xpath');
+                  throw new Error('Invalid pseudo: \':xpath\' should be at the end of the selector');
                 }
 
                 return matches[1];
@@ -3302,13 +3331,13 @@ var ExtendedCss = (function () {
 
               if (matches[0] === 'nth-ancestor') {
                 if (i + 1 !== tokensLength) {
-                  throw new Error('Invalid pseudo: selector should finish with :nth-ancestor');
+                  throw new Error('Invalid pseudo: \':nth-ancestor\' should be at the end of the selector');
                 }
 
-                const deep = matches[1];
+                var deep = matches[1];
 
                 if (deep > 0 && deep < 256) {
-                  return this.convertNthAncestorToken(matches[1]);
+                  return this.convertNthAncestorToken(deep);
                 }
               }
             }
@@ -3317,12 +3346,12 @@ var ExtendedCss = (function () {
       },
 
       /**
-       * converts nth-ancestor deep value to xpath equivalent
-       * @param deep
+       * converts nth-ancestor/upward deep value to xpath equivalent
+       * @param {number} deep
        * @return {string}
        */
-      convertNthAncestorToken(deep) {
-        let result = '..';
+      convertNthAncestorToken: function convertNthAncestorToken(deep) {
+        var result = '..';
 
         while (deep > 1) {
           result += '/..';
@@ -3330,10 +3359,36 @@ var ExtendedCss = (function () {
         }
 
         return result;
-      }
+      },
 
+      /**
+       * @private
+       * @return {string|undefined} upward parameter
+       * or undefined if the input does not contain upward tokens
+       */
+      getUpwardPart: function getUpwardPart() {
+        var tokens = this.tokens[0];
+
+        for (var i = 0, tokensLength = tokens.length; i < tokensLength; i++) {
+          var token = tokens[i];
+
+          if (token.type === 'PSEUDO') {
+            var matches = token.matches;
+
+            if (matches && matches.length > 1) {
+              if (matches[0] === 'upward') {
+                if (i + 1 !== tokensLength) {
+                  throw new Error('Invalid pseudo: \':upward\' should be at the end of the selector');
+                }
+
+                return matches[1];
+              }
+            }
+          }
+        }
+      }
     };
-    let globalDebuggingFlag = false;
+    var globalDebuggingFlag = false;
 
     function isDebugging() {
       return globalDebuggingFlag || this.debug;
@@ -3352,15 +3407,13 @@ var ExtendedCss = (function () {
     }
 
     NotAnExtendedSelector.prototype = {
-      querySelectorAll() {
+      querySelectorAll: function querySelectorAll() {
         return document.querySelectorAll(this.selectorText);
       },
-
-      matches(element) {
+      matches: function matches(element) {
         return element[utils.matchesPropertyName](this.selectorText);
       },
-
-      isDebugging
+      isDebugging: isDebugging
     };
     /**
      * A trait-less extended selector class.
@@ -3376,17 +3429,17 @@ var ExtendedCss = (function () {
     }
 
     TraitLessSelector.prototype = {
-      querySelectorAll() {
+      querySelectorAll: function querySelectorAll() {
         return Sizzle(this.selectorText);
       },
 
       /** @final */
-      matches(element) {
+      matches: function matches(element) {
         return Sizzle.matchesSelector(element, this.selectorText);
       },
 
       /** @final */
-      isDebugging
+      isDebugging: isDebugging
     };
     /**
      * Xpath selector class
@@ -3394,7 +3447,7 @@ var ExtendedCss = (function () {
      *
      * @param {string} selectorText
      * @param {string} xpath value
-     * @param {boolean=}debug
+     * @param {boolean=} debug
      * @constructor
      */
 
@@ -3407,9 +3460,11 @@ var ExtendedCss = (function () {
     }
 
     XpathSelector.prototype = {
-      querySelectorAll() {
-        const resultNodes = [];
-        let simpleNodes;
+      querySelectorAll: function querySelectorAll() {
+        var _this = this;
+
+        var resultNodes = [];
+        var simpleNodes;
 
         if (this.selectorText) {
           simpleNodes = Sizzle(this.selectorText);
@@ -3421,21 +3476,20 @@ var ExtendedCss = (function () {
           simpleNodes = [document];
         }
 
-        for (const node of simpleNodes) {
-          this.xpathSearch(node, this.xpath, resultNodes);
-        }
-
+        simpleNodes.forEach(function (node) {
+          _this.xpathSearch(node, _this.xpath, resultNodes);
+        });
         return Sizzle.uniqueSort(resultNodes);
       },
 
       /** @final */
-      matches(element) {
-        const results = this.querySelectorAll();
+      matches: function matches(element) {
+        var results = this.querySelectorAll();
         return results.indexOf(element) > -1;
       },
 
       /** @final */
-      isDebugging,
+      isDebugging: isDebugging,
 
       /**
        * Applies xpath to provided context node
@@ -3444,15 +3498,89 @@ var ExtendedCss = (function () {
        * @param {string} xpath
        * @param {Array} result
        */
-      xpathSearch(node, xpath, result) {
-        const xpathResult = document.evaluate(xpath, node, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
-        let iNode; // eslint-disable-next-line no-cond-assign
+      xpathSearch: function xpathSearch(node, xpath, result) {
+        var xpathResult = document.evaluate(xpath, node, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
+        var iNode; // eslint-disable-next-line no-cond-assign
 
         while (iNode = xpathResult.iterateNext()) {
           result.push(iNode);
         }
       }
+    };
+    /**
+     * Upward selector class
+     * Limited to support upward to be only the last one token in selector
+     *
+     * @param {string} selectorText
+     * @param {string} upwardSelector value
+     * @param {boolean=} debug
+     * @constructor
+     */
 
+    function UpwardSelector(selectorText, upwardSelector, debug) {
+      // Xpath is limited to be the last one token
+      this.selectorText = selectorText;
+      this.upwardSelector = upwardSelector;
+      this.debug = debug;
+      Sizzle.compile(this.selectorText);
+    }
+
+    UpwardSelector.prototype = {
+      querySelectorAll: function querySelectorAll() {
+        var _this2 = this;
+
+        var resultNodes = [];
+        var simpleNodes;
+
+        if (this.selectorText) {
+          simpleNodes = Sizzle(this.selectorText);
+
+          if (!simpleNodes || !simpleNodes.length) {
+            return resultNodes;
+          }
+        } else {
+          simpleNodes = [document];
+        }
+
+        simpleNodes.forEach(function (node) {
+          _this2.upwardSearch(node, _this2.upwardSelector, resultNodes);
+        });
+        return Sizzle.uniqueSort(resultNodes);
+      },
+
+      /** @final */
+      matches: function matches(element) {
+        var results = this.querySelectorAll();
+        return results.indexOf(element) > -1;
+      },
+
+      /** @final */
+      isDebugging: isDebugging,
+
+      /**
+       * Applies upwardSelector to provided context node
+       *
+       * @param {Object} node context element
+       * @param {string} upwardSelector
+       * @param {Array} result
+       */
+      upwardSearch: function upwardSearch(node, upwardSelector, result) {
+        if (upwardSelector !== '') {
+          var parent = node.parentElement;
+
+          if (parent === null) {
+            return;
+          }
+
+          node = parent.closest(upwardSelector);
+
+          if (node === null) {
+            return;
+          }
+        }
+
+        result.push(node);
+      }
     };
     /**
      * A splitted extended selector class.
@@ -3484,12 +3612,12 @@ var ExtendedCss = (function () {
     /** @override */
 
     SplittedSelector.prototype.querySelectorAll = function () {
-      const resultNodes = [];
-      let simpleNodes;
-      const {
-        simple
-      } = this;
-      let relation;
+      var _this3 = this;
+
+      var resultNodes = [];
+      var simpleNodes;
+      var simple = this.simple;
+      var relation;
 
       if (simple) {
         // First we use simple selector to narrow our search
@@ -3507,64 +3635,46 @@ var ExtendedCss = (function () {
 
       switch (relation) {
         case ' ':
-          for (const node of simpleNodes) {
-            this.relativeSearch(node, resultNodes);
-          }
-
+          simpleNodes.forEach(function (node) {
+            _this3.relativeSearch(node, resultNodes);
+          });
           break;
 
         case '>':
           {
-            for (const node of simpleNodes) {
-              for (const childNode of node.children) {
-                if (this.matches(childNode)) {
+            simpleNodes.forEach(function (node) {
+              Object.values(node.children).forEach(function (childNode) {
+                if (_this3.matches(childNode)) {
                   resultNodes.push(childNode);
                 }
-              }
-            }
-
+              });
+            });
             break;
           }
 
         case '+':
           {
-            for (const node of simpleNodes) {
-              const {
-                parentNode
-              } = node;
-
-              if (!parentNode) {
-                continue;
-              }
-
-              for (const childNode of parentNode.children) {
-                if (this.matches(childNode) && childNode.previousElementSibling === node) {
+            simpleNodes.forEach(function (node) {
+              var parentNode = node.parentNode;
+              Object.values(parentNode.children).forEach(function (childNode) {
+                if (_this3.matches(childNode) && childNode.previousElementSibling === node) {
                   resultNodes.push(childNode);
                 }
-              }
-            }
-
+              });
+            });
             break;
           }
 
         case '~':
           {
-            for (const node of simpleNodes) {
-              const {
-                parentNode
-              } = node;
-
-              if (!parentNode) {
-                continue;
-              }
-
-              for (const childNode of parentNode.children) {
-                if (this.matches(childNode) && node.compareDocumentPosition(childNode) === 4) {
+            simpleNodes.forEach(function (node) {
+              var parentNode = node.parentNode;
+              Object.values(parentNode.children).forEach(function (childNode) {
+                if (_this3.matches(childNode) && node.compareDocumentPosition(childNode) === 4) {
                   resultNodes.push(childNode);
                 }
-              }
-            }
-
+              });
+            });
             break;
           }
       }
@@ -3586,7 +3696,7 @@ var ExtendedCss = (function () {
       /**
        * Wraps the inner class so that the instance is not exposed.
        */
-      createSelector(selector, tokens, debug) {
+      createSelector: function createSelector(selector, tokens, debug) {
         return new ExtendedSelectorParser(selector, tokens, debug).createSelector();
       },
 
@@ -3594,10 +3704,9 @@ var ExtendedCss = (function () {
        * Mark every selector as a selector being debugged, so that timing information
        * for the selector is printed to the console.
        */
-      enableGlobalDebugging() {
+      enableGlobalDebugging: function enableGlobalDebugging() {
         globalDebuggingFlag = true;
       }
-
     };
   }();
 
@@ -3622,11 +3731,11 @@ var ExtendedCss = (function () {
    * Please note, that it does not support any complex things like media queries and such.
    */
 
-  const ExtendedCssParser = function () {
-    const reDeclEnd = /[;}]/g;
-    const reDeclDivider = /[;:}]/g;
-    const reNonWhitespace = /\S/g;
-    let Sizzle;
+  var ExtendedCssParser = function () {
+    var reDeclEnd = /[;}]/g;
+    var reDeclDivider = /[;:}]/g;
+    var reNonWhitespace = /\S/g;
+    var Sizzle;
     /**
      * @param {string} cssText
      * @constructor
@@ -3637,8 +3746,8 @@ var ExtendedCss = (function () {
     }
 
     Parser.prototype = {
-      error(position) {
-        throw new Error(`CssParser: parse error at position ${this.posOffset + position}`);
+      error: function error(position) {
+        throw new Error("CssParser: parse error at position ".concat(this.posOffset + position));
       },
 
       /**
@@ -3649,18 +3758,16 @@ var ExtendedCss = (function () {
        * @param {*} selectors An array of SelectorData (selector, groups)
        * @returns {boolean} false if any of the groups are invalid
        */
-      validateSelectors(selectors) {
-        let iSelectors = selectors.length;
+      validateSelectors: function validateSelectors(selectors) {
+        var iSelectors = selectors.length;
 
         while (iSelectors--) {
-          const {
-            groups
-          } = selectors[iSelectors];
-          let iGroups = groups.length;
+          var groups = selectors[iSelectors].groups;
+          var iGroups = groups.length;
 
           while (iGroups--) {
-            const tokens = groups[iGroups];
-            const lastToken = tokens[tokens.length - 1];
+            var tokens = groups[iGroups];
+            var lastToken = tokens[tokens.length - 1];
 
             if (Sizzle.selectors.relative[lastToken.type]) {
               return false;
@@ -3683,22 +3790,22 @@ var ExtendedCss = (function () {
        *
        * @returns {Array.<ExtendedStyle>} An array of the styles parsed
        */
-      parseCss() {
+      parseCss: function parseCss() {
         this.posOffset = 0;
 
         if (!this.cssText) {
           this.error(0);
         }
 
-        const results = [];
+        var results = [];
 
         while (this.cssText) {
           // Apply tolerant tokenization.
-          const parseResult = Sizzle.tokenize(this.cssText, false, {
+          var parseResult = Sizzle.tokenize(this.cssText, false, {
             tolerant: true,
             returnUnsorted: true
           });
-          const selectorData = parseResult.selectors;
+          var selectorData = parseResult.selectors;
           this.nextIndex = parseResult.nextIndex;
 
           if (this.cssText.charCodeAt(this.nextIndex) !== 123 ||
@@ -3709,11 +3816,11 @@ var ExtendedCss = (function () {
 
           this.nextIndex++; // Move the pointer to the start of style declaration.
 
-          const styleMap = this.parseNextStyle();
-          let debug = false; // If there is a style property 'debug', mark the selector
+          var styleMap = this.parseNextStyle();
+          var debug = false; // If there is a style property 'debug', mark the selector
           // as a debuggable selector, and delete the style declaration.
 
-          const debugPropertyValue = styleMap['debug'];
+          var debugPropertyValue = styleMap['debug'];
 
           if (typeof debugPropertyValue !== 'undefined') {
             if (debugPropertyValue === 'global') {
@@ -3726,37 +3833,36 @@ var ExtendedCss = (function () {
           // This is quite important as Sizzle does a poor job at executing selectors like "selector1, selector2".
 
 
-          for (let i = 0, l = selectorData.length; i < l; i++) {
-            const data = selectorData[i];
+          for (var i = 0, l = selectorData.length; i < l; i++) {
+            var data = selectorData[i];
 
             try {
-              const extendedSelector = ExtendedSelectorFactory.createSelector(data.selectorText, data.groups, debug);
+              var extendedSelector = ExtendedSelectorFactory.createSelector(data.selectorText, data.groups, debug);
               results.push({
                 selector: extendedSelector,
                 style: styleMap
               });
             } catch (ex) {
-              utils.logError(`ExtendedCssParser: ignoring invalid selector ${data.selectorText}`);
+              utils.logError("ExtendedCssParser: ignoring invalid selector ".concat(data.selectorText));
             }
           }
         }
 
         return results;
       },
-
-      parseNextStyle() {
-        const styleMap = Object.create(null);
-        const bracketPos = this.parseUntilClosingBracket(styleMap); // Cut out matched portion from cssText.
+      parseNextStyle: function parseNextStyle() {
+        var styleMap = Object.create(null);
+        var bracketPos = this.parseUntilClosingBracket(styleMap); // Cut out matched portion from cssText.
 
         reNonWhitespace.lastIndex = bracketPos + 1;
-        const match = reNonWhitespace.exec(this.cssText);
+        var match = reNonWhitespace.exec(this.cssText);
 
         if (match === null) {
           this.cssText = '';
           return styleMap;
         }
 
-        const matchPos = match.index;
+        var matchPos = match.index;
         this.cssText = this.cssText.slice(matchPos);
         this.posOffset += matchPos;
         return styleMap;
@@ -3765,24 +3871,24 @@ var ExtendedCss = (function () {
       /**
        * @return {number} an index of the next '}' in `this.cssText`.
        */
-      parseUntilClosingBracket(styleMap) {
+      parseUntilClosingBracket: function parseUntilClosingBracket(styleMap) {
         // Expects ":", ";", and "}".
         reDeclDivider.lastIndex = this.nextIndex;
-        let match = reDeclDivider.exec(this.cssText);
+        var match = reDeclDivider.exec(this.cssText);
 
         if (match === null) {
           this.error(this.nextIndex);
         }
 
-        let matchPos = match.index;
-        let matched = match[0];
+        var matchPos = match.index;
+        var matched = match[0];
 
         if (matched === '}') {
           return matchPos;
         }
 
         if (matched === ':') {
-          const colonIndex = matchPos; // Expects ";" and "}".
+          var colonIndex = matchPos; // Expects ";" and "}".
 
           reDeclEnd.lastIndex = colonIndex;
           match = reDeclEnd.exec(this.cssText);
@@ -3794,8 +3900,8 @@ var ExtendedCss = (function () {
           matchPos = match.index;
           matched = match[0]; // Populates the `styleMap` key-value map.
 
-          const property = this.cssText.slice(this.nextIndex, colonIndex).trim();
-          const value = this.cssText.slice(colonIndex + 1, matchPos).trim();
+          var property = this.cssText.slice(this.nextIndex, colonIndex).trim();
+          var value = this.cssText.slice(colonIndex + 1, matchPos).trim();
           styleMap[property] = value; // If found "}", re-run the outer loop.
 
           if (matched === '}') {
@@ -3808,32 +3914,15 @@ var ExtendedCss = (function () {
         this.nextIndex = matchPos + 1;
         return this.parseUntilClosingBracket(styleMap); // Should be a subject of tail-call optimization.
       }
-
     };
     return {
-      parseCss(cssText) {
+      parseCss: function parseCss(cssText) {
         Sizzle = initializeSizzle();
         return new Parser(cssUtils.normalize(cssText)).parseCss();
       }
-
     };
   }();
 
-  /**
-   * Copyright 2016 Adguard Software Ltd
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   */
   /**
    * This callback is used to get affected node elements and handle style properties
    * before they are applied to them if it is necessary
@@ -3856,68 +3945,63 @@ var ExtendedCss = (function () {
       throw new Error('Configuration is not provided.');
     }
 
-    const {
-      styleSheet
-    } = configuration;
-    const {
-      beforeStyleApplied
-    } = configuration;
+    var styleSheet = configuration.styleSheet;
+    var beforeStyleApplied = configuration.beforeStyleApplied;
 
     if (beforeStyleApplied && typeof beforeStyleApplied !== 'function') {
       // eslint-disable-next-line max-len
-      throw new Error(`Wrong configuration. Type of 'beforeStyleApplied' field should be a function, received: ${typeof beforeStyleApplied}`);
+      throw new Error("Wrong configuration. Type of 'beforeStyleApplied' field should be a function, received: ".concat(_typeof(beforeStyleApplied)));
     } // We use EventTracker to track the event that is likely to cause the mutation.
     // The problem is that we cannot use `window.event` directly from the mutation observer call
     // as we're not in the event handler context anymore.
 
 
-    const EventTracker = function () {
-      const ignoredEventTypes = ['mouseover', 'mouseleave', 'mouseenter', 'mouseout'];
-      const LAST_EVENT_TIMEOUT_MS = 10;
-      const TRACKED_EVENTS = [// keyboard events
+    var EventTracker = function () {
+      var ignoredEventTypes = ['mouseover', 'mouseleave', 'mouseenter', 'mouseout'];
+      var LAST_EVENT_TIMEOUT_MS = 10;
+      var TRACKED_EVENTS = [// keyboard events
       'keydown', 'keypress', 'keyup', // mouse events
       'auxclick', 'click', 'contextmenu', 'dblclick', 'mousedown', 'mouseenter', 'mouseleave', 'mousemove', 'mouseover', 'mouseout', 'mouseup', 'pointerlockchange', 'pointerlockerror', 'select', 'wheel'];
-      let lastEventType;
-      let lastEventTime;
+      var lastEventType;
+      var lastEventTime;
 
-      const trackEvent = function (e) {
+      var trackEvent = function trackEvent(e) {
         lastEventType = e.type;
         lastEventTime = Date.now();
       };
 
-      for (const evName of TRACKED_EVENTS) {
+      TRACKED_EVENTS.forEach(function (evName) {
         document.documentElement.addEventListener(evName, trackEvent, true);
-      }
+      });
 
-      const getLastEventType = function () {
+      var getLastEventType = function getLastEventType() {
         return lastEventType;
       };
 
-      const getTimeSinceLastEvent = function () {
+      var getTimeSinceLastEvent = function getTimeSinceLastEvent() {
         return Date.now() - lastEventTime;
       };
 
       return {
-        isIgnoredEventType() {
+        isIgnoredEventType: function isIgnoredEventType() {
           return ignoredEventTypes.indexOf(getLastEventType()) > -1 && getTimeSinceLastEvent() < LAST_EVENT_TIMEOUT_MS;
         }
-
       };
     }();
 
-    let rules = [];
-    const affectedElements = [];
-    const removalsStatistic = {};
-    let domObserved;
-    const eventListenerSupported = window.addEventListener;
-    let domMutationObserver;
+    var rules = [];
+    var affectedElements = [];
+    var removalsStatistic = {};
+    var domObserved;
+    var eventListenerSupported = window.addEventListener;
+    var domMutationObserver;
 
     function observeDocument(callback) {
       // We are trying to limit the number of callback calls by not calling it on all kind of "hover" events.
       // The rationale behind this is that "hover" events often cause attributes modification,
       // but re-applying extCSS rules will be useless as these attribute changes are usually transient.
-      const isIgnoredMutation = function (mutations) {
-        for (let i = 0; i < mutations.length; i += 1) {
+      var isIgnoredMutation = function isIgnoredMutation(mutations) {
+        for (var i = 0; i < mutations.length; i += 1) {
           if (mutations.type !== 'attributes') {
             return false;
           }
@@ -3927,7 +4011,7 @@ var ExtendedCss = (function () {
       };
 
       if (utils.MutationObserver) {
-        domMutationObserver = new utils.MutationObserver(mutations => {
+        domMutationObserver = new utils.MutationObserver(function (mutations) {
           if (!mutations || mutations.length === 0) {
             return;
           }
@@ -3961,8 +4045,8 @@ var ExtendedCss = (function () {
       }
     }
 
-    const MAX_STYLE_PROTECTION_COUNT = 50;
-    const protectionObserverOption = {
+    var MAX_STYLE_PROTECTION_COUNT = 50;
+    var protectionObserverOption = {
       attributes: true,
       attributeOldValue: true,
       attributeFilter: ['style']
@@ -3980,12 +4064,10 @@ var ExtendedCss = (function () {
           return;
         }
 
-        const mutation = mutations[0];
-        const {
-          target
-        } = mutation;
+        var mutation = mutations[0];
+        var target = mutation.target;
         observer.disconnect();
-        styles.forEach(style => {
+        styles.forEach(function (style) {
           setStyleToElement(target, style);
         });
 
@@ -4011,8 +4093,10 @@ var ExtendedCss = (function () {
         return null;
       }
 
-      const styles = rules.map(r => r.style);
-      const protectionObserver = new utils.MutationObserver(createProtectionFunction(styles));
+      var styles = rules.map(function (r) {
+        return r.style;
+      });
+      var protectionObserver = new utils.MutationObserver(createProtectionFunction(styles));
       protectionObserver.observe(node, protectionObserverOption); // Adds an expando to the observer to keep 'style fix counts'.
 
       protectionObserver.styleProtectionCount = 0;
@@ -4020,7 +4104,7 @@ var ExtendedCss = (function () {
     }
 
     function removeSuffix(str, suffix) {
-      const index = str.indexOf(suffix, str.length - suffix.length);
+      var index = str.indexOf(suffix, str.length - suffix.length);
 
       if (index >= 0) {
         return str.substring(0, index);
@@ -4036,9 +4120,31 @@ var ExtendedCss = (function () {
 
 
     function findAffectedElement(node) {
-      for (const affectedElement of affectedElements) {
-        if (affectedElement.node === node) {
-          return affectedElement;
+      // eslint-disable-next-line no-restricted-syntax
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = affectedElements[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var affectedElement = _step.value;
+
+          if (affectedElement.node === node) {
+            return affectedElement;
+          }
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return != null) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
         }
       }
 
@@ -4046,13 +4152,11 @@ var ExtendedCss = (function () {
     }
 
     function removeElement(affectedElement) {
-      const {
-        node
-      } = affectedElement;
+      var node = affectedElement.node;
       affectedElement.removed = true;
-      const elementSelector = utils.getNodeSelector(node); // check if the element has been already removed earlier
+      var elementSelector = utils.getNodeSelector(node); // check if the element has been already removed earlier
 
-      const elementRemovalsCounter = removalsStatistic[elementSelector] || 0; // if removals attempts happened more than specified we do not try to remove node again
+      var elementRemovalsCounter = removalsStatistic[elementSelector] || 0; // if removals attempts happened more than specified we do not try to remove node again
 
       if (elementRemovalsCounter > MAX_STYLE_PROTECTION_COUNT) {
         utils.logError('ExtendedCss: infinite loop protection for SELECTOR', elementSelector);
@@ -4084,14 +4188,11 @@ var ExtendedCss = (function () {
         }
       }
 
-      const {
-        node
-      } = affectedElement;
+      var _affectedElement = affectedElement,
+          node = _affectedElement.node;
 
-      for (let i = 0; i < affectedElement.rules.length; i++) {
-        const {
-          style
-        } = affectedElement.rules[i];
+      for (var i = 0; i < affectedElement.rules.length; i++) {
+        var style = affectedElement.rules[i].style;
 
         if (style['remove'] === 'true') {
           removeElement(affectedElement);
@@ -4109,16 +4210,16 @@ var ExtendedCss = (function () {
 
 
     function setStyleToElement(node, style) {
-      for (const prop in style) {
+      Object.keys(style).forEach(function (prop) {
         // Apply this style only to existing properties
         // We can't use hasOwnProperty here (does not work in FF)
         if (typeof node.style.getPropertyValue(prop) !== 'undefined') {
-          let value = style[prop]; // First we should remove !important attribute (or it won't be applied')
+          var value = style[prop]; // First we should remove !important attribute (or it won't be applied')
 
           value = removeSuffix(value.trim(), '!important').trim();
           node.style.setProperty(prop, value, 'important');
         }
-      }
+      });
     }
     /**
      * Reverts style for the affected object
@@ -4140,33 +4241,30 @@ var ExtendedCss = (function () {
 
 
     function applyRule(rule) {
-      const debug = rule.selector.isDebugging();
-      let start;
+      var debug = rule.selector.isDebugging();
+      var start;
 
       if (debug) {
         start = utils.AsyncWrapper.now();
       }
 
-      const {
-        selector
-      } = rule;
-      const nodes = selector.querySelectorAll();
-
-      for (const node of nodes) {
-        let affectedElement = findAffectedElement(node);
+      var selector = rule.selector;
+      var nodes = selector.querySelectorAll();
+      nodes.forEach(function (node) {
+        var affectedElement = findAffectedElement(node);
 
         if (affectedElement) {
           affectedElement.rules.push(rule);
           applyStyle(affectedElement);
         } else {
           // Applying style first time
-          const originalStyle = node.style.cssText;
+          var originalStyle = node.style.cssText;
           affectedElement = {
-            node,
+            node: node,
             // affected DOM node
             rules: [rule],
             // rules to be applied
-            originalStyle,
+            originalStyle: originalStyle,
             // original node style
             protectionObserver: null // style attribute observer
 
@@ -4174,10 +4272,10 @@ var ExtendedCss = (function () {
           applyStyle(affectedElement);
           affectedElements.push(affectedElement);
         }
-      }
+      });
 
       if (debug) {
-        const elapsed = utils.AsyncWrapper.now() - start;
+        var elapsed = utils.AsyncWrapper.now() - start;
 
         if (!('timingStats' in rule)) {
           rule.timingStats = new utils.Stats();
@@ -4194,22 +4292,20 @@ var ExtendedCss = (function () {
 
 
     function applyRules() {
-      const elementsIndex = []; // some rules could make call - selector.querySelectorAll() temporarily to change node id attribute
+      var elementsIndex = []; // some rules could make call - selector.querySelectorAll() temporarily to change node id attribute
       // this caused MutationObserver to call recursively
       // https://github.com/AdguardTeam/ExtendedCss/issues/81
 
       stopObserve();
-
-      for (const rule of rules) {
-        const nodes = applyRule(rule);
+      rules.forEach(function (rule) {
+        var nodes = applyRule(rule);
         Array.prototype.push.apply(elementsIndex, nodes);
-      } // Now revert styles for elements which are no more affected
+      }); // Now revert styles for elements which are no more affected
 
-
-      let l = affectedElements.length;
+      var l = affectedElements.length;
 
       while (l--) {
-        const obj = affectedElements[l];
+        var obj = affectedElements[l];
 
         if (elementsIndex.indexOf(obj.node) === -1) {
           // Time to revert style
@@ -4229,9 +4325,9 @@ var ExtendedCss = (function () {
       printTimingInfo();
     }
 
-    const APPLY_RULES_DELAY = 150;
-    const applyRulesScheduler = new utils.AsyncWrapper(applyRules, APPLY_RULES_DELAY);
-    const mainCallback = applyRulesScheduler.run.bind(applyRulesScheduler);
+    var APPLY_RULES_DELAY = 150;
+    var applyRulesScheduler = new utils.AsyncWrapper(applyRules, APPLY_RULES_DELAY);
+    var mainCallback = applyRulesScheduler.run.bind(applyRulesScheduler);
 
     function observe() {
       if (domObserved) {
@@ -4266,13 +4362,12 @@ var ExtendedCss = (function () {
 
     function dispose() {
       stopObserve();
-
-      for (const obj of affectedElements) {
+      affectedElements.forEach(function (obj) {
         revertStyle(obj);
-      }
+      });
     }
 
-    let timingsPrinted = false;
+    var timingsPrinted = false;
     /**
      * Prints timing information for all selectors marked as "debug"
      */
@@ -4283,10 +4378,14 @@ var ExtendedCss = (function () {
       }
 
       timingsPrinted = true;
-      const timings = rules.filter(rule => rule.selector.isDebugging()).map(rule => ({
-        selectorText: rule.selector.selectorText,
-        timingStats: rule.timingStats
-      }));
+      var timings = rules.filter(function (rule) {
+        return rule.selector.isDebugging();
+      }).map(function (rule) {
+        return {
+          selectorText: rule.selector.selectorText,
+          timingStats: rule.timingStats
+        };
+      });
 
       if (timings.length === 0) {
         return;
@@ -4322,18 +4421,16 @@ var ExtendedCss = (function () {
       throw new Error('Selector text is empty');
     }
 
-    const {
-      now
-    } = utils.AsyncWrapper;
-    const start = now();
+    var now = utils.AsyncWrapper.now;
+    var start = now();
 
     try {
       return ExtendedSelectorFactory.createSelector(selectorText).querySelectorAll();
     } finally {
-      const end = now();
+      var end = now();
 
       if (!noTiming) {
-        utils.logInfo(`[ExtendedCss] Elapsed: ${Math.round((end - start) * 1000)} μs.`);
+        utils.logInfo("[ExtendedCss] Elapsed: ".concat(Math.round((end - start) * 1000), " \u03BCs."));
       }
     }
   };
