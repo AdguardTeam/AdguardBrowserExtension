@@ -826,7 +826,7 @@ QUnit.test('Request filter finds rules for domains with "." in the end', (assert
 
 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1534
 QUnit.test('In case request has "DOCUMENT" type - $domain modifier will match as well request URL hostname', (assert) => {
-    const urlRuleText = '||check.com/url$domain=example.org|check.com';
+    const urlRuleText = '|http://$third-party,domain=example.org';
     const urlRule = new adguard.rules.UrlFilterRule(urlRuleText);
 
     const requestFilter = new adguard.RequestFilter();
@@ -841,32 +841,23 @@ QUnit.test('In case request has "DOCUMENT" type - $domain modifier will match as
 
     assert.equal(rule.ruleText, urlRuleText);
 
-    // request url doesn't match
-    rule = requestFilter.findRuleForRequest(
-        'http://another.org/url',
-        'http://www.example.org/',
-        adguard.RequestTypes.DOCUMENT
-    );
-
-    assert.notOk(rule);
-
     // Will match request url host
     rule = requestFilter.findRuleForRequest(
-        'http://check.com/url',
+        'http://www.example.org/url',
         'http://test.com/',
         adguard.RequestTypes.DOCUMENT
     );
 
     assert.equal(rule.ruleText, urlRuleText);
 
-    // Will match request url host
+    // Request type DOCUMENT is required
     rule = requestFilter.findRuleForRequest(
         'http://check.com/url',
         'http://test.com/',
         adguard.RequestTypes.SUBDOCUMENT
     );
 
-    assert.equal(rule.ruleText, urlRuleText);
+    assert.notOk(rule);
 
     // Request type DOCUMENT is required
     rule = requestFilter.findRuleForRequest(
