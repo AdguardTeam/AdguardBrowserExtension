@@ -1,8 +1,8 @@
-! Checksum: u7DsEWoZzVXfWSkLcwX/aw
-! Title: AdGuard Dutch filter
+! Checksum: vMvqPnO7ysSJTm7gXGKUbQ
+! Title: AdGuard Dutch filter (Optimized)
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.0.76
-! TimeUpdated: 2020-03-05T17:32:09+03:00
+! Version: 2.0.0.84
+! TimeUpdated: 2020-06-02T00:03:59+03:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -1301,6 +1301,9 @@ tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
 ||widget.igcdn.nl^$third-party
 ||wwa.pacific-yield.com^$third-party
 @@/ad_pics/*$image,domain=computerworld.nl|webwereld.nl
+hardware.info#@#.AdBar
+@@||content.hwigroup.net/images/*/adinclude/$domain=hardware.info
+forum.fok.nl#%#//scriptlet("set-constant", "DAB", "noopFunc")
 ||knack.be/js/responsive/rmgAdCheck.js
 indeleiderstrui.nl#%#Object.defineProperty(Object.prototype, 'disableAb', { get: function() { throw null; }, set: function() { throw null; } });
 indeleiderstrui.nl#%#AG_abortInlineScript(/Flags\.newInject/, 'window.Math');
@@ -1349,6 +1352,9 @@ klusidee.nl#?#tr.table-row[-ext-has=".td-ad"]
 omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3000px!important; }
 handbalstartpunt.nl#$##advertentie-top { height: 0!important; }
 omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
+forum.fok.nl###wa_web_headertofloor
+nu.nl###header > .zone
+telegraaf.nl##.VideoArticlePage__banner
 almere-nieuws.nl##header #mvp-leader-wrap
 almere-nieuws.nl###footer-container > #footer-banners + #footer-text
 ||almere-nieuws.nl/banners_*.html
@@ -1430,7 +1436,7 @@ afkortingen.nu##.banner
 marktplaats.nl##.banner-vipbottom
 nu.nl##.block.advertoriallist
 tvgids.nl##.interstitial_banner
-weeronline.nl##.leaderboard
+hardware.info,weeronline.nl##.leaderboard
 funx.nl##.leaderboard-container
 ondertitel.com##.leaderbord-container
 nu.nl##.section-mediapartner-external.source-normal
@@ -1456,6 +1462,9 @@ klusidee.nl##td.td-ad
 ||vlinderscrime.nl/wp-content/uploads/*/*banner*.
 !+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
 voipsipclient.blogspot.nl##.adsbygoogle
+@@||markup.nieuwsblad.be/extra/assets/advertising/dfp-setup.js
+@@||markup.nieuwsblad.be/extra/assets/advertising/prebid.js
+||securepubads.g.doubleclick.net/tag/js/gpt.js$script,redirect=googletagservices-gpt,domain=nieuwsblad.be
 @@||securepubads.g.doubleclick.net/gpt/pubads_impl_*.js$domain=standaard.be
 @@||securepubads.g.doubleclick.net/tag/js/gpt.js$domain=standaard.be
 @@||markup.standaard.be/extra/assets/advertising/dfp-setup.js
