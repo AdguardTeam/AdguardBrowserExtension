@@ -715,6 +715,8 @@ adguard.antiBannerService = (function (adguard) {
         const loadAllFilterRulesDone = function () {
             adguard.console.info('Finished loading filter rules from the storage in {0} ms', (new Date().getTime() - start));
             onFiltersLoadedFromStorage(rulesFilterMap, callback);
+
+            adguard.application.startEngine(rulesFilterMap);
         };
 
         /**
