@@ -22,19 +22,23 @@
  * Removes track-able data from extension initiated requests
  */
 (function (adguard) {
-    const BACKEND_HOST = 'adtidy.org';
+    /**
+     * Returns extension's full url
+     */
+    const extensionUrl = (function () {
+        const url = adguard.getURL('');
+        return url.substring(0, url.length - 1);
+    })();
 
     /**
-     * Checks if request was initiated by extension
-     * We check if it is the request to our backend
-     *
-     * @param url
-     * @return {boolean}
+     * If referrer of request contains full url of extension,
+     * than this request is considered as extension's own request
+     * (e.g. request for filter downloading)
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1437
+     * @param referrerUrl
+     * @returns {boolean}
      */
-    const isRequestInitiatedByExtension = (url) => {
-        const domainName = adguard.utils.url.getHost(url);
-        return domainName && adguard.utils.url.isDomainOrSubDomain(domainName, BACKEND_HOST);
-    };
+    const isOwnRequest = referrerUrl => referrerUrl && referrerUrl.indexOf(extensionUrl) === 0;
 
     /**
      * On before send headers listener
@@ -43,9 +47,7 @@
      * @return {{requestHeaders: *}}
      */
     const safeFilter = (req) => {
-        const {
-            requestHeaders, url, tabId,
-        } = req;
+        const { requestHeaders, initiator, tabId } = req;
 
         if (tabId !== -1) {
             return;
@@ -53,7 +55,7 @@
 
         let requestHeadersModified = false;
 
-        if (isRequestInitiatedByExtension(url)) {
+        if (isOwnRequest(initiator)) {
             requestHeadersModified = adguard.utils.browser.removeHeader(requestHeaders, 'Cookie');
         }
 
