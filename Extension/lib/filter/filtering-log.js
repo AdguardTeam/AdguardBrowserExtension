@@ -32,8 +32,6 @@ adguard.filteringLog = (function (adguard) {
     const tabsInfoMap = Object.create(null);
     let openedFilteringLogsPage = 0;
 
-    const extensionURL = adguard.getURL('');
-
     // Force to add background tab if it's defined
     if (adguard.prefs.features.hasBackgroundTab) {
         tabsInfoMap[backgroundTabId] = backgroundTab;
@@ -47,7 +45,7 @@ adguard.filteringLog = (function (adguard) {
         const tabInfo = tabsInfoMap[tab.tabId] || Object.create(null);
         tabInfo.tabId = tab.tabId;
         tabInfo.title = tab.title;
-        tabInfo.isExtensionTab = tab.url && tab.url.indexOf(extensionURL) === 0;
+        tabInfo.isExtensionTab = tab.url && tab.url.indexOf(adguard.app.getExtensionUrl()) === 0;
         tabsInfoMap[tab.tabId] = tabInfo;
         return tabInfo;
     }
