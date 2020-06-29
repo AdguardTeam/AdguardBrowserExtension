@@ -124,7 +124,13 @@
                     adguard.filters.disableFilters([filter.filterId]);
                 }
             }
-            callback();
+
+            var listernerId = adguard.listeners.addListener(function (event) {
+                if (event === adguard.listeners.REQUEST_FILTER_UPDATED) {
+                    adguard.listeners.removeListener(listernerId);
+                    callback();
+                }
+            });
         });
     }
 
