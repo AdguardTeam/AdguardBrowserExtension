@@ -63,22 +63,22 @@ QUnit.test('Test converter css adguard rule', (assert) => {
     assert.equal(actual, expected, 'AG CSS whitelist rules should not be parsed as ABP scriptlet rule');
 });
 
-QUnit.test('Composite rules', (assert) => {
-    const requestFilter = new adguard.RequestFilter();
-    const rule = 'example.org#$#hide-if-has-and-matches-style \'d[id^="_"]\' \'div > s\' \'display: none\'; hide-if-contains /.*/ .p \'a[href^="/ad__c?"]\'';
-    const compositeRule = adguard.rules.builder.createRule(rule, 0);
-
-    assert.ok(compositeRule);
-    assert.ok(compositeRule instanceof adguard.rules.CompositeRule);
-
-    requestFilter.addRule(compositeRule);
-    const rules = requestFilter.getRules();
-    assert.equal(rules.length, 2);
-
-    requestFilter.removeRule(compositeRule);
-    const rules1 = requestFilter.getRules();
-    assert.equal(rules1, 0);
-});
+// QUnit.test('Composite rules', (assert) => {
+//     const requestFilter = new adguard.RequestFilter();
+//     const rule = 'example.org#$#hide-if-has-and-matches-style \'d[id^="_"]\' \'div > s\' \'display: none\'; hide-if-contains /.*/ .p \'a[href^="/ad__c?"]\'';
+//     const compositeRule = adguard.rules.builder.createRule(rule, 0);
+//
+//     assert.ok(compositeRule);
+//     assert.ok(compositeRule instanceof adguard.rules.CompositeRule);
+//
+//     requestFilter.addRule(compositeRule);
+//     const rules = requestFilter.getRules();
+//     assert.equal(rules.length, 2);
+//
+//     requestFilter.removeRule(compositeRule);
+//     const rules1 = requestFilter.getRules();
+//     assert.equal(rules1, 0);
+// });
 
 QUnit.test('Comments in rule', (assert) => {
     let rule = adguard.rules.builder.createRule('! example.com#$#.pub_300x250 {display:block!important;}', 0);

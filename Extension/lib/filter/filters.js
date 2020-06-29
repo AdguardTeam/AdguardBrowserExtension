@@ -88,13 +88,11 @@
      * @type {Function}
      */
     const RequestFilter = function () {
+        this.engine = adguard.application.getEngine();
+
         // Bad-filter rules collection
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#badfilter-modifier
         this.badFilterRules = {};
-
-        // Filter that applies URL blocking rules
-        // Basic rules: https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#basic-rules
-        this.urlBlockingFilter = new adguard.rules.UrlFilter([], this.badFilterRules);
 
         // Filter that applies whitelist rules
         // Exception rules: https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#exceptions-modifiers
@@ -142,132 +140,6 @@
          * Cache capacity
          */
         requestCacheMaxSize: 1000,
-
-        /**
-         * Adds rules to the request filter
-         *
-         * @param rules List of rules to add
-         */
-        addRules(rules) {
-            if (!rules) {
-                return;
-            }
-            for (let i = 0; i < rules.length; i += 1) {
-                this.addRule(rules[i]);
-            }
-        },
-
-        /**
-         * Adds rule to the request filter.
-         * Rule is added to one of underlying filter objects depending on the rule type.
-         *
-         * @param rule     Rule to add. Rule should be an object of
-         *                 one of these classes: UrlFilterRule, CssFilterRule, ScriptFilterRule
-         */
-        addRule(rule) {
-            if (rule === null || !rule.ruleText) {
-                adguard.console.error('FilterRule must not be null');
-                return;
-            }
-
-            if (rule instanceof adguard.rules.UrlFilterRule) {
-                if (typeof rule.isIgnored === 'function' && rule.isIgnored()) {
-                    adguard.console.debug(`FilterRule with $extension modifier was omitted. Rule text: "${rule.ruleText}"`);
-                    return;
-                }
-                if (rule.isCspRule() && !rule.isBadFilter()) {
-                    this.cspFilter.addRule(rule);
-                } else if (rule.isCookieRule()) {
-                    this.cookieFilter.addRule(rule);
-                } else if (rule.isStealthRule() && !rule.isBadFilter()) {
-                    this.stealthFilter.addRule(rule);
-                } else if (rule.isReplaceRule() && !rule.isBadFilter()) {
-                    this.replaceFilter.addRule(rule);
-                } else if (rule.isBadFilter()) {
-                    this.badFilterRules[rule.badFilter] = rule;
-                } else if (rule.whiteListRule) {
-                    this.urlWhiteFilter.addRule(rule);
-                } else {
-                    this.urlBlockingFilter.addRule(rule);
-                }
-            } else if (rule instanceof adguard.rules.CssFilterRule) {
-                this.cssFilter.addRule(rule);
-            } else if (rule instanceof adguard.rules.ScriptFilterRule) {
-                this.scriptFilter.addRule(rule);
-            } else if (rule instanceof adguard.rules.ScriptletRule) {
-                this.scriptFilter.addRule(rule);
-            } else if (rule instanceof adguard.rules.CompositeRule) {
-                rule.rules.forEach(this.addRule.bind(this));
-            } else if (rule instanceof adguard.rules.ContentFilterRule) {
-                this.contentFilter.addRule(rule);
-            }
-
-            this.rulesCount++;
-            this.urlBlockingCache.clearRequestCache();
-            this.urlExceptionsCache.clearRequestCache();
-        },
-
-        /**
-         * Removes rule from the RequestFilter.
-         * Rule is removed from one of underlying filters depending on the rule type.
-         *
-         * @param rule Rule to be removed
-         */
-        removeRule(rule) {
-            if (rule === null) {
-                adguard.console.error('FilterRule must not be null');
-                return;
-            }
-            if (rule instanceof adguard.rules.UrlFilterRule) {
-                if (rule.isCspRule()) {
-                    this.cspFilter.removeRule(rule);
-                } else if (rule.isCookieRule()) {
-                    this.cookieFilter.removeRule(rule);
-                } else if (rule.isStealthRule()) {
-                    this.stealthFilter.removeRule(rule);
-                } else if (rule.isBadFilter()) {
-                    delete this.badFilterRules[rule.badFilter];
-                } else if (rule.whiteListRule) {
-                    this.urlWhiteFilter.removeRule(rule);
-                } else {
-                    this.urlBlockingFilter.removeRule(rule);
-                }
-            } else if (rule instanceof adguard.rules.CssFilterRule) {
-                this.cssFilter.removeRule(rule);
-            } else if (rule instanceof adguard.rules.ScriptFilterRule) {
-                this.scriptFilter.removeRule(rule);
-            } else if (rule instanceof adguard.rules.ScriptletRule) {
-                this.scriptFilter.removeRule(rule);
-            } else if (rule instanceof adguard.rules.CompositeRule) {
-                rule.rules.forEach(this.removeRule.bind(this));
-            } else if (rule instanceof adguard.rules.ContentFilterRule) {
-                this.contentFilter.removeRule(rule);
-            }
-            this.rulesCount -= 1;
-            this.urlBlockingCache.clearRequestCache();
-            this.urlExceptionsCache.clearRequestCache();
-        },
-
-        /**
-         * Returns the array of loaded rules
-         */
-        getRules() {
-            let result = [];
-
-            result = result.concat(this.urlWhiteFilter.getRules());
-            result = result.concat(this.urlBlockingFilter.getRules());
-            result = result.concat(this.cssFilter.getRules());
-            result = result.concat(this.scriptFilter.getRules());
-            result = result.concat(this.cspFilter.getRules());
-            result = result.concat(this.cookieFilter.getRules());
-            result = result.concat(this.stealthFilter.getRules());
-
-            for (const badFilter in this.badFilterRules) {
-                result.push(this.badFilterRules[badFilter]);
-            }
-
-            return result;
-        },
 
         /**
          * An object with the information on the CSS and ExtendedCss stylesheets which
@@ -454,7 +326,6 @@
          */
         findRuleForRequest(requestUrl, documentUrl, requestType, documentWhitelistRule) {
             const documentHost = adguard.utils.url.getHost(documentUrl);
-            const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
 
             const cacheItem = this.urlBlockingCache.searchRequestCache(requestUrl, documentHost, requestType);
             if (cacheItem) {
@@ -462,7 +333,7 @@
                 return cacheItem[0];
             }
 
-            const rule = this._findRuleForRequest(requestUrl, documentHost, requestType, thirdParty, documentWhitelistRule);
+            const rule = this._findRuleForRequest(requestUrl, documentUrl, requestType, documentWhitelistRule);
 
             this.urlBlockingCache.saveResultToCache(requestUrl, rule, documentHost, requestType);
             return rule;
@@ -541,109 +412,65 @@
         },
 
         /**
-         * Checks if there is a rule blocking this request
+         * TODO: Parse webrequest details type
          *
-         * @param requestUrl    Request URL
-         * @param refHost       Referrer host
-         * @param requestType   Request content type (one of UrlFilterRule.contentTypes)
-         * @param thirdParty    Is request third-party or not
-         * @param genericRulesAllowed    Is generic rules allowed
-         * @returns Filter rule found or null
-         * @private
+         * @param requestType
+         * @return {number}
          */
-        _checkUrlBlockingList(requestUrl, refHost, requestType, thirdParty, genericRulesAllowed) {
-            if (this.urlBlockingFilter === null || !requestUrl) {
-                return null;
-            }
+        transformRequestType(requestType) {
+            const contentTypes = adguard.RequestTypes;
 
-            return this.urlBlockingFilter.isFiltered(
-                requestUrl,
-                refHost,
-                requestType,
-                thirdParty,
-                !genericRulesAllowed
-            );
+            switch (requestType) {
+                case contentTypes.DOCUMENT:
+                    return RequestType.Document;
+                case contentTypes.SUBDOCUMENT:
+                    return RequestType.Subdocument;
+                case contentTypes.STYLESHEET:
+                    return RequestType.Stylesheet;
+                case contentTypes.FONT:
+                    return RequestType.Font;
+                case contentTypes.IMAGE:
+                    return RequestType.Image;
+                case contentTypes.MEDIA:
+                    return RequestType.Media;
+                case contentTypes.SCRIPT:
+                    return RequestType.Script;
+                case contentTypes.XMLHTTPREQUEST:
+                    return RequestType.XmlHttpRequest;
+                case contentTypes.WEBSOCKET:
+                    return RequestType.Websocket;
+                case contentTypes.PING:
+                    return RequestType.Ping;
+                default:
+                    return RequestType.Other;
+            }
         },
 
         /**
          * Searches the rule for request.
          *
          * @param requestUrl    Request URL
-         * @param documentHost  Document host
+         * @param documentUrl   Document URL
          * @param requestType   Request content type (one of UrlFilterRule.contentTypes)
-         * @param thirdParty    Is request third-party or not
          * @param documentWhiteListRule (optional) Document-level whitelist rule
          * @returns Filter rule found or null
          * @private
          */
-        _findRuleForRequest(requestUrl, documentHost, requestType, thirdParty, documentWhiteListRule) {
-            adguard.console.debug('Filtering http request for url: {0}, document: {1}, requestType: {2}', requestUrl, documentHost, requestType);
+        _findRuleForRequest(requestUrl, documentUrl, requestType, documentWhiteListRule) {
+            adguard.console.debug('Filtering http request for url: {0}, document: {1}, requestType: {2}', requestUrl, documentUrl, requestType);
 
-            // STEP 1: Looking for exception rule, which could be applied to the current request
+            const request = new Request(requestUrl, documentUrl, this.transformRequestType(requestType));
 
-            // Checks white list for a rule for this RequestUrl.
-            // If something is found - returning it.
-            const urlWhiteListRule = this._checkWhiteList(
-                requestUrl,
-                documentHost,
-                requestType,
-                thirdParty
-            );
+            const result = this.engine.matchRequest(request);
+            adguard.console.debug(result);
 
-            // If UrlBlock is set - than we should not use UrlBlockingFilter against this request.
-            // Now check if document rule has $genericblock or $urlblock modifier
-            const genericRulesAllowed = !documentWhiteListRule
-                || !documentWhiteListRule.isGenericBlock();
-
-            const urlRulesAllowed = !documentWhiteListRule || !documentWhiteListRule.isUrlBlock();
-
-            // STEP 2: Looking for blocking rule, which could be applied to the current request
-
-            const ruleForRequest = this._checkUrlBlockingList(
-                requestUrl,
-                documentHost,
-                requestType,
-                thirdParty,
-                genericRulesAllowed
-            );
-
-            // STEP 3: Analyze results, first - basic exception rule
-
-            if (urlWhiteListRule
-                // Please note, that if blocking rule has $important modifier, it could
-                // overcome existing exception rule
-                && (urlWhiteListRule.isImportant
-                    || !ruleForRequest
-                    || !ruleForRequest.isImportant)) {
-                adguard.console.debug(
-                    'White list rule found {0} for url: {1} document: {2}, requestType: {3}',
-                    urlWhiteListRule.ruleText,
-                    requestUrl,
-                    documentHost,
-                    requestType
-                );
-                return urlWhiteListRule;
-            }
-
-            if (!genericRulesAllowed || !urlRulesAllowed) {
-                adguard.console.debug(
-                    'White list rule {0} found for document: {1}',
-                    documentWhiteListRule.ruleText,
-                    documentHost
-                );
-            }
-
-            if (!urlRulesAllowed) {
-                // URL whitelisted
-                return documentWhiteListRule;
-            }
-
+            const ruleForRequest = result.getBasicResult();
             if (ruleForRequest) {
                 adguard.console.debug(
-                    'Black list rule {0} found for url: {1}, document: {2}, requestType: {3}',
+                    'Rule {0} found for url: {1}, document: {2}, requestType: {3}',
                     ruleForRequest.ruleText,
                     requestUrl,
-                    documentHost,
+                    documentUrl,
                     requestType
                 );
             }
