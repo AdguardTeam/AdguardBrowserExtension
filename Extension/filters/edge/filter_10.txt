@@ -1,8 +1,8 @@
-! Checksum: 4QkwTB8NxRJFAz5JzM2cOw
+! Checksum: GXgTrVTYMdqfD9elKgo3OA
 ! Title: Filter unblocking search ads and self-promotion
 ! Description: Filter that unblocks search (Duckduckgo, Google, Bing, Yahoo) and self-promo ads. Self-promotion definition: when an ad on a website is promoting this very website or other websites/social media/etc closely related to it, such ad is considered a self-promoting one.
-! Version: 2.0.0.99
-! TimeUpdated: 2020-03-06T15:30:09+03:00
+! Version: 2.0.1.6
+! TimeUpdated: 2020-06-15T22:30:07+03:00
 ! Expires: 4 days (update frequency)
 ! Homepage: http://adguard.com/whitelist.html
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -160,12 +160,12 @@ search.ask.com#@##sponsoredTop
 !
 ! Yandex main page
 ! Ad under the search string
-yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua#@$#.container__banner { position: absolute!important; left: -3000px!important; }
-!yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua#@#.container__banner iframe
+yandex.md,yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua#@$#.container__banner { position: absolute!important; left: -3000px!important; }
+!yandex.md,yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua#@#.container__banner iframe
 ! mobile
 !
 ! Yandex.Maps - search results
-yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua#@$#.search-direct-snippet-view { position: absolute!important; left: -3000px!important; }
+yandex.md,yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua#@$#.search-direct-snippet-view { position: absolute!important; left: -3000px!important; }
 ! Yandex.Недвижимость
 !
 ! Yandex.Rabota
@@ -192,6 +192,12 @@ amazon.de#@#div[data-p13n-asin-metadata*="adId"]
 amazon.de#@?##sc-checkout-prefetch + .a-section + .a-section > .a-section:has(> .a-section > div[data-p13n-asin-metadata*="adId"] )
 amazon.de#@##detailILMPercolate_feature_div
 amazon.co.jp#@#span[class*="slot_adPlacements"]
+amazon.de#@#.widgetId\=loom-desktop-brand-footer-slot_hsa-id
+amazon.de#@#span[class*="_adPlacements:"]
+amazon.de#@?#.s-result-list > div[data-asin].s-result-item:has( > .a-section > .widgetId\=loom-desktop-brand-footer-slot_hsa-id)
+amazon.de#@?#div[class*="csm-placement-id-"]:has(> div[cel_widget_id^="adplacements"])
+amazon.de#@#div[data-cel-widget*="desktop-dp-sims_SponsoredProductsSims"]
+amazon.de#@#div[class*="thirdPartySponsorLink"]
 ! Mediafire premium upgrade
 mediafire.com#@##upsellBox
 ! Startpage
@@ -217,7 +223,7 @@ ebay.co.uk,ebay.com,ebay.de#@?##ListViewInner > li.sresult[-ext-has='div.promote
 ebay.co.uk,ebay.com,ebay.com.au#@?#li.s-item:-abp-has(span:-abp-contains(/S[^P]*?P[^O]*?O[^N]*?N[^S]*?S[^O]*?O[^R]*?R[^E]*?E[^D]*?D/))
 ebay.co.uk,ebay.com,ebay.com.au#@?#.b-module:-abp-has(h2:-abp-contains(Sponsored))
 ebay.co.uk,ebay.com,ebay.com.au#@?#.mfe-lex:-abp-has(h2:-abp-contains(sponsored))
-ebay.com,ebay.co.uk,ebay.com.au#@?#.srp-list > .s-item:has(> div > .s-item__info > a > div[style="display:flex;"] span[role="text"] > span:contains(S) ~ span:contains(P) ~ span:contains(O))
+! ebay.com,ebay.co.uk,ebay.com.au#@?#.srp-list > .s-item:has(> div > .s-item__info > a > div[style="display:flex;"] span[role="text"] > span:contains(S) ~ span:contains(P) ~ span:contains(O))
 ebay.de#@?#.srp-list > .s-item:has(> div > .s-item__info > a > div[style="display:flex;"] span[role="text"] > span:contains(A) ~ span:contains(N) ~ span:contains(Z))
 ebay.com,ebay.co.uk,ebay.com.au#@?#div[itemtype="https://schema.org/Product"] div[id^="merch_html_"]:has(> div[id] .mfe-header > h2.mfe-pull-left:contains(Sponsored))
 ebay.com,ebay.co.uk,ebay.com.au#@?#div[itemtype="https://schema.org/Product"] div[id^="merch_html_"]:has(> div[id] h2.mfe-card-group-title:contains(sponsored))
