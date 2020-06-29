@@ -31,7 +31,7 @@
     const safeFilter = (req) => {
         const { requestHeaders, initiator, tabId } = req;
 
-        if (tabId !== -1) {
+        if (tabId !== adguard.BACKGROUND_TAB_ID) {
             return;
         }
 
