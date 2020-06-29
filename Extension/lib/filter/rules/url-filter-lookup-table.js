@@ -304,8 +304,7 @@
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1474
             if (hostToCheck === null) {
                 hostToCheck = adguard.utils.url.getHost(url);
-            } else if (requestType === adguard.RequestTypes.DOCUMENT
-                || requestType === adguard.RequestTypes.SUBDOCUMENT) {
+            } else if (requestType === adguard.RequestTypes.DOCUMENT) {
                 // In case DOCUMENT request type look up rules for request url host
                 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1534
                 rules = this.domainsLookupTable.lookupRules(adguard.utils.url.getHost(url));
