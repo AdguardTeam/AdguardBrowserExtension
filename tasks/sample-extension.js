@@ -62,8 +62,6 @@ const API_SCRIPTS = [
     'Extension/lib/filter/rules/base-filter-rule.js',
     'Extension/lib/filter/rules/css-filter-rule.js',
     'Extension/lib/filter/rules/css-filter.js',
-    'Extension/lib/filter/rules/script-filter-rule.js',
-    'Extension/lib/filter/rules/script-filter.js',
     'Extension/lib/filter/rules/url-filter-rule.js',
     'Extension/lib/filter/rules/url-filter.js',
     'Extension/lib/filter/rules/content-filter-rule.js',
@@ -73,7 +71,6 @@ const API_SCRIPTS = [
     'Extension/lib/filter/rules/redirect-filter.js',
     'Extension/lib/filter/rules/replace-filter.js',
     'Extension/lib/filter/rules/filter-rule-builder.js',
-    'Extension/lib/filter/rules/scriptlet-rule.js',
     'Extension/lib/filter/rules/redirect-filter.js',
     'Extension/lib/filter/rules/composite-rule.js',
     // Filters metadata and filtration modules

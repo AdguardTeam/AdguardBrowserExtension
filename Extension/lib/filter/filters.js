@@ -102,10 +102,6 @@
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#cosmetic-rules
         this.cssFilter = new adguard.rules.CssFilter();
 
-        // Filter that applies JS rules
-        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#javascript-rules
-        this.scriptFilter = new adguard.rules.ScriptFilter();
-
         // Filter that applies CSP rules
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#csp-modifier
         this.cspFilter = new adguard.rules.CspFilter([], this.badFilterRules);
@@ -188,13 +184,10 @@
          */
         getScriptsForUrl(url, debug) {
             const domain = adguard.utils.url.getHost(url);
-            const config = {
-                debug,
-                domainName: domain,
-                engine: 'extension',
-                version: adguard.app && adguard.app.getVersion && adguard.app.getVersion(),
-            };
-            return this.scriptFilter.buildScript(domain, config);
+            const cosmeticResult = this.engine.getCosmeticResult(domain, CosmeticOption.CosmeticOptionJS);
+
+            // TODO: Pass debug
+            return cosmeticResult.getScriptRules();
         },
 
         /**
@@ -213,15 +206,19 @@
             const isOpera = adguard.utils.browser.isOperaBrowser();
 
             const selectedScriptRules = scriptRules.filter((scriptRule) => {
-                if (scriptRule.scriptSource === 'local') {
+                // TODO: Performance
+                const isLocal = adguard.rules.LocalScriptRulesService.isLocal(scriptRule.ruleText);
+
+                if (isLocal) {
                     return true;
                 }
-                if (scriptRule.scriptSource === 'remote') {
+
+                if (!isLocal) {
                     /**
                      * Note (!) (Firefox, Opera):
                      * In case of Firefox and Opera add-ons,
                      * JS filtering rules are hardcoded into add-on code.
-                     * Look at ScriptFilterRule.getScriptSource to learn more.
+                     * Look at LocalScriptRulesService.isLocal to learn more.
                      */
                     /* @if remoteScripts == false */
                     if (!isFirefox && !isOpera) {
@@ -235,21 +232,18 @@
                     }
                     /* @endif */
                 }
+
                 return false;
             });
 
             if (debug) {
-                const domainName = adguard.utils.url.getHost(url);
                 scriptRules.forEach((scriptRule) => {
-                    if (scriptRule.rule instanceof adguard.rules.ScriptletRule
-                        || scriptRule.rule.isDomainSpecific(domainName)) {
-                        adguard.filteringLog.addScriptInjectionEvent(
-                            tab,
-                            url,
-                            adguard.RequestTypes.DOCUMENT,
-                            scriptRule.rule
-                        );
-                    }
+                    adguard.filteringLog.addScriptInjectionEvent(
+                        tab,
+                        url,
+                        adguard.RequestTypes.DOCUMENT,
+                        scriptRule
+                    );
                 });
             }
 

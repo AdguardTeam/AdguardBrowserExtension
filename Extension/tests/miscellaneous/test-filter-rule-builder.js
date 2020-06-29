@@ -1,23 +1,4 @@
 QUnit.test('Build Rules', (assert) => {
-    const scriptFilter = new adguard.rules.ScriptFilter();
-
-    const ruleText = 'www.example.org#%#//scriptlet("set-constant", "test", "true")';
-    const rule = new adguard.rules.ScriptletRule(ruleText);
-    scriptFilter.addRule(rule);
-
-    assert.equal(scriptFilter.getRules().length, 1, 'Rule has been added');
-
-    const whiteRuleText = 'example.org#@%#//scriptlet("set-constant", "test", "true")';
-    const whiteRule = new adguard.rules.ScriptletRule(whiteRuleText);
-    scriptFilter.addRule(whiteRule);
-
-    assert.equal(scriptFilter.getRules().length, 2, 'Whitelist rule has been added');
-
-    assert.notOk(rule.isPermitted('example.org'));
-    assert.notOk(rule.isPermitted('www.example.org'));
-});
-
-QUnit.test('Build Rules', (assert) => {
     let rule = adguard.rules.builder.createRule('example.com', 0);
     assert.ok(rule);
     assert.ok(rule instanceof adguard.rules.UrlFilterRule);
@@ -31,10 +12,6 @@ QUnit.test('Build Rules', (assert) => {
     rule = adguard.rules.builder.createRule('example.org$$script[data-src="banner"]', 0);
     assert.ok(rule);
     assert.ok(rule instanceof adguard.rules.ContentFilterRule);
-
-    rule = adguard.rules.builder.createRule('example.org#%#window.__gaq = undefined;', 0);
-    assert.ok(rule);
-    assert.ok(rule instanceof adguard.rules.ScriptFilterRule);
 
     rule = adguard.rules.builder.createRule('example.org#%#window.__gaq = undefined;', 0, false);
     assert.notOk(rule);

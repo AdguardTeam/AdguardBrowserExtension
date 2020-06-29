@@ -70,7 +70,7 @@
      * @param {string} ruleText Rule text
      * @param {number} filterId Filter identifier
      * @param {boolean} isTrustedFilter - custom filter can be trusted and untrusted, default is true
-     * @returns Filter rule object. Either UrlFilterRule or CssFilterRule or ScriptFilterRule.
+     * @returns Filter rule object. Either UrlFilterRule or CssFilterRule
      */
     const _createRule = function (ruleText, filterId, isTrustedFilter) {
         ruleText = ruleText ? ruleText.trim() : null;
@@ -113,14 +113,6 @@
                 return new api.CssFilterRule(ruleText, filterId);
             }
 
-            if (api.FilterRule.findRuleMarker(ruleText, api.ScriptFilterRule.RULE_MARKERS, api.ScriptFilterRule.RULE_MARKER_FIRST_CHAR)) {
-                if (api.ScriptletRule.isAdguardScriptletRule(ruleText)) {
-                    return new api.ScriptletRule(ruleText, filterId);
-                }
-
-                return new api.ScriptFilterRule(ruleText, filterId);
-            }
-
             return new api.UrlFilterRule(ruleText, filterId);
         } catch (ex) {
             adguard.console.debug('Cannot create rule from filter {0}: {1}, cause {2}', filterId || 0, ruleText, ex);
@@ -136,7 +128,7 @@
      * @param {number} filterId Filter identifier
      * @param {boolean} isTrustedFilter - custom filter can be trusted and untrusted,
      * default is true
-     * @returns Filter rule object. Either UrlFilterRule or CssFilterRule or ScriptFilterRule.
+     * @returns Filter rule object. Either UrlFilterRule or CssFilterRule
      */
     const createRule = (ruleText, filterId, isTrustedFilter = true) => {
         let conversionResult;

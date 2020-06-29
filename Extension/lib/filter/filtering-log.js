@@ -102,8 +102,7 @@ adguard.filteringLog = (function (adguard) {
         }
     }
 
-    const isScriptRule = rule => rule instanceof adguard.rules.ScriptFilterRule
-        || rule instanceof adguard.rules.ScriptletRule;
+    const isScriptRule = rule => false; // TODO: Fix
 
     /**
      * Copy some properties from source rule to destination rule

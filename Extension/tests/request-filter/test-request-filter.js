@@ -913,13 +913,14 @@ QUnit.test('requestFilter.findRuleForRequest performance', (assert) => {
 //     assert.notOk(rule);
 // });
 
-// QUnit.test('Invalid scriptlets are not added to the scripts string', (assert) => {
-//     const validScriptletRuleText = 'example.org#%#//scriptlet("adjust-setTimeout", "example", "400")';
-//     const invalidScriptletRuleText = 'example.org#%#//scriptlet("adjust-setTimeout-invalid", "example", "400")';
-//
-//     const requestFilter = createRequestFilterWithRules([validScriptletRuleText, invalidScriptletRuleText]);
-//     const scripts = requestFilter.getScriptsForUrl('https://example.org', true);
-//
-//     assert.equal(scripts.length, 1, 'length of results should be one');
-//     assert.equal(scripts[0].rule.ruleText, validScriptletRuleText, 'valid rule should be in results');
-// });
+QUnit.test('Invalid scriptlets are not added to the scripts string', (assert) => {
+    const validScriptletRuleText = 'example.org#%#//scriptlet("adjust-setTimeout", "example", "400")';
+    const invalidScriptletRuleText = 'example.org#%#//scriptlet("adjust-setTimeout-invalid", "example", "400")';
+
+    const requestFilter = createRequestFilterWithRules([validScriptletRuleText, invalidScriptletRuleText]);
+    const scripts = requestFilter.getScriptsForUrl('https://example.org', true);
+
+    assert.equal(scripts.length, 2);
+    assert.ok(scripts[0].script, 'valid rule has script field');
+    assert.notOk(scripts[1].script, 'invalid rule has no script field');
+});
