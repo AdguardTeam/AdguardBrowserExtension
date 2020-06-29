@@ -870,14 +870,9 @@ QUnit.test('requestFilter.findRuleForRequest performance', (assert) => {
 
 // QUnit.test('Invalid scriptlets are not added to the scripts string', (assert) => {
 //     const validScriptletRuleText = 'example.org#%#//scriptlet("adjust-setTimeout", "example", "400")';
-//     const validScriptletRule = new adguard.rules.ScriptletRule(validScriptletRuleText);
-//
 //     const invalidScriptletRuleText = 'example.org#%#//scriptlet("adjust-setTimeout-invalid", "example", "400")';
-//     const invalidScriptletRule = new adguard.rules.ScriptletRule(invalidScriptletRuleText);
 //
-//     const requestFilter = new adguard.RequestFilter();
-//     requestFilter.addRules([validScriptletRule, invalidScriptletRule]);
-//
+//     const requestFilter = createRequestFilterWithRules([validScriptletRuleText, invalidScriptletRuleText]);
 //     const scripts = requestFilter.getScriptsForUrl('https://example.org', true);
 //
 //     assert.equal(scripts.length, 1, 'length of results should be one');
