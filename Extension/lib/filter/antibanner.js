@@ -501,15 +501,8 @@ adguard.antiBannerService = (function (adguard) {
     function onFiltersLoadedFromStorage(rulesFilterMap, callback) {
         const start = new Date().getTime();
 
-        // UI thread becomes blocked on the options page while request filter is created
-        // that't why we create filter rules using chunks of the specified length
-        // Request filter creation is rather slow operation so we should
-        // use setTimeout calls to give UI thread some time.
-        const async = adguard.requestFilter.isReady();
-        const asyncStep = 1000;
-        adguard.console.info('Starting request filter initialization. Async={0}', async);
+        adguard.console.info('Starting request filter initialization..');
 
-        // Empty request filter
         const newRequestFilter = new adguard.RequestFilter();
 
         if (requestFilterInitTime === 0) {
@@ -517,9 +510,6 @@ adguard.antiBannerService = (function (adguard) {
             requestFilterInitTime = new Date().getTime();
             adguard.listeners.notifyListeners(adguard.listeners.APPLICATION_INITIALIZED);
         }
-
-        // Supplement object to make sure that we use only unique filter rules
-        const uniqueRules = Object.create(null);
 
         /**
          * Checks rulesFilterMap is empty (no one of filters are enabled)
@@ -550,6 +540,7 @@ adguard.antiBannerService = (function (adguard) {
          */
         const requestFilterInitialized = function () {
             // Request filter is ready
+            // TODO: We actually to only clean cache
             requestFilter = newRequestFilter;
 
             if (callback && typeof callback === 'function') {
@@ -582,109 +573,27 @@ adguard.antiBannerService = (function (adguard) {
         };
 
         /**
-         * Supplement function for adding rules to the request filter
-         *
-         * @param filterId Filter identifier
-         * @param rulesTexts Array with filter rules
-         * @param startIdx Start index of the rules array
-         * @param endIdx End index of the rules array
+         * Synchronously fills engine with rules
          */
-        const addRules = function (filterId, rulesTexts, startIdx, endIdx) {
-            if (!rulesTexts) {
-                return;
-            }
+        const startTSUrlfilterEngine = function () {
+            const lists = [];
 
-            const isTrustedFilter = adguard.subscriptions.isTrustedFilter(filterId);
-
-            for (let i = startIdx; i < rulesTexts.length && i < endIdx; i += 1) {
-                const ruleText = rulesTexts[i];
-                if (ruleText in uniqueRules) {
-                    // Do not allow duplicates
-                    continue;
-                }
-                uniqueRules[ruleText] = true;
-                const rule = adguard.rules.builder.createRule(ruleText, filterId, isTrustedFilter);
-
-                if (rule !== null) {
-                    newRequestFilter.addRule(rule);
-                }
-            }
-        };
-
-        /**
-         * Asynchronously adds rules to the request filter.
-         */
-        const addRulesAsync = (filterId, rulesTexts, startIdx, stopIdx, prevPromise) => new Promise((resolve) => {
-            prevPromise.then(() => {
-                setTimeout(() => {
-                    addRules(filterId, rulesTexts, startIdx, stopIdx);
-                    resolve();
-                }, 1);
-            });
-        });
-
-        /**
-         * Asynchronously fills request filter with rules.
-         */
-        const fillRequestFilterAsync = function () {
-            const rootPromise = Promise.resolve();
-            let prevPromise = null;
-            const promises = [];
-
-            // Go through all filters in the map
-            for (let filterId in rulesFilterMap) { // jshint ignore:line
+            // eslint-disable-next-line guard-for-in,no-restricted-syntax
+            for (let filterId in rulesFilterMap) {
                 // To number
                 filterId -= 0;
-                if (filterId !== adguard.utils.filters.USER_FILTER_ID) {
-                    const rulesTexts = rulesFilterMap[filterId];
 
-                    for (let i = 0; i < rulesTexts.length; i += asyncStep) {
-                        prevPromise = addRulesAsync(filterId, rulesTexts, i, i + asyncStep, prevPromise || rootPromise);
-                        promises.push(prevPromise);
-                    }
-                }
+                const isTrustedFilter = adguard.subscriptions.isTrustedFilter(filterId);
+                const rulesTexts = rulesFilterMap[filterId];
+                lists.push(new StringRuleList(filterId, rulesTexts, false, !isTrustedFilter));
             }
 
-            // User filter should be the last
-            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/117
-            const userFilterId = adguard.utils.filters.USER_FILTER_ID;
-            const userRules = rulesFilterMap[userFilterId];
-            const startIndex = 0;
-            const endIndex = userRules.length;
-            prevPromise = addRulesAsync(userFilterId, userRules, startIndex, endIndex, prevPromise || rootPromise);
-            promises.push(prevPromise);
+            adguard.application.startEngine(lists);
 
-            Promise.all(promises).then(() => {
-                requestFilterInitialized();
-            });
-        };
-
-        /**
-         * Synchronously fills request filter with rules
-         */
-        const fillRequestFilterSync = function () {
-            // Go through all filters in the map
-            for (let filterId in rulesFilterMap) { // jshint ignore:line
-                // To number
-                filterId -= 0;
-                if (filterId != adguard.utils.filters.USER_FILTER_ID) {
-                    const rulesTexts = rulesFilterMap[filterId];
-                    addRules(filterId, rulesTexts, 0, rulesTexts.length);
-                }
-            }
-
-            // User filter should be the last
-            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/117
-            const userRules = rulesFilterMap[adguard.utils.filters.USER_FILTER_ID];
-            addRules(adguard.utils.filters.USER_FILTER_ID, userRules, 0, userRules.length);
             requestFilterInitialized();
         };
 
-        if (async) {
-            fillRequestFilterAsync();
-        } else {
-            fillRequestFilterSync();
-        }
+        startTSUrlfilterEngine();
     }
 
     /**
@@ -713,10 +622,9 @@ adguard.antiBannerService = (function (adguard) {
          * STEP 2: Called when all filter rules have been loaded from storage
          */
         const loadAllFilterRulesDone = function () {
-            adguard.console.info('Finished loading filter rules from the storage in {0} ms', (new Date().getTime() - start));
+            adguard.console.info('Finished loading filter rules from the storage in {0} ms',
+                (new Date().getTime() - start));
             onFiltersLoadedFromStorage(rulesFilterMap, callback);
-
-            adguard.application.startEngine(rulesFilterMap);
         };
 
         /**
@@ -764,7 +672,8 @@ adguard.antiBannerService = (function (adguard) {
     var getRequestFilterInfo = function () {
         let rulesCount = 0;
         if (requestFilter) {
-            rulesCount = requestFilter.rulesCount;
+            // TODO: Fix rules count
+            rulesCount = 0; // requestFilter.rulesCount;
         }
         return {
             rulesCount,
@@ -1118,19 +1027,22 @@ adguard.antiBannerService = (function (adguard) {
      * @returns {Array}
      */
     const addUserFilterRules = function (rulesText) {
-        const rules = [];
-        for (let i = 0; i < rulesText.length; i += 1) {
-            const rule = adguard.rules.builder.createRule(rulesText[i], adguard.utils.filters.USER_FILTER_ID);
-            if (rule !== null) {
-                rules.push(rule);
-            }
-        }
-        requestFilter.addRules(rules);
+        // const rules = [];
+        // for (let i = 0; i < rulesText.length; i += 1) {
+        //     const rule = adguard.rules.builder.createRule(rulesText[i], adguard.utils.filters.USER_FILTER_ID);
+        //     if (rule !== null) {
+        //         rules.push(rule);
+        //     }
+        // }
+        // requestFilter.addRules(rules);
 
-        adguard.listeners.notifyListeners(adguard.listeners.ADD_RULES, userFilter, rulesText);
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_USER_FILTER_RULES, getRequestFilterInfo());
+        // adguard.listeners.notifyListeners(adguard.listeners.ADD_RULES, userFilter, rulesText);
+        // adguard.listeners.notifyListeners(adguard.listeners.UPDATE_USER_FILTER_RULES, getRequestFilterInfo());
+        //
+        // return rules;
 
-        return rules;
+        // TODO: Fix user filter
+        return [];
     };
 
     /**
@@ -1147,11 +1059,13 @@ adguard.antiBannerService = (function (adguard) {
      * @param ruleText
      */
     const removeUserFilterRule = function (ruleText) {
-        const rule = adguard.rules.builder.createRule(ruleText, adguard.utils.filters.USER_FILTER_ID);
-        if (rule !== null) {
-            requestFilter.removeRule(rule);
-        }
-        adguard.listeners.notifyListeners(adguard.listeners.REMOVE_RULE, userFilter, [ruleText]);
+        // const rule = adguard.rules.builder.createRule(ruleText, adguard.utils.filters.USER_FILTER_ID);
+        // if (rule !== null) {
+        //     requestFilter.removeRule(rule);
+        // }
+        // adguard.listeners.notifyListeners(adguard.listeners.REMOVE_RULE, userFilter, [ruleText]);
+
+        // TODO: Fix user filter
     };
 
     return {
@@ -1210,14 +1124,11 @@ adguard.requestFilter = (function (adguard) {
         return (requestFilterInitTime > 0) && (requestFilterInitTime + 5000 > new Date().getTime());
     };
 
-    const getRules = function () {
-        return getRequestFilter().getRules();
-    };
-
     const findRuleForRequest = function (requestUrl, documentUrl, requestType, documentWhitelistRule) {
         return getRequestFilter().findRuleForRequest(requestUrl, documentUrl, requestType, documentWhitelistRule);
     };
 
+    // TODO: Remove
     const findWhiteListRule = function (requestUrl, referrer, requestType) {
         return getRequestFilter().findWhiteListRule(requestUrl, referrer, requestType);
     };

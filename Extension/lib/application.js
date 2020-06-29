@@ -18,45 +18,26 @@
 adguard.application = (function (adguard) {
     let engine;
 
-    const createFilterLists = (rulesFilterMap) => {
-        const lists = [];
-
-        // eslint-disable-next-line guard-for-in,no-restricted-syntax
-        for (let filterId in rulesFilterMap) {
-            // To number
-            filterId -= 0;
-
-            const isTrustedFilter = adguard.subscriptions.isTrustedFilter(filterId);
-            adguard.rulesStorage.read(filterId, (rulesText) => {
-                if (rulesText) {
-                    lists.push(new StringRuleList(filterId, rulesText, false, !isTrustedFilter));
-                }
-            });
-        }
-
-        return lists;
-    };
-
-    // TODO: Use filterids only
-    const startEngine = (rulesFilterMap) => {
+    const startEngine = (lists) => {
         console.log('Starting url filter engine');
 
-        const lists = createFilterLists(rulesFilterMap);
         const ruleStorage = new RuleStorage(lists);
 
         const config = {
             engine: 'extension',
-            version: adguard.app.getVersion(),
+            version: adguard.app && adguard.app.getVersion(),
             verbose: true,
         };
 
-        this.engine = new Engine(ruleStorage, config);
+        engine = new Engine(ruleStorage, config);
         // this.dnsEngine = new AGUrlFilter.DnsEngine(ruleStorage);
         // this.contentFiltering = new AGUrlFilter.ContentFiltering(this.filteringLog);
         // this.stealthService = new AGUrlFilter.StealthService(stealthConfig);
         // await this.redirectsService.init();
 
         console.log('Starting url filter engine..ok');
+
+        return engine;
     };
 
     const getEngine = () => engine;
