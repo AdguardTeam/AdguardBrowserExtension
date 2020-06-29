@@ -1,8 +1,8 @@
-! Checksum: bHGL+ckEZG5K05Tn1nDHHQ
+! Checksum: FHW9/x0NiLJc2vMnC9s5ug
 ! Title: AdGuard Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.0.55
-! TimeUpdated: 2020-01-13T14:31:29+03:00
+! Version: 2.0.0.63
+! TimeUpdated: 2020-06-25T20:31:48+03:00
 ! Expires: 4 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#experimental
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -131,6 +131,14 @@
 ! Be VERY cautious with this type of rules.
 !
 !
+! YouTube ads (for old and new ads)
+! youtube.com - white screen with skip button
+||youtube.com/*/base.js$replace=/(playerResponse\.adPlacements|playerResponse\.playerAds)/_ad/
+||youtube.com/*/base.js$replace=/(playerAds|adPlacement[a-zA-Z]+)/_da/
+youtube.com#%#//scriptlet("json-prune", "playerResponse.adPlacements playerResponse.playerAds adPlacements playerAds")
+youtube.com#%#//scriptlet("set-constant", "ytInitialPlayerResponse.adPlacements", "undefined")
+@@||youtube.com/get_video_info
+!
 ! Rules that are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
 !
@@ -237,6 +245,8 @@
 !
 ! This file contains all filters other than English, Social, Spyware and Russian.
 ! Also filters by platforms https://github.com/AdguardTeam/AdguardBrowserExtension/issues/917
+!
+!
 !
 ! Filters for adguard without safari
 ||chrome.test.filter.com^$third-party
