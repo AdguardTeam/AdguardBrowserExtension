@@ -868,6 +868,51 @@ QUnit.test('requestFilter.findRuleForRequest performance', (assert) => {
 //     assert.notOk(rule);
 // });
 
+// // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1534
+// QUnit.test('In case request has "DOCUMENT" type - $domain modifier will match as well request URL hostname', (assert) => {
+//     const urlRuleText = '|http://$third-party,domain=example.org';
+//     const urlRule = new adguard.rules.UrlFilterRule(urlRuleText);
+//
+//     const requestFilter = new adguard.RequestFilter();
+//     requestFilter.addRules([urlRule]);
+//
+//     // Will match document url host
+//     let rule = requestFilter.findRuleForRequest(
+//         'http://check.com/url',
+//         'http://www.example.org/',
+//         adguard.RequestTypes.DOCUMENT
+//     );
+//
+//     assert.equal(rule.ruleText, urlRuleText);
+//
+//     // Will match request url host
+//     rule = requestFilter.findRuleForRequest(
+//         'http://www.example.org/url',
+//         'http://test.com/',
+//         adguard.RequestTypes.DOCUMENT
+//     );
+//
+//     assert.equal(rule.ruleText, urlRuleText);
+//
+//     // Request type DOCUMENT is required
+//     rule = requestFilter.findRuleForRequest(
+//         'http://check.com/url',
+//         'http://test.com/',
+//         adguard.RequestTypes.SUBDOCUMENT
+//     );
+//
+//     assert.notOk(rule);
+//
+//     // Request type DOCUMENT is required
+//     rule = requestFilter.findRuleForRequest(
+//         'http://check.com/url',
+//         'http://test.com/',
+//         adguard.RequestTypes.IMAGE
+//     );
+//
+//     assert.notOk(rule);
+// });
+
 // QUnit.test('Invalid scriptlets are not added to the scripts string', (assert) => {
 //     const validScriptletRuleText = 'example.org#%#//scriptlet("adjust-setTimeout", "example", "400")';
 //     const invalidScriptletRuleText = 'example.org#%#//scriptlet("adjust-setTimeout-invalid", "example", "400")';
