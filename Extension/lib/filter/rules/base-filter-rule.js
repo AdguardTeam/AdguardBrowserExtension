@@ -234,27 +234,7 @@
         },
     };
 
-    /**
-     * Checks if the specified string starts with a substr at the specified index
-     *
-     * @param str        String to check
-     * @param startIndex Index to start checking from
-     * @param substr     Substring to check
-     * @return boolean true if it does start
-     */
-    function startsAtIndexWith(str, startIndex, substr) {
-        if (str.length - startIndex < substr.length) {
-            return false;
-        }
-
-        for (let i = 0; i < substr.length; i += 1) {
-            if (str.charAt(startIndex + i) !== substr.charAt(i)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
+    var stringUtils = adguard.utils.strings;
 
     /**
      * Finds CSS rule marker in the rule text
@@ -272,7 +252,7 @@
 
         for (let i = 0; i < markers.length; i += 1) {
             const marker = markers[i];
-            if (startsAtIndexWith(ruleText, startIndex, marker)) {
+            if (stringUtils.startsAtIndexWith(ruleText, startIndex, marker)) {
                 return marker;
             }
         }
