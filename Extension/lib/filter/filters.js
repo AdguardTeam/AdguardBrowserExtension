@@ -92,10 +92,6 @@
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#badfilter-modifier
         this.badFilterRules = {};
 
-        // Filter that applies CSS rules
-        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#cosmetic-rules
-        this.cssFilter = new adguard.rules.CssFilter();
-
         // Filter that applies CSP rules
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#csp-modifier
         this.cspFilter = new adguard.rules.CspFilter([], this.badFilterRules);
@@ -151,14 +147,14 @@
          * http://adguard.com/en/filterrules.html#hideRules
          *
          * @param {string} url Page URL
-         * @param {number} options CssFilter bitmask
+         * @param {number} options bitmask
          * @returns {*} CSS and ExtCss data for the webpage
          */
         getSelectorsForUrl(url, options) {
             const domain = adguard.utils.url.getHost(url);
 
             // TODO: Use options
-            const cosmeticResult = adguard.application.getEngine().getCosmeticResult(domain, CosmeticOption.CosmeticOptionAll);
+            const cosmeticResult = adguard.application.getEngine().getCosmeticResult(domain, options);
 
             const elemhideCss = [...cosmeticResult.elementHiding.generic, ...cosmeticResult.elementHiding.specific];
             const injectCss = [...cosmeticResult.CSS.generic, ...cosmeticResult.CSS.specific];

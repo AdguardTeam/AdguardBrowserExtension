@@ -60,8 +60,6 @@ const API_SCRIPTS = [
     'Extension/lib/filter/rules/url-filter-lookup-table.js',
     'Extension/lib/filter/rules/simple-regex.js',
     'Extension/lib/filter/rules/base-filter-rule.js',
-    'Extension/lib/filter/rules/css-filter-rule.js',
-    'Extension/lib/filter/rules/css-filter.js',
     'Extension/lib/filter/rules/url-filter-rule.js',
     'Extension/lib/filter/rules/url-filter.js',
     'Extension/lib/filter/rules/content-filter-rule.js',

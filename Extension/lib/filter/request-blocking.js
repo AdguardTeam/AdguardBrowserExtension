@@ -68,7 +68,7 @@ adguard.webRequestService = (function (adguard) {
      *
      * @param tab                       Tab data
      * @param documentUrl               Document URL
-     * @param cssFilterOptions          Bitmask for the CssFilter
+     * @param cssFilterOptions          Bitmask
      * @param {boolean} retrieveScripts Indicates whether to retrieve JS rules or not
      *
      * When cssFilterOptions and retrieveScripts are undefined, we handle it in a special way
@@ -102,8 +102,6 @@ adguard.webRequestService = (function (adguard) {
             whitelistRule = adguard.requestFilter.findWhiteListRule(documentUrl, mainFrameUrl, adguard.RequestTypes.DOCUMENT);
         }
 
-        let CssFilter = adguard.rules.CssFilter;
-
 
         // Check what exactly is disabled by this rule
         var elemHideFlag = whitelistRule && whitelistRule.isElemhide();
@@ -112,25 +110,25 @@ adguard.webRequestService = (function (adguard) {
         // content-message-handler calls it in this way
         if (typeof cssFilterOptions === 'undefined' && typeof retrieveScripts === 'undefined') {
             // Build up default flags.
-            let canUseInsertCSSAndExecuteScript = adguard.prefs.features.canUseInsertCSSAndExecuteScript;
+            const canUseInsertCSSAndExecuteScript = adguard.prefs.features.canUseInsertCSSAndExecuteScript;
             // If tabs.executeScript is unavailable, retrieve JS rules now.
             retrieveScripts = !canUseInsertCSSAndExecuteScript;
             if (!elemHideFlag) {
-                cssFilterOptions = CssFilter.RETRIEVE_EXTCSS;
+                cssFilterOptions = CosmeticOption.CosmeticOptionNone;
                 if (!canUseInsertCSSAndExecuteScript) {
-                    cssFilterOptions += CssFilter.RETRIEVE_TRADITIONAL_CSS;
+                    cssFilterOptions |= CosmeticOption.CosmeticOptionCSS;
                 }
                 if (genericHideFlag) {
-                    cssFilterOptions += CssFilter.GENERIC_HIDE_APPLIED;
+                    cssFilterOptions |= CosmeticOption.CosmeticOptionGenericCSS;
                 }
             }
         } else {
             if (!elemHideFlag && genericHideFlag) {
-                cssFilterOptions += CssFilter.GENERIC_HIDE_APPLIED;
+                cssFilterOptions |= CosmeticOption.CosmeticOptionGenericCSS;
             }
         }
 
-        var retrieveSelectors = !elemHideFlag && (cssFilterOptions & (CssFilter.RETRIEVE_TRADITIONAL_CSS + CssFilter.RETRIEVE_EXTCSS)) !== 0;
+        var retrieveSelectors = !elemHideFlag;
 
         // It's important to check this after the recordRuleHit call
         // as otherwise we will never record $document rules hit for domain

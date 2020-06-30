@@ -842,7 +842,8 @@ adguard.antiBannerService = (function (adguard) {
                 return;
             }
             if (setting === adguard.settings.DISABLE_COLLECT_HITS) {
-                getRequestFilter().cssFilter.dirty = true;
+                // TODO: We may use this with adguard.cssService
+                // getRequestFilter().cssFilter.dirty = true;
             }
             if (setting === adguard.settings.FILTERS_UPDATE_PERIOD) {
                 scheduleFiltersUpdate();

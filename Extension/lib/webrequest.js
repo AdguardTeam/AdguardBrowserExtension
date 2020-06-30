@@ -804,7 +804,7 @@
                 }
                 const { frameId } = details;
                 const url = details.requestUrl;
-                const cssFilterOption = adguard.rules.CssFilter.RETRIEVE_TRADITIONAL_CSS;
+                const cssFilterOption = CosmeticOption.CosmeticOptionCSS | CosmeticOption.CosmeticOptionGenericCSS;
                 const retrieveScripts = true;
                 const result = adguard.webRequestService.processGetSelectorsAndScripts(
                     { tabId },
@@ -974,7 +974,7 @@
                  */
                 const mainFrameUrl = adguard.frames.getMainFrameUrl({ tabId });
                 if (mainFrameUrl && isIframeWithoutSrc(frameUrl, frameId, mainFrameUrl)) {
-                    const cssFilterOption = adguard.rules.CssFilter.RETRIEVE_TRADITIONAL_CSS;
+                    const cssFilterOption = CosmeticOption.CosmeticOptionCSS | CosmeticOption.CosmeticOptionGenericCSS;
                     const retrieveScripts = true;
                     const result = adguard.webRequestService.processGetSelectorsAndScripts({ tabId }, mainFrameUrl, cssFilterOption, retrieveScripts);
                     if (result.requestFilterReady === false) {

@@ -781,7 +781,7 @@ QUnit.test('Request filter finds rules for domains with "." in the end', (assert
     const cssRuleText = 'www.benchmark.pl##body';
     let requestFilter = createRequestFilterWithRules([cssRuleText]);
 
-    const { css: [firstCss] } = requestFilter.getSelectorsForUrl('http://www.benchmark.pl./', 1);
+    const { css: [firstCss] } = requestFilter.getSelectorsForUrl('http://www.benchmark.pl./', CosmeticOption.CosmeticOptionAll);
     assert.ok(firstCss);
     assert.ok(firstCss.indexOf('body { display: none!important; }') > -1);
 

@@ -127,10 +127,11 @@ adguard.filteringLog = (function (adguard) {
         }
         if (sourceRule instanceof adguard.rules.ContentFilterRule) {
             destinationRule.contentRule = true;
-        } else if (sourceRule instanceof adguard.rules.CssFilterRule) {
-            destinationRule.cssRule = true;
-        } else if (isScriptRule(sourceRule)) {
-            destinationRule.scriptRule = true;
+        // TODO: Fix log
+        // } else if (sourceRule instanceof adguard.rules.CssFilterRule) {
+        //     destinationRule.cssRule = true;
+        // } else if (isScriptRule(sourceRule)) {
+        //     destinationRule.scriptRule = true;
         } else if (sourceRule instanceof adguard.rules.UrlFilterRule) {
             destinationRule.whiteListRule = sourceRule.whiteListRule;
             destinationRule.cspRule = sourceRule.isCspRule();
