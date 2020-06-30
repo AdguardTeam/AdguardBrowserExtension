@@ -77,7 +77,7 @@ adguard.antiBannerService = (function (adguard) {
         return SAVE_FILTER_RULES_TO_STORAGE_EVENTS.indexOf(el.event) >= 0;
     };
 
-    let reloadedRules = false;
+    const reloadedRules = false;
 
     /**
      * AntiBannerService initialize method. Process install, update or simple run.
@@ -558,7 +558,7 @@ adguard.antiBannerService = (function (adguard) {
              * If no one of filters is enabled, don't reload rules
              */
             if (isEmptyRulesFilterMap(rulesFilterMap)) {
-                return;
+
             }
 
             // TODO: Fix reloadedRules
@@ -786,7 +786,6 @@ adguard.antiBannerService = (function (adguard) {
         const dfd = new adguard.utils.Promise();
 
         adguard.rulesStorage.read(filterId, (loadedRulesText) => {
-
             for (let i = 0; i < events.length; i += 1) {
                 if (!loadedRulesText) {
                     loadedRulesText = [];
@@ -1129,7 +1128,6 @@ adguard.requestFilter = (function (adguard) {
         return getRequestFilter().findRuleForRequest(requestUrl, documentUrl, requestType, documentWhitelistRule);
     };
 
-    // TODO: Remove
     const findWhiteListRule = function (requestUrl, referrer, requestType) {
         return getRequestFilter().findWhiteListRule(requestUrl, referrer, requestType);
     };

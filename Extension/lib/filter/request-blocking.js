@@ -230,10 +230,7 @@ adguard.webRequestService = (function (adguard) {
      * @returns {*|boolean}
      */
     var isRequestBlockedByRule = function (requestRule) {
-        return requestRule
-            && !requestRule.whiteListRule
-            && !requestRule.getReplace()
-            && !requestRule.isRedirectRule();
+        return requestRule && !requestRule.isWhitelist();
     };
 
     /**
@@ -242,7 +239,7 @@ adguard.webRequestService = (function (adguard) {
      * @returns {*|boolean|true}
      */
     var isPopupBlockedByRule = function (requestRule) {
-        return requestRule && !requestRule.whiteListRule && requestRule.isBlockPopups();
+        return requestRule && !requestRule.isWhitelist();  //&& requestRule.isBlockPopups(); TODO: Fix popups
     };
 
     /**
@@ -312,7 +309,7 @@ adguard.webRequestService = (function (adguard) {
             whitelistRule = adguard.frames.getFrameWhiteListRule(tab);
         }
 
-        if (whitelistRule && whitelistRule.isDocumentWhiteList()) {
+        if (whitelistRule && whitelistRule.isDocumentWhitelistRule()) {
             // Frame is whitelisted by the main frame's $document rule
             // We do nothing more in this case - return the rule.
             return whitelistRule;

@@ -92,10 +92,6 @@
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#badfilter-modifier
         this.badFilterRules = {};
 
-        // Filter that applies whitelist rules
-        // Exception rules: https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#exceptions-modifiers
-        this.urlWhiteFilter = new adguard.rules.UrlFilter([], this.badFilterRules);
-
         // Filter that applies CSS rules
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#cosmetic-rules
         this.cssFilter = new adguard.rules.CssFilter();
@@ -277,7 +273,7 @@
                 return cacheItem[0];
             }
 
-            const rule = this._checkWhiteList(requestUrl, refHost, requestType, thirdParty);
+            const rule = this._checkWhiteList(requestUrl, referrer, requestType, thirdParty);
 
             this.urlExceptionsCache.saveResultToCache(requestUrl, rule, refHost, requestType);
             return rule;
@@ -391,17 +387,28 @@
          * Checks if exception rule is present for the URL/Referrer pair
          *
          * @param requestUrl    Request URL
-         * @param documentHost  Document URL host
+         * @param documentUrl   Document URL
          * @param requestType   Request content type (one of UrlFilterRule.contentTypes)
          * @param thirdParty    Is request third-party or not
          * @returns Filter rule found or null
          * @private
          */
-        _checkWhiteList(requestUrl, documentHost, requestType, thirdParty) {
-            if (this.urlWhiteFilter === null || !requestUrl) {
+        _checkWhiteList(requestUrl, documentUrl, requestType, thirdParty) {
+            if (!requestUrl) {
                 return null;
             }
-            return this.urlWhiteFilter.isFiltered(requestUrl, documentHost, requestType, thirdParty);
+
+            const request = new Request(requestUrl, documentUrl, this.transformRequestType(requestType));
+
+            const result = adguard.application.getEngine().matchRequest(request);
+            adguard.console.debug(result);
+
+            const basicResult = result.getBasicResult();
+            if (basicResult && basicResult.isWhitelist()) {
+                return basicResult;
+            }
+
+            return null;
         },
 
         /**
