@@ -248,6 +248,60 @@ adguard.utils = (function () {
             s.push('>');
             return s.join('');
         },
+
+        /**
+         * Checks if the specified string starts with a substr at the specified index.
+         * @param str - String to check
+         * @param startIndex - Index to start checking from
+         * @param substr - Substring to check
+         * @return boolean true if it does start
+         */
+        startsAtIndexWith(str, startIndex, substr) {
+            if (str.length - startIndex < substr.length) {
+                return false;
+            }
+
+            for (let i = 0; i < substr.length; i += 1) {
+                if (str.charAt(startIndex + i) !== substr.charAt(i)) {
+                    return false;
+                }
+            }
+
+            return true;
+        },
+
+        /**
+         * Checks if str has unquoted substr
+         * @param str
+         * @param substr
+         */
+        hasUnquotedSubstring(str, substr) {
+            const quotes = ['"', "'", '/'];
+
+            const stack = [];
+            for (let i = 0; i < str.length; i += 1) {
+                const cursor = str[i];
+
+                if (stack.length === 0) {
+                    if (this.startsAtIndexWith(str, i, substr)) {
+                        return true;
+                    }
+                }
+
+                if (quotes.indexOf(cursor) >= 0
+                    && (i === 0 || str[i - 1] !== '\\')) {
+                    const last = stack.pop();
+                    if (!last) {
+                        stack.push(cursor);
+                    } else if (last !== cursor) {
+                        stack.push(last);
+                        stack.push(cursor);
+                    }
+                }
+            }
+
+            return false;
+        },
     };
 
     api.strings = StringUtils;

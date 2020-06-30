@@ -103,6 +103,7 @@
                 throw new Error("ruleText does not contain a CSS rule marker: " + rule);
             }
 
+            var isElemhideRule = CssFilterRule.ELEMHIDE_MARKERS.indexOf(mask) !== -1;
             var isInjectRule = CssFilterRule.INJECT_MARKERS.indexOf(mask) !== -1;
             this.whiteListRule = CssFilterRule.WHITELIST_MARKERS.indexOf(mask) !== -1;
             var isExtendedCss = CssFilterRule.EXTCSS_MARKERS.indexOf(mask) !== -1;
@@ -114,7 +115,19 @@
                 this.loadDomains(domains);
             }
 
+            var stringUtils = adguard.utils.strings;
             var cssContent = rule.substring(indexOfMask + mask.length);
+
+            if (isElemhideRule) {
+                // prevent using elemhide rules (##) as css (#$#)
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1624
+                if (/{.+}/.test(cssContent)
+                    || stringUtils.hasUnquotedSubstring(cssContent, '{')
+                    || stringUtils.hasUnquotedSubstring(cssContent, '/*')
+                    || stringUtils.hasUnquotedSubstring(cssContent, ' //')) {
+                    throw new SyntaxError(`Invalid elemhide rule: ${this.ruleText}`);
+                }
+            }
 
             if (!isInjectRule) {
                 // We need to validate pseudo-classes
@@ -140,7 +153,7 @@
 
                 // Prohibit "\" character in CSS injection rules
                 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1444
-                if (cssContent.indexOf('\\', cssContent.indexOf('{')) > -1) {
+                if (cssContent.indexOf('\\') > -1) {
                     throw new Error(`Css injection rule with '\\' was omitted: ${rule}`);
                 }
             }
@@ -153,6 +166,7 @@
                 }
             }
 
+            this.isElemhideRule = isElemhideRule;
             this.isInjectRule = isInjectRule;
             this.extendedCss = isExtendedCss;
             this.cssSelector = cssContent;
@@ -227,6 +241,12 @@
         api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE, api.FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE,
         api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE, api.FilterRule.MASK_CSS_INJECT_RULE];
 
+    /**
+     * Masks indicating elemhide rules
+     */
+    CssFilterRule.ELEMHIDE_MARKERS = [
+        api.FilterRule.MASK_CSS_RULE, api.FilterRule.MASK_CSS_EXCEPTION_RULE];
+        
     api.CssFilterRule = CssFilterRule;
 
 })(adguard, adguard.rules);
