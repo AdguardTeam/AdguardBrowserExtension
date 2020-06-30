@@ -288,6 +288,31 @@ const browser = window.browser || chrome;
          * @param {Array.<String>} urls url match pattern https://developer.chrome.com/extensions/match_patterns
          */
         addListener(callback, urls) {
+            const allTypes = [
+                'main_frame',
+                'sub_frame',
+                'stylesheet',
+                'script',
+                'image',
+                'font',
+                'object',
+                'xmlhttprequest',
+                'ping',
+                'csp_report',
+                'media',
+                'websocket',
+                'other'
+            ];
+            const nonExtraHeadersTypes = ['stylesheet', 'script', 'media'];
+            const extraHeadersTypes = allTypes.filter(type => !nonExtraHeadersTypes.includes(type));
+
+
+            // listener with extra headers
+            let extraHeadersRequestFilter = { types: extraHeadersTypes };
+            if (urls) {
+                extraHeadersRequestFilter = { ...extraHeadersRequestFilter, urls };
+            }
+
             browser.webRequest.onBeforeSendHeaders.addListener((details) => {
                 if (shouldSkipRequest(details)) {
                     return;
@@ -298,7 +323,32 @@ const browser = window.browser || chrome;
                 if (result) {
                     return 'requestHeaders' in result ? { requestHeaders: result.requestHeaders } : {};
                 }
-            }, urls ? { urls } : {}, onBeforeSendHeadersExtraInfoSpec);
+            }, extraHeadersRequestFilter, onBeforeSendHeadersExtraInfoSpec);
+
+            // listener without extra headers
+
+            let nonExtraHeadersRequestFilter = { types: nonExtraHeadersTypes };
+            if (urls) {
+                nonExtraHeadersRequestFilter = { ...nonExtraHeadersRequestFilter, urls };
+            }
+
+            console.log({ nonExtraHeadersRequestFilter });
+            const nonExtraHeadersInfoSpec = onBeforeSendHeadersExtraInfoSpec
+                .filter(opt => opt !== 'extraHeaders')
+                .filter(opt => opt !== 'blocking');
+
+            console.log({ nonExtraHeadersInfoSpec });
+            browser.webRequest.onBeforeSendHeaders.addListener((details) => {
+                if (shouldSkipRequest(details)) {
+                    return;
+                }
+
+                const requestDetails = getRequestDetails(details);
+                const result = callback(requestDetails);
+                if (result) {
+                    return 'requestHeaders' in result ? { requestHeaders: result.requestHeaders } : {};
+                }
+            }, nonExtraHeadersRequestFilter, nonExtraHeadersInfoSpec);
         },
     };
 
