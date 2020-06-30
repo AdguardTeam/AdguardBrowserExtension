@@ -775,29 +775,28 @@ QUnit.test('requestFilter.findRuleForRequest performance', (assert) => {
 //     assert.notOk(search2.includes(rule2));
 //     assert.ok(search2.includes(rule3));
 // });
-//
-// // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1586
-// QUnit.test('Request filter finds rules for domains with "." in the end', (assert) => {
-//     const selector = 'body';
-//     const cssRule = new adguard.rules.CssFilterRule(`benchmark.pl##${selector}`);
-//
-//     const requestFilter = new adguard.RequestFilter();
-//     requestFilter.addRules([cssRule]);
-//     const { css: [firstCss] } = requestFilter.getSelectorsForUrl('http://www.benchmark.pl./', 1);
-//     assert.ok(firstCss.indexOf(`${selector} { display: none!important; }`) > -1);
-//
-//     const urlRuleText = '||cdn.benchmark.pl^$domain=benchmark.pl';
-//     const urlRule = new adguard.rules.UrlFilterRule(urlRuleText);
-//     requestFilter.addRules([urlRule]);
-//
-//     const rule = requestFilter.findRuleForRequest(
-//         'http://cdn.benchmark.pl/assets/css/mainPage.min.css',
-//         'http://www.benchmark.pl./',
-//         adguard.RequestTypes.STYLESHEET
-//     );
-//     assert.equal(rule.ruleText, urlRuleText);
-// });
-//
+
+// https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1586
+QUnit.test('Request filter finds rules for domains with "." in the end', (assert) => {
+    const cssRuleText = 'www.benchmark.pl##body';
+    let requestFilter = createRequestFilterWithRules([cssRuleText]);
+
+    const { css: [firstCss] } = requestFilter.getSelectorsForUrl('http://www.benchmark.pl./', 1);
+    assert.ok(firstCss);
+    assert.ok(firstCss.indexOf('body { display: none!important; }') > -1);
+
+    const urlRuleText = '||cdn.benchmark.pl^$domain=benchmark.pl';
+    requestFilter = createRequestFilterWithRules([cssRuleText, urlRuleText]);
+
+    const rule = requestFilter.findRuleForRequest(
+        'http://cdn.benchmark.pl/assets/css/mainPage.min.css',
+        'http://www.benchmark.pl./',
+        adguard.RequestTypes.STYLESHEET
+    );
+
+    assert.equal(rule.ruleText, urlRuleText);
+});
+
 // // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1534
 // QUnit.test('In case request has "DOCUMENT" type - $domain modifier will match as well request URL hostname', (assert) => {
 //     const urlRuleText = '||check.com/url$domain=example.org|check.com';

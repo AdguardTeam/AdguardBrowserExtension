@@ -152,24 +152,38 @@
          *
          * @param {string} url Page URL
          * @param {number} options CssFilter bitmask
-         * @returns {SelectorsData} CSS and ExtCss data for the webpage
+         * @returns {*} CSS and ExtCss data for the webpage
          */
         getSelectorsForUrl(url, options) {
             const domain = adguard.utils.url.getHost(url);
 
-            const { CSS_INJECTION_ONLY } = adguard.rules.CssFilter;
-            const cssInjectionOnly = (options & CSS_INJECTION_ONLY) === CSS_INJECTION_ONLY;
+            // TODO: Use options
+            const cosmeticResult = adguard.application.getEngine().getCosmeticResult(domain, CosmeticOption.CosmeticOptionAll);
 
-            if (!cssInjectionOnly
-                && adguard.webRequestService.isCollectingCosmeticRulesHits()) {
-                /**
-                 * If user has enabled "Send statistics for ad filters usage" option we
-                 * build CSS with enabled hits stats. In this case style contains "content"
-                 * with filter identifier and rule text.
-                 */
-                return this.cssFilter.buildCssHits(domain, options);
+            const elemhideCss = [...cosmeticResult.elementHiding.generic, ...cosmeticResult.elementHiding.specific];
+            const injectCss = [...cosmeticResult.CSS.generic, ...cosmeticResult.CSS.specific];
+
+            const elemhideExtendedCss = [
+                ...cosmeticResult.elementHiding.genericExtCss,
+                ...cosmeticResult.elementHiding.specificExtCss,
+            ];
+            const injectExtendedCss = [
+                ...cosmeticResult.elementHiding.genericExtCss,
+                ...cosmeticResult.elementHiding.specificExtCss,
+            ];
+
+            const collectingCosmeticRulesHits = adguard.webRequestService.isCollectingCosmeticRulesHits();
+            if (collectingCosmeticRulesHits) {
+                return {
+                    css: adguard.cssService.buildStyleSheetHits(elemhideCss, injectCss),
+                    extendedCss: adguard.cssService.buildStyleSheetHits(elemhideExtendedCss, injectExtendedCss),
+                };
             }
-            return this.cssFilter.buildCss(domain, options);
+
+            return {
+                css: adguard.cssService.buildStyleSheet(elemhideCss, injectCss, true),
+                extendedCss: adguard.cssService.buildStyleSheet(elemhideExtendedCss, injectExtendedCss, false),
+            };
         },
 
         /**
@@ -189,6 +203,8 @@
         },
 
         /**
+         * TODO: Move to scripts-service
+         *
          * Builds the final output string for the specified page.
          * Depending on the browser we either allow or forbid the new remote rules
          * (see how `scriptSource` is used).
