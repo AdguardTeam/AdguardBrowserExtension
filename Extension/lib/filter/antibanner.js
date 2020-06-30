@@ -561,15 +561,16 @@ adguard.antiBannerService = (function (adguard) {
                 return;
             }
 
-            if (newRequestFilter.rulesCount === 0 && !reloadedRules) {
-                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/205
-                adguard.console.info('No rules have been found - checking filter updates');
-                reloadAntiBannerFilters();
-                reloadedRules = true;
-            } else if (newRequestFilter.rulesCount > 0 && reloadedRules) {
-                adguard.console.info('Filters reloaded, deleting reloadRules flag');
-                reloadedRules = false;
-            }
+            // TODO: Fix reloadedRules
+            // if (newRequestFilter.rulesCount === 0 && !reloadedRules) {
+            //     // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/205
+            //     adguard.console.info('No rules have been found - checking filter updates');
+            //     reloadAntiBannerFilters();
+            //     reloadedRules = true;
+            // } else if (newRequestFilter.rulesCount > 0 && reloadedRules) {
+            //     adguard.console.info('Filters reloaded, deleting reloadRules flag');
+            //     reloadedRules = false;
+            // }
         };
 
         /**
@@ -584,7 +585,7 @@ adguard.antiBannerService = (function (adguard) {
                 filterId -= 0;
 
                 const isTrustedFilter = adguard.subscriptions.isTrustedFilter(filterId);
-                const rulesTexts = rulesFilterMap[filterId];
+                const rulesTexts = rulesFilterMap[filterId].join('\n');
                 lists.push(new StringRuleList(filterId, rulesTexts, false, !isTrustedFilter));
             }
 
@@ -673,7 +674,7 @@ adguard.antiBannerService = (function (adguard) {
         let rulesCount = 0;
         if (requestFilter) {
             // TODO: Fix rules count
-            rulesCount = 0; // requestFilter.rulesCount;
+            rulesCount = 50; // requestFilter.rulesCount;
         }
         return {
             rulesCount,
@@ -1182,7 +1183,6 @@ adguard.requestFilter = (function (adguard) {
         isReady,
         shouldCollapseAllElements,
 
-        getRules,
         findRuleForRequest,
         findWhiteListRule,
 

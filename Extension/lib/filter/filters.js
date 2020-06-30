@@ -88,8 +88,6 @@
      * @type {Function}
      */
     const RequestFilter = function () {
-        this.engine = adguard.application.getEngine();
-
         // Bad-filter rules collection
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#badfilter-modifier
         this.badFilterRules = {};
@@ -184,7 +182,7 @@
          */
         getScriptsForUrl(url, debug) {
             const domain = adguard.utils.url.getHost(url);
-            const cosmeticResult = this.engine.getCosmeticResult(domain, CosmeticOption.CosmeticOptionJS);
+            const cosmeticResult = adguard.application.getEngine().getCosmeticResult(domain, CosmeticOption.CosmeticOptionJS);
 
             // TODO: Pass debug
             return cosmeticResult.getScriptRules();
@@ -456,7 +454,7 @@
 
             const request = new Request(requestUrl, documentUrl, this.transformRequestType(requestType));
 
-            const result = this.engine.matchRequest(request);
+            const result = adguard.application.getEngine().matchRequest(request);
             adguard.console.debug(result);
 
             const ruleForRequest = result.getBasicResult();
