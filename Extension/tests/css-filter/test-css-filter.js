@@ -189,45 +189,6 @@ QUnit.test('Css GenericHide Exception Rules', (assert) => {
     assert.equal(otherCss.length, 2);
 });
 
-QUnit.test('Ublock Css Injection Syntax Support', (assert) => {
-    let ruleText = 'yandex.ru##body:style(background:inherit;)';
-    let cssFilterRule = adguard.rules.builder.createRule(ruleText, 0);
-    assert.equal(cssFilterRule.ruleText, ruleText);
-    assert.equal(cssFilterRule.convertedRuleText, 'yandex.ru#$#body { background:inherit; }');
-    assert.ok(cssFilterRule.isInjectRule);
-    assert.notOk(cssFilterRule.whiteListRule);
-    assert.equal(cssFilterRule.cssSelector, 'body { background:inherit; }');
-
-    ruleText = 'yandex.ru#@#body:style(background:inherit;)';
-    cssFilterRule = adguard.rules.builder.createRule(ruleText, 0);
-    assert.equal(cssFilterRule.ruleText, ruleText);
-    assert.equal(cssFilterRule.convertedRuleText, 'yandex.ru#@$#body { background:inherit; }');
-    assert.ok(cssFilterRule.isInjectRule);
-    assert.ok(cssFilterRule.whiteListRule);
-    assert.equal(cssFilterRule.cssSelector, 'body { background:inherit; }');
-
-    ruleText = 'yandex.ru##a[src^="http://domain.com"]';
-    cssFilterRule = adguard.rules.builder.createRule(ruleText, 0);
-    assert.equal(cssFilterRule.ruleText, ruleText);
-    assert.notOk(cssFilterRule.isInjectRule);
-    assert.notOk(cssFilterRule.whiteListRule);
-    assert.equal(cssFilterRule.cssSelector, 'a[src^="http://domain.com"]');
-
-    ruleText = "yandex.ru##[role='main']:style(display: none;)";
-    cssFilterRule = adguard.rules.builder.createRule(ruleText, 0);
-    assert.equal(cssFilterRule.ruleText, ruleText);
-    assert.equal(cssFilterRule.convertedRuleText, 'yandex.ru#$#[role=\'main\'] { display: none; }');
-    assert.ok(cssFilterRule.isInjectRule);
-    assert.notOk(cssFilterRule.whiteListRule);
-    assert.equal(cssFilterRule.cssSelector, "[role='main'] { display: none; }");
-
-    ruleText = 'example.com##a[target="_blank"][href^="http://api.taboola.com/"]:style(display: none;)';
-    cssFilterRule = adguard.rules.builder.createRule(ruleText, 0);
-    assert.equal(cssFilterRule.ruleText, ruleText);
-    assert.equal(cssFilterRule.convertedRuleText, 'example.com#$#a[target="_blank"][href^="http://api.taboola.com/"] { display: none; }');
-    assert.equal(cssFilterRule.cssSelector, 'a[target="_blank"][href^="http://api.taboola.com/"] { display: none; }');
-});
-
 QUnit.test('Some Complex Selector Rules', (assert) => {
     let ruleText = 'example.com##td[valign="top"] > .mainmenu[style="padding:10px 0 0 0 !important;"]';
     let cssFilterRule = new adguard.rules.CssFilterRule(ruleText);
@@ -649,88 +610,6 @@ QUnit.test('Extended Css Build CssHits', (assert) => {
     assert.equal(css[0].trim(), ".sponsored { display: none!important; content: 'adguard1%3Badguard.com%23%23.sponsored' !important;}");
     assert.equal(extendedCss.length, 1);
     assert.equal(extendedCss[0].trim(), ".sponsored[-ext-contains=test] { display: none!important; content: 'adguard1%3Badguard.com%23%23.sponsored%5B-ext-contains%3Dtest%5D' !important;}");
-});
-
-QUnit.test('Extended Css Build Inject Css', (assert) => {
-    const rule = adguard.rules.builder.createRule('adguard.com##.sponsored', 0);
-    const genericRule = new adguard.rules.CssFilterRule('##.banner');
-    const extendedCssRule = new adguard.rules.CssFilterRule('adguard.com##.sponsored[-ext-contains=test]');
-    const filter = new adguard.rules.CssFilter([rule, genericRule, extendedCssRule]);
-
-    let selectors; let css; let extendedCss; let
-        commonCss;
-
-    const baseOption = adguard.rules.CssFilter.RETRIEVE_TRADITIONAL_CSS + adguard.rules.CssFilter.RETRIEVE_EXTCSS + adguard.rules.CssFilter.CSS_INJECTION_ONLY;
-
-    const injectRule = adguard.rules.builder.createRule('adguard.com##body:style(background:inherit;)', 0);
-    assert.ok(injectRule.isInjectRule);
-    assert.notOk(injectRule.extendedCss);
-    filter.addRule(injectRule);
-
-    selectors = filter.buildCss('adguard.com', baseOption);
-    css = selectors.css;
-    extendedCss = selectors.extendedCss;
-    commonCss = filter.buildCss(null).css;
-    assert.equal(commonCss.length, 1);
-    assert.equal(css.length, 1);
-    assert.equal(extendedCss.length, 1);
-
-    selectors = filter.buildCss('adguard.com', baseOption + adguard.rules.CssFilter.GENERIC_HIDE_APPLIED);
-    css = selectors.css;
-    extendedCss = selectors.extendedCss;
-    commonCss = filter.buildCss(null).css;
-    assert.equal(commonCss.length, 1);
-    assert.equal(css.length, 1);
-    assert.equal(extendedCss.length, 1);
-
-    const exceptionInjectRule = new adguard.rules.CssFilterRule('adguard.com#@$#.sponsored { display: none!important;}');
-    assert.ok(exceptionInjectRule.isInjectRule);
-    assert.notOk(exceptionInjectRule.extendedCss);
-    assert.ok(exceptionInjectRule.whiteListRule);
-    filter.addRule(exceptionInjectRule);
-
-    selectors = filter.buildCss('adguard.com', baseOption);
-    css = selectors.css;
-    extendedCss = selectors.extendedCss;
-    commonCss = filter.buildCss(null).css;
-    assert.equal(commonCss.length, 1);
-    assert.equal(css.length, 1);
-    assert.equal(extendedCss.length, 1);
-});
-
-QUnit.test('Extended Css Selector Inject Rule', (assert) => {
-    const rule = new adguard.rules.CssFilterRule('adguard.com##.bannerSponsor');
-    const genericRule = new adguard.rules.CssFilterRule('##.banner');
-    const extendedCssRule = new adguard.rules.CssFilterRule('adguard.com##.sponsored[-ext-contains=test]');
-    const filter = new adguard.rules.CssFilter([rule, genericRule, extendedCssRule]);
-
-    let selectors; let css; let extendedCss; let
-        commonCss;
-
-    let injectRule = new adguard.rules.CssFilterRule('adguard.com#$#.first-item h2:has(time) { font-size: 128px; }');
-    assert.ok(injectRule.isInjectRule);
-    assert.ok(injectRule.extendedCss);
-    filter.addRule(injectRule);
-
-    injectRule = new adguard.rules.CssFilterRule('#$#.first-item { font-size: 130px; }');
-    assert.ok(injectRule.isInjectRule);
-    filter.addRule(injectRule);
-
-    selectors = filter.buildCss('adguard.com', adguard.rules.CssFilter.RETRIEVE_TRADITIONAL_CSS + adguard.rules.CssFilter.RETRIEVE_EXTCSS + adguard.rules.CssFilter.CSS_INJECTION_ONLY);
-    css = selectors.css;
-    extendedCss = selectors.extendedCss;
-    commonCss = filter.buildCss(null).css;
-    assert.equal(commonCss.length, 2);
-    assert.equal(css.length, 1);
-    assert.equal(extendedCss.length, 2);
-
-    selectors = filter.buildCss('adguard.com', adguard.rules.CssFilter.RETRIEVE_TRADITIONAL_CSS + adguard.rules.CssFilter.RETRIEVE_EXTCSS + adguard.rules.CssFilter.CSS_INJECTION_ONLY + adguard.rules.CssFilter.GENERIC_HIDE_APPLIED);
-    css = selectors.css;
-    extendedCss = selectors.extendedCss;
-    commonCss = filter.buildCss(null).css;
-    assert.equal(commonCss.length, 2);
-    assert.equal(css.length, 0);
-    assert.equal(extendedCss.length, 2);
 });
 
 QUnit.test('Css Filter WWW Test', (assert) => {

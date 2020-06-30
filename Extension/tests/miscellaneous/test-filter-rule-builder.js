@@ -29,14 +29,6 @@ QUnit.test('Unsupported rules', (assert) => {
     assert.ok(rule instanceof adguard.rules.CssFilterRule);
 });
 
-
-QUnit.test('Invalid Style Syntax', (assert) => {
-    const ruleText = 'yandex.ru##body:style()';
-    assert.throws(() => {
-        adguard.rules.ruleConverter.convertRule(ruleText);
-    }, new Error('Empty :style pseudo class: body:style()'));
-});
-
 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1600
 QUnit.test('Too short rules are ignored', (assert) => {
     let ruleText = 'adg';

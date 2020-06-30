@@ -637,23 +637,7 @@ QUnit.test('Whitelist rules selecting', (assert) => {
 //
 //     assert.notOk(result);
 // });
-//
-// // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1573
-// QUnit.test('$csp rules created with $all modifier should be unblocked with $badfilter modifier', (assert) => {
-//     const requestFilter = new adguard.RequestFilter();
-//     const blockingCompositeRule = adguard.rules.builder.createRule('||example.org^$all', 0);
-//
-//     requestFilter.addRule(blockingCompositeRule);
-//
-//     let result = requestFilter.findCspRules('https://example.org', 'https://example.org', adguard.RequestTypes.DOCUMENT);
-//     assert.equal(result.length, 2);
-//
-//     const whitelistCompositeRule = adguard.rules.builder.createRule('||example.org^$all,badfilter');
-//     requestFilter.addRule(whitelistCompositeRule);
-//     result = requestFilter.findCspRules('https://example.org', 'https://example.org', adguard.RequestTypes.DOCUMENT);
-//     assert.equal(result.length, 0);
-// });
-//
+
 // // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1122
 // QUnit.test('Rule with extension modifier should be omitted in request filter', (assert) => {
 //     const rules = [

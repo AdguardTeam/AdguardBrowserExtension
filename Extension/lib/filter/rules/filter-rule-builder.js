@@ -131,30 +131,7 @@
      * @returns Filter rule object. Either UrlFilterRule or CssFilterRule
      */
     const createRule = (ruleText, filterId, isTrustedFilter = true) => {
-        let conversionResult;
-        try {
-            conversionResult = api.ruleConverter.convertRule(ruleText);
-        } catch (ex) {
-            adguard.console.debug('Cannot convert rule from filter {0}: {1}, cause {2}', filterId || 0, ruleText, ex);
-        }
-        if (!conversionResult) {
-            return null;
-        }
-        if (Array.isArray(conversionResult)) {
-            const rules = conversionResult
-                .map(rt => _createRule(rt, filterId, isTrustedFilter))
-                .filter(rule => rule !== null);
-            // composite rule shouldn't be with without rules inside it
-            if (rules.length === 0) {
-                return null;
-            }
-            return new api.CompositeRule(ruleText, rules);
-        }
-        const rule = _createRule(conversionResult, filterId, isTrustedFilter);
-        if (rule && conversionResult !== ruleText) {
-            rule.ruleText = ruleText;
-            rule.convertedRuleText = conversionResult;
-        }
+        const rule = _createRule(ruleText, filterId, isTrustedFilter);
         return rule;
     };
 
