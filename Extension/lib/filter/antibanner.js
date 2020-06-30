@@ -77,7 +77,7 @@ adguard.antiBannerService = (function (adguard) {
         return SAVE_FILTER_RULES_TO_STORAGE_EVENTS.indexOf(el.event) >= 0;
     };
 
-    const reloadedRules = false;
+    let reloadedRules = false;
 
     /**
      * AntiBannerService initialize method. Process install, update or simple run.
@@ -551,26 +551,25 @@ adguard.antiBannerService = (function (adguard) {
             adguard.console.info(
                 'Finished request filter initialization in {0} ms. Rules count: {1}',
                 (new Date().getTime() - start),
-                newRequestFilter.rulesCount
+                newRequestFilter.getRulesCount()
             );
 
             /**
              * If no one of filters is enabled, don't reload rules
              */
             if (isEmptyRulesFilterMap(rulesFilterMap)) {
-
+                return;
             }
 
-            // TODO: Fix reloadedRules
-            // if (newRequestFilter.rulesCount === 0 && !reloadedRules) {
-            //     // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/205
-            //     adguard.console.info('No rules have been found - checking filter updates');
-            //     reloadAntiBannerFilters();
-            //     reloadedRules = true;
-            // } else if (newRequestFilter.rulesCount > 0 && reloadedRules) {
-            //     adguard.console.info('Filters reloaded, deleting reloadRules flag');
-            //     reloadedRules = false;
-            // }
+            if (newRequestFilter.getRulesCount() === 0 && !reloadedRules) {
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/205
+                adguard.console.info('No rules have been found - checking filter updates');
+                reloadAntiBannerFilters();
+                reloadedRules = true;
+            } else if (newRequestFilter.getRulesCount() > 0 && reloadedRules) {
+                adguard.console.info('Filters reloaded, deleting reloadRules flag');
+                reloadedRules = false;
+            }
         };
 
         /**
@@ -673,8 +672,7 @@ adguard.antiBannerService = (function (adguard) {
     var getRequestFilterInfo = function () {
         let rulesCount = 0;
         if (requestFilter) {
-            // TODO: Fix rules count
-            rulesCount = 50; // requestFilter.rulesCount;
+            rulesCount = requestFilter.getRulesCount();
         }
         return {
             rulesCount,
@@ -1140,10 +1138,6 @@ adguard.requestFilter = (function (adguard) {
         return getRequestFilter().getSelectorsForUrl(documentUrl, genericHideFlag);
     };
 
-    const getInjectedSelectorsForUrl = function (documentUrl, genericHideFlag) {
-        return getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideFlag);
-    };
-
     const getScriptsForUrl = function (documentUrl) {
         return getRequestFilter().getScriptsForUrl(documentUrl);
     };
@@ -1185,7 +1179,6 @@ adguard.requestFilter = (function (adguard) {
         findWhiteListRule,
 
         getSelectorsForUrl,
-        getInjectedSelectorsForUrl,
         getScriptsForUrl,
         getScriptsStringForUrl,
         getContentRulesForUrl,

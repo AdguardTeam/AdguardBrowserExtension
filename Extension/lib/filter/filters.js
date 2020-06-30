@@ -131,6 +131,10 @@
          */
         requestCacheMaxSize: 1000,
 
+        getRulesCount() {
+            return adguard.application.getEngine().getRulesCount();
+        },
+
         /**
          * An object with the information on the CSS and ExtendedCss stylesheets which
          * need to be injected into a web page.
