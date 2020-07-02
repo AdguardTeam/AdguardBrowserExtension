@@ -1,8 +1,8 @@
-! Checksum: xP1ii199i6w9nJFG9z5mZA
+! Checksum: b6s6T2GxE7gYmX+TNA0oNQ
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.0.76
-! TimeUpdated: 2020-03-05T17:32:09+03:00
+! Version: 2.0.0.84
+! TimeUpdated: 2020-06-02T00:03:59+03:00
 ! Expires: 4 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#dutch
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -1374,6 +1374,11 @@ tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
 ! Prevent AdFender detection
 @@/ad_pics/*$image,domain=computerworld.nl|webwereld.nl
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/56401
+hardware.info#@#.AdBar
+@@||content.hwigroup.net/images/*/adinclude/$domain=hardware.info
+! https://github.com/AdguardTeam/AdguardFilters/issues/56379
+forum.fok.nl#%#//scriptlet("set-constant", "DAB", "noopFunc")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/40543
 ||knack.be/js/responsive/rmgAdCheck.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/29317
@@ -1496,6 +1501,10 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 !--------------------------------------------------------!
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
+!
+forum.fok.nl###wa_web_headertofloor
+nu.nl###header > .zone
+telegraaf.nl##.VideoArticlePage__banner
 almere-nieuws.nl##header #mvp-leader-wrap
 almere-nieuws.nl###footer-container > #footer-banners + #footer-text
 ||almere-nieuws.nl/banners_*.html
@@ -1577,7 +1586,7 @@ afkortingen.nu##.banner
 marktplaats.nl##.banner-vipbottom
 nu.nl##.block.advertoriallist
 tvgids.nl##.interstitial_banner
-weeronline.nl##.leaderboard
+hardware.info,weeronline.nl##.leaderboard
 funx.nl##.leaderboard-container
 ondertitel.com##.leaderbord-container
 nu.nl##.section-mediapartner-external.source-normal
@@ -1608,6 +1617,10 @@ klusidee.nl##td.td-ad
 !
 ! White list. Fixing filtration errors (false-positive)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/54225
+@@||markup.nieuwsblad.be/extra/assets/advertising/dfp-setup.js
+@@||markup.nieuwsblad.be/extra/assets/advertising/prebid.js
+||securepubads.g.doubleclick.net/tag/js/gpt.js$script,redirect=googletagservices-gpt,domain=nieuwsblad.be
 ! https://github.com/AdguardTeam/AdguardFilters/issues/47079
 @@||securepubads.g.doubleclick.net/gpt/pubads_impl_*.js$domain=standaard.be
 @@||securepubads.g.doubleclick.net/tag/js/gpt.js$domain=standaard.be

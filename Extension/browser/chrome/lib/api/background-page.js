@@ -288,6 +288,44 @@ const browser = window.browser || chrome;
          * @param {Array.<String>} urls url match pattern https://developer.chrome.com/extensions/match_patterns
          */
         addListener(callback, urls) {
+            let requestFilter = {};
+            /**
+             * Sometimes extraHeaders option of onBeforeSendHeaders handler is blocking network
+             * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1634
+             * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1644
+             * https://bugs.chromium.org/p/chromium/issues/detail?id=938560
+             * https://bugs.chromium.org/p/chromium/issues/detail?id=1075905
+             * This issue was fixed in the Canary v85.0.4178.0 and would be fixed
+             * in the Chrome with the same version
+             * Until v85 we have decided to filter requests with types:
+             * 'stylesheet', 'script', 'media'
+             */
+            if (adguard.prefs.browser === 'Chrome' && adguard.prefs.chromeVersion < 85) {
+                const allTypes = [
+                    'main_frame',
+                    'sub_frame',
+                    'stylesheet',
+                    'script',
+                    'image',
+                    'font',
+                    'object',
+                    'xmlhttprequest',
+                    'ping',
+                    'csp_report',
+                    'media',
+                    'websocket',
+                    'other',
+                ];
+                // this request types block requests, if use them with extraHeaders and blocking options
+                const nonExtraHeadersTypes = ['stylesheet', 'script', 'media'];
+                const extraHeadersTypes = allTypes.filter(type => !nonExtraHeadersTypes.includes(type));
+                requestFilter = { ...requestFilter, types: extraHeadersTypes };
+            }
+
+            if (urls) {
+                requestFilter = { ...requestFilter, urls };
+            }
+
             browser.webRequest.onBeforeSendHeaders.addListener((details) => {
                 if (shouldSkipRequest(details)) {
                     return;
@@ -298,7 +336,7 @@ const browser = window.browser || chrome;
                 if (result) {
                     return 'requestHeaders' in result ? { requestHeaders: result.requestHeaders } : {};
                 }
-            }, urls ? { urls } : {}, onBeforeSendHeadersExtraInfoSpec);
+            }, requestFilter, onBeforeSendHeadersExtraInfoSpec);
         },
     };
 
