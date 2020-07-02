@@ -288,29 +288,42 @@ const browser = window.browser || chrome;
          * @param {Array.<String>} urls url match pattern https://developer.chrome.com/extensions/match_patterns
          */
         addListener(callback, urls) {
-            const allTypes = [
-                'main_frame',
-                'sub_frame',
-                'stylesheet',
-                'script',
-                'image',
-                'font',
-                'object',
-                'xmlhttprequest',
-                'ping',
-                'csp_report',
-                'media',
-                'websocket',
-                'other'
-            ];
-            const nonExtraHeadersTypes = ['stylesheet', 'script', 'media'];
-            const extraHeadersTypes = allTypes.filter(type => !nonExtraHeadersTypes.includes(type));
+            let requestFilter = {};
+            /**
+             * Sometimes extraHeaders option of onBeforeSendHeaders handler is blocking network
+             * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1634
+             * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1644
+             * https://bugs.chromium.org/p/chromium/issues/detail?id=938560
+             * https://bugs.chromium.org/p/chromium/issues/detail?id=1075905
+             * This issue was fixed in the Canary v85.0.4178.0 and would be fixed
+             * in the Chrome with the same version
+             * Until v85 we have decided to filter requests with types:
+             * 'stylesheet', 'script', 'media'
+             */
+            if (adguard.prefs.browser === 'Chrome' && adguard.prefs.chromeVersion < 85) {
+                const allTypes = [
+                    'main_frame',
+                    'sub_frame',
+                    'stylesheet',
+                    'script',
+                    'image',
+                    'font',
+                    'object',
+                    'xmlhttprequest',
+                    'ping',
+                    'csp_report',
+                    'media',
+                    'websocket',
+                    'other',
+                ];
+                // this request types block requests, if use them with extraHeaders and blocking options
+                const nonExtraHeadersTypes = ['stylesheet', 'script', 'media'];
+                const extraHeadersTypes = allTypes.filter(type => !nonExtraHeadersTypes.includes(type));
+                requestFilter = { ...requestFilter, types: extraHeadersTypes };
+            }
 
-
-            // listener with extra headers
-            let extraHeadersRequestFilter = { types: extraHeadersTypes };
             if (urls) {
-                extraHeadersRequestFilter = { ...extraHeadersRequestFilter, urls };
+                requestFilter = { ...requestFilter, urls };
             }
 
             browser.webRequest.onBeforeSendHeaders.addListener((details) => {
@@ -323,32 +336,7 @@ const browser = window.browser || chrome;
                 if (result) {
                     return 'requestHeaders' in result ? { requestHeaders: result.requestHeaders } : {};
                 }
-            }, extraHeadersRequestFilter, onBeforeSendHeadersExtraInfoSpec);
-
-            // listener without extra headers
-
-            let nonExtraHeadersRequestFilter = { types: nonExtraHeadersTypes };
-            if (urls) {
-                nonExtraHeadersRequestFilter = { ...nonExtraHeadersRequestFilter, urls };
-            }
-
-            console.log({ nonExtraHeadersRequestFilter });
-            const nonExtraHeadersInfoSpec = onBeforeSendHeadersExtraInfoSpec
-                .filter(opt => opt !== 'extraHeaders')
-                .filter(opt => opt !== 'blocking');
-
-            console.log({ nonExtraHeadersInfoSpec });
-            browser.webRequest.onBeforeSendHeaders.addListener((details) => {
-                if (shouldSkipRequest(details)) {
-                    return;
-                }
-
-                const requestDetails = getRequestDetails(details);
-                const result = callback(requestDetails);
-                if (result) {
-                    return 'requestHeaders' in result ? { requestHeaders: result.requestHeaders } : {};
-                }
-            }, nonExtraHeadersRequestFilter, nonExtraHeadersInfoSpec);
+            }, requestFilter, onBeforeSendHeadersExtraInfoSpec);
         },
     };
 
