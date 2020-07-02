@@ -850,13 +850,10 @@ QUnit.test('Inject rules with backslash should be omitted', (assert) => {
         const rule = new adguard.rules.CssFilterRule(ruleText);
     }, `Css injection rule with '\\' was omitted: ${ruleText}`);
 
-    ruleText = 'example.org#$?#div:matches-css(width: /\\d+/) { background-color: red!important; }';
-    assert.throws(() => {
-        // eslint-disable-next-line no-unused-vars
-        const rule = new adguard.rules.CssFilterRule(ruleText);
-    }, `Css injection rule with '\\' was omitted: ${ruleText}`);
+    let validRule = new adguard.rules.CssFilterRule('example.com#$#body { background: black; }');
+    assert.ok(validRule !== null);
 
-    const validRule = new adguard.rules.CssFilterRule('example.com#$#body { background: black; }');
+    validRule = new adguard.rules.CssFilterRule('example.org#$?#div:matches-css(width: /\\d+/) { background-color: red!important; }');
     assert.ok(validRule !== null);
 });
 

@@ -153,7 +153,7 @@
 
                 // Prohibit "\" character in CSS injection rules
                 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1444
-                if (cssContent.indexOf('\\') > -1) {
+                if ((cssContent.indexOf('\\') > -1) && !isExtendedCss) {
                     throw new Error(`Css injection rule with '\\' was omitted: ${rule}`);
                 }
             }
