@@ -54,6 +54,6 @@
             urls: ['<all_urls>'],
             tabId: adguard.BACKGROUND_TAB_ID,
         },
-        ['blocking', 'requestHeaders']
+        ['blocking', 'requestHeaders', 'extraHeaders']
     );
 })(adguard);
