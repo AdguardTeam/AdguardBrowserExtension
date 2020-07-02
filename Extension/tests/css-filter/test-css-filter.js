@@ -853,7 +853,7 @@ QUnit.test('Inject rules with backslash should be omitted', (assert) => {
     let validRule = new adguard.rules.CssFilterRule('example.com#$#body { background: black; }');
     assert.ok(validRule !== null);
 
-    validRule = new adguard.rules.CssFilterRule('example.org#$?#div:matches-css(width: /\\d+/) { background-color: red!important; }');
+    validRule = new adguard.rules.CssFilterRule('example.org#$?#div:matches-css(width: /\d+px/) { background-color: red!important; }');
     assert.ok(validRule !== null);
 });
 
