@@ -37,15 +37,6 @@ adguard.safebrowsing = (function (adguard, global) {
      */
     const SUSPEND_TTL = 40 * 60 * 1000;
 
-    /**
-     * SB cache ttl: 40 minutes
-     */
-    const SB_TTL = 40 * 60 * 1000;
-
-    /**
-     * If user ignores warning - do not check SB for 40 minutes
-     */
-    const TRUSTED_TTL = 40 * 60 * 1000;
     const SB_WHITE_LIST = 'whitelist';
 
     /**
@@ -241,7 +232,7 @@ adguard.safebrowsing = (function (adguard, global) {
                 sbList = processSbResponse(response.responseText, hashesMap) || SB_WHITE_LIST;
             }
 
-            safebrowsingCache.cache.saveValue(host, sbList, Date.now() + SB_TTL);
+            safebrowsingCache.cache.saveValue(host, sbList);
 
             lookupUrlCallback(createResponse(sbList));
         };
@@ -298,7 +289,8 @@ adguard.safebrowsing = (function (adguard, global) {
         if (!host) {
             return;
         }
-        safebrowsingCache.cache.saveValue(host, SB_WHITE_LIST, Date.now() + TRUSTED_TTL);
+
+        safebrowsingCache.cache.saveValue(host, SB_WHITE_LIST);
     };
 
     return {
