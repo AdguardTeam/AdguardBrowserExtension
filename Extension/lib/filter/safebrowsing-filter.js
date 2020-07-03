@@ -49,6 +49,11 @@ adguard.safebrowsing = (function (adguard, global) {
     const SB_WHITE_LIST = 'whitelist';
 
     /**
+     * Domain hash length
+     */
+    const DOMAIN_HASH_LENGTH = 4;
+
+    /**
      * Parses safebrowsing service response
      *
      * @param responseText  Response text
@@ -249,7 +254,7 @@ adguard.safebrowsing = (function (adguard, global) {
         const hashes = Object.keys(hashesMap);
         const shortHashes = [];
         for (let i = 0; i < hashes.length; i += 1) {
-            shortHashes.push(hashes[i].substring(0, 8));
+            shortHashes.push(hashes[i].substring(0, DOMAIN_HASH_LENGTH));
         }
 
         adguard.backend.lookupSafebrowsing(shortHashes, successCallback, errorCallback);
