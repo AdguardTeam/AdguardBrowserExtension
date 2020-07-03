@@ -18,6 +18,61 @@ QUnit.test('Css Filter Rule', (assert) => {
     assert.equal('.sponsored', rule.cssSelector);
 });
 
+QUnit.test('Elemhide Rules As CSS', (assert) => {
+    function tryTest(rule) {
+        try {
+            new adguard.rules.CssFilterRule(rule);
+            throw new Error('Rule should not be parsed successfully');
+        } catch (ex) {
+            assert.equal(ex.message, `Invalid elemhide rule: ${rule}`);
+        }
+    }
+
+    let selector = 'img[title|={]';
+    let ruleText = `example.org##${selector}`;
+    tryTest(ruleText);
+
+    selector = 'body { background: red!important; }';
+    ruleText = `example.org##${selector}`;
+    tryTest(ruleText);
+
+    selector = 'body { background: red!important; }';
+    ruleText = `example.org#@#${selector}`;
+    tryTest(ruleText);
+
+    selector = 'a[title=\"\\\"\"]{background:url()}';
+    ruleText = `example.org##${selector}`;
+    tryTest(ruleText);
+
+    selector = 'body\\{\\}, body { background: lightblue url(\"https://www.w3schools.com/cssref/img_tree.gif\") no-repeat fixed center!important; }';
+    ruleText = `example.org##${selector}`;
+    tryTest(ruleText);
+
+    selector = 'body /*({})*/ { background: lightblue url(\"https://www.w3schools.com/cssref/img_tree.gif\") no-repeat fixed center!important; }';
+    ruleText = `example.org##${selector}`;
+    tryTest(ruleText);
+
+    selector = 'body /*({*/ { background: lightblue url(\"https://www.w3schools.com/cssref/img_tree.gif\") no-repeat fixed center!important; }';
+    ruleText = `example.org##${selector}`;
+    tryTest(ruleText);
+
+    selector = '.generic1 /*comment*/';
+    ruleText = `example.org##${selector}`;
+    tryTest(ruleText);
+
+    selector = '\\\\/*[*/, body { background: lightblue url(\"https://www.w3schools.com/cssref/img_tree.gif\") no-repeat fixed center!important; } ,\\/*]';
+    ruleText = `example.org##${selector}`;
+    tryTest(ruleText);
+
+    selector = 'body:not(blabla/*[*/) { background: lightblue url(\"https://www.w3schools.com/cssref/img_tree.gif\") no-repeat fixed center!important; } /*]*\\/';
+    ruleText = `example.org##${selector}`;
+    tryTest(ruleText);
+
+    selector = 'a //';
+    ruleText = `example.org##${selector}`;
+    tryTest(ruleText);
+});
+
 QUnit.test('Css Filter Rule Extended Css', (assert) => {
     let ruleText = '~gamespot.com,~mint.com,~slidetoplay.com,~smh.com.au,~zattoo.com##.sponsored[-ext-contains=test]';
     let rule = new adguard.rules.CssFilterRule(ruleText);
@@ -795,11 +850,10 @@ QUnit.test('Inject rules with backslash should be omitted', (assert) => {
         const rule = new adguard.rules.CssFilterRule(ruleText);
     }, `Css injection rule with '\\' was omitted: ${ruleText}`);
 
-
     let validRule = new adguard.rules.CssFilterRule('example.com#$#body { background: black; }');
     assert.ok(validRule !== null);
 
-    validRule = new adguard.rules.CssFilterRule('example.org#$?#div:matches-css(width: /\\d+/) { background-color: red!important; }');
+    validRule = new adguard.rules.CssFilterRule('example.org#$?#div:matches-css(width: /\d+px/) { background-color: red!important; }');
     assert.ok(validRule !== null);
 });
 
