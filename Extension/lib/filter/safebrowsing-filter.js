@@ -25,7 +25,7 @@ adguard.safebrowsing = (function (adguard, global) {
     // Lazy initialized safebrowsing cache
     const safebrowsingCache = {
         get cache() {
-            return adguard.lazyGet(safebrowsingCache, 'cache', () => new adguard.utils.ExpiringCache('sb-cache'));
+            return adguard.lazyGet(safebrowsingCache, 'cache', () => new adguard.utils.LruCache('lru-sb-cache'));
         },
     };
 
