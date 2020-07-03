@@ -102,6 +102,36 @@ adguard.safebrowsing = (function (adguard, global) {
     }
 
     /**
+     * Calculates hash for host string
+     *
+     * @param host
+     * @return {string}
+     */
+    function createHash(host) {
+        return global.SHA256.hash(`${host}/`).toUpperCase();
+    }
+
+    /**
+     * Calculates SHA256 hashes for strings in hosts and then
+     * gets prefixes for calculated hashes
+     *
+     * @param hosts
+     * @returns Map object of prefixes
+     * @private
+     */
+    function createHashesMap(hosts) {
+        const result = Object.create(null);
+
+        for (let i = 0; i < hosts.length; i += 1) {
+            const host = hosts[i];
+            const hash = createHash(host);
+            result[hash] = host;
+        }
+
+        return result;
+    }
+
+    /**
      * Checks safebrowsing cache
      *
      * @param hosts List of hosts
@@ -110,7 +140,7 @@ adguard.safebrowsing = (function (adguard, global) {
      */
     function checkHostsInSbCache(hosts) {
         for (let i = 0; i < hosts.length; i += 1) {
-            const sbList = safebrowsingCache.cache.getValue(hosts[i]);
+            const sbList = safebrowsingCache.cache.getValue(createHash(hosts[i]));
             if (sbList) {
                 return sbList;
             }
@@ -143,26 +173,6 @@ adguard.safebrowsing = (function (adguard, global) {
         }
 
         return hosts;
-    }
-
-    /**
-     * Calculates SHA256 hashes for strings in hosts and then
-     * gets prefixes for calculated hashes
-     *
-     * @param hosts
-     * @returns Map object of prefixes
-     * @private
-     */
-    function createHashesMap(hosts) {
-        const result = Object.create(null);
-
-        for (let i = 0; i < hosts.length; i += 1) {
-            const host = hosts[i];
-            const hash = global.SHA256.hash(`${host}/`);
-            result[hash.toUpperCase()] = host;
-        }
-
-        return result;
     }
 
     /**
@@ -232,7 +242,7 @@ adguard.safebrowsing = (function (adguard, global) {
                 sbList = processSbResponse(response.responseText, hashesMap) || SB_WHITE_LIST;
             }
 
-            safebrowsingCache.cache.saveValue(host, sbList);
+            safebrowsingCache.cache.saveValue(createHash(host), sbList);
 
             lookupUrlCallback(createResponse(sbList));
         };
@@ -290,7 +300,7 @@ adguard.safebrowsing = (function (adguard, global) {
             return;
         }
 
-        safebrowsingCache.cache.saveValue(host, SB_WHITE_LIST);
+        safebrowsingCache.cache.saveValue(createHash(host), SB_WHITE_LIST);
     };
 
     return {
