@@ -68,22 +68,18 @@ These libs are developed by us from scratch.
 * v1.0.11
 * Library source: https://github.com/AdguardTeam/FiltersDownloader/tree/v1.0.11
 
-#### `extended-css.js`
-* v1.2.8
-* Licence: LGPL-3.0
-* Library source: https://github.com/AdguardTeam/ExtendedCss/releases/tag/v1.2.8
-
 #### `lib/content-script/assistant.js`
 * v4.3.32
 * Library source: https://github.com/AdguardTeam/AdguardAssistant/tree/v4.3.32
 `assistant.embedded.js` build is being used.
 
+// TODO: Remove
 #### `lib/filter/rules/scriptlets/`
 * v1.1.11
 * Library source https://github.com/AdguardTeam/Scriptlets/releases
 
 #### `tsurlfilter.js`
+#### `AGUrlFilterContentScript.js`
 * TODO: Fill details
-
 
 

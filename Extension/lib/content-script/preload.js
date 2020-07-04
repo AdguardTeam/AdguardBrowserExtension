@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global contentPage, ExtendedCss, HTMLDocument, XMLDocument, ElementCollapser, CssHitsCounter, adguardContent */
+/* global contentPage, HTMLDocument, XMLDocument, ElementCollapser, adguardContent, AGUrlFilter */
 (function () {
 
     var requestTypeMap = {
@@ -32,6 +32,9 @@
     var collapseRequestId = 1;
     var isFirefox = false;
     var isOpera = false;
+
+    let cssHitsCounter;
+
 
     /**
      * Unexpectedly global variable contentPage could become undefined in FF,
@@ -193,8 +196,11 @@
         }
 
         if (response.collectRulesHits) {
-            CssHitsCounter.init((stats) => {
-                getContentPage().sendMessage({ type: 'saveCssHitStats', stats });
+            cssHitsCounter = new AGUrlFilter.CssHitsCounter((stats) => {
+                console.debug('Css stats ready');
+                console.debug(stats);
+
+                getContentPage().sendMessage({ type: 'saveCssHitStats', stats: JSON.stringify(stats) });
             });
         }
 
@@ -267,12 +273,16 @@
             return;
         }
 
-        // https://github.com/AdguardTeam/ExtendedCss
-        window.extcss = new ExtendedCss({
+        const styleSheet = extendedCss.join('\n');
+        if (!styleSheet) {
+            return;
+        }
+
+        window.extcss = new AGUrlFilter.ExtendedCss({
             styleSheet: extendedCss.join('\n'),
-            beforeStyleApplied: CssHitsCounter.countAffectedByExtendedCss,
+            beforeStyleApplied: el => (cssHitsCounter ? cssHitsCounter.countAffectedByExtendedCss(el) : null),
         });
-        extcss.apply();
+        window.extcss.apply();
     };
 
     /**
