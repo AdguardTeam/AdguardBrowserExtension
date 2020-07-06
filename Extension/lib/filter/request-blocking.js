@@ -114,10 +114,7 @@ adguard.webRequestService = (function (adguard) {
             // If tabs.executeScript is unavailable, retrieve JS rules now.
             retrieveScripts = !canUseInsertCSSAndExecuteScript;
             if (!elemHideFlag) {
-                cssFilterOptions = CosmeticOption.CosmeticOptionNone;
-                if (!canUseInsertCSSAndExecuteScript) {
-                    cssFilterOptions |= CosmeticOption.CosmeticOptionCSS;
-                }
+                cssFilterOptions = CosmeticOption.CosmeticOptionCSS;
                 if (genericHideFlag) {
                     cssFilterOptions |= CosmeticOption.CosmeticOptionGenericCSS;
                 }

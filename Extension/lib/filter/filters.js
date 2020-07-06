@@ -153,7 +153,6 @@
         getSelectorsForUrl(url, options) {
             const domain = adguard.utils.url.getHost(url);
 
-            // TODO: Use options
             const cosmeticResult = adguard.application.getEngine().getCosmeticResult(domain, options);
 
             const elemhideCss = [...cosmeticResult.elementHiding.generic, ...cosmeticResult.elementHiding.specific];
@@ -164,8 +163,8 @@
                 ...cosmeticResult.elementHiding.specificExtCss,
             ];
             const injectExtendedCss = [
-                ...cosmeticResult.elementHiding.genericExtCss,
-                ...cosmeticResult.elementHiding.specificExtCss,
+                ...cosmeticResult.CSS.genericExtCss,
+                ...cosmeticResult.CSS.specificExtCss,
             ];
 
             const collectingCosmeticRulesHits = adguard.webRequestService.isCollectingCosmeticRulesHits();

@@ -278,11 +278,11 @@
             return;
         }
 
-        window.extcss = new AGUrlFilter.ExtendedCss({
-            styleSheet: extendedCss.join('\n'),
-            beforeStyleApplied: el => (cssHitsCounter ? cssHitsCounter.countAffectedByExtendedCss(el) : null),
+        const extcss = new AGUrlFilter.ExtendedCss({
+            styleSheet,
+            beforeStyleApplied: (cssHitsCounter ? cssHitsCounter.countAffectedByExtendedCss : el => el),
         });
-        window.extcss.apply();
+        extcss.apply();
     };
 
     /**
