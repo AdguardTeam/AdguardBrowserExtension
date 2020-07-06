@@ -89,7 +89,7 @@ adguard.backend = (function (adguard) {
          * Browsing Security lookups. In case of Firefox lookups are disabled for HTTPS urls.
          */
         get safebrowsingLookupUrl() {
-            return 'https://sb.adtidy.org/safebrowsing-lookup-hash.html';
+            return 'https://sb.adtidy.org/safebrowsing-lookup-short-hash.html';
         },
 
         // This url is used in integration mode. Adguard for Windows/Mac/Android intercepts requests to injections.adguard.com host.
