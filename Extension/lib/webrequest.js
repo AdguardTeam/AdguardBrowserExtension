@@ -52,31 +52,6 @@
             || adguard.frames.getMainFrameUrl(requestDetails.tab);
     }
 
-
-    /**
-     * Returns extension's full url
-     */
-    const extensionUrl = (function () {
-        const url = adguard.getURL('');
-        return url.substring(0, url.length - 1);
-    })();
-
-    /**
-     * If referrer of request contains full url of extension,
-     * than this request is considered as extension's own request
-     * (e.g. request for filter downloading)
-     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1437
-     * @param details
-     * @returns {boolean}
-     */
-    const isOwnRequest = (details) => {
-        const { referrerUrl } = details;
-        if (!referrerUrl) {
-            return false;
-        }
-        return referrerUrl.indexOf(extensionUrl) === 0;
-    };
-
     /**
      * Process request
      *
@@ -84,7 +59,7 @@
      * @returns {boolean|{Object}} False if request must be blocked, object if url was redirected
      */
     function onBeforeRequest(requestDetails) {
-        if (isOwnRequest(requestDetails)) {
+        if (adguard.app.isOwnRequest(requestDetails.referrerUrl)) {
             return;
         }
 
