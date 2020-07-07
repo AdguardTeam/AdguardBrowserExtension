@@ -11,11 +11,12 @@ QUnit.test('Calculate hash', (assert) => {
     assert.equal('yandex.ru', hashes['A42653DA210A54B6874F37F0D4A12DA5E89BB436F2C6A01F83246E71CDB544E5']);
 });
 
-QUnit.test('Process response', function (assert) {
+QUnit.test('Process response', (assert) => {
     const host = adguard.utils.url.getHost('http://theballoonboss.com');
     const hosts = adguard.safebrowsing.extractHosts(host);
     const hashes = adguard.safebrowsing.createHashesMap(hosts);
 
+    // eslint-disable-next-line max-len
     const sbList = adguard.safebrowsing.processSbResponse('adguard-phishing-shavar:37654:B8DC93970348F0A3E6856C32AC5C04D5655E5EE17D4169EC51A2102FB6D5E12A\nadguard-malware-shavar:35176:AE617C8343E1C79E27515B3F6D6D26413FCE47AE32A73488F9D033B4D2A46B3D\nadguard-phishing-shavar:35071:AE617C8343E1C79E27515B3F6D6D26413FCE47AE32A73488F9D033B4D2A46B3D', hashes);
 
     assert.equal('adguard-phishing-shavar', sbList);
