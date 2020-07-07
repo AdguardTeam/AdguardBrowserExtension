@@ -585,7 +585,13 @@ adguard.antiBannerService = (function (adguard) {
 
                 const isTrustedFilter = adguard.subscriptions.isTrustedFilter(filterId);
                 const rulesTexts = rulesFilterMap[filterId].join('\n');
-                lists.push(new StringRuleList(filterId, rulesTexts, false, !isTrustedFilter));
+
+                // TODO: Move
+                // This supposed to be done then rulesText is downloaded, before saving to local file
+                // Rules text will be splitted and processed line by line
+                const converted = RuleConverter.convertRules(rulesTexts);
+
+                lists.push(new StringRuleList(filterId, converted, false, !isTrustedFilter));
             }
 
             adguard.application.startEngine(lists);
