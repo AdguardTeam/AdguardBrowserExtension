@@ -20,3 +20,31 @@ QUnit.test('Process response', function (assert) {
 
     assert.equal('adguard-phishing-shavar', sbList);
 });
+
+QUnit.test('Test cache', (assert) => {
+    let counter = 0;
+    // Mock backend request
+    adguard.backend.lookupSafebrowsing = (shortHashes, successCallback) => {
+        counter += 1;
+
+        successCallback({
+            status: 204,
+        });
+    };
+
+    const done = assert.async();
+
+    const testUrl = 'http://google.com';
+    adguard.safebrowsing.lookupUrlWithCallback(testUrl, (response) => {
+        assert.ok(!response);
+        assert.equal(counter, 1);
+
+        adguard.safebrowsing.lookupUrlWithCallback(testUrl, (response) => {
+            assert.ok(!response);
+            // Check there was only one request to backend
+            assert.equal(counter, 1);
+
+            done();
+        });
+    });
+});
