@@ -158,8 +158,8 @@
         );
 
         if (requestRule
-            && !requestRule.whiteListRule
-            && requestRule.isBlockPopups()
+            && !requestRule.isWhitelist()
+            && requestRule.isOptionEnabled(NetworkRuleOption.Popup)
             && requestType === adguard.RequestTypes.DOCUMENT) {
             const isNewTab = adguard.tabs.isNewPopupTab(tabId);
             if (isNewTab) {

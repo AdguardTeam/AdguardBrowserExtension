@@ -234,7 +234,20 @@ adguard.webRequestService = (function (adguard) {
      * @returns {*|boolean|true}
      */
     var isPopupBlockedByRule = function (requestRule) {
-        return requestRule && !requestRule.isWhitelist();  //&& requestRule.isBlockPopups(); TODO: Fix popups
+        return requestRule && !requestRule.isWhitelist()
+            && requestRule.isOptionEnabled(NetworkRuleOption.Popup);
+    };
+
+    /**
+     * Check if document is blocked by rule
+     * @param requestRule
+     * @return {*|boolean|true}
+     */
+    const isDocumentBlockingRule = (requestRule) => {
+        return requestRule && !requestRule.isWhitelist()
+            && requestRule.isOptionEnabled(NetworkRuleOption.Elemhide)
+            && requestRule.isOptionEnabled(NetworkRuleOption.Jsinject)
+            && requestRule.isOptionEnabled(NetworkRuleOption.Urlblock);
     };
 
     /**
@@ -251,7 +264,7 @@ adguard.webRequestService = (function (adguard) {
             const isDocumentLevel = requestType === adguard.RequestTypes.DOCUMENT
                 || requestType === adguard.RequestTypes.SUBDOCUMENT;
 
-            if (isDocumentLevel && requestRule.isDocumentRule()) {
+            if (isDocumentLevel && isDocumentBlockingRule(requestRule)) {
                 const documentBlockedPage = adguard.rules.documentFilterService.getDocumentBlockPageUrl(
                     requestUrl,
                     requestRule.ruleText
@@ -381,7 +394,7 @@ adguard.webRequestService = (function (adguard) {
         }
 
         const whitelistRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
-        if (whitelistRule && whitelistRule.isDocumentWhiteList()) {
+        if (whitelistRule && whitelistRule.isDocumentWhitelistRule()) {
             // $cookie rules are not affected by regular exception rules (@@) unless it's a $document exception.
             return null;
         }
@@ -476,12 +489,12 @@ adguard.webRequestService = (function (adguard) {
 
         if (requestRule && !requestRule.whiteListRule) {
             var isRequestBlockingRule = isRequestBlockedByRule(requestRule);
-            var isPopupBlockingRule = isPopupBlockedByRule(requestRule);
-            var isReplaceRule = !!requestRule.getReplace();
+            var isReplaceRule = requestRule.isOptionEnabled(NetworkRuleOption.Replace);
 
             // Url blocking rules are not applicable to the main_frame
             if (isRequestBlockingRule && requestType === adguard.RequestTypes.DOCUMENT) {
                 // except rules with $document and $popup modifiers
+                var isPopupBlockingRule = isPopupBlockedByRule(requestRule);
                 if (!requestRule.isDocumentRule() && !isPopupBlockingRule) {
                     requestRule = null;
                 }
