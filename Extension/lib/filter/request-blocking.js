@@ -269,10 +269,14 @@ adguard.webRequestService = (function (adguard) {
                 return { cancel: true };
             }
         // check if request rule is blocked by rule and is redirect rule
-        } else if (requestRule && !requestRule.whiteListRule && requestRule.isRedirectRule()) {
-            const redirectOption = requestRule.getRedirect();
-            const redirectUrl = redirectOption.getRedirectUrl();
-            return { redirectUrl };
+        } else if (requestRule && !requestRule.isWhitelist()) {
+            if (requestRule.isOptionEnabled(NetworkRuleOption.Redirect)) {
+                // eslint-disable-next-line max-len
+                const redirectUrl = adguard.redirectFilterService.buildRedirectUrl(requestRule.getAdvancedModifierValue());
+                if (redirectUrl) {
+                    return { redirectUrl };
+                }
+            }
         }
         return null;
     };

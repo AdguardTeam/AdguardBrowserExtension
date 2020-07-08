@@ -713,7 +713,7 @@ adguard.subscriptions = (function (adguard) {
      * @private
      */
     async function loadRedirectSources() {
-        const redirectSourcesService = adguard.rules.RedirectFilterService;
+        const redirectSourcesService = adguard.redirectFilterService;
         if (typeof redirectSourcesService !== 'undefined') {
             const txt = await adguard.backend.loadRedirectSources();
             redirectSourcesService.setRedirectSources(txt);

@@ -298,7 +298,7 @@
     }
 
     function RedirectOption(option) {
-        const getRedirectUrl = () => adguard.rules.RedirectFilterService.buildRedirectUrl(option);
+        const getRedirectUrl = () => adguard.redirectFilterService.buildRedirectUrl(option);
         return { getRedirectUrl, redirectTitle: option };
     }
 
@@ -965,7 +965,7 @@
                     break;
                 case UrlFilterRule.REDIRECT_OPTION: {
                     // In case if redirect source doesn't exists, throw error;
-                    const redirectSource = adguard.rules.RedirectFilterService.hasRedirect(optionValue);
+                    const redirectSource = adguard.redirectFilterService.hasRedirect(optionValue);
                     if (!redirectSource) {
                         throw new Error(`Unknown redirect source title: ${optionValue}`);
                     }
