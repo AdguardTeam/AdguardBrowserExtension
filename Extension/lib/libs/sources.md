@@ -73,9 +73,8 @@ These libs are developed by us from scratch.
 * Library source: https://github.com/AdguardTeam/AdguardAssistant/tree/v4.3.32
 `assistant.embedded.js` build is being used.
 
-// TODO: Remove
-#### `lib/filter/rules/scriptlets/`
-* v1.1.11
+#### `lib/libs/scriptlets/`
+* v1.2.3
 * Library source https://github.com/AdguardTeam/Scriptlets/releases
 
 #### `tsurlfilter.js`

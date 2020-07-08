@@ -26,8 +26,7 @@ const API_SCRIPTS = [
     'Extension/lib/libs/filter-downloader.js',
     'Extension/lib/libs/crypto-js/core.js',
     'Extension/lib/libs/crypto-js/md5.js',
-    'Extension/lib/filter/rules/scriptlets/redirects.js',
-    'Extension/lib/filter/rules/scriptlets/scriptlets.js',
+    'Extension/lib/libs/scriptlets/redirects.js',
     // Adguard Global and preExtension/ferences
     'Extension/lib/adguard.js',
     'Extension/browser/webkit/lib/prefs.js',
@@ -100,7 +99,7 @@ const paths = {
         path.join('Extension/filters/chromium/filters.json'),
     ],
     redirects: [
-        path.join('Extension/lib/filter/rules/scriptlets/redirects.yml'),
+        path.join('Extension/lib/libs/scriptlets/redirects.yml'),
     ],
     dest: path.join(BUILD_DIR, BRANCH, 'adguard-api'),
 };

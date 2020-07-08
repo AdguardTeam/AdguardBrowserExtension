@@ -112,7 +112,7 @@ adguard.backend = (function (adguard) {
         },
         // Path to the redirect sources
         get redirectSourcesFolder() {
-            return 'lib/filter/rules/scriptlets';
+            return 'lib/libs/scriptlets';
         },
         // Array of filter identifiers, that have local file with rules. Range from 1 to 14 by default
         get localFilterIds() {
