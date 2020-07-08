@@ -224,8 +224,11 @@ adguard.webRequestService = (function (adguard) {
      * @param requestRule
      * @returns {*|boolean}
      */
-    var isRequestBlockedByRule = function (requestRule) {
-        return requestRule && !requestRule.isWhitelist();
+    const isRequestBlockedByRule = (requestRule) => {
+        return requestRule
+            && !requestRule.isWhitelist()
+            && !requestRule.isOptionEnabled(NetworkRuleOption.Replace)
+            && !requestRule.isOptionEnabled(NetworkRuleOption.Redirect);
     };
 
     /**
@@ -233,7 +236,7 @@ adguard.webRequestService = (function (adguard) {
      * @param requestRule
      * @returns {*|boolean|true}
      */
-    var isPopupBlockedByRule = function (requestRule) {
+    const isPopupBlockedByRule = (requestRule) => {
         return requestRule && !requestRule.isWhitelist()
             && requestRule.isOptionEnabled(NetworkRuleOption.Popup);
     };
