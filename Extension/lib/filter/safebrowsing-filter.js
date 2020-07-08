@@ -58,17 +58,24 @@ adguard.safebrowsing = (function (adguard, global) {
         }
 
         try {
+            let result;
             const lines = responseText.split('\n');
             for (let i = 0; i < lines.length; i += 1) {
                 const r = lines[i].split(':');
                 const hash = r[2];
-                const host = hashesMap[hash];
-                if (host) {
-                    return r[0];
+                const list = r[0];
+
+                safebrowsingCache.cache.saveValue(hash, list);
+
+                if (!result) {
+                    const host = hashesMap[hash];
+                    if (host) {
+                        result = list;
+                    }
                 }
             }
 
-            return null;
+            return result;
         } catch (ex) {
             adguard.console.error('Error parse safebrowsing response, cause {0}', ex);
         }
