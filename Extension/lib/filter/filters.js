@@ -371,6 +371,8 @@
          * @returns Collection of CSP rules for applying to the request or null
          */
         findCspRules(requestUrl, documentUrl, requestType) {
+            // TODO: Cache matching result in request-context-storage
+
             const documentHost = adguard.utils.url.getHost(documentUrl);
             const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
             return this.cspFilter.findCspRules(requestUrl, documentHost, thirdParty, requestType);
