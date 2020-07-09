@@ -375,7 +375,7 @@
                 if (adguard.webRequestService.isRequestBlockedByRule(rule)) {
                     cspHeaders.push({
                         name: CSP_HEADER_NAME,
-                        value: rule.cspDirective,
+                        value: rule.getAdvancedModifierValue(),
                     });
                 }
             }

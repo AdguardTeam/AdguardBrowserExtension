@@ -92,10 +92,6 @@
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#badfilter-modifier
         this.badFilterRules = {};
 
-        // Filter that applies CSP rules
-        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#csp-modifier
-        this.cspFilter = new adguard.rules.CspFilter([], this.badFilterRules);
-
         // Filter that applies cookie rules
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/961
         this.cookieFilter = new adguard.rules.CookieFilter();
@@ -373,9 +369,10 @@
         findCspRules(requestUrl, documentUrl, requestType) {
             // TODO: Cache matching result in request-context-storage
 
-            const documentHost = adguard.utils.url.getHost(documentUrl);
-            const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
-            return this.cspFilter.findCspRules(requestUrl, documentHost, thirdParty, requestType);
+            const request = new Request(requestUrl, documentUrl, this.transformRequestType(requestType));
+            const result = adguard.application.getEngine().matchRequest(request);
+
+            return result.getCspRules();
         },
 
         findReplaceRules(requestUrl, documentUrl, requestType) {
