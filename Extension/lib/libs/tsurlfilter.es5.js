@@ -713,6 +713,22 @@ var IndexedRule = /** @class */ (function () {
     }
     return IndexedRule;
 }());
+/**
+ * Rule with storage index
+ */
+var IndexedStorageRule = /** @class */ (function () {
+    /**
+     * Constructor
+     *
+     * @param rule
+     * @param index
+     */
+    function IndexedStorageRule(rule, index) {
+        this.rule = rule;
+        this.index = index;
+    }
+    return IndexedStorageRule;
+}());
 
 /**
  * Splits the string by the delimiter, ignoring escaped delimiters.
@@ -9907,7 +9923,7 @@ var RuleStorageScanner = /** @class */ (function () {
             return null;
         }
         var index = RuleStorageScanner.ruleListIdxToStorageIdx(rule.rule.getFilterListId(), rule.index);
-        return new IndexedRule(rule.rule, index);
+        return new IndexedStorageRule(rule.rule, index);
     };
     /**
      * ruleListIdxToStorageIdx converts pair of listID and rule list index
@@ -9918,7 +9934,7 @@ var RuleStorageScanner = /** @class */ (function () {
      */
     RuleStorageScanner.ruleListIdxToStorageIdx = function (listId, ruleIdx) {
         // eslint-disable-next-line no-mixed-operators
-        return listId << 24 | ruleIdx;
+        return BigInt.asUintN(64, BigInt(listId) << BigInt(32) | BigInt(ruleIdx));
     };
     /**
      * Converts the "storage index" to two integers:
@@ -9929,7 +9945,7 @@ var RuleStorageScanner = /** @class */ (function () {
      * @return [listId, ruleIdx]
      */
     RuleStorageScanner.storageIdxToRuleListIdx = function (storageIdx) {
-        return [storageIdx >> 24, storageIdx & 0xFFFFFF];
+        return [Number(storageIdx >> BigInt(32)), Number(storageIdx & BigInt(0xFFFFFF))];
     };
     return RuleStorageScanner;
 }());
