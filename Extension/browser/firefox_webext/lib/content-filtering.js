@@ -344,10 +344,10 @@ adguard.contentFiltering = (function (adguard) {
         // Sort replace rules alphabetically as noted here
         // https://github.com/AdguardTeam/CoreLibs/issues/45
         const sortedReplaceRules = replaceRules.sort((prev, next) => {
-            if (prev.ruleText > next.ruleText) {
+            if (prev.getText() > next.getText()) {
                 return 1;
             }
-            if (prev.ruleText < next.ruleText) {
+            if (prev.getText() < next.getText()) {
                 return -1;
             }
             return 0;
@@ -355,11 +355,11 @@ adguard.contentFiltering = (function (adguard) {
 
         for (let i = 0; i < sortedReplaceRules.length; i += 1) {
             const replaceRule = sortedReplaceRules[i];
-            if (replaceRule.whiteListRule) {
+            if (replaceRule.isWhitelist()) {
                 appliedRules.push(replaceRule);
             } else {
-                const replaceOption = replaceRule.getReplace();
-                modifiedContent = replaceOption.apply(modifiedContent);
+                const advancedModifier = replaceRule.getAdvancedModifier();
+                modifiedContent = advancedModifier.getApplyFunc()(modifiedContent);
                 appliedRules.push(replaceRule);
             }
         }

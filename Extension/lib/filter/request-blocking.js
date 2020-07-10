@@ -374,7 +374,7 @@ adguard.webRequestService = (function (adguard) {
 
         // @@||example.org^$document or @@||example.org^$urlblock — disables all the $csp rules on all the pages matching the rule pattern.
         let whitelistRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
-        if (whitelistRule && whitelistRule.isUrlBlock()) {
+        if (whitelistRule && whitelistRule.isOptionEnabled(NetworkRuleOption.Urlblock)) {
             return null;
         }
 
@@ -421,8 +421,7 @@ adguard.webRequestService = (function (adguard) {
         }
 
         const whitelistRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
-
-        if (whitelistRule && whitelistRule.isContent()) {
+        if (whitelistRule && whitelistRule.isOptionEnabled(NetworkRuleOption.Content)) {
             return null;
         }
 

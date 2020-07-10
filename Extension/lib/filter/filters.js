@@ -100,10 +100,6 @@
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#stealth-modifier
         this.stealthFilter = new adguard.rules.UrlFilter([], this.badFilterRules);
 
-        // Filter that applies replace rules
-        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#replace-modifier
-        this.replaceFilter = new adguard.rules.ReplaceFilter([], this.badFilterRules);
-
         // Filter that applies HTML filtering rules
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#html-filtering-rules
         this.contentFilter = new adguard.rules.ContentFilter();
@@ -376,10 +372,12 @@
         },
 
         findReplaceRules(requestUrl, documentUrl, requestType) {
-            const documentHost = adguard.utils.url.getHost(documentUrl);
-            const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
+            // TODO: Cache matching result in request-context-storage
 
-            return this.replaceFilter.findReplaceRules(requestUrl, documentHost, thirdParty, requestType);
+            const request = new Request(requestUrl, documentUrl, this.transformRequestType(requestType));
+            const result = adguard.application.getEngine().matchRequest(request);
+
+            return result.getReplaceRules();
         },
 
         /**
