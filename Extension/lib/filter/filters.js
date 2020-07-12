@@ -28,7 +28,7 @@
         this.requestCacheMaxSize = requestCacheMaxSize;
 
         /**
-         * Searches for cached filter rule
+         * Searches for cached matching result
          *
          * @param requestUrl Request url
          * @param refHost Referrer host
@@ -42,21 +42,21 @@
 
             const c = cacheItem[requestType];
             if (c && c[1] === refHost) {
-                return c;
+                return c[0];
             }
 
             return null;
         };
 
         /**
-         * Saves resulting filtering rule to requestCache
+         * Saves matching result to requestCache
          *
          * @param requestUrl Request url
-         * @param rule Rule found
+         * @param matchingResult Request result
          * @param refHost Referrer host
          * @param requestType Request type
          */
-        this.saveResultToCache = function (requestUrl, rule, refHost, requestType) {
+        this.saveResultToCache = function (requestUrl, matchingResult, refHost, requestType) {
             if (this.requestCacheSize > this.requestCacheMaxSize) {
                 this.clearRequestCache();
             }
@@ -67,7 +67,7 @@
 
             // Two-levels gives us an ability to not to override cached item for
             // different request types with the same url
-            this.requestCache[requestUrl][requestType] = [rule, refHost];
+            this.requestCache[requestUrl][requestType] = [matchingResult, refHost];
         };
 
         /**
@@ -108,8 +108,7 @@
         this.rulesCount = 0;
 
         // Init small caches for url filtering rules
-        this.urlBlockingCache = new RequestCache(this.requestCacheMaxSize);
-        this.urlExceptionsCache = new RequestCache(this.requestCacheMaxSize);
+        this.matchingResultsCache = new RequestCache(this.requestCacheMaxSize);
     };
 
     RequestFilter.prototype = {
@@ -262,6 +261,27 @@
         },
 
         /**
+         * Gets or creates matching result
+         *
+         * @param requestUrl
+         * @param referrer
+         * @param requestType
+         * @return {null}
+         */
+        getMatchingResult(requestUrl, referrer, requestType) {
+            const refHost = adguard.utils.url.getHost(referrer);
+
+            let result = this.matchingResultsCache.searchRequestCache(requestUrl, refHost, requestType);
+            if (!result) {
+                result = this.createMatchingResult(requestUrl, referrer, requestType);
+            }
+
+            this.matchingResultsCache.saveResultToCache(requestUrl, result, refHost, requestType);
+
+            return result;
+        },
+
+        /**
          * Searches for the whitelist rule for the specified pair (url/referrer)
          *
          * @param requestUrl  Request URL
@@ -270,20 +290,14 @@
          * @returns Filter rule found or null
          */
         findWhiteListRule(requestUrl, referrer, requestType) {
-            const refHost = adguard.utils.url.getHost(referrer);
-            const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrer);
+            const result = this.getMatchingResult(requestUrl, referrer, requestType);
 
-            const cacheItem = this.urlExceptionsCache.searchRequestCache(requestUrl, refHost, requestType);
-
-            if (cacheItem) {
-                // Element with zero index is a filter rule found last time
-                return cacheItem[0];
+            const basicResult = result.getBasicResult();
+            if (basicResult && basicResult.isWhitelist()) {
+                return basicResult;
             }
 
-            const rule = this._checkWhiteList(requestUrl, referrer, requestType, thirdParty);
-
-            this.urlExceptionsCache.saveResultToCache(requestUrl, rule, refHost, requestType);
-            return rule;
+            return null;
         },
 
         /**
@@ -317,22 +331,11 @@
          * @param requestUrl            Request URL
          * @param documentUrl           Document URL
          * @param requestType           Request content type (one of UrlFilterRule.contentTypes)
-         * @param documentWhitelistRule (optional) Document-level whitelist rule
          * @returns Rule found or null
          */
-        findRuleForRequest(requestUrl, documentUrl, requestType, documentWhitelistRule) {
-            const documentHost = adguard.utils.url.getHost(documentUrl);
-
-            const cacheItem = this.urlBlockingCache.searchRequestCache(requestUrl, documentHost, requestType);
-            if (cacheItem) {
-                // Element with zero index is a filter rule found last time
-                return cacheItem[0];
-            }
-
-            const rule = this._findRuleForRequest(requestUrl, documentUrl, requestType, documentWhitelistRule);
-
-            this.urlBlockingCache.saveResultToCache(requestUrl, rule, documentHost, requestType);
-            return rule;
+        findRuleForRequest(requestUrl, documentUrl, requestType) {
+            const result = this.getMatchingResult(requestUrl, documentUrl, requestType);
+            return result.getBasicResult();
         },
 
         /**
@@ -357,26 +360,27 @@
 
         /**
          * Searches for CSP rules for the specified request
+         *
          * @param requestUrl Request URL
          * @param documentUrl Document URL
          * @param requestType Request Type (DOCUMENT or SUBDOCUMENT)
          * @returns Collection of CSP rules for applying to the request or null
          */
         findCspRules(requestUrl, documentUrl, requestType) {
-            // TODO: Cache matching result in request-context-storage
-
-            const request = new Request(requestUrl, documentUrl, this.transformRequestType(requestType));
-            const result = adguard.application.getEngine().matchRequest(request);
-
+            const result = this.getMatchingResult(requestUrl, documentUrl, requestType);
             return result.getCspRules();
         },
 
+        /**
+         * Searches for replace modifier rules
+         *
+         * @param requestUrl
+         * @param documentUrl
+         * @param requestType
+         * @return {[]|*}
+         */
         findReplaceRules(requestUrl, documentUrl, requestType) {
-            // TODO: Cache matching result in request-context-storage
-
-            const request = new Request(requestUrl, documentUrl, this.transformRequestType(requestType));
-            const result = adguard.application.getEngine().matchRequest(request);
-
+            const result = this.getMatchingResult(requestUrl, documentUrl, requestType);
             return result.getReplaceRules();
         },
 
@@ -393,34 +397,6 @@
             const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
 
             return this.cookieFilter.findCookieRules(requestUrl, documentHost, thirdParty, requestType);
-        },
-
-        /**
-         * Checks if exception rule is present for the URL/Referrer pair
-         *
-         * @param requestUrl    Request URL
-         * @param documentUrl   Document URL
-         * @param requestType   Request content type (one of UrlFilterRule.contentTypes)
-         * @param thirdParty    Is request third-party or not
-         * @returns Filter rule found or null
-         * @private
-         */
-        _checkWhiteList(requestUrl, documentUrl, requestType, thirdParty) {
-            if (!requestUrl) {
-                return null;
-            }
-
-            const request = new Request(requestUrl, documentUrl, this.transformRequestType(requestType));
-
-            const result = adguard.application.getEngine().matchRequest(request);
-            adguard.console.debug(result);
-
-            const basicResult = result.getBasicResult();
-            if (basicResult && basicResult.isWhitelist()) {
-                return basicResult;
-            }
-
-            return null;
         },
 
         /**
@@ -459,35 +435,29 @@
         },
 
         /**
-         * Searches the rule for request.
+         * Gets matching result for request.
          *
          * @param requestUrl    Request URL
          * @param documentUrl   Document URL
          * @param requestType   Request content type (one of UrlFilterRule.contentTypes)
-         * @param documentWhiteListRule (optional) Document-level whitelist rule
-         * @returns Filter rule found or null
+         * @returns matching result
          * @private
          */
-        _findRuleForRequest(requestUrl, documentUrl, requestType, documentWhiteListRule) {
+        createMatchingResult(requestUrl, documentUrl, requestType) {
             adguard.console.debug('Filtering http request for url: {0}, document: {1}, requestType: {2}', requestUrl, documentUrl, requestType);
 
             const request = new Request(requestUrl, documentUrl, this.transformRequestType(requestType));
 
             const result = adguard.application.getEngine().matchRequest(request);
-            adguard.console.debug(result);
+            adguard.console.debug(
+                'Result {0} found for url: {1}, document: {2}, requestType: {3}',
+                result.getBasicResult(),
+                requestUrl,
+                documentUrl,
+                requestType
+            );
 
-            const ruleForRequest = result.getBasicResult();
-            if (ruleForRequest) {
-                adguard.console.debug(
-                    'Rule {0} found for url: {1}, document: {2}, requestType: {3}',
-                    ruleForRequest.ruleText,
-                    requestUrl,
-                    documentUrl,
-                    requestType
-                );
-            }
-
-            return ruleForRequest;
+            return result;
         },
     };
 
