@@ -49,3 +49,52 @@ QUnit.test('Test cache', (assert) => {
         });
     });
 });
+
+QUnit.test('Test requests cache', (assert) => {
+    let counter = 0;
+    let hashesChecked = [];
+
+    // Mock backend request
+    adguard.backend.lookupSafebrowsing = (shortHashes, successCallback) => {
+        counter += 1;
+        hashesChecked = shortHashes;
+
+        successCallback({
+            status: 204,
+        });
+    };
+
+    const done = assert.async();
+
+    const testUrlOne = 'http://google.co.jp';
+    const testUrlTwo = 'http://yahoo.co.jp';
+    const testUrlThree = 'http://co.jp';
+    adguard.safebrowsing.lookupUrlWithCallback(testUrlOne, (response) => {
+        assert.ok(!response);
+        assert.equal(counter, 1);
+        assert.equal(hashesChecked.length, 2);
+        assert.equal(hashesChecked[0], '6830');
+        assert.equal(hashesChecked[1], 'D617');
+
+        hashesChecked = [];
+
+        adguard.safebrowsing.lookupUrlWithCallback(testUrlTwo, (response) => {
+            assert.ok(!response);
+            // One new hash added
+            assert.equal(counter, 2);
+            assert.equal(hashesChecked.length, 1);
+            assert.equal(hashesChecked[0], '20E4');
+
+            hashesChecked = [];
+
+            adguard.safebrowsing.lookupUrlWithCallback(testUrlThree, (response) => {
+                assert.ok(!response);
+                // All hashes have been checked already - so there was no request to backend
+                assert.equal(counter, 2);
+                assert.equal(hashesChecked.length, 0);
+
+                done();
+            });
+        });
+    });
+});
