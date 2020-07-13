@@ -92,20 +92,6 @@ adguard.backend = (function (adguard) {
             return 'https://sb.adtidy.org/safebrowsing-lookup-hash.html';
         },
 
-        // This url is used in integration mode. Adguard for Windows/Mac/Android intercepts requests to injections.adguard.com host.
-        // It is not used for remote requests, requests are intercepted by the desktop version of Adguard.
-        get injectionsUrl() {
-            return 'https://injections.adguard.com';
-        },
-
-        // URLs used when add-on works in integration mode.
-        // @deprecated
-        get adguardAppUrlOld() {
-            return `${this.injectionsUrl}/adguard-ajax-crossdomain-hack/api?`;
-        },
-        get adguardAppUrl() {
-            return `${this.injectionsUrl}/adguard-ajax-api/api?`;
-        },
         // Folder that contains filters metadata and files with rules. 'filters' by default
         get localFiltersFolder() {
             return 'filters';
@@ -445,40 +431,6 @@ adguard.backend = (function (adguard) {
     };
 
     /**
-     * Used in integration mode. Sends ajax-request which should be intercepted by Adguard for Windows/Mac/Android.
-     *
-     * @param ruleText          Rule text
-     * @param successCallback   Called on success
-     * @param errorCallback     Called on error
-     */
-    const adguardAppAddRule = function (ruleText, successCallback, errorCallback) {
-        executeRequestAsync(`${settings.adguardAppUrl}type=add&rule=${encodeURIComponent(ruleText)}`, 'text/plain', successCallback, errorCallback);
-    };
-
-    /**
-     * Used in integration mode. Sends ajax-request which should be intercepted by Adguard for Windows/Mac/Android.
-     *
-     * @param ruleText
-     * @param successCallback
-     * @param errorCallback
-     */
-    const adguardAppRemoveRule = function (ruleText, successCallback, errorCallback) {
-        executeRequestAsync(`${settings.adguardAppUrl}type=remove&rule=${encodeURIComponent(ruleText)}`, 'text/plain', successCallback, errorCallback);
-    };
-
-    /**
-     * Used in integration mode. Sends ajax-request which should be intercepted by Adguard for Windows/Mac/Android.
-     *
-     * @param ruleText          Rule text
-     * @param successCallback   Called on success
-     * @param errorCallback     Called on error
-     * @deprecated
-     */
-    const adguardAppAddRuleOld = function (ruleText, successCallback, errorCallback) {
-        executeRequestAsync(`${settings.adguardAppUrlOld}type=add&rule=${encodeURIComponent(ruleText)}`, 'text/plain', successCallback, errorCallback);
-    };
-
-    /**
      * Sends filter hits stats to backend server.
      * This method is used if user has enabled "Send statistics for ad filters usage".
      * More information about ad filters usage stats:
@@ -593,10 +545,6 @@ adguard.backend = (function (adguard) {
     };
 
     return {
-
-        adguardAppUrl: settings.adguardAppUrl,
-        injectionsUrl: settings.injectionsUrl,
-
         loadFiltersMetadata,
         loadFilterRules,
 
@@ -606,10 +554,6 @@ adguard.backend = (function (adguard) {
         loadLocalFiltersI18Metadata,
         loadLocalScriptRules,
         loadRedirectSources,
-
-        adguardAppAddRule,
-        adguardAppAddRuleOld,
-        adguardAppRemoveRule,
 
         lookupSafebrowsing,
 

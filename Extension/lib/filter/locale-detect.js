@@ -159,11 +159,6 @@
             return;
         }
 
-        if (adguard.integration.isSupported() && adguard.frames.isTabAdguardDetected(tab)) {
-            // Autodetect is disabled in integration mode
-            return;
-        }
-
         // Check language only for http://... tabs
         if (!adguard.utils.url.isHttpRequest(url)) {
             return;
