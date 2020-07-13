@@ -76,7 +76,7 @@ const API_SCRIPTS = [
     'Extension/lib/filter/request-context-storage.js',
     // Content messaging
     'Extension/lib/content-message-handler.js',
-    'Extension/lib/stealth.js',
+    'Extension/lib/filter/services/stealth-service.js',
     'Extension/lib/webrequest.js',
     'Extension/api/chrome/lib/api.js',
 ];
