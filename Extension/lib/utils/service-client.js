@@ -458,14 +458,6 @@ adguard.backend = (function (adguard) {
     };
 
     /**
-     * @param requestUrl
-     * @returns true if request to adguard application
-     */
-    const isAdguardAppRequest = function (requestUrl) {
-        return requestUrl && (requestUrl.indexOf('/adguard-ajax-crossdomain-hack/') > 0 || requestUrl.indexOf('/adguard-ajax-api/') > 0);
-    };
-
-    /**
      * Allows to receive response headers from the request to the given URL
      * @param url URL
      * @param callback Callback with headers or null in the case of error
@@ -560,7 +552,6 @@ adguard.backend = (function (adguard) {
         sendUrlReport,
         sendHitStats,
 
-        isAdguardAppRequest,
         getResponseHeaders,
 
         configure,
