@@ -729,15 +729,6 @@
     };
 
     /**
-     * If true -- ContentFilter rules cannot be applied to page matching this rule.
-     *
-     * @return true if ContentFilter should not be applied to page matching this rule.
-     */
-    UrlFilterRule.prototype.isContent = function () {
-        return this.isOptionEnabled(UrlFilterRule.options.CONTENT);
-    };
-
-    /**
      * Checks if the specified rule contains all document level options
      * @returns If true - contains $jsinject, $elemhide and $urlblock options
      */
@@ -973,16 +964,6 @@
                     this.redirectOption = new RedirectOption(optionValue);
                     break;
                 }
-                case UrlFilterRule.REPLACE_OPTION:
-                    // In case of .features or .features.responseContentFilteringSupported are not defined
-                    const responseContentFilteringSupported = adguard.prefs.features
-                        && adguard.prefs.features.responseContentFilteringSupported;
-                    if (!responseContentFilteringSupported) {
-                        throw new Error('Unknown option: REPLACE');
-                    }
-                    this._setUrlFilterRuleOption(UrlFilterRule.options.REPLACE, true);
-                    this.replaceOption = new ReplaceOption(optionValue);
-                    break;
                 case UrlFilterRule.BADFILTER_OPTION:
                     this.badFilter = this.ruleText
                         .replace(UrlFilterRule.OPTIONS_DELIMITER + UrlFilterRule.BADFILTER_OPTION + api.FilterRule.COMA_DELIMITER, UrlFilterRule.OPTIONS_DELIMITER)

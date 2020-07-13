@@ -1,28 +1,3 @@
-QUnit.test('Build Rules', (assert) => {
-    let rule = adguard.rules.builder.createRule('example.com', 0);
-    assert.ok(rule);
-    assert.ok(rule instanceof adguard.rules.UrlFilterRule);
-
-    rule = adguard.rules.builder.createRule('example.com$important', 0);
-    assert.ok(rule);
-    assert.ok(rule instanceof adguard.rules.UrlFilterRule);
-
-    adguard.prefs.features.responseContentFilteringSupported = true;
-
-    rule = adguard.rules.builder.createRule('example.org$$script[data-src="banner"]', 0);
-    assert.ok(rule);
-    assert.ok(rule instanceof adguard.rules.ContentFilterRule);
-
-    rule = adguard.rules.builder.createRule('example.org#%#window.__gaq = undefined;', 0, false);
-    assert.notOk(rule);
-
-    rule = adguard.rules.builder.createRule('||example.org^$replace=/example/trusted/gi', 0, false);
-    assert.notOk(rule);
-
-    rule = adguard.rules.builder.createRule('||example.org^$replace=/example/trusted/gi', 0);
-    assert.ok(rule);
-});
-
 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1600
 QUnit.test('Too short rules are ignored', (assert) => {
     let ruleText = 'adg';

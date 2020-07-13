@@ -123,14 +123,16 @@ adguard.filteringLog = (function (adguard) {
         if (sourceRule.documentLevelRule) {
             destinationRule.documentLevelRule = sourceRule.documentLevelRule;
         }
-        if (sourceRule instanceof adguard.rules.ContentFilterRule) {
-            destinationRule.contentRule = true;
+        // TODO: Fix log
+        // if (sourceRule instanceof adguard.rules.ContentFilterRule) {
+        //     destinationRule.contentRule = true;
         // TODO: Fix log
         // } else if (sourceRule instanceof adguard.rules.CssFilterRule) {
         //     destinationRule.cssRule = true;
         // } else if (isScriptRule(sourceRule)) {
         //     destinationRule.scriptRule = true;
-        } else if (sourceRule instanceof adguard.rules.UrlFilterRule) {
+        // } else
+        if (sourceRule instanceof adguard.rules.UrlFilterRule) {
             destinationRule.whiteListRule = sourceRule.whiteListRule;
             destinationRule.cspRule = sourceRule.isCspRule();
             destinationRule.cspDirective = sourceRule.cspDirective;
@@ -398,6 +400,47 @@ adguard.filteringLog = (function (adguard) {
     };
 
     /**
+     * Add html rule event to log
+     *
+     * @param {Number} tabId - tab id
+     * @param {String} elementString - element string presentation
+     * @param {String} frameUrl - Frame url
+     * @param {Object} rule - cookie rule
+     */
+    const addHtmlEvent = (tabId, elementString, frameUrl, rule) => {
+        const filteringEvent = {
+            eventType: 'HTML',
+            element: elementString,
+            frameUrl,
+            rule,
+        };
+
+        // TODO: Fix
+        console.log(filteringEvent);
+
+        // pushFilteringEvent(filteringEvent);
+    };
+
+    /**
+     * Add html rule event to log
+     *
+     * @param {Number} tabId - tab id
+     * @param {String} frameUrl - Frame url
+     * @param {Object} rules - cookie rule
+     */
+    const addReplaceRulesEvent = (tabId, frameUrl, rules) => {
+        rules.forEach((r) => {
+            // TODO: Fix
+            console.log(r);
+            // pushFilteringEvent({
+            //     eventType: 'REPLACE',
+            //     frameUrl,
+            //     rule: r,
+            // });
+        });
+    };
+
+    /**
      * Binds applied stealth actions to HTTP request
      *
      * @param {object} tab Request tab
@@ -532,6 +575,9 @@ adguard.filteringLog = (function (adguard) {
         addScriptInjectionEvent,
         bindStealthActionsToHttpRequestEvent,
         clearEventsByTabId,
+        addHtmlEvent,
+        addReplaceRulesEvent,
+
 
         isOpen,
         onOpenFilteringLogPage,

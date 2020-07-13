@@ -443,48 +443,7 @@ QUnit.test('Redirect rules', (assert) => {
 //     assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.XMLHTTPREQUEST));
 // });
 //
-// QUnit.test('Replace filters', (assert) => {
-//     const rules = [
-//         '||example.org^$replace=/test/test1/g',
-//         '||example.org^$replace=/test1/test2/g',
-//     ];
-//
-//     const requestFilter = new adguard.RequestFilter();
-//
-//     adguard.prefs.features.responseContentFilteringSupported = true;
-//
-//     const urlFilterRules = rules.map(rule => new adguard.rules.UrlFilterRule(rule));
-//
-//     requestFilter.addRules(urlFilterRules);
-//
-//     const replaceRules = requestFilter.findReplaceRules('https://example.org', '', adguard.RequestTypes.DOCUMENT);
-//
-//     assert.ok(replaceRules);
-//     assert.equal(replaceRules.length, rules.length);
-// });
-//
-// QUnit.test('whitelisted replace filter with same option is omitted', (assert) => {
-//     const expectedRule = '||example.org^$replace=/test/test1/g';
-//
-//     const rules = [
-//         expectedRule,
-//         '||example.org^$replace=/test1/test2/g',
-//         '@@||example.org^$replace=/test1/test2/g',
-//     ];
-//
-//     const requestFilter = new adguard.RequestFilter();
-//
-//     adguard.prefs.features.responseContentFilteringSupported = true;
-//
-//     const urlFilterRules = rules.map(rule => new adguard.rules.UrlFilterRule(rule));
-//
-//     requestFilter.addRules(urlFilterRules);
-//
-//     const replaceRules = requestFilter.findReplaceRules('https://example.org', '', adguard.RequestTypes.DOCUMENT);
-//
-//     assert.ok(replaceRules);
-//     assert.equal(replaceRules.length, 2);
-// });
+
 //
 // QUnit.test('whitelist rules with $stealth modifier', (assert) => {
 //     const stealthRule = new adguard.rules.UrlFilterRule('@@||example.org^$stealth');
@@ -551,52 +510,6 @@ QUnit.test('Redirect rules', (assert) => {
 //     assert.ok(thirdPartyResult);
 //     assert.ok(thirdPartyResult.whiteListRule);
 //     assert.equal(thirdPartyResult.textRule, thirdPartyResult.textRule);
-// });
-//
-// QUnit.test('replace filter with empty $replace modifier should remove all other replace rules', (assert) => {
-//     const rules = [
-//         '||example.org^$replace=/test/test1/g',
-//         '||example.org^$replace=/test1/test2/g',
-//         '@@||example.org^$replace',
-//     ];
-//
-//     const requestFilter = new adguard.RequestFilter();
-//
-//     adguard.prefs.features.responseContentFilteringSupported = true;
-//
-//     const urlFilterRules = rules.map(rule => new adguard.rules.UrlFilterRule(rule));
-//
-//     requestFilter.addRules(urlFilterRules);
-//
-//     const replaceRules = requestFilter.findReplaceRules('https://example.org', '', adguard.RequestTypes.DOCUMENT);
-//
-//     assert.ok(replaceRules);
-//     assert.ok(replaceRules[0].whiteListRule);
-//     assert.equal(rules.length, 3);
-//     assert.equal(replaceRules.length, 1);
-// });
-//
-// QUnit.test('replace rules with $badfilter modifier', (assert) => {
-//     const rules = [
-//         '||example.org^$replace=/test/test1/g',
-//         '||example.org^$replace=/test1/test2/g',
-//         '||example.org^$replace=/test/test1/g,badfilter',
-//     ];
-//
-//     const requestFilter = new adguard.RequestFilter();
-//
-//     adguard.prefs.features.responseContentFilteringSupported = true;
-//
-//     const urlFilterRules = rules.map(rule => new adguard.rules.UrlFilterRule(rule));
-//
-//     requestFilter.addRules(urlFilterRules);
-//
-//     const replaceRules = requestFilter.findReplaceRules('https://example.org', '', adguard.RequestTypes.DOCUMENT);
-//
-//     assert.ok(replaceRules);
-//     assert.equal(replaceRules[0].ruleText, rules[1]);
-//     assert.equal(rules.length, 3);
-//     assert.equal(replaceRules.length, 1);
 // });
 //
 // QUnit.test('stealth rules with $badfilter modifier', (assert) => {

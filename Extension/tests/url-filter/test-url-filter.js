@@ -171,84 +171,6 @@ QUnit.test('Url blocking rule', (assert) => {
     assert.notOk(rule.isPermitted('www.nigma.ru'));
 });
 
-QUnit.test('Content-specific URL blocking', (assert) => {
-    const { RequestTypes } = adguard;
-
-    let mask = '||test.ru/$script';
-    let rule = new adguard.rules.UrlFilterRule(mask);
-    assert.ok(rule.isFiltered('http://test.ru/script.js?ololo=ololo', false, RequestTypes.SCRIPT));
-    assert.notOk(rule.isFiltered('http://test.ru/script.js?ololo=ololo', false, RequestTypes.XMLHTTPREQUEST));
-    assert.notOk(rule.isFiltered('http://test.ru/?ololo=ololo', false, RequestTypes.SUBDOCUMENT));
-    assert.notOk(rule.isFiltered('http://test.ru/image.png', false, RequestTypes.IMAGE));
-
-    mask = '||test.ru/$~script';
-    rule = new adguard.rules.UrlFilterRule(mask);
-    assert.notOk(rule.isFiltered('http://test.ru/script.js?ololo=ololo', false, RequestTypes.SCRIPT));
-    assert.ok(rule.isFiltered('http://test.ru/script.js?ololo=ololo', false, RequestTypes.XMLHTTPREQUEST));
-    assert.ok(rule.isFiltered('http://test.ru/?ololo=ololo', false, RequestTypes.SUBDOCUMENT));
-    assert.ok(rule.isFiltered('http://test.ru/image.png', false, RequestTypes.IMAGE));
-    assert.ok(rule.isFiltered('ws://test.ru/?ololo=ololo', false, RequestTypes.WEBSOCKET));
-
-    mask = '||test.ru/$script,image';
-    rule = new adguard.rules.UrlFilterRule(mask);
-    assert.ok(rule.isFiltered('http://test.ru/script.js?ololo=ololo', false, RequestTypes.SCRIPT));
-    assert.ok(rule.isFiltered('http://test.ru/image.png', false, RequestTypes.IMAGE));
-    assert.notOk(rule.isFiltered('http://test.ru/?ololo=ololo', false, RequestTypes.SUBDOCUMENT));
-    assert.notOk(rule.isFiltered('http://test.ru/?ololo=ololo', false, RequestTypes.XMLHTTPREQUEST));
-    assert.notOk(rule.isFiltered('wss://test.ru/?ololo=ololo', false, RequestTypes.WEBSOCKET));
-
-    mask = '||test.ru/$~script,~image';
-    rule = new adguard.rules.UrlFilterRule(mask);
-    assert.notOk(rule.isFiltered('http://test.ru/script.js?ololo=ololo', false, RequestTypes.SCRIPT));
-    assert.ok(rule.isFiltered('http://test.ru/script.js?ololo=ololo', false, RequestTypes.XMLHTTPREQUEST));
-    assert.ok(rule.isFiltered('http://test.ru/?ololo=ololo', false, RequestTypes.SUBDOCUMENT));
-    assert.notOk(rule.isFiltered('http://test.ru/image.png', false, RequestTypes.IMAGE));
-
-    mask = '||test.ru/$~script,image';
-    rule = new adguard.rules.UrlFilterRule(mask);
-    assert.notOk(rule.isFiltered('http://test.ru/script.js?ololo=ololo', false, RequestTypes.SCRIPT));
-    assert.notOk(rule.isFiltered('http://test.ru/script.js?ololo=ololo', false, RequestTypes.XMLHTTPREQUEST));
-    assert.notOk(rule.isFiltered('http://test.ru/?ololo=ololo', false, RequestTypes.SUBDOCUMENT));
-    assert.ok(rule.isFiltered('http://test.ru/image.png', false, RequestTypes.IMAGE));
-    assert.notOk(rule.isFiltered('http://test.ru/image.png', false, RequestTypes.XMLHTTPREQUEST));
-
-    mask = '||test.ru/$script,image,xmlhttprequest';
-    rule = new adguard.rules.UrlFilterRule(mask);
-    assert.ok(rule.isFiltered('http://test.ru/script.js?ololo=ololo', false, RequestTypes.SCRIPT));
-    assert.notOk(rule.isFiltered('http://test.ru/?ololo=ololo', false, RequestTypes.SUBDOCUMENT));
-    assert.ok(rule.isFiltered('http://test.ru/?ololo=ololo', false, RequestTypes.XMLHTTPREQUEST));
-    assert.ok(rule.isFiltered('http://test.ru/image.png', false, RequestTypes.IMAGE));
-
-    mask = '||test.ru/$websocket';
-    rule = new adguard.rules.UrlFilterRule(mask);
-    assert.ok(rule.isFiltered('ws://test.ru/?ololo=ololo', false, RequestTypes.WEBSOCKET));
-    assert.notOk(rule.isFiltered('http://test.ru/?ololo=ololo', false, RequestTypes.SUBDOCUMENT));
-    assert.notOk(rule.isFiltered('http://test.ru/?ololo=ololo', false, RequestTypes.OTHER));
-
-    mask = 'stun:test.ru$webrtc';
-    rule = new adguard.rules.UrlFilterRule(mask);
-    assert.ok(rule.isFiltered('stun:test.ru:19302/?ololo=ololo', false, RequestTypes.WEBRTC));
-    assert.notOk(rule.isFiltered('ws://test.ru/?ololo=ololo', false, RequestTypes.WEBSOCKET));
-    assert.notOk(rule.isFiltered('http://test.ru/?ololo=ololo', false, RequestTypes.SUBDOCUMENT));
-    assert.notOk(rule.isFiltered('http://test.ru/?ololo=ololo', false, RequestTypes.OTHER));
-
-    mask = '@@||test.ru$content,jsinject';
-    rule = new adguard.rules.UrlFilterRule(mask);
-    assert.ok(rule.isContent());
-    assert.ok(rule.isJsInject());
-    assert.notOk(rule.isDocumentWhiteList());
-    assert.ok(rule.isFiltered('http://test.ru', false, RequestTypes.DOCUMENT));
-    assert.notOk(rule.isFiltered('http://test.ru/script.js', false, RequestTypes.SCRIPT));
-
-    mask = '@@||test.ru$content';
-    rule = new adguard.rules.UrlFilterRule(mask);
-    assert.ok(rule.isContent());
-    assert.notOk(rule.isJsInject());
-    assert.notOk(rule.isDocumentWhiteList());
-    assert.ok(rule.isFiltered('http://test.ru', false, RequestTypes.DOCUMENT));
-    assert.notOk(rule.isFiltered('http://test.ru/script.js', false, RequestTypes.SCRIPT));
-});
-
 QUnit.test('Ping specific request is blocked', (assert) => {
     const ruleText = 'example.org$ping';
     const rule = new adguard.rules.UrlFilterRule(ruleText, 1);
@@ -482,28 +404,6 @@ QUnit.test('Many rules in one rule filter', (assert) => {
     assert.equal(filter.getRules().length, 1);
 });
 
-QUnit.test('Escaped ampersand symbol in options', (assert) => {
-    adguard.prefs.features.responseContentFilteringSupported = false;
-
-    assert.throws(() => {
-        // eslint-disable-next-line no-new
-        new adguard.rules.UrlFilterRule('||goodgame.ru/*.php?script=*vastInlineBannerTypeHtml$important,replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\\$1<\/VAST>/', 1);
-        // assert.ok(false);
-    }, new Error('Unknown option: REPLACE'));
-});
-
-QUnit.test('RegExp Rules Parsing', (assert) => {
-    adguard.prefs.features.responseContentFilteringSupported = false;
-
-    assert.ok(new adguard.rules.UrlFilterRule('/(.jpg)$/').isFiltered('http://test.ru/foo.jpg', false, adguard.RequestTypes.IMAGE));
-    assert.notOk(new adguard.rules.UrlFilterRule('/(.jpg)$/').isFiltered('http://test.ru/foo.png', false, adguard.RequestTypes.IMAGE));
-
-    assert.throws(() => {
-        // eslint-disable-next-line no-new
-        new adguard.rules.UrlFilterRule('/.*/$replace=/hello/bug/');
-    }, new Error('Unknown option: REPLACE'));
-});
-
 QUnit.test('BadFilter option', (assert) => {
     let badFilterRule = new adguard.rules.UrlFilterRule('https:*_ad_$badfilter');
 
@@ -619,15 +519,6 @@ QUnit.test('Test stealth option', (assert) => {
     assert.ok(rule.whiteListRule);
     assert.ok(rule.isStealthRule());
 });
-
-QUnit.test('Test replace option', (assert) => {
-    adguard.prefs.features.responseContentFilteringSupported = true;
-
-    const replaceRule = new adguard.rules.UrlFilterRule('||example.org^$replace=/test/test2/i');
-    assert.ok(replaceRule);
-    assert.ok(replaceRule.isReplaceRule());
-});
-
 
 QUnit.test('Invalid $domain options throw exception', (assert) => {
     try {

@@ -1157,10 +1157,6 @@ adguard.requestFilter = (function (adguard) {
         return getRequestFilter().getContentRulesForUrl(documentUrl);
     };
 
-    const getMatchedElementsForContentRules = function (doc, rules) {
-        return getRequestFilter().getMatchedElementsForContentRules(doc, rules);
-    };
-
     const getCspRules = function (requestUrl, referrer, requestType) {
         return getRequestFilter().findCspRules(requestUrl, referrer, requestType);
     };
@@ -1189,12 +1185,12 @@ adguard.requestFilter = (function (adguard) {
         getScriptsForUrl,
         getScriptsStringForUrl,
         getContentRulesForUrl,
-        getMatchedElementsForContentRules,
         getCspRules,
         getCookieRules,
         getReplaceRules,
         findStealthWhiteListRule,
         getRequestFilterInfo,
+        getRequestFilter,
     };
 })(adguard);
 

@@ -101,14 +101,6 @@
                 return new api.UrlFilterRule(ruleText, filterId);
             }
 
-            if (api.FilterRule.findRuleMarker(ruleText, api.ContentFilterRule.RULE_MARKERS, api.ContentFilterRule.RULE_MARKER_FIRST_CHAR)) {
-                const responseContentFilteringSupported = adguard.prefs.features && adguard.prefs.features.responseContentFilteringSupported;
-                if (!responseContentFilteringSupported) {
-                    return null;
-                }
-                return new api.ContentFilterRule(ruleText, filterId);
-            }
-
             return new api.UrlFilterRule(ruleText, filterId);
         } catch (ex) {
             adguard.console.debug('Cannot create rule from filter {0}: {1}, cause {2}', filterId || 0, ruleText, ex);

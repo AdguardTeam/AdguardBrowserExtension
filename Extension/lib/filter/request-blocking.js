@@ -104,8 +104,11 @@ adguard.webRequestService = (function (adguard) {
 
 
         // Check what exactly is disabled by this rule
-        var elemHideFlag = whitelistRule && whitelistRule.isElemhide();
-        var genericHideFlag = whitelistRule && whitelistRule.isGenericHide();
+
+        var elemHideFlag = whitelistRule && whitelistRule.isOptionEnabled(NetworkRuleOption.Elemhide);
+        var genericHideFlag = whitelistRule && whitelistRule.isOptionEnabled(NetworkRuleOption.Generichide);
+
+        // TODO: use matching result getCosmeticOption
 
         // content-message-handler calls it in this way
         if (typeof cssFilterOptions === 'undefined' && typeof retrieveScripts === 'undefined') {
@@ -139,7 +142,7 @@ adguard.webRequestService = (function (adguard) {
         }
 
         if (retrieveScripts) {
-            var jsInjectFlag = whitelistRule && whitelistRule.isJsInject();
+            var jsInjectFlag = whitelistRule && whitelistRule.isOptionEnabled(NetworkRuleOption.Jsinject);
             if (!jsInjectFlag) {
                 // JS rules aren't disabled, returning them
                 result.scripts = adguard.requestFilter.getScriptsStringForUrl(documentUrl, tab);
@@ -350,7 +353,7 @@ adguard.webRequestService = (function (adguard) {
         }
 
         var whitelistRule = adguard.requestFilter.findWhiteListRule(documentUrl, documentUrl, adguard.RequestTypes.DOCUMENT);
-        if (whitelistRule && whitelistRule.isContent()) {
+        if (whitelistRule && whitelistRule.isOptionEnabled(NetworkRuleOption.Content)) {
             return null;
         }
 
@@ -502,7 +505,7 @@ adguard.webRequestService = (function (adguard) {
                 }
             }
 
-            // Replace rules are processed in content-filtering.js
+            // Replace rules are processed in content-filtering
             if (isReplaceRule) {
                 requestRule = null;
             }

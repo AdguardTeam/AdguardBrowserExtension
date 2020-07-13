@@ -43,11 +43,6 @@ const testCssService = (done) => {
     runQunit('../Extension/tests/services/test-css-service.html', done);
 };
 
-// Content filter tests
-const testContent = (done) => {
-    runQunit('../Extension/tests/content-filter/test-content-filter.html', done);
-};
-
 // Cookie filtering tests
 const testCookieFiltering = (done) => {
     runQunit('../Extension/tests/cookie-filtering/test-cookie-filtering.html', done);
@@ -108,7 +103,6 @@ export default gulp.series(
     testSB,
     testURL,
     testCssService,
-    testContent,
     testCookieFiltering,
     testReq,
     testEl,

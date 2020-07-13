@@ -100,10 +100,6 @@
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#stealth-modifier
         this.stealthFilter = new adguard.rules.UrlFilter([], this.badFilterRules);
 
-        // Filter that applies HTML filtering rules
-        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#html-filtering-rules
-        this.contentFilter = new adguard.rules.ContentFilter();
-
         // Rules count (includes all types of rules)
         this.rulesCount = 0;
 
@@ -344,18 +340,11 @@
          * @returns Collection of content rules
          */
         getContentRulesForUrl(documentUrl) {
-            const documentHost = adguard.utils.url.getHost(documentUrl);
-            return this.contentFilter.getRulesForDomain(documentHost);
-        },
+            const hostname = adguard.utils.url.getHost(documentUrl);
+            // eslint-disable-next-line max-len
+            const cosmeticResult = adguard.application.getEngine().getCosmeticResult(hostname, CosmeticOption.CosmeticOptionHtml);
 
-        /**
-         * Searches for elements in document that matches given content rules
-         * @param doc Document
-         * @param rules Content rules
-         * @returns Matched elements
-         */
-        getMatchedElementsForContentRules(doc, rules) {
-            return this.contentFilter.getMatchedElementsForRules(doc, rules);
+            return cosmeticResult.Html.getRules();
         },
 
         /**
