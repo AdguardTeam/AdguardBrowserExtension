@@ -511,15 +511,6 @@ QUnit.test('Test cookie option', (assert) => {
     assert.notOk(cookieRule.cookieOption.matches('123'));
 });
 
-QUnit.test('Test stealth option', (assert) => {
-    const ruleText = '@@||example.com^$stealth';
-    const rule = new adguard.rules.UrlFilterRule(ruleText);
-
-    assert.ok(rule);
-    assert.ok(rule.whiteListRule);
-    assert.ok(rule.isStealthRule());
-});
-
 QUnit.test('Invalid $domain options throw exception', (assert) => {
     try {
         const rule = new adguard.rules.UrlFilterRule('|http*$domain=|');

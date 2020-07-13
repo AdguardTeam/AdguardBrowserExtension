@@ -96,10 +96,6 @@
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/961
         this.cookieFilter = new adguard.rules.CookieFilter();
 
-        // Filter that applies stealth rules
-        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#stealth-modifier
-        this.stealthFilter = new adguard.rules.UrlFilter([], this.badFilterRules);
-
         // Rules count (includes all types of rules)
         this.rulesCount = 0;
 
@@ -305,20 +301,8 @@
          * @returns Filter rule found or null
          */
         findStealthWhiteListRule(requestUrl, referrer, requestType) {
-            const refHost = adguard.utils.url.getHost(referrer);
-            const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrer);
-
-            // Check if request is whitelisted with document wide rule
-            // e.g. "@@||example.org^$stealth"
-            let rule = this.stealthFilter.isFiltered(referrer, refHost, requestType, thirdParty);
-
-            if (!rule) {
-                // Check if request is whitelisted with third-party request
-                // e.g. "@@||example.org^$domain=ya.ru,stealth"
-                rule = this.stealthFilter.isFiltered(requestUrl, refHost, requestType, thirdParty);
-            }
-
-            return rule;
+            const result = this.getMatchingResult(requestUrl, referrer, requestType);
+            return result.stealthRule;
         },
 
         /**

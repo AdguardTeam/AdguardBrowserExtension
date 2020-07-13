@@ -303,7 +303,7 @@ adguard.stealthService = (function (adguard) {
      */
     const findStealthWhitelistRule = function (requestUrl, referrerUrl, requestType) {
         const stealthDocumentWhitelistRule = adguard.requestFilter.findStealthWhiteListRule(referrerUrl, referrerUrl, requestType);
-        if (stealthDocumentWhitelistRule && stealthDocumentWhitelistRule.isDocumentWhiteList()) {
+        if (stealthDocumentWhitelistRule && stealthDocumentWhitelistRule.isDocumentWhitelistRule()) {
             adguard.console.debug('Stealth document whitelist rule found.');
             return stealthDocumentWhitelistRule;
         }
