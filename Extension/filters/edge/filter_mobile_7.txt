@@ -1,8 +1,8 @@
-! Checksum: 70UjEwWWUe1pIXAF4/p7Qw
+! Checksum: vTpOiVp84mzxCsRBQm0Kmw
 ! Title: AdGuard Japanese filter (Optimized)
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.3.65
-! TimeUpdated: 2020-06-25T22:32:07+03:00
+! Version: 2.0.3.75
+! TimeUpdated: 2020-07-09T20:32:05+03:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -54,6 +54,13 @@
 ||adimp.excite.co.jp^
 ||adimpkwd.excite.co.jp^
 ||adingo.jp.eimg.jp^
+||adp.homes.co.jp^
+||api.primecaster.net^
+||genieedmp.com^
+||gmossp-sp.jp^
+||okbp.xyz^
+||primead.jp^
+||advert.punyu.com^
 ||feed.mikle.com^$third-party
 ||js.blozoo.info^$third-party
 ||xxxxxxxx.jp^$third-party
@@ -299,6 +306,8 @@
 ||webtracker.jp^
 ||widget.zenback.jp^$third-party
 ||w.zenback.jp^$third-party
+||diamond.jp/go/pb/forbrave/
+/fab.js|$domain=life-n.jp|point-news.jp
 gendai.ismedia.jp,hamakei.com#$#.fc-ab-root { display: none !important; }
 gendai.ismedia.jp,hamakei.com#$#body { overflow: visible !important; }
 ||iza.ne.jp/common/js/others/brave/
@@ -364,6 +373,16 @@ nasubiblog.com,kyukyoku-matome.com##.widget_pc_ad
 @@||mushinavi.com^$generichide
 off-soft.net#@#.adsbygoogle
 anipo.jp#@#.adbanner
+moeimg.net#?##main-2 > .post:has(> .pc_ad:only-child)
+weathernews.jp#?#.block:has([id^=div-gpt-ad])
+weathernews.jp#?#.block:has(script[src$="/yads.js"])
+ejje.weblio.jp#?#.mainBlock:has(.flex-rectangle-ads-frame)
+ejje.weblio.jp#?#.sideBlock:has([id$=AdId])
+momoniji.com#?#.widget_pc_text:has(script[src^="https://ad-nex."])
+sankei.com#?#.row:has(div[id^="div-gpt-ad-"])
+uwagakisimasuka.blog.fc2.com#?#.side_plugin:has(.adsbygoogle)
+weathernews.jp#?#.block:has([id^=div-gpt-ad])
+weathernews.jp#?#.block:has(script[src$="/yads.js"])
 xtech.nikkei.com#?#.l-main_primary > section[class="l-section"]:has(> div.c-iconAd)
 xtech.nikkei.com#?#.p-article_footer > section[class="l-section"]:has(> div.c-iconAd)
 xtech.nikkei.com#?#.p-article_footer > section[class="l-section"]:has(> #recommend > .p-articlePanel_item > div[id^="div-gpt-ad"])
@@ -417,6 +436,7 @@ nijinchu.com#?#article > div.entry_content > h3:contains(おすすめ商品)
 melos.media#?#.x1_article > .x1_articleArea[-ext-has='div.x1_siteTitle:contains([PR])']
 repeat-drama.info#?#.side_inner > .box:contains(スポンサーリンク)
 momon-ga.com#?#.repo-title:has(> strong)
+##.google-afc-image
 ##[class^=blogroll_wrapper]
 ###AD1line
 ###AD2line
@@ -492,6 +512,10 @@ momon-ga.com#?#.repo-title:has(> strong)
 ##a[href^="http://www.rssad.jp/"]
 xbooks.to#%#document.cookie = "pop=1";
 avgle.com#%#AG_onLoad(function() { closeAd(); });
+uwl.weblio.jp#$##side { display: none !important; }
+uwl.weblio.jp#$##main { width: 1325px !important; padding-left: 15px !important; }
+buhidoh.net#$##center-left { height: auto !important; }
+punyu.com#$#.tblmain[Width="900"] { height: auto !important; }
 hiroba.dpoint.jp#$##gtm-promotionModal-overlay { display: none !important; }
 hiroba.dpoint.jp#$#.js-modal-promotion-banner { display: none !important; }
 hiroba.dpoint.jp#$#body[data-modal-overlay="open"] > div#wrapper { position: static !important; }
@@ -564,6 +588,94 @@ iza.ne.jp#$#.sideFixedWrapper { position: relative!important; }
 /top/head_s_bnr
 /yaad.js
 _ds_adtag_
+moeimg.net##div[id^="side"] > .widget-area > .widget-container
+h723.blog.fc2.com##div[align="left"]
+h723.blog.fc2.com##div[align="left"] + div[style]
+h723.blog.fc2.com##.plugin1_outline:first-of-type
+h723.blog.fc2.com##.plugin1_outline:nth-of-type(n+3)
+||cloudfront.net/images/banner/250_50_$domain=zaif.jp
+zaif.jp###banner_head
+zaif.jp##.banner-kv
+||file.buhidoh.net/uploads/$subdocument
+buhidoh.net###center-left > .plugin3_outline
+buhidoh.net###center-left > .plugin3box
+buhidoh.net###right > .plugin2_outline:last-child
+buhidoh.net###text-3
+||file.dousyoko.net/uploads/$subdocument
+dousyoko.net##.floatbox1
+dousyoko.net##.floatbox2
+dousyoko.net##.plugin2_outline
+dousyoko.net##.plugin3_outline
+||nikkei.jp^*/f1h_text1.js|
+||partsa.nikkei.com/static/nkis/js/foneH.js
+www.nikkei.com##.PRb
+www.nikkei.com##.k-ad__text
+www.nikkei.com##.k-hub-pr
+www.nikkei.com##.newsTrendWatch
+||jorudan.co.jp/com/img/bnr/w685_
+||smtgvs.weathernews.jp/s/topics/img/banner/
+2nn.jp##.ads
+5ch.net###banner
+alc.co.jp###news > ul
+alc.co.jp###container > div[style^="width:1100px; "]
+allabout.co.jp##.aa_rec-box
+allabout.co.jp##.js-ui-top-banner-animation
+ascii.jp##.ad
+asia.nikkei.com##.article__footer:last-child
+atwiki.jp###ads
+atwiki.jp###google_relate_ads
+businessinsider.jp##.f-content-secondary > style + div
+businessinsider.jp##.p-post-content > div > p:first-child
+daily.co.jp##.pnl-aside
+daily.co.jp##.recommend
+diamond.jp###dol17_article_recm_pc
+diamond.jp##.pr-icon
+diamond.jp##.pr-icon + .top-article
+diamond.jp##.sub-trend-watch
+ejje.weblio.jp###footFixBar
+eow.alc.co.jp##.ad_left
+eow.alc.co.jp##.five
+firestorage.jp###mains > .minispace2
+hateblo.jp,hatenablog.com,hatenablog.jp,hatenadiary.com,hatenadiary.jp,hatenadiary.org##.sleeping-ads
+hatenablog.com##.serviceTop-recommend-ad
+homes.co.jp##.adPremium
+infoseek.co.jp###bannerblock
+lifehacker.jp##.lh-banner
+mainichi.jp###main > .no-print
+mainichi.jp##.apply-link + .ad
+mainichi.jp##.article .ad
+momoniji.com###content-top-in > .widget-content-top:first-child
+min.dododori.com###fix-space
+mixi.jp##.COMMUNITY_bodyArea__subArea > .adBanner:first-child + .COMMUNITY_rightAreaBox
+nicoco.net###search_form_wrap > div
+picrew.me##.imagemaker_ad_wrapper
+picrew.me##.search-Sidebar
+picrew.me##.c_related_section:first-of-type
+poipiku.com##.SideBarMid
+seiga.nicovideo.jp##.level_ad
+shindanmaker.com###sm_pc_head_728x90_bl
+tenki.jp##div[class^=tenki-ad-]
+tinami.com###main > .eventmesh + .text
+toranoana.jp##.tora-ads-default
+wowkorea.jp##div[style="width:300px;height:250px;"]
+www.weblio.jp###adPcBnrWrp
+www.weblio.jp##.ads-loader
+www.weblio.jp##.firstDictBnr
+www.weblio.jp##.rectangle-ads-frame-www
+ad-contents.jp##.overlay-item
+ad-contents.jp##.overlay-mask
+||dmm.co.jp/litevideo/-/part/=/affi_id=
+punyu.com###content > .box_title[style="width:700px;"]
+punyu.com###content > .box_title[style^="width:700px; margin-top:20px; "]
+punyu.com###content > .rank_table
+punyu.com###right > .box_title[style="width:410px; margin-top:10px;"]
+punyu.com###right > .rank_table
+punyu.com##.box_title_pr
+punyu.com##.box_title_pr + .rank_table
+punyu.com##.box_title[style="width:330px; margin-top:10px;"]
+punyu.com##.tblmain[cellspacing="2"][cellpadding="0"]
+punyu.com##div[id^=dugaflvplayer-]
+iphone-mania.jp##.app_banner > a:not([href^="https://iphone-mania.jp/"])
 ||sexpixbox.com/fbwax/cute/coupon.html?affid=
 hiroba.dpoint.jp###js-floating
 hosyusokuhou.jp###headline
@@ -1368,6 +1480,7 @@ avgle.com##body > div[style*="z-index"]:not([id]):not([class])
 ||static.avgle.com/media/av^
 !+ NOT_OPTIMIZED
 ||yimg.jp/bdv/
+@@||lacoste.com/on/demandware.static/*/js/dist-refit/framework/base/popin.js
 lifehacker.jp#@#.is-sponsored
 news.2chblog.jp#@#.ad-center
 hs-exp.jp#@#.hcf-ad
