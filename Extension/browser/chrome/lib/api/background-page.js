@@ -456,6 +456,26 @@ const browser = window.browser || chrome;
         getLocale() {
             return browser.i18n.getUILanguage();
         },
+
+        /**
+         * Returns extension's full url
+         */
+        getExtensionUrl() {
+            const url = adguard.getURL('');
+            return url.substring(0, url.length - 1);
+        },
+
+        /**
+         * If referrer of request contains full url of extension,
+         * then this request is considered as extension's own request
+         * (e.g. request for filter downloading)
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1437
+         * @param referrerUrl
+         * @returns {boolean}
+         */
+        isOwnRequest(referrerUrl) {
+            return referrerUrl && referrerUrl.indexOf(this.getExtensionUrl()) === 0;
+        },
     };
 
     adguard.webRequest = {
