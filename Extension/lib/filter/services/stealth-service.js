@@ -17,6 +17,8 @@
 
 /* global adguard */
 
+// TODO: Use TSURLFilter stealthService
+
 adguard.stealthService = (function (adguard) {
 
     'use strict';

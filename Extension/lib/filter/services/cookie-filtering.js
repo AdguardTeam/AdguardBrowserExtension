@@ -15,6 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// TODO: Use TSURLFilter cookieFiltering
+
 /**
  * Cookie filtering module
  * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/961
@@ -243,7 +245,7 @@ adguard.cookieFiltering = (function (adguard) {
             const promises = [];
             if (cookies.length > 0) {
                 const cookie = cookies[0];
-                if (!rule.whiteListRule) {
+                if (!rule.isWhitelist()) {
                     const promise = apiRemoveCookie(name, url);
                     promises.push(promise);
                 }
@@ -302,8 +304,9 @@ adguard.cookieFiltering = (function (adguard) {
      * @return {boolean}
      */
     const isModifyingRule = (rule) => {
-        const opt = rule.getCookieOption();
-        return !!opt.sameSite || (typeof opt.maxAge === 'number' && opt.maxAge > 0);
+        const cookieModifier = rule.getAdvancedModifier();
+        return cookieModifier.getSameSite() !== null
+            || (cookieModifier.getMaxAge() !== null && cookieModifier.getMaxAge() > 0);
     };
 
     /**
@@ -317,8 +320,8 @@ adguard.cookieFiltering = (function (adguard) {
         if (rules && rules.length > 0) {
             for (let i = 0; i < rules.length; i += 1) {
                 const rule = rules[i];
-                const opt = rule.getCookieOption();
-                if (opt.matches(cookieName) && !isModifyingRule(rule)) {
+                const cookieModifier = rule.getAdvancedModifier();
+                if (cookieModifier.matches(cookieName) && !isModifyingRule(rule)) {
                     return rule;
                 }
             }
@@ -338,8 +341,8 @@ adguard.cookieFiltering = (function (adguard) {
         if (rules && rules.length > 0) {
             for (let i = 0; i < rules.length; i += 1) {
                 const rule = rules[i];
-                const opt = rule.getCookieOption();
-                if (!opt.matches(cookieName)) {
+                const cookieModifier = rule.getAdvancedModifier();
+                if (!cookieModifier.matches(cookieName)) {
                     continue;
                 }
                 // Blocking or whitelist rule exists
@@ -416,19 +419,20 @@ adguard.cookieFiltering = (function (adguard) {
         const appliedRules = [];
         for (let i = 0; i < rules.length; i += 1) {
             const rule = rules[i];
-            const cookieOption = rule.getCookieOption();
+            const cookieModifier = rule.getAdvancedModifier();
 
             let modified = false;
 
             // eslint-disable-next-line prefer-destructuring
-            const sameSite = cookieOption.sameSite;
+            const sameSite = cookieModifier.getSameSite();
             if (sameSite && setCookie.sameSite !== sameSite) {
                 setCookie.sameSite = sameSite;
                 modified = true;
             }
 
-            if (typeof cookieOption.maxAge === 'number'
-                && updateSetCookieMaxAge(setCookie, cookieOption.maxAge)) {
+            const maxAge = cookieModifier.getMaxAge();
+            if (typeof maxAge === 'number'
+                && updateSetCookieMaxAge(setCookie, maxAge)) {
                 modified = true;
             }
 
@@ -479,19 +483,20 @@ adguard.cookieFiltering = (function (adguard) {
 
         for (let i = 0; i < rules.length; i += 1) {
             const rule = rules[i];
-            const cookieOption = rule.getCookieOption();
+            const cookieModifier = rule.getAdvancedModifier();
 
             let modified = false;
 
             // eslint-disable-next-line prefer-destructuring
-            const sameSite = cookieOption.sameSite;
+            const sameSite = cookieModifier.getSameSite();
             if (sameSite && cookie.sameSite !== sameSite) {
                 cookie.sameSite = sameSite;
                 modified = true;
             }
 
-            if (typeof cookieOption.maxAge === 'number'
-                && updateApiCookieMaxAge(cookie, cookieOption.maxAge)) {
+            const maxAge = cookieModifier.getMaxAge();
+            if (typeof maxAge === 'number'
+                && updateApiCookieMaxAge(cookie, maxAge)) {
                 modified = true;
             }
 
@@ -555,7 +560,7 @@ adguard.cookieFiltering = (function (adguard) {
             const cookieName = cookie.name;
             const bRule = findNotModifyingRule(cookieName, rules);
             if (bRule) {
-                if (!bRule.whiteListRule) {
+                if (!bRule.isWhitelist()) {
                     cookies.splice(iCookies, 1);
                     cookieHeaderModified = true;
                 }
@@ -568,7 +573,7 @@ adguard.cookieFiltering = (function (adguard) {
             }
 
             // If cookie rules found - ignore stealth cookie rules
-            const ignoreStealthRules = !!((bRule && !bRule.whiteListRule) || (mRules && mRules.length > 0));
+            const ignoreStealthRules = !!((bRule && !bRule.isWhitelist()) || (mRules && mRules.length > 0));
             if (!ignoreStealthRules && stealthRules && stealthRules.length > 0) {
                 scheduleProcessingCookie(requestId, cookieName, requestUrl, thirdParty, stealthRules, false);
             }
@@ -648,7 +653,7 @@ adguard.cookieFiltering = (function (adguard) {
 
             const bRule = findNotModifyingRule(cookieName, rules);
             if (bRule) {
-                if (!bRule.whiteListRule) {
+                if (!bRule.isWhitelist()) {
                     delete setCookie.expires;
                     setCookie.maxAge = 0;
                     header.value = adguard.utils.cookie.serialize(setCookie);
@@ -665,7 +670,7 @@ adguard.cookieFiltering = (function (adguard) {
             }
 
             // If cookie rules found - ignore stealth cookie rules
-            const ignoreStealthRules = !!((bRule && !bRule.whiteListRule) || (mRules && mRules.length > 0));
+            const ignoreStealthRules = !!((bRule && !bRule.isWhitelist()) || (mRules && mRules.length > 0));
             if (!ignoreStealthRules) {
                 const stealthRules = adguard.stealthService.getCookieRules(cookieUrl, referrerUrl, requestType);
                 if (processModifySetCookieByRules(tab, setCookie, cookieDomain, thirdParty, header, stealthRules)) {

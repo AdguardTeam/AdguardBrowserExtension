@@ -88,17 +88,6 @@
      * @type {Function}
      */
     const RequestFilter = function () {
-        // Bad-filter rules collection
-        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#badfilter-modifier
-        this.badFilterRules = {};
-
-        // Filter that applies cookie rules
-        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/961
-        this.cookieFilter = new adguard.rules.CookieFilter();
-
-        // Rules count (includes all types of rules)
-        this.rulesCount = 0;
-
         // Init small caches for url filtering rules
         this.matchingResultsCache = new RequestCache(this.requestCacheMaxSize);
     };
@@ -366,10 +355,8 @@
          * @returns             Matching rules
          */
         findCookieRules(requestUrl, documentUrl, requestType) {
-            const documentHost = adguard.utils.url.getHost(documentUrl);
-            const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
-
-            return this.cookieFilter.findCookieRules(requestUrl, documentHost, thirdParty, requestType);
+            const result = this.getMatchingResult(requestUrl, documentUrl, requestType);
+            return result.getCookieRules();
         },
 
         /**

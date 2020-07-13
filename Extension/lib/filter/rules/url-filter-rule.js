@@ -504,14 +504,6 @@
         return this.redirectOption;
     };
 
-    /**
-     * $cookie modifier
-     * @return {CookieOption} Parsed $cookie modifier
-     */
-    UrlFilterRule.prototype.getCookieOption = function () {
-        return this.cookieOption;
-    };
-
     // Lazy regexp creation
     UrlFilterRule.prototype.getUrlRegExp = function () {
         // check already compiled but not successful

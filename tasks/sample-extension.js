@@ -61,7 +61,6 @@ const API_SCRIPTS = [
     'Extension/lib/filter/rules/base-filter-rule.js',
     'Extension/lib/filter/rules/url-filter-rule.js',
     'Extension/lib/filter/rules/url-filter.js',
-    'Extension/lib/filter/rules/cookie-filter.js',
     'Extension/lib/filter/rules/filter-rule-builder.js',
     // Filters metadata and filtration modules
     'Extension/lib/filter/subscription.js',
@@ -71,7 +70,7 @@ const API_SCRIPTS = [
     'Extension/lib/filter/filters.js',
     'Extension/lib/filter/antibanner.js',
     'Extension/lib/filter/request-blocking.js',
-    'Extension/lib/filter/cookie-filtering.js',
+    'Extension/lib/filter/services/cookie-filtering.js',
     'Extension/lib/filter/filtering-log.js',
     'Extension/lib/filter/request-context-storage.js',
     // Content messaging

@@ -136,7 +136,8 @@ adguard.filteringLog = (function (adguard) {
             destinationRule.whiteListRule = sourceRule.whiteListRule;
             destinationRule.cspRule = sourceRule.isCspRule();
             destinationRule.cspDirective = sourceRule.cspDirective;
-            destinationRule.cookieRule = !!sourceRule.getCookieOption();
+            // TODO: Fix log
+            //destinationRule.cookieRule = !!sourceRule.getCookieOption();
         }
     };
 
