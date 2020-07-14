@@ -52,9 +52,6 @@ const API_SCRIPTS = [
     // Tabs api library
     'Extension/browser/chrome/lib/api/tabs.js',
     'Extension/lib/tabs/tabs-api.js',
-    // Rules and filters libraries
-    'Extension/lib/filter/rules/rules.js',
-    'Extension/lib/filter/rules/base-filter-rule.js',
     // Filters metadata and filtration modules
     'Extension/lib/filter/subscription.js',
     'Extension/lib/filter/update-service.js',

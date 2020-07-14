@@ -44,7 +44,7 @@
             if (domains !== '<any>') {
                 ruleText = domains;
             }
-            ruleText += api.FilterRule.MASK_SCRIPT_RULE + script;
+            ruleText += '#%#' + script;
             DEFAULT_SCRIPT_RULES[ruleText] = true;
         }
     };
