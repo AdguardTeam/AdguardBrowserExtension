@@ -383,15 +383,6 @@ adguard.whitelist = (function (adguard) {
     };
 
     /**
-     * Returns the array of loaded rules
-     */
-    var getRules = function () {
-        //TODO: blockListFilter
-
-        return getWhiteListFilter().getRules();
-    };
-
-    /**
      * Initializes whitelist filter
      */
     var init = function () {
@@ -407,20 +398,17 @@ adguard.whitelist = (function (adguard) {
     return {
 
         init: init,
-        getRules: getRules,
-        getWhiteListDomains: getWhiteListDomains,
+        configure: configure,
 
+        getWhiteListDomains: getWhiteListDomains,
         getWhiteListedDomains: getWhiteListedDomains,
         getBlockListedDomains: getBlockListedDomains,
+        updateWhiteListDomains: updateWhiteListDomains,
 
         findWhiteListRule: findWhiteListRule,
 
         whiteListUrl: whiteListUrl,
         unWhiteListUrl: unWhiteListUrl,
-
-        updateWhiteListDomains: updateWhiteListDomains,
-
-        configure: configure,
 
         isDefaultMode: isDefaultWhiteListMode,
         changeDefaultWhiteListMode: changeDefaultWhiteListMode
