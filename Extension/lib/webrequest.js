@@ -235,29 +235,23 @@
 
     /**
      * Called before request is sent to the remote endpoint.
-     * This method is used to modify request in case of working in integration mode,
-     * to modify headers for stealth service and also to record referrer header in frame data.
+     * This method is used to modify headers for stealth service
+     * and also to record referrer header in frame data.
      *
      * @param requestDetails Request details
      * @returns {*} headers to send
      */
     function onBeforeSendHeaders(requestDetails) {
-        const { tab } = requestDetails;
-        const { requestId } = requestDetails;
-        let { requestHeaders } = requestDetails;
-        const { requestType } = requestDetails;
+        const {
+            tab,
+            requestId,
+            requestType,
+            requestHeaders,
+        } = requestDetails;
 
         adguard.requestContextStorage.update(requestId, { requestHeaders });
 
         let requestHeadersModified = false;
-
-        if (adguard.integration.shouldOverrideReferrer(tab)
-            && (requestType === adguard.RequestTypes.DOCUMENT || adguard.frames.isTabAdguardDetected(tab))) {
-            // Retrieve main frame url
-            const mainFrameUrl = adguard.frames.getMainFrameUrl(tab);
-            requestHeaders = adguard.utils.browser.setHeaderValue(requestHeaders, 'Referer', mainFrameUrl);
-            requestHeadersModified = true;
-        }
 
         if (requestType === adguard.RequestTypes.DOCUMENT) {
             // Save ref header
@@ -303,11 +297,7 @@
 
         adguard.requestContextStorage.update(requestId, { responseHeaders });
 
-        const requestRule = adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
-        // Overrides rule in integration mode
-        if (adguard.frames.isTabAdguardDetected(tab)) {
-            adguard.requestContextStorage.update(requestId, { requestRule });
-        }
+        adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
 
         // Safebrowsing check
         if (requestType === adguard.RequestTypes.DOCUMENT
@@ -407,8 +397,7 @@
      * @param mainFrameUrl
      */
     function filterSafebrowsing(tab, mainFrameUrl) {
-        if (adguard.frames.isTabAdguardDetected(tab)
-            || adguard.frames.isTabProtectionDisabled(tab)
+        if (adguard.frames.isTabProtectionDisabled(tab)
             || adguard.frames.isTabWhiteListedForSafebrowsing(tab)) {
             return;
         }
@@ -461,20 +450,6 @@
     };
 
     adguard.webNavigation.onCommitted.addListener(onCommittedCheckFrameUrl);
-
-    // AG for Windows and Mac checks either request signature or request Referer to authorize request.
-    // Referer cannot be forged by the website so it's ok for add-on authorization.
-    if (adguard.integration.isSupported() && adguard.utils.browser.isChromium()) {
-        adguard.webRequest.onBeforeSendHeaders.addListener((requestDetails) => {
-            const authHeaders = adguard.integration.getAuthorizationHeaders();
-            let { requestHeaders } = requestDetails;
-            for (let i = 0; i < authHeaders.length; i++) {
-                requestHeaders = adguard.utils.browser.setHeaderValue(requestHeaders, authHeaders[i].name, authHeaders[i].value);
-            }
-
-            return { requestHeaders };
-        }, [`${adguard.integration.getIntegrationBaseUrl()}*`]);
-    }
 
     let handlerBehaviorTimeout = null;
     adguard.listeners.addListener((event) => {
@@ -1023,11 +998,10 @@
         const { tab, requestType, frameId } = details;
         if ((requestType !== adguard.RequestTypes.DOCUMENT
             && requestType !== adguard.RequestTypes.SUBDOCUMENT)
-            || adguard.frames.isTabAdguardDetected(tab)
             || tab.tabId === adguard.BACKGROUND_TAB_ID) {
             return;
         }
-        // load subscribe script on dom content load if integration mode is turned off
+        // load subscribe script on dom content load
         adguard.tabs.executeScriptFile(tab.tabId, { file: '/lib/content-script/subscribe.js', frameId });
     });
 })(adguard);
