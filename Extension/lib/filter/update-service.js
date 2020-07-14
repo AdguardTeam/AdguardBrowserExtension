@@ -277,6 +277,44 @@ adguard.applicationUpdateService = (function (adguard) {
     }
 
     /**
+     * Function removes obsolete filters from the storage
+     * @returns {Promise<any>}
+     */
+    function handleObsoleteFiltersRemoval() {
+        const dfd = new adguard.utils.Promise();
+
+        const filtersStateInfo = adguard.filtersState.getFiltersState();
+        const allFiltersMetadata = adguard.subscriptions.getFilters();
+
+        const installedFiltersIds = Object.keys(filtersStateInfo)
+            .map(filterId => Number.parseInt(filterId, 10));
+
+        const existingFiltersIds = installedFiltersIds.filter((filterId) => {
+            return allFiltersMetadata.find(f => f.filterId === filterId);
+        });
+
+        const filtersIdsToRemove = installedFiltersIds.filter((id) => {
+            return !existingFiltersIds.includes(id);
+        });
+
+        filtersIdsToRemove.forEach(filterId => adguard.filtersState.removeFilter(filterId));
+
+        const removePromises = filtersIdsToRemove.map(filterId => new Promise((resolve) => {
+            adguard.rulesStorage.remove(filterId, () => {
+                adguard.console.info(`Filter with id: ${filterId} removed from the storage`);
+                resolve();
+            });
+            resolve();
+        }));
+
+        Promise.all(removePromises).then(() => {
+            dfd.resolve();
+        });
+
+        return dfd;
+    }
+
+    /**
      * Async returns extension run info
      *
      * @param callback Run info callback with passed object {{isFirstRun: boolean, isUpdate: (boolean|*), currentVersion: (Prefs.version|*), prevVersion: *}}
@@ -318,9 +356,11 @@ adguard.applicationUpdateService = (function (adguard) {
         if (adguard.utils.browser.isGreaterVersion('3.0.3', runInfo.prevVersion)) {
             methods.push(handleUndefinedGroupStatuses);
         }
-
         if (adguard.utils.browser.isGreaterVersion('3.3.5', runInfo.prevVersion)) {
             methods.push(handleDefaultUpdatePeriodSetting);
+        }
+        if (adguard.utils.browser.isGreaterVersion('3.5.0', runInfo.prevVersion)) {
+            methods.push(handleObsoleteFiltersRemoval);
         }
 
         const dfd = executeMethods(methods);
