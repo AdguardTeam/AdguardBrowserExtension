@@ -38,7 +38,6 @@ adguard.settings = (function (adguard) {
         USE_OPTIMIZED_FILTERS: 'use-optimized-filters',
         DEFAULT_WHITE_LIST_MODE: 'default-whitelist-mode',
         DISABLE_SHOW_APP_UPDATED_NOTIFICATION: 'show-app-updated-disabled',
-        DISABLE_INTEGRATION_MODE: 'integration-mode-disabled',
         FILTERS_UPDATE_PERIOD: 'filters-update-period',
         DISABLE_STEALTH_MODE: 'stealth_disable_stealth_mode',
         HIDE_REFERRER: 'stealth-hide-referrer',
@@ -77,7 +76,6 @@ adguard.settings = (function (adguard) {
                 defaults[settings.USE_OPTIMIZED_FILTERS] = adguard.prefs.mobile;
                 defaults[settings.DISABLE_DETECT_FILTERS] = false;
                 defaults[settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION] = false;
-                defaults[settings.DISABLE_INTEGRATION_MODE] = false;
                 defaults[settings.FILTERS_UPDATE_PERIOD] = DEFAULT_FILTERS_UPDATE_PERIOD;
                 defaults[settings.DISABLE_STEALTH_MODE] = true;
                 defaults[settings.HIDE_REFERRER] = true;
@@ -196,14 +194,6 @@ adguard.settings = (function (adguard) {
         setProperty(settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION, !show, options);
     };
 
-    const isIntegrationModeEnabled = function () {
-        return !getProperty(settings.DISABLE_INTEGRATION_MODE);
-    };
-
-    const changeIntegrationModeEnabled = function (show, options) {
-        setProperty(settings.DISABLE_INTEGRATION_MODE, !show, options);
-    };
-
     const changeEnableSafebrowsing = function (enabled, options) {
         setProperty(settings.DISABLE_SAFEBROWSING, !enabled, options);
     };
@@ -318,8 +308,6 @@ adguard.settings = (function (adguard) {
     api.changeDefaultWhiteListMode = changeDefaultWhiteListMode;
     api.getFiltersUpdatePeriod = getFiltersUpdatePeriod;
     api.setFiltersUpdatePeriod = setFiltersUpdatePeriod;
-    api.isIntegrationModeEnabled = isIntegrationModeEnabled;
-    api.changeIntegrationModeEnabled = changeIntegrationModeEnabled;
     api.isWebRTCDisabled = isWebRTCDisabled;
     api.disableShowAdguardPromoInfo = disableShowAdguardPromoInfo;
     api.isDisableShowAdguardPromoInfo = isDisableShowAdguardPromoInfo;

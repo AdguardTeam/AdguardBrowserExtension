@@ -99,10 +99,6 @@ adguard.prefs = (function (adguard) {
 
         get ICONS() {
             return adguard.lazyGet(Prefs, 'ICONS', () => ({
-                ICON_BLUE: {
-                    '19': adguard.getURL('icons/blue-19.png'),
-                    '38': adguard.getURL('icons/blue-38.png'),
-                },
                 ICON_GREEN: {
                     '19': adguard.getURL('icons/green-19.png'),
                     '38': adguard.getURL('icons/green-38.png'),

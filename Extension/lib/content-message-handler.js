@@ -180,15 +180,9 @@
                 break;
             case 'addUserRule':
                 adguard.userrules.addRules([message.ruleText]);
-                if (message.adguardDetected || adguard.frames.isTabAdguardDetected(sender.tab)) {
-                    adguard.integration.addRuleToApp(message.ruleText);
-                }
                 break;
             case 'removeUserRule':
                 adguard.userrules.removeRule(message.ruleText);
-                if (message.adguardDetected || adguard.frames.isTabAdguardDetected(sender.tab)) {
-                    adguard.integration.removeRuleFromApp(message.ruleText);
-                }
                 break;
             case 'checkAntiBannerFiltersUpdate':
                 adguard.ui.checkFiltersUpdates();
@@ -295,9 +289,6 @@
                 });
                 return true; // Async
             case 'addFilterSubscription': {
-                if (adguard.frames.isTabAdguardDetected(sender.tab)) {
-                    break;
-                }
                 const { url, title } = message;
                 const hashOptions = {
                     action: 'add_filter_subscription',

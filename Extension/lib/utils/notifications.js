@@ -198,16 +198,6 @@ adguard.notifications = (function (adguard) {
             return null;
         }
 
-        if (frameInfo && frameInfo.adguardDetected) {
-            Object.keys(notifications).forEach((key) => {
-                currentNotification = notifications[key];
-                setNotificationViewed(false);
-            });
-            notifications = {};
-            currentNotification = null;
-            return null;
-        }
-
         // Check not often than once in 10 minutes
         const timeSinceLastCheck = currentTime - notificationCheckTime;
         if (notificationCheckTime > 0 && timeSinceLastCheck <= checkTimeoutMs) {
