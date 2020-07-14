@@ -33,11 +33,6 @@ const testSB = (done) => {
     runQunit('../Extension/tests/sb-filter/test-sb-filter.html', done);
 };
 
-// Url filter tests
-const testURL = (done) => {
-    runQunit('../Extension/tests/url-filter/test-url-filter.html', done);
-};
-
 // Css service tests
 const testCssService = (done) => {
     runQunit('../Extension/tests/services/test-css-service.html', done);
@@ -91,7 +86,6 @@ const testSettingsProvider = (done) => {
 export default gulp.series(
     testRule,
     testSB,
-    testURL,
     testCssService,
     testReq,
     testEl,
