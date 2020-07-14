@@ -100,7 +100,7 @@
         var frameUrl = adguard.frames.getMainFrameUrl(tab);
         for (let i = 0; i < stats.length; i += 1) {
             const stat = stats[i];
-            const rule = adguard.rules.builder.createRule(stat.ruleText, stat.filterId);
+            const rule = new CosmeticRule(stat.ruleText, stat.filterId);
             adguard.webRequestService.recordRuleHit(tab, rule, frameUrl);
             adguard.filteringLog.addCosmeticEvent(tab, stat.element, tab.url, adguard.RequestTypes.DOCUMENT, rule);
         }

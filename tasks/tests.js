@@ -73,11 +73,6 @@ const testRequestContextStorage = (done) => {
     runQunit('../Extension/tests/miscellaneous/test-request-context-storage.html', done);
 };
 
-// Filter rules builder test
-const testFilterRuleBuilder = (done) => {
-    runQunit('../Extension/tests/miscellaneous/test-filter-rule-builder.html', done);
-};
-
 // Stats collection test
 const testStatsCollection = (done) => {
     runQunit('../Extension/tests/stats/test-stats.html', done);
@@ -104,7 +99,6 @@ export default gulp.series(
     testRing,
     testEncoding,
     testRequestContextStorage,
-    testFilterRuleBuilder,
     testStatsCollection,
     testDocumentFilter,
     testSettingsProvider

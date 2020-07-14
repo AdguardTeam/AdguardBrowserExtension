@@ -167,24 +167,6 @@ QUnit.test('Whitelist rules selecting', (assert) => {
 //     assert.ok(rules[1].ruleText === cspRuleAny.ruleText || rules[1].ruleText === cspRuleSubDocument.ruleText);
 // });
 //
-// QUnit.test('Test CSP invalid rules', (assert) => {
-//     // Invalid csp rules
-//     let invalidRule = adguard.rules.builder.createRule('||$csp=report-uri /csp-violation-report-endpoint/', 1);
-//     assert.ok(!invalidRule);
-//
-//     invalidRule = adguard.rules.builder.createRule('||$csp=report-to /csp-violation-report-endpoint/', 1);
-//     assert.ok(!invalidRule);
-//
-//     let correctRule = adguard.rules.builder.createRule('||$csp=frame-src \'none\',subdocument', 1);
-//     assert.ok(correctRule);
-//
-//     correctRule = adguard.rules.builder.createRule('||$csp=frame-src \'none\',~subdocument', 1);
-//     assert.ok(correctRule);
-//
-//     correctRule = adguard.rules.builder.createRule('||$csp=frame-src \'none\'', 1);
-//     assert.ok(correctRule);
-// });
-//
 // QUnit.test('Test CSP important rules', (assert) => {
 //     // Test important rules
 //     const requestFilter = new adguard.RequestFilter();
@@ -500,35 +482,6 @@ QUnit.test('requestFilter.findRuleForRequest performance', (assert) => {
 //         'https://example.org',
 //         adguard.RequestTypes.DOCUMENT
 //     ));
-// });
-//
-// QUnit.test('redirect rules are removed with $badfilter modifier', (assert) => {
-//     const ruleText = '||example.org/favicon.ico$domain=example.org,empty,important';
-//     const badfilterRuleText = '||example.org/favicon.ico$domain=example.org,empty,important,badfilter';
-//     const rawYaml = `
-//     - title: nooptext
-//       aliases:
-//         - blank-text
-//       contentType: text/plain
-//       content: ''`;
-//     adguard.rules.RedirectFilterService.setRedirectSources(rawYaml);
-//     const requestFilter = new adguard.RequestFilter();
-//     const rule = adguard.rules.builder.createRule(ruleText, 1);
-//     requestFilter.addRule(rule);
-//     let result = requestFilter.findRuleForRequest(
-//         'https://example.org/favicon.ico',
-//         'https://example.org',
-//         adguard.RequestTypes.IMAGE
-//     );
-//     assert.ok(result, 'rule should be found');
-//     const badfilterRule = adguard.rules.builder.createRule(badfilterRuleText, 1);
-//     requestFilter.addRule(badfilterRule);
-//     result = requestFilter.findRuleForRequest(
-//         'https://example.org/favicon.ico',
-//         'https://example.org',
-//         adguard.RequestTypes.IMAGE
-//     );
-//     assert.notOk(result, 'rule should be blocked by badfilter rule');
 // });
 //
 // QUnit.test('domain restriction semantic', (assert) => {
