@@ -132,7 +132,7 @@
             incognito: false,
             status: null,   // 'loading' or 'complete'
             frames: null,   // Collection of frames inside tab
-            metadata: null,  // Contains info about integration, white list rule is applied to tab.
+            metadata: null,  // Contains info about white list rule is applied to tab.
         };
 
         // eslint-disable-next-line no-unused-vars

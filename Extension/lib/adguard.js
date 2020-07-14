@@ -75,13 +75,6 @@ var adguard = (function () { // eslint-disable-line
         checkSafebrowsingFilter: notImplemented,
     };
 
-    const integrationModule = {
-        isSupported: notImplemented,
-        isEnabled: notImplemented,
-        isIntegrationRequest: notImplemented,
-        shouldOverrideReferrer: notImplemented,
-    };
-
     const syncModule = {
         settingsProvider: notImplemented(),
     };
@@ -97,7 +90,6 @@ var adguard = (function () { // eslint-disable-line
         hitStats: hitStatsModule,
         filteringLog: filteringLogModule,
         safebrowsing: safebrowsingModule,
-        integration: integrationModule,
         sync: syncModule,
     };
 })();

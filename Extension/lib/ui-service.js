@@ -74,9 +74,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         'context_update_antibanner_filters': function () {
             checkFiltersUpdates();
         },
-        'context_ads_has_been_removed_by_adguard': function () {
-            openIntegrationModeInfo();
-        },
     };
 
     const extensionStoreLink = (function () {
@@ -119,24 +116,17 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                 let disabled;
 
                 const tabInfo = adguard.frames.getFrameInfo(tab);
-                if (tabInfo.adguardDetected) {
-                    disabled = tabInfo.documentWhiteListed;
-                    blocked = '';
-                } else {
-                    disabled = tabInfo.applicationFilteringDisabled;
-                    disabled = disabled || tabInfo.documentWhiteListed;
+                disabled = tabInfo.applicationFilteringDisabled;
+                disabled = disabled || tabInfo.documentWhiteListed;
 
-                    if (!disabled && adguard.settings.showPageStatistic()) {
-                        blocked = tabInfo.totalBlockedTab.toString();
-                    } else {
-                        blocked = '0';
-                    }
+                if (!disabled && adguard.settings.showPageStatistic()) {
+                    blocked = tabInfo.totalBlockedTab.toString();
+                } else {
+                    blocked = '0';
                 }
 
                 if (disabled) {
                     icon = adguard.prefs.ICONS.ICON_GRAY;
-                } else if (tabInfo.adguardDetected) {
-                    icon = adguard.prefs.ICONS.ICON_BLUE;
                 } else {
                     icon = adguard.prefs.ICONS.ICON_GREEN;
                 }
@@ -154,8 +144,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                     if (hasSpecialIcons) {
                         if (disabled) {
                             icon = notification.icons.ICON_GRAY;
-                        } else if (tabInfo.adguardDetected) {
-                            icon = notification.icons.ICON_BLUE;
                         } else {
                             icon = notification.icons.ICON_GREEN;
                         }
@@ -259,14 +247,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             addMenu('context_open_settings');
             addMenu('context_update_antibanner_filters');
         } else {
-            if (tabInfo.adguardDetected) {
-                if (tabInfo.adguardProductName) {
-                    addMenu('context_ads_has_been_removed_by_adguard', { messageArgs: [tabInfo.adguardProductName] });
-                } else {
-                    addMenu('context_ads_has_been_removed');
-                }
-                addSeparator();
-            }
             if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
                 addMenu('context_site_exception');
             } else if (tabInfo.canAddRemoveRule) {
@@ -285,15 +265,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             addMenu('context_security_report');
             addMenu('context_complaint_website');
             addSeparator();
-            if (!tabInfo.adguardDetected) {
-                addMenu('context_update_antibanner_filters');
-                addSeparator();
-                addMenu('context_open_settings');
-            }
             addMenu('context_open_log');
-            if (!tabInfo.adguardDetected) {
-                addMenu('context_disable_protection');
-            }
         }
     }
 
@@ -391,7 +363,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
     function showAlertMessagePopup(title, text, showForAdguardTab) {
         adguard.tabs.getActive((tab) => {
-            if (!showForAdguardTab && adguard.frames.isTabAdguardDetected(tab)) {
+            if (!showForAdguardTab) {
                 return;
             }
             adguard.tabs.sendMessage(tab.tabId, {
@@ -445,7 +417,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
         adguard.tabs.getActive((tab) => {
             message.isAdguardTab = isAdguardTab(tab);
-            message.isTabAdguardDetected = adguard.frames.isTabAdguardDetected(tab);
             adguard.tabs.sendMessage(tab.tabId, message);
         });
     }
@@ -651,10 +622,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         });
     };
 
-    var openIntegrationModeInfo = function () {
-        openTab('https://adguard.com/adguard-adblock-browser-extension/integration-mode.html?utm_source=extension&aid=16593#integrationMode');
-    };
-
     const openExtensionStore = function () {
         openTab(extensionStoreLink);
     };
@@ -666,33 +633,15 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     var whiteListTab = function (tab) {
         const tabInfo = adguard.frames.getFrameInfo(tab);
         adguard.whitelist.whiteListUrl(tabInfo.url);
-
-        if (adguard.frames.isTabAdguardDetected(tab)) {
-            const domain = adguard.utils.url.getHost(tab.url);
-            adguard.integration.addRuleToApp(`@@//${domain}^$document`, () => {
-                adguard.tabs.sendMessage(tab.tabId, { type: 'no-cache-reload' });
-            });
-        } else {
-            updateTabIconAndContextMenu(tab, true);
-            adguard.tabs.reload(tab.tabId);
-        }
+        updateTabIconAndContextMenu(tab, true);
+        adguard.tabs.reload(tab.tabId);
     };
 
     var unWhiteListTab = function (tab) {
         const tabInfo = adguard.frames.getFrameInfo(tab);
         adguard.userrules.unWhiteListFrame(tabInfo);
-
-        if (adguard.frames.isTabAdguardDetected(tab)) {
-            const rule = adguard.frames.getTabAdguardUserWhiteListRule(tab);
-            if (rule) {
-                adguard.integration.removeRuleFromApp(rule.ruleText, () => {
-                    adguard.tabs.sendMessage(tab.tabId, { type: 'no-cache-reload' });
-                });
-            }
-        } else {
-            updateTabIconAndContextMenu(tab, true);
-            adguard.tabs.reload(tab.tabId);
-        }
+        updateTabIconAndContextMenu(tab, true);
+        adguard.tabs.reload(tab.tabId);
     };
 
     var changeApplicationFilteringDisabled = function (disabled) {
