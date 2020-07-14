@@ -159,13 +159,13 @@
             if (document.body) {
                 const alertElement = appendAlertElement(document.body, alertDivHtml, isAdguardTab);
                 alertElement.classList.add('adguard-alert-iframe');
-                setTimeout(function () {
+                setTimeout(() => {
                     if (alertElement && alertElement.parentNode) {
                         alertElement.parentNode.removeChild(alertElement);
                     }
                 }, 4000);
             } else {
-                setTimeout(function () {
+                setTimeout(() => {
                     appendPopup(count + 1);
                 }, 500);
             }
@@ -191,13 +191,7 @@
             offerButtonText,
             disableNotificationText,
             isAdguardTab,
-            isTabAdguardDetected,
         } = message;
-
-        // Do not show update message in the integration mode
-        if (isTabAdguardDetected) {
-            return;
-        }
 
         const updateIframeHtml = `<head></head>
                             <body>
@@ -233,7 +227,7 @@
             const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
             const closeElements = iframeDocument.querySelectorAll('.close-iframe');
             if (closeElements.length > 0) {
-                closeElements.forEach(element => {
+                closeElements.forEach((element) => {
                     element.addEventListener('click', () => {
                         if (element.classList.contains('disable-notifications')) {
                             // disable update notifications
@@ -269,7 +263,7 @@
                     });
                 }
             } else {
-                setTimeout(function () {
+                setTimeout(() => {
                     appendPopup(count + 1);
                 }, 500);
             }
@@ -293,7 +287,7 @@
         xhr.send(null);
     }
 
-    contentPage.onMessage.addListener(function (message) {
+    contentPage.onMessage.addListener((message) => {
         if (message.type === 'show-alert-popup') {
             showAlertPopup(message);
         } else if (message.type === 'show-version-updated-popup') {

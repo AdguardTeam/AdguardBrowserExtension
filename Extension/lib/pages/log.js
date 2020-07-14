@@ -453,7 +453,7 @@ const RequestWizard = (function () {
                 return;
             }
             // Add rule to user filter
-            contentPage.sendMessage({ type: 'addUserRule', ruleText, adguardDetected: frameInfo.adguardDetected });
+            contentPage.sendMessage({ type: 'addUserRule', ruleText });
             // Close modal
             closeModal();
         });
@@ -779,13 +779,7 @@ const RequestWizard = (function () {
             contentPage.sendMessage({
                 type: 'removeUserRule',
                 ruleText: requestRule.ruleText,
-                adguardDetected: frameInfo.adguardDetected,
             });
-
-            if (frameInfo.adguardDetected) {
-                // In integration mode rule may be present in whitelist filter
-                contentPage.sendMessage({ type: 'unWhiteListFrame', frameInfo });
-            }
 
             closeModal();
         });
@@ -1075,12 +1069,7 @@ PageController.prototype = {
 
     _updateLogoIcon() {
         contentPage.sendMessage({ type: 'getTabFrameInfoById', tabId: this.currentTabId }, (response) => {
-            const { frameInfo } = response;
-            let src = 'images/shield.svg';
-            if (frameInfo && frameInfo.adguardDetected) {
-                src = 'images/shield-blue.svg';
-            }
-
+            const src = 'images/shield.svg';
             this.logoIcon.setAttribute('src', src);
         });
     },
