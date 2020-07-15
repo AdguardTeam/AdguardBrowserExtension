@@ -111,18 +111,18 @@ adguard.filteringLog = (function (adguard) {
         if (!destinationRule || !sourceRule) {
             return;
         }
-
-        destinationRule.filterId = sourceRule.filterId;
-        destinationRule.ruleText = sourceRule.ruleText;
-        if (sourceRule.isImportant) {
-            destinationRule.isImportant = sourceRule.isImportant;
-        }
-        if (sourceRule.convertedRuleText) {
-            destinationRule.convertedRuleText = sourceRule.convertedRuleText;
-        }
-        if (sourceRule.documentLevelRule) {
-            destinationRule.documentLevelRule = sourceRule.documentLevelRule;
-        }
+        // TODO: Fix log
+        // destinationRule.filterId = sourceRule.getFilterListId();
+        // destinationRule.ruleText = sourceRule.getText();
+        // if (sourceRule.isImportant) {
+        //     destinationRule.isImportant = sourceRule.isImportant;
+        // }
+        // if (sourceRule.convertedRuleText) {
+        //     destinationRule.convertedRuleText = sourceRule.convertedRuleText;
+        // }
+        // if (sourceRule.documentLevelRule) {
+        //     destinationRule.documentLevelRule = sourceRule.documentLevelRule;
+        // }
         // TODO: Fix log
         // if (sourceRule instanceof adguard.rules.ContentFilterRule) {
         //     destinationRule.contentRule = true;

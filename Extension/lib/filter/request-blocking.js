@@ -49,7 +49,7 @@ adguard.webRequestService = (function (adguard) {
             && !adguard.utils.filters.isWhiteListFilterRule(requestRule)
             && canCollectHitStatsForTab(tab)) {
             const domain = adguard.frames.getFrameDomain(tab);
-            adguard.hitStats.addRuleHit(domain, requestRule.ruleText, requestRule.filterId, requestUrl);
+            adguard.hitStats.addRuleHit(domain, requestRule.getText(), requestRule.getFilterListId(), requestUrl);
         }
     };
 
@@ -266,7 +266,7 @@ adguard.webRequestService = (function (adguard) {
             if (isDocumentLevel && isDocumentBlockingRule(requestRule)) {
                 const documentBlockedPage = adguard.rules.documentFilterService.getDocumentBlockPageUrl(
                     requestUrl,
-                    requestRule.ruleText
+                    requestRule.getText()
                 );
 
                 if (documentBlockedPage) {
@@ -480,8 +480,8 @@ adguard.webRequestService = (function (adguard) {
                     referrerUrl,
                     requestType,
                 };
-                details.rule = requestRule.ruleText;
-                details.filterId = requestRule.filterId;
+                details.rule = requestRule.getText();
+                details.filterId = requestRule.getFilterListId();
                 onRequestBlockedChannel.notify(details);
             }
         }

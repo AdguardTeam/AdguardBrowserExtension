@@ -22,7 +22,7 @@ QUnit.test('General', (assert) => {
 
     const result = requestFilter.findRuleForRequest(url, referrer, adguard.RequestTypes.SUBDOCUMENT);
     assert.ok(result != null);
-    assert.equal(result.ruleText, ruleText);
+    assert.equal(result.getText(), ruleText);
 });
 
 QUnit.test('Whitelist rules selecting', (assert) => {
@@ -42,12 +42,12 @@ QUnit.test('Whitelist rules selecting', (assert) => {
     requestFilter = createRequestFilterWithRules([rule]);
     result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT);
     assert.ok(result != null);
-    assert.equal(result.ruleText, rule);
+    assert.equal(result.getText(), rule);
 
     requestFilter = createRequestFilterWithRules([rule, whitelist]);
     result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT);
     assert.ok(result != null);
-    assert.equal(result.ruleText, whitelist);
+    assert.equal(result.getText(), whitelist);
 
     // requestFilter = createRequestFilterWithRules([rule, documentRule]);
     // result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT);
@@ -57,7 +57,7 @@ QUnit.test('Whitelist rules selecting', (assert) => {
     requestFilter = createRequestFilterWithRules([rule, whitelist, genericHideRule]);
     result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.DOCUMENT);
     assert.ok(result != null);
-    assert.equal(result.ruleText, genericHideRule);
+    assert.equal(result.getText(), genericHideRule);
 });
 
 // QUnit.test('Important modifier rules', (assert) => {
@@ -247,11 +247,11 @@ QUnit.test('Redirect rules', (assert) => {
 
     const rule = requestFilter.findRuleForRequest('http://example.org/ads.js', 'http://example.org/', adguard.RequestTypes.SCRIPT);
     assert.ok(rule != null);
-    assert.equal(rule.ruleText, redirectRule);
+    assert.equal(rule.getText(), redirectRule);
 
     const imgRule = requestFilter.findRuleForRequest('http://example.org/ad.png', 'http://example.org/', adguard.RequestTypes.IMAGE);
     assert.ok(imgRule != null);
-    assert.equal(imgRule.ruleText, blockRedirectRule);
+    assert.equal(imgRule.getText(), blockRedirectRule);
 
     // TODO: Move to redirect-service tests
     // const invalidTitle = 'space';
@@ -553,7 +553,7 @@ QUnit.test('Request filter finds rules for domains with "." in the end', (assert
         adguard.RequestTypes.STYLESHEET
     );
 
-    assert.equal(rule.ruleText, urlRuleText);
+    assert.equal(rule.getText(), urlRuleText);
 });
 
 // // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1534

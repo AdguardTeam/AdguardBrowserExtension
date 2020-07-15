@@ -251,8 +251,8 @@ adguard.frames = (function (adguard) {
                 userWhiteListed = adguard.utils.filters.isWhiteListFilterRule(rule)
                         || adguard.utils.filters.isUserFilterRule(rule);
                 frameRule = {
-                    filterId: rule.filterId,
-                    ruleText: rule.ruleText,
+                    filterId: rule.getFilterListId(),
+                    ruleText: rule.getText(),
                 };
             }
             // It means site in exception

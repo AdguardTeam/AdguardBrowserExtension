@@ -678,10 +678,10 @@ const RequestWizard = (function () {
 
         if (requestRule
             && !requestRule.replaceRule
-            && typeof requestRule.filterId !== 'undefined') {
-            if (requestRule.filterId !== AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+            && typeof requestRule.getFilterListId() !== 'undefined') {
+            if (requestRule.getFilterListId() !== AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
                 const requestRuleNode = template.querySelector('[attr-text="requestRule"]');
-                requestRuleNode.textContent = requestRule.ruleText;
+                requestRuleNode.textContent = requestRule.getText();
                 if (requestRule.convertedRuleText) {
                     const convertedRuleHtml = `&nbsp<i>(Converted to: ${requestRule.convertedRuleText})</i>`;
                     requestRuleNode.insertAdjacentHTML('beforeend', convertedRuleHtml);
@@ -690,7 +690,7 @@ const RequestWizard = (function () {
                 template.querySelector('[attr-text="requestRule"]').closest('li').style.display = 'none';
             }
             template.querySelector('[attr-text="replaceRules"]').closest('li').style.display = 'none';
-            template.querySelector('[attr-text="requestRuleFilter"]').textContent = getFilterName(requestRule.filterId);
+            template.querySelector('[attr-text="requestRuleFilter"]').textContent = getFilterName(requestRule.getFilterListId());
         } else {
             template.querySelector('[attr-text="requestRule"]').closest('li').style.display = 'none';
             template.querySelector('[attr-text="requestRuleFilter"]').closest('li').style.display = 'none';
@@ -701,7 +701,7 @@ const RequestWizard = (function () {
             template.querySelector('[attr-text="requestRuleFilter"]').closest('li').style.display = 'none';
             if (replaceRules.length > 0) {
                 template.querySelector('[attr-text="replaceRules"]').textContent = replaceRules
-                    .map(replaceRule => replaceRule.ruleText)
+                    .map(replaceRule => replaceRule.getText())
                     .join('\r\n');
             } else {
                 template.querySelector('[attr-text="replaceRules"]').closest('li').style.display = 'none';
@@ -778,7 +778,7 @@ const RequestWizard = (function () {
             e.preventDefault();
             contentPage.sendMessage({
                 type: 'removeUserRule',
-                ruleText: requestRule.ruleText,
+                ruleText: requestRule.getText(),
             });
 
             closeModal();
@@ -786,16 +786,16 @@ const RequestWizard = (function () {
 
         if (!requestRule) {
             blockRequestButton.classList.remove('hidden');
-        } else if (requestRule.filterId === AntiBannerFiltersId.USER_FILTER_ID) {
+        } else if (requestRule.getFilterListId() === AntiBannerFiltersId.USER_FILTER_ID) {
             removeUserFilterRuleButton.classList.remove('hidden');
-            if (requestRule.whiteListRule) {
+            if (requestRule.isWhitelist()) {
                 blockRequestButton.classList.remove('hidden');
             }
-        } else if (requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+        } else if (requestRule.getFilterListId() === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
             removeWhiteListDomainButton.classList.remove('hidden');
-        } else if (!requestRule.whiteListRule) {
+        } else if (!requestRule.isWhitelist()) {
             unblockRequestButton.classList.remove('hidden');
-        } else if (requestRule.whiteListRule) {
+        } else if (requestRule.isWhitelist()) {
             blockRequestButton.classList.remove('hidden');
         }
 
@@ -1203,8 +1203,8 @@ PageController.prototype = {
 
         event.filterName = '';
 
-        if (event.requestRule && event.requestRule.filterId !== undefined) {
-            event.filterName = RequestWizard.getFilterName(event.requestRule.filterId);
+        if (event.requestRule && event.requestRule.getFilterListId() !== undefined) {
+            event.filterName = RequestWizard.getFilterName(event.requestRule.getFilterListId());
         } else if (event.stealthActions) {
             event.filterName = i18n.getMessage('filtering_log_privacy_applied_rules');
         }
@@ -1245,10 +1245,10 @@ PageController.prototype = {
         // Get rule text for requestRule or replaceRules
         let ruleText = '';
         if (event.requestRule) {
-            if (event.requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+            if (event.requestRule.getFilterListId() === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
                 ruleText = Messages.IN_WHITELIST;
             } else {
-                ruleText = event.requestRule.ruleText;
+                ruleText = event.requestRule.getText();
             }
         }
 
@@ -1292,8 +1292,8 @@ PageController.prototype = {
             || StringUtils.containsIgnoreCase(filterData.cookieName, this.searchRequest)
             || StringUtils.containsIgnoreCase(filterData.cookieValue, this.searchRequest);
 
-        if (filterData.requestRule && filterData.requestRule.ruleText) {
-            show |= StringUtils.containsIgnoreCase(filterData.requestRule.ruleText, this.searchRequest);
+        if (filterData.requestRule && filterData.requestRule.getText()) {
+            show |= StringUtils.containsIgnoreCase(filterData.requestRule.getText(), this.searchRequest);
         }
 
         if (filterData.filterName) {

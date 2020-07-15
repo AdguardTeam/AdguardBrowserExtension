@@ -847,7 +847,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             return;
         }
 
-        adguard.pageStats.updateStats(rule.filterId, blocked, new Date());
+        adguard.pageStats.updateStats(rule.getFilterListId(), blocked, new Date());
         const tabBlocked = adguard.frames.updateBlockedAdsCount(tab, blocked);
         if (tabBlocked === null) {
             return;

@@ -188,7 +188,7 @@
 
             const selectedScriptRules = scriptRules.filter((scriptRule) => {
                 // TODO: Performance
-                const isLocal = adguard.rules.LocalScriptRulesService.isLocal(scriptRule.ruleText);
+                const isLocal = adguard.rules.LocalScriptRulesService.isLocal(scriptRule.getText());
 
                 if (isLocal) {
                     return true;

@@ -382,7 +382,7 @@ adguard.utils = (function () {
                 return;
             }
             for (let i = collection.length - 1; i >= 0; i--) {
-                if (rule.ruleText === collection[i].ruleText) {
+                if (rule.getText() === collection[i].getText()) {
                     collection.splice(i, 1);
                 }
             }
@@ -401,7 +401,7 @@ adguard.utils = (function () {
                 return text;
             }
             for (let i = 0; i < collection.length; i++) {
-                text.push(collection[i].ruleText);
+                text.push(collection[i].getText());
             }
             return text;
         },
@@ -560,11 +560,11 @@ adguard.utils = (function () {
     const FilterUtils = {
 
         isUserFilterRule(rule) {
-            return rule.filterId == AntiBannerFiltersId.USER_FILTER_ID;
+            return rule.getFilterListId() === AntiBannerFiltersId.USER_FILTER_ID;
         },
 
         isWhiteListFilterRule(rule) {
-            return rule.filterId == AntiBannerFiltersId.WHITE_LIST_FILTER_ID;
+            return rule.getFilterListId() === AntiBannerFiltersId.WHITE_LIST_FILTER_ID;
         },
     };
 

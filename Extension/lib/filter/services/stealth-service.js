@@ -109,7 +109,7 @@ adguard.stealthService = (function (adguard) {
         const maxAgeOption = maxAgeMinutes > 0 ? `;maxAge=${maxAgeMinutes * 60}` : '';
         const rule = new NetworkRule(`$cookie=/.+/${maxAgeOption}`, 0);
         // TODO: Fix
-        rule.addStealthActions(stealthActions);
+        // rule.addStealthActions(stealthActions);
         return rule;
     };
 
