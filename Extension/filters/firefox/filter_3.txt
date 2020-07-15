@@ -1,8 +1,8 @@
-! Checksum: BPMpwIfBCDKs6yj1HSa4NQ
+! Checksum: sl+bzsOe86nvoL2v+0JTFQ
 ! Title: AdGuard Tracking Protection filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. Use this filter if you do not want your actions on the Internet to be tracked.
-! Version: 2.0.14.97
-! TimeUpdated: 2020-06-26T15:31:42+03:00
+! Version: 2.0.15.54
+! TimeUpdated: 2020-07-13T15:31:42+03:00
 ! Expires: 4 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#privacy
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -139,7 +139,7 @@ echo.msk.ru$$script[tag-content="s=screen;"][max-length="200"]
 ##a[href^="https://top.mail.ru/jump"]
 ##img[src*="counter.yadro.ru"]
 ##img[src^="http://c.bigmir.net/"]
-~minu.stv.ee,~sota.com,~7kingdoms.ru,~epicl2.com,~forum.ixbt.com,~forum.themega.ru,~gamepedia.com,~makeserver.ru,~mozhor.ru,~onliner.by,~wiktionary.org,~yandex.by,~yandex.com,~yandex.com.tr,~yandex.ru,~yandex.ua##img[width="88"][height="31"]
+~underverse.su,~underver.se,~minu.stv.ee,~sota.com,~7kingdoms.ru,~epicl2.com,~forum.ixbt.com,~forum.themega.ru,~gamepedia.com,~makeserver.ru,~mozhor.ru,~onliner.by,~wiktionary.org,~yandex.by,~yandex.com,~yandex.com.tr,~yandex.ru,~yandex.ua##img[width="88"][height="31"]
 !---------------------------------------------------------------------------!
 !-------------- Extended CSS rules -----------------------------------------!
 !---------------------------------------------------------------------------!
@@ -154,6 +154,7 @@ donnerwetter.de#?#.col-xs-12 > div.block.prepend-top[-ext-has='> div.blocktitle-
 hdreactor.club,hdreactor.su,hdreactor.tv,hdreactor.net#?#.sidebar > div.menu-wrap > div.menu-head:contains(Счетчики)
 hdreactor.club,hdreactor.su,hdreactor.tv,hdreactor.net#?#.sidebar > div.menu-wrap > div.menu-head:contains(Счетчики) + div.menu-head1
 !
+musicrock24.ru#?#.art-layout-cell > div.art-box:has(> div.art-box-body > div.art-blockheader > h3:contains(Счётчики))
 pryamoj-efir.ru#?#.layout-post-right > h1.playmaker-list:contains(Статистика)
 elmundo.es#?#body > main[role="main"] > div.ue-l-article:has(> div.ue-l-article__inner > div.ue-l-article__main-column > aside > div[id^="taboola"])
 uniongang.org#?#td[align="center"][height="27"]:contains(Счётчики)
@@ -183,6 +184,48 @@ journal-plaza.net#?#.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч
 !
 ! ||ensighten.com^$third-party - not a tracker
 !
+! Be careful when blocking snssdk.com. I is used also for legal purposes
+||mcs.snssdk.com^
+||i.snssdk.com^
+||log-hl.snssdk.com^
+||ib.snssdk.com^
+||xlog.snssdk.com^
+||log.snssdk.com^
+!||i.snssdk.com/log/*
+!||i.snssdk.com/slardar/sdk.js
+!
+||l.logly.co.jp^$third-party
+||tagmanager.alright.network^$third-party
+||statad.ru^$third-party
+||tattle.api.osano.com^
+||nta1vb6cdlrl.com^$third-party
+||js.rush-member.com^$third-party
+||js.passaro-de-fogo.biz^$third-party
+||js.mediams.mb.softbank.jp^$third-party
+||js.monetize-ssp.com^$third-party
+||minkatu.com^$third-party
+||udkcrj.com^$third-party
+||accaii.com^$third-party
+||astat.nikkei.com^
+||interactive-circle.jp^$third-party
+||stats.streamhub.io^$third-party
+||litix.io^$third-party
+||cdn.glassboxcdn.com^$third-party
+||glassboxdigital.io^$third-party
+||p.tinynewsfeed.com^$third-party
+||clarivoy.com^$third-party
+||aufp.io^$third-party
+||datadome.co^$third-party
+||mpianalytics.com^$third-party
+||realytics.net^$third-party
+||eue.d-teknoloji.com.tr^$third-party
+||track.thevtk.com^$third-party
+||track.mp3vizor.com^$third-party
+||track.mp3bars.com^$third-party
+||hs-scripts.com^$third-party
+||parkdomainreal*.site^$third-party
+||sjsmartcontent.org^$third-party
+||telemetry.swe.quicinc.com^
 ||i-*.ci360.sas.com^$third-party
 ||st.onlygip.tech^$third-party
 ||analysis.fi^$third-party
@@ -394,7 +437,6 @@ journal-plaza.net#?#.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч
 ||api.cazamba.com^$third-party
 ||maliva-mcs.byteoversea.com^
 ||sgali-mcs.byteoversea.com^
-||mcs.snssdk.com^
 ||mcs.byted.org^
 ||1dmp.io^$third-party
 ||wheredoyoucomefrom.ovh^
@@ -1457,7 +1499,7 @@ journal-plaza.net#?#.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч
 ||find-ip-address.org^$third-party
 ||finderlocator.com^$third-party
 ||fishhoo.com^$third-party
-||fitanalytics.com^$third-party
+||metrics*.fitanalytics.com^$third-party
 ||fixcounter.com^$third-party
 ||fixwap.net^$third-party
 ||flagcounter.com^$third-party
@@ -3297,6 +3339,9 @@ journal-plaza.net#?#.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч
 ! Admiral domains
 ! These domains are used for tracking purposes according to the data that is being sent there.
 ! More info: https://getadmiral.com/products/measure
+||overconfidentfood.com^$third-party
+||strangesink.com^$third-party
+||carpentercomparison.com^$third-party
 ||curvycry.com^$third-party
 ||habitualhumor.com^$third-party
 ||hocgeese.com^$third-party
@@ -3689,6 +3734,12 @@ nethunt.com/api/v1/track/email/$image
 !+ NOT_PLATFORM(ios, ext_safari, ext_android_cb)
 ||tags.news.com.au^$~script
 !
+||beacon.sojern.com^
+||pixel.sojern.com^
+||analytic20.detik.com^
+||rubicon.wellsfargo.com^
+||dj4odketdva9s.cloudfront.net^
+||stores-counters.wix.com^
 ||stats.heyoya.com^
 ||tracker.remp.impresa.pt^
 ||bl.impresa.pt^
@@ -4410,7 +4461,7 @@ nethunt.com/api/v1/track/email/$image
 ||metric-agent.i10c.net^$third-party
 ||az416426.vo.msecnd.net^$third-party
 ||a.klaviyo.com^$third-party
-||t.kctag.net^$third-party
+||kctag.net^$third-party
 ||mpc.nicequest.com^$third-party
 ||collector-analytics.efigence.com^
 ||stat.kununu.cz^
@@ -5184,7 +5235,6 @@ charlestownwyllie.oaklawnnonantum.com^
 ||w88.espn.com^
 ||wtsdc.uhc.com^$image
 ||xtag.autotrader.com^
-||xtag.kbb.com^
 ||zdlogs.sphereup.com^
 ! Tiktok app
 ||log.musical.ly^
@@ -5194,6 +5244,16 @@ charlestownwyllie.oaklawnnonantum.com^
 !-------------------------------------------------------------------------------!
 !-------------- General (unsorted) url blocking --------------------------------!
 !-------------------------------------------------------------------------------!
+!
+! Popular on Japanese sites
+! https://github.com/AdguardTeam/AdguardFilters/issues/58587#issuecomment-656098019
+! Sample URL: ||js.passaro-de-fogo.biz/t/113/750/a1113750.js
+/^https?:\/\/js\.[-.0-9a-z]+\/t\/[0-9]{3}\/[0-9]{3}\/a[0-9]{7}\.js$/$script
+!
+! Cloudflare
+/\/(public|resources|static|assets)\/([a-f0-9]){28,31}$/$script,xmlhttprequest,~third-party
+/cdn-cgi/bm/cv/*$script
+/cgi-bin/bm/cv/*$script
 !
 ! Tracking pixels (for instance, analytics.businessinsider.com/t.gif)
 .at/t.gif?
@@ -5213,7 +5273,20 @@ charlestownwyllie.oaklawnnonantum.com^
 ! Eulerian
 /eulerian.js
 /simpleEulerian.
+! https://github.com/easylist/easylist/issues/5297
+/submission/pageview
+/collect-*/pageview|
 !
+/watch.*.js?key=*&kw=*&refer=
+/pv_count.
+_analytics.js?
+/entry.count?
+/js/counter.js
+/cls_report?
+/akam/11/*
+/bpix.bmp?b=
+/chicken.gif?z=
+/analytics-event-adapter.
 /alog.min.js
 /alog.mobile.min.js
 .cn/b.gif?
@@ -5368,7 +5441,7 @@ charlestownwyllie.oaklawnnonantum.com^
 /mms/get_site_js?*abp=
 /openxtargeting.js
 /partner/transparent_pixel-$image
-/piwik-$domain=~piwik.org
+/piwik-$domain=~piwik.org|~piwik.pro
 /piwik.js
 /piwik.php
 /piwik/js/*$domain=~piwik.org
@@ -5500,6 +5573,38 @@ _tracking.php?b=
 ||nd.demdex.net/event?d_mid=$empty,important,domain=9now.com.au
 ||adc.nine.com.au/?token=$empty,important,domain=9now.com.au
 !
+||verify.snssdk.com^$xmlhttprequest,redirect=nooptext
+||stats.viqeo.tv^
+||links.services.disqus.com/api/ping
+||nikkei.com/.resources/tracking/
+||nikkei.*^*/SC/
+||nikkei.*^*/SC2/
+||i.bcicdn.com/js-min/*/chunks/8.*.js
+||martechsecresponse.s3.us-east-2.amazonaws.com/HotelTracker-*.js
+||my.mail.ru/dstat?random=
+||javhd.com/ascripts/gcu.js
+||expedia.nl/trvl-px/
+||a.cdn-hotels.com/cos/travel-pixel/
+||static.wellsfargo.com/tracking/ga/analytics.js
+||static.wellsfargo.com/tracking/toppages/utag.js
+||wellsfargo.com/assets/images/global/s.gif?log=
+||wellsfargo.com/tas|
+/wp-content/plugins/google-analytics-for-wordpress/*$domain=graphicdesignresources.net
+||tweakers.net/x/scripts/min/ptBO.js
+||franeski.net/js/lib.js
+||kbb.com/pixall/
+||api.trwl1.com/ascripts/gcrt.js
+||main.exoclick.com/tag.php
+||i.bcicdn.com/js-min/*/chunks/8.3f10f7a68cef9d04f3d4.js
+||static.dditscdn.com/arms-datacollectorjs/
+||cs.digitalbox.ru/pixeljs
+||zaycev.net/clickmeter_
+||cdnst.zaycev.net/static/*/countersm.js
+||highwebmedia.com/CACHE/js/output.92c98302d256.js
+||foodclub.ru/bitrix/tmp/fd_tmb/f.php
+||bloomberg.com/*/init.js
+||bursadabugun.com/haber/imp-
+||i.jsrdn.com/i/1.gif?r=
 ||api.impresa.pt/trackercookie
 ||rackcdn.com/stf.js
 ||linkedin.com/sensorCollect/?action=
@@ -5516,6 +5621,9 @@ _tracking.php?b=
 ||static.cloudflareinsights.com/beacon.min.js
 ||frog.wix.com/hls2?
 ||frog.wix.com/p?
+||frog.wix.com/fed?
+||frog.wix.com/da-client?
+||frog.wix.com/pre?
 ||forum.turkmmo.com/*/track-view
 ||eiga.k-img.com/javascripts/td.js?1578981009
 ||gnavi.co.jp/analysis/
@@ -5561,7 +5669,8 @@ animespirit.*###CollapsiblePanel_Statistics
 ||assiatv.com/css/stat.js
 ||fresnel.vimeocdn.com/add/player-test-impression?beacon
 ||exelator.com/pixel.gif
-||api-js.mixpanel.com/track^
+||api-js.mixpanel.com/engage/?
+||api-js.mixpanel.com/track/?
 ||try.abtasty.com/*.js$third-party
 ||analytics.*.*/*.php
 ||notebookinfo.de/javascript/*/collector.js
@@ -5699,7 +5808,6 @@ portaltele.com.ua##.td-footer-template-9
 ||instadp.com/track
 ||weser-kurier.de/REST/frontend/itemstatistics^
 ||facebook.com/sem_pixel^
-||s.kbb.com/static/js/global/app-measurement
 ||event-analytics.yesware.com/main.js
 kinotan.ru##.counts
 ||fstrk.net/api/tracker/
@@ -5925,7 +6033,6 @@ abp?type=js&session$domain=prosieben.de|sat1.de|kabeleins.de|sixx.de|prosiebenma
 ||ati-host.net/hit.xiti?s=
 ||antivirus-alarm.ru/proverka$third-party
 ||addthis.com/live/$script,third-party
-||a.ria.ru/js/counter.js$third-party
 ||58.205.218.4/pos?act=
 ||2ip.ru/sbar/$third-party
 ||doubleclick.net^*/trackimp/$third-party
@@ -6689,7 +6796,7 @@ dreamprogs.net##td[width="88"][height="31"]
 ||apple.com/metrics/
 ||arcpublishing.com^*/datapoint/save
 ||assets-jpcust.jwpsrv.com/*/ping.js
-||assets.adobedtm.com^$domain=mcclatchydc.com|elnuevoherald.com|bellinghamherald.com|sacbee.com|charlotteobserver.com|newsobserver.com|miamiherald.com|ef.ru|algida.com.tr|bmw-motorrad.co.uk|cif.com.tr|clearhaircare.com|domestos.com|dove.com|elidor.com.tr|f1sport.autorevue.cz|geico.com|gittigidiyor.com|hellmanns.com.tr|herkessofraya.com|johnsonsbaby.com.tr|lipton.com|lnk.to|lux.com|magnumicecream.com|neutrogena.com.tr|omo.com|rexona.com|samsung.com|sap.com|schwarzkopf.com.tr|signalturkiye.com|msnbc.com|nbcnews.com
+||assets.adobedtm.com^$domain=mcclatchydc.com|elnuevoherald.com|bellinghamherald.com|sacbee.com|charlotteobserver.com|newsobserver.com|miamiherald.com|ef.ru|algida.com.tr|bmw-motorrad.co.uk|cif.com.tr|clearhaircare.com|domestos.com|dove.com|elidor.com.tr|f1sport.autorevue.cz|geico.com|gittigidiyor.com|hellmanns.com.tr|herkessofraya.com|johnsonsbaby.com.tr|lipton.com|lnk.to|lux.com|magnumicecream.com|neutrogena.com.tr|omo.com|rexona.com|samsung.com|sap.com|schwarzkopf.com.tr|signalturkiye.com|msnbc.com|nbcnews.com|kbb.com
 ||at.mklaud.com/at/at_log_*.php
 ||auto-bild.de/*/gaEvents
 ||auto-motor-und-sport.de/js/sophus3/logging.js
@@ -6830,7 +6937,6 @@ dreamprogs.net##td[width="88"][height="31"]
 ||heise.de/video/video_gesehen.html?mmbid=
 ||heizoel24.de/Scripts/g_tracking.js
 ||hellobar.com/ping?
-||hi-fi.ru/i/js/counter.js
 ||hm.com/global/session-tracking
 ||horizon.businessinsider.com/*/track
 ||horizon.mashable.com/*/track
@@ -6866,7 +6972,6 @@ dreamprogs.net##td[width="88"][height="31"]
 ||jsdelivr.net/snowplow/
 ||jwplatform.com/ping.gif?
 ||karstadt.de/on/demandware.store/*/__Analytics-Tracking?
-||kbb.com/services/psclientlogging
 ||kfzteile24.de/*_tracking.js
 ||kia.ru/bitrix/templates/.default/js/jquery.gatrack.dpack.js
 ||kinja.com/api/analytics/
@@ -7049,7 +7154,6 @@ dreamprogs.net##td[width="88"][height="31"]
 ||stackoverflow.com/gps/event
 ||star.com.tr/analytic/
 ||stat.sports.ru^
-||static-mail.kz/assets/frontend/js/counter.js
 ||static.bro.adca.st/broadcast/stats
 ||static.iqiyi.com/js/pingback/
 ||static.krone.at/wcm/donau/extern/anti_adblocker/check.js
@@ -7254,7 +7358,6 @@ link.gmapp*.net$image
 ! Swiftkey(Microsoft) Keyboard
 ||telemetry.api.swiftkey.com^
 ||telemetry.swiftkey.com^
-||touchtype-fluency.com^
 !
 ! QuQa.ch for Android
 ||analytics.qoqa.ninja^
@@ -7275,6 +7378,11 @@ link.gmapp*.net$image
 !+ NOT_PLATFORM(ios, ext_safari, ext_android_cb)
 ||adj.st^
 !
+||register.xmpush.xiaomi.com^
+||tunion-api.m.taobao.com^
+||nbsdk-baichuan.taobao.com^
+||amdc.m.taobao.com^
+||amdcopen.m.taobao.com^
 ||batchlogging*-eu.truecaller.com^
 ||batchlogging*-noneu.truecaller.com^
 ||logsink.zedge.net^
@@ -7689,6 +7797,22 @@ link.gmapp*.net$image
 ||rover.ebay.$image,object,script,badfilter
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/59098
+@@||googletagmanager.com/gtm.js$domain=redbull.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/58949
+! https://github.com/AdguardTeam/AdguardFilters/issues/58944
+@@||src.litix.io/videojs/*/videojs-mux.js$domain=dplay.co.uk
+! https://forum.adguard.com/index.php?threads/samsung-com.39002/
+@@||assets.adobedtm.com/*launch-*.min.js$domain=samsung.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/58157
+! liga.net - fixing comments
+@@||googletagmanager.com/gtm.js$domain=liga.net
+! https://github.com/AdguardTeam/AdguardFilters/issues/58292
+@@||s.imgur.com/min/px.js$domain=imgur.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/57944
+@@||googletagmanager.com/gtm.js$domain=braun.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/58091
+@@||thehackernews.com/images^
 ! https://github.com/AdguardTeam/AdguardFilters/issues/57812
 @@||googletagmanager.com/gtm.js$domain=spareroom.co.uk
 ! https://github.com/AdguardTeam/AdguardFilters/issues/57848
@@ -8159,8 +8283,6 @@ link.gmapp*.net$image
 @@||ugdturner.com/xd.sjs$domain=tbs.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/37574
 @@||relap.io/api/*/similar_pages_jsonp.js$domain=ivi.ru
-! https://github.com/AdguardTeam/AdguardFilters/issues/37553
-@@||google-analytics.com/analytics.js$domain=linsoo.co.kr
 ! anime-planet.com - fix player
 ! https://github.com/AdguardTeam/AdguardFilters/issues/37430
 ! https://github.com/AdguardTeam/AdguardFilters/issues/37432
@@ -9878,5 +10000,3 @@ mozilla-russia.org#@#img[width="88"][height="31"]
 ! Swedish
 @@||blocket.se^*/xtcore.js
 @@||reseguiden.se^*.siteCatalyst.js
-! Turkey
-@@||tvyo.com/player/plugins/comscorePlugin.swf?
