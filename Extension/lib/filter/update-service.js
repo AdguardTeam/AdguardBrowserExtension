@@ -359,9 +359,9 @@ adguard.applicationUpdateService = (function (adguard) {
         if (adguard.utils.browser.isGreaterVersion('3.3.5', runInfo.prevVersion)) {
             methods.push(handleDefaultUpdatePeriodSetting);
         }
-        if (adguard.utils.browser.isGreaterVersion('3.5.0', runInfo.prevVersion)) {
-            methods.push(handleObsoleteFiltersRemoval);
-        }
+
+        // On every update remove if necessary obsolete filters
+        methods.push(handleObsoleteFiltersRemoval);
 
         const dfd = executeMethods(methods);
         dfd.then(callback);
