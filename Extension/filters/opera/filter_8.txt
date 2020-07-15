@@ -1,8 +1,8 @@
-! Checksum: Lis/ldDgukIPSgMVHxR4iQ
+! Checksum: WnjxuUZcRTAEApd3IyyOFQ
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.0.84
-! TimeUpdated: 2020-06-02T00:03:59+03:00
+! Version: 2.0.0.86
+! TimeUpdated: 2020-07-06T18:32:20+03:00
 ! Expires: 4 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#dutch
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -1373,10 +1373,10 @@ tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
 !
 ! Prevent AdFender detection
 @@/ad_pics/*$image,domain=computerworld.nl|webwereld.nl
+@@||tweakers.net/i^
+@@||content.hwigroup.net/images^$domain=hardware.info
+hardware.info,tweakers.net#@#.AdBar
 !
-! https://github.com/AdguardTeam/AdguardFilters/issues/56401
-hardware.info#@#.AdBar
-@@||content.hwigroup.net/images/*/adinclude/$domain=hardware.info
 ! https://github.com/AdguardTeam/AdguardFilters/issues/56379
 forum.fok.nl#%#//scriptlet("set-constant", "DAB", "noopFunc")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/40543
@@ -1504,6 +1504,7 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
 !
+nnieuws.be##.banner-silver
 forum.fok.nl###wa_web_headertofloor
 nu.nl###header > .zone
 telegraaf.nl##.VideoArticlePage__banner
