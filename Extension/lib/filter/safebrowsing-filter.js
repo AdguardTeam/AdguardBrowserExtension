@@ -15,19 +15,25 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global LRUMap */
+
 /**
  * Initializing SafebrowsingFilter.
  *
  * http://adguard.com/en/how-malware-blocked.html#extension
  */
-
 adguard.safebrowsing = (function (adguard, global) {
     // Lazy initialized safebrowsing cache
     const safebrowsingCache = {
         get cache() {
-            return adguard.lazyGet(safebrowsingCache, 'cache', () => new adguard.utils.ExpiringCache('sb-cache'));
+            return adguard.lazyGet(safebrowsingCache, 'cache', () => new adguard.utils.LruCache('sb-lru-cache'));
         },
     };
+
+    /**
+     * Backend requests cache
+     */
+    const safebrowsingRequestsCache = new LRUMap(1000);
 
     const suspendedFromProperty = 'safebrowsing-suspended-from';
 
@@ -37,16 +43,12 @@ adguard.safebrowsing = (function (adguard, global) {
      */
     const SUSPEND_TTL = 40 * 60 * 1000;
 
-    /**
-     * SB cache ttl: 40 minutes
-     */
-    const SB_TTL = 40 * 60 * 1000;
+    const SB_WHITE_LIST = 'whitelist';
 
     /**
-     * If user ignores warning - do not check SB for 40 minutes
+     * Domain hash length
      */
-    const TRUSTED_TTL = 40 * 60 * 1000;
-    const SB_WHITE_LIST = 'whitelist';
+    const DOMAIN_HASH_LENGTH = 4;
 
     /**
      * Parses safebrowsing service response
@@ -62,17 +64,24 @@ adguard.safebrowsing = (function (adguard, global) {
         }
 
         try {
+            let result;
             const lines = responseText.split('\n');
             for (let i = 0; i < lines.length; i += 1) {
                 const r = lines[i].split(':');
                 const hash = r[2];
-                const host = hashesMap[hash];
-                if (host) {
-                    return r[0];
+                const list = r[0];
+
+                safebrowsingCache.cache.saveValue(hash, list);
+
+                if (!result) {
+                    const host = hashesMap[hash];
+                    if (host) {
+                        result = list;
+                    }
                 }
             }
 
-            return null;
+            return result;
         } catch (ex) {
             adguard.console.error('Error parse safebrowsing response, cause {0}', ex);
         }
@@ -106,6 +115,36 @@ adguard.safebrowsing = (function (adguard, global) {
     }
 
     /**
+     * Calculates hash for host string
+     *
+     * @param host
+     * @return {string}
+     */
+    function createHash(host) {
+        return global.SHA256.hash(`${host}/`).toUpperCase();
+    }
+
+    /**
+     * Calculates SHA256 hashes for strings in hosts and then
+     * gets prefixes for calculated hashes
+     *
+     * @param hosts
+     * @returns Map object of prefixes
+     * @private
+     */
+    function createHashesMap(hosts) {
+        const result = Object.create(null);
+
+        for (let i = 0; i < hosts.length; i += 1) {
+            const host = hosts[i];
+            const hash = createHash(host);
+            result[hash] = host;
+        }
+
+        return result;
+    }
+
+    /**
      * Checks safebrowsing cache
      *
      * @param hosts List of hosts
@@ -114,7 +153,7 @@ adguard.safebrowsing = (function (adguard, global) {
      */
     function checkHostsInSbCache(hosts) {
         for (let i = 0; i < hosts.length; i += 1) {
-            const sbList = safebrowsingCache.cache.getValue(hosts[i]);
+            const sbList = safebrowsingCache.cache.getValue(createHash(hosts[i]));
             if (sbList) {
                 return sbList;
             }
@@ -147,26 +186,6 @@ adguard.safebrowsing = (function (adguard, global) {
         }
 
         return hosts;
-    }
-
-    /**
-     * Calculates SHA256 hashes for strings in hosts and then
-     * gets prefixes for calculated hashes
-     *
-     * @param hosts
-     * @returns Map object of prefixes
-     * @private
-     */
-    function createHashesMap(hosts) {
-        const result = Object.create(null);
-
-        for (let i = 0; i < hosts.length; i += 1) {
-            const host = hosts[i];
-            const hash = global.SHA256.hash(`${host}/`);
-            result[hash.toUpperCase()] = host;
-        }
-
-        return result;
     }
 
     /**
@@ -220,39 +239,46 @@ adguard.safebrowsing = (function (adguard, global) {
         }
 
         const hashesMap = createHashesMap(hosts);
-
-        const successCallback = function (response) {
-            if (response.status >= 500) {
-                // Error on server side, suspend request
-                // eslint-disable-next-line max-len
-                adguard.console.error('Error response status {0} received from safebrowsing lookup server.', response.status);
-                suspendSafebrowsing();
-                return;
-            }
-            resumeSafebrowsing();
-
-            let sbList = SB_WHITE_LIST;
-            if (response.status !== 204) {
-                sbList = processSbResponse(response.responseText, hashesMap) || SB_WHITE_LIST;
-            }
-
-            safebrowsingCache.cache.saveValue(host, sbList, Date.now() + SB_TTL);
-
-            lookupUrlCallback(createResponse(sbList));
-        };
-
-        const errorCallback = function () {
-            adguard.console.error('Error response from safebrowsing lookup server for {0}', host);
-            suspendSafebrowsing();
-        };
-
         const hashes = Object.keys(hashesMap);
-        const shortHashes = [];
+        let shortHashes = [];
         for (let i = 0; i < hashes.length; i += 1) {
-            shortHashes.push(hashes[i].substring(0, 8));
+            shortHashes.push(hashes[i].substring(0, DOMAIN_HASH_LENGTH));
         }
 
-        adguard.backend.lookupSafebrowsing(shortHashes, successCallback, errorCallback);
+        // Filter already checked hashes
+        shortHashes = shortHashes.filter(x => !safebrowsingRequestsCache.get(x));
+        if (shortHashes.length === 0) {
+            // In case we have not found anything in safebrowsingCache and all short hashes have been checked in
+            // safebrowsingRequestsCache - means that there is no need to request backend again
+            safebrowsingCache.cache.saveValue(createHash(host), SB_WHITE_LIST);
+            lookupUrlCallback(createResponse(SB_WHITE_LIST));
+        } else {
+            adguard.backend.lookupSafebrowsing(shortHashes, (response) => {
+                if (response.status >= 500) {
+                    // Error on server side, suspend request
+                    // eslint-disable-next-line max-len
+                    adguard.console.error('Error response status {0} received from safebrowsing lookup server.', response.status);
+                    suspendSafebrowsing();
+                    return;
+                }
+                resumeSafebrowsing();
+
+                shortHashes.forEach((x) => {
+                    safebrowsingRequestsCache.set(x, true);
+                });
+
+                let sbList = SB_WHITE_LIST;
+                if (response.status !== 204) {
+                    sbList = processSbResponse(response.responseText, hashesMap) || SB_WHITE_LIST;
+                }
+
+                safebrowsingCache.cache.saveValue(createHash(host), sbList);
+                lookupUrlCallback(createResponse(sbList));
+            }, () => {
+                adguard.console.error('Error response from safebrowsing lookup server for {0}', host);
+                suspendSafebrowsing();
+            });
+        }
     };
 
     /**
@@ -293,7 +319,8 @@ adguard.safebrowsing = (function (adguard, global) {
         if (!host) {
             return;
         }
-        safebrowsingCache.cache.saveValue(host, SB_WHITE_LIST, Date.now() + TRUSTED_TTL);
+
+        safebrowsingCache.cache.saveValue(createHash(host), SB_WHITE_LIST);
     };
 
     return {
