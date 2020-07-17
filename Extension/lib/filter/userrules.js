@@ -91,7 +91,6 @@ adguard.userrules = (function (adguard) {
         removeRule,
         updateUserRulesText,
         getUserRulesText,
-        // TODO: fix
         unWhiteListFrame,
     };
 })(adguard);

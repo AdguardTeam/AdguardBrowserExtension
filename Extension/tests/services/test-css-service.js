@@ -41,7 +41,7 @@ QUnit.test('Css hits', (assert) => {
     assert.equal(stylesheet[1], '.textad { visibility: hidden; content: \'adguard1%3Bexample.org%23%24%23.textad%20%7B%20visibility%3A%20hidden%3B%20%7D\' !important;}\r\n');
 });
 
-// TODO: Tests
+// TODO: [TSUrlFilter] Tests
 //
 // QUnit.test('Css Exception Rules', (assert) => {
 //     const rule = new adguard.rules.CssFilterRule('##.sponsored');

@@ -217,7 +217,7 @@ QUnit.test('Whitelist rules selecting', (assert) => {
 //     assert.ok(rules.length === 1);
 //     assert.equal(rules[0].ruleText, cookieRule.ruleText);
 //
-//     // TODO: Add cases and other tests
+//     // TODO: [TSUrlFilter] Add cases and other tests
 // });
 //
 QUnit.test('Redirect rules', (assert) => {
@@ -253,7 +253,7 @@ QUnit.test('Redirect rules', (assert) => {
     assert.ok(imgRule != null);
     assert.equal(imgRule.getText(), blockRedirectRule);
 
-    // TODO: Move to redirect-service tests
+    // TODO: [TSUrlFilter] Move to redirect-service tests
     // const invalidTitle = 'space';
     // const validTitle = 'noopjs';
     // // Test that rule correct url has been build

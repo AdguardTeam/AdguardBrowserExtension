@@ -169,7 +169,6 @@ adguard.whitelist = (function (adguard) {
 
     /**
      * Search for whitelist rule by url.
-     * // TODO: Probably its enough to return boolean only
      */
     const findWhiteListRule = function (url) {
         if (!url) {

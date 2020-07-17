@@ -17,7 +17,7 @@
 
 /* global adguard, Redirects */
 
-// TODO: Use web-accessible-resources
+// TODO: [TSUrlFilter] Use web-accessible-resources
 adguard.redirectFilterService = (function (adguard) {
     let redirects;
 

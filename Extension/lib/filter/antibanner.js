@@ -540,7 +540,7 @@ adguard.antiBannerService = (function (adguard) {
          */
         const requestFilterInitialized = function () {
             // Request filter is ready
-            // TODO: We actually to only clean cache
+            // TODO: [TSUrlFilter] We actually to only clean cache
             requestFilter = newRequestFilter;
 
             if (callback && typeof callback === 'function') {
@@ -586,7 +586,7 @@ adguard.antiBannerService = (function (adguard) {
                 const isTrustedFilter = adguard.subscriptions.isTrustedFilter(filterId);
                 const rulesTexts = rulesFilterMap[filterId].join('\n');
 
-                // TODO: Move
+                // TODO: [TSUrlFilter] Move
                 // This supposed to be done then rulesText is downloaded, before saving to local file
                 // Rules text will be splitted and processed line by line
                 const converted = RuleConverter.convertRules(rulesTexts);
@@ -848,7 +848,7 @@ adguard.antiBannerService = (function (adguard) {
                 return;
             }
             if (setting === adguard.settings.DISABLE_COLLECT_HITS) {
-                // TODO: We may use this with adguard.cssService
+                // TODO: [TSUrlFilter] We may use this with adguard.cssService
                 // getRequestFilter().cssFilter.dirty = true;
             }
             if (setting === adguard.settings.FILTERS_UPDATE_PERIOD) {
@@ -1046,7 +1046,7 @@ adguard.antiBannerService = (function (adguard) {
         //
         // return rules;
 
-        // TODO: Fix user filter
+        // TODO: [TSUrlFilter] Fix user filter
         return [];
     };
 
@@ -1070,7 +1070,7 @@ adguard.antiBannerService = (function (adguard) {
         // }
         // adguard.listeners.notifyListeners(adguard.listeners.REMOVE_RULE, userFilter, [ruleText]);
 
-        // TODO: Fix user filter
+        // TODO: [TSUrlFilter] Fix user filter
     };
 
     return {

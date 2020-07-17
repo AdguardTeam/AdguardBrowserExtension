@@ -17,6 +17,7 @@
 * No releases in the repo
 * Raw file: https://raw.githubusercontent.com/AndersLindman/SHA256/254e29ca2fb2d0697ced7e4fea03149e210ce8b9/js/sha256.js
 
+// TODO: [TSUrlFilter] Remove
 #### `encoding.js`
 * License and copyright free
 * https://github.com/ameshkov/text-encoding
@@ -79,6 +80,6 @@ These libs are developed by us from scratch.
 
 #### `tsurlfilter.js`
 #### `AGUrlFilterContentScript.js`
-* TODO: Fill details
+// TODO: [TSUrlFilter] Fill details
 
 

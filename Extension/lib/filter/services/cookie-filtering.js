@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// TODO: Use TSURLFilter cookieFiltering
+// TODO: [TSUrlFilter] Use TSURLFilter cookieFiltering
 
 /**
  * Cookie filtering module

@@ -104,7 +104,7 @@ adguard.webRequestService = (function (adguard) {
         var elemHideFlag = whitelistRule && whitelistRule.isOptionEnabled(NetworkRuleOption.Elemhide);
         var genericHideFlag = whitelistRule && whitelistRule.isOptionEnabled(NetworkRuleOption.Generichide);
 
-        // TODO: use matching result getCosmeticOption
+        // TODO: [TSUrlFilter] use matching result getCosmeticOption
 
         // content-message-handler calls it in this way
         if (typeof cssFilterOptions === 'undefined' && typeof retrieveScripts === 'undefined') {

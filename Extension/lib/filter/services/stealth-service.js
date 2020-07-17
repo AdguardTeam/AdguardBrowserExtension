@@ -17,7 +17,7 @@
 
 /* global adguard */
 
-// TODO: Use TSURLFilter stealthService
+// TODO: [TSUrlFilter] Use TSURLFilter stealthService
 
 adguard.stealthService = (function (adguard) {
 
@@ -108,7 +108,7 @@ adguard.stealthService = (function (adguard) {
     const generateRemoveRule = function (maxAgeMinutes, stealthActions) {
         const maxAgeOption = maxAgeMinutes > 0 ? `;maxAge=${maxAgeMinutes * 60}` : '';
         const rule = new NetworkRule(`$cookie=/.+/${maxAgeOption}`, 0);
-        // TODO: Fix
+        // TODO: [TSUrlFilter] Fix
         // rule.addStealthActions(stealthActions);
         return rule;
     };

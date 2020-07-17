@@ -165,12 +165,12 @@
             const domain = adguard.utils.url.getHost(url);
             const cosmeticResult = adguard.application.getEngine().getCosmeticResult(domain, CosmeticOption.CosmeticOptionJS);
 
-            // TODO: Pass debug
+            // TODO: [TSUrlFilter] Pass debug
             return cosmeticResult.getScriptRules();
         },
 
         /**
-         * TODO: Move to scripts-service
+         * TODO: [TSUrlFilter] Move to scripts-service
          *
          * Builds the final output string for the specified page.
          * Depending on the browser we either allow or forbid the new remote rules
@@ -187,7 +187,6 @@
             const isOpera = adguard.utils.browser.isOperaBrowser();
 
             const selectedScriptRules = scriptRules.filter((scriptRule) => {
-                // TODO: Performance
                 const isLocal = adguard.rules.LocalScriptRulesService.isLocal(scriptRule.getText());
 
                 if (isLocal) {
@@ -360,7 +359,7 @@
         },
 
         /**
-         * TODO: Parse webrequest details type
+         * TODO: [TSUrlFilter] Parse webrequest details type
          *
          * @param requestType
          * @return {number}
