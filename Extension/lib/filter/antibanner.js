@@ -540,7 +540,6 @@ adguard.antiBannerService = (function (adguard) {
          */
         const requestFilterInitialized = function () {
             // Request filter is ready
-            // TODO: [TSUrlFilter] We actually to only clean cache
             requestFilter = newRequestFilter;
 
             if (callback && typeof callback === 'function') {
@@ -845,13 +844,7 @@ adguard.antiBannerService = (function (adguard) {
         adguard.settings.onUpdated.addListener((setting) => {
             if (setting === adguard.settings.USE_OPTIMIZED_FILTERS) {
                 onUsedOptimizedFiltersChange();
-                return;
-            }
-            if (setting === adguard.settings.DISABLE_COLLECT_HITS) {
-                // TODO: [TSUrlFilter] We may use this with adguard.cssService
-                // getRequestFilter().cssFilter.dirty = true;
-            }
-            if (setting === adguard.settings.FILTERS_UPDATE_PERIOD) {
+            } else if (setting === adguard.settings.FILTERS_UPDATE_PERIOD) {
                 scheduleFiltersUpdate();
             }
         });
@@ -1032,22 +1025,8 @@ adguard.antiBannerService = (function (adguard) {
      * @returns {Array}
      */
     const addUserFilterRules = function (rulesText) {
-        // const rules = [];
-        // for (let i = 0; i < rulesText.length; i += 1) {
-        //     const rule = adguard.rules.builder.createRule(rulesText[i], adguard.utils.filters.USER_FILTER_ID);
-        //     if (rule !== null) {
-        //         rules.push(rule);
-        //     }
-        // }
-        // requestFilter.addRules(rules);
-
-        // adguard.listeners.notifyListeners(adguard.listeners.ADD_RULES, userFilter, rulesText);
-        // adguard.listeners.notifyListeners(adguard.listeners.UPDATE_USER_FILTER_RULES, getRequestFilterInfo());
-        //
-        // return rules;
-
-        // TODO: [TSUrlFilter] Fix user filter
-        return [];
+        adguard.listeners.notifyListeners(adguard.listeners.ADD_RULES, userFilter, rulesText);
+        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_USER_FILTER_RULES, getRequestFilterInfo());
     };
 
     /**
@@ -1064,13 +1043,7 @@ adguard.antiBannerService = (function (adguard) {
      * @param ruleText
      */
     const removeUserFilterRule = function (ruleText) {
-        // const rule = adguard.rules.builder.createRule(ruleText, adguard.utils.filters.USER_FILTER_ID);
-        // if (rule !== null) {
-        //     requestFilter.removeRule(rule);
-        // }
-        // adguard.listeners.notifyListeners(adguard.listeners.REMOVE_RULE, userFilter, [ruleText]);
-
-        // TODO: [TSUrlFilter] Fix user filter
+        adguard.listeners.notifyListeners(adguard.listeners.REMOVE_RULE, userFilter, [ruleText]);
     };
 
     return {

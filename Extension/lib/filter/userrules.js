@@ -35,8 +35,7 @@ adguard.userrules = (function (adguard) {
      * @param rulesText List of rules to add
      */
     const addRules = function (rulesText) {
-        const rules = getAntiBannerService().addUserFilterRules(rulesText);
-        return rules;
+        getAntiBannerService().addUserFilterRules(rulesText);
     };
 
     /**
