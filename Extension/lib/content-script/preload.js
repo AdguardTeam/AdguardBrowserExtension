@@ -197,10 +197,7 @@
 
         if (response.collectRulesHits) {
             cssHitsCounter = new AGUrlFilter.CssHitsCounter((stats) => {
-                console.debug('Css stats ready');
-                console.debug(stats);
-
-                getContentPage().sendMessage({ type: 'saveCssHitStats', stats: JSON.stringify(stats) });
+                getContentPage().sendMessage({ type: 'saveCssHitStats', stats });
             });
         }
 
@@ -280,7 +277,7 @@
 
         const extcss = new AGUrlFilter.ExtendedCss({
             styleSheet,
-            beforeStyleApplied: (cssHitsCounter ? cssHitsCounter.countAffectedByExtendedCss : el => el),
+            beforeStyleApplied: (cssHitsCounter ? cssHitsCounter.countAffectedByExtendedCss.bind(cssHitsCounter) : el => el),
         });
         extcss.apply();
     };

@@ -16,3 +16,13 @@
  */
 
 adguard.contentFiltering = new ContentFiltering(adguard.filteringLog);
+
+
+// TODO: [TSUrlFilter] wrap filteringLog to use it like:
+// onReplaceRulesApplied( .. ) {
+//     adguard.requestContextStorage.update(requestId, { replaceRules: appliedRules });
+// }
+//
+// onContentRuleApplied( .. ) {
+//     adguard.requestContextStorage.bindContentRule(requestId, rule, adguard.utils.strings.elementToString(element));
+// }

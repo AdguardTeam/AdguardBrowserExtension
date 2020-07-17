@@ -100,44 +100,40 @@ adguard.filteringLog = (function (adguard) {
         }
     }
 
-    const isScriptRule = rule => false; // TODO: Fix
-
     /**
      * Copy some properties from source rule to destination rule
-     * @param destinationRule
+     * @param destinationRuleDTO
      * @param sourceRule
      */
-    const appendProperties = (destinationRule, sourceRule) => {
-        if (!destinationRule || !sourceRule) {
+    const appendProperties = (destinationRuleDTO, sourceRule) => {
+        if (!destinationRuleDTO || !sourceRule) {
             return;
         }
-        // TODO: Fix log
-        // destinationRule.filterId = sourceRule.getFilterListId();
-        // destinationRule.ruleText = sourceRule.getText();
-        // if (sourceRule.isImportant) {
-        //     destinationRule.isImportant = sourceRule.isImportant;
-        // }
-        // if (sourceRule.convertedRuleText) {
-        //     destinationRule.convertedRuleText = sourceRule.convertedRuleText;
-        // }
-        // if (sourceRule.documentLevelRule) {
-        //     destinationRule.documentLevelRule = sourceRule.documentLevelRule;
-        // }
-        // TODO: Fix log
-        // if (sourceRule instanceof adguard.rules.ContentFilterRule) {
-        //     destinationRule.contentRule = true;
-        // TODO: Fix log
-        // } else if (sourceRule instanceof adguard.rules.CssFilterRule) {
-        //     destinationRule.cssRule = true;
-        // } else if (isScriptRule(sourceRule)) {
-        //     destinationRule.scriptRule = true;
-        // } else
-        if (sourceRule instanceof adguard.rules.UrlFilterRule) {
-            destinationRule.whiteListRule = sourceRule.whiteListRule;
-            destinationRule.cspRule = sourceRule.isCspRule();
-            destinationRule.cspDirective = sourceRule.cspDirective;
-            // TODO: Fix log
-            //destinationRule.cookieRule = !!sourceRule.getCookieOption();
+
+        destinationRuleDTO.filterId = sourceRule.getFilterListId();
+        destinationRuleDTO.ruleText = sourceRule.getText();
+
+        if (sourceRule instanceof NetworkRule) {
+            if (sourceRule.isOptionEnabled(NetworkRuleOption.Important)) {
+                destinationRuleDTO.isImportant = true;
+            }
+            if (sourceRule.isDocumentWhitelistRule()) {
+                destinationRuleDTO.documentLevelRule = true;
+            }
+
+            destinationRuleDTO.whiteListRule = sourceRule.isWhitelist();
+            destinationRuleDTO.cspRule = sourceRule.isOptionEnabled(NetworkRuleOption.Csp);
+            destinationRuleDTO.cspDirective = sourceRule.getAdvancedModifierValue();
+            destinationRuleDTO.cookieRule = sourceRule.isOptionEnabled(NetworkRuleOption.Cookie);
+        } else if (sourceRule instanceof CosmeticRule) {
+            const ruleType = sourceRule.getType();
+            if (ruleType === CosmeticRuleType.Html) {
+                destinationRuleDTO.contentRule = true;
+            } else if (ruleType === CosmeticRuleType.ElementHiding || ruleType === CosmeticRuleType.Css) {
+                destinationRuleDTO.cssRule = true;
+            } else if (ruleType === CosmeticRuleType.Js) {
+                destinationRuleDTO.scriptRule = true;
+            }
         }
     };
 
@@ -416,7 +412,7 @@ adguard.filteringLog = (function (adguard) {
             rule,
         };
 
-        // TODO: Fix
+        // TODO: [TSUrlFilter] Fix
         console.log(filteringEvent);
 
         // pushFilteringEvent(filteringEvent);
@@ -431,7 +427,7 @@ adguard.filteringLog = (function (adguard) {
      */
     const addReplaceRulesEvent = (tabId, frameUrl, rules) => {
         rules.forEach((r) => {
-            // TODO: Fix
+            // TODO: [TSUrlFilter] Fix
             console.log(r);
             // pushFilteringEvent({
             //     eventType: 'REPLACE',

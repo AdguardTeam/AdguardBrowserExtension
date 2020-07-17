@@ -108,8 +108,7 @@ adguard.stealthService = (function (adguard) {
     const generateRemoveRule = function (maxAgeMinutes, stealthActions) {
         const maxAgeOption = maxAgeMinutes > 0 ? `;maxAge=${maxAgeMinutes * 60}` : '';
         const rule = new NetworkRule(`$cookie=/.+/${maxAgeOption}`, 0);
-        // TODO: [TSUrlFilter] Fix
-        // rule.addStealthActions(stealthActions);
+        rule.stealthActions = stealthActions;
         return rule;
     };
 
