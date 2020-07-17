@@ -17,15 +17,6 @@
 * No releases in the repo
 * Raw file: https://raw.githubusercontent.com/AndersLindman/SHA256/254e29ca2fb2d0697ced7e4fea03149e210ce8b9/js/sha256.js
 
-// TODO: [TSUrlFilter] Remove
-#### `encoding.js`
-* License and copyright free
-* https://github.com/ameshkov/text-encoding
-* This is a fork of the archived https://github.com/inexorabletash/text-encoding with a single change made: https://github.com/ameshkov/text-encoding/commit/ddd20a5064f622b6fd47cdc11834ca8f130cb100
-* No releases in the repo
-* Raw file: https://raw.githubusercontent.com/ameshkov/text-encoding/ddd20a5064f622b6fd47cdc11834ca8f130cb100/lib/encoding.js
-* `encoding-indexes.js` is **not** a third-party library, but definitions of encodings used by `encoding.js`
-
 #### `d3.js`
 * v3.5.17
 * Licence: BSD 3-Clause
