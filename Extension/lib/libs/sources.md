@@ -69,6 +69,10 @@ These libs are developed by us from scratch.
 * v1.2.3
 * Library source https://github.com/AdguardTeam/Scriptlets/releases
 
+#### `lru.js`
+* v0.3.3
+* Library source https://raw.githubusercontent.com/rsms/js-lru/master/lru.js
+
 #### `tsurlfilter.js`
 #### `AGUrlFilterContentScript.js`
 // TODO: [TSUrlFilter] Fill details

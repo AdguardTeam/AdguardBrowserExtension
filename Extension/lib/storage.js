@@ -137,6 +137,21 @@ adguard.rulesStorage = (function (adguard, impl) {
     };
 
     /**
+     * Removes filter from storage
+     * @param filterId
+     * @param callback
+     */
+    const remove = (filterId, callback) => {
+        const filePath = getFilePath(filterId);
+        impl.remove(filePath, (e) => {
+            if (e) {
+                adguard.console.error(`Error removing filter ${filePath}. Cause: ${e}`);
+            }
+            callback();
+        });
+    };
+
+    /**
      * IndexedDB implementation of the rules storage requires async initialization.
      * Also in some cases IndexedDB isn't supported, so we have to replace implementation
      * with the browser.storage
@@ -157,6 +172,7 @@ adguard.rulesStorage = (function (adguard, impl) {
     return {
         read,
         write,
+        remove,
         init,
     };
 })(adguard, adguard.rulesStorageImpl);

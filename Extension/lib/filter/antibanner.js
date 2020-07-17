@@ -1286,6 +1286,12 @@ adguard.filtersState = (function (adguard) {
         adguard.localStorage.setItem(FILTERS_STATE_PROP, JSON.stringify(filters));
     };
 
+    const removeFilter = (filterId) => {
+        const filters = getFiltersState();
+        delete filters[filterId];
+        adguard.localStorage.setItem(FILTERS_STATE_PROP, JSON.stringify(filters));
+    };
+
     /**
      * Updates group enable state in the local storage
      *
@@ -1325,6 +1331,7 @@ adguard.filtersState = (function (adguard) {
         // These methods are used only for migrate from old versions
         updateFilterVersion,
         updateFilterState,
+        removeFilter,
     };
 })(adguard);
 

@@ -1,8 +1,8 @@
-! Checksum: ZJBP46lG9jP46ETxbtmkdg
+! Checksum: /3rN7wAiwG5RgfRJfIUbSw
 ! Title: AdGuard Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.0.63
-! TimeUpdated: 2020-06-25T20:31:48+03:00
+! Version: 2.0.0.65
+! TimeUpdated: 2020-07-02T12:04:11+03:00
 ! Expires: 4 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#experimental
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -133,9 +133,19 @@
 !
 ! YouTube ads (for old and new ads)
 ! youtube.com - white screen with skip button
-youtube.com#%#//scriptlet("json-prune", "playerResponse.adPlacements playerResponse.playerAds adPlacements playerAds")
-youtube.com#%#//scriptlet("set-constant", "ytInitialPlayerResponse.adPlacements", "undefined")
-@@||youtube.com/get_video_info
+! This one works okay.
+! smart JSON override: https://gist.github.com/ameshkov/0c5148f243ffe9d8e40fd9ee11f142f4
+! smartJSONParseOverride('adPlacements', [], /base.js:[0-9]+/);
+! smartJSONParseOverride('playerAds', [], /base.js:[0-9]+/);
+! youtube.com#%#(function(){var overrideObject=function(obj,propertyName,overrideValue){var overriden=false;for(var key in obj){if(obj.hasOwnProperty(key)&&key===propertyName){obj[key]=overrideValue;overriden=true}if(obj.hasOwnProperty(key)&&typeof obj[key]==="object")if(overrideObject(obj[key]))overriden=true}return overriden};var smartJSONParseOverride=function(propertyName,overrideValue,reStack){var realParse=JSON.parse;JSON.parse=function(text,reviver){var obj=realParse(text,reviver);if(!obj)return obj;var stackTrace=(new Error).stack;if(reStack.test(stackTrace))if(overrideObject(obj,propertyName,overrideValue));return obj}};smartJSONParseOverride("adPlacements",[],/base.js/);smartJSONParseOverride("playerAds",[],/base.js/)})();
+! I am not sure why we need this, commented out
+! !#if (!adguard_app_ios && !adguard_ext_android_cb)
+! @@||youtube.com/get_video_info
+! !#endif
+! YT fix using json-prune, prune only 1 level
+youtube.com#%#//scriptlet("json-prune", "adPlacements playerAds")
+! These two rules seem to be working okay.
+! Commented out for now in order to test the smart override function
 !
 ! Rules that are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
