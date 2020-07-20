@@ -1,7 +1,7 @@
 
 /**
  * AdGuard Scriptlets
- * Version 1.2.3
+ * Version 1.2.5
  */
 
 (function () {
@@ -38,20 +38,17 @@
      */
 
     /**
-     * Check is property exist in base object recursively
+     * Check if the property exists in the base object (recursively)
      *
      * If property doesn't exist in base object,
-     * defines this property (for addProp = true)
+     * defines this property as 'undefined'
      * and returns base, property name and remaining part of property chain
      *
      * @param {Object} base
      * @param {string} chain
-     * @param {boolean} [addProp=true]
-     * defines is nonexistent base property should be assigned as 'undefined'
      * @returns {Chain}
      */
     function getPropertyInChain(base, chain) {
-      var addProp = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
       var pos = chain.indexOf('.');
 
       if (pos === -1) {
@@ -62,25 +59,88 @@
       }
 
       var prop = chain.slice(0, pos);
-      var own = base[prop];
+      var nextBase = base[prop];
       chain = chain.slice(pos + 1);
 
-      if (own !== undefined) {
-        return getPropertyInChain(own, chain, addProp);
-      }
-
-      if (!addProp) {
-        return false;
+      if (nextBase !== undefined) {
+        return getPropertyInChain(nextBase, chain);
       }
 
       Object.defineProperty(base, prop, {
         configurable: true
       });
       return {
-        base: own,
+        base: nextBase,
         prop: prop,
         chain: chain
       };
+    }
+
+    /**
+     * @typedef Chain
+     * @property {Object} base
+     * @property {string} prop
+     * @property {string} [chain]
+     */
+
+    /**
+     * Check if the property exists in the base object (recursively).
+     * Similar to getPropertyInChain but upgraded for json-prune:
+     * handle wildcard properties and does not define nonexistent base property as 'undefined'
+     *
+     * @param {Object} base
+     * @param {string} chain
+     * @param {boolean} [lookThrough=false]
+     * should the method look through it's props in order to wildcard
+     * @param {Array} [output=[]] result acc
+     * @returns {Chain[]} array of objects
+     */
+    function getWildcardPropertyInChain(base, chain) {
+      var lookThrough = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+      var output = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
+      var pos = chain.indexOf('.');
+
+      if (pos === -1) {
+        // for paths like 'a.b.*' every final nested prop should be processed
+        if (chain === '*') {
+          Object.keys(base).forEach(function (key) {
+            output.push({
+              base: base,
+              prop: key
+            });
+          });
+        } else {
+          output.push({
+            base: base,
+            prop: chain
+          });
+        }
+
+        return output;
+      }
+
+      var prop = chain.slice(0, pos);
+      var shouldLookThrough = prop === '[]' && Array.isArray(base) || prop === '*' && base instanceof Object;
+
+      if (shouldLookThrough) {
+        var nextProp = chain.slice(pos + 1);
+        var baseKeys = Object.keys(base); // if there is a wildcard prop in input chain (e.g. 'ad.*.src' for 'ad.0.src ad.1.src'),
+        // each one of base keys should be considered as a potential chain prop in final path
+
+        baseKeys.forEach(function (key) {
+          var item = base[key];
+          getWildcardPropertyInChain(item, nextProp, lookThrough, output);
+        });
+      }
+
+      var nextBase = base[prop];
+      chain = chain.slice(pos + 1);
+
+      if (nextBase !== undefined) {
+        getWildcardPropertyInChain(nextBase, chain, lookThrough, output);
+      }
+
+      return output;
     }
 
     /**
@@ -290,10 +350,10 @@
         }
 
         log("".concat(prefix, " trace end"));
-      } catch (e) {} // try catch for Edge 15
-      // In according to this issue https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/14495220/
-      // console.log throws an error
-      // This is necessary for unit-tests only!
+      } catch (e) {// try catch for Edge 15
+        // In according to this issue https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/14495220/
+        // console.log throws an error
+      } // This is necessary for unit-tests only!
 
 
       if (typeof window.__debug === 'function') {
@@ -412,6 +472,7 @@
         randomId: randomId,
         setPropertyAccess: setPropertyAccess,
         getPropertyInChain: getPropertyInChain,
+        getWildcardPropertyInChain: getWildcardPropertyInChain,
         escapeRegExp: escapeRegExp,
         toRegExp: toRegExp,
         getBeforeRegExp: getBeforeRegExp,
@@ -1547,7 +1608,7 @@
      *
      * **Syntax**
      * ```
-     * example.org#%#//scriptlet('set-constant', property, value)
+     * example.org#%#//scriptlet('set-constant', property, value[, stack])
      * ```
      *
      * - `property` - required, path to a property (joined with `.` if needed). The property must be attached to `window`.
@@ -1563,21 +1624,27 @@
      *         - `falseFunc` - function returning false
      *         - `''` - empty string
      *         - `-1` - number value `-1`
+     * - `stack` - optional, string or regular expression that must match the current function call stack trace
      *
      * **Examples**
      * ```
-     * ! window.firstConst === false // this comparision will return true
+     * ! window.firstConst === false // this comparision will return false
      * example.org#%#//scriptlet('set-constant', 'firstConst', 'false')
      *
-     * ! window.secondConst() === true // call to the secondConst will return true
+     * ! window.second() === trueFunc // 'second' call will return true
      * example.org#%#//scriptlet('set-constant', 'secondConst', 'trueFunc')
+     *
+     * ! document.third() === falseFunc  // 'third' call will return false if the method is related to checking.js
+     * example.org#%#//scriptlet('set-constant', 'secondConst', 'trueFunc', 'checking.js')
      * ```
      */
 
     /* eslint-enable max-len */
 
-    function setConstant(source, property, value) {
-      if (!property) {
+    function setConstant(source, property, value, stack) {
+      var stackRegexp = stack ? toRegExp(stack) : toRegExp('/.?/');
+
+      if (!property || !matchStackTrace(stackRegexp, new Error().stack)) {
         return;
       }
 
@@ -1672,7 +1739,7 @@
       setChainPropAccess(window, property);
     }
     setConstant.names = ['set-constant', 'set-constant.js', 'ubo-set-constant.js', 'set.js', 'ubo-set.js'];
-    setConstant.injections = [getPropertyInChain, setPropertyAccess, hit, noopFunc, trueFunc, falseFunc];
+    setConstant.injections = [getPropertyInChain, setPropertyAccess, toRegExp, matchStackTrace, hit, noopFunc, trueFunc, falseFunc];
 
     /* eslint-disable max-len */
 
@@ -3128,13 +3195,20 @@
      * Related UBO scriptlet:
      * https://github.com/gorhill/uBlock/wiki/Resources-Library#json-prunejs-
      *
+     * Related ABP source:
+     * https://github.com/adblockplus/adblockpluscore/blob/master/lib/content/snippets.js#L1285
+     *
      * **Syntax**
      * ```
-     * example.org#%#//scriptlet('json-prune'[, propsToRemove [, obligatoryProps]])
+     * example.org#%#//scriptlet('json-prune'[, propsToRemove [, obligatoryProps [, stack]]])
      * ```
      *
      * - `propsToRemove` - optional, string of space-separated properties to remove
      * - `obligatoryProps` - optional, string of space-separated properties which must be all present for the pruning to occur
+     * - `stack` - optional, string or regular expression that must match the current function call stack trace
+     *
+     * > Note please that you can use wildcard `*` for chain property name.
+     * e.g. 'ad.*.src' instead of 'ad.0.src ad.1.src ad.2.src ...'
      *
      * **Examples**
      * 1. Removes property `example` from the results of JSON.parse call
@@ -3165,7 +3239,18 @@
      *     example.org#%#//scriptlet('json-prune', 'a.b', 'adpath.url.first')
      *     ```
      *
-     * 4. Call with no arguments will log the current hostname and json payload at the console
+     * 4. Removes property `content.ad` from the results of JSON.parse call it's error stack trace contains `test.js`
+     *     ```
+     *     example.org#%#//scriptlet('json-prune', 'content.ad', '', 'test.js')
+     *     ```
+     *
+     * 5. A property in a list of properties can be a chain of properties with wildcard in it
+     *
+     *     ```
+     *     example.org#%#//scriptlet('json-prune', 'content.*.media.src', 'content.*.media.preroll')
+     *     ```
+     *
+     * 6. Call with no arguments will log the current hostname and json payload at the console
      *     ```
      *     example.org#%#//scriptlet('json-prune')
      *     ```
@@ -3173,28 +3258,47 @@
 
     /* eslint-enable max-len */
 
-    function jsonPrune(source, propsToRemove, requiredInitialProps) {
-      // eslint-disable-next-line no-console
+    function jsonPrune(source, propsToRemove, requiredInitialProps, stack) {
+      var stackRegexp = stack ? toRegExp(stack) : toRegExp('/.?/');
+
+      if (!matchStackTrace(stackRegexp, new Error().stack)) {
+        return;
+      } // eslint-disable-next-line no-console
+
+
       var log = console.log.bind(console);
       var prunePaths = propsToRemove !== undefined && propsToRemove !== '' ? propsToRemove.split(/ +/) : [];
-      var needlePaths = requiredInitialProps !== undefined && requiredInitialProps !== '' ? requiredInitialProps.split(/ +/) : [];
+      var requiredPaths = requiredInitialProps !== undefined && requiredInitialProps !== '' ? requiredInitialProps.split(/ +/) : [];
 
       function isPruningNeeded(root) {
         if (!root) {
           return false;
         }
 
-        for (var i = 0; i < needlePaths.length; i += 1) {
-          var needlePath = needlePaths[i];
-          var details = getPropertyInChain(root, needlePath, false);
-          var nestedPropName = needlePath.split('.').pop();
+        var shouldProcess;
 
-          if (details && details.base[nestedPropName] === undefined) {
-            return false;
+        for (var i = 0; i < requiredPaths.length; i += 1) {
+          var requiredPath = requiredPaths[i];
+          var lastNestedPropName = requiredPath.split('.').pop();
+          var hasWildcard = requiredPath.indexOf('.*.') > -1 || requiredPath.indexOf('*.') > -1 || requiredPath.indexOf('.*') > -1; // if the path has wildcard, getPropertyInChain should 'look through' chain props
+
+          var details = getWildcardPropertyInChain(root, requiredPath, hasWildcard); // start value of 'shouldProcess' due to checking below
+
+          shouldProcess = !hasWildcard;
+
+          for (var _i = 0; _i < details.length; _i += 1) {
+            if (hasWildcard) {
+              // if there is a wildcard,
+              // at least one (||) of props chain should be present in object
+              shouldProcess = !(details[_i].base[lastNestedPropName] === undefined) || shouldProcess;
+            } else {
+              // otherwise each one (&&) of them should be there
+              shouldProcess = !(details[_i].base[lastNestedPropName] === undefined) && shouldProcess;
+            }
           }
         }
 
-        return true;
+        return shouldProcess;
       }
 
       var nativeParse = JSON.parse;
@@ -3204,32 +3308,35 @@
           args[_key] = arguments[_key];
         }
 
-        var r = nativeParse.apply(window, args);
+        var root = nativeParse.apply(window, args);
 
         if (prunePaths.length === 0) {
-          log(window.location.hostname, r);
-          return r;
+          log(window.location.hostname, root);
+          return root;
         }
 
-        if (isPruningNeeded(r) === false) {
-          return r;
-        }
+        if (isPruningNeeded(root) === false) {
+          return root;
+        } // if pruning is needed, we check every input pathToRemove
+        // and delete it if root has it
+
 
         prunePaths.forEach(function (path) {
-          var ownerObj = getPropertyInChain(r, path, false);
-
-          if (ownerObj !== undefined && ownerObj.base) {
-            delete ownerObj.base[ownerObj.prop];
-          }
+          var ownerObjArr = getWildcardPropertyInChain(root, path, true);
+          ownerObjArr.forEach(function (ownerObj) {
+            if (ownerObj !== undefined && ownerObj.base) {
+              delete ownerObj.base[ownerObj.prop];
+            }
+          });
         });
         hit(source);
-        return r;
+        return root;
       };
 
       JSON.parse = parseWrapper;
     }
     jsonPrune.names = ['json-prune', 'json-prune.js', 'ubo-json-prune.js'];
-    jsonPrune.injections = [hit, getPropertyInChain];
+    jsonPrune.injections = [hit, toRegExp, matchStackTrace, getWildcardPropertyInChain];
 
     /* eslint-disable max-len */
 
@@ -3736,7 +3843,7 @@
 
 
     var isAdgRedirectCompatibleWithUbo = function isAdgRedirectCompatibleWithUbo(rule) {
-      return isRedirectRuleByType(rule, 'ADG');
+      return isAdgRedirectRule(rule) && isRedirectRuleByType(rule, 'ADG');
     };
     /**
     * Checks if the Ubo redirect `rule` has AdGuard analog. Needed for Ubo->Adg conversion
@@ -4843,8 +4950,6 @@
     }
     AmazonApstag.names = ['amazon-apstag', 'ubo-amazon_apstag.js', 'amazon_apstag.js'];
     AmazonApstag.injections = [hit, noopFunc];
-
-
 
     var redirectsList = /*#__PURE__*/Object.freeze({
         __proto__: null,
