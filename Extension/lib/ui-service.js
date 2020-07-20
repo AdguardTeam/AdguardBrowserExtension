@@ -265,7 +265,11 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             addMenu('context_security_report');
             addMenu('context_complaint_website');
             addSeparator();
+            addMenu('context_update_antibanner_filters');
+            addSeparator();
+            addMenu('context_open_settings');
             addMenu('context_open_log');
+            addMenu('context_disable_protection');
         }
     }
 
@@ -361,11 +365,8 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         return parsedUrl.protocol.indexOf(schemeUrl) > -1;
     };
 
-    function showAlertMessagePopup(title, text, showForAdguardTab) {
+    function showAlertMessagePopup(title, text) {
         adguard.tabs.getActive((tab) => {
-            if (!showForAdguardTab) {
-                return;
-            }
             adguard.tabs.sendMessage(tab.tabId, {
                 type: 'show-alert-popup',
                 isAdguardTab: isAdguardTab(tab),
