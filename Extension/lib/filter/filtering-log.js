@@ -397,47 +397,6 @@ adguard.filteringLog = (function (adguard) {
     };
 
     /**
-     * Add html rule event to log
-     *
-     * @param {Number} tabId - tab id
-     * @param {String} elementString - element string presentation
-     * @param {String} frameUrl - Frame url
-     * @param {Object} rule - cookie rule
-     */
-    const addHtmlEvent = (tabId, elementString, frameUrl, rule) => {
-        const filteringEvent = {
-            eventType: 'HTML',
-            element: elementString,
-            frameUrl,
-            rule,
-        };
-
-        // TODO: [TSUrlFilter] Fix
-        console.log(filteringEvent);
-
-        // pushFilteringEvent(filteringEvent);
-    };
-
-    /**
-     * Add html rule event to log
-     *
-     * @param {Number} tabId - tab id
-     * @param {String} frameUrl - Frame url
-     * @param {Object} rules - cookie rule
-     */
-    const addReplaceRulesEvent = (tabId, frameUrl, rules) => {
-        rules.forEach((r) => {
-            // TODO: [TSUrlFilter] Fix
-            console.log(r);
-            // pushFilteringEvent({
-            //     eventType: 'REPLACE',
-            //     frameUrl,
-            //     rule: r,
-            // });
-        });
-    };
-
-    /**
      * Binds applied stealth actions to HTTP request
      *
      * @param {object} tab Request tab
@@ -572,8 +531,6 @@ adguard.filteringLog = (function (adguard) {
         addScriptInjectionEvent,
         bindStealthActionsToHttpRequestEvent,
         clearEventsByTabId,
-        addHtmlEvent,
-        addReplaceRulesEvent,
 
 
         isOpen,

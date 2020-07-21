@@ -14,15 +14,52 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+const wrapper = {
+    /**
+     * Add html rule event to log
+     *
+     * @param {Number} tabId - tab id
+     * @param {Number} requestId
+     * @param {String} elementString - element string presentation
+     * @param {String} frameUrl - Frame url
+     * @param {Object} rule - html rule
+     */
+    addHtmlEvent(tabId, requestId, elementString, frameUrl, rule) {
+        adguard.requestContextStorage.bindContentRule(requestId, rule, elementString);
 
-adguard.contentFiltering = new ContentFiltering(adguard.filteringLog);
+        // TODO: [TSUrlFilter] fix logging content rules
+    },
 
+    /**
+     * Add html rule event to log
+     *
+     * @param {Number} tabId - tab id
+     * @param {Number} requestId
+     * @param {String} frameUrl - Frame url
+     * @param {Object} rules - cookie rule
+     */
+    addReplaceRulesEvent(tabId, requestId, frameUrl, rules) {
+        adguard.requestContextStorage.update(requestId, { replaceRules: rules });
+    },
 
-// TODO: [TSUrlFilter] wrap filteringLog to use it like:
-// onReplaceRulesApplied( .. ) {
-//     adguard.requestContextStorage.update(requestId, { replaceRules: appliedRules });
-// }
-//
-// onContentRuleApplied( .. ) {
-//     adguard.requestContextStorage.bindContentRule(requestId, rule, adguard.utils.strings.elementToString(element));
-// }
+    /**
+     * Called on modification started
+     *
+     * @param requestId
+     */
+    onModificationStarted(requestId) {
+        // Call this method to prevent removing context on request complete/error event
+        adguard.requestContextStorage.onContentModificationStarted(requestId);
+    },
+
+    /**
+     * Called on modification finished
+     *
+     * @param requestId
+     */
+    onModificationFinished(requestId) {
+        adguard.requestContextStorage.onContentModificationFinished(requestId);
+    },
+};
+
+adguard.contentFiltering = new ContentFiltering(wrapper);

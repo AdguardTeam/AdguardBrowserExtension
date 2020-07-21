@@ -8946,6 +8946,7 @@ var MatchingResult = /** @class */ (function () {
         if (!this.replaceRules) {
             return [];
         }
+        // TODO: Look up for whitelist $content rule
         return MatchingResult.filterAdvancedModifierRules(this.replaceRules, function (rule) { return (function (x) { return x.getAdvancedModifierValue() === rule.getAdvancedModifierValue(); }); });
     };
     /**
@@ -14130,7 +14131,7 @@ var ContentFiltering = /** @class */ (function () {
                     var element = elements[j];
                     if (element.parentNode && deleted.indexOf(element) < 0) {
                         element.parentNode.removeChild(element);
-                        this.filteringLog.addHtmlEvent(request.tabId, element.innerHTML, request.url, rule);
+                        this.filteringLog.addHtmlEvent(request.tabId, request.requestId, element.innerHTML, request.url, rule);
                         deleted.push(element);
                     }
                 }
@@ -14180,7 +14181,7 @@ var ContentFiltering = /** @class */ (function () {
             result = modifiedContent;
         }
         if (appliedRules.length > 0) {
-            this.filteringLog.addReplaceRulesEvent(request.tabId, request.url, appliedRules);
+            this.filteringLog.addReplaceRulesEvent(request.tabId, request.requestId, request.url, appliedRules);
         }
         return result;
     };
@@ -14221,6 +14222,7 @@ var ContentFiltering = /** @class */ (function () {
      */
     ContentFiltering.prototype.applyRulesToContent = function (request, contentRules, replaceRules, content) {
         var result = content;
+        this.filteringLog.onModificationStarted(request.requestId);
         if (contentRules && contentRules.length > 0) {
             var doc = this.documentParser.parse(content);
             if (doc !== null) {
@@ -14237,6 +14239,7 @@ var ContentFiltering = /** @class */ (function () {
         if (replaceRules) {
             result = this.applyReplaceRules(request, result, replaceRules);
         }
+        this.filteringLog.onModificationFinished(request.requestId);
         return result;
     };
     /**

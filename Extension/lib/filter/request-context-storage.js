@@ -301,7 +301,7 @@
 
             if (replaceRules) {
                 adguard.filteringLog.bindReplaceRulesToHttpRequestEvent(tab, replaceRules, context.eventId);
-                ruleHitsRecords.push(replaceRules);
+                ruleHitsRecords = ruleHitsRecords.concat(replaceRules);
             }
 
             if (contentRules) {
