@@ -14091,16 +14091,21 @@ var ContentFiltering = /** @class */ (function () {
      * @param charset
      * @param callback
      */
-    ContentFiltering.handleResponse = function (streamFilter, request, charset, callback) {
+    ContentFiltering.prototype.handleResponse = function (streamFilter, request, charset, callback) {
+        var _this = this;
         try {
             // eslint-disable-next-line max-len
             var contentFilter_1 = new ContentFilter(streamFilter, request.requestId, request.requestType, charset, function (content) {
+                _this.filteringLog.onModificationStarted(request.requestId);
                 try {
                     // eslint-disable-next-line no-param-reassign
                     content = callback(content);
                 }
                 catch (ex) {
                     logger.error("Error while applying content filter to " + request.url + ". Error: " + ex);
+                }
+                finally {
+                    _this.filteringLog.onModificationFinished(request.requestId);
                 }
                 contentFilter_1.write(content);
             });
@@ -14222,7 +14227,6 @@ var ContentFiltering = /** @class */ (function () {
      */
     ContentFiltering.prototype.applyRulesToContent = function (request, contentRules, replaceRules, content) {
         var result = content;
-        this.filteringLog.onModificationStarted(request.requestId);
         if (contentRules && contentRules.length > 0) {
             var doc = this.documentParser.parse(content);
             if (doc !== null) {
@@ -14239,7 +14243,6 @@ var ContentFiltering = /** @class */ (function () {
         if (replaceRules) {
             result = this.applyReplaceRules(request, result, replaceRules);
         }
-        this.filteringLog.onModificationFinished(request.requestId);
         return result;
     };
     /**
@@ -14280,7 +14283,7 @@ var ContentFiltering = /** @class */ (function () {
         if (!htmlRulesToApply && !replaceRulesToApply) {
             return;
         }
-        ContentFiltering.handleResponse(streamFilter, request, charset, function (content) { return _this.applyRulesToContent(request, htmlRulesToApply, replaceRulesToApply, content); });
+        this.handleResponse(streamFilter, request, charset, function (content) { return _this.applyRulesToContent(request, htmlRulesToApply, replaceRulesToApply, content); });
     };
     /**
      * Contains collection of accepted request types for replace rules

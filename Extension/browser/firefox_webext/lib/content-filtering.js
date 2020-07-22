@@ -26,8 +26,6 @@ const wrapper = {
      */
     addHtmlEvent(tabId, requestId, elementString, frameUrl, rule) {
         adguard.requestContextStorage.bindContentRule(requestId, rule, elementString);
-
-        // TODO: [TSUrlFilter] fix logging content rules
     },
 
     /**
