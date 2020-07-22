@@ -253,7 +253,6 @@ QUnit.test('Redirect rules', (assert) => {
     assert.ok(imgRule != null);
     assert.equal(imgRule.getText(), blockRedirectRule);
 
-    // TODO: [TSUrlFilter] Move to redirect-service tests
     // const invalidTitle = 'space';
     // const validTitle = 'noopjs';
     // // Test that rule correct url has been build
