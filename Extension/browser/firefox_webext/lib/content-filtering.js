@@ -14,9 +14,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-const wrapper = {
+
+/**
+ * Listens content filtering callbacks
+ */
+const modificationsListener = {
     /**
-     * Add html rule event to log
+     * On html rule applied
      *
      * @param {Number} tabId - tab id
      * @param {Number} requestId
@@ -24,19 +28,19 @@ const wrapper = {
      * @param {String} frameUrl - Frame url
      * @param {Object} rule - html rule
      */
-    addHtmlEvent(tabId, requestId, elementString, frameUrl, rule) {
+    onHtmlRuleApplied(tabId, requestId, elementString, frameUrl, rule) {
         adguard.requestContextStorage.bindContentRule(requestId, rule, elementString);
     },
 
     /**
-     * Add html rule event to log
+     * On replace rules applied
      *
      * @param {Number} tabId - tab id
      * @param {Number} requestId
      * @param {String} frameUrl - Frame url
      * @param {Object} rules - cookie rule
      */
-    addReplaceRulesEvent(tabId, requestId, frameUrl, rules) {
+    onReplaceRulesApplied(tabId, requestId, frameUrl, rules) {
         adguard.requestContextStorage.update(requestId, { replaceRules: rules });
     },
 
@@ -60,4 +64,4 @@ const wrapper = {
     },
 };
 
-adguard.contentFiltering = new ContentFiltering(wrapper);
+adguard.contentFiltering = new ContentFiltering(modificationsListener);

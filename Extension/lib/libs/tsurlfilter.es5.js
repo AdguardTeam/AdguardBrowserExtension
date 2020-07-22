@@ -14072,14 +14072,14 @@ var ContentFiltering = /** @class */ (function () {
     /**
      * Constructor
      *
-     * @param filteringLog
+     * @param modificationsListener
      */
-    function ContentFiltering(filteringLog) {
+    function ContentFiltering(modificationsListener) {
         /**
          * Document parser
          */
         this.documentParser = new DocumentParser();
-        this.filteringLog = filteringLog;
+        this.modificationsListener = modificationsListener;
     }
     /**
      * For correctly applying replace or content rules we have to work with the whole response content.
@@ -14096,7 +14096,7 @@ var ContentFiltering = /** @class */ (function () {
         try {
             // eslint-disable-next-line max-len
             var contentFilter_1 = new ContentFilter(streamFilter, request.requestId, request.requestType, charset, function (content) {
-                _this.filteringLog.onModificationStarted(request.requestId);
+                _this.modificationsListener.onModificationStarted(request.requestId);
                 try {
                     // eslint-disable-next-line no-param-reassign
                     content = callback(content);
@@ -14105,7 +14105,7 @@ var ContentFiltering = /** @class */ (function () {
                     logger.error("Error while applying content filter to " + request.url + ". Error: " + ex);
                 }
                 finally {
-                    _this.filteringLog.onModificationFinished(request.requestId);
+                    _this.modificationsListener.onModificationFinished(request.requestId);
                 }
                 contentFilter_1.write(content);
             });
@@ -14136,7 +14136,7 @@ var ContentFiltering = /** @class */ (function () {
                     var element = elements[j];
                     if (element.parentNode && deleted.indexOf(element) < 0) {
                         element.parentNode.removeChild(element);
-                        this.filteringLog.addHtmlEvent(request.tabId, request.requestId, element.innerHTML, request.url, rule);
+                        this.modificationsListener.onHtmlRuleApplied(request.tabId, request.requestId, element.innerHTML, request.url, rule);
                         deleted.push(element);
                     }
                 }
@@ -14186,7 +14186,7 @@ var ContentFiltering = /** @class */ (function () {
             result = modifiedContent;
         }
         if (appliedRules.length > 0) {
-            this.filteringLog.addReplaceRulesEvent(request.tabId, request.requestId, request.url, appliedRules);
+            this.modificationsListener.onReplaceRulesApplied(request.tabId, request.requestId, request.url, appliedRules);
         }
         return result;
     };
