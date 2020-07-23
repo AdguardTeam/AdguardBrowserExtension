@@ -123,150 +123,6 @@ QUnit.test('Important modifier rules', (assert) => {
     assert.equal(result.getText(), important);
 });
 
-QUnit.test('CSP rules', (assert) => {
-    let requestFilter;
-    let result;
-
-    const cspRule = '||xpanama.net^$third-party,csp=connect-src \'none\',domain=~example.org|merriam-webster.com';
-    requestFilter = createRequestFilterWithRules([cspRule]);
-    result = requestFilter.findCspRules(
-        'https://nop.xpanama.net/if.html?adflag=1&cb=kq4iOggNyP',
-        'https://www.merriam-webster.com/',
-        adguard.RequestTypes.DOCUMENT
-    );
-    assert.ok(result.length === 1);
-    assert.equal(result[0].getText(), cspRule);
-
-    result = requestFilter.findCspRules(
-        'https://xpanama.net',
-        'https://example.org',
-        adguard.RequestTypes.DOCUMENT
-    );
-    assert.ok(!result || result.length === 0);
-
-    // Add matching directive whitelist rule
-    const directiveWhiteListRule = '@@||xpanama.net^$csp=connect-src \'none\'';
-    requestFilter = createRequestFilterWithRules([cspRule, directiveWhiteListRule]);
-    result = requestFilter.findCspRules(
-        'https://xpanama.net',
-        'https://www.merriam-webster.com/',
-        adguard.RequestTypes.DOCUMENT
-    );
-    // Specific whitelist rule should be returned
-    assert.ok(result.length === 1);
-    assert.equal(result[0].getText(), directiveWhiteListRule);
-
-    // Add global whitelist rule
-    const globalWhiteListRule = '@@||xpanama.net^$csp';
-    requestFilter = createRequestFilterWithRules([cspRule, directiveWhiteListRule, globalWhiteListRule]);
-    result = requestFilter.findCspRules(
-        'https://xpanama.net', 'https://www.merriam-webster.com/', adguard.RequestTypes.DOCUMENT
-    );
-    // Global whitelist rule should be returned
-    assert.ok(result.length === 1);
-    assert.equal(result[0].getText(), globalWhiteListRule);
-
-    // Add whitelist rule, but with not matched directive
-    const directiveMissWhiteListRule = '@@||xpanama.net^$csp=frame-src \'none\'';
-    requestFilter = createRequestFilterWithRules([cspRule, directiveMissWhiteListRule]);
-    result = requestFilter.findCspRules(
-        'https://xpanama.net', 'https://www.merriam-webster.com/', adguard.RequestTypes.DOCUMENT
-    );
-    assert.ok(result.length === 1);
-    assert.equal(result[0].getText(), cspRule);
-
-    // Add CSP rule with duplicated directive
-    const duplicateCspRule = '||xpanama.net^$third-party,csp=connect-src \'none\'';
-    requestFilter = createRequestFilterWithRules([cspRule, directiveMissWhiteListRule, duplicateCspRule]);
-    result = requestFilter.findCspRules(
-        'https://xpanama.net', 'https://www.merriam-webster.com/', adguard.RequestTypes.DOCUMENT
-    );
-    assert.ok(result.length === 1);
-    assert.ok(result[0].getText() === cspRule || result[0].getText() === duplicateCspRule);
-
-    // Test request type matching
-    const cspRuleSubDocument = '||xpanama.net^$csp=connect-src http:,domain=merriam-webster.com,subdocument';
-    const cspRuleNotSubDocument = '||xpanama.net^$csp=connect-src \'none\',domain=merriam-webster.com,~subdocument';
-    const cspRuleAny = '||xpanama.net^$csp=frame-src \'none\',domain=merriam-webster.com';
-    requestFilter = createRequestFilterWithRules([cspRuleSubDocument, cspRuleNotSubDocument, cspRuleAny]);
-
-    result = requestFilter.findCspRules(
-        'https://nop.xpanama.net/if.html?adflag=1&cb=kq4iOggNyP',
-        'https://www.merriam-webster.com/',
-        adguard.RequestTypes.DOCUMENT
-    );
-    assert.ok(result.length === 2);
-    assert.ok(result[0].getText() === cspRuleAny || result[0].getText() === cspRuleNotSubDocument);
-    assert.ok(result[1].getText() === cspRuleAny || result[1].getText() === cspRuleNotSubDocument);
-
-    result = requestFilter.findCspRules(
-        'https://nop.xpanama.net/if.html?adflag=1&cb=kq4iOggNyP',
-        'https://www.merriam-webster.com/',
-        adguard.RequestTypes.SUBDOCUMENT
-    );
-    assert.ok(result.length === 2);
-    assert.ok(result[0].getText() === cspRuleAny || result[0].getText() === cspRuleSubDocument);
-    assert.ok(result[1].getText() === cspRuleAny || result[1].getText() === cspRuleSubDocument);
-});
-
-QUnit.test('CSP important rules', (assert) => {
-    let requestFilter;
-    let rules;
-
-    // Test important rules
-    const globalWhiteListRule = '@@||xpanama.net^$csp,domain=merriam-webster.com';
-    const directiveWhiteListRule = '@@||xpanama.net^$csp=frame-src \'none\',domain=merriam-webster.com';
-    // eslint-disable-next-line max-len
-    const importantDirectiveWhiteListRule = '@@||xpanama.net^$csp=frame-src \'none\',domain=merriam-webster.com,important';
-    const defaultCspRule = '||xpanama.net^$csp=frame-src \'none\',domain=merriam-webster.com';
-    const importantCspRule = '||xpanama.net^$csp=frame-src \'none\',domain=merriam-webster.com,important';
-
-    function checkCspRules(expected) {
-        rules = requestFilter.findCspRules(
-            'https://nop.xpanama.net/if.html?adflag=1&cb=kq4iOggNyP',
-            'https://www.merriam-webster.com/', adguard.RequestTypes.DOCUMENT
-        );
-        assert.ok(rules.length === 1);
-        assert.equal(rules[0].getText(), expected);
-    }
-
-    requestFilter = createRequestFilterWithRules([
-        globalWhiteListRule,
-        directiveWhiteListRule,
-        importantDirectiveWhiteListRule,
-        defaultCspRule,
-        importantCspRule,
-    ]);
-
-    checkCspRules(globalWhiteListRule);
-
-    requestFilter = createRequestFilterWithRules([
-        directiveWhiteListRule,
-        importantDirectiveWhiteListRule,
-        defaultCspRule,
-        importantCspRule,
-    ]);
-    checkCspRules(importantDirectiveWhiteListRule);
-
-    requestFilter = createRequestFilterWithRules([
-        directiveWhiteListRule,
-        defaultCspRule,
-        importantCspRule,
-    ]);
-    checkCspRules(importantCspRule);
-
-    requestFilter = createRequestFilterWithRules([
-        directiveWhiteListRule,
-        defaultCspRule,
-    ]);
-    checkCspRules(directiveWhiteListRule);
-
-    requestFilter = createRequestFilterWithRules([
-        defaultCspRule,
-    ]);
-    checkCspRules(defaultCspRule);
-});
-
 QUnit.test('Cookie rules', (assert) => {
     const ruleText = '||xpanama.net^$third-party,cookie=c_user,domain=~example.org|merriam-webster.com';
     const requestFilter = createRequestFilterWithRules([ruleText]);
@@ -315,6 +171,8 @@ QUnit.test('Redirect rules', (assert) => {
     assert.ok(imgRule != null);
     assert.equal(imgRule.getText(), blockRedirectRule);
 });
+
+QUnit.module('$badfilter');
 
 QUnit.test('BadFilter option', (assert) => {
     const rule = 'https:*_ad_';
@@ -475,36 +333,150 @@ QUnit.test('BadFilter doesn stop looking for other rules', (assert) => {
     assert.notOk(requestFilter.findRuleForRequest(testUrl, '', adguard.RequestTypes.XMLHTTPREQUEST));
 });
 
-// TODO: [TSUrlFilter] Add blacklist $document modifier
-// QUnit.test('$document modifier', (assert) => {
-//     const rule = '||example.org^$document';
-//
-//     const requestFilter = createRequestFilterWithRules([rule]);
-//     assert.ok(requestFilter.findRuleForRequest(
-//         'https://example.org',
-//         'https://example.org',
-//         adguard.RequestTypes.DOCUMENT
-//     ));
-// });
+QUnit.module('$csp');
 
-QUnit.test('Domain restriction semantic', (assert) => {
-    const url = 'https://example.org/';
+QUnit.test('CSP rules', (assert) => {
+    let requestFilter;
+    let result;
 
-    const cspRule = '$domain=example.org,csp=script-src \'none\'';
-    const cookieRule = '$cookie=test,domain=example.org';
+    const cspRule = '||xpanama.net^$third-party,csp=connect-src \'none\',domain=~example.org|merriam-webster.com';
+    requestFilter = createRequestFilterWithRules([cspRule]);
+    result = requestFilter.findCspRules(
+        'https://nop.xpanama.net/if.html?adflag=1&cb=kq4iOggNyP',
+        'https://www.merriam-webster.com/',
+        adguard.RequestTypes.DOCUMENT
+    );
+    assert.ok(result.length === 1);
+    assert.equal(result[0].getText(), cspRule);
 
-    const requestFilter = createRequestFilterWithRules([cspRule, cookieRule]);
-    const cspResultDocument = requestFilter.findCspRules(url, url, adguard.RequestTypes.DOCUMENT);
-    assert.equal(cspResultDocument.length, 1);
-    assert.equal(cspResultDocument[0].getText(), cspRule);
+    result = requestFilter.findCspRules(
+        'https://xpanama.net',
+        'https://example.org',
+        adguard.RequestTypes.DOCUMENT
+    );
+    assert.ok(!result || result.length === 0);
 
-    const cspResultSubDocument = requestFilter.findCspRules(url, url, adguard.RequestTypes.SUBDOCUMENT);
-    assert.equal(cspResultSubDocument.length, 1);
-    assert.equal(cspResultSubDocument[0].getText(), cspRule);
+    // Add matching directive whitelist rule
+    const directiveWhiteListRule = '@@||xpanama.net^$csp=connect-src \'none\'';
+    requestFilter = createRequestFilterWithRules([cspRule, directiveWhiteListRule]);
+    result = requestFilter.findCspRules(
+        'https://xpanama.net',
+        'https://www.merriam-webster.com/',
+        adguard.RequestTypes.DOCUMENT
+    );
+    // Specific whitelist rule should be returned
+    assert.ok(result.length === 1);
+    assert.equal(result[0].getText(), directiveWhiteListRule);
 
-    const cookieResult = requestFilter.findCookieRules(url, url, adguard.RequestTypes.DOCUMENT);
-    assert.equal(cookieResult.length, 1);
-    assert.equal(cookieResult[0].getText(), cookieRule);
+    // Add global whitelist rule
+    const globalWhiteListRule = '@@||xpanama.net^$csp';
+    requestFilter = createRequestFilterWithRules([cspRule, directiveWhiteListRule, globalWhiteListRule]);
+    result = requestFilter.findCspRules(
+        'https://xpanama.net', 'https://www.merriam-webster.com/', adguard.RequestTypes.DOCUMENT
+    );
+    // Global whitelist rule should be returned
+    assert.ok(result.length === 1);
+    assert.equal(result[0].getText(), globalWhiteListRule);
+
+    // Add whitelist rule, but with not matched directive
+    const directiveMissWhiteListRule = '@@||xpanama.net^$csp=frame-src \'none\'';
+    requestFilter = createRequestFilterWithRules([cspRule, directiveMissWhiteListRule]);
+    result = requestFilter.findCspRules(
+        'https://xpanama.net', 'https://www.merriam-webster.com/', adguard.RequestTypes.DOCUMENT
+    );
+    assert.ok(result.length === 1);
+    assert.equal(result[0].getText(), cspRule);
+
+    // Add CSP rule with duplicated directive
+    const duplicateCspRule = '||xpanama.net^$third-party,csp=connect-src \'none\'';
+    requestFilter = createRequestFilterWithRules([cspRule, directiveMissWhiteListRule, duplicateCspRule]);
+    result = requestFilter.findCspRules(
+        'https://xpanama.net', 'https://www.merriam-webster.com/', adguard.RequestTypes.DOCUMENT
+    );
+    assert.ok(result.length === 1);
+    assert.ok(result[0].getText() === cspRule || result[0].getText() === duplicateCspRule);
+
+    // Test request type matching
+    const cspRuleSubDocument = '||xpanama.net^$csp=connect-src http:,domain=merriam-webster.com,subdocument';
+    const cspRuleNotSubDocument = '||xpanama.net^$csp=connect-src \'none\',domain=merriam-webster.com,~subdocument';
+    const cspRuleAny = '||xpanama.net^$csp=frame-src \'none\',domain=merriam-webster.com';
+    requestFilter = createRequestFilterWithRules([cspRuleSubDocument, cspRuleNotSubDocument, cspRuleAny]);
+
+    result = requestFilter.findCspRules(
+        'https://nop.xpanama.net/if.html?adflag=1&cb=kq4iOggNyP',
+        'https://www.merriam-webster.com/',
+        adguard.RequestTypes.DOCUMENT
+    );
+    assert.ok(result.length === 2);
+    assert.ok(result[0].getText() === cspRuleAny || result[0].getText() === cspRuleNotSubDocument);
+    assert.ok(result[1].getText() === cspRuleAny || result[1].getText() === cspRuleNotSubDocument);
+
+    result = requestFilter.findCspRules(
+        'https://nop.xpanama.net/if.html?adflag=1&cb=kq4iOggNyP',
+        'https://www.merriam-webster.com/',
+        adguard.RequestTypes.SUBDOCUMENT
+    );
+    assert.ok(result.length === 2);
+    assert.ok(result[0].getText() === cspRuleAny || result[0].getText() === cspRuleSubDocument);
+    assert.ok(result[1].getText() === cspRuleAny || result[1].getText() === cspRuleSubDocument);
+});
+
+QUnit.test('CSP important rules', (assert) => {
+    let requestFilter;
+    let rules;
+
+    // Test important rules
+    const globalWhiteListRule = '@@||xpanama.net^$csp,domain=merriam-webster.com';
+    const directiveWhiteListRule = '@@||xpanama.net^$csp=frame-src \'none\',domain=merriam-webster.com';
+    // eslint-disable-next-line max-len
+    const importantDirectiveWhiteListRule = '@@||xpanama.net^$csp=frame-src \'none\',domain=merriam-webster.com,important';
+    const defaultCspRule = '||xpanama.net^$csp=frame-src \'none\',domain=merriam-webster.com';
+    const importantCspRule = '||xpanama.net^$csp=frame-src \'none\',domain=merriam-webster.com,important';
+
+    function checkCspRules(expected) {
+        rules = requestFilter.findCspRules(
+            'https://nop.xpanama.net/if.html?adflag=1&cb=kq4iOggNyP',
+            'https://www.merriam-webster.com/', adguard.RequestTypes.DOCUMENT
+        );
+        assert.ok(rules.length === 1);
+        assert.equal(rules[0].getText(), expected);
+    }
+
+    requestFilter = createRequestFilterWithRules([
+        globalWhiteListRule,
+        directiveWhiteListRule,
+        importantDirectiveWhiteListRule,
+        defaultCspRule,
+        importantCspRule,
+    ]);
+
+    checkCspRules(globalWhiteListRule);
+
+    requestFilter = createRequestFilterWithRules([
+        directiveWhiteListRule,
+        importantDirectiveWhiteListRule,
+        defaultCspRule,
+        importantCspRule,
+    ]);
+    checkCspRules(importantDirectiveWhiteListRule);
+
+    requestFilter = createRequestFilterWithRules([
+        directiveWhiteListRule,
+        defaultCspRule,
+        importantCspRule,
+    ]);
+    checkCspRules(importantCspRule);
+
+    requestFilter = createRequestFilterWithRules([
+        directiveWhiteListRule,
+        defaultCspRule,
+    ]);
+    checkCspRules(directiveWhiteListRule);
+
+    requestFilter = createRequestFilterWithRules([
+        defaultCspRule,
+    ]);
+    checkCspRules(defaultCspRule);
 });
 
 QUnit.test('CSP rules are found correctly', (assert) => {
@@ -535,6 +507,147 @@ QUnit.test('CSP rules are found correctly', (assert) => {
     assert.ok(search2.length === 2);
     assert.equal(search2[0].getText(), ruleText1);
     assert.equal(search2[1].getText(), ruleText3);
+});
+
+QUnit.module('Stylesheets');
+
+QUnit.test('Css Exception Rules', (assert) => {
+    const rule = '##.sponsored';
+    const rule1 = 'adguard.com#@#.sponsored';
+
+    const testUrl = 'http://adguard.com';
+
+    let filter = createRequestFilterWithRules([rule]);
+    let { css } = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll);
+    assert.equal(css.length, 1);
+    assert.equal(css[0].trim(), '.sponsored { display: none!important; }');
+
+    filter = createRequestFilterWithRules([rule, rule1]);
+    css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll).css;
+    assert.equal(css.length, 0);
+
+    css = filter.getSelectorsForUrl('http://another.com', CosmeticOption.CosmeticOptionAll).css;
+    assert.equal(css.length, 1);
+    assert.equal(css[0].trim(), '.sponsored { display: none!important; }');
+});
+
+QUnit.test('Css GenericHide Exception Rules', (assert) => {
+    const genericOne = '##.generic-one';
+    const genericTwo = '~google.com,~yahoo.com###generic';
+    const nonGeneric = 'adguard.com##.non-generic';
+    const exceptionRule = 'adguard.com#@#.generic-one';
+    const genericHideRule = '@@||adguard.com^$generichide';
+    const elemHideRule = '@@||adguard.com^$elemhide';
+
+    const testUrl = 'http://adguard.com';
+    const anOtherUrl = 'http://another.com';
+
+    let filter;
+    let css;
+
+    filter = createRequestFilterWithRules([genericOne]);
+    css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll).css;
+    assert.equal(css.length, 1);
+    assert.equal(css[0].trim(), '.generic-one { display: none!important; }');
+
+    filter = createRequestFilterWithRules([genericOne, genericTwo]);
+    css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll).css;
+    assert.equal(css.length, 1);
+    assert.equal(css[0].trim(), '.generic-one, #generic { display: none!important; }');
+
+    filter = createRequestFilterWithRules([genericOne, genericTwo, nonGeneric]);
+    css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll).css;
+    assert.equal(css.length, 1);
+    assert.equal(css[0].trim(), '.generic-one, #generic, .non-generic { display: none!important; }');
+
+    css = filter.getSelectorsForUrl(anOtherUrl, CosmeticOption.CosmeticOptionAll).css;
+    assert.equal(css.length, 1);
+    assert.equal(css[0].trim(), '.generic-one, #generic { display: none!important; }');
+
+    filter = createRequestFilterWithRules([genericOne, genericTwo, nonGeneric, exceptionRule]);
+    css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll).css;
+    assert.equal(css.length, 1);
+    assert.equal(css[0].trim(), '#generic, .non-generic { display: none!important; }');
+
+    css = filter.getSelectorsForUrl(anOtherUrl, CosmeticOption.CosmeticOptionAll).css;
+    assert.equal(css.length, 1);
+    assert.equal(css[0].trim(), '.generic-one, #generic { display: none!important; }');
+
+    filter = createRequestFilterWithRules([genericOne, genericTwo, nonGeneric, exceptionRule, genericHideRule]);
+    css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll).css;
+    assert.equal(css.length, 1);
+    assert.equal(css[0].trim(), '#generic, .non-generic { display: none!important; }');
+    css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionCSS).css;
+    assert.equal(css.length, 1);
+    assert.equal(css[0].trim(), '.non-generic { display: none!important; }');
+
+    css = filter.getSelectorsForUrl(anOtherUrl, CosmeticOption.CosmeticOptionAll).css;
+    assert.equal(css.length, 1);
+    assert.equal(css[0].trim(), '.generic-one, #generic { display: none!important; }');
+    css = filter.getSelectorsForUrl(anOtherUrl, CosmeticOption.CosmeticOptionCSS).css;
+    assert.equal(css.length, 0);
+
+    filter = createRequestFilterWithRules([genericOne, genericTwo, nonGeneric, genericHideRule]);
+    css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll).css;
+    assert.equal(css.length, 1);
+    assert.equal(css[0].trim(), '.generic-one, #generic, .non-generic { display: none!important; }');
+    css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionCSS).css;
+    assert.equal(css.length, 1);
+    assert.equal(css[0].trim(), '.non-generic { display: none!important; }');
+
+    css = filter.getSelectorsForUrl(anOtherUrl, CosmeticOption.CosmeticOptionAll).css;
+    assert.equal(css.length, 1);
+    assert.equal(css[0].trim(), '.generic-one, #generic { display: none!important; }');
+    css = filter.getSelectorsForUrl(anOtherUrl, CosmeticOption.CosmeticOptionCSS).css;
+    assert.equal(css.length, 0);
+
+    filter = createRequestFilterWithRules([genericOne, genericTwo, nonGeneric, genericHideRule, elemHideRule]);
+    css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll).css;
+    assert.equal(css.length, 1);
+    assert.equal(css[0].trim(), '.generic-one, #generic, .non-generic { display: none!important; }');
+    css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionCSS).css;
+    assert.equal(css.length, 1);
+    assert.equal(css[0].trim(), '.non-generic { display: none!important; }');
+
+    css = filter.getSelectorsForUrl(anOtherUrl, CosmeticOption.CosmeticOptionAll).css;
+    assert.equal(css.length, 1);
+    assert.equal(css[0].trim(), '.generic-one, #generic { display: none!important; }');
+    css = filter.getSelectorsForUrl(anOtherUrl, CosmeticOption.CosmeticOptionCSS).css;
+    assert.equal(css.length, 0);
+});
+
+QUnit.module('Misc');
+
+// TODO: [TSUrlFilter] Add blacklist $document modifier
+// QUnit.test('$document modifier', (assert) => {
+//     const rule = '||example.org^$document';
+//
+//     const requestFilter = createRequestFilterWithRules([rule]);
+//     assert.ok(requestFilter.findRuleForRequest(
+//         'https://example.org',
+//         'https://example.org',
+//         adguard.RequestTypes.DOCUMENT
+//     ));
+// });
+
+QUnit.test('Domain restriction semantic', (assert) => {
+    const url = 'https://example.org/';
+
+    const cspRule = '$domain=example.org,csp=script-src \'none\'';
+    const cookieRule = '$cookie=test,domain=example.org';
+
+    const requestFilter = createRequestFilterWithRules([cspRule, cookieRule]);
+    const cspResultDocument = requestFilter.findCspRules(url, url, adguard.RequestTypes.DOCUMENT);
+    assert.equal(cspResultDocument.length, 1);
+    assert.equal(cspResultDocument[0].getText(), cspRule);
+
+    const cspResultSubDocument = requestFilter.findCspRules(url, url, adguard.RequestTypes.SUBDOCUMENT);
+    assert.equal(cspResultSubDocument.length, 1);
+    assert.equal(cspResultSubDocument[0].getText(), cspRule);
+
+    const cookieResult = requestFilter.findCookieRules(url, url, adguard.RequestTypes.DOCUMENT);
+    assert.equal(cookieResult.length, 1);
+    assert.equal(cookieResult[0].getText(), cookieRule);
 });
 
 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1586
