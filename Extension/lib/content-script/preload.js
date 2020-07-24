@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global contentPage, HTMLDocument, XMLDocument, ElementCollapser, adguardContent, AGUrlFilter */
+/* global contentPage, HTMLDocument, XMLDocument, ElementCollapser, adguardContent, TSUrlFilter */
 (function () {
 
     var requestTypeMap = {
@@ -196,7 +196,7 @@
         }
 
         if (response.collectRulesHits) {
-            cssHitsCounter = new AGUrlFilter.CssHitsCounter((stats) => {
+            cssHitsCounter = new TSUrlFilter.CssHitsCounter((stats) => {
                 getContentPage().sendMessage({ type: 'saveCssHitStats', stats });
             });
         }
@@ -275,7 +275,7 @@
             return;
         }
 
-        const extcss = new AGUrlFilter.ExtendedCss({
+        const extcss = new TSUrlFilter.ExtendedCss({
             styleSheet,
             beforeStyleApplied: (cssHitsCounter ? cssHitsCounter.countAffectedByExtendedCss.bind(cssHitsCounter) : el => el),
         });
