@@ -101,8 +101,8 @@ adguard.webRequestService = (function (adguard) {
 
         // Check what exactly is disabled by this rule
 
-        var elemHideFlag = whitelistRule && whitelistRule.isOptionEnabled(NetworkRuleOption.Elemhide);
-        var genericHideFlag = whitelistRule && whitelistRule.isOptionEnabled(NetworkRuleOption.Generichide);
+        const elemHideFlag = whitelistRule && whitelistRule.isOptionEnabled(NetworkRuleOption.Elemhide);
+        const genericHideFlag = whitelistRule && whitelistRule.isOptionEnabled(NetworkRuleOption.Generichide);
 
         // TODO: [TSUrlFilter] use matching result getCosmeticOption
 
@@ -115,12 +115,12 @@ adguard.webRequestService = (function (adguard) {
             if (!elemHideFlag) {
                 cssFilterOptions = CosmeticOption.CosmeticOptionCSS;
                 if (genericHideFlag) {
-                    cssFilterOptions |= CosmeticOption.CosmeticOptionGenericCSS;
+                    cssFilterOptions &= ~CosmeticOption.CosmeticOptionGenericCSS;
                 }
             }
         } else {
             if (!elemHideFlag && genericHideFlag) {
-                cssFilterOptions |= CosmeticOption.CosmeticOptionGenericCSS;
+                cssFilterOptions &= ~CosmeticOption.CosmeticOptionGenericCSS;
             }
         }
 
