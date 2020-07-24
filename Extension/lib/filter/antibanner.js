@@ -585,12 +585,7 @@ adguard.antiBannerService = (function (adguard) {
                 const isTrustedFilter = adguard.subscriptions.isTrustedFilter(filterId);
                 const rulesTexts = rulesFilterMap[filterId].join('\n');
 
-                // TODO: [TSUrlFilter] Move
-                // This supposed to be done then rulesText is downloaded, before saving to local file
-                // Rules text will be splitted and processed line by line
-                const converted = RuleConverter.convertRules(rulesTexts);
-
-                lists.push(new StringRuleList(filterId, converted, false, !isTrustedFilter));
+                lists.push(new StringRuleList(filterId, rulesTexts, false, !isTrustedFilter));
             }
 
             adguard.application.startEngine(lists);
@@ -815,8 +810,11 @@ adguard.antiBannerService = (function (adguard) {
                 }
             }
 
-            adguard.console.debug('Save {0} rules to filter {1}', loadedRulesText.length, filterId);
-            adguard.rulesStorage.write(filterId, loadedRulesText, () => {
+            adguard.console.debug('Converting {0} rules for filter {1}', loadedRulesText.length, filterId);
+            const converted = RuleConverter.convertRules(loadedRulesText.join('\n')).split('\n');
+
+            adguard.console.debug('Saving {0} rules to filter {1}', converted.length, filterId);
+            adguard.rulesStorage.write(filterId, converted, () => {
                 dfd.resolve();
                 if (filterId === adguard.utils.filters.USER_FILTER_ID) {
                     adguard.listeners.notifyListeners(
@@ -1169,7 +1167,6 @@ adguard.requestFilter = (function (adguard) {
 
 /**
  * Helper class for working with filters metadata storage (local storage)
- * //TODO: Duplicated in filters-storage.js
  */
 adguard.filtersState = (function (adguard) {
     const FILTERS_STATE_PROP = 'filters-state';

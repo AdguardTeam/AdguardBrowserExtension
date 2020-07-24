@@ -277,6 +277,40 @@ adguard.applicationUpdateService = (function (adguard) {
     }
 
     /**
+     * From that version we store already converted rule texts in storage
+     */
+    function onUpdateRuleConverter() {
+        const dfd = new adguard.utils.Promise();
+
+        const filtersStateInfo = adguard.filtersState.getFiltersState();
+        const installedFiltersIds = Object.keys(filtersStateInfo)
+            .map(filterId => Number.parseInt(filterId, 10));
+
+        const reloadRulesPromises = installedFiltersIds.map(filterId => new Promise((resolve) => {
+            adguard.rulesStorage.read(filterId, (loadedRulesText) => {
+                if (!loadedRulesText) {
+                    loadedRulesText = [];
+                }
+
+                // eslint-disable-next-line max-len
+                adguard.console.info('Reloading and converting {0} rules for filter {1}', loadedRulesText.length, filterId);
+                const converted = RuleConverter.convertRules(loadedRulesText.join('\n')).split('\n');
+
+                adguard.console.debug('Saving {0} rules to filter {1}', converted.length, filterId);
+                adguard.rulesStorage.write(filterId, converted, () => {
+                    resolve();
+                });
+            });
+        }));
+
+        Promise.all(reloadRulesPromises).then(() => {
+            dfd.resolve();
+        });
+
+        return dfd;
+    }
+
+    /**
      * Function removes obsolete filters from the storage
      * @returns {Promise<any>}
      */
@@ -358,6 +392,9 @@ adguard.applicationUpdateService = (function (adguard) {
         }
         if (adguard.utils.browser.isGreaterVersion('3.3.5', runInfo.prevVersion)) {
             methods.push(handleDefaultUpdatePeriodSetting);
+        }
+        if (adguard.utils.browser.isGreaterVersion('3.5.6', runInfo.prevVersion)) {
+            methods.push(onUpdateRuleConverter);
         }
 
         // On every update remove if necessary obsolete filters
