@@ -254,9 +254,9 @@
             let result = this.matchingResultsCache.searchRequestCache(requestUrl, refHost, requestType);
             if (!result) {
                 result = this.createMatchingResult(requestUrl, referrer, requestType);
-            }
 
-            this.matchingResultsCache.saveResultToCache(requestUrl, result, refHost, requestType);
+                this.matchingResultsCache.saveResultToCache(requestUrl, result, refHost, requestType);
+            }
 
             return result;
         },

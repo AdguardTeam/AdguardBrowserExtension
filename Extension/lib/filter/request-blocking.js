@@ -66,7 +66,6 @@ adguard.webRequestService = (function (adguard) {
      *
      * @param tab                       Tab data
      * @param documentUrl               Document URL
-     * @param cssFilterOptions          Bitmask
      * @param {boolean} retrieveScripts Indicates whether to retrieve JS rules or not
      *
      * When cssFilterOptions and retrieveScripts are undefined, we handle it in a special way
@@ -74,7 +73,7 @@ adguard.webRequestService = (function (adguard) {
      *
      * @returns {SelectorsAndScripts} an object with the selectors and scripts to be injected into the page
      */
-    const processGetSelectorsAndScripts = function (tab, documentUrl, cssFilterOptions, retrieveScripts) {
+    const processGetSelectorsAndScripts = function (tab, documentUrl, retrieveScripts) {
         const result = Object.create(null);
 
         if (!tab) {
@@ -90,62 +89,25 @@ adguard.webRequestService = (function (adguard) {
             return result;
         }
 
-        // Looking for the whitelist rule
-        let whitelistRule = adguard.frames.getFrameWhiteListRule(tab);
-        if (!whitelistRule) {
-            // Check whitelist for current frame
-            const mainFrameUrl = adguard.frames.getMainFrameUrl(tab);
-            whitelistRule = adguard.requestFilter.findWhiteListRule(documentUrl, mainFrameUrl, adguard.RequestTypes.DOCUMENT);
-        }
-
-
-        // Check what exactly is disabled by this rule
-
-        const elemHideFlag = whitelistRule && whitelistRule.isOptionEnabled(NetworkRuleOption.Elemhide);
-        const genericHideFlag = whitelistRule && whitelistRule.isOptionEnabled(NetworkRuleOption.Generichide);
-
-        // TODO: [TSUrlFilter] use matching result getCosmeticOption
-
-        // content-message-handler calls it in this way
-        if (typeof cssFilterOptions === 'undefined' && typeof retrieveScripts === 'undefined') {
-            // Build up default flags.
-            const canUseInsertCSSAndExecuteScript = adguard.prefs.features.canUseInsertCSSAndExecuteScript;
-            // If tabs.executeScript is unavailable, retrieve JS rules now.
-            retrieveScripts = !canUseInsertCSSAndExecuteScript;
-            if (!elemHideFlag) {
-                cssFilterOptions = CosmeticOption.CosmeticOptionCSS;
-                if (genericHideFlag) {
-                    cssFilterOptions &= ~CosmeticOption.CosmeticOptionGenericCSS;
-                }
-            }
-        } else {
-            if (!elemHideFlag && genericHideFlag) {
-                cssFilterOptions &= ~CosmeticOption.CosmeticOptionGenericCSS;
-            }
-        }
-
-        var retrieveSelectors = !elemHideFlag;
-
-        // It's important to check this after the recordRuleHit call
-        // as otherwise we will never record $document rules hit for domain
         if (adguard.frames.isTabWhiteListed(tab)) {
             return result;
         }
 
-        if (retrieveSelectors) {
-            result.collapseAllElements = adguard.requestFilter.shouldCollapseAllElements();
-            result.selectors = adguard.requestFilter.getSelectorsForUrl(documentUrl, cssFilterOptions);
+        const matchingResult = adguard.requestFilter.getRequestFilter().getMatchingResult(
+            documentUrl, documentUrl, adguard.RequestTypes.DOCUMENT
+        );
+        const cosmeticOptions = matchingResult.getCosmeticOption();
+
+        result.collapseAllElements = adguard.requestFilter.shouldCollapseAllElements();
+        result.selectors = adguard.requestFilter.getSelectorsForUrl(documentUrl, cosmeticOptions);
+
+        const canUseInsertCSSAndExecuteScript = adguard.prefs.features.canUseInsertCSSAndExecuteScript;
+        if (retrieveScripts || !canUseInsertCSSAndExecuteScript) {
+            result.scripts = adguard.requestFilter.getScriptsStringForUrl(documentUrl, tab);
         }
 
-        if (retrieveScripts) {
-            var jsInjectFlag = whitelistRule && whitelistRule.isOptionEnabled(NetworkRuleOption.Jsinject);
-            if (!jsInjectFlag) {
-                // JS rules aren't disabled, returning them
-                result.scripts = adguard.requestFilter.getScriptsStringForUrl(documentUrl, tab);
-            }
-        }
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1337
-        result.collectRulesHits = elemHideFlag ? false : adguard.webRequestService.isCollectingCosmeticRulesHits(tab);
+        result.collectRulesHits = adguard.webRequestService.isCollectingCosmeticRulesHits(tab);
 
         return result;
     };
