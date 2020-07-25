@@ -1,7 +1,7 @@
 /* global QUnit */
 
 const { test } = QUnit;
-const { rules: { documentFilterService } } = adguard;
+const { documentFilterService } = adguard;
 
 // Mocks extension api;
 adguard.getURL = url => url;

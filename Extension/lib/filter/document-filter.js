@@ -17,7 +17,7 @@
 
 /* global adguard */
 
-(function (adguard, api) {
+(function (adguard) {
     const { utils: { url: urlUtils } } = adguard;
 
     const trustedCache = {
@@ -108,5 +108,5 @@
         };
     }
 
-    api.documentFilterService = documentFilterService();
-})(adguard, adguard.rules);
+    adguard.documentFilterService = documentFilterService();
+})(adguard);

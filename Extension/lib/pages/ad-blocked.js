@@ -32,7 +32,7 @@ const fillBlockRule = (blockRule) => {
 };
 
 const handleProceedAnyway = (url, rule) => {
-    adguard.rules.documentFilterService.addToTrusted(url, rule);
+    adguard.documentFilterService.addToTrusted(url, rule);
 };
 
 document.addEventListener('DOMContentLoaded', async () => {

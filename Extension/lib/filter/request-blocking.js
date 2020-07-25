@@ -226,7 +226,7 @@ adguard.webRequestService = (function (adguard) {
                 || requestType === adguard.RequestTypes.SUBDOCUMENT;
 
             if (isDocumentLevel && isDocumentBlockingRule(requestRule)) {
-                const documentBlockedPage = adguard.rules.documentFilterService.getDocumentBlockPageUrl(
+                const documentBlockedPage = adguard.documentFilterService.getDocumentBlockPageUrl(
                     requestUrl,
                     requestRule.getText()
                 );
