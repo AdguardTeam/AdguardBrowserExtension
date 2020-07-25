@@ -26,7 +26,7 @@
  *    or from this DEFAULT_SCRIPT_RULES object
  */
 
-(function (api) {
+adguard.LocalScriptRulesService = (function () {
     let DEFAULT_SCRIPT_RULES = Object.create(null);
 
     /**
@@ -58,8 +58,8 @@
         return ruleText in DEFAULT_SCRIPT_RULES;
     };
 
-    api.LocalScriptRulesService = {
+    return {
         setLocalScriptRules,
         isLocal,
     };
-})(adguard.rules);
+})();

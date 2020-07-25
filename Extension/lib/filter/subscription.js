@@ -699,7 +699,7 @@ adguard.subscriptions = (function (adguard) {
      * @private
      */
     async function loadLocalScriptRules() {
-        const localScriptRulesService = adguard.rules.LocalScriptRulesService;
+        const localScriptRulesService = adguard.LocalScriptRulesService;
         if (typeof localScriptRulesService !== 'undefined') {
             const json = await adguard.backend.loadLocalScriptRules();
             localScriptRulesService.setLocalScriptRules(json);

@@ -24,7 +24,7 @@ export const OPTIMIZED_FILTER_DOWNLOAD_URL_FORMAT = `${EXTENSION_FILTERS_SERVER_
 
 export const LOCAL_SCRIPT_RULES_COMMENT = 'By the rules of AMO and addons.opera.com we cannot use remote scripts (and our JS injection rules could be counted as remote scripts).\r\n'
         + 'So what we do:\r\n'
-        + '1. We gather all current JS rules in the DEFAULT_SCRIPT_RULES object (see lib/utils/local-script-rules.js)\r\n'
+        + '1. We gather all current JS rules in the DEFAULT_SCRIPT_RULES object (see lib/filter/services/local-script-rules.js)\r\n'
         + '2. We disable JS rules got from remote server\r\n'
         + '3. We allow only custom rules got from the User filter (which user creates manually) or from this DEFAULT_SCRIPT_RULES object';
 

@@ -187,7 +187,7 @@
             const isOpera = adguard.utils.browser.isOperaBrowser();
 
             const selectedScriptRules = scriptRules.filter((scriptRule) => {
-                const isLocal = adguard.rules.LocalScriptRulesService.isLocal(scriptRule.getText());
+                const isLocal = adguard.LocalScriptRulesService.isLocal(scriptRule.getText());
 
                 if (isLocal) {
                     return true;
