@@ -170,8 +170,6 @@
         },
 
         /**
-         * TODO: [TSUrlFilter] Move to scripts-service
-         *
          * Builds the final output string for the specified page.
          * Depending on the browser we either allow or forbid the new remote rules
          * (see how `scriptSource` is used).
