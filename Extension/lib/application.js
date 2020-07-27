@@ -19,7 +19,7 @@ adguard.application = (function (adguard) {
     let engine;
 
     const startEngine = (lists) => {
-        console.log('Starting url filter engine');
+        adguard.console.info('Starting url filter engine');
 
         const ruleStorage = new RuleStorage(lists);
 
@@ -30,12 +30,8 @@ adguard.application = (function (adguard) {
         };
 
         engine = new Engine(ruleStorage, config);
-        // this.dnsEngine = new AGUrlFilter.DnsEngine(ruleStorage);
-        // this.contentFiltering = new AGUrlFilter.ContentFiltering(this.filteringLog);
-        // this.stealthService = new AGUrlFilter.StealthService(stealthConfig);
-        // await this.redirectsService.init();
 
-        console.log('Starting url filter engine..ok');
+        adguard.console.info('Starting url filter engine..ok');
 
         return engine;
     };

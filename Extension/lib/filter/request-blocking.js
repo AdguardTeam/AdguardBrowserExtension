@@ -264,7 +264,7 @@ adguard.webRequestService = (function (adguard) {
      * @param requestType   one of RequestType
      * @returns {*}         rule or null
      */
-    var getRuleForRequest = function (tab, requestUrl, referrerUrl, requestType) {
+    const getRuleForRequest = function (tab, requestUrl, referrerUrl, requestType) {
         if (adguard.frames.isTabProtectionDisabled(tab)) {
             // don't process request
             return null;
@@ -306,7 +306,7 @@ adguard.webRequestService = (function (adguard) {
             return null;
         }
 
-        var whitelistRule = adguard.requestFilter.findWhiteListRule(documentUrl, documentUrl, adguard.RequestTypes.DOCUMENT);
+        const whitelistRule = adguard.requestFilter.findWhiteListRule(documentUrl, documentUrl, adguard.RequestTypes.DOCUMENT);
         if (whitelistRule && whitelistRule.isOptionEnabled(NetworkRuleOption.Content)) {
             return null;
         }
@@ -329,7 +329,7 @@ adguard.webRequestService = (function (adguard) {
         }
 
         // @@||example.org^$document or @@||example.org^$urlblock — disables all the $csp rules on all the pages matching the rule pattern.
-        let whitelistRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
+        const whitelistRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
         if (whitelistRule && whitelistRule.isOptionEnabled(NetworkRuleOption.Urlblock)) {
             return null;
         }

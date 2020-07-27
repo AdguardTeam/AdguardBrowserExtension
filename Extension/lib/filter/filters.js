@@ -173,6 +173,7 @@
          * (see how `scriptSource` is used).
          *
          * @param {string} url Page URL
+         * @param {Object} tab tab
          * @returns {string} Script to be applied
          */
         getScriptsStringForUrl(url, tab) {
