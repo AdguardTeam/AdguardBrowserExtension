@@ -282,11 +282,11 @@ var Redirects = (function () {
   /* lists... */
   {
     var result = {
-          scalar: {},
-          sequence: {},
-          mapping: {},
-          fallback: {}
-        },
+      scalar: {},
+      sequence: {},
+      mapping: {},
+      fallback: {}
+    },
         index,
         length;
 
@@ -454,34 +454,34 @@ var Redirects = (function () {
 
   function isHexCode(c) {
     return 0x30
-        /* 0 */
-        <= c && c <= 0x39
-        /* 9 */
-        || 0x41
-        /* A */
-        <= c && c <= 0x46
-        /* F */
-        || 0x61
-        /* a */
-        <= c && c <= 0x66
-        /* f */
-        ;
+    /* 0 */
+    <= c && c <= 0x39
+    /* 9 */
+    || 0x41
+    /* A */
+    <= c && c <= 0x46
+    /* F */
+    || 0x61
+    /* a */
+    <= c && c <= 0x66
+    /* f */
+    ;
   }
 
   function isOctCode(c) {
     return 0x30
-        /* 0 */
-        <= c && c <= 0x37
-        /* 7 */
-        ;
+    /* 0 */
+    <= c && c <= 0x37
+    /* 7 */
+    ;
   }
 
   function isDecCode(c) {
     return 0x30
-        /* 0 */
-        <= c && c <= 0x39
-        /* 9 */
-        ;
+    /* 0 */
+    <= c && c <= 0x39
+    /* 9 */
+    ;
   }
 
   function resolveYamlInteger(data) {
@@ -643,19 +643,19 @@ var Redirects = (function () {
   });
 
   var YAML_FLOAT_PATTERN = new RegExp( // 2.5e4, 2.5 and integers
-      '^(?:[-+]?(?:0|[1-9][0-9_]*)(?:\\.[0-9_]*)?(?:[eE][-+]?[0-9]+)?' + // .2e4, .2
-      // special case, seems not from spec
-      '|\\.[0-9_]+(?:[eE][-+]?[0-9]+)?' + // 20:59
-      '|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*' + // .inf
-      '|[-+]?\\.(?:inf|Inf|INF)' + // .nan
-      '|\\.(?:nan|NaN|NAN))$');
+  '^(?:[-+]?(?:0|[1-9][0-9_]*)(?:\\.[0-9_]*)?(?:[eE][-+]?[0-9]+)?' + // .2e4, .2
+  // special case, seems not from spec
+  '|\\.[0-9_]+(?:[eE][-+]?[0-9]+)?' + // 20:59
+  '|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*' + // .inf
+  '|[-+]?\\.(?:inf|Inf|INF)' + // .nan
+  '|\\.(?:nan|NaN|NAN))$');
 
   function resolveYamlFloat(data) {
     if (data === null) return false;
 
     if (!YAML_FLOAT_PATTERN.test(data) || // Quick hack to not allow integers end with `_`
-        // Probably should update regexp & check speed
-        data[data.length - 1] === '_') {
+    // Probably should update regexp & check speed
+    data[data.length - 1] === '_') {
       return false;
     }
 
@@ -763,19 +763,19 @@ var Redirects = (function () {
   });
 
   var YAML_DATE_REGEXP = new RegExp('^([0-9][0-9][0-9][0-9])' + // [1] year
-      '-([0-9][0-9])' + // [2] month
-      '-([0-9][0-9])$'); // [3] day
+  '-([0-9][0-9])' + // [2] month
+  '-([0-9][0-9])$'); // [3] day
 
   var YAML_TIMESTAMP_REGEXP = new RegExp('^([0-9][0-9][0-9][0-9])' + // [1] year
-      '-([0-9][0-9]?)' + // [2] month
-      '-([0-9][0-9]?)' + // [3] day
-      '(?:[Tt]|[ \\t]+)' + // ...
-      '([0-9][0-9]?)' + // [4] hour
-      ':([0-9][0-9])' + // [5] minute
-      ':([0-9][0-9])' + // [6] second
-      '(?:\\.([0-9]*))?' + // [7] fraction
-      '(?:[ \\t]*(Z|([-+])([0-9][0-9]?)' + // [8] tz [9] tz_sign [10] tz_hour
-      '(?::([0-9][0-9]))?))?$'); // [11] tz_minute
+  '-([0-9][0-9]?)' + // [2] month
+  '-([0-9][0-9]?)' + // [3] day
+  '(?:[Tt]|[ \\t]+)' + // ...
+  '([0-9][0-9]?)' + // [4] hour
+  ':([0-9][0-9])' + // [5] minute
+  ':([0-9][0-9])' + // [6] second
+  '(?:\\.([0-9]*))?' + // [7] fraction
+  '(?:[ \\t]*(Z|([-+])([0-9][0-9]?)' + // [8] tz [9] tz_sign [10] tz_hour
+  '(?::([0-9][0-9]))?))?$'); // [11] tz_minute
 
   function resolveYamlTimestamp(data) {
     if (data === null) return false;
@@ -842,7 +842,7 @@ var Redirects = (function () {
   }
 
   function representYamlTimestamp(object
-                                  /*, style*/
+  /*, style*/
   ) {
     return object.toISOString();
   }
@@ -865,7 +865,7 @@ var Redirects = (function () {
   });
 
   function commonjsRequire () {
-    throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
+  	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
   }
 
   /*eslint-disable no-bitwise*/
@@ -908,7 +908,7 @@ var Redirects = (function () {
         tailbits,
         input = data.replace(/[\r\n=]/g, ''),
         // remove CR/LF & padding to simplify scan
-        max = input.length,
+    max = input.length,
         map = BASE64_MAP,
         bits = 0,
         result = []; // Collect by 6*4 bits (3 bytes)
@@ -947,7 +947,7 @@ var Redirects = (function () {
   }
 
   function representYamlBinary(object
-                               /*, style*/
+  /*, style*/
   ) {
     var result = '',
         bits = 0,
@@ -1180,7 +1180,7 @@ var Redirects = (function () {
   }
 
   function representJavascriptRegExp(object
-                                     /*, style*/
+  /*, style*/
   ) {
     var result = '/' + object.source + '/';
     if (object.global) result += 'g';
@@ -1226,8 +1226,8 @@ var Redirects = (function () {
     try {
       var source = '(' + data + ')',
           ast = esprima.parse(source, {
-            range: true
-          });
+        range: true
+      });
 
       if (ast.type !== 'Program' || ast.body.length !== 1 || ast.body[0].type !== 'ExpressionStatement' || ast.body[0].expression.type !== 'ArrowFunctionExpression' && ast.body[0].expression.type !== 'FunctionExpression') {
         return false;
@@ -1243,8 +1243,8 @@ var Redirects = (function () {
     /*jslint evil:true*/
     var source = '(' + data + ')',
         ast = esprima.parse(source, {
-          range: true
-        }),
+      range: true
+    }),
         params = [],
         body;
 
@@ -1271,7 +1271,7 @@ var Redirects = (function () {
   }
 
   function representJavascriptFunction(object
-                                       /*, style*/
+  /*, style*/
   ) {
     return object.toString();
   }
@@ -1316,52 +1316,52 @@ var Redirects = (function () {
 
   function is_EOL(c) {
     return c === 0x0A
-        /* LF */
-        || c === 0x0D
-        /* CR */
-        ;
+    /* LF */
+    || c === 0x0D
+    /* CR */
+    ;
   }
 
   function is_WHITE_SPACE(c) {
     return c === 0x09
-        /* Tab */
-        || c === 0x20
-        /* Space */
-        ;
+    /* Tab */
+    || c === 0x20
+    /* Space */
+    ;
   }
 
   function is_WS_OR_EOL(c) {
     return c === 0x09
-        /* Tab */
-        || c === 0x20
-        /* Space */
-        || c === 0x0A
-        /* LF */
-        || c === 0x0D
-        /* CR */
-        ;
+    /* Tab */
+    || c === 0x20
+    /* Space */
+    || c === 0x0A
+    /* LF */
+    || c === 0x0D
+    /* CR */
+    ;
   }
 
   function is_FLOW_INDICATOR(c) {
     return c === 0x2C
-        /* , */
-        || c === 0x5B
-        /* [ */
-        || c === 0x5D
-        /* ] */
-        || c === 0x7B
-        /* { */
-        || c === 0x7D
-        /* } */
-        ;
+    /* , */
+    || c === 0x5B
+    /* [ */
+    || c === 0x5D
+    /* ] */
+    || c === 0x7B
+    /* { */
+    || c === 0x7D
+    /* } */
+    ;
   }
 
   function fromHexCode(c) {
     var lc;
 
     if (0x30
-        /* 0 */
-        <= c && c <= 0x39
+    /* 0 */
+    <= c && c <= 0x39
     /* 9 */
     ) {
       return c - 0x30;
@@ -1372,8 +1372,8 @@ var Redirects = (function () {
     lc = c | 0x20;
 
     if (0x61
-        /* a */
-        <= lc && lc <= 0x66
+    /* a */
+    <= lc && lc <= 0x66
     /* f */
     ) {
       return lc - 0x61 + 10;
@@ -1386,28 +1386,28 @@ var Redirects = (function () {
     if (c === 0x78
     /* x */
     ) {
-      return 2;
-    }
+        return 2;
+      }
 
     if (c === 0x75
     /* u */
     ) {
-      return 4;
-    }
+        return 4;
+      }
 
     if (c === 0x55
     /* U */
     ) {
-      return 8;
-    }
+        return 8;
+      }
 
     return 0;
   }
 
   function fromDecimalCode(c) {
     if (0x30
-        /* 0 */
-        <= c && c <= 0x39
+    /* 0 */
+    <= c && c <= 0x39
     /* 9 */
     ) {
       return c - 0x30;
@@ -1419,42 +1419,42 @@ var Redirects = (function () {
   function simpleEscapeSequence(c) {
     /* eslint-disable indent */
     return c === 0x30
-        /* 0 */
-        ? '\x00' : c === 0x61
-            /* a */
-            ? '\x07' : c === 0x62
-                /* b */
-                ? '\x08' : c === 0x74
-                    /* t */
-                    ? '\x09' : c === 0x09
-                        /* Tab */
-                        ? '\x09' : c === 0x6E
-                            /* n */
-                            ? '\x0A' : c === 0x76
-                                /* v */
-                                ? '\x0B' : c === 0x66
-                                    /* f */
-                                    ? '\x0C' : c === 0x72
-                                        /* r */
-                                        ? '\x0D' : c === 0x65
-                                            /* e */
-                                            ? '\x1B' : c === 0x20
-                                                /* Space */
-                                                ? ' ' : c === 0x22
-                                                    /* " */
-                                                    ? '\x22' : c === 0x2F
-                                                        /* / */
-                                                        ? '/' : c === 0x5C
-                                                            /* \ */
-                                                            ? '\x5C' : c === 0x4E
-                                                                /* N */
-                                                                ? '\x85' : c === 0x5F
-                                                                    /* _ */
-                                                                    ? '\xA0' : c === 0x4C
-                                                                        /* L */
-                                                                        ? "\u2028" : c === 0x50
-                                                                            /* P */
-                                                                            ? "\u2029" : '';
+    /* 0 */
+    ? '\x00' : c === 0x61
+    /* a */
+    ? '\x07' : c === 0x62
+    /* b */
+    ? '\x08' : c === 0x74
+    /* t */
+    ? '\x09' : c === 0x09
+    /* Tab */
+    ? '\x09' : c === 0x6E
+    /* n */
+    ? '\x0A' : c === 0x76
+    /* v */
+    ? '\x0B' : c === 0x66
+    /* f */
+    ? '\x0C' : c === 0x72
+    /* r */
+    ? '\x0D' : c === 0x65
+    /* e */
+    ? '\x1B' : c === 0x20
+    /* Space */
+    ? ' ' : c === 0x22
+    /* " */
+    ? '\x22' : c === 0x2F
+    /* / */
+    ? '/' : c === 0x5C
+    /* \ */
+    ? '\x5C' : c === 0x4E
+    /* N */
+    ? '\x85' : c === 0x5F
+    /* _ */
+    ? '\xA0' : c === 0x4C
+    /* L */
+    ? "\u2028" : c === 0x50
+    /* P */
+    ? "\u2029" : '';
   }
 
   function charFromCodepoint(c) {
@@ -1677,18 +1677,18 @@ var Redirects = (function () {
     if (ch === 0x0A
     /* LF */
     ) {
-      state.position++;
-    } else if (ch === 0x0D
+        state.position++;
+      } else if (ch === 0x0D
     /* CR */
     ) {
-      state.position++;
-
-      if (state.input.charCodeAt(state.position) === 0x0A
-      /* LF */
-      ) {
         state.position++;
-      }
-    } else {
+
+        if (state.input.charCodeAt(state.position) === 0x0A
+        /* LF */
+        ) {
+            state.position++;
+          }
+      } else {
       throwError(state, 'a line break is expected');
     }
 
@@ -1708,14 +1708,14 @@ var Redirects = (function () {
       if (allowComments && ch === 0x23
       /* # */
       ) {
-        do {
-          ch = state.input.charCodeAt(++state.position);
-        } while (ch !== 0x0A
-        /* LF */
-        && ch !== 0x0D
-        /* CR */
-        && ch !== 0);
-      }
+          do {
+            ch = state.input.charCodeAt(++state.position);
+          } while (ch !== 0x0A
+          /* LF */
+          && ch !== 0x0D
+          /* CR */
+          && ch !== 0);
+        }
 
       if (is_EOL(ch)) {
         readLineBreak(state);
@@ -1724,8 +1724,8 @@ var Redirects = (function () {
         state.lineIndent = 0;
 
         while (ch === 0x20
-            /* Space */
-            ) {
+        /* Space */
+        ) {
           state.lineIndent++;
           ch = state.input.charCodeAt(++state.position);
         }
@@ -1748,9 +1748,9 @@ var Redirects = (function () {
     // in parent on each call, for efficiency. No needs to test here again.
 
     if ((ch === 0x2D
-        /* - */
-        || ch === 0x2E
-        /* . */
+    /* - */
+    || ch === 0x2E
+    /* . */
     ) && ch === state.input.charCodeAt(_position + 1) && ch === state.input.charCodeAt(_position + 2)) {
       _position += 3;
       ch = state.input.charCodeAt(_position);
@@ -1787,42 +1787,42 @@ var Redirects = (function () {
     ch = state.input.charCodeAt(state.position);
 
     if (is_WS_OR_EOL(ch) || is_FLOW_INDICATOR(ch) || ch === 0x23
-        /* # */
-        || ch === 0x26
-        /* & */
-        || ch === 0x2A
-        /* * */
-        || ch === 0x21
-        /* ! */
-        || ch === 0x7C
-        /* | */
-        || ch === 0x3E
-        /* > */
-        || ch === 0x27
-        /* ' */
-        || ch === 0x22
-        /* " */
-        || ch === 0x25
-        /* % */
-        || ch === 0x40
-        /* @ */
-        || ch === 0x60
+    /* # */
+    || ch === 0x26
+    /* & */
+    || ch === 0x2A
+    /* * */
+    || ch === 0x21
+    /* ! */
+    || ch === 0x7C
+    /* | */
+    || ch === 0x3E
+    /* > */
+    || ch === 0x27
+    /* ' */
+    || ch === 0x22
+    /* " */
+    || ch === 0x25
+    /* % */
+    || ch === 0x40
+    /* @ */
+    || ch === 0x60
     /* ` */
     ) {
-      return false;
-    }
-
-    if (ch === 0x3F
-        /* ? */
-        || ch === 0x2D
-    /* - */
-    ) {
-      following = state.input.charCodeAt(state.position + 1);
-
-      if (is_WS_OR_EOL(following) || withinFlowCollection && is_FLOW_INDICATOR(following)) {
         return false;
       }
-    }
+
+    if (ch === 0x3F
+    /* ? */
+    || ch === 0x2D
+    /* - */
+    ) {
+        following = state.input.charCodeAt(state.position + 1);
+
+        if (is_WS_OR_EOL(following) || withinFlowCollection && is_FLOW_INDICATOR(following)) {
+          return false;
+        }
+      }
 
     state.kind = 'scalar';
     state.result = '';
@@ -1833,20 +1833,20 @@ var Redirects = (function () {
       if (ch === 0x3A
       /* : */
       ) {
-        following = state.input.charCodeAt(state.position + 1);
+          following = state.input.charCodeAt(state.position + 1);
 
-        if (is_WS_OR_EOL(following) || withinFlowCollection && is_FLOW_INDICATOR(following)) {
-          break;
-        }
-      } else if (ch === 0x23
+          if (is_WS_OR_EOL(following) || withinFlowCollection && is_FLOW_INDICATOR(following)) {
+            break;
+          }
+        } else if (ch === 0x23
       /* # */
       ) {
-        preceding = state.input.charCodeAt(state.position - 1);
+          preceding = state.input.charCodeAt(state.position - 1);
 
-        if (is_WS_OR_EOL(preceding)) {
-          break;
-        }
-      } else if (state.position === state.lineStart && testDocumentSeparator(state) || withinFlowCollection && is_FLOW_INDICATOR(ch)) {
+          if (is_WS_OR_EOL(preceding)) {
+            break;
+          }
+        } else if (state.position === state.lineStart && testDocumentSeparator(state) || withinFlowCollection && is_FLOW_INDICATOR(ch)) {
         break;
       } else if (is_EOL(ch)) {
         _line = state.line;
@@ -1899,8 +1899,8 @@ var Redirects = (function () {
     if (ch !== 0x27
     /* ' */
     ) {
-      return false;
-    }
+        return false;
+      }
 
     state.kind = 'scalar';
     state.result = '';
@@ -1911,19 +1911,19 @@ var Redirects = (function () {
       if (ch === 0x27
       /* ' */
       ) {
-        captureSegment(state, captureStart, state.position, true);
-        ch = state.input.charCodeAt(++state.position);
+          captureSegment(state, captureStart, state.position, true);
+          ch = state.input.charCodeAt(++state.position);
 
-        if (ch === 0x27
-        /* ' */
-        ) {
-          captureStart = state.position;
-          state.position++;
-          captureEnd = state.position;
-        } else {
-          return true;
-        }
-      } else if (is_EOL(ch)) {
+          if (ch === 0x27
+          /* ' */
+          ) {
+              captureStart = state.position;
+              state.position++;
+              captureEnd = state.position;
+            } else {
+            return true;
+          }
+        } else if (is_EOL(ch)) {
         captureSegment(state, captureStart, captureEnd, true);
         writeFoldedLines(state, skipSeparationSpace(state, false, nodeIndent));
         captureStart = captureEnd = state.position;
@@ -1945,8 +1945,8 @@ var Redirects = (function () {
     if (ch !== 0x22
     /* " */
     ) {
-      return false;
-    }
+        return false;
+      }
 
     state.kind = 'scalar';
     state.result = '';
@@ -1957,42 +1957,42 @@ var Redirects = (function () {
       if (ch === 0x22
       /* " */
       ) {
-        captureSegment(state, captureStart, state.position, true);
-        state.position++;
-        return true;
-      } else if (ch === 0x5C
+          captureSegment(state, captureStart, state.position, true);
+          state.position++;
+          return true;
+        } else if (ch === 0x5C
       /* \ */
       ) {
-        captureSegment(state, captureStart, state.position, true);
-        ch = state.input.charCodeAt(++state.position);
+          captureSegment(state, captureStart, state.position, true);
+          ch = state.input.charCodeAt(++state.position);
 
-        if (is_EOL(ch)) {
-          skipSeparationSpace(state, false, nodeIndent); // TODO: rework to inline fn with no type cast?
-        } else if (ch < 256 && simpleEscapeCheck[ch]) {
-          state.result += simpleEscapeMap[ch];
-          state.position++;
-        } else if ((tmp = escapedHexLen(ch)) > 0) {
-          hexLength = tmp;
-          hexResult = 0;
+          if (is_EOL(ch)) {
+            skipSeparationSpace(state, false, nodeIndent); // TODO: rework to inline fn with no type cast?
+          } else if (ch < 256 && simpleEscapeCheck[ch]) {
+            state.result += simpleEscapeMap[ch];
+            state.position++;
+          } else if ((tmp = escapedHexLen(ch)) > 0) {
+            hexLength = tmp;
+            hexResult = 0;
 
-          for (; hexLength > 0; hexLength--) {
-            ch = state.input.charCodeAt(++state.position);
+            for (; hexLength > 0; hexLength--) {
+              ch = state.input.charCodeAt(++state.position);
 
-            if ((tmp = fromHexCode(ch)) >= 0) {
-              hexResult = (hexResult << 4) + tmp;
-            } else {
-              throwError(state, 'expected hexadecimal character');
+              if ((tmp = fromHexCode(ch)) >= 0) {
+                hexResult = (hexResult << 4) + tmp;
+              } else {
+                throwError(state, 'expected hexadecimal character');
+              }
             }
+
+            state.result += charFromCodepoint(hexResult);
+            state.position++;
+          } else {
+            throwError(state, 'unknown escape sequence');
           }
 
-          state.result += charFromCodepoint(hexResult);
-          state.position++;
-        } else {
-          throwError(state, 'unknown escape sequence');
-        }
-
-        captureStart = captureEnd = state.position;
-      } else if (is_EOL(ch)) {
+          captureStart = captureEnd = state.position;
+        } else if (is_EOL(ch)) {
         captureSegment(state, captureStart, captureEnd, true);
         writeFoldedLines(state, skipSeparationSpace(state, false, nodeIndent));
         captureStart = captureEnd = state.position;
@@ -2029,20 +2029,20 @@ var Redirects = (function () {
     if (ch === 0x5B
     /* [ */
     ) {
-      terminator = 0x5D;
-      /* ] */
+        terminator = 0x5D;
+        /* ] */
 
-      isMapping = false;
-      _result = [];
-    } else if (ch === 0x7B
+        isMapping = false;
+        _result = [];
+      } else if (ch === 0x7B
     /* { */
     ) {
-      terminator = 0x7D;
-      /* } */
+        terminator = 0x7D;
+        /* } */
 
-      isMapping = true;
-      _result = {};
-    } else {
+        isMapping = true;
+        _result = {};
+      } else {
       return false;
     }
 
@@ -2073,14 +2073,14 @@ var Redirects = (function () {
       if (ch === 0x3F
       /* ? */
       ) {
-        following = state.input.charCodeAt(state.position + 1);
+          following = state.input.charCodeAt(state.position + 1);
 
-        if (is_WS_OR_EOL(following)) {
-          isPair = isExplicitPair = true;
-          state.position++;
-          skipSeparationSpace(state, true, nodeIndent);
+          if (is_WS_OR_EOL(following)) {
+            isPair = isExplicitPair = true;
+            state.position++;
+            skipSeparationSpace(state, true, nodeIndent);
+          }
         }
-      }
 
       _line = state.line;
       composeNode(state, nodeIndent, CONTEXT_FLOW_IN, false, true);
@@ -2092,12 +2092,12 @@ var Redirects = (function () {
       if ((isExplicitPair || state.line === _line) && ch === 0x3A
       /* : */
       ) {
-        isPair = true;
-        ch = state.input.charCodeAt(++state.position);
-        skipSeparationSpace(state, true, nodeIndent);
-        composeNode(state, nodeIndent, CONTEXT_FLOW_IN, false, true);
-        valueNode = state.result;
-      }
+          isPair = true;
+          ch = state.input.charCodeAt(++state.position);
+          skipSeparationSpace(state, true, nodeIndent);
+          composeNode(state, nodeIndent, CONTEXT_FLOW_IN, false, true);
+          valueNode = state.result;
+        }
 
       if (isMapping) {
         storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valueNode);
@@ -2113,9 +2113,9 @@ var Redirects = (function () {
       if (ch === 0x2C
       /* , */
       ) {
-        readNext = true;
-        ch = state.input.charCodeAt(++state.position);
-      } else {
+          readNext = true;
+          ch = state.input.charCodeAt(++state.position);
+        } else {
         readNext = false;
       }
     }
@@ -2139,12 +2139,12 @@ var Redirects = (function () {
     if (ch === 0x7C
     /* | */
     ) {
-      folding = false;
-    } else if (ch === 0x3E
+        folding = false;
+      } else if (ch === 0x3E
     /* > */
     ) {
-      folding = true;
-    } else {
+        folding = true;
+      } else {
       return false;
     }
 
@@ -2155,18 +2155,18 @@ var Redirects = (function () {
       ch = state.input.charCodeAt(++state.position);
 
       if (ch === 0x2B
-          /* + */
-          || ch === 0x2D
+      /* + */
+      || ch === 0x2D
       /* - */
       ) {
-        if (CHOMPING_CLIP === chomping) {
-          chomping = ch === 0x2B
-              /* + */
-              ? CHOMPING_KEEP : CHOMPING_STRIP;
-        } else {
-          throwError(state, 'repeat of a chomping mode identifier');
-        }
-      } else if ((tmp = fromDecimalCode(ch)) >= 0) {
+          if (CHOMPING_CLIP === chomping) {
+            chomping = ch === 0x2B
+            /* + */
+            ? CHOMPING_KEEP : CHOMPING_STRIP;
+          } else {
+            throwError(state, 'repeat of a chomping mode identifier');
+          }
+        } else if ((tmp = fromDecimalCode(ch)) >= 0) {
         if (tmp === 0) {
           throwError(state, 'bad explicit indentation width of a block scalar; it cannot be less than one');
         } else if (!detectedIndent) {
@@ -2188,10 +2188,10 @@ var Redirects = (function () {
       if (ch === 0x23
       /* # */
       ) {
-        do {
-          ch = state.input.charCodeAt(++state.position);
-        } while (!is_EOL(ch) && ch !== 0);
-      }
+          do {
+            ch = state.input.charCodeAt(++state.position);
+          } while (!is_EOL(ch) && ch !== 0);
+        }
     }
 
     while (ch !== 0) {
@@ -2200,8 +2200,8 @@ var Redirects = (function () {
       ch = state.input.charCodeAt(state.position);
 
       while ((!detectedIndent || state.lineIndent < textIndent) && ch === 0x20
-          /* Space */
-          ) {
+      /* Space */
+      ) {
         state.lineIndent++;
         ch = state.input.charCodeAt(++state.position);
       }
@@ -2290,8 +2290,8 @@ var Redirects = (function () {
       if (ch !== 0x2D
       /* - */
       ) {
-        break;
-      }
+          break;
+        }
 
       following = state.input.charCodeAt(state.position + 1);
 
@@ -2369,22 +2369,22 @@ var Redirects = (function () {
       //
 
       if ((ch === 0x3F
-          /* ? */
-          || ch === 0x3A
-          /* : */
+      /* ? */
+      || ch === 0x3A
+      /* : */
       ) && is_WS_OR_EOL(following)) {
         if (ch === 0x3F
         /* ? */
         ) {
-          if (atExplicitKey) {
-            storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, null);
-            keyTag = keyNode = valueNode = null;
-          }
+            if (atExplicitKey) {
+              storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, null);
+              keyTag = keyNode = valueNode = null;
+            }
 
-          detected = true;
-          atExplicitKey = true;
-          allowCompact = true;
-        } else if (atExplicitKey) {
+            detected = true;
+            atExplicitKey = true;
+            allowCompact = true;
+          } else if (atExplicitKey) {
           // i.e. 0x3A/* : */ === character after the explicit key.
           atExplicitKey = false;
           allowCompact = true;
@@ -2407,23 +2407,23 @@ var Redirects = (function () {
           if (ch === 0x3A
           /* : */
           ) {
-            ch = state.input.charCodeAt(++state.position);
+              ch = state.input.charCodeAt(++state.position);
 
-            if (!is_WS_OR_EOL(ch)) {
-              throwError(state, 'a whitespace character is expected after the key-value separator within a block mapping');
-            }
+              if (!is_WS_OR_EOL(ch)) {
+                throwError(state, 'a whitespace character is expected after the key-value separator within a block mapping');
+              }
 
-            if (atExplicitKey) {
-              storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, null);
-              keyTag = keyNode = valueNode = null;
-            }
+              if (atExplicitKey) {
+                storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, null);
+                keyTag = keyNode = valueNode = null;
+              }
 
-            detected = true;
-            atExplicitKey = false;
-            allowCompact = false;
-            keyTag = state.tag;
-            keyNode = state.result;
-          } else if (detected) {
+              detected = true;
+              atExplicitKey = false;
+              allowCompact = false;
+              keyTag = state.tag;
+              keyNode = state.result;
+            } else if (detected) {
             throwError(state, 'can not read an implicit mapping pair; a colon is missed');
           } else {
             state.tag = _tag;
@@ -2438,8 +2438,8 @@ var Redirects = (function () {
           return true; // Keep the result of `composeNode`.
         }
       } else {
-        break; // Reading is done. Go to the epilogue.
-      } //
+          break; // Reading is done. Go to the epilogue.
+        } //
       // Common reading code for both explicit and implicit notations.
       //
 
@@ -2510,15 +2510,15 @@ var Redirects = (function () {
     if (ch === 0x3C
     /* < */
     ) {
-      isVerbatim = true;
-      ch = state.input.charCodeAt(++state.position);
-    } else if (ch === 0x21
+        isVerbatim = true;
+        ch = state.input.charCodeAt(++state.position);
+      } else if (ch === 0x21
     /* ! */
     ) {
-      isNamed = true;
-      tagHandle = '!!';
-      ch = state.input.charCodeAt(++state.position);
-    } else {
+        isNamed = true;
+        tagHandle = '!!';
+        ch = state.input.charCodeAt(++state.position);
+      } else {
       tagHandle = '!';
     }
 
@@ -2528,8 +2528,8 @@ var Redirects = (function () {
       do {
         ch = state.input.charCodeAt(++state.position);
       } while (ch !== 0 && ch !== 0x3E
-          /* > */
-          );
+      /* > */
+      );
 
       if (state.position < state.length) {
         tagName = state.input.slice(_position, state.position);
@@ -2542,19 +2542,19 @@ var Redirects = (function () {
         if (ch === 0x21
         /* ! */
         ) {
-          if (!isNamed) {
-            tagHandle = state.input.slice(_position - 1, state.position + 1);
+            if (!isNamed) {
+              tagHandle = state.input.slice(_position - 1, state.position + 1);
 
-            if (!PATTERN_TAG_HANDLE.test(tagHandle)) {
-              throwError(state, 'named tag handle cannot contain such characters');
+              if (!PATTERN_TAG_HANDLE.test(tagHandle)) {
+                throwError(state, 'named tag handle cannot contain such characters');
+              }
+
+              isNamed = true;
+              _position = state.position + 1;
+            } else {
+              throwError(state, 'tag suffix cannot contain exclamation marks');
             }
-
-            isNamed = true;
-            _position = state.position + 1;
-          } else {
-            throwError(state, 'tag suffix cannot contain exclamation marks');
           }
-        }
 
         ch = state.input.charCodeAt(++state.position);
       }
@@ -2647,7 +2647,7 @@ var Redirects = (function () {
         allowBlockCollections,
         indentStatus = 1,
         // 1: this>parent, 0: this=parent, -1: this<parent
-        atNewLine = false,
+    atNewLine = false,
         hasContent = false,
         typeIndex,
         typeQuantity,
@@ -2818,8 +2818,8 @@ var Redirects = (function () {
       if (state.lineIndent > 0 || ch !== 0x25
       /* % */
       ) {
-        break;
-      }
+          break;
+        }
 
       hasDirectives = true;
       ch = state.input.charCodeAt(++state.position);
@@ -2844,12 +2844,12 @@ var Redirects = (function () {
         if (ch === 0x23
         /* # */
         ) {
-          do {
-            ch = state.input.charCodeAt(++state.position);
-          } while (ch !== 0 && !is_EOL(ch));
+            do {
+              ch = state.input.charCodeAt(++state.position);
+            } while (ch !== 0 && !is_EOL(ch));
 
-          break;
-        }
+            break;
+          }
 
         if (is_EOL(ch)) break;
         _position = state.position;
@@ -2873,15 +2873,15 @@ var Redirects = (function () {
     skipSeparationSpace(state, true, -1);
 
     if (state.lineIndent === 0 && state.input.charCodeAt(state.position) === 0x2D
-        /* - */
-        && state.input.charCodeAt(state.position + 1) === 0x2D
-        /* - */
-        && state.input.charCodeAt(state.position + 2) === 0x2D
+    /* - */
+    && state.input.charCodeAt(state.position + 1) === 0x2D
+    /* - */
+    && state.input.charCodeAt(state.position + 2) === 0x2D
     /* - */
     ) {
-      state.position += 3;
-      skipSeparationSpace(state, true, -1);
-    } else if (hasDirectives) {
+        state.position += 3;
+        skipSeparationSpace(state, true, -1);
+      } else if (hasDirectives) {
       throwError(state, 'directives end mark is expected');
     }
 
@@ -2898,9 +2898,9 @@ var Redirects = (function () {
       if (state.input.charCodeAt(state.position) === 0x2E
       /* . */
       ) {
-        state.position += 3;
-        skipSeparationSpace(state, true, -1);
-      }
+          state.position += 3;
+          skipSeparationSpace(state, true, -1);
+        }
 
       return;
     }
@@ -2919,12 +2919,12 @@ var Redirects = (function () {
     if (input.length !== 0) {
       // Add tailing `\n` if not exists
       if (input.charCodeAt(input.length - 1) !== 0x0A
-          /* LF */
-          && input.charCodeAt(input.length - 1) !== 0x0D
+      /* LF */
+      && input.charCodeAt(input.length - 1) !== 0x0D
       /* CR */
       ) {
-        input += '\n';
-      } // Strip BOM
+          input += '\n';
+        } // Strip BOM
 
 
       if (input.charCodeAt(0) === 0xFEFF) {
@@ -2944,8 +2944,8 @@ var Redirects = (function () {
     state.input += '\0';
 
     while (state.input.charCodeAt(state.position) === 0x20
-        /* Space */
-        ) {
+    /* Space */
+    ) {
       state.lineIndent += 1;
       state.position += 1;
     }
@@ -3232,8 +3232,8 @@ var Redirects = (function () {
 
   function isPrintable(c) {
     return 0x00020 <= c && c <= 0x00007E || 0x000A1 <= c && c <= 0x00D7FF && c !== 0x2028 && c !== 0x2029 || 0x0E000 <= c && c <= 0x00FFFD && c !== 0xFEFF
-        /* BOM */
-        || 0x10000 <= c && c <= 0x10FFFF;
+    /* BOM */
+    || 0x10000 <= c && c <= 0x10FFFF;
   } // [34] ns-char ::= nb-char - s-white
   // [27] nb-char ::= c-printable - b-char - c-byte-order-mark
   // [26] b-char  ::= b-line-feed | b-carriage-return
@@ -3244,8 +3244,8 @@ var Redirects = (function () {
 
   function isNsChar(c) {
     return isPrintable(c) && !isWhitespace(c) // byte-order-mark
-        && c !== 0xFEFF // b-char
-        && c !== CHAR_CARRIAGE_RETURN && c !== CHAR_LINE_FEED;
+    && c !== 0xFEFF // b-char
+    && c !== CHAR_CARRIAGE_RETURN && c !== CHAR_LINE_FEED;
   } // Simplified test for values allowed after the first character in plain style.
 
 
@@ -3253,9 +3253,9 @@ var Redirects = (function () {
     // Uses a subset of nb-char - c-flow-indicator - ":" - "#"
     // where nb-char ::= c-printable - b-char - c-byte-order-mark.
     return isPrintable(c) && c !== 0xFEFF // - c-flow-indicator
-        && c !== CHAR_COMMA && c !== CHAR_LEFT_SQUARE_BRACKET && c !== CHAR_RIGHT_SQUARE_BRACKET && c !== CHAR_LEFT_CURLY_BRACKET && c !== CHAR_RIGHT_CURLY_BRACKET // - ":" - "#"
-        // /* An ns-char preceding */ "#"
-        && c !== CHAR_COLON && (c !== CHAR_SHARP || prev && isNsChar(prev));
+    && c !== CHAR_COMMA && c !== CHAR_LEFT_SQUARE_BRACKET && c !== CHAR_RIGHT_SQUARE_BRACKET && c !== CHAR_LEFT_CURLY_BRACKET && c !== CHAR_RIGHT_CURLY_BRACKET // - ":" - "#"
+    // /* An ns-char preceding */ "#"
+    && c !== CHAR_COLON && (c !== CHAR_SHARP || prev && isNsChar(prev));
   } // Simplified test for values allowed as the first character in plain style.
 
 
@@ -3263,11 +3263,11 @@ var Redirects = (function () {
     // Uses a subset of ns-char - c-indicator
     // where ns-char = nb-char - s-white.
     return isPrintable(c) && c !== 0xFEFF && !isWhitespace(c) // - s-white
-        // - (c-indicator ::=
-        // “-” | “?” | “:” | “,” | “[” | “]” | “{” | “}”
-        && c !== CHAR_MINUS && c !== CHAR_QUESTION && c !== CHAR_COLON && c !== CHAR_COMMA && c !== CHAR_LEFT_SQUARE_BRACKET && c !== CHAR_RIGHT_SQUARE_BRACKET && c !== CHAR_LEFT_CURLY_BRACKET && c !== CHAR_RIGHT_CURLY_BRACKET // | “#” | “&” | “*” | “!” | “|” | “=” | “>” | “'” | “"”
-        && c !== CHAR_SHARP && c !== CHAR_AMPERSAND && c !== CHAR_ASTERISK && c !== CHAR_EXCLAMATION && c !== CHAR_VERTICAL_LINE && c !== CHAR_EQUALS && c !== CHAR_GREATER_THAN && c !== CHAR_SINGLE_QUOTE && c !== CHAR_DOUBLE_QUOTE // | “%” | “@” | “`”)
-        && c !== CHAR_PERCENT && c !== CHAR_COMMERCIAL_AT && c !== CHAR_GRAVE_ACCENT;
+    // - (c-indicator ::=
+    // “-” | “?” | “:” | “,” | “[” | “]” | “{” | “}”
+    && c !== CHAR_MINUS && c !== CHAR_QUESTION && c !== CHAR_COLON && c !== CHAR_COMMA && c !== CHAR_LEFT_SQUARE_BRACKET && c !== CHAR_RIGHT_SQUARE_BRACKET && c !== CHAR_LEFT_CURLY_BRACKET && c !== CHAR_RIGHT_CURLY_BRACKET // | “#” | “&” | “*” | “!” | “|” | “=” | “>” | “'” | “"”
+    && c !== CHAR_SHARP && c !== CHAR_AMPERSAND && c !== CHAR_ASTERISK && c !== CHAR_EXCLAMATION && c !== CHAR_VERTICAL_LINE && c !== CHAR_EQUALS && c !== CHAR_GREATER_THAN && c !== CHAR_SINGLE_QUOTE && c !== CHAR_DOUBLE_QUOTE // | “%” | “@” | “`”)
+    && c !== CHAR_PERCENT && c !== CHAR_COMMERCIAL_AT && c !== CHAR_GRAVE_ACCENT;
   } // Determines whether block indentation indicator is required.
 
 
@@ -3322,7 +3322,7 @@ var Redirects = (function () {
 
           if (shouldTrackWidth) {
             hasFoldableLine = hasFoldableLine || // Foldable line = too long, and not more-indented.
-                i - previousLineBreak - 1 > lineWidth && string[previousLineBreak + 1] !== ' ';
+            i - previousLineBreak - 1 > lineWidth && string[previousLineBreak + 1] !== ' ';
             previousLineBreak = i;
           }
         } else if (!isPrintable(char)) {
@@ -3384,7 +3384,7 @@ var Redirects = (function () {
       var lineWidth = state.lineWidth === -1 ? -1 : Math.max(Math.min(state.lineWidth, 40), state.lineWidth - indent); // Without knowing if keys are implicit/explicit, assume implicit for safety.
 
       var singleLineOnly = iskey // No block styles in flow mode.
-          || state.flowLevel > -1 && level >= state.flowLevel;
+      || state.flowLevel > -1 && level >= state.flowLevel;
 
       function testAmbiguity(string) {
         return testImplicitResolving(state, string);
@@ -3519,18 +3519,18 @@ var Redirects = (function () {
       if (char >= 0xD800 && char <= 0xDBFF
       /* high surrogate */
       ) {
-        nextChar = string.charCodeAt(i + 1);
+          nextChar = string.charCodeAt(i + 1);
 
-        if (nextChar >= 0xDC00 && nextChar <= 0xDFFF
-        /* low surrogate */
-        ) {
-          // Combine the surrogate pair and store it escaped.
-          result += encodeHex((char - 0xD800) * 0x400 + nextChar - 0xDC00 + 0x10000); // Advance index one extra since we already used that char here.
+          if (nextChar >= 0xDC00 && nextChar <= 0xDFFF
+          /* low surrogate */
+          ) {
+              // Combine the surrogate pair and store it escaped.
+              result += encodeHex((char - 0xD800) * 0x400 + nextChar - 0xDC00 + 0x10000); // Advance index one extra since we already used that char here.
 
-          i++;
-          continue;
+              i++;
+              continue;
+            }
         }
-      }
 
       escapeSeq = ESCAPE_SEQUENCES[char];
       result += !escapeSeq && isPrintable(char) ? string[i] : escapeSeq || encodeHex(char);

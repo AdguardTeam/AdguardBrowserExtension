@@ -27,7 +27,9 @@ const API_SCRIPTS = [
     'Extension/lib/libs/crypto-js/core.js',
     'Extension/lib/libs/crypto-js/md5.js',
     'Extension/lib/libs/scriptlets/redirects.js',
-    // Adguard Global and preExtension/ferences
+    // TS url filter
+    'Extension/lib/libs/tsurlfilter.es5.js',
+    // Adguard Global and preferences
     'Extension/lib/adguard.js',
     'Extension/browser/webkit/lib/prefs.js',
     // Utils libraries
@@ -52,6 +54,10 @@ const API_SCRIPTS = [
     // Tabs api library
     'Extension/browser/chrome/lib/api/tabs.js',
     'Extension/lib/tabs/tabs-api.js',
+    // Application
+    'Extension/lib/application.js',
+    // Services
+    'Extension/lib/filter/services/css-service.js',
     // Filters metadata and filtration modules
     'Extension/lib/filter/subscription.js',
     'Extension/lib/filter/update-service.js',
@@ -63,9 +69,10 @@ const API_SCRIPTS = [
     'Extension/lib/filter/services/cookie-filtering.js',
     'Extension/lib/filter/filtering-log.js',
     'Extension/lib/filter/request-context-storage.js',
+    // Stealth
+    'Extension/lib/filter/services/stealth-service.js',
     // Content messaging
     'Extension/lib/content-message-handler.js',
-    'Extension/lib/filter/services/stealth-service.js',
     'Extension/lib/webrequest.js',
     'Extension/api/chrome/lib/api.js',
 ];
