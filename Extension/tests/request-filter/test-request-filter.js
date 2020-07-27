@@ -772,7 +772,7 @@ QUnit.test('Invalid scriptlets are not added to the scripts string', (assert) =>
     const invalidScriptletRuleText = 'example.org#%#//scriptlet("adjust-setTimeout-invalid", "example", "400")';
 
     const requestFilter = createRequestFilterWithRules([validScriptletRuleText, invalidScriptletRuleText]);
-    const scripts = requestFilter.getScriptsForUrl('https://example.org', true);
+    const scripts = requestFilter.getScriptsForUrl('https://example.org');
 
     assert.equal(scripts.length, 2);
     assert.ok(scripts[0].script, 'valid rule has script field');

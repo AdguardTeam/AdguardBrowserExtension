@@ -7990,6 +7990,10 @@ var CosmeticRule = /** @class */ (function () {
          */
         this.script = null;
         /**
+         * Js script to execute - debug
+         */
+        this.scriptVerbose = null;
+        /**
          * Pseudo class indicators. They are used to detect if rule is extended or not even if rule does not
          * have extended css marker
          */
@@ -8108,6 +8112,14 @@ var CosmeticRule = /** @class */ (function () {
      */
     CosmeticRule.prototype.getContent = function () {
         return this.content;
+    };
+    /**
+     * Get rule script string
+     * @param debug
+     */
+    CosmeticRule.prototype.getScript = function (debug) {
+        if (debug === void 0) { debug = false; }
+        return debug ? this.scriptVerbose : this.script;
     };
     /**
      * Gets list of permitted domains.
@@ -8521,7 +8533,7 @@ var CosmeticScriptsResult = /** @class */ (function () {
      * @param rule
      */
     CosmeticScriptsResult.setScriptCode = function (rule) {
-        if (rule.script) {
+        if (rule.script && rule.scriptVerbose) {
             // Already done for this rule
             return;
         }
@@ -8529,6 +8541,8 @@ var CosmeticScriptsResult = /** @class */ (function () {
         if (!ruleContent.startsWith(CosmeticScriptsResult.ADG_SCRIPTLET_MASK)) {
             // eslint-disable-next-line no-param-reassign
             rule.script = ruleContent;
+            // eslint-disable-next-line no-param-reassign
+            rule.scriptVerbose = ruleContent;
             return;
         }
         var scriptletContent = ruleContent.substr(CosmeticScriptsResult.ADG_SCRIPTLET_MASK.length);
@@ -8538,11 +8552,14 @@ var CosmeticScriptsResult = /** @class */ (function () {
             engine: config.engine ? config.engine : '',
             name: scriptletParams.name,
             ruleText: rule.getText(),
-            verbose: config.verbose,
+            verbose: false,
             version: config.version ? config.version : '',
         };
         // eslint-disable-next-line no-param-reassign
         rule.script = scriptletsCjs.invoke(params);
+        params.verbose = true;
+        // eslint-disable-next-line no-param-reassign
+        rule.scriptVerbose = scriptletsCjs.invoke(params);
     };
     /**
      * AdGuard scriptlet rule mask
@@ -14186,6 +14203,7 @@ var ContentFiltering = /** @class */ (function () {
             result = modifiedContent;
         }
         if (appliedRules.length > 0) {
+            // eslint-disable-next-line max-len
             this.modificationsListener.onReplaceRulesApplied(request.tabId, request.requestId, request.url, appliedRules);
         }
         return result;

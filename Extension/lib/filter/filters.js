@@ -158,14 +158,12 @@
          * http://adguard.com/en/filterrules.html#javascriptInjection
          *
          * @param url Page URL
-         * @param {boolean} debug enabled or disabled debug
          * @returns {{scriptSource: string, rule: string}[]} Javascript for the specified URL
          */
-        getScriptsForUrl(url, debug) {
+        getScriptsForUrl(url) {
             const domain = adguard.utils.url.getHost(url);
             const cosmeticResult = adguard.application.getEngine().getCosmeticResult(domain, CosmeticOption.CosmeticOptionJS);
 
-            // TODO: [TSUrlFilter] Pass debug
             return cosmeticResult.getScriptRules();
         },
 
@@ -179,7 +177,7 @@
          */
         getScriptsStringForUrl(url, tab) {
             const debug = adguard.filteringLog && adguard.filteringLog.isOpen();
-            const scriptRules = this.getScriptsForUrl(url, debug);
+            const scriptRules = this.getScriptsForUrl(url);
 
             const isFirefox = adguard.utils.browser.isFirefoxBrowser();
             const isOpera = adguard.utils.browser.isOperaBrowser();
@@ -225,7 +223,7 @@
                 });
             }
 
-            const scriptsCode = selectedScriptRules.map(scriptRule => scriptRule.script).join('\r\n');
+            const scriptsCode = selectedScriptRules.map(scriptRule => scriptRule.getScript(debug)).join('\r\n');
 
             return `
             (function () {
