@@ -99,7 +99,7 @@ adguard.application = (function (adguard) {
                 : true));
 
             if (outdatedFilter.length > 0) {
-                antiBannerService.checkAntiBannerFiltersUpdate(
+                adguard.filtersUpdate.checkAntiBannerFiltersUpdate(
                     true,
                     successCallback,
                     errorCallback,
@@ -107,7 +107,7 @@ adguard.application = (function (adguard) {
                 );
             }
         } else {
-            antiBannerService.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback);
+            adguard.filtersUpdate.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback);
         }
     };
 

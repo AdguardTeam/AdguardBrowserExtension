@@ -66,6 +66,7 @@ const API_SCRIPTS = [
     'Extension/lib/filter/antibanner.js',
     'Extension/lib/filter/filtering-api.js',
     'Extension/lib/filter/filters/filters-state.js',
+    'Extension/lib/filter/filters/filters-update.js',
     'Extension/lib/filter/request-blocking.js',
     'Extension/lib/filter/services/cookie-filtering.js',
     'Extension/lib/filter/filtering-log.js',
