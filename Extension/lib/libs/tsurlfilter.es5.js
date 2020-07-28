@@ -7096,10 +7096,10 @@ var NetworkRule = /** @class */ (function () {
      */
     NetworkRule.prototype.setOptionEnabled = function (option, enabled) {
         if (this.whitelist && (option & NetworkRuleOption.BlacklistOnly) === option) {
-            throw new SyntaxError("modifier " + NetworkRuleOption[option] + " cannot be used in a whitelist rule");
+            throw new SyntaxError("modifier " + NetworkRuleOption[option] + " cannot be used in whitelist rule " + this.ruleText);
         }
         if (!this.whitelist && (option & NetworkRuleOption.WhitelistOnly) === option) {
-            throw new SyntaxError("modifier " + NetworkRuleOption[option] + " cannot be used in a blacklist rule");
+            throw new SyntaxError("modifier " + NetworkRuleOption[option] + " cannot be used in blacklist rule " + this.ruleText);
         }
         if (enabled) {
             this.enabledOptions |= option;
@@ -7294,7 +7294,7 @@ var NetworkRule = /** @class */ (function () {
                 this.advancedModifier = new RemoveParamModifier(optionValue, this.isWhitelist());
                 break;
             default:
-                throw new SyntaxError("Unknown modifier: " + optionName + "=" + optionValue);
+                throw new SyntaxError("Unknown modifier: " + optionName + "=" + optionValue + " in rule " + this.ruleText);
         }
     };
     /**
@@ -9630,7 +9630,7 @@ var RuleUtils = /** @class */ (function () {
             return new NetworkRule(line, filterListId);
         }
         catch (e) {
-            logger.error(e);
+            logger.info(e.message);
         }
         return null;
     };
