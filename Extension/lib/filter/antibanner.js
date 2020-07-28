@@ -19,9 +19,6 @@
  * Creating service that manages our filter rules.
  */
 adguard.antiBannerService = (function (adguard) {
-    // Add synthetic user filter
-    const userFilter = { filterId: adguard.utils.filters.USER_FILTER_ID };
-
     // Request filter contains all filter rules
     // This class does the actual filtering (checking URLs, constructing CSS/JS to inject, etc)
     let requestFilter = new adguard.RequestFilter();
@@ -681,33 +678,6 @@ adguard.antiBannerService = (function (adguard) {
     };
 
     /**
-     * Add rules to filter
-     * @param rulesText
-     * @returns {Array}
-     */
-    const addUserFilterRules = function (rulesText) {
-        adguard.listeners.notifyListeners(adguard.listeners.ADD_RULES, userFilter, rulesText);
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_USER_FILTER_RULES, getRequestFilterInfo());
-    };
-
-    /**
-     * Updates filter rules
-     * @param rulesText Rules text
-     */
-    const updateUserFilterRules = function (rulesText) {
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, userFilter, rulesText);
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_USER_FILTER_RULES, getRequestFilterInfo());
-    };
-
-    /**
-     * Remove rule from filter
-     * @param ruleText
-     */
-    const removeUserFilterRule = function (ruleText) {
-        adguard.listeners.notifyListeners(adguard.listeners.REMOVE_RULE, userFilter, [ruleText]);
-    };
-
-    /**
      * Is Application running
      */
     const isRunning = () => applicationRunning;
@@ -723,10 +693,6 @@ adguard.antiBannerService = (function (adguard) {
 
         getRequestFilter,
         getRequestFilterInitTime,
-
-        addUserFilterRules,
-        updateUserFilterRules,
-        removeUserFilterRule,
 
         getRequestFilterInfo,
     };

@@ -22,12 +22,9 @@ adguard.userrules = (function (adguard) {
     'use strict';
 
     /**
-     * Wraps access to getter. AntiBannerService hasn't been defined yet.
-     * @returns {*}
+     * Synthetic user filter
      */
-    function getAntiBannerService() {
-        return adguard.antiBannerService;
-    }
+    const userFilter = { filterId: adguard.utils.filters.USER_FILTER_ID };
 
     /**
      * Adds list of rules to the user filter
@@ -35,14 +32,20 @@ adguard.userrules = (function (adguard) {
      * @param rulesText List of rules to add
      */
     const addRules = function (rulesText) {
-        getAntiBannerService().addUserFilterRules(rulesText);
+        adguard.listeners.notifyListeners(adguard.listeners.ADD_RULES, userFilter, rulesText);
+        adguard.listeners.notifyListeners(
+            adguard.listeners.UPDATE_USER_FILTER_RULES, adguard.antiBannerService.getRequestFilterInfo()
+        );
     };
 
     /**
      * Removes all user's custom rules
      */
     const clearRules = function () {
-        getAntiBannerService().updateUserFilterRules([]);
+        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, userFilter, []);
+        adguard.listeners.notifyListeners(
+            adguard.listeners.UPDATE_USER_FILTER_RULES, adguard.antiBannerService.getRequestFilterInfo()
+        );
     };
 
     /**
@@ -51,7 +54,7 @@ adguard.userrules = (function (adguard) {
      * @param ruleText Rule text
      */
     const removeRule = function (ruleText) {
-        getAntiBannerService().removeUserFilterRule(ruleText);
+        adguard.listeners.notifyListeners(adguard.listeners.REMOVE_RULE, userFilter, [ruleText]);
     };
 
     /**
@@ -60,7 +63,10 @@ adguard.userrules = (function (adguard) {
      */
     const updateUserRulesText = function (content) {
         const lines = content.length > 0 ? content.split(/\n/) : [];
-        getAntiBannerService().updateUserFilterRules(lines);
+        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, userFilter, lines);
+        adguard.listeners.notifyListeners(
+            adguard.listeners.UPDATE_USER_FILTER_RULES, adguard.antiBannerService.getRequestFilterInfo()
+        );
     };
 
     /**
