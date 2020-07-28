@@ -7999,7 +7999,7 @@ var CosmeticRule = /** @class */ (function () {
         this.EXT_CSS_PSEUDO_INDICATORS = ['[-ext-has=', '[-ext-contains=', '[-ext-has-text=',
             '[-ext-matches-css=', '[-ext-matches-css-before=', '[-ext-matches-css-after=', ':has(', ':has-text(',
             ':contains(', ':matches-css(', ':matches-css-before(', ':matches-css-after(', ':-abp-has(', ':-abp-contains(',
-            ':if(', ':if-not('];
+            ':if(', ':if-not(', ':properties(', ':-abp-properties(', ':xpath(', ':nth-ancestor(', ':upward('];
         this.ruleText = ruleText;
         this.filterListId = filterListId;
         var _a = findCosmeticRuleMarker(ruleText), index = _a[0], marker = _a[1];
@@ -8280,7 +8280,7 @@ var CosmeticRule = /** @class */ (function () {
         ':not', ':nth-child', ':nth-last-child', ':nth-last-of-type', ':nth-of-type',
         ':only-child', ':only-of-type', ':optional', ':out-of-range', ':read-only',
         ':read-write', ':required', ':root', ':target', ':valid', ':visited',
-        ':-abp-has', ':-abp-contains'];
+        ':-abp-has', ':-abp-contains', ':-abp-properties', ':xpath', ':nth-ancestor', ':upward'];
     return CosmeticRule;
 }());
 
