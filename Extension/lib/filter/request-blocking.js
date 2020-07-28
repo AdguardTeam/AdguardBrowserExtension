@@ -421,9 +421,15 @@ adguard.webRequestService = (function (adguard) {
 
             // Url blocking rules are not applicable to the main_frame
             if (isRequestBlockingRule && requestType === adguard.RequestTypes.DOCUMENT) {
+                // TODO: [TSUrlFilter] Fix blocking $document rules
                 // except rules with $document and $popup modifiers
-                var isPopupBlockingRule = isPopupBlockedByRule(requestRule);
-                if (!requestRule.isDocumentRule() && !isPopupBlockingRule) {
+                // const isPopupBlockingRule = isPopupBlockedByRule(requestRule);
+                // if (!requestRule.isDocumentRule() && !isPopupBlockingRule) {
+                //     requestRule = null;
+                // }
+
+                const isPopupBlockingRule = isPopupBlockedByRule(requestRule);
+                if (!isPopupBlockingRule) {
                     requestRule = null;
                 }
             }

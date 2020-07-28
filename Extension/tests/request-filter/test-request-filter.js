@@ -618,7 +618,7 @@ QUnit.test('Css GenericHide Exception Rules', (assert) => {
 
 QUnit.module('Misc');
 
-// TODO: [TSUrlFilter] Add blacklist $document modifier
+// TODO: [TSUrlFilter] Fix blocking $document rules
 // QUnit.test('$document modifier', (assert) => {
 //     const rule = '||example.org^$document';
 //
