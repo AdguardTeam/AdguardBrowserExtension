@@ -37,12 +37,12 @@ const API_SCRIPTS = [
     'Extension/lib/utils/log.js',
     'Extension/lib/utils/public-suffixes.js',
     'Extension/lib/utils/url.js',
-    'Extension/lib/utils/notifier.js',
+    'Extension/lib/notifier.js',
     'Extension/lib/utils/browser-utils.js',
-    'Extension/lib/utils/service-client.js',
-    'Extension/lib/utils/page-stats.js',
-    'Extension/lib/utils/user-settings.js',
-    'Extension/lib/utils/frames.js',
+    'Extension/lib/filter/filters/service-client.js',
+    'Extension/lib/filter/page-stats.js',
+    'Extension/lib/settings/user-settings.js',
+    'Extension/lib/tabs/frames.js',
     'Extension/lib/utils/cookie.js',
     // Local storage and rules storage libraries
     'Extension/browser/chrome/lib/utils/local-storage.js',
@@ -54,16 +54,15 @@ const API_SCRIPTS = [
     // Tabs api library
     'Extension/browser/chrome/lib/api/tabs.js',
     'Extension/lib/tabs/tabs-api.js',
-    // Application
-    'Extension/lib/application.js',
     // Services
     'Extension/lib/filter/services/css-service.js',
     // Filters metadata and filtration modules
-    'Extension/lib/filter/subscription.js',
-    'Extension/lib/filter/update-service.js',
+    'Extension/lib/filter/application.js',
+    'Extension/lib/filter/filters/subscription.js',
+    'Extension/lib/update-service.js',
     'Extension/lib/filter/whitelist.js',
     'Extension/lib/filter/userrules.js',
-    'Extension/lib/filter/filters.js',
+    'Extension/lib/filter/request-filter.js',
     'Extension/lib/filter/antibanner.js',
     'Extension/lib/filter/request-blocking.js',
     'Extension/lib/filter/services/cookie-filtering.js',

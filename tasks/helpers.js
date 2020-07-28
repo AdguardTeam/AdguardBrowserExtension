@@ -86,7 +86,7 @@ export function preprocessAll(dest, data, done) {
         path.join(dest, 'pages/export.html'),
         path.join(dest, 'pages/log.html'),
         path.join(dest, 'pages/options.html'),
-        path.join(dest, 'lib/filter/filters.js'),
+        path.join(dest, 'lib/filter/request-filter.js'),
     ];
 
     for (const filePath of filesToPreprocess) {
