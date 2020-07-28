@@ -7,7 +7,7 @@ adguard.webRequestService = adguard.webRequestService || {
 
 const createRequestFilter = (rulesText) => {
     const lists = [new StringRuleList(1, rulesText, false, false)];
-    adguard.application.startEngine(lists);
+    adguard.engine.startEngine(lists);
     return new adguard.RequestFilter();
 };
 

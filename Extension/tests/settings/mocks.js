@@ -1,5 +1,5 @@
 (function (adguard) {
-    adguard.filters = {
+    adguard.application = {
         getEnabledFilters: () => [
             { filterId: 1 },
             {

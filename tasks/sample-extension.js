@@ -57,13 +57,14 @@ const API_SCRIPTS = [
     // Services
     'Extension/lib/filter/services/css-service.js',
     // Filters metadata and filtration modules
-    'Extension/lib/filter/application.js',
+    'Extension/lib/filter/engine.js',
     'Extension/lib/filter/filters/subscription.js',
     'Extension/lib/update-service.js',
     'Extension/lib/filter/whitelist.js',
     'Extension/lib/filter/userrules.js',
     'Extension/lib/filter/request-filter.js',
     'Extension/lib/filter/antibanner.js',
+    'Extension/lib/filter/filtering-api.js',
     'Extension/lib/filter/filters/filters-state.js',
     'Extension/lib/filter/request-blocking.js',
     'Extension/lib/filter/services/cookie-filtering.js',
@@ -74,6 +75,7 @@ const API_SCRIPTS = [
     // Content messaging
     'Extension/lib/content-message-handler.js',
     'Extension/lib/webrequest.js',
+    'Extension/lib/application.js',
     'Extension/api/chrome/lib/api.js',
 ];
 

@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-adguard.application = (function (adguard) {
+adguard.engine = (function (adguard) {
     let engine;
 
     const startEngine = (lists) => {

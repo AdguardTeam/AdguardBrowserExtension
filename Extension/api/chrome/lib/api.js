@@ -116,12 +116,12 @@
             }
         }
 
-        adguard.filters.addAndEnableFilters(filterIds, function () {
-            var enabledFilters = adguard.filters.getEnabledFilters();
+        adguard.application.addAndEnableFilters(filterIds, function () {
+            var enabledFilters = adguard.application.getEnabledFilters();
             for (var i = 0; i < enabledFilters.length; i++) {
                 var filter = enabledFilters[i];
                 if (filterIds.indexOf(filter.filterId) < 0) {
-                    adguard.filters.disableFilters([filter.filterId]);
+                    adguard.application.disableFilters([filter.filterId]);
                 }
             }
 
@@ -179,7 +179,7 @@
 
         adguard.rulesStorage.init(function () {
             adguard.localStorage.init(function () {
-                adguard.filters.start({}, function () {
+                adguard.application.start({}, function () {
                     configure(configuration, callback);
                 });
             });
@@ -191,7 +191,7 @@
      * @param callback Callback function
      */
     var stop = function (callback) {
-        adguard.filters.stop(callback || noOpFunc);
+        adguard.application.stop(callback || noOpFunc);
     };
 
     /**
@@ -201,7 +201,7 @@
      */
     var configure = function (configuration, callback) {
 
-        if (!adguard.filters.isInitialized()) {
+        if (!adguard.application.isInitialized()) {
             throw new Error('Applications is not initialized. Use \'start\' method.');
         }
         validateConfiguration(configuration);

@@ -32,7 +32,7 @@
      * @returns {Array}
      */
     const collectEnabledFilterIds = () => {
-        const enabledFilters = adguard.filters.getEnabledFilters();
+        const enabledFilters = adguard.application.getEnabledFilters();
         return enabledFilters
             .filter(filter => !filter.customUrl)
             .map(filter => filter.filterId);
@@ -151,11 +151,11 @@
         adguard.settings.setFiltersUpdatePeriod(set['filters-update-period']);
 
         if (set['allow-acceptable-ads']) {
-            adguard.filters.addAndEnableFilters([adguard.utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID], () => {
+            adguard.application.addAndEnableFilters([adguard.utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID], () => {
                 callback(true);
             });
         } else {
-            adguard.filters.disableFilters([adguard.utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID]);
+            adguard.application.disableFilters([adguard.utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID]);
             callback(true);
         }
     };
@@ -199,7 +199,7 @@
 
         return new Promise((resolve, reject) => {
             const options = { title, trusted };
-            adguard.filters.loadCustomFilter(
+            adguard.application.loadCustomFilter(
                 customUrl,
                 options,
                 (filter) => {
@@ -231,7 +231,7 @@
      */
     const removeCustomFilters = (filterIds) => {
         filterIds.forEach((filterId) => {
-            adguard.filters.removeFilter(filterId);
+            adguard.application.removeFilter(filterId);
         });
         adguard.console.info(`Settings sync: Next filters were removed: ${filterIds}`);
     };
@@ -297,12 +297,12 @@
      * @returns {Promise<any>}
      */
     const syncEnabledFilters = filterIds => new Promise((resolve) => {
-        adguard.filters.addAndEnableFilters(filterIds, () => {
-            const enabledFilters = adguard.filters.getEnabledFilters();
+        adguard.application.addAndEnableFilters(filterIds, () => {
+            const enabledFilters = adguard.application.getEnabledFilters();
             const filtersToDisable = enabledFilters
                 .filter(enabledFilter => !filterIds.includes(enabledFilter.filterId))
                 .map(filter => filter.filterId);
-            adguard.filters.disableFilters(filtersToDisable);
+            adguard.application.disableFilters(filtersToDisable);
             resolve();
         });
     });
@@ -313,7 +313,7 @@
      */
     const syncEnabledGroups = (enabledGroups) => {
         enabledGroups.forEach((groupId) => {
-            adguard.filters.enableGroup(groupId);
+            adguard.application.enableGroup(groupId);
         });
         adguard.console.info(`Settings sync: Next groups were enabled: ${enabledGroups}`);
 
@@ -325,7 +325,7 @@
             .filter(groupId => !enabledGroups.includes(groupId));
 
         groupIdsToDisable.forEach((groupId) => {
-            adguard.filters.disableGroup(groupId);
+            adguard.application.disableGroup(groupId);
         });
     };
 

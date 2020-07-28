@@ -58,7 +58,7 @@
         for (var key in AntiBannerFiltersId) {
             if (AntiBannerFiltersId.hasOwnProperty(key)) {
                 var filterId = AntiBannerFiltersId[key];
-                var enabled = adguard.filters.isFilterEnabled(filterId);
+                var enabled = adguard.application.isFilterEnabled(filterId);
                 if (enabled) {
                     enabledFilters[filterId] = true;
                 }
@@ -69,7 +69,7 @@
             userSettings: adguard.settings.getAllSettings(),
             enabledFilters: enabledFilters,
             filtersMetadata: adguard.subscriptions.getFilters(),
-            requestFilterInfo: adguard.requestFilter.getRequestFilterInfo(),
+            requestFilterInfo: adguard.filteringApi.getRequestFilterInfo(),
             environmentOptions: {
                 isMacOs: adguard.utils.browser.isMacOs(),
                 canBlockWebRTC: adguard.stealthService.canBlockWebRTC(),
@@ -133,19 +133,19 @@
                 adguard.settings.setProperty(message.key, message.value);
                 break;
             case 'checkRequestFilterReady':
-                return { ready: adguard.requestFilter.isReady() };
+                return { ready: adguard.filteringApi.isReady() };
             case 'addAndEnableFilter':
-                adguard.filters.addAndEnableFilters([message.filterId]);
+                adguard.application.addAndEnableFilters([message.filterId]);
                 break;
             case 'disableAntiBannerFilter':
                 if (message.remove) {
-                    adguard.filters.uninstallFilters([message.filterId]);
+                    adguard.application.uninstallFilters([message.filterId]);
                 } else {
-                    adguard.filters.disableFilters([message.filterId]);
+                    adguard.application.disableFilters([message.filterId]);
                 }
                 break;
             case 'removeAntiBannerFilter':
-                adguard.filters.removeFilter(message.filterId);
+                adguard.application.removeFilter(message.filterId);
                 break;
             case 'enableFiltersGroup':
                 adguard.categories.enableFiltersGroup(message.groupId);
@@ -188,7 +188,7 @@
                 adguard.ui.checkFiltersUpdates();
                 break;
             case 'loadCustomFilterInfo':
-                adguard.filters.loadCustomFilterInfo(message.url, { title: message.title }, (filter) => {
+                adguard.application.loadCustomFilterInfo(message.url, { title: message.title }, (filter) => {
                     callback({ filter });
                 }, (error) => {
                     callback({ error });
@@ -196,8 +196,8 @@
                 return true;
             case 'subscribeToCustomFilter': {
                 const { url, title, trusted } = message;
-                adguard.filters.loadCustomFilter(url, { title, trusted }, (filter) => {
-                    adguard.filters.addAndEnableFilters([filter.filterId], () => {
+                adguard.application.loadCustomFilter(url, { title, trusted }, (filter) => {
+                    adguard.application.addAndEnableFilters([filter.filterId], () => {
                         callback(filter);
                     });
                 }, () => {

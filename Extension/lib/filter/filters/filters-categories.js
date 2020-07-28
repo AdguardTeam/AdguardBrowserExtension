@@ -145,9 +145,9 @@ adguard.categories = (function (adguard) {
         const group = adguard.subscriptions.getGroup(groupId);
         if (group && typeof group.enabled === 'undefined') {
             const recommendedFiltersIds = getRecommendedFilterIdsByGroupId(groupId);
-            adguard.filters.addAndEnableFilters(recommendedFiltersIds);
+            adguard.application.addAndEnableFilters(recommendedFiltersIds);
         }
-        adguard.filters.enableGroup(groupId);
+        adguard.application.enableGroup(groupId);
     };
 
     /**
@@ -155,7 +155,7 @@ adguard.categories = (function (adguard) {
      * @param {number} groupId
      */
     const disableFiltersGroup = function (groupId) {
-        adguard.filters.disableGroup(groupId);
+        adguard.application.disableGroup(groupId);
     };
 
     return {

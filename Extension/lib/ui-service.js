@@ -575,7 +575,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             browserDetails = adguard.prefs.browser;
         }
 
-        const filterIds = adguard.filters.getEnabledFiltersFromEnabledGroups()
+        const filterIds = adguard.application.getEnabledFiltersFromEnabledGroups()
             .map(filter => filter.filterId);
 
         openTab(`https://reports.adguard.com/new_issue.html?product_type=Ext&product_version=${
@@ -679,9 +679,9 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             : () => { };
 
         if (filters) {
-            adguard.filters.checkFiltersUpdates(successCallback, errorCallback, filters);
+            adguard.application.checkFiltersUpdates(successCallback, errorCallback, filters);
         } else {
-            adguard.filters.checkFiltersUpdates(successCallback, errorCallback);
+            adguard.application.checkFiltersUpdates(successCallback, errorCallback);
         }
     };
 

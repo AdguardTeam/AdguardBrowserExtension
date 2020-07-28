@@ -110,7 +110,7 @@
             }
         };
 
-        adguard.filters.addAndEnableFilters(filterIds, onSuccess, { forceGroupEnable: true });
+        adguard.application.addAndEnableFilters(filterIds, onSuccess, { forceGroupEnable: true });
     }
 
     /**

@@ -191,7 +191,7 @@ adguard.frames = (function (adguard) {
                 const { url } = frame;
                 frameWhiteListRule = adguard.whitelist.findWhiteListRule(url);
                 if (!frameWhiteListRule) {
-                    frameWhiteListRule = adguard.requestFilter.findWhiteListRule(url, url, adguard.RequestTypes.DOCUMENT);
+                    frameWhiteListRule = adguard.filteringApi.findWhiteListRule(url, url, adguard.RequestTypes.DOCUMENT);
                 }
             }
             adguard.tabs.updateTabMetadata(tab.tabId, {

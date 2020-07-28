@@ -46,7 +46,7 @@ adguard.initialize = function () {
         /**
          * Start application
          */
-        adguard.filters.start({
+        adguard.application.start({
             onInstall(callback) {
                 // Process installation
                 /**
@@ -55,8 +55,8 @@ adguard.initialize = function () {
                 adguard.ui.openFiltersDownloadPage();
 
                 // Retrieve filters and install them
-                adguard.filters.offerFilters((filterIds) => {
-                    adguard.filters.addAndEnableFilters(filterIds, callback);
+                adguard.application.offerFilters((filterIds) => {
+                    adguard.application.addAndEnableFilters(filterIds, callback);
                 });
             },
         }, () => {

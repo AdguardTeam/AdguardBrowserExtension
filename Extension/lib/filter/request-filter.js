@@ -100,7 +100,7 @@
         requestCacheMaxSize: 1000,
 
         getRulesCount() {
-            return adguard.application.getEngine().getRulesCount();
+            return adguard.engine.getEngine().getRulesCount();
         },
 
         /**
@@ -125,7 +125,7 @@
         getSelectorsForUrl(url, options) {
             const domain = adguard.utils.url.getHost(url);
 
-            const cosmeticResult = adguard.application.getEngine().getCosmeticResult(domain, options);
+            const cosmeticResult = adguard.engine.getEngine().getCosmeticResult(domain, options);
 
             const elemhideCss = [...cosmeticResult.elementHiding.generic, ...cosmeticResult.elementHiding.specific];
             const injectCss = [...cosmeticResult.CSS.generic, ...cosmeticResult.CSS.specific];
@@ -162,7 +162,7 @@
          */
         getScriptsForUrl(url) {
             const domain = adguard.utils.url.getHost(url);
-            const cosmeticResult = adguard.application.getEngine().getCosmeticResult(domain, CosmeticOption.CosmeticOptionJS);
+            const cosmeticResult = adguard.engine.getEngine().getCosmeticResult(domain, CosmeticOption.CosmeticOptionJS);
 
             return cosmeticResult.getScriptRules();
         },
@@ -311,7 +311,7 @@
         getContentRulesForUrl(documentUrl) {
             const hostname = adguard.utils.url.getHost(documentUrl);
             // eslint-disable-next-line max-len
-            const cosmeticResult = adguard.application.getEngine().getCosmeticResult(hostname, CosmeticOption.CosmeticOptionHtml);
+            const cosmeticResult = adguard.engine.getEngine().getCosmeticResult(hostname, CosmeticOption.CosmeticOptionHtml);
 
             return cosmeticResult.Html.getRules();
         },
@@ -372,7 +372,7 @@
                 requestUrl, documentUrl, adguard.RequestTypes.transformRequestType(requestType)
             );
 
-            const result = adguard.application.getEngine().matchRequest(request);
+            const result = adguard.engine.getEngine().matchRequest(request);
             adguard.console.debug(
                 'Result {0} found for url: {1}, document: {2}, requestType: {3}',
                 result.getBasicResult(),

@@ -252,7 +252,7 @@ adguard.applicationUpdateService = (function (adguard) {
         enabledFilters.forEach((filter) => {
             const { groupId } = filter;
             if (typeof groupState[groupId] === 'undefined') {
-                adguard.filters.enableGroup(filter.groupId);
+                adguard.application.enableGroup(filter.groupId);
             }
         });
 

@@ -169,7 +169,7 @@ adguard.stealthService = (function (adguard) {
             return false;
         }
 
-        const whiteListRule = adguard.requestFilter.findWhiteListRule(requestUrl, mainFrameUrl, requestType);
+        const whiteListRule = adguard.filteringApi.findWhiteListRule(requestUrl, mainFrameUrl, requestType);
         if (whiteListRule && whiteListRule.isDocumentWhiteList()) {
             adguard.console.debug('Whitelist rule found');
             return false;
@@ -251,7 +251,7 @@ adguard.stealthService = (function (adguard) {
             return null;
         }
 
-        const whiteListRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, requestType);
+        const whiteListRule = adguard.filteringApi.findWhiteListRule(requestUrl, referrerUrl, requestType);
         if (whiteListRule && whiteListRule.isDocumentWhiteList()) {
             adguard.console.debug('Whitelist rule found');
             return false;
@@ -304,13 +304,13 @@ adguard.stealthService = (function (adguard) {
      * @returns whitelist rule if found
      */
     const findStealthWhitelistRule = function (requestUrl, referrerUrl, requestType) {
-        const stealthDocumentWhitelistRule = adguard.requestFilter.findStealthWhiteListRule(referrerUrl, referrerUrl, requestType);
+        const stealthDocumentWhitelistRule = adguard.filteringApi.findStealthWhiteListRule(referrerUrl, referrerUrl, requestType);
         if (stealthDocumentWhitelistRule && stealthDocumentWhitelistRule.isDocumentWhitelistRule()) {
             adguard.console.debug('Stealth document whitelist rule found.');
             return stealthDocumentWhitelistRule;
         }
 
-        const stealthWhiteListRule = adguard.requestFilter.findStealthWhiteListRule(requestUrl, referrerUrl, requestType);
+        const stealthWhiteListRule = adguard.filteringApi.findStealthWhiteListRule(requestUrl, referrerUrl, requestType);
         if (stealthWhiteListRule) {
             adguard.console.debug('Stealth whitelist rule found.');
             return stealthWhiteListRule;
@@ -412,7 +412,7 @@ adguard.stealthService = (function (adguard) {
             return null;
         }
 
-        const whiteListRule = adguard.requestFilter.findWhiteListRule(requestUrl, mainFrameUrl, requestType);
+        const whiteListRule = adguard.filteringApi.findWhiteListRule(requestUrl, mainFrameUrl, requestType);
         if (whiteListRule && whiteListRule.isDocumentWhiteList()) {
             adguard.console.debug('Whitelist rule found');
             return null;

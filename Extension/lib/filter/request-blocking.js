@@ -80,7 +80,7 @@ adguard.webRequestService = (function (adguard) {
             return result;
         }
 
-        if (!adguard.requestFilter.isReady()) {
+        if (!adguard.filteringApi.isReady()) {
             result.requestFilterReady = false;
             return result;
         }
@@ -93,16 +93,16 @@ adguard.webRequestService = (function (adguard) {
             return result;
         }
 
-        const cosmeticOptions = adguard.requestFilter.getCosmeticOption(
+        const cosmeticOptions = adguard.filteringApi.getCosmeticOption(
             documentUrl, documentUrl, adguard.RequestTypes.DOCUMENT
         );
 
-        result.collapseAllElements = adguard.requestFilter.shouldCollapseAllElements();
-        result.selectors = adguard.requestFilter.getSelectorsForUrl(documentUrl, cosmeticOptions);
+        result.collapseAllElements = adguard.filteringApi.shouldCollapseAllElements();
+        result.selectors = adguard.filteringApi.getSelectorsForUrl(documentUrl, cosmeticOptions);
 
         const canUseInsertCSSAndExecuteScript = adguard.prefs.features.canUseInsertCSSAndExecuteScript;
         if (retrieveScripts || !canUseInsertCSSAndExecuteScript) {
-            result.scripts = adguard.requestFilter.getScriptsStringForUrl(documentUrl, tab);
+            result.scripts = adguard.filteringApi.getScriptsStringForUrl(documentUrl, tab);
         }
 
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1337
@@ -287,10 +287,10 @@ adguard.webRequestService = (function (adguard) {
             return whitelistRule;
         } else if (!whitelistRule) {
             // If whitelist rule is not found for the main frame, we check it for referrer
-            whitelistRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
+            whitelistRule = adguard.filteringApi.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
         }
 
-        return adguard.requestFilter.findRuleForRequest(requestUrl, referrerUrl, requestType, whitelistRule);
+        return adguard.filteringApi.findRuleForRequest(requestUrl, referrerUrl, requestType, whitelistRule);
     };
 
     /**
@@ -305,12 +305,12 @@ adguard.webRequestService = (function (adguard) {
             return null;
         }
 
-        const whitelistRule = adguard.requestFilter.findWhiteListRule(documentUrl, documentUrl, adguard.RequestTypes.DOCUMENT);
+        const whitelistRule = adguard.filteringApi.findWhiteListRule(documentUrl, documentUrl, adguard.RequestTypes.DOCUMENT);
         if (whitelistRule && whitelistRule.isOptionEnabled(NetworkRuleOption.Content)) {
             return null;
         }
 
-        return adguard.requestFilter.getContentRulesForUrl(documentUrl);
+        return adguard.filteringApi.getContentRulesForUrl(documentUrl);
     };
 
     /**
@@ -328,12 +328,12 @@ adguard.webRequestService = (function (adguard) {
         }
 
         // @@||example.org^$document or @@||example.org^$urlblock — disables all the $csp rules on all the pages matching the rule pattern.
-        const whitelistRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
+        const whitelistRule = adguard.filteringApi.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
         if (whitelistRule && whitelistRule.isOptionEnabled(NetworkRuleOption.Urlblock)) {
             return null;
         }
 
-        return adguard.requestFilter.getCspRules(requestUrl, referrerUrl, requestType);
+        return adguard.filteringApi.getCspRules(requestUrl, referrerUrl, requestType);
     };
 
     /**
@@ -350,14 +350,14 @@ adguard.webRequestService = (function (adguard) {
             return null;
         }
 
-        const whitelistRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
+        const whitelistRule = adguard.filteringApi.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
         if (whitelistRule && whitelistRule.isDocumentWhitelistRule()) {
             // $cookie rules are not affected by regular exception rules (@@) unless it's a $document exception.
             return null;
         }
 
         // Get all $cookie rules matching the specified request
-        return adguard.requestFilter.getCookieRules(requestUrl, referrerUrl, requestType);
+        return adguard.filteringApi.getCookieRules(requestUrl, referrerUrl, requestType);
     };
 
     /**
@@ -374,12 +374,12 @@ adguard.webRequestService = (function (adguard) {
             return null;
         }
 
-        const whitelistRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
+        const whitelistRule = adguard.filteringApi.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
         if (whitelistRule && whitelistRule.isOptionEnabled(NetworkRuleOption.Content)) {
             return null;
         }
 
-        return adguard.requestFilter.getReplaceRules(requestUrl, referrerUrl, requestType);
+        return adguard.filteringApi.getReplaceRules(requestUrl, referrerUrl, requestType);
     };
 
     /**

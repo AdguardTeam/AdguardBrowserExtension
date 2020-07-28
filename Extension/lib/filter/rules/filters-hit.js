@@ -66,7 +66,7 @@ adguard.hitStats = (function (adguard) {
         if (overallViews < MAX_PAGE_VIEWS_COUNT) {
             return;
         }
-        var enabledFilters = adguard.filters.getEnabledFilters();
+        var enabledFilters = adguard.application.getEnabledFilters();
         adguard.backend.sendHitStats(JSON.stringify(hitStatsHolder.hitStats), enabledFilters);
         cleanup();
     }
