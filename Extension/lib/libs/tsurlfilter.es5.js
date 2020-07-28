@@ -7402,7 +7402,12 @@ var RuleConverter = /** @class */ (function () {
         var lines = rulesText.split('\n');
         for (var _i = 0, lines_1 = lines; _i < lines_1.length; _i++) {
             var line = lines_1[_i];
-            result.push.apply(result, RuleConverter.convertRule(line));
+            try {
+                result.push.apply(result, RuleConverter.convertRule(line));
+            }
+            catch (e) {
+                logger.warn(e);
+            }
         }
         return result.join('\n');
     };
@@ -7412,33 +7417,27 @@ var RuleConverter = /** @class */ (function () {
      * @param {string} rule convert rule
      */
     RuleConverter.convertRule = function (rule) {
-        try {
-            var comment = RuleConverter.convertUboComments(rule);
-            if (comment) {
-                return [comment];
-            }
-            var converted = RuleConverter.convertCssInjection(rule);
-            converted = RuleConverter.convertRemoveRule(converted);
-            converted = RuleConverter.replaceOptions(converted);
-            converted = RuleConverter.convertScriptHasTextToScriptTagContent(converted);
-            var scriptlet = scriptletsCjs.convertScriptletToAdg(converted);
-            if (scriptlet) {
-                return scriptlet;
-            }
-            var abpRedirectRule = RuleConverter.convertUboAndAbpRedirectsToAdg(converted);
-            if (abpRedirectRule) {
-                return [abpRedirectRule];
-            }
-            var ruleWithConvertedOptions = RuleConverter.convertOptions(converted);
-            if (ruleWithConvertedOptions) {
-                return ruleWithConvertedOptions;
-            }
-            return [converted];
+        var comment = RuleConverter.convertUboComments(rule);
+        if (comment) {
+            return [comment];
         }
-        catch (e) {
-            logger.error(e);
+        var converted = RuleConverter.convertCssInjection(rule);
+        converted = RuleConverter.convertRemoveRule(converted);
+        converted = RuleConverter.replaceOptions(converted);
+        converted = RuleConverter.convertScriptHasTextToScriptTagContent(converted);
+        var scriptlet = scriptletsCjs.convertScriptletToAdg(converted);
+        if (scriptlet) {
+            return scriptlet;
         }
-        return [rule];
+        var abpRedirectRule = RuleConverter.convertUboAndAbpRedirectsToAdg(converted);
+        if (abpRedirectRule) {
+            return [abpRedirectRule];
+        }
+        var ruleWithConvertedOptions = RuleConverter.convertOptions(converted);
+        if (ruleWithConvertedOptions) {
+            return ruleWithConvertedOptions;
+        }
+        return [converted];
     };
     /**
      * Converts UBO Script rule
