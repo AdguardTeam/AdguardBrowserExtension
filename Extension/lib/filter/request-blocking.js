@@ -93,10 +93,9 @@ adguard.webRequestService = (function (adguard) {
             return result;
         }
 
-        const matchingResult = adguard.requestFilter.getRequestFilter().getMatchingResult(
+        const cosmeticOptions = adguard.requestFilter.getCosmeticOption(
             documentUrl, documentUrl, adguard.RequestTypes.DOCUMENT
         );
-        const cosmeticOptions = matchingResult.getCosmeticOption();
 
         result.collapseAllElements = adguard.requestFilter.shouldCollapseAllElements();
         result.selectors = adguard.requestFilter.getSelectorsForUrl(documentUrl, cosmeticOptions);

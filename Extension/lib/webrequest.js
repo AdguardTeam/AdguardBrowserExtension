@@ -312,7 +312,9 @@
             const replaceRules = adguard.webRequestService.getReplaceRules(tab, requestUrl, referrerUrl, requestType);
             const htmlRules = adguard.webRequestService.getContentRules(tab, referrerUrl);
 
-            const request = new Request(requestUrl, referrerUrl, adguard.requestFilter.getRequestFilter().transformRequestType(requestType));
+            const request = new Request(
+                requestUrl, referrerUrl, adguard.RequestTypes.transformRequestType(requestType)
+            );
             request.requestId = requestId;
             request.tabId = tab.tabId;
             request.statusCode = statusCode;

@@ -1140,6 +1140,10 @@ adguard.requestFilter = (function (adguard) {
         return getRequestFilter().findReplaceRules(requestUrl, referrer, requestType);
     };
 
+    const getCosmeticOption = function (requestUrl, referrer, requestType) {
+        return getRequestFilter().getMatchingResult(requestUrl, referrer, requestType).getCosmeticOption();
+    };
+
     const getRequestFilterInfo = function () {
         return antiBannerService.getRequestFilterInfo();
     };
@@ -1160,8 +1164,9 @@ adguard.requestFilter = (function (adguard) {
         getCookieRules,
         getReplaceRules,
         findStealthWhiteListRule,
+        getCosmeticOption,
+
         getRequestFilterInfo,
-        getRequestFilter,
     };
 })(adguard);
 

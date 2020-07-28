@@ -43,6 +43,41 @@ adguard.RequestTypes = {
     CSP: 'CSP',
     COOKIE: 'COOKIE',
     PING: 'PING',
+
+    /**
+     * Transforms to TSUrlFilter.RequestType
+     *
+     * @param requestType
+     * @return {number}
+     */
+    transformRequestType(requestType) {
+        const contentTypes = adguard.RequestTypes;
+
+        switch (requestType) {
+            case contentTypes.DOCUMENT:
+                return RequestType.Document;
+            case contentTypes.SUBDOCUMENT:
+                return RequestType.Subdocument;
+            case contentTypes.STYLESHEET:
+                return RequestType.Stylesheet;
+            case contentTypes.FONT:
+                return RequestType.Font;
+            case contentTypes.IMAGE:
+                return RequestType.Image;
+            case contentTypes.MEDIA:
+                return RequestType.Media;
+            case contentTypes.SCRIPT:
+                return RequestType.Script;
+            case contentTypes.XMLHTTPREQUEST:
+                return RequestType.XmlHttpRequest;
+            case contentTypes.WEBSOCKET:
+                return RequestType.Websocket;
+            case contentTypes.PING:
+                return RequestType.Ping;
+            default:
+                return RequestType.Other;
+        }
+    },
 };
 
 /**
