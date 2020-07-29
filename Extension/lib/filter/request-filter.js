@@ -252,7 +252,12 @@
             if (!result) {
                 result = this.createMatchingResult(requestUrl, referrer, requestType);
 
+                if (!result) {
+                    return new MatchingResult([], []);
+                }
+
                 this.matchingResultsCache.saveResultToCache(requestUrl, result, refHost, requestType);
+
             }
 
             return result;
@@ -371,6 +376,11 @@
             const request = new Request(
                 requestUrl, documentUrl, adguard.RequestTypes.transformRequestType(requestType)
             );
+
+            if (!adguard.engine.getEngine()) {
+                adguard.console.warn('Filtering engine is not ready');
+                return null;
+            }
 
             const result = adguard.engine.getEngine().matchRequest(request);
             adguard.console.debug(
