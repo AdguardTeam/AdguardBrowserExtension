@@ -6723,7 +6723,10 @@ var NetworkRule = /** @class */ (function () {
         if (!this.isWhitelist()) {
             return false;
         }
-        return this.isOptionEnabled(NetworkRuleOption.Urlblock) || this.isOptionEnabled(NetworkRuleOption.Genericblock);
+        return this.isOptionEnabled(NetworkRuleOption.Urlblock) &&
+            this.isOptionEnabled(NetworkRuleOption.Elemhide) &&
+            this.isOptionEnabled(NetworkRuleOption.Jsinject) &&
+            this.isOptionEnabled(NetworkRuleOption.Content);
     };
     /**
      * The longest part of pattern without any special characters.
