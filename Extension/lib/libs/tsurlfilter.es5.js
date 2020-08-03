@@ -6609,9 +6609,9 @@ var NetworkRuleOption;
     NetworkRuleOption[NetworkRuleOption["RemoveParam"] = 524288] = "RemoveParam";
     // Groups (for validation)
     /** Blacklist-only modifiers */
-    NetworkRuleOption[NetworkRuleOption["BlacklistOnly"] = 14336] = "BlacklistOnly";
+    NetworkRuleOption[NetworkRuleOption["BlacklistOnly"] = 6144] = "BlacklistOnly";
     /** Whitelist-only modifiers */
-    NetworkRuleOption[NetworkRuleOption["WhitelistOnly"] = 2040] = "WhitelistOnly";
+    NetworkRuleOption[NetworkRuleOption["WhitelistOnly"] = 1584] = "WhitelistOnly";
     /** Options supported by host-level network rules * */
     NetworkRuleOption[NetworkRuleOption["OptionHostLevelRulesOnly"] = 262148] = "OptionHostLevelRulesOnly";
 })(NetworkRuleOption || (NetworkRuleOption = {}));
@@ -6723,10 +6723,10 @@ var NetworkRule = /** @class */ (function () {
         if (!this.isWhitelist()) {
             return false;
         }
-        return this.isOptionEnabled(NetworkRuleOption.Urlblock) &&
-            this.isOptionEnabled(NetworkRuleOption.Elemhide) &&
-            this.isOptionEnabled(NetworkRuleOption.Jsinject) &&
-            this.isOptionEnabled(NetworkRuleOption.Content);
+        return this.isOptionEnabled(NetworkRuleOption.Urlblock)
+            && this.isOptionEnabled(NetworkRuleOption.Elemhide)
+            && this.isOptionEnabled(NetworkRuleOption.Jsinject)
+            && this.isOptionEnabled(NetworkRuleOption.Content);
     };
     /**
      * The longest part of pattern without any special characters.

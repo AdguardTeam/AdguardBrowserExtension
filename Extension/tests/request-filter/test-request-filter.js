@@ -618,17 +618,16 @@ QUnit.test('Css GenericHide Exception Rules', (assert) => {
 
 QUnit.module('Misc');
 
-// TODO: [TSUrlFilter] Fix blocking $document rules
-// QUnit.test('$document modifier', (assert) => {
-//     const rule = '||example.org^$document';
-//
-//     const requestFilter = createRequestFilterWithRules([rule]);
-//     assert.ok(requestFilter.findRuleForRequest(
-//         'https://example.org',
-//         'https://example.org',
-//         adguard.RequestTypes.DOCUMENT
-//     ));
-// });
+QUnit.test('$document modifier', (assert) => {
+    const rule = '||example.org^$document';
+
+    const requestFilter = createRequestFilterWithRules([rule]);
+    assert.ok(requestFilter.findRuleForRequest(
+        'https://example.org',
+        'https://example.org',
+        adguard.RequestTypes.DOCUMENT
+    ));
+});
 
 QUnit.test('Domain restriction semantic', (assert) => {
     const url = 'https://example.org/';
