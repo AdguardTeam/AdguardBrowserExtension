@@ -36,10 +36,67 @@ adguard.engine = (function (adguard) {
         return engine;
     };
 
-    const getEngine = () => engine;
+    /**
+     * Gets matching result for request.
+     *
+     * @param requestUrl    Request URL
+     * @param documentUrl   Document URL
+     * @param requestType   Request content type (one of UrlFilterRule.contentTypes)
+     * @returns matching result or null
+     * @private
+     */
+    const createMatchingResult = (requestUrl, documentUrl, requestType) => {
+        // eslint-disable-next-line max-len
+        adguard.console.debug('Filtering http request for url: {0}, document: {1}, requestType: {2}', requestUrl, documentUrl, requestType);
+
+        const request = new Request(
+            requestUrl, documentUrl, adguard.RequestTypes.transformRequestType(requestType)
+        );
+
+        if (!engine) {
+            adguard.console.warn('Filtering engine is not ready');
+            return null;
+        }
+
+        const result = engine.matchRequest(request);
+        adguard.console.debug(
+            'Result {0} found for url: {1}, document: {2}, requestType: {3}',
+            result.getBasicResult(),
+            requestUrl,
+            documentUrl,
+            requestType
+        );
+
+        return result;
+    };
+
+    /**
+     * Gets cosmetic result for the specified hostname and cosmetic options
+     *
+     * @param hostname
+     * @param option
+     * @returns cosmetic result
+     */
+    const getCosmeticResult = (hostname, option) => {
+        if (!engine) {
+            return new CosmeticResult();
+        }
+
+        return engine.getCosmeticResult(hostname, option);
+    };
+
+    /**
+     * @return Engine rules count
+     */
+    const getRulesCount = () => {
+        return engine ? engine.getRulesCount() : 0;
+    };
 
     return {
         startEngine,
-        getEngine,
+        getRulesCount,
+
+        createMatchingResult,
+        getCosmeticResult,
     };
 })(adguard);

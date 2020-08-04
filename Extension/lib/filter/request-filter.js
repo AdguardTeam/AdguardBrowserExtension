@@ -100,7 +100,7 @@
         requestCacheMaxSize: 1000,
 
         getRulesCount() {
-            return adguard.engine.getEngine().getRulesCount();
+            return adguard.engine.getRulesCount();
         },
 
         /**
@@ -125,7 +125,7 @@
         getSelectorsForUrl(url, options) {
             const domain = adguard.utils.url.getHost(url);
 
-            const cosmeticResult = adguard.engine.getEngine().getCosmeticResult(domain, options);
+            const cosmeticResult = adguard.engine.getCosmeticResult(domain, options);
 
             const elemhideCss = [...cosmeticResult.elementHiding.generic, ...cosmeticResult.elementHiding.specific];
             const injectCss = [...cosmeticResult.CSS.generic, ...cosmeticResult.CSS.specific];
@@ -162,7 +162,7 @@
          */
         getScriptsForUrl(url) {
             const domain = adguard.utils.url.getHost(url);
-            const cosmeticResult = adguard.engine.getEngine().getCosmeticResult(domain, CosmeticOption.CosmeticOptionJS);
+            const cosmeticResult = adguard.engine.getCosmeticResult(domain, CosmeticOption.CosmeticOptionJS);
 
             return cosmeticResult.getScriptRules();
         },
@@ -250,7 +250,7 @@
 
             let result = this.matchingResultsCache.searchRequestCache(requestUrl, refHost, requestType);
             if (!result) {
-                result = this.createMatchingResult(requestUrl, referrer, requestType);
+                result = adguard.engine.createMatchingResult(requestUrl, referrer, requestType);
 
                 if (!result) {
                     return new MatchingResult([], []);
@@ -316,7 +316,7 @@
         getContentRulesForUrl(documentUrl) {
             const hostname = adguard.utils.url.getHost(documentUrl);
             // eslint-disable-next-line max-len
-            const cosmeticResult = adguard.engine.getEngine().getCosmeticResult(hostname, CosmeticOption.CosmeticOptionHtml);
+            const cosmeticResult = adguard.engine.getCosmeticResult(hostname, CosmeticOption.CosmeticOptionHtml);
 
             return cosmeticResult.Html.getRules();
         },
@@ -358,40 +358,6 @@
         findCookieRules(requestUrl, documentUrl, requestType) {
             const result = this.getMatchingResult(requestUrl, documentUrl, requestType);
             return result.getCookieRules();
-        },
-
-        /**
-         * Gets matching result for request.
-         *
-         * @param requestUrl    Request URL
-         * @param documentUrl   Document URL
-         * @param requestType   Request content type (one of UrlFilterRule.contentTypes)
-         * @returns matching result
-         * @private
-         */
-        createMatchingResult(requestUrl, documentUrl, requestType) {
-            // eslint-disable-next-line max-len
-            adguard.console.debug('Filtering http request for url: {0}, document: {1}, requestType: {2}', requestUrl, documentUrl, requestType);
-
-            const request = new Request(
-                requestUrl, documentUrl, adguard.RequestTypes.transformRequestType(requestType)
-            );
-
-            if (!adguard.engine.getEngine()) {
-                adguard.console.warn('Filtering engine is not ready');
-                return null;
-            }
-
-            const result = adguard.engine.getEngine().matchRequest(request);
-            adguard.console.debug(
-                'Result {0} found for url: {1}, document: {2}, requestType: {3}',
-                result.getBasicResult(),
-                requestUrl,
-                documentUrl,
-                requestType
-            );
-
-            return result;
         },
     };
 
