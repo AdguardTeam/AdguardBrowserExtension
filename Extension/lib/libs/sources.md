@@ -66,7 +66,7 @@ These libs are developed by us from scratch.
 `assistant.embedded.js` build is being used.
 
 #### `lib/libs/scriptlets/`
-* v1.2.3
+* v1.2.6
 * Library source https://github.com/AdguardTeam/Scriptlets/releases
 
 #### `lru.js`
