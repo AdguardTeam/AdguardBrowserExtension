@@ -190,7 +190,7 @@
         ":not", ":nth-child", ":nth-last-child", ":nth-last-of-type", ":nth-of-type",
         ":only-child", ":only-of-type", ":optional", ":out-of-range", ":properties", ":read-only",
         ":read-write", ":required", ":root", ":target", ":valid", ":visited",
-        ":-abp-has", ":-abp-contains", ":-abp-properties", ":xpath", ":nth-ancestor", ":upward"];
+        ":-abp-has", ":-abp-contains", ":-abp-properties", ":xpath", ":nth-ancestor", ":upward", ":remove"];
 
     /**
      * The problem with it is that ":has" and ":contains" pseudo classes are not a valid pseudo classes,
@@ -199,7 +199,7 @@
     CssFilterRule.EXTENDED_CSS_MARKERS = ["[-ext-has=", "[-ext-contains=", "[-ext-has-text=", "[-ext-matches-css=",
         "[-ext-matches-css-before=", "[-ext-matches-css-after=", ":has(", ":has-text(", ":contains(",
         ":matches-css(", ":matches-css-before(", ":matches-css-after(", ":-abp-has(", ":-abp-contains(",
-        ":if(", ":if-not(", ":properties(", ":-abp-properties(", ":xpath(", ":nth-ancestor(", ":upward("];
+        ":if(", ":if-not(", ":properties(", ":-abp-properties(", ":xpath(", ":nth-ancestor(", ":upward(", ":remove("];
 
     /**
      * All CSS rules markers start with this character
