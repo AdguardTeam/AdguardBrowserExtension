@@ -414,22 +414,21 @@ adguard.webRequestService = (function (adguard) {
      * @param requestRule   rule
      * @return {object} Request rule if suitable by its own type and request type or null
      */
-    var postProcessRequest = function (tab, requestUrl, referrerUrl, requestType, requestRule) {
+    const postProcessRequest = function (tab, requestUrl, referrerUrl, requestType, requestRule) {
         if (requestRule && !requestRule.whiteListRule) {
-            var isRequestBlockingRule = isRequestBlockedByRule(requestRule);
-            var isReplaceRule = requestRule.isOptionEnabled(NetworkRuleOption.Replace);
+            const isRequestBlockingRule = isRequestBlockedByRule(requestRule);
+            const isReplaceRule = requestRule.isOptionEnabled(NetworkRuleOption.Replace);
 
             // Url blocking rules are not applicable to the main_frame
             if (isRequestBlockingRule && requestType === adguard.RequestTypes.DOCUMENT) {
-                // TODO: [TSUrlFilter] Fix blocking $document rules
                 // except rules with $document and $popup modifiers
-                // const isPopupBlockingRule = isPopupBlockedByRule(requestRule);
-                // if (!requestRule.isDocumentRule() && !isPopupBlockingRule) {
-                //     requestRule = null;
-                // }
-
+                const isDocumentRule = requestRule.isOptionEnabled(NetworkRuleOption.Urlblock)
+                    && requestRule.isOptionEnabled(NetworkRuleOption.Elemhide)
+                    && requestRule.isOptionEnabled(NetworkRuleOption.Jsinject)
+                    && requestRule.isOptionEnabled(NetworkRuleOption.Content);
                 const isPopupBlockingRule = isPopupBlockedByRule(requestRule);
-                if (!isPopupBlockingRule) {
+
+                if (!isDocumentRule && !isPopupBlockingRule) {
                     requestRule = null;
                 }
             }
