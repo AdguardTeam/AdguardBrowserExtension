@@ -1,8 +1,8 @@
-! Checksum: 8ekV5nfFKwTbylzye9IneA
+! Checksum: 4niELuPT5srDPS5YfgeKkA
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.3.75
-! TimeUpdated: 2020-07-09T20:32:05+03:00
+! Version: 2.0.3.87
+! TimeUpdated: 2020-07-28T20:04:21+03:00
 ! Expires: 4 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#japanese
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -109,12 +109,13 @@
 !
 ! Rakuten.co.jp
 ||affiliate.rakuten.co.jp^$third-party
-||ias.rakuten.co.jp^
 ||rd.rakuten.co.jp^$third-party
 ||ranking.rakuten.co.jp^
 ||afl.rakuten.co.jp^$domain=~kakaku.com,third-party
 ||hbb.afl.rakuten.co.jp^$third-party
 ||hb.afl.rakuten.co.jp^$third-party
+! not for DNS
+||ias.rakuten.co.jp^$third-party,domain=~rakuten--.co.jp
 !
 ! Nikkeibp.co.jp
 ||bizad.nikkeibp.co.jp^
@@ -141,8 +142,11 @@
 ! Eimg.jp
 ||adingo.jp.eimg.jp^
 !
+||scottdwebgraphics.com^$third-party
+||p.permalink-system.com^$third-party
 ||adp.homes.co.jp^
 ||api.primecaster.net^
+||fam-8.net^$third-party
 ||genieedmp.com^
 ||gmossp-sp.jp^
 ||okbp.xyz^
@@ -391,6 +395,8 @@
 ||web-jp.ad-v.jp^
 ||webantenna.info^$third-party
 ||webtracker.jp^
+||widget-view.dmm.co.jp^
+||widget-view.dmm.com^
 ||widget.zenback.jp^$third-party
 ||w.zenback.jp^$third-party
 !---------------------------------------------------------------------------!
@@ -607,6 +613,8 @@ mindhack2ch.com#?#.article-body > .ad:has(> .adsbygoogle)
 mindhack2ch.com#?#.article-body > .rss:has(> script)
 mindhack2ch.com#?#.article-post-bottom > .rss-article:has(> .rss-article-item)
 !
+sponichi.co.jp#?#.mb30:has(> div > script[src*="rakuten"])
+sponichi.co.jp#?#.mb30 > h2:contains(スペシャルコンテンツ)
 hosyusokuhou.jp#?##wrap .entrybox:contains(/(?:【スポンサー】|【PR】)/)
 2ch.vet#?#.table > tbody > tr.active:has(> td > center > script[src^="//j.microad.net/"])
 ghdnewzealandshopc.com#?##news-bottom > div.widget:has(> h3 > div:contains(/初の出会い系はここでした|出会い系サイトのリアルな部分|某県知事もここで女性と知り合いました/))
@@ -748,6 +756,11 @@ avgle.com#%#AG_onLoad(function() { closeAd(); });
 !-------CSS---------
 !-------------------
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/60234
+sp.jp.wazap.com#$#.gmoam_outer_wrapper { display: none !important; }
+sp.jp.wazap.com#$#body[style="position: fixed;"] { position: static !important }
+! https://github.com/AdguardTeam/AdguardFilters/issues/59739
+tv-asahi.co.jp#$##common-header > div[class^="common-header-pc-"] { padding-top: 0 !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/58587
 uwl.weblio.jp#$##side { display: none !important; }
 uwl.weblio.jp#$##main { width: 1325px !important; padding-left: 15px !important; }
@@ -854,11 +867,22 @@ _ds_adtag_
 !
 ! /banner/banner_ - if it is necessary, make this rule domain specific
 !
+||mempf.yahoo.co.jp/offer?position=takara_
+warotanikki.com##.widget_diver_widget_pcsp
+sponichi.co.jp##div[data-component="ad-basic"]
+tv-asahi.co.jp##.rectangle-desktop
+gizmodo.jp##.s-body-ad
+news.goo.ne.jp##.gn-partition.sp-padding15
+gamejksokuhou.com##.google-2ad-h
+gamejksokuhou.com##.rss-blogroll
+gamejksokuhou.com##.side_amazon
+getnews.jp##.custom-html-widget > center > a[target="_blank"] > img
 moeimg.net##div[id^="side"] > .widget-area > .widget-container
 h723.blog.fc2.com##div[align="left"]
 h723.blog.fc2.com##div[align="left"] + div[style]
 h723.blog.fc2.com##.plugin1_outline:first-of-type
 h723.blog.fc2.com##.plugin1_outline:nth-of-type(n+3)
+sn-jp.com,snjpn.net##.diver_widget_adarea
 ||cloudfront.net/images/banner/250_50_$domain=zaif.jp
 zaif.jp###banner_head
 zaif.jp##.banner-kv
