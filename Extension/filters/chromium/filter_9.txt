@@ -1,8 +1,8 @@
-! Checksum: WoEiDWfjZzyGnSd4Ba/Iww
+! Checksum: Zm9gxlXk+p5KkVu0vCnq6Q
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish and Portuguese languages.
-! Version: 2.0.6.76
-! TimeUpdated: 2020-07-13T14:32:15+03:00
+! Version: 2.0.6.89
+! TimeUpdated: 2020-08-04T12:04:22+03:00
 ! Expires: 4 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#spanish
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -84,6 +84,7 @@
 ! ||addevweb.com^$third-party
 !
 ||adsrv.eacdn.com^$third-party
+||videoo.tv^$third-party
 ||eru5tdmbuwxm.com^
 ||mtecso.online^
 ||gyh1lh20owj.ru^
@@ -268,6 +269,11 @@
 tunovelaligera.com#%#AG_abortOnPropertyWrite(`adregain_wall`);
 tunovelaligera.com#%#AG_abortOnPropertyRead(`ad_nodes`);
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/60205
+meuwindows.com#%#//scriptlet("abort-on-property-write", "ai_front")
+! https://github.com/AdguardTeam/AdguardFilters/issues/59758
+@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=anihub.tv
+||st.bebi.com/bebi_v*.js$script,redirect=nooptext,domain=anihub.tv
 ! https://github.com/AdguardTeam/AdguardFilters/issues/57785
 ||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$xmlhttprequest,redirect=googlesyndication-adsbygoogle,important,domain=funzen.net
 @@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=funzen.net
@@ -1126,6 +1132,13 @@ maisgasolina.com#?##main [id$="Block"][-ext-has='.adsbygoogle']
 !------- JS rules ---------------------!
 !--------------------------------------!
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/60106
+compartiendofull.net#%#//scriptlet("remove-attr", "href", ".leaving-message center > a.btn[onclick^='window.open'][href*='/ads.html']")
+! https://github.com/AdguardTeam/AdguardFilters/issues/59587
+animeblix.com#%#//scriptlet("json-prune", "rot_url pop_type")
+! https://github.com/AdguardTeam/AdguardFilters/issues/59484
+pasfox.com#%#//scriptlet("abort-current-inline-script", "$", "ads_enabled")
+pasfox.com#%#//scriptlet("abort-current-inline-script", "enlace", "document.write")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/57235
 repelisgt.net#%#//scriptlet('prevent-window-open')
 r5bke8d-execute.firedge.com#%#!function(){if(-1<window.location.href.indexOf("/i?")){var a=location.href.split("/i?");if(a&&a[1])try{var d=atob(a[1]);AG_onLoad(function(){var b=document.querySelector("#link > a[href]"),a=document.querySelector("#steps"),c=document.querySelector("#link > div");b&&a&&c&&(b.setAttribute("href",d),b.style.display="block",a.style.display="none",c.innerText.match("El enlace se mostrar\u00e1 aqu\u00ed")&&(c.style.display="none"))})}catch(b){}}}();
@@ -1435,6 +1448,7 @@ http://adw.
 !
 ! The content replacement rules
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/59758
 ! https://github.com/AdguardTeam/AdguardFilters/issues/58962
 ! https://github.com/AdguardTeam/AdguardFilters/issues/21452
 !---------------------------------------------------------------------------!
@@ -1444,6 +1458,22 @@ http://adw.
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
 !
+animesvision.biz###sidebar > .discord-image > center > a[href^="https://bit.ly/"][target="_blank"] > img
+animesvision.biz###main-content > div[style^="margin-bottom:"] > a[href^="https://bit.ly/"][target="_blank"] > img
+seriesanimadas.org##a[href^="https://ladsanz.com/"]
+pastepvp.org##center > div.separator
+awdescargas.com###generic-btn-premium
+correiodeitapetininga.com.br##div[class^="angwp_"]
+||correiodeitapetininga.com.br/site/wp-content/uploads/*/banner-
+maxmodapk.com,moddescargar.com##.ad-wap
+animeblix.com##iframe[data-glx][style*="z-index"]
+lasexta.com##.mod-ligatus
+lasexta.com##.mod-ad-middle
+lasexta.com##.publi_horizontal
+lasexta.com##.sticky-wrap-publi
+lasexta.com##aside[class^="mod-ad-top"]
+pasfox.com##.adversiment
+||allguiderecipes.info^$domain=mangatigre.com
 flatout.com.br###penci_custom_html-4
 dplay.es##div[class^="controls-"] > div[class^="outer-"] > div[class^="slot-"]
 administradores.com.br##.tobecontinuedBlock
