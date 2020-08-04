@@ -94,16 +94,16 @@ adguard.application = (function (adguard) {
     const checkFiltersUpdates = (successCallback, errorCallback, filters) => {
         if (filters) {
             // Skip recently downloaded filters
-            const outdatedFilter = filters.filter(f => (f.lastCheckTime
+            const outdatedFilters = filters.filter(f => (f.lastCheckTime
                 ? Date.now() - f.lastCheckTime > ENABLED_FILTERS_SKIP_TIMEOUT
                 : true));
 
-            if (outdatedFilter.length > 0) {
+            if (outdatedFilters.length > 0) {
                 adguard.filtersUpdate.checkAntiBannerFiltersUpdate(
                     true,
                     successCallback,
                     errorCallback,
-                    outdatedFilter
+                    outdatedFilters
                 );
             }
         } else {
