@@ -1,6 +1,6 @@
 #
 #    AdGuard Scriptlets (Redirects Source)
-#    Version 1.2.5
+#    Version 1.2.6
 #
 - title: 1x1-transparent.gif
   description: |-
@@ -520,9 +520,10 @@
         proto.get = noopFunc;
         proto.set = noopFunc;
         proto.send = noopFunc;
-        var googleAnalyticsName = window.GoogleAnalyticsObject || 'ga';
+        var googleAnalyticsName = window.GoogleAnalyticsObject || 'ga'; // a -- fake arg for 'ga.length < 1' antiadblock checking
+        // eslint-disable-next-line no-unused-vars
 
-        function ga() {
+        function ga(a) {
           var len = arguments.length;
 
           if (len === 0) {
@@ -636,7 +637,7 @@
   content: |-
     (function(source, args){
     function GoogleSyndicationAdsByGoogle(source) {
-        window.adsbygoogle = window.adsbygoogle || {
+        window.adsbygoogle = {
           length: 0,
           loaded: true,
           push: function push() {
@@ -672,10 +673,14 @@
             aswiftIframe.id = "".concat(ASWIFT_IFRAME_MARKER).concat(i + 1);
             aswiftIframe.style = css;
             adElems[i].appendChild(aswiftIframe);
+            var innerAswiftIframe = document.createElement('iframe');
+            aswiftIframe.contentWindow.document.body.appendChild(innerAswiftIframe);
             var googleadsIframe = document.createElement('iframe');
             googleadsIframe.id = "".concat(GOOGLE_ADS_IFRAME_MARKER).concat(i + 1);
             googleadsIframe.style = css;
             adElems[i].appendChild(googleadsIframe);
+            var innerGoogleadsIframe = document.createElement('iframe');
+            googleadsIframe.contentWindow.document.body.appendChild(innerGoogleadsIframe);
             executed = true;
           }
         }
@@ -1392,6 +1397,8 @@
     - silent-noeval.js
     - ubo-noeval.js
     - ubo-silent-noeval.js
+    - ubo-noeval
+    - ubo-silent-noeval
   contentType: application/javascript
   content: |-
     (function(source, args){
@@ -1468,6 +1475,7 @@
     - ubo-nofab.js
     - fuckadblock.js-3.2.0
     - ubo-fuckadblock.js-3.2.0
+    - ubo-nofab
   contentType: application/javascript
   content: |-
     (function(source, args){
@@ -1619,6 +1627,7 @@
   aliases:
     - popads.net.js
     - ubo-popads.net.js
+    - ubo-popads.net
   contentType: application/javascript
   content: |-
     (function(source, args){
@@ -1811,6 +1820,7 @@
   aliases:
     - popads-dummy.js
     - ubo-popads-dummy.js
+    - ubo-popads-dummy
   contentType: application/javascript
   content: |-
     (function(source, args){
