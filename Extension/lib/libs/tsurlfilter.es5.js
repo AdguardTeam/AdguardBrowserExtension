@@ -9535,6 +9535,9 @@ var HostRule = /** @class */ (function () {
      * @throws error if it fails to parse the rule.
      */
     function HostRule(ruleText, filterListId) {
+        this.hostnames = [];
+        this.ip = '';
+        this.invalid = false;
         this.ruleText = ruleText;
         this.filterListId = filterListId;
         var commentIndex = ruleText.indexOf('#');
@@ -9542,7 +9545,8 @@ var HostRule = /** @class */ (function () {
         var parts = stripped.trim().split(' ');
         if (parts.length >= 2) {
             if (!isIp_1(parts[0])) {
-                throw new SyntaxError("Invalid host rule: invalid IP: " + ruleText);
+                this.invalid = true;
+                return;
             }
             // eslint-disable-next-line prefer-destructuring
             this.ip = parts[0];
@@ -9553,7 +9557,7 @@ var HostRule = /** @class */ (function () {
             this.ip = '0.0.0.0';
         }
         else {
-            throw new SyntaxError("Invalid host rule: " + ruleText);
+            this.invalid = true;
         }
     }
     /**
@@ -9587,6 +9591,12 @@ var HostRule = /** @class */ (function () {
      */
     HostRule.prototype.getHostnames = function () {
         return this.hostnames;
+    };
+    /**
+     * Is invalid rule
+     */
+    HostRule.prototype.isInvalid = function () {
+        return this.invalid;
     };
     /**
      * Check if the string could be a domain name
@@ -9671,13 +9681,8 @@ var RuleUtils = /** @class */ (function () {
      * @param filterListId
      */
     RuleUtils.createHostRule = function (ruleText, filterListId) {
-        try {
-            return new HostRule(ruleText, filterListId);
-        }
-        catch (e) {
-            // Ignore
-        }
-        return null;
+        var rule = new HostRule(ruleText, filterListId);
+        return rule.isInvalid() ? null : rule;
     };
     return RuleUtils;
 }());
