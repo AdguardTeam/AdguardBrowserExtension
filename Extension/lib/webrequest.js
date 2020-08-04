@@ -308,25 +308,28 @@
         }
 
         if (adguard.contentFiltering) {
-            const contentType = adguard.utils.browser.getHeaderValueByName(responseHeaders, 'content-type');
-            const replaceRules = adguard.webRequestService.getReplaceRules(tab, requestUrl, referrerUrl, requestType);
-            const htmlRules = adguard.webRequestService.getContentRules(tab, referrerUrl);
+            const replaceRules = adguard.webRequestService.getReplaceRules(tab, requestUrl, referrerUrl, requestType) || [];
+            const htmlRules = adguard.webRequestService.getContentRules(tab, referrerUrl) || [];
 
-            const request = new Request(
-                requestUrl, referrerUrl, adguard.RequestTypes.transformRequestType(requestType)
-            );
-            request.requestId = requestId;
-            request.tabId = tab.tabId;
-            request.statusCode = statusCode;
-            request.method = method;
+            if (replaceRules.length > 0 || htmlRules.length > 0) {
+                const contentType = adguard.utils.browser.getHeaderValueByName(responseHeaders, 'content-type');
 
-            adguard.contentFiltering.apply(
-                adguard.webRequest.filterResponseData(requestId),
-                request,
-                contentType,
-                replaceRules || [],
-                htmlRules || []
-            );
+                const request = new Request(
+                    requestUrl, referrerUrl, adguard.RequestTypes.transformRequestType(requestType)
+                );
+                request.requestId = requestId;
+                request.tabId = tab.tabId;
+                request.statusCode = statusCode;
+                request.method = method;
+
+                adguard.contentFiltering.apply(
+                    adguard.webRequest.filterResponseData(requestId),
+                    request,
+                    contentType,
+                    replaceRules || [],
+                    htmlRules || []
+                );
+            }
         }
 
         let responseHeadersModified = false;
