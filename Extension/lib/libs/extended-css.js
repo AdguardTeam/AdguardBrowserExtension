@@ -1,4 +1,4 @@
-/*! extended-css - v1.2.10 - Thu Jul 30 2020
+/*! extended-css - v1.2.12 - Tue Aug 04 2020
 * https://github.com/AdguardTeam/ExtendedCss
 * Copyright (c) 2020 AdGuard ; Licensed LGPL-3.0
 */
@@ -3107,7 +3107,7 @@ var ExtendedCss = (function () {
     // while addind new markers, AdGuard extension code also should be corrected:
     // 'CssFilterRule.SUPPORTED_PSEUDO_CLASSES' and 'CssFilterRule.EXTENDED_CSS_MARKERS'
     // at Extension/lib/filter/rules/css-filter-rule.js
-    var PSEUDO_EXTENSIONS_MARKERS = [':has', ':contains', ':has-text', ':matches-css', ':-abp-has', ':-abp-has-text', ':if', ':if-not', ':xpath', ':nth-ancestor', ':upward'];
+    var PSEUDO_EXTENSIONS_MARKERS = [':has', ':contains', ':has-text', ':matches-css', ':-abp-has', ':-abp-has-text', ':if', ':if-not', ':xpath', ':nth-ancestor', ':upward', ':remove'];
     var initialized = false;
     var Sizzle;
     /**
@@ -3165,8 +3165,17 @@ var ExtendedCss = (function () {
         return function (elem) {
           return Sizzle(selector, elem).length === 0;
         };
-      }); // Define :xpath support in Sizzle, to make tokenize work properly
+      });
+      registerParserOnlyTokens();
+    }
+    /**
+     * Registrate custom tokens for parser.
+     * Needed for proper work of pseudos:
+     * for checking if the token is last and pseudo-class arguments validation
+     */
 
+
+    function registerParserOnlyTokens() {
       Sizzle.selectors.pseudos['xpath'] = Sizzle.selectors.createPseudo(function (selector) {
         try {
           document.createExpression(selector, null);
@@ -3194,6 +3203,15 @@ var ExtendedCss = (function () {
           throw new Error("Invalid argument of :upward pseudo class: ".concat(input));
         } else if (Number.isInteger(+input) && (+input < 1 || +input >= 256)) {
           throw new Error("Invalid argument of :upward pseudo class: ".concat(input));
+        }
+
+        return function () {
+          return true;
+        };
+      });
+      Sizzle.selectors.pseudos['remove'] = Sizzle.selectors.createPseudo(function (input) {
+        if (input !== '') {
+          throw new Error("Invalid argument of :remove pseudo class: ".concat(input));
         }
 
         return function () {
@@ -3308,6 +3326,16 @@ var ExtendedCss = (function () {
           }
 
           return output;
+        } // argument of pseudo-class remove;
+        // it's defined only if remove is parsed as last token
+        // and it's valid only if remove arg is empty string
+
+
+        var removePart = this.getRemovePart();
+
+        if (typeof removePart !== 'undefined') {
+          var hasValidRemovePart = removePart === '';
+          return new RemoveSelector(selectorText, hasValidRemovePart, debug);
         }
 
         tokens = tokens[0];
@@ -3398,7 +3426,7 @@ var ExtendedCss = (function () {
 
             if (matches && matches.length > 1) {
               if (matches[0] === 'xpath') {
-                if (i + 1 !== tokensLength) {
+                if (this.isLastToken(tokens, i)) {
                   throw new Error('Invalid pseudo: \':xpath\' should be at the end of the selector');
                 }
 
@@ -3406,7 +3434,7 @@ var ExtendedCss = (function () {
               }
 
               if (matches[0] === 'nth-ancestor') {
-                if (i + 1 !== tokensLength) {
+                if (this.isLastToken(tokens, i)) {
                   throw new Error('Invalid pseudo: \':nth-ancestor\' should be at the end of the selector');
                 }
 
@@ -3438,6 +3466,22 @@ var ExtendedCss = (function () {
       },
 
       /**
+       * Checks if the token is last,
+       * except of remove pseudo-class
+       * @param {Array} tokens
+       * @param {number} i index of token
+       * @returns {boolean}
+       */
+      isLastToken: function isLastToken(tokens, i) {
+        // check id the next parsed token is remove pseudo
+        var isNextRemoveToken = tokens[i + 1] && tokens[i + 1].type === 'PSEUDO' && tokens[i + 1].matches && tokens[i + 1].matches[0] === 'remove'; // check if the token is last
+        // and if it is not check if it is remove one
+        // which should be skipped
+
+        return i + 1 !== tokens.length && !isNextRemoveToken;
+      },
+
+      /**
        * @private
        * @return {string|undefined} upward parameter
        * or undefined if the input does not contain upward tokens
@@ -3453,8 +3497,35 @@ var ExtendedCss = (function () {
 
             if (matches && matches.length > 1) {
               if (matches[0] === 'upward') {
-                if (i + 1 !== tokensLength) {
+                if (this.isLastToken(tokens, i)) {
                   throw new Error('Invalid pseudo: \':upward\' should be at the end of the selector');
+                }
+
+                return matches[1];
+              }
+            }
+          }
+        }
+      },
+
+      /**
+       * @private
+       * @return {string|undefined} remove parameter
+       * or undefined if the input does not contain remove tokens
+       */
+      getRemovePart: function getRemovePart() {
+        var tokens = this.tokens[0];
+
+        for (var i = 0, tokensLength = tokens.length; i < tokensLength; i++) {
+          var token = tokens[i];
+
+          if (token.type === 'PSEUDO') {
+            var matches = token.matches;
+
+            if (matches && matches.length > 1) {
+              if (matches[0] === 'remove') {
+                if (i + 1 !== tokensLength) {
+                  throw new Error('Invalid pseudo: \':remove\' should be at the end of the selector');
                 }
 
                 return matches[1];
@@ -3518,24 +3589,23 @@ var ExtendedCss = (function () {
       isDebugging: isDebugging
     };
     /**
-     * Xpath selector class
-     * Limited to support xpath to be only the last one token in selector
+     * Parental class for such pseudo-classes as xpath, upward, remove
+     * which are limited to be the last one token in selector
      *
      * @param {string} selectorText
-     * @param {string} xpath value
+     * @param {string} pseudoClassArg pseudo-class arg
      * @param {boolean=} debug
      * @constructor
      */
 
-    function XpathSelector(selectorText, xpath, debug) {
-      // Xpath is limited to be the last one token
+    function BaseLastArgumentSelector(selectorText, pseudoClassArg, debug) {
       this.selectorText = selectorText;
-      this.xpath = xpath;
+      this.pseudoClassArg = pseudoClassArg;
       this.debug = debug;
       Sizzle.compile(this.selectorText);
     }
 
-    XpathSelector.prototype = {
+    BaseLastArgumentSelector.prototype = {
       querySelectorAll: function querySelectorAll() {
         var _this = this;
 
@@ -3553,7 +3623,7 @@ var ExtendedCss = (function () {
         }
 
         simpleNodes.forEach(function (node) {
-          _this.xpathSearch(node, _this.xpath, resultNodes);
+          _this.searchResultNodes(node, _this.pseudoClassArg, resultNodes);
         });
         return Sizzle.uniqueSort(resultNodes);
       },
@@ -3568,96 +3638,117 @@ var ExtendedCss = (function () {
       isDebugging: isDebugging,
 
       /**
-       * Applies xpath to provided context node
-       *
+       * Primitive method that returns all nodes if pseudo-class arg is defined.
+       * That logic works for remove pseudo-class,
+       * but for others it should be overridden.
        * @param {Object} node context element
-       * @param {string} xpath
+       * @param {string} pseudoClassArg pseudo-class argument
        * @param {Array} result
        */
-      xpathSearch: function xpathSearch(node, xpath, result) {
-        var xpathResult = document.evaluate(xpath, node, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
-        var iNode; // eslint-disable-next-line no-cond-assign
-
-        while (iNode = xpathResult.iterateNext()) {
-          result.push(iNode);
+      searchResultNodes: function searchResultNodes(node, pseudoClassArg, result) {
+        if (pseudoClassArg) {
+          result.push(node);
         }
       }
     };
     /**
+     * Xpath selector class
+     * Limited to support 'xpath' to be only the last one token in selector
+     * @param {string} selectorText
+     * @param {string} xpath value
+     * @param {boolean=} debug
+     * @constructor
+     * @augments BaseLastArgumentSelector
+     */
+
+    function XpathSelector(selectorText, xpath, debug) {
+      BaseLastArgumentSelector.call(this, selectorText, xpath, debug);
+    }
+
+    XpathSelector.prototype = Object.create(BaseLastArgumentSelector.prototype);
+    XpathSelector.prototype.constructor = XpathSelector;
+    /**
+     * Applies xpath pseudo-class to provided context node
+     * @param {Object} node context element
+     * @param {string} pseudoClassArg xpath
+     * @param {Array} result
+     * @override
+     */
+
+    XpathSelector.prototype.searchResultNodes = function (node, pseudoClassArg, result) {
+      var xpathResult = document.evaluate(pseudoClassArg, node, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
+      var iNode; // eslint-disable-next-line no-cond-assign
+
+      while (iNode = xpathResult.iterateNext()) {
+        result.push(iNode);
+      }
+    };
+    /**
      * Upward selector class
-     * Limited to support upward to be only the last one token in selector
-     *
+     * Limited to support 'upward' to be only the last one token in selector
      * @param {string} selectorText
      * @param {string} upwardSelector value
      * @param {boolean=} debug
      * @constructor
+     * @augments BaseLastArgumentSelector
      */
 
+
     function UpwardSelector(selectorText, upwardSelector, debug) {
-      // Xpath is limited to be the last one token
-      this.selectorText = selectorText;
-      this.upwardSelector = upwardSelector;
-      this.debug = debug;
-      Sizzle.compile(this.selectorText);
+      BaseLastArgumentSelector.call(this, selectorText, upwardSelector, debug);
     }
 
-    UpwardSelector.prototype = {
-      querySelectorAll: function querySelectorAll() {
-        var _this2 = this;
+    UpwardSelector.prototype = Object.create(BaseLastArgumentSelector.prototype);
+    UpwardSelector.prototype.constructor = UpwardSelector;
+    /**
+     * Applies upward pseudo-class to provided context node
+     * @param {Object} node context element
+     * @param {string} upwardSelector upward selector
+     * @param {Array} result
+     * @override
+     */
 
-        var resultNodes = [];
-        var simpleNodes;
+    UpwardSelector.prototype.searchResultNodes = function (node, upwardSelector, result) {
+      if (upwardSelector !== '') {
+        var parent = node.parentElement;
 
-        if (this.selectorText) {
-          simpleNodes = Sizzle(this.selectorText);
-
-          if (!simpleNodes || !simpleNodes.length) {
-            return resultNodes;
-          }
-        } else {
-          simpleNodes = [document];
+        if (parent === null) {
+          return;
         }
 
-        simpleNodes.forEach(function (node) {
-          _this2.upwardSearch(node, _this2.upwardSelector, resultNodes);
-        });
-        return Sizzle.uniqueSort(resultNodes);
-      },
+        node = parent.closest(upwardSelector);
 
-      /** @final */
-      matches: function matches(element) {
-        var results = this.querySelectorAll();
-        return results.indexOf(element) > -1;
-      },
-
-      /** @final */
-      isDebugging: isDebugging,
-
-      /**
-       * Applies upwardSelector to provided context node
-       *
-       * @param {Object} node context element
-       * @param {string} upwardSelector
-       * @param {Array} result
-       */
-      upwardSearch: function upwardSearch(node, upwardSelector, result) {
-        if (upwardSelector !== '') {
-          var parent = node.parentElement;
-
-          if (parent === null) {
-            return;
-          }
-
-          node = parent.closest(upwardSelector);
-
-          if (node === null) {
-            return;
-          }
+        if (node === null) {
+          return;
         }
-
-        result.push(node);
       }
+
+      result.push(node);
     };
+    /**
+     * Remove selector class
+     * Limited to support 'remove' to be only the last one token in selector
+     * @param {string} selectorText
+     * @param {boolean} hasValidRemovePart
+     * @param {boolean=} debug
+     * @constructor
+     * @augments BaseLastArgumentSelector
+     */
+
+
+    function RemoveSelector(selectorText, hasValidRemovePart, debug) {
+      var REMOVE_PSEUDO_MARKER = ':remove()';
+      var removeMarkerIndex = selectorText.indexOf(REMOVE_PSEUDO_MARKER); // deleting remove part of rule instead of which
+      // pseudo-property property 'remove' will be added by ExtendedCssParser
+
+      var modifiedSelectorText = selectorText.slice(0, removeMarkerIndex);
+      BaseLastArgumentSelector.call(this, modifiedSelectorText, hasValidRemovePart, debug); // mark extendedSelector as Remove one for ExtendedCssParser
+
+      this.isRemoveSelector = true;
+    }
+
+    RemoveSelector.prototype = Object.create(BaseLastArgumentSelector.prototype);
+    RemoveSelector.prototype.constructor = RemoveSelector;
     /**
      * A splitted extended selector class.
      *
@@ -3688,7 +3779,7 @@ var ExtendedCss = (function () {
     /** @override */
 
     SplittedSelector.prototype.querySelectorAll = function () {
-      var _this3 = this;
+      var _this2 = this;
 
       var resultNodes = [];
       var simpleNodes;
@@ -3712,7 +3803,7 @@ var ExtendedCss = (function () {
       switch (relation) {
         case ' ':
           simpleNodes.forEach(function (node) {
-            _this3.relativeSearch(node, resultNodes);
+            _this2.relativeSearch(node, resultNodes);
           });
           break;
 
@@ -3720,7 +3811,7 @@ var ExtendedCss = (function () {
           {
             simpleNodes.forEach(function (node) {
               Object.values(node.children).forEach(function (childNode) {
-                if (_this3.matches(childNode)) {
+                if (_this2.matches(childNode)) {
                   resultNodes.push(childNode);
                 }
               });
@@ -3733,7 +3824,7 @@ var ExtendedCss = (function () {
             simpleNodes.forEach(function (node) {
               var parentNode = node.parentNode;
               Object.values(parentNode.children).forEach(function (childNode) {
-                if (_this3.matches(childNode) && childNode.previousElementSibling === node) {
+                if (_this2.matches(childNode) && childNode.previousElementSibling === node) {
                   resultNodes.push(childNode);
                 }
               });
@@ -3746,7 +3837,7 @@ var ExtendedCss = (function () {
             simpleNodes.forEach(function (node) {
               var parentNode = node.parentNode;
               Object.values(parentNode.children).forEach(function (childNode) {
-                if (_this3.matches(childNode) && node.compareDocumentPosition(childNode) === 4) {
+                if (_this2.matches(childNode) && node.compareDocumentPosition(childNode) === 4) {
                   resultNodes.push(childNode);
                 }
               });
@@ -3914,6 +4005,13 @@ var ExtendedCss = (function () {
 
             try {
               var extendedSelector = ExtendedSelectorFactory.createSelector(data.selectorText, data.groups, debug);
+
+              if (extendedSelector.pseudoClassArg && extendedSelector.isRemoveSelector) {
+                // if there is remove pseudo-class in rule,
+                // the element will be removed and no other styles will be applied
+                styleMap['remove'] = 'true';
+              }
+
               results.push({
                 selector: extendedSelector,
                 style: styleMap
