@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global chrome, adguard */
+/* global browser, adguard */
 
 /**
  * Request sanitizer helper
@@ -29,7 +29,12 @@
      * @return {{requestHeaders: *}}
      */
     const safeFilter = (req) => {
-        const { requestHeaders, initiator, tabId } = req;
+        const {
+            requestHeaders,
+            initiator,
+            tabId,
+            originUrl,
+        } = req;
 
         if (tabId !== adguard.BACKGROUND_TAB_ID) {
             return;
@@ -37,7 +42,9 @@
 
         let requestHeadersModified = false;
 
-        if (adguard.app.isOwnRequest(initiator)) {
+        // Chrome provides "initiator" and firefox "originUrl"
+        const origin = initiator || originUrl;
+        if (adguard.app.isOwnRequest(origin)) {
             requestHeadersModified = adguard.utils.browser.removeHeader(requestHeaders, 'Cookie');
         }
 
@@ -48,12 +55,20 @@
         }
     };
 
-    chrome.webRequest.onBeforeSendHeaders.addListener(
+    // Firefox doesn't allow to use "extraHeaders" extra option,
+    //  but chrome requires it in order to get access to "Cookie" header
+    const onBeforeSendHeadersExtraInfoSpec = ['requestHeaders', 'blocking'];
+    if (typeof browser.webRequest.OnBeforeSendHeadersOptions !== 'undefined'
+        && browser.webRequest.OnBeforeSendHeadersOptions.hasOwnProperty('EXTRA_HEADERS')) {
+        onBeforeSendHeadersExtraInfoSpec.push('extraHeaders');
+    }
+
+    browser.webRequest.onBeforeSendHeaders.addListener(
         safeFilter,
         {
             urls: ['<all_urls>'],
             tabId: adguard.BACKGROUND_TAB_ID,
         },
-        ['blocking', 'requestHeaders', 'extraHeaders']
+        onBeforeSendHeadersExtraInfoSpec
     );
-})(adguard);
+})(adguard, browser);
