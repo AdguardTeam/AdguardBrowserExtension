@@ -6611,7 +6611,7 @@ var NetworkRuleOption;
     /** Blacklist-only modifiers */
     NetworkRuleOption[NetworkRuleOption["BlacklistOnly"] = 6144] = "BlacklistOnly";
     /** Whitelist-only modifiers */
-    NetworkRuleOption[NetworkRuleOption["WhitelistOnly"] = 1584] = "WhitelistOnly";
+    NetworkRuleOption[NetworkRuleOption["WhitelistOnly"] = 2040] = "WhitelistOnly";
     /** Options supported by host-level network rules * */
     NetworkRuleOption[NetworkRuleOption["OptionHostLevelRulesOnly"] = 262148] = "OptionHostLevelRulesOnly";
 })(NetworkRuleOption || (NetworkRuleOption = {}));
@@ -7093,16 +7093,20 @@ var NetworkRule = /** @class */ (function () {
      *
      * @param option - option to enable or disable.
      * @param enabled - true to enable, false to disable.
+     * @param skipRestrictions - skip options whitelist/blacklist restrictions
      *
      * @throws an error if the option we're trying to enable cannot be.
      * For instance, you cannot enable $elemhide for blacklist rules.
      */
-    NetworkRule.prototype.setOptionEnabled = function (option, enabled) {
-        if (this.whitelist && (option & NetworkRuleOption.BlacklistOnly) === option) {
-            throw new SyntaxError("modifier " + NetworkRuleOption[option] + " cannot be used in whitelist rule " + this.ruleText);
-        }
-        if (!this.whitelist && (option & NetworkRuleOption.WhitelistOnly) === option) {
-            throw new SyntaxError("modifier " + NetworkRuleOption[option] + " cannot be used in blacklist rule " + this.ruleText);
+    NetworkRule.prototype.setOptionEnabled = function (option, enabled, skipRestrictions) {
+        if (skipRestrictions === void 0) { skipRestrictions = false; }
+        if (!skipRestrictions) {
+            if (this.whitelist && (option & NetworkRuleOption.BlacklistOnly) === option) {
+                throw new SyntaxError("modifier " + NetworkRuleOption[option] + " cannot be used in whitelist rule " + this.ruleText);
+            }
+            if (!this.whitelist && (option & NetworkRuleOption.WhitelistOnly) === option) {
+                throw new SyntaxError("modifier " + NetworkRuleOption[option] + " cannot be used in blacklist rule " + this.ruleText);
+            }
         }
         if (enabled) {
             this.enabledOptions |= option;
@@ -7184,10 +7188,10 @@ var NetworkRule = /** @class */ (function () {
                 break;
             // $document
             case 'document':
-                this.setOptionEnabled(NetworkRuleOption.Elemhide, true);
-                this.setOptionEnabled(NetworkRuleOption.Jsinject, true);
-                this.setOptionEnabled(NetworkRuleOption.Urlblock, true);
-                this.setOptionEnabled(NetworkRuleOption.Content, true);
+                this.setOptionEnabled(NetworkRuleOption.Elemhide, true, true);
+                this.setOptionEnabled(NetworkRuleOption.Jsinject, true, true);
+                this.setOptionEnabled(NetworkRuleOption.Urlblock, true, true);
+                this.setOptionEnabled(NetworkRuleOption.Content, true, true);
                 break;
             // Stealth mode
             case 'stealth':
@@ -8002,7 +8006,7 @@ var CosmeticRule = /** @class */ (function () {
         this.EXT_CSS_PSEUDO_INDICATORS = ['[-ext-has=', '[-ext-contains=', '[-ext-has-text=',
             '[-ext-matches-css=', '[-ext-matches-css-before=', '[-ext-matches-css-after=', ':has(', ':has-text(',
             ':contains(', ':matches-css(', ':matches-css-before(', ':matches-css-after(', ':-abp-has(', ':-abp-contains(',
-            ':if(', ':if-not(', ':properties(', ':-abp-properties(', ':xpath(', ':nth-ancestor(', ':upward('];
+            ':if(', ':if-not(', ':properties(', ':-abp-properties(', ':xpath(', ':nth-ancestor(', ':upward(', ':remove('];
         this.ruleText = ruleText;
         this.filterListId = filterListId;
         var _a = findCosmeticRuleMarker(ruleText), index = _a[0], marker = _a[1];
@@ -8283,7 +8287,7 @@ var CosmeticRule = /** @class */ (function () {
         ':not', ':nth-child', ':nth-last-child', ':nth-last-of-type', ':nth-of-type',
         ':only-child', ':only-of-type', ':optional', ':out-of-range', ':read-only',
         ':read-write', ':required', ':root', ':target', ':valid', ':visited',
-        ':-abp-has', ':-abp-contains', ':-abp-properties', ':xpath', ':nth-ancestor', ':upward'];
+        ':-abp-has', ':-abp-contains', ':-abp-properties', ':xpath', ':nth-ancestor', ':upward', ':remove'];
     return CosmeticRule;
 }());
 
