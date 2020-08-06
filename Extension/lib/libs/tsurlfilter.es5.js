@@ -795,6 +795,13 @@ function startsAtIndexWith(str, startIndex, substr) {
  */
 function hasUnquotedSubstring(str, substr) {
     var quotes = ['"', "'", '/'];
+    if (!str.includes(substr)) {
+        return false;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    if (indexOfAny(str, quotes) === -1) {
+        return true;
+    }
     var stack = [];
     for (var i = 0; i < str.length; i += 1) {
         var cursor = str[i];
