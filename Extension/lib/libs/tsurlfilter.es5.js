@@ -8682,6 +8682,29 @@ var CosmeticOption;
 })(CosmeticOption || (CosmeticOption = {}));
 
 /**
+ * Scanner types enum
+ */
+var ScannerType;
+(function (ScannerType) {
+    /**
+     * Scanning for network rules
+     */
+    ScannerType[ScannerType["NetworkRules"] = 0] = "NetworkRules";
+    /**
+     * Scanning for cosmetic rules
+     */
+    ScannerType[ScannerType["CosmeticRules"] = 2] = "CosmeticRules";
+    /**
+     * Scanning for host rules
+     */
+    ScannerType[ScannerType["HostRules"] = 4] = "HostRules";
+    /**
+     * All
+     */
+    ScannerType[ScannerType["All"] = 6] = "All";
+})(ScannerType || (ScannerType = {}));
+
+/**
  * CosmeticEngine combines all the cosmetic rules and allows to quickly
  * find all rules matching this or that hostname
  * It is primarily used by the {@see Engine}
@@ -8699,7 +8722,7 @@ var CosmeticEngine = /** @class */ (function () {
         this.cssLookupTable = new CosmeticLookupTable();
         this.jsLookupTable = new CosmeticLookupTable();
         this.htmlLookupTable = new CosmeticLookupTable();
-        var scanner = this.ruleStorage.createRuleStorageScanner();
+        var scanner = this.ruleStorage.createRuleStorageScanner(ScannerType.CosmeticRules);
         while (scanner.scan()) {
             var indexedRule = scanner.getRule();
             if (indexedRule
@@ -9164,7 +9187,7 @@ var NetworkEngine = /** @class */ (function () {
         if (skipStorageScan) {
             return;
         }
-        var scanner = this.ruleStorage.createRuleStorageScanner();
+        var scanner = this.ruleStorage.createRuleStorageScanner(ScannerType.NetworkRules);
         while (scanner.scan()) {
             var indexedRule = scanner.getRule();
             if (indexedRule
@@ -9636,22 +9659,35 @@ var RuleUtils = /** @class */ (function () {
      *
      * @param text rule string
      * @param filterListId list id
+     * @param ignoreNetwork do not create network rules
+     * @param ignoreCosmetic do not create cosmetic rules
+     * @param ignoreHost do not create host rules
      * @return IRule object or null
      */
-    RuleUtils.createRule = function (text, filterListId) {
+    RuleUtils.createRule = function (text, filterListId, ignoreNetwork, ignoreCosmetic, ignoreHost) {
+        if (ignoreNetwork === void 0) { ignoreNetwork = false; }
+        if (ignoreCosmetic === void 0) { ignoreCosmetic = false; }
+        if (ignoreHost === void 0) { ignoreHost = false; }
         if (!text || RuleUtils.isComment(text)) {
             return null;
         }
         var line = text.trim();
         try {
             if (RuleUtils.isCosmetic(line)) {
+                if (ignoreCosmetic) {
+                    return null;
+                }
                 return new CosmeticRule(line, filterListId);
             }
-            var hostRule = RuleUtils.createHostRule(line, filterListId);
-            if (hostRule) {
-                return hostRule;
+            if (!ignoreHost) {
+                var hostRule = RuleUtils.createHostRule(line, filterListId);
+                if (hostRule) {
+                    return hostRule;
+                }
             }
-            return new NetworkRule(line, filterListId);
+            if (!ignoreNetwork) {
+                return new NetworkRule(line, filterListId);
+            }
         }
         catch (e) {
             logger.info(e.message);
@@ -9707,10 +9743,11 @@ var RuleScanner = /** @class */ (function () {
      *
      * @param reader source of the filtering rules
      * @param listId filter list ID
+     * @param scannerType scanner type
      * @param ignoreCosmetic if true, cosmetic rules will be ignored
      * @param ignoreJS if true, javascript cosmetic rules will be ignored
      */
-    function RuleScanner(reader, listId, ignoreCosmetic, ignoreJS) {
+    function RuleScanner(reader, listId, scannerType, ignoreCosmetic, ignoreJS) {
         /**
          *  Current rule
          */
@@ -9725,7 +9762,10 @@ var RuleScanner = /** @class */ (function () {
         this.currentPos = 0;
         this.reader = reader;
         this.listId = listId;
-        this.ignoreCosmetic = !!ignoreCosmetic;
+        this.ignoreCosmetic = !!ignoreCosmetic
+            || ((scannerType & ScannerType.CosmeticRules) !== ScannerType.CosmeticRules);
+        this.ignoreNetwork = (scannerType & ScannerType.NetworkRules) !== ScannerType.NetworkRules;
+        this.ignoreHost = (scannerType & ScannerType.HostRules) !== ScannerType.HostRules;
         this.ignoreJS = !!ignoreJS;
     }
     /**
@@ -9743,7 +9783,7 @@ var RuleScanner = /** @class */ (function () {
                 return false;
             }
             if (line) {
-                var rule = RuleUtils.createRule(line, this.listId);
+                var rule = RuleUtils.createRule(line, this.listId, this.ignoreNetwork, this.ignoreCosmetic, this.ignoreHost);
                 if (rule && !this.isIgnored(rule)) {
                     this.currentRule = rule;
                     this.currentRuleIndex = lineIndex;
@@ -9873,9 +9913,9 @@ var StringRuleList = /** @class */ (function () {
      * Creates a new rules scanner that reads the list contents
      * @return scanner object
      */
-    StringRuleList.prototype.newScanner = function () {
+    StringRuleList.prototype.newScanner = function (scannerType) {
         var reader = new StringLineReader(this.rulesText);
-        return new RuleScanner(reader, this.id, this.ignoreCosmetic, this.ignoreJS);
+        return new RuleScanner(reader, this.id, scannerType, this.ignoreCosmetic, this.ignoreJS);
     };
     /**
      * RetrieveRule finds and deserializes rule by its index.
@@ -10032,8 +10072,8 @@ var RuleStorage = /** @class */ (function () {
      *
      * @return scanner instance
      */
-    RuleStorage.prototype.createRuleStorageScanner = function () {
-        var scanners = this.lists.map(function (list) { return list.newScanner(); });
+    RuleStorage.prototype.createRuleStorageScanner = function (scannerType) {
+        var scanners = this.lists.map(function (list) { return list.newScanner(scannerType); });
         return new RuleStorageScanner(scanners);
     };
     /**
@@ -10127,7 +10167,7 @@ var DnsEngine = /** @class */ (function () {
         this.rulesCount = 0;
         this.lookupTable = new Map();
         this.networkEngine = new NetworkEngine(storage, true);
-        var scanner = this.ruleStorage.createRuleStorageScanner();
+        var scanner = this.ruleStorage.createRuleStorageScanner(ScannerType.HostRules);
         while (scanner.scan()) {
             var indexedRule = scanner.getRule();
             if (indexedRule) {
