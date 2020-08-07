@@ -1,7 +1,7 @@
 
 /**
  * AdGuard Scriptlets
- * Version 1.2.6
+ * Version 1.3.0
  */
 
 (function () {
@@ -464,6 +464,37 @@
     };
 
     /**
+     * Some browsers do not support Array.prototype.flat()
+     * for example, Opera 42 which is used for browserstack tests
+     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat
+     * @param {Array} input
+     */
+    var flatten = function flatten(input) {
+      var stack = [];
+      input.forEach(function (el) {
+        return stack.push(el);
+      });
+      var res = [];
+
+      while (stack.length) {
+        // pop value from stack
+        var next = stack.pop();
+
+        if (Array.isArray(next)) {
+          // push back array items, won't modify the original input
+          next.forEach(function (el) {
+            return stack.push(el);
+          });
+        } else {
+          res.push(next);
+        }
+      } // reverse to restore input order
+
+
+      return res.reverse();
+    };
+
+    /**
      * This file must export all used dependencies
      */
 
@@ -492,7 +523,8 @@
         noopStr: noopStr,
         hit: hit,
         observeDOMChanges: observeDOMChanges,
-        matchStackTrace: matchStackTrace
+        matchStackTrace: matchStackTrace,
+        flatten: flatten
     });
 
     /**
@@ -3576,6 +3608,150 @@
     setCookie.injections = [hit];
 
     /**
+     * @scriptlet hide-in-shadow-dom
+     *
+     * @description
+     * Hides elements inside open shadow DOM elements.
+     *
+     * **Syntax**
+     * ```
+     * example.org#%#//scriptlet('hide-in-shadow-dom', selector[, baseSelector])
+     * ```
+     *
+     * - `selector` — required, CSS selector of element in shadow-dom to hide
+     * - `baseSelector` — optional, selector of specific page DOM element,
+     * narrows down the part of the page DOM where shadow-dom host supposed to be,
+     * defaults to document.documentElement
+     *
+     * > `baseSelector` should match element of the page DOM, but not of shadow DOM
+     *
+     * **Examples**
+     * ```
+     * ! hides menu bar
+     * virustotal.com#%#//scriptlet('hide-in-shadow-dom', 'iron-pages', 'vt-virustotal-app')
+     *
+     * ! hides floating element
+     * virustotal.com#%#//scriptlet('hide-in-shadow-dom', 'vt-ui-contact-fab')
+     * ```
+     */
+
+    function hideInShadowDom(source, selector, baseSelector) {
+      // do nothing if browser does not support ShadowRoot
+      // https://developer.mozilla.org/en-US/docs/Web/API/ShadowRoot
+      if (!Element.prototype.attachShadow) {
+        return;
+      }
+      /**
+       * Finds shadow-dom host (elements with shadowRoot property) in DOM of rootElement.
+       * @param {HTMLElement} rootElement
+       * @returns {nodeList[]} shadow-dom hosts
+       */
+
+
+      var findHostElements = function findHostElements(rootElement) {
+        var hosts = []; // Element.querySelectorAll() returns list of elements
+        // which are defined in DOM of Element.
+        // Meanwhile, inner DOM of the element with shadowRoot property
+        // is absolutely another DOM and which can not be reached by querySelectorAll('*')
+
+        var domElems = rootElement.querySelectorAll('*');
+        domElems.forEach(function (el) {
+          if (el.shadowRoot) {
+            hosts.push(el);
+          }
+        });
+        return hosts;
+      };
+      /**
+       * @typedef {Object} PierceData
+       * @property {Array} targets found elements
+       * @property {Array} innerHosts inner shadow-dom hosts
+       */
+
+      /**
+       * Pierces open shadow-dom in order to find:
+       * - elements by 'selector' matching
+       * - inner shadow-dom hosts
+       * @param {string} selector
+       * @param {nodeList[]} hostElements
+       * @returns {PierceData}
+       */
+
+
+      var pierceShadowDom = function pierceShadowDom(selector, hostElements) {
+        var targets = [];
+        var innerHostsAcc = [];
+
+        var collectTargets = function collectTargets(arr) {
+          if (arr.length !== 0) {
+            arr.forEach(function (el) {
+              return targets.push(el);
+            });
+          }
+        }; // it's possible to get a few hostElements found by baseSelector on the page
+
+
+        hostElements.forEach(function (host) {
+          // check presence of selector element inside base element if it's not in shadow-dom
+          var simpleElems = host.querySelectorAll(selector);
+          collectTargets(simpleElems);
+          var shadowRootElem = host.shadowRoot;
+          var shadowChildren = shadowRootElem.querySelectorAll(selector);
+          collectTargets(shadowChildren); // find inner shadow-dom hosts inside processing shadow-dom
+
+          innerHostsAcc.push(findHostElements(shadowRootElem));
+        }); // if there were more than one host element,
+        // innerHostsAcc is an array of arrays and should be flatten
+
+        var innerHosts = flatten(innerHostsAcc);
+        return {
+          targets: targets,
+          innerHosts: innerHosts
+        };
+      };
+      /**
+       * Handles shadow-dom piercing and hiding of found elements
+       */
+
+
+      var hideHandler = function hideHandler() {
+        // start value of shadow-dom hosts for the page dom
+        var hostElements = !baseSelector ? findHostElements(document.documentElement) : document.querySelectorAll(baseSelector); // if there is shadow-dom host, they should be explored
+
+        var _loop = function _loop() {
+          var hidden = false;
+          var DISPLAY_NONE_CSS = 'display:none!important;';
+
+          var _pierceShadowDom = pierceShadowDom(selector, hostElements),
+              targets = _pierceShadowDom.targets,
+              innerHosts = _pierceShadowDom.innerHosts;
+
+          targets.forEach(function (targetEl) {
+            targetEl.style.cssText = DISPLAY_NONE_CSS;
+            hidden = true;
+          });
+
+          if (hidden) {
+            hit(source);
+          } // continue to pierce for inner shadow-dom hosts
+          // and search inside them while the next iteration
+
+
+          hostElements = innerHosts;
+        };
+
+        while (hostElements.length !== 0) {
+          _loop();
+        }
+      };
+
+      hideHandler();
+      observeDOMChanges(hideHandler, true);
+    }
+    hideInShadowDom.names = ['hide-in-shadow-dom'];
+    hideInShadowDom.injections = [hit, observeDOMChanges, flatten];
+
+    /**
      * This file must export all scriptlets which should be accessible
      */
 
@@ -3612,7 +3788,8 @@
         dirString: dirString,
         jsonPrune: jsonPrune,
         preventRequestAnimationFrame: preventRequestAnimationFrame,
-        setCookie: setCookie
+        setCookie: setCookie,
+        hideInShadowDom: hideInShadowDom
     });
 
     const redirects=[{adg:"1x1-transparent.gif",ubo:"1x1.gif",abp:"1x1-transparent-gif"},{adg:"2x2-transparent.png",ubo:"2x2.png",abp:"2x2-transparent-png"},{adg:"3x2-transparent.png",ubo:"3x2.png",abp:"3x2-transparent-png"},{adg:"32x32-transparent.png",ubo:"32x32.png",abp:"32x32-transparent-png"},{adg:"amazon-apstag",ubo:"amazon_apstag.js"},{adg:"google-analytics",ubo:"google-analytics_analytics.js"},{adg:"google-analytics-ga",ubo:"google-analytics_ga.js"},{adg:"googlesyndication-adsbygoogle",ubo:"googlesyndication_adsbygoogle.js"},{adg:"googletagmanager-gtm",ubo:"googletagmanager_gtm.js"},{adg:"googletagservices-gpt",ubo:"googletagservices_gpt.js"},{adg:"metrika-yandex-watch"},{adg:"metrika-yandex-tag"},{adg:"noeval",ubo:"noeval-silent.js"},{adg:"noopcss",abp:"blank-css"},{adg:"noopframe",ubo:"noop.html",abp:"blank-html"},{adg:"noopjs",ubo:"noop.js",abp:"blank-js"},{adg:"nooptext",ubo:"noop.txt",abp:"blank-text"},{adg:"noopmp3-0.1s",ubo:"noop-0.1s.mp3",abp:"blank-mp3"},{adg:"noopmp4-1s",ubo:"noop-1s.mp4",abp:"blank-mp4"},{adg:"noopvmap-1.0"},{adg:"noopvast-2.0"},{adg:"noopvast-3.0"},{adg:"prevent-fab-3.2.0",ubo:"nofab.js"},{adg:"prevent-popads-net",ubo:"popads.js"},{adg:"scorecardresearch-beacon",ubo:"scorecardresearch_beacon.js"},{adg:"set-popads-dummy",ubo:"popads-dummy.js"},{ubo:"addthis_widget.js"},{ubo:"amazon_ads.js"},{ubo:"ampproject_v0.js"},{ubo:"chartbeat.js"},{ubo:"disqus_embed.js"},{ubo:"disqus_forums_embed.js"},{ubo:"doubleclick_instream_ad_status.js"},{ubo:"empty"},{ubo:"google-analytics_cx_api.js"},{ubo:"google-analytics_inpage_linkid.js"},{ubo:"hd-main.js"},{ubo:"ligatus_angular-tag.js"},{ubo:"monkeybroker.js"},{ubo:"outbrain-widget.js"},{ubo:"window.open-defuser.js"},{ubo:"nobab.js"},{ubo:"noeval.js"}];
