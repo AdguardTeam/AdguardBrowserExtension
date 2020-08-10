@@ -319,11 +319,15 @@ const browser = window.browser || chrome;
                 // this request types block requests, if use them with extraHeaders and blocking options
                 const nonExtraHeadersTypes = ['stylesheet', 'script', 'media'];
                 const extraHeadersTypes = allTypes.filter(type => !nonExtraHeadersTypes.includes(type));
-                requestFilter = { ...requestFilter, types: extraHeadersTypes };
+                // Assign instead of spread used because FF begin to support them from v55
+                // https://caniuse.com/#feat=mdn-javascript_operators_spread_spread_in_object_literals
+                requestFilter = Object.assign(requestFilter, { types: extraHeadersTypes });
             }
 
             if (urls) {
-                requestFilter = { ...requestFilter, urls };
+                // Assign instead of spread used because FF begin to support them from v55
+                // https://caniuse.com/#feat=mdn-javascript_operators_spread_spread_in_object_literals
+                requestFilter = Object.assign(requestFilter, { urls });
             }
 
             browser.webRequest.onBeforeSendHeaders.addListener((details) => {
