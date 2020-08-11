@@ -127,11 +127,11 @@ Run the following command:
   yarn dev
 ```
 
-This will create a Build directory with unpacked extensions for all browsers:
+This will create a build directory with unpacked extensions for all browsers:
 ```
-  Build/dev/chrome
-  Build/dev/firefox
-  Build/dev/edge
+  build/dev/chrome
+  build/dev/firefox
+  build/dev/edge
 ```
 
 **Building the beta and release versions**
@@ -147,6 +147,18 @@ Before building the release version, you should manually download necessary reso
   CREDENTIALS_PASSWORD=<password> yarn release
 ```
 You will need to put certificate.pem and mozilla_credentials.json files to the `./private` directory. This build will create unpacked extensions and then pack them (crx for Chrome, xpi for Firefox).
+
+**Building the sample extension with API**
+
+Run the following command:
+```
+yarn sample-api
+```
+This will create a build directory with unpacked sample extension for chromium browsers:
+
+```
+build/dev/adguard-api
+```
 
 <a id="dev-linter"></a>
 ### Linter
