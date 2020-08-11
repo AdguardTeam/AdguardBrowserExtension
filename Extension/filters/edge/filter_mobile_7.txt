@@ -1,8 +1,8 @@
-! Checksum: dTsyMrAMslE+4LdQ51pHcw
+! Checksum: kKSDIFxbZjafbsDzRTAoYQ
 ! Title: AdGuard Japanese filter (Optimized)
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.3.87
-! TimeUpdated: 2020-07-28T20:04:21+03:00
+! Version: 2.0.3.90
+! TimeUpdated: 2020-08-07T13:32:03+03:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -311,12 +311,8 @@
 ||widget-view.dmm.com^
 ||widget.zenback.jp^$third-party
 ||w.zenback.jp^$third-party
-||diamond.jp/go/pb/forbrave/
+/modal-dist/index.js$script,domain=diamond.jp|iza.ne.jp|lifehacker.jp|newsweekjapan.jp
 /fab.js|$domain=life-n.jp|point-news.jp
-gendai.ismedia.jp,hamakei.com#$#.fc-ab-root { display: none !important; }
-gendai.ismedia.jp,hamakei.com#$#body { overflow: visible !important; }
-||iza.ne.jp/common/js/others/brave/
-@@||newsweekjapan.jp/brave/ad-page/ad-pulse.js
 @@||pointservice.com/res/media/common/ad/adframe.js$script,domain=goldencocco.jp|mottonoutore.jp
 @@||ad.jp.ap.valuecommerce.com/servlet/jsbanner$domain=coron.tech
 @@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=coron.tech
@@ -635,7 +631,6 @@ www.nikkei.com##.k-hub-pr
 www.nikkei.com##.newsTrendWatch
 ||jorudan.co.jp/com/img/bnr/w685_
 ||smtgvs.weathernews.jp/s/topics/img/banner/
-2nn.jp##.ads
 5ch.net###banner
 alc.co.jp###news > ul
 alc.co.jp###container > div[style^="width:1100px; "]
@@ -934,7 +929,6 @@ cherio199.blog120.fc2.com##center > table[Width="750"][bordercolor="8b0000"][cel
 mindhack2ch.com##.free-area > aside.rss
 ||mv-mindhack2ch.up.seesaa.net/common/image_feed.js
 localplace.jp###bannerList
-karapaia.com##.ads
 oricon.co.jp##aside.top-inline-banner
 oricon.co.jp##aside.block-header-banner
 erogazo-ngo.com##p > a[rel="nofollow"]
@@ -1121,7 +1115,7 @@ watch.impress.co.jp##.ad.billboard
 gagetmatome.com###ad-bottom-oya
 ||blog.livedoor.jp/diet2channel/js/adarea.js
 jin115.com##.dix_ad_n
-footballnews.jp##.ads
+chugoku-np.co.jp,2nn.jp,karapaia.com,footballnews.jp##.ads
 seesaa.jp##.banner-footer
 auone.jp##.side__ad-box
 yahoo.co.jp###bpComposite > a

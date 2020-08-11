@@ -1,8 +1,8 @@
-! Checksum: 7M6VyfwZyMd4jCjMpP5ZsQ
+! Checksum: 7ugZ8ja2vQUtchK2aufjog
 ! Title: AdGuard Mobile Ads filter (Optimized)
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.14.27
-! TimeUpdated: 2020-08-04T11:30:12+03:00
+! Version: 2.0.14.41
+! TimeUpdated: 2020-08-10T22:30:14+03:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -1042,6 +1042,7 @@
 ||smilered.com^
 ||weboohost.com^
 @@||m.beautypageants.in^$elemhide
+@@||m.wcostream.com/inc/embed/ads.js
 @@||imasdk.googleapis.com/*/ima3.js$domain=player.glomex.com
 @@||m.da.mgtv.com/m/player?_type_object=$domain=m.mgtv.com
 @@||js.kanald.com.tr/assets/dist/js/custom/ads.js
@@ -1083,6 +1084,7 @@ blogdoiphone.com#@#.header-ad
 blogdoiphone.com#@#.custom-ad
 westseattleblog.com#@#.custom-ad
 westseattleblog.com#@#.header-ad
+overclockers.ru#?#.container-block.woback:has(> div > ins[data-revive-zoneid])
 mensxp.com#?#.list-card > li:not(.track_ga):has(> div[class*=" "] > div > div > a[onclick])
 m.vk.com#?#.wall_posts div.wall_item:has(> div.wi_body > div.ads_mark)
 mail.google.com#?##views div[style^="min-height:"] > form ~ div[class][style]:has(> div[class] > div[class][id] > div[class] > div[class]:contains(Ad))
@@ -1526,6 +1528,11 @@ m.news.de##.unisterAdsStart
 independent.co.uk,tomshardware.com,techbook.de,sueddeutsche.de,hurriyet.com.tr,elmundo.es,timesnownews.com,biz-journal.jp,sankei.com,m.mynet.com,amp.ibtimes.co.uk,lifehacker.com,jalopnik.com,ndtv.com,gizmodo.com,cnbc.com##amp-embed[type="taboola"]
 independent.co.uk,komputerswiat.pl,dobreprogramy.pl,amp.pcwelt.de,tomshardware.com,techbook.de,forbes.com,auto-swiat.pl,dialog.ua,mobile.reuters.com,spiegel.de,amp.welt.de,forum.xda-developers.com,sueddeutsche.de,amp.usatoday.com,m.gadgets.ndtv.com##amp-ad
 avclub.com,clickhole.com,deadspin.com,gizmodo.com,jalopnik.com,jezebel.com,kotaku.com,lifehacker.com,splinternews.com,theinventory.com,theonion.com,theroot.com,thetakeout.com##.inline-ad-container
+ichip.ru##.banner-info
+||m.31bz.org/shubao/c.js
+||m.31bz.org/shubao/cn.js
+||wap.jd-tv.com/skin/js/ssp.js
+iphoneitalia.com##.ad_300x250_mob_top
 lifehacker.com##.jnPJre
 news18.com##.ad-cntainer
 news18.com##body > div[style="background: #dbdde3!Important;padding: 10px 0;"]
@@ -2972,7 +2979,6 @@ ticotimes.net##div[class^="ticot-"]
 piluli.ru##div[class^="ya_adv_"]
 nordbayern.de##div[id*="-mobile-ad-"]
 m.ynet.co.il##div[id^="GoogleAdStrip"]
-epidemz.co,epidemz.com##div[id^="cpa_rotator_block_"]
 xda-developers.com##div[id^="edit"][class="postbit-wrapper "] > div[style="margin:10px 0;min-height:250px;max-height:250px;overflow:hidden;"]
 m.watchcartoononline.io##div[id^="epmads-"]
 piluli.ru##div[id^="medads_banner"]
