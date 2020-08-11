@@ -1,8 +1,8 @@
-! Checksum: TQ6eaVLo6K5zMmD3uIooPg
+! Checksum: qR868O4jGzteFKiXDVk0Tw
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.12.16
-! TimeUpdated: 2020-08-04T16:20:35+03:00
+! Version: 2.0.12.20
+! TimeUpdated: 2020-08-10T17:31:56+03:00
 ! Expires: 4 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#german
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -1334,6 +1334,8 @@ smarthomearea.de#@##adsense
 !
 ! Extended CSS rules
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/61201
+menshealth.de#?#.v-A_-wrapper > .v-A_-teaser.v-A_-clear:has(> .v-A_-teaser__headline__container > span.v-A_-headline:contains(Sponsored))
 ! https://github.com/AdguardTeam/AdguardFilters/issues/60776
 forum.abakus-internet-marketing.de#?#div[id^="page-"] > .post:has(> .inner > .postbody > #post_content > .content > .foren_werbung)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/57072
@@ -2144,6 +2146,9 @@ welt.de##.c-page-container--has-commercials
 ! ##.pdb-div-gpt-footerad
 haz.de,ostsee-zeitung.de,sn-online.de,dnn.de,kn-online.de,ln-online.de,neuepresse.de,lvz.de##.pdb-div-gpt-footerad
 !
+wunderkessel.de##.fh_ad_21
+menshealth.de##.v-A_-commercial
+amazon.de###universal-hero-quick-promo
 forum.abakus-internet-marketing.de##.foren_werbung
 helpster.de##.h5v-ad
 dubisthalle.de##.dbh-im-artikel
@@ -4301,6 +4306,8 @@ tagesspiegel.de###urban-teaser1
 !###TEMPORARY###
 !###############
 !
+! saechsische.de - article hidden - https://www.saechsische.de/staatsanwalt-gegenueber-rechten-befangen-5247375.html
+saechsische.de#@?#article,div:-abp-has( > .article-fill__section > span:-abp-contains(Anzeige))
 ! https://github.com/AdguardTeam/AdguardFilters/issues/57374
 ||movie-blog.org^$subdocument,domain=movie-blog.org,badfilter
 ! rtl.de - video not showing
