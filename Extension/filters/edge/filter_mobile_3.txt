@@ -1,8 +1,8 @@
-! Checksum: OpaXbX1nAmuCKLYCpQqzZg
+! Checksum: 4jybVe/wWdqlmX/aDUx4dQ
 ! Title: AdGuard Tracking Protection filter (Optimized)
 ! Description: The most comprehensive list of various online counters and web analytics tools. Use this filter if you do not want your actions on the Internet to be tracked.
-! Version: 2.0.16.2
-! TimeUpdated: 2020-08-04T15:31:46+03:00
+! Version: 2.0.16.17
+! TimeUpdated: 2020-08-11T14:31:35+03:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -65,6 +65,11 @@ journal-plaza.net#?#.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч
 ||ib.snssdk.com^
 ||xlog.snssdk.com^
 ||log.snssdk.com^
+||am-trc-events.taboola.com^
+||g2178927685.co^$third-party
+||pxf.io^$third-party
+||eba-amadeus.netdna-ssl.com^$third-party
+||c.tvpixel.com^$third-party
 ||ga-analytics.com^$third-party
 ||analytics.webads.eu^
 ||erandex.com^$third-party
@@ -3214,6 +3219,8 @@ journal-plaza.net#?#.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч
 ||zqtk.net^$third-party
 ||zroitracker.com^$third-party
 ||functionalclam.com^$third-party
+||rhetoricalloss.com^$third-party
+||firstfrogs.com^$third-party
 ||additionant.com^$third-party
 ||plainplayground.com^$third-party
 ||enviousshape.com^$third-party
@@ -5060,6 +5067,7 @@ charlestownwyllie.oaklawnnonantum.com^
 ||frontier.musical.ly^
 ||xlog-va.musical.ly^
 /^https?:\/\/js\.[-.0-9a-z]+\/t\/[0-9]{3}\/[0-9]{3}\/a[0-9]{7}\.js$/$script,third-party
+/facebookproductad/views/js/pixel.js
 /\/(public|resources|static|assets)\/([a-f0-9]){28,31}$/$script,xmlhttprequest,~third-party
 /cdn-cgi/bm/cv/*$script
 /cgi-bin/bm/cv/*$script
@@ -5077,6 +5085,7 @@ charlestownwyllie.oaklawnnonantum.com^
 /simpleEulerian.
 /submission/pageview
 /collect-*/pageview|
+/qlitics.js
 /api/increment-pv$xmlhttprequest
 /matomo.php?idsite=
 /watch.*.js?key=*&kw=*&refer=
@@ -5355,6 +5364,11 @@ _tracking.php?b=
 ||omtrdc.net/id^$empty,important
 ||nd.demdex.net/event?d_mid=$empty,important,domain=9now.com.au
 ||adc.nine.com.au/?token=$empty,important,domain=9now.com.au
+||prometeo-media-service.com/assets/pixel.gif
+||capi.connatix.com/tr/
+||i.milliyet.com.tr/D/j/Molatik/GoogleAnalit.js
+.co/gc?id=$domain=nzma.org.nz
+||suggestions.dadata.ru/suggestions/api$third-party
 /kukulufinger2.js$domain=erinn.biz|kuku.lu
 ||genpas.icu/js/ga.js
 ||pages.s6.exacttarget.com/Script/pageTracking.js
@@ -6268,7 +6282,6 @@ utorrent.games,borfilm.com,hronika.info##.count
 ||gutefrage.net/px.js
 ||turbobit.net/ajax/fdlogger/
 ||morgenpost.de/resources/*/js/webtrekk
-||t1.streamcherry.com/log|
 ||kotaku.com/stats/beacon?
 ||immobilien-zeitung.de/backend/commons/js/analytics_config.js
 ||anapixel.elmundo.es/ter.gif
@@ -6512,7 +6525,7 @@ europcar.com###wt_overlay
 .arnostat.nl/click.
 m24.ru##.b-counters > ul
 vesti-ua.net,udaff.com##.counters
-w-kino.ru,kinotochka.club,efirde.az,legend.az##.counts
+w-kino.ru,kinotochka.club,legend.az##.counts
 blogovo.ru##.metrika_sapaclick
 newslab.ru##.r-recommend
 businessinsider.co.uk,businessinsider.com##.rail-recommended
@@ -7504,6 +7517,8 @@ link.gmapp*.net$image
 @@||metrics.us.playstation.com/b/ss/
 @@||app.adjust.com^$domain=dawanda.com
 ||rover.ebay.$image,object,script,badfilter
+@@||cmoney.tw/follow/js/google_analytics.js
+@@||googletagmanager.com/gtm.js$domain=portsmouth.co.uk
 @@||tvhayz.org/playergk/fingerprint2.min.js
 @@||cdn.cxense.com/cx*.js$domain=bangkokpost.com
 @@||api.cxense.com/public/widget/data?json$domain=bangkokpost.com

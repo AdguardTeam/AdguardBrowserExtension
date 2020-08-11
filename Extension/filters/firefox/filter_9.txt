@@ -1,8 +1,8 @@
-! Checksum: 08T5FPCWlsTHMM4EAzHdVQ
+! Checksum: 2PVgUZPsiQXO910/iPHOBQ
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish and Portuguese languages.
-! Version: 2.0.6.89
-! TimeUpdated: 2020-08-04T12:04:22+03:00
+! Version: 2.0.6.92
+! TimeUpdated: 2020-08-10T23:32:06+03:00
 ! Expires: 4 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#spanish
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -275,6 +275,8 @@ tunovelaligera.com#@#img[width="728"][height="90"]
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/60205
 meuwindows.com#%#//scriptlet("abort-on-property-write", "ai_front")
+! https://github.com/AdguardTeam/AdguardFilters/issues/60999
+||cdn.jsdelivr.net/*/dist/js/wgd-core.min.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/59758
 @@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=anihub.tv
 ||st.bebi.com/bebi_v*.js$script,redirect=nooptext,domain=anihub.tv
@@ -1702,6 +1704,8 @@ http://adw.
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
 !
+||taxofcnym.com.ar/wp-content/cache/*/plus/bg.htm
+taxofcnym.com.ar##.wallpaper
 animesvision.biz###sidebar > .discord-image > center > a[href^="https://bit.ly/"][target="_blank"] > img
 animesvision.biz###main-content > div[style^="margin-bottom:"] > a[href^="https://bit.ly/"][target="_blank"] > img
 seriesanimadas.org##a[href^="https://ladsanz.com/"]
@@ -3596,6 +3600,8 @@ urlcloud.us##.banner
 !
 ! White list. Fixing filtration errors (false-positive)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/61205
+@@||sascdn.com/diff/video/current/libs/js/controller.js$domain=ubeat.tv
 ! https://github.com/AdguardTeam/AdguardFilters/issues/59034
 flatout.com.br#@#div[id^="div-gpt-ad"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/59006
