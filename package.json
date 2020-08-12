@@ -1,11 +1,12 @@
 {
   "name": "browser-extension",
-  "version": "3.5.7",
+  "version": "3.5.12",
   "description": "AdGuard Extension",
   "scripts": {
     "dev": "NODE_ENV=dev gulp buildDev --require babel-register --gulpfile tasks",
     "beta": "NODE_ENV=beta gulp buildBeta --require babel-register --gulpfile tasks",
     "release": "NODE_ENV=release gulp buildRelease --require babel-register --gulpfile tasks",
+    "sample-api": "NODE_ENV=dev gulp buildSampleApi --require babel-register --gulpfile tasks",
     "test": "gulp runTests --require babel-register --gulpfile tasks",
     "locales-download": "gulp updateLocalesStream --require babel-register --gulpfile tasks",
     "locales-upload": "gulp uploadLocalesStream --require babel-register --gulpfile tasks",
@@ -60,7 +61,7 @@
     "preprocess": "^3.1.0",
     "punycode": "^2.1.0",
     "qunit": "^2.6.0",
-    "scriptlets": "https://github.com/AdguardTeam/Scriptlets.git#v1.2.6",
+    "scriptlets": "https://github.com/AdguardTeam/Scriptlets.git#v1.3.0",
     "web-ext": "^2.6.0"
   }
 }

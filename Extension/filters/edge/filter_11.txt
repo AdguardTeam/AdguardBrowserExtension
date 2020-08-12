@@ -1,8 +1,8 @@
-! Checksum: A/xUPVukO3EbX3FAXdaPnQ
+! Checksum: GCb5TWx2KgKN7D/srTYeHQ
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.14.27
-! TimeUpdated: 2020-08-04T11:30:12+03:00
+! Version: 2.0.14.41
+! TimeUpdated: 2020-08-10T22:30:14+03:00
 ! Expires: 4 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#mobile
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -1157,6 +1157,8 @@
 !---
 ! Rules for AdFender to block injected ads when AdGuard DNS is active
 !
+! https://forum.adguard.com/index.php?threads/ios-cannot-load-videos-on-a-website.39306/
+@@||m.wcostream.com/inc/embed/ads.js
 ! merkur.de amp adblock detection for glomex video (Android)
 @@||imasdk.googleapis.com/*/ima3.js$domain=player.glomex.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/44990
@@ -1238,6 +1240,8 @@ westseattleblog.com#@#.header-ad
 !
 ! Extended CSS rules
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/61215
+overclockers.ru#?#.container-block.woback:has(> div > ins[data-revive-zoneid])
 ! https://github.com/AdguardTeam/AdguardFilters/issues/59614
 mensxp.com#?#.list-card > li:not(.track_ga):has(> div[class*=" "] > div > div > a[onclick])
 ! https://github.com/AdguardTeam/AdguardFilters/issues/60338
@@ -2071,6 +2075,11 @@ independent.co.uk,komputerswiat.pl,dobreprogramy.pl,amp.pcwelt.de,tomshardware.c
 ! ##.inline-ad-container
 avclub.com,clickhole.com,deadspin.com,gizmodo.com,jalopnik.com,jezebel.com,kotaku.com,lifehacker.com,splinternews.com,theinventory.com,theonion.com,theroot.com,thetakeout.com##.inline-ad-container
 !
+ichip.ru##.banner-info
+||m.31bz.org/shubao/c.js
+||m.31bz.org/shubao/cn.js
+||wap.jd-tv.com/skin/js/ssp.js
+iphoneitalia.com##.ad_300x250_mob_top
 lifehacker.com##.jnPJre
 news18.com##.ad-cntainer
 news18.com##body > div[style="background: #dbdde3!Important;padding: 10px 0;"]
@@ -3517,7 +3526,6 @@ ticotimes.net##div[class^="ticot-"]
 piluli.ru##div[class^="ya_adv_"]
 nordbayern.de##div[id*="-mobile-ad-"]
 m.ynet.co.il##div[id^="GoogleAdStrip"]
-epidemz.co,epidemz.com##div[id^="cpa_rotator_block_"]
 xda-developers.com##div[id^="edit"][class="postbit-wrapper "] > div[style="margin:10px 0;min-height:250px;max-height:250px;overflow:hidden;"]
 m.watchcartoononline.io##div[id^="epmads-"]
 piluli.ru##div[id^="medads_banner"]
