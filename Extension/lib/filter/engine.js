@@ -16,6 +16,8 @@
  */
 
 adguard.engine = (function (adguard) {
+    const ASYNC_LOAD_CHUNK_SIZE = 5000;
+
     let engine;
 
     const startEngine = async (lists) => {
@@ -37,7 +39,7 @@ adguard.engine = (function (adguard) {
          * Request filter creation is rather slow operation so we should
          * use setTimeout calls to give UI thread some time.
         */
-        await engine.loadRulesAsync(1000);
+        await engine.loadRulesAsync(ASYNC_LOAD_CHUNK_SIZE);
 
         adguard.console.info('Starting url filter engine..ok');
 
