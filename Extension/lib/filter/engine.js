@@ -18,7 +18,7 @@
 adguard.engine = (function (adguard) {
     let engine;
 
-    const startEngine = (lists) => {
+    const startEngine = async (lists) => {
         adguard.console.info('Starting url filter engine');
 
         const ruleStorage = new RuleStorage(lists);
@@ -29,7 +29,15 @@ adguard.engine = (function (adguard) {
             verbose: true,
         };
 
-        engine = new Engine(ruleStorage, config);
+        engine = new Engine(ruleStorage, config, true);
+
+        /*
+         * UI thread becomes blocked on the options page while request filter is created
+         * that't why we create filter rules using chunks of the specified length
+         * Request filter creation is rather slow operation so we should
+         * use setTimeout calls to give UI thread some time.
+        */
+        await engine.loadRulesAsync(1000);
 
         adguard.console.info('Starting url filter engine..ok');
 

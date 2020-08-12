@@ -303,7 +303,7 @@ adguard.antiBannerService = (function (adguard) {
      * @param rulesFilterMap Map for populating rules (filterId -> rules collection)
      * @param callback Called when request filter is initialized
      */
-    function onFiltersLoadedFromStorage(rulesFilterMap, callback) {
+    async function onFiltersLoadedFromStorage(rulesFilterMap, callback) {
         const start = new Date().getTime();
 
         adguard.console.info('Starting request filter initialization..');
@@ -377,9 +377,9 @@ adguard.antiBannerService = (function (adguard) {
         };
 
         /**
-         * Synchronously fills engine with rules
+         * Fills engine with rules
          */
-        const startTSUrlfilterEngine = function () {
+        const startTSUrlfilterEngine = async () => {
             const lists = [];
 
             // eslint-disable-next-line guard-for-in,no-restricted-syntax
@@ -393,12 +393,12 @@ adguard.antiBannerService = (function (adguard) {
                 lists.push(new StringRuleList(filterId, rulesTexts, false, !isTrustedFilter));
             }
 
-            adguard.engine.startEngine(lists);
+            await adguard.engine.startEngine(lists);
 
             requestFilterInitialized();
         };
 
-        startTSUrlfilterEngine();
+        await startTSUrlfilterEngine();
     }
 
     /**
@@ -426,10 +426,10 @@ adguard.antiBannerService = (function (adguard) {
         /**
          * STEP 2: Called when all filter rules have been loaded from storage
          */
-        const loadAllFilterRulesDone = function () {
+        const loadAllFilterRulesDone = async () => {
             adguard.console.info('Finished loading filter rules from the storage in {0} ms',
                 (new Date().getTime() - start));
-            onFiltersLoadedFromStorage(rulesFilterMap, callback);
+            await onFiltersLoadedFromStorage(rulesFilterMap, callback);
         };
 
         /**
