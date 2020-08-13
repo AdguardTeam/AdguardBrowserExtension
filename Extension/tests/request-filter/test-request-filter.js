@@ -5,27 +5,27 @@ adguard.webRequestService = adguard.webRequestService || {
     isCollectingCosmeticRulesHits: () => false,
 };
 
-const createRequestFilter = (rulesText) => {
+const createRequestFilter = async (rulesText) => {
     const lists = [new StringRuleList(1, rulesText, false, false)];
-    adguard.engine.startEngine(lists);
+    await adguard.engine.startEngine(lists);
     return new adguard.RequestFilter();
 };
 
 const createRequestFilterWithRules = rules => createRequestFilter(rules.join('\n'));
 
-QUnit.test('General', (assert) => {
+QUnit.test('General', async (assert) => {
     const url = 'https://test.com/';
     const referrer = 'example.org';
     const ruleText = '||test.com^';
 
-    const requestFilter = createRequestFilter(ruleText);
+    const requestFilter = await createRequestFilter(ruleText);
 
     const result = requestFilter.findRuleForRequest(url, referrer, adguard.RequestTypes.SUBDOCUMENT);
     assert.ok(result != null);
     assert.equal(result.getText(), ruleText);
 });
 
-QUnit.test('RequestFilter.findRuleForRequest performance', (assert) => {
+QUnit.test('RequestFilter.findRuleForRequest performance', async (assert) => {
     setLogger({
         error() {},
         warn() {},
@@ -34,7 +34,7 @@ QUnit.test('RequestFilter.findRuleForRequest performance', (assert) => {
     });
 
     // eslint-disable-next-line no-undef
-    const requestFilter = createRequestFilter(filtersFromTxt.join('\n'));
+    const requestFilter = await createRequestFilter(filtersFromTxt.join('\n'));
 
     const url = 'https://www.youtube.com/gaming';
     const referrer = 'http://example.org';
@@ -59,7 +59,7 @@ QUnit.test('RequestFilter.findRuleForRequest performance', (assert) => {
     setLogger(console);
 });
 
-QUnit.test('Whitelist rules selecting', (assert) => {
+QUnit.test('Whitelist rules selecting', async (assert) => {
     const { RequestTypes } = adguard;
 
     const url = 'https://test.com/';
@@ -73,28 +73,28 @@ QUnit.test('Whitelist rules selecting', (assert) => {
     let requestFilter;
     let result;
 
-    requestFilter = createRequestFilterWithRules([rule]);
+    requestFilter = await createRequestFilterWithRules([rule]);
     result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT);
     assert.ok(result != null);
     assert.equal(result.getText(), rule);
 
-    requestFilter = createRequestFilterWithRules([rule, whitelist]);
+    requestFilter = await createRequestFilterWithRules([rule, whitelist]);
     result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT);
     assert.ok(result != null);
     assert.equal(result.getText(), whitelist);
 
-    requestFilter = createRequestFilterWithRules([rule, documentRule]);
+    requestFilter = await createRequestFilterWithRules([rule, documentRule]);
     result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.DOCUMENT);
     assert.ok(result != null);
     assert.equal(result.ruleText, documentRule);
 
-    requestFilter = createRequestFilterWithRules([rule, whitelist, genericHideRule]);
+    requestFilter = await createRequestFilterWithRules([rule, whitelist, genericHideRule]);
     result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.DOCUMENT);
     assert.ok(result != null);
     assert.equal(result.getText(), genericHideRule);
 });
 
-QUnit.test('Important modifier rules', (assert) => {
+QUnit.test('Important modifier rules', async (assert) => {
     const { RequestTypes } = adguard;
 
     const url = 'https://test.com/';
@@ -107,25 +107,25 @@ QUnit.test('Important modifier rules', (assert) => {
     let requestFilter;
     let result;
 
-    requestFilter = createRequestFilterWithRules([rule]);
+    requestFilter = await createRequestFilterWithRules([rule]);
     result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT);
     assert.ok(result != null);
     assert.equal(result.getText(), rule);
 
-    requestFilter = createRequestFilterWithRules([rule, whitelist]);
+    requestFilter = await createRequestFilterWithRules([rule, whitelist]);
     result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT);
     assert.ok(result != null);
     assert.equal(result.getText(), whitelist);
 
-    requestFilter = createRequestFilterWithRules([rule, whitelist, important]);
+    requestFilter = await createRequestFilterWithRules([rule, whitelist, important]);
     result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT);
     assert.ok(result != null);
     assert.equal(result.getText(), important);
 });
 
-QUnit.test('Cookie rules', (assert) => {
+QUnit.test('Cookie rules', async (assert) => {
     const ruleText = '||xpanama.net^$third-party,cookie=c_user,domain=~example.org|merriam-webster.com';
-    const requestFilter = createRequestFilterWithRules([ruleText]);
+    const requestFilter = await createRequestFilterWithRules([ruleText]);
 
     const rules = requestFilter.findCookieRules(
         'https://nop.xpanama.net/if.html?adflag=1&cb=kq4iOggNyP',
@@ -137,7 +137,7 @@ QUnit.test('Cookie rules', (assert) => {
     assert.equal(rules[0].getText(), ruleText);
 });
 
-QUnit.test('Redirect rules', (assert) => {
+QUnit.test('Redirect rules', async (assert) => {
     const rawYaml = `
         - title: 1x1-transparent.gif
           aliases:
@@ -157,7 +157,7 @@ QUnit.test('Redirect rules', (assert) => {
     const redirectRule = 'example.org/ads.js$script,redirect=noopjs';
     const blockRedirectRule = '||example.org/*.png$image,redirect=1x1-transparent.gif';
 
-    const requestFilter = createRequestFilterWithRules([redirectRule, blockRedirectRule]);
+    const requestFilter = await createRequestFilterWithRules([redirectRule, blockRedirectRule]);
 
     const rule = requestFilter.findRuleForRequest(
         'http://example.org/ads.js', 'http://example.org/', adguard.RequestTypes.SCRIPT
@@ -174,7 +174,7 @@ QUnit.test('Redirect rules', (assert) => {
 
 QUnit.module('$badfilter');
 
-QUnit.test('BadFilter option', (assert) => {
+QUnit.test('BadFilter option', async (assert) => {
     const rule = 'https:*_ad_';
     const ruleTwo = 'https:*_da_';
     const ruleThree = 'https:*_ad_$match-case';
@@ -185,14 +185,14 @@ QUnit.test('BadFilter option', (assert) => {
 
     let requestFilter;
 
-    requestFilter = createRequestFilterWithRules([
+    requestFilter = await createRequestFilterWithRules([
         rule,
         ruleTwo,
     ]);
     assert.ok(requestFilter.findRuleForRequest(comAd, '', adguard.RequestTypes.SUBDOCUMENT));
     assert.ok(requestFilter.findRuleForRequest(comDa, '', adguard.RequestTypes.SUBDOCUMENT));
 
-    requestFilter = createRequestFilterWithRules([
+    requestFilter = await createRequestFilterWithRules([
         rule,
         ruleTwo,
         badFilterRule,
@@ -200,7 +200,7 @@ QUnit.test('BadFilter option', (assert) => {
     assert.notOk(requestFilter.findRuleForRequest(comAd, '', adguard.RequestTypes.SUBDOCUMENT));
     assert.ok(requestFilter.findRuleForRequest(comDa, '', adguard.RequestTypes.SUBDOCUMENT));
 
-    requestFilter = createRequestFilterWithRules([
+    requestFilter = await createRequestFilterWithRules([
         ruleTwo,
         ruleThree,
         badFilterRule,
@@ -208,7 +208,7 @@ QUnit.test('BadFilter option', (assert) => {
     assert.ok(requestFilter.findRuleForRequest(comAd, '', adguard.RequestTypes.SUBDOCUMENT));
     assert.ok(requestFilter.findRuleForRequest(comDa, '', adguard.RequestTypes.SUBDOCUMENT));
 
-    requestFilter = createRequestFilterWithRules([
+    requestFilter = await createRequestFilterWithRules([
         ruleTwo,
         ruleThree,
 
@@ -216,14 +216,14 @@ QUnit.test('BadFilter option', (assert) => {
     assert.ok(requestFilter.findRuleForRequest(comAd, '', adguard.RequestTypes.SUBDOCUMENT));
     assert.ok(requestFilter.findRuleForRequest(comDa, '', adguard.RequestTypes.SUBDOCUMENT));
 
-    requestFilter = createRequestFilterWithRules([
+    requestFilter = await createRequestFilterWithRules([
         ruleTwo,
     ]);
     assert.notOk(requestFilter.findRuleForRequest(comAd, '', adguard.RequestTypes.SUBDOCUMENT));
     assert.ok(requestFilter.findRuleForRequest(comDa, '', adguard.RequestTypes.SUBDOCUMENT));
 });
 
-QUnit.test('BadFilter option whitelist', (assert) => {
+QUnit.test('BadFilter option whitelist', async (assert) => {
     const url = 'https://test.com/';
     const referrer = 'http://example.org';
 
@@ -234,7 +234,7 @@ QUnit.test('BadFilter option whitelist', (assert) => {
     let requestFilter;
     let result;
 
-    requestFilter = createRequestFilterWithRules([
+    requestFilter = await createRequestFilterWithRules([
         rule,
     ]);
 
@@ -243,7 +243,7 @@ QUnit.test('BadFilter option whitelist', (assert) => {
     assert.equal(result.getText(), rule);
 
 
-    requestFilter = createRequestFilterWithRules([
+    requestFilter = await createRequestFilterWithRules([
         rule, whitelist,
     ]);
 
@@ -255,7 +255,7 @@ QUnit.test('BadFilter option whitelist', (assert) => {
     assert.ok(result);
     assert.equal(result.getText(), whitelist);
 
-    requestFilter = createRequestFilterWithRules([
+    requestFilter = await createRequestFilterWithRules([
         rule, whitelist, badFilterRule,
     ]);
 
@@ -267,7 +267,7 @@ QUnit.test('BadFilter option whitelist', (assert) => {
     assert.equal(result.getText(), rule);
 });
 
-QUnit.test('BadFilter multi-options', (assert) => {
+QUnit.test('BadFilter multi-options', async (assert) => {
     const rule = '||example.org^$object';
     const ruleTwo = '||example.org^';
     const badFilterRule = '||example.org^$badfilter,object';
@@ -277,13 +277,13 @@ QUnit.test('BadFilter multi-options', (assert) => {
 
     let requestFilter;
 
-    requestFilter = createRequestFilterWithRules([
+    requestFilter = await createRequestFilterWithRules([
         rule, ruleTwo,
     ]);
     assert.ok(requestFilter.findRuleForRequest(testUrl, '', adguard.RequestTypes.OBJECT));
     assert.ok(requestFilter.findRuleForRequest(testUrl, '', adguard.RequestTypes.SUBDOCUMENT));
 
-    requestFilter = createRequestFilterWithRules([
+    requestFilter = await createRequestFilterWithRules([
         rule, ruleTwo, badFilterRule,
     ]);
 
@@ -292,7 +292,7 @@ QUnit.test('BadFilter multi-options', (assert) => {
     assert.equal(ruleTwo, requestFilter.findRuleForRequest(testUrl, '', adguard.RequestTypes.OBJECT).getText());
     assert.equal(ruleTwo, requestFilter.findRuleForRequest(testUrl, '', adguard.RequestTypes.SUBDOCUMENT).getText());
 
-    requestFilter = createRequestFilterWithRules([
+    requestFilter = await createRequestFilterWithRules([
         rule, ruleTwo, badFilterRuleInv,
     ]);
     assert.ok(requestFilter.findRuleForRequest(testUrl, '', adguard.RequestTypes.OBJECT));
@@ -301,7 +301,7 @@ QUnit.test('BadFilter multi-options', (assert) => {
     assert.equal(ruleTwo, requestFilter.findRuleForRequest(testUrl, '', adguard.RequestTypes.SUBDOCUMENT).getText());
 });
 
-QUnit.test('BadFilter doesn stop looking for other rules', (assert) => {
+QUnit.test('BadFilter doesn stop looking for other rules', async (assert) => {
     const rule = '||example.org^$third-party';
     const ruleTwo = '||example.org^$xmlhttprequest';
     const badFilterRule = '||example.org^$third-party,badfilter';
@@ -312,20 +312,20 @@ QUnit.test('BadFilter doesn stop looking for other rules', (assert) => {
 
     let requestFilter;
 
-    requestFilter = createRequestFilterWithRules([
+    requestFilter = await createRequestFilterWithRules([
         rule, ruleTwo,
     ]);
 
     assert.ok(requestFilter.findRuleForRequest(testUrl, documentUrl, adguard.RequestTypes.DOCUMENT));
     assert.ok(requestFilter.findRuleForRequest(testUrl, '', adguard.RequestTypes.XMLHTTPREQUEST));
 
-    requestFilter = createRequestFilterWithRules([
+    requestFilter = await createRequestFilterWithRules([
         rule, ruleTwo, badFilterRule,
     ]);
     assert.notOk(requestFilter.findRuleForRequest(testUrl, documentUrl, adguard.RequestTypes.DOCUMENT));
     assert.ok(requestFilter.findRuleForRequest(testUrl, '', adguard.RequestTypes.XMLHTTPREQUEST));
 
-    requestFilter = createRequestFilterWithRules([
+    requestFilter = await createRequestFilterWithRules([
         rule, ruleTwo, badFilterRuleHttp,
     ]);
 
@@ -335,12 +335,12 @@ QUnit.test('BadFilter doesn stop looking for other rules', (assert) => {
 
 QUnit.module('$csp');
 
-QUnit.test('CSP rules', (assert) => {
+QUnit.test('CSP rules', async (assert) => {
     let requestFilter;
     let result;
 
     const cspRule = '||xpanama.net^$third-party,csp=connect-src \'none\',domain=~example.org|merriam-webster.com';
-    requestFilter = createRequestFilterWithRules([cspRule]);
+    requestFilter = await createRequestFilterWithRules([cspRule]);
     result = requestFilter.findCspRules(
         'https://nop.xpanama.net/if.html?adflag=1&cb=kq4iOggNyP',
         'https://www.merriam-webster.com/',
@@ -358,7 +358,7 @@ QUnit.test('CSP rules', (assert) => {
 
     // Add matching directive whitelist rule
     const directiveWhiteListRule = '@@||xpanama.net^$csp=connect-src \'none\'';
-    requestFilter = createRequestFilterWithRules([cspRule, directiveWhiteListRule]);
+    requestFilter = await createRequestFilterWithRules([cspRule, directiveWhiteListRule]);
     result = requestFilter.findCspRules(
         'https://xpanama.net',
         'https://www.merriam-webster.com/',
@@ -370,7 +370,7 @@ QUnit.test('CSP rules', (assert) => {
 
     // Add global whitelist rule
     const globalWhiteListRule = '@@||xpanama.net^$csp';
-    requestFilter = createRequestFilterWithRules([cspRule, directiveWhiteListRule, globalWhiteListRule]);
+    requestFilter = await createRequestFilterWithRules([cspRule, directiveWhiteListRule, globalWhiteListRule]);
     result = requestFilter.findCspRules(
         'https://xpanama.net', 'https://www.merriam-webster.com/', adguard.RequestTypes.DOCUMENT
     );
@@ -380,7 +380,7 @@ QUnit.test('CSP rules', (assert) => {
 
     // Add whitelist rule, but with not matched directive
     const directiveMissWhiteListRule = '@@||xpanama.net^$csp=frame-src \'none\'';
-    requestFilter = createRequestFilterWithRules([cspRule, directiveMissWhiteListRule]);
+    requestFilter = await createRequestFilterWithRules([cspRule, directiveMissWhiteListRule]);
     result = requestFilter.findCspRules(
         'https://xpanama.net', 'https://www.merriam-webster.com/', adguard.RequestTypes.DOCUMENT
     );
@@ -389,7 +389,7 @@ QUnit.test('CSP rules', (assert) => {
 
     // Add CSP rule with duplicated directive
     const duplicateCspRule = '||xpanama.net^$third-party,csp=connect-src \'none\'';
-    requestFilter = createRequestFilterWithRules([cspRule, directiveMissWhiteListRule, duplicateCspRule]);
+    requestFilter = await createRequestFilterWithRules([cspRule, directiveMissWhiteListRule, duplicateCspRule]);
     result = requestFilter.findCspRules(
         'https://xpanama.net', 'https://www.merriam-webster.com/', adguard.RequestTypes.DOCUMENT
     );
@@ -400,7 +400,7 @@ QUnit.test('CSP rules', (assert) => {
     const cspRuleSubDocument = '||xpanama.net^$csp=connect-src http:,domain=merriam-webster.com,subdocument';
     const cspRuleNotSubDocument = '||xpanama.net^$csp=connect-src \'none\',domain=merriam-webster.com,~subdocument';
     const cspRuleAny = '||xpanama.net^$csp=frame-src \'none\',domain=merriam-webster.com';
-    requestFilter = createRequestFilterWithRules([cspRuleSubDocument, cspRuleNotSubDocument, cspRuleAny]);
+    requestFilter = await createRequestFilterWithRules([cspRuleSubDocument, cspRuleNotSubDocument, cspRuleAny]);
 
     result = requestFilter.findCspRules(
         'https://nop.xpanama.net/if.html?adflag=1&cb=kq4iOggNyP',
@@ -421,7 +421,7 @@ QUnit.test('CSP rules', (assert) => {
     assert.ok(result[1].getText() === cspRuleAny || result[1].getText() === cspRuleSubDocument);
 });
 
-QUnit.test('CSP important rules', (assert) => {
+QUnit.test('CSP important rules', async (assert) => {
     let requestFilter;
     let rules;
 
@@ -442,7 +442,7 @@ QUnit.test('CSP important rules', (assert) => {
         assert.equal(rules[0].getText(), expected);
     }
 
-    requestFilter = createRequestFilterWithRules([
+    requestFilter = await createRequestFilterWithRules([
         globalWhiteListRule,
         directiveWhiteListRule,
         importantDirectiveWhiteListRule,
@@ -452,7 +452,7 @@ QUnit.test('CSP important rules', (assert) => {
 
     checkCspRules(globalWhiteListRule);
 
-    requestFilter = createRequestFilterWithRules([
+    requestFilter = await createRequestFilterWithRules([
         directiveWhiteListRule,
         importantDirectiveWhiteListRule,
         defaultCspRule,
@@ -460,26 +460,26 @@ QUnit.test('CSP important rules', (assert) => {
     ]);
     checkCspRules(importantDirectiveWhiteListRule);
 
-    requestFilter = createRequestFilterWithRules([
+    requestFilter = await createRequestFilterWithRules([
         directiveWhiteListRule,
         defaultCspRule,
         importantCspRule,
     ]);
     checkCspRules(importantCspRule);
 
-    requestFilter = createRequestFilterWithRules([
+    requestFilter = await createRequestFilterWithRules([
         directiveWhiteListRule,
         defaultCspRule,
     ]);
     checkCspRules(directiveWhiteListRule);
 
-    requestFilter = createRequestFilterWithRules([
+    requestFilter = await createRequestFilterWithRules([
         defaultCspRule,
     ]);
     checkCspRules(defaultCspRule);
 });
 
-QUnit.test('CSP rules are found correctly', (assert) => {
+QUnit.test('CSP rules are found correctly', async (assert) => {
     /**
      * For example:
      * rule1 = '||$csp'
@@ -494,7 +494,7 @@ QUnit.test('CSP rules are found correctly', (assert) => {
     const ruleText2 = '||example.org^$csp=script-src \'none\',subdocument';
     const ruleText3 = '||example.org^$csp=connect-src \'none\',~subdocument';
 
-    const requestFilter = createRequestFilterWithRules([
+    const requestFilter = await createRequestFilterWithRules([
         ruleText1, ruleText2, ruleText3,
     ]);
 
@@ -511,18 +511,18 @@ QUnit.test('CSP rules are found correctly', (assert) => {
 
 QUnit.module('Stylesheets');
 
-QUnit.test('Css Exception Rules', (assert) => {
+QUnit.test('Css Exception Rules', async (assert) => {
     const rule = '##.sponsored';
     const rule1 = 'adguard.com#@#.sponsored';
 
     const testUrl = 'http://adguard.com';
 
-    let filter = createRequestFilterWithRules([rule]);
+    let filter = await createRequestFilterWithRules([rule]);
     let { css } = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll);
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '.sponsored { display: none!important; }');
 
-    filter = createRequestFilterWithRules([rule, rule1]);
+    filter = await createRequestFilterWithRules([rule, rule1]);
     css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll).css;
     assert.equal(css.length, 0);
 
@@ -531,7 +531,7 @@ QUnit.test('Css Exception Rules', (assert) => {
     assert.equal(css[0].trim(), '.sponsored { display: none!important; }');
 });
 
-QUnit.test('Css GenericHide Exception Rules', (assert) => {
+QUnit.test('Css GenericHide Exception Rules', async (assert) => {
     const genericOne = '##.generic-one';
     const genericTwo = '~google.com,~yahoo.com###generic';
     const nonGeneric = 'adguard.com##.non-generic';
@@ -545,17 +545,17 @@ QUnit.test('Css GenericHide Exception Rules', (assert) => {
     let filter;
     let css;
 
-    filter = createRequestFilterWithRules([genericOne]);
+    filter = await createRequestFilterWithRules([genericOne]);
     css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll).css;
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '.generic-one { display: none!important; }');
 
-    filter = createRequestFilterWithRules([genericOne, genericTwo]);
+    filter = await createRequestFilterWithRules([genericOne, genericTwo]);
     css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll).css;
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '.generic-one, #generic { display: none!important; }');
 
-    filter = createRequestFilterWithRules([genericOne, genericTwo, nonGeneric]);
+    filter = await createRequestFilterWithRules([genericOne, genericTwo, nonGeneric]);
     css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll).css;
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '.generic-one, #generic, .non-generic { display: none!important; }');
@@ -564,7 +564,7 @@ QUnit.test('Css GenericHide Exception Rules', (assert) => {
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '.generic-one, #generic { display: none!important; }');
 
-    filter = createRequestFilterWithRules([genericOne, genericTwo, nonGeneric, exceptionRule]);
+    filter = await createRequestFilterWithRules([genericOne, genericTwo, nonGeneric, exceptionRule]);
     css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll).css;
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '#generic, .non-generic { display: none!important; }');
@@ -573,7 +573,7 @@ QUnit.test('Css GenericHide Exception Rules', (assert) => {
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '.generic-one, #generic { display: none!important; }');
 
-    filter = createRequestFilterWithRules([genericOne, genericTwo, nonGeneric, exceptionRule, genericHideRule]);
+    filter = await createRequestFilterWithRules([genericOne, genericTwo, nonGeneric, exceptionRule, genericHideRule]);
     css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll).css;
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '#generic, .non-generic { display: none!important; }');
@@ -587,7 +587,7 @@ QUnit.test('Css GenericHide Exception Rules', (assert) => {
     css = filter.getSelectorsForUrl(anOtherUrl, CosmeticOption.CosmeticOptionCSS).css;
     assert.equal(css.length, 0);
 
-    filter = createRequestFilterWithRules([genericOne, genericTwo, nonGeneric, genericHideRule]);
+    filter = await createRequestFilterWithRules([genericOne, genericTwo, nonGeneric, genericHideRule]);
     css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll).css;
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '.generic-one, #generic, .non-generic { display: none!important; }');
@@ -601,7 +601,7 @@ QUnit.test('Css GenericHide Exception Rules', (assert) => {
     css = filter.getSelectorsForUrl(anOtherUrl, CosmeticOption.CosmeticOptionCSS).css;
     assert.equal(css.length, 0);
 
-    filter = createRequestFilterWithRules([genericOne, genericTwo, nonGeneric, genericHideRule, elemHideRule]);
+    filter = await createRequestFilterWithRules([genericOne, genericTwo, nonGeneric, genericHideRule, elemHideRule]);
     css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll).css;
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '.generic-one, #generic, .non-generic { display: none!important; }');
@@ -618,10 +618,10 @@ QUnit.test('Css GenericHide Exception Rules', (assert) => {
 
 QUnit.module('Misc');
 
-QUnit.test('$document modifier', (assert) => {
+QUnit.test('$document modifier', async (assert) => {
     const rule = '||example.org^$document';
 
-    const requestFilter = createRequestFilterWithRules([rule]);
+    const requestFilter = await createRequestFilterWithRules([rule]);
     assert.ok(requestFilter.findRuleForRequest(
         'https://example.org',
         'https://example.org',
@@ -629,13 +629,13 @@ QUnit.test('$document modifier', (assert) => {
     ));
 });
 
-QUnit.test('Domain restriction semantic', (assert) => {
+QUnit.test('Domain restriction semantic', async (assert) => {
     const url = 'https://example.org/';
 
     const cspRule = '$domain=example.org,csp=script-src \'none\'';
     const cookieRule = '$cookie=test,domain=example.org';
 
-    const requestFilter = createRequestFilterWithRules([cspRule, cookieRule]);
+    const requestFilter = await createRequestFilterWithRules([cspRule, cookieRule]);
     const cspResultDocument = requestFilter.findCspRules(url, url, adguard.RequestTypes.DOCUMENT);
     assert.equal(cspResultDocument.length, 1);
     assert.equal(cspResultDocument[0].getText(), cspRule);
@@ -650,9 +650,9 @@ QUnit.test('Domain restriction semantic', (assert) => {
 });
 
 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1586
-QUnit.test('Request filter finds rules for domains with "." in the end', (assert) => {
+QUnit.test('Request filter finds rules for domains with "." in the end', async (assert) => {
     const cssRuleText = 'www.benchmark.pl##body';
-    let requestFilter = createRequestFilterWithRules([cssRuleText]);
+    let requestFilter = await createRequestFilterWithRules([cssRuleText]);
 
     // eslint-disable-next-line max-len
     const { css: [firstCss] } = requestFilter.getSelectorsForUrl('http://www.benchmark.pl./', CosmeticOption.CosmeticOptionAll);
@@ -660,7 +660,7 @@ QUnit.test('Request filter finds rules for domains with "." in the end', (assert
     assert.ok(firstCss.indexOf('body { display: none!important; }') > -1);
 
     const urlRuleText = '||cdn.benchmark.pl^$domain=benchmark.pl';
-    requestFilter = createRequestFilterWithRules([cssRuleText, urlRuleText]);
+    requestFilter = await createRequestFilterWithRules([cssRuleText, urlRuleText]);
 
     const rule = requestFilter.findRuleForRequest(
         'http://cdn.benchmark.pl/assets/css/mainPage.min.css',
@@ -673,9 +673,9 @@ QUnit.test('Request filter finds rules for domains with "." in the end', (assert
 
 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1534
 // eslint-disable-next-line max-len
-QUnit.test('In case request has "DOCUMENT" type - $domain modifier will match as well request URL hostname', (assert) => {
+QUnit.test('In case request has "DOCUMENT" type - $domain modifier will match as well request URL hostname', async (assert) => {
     const urlRuleText = '||check.com/url$domain=example.org|check.com';
-    const requestFilter = createRequestFilterWithRules([urlRuleText]);
+    const requestFilter = await createRequestFilterWithRules([urlRuleText]);
 
     // Will match document url host
     let rule = requestFilter.findRuleForRequest(
@@ -725,9 +725,9 @@ QUnit.test('In case request has "DOCUMENT" type - $domain modifier will match as
 
 // // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1534
 // eslint-disable-next-line max-len
-QUnit.test('In case request has "DOCUMENT" type - $domain modifier will match as well request URL hostname', (assert) => {
+QUnit.test('In case request has "DOCUMENT" type - $domain modifier will match as well request URL hostname', async (assert) => {
     const urlRuleText = '|http://$third-party,domain=example.org';
-    const requestFilter = createRequestFilterWithRules([urlRuleText]);
+    const requestFilter = await createRequestFilterWithRules([urlRuleText]);
 
     // Will match document url host
     let rule = requestFilter.findRuleForRequest(
@@ -766,11 +766,11 @@ QUnit.test('In case request has "DOCUMENT" type - $domain modifier will match as
     assert.notOk(rule);
 });
 
-QUnit.test('Invalid scriptlets are not added to the scripts string', (assert) => {
+QUnit.test('Invalid scriptlets are not added to the scripts string', async (assert) => {
     const validScriptletRuleText = 'example.org#%#//scriptlet("adjust-setTimeout", "example", "400")';
     const invalidScriptletRuleText = 'example.org#%#//scriptlet("adjust-setTimeout-invalid", "example", "400")';
 
-    const requestFilter = createRequestFilterWithRules([validScriptletRuleText, invalidScriptletRuleText]);
+    const requestFilter = await createRequestFilterWithRules([validScriptletRuleText, invalidScriptletRuleText]);
     const scripts = requestFilter.getScriptsForUrl('https://example.org');
 
     assert.equal(scripts.length, 2);
