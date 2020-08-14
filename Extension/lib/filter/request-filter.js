@@ -15,6 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global TSUrlFilter */
+
 (function (adguard) {
     'use strict';
 
@@ -162,7 +164,9 @@
          */
         getScriptsForUrl(url) {
             const domain = adguard.utils.url.getHost(url);
-            const cosmeticResult = adguard.engine.getCosmeticResult(domain, CosmeticOption.CosmeticOptionJS);
+            const cosmeticResult = adguard.engine.getCosmeticResult(
+                domain, TSUrlFilter.CosmeticOption.CosmeticOptionJS
+            );
 
             return cosmeticResult.getScriptRules();
         },
@@ -253,11 +257,10 @@
                 result = adguard.engine.createMatchingResult(requestUrl, referrer, requestType);
 
                 if (!result) {
-                    return new MatchingResult([], []);
+                    return new TSUrlFilter.MatchingResult([], []);
                 }
 
                 this.matchingResultsCache.saveResultToCache(requestUrl, result, refHost, requestType);
-
             }
 
             return result;
@@ -316,7 +319,7 @@
         getContentRulesForUrl(documentUrl) {
             const hostname = adguard.utils.url.getHost(documentUrl);
             // eslint-disable-next-line max-len
-            const cosmeticResult = adguard.engine.getCosmeticResult(hostname, CosmeticOption.CosmeticOptionHtml);
+            const cosmeticResult = adguard.engine.getCosmeticResult(hostname, TSUrlFilter.CosmeticOption.CosmeticOptionHtml);
 
             return cosmeticResult.Html.getRules();
         },

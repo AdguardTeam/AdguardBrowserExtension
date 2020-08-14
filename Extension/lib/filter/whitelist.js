@@ -15,13 +15,15 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global TSUrlFilter */
+
 adguard.whitelist = (function (adguard) {
 
     const WHITE_LIST_DOMAINS_LS_PROP = 'white-list-domains';
     const BLOCK_LIST_DOMAINS_LS_PROP = 'block-list-domains';
 
     // eslint-disable-next-line max-len
-    const allowAllWhiteListRule = new NetworkRule('@@whitelist-all$document', adguard.utils.filters.WHITE_LIST_FILTER_ID);
+    const allowAllWhiteListRule = new TSUrlFilter.NetworkRule('@@whitelist-all$document', adguard.utils.filters.WHITE_LIST_FILTER_ID);
 
     /**
      * Returns whitelist mode
@@ -82,7 +84,7 @@ adguard.whitelist = (function (adguard) {
             return null;
         }
 
-        return new NetworkRule(`@@//${domain}$document`, adguard.utils.filters.WHITE_LIST_FILTER_ID);
+        return new TSUrlFilter.NetworkRule(`@@//${domain}$document`, adguard.utils.filters.WHITE_LIST_FILTER_ID);
     }
 
     /**

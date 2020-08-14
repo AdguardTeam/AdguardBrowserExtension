@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
-/* global QUnit, CosmeticRule */
+/* global QUnit, TSUrlFilter */
 
 QUnit.test('General', (assert) => {
     const elemhideRuleText = 'example.org##body';
     const injectRuleText = 'example.org#$#.textad { visibility: hidden; }';
 
-    const elemhideRule = new CosmeticRule(elemhideRuleText, 1);
-    const injectRule = new CosmeticRule(injectRuleText, 1);
+    const elemhideRule = new TSUrlFilter.CosmeticRule(elemhideRuleText, 1);
+    const injectRule = new TSUrlFilter.CosmeticRule(injectRuleText, 1);
 
     let stylesheet = adguard.cssService.buildStyleSheet([elemhideRule], [injectRule]);
     assert.ok(stylesheet);
@@ -25,8 +25,8 @@ QUnit.test('Css hits', (assert) => {
     const elemhideRuleText = 'example.org##body';
     const injectRuleText = 'example.org#$#.textad { visibility: hidden; }';
 
-    const elemhideRule = new CosmeticRule(elemhideRuleText, 1);
-    const injectRule = new CosmeticRule(injectRuleText, 1);
+    const elemhideRule = new TSUrlFilter.CosmeticRule(elemhideRuleText, 1);
+    const injectRule = new TSUrlFilter.CosmeticRule(injectRuleText, 1);
 
     let stylesheet = adguard.cssService.buildStyleSheetHits([elemhideRule], [injectRule]);
     assert.ok(stylesheet);

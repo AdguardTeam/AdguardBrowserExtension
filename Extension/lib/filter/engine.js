@@ -15,6 +15,11 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global TSUrlFilter */
+
+/**
+ * TSUrlFilter Engine wrapper
+ */
 adguard.engine = (function (adguard) {
     const ASYNC_LOAD_CHUNK_SIZE = 5000;
 
@@ -23,7 +28,7 @@ adguard.engine = (function (adguard) {
     const startEngine = async (lists) => {
         adguard.console.info('Starting url filter engine');
 
-        const ruleStorage = new RuleStorage(lists);
+        const ruleStorage = new TSUrlFilter.RuleStorage(lists);
 
         const config = {
             engine: 'extension',
@@ -31,7 +36,7 @@ adguard.engine = (function (adguard) {
             verbose: true,
         };
 
-        engine = new Engine(ruleStorage, config, true);
+        engine = new TSUrlFilter.Engine(ruleStorage, config, true);
 
         /*
          * UI thread becomes blocked on the options page while request filter is created
@@ -59,7 +64,7 @@ adguard.engine = (function (adguard) {
         // eslint-disable-next-line max-len
         adguard.console.debug('Filtering http request for url: {0}, document: {1}, requestType: {2}', requestUrl, documentUrl, requestType);
 
-        const request = new Request(
+        const request = new TSUrlFilter.Request(
             requestUrl, documentUrl, adguard.RequestTypes.transformRequestType(requestType)
         );
 
@@ -89,7 +94,7 @@ adguard.engine = (function (adguard) {
      */
     const getCosmeticResult = (hostname, option) => {
         if (!engine) {
-            return new CosmeticResult();
+            return new TSUrlFilter.CosmeticResult();
         }
 
         return engine.getCosmeticResult(hostname, option);

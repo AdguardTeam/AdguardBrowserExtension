@@ -15,6 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global TSUrlFilter */
+
 /**
  * Creating service that manages our filter rules.
  */
@@ -390,7 +392,7 @@ adguard.antiBannerService = (function (adguard) {
                 const isTrustedFilter = adguard.subscriptions.isTrustedFilter(filterId);
                 const rulesTexts = rulesFilterMap[filterId].join('\n');
 
-                lists.push(new StringRuleList(filterId, rulesTexts, false, !isTrustedFilter));
+                lists.push(new TSUrlFilter.StringRuleList(filterId, rulesTexts, false, !isTrustedFilter));
             }
 
             await adguard.engine.startEngine(lists);
@@ -616,7 +618,7 @@ adguard.antiBannerService = (function (adguard) {
             }
 
             adguard.console.debug('Converting {0} rules for filter {1}', loadedRulesText.length, filterId);
-            const converted = RuleConverter.convertRules(loadedRulesText.join('\n')).split('\n');
+            const converted = TSUrlFilter.RuleConverter.convertRules(loadedRulesText.join('\n')).split('\n');
 
             adguard.console.debug('Saving {0} rules to filter {1}', converted.length, filterId);
             adguard.rulesStorage.write(filterId, converted, () => {

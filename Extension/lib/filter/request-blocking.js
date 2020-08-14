@@ -15,6 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global TSUrlFilter */
+
 adguard.webRequestService = (function (adguard) {
     'use strict';
 
@@ -184,8 +186,8 @@ adguard.webRequestService = (function (adguard) {
     const isRequestBlockedByRule = (requestRule) => {
         return requestRule
             && !requestRule.isWhitelist()
-            && !requestRule.isOptionEnabled(NetworkRuleOption.Replace)
-            && !requestRule.isOptionEnabled(NetworkRuleOption.Redirect);
+            && !requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Replace)
+            && !requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Redirect);
     };
 
     /**
@@ -243,7 +245,7 @@ adguard.webRequestService = (function (adguard) {
             }
         // check if request rule is blocked by rule and is redirect rule
         } else if (requestRule && !requestRule.isWhitelist()) {
-            if (requestRule.isOptionEnabled(NetworkRuleOption.Redirect)) {
+            if (requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Redirect)) {
                 // eslint-disable-next-line max-len
                 const redirectUrl = adguard.redirectFilterService.buildRedirectUrl(requestRule.getAdvancedModifierValue());
                 if (redirectUrl) {
@@ -306,7 +308,7 @@ adguard.webRequestService = (function (adguard) {
         }
 
         const whitelistRule = adguard.filteringApi.findWhiteListRule(documentUrl, documentUrl, adguard.RequestTypes.DOCUMENT);
-        if (whitelistRule && whitelistRule.isOptionEnabled(NetworkRuleOption.Content)) {
+        if (whitelistRule && whitelistRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Content)) {
             return null;
         }
 
@@ -327,9 +329,11 @@ adguard.webRequestService = (function (adguard) {
             return null;
         }
 
-        // @@||example.org^$document or @@||example.org^$urlblock — disables all the $csp rules on all the pages matching the rule pattern.
+        // @@||example.org^$document or @@||example.org^$urlblock —
+        // disables all the $csp rules on all the pages matching the rule pattern.
+        // eslint-disable-next-line max-len
         const whitelistRule = adguard.filteringApi.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
-        if (whitelistRule && whitelistRule.isOptionEnabled(NetworkRuleOption.Urlblock)) {
+        if (whitelistRule && whitelistRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Urlblock)) {
             return null;
         }
 
@@ -375,7 +379,7 @@ adguard.webRequestService = (function (adguard) {
         }
 
         const whitelistRule = adguard.filteringApi.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
-        if (whitelistRule && whitelistRule.isOptionEnabled(NetworkRuleOption.Content)) {
+        if (whitelistRule && whitelistRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Content)) {
             return null;
         }
 
@@ -417,15 +421,15 @@ adguard.webRequestService = (function (adguard) {
     const postProcessRequest = function (tab, requestUrl, referrerUrl, requestType, requestRule) {
         if (requestRule && !requestRule.whiteListRule) {
             const isRequestBlockingRule = isRequestBlockedByRule(requestRule);
-            const isReplaceRule = requestRule.isOptionEnabled(NetworkRuleOption.Replace);
+            const isReplaceRule = requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Replace);
 
             // Url blocking rules are not applicable to the main_frame
             if (isRequestBlockingRule && requestType === adguard.RequestTypes.DOCUMENT) {
                 // except rules with $document and $popup modifiers
-                const isDocumentRule = requestRule.isOptionEnabled(NetworkRuleOption.Urlblock)
-                    && requestRule.isOptionEnabled(NetworkRuleOption.Elemhide)
-                    && requestRule.isOptionEnabled(NetworkRuleOption.Jsinject)
-                    && requestRule.isOptionEnabled(NetworkRuleOption.Content);
+                const isDocumentRule = requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Urlblock)
+                    && requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Elemhide)
+                    && requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Jsinject)
+                    && requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Content);
                 const isPopupBlockingRule = isPopupBlockedByRule(requestRule);
 
                 if (!isDocumentRule && !isPopupBlockingRule) {

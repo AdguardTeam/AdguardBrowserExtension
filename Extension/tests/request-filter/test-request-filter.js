@@ -1,12 +1,12 @@
 /* eslint-disable no-console,no-undef */
-/* global QUnit, adguard, StringRuleList, CosmeticOption */
+/* global QUnit, adguard, TSUrlFilter */
 
 adguard.webRequestService = adguard.webRequestService || {
     isCollectingCosmeticRulesHits: () => false,
 };
 
 const createRequestFilter = async (rulesText) => {
-    const lists = [new StringRuleList(1, rulesText, false, false)];
+    const lists = [new TSUrlFilter.StringRuleList(1, rulesText, false, false)];
     await adguard.engine.startEngine(lists);
     return new adguard.RequestFilter();
 };
@@ -26,7 +26,7 @@ QUnit.test('General', async (assert) => {
 });
 
 QUnit.test('RequestFilter.findRuleForRequest performance', async (assert) => {
-    setLogger({
+    TSUrlFilter.setLogger({
         error() {},
         warn() {},
         log() {},
@@ -56,7 +56,7 @@ QUnit.test('RequestFilter.findRuleForRequest performance', async (assert) => {
     // Total: 84 ms
     // Average: 0.00168 ms
 
-    setLogger(console);
+    TSUrlFilter.setLogger(console);
 });
 
 QUnit.test('Whitelist rules selecting', async (assert) => {
@@ -518,15 +518,15 @@ QUnit.test('Css Exception Rules', async (assert) => {
     const testUrl = 'http://adguard.com';
 
     let filter = await createRequestFilterWithRules([rule]);
-    let { css } = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll);
+    let { css } = filter.getSelectorsForUrl(testUrl, TSUrlFilter.CosmeticOption.CosmeticOptionAll);
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '.sponsored { display: none!important; }');
 
     filter = await createRequestFilterWithRules([rule, rule1]);
-    css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll).css;
+    css = filter.getSelectorsForUrl(testUrl, TSUrlFilter.CosmeticOption.CosmeticOptionAll).css;
     assert.equal(css.length, 0);
 
-    css = filter.getSelectorsForUrl('http://another.com', CosmeticOption.CosmeticOptionAll).css;
+    css = filter.getSelectorsForUrl('http://another.com', TSUrlFilter.CosmeticOption.CosmeticOptionAll).css;
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '.sponsored { display: none!important; }');
 });
@@ -546,73 +546,73 @@ QUnit.test('Css GenericHide Exception Rules', async (assert) => {
     let css;
 
     filter = await createRequestFilterWithRules([genericOne]);
-    css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll).css;
+    css = filter.getSelectorsForUrl(testUrl, TSUrlFilter.CosmeticOption.CosmeticOptionAll).css;
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '.generic-one { display: none!important; }');
 
     filter = await createRequestFilterWithRules([genericOne, genericTwo]);
-    css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll).css;
+    css = filter.getSelectorsForUrl(testUrl, TSUrlFilter.CosmeticOption.CosmeticOptionAll).css;
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '.generic-one, #generic { display: none!important; }');
 
     filter = await createRequestFilterWithRules([genericOne, genericTwo, nonGeneric]);
-    css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll).css;
+    css = filter.getSelectorsForUrl(testUrl, TSUrlFilter.CosmeticOption.CosmeticOptionAll).css;
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '.generic-one, #generic, .non-generic { display: none!important; }');
 
-    css = filter.getSelectorsForUrl(anOtherUrl, CosmeticOption.CosmeticOptionAll).css;
+    css = filter.getSelectorsForUrl(anOtherUrl, TSUrlFilter.CosmeticOption.CosmeticOptionAll).css;
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '.generic-one, #generic { display: none!important; }');
 
     filter = await createRequestFilterWithRules([genericOne, genericTwo, nonGeneric, exceptionRule]);
-    css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll).css;
+    css = filter.getSelectorsForUrl(testUrl, TSUrlFilter.CosmeticOption.CosmeticOptionAll).css;
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '#generic, .non-generic { display: none!important; }');
 
-    css = filter.getSelectorsForUrl(anOtherUrl, CosmeticOption.CosmeticOptionAll).css;
+    css = filter.getSelectorsForUrl(anOtherUrl, TSUrlFilter.CosmeticOption.CosmeticOptionAll).css;
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '.generic-one, #generic { display: none!important; }');
 
     filter = await createRequestFilterWithRules([genericOne, genericTwo, nonGeneric, exceptionRule, genericHideRule]);
-    css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll).css;
+    css = filter.getSelectorsForUrl(testUrl, TSUrlFilter.CosmeticOption.CosmeticOptionAll).css;
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '#generic, .non-generic { display: none!important; }');
-    css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionCSS).css;
+    css = filter.getSelectorsForUrl(testUrl, TSUrlFilter.CosmeticOption.CosmeticOptionCSS).css;
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '.non-generic { display: none!important; }');
 
-    css = filter.getSelectorsForUrl(anOtherUrl, CosmeticOption.CosmeticOptionAll).css;
+    css = filter.getSelectorsForUrl(anOtherUrl, TSUrlFilter.CosmeticOption.CosmeticOptionAll).css;
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '.generic-one, #generic { display: none!important; }');
-    css = filter.getSelectorsForUrl(anOtherUrl, CosmeticOption.CosmeticOptionCSS).css;
+    css = filter.getSelectorsForUrl(anOtherUrl, TSUrlFilter.CosmeticOption.CosmeticOptionCSS).css;
     assert.equal(css.length, 0);
 
     filter = await createRequestFilterWithRules([genericOne, genericTwo, nonGeneric, genericHideRule]);
-    css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll).css;
+    css = filter.getSelectorsForUrl(testUrl, TSUrlFilter.CosmeticOption.CosmeticOptionAll).css;
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '.generic-one, #generic, .non-generic { display: none!important; }');
-    css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionCSS).css;
+    css = filter.getSelectorsForUrl(testUrl, TSUrlFilter.CosmeticOption.CosmeticOptionCSS).css;
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '.non-generic { display: none!important; }');
 
-    css = filter.getSelectorsForUrl(anOtherUrl, CosmeticOption.CosmeticOptionAll).css;
+    css = filter.getSelectorsForUrl(anOtherUrl, TSUrlFilter.CosmeticOption.CosmeticOptionAll).css;
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '.generic-one, #generic { display: none!important; }');
-    css = filter.getSelectorsForUrl(anOtherUrl, CosmeticOption.CosmeticOptionCSS).css;
+    css = filter.getSelectorsForUrl(anOtherUrl, TSUrlFilter.CosmeticOption.CosmeticOptionCSS).css;
     assert.equal(css.length, 0);
 
     filter = await createRequestFilterWithRules([genericOne, genericTwo, nonGeneric, genericHideRule, elemHideRule]);
-    css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionAll).css;
+    css = filter.getSelectorsForUrl(testUrl, TSUrlFilter.CosmeticOption.CosmeticOptionAll).css;
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '.generic-one, #generic, .non-generic { display: none!important; }');
-    css = filter.getSelectorsForUrl(testUrl, CosmeticOption.CosmeticOptionCSS).css;
+    css = filter.getSelectorsForUrl(testUrl, TSUrlFilter.CosmeticOption.CosmeticOptionCSS).css;
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '.non-generic { display: none!important; }');
 
-    css = filter.getSelectorsForUrl(anOtherUrl, CosmeticOption.CosmeticOptionAll).css;
+    css = filter.getSelectorsForUrl(anOtherUrl, TSUrlFilter.CosmeticOption.CosmeticOptionAll).css;
     assert.equal(css.length, 1);
     assert.equal(css[0].trim(), '.generic-one, #generic { display: none!important; }');
-    css = filter.getSelectorsForUrl(anOtherUrl, CosmeticOption.CosmeticOptionCSS).css;
+    css = filter.getSelectorsForUrl(anOtherUrl, TSUrlFilter.CosmeticOption.CosmeticOptionCSS).css;
     assert.equal(css.length, 0);
 });
 
@@ -655,7 +655,7 @@ QUnit.test('Request filter finds rules for domains with "." in the end', async (
     let requestFilter = await createRequestFilterWithRules([cssRuleText]);
 
     // eslint-disable-next-line max-len
-    const { css: [firstCss] } = requestFilter.getSelectorsForUrl('http://www.benchmark.pl./', CosmeticOption.CosmeticOptionAll);
+    const { css: [firstCss] } = requestFilter.getSelectorsForUrl('http://www.benchmark.pl./', TSUrlFilter.CosmeticOption.CosmeticOptionAll);
     assert.ok(firstCss);
     assert.ok(firstCss.indexOf('body { display: none!important; }') > -1);
 

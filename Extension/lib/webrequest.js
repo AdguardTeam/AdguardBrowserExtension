@@ -15,6 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global TSUrlFilter */
+
 (function (adguard) {
     'use strict';
 
@@ -159,7 +161,7 @@
 
         if (requestRule
             && !requestRule.isWhitelist()
-            && requestRule.isOptionEnabled(NetworkRuleOption.Popup)
+            && requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Popup)
             && requestType === adguard.RequestTypes.DOCUMENT) {
             const isNewTab = adguard.tabs.isNewPopupTab(tabId);
             if (isNewTab) {

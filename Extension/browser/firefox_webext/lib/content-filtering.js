@@ -15,6 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global TSUrlFilter */
+
 /**
  * Listens content filtering callbacks
  */
@@ -64,4 +66,4 @@ const modificationsListener = {
     },
 };
 
-adguard.contentFiltering = new ContentFiltering(modificationsListener);
+adguard.contentFiltering = new TSUrlFilter.ContentFiltering(modificationsListener);

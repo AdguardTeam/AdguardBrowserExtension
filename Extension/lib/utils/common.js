@@ -15,6 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global TSUrlFilter */
+
 /**
  * Request types enumeration
  */
@@ -55,27 +57,27 @@ adguard.RequestTypes = {
 
         switch (requestType) {
             case contentTypes.DOCUMENT:
-                return RequestType.Document;
+                return TSUrlFilter.RequestType.Document;
             case contentTypes.SUBDOCUMENT:
-                return RequestType.Subdocument;
+                return TSUrlFilter.RequestType.Subdocument;
             case contentTypes.STYLESHEET:
-                return RequestType.Stylesheet;
+                return TSUrlFilter.RequestType.Stylesheet;
             case contentTypes.FONT:
-                return RequestType.Font;
+                return TSUrlFilter.RequestType.Font;
             case contentTypes.IMAGE:
-                return RequestType.Image;
+                return TSUrlFilter.RequestType.Image;
             case contentTypes.MEDIA:
-                return RequestType.Media;
+                return TSUrlFilter.RequestType.Media;
             case contentTypes.SCRIPT:
-                return RequestType.Script;
+                return TSUrlFilter.RequestType.Script;
             case contentTypes.XMLHTTPREQUEST:
-                return RequestType.XmlHttpRequest;
+                return TSUrlFilter.RequestType.XmlHttpRequest;
             case contentTypes.WEBSOCKET:
-                return RequestType.Websocket;
+                return TSUrlFilter.RequestType.Websocket;
             case contentTypes.PING:
-                return RequestType.Ping;
+                return TSUrlFilter.RequestType.Ping;
             default:
-                return RequestType.Other;
+                return TSUrlFilter.RequestType.Other;
         }
     },
 };

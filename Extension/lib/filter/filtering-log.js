@@ -15,6 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global TSUrlFilter */
+
 /**
  * Object for log http requests
  */
@@ -113,8 +115,8 @@ adguard.filteringLog = (function (adguard) {
         destinationRuleDTO.filterId = sourceRule.getFilterListId();
         destinationRuleDTO.ruleText = sourceRule.getText();
 
-        if (sourceRule instanceof NetworkRule) {
-            if (sourceRule.isOptionEnabled(NetworkRuleOption.Important)) {
+        if (sourceRule instanceof TSUrlFilter.NetworkRule) {
+            if (sourceRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Important)) {
                 destinationRuleDTO.isImportant = true;
             }
             if (sourceRule.isDocumentWhitelistRule()) {
@@ -122,16 +124,17 @@ adguard.filteringLog = (function (adguard) {
             }
 
             destinationRuleDTO.whiteListRule = sourceRule.isWhitelist();
-            destinationRuleDTO.cspRule = sourceRule.isOptionEnabled(NetworkRuleOption.Csp);
+            destinationRuleDTO.cspRule = sourceRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Csp);
             destinationRuleDTO.cspDirective = sourceRule.getAdvancedModifierValue();
-            destinationRuleDTO.cookieRule = sourceRule.isOptionEnabled(NetworkRuleOption.Cookie);
-        } else if (sourceRule instanceof CosmeticRule) {
+            destinationRuleDTO.cookieRule = sourceRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Cookie);
+        } else if (sourceRule instanceof TSUrlFilter.CosmeticRule) {
             const ruleType = sourceRule.getType();
-            if (ruleType === CosmeticRuleType.Html) {
+            if (ruleType === TSUrlFilter.CosmeticRuleType.Html) {
                 destinationRuleDTO.contentRule = true;
-            } else if (ruleType === CosmeticRuleType.ElementHiding || ruleType === CosmeticRuleType.Css) {
+                // eslint-disable-next-line max-len
+            } else if (ruleType === TSUrlFilter.CosmeticRuleType.ElementHiding || ruleType === TSUrlFilter.CosmeticRuleType.Css) {
                 destinationRuleDTO.cssRule = true;
-            } else if (ruleType === CosmeticRuleType.Js) {
+            } else if (ruleType === TSUrlFilter.CosmeticRuleType.Js) {
                 destinationRuleDTO.scriptRule = true;
             }
         }
@@ -366,7 +369,9 @@ adguard.filteringLog = (function (adguard) {
      * @param {boolean} isModifyingCookieRule
      * @param {boolean} thirdParty
      */
-    const addCookieEvent = function (tab, cookieName, cookieValue, cookieDomain, requestType, cookieRule, isModifyingCookieRule, thirdParty) {
+    const addCookieEvent = function (
+        tab, cookieName, cookieValue, cookieDomain, requestType, cookieRule, isModifyingCookieRule, thirdParty
+    ) {
         if (openedFilteringLogsPage === 0) {
             return;
         }

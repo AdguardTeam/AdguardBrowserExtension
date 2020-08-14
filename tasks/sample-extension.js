@@ -28,7 +28,7 @@ const API_SCRIPTS = [
     'Extension/lib/libs/crypto-js/md5.js',
     'Extension/lib/libs/scriptlets/redirects.js',
     // TS url filter
-    'Extension/lib/libs/tsurlfilter.es5.js',
+    'Extension/lib/libs/tsurlfilter.js',
     // Adguard Global and preferences
     'Extension/lib/adguard.js',
     'Extension/browser/webkit/lib/prefs.js',

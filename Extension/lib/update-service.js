@@ -15,6 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global TSUrlFilter */
+
 /**
  * Service that manages extension version information and handles
  * extension update. For instance we may need to change storage schema on update.
@@ -294,7 +296,7 @@ adguard.applicationUpdateService = (function (adguard) {
 
                 // eslint-disable-next-line max-len
                 adguard.console.info('Reloading and converting {0} rules for filter {1}', loadedRulesText.length, filterId);
-                const converted = RuleConverter.convertRules(loadedRulesText.join('\n')).split('\n');
+                const converted = TSUrlFilter.RuleConverter.convertRules(loadedRulesText.join('\n')).split('\n');
 
                 adguard.console.debug('Saving {0} rules to filter {1}', converted.length, filterId);
                 adguard.rulesStorage.write(filterId, converted, () => {
