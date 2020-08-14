@@ -300,6 +300,37 @@ adguard.filteringLog = (function (adguard) {
     };
 
     /**
+     * Adds remove query parameters event to log with the corresponding rule
+     *
+     * @param {{tabId: Number}} tab - Tab object with one of properties tabId
+     * @param {String} frameUrl - Frame url
+     * @param {String} requestType - Request type
+     * @param {Object} rule - removeparam rule
+     */
+    const addRemoveParamEvent = (tab, frameUrl, requestType, rule) => {
+        if (openedFilteringLogsPage === 0 || !rule) {
+            return;
+        }
+
+        const tabInfo = tabsInfoMap[tab.tabId];
+        if (!tabInfo) {
+            return;
+        }
+
+        const frameDomain = adguard.utils.url.getDomainName(frameUrl);
+        const filteringEvent = {
+            removeParam: true,
+            requestUrl: frameUrl,
+            frameUrl,
+            frameDomain,
+            requestType,
+        };
+
+        addRuleToFilteringEvent(filteringEvent, rule);
+        pushFilteringEvent(tabInfo, filteringEvent);
+    };
+
+    /**
      * Binds rule to HTTP request
      * @param tab Tab
      * @param requestRule Request rule
@@ -533,6 +564,7 @@ adguard.filteringLog = (function (adguard) {
         bindReplaceRulesToHttpRequestEvent,
         addCosmeticEvent,
         addCookieEvent,
+        addRemoveParamEvent,
         addScriptInjectionEvent,
         bindStealthActionsToHttpRequestEvent,
         clearEventsByTabId,

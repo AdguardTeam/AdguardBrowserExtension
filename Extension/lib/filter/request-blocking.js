@@ -387,6 +387,48 @@ adguard.webRequestService = (function (adguard) {
     };
 
     /**
+     * Remove query parameters by rules for request
+     * @param tab
+     * @param requestUrl
+     * @param referrerUrl
+     * @param requestType
+     * @returns {*} Collection of rules or null
+     */
+    const removeParamFromUrl = (tab, requestUrl, referrerUrl, requestType) => {
+        if (adguard.frames.shouldStopRequestProcess(tab)) {
+            // don't process request
+            return null;
+        }
+
+        const whitelistRule = adguard.filteringApi.findWhiteListRule(
+            requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT
+        );
+        if (whitelistRule && whitelistRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.RemoveParam)) {
+            return null;
+        }
+
+        const rules = adguard.filteringApi.getRemoveParamRules(requestUrl, referrerUrl, requestType);
+
+        let result = requestUrl;
+        rules.forEach((r) => {
+            if (!r.isWhitelist()) {
+                const ruleResult = r.getAdvancedModifier().removeParameters(result);
+                if (ruleResult !== result) {
+                    adguard.filteringLog.addRemoveParamEvent(tab, requestUrl, requestType, r);
+                }
+
+                result = ruleResult;
+            }
+        });
+
+        if (result !== requestUrl) {
+            return result;
+        }
+
+        return null;
+    };
+
+    /**
      * Processes HTTP response.
      * It could do the following:
      * 1. Add event to the filtering log (for DOCUMENT requests)
@@ -487,6 +529,7 @@ adguard.webRequestService = (function (adguard) {
         getCookieRules,
         getContentRules,
         getReplaceRules,
+        removeParamFromUrl,
         processRequestResponse,
         postProcessRequest,
         recordRuleHit,

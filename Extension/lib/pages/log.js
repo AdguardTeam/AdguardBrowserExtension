@@ -1216,7 +1216,7 @@ PageController.prototype = {
         if (event.requestRule && !event.replaceRules) {
             if (event.requestRule.whiteListRule) {
                 metadata.class += ' green';
-            } else if (event.requestRule.cssRule || event.requestRule.scriptRule) {
+            } else if (event.requestRule.cssRule || event.requestRule.scriptRule || event.removeParam) {
                 metadata.class += ' yellow';
             } else if (event.requestRule.cookieRule) {
                 if (event.requestRule.isModifyingCookieRule) {
