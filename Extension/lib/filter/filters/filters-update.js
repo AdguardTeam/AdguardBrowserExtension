@@ -250,7 +250,7 @@ adguard.filtersUpdate = (function (adguard) {
         errorCallback = errorCallback || noop;
 
         // Don't update in background if request filter isn't running
-        if (!forceUpdate && !adguard.antibanner.isRunning()) {
+        if (!forceUpdate && !adguard.antiBannerService.isRunning()) {
             return;
         }
 
