@@ -316,7 +316,7 @@
             if (replaceRules.length > 0 || htmlRules.length > 0) {
                 const contentType = adguard.utils.browser.getHeaderValueByName(responseHeaders, 'content-type');
 
-                const request = new Request(
+                const request = new TSUrlFilter.Request(
                     requestUrl, referrerUrl, adguard.RequestTypes.transformRequestType(requestType)
                 );
                 request.requestId = requestId;

@@ -197,7 +197,7 @@ adguard.webRequestService = (function (adguard) {
      */
     const isPopupBlockedByRule = (requestRule) => {
         return requestRule && !requestRule.isWhitelist()
-            && requestRule.isOptionEnabled(NetworkRuleOption.Popup);
+            && requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Popup);
     };
 
     /**
@@ -207,9 +207,9 @@ adguard.webRequestService = (function (adguard) {
      */
     const isDocumentBlockingRule = (requestRule) => {
         return requestRule && !requestRule.isWhitelist()
-            && requestRule.isOptionEnabled(NetworkRuleOption.Elemhide)
-            && requestRule.isOptionEnabled(NetworkRuleOption.Jsinject)
-            && requestRule.isOptionEnabled(NetworkRuleOption.Urlblock);
+            && requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Elemhide)
+            && requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Jsinject)
+            && requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Urlblock);
     };
 
     /**

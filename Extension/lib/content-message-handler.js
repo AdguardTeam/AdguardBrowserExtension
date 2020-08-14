@@ -15,6 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global TSUrlFilter */
+
 /**
  *  Initialize Content => BackgroundPage messaging
  */
@@ -100,7 +102,7 @@
         var frameUrl = adguard.frames.getMainFrameUrl(tab);
         for (let i = 0; i < stats.length; i += 1) {
             const stat = stats[i];
-            const rule = new CosmeticRule(stat.ruleText, stat.filterId);
+            const rule = new TSUrlFilter.CosmeticRule(stat.ruleText, stat.filterId);
             adguard.webRequestService.recordRuleHit(tab, rule, frameUrl);
             adguard.filteringLog.addCosmeticEvent(tab, stat.element, tab.url, adguard.RequestTypes.DOCUMENT, rule);
         }
