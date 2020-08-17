@@ -21,24 +21,10 @@ QUnit.test('Redirect service', (assert) => {
           contentType: ${jsContentType}
           content: ${noopJsContent}`;
 
-    adguard.redirectFilterService.setRedirectSources(rawYaml);
+    adguard.redirectFilterService.init(rawYaml);
 
     assert.ok(adguard.redirectFilterService.hasRedirect(gifRedirectTitle));
     assert.ok(adguard.redirectFilterService.hasRedirect(noopjsTitle));
     assert.ok(adguard.redirectFilterService.hasRedirect(blankJsAlias));
     assert.notOk(adguard.redirectFilterService.hasRedirect('invalid'));
-
-    assert.equal(adguard.redirectFilterService.buildRedirectUrl(gifRedirectTitle),
-        'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==');
-
-    function checkUrl(title, expectedContent, expectedContentType = jsContentType) {
-        const redirectUrl = adguard.redirectFilterService.buildRedirectUrl(title);
-        const [rawContentType, base64str] = redirectUrl.split(',');
-        assert.equal(atob(base64str), expectedContent, 'decoded string should be equal with source');
-        const [contentType] = rawContentType.split(';');
-        assert.equal(contentType, `data:${expectedContentType}`);
-    }
-
-    checkUrl(noopjsTitle, noopJsContent, jsContentType);
-    checkUrl(blankJsAlias, noopJsContent, jsContentType);
 });

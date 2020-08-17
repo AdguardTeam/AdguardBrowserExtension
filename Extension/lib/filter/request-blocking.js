@@ -247,7 +247,7 @@ adguard.webRequestService = (function (adguard) {
         } else if (requestRule && !requestRule.isWhitelist()) {
             if (requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Redirect)) {
                 // eslint-disable-next-line max-len
-                const redirectUrl = adguard.redirectFilterService.buildRedirectUrl(requestRule.getAdvancedModifierValue());
+                const redirectUrl = adguard.redirectFilterService.createRedirectUrl(requestRule.getAdvancedModifierValue());
                 if (redirectUrl) {
                     return { redirectUrl };
                 }

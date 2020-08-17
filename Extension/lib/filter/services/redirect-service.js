@@ -17,15 +17,26 @@
 
 /* global adguard, Redirects */
 
-// TODO: [TSUrlFilter] Use web-accessible-resources
+/**
+ * Redirects service class
+ */
 adguard.redirectFilterService = (function (adguard) {
-    let redirects;
+    let redirects = null;
 
-    function setRedirectSources(rawYaml) {
+    /**
+     * Initialize service
+     */
+    const init = (rawYaml) => {
         redirects = new Redirects(rawYaml);
-    }
+    };
 
-    function buildRedirectUrl(title) {
+    /**
+     * Creates url
+     *
+     * @param title
+     * @return string|null
+     */
+    const createRedirectUrl = (title) => {
         if (!title) {
             return null;
         }
@@ -35,24 +46,17 @@ adguard.redirectFilterService = (function (adguard) {
             adguard.console.debug(`There is no redirect source with title: "${title}"`);
             return null;
         }
-        let { content, contentType } = redirectSource;
-        // if contentType does not include "base64" string we convert it to base64
-        const BASE_64 = 'base64';
-        if (!contentType.includes(BASE_64)) {
-            content = window.btoa(content);
-            contentType = `${contentType};${BASE_64}`;
-        }
 
-        return `data:${contentType},${content}`;
-    }
+        return adguard.utils.resources.createRedirectFileUrl(redirectSource.file);
+    };
 
-    function hasRedirect(title) {
+    const hasRedirect = (title) => {
         return !!redirects.getRedirect(title);
-    }
+    };
 
     return {
-        setRedirectSources,
+        init,
         hasRedirect,
-        buildRedirectUrl,
+        createRedirectUrl,
     };
 })(adguard);

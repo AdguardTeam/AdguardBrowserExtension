@@ -8,6 +8,8 @@ export const BUILD_DIR = 'build';
 
 export const LOCALES_DIR = './Extension/_locales/';
 
+export const WEB_RESOURCES_DIR = './Extension/web-accessible-resources/';
+
 export const FILTERS_DEST = 'Extension/filters/%browser';
 
 export const PRIVATE_FILES = 'private/AdguardBrowserExtension';

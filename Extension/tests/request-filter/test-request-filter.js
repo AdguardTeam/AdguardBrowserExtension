@@ -152,7 +152,7 @@ QUnit.test('Redirect rules', async (assert) => {
           contentType: application/javascript
           content: (function() {})()`;
 
-    adguard.redirectFilterService.setRedirectSources(rawYaml);
+    adguard.redirectFilterService.init(rawYaml);
 
     const redirectRule = 'example.org/ads.js$script,redirect=noopjs';
     const blockRedirectRule = '||example.org/*.png$image,redirect=1x1-transparent.gif';
