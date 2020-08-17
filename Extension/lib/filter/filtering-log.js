@@ -40,23 +40,58 @@ adguard.filteringLog = (function (adguard) {
     }
 
     /**
+     * Checks if filtering log page is open
+     * @return {boolean}
+     */
+    const isOpen = function () {
+        return openedFilteringLogsPage > 0;
+    };
+
+    /**
+     * We collect filtering events if opened at least one page of log
+     */
+    const onOpenFilteringLogPage = function () {
+        openedFilteringLogsPage += 1;
+    };
+
+    /**
+     * Cleanup when last page of log closes
+     */
+    const onCloseFilteringLogPage = function () {
+        openedFilteringLogsPage = Math.max(openedFilteringLogsPage - 1, 0);
+        if (openedFilteringLogsPage === 0) {
+            // Clear events
+            Object.keys(tabsInfoMap).forEach((tabId) => {
+                const tabInfo = tabsInfoMap[tabId];
+                delete tabInfo.filteringEvents;
+            });
+        }
+    };
+
+    /**
+     * Get filtering info for tab
+     * @param tabId
+     */
+    const getFilteringInfoByTabId = tabId => tabsInfoMap[tabId];
+
+    /**
      * Updates tab info (title and url)
      * @param tab
      */
-    function updateTabInfo(tab) {
+    const updateTabInfo = (tab) => {
         const tabInfo = tabsInfoMap[tab.tabId] || Object.create(null);
         tabInfo.tabId = tab.tabId;
         tabInfo.title = tab.title;
         tabInfo.isExtensionTab = tab.url && tab.url.indexOf(adguard.app.getExtensionUrl()) === 0;
         tabsInfoMap[tab.tabId] = tabInfo;
         return tabInfo;
-    }
+    };
 
     /**
      * Adds tab
      * @param tab
      */
-    function addTab(tab) {
+    const addTab = (tab) => {
         // Background tab can't be added
         // Synthetic tabs are used to send initial requests from new tab in chrome
         if (tab.tabId === backgroundTabId || tab.synthetic) {
@@ -67,13 +102,13 @@ adguard.filteringLog = (function (adguard) {
         if (tabInfo) {
             adguard.listeners.notifyListeners(adguard.listeners.TAB_ADDED, tabInfo);
         }
-    }
+    };
 
     /**
      * Removes tab
      * @param tabId
      */
-    function removeTabById(tabId) {
+    const removeTabById = (tabId) => {
         // Background tab can't be removed
         if (tabId === backgroundTabId) {
             return;
@@ -84,13 +119,13 @@ adguard.filteringLog = (function (adguard) {
             adguard.listeners.notifyListeners(adguard.listeners.TAB_CLOSE, tabInfo);
         }
         delete tabsInfoMap[tabId];
-    }
+    };
 
     /**
      * Updates tab
      * @param tab
      */
-    function updateTab(tab) {
+    const updateTab = (tab) => {
         // Background tab can't be updated
         if (tab.tabId === backgroundTabId) {
             return;
@@ -100,14 +135,14 @@ adguard.filteringLog = (function (adguard) {
         if (tabInfo) {
             adguard.listeners.notifyListeners(adguard.listeners.TAB_UPDATE, tabInfo);
         }
-    }
+    };
 
     /**
      * Copy some properties from source rule to destination rule
      * @param destinationRuleDTO
      * @param sourceRule
      */
-    const appendProperties = (destinationRuleDTO, sourceRule) => {
+    const copyRuleProperties = (destinationRuleDTO, sourceRule) => {
         if (!destinationRuleDTO || !sourceRule) {
             return;
         }
@@ -141,38 +176,42 @@ adguard.filteringLog = (function (adguard) {
     };
 
     /**
-     * Writes to filtering event some useful properties from the request rule
-     * @param filteringEvent
-     * @param requestRule
+     * Checks if event can be added
+     * @param tab
      */
-    function addRuleToFilteringEvent(filteringEvent, requestRule) {
-        filteringEvent.requestRule = {};
-        appendProperties(filteringEvent.requestRule, requestRule);
-    }
+    const canAddEvent = (tab) => {
+        if (!isOpen()) {
+            return false;
+        }
+
+        return !!getFilteringInfoByTabId(tab.tabId);
+    };
 
     /**
-     * Writes to filtering event some useful properties from the replace rules
+     * Writes to filtering event some useful properties from the request rule
      * @param filteringEvent
-     * @param replaceRules
+     * @param rule
      */
-    const addReplaceRulesToFilteringEvent = (filteringEvent, replaceRules) => {
-        // only replace rules can be applied together
+    const addRuleToFilteringEvent = (filteringEvent, rule) => {
+        if (!rule) {
+            return;
+        }
+
         filteringEvent.requestRule = {};
-        filteringEvent.requestRule.replaceRule = true;
-        filteringEvent.replaceRules = [];
-        replaceRules.forEach((replaceRule) => {
-            const tempRule = {};
-            appendProperties(tempRule, replaceRule);
-            filteringEvent.replaceRules.push(tempRule);
-        });
+        copyRuleProperties(filteringEvent.requestRule, rule);
     };
 
     /**
      * Adds filtering event to log
-     * @param tabInfo Tab
+     * @param tab Tab
      * @param filteringEvent Event to add
      */
-    function pushFilteringEvent(tabInfo, filteringEvent) {
+    const pushFilteringEvent = (tab, filteringEvent) => {
+        const tabInfo = getFilteringInfoByTabId(tab.tabId);
+        if (!tabInfo) {
+            return;
+        }
+
         if (!tabInfo.filteringEvents) {
             tabInfo.filteringEvents = [];
         }
@@ -185,14 +224,6 @@ adguard.filteringLog = (function (adguard) {
         }
 
         adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_ADDED, tabInfo, filteringEvent);
-    }
-
-    /**
-     * Get filtering info for tab
-     * @param tabId
-     */
-    const getFilteringInfoByTabId = function (tabId) {
-        return tabsInfoMap[tabId];
     };
 
     /**
@@ -205,12 +236,7 @@ adguard.filteringLog = (function (adguard) {
      * @param eventId
      */
     const addHttpRequestEvent = function (tab, requestUrl, frameUrl, requestType, requestRule, eventId) {
-        if (openedFilteringLogsPage === 0) {
-            return;
-        }
-
-        const tabInfo = tabsInfoMap[tab.tabId];
-        if (!tabInfo) {
+        if (!canAddEvent(tab)) {
             return;
         }
 
@@ -227,12 +253,8 @@ adguard.filteringLog = (function (adguard) {
             requestThirdParty: adguard.utils.url.isThirdPartyRequest(requestUrl, frameUrl),
         };
 
-        if (requestRule) {
-            // Copy useful properties
-            addRuleToFilteringEvent(filteringEvent, requestRule);
-        }
-
-        pushFilteringEvent(tabInfo, filteringEvent);
+        addRuleToFilteringEvent(filteringEvent, requestRule);
+        pushFilteringEvent(tab, filteringEvent);
     };
 
     /**
@@ -244,16 +266,7 @@ adguard.filteringLog = (function (adguard) {
      * @param {{ruleText: String, filterId: Number, isInjectRule: Boolean}} requestRule - Request rule
      */
     const addCosmeticEvent = function (tab, element, frameUrl, requestType, requestRule) {
-        if (openedFilteringLogsPage === 0) {
-            return;
-        }
-
-        if (!requestRule) {
-            return;
-        }
-
-        const tabInfo = tabsInfoMap[tab.tabId];
-        if (!tabInfo) {
+        if (!requestRule || !canAddEvent(tab)) {
             return;
         }
 
@@ -264,12 +277,9 @@ adguard.filteringLog = (function (adguard) {
             frameDomain,
             requestType,
         };
-        if (requestRule) {
-            // Copy useful properties
-            addRuleToFilteringEvent(filteringEvent, requestRule);
-        }
 
-        pushFilteringEvent(tabInfo, filteringEvent);
+        addRuleToFilteringEvent(filteringEvent, requestRule);
+        pushFilteringEvent(tab, filteringEvent);
     };
 
     /**
@@ -280,13 +290,10 @@ adguard.filteringLog = (function (adguard) {
      * @param {Object} rule - script rule
      */
     const addScriptInjectionEvent = (tab, frameUrl, requestType, rule) => {
-        if (openedFilteringLogsPage === 0 || !rule) {
+        if (!rule || !canAddEvent(tab)) {
             return;
         }
-        const tabInfo = tabsInfoMap[tab.tabId];
-        if (!tabInfo) {
-            return;
-        }
+
         const frameDomain = adguard.utils.url.getDomainName(frameUrl);
         const filteringEvent = {
             script: true,
@@ -295,8 +302,91 @@ adguard.filteringLog = (function (adguard) {
             frameDomain,
             requestType,
         };
+
         addRuleToFilteringEvent(filteringEvent, rule);
-        pushFilteringEvent(tabInfo, filteringEvent);
+        pushFilteringEvent(tab, filteringEvent);
+    };
+
+    /**
+     * Adds remove query parameters event to log with the corresponding rule
+     *
+     * @param {{tabId: Number}} tab - Tab object with one of properties tabId
+     * @param {String} frameUrl - Frame url
+     * @param {String} requestType - Request type
+     * @param {Object} rule - removeparam rule
+     */
+    const addRemoveParamEvent = (tab, frameUrl, requestType, rule) => {
+        if (!rule || !canAddEvent(tab)) {
+            return;
+        }
+
+        const frameDomain = adguard.utils.url.getDomainName(frameUrl);
+        const filteringEvent = {
+            removeParam: true,
+            requestUrl: frameUrl,
+            frameUrl,
+            frameDomain,
+            requestType,
+        };
+
+        addRuleToFilteringEvent(filteringEvent, rule);
+        pushFilteringEvent(tab, filteringEvent);
+    };
+
+    /**
+     * Writes to filtering event some useful properties from the replace rules
+     * @param filteringEvent
+     * @param replaceRules
+     */
+    const addReplaceRulesToFilteringEvent = (filteringEvent, replaceRules) => {
+        // only replace rules can be applied together
+        filteringEvent.requestRule = {};
+        filteringEvent.requestRule.replaceRule = true;
+        filteringEvent.replaceRules = [];
+        replaceRules.forEach((replaceRule) => {
+            const ruleDTO = {};
+            copyRuleProperties(ruleDTO, replaceRule);
+            filteringEvent.replaceRules.push(ruleDTO);
+        });
+    };
+
+    /**
+     * Adds cookie rule event
+     *
+     * @param {object} tab
+     * @param {string} cookieName
+     * @param {string} cookieValue
+     * @param {string} cookieDomain
+     * @param {string} requestType
+     * @param {object} cookieRule
+     * @param {boolean} isModifyingCookieRule
+     * @param {boolean} thirdParty
+     */
+    const addCookieEvent = function (
+        tab, cookieName, cookieValue, cookieDomain, requestType, cookieRule, isModifyingCookieRule, thirdParty
+    ) {
+        if (!canAddEvent(tab)) {
+            return;
+        }
+
+        const filteringEvent = {
+            frameDomain: cookieDomain,
+            requestType,
+            requestThirdParty: thirdParty,
+            cookieName,
+            cookieValue,
+        };
+
+        if (cookieRule) {
+            // Copy useful properties
+            addRuleToFilteringEvent(filteringEvent, cookieRule);
+            filteringEvent.requestRule.isModifyingCookieRule = isModifyingCookieRule;
+            if (cookieRule.stealthActions) {
+                filteringEvent.stealthActions = cookieRule.stealthActions;
+            }
+        }
+
+        pushFilteringEvent(tab, filteringEvent);
     };
 
     /**
@@ -306,15 +396,11 @@ adguard.filteringLog = (function (adguard) {
      * @param eventId Event identifier
      */
     const bindRuleToHttpRequestEvent = function (tab, requestRule, eventId) {
-        if (openedFilteringLogsPage === 0) {
+        if (!canAddEvent(tab)) {
             return;
         }
 
-        const tabInfo = tabsInfoMap[tab.tabId];
-        if (!tabInfo) {
-            return;
-        }
-
+        const tabInfo = getFilteringInfoByTabId(tab.tabId);
         const events = tabInfo.filteringEvents;
         if (events) {
             for (let i = events.length - 1; i >= 0; i -= 1) {
@@ -336,15 +422,11 @@ adguard.filteringLog = (function (adguard) {
      * @param eventId
      */
     const bindReplaceRulesToHttpRequestEvent = function (tab, replaceRules, eventId) {
-        if (openedFilteringLogsPage === 0) {
+        if (!canAddEvent(tab)) {
             return;
         }
 
-        const tabInfo = tabsInfoMap[tab.tabId];
-        if (!tabInfo) {
-            return;
-        }
-
+        const tabInfo = getFilteringInfoByTabId(tab.tabId);
         const events = tabInfo.filteringEvents;
         if (events) {
             for (let i = events.length - 1; i >= 0; i -= 1) {
@@ -359,49 +441,6 @@ adguard.filteringLog = (function (adguard) {
     };
 
     /**
-     *
-     * @param {object} tab
-     * @param {string} cookieName
-     * @param {string} cookieValue
-     * @param {string} cookieDomain
-     * @param {string} requestType
-     * @param {object} cookieRule
-     * @param {boolean} isModifyingCookieRule
-     * @param {boolean} thirdParty
-     */
-    const addCookieEvent = function (
-        tab, cookieName, cookieValue, cookieDomain, requestType, cookieRule, isModifyingCookieRule, thirdParty
-    ) {
-        if (openedFilteringLogsPage === 0) {
-            return;
-        }
-
-        const tabInfo = tabsInfoMap[tab.tabId];
-        if (!tabInfo) {
-            return;
-        }
-
-        const filteringEvent = {
-            frameDomain: cookieDomain,
-            requestType,
-            requestThirdParty: thirdParty,
-            cookieName,
-            cookieValue,
-        };
-
-        if (cookieRule) {
-            // Copy useful properties
-            addRuleToFilteringEvent(filteringEvent, cookieRule);
-            filteringEvent.requestRule.isModifyingCookieRule = isModifyingCookieRule;
-            if (cookieRule.stealthActions) {
-                filteringEvent.stealthActions = cookieRule.stealthActions;
-            }
-        }
-
-        pushFilteringEvent(tabInfo, filteringEvent);
-    };
-
-    /**
      * Binds applied stealth actions to HTTP request
      *
      * @param {object} tab Request tab
@@ -409,15 +448,11 @@ adguard.filteringLog = (function (adguard) {
      * @param {number} eventId Event identifier
      */
     const bindStealthActionsToHttpRequestEvent = (tab, actions, eventId) => {
-        if (openedFilteringLogsPage === 0) {
+        if (!canAddEvent(tab)) {
             return;
         }
 
-        const tabInfo = tabsInfoMap[tab.tabId];
-        if (!tabInfo) {
-            return;
-        }
-
+        const tabInfo = getFilteringInfoByTabId(tab.tabId);
         const events = tabInfo.filteringEvents;
         if (events) {
             for (let i = events.length - 1; i >= 0; i -= 1) {
@@ -452,7 +487,7 @@ adguard.filteringLog = (function (adguard) {
             // As Object.keys() returns strings we convert them to integers,
             // because tabId is integer in extension API
             const tabIdsToRemove = Object.keys(tabsInfoMap).map(id => parseInt(id, 10));
-            for (let i = 0; i < tabs.length; i++) {
+            for (let i = 0; i < tabs.length; i += 1) {
                 const openTab = tabs[i];
                 const tabInfo = tabsInfoMap[openTab.tabId];
                 if (!tabInfo) {
@@ -467,42 +502,17 @@ adguard.filteringLog = (function (adguard) {
                     tabIdsToRemove.splice(index, 1);
                 }
             }
-            for (let j = 0; j < tabIdsToRemove.length; j++) {
+            for (let j = 0; j < tabIdsToRemove.length; j += 1) {
                 removeTabById(tabIdsToRemove[j]);
             }
             if (typeof callback === 'function') {
                 const syncTabs = [];
-                for (const tabId in tabsInfoMap) { // jshint ignore:line
+                Object.keys(tabsInfoMap).forEach((tabId) => {
                     syncTabs.push(tabsInfoMap[tabId]);
-                }
+                });
                 callback(syncTabs);
             }
         });
-    };
-
-    /**
-     * We collect filtering events if opened at least one page of log
-     */
-    const onOpenFilteringLogPage = function () {
-        openedFilteringLogsPage++;
-    };
-
-    /**
-     * Cleanup when last page of log closes
-     */
-    const onCloseFilteringLogPage = function () {
-        openedFilteringLogsPage = Math.max(openedFilteringLogsPage - 1, 0);
-        if (openedFilteringLogsPage === 0) {
-            // Clear events
-            for (const tabId in tabsInfoMap) { // jshint ignore:line
-                const tabInfo = tabsInfoMap[tabId];
-                delete tabInfo.filteringEvents;
-            }
-        }
-    };
-
-    const isOpen = function () {
-        return openedFilteringLogsPage > 0;
     };
 
     /**
@@ -533,10 +543,10 @@ adguard.filteringLog = (function (adguard) {
         bindReplaceRulesToHttpRequestEvent,
         addCosmeticEvent,
         addCookieEvent,
+        addRemoveParamEvent,
         addScriptInjectionEvent,
         bindStealthActionsToHttpRequestEvent,
         clearEventsByTabId,
-
 
         isOpen,
         onOpenFilteringLogPage,

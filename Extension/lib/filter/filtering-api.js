@@ -77,6 +77,10 @@ adguard.filteringApi = (function (adguard) {
         return getRequestFilter().getMatchingResult(requestUrl, referrer, requestType).getCosmeticOption();
     };
 
+    const getRemoveParamRules = function (requestUrl, referrer, requestType) {
+        return getRequestFilter().getMatchingResult(requestUrl, referrer, requestType).getRemoveParamRules();
+    };
+
     const getRequestFilterInfo = function () {
         return antiBannerService.getRequestFilterInfo();
     };
@@ -96,6 +100,7 @@ adguard.filteringApi = (function (adguard) {
         getCspRules,
         getCookieRules,
         getReplaceRules,
+        getRemoveParamRules,
         findStealthWhiteListRule,
         getCosmeticOption,
 
