@@ -20,7 +20,7 @@
 /**
  * Web accessible resources helper
  */
-(function (adguard) {
+(function (adguard, browser) {
     /**
      * Resources directory
      *
@@ -37,7 +37,7 @@
     const warSecret = (() => {
         const generateSecret = () => Math.floor(Math.random() * 982451653 + 982451653).toString(36);
 
-        const root = chrome.runtime.getURL('/');
+        const root = browser.runtime.getURL('/');
         const secrets = [];
         let lastSecretTime = 0;
 
@@ -51,7 +51,7 @@
             secrets.splice(pos, 1);
         };
 
-        chrome.webRequest.onBeforeRequest.addListener(
+        browser.webRequest.onBeforeRequest.addListener(
             guard,
             {
                 urls: [`${root}${WEB_ACCESSIBLE_RESOURCES}/*`],
@@ -81,7 +81,7 @@
      * @return {Promise<string>}
      */
     const loadResource = async (path) => {
-        const url = chrome.runtime.getURL(`/${WEB_ACCESSIBLE_RESOURCES}/${path}${warSecret()}`);
+        const url = browser.runtime.getURL(`/${WEB_ACCESSIBLE_RESOURCES}/${path}${warSecret()}`);
         const response = await fetch(url);
         return response.text();
     };
@@ -93,7 +93,7 @@
      * @return {*}
      */
     const createRedirectFileUrl = (redirectFile) => {
-        return chrome.runtime.getURL(`${WEB_ACCESSIBLE_RESOURCES}/redirects/${redirectFile}${warSecret()}`);
+        return browser.runtime.getURL(`${WEB_ACCESSIBLE_RESOURCES}/redirects/${redirectFile}${warSecret()}`);
     };
 
     // EXPOSE
@@ -101,4 +101,4 @@
         loadResource,
         createRedirectFileUrl,
     };
-})(adguard);
+})(adguard, window.browser || chrome);
