@@ -3,10 +3,12 @@
   "version": "3.5.12",
   "description": "AdGuard Extension",
   "scripts": {
-    "dev": "NODE_ENV=dev gulp buildDev --require babel-register --gulpfile tasks",
-    "beta": "NODE_ENV=beta gulp buildBeta --require babel-register --gulpfile tasks",
-    "release": "NODE_ENV=release gulp buildRelease --require babel-register --gulpfile tasks",
-    "sample-api": "NODE_ENV=dev gulp buildSampleApi --require babel-register --gulpfile tasks",
+    "dev": "BUILD_ENV=dev run-p build:*",
+    "builds:chrome": "BROWSER=chrome webpack --config tasks/webpack/chrome/webpack.chrome.js",
+    "build:firefox": "BROWSER=chrome webpack --config tasks/webpack/firefox/webpack.firefox.js",
+    "beta": "BUILD_ENV=beta gulp buildBeta --require babel-register --gulpfile tasks",
+    "release": "BUILD_ENV=release gulp buildRelease --require babel-register --gulpfile tasks",
+    "sample-api": "BUILD_ENV=dev gulp buildSampleApi --require babel-register --gulpfile tasks",
     "test": "gulp runTests --require babel-register --gulpfile tasks",
     "locales-download": "gulp updateLocalesStream --require babel-register --gulpfile tasks",
     "locales-upload": "gulp uploadLocalesStream --require babel-register --gulpfile tasks",
@@ -16,16 +18,6 @@
     "lint": "eslint .",
     "increment": "yarn version --patch --no-git-tag-version"
   },
-  "babel": {
-    "presets": [
-      "env"
-    ],
-    "plugins": [
-      "transform-runtime",
-      "transform-object-rest-spread"
-    ],
-    "babelrc": false
-  },
   "repository": {
     "type": "git",
     "url": "ssh://git@github.com:AdguardTeam/AdguardBrowserExtension.git"
@@ -33,15 +25,13 @@
   "author": "adguard@adguard.com",
   "license": "LGPL-3.0",
   "devDependencies": {
+    "@babel/core": "^7.11.4",
+    "@babel/preset-env": "^7.11.0",
     "adguard-assistant": "https://github.com/AdguardTeam/AdguardAssistant.git#4.3.32",
     "axios": "^0.19.0",
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.6.1",
-    "babel-runtime": "^6.26.0",
+    "babel-loader": "^8.1.0",
     "checksum": "^0.1.1",
+    "copy-webpack-plugin": "^6.0.3",
     "crx": "^5.0.1",
     "del": "^4.1.0",
     "eslint": "^5.15.3",
@@ -56,12 +46,17 @@
     "gulp-modify-file": "^1.0.1",
     "gulp-rename": "^2.0.0",
     "gulp-zip": "^4.1.0",
+    "html-webpack-plugin": "^4.3.0",
     "lodash": "^4.17.11",
     "node-qunit-puppeteer": "^1.0.6",
+    "npm-run-all": "^4.1.5",
     "preprocess": "^3.1.0",
     "punycode": "^2.1.0",
     "qunit": "^2.6.0",
     "scriptlets": "https://github.com/AdguardTeam/Scriptlets.git#v1.3.0",
-    "web-ext": "^2.6.0"
+    "web-ext": "^2.6.0",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12",
+    "webpack-merge": "^5.1.2"
   }
 }

@@ -39,7 +39,9 @@
     <!--Local storage and rules storage libraries-->
     <script type="text/javascript" src="lib/utils/local-storage.js"></script>
     <script type="text/javascript" src="lib/utils/rules-storage.js"></script>
+    <% if (browser === 'firefox') { %>
     <script type="text/javascript" src="lib/utils/rules-storage-indexeddb.js"></script>
+    <% } %>
     <script type="text/javascript" src="lib/storage.js"></script>
 
     <!--Chromium api adapter libraries-->
@@ -81,6 +83,11 @@
     <script type="text/javascript" src="lib/filter/filtering-log.js"></script>
     <script type="text/javascript" src="lib/ui-service.js"></script>
 
+    <% if (browser === 'chrome') { %>
+    <!--Request sanitizer-->
+    <script type="text/javascript" src="lib/filter/request-sanitizer.js"></script>
+    <% } %>
+
     <!--Content messaging-->
     <script type="text/javascript" src="lib/content-message-handler.js"></script>
 
@@ -90,8 +97,10 @@
     <!--Sync settings-->
     <script type="text/javascript" src="lib/settings/settings-provider.js"></script>
 
+    <% if (browser === 'firefox') { %>
     <!--Response Content Filtering -->
     <script type="text/javascript" src="lib/content-filtering.js"></script>
+    <% } %>
 
     <script type="text/javascript" src="lib/application.js"></script>
     <script type="text/javascript" src="lib/startup.js"></script>
