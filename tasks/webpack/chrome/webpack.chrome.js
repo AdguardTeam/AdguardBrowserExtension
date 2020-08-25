@@ -15,6 +15,15 @@ const plugins = [
                 // TODO update eslint
                 transform: (content) => updateManifest(process.env.BUILD_ENV, content, chromeManifest),
             },
+            {
+                context: 'Extension',
+                from: 'browser/chrome',
+            },
+            {
+                context: 'Extension',
+                from: 'filters/chromium',
+                to: 'filters',
+            },
         ],
     }),
 ];

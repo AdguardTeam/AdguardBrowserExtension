@@ -896,7 +896,7 @@ const AntiBannerFilters = function (options) {
         return `
             <div class="page-title">
                 <a href="#antibanner">
-                    <img src="images/arrow-left.svg" class="back">
+                    <img src="../assets/images/arrow-left.svg" class="back">
                 </a>
                 ${name}
             </div>`;
@@ -1209,7 +1209,7 @@ const AntiBannerFilters = function (options) {
 
     const searchHtml = `<div class="filters-search">
                             <div class="icon-search">
-                                <img src="images/magnifying-green.svg" alt="">
+                                <img src="../assets/images/magnifying-green.svg" alt="">
                             </div>
                             <input
                                 type="text"
@@ -1228,7 +1228,7 @@ const AntiBannerFilters = function (options) {
                                 </option>
                             </select>
                             <div class="filters-search__cross">
-                                <img src="images/cross.svg" alt="">
+                                <img src="../assets/images/cross.svg" alt="">
                             </div>
                         </div>`;
 

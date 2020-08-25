@@ -15,6 +15,15 @@ const plugins = [
                 // TODO update eslint
                 transform: (content) => updateManifest(process.env.BUILD_ENV, content, firefoxManifest),
             },
+            {
+                context: 'Extension',
+                from: 'browser/firefox',
+            },
+            {
+                context: 'Extension',
+                from: 'filters/firefox',
+                to: 'filters',
+            },
         ],
     }),
 ];

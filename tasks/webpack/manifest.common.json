@@ -3,23 +3,22 @@
     "name": "__MSG_name__",
     "short_name": "__MSG_short_name__",
     "author": "Adguard Software Ltd",
-    "version": "${version}",
     "default_locale": "en",
     "description": "__MSG_description__",
     "icons": {
-        "16": "icons/green-16.png",
-        "128": "icons/green-128.png"
+        "16": "assets/icons/green-16.png",
+        "128": "assets/icons/green-128.png"
     },
     "browser_action": {
         "default_icon": {
-            "19": "icons/green-19.png",
-            "38": "icons/green-38.png"
+            "19": "assets/icons/green-19.png",
+            "38": "assets/icons/green-38.png"
         },
         "default_title": "__MSG_name__",
         "default_popup": "pages/popup.html"
     },
     "background": {
-        "page": "background.html",
+        "page": "pages/background.html",
         "persistent": true
     },
     "content_scripts": [
@@ -68,8 +67,6 @@
         }
     ],
     "minimum_chrome_version": "55.0",
-    "options_page": "pages/options.html",
-    "devtools_page": "devtools.html",
     "web_accessible_resources": [
         "/web-accessible-resources/*"
     ]

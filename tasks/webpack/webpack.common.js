@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const path = require('path');
 const { getConfig } = require('./helpers');
 
@@ -12,12 +13,16 @@ const POPUP_PATH = path.resolve(__dirname, '../../Extension/pages/popup');
 
 const OUTPUT_PATH = config.outputPath;
 
+// TODO clean dev folder before build
+// TODO copy web-accessible-resources from node_modules on every-build
+// TODO build sample extension with api
 const commonConfig = {
     mode: config.mode,
+    devtool: 'cheap-module-source-map',
     entry: {
-        background: path.resolve(__dirname, BACKGROUND_PATH),
-        options: path.resolve(__dirname, OPTIONS_PATH),
-        popup: path.resolve(__dirname, POPUP_PATH),
+        'pages/background': path.resolve(__dirname, BACKGROUND_PATH),
+        'pages/options': path.resolve(__dirname, OPTIONS_PATH),
+        'pages/popup': path.resolve(__dirname, POPUP_PATH),
     },
     output: {
         path: path.resolve(__dirname, BUILD_PATH, OUTPUT_PATH),
@@ -57,18 +62,46 @@ const commonConfig = {
             templateParameters: {
                 browser: process.env.BROWSER,
             },
-            filename: 'background.html',
-            chunks: ['background'],
+            filename: 'pages/background.html',
+            chunks: ['pages/background'],
         }),
         new HtmlWebpackPlugin({
             template: path.join(OPTIONS_PATH, 'index.html'),
-            filename: 'options.html',
-            chunks: ['options'],
+            filename: 'pages/options.html',
+            chunks: ['pages/options'],
         }),
         new HtmlWebpackPlugin({
             template: path.join(POPUP_PATH, 'index.html'),
-            filename: 'popup.html',
-            chunks: ['popup'],
+            filename: 'pages/popup.html',
+            chunks: ['pages/popup'],
+        }),
+        new CopyWebpackPlugin({
+            patterns: [
+                {
+                    context: 'Extension',
+                    from: 'assets',
+                    to: 'assets',
+                },
+                {
+                    context: 'Extension',
+                    from: '_locales',
+                    to: '_locales',
+                },
+                {
+                    context: 'Extension',
+                    from: 'web-accessible-resources',
+                    to: 'web-accessible-resources',
+                },
+                {
+                    context: 'Extension',
+                    from: 'lib',
+                    to: 'lib',
+                },
+                {
+                    context: 'Extension',
+                    from: 'browser/webkit', // TODO figure out purpose of this separation
+                },
+            ],
         }),
     ],
 };
