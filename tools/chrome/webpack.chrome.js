@@ -1,10 +1,10 @@
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const path = require('path');
-const { merge } = require('webpack-merge');
-const { commonConfig } = require('../webpack.common');
-const { chromeManifest } = require('./manifest.chrome');
-const { updateManifest } = require('../helpers');
-const { CHROME_BUILD_DIR } = require('../constants');
+import CopyWebpackPlugin from 'copy-webpack-plugin';
+import path from 'path';
+import { merge } from 'webpack-merge';
+import { commonConfig } from '../webpack.common';
+import { chromeManifest } from './manifest.chrome';
+import { updateManifest } from '../helpers';
+import { BROWSERS } from '../constants';
 
 const plugins = [
     new CopyWebpackPlugin({
@@ -30,9 +30,9 @@ const plugins = [
 
 const chromeConfig = {
     output: {
-        path: path.join(commonConfig.output.path, CHROME_BUILD_DIR),
+        path: path.join(commonConfig.output.path, BROWSERS.CHROME),
     },
     plugins,
 };
 
-module.exports = merge(commonConfig, chromeConfig);
+export default merge(commonConfig, chromeConfig);

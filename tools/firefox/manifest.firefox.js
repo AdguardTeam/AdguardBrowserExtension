@@ -1,4 +1,4 @@
-const { ENVS } = require('../constants');
+import { ENVS } from '../constants';
 
 const APP_ID_MAP = {
     [ENVS.DEV]: 'adguard-vpn-dev@adguard.com',
@@ -8,7 +8,7 @@ const APP_ID_MAP = {
 
 const appId = APP_ID_MAP[process.env.BUILD_ENV];
 
-const firefoxManifest = {
+export const firefoxManifest = {
     'applications': {
         'gecko': {
             'id': appId,
@@ -45,8 +45,4 @@ const firefoxManifest = {
         'cookies',
         'privacy',
     ],
-};
-
-module.exports = {
-    firefoxManifest,
 };

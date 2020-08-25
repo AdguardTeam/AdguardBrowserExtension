@@ -1,10 +1,10 @@
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const path = require('path');
-const { merge } = require('webpack-merge');
-const { commonConfig } = require('../webpack.common');
-const { firefoxManifest } = require('./manifest.firefox');
-const { updateManifest } = require('../helpers');
-const { FIREFOX_BUILD_DIR } = require('../constants');
+import CopyWebpackPlugin from 'copy-webpack-plugin';
+import path from 'path';
+import { merge } from 'webpack-merge';
+import { commonConfig } from '../webpack.common';
+import { firefoxManifest } from './manifest.firefox';
+import { updateManifest } from '../helpers';
+import { FIREFOX_BUILD_DIR } from '../constants';
 
 const plugins = [
     new CopyWebpackPlugin({
@@ -35,4 +35,4 @@ const firefoxConfig = {
     plugins,
 };
 
-module.exports = merge(commonConfig, firefoxConfig);
+export default merge(commonConfig, firefoxConfig);

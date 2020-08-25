@@ -4,8 +4,8 @@
   "description": "AdGuard Extension",
   "scripts": {
     "dev": "BUILD_ENV=dev run-p build:*",
-    "build:chrome": "BROWSER=chrome webpack --config tasks/webpack/chrome/webpack.chrome.js",
-    "builds:firefox": "BROWSER=chrome webpack --config tasks/webpack/firefox/webpack.firefox.js",
+    "build:chrome": "BROWSER=chrome webpack -r @babel/register --config tools/chrome/webpack.chrome.js",
+    "builds:firefox": "BROWSER=firefox webpack -r @babel/register --config tools/firefox/webpack.firefox.js",
     "beta": "BUILD_ENV=beta gulp buildBeta --require babel-register --gulpfile tasks",
     "release": "BUILD_ENV=release gulp buildRelease --require babel-register --gulpfile tasks",
     "sample-api": "BUILD_ENV=dev gulp buildSampleApi --require babel-register --gulpfile tasks",
@@ -27,6 +27,7 @@
   "devDependencies": {
     "@babel/core": "^7.11.4",
     "@babel/preset-env": "^7.11.0",
+    "@babel/register": "^7.10.5",
     "adguard-assistant": "https://github.com/AdguardTeam/AdguardAssistant.git#4.3.32",
     "axios": "^0.19.0",
     "babel-loader": "^8.1.0",

@@ -1,19 +1,19 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const path = require('path');
-const { getConfig } = require('./helpers');
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
+import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import path from 'path';
+import { getConfig, updateLocalesMSGName } from './helpers';
 
-const BUILD_PATH = path.resolve(__dirname, '../../build');
+const BUILD_PATH = path.resolve(__dirname, '../build');
 
 const config = getConfig(process.env.BUILD_ENV);
 
-const BACKGROUND_PATH = path.resolve(__dirname, '../../Extension/pages/background');
-const OPTIONS_PATH = path.resolve(__dirname, '../../Extension/pages/options');
-const POPUP_PATH = path.resolve(__dirname, '../../Extension/pages/popup');
-const FILTERING_LOG_PATH = path.resolve(__dirname, '../../Extension/pages/filtering-log');
-const FILTER_DOWNLOAD_PATH = path.resolve(__dirname, '../../Extension/pages/filter-download');
-const EXPORT_PATH = path.resolve(__dirname, '../../Extension/pages/export');
+const BACKGROUND_PATH = path.resolve(__dirname, '../Extension/pages/background');
+const OPTIONS_PATH = path.resolve(__dirname, '../Extension/pages/options');
+const POPUP_PATH = path.resolve(__dirname, '../Extension/pages/popup');
+const FILTERING_LOG_PATH = path.resolve(__dirname, '../Extension/pages/filtering-log');
+const FILTER_DOWNLOAD_PATH = path.resolve(__dirname, '../Extension/pages/filter-download');
+const EXPORT_PATH = path.resolve(__dirname, '../Extension/pages/export');
 
 const OUTPUT_PATH = config.outputPath;
 
@@ -22,7 +22,10 @@ const OUTPUT_PATH = config.outputPath;
 // TODO in dev build use sourcemaps while in prod no
 // TODO setup chrome devtools to work
 // TODO check work of blocking pages
-const commonConfig = {
+// TODO fix tests
+// TODO remove gulp
+// TODO update all names and short_titles in the locales folder adding suffix
+export const commonConfig = {
     mode: config.mode,
     devtool: false,
     entry: {
@@ -111,6 +114,9 @@ const commonConfig = {
                     context: 'Extension',
                     from: '_locales',
                     to: '_locales',
+                    transform: (content) => {
+                        return updateLocalesMSGName(content, process.env.BUILD_ENV, process.env.BROWSER);
+                    },
                 },
                 {
                     context: 'Extension',
@@ -129,8 +135,4 @@ const commonConfig = {
             ],
         }),
     ],
-};
-
-module.exports = {
-    commonConfig,
 };

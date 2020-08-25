@@ -1,4 +1,4 @@
-const chromeManifest = {
+export const chromeManifest = {
     'content_scripts': [
         {
             'all_frames': false,
@@ -30,8 +30,4 @@ const chromeManifest = {
     'optional_permissions': [
         'privacy',
     ],
-};
-
-module.exports = {
-    chromeManifest,
 };
