@@ -606,6 +606,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         params.push(`_locale=${encodeURIComponent(adguard.app.getLocale())}`);
         const thankyouUrl = `${THANKYOU_PAGE_URL}?${params.join('&')}`;
 
+        // TODO move url in constants
         const filtersDownloadUrl = getPageUrl('filter-download.html');
 
         adguard.tabs.getAll((tabs) => {
@@ -630,6 +631,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     };
 
     const openFiltersDownloadPage = function () {
+        // TODO move url in constants
         openTab(getPageUrl('filter-download.html'), { inBackground: adguard.utils.browser.isYaBrowser() });
     };
 

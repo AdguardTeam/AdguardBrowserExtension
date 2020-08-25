@@ -11,6 +11,7 @@ const BACKGROUND_PATH = path.resolve(__dirname, '../../Extension/pages/backgroun
 const OPTIONS_PATH = path.resolve(__dirname, '../../Extension/pages/options');
 const POPUP_PATH = path.resolve(__dirname, '../../Extension/pages/popup');
 const FILTERING_LOG_PATH = path.resolve(__dirname, '../../Extension/pages/filtering-log');
+const FILTER_DOWNLOAD_PATH = path.resolve(__dirname, '../../Extension/pages/filter-download');
 
 const OUTPUT_PATH = config.outputPath;
 
@@ -26,6 +27,7 @@ const commonConfig = {
         'pages/options': path.resolve(__dirname, OPTIONS_PATH),
         'pages/popup': path.resolve(__dirname, POPUP_PATH),
         'pages/filtering-log': path.resolve(__dirname, FILTERING_LOG_PATH),
+        'pages/filter-download': path.resolve(__dirname, FILTER_DOWNLOAD_PATH),
     },
     output: {
         path: path.resolve(__dirname, BUILD_PATH, OUTPUT_PATH),
@@ -82,6 +84,11 @@ const commonConfig = {
             template: path.join(FILTERING_LOG_PATH, 'index.html'),
             filename: 'pages/filtering-log.html',
             chunks: ['pages/filtering-log'],
+        }),
+        new HtmlWebpackPlugin({
+            template: path.join(FILTER_DOWNLOAD_PATH, 'index.html'),
+            filename: 'pages/filter-download.html',
+            chunks: ['pages/filter-download'],
         }),
         new CopyWebpackPlugin({
             patterns: [
