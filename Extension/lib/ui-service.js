@@ -592,11 +592,13 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         if (!tabId) {
             adguard.tabs.getActive((tab) => {
                 const { tabId } = tab;
-                openTab(getPageUrl('log.html') + (tabId ? `#${tabId}` : ''), options);
+                // TODO extract into constants
+                openTab(getPageUrl('filtering-log.html') + (tabId ? `#${tabId}` : ''), options);
             });
             return;
         }
-        openTab(getPageUrl('log.html') + (tabId ? `#${tabId}` : ''), options);
+        // TODO extract into constants
+        openTab(getPageUrl('filtering-log.html') + (tabId ? `#${tabId}` : ''), options);
     };
 
     const openThankYouPage = function () {

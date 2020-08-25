@@ -1069,7 +1069,7 @@ PageController.prototype = {
 
     _updateLogoIcon() {
         contentPage.sendMessage({ type: 'getTabFrameInfoById', tabId: this.currentTabId }, (response) => {
-            const src = 'images/shield.svg';
+            const src = '../assets/images/shield.svg';
             this.logoIcon.setAttribute('src', src);
         });
     },
@@ -1259,7 +1259,7 @@ PageController.prototype = {
 
         let thirdPartyDetails = '';
         if (event.requestThirdParty) {
-            thirdPartyDetails = '<img src="images/chain-link.svg" class="icon-chain"><small>Third party</small>';
+            thirdPartyDetails = '<img src="../assets/images/chain-link.svg" class="icon-chain"><small>Third party</small>';
         }
 
         const eventTemplate = `
