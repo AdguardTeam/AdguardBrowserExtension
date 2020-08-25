@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const path = require('path');
 const { getConfig } = require('./helpers');
 
@@ -12,22 +13,25 @@ const OPTIONS_PATH = path.resolve(__dirname, '../../Extension/pages/options');
 const POPUP_PATH = path.resolve(__dirname, '../../Extension/pages/popup');
 const FILTERING_LOG_PATH = path.resolve(__dirname, '../../Extension/pages/filtering-log');
 const FILTER_DOWNLOAD_PATH = path.resolve(__dirname, '../../Extension/pages/filter-download');
+const EXPORT_PATH = path.resolve(__dirname, '../../Extension/pages/export');
 
 const OUTPUT_PATH = config.outputPath;
 
-// TODO clean dev folder before build
 // TODO copy web-accessible-resources from node_modules on every-build
 // TODO build sample extension with api
 // TODO in dev build use sourcemaps while in prod no
+// TODO setup chrome devtools to work
+// TODO check work of blocking pages
 const commonConfig = {
     mode: config.mode,
-    devtool: 'cheap-module-source-map',
+    devtool: false,
     entry: {
         'pages/background': path.resolve(__dirname, BACKGROUND_PATH),
         'pages/options': path.resolve(__dirname, OPTIONS_PATH),
         'pages/popup': path.resolve(__dirname, POPUP_PATH),
         'pages/filtering-log': path.resolve(__dirname, FILTERING_LOG_PATH),
         'pages/filter-download': path.resolve(__dirname, FILTER_DOWNLOAD_PATH),
+        'pages/export': path.resolve(__dirname, EXPORT_PATH),
     },
     output: {
         path: path.resolve(__dirname, BUILD_PATH, OUTPUT_PATH),
@@ -62,6 +66,7 @@ const commonConfig = {
     },
 
     plugins: [
+        new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
             template: path.join(BACKGROUND_PATH, 'index.html'),
             templateParameters: {
@@ -89,6 +94,11 @@ const commonConfig = {
             template: path.join(FILTER_DOWNLOAD_PATH, 'index.html'),
             filename: 'pages/filter-download.html',
             chunks: ['pages/filter-download'],
+        }),
+        new HtmlWebpackPlugin({
+            template: path.join(EXPORT_PATH, 'index.html'),
+            filename: 'pages/export.html',
+            chunks: ['pages/export'],
         }),
         new CopyWebpackPlugin({
             patterns: [
