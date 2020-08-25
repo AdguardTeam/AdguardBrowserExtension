@@ -571,43 +571,42 @@ var TSUrlFilter = (function () {
      * Released under the MIT license
      * https://js.foundation/
      *
-     * Date: 2018-03-20
+     * Date: 2020-08-04
      */
     /**
      * Version of Sizzle patched by AdGuard in order to be used in the ExtendedCss module.
      * https://github.com/AdguardTeam/sizzle-extcss
-     * 
+     *
      * Look for [AdGuard Patch] and ADGUARD_EXTCSS markers to find out what exactly was changed by us.
-     * 
+     *
      * Global changes:
      * 1. Added additional parameters to the "Sizzle.tokenize" method so that it can be used for stylesheets parsing and validation.
      * 2. Added tokens re-sorting mechanism forcing slow pseudos to be matched last  (see sortTokenGroups).
      * 3. Fix the nonnativeSelectorCache caching -- there was no value corresponding to a key.
      * 4. Added Sizzle.compile call to the `:has` pseudo definition.
-     * 
+     *
      * Changes that are applied to the ADGUARD_EXTCSS build only:
      * 1. Do not expose Sizzle to the global scope. Initialize it lazily via initializeSizzle().
      * 2. Removed :contains pseudo declaration -- its syntax is changed and declared outside of Sizzle.
-     * 3. Removed declarations for the following non-standard pseudo classes: 
+     * 3. Removed declarations for the following non-standard pseudo classes:
      * :parent, :header, :input, :button, :text, :first, :last, :eq,
      * :even, :odd, :lt, :gt, :nth, :radio, :checkbox, :file,
      * :password, :image, :submit, :reset
+     * 4. Added es6 module export
      */
-
-    let Sizzle;
+    var Sizzle;
 
     /**
      * Initializes Sizzle object.
      * In the case of AdGuard ExtendedCss we want to avoid initializing Sizzle right away
      * and exposing it to the global scope.
      */
-    function initializeSizzle() { // jshint ignore:line
-        if (!Sizzle) {
+    var initializeSizzle = function() { // jshint ignore:line
+    	if (!Sizzle) {
 
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     Sizzle =
-
     (function( window ) {
 
     var support,
@@ -1299,9 +1298,9 @@ var TSUrlFilter = (function () {
     			// setting a boolean content attribute,
     			// since its presence should be enough
     			// https://bugs.jquery.com/ticket/12359
-    			docElem.appendChild( el ).innerHTML = "<a id='" + expando + "'></a>" +
+    			docElem.appendChild( el ).innerHTML = AGPolicy.createHTML("<a id='" + expando + "'></a>" +
     				"<select id='" + expando + "-\r\\' msallowcapture=''>" +
-    				"<option selected=''></option></select>";
+    				"<option selected=''></option></select>");
 
     			// Support: IE8, Opera 11-12.16
     			// Nothing should be selected when empty strings follow ^= or $= or *=
@@ -1338,8 +1337,8 @@ var TSUrlFilter = (function () {
     		});
 
     		assert(function( el ) {
-    			el.innerHTML = "<a href='' disabled='disabled'></a>" +
-    				"<select disabled='disabled'><option/></select>";
+    			el.innerHTML = AGPolicy.createHTML("<a href='' disabled='disabled'></a>" +
+    				"<select disabled='disabled'><option/></select>");
 
     			// Support: Windows 8 Native Apps
     			// The type and name attributes are restricted during .innerHTML assignment
@@ -2005,7 +2004,7 @@ var TSUrlFilter = (function () {
     		"has": markFunction(function( selector ) {
     			if (typeof selector === "string") {
     				Sizzle.compile(selector);
-    			}			
+    			}
     			return function( elem ) {
     				return Sizzle( selector, elem ).length > 0;
     			};
@@ -2110,7 +2109,7 @@ var TSUrlFilter = (function () {
 
     	/**
     	 * Splits compound selector into a list of simple selectors
-    	 * 
+    	 *
     	 * @param {*} tokens Tokens to split into groups
     	 * @returns an array consisting of token groups (arrays) and relation tokens.
     	 */
@@ -2128,7 +2127,7 @@ var TSUrlFilter = (function () {
     				groups.push(token);
     				currentTokensGroup = [];
     			} else {
-    				currentTokensGroup.push(token);				
+    				currentTokensGroup.push(token);
     			}
 
     			if (i === maxIdx) {
@@ -2153,7 +2152,7 @@ var TSUrlFilter = (function () {
     		"nth", "first", "last", "eq", "even", "odd", "lt", "gt", "not"
     	];
 
-    	/** 
+    	/**
     	 * A function that defines the sort order.
     	 * Returns a value lesser than 0 if "left" is less than "right".
     	 */
@@ -2186,7 +2185,7 @@ var TSUrlFilter = (function () {
     	 * Sorts the tokens in order to mitigate the issues caused by the left-to-right matching.
     	 * The idea is change the tokens order so that Sizzle was matching fast selectors first (id, class),
     	 * and slow selectors after that (and here I mean our slow custom pseudo classes).
-    	 * 
+    	 *
     	 * @param {Array} tokens An array of tokens to sort
     	 * @returns {Array} A new re-sorted array
     	 */
@@ -2216,7 +2215,7 @@ var TSUrlFilter = (function () {
     	/**
     	 * Sorts every tokens array inside of the specified "groups" array.
     	 * See "sortTokens" methods for more information on how tokens are sorted.
-    	 * 
+    	 *
     	 * @param {Array} groups An array of tokens arrays.
     	 * @returns {Array} A new array that consists of the same tokens arrays after sorting
     	 */
@@ -2235,9 +2234,33 @@ var TSUrlFilter = (function () {
     })();
 
     /**
+     * Creates custom policy to use TrustedTypes CSP policy
+     * https://w3c.github.io/webappsec-trusted-types/dist/spec/
+     */
+    var AGPolicy = (function createPolicy() {
+    	var defaultPolicy = {
+    		createHTML: function (input) {
+    			return input;
+    		},
+    		createScript: function (input) {
+    			return input;
+    		},
+    		createScriptURL: function (input) {
+    			return input;
+    		}
+    	};
+
+    	if (window.trustedTypes && window.trustedTypes.createPolicy) {
+    		return window.trustedTypes.createPolicy("AGPolicy", defaultPolicy);
+    	}
+
+    	return defaultPolicy;
+    })();
+
+    /**
      * [AdGuard Patch]:
      * Removes trailing spaces from the tokens list
-     * 
+     *
      * @param {*} tokens An array of Sizzle tokens to post-process
      */
     function removeTrailingSpaces(tokens) {
@@ -2264,7 +2287,7 @@ var TSUrlFilter = (function () {
      * [AdGuard Patch]:
      * This method processes parsed token groups, divides them into a number of selectors
      * and makes sure that each selector's tokens are cached properly in Sizzle.
-     * 
+     *
      * @param {*} groups Token groups (see {@link Sizzle.tokenize})
      * @returns {Array.<SelectorData>} An array of selectors data we got from the groups
      */
@@ -2277,12 +2300,12 @@ var TSUrlFilter = (function () {
 
     	// We need sorted tokens to make cache work properly
     	var sortedGroups = sortTokenGroups(groups);
-    	
+
     	var selectors = [];
     	for (var i = 0; i < groups.length; i++) {
     		var tokenGroups = groups[i];
     		var selectorText = toSelector(tokenGroups);
-    		
+
     		selectors.push({
     			// Sizzle expects an array of token groups when compiling a selector
     			groups: [ tokenGroups ],
@@ -2305,13 +2328,13 @@ var TSUrlFilter = (function () {
      * Add an additional argument for Sizzle.tokenize which indicates that it
      * should not throw on invalid tokens, and instead should return tokens
      * that it has produced so far.
-     * 
+     *
      * One more additional argument that allow to choose if you want to receive sorted or unsorted tokens
      * The problem is that the re-sorted selectors are valid for Sizzle, but not for the browser.
      * options.returnUnsorted -- return unsorted tokens if true.
      * options.cacheOnly -- return cached result only. Required for unit-tests.
-     * 
-     * @param {*} options Optional configuration object with two additional flags 
+     *
+     * @param {*} options Optional configuration object with two additional flags
      * (options.tolerant, options.returnUnsorted, options.cacheOnly) -- see patches #5 and #6 notes
      */
     tokenize = Sizzle.tokenize = function( selector, parseOnly, options) {
@@ -2390,14 +2413,14 @@ var TSUrlFilter = (function () {
     		return invalidLen;
     	}
 
-    	if (invalidLen !== 0 && !tolerant) { 
+    	if (invalidLen !== 0 && !tolerant) {
     		Sizzle.error( selector ); // Throws an error.
     	}
 
     	if (tolerant) {
-    		/** 
+    		/**
     		 * [AdGuard Patch]:
-    		 * In tolerant mode we return a special object that constists of 
+    		 * In tolerant mode we return a special object that constists of
     		 * an array of parsed selectors (and their tokens) and a "nextIndex" field
     		 * that points to an index after which we're not able to parse selectors farther.
     		 */
@@ -2933,7 +2956,7 @@ var TSUrlFilter = (function () {
     // Prevent attribute/property "interpolation"
     // https://msdn.microsoft.com/en-us/library/ms536429%28VS.85%29.aspx
     if ( !assert(function( el ) {
-    	el.innerHTML = "<a href='#'></a>";
+    	el.innerHTML = AGPolicy.createHTML("<a href='#'></a>");
     	return el.firstChild.getAttribute("href") === "#" ;
     }) ) {
     	addHandle( "type|href|height|width", function( elem, name, isXML ) {
@@ -2946,7 +2969,7 @@ var TSUrlFilter = (function () {
     // Support: IE<9
     // Use defaultValue in place of getAttribute("value")
     if ( !support.attributes || !assert(function( el ) {
-    	el.innerHTML = "<input/>";
+    	el.innerHTML = AGPolicy.createHTML("<input/>");
     	el.firstChild.setAttribute( "value", "" );
     	return el.firstChild.getAttribute( "value" ) === "";
     }) ) {
@@ -2983,13 +3006,14 @@ var TSUrlFilter = (function () {
 
     })( window );
 
-
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-        }
-
-        return Sizzle;
     }
+
+    return Sizzle;
+    };
+    // jscs:enable
+    /* jshint ignore:end */
 
     /**
      * Copyright 2016 Adguard Software Ltd
@@ -3179,7 +3203,7 @@ var TSUrlFilter = (function () {
         // 'CssFilterRule.SUPPORTED_PSEUDO_CLASSES' and 'CssFilterRule.EXTENDED_CSS_MARKERS'
         // at Extension/lib/filter/rules/css-filter-rule.js
         const PSEUDO_EXTENSIONS_MARKERS = [':has', ':contains', ':has-text', ':matches-css',
-            ':-abp-has', ':-abp-has-text', ':if', ':if-not', ':xpath', ':nth-ancestor', ':upward'];
+            ':-abp-has', ':-abp-has-text', ':if', ':if-not', ':xpath', ':nth-ancestor', ':upward', ':remove'];
         let initialized = false;
 
         let Sizzle;
@@ -3237,14 +3261,21 @@ var TSUrlFilter = (function () {
                 };
             });
 
-            // Define :xpath support in Sizzle, to make tokenize work properly
+            registerParserOnlyTokens();
+        }
+
+        /**
+         * Registrate custom tokens for parser.
+         * Needed for proper work of pseudos:
+         * for checking if the token is last and pseudo-class arguments validation
+         */
+        function registerParserOnlyTokens() {
             Sizzle.selectors.pseudos['xpath'] = Sizzle.selectors.createPseudo((selector) => {
                 try {
                     document.createExpression(selector, null);
                 } catch (e) {
                     throw new Error(`Invalid argument of :xpath pseudo class: ${selector}`);
                 }
-
                 return () => true;
             });
             Sizzle.selectors.pseudos['nth-ancestor'] = Sizzle.selectors.createPseudo((selector) => {
@@ -3252,16 +3283,20 @@ var TSUrlFilter = (function () {
                 if (Number.isNaN(deep) || deep < 1 || deep >= 256) {
                     throw new Error(`Invalid argument of :nth-ancestor pseudo class: ${selector}`);
                 }
-
                 return () => true;
             });
             Sizzle.selectors.pseudos['upward'] = Sizzle.selectors.createPseudo((input) => {
                 if (input === '') {
                     throw new Error(`Invalid argument of :upward pseudo class: ${input}`);
-                } else if (Number.isInteger(input) && (input < 1 || input >= 256)) {
+                } else if (Number.isInteger(+input) && (+input < 1 || +input >= 256)) {
                     throw new Error(`Invalid argument of :upward pseudo class: ${input}`);
                 }
-
+                return () => true;
+            });
+            Sizzle.selectors.pseudos['remove'] = Sizzle.selectors.createPseudo((input) => {
+                if (input !== '') {
+                    throw new Error(`Invalid argument of :remove pseudo class: ${input}`);
+                }
                 return () => true;
             });
         }
@@ -3359,6 +3394,15 @@ var TSUrlFilter = (function () {
                     return output;
                 }
 
+                // argument of pseudo-class remove;
+                // it's defined only if remove is parsed as last token
+                // and it's valid only if remove arg is empty string
+                const removePart = this.getRemovePart();
+                if (typeof removePart !== 'undefined') {
+                    const hasValidRemovePart = removePart === '';
+                    return new RemoveSelector(selectorText, hasValidRemovePart, debug);
+                }
+
                 tokens = tokens[0];
                 const l = tokens.length;
                 const lastRelTokenInd = this.getSplitPoint();
@@ -3430,13 +3474,13 @@ var TSUrlFilter = (function () {
                         const { matches } = token;
                         if (matches && matches.length > 1) {
                             if (matches[0] === 'xpath') {
-                                if (i + 1 !== tokensLength) {
+                                if (this.isLastToken(tokens, i)) {
                                     throw new Error('Invalid pseudo: \':xpath\' should be at the end of the selector');
                                 }
                                 return matches[1];
                             }
                             if (matches[0] === 'nth-ancestor') {
-                                if (i + 1 !== tokensLength) {
+                                if (this.isLastToken(tokens, i)) {
                                     throw new Error('Invalid pseudo: \':nth-ancestor\' should be at the end of the selector');
                                 }
                                 const deep = matches[1];
@@ -3462,6 +3506,25 @@ var TSUrlFilter = (function () {
                 return result;
             },
             /**
+             * Checks if the token is last,
+             * except of remove pseudo-class
+             * @param {Array} tokens
+             * @param {number} i index of token
+             * @returns {boolean}
+             */
+            isLastToken(tokens, i) {
+                // check id the next parsed token is remove pseudo
+                const isNextRemoveToken = tokens[i + 1]
+                    && tokens[i + 1].type === 'PSEUDO'
+                    && tokens[i + 1].matches
+                    && tokens[i + 1].matches[0] === 'remove';
+
+                // check if the token is last
+                // and if it is not check if it is remove one
+                // which should be skipped
+                return i + 1 !== tokens.length && !isNextRemoveToken;
+            },
+            /**
              * @private
              * @return {string|undefined} upward parameter
              * or undefined if the input does not contain upward tokens
@@ -3474,8 +3537,30 @@ var TSUrlFilter = (function () {
                         const { matches } = token;
                         if (matches && matches.length > 1) {
                             if (matches[0] === 'upward') {
-                                if (i + 1 !== tokensLength) {
+                                if (this.isLastToken(tokens, i)) {
                                     throw new Error('Invalid pseudo: \':upward\' should be at the end of the selector');
+                                }
+                                return matches[1];
+                            }
+                        }
+                    }
+                }
+            },
+            /**
+             * @private
+             * @return {string|undefined} remove parameter
+             * or undefined if the input does not contain remove tokens
+             */
+            getRemovePart() {
+                const tokens = this.tokens[0];
+                for (let i = 0, tokensLength = tokens.length; i < tokensLength; i++) {
+                    const token = tokens[i];
+                    if (token.type === 'PSEUDO') {
+                        const { matches } = token;
+                        if (matches && matches.length > 1) {
+                            if (matches[0] === 'remove') {
+                                if (i + 1 !== tokensLength) {
+                                    throw new Error('Invalid pseudo: \':remove\' should be at the end of the selector');
                                 }
                                 return matches[1];
                             }
@@ -3537,23 +3622,22 @@ var TSUrlFilter = (function () {
         };
 
         /**
-         * Xpath selector class
-         * Limited to support xpath to be only the last one token in selector
+         * Parental class for such pseudo-classes as xpath, upward, remove
+         * which are limited to be the last one token in selector
          *
          * @param {string} selectorText
-         * @param {string} xpath value
+         * @param {string} pseudoClassArg pseudo-class arg
          * @param {boolean=} debug
          * @constructor
          */
-        function XpathSelector(selectorText, xpath, debug) {
-            // Xpath is limited to be the last one token
+        function BaseLastArgumentSelector(selectorText, pseudoClassArg, debug) {
             this.selectorText = selectorText;
-            this.xpath = xpath;
+            this.pseudoClassArg = pseudoClassArg;
             this.debug = debug;
             Sizzle.compile(this.selectorText);
         }
 
-        XpathSelector.prototype = {
+        BaseLastArgumentSelector.prototype = {
             querySelectorAll() {
                 const resultNodes = [];
                 let simpleNodes;
@@ -3567,7 +3651,7 @@ var TSUrlFilter = (function () {
                 }
 
                 simpleNodes.forEach((node) => {
-                    this.xpathSearch(node, this.xpath, resultNodes);
+                    this.searchResultNodes(node, this.pseudoClassArg, resultNodes);
                 });
 
                 return Sizzle.uniqueSort(resultNodes);
@@ -3580,87 +3664,107 @@ var TSUrlFilter = (function () {
             /** @final */
             isDebugging,
             /**
-             * Applies xpath to provided context node
-             *
+             * Primitive method that returns all nodes if pseudo-class arg is defined.
+             * That logic works for remove pseudo-class,
+             * but for others it should be overridden.
              * @param {Object} node context element
-             * @param {string} xpath
+             * @param {string} pseudoClassArg pseudo-class argument
              * @param {Array} result
              */
-            xpathSearch(node, xpath, result) {
-                const xpathResult = document.evaluate(xpath, node, null,
-                    XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
-                let iNode;
-                // eslint-disable-next-line no-cond-assign
-                while (iNode = xpathResult.iterateNext()) {
-                    result.push(iNode);
+            searchResultNodes(node, pseudoClassArg, result) {
+                if (pseudoClassArg) {
+                    result.push(node);
                 }
             },
         };
 
         /**
+         * Xpath selector class
+         * Limited to support 'xpath' to be only the last one token in selector
+         * @param {string} selectorText
+         * @param {string} xpath value
+         * @param {boolean=} debug
+         * @constructor
+         * @augments BaseLastArgumentSelector
+         */
+        function XpathSelector(selectorText, xpath, debug) {
+            BaseLastArgumentSelector.call(this, selectorText, xpath, debug);
+        }
+        XpathSelector.prototype = Object.create(BaseLastArgumentSelector.prototype);
+        XpathSelector.prototype.constructor = XpathSelector;
+        /**
+         * Applies xpath pseudo-class to provided context node
+         * @param {Object} node context element
+         * @param {string} pseudoClassArg xpath
+         * @param {Array} result
+         * @override
+         */
+        XpathSelector.prototype.searchResultNodes = function (node, pseudoClassArg, result) {
+            const xpathResult = document.evaluate(pseudoClassArg, node, null,
+                XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
+            let iNode;
+            // eslint-disable-next-line no-cond-assign
+            while (iNode = xpathResult.iterateNext()) {
+                result.push(iNode);
+            }
+        };
+
+        /**
          * Upward selector class
-         * Limited to support upward to be only the last one token in selector
-         *
+         * Limited to support 'upward' to be only the last one token in selector
          * @param {string} selectorText
          * @param {string} upwardSelector value
          * @param {boolean=} debug
          * @constructor
+         * @augments BaseLastArgumentSelector
          */
         function UpwardSelector(selectorText, upwardSelector, debug) {
-            // Xpath is limited to be the last one token
-            this.selectorText = selectorText;
-            this.upwardSelector = upwardSelector;
-            this.debug = debug;
-            Sizzle.compile(this.selectorText);
+            BaseLastArgumentSelector.call(this, selectorText, upwardSelector, debug);
         }
-
-        UpwardSelector.prototype = {
-            querySelectorAll() {
-                const resultNodes = [];
-                let simpleNodes;
-                if (this.selectorText) {
-                    simpleNodes = Sizzle(this.selectorText);
-                    if (!simpleNodes || !simpleNodes.length) {
-                        return resultNodes;
-                    }
-                } else {
-                    simpleNodes = [document];
+        UpwardSelector.prototype = Object.create(BaseLastArgumentSelector.prototype);
+        UpwardSelector.prototype.constructor = UpwardSelector;
+        /**
+         * Applies upward pseudo-class to provided context node
+         * @param {Object} node context element
+         * @param {string} upwardSelector upward selector
+         * @param {Array} result
+         * @override
+         */
+        UpwardSelector.prototype.searchResultNodes = function (node, upwardSelector, result) {
+            if (upwardSelector !== '') {
+                const parent = node.parentElement;
+                if (parent === null) {
+                    return;
                 }
-
-                simpleNodes.forEach((node) => {
-                    this.upwardSearch(node, this.upwardSelector, resultNodes);
-                });
-
-                return Sizzle.uniqueSort(resultNodes);
-            },
-            /** @final */
-            matches(element) {
-                const results = this.querySelectorAll();
-                return results.indexOf(element) > -1;
-            },
-            /** @final */
-            isDebugging,
-            /**
-             * Applies upwardSelector to provided context node
-             *
-             * @param {Object} node context element
-             * @param {string} upwardSelector
-             * @param {Array} result
-             */
-            upwardSearch(node, upwardSelector, result) {
-                if (upwardSelector !== '') {
-                    const parent = node.parentElement;
-                    if (parent === null) {
-                        return;
-                    }
-                    node = parent.closest(upwardSelector);
-                    if (node === null) {
-                        return;
-                    }
+                node = parent.closest(upwardSelector);
+                if (node === null) {
+                    return;
                 }
-                result.push(node);
-            },
+            }
+            result.push(node);
         };
+
+        /**
+         * Remove selector class
+         * Limited to support 'remove' to be only the last one token in selector
+         * @param {string} selectorText
+         * @param {boolean} hasValidRemovePart
+         * @param {boolean=} debug
+         * @constructor
+         * @augments BaseLastArgumentSelector
+         */
+        function RemoveSelector(selectorText, hasValidRemovePart, debug) {
+            const REMOVE_PSEUDO_MARKER = ':remove()';
+            const removeMarkerIndex = selectorText.indexOf(REMOVE_PSEUDO_MARKER);
+            // deleting remove part of rule instead of which
+            // pseudo-property property 'remove' will be added by ExtendedCssParser
+            const modifiedSelectorText = selectorText.slice(0, removeMarkerIndex);
+            BaseLastArgumentSelector.call(this, modifiedSelectorText, hasValidRemovePart, debug);
+            // mark extendedSelector as Remove one for ExtendedCssParser
+            this.isRemoveSelector = true;
+        }
+        RemoveSelector.prototype = Object.create(BaseLastArgumentSelector.prototype);
+        RemoveSelector.prototype.constructor = RemoveSelector;
 
         /**
          * A splitted extended selector class.
@@ -3898,6 +4002,11 @@ var TSUrlFilter = (function () {
                         const data = selectorData[i];
                         try {
                             const extendedSelector = ExtendedSelectorFactory.createSelector(data.selectorText, data.groups, debug);
+                            if (extendedSelector.pseudoClassArg && extendedSelector.isRemoveSelector) {
+                                // if there is remove pseudo-class in rule,
+                                // the element will be removed and no other styles will be applied
+                                styleMap['remove'] = 'true';
+                            }
                             results.push({
                                 selector: extendedSelector,
                                 style: styleMap,
