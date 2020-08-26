@@ -50,7 +50,3 @@ export const BRANCH_DEV = 'dev';
 export const BRANCH_BETA = 'beta';
 
 export const BRANCH_RELEASE = 'release';
-
-// URL for reserved domains
-export const PUBLIC_SUFFIXES_URL = 'https://publicsuffix.org/list/public_suffix_list.dat';
-export const PUBLIC_SUFFIXES_FILE = '../Extension/lib/utils/public-suffixes.js';

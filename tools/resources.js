@@ -1,13 +1,10 @@
 // TODO update filters, update suffixes
 import { downloadFilters } from './resources/download-filters';
+import { updatePublicSuffixes } from './resources/update-public-suffixes';
 
 const resources = async () => {
-    try {
-        await downloadFilters();
-    } catch (e) {
-        // eslint-disable-next-line no-console
-        console.log(e);
-    }
+    await downloadFilters();
+    await updatePublicSuffixes();
 };
 
 resources();
