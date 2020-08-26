@@ -1,7 +1,3 @@
-const LOCALES_BASE_URL = 'https://twosky.adtidy.org/api/v1';
-export const LOCALES_DOWNLOAD_URL = `${LOCALES_BASE_URL}/download`;
-export const LOCALES_UPLOAD_URL = `${LOCALES_BASE_URL}/upload`;
-
 export const LAST_ADGUARD_FILTER_ID = 14;
 
 export const BUILD_DIR = 'build';
@@ -17,8 +13,6 @@ export const PRIVATE_FILES = 'private/AdguardBrowserExtension';
 export const EXTENSION_FILTERS_SERVER_URL_FORMAT = 'https://filters.adtidy.org/extension/%browser';
 
 export const METADATA_DOWNLOAD_URL_FORMAT = `${EXTENSION_FILTERS_SERVER_URL_FORMAT}/filters.json`;
-
-export const METADATA_I18N_DOWNLOAD_URL_FORMAT = `${EXTENSION_FILTERS_SERVER_URL_FORMAT}/filters_i18n.js`;
 
 export const FILTER_DOWNLOAD_URL_FORMAT = `${EXTENSION_FILTERS_SERVER_URL_FORMAT}/filters/%filter.txt`;
 

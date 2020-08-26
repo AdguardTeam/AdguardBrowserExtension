@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "BUILD_ENV=dev run-p build:*",
     "build:chrome": "BROWSER=chrome webpack -r @babel/register --config tools/chrome/webpack.chrome.js",
-    "builds:firefox": "BROWSER=firefox webpack -r @babel/register --config tools/firefox/webpack.firefox.js",
+    "build:firefox": "BROWSER=firefox webpack -r @babel/register --config tools/firefox/webpack.firefox.js",
     "beta": "BUILD_ENV=beta gulp buildBeta --require babel-register --gulpfile tasks",
     "release": "BUILD_ENV=release gulp buildRelease --require babel-register --gulpfile tasks",
     "sample-api": "BUILD_ENV=dev gulp buildSampleApi --require babel-register --gulpfile tasks",
@@ -13,9 +13,7 @@
     "locales:download": "babel-node tools/locales.js download",
     "locales:upload": "babel-node tools/locales.js upload",
     "locales:renew": "babel-node tools/locales.js renew",
-    "build-update": "gulp buildUpdatesFilesStream --require babel-register --gulpfile tasks",
     "resources": "babel-node tools/resources.js",
-    "rebuild-locales": "gulp rebuildLocales --require babel-register --gulpfile tasks",
     "lint": "eslint .",
     "increment": "yarn version --patch --no-git-tag-version"
   },

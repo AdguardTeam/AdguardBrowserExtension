@@ -1,12 +1,6 @@
-import { ENVS } from '../constants';
+import { ENVS, FIREFOX_APP_IDS_MAP } from '../constants';
 
-const APP_ID_MAP = {
-    [ENVS.DEV]: 'adguard-vpn-dev@adguard.com',
-    [ENVS.BETA]: 'adguard-vpn-beta@adguard.com',
-    [ENVS.RELEASE]: 'adguard-vpn@adguard.com',
-};
-
-const appId = APP_ID_MAP[process.env.BUILD_ENV];
+const appId = FIREFOX_APP_IDS_MAP[process.env.BUILD_ENV];
 
 export const firefoxManifest = {
     'applications': {

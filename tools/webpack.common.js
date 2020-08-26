@@ -132,6 +132,10 @@ export const commonConfig = {
                     context: 'Extension',
                     from: 'browser/webkit', // TODO figure out purpose of this separation
                 },
+                {
+                    context: 'Extension',
+                    from: 'browser/chrome',
+                },
             ],
         }),
     ],

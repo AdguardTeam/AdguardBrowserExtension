@@ -22,6 +22,12 @@ export const BROWSERS = {
     FIREFOX: 'firefox',
 };
 
+export const FIREFOX_APP_IDS_MAP = {
+    [ENVS.DEV]: 'adguardadblockerdev@adguard.com',
+    [ENVS.BETA]: 'adguardadblockerbeta@adguard.com',
+    [ENVS.RELEASE]: 'adguardadblocker@adguard.com',
+};
+
 // filters constants
 export const METADATA_DOWNLOAD_URL_FORMAT = `${EXTENSION_FILTERS_SERVER_URL_FORMAT}/filters.json`;
 export const FILTERS_DEST = 'Extension/filters/%browser';

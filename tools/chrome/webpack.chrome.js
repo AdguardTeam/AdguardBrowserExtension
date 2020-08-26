@@ -17,10 +17,6 @@ const plugins = [
             },
             {
                 context: 'Extension',
-                from: 'browser/chrome',
-            },
-            {
-                context: 'Extension',
                 from: 'filters/chromium',
                 to: 'filters',
             },
