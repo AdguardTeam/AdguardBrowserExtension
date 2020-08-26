@@ -34,6 +34,13 @@ So what we do:
     1. We gather all current JS rules in the DEFAULT_SCRIPT_RULES object (see lib/filter/rules/local-script-rules.js)
     2. We disable JS rules got from remote server
     3. We allow only custom rules got from the User filter (which user creates manually) or from this DEFAULT_SCRIPT_RULES object`;
+
 // public suffixes list constants
 export const PUBLIC_SUFFIXES_URL = 'https://publicsuffix.org/list/public_suffix_list.dat';
 export const PUBLIC_SUFFIXES_FILE = '../../Extension/lib/utils/public-suffixes.js';
+
+// locales constants
+const LOCALES_BASE_URL = 'https://twosky.adtidy.org/api/v1';
+export const LOCALES_DOWNLOAD_URL = `${LOCALES_BASE_URL}/download`;
+export const LOCALES_UPLOAD_URL = `${LOCALES_BASE_URL}/upload`;
+export const LOCALES_DIR = './Extension/_locales/';

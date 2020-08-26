@@ -5,36 +5,15 @@ import axios from 'axios';
 import path from 'path';
 import fs from 'fs';
 import querystring from 'querystring';
-import Log from './log';
-import { chunkArray } from './helpers';
-import {
-    LOCALES_DIR,
-    LOCALES_DOWNLOAD_URL,
-} from './consts';
+import { log } from '../log';
+import { chunkArray } from '../helpers';
+import { LOCALES_DIR, LOCALES_DOWNLOAD_URL } from '../constants';
+import { LOCALE_PAIRS } from './locales-constants';
 
-const [twoskyConfig] = require('../.twosky.json');
+const [twoskyConfig] = require('../../.twosky.json');
 
 const { project_id: projectId, languages, base_locale: baseLocale } = twoskyConfig;
 const locales = Object.keys(languages);
-
-const fsPromises = fs.promises;
-const log = new Log();
-
-/**
- * We use this pairs because we have different locale codes in the crowdin and the extension
- */
-const LOCALE_PAIRS = {
-    /**
-     * Norvegian language locale code in Crowdin is 'no'
-     * Chrome recognizes both locale code 'nb' and 'no',
-     * Firefox recognizes only 'nb'
-     */
-    nb: 'no',
-    /**
-     * We duplicate es language for Spanish (Latin America and Caribbean)
-     */
-    es_419: 'es',
-};
 
 const FILE_NAME = 'messages.json';
 
@@ -83,7 +62,7 @@ const promiseBatchMap = async (arr, batchSize, handler) => {
     return result.flat(Infinity);
 };
 
-const downloadLocales = async () => {
+const downloadAllLocales = async () => {
     const localeUrlPairs = locales.map((locale) => {
         const crowdinLocale = LOCALE_PAIRS[locale] || locale;
         const downloadUrl = `${LOCALES_DOWNLOAD_URL}?${getQueryString(crowdinLocale)}`;
@@ -103,7 +82,7 @@ const downloadLocales = async () => {
 
 const saveFile = async (path, data) => {
     try {
-        await fsPromises.writeFile(path, data);
+        await fs.promises.writeFile(path, data);
     } catch (e) {
         log.error(`Was unable do save data in path: ${path}. Error: ${e.message}`);
     }
@@ -145,23 +124,21 @@ const checkRequiredFields = (locale, messages, baseMessages) => {
 
 const validateLocales = async () => {
     const baseLocalePath = path.resolve(LOCALES_DIR, baseLocale, FILE_NAME);
-    const baseMessages = JSON.parse(await fsPromises.readFile(baseLocalePath, 'utf-8'));
+    const baseMessages = JSON.parse(await fs.promises.readFile(baseLocalePath, 'utf-8'));
     const promises = locales.map(async (locale) => {
         const pathToLocale = path.resolve(LOCALES_DIR, locale, FILE_NAME);
-        const messages = JSON.parse(await fsPromises.readFile(pathToLocale, 'utf-8'));
+        const messages = JSON.parse(await fs.promises.readFile(pathToLocale, 'utf-8'));
         const checkedMessages = checkRequiredFields(locale, messages, baseMessages);
         const checkedMessagesString = JSON.stringify(checkedMessages, null, 4).replace(/\//g, '\\/');
-        await fsPromises.writeFile(pathToLocale, checkedMessagesString);
+        await fs.promises.writeFile(pathToLocale, checkedMessagesString);
     });
     await Promise.all(promises).catch((e) => {
         log.error(e);
     });
 };
 
-const updateLocales = async () => {
-    const localeDataPairs = await downloadLocales();
+export const downloadLocales = async () => {
+    const localeDataPairs = await downloadAllLocales();
     await saveLocales(localeDataPairs);
     await validateLocales();
 };
-
-export default updateLocales;

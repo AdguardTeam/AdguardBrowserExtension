@@ -65,3 +65,12 @@ export const updateLocalesMSGName = (content, env, browser, standalone) => {
 
     return JSON.stringify(messages, null, 4);
 };
+
+export const chunkArray = (arr, size) => arr.reduce((chunks, el, idx) => {
+    if (idx % size === 0) {
+        chunks.push([el]);
+    } else {
+        chunks[chunks.length - 1].push(el);
+    }
+    return chunks;
+}, []);

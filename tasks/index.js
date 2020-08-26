@@ -5,19 +5,11 @@ import edge from './browser-edge';
 import firefoxWebext from './browser-firefox-webext';
 import firefoxAmo from './browser-firefox-amo';
 import api from './sample-extension';
-import updateLocales from './update-locales';
-import uploadLocales from './upload-locales';
 import buildUpdatesFiles from './build-updates-files';
 import tests from './tests';
 import clean from './clean-build-dir';
 import renewLocales from './renew-locales';
 import updateBuildInfo from './update-build-info';
-
-// download localizations to repository
-export const updateLocalesStream = gulp.series(updateLocales, done => done());
-
-// upload localizations to oneskyapp
-export const uploadLocalesStream = gulp.series(uploadLocales, done => done());
 
 // tests
 export const runTests = gulp.series(tests, done => done());
