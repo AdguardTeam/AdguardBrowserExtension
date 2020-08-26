@@ -1,16 +1,16 @@
+/* eslint-disable no-await-in-loop,no-restricted-syntax,no-console */
 const fs = require('fs').promises;
 const path = require('path');
 const _ = require('lodash');
-const { LOCALES_DIR } = require('./consts');
-
+const { LOCALES_DIR } = require('../constants');
 
 /**
  * Search configuration
  */
 const configuration = {
-    src: path.join('../', LOCALES_DIR, '/en/messages.json'), // Base language json
-    targets: [ './Extension/' ], // Directory to search occurrences
-    output: LOCALES_DIR + '/en/messages.json', // Place to put result
+    src: path.resolve(LOCALES_DIR, 'en/messages.json'), // Base language json
+    targets: ['./Extension/'], // Directory to search occurrences
+    output: path.resolve(LOCALES_DIR, 'en/messages.json'), // Place to put result
     filesReg: '(.js|.html)$',
     // messages used in extensions localisations e.g. __MSG_short_name__
     persistedMessages: ['name', 'short_name', 'description'],
@@ -40,17 +40,14 @@ const findFilesPaths = async (dir, filesReg) => {
     const walk = async (dir, filePaths = []) => {
         const files = await fs.readdir(dir);
 
-        for (let file of files) {
+        for (const file of files) {
             const filePath = path.join(dir, file);
             const stat = await fs.stat(filePath);
 
             if (stat.isDirectory()) {
                 filePaths = await walk(filePath, filePaths);
-            } else {
-                if (filePath.match(filterRegexp)) {
-                    filePaths.push(filePath);
-                }
-
+            } else if (filePath.match(filterRegexp)) {
+                filePaths.push(filePath);
             }
         }
         return filePaths;
@@ -59,46 +56,46 @@ const findFilesPaths = async (dir, filesReg) => {
 };
 
 const getFilesPathsList = async (targets, filesReg) => {
-    const filesListsPromises = targets.map(async directory => {
-        return await findFilesPaths(directory, filesReg);
+    const filesListsPromises = targets.map(async (directory) => {
+        return findFilesPaths(directory, filesReg);
     });
     return Promise
         .all(filesListsPromises)
-        .then(filesLists => {
+        .then((filesLists) => {
             return filesLists.reduce((uniqueFiles, filesList) => {
                 return [...new Set([...uniqueFiles, ...filesList])];
             }, []);
-        })
+        });
 };
 
 const filterMessages = (messages, content) => {
-    return messages.filter(message => {
+    return messages.filter((message) => {
         return content.indexOf(message) > -1;
     });
 };
 
 const chooseMessagesFromFiles = async (messages, targets, filesReg) => {
     const filesPaths = await getFilesPathsList(targets, filesReg);
-    const filteredMessages = filesPaths.map(async filePath => {
+    const filteredMessages = filesPaths.map(async (filePath) => {
         const fileContent = await fs.readFile(filePath);
         return filterMessages(messages, fileContent);
     });
     return Promise
         .all(filteredMessages)
-        .then(messages => {
+        .then((messages) => {
             return [...messages.reduce((unique, messageArray) => {
                 return new Set([...unique, ...messageArray]);
-            }, new Set())]
+            }, new Set())];
         });
 };
 
 /**
  * Initialization of search process
  */
-const renewLocales = async (done) => {
-    let {
+export const renewLocales = async () => {
+    let { targets } = configuration;
+    const {
         src,
-        targets,
         output = 'result.json',
         filesReg = '.html$',
         persistedMessages = [],
@@ -113,34 +110,31 @@ const renewLocales = async (done) => {
     }
 
     if (typeof targets === 'string') {
-        targets = [target];
+        targets = [targets];
     }
 
+    // eslint-disable-next-line global-require,import/no-dynamic-require
     const source = require(src);
-    const oldKeys = Object.keys({...source});
+    const oldKeys = Object.keys({ ...source });
 
     chooseMessagesFromFiles(oldKeys, targets, filesReg)
-        .then(chosenKeys => {
+        .then((chosenKeys) => {
             const result = {};
             const resultMessages = _.uniq([...chosenKeys, ...persistedMessages]);
-            resultMessages.forEach(key => {
+            resultMessages.forEach((key) => {
                 result[key] = source[key];
             });
-            console.log('existing keys length: ', resultMessages.length);
-            console.log('old keys length: ', oldKeys.length);
+            console.log('existing keys number: ', resultMessages.length);
+            console.log('old keys number: ', oldKeys.length);
             const removedKeys = _.xor(resultMessages, oldKeys);
-            console.log('removed keys length: ', removedKeys.length);
+            console.log('removed keys number: ', removedKeys.length);
             console.log('removed keys: ', removedKeys);
             return writeInFile(output, result);
         })
         .then(() => {
             console.log('Success');
-            done();
         })
-        .catch(err => {
-            console.log(err);
-            done(err);
+        .catch((err) => {
+            console.error(err);
         });
 };
-
-export default renewLocales;
