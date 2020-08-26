@@ -5,19 +5,13 @@ import edge from './browser-edge';
 import firefoxWebext from './browser-firefox-webext';
 import firefoxAmo from './browser-firefox-amo';
 import api from './sample-extension';
-import downloadAllFilters from './download-filters';
-import updateLocalScriptRules from './update-local-script-rules';
 import updateLocales from './update-locales';
 import uploadLocales from './upload-locales';
 import buildUpdatesFiles from './build-updates-files';
 import tests from './tests';
 import clean from './clean-build-dir';
-import updatePublicSuffixList from './update-public-suffix-list';
 import renewLocales from './renew-locales';
 import updateBuildInfo from './update-build-info';
-
-// download filters to repository
-export const downloadFilters = gulp.series(downloadAllFilters, updateLocalScriptRules, done => done());
 
 // download localizations to repository
 export const updateLocalesStream = gulp.series(updateLocales, done => done());
@@ -42,9 +36,6 @@ export const buildRelease = gulp.series(chromium, opera, firefoxAmo, edge, updat
 
 // sample api build
 export const buildSampleApi = gulp.series(api, done => done());
-
-// download resources
-export const downloadResources = gulp.series(downloadFilters, updatePublicSuffixList, done => done());
 
 // renew locales
 export const rebuildLocales = gulp.series(renewLocales);
