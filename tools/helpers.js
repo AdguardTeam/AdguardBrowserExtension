@@ -29,7 +29,7 @@ const capitalize = (str) => {
 };
 
 // TODO add documentation + test work in the firefox builds
-const getNameSuffix = (buildEnv, browser, standalone) => {
+const getNameSuffix = (buildEnv, browser) => {
     switch (browser) {
         case BROWSERS.FIREFOX:
             if (standalone) {

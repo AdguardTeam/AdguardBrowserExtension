@@ -3,7 +3,7 @@
   "version": "3.5.12",
   "description": "AdGuard Extension",
   "scripts": {
-    "dev": "export BUILD_ENV=dev; babel-node tools/copy-external.js && run-p build:*",
+    "dev": "BUILD_ENV=dev babel-node tools/bundle.js",
     "build:chrome": "BROWSER=chrome webpack -r @babel/register --config tools/chrome/webpack.chrome.js",
     "build:firefox": "BROWSER=firefox webpack -r @babel/register --config tools/firefox/webpack.firefox.js",
     "beta": "BUILD_ENV=beta gulp buildBeta --require babel-register --gulpfile tasks",
@@ -56,7 +56,7 @@
     "lodash": "^4.17.11",
     "node-qunit-puppeteer": "^1.0.6",
     "npm-run-all": "^4.1.5",
-    "preprocess": "^3.1.0",
+    "preprocess": "^3.2.0",
     "punycode": "^2.1.0",
     "qunit": "^2.6.0",
     "scriptlets": "https://github.com/AdguardTeam/Scriptlets.git#v1.3.0",

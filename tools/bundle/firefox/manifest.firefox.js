@@ -1,4 +1,4 @@
-import { ENVS, FIREFOX_APP_IDS_MAP } from '../constants';
+import { FIREFOX_APP_IDS_MAP } from '../../constants';
 
 const appId = FIREFOX_APP_IDS_MAP[process.env.BUILD_ENV];
 

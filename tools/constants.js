@@ -8,18 +8,45 @@ export const ENVS = {
 };
 
 export const ENV_CONF = {
-    [ENVS.DEV]: { outputPath: 'dev', suffix: 'Dev', mode: 'development' },
-    [ENVS.BETA]: { outputPath: 'beta', suffix: 'Beta', mode: 'production' },
-    [ENVS.RELEASE]: { outputPath: 'release', suffix: '', mode: 'production' },
+    [ENVS.DEV]: { outputPath: 'dev', mode: 'development' },
+    [ENVS.BETA]: { outputPath: 'beta', mode: 'production' },
+    [ENVS.RELEASE]: { outputPath: 'release', mode: 'production' },
 };
 
-export const CHROME_BUILD_DIR = 'chrome';
-export const FIREFOX_BUILD_DIR = 'firefox';
-
-// TODO add opera and edge
 export const BROWSERS = {
     CHROME: 'chrome',
-    FIREFOX: 'firefox',
+    FIREFOX_AMO: 'firefox-amo',
+    FIREFOX_STANDALONE: 'firefox-standalone',
+    OPERA: 'opera',
+    EDGE: 'edge',
+};
+
+export const BROWSERS_CONF = {
+    [BROWSERS.CHROME]: {
+        browser: BROWSERS.CHROME,
+        remoteScripts: true,
+        buildDir: BROWSERS.CHROME,
+    },
+    [BROWSERS.FIREFOX_STANDALONE]: {
+        browser: BROWSERS.FIREFOX_STANDALONE,
+        remoteScripts: true,
+        buildDir: BROWSERS.FIREFOX_STANDALONE,
+    },
+    [BROWSERS.FIREFOX_AMO]: {
+        browser: BROWSERS.FIREFOX_AMO,
+        remoteScripts: false,
+        buildDir: BROWSERS.FIREFOX_AMO,
+    },
+    [BROWSERS.OPERA]: {
+        browser: BROWSERS.OPERA,
+        remoteScripts: false,
+        buildDir: BROWSERS.OPERA,
+    },
+    [BROWSERS.EDGE]: {
+        browser: BROWSERS.EDGE,
+        remoteScripts: true,
+        buildDir: BROWSERS.EDGE,
+    },
 };
 
 export const FIREFOX_APP_IDS_MAP = {

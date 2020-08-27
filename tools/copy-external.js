@@ -1,7 +1,7 @@
 import cpy from 'cpy';
 
 // TODO move to modules, import assistant into content script, and scriptlets into background page
-const copyExternals = async () => {
+export const copyExternals = async () => {
     const paths = [
         // TODO check is scriptlets should be copied as well
         // redirects
@@ -30,7 +30,3 @@ const copyExternals = async () => {
         await cpy(path.from, path.to, path.options);
     }
 };
-
-(async () => {
-    await copyExternals();
-})();
