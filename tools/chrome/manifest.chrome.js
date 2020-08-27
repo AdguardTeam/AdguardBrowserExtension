@@ -5,7 +5,7 @@ export const chromeManifest = {
             'js': [
                 'lib/content-script/i18n-helper.js',
                 'lib/content-script/devtools/devtools-rules-constructor.js',
-                'lib/content-script/assistant/js/start-assistant.js',
+                'lib/content-script/assistant/start-assistant.js',
                 'lib/content-script/devtools-helper.js',
             ],
             'matches': [
