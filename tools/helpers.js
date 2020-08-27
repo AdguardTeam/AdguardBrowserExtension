@@ -28,7 +28,6 @@ const capitalize = (str) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
-// TODO add documentation + test work in the firefox builds
 const getNameSuffix = (buildEnv, browser) => {
     switch (browser) {
         case BROWSERS.FIREFOX_STANDALONE: {
@@ -57,9 +56,8 @@ const getNameSuffix = (buildEnv, browser) => {
     return '';
 };
 
-// TODO build firefox with allowRemoteScript parameter for standalone builds
-export const updateLocalesMSGName = (content, env, browser, standalone) => {
-    const suffix = getNameSuffix(env, browser, standalone);
+export const updateLocalesMSGName = (content, env, browser) => {
+    const suffix = getNameSuffix(env, browser);
 
     const messages = JSON.parse(content.toString());
     messages.name.message += suffix;

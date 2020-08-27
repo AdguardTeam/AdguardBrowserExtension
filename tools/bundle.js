@@ -19,12 +19,17 @@ const bundleFirefoxStandalone = () => {
     return bundleRunner(config);
 };
 
+const bundleEdge = () => {
+    const config = webpackConfig(BROWSERS.EDGE);
+    return bundleRunner(config);
+};
+
 const devPlan = [
     copyExternals,
     bundleChrome,
     bundleFirefoxAmo,
     bundleFirefoxStandalone,
-    // bundleEdge,
+    bundleEdge,
     // bundleOpera
 ];
 
@@ -32,7 +37,7 @@ const betaPlan = [
     copyExternals,
     bundleChrome,
     bundleFirefoxStandalone,
-    // bundleEdge,
+    bundleEdge,
     // bundleOpera,
 ];
 
@@ -40,7 +45,7 @@ const releasePlan = [
     copyExternals,
     bundleChrome,
     bundleFirefoxAmo,
-    // bundleEdge,
+    bundleEdge,
     // bundleOpera,
 ];
 

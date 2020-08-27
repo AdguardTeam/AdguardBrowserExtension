@@ -1,6 +1,7 @@
 import { BROWSERS, BROWSERS_CONF } from '../constants';
 import { genChromeConfig } from './chrome/webpack.chrome';
 import { genFirefoxConfig } from './firefox/webpack.firefox';
+import { genEdgeConfig } from './edge/webpack.edge';
 
 export const webpackConfig = (browser) => {
     const browserConf = BROWSERS_CONF[browser];
@@ -18,9 +19,9 @@ export const webpackConfig = (browser) => {
         // case BROWSERS.OPERA: {
         //     return genOperaConfig(browserConf);
         // }
-        // case BROWSERS.EDGE: {
-        //     return genEdgeConfig(browserConf);
-        // }
+        case BROWSERS.EDGE: {
+            return genEdgeConfig(browserConf);
+        }
         default: {
             throw new Error(`Unknown browser: "${browser}"`);
         }

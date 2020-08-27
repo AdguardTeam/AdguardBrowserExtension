@@ -134,7 +134,7 @@ const startDownload = async (browser) => {
 
 export const downloadFilters = async () => {
     await startDownload('chromium');
-    await startDownload('edge'); // TODO consider removing edge filters
+    await startDownload('edge');
     await startDownload('firefox');
     await startDownload('opera');
 };
