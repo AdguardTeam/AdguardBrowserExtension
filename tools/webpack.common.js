@@ -135,6 +135,11 @@ export const commonConfig = {
                     context: 'Extension',
                     from: 'browser/chrome',
                 },
+                {
+                    context: 'Extension',
+                    from: 'pages/blocking-pages',
+                    to: 'pages/blocking-pages',
+                },
             ],
         }),
     ],
