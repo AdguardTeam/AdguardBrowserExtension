@@ -15,7 +15,7 @@ export const firefoxManifest = {
             'js': [
                 'lib/content-script/content-script.js',
                 'lib/content-script/i18n-helper.js',
-                'lib/content-script/assistant/js/start-assistant.js',
+                'lib/content-script/assistant/start-assistant.js',
             ],
             'matches': [
                 'http://*/*',

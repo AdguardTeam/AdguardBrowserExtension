@@ -26,9 +26,7 @@ import {
     CHROME_CODEBASE_URL,
 } from './consts';
 import { version } from './parse-package';
-import { updateLocalesMSGName, preprocessAll } from './helpers';
-import copyCommonFiles from './copy-common';
-import copyExternal from './copy-external';
+import { preprocessAll } from './helpers';
 
 // set current type of build
 const BRANCH = process.env.NODE_ENV || '';
@@ -48,9 +46,6 @@ const dest = {
     manifest: path.join(paths.dest, 'manifest.json'),
 };
 
-// copy common files
-const copyCommon = () => copyCommonFiles(paths.dest);
-
 // copy chromium filters
 const copyFilters = () => gulp.src(paths.filters)
     .pipe(gulp.dest(dest.filters));
@@ -64,9 +59,6 @@ const preprocess = done => preprocessAll(paths.dest, {
     browser: 'CHROMIUM',
     remoteScripts: true,
 }, done);
-
-// change the extension name based on a type of a build (dev, beta or release)
-const localesProcess = done => updateLocalesMSGName(BRANCH, paths.dest, done);
 
 // update current version of extension
 const updateManifest = (done) => {
@@ -125,12 +117,9 @@ const crxPack = async (done) => {
 };
 
 export default gulp.series(
-    copyExternal,
-    copyCommon,
     copyFilters,
     chromiumMainFiles,
     updateManifest,
-    localesProcess,
     preprocess,
     createArchive,
     crxPack

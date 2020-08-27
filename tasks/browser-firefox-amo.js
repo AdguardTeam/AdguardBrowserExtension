@@ -26,9 +26,7 @@ import {
     FIREFOX_EXTENSION_ID_DEV,
 } from './consts';
 import { version } from './parse-package';
-import { updateLocalesMSGName, preprocessAll } from './helpers';
-import copyCommonFiles from './copy-common';
-import copyExternal from './copy-external';
+import { preprocessAll } from './helpers';
 
 // set current type of build
 const BRANCH = process.env.NODE_ENV || '';
@@ -51,9 +49,6 @@ const dest = {
     webext: path.join(BUILD_DIR, BRANCH, `firefox-amo-${BRANCH}-unsigned.zip`),
 };
 
-// copy common files
-const copyCommon = () => copyCommonFiles(paths.dest);
-
 // copy firefox filters
 const copyFilters = () => gulp.src(paths.filters)
     .pipe(gulp.dest(dest.filters));
@@ -67,9 +62,6 @@ const preprocess = done => preprocessAll(paths.dest, {
     browser: FIREFOX_WEBEXT,
     remoteScripts: false,
 }, done);
-
-// change the extension name based on a type of a build (dev, beta or release)
-const localesProcess = done => updateLocalesMSGName(BRANCH, paths.dest, done, FIREFOX_WEBEXT);
 
 const updateManifest = (done) => {
     const manifest = JSON.parse(fs.readFileSync(dest.manifest));
@@ -121,12 +113,9 @@ const createWebExt = (done) => {
 };
 
 export default gulp.series(
-    copyExternal,
-    copyCommon,
     copyFilters,
     firefoxWebext,
     updateManifest,
-    localesProcess,
     preprocess,
     createArtifactBuild,
     createWebExt

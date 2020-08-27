@@ -85,7 +85,7 @@ const BRANCH = process.env.NODE_ENV || '';
 
 const paths = {
     sample: path.join('Extension/api/sample-extension/**/*'),
-    assistant: path.join('Extension/lib/content-script/assistant/js/assistant.js'),
+    assistant: path.join('Extension/lib/content-script/assistant/assistant.js'),
     locales: path.join(`${LOCALES_DIR}**/*`),
     sourceManifest: path.join('Extension/api/chrome/manifest.json'),
     contentScriptsStartFile: path.join('adguard/adguard-content.js'),

@@ -721,7 +721,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     const openAssistant = (selectElement) => {
         if (adguard.tabs.executeScriptFile) {
             // Load Assistant code to the activate tab immediately
-            adguard.tabs.executeScriptFile(null, { file: '/lib/content-script/assistant/js/assistant.js' }, () => {
+            adguard.tabs.executeScriptFile(null, { file: '/lib/content-script/assistant/assistant.js' }, () => {
                 initAssistant(selectElement);
             });
         } else {

@@ -15,9 +15,7 @@ import gulp from 'gulp';
 import zip from 'gulp-zip';
 import { BUILD_DIR, BRANCH_BETA, BRANCH_RELEASE } from './consts';
 import { version } from './parse-package';
-import { updateLocalesMSGName, preprocessAll } from './helpers';
-import copyCommonFiles from './copy-common';
-import copyExternal from './copy-external';
+import { preprocessAll } from './helpers';
 
 // set current type of build
 const BRANCH = process.env.NODE_ENV || '';
@@ -37,9 +35,6 @@ const dest = {
     manifest: path.join(paths.dest, 'manifest.json'),
 };
 
-// copy common filters
-const copyCommon = () => copyCommonFiles(paths.dest);
-
 // copy edge filters
 const copyFilters = () => gulp.src(paths.filters).pipe(gulp.dest(dest.filters));
 
@@ -48,9 +43,6 @@ const edge = () => gulp.src([paths.webkitFiles, paths.chromeFiles, paths.edge]).
 
 // preprocess with params
 const preprocess = done => preprocessAll(paths.dest, { browser: 'EDGE', remoteScripts: true }, done);
-
-// change the extension name based on a type of a build (dev, beta or release)
-const localesProcess = done => updateLocalesMSGName(BRANCH, paths.dest, done);
 
 // update current version of extension
 const updateManifest = (done) => {
@@ -71,12 +63,9 @@ const createArchive = (done) => {
 };
 
 export default gulp.series(
-    copyExternal,
-    copyCommon,
     copyFilters,
     edge,
     updateManifest,
-    localesProcess,
     preprocess,
     createArchive
 );

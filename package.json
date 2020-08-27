@@ -3,7 +3,7 @@
   "version": "3.5.12",
   "description": "AdGuard Extension",
   "scripts": {
-    "dev": "BUILD_ENV=dev run-p build:*",
+    "dev": "export BUILD_ENV=dev; babel-node tools/copy-external.js && run-p build:*",
     "build:chrome": "BROWSER=chrome webpack -r @babel/register --config tools/chrome/webpack.chrome.js",
     "build:firefox": "BROWSER=firefox webpack -r @babel/register --config tools/firefox/webpack.firefox.js",
     "beta": "BUILD_ENV=beta gulp buildBeta --require babel-register --gulpfile tasks",
@@ -35,6 +35,7 @@
     "clean-webpack-plugin": "^3.0.0",
     "commander": "^6.0.0",
     "copy-webpack-plugin": "^6.0.3",
+    "cpy": "^8.1.0",
     "crx": "^5.0.1",
     "del": "^4.1.0",
     "eslint": "^5.15.3",

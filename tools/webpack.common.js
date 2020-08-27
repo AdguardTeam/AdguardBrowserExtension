@@ -17,11 +17,9 @@ const EXPORT_PATH = path.resolve(__dirname, '../Extension/pages/export');
 
 const OUTPUT_PATH = config.outputPath;
 
-// TODO copy web-accessible-resources from node_modules on every-build
-// TODO copy scriptlets from node_modules on every-build
+// TODO copy scriptlets and web-accessible-resources from node_modules on every-build
 // TODO build sample extension with api
 // TODO in dev build use sourcemaps while in prod no
-// TODO check work of blocking pages
 // TODO fix tests
 // TODO remove gulp
 export const commonConfig = {
@@ -129,7 +127,7 @@ export const commonConfig = {
                 },
                 {
                     context: 'Extension',
-                    from: 'browser/webkit', // TODO figure out purpose of this separation
+                    from: 'browser/webkit',
                 },
                 {
                     context: 'Extension',
@@ -139,7 +137,7 @@ export const commonConfig = {
                     context: 'Extension',
                     from: 'pages/blocking-pages',
                     to: 'pages/blocking-pages',
-                },
+                }
             ],
         }),
     ],

@@ -40,7 +40,7 @@ const copyFiltersOpera = () => gulp.src(paths.filtersOpera).pipe(gulp.dest(dest.
 // copy chromium manifest, and update it
 const modifyManifest = () => gulp
     .src(paths.chromiumManifest)
-    .pipe(modifyFile((content, path, file) => {
+    .pipe(modifyFile((content) => {
         const manifest = JSON.parse(content);
         const updatedManifest = {
             ...manifest,

@@ -25,12 +25,3 @@ export function preprocessAll(dest, data, done) {
 
     return done();
 }
-
-export const chunkArray = (arr, size) => arr.reduce((chunks, el, idx) => {
-    if (idx % size === 0) {
-        chunks.push([el]);
-    } else {
-        chunks[chunks.length - 1].push(el);
-    }
-    return chunks;
-}, []);

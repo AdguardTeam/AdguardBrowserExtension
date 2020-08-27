@@ -26,9 +26,7 @@ import {
     FIREFOX_EXTENSION_ID_BETA,
 } from './consts';
 import { version } from './parse-package';
-import { updateLocalesMSGName, preprocessAll } from './helpers';
-import copyCommonFiles from './copy-common';
-import copyExternal from './copy-external';
+import { preprocessAll } from './helpers';
 
 // set current type of build
 const BRANCH = process.env.NODE_ENV || '';
@@ -50,9 +48,6 @@ const dest = {
     manifest: path.join(paths.dest, 'manifest.json'),
 };
 
-// copy common files
-const copyCommon = () => copyCommonFiles(paths.dest);
-
 // copy firefox filters
 const copyFilters = () => gulp.src(paths.filters).pipe(gulp.dest(dest.filters));
 
@@ -62,9 +57,6 @@ const firefoxWebext = () => gulp.src([paths.webkitFiles, paths.chromeFiles, path
 
 // preprocess with params
 const preprocess = done => preprocessAll(paths.dest, { browser: FIREFOX_WEBEXT, remoteScripts: true }, done);
-
-// change the extension name based on a type of a build (dev, beta or release)
-const localesProcess = done => updateLocalesMSGName(BRANCH, paths.dest, done, FIREFOX_WEBEXT, true);
 
 const updateManifest = (done) => {
     const manifest = JSON.parse(fs.readFileSync(dest.manifest));
@@ -152,12 +144,9 @@ const createArchive = (done) => {
 };
 
 export default gulp.series(
-    copyExternal,
-    copyCommon,
     copyFilters,
     firefoxWebext,
     updateManifest,
-    localesProcess,
     preprocess,
     createArtifact,
     createArchive,

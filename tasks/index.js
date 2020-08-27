@@ -6,7 +6,6 @@ import firefoxWebext from './browser-firefox-webext';
 import firefoxAmo from './browser-firefox-amo';
 import api from './sample-extension';
 import tests from './tests';
-import clean from './clean-build-dir';
 import updateBuildInfo from './update-build-info';
 
 // tests
@@ -16,10 +15,10 @@ export const runTests = gulp.series(tests, done => done());
 export const buildDev = gulp.series(chromium, firefoxAmo, firefoxWebext, edge, api, done => done());
 
 // beta build
-export const buildBeta = gulp.series(chromium, firefoxWebext, edge, api, updateBuildInfo, clean, done => done());
+export const buildBeta = gulp.series(chromium, firefoxWebext, edge, api, updateBuildInfo, done => done());
 
 // release build
-export const buildRelease = gulp.series(chromium, opera, firefoxAmo, edge, updateBuildInfo, clean, done => done());
+export const buildRelease = gulp.series(chromium, opera, firefoxAmo, edge, updateBuildInfo, done => done());
 
 // sample api build
 export const buildSampleApi = gulp.series(api, done => done());
