@@ -5,7 +5,7 @@ import packageJson from '../package.json';
 export const getConfig = (env) => {
     const envConfig = ENV_CONF[env];
     if (!envConfig) {
-        throw new Error('There is not such env in the config map');
+        throw new Error(`There is not such ENV config: ${env}`);
     }
     return envConfig;
 };
@@ -31,21 +31,23 @@ const capitalize = (str) => {
 // TODO add documentation + test work in the firefox builds
 const getNameSuffix = (buildEnv, browser) => {
     switch (browser) {
-        case BROWSERS.FIREFOX:
-            if (standalone) {
-                if (buildEnv === ENVS.BETA) {
-                    return ' (Standalone)';
-                } if (buildEnv === ENVS.DEV) {
-                    return ' (Standalone Dev)';
-                }
-            } else {
-                if (buildEnv === ENVS.BETA) {
-                    return ' (Beta)';
-                } if (buildEnv === ENVS.DEV) {
-                    return ' (AMO Dev)';
-                }
+        case BROWSERS.FIREFOX_STANDALONE: {
+            if (buildEnv === ENVS.BETA) {
+                return ' (Standalone)';
+            }
+            if (buildEnv === ENVS.DEV) {
+                return ' (Standalone Dev)';
             }
             break;
+        }
+        case BROWSERS.FIREFOX_AMO: {
+            if (buildEnv === ENVS.BETA) {
+                return ' (Beta)';
+            } if (buildEnv === ENVS.DEV) {
+                return ' (AMO Dev)';
+            }
+            break;
+        }
         default:
             if (buildEnv !== ENVS.RELEASE) {
                 return ` (${capitalize(buildEnv)})`;

@@ -53,7 +53,7 @@ export const genCommonConfig = (browserConfig) => {
                     exclude: /node_modules/,
                     use: [{
                         loader: 'babel-loader',
-                        options: { babelrc: true }
+                        options: { babelrc: true },
                     }],
                 },
                 {
@@ -63,7 +63,7 @@ export const genCommonConfig = (browserConfig) => {
                         'style-loader',
                         {
                             loader: 'css-loader',
-                            options: { importLoaders: 1 }
+                            options: { importLoaders: 1 },
                         },
                         'postcss-loader',
                     ],
@@ -73,7 +73,7 @@ export const genCommonConfig = (browserConfig) => {
                     use: [
                         {
                             loader: 'file-loader',
-                            options: { outputPath: 'assets' }
+                            options: { outputPath: 'assets' },
                         },
                     ],
                 },
