@@ -3,9 +3,10 @@ export const chromeManifest = {
         {
             'all_frames': false,
             'js': [
-                'lib/content-script/content-script.js',
                 'lib/content-script/i18n-helper.js',
+                'lib/content-script/devtools/devtools-rules-constructor.js',
                 'lib/content-script/assistant/js/start-assistant.js',
+                'lib/content-script/devtools-helper.js',
             ],
             'matches': [
                 'http://*/*',
@@ -15,7 +16,7 @@ export const chromeManifest = {
         },
     ],
     'options_page': 'pages/options.html',
-    'devtools_page': 'devtools.html',
+    'devtools_page': 'pages/devtools.html',
     'permissions': [
         'tabs',
         '<all_urls>',

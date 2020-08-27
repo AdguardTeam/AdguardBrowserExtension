@@ -18,13 +18,12 @@ const EXPORT_PATH = path.resolve(__dirname, '../Extension/pages/export');
 const OUTPUT_PATH = config.outputPath;
 
 // TODO copy web-accessible-resources from node_modules on every-build
+// TODO copy scriptlets from node_modules on every-build
 // TODO build sample extension with api
 // TODO in dev build use sourcemaps while in prod no
-// TODO setup chrome devtools to work
 // TODO check work of blocking pages
 // TODO fix tests
 // TODO remove gulp
-// TODO update all names and short_titles in the locales folder adding suffix
 export const commonConfig = {
     mode: config.mode,
     devtool: false,

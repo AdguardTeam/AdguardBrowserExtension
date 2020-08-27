@@ -21,5 +21,5 @@ const browser = window.browser || chrome;
 browser.devtools.panels.elements.createSidebarPane('AdGuard',
     (sidebar) => {
         sidebar.setHeight('400px');
-        sidebar.setPage('pages/devtools-elements-sidebar.html');
+        sidebar.setPage('../pages/devtools-elements-sidebar.html');
     });
