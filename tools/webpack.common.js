@@ -1,8 +1,11 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import CreateFileWebpack from 'create-file-webpack';
 import path from 'path';
+
 import { getConfig, updateLocalesMSGName } from './helpers';
+import packageJson from '../package.json';
 
 const BUILD_PATH = path.resolve(__dirname, '../build');
 
@@ -100,6 +103,11 @@ export const commonConfig = {
             filename: 'pages/export.html',
             chunks: ['pages/export'],
         }),
+        new CreateFileWebpack({
+            path: path.resolve(__dirname, BUILD_PATH, OUTPUT_PATH),
+            fileName: 'build.txt',
+            content: `version=${packageJson.version}`,
+        }),
         new CopyWebpackPlugin({
             patterns: [
                 {
@@ -137,7 +145,7 @@ export const commonConfig = {
                     context: 'Extension',
                     from: 'pages/blocking-pages',
                     to: 'pages/blocking-pages',
-                }
+                },
             ],
         }),
     ],
