@@ -2,6 +2,7 @@ import { BROWSERS, BROWSERS_CONF } from '../constants';
 import { genChromeConfig } from './chrome/webpack.chrome';
 import { genFirefoxConfig } from './firefox/webpack.firefox';
 import { genEdgeConfig } from './edge/webpack.edge';
+import { genOperaConfig } from './opera/webpack.opera';
 
 export const webpackConfig = (browser) => {
     const browserConf = BROWSERS_CONF[browser];
@@ -16,9 +17,9 @@ export const webpackConfig = (browser) => {
         case BROWSERS.FIREFOX_AMO: {
             return genFirefoxConfig(browserConf);
         }
-        // case BROWSERS.OPERA: {
-        //     return genOperaConfig(browserConf);
-        // }
+        case BROWSERS.OPERA: {
+            return genOperaConfig(browserConf);
+        }
         case BROWSERS.EDGE: {
             return genEdgeConfig(browserConf);
         }
