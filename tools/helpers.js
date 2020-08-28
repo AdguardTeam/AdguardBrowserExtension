@@ -1,13 +1,26 @@
 import { merge } from 'webpack-merge';
-import { ENV_CONF, ENVS, BROWSERS } from './constants';
+import {
+    ENVS,
+    ENV_CONF,
+    BROWSERS,
+    BROWSERS_CONF,
+} from './constants';
 import packageJson from '../package.json';
 
-export const getConfig = (env) => {
+export const getEnvConf = (env) => {
     const envConfig = ENV_CONF[env];
     if (!envConfig) {
-        throw new Error(`There is not such ENV config: ${env}`);
+        throw new Error(`No env config for: "${env}"`);
     }
     return envConfig;
+};
+
+export const getBrowserConf = (browser) => {
+    const browserConf = BROWSERS_CONF[browser];
+    if (!browserConf) {
+        throw new Error(`No browser config for: "${browser}"`);
+    }
+    return browserConf;
 };
 
 export const updateManifest = (env, targetPart, addedPart) => {
@@ -25,7 +38,8 @@ export const updateManifest = (env, targetPart, addedPart) => {
 };
 
 const capitalize = (str) => {
-    return str.charAt(0).toUpperCase() + str.slice(1);
+    return str.charAt(0)
+        .toUpperCase() + str.slice(1);
 };
 
 const getNameSuffix = (buildEnv, browser) => {
@@ -42,7 +56,8 @@ const getNameSuffix = (buildEnv, browser) => {
         case BROWSERS.FIREFOX_AMO: {
             if (buildEnv === ENVS.BETA) {
                 return ' (Beta)';
-            } if (buildEnv === ENVS.DEV) {
+            }
+            if (buildEnv === ENVS.DEV) {
                 return ' (AMO Dev)';
             }
             break;

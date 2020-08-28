@@ -4,13 +4,12 @@ import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import CreateFileWebpack from 'create-file-webpack';
 import path from 'path';
 import pp from 'preprocess';
+import { BUILD_PATH } from '../constants';
 
-import { getConfig, updateLocalesMSGName } from '../helpers';
+import { getEnvConf, updateLocalesMSGName } from '../helpers';
 import packageJson from '../../package.json';
 
-const BUILD_PATH = path.resolve(__dirname, '../../build');
-
-const config = getConfig(process.env.BUILD_ENV);
+const config = getEnvConf(process.env.BUILD_ENV);
 
 const BACKGROUND_PATH = path.resolve(__dirname, '../../Extension/pages/background');
 const OPTIONS_PATH = path.resolve(__dirname, '../../Extension/pages/options');
@@ -32,15 +31,15 @@ export const genCommonConfig = (browserConfig) => {
         mode: config.mode,
         devtool: false,
         entry: {
-            'pages/background': path.resolve(__dirname, BACKGROUND_PATH),
-            'pages/options': path.resolve(__dirname, OPTIONS_PATH),
-            'pages/popup': path.resolve(__dirname, POPUP_PATH),
-            'pages/filtering-log': path.resolve(__dirname, FILTERING_LOG_PATH),
-            'pages/filter-download': path.resolve(__dirname, FILTER_DOWNLOAD_PATH),
-            'pages/export': path.resolve(__dirname, EXPORT_PATH),
+            'pages/background': BACKGROUND_PATH,
+            'pages/options': OPTIONS_PATH,
+            'pages/popup': POPUP_PATH,
+            'pages/filtering-log': FILTERING_LOG_PATH,
+            'pages/filter-download': FILTER_DOWNLOAD_PATH,
+            'pages/export': EXPORT_PATH,
         },
         output: {
-            path: path.resolve(__dirname, BUILD_PATH, OUTPUT_PATH),
+            path: path.join(BUILD_PATH, OUTPUT_PATH),
             filename: '[name].js',
         },
         resolve: {
@@ -116,7 +115,7 @@ export const genCommonConfig = (browserConfig) => {
                 chunks: ['pages/export'],
             }),
             new CreateFileWebpack({
-                path: path.resolve(__dirname, BUILD_PATH, OUTPUT_PATH),
+                path: path.join(BUILD_PATH, OUTPUT_PATH),
                 fileName: 'build.txt',
                 content: `version=${packageJson.version}`,
             }),

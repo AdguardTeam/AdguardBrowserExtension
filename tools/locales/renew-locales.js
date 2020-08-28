@@ -8,9 +8,9 @@ const { LOCALES_DIR } = require('../constants');
  * Search configuration
  */
 const configuration = {
-    src: path.resolve(LOCALES_DIR, 'en/messages.json'), // Base language json
+    src: path.join(LOCALES_DIR, 'en/messages.json'), // Base language json
     targets: ['./Extension/'], // Directory to search occurrences
-    output: path.resolve(LOCALES_DIR, 'en/messages.json'), // Place to put result
+    output: path.join(LOCALES_DIR, 'en/messages.json'), // Place to put result
     filesReg: '(.js|.html)$',
     // messages used in extensions localisations e.g. __MSG_short_name__
     persistedMessages: ['name', 'short_name', 'description'],

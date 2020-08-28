@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { EXTENSION_FILTERS_SERVER_URL_FORMAT } from '../tasks/consts';
+import path from 'path';
 
 export const ENVS = {
     DEV: 'dev',
@@ -55,7 +55,10 @@ export const FIREFOX_APP_IDS_MAP = {
     [ENVS.RELEASE]: 'adguardadblocker@adguard.com',
 };
 
+export const BUILD_PATH = path.resolve(__dirname, '../build');
+
 // filters constants
+export const EXTENSION_FILTERS_SERVER_URL_FORMAT = 'https://filters.adtidy.org/extension/%browser';
 export const METADATA_DOWNLOAD_URL_FORMAT = `${EXTENSION_FILTERS_SERVER_URL_FORMAT}/filters.json`;
 export const FILTERS_DEST = 'Extension/filters/%browser';
 export const METADATA_I18N_DOWNLOAD_URL_FORMAT = `${EXTENSION_FILTERS_SERVER_URL_FORMAT}/filters_i18n.js`;
@@ -76,4 +79,9 @@ export const PUBLIC_SUFFIXES_FILE = '../../Extension/lib/utils/public-suffixes.j
 const LOCALES_BASE_URL = 'https://twosky.adtidy.org/api/v1';
 export const LOCALES_DOWNLOAD_URL = `${LOCALES_BASE_URL}/download`;
 export const LOCALES_UPLOAD_URL = `${LOCALES_BASE_URL}/upload`;
-export const LOCALES_DIR = './Extension/_locales/';
+export const LOCALES_DIR = path.resolve(__dirname, '../Extension/_locales/');
+
+// artifacts constants
+export const CHROME_UPDATE_URL = 'https://static.adguard.com/extensions/adguardadblocker/beta/update.xml';
+export const CHROME_CERT = path.resolve(__dirname, '../private/AdguardBrowserExtension/certificate.pem');
+export const CHROME_CODEBASE_URL = 'https://static.adguard.com/extensions/adguardadblocker/beta/chrome.crx';

@@ -91,8 +91,8 @@ const saveFile = async (path, data) => {
 const saveLocales = async (localeDataPairs) => {
     const promises = localeDataPairs.map((localeDataPair) => {
         const { locale, data } = localeDataPair;
-        const localeFilePath = path.resolve(LOCALES_DIR, locale, FILE_NAME);
-        const localeDirPath = path.resolve(LOCALES_DIR, locale);
+        const localeFilePath = path.join(LOCALES_DIR, locale, FILE_NAME);
+        const localeDirPath = path.join(LOCALES_DIR, locale);
         if (!fs.existsSync(localeDirPath)) {
             fs.mkdirSync(localeDirPath);
         }
@@ -123,10 +123,10 @@ const checkRequiredFields = (locale, messages, baseMessages) => {
 };
 
 const validateLocales = async () => {
-    const baseLocalePath = path.resolve(LOCALES_DIR, baseLocale, FILE_NAME);
+    const baseLocalePath = path.join(LOCALES_DIR, baseLocale, FILE_NAME);
     const baseMessages = JSON.parse(await fs.promises.readFile(baseLocalePath, 'utf-8'));
     const promises = locales.map(async (locale) => {
-        const pathToLocale = path.resolve(LOCALES_DIR, locale, FILE_NAME);
+        const pathToLocale = path.join(LOCALES_DIR, locale, FILE_NAME);
         const messages = JSON.parse(await fs.promises.readFile(pathToLocale, 'utf-8'));
         const checkedMessages = checkRequiredFields(locale, messages, baseMessages);
         const checkedMessagesString = JSON.stringify(checkedMessages, null, 4).replace(/\//g, '\\/');

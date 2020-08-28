@@ -15,7 +15,7 @@ const prepare = (locale) => {
     formData.append('language', LOCALE_PAIRS[locale] || locale);
     formData.append('filename', 'messages.json');
     formData.append('project', projectId);
-    formData.append('file', fs.createReadStream(path.resolve(LOCALES_DIR, `${locale}/messages.json`)));
+    formData.append('file', fs.createReadStream(path.join(LOCALES_DIR, `${locale}/messages.json`)));
     const headers = {
         ...formData.getHeaders(),
     };
