@@ -50,9 +50,9 @@ export const BROWSERS_CONF = {
 };
 
 export const FIREFOX_APP_IDS_MAP = {
-    [ENVS.DEV]: 'adguardadblockerdev@adguard.com',
-    [ENVS.BETA]: 'adguardadblockerbeta@adguard.com',
-    [ENVS.RELEASE]: 'adguardadblocker@adguard.com',
+    [ENVS.DEV]: 'adguardadblockerdev-maximtop@adguard.com',
+    [ENVS.BETA]: 'adguardadblockerbeta-maximtop@adguard.com',
+    [ENVS.RELEASE]: 'adguardadblocker-maximtop@adguard.com',
 };
 
 export const BUILD_PATH = path.resolve(__dirname, '../build');
@@ -85,3 +85,6 @@ export const LOCALES_DIR = path.resolve(__dirname, '../Extension/_locales/');
 export const CHROME_UPDATE_URL = 'https://static.adguard.com/extensions/adguardadblocker/beta/update.xml';
 export const CHROME_CERT = path.resolve(__dirname, '../private/AdguardBrowserExtension/certificate.pem');
 export const CHROME_CODEBASE_URL = 'https://static.adguard.com/extensions/adguardadblocker/beta/chrome.crx';
+export const FIREFOX_CREDENTIALS = path.resolve(__dirname, '../private/AdguardBrowserExtension/mozilla_credentials.json');
+export const FIREFOX_UPDATE_TEMPLATE = path.resolve(__dirname, './bundle/firefox/update_template.json');
+export const FIREFOX_WEBEXT_UPDATE_URL = 'https://static.adguard.com/extensions/adguardadblocker/beta/update.json';

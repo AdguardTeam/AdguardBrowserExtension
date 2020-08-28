@@ -51,6 +51,6 @@ export const crx = async (browser) => {
     await fs.writeFile(crxBuildPath, crxBuffer);
     await fs.writeFile(updateXmlPath, updateXml);
 
-    // revert to non updated manifest
+    // revert manifest to prev state
     await fs.writeFile(manifestPath, JSON.stringify(manifest, null, 4));
 };

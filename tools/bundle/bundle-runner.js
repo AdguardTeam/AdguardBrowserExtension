@@ -14,6 +14,17 @@ export const bundleRunner = (webpackConfig) => {
                 reject();
                 return;
             }
+            if (stats.hasErrors()) {
+                console.log(stats.toString({
+                    colors: true,
+                    all: false,
+                    errors: true,
+                    moduleTrace: true,
+                    logging: 'error',
+                }));
+                reject();
+                return;
+            }
 
             console.log(stats.toString({
                 chunks: false,  // Makes the build much quieter

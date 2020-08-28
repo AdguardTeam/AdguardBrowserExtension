@@ -20,12 +20,11 @@ const EXPORT_PATH = path.resolve(__dirname, '../../Extension/pages/export');
 
 const OUTPUT_PATH = config.outputPath;
 
-// TODO copy scriptlets and web-accessible-resources from node_modules on every-build
 // TODO build sample extension with api
 // TODO in dev build use sourcemaps while in prod no
 // TODO fix tests
 // TODO remove gulp
-// TODO build edge extension
+// TODO prepare zip directories
 export const genCommonConfig = (browserConfig) => {
     return {
         mode: config.mode,
