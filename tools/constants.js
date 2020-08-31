@@ -19,6 +19,7 @@ export const BROWSERS = {
     FIREFOX_STANDALONE: 'firefox-standalone',
     OPERA: 'opera',
     EDGE: 'edge',
+    SAMPLE_API: 'sample-api',
 };
 
 export const BROWSERS_CONF = {
@@ -46,6 +47,11 @@ export const BROWSERS_CONF = {
         browser: BROWSERS.EDGE,
         remoteScripts: true,
         buildDir: BROWSERS.EDGE,
+    },
+    [BROWSERS.SAMPLE_API]: {
+        browser: BROWSERS.SAMPLE_API,
+        remoteScripts: true,
+        buildDir: BROWSERS.SAMPLE_API,
     },
 };
 

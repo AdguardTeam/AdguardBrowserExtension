@@ -18,7 +18,7 @@
 /**
  * Global adguard object
  */
-var adguard = (function () { // eslint-disable-line
+window.adguard = (function () { // eslint-disable-line
     /**
      * This function allows cache property in object. Use with javascript getter.
      *

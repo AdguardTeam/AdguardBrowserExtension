@@ -24,7 +24,7 @@ const OUTPUT_PATH = config.outputPath;
 // TODO in dev build use sourcemaps while in prod no
 // TODO fix tests
 // TODO remove gulp
-// TODO prepare zip directories
+// TODO prepare zip artifacts
 export const genCommonConfig = (browserConfig) => {
     return {
         mode: config.mode,
@@ -113,6 +113,7 @@ export const genCommonConfig = (browserConfig) => {
                 filename: 'pages/export.html',
                 chunks: ['pages/export'],
             }),
+            // TODO move this file creation to the separate script
             new CreateFileWebpack({
                 path: path.join(BUILD_PATH, OUTPUT_PATH),
                 fileName: 'build.txt',

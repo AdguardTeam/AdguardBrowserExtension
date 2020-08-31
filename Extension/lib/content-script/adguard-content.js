@@ -19,4 +19,4 @@
  * Global object for content scripts.
  * !!! DO not change to const, because this variable will be redeclared in adguard-api
  */
-var adguardContent = {}; // eslint-disable-line no-unused-vars, no-var
+window.adguardContent = {}; // eslint-disable-line no-unused-vars, no-var

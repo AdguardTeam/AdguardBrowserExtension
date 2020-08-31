@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-const browser = window.browser || chrome;
+window.browser = window.browser || chrome;
 
 (function (adguard, browser) {
     'use strict';

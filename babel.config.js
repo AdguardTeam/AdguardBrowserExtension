@@ -8,5 +8,6 @@ module.exports = (api) => {
                 opera: '42',
             },
         }]],
+        'plugins': ['@babel/plugin-transform-runtime'],
     };
 };

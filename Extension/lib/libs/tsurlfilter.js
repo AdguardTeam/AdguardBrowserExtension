@@ -1,4 +1,4 @@
-var TSUrlFilter = (function (exports) {
+window.TSUrlFilter = (function (exports) {
     'use strict';
 
     /**
@@ -11811,7 +11811,7 @@ var TSUrlFilter = (function (exports) {
 
       /**
        * Searches for the fallback replacement configuration for the specified encoding.
-       * 
+       *
        * @param {string} name Name of the encoding.
        * @returns {{replacement: String|number|*, index: Array<number>|Array<Array<number>>}}
        */
@@ -12064,7 +12064,7 @@ var TSUrlFilter = (function (exports) {
                                  input.byteOffset,
                                  input.byteLength);
         } else if (typeof input === 'object' && input instanceof Uint8Array) {
-          bytes = input;    
+          bytes = input;
         } else {
           bytes = new Uint8Array(0);
         }

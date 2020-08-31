@@ -39,13 +39,20 @@ const bundleFirefoxXpi = async () => {
     await xpi(BROWSERS.FIREFOX_STANDALONE);
 };
 
+const bundleSampleApi = async () => {
+    const config = webpackConfig(BROWSERS.SAMPLE_API);
+    return bundleRunner(config);
+};
+
 const devPlan = [
-    copyExternals,
-    bundleChrome,
-    bundleFirefoxAmo,
-    bundleFirefoxStandalone,
-    bundleEdge,
-    bundleOpera,
+    // copyExternals,
+    // bundleChrome,
+    // bundleFirefoxAmo,
+    // bundleFirefoxStandalone,
+    // bundleEdge,
+    // bundleOpera,
+    bundleSampleApi,
+    // TODO build sample api
 ];
 
 const betaPlan = [
@@ -56,6 +63,7 @@ const betaPlan = [
     bundleFirefoxXpi,
     bundleEdge,
     bundleOpera,
+    // TODO build sample api
 ];
 
 const releasePlan = [

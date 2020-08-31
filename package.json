@@ -19,11 +19,15 @@
     "type": "git",
     "url": "ssh://git@github.com:AdguardTeam/AdguardBrowserExtension.git"
   },
+  "browser": {
+    "./node/file-download-wrapper": false
+  },
   "author": "adguard@adguard.com",
   "license": "LGPL-3.0",
   "devDependencies": {
     "@babel/core": "^7.11.4",
     "@babel/node": "^7.10.5",
+    "@babel/plugin-transform-runtime": "^7.11.0",
     "@babel/preset-env": "^7.11.0",
     "@babel/register": "^7.10.5",
     "adguard-assistant": "https://github.com/AdguardTeam/AdguardAssistant.git#4.3.32",
@@ -62,5 +66,8 @@
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12",
     "webpack-merge": "^5.1.2"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.11.2"
   }
 }

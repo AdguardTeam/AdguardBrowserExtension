@@ -240,30 +240,12 @@
     return fw.when = _when;
   };
 
-  if (typeof exports !== 'undefined') {
-    exports.Deferred = function() {
-      return new Deferred();
-    };
-    exports.when = _when;
-    exports.installInto = installInto;
-  } else if (typeof define === 'function' && define.amd) {
-    define(function() {
-      if (typeof Zepto !== 'undefined') {
-        return installInto(Zepto);
-      } else {
-        Deferred.when = _when;
-        Deferred.installInto = installInto;
-        return Deferred;
-      }
-    });
-  } else if (typeof Zepto !== 'undefined') {
-    installInto(Zepto);
-  } else {
-    this.Deferred = function() {
-      return new Deferred();
-    };
-    this.Deferred.when = _when;
-    this.Deferred.installInto = installInto;
-  }
 
-}).call(this);
+  // TODO was patched, figure out how to use without patch or deferred at all
+  this.Deferred = function() {
+    return new Deferred();
+  };
+  this.Deferred.when = _when;
+  this.Deferred.installInto = installInto;
+
+}).call(window);

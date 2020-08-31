@@ -1,4 +1,4 @@
-var TSUrlFilter = (function () {
+window.TSUrlFilter = (function () {
     'use strict';
 
     /**

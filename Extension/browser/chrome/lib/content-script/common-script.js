@@ -58,4 +58,4 @@
             sendMessage,
         };
     })();
-})(typeof adguardContent !== 'undefined' ? adguardContent : adguard, this); // jshint ignore:line
+})(typeof adguardContent !== 'undefined' ? adguardContent : adguard, window); // jshint ignore:line
