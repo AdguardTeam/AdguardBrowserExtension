@@ -1,21 +1,36 @@
 /**
+ * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
+ *
+ * Adguard Browser Extension is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Adguard Browser Extension is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import { antiBannerService } from './filter/antibanner';
+
+/**
  * AdGuard application class
  */
-adguard.application = (function (adguard) {
-    'use strict';
-
+export const application = (() => {
     /**
-     * TImeout for recently updated filters and again enabled filters - 5 minutes
+     * Timeout for recently updated filters and again enabled filters - 5 minutes
      */
     const ENABLED_FILTERS_SKIP_TIMEOUT = 5 * 60 * 1000;
 
-    const { antiBannerService } = adguard;
-
-    const start = function (options, callback) {
+    const start = (options, callback) => {
         antiBannerService.start(options, callback);
     };
 
-    const stop = function (callback) {
+    const stop = callback => {
         antiBannerService.stop();
         callback();
     };
@@ -24,9 +39,7 @@ adguard.application = (function (adguard) {
      * Checks application has been initialized
      * @returns {boolean}
      */
-    const isInitialized = function () {
-        return antiBannerService.isInitialized();
-    };
+    const isInitialized = () => antiBannerService.isInitialized();
 
     /**
      * Offer filters on extension install, select default filters and filters by locale and country
@@ -348,4 +361,7 @@ adguard.application = (function (adguard) {
         loadCustomFilterInfo,
         getEnabledFiltersFromEnabledGroups,
     };
-})(adguard);
+})();
+
+// TODO remove when all will be converted to es6
+adguard.application = application;

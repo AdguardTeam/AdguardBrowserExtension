@@ -15,12 +15,12 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global TSUrlFilter */
+import * as TSUrlFilter from '@adguard/tsurlfilter';
 
 /**
  * Creating service that manages our filter rules.
  */
-adguard.antiBannerService = (function (adguard) {
+export const antiBannerService = (() => {
     // Request filter contains all filter rules
     // This class does the actual filtering (checking URLs, constructing CSS/JS to inject, etc)
     let requestFilter = new adguard.RequestFilter();
@@ -698,4 +698,7 @@ adguard.antiBannerService = (function (adguard) {
 
         getRequestFilterInfo,
     };
-})(adguard);
+})();
+
+// TODO remove when all converted to es6
+adguard.antiBannerService = antiBannerService;

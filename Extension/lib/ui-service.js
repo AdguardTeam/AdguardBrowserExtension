@@ -15,6 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { application } from './application';
+
 // TODO rename to uiService
 export const ui = (function () {
     const browserActionTitle = adguard.i18n.getMessage('name');
@@ -576,7 +578,7 @@ export const ui = (function () {
             browserDetails = adguard.prefs.browser;
         }
 
-        const filterIds = adguard.application.getEnabledFiltersFromEnabledGroups()
+        const filterIds = application.getEnabledFiltersFromEnabledGroups()
             .map(filter => filter.filterId);
 
         openTab(`https://reports.adguard.com/new_issue.html?product_type=Ext&product_version=${
@@ -684,9 +686,9 @@ export const ui = (function () {
             : () => { };
 
         if (filters) {
-            adguard.application.checkFiltersUpdates(successCallback, errorCallback, filters);
+            application.checkFiltersUpdates(successCallback, errorCallback, filters);
         } else {
-            adguard.application.checkFiltersUpdates(successCallback, errorCallback);
+            application.checkFiltersUpdates(successCallback, errorCallback);
         }
     };
 
@@ -955,4 +957,5 @@ export const ui = (function () {
     };
 })();
 
+// TODO remove when all be converted to es6 modules
 adguard.ui = ui;

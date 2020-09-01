@@ -21,6 +21,7 @@ import { rulesStorage, localStorage } from './storage';
 import { whitelist } from './filter/whitelist';
 import { filteringLog } from './filter/filtering-log';
 import { ui } from './ui-service';
+import { application } from './application';
 
 /**
  * Extension initialize logic. Called from start.js
@@ -52,17 +53,17 @@ export const startup = function () {
         /**
          * Start application
          */
-        adguard.application.start({
+        application.start({
             onInstall(callback) {
                 // Process installation
                 /**
                  * Show UI installation page
                  */
-                adguard.ui.openFiltersDownloadPage();
+                ui.openFiltersDownloadPage();
 
                 // Retrieve filters and install them
-                adguard.application.offerFilters((filterIds) => {
-                    adguard.application.addAndEnableFilters(filterIds, callback);
+                application.offerFilters((filterIds) => {
+                    application.addAndEnableFilters(filterIds, callback);
                 });
             },
         }, () => {
