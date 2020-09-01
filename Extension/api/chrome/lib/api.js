@@ -20,7 +20,6 @@
  * @type {{start, stop, configure}}
  */
 (function (adguard, global) {
-
     'use strict';
 
     function noOpFunc() {
@@ -278,5 +277,4 @@
         openAssistant: openAssistant,
         closeAssistant: closeAssistant
     };
-
 })(adguard, window);

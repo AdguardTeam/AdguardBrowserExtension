@@ -15,10 +15,13 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { log } from './utils/log';
+import { startup } from './startup';
+
 /**
  * Extension startup entry point
  */
-(function () {
-    adguard.console.info('Initializing adguard');
-    adguard.initialize();
-})();
+export function start() {
+    log.info('Initializing adguard');
+    startup();
+}

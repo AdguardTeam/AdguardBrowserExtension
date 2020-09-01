@@ -46,12 +46,12 @@ const bundleSampleApi = async () => {
 
 const devPlan = [
     // copyExternals,
-    // bundleChrome,
+    bundleChrome,
     // bundleFirefoxAmo,
     // bundleFirefoxStandalone,
     // bundleEdge,
     // bundleOpera,
-    bundleSampleApi,
+    // bundleSampleApi,
     // TODO build sample api
 ];
 

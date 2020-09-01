@@ -15,14 +15,14 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global adguard */
+import { log } from './utils/log';
 
 /**
  * Extension initialize logic. Called from start.js
  */
-adguard.initialize = function () {
+export const startup = function () {
     function onLocalStorageLoaded() {
-        adguard.console.info('Starting adguard... Version: {0}. Id: {1}', adguard.app.getVersion(), adguard.app.getId());
+        log.info('Starting adguard... Version: {0}. Id: {1}', adguard.app.getVersion(), adguard.app.getId());
 
         // Initialize popup button
         adguard.browserAction.setPopup({
@@ -30,13 +30,14 @@ adguard.initialize = function () {
         });
 
         // Set uninstall page url
+        // eslint-disable-next-line max-len
         const uninstallUrl = 'https://adguard.com/forward.html?action=adguard_uninstal_ext&from=background&app=browser_extension';
         adguard.runtime.setUninstallURL(uninstallUrl, () => {
             if (adguard.runtime.lastError) {
-                adguard.console.error(adguard.runtime.lastError);
+                log.error(adguard.runtime.lastError);
                 return;
             }
-            adguard.console.info(`Uninstall url was set to: ${uninstallUrl}`);
+            log.info(`Uninstall url was set to: ${uninstallUrl}`);
         });
 
         adguard.whitelist.init();
