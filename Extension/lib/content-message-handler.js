@@ -17,6 +17,8 @@
 
 /* global TSUrlFilter */
 
+console.log(adguard.runtime);
+
 /**
  *  Initialize Content => BackgroundPage messaging
  */

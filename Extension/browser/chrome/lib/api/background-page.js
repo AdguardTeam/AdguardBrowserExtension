@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -14,13 +15,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-window.browser = window.browser || chrome;
-
-(function (adguard, browser) {
-    'use strict';
-
-    adguard.runtime = (function () {
+export const backgroundPage = (() => {
+    const runtime = (function () {
         const onMessage = {
             addListener(callback) {
                 // https://developer.chrome.com/extensions/runtime#event-onMessage
@@ -421,14 +417,10 @@ window.browser = window.browser || chrome;
      * Gets URL of a file that belongs to our extension
      * https://developer.chrome.com/apps/runtime#method-getURL
      */
-    adguard.getURL = browser.runtime.getURL;
+    // eslint-disable-next-line prefer-destructuring
+    const getURL = browser.runtime.getURL;
 
-    adguard.backgroundPage = {};
-    adguard.backgroundPage.getWindow = function () {
-        return browser.extension.getBackgroundPage();
-    };
-
-    adguard.app = {
+    const app = {
 
         /**
          * Extension ID
@@ -482,7 +474,7 @@ window.browser = window.browser || chrome;
         },
     };
 
-    adguard.webRequest = {
+    const webRequest = {
         onBeforeRequest,
         handlerBehaviorChanged: browser.webRequest.handlerBehaviorChanged,
         onCompleted,
@@ -546,7 +538,7 @@ window.browser = window.browser || chrome;
     };
 
     // https://developer.chrome.com/extensions/webNavigation
-    adguard.webNavigation = {
+    const webNavigation = {
         onCreatedNavigationTarget,
         onCommitted,
         onDOMContentLoaded: browser.webNavigation.onDOMContentLoaded,
@@ -560,7 +552,7 @@ window.browser = window.browser || chrome;
         });
     }
 
-    adguard.browserAction = {
+    const browserAction = {
         /* eslint-disable-next-line no-unused-vars */
         setBrowserAction(tab, icon, badge, badgeColor, title) {
             if (!browserActionSupported) {
@@ -610,5 +602,25 @@ window.browser = window.browser || chrome;
         },
     };
 
-    adguard.contextMenus = browser.contextMenus;
-})(adguard, browser);
+    // eslint-disable-next-line prefer-destructuring
+    const contextMenus = browser.contextMenus;
+
+    return {
+        runtime,
+        getURL,
+        app,
+        webRequest,
+        webNavigation,
+        browserAction,
+        contextMenus,
+    };
+})();
+
+// TODO remove when background page would be imported into other modules
+adguard.runtime = backgroundPage.runtime;
+adguard.getURL = backgroundPage.getURL;
+adguard.app = backgroundPage.app;
+adguard.webRequest = backgroundPage.webRequest;
+adguard.webNavigation = backgroundPage.webNavigation;
+adguard.browserAction = backgroundPage.browserAction;
+adguard.contextMenus = backgroundPage.contextMenu;
