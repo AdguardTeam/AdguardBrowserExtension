@@ -16,6 +16,7 @@
  */
 
 import { antiBannerService } from './filter/antibanner';
+import { prefs } from '../browser/webkit/lib/prefs';
 
 /**
  * AdGuard application class
@@ -51,7 +52,7 @@ export const application = (() => {
             adguard.utils.filters.ENGLISH_FILTER_ID,
             adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID,
         ];
-        if (adguard.prefs.mobile) {
+        if (prefs.mobile) {
             filterIds.push(adguard.utils.filters.MOBILE_ADS_FILTER_ID);
         }
         filterIds.concat(adguard.subscriptions.getLangSuitableFilters());

@@ -15,10 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-(function (adguard) {
-    'use strict';
-
-    adguard.windowsImpl = adguard.windowsImpl || (function () {
+export const tabsApi = (() => {
+    adguard.windowsImpl = adguard.windowsImpl || (() => {
         function noOpFunc() {
             throw new Error('Not implemented');
         }
@@ -40,7 +38,7 @@
         };
     });
 
-    adguard.windows = (function (windowsImpl) {
+    adguard.windows = (windowsImpl => {
         // eslint-disable-next-line no-unused-vars
         const AdguardWin = {
             windowId: 1,
@@ -95,7 +93,7 @@
         };
     })(adguard.windowsImpl);
 
-    adguard.tabsImpl = adguard.tabsImpl || (function () {
+    adguard.tabsImpl = adguard.tabsImpl || (() => {
         function noOpFunc() {
             throw new Error('Not implemented');
         }
@@ -123,7 +121,7 @@
         };
     })();
 
-    adguard.tabs = (function (tabsImpl) {
+    adguard.tabs = (tabsImpl => {
         // eslint-disable-next-line no-unused-vars
         const AdguardTab = {
             tabId: 1,
@@ -423,4 +421,10 @@
             executeScriptFile,
         };
     })(adguard.tabsImpl);
-})(adguard);
+})();
+
+// TODO remove when all converted to es6 modules
+adguard.windowsImpl = tabsApi.windowsImpl;
+adguard.windows = tabsApi.windowsImpl;
+adguard.tabsImpl = tabsApi.tabsImpl;
+adguard.tabs = tabsApi.tabs;

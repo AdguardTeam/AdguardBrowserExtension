@@ -21,7 +21,7 @@ import { startup } from './startup';
 /**
  * Extension startup entry point
  */
-export function start() {
+export const start = () => {
     log.info('Initializing adguard');
     startup();
-}
+};

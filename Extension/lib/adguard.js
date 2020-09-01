@@ -18,7 +18,7 @@
 /**
  * Global adguard object
  */
-window.adguard = (function () { // eslint-disable-line
+export const adguard = (() => {
     /**
      * This function allows cache property in object. Use with javascript getter.
      *
@@ -93,3 +93,5 @@ window.adguard = (function () { // eslint-disable-line
         sync: syncModule,
     };
 })();
+
+window.adguard = adguard;

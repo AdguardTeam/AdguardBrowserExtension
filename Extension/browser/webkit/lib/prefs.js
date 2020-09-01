@@ -15,12 +15,12 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// TODO check work of this module in the firefox
 /**
  * Extension global preferences.
- * (!) Firefox has it's own implementation
  */
-adguard.prefs = (function (adguard) {
-    var Prefs = {
+export const prefs = (() => {
+    const Prefs = {
 
         get mobile() {
             return adguard.lazyGet(Prefs, 'mobile', () => navigator.userAgent.indexOf('Android') >= 0);
@@ -54,7 +54,7 @@ adguard.prefs = (function (adguard) {
         get chromeVersion() {
             return adguard.lazyGet(Prefs, 'chromeVersion', () => {
                 const match = /\sChrome\/(\d+)\./.exec(navigator.userAgent);
-                return match === null ? null : parseInt(match[1]);
+                return match === null ? null : Number.parseInt(match[1], 10);
             });
         },
 
@@ -83,8 +83,8 @@ adguard.prefs = (function (adguard) {
                     const version = userAgent.substring(i + 'Edge/'.length);
                     const parts = version.split('.');
                     return {
-                        rev: parseInt(parts[0]),
-                        build: parseInt(parts[1]),
+                        rev: Number.parseInt(parts[0], 10),
+                        build: Number.parseInt(parts[1], 10),
                     };
                 }
             });
@@ -130,9 +130,13 @@ adguard.prefs = (function (adguard) {
 
         const canUseInsertCSSAndExecuteScript = (
             // Blink engine based browsers
-            (Prefs.browser === 'Chrome' || Prefs.browser === 'Opera' || Prefs.browser === 'YaBrowser' || Prefs.browser === 'EdgeChromium')
+            (Prefs.browser === 'Chrome'
+                || Prefs.browser === 'Opera'
+                || Prefs.browser === 'YaBrowser'
+                || Prefs.browser === 'EdgeChromium')
             // Support for tabs.insertCSS and tabs.executeScript on chrome
-            // requires chrome version above or equal to 39, as per documentation: https://developers.chrome.com/extensions/tabs
+            // requires chrome version above or equal to 39,
+            // as per documentation: https://developers.chrome.com/extensions/tabs
             // But due to a bug, it requires version >= 50
             // https://bugs.chromium.org/p/chromium/issues/detail?id=63979
             && Prefs.chromeVersion >= 50
@@ -154,4 +158,4 @@ adguard.prefs = (function (adguard) {
     })();
 
     return Prefs;
-})(adguard);
+})();

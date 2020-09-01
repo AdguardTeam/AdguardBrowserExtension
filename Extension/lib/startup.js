@@ -28,7 +28,11 @@ import { application } from './application';
  */
 export const startup = function () {
     function onLocalStorageLoaded() {
-        log.info('Starting adguard... Version: {0}. Id: {1}', adguard.app.getVersion(), adguard.app.getId());
+        log.info(
+            'Starting adguard... Version: {0}. Id: {1}',
+            backgroundPage.app.getVersion(),
+            backgroundPage.app.getId()
+        );
 
         // Initialize popup button
         backgroundPage.browserAction.setPopup({

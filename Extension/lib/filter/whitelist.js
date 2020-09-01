@@ -16,6 +16,7 @@
  */
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
+import { adguard } from '../adguard';
 
 export const whitelist = (() => {
     const WHITE_LIST_DOMAINS_LS_PROP = 'white-list-domains';

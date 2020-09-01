@@ -16,6 +16,7 @@
  */
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
+import { tabsApi } from '../tabs/tabs-api';
 
 /**
  * Object for log http requests
@@ -483,7 +484,7 @@ export const filteringLog = (function () {
      * @param callback
      */
     const synchronizeOpenTabs = function (callback) {
-        adguard.tabs.getAll((tabs) => {
+        tabsApi.tabs.getAll((tabs) => {
             // As Object.keys() returns strings we convert them to integers,
             // because tabId is integer in extension API
             const tabIdsToRemove = Object.keys(tabsInfoMap).map(id => parseInt(id, 10));
@@ -525,9 +526,9 @@ export const filteringLog = (function () {
         synchronizeOpenTabs();
 
         // Bind to tab events
-        adguard.tabs.onCreated.addListener(addTab);
-        adguard.tabs.onUpdated.addListener(updateTab);
-        adguard.tabs.onRemoved.addListener((tab) => {
+        tabsApi.tabs.onCreated.addListener(addTab);
+        tabsApi.tabs.onUpdated.addListener(updateTab);
+        tabsApi.tabs.onRemoved.addListener((tab) => {
             removeTabById(tab.tabId);
         });
     };
