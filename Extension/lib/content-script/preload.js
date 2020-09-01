@@ -509,7 +509,7 @@
         var requests = [];
 
         // Collect collapse requests
-        for (var tagName in requestTypeMap) { // jshint ignore:line
+        for (var tagName in requestTypeMap) {
             var requestType = requestTypeMap[tagName];
 
             var elements = document.getElementsByTagName(tagName);

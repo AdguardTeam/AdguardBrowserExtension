@@ -18,7 +18,7 @@
 /**
  * DevTools rules constructor helper
  */
-var DevToolsRulesConstructor = (function () { // jshint ignore:line
+var DevToolsRulesConstructor = (function () {
 
     var CSS_RULE_MARK = '##';
     var RULE_OPTIONS_MARK = '$';

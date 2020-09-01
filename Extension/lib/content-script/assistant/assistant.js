@@ -322,7 +322,7 @@ module.exports = code;
         } else {
             module.exports = result.toString();
         }
-    
+
 
 /***/ }),
 /* 13 */
@@ -336,7 +336,7 @@ module.exports = code;
         } else {
             module.exports = result.toString();
         }
-    
+
 
 /***/ }),
 /* 14 */
@@ -350,7 +350,7 @@ module.exports = code;
         } else {
             module.exports = result.toString();
         }
-    
+
 
 /***/ }),
 /* 15 */
@@ -364,7 +364,7 @@ module.exports = code;
         } else {
             module.exports = result.toString();
         }
-    
+
 
 /***/ }),
 /* 16 */
@@ -378,7 +378,7 @@ module.exports = code;
         } else {
             module.exports = result.toString();
         }
-    
+
 
 /***/ }),
 /* 17 */
@@ -1927,7 +1927,7 @@ var HTML = {
  * @constructor
  */
 function CustomEvent() {
-  // jshint ignore:line
+
   var listeners = [];
 
   var attach = function attach(listener) {

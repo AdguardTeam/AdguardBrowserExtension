@@ -15,30 +15,11 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { utils } from '../utils/common';
+import { windowsImpl, tabsImpl } from '../../browser/chrome/lib/api/tabs';
+
 export const tabsApi = (() => {
-    adguard.windowsImpl = adguard.windowsImpl || (() => {
-        function noOpFunc() {
-            throw new Error('Not implemented');
-        }
-
-        const emptyListener = {
-            addListener: noOpFunc,
-            removeListener: noOpFunc,
-        };
-
-        return {
-
-            onCreated: emptyListener, // callback (adguardWin, nativeWin)
-            onRemoved: emptyListener, // callback (windowId, nativeWin)
-            onUpdated: emptyListener, // callback (adguardWin, nativeWin, type) (Defined only for Firefox)
-
-            create: noOpFunc,
-            getLastFocused: noOpFunc, // callback (windowId, nativeWin)
-            forEachNative: noOpFunc, // callback (nativeWin, adguardWin)
-        };
-    });
-
-    adguard.windows = (windowsImpl => {
+    const windows = (windowsImpl => {
         // eslint-disable-next-line no-unused-vars
         const AdguardWin = {
             windowId: 1,
@@ -54,8 +35,8 @@ export const tabsApi = (() => {
             adguardWindows[adguardWin.windowId] = adguardWin;
         });
 
-        const onCreatedChannel = adguard.utils.channels.newChannel();
-        const onRemovedChannel = adguard.utils.channels.newChannel();
+        const onCreatedChannel = utils.channels.newChannel();
+        const onRemovedChannel = utils.channels.newChannel();
 
         windowsImpl.onCreated.addListener((adguardWin) => {
             adguardWindows[adguardWin.windowId] = adguardWin;
@@ -91,37 +72,9 @@ export const tabsApi = (() => {
             create,
             getLastFocused, // callback (adguardWin)
         };
-    })(adguard.windowsImpl);
+    })(windowsImpl);
 
-    adguard.tabsImpl = adguard.tabsImpl || (() => {
-        function noOpFunc() {
-            throw new Error('Not implemented');
-        }
-
-        const emptyListener = {
-            addListener: noOpFunc,
-            removeListener: noOpFunc,
-        };
-
-        return {
-
-            onCreated: emptyListener, // callback(tab)
-            onRemoved: emptyListener, // callback(tabId)
-            onUpdated: emptyListener, // callback(tab)
-            onActivated: emptyListener, // callback(tabId)
-
-            create: noOpFunc, // callback(tab)
-            remove: noOpFunc, // callback(tabId)
-            activate: noOpFunc, // callback(tabId)
-            reload: noOpFunc,
-            sendMessage: noOpFunc,
-            getAll: noOpFunc, // callback(tabs)
-            getActive: noOpFunc, // callback(tabId),
-            get: noOpFunc, // callback(tab)
-        };
-    })();
-
-    adguard.tabs = (tabsImpl => {
+    const tabs = (tabsImpl => {
         // eslint-disable-next-line no-unused-vars
         const AdguardTab = {
             tabId: 1,
@@ -147,16 +100,16 @@ export const tabsApi = (() => {
 
         // Fired when a tab is created. Note that the tab's URL may not be set at the time
         // this event fired, but you can listen to onUpdated events to be notified when a URL is set.
-        const onCreatedChannel = adguard.utils.channels.newChannel();
+        const onCreatedChannel = utils.channels.newChannel();
 
         // Fired when a tab is closed.
-        const onRemovedChannel = adguard.utils.channels.newChannel();
+        const onRemovedChannel = utils.channels.newChannel();
 
         // Fired when a tab is updated.
-        const onUpdatedChannel = adguard.utils.channels.newChannel();
+        const onUpdatedChannel = utils.channels.newChannel();
 
         // Fires when the active tab in a window changes.
-        const onActivatedChannel = adguard.utils.channels.newChannel();
+        const onActivatedChannel = utils.channels.newChannel();
 
         /**
          * Saves tab to collection and notify listeners
@@ -420,11 +373,10 @@ export const tabsApi = (() => {
             executeScriptCode,
             executeScriptFile,
         };
-    })(adguard.tabsImpl);
-})();
+    })(tabsImpl);
 
-// TODO remove when all converted to es6 modules
-adguard.windowsImpl = tabsApi.windowsImpl;
-adguard.windows = tabsApi.windowsImpl;
-adguard.tabsImpl = tabsApi.tabsImpl;
-adguard.tabs = tabsApi.tabs;
+    return {
+        tabs,
+        windows,
+    };
+})();

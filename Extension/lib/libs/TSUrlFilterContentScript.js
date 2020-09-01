@@ -601,7 +601,7 @@ window.TSUrlFilter = (function () {
      * In the case of AdGuard ExtendedCss we want to avoid initializing Sizzle right away
      * and exposing it to the global scope.
      */
-    var initializeSizzle = function() { // jshint ignore:line
+    var initializeSizzle = function() {
     	if (!Sizzle) {
 
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

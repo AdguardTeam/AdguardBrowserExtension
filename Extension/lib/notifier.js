@@ -111,7 +111,7 @@ adguard.listeners = (function () {
             if (!event || !(event in EventNotifierEventsMap)) {
                 throw new Error('Illegal event: ' + event);
             }
-            for (var listenerId in this.listenersMap) { // jshint ignore:line
+            for (var listenerId in this.listenersMap) {
                 var events = this.listenersEventsMap[listenerId];
                 if (events && events.length > 0 && events.indexOf(event) < 0) {
                     continue;

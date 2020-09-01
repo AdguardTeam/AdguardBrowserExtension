@@ -132,7 +132,7 @@ function customizePopupFooter(isMacOs) {
  * @param callback Event listener callback
  * @param onUnloadCallback Window unload callback
  */
-function createEventListener(events, callback, onUnloadCallback) { // jshint ignore:line
+function createEventListener(events, callback, onUnloadCallback) {
     function eventListener() {
         callback.apply(null, arguments);
     }

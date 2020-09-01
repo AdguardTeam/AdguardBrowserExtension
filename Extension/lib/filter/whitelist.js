@@ -16,6 +16,7 @@
  */
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
+import { utils } from '../utils/common';
 import { adguard } from '../adguard';
 
 export const whitelist = (() => {
@@ -23,7 +24,7 @@ export const whitelist = (() => {
     const BLOCK_LIST_DOMAINS_LS_PROP = 'block-list-domains';
 
     // eslint-disable-next-line max-len
-    const allowAllWhiteListRule = new TSUrlFilter.NetworkRule('@@whitelist-all$document', adguard.utils.filters.WHITE_LIST_FILTER_ID);
+    const allowAllWhiteListRule = new TSUrlFilter.NetworkRule('@@whitelist-all$document', utils.filters.WHITE_LIST_FILTER_ID);
 
     /**
      * Returns whitelist mode

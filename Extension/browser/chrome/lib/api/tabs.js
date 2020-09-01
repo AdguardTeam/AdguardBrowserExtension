@@ -15,52 +15,47 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global browser */
+import { utils } from '../../../../lib/utils/common';
 
 /**
  * Chromium windows implementation
  * @type {{onCreated, onRemoved, onUpdated, create, getLastFocused, forEachNative}}
  */
-adguard.windowsImpl = (function (adguard) {
-
-    'use strict';
-
+export const windowsImpl = (() => {
     function toWindowFromChromeWindow(chromeWin) {
         return {
             windowId: chromeWin.id,
-            type: chromeWin.type === 'normal' || chromeWin.type === 'popup' ? chromeWin.type : 'other'
+            type: chromeWin.type === 'normal' || chromeWin.type === 'popup' ? chromeWin.type : 'other',
         };
     }
 
     // Make compatible with Android WebExt
     if (typeof browser.windows === 'undefined') {
-
         browser.windows = (function () {
-
-            var defaultWindow = {
+            const defaultWindow = {
                 id: 1,
-                type: 'normal'
+                type: 'normal',
             };
 
-            var emptyListener = {
-                addListener: function () {
+            const emptyListener = {
+                addListener() {
                     // Doing nothing
-                }
+                },
             };
 
-            var create = function (createData, callback) {
+            const create = function (createData, callback) {
                 callback(defaultWindow);
             };
 
-            var update = function (windowId, data, callback) {
+            const update = function (windowId, data, callback) {
                 callback();
             };
 
-            var getAll = function (query, callback) {
+            const getAll = function (query, callback) {
                 callback(defaultWindow);
             };
 
-            var getLastFocused = function (callback) {
+            const getLastFocused = function (callback) {
                 callback(defaultWindow);
             };
 
@@ -68,54 +63,53 @@ adguard.windowsImpl = (function (adguard) {
                 onCreated: emptyListener,
                 onRemoved: emptyListener,
                 onFocusChanged: emptyListener,
-                create: create,
-                update: update,
-                getAll: getAll,
-                getLastFocused: getLastFocused
+                create,
+                update,
+                getAll,
+                getLastFocused,
             };
-
         })();
     }
 
-    var onCreatedChannel = adguard.utils.channels.newChannel();
-    var onRemovedChannel = adguard.utils.channels.newChannel();
-    var onUpdatedChannel = adguard.utils.channels.newChannel();
+    const onCreatedChannel = utils.channels.newChannel();
+    const onRemovedChannel = utils.channels.newChannel();
+    const onUpdatedChannel = utils.channels.newChannel();
 
     // https://developer.chrome.com/extensions/windows#event-onCreated
     // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/onCreated
-    browser.windows.onCreated.addListener(function (chromeWin) {
+    browser.windows.onCreated.addListener((chromeWin) => {
         onCreatedChannel.notify(toWindowFromChromeWindow(chromeWin), chromeWin);
     });
 
     // https://developer.chrome.com/extensions/windows#event-onRemoved
     // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/onRemoved
-    browser.windows.onRemoved.addListener(function (windowId) {
+    browser.windows.onRemoved.addListener((windowId) => {
         onRemovedChannel.notify(windowId);
     });
 
-    var create = function (createData, callback) {
+    const create = function (createData, callback) {
         // https://developer.chrome.com/extensions/windows#method-create
         // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/create
-        browser.windows.create(createData, function (chromeWin) {
+        browser.windows.create(createData, (chromeWin) => {
             callback(toWindowFromChromeWindow(chromeWin), chromeWin);
         });
     };
 
-    var forEachNative = function (callback) {
+    const forEachNative = function (callback) {
         // https://developer.chrome.com/extensions/windows#method-getAll
         // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/getAll
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/569
-        browser.windows.getAll({}, function (chromeWins) {
-            for (var i = 0; i < chromeWins.length; i++) {
-                var chromeWin = chromeWins[i];
+        browser.windows.getAll({}, (chromeWins) => {
+            for (let i = 0; i < chromeWins.length; i++) {
+                const chromeWin = chromeWins[i];
                 callback(chromeWin, toWindowFromChromeWindow(chromeWin));
             }
         });
     };
 
-    var getLastFocused = function (callback) {
+    const getLastFocused = function (callback) {
         // https://developer.chrome.com/extensions/windows#method-getLastFocused
-        browser.windows.getLastFocused(function (chromeWin) {
+        browser.windows.getLastFocused((chromeWin) => {
             callback(chromeWin.id);
         });
     };
@@ -126,20 +120,18 @@ adguard.windowsImpl = (function (adguard) {
         onRemoved: onRemovedChannel, // callback (windowId)
         onUpdated: onUpdatedChannel, // empty
 
-        create: create,
-        getLastFocused: getLastFocused,
+        create,
+        getLastFocused,
 
-        forEachNative: forEachNative
+        forEachNative,
     };
-
-})(adguard);
+})();
 
 /**
  * Chromium tabs implementation
  * @type {{onCreated, onRemoved, onUpdated, onActivated, create, remove, activate, reload, sendMessage, getAll, getActive, fromChromeTab}}
  */
-adguard.tabsImpl = (function (adguard) {
-
+export const tabsImpl = (function () {
     'use strict';
 
     /**
@@ -151,9 +143,9 @@ adguard.tabsImpl = (function (adguard) {
     }
 
     function checkLastError(operation) {
-        var ex = browser.runtime.lastError;
+        const ex = browser.runtime.lastError;
         if (ex) {
-            adguard.console.error("Error while executing operation{1}: {0}", ex, operation ? " '" + operation + "'" : '');
+            adguard.console.error('Error while executing operation{1}: {0}', ex, operation ? ` '${operation}'` : '');
         }
         return ex;
     }
@@ -165,36 +157,36 @@ adguard.tabsImpl = (function (adguard) {
             url: chromeTab.url,
             title: chromeTab.title,
             incognito: chromeTab.incognito,
-            status: chromeTab.status
+            status: chromeTab.status,
         };
     }
 
     // https://developer.chrome.com/extensions/tabs#event-onCreated
-    var onCreatedChannel = adguard.utils.channels.newChannel();
-    browser.tabs.onCreated.addListener(function (chromeTab) {
+    const onCreatedChannel = utils.channels.newChannel();
+    browser.tabs.onCreated.addListener((chromeTab) => {
         onCreatedChannel.notify(toTabFromChromeTab(chromeTab));
     });
 
     // https://developer.chrome.com/extensions/tabs#event-onCreated
-    var onRemovedChannel = adguard.utils.channels.newChannel();
-    browser.tabs.onRemoved.addListener(function (tabId) {
+    const onRemovedChannel = utils.channels.newChannel();
+    browser.tabs.onRemoved.addListener((tabId) => {
         onRemovedChannel.notify(tabId);
     });
 
-    var onUpdatedChannel = adguard.utils.channels.newChannel();
+    const onUpdatedChannel = utils.channels.newChannel();
     // https://developer.chrome.com/extensions/tabs#event-onUpdated
-    browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+    browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         onUpdatedChannel.notify(toTabFromChromeTab(tab));
     });
 
     // https://developer.chrome.com/extensions/tabs#event-onActivated
-    var onActivatedChannel = adguard.utils.channels.newChannel();
-    browser.tabs.onActivated.addListener(function (activeInfo) {
+    const onActivatedChannel = utils.channels.newChannel();
+    browser.tabs.onActivated.addListener((activeInfo) => {
         onActivatedChannel.notify(activeInfo.tabId);
     });
 
     // https://developer.chrome.com/extensions/windows#event-onFocusChanged
-    browser.windows.onFocusChanged.addListener(function (windowId) {
+    browser.windows.onFocusChanged.addListener((windowId) => {
         if (windowId === browser.windows.WINDOW_ID_NONE) {
             return;
         }
@@ -212,11 +204,11 @@ adguard.tabsImpl = (function (adguard) {
          * Updating already focused window produces bug in Edge browser
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/675
          */
-        getActive(function (activeTabId) {
+        getActive((activeTabId) => {
             if (tabId !== activeTabId) {
                 // Focus window
-                browser.windows.update(windowId, { focused: true }, function () {
-                    if (checkLastError("Update window " + windowId)) {
+                browser.windows.update(windowId, { focused: true }, () => {
+                    if (checkLastError(`Update window ${windowId}`)) {
                         return;
                     }
                     callback();
@@ -226,28 +218,27 @@ adguard.tabsImpl = (function (adguard) {
         });
     }
 
-    var create = function (createData, callback) {
+    const create = function (createData, callback) {
+        const { url } = createData;
+        const active = createData.active === true;
 
-        var url = createData.url;
-        var active = createData.active === true;
-
-        if (createData.type === 'popup' &&
+        if (createData.type === 'popup'
             // Does not work properly in Anniversary builds
-            !adguard.utils.browser.isEdgeBeforeCreatorsUpdate() &&
+            && !utils.browser.isEdgeBeforeCreatorsUpdate()
             // Isn't supported by Android WebExt
-            !adguard.prefs.mobile) {
+            && !adguard.prefs.mobile) {
             // https://developer.chrome.com/extensions/windows#method-create
             // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/create
             browser.windows.create({
-                url: url,
+                url,
                 type: 'popup',
                 width: 1230,
-                height: 630
+                height: 630,
             }, callback);
             return;
         }
 
-        var isHttp = url.indexOf('http') === 0;
+        const isHttp = url.indexOf('http') === 0;
 
         function onWindowFound(win) {
             // https://developer.chrome.com/extensions/tabs#method-create
@@ -258,11 +249,11 @@ adguard.tabsImpl = (function (adguard) {
                  * Thats why if we try to provide windowId, method fails with error.
                  */
                 windowId: !adguard.prefs.mobile ? win.id : undefined,
-                url: url,
-                active: active,
-            }, function (chromeTab) {
+                url,
+                active,
+            }, (chromeTab) => {
                 if (active) {
-                    focusWindow(chromeTab.id, chromeTab.windowId, function () {
+                    focusWindow(chromeTab.id, chromeTab.windowId, () => {
                     });
                 }
                 callback(toTabFromChromeTab(chromeTab));
@@ -279,17 +270,17 @@ adguard.tabsImpl = (function (adguard) {
         // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/create
         // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/getLastFocused
 
-        browser.windows.getLastFocused(function (win) {
+        browser.windows.getLastFocused((win) => {
             if (isAppropriateWindow(win)) {
                 onWindowFound(win);
                 return;
             }
 
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/569
-            browser.windows.getAll({}, function (wins) {
+            browser.windows.getAll({}, (wins) => {
                 if (wins) {
-                    for (var i = 0; i < wins.length; i++) {
-                        var win = wins[i];
+                    for (let i = 0; i < wins.length; i++) {
+                        const win = wins[i];
                         if (isAppropriateWindow(win)) {
                             onWindowFound(win);
                             return;
@@ -303,10 +294,10 @@ adguard.tabsImpl = (function (adguard) {
         });
     };
 
-    var remove = function (tabId, callback) {
+    const remove = function (tabId, callback) {
         // https://developer.chrome.com/extensions/tabs#method-remove
         // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/remove
-        browser.tabs.remove(tabIdToInt(tabId), function () {
+        browser.tabs.remove(tabIdToInt(tabId), () => {
             if (checkLastError()) {
                 return;
             }
@@ -314,21 +305,21 @@ adguard.tabsImpl = (function (adguard) {
         });
     };
 
-    var activate = function (tabId, callback) {
+    const activate = function (tabId, callback) {
         // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/update
-        browser.tabs.update(tabIdToInt(tabId), { active: true }, function (chromeTab) {
-            if (checkLastError("Before tab update")) {
+        browser.tabs.update(tabIdToInt(tabId), { active: true }, (chromeTab) => {
+            if (checkLastError('Before tab update')) {
                 return;
             }
-            focusWindow(tabId, chromeTab.windowId, function () {
+            focusWindow(tabId, chromeTab.windowId, () => {
                 callback(tabId);
             });
         });
     };
 
-    var reload = function (tabId, url) {
+    const reload = function (tabId, url) {
         if (url) {
-            if (adguard.utils.browser.isEdgeBrowser()) {
+            if (utils.browser.isEdgeBrowser()) {
                 /**
                  * For security reasons, in Firefox and Edge, this may not be a privileged URL.
                  * So passing any of the following URLs will fail, with runtime.lastError being set to an error message:
@@ -345,11 +336,11 @@ adguard.tabsImpl = (function (adguard) {
                  * Content script may not have been loaded at this point yet.
                  * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/580
                  */
-                setTimeout(function () {
-                    sendMessage(tabId, { type: 'update-tab-url', url: url });
+                setTimeout(() => {
+                    sendMessage(tabId, { type: 'update-tab-url', url });
                 }, 100);
             } else {
-                browser.tabs.update(tabIdToInt(tabId), { url: url }, checkLastError);
+                browser.tabs.update(tabIdToInt(tabId), { url }, checkLastError);
             }
         } else {
             // https://developer.chrome.com/extensions/tabs#method-reload
@@ -373,13 +364,13 @@ adguard.tabsImpl = (function (adguard) {
         (browser.tabs.sendMessage || browser.tabs.sendRequest)(tabIdToInt(tabId), message, responseCallback);
     };
 
-    var getAll = function (callback) {
+    const getAll = function (callback) {
         // https://developer.chrome.com/extensions/tabs#method-query
         // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/query
-        browser.tabs.query({}, function (chromeTabs) {
-            var result = [];
-            for (var i = 0; i < chromeTabs.length; i++) {
-                var chromeTab = chromeTabs[i];
+        browser.tabs.query({}, (chromeTabs) => {
+            const result = [];
+            for (let i = 0; i < chromeTabs.length; i++) {
+                const chromeTab = chromeTabs[i];
                 result.push(toTabFromChromeTab(chromeTab));
             }
             callback(result);
@@ -395,7 +386,7 @@ adguard.tabsImpl = (function (adguard) {
          * https://dev.opera.com/extensions/tab-window/#accessing-the-current-tab
          * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/query
          */
-        browser.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+        browser.tabs.query({ currentWindow: true, active: true }, (tabs) => {
             if (tabs && tabs.length > 0) {
                 callback(tabs[0].id);
             }
@@ -407,8 +398,8 @@ adguard.tabsImpl = (function (adguard) {
      * @param tabId Tab identifier
      * @param callback
      */
-    var get = function (tabId, callback) {
-        browser.tabs.get(tabIdToInt(tabId), function (chromeTab) {
+    const get = function (tabId, callback) {
+        browser.tabs.get(tabIdToInt(tabId), (chromeTab) => {
             if (browser.runtime.lastError) {
                 return;
             }
@@ -485,7 +476,7 @@ adguard.tabsImpl = (function (adguard) {
      */
     const executeScriptCode = !browser.tabs.executeScript ? undefined : function (tabId, requestFrameId, code) {
         browser.tabs.executeScript(tabId, {
-            code: code,
+            code,
             frameId: requestFrameId,
             runAt: 'document_start',
             matchAboutBlank: true,
@@ -532,21 +523,20 @@ adguard.tabsImpl = (function (adguard) {
         onUpdated: onUpdatedChannel,
         onActivated: onActivatedChannel,
 
-        create: create,
-        remove: remove,
-        activate: activate,
-        reload: reload,
-        sendMessage: sendMessage,
-        getAll: getAll,
-        getActive: getActive,
-        get: get,
-        updateUrl: updateUrl,
+        create,
+        remove,
+        activate,
+        reload,
+        sendMessage,
+        getAll,
+        getActive,
+        get,
+        updateUrl,
 
-        insertCssCode: insertCssCode,
-        executeScriptCode: executeScriptCode,
-        executeScriptFile: executeScriptFile,
+        insertCssCode,
+        executeScriptCode,
+        executeScriptFile,
 
-        fromChromeTab: toTabFromChromeTab
+        fromChromeTab: toTabFromChromeTab,
     };
-
-})(adguard);
+})();

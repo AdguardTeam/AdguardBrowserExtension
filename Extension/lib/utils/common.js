@@ -15,13 +15,14 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global TSUrlFilter */
+import * as TSUrlFilter from '@adguard/tsurlfilter';
+import { Deferred } from 'simply-deferred';
+import { log } from './log';
 
 /**
  * Request types enumeration
  */
-adguard.RequestTypes = {
-
+export const RequestTypes = {
     /**
      * Document that is loaded for a top-level frame
      */
@@ -85,38 +86,36 @@ adguard.RequestTypes = {
 /**
  * Background tab id in browsers is defined as -1
  */
-adguard.BACKGROUND_TAB_ID = -1;
+export const BACKGROUND_TAB_ID = -1;
 
 /**
  * Main frame id is equal to 0
  */
-adguard.MAIN_FRAME_ID = 0;
+export const MAIN_FRAME_ID = 0;
 
 /**
  * Utilities namespace
  */
-adguard.utils = (function () {
-    return {
-        strings: null, // StringUtils
-        dates: null, // DateUtils
-        collections: null, // CollectionUtils,
-        concurrent: null, // ConcurrentUtils,
-        channels: null, // EventChannels
-        browser: null, // BrowserUtils
-        filters: null, // FilterUtils,
-        workaround: null, // WorkaroundUtils
-        i18n: null, // I18nUtils
-        StopWatch: null,
-        Promise: null, // Deferred,
-    };
-})();
+export const utils = (() => ({
+    strings: null, // StringUtils
+    dates: null, // DateUtils
+    collections: null, // CollectionUtils,
+    concurrent: null, // ConcurrentUtils,
+    channels: null, // EventChannels
+    browser: null, // BrowserUtils
+    filters: null, // FilterUtils,
+    workaround: null, // WorkaroundUtils
+    i18n: null, // I18nUtils
+    StopWatch: null,
+    Promise: null, // Deferred,
+}))();
 
 /**
  * Util class for work with strings
  */
 (function (api) {
     if (!String.prototype.endsWith) {
-        String.prototype.endsWith = function (suffix) { // jshint ignore:line
+        String.prototype.endsWith = function (suffix) {
             const index = this.lastIndexOf(suffix);
             return index !== -1 && index === this.length - suffix.length;
         };
@@ -242,7 +241,7 @@ adguard.utils = (function () {
                 const c = str.charAt(i);
 
                 if (c === delimiter) {
-                    if (i === 0) { // jshint ignore:line
+                    if (i === 0) {
                         // Ignore
                     } else if (str.charAt(i - 1) === escapeCharacter) {
                         sb.splice(sb.length - 1, 1);
@@ -342,7 +341,7 @@ adguard.utils = (function () {
     };
 
     api.strings = StringUtils;
-})(adguard.utils);
+})(utils);
 
 /**
  * Util class for dates
@@ -384,7 +383,7 @@ adguard.utils = (function () {
     };
 
     api.dates = DateUtils;
-})(adguard.utils);
+})(utils);
 
 /**
  * Util class for work with collections
@@ -484,7 +483,7 @@ adguard.utils = (function () {
     };
 
     api.collections = CollectionUtils;
-})(adguard.utils);
+})(utils);
 
 /**
  * Util class for support timeout, retry operations, debounce
@@ -573,7 +572,7 @@ adguard.utils = (function () {
     };
 
     api.concurrent = ConcurrentUtils;
-})(adguard.utils);
+})(utils);
 
 /**
  * Util class for detect filter type. Includes various filter identifiers
@@ -616,7 +615,7 @@ adguard.utils = (function () {
     }
 
     api.filters = FilterUtils;
-})(adguard.utils);
+})(utils);
 
 /**
  * Simple time measurement utils
@@ -643,7 +642,7 @@ adguard.utils = (function () {
     };
 
     api.StopWatch = StopWatch;
-})(adguard.utils);
+})(utils);
 
 /**
  * Simple publish-subscribe implementation
@@ -741,17 +740,15 @@ adguard.utils = (function () {
     })();
 
     api.channels = EventChannels;
-})(adguard.utils);
+})(utils);
 
 /**
  * Promises wrapper
  */
-(function (api, global) {
-    'use strict';
-
-    const defer = global.Deferred;
+(function (api) {
+    const defer = Deferred;
     const deferAll = function (arr) {
-        return global.Deferred.when.apply(global.Deferred, arr);
+        return Deferred.when.apply(Deferred, arr);
     };
 
     const Promise = function () {
@@ -792,7 +789,7 @@ adguard.utils = (function () {
     };
 
     api.Promise = Promise;
-})(adguard.utils, window);
+})(utils, window);
 
 /**
  * We collect here all workarounds and ugly hacks:)
@@ -818,7 +815,7 @@ adguard.utils = (function () {
     };
 
     api.workaround = WorkaroundUtils;
-})(adguard.utils);
+})(utils);
 
 /**
  * Simple i18n utils
@@ -870,17 +867,15 @@ adguard.utils = (function () {
             return null;
         },
     };
-})(adguard.utils);
+})(utils);
 
 /**
  * Unload handler. When extension is unload then 'fireUnload' is invoked.
  * You can add own handler with method 'when'
  * @type {{when, fireUnload}}
  */
-adguard.unload = (function (adguard) {
-    'use strict';
-
-    const unloadChannel = adguard.utils.channels.newChannel();
+export const unload = (function () {
+    const unloadChannel = utils.channels.newChannel();
 
     const when = function (callback) {
         if (typeof callback !== 'function') {
@@ -890,14 +885,14 @@ adguard.unload = (function (adguard) {
             try {
                 callback();
             } catch (ex) {
-                console.error('Error while invoke unload method');
-                console.error(ex);
+                log.error('Error while invoke unload method');
+                log.error(ex);
             }
         });
     };
 
     const fireUnload = function (reason) {
-        console.info(`Unload is fired: ${reason}`);
+        log.info(`Unload is fired: ${reason}`);
         unloadChannel.notifyInReverseOrder(reason);
     };
 
@@ -905,112 +900,4 @@ adguard.unload = (function (adguard) {
         when,
         fireUnload,
     };
-})(adguard);
-
-/**
- * Utility class for saving and retrieving some item by key;
- * It's bounded with some capacity.
- * Details are stored in some ring buffer. For each key corresponding item are retrieved in LIFO order.
- */
-adguard.utils.RingBuffer = function (size) { // jshint ignore:line
-    if (typeof Map === 'undefined') {
-        throw new Error('Unable to create RingBuffer');
-    }
-
-    /**
-     * itemKeyToIndex: Map (key => indexes)
-     * indexes = Array of [index];
-     * index = position of item in ringBuffer
-     */
-    /* global Map */
-    let itemKeyToIndex = new Map();
-    let itemWritePointer = 0; // Current write position
-
-    /**
-     * ringBuffer: Array [0:item][1:item]...[size-1:item]
-     */
-    const ringBuffer = new Array(size);
-
-    let i = ringBuffer.length;
-    while (i--) {
-        ringBuffer[i] = { processedKey: null }; // 'if not null' means this item hasn't been processed yet.
-    }
-
-    /**
-     * Put new value to buffer
-     * 1. Associates item with next index from ringBuffer.
-     * 2. If index has been already in use and item hasn't been processed yet, then removes it from indexes array in itemKeyToIndex
-     * 3. Push this index to indexes array in itemKeyToIndex at first position
-     * @param key Key
-     * @param value Object
-     */
-    const put = function (key, value) {
-        const index = itemWritePointer;
-        itemWritePointer = (index + 1) % size;
-
-        let item = ringBuffer[index];
-        let indexes;
-
-        // Cleanup unprocessed item
-        if (item.processedKey !== null) {
-            indexes = itemKeyToIndex.get(item.processedKey);
-            if (indexes.length === 1) {
-                // It's last item with this key
-                itemKeyToIndex.delete(item.processedKey);
-            } else {
-                const pos = indexes.indexOf(index);
-                if (pos >= 0) {
-                    indexes.splice(pos, 1);
-                }
-            }
-            ringBuffer[index] = item = null;
-        }
-        indexes = itemKeyToIndex.get(key);
-        if (indexes === undefined) {
-            // It's first item with this key
-            itemKeyToIndex.set(key, [index]);
-        } else {
-            // Push item index at first position
-            indexes.unshift(index);
-        }
-
-        ringBuffer[index] = value;
-        value.processedKey = key;
-    };
-
-    /**
-     * Finds item by key
-     * 1. Get indexes from itemKeyToIndex by key.
-     * 2. Gets first index from indexes, then gets item from ringBuffer by this index
-     * @param key Key for searching
-     */
-    const pop = function (key) {
-        const indexes = itemKeyToIndex.get(key);
-        if (indexes === undefined) {
-            return null;
-        }
-        const index = indexes.shift();
-        if (indexes.length === 0) {
-            itemKeyToIndex.delete(key);
-        }
-        const item = ringBuffer[index];
-        // Mark as processed
-        item.processedKey = null;
-        return item;
-    };
-
-    const clear = function () {
-        itemKeyToIndex = new Map();
-        itemWritePointer = 0;
-        let i = ringBuffer.length;
-        while (i--) {
-            ringBuffer[i] = { processedKey: null };
-        }
-    };
-
-    return {
-        put,
-        pop,
-        clear,
-    };
-};
+})();
