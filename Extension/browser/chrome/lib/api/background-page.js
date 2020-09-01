@@ -615,12 +615,3 @@ export const backgroundPage = (() => {
         contextMenus,
     };
 })();
-
-// TODO remove when background page would be imported into other modules
-adguard.runtime = backgroundPage.runtime;
-adguard.getURL = backgroundPage.getURL;
-adguard.app = backgroundPage.app;
-adguard.webRequest = backgroundPage.webRequest;
-adguard.webNavigation = backgroundPage.webNavigation;
-adguard.browserAction = backgroundPage.browserAction;
-adguard.contextMenus = backgroundPage.contextMenu;

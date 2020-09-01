@@ -15,15 +15,16 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { localStorageImpl } from '../../../chrome/lib/utils/local-storage';
+
 /**
  * Filter rules storage implementation
  */
-adguard.rulesStorageImpl = (function (adguard) {
-
-    var read = function (path, callback) {
+export const rulesStorageImpl = (() => {
+    const read = (path, callback) => {
         try {
-            var value = adguard.localStorageImpl.getItem(path);
-            var lines = [];
+            const value = localStorageImpl.getItem(path);
+            let lines = [];
             if (value) {
                 lines = value.split(/[\r\n]+/);
             }
@@ -33,25 +34,24 @@ adguard.rulesStorageImpl = (function (adguard) {
         }
     };
 
-    var write = function (path, data, callback) {
-        var value = data.join('\n');
+    const write = (path, data, callback) => {
+        const value = data.join('\n');
         try {
-            adguard.localStorageImpl.setItem(path, value);
+            localStorageImpl.setItem(path, value);
             callback();
         } catch (ex) {
             callback(ex);
         }
     };
 
-    var remove = function (path, successCallback) {
-        adguard.localStorageImpl.removeItem(path);
+    const remove = (path, successCallback) => {
+        localStorageImpl.removeItem(path);
         successCallback();
     };
 
     return {
-        write: write,
-        read: read,
-        remove: remove
+        write,
+        read,
+        remove,
     };
-
-})(adguard);
+})();

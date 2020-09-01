@@ -15,15 +15,12 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global browser */
-
 /**
  * Local storage implementation for chromium-based browsers
  */
-adguard.localStorageImpl = (function () {
-
-    var ADGUARD_SETTINGS_PROP = 'adguard-settings';
-    var values = null;
+export const localStorageImpl = (function () {
+    const ADGUARD_SETTINGS_PROP = 'adguard-settings';
+    let values = null;
 
     function checkError(ex) {
         if (ex) {
@@ -36,14 +33,14 @@ adguard.localStorageImpl = (function () {
      * @param callback Callback, fired with parameters (ex, result)
      */
     function createDefaultAsyncHandler(callback) {
-
-        var dfd = new adguard.utils.Promise();
+        const dfd = new adguard.utils.Promise();
         dfd.then(
-            function (result) {
+            (result) => {
                 callback(null, result);
-            }, function (ex) {
+            }, (ex) => {
                 callback(ex);
-            });
+            }
+        );
 
         return dfd;
     }
@@ -54,11 +51,10 @@ adguard.localStorageImpl = (function () {
      * @param callback Callback
      */
     function read(path, callback) {
-
-        var dfd = createDefaultAsyncHandler(callback);
+        const dfd = createDefaultAsyncHandler(callback);
 
         try {
-            browser.storage.local.get(path, function (results) {
+            browser.storage.local.get(path, (results) => {
                 if (browser.runtime.lastError) {
                     dfd.reject(browser.runtime.lastError);
                 } else {
@@ -77,13 +73,12 @@ adguard.localStorageImpl = (function () {
      * @param callback Callback
      */
     function write(path, data, callback) {
-
-        var dfd = createDefaultAsyncHandler(callback);
+        const dfd = createDefaultAsyncHandler(callback);
 
         try {
-            var item = {};
+            const item = {};
             item[path] = data;
-            browser.storage.local.set(item, function () {
+            browser.storage.local.set(item, () => {
                 if (browser.runtime.lastError) {
                     dfd.reject(browser.runtime.lastError);
                 } else {
@@ -102,7 +97,7 @@ adguard.localStorageImpl = (function () {
      */
     function migrateKeyValue(key) {
         if (key in localStorage) {
-            var value = localStorage.getItem(key);
+            const value = localStorage.getItem(key);
             localStorage.removeItem(key);
             setItem(key, value);
         }
@@ -113,7 +108,7 @@ adguard.localStorageImpl = (function () {
      * @param key
      * @returns {*}
      */
-    var getItem = function (key) {
+    const getItem = function (key) {
         if (!isInitialized()) {
             return null;
         }
@@ -131,7 +126,7 @@ adguard.localStorageImpl = (function () {
         write(ADGUARD_SETTINGS_PROP, values, checkError);
     };
 
-    var removeItem = function (key) {
+    const removeItem = function (key) {
         if (!isInitialized()) {
             return;
         }
@@ -141,7 +136,7 @@ adguard.localStorageImpl = (function () {
         write(ADGUARD_SETTINGS_PROP, values, checkError);
     };
 
-    var hasItem = function (key) {
+    const hasItem = function (key) {
         if (!isInitialized()) {
             return false;
         }
@@ -159,13 +154,13 @@ adguard.localStorageImpl = (function () {
      *
      * @param callback
      */
-    var init = function (callback) {
+    const init = function (callback) {
         if (isInitialized()) {
             // Already initialized
             callback();
             return;
         }
-        read(ADGUARD_SETTINGS_PROP, function (ex, items) {
+        read(ADGUARD_SETTINGS_PROP, (ex, items) => {
             if (ex) {
                 checkError(ex);
             }
@@ -183,12 +178,11 @@ adguard.localStorageImpl = (function () {
     };
 
     return {
-        getItem: getItem,
-        setItem: setItem,
-        removeItem: removeItem,
-        hasItem: hasItem,
-        init: init,
-        isInitialized: isInitialized
+        getItem,
+        setItem,
+        removeItem,
+        hasItem,
+        init,
+        isInitialized,
     };
-
 })();

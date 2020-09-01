@@ -16,6 +16,9 @@
  */
 
 import { log } from './utils/log';
+// TODO use dependent from browser storage implementation
+import { localStorageImpl } from '../browser/chrome/lib/utils/local-storage';
+import { rulesStorageImpl } from '../browser/webkit/lib/utils/rules-storage';
 
 // TODO consider moving into helpers
 const notImplemented = () => {
@@ -23,21 +26,9 @@ const notImplemented = () => {
 };
 
 /**
- * Local storage interface. Implementation depends on browser
- */
-export const localStorageImpl = adguard.localStorageImpl || (function () {
-    return {
-        getItem: notImplemented,
-        setItem: notImplemented,
-        removeItem: notImplemented,
-        hasItem: notImplemented,
-    };
-})();
-
-/**
  * This class manages local storage
  */
-export const localStorage = (function (adguard, impl) {
+export const localStorage = (function (impl) {
     const getItem = function (key) {
         return impl.getItem(key);
     };
@@ -46,7 +37,7 @@ export const localStorage = (function (adguard, impl) {
         try {
             impl.setItem(key, value);
         } catch (ex) {
-            adguard.console.error(`Error while saving item ${key} to the localStorage: ${ex}`);
+            log.error(`Error while saving item ${key} to the localStorage: ${ex}`);
         }
     };
 
@@ -82,22 +73,12 @@ export const localStorage = (function (adguard, impl) {
         init,
         isInitialized,
     };
-})(adguard, adguard.localStorageImpl);
-
-/**
- * Rules storage interface. Implementation depends on browser
- */
-export const rulesStorageImpl = adguard.rulesStorageImpl || (() => {
-    return {
-        read: notImplemented,
-        write: notImplemented,
-    };
-})();
+})(localStorageImpl);
 
 /**
  * This class manages storage for filters.
  */
-export const rulesStorage = (function (adguard, impl) {
+export const rulesStorage = (impl => {
     function getFilePath(filterId) {
         return `filterrules_${filterId}.txt`;
     }
@@ -174,10 +155,4 @@ export const rulesStorage = (function (adguard, impl) {
         remove,
         init,
     };
-})(adguard, adguard.rulesStorageImpl);
-
-// TODO remove when this module would be used imported in another modules
-adguard.localStorageImpl = localStorageImpl;
-adguard.localStorage = localStorage;
-adguard.rulesStorageImpl = rulesStorageImpl;
-adguard.rulesStorage = rulesStorage;
+})(rulesStorageImpl);

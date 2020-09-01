@@ -100,6 +100,3 @@ export const log = (() => {
         },
     };
 })();
-
-// TODO remove when all log usages would be replaced
-adguard.console = log;

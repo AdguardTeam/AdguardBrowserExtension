@@ -4,93 +4,93 @@
     <meta charset="UTF-8">
     <script src="../../lib/temp.js"></script>
 
-    <!--Third party libraries-->
-    <script type="text/javascript" src="../lib/libs/deferred.js"></script>
-    <script type="text/javascript" src="../lib/libs/sha256.js"></script>
-    <script type="text/javascript" src="../lib/utils/punycode.js"></script>
-    <script type="text/javascript" src="../lib/libs/filter-downloader.js"></script>
-    <script type="text/javascript" src="../lib/libs/scriptlets/redirects.js"></script>
-    <script type="text/javascript" src="../lib/libs/crypto-js/core.js"></script>
-    <script type="text/javascript" src="../lib/libs/crypto-js/md5.js"></script>
-    <script type="text/javascript" src="../lib/libs/lru.js"></script>
+<!--    &lt;!&ndash;Third party libraries&ndash;&gt;-->
+<!--    <script type="text/javascript" src="../lib/libs/deferred.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/libs/sha256.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/utils/punycode.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/libs/filter-downloader.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/libs/scriptlets/redirects.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/libs/crypto-js/core.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/libs/crypto-js/md5.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/libs/lru.js"></script>-->
 
-    <!--TS url filter-->
-    <script type="text/javascript" src="../lib/libs/tsurlfilter.js"></script>
+<!--    &lt;!&ndash;TS url filter&ndash;&gt;-->
+<!--    <script type="text/javascript" src="../lib/libs/tsurlfilter.js"></script>-->
 
-    <!--Utils libraries-->
-    <script type="text/javascript" src="../lib/utils/public-suffixes.js"></script>
-    <script type="text/javascript" src="../lib/utils/url.js"></script>
-    <script type="text/javascript" src="../lib/notifier.js"></script>
-    <script type="text/javascript" src="../lib/utils/browser-utils.js"></script>
-    <script type="text/javascript" src="../lib/filter/filters/service-client.js"></script>
-    <script type="text/javascript" src="../lib/settings/user-settings.js"></script>
-    <script type="text/javascript" src="../lib/utils/notifications.js"></script>
-    <script type="text/javascript" src="../lib/tabs/frames.js"></script>
-    <script type="text/javascript" src="../lib/utils/cookie.js"></script>
-    <script type="text/javascript" src="../lib/utils/expiring-cache.js"></script>
-    <script type="text/javascript" src="../lib/utils/lru-cache.js"></script>
-    <script type="text/javascript" src="../lib/utils/resources.js"></script>
+<!--    &lt;!&ndash;Utils libraries&ndash;&gt;-->
+<!--    <script type="text/javascript" src="../lib/utils/public-suffixes.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/utils/url.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/notifier.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/utils/browser-utils.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/filter/filters/service-client.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/settings/user-settings.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/utils/notifications.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/tabs/frames.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/utils/cookie.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/utils/expiring-cache.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/utils/lru-cache.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/utils/resources.js"></script>-->
 
-    <!--Local storage and rules storage libraries-->
-    <script type="text/javascript" src="../lib/utils/local-storage.js"></script>
-    <script type="text/javascript" src="../lib/utils/rules-storage.js"></script>
-    <% if (browser === 'firefox') { %>
-    <script type="text/javascript" src="../lib/utils/rules-storage-indexeddb.js"></script>
-    <% } %>
+<!--    &lt;!&ndash;Local storage and rules storage libraries&ndash;&gt;-->
+<!--    <script type="text/javascript" src="../lib/utils/local-storage.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/utils/rules-storage.js"></script>-->
+<!--    <% if (browser === 'firefox') { %>-->
+<!--    <script type="text/javascript" src="../lib/utils/rules-storage-indexeddb.js"></script>-->
+<!--    <% } %>-->
 
-    <!--Chromium api adapter libraries-->
-    <script type="text/javascript" src="../lib/content-script/common-script.js"></script>
+<!--    &lt;!&ndash;Chromium api adapter libraries&ndash;&gt;-->
+<!--    <script type="text/javascript" src="../lib/content-script/common-script.js"></script>-->
 
-    <!--Tabs api library-->
-    <script type="text/javascript" src="../lib/api/tabs.js"></script>
+<!--    &lt;!&ndash;Tabs api library&ndash;&gt;-->
+<!--    <script type="text/javascript" src="../lib/api/tabs.js"></script>-->
 
-    <!--Services-->
-    <script type="text/javascript" src="../lib/filter/services/css-service.js"></script>
-    <script type="text/javascript" src="../lib/filter/services/redirect-service.js"></script>
-    <script type="text/javascript" src="../lib/filter/rules/local-script-rules.js"></script>
+<!--    &lt;!&ndash;Services&ndash;&gt;-->
+<!--    <script type="text/javascript" src="../lib/filter/services/css-service.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/filter/services/redirect-service.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/filter/rules/local-script-rules.js"></script>-->
 
-    <!--Filters metadata and filtration modules-->
-    <script type="text/javascript" src="../lib/filter/engine.js"></script>
-    <script type="text/javascript" src="../lib/filter/filters/subscription.js"></script>
-    <script type="text/javascript" src="../lib/update-service.js"></script>
-    <script type="text/javascript" src="../lib/filter/userrules.js"></script>
-    <script type="text/javascript" src="../lib/filter/request-filter.js"></script>
-    <script type="text/javascript" src="../lib/filter/filtering-api.js"></script>
-    <script type="text/javascript" src="../lib/filter/filters/filters-state.js"></script>
-    <script type="text/javascript" src="../lib/filter/filters/filters-update.js"></script>
-    <script type="text/javascript" src="../lib/filter/request-blocking.js"></script>
-    <script type="text/javascript" src="../lib/filter/services/cookie-filtering.js"></script>
-    <script type="text/javascript" src="../lib/filter/request-context-storage.js"></script>
-    <script type="text/javascript" src="../lib/filter/filters/filters-tags.js"></script>
-    <script type="text/javascript" src="../lib/filter/filters/filters-categories.js"></script>
-    <script type="text/javascript" src="../lib/filter/page-stats.js"></script>
+<!--    &lt;!&ndash;Filters metadata and filtration modules&ndash;&gt;-->
+<!--    <script type="text/javascript" src="../lib/filter/engine.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/filter/filters/subscription.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/update-service.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/filter/userrules.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/filter/request-filter.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/filter/filtering-api.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/filter/filters/filters-state.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/filter/filters/filters-update.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/filter/request-blocking.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/filter/services/cookie-filtering.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/filter/request-context-storage.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/filter/filters/filters-tags.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/filter/filters/filters-categories.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/filter/page-stats.js"></script>-->
 
-    <!--Various modules for safebrowsing, logging, ui and etc-->
-    <script type="text/javascript" src="../lib/filter/services/safebrowsing-filter.js"></script>
-    <script type="text/javascript" src="../lib/filter/services/document-filter.js"></script>
-    <script type="text/javascript" src="../lib/filter/rules/filters-hit.js"></script>
-    <script type="text/javascript" src="../lib/filter/services/locale-detect.js"></script>
+<!--    &lt;!&ndash;Various modules for safebrowsing, logging, ui and etc&ndash;&gt;-->
+<!--    <script type="text/javascript" src="../lib/filter/services/safebrowsing-filter.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/filter/services/document-filter.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/filter/rules/filters-hit.js"></script>-->
+<!--    <script type="text/javascript" src="../lib/filter/services/locale-detect.js"></script>-->
 
-    <% if (browser === 'chrome') { %>
-    <!--Request sanitizer-->
-    <script type="text/javascript" src="../lib/filter/request-sanitizer.js"></script>
-    <% } %>
+<!--    <% if (browser === 'chrome') { %>-->
+<!--    &lt;!&ndash;Request sanitizer&ndash;&gt;-->
+<!--    <script type="text/javascript" src="../lib/filter/request-sanitizer.js"></script>-->
+<!--    <% } %>-->
 
-    <!--Content messaging-->
-    <script type="text/javascript" src="../lib/content-message-handler.js"></script>
+<!--    &lt;!&ndash;Content messaging&ndash;&gt;-->
+<!--    <script type="text/javascript" src="../lib/content-message-handler.js"></script>-->
 
-    <!--Stealth-->
-    <script type="text/javascript" src="../lib/filter/services/stealth-service.js"></script>
+<!--    &lt;!&ndash;Stealth&ndash;&gt;-->
+<!--    <script type="text/javascript" src="../lib/filter/services/stealth-service.js"></script>-->
 
-    <!--Sync settings-->
-    <script type="text/javascript" src="../lib/settings/settings-provider.js"></script>
+<!--    &lt;!&ndash;Sync settings&ndash;&gt;-->
+<!--    <script type="text/javascript" src="../lib/settings/settings-provider.js"></script>-->
 
-    <% if (browser === 'firefox') { %>
-    <!--Response Content Filtering -->
-    <script type="text/javascript" src="../lib/content-filtering.js"></script>
-    <% } %>
+<!--    <% if (browser === 'firefox') { %>-->
+<!--    &lt;!&ndash;Response Content Filtering &ndash;&gt;-->
+<!--    <script type="text/javascript" src="../lib/content-filtering.js"></script>-->
+<!--    <% } %>-->
 
-    <script type="text/javascript" src="../lib/webrequest.js"></script>
+<!--    <script type="text/javascript" src="../lib/webrequest.js"></script>-->
 
 </head>
 </html>
