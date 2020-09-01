@@ -15,13 +15,15 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global TSUrlFilter */
+import * as TSUrlFilter from '@adguard/tsurlfilter';
+import { utils } from './utils/common';
+import { backgroundPage } from '../browser/chrome/lib/api/background-page';
 
 /**
  * Service that manages extension version information and handles
  * extension update. For instance we may need to change storage schema on update.
  */
-adguard.applicationUpdateService = (function (adguard) {
+export const applicationUpdateService = (function () {
     /**
      * File storage adapter
      * @Deprecated Used now only to upgrade from versions older than v2.3.5
@@ -84,7 +86,7 @@ adguard.applicationUpdateService = (function (adguard) {
      * @private
      */
     function executeMethods(methods) {
-        const mainDfd = new adguard.utils.Promise();
+        const mainDfd = new utils.Promise();
 
         var executeNextMethod = function () {
             if (methods.length === 0) {
@@ -111,9 +113,9 @@ adguard.applicationUpdateService = (function (adguard) {
     function onUpdateChromiumStorage() {
         adguard.console.info('Call update to version 2.3.5');
 
-        const dfd = new adguard.utils.Promise();
+        const dfd = new utils.Promise();
 
-        const filterId = adguard.utils.filters.USER_FILTER_ID;
+        const filterId = utils.filters.USER_FILTER_ID;
         const filePath = `filterrules_${filterId}.txt`;
 
         FileStorage.readFromFile(filePath, (e, rules) => {
@@ -148,7 +150,7 @@ adguard.applicationUpdateService = (function (adguard) {
      * Version > 2.7.3
      */
     function onUpdateFirefoxWebExtRulesStorage() {
-        const dfd = new adguard.utils.Promise();
+        const dfd = new utils.Promise();
 
         function writeFilterRules(keys, items) {
             if (keys.length === 0) {
@@ -197,9 +199,9 @@ adguard.applicationUpdateService = (function (adguard) {
      * See https://github.com/AdguardTeam/AdguardBrowserExtension/issues/566
      */
     function onUpdateEdgeRulesStorage() {
-        const dfd = new adguard.utils.Promise();
+        const dfd = new utils.Promise();
 
-        const fixProperty = `edge-storage-local-fix-build${adguard.utils.browser.EDGE_CREATORS_UPDATE}`;
+        const fixProperty = `edge-storage-local-fix-build${utils.browser.EDGE_CREATORS_UPDATE}`;
         if (adguard.localStorage.getItem(fixProperty)) {
             dfd.resolve();
             return dfd;
@@ -238,7 +240,7 @@ adguard.applicationUpdateService = (function (adguard) {
     }
 
     function handleUndefinedGroupStatuses() {
-        const dfd = new adguard.utils.Promise();
+        const dfd = new utils.Promise();
 
         const filters = adguard.subscriptions.getFilters();
 
@@ -264,7 +266,7 @@ adguard.applicationUpdateService = (function (adguard) {
     }
 
     function handleDefaultUpdatePeriodSetting() {
-        const dfd = new adguard.utils.Promise();
+        const dfd = new utils.Promise();
         const previousDefaultValue = 48 * 60 * 60 * 1000;
 
         const currentUpdatePeriod = adguard.settings.getFiltersUpdatePeriod();
@@ -282,7 +284,7 @@ adguard.applicationUpdateService = (function (adguard) {
      * From that version we store already converted rule texts in storage
      */
     function onUpdateRuleConverter() {
-        const dfd = new adguard.utils.Promise();
+        const dfd = new utils.Promise();
 
         const filtersStateInfo = adguard.filtersState.getFiltersState();
         const installedFiltersIds = Object.keys(filtersStateInfo)
@@ -317,7 +319,7 @@ adguard.applicationUpdateService = (function (adguard) {
      * @returns {Promise<any>}
      */
     function handleObsoleteFiltersRemoval() {
-        const dfd = new adguard.utils.Promise();
+        const dfd = new utils.Promise();
 
         const filtersStateInfo = adguard.filtersState.getFiltersState();
         const allFiltersMetadata = adguard.subscriptions.getFilters();
@@ -356,9 +358,9 @@ adguard.applicationUpdateService = (function (adguard) {
      * @param callback Run info callback with passed object {{isFirstRun: boolean, isUpdate: (boolean|*), currentVersion: (Prefs.version|*), prevVersion: *}}
      */
     const getRunInfo = function (callback) {
-        const prevVersion = adguard.utils.browser.getAppVersion();
-        const currentVersion = adguard.app.getVersion();
-        adguard.utils.browser.setAppVersion(currentVersion);
+        const prevVersion = utils.browser.getAppVersion();
+        const currentVersion = backgroundPage.app.getVersion();
+        utils.browser.setAppVersion(currentVersion);
 
         const isFirstRun = (currentVersion !== prevVersion && !prevVersion);
         const isUpdate = !!(currentVersion !== prevVersion && prevVersion);
@@ -378,24 +380,24 @@ adguard.applicationUpdateService = (function (adguard) {
      */
     const onUpdate = function (runInfo, callback) {
         const methods = [];
-        if (adguard.utils.browser.isGreaterVersion('2.3.5', runInfo.prevVersion)
-            && adguard.utils.browser.isChromium()) {
+        if (utils.browser.isGreaterVersion('2.3.5', runInfo.prevVersion)
+            && utils.browser.isChromium()) {
             methods.push(onUpdateChromiumStorage);
         }
-        if (adguard.utils.browser.isEdgeBrowser() && !adguard.utils.browser.isEdgeBeforeCreatorsUpdate()) {
+        if (utils.browser.isEdgeBrowser() && !utils.browser.isEdgeBeforeCreatorsUpdate()) {
             methods.push(onUpdateEdgeRulesStorage);
         }
-        if (adguard.utils.browser.isGreaterVersion('2.7.4', runInfo.prevVersion)
-            && adguard.utils.browser.isFirefoxBrowser() && typeof browser !== 'undefined') {
+        if (utils.browser.isGreaterVersion('2.7.4', runInfo.prevVersion)
+            && utils.browser.isFirefoxBrowser() && typeof browser !== 'undefined') {
             methods.push(onUpdateFirefoxWebExtRulesStorage);
         }
-        if (adguard.utils.browser.isGreaterVersion('3.0.3', runInfo.prevVersion)) {
+        if (utils.browser.isGreaterVersion('3.0.3', runInfo.prevVersion)) {
             methods.push(handleUndefinedGroupStatuses);
         }
-        if (adguard.utils.browser.isGreaterVersion('3.3.5', runInfo.prevVersion)) {
+        if (utils.browser.isGreaterVersion('3.3.5', runInfo.prevVersion)) {
             methods.push(handleDefaultUpdatePeriodSetting);
         }
-        if (adguard.utils.browser.isGreaterVersion('3.5.6', runInfo.prevVersion)) {
+        if (utils.browser.isGreaterVersion('3.5.6', runInfo.prevVersion)) {
             methods.push(onUpdateRuleConverter);
         }
 
@@ -410,4 +412,4 @@ adguard.applicationUpdateService = (function (adguard) {
         getRunInfo,
         onUpdate,
     };
-})(adguard);
+})();

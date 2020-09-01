@@ -15,16 +15,16 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global CryptoJS */
+import CryptoJS from 'crypto-js';
+import { listeners } from '../../notifier';
+import { log } from '../../utils/log';
 
 /**
  * Service that loads and parses filters metadata from backend server.
  * For now we just store filters metadata in an XML file within the extension.
  * In future we'll add an opportunity to update metadata along with filter rules update.
  */
-adguard.subscriptions = (function (adguard) {
-    'use strict';
-
+export const subscriptions = (() => {
     /**
      * Custom filters group identifier
      *
@@ -496,12 +496,12 @@ adguard.subscriptions = (function (adguard) {
 
             updateCustomFilterInfo(filter, { lastCheckTime: Date.now() });
 
-            adguard.listeners.notifyListeners(adguard.listeners.SUCCESS_DOWNLOAD_FILTER, filter);
-            adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, filter, rules);
+            listeners.notifyListeners(listeners.SUCCESS_DOWNLOAD_FILTER, filter);
+            listeners.notifyListeners(listeners.UPDATE_FILTER_RULES, filter, rules);
 
             callback(filter.filterId);
         }, (cause) => {
-            adguard.console.error(`Error download filter by url ${url}, cause: ${cause || ''}`);
+            log.error(`Error download filter by url ${url}, cause: ${cause || ''}`);
             callback();
         });
     };
@@ -558,7 +558,7 @@ adguard.subscriptions = (function (adguard) {
 
             callback({ filter });
         }, (cause) => {
-            adguard.console.error(`Error download filter by url ${url}, cause: ${cause || ''}`);
+            log.error(`Error download filter by url ${url}, cause: ${cause || ''}`);
             callback();
         });
     };
@@ -609,7 +609,7 @@ adguard.subscriptions = (function (adguard) {
 
         groups.sort((f1, f2) => f1.displayNumber - f2.displayNumber);
 
-        adguard.console.info('Filters metadata loaded');
+        log.info('Filters metadata loaded');
     }
 
     /**
@@ -690,7 +690,7 @@ adguard.subscriptions = (function (adguard) {
             applyGroupLocalization(groups[k], groupsI18n);
         }
 
-        adguard.console.info('Filters i18n metadata loaded');
+        log.info('Filters i18n metadata loaded');
     }
 
     /**
@@ -703,7 +703,7 @@ adguard.subscriptions = (function (adguard) {
         if (typeof localScriptRulesService !== 'undefined') {
             const json = await adguard.backend.loadLocalScriptRules();
             localScriptRulesService.setLocalScriptRules(json);
-            adguard.console.info('Filters local script rules loaded');
+            log.info('Filters local script rules loaded');
         }
     }
 
@@ -717,7 +717,7 @@ adguard.subscriptions = (function (adguard) {
         if (typeof redirectSourcesService !== 'undefined') {
             const txt = await adguard.backend.loadRedirectSources();
             redirectSourcesService.init(txt);
-            adguard.console.info('Filters redirect sources loaded');
+            log.info('Filters redirect sources loaded');
         }
     }
 
@@ -732,7 +732,7 @@ adguard.subscriptions = (function (adguard) {
             await loadLocalScriptRules();
             await loadRedirectSources();
         } catch (e) {
-            adguard.console.error(`Error loading metadata, cause: ${e.message}`);
+            log.error(`Error loading metadata, cause: ${e.message}`);
         }
     };
 
@@ -838,9 +838,9 @@ adguard.subscriptions = (function (adguard) {
     };
 
     // Add event listener to persist filter metadata to local storage
-    adguard.listeners.addListener((event, payload) => {
+    listeners.addListener((event, payload) => {
         switch (event) {
-            case adguard.listeners.FILTER_ADD_REMOVE:
+            case listeners.FILTER_ADD_REMOVE:
                 if (payload && payload.removed) {
                     removeCustomFilter(payload);
                     removeCustomFilterFromStorage(payload);
@@ -868,4 +868,4 @@ adguard.subscriptions = (function (adguard) {
         getLangSuitableFilters,
         CUSTOM_FILTERS_START_ID,
     };
-})(adguard);
+})();

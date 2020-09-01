@@ -17,9 +17,10 @@
 
 import { application } from './application';
 import { backgroundPage } from '../browser/chrome/lib/api/background-page';
-import { utils } from './utils/common';
+import { utils, unload } from './utils/common';
 import { listeners } from './notifier';
 import { settings } from './settings/user-settings';
+import { tabsApi } from './tabs/tabs-api';
 
 // TODO rename to uiService
 export const ui = (function () {
@@ -33,20 +34,20 @@ export const ui = (function () {
             openAssistant(true);
         },
         'context_security_report': function () {
-            adguard.tabs.getActive((tab) => {
+            tabsApi.tabs.getActive((tab) => {
                 openSiteReportTab(tab.url);
             });
         },
         'context_complaint_website': function () {
-            adguard.tabs.getActive((tab) => {
+            tabsApi.tabs.getActive((tab) => {
                 openAbuseTab(tab.url);
             });
         },
         'context_site_filtering_on': function () {
-            adguard.tabs.getActive(unWhiteListTab);
+            tabsApi.tabs.getActive(unWhiteListTab);
         },
         'context_site_filtering_off': function () {
-            adguard.tabs.getActive(whiteListTab);
+            tabsApi.tabs.getActive(whiteListTab);
         },
         'context_enable_protection': function () {
             changeApplicationFilteringDisabled(false);
@@ -354,9 +355,9 @@ export const ui = (function () {
     }
 
     function closeAllPages() {
-        adguard.tabs.forEach((tab) => {
+        tabsApi.tabs.forEach((tab) => {
             if (tab.url.indexOf(adguard.getURL('')) >= 0) {
-                adguard.tabs.remove(tab.tabId);
+                tabsApi.tabs.remove(tab.tabId);
             }
         });
     }
@@ -373,8 +374,8 @@ export const ui = (function () {
     };
 
     function showAlertMessagePopup(title, text) {
-        adguard.tabs.getActive((tab) => {
-            adguard.tabs.sendMessage(tab.tabId, {
+        tabsApi.tabs.getActive((tab) => {
+            tabsApi.tabs.sendMessage(tab.tabId, {
                 type: 'show-alert-popup',
                 isAdguardTab: isAdguardTab(tab),
                 title,
@@ -423,9 +424,9 @@ export const ui = (function () {
             disableNotificationText: adguard.i18n.getMessage('options_popup_version_update_disable_notification'),
         };
 
-        adguard.tabs.getActive((tab) => {
+        tabsApi.tabs.getActive((tab) => {
             message.isAdguardTab = isAdguardTab(tab);
-            adguard.tabs.sendMessage(tab.tabId, message);
+            tabsApi.tabs.sendMessage(tab.tabId, message);
         });
     }
 
@@ -597,7 +598,7 @@ export const ui = (function () {
     var openFilteringLog = function (tabId) {
         const options = { activateSameTab: true, type: 'popup' };
         if (!tabId) {
-            adguard.tabs.getActive((tab) => {
+            tabsApi.tabs.getActive((tab) => {
                 const { tabId } = tab;
                 // TODO extract into constants
                 openTab(getPageUrl('filtering-log.html') + (tabId ? `#${tabId}` : ''), options);
@@ -616,16 +617,16 @@ export const ui = (function () {
         // TODO move url in constants
         const filtersDownloadUrl = getPageUrl('filter-download.html');
 
-        adguard.tabs.getAll((tabs) => {
+        tabsApi.tabs.getAll((tabs) => {
             // Finds the filter-download page and reload it within the thank-you page URL
             for (let i = 0; i < tabs.length; i++) {
                 const tab = tabs[i];
                 if (tab.url === filtersDownloadUrl) {
                     // In YaBrowser don't activate found page
                     if (!utils.browser.isYaBrowser()) {
-                        adguard.tabs.activate(tab.tabId);
+                        tabsApi.tabs.activate(tab.tabId);
                     }
-                    adguard.tabs.reload(tab.tabId, thankyouUrl);
+                    tabsApi.tabs.reload(tab.tabId, thankyouUrl);
                     return;
                 }
             }
@@ -646,21 +647,21 @@ export const ui = (function () {
         const tabInfo = adguard.frames.getFrameInfo(tab);
         adguard.whitelist.whiteListUrl(tabInfo.url);
         updateTabIconAndContextMenu(tab, true);
-        adguard.tabs.reload(tab.tabId);
+        tabsApi.tabs.reload(tab.tabId);
     };
 
     var unWhiteListTab = function (tab) {
         const tabInfo = adguard.frames.getFrameInfo(tab);
         adguard.userrules.unWhiteListFrame(tabInfo);
         updateTabIconAndContextMenu(tab, true);
-        adguard.tabs.reload(tab.tabId);
+        tabsApi.tabs.reload(tab.tabId);
     };
 
     var changeApplicationFilteringDisabled = function (disabled) {
         settings.changeFilteringDisabled(disabled);
-        adguard.tabs.getActive((tab) => {
+        tabsApi.tabs.getActive((tab) => {
             updateTabIconAndContextMenu(tab, true);
-            adguard.tabs.reload(tab.tabId);
+            tabsApi.tabs.reload(tab.tabId);
         });
     };
 
@@ -703,8 +704,8 @@ export const ui = (function () {
         };
 
         // init assistant
-        adguard.tabs.getActive((tab) => {
-            adguard.tabs.sendMessage(tab.tabId, {
+        tabsApi.tabs.getActive((tab) => {
+            tabsApi.tabs.sendMessage(tab.tabId, {
                 type: 'initAssistant',
                 options,
             });
@@ -726,9 +727,9 @@ export const ui = (function () {
      * @param {boolean} selectElement - if true select the element on which the Mousedown event was
      */
     const openAssistant = (selectElement) => {
-        if (adguard.tabs.executeScriptFile) {
+        if (tabsApi.tabs.executeScriptFile) {
             // Load Assistant code to the activate tab immediately
-            adguard.tabs.executeScriptFile(null, { file: '/lib/content-script/assistant/assistant.js' }, () => {
+            tabsApi.tabs.executeScriptFile(null, { file: '/lib/content-script/assistant/assistant.js' }, () => {
                 initAssistant(selectElement);
             });
         } else {
@@ -787,10 +788,10 @@ export const ui = (function () {
 
         function onTabFound(tab) {
             if (tab.url !== url) {
-                adguard.tabs.reload(tab.tabId, url);
+                tabsApi.tabs.reload(tab.tabId, url);
             }
             if (!inBackground) {
-                adguard.tabs.activate(tab.tabId);
+                tabsApi.tabs.activate(tab.tabId);
             }
             if (callback) {
                 callback(tab);
@@ -798,7 +799,7 @@ export const ui = (function () {
         }
 
         url = utils.strings.contains(url, '://') ? url : adguard.getURL(url);
-        adguard.tabs.getAll((tabs) => {
+        tabsApi.tabs.getAll((tabs) => {
             // try to find between opened tabs
             if (activateSameTab) {
                 for (let i = 0; i < tabs.length; i += 1) {
@@ -809,7 +810,7 @@ export const ui = (function () {
                     }
                 }
             }
-            adguard.tabs.create({
+            tabsApi.tabs.create({
                 url,
                 type: type || 'normal',
                 active: !inBackground,
@@ -834,11 +835,11 @@ export const ui = (function () {
         });
 
         // Update tab icon and context menu while loading
-        adguard.tabs.onUpdated.addListener((tab) => {
+        tabsApi.tabs.onUpdated.addListener((tab) => {
             const { tabId } = tab;
             // BrowserAction is set separately for each tab
             updateTabIcon(tab);
-            adguard.tabs.getActive((aTab) => {
+            tabsApi.tabs.getActive((aTab) => {
                 if (aTab.tabId !== tabId) {
                     return;
                 }
@@ -848,7 +849,7 @@ export const ui = (function () {
         });
 
         // Update tab icon and context menu on active tab changed
-        adguard.tabs.onActivated.addListener((tab) => {
+        tabsApi.tabs.onActivated.addListener((tab) => {
             updateTabIconAndContextMenu(tab, true);
         });
     };
@@ -866,7 +867,7 @@ export const ui = (function () {
         }
         updateTabIconAsync(tab);
 
-        adguard.tabs.getActive((activeTab) => {
+        tabsApi.tabs.getActive((activeTab) => {
             if (tab.tabId === activeTab.tabId) {
                 updatePopupStatsAsync(activeTab);
             }
@@ -876,7 +877,7 @@ export const ui = (function () {
     // Update context menu on change user settings
     settings.onUpdated.addListener((setting) => {
         if (setting === settings.DISABLE_SHOW_CONTEXT_MENU) {
-            adguard.tabs.getActive((tab) => {
+            tabsApi.tabs.getActive((tab) => {
                 updateTabContextMenu(tab);
             });
         }
@@ -885,7 +886,7 @@ export const ui = (function () {
     // Update tab icon and context menu on application initialization
     listeners.addListener((event) => {
         if (event === listeners.APPLICATION_INITIALIZED) {
-            adguard.tabs.getActive(updateTabIconAndContextMenu);
+            tabsApi.tabs.getActive(updateTabIconAndContextMenu);
         }
     });
 
@@ -934,7 +935,7 @@ export const ui = (function () {
     });
 
     // close all page on unload
-    adguard.unload.when(closeAllPages);
+    unload.when(closeAllPages);
 
     return {
         init,
@@ -960,6 +961,3 @@ export const ui = (function () {
         showAlertMessagePopup,
     };
 })();
-
-// TODO remove when all be converted to es6 modules
-adguard.ui = ui;

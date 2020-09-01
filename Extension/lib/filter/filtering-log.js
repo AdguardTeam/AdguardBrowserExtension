@@ -20,6 +20,7 @@ import { tabsApi } from '../tabs/tabs-api';
 import { BACKGROUND_TAB_ID } from '../utils/common';
 import { backgroundPage } from '../../browser/chrome/lib/api/background-page';
 import { prefs } from '../../browser/webkit/lib/prefs';
+import { listeners } from '../notifier';
 
 /**
  * Object for log http requests
@@ -87,7 +88,7 @@ export const filteringLog = (function () {
         const tabInfo = tabsInfoMap[tab.tabId] || Object.create(null);
         tabInfo.tabId = tab.tabId;
         tabInfo.title = tab.title;
-        tabInfo.isExtensionTab = tab.url && tab.url.indexOf(adguard.app.getExtensionUrl()) === 0;
+        tabInfo.isExtensionTab = tab.url && tab.url.indexOf(backgroundPage.app.getExtensionUrl()) === 0;
         tabsInfoMap[tab.tabId] = tabInfo;
         return tabInfo;
     };
@@ -105,7 +106,7 @@ export const filteringLog = (function () {
 
         const tabInfo = updateTabInfo(tab);
         if (tabInfo) {
-            adguard.listeners.notifyListeners(adguard.listeners.TAB_ADDED, tabInfo);
+            listeners.notifyListeners(listeners.TAB_ADDED, tabInfo);
         }
     };
 
@@ -121,7 +122,7 @@ export const filteringLog = (function () {
 
         const tabInfo = tabsInfoMap[tabId];
         if (tabInfo) {
-            adguard.listeners.notifyListeners(adguard.listeners.TAB_CLOSE, tabInfo);
+            listeners.notifyListeners(listeners.TAB_CLOSE, tabInfo);
         }
         delete tabsInfoMap[tabId];
     };
@@ -138,7 +139,7 @@ export const filteringLog = (function () {
 
         const tabInfo = updateTabInfo(tab);
         if (tabInfo) {
-            adguard.listeners.notifyListeners(adguard.listeners.TAB_UPDATE, tabInfo);
+            listeners.notifyListeners(listeners.TAB_UPDATE, tabInfo);
         }
     };
 
@@ -228,7 +229,7 @@ export const filteringLog = (function () {
             tabInfo.filteringEvents.splice(1, 1);
         }
 
-        adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_ADDED, tabInfo, filteringEvent);
+        listeners.notifyListeners(listeners.LOG_EVENT_ADDED, tabInfo, filteringEvent);
     };
 
     /**
@@ -412,7 +413,7 @@ export const filteringLog = (function () {
                 const event = events[i];
                 if (event.eventId === eventId) {
                     addRuleToFilteringEvent(event, requestRule);
-                    adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
+                    listeners.notifyListeners(listeners.LOG_EVENT_UPDATED, tabInfo, event);
                     break;
                 }
             }
@@ -438,7 +439,7 @@ export const filteringLog = (function () {
                 const event = events[i];
                 if (event.eventId === eventId) {
                     addReplaceRulesToFilteringEvent(event, replaceRules);
-                    adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
+                    listeners.notifyListeners(listeners.LOG_EVENT_UPDATED, tabInfo, event);
                     break;
                 }
             }
@@ -464,7 +465,7 @@ export const filteringLog = (function () {
                 const event = events[i];
                 if (event.eventId === eventId) {
                     event.stealthActions = actions;
-                    adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
+                    listeners.notifyListeners(listeners.LOG_EVENT_UPDATED, tabInfo, event);
                     break;
                 }
             }
@@ -479,7 +480,7 @@ export const filteringLog = (function () {
         const tabInfo = tabsInfoMap[tabId];
         if (tabInfo) {
             delete tabInfo.filteringEvents;
-            adguard.listeners.notifyListeners(adguard.listeners.TAB_RESET, tabInfo);
+            listeners.notifyListeners(listeners.TAB_RESET, tabInfo);
         }
     };
 

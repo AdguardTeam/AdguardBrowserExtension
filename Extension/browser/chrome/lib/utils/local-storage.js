@@ -15,6 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { utils } from '../../../../lib/utils/common';
+
 /**
  * Local storage implementation for chromium-based browsers
  */
@@ -33,7 +35,7 @@ export const localStorageImpl = (function () {
      * @param callback Callback, fired with parameters (ex, result)
      */
     function createDefaultAsyncHandler(callback) {
-        const dfd = new adguard.utils.Promise();
+        const dfd = new utils.Promise();
         dfd.then(
             (result) => {
                 callback(null, result);

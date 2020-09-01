@@ -36,7 +36,7 @@ export const startup = function () {
 
         // Initialize popup button
         backgroundPage.browserAction.setPopup({
-            popup: adguard.getURL('pages/popup.html'),
+            popup: backgroundPage.getURL('pages/popup.html'),
         });
 
         // Set uninstall page url

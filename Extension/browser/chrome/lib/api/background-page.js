@@ -457,7 +457,7 @@ export const backgroundPage = (() => {
          * Returns extension's full url
          */
         getExtensionUrl() {
-            const url = adguard.getURL('');
+            const url = getURL('');
             return url.substring(0, url.length - 1);
         },
 

@@ -16,6 +16,7 @@
  */
 
 import { prefs } from '../../browser/webkit/lib/prefs';
+import { localStorage } from '../storage';
 
 export const browserUtils = function (api) {
     /**
@@ -65,7 +66,7 @@ export const browserUtils = function (api) {
     const Utils = {
 
         getClientId() {
-            let clientId = adguard.localStorage.getItem('client-id');
+            let clientId = localStorage.getItem('client-id');
             if (!clientId) {
                 const result = [];
                 const suffix = (Date.now()) % 1e8;
@@ -75,7 +76,7 @@ export const browserUtils = function (api) {
                     result.push(symbol);
                 }
                 clientId = result.join('') + suffix;
-                adguard.localStorage.setItem('client-id', clientId);
+                localStorage.setItem('client-id', clientId);
             }
 
             return clientId;
@@ -120,11 +121,11 @@ export const browserUtils = function (api) {
          * @returns Extension version
          */
         getAppVersion() {
-            return adguard.localStorage.getItem('app-version');
+            return localStorage.getItem('app-version');
         },
 
         setAppVersion(version) {
-            adguard.localStorage.setItem('app-version', version);
+            localStorage.setItem('app-version', version);
         },
 
         isYaBrowser() {

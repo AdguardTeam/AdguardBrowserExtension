@@ -18,6 +18,8 @@
 import * as TSUrlFilter from '@adguard/tsurlfilter';
 import { RequestFilter } from './request-filter';
 import { listeners } from '../notifier';
+import { applicationUpdateService } from '../update-service';
+import { subscriptions } from './filters/subscription';
 
 /**
  * Creating service that manages our filter rules.
@@ -135,9 +137,9 @@ export const antiBannerService = (() => {
         /**
          * Init extension common info.
          */
-        adguard.applicationUpdateService.getRunInfo(async (runInfo) => {
+        applicationUpdateService.getRunInfo(async (runInfo) => {
             // Load subscription from the storage
-            await adguard.subscriptions.init();
+            await subscriptions.init();
             onSubscriptionLoaded(runInfo);
         });
     }
