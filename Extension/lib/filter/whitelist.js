@@ -15,10 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global TSUrlFilter */
+import * as TSUrlFilter from '@adguard/tsurlfilter';
 
-adguard.whitelist = (function (adguard) {
-
+export const whitelist = (() => {
     const WHITE_LIST_DOMAINS_LS_PROP = 'white-list-domains';
     const BLOCK_LIST_DOMAINS_LS_PROP = 'block-list-domains';
 
@@ -59,7 +58,7 @@ adguard.whitelist = (function (adguard) {
                 return getDomainsFromLocalStorage(BLOCK_LIST_DOMAINS_LS_PROP);
             });
         },
-        add: function (domain) {
+        add(domain) {
             if (this.domains.indexOf(domain) < 0) {
                 this.domains.push(domain);
             }
@@ -143,14 +142,14 @@ adguard.whitelist = (function (adguard) {
      * @returns {Array}
      */
     function getDomainsFromLocalStorage(prop) {
-        var domains = [];
+        let domains = [];
         try {
-            var json = adguard.localStorage.getItem(prop);
+            const json = adguard.localStorage.getItem(prop);
             if (json) {
                 domains = JSON.parse(json);
             }
         } catch (ex) {
-            adguard.console.error("Error retrieve whitelist domains {0}, cause {1}", prop, ex);
+            adguard.console.error('Error retrieve whitelist domains {0}, cause {1}', prop, ex);
         }
         return domains;
     }
@@ -199,7 +198,7 @@ adguard.whitelist = (function (adguard) {
      * Changes whitelist mode
      * @param defaultMode
      */
-    var changeDefaultWhiteListMode = function (defaultMode) {
+    const changeDefaultWhiteListMode = function (defaultMode) {
         adguard.settings.changeDefaultWhiteListMode(defaultMode);
         notifyWhiteListUpdated();
     };
@@ -208,8 +207,8 @@ adguard.whitelist = (function (adguard) {
      * Stop (or start in case of inverted mode) filtration for url
      * @param url
      */
-    var whiteListUrl = function (url) {
-        var domain = adguard.utils.url.getHost(url);
+    const whiteListUrl = function (url) {
+        const domain = adguard.utils.url.getHost(url);
         if (isDefaultWhiteListMode()) {
             addToWhiteList(domain);
         } else {
@@ -221,8 +220,8 @@ adguard.whitelist = (function (adguard) {
      * Start (or stop in case of inverted mode) filtration for url
      * @param url
      */
-    var unWhiteListUrl = function (url) {
-        var domain = adguard.utils.url.getHost(url);
+    const unWhiteListUrl = function (url) {
+        const domain = adguard.utils.url.getHost(url);
         if (isDefaultWhiteListMode()) {
             removeFromWhiteList(domain);
         } else {
@@ -234,7 +233,7 @@ adguard.whitelist = (function (adguard) {
      * Updates domains in whitelist
      * @param domains
      */
-    var updateWhiteListDomains = function (domains) {
+    const updateWhiteListDomains = function (domains) {
         domains = domains || [];
         if (isDefaultWhiteListMode()) {
             clearWhiteListed();
@@ -254,8 +253,8 @@ adguard.whitelist = (function (adguard) {
         if (!domains) {
             return;
         }
-        for (var i = 0; i < domains.length; i++) {
-            var domain = domains[i];
+        for (let i = 0; i < domains.length; i++) {
+            const domain = domains[i];
             whiteListDomainsHolder.add(domain);
         }
         saveDomainsToLocalStorage();
@@ -269,8 +268,8 @@ adguard.whitelist = (function (adguard) {
         if (!domains) {
             return;
         }
-        for (var i = 0; i < domains.length; i++) {
-            var domain = domains[i];
+        for (let i = 0; i < domains.length; i++) {
+            const domain = domains[i];
             blockListDomainsHolder.add(domain);
         }
         saveDomainsToLocalStorage();
@@ -298,7 +297,7 @@ adguard.whitelist = (function (adguard) {
      * @param blocklist Blocklist domains
      * @param whiteListMode Whitelist mode
      */
-    var configure = function (whitelist, blocklist, whiteListMode) {
+    const configure = function (whitelist, blocklist, whiteListMode) {
         clearWhiteListed();
         clearBlockListed();
         addWhiteListed(whitelist || []);
@@ -310,32 +309,31 @@ adguard.whitelist = (function (adguard) {
     /**
      * Returns the array of whitelist domains
      */
-    var getWhiteListDomains = function () {
+    const getWhiteListDomains = function () {
         if (isDefaultWhiteListMode()) {
             return whiteListDomainsHolder.domains;
-        } else {
-            return blockListDomainsHolder.domains;
         }
+        return blockListDomainsHolder.domains;
     };
 
     /**
      * Returns the array of whitelisted domains
      */
-    var getWhiteListedDomains = function () {
+    const getWhiteListedDomains = function () {
         return whiteListDomainsHolder.domains;
     };
 
     /**
      * Returns the array of blocklisted domains, inverted mode
      */
-    var getBlockListedDomains = function () {
+    const getBlockListedDomains = function () {
         return blockListDomainsHolder.domains;
     };
 
     /**
      * Initializes whitelist filter
      */
-    var init = function () {
+    const init = function () {
         /**
          * Access to whitelist/blacklist domains before the proper initialization of localStorage leads to wrong caching of its values
          * To prevent it we should clear cached values
@@ -347,22 +345,23 @@ adguard.whitelist = (function (adguard) {
 
     return {
 
-        init: init,
-        configure: configure,
+        init,
+        configure,
 
-        getWhiteListDomains: getWhiteListDomains,
-        getWhiteListedDomains: getWhiteListedDomains,
-        getBlockListedDomains: getBlockListedDomains,
-        updateWhiteListDomains: updateWhiteListDomains,
+        getWhiteListDomains,
+        getWhiteListedDomains,
+        getBlockListedDomains,
+        updateWhiteListDomains,
 
-        findWhiteListRule: findWhiteListRule,
+        findWhiteListRule,
 
-        whiteListUrl: whiteListUrl,
-        unWhiteListUrl: unWhiteListUrl,
+        whiteListUrl,
+        unWhiteListUrl,
 
         isDefaultMode: isDefaultWhiteListMode,
-        changeDefaultWhiteListMode: changeDefaultWhiteListMode
+        changeDefaultWhiteListMode,
     };
+})();
 
-})(adguard);
-
+// TODO remove when all modules will be imported
+adguard.whitelist = whitelist;

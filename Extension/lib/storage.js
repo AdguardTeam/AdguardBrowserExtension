@@ -15,14 +15,17 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * localStorage interface. Implementation depends on browser
- */
-adguard.localStorageImpl = adguard.localStorageImpl || (function () {
-    function notImplemented() {
-        throw new Error('Not implemented');
-    }
+import { log } from './utils/log';
 
+// TODO consider moving into helpers
+const notImplemented = () => {
+    throw new Error('Not implemented');
+};
+
+/**
+ * Local storage interface. Implementation depends on browser
+ */
+export const localStorageImpl = adguard.localStorageImpl || (function () {
     return {
         getItem: notImplemented,
         setItem: notImplemented,
@@ -34,7 +37,7 @@ adguard.localStorageImpl = adguard.localStorageImpl || (function () {
 /**
  * This class manages local storage
  */
-adguard.localStorage = (function (adguard, impl) {
+export const localStorage = (function (adguard, impl) {
     const getItem = function (key) {
         return impl.getItem(key);
     };
@@ -84,11 +87,7 @@ adguard.localStorage = (function (adguard, impl) {
 /**
  * Rules storage interface. Implementation depends on browser
  */
-adguard.rulesStorageImpl = adguard.rulesStorageImpl || (function () {
-    function notImplemented() {
-        throw new Error('Not implemented');
-    }
-
+export const rulesStorageImpl = adguard.rulesStorageImpl || (() => {
     return {
         read: notImplemented,
         write: notImplemented,
@@ -98,7 +97,7 @@ adguard.rulesStorageImpl = adguard.rulesStorageImpl || (function () {
 /**
  * This class manages storage for filters.
  */
-adguard.rulesStorage = (function (adguard, impl) {
+export const rulesStorage = (function (adguard, impl) {
     function getFilePath(filterId) {
         return `filterrules_${filterId}.txt`;
     }
@@ -113,7 +112,7 @@ adguard.rulesStorage = (function (adguard, impl) {
         const filePath = getFilePath(filterId);
         impl.read(filePath, (e, rules) => {
             if (e) {
-                adguard.console.error(`Error while reading rules from file ${filePath} cause: ${e}`);
+                log.error(`Error while reading rules from file ${filePath} cause: ${e}`);
             }
             callback(rules);
         });
@@ -176,3 +175,9 @@ adguard.rulesStorage = (function (adguard, impl) {
         init,
     };
 })(adguard, adguard.rulesStorageImpl);
+
+// TODO remove when this module would be used imported in another modules
+adguard.localStorageImpl = localStorageImpl;
+adguard.localStorage = localStorage;
+adguard.rulesStorageImpl = rulesStorageImpl;
+adguard.rulesStorage = rulesStorage;

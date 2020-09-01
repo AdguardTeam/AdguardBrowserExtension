@@ -17,6 +17,8 @@
 
 import { log } from './utils/log';
 import { backgroundPage } from '../browser/chrome/lib/api/background-page';
+import { rulesStorage, localStorage } from './storage';
+import { whitelist } from './filter/whitelist';
 
 /**
  * Extension initialize logic. Called from start.js
@@ -41,7 +43,7 @@ export const startup = function () {
             log.info(`Uninstall url was set to: ${uninstallUrl}`);
         });
 
-        adguard.whitelist.init();
+        whitelist.init();
         adguard.filteringLog.init();
         adguard.ui.init();
 
@@ -66,7 +68,7 @@ export const startup = function () {
         });
     }
 
-    adguard.rulesStorage.init(() => {
-        adguard.localStorage.init(onLocalStorageLoaded);
+    rulesStorage.init(() => {
+        localStorage.init(onLocalStorageLoaded);
     });
 };
