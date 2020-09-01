@@ -93,5 +93,3 @@ export const adguard = (() => {
         sync: syncModule,
     };
 })();
-
-window.adguard = adguard;

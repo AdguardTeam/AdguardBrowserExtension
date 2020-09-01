@@ -16,10 +16,14 @@
  */
 
 import { application } from './application';
+import { backgroundPage } from '../browser/chrome/lib/api/background-page';
+import { utils } from './utils/common';
+import { listeners } from './notifier';
+import { settings } from './settings/user-settings';
 
 // TODO rename to uiService
 export const ui = (function () {
-    const browserActionTitle = adguard.i18n.getMessage('name');
+    const browserActionTitle = backgroundPage.i18n.getMessage('name');
 
     const contextMenuCallbackMappings = {
         'context_block_site_ads': function () {
@@ -81,11 +85,11 @@ export const ui = (function () {
 
     const extensionStoreLink = (function () {
         let browser = 'chrome';
-        if (adguard.utils.browser.isOperaBrowser()) {
+        if (utils.browser.isOperaBrowser()) {
             browser = 'opera';
-        } else if (adguard.utils.browser.isFirefoxBrowser()) {
+        } else if (utils.browser.isFirefoxBrowser()) {
             browser = 'firefox';
-        } else if (adguard.utils.browser.isEdgeChromiumBrowser()) {
+        } else if (utils.browser.isEdgeChromiumBrowser()) {
             browser = 'edge';
         }
 
@@ -122,7 +126,7 @@ export const ui = (function () {
                 disabled = tabInfo.applicationFilteringDisabled;
                 disabled = disabled || tabInfo.documentWhiteListed;
 
-                if (!disabled && adguard.settings.showPageStatistic()) {
+                if (!disabled && settings.showPageStatistic()) {
                     blocked = tabInfo.totalBlockedTab.toString();
                 } else {
                     blocked = '0';
@@ -134,7 +138,7 @@ export const ui = (function () {
                     icon = adguard.prefs.ICONS.ICON_GREEN;
                 }
 
-                badge = adguard.utils.workaround.getBlockedCountText(blocked);
+                badge = utils.workaround.getBlockedCountText(blocked);
 
                 // If there's an active notification, indicate it on the badge
                 const notification = adguard.notifications.getCurrentNotification(tabInfo);
@@ -160,7 +164,7 @@ export const ui = (function () {
         }
     }
 
-    const updateTabIconAsync = adguard.utils.concurrent.debounce((tab) => {
+    const updateTabIconAsync = utils.concurrent.debounce((tab) => {
         updateTabIcon(tab);
     }, 250);
 
@@ -179,7 +183,7 @@ export const ui = (function () {
         });
     }
 
-    const updatePopupStatsAsync = adguard.utils.concurrent.debounce((tab) => {
+    const updatePopupStatsAsync = utils.concurrent.debounce((tab) => {
         updatePopupStats(tab);
     }, 250);
 
@@ -336,7 +340,7 @@ export const ui = (function () {
             return;
         }
         adguard.contextMenus.removeAll();
-        if (adguard.settings.showContextMenu()) {
+        if (settings.showContextMenu()) {
             if (adguard.prefs.mobile) {
                 customizeMobileContextMenu(tab);
             } else {
@@ -386,8 +390,8 @@ export const ui = (function () {
      * @param previousVersion
      */
     function getUpdateDescriptionMessage(currentVersion, previousVersion) {
-        if (adguard.utils.browser.getMajorVersionNumber(currentVersion) > adguard.utils.browser.getMajorVersionNumber(previousVersion)
-            || adguard.utils.browser.getMinorVersionNumber(currentVersion) > adguard.utils.browser.getMinorVersionNumber(previousVersion)) {
+        if (utils.browser.getMajorVersionNumber(currentVersion) > utils.browser.getMajorVersionNumber(previousVersion)
+            || utils.browser.getMinorVersionNumber(currentVersion) > utils.browser.getMinorVersionNumber(previousVersion)) {
             return adguard.i18n.getMessage('options_popup_version_update_description_major');
         }
 
@@ -403,8 +407,8 @@ export const ui = (function () {
     function showVersionUpdatedPopup(currentVersion, previousVersion) {
         // Suppress for v3.0 hotfix
         // TODO: Remove this in the next update
-        if (adguard.utils.browser.getMajorVersionNumber(currentVersion) == adguard.utils.browser.getMajorVersionNumber(previousVersion)
-            && adguard.utils.browser.getMinorVersionNumber(currentVersion) == adguard.utils.browser.getMinorVersionNumber(previousVersion)) {
+        if (utils.browser.getMajorVersionNumber(currentVersion) == utils.browser.getMajorVersionNumber(previousVersion)
+            && utils.browser.getMinorVersionNumber(currentVersion) == utils.browser.getMinorVersionNumber(previousVersion)) {
             return;
         }
         const message = {
@@ -505,7 +509,7 @@ export const ui = (function () {
     };
 
     var openSiteReportTab = function (url) {
-        const domain = adguard.utils.url.toPunyCode(adguard.utils.url.getDomainName(url));
+        const domain = utils.url.toPunyCode(utils.url.getDomainName(url));
         if (domain) {
             openTab(`https://adguard.com/site.html?domain=${encodeURIComponent(domain)}&utm_source=extension&aid=16593`);
         }
@@ -517,25 +521,25 @@ export const ui = (function () {
      */
     const getStealthString = () => {
         const stealthOptions = [
-            { queryKey: 'ext_hide_referrer', settingKey: adguard.settings.HIDE_REFERRER },
-            { queryKey: 'hide_search_queries', settingKey: adguard.settings.HIDE_SEARCH_QUERIES },
-            { queryKey: 'DNT', settingKey: adguard.settings.SEND_DO_NOT_TRACK },
-            { queryKey: 'x_client', settingKey: adguard.settings.BLOCK_CHROME_CLIENT_DATA },
-            { queryKey: 'webrtc', settingKey: adguard.settings.BLOCK_WEBRTC },
+            { queryKey: 'ext_hide_referrer', settingKey: settings.HIDE_REFERRER },
+            { queryKey: 'hide_search_queries', settingKey: settings.HIDE_SEARCH_QUERIES },
+            { queryKey: 'DNT', settingKey: settings.SEND_DO_NOT_TRACK },
+            { queryKey: 'x_client', settingKey: settings.BLOCK_CHROME_CLIENT_DATA },
+            { queryKey: 'webrtc', settingKey: settings.BLOCK_WEBRTC },
             {
                 queryKey: 'third_party_cookies',
-                settingKey: adguard.settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES,
-                settingValueKey: adguard.settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME,
+                settingKey: settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES,
+                settingValueKey: settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME,
             },
             {
                 queryKey: 'first_party_cookies',
-                settingKey: adguard.settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES,
-                settingValueKey: adguard.settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME,
+                settingKey: settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES,
+                settingValueKey: settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME,
             },
-            { queryKey: 'strip_url', settingKey: adguard.settings.STRIP_TRACKING_PARAMETERS },
+            { queryKey: 'strip_url', settingKey: settings.STRIP_TRACKING_PARAMETERS },
         ];
 
-        const stealthEnabled = !adguard.settings.getProperty(adguard.settings.DISABLE_STEALTH_MODE);
+        const stealthEnabled = !settings.getProperty(settings.DISABLE_STEALTH_MODE);
 
         if (!stealthEnabled) {
             return `&stealth.enabled=${stealthEnabled}`;
@@ -543,7 +547,7 @@ export const ui = (function () {
 
         const stealthOptionsString = stealthOptions.map((option) => {
             const { queryKey, settingKey, settingValueKey } = option;
-            const setting = adguard.settings.getProperty(settingKey);
+            const setting = settings.getProperty(settingKey);
             let settingString;
             if (!setting) {
                 return '';
@@ -551,7 +555,7 @@ export const ui = (function () {
             if (!settingValueKey) {
                 settingString = setting;
             } else {
-                settingString = adguard.settings.getProperty(settingValueKey);
+                settingString = settings.getProperty(settingValueKey);
             }
             return `stealth.${queryKey}=${encodeURIComponent(settingString)}`;
         })
@@ -605,7 +609,7 @@ export const ui = (function () {
     };
 
     const openThankYouPage = function () {
-        const params = adguard.utils.browser.getExtensionParams();
+        const params = utils.browser.getExtensionParams();
         params.push(`_locale=${encodeURIComponent(adguard.app.getLocale())}`);
         const thankyouUrl = `${THANKYOU_PAGE_URL}?${params.join('&')}`;
 
@@ -618,7 +622,7 @@ export const ui = (function () {
                 const tab = tabs[i];
                 if (tab.url === filtersDownloadUrl) {
                     // In YaBrowser don't activate found page
-                    if (!adguard.utils.browser.isYaBrowser()) {
+                    if (!utils.browser.isYaBrowser()) {
                         adguard.tabs.activate(tab.tabId);
                     }
                     adguard.tabs.reload(tab.tabId, thankyouUrl);
@@ -635,7 +639,7 @@ export const ui = (function () {
 
     const openFiltersDownloadPage = function () {
         // TODO move url in constants
-        openTab(getPageUrl('filter-download.html'), { inBackground: adguard.utils.browser.isYaBrowser() });
+        openTab(getPageUrl('filter-download.html'), { inBackground: utils.browser.isYaBrowser() });
     };
 
     var whiteListTab = function (tab) {
@@ -653,7 +657,7 @@ export const ui = (function () {
     };
 
     var changeApplicationFilteringDisabled = function (disabled) {
-        adguard.settings.changeFilteringDisabled(disabled);
+        settings.changeFilteringDisabled(disabled);
         adguard.tabs.getActive((tab) => {
             updateTabIconAndContextMenu(tab, true);
             adguard.tabs.reload(tab.tabId);
@@ -666,11 +670,11 @@ export const ui = (function () {
      * @param {boolean} [showPopup = true] show update filters popup
      */
     const checkFiltersUpdates = (filters, showPopup = true) => {
-        const showPopupEvent = adguard.listeners.UPDATE_FILTERS_SHOW_POPUP;
+        const showPopupEvent = listeners.UPDATE_FILTERS_SHOW_POPUP;
         const successCallback = showPopup
             ? (updatedFilters) => {
-                adguard.listeners.notifyListeners(showPopupEvent, true, updatedFilters);
-                adguard.listeners.notifyListeners(adguard.listeners.FILTERS_UPDATE_CHECK_READY);
+                listeners.notifyListeners(showPopupEvent, true, updatedFilters);
+                listeners.notifyListeners(listeners.FILTERS_UPDATE_CHECK_READY);
             }
             : (updatedFilters) => {
                 if (updatedFilters && updatedFilters.length > 0) {
@@ -680,8 +684,8 @@ export const ui = (function () {
             };
         const errorCallback = showPopup
             ? () => {
-                adguard.listeners.notifyListeners(showPopupEvent, false);
-                adguard.listeners.notifyListeners(adguard.listeners.FILTERS_UPDATE_CHECK_READY);
+                listeners.notifyListeners(showPopupEvent, false);
+                listeners.notifyListeners(listeners.FILTERS_UPDATE_CHECK_READY);
             }
             : () => { };
 
@@ -793,13 +797,13 @@ export const ui = (function () {
             }
         }
 
-        url = adguard.utils.strings.contains(url, '://') ? url : adguard.getURL(url);
+        url = utils.strings.contains(url, '://') ? url : adguard.getURL(url);
         adguard.tabs.getAll((tabs) => {
             // try to find between opened tabs
             if (activateSameTab) {
                 for (let i = 0; i < tabs.length; i += 1) {
                     const tab = tabs[i];
-                    if (adguard.utils.url.urlEquals(tab.url, url)) {
+                    if (utils.url.urlEquals(tab.url, url)) {
                         onTabFound(tab);
                         return;
                     }
@@ -816,8 +820,8 @@ export const ui = (function () {
 
     const init = () => {
         // update icon on event received
-        adguard.listeners.addListener((event, tab, reset) => {
-            if (event !== adguard.listeners.UPDATE_TAB_BUTTON_STATE || !tab) {
+        listeners.addListener((event, tab, reset) => {
+            if (event !== listeners.UPDATE_TAB_BUTTON_STATE || !tab) {
                 return;
             }
 
@@ -850,8 +854,8 @@ export const ui = (function () {
     };
 
     // Update icon and popup stats on ads blocked
-    adguard.listeners.addListener((event, rule, tab, blocked) => {
-        if (event !== adguard.listeners.ADS_BLOCKED || !tab) {
+    listeners.addListener((event, rule, tab, blocked) => {
+        if (event !== listeners.ADS_BLOCKED || !tab) {
             return;
         }
 
@@ -870,8 +874,8 @@ export const ui = (function () {
     });
 
     // Update context menu on change user settings
-    adguard.settings.onUpdated.addListener((setting) => {
-        if (setting === adguard.settings.DISABLE_SHOW_CONTEXT_MENU) {
+    settings.onUpdated.addListener((setting) => {
+        if (setting === settings.DISABLE_SHOW_CONTEXT_MENU) {
             adguard.tabs.getActive((tab) => {
                 updateTabContextMenu(tab);
             });
@@ -879,38 +883,38 @@ export const ui = (function () {
     });
 
     // Update tab icon and context menu on application initialization
-    adguard.listeners.addListener((event) => {
-        if (event === adguard.listeners.APPLICATION_INITIALIZED) {
+    listeners.addListener((event) => {
+        if (event === listeners.APPLICATION_INITIALIZED) {
             adguard.tabs.getActive(updateTabIconAndContextMenu);
         }
     });
 
     // on application updated event
-    adguard.listeners.addListener((event, info) => {
-        if (event === adguard.listeners.APPLICATION_UPDATED) {
-            if (adguard.settings.isShowAppUpdatedNotification()) {
+    listeners.addListener((event, info) => {
+        if (event === listeners.APPLICATION_UPDATED) {
+            if (settings.isShowAppUpdatedNotification()) {
                 showVersionUpdatedPopup(info.currentVersion, info.prevVersion);
             }
         }
     });
 
     // on filter auto-enabled event
-    adguard.listeners.addListener((event, enabledFilters) => {
-        if (event === adguard.listeners.ENABLE_FILTER_SHOW_POPUP) {
+    listeners.addListener((event, enabledFilters) => {
+        if (event === listeners.ENABLE_FILTER_SHOW_POPUP) {
             const result = getFiltersEnabledResultMessage(enabledFilters);
             showAlertMessagePopup(result.title, result.text);
         }
     });
 
     // on filter enabled event
-    adguard.listeners.addListener((event, payload) => {
+    listeners.addListener((event, payload) => {
         switch (event) {
-            case adguard.listeners.FILTER_ENABLE_DISABLE:
+            case listeners.FILTER_ENABLE_DISABLE:
                 if (payload.enabled) {
                     checkFiltersUpdates([payload], false);
                 }
                 break;
-            case adguard.listeners.FILTER_GROUP_ENABLE_DISABLE:
+            case listeners.FILTER_GROUP_ENABLE_DISABLE:
                 if (payload.enabled && payload.filters) {
                     const enabledFilters = payload.filters.filter(f => f.enabled);
                     checkFiltersUpdates(enabledFilters, false);
@@ -922,8 +926,8 @@ export const ui = (function () {
     });
 
     // on filters updated event
-    adguard.listeners.addListener((event, success, updatedFilters) => {
-        if (event === adguard.listeners.UPDATE_FILTERS_SHOW_POPUP) {
+    listeners.addListener((event, success, updatedFilters) => {
+        if (event === listeners.UPDATE_FILTERS_SHOW_POPUP) {
             const result = getFiltersUpdateResultMessage(success, updatedFilters);
             showAlertMessagePopup(result.title, result.text);
         }

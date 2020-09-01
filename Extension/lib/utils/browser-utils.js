@@ -15,7 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-(function (adguard, api) {
+import { prefs } from '../../browser/webkit/lib/prefs';
+
+export const browserUtils = function (api) {
     /**
      * Extension version (x.x.x)
      * @param version
@@ -126,31 +128,31 @@
         },
 
         isYaBrowser() {
-            return adguard.prefs.browser === 'YaBrowser';
+            return prefs.browser === 'YaBrowser';
         },
 
         isOperaBrowser() {
-            return adguard.prefs.browser === 'Opera';
+            return prefs.browser === 'Opera';
         },
 
         isEdgeBrowser() {
-            return adguard.prefs.browser === 'Edge';
+            return prefs.browser === 'Edge';
         },
 
         isEdgeChromiumBrowser() {
-            return adguard.prefs.browser === 'EdgeChromium';
+            return prefs.browser === 'EdgeChromium';
         },
 
         isFirefoxBrowser() {
-            return adguard.prefs.browser === 'Firefox';
+            return prefs.browser === 'Firefox';
         },
 
         isChromeBrowser() {
-            return adguard.prefs.browser === 'Chrome';
+            return prefs.browser === 'Chrome';
         },
 
         isChromium() {
-            return adguard.prefs.platform === 'chromium';
+            return prefs.platform === 'chromium';
         },
 
         isWindowsOs() {
@@ -302,7 +304,7 @@
         EDGE_CREATORS_UPDATE: 15063,
 
         isEdgeBeforeCreatorsUpdate() {
-            return this.isEdgeBrowser() && adguard.prefs.edgeVersion.build < this.EDGE_CREATORS_UPDATE;
+            return this.isEdgeBrowser() && prefs.edgeVersion.build < this.EDGE_CREATORS_UPDATE;
         },
 
         /**
@@ -362,4 +364,4 @@
     };
 
     api.browser = Utils;
-})(adguard, adguard.utils);
+};

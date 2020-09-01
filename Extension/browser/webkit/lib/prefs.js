@@ -16,6 +16,9 @@
  */
 
 // TODO check work of this module in the firefox
+
+import { adguard } from '../../../lib/adguard';
+
 /**
  * Extension global preferences.
  */

@@ -605,6 +605,8 @@ export const backgroundPage = (() => {
     // eslint-disable-next-line prefer-destructuring
     const contextMenus = browser.contextMenus;
 
+    const i18n = browser.i18n;
+
     return {
         runtime,
         getURL,
@@ -613,5 +615,6 @@ export const backgroundPage = (() => {
         webNavigation,
         browserAction,
         contextMenus,
+        i18n,
     };
 })();

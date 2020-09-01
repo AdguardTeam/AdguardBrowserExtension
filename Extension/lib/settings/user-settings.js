@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -15,11 +16,13 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { utils } from '../utils/common';
+
 /**
  * Object that manages user settings.
  * @constructor
  */
-adguard.settings = (function (adguard) {
+export const settings = (() => {
     'use strict';
 
     const DEFAULT_FILTERS_UPDATE_PERIOD = -1;
@@ -54,7 +57,7 @@ adguard.settings = (function (adguard) {
     };
 
     const properties = Object.create(null);
-    const propertyUpdateChannel = adguard.utils.channels.newChannel();
+    const propertyUpdateChannel = utils.channels.newChannel();
 
     /**
      * Lazy default properties
@@ -69,7 +72,7 @@ adguard.settings = (function (adguard) {
                         defaults[settings[name]] = false;
                     }
                 }
-                defaults[settings.DISABLE_SHOW_ADGUARD_PROMO_INFO] = (!adguard.utils.browser.isWindowsOs() && !adguard.utils.browser.isMacOs()) || adguard.utils.browser.isEdgeBrowser();
+                defaults[settings.DISABLE_SHOW_ADGUARD_PROMO_INFO] = (!utils.browser.isWindowsOs() && !utils.browser.isMacOs()) || utils.browser.isEdgeBrowser();
                 defaults[settings.DISABLE_SAFEBROWSING] = true;
                 defaults[settings.DISABLE_COLLECT_HITS] = true;
                 defaults[settings.DEFAULT_WHITE_LIST_MODE] = true;
@@ -81,7 +84,7 @@ adguard.settings = (function (adguard) {
                 defaults[settings.HIDE_REFERRER] = true;
                 defaults[settings.HIDE_SEARCH_QUERIES] = true;
                 defaults[settings.SEND_DO_NOT_TRACK] = true;
-                defaults[settings.BLOCK_CHROME_CLIENT_DATA] = !!adguard.utils.browser.isChromeBrowser();
+                defaults[settings.BLOCK_CHROME_CLIENT_DATA] = !!utils.browser.isChromeBrowser();
                 defaults[settings.BLOCK_WEBRTC] = false;
                 defaults[settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES] = true;
                 defaults[settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME] = DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN;
@@ -314,4 +317,4 @@ adguard.settings = (function (adguard) {
     api.DEFAULT_FILTERS_UPDATE_PERIOD = DEFAULT_FILTERS_UPDATE_PERIOD;
 
     return api;
-})(adguard);
+})();

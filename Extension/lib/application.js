@@ -363,6 +363,3 @@ export const application = (() => {
         getEnabledFiltersFromEnabledGroups,
     };
 })();
-
-// TODO remove when all will be converted to es6
-adguard.application = application;

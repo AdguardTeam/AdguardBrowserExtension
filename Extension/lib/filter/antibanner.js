@@ -16,6 +16,8 @@
  */
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
+import { RequestFilter } from './request-filter';
+import { listeners } from '../notifier';
 
 /**
  * Creating service that manages our filter rules.
@@ -23,7 +25,7 @@ import * as TSUrlFilter from '@adguard/tsurlfilter';
 export const antiBannerService = (() => {
     // Request filter contains all filter rules
     // This class does the actual filtering (checking URLs, constructing CSS/JS to inject, etc)
-    let requestFilter = new adguard.RequestFilter();
+    let requestFilter = new RequestFilter();
 
     // Service is not initialized yet
     let requestFilterInitTime = 0;
@@ -47,9 +49,9 @@ export const antiBannerService = (() => {
      * @type {Array}
      */
     const UPDATE_REQUEST_FILTER_EVENTS = [
-        adguard.listeners.UPDATE_FILTER_RULES,
-        adguard.listeners.FILTER_ENABLE_DISABLE,
-        adguard.listeners.FILTER_GROUP_ENABLE_DISABLE,
+        listeners.UPDATE_FILTER_RULES,
+        listeners.FILTER_ENABLE_DISABLE,
+        listeners.FILTER_GROUP_ENABLE_DISABLE,
     ];
 
     const isUpdateRequestFilterEvent = el => UPDATE_REQUEST_FILTER_EVENTS.indexOf(el.event) >= 0;
@@ -59,9 +61,9 @@ export const antiBannerService = (() => {
      * @type {Array}
      */
     const SAVE_FILTER_RULES_TO_STORAGE_EVENTS = [
-        adguard.listeners.UPDATE_FILTER_RULES,
-        adguard.listeners.ADD_RULES,
-        adguard.listeners.REMOVE_RULE,
+        listeners.UPDATE_FILTER_RULES,
+        listeners.ADD_RULES,
+        listeners.REMOVE_RULE,
     ];
 
     const isSaveRulesToStorageEvent = function (el) {
@@ -83,7 +85,7 @@ export const antiBannerService = (() => {
          */
         const notifyApplicationUpdated = function (runInfo) {
             setTimeout(() => {
-                adguard.listeners.notifyListeners(adguard.listeners.APPLICATION_UPDATED, runInfo);
+                listeners.notifyListeners(listeners.APPLICATION_UPDATED, runInfo);
             }, APP_UPDATED_NOTIFICATION_DELAY);
         };
 
@@ -167,7 +169,7 @@ export const antiBannerService = (() => {
     const stop = function () {
         applicationRunning = false;
         requestFilter = new adguard.RequestFilter();
-        adguard.listeners.notifyListeners(adguard.listeners.REQUEST_FILTER_UPDATED, getRequestFilterInfo());
+        listeners.notifyListeners(listeners.REQUEST_FILTER_UPDATED, getRequestFilterInfo());
     };
 
     /**
@@ -201,7 +203,7 @@ export const antiBannerService = (() => {
         const onFilterLoaded = (success) => {
             if (success) {
                 filter.installed = true;
-                adguard.listeners.notifyListeners(adguard.listeners.FILTER_ADD_REMOVE, filter);
+                listeners.notifyListeners(listeners.FILTER_ADD_REMOVE, filter);
             }
             callback(success);
         };
@@ -315,7 +317,7 @@ export const antiBannerService = (() => {
         if (requestFilterInitTime === 0) {
             // Setting the time of request filter very first initialization
             requestFilterInitTime = new Date().getTime();
-            adguard.listeners.notifyListeners(adguard.listeners.APPLICATION_INITIALIZED);
+            listeners.notifyListeners(listeners.APPLICATION_INITIALIZED);
         }
 
         /**
@@ -353,7 +355,7 @@ export const antiBannerService = (() => {
                 callback();
             }
 
-            adguard.listeners.notifyListeners(adguard.listeners.REQUEST_FILTER_UPDATED, getRequestFilterInfo());
+            listeners.notifyListeners(listeners.REQUEST_FILTER_UPDATED, getRequestFilterInfo());
             adguard.console.info(
                 'Finished request filter initialization in {0} ms. Rules count: {1}',
                 (new Date().getTime() - start),
@@ -533,7 +535,7 @@ export const antiBannerService = (() => {
                 adguard.utils.Promise.all(dfds).then(createRequestFilter);
             } else {
                 // Rules are already in request filter, notify listeners
-                adguard.listeners.notifyListeners(adguard.listeners.REQUEST_FILTER_UPDATED, getRequestFilterInfo());
+                listeners.notifyListeners(listeners.REQUEST_FILTER_UPDATED, getRequestFilterInfo());
             }
         };
 
@@ -557,21 +559,21 @@ export const antiBannerService = (() => {
             onFilterChangeTimeout = setTimeout(processEventsHistory, FILTERS_CHANGE_DEBOUNCE_PERIOD);
         };
 
-        adguard.listeners.addListener((event, filter, rules) => {
+        listeners.addListener((event, filter, rules) => {
             switch (event) {
-                case adguard.listeners.ADD_RULES:
-                case adguard.listeners.REMOVE_RULE:
-                case adguard.listeners.UPDATE_FILTER_RULES:
-                case adguard.listeners.FILTER_ENABLE_DISABLE:
+                case listeners.ADD_RULES:
+                case listeners.REMOVE_RULE:
+                case listeners.UPDATE_FILTER_RULES:
+                case listeners.FILTER_ENABLE_DISABLE:
                     processFilterEvent(event, filter, rules);
                     break;
                 default: break;
             }
         });
 
-        adguard.listeners.addListener((event, group) => {
+        listeners.addListener((event, group) => {
             switch (event) {
-                case adguard.listeners.FILTER_GROUP_ENABLE_DISABLE:
+                case listeners.FILTER_GROUP_ENABLE_DISABLE:
                     processGroupEvent(event, group);
                     break;
                 default:
@@ -601,16 +603,16 @@ export const antiBannerService = (() => {
                 const eventRules = event.rules;
 
                 switch (eventType) {
-                    case adguard.listeners.ADD_RULES:
+                    case listeners.ADD_RULES:
                         loadedRulesText = loadedRulesText.concat(eventRules);
                         adguard.console.debug('Add {0} rules to filter {1}', eventRules.length, filterId);
                         break;
-                    case adguard.listeners.REMOVE_RULE:
+                    case listeners.REMOVE_RULE:
                         var actionRule = eventRules[0];
                         adguard.utils.collections.removeAll(loadedRulesText, actionRule);
                         adguard.console.debug('Remove {0} rule from filter {1}', actionRule, filterId);
                         break;
-                    case adguard.listeners.UPDATE_FILTER_RULES:
+                    case listeners.UPDATE_FILTER_RULES:
                         loadedRulesText = eventRules;
                         adguard.console.debug('Update filter {0} rules count to {1}', filterId, eventRules.length);
                         break;
@@ -624,8 +626,8 @@ export const antiBannerService = (() => {
             adguard.rulesStorage.write(filterId, converted, () => {
                 dfd.resolve();
                 if (filterId === adguard.utils.filters.USER_FILTER_ID) {
-                    adguard.listeners.notifyListeners(
-                        adguard.listeners.UPDATE_USER_FILTER_RULES,
+                    listeners.notifyListeners(
+                        listeners.UPDATE_USER_FILTER_RULES,
                         getRequestFilterInfo()
                     );
                 }
@@ -699,6 +701,3 @@ export const antiBannerService = (() => {
         getRequestFilterInfo,
     };
 })();
-
-// TODO remove when all converted to es6
-adguard.antiBannerService = antiBannerService;

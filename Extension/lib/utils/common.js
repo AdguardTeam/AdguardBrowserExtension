@@ -18,6 +18,7 @@
 import * as TSUrlFilter from '@adguard/tsurlfilter';
 import { Deferred } from 'simply-deferred';
 import { log } from './log';
+import { browserUtils } from './browser-utils';
 
 /**
  * Request types enumeration
@@ -741,6 +742,11 @@ export const utils = (() => ({
 
     api.channels = EventChannels;
 })(utils);
+
+/**
+ * Append browser utils
+ */
+browserUtils(utils);
 
 /**
  * Promises wrapper

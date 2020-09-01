@@ -17,6 +17,9 @@
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
 import { tabsApi } from '../tabs/tabs-api';
+import { BACKGROUND_TAB_ID } from '../utils/common';
+import { backgroundPage } from '../../browser/chrome/lib/api/background-page';
+import { prefs } from '../../browser/webkit/lib/prefs';
 
 /**
  * Object for log http requests
@@ -26,17 +29,18 @@ export const filteringLog = (function () {
 
     const REQUESTS_SIZE_PER_TAB = 1000;
 
-    const backgroundTabId = adguard.BACKGROUND_TAB_ID;
+    const backgroundTabId = BACKGROUND_TAB_ID;
+
     const backgroundTab = {
         tabId: backgroundTabId,
-        title: adguard.i18n.getMessage('background_tab_title'),
+        title: backgroundPage.i18n.getMessage('background_tab_title'),
     };
 
     const tabsInfoMap = Object.create(null);
     let openedFilteringLogsPage = 0;
 
     // Force to add background tab if it's defined
-    if (adguard.prefs.features.hasBackgroundTab) {
+    if (prefs.features.hasBackgroundTab) {
         tabsInfoMap[backgroundTabId] = backgroundTab;
     }
 
@@ -554,6 +558,3 @@ export const filteringLog = (function () {
         onCloseFilteringLogPage,
     };
 })();
-
-// TODO remove when all modules would be imported
-adguard.filteringLog = filteringLog;

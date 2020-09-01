@@ -15,9 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global TSUrlFilter */
+import * as TSUrlFilre from '@adguard/tsurlfilter';
 
-(function (adguard) {
+export const RequestFilter = (() => {
     'use strict';
 
     /**
@@ -364,5 +364,5 @@
         },
     };
 
-    adguard.RequestFilter = RequestFilter;
-})(adguard);
+    return RequestFilter;
+})();
