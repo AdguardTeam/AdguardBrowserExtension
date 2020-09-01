@@ -15,12 +15,12 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global TSUrlFilter */
+import * as TSUrlFilter from '@adguard/tsurlfilter';
 
 /**
  * Object for log http requests
  */
-adguard.filteringLog = (function (adguard) {
+export const filteringLog = (function () {
     'use strict';
 
     const REQUESTS_SIZE_PER_TAB = 1000;
@@ -552,4 +552,7 @@ adguard.filteringLog = (function (adguard) {
         onOpenFilteringLogPage,
         onCloseFilteringLogPage,
     };
-})(adguard);
+})();
+
+// TODO remove when all modules would be imported
+adguard.filteringLog = filteringLog;

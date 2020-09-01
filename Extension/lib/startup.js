@@ -19,6 +19,8 @@ import { log } from './utils/log';
 import { backgroundPage } from '../browser/chrome/lib/api/background-page';
 import { rulesStorage, localStorage } from './storage';
 import { whitelist } from './filter/whitelist';
+import { filteringLog } from './filter/filtering-log';
+import { ui } from './ui-service';
 
 /**
  * Extension initialize logic. Called from start.js
@@ -44,8 +46,8 @@ export const startup = function () {
         });
 
         whitelist.init();
-        adguard.filteringLog.init();
-        adguard.ui.init();
+        filteringLog.init();
+        ui.init();
 
         /**
          * Start application

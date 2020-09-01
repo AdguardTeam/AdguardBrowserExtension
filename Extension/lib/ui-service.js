@@ -15,7 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-adguard.ui = (function (adguard) { // jshint ignore:line
+// TODO rename to uiService
+export const ui = (function () {
     const browserActionTitle = adguard.i18n.getMessage('name');
 
     const contextMenuCallbackMappings = {
@@ -952,4 +953,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
         showAlertMessagePopup,
     };
-})(adguard);
+})();
+
+adguard.ui = ui;
