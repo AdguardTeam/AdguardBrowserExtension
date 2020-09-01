@@ -15,12 +15,14 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global adguard, Redirects */
+// TODO fix scriptlets library to expose Redirects class
+import { redirects } from 'scriptlets';
+const Redirects = redirects.Redirects;
 
 /**
  * Redirects service class
  */
-adguard.redirectFilterService = (function (adguard) {
+export const redirectFilterService = (function () {
     let redirects = null;
 
     /**
@@ -59,4 +61,4 @@ adguard.redirectFilterService = (function (adguard) {
         hasRedirect,
         createRedirectUrl,
     };
-})(adguard);
+})();

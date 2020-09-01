@@ -26,7 +26,7 @@
  *    or from this DEFAULT_SCRIPT_RULES object
  */
 
-adguard.LocalScriptRulesService = (function () {
+export const LocalScriptRulesService = (function () {
     let DEFAULT_SCRIPT_RULES = Object.create(null);
 
     /**

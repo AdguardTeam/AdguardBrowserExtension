@@ -155,13 +155,15 @@ let FileDownloadWrapper = (() => {
  * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/917
  */
 
-// Override FileDownload object for node environment
-if (typeof FileDownloadWrapper === 'undefined') {
-    //noinspection JSAnnotator
-    FileDownloadWrapper = require('./node/file-download-wrapper');
-}
+// TODO fix https://github.com/AdguardTeam/FiltersDownloader library
+//  build for browser and for node environments
+// // Override FileDownload object for node environment
+// if (typeof FileDownloadWrapper === 'undefined') {
+//     //noinspection JSAnnotator
+//     FileDownloadWrapper = require('./node/file-download-wrapper');
+// }
 
-const FilterDownloader = (() => {
+const FiltersDownloader = (() => {
     "use strict";
 
     const CONDITION_DIRECTIVE_START = "!#if";
@@ -556,5 +558,5 @@ const FilterDownloader = (() => {
 })();
 
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = FilterDownloader;
+    module.exports = FiltersDownloader;
 }

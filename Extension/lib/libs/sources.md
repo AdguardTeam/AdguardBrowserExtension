@@ -56,7 +56,7 @@
 ​
 These libs are developed by us from scratch.
 ​
-#### `filter-downloader.js`
+#### `filters-downloader.js`
 * v1.0.11
 * Library source: https://github.com/AdguardTeam/FiltersDownloader/tree/v1.0.11
 

@@ -15,8 +15,11 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global FilterDownloader */
-adguard.backend = (function (adguard) {
+import FiltersDownloader from '../../libs/filters-downloader';
+import { utils } from '../../utils/common';
+import { backgroundPage } from '../../../browser/chrome/lib/api/background-page';
+
+export const backend = (function () {
     'use strict';
 
     /**
@@ -42,11 +45,11 @@ adguard.backend = (function (adguard) {
         // Url for load filters metadata and rules
         get filtersUrl() {
             return adguard.lazyGet(this, 'filtersUrl', () => {
-                if (adguard.utils.browser.isFirefoxBrowser()) {
+                if (utils.browser.isFirefoxBrowser()) {
                     return 'https://filters.adtidy.org/extension/firefox';
-                } if (adguard.utils.browser.isEdgeBrowser()) {
+                } if (utils.browser.isEdgeBrowser()) {
                     return 'https://filters.adtidy.org/extension/edge';
-                } if (adguard.utils.browser.isOperaBrowser()) {
+                } if (utils.browser.isOperaBrowser()) {
                     return 'https://filters.adtidy.org/extension/opera';
                 }
                 return 'https://filters.adtidy.org/extension/chromium';
@@ -65,7 +68,7 @@ adguard.backend = (function (adguard) {
 
         // URL for checking filter updates
         get filtersMetadataUrl() {
-            const params = adguard.utils.browser.getExtensionParams();
+            const params = utils.browser.getExtensionParams();
             return `${this.filtersUrl}/filters.js?${params.join('&')}`;
         },
 
@@ -107,15 +110,15 @@ adguard.backend = (function (adguard) {
     };
 
     /**
-     * FilterDownloader constants
+     * FiltersDownloader constants
      */
     const FilterCompilerConditionsConstants = {
         adguard: true,
-        adguard_ext_chromium: adguard.utils.browser.isChromium(),
-        adguard_ext_firefox: adguard.utils.browser.isFirefoxBrowser(),
-        adguard_ext_edge: adguard.utils.browser.isEdgeBrowser(),
+        adguard_ext_chromium: utils.browser.isChromium(),
+        adguard_ext_firefox: utils.browser.isFirefoxBrowser(),
+        adguard_ext_edge: utils.browser.isEdgeBrowser(),
         adguard_ext_safari: false,
-        adguard_ext_opera: adguard.utils.browser.isOperaBrowser(),
+        adguard_ext_opera: utils.browser.isOperaBrowser(),
     };
 
     /**
@@ -168,7 +171,7 @@ adguard.backend = (function (adguard) {
      */
     function getUrlForDownloadFilterRules(filterId, useOptimizedFilters) {
         const url = useOptimizedFilters ? settings.optimizedFilterRulesUrl : settings.filterRulesUrl;
-        return adguard.utils.strings.replaceAll(url, '{filter_id}', filterId);
+        return utils.strings.replaceAll(url, '{filter_id}', filterId);
     }
 
     /**
@@ -214,7 +217,7 @@ adguard.backend = (function (adguard) {
                 }
                 const filterMetadataList = [];
                 for (let i = 0; i < filterIds.length; i += 1) {
-                    const filter = adguard.utils.collections.find(metadata.filters, 'filterId', filterIds[i]);
+                    const filter = utils.collections.find(metadata.filters, 'filterId', filterIds[i]);
                     if (filter) {
                         filterMetadataList.push(adguard.subscriptions.createSubscriptionFilterFromJSON(filter));
                     }
@@ -242,13 +245,13 @@ adguard.backend = (function (adguard) {
         if (forceRemote || settings.localFilterIds.indexOf(filterId) < 0) {
             url = getUrlForDownloadFilterRules(filterId, useOptimizedFilters);
         } else {
-            url = adguard.getURL(`${settings.localFiltersFolder}/filter_${filterId}.txt`);
+            url = backgroundPage.getURL(`${settings.localFiltersFolder}/filter_${filterId}.txt`);
             if (useOptimizedFilters) {
-                url = adguard.getURL(`${settings.localFiltersFolder}/filter_mobile_${filterId}.txt`);
+                url = backgroundPage.getURL(`${settings.localFiltersFolder}/filter_mobile_${filterId}.txt`);
             }
         }
 
-        return FilterDownloader.download(url, FilterCompilerConditionsConstants);
+        return FiltersDownloader.download(url, FilterCompilerConditionsConstants);
     };
 
     /**
@@ -282,7 +285,7 @@ adguard.backend = (function (adguard) {
             errorCallback(message);
         };
 
-        FilterDownloader.download(url, FilterCompilerConditionsConstants).then(success, error);
+        FiltersDownloader.download(url, FilterCompilerConditionsConstants).then(success, error);
     };
 
     const createError = (message, url, response) => {
@@ -297,7 +300,7 @@ adguard.backend = (function (adguard) {
      * Loads filter groups metadata
      */
     const loadLocalFiltersMetadata = () => new Promise((resolve, reject) => {
-        const url = adguard.getURL(`${settings.localFiltersFolder}/filters.json`);
+        const url = backgroundPage.getURL(`${settings.localFiltersFolder}/filters.json`);
         const success = function (response) {
             if (response && response.responseText) {
                 const metadata = parseJson(response.responseText);
@@ -324,7 +327,7 @@ adguard.backend = (function (adguard) {
      * @returns {Promise}
      */
     const loadLocalFiltersI18Metadata = () => new Promise((resolve, reject) => {
-        const url = adguard.getURL(`${settings.localFiltersFolder}/filters_i18n.json`);
+        const url = backgroundPage.getURL(`${settings.localFiltersFolder}/filters_i18n.json`);
         const success = function (response) {
             if (response && response.responseText) {
                 const metadata = parseJson(response.responseText);
@@ -351,7 +354,7 @@ adguard.backend = (function (adguard) {
      * @returns {Promise}
      */
     const loadLocalScriptRules = () => new Promise((resolve, reject) => {
-        const url = adguard.getURL(`${settings.localFiltersFolder}/local_script_rules.json`);
+        const url = backgroundPage.getURL(`${settings.localFiltersFolder}/local_script_rules.json`);
 
         const success = (response) => {
             if (response && response.responseText) {
@@ -379,7 +382,7 @@ adguard.backend = (function (adguard) {
      * @returns {Promise}
      */
     const loadRedirectSources = () => new Promise((resolve, reject) => {
-        const url = `${adguard.getURL(settings.redirectSourcesFolder)}/redirects.yml`;
+        const url = `${backgroundPage.getURL(settings.redirectSourcesFolder)}/redirects.yml`;
 
         const success = (response) => {
             if (response && response.responseText) {
@@ -556,4 +559,4 @@ adguard.backend = (function (adguard) {
 
         configure,
     };
-})(adguard);
+})();

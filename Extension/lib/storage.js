@@ -20,11 +20,6 @@ import { log } from './utils/log';
 import { localStorageImpl } from '../browser/chrome/lib/utils/local-storage';
 import { rulesStorageImpl } from '../browser/webkit/lib/utils/rules-storage';
 
-// TODO consider moving into helpers
-const notImplemented = () => {
-    throw new Error('Not implemented');
-};
-
 /**
  * This class manages local storage
  */

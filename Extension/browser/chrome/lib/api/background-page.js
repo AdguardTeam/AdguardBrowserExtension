@@ -605,6 +605,7 @@ export const backgroundPage = (() => {
     // eslint-disable-next-line prefer-destructuring
     const contextMenus = browser.contextMenus;
 
+    // eslint-disable-next-line prefer-destructuring
     const i18n = browser.i18n;
 
     return {

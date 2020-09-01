@@ -23,7 +23,7 @@ const API_SCRIPTS = [
     'Extension/lib/libs/deferred.js',
     'Extension/lib/libs/sha256.js',
     'Extension/lib/utils/punycode.js',
-    'Extension/lib/libs/filter-downloader.js',
+    'Extension/lib/libs/filters-downloader.js',
     'Extension/lib/libs/crypto-js/core.js',
     'Extension/lib/libs/crypto-js/md5.js',
     'Extension/lib/libs/scriptlets/redirects.js',

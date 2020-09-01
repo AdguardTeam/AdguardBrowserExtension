@@ -18,6 +18,12 @@
 import CryptoJS from 'crypto-js';
 import { listeners } from '../../notifier';
 import { log } from '../../utils/log';
+import { backend } from './service-client';
+import { backgroundPage } from '../../../browser/chrome/lib/api/background-page';
+import { localStorage } from '../../storage';
+import { utils } from '../../utils/common';
+import { LocalScriptRulesService } from '../rules/local-script-rules';
+import { redirectFilterService } from '../services/redirect-service';
 
 /**
  * Service that loads and parses filters metadata from backend server.
@@ -308,7 +314,7 @@ export const subscriptions = (() => {
      * @returns {Array}
      */
     const loadCustomFilters = () => {
-        const customFilters = adguard.localStorage.getItem(CUSTOM_FILTERS_JSON_KEY);
+        const customFilters = localStorage.getItem(CUSTOM_FILTERS_JSON_KEY);
         return customFilters ? JSON.parse(customFilters) : [];
     };
 
@@ -331,7 +337,7 @@ export const subscriptions = (() => {
         if (!found) {
             updatedCustomFilters.push(filter);
         }
-        adguard.localStorage.setItem(CUSTOM_FILTERS_JSON_KEY, JSON.stringify(updatedCustomFilters));
+        localStorage.setItem(CUSTOM_FILTERS_JSON_KEY, JSON.stringify(updatedCustomFilters));
     };
 
     /**
@@ -347,7 +353,7 @@ export const subscriptions = (() => {
             }
             return true;
         });
-        adguard.localStorage.setItem(CUSTOM_FILTERS_JSON_KEY, JSON.stringify(updatedCustomFilters));
+        localStorage.setItem(CUSTOM_FILTERS_JSON_KEY, JSON.stringify(updatedCustomFilters));
     };
 
     /**
@@ -359,7 +365,7 @@ export const subscriptions = (() => {
      */
     function didFilterUpdate(newVersion, newChecksum, oldFilter) {
         if (newVersion) {
-            return !adguard.utils.browser.isGreaterOrEqualsVersion(oldFilter.version, newVersion);
+            return !utils.browser.isGreaterOrEqualsVersion(oldFilter.version, newVersion);
         }
         if (!oldFilter.checksum) {
             return true;
@@ -422,7 +428,7 @@ export const subscriptions = (() => {
      */
     const updateCustomFilter = function (url, options, callback) {
         const { title, trusted } = options;
-        adguard.backend.loadFilterRulesBySubscriptionUrl(url, (rules) => {
+        backend.loadFilterRulesBySubscriptionUrl(url, (rules) => {
             const filterId = addFilterId();
             const parsedData = parseFilterDataFromHeader(rules);
             let { timeUpdated } = parsedData;
@@ -509,7 +515,7 @@ export const subscriptions = (() => {
     const getCustomFilterInfo = (url, options, callback) => {
         const { title } = options;
 
-        adguard.backend.loadFilterRulesBySubscriptionUrl(url, (rules) => {
+        backend.loadFilterRulesBySubscriptionUrl(url, (rules) => {
             const parsedData = parseFilterDataFromHeader(rules);
             let { name, timeUpdated } = parsedData;
             const {
@@ -568,7 +574,7 @@ export const subscriptions = (() => {
      * @returns {Promise} returns promise
      */
     async function loadMetadata() {
-        const metadata = await adguard.backend.loadLocalFiltersMetadata();
+        const metadata = await backend.loadLocalFiltersMetadata();
         tags = [];
         groups = [];
         groupsMap = {};
@@ -591,9 +597,11 @@ export const subscriptions = (() => {
             groupsMap[group.groupId] = group;
         }
 
-        const customFiltersGroup = new SubscriptionGroup(CUSTOM_FILTERS_GROUP_ID,
-            adguard.i18n.getMessage('options_antibanner_custom_group'),
-            CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER);
+        const customFiltersGroup = new SubscriptionGroup(
+            CUSTOM_FILTERS_GROUP_ID,
+            backgroundPage.i18n.getMessage('options_antibanner_custom_group'),
+            CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER
+        );
         groups.push(customFiltersGroup);
         groupsMap[customFiltersGroup.groupId] = customFiltersGroup;
 
@@ -622,7 +630,7 @@ export const subscriptions = (() => {
         const { tagId } = tag;
         const localizations = i18nMetadata[tagId];
         if (localizations) {
-            const locale = adguard.utils.i18n.normalize(localizations, adguard.app.getLocale());
+            const locale = utils.i18n.normalize(localizations, backgroundPage.app.getLocale());
             const localization = localizations[locale];
             if (localization) {
                 tag.name = localization.name;
@@ -641,7 +649,7 @@ export const subscriptions = (() => {
         const { filterId } = filter;
         const localizations = i18nMetadata[filterId];
         if (localizations) {
-            const locale = adguard.utils.i18n.normalize(localizations, adguard.app.getLocale());
+            const locale = utils.i18n.normalize(localizations, backgroundPage.app.getLocale());
             const localization = localizations[locale];
             if (localization) {
                 filter.name = localization.name;
@@ -660,7 +668,7 @@ export const subscriptions = (() => {
         const { groupId } = group;
         const localizations = i18nMetadata[groupId];
         if (localizations) {
-            const locale = adguard.utils.i18n.normalize(localizations, adguard.app.getLocale());
+            const locale = utils.i18n.normalize(localizations, backgroundPage.app.getLocale());
             const localization = localizations[locale];
             if (localization) {
                 group.groupName = localization.name;
@@ -673,7 +681,7 @@ export const subscriptions = (() => {
      * @return {Promise} returns promise
      */
     async function loadMetadataI18n() {
-        const i18nMetadata = await adguard.backend.loadLocalFiltersI18Metadata();
+        const i18nMetadata = await backend.loadLocalFiltersI18Metadata();
         const tagsI18n = i18nMetadata.tags;
         const filtersI18n = i18nMetadata.filters;
         const groupsI18n = i18nMetadata.groups;
@@ -699,9 +707,9 @@ export const subscriptions = (() => {
      * @private
      */
     async function loadLocalScriptRules() {
-        const localScriptRulesService = adguard.LocalScriptRulesService;
+        const localScriptRulesService = LocalScriptRulesService;
         if (typeof localScriptRulesService !== 'undefined') {
-            const json = await adguard.backend.loadLocalScriptRules();
+            const json = await backend.loadLocalScriptRules();
             localScriptRulesService.setLocalScriptRules(json);
             log.info('Filters local script rules loaded');
         }
@@ -713,9 +721,9 @@ export const subscriptions = (() => {
      * @private
      */
     async function loadRedirectSources() {
-        const redirectSourcesService = adguard.redirectFilterService;
+        const redirectSourcesService = redirectFilterService;
         if (typeof redirectSourcesService !== 'undefined') {
-            const txt = await adguard.backend.loadRedirectSources();
+            const txt = await backend.loadRedirectSources();
             redirectSourcesService.init(txt);
             log.info('Filters redirect sources loaded');
         }
@@ -804,7 +812,7 @@ export const subscriptions = (() => {
             const filter = filters[i];
             const { languages } = filter;
             if (languages && languages.length > 0) {
-                const language = adguard.utils.i18n.normalize(languages, locale);
+                const language = utils.i18n.normalize(languages, locale);
                 if (language) {
                     filterIds.push(filter.filterId);
                 }
@@ -817,12 +825,12 @@ export const subscriptions = (() => {
         // Get language-specific filters by user locale
         let filterIds = [];
 
-        let localeFilterIds = getFilterIdsForLanguage(adguard.app.getLocale());
+        let localeFilterIds = getFilterIdsForLanguage(backgroundPage.app.getLocale());
         filterIds = filterIds.concat(localeFilterIds);
 
         // Get language-specific filters by navigator languages
         // Get the 2 most commonly used languages
-        const languages = adguard.utils.browser.getNavigatorLanguages(2);
+        const languages = utils.browser.getNavigatorLanguages(2);
         for (let i = 0; i < languages.length; i += 1) {
             localeFilterIds = getFilterIdsForLanguage(languages[i]);
             filterIds = filterIds.concat(localeFilterIds);
