@@ -18,6 +18,7 @@
 import { utils } from '../utils/common';
 import { windowsImpl, tabsImpl } from '../../browser/chrome/lib/api/tabs';
 
+// TODO split into windows and tabs api
 export const tabsApi = (() => {
     const windows = (windowsImpl => {
         // eslint-disable-next-line no-unused-vars

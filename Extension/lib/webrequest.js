@@ -17,6 +17,8 @@
 
 /* global TSUrlFilter */
 
+import { requestContextStorage } from './filter/request-context-storage';
+
 (function (adguard) {
     'use strict';
 
@@ -86,7 +88,7 @@
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_TAB_BUTTON_STATE, tab, true);
 
             // Record request context for the main frame
-            adguard.requestContextStorage.record(requestId, requestUrl, requestUrl, originUrl, requestType, tab);
+            requestContextStorage.record(requestId, requestUrl, requestUrl, originUrl, requestType, tab);
 
             // Strip tracking parameters
             const cleansedUrl = adguard.stealthService.removeTrackersFromUrl(requestId);
@@ -107,7 +109,7 @@
              */
             const tabRequestRule = adguard.frames.getFrameWhiteListRule(tab);
             if (tabRequestRule) {
-                adguard.requestContextStorage.update(requestId, { requestRule: tabRequestRule });
+                requestContextStorage.update(requestId, { requestRule: tabRequestRule });
             }
         }
 
@@ -126,7 +128,7 @@
         }
 
         // Record request for other types
-        adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, originUrl, requestType, tab);
+        requestContextStorage.record(requestId, requestUrl, referrerUrl, originUrl, requestType, tab);
 
         // Strip tracking parameters
         let cleansedUrl = adguard.stealthService.removeTrackersFromUrl(requestId);
@@ -156,7 +158,7 @@
         );
 
         if (requestRule) {
-            adguard.requestContextStorage.update(requestId, { requestRule });
+            requestContextStorage.update(requestId, { requestRule });
         }
 
         const response = adguard.webRequestService.getBlockedResponseByRule(
@@ -257,7 +259,7 @@
             requestHeaders,
         } = requestDetails;
 
-        adguard.requestContextStorage.update(requestId, { requestHeaders });
+        requestContextStorage.update(requestId, { requestHeaders });
 
         let requestHeadersModified = false;
 
@@ -278,7 +280,7 @@
         }
 
         if (requestHeadersModified) {
-            adguard.requestContextStorage.update(requestId, { modifiedRequestHeaders: requestHeaders });
+            requestContextStorage.update(requestId, { modifiedRequestHeaders: requestHeaders });
             return { requestHeaders };
         }
 
@@ -303,7 +305,7 @@
         const { statusCode } = requestDetails;
         const { method } = requestDetails;
 
-        adguard.requestContextStorage.update(requestId, { responseHeaders });
+        requestContextStorage.update(requestId, { responseHeaders });
 
         adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
 
@@ -355,7 +357,7 @@
         }
 
         if (responseHeadersModified) {
-            adguard.requestContextStorage.update(requestId, { modifiedResponseHeaders: responseHeaders });
+            requestContextStorage.update(requestId, { modifiedResponseHeaders: responseHeaders });
             return { responseHeaders };
         }
     }
@@ -398,7 +400,7 @@
                 }
             }
             if (cspRules.length > 0) {
-                adguard.requestContextStorage.update(requestId, { cspRules });
+                requestContextStorage.update(requestId, { cspRules });
             }
         }
 
@@ -994,12 +996,12 @@
      */
     adguard.webRequest.onCompleted.addListener(({ requestId }) => {
         adguard.cookieFiltering.modifyCookies(requestId);
-        adguard.requestContextStorage.onRequestCompleted(requestId);
+        requestContextStorage.onRequestCompleted(requestId);
     }, ['<all_urls>']);
 
     adguard.webRequest.onErrorOccurred.addListener(({ requestId }) => {
         adguard.cookieFiltering.modifyCookies(requestId);
-        adguard.requestContextStorage.onRequestCompleted(requestId);
+        requestContextStorage.onRequestCompleted(requestId);
     }, ['<all_urls>']);
 
     /**
@@ -1009,7 +1011,7 @@
      */
     adguard.webRequest.onBeforeRedirect.addListener(({ requestId, redirectUrl }) => {
         if (redirectUrl && redirectUrl.indexOf('data:') === 0) {
-            adguard.requestContextStorage.onRequestCompleted(requestId);
+            requestContextStorage.onRequestCompleted(requestId);
         }
     }, ['<all_urls>']);
 

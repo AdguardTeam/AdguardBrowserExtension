@@ -18,7 +18,7 @@
 /**
  * Application settings provider.
  */
-(function (api, adguard) {
+export const settingsProvider = (function () {
     const FILTERS_SECTION = 'filters.json';
     const GENERAL_SECTION = 'general-settings.json';
     const EXTENSION_SPECIFIC_SECTION = 'extension-specific-settings.json';
@@ -462,7 +462,7 @@
     };
 
     // EXPOSE
-    api.settingsProvider = {
+    return {
         /**
          * Loads settings backup json
          */
@@ -473,4 +473,4 @@
          */
         applySettingsBackup: applySettingsBackupJson,
     };
-})(adguard.sync, adguard);
+})();

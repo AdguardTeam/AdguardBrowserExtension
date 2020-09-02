@@ -15,7 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global TSUrlFilter */
+// TODO check if it is possible to import TSUrlFilter as named expression import { TSUrlFilter } from '...
+import * as TSUrlFilter from '@adguard/tsurlfilter';
+import { settingsProvider } from './settings/settings-provider';
 
 /**
  *  Initialize Content => BackgroundPage messaging
@@ -375,11 +377,11 @@
                 const settingsCb = (json) => {
                     callback({ content: json, appVersion });
                 };
-                adguard.sync.settingsProvider.loadSettingsBackup(settingsCb);
+                settingsProvider.loadSettingsBackup(settingsCb);
                 return true; // Async
             }
             case 'applySettingsJson':
-                adguard.sync.settingsProvider.applySettingsBackup(message.json);
+                settingsProvider.applySettingsBackup(message.json);
                 break;
             case 'disableGetPremiumNotification':
                 adguard.settings.disableShowAdguardPromoInfo();

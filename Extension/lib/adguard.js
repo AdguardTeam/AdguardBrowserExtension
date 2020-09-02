@@ -80,9 +80,11 @@ export const adguard = (() => {
     };
 
     return {
+        // TODO move lazyGet and lazyGetClear into separate module, may be helpers or utils
         lazyGet,
         lazyGetClear,
 
+        // TODO handle simple adguard API when some modules should be turned off
         /**
          * Define dummy modules.
          * In case of simple adguard API, some modules aren't supported

@@ -15,7 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global TSUrlFilter */
+import * as TSUrlFilter from '@adguard/tsurlfilter';
+import { requestContextStorage } from '../../../lib/filter/request-context-storage';
 
 /**
  * Listens content filtering callbacks
@@ -31,7 +32,7 @@ const modificationsListener = {
      * @param {Object} rule - html rule
      */
     onHtmlRuleApplied(tabId, requestId, elementString, frameUrl, rule) {
-        adguard.requestContextStorage.bindContentRule(requestId, rule, elementString);
+        requestContextStorage.bindContentRule(requestId, rule, elementString);
     },
 
     /**
@@ -43,7 +44,7 @@ const modificationsListener = {
      * @param {Object} rules - cookie rule
      */
     onReplaceRulesApplied(tabId, requestId, frameUrl, rules) {
-        adguard.requestContextStorage.update(requestId, { replaceRules: rules });
+        requestContextStorage.update(requestId, { replaceRules: rules });
     },
 
     /**
@@ -53,7 +54,7 @@ const modificationsListener = {
      */
     onModificationStarted(requestId) {
         // Call this method to prevent removing context on request complete/error event
-        adguard.requestContextStorage.onContentModificationStarted(requestId);
+        requestContextStorage.onContentModificationStarted(requestId);
     },
 
     /**
@@ -62,8 +63,8 @@ const modificationsListener = {
      * @param requestId
      */
     onModificationFinished(requestId) {
-        adguard.requestContextStorage.onContentModificationFinished(requestId);
+        requestContextStorage.onContentModificationFinished(requestId);
     },
 };
 
-adguard.contentFiltering = new TSUrlFilter.ContentFiltering(modificationsListener);
+export const contentFiltering = new TSUrlFilter.ContentFiltering(modificationsListener);
