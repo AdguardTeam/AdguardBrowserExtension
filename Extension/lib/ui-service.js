@@ -17,10 +17,13 @@
 
 import { application } from './application';
 import { backgroundPage } from '../browser/chrome/lib/api/background-page';
-import { utils, unload } from './utils/common';
+import { utils, unload, BACKGROUND_TAB_ID } from './utils/common';
 import { listeners } from './notifier';
 import { settings } from './settings/user-settings';
 import { tabsApi } from './tabs/tabs-api';
+import { prefs } from '../browser/webkit/lib/prefs';
+import { pageStats } from './filter/page-stats';
+import { frames } from './tabs/frames';
 
 // TODO rename to uiService
 export const ui = (function () {
@@ -111,7 +114,7 @@ export const ui = (function () {
         let badge;
         let badgeColor = '#555';
 
-        if (tab.tabId === adguard.BACKGROUND_TAB_ID) {
+        if (tab.tabId === BACKGROUND_TAB_ID) {
             return;
         }
 
@@ -123,7 +126,7 @@ export const ui = (function () {
                 let blocked;
                 let disabled;
 
-                const tabInfo = adguard.frames.getFrameInfo(tab);
+                const tabInfo = frames.getFrameInfo(tab);
                 disabled = tabInfo.applicationFilteringDisabled;
                 disabled = disabled || tabInfo.documentWhiteListed;
 
@@ -134,15 +137,15 @@ export const ui = (function () {
                 }
 
                 if (disabled) {
-                    icon = adguard.prefs.ICONS.ICON_GRAY;
+                    icon = prefs.ICONS.ICON_GRAY;
                 } else {
-                    icon = adguard.prefs.ICONS.ICON_GREEN;
+                    icon = prefs.ICONS.ICON_GREEN;
                 }
 
                 badge = utils.workaround.getBlockedCountText(blocked);
 
                 // If there's an active notification, indicate it on the badge
-                const notification = adguard.notifications.getCurrentNotification(tabInfo);
+                const notification = adguard.notifications.getCurrentNotification();
                 if (notification) {
                     badge = notification.badgeText || badge;
                     badgeColor = notification.badgeBgColor || badgeColor;
@@ -174,7 +177,7 @@ export const ui = (function () {
      * @param tab - active tab
      */
     function updatePopupStats(tab) {
-        const tabInfo = adguard.frames.getFrameInfo(tab);
+        const tabInfo = frames.getFrameInfo(tab);
         if (!tabInfo) {
             return;
         }
@@ -240,7 +243,7 @@ export const ui = (function () {
             });
         }
 
-        const tabInfo = adguard.frames.getFrameInfo(tab);
+        const tabInfo = frames.getFrameInfo(tab);
 
         if (tabInfo.applicationFilteringDisabled) {
             addMenu('context_site_protection_disabled');
@@ -282,7 +285,7 @@ export const ui = (function () {
     }
 
     function customizeMobileContextMenu(tab) {
-        const tabInfo = adguard.frames.getFrameInfo(tab);
+        const tabInfo = frames.getFrameInfo(tab);
 
         if (tabInfo.applicationFilteringDisabled) {
             addMenu('popup_site_protection_disabled_android', {
@@ -342,7 +345,7 @@ export const ui = (function () {
         }
         adguard.contextMenus.removeAll();
         if (settings.showContextMenu()) {
-            if (adguard.prefs.mobile) {
+            if (prefs.mobile) {
                 customizeMobileContextMenu(tab);
             } else {
                 customizeContextMenu(tab);
@@ -481,7 +484,7 @@ export const ui = (function () {
 
     const updateTabIconAndContextMenu = function (tab, reloadFrameData) {
         if (reloadFrameData) {
-            adguard.frames.reloadFrameData(tab);
+            frames.reloadFrameData(tab);
         }
         updateTabIcon(tab);
         updateTabContextMenu(tab);
@@ -576,11 +579,11 @@ export const ui = (function () {
         let browserDetails;
 
         const supportedBrowsers = ['Chrome', 'Firefox', 'Opera', 'Safari', 'IE', 'Edge'];
-        if (supportedBrowsers.includes(adguard.prefs.browser)) {
-            browser = adguard.prefs.browser;
+        if (supportedBrowsers.includes(prefs.browser)) {
+            browser = prefs.browser;
         } else {
             browser = 'Other';
-            browserDetails = adguard.prefs.browser;
+            browserDetails = prefs.browser;
         }
 
         const filterIds = application.getEnabledFiltersFromEnabledGroups()
@@ -644,14 +647,14 @@ export const ui = (function () {
     };
 
     var whiteListTab = function (tab) {
-        const tabInfo = adguard.frames.getFrameInfo(tab);
+        const tabInfo = frames.getFrameInfo(tab);
         adguard.whitelist.whiteListUrl(tabInfo.url);
         updateTabIconAndContextMenu(tab, true);
         tabsApi.tabs.reload(tab.tabId);
     };
 
     var unWhiteListTab = function (tab) {
-        const tabInfo = adguard.frames.getFrameInfo(tab);
+        const tabInfo = frames.getFrameInfo(tab);
         adguard.userrules.unWhiteListFrame(tabInfo);
         updateTabIconAndContextMenu(tab, true);
         tabsApi.tabs.reload(tab.tabId);
@@ -828,7 +831,7 @@ export const ui = (function () {
 
             let options;
             if (reset) {
-                options = { icon: adguard.prefs.ICONS.ICON_GREEN, badge: '' };
+                options = { icon: prefs.ICONS.ICON_GREEN, badge: '' };
             }
 
             updateTabIcon(tab, options);
@@ -860,8 +863,8 @@ export const ui = (function () {
             return;
         }
 
-        adguard.pageStats.updateStats(rule.getFilterListId(), blocked, new Date());
-        const tabBlocked = adguard.frames.updateBlockedAdsCount(tab, blocked);
+        pageStats.updateStats(rule.getFilterListId(), blocked, new Date());
+        const tabBlocked = frames.updateBlockedAdsCount(tab, blocked);
         if (tabBlocked === null) {
             return;
         }
