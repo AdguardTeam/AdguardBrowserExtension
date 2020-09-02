@@ -16,6 +16,13 @@
  */
 
 // TODO: [TSUrlFilter] Use TSURLFilter cookieFiltering
+import { filteringLog } from '../filtering-log';
+import { utils, RequestTypes } from '../../utils/common';
+import { frames } from '../../tabs/frames';
+import { requestContextStorage } from '../request-context-storage';
+import { log } from '../../utils/log';
+import { webRequestService } from '../request-blocking';
+import { stealthService } from './stealth-service';
 
 /**
  * Cookie filtering module
@@ -44,9 +51,7 @@
  *
  * @type {{filterRequestHeaders, filterResponseHeaders}}
  */
-adguard.cookieFiltering = (function (adguard) {
-    'use strict';
-
+export const cookieFiltering = (() => {
     /**
      * Cookie with name that matches some URL
      *
@@ -153,8 +158,8 @@ adguard.cookieFiltering = (function (adguard) {
     const addCookieLogEvent = (tab, cookieName, cookieValue, cookieDomain, cookieThirdParty,
         rules, isModifyingCookieRule) => {
         for (let i = 0; i < rules.length; i += 1) {
-            adguard.filteringLog.addCookieEvent(tab, cookieName, cookieValue,
-                cookieDomain, adguard.RequestTypes.COOKIE, rules[i],
+            filteringLog.addCookieEvent(tab, cookieName, cookieValue,
+                cookieDomain, RequestTypes.COOKIE, rules[i],
                 isModifyingCookieRule, cookieThirdParty);
         }
     };
@@ -170,7 +175,7 @@ adguard.cookieFiltering = (function (adguard) {
         browser.cookies.remove({ url, name }, () => {
             const ex = browser.runtime.lastError;
             if (ex) {
-                adguard.console.error('Error remove cookie {0} - {1}: {2}', name, url, ex);
+                log.error('Error remove cookie {0} - {1}: {2}', name, url, ex);
             }
             resolve();
         });
@@ -207,7 +212,7 @@ adguard.cookieFiltering = (function (adguard) {
             browser.cookies.set(update, () => {
                 const ex = browser.runtime.lastError;
                 if (ex) {
-                    adguard.console.error('Error update cookie {0} - {1}: {2}', apiCookie.name, url, ex);
+                    log.error('Error update cookie {0} - {1}: {2}', apiCookie.name, url, ex);
                 }
                 resolve();
             });
@@ -463,7 +468,7 @@ adguard.cookieFiltering = (function (adguard) {
         rules = modifySetCookieByRules(setCookie, rules);
 
         if (rules && rules.length > 0) {
-            header.value = adguard.utils.cookie.serialize(setCookie);
+            header.value = utils.cookie.serialize(setCookie);
             addCookieLogEvent(tab, cookieName, cookieValue, cookieDomain, thirdParty, rules, true);
             return true;
         }
@@ -521,7 +526,7 @@ adguard.cookieFiltering = (function (adguard) {
             return false;
         }
 
-        const context = adguard.requestContextStorage.get(requestId);
+        const context = requestContextStorage.get(requestId);
         if (!context) {
             return false;
         }
@@ -531,19 +536,19 @@ adguard.cookieFiltering = (function (adguard) {
         // Sometimes requests are fired in a refreshed tab, and leading to wrong use
         // referrerUrl of the new tab instead of the origin initiator
         const referrerUrl = context.originUrl || context.referrerUrl;
-        const requestType = context.requestType || adguard.RequestTypes.DOCUMENT;
+        const requestType = context.requestType || RequestTypes.DOCUMENT;
 
-        const cookieHeader = adguard.utils.browser.findHeaderByName(requestHeaders, 'Cookie');
-        const cookies = adguard.utils.cookie.parseCookie(cookieHeader ? cookieHeader.value : null);
+        const cookieHeader = utils.browser.findHeaderByName(requestHeaders, 'Cookie');
+        const cookies = utils.cookie.parseCookie(cookieHeader ? cookieHeader.value : null);
         if (!cookies) {
             return false;
         }
 
         // Marks requests without referrer as first-party.
         // It's important to prevent removing google auth cookies. (for requests in background tab)
-        const thirdParty = referrerUrl && adguard.utils.url.isThirdPartyRequest(requestUrl, referrerUrl);
-        const rules = adguard.webRequestService.getCookieRules(tab, requestUrl, referrerUrl, requestType);
-        const stealthRules = adguard.stealthService.getCookieRules(requestUrl, referrerUrl, requestType);
+        const thirdParty = referrerUrl && utils.url.isThirdPartyRequest(requestUrl, referrerUrl);
+        const rules = webRequestService.getCookieRules(tab, requestUrl, referrerUrl, requestType);
+        const stealthRules = stealthService.getCookieRules(requestUrl, referrerUrl, requestType);
         if ((!rules || rules.length === 0)
             && (!stealthRules || stealthRules.length === 0)) {
             // Nothing to apply
@@ -605,7 +610,7 @@ adguard.cookieFiltering = (function (adguard) {
          * https://bugs.chromium.org/p/chromium/issues/detail?id=898461
          */
 
-        const context = adguard.requestContextStorage.get(requestId);
+        const context = requestContextStorage.get(requestId);
         if (!context) {
             return false;
         }
@@ -613,8 +618,8 @@ adguard.cookieFiltering = (function (adguard) {
         const tab = context.tab || {};
         const requestUrl = context.requestUrl || '';
         const referrerUrl = context.originUrl || context.referrerUrl;
-        const requestType = context.requestType || adguard.RequestTypes.DOCUMENT;
-        const requestHost = adguard.utils.url.getHost(requestUrl);
+        const requestType = context.requestType || RequestTypes.DOCUMENT;
+        const requestHost = utils.url.getHost(requestUrl);
 
         /**
          * Collects cookies that will be blocked or modified via Set-Cookie header
@@ -634,7 +639,7 @@ adguard.cookieFiltering = (function (adguard) {
                 continue;
             }
 
-            const setCookie = adguard.utils.cookie.parseSetCookie(header.value);
+            const setCookie = utils.cookie.parseSetCookie(header.value);
             if (!setCookie) {
                 continue;
             }
@@ -648,15 +653,15 @@ adguard.cookieFiltering = (function (adguard) {
             const cookieUrl = getCookieUrl(setCookie, cookieDomain);
             // Marks requests without referrer as first-party.
             // It's important to prevent removing google auth cookies. (for requests in background tab)
-            const thirdParty = referrerUrl && adguard.utils.url.isThirdPartyRequest(cookieUrl, referrerUrl);
-            const rules = adguard.webRequestService.getCookieRules(tab, cookieUrl, referrerUrl, requestType);
+            const thirdParty = referrerUrl && utils.url.isThirdPartyRequest(cookieUrl, referrerUrl);
+            const rules = webRequestService.getCookieRules(tab, cookieUrl, referrerUrl, requestType);
 
             const bRule = findNotModifyingRule(cookieName, rules);
             if (bRule) {
                 if (!bRule.isWhitelist()) {
                     delete setCookie.expires;
                     setCookie.maxAge = 0;
-                    header.value = adguard.utils.cookie.serialize(setCookie);
+                    header.value = utils.cookie.serialize(setCookie);
                     setCookieHeaderModified = true;
                 }
                 processedCookies.push(cookieName);
@@ -672,7 +677,7 @@ adguard.cookieFiltering = (function (adguard) {
             // If cookie rules found - ignore stealth cookie rules
             const ignoreStealthRules = !!((bRule && !bRule.isWhitelist()) || (mRules && mRules.length > 0));
             if (!ignoreStealthRules) {
-                const stealthRules = adguard.stealthService.getCookieRules(cookieUrl, referrerUrl, requestType);
+                const stealthRules = stealthService.getCookieRules(cookieUrl, referrerUrl, requestType);
                 if (processModifySetCookieByRules(tab, setCookie, cookieDomain, thirdParty, header, stealthRules)) {
                     setCookieHeaderModified = true;
                     processedCookies.push(cookieName);
@@ -695,15 +700,15 @@ adguard.cookieFiltering = (function (adguard) {
             return false;
         }
 
-        const context = adguard.requestContextStorage.get(requestId);
+        const context = requestContextStorage.get(requestId);
         if (!context) {
             return false;
         }
 
         const tab = context.tab || {};
 
-        if (adguard.frames.shouldStopRequestProcess(tab)) {
-            adguard.console.debug('Tab is whitelisted or protection is disabled');
+        if (frames.shouldStopRequestProcess(tab)) {
+            log.debug('Tab is whitelisted or protection is disabled');
             cookiesMap.delete(requestId);
             return false;
         }
@@ -740,4 +745,4 @@ adguard.cookieFiltering = (function (adguard) {
         filterResponseHeaders,
         modifyCookies,
     };
-})(adguard);
+})();
