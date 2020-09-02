@@ -18,7 +18,7 @@
 /**
  * Global stats
  */
-adguard.pageStats = (function (adguard) {
+export const pageStats = (function () {
     'use strict';
 
     const MAX_HOURS_HISTORY = 24;
@@ -324,4 +324,4 @@ adguard.pageStats = (function (adguard) {
         getTotalBlocked: getTotalBlocked,
         getStatisticsData: getStatisticsData,
     };
-})(adguard);
+})();
