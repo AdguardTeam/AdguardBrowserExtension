@@ -15,14 +15,12 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { antiBannerService } from './antibanner';
+
 /**
  * Api for filtering and elements hiding.
  */
 export const filteringApi = (function () {
-    'use strict';
-
-    const { antiBannerService } = adguard;
-
     function getRequestFilter() {
         return antiBannerService.getRequestFilter();
     }
