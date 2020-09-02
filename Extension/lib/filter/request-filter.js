@@ -15,7 +15,11 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import * as TSUrlFilre from '@adguard/tsurlfilter';
+import * as TSUrlFilter from '@adguard/tsurlfilter';
+import { engine } from './engine';
+import { utils, RequestTypes } from '../utils/common';
+import { filteringLog } from './filtering-log';
+import { LocalScriptRulesService } from './rules/local-script-rules';
 
 export const RequestFilter = (() => {
     'use strict';
@@ -102,7 +106,7 @@ export const RequestFilter = (() => {
         requestCacheMaxSize: 1000,
 
         getRulesCount() {
-            return adguard.engine.getRulesCount();
+            return engine.getRulesCount();
         },
 
         /**
@@ -125,9 +129,9 @@ export const RequestFilter = (() => {
          * @returns {*} CSS and ExtCss data for the webpage
          */
         getSelectorsForUrl(url, options) {
-            const domain = adguard.utils.url.getHost(url);
+            const domain = utils.url.getHost(url);
 
-            const cosmeticResult = adguard.engine.getCosmeticResult(domain, options);
+            const cosmeticResult = engine.getCosmeticResult(domain, options);
 
             const elemhideCss = [...cosmeticResult.elementHiding.generic, ...cosmeticResult.elementHiding.specific];
             const injectCss = [...cosmeticResult.CSS.generic, ...cosmeticResult.CSS.specific];
@@ -163,8 +167,8 @@ export const RequestFilter = (() => {
          * @returns {{scriptSource: string, rule: string}[]} Javascript for the specified URL
          */
         getScriptsForUrl(url) {
-            const domain = adguard.utils.url.getHost(url);
-            const cosmeticResult = adguard.engine.getCosmeticResult(
+            const domain = utils.url.getHost(url);
+            const cosmeticResult = engine.getCosmeticResult(
                 domain, TSUrlFilter.CosmeticOption.CosmeticOptionJS
             );
 
@@ -181,14 +185,14 @@ export const RequestFilter = (() => {
          * @returns {string} Script to be applied
          */
         getScriptsStringForUrl(url, tab) {
-            const debug = adguard.filteringLog && adguard.filteringLog.isOpen();
+            const debug = filteringLog && filteringLog.isOpen();
             const scriptRules = this.getScriptsForUrl(url);
 
-            const isFirefox = adguard.utils.browser.isFirefoxBrowser();
-            const isOpera = adguard.utils.browser.isOperaBrowser();
+            const isFirefox = utils.browser.isFirefoxBrowser();
+            const isOpera = utils.browser.isOperaBrowser();
 
             const selectedScriptRules = scriptRules.filter((scriptRule) => {
-                const isLocal = adguard.LocalScriptRulesService.isLocal(scriptRule.getText());
+                const isLocal = LocalScriptRulesService.isLocal(scriptRule.getText());
 
                 if (isLocal) {
                     return true;
@@ -219,10 +223,10 @@ export const RequestFilter = (() => {
 
             if (debug) {
                 scriptRules.forEach((scriptRule) => {
-                    adguard.filteringLog.addScriptInjectionEvent(
+                    filteringLog.addScriptInjectionEvent(
                         tab,
                         url,
-                        adguard.RequestTypes.DOCUMENT,
+                        RequestTypes.DOCUMENT,
                         scriptRule
                     );
                 });
@@ -250,11 +254,11 @@ export const RequestFilter = (() => {
          * @return {null}
          */
         getMatchingResult(requestUrl, referrer, requestType) {
-            const refHost = adguard.utils.url.getHost(referrer);
+            const refHost = utils.url.getHost(referrer);
 
             let result = this.matchingResultsCache.searchRequestCache(requestUrl, refHost, requestType);
             if (!result) {
-                result = adguard.engine.createMatchingResult(requestUrl, referrer, requestType);
+                result = engine.createMatchingResult(requestUrl, referrer, requestType);
 
                 if (!result) {
                     return new TSUrlFilter.MatchingResult([], []);
@@ -317,9 +321,9 @@ export const RequestFilter = (() => {
          * @returns Collection of content rules
          */
         getContentRulesForUrl(documentUrl) {
-            const hostname = adguard.utils.url.getHost(documentUrl);
+            const hostname = utils.url.getHost(documentUrl);
             // eslint-disable-next-line max-len
-            const cosmeticResult = adguard.engine.getCosmeticResult(hostname, TSUrlFilter.CosmeticOption.CosmeticOptionHtml);
+            const cosmeticResult = engine.getCosmeticResult(hostname, TSUrlFilter.CosmeticOption.CosmeticOptionHtml);
 
             return cosmeticResult.Html.getRules();
         },
