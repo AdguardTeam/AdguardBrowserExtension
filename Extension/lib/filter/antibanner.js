@@ -20,6 +20,13 @@ import { RequestFilter } from './request-filter';
 import { listeners } from '../notifier';
 import { applicationUpdateService } from '../update-service';
 import { subscriptions } from './filters/subscription';
+import { utils } from '../utils/common';
+import { settings } from '../settings/user-settings';
+import { filtersState } from './filters/filters-state';
+import { log } from '../utils/log';
+import { rulesStorage } from '../storage';
+import { filtersUpdate } from './filters/filters-update';
+import { engine } from './engine';
 
 /**
  * Creating service that manages our filter rules.
@@ -131,7 +138,7 @@ export const antiBannerService = (() => {
                 initRequestFilter();
             }
             // Schedule filters update job
-            adguard.filtersUpdate.scheduleFiltersUpdate(runInfo.isFirstRun);
+            filtersUpdate.scheduleFiltersUpdate(runInfo.isFirstRun);
         };
 
         /**
@@ -170,7 +177,7 @@ export const antiBannerService = (() => {
      */
     const stop = function () {
         applicationRunning = false;
-        requestFilter = new adguard.RequestFilter();
+        requestFilter = new RequestFilter();
         listeners.notifyListeners(listeners.REQUEST_FILTER_UPDATED, getRequestFilterInfo());
     };
 
@@ -240,7 +247,7 @@ export const antiBannerService = (() => {
     function resetFiltersVersion() {
         const RESET_VERSION = '0.0.0.0';
 
-        const filters = adguard.subscriptions.getFilters();
+        const filters = subscriptions.getFilters();
         for (let i = 0; i < filters.length; i += 1) {
             const filter = filters[i];
             filter.version = RESET_VERSION;
@@ -254,9 +261,9 @@ export const antiBannerService = (() => {
      */
     function loadGroupsStateInfo() {
         // Load filters state from the storage
-        const groupsStateInfo = adguard.filtersState.getGroupsState();
+        const groupsStateInfo = filtersState.getGroupsState();
 
-        const groups = adguard.subscriptions.getGroups();
+        const groups = subscriptions.getGroups();
 
         for (let i = 0; i < groups.length; i += 1) {
             const group = groups[i];
@@ -276,11 +283,11 @@ export const antiBannerService = (() => {
      */
     function loadFiltersVersionAndStateInfo() {
         // Load filters metadata from the storage
-        const filtersVersionInfo = adguard.filtersState.getFiltersVersion();
+        const filtersVersionInfo = filtersState.getFiltersVersion();
         // Load filters state from the storage
-        const filtersStateInfo = adguard.filtersState.getFiltersState();
+        const filtersStateInfo = filtersState.getFiltersState();
 
-        const filters = adguard.subscriptions.getFilters();
+        const filters = subscriptions.getFilters();
 
         for (let i = 0; i < filters.length; i += 1) {
             const filter = filters[i];
@@ -312,9 +319,9 @@ export const antiBannerService = (() => {
     async function onFiltersLoadedFromStorage(rulesFilterMap, callback) {
         const start = new Date().getTime();
 
-        adguard.console.info('Starting request filter initialization..');
+        log.info('Starting request filter initialization..');
 
-        const newRequestFilter = new adguard.RequestFilter();
+        const newRequestFilter = new RequestFilter();
 
         if (requestFilterInitTime === 0) {
             // Setting the time of request filter very first initialization
@@ -334,7 +341,7 @@ export const antiBannerService = (() => {
             }
 
             // User filter is enabled by default, but it may not contain any rules
-            const userFilterId = adguard.utils.filters.USER_FILTER_ID;
+            const userFilterId = utils.filters.USER_FILTER_ID;
             if (enabledFilterIds.length === 1 && enabledFilterIds[0] == userFilterId) {
                 const userRules = rulesFilterMap[userFilterId];
                 if (!userRules || userRules.length === 0) {
@@ -358,7 +365,7 @@ export const antiBannerService = (() => {
             }
 
             listeners.notifyListeners(listeners.REQUEST_FILTER_UPDATED, getRequestFilterInfo());
-            adguard.console.info(
+            log.info(
                 'Finished request filter initialization in {0} ms. Rules count: {1}',
                 (new Date().getTime() - start),
                 newRequestFilter.getRulesCount()
@@ -373,11 +380,11 @@ export const antiBannerService = (() => {
 
             if (newRequestFilter.getRulesCount() === 0 && !reloadedRules) {
                 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/205
-                adguard.console.info('No rules have been found - checking filter updates');
+                log.info('No rules have been found - checking filter updates');
                 reloadAntiBannerFilters();
                 reloadedRules = true;
             } else if (newRequestFilter.getRulesCount() > 0 && reloadedRules) {
-                adguard.console.info('Filters reloaded, deleting reloadRules flag');
+                log.info('Filters reloaded, deleting reloadRules flag');
                 reloadedRules = false;
             }
         };
@@ -393,13 +400,13 @@ export const antiBannerService = (() => {
                 // To number
                 filterId -= 0;
 
-                const isTrustedFilter = adguard.subscriptions.isTrustedFilter(filterId);
+                const isTrustedFilter = subscriptions.isTrustedFilter(filterId);
                 const rulesTexts = rulesFilterMap[filterId].join('\n');
 
                 lists.push(new TSUrlFilter.StringRuleList(filterId, rulesTexts, false, !isTrustedFilter));
             }
 
-            await adguard.engine.startEngine(lists);
+            await engine.startEngine(lists);
 
             requestFilterInitialized();
         };
@@ -422,7 +429,7 @@ export const antiBannerService = (() => {
         }
 
         const start = new Date().getTime();
-        adguard.console.info('Starting loading filter rules from the storage');
+        log.info('Starting loading filter rules from the storage');
 
         // Prepare map for filter rules
         // Map key is filter ID
@@ -433,7 +440,7 @@ export const antiBannerService = (() => {
          * STEP 2: Called when all filter rules have been loaded from storage
          */
         const loadAllFilterRulesDone = async () => {
-            adguard.console.info('Finished loading filter rules from the storage in {0} ms',
+            log.info('Finished loading filter rules from the storage in {0} ms',
                 (new Date().getTime() - start));
             await onFiltersLoadedFromStorage(rulesFilterMap, callback);
         };
@@ -446,7 +453,7 @@ export const antiBannerService = (() => {
          * @returns {*} Deferred object
          */
         const loadFilterRulesFromStorage = (filterId, rulesFilterMap) => new Promise((resolve) => {
-            adguard.rulesStorage.read(filterId, (rulesText) => {
+            rulesStorage.read(filterId, (rulesText) => {
                 if (rulesText) {
                     rulesFilterMap[filterId] = rulesText;
                 }
@@ -459,16 +466,16 @@ export const antiBannerService = (() => {
          */
         const loadFilterRules = function () {
             const promises = [];
-            const filters = adguard.subscriptions.getFilters();
+            const filters = subscriptions.getFilters();
             for (let i = 0; i < filters.length; i += 1) {
                 const filter = filters[i];
-                const group = adguard.subscriptions.getGroup(filter.groupId);
+                const group = subscriptions.getGroup(filter.groupId);
                 if (filter.enabled && group.enabled) {
                     promises.push(loadFilterRulesFromStorage(filter.filterId, rulesFilterMap));
                 }
             }
             // get user filter rules from storage
-            promises.push(loadFilterRulesFromStorage(adguard.utils.filters.USER_FILTER_ID, rulesFilterMap));
+            promises.push(loadFilterRulesFromStorage(utils.filters.USER_FILTER_ID, rulesFilterMap));
 
             // Load all filters and then recreate request filter
             Promise.all(promises).then(loadAllFilterRulesDone);
@@ -534,7 +541,7 @@ export const antiBannerService = (() => {
 
             if (needCreateRequestFilter) {
                 // Rules will be added to request filter lazy, listeners will be notified about REQUEST_FILTER_UPDATED later
-                adguard.utils.Promise.all(dfds).then(createRequestFilter);
+                utils.Promise.all(dfds).then(createRequestFilter);
             } else {
                 // Rules are already in request filter, notify listeners
                 listeners.notifyListeners(listeners.REQUEST_FILTER_UPDATED, getRequestFilterInfo());
@@ -592,9 +599,9 @@ export const antiBannerService = (() => {
      * @private
      */
     function processSaveFilterRulesToStorageEvents(filterId, events) {
-        const dfd = new adguard.utils.Promise();
+        const dfd = new utils.Promise();
 
-        adguard.rulesStorage.read(filterId, (loadedRulesText) => {
+        rulesStorage.read(filterId, (loadedRulesText) => {
             for (let i = 0; i < events.length; i += 1) {
                 if (!loadedRulesText) {
                     loadedRulesText = [];
@@ -607,27 +614,27 @@ export const antiBannerService = (() => {
                 switch (eventType) {
                     case listeners.ADD_RULES:
                         loadedRulesText = loadedRulesText.concat(eventRules);
-                        adguard.console.debug('Add {0} rules to filter {1}', eventRules.length, filterId);
+                        log.debug('Add {0} rules to filter {1}', eventRules.length, filterId);
                         break;
                     case listeners.REMOVE_RULE:
                         var actionRule = eventRules[0];
-                        adguard.utils.collections.removeAll(loadedRulesText, actionRule);
-                        adguard.console.debug('Remove {0} rule from filter {1}', actionRule, filterId);
+                        utils.collections.removeAll(loadedRulesText, actionRule);
+                        log.debug('Remove {0} rule from filter {1}', actionRule, filterId);
                         break;
                     case listeners.UPDATE_FILTER_RULES:
                         loadedRulesText = eventRules;
-                        adguard.console.debug('Update filter {0} rules count to {1}', filterId, eventRules.length);
+                        log.debug('Update filter {0} rules count to {1}', filterId, eventRules.length);
                         break;
                 }
             }
 
-            adguard.console.debug('Converting {0} rules for filter {1}', loadedRulesText.length, filterId);
+            log.debug('Converting {0} rules for filter {1}', loadedRulesText.length, filterId);
             const converted = TSUrlFilter.RuleConverter.convertRules(loadedRulesText.join('\n')).split('\n');
 
-            adguard.console.debug('Saving {0} rules to filter {1}', converted.length, filterId);
-            adguard.rulesStorage.write(filterId, converted, () => {
+            log.debug('Saving {0} rules to filter {1}', converted.length, filterId);
+            rulesStorage.write(filterId, converted, () => {
                 dfd.resolve();
-                if (filterId === adguard.utils.filters.USER_FILTER_ID) {
+                if (filterId === utils.filters.USER_FILTER_ID) {
                     listeners.notifyListeners(
                         listeners.UPDATE_USER_FILTER_RULES,
                         getRequestFilterInfo()
@@ -645,15 +652,15 @@ export const antiBannerService = (() => {
      */
     function subscribeToFiltersChangeEvents() {
         // on USE_OPTIMIZED_FILTERS setting change we need to reload filters
-        const onUsedOptimizedFiltersChange = adguard.utils.concurrent.debounce(
+        const onUsedOptimizedFiltersChange = utils.concurrent.debounce(
             reloadAntiBannerFilters,
             RELOAD_FILTERS_DEBOUNCE_PERIOD
         );
 
-        adguard.settings.onUpdated.addListener((setting) => {
-            if (setting === adguard.settings.USE_OPTIMIZED_FILTERS) {
+        settings.onUpdated.addListener((setting) => {
+            if (setting === settings.USE_OPTIMIZED_FILTERS) {
                 onUsedOptimizedFiltersChange();
-            } else if (setting === adguard.settings.FILTERS_UPDATE_PERIOD) {
+            } else if (setting === settings.FILTERS_UPDATE_PERIOD) {
                 adguard.filtersUpdate.scheduleFiltersUpdate();
             }
         });
@@ -664,11 +671,11 @@ export const antiBannerService = (() => {
      * Throws exception if filter not found.
      *
      * @param filterId Filter identifier
-     * @returns {*} Filter got from adguard.subscriptions.getFilter
+     * @returns {*} Filter got from subscriptions.getFilter
      * @private
      */
     function getFilterById(filterId) {
-        const filter = adguard.subscriptions.getFilter(filterId);
+        const filter = subscriptions.getFilter(filterId);
         if (!filter) {
             throw new Error(`Filter with id: ${filterId} not found`);
         }

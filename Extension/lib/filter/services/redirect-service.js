@@ -17,7 +17,8 @@
 
 // TODO fix scriptlets library to expose Redirects class
 import { redirects } from 'scriptlets';
-const Redirects = redirects.Redirects;
+
+const { Redirects } = redirects;
 
 /**
  * Redirects service class

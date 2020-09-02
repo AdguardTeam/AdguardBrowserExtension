@@ -17,6 +17,11 @@
  */
 
 import { utils } from '../utils/common';
+import { prefs } from '../../browser/webkit/lib/prefs';
+import { listeners } from '../notifier';
+import { log } from '../utils/log';
+import { localStorage } from '../storage';
+import { adguard } from '../adguard';
 
 /**
  * Object that manages user settings.
@@ -76,7 +81,7 @@ export const settings = (() => {
                 defaults[settings.DISABLE_SAFEBROWSING] = true;
                 defaults[settings.DISABLE_COLLECT_HITS] = true;
                 defaults[settings.DEFAULT_WHITE_LIST_MODE] = true;
-                defaults[settings.USE_OPTIMIZED_FILTERS] = adguard.prefs.mobile;
+                defaults[settings.USE_OPTIMIZED_FILTERS] = prefs.mobile;
                 defaults[settings.DISABLE_DETECT_FILTERS] = false;
                 defaults[settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION] = false;
                 defaults[settings.FILTERS_UPDATE_PERIOD] = DEFAULT_FILTERS_UPDATE_PERIOD;
@@ -105,17 +110,17 @@ export const settings = (() => {
         /**
          * Don't cache values in case of uninitialized storage
          */
-        if (!adguard.localStorage.isInitialized()) {
+        if (!localStorage.isInitialized()) {
             return defaultProperties.defaults[propertyName];
         }
 
         let propertyValue = null;
 
-        if (adguard.localStorage.hasItem(propertyName)) {
+        if (localStorage.hasItem(propertyName)) {
             try {
-                propertyValue = JSON.parse(adguard.localStorage.getItem(propertyName));
+                propertyValue = JSON.parse(localStorage.getItem(propertyName));
             } catch (ex) {
-                adguard.console.error('Error get property {0}, cause: {1}', propertyName, ex);
+                log.error('Error get property {0}, cause: {1}', propertyName, ex);
             }
         } else if (propertyName in defaultProperties.defaults) {
             propertyValue = defaultProperties.defaults[propertyName];
@@ -127,10 +132,10 @@ export const settings = (() => {
     };
 
     const setProperty = (propertyName, propertyValue) => {
-        adguard.localStorage.setItem(propertyName, JSON.stringify(propertyValue));
+        localStorage.setItem(propertyName, JSON.stringify(propertyValue));
         properties[propertyName] = propertyValue;
         propertyUpdateChannel.notify(propertyName, propertyValue);
-        adguard.listeners.notifyListeners(adguard.listeners.SETTING_UPDATED, { propertyName, propertyValue });
+        listeners.notifyListeners(listeners.SETTING_UPDATED, { propertyName, propertyValue });
     };
 
     const getAllSettings = function () {
