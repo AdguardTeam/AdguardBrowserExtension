@@ -105,7 +105,7 @@ export const rulesStorage = (impl => {
         const filePath = getFilePath(filterId);
         impl.write(filePath, filterRules, (e) => {
             if (e) {
-                adguard.console.error(`Error writing filters to file ${filePath}. Cause: ${e}`);
+                log.error(`Error writing filters to file ${filePath}. Cause: ${e}`);
             }
             callback();
         });
@@ -120,7 +120,7 @@ export const rulesStorage = (impl => {
         const filePath = getFilePath(filterId);
         impl.remove(filePath, (e) => {
             if (e) {
-                adguard.console.error(`Error removing filter ${filePath}. Cause: ${e}`);
+                log.error(`Error removing filter ${filePath}. Cause: ${e}`);
             }
             callback();
         });

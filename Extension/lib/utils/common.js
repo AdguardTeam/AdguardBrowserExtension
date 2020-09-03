@@ -20,6 +20,7 @@ import { Deferred } from 'simply-deferred';
 import { log } from './log';
 import { browserUtils } from './browser-utils';
 import { cookie } from './cookie';
+import { expiringCache } from './expiring-cache';
 
 /**
  * Request types enumeration
@@ -745,11 +746,6 @@ export const utils = (() => ({
 })(utils);
 
 /**
- * Append browser utils
- */
-browserUtils(utils);
-
-/**
  * Promises wrapper
  */
 (function (api) {
@@ -877,9 +873,19 @@ browserUtils(utils);
 })(utils);
 
 /**
+ * Append browser utils
+ */
+browserUtils(utils);
+
+/**
  * Append cookie utils
  */
 cookie(utils);
+
+/**
+ * Append expiringCache utils
+ */
+expiringCache(utils);
 
 /**
  * Unload handler. When extension is unload then 'fireUnload' is invoked.

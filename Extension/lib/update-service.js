@@ -18,6 +18,7 @@
 import * as TSUrlFilter from '@adguard/tsurlfilter';
 import { utils } from './utils/common';
 import { backgroundPage } from '../browser/chrome/lib/api/background-page';
+import { log } from './utils/log';
 
 /**
  * Service that manages extension version information and handles
@@ -111,7 +112,7 @@ export const applicationUpdateService = (function () {
      * @private
      */
     function onUpdateChromiumStorage() {
-        adguard.console.info('Call update to version 2.3.5');
+        log.info('Call update to version 2.3.5');
 
         const dfd = new utils.Promise();
 
@@ -120,22 +121,22 @@ export const applicationUpdateService = (function () {
 
         FileStorage.readFromFile(filePath, (e, rules) => {
             if (e) {
-                adguard.console.error('Error while reading rules from file {0} cause: {1}', filePath, e);
+                log.error('Error while reading rules from file {0} cause: {1}', filePath, e);
                 return;
             }
 
             const onTransferCompleted = function () {
-                adguard.console.info('Rules have been transferred to local storage for filter {0}', filterId);
+                log.info('Rules have been transferred to local storage for filter {0}', filterId);
 
                 FileStorage.removeFile(filePath, () => {
-                    adguard.console.info('File removed for filter {0}', filterId);
+                    log.info('File removed for filter {0}', filterId);
                 }, () => {
-                    adguard.console.error('File remove error for filter {0}', filterId);
+                    log.error('File remove error for filter {0}', filterId);
                 });
             };
 
             if (rules) {
-                adguard.console.info(`Found rules:${rules.length}`);
+                log.info(`Found rules:${rules.length}`);
             }
 
             adguard.rulesStorage.write(filterId, rules, onTransferCompleted);
@@ -160,7 +161,7 @@ export const applicationUpdateService = (function () {
                 const lines = items[key] || [];
                 const linesLength = lines.length;
                 adguard.rulesStorageImpl.write(key, lines, () => {
-                    adguard.console.info('Adguard filter "{0}" has been migrated. Rules: {1}', key, linesLength);
+                    log.info('Adguard filter "{0}" has been migrated. Rules: {1}', key, linesLength);
                     browser.storage.local.remove(key);
                     writeFilterRules(keys, items);
                 });
@@ -168,7 +169,7 @@ export const applicationUpdateService = (function () {
         }
 
         function migrate() {
-            adguard.console.info('Call update to use indexedDB instead of storage.local for Firefox browser');
+            log.info('Call update to use indexedDB instead of storage.local for Firefox browser');
 
             browser.storage.local.get(null, (items) => {
                 const keys = [];
@@ -207,7 +208,7 @@ export const applicationUpdateService = (function () {
             return dfd;
         }
 
-        adguard.console.info('Call update to use storage.local for Edge browser');
+        log.info('Call update to use storage.local for Edge browser');
 
         const keys = [];
         for (const key in localStorage) {
@@ -297,10 +298,10 @@ export const applicationUpdateService = (function () {
                 }
 
                 // eslint-disable-next-line max-len
-                adguard.console.info('Reloading and converting {0} rules for filter {1}', loadedRulesText.length, filterId);
+                log.info('Reloading and converting {0} rules for filter {1}', loadedRulesText.length, filterId);
                 const converted = TSUrlFilter.RuleConverter.convertRules(loadedRulesText.join('\n')).split('\n');
 
-                adguard.console.debug('Saving {0} rules to filter {1}', converted.length, filterId);
+                log.debug('Saving {0} rules to filter {1}', converted.length, filterId);
                 adguard.rulesStorage.write(filterId, converted, () => {
                     resolve();
                 });
@@ -339,7 +340,7 @@ export const applicationUpdateService = (function () {
 
         const removePromises = filtersIdsToRemove.map(filterId => new Promise((resolve) => {
             adguard.rulesStorage.remove(filterId, () => {
-                adguard.console.info(`Filter with id: ${filterId} removed from the storage`);
+                log.info(`Filter with id: ${filterId} removed from the storage`);
                 resolve();
             });
             resolve();

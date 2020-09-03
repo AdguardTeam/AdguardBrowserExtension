@@ -15,7 +15,11 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* eslint-disable max-len */
+
 import { utils } from '../../../../lib/utils/common';
+import { prefs } from '../../../webkit/lib/prefs';
+import { backgroundPage } from './background-page';
 
 /**
  * Chromium windows implementation
@@ -145,7 +149,7 @@ export const tabsImpl = (function () {
     function checkLastError(operation) {
         const ex = browser.runtime.lastError;
         if (ex) {
-            adguard.console.error('Error while executing operation{1}: {0}', ex, operation ? ` '${operation}'` : '');
+            log.error('Error while executing operation{1}: {0}', ex, operation ? ` '${operation}'` : '');
         }
         return ex;
     }
@@ -226,7 +230,7 @@ export const tabsImpl = (function () {
             // Does not work properly in Anniversary builds
             && !utils.browser.isEdgeBeforeCreatorsUpdate()
             // Isn't supported by Android WebExt
-            && !adguard.prefs.mobile) {
+            && !prefs.mobile) {
             // https://developer.chrome.com/extensions/windows#method-create
             // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/create
             browser.windows.create({
@@ -248,7 +252,7 @@ export const tabsImpl = (function () {
                  * There is only one window whole time
                  * Thats why if we try to provide windowId, method fails with error.
                  */
-                windowId: !adguard.prefs.mobile ? win.id : undefined,
+                windowId: !prefs.mobile ? win.id : undefined,
                 url,
                 active,
             }, (chromeTab) => {
@@ -413,7 +417,7 @@ export const tabsImpl = (function () {
      * See https://stackoverflow.com/questions/43665470/cannot-call-chrome-tabs-executescript-into-preloaded-tab-is-this-a-bug-in-chr
      */
     const noopCallback = function () {
-        adguard.runtime.lastError;
+        backgroundPage.runtime.lastError;
     };
 
     /**

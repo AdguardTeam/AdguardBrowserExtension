@@ -16,6 +16,7 @@
  */
 
 import { utils } from '../../../../lib/utils/common';
+import { log } from '../../../../../tools/log';
 
 /**
  * Local storage implementation for chromium-based browsers
@@ -26,7 +27,7 @@ export const localStorageImpl = (function () {
 
     function checkError(ex) {
         if (ex) {
-            adguard.console.error('{0}', ex);
+            log.error('{0}', ex);
         }
     }
 

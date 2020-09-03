@@ -17,6 +17,7 @@
 
 import { antiBannerService } from './filter/antibanner';
 import { prefs } from '../browser/webkit/lib/prefs';
+import { log } from './utils/log';
 
 /**
  * AdGuard application class
@@ -251,7 +252,7 @@ export const application = (() => {
                 continue;
             }
 
-            adguard.console.debug('Uninstall filter {0}', filter.filterId);
+            log.debug('Uninstall filter {0}', filter.filterId);
 
             filter.enabled = false;
             filter.installed = false;
@@ -272,11 +273,11 @@ export const application = (() => {
         }
 
         if (!filter.customUrl) {
-            adguard.console.error('Filter {0} is not custom and could not be removed', filter.filterId);
+            log.error('Filter {0} is not custom and could not be removed', filter.filterId);
             return;
         }
 
-        adguard.console.debug('Remove filter {0}', filter.filterId);
+        log.debug('Remove filter {0}', filter.filterId);
 
         filter.enabled = false;
         filter.installed = false;
@@ -296,7 +297,7 @@ export const application = (() => {
      * @param errorCallback
      */
     const loadCustomFilter = function (url, options, successCallback, errorCallback) {
-        adguard.console.info('Downloading custom filter from {0}', url);
+        log.info('Downloading custom filter from {0}', url);
 
         if (!url) {
             errorCallback();
@@ -305,7 +306,7 @@ export const application = (() => {
 
         adguard.subscriptions.updateCustomFilter(url, options, (filterId) => {
             if (filterId) {
-                adguard.console.info('Custom filter downloaded');
+                log.info('Custom filter downloaded');
 
                 const filter = adguard.subscriptions.getFilter(filterId);
                 // In case filter is loaded again and was removed before
@@ -318,7 +319,7 @@ export const application = (() => {
     };
 
     const loadCustomFilterInfo = (url, options, successCallback, errorCallback) => {
-        adguard.console.info(`Downloading custom filter info from ${url}`);
+        log.info(`Downloading custom filter info from ${url}`);
         if (!url) {
             errorCallback();
             return;
@@ -327,7 +328,7 @@ export const application = (() => {
         adguard.subscriptions.getCustomFilterInfo(url, options, (result = {}) => {
             const { error, filter } = result;
             if (filter) {
-                adguard.console.info('Custom filter data downloaded');
+                log.info('Custom filter data downloaded');
                 successCallback(filter);
                 return;
             }

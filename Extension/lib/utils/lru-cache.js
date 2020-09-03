@@ -15,9 +15,11 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global LRUMap */
+import { LRUMap } from 'lru_map';
+import { localStorage } from '../storage';
+import { log } from './log';
 
-(function (adguard) {
+export const LruCache = function (utils) {
     /**
      * Cache with maxCacheSize stored in local storage, which automatically clears less recently used entries
      *
@@ -35,15 +37,15 @@
         function getCacheFromLocalStorage() {
             let entries = null;
             try {
-                const json = adguard.localStorage.getItem(storagePropertyName);
+                const json = localStorage.getItem(storagePropertyName);
                 if (json) {
                     const data = JSON.parse(json);
                     entries = data.map(x => [x.key, x.value]);
                 }
             } catch (ex) {
                 // ignore
-                adguard.console.error('Error read from {0} cache, cause: {1}', storagePropertyName, ex);
-                adguard.localStorage.removeItem(storagePropertyName);
+                log.error('Error read from {0} cache, cause: {1}', storagePropertyName, ex);
+                localStorage.removeItem(storagePropertyName);
             }
 
             return new LRUMap(maxCacheSize, entries);
@@ -51,9 +53,9 @@
 
         function saveCacheToLocalStorage() {
             try {
-                adguard.localStorage.setItem(storagePropertyName, JSON.stringify(cache.toJSON()));
+                localStorage.setItem(storagePropertyName, JSON.stringify(cache.toJSON()));
             } catch (ex) {
-                adguard.console.error('Error save to {0} cache, cause: {1}', storagePropertyName, ex);
+                log.error('Error save to {0} cache, cause: {1}', storagePropertyName, ex);
             }
         }
 
@@ -89,5 +91,5 @@
         };
     }
 
-    adguard.utils.LruCache = LruCache;
-})(adguard);
+    utils.LruCache = LruCache;
+};

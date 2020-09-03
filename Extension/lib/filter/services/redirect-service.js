@@ -17,6 +17,8 @@
 
 // TODO fix scriptlets library to expose Redirects class
 import { redirects } from 'scriptlets';
+import { utils } from '../../utils/common';
+import { log } from '../../utils/log';
 
 const { Redirects } = redirects;
 
@@ -46,11 +48,11 @@ export const redirectFilterService = (function () {
 
         const redirectSource = redirects.getRedirect(title);
         if (!redirectSource) {
-            adguard.console.debug(`There is no redirect source with title: "${title}"`);
+            log.debug(`There is no redirect source with title: "${title}"`);
             return null;
         }
 
-        return adguard.utils.resources.createRedirectFileUrl(redirectSource.file);
+        return utils.resources.createRedirectFileUrl(redirectSource.file);
     };
 
     const hasRedirect = (title) => {
