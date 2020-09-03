@@ -15,12 +15,13 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { subscriptions } from './subscription';
+import { utils } from '../../utils/common';
+
 /**
  * Filter tags service
  */
-adguard.tags = (function (adguard) {
-    'use strict';
-
+export const tags = (() => {
     const RECOMMENDED_TAG_ID = 10;
 
     const PURPOSE_ADS_TAG_ID = 1;
@@ -32,12 +33,12 @@ adguard.tags = (function (adguard) {
     const PURPOSE_MOBILE_TAG_ID = 19;
 
     const getTags = function () {
-        return adguard.subscriptions.getTags();
+        return subscriptions.getTags();
     };
 
     const getFilters = function () {
-        return adguard.subscriptions.getFilters()
-            .filter(f => f.filterId !== adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID);
+        return subscriptions.getFilters()
+            .filter(f => f.filterId !== utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID);
     };
 
     const getFiltersByTagId = function (tagId, filters) {
@@ -79,4 +80,4 @@ adguard.tags = (function (adguard) {
         getFiltersByTagId,
         getRecommendedFilters,
     };
-})(adguard);
+})();
