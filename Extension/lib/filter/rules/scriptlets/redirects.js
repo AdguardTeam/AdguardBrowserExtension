@@ -1,7 +1,7 @@
 
 /**
  * AdGuard Scriptlets
- * Version 1.3.0
+ * Version 1.3.2
  */
 
 var Redirects = (function () {
@@ -4004,4 +4004,3 @@ var Redirects = (function () {
   return Redirects;
 
 }());
-//# sourceMappingURL=redirects.js.map
