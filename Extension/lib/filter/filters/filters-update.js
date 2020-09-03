@@ -27,7 +27,7 @@ import { settings } from '../../settings/user-settings';
 /**
  * Filters update service
  */
-export const filtersUpdate = (function () {
+export const filtersUpdate = (() => {
     /**
      * Delay before doing first filters update check -- 5 minutes
      */

@@ -18,6 +18,10 @@
 import * as TSUrlFilter from '@adguard/tsurlfilter';
 import { utils } from '../utils/common';
 import { adguard } from '../adguard';
+import { settings } from '../settings/user-settings';
+import { localStorage } from '../storage';
+import { listeners } from '../notifier';
+import { log } from '../utils/log';
 
 export const whitelist = (() => {
     const WHITE_LIST_DOMAINS_LS_PROP = 'white-list-domains';
@@ -32,7 +36,7 @@ export const whitelist = (() => {
      * In inverted model filtration is disabled for all sites
      */
     function isDefaultWhiteListMode() {
-        return adguard.settings.isDefaultWhiteListMode();
+        return settings.isDefaultWhiteListMode();
     }
 
     /**
@@ -71,7 +75,7 @@ export const whitelist = (() => {
     };
 
     function notifyWhiteListUpdated() {
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_WHITELIST_FILTER_RULES);
+        listeners.notifyListeners(listeners.UPDATE_WHITELIST_FILTER_RULES);
     }
 
     /**
@@ -81,11 +85,11 @@ export const whitelist = (() => {
      * @private
      */
     function createWhiteListRule(domain) {
-        if (adguard.utils.strings.isEmpty(domain)) {
+        if (utils.strings.isEmpty(domain)) {
             return null;
         }
 
-        return new TSUrlFilter.NetworkRule(`@@//${domain}$document`, adguard.utils.filters.WHITE_LIST_FILTER_ID);
+        return new TSUrlFilter.NetworkRule(`@@//${domain}$document`, utils.filters.WHITE_LIST_FILTER_ID);
     }
 
     /**
@@ -112,9 +116,9 @@ export const whitelist = (() => {
             return;
         }
         if (isDefaultWhiteListMode()) {
-            adguard.utils.collections.removeAll(whiteListDomainsHolder.domains, domain);
+            utils.collections.removeAll(whiteListDomainsHolder.domains, domain);
         } else {
-            adguard.utils.collections.removeAll(blockListDomainsHolder.domains, domain);
+            utils.collections.removeAll(blockListDomainsHolder.domains, domain);
         }
     }
 
@@ -132,9 +136,9 @@ export const whitelist = (() => {
      * Save domains to local storage
      */
     function saveDomainsToLocalStorage() {
-        adguard.localStorage.setItem(WHITE_LIST_DOMAINS_LS_PROP,
+        localStorage.setItem(WHITE_LIST_DOMAINS_LS_PROP,
             JSON.stringify(whiteListDomainsHolder.domains));
-        adguard.localStorage.setItem(BLOCK_LIST_DOMAINS_LS_PROP,
+        localStorage.setItem(BLOCK_LIST_DOMAINS_LS_PROP,
             JSON.stringify(blockListDomainsHolder.domains));
     }
 
@@ -146,12 +150,12 @@ export const whitelist = (() => {
     function getDomainsFromLocalStorage(prop) {
         let domains = [];
         try {
-            const json = adguard.localStorage.getItem(prop);
+            const json = localStorage.getItem(prop);
             if (json) {
                 domains = JSON.parse(json);
             }
         } catch (ex) {
-            adguard.console.error('Error retrieve whitelist domains {0}, cause {1}', prop, ex);
+            log.error('Error retrieve whitelist domains {0}, cause {1}', prop, ex);
         }
         return domains;
     }
@@ -161,7 +165,7 @@ export const whitelist = (() => {
      * @param domain
      */
     function addToWhiteList(domain) {
-        if (adguard.utils.strings.isEmpty(domain)) {
+        if (utils.strings.isEmpty(domain)) {
             return;
         }
 
@@ -178,7 +182,7 @@ export const whitelist = (() => {
             return null;
         }
 
-        const host = adguard.utils.url.getHost(url);
+        const host = utils.url.getHost(url);
 
         if (isDefaultWhiteListMode()) {
             if (whiteListDomainsHolder.includes(host)) {
@@ -201,7 +205,7 @@ export const whitelist = (() => {
      * @param defaultMode
      */
     const changeDefaultWhiteListMode = function (defaultMode) {
-        adguard.settings.changeDefaultWhiteListMode(defaultMode);
+        settings.changeDefaultWhiteListMode(defaultMode);
         notifyWhiteListUpdated();
     };
 
@@ -210,7 +214,7 @@ export const whitelist = (() => {
      * @param url
      */
     const whiteListUrl = function (url) {
-        const domain = adguard.utils.url.getHost(url);
+        const domain = utils.url.getHost(url);
         if (isDefaultWhiteListMode()) {
             addToWhiteList(domain);
         } else {
@@ -223,7 +227,7 @@ export const whitelist = (() => {
      * @param url
      */
     const unWhiteListUrl = function (url) {
-        const domain = adguard.utils.url.getHost(url);
+        const domain = utils.url.getHost(url);
         if (isDefaultWhiteListMode()) {
             removeFromWhiteList(domain);
         } else {
@@ -281,7 +285,7 @@ export const whitelist = (() => {
      * Clear whitelisted only
      */
     var clearWhiteListed = function () {
-        adguard.localStorage.removeItem(WHITE_LIST_DOMAINS_LS_PROP);
+        localStorage.removeItem(WHITE_LIST_DOMAINS_LS_PROP);
         adguard.lazyGetClear(whiteListDomainsHolder, 'domains');
     };
 
@@ -289,7 +293,7 @@ export const whitelist = (() => {
      * Clear blocklisted only
      */
     var clearBlockListed = function () {
-        adguard.localStorage.removeItem(BLOCK_LIST_DOMAINS_LS_PROP);
+        localStorage.removeItem(BLOCK_LIST_DOMAINS_LS_PROP);
         adguard.lazyGetClear(blockListDomainsHolder, 'domains');
     };
 
@@ -304,7 +308,7 @@ export const whitelist = (() => {
         clearBlockListed();
         addWhiteListed(whitelist || []);
         addBlockListed(blocklist || []);
-        adguard.settings.changeDefaultWhiteListMode(whiteListMode);
+        settings.changeDefaultWhiteListMode(whiteListMode);
         notifyWhiteListUpdated();
     };
 
@@ -364,6 +368,3 @@ export const whitelist = (() => {
         changeDefaultWhiteListMode,
     };
 })();
-
-// TODO remove when all modules will be imported
-adguard.whitelist = whitelist;

@@ -539,7 +539,7 @@ export const subscriptions = (() => {
             let filter = filters.find(f => f.customUrl === url);
 
             if (filter) {
-                callback({ error: adguard.i18n.getMessage('options_antibanner_custom_filter_already_exists') });
+                callback({ error: backgroundPage.i18n.getMessage('options_antibanner_custom_filter_already_exists') });
                 return;
             }
 

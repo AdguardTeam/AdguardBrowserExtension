@@ -20,6 +20,8 @@ import { engine } from './engine';
 import { utils, RequestTypes } from '../utils/common';
 import { filteringLog } from './filtering-log';
 import { LocalScriptRulesService } from './rules/local-script-rules';
+import { cssService } from './services/css-service';
+import { webRequestService } from './request-blocking';
 
 export const RequestFilter = (() => {
     'use strict';
@@ -145,17 +147,17 @@ export const RequestFilter = (() => {
                 ...cosmeticResult.CSS.specificExtCss,
             ];
 
-            const collectingCosmeticRulesHits = adguard.webRequestService.isCollectingCosmeticRulesHits();
+            const collectingCosmeticRulesHits = webRequestService.isCollectingCosmeticRulesHits();
             if (collectingCosmeticRulesHits) {
                 return {
-                    css: adguard.cssService.buildStyleSheetHits(elemhideCss, injectCss),
-                    extendedCss: adguard.cssService.buildStyleSheetHits(elemhideExtendedCss, injectExtendedCss),
+                    css: cssService.buildStyleSheetHits(elemhideCss, injectCss),
+                    extendedCss: cssService.buildStyleSheetHits(elemhideExtendedCss, injectExtendedCss),
                 };
             }
 
             return {
-                css: adguard.cssService.buildStyleSheet(elemhideCss, injectCss, true),
-                extendedCss: adguard.cssService.buildStyleSheet(elemhideExtendedCss, injectExtendedCss, false),
+                css: cssService.buildStyleSheet(elemhideCss, injectCss, true),
+                extendedCss: cssService.buildStyleSheet(elemhideExtendedCss, injectExtendedCss, false),
             };
         },
 

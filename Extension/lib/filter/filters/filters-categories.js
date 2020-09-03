@@ -23,7 +23,7 @@ import { prefs } from '../../../browser/webkit/lib/prefs';
 /**
  * Filter categories service
  */
-export const categories = (function () {
+export const categories = (() => {
     /**
      * @returns {Array.<*>} filters
      */
@@ -166,4 +166,4 @@ export const categories = (function () {
         enableFiltersGroup,
         disableFiltersGroup,
     };
-})(adguard);
+})();

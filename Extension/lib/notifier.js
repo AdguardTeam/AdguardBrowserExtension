@@ -15,6 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { log } from './utils/log';
+
 /**
  * Simple mediator
  */
@@ -119,7 +121,7 @@ export const listeners = (() => {
                     const listener = this.listenersMap[listenerId];
                     listener.apply(listener, arguments);
                 } catch (ex) {
-                    adguard.console.error('Error invoking listener for {0} cause: {1}', event, ex);
+                    log.error('Error invoking listener for {0} cause: {1}', event, ex);
                 }
             }
         },

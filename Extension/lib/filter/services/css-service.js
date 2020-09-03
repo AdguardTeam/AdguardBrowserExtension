@@ -1,7 +1,7 @@
 /**
  * Class to manage css
  */
-adguard.cssService = (function () {
+export const cssService = (() => {
     /**
      * Builds stylesheet from rules
      *
@@ -128,5 +128,8 @@ adguard.cssService = (function () {
         return [...elemhideStyles, injectStyles];
     };
 
-    return { buildStyleSheet, buildStyleSheetHits };
+    return {
+        buildStyleSheet,
+        buildStyleSheetHits,
+    };
 })();

@@ -56,7 +56,7 @@ export const RequestTypes = {
      * @return {number}
      */
     transformRequestType(requestType) {
-        const contentTypes = adguard.RequestTypes;
+        const contentTypes = RequestTypes;
 
         switch (requestType) {
             case contentTypes.DOCUMENT:

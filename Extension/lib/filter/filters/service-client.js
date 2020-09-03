@@ -19,6 +19,8 @@ import FiltersDownloader from '../../libs/filters-downloader';
 import { utils } from '../../utils/common';
 import { backgroundPage } from '../../../browser/chrome/lib/api/background-page';
 import { prefs } from '../../../browser/webkit/lib/prefs';
+import { log } from '../../utils/log';
+import { subscriptions } from './subscription';
 
 export const backend = (function () {
     'use strict';
@@ -191,7 +193,7 @@ export const backend = (function () {
         try {
             return JSON.parse(text);
         } catch (ex) {
-            adguard.console.error('Error parse json {0}', ex);
+            log.error('Error parse json {0}', ex);
             return null;
         }
     }
@@ -220,7 +222,7 @@ export const backend = (function () {
                 for (let i = 0; i < filterIds.length; i += 1) {
                     const filter = utils.collections.find(metadata.filters, 'filterId', filterIds[i]);
                     if (filter) {
-                        filterMetadataList.push(adguard.subscriptions.createSubscriptionFilterFromJSON(filter));
+                        filterMetadataList.push(subscriptions.createSubscriptionFilterFromJSON(filter));
                     }
                 }
                 successCallback(filterMetadataList);
@@ -480,7 +482,7 @@ export const backend = (function () {
             });
             callback(headers);
         }, (request) => {
-            adguard.console.error('Error retrieved response from {0}, cause: {1}', url, request.statusText);
+            log.error('Error retrieved response from {0}, cause: {1}', url, request.statusText);
             callback(null);
         });
     };

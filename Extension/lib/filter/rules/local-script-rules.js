@@ -25,7 +25,6 @@
  * 3. We allow only custom rules got from the User filter (which user creates manually)
  *    or from this DEFAULT_SCRIPT_RULES object
  */
-
 export const LocalScriptRulesService = (function () {
     let DEFAULT_SCRIPT_RULES = Object.create(null);
 
@@ -36,7 +35,7 @@ export const LocalScriptRulesService = (function () {
     const setLocalScriptRules = function (json) {
         DEFAULT_SCRIPT_RULES = Object.create(null);
 
-        const rules = json.rules;
+        const { rules } = json;
         for (let i = 0; i < rules.length; i += 1) {
             const rule = rules[i];
             const { domains, script } = rule;
@@ -44,7 +43,7 @@ export const LocalScriptRulesService = (function () {
             if (domains !== '<any>') {
                 ruleText = domains;
             }
-            ruleText += '#%#' + script;
+            ruleText += `#%#${script}`;
             DEFAULT_SCRIPT_RULES[ruleText] = true;
         }
     };
