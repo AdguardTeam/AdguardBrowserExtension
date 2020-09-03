@@ -15,8 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global LRUMap */
-// TODO import LRU
+import { LRUMap } from 'lru_map';
 
 import { log } from '../../utils/log';
 import { utils } from '../../utils/common';

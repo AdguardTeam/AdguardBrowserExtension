@@ -28,6 +28,7 @@ import { requestContextStorage } from './request-context-storage';
 import { documentFilterService } from './services/document-filter';
 import { redirectFilterService } from './services/redirect-service';
 import { whitelist } from './whitelist';
+import { browserUtils } from '../utils/browser-utils';
 
 export const webRequestService = (function () {
     const onRequestBlockedChannel = utils.channels.newChannel();
@@ -517,7 +518,7 @@ export const webRequestService = (function () {
          * :before and :after
          * Due to this we can't use cssHitsCounter for edge browser
          */
-        if (utils.browser.isEdgeBrowser()) {
+        if (browserUtils.isEdgeBrowser()) {
             return false;
         }
 

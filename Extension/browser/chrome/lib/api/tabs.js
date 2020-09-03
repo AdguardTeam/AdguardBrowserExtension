@@ -20,6 +20,7 @@
 import { utils } from '../../../../lib/utils/common';
 import { prefs } from '../../../webkit/lib/prefs';
 import { backgroundPage } from './background-page';
+import { browserUtils } from '../../../../lib/utils/browser-utils';
 
 /**
  * Chromium windows implementation
@@ -228,7 +229,7 @@ export const tabsImpl = (function () {
 
         if (createData.type === 'popup'
             // Does not work properly in Anniversary builds
-            && !utils.browser.isEdgeBeforeCreatorsUpdate()
+            && !browserUtils.isEdgeBeforeCreatorsUpdate()
             // Isn't supported by Android WebExt
             && !prefs.mobile) {
             // https://developer.chrome.com/extensions/windows#method-create
@@ -323,7 +324,7 @@ export const tabsImpl = (function () {
 
     const reload = function (tabId, url) {
         if (url) {
-            if (utils.browser.isEdgeBrowser()) {
+            if (browserUtils.isEdgeBrowser()) {
                 /**
                  * For security reasons, in Firefox and Edge, this may not be a privileged URL.
                  * So passing any of the following URLs will fail, with runtime.lastError being set to an error message:

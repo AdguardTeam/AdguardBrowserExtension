@@ -21,6 +21,7 @@ import { tabsApi } from '../../tabs/tabs-api';
 import { subscriptions } from '../filters/subscription';
 import { settings } from '../../settings/user-settings';
 import { utils } from '../../utils/common';
+import { browserUtils } from '../../utils/browser-utils';
 
 /**
  * Initialize LocaleDetectService.
@@ -171,7 +172,7 @@ export const localeDetect = (function () {
 
         // tabs.detectLanguage doesn't work in Opera
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/997
-        if (!utils.browser.isOperaBrowser()) {
+        if (!browserUtils.isOperaBrowser()) {
             /* global browser */
             if (tab.tabId && typeof browser !== 'undefined' && browser.tabs && browser.tabs.detectLanguage) {
                 // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/detectLanguage

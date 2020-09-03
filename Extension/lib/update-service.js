@@ -19,6 +19,7 @@ import * as TSUrlFilter from '@adguard/tsurlfilter';
 import { utils } from './utils/common';
 import { backgroundPage } from '../browser/chrome/lib/api/background-page';
 import { log } from './utils/log';
+import { browserUtils } from './utils/browser-utils';
 
 /**
  * Service that manages extension version information and handles
@@ -202,7 +203,7 @@ export const applicationUpdateService = (function () {
     function onUpdateEdgeRulesStorage() {
         const dfd = new utils.Promise();
 
-        const fixProperty = `edge-storage-local-fix-build${utils.browser.EDGE_CREATORS_UPDATE}`;
+        const fixProperty = `edge-storage-local-fix-build${browserUtils.EDGE_CREATORS_UPDATE}`;
         if (adguard.localStorage.getItem(fixProperty)) {
             dfd.resolve();
             return dfd;
@@ -359,9 +360,9 @@ export const applicationUpdateService = (function () {
      * @param callback Run info callback with passed object {{isFirstRun: boolean, isUpdate: (boolean|*), currentVersion: (Prefs.version|*), prevVersion: *}}
      */
     const getRunInfo = function (callback) {
-        const prevVersion = utils.browser.getAppVersion();
+        const prevVersion = browserUtils.getAppVersion();
         const currentVersion = backgroundPage.app.getVersion();
-        utils.browser.setAppVersion(currentVersion);
+        browserUtils.setAppVersion(currentVersion);
 
         const isFirstRun = (currentVersion !== prevVersion && !prevVersion);
         const isUpdate = !!(currentVersion !== prevVersion && prevVersion);
@@ -381,24 +382,24 @@ export const applicationUpdateService = (function () {
      */
     const onUpdate = function (runInfo, callback) {
         const methods = [];
-        if (utils.browser.isGreaterVersion('2.3.5', runInfo.prevVersion)
-            && utils.browser.isChromium()) {
+        if (browserUtils.isGreaterVersion('2.3.5', runInfo.prevVersion)
+            && browserUtils.isChromium()) {
             methods.push(onUpdateChromiumStorage);
         }
-        if (utils.browser.isEdgeBrowser() && !utils.browser.isEdgeBeforeCreatorsUpdate()) {
+        if (browserUtils.isEdgeBrowser() && !browserUtils.isEdgeBeforeCreatorsUpdate()) {
             methods.push(onUpdateEdgeRulesStorage);
         }
-        if (utils.browser.isGreaterVersion('2.7.4', runInfo.prevVersion)
-            && utils.browser.isFirefoxBrowser() && typeof browser !== 'undefined') {
+        if (browserUtils.isGreaterVersion('2.7.4', runInfo.prevVersion)
+            && browserUtils.isFirefoxBrowser() && typeof browser !== 'undefined') {
             methods.push(onUpdateFirefoxWebExtRulesStorage);
         }
-        if (utils.browser.isGreaterVersion('3.0.3', runInfo.prevVersion)) {
+        if (browserUtils.isGreaterVersion('3.0.3', runInfo.prevVersion)) {
             methods.push(handleUndefinedGroupStatuses);
         }
-        if (utils.browser.isGreaterVersion('3.3.5', runInfo.prevVersion)) {
+        if (browserUtils.isGreaterVersion('3.3.5', runInfo.prevVersion)) {
             methods.push(handleDefaultUpdatePeriodSetting);
         }
-        if (utils.browser.isGreaterVersion('3.5.6', runInfo.prevVersion)) {
+        if (browserUtils.isGreaterVersion('3.5.6', runInfo.prevVersion)) {
             methods.push(onUpdateRuleConverter);
         }
 

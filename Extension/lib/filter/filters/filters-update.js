@@ -23,6 +23,7 @@ import { backend } from './service-client';
 import { antiBannerService } from '../antibanner';
 import { log } from '../../utils/log';
 import { settings } from '../../settings/user-settings';
+import { browserUtils } from '../../utils/browser-utils';
 
 /**
  * Filters update service
@@ -309,7 +310,7 @@ export const filtersUpdate = (() => {
                     const filterMetadata = filterMetadataList[i];
                     const filter = subscriptions.getFilter(filterMetadata.filterId);
                     // eslint-disable-next-line max-len
-                    if (filter && filterMetadata.version && utils.browser.isGreaterVersion(filterMetadata.version, filter.version)) {
+                    if (filter && filterMetadata.version && browserUtils.isGreaterVersion(filterMetadata.version, filter.version)) {
                         log.info(`Updating filter ${filter.filterId} to version ${filterMetadata.version}`);
                         filterMetadataListToUpdate.push(filterMetadata);
                     } else {

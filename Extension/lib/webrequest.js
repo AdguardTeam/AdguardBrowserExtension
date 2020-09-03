@@ -32,6 +32,7 @@ import { contentFiltering } from '../browser/firefox/lib/content-filtering';
 import { safebrowsing } from './filter/services/safebrowsing-filter';
 import { ui } from './ui-service';
 import { log } from './utils/log';
+import { browserUtils } from './utils/browser-utils';
 
 // TODO add description
 const webrequestInit = function () {
@@ -278,7 +279,7 @@ const webrequestInit = function () {
 
         if (requestType === RequestTypes.DOCUMENT) {
             // Save ref header
-            const refHeader = utils.browser.findHeaderByName(requestHeaders, 'Referer');
+            const refHeader = browserUtils.findHeaderByName(requestHeaders, 'Referer');
             if (refHeader) {
                 frames.recordFrameReferrerHeader(tab, refHeader.value);
             }
@@ -336,7 +337,7 @@ const webrequestInit = function () {
             const htmlRules = webRequestService.getContentRules(tab, referrerUrl) || [];
 
             if (replaceRules.length > 0 || htmlRules.length > 0) {
-                const contentType = utils.browser.getHeaderValueByName(responseHeaders, 'content-type');
+                const contentType = browserUtils.getHeaderValueByName(responseHeaders, 'content-type');
 
                 const request = new TSUrlFilter.Request(
                     requestUrl, referrerUrl, RequestTypes.transformRequestType(requestType)
@@ -385,7 +386,7 @@ const webrequestInit = function () {
         // Please note, that we do not modify response headers in Edge before Creators update:
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/401
         // https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8796739/
-        if (utils.browser.isEdgeBeforeCreatorsUpdate()) {
+        if (browserUtils.isEdgeBeforeCreatorsUpdate()) {
             return;
         }
 
@@ -446,13 +447,13 @@ const webrequestInit = function () {
             return;
         }
 
-        const referrerUrl = utils.browser.getSafebrowsingBackUrl(tab);
+        const referrerUrl = browserUtils.getSafebrowsingBackUrl(tab);
         const incognitoTab = frames.isIncognitoTab(tab);
 
         safebrowsing.checkSafebrowsingFilter(mainFrameUrl, referrerUrl, (safebrowsingUrl) => {
             // Chrome doesn't allow open extension url in incognito mode
             // So close current tab and open new
-            if (utils.browser.isChromium() && incognitoTab) {
+            if (browserUtils.isChromium() && incognitoTab) {
                 // Closing tab before opening a new one may lead to browser crash (Chromium)
                 ui.openTab(safebrowsingUrl, {}, () => {
                     tabsApi.tabs.remove(tab.tabId);
@@ -997,7 +998,7 @@ const webrequestInit = function () {
             // onHeadersReceived for SUBDOCUMENT requests
             // This is true only for SUBDOCUMENTS i.e. iframes
             // so we inject code when onCompleted event fires
-            if (utils.browser.isFirefoxBrowser()) {
+            if (browserUtils.isFirefoxBrowser()) {
                 backgroundPage.webRequest.onCompleted.addListener((details) => { tryInject(details, 'onCompleted'); }, ['<all_urls>']);
             }
             // Remove injections when tab is closed

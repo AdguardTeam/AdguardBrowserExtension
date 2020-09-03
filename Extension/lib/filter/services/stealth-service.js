@@ -24,11 +24,12 @@ import { filteringApi } from '../filtering-api';
 import { filteringLog } from '../filtering-log';
 import { listeners } from '../../notifier';
 import { frames } from '../../tabs/frames';
+import { browserUtils } from '../../utils/browser-utils';
 
 // TODO can the line below to be removed?
 // TODO: [TSUrlFilter] Use TSURLFilter stealthService
 
-// TOD add description
+// TODO add description
 export const stealthService = (() => {
     /**
      * Search engines regexps
@@ -195,7 +196,7 @@ export const stealthService = (() => {
         const hideReferrer = getStealthSettingValue(settings.HIDE_REFERRER);
         if (hideReferrer) {
             log.debug('Remove referrer for third-party requests');
-            const refHeader = utils.browser.findHeaderByName(requestHeaders, HEADERS.REFERRER);
+            const refHeader = browserUtils.findHeaderByName(requestHeaders, HEADERS.REFERRER);
             if (refHeader
                 && utils.url.isThirdPartyRequest(requestUrl, refHeader.value)) {
                 refHeader.value = getHiddenRefHeaderUrl(requestUrl);
@@ -208,7 +209,7 @@ export const stealthService = (() => {
         const hideSearchQueries = getStealthSettingValue(settings.HIDE_SEARCH_QUERIES);
         if (hideSearchQueries && isMainFrame) {
             log.debug('Hide referrer in case of search engine is referrer');
-            const refHeader = utils.browser.findHeaderByName(requestHeaders, HEADERS.REFERRER);
+            const refHeader = browserUtils.findHeaderByName(requestHeaders, HEADERS.REFERRER);
             if (refHeader
                 && isSearchEngine(refHeader.value)
                 && utils.url.isThirdPartyRequest(requestUrl, refHeader.value)) {
@@ -221,7 +222,7 @@ export const stealthService = (() => {
         const blockChromeClientData = getStealthSettingValue(settings.BLOCK_CHROME_CLIENT_DATA);
         if (blockChromeClientData) {
             log.debug('Remove X-Client-Data header');
-            if (utils.browser.removeHeader(requestHeaders, HEADERS.X_CLIENT_DATA)) {
+            if (browserUtils.removeHeader(requestHeaders, HEADERS.X_CLIENT_DATA)) {
                 stealthActions |= STEALTH_ACTIONS.BLOCK_CHROME_CLIENT_DATA;
             }
         }
@@ -467,12 +468,12 @@ export const stealthService = (() => {
     };
 
     const handleWebRTCEnabling = () => {
-        utils.browser.containsPermissions(['privacy'])
+        browserUtils.containsPermissions(['privacy'])
             .then(result => {
                 if (result) {
                     return true;
                 }
-                return utils.browser.requestPermissions(['privacy']);
+                return browserUtils.requestPermissions(['privacy']);
             })
             .then(granted => {
                 if (granted) {
@@ -488,11 +489,11 @@ export const stealthService = (() => {
     };
 
     const handleWebRTCDisabling = () => {
-        utils.browser.containsPermissions(['privacy'])
+        browserUtils.containsPermissions(['privacy'])
             .then(result => {
                 if (result) {
                     handleBlockWebRTC();
-                    return utils.browser.removePermission(['privacy']);
+                    return browserUtils.removePermission(['privacy']);
                 }
                 return true;
             });
@@ -518,7 +519,7 @@ export const stealthService = (() => {
      * @returns {boolean}
      */
     const canBlockWebRTC = () => {
-        return !utils.browser.isEdgeBrowser();
+        return !browserUtils.isEdgeBrowser();
     };
 
     /**
@@ -528,7 +529,7 @@ export const stealthService = (() => {
      * @returns {boolean}
      */
     const shouldHandlePrivacyPermission = () => {
-        return utils.browser.isChromium();
+        return browserUtils.isChromium();
     };
 
     if (canBlockWebRTC()) {
@@ -546,7 +547,7 @@ export const stealthService = (() => {
         listeners.addListener((event) => {
             switch (event) {
                 case listeners.APPLICATION_INITIALIZED:
-                    utils.browser.containsPermissions(['privacy'])
+                    browserUtils.containsPermissions(['privacy'])
                         .then(result => {
                             if (result) {
                                 handleBlockWebRTC();

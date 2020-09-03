@@ -15,7 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { BACKGROUND_TAB_ID } from '../utils/common';
+import { BACKGROUND_TAB_ID, utils } from '../utils/common';
+import { backgroundPage } from '../../browser/chrome/lib/api/background-page';
+import { browserUtils } from '../utils/browser-utils';
 
 /**
  * Request sanitizer helper
@@ -44,8 +46,8 @@ export const requestSanitizer = (function () {
 
         // Chrome provides "initiator" and firefox "originUrl"
         const origin = initiator || originUrl;
-        if (adguard.app.isOwnRequest(origin)) {
-            requestHeadersModified = adguard.utils.browser.removeHeader(requestHeaders, 'Cookie');
+        if (backgroundPage.app.isOwnRequest(origin)) {
+            requestHeadersModified = browserUtils.removeHeader(requestHeaders, 'Cookie');
         }
 
         if (requestHeadersModified) {

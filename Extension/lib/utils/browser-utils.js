@@ -17,11 +17,12 @@
 
 import { prefs } from '../../browser/webkit/lib/prefs';
 import { localStorage } from '../storage';
-import { tabsApi } from '../tabs/tabs-api';
 import { RequestTypes } from './common';
+import { collections } from './collections';
+import { tabsApi } from '../tabs/tabs-api';
 import { backgroundPage } from '../../browser/chrome/lib/api/background-page';
 
-export const browserUtils = function (utils) {
+export const browserUtils = (function () {
     /**
      * Extension version (x.x.x)
      * @param version
@@ -39,7 +40,7 @@ export const browserUtils = function (utils) {
             return Math.max(part - 0, 0);
         }
 
-        for (let i = 3; i >= 0; i--) {
+        for (let i = 3; i >= 0; i -= 1) {
             this.version[i] = parseVersionPart(parts[i]);
         }
     };
@@ -65,8 +66,7 @@ export const browserUtils = function (utils) {
     const fontContentTypes = '.ttf.otf.woff.woff2.eot.';
     const imageContentTypes = '.ico.png.gif.jpg.jpeg.webp.';
 
-    const Utils = {
-
+    const browserUtils = {
         getClientId() {
             let clientId = localStorage.getItem('client-id');
             if (!clientId) {
@@ -174,7 +174,7 @@ export const browserUtils = function (utils) {
          */
         findHeaderByName(headers, headerName) {
             if (headers) {
-                for (let i = 0; i < headers.length; i++) {
+                for (let i = 0; i < headers.length; i += 1) {
                     const header = headers[i];
                     if (header.name.toLowerCase() === headerName.toLowerCase()) {
                         return header;
@@ -224,7 +224,7 @@ export const browserUtils = function (utils) {
         removeHeader(headers, headerName) {
             let removed = false;
             if (headers) {
-                for (let i = headers.length - 1; i >= 0; i--) {
+                for (let i = headers.length - 1; i >= 0; i -= 1) {
                     const header = headers[i];
                     if (header.name.toLowerCase() === headerName.toLowerCase()) {
                         headers.splice(i, 1);
@@ -288,7 +288,7 @@ export const browserUtils = function (utils) {
         getNavigatorLanguages(limit) {
             let languages = [];
             // https://developer.mozilla.org/ru/docs/Web/API/NavigatorLanguage/languages
-            if (utils.collections.isArray(navigator.languages)) {
+            if (collections.isArray(navigator.languages)) {
                 languages = navigator.languages.slice(0, limit);
             } else if (navigator.language) {
                 languages.push(navigator.language); // .language is first in .languages
@@ -301,7 +301,6 @@ export const browserUtils = function (utils) {
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/602
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/566
          * 'Popup' window
-
          * Creators update is not yet released, so we use Insider build 15063 instead.
          */
         EDGE_CREATORS_UPDATE: 15063,
@@ -366,5 +365,5 @@ export const browserUtils = function (utils) {
         }),
     };
 
-    utils.browser = Utils;
-};
+    return browserUtils;
+})();

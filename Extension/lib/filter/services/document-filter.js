@@ -21,6 +21,8 @@ import { backgroundPage } from '../../../browser/chrome/lib/api/background-page'
 import { tabsApi } from '../../tabs/tabs-api';
 import { ui } from '../../ui-service';
 import { frames } from '../../tabs/frames';
+import { ExpiringCache } from '../../utils/ExpiringCache';
+import { browserUtils } from '../../utils/browser-utils';
 
 export const documentFilterService = (function () {
     const trustedCache = {
@@ -28,7 +30,7 @@ export const documentFilterService = (function () {
             return adguard.lazyGet(
                 trustedCache,
                 'cache',
-                () => new utils.ExpiringCache('document-block-cache')
+                () => new ExpiringCache('document-block-cache')
             );
         },
     };
@@ -94,7 +96,7 @@ export const documentFilterService = (function () {
         const showDocumentBlockPage = (tabId, url) => {
             const incognitoTab = frames.isIncognitoTab({ tabId });
             // Chrome doesn't allow to show extension pages in incognito mode
-            if (utils.browser.isChromium() && incognitoTab) {
+            if (browserUtils.isChromium() && incognitoTab) {
                 // Closing tab before opening a new one may lead to browser crash (Chromium)
                 ui.openTab(url, {}, () => {
                     tabsApi.tabs.remove(tabId);

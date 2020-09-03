@@ -17,6 +17,8 @@
 
 /* eslint-disable prefer-template */
 
+import { strings } from './strings';
+
 /**
  * Helper methods for parsing and extracting browser cookies from headers (both Set-Cookie and Cookie).
  *
@@ -28,7 +30,7 @@
  *
  * Heavily inspired by https://github.com/nfriedly/set-cookie-parser and https://github.com/jshttp/cookie
  */
-export const cookie = utils => {
+export const cookie = (() => {
     /**
      * RegExp to match field-content in RFC 7230 sec 3.2
      *
@@ -64,7 +66,7 @@ export const cookie = utils => {
      * @public
      */
     function parseCookie(cookieValue) {
-        if (utils.strings.isEmpty(cookieValue)) {
+        if (strings.isEmpty(cookieValue)) {
             return null;
         }
 
@@ -103,11 +105,11 @@ export const cookie = utils => {
      * @public
      */
     function parseSetCookie(setCookieValue) {
-        if (utils.strings.isEmpty(setCookieValue)) {
+        if (strings.isEmpty(setCookieValue)) {
             return null;
         }
 
-        const parts = setCookieValue.split(';').filter(s => !utils.strings.isEmpty(s));
+        const parts = setCookieValue.split(';').filter(s => !strings.isEmpty(s));
         const nameValuePart = parts.shift();
         const nameValue = nameValuePart.split('=');
         const name = nameValue.shift();
@@ -195,7 +197,7 @@ export const cookie = utils => {
         if (cookie.secure) {
             setCookieValue += '; Secure';
         }
-        if (!utils.strings.isEmpty(cookie.sameSite)) {
+        if (!strings.isEmpty(cookie.sameSite)) {
             const sameSite = cookie.sameSite.toLowerCase();
 
             switch (sameSite) {
@@ -223,9 +225,9 @@ export const cookie = utils => {
     }
 
     // EXPOSE
-    utils.cookie = {
+    return {
         parseCookie,
         parseSetCookie,
         serialize,
     };
-};
+})();

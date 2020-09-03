@@ -18,7 +18,7 @@
 import { localStorage } from '../storage';
 import { log } from './log';
 
-export const expiringCache = function (utils) {
+export const ExpiringCache = (() => {
     /**
      * Cache with maxCacheSize stored in local storage, which automatically clears expired values
      *
@@ -130,5 +130,5 @@ export const expiringCache = function (utils) {
     /**
      * Expose
      */
-    utils.ExpiringCache = ExpiringCache;
-};
+    return ExpiringCache;
+})();

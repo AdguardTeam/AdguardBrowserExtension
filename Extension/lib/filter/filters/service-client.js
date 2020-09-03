@@ -21,6 +21,7 @@ import { backgroundPage } from '../../../browser/chrome/lib/api/background-page'
 import { prefs } from '../../../browser/webkit/lib/prefs';
 import { log } from '../../utils/log';
 import { subscriptions } from './subscription';
+import { browserUtils } from '../../utils/browser-utils';
 
 export const backend = (function () {
     'use strict';
@@ -48,11 +49,11 @@ export const backend = (function () {
         // Url for load filters metadata and rules
         get filtersUrl() {
             return adguard.lazyGet(this, 'filtersUrl', () => {
-                if (utils.browser.isFirefoxBrowser()) {
+                if (browserUtils.isFirefoxBrowser()) {
                     return 'https://filters.adtidy.org/extension/firefox';
-                } if (utils.browser.isEdgeBrowser()) {
+                } if (browserUtils.isEdgeBrowser()) {
                     return 'https://filters.adtidy.org/extension/edge';
-                } if (utils.browser.isOperaBrowser()) {
+                } if (browserUtils.isOperaBrowser()) {
                     return 'https://filters.adtidy.org/extension/opera';
                 }
                 return 'https://filters.adtidy.org/extension/chromium';
@@ -71,7 +72,7 @@ export const backend = (function () {
 
         // URL for checking filter updates
         get filtersMetadataUrl() {
-            const params = utils.browser.getExtensionParams();
+            const params = browserUtils.getExtensionParams();
             return `${this.filtersUrl}/filters.js?${params.join('&')}`;
         },
 
@@ -117,11 +118,11 @@ export const backend = (function () {
      */
     const FilterCompilerConditionsConstants = {
         adguard: true,
-        adguard_ext_chromium: utils.browser.isChromium(),
-        adguard_ext_firefox: utils.browser.isFirefoxBrowser(),
-        adguard_ext_edge: utils.browser.isEdgeBrowser(),
+        adguard_ext_chromium: browserUtils.isChromium(),
+        adguard_ext_firefox: browserUtils.isFirefoxBrowser(),
+        adguard_ext_edge: browserUtils.isEdgeBrowser(),
         adguard_ext_safari: false,
-        adguard_ext_opera: utils.browser.isOperaBrowser(),
+        adguard_ext_opera: browserUtils.isOperaBrowser(),
     };
 
     /**

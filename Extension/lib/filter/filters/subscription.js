@@ -24,6 +24,7 @@ import { localStorage } from '../../storage';
 import { utils } from '../../utils/common';
 import { LocalScriptRulesService } from '../rules/local-script-rules';
 import { redirectFilterService } from '../services/redirect-service';
+import { browserUtils } from '../../utils/browser-utils';
 
 /**
  * Service that loads and parses filters metadata from backend server.
@@ -365,7 +366,7 @@ export const subscriptions = (() => {
      */
     function didFilterUpdate(newVersion, newChecksum, oldFilter) {
         if (newVersion) {
-            return !utils.browser.isGreaterOrEqualsVersion(oldFilter.version, newVersion);
+            return !browserUtils.isGreaterOrEqualsVersion(oldFilter.version, newVersion);
         }
         if (!oldFilter.checksum) {
             return true;
@@ -830,7 +831,7 @@ export const subscriptions = (() => {
 
         // Get language-specific filters by navigator languages
         // Get the 2 most commonly used languages
-        const languages = utils.browser.getNavigatorLanguages(2);
+        const languages = browserUtils.getNavigatorLanguages(2);
         for (let i = 0; i < languages.length; i += 1) {
             localeFilterIds = getFilterIdsForLanguage(languages[i]);
             filterIds = filterIds.concat(localeFilterIds);

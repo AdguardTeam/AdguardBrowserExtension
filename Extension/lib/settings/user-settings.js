@@ -23,6 +23,7 @@ import { listeners } from '../notifier';
 import { log } from '../utils/log';
 import { localStorage } from '../storage';
 import { adguard } from '../adguard';
+import { browserUtils } from '../utils/browser-utils';
 
 /**
  * Object that manages user settings.
@@ -78,7 +79,7 @@ export const settings = (() => {
                         defaults[settings[name]] = false;
                     }
                 }
-                defaults[settings.DISABLE_SHOW_ADGUARD_PROMO_INFO] = (!utils.browser.isWindowsOs() && !utils.browser.isMacOs()) || utils.browser.isEdgeBrowser();
+                defaults[settings.DISABLE_SHOW_ADGUARD_PROMO_INFO] = (!browserUtils.isWindowsOs() && !browserUtils.isMacOs()) || browserUtils.isEdgeBrowser();
                 defaults[settings.DISABLE_SAFEBROWSING] = true;
                 defaults[settings.DISABLE_COLLECT_HITS] = true;
                 defaults[settings.DEFAULT_WHITE_LIST_MODE] = true;
@@ -90,7 +91,7 @@ export const settings = (() => {
                 defaults[settings.HIDE_REFERRER] = true;
                 defaults[settings.HIDE_SEARCH_QUERIES] = true;
                 defaults[settings.SEND_DO_NOT_TRACK] = true;
-                defaults[settings.BLOCK_CHROME_CLIENT_DATA] = !!utils.browser.isChromeBrowser();
+                defaults[settings.BLOCK_CHROME_CLIENT_DATA] = !!browserUtils.isChromeBrowser();
                 defaults[settings.BLOCK_WEBRTC] = false;
                 defaults[settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES] = true;
                 defaults[settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME] = DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN;

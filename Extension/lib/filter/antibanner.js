@@ -130,7 +130,7 @@ export const antiBannerService = (() => {
                 }
             } else if (runInfo.isUpdate) {
                 // Updating storage schema on extension update (if needed)
-                adguard.applicationUpdateService.onUpdate(runInfo, initRequestFilter);
+                applicationUpdateService.onUpdate(runInfo, initRequestFilter);
                 // Show updated version popup
                 notifyApplicationUpdated(runInfo);
             } else {
@@ -226,7 +226,7 @@ export const antiBannerService = (() => {
          * TODO: when we want to load filter from backend,
          *  we should retrieve metadata from backend too, but not from local file.
          */
-        adguard.filtersUpdate.loadFilterRules(filter, false, onFilterLoaded);
+        filtersUpdate.loadFilterRules(filter, false, onFilterLoaded);
     };
 
     /**
@@ -238,7 +238,7 @@ export const antiBannerService = (() => {
      */
     function reloadAntiBannerFilters(successCallback, errorCallback) {
         resetFiltersVersion();
-        adguard.filtersUpdate.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback);
+        filtersUpdate.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback);
     }
 
     /**
@@ -661,7 +661,7 @@ export const antiBannerService = (() => {
             if (setting === settings.USE_OPTIMIZED_FILTERS) {
                 onUsedOptimizedFiltersChange();
             } else if (setting === settings.FILTERS_UPDATE_PERIOD) {
-                adguard.filtersUpdate.scheduleFiltersUpdate();
+                filtersUpdate.scheduleFiltersUpdate();
             }
         });
     }

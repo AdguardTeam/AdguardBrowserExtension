@@ -22,6 +22,7 @@ import { filteringLog } from './filtering-log';
 import { LocalScriptRulesService } from './rules/local-script-rules';
 import { cssService } from './services/css-service';
 import { webRequestService } from './request-blocking';
+import { browserUtils } from '../utils/browser-utils';
 
 export const RequestFilter = (() => {
     'use strict';
@@ -190,8 +191,8 @@ export const RequestFilter = (() => {
             const debug = filteringLog && filteringLog.isOpen();
             const scriptRules = this.getScriptsForUrl(url);
 
-            const isFirefox = utils.browser.isFirefoxBrowser();
-            const isOpera = utils.browser.isOperaBrowser();
+            const isFirefox = browserUtils.isFirefoxBrowser();
+            const isOpera = browserUtils.isOperaBrowser();
 
             const selectedScriptRules = scriptRules.filter((scriptRule) => {
                 const isLocal = LocalScriptRulesService.isLocal(scriptRule.getText());

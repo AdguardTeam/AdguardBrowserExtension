@@ -29,6 +29,7 @@ import { frames } from './tabs/frames';
 import { notifications } from './utils/notifications';
 import { whitelist } from './filter/whitelist';
 import { userrules } from './filter/userrules';
+import { browserUtils } from './utils/browser-utils';
 
 // TODO rename to uiService
 export const ui = (function () {
@@ -94,11 +95,11 @@ export const ui = (function () {
 
     const extensionStoreLink = (function () {
         let browser = 'chrome';
-        if (utils.browser.isOperaBrowser()) {
+        if (browserUtils.isOperaBrowser()) {
             browser = 'opera';
-        } else if (utils.browser.isFirefoxBrowser()) {
+        } else if (browserUtils.isFirefoxBrowser()) {
             browser = 'firefox';
-        } else if (utils.browser.isEdgeChromiumBrowser()) {
+        } else if (browserUtils.isEdgeChromiumBrowser()) {
             browser = 'edge';
         }
 
@@ -399,8 +400,8 @@ export const ui = (function () {
      * @param previousVersion
      */
     function getUpdateDescriptionMessage(currentVersion, previousVersion) {
-        if (utils.browser.getMajorVersionNumber(currentVersion) > utils.browser.getMajorVersionNumber(previousVersion)
-            || utils.browser.getMinorVersionNumber(currentVersion) > utils.browser.getMinorVersionNumber(previousVersion)) {
+        if (browserUtils.getMajorVersionNumber(currentVersion) > browserUtils.getMajorVersionNumber(previousVersion)
+            || browserUtils.getMinorVersionNumber(currentVersion) > browserUtils.getMinorVersionNumber(previousVersion)) {
             return backgroundPage.i18n.getMessage('options_popup_version_update_description_major');
         }
 
@@ -416,8 +417,8 @@ export const ui = (function () {
     function showVersionUpdatedPopup(currentVersion, previousVersion) {
         // Suppress for v3.0 hotfix
         // TODO: Remove this in the next update
-        if (utils.browser.getMajorVersionNumber(currentVersion) === utils.browser.getMajorVersionNumber(previousVersion)
-            && utils.browser.getMinorVersionNumber(currentVersion) === utils.browser.getMinorVersionNumber(previousVersion)) {
+        if (browserUtils.getMajorVersionNumber(currentVersion) === browserUtils.getMajorVersionNumber(previousVersion)
+            && browserUtils.getMinorVersionNumber(currentVersion) === browserUtils.getMinorVersionNumber(previousVersion)) {
             return;
         }
         const message = {
@@ -621,7 +622,7 @@ export const ui = (function () {
     };
 
     const openThankYouPage = function () {
-        const params = utils.browser.getExtensionParams();
+        const params = browserUtils.getExtensionParams();
         params.push(`_locale=${encodeURIComponent(backgroundPage.app.getLocale())}`);
         const thankyouUrl = `${THANKYOU_PAGE_URL}?${params.join('&')}`;
 
@@ -634,7 +635,7 @@ export const ui = (function () {
                 const tab = tabs[i];
                 if (tab.url === filtersDownloadUrl) {
                     // In YaBrowser don't activate found page
-                    if (!utils.browser.isYaBrowser()) {
+                    if (!browserUtils.isYaBrowser()) {
                         tabsApi.tabs.activate(tab.tabId);
                     }
                     tabsApi.tabs.reload(tab.tabId, thankyouUrl);
@@ -651,7 +652,7 @@ export const ui = (function () {
 
     const openFiltersDownloadPage = function () {
         // TODO move url in constants
-        openTab(getPageUrl('filter-download.html'), { inBackground: utils.browser.isYaBrowser() });
+        openTab(getPageUrl('filter-download.html'), { inBackground: browserUtils.isYaBrowser() });
     };
 
     var whiteListTab = function (tab) {

@@ -23,6 +23,7 @@ import { requestContextStorage } from '../request-context-storage';
 import { log } from '../../utils/log';
 import { webRequestService } from '../request-blocking';
 import { stealthService } from './stealth-service';
+import { browserUtils } from '../../utils/browser-utils';
 
 /**
  * Cookie filtering module
@@ -538,7 +539,7 @@ export const cookieFiltering = (() => {
         const referrerUrl = context.originUrl || context.referrerUrl;
         const requestType = context.requestType || RequestTypes.DOCUMENT;
 
-        const cookieHeader = utils.browser.findHeaderByName(requestHeaders, 'Cookie');
+        const cookieHeader = browserUtils.findHeaderByName(requestHeaders, 'Cookie');
         const cookies = utils.cookie.parseCookie(cookieHeader ? cookieHeader.value : null);
         if (!cookies) {
             return false;
