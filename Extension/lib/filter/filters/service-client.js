@@ -18,6 +18,7 @@
 import FiltersDownloader from '../../libs/filters-downloader';
 import { utils } from '../../utils/common';
 import { backgroundPage } from '../../../browser/chrome/lib/api/background-page';
+import { prefs } from '../../../browser/webkit/lib/prefs';
 
 export const backend = (function () {
     'use strict';
@@ -444,10 +445,10 @@ export const backend = (function () {
      */
     const sendHitStats = function (stats, enabledFilters) {
         let params = `stats=${encodeURIComponent(stats)}`;
-        params += `&v=${encodeURIComponent(adguard.app.getVersion())}`;
-        params += `&b=${encodeURIComponent(adguard.prefs.browser)}`;
+        params += `&v=${encodeURIComponent(backgroundPage.app.getVersion())}`;
+        params += `&b=${encodeURIComponent(prefs.browser)}`;
         if (enabledFilters) {
-            for (let i = 0; i < enabledFilters.length; i++) {
+            for (let i = 0; i < enabledFilters.length; i += 1) {
                 const filter = enabledFilters[i];
                 params += `&f=${encodeURIComponent(`${filter.filterId},${filter.version}`)}`;
             }

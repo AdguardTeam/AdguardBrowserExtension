@@ -1,6 +1,3 @@
-/* eslint-disable max-len */
-import { BACKGROUND_TAB_ID } from '../../../../lib/utils/common';
-
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -17,10 +14,18 @@ import { BACKGROUND_TAB_ID } from '../../../../lib/utils/common';
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* eslint-disable max-len */
+
+import { BACKGROUND_TAB_ID, RequestTypes, utils } from '../../../../lib/utils/common';
+import { ui } from '../../../../lib/ui-service';
+import { prefs } from '../../../webkit/lib/prefs';
+
 export const backgroundPage = (() => {
     const runtime = (function () {
         const onMessage = {
             addListener(callback) {
+                // TODO check this calls adguard.runtimeImpl && adguard.tabsImpl
                 // https://developer.chrome.com/extensions/runtime#event-onMessage
                 adguard.runtimeImpl.onMessage.addListener((message, sender, sendResponse) => {
                     const senderOverride = Object.create(null);
@@ -84,10 +89,10 @@ export const backgroundPage = (() => {
     function parseRequestTypeFromUrl(url) {
         linkHelper.href = url;
         const path = linkHelper.pathname;
-        let requestType = adguard.utils.browser.parseContentTypeFromUrlPath(path);
+        let requestType = utils.browser.parseContentTypeFromUrlPath(path);
         if (requestType === null) {
             // https://code.google.com/p/chromium/issues/detail?id=410382
-            requestType = adguard.RequestTypes.OBJECT;
+            requestType = RequestTypes.OBJECT;
         }
         return requestType;
     }
@@ -112,7 +117,7 @@ export const backgroundPage = (() => {
      * @property {String} method - standard HTTP method
      * @property {Number} frameId - ID of current frame. Frame IDs are unique within a tab.
      * @property {Number} requestFrameId - ID of frame where request is executed
-     * @property {Number} requestType - request type {@link adguard.RequestTypes}
+     * @property {Number} requestType - request type {@link RequestTypes}
      * @property {HttpHeaders} [requestHeaders] - the HTTP request headers
      * @property {HttpHeaders} [responseHeaders] - the HTTP response headers
      * @property {String} redirectUrl - new URL in onBeforeRedirect event
@@ -159,13 +164,13 @@ export const backgroundPage = (() => {
         switch (details.type) {
             case 'main_frame':
                 frameId = 0;
-                requestType = adguard.RequestTypes.DOCUMENT;
+                requestType = RequestTypes.DOCUMENT;
                 break;
             case 'sub_frame':
                 frameId = details.frameId;
                 // for sub_frame use parentFrameId as id of frame that wraps this frame
                 requestFrameId = details.parentFrameId;
-                requestType = adguard.RequestTypes.SUBDOCUMENT;
+                requestType = RequestTypes.SUBDOCUMENT;
                 break;
             default:
                 requestFrameId = details.frameId;
@@ -179,10 +184,10 @@ export const backgroundPage = (() => {
         }
 
         if (requestType === 'IMAGESET') {
-            requestType = adguard.RequestTypes.IMAGE;
+            requestType = RequestTypes.IMAGE;
         }
 
-        if (requestType === adguard.RequestTypes.OTHER) {
+        if (requestType === RequestTypes.OTHER) {
             requestType = parseRequestTypeFromUrl(details.url);
         }
 
@@ -190,8 +195,8 @@ export const backgroundPage = (() => {
          * Use `OTHER` type as a fallback
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/777
          */
-        if (!(requestType in adguard.RequestTypes)) {
-            requestType = adguard.RequestTypes.OTHER;
+        if (!(requestType in RequestTypes)) {
+            requestType = RequestTypes.OTHER;
         }
 
         requestDetails.frameId = frameId;
@@ -298,7 +303,7 @@ export const backgroundPage = (() => {
              * Until v85 we have decided to filter requests with types:
              * 'stylesheet', 'script', 'media'
              */
-            if (adguard.prefs.browser === 'Chrome' && adguard.prefs.chromeVersion < 85) {
+            if (prefs.browser === 'Chrome' && prefs.chromeVersion < 85) {
                 const allTypes = [
                     'main_frame',
                     'sub_frame',
@@ -436,7 +441,7 @@ export const backgroundPage = (() => {
          * @returns "chrome-extension" for Chrome," ms-browser-extension" for Edge
          */
         getUrlScheme() {
-            const url = adguard.getURL('test.html');
+            const url = backgroundPage.getURL('test.html');
             const index = url.indexOf('://');
             return url.substring(0, index);
         },
@@ -524,8 +529,8 @@ export const backgroundPage = (() => {
             browser.webNavigation.onCommitted.addListener((details) => {
                 // makes webNavigation.onCommitted details similar to webRequestDetails
                 details.requestType = details.frameId === 0
-                    ? adguard.RequestTypes.DOCUMENT
-                    : adguard.RequestTypes.SUBDOCUMENT;
+                    ? RequestTypes.DOCUMENT
+                    : RequestTypes.SUBDOCUMENT;
                 details.tab = { tabId: details.tabId };
                 details.requestUrl = details.url;
                 callback(details);
@@ -550,7 +555,7 @@ export const backgroundPage = (() => {
     if (!browserActionSupported && browser.browserAction.onClicked) {
         // Open settings menu
         browser.browserAction.onClicked.addListener(() => {
-            adguard.ui.openSettingsTab();
+            ui.openSettingsTab();
         });
     }
 

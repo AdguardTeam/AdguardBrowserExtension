@@ -18,6 +18,7 @@
 
 import { RequestTypes } from '../utils/common';
 import { filteringLog } from './filtering-log';
+import { webRequestService } from './request-blocking';
 
 /**
  * Module for managing requests context.
@@ -166,7 +167,7 @@ export const requestContextStorage = (function () {
      */
     const recordEmulated = (requestUrl, referrerUrl, requestType, tab, requestRule) => {
         filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
-        adguard.webRequestService.recordRuleHit(tab, requestRule, requestUrl);
+        webRequestService.recordRuleHit(tab, requestRule, requestUrl);
     };
 
     /**
@@ -319,7 +320,7 @@ export const requestContextStorage = (function () {
         }
 
         for (let i = 0; i < ruleHitsRecords.length; i += 1) {
-            adguard.webRequestService.recordRuleHit(tab, ruleHitsRecords[i], requestUrl);
+            webRequestService.recordRuleHit(tab, ruleHitsRecords[i], requestUrl);
         }
 
         // All processes finished

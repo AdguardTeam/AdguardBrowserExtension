@@ -15,16 +15,22 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { utils } from '../utils/common';
+import { whitelist } from './whitelist';
+import { rulesStorage } from '../storage';
+import { listeners } from '../notifier';
+import { antiBannerService } from './antibanner';
+
 /**
  * Class for manage user rules
  */
-adguard.userrules = (function (adguard) {
+export const userrules = (function () {
     'use strict';
 
     /**
      * Synthetic user filter
      */
-    const userFilter = { filterId: adguard.utils.filters.USER_FILTER_ID };
+    const userFilter = { filterId: utils.filters.USER_FILTER_ID };
 
     /**
      * Adds list of rules to the user filter
@@ -32,9 +38,9 @@ adguard.userrules = (function (adguard) {
      * @param rulesText List of rules to add
      */
     const addRules = function (rulesText) {
-        adguard.listeners.notifyListeners(adguard.listeners.ADD_RULES, userFilter, rulesText);
-        adguard.listeners.notifyListeners(
-            adguard.listeners.UPDATE_USER_FILTER_RULES, adguard.antiBannerService.getRequestFilterInfo()
+        listeners.notifyListeners(listeners.ADD_RULES, userFilter, rulesText);
+        listeners.notifyListeners(
+            listeners.UPDATE_USER_FILTER_RULES, antiBannerService.getRequestFilterInfo()
         );
     };
 
@@ -42,9 +48,9 @@ adguard.userrules = (function (adguard) {
      * Removes all user's custom rules
      */
     const clearRules = function () {
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, userFilter, []);
-        adguard.listeners.notifyListeners(
-            adguard.listeners.UPDATE_USER_FILTER_RULES, adguard.antiBannerService.getRequestFilterInfo()
+        listeners.notifyListeners(listeners.UPDATE_FILTER_RULES, userFilter, []);
+        listeners.notifyListeners(
+            listeners.UPDATE_USER_FILTER_RULES, antiBannerService.getRequestFilterInfo()
         );
     };
 
@@ -54,7 +60,7 @@ adguard.userrules = (function (adguard) {
      * @param ruleText Rule text
      */
     const removeRule = function (ruleText) {
-        adguard.listeners.notifyListeners(adguard.listeners.REMOVE_RULE, userFilter, [ruleText]);
+        listeners.notifyListeners(listeners.REMOVE_RULE, userFilter, [ruleText]);
     };
 
     /**
@@ -63,9 +69,9 @@ adguard.userrules = (function (adguard) {
      */
     const updateUserRulesText = function (content) {
         const lines = content.length > 0 ? content.split(/\n/) : [];
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, userFilter, lines);
-        adguard.listeners.notifyListeners(
-            adguard.listeners.UPDATE_USER_FILTER_RULES, adguard.antiBannerService.getRequestFilterInfo()
+        listeners.notifyListeners(listeners.UPDATE_FILTER_RULES, userFilter, lines);
+        listeners.notifyListeners(
+            listeners.UPDATE_USER_FILTER_RULES, antiBannerService.getRequestFilterInfo()
         );
     };
 
@@ -74,7 +80,7 @@ adguard.userrules = (function (adguard) {
      * @param callback Callback function
      */
     const getUserRulesText = function (callback) {
-        adguard.rulesStorage.read(adguard.utils.filters.USER_FILTER_ID, (rulesText) => {
+        rulesStorage.read(utils.filters.USER_FILTER_ID, (rulesText) => {
             const content = (rulesText || []).join('\n');
             callback(content);
         });
@@ -82,8 +88,8 @@ adguard.userrules = (function (adguard) {
 
     const unWhiteListFrame = function (frameInfo) {
         if (frameInfo.frameRule) {
-            if (frameInfo.frameRule.filterId === adguard.utils.filters.WHITE_LIST_FILTER_ID) {
-                adguard.whitelist.unWhiteListUrl(frameInfo.url);
+            if (frameInfo.frameRule.filterId === utils.filters.WHITE_LIST_FILTER_ID) {
+                whitelist.unWhiteListUrl(frameInfo.url);
             } else {
                 removeRule(frameInfo.frameRule.ruleText);
             }
@@ -98,4 +104,4 @@ adguard.userrules = (function (adguard) {
         getUserRulesText,
         unWhiteListFrame,
     };
-})(adguard);
+})();
