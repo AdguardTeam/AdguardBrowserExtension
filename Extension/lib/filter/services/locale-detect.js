@@ -15,19 +15,25 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { listeners } from '../../notifier';
+import { application } from '../../application';
+import { tabsApi } from '../../tabs/tabs-api';
+import { subscriptions } from '../filters/subscription';
+import { settings } from '../../settings/user-settings';
+import { utils } from '../../utils/common';
+
 /**
  * Initialize LocaleDetectService.
  *
  * This service is used to auto-enable language-specific filters.
  */
-(function (adguard) {
+export const localeDetect = (function () {
+    const browsingLanguages = [];
 
-    var browsingLanguages = [];
+    const SUCCESS_HIT_COUNT = 3;
+    const MAX_HISTORY_LENGTH = 10;
 
-    var SUCCESS_HIT_COUNT = 3;
-    var MAX_HISTORY_LENGTH = 10;
-
-    var domainToLanguagesMap = {
+    const domainToLanguagesMap = {
         // Russian
         'ru': 'ru',
         'ua': 'ru',
@@ -87,7 +93,7 @@
         // Chinese
         'cn': 'zh',
         // Indonesian
-        'id': 'id'
+        'id': 'id',
     };
 
     /**
@@ -103,14 +109,14 @@
 
         const onSuccess = (enabledFilters) => {
             if (enabledFilters.length > 0) {
-                adguard.listeners.notifyListeners(
-                    adguard.listeners.ENABLE_FILTER_SHOW_POPUP,
+                listeners.notifyListeners(
+                    listeners.ENABLE_FILTER_SHOW_POPUP,
                     enabledFilters
                 );
             }
         };
 
-        adguard.application.addAndEnableFilters(filterIds, onSuccess, { forceGroupEnable: true });
+        application.addAndEnableFilters(filterIds, onSuccess, { forceGroupEnable: true });
     }
 
     /**
@@ -122,29 +128,28 @@
      * @private
      */
     function detectLanguage(language) {
-
         /**
          * For an unknown language "und" will be returned
          * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/detectLanguage
          */
-        if (!language || language === "und") {
+        if (!language || language === 'und') {
             return;
         }
 
         browsingLanguages.push({
-            language: language,
-            time: Date.now()
+            language,
+            time: Date.now(),
         });
         if (browsingLanguages.length > MAX_HISTORY_LENGTH) {
             browsingLanguages.shift();
         }
 
-        var history = browsingLanguages.filter(function (h) {
+        const history = browsingLanguages.filter((h) => {
             return h.language === language;
         });
 
         if (history.length >= SUCCESS_HIT_COUNT) {
-            var filterIds = adguard.subscriptions.getFilterIdsForLanguage(language);
+            const filterIds = subscriptions.getFilterIdsForLanguage(language);
             onFilterDetectedByLocale(filterIds);
         }
     }
@@ -155,22 +160,22 @@
      * @param url    Page URL
      */
     function detectTabLanguage(tab, url) {
-        if (!adguard.settings.isAutodetectFilters() || adguard.settings.isFilteringDisabled()) {
+        if (!settings.isAutodetectFilters() || settings.isFilteringDisabled()) {
             return;
         }
 
         // Check language only for http://... tabs
-        if (!adguard.utils.url.isHttpRequest(url)) {
+        if (!utils.url.isHttpRequest(url)) {
             return;
         }
 
         // tabs.detectLanguage doesn't work in Opera
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/997
-        if (!adguard.utils.browser.isOperaBrowser()) {
+        if (!utils.browser.isOperaBrowser()) {
             /* global browser */
-            if (tab.tabId && typeof browser != 'undefined' && browser.tabs && browser.tabs.detectLanguage) {
+            if (tab.tabId && typeof browser !== 'undefined' && browser.tabs && browser.tabs.detectLanguage) {
                 // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/detectLanguage
-                browser.tabs.detectLanguage(tab.tabId, function (language) {
+                browser.tabs.detectLanguage(tab.tabId, (language) => {
                     if (browser.runtime.lastError) {
                         return;
                     }
@@ -183,7 +188,7 @@
         // Detecting language by top-level domain if extension API language detection is unavailable
         // Ignore hostnames which length is less or equal to 8
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1354
-        const host = adguard.utils.url.getHost(url);
+        const host = utils.url.getHost(url);
         if (host && host.length > 8) {
             const parts = host ? host.split('.') : [];
             const tld = parts[parts.length - 1];
@@ -192,11 +197,17 @@
         }
     }
 
-    // Locale detect
-    adguard.tabs.onUpdated.addListener((tab) => {
-        if (tab.status === 'complete') {
-            detectTabLanguage(tab, tab.url);
-        }
-    });
 
-})(adguard);
+    const init = () => {
+        // Locale detect
+        tabsApi.tabs.onUpdated.addListener((tab) => {
+            if (tab.status === 'complete') {
+                detectTabLanguage(tab, tab.url);
+            }
+        });
+    };
+
+    return {
+        init,
+    };
+})();
