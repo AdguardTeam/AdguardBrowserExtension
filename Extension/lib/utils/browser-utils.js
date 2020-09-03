@@ -17,8 +17,11 @@
 
 import { prefs } from '../../browser/webkit/lib/prefs';
 import { localStorage } from '../storage';
+import { tabsApi } from '../tabs/tabs-api';
+import { RequestTypes } from './common';
+import { backgroundPage } from '../../browser/chrome/lib/api/background-page';
 
-export const browserUtils = function (api) {
+export const browserUtils = function (utils) {
     /**
      * Extension version (x.x.x)
      * @param version
@@ -30,7 +33,7 @@ export const browserUtils = function (api) {
         const parts = String(version || '').split('.');
 
         function parseVersionPart(part) {
-            if (isNaN(part)) {
+            if (Number.isNaN(part)) {
                 return 0;
             }
             return Math.max(part - 0, 0);
@@ -47,7 +50,7 @@ export const browserUtils = function (api) {
      * @returns {number}
      */
     Version.prototype.compare = function (o) {
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < 4; i += 1) {
             if (this.version[i] > o.version[i]) {
                 return 1;
             } if (this.version[i] < o.version[i]) {
@@ -62,7 +65,6 @@ export const browserUtils = function (api) {
     const fontContentTypes = '.ttf.otf.woff.woff2.eot.';
     const imageContentTypes = '.ico.png.gif.jpg.jpeg.webp.';
 
-    // noinspection UnnecessaryLocalVariableJS
     const Utils = {
 
         getClientId() {
@@ -71,7 +73,7 @@ export const browserUtils = function (api) {
                 const result = [];
                 const suffix = (Date.now()) % 1e8;
                 const symbols = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567890';
-                for (let i = 0; i < 8; i++) {
+                for (let i = 0; i < 8; i += 1) {
                     const symbol = symbols[Math.floor(Math.random() * symbols.length)];
                     result.push(symbol);
                 }
@@ -235,11 +237,11 @@ export const browserUtils = function (api) {
 
         getSafebrowsingBackUrl(tab) {
             // https://code.google.com/p/chromium/issues/detail?id=11854
-            const previousUrl = adguard.tabs.getTabMetadata(tab.tabId, 'previousUrl');
+            const previousUrl = tabsApi.tabs.getTabMetadata(tab.tabId, 'previousUrl');
             if (previousUrl && previousUrl.indexOf('http') === 0) {
                 return previousUrl;
             }
-            const referrerUrl = adguard.tabs.getTabMetadata(tab.tabId, 'referrerUrl');
+            const referrerUrl = tabsApi.tabs.getTabMetadata(tab.tabId, 'referrerUrl');
             if (referrerUrl && referrerUrl.indexOf('http') === 0) {
                 return referrerUrl;
             }
@@ -250,7 +252,7 @@ export const browserUtils = function (api) {
         /**
          * Parse content type from path
          * @param path Path
-         * @returns {*} content type (adguard.RequestTypes.*) or null
+         * @returns {*} content type (RequestTypes.*) or null
          */
         parseContentTypeFromUrlPath(path) {
             let ext = path.slice(-6);
@@ -263,16 +265,16 @@ export const browserUtils = function (api) {
 
             ext = `${ext.slice(pos)}.`;
             if (objectContentTypes.indexOf(ext) !== -1) {
-                return adguard.RequestTypes.OBJECT;
+                return RequestTypes.OBJECT;
             }
             if (mediaContentTypes.indexOf(ext) !== -1) {
-                return adguard.RequestTypes.MEDIA;
+                return RequestTypes.MEDIA;
             }
             if (fontContentTypes.indexOf(ext) !== -1) {
-                return adguard.RequestTypes.FONT;
+                return RequestTypes.FONT;
             }
             if (imageContentTypes.indexOf(ext) !== -1) {
-                return adguard.RequestTypes.IMAGE;
+                return RequestTypes.IMAGE;
             }
 
             return null;
@@ -286,7 +288,7 @@ export const browserUtils = function (api) {
         getNavigatorLanguages(limit) {
             let languages = [];
             // https://developer.mozilla.org/ru/docs/Web/API/NavigatorLanguage/languages
-            if (adguard.utils.collections.isArray(navigator.languages)) {
+            if (utils.collections.isArray(navigator.languages)) {
                 languages = navigator.languages.slice(0, limit);
             } else if (navigator.language) {
                 languages.push(navigator.language); // .language is first in .languages
@@ -313,9 +315,9 @@ export const browserUtils = function (api) {
          */
         getExtensionParams() {
             const clientId = encodeURIComponent(this.getClientId());
-            const locale = encodeURIComponent(adguard.app.getLocale());
-            const version = encodeURIComponent(adguard.app.getVersion());
-            const id = encodeURIComponent(adguard.app.getId());
+            const locale = encodeURIComponent(backgroundPage.app.getLocale());
+            const version = encodeURIComponent(backgroundPage.app.getVersion());
+            const id = encodeURIComponent(backgroundPage.app.getId());
             const params = [];
             params.push(`v=${version}`);
             params.push(`cid=${clientId}`);
@@ -364,5 +366,5 @@ export const browserUtils = function (api) {
         }),
     };
 
-    api.browser = Utils;
+    utils.browser = Utils;
 };

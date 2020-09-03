@@ -19,6 +19,7 @@ import * as TSUrlFilter from '@adguard/tsurlfilter';
 import { Deferred } from 'simply-deferred';
 import { log } from './log';
 import { browserUtils } from './browser-utils';
+import { cookie } from './cookie';
 
 /**
  * Request types enumeration
@@ -874,6 +875,11 @@ browserUtils(utils);
         },
     };
 })(utils);
+
+/**
+ * Append cookie utils
+ */
+cookie(utils);
 
 /**
  * Unload handler. When extension is unload then 'fireUnload' is invoked.

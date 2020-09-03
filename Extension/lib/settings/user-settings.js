@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -15,6 +14,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* eslint-disable max-len */
 
 import { utils } from '../utils/common';
 import { prefs } from '../../browser/webkit/lib/prefs';

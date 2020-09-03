@@ -17,7 +17,7 @@
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
 import { tabsApi } from '../tabs/tabs-api';
-import { BACKGROUND_TAB_ID } from '../utils/common';
+import { BACKGROUND_TAB_ID, utils } from '../utils/common';
 import { backgroundPage } from '../../browser/chrome/lib/api/background-page';
 import { prefs } from '../../browser/webkit/lib/prefs';
 import { listeners } from '../notifier';
@@ -246,8 +246,8 @@ export const filteringLog = (function () {
             return;
         }
 
-        const requestDomain = adguard.utils.url.getDomainName(requestUrl);
-        const frameDomain = adguard.utils.url.getDomainName(frameUrl);
+        const requestDomain = utils.url.getDomainName(requestUrl);
+        const frameDomain = utils.url.getDomainName(frameUrl);
 
         const filteringEvent = {
             eventId,
@@ -256,7 +256,7 @@ export const filteringLog = (function () {
             frameUrl,
             frameDomain,
             requestType,
-            requestThirdParty: adguard.utils.url.isThirdPartyRequest(requestUrl, frameUrl),
+            requestThirdParty: utils.url.isThirdPartyRequest(requestUrl, frameUrl),
         };
 
         addRuleToFilteringEvent(filteringEvent, requestRule);
@@ -276,9 +276,9 @@ export const filteringLog = (function () {
             return;
         }
 
-        const frameDomain = adguard.utils.url.getDomainName(frameUrl);
+        const frameDomain = utils.url.getDomainName(frameUrl);
         const filteringEvent = {
-            element: typeof element === 'string' ? element : adguard.utils.strings.elementToString(element),
+            element: typeof element === 'string' ? element : utils.strings.elementToString(element),
             frameUrl,
             frameDomain,
             requestType,
@@ -300,7 +300,7 @@ export const filteringLog = (function () {
             return;
         }
 
-        const frameDomain = adguard.utils.url.getDomainName(frameUrl);
+        const frameDomain = utils.url.getDomainName(frameUrl);
         const filteringEvent = {
             script: true,
             requestUrl: frameUrl,
@@ -326,7 +326,7 @@ export const filteringLog = (function () {
             return;
         }
 
-        const frameDomain = adguard.utils.url.getDomainName(frameUrl);
+        const frameDomain = utils.url.getDomainName(frameUrl);
         const filteringEvent = {
             removeParam: true,
             requestUrl: frameUrl,
