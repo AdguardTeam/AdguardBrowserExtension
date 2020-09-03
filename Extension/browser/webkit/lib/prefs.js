@@ -18,6 +18,7 @@
 // TODO check work of this module in the firefox
 
 import { adguard } from '../../../lib/adguard';
+import { backgroundPage } from '../../chrome/lib/api/background-page';
 
 /**
  * Extension global preferences.
@@ -103,12 +104,12 @@ export const prefs = (() => {
         get ICONS() {
             return adguard.lazyGet(Prefs, 'ICONS', () => ({
                 ICON_GREEN: {
-                    '19': adguard.getURL('assets/icons/green-19.png'),
-                    '38': adguard.getURL('assets/icons/green-38.png'),
+                    '19': backgroundPage.getURL('assets/icons/green-19.png'),
+                    '38': backgroundPage.getURL('assets/icons/green-38.png'),
                 },
                 ICON_GRAY: {
-                    '19': adguard.getURL('assets/icons/gray-19.png'),
-                    '38': adguard.getURL('assets/icons/gray-38.png'),
+                    '19': backgroundPage.getURL('assets/icons/gray-19.png'),
+                    '38': backgroundPage.getURL('assets/icons/gray-38.png'),
                 },
             }));
         },

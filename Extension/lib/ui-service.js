@@ -30,6 +30,7 @@ import { notifications } from './utils/notifications';
 import { whitelist } from './filter/whitelist';
 import { userrules } from './filter/userrules';
 import { browserUtils } from './utils/browser-utils';
+import { log } from './utils/log';
 
 // TODO rename to uiService
 export const ui = (function () {

@@ -15,7 +15,23 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-(function (api, global) {
+/* eslint-disable camelcase, no-control-regex, max-len */
+
+import { strings } from './strings';
+import { publicSuffixes } from './public-suffixes';
+
+export const url = (function () {
+    const RE_V4 = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|0x[0-9a-f][0-9a-f]?|0[0-7]{3})\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|0x[0-9a-f][0-9a-f]?|0[0-7]{3})$/i;
+    const RE_V4_HEX = /^0x([0-9a-f]{8})$/i;
+    const RE_V4_NUMERIC = /^[0-9]+$/;
+    const RE_V4inV6 = /(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+
+    const RE_BAD_CHARACTERS = /([^0-9a-f:])/i;
+    const RE_BAD_ADDRESS = /([0-9a-f]{5,}|:{3,}|[^:]:$|^:[^:]$)/i;
+
+    // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1010
+    const RESERVED_DOMAINS = publicSuffixes;
+
     /**
      * Helper methods to work with URLs
      */
@@ -42,7 +58,7 @@
         isThirdPartyRequest(requestUrl, referrer) {
             const domainName = this._get2NdLevelDomainName(requestUrl);
             const refDomainName = this._get2NdLevelDomainName(referrer);
-            return domainName != refDomainName;
+            return domainName !== refDomainName;
         },
 
         /**
@@ -96,7 +112,7 @@
         },
 
         getCroppedDomainName(host) {
-            return api.strings.startWith(host, 'www.') ? host.substring(4) : host;
+            return strings.startWith(host, 'www.') ? host.substring(4) : host;
         },
 
         isIpv4(address) {
@@ -117,7 +133,7 @@
             const address4 = address.match(RE_V4inV6);
             if (address4) {
                 const temp4 = address4[0].split('.');
-                for (let i = 0; i < 4; i++) {
+                for (let i = 0; i < 4; i += 1) {
                     if (/^0[0-9]+/.test(temp4[i])) {
                         return false;
                     }
@@ -144,11 +160,11 @@
             }
 
             const halves = count(address, '::');
-            if (halves == 1 && count(address, ':') <= 6 + 2 + a4addon) {
+            if (halves === 1 && count(address, ':') <= 6 + 2 + a4addon) {
                 return true;
             }
 
-            if (halves == 0 && count(address, ':') == 7 + a4addon) {
+            if (halves === 0 && count(address, ':') === 7 + a4addon) {
                 return true;
             }
 
@@ -159,7 +175,9 @@
             if (!u1 || !u2) {
                 return false;
             }
+            // eslint-disable-next-line prefer-destructuring
             u1 = u1.split(/[#?]/)[0];
+            // eslint-disable-next-line prefer-destructuring
             u2 = u2.split(/[#?]/)[0];
             return u1 == u2;
         },
@@ -232,14 +250,14 @@
                 const wildcardedDomainToCheck = genTldWildcard(domainNameToCheck);
                 if (wildcardedDomainToCheck) {
                     return wildcardedDomainToCheck === wildcard
-                        || api.strings.endsWith(wildcardedDomainToCheck, wildcard)
-                        && api.strings.endsWith(wildcardedDomainToCheck, `.${wildcard}`);
+                        || strings.endsWith(wildcardedDomainToCheck, wildcard)
+                        && strings.endsWith(wildcardedDomainToCheck, `.${wildcard}`);
                 }
                 return false;
             }
 
             function isWildcardDomain(domainName) {
-                return api.strings.endsWith(domainName, '.*');
+                return strings.endsWith(domainName, '.*');
             }
 
             return function (domainNameToCheck, domainName) {
@@ -250,9 +268,9 @@
                 }
                 // Double endsWith check is memory optimization
                 // Works in android, not sure if it makes sense here
-                return domainName == domainNameToCheck
-                    || api.strings.endsWith(domainNameToCheck, domainName)
-                    && api.strings.endsWith(domainNameToCheck, `.${domainName}`);
+                return domainName === domainNameToCheck
+                    || strings.endsWith(domainNameToCheck, domainName)
+                    && strings.endsWith(domainNameToCheck, `.${domainName}`);
             };
         })(),
 
@@ -272,11 +290,11 @@
             const isContainsTwoLvlPostfix = (twoPartDomain in RESERVED_DOMAINS);
 
             const threePartDomain = `${parts[parts.length - 3]}.${twoPartDomain}`;
-            if (parts.length == 3 && isContainsTwoLvlPostfix) {
+            if (parts.length === 3 && isContainsTwoLvlPostfix) {
                 return threePartDomain;
             }
             if (threePartDomain in RESERVED_DOMAINS) {
-                if (parts.length == 3) {
+                if (parts.length === 3) {
                     return threePartDomain;
                 }
                 return `${parts[parts.length - 4]}.${threePartDomain}`;
@@ -286,16 +304,5 @@
         },
     };
 
-    var RE_V4 = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|0x[0-9a-f][0-9a-f]?|0[0-7]{3})\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|0x[0-9a-f][0-9a-f]?|0[0-7]{3})$/i;
-    var RE_V4_HEX = /^0x([0-9a-f]{8})$/i;
-    var RE_V4_NUMERIC = /^[0-9]+$/;
-    var RE_V4inV6 = /(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-
-    var RE_BAD_CHARACTERS = /([^0-9a-f:])/i;
-    var RE_BAD_ADDRESS = /([0-9a-f]{5,}|:{3,}|[^:]:$|^:[^:]$)/i;
-
-    // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1010
-    var RESERVED_DOMAINS = api.publicSuffixes;
-
-    api.url = UrlUtils;
-})(adguard.utils, window);
+    return UrlUtils;
+})();

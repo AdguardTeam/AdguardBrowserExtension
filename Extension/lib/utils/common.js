@@ -26,6 +26,8 @@ import { channels } from './channels';
 import { Promise } from './Promise';
 import { workaround } from './workaround';
 import { i18n } from './i18n';
+import { filters } from './filters';
+import { url } from './url';
 
 /**
  * Request types enumeration
@@ -114,6 +116,8 @@ export const utils = {
     workaround,
     i18n,
     cookie,
+    filters,
+    url,
 };
 
 /**

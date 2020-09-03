@@ -17,7 +17,6 @@
 
 import { prefs } from '../../browser/webkit/lib/prefs';
 import { localStorage } from '../storage';
-import { RequestTypes } from './common';
 import { collections } from './collections';
 import { tabsApi } from '../tabs/tabs-api';
 import { backgroundPage } from '../../browser/chrome/lib/api/background-page';
@@ -60,11 +59,6 @@ export const browserUtils = (function () {
         }
         return 0;
     };
-
-    const objectContentTypes = '.jar.swf.';
-    const mediaContentTypes = '.mp4.flv.avi.m3u.webm.mpeg.3gp.3gpp.3g2.3gpp2.ogg.mov.qt.';
-    const fontContentTypes = '.ttf.otf.woff.woff2.eot.';
-    const imageContentTypes = '.ico.png.gif.jpg.jpeg.webp.';
 
     const browserUtils = {
         getClientId() {
@@ -247,37 +241,6 @@ export const browserUtils = (function () {
             }
 
             return 'about:newtab';
-        },
-
-        /**
-         * Parse content type from path
-         * @param path Path
-         * @returns {*} content type (RequestTypes.*) or null
-         */
-        parseContentTypeFromUrlPath(path) {
-            let ext = path.slice(-6);
-            const pos = ext.lastIndexOf('.');
-
-            // Unable to parse extension from url
-            if (pos === -1) {
-                return null;
-            }
-
-            ext = `${ext.slice(pos)}.`;
-            if (objectContentTypes.indexOf(ext) !== -1) {
-                return RequestTypes.OBJECT;
-            }
-            if (mediaContentTypes.indexOf(ext) !== -1) {
-                return RequestTypes.MEDIA;
-            }
-            if (fontContentTypes.indexOf(ext) !== -1) {
-                return RequestTypes.FONT;
-            }
-            if (imageContentTypes.indexOf(ext) !== -1) {
-                return RequestTypes.IMAGE;
-            }
-
-            return null;
         },
 
         /**

@@ -15,10 +15,10 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-(function (api) {
+export const publicSuffixes = (function () {
   // %START_RESERVED_DOMAINS% and %END_RESERVED_DOMAINS% serve as markers for the possibility to update RESERVED_DOMAINS object
   // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1010
-  var publicSuffixes =
+  const publicSuffixes =
     //%START_RESERVED_DOMAINS%
 {
   "0.bg": 1,
@@ -8898,5 +8898,5 @@
 }
   //%END_RESERVED_DOMAINS%
   ;
-  api.publicSuffixes = publicSuffixes;
-})(adguard.utils);
+  return publicSuffixes;
+});

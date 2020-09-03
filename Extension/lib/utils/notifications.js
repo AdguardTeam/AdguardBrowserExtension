@@ -94,7 +94,7 @@ export const notifications = (function () {
      * @property {string} badgeText;
      * @property {string} type;
      */
-    let notifications = {
+    const notifications = {
         newYear2020: newYearNotification,
     };
 

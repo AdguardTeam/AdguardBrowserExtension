@@ -605,7 +605,7 @@ const webrequestInit = function () {
                                             |                                    |     remote source
                                             +- ----------------------------------+
          */
-        (function (adguard) {
+        (function () {
             /**
              * This object is used:
              * 1. to save js and css texts when onHeadersReceived event fires
@@ -1003,7 +1003,7 @@ const webrequestInit = function () {
             }
             // Remove injections when tab is closed
             tabsApi.tabs.onRemoved.addListener(injections.removeTabInjection);
-        })(adguard);
+        })();
     }
 
     /**

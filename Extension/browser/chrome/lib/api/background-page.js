@@ -18,9 +18,8 @@
 /* eslint-disable max-len */
 
 import { BACKGROUND_TAB_ID, RequestTypes } from '../../../../lib/utils/common';
-import { ui } from '../../../../lib/ui-service';
 import { prefs } from '../../../webkit/lib/prefs';
-import { browserUtils } from '../../../../lib/utils/browser-utils';
+import { parseContentTypeFromUrlPath } from '../../../../lib/utils/temp';
 
 export const backgroundPage = (() => {
     const runtime = (function () {
@@ -90,7 +89,7 @@ export const backgroundPage = (() => {
     function parseRequestTypeFromUrl(url) {
         linkHelper.href = url;
         const path = linkHelper.pathname;
-        let requestType = browserUtils.parseContentTypeFromUrlPath(path);
+        let requestType = parseContentTypeFromUrlPath(path);
         if (requestType === null) {
             // https://code.google.com/p/chromium/issues/detail?id=410382
             requestType = RequestTypes.OBJECT;
@@ -553,12 +552,6 @@ export const backgroundPage = (() => {
     };
 
     const browserActionSupported = typeof browser.browserAction.setIcon !== 'undefined';
-    if (!browserActionSupported && browser.browserAction.onClicked) {
-        // Open settings menu
-        browser.browserAction.onClicked.addListener(() => {
-            ui.openSettingsTab();
-        });
-    }
 
     const browserAction = {
         /* eslint-disable-next-line no-unused-vars */
