@@ -20,6 +20,7 @@ import { localStorage } from '../storage';
 import { collections } from './collections';
 import { tabsApi } from '../tabs/tabs-api';
 import { backgroundPage } from '../api/background-page';
+import { browser } from '../browser';
 
 export const browserUtils = (function () {
     /**

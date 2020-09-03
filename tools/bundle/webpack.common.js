@@ -141,23 +141,6 @@ export const genCommonConfig = (browserConfig) => {
                     },
                     {
                         context: 'Extension',
-                        from: 'lib',
-                        to: 'lib',
-                        transform(content, path) {
-                            // TODO do not forget to preprocess this file when imported into background page
-                            if (path.endsWith('request-filter.js')) {
-                                const str = content.toString();
-                                return Buffer.from(pp.preprocess(
-                                    str,
-                                    { remoteScripts: browserConfig.remoteScripts },
-                                    { type: 'js' }
-                                ));
-                            }
-                            return content;
-                        },
-                    },
-                    {
-                        context: 'Extension',
                         from: 'pages/blocking-pages',
                         to: 'pages/blocking-pages',
                     },

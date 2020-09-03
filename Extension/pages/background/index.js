@@ -3,6 +3,7 @@ import { webrequest } from '../../lib/webrequest';
 import { requestSanitizer } from '../../lib/filter/request-sanitizer';
 import { localeDetect } from '../../lib/filter/services/locale-detect';
 import { ui } from '../../lib/ui-service';
+import { browser } from '../../lib/browser';
 
 // TODO move to separate module
 const browserActionSupported = typeof browser.browserAction.setIcon !== 'undefined';

@@ -17,6 +17,8 @@
 
 /* eslint-disable max-len */
 
+import { browser } from '../browser';
+
 import { utils } from '../utils/common';
 import { prefs } from '../prefs';
 import { backgroundPage } from './background-page';

@@ -17,6 +17,8 @@
 
 /* eslint-disable max-len */
 
+import { browser } from '../browser';
+
 import { BACKGROUND_TAB_ID, RequestTypes } from '../utils/common';
 import { prefs } from '../prefs';
 import { parseContentTypeFromUrlPath } from '../utils/temp';

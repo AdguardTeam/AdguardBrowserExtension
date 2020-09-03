@@ -106,7 +106,7 @@ export const backend = (function () {
         },
         // Path to the redirect sources
         get redirectSourcesFolder() {
-            return 'lib/libs/scriptlets';
+            return 'assets/libs/scriptlets';
         },
         // Array of filter identifiers, that have local file with rules. Range from 1 to 14 by default
         get localFilterIds() {
@@ -382,6 +382,8 @@ export const backend = (function () {
         executeRequestAsync(url, 'application/json', success, error);
     });
 
+    // TODO check necessity of this module,
+    //  as we already have redirect sources in the webaccessible-resources folder
     /**
      * Loads redirect sources from local file
      * @returns {Promise}

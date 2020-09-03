@@ -24,6 +24,7 @@ import { log } from '../../utils/log';
 import { webRequestService } from '../request-blocking';
 import { stealthService } from './stealth-service';
 import { browserUtils } from '../../utils/browser-utils';
+import { browser } from '../../browser';
 
 /**
  * Cookie filtering module
