@@ -107,11 +107,19 @@ export const localStorageImpl = (function () {
     }
 
     /**
+     * Due to async initialization of storage, we have to check it before accessing values object
+     * @returns {boolean}
+     */
+    function isInitialized() {
+        return values !== null;
+    }
+
+    /**
      * Retrieves value by key from cached values
      * @param key
      * @returns {*}
      */
-    const getItem = function (key) {
+    function getItem(key) {
         if (!isInitialized()) {
             return null;
         }
@@ -119,17 +127,17 @@ export const localStorageImpl = (function () {
             migrateKeyValue(key);
         }
         return values[key];
-    };
+    }
 
-    var setItem = function (key, value) {
+    function setItem(key, value) {
         if (!isInitialized()) {
             return;
         }
         values[key] = value;
         write(ADGUARD_SETTINGS_PROP, values, checkError);
-    };
+    }
 
-    const removeItem = function (key) {
+    function removeItem(key) {
         if (!isInitialized()) {
             return;
         }
@@ -137,9 +145,9 @@ export const localStorageImpl = (function () {
         // Remove from localStorage too, as a part of migration process
         localStorage.removeItem(key);
         write(ADGUARD_SETTINGS_PROP, values, checkError);
-    };
+    }
 
-    const hasItem = function (key) {
+    function hasItem(key) {
         if (!isInitialized()) {
             return false;
         }
@@ -148,7 +156,7 @@ export const localStorageImpl = (function () {
         }
         migrateKeyValue(key);
         return key in values;
-    };
+    }
 
     /**
      * We can't use localStorage object anymore and we've decided to store all data into storage.local
@@ -157,7 +165,7 @@ export const localStorageImpl = (function () {
      *
      * @param callback
      */
-    const init = function (callback) {
+    function init(callback) {
         if (isInitialized()) {
             // Already initialized
             callback();
@@ -170,15 +178,7 @@ export const localStorageImpl = (function () {
             values = items || Object.create(null);
             callback();
         });
-    };
-
-    /**
-     * Due to async initialization of storage, we have to check it before accessing values object
-     * @returns {boolean}
-     */
-    var isInitialized = function () {
-        return values !== null;
-    };
+    }
 
     return {
         getItem,
