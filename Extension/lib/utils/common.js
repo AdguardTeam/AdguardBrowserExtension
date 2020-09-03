@@ -23,7 +23,7 @@ import { dates } from './dates';
 import { collections } from './collections';
 import { concurrent } from './concurrent';
 import { channels } from './channels';
-import { Promise } from './Promise';
+import { Promise } from './promise';
 import { workaround } from './workaround';
 import { i18n } from './i18n';
 import { filters } from './filters';

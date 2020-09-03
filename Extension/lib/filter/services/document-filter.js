@@ -21,7 +21,7 @@ import { backgroundPage } from '../../api/background-page';
 import { tabsApi } from '../../tabs/tabs-api';
 import { ui } from '../../ui-service';
 import { frames } from '../../tabs/frames';
-import { ExpiringCache } from '../../utils/ExpiringCache';
+import { ExpiringCache } from '../../utils/expiring-cache';
 import { browserUtils } from '../../utils/browser-utils';
 
 export const documentFilterService = (function () {
