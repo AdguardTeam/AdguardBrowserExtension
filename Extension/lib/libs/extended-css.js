@@ -1,4 +1,4 @@
-/*! extended-css - v1.2.12 - Tue Aug 04 2020
+/*! extended-css - v1.2.15 - Thu Sep 03 2020
 * https://github.com/AdguardTeam/ExtendedCss
 * Copyright (c) 2020 AdGuard ; Licensed LGPL-3.0
 */
@@ -21,6 +21,53 @@ var ExtendedCss = (function () {
     return _typeof(obj);
   }
 
+  function _slicedToArray(arr, i) {
+    return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+  }
+
+  function _toConsumableArray(arr) {
+    return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+  }
+
+  function _arrayWithoutHoles(arr) {
+    if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+  }
+
+  function _arrayWithHoles(arr) {
+    if (Array.isArray(arr)) return arr;
+  }
+
+  function _iterableToArray(iter) {
+    if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+  }
+
+  function _iterableToArrayLimit(arr, i) {
+    if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
+    var _arr = [];
+    var _n = true;
+    var _d = false;
+    var _e = undefined;
+
+    try {
+      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+        _arr.push(_s.value);
+
+        if (i && _arr.length === i) break;
+      }
+    } catch (err) {
+      _d = true;
+      _e = err;
+    } finally {
+      try {
+        if (!_n && _i["return"] != null) _i["return"]();
+      } finally {
+        if (_d) throw _e;
+      }
+    }
+
+    return _arr;
+  }
+
   function _unsupportedIterableToArray(o, minLen) {
     if (!o) return;
     if (typeof o === "string") return _arrayLikeToArray(o, minLen);
@@ -38,61 +85,12 @@ var ExtendedCss = (function () {
     return arr2;
   }
 
-  function _createForOfIteratorHelper(o, allowArrayLike) {
-    var it;
+  function _nonIterableSpread() {
+    throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
 
-    if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
-      if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
-        if (it) o = it;
-        var i = 0;
-
-        var F = function () {};
-
-        return {
-          s: F,
-          n: function () {
-            if (i >= o.length) return {
-              done: true
-            };
-            return {
-              done: false,
-              value: o[i++]
-            };
-          },
-          e: function (e) {
-            throw e;
-          },
-          f: F
-        };
-      }
-
-      throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-    }
-
-    var normalCompletion = true,
-        didErr = false,
-        err;
-    return {
-      s: function () {
-        it = o[Symbol.iterator]();
-      },
-      n: function () {
-        var step = it.next();
-        normalCompletion = step.done;
-        return step;
-      },
-      e: function (e) {
-        didErr = true;
-        err = e;
-      },
-      f: function () {
-        try {
-          if (!normalCompletion && it.return != null) it.return();
-        } finally {
-          if (didErr) throw err;
-        }
-      }
-    };
+  function _nonIterableRest() {
+    throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
   }
 
   /**
@@ -126,6 +124,41 @@ var ExtendedCss = (function () {
     return new RegExp(regexSrc, flag);
   };
   /**
+   * Converts string to the regexp
+   * @param {string} str
+   * @returns {RegExp}
+   */
+
+
+  utils.toRegExp = function (str) {
+    if (str[0] === '/' && str[str.length - 1] === '/') {
+      return new RegExp(str.slice(1, -1));
+    }
+
+    var escaped = str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp(escaped);
+  };
+
+  utils.startsWith = function (str, prefix) {
+    // if str === '', (str && false) will return ''
+    // that's why it has to be !!str
+    return !!str && str.indexOf(prefix) === 0;
+  };
+
+  utils.endsWith = function (str, postfix) {
+    if (!str || !postfix) {
+      return false;
+    }
+
+    if (str.endsWith) {
+      return str.endsWith(postfix);
+    }
+
+    var t = String(postfix);
+    var index = str.lastIndexOf(t);
+    return index >= 0 && index === str.length - t.length;
+  };
+  /**
    * Helper function for creating regular expression from a url filter rule syntax.
    */
 
@@ -156,24 +189,6 @@ var ExtendedCss = (function () {
       return str.replace(specialsRegex, '\\$&');
     };
 
-    var startsWith = function startsWith(str, prefix) {
-      return str && str.indexOf(prefix) === 0;
-    };
-
-    var endsWith = function endsWith(str, postfix) {
-      if (!str || !postfix) {
-        return false;
-      }
-
-      if (str.endsWith) {
-        return str.endsWith(postfix);
-      }
-
-      var t = String(postfix);
-      var index = str.lastIndexOf(t);
-      return index >= 0 && index === str.length - t.length;
-    };
-
     var replaceAll = function replaceAll(str, find, replace) {
       if (!str) {
         return str;
@@ -191,9 +206,9 @@ var ExtendedCss = (function () {
     var createRegexText = function createRegexText(str) {
       var regex = escapeRegExp(str);
 
-      if (startsWith(regex, regexConfiguration.maskStartUrl)) {
+      if (utils.startsWith(regex, regexConfiguration.maskStartUrl)) {
         regex = regex.substring(0, regexConfiguration.maskStartUrl.length) + replaceAll(regex.substring(regexConfiguration.maskStartUrl.length, regex.length - 1), '\|', '\\|') + regex.substring(regex.length - 1);
-      } else if (startsWith(regex, regexConfiguration.maskPipe)) {
+      } else if (utils.startsWith(regex, regexConfiguration.maskPipe)) {
         regex = regex.substring(0, regexConfiguration.maskPipe.length) + replaceAll(regex.substring(regexConfiguration.maskPipe.length, regex.length - 1), '\|', '\\|') + regex.substring(regex.length - 1);
       } else {
         regex = replaceAll(regex.substring(0, regex.length - 1), '\|', '\\|') + regex.substring(regex.length - 1);
@@ -203,13 +218,13 @@ var ExtendedCss = (function () {
       regex = replaceAll(regex, regexConfiguration.maskAnySymbol, regexConfiguration.regexAnySymbol);
       regex = replaceAll(regex, regexConfiguration.maskSeparator, regexConfiguration.regexSeparator);
 
-      if (startsWith(regex, regexConfiguration.maskStartUrl)) {
+      if (utils.startsWith(regex, regexConfiguration.maskStartUrl)) {
         regex = regexConfiguration.regexStartUrl + regex.substring(regexConfiguration.maskStartUrl.length);
-      } else if (startsWith(regex, regexConfiguration.maskPipe)) {
+      } else if (utils.startsWith(regex, regexConfiguration.maskPipe)) {
         regex = regexConfiguration.regexStartString + regex.substring(regexConfiguration.maskPipe.length);
       }
 
-      if (endsWith(regex, regexConfiguration.maskPipe)) {
+      if (utils.endsWith(regex, regexConfiguration.maskPipe)) {
         regex = regex.substring(0, regex.length - 1) + regexConfiguration.regexEndString;
       }
 
@@ -230,7 +245,7 @@ var ExtendedCss = (function () {
     anchor.href = href;
 
     if (anchor.host === '') {
-      anchor.href = anchor.href;
+      anchor.href = anchor.href; // eslint-disable-line no-self-assign
     }
 
     return anchor;
@@ -570,19 +585,21 @@ var ExtendedCss = (function () {
   }
   /**
    * Returns path to element we will use as element identifier
-   * @param {Element} el
+   * @param {Element} inputEl
    * @returns {string} - path to the element
    */
 
 
-  utils.getNodeSelector = function (el) {
-    if (!(el instanceof Element)) {
+  utils.getNodeSelector = function (inputEl) {
+    if (!(inputEl instanceof Element)) {
       throw new Error('Function received argument with wrong type');
     }
 
-    var path = [];
+    var el = inputEl;
+    var path = []; // we need to check '!!el' first because it is possible
+    // that some ancestor of the inputEl was removed before it
 
-    while (el.nodeType === Node.ELEMENT_NODE) {
+    while (!!el && el.nodeType === Node.ELEMENT_NODE) {
       var selector = el.nodeName.toLowerCase();
 
       if (el.id && typeof el.id === 'string') {
@@ -703,28 +720,29 @@ var ExtendedCss = (function () {
    * Released under the MIT license
    * https://js.foundation/
    *
-   * Date: 2018-03-20
+   * Date: 2020-08-04
    */
 
   /**
    * Version of Sizzle patched by AdGuard in order to be used in the ExtendedCss module.
    * https://github.com/AdguardTeam/sizzle-extcss
-   * 
+   *
    * Look for [AdGuard Patch] and ADGUARD_EXTCSS markers to find out what exactly was changed by us.
-   * 
+   *
    * Global changes:
    * 1. Added additional parameters to the "Sizzle.tokenize" method so that it can be used for stylesheets parsing and validation.
    * 2. Added tokens re-sorting mechanism forcing slow pseudos to be matched last  (see sortTokenGroups).
    * 3. Fix the nonnativeSelectorCache caching -- there was no value corresponding to a key.
    * 4. Added Sizzle.compile call to the `:has` pseudo definition.
-   * 
+   *
    * Changes that are applied to the ADGUARD_EXTCSS build only:
    * 1. Do not expose Sizzle to the global scope. Initialize it lazily via initializeSizzle().
    * 2. Removed :contains pseudo declaration -- its syntax is changed and declared outside of Sizzle.
-   * 3. Removed declarations for the following non-standard pseudo classes: 
+   * 3. Removed declarations for the following non-standard pseudo classes:
    * :parent, :header, :input, :button, :text, :first, :last, :eq,
    * :even, :odd, :lt, :gt, :nth, :radio, :checkbox, :file,
    * :password, :image, :submit, :reset
+   * 4. Added es6 module export
    */
   var Sizzle;
   /**
@@ -733,7 +751,7 @@ var ExtendedCss = (function () {
    * and exposing it to the global scope.
    */
 
-  function initializeSizzle() {
+  var initializeSizzle = function initializeSizzle() {
     // jshint ignore:line
     if (!Sizzle) {
       //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -1357,7 +1375,7 @@ var ExtendedCss = (function () {
               // setting a boolean content attribute,
               // since its presence should be enough
               // https://bugs.jquery.com/ticket/12359
-              docElem.appendChild(el).innerHTML = "<a id='" + expando + "'></a>" + "<select id='" + expando + "-\r\\' msallowcapture=''>" + "<option selected=''></option></select>"; // Support: IE8, Opera 11-12.16
+              docElem.appendChild(el).innerHTML = AGPolicy.createHTML("<a id='" + expando + "'></a>" + "<select id='" + expando + "-\r\\' msallowcapture=''>" + "<option selected=''></option></select>"); // Support: IE8, Opera 11-12.16
               // Nothing should be selected when empty strings follow ^= or $= or *=
               // The test attribute must be unknown in Opera but "safe" for WinRT
               // https://msdn.microsoft.com/en-us/library/ie/hh465388.aspx#attribute_section
@@ -1392,7 +1410,7 @@ var ExtendedCss = (function () {
               }
             });
             assert(function (el) {
-              el.innerHTML = "<a href='' disabled='disabled'></a>" + "<select disabled='disabled'><option/></select>"; // Support: Windows 8 Native Apps
+              el.innerHTML = AGPolicy.createHTML("<a href='' disabled='disabled'></a>" + "<select disabled='disabled'><option/></select>"); // Support: Windows 8 Native Apps
               // The type and name attributes are restricted during .innerHTML assignment
 
               var input = document.createElement("input");
@@ -2050,7 +2068,7 @@ var ExtendedCss = (function () {
         var sortTokenGroups = function () {
           /**
            * Splits compound selector into a list of simple selectors
-           * 
+           *
            * @param {*} tokens Tokens to split into groups
            * @returns an array consisting of token groups (arrays) and relation tokens.
            */
@@ -2089,7 +2107,7 @@ var ExtendedCss = (function () {
             "PSEUDO": 60
           };
           var POSITIONAL_PSEUDOS = ["nth", "first", "last", "eq", "even", "odd", "lt", "gt", "not"];
-          /** 
+          /**
            * A function that defines the sort order.
            * Returns a value lesser than 0 if "left" is less than "right".
            */
@@ -2126,7 +2144,7 @@ var ExtendedCss = (function () {
            * Sorts the tokens in order to mitigate the issues caused by the left-to-right matching.
            * The idea is change the tokens order so that Sizzle was matching fast selectors first (id, class),
            * and slow selectors after that (and here I mean our slow custom pseudo classes).
-           * 
+           *
            * @param {Array} tokens An array of tokens to sort
            * @returns {Array} A new re-sorted array
            */
@@ -2159,7 +2177,7 @@ var ExtendedCss = (function () {
           /**
            * Sorts every tokens array inside of the specified "groups" array.
            * See "sortTokens" methods for more information on how tokens are sorted.
-           * 
+           *
            * @param {Array} groups An array of tokens arrays.
            * @returns {Array} A new array that consists of the same tokens arrays after sorting
            */
@@ -2181,9 +2199,34 @@ var ExtendedCss = (function () {
           return sortTokenGroups;
         }();
         /**
+         * Creates custom policy to use TrustedTypes CSP policy
+         * https://w3c.github.io/webappsec-trusted-types/dist/spec/
+         */
+
+
+        var AGPolicy = function createPolicy() {
+          var defaultPolicy = {
+            createHTML: function createHTML(input) {
+              return input;
+            },
+            createScript: function createScript(input) {
+              return input;
+            },
+            createScriptURL: function createScriptURL(input) {
+              return input;
+            }
+          };
+
+          if (window.trustedTypes && window.trustedTypes.createPolicy) {
+            return window.trustedTypes.createPolicy("AGPolicy", defaultPolicy);
+          }
+
+          return defaultPolicy;
+        }();
+        /**
          * [AdGuard Patch]:
          * Removes trailing spaces from the tokens list
-         * 
+         *
          * @param {*} tokens An array of Sizzle tokens to post-process
          */
 
@@ -2213,7 +2256,7 @@ var ExtendedCss = (function () {
          * [AdGuard Patch]:
          * This method processes parsed token groups, divides them into a number of selectors
          * and makes sure that each selector's tokens are cached properly in Sizzle.
-         * 
+         *
          * @param {*} groups Token groups (see {@link Sizzle.tokenize})
          * @returns {Array.<SelectorData>} An array of selectors data we got from the groups
          */
@@ -2251,13 +2294,13 @@ var ExtendedCss = (function () {
          * Add an additional argument for Sizzle.tokenize which indicates that it
          * should not throw on invalid tokens, and instead should return tokens
          * that it has produced so far.
-         * 
+         *
          * One more additional argument that allow to choose if you want to receive sorted or unsorted tokens
          * The problem is that the re-sorted selectors are valid for Sizzle, but not for the browser.
          * options.returnUnsorted -- return unsorted tokens if true.
          * options.cacheOnly -- return cached result only. Required for unit-tests.
-         * 
-         * @param {*} options Optional configuration object with two additional flags 
+         *
+         * @param {*} options Optional configuration object with two additional flags
          * (options.tolerant, options.returnUnsorted, options.cacheOnly) -- see patches #5 and #6 notes
          */
 
@@ -2346,9 +2389,9 @@ var ExtendedCss = (function () {
           }
 
           if (tolerant) {
-            /** 
+            /**
              * [AdGuard Patch]:
-             * In tolerant mode we return a special object that constists of 
+             * In tolerant mode we return a special object that constists of
              * an array of parsed selectors (and their tokens) and a "nextIndex" field
              * that points to an index after which we're not able to parse selectors farther.
              */
@@ -2859,7 +2902,7 @@ var ExtendedCss = (function () {
         // https://msdn.microsoft.com/en-us/library/ms536429%28VS.85%29.aspx
 
         if (!assert(function (el) {
-          el.innerHTML = "<a href='#'></a>";
+          el.innerHTML = AGPolicy.createHTML("<a href='#'></a>");
           return el.firstChild.getAttribute("href") === "#";
         })) {
           addHandle("type|href|height|width", function (elem, name, isXML) {
@@ -2872,7 +2915,7 @@ var ExtendedCss = (function () {
 
 
         if (!support.attributes || !assert(function (el) {
-          el.innerHTML = "<input/>";
+          el.innerHTML = AGPolicy.createHTML("<input/>");
           el.firstChild.setAttribute("value", "");
           return el.firstChild.getAttribute("value") === "";
         })) {
@@ -2905,7 +2948,9 @@ var ExtendedCss = (function () {
     }
 
     return Sizzle;
-  }
+  };
+
+  /* jshint ignore:end */
 
   /**
    * Copyright 2016 Adguard Software Ltd
@@ -3096,6 +3141,508 @@ var ExtendedCss = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
+  var matcherUtils = {};
+  matcherUtils.MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+  /**
+   * Parses argument of matcher pseudo (for matches-attr and matches-property)
+   * @param {string} matcherFilter argument of pseudo class
+   * @returns {Array}
+   */
+
+  matcherUtils.parseMatcherFilter = function (matcherFilter) {
+    var FULL_MATCH_MARKER = '"="';
+    var rawArgs = [];
+
+    if (matcherFilter.indexOf(FULL_MATCH_MARKER) === -1) {
+      // if there is only one pseudo arg
+      // e.g. :matches-attr("data-name") or :matches-property("inner.prop")
+      // Sizzle will parse it and get rid of quotes
+      // so it might be valid arg already without them
+      rawArgs.push(matcherFilter);
+    } else {
+      matcherFilter.split('=').forEach(function (arg) {
+        if (arg[0] === '"' && arg[arg.length - 1] === '"') {
+          rawArgs.push(arg.slice(1, -1));
+        }
+      });
+    }
+
+    return rawArgs;
+  };
+  /**
+   * @typedef {Object} ArgData
+   * @property {string} arg
+   * @property {boolean} isRegexp
+   */
+
+  /**
+   * Parses raw matcher arg
+   * @param {string} rawArg
+   * @returns {ArgData}
+   */
+
+
+  matcherUtils.parseRawMatcherArg = function (rawArg) {
+    var arg = rawArg;
+    var isRegexp = !!rawArg && rawArg[0] === '/' && rawArg[rawArg.length - 1] === '/';
+
+    if (isRegexp) {
+      // to avoid at least such case — :matches-property("//")
+      if (rawArg.length > 2) {
+        arg = utils.toRegExp(rawArg);
+      } else {
+        throw new Error("Invalid regexp: ".concat(rawArg));
+      }
+    }
+
+    return {
+      arg: arg,
+      isRegexp: isRegexp
+    };
+  };
+  /**
+   * @typedef Chain
+   * @property {Object} base
+   * @property {string} prop
+   * @property {string} value
+   */
+
+  /**
+   * Checks if the property exists in the base object (recursively).
+   * @param {Object} base
+   * @param {ArgData[]} chain array of objects - parsed string property chain
+   * @param {Array} [output=[]] result acc
+   * @returns {Chain[]} array of objects
+   */
+
+
+  matcherUtils.filterRootsByRegexpChain = function (base, chain) {
+    var output = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+    var tempProp = chain[0];
+
+    if (chain.length === 1) {
+      Object.keys(base).forEach(function (key) {
+        if (tempProp.isRegexp) {
+          if (tempProp.arg.test(key)) {
+            output.push({
+              base: base,
+              prop: key,
+              value: base[key]
+            });
+          }
+        } else if (tempProp.arg === key) {
+          output.push({
+            base: base,
+            prop: tempProp.arg,
+            value: base[key]
+          });
+        }
+      });
+      return output;
+    } // if there is a regexp prop in input chain
+    // e.g. 'unit./^ad.+/.src' for 'unit.ad-1gf2.src unit.ad-fgd34.src'),
+    // every base keys should be tested by regexp and it can be more that one results
+
+
+    if (tempProp.isRegexp) {
+      var nextProp = chain.slice(1);
+      var baseKeys = Object.keys(base).filter(function (key) {
+        return tempProp.arg.test(key);
+      });
+      baseKeys.forEach(function (key) {
+        var item = base[key];
+        matcherUtils.filterRootsByRegexpChain(item, nextProp, output);
+      });
+    }
+
+    var nextBase = base[tempProp.arg];
+    chain = chain.slice(1);
+
+    if (nextBase !== undefined) {
+      matcherUtils.filterRootsByRegexpChain(nextBase, chain, output);
+    }
+
+    return output;
+  };
+  /**
+   * Validates parsed args of matches-property pseudo
+   * @param {...ArgData} args
+   */
+
+
+  matcherUtils.validatePropMatcherArgs = function () {
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    for (var i = 0; i < args.length; i += 1) {
+      if (args[i].isRegexp) {
+        if (!utils.startsWith(args[i].arg.toString(), '/') || !utils.endsWith(args[i].arg.toString(), '/')) {
+          return false;
+        } // simple arg check if it is not a regexp
+
+      } else if (!/^[\w-]+$/.test(args[i].arg)) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  /**
+   * Class that extends Sizzle and adds support for "matches-attr" pseudo element.
+   */
+
+  var AttributesMatcher = function () {
+    /**
+     * Class that matches element attributes against the specified expressions
+     * @param {ArgData} nameArg - parsed name argument
+     * @param {ArgData} valueArg - parsed value argument
+     * @param {string} pseudoElement
+     * @constructor
+     *
+     * @member {string|RegExp} attrName
+     * @member {boolean} isRegexpName
+     * @member {string|RegExp} attrValue
+     * @member {boolean} isRegexpValue
+     */
+    var AttrMatcher = function AttrMatcher(nameArg, valueArg, pseudoElement) {
+      this.pseudoElement = pseudoElement;
+      this.attrName = nameArg.arg;
+      this.isRegexpName = nameArg.isRegexp;
+      this.attrValue = valueArg.arg;
+      this.isRegexpValue = valueArg.isRegexp;
+    };
+    /**
+     * Function to check if element attributes matches filter pattern
+     * @param {Element} element to check
+     */
+
+
+    AttrMatcher.prototype.matches = function (element) {
+      var elAttrs = element.attributes;
+
+      if (elAttrs.length === 0 || !this.attrName) {
+        return false;
+      }
+
+      var i = 0;
+
+      while (i < elAttrs.length) {
+        var attr = elAttrs[i];
+        var matched = false;
+        var attrNameMatched = this.isRegexpName ? this.attrName.test(attr.name) : this.attrName === attr.name;
+
+        if (!this.attrValue) {
+          // for :matches-attr("/regex/") or :matches-attr("attr-name")
+          matched = attrNameMatched;
+        } else {
+          var attrValueMatched = this.isRegexpValue ? this.attrValue.test(attr.value) : this.attrValue === attr.value;
+          matched = attrNameMatched && attrValueMatched;
+        }
+
+        if (matched) {
+          return true;
+        }
+
+        i += 1;
+      }
+    };
+    /**
+     * Creates a new pseudo-class and registers it in Sizzle
+     */
+
+
+    var extendSizzle = function extendSizzle(sizzle) {
+      // First of all we should prepare Sizzle engine
+      sizzle.selectors.pseudos['matches-attr'] = sizzle.selectors.createPseudo(function (attrFilter) {
+        var _matcherUtils$parseMa = matcherUtils.parseMatcherFilter(attrFilter),
+            _matcherUtils$parseMa2 = _slicedToArray(_matcherUtils$parseMa, 2),
+            rawName = _matcherUtils$parseMa2[0],
+            rawValue = _matcherUtils$parseMa2[1];
+
+        var nameArg = matcherUtils.parseRawMatcherArg(rawName);
+        var valueArg = matcherUtils.parseRawMatcherArg(rawValue);
+
+        if (!attrFilter || !matcherUtils.validatePropMatcherArgs(nameArg, valueArg)) {
+          throw new Error("Invalid argument of :matches-attr pseudo class: ".concat(attrFilter));
+        }
+
+        var matcher = new AttrMatcher(nameArg, valueArg);
+        return function (element) {
+          return matcher.matches(element);
+        };
+      });
+    }; // EXPOSE
+
+
+    return {
+      extendSizzle: extendSizzle
+    };
+  }();
+
+  /**
+   * Parses raw property arg
+   * @param {string} input
+   * @returns {ArgData[]} array of objects
+   */
+
+  var parseRawPropChain = function parseRawPropChain(input) {
+    var PROPS_DIVIDER = '.';
+    var REGEXP_MARKER = '/';
+    var propsArr = [];
+    var str = input;
+
+    while (str.length > 0) {
+      if (utils.startsWith(str, PROPS_DIVIDER)) {
+        // for cases like '.prop.id' and 'nested..test'
+        throw new Error("Invalid chain property: ".concat(input));
+      }
+
+      if (!utils.startsWith(str, REGEXP_MARKER)) {
+        var isRegexp = false;
+        var dividerIndex = str.indexOf(PROPS_DIVIDER);
+
+        if (str.indexOf(PROPS_DIVIDER) === -1) {
+          // if there is no '.' left in str
+          // take the rest of str as prop
+          propsArr.push({
+            arg: str,
+            isRegexp: isRegexp
+          });
+          return propsArr;
+        } // else take prop from str
+
+
+        var prop = str.slice(0, dividerIndex); // for cases like 'asadf.?+/.test'
+
+        if (prop.indexOf(REGEXP_MARKER) > -1) {
+          // prop is '?+/'
+          throw new Error("Invalid chain property: ".concat(prop));
+        }
+
+        propsArr.push({
+          arg: prop,
+          isRegexp: isRegexp
+        }); // delete prop from str
+
+        str = str.slice(dividerIndex);
+      } else {
+        // deal with regexp
+        var propChunks = [];
+        propChunks.push(str.slice(0, 1)); // if str starts with '/', delete it from str and find closing regexp slash.
+        // note that chained property name can not include '/' or '.'
+        // so there is no checking for escaped characters
+
+        str = str.slice(1);
+        var regexEndIndex = str.indexOf(REGEXP_MARKER);
+
+        if (regexEndIndex < 1) {
+          // regexp should be at least === '/./'
+          // so we should avoid args like '/id' and 'test.//.id'
+          throw new Error("Invalid regexp: ".concat(REGEXP_MARKER).concat(str));
+        }
+
+        var _isRegexp = true; // take the rest regexp part
+
+        propChunks.push(str.slice(0, regexEndIndex + 1));
+
+        var _prop = utils.toRegExp(propChunks.join(''));
+
+        propsArr.push({
+          arg: _prop,
+          isRegexp: _isRegexp
+        }); // delete prop from str
+
+        str = str.slice(regexEndIndex + 1);
+      }
+
+      if (!str) {
+        return propsArr;
+      } // str should be like '.nextProp' now
+      // so 'zx.prop' or '.' is invalid
+
+
+      if (!utils.startsWith(str, PROPS_DIVIDER) || utils.startsWith(str, PROPS_DIVIDER) && str.length === 1) {
+        throw new Error("Invalid chain property: ".concat(input));
+      }
+
+      str = str.slice(1);
+    }
+  };
+
+  var convertTypeFromStr = function convertTypeFromStr(value) {
+    var numValue = Number(value);
+    var output;
+
+    if (!Number.isNaN(numValue)) {
+      output = numValue;
+    } else {
+      switch (value) {
+        case 'undefined':
+          output = undefined;
+          break;
+
+        case 'null':
+          output = null;
+          break;
+
+        case 'true':
+          output = true;
+          break;
+
+        case 'false':
+          output = false;
+          break;
+
+        default:
+          output = value;
+      }
+    }
+
+    return output;
+  };
+
+  var convertTypeIntoStr = function convertTypeIntoStr(value) {
+    var output;
+
+    switch (value) {
+      case undefined:
+        output = 'undefined';
+        break;
+
+      case null:
+        output = 'null';
+        break;
+
+      default:
+        output = value.toString();
+    }
+
+    return output;
+  };
+  /**
+   * Class that extends Sizzle and adds support for "matches-property" pseudo element.
+   */
+
+
+  var ElementPropertyMatcher = function () {
+    /**
+     * Class that matches element properties against the specified expressions
+     * @param {ArgData[]} propsChainArg - array of parsed props chain objects
+     * @param {ArgData} valueArg - parsed value argument
+     * @param {string} pseudoElement
+     * @constructor
+     *
+     * @member {Array} chainedProps
+     * @member {boolean} isRegexpName
+     * @member {string|RegExp} propValue
+     * @member {boolean} isRegexpValue
+     */
+    var PropMatcher = function PropMatcher(propsChainArg, valueArg, pseudoElement) {
+      this.pseudoElement = pseudoElement;
+      this.chainedProps = propsChainArg;
+      this.propValue = valueArg.arg;
+      this.isRegexpValue = valueArg.isRegexp;
+    };
+    /**
+     * Function to check if element properties matches filter pattern
+     * @param {Element} element to check
+     */
+
+
+    PropMatcher.prototype.matches = function (element) {
+      var ownerObjArr = matcherUtils.filterRootsByRegexpChain(element, this.chainedProps);
+
+      if (ownerObjArr.length === 0) {
+        return false;
+      }
+
+      var matched = true;
+
+      if (this.propValue) {
+        for (var i = 0; i < ownerObjArr.length; i += 1) {
+          var realValue = ownerObjArr[i].value;
+
+          if (this.isRegexpValue) {
+            matched = this.propValue.test(convertTypeIntoStr(realValue));
+          } else {
+            // handle 'null' and 'undefined' property values set as string
+            if (realValue === 'null' || realValue === 'undefined') {
+              matched = this.propValue === realValue;
+              break;
+            }
+
+            matched = convertTypeFromStr(this.propValue) === realValue;
+          }
+
+          if (matched) {
+            break;
+          }
+        }
+      }
+
+      return matched;
+    };
+    /**
+     * Creates a new pseudo-class and registers it in Sizzle
+     */
+
+
+    var extendSizzle = function extendSizzle(sizzle) {
+      // First of all we should prepare Sizzle engine
+      sizzle.selectors.pseudos['matches-property'] = sizzle.selectors.createPseudo(function (propertyFilter) {
+        if (!propertyFilter) {
+          throw new Error('No argument is given for :matches-property pseudo class');
+        }
+
+        var _matcherUtils$parseMa = matcherUtils.parseMatcherFilter(propertyFilter),
+            _matcherUtils$parseMa2 = _slicedToArray(_matcherUtils$parseMa, 2),
+            rawProp = _matcherUtils$parseMa2[0],
+            rawValue = _matcherUtils$parseMa2[1]; // chained property name can not include '/' or '.'
+        // so regex prop names with such escaped characters are invalid
+
+
+        if (rawProp.indexOf('\\/') > -1 || rawProp.indexOf('\\.') > -1) {
+          throw new Error("Invalid property name: ".concat(rawProp));
+        }
+
+        var propsChainArg = parseRawPropChain(rawProp);
+        var valueArg = matcherUtils.parseRawMatcherArg(rawValue);
+        var propsToValidate = [].concat(_toConsumableArray(propsChainArg), [valueArg]);
+
+        if (!matcherUtils.validatePropMatcherArgs(propsToValidate)) {
+          throw new Error("Invalid argument of :matches-property pseudo class: ".concat(propertyFilter));
+        }
+
+        var matcher = new PropMatcher(propsChainArg, valueArg);
+        return function (element) {
+          return matcher.matches(element);
+        };
+      });
+    }; // EXPOSE
+
+
+    return {
+      extendSizzle: extendSizzle
+    };
+  }();
+
+  /**
+   * Copyright 2016 Adguard Software Ltd
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
   /**
    * Extended selector factory module, for creating extended selector classes.
    *
@@ -3107,7 +3654,7 @@ var ExtendedCss = (function () {
     // while addind new markers, AdGuard extension code also should be corrected:
     // 'CssFilterRule.SUPPORTED_PSEUDO_CLASSES' and 'CssFilterRule.EXTENDED_CSS_MARKERS'
     // at Extension/lib/filter/rules/css-filter-rule.js
-    var PSEUDO_EXTENSIONS_MARKERS = [':has', ':contains', ':has-text', ':matches-css', ':-abp-has', ':-abp-has-text', ':if', ':if-not', ':xpath', ':nth-ancestor', ':upward', ':remove'];
+    var PSEUDO_EXTENSIONS_MARKERS = [':has', ':contains', ':has-text', ':matches-css', ':-abp-has', ':-abp-has-text', ':if', ':if-not', ':xpath', ':nth-ancestor', ':upward', ':remove', ':matches-attr', ':matches-property'];
     var initialized = false;
     var Sizzle;
     /**
@@ -3124,7 +3671,11 @@ var ExtendedCss = (function () {
 
       Sizzle = initializeSizzle(); // Add :matches-css-*() support
 
-      StylePropertyMatcher.extendSizzle(Sizzle); // Add :contains, :has-text, :-abp-contains support
+      StylePropertyMatcher.extendSizzle(Sizzle); // Add :matches-attr() support
+
+      AttributesMatcher.extendSizzle(Sizzle); // Add :matches-property() support
+
+      ElementPropertyMatcher.extendSizzle(Sizzle); // Add :contains, :has-text, :-abp-contains support
 
       var containsPseudo = Sizzle.selectors.createPseudo(function (text) {
         if (/^\s*\/.*\/[gmisuy]*\s*$/.test(text)) {
@@ -4294,22 +4845,10 @@ var ExtendedCss = (function () {
 
 
     function findAffectedElement(node) {
-      // eslint-disable-next-line no-restricted-syntax
-      var _iterator = _createForOfIteratorHelper(affectedElements),
-          _step;
-
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var affectedElement = _step.value;
-
-          if (affectedElement.node === node) {
-            return affectedElement;
-          }
+      for (var i = 0; i < affectedElements.length; i += 1) {
+        if (affectedElements[i].node === node) {
+          return affectedElements[i];
         }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
       }
 
       return null;
@@ -4466,20 +5005,22 @@ var ExtendedCss = (function () {
         Array.prototype.push.apply(elementsIndex, nodes);
       }); // Now revert styles for elements which are no more affected
 
-      var l = affectedElements.length;
+      var l = affectedElements.length; // do nothing if there is no elements to process
 
-      while (l--) {
-        var obj = affectedElements[l];
+      if (elementsIndex.length > 0) {
+        while (l--) {
+          var obj = affectedElements[l];
 
-        if (elementsIndex.indexOf(obj.node) === -1) {
-          // Time to revert style
-          revertStyle(obj);
-          affectedElements.splice(l, 1);
-        } else if (!obj.removed) {
-          // Add style protection observer
-          // Protect "style" attribute from changes
-          if (!obj.protectionObserver) {
-            obj.protectionObserver = protectStyleAttribute(obj.node, obj.rules);
+          if (elementsIndex.indexOf(obj.node) === -1) {
+            // Time to revert style
+            revertStyle(obj);
+            affectedElements.splice(l, 1);
+          } else if (!obj.removed) {
+            // Add style protection observer
+            // Protect "style" attribute from changes
+            if (!obj.protectionObserver) {
+              obj.protectionObserver = protectStyleAttribute(obj.node, obj.rules);
+            }
           }
         }
       } // After styles are applied we can start observe again
