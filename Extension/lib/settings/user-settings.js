@@ -18,7 +18,7 @@
 /* eslint-disable max-len */
 
 import { utils } from '../utils/common';
-import { prefs } from '../../browser/webkit/lib/prefs';
+import { prefs } from '../prefs';
 import { listeners } from '../notifier';
 import { log } from '../utils/log';
 import { localStorage } from '../storage';

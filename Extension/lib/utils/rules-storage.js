@@ -18,7 +18,7 @@
 /**
  * Filter rules storage implementation
  */
-adguard.rulesStorageImpl = (function () {
+export const rulesStorageImpl = (function () {
     /**
      * Checks runtime.lastError and calls "callback" if so.
      *

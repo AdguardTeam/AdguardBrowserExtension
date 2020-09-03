@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { localStorageImpl } from '../../../chrome/lib/utils/local-storage';
+import { localStorageImpl } from '../../../../lib/utils/local-storage';
 
 /**
  * Filter rules storage implementation

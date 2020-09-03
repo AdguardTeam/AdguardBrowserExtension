@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { backgroundPage } from '../../browser/chrome/lib/api/background-page';
+import { backgroundPage } from '../api/background-page';
 import { adguard } from '../adguard';
 import { tabsApi } from '../tabs/tabs-api';
 import { ui } from '../ui-service';

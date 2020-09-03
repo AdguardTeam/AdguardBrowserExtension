@@ -20,7 +20,7 @@ import { LRUMap } from 'lru_map';
 import { log } from '../../utils/log';
 import { utils } from '../../utils/common';
 import { localStorage } from '../../storage';
-import { backgroundPage } from '../../../browser/chrome/lib/api/background-page';
+import { backgroundPage } from '../../api/background-page';
 import { backend } from '../filters/service-client';
 import { settings } from '../../settings/user-settings';
 

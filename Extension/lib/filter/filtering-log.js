@@ -18,8 +18,8 @@
 import * as TSUrlFilter from '@adguard/tsurlfilter';
 import { tabsApi } from '../tabs/tabs-api';
 import { BACKGROUND_TAB_ID, utils } from '../utils/common';
-import { backgroundPage } from '../../browser/chrome/lib/api/background-page';
-import { prefs } from '../../browser/webkit/lib/prefs';
+import { backgroundPage } from '../api/background-page';
+import { prefs } from '../prefs';
 import { listeners } from '../notifier';
 
 /**

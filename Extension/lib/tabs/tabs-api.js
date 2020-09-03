@@ -16,7 +16,7 @@
  */
 
 import { utils } from '../utils/common';
-import { windowsImpl, tabsImpl } from '../../browser/chrome/lib/api/tabs';
+import { windowsImpl, tabsImpl } from '../api/tabs';
 
 // TODO split into windows and tabs api
 export const tabsApi = (() => {

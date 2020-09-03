@@ -17,10 +17,10 @@
 
 /* eslint-disable max-len */
 
-import { utils } from '../../../../lib/utils/common';
-import { prefs } from '../../../webkit/lib/prefs';
+import { utils } from '../utils/common';
+import { prefs } from '../prefs';
 import { backgroundPage } from './background-page';
-import { browserUtils } from '../../../../lib/utils/browser-utils';
+import { browserUtils } from '../utils/browser-utils';
 
 /**
  * Chromium windows implementation

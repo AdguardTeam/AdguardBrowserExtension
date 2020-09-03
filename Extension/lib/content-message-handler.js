@@ -18,7 +18,7 @@
 // TODO check if it is possible to import TSUrlFilter as named expression import { TSUrlFilter } from '...
 import * as TSUrlFilter from '@adguard/tsurlfilter';
 import { settingsProvider } from './settings/settings-provider';
-import { backgroundPage } from '../browser/chrome/lib/api/background-page';
+import { backgroundPage } from './api/background-page';
 import { settings } from './settings/user-settings';
 import { listeners } from './notifier';
 import { userrules } from './filter/userrules';
@@ -39,7 +39,7 @@ import { backend } from './filter/filters/service-client';
 import { subscriptions } from './filter/filters/subscription';
 import { filteringApi } from './filter/filtering-api';
 import { stealthService } from './filter/services/stealth-service';
-import { prefs } from '../browser/webkit/lib/prefs';
+import { prefs } from './prefs';
 import { whitelist } from './filter/whitelist';
 
 /**

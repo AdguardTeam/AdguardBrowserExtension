@@ -17,8 +17,8 @@
 
 // TODO check work of this module in the firefox
 
-import { adguard } from '../../../lib/adguard';
-import { backgroundPage } from '../../chrome/lib/api/background-page';
+import { adguard } from './adguard';
+import { backgroundPage } from './api/background-page';
 
 /**
  * Extension global preferences.

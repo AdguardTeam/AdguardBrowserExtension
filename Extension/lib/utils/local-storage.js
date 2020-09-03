@@ -15,8 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { utils } from '../../../../lib/utils/common';
-import { log } from '../../../../../tools/log';
+import { utils } from './common';
+import { log } from '../../../tools/log';
 
 /**
  * Local storage implementation for chromium-based browsers

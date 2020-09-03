@@ -18,12 +18,12 @@
 /* eslint-disable max-len */
 
 import { application } from './application';
-import { backgroundPage } from '../browser/chrome/lib/api/background-page';
+import { backgroundPage } from './api/background-page';
 import { utils, unload, BACKGROUND_TAB_ID } from './utils/common';
 import { listeners } from './notifier';
 import { settings } from './settings/user-settings';
 import { tabsApi } from './tabs/tabs-api';
-import { prefs } from '../browser/webkit/lib/prefs';
+import { prefs } from './prefs';
 import { pageStats } from './filter/page-stats';
 import { frames } from './tabs/frames';
 import { notifications } from './utils/notifications';
@@ -31,6 +31,7 @@ import { whitelist } from './filter/whitelist';
 import { userrules } from './filter/userrules';
 import { browserUtils } from './utils/browser-utils';
 import { log } from './utils/log';
+import { runtimeImpl } from './common-script';
 
 // TODO rename to uiService
 export const ui = (function () {
@@ -188,7 +189,7 @@ export const ui = (function () {
         if (!tabInfo) {
             return;
         }
-        adguard.runtimeImpl.sendMessage({
+        runtimeImpl.sendMessage({
             type: 'updateTotalBlocked',
             tabInfo,
         });

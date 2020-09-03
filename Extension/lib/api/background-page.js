@@ -17,9 +17,10 @@
 
 /* eslint-disable max-len */
 
-import { BACKGROUND_TAB_ID, RequestTypes } from '../../../../lib/utils/common';
-import { prefs } from '../../../webkit/lib/prefs';
-import { parseContentTypeFromUrlPath } from '../../../../lib/utils/temp';
+import { BACKGROUND_TAB_ID, RequestTypes } from '../utils/common';
+import { prefs } from '../prefs';
+import { parseContentTypeFromUrlPath } from '../utils/temp';
+import { runtimeImpl } from '../common-script';
 
 export const backgroundPage = (() => {
     const runtime = (function () {
@@ -27,7 +28,7 @@ export const backgroundPage = (() => {
             addListener(callback) {
                 // TODO check this calls adguard.runtimeImpl && adguard.tabsImpl
                 // https://developer.chrome.com/extensions/runtime#event-onMessage
-                adguard.runtimeImpl.onMessage.addListener((message, sender, sendResponse) => {
+                runtimeImpl.onMessage.addListener((message, sender, sendResponse) => {
                     const senderOverride = Object.create(null);
                     if (sender.tab) {
                         senderOverride.tab = adguard.tabsImpl.fromChromeTab(sender.tab);

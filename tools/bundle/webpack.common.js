@@ -158,14 +158,6 @@ export const genCommonConfig = (browserConfig) => {
                     },
                     {
                         context: 'Extension',
-                        from: 'browser/webkit',
-                    },
-                    {
-                        context: 'Extension',
-                        from: 'browser/chrome',
-                    },
-                    {
-                        context: 'Extension',
                         from: 'pages/blocking-pages',
                         to: 'pages/blocking-pages',
                     },

@@ -17,11 +17,12 @@
 
 import FiltersDownloader from '../../libs/filters-downloader';
 import { utils } from '../../utils/common';
-import { backgroundPage } from '../../../browser/chrome/lib/api/background-page';
-import { prefs } from '../../../browser/webkit/lib/prefs';
+import { backgroundPage } from '../../api/background-page';
+import { prefs } from '../../prefs';
 import { log } from '../../utils/log';
 import { subscriptions } from './subscription';
 import { browserUtils } from '../../utils/browser-utils';
+import { adguard } from '../../adguard';
 
 export const backend = (function () {
     'use strict';

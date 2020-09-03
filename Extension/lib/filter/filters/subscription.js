@@ -19,7 +19,7 @@ import CryptoJS from 'crypto-js';
 import { listeners } from '../../notifier';
 import { log } from '../../utils/log';
 import { backend } from './service-client';
-import { backgroundPage } from '../../../browser/chrome/lib/api/background-page';
+import { backgroundPage } from '../../api/background-page';
 import { localStorage } from '../../storage';
 import { utils } from '../../utils/common';
 import { LocalScriptRulesService } from '../rules/local-script-rules';

@@ -23,7 +23,7 @@ import { userrules } from '../filter/userrules';
 import { listeners } from '../notifier';
 import { utils } from '../utils/common';
 import { settings } from './user-settings';
-import { backgroundPage } from '../../browser/chrome/lib/api/background-page';
+import { backgroundPage } from '../api/background-page';
 
 /**
  * Application settings provider.

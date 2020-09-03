@@ -34,14 +34,12 @@
 
     adguard.i18n = browserApi.i18n;
 
-        adguard.runtimeImpl = (function () {
+    adguard.runtimeImpl = (function () {
         const onMessage = (function () {
             if (browserApi.runtime && browserApi.runtime.onMessage) {
                 // Chromium, Edge, Firefox WebExtensions
                 return browserApi.runtime.onMessage;
             }
-            // Old Chromium
-            return browserApi.extension.onMessage || browserApi.extension.onRequest;
         })();
 
         const sendMessage = (function () {
@@ -49,8 +47,6 @@
                 // Chromium, Edge, Firefox WebExtensions
                 return browserApi.runtime.sendMessage;
             }
-            // Old Chromium
-            return browserApi.extension.sendMessage || browserApi.extension.sendRequest;
         })();
 
         return {

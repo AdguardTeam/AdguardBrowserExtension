@@ -17,7 +17,7 @@
 
 import { utils } from '../../utils/common';
 import { adguard } from '../../adguard';
-import { backgroundPage } from '../../../browser/chrome/lib/api/background-page';
+import { backgroundPage } from '../../api/background-page';
 import { tabsApi } from '../../tabs/tabs-api';
 import { ui } from '../../ui-service';
 import { frames } from '../../tabs/frames';

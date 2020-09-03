@@ -17,12 +17,12 @@
 
 /* eslint-disable max-len */
 
-import { backgroundPage } from '../../browser/chrome/lib/api/background-page';
+import { backgroundPage } from '../api/background-page';
 import { adguard } from '../adguard';
 import { localStorage } from '../storage';
 import { utils } from '../utils/common';
 import { subscriptions } from './filters/subscription';
-import { prefs } from '../../browser/webkit/lib/prefs';
+import { prefs } from '../prefs';
 import { log } from '../utils/log';
 
 /**

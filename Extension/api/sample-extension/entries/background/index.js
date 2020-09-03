@@ -16,7 +16,7 @@ import '../../../../lib/libs/tsurlfilter';
 
 // Adguard Global and preferences
 import '../../../../lib/adguard';
-import '../../../../browser/webkit/lib/prefs';
+import '../../../../lib/prefs';
 
 // Utils libraries
 import '../../../../lib/utils/common';
@@ -32,16 +32,16 @@ import '../../../../lib/tabs/frames';
 import '../../../../lib/utils/cookie';
 
 // Local storage and rules storage libraries
-import '../../../../browser/chrome/lib/utils/local-storage';
-import '../../../../browser/chrome/lib/utils/rules-storage';
+import '../../../../lib/utils/local-storage';
+import '../../../../lib/utils/rules-storage';
 import '../../../../lib/storage';
 
 // Chromium api adapter libraries
-import '../../../../browser/chrome/lib/content-script/common-script';
-import '../../../../browser/chrome/lib/api/background-page';
+import '../../../../lib/content-script/common-script';
+import '../../../../lib/api/background-page';
 
 // // Tabs api library
-import '../../../../browser/chrome/lib/api/tabs';
+import '../../../../lib/api/tabs';
 import '../../../../lib/tabs/tabs-api';
 
 // Services

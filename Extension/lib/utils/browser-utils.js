@@ -15,11 +15,11 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { prefs } from '../../browser/webkit/lib/prefs';
+import { prefs } from '../prefs';
 import { localStorage } from '../storage';
 import { collections } from './collections';
 import { tabsApi } from '../tabs/tabs-api';
-import { backgroundPage } from '../../browser/chrome/lib/api/background-page';
+import { backgroundPage } from '../api/background-page';
 
 export const browserUtils = (function () {
     /**

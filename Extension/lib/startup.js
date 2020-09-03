@@ -16,7 +16,7 @@
  */
 
 import { log } from './utils/log';
-import { backgroundPage } from '../browser/chrome/lib/api/background-page';
+import { backgroundPage } from './api/background-page';
 import { rulesStorage, localStorage } from './storage';
 import { whitelist } from './filter/whitelist';
 import { filteringLog } from './filter/filtering-log';

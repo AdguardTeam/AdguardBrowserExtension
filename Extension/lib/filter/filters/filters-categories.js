@@ -18,7 +18,7 @@
 import { subscriptions } from './subscription';
 import { application } from '../../application';
 import { tags } from './filters-tags';
-import { prefs } from '../../../browser/webkit/lib/prefs';
+import { prefs } from '../../prefs';
 
 /**
  * Filter categories service

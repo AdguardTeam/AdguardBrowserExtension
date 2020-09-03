@@ -23,7 +23,7 @@ import { settings } from '../settings/user-settings';
 import { frames } from '../tabs/frames';
 import { hitStats } from './rules/filters-hit';
 import { filteringApi } from './filtering-api';
-import { prefs } from '../../browser/webkit/lib/prefs';
+import { prefs } from '../prefs';
 import { requestContextStorage } from './request-context-storage';
 import { documentFilterService } from './services/document-filter';
 import { redirectFilterService } from './services/redirect-service';

@@ -17,7 +17,7 @@
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
 import { log } from '../utils/log';
-import { backgroundPage } from '../../browser/chrome/lib/api/background-page';
+import { backgroundPage } from '../api/background-page';
 import { RequestTypes } from '../utils/common';
 
 /**

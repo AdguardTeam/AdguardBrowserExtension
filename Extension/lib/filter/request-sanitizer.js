@@ -16,7 +16,7 @@
  */
 
 import { BACKGROUND_TAB_ID, utils } from '../utils/common';
-import { backgroundPage } from '../../browser/chrome/lib/api/background-page';
+import { backgroundPage } from '../api/background-page';
 import { browserUtils } from '../utils/browser-utils';
 
 /**
