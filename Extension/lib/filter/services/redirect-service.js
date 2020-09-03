@@ -17,8 +17,8 @@
 
 // TODO fix scriptlets library to expose Redirects class
 import { redirects } from 'scriptlets';
-import { utils } from '../../utils/common';
 import { log } from '../../utils/log';
+import { resources } from '../../utils/resources';
 
 const { Redirects } = redirects;
 
@@ -52,7 +52,7 @@ export const redirectFilterService = (function () {
             return null;
         }
 
-        return utils.resources.createRedirectFileUrl(redirectSource.file);
+        return resources.createRedirectFileUrl(redirectSource.file);
     };
 
     const hasRedirect = (title) => {

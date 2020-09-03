@@ -19,7 +19,7 @@ import { LRUMap } from 'lru_map';
 import { localStorage } from '../storage';
 import { log } from './log';
 
-export const LruCache = function (utils) {
+export const LruCache = function () {
     /**
      * Cache with maxCacheSize stored in local storage, which automatically clears less recently used entries
      *
@@ -91,5 +91,5 @@ export const LruCache = function (utils) {
         };
     }
 
-    utils.LruCache = LruCache;
+    return LruCache;
 };
