@@ -1,7 +1,7 @@
 
 /**
  * AdGuard Scriptlets
- * Version 1.3.0
+ * Version 1.3.2
  */
 
 (function () {
@@ -102,7 +102,7 @@
 
       if (pos === -1) {
         // for paths like 'a.b.*' every final nested prop should be processed
-        if (chain === '*') {
+        if (chain === '*' || chain === '[]') {
           Object.keys(base).forEach(function (key) {
             output.push({
               base: base,
@@ -120,7 +120,7 @@
       }
 
       var prop = chain.slice(0, pos);
-      var shouldLookThrough = prop === '[]' && Array.isArray(base) || prop === '*' && base instanceof Object;
+      var shouldLookThrough = (prop === '*' || prop === '[]') && base instanceof Object;
 
       if (shouldLookThrough) {
         var nextProp = chain.slice(pos + 1);
@@ -177,10 +177,14 @@
       return str.substring(0, index);
     };
     var startsWith = function startsWith(str, prefix) {
-      return str && str.indexOf(prefix) === 0;
+      // if str === '', (str && false) will return ''
+      // that's why it has to be !!str
+      return !!str && str.indexOf(prefix) === 0;
     };
     var endsWith = function endsWith(str, prefix) {
-      return str && str.indexOf(prefix) === str.length - 1;
+      // if str === '', (str && false) will return ''
+      // that's why it has to be !!str
+      return !!str && str.indexOf(prefix) === str.length - 1;
     };
     var substringAfter = function substringAfter(str, separator) {
       if (!str) {
@@ -3351,7 +3355,7 @@
         for (var i = 0; i < requiredPaths.length; i += 1) {
           var requiredPath = requiredPaths[i];
           var lastNestedPropName = requiredPath.split('.').pop();
-          var hasWildcard = requiredPath.indexOf('.*.') > -1 || requiredPath.indexOf('*.') > -1 || requiredPath.indexOf('.*') > -1; // if the path has wildcard, getPropertyInChain should 'look through' chain props
+          var hasWildcard = requiredPath.indexOf('.*.') > -1 || requiredPath.indexOf('*.') > -1 || requiredPath.indexOf('.*') > -1 || requiredPath.indexOf('.[].') > -1 || requiredPath.indexOf('[].') > -1 || requiredPath.indexOf('.[]') > -1; // if the path has wildcard, getPropertyInChain should 'look through' chain props
 
           var details = getWildcardPropertyInChain(root, requiredPath, hasWildcard); // start value of 'shouldProcess' due to checking below
 
@@ -5314,4 +5318,3 @@
  * |                                         |
  * -------------------------------------------
  */
-//# sourceMappingURL=scriptlets.js.map
