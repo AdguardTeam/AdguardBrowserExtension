@@ -15,13 +15,13 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global browser, adguard */
+import { BACKGROUND_TAB_ID } from '../utils/common';
 
 /**
  * Request sanitizer helper
  * Removes track-able data from extension initiated requests
  */
-(function (adguard) {
+export const requestSanitizer = (function () {
     /**
      * On before send headers listener
      *
@@ -36,7 +36,7 @@
             originUrl,
         } = req;
 
-        if (tabId !== adguard.BACKGROUND_TAB_ID) {
+        if (tabId !== BACKGROUND_TAB_ID) {
             return;
         }
 
@@ -55,20 +55,26 @@
         }
     };
 
-    // Firefox doesn't allow to use "extraHeaders" extra option,
-    //  but chrome requires it in order to get access to "Cookie" header
-    const onBeforeSendHeadersExtraInfoSpec = ['requestHeaders', 'blocking'];
-    if (typeof browser.webRequest.OnBeforeSendHeadersOptions !== 'undefined'
-        && browser.webRequest.OnBeforeSendHeadersOptions.hasOwnProperty('EXTRA_HEADERS')) {
-        onBeforeSendHeadersExtraInfoSpec.push('extraHeaders');
-    }
+    const init = () => {
+        // Firefox doesn't allow to use "extraHeaders" extra option,
+        //  but chrome requires it in order to get access to "Cookie" header
+        const onBeforeSendHeadersExtraInfoSpec = ['requestHeaders', 'blocking'];
+        if (typeof browser.webRequest.OnBeforeSendHeadersOptions !== 'undefined'
+            && browser.webRequest.OnBeforeSendHeadersOptions.hasOwnProperty('EXTRA_HEADERS')) {
+            onBeforeSendHeadersExtraInfoSpec.push('extraHeaders');
+        }
 
-    browser.webRequest.onBeforeSendHeaders.addListener(
-        safeFilter,
-        {
-            urls: ['<all_urls>'],
-            tabId: adguard.BACKGROUND_TAB_ID,
-        },
-        onBeforeSendHeadersExtraInfoSpec
-    );
-})(adguard, browser);
+        browser.webRequest.onBeforeSendHeaders.addListener(
+            safeFilter,
+            {
+                urls: ['<all_urls>'],
+                tabId: BACKGROUND_TAB_ID,
+            },
+            onBeforeSendHeadersExtraInfoSpec
+        );
+    };
+
+    return {
+        init,
+    };
+})();

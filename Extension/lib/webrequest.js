@@ -1046,7 +1046,6 @@ const webrequestInit = function () {
     });
 };
 
-// Initiate
 export const webrequest = {
     init: webrequestInit,
 };

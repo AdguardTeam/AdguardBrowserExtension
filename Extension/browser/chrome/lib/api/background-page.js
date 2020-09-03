@@ -1,4 +1,6 @@
 /* eslint-disable max-len */
+import { BACKGROUND_TAB_ID } from '../../../../lib/utils/common';
+
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -66,7 +68,7 @@ export const backgroundPage = (() => {
      * @returns {boolean}
      */
     function shouldSkipRequest(details) {
-        return details.tabId === adguard.BACKGROUND_TAB_ID
+        return details.tabId === BACKGROUND_TAB_ID
             && details.url.indexOf(extensionScheme) === 0;
     }
 
@@ -204,7 +206,7 @@ export const backgroundPage = (() => {
             requestDetails.responseHeaders = details.responseHeaders;
         }
 
-        if (details.tabId === adguard.BACKGROUND_TAB_ID) {
+        if (details.tabId === BACKGROUND_TAB_ID) {
             // In case of background request, its details contains referrer url
             // Chrome uses `initiator`: https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
             // FF uses `originUrl`: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webRequest/onBeforeRequest#Additional_objects
@@ -497,7 +499,7 @@ export const backgroundPage = (() => {
             }
 
             browser.webNavigation.onCreatedNavigationTarget.addListener((details) => {
-                if (details.tabId === adguard.BACKGROUND_TAB_ID) {
+                if (details.tabId === BACKGROUND_TAB_ID) {
                     return;
                 }
 
