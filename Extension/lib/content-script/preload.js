@@ -14,24 +14,25 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global contentPage, HTMLDocument, XMLDocument, ElementCollapser, adguardContent, TSUrlFilter */
-(function () {
 
-    var requestTypeMap = {
-        "img": "IMAGE",
-        "input": "IMAGE",
-        "audio": "MEDIA",
-        "video": "MEDIA",
-        "object": "OBJECT",
-        "frame": "SUBDOCUMENT",
-        "iframe": "SUBDOCUMENT",
-        "embed": "OBJECT"
+import { runtimeImpl } from '../common-script';
+
+export const preload = (function () {
+    const requestTypeMap = {
+        'img': 'IMAGE',
+        'input': 'IMAGE',
+        'audio': 'MEDIA',
+        'video': 'MEDIA',
+        'object': 'OBJECT',
+        'frame': 'SUBDOCUMENT',
+        'iframe': 'SUBDOCUMENT',
+        'embed': 'OBJECT',
     };
 
-    var collapseRequests = Object.create(null);
-    var collapseRequestId = 1;
-    var isFirefox = false;
-    var isOpera = false;
+    const collapseRequests = Object.create(null);
+    let collapseRequestId = 1;
+    let isFirefox = false;
+    let isOpera = false;
 
     let cssHitsCounter;
 
@@ -44,11 +45,11 @@
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/924
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/880
      */
-    var getContentPage = function () {
+    const getContentPage = function () {
         if (typeof contentPage === 'undefined') {
             contentPage = {
-                sendMessage: adguardContent.runtimeImpl.sendMessage,
-                onMessage: adguardContent.runtimeImpl.onMessage
+                sendMessage: runtimeImpl.sendMessage,
+                onMessage: runtimeImpl.onMessage,
             };
         }
 
@@ -60,10 +61,10 @@
      * It allows us to execute script as soon as possible, because runtime.messaging makes huge overhead
      * If onCommitted event doesn't occur for the frame, scripts will be applied in usual way.
      */
-    getContentPage().onMessage.addListener(function (response, sender, sendResponse) {
+    getContentPage().onMessage.addListener((response, sender, sendResponse) => {
         if (response.type === 'injectScripts') {
             // Notify background-page that content-script was received scripts
-            sendResponse({applied: true});
+            sendResponse({ applied: true });
             if (!isHtml()) {
                 return;
             }
@@ -74,15 +75,14 @@
     /**
      * Initializing content script
      */
-    var init = function () {
-
+    const init = function () {
         if (!isHtml()) {
             return;
         }
 
         initRequestWrappers();
 
-        var userAgent = navigator.userAgent.toLowerCase();
+        const userAgent = navigator.userAgent.toLowerCase();
         isFirefox = userAgent.indexOf('firefox') > -1;
         isOpera = userAgent.indexOf('opera') > -1 || userAgent.indexOf('opr') > -1;
 
@@ -96,9 +96,9 @@
      * @returns {boolean}
      */
     var isHtml = function () {
-        return (document instanceof HTMLDocument) ||
+        return (document instanceof HTMLDocument)
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/233
-            ((document instanceof XMLDocument) && (document.createElement('div') instanceof HTMLDivElement));
+            || ((document instanceof XMLDocument) && (document.createElement('div') instanceof HTMLDivElement));
     };
 
     /**
@@ -106,8 +106,8 @@
      * We insert wrapper's code into http/https documents and dynamically created frames.
      * The last one is due to the circumvention with using iframe's contentWindow.
      */
-    var isHttpOrAboutPage = function () {
-        var protocol = window.location.protocol;
+    const isHttpOrAboutPage = function () {
+        const { protocol } = window.location;
         return protocol.indexOf('http') === 0 || protocol.indexOf('about:') === 0;
     };
 
@@ -115,7 +115,7 @@
      * Execute several scripts
      * @param {Array<string>} scripts Scripts to execute
      */
-    var executeScripts = function (scripts) {
+    const executeScripts = function (scripts) {
         if (!scripts || scripts.length === 0) {
             return;
         }
@@ -160,7 +160,7 @@
 
         initPageMessageListener();
 
-        const wrapperScriptName = 'wrapper-script-' + Math.random().toString().substr(2);
+        const wrapperScriptName = `wrapper-script-${Math.random().toString().substr(2)}`;
         const script = `(${injectPageScriptAPI.toString()})('${wrapperScriptName}', true);`;
         executeScripts([script]);
     };
@@ -169,7 +169,7 @@
      * Loads CSS and JS injections
      */
     var tryLoadCssAndScripts = function () {
-        var message = {
+        const message = {
             type: 'getSelectorsAndScripts',
             documentUrl: window.location.href,
         };
@@ -222,7 +222,7 @@
      * @param styleEl       "style" DOM element
      * @param cssContent    CSS content to set
      */
-    var setStyleContent = function (styleEl, cssContent) {
+    const setStyleContent = function (styleEl, cssContent) {
         styleEl.textContent = cssContent;
     };
 
@@ -249,9 +249,9 @@
             return;
         }
 
-        for (var i = 0; i < css.length; i++) {
-            var styleEl = document.createElement("style");
-            styleEl.setAttribute("type", "text/css");
+        for (let i = 0; i < css.length; i++) {
+            const styleEl = document.createElement('style');
+            styleEl.setAttribute('type', 'text/css');
             setStyleContent(styleEl, css[i]);
 
             (document.head || document.documentElement).appendChild(styleEl);
@@ -289,52 +289,47 @@
      * @param protectStyleEl protected style element
      */
     var protectStyleElementContent = function (protectStyleEl) {
-        var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+        const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
         if (!MutationObserver) {
             return;
         }
         /* observer, which observe protectStyleEl inner changes, without deleting styleEl */
-        var innerObserver = new MutationObserver(function (mutations) {
-
-            for (var i = 0; i < mutations.length; i++) {
-
-                var m = mutations[i];
-                if (protectStyleEl.hasAttribute("mod") && protectStyleEl.getAttribute("mod") === "inner") {
-                    protectStyleEl.removeAttribute("mod");
+        const innerObserver = new MutationObserver(((mutations) => {
+            for (let i = 0; i < mutations.length; i++) {
+                const m = mutations[i];
+                if (protectStyleEl.hasAttribute('mod') && protectStyleEl.getAttribute('mod') === 'inner') {
+                    protectStyleEl.removeAttribute('mod');
                     break;
                 }
 
-                protectStyleEl.setAttribute("mod", "inner");
-                var isProtectStyleElModified = false;
+                protectStyleEl.setAttribute('mod', 'inner');
+                let isProtectStyleElModified = false;
 
                 /* further, there are two mutually exclusive situations: either there were changes the text of protectStyleEl,
                  either there was removes a whole child "text" element of protectStyleEl
                  we'll process both of them */
 
                 if (m.removedNodes.length > 0) {
-                    for (var j = 0; j < m.removedNodes.length; j++) {
+                    for (let j = 0; j < m.removedNodes.length; j++) {
                         isProtectStyleElModified = true;
                         protectStyleEl.appendChild(m.removedNodes[j]);
                     }
-                } else {
-                    if (m.oldValue) {
-                        isProtectStyleElModified = true;
-                        protectStyleEl.textContent = m.oldValue;
-                    }
+                } else if (m.oldValue) {
+                    isProtectStyleElModified = true;
+                    protectStyleEl.textContent = m.oldValue;
                 }
 
                 if (!isProtectStyleElModified) {
-                    protectStyleEl.removeAttribute("mod");
+                    protectStyleEl.removeAttribute('mod');
                 }
             }
-
-        });
+        }));
 
         innerObserver.observe(protectStyleEl, {
             'childList': true,
             'characterData': true,
             'subtree': true,
-            'characterDataOldValue': true
+            'characterDataOldValue': true,
         });
     };
 
@@ -343,7 +338,6 @@
      * @param scripts Array with JS scripts and scriptSource ('remote' or 'local')
      */
     var applyScripts = function (scripts) {
-
         if (!scripts || scripts.length === 0) {
             return;
         }
@@ -361,10 +355,10 @@
      * In this case we'll hide these blocked elements.
      */
     var initCollapseEventListeners = function () {
-        document.addEventListener("error", checkShouldCollapse, true);
+        document.addEventListener('error', checkShouldCollapse, true);
 
         // We need to listen for load events to hide blocked iframes (they don't raise error event)
-        document.addEventListener("load", checkShouldCollapse, true);
+        document.addEventListener('load', checkShouldCollapse, true);
     };
 
     /**
@@ -372,11 +366,11 @@
      * @param event Load or error event
      */
     var checkShouldCollapse = function (event) {
-        var element = event.target;
-        var eventType = event.type;
-        var tagName = element.tagName.toLowerCase();
+        const element = event.target;
+        const eventType = event.type;
+        const tagName = element.tagName.toLowerCase();
 
-        var expectedEventType = (tagName === "iframe" || tagName === "frame" || tagName === "embed") ? "load" : "error";
+        const expectedEventType = (tagName === 'iframe' || tagName === 'frame' || tagName === 'embed') ? 'load' : 'error';
         if (eventType !== expectedEventType) {
             return;
         }
@@ -388,13 +382,13 @@
      * Extracts element URL from the dom node
      * @param element DOM node
      */
-    var getElementUrl = function (element) {
-        var elementUrl = element.src || element.data;
-        if (!elementUrl ||
-            elementUrl.indexOf('http') !== 0 ||
+    const getElementUrl = function (element) {
+        let elementUrl = element.src || element.data;
+        if (!elementUrl
+            || elementUrl.indexOf('http') !== 0
             // Some sources could not be set yet, lazy loaded images or smth.
             // In some cases like on gog.com, collapsing these elements could break the page script loading their sources
-            elementUrl === element.baseURI) {
+            || elementUrl === element.baseURI) {
             return null;
         }
 
@@ -413,14 +407,13 @@
      * @param element Element to check
      * @return request ID
      */
-    var saveCollapseRequest = function (element) {
-
-        var tagName = element.tagName.toLowerCase();
-        var requestId = collapseRequestId++;
+    const saveCollapseRequest = function (element) {
+        const tagName = element.tagName.toLowerCase();
+        const requestId = collapseRequestId++;
         collapseRequests[requestId] = {
-            element: element,
+            element,
             src: element.src,
-            tagName: tagName
+            tagName,
         };
 
         return requestId;
@@ -430,22 +423,21 @@
      * Response callback for "processShouldCollapse" message.
      * @param response Response got from the background page
      */
-    var onProcessShouldCollapseResponse = function (response) {
-
+    const onProcessShouldCollapseResponse = function (response) {
         if (!response) {
             return;
         }
 
         // Get original collapse request
-        var collapseRequest = collapseRequests[response.requestId];
+        const collapseRequest = collapseRequests[response.requestId];
         if (!collapseRequest) {
             return;
         }
         delete collapseRequests[response.requestId];
 
-        var element = collapseRequest.element;
+        const { element } = collapseRequest;
         if (response.collapse === true) {
-            var elementUrl = collapseRequest.src;
+            const elementUrl = collapseRequest.src;
             ElementCollapser.collapseElement(element, elementUrl);
         }
     };
@@ -455,13 +447,12 @@
      * @param element Element to check
      */
     var checkShouldCollapseElement = function (element) {
-
-        var requestType = requestTypeMap[element.localName];
+        const requestType = requestTypeMap[element.localName];
         if (!requestType) {
             return;
         }
 
-        var elementUrl = getElementUrl(element);
+        const elementUrl = getElementUrl(element);
         if (!elementUrl) {
             return;
         }
@@ -471,15 +462,15 @@
         }
 
         // Save request to a map (it will be used in response callback)
-        var requestId = saveCollapseRequest(element);
+        const requestId = saveCollapseRequest(element);
 
         // Send a message to the background page to check if the element really should be collapsed
-        var message = {
+        const message = {
             type: 'processShouldCollapse',
-            elementUrl: elementUrl,
+            elementUrl,
             documentUrl: document.URL,
-            requestType: requestType,
-            requestId: requestId
+            requestType,
+            requestId,
         };
 
         getContentPage().sendMessage(message, onProcessShouldCollapseResponse);
@@ -489,15 +480,14 @@
      * Response callback for "processShouldCollapseMany" message.
      * @param response Response from bg page.
      */
-    var onProcessShouldCollapseManyResponse = function (response) {
-
+    const onProcessShouldCollapseManyResponse = function (response) {
         if (!response) {
             return;
         }
 
-        var requests = response.requests;
-        for (var i = 0; i < requests.length; i++) {
-            var collapseRequest = requests[i];
+        const { requests } = response;
+        for (let i = 0; i < requests.length; i++) {
+            const collapseRequest = requests[i];
             onProcessShouldCollapseResponse(collapseRequest);
         }
     };
@@ -505,37 +495,36 @@
     /**
      * Collects all elements from the page and checks if we should hide them.
      */
-    var checkBatchShouldCollapse = function () {
-        var requests = [];
+    const checkBatchShouldCollapse = function () {
+        const requests = [];
 
         // Collect collapse requests
-        for (var tagName in requestTypeMap) {
-            var requestType = requestTypeMap[tagName];
+        for (const tagName in requestTypeMap) {
+            const requestType = requestTypeMap[tagName];
 
-            var elements = document.getElementsByTagName(tagName);
-            for (var j = 0; j < elements.length; j++) {
-
-                var element = elements[j];
-                var elementUrl = getElementUrl(element);
+            const elements = document.getElementsByTagName(tagName);
+            for (let j = 0; j < elements.length; j++) {
+                const element = elements[j];
+                const elementUrl = getElementUrl(element);
                 if (!elementUrl) {
                     continue;
                 }
 
-                var requestId = saveCollapseRequest(element);
+                const requestId = saveCollapseRequest(element);
 
                 requests.push({
-                    elementUrl: elementUrl,
-                    requestType: requestType,
-                    requestId: requestId,
-                    tagName: tagName
+                    elementUrl,
+                    requestType,
+                    requestId,
+                    tagName,
                 });
             }
         }
 
-        var message = {
+        const message = {
             type: 'processShouldCollapseMany',
-            requests: requests,
-            documentUrl: document.URL
+            requests,
+            documentUrl: document.URL,
         };
 
         // Send all prepared requests in one message
@@ -549,9 +538,9 @@
      * checks all page elements.
      */
     var initBatchCollapse = function () {
-        if (document.readyState === 'complete' ||
-            document.readyState === 'loaded' ||
-            document.readyState === 'interactive') {
+        if (document.readyState === 'complete'
+            || document.readyState === 'loaded'
+            || document.readyState === 'interactive') {
             checkBatchShouldCollapse();
         } else {
             document.addEventListener('DOMContentLoaded', checkBatchShouldCollapse);
@@ -563,13 +552,13 @@
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/159
      */
     var onVisibilityChange = function () {
-
         if (document.hidden === false) {
-            document.removeEventListener("visibilitychange", onVisibilityChange);
+            document.removeEventListener('visibilitychange', onVisibilityChange);
             init();
         }
     };
 
-    // Start the content script
-    init();
+    return {
+        init,
+    };
 })();

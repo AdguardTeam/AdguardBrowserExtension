@@ -17,6 +17,7 @@ const POPUP_PATH = path.resolve(__dirname, '../../Extension/pages/popup');
 const FILTERING_LOG_PATH = path.resolve(__dirname, '../../Extension/pages/filtering-log');
 const FILTER_DOWNLOAD_PATH = path.resolve(__dirname, '../../Extension/pages/filter-download');
 const EXPORT_PATH = path.resolve(__dirname, '../../Extension/pages/export');
+const CONTENT_SCRIPT_START_PATH = path.resolve(__dirname, '../../Extension/pages/content-script-start');
 
 const OUTPUT_PATH = config.outputPath;
 
@@ -36,6 +37,7 @@ export const genCommonConfig = (browserConfig) => {
             'pages/filtering-log': FILTERING_LOG_PATH,
             'pages/filter-download': FILTER_DOWNLOAD_PATH,
             'pages/export': EXPORT_PATH,
+            'pages/content-script-start': CONTENT_SCRIPT_START_PATH,
         },
         output: {
             path: path.join(BUILD_PATH, OUTPUT_PATH),

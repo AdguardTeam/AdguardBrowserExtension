@@ -1,4 +1,4 @@
-import { BROWSERS, BROWSERS_CONF } from '../constants';
+import { BROWSERS } from '../constants';
 import { genChromeConfig } from './chrome/webpack.chrome';
 import { genFirefoxConfig } from './firefox/webpack.firefox';
 import { genEdgeConfig } from './edge/webpack.edge';
