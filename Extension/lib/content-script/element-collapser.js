@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global CSS */
-
 /**
  * Object that collapses or hides DOM elements and able to roll it back.
  */

@@ -15,8 +15,10 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import TSUrlFilter from '@adguard/tsurlfilter/dist/TSUrlFilterContentScript';
 import { initPageMessageListener, injectPageScriptAPI } from './wrappers';
 import { contentPage } from './content-script';
+import { ElementCollapser } from './element-collapser';
 
 export const preload = (function () {
     const requestTypeMap = {
@@ -32,11 +34,7 @@ export const preload = (function () {
 
     const collapseRequests = Object.create(null);
     let collapseRequestId = 1;
-    let isFirefox = false;
-    let isOpera = false;
-
     let cssHitsCounter;
-
 
     /**
      * Unexpectedly global variable contentPage could become undefined in FF,
@@ -48,6 +46,49 @@ export const preload = (function () {
      */
     const getContentPage = function () {
         return contentPage;
+    };
+
+    /**
+     * Checks if it is html document
+     *
+     * @returns {boolean}
+     */
+    const isHtml = function () {
+        return (document instanceof HTMLDocument)
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/233
+            || ((document instanceof XMLDocument) && (document.createElement('div') instanceof HTMLDivElement));
+    };
+
+    /**
+     * Execute scripts in a page context and cleanup itself when execution completes
+     * @param {string} script Script to execute
+     */
+    const executeScript = function (script) {
+        const scriptTag = document.createElement('script');
+        scriptTag.setAttribute('type', 'text/javascript');
+        scriptTag.textContent = script;
+
+        const parent = document.head || document.documentElement;
+        parent.appendChild(scriptTag);
+        if (scriptTag.parentNode) {
+            scriptTag.parentNode.removeChild(scriptTag);
+        }
+    };
+
+    /**
+     * Applies JS injections.
+     * @param scripts Array with JS scripts and scriptSource ('remote' or 'local')
+     */
+    const applyScripts = function (scripts) {
+        if (!scripts || scripts.length === 0) {
+            return;
+        }
+
+        /**
+         * JS injections are created by JS filtering rules:
+         * http://adguard.com/en/filterrules.html#javascriptInjection
+         */
+        executeScript(scripts);
     };
 
     /**
@@ -65,35 +106,6 @@ export const preload = (function () {
             applyScripts(response.scripts);
         }
     });
-
-    /**
-     * Initializing content script
-     */
-    const init = function () {
-        if (!isHtml()) {
-            return;
-        }
-
-        initRequestWrappers();
-
-        const userAgent = navigator.userAgent.toLowerCase();
-        isFirefox = userAgent.indexOf('firefox') > -1;
-        isOpera = userAgent.indexOf('opera') > -1 || userAgent.indexOf('opr') > -1;
-
-        initCollapseEventListeners();
-        tryLoadCssAndScripts();
-    };
-
-    /**
-     * Checks if it is html document
-     *
-     * @returns {boolean}
-     */
-    var isHtml = function () {
-        return (document instanceof HTMLDocument)
-            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/233
-            || ((document instanceof XMLDocument) && (document.createElement('div') instanceof HTMLDivElement));
-    };
 
     /**
      * Uses in `initRequestWrappers` method.
@@ -121,22 +133,6 @@ export const preload = (function () {
     };
 
     /**
-     * Execute scripts in a page context and cleanup itself when execution completes
-     * @param {string} script Script to execute
-     */
-    const executeScript = function (script) {
-        const scriptTag = document.createElement('script');
-        scriptTag.setAttribute('type', 'text/javascript');
-        scriptTag.textContent = script;
-
-        const parent = document.head || document.documentElement;
-        parent.appendChild(scriptTag);
-        if (scriptTag.parentNode) {
-            scriptTag.parentNode.removeChild(scriptTag);
-        }
-    };
-
-    /**
      * Overrides window.RTCPeerConnection running the function from wrappers.js
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/588
      */
@@ -158,219 +154,6 @@ export const preload = (function () {
     };
 
     /**
-     * Loads CSS and JS injections
-     */
-    var tryLoadCssAndScripts = function () {
-        const message = {
-            type: 'getSelectorsAndScripts',
-            documentUrl: window.location.href,
-        };
-
-        /**
-         * Sending message to background page and passing a callback function
-         */
-        getContentPage().sendMessage(message, processCssAndScriptsResponse);
-    };
-
-    /**
-     * Processes response from the background page containing CSS and JS injections
-     * @param response Response from the background page
-     */
-    const processCssAndScriptsResponse = (response) => {
-        if (!response || response.requestFilterReady === false) {
-            /**
-             * This flag (requestFilterReady) means that we should wait for a while, because the
-             * request filter is not ready yet. This is possible only on browser startup.
-             * In this case we'll delay injections until extension is fully initialized.
-             */
-            setTimeout(tryLoadCssAndScripts, 100);
-            return;
-        }
-
-        if (response.collectRulesHits) {
-            cssHitsCounter = new TSUrlFilter.CssHitsCounter((stats) => {
-                getContentPage().sendMessage({ type: 'saveCssHitStats', stats });
-            });
-        }
-
-        if (response.collapseAllElements) {
-            /**
-             * This flag (collapseAllElements) means that we should check all page elements
-             * and collapse them if needed. Why? On browser startup we can't block some
-             * ad/tracking requests because extension is not yet initialized when
-             * these requests are executed. At least we could hide these elements.
-             */
-            applySelectors(response.selectors);
-            applyScripts(response.scripts);
-            initBatchCollapse();
-        } else {
-            applySelectors(response.selectors);
-            applyScripts(response.scripts);
-        }
-    };
-
-    /**
-     * Sets "style" DOM element content.
-     * @param styleEl       "style" DOM element
-     * @param cssContent    CSS content to set
-     */
-    const setStyleContent = function (styleEl, cssContent) {
-        styleEl.textContent = cssContent;
-    };
-
-    /**
-     * Applies CSS and extended CSS stylesheets
-     * @param selectors     Object with the stylesheets got from the background page.
-     */
-    var applySelectors = function (selectors) {
-        if (!selectors) {
-            return;
-        }
-
-        applyCss(selectors.css);
-        applyExtendedCss(selectors.extendedCss);
-    };
-
-    /**
-     * Applies CSS stylesheets
-     *
-     * @param css Array with CSS stylesheets
-     */
-    var applyCss = function (css) {
-        if (!css || css.length === 0) {
-            return;
-        }
-
-        for (let i = 0; i < css.length; i++) {
-            const styleEl = document.createElement('style');
-            styleEl.setAttribute('type', 'text/css');
-            setStyleContent(styleEl, css[i]);
-
-            (document.head || document.documentElement).appendChild(styleEl);
-
-            protectStyleElementContent(styleEl);
-        }
-    };
-
-    /**
-     * Applies Extended Css stylesheet
-     *
-     * @param extendedCss Array with ExtendedCss stylesheets
-     */
-    var applyExtendedCss = function (extendedCss) {
-        if (!extendedCss || !extendedCss.length) {
-            return;
-        }
-
-        const styleSheet = extendedCss.join('\n');
-        if (!styleSheet) {
-            return;
-        }
-
-        const extcss = new TSUrlFilter.ExtendedCss({
-            styleSheet,
-            beforeStyleApplied: (cssHitsCounter ? cssHitsCounter.countAffectedByExtendedCss.bind(cssHitsCounter) : el => el),
-        });
-        extcss.apply();
-    };
-
-    /**
-     * Protects specified style element from changes to the current document
-     * Add a mutation observer, which is adds our rules again if it was removed
-     *
-     * @param protectStyleEl protected style element
-     */
-    var protectStyleElementContent = function (protectStyleEl) {
-        const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-        if (!MutationObserver) {
-            return;
-        }
-        /* observer, which observe protectStyleEl inner changes, without deleting styleEl */
-        const innerObserver = new MutationObserver(((mutations) => {
-            for (let i = 0; i < mutations.length; i++) {
-                const m = mutations[i];
-                if (protectStyleEl.hasAttribute('mod') && protectStyleEl.getAttribute('mod') === 'inner') {
-                    protectStyleEl.removeAttribute('mod');
-                    break;
-                }
-
-                protectStyleEl.setAttribute('mod', 'inner');
-                let isProtectStyleElModified = false;
-
-                /* further, there are two mutually exclusive situations: either there were changes the text of protectStyleEl,
-                 either there was removes a whole child "text" element of protectStyleEl
-                 we'll process both of them */
-
-                if (m.removedNodes.length > 0) {
-                    for (let j = 0; j < m.removedNodes.length; j++) {
-                        isProtectStyleElModified = true;
-                        protectStyleEl.appendChild(m.removedNodes[j]);
-                    }
-                } else if (m.oldValue) {
-                    isProtectStyleElModified = true;
-                    protectStyleEl.textContent = m.oldValue;
-                }
-
-                if (!isProtectStyleElModified) {
-                    protectStyleEl.removeAttribute('mod');
-                }
-            }
-        }));
-
-        innerObserver.observe(protectStyleEl, {
-            'childList': true,
-            'characterData': true,
-            'subtree': true,
-            'characterDataOldValue': true,
-        });
-    };
-
-    /**
-     * Applies JS injections.
-     * @param scripts Array with JS scripts and scriptSource ('remote' or 'local')
-     */
-    var applyScripts = function (scripts) {
-        if (!scripts || scripts.length === 0) {
-            return;
-        }
-
-        /**
-         * JS injections are created by JS filtering rules:
-         * http://adguard.com/en/filterrules.html#javascriptInjection
-         */
-        executeScript(scripts);
-    };
-
-    /**
-     * Init listeners for error and load events.
-     * We will then check loaded elements if they are blocked by our extension.
-     * In this case we'll hide these blocked elements.
-     */
-    var initCollapseEventListeners = function () {
-        document.addEventListener('error', checkShouldCollapse, true);
-
-        // We need to listen for load events to hide blocked iframes (they don't raise error event)
-        document.addEventListener('load', checkShouldCollapse, true);
-    };
-
-    /**
-     * Checks if loaded element is blocked by AG and should be hidden
-     * @param event Load or error event
-     */
-    var checkShouldCollapse = function (event) {
-        const element = event.target;
-        const eventType = event.type;
-        const tagName = element.tagName.toLowerCase();
-
-        const expectedEventType = (tagName === 'iframe' || tagName === 'frame' || tagName === 'embed') ? 'load' : 'error';
-        if (eventType !== expectedEventType) {
-            return;
-        }
-
-        checkShouldCollapseElement(element);
-    };
-
-    /**
      * Extracts element URL from the dom node
      * @param element DOM node
      */
@@ -379,7 +162,8 @@ export const preload = (function () {
         if (!elementUrl
             || elementUrl.indexOf('http') !== 0
             // Some sources could not be set yet, lazy loaded images or smth.
-            // In some cases like on gog.com, collapsing these elements could break the page script loading their sources
+            // In some cases like on gog.com, collapsing these elements could break
+            // the page script loading their sources
             || elementUrl === element.baseURI) {
             return null;
         }
@@ -401,7 +185,8 @@ export const preload = (function () {
      */
     const saveCollapseRequest = function (element) {
         const tagName = element.tagName.toLowerCase();
-        const requestId = collapseRequestId++;
+        const requestId = collapseRequestId;
+        collapseRequestId += 1;
         collapseRequests[requestId] = {
             element,
             src: element.src,
@@ -438,7 +223,7 @@ export const preload = (function () {
      * Checks if element is blocked by AG and should be hidden
      * @param element Element to check
      */
-    var checkShouldCollapseElement = function (element) {
+    const checkShouldCollapseElement = function (element) {
         const requestType = requestTypeMap[element.localName];
         if (!requestType) {
             return;
@@ -469,6 +254,156 @@ export const preload = (function () {
     };
 
     /**
+     * Checks if loaded element is blocked by AG and should be hidden
+     * @param event Load or error event
+     */
+    const checkShouldCollapse = function (event) {
+        const element = event.target;
+        const eventType = event.type;
+        const tagName = element.tagName.toLowerCase();
+
+        const expectedEventType = (tagName === 'iframe' || tagName === 'frame' || tagName === 'embed')
+            ? 'load'
+            : 'error';
+        if (eventType !== expectedEventType) {
+            return;
+        }
+
+        checkShouldCollapseElement(element);
+    };
+
+    /**
+     * Init listeners for error and load events.
+     * We will then check loaded elements if they are blocked by our extension.
+     * In this case we'll hide these blocked elements.
+     */
+    const initCollapseEventListeners = function () {
+        document.addEventListener('error', checkShouldCollapse, true);
+
+        // We need to listen for load events to hide blocked iframes (they don't raise error event)
+        document.addEventListener('load', checkShouldCollapse, true);
+    };
+
+    /**
+     * Sets "style" DOM element content.
+     * @param styleEl       "style" DOM element
+     * @param cssContent    CSS content to set
+     */
+    const setStyleContent = function (styleEl, cssContent) {
+        styleEl.textContent = cssContent;
+    };
+
+    /**
+     * Protects specified style element from changes to the current document
+     * Add a mutation observer, which is adds our rules again if it was removed
+     *
+     * @param protectStyleEl protected style element
+     */
+    const protectStyleElementContent = function (protectStyleEl) {
+        const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+        if (!MutationObserver) {
+            return;
+        }
+        /* observer, which observe protectStyleEl inner changes, without deleting styleEl */
+        const innerObserver = new MutationObserver(((mutations) => {
+            for (let i = 0; i < mutations.length; i += 1) {
+                const m = mutations[i];
+                if (protectStyleEl.hasAttribute('mod') && protectStyleEl.getAttribute('mod') === 'inner') {
+                    protectStyleEl.removeAttribute('mod');
+                    break;
+                }
+
+                protectStyleEl.setAttribute('mod', 'inner');
+                let isProtectStyleElModified = false;
+
+                /**
+                 * further, there are two mutually exclusive situations: either there were changes
+                 * the text of protectStyleEl, either there was removes a whole child "text"
+                 * element of protectStyleEl we'll process both of them
+                 */
+                if (m.removedNodes.length > 0) {
+                    for (let j = 0; j < m.removedNodes.length; j += 1) {
+                        isProtectStyleElModified = true;
+                        protectStyleEl.appendChild(m.removedNodes[j]);
+                    }
+                } else if (m.oldValue) {
+                    isProtectStyleElModified = true;
+                    protectStyleEl.textContent = m.oldValue;
+                }
+
+                if (!isProtectStyleElModified) {
+                    protectStyleEl.removeAttribute('mod');
+                }
+            }
+        }));
+
+        innerObserver.observe(protectStyleEl, {
+            'childList': true,
+            'characterData': true,
+            'subtree': true,
+            'characterDataOldValue': true,
+        });
+    };
+
+    /**
+     * Applies CSS stylesheets
+     *
+     * @param css Array with CSS stylesheets
+     */
+    const applyCss = function (css) {
+        if (!css || css.length === 0) {
+            return;
+        }
+
+        for (let i = 0; i < css.length; i += 1) {
+            const styleEl = document.createElement('style');
+            styleEl.setAttribute('type', 'text/css');
+            setStyleContent(styleEl, css[i]);
+
+            (document.head || document.documentElement).appendChild(styleEl);
+
+            protectStyleElementContent(styleEl);
+        }
+    };
+
+    /**
+     * Applies Extended Css stylesheet
+     *
+     * @param extendedCss Array with ExtendedCss stylesheets
+     */
+    const applyExtendedCss = function (extendedCss) {
+        if (!extendedCss || !extendedCss.length) {
+            return;
+        }
+
+        const styleSheet = extendedCss.join('\n');
+        if (!styleSheet) {
+            return;
+        }
+
+        const extcss = new TSUrlFilter.ExtendedCss({
+            styleSheet,
+            beforeStyleApplied: (cssHitsCounter
+                ? cssHitsCounter.countAffectedByExtendedCss.bind(cssHitsCounter)
+                : el => el),
+        });
+        extcss.apply();
+    };
+
+    /**
+     * Applies CSS and extended CSS stylesheets
+     * @param selectors     Object with the stylesheets got from the background page.
+     */
+    const applySelectors = function (selectors) {
+        if (!selectors) {
+            return;
+        }
+
+        applyCss(selectors.css);
+        applyExtendedCss(selectors.extendedCss);
+    };
+
+    /**
      * Response callback for "processShouldCollapseMany" message.
      * @param response Response from bg page.
      */
@@ -478,7 +413,7 @@ export const preload = (function () {
         }
 
         const { requests } = response;
-        for (let i = 0; i < requests.length; i++) {
+        for (let i = 0; i < requests.length; i += 1) {
             const collapseRequest = requests[i];
             onProcessShouldCollapseResponse(collapseRequest);
         }
@@ -491,11 +426,12 @@ export const preload = (function () {
         const requests = [];
 
         // Collect collapse requests
+        // eslint-disable-next-line guard-for-in,no-restricted-syntax
         for (const tagName in requestTypeMap) {
             const requestType = requestTypeMap[tagName];
 
             const elements = document.getElementsByTagName(tagName);
-            for (let j = 0; j < elements.length; j++) {
+            for (let j = 0; j < elements.length; j += 1) {
                 const element = elements[j];
                 const elementUrl = getElementUrl(element);
                 if (!elementUrl) {
@@ -529,7 +465,7 @@ export const preload = (function () {
      * In this case content scripts waits for add-on initialization and the
      * checks all page elements.
      */
-    var initBatchCollapse = function () {
+    const initBatchCollapse = function () {
         if (document.readyState === 'complete'
             || document.readyState === 'loaded'
             || document.readyState === 'interactive') {
@@ -540,10 +476,78 @@ export const preload = (function () {
     };
 
     /**
+     * Processes response from the background page containing CSS and JS injections
+     * @param response Response from the background page
+     */
+    const processCssAndScriptsResponse = (response) => {
+        if (!response || response.requestFilterReady === false) {
+            /**
+             * This flag (requestFilterReady) means that we should wait for a while, because the
+             * request filter is not ready yet. This is possible only on browser startup.
+             * In this case we'll delay injections until extension is fully initialized.
+             */
+            // eslint-disable-next-line no-use-before-define
+            setTimeout(tryLoadCssAndScripts, 100);
+            return;
+        }
+
+        if (response.collectRulesHits) {
+            cssHitsCounter = new TSUrlFilter.CssHitsCounter((stats) => {
+                getContentPage().sendMessage({ type: 'saveCssHitStats', stats });
+            });
+        }
+
+        if (response.collapseAllElements) {
+            /**
+             * This flag (collapseAllElements) means that we should check all page elements
+             * and collapse them if needed. Why? On browser startup we can't block some
+             * ad/tracking requests because extension is not yet initialized when
+             * these requests are executed. At least we could hide these elements.
+             */
+            applySelectors(response.selectors);
+            applyScripts(response.scripts);
+            initBatchCollapse();
+        } else {
+            applySelectors(response.selectors);
+            applyScripts(response.scripts);
+        }
+    };
+
+    /**
+     * Loads CSS and JS injections
+     */
+    const tryLoadCssAndScripts = function () {
+        const message = {
+            type: 'getSelectorsAndScripts',
+            documentUrl: window.location.href,
+        };
+
+        /**
+         * Sending message to background page and passing a callback function
+         */
+        getContentPage().sendMessage(message, processCssAndScriptsResponse);
+    };
+
+    /**
+     * Initializing content script
+     */
+    const init = function () {
+        if (!isHtml()) {
+            return;
+        }
+
+        initRequestWrappers();
+
+        initCollapseEventListeners();
+        tryLoadCssAndScripts();
+    };
+
+    // TODO check why this function is not used anywhere?
+    /**
      * Called when document become visible.
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/159
      */
-    var onVisibilityChange = function () {
+    const onVisibilityChange = function () {
         if (document.hidden === false) {
             document.removeEventListener('visibilitychange', onVisibilityChange);
             init();
