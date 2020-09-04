@@ -23,6 +23,8 @@ import { utils } from '../utils/common';
 import { prefs } from '../prefs';
 import { backgroundPage } from './background-page';
 import { browserUtils } from '../utils/browser-utils';
+import { log } from '../utils/log';
+import { toTabFromChromeTab } from '../utils/temp';
 
 /**
  * Chromium windows implementation
@@ -139,14 +141,12 @@ export const windowsImpl = (() => {
  * @type {{onCreated, onRemoved, onUpdated, onActivated, create, remove, activate, reload, sendMessage, getAll, getActive, fromChromeTab}}
  */
 export const tabsImpl = (function () {
-    'use strict';
-
     /**
      * tabId parameter must be integer
      * @param tabId
      */
     function tabIdToInt(tabId) {
-        return parseInt(tabId);
+        return Number.parseInt(tabId, 10);
     }
 
     function checkLastError(operation) {
@@ -155,17 +155,6 @@ export const tabsImpl = (function () {
             log.error('Error while executing operation{1}: {0}', ex, operation ? ` '${operation}'` : '');
         }
         return ex;
-    }
-
-    // https://developer.chrome.com/extensions/tabs#type-Tab
-    function toTabFromChromeTab(chromeTab) {
-        return {
-            tabId: chromeTab.id,
-            url: chromeTab.url,
-            title: chromeTab.title,
-            incognito: chromeTab.incognito,
-            status: chromeTab.status,
-        };
     }
 
     // https://developer.chrome.com/extensions/tabs#event-onCreated
@@ -543,7 +532,5 @@ export const tabsImpl = (function () {
         insertCssCode,
         executeScriptCode,
         executeScriptFile,
-
-        fromChromeTab: toTabFromChromeTab,
     };
 })();

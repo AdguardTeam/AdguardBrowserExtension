@@ -37,3 +37,14 @@ export function parseContentTypeFromUrlPath(path) {
 
     return null;
 }
+
+// https://developer.chrome.com/extensions/tabs#type-Tab
+export function toTabFromChromeTab(chromeTab) {
+    return {
+        tabId: chromeTab.id,
+        url: chromeTab.url,
+        title: chromeTab.title,
+        incognito: chromeTab.incognito,
+        status: chromeTab.status,
+    };
+}

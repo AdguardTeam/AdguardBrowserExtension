@@ -15,7 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// TODO use browser from webextension-polyfill
 export const runtimeImpl = (self => {
     /**
      * https://bugs.chromium.org/p/project-zero/issues/detail?id=1225&desc=6

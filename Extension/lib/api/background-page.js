@@ -21,7 +21,7 @@ import { browser } from '../browser';
 
 import { BACKGROUND_TAB_ID, RequestTypes } from '../utils/common';
 import { prefs } from '../prefs';
-import { parseContentTypeFromUrlPath } from '../utils/temp';
+import { parseContentTypeFromUrlPath, toTabFromChromeTab } from '../utils/temp';
 import { runtimeImpl } from '../common-script';
 
 export const backgroundPage = (() => {
@@ -33,7 +33,7 @@ export const backgroundPage = (() => {
                 runtimeImpl.onMessage.addListener((message, sender, sendResponse) => {
                     const senderOverride = Object.create(null);
                     if (sender.tab) {
-                        senderOverride.tab = adguard.tabsImpl.fromChromeTab(sender.tab);
+                        senderOverride.tab = toTabFromChromeTab(sender.tab);
                     }
                     if (typeof sender.frameId !== 'undefined') {
                         senderOverride.frameId = sender.frameId;

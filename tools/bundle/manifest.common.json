@@ -33,6 +33,18 @@
             ],
             "match_about_blank": true,
             "run_at": "document_start"
+        },
+        {
+            "all_frames": true,
+            "js": [
+                "pages/content-script-end.js"
+            ],
+            "matches": [
+                "http://*/*",
+                "https://*/*"
+            ],
+            "match_about_blank": true,
+            "run_at": "document_end"
         }
     ],
     "minimum_chrome_version": "55.0",

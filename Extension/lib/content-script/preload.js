@@ -15,7 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { runtimeImpl } from '../common-script';
+import { initPageMessageListener, injectPageScriptAPI } from './wrappers';
+import { contentPage } from './content-script';
 
 export const preload = (function () {
     const requestTypeMap = {
@@ -46,13 +47,6 @@ export const preload = (function () {
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/880
      */
     const getContentPage = function () {
-        if (typeof contentPage === 'undefined') {
-            contentPage = {
-                sendMessage: runtimeImpl.sendMessage,
-                onMessage: runtimeImpl.onMessage,
-            };
-        }
-
         return contentPage;
     };
 
@@ -146,7 +140,6 @@ export const preload = (function () {
      * Overrides window.RTCPeerConnection running the function from wrappers.js
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/588
      */
-    /* global injectPageScriptAPI, initPageMessageListener */
     const initRequestWrappers = function () {
         // Only for dynamically created frames and http/https documents.
         if (!isHttpOrAboutPage()) {
@@ -157,7 +150,6 @@ export const preload = (function () {
          * The code below is supposed to be used in WebExt extensions.
          * This code overrides RTCPeerConnection constructor, so that we could inspect & block them.
          */
-
         initPageMessageListener();
 
         const wrapperScriptName = `wrapper-script-${Math.random().toString().substr(2)}`;

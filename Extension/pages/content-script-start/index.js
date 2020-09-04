@@ -8,6 +8,8 @@
 
 import { preload } from '../../lib/content-script/preload';
 
+console.log('hello from content-script-start');
+
 preload.init();
 
 // TODO add this scripts to the webpack
@@ -36,5 +38,3 @@ preload.init();
 // ],
 //     "run_at": "document_start"
 // }
-
-console.log('test');

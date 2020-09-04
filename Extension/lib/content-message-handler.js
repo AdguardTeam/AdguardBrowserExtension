@@ -451,13 +451,6 @@ const init = () => {
 
     // Add event listener from content-script messages
     backgroundPage.runtime.onMessage.addListener(handleMessage);
-
-    /**
-     * There is no messaging in Safari popover context,
-     * so we have to expose this method to keep the message-like
-     * style that is used in other browsers for communication between popup and background page.
-     */
-    backgroundPage.runtime.onMessageHandler = handleMessage;
 };
 
 export const contentMessageHandler = {

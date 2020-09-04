@@ -15,15 +15,10 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global adguardContent */
+import { runtimeImpl } from '../common-script';
 
-(function (adguard) {
-    'use strict';
-
-    window.i18n = adguard.i18n;
-
-    window.contentPage = {
-        sendMessage: adguard.runtimeImpl.sendMessage,
-        onMessage: adguard.runtimeImpl.onMessage,
-    };
-})(adguardContent);
+// TODO check if strings are translated (i18n)
+export const contentPage = {
+    sendMessage: runtimeImpl.sendMessage,
+    onMessage: runtimeImpl.onMessage,
+};
