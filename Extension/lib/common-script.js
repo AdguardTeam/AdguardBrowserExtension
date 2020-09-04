@@ -15,7 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-export const runtimeImpl = (self => {
+
+const browserApi = ((self) => {
     /**
      * https://bugs.chromium.org/p/project-zero/issues/detail?id=1225&desc=6
      * Page script can inject global variables into the DOM,
@@ -28,6 +29,10 @@ export const runtimeImpl = (self => {
 
     const browserApi = isDefined('browser') && self.browser !== undefined ? self.browser : self.chrome;
 
+    return browserApi;
+})(window);
+
+export const runtimeImpl = (() => {
     const runtimeImpl = (function () {
         const onMessage = (function () {
             if (browserApi.runtime && browserApi.runtime.onMessage) {
@@ -50,4 +55,7 @@ export const runtimeImpl = (self => {
     })();
 
     return runtimeImpl;
-})(window);
+})();
+
+// eslint-disable-next-line prefer-destructuring
+export const i18n = browserApi.i18n;

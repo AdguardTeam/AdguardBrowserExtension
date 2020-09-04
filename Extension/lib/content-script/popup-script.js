@@ -15,21 +15,15 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global adguardContent */
+import { runtimeImpl } from '../common-script';
 
-(function (adguard) {
-    'use strict';
-
-    window.i18n = adguard.i18n;
-
-    window.popupPage = {
-        sendMessage: adguard.runtimeImpl.sendMessage,
-        onMessage: adguard.runtimeImpl.onMessage,
-        closePopup() {
-            window.close();
-        },
-        resizePopup() {
-            // Doing nothing
-        },
-    };
-})(adguardContent);
+export const popupPage = {
+    sendMessage: runtimeImpl.sendMessage,
+    onMessage: runtimeImpl.onMessage,
+    closePopup() {
+        window.close();
+    },
+    resizePopup() {
+        // Doing nothing
+    },
+};
