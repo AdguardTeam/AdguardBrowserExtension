@@ -20,8 +20,6 @@ import { i18n } from './i18n';
 import { popupPage } from '../content-script/popup-script';
 import { htmlToElement } from './script';
 
-console.log(c3);
-
 /**
  * Controller that manages add-on popup window
  */
@@ -601,6 +599,7 @@ PopupController.prototype = {
                     const elementCenterPosition = elementRect.left + (elementRect.width / 2);
                     const tooltipHalfWidth = chart.querySelector('.chart__tooltip').clientWidth / 2;
                     const tooltipLeft = elementCenterPosition - tooltipHalfWidth;
+                    // eslint-disable-next-line no-undef
                     const top = d3.mouse(element)[1] - 50;
                     return {
                         top,
