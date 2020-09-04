@@ -15,7 +15,16 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global contentPage, i18n, moment, ace, CheckboxUtils */
+import moment from 'moment/min/moment-with-locales';
+import * as ace from 'ace-builds';
+import 'ace-builds/src-noconflict/ext-searchbox';
+import 'ace-builds/src-noconflict/theme-textmate';
+import '../libs/ace/mode-adguard';
+
+import { contentPage } from '../content-script/content-script';
+import { i18n } from './i18n';
+import { CheckboxUtils, htmlToElement, createEventListener } from './script';
+
 
 // Update default date format for zh-cn
 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1442
@@ -2205,10 +2214,16 @@ const waitStorageInit = (adguard) => {
     contentPage.sendMessage({ type: 'initializeFrameScript' }, initPage);
 };
 
-backgroundPagePromise
-    .then((page) => {
-        waitStorageInit(page.adguard);
-    })
-    .catch((e) => {
-        console.log(e.message);
-    });
+const init = () => {
+    backgroundPagePromise
+        .then((page) => {
+            waitStorageInit(page.adguard);
+        })
+        .catch((e) => {
+            console.log(e.message);
+        });
+};
+
+export const options = {
+    init,
+}

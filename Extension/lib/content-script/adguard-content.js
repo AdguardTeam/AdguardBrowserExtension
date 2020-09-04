@@ -15,6 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// TODO consider removing this file
 /**
  * Global object for content scripts.
  * !!! DO not change to const, because this variable will be redeclared in adguard-api

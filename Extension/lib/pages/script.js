@@ -15,14 +15,15 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global i18n, contentPage */
+import { i18n } from '../common-script';
+import { contentPage } from '../content-script/content-script';
 
 /**
  * UI checkboxes utils
  *
  * @type {{toggleCheckbox, updateCheckbox}}
  */
-const CheckboxUtils = (function () {
+export const CheckboxUtils = (function () {
     'use strict';
 
     const updateAreaChecked = (el, checked) => {
@@ -107,7 +108,8 @@ const CheckboxUtils = (function () {
     };
 })();
 
-function customizePopupFooter(isMacOs) {
+// TODO seems that this one can be removed
+export function customizePopupFooter(isMacOs) {
     // fix title
     let messageId = isMacOs ? 'thankyou_want_full_protection_mac' : 'thankyou_want_full_protection';
     let title = document.querySelector('.thanks-prefooter .thanks-prefooter-title');
@@ -132,7 +134,7 @@ function customizePopupFooter(isMacOs) {
  * @param callback Event listener callback
  * @param onUnloadCallback Window unload callback
  */
-function createEventListener(events, callback, onUnloadCallback) {
+export function createEventListener(events, callback, onUnloadCallback) {
     function eventListener() {
         callback.apply(null, arguments);
     }
