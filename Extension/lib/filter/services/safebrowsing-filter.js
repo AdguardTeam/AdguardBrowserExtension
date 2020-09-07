@@ -17,6 +17,7 @@
 
 import { LRUMap } from 'lru_map';
 
+import SHA256 from 'crypto-js/sha256';
 import { log } from '../../utils/log';
 import { utils } from '../../utils/common';
 import { localStorage } from '../../storage';
@@ -24,6 +25,7 @@ import { backgroundPage } from '../../api/background-page';
 import { backend } from '../filters/service-client';
 import { settings } from '../../settings/user-settings';
 import { LruCache } from '../../utils/lru-cache';
+import { adguard } from '../../adguard';
 
 /**
  * Initializing SafebrowsingFilter.
@@ -129,8 +131,7 @@ export const safebrowsing = (function () {
      * @return {string}
      */
     function createHash(host) {
-        // TODO fix
-        return global.SHA256.hash(`${host}/`).toUpperCase();
+        return SHA256(`${host}/`).toString().toUpperCase();
     }
 
     /**

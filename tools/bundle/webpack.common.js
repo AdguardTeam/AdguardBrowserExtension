@@ -20,6 +20,7 @@ const EXPORT_PATH = path.resolve(__dirname, '../../Extension/pages/export');
 const CONTENT_SCRIPT_START_PATH = path.resolve(__dirname, '../../Extension/pages/content-script-start');
 const CONTENT_SCRIPT_END_PATH = path.resolve(__dirname, '../../Extension/pages/content-script-end');
 const DEVTOOLS_PATH = path.resolve(__dirname, '../../Extension/pages/devtools');
+const THANKYOU_PATH = path.resolve(__dirname, '../../Extension/pages/thankyou');
 
 const OUTPUT_PATH = config.outputPath;
 
@@ -43,6 +44,7 @@ export const genCommonConfig = (browserConfig) => {
             'pages/content-script-end': CONTENT_SCRIPT_END_PATH,
             'pages/devtools': path.join(DEVTOOLS_PATH, 'devtools.js'),
             'pages/devtools-elements-sidebar': path.join(DEVTOOLS_PATH, 'devtools-elements-sidebar.js'),
+            'pages/thankyou': THANKYOU_PATH,
         },
         output: {
             path: path.join(BUILD_PATH, OUTPUT_PATH),
