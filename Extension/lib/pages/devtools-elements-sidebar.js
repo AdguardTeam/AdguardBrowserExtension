@@ -14,11 +14,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global chrome, DevToolsRulesConstructor */
 
 const browser = window.browser || chrome;
 
-(function () {
+export const devtoolsElementsSidebar = (function () {
     const initPanel = function () {
         initTheme();
         initElements();
@@ -311,7 +310,13 @@ const browser = window.browser || chrome;
         });
     };
 
-    document.addEventListener('DOMContentLoaded', () => {
-        initPanel();
-    });
+    const init = () => {
+        document.addEventListener('DOMContentLoaded', () => {
+            initPanel();
+        });
+    };
+
+    return {
+        init,
+    };
 })();

@@ -1,9 +1,9 @@
+/* eslint-disable max-len */
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import CreateFileWebpack from 'create-file-webpack';
 import path from 'path';
-import pp from 'preprocess';
 import { BUILD_PATH } from '../constants';
 
 import { getEnvConf, updateLocalesMSGName } from '../helpers';
@@ -19,6 +19,7 @@ const FILTER_DOWNLOAD_PATH = path.resolve(__dirname, '../../Extension/pages/filt
 const EXPORT_PATH = path.resolve(__dirname, '../../Extension/pages/export');
 const CONTENT_SCRIPT_START_PATH = path.resolve(__dirname, '../../Extension/pages/content-script-start');
 const CONTENT_SCRIPT_END_PATH = path.resolve(__dirname, '../../Extension/pages/content-script-end');
+const DEVTOOLS_PATH = path.resolve(__dirname, '../../Extension/pages/devtools');
 
 const OUTPUT_PATH = config.outputPath;
 
@@ -40,6 +41,8 @@ export const genCommonConfig = (browserConfig) => {
             'pages/export': EXPORT_PATH,
             'pages/content-script-start': CONTENT_SCRIPT_START_PATH,
             'pages/content-script-end': CONTENT_SCRIPT_END_PATH,
+            'pages/devtools': path.join(DEVTOOLS_PATH, 'devtools.js'),
+            'pages/devtools-elements-sidebar': path.join(DEVTOOLS_PATH, 'devtools-elements-sidebar.js'),
         },
         output: {
             path: path.join(BUILD_PATH, OUTPUT_PATH),
@@ -116,6 +119,16 @@ export const genCommonConfig = (browserConfig) => {
                 template: path.join(EXPORT_PATH, 'index.html'),
                 filename: 'pages/export.html',
                 chunks: ['pages/export'],
+            }),
+            new HtmlWebpackPlugin({
+                template: path.join(DEVTOOLS_PATH, 'devtools.html'),
+                filename: 'pages/devtools.html',
+                chunks: ['pages/devtools'],
+            }),
+            new HtmlWebpackPlugin({
+                template: path.join(DEVTOOLS_PATH, 'devtools-elements-sidebar.html'),
+                filename: 'pages/devtools-elements-sidebar.html',
+                chunks: ['pages/devtools-elements-sidebar'],
             }),
             // TODO move this file creation to the separate script
             new CreateFileWebpack({
