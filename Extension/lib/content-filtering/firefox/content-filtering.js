@@ -16,7 +16,7 @@
  */
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
-import { requestContextStorage } from '../../../lib/filter/request-context-storage';
+import { requestContextStorage } from '../../filter/request-context-storage';
 
 /**
  * Listens content filtering callbacks

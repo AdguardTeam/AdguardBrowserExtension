@@ -28,7 +28,7 @@ import { frames } from './tabs/frames';
 import { listeners } from './notifier';
 import { webRequestService } from './filter/request-blocking';
 import { stealthService } from './filter/services/stealth-service';
-import { contentFiltering } from '../browser/firefox/lib/content-filtering';
+import { contentFiltering } from './content-filtering';
 import { safebrowsing } from './filter/services/safebrowsing-filter';
 import { ui } from './ui-service';
 import { log } from './utils/log';

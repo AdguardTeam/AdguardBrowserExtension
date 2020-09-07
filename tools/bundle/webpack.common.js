@@ -90,12 +90,23 @@ export const genCommonConfig = (browserConfig) => {
 
         plugins: [
             new CleanWebpackPlugin(),
+            // TODO refactor NormalModuleReplacementPlugin
             new NormalModuleReplacementPlugin(/\.\/abstract-rules-storage/, ((resource) => {
                 if (browserConfig.browser === BROWSERS.FIREFOX_AMO
                     || browserConfig.browser === BROWSERS.FIREFOX_STANDALONE) {
                     resource.request = resource.request.replace(/\.\/abstract-rules-storage/, './firefox/rules-storage');
                 } else if (browserConfig.browser === BROWSERS.CHROME) {
                     resource.request = resource.request.replace(/\.\/abstract-rules-storage/, './chrome/rules-storage');
+                } else {
+                    throw new Error(`There is no proxy api for browser: ${process.env.BROWSER}`);
+                }
+            })),
+            new NormalModuleReplacementPlugin(/\.\/abstract-content-filtering/, ((resource) => {
+                if (browserConfig.browser === BROWSERS.FIREFOX_AMO
+                    || browserConfig.browser === BROWSERS.FIREFOX_STANDALONE) {
+                    resource.request = resource.request.replace(/\.\/abstract-content-filtering/, './firefox/content-filtering');
+                } else if (browserConfig.browser === BROWSERS.CHROME) {
+                    resource.request = resource.request.replace(/\.\/abstract-content-filtering/, './chrome/content-filtering');
                 } else {
                     throw new Error(`There is no proxy api for browser: ${process.env.BROWSER}`);
                 }

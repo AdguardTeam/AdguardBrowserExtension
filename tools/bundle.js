@@ -46,7 +46,7 @@ const bundleSampleApi = async () => {
 
 const devPlan = [
     copyExternals,
-    // bundleChrome,
+    bundleChrome,
     bundleFirefoxAmo, // TODO check that only local scripts are used
     // bundleFirefoxStandalone,
     // bundleEdge,
