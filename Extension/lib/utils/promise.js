@@ -1,12 +1,13 @@
-import { Deferred } from 'simply-deferred';
+import { Deferred, when } from 'simply-deferred';
 
 /**
  * Promises wrapper
  */
 export const Promise = (function () {
     const defer = Deferred;
+
     const deferAll = function (arr) {
-        return Deferred.when.apply(Deferred, arr);
+        return when.apply(Deferred, arr);
     };
 
     const Promise = function () {
