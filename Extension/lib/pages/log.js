@@ -15,7 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global i18n, contentPage, createEventListener, htmlToElement */
+import { contentPage } from '../content-script/content-script';
+import { i18n } from './i18n';
+import { createEventListener, htmlToElement } from './script';
 
 // variables used to spread data received on script initialize
 let AntiBannerFiltersId;
@@ -1068,7 +1070,7 @@ PageController.prototype = {
     },
 
     _updateLogoIcon() {
-        contentPage.sendMessage({ type: 'getTabFrameInfoById', tabId: this.currentTabId }, (response) => {
+        contentPage.sendMessage({ type: 'getTabFrameInfoById', tabId: this.currentTabId }, () => {
             const src = '../assets/images/shield.svg';
             this.logoIcon.setAttribute('src', src);
         });
@@ -1189,7 +1191,7 @@ PageController.prototype = {
 
         this._onNotEmptyTable();
 
-        templates.forEach(function (t) {
+        templates.forEach((t) => {
             this.logTable.appendChild(t);
         });
     },
@@ -1259,6 +1261,7 @@ PageController.prototype = {
 
         let thirdPartyDetails = '';
         if (event.requestThirdParty) {
+            // eslint-disable-next-line max-len
             thirdPartyDetails = '<img src="../assets/images/chain-link.svg" class="icon-chain"><small>Third party</small>';
         }
 
@@ -1315,57 +1318,63 @@ PageController.prototype = {
     },
 };
 
-contentPage.sendMessage({ type: 'initializeFrameScript' }, (response) => {
-    filtersMetadata = response.filtersMetadata;
-    AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
-    EventNotifierTypes = response.constants.EventNotifierTypes;
+const init = () => {
+    contentPage.sendMessage({ type: 'initializeFrameScript' }, (response) => {
+        filtersMetadata = response.filtersMetadata;
+        AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
+        EventNotifierTypes = response.constants.EventNotifierTypes;
 
-    const onDocumentReady = function () {
-        const pageController = new PageController();
-        pageController.init();
+        const onDocumentReady = function () {
+            const pageController = new PageController();
+            pageController.init();
 
-        const events = [
-            EventNotifierTypes.TAB_ADDED,
-            EventNotifierTypes.TAB_UPDATE,
-            EventNotifierTypes.TAB_CLOSE,
-            EventNotifierTypes.TAB_RESET,
-            EventNotifierTypes.LOG_EVENT_ADDED,
-            EventNotifierTypes.LOG_EVENT_UPDATED,
-        ];
+            const events = [
+                EventNotifierTypes.TAB_ADDED,
+                EventNotifierTypes.TAB_UPDATE,
+                EventNotifierTypes.TAB_CLOSE,
+                EventNotifierTypes.TAB_RESET,
+                EventNotifierTypes.LOG_EVENT_ADDED,
+                EventNotifierTypes.LOG_EVENT_UPDATED,
+            ];
 
-        // set log is open
-        contentPage.sendMessage({ type: 'onOpenFilteringLogPage' });
+            // set log is open
+            contentPage.sendMessage({ type: 'onOpenFilteringLogPage' });
 
-        createEventListener(events, (event, tabInfo, filteringEvent) => {
-            switch (event) {
-                case EventNotifierTypes.TAB_ADDED:
-                case EventNotifierTypes.TAB_UPDATE:
-                    pageController.onTabUpdated(tabInfo);
-                    break;
-                case EventNotifierTypes.TAB_CLOSE:
-                    pageController.onTabClose(tabInfo);
-                    break;
-                case EventNotifierTypes.TAB_RESET:
-                    pageController.onTabReset(tabInfo);
-                    break;
-                case EventNotifierTypes.LOG_EVENT_ADDED:
-                    pageController.onEventAdded(tabInfo, filteringEvent);
-                    break;
-                case EventNotifierTypes.LOG_EVENT_UPDATED:
-                    pageController.onEventUpdated(tabInfo, filteringEvent);
-                    break;
-                default:
-                    break;
-            }
-        }, () => {
-            // set log is closed
-            contentPage.sendMessage({ type: 'onCloseFilteringLogPage' });
-        });
-    };
+            createEventListener(events, (event, tabInfo, filteringEvent) => {
+                switch (event) {
+                    case EventNotifierTypes.TAB_ADDED:
+                    case EventNotifierTypes.TAB_UPDATE:
+                        pageController.onTabUpdated(tabInfo);
+                        break;
+                    case EventNotifierTypes.TAB_CLOSE:
+                        pageController.onTabClose(tabInfo);
+                        break;
+                    case EventNotifierTypes.TAB_RESET:
+                        pageController.onTabReset(tabInfo);
+                        break;
+                    case EventNotifierTypes.LOG_EVENT_ADDED:
+                        pageController.onEventAdded(tabInfo, filteringEvent);
+                        break;
+                    case EventNotifierTypes.LOG_EVENT_UPDATED:
+                        pageController.onEventUpdated(tabInfo, filteringEvent);
+                        break;
+                    default:
+                        break;
+                }
+            }, () => {
+                // set log is closed
+                contentPage.sendMessage({ type: 'onCloseFilteringLogPage' });
+            });
+        };
 
-    if (document.attachEvent ? document.readyState === 'complete' : document.readyState !== 'loading') {
-        onDocumentReady();
-    } else {
-        document.addEventListener('DOMContentLoaded', onDocumentReady);
-    }
-});
+        if (document.attachEvent ? document.readyState === 'complete' : document.readyState !== 'loading') {
+            onDocumentReady();
+        } else {
+            document.addEventListener('DOMContentLoaded', onDocumentReady);
+        }
+    });
+};
+
+export const log = {
+    init,
+};
