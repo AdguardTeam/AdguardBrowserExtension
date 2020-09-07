@@ -1,6 +1,6 @@
 /* eslint-disable no-console,no-restricted-syntax,no-await-in-loop */
 import { bundleRunner } from './bundle/bundle-runner';
-import { copyExternals } from './copy-external';
+import { copyExternals } from './bundle/copy-external';
 import { BROWSERS, ENVS } from './constants';
 import { webpackConfig } from './bundle/webpack-config';
 import { crx } from './bundle/crx';
@@ -46,8 +46,8 @@ const bundleSampleApi = async () => {
 
 const devPlan = [
     copyExternals,
-    bundleChrome,
-    // bundleFirefoxAmo,
+    // bundleChrome,
+    bundleFirefoxAmo, // TODO check that only local scripts are used
     // bundleFirefoxStandalone,
     // bundleEdge,
     // bundleOpera,

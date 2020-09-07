@@ -16,9 +16,8 @@
  */
 
 import { log } from './utils/log';
-// TODO use dependent from browser storage implementation
 import { localStorageImpl } from './utils/local-storage';
-import { rulesStorageImpl } from './utils/rules-storage';
+import { rulesStorageImpl } from './rules-storage';
 
 /**
  * This class manages local storage

@@ -16,10 +16,11 @@ export const genFirefoxConfig = (browserConfig) => {
                     to: 'manifest.json',
                     transform: (content) => updateManifest(process.env.BUILD_ENV, content, firefoxManifest),
                 },
-                {
-                    context: 'Extension',
-                    from: 'browser/firefox',
-                },
+                // TODO figure out how to separate firefox api from chrome api
+                // {
+                //     context: 'Extension',
+                //     from: 'browser/firefox',
+                // },
                 {
                     context: 'Extension',
                     from: 'filters/firefox',

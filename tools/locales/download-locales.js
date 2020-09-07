@@ -5,7 +5,7 @@ import axios from 'axios';
 import path from 'path';
 import fs from 'fs';
 import querystring from 'querystring';
-import { log } from '../log';
+import { cliLog } from '../cli-log';
 import { chunkArray } from '../helpers';
 import { LOCALES_DIR, LOCALES_DOWNLOAD_URL } from '../constants';
 import { LOCALE_PAIRS } from './locales-constants';
@@ -20,9 +20,9 @@ const FILE_NAME = 'messages.json';
 const downloadMessagesByUrl = async (url) => {
     let response;
     try {
-        log.info(`Downloading url: ${url}...`);
+        cliLog.info(`Downloading url: ${url}...`);
         response = await axios.get(url, { responseType: 'arraybuffer' });
-        log.info(`Downloaded: ${url}`);
+        cliLog.info(`Downloaded: ${url}`);
     } catch (e) {
         let errorMessage;
         if (e.response && e.response.data) {
@@ -31,7 +31,7 @@ const downloadMessagesByUrl = async (url) => {
         } else {
             errorMessage = e.message;
         }
-        log.error(`Error occurred: ${errorMessage}, while downloading: ${url}`);
+        cliLog.error(`Error occurred: ${errorMessage}, while downloading: ${url}`);
     }
     return response.data;
 };
@@ -84,7 +84,7 @@ const saveFile = async (path, data) => {
     try {
         await fs.promises.writeFile(path, data);
     } catch (e) {
-        log.error(`Was unable do save data in path: ${path}. Error: ${e.message}`);
+        cliLog.error(`Was unable do save data in path: ${path}. Error: ${e.message}`);
     }
 };
 
@@ -114,8 +114,8 @@ const checkRequiredFields = (locale, messages, baseMessages) => {
     requiredFields.forEach((requiredField) => {
         const fieldData = resultMessages[requiredField];
         if (!fieldData) {
-            log.info(`"${locale}" locale does't have required field: "${requiredField}"`);
-            log.info('Will be added message from base locale');
+            cliLog.info(`"${locale}" locale does't have required field: "${requiredField}"`);
+            cliLog.info('Will be added message from base locale');
             resultMessages[requiredField] = baseMessages[requiredField];
         }
     });
@@ -133,7 +133,7 @@ const validateLocales = async () => {
         await fs.promises.writeFile(pathToLocale, checkedMessagesString);
     });
     await Promise.all(promises).catch((e) => {
-        log.error(e);
+        cliLog.error(e);
     });
 };
 

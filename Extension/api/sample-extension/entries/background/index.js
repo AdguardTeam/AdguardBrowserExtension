@@ -33,7 +33,7 @@ import '../../../../lib/utils/cookie';
 
 // Local storage and rules storage libraries
 import '../../../../lib/utils/local-storage';
-import '../../../../lib/utils/rules-storage';
+import '../../../../lib/rules-storage/chrome/rules-storage';
 import '../../../../lib/storage';
 
 // Chromium api adapter libraries

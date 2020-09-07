@@ -5,7 +5,6 @@ export const copyExternals = async () => {
     const paths = [
         {
             from: [
-                // TODO check necessity of this file
                 'node_modules/scriptlets/dist/redirects.yml',
             ],
             to: 'Extension/assets/libs/scriptlets',

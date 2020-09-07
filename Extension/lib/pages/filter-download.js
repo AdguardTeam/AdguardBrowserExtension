@@ -39,9 +39,7 @@ export const init = () => {
         }
 
         function checkRequestFilterReady() {
-            console.log('check request filter ready');
             contentPage.sendMessage({ type: 'checkRequestFilterReady' }, (response) => {
-                console.log(response);
                 if (response.ready) {
                     onLoaded();
                 } else {

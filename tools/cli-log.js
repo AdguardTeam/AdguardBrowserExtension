@@ -16,7 +16,7 @@ const info = (text) => {
     }
 };
 
-export const log = {
+export const cliLog = {
     error,
     info,
 };

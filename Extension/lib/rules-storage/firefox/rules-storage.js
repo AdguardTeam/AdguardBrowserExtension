@@ -15,7 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global IDBDatabase, indexedDB */
+// We use chrome rules storage implementation as fallback as it based on storage.local
+import { rulesStorageImpl } from '../chrome/rules-storage';
 
 /**
  * Filter rules storage implementation. Based on the indexedDB
@@ -26,11 +27,10 @@
  * https://bugzilla.mozilla.org/show_bug.cgi?id=1371255
  * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/892
  */
-adguard.rulesStorageImpl = (function (adguard, initialAPI) {
+const firefoxRulesStorageImpl = (function (initialAPI) {
+    const STORAGE_NAME = 'AdguardRulesStorage';
 
-    var STORAGE_NAME = 'AdguardRulesStorage';
-
-    var database;
+    let database;
 
     function onError(error) {
         adguard.console.error('Adguard rulesStorage error: {0}', error.error || error);
@@ -40,11 +40,10 @@ adguard.rulesStorageImpl = (function (adguard, initialAPI) {
      * Gets value from the database by key
      */
     function getFromDatabase(key, callback) {
+        const transaction = database.transaction(STORAGE_NAME);
+        const table = transaction.objectStore(STORAGE_NAME);
 
-        var transaction = database.transaction(STORAGE_NAME);
-        var table = transaction.objectStore(STORAGE_NAME);
-
-        var request = table.get(key);
+        const request = table.get(key);
         request.onsuccess = callback;
         request.onerror = callback;
     }
@@ -53,13 +52,12 @@ adguard.rulesStorageImpl = (function (adguard, initialAPI) {
      * Puts key and value to the database
      */
     function putToDatabase(key, value, callback) {
+        const transaction = database.transaction(STORAGE_NAME, 'readwrite');
+        const table = transaction.objectStore(STORAGE_NAME);
 
-        var transaction = database.transaction(STORAGE_NAME, 'readwrite');
-        var table = transaction.objectStore(STORAGE_NAME);
-
-        var request = table.put({
-            key: key,
-            value: value.join('\n')
+        const request = table.put({
+            key,
+            value: value.join('\n'),
         });
         request.onsuccess = callback;
         request.onerror = callback;
@@ -69,11 +67,10 @@ adguard.rulesStorageImpl = (function (adguard, initialAPI) {
      * Deletes value from the database
      */
     function deleteFromDatabase(key, callback) {
+        const transaction = database.transaction(STORAGE_NAME, 'readwrite');
+        const table = transaction.objectStore(STORAGE_NAME);
 
-        var transaction = database.transaction(STORAGE_NAME, 'readwrite');
-        var table = transaction.objectStore(STORAGE_NAME);
-
-        var request = table.delete(key);
+        const request = table.delete(key);
         request.onsuccess = callback;
         request.onerror = callback;
     }
@@ -83,15 +80,15 @@ adguard.rulesStorageImpl = (function (adguard, initialAPI) {
      * @param path Path to rules
      * @param callback
      */
-    var read = function (path, callback) {
-        return getFromDatabase(path, function (event) {
-            var request = event.target;
+    const read = function (path, callback) {
+        return getFromDatabase(path, (event) => {
+            const request = event.target;
             if (request.error) {
                 callback(request.error);
                 return;
             }
-            var lines = [];
-            var result = request.result;
+            let lines = [];
+            const { result } = request;
             if (result && result.value) {
                 lines = result.value.split(/[\r\n]+/);
             }
@@ -105,9 +102,9 @@ adguard.rulesStorageImpl = (function (adguard, initialAPI) {
      * @param data Data to write (Array)
      * @param callback
      */
-    var write = function (path, data, callback) {
-        putToDatabase(path, data, function (event) {
-            var request = event.target;
+    const write = function (path, data, callback) {
+        putToDatabase(path, data, (event) => {
+            const request = event.target;
             callback(request.error);
         });
     };
@@ -117,9 +114,9 @@ adguard.rulesStorageImpl = (function (adguard, initialAPI) {
      * @param path Path to rules
      * @param callback
      */
-    var remove = function (path, callback) {
-        deleteFromDatabase(path, callback || function () {
-        });
+    const remove = function (path, callback) {
+        deleteFromDatabase(path, callback || (() => {
+        }));
     };
 
     /**
@@ -127,17 +124,16 @@ adguard.rulesStorageImpl = (function (adguard, initialAPI) {
      *
      * @param callback
      */
-    var init = function (callback) {
-
+    const init = function (callback) {
         // Failed in private browsing mode.
-        var request = indexedDB.open(STORAGE_NAME, 1);
+        const request = indexedDB.open(STORAGE_NAME, 1);
 
         request.onupgradeneeded = function (ev) {
             database = ev.target.result;
             database.onerror = database.onabort = onError;
             // DB doesn't exist => creates new storage
-            var table = database.createObjectStore(STORAGE_NAME, {keyPath: 'key'});
-            table.createIndex('value', 'value', {unique: false});
+            const table = database.createObjectStore(STORAGE_NAME, { keyPath: 'key' });
+            table.createIndex('value', 'value', { unique: false });
         };
 
         request.onsuccess = function (ev) {
@@ -154,18 +150,20 @@ adguard.rulesStorageImpl = (function (adguard, initialAPI) {
     };
 
     var api = {
-        read: read,
-        write: write,
-        remove: remove,
-        init: init,
+        read,
+        write,
+        remove,
+        init,
         /**
          * IndexedDB isn't initialized in the private mode.
          * In this case we should switch implementation to the browser.storage (see init method)
          * This flag helps us to understand which implementation is used now (see update-service.js for example)
          */
-        isIndexedDB: true
+        isIndexedDB: true,
     };
 
     return api;
+})(rulesStorageImpl || {});
 
-})(adguard, adguard.rulesStorageImpl || {});
+
+export { firefoxRulesStorageImpl as rulesStorageImpl };

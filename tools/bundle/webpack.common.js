@@ -4,8 +4,9 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import CreateFileWebpack from 'create-file-webpack';
 import path from 'path';
-import { BUILD_PATH } from '../constants';
+import { NormalModuleReplacementPlugin } from 'webpack';
 
+import { BROWSERS, BUILD_PATH } from '../constants';
 import { getEnvConf, updateLocalesMSGName } from '../helpers';
 import packageJson from '../../package.json';
 
@@ -89,6 +90,16 @@ export const genCommonConfig = (browserConfig) => {
 
         plugins: [
             new CleanWebpackPlugin(),
+            new NormalModuleReplacementPlugin(/\.\/abstract-rules-storage/, ((resource) => {
+                if (browserConfig.browser === BROWSERS.FIREFOX_AMO
+                    || browserConfig.browser === BROWSERS.FIREFOX_STANDALONE) {
+                    resource.request = resource.request.replace(/\.\/abstract-rules-storage/, './firefox/rules-storage');
+                } else if (browserConfig.browser === BROWSERS.CHROME) {
+                    resource.request = resource.request.replace(/\.\/abstract-rules-storage/, './chrome/rules-storage');
+                } else {
+                    throw new Error(`There is no proxy api for browser: ${process.env.BROWSER}`);
+                }
+            })),
             new HtmlWebpackPlugin({
                 template: path.join(BACKGROUND_PATH, 'index.html'),
                 templateParameters: {

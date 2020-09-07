@@ -45,8 +45,8 @@ const API_SCRIPTS = [
     'Extension/lib/tabs/frames.js',
     'Extension/lib/utils/cookie.js',
     // Local storage and rules storage libraries
-    'Extension/browser/chrome/lib/utils/local-storage.js',
-    'Extension/browser/chrome/lib/utils/rules-storage.js',
+    'Extension/browser/chrome/lib/utils/index.js',
+    'Extension/browser/chrome/lib/utils/index.js',
     'Extension/lib/storage.js',
     // Chromium api adapter libraries
     'Extension/browser/chrome/lib/content-script/common-script.js',

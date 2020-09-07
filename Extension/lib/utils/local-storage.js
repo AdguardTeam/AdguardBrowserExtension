@@ -16,9 +16,8 @@
  */
 
 import { utils } from './common';
-import { log } from '../../../tools/log';
+import { log } from './log';
 import { browser } from '../browser';
-
 
 /**
  * Local storage implementation for chromium-based browsers

@@ -6,7 +6,7 @@ import fs from 'fs';
 import fse from 'fs-extra';
 import crypto from 'crypto';
 import axios from 'axios';
-import { log } from '../log';
+import { cliLog } from '../cli-log';
 import {
     METADATA_DOWNLOAD_URL_FORMAT,
     FILTERS_DEST,
@@ -89,16 +89,16 @@ const validateChecksum = (url, body) => {
     const checksumMatch = partOfResponse.match(CHECKSUM_PATTERN);
 
     if (!checksumMatch[1]) {
-        log.error(`Filter rules from ${url.url} doesn't contain a checksum ${partOfResponse}`);
+        cliLog.error(`Filter rules from ${url.url} doesn't contain a checksum ${partOfResponse}`);
     }
 
     const bodyChecksum = crypto.createHash('md5').update(normalizeResponse(body)).digest('base64').replace(/=/g, '');
 
     if (bodyChecksum !== checksumMatch[1]) {
-        log.error(`Wrong checksum: found ${bodyChecksum}, expected ${checksumMatch[1]}`);
+        cliLog.error(`Wrong checksum: found ${bodyChecksum}, expected ${checksumMatch[1]}`);
     }
 
-    log.info('Checksum is valid');
+    cliLog.info('Checksum is valid');
 };
 
 const downloadFilter = async (url, browser) => {
@@ -106,7 +106,7 @@ const downloadFilter = async (url, browser) => {
 
     fse.ensureDirSync(filtersDir);
 
-    log.info(`Download ${url.url}...`);
+    cliLog.info(`Download ${url.url}...`);
 
     const response = await axios.get(url.url);
 
@@ -116,7 +116,7 @@ const downloadFilter = async (url, browser) => {
 
     await fs.promises.writeFile(path.join(filtersDir, url.file), response.data);
 
-    log.info('Done');
+    cliLog.info('Done');
 };
 
 /**
