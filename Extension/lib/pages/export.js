@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global contentPage */
+import { contentPage } from '../content-script/content-script';
 
 const showSaveFunc = (function () {
     let showSave;
@@ -60,7 +60,7 @@ const showSaveFunc = (function () {
     return showSave;
 })();
 
-document.addEventListener('DOMContentLoaded', () => {
+const onDomContentLoaded = () => {
     const exportTypeMap = {
         '#uf': {
             title: 'user_filter',
@@ -118,4 +118,12 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     contentPage.sendMessage({ type: exportType.messageType }, callback);
-});
+};
+
+const init = () => {
+    document.addEventListener('DOMContentLoaded', onDomContentLoaded);
+};
+
+export const exportPage = {
+    init,
+};
