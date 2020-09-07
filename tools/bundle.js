@@ -45,7 +45,7 @@ const bundleSampleApi = async () => {
 };
 
 const devPlan = [
-    // copyExternals,
+    copyExternals,
     bundleChrome,
     // bundleFirefoxAmo,
     // bundleFirefoxStandalone,
