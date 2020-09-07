@@ -15,7 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global DevToolsRulesConstructor, contentPage */
+import { DevToolsRulesConstructor } from './devtools-rules-constructor';
+import { contentPage } from '../content-script';
 
 /**
  * Helper object that provides methods used in devtools panel's code
@@ -23,7 +24,7 @@
  * https://developer.chrome.com/extensions/devtools_inspectedWindow#method-eval
  *
  */
-const DevToolsHelper = (function () { // eslint-disable-line
+export const DevToolsHelper = (function () {
     const PREVIEW_STYLE_ID = 'adguard-preview-style';
 
     /**

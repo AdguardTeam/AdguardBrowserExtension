@@ -18,14 +18,13 @@
 /**
  * DevTools rules constructor helper
  */
-var DevToolsRulesConstructor = (function () {
+export const DevToolsRulesConstructor = (function () {
+    const CSS_RULE_MARK = '##';
+    const RULE_OPTIONS_MARK = '$';
 
-    var CSS_RULE_MARK = '##';
-    var RULE_OPTIONS_MARK = '$';
+    const URLBLOCK_ATTRIBUTES = ['src', 'data'];
 
-    var URLBLOCK_ATTRIBUTES = ['src', 'data'];
-
-    var linkHelper = document.createElement('a');
+    const linkHelper = document.createElement('a');
 
     /**
      * Constructs css selector for element using tag name, id and classed, like: tagName#id.class1.class2
@@ -36,10 +35,10 @@ var DevToolsRulesConstructor = (function () {
      * @param excludeId Omit element id in selector
      * @returns {string}
      */
-    var makeDefaultCssFilter = function (element, classList, excludeTagName, excludeId) {
-        var cssSelector = excludeTagName ? '' : element.tagName.toLowerCase();
+    const makeDefaultCssFilter = function (element, classList, excludeTagName, excludeId) {
+        let cssSelector = excludeTagName ? '' : element.tagName.toLowerCase();
         if (element.id && !excludeId) {
-            cssSelector += '#' + CSS.escape(element.id);
+            cssSelector += `#${CSS.escape(element.id)}`;
         }
         cssSelector += constructClassCssSelectorByAND(classList || element.classList);
         return cssSelector;
@@ -52,24 +51,23 @@ var DevToolsRulesConstructor = (function () {
      * @param options Construct options. For example: {excludeTagName: false, excludeId: false, classList: []}
      * @returns {string}
      */
-    var makeCssNthChildFilter = function (element, options) {
-
+    const makeCssNthChildFilter = function (element, options) {
         options = options || {};
 
-        var classList = options.classList;
+        const { classList } = options;
 
-        var excludeTagNameOverride = 'excludeTagName' in options;
-        var excludeTagName = options.excludeTagName;
+        const excludeTagNameOverride = 'excludeTagName' in options;
+        const { excludeTagName } = options;
 
-        var excludeIdOverride = 'excludeId' in options;
-        var excludeId = options.excludeId;
+        const excludeIdOverride = 'excludeId' in options;
+        const { excludeId } = options;
 
-        var path = [];
-        var el = element;
+        const path = [];
+        let el = element;
         while (el.parentNode) {
-            var nodeName = el && el.nodeName ? el.nodeName.toUpperCase() : '';
+            const nodeName = el && el.nodeName ? el.nodeName.toUpperCase() : '';
             if (nodeName === 'BODY' && path.length === 0) {
-                const bodySelector = makeDefaultCssFilter(el, classList, excludeTagNameOverride ? excludeTagName : false, excludeId)
+                const bodySelector = makeDefaultCssFilter(el, classList, excludeTagNameOverride ? excludeTagName : false, excludeId);
                 path.unshift(bodySelector);
                 break;
             }
@@ -80,7 +78,7 @@ var DevToolsRulesConstructor = (function () {
                 /**
                  * Be default we don't include tag name and classes to selector for element with id attribute
                  */
-                var cssSelector = '';
+                let cssSelector = '';
                 if (el === element) {
                     cssSelector = makeDefaultCssFilter(el, classList || [], excludeTagNameOverride ? excludeTagName : true, excludeIdOverride ? excludeId : false);
                 } else {
@@ -89,15 +87,15 @@ var DevToolsRulesConstructor = (function () {
                 path.unshift(cssSelector);
                 break;
             } else {
-                var c = 1;
-                for (var e = el; e.previousSibling; e = e.previousSibling) {
+                let c = 1;
+                for (let e = el; e.previousSibling; e = e.previousSibling) {
                     if (e.previousSibling.nodeType === 1) {
                         c++;
                     }
                 }
 
-                var cldCount = 0;
-                for (var i = 0; el.parentNode && i < el.parentNode.childNodes.length; i++) {
+                let cldCount = 0;
+                for (let i = 0; el.parentNode && i < el.parentNode.childNodes.length; i++) {
                     cldCount += el.parentNode.childNodes[i].nodeType === 1 ? 1 : 0;
                 }
 
@@ -109,14 +107,14 @@ var DevToolsRulesConstructor = (function () {
                 } else if (c === cldCount) {
                     ch = ':last-child';
                 } else {
-                    ch = ':nth-child(' + c + ')';
+                    ch = `:nth-child(${c})`;
                 }
 
                 /**
                  * By default we include tag name and element classes to selector for element without id attribute
                  */
                 if (el === element) {
-                    var p = makeDefaultCssFilter(el, classList, excludeTagNameOverride ? excludeTagName : false, excludeId);
+                    let p = makeDefaultCssFilter(el, classList, excludeTagNameOverride ? excludeTagName : false, excludeId);
                     p += ch;
                     path.unshift(p);
                 } else {
@@ -135,10 +133,10 @@ var DevToolsRulesConstructor = (function () {
      * @returns {string}
      */
     var constructClassCssSelectorByAND = function (classList) {
-        var selectors = [];
+        const selectors = [];
         if (classList) {
-            for (var i = 0; i < classList.length; i++) {
-                selectors.push('.' + CSS.escape(classList[i]));
+            for (let i = 0; i < classList.length; i++) {
+                selectors.push(`.${CSS.escape(classList[i])}`);
             }
         }
         return selectors.join('');
@@ -149,11 +147,11 @@ var DevToolsRulesConstructor = (function () {
      * @param classList
      * @returns {string}
      */
-    var constructClassCssSelectorByOR = function (classList) {
-        var selectors = [];
+    const constructClassCssSelectorByOR = function (classList) {
+        const selectors = [];
         if (classList) {
-            for (var i = 0; i < classList.length; i++) {
-                selectors.push('.' + CSS.escape(classList[i]));
+            for (let i = 0; i < classList.length; i++) {
+                selectors.push(`.${CSS.escape(classList[i])}`);
             }
         }
         return selectors.join(', ');
@@ -167,7 +165,7 @@ var DevToolsRulesConstructor = (function () {
      * @param classList Override element classes (If classList is null, element classes will be used)
      * @returns {string}
      */
-    var makeSimilarCssFilter = function (element, classList) {
+    const makeSimilarCssFilter = function (element, classList) {
         return constructClassCssSelectorByOR(classList || element.classList);
     };
 
@@ -177,15 +175,15 @@ var DevToolsRulesConstructor = (function () {
      * @param options Construct options. For example: {cssSelectorType: 'STRICT_FULL', excludeTagName: false, excludeId: false, classList: []}
      * @returns {string}
      */
-    var constructCssRuleText = function (element, options) {
+    const constructCssRuleText = function (element, options) {
         if (!element) {
             return;
         }
 
         options = options || {};
-        var cssSelectorType = options.cssSelectorType || 'STRICT_FULL';
+        const cssSelectorType = options.cssSelectorType || 'STRICT_FULL';
 
-        var selector;
+        let selector;
         switch (cssSelectorType) {
             case 'STRICT_FULL':
                 selector = makeCssNthChildFilter(element, options);
@@ -201,7 +199,7 @@ var DevToolsRulesConstructor = (function () {
         return selector ? CSS_RULE_MARK + selector : '';
     };
 
-    var isValidUrl = function (value) {
+    const isValidUrl = function (value) {
         if (value) {
             linkHelper.href = value;
             if (linkHelper.hostname) {
@@ -212,28 +210,28 @@ var DevToolsRulesConstructor = (function () {
         return false;
     };
 
-    var haveUrlBlockParameter = function (element) {
-        var value = getUrlBlockAttribute(element);
+    const haveUrlBlockParameter = function (element) {
+        const value = getUrlBlockAttribute(element);
         return value && value !== '';
     };
 
-    var haveClassAttribute = function (element) {
+    const haveClassAttribute = function (element) {
         return element.classList && element.classList.length > 0;
     };
 
-    var haveIdAttribute = function (element) {
+    const haveIdAttribute = function (element) {
         return element.id && element.id.trim() !== '';
     };
 
-    var cropDomain = function (url) {
-        var domain = getUrl(url).host;
+    const cropDomain = function (url) {
+        const domain = getUrl(url).host;
         return domain.replace('www.', '').replace(/:\d+/, '');
     };
 
     var getUrl = function (url) {
-        var pattern = '^(([^:/\\?#]+):)?(//(([^:/\\?#]*)(?::([^/\\?#]*))?))?([^\\?#]*)(\\?([^#]*))?(#(.*))?$';
-        var rx = new RegExp(pattern);
-        var parts = rx.exec(url);
+        const pattern = '^(([^:/\\?#]+):)?(//(([^:/\\?#]*)(?::([^/\\?#]*))?))?([^\\?#]*)(\\?([^#]*))?(#(.*))?$';
+        const rx = new RegExp(pattern);
+        const parts = rx.exec(url);
 
         return {
             host: parts[4] || '',
@@ -241,19 +239,18 @@ var DevToolsRulesConstructor = (function () {
         };
     };
 
-    var constructUrlBlockRuleText = function (element, urlBlockAttribute, oneDomain, domain) {
-
+    const constructUrlBlockRuleText = function (element, urlBlockAttribute, oneDomain, domain) {
         if (!urlBlockAttribute) {
             return null;
         }
 
-        var blockUrlRuleText = urlBlockAttribute.replace(/^http:\/\/(www\.)?/, '||');
+        let blockUrlRuleText = urlBlockAttribute.replace(/^http:\/\/(www\.)?/, '||');
         if (blockUrlRuleText.indexOf('.') === 0) {
             blockUrlRuleText = blockUrlRuleText.substring(1);
         }
 
         if (!oneDomain) {
-            blockUrlRuleText = blockUrlRuleText + RULE_OPTIONS_MARK + 'domain=' + domain;
+            blockUrlRuleText = `${blockUrlRuleText + RULE_OPTIONS_MARK}domain=${domain}`;
         }
 
         return blockUrlRuleText;
@@ -264,9 +261,9 @@ var DevToolsRulesConstructor = (function () {
             return null;
         }
 
-        for (var i = 0; i < URLBLOCK_ATTRIBUTES.length; i++) {
-            var attr = URLBLOCK_ATTRIBUTES[i];
-            var value = element.getAttribute(attr);
+        for (let i = 0; i < URLBLOCK_ATTRIBUTES.length; i++) {
+            const attr = URLBLOCK_ATTRIBUTES[i];
+            const value = element.getAttribute(attr);
             if (isValidUrl(value)) {
                 return value;
             }
@@ -275,22 +272,18 @@ var DevToolsRulesConstructor = (function () {
         return null;
     };
 
-    // Public API
-    var api = {};
-
     /**
      * Returns detailed element info
      *
      * @param element
      */
-    api.getElementInfo = function (element) {
-
+    const getElementInfo = function (element) {
         // Convert attributes to array
-        var attributes = [];
-        var elementAttributes = element.attributes;
+        const attributes = [];
+        const elementAttributes = element.attributes;
         if (elementAttributes) {
-            for (var i = 0; i < elementAttributes.length; i++) {
-                var attr = elementAttributes[i];
+            for (let i = 0; i < elementAttributes.length; i++) {
+                const attr = elementAttributes[i];
                 attributes.push({
                     name: attr.name,
                     value: attr.value,
@@ -300,7 +293,7 @@ var DevToolsRulesConstructor = (function () {
 
         return {
             tagName: element.tagName,
-            attributes: attributes,
+            attributes,
             urlBlockAttributeValue: getUrlBlockAttribute(element),
             haveUrlBlockParameter: haveUrlBlockParameter(element),
             haveClassAttribute: haveClassAttribute(element),
@@ -314,23 +307,23 @@ var DevToolsRulesConstructor = (function () {
      * @param ruleText rule text
      * @returns {string} css style selector
      */
-    api.constructRuleCssSelector = function (ruleText) {
+    const constructRuleCssSelector = function (ruleText) {
         if (!ruleText) {
             return null;
         }
 
-        var index = ruleText.indexOf(CSS_RULE_MARK);
-        var optionsIndex = ruleText.indexOf(RULE_OPTIONS_MARK);
+        const index = ruleText.indexOf(CSS_RULE_MARK);
+        const optionsIndex = ruleText.indexOf(RULE_OPTIONS_MARK);
 
         if (index >= 0) {
             return ruleText.substring(index + CSS_RULE_MARK.length, optionsIndex >= 0 ? optionsIndex : ruleText.length);
         }
 
-        var s = ruleText.substring(0, optionsIndex);
+        let s = ruleText.substring(0, optionsIndex);
         s = s.replace(/[\|]|[\^]/g, '');
 
         if (isValidUrl(s)) {
-            return '[src*="' + s + '"]';
+            return `[src*="${s}"]`;
         }
 
         return null;
@@ -355,28 +348,26 @@ var DevToolsRulesConstructor = (function () {
      * @param options
      * @returns {*}
      */
-    api.constructRuleText = function (element, options) {
+    const constructRuleText = function (element, options) {
+        const croppedDomain = cropDomain(options.url);
 
-        var croppedDomain = cropDomain(options.url);
-
-        var ruleType = options.ruleType;
+        const { ruleType } = options;
 
         if (ruleType === 'URL') {
-            var blockUrlRuleText = constructUrlBlockRuleText(element, options.urlMask, options.isBlockOneDomain, croppedDomain);
+            const blockUrlRuleText = constructUrlBlockRuleText(element, options.urlMask, options.isBlockOneDomain, croppedDomain);
             if (blockUrlRuleText) {
                 return blockUrlRuleText;
             }
         }
 
-        var result;
+        let result;
 
         if (ruleType === 'CSS') {
-
             result = constructCssRuleText(element, options);
 
             // Append html attributes to css selector
             if (options.attributes) {
-                result = (result ? result : CSS_RULE_MARK + result) + options.attributes;
+                result = (result || CSS_RULE_MARK + result) + options.attributes;
             }
         }
 
@@ -387,6 +378,9 @@ var DevToolsRulesConstructor = (function () {
         return result;
     };
 
-    return api;
-
+    return {
+        getElementInfo,
+        constructRuleCssSelector,
+        constructRuleText,
+    };
 })();

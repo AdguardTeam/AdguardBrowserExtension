@@ -15,9 +15,11 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global contentPage, adguardAssistant */
+// TODO fix adguard-assistant library to named export
+import 'adguard-assistant';
+import { contentPage } from '../content-script';
 
-(function () {
+export const startAssistant = () => {
     if (window.top !== window || !(document.documentElement instanceof HTMLElement)) {
         return;
     }
@@ -70,4 +72,4 @@
                 break;
         }
     });
-})();
+};

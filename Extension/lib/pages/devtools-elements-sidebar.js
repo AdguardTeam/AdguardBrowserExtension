@@ -16,27 +16,26 @@
  */
 /* global chrome, DevToolsRulesConstructor */
 
-var browser = window.browser || chrome;
+const browser = window.browser || chrome;
 
 (function () {
-    var initPanel = function () {
+    const initPanel = function () {
         initTheme();
         initElements();
         bindEvents();
 
-        var onElementSelected = function () {
-
-            browser.devtools.inspectedWindow.eval("DevToolsRulesConstructor.getElementInfo($0)", {
-                useContentScriptContext: true
-            }, function (info) {
+        const onElementSelected = function () {
+            browser.devtools.inspectedWindow.eval('DevToolsRulesConstructor.getElementInfo($0)', {
+                useContentScriptContext: true,
+            }, (info) => {
                 if (!info) {
                     return;
                 }
 
                 // Sort attributes
-                info.attributes.sort(function(a1, a2){
-                    var i1 = a1.name === 'id' ? 0 : (a1.name === 'class' ? 1 : 2);
-                    var i2 = a2.name === 'id' ? 0 : (a2.name === 'class' ? 1 : 2);
+                info.attributes.sort((a1, a2) => {
+                    const i1 = a1.name === 'id' ? 0 : (a1.name === 'class' ? 1 : 2);
+                    const i2 = a2.name === 'id' ? 0 : (a2.name === 'class' ? 1 : 2);
                     return i1 - i2;
                 });
 
@@ -48,8 +47,8 @@ var browser = window.browser || chrome;
             });
         };
 
-        var onPageChanged = function () {
-            document.getElementById("preview-rule-button").value = 'Preview';
+        const onPageChanged = function () {
+            document.getElementById('preview-rule-button').value = 'Preview';
             delete window.adguardDevToolsPreview;
         };
 
@@ -60,7 +59,7 @@ var browser = window.browser || chrome;
     };
 
     var initTheme = function () {
-        var theme = browser.devtools.panels.themeName;
+        const theme = browser.devtools.panels.themeName;
         if (theme === 'dark') {
             document.body.classList.add('-theme-with-dark-background');
         }
@@ -72,21 +71,21 @@ var browser = window.browser || chrome;
         document.querySelector('#one-domain-checkbox').checked = true;
         document.querySelector('#filter-rule-text').value = '';
 
-        var placeholder = document.getElementById("attributes-block");
+        const placeholder = document.getElementById('attributes-block');
         while (placeholder.firstChild) {
             placeholder.removeChild(placeholder.firstChild);
         }
     };
 
     var updateRule = function () {
-        getInspectedPageUrl(function (url) {
+        getInspectedPageUrl((url) => {
             updateFilterRuleInput(window.selectedElementInfo, url);
         });
     };
 
     var bindEvents = function () {
-        var previewRuleButton = document.getElementById("preview-rule-button");
-        previewRuleButton.addEventListener("click", function (e) {
+        const previewRuleButton = document.getElementById('preview-rule-button');
+        previewRuleButton.addEventListener('click', (e) => {
             e.preventDefault();
 
             if (window.selectedElementInfo) {
@@ -99,7 +98,7 @@ var browser = window.browser || chrome;
                     return;
                 }
 
-                var ruleText = document.getElementById("filter-rule-text").value;
+                const ruleText = document.getElementById('filter-rule-text').value;
                 if (!ruleText) {
                     return;
                 }
@@ -111,7 +110,7 @@ var browser = window.browser || chrome;
             }
         });
 
-        document.getElementById("add-rule-button").addEventListener("click", function (e) {
+        document.getElementById('add-rule-button').addEventListener('click', (e) => {
             e.preventDefault();
 
             if (window.selectedElementInfo) {
@@ -128,8 +127,8 @@ var browser = window.browser || chrome;
         });
 
 
-        document.getElementById('select-attributes-checkbox').addEventListener('click', function (e) {
-            const checked = e.currentTarget.checked;
+        document.getElementById('select-attributes-checkbox').addEventListener('click', (e) => {
+            const { checked } = e.currentTarget;
 
             const attributeCheckBoxes = document.querySelectorAll('.attribute-check-box');
             attributeCheckBoxes.forEach(el => {
@@ -201,13 +200,13 @@ var browser = window.browser || chrome;
             placeholder.appendChild(createAttributeElement('tag', info.tagName.toLowerCase(), true));
         }
 
-        for (var i = 0; i < info.attributes.length; i++) {
-            var attribute = info.attributes[i];
+        for (let i = 0; i < info.attributes.length; i++) {
+            const attribute = info.attributes[i];
 
             if (attribute.name === 'class' && attribute.value) {
-                var split = attribute.value.split(' ');
-                for (var j = 0; j < split.length; j++) {
-                    var value = split[j];
+                const split = attribute.value.split(' ');
+                for (let j = 0; j < split.length; j++) {
+                    const value = split[j];
                     if (value) { // Skip empty values. Like 'class1 class2   '
                         placeholder.appendChild(createAttributeElement(attribute.name, value, true));
                     }
@@ -225,70 +224,68 @@ var browser = window.browser || chrome;
     };
 
     var getInspectedPageUrl = function (callback) {
-        browser.devtools.inspectedWindow.eval("document.location && document.location.href", function (result) {
+        browser.devtools.inspectedWindow.eval('document.location && document.location.href', (result) => {
             callback(result);
         });
     };
 
     var updateFilterRuleInput = function (info, url) {
-        var isBlockByUrl = document.querySelector('#block-by-url-checkbox').checked;
-        var createFullCssPath = document.querySelector('#create-full-css-path').checked;
-        var isBlockOneDomain = document.querySelector('#one-domain-checkbox').checked;
+        const isBlockByUrl = document.querySelector('#block-by-url-checkbox').checked;
+        const createFullCssPath = document.querySelector('#create-full-css-path').checked;
+        const isBlockOneDomain = document.querySelector('#one-domain-checkbox').checked;
 
-        var includeTagName = true;
-        var includeElementId = true;
-        var selectedClasses = [];
-        var attributesSelector = '';
-        document.querySelectorAll('.attribute-check-box').forEach(function (el) {
+        let includeTagName = true;
+        let includeElementId = true;
+        const selectedClasses = [];
+        let attributesSelector = '';
+        document.querySelectorAll('.attribute-check-box').forEach((el) => {
             if (el) {
-                var attrName = el.id.substring('attribute-check-box-'.length);
+                const attrName = el.id.substring('attribute-check-box-'.length);
                 if (attrName === 'tag') {
                     includeTagName = el.checked;
                 } else if (attrName === 'id') {
                     includeElementId = el.checked;
-                } else {
-                    if (el.checked) {
-                        var attrValue = el.parentNode.querySelector('.attribute-check-box-value').innerText;
-                        if (attrName === 'class') {
-                            selectedClasses.push(attrValue);
-                        } else {
-                            attributesSelector += '[' + attrName + '="' + attrValue + '"]';
-                        }
+                } else if (el.checked) {
+                    const attrValue = el.parentNode.querySelector('.attribute-check-box-value').innerText;
+                    if (attrName === 'class') {
+                        selectedClasses.push(attrValue);
+                    } else {
+                        attributesSelector += `[${attrName}="${attrValue}"]`;
                     }
                 }
             }
         });
 
-        var options = {
+        const options = {
             urlMask: info.urlBlockAttributeValue,
             isBlockOneDomain: !isBlockOneDomain,
-            url: url,
+            url,
             ruleType: isBlockByUrl ? 'URL' : 'CSS',
             cssSelectorType: createFullCssPath ? 'STRICT_FULL' : 'STRICT',
             attributes: attributesSelector,
             excludeTagName: !includeTagName,
             excludeId: !includeElementId,
-            classList: selectedClasses
+            classList: selectedClasses,
         };
 
-        var func = 'DevToolsRulesConstructor.constructRuleText($0, ' + JSON.stringify(options) + ');';
+        const func = `DevToolsRulesConstructor.constructRuleText($0, ${JSON.stringify(options)});`;
         browser.devtools.inspectedWindow.eval(func, {
-            useContentScriptContext: true
-        }, function (result) {
+            useContentScriptContext: true,
+        }, (result) => {
             if (result) {
-                document.getElementById("filter-rule-text").value = result;
+                document.getElementById('filter-rule-text').value = result;
             }
         });
     };
 
     var applyPreview = function (ruleText) {
-        var func = 'DevToolsHelper.applyPreview(' + JSON.stringify({ruleText: ruleText}) + ');';
-        browser.devtools.inspectedWindow.eval(func, {useContentScriptContext: true});
+        const func = `DevToolsHelper.applyPreview(${JSON.stringify({ ruleText })});`;
+        browser.devtools.inspectedWindow.eval(func, { useContentScriptContext: true });
     };
 
     var cancelPreview = function () {
-        var func = 'DevToolsHelper.cancelPreview();';
-        browser.devtools.inspectedWindow.eval(func, {useContentScriptContext: true});
+        const func = 'DevToolsHelper.cancelPreview();';
+        browser.devtools.inspectedWindow.eval(func, { useContentScriptContext: true });
     };
 
     var addRuleForElement = function () {
@@ -297,15 +294,15 @@ var browser = window.browser || chrome;
             cancelPreview();
         }
 
-        var ruleText = document.getElementById("filter-rule-text").value;
+        const ruleText = document.getElementById('filter-rule-text').value;
         if (!ruleText) {
             return;
         }
 
-        var func = 'DevToolsHelper.addRule(' + JSON.stringify({ruleText: ruleText}) + ');';
+        const func = `DevToolsHelper.addRule(${JSON.stringify({ ruleText })});`;
         browser.devtools.inspectedWindow.eval(func, {
-            useContentScriptContext: true
-        }, function () {
+            useContentScriptContext: true,
+        }, () => {
             applyPreview(ruleText);
 
             delete window.selectedElementInfo;
@@ -314,8 +311,7 @@ var browser = window.browser || chrome;
         });
     };
 
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', () => {
         initPanel();
     });
-
 })();

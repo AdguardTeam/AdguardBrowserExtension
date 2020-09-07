@@ -1,14 +1,4 @@
-// "lib/libs/TSUrlFilterContentScript.js",
-//     "lib/utils/element-collapser.js",
-//     "lib/content-script/adguard-content.js",
-//     "lib/content-script/common-script.js",
-//     "lib/content-script/content-script.js",
-//     "lib/content-script/wrappers.js",
-//     "lib/content-script/preload.js"
-
 import { preload } from '../../lib/content-script/preload';
-
-console.log('hello from content-script-start');
 
 preload.init();
 
