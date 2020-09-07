@@ -15,24 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global contentPage, HTMLDocument */
+import { contentPage } from './content-script';
 
-(function () {
-    if (window !== window.top) {
-        return;
-    }
-
-    if (!(document instanceof HTMLDocument)) {
-        return;
-    }
-
-    /**
-     * On extension startup contentPage is undefined
-     */
-    if (typeof contentPage === 'undefined') {
-        return;
-    }
-
+export const contentUtils = (function () {
     const MAX_Z_INDEX = '2147483647';
 
     /**
@@ -57,7 +42,6 @@
         iframe.style.zIndex = MAX_Z_INDEX;
         return iframe;
     };
-
 
     /**
      * Creates div and appends it to the page
@@ -287,15 +271,36 @@
         xhr.send(null);
     }
 
-    contentPage.onMessage.addListener((message) => {
-        if (message.type === 'show-alert-popup') {
-            showAlertPopup(message);
-        } else if (message.type === 'show-version-updated-popup') {
-            showVersionUpdatedPopup(message);
-        } else if (message.type === 'no-cache-reload') {
-            noCacheReload();
-        } else if (message.type === 'update-tab-url') {
-            window.location = message.url;
+    const init = () => {
+        if (window !== window.top) {
+            return;
         }
-    });
+
+        if (!(document instanceof HTMLDocument)) {
+            return;
+        }
+
+        /**
+         * On extension startup contentPage is undefined
+         */
+        if (typeof contentPage === 'undefined') {
+            return;
+        }
+
+        contentPage.onMessage.addListener((message) => {
+            if (message.type === 'show-alert-popup') {
+                showAlertPopup(message);
+            } else if (message.type === 'show-version-updated-popup') {
+                showVersionUpdatedPopup(message);
+            } else if (message.type === 'no-cache-reload') {
+                noCacheReload();
+            } else if (message.type === 'update-tab-url') {
+                window.location = message.url;
+            }
+        });
+    };
+
+    return {
+        init,
+    };
 })();
