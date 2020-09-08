@@ -56,7 +56,7 @@ export const BROWSERS_CONF = {
     [BROWSERS.SAMPLE_API]: {
         browser: BROWSERS.SAMPLE_API,
         remoteScripts: true,
-        devtools: true,
+        devtools: false,
         buildDir: BROWSERS.SAMPLE_API,
     },
 };

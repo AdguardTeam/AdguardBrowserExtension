@@ -38,11 +38,8 @@ export const sampleApiManifest = {
     ],
     'minimum_chrome_version': '55.0',
     'permissions': [
+        '<all_urls>',
         'tabs',
-        'http://*/*',
-        'https://*/*',
-        'ws://*/*',
-        'wss://*/*',
         'webRequest',
         'webRequestBlocking',
         'webNavigation',

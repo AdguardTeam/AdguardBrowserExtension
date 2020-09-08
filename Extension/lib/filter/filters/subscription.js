@@ -22,8 +22,8 @@ import { backend } from './service-client';
 import { backgroundPage } from '../../api/background-page';
 import { localStorage } from '../../storage';
 import { utils } from '../../utils/common';
-import { LocalScriptRulesService } from '../rules/local-script-rules';
-import { redirectFilterService } from '../services/redirect-service';
+import { localScriptRulesService } from '../rules/local-script-rules';
+import { redirectService } from '../services/redirect-service';
 import { browserUtils } from '../../utils/browser-utils';
 
 /**
@@ -708,12 +708,9 @@ export const subscriptions = (() => {
      * @private
      */
     async function loadLocalScriptRules() {
-        const localScriptRulesService = LocalScriptRulesService;
-        if (typeof localScriptRulesService !== 'undefined') {
-            const json = await backend.loadLocalScriptRules();
-            localScriptRulesService.setLocalScriptRules(json);
-            log.info('Filters local script rules loaded');
-        }
+        const json = await backend.loadLocalScriptRules();
+        localScriptRulesService.setLocalScriptRules(json);
+        log.info('Filters local script rules loaded');
     }
 
     /**
@@ -722,12 +719,9 @@ export const subscriptions = (() => {
      * @private
      */
     async function loadRedirectSources() {
-        const redirectSourcesService = redirectFilterService;
-        if (typeof redirectSourcesService !== 'undefined') {
-            const txt = await backend.loadRedirectSources();
-            redirectSourcesService.init(txt);
-            log.info('Filters redirect sources loaded');
-        }
+        const txt = await backend.loadRedirectSources();
+        redirectService.init(txt);
+        log.info('Filters redirect sources loaded');
     }
 
     /**

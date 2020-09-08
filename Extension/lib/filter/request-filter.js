@@ -19,7 +19,7 @@ import * as TSUrlFilter from '@adguard/tsurlfilter';
 import { engine } from './engine';
 import { utils, RequestTypes } from '../utils/common';
 import { filteringLog } from './filtering-log';
-import { LocalScriptRulesService } from './rules/local-script-rules';
+import { localScriptRulesService } from './rules/local-script-rules';
 import { cssService } from './services/css-service';
 import { webRequestService } from './request-blocking';
 import { browserUtils } from '../utils/browser-utils';
@@ -193,7 +193,7 @@ export const RequestFilter = (() => {
             const isOpera = browserUtils.isOperaBrowser();
 
             const selectedScriptRules = scriptRules.filter((scriptRule) => {
-                const isLocal = LocalScriptRulesService.isLocal(scriptRule.getText());
+                const isLocal = localScriptRulesService.isLocal(scriptRule.getText());
 
                 if (isLocal) {
                     return true;
@@ -204,7 +204,7 @@ export const RequestFilter = (() => {
                      * Note (!) (Firefox, Opera):
                      * In case of Firefox and Opera add-ons,
                      * JS filtering rules are hardcoded into add-on code.
-                     * Look at LocalScriptRulesService.isLocal to learn more.
+                     * Look at localScriptRulesService.isLocal to learn more.
                      * Commented instructions would be preprocessed during compilation by webpack
                      */
                     /* @if remoteScripts == false */

@@ -25,11 +25,11 @@ export const rulesStorageImpl = (() => {
         /**
          * Optional
          */
-        init: noop,
+        init: errorFunction,
 
         /**
          * Optional
          */
-        isIndexedDB: noop,
+        isIndexedDB: errorFunction,
     };
 })();

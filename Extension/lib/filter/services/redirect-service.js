@@ -24,7 +24,7 @@ const { Redirects } = redirects;
 /**
  * Redirects service class
  */
-export const redirectFilterService = (function () {
+export const redirectService = (function () {
     let redirects = null;
 
     /**

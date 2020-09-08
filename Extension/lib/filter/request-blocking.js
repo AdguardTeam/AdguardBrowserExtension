@@ -26,7 +26,7 @@ import { filteringApi } from './filtering-api';
 import { prefs } from '../prefs';
 import { requestContextStorage } from './request-context-storage';
 import { documentFilterService } from './services/document-filter';
-import { redirectFilterService } from './services/redirect-service';
+import { redirectService } from './services/redirect-service';
 import { whitelist } from './whitelist';
 import { browserUtils } from '../utils/browser-utils';
 
@@ -258,7 +258,7 @@ export const webRequestService = (function () {
         } else if (requestRule && !requestRule.isWhitelist()) {
             if (requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Redirect)) {
                 // eslint-disable-next-line max-len
-                const redirectUrl = redirectFilterService.createRedirectUrl(requestRule.getAdvancedModifierValue());
+                const redirectUrl = redirectService.createRedirectUrl(requestRule.getAdvancedModifierValue());
                 if (redirectUrl) {
                     return { redirectUrl };
                 }

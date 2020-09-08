@@ -4,7 +4,8 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import CreateFileWebpack from 'create-file-webpack';
 import path from 'path';
-import { BUILD_PATH } from '../../constants';
+import { NormalModuleReplacementPlugin } from 'webpack';
+import { BROWSERS, BUILD_PATH } from '../../constants';
 
 import { getEnvConf } from '../../helpers';
 import { sampleApiManifest } from './manifest.sample-api';
@@ -38,9 +39,25 @@ export const genSampleApiConfig = (browserConfig) => {
         module: {
             rules: [
                 {
+                    include: [
+                        path.resolve(__dirname, '../../../Extension/lib/filter/request-filter.js'),
+                        path.resolve(__dirname, '../../../Extension/pages/content-script-end/index.js'),
+                    ],
+                    use: [{
+                        loader: 'preprocess-loader',
+                        options: {
+                            remoteScripts: browserConfig.remoteScripts,
+                            devtools: browserConfig.devtools,
+                            ppOptions: {
+                                type: 'js',
+                            },
+                        },
+                    }],
+                },
+                {
                     test: /\.(js|jsx)$/,
                     exclude: /node_modules/,
-                    use: [{
+                    use: ['cache-loader', {
                         loader: 'babel-loader',
                         options: { babelrc: true },
                     }],
@@ -50,11 +67,36 @@ export const genSampleApiConfig = (browserConfig) => {
 
         plugins: [
             new CleanWebpackPlugin(),
+            new NormalModuleReplacementPlugin(/\.\/abstract-rules-storage/, ((resource) => {
+                if (browserConfig.browser === BROWSERS.FIREFOX_AMO
+                    || browserConfig.browser === BROWSERS.FIREFOX_STANDALONE) {
+                    resource.request = resource.request.replace(/\.\/abstract-rules-storage/, './firefox/rules-storage');
+                } else if (browserConfig.browser === BROWSERS.CHROME
+                    || browserConfig.browser === BROWSERS.OPERA
+                    || browserConfig.browser === BROWSERS.EDGE
+                    || browserConfig.browser === BROWSERS.SAMPLE_API
+                ) {
+                    resource.request = resource.request.replace(/\.\/abstract-rules-storage/, './chrome/rules-storage');
+                } else {
+                    throw new Error(`There is no proxy api for browser: ${process.env.BROWSER}`);
+                }
+            })),
+            new NormalModuleReplacementPlugin(/\.\/abstract-content-filtering/, ((resource) => {
+                if (browserConfig.browser === BROWSERS.FIREFOX_AMO
+                    || browserConfig.browser === BROWSERS.FIREFOX_STANDALONE) {
+                    resource.request = resource.request.replace(/\.\/abstract-content-filtering/, './firefox/content-filtering');
+                } else if (browserConfig.browser === BROWSERS.CHROME
+                    || browserConfig.browser === BROWSERS.OPERA
+                    || browserConfig.browser === BROWSERS.EDGE
+                    || browserConfig.browser === BROWSERS.SAMPLE_API
+                ) {
+                    resource.request = resource.request.replace(/\.\/abstract-content-filtering/, './chrome/content-filtering');
+                } else {
+                    throw new Error(`There is no proxy api for browser: ${process.env.BROWSER}`);
+                }
+            })),
             new HtmlWebpackPlugin({
                 template: path.join(BACKGROUND_PATH, 'index.html'),
-                templateParameters: {
-                    browser: process.env.BROWSER,
-                },
                 filename: 'background.html',
                 chunks: ['background'],
             }),
@@ -69,6 +111,30 @@ export const genSampleApiConfig = (browserConfig) => {
                         context: 'Extension/api/sample-extension',
                         from: 'adguard-api.md',
                         to: 'adguard-api.md',
+                    },
+                ],
+            }),
+            new CopyWebpackPlugin({
+                patterns: [
+                    {
+                        context: 'Extension',
+                        from: 'filters/chromium/filters_i18n.json',
+                        to: 'adguard',
+                    },
+                    {
+                        context: 'Extension',
+                        from: 'filters/chromium/filters.json',
+                        to: 'adguard',
+                    },
+                    {
+                        context: 'Extension',
+                        from: 'filters/chromium/local_script_rules.json',
+                        to: 'adguard',
+                    },
+                    {
+                        context: 'Extension',
+                        from: 'assets/libs/scriptlets/redirects.yml',
+                        to: 'adguard',
                     },
                 ],
             }),

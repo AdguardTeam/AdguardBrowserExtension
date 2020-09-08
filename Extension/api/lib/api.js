@@ -15,12 +15,60 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { backend } from '../../lib/filter/filters/service-client';
+import { tabsApi } from '../../lib/tabs/tabs-api';
+import { webRequestService } from '../../lib/filter/request-blocking';
+import { whitelist } from '../../lib/filter/whitelist';
+import { subscriptions } from '../../lib/filter/filters/subscription';
+import { log } from '../../lib/utils/log';
+import { application } from '../../lib/application';
+import { rulesStorage, localStorage } from '../../lib/storage';
+import { listeners } from '../../lib/notifier';
+import { userrules } from '../../lib/filter/userrules';
+import { webrequest } from '../../lib/webrequest';
+import { requestSanitizer } from '../../lib/filter/request-sanitizer';
+import { localeDetect } from '../../lib/filter/services/locale-detect';
+import { contentMessageHandler } from '../../lib/content-message-handler';
+
 /**
  * Adguard simple api
  * @type {{start, stop, configure}}
  */
-(function (adguard, global) {
-    function noOpFunc() {
+export const adguardApi = (function () {
+    function noopFunc() {
+    }
+
+    /**
+     * Validates filters identifiers
+     * @param filters Array
+     */
+    function validateFiltersConfiguration(filters) {
+        if (!filters || filters.length === 0) {
+            return;
+        }
+        for (let i = 0; i < filters.length; i += 1) {
+            const filterId = filters[i];
+            if (typeof filterId !== 'number') {
+                throw new Error(`${filterId} is not a number`);
+            }
+        }
+    }
+
+    /**
+     * Validate domains
+     * @param domains Array
+     * @param prop Property name (whitelist or blacklist)
+     */
+    function validateDomains(domains, prop) {
+        if (!domains || domains.length === 0) {
+            return;
+        }
+        for (let i = 0; i < domains.length; i += 1) {
+            const domain = domains[i];
+            if (typeof domain !== 'string') {
+                throw new Error(`Domain ${domain} at position ${i} in ${prop} is not a string`);
+            }
+        }
     }
 
     /**
@@ -37,58 +85,24 @@
     }
 
     /**
-     * Validates filters identifiers
-     * @param filters Array
-     */
-    function validateFiltersConfiguration(filters) {
-        if (!filters || filters.length === 0) {
-            return;
-        }
-        for (var i = 0; i < filters.length; i++) {
-            var filterId = filters[i];
-            if (typeof filterId !== 'number') {
-                throw new Error(filterId + ' is not a number');
-            }
-        }
-    }
-
-    /**
-     * Validate domains
-     * @param domains Array
-     * @param prop Property name (whitelist or blacklist)
-     */
-    function validateDomains(domains, prop) {
-        if (!domains || domains.length === 0) {
-            return;
-        }
-        for (var i = 0; i < domains.length; i++) {
-            var domain = domains[i];
-            if (typeof domain !== 'string') {
-                throw new Error('Domain ' + domain + ' at position ' + i + ' in ' + prop + ' is not a string');
-            }
-        }
-    }
-
-    /**
      * Configures white and black lists.
      * If blacklist is not null filtration will be in inverted mode, otherwise in default mode.
      * @param configuration Configuration object: {whitelist: [], blacklist: []}
      */
     function configureWhiteBlackLists(configuration) {
-
         if (!configuration.force && !configuration.blacklist && !configuration.whitelist) {
             return;
         }
 
-        var domains;
+        let domains;
         if (configuration.blacklist) {
-            adguard.whitelist.changeDefaultWhiteListMode(false);
+            whitelist.changeDefaultWhiteListMode(false);
             domains = configuration.blacklist;
         } else {
-            adguard.whitelist.changeDefaultWhiteListMode(true);
+            whitelist.changeDefaultWhiteListMode(true);
             domains = configuration.whitelist;
         }
-        adguard.whitelist.updateWhiteListDomains(domains || []);
+        whitelist.updateWhiteListDomains(domains || []);
     }
 
     /**
@@ -97,34 +111,33 @@
      * @param callback
      */
     function configureFilters(configuration, callback) {
-
         if (!configuration.force && !configuration.filters) {
             callback();
             return;
         }
 
-        var filterIds = (configuration.filters || []).slice(0);
-        for (var i = filterIds.length - 1; i >= 0; i--) {
-            var filterId = filterIds[i];
-            var filter = adguard.subscriptions.getFilter(filterId);
+        const filterIds = (configuration.filters || []).slice(0);
+        for (let i = filterIds.length - 1; i >= 0; i -= 1) {
+            const filterId = filterIds[i];
+            const filter = subscriptions.getFilter(filterId);
             if (!filter) {
-                adguard.console.error('Filter with id {0} not found. Skip it...', filterId);
+                log.error('Filter with id {0} not found. Skip it...', filterId);
                 filterIds.splice(i, 1);
             }
         }
 
-        adguard.application.addAndEnableFilters(filterIds, function () {
-            var enabledFilters = adguard.application.getEnabledFilters();
-            for (var i = 0; i < enabledFilters.length; i++) {
-                var filter = enabledFilters[i];
+        application.addAndEnableFilters(filterIds, () => {
+            const enabledFilters = application.getEnabledFilters();
+            for (let i = 0; i < enabledFilters.length; i += 1) {
+                const filter = enabledFilters[i];
                 if (filterIds.indexOf(filter.filterId) < 0) {
-                    adguard.application.disableFilters([filter.filterId]);
+                    application.disableFilters([filter.filterId]);
                 }
             }
 
-            var listernerId = adguard.listeners.addListener(function (event) {
-                if (event === adguard.listeners.REQUEST_FILTER_UPDATED) {
-                    adguard.listeners.removeListener(listernerId);
+            const listenerId = listeners.addListener((event) => {
+                if (event === listeners.REQUEST_FILTER_UPDATED) {
+                    listeners.removeListener(listenerId);
                     callback();
                 }
             });
@@ -136,13 +149,12 @@
      * @param configuration Configuration object: {rules: [...]}
      */
     function configureCustomRules(configuration) {
-
         if (!configuration.force && !configuration.rules) {
             return;
         }
 
-        var content = (configuration.rules || []).join('\r\n');
-        adguard.userrules.updateUserRulesText(content);
+        const content = (configuration.rules || []).join('\r\n');
+        userrules.updateUserRulesText(content);
     }
 
     /**
@@ -153,11 +165,30 @@
         if (!configuration.force && !configuration.filtersMetadataUrl && !configuration.filterRulesUrl) {
             return;
         }
-        adguard.backend.configure({
+        backend.configure({
             filtersMetadataUrl: configuration.filtersMetadataUrl,
-            filterRulesUrl: configuration.filterRulesUrl
+            filterRulesUrl: configuration.filterRulesUrl,
         });
     }
+
+    /**
+     * Configure current filtration settings
+     * @param configuration Filtration configuration: {filters: [], whitelist: [], blacklist: []}
+     * @param callback
+     */
+    const configure = function (configuration, callback) {
+        if (!application.isInitialized()) {
+            throw new Error('Applications is not initialized. Use \'start\' method.');
+        }
+        validateConfiguration(configuration);
+
+        callback = callback || noopFunc;
+
+        configureFiltersUrl(configuration);
+        configureWhiteBlackLists(configuration);
+        configureCustomRules(configuration);
+        configureFilters(configuration, callback);
+    };
 
     /**
      * Start filtration.
@@ -165,18 +196,17 @@
      * @param configuration Configuration object
      * @param callback Callback function
      */
-    var start = function (configuration, callback) {
-
+    const start = function (configuration, callback) {
         validateConfiguration(configuration);
 
-        callback = callback || noOpFunc;
+        callback = callback || noopFunc;
 
         // Force apply all configuration fields
         configuration.force = true;
 
-        adguard.rulesStorage.init(function () {
-            adguard.localStorage.init(function () {
-                adguard.application.start({}, function () {
+        rulesStorage.init(() => {
+            localStorage.init(() => {
+                application.start({}, () => {
                     configure(configuration, callback);
                 });
             });
@@ -187,37 +217,17 @@
      * Stop filtration
      * @param callback Callback function
      */
-    var stop = function (callback) {
-        adguard.application.stop(callback || noOpFunc);
+    const stop = function (callback) {
+        application.stop(callback || noopFunc);
     };
 
-    /**
-     * Configure current filtration settings
-     * @param configuration Filtration configuration: {filters: [], whitelist: [], blacklist: []}
-     * @param callback
-     */
-    var configure = function (configuration, callback) {
-
-        if (!adguard.application.isInitialized()) {
-            throw new Error('Applications is not initialized. Use \'start\' method.');
-        }
-        validateConfiguration(configuration);
-
-        callback = callback || noOpFunc;
-
-        configureFiltersUrl(configuration);
-        configureWhiteBlackLists(configuration);
-        configureCustomRules(configuration);
-        configureFilters(configuration, callback);
-    };
-
-    var initAssistant = function (tabId) {
-        var assistantOptions = {
-            addRuleCallbackName: 'assistant-create-rule'
+    const initAssistant = function (tabId) {
+        const assistantOptions = {
+            addRuleCallbackName: 'assistant-create-rule',
         };
-        adguard.tabs.sendMessage(tabId, {
+        tabsApi.tabs.sendMessage(tabId, {
             type: 'initAssistant',
-            options: assistantOptions
+            options: assistantOptions,
         });
     };
 
@@ -226,9 +236,9 @@
      * @param tabId Tab identifier
      */
     const openAssistant = (tabId) => {
-        if (adguard.tabs.executeScriptFile) {
+        if (tabsApi.tabs.executeScriptFile) {
             // Load Assistant code to the activate tab immediately
-            adguard.tabs.executeScriptFile(null, { file: '/adguard/assistant/assistant.js' }, () => {
+            tabsApi.tabs.executeScriptFile(null, { file: '/adguard/assistant/assistant.js' }, () => {
                 initAssistant(tabId);
             });
         } else {
@@ -241,22 +251,28 @@
      * Closes assistant dialog in the specified tab
      * @param tabId Tab identifier
      */
-    var closeAssistant = function (tabId) {
-        adguard.tabs.sendMessage(tabId, {
-            type: 'destroyAssistant'
+    const closeAssistant = function (tabId) {
+        tabsApi.tabs.sendMessage(tabId, {
+            type: 'destroyAssistant',
         });
     };
 
-    adguard.backend.configure({
+    backend.configure({
         localFiltersFolder: 'adguard',
         redirectSourcesFolder: 'adguard',
-        localFilterIds: []
+        localFilterIds: [],
     });
 
-    global.adguardApi = {
-        start: start,
-        stop: stop,
-        configure: configure,
+    // Modules needed to be initiated
+    webrequest.init();
+    requestSanitizer.init();
+    localeDetect.init();
+    contentMessageHandler.init();
+
+    return {
+        start,
+        stop,
+        configure,
         /**
          *  Fired when a request is blocked
          *  var onBlocked = function (details) {console.log(details);};
@@ -266,13 +282,15 @@
          *      tabId: ...,
          *      requestUrl: "...",
          *      referrerUrl: "...",
-         *      requestType: "...", see adguard.RequestTypes
+         *      requestType: "...", see RequestTypes
          *      rule: "..." // Rule text
          *      filterId: ... // Filter identifier
          *   };
          */
-        onRequestBlocked: adguard.webRequestService.onRequestBlocked,
-        openAssistant: openAssistant,
-        closeAssistant: closeAssistant
+        onRequestBlocked: webRequestService.onRequestBlocked,
+        openAssistant,
+        closeAssistant,
     };
-})(adguard, window);
+})();
+
+global.adguardApi = adguardApi;

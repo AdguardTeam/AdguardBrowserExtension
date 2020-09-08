@@ -51,8 +51,7 @@ const devPlan = [
     bundleFirefoxStandalone,
     bundleEdge,
     bundleOpera,
-    // bundleSampleApi,
-    // TODO build sample api
+    bundleSampleApi,
 ];
 
 const betaPlan = [

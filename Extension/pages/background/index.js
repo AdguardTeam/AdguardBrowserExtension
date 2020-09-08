@@ -22,6 +22,7 @@ requestSanitizer.init();
 localeDetect.init();
 contentMessageHandler.init();
 
+// Exposing for options page
 window.adguard = {
     localStorage,
 };
