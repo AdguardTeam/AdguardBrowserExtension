@@ -57,6 +57,18 @@ export const genCommonConfig = (browserConfig) => {
         module: {
             rules: [
                 {
+                    include: [path.resolve(__dirname, '../../Extension/lib/filter/request-filter.js')],
+                    use: [{
+                        loader: 'preprocess-loader',
+                        options: {
+                            remoteScripts: browserConfig.remoteScripts,
+                            ppOptions: {
+                                type: 'js',
+                            },
+                        },
+                    }],
+                },
+                {
                     test: /\.(js|jsx)$/,
                     exclude: /node_modules/,
                     use: [{

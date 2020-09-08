@@ -15,18 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// TODO do not forget to preprocess this file when imported into background page
-// import pp from 'preprocess';
-//
-// if (path.endsWith('request-filter.js')) {
-//     const str = content.toString();
-//     return Buffer.from(pp.preprocess(
-//         str,
-//         { remoteScripts: browserConfig.remoteScripts },
-//         { type: 'js' }
-//     ));
-// }
-
 import * as TSUrlFilter from '@adguard/tsurlfilter';
 import { engine } from './engine';
 import { utils, RequestTypes } from '../utils/common';
@@ -219,6 +207,7 @@ export const RequestFilter = (() => {
                      * In case of Firefox and Opera add-ons,
                      * JS filtering rules are hardcoded into add-on code.
                      * Look at LocalScriptRulesService.isLocal to learn more.
+                     * Commented instructions would be preprocessed during compilation by webpack
                      */
                     /* @if remoteScripts == false */
                     if (!isFirefox && !isOpera) {
