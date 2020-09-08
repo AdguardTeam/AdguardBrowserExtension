@@ -20,7 +20,6 @@ const FILTER_DOWNLOAD_PATH = path.resolve(__dirname, '../../Extension/pages/filt
 const EXPORT_PATH = path.resolve(__dirname, '../../Extension/pages/export');
 const CONTENT_SCRIPT_START_PATH = path.resolve(__dirname, '../../Extension/pages/content-script-start');
 const CONTENT_SCRIPT_END_PATH = path.resolve(__dirname, '../../Extension/pages/content-script-end');
-const DEVTOOLS_PATH = path.resolve(__dirname, '../../Extension/pages/devtools');
 const THANKYOU_PATH = path.resolve(__dirname, '../../Extension/pages/thankyou');
 
 const OUTPUT_PATH = config.outputPath;
@@ -43,8 +42,6 @@ export const genCommonConfig = (browserConfig) => {
             'pages/export': EXPORT_PATH,
             'pages/content-script-start': CONTENT_SCRIPT_START_PATH,
             'pages/content-script-end': CONTENT_SCRIPT_END_PATH,
-            'pages/devtools': path.join(DEVTOOLS_PATH, 'devtools.js'),
-            'pages/devtools-elements-sidebar': path.join(DEVTOOLS_PATH, 'devtools-elements-sidebar.js'),
             'pages/thankyou': THANKYOU_PATH,
         },
         output: {
@@ -57,11 +54,15 @@ export const genCommonConfig = (browserConfig) => {
         module: {
             rules: [
                 {
-                    include: [path.resolve(__dirname, '../../Extension/lib/filter/request-filter.js')],
+                    include: [
+                        path.resolve(__dirname, '../../Extension/lib/filter/request-filter.js'),
+                        path.resolve(__dirname, '../../Extension/pages/content-script-end/index.js'),
+                    ],
                     use: [{
                         loader: 'preprocess-loader',
                         options: {
                             remoteScripts: browserConfig.remoteScripts,
+                            devtools: browserConfig.devtools,
                             ppOptions: {
                                 type: 'js',
                             },
@@ -108,7 +109,10 @@ export const genCommonConfig = (browserConfig) => {
                 if (browserConfig.browser === BROWSERS.FIREFOX_AMO
                     || browserConfig.browser === BROWSERS.FIREFOX_STANDALONE) {
                     resource.request = resource.request.replace(/\.\/abstract-rules-storage/, './firefox/rules-storage');
-                } else if (browserConfig.browser === BROWSERS.CHROME) {
+                } else if (browserConfig.browser === BROWSERS.CHROME
+                    || browserConfig.browser === BROWSERS.OPERA
+                    || browserConfig.browser === BROWSERS.EDGE
+                ) {
                     resource.request = resource.request.replace(/\.\/abstract-rules-storage/, './chrome/rules-storage');
                 } else {
                     throw new Error(`There is no proxy api for browser: ${process.env.BROWSER}`);
@@ -118,7 +122,9 @@ export const genCommonConfig = (browserConfig) => {
                 if (browserConfig.browser === BROWSERS.FIREFOX_AMO
                     || browserConfig.browser === BROWSERS.FIREFOX_STANDALONE) {
                     resource.request = resource.request.replace(/\.\/abstract-content-filtering/, './firefox/content-filtering');
-                } else if (browserConfig.browser === BROWSERS.CHROME) {
+                } else if (browserConfig.browser === BROWSERS.CHROME
+                || browserConfig.browser === BROWSERS.OPERA
+                || browserConfig.browser === BROWSERS.EDGE) {
                     resource.request = resource.request.replace(/\.\/abstract-content-filtering/, './chrome/content-filtering');
                 } else {
                     throw new Error(`There is no proxy api for browser: ${process.env.BROWSER}`);
@@ -156,16 +162,6 @@ export const genCommonConfig = (browserConfig) => {
                 template: path.join(EXPORT_PATH, 'index.html'),
                 filename: 'pages/export.html',
                 chunks: ['pages/export'],
-            }),
-            new HtmlWebpackPlugin({
-                template: path.join(DEVTOOLS_PATH, 'devtools.html'),
-                filename: 'pages/devtools.html',
-                chunks: ['pages/devtools'],
-            }),
-            new HtmlWebpackPlugin({
-                template: path.join(DEVTOOLS_PATH, 'devtools-elements-sidebar.html'),
-                filename: 'pages/devtools-elements-sidebar.html',
-                chunks: ['pages/devtools-elements-sidebar'],
             }),
             // TODO move this file creation to the separate script
             new CreateFileWebpack({

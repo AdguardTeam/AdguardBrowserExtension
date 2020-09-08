@@ -26,39 +26,45 @@ export const BROWSERS_CONF = {
     [BROWSERS.CHROME]: {
         browser: BROWSERS.CHROME,
         remoteScripts: true,
+        devtools: true,
         buildDir: BROWSERS.CHROME,
     },
     [BROWSERS.FIREFOX_STANDALONE]: {
         browser: BROWSERS.FIREFOX_STANDALONE,
         remoteScripts: true,
+        devtools: false,
         buildDir: BROWSERS.FIREFOX_STANDALONE,
     },
     [BROWSERS.FIREFOX_AMO]: {
         browser: BROWSERS.FIREFOX_AMO,
         remoteScripts: false,
+        devtools: false,
         buildDir: BROWSERS.FIREFOX_AMO,
     },
     [BROWSERS.OPERA]: {
         browser: BROWSERS.OPERA,
         remoteScripts: false,
+        devtools: true,
         buildDir: BROWSERS.OPERA,
     },
     [BROWSERS.EDGE]: {
         browser: BROWSERS.EDGE,
         remoteScripts: true,
+        devtools: true,
         buildDir: BROWSERS.EDGE,
     },
     [BROWSERS.SAMPLE_API]: {
         browser: BROWSERS.SAMPLE_API,
         remoteScripts: true,
+        devtools: true,
         buildDir: BROWSERS.SAMPLE_API,
     },
 };
 
 export const FIREFOX_APP_IDS_MAP = {
-    [ENVS.DEV]: 'adguardadblockerdev-maximtop@adguard.com',
-    [ENVS.BETA]: 'adguardadblockerbeta-maximtop@adguard.com',
-    [ENVS.RELEASE]: 'adguardadblocker-maximtop@adguard.com',
+    [ENVS.DEV]: 'adguardadblockerdev@adguard.com',
+    [ENVS.BETA]: 'adguardadblockerbeta@adguard.com',
+    [ENVS.RELEASE]: 'adguardadblocker@adguard.com',
 };
 
 export const BUILD_PATH = path.resolve(__dirname, '../build');

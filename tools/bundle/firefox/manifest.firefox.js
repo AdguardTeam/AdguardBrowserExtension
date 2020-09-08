@@ -9,21 +9,6 @@ export const firefoxManifest = {
             'strict_min_version': '52.0',
         },
     },
-    'content_scripts': [
-        {
-            'all_frames': false,
-            'js': [
-                'lib/content-script/content-script.js',
-                'lib/content-script/i18n-helper.js',
-                'lib/content-script/assistant/start-assistant.js',
-            ],
-            'matches': [
-                'http://*/*',
-                'https://*/*',
-            ],
-            'run_at': 'document_end',
-        },
-    ],
     'options_ui': {
         'page': 'pages/options.html',
         'open_in_tab': true,
