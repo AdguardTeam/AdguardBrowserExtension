@@ -30,8 +30,6 @@ import { browserUtils } from '../utils/browser-utils';
  * @constructor
  */
 export const settings = (() => {
-    'use strict';
-
     const DEFAULT_FILTERS_UPDATE_PERIOD = -1;
     const DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN = 4320;
     const DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN = 2880;

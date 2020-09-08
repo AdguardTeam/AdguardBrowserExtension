@@ -24,8 +24,6 @@ import { contentPage } from '../content-script/content-script';
  * @type {{toggleCheckbox, updateCheckbox}}
  */
 export const CheckboxUtils = (function () {
-    'use strict';
-
     const updateAreaChecked = (el, checked) => {
         if (el) {
             el.setAttribute('aria-checked', checked);

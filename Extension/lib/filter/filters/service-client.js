@@ -25,8 +25,6 @@ import { browserUtils } from '../../utils/browser-utils';
 import { adguard } from '../../adguard';
 
 export const backend = (function () {
-    'use strict';
-
     /**
      * Class for working with our backend server.
      * All requests sent by this class are covered in the privacy policy:

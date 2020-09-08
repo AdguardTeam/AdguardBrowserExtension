@@ -26,8 +26,6 @@ import { listeners } from '../notifier';
  * Object for log http requests
  */
 export const filteringLog = (function () {
-    'use strict';
-
     const REQUESTS_SIZE_PER_TAB = 1000;
 
     const backgroundTabId = BACKGROUND_TAB_ID;

@@ -33,28 +33,10 @@ const browserApi = ((self) => {
 })(window);
 
 export const runtimeImpl = (() => {
-    const runtimeImpl = (function () {
-        const onMessage = (function () {
-            if (browserApi.runtime && browserApi.runtime.onMessage) {
-                // Chromium, Edge, Firefox WebExtensions
-                return browserApi.runtime.onMessage;
-            }
-        })();
-
-        const sendMessage = (function () {
-            if (browserApi.runtime && browserApi.runtime.sendMessage) {
-                // Chromium, Edge, Firefox WebExtensions
-                return browserApi.runtime.sendMessage;
-            }
-        })();
-
-        return {
-            onMessage,
-            sendMessage,
-        };
-    })();
-
-    return runtimeImpl;
+    return {
+        onMessage: browserApi.runtime.onMessage,
+        sendMessage: browserApi.runtime.sendMessage,
+    };
 })();
 
 // eslint-disable-next-line prefer-destructuring

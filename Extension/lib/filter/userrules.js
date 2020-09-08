@@ -25,8 +25,6 @@ import { antiBannerService } from './antibanner';
  * Class for manage user rules
  */
 export const userrules = (function () {
-    'use strict';
-
     /**
      * Synthetic user filter
      */

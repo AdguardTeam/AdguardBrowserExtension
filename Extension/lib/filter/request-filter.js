@@ -25,8 +25,6 @@ import { webRequestService } from './request-blocking';
 import { browserUtils } from '../utils/browser-utils';
 
 export const RequestFilter = (() => {
-    'use strict';
-
     /**
      * Simple request cache
      * @param requestCacheMaxSize Max cache size

@@ -20,8 +20,6 @@
  * @type {{start, stop, configure}}
  */
 (function (adguard, global) {
-    'use strict';
-
     function noOpFunc() {
     }
 

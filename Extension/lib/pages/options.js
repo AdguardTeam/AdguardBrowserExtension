@@ -136,8 +136,6 @@ const Utils = {
 };
 
 const TopMenu = (function () {
-    'use strict';
-
     const GENERAL_SETTINGS = '#general-settings';
     const ANTIBANNER = '#antibanner';
     const WHITELIST = '#whitelist';
@@ -430,8 +428,6 @@ const handleEditorResize = (editor, editorId) => {
 };
 
 const WhiteListFilter = function (options) {
-    'use strict';
-
     const editorId = 'whiteListRules';
     const editor = ace.edit(editorId);
     handleEditorResize(editor, editorId);
@@ -537,8 +533,6 @@ const WhiteListFilter = function (options) {
 };
 
 const UserFilter = function () {
-    'use strict';
-
     const editorId = 'userRules';
     const editor = ace.edit(editorId);
     editor.setShowPrintMargin(false);
@@ -636,8 +630,6 @@ const UserFilter = function () {
 };
 
 const AntiBannerFilters = function (options) {
-    'use strict';
-
     const loadedFiltersInfo = {
         filters: [],
         categories: [],
@@ -1632,8 +1624,6 @@ const AntiBannerFilters = function (options) {
 };
 
 const Settings = function () {
-    'use strict';
-
     const Checkbox = function (id, property, options) {
         options = options || {};
         const { negate } = options;

@@ -15,7 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// TODO fix scriptlets library to expose Redirects class
 import { redirects } from 'scriptlets';
 import { log } from '../../utils/log';
 import { resources } from '../../utils/resources';
