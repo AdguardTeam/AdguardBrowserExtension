@@ -71,7 +71,7 @@ export const genCommonConfig = (browserConfig) => {
                 {
                     test: /\.(js|jsx)$/,
                     exclude: /node_modules/,
-                    use: [{
+                    use: ['cache-loader', {
                         loader: 'babel-loader',
                         options: { babelrc: true },
                     }],
@@ -90,6 +90,7 @@ export const genCommonConfig = (browserConfig) => {
                 },
                 {
                     test: /\.(woff|woff2|eot|ttf|otf)$/,
+                    exclude: /node_modules/,
                     use: [
                         {
                             loader: 'file-loader',

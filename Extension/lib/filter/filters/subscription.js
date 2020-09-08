@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import CryptoJS from 'crypto-js';
+import MD5 from 'crypto-js/md5';
 import { listeners } from '../../notifier';
 import { log } from '../../utils/log';
 import { backend } from './service-client';
@@ -381,7 +381,7 @@ export const subscriptions = (() => {
      */
     const getChecksum = (rules) => {
         const rulesText = rules.join('\n');
-        return CryptoJS.MD5(rulesText).toString();
+        return MD5(rulesText).toString();
     };
 
     /**
