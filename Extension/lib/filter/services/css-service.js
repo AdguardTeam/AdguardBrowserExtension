@@ -125,7 +125,7 @@ export const cssService = (() => {
         const elemhideStyles = elemhideRules.map(x => addMarkerToElemhideRule(x));
         const injectStyles = injectRules.map(x => addMarkerToInjectRule(x));
 
-        return [...elemhideStyles, injectStyles];
+        return [...elemhideStyles, ...injectStyles];
     };
 
     return {

@@ -1,7 +1,7 @@
 /**
  * `adguard.localStorageImpl` implementation contains chrome API, so we can't use it in tests.
  *  As the decision, we write implementation for `adguard.localStorageImpl`
- *  using wingow.localStorage
+ *  using window.localStorage
  */
 adguard.localStorageImpl = (function () {
     const getItem = function (key) {

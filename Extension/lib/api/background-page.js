@@ -18,7 +18,6 @@
 /* eslint-disable max-len */
 
 import { browser } from '../browser';
-
 import { BACKGROUND_TAB_ID, RequestTypes } from '../utils/common';
 import { prefs } from '../prefs';
 import { parseContentTypeFromUrlPath, toTabFromChromeTab } from '../utils/temp';
@@ -62,10 +61,15 @@ export const backgroundPage = (() => {
     // Calculates scheme of this extension (e.g.: chrome-extension:// or moz-extension://)
     const extensionScheme = (function () {
         const url = browser.extension.getURL('');
+        if (!url) {
+            return url;
+        }
+
         const index = url.indexOf('://');
         if (index > 0) {
             return url.substring(0, index);
         }
+
         return url;
     })();
 

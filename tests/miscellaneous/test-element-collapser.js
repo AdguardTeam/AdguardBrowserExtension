@@ -1,4 +1,6 @@
+/* eslint-disable import/extensions */
 /* global ElementCollapser */
+import { ElementCollapser } from '../../Extension/lib/content-script/element-collapser.js';
 
 QUnit.test('Test Element Collapser', (assert) => {
     ElementCollapser.clear();
