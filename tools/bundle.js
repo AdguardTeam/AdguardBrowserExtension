@@ -74,6 +74,7 @@ const releasePlan = [
     bundleFirefoxAmo,
     bundleEdge,
     bundleOpera,
+    buildInfo,
 ];
 
 const runBuild = async (tasks) => {
