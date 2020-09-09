@@ -1,4 +1,4 @@
-/*! extended-css - v1.2.15 - Thu Sep 03 2020
+/*! extended-css - v1.3.0 - Tue Sep 08 2020
 * https://github.com/AdguardTeam/ExtendedCss
 * Copyright (c) 2020 AdGuard ; Licensed LGPL-3.0
 */
@@ -679,7 +679,8 @@ var ExtendedCss = (function () {
 
 
     var reMatchesCss = /\:(matches-css(?:-after|-before)?)\(([a-z-\s]*\:\s*\/(?:\\.|[^\/])*?\/\s*)\)/g;
-    var reContains = /:(?:-abp-)?(contains|has-text)\((\s*\/(?:\\.|[^\/])*?\/\s*)\)/g; // Note that we require `/` character in regular expressions to be escaped.
+    var reContains = /:(?:-abp-)?(contains|has-text)\((\s*\/(?:\\.|[^\/])*?\/\s*)\)/g;
+    var reScope = /\(\:scope >/g; // Note that we require `/` character in regular expressions to be escaped.
 
     /**
      * Used for pre-processing pseudo-classes values with above two regexes.
@@ -688,6 +689,8 @@ var ExtendedCss = (function () {
     var addQuotes = function addQuotes(_, c1, c2) {
       return ":".concat(c1, "(\"").concat(c2.replace(/["\\]/g, '\\$&'), "\")");
     };
+
+    var SCOPE_REPLACER = '(>';
     /**
      * Normalizes specified css text in a form that can be parsed by the
      * Sizzle engine.
@@ -699,11 +702,11 @@ var ExtendedCss = (function () {
      * @return {string}
      */
 
-
     var normalize = function normalize(cssText) {
       cssText = cssText.replace(reAttrFallback, evaluateMatch);
       cssText = cssText.replace(reMatchesCss, addQuotes);
       cssText = cssText.replace(reContains, addQuotes);
+      cssText = cssText.replace(reScope, SCOPE_REPLACER);
       return cssText;
     };
 
