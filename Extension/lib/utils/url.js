@@ -17,6 +17,7 @@
 
 /* eslint-disable camelcase, no-control-regex, max-len */
 
+import punycode from 'punycode';
 import { strings } from './strings';
 import { publicSuffixes } from './public-suffixes';
 
@@ -52,7 +53,7 @@ export const url = (function () {
             if (/^[\x00-\x7F]+$/.test(domain)) {
                 return domain;
             }
-            return global.punycode.toASCII(domain);
+            return punycode.toASCII(domain);
         },
 
         isThirdPartyRequest(requestUrl, referrer) {
