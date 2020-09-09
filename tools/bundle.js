@@ -5,6 +5,7 @@ import { BROWSERS, ENVS } from './constants';
 import { webpackConfig } from './bundle/webpack-config';
 import { crx } from './bundle/crx';
 import { xpi } from './bundle/xpi';
+import { buildInfo } from './bundle/build-info';
 
 const bundleChrome = () => {
     const config = webpackConfig(BROWSERS.CHROME);
@@ -52,6 +53,7 @@ const devPlan = [
     bundleEdge,
     bundleOpera,
     bundleSampleApi,
+    buildInfo,
 ];
 
 const betaPlan = [
@@ -62,7 +64,8 @@ const betaPlan = [
     bundleFirefoxXpi,
     bundleEdge,
     bundleOpera,
-    // TODO build sample api
+    bundleSampleApi,
+    buildInfo,
 ];
 
 const releasePlan = [

@@ -163,12 +163,6 @@ export const genCommonConfig = (browserConfig) => {
                 filename: 'pages/export.html',
                 chunks: ['pages/export'],
             }),
-            // TODO move this file creation to the separate script
-            new CreateFileWebpack({
-                path: path.join(BUILD_PATH, OUTPUT_PATH),
-                fileName: 'build.txt',
-                content: `version=${packageJson.version}`,
-            }),
             new CopyWebpackPlugin({
                 patterns: [
                     {
