@@ -6,7 +6,7 @@ export const firefoxManifest = {
     'applications': {
         'gecko': {
             'id': appId,
-            'strict_min_version': '52.0',
+            'strict_min_version': '57.0',
         },
     },
     'options_ui': {
