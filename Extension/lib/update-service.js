@@ -20,6 +20,12 @@ import { utils } from './utils/common';
 import { backgroundPage } from './api/background-page';
 import { log } from './utils/log';
 import { browserUtils } from './utils/browser-utils';
+import { filtersState } from './filter/filters/filters-state';
+import { subscriptions } from './filter/filters/subscription';
+import { rulesStorageImpl } from './rules-storage';
+import { localStorage, rulesStorage } from './storage';
+import { application } from './application';
+import { settings } from './settings/user-settings';
 
 /**
  * Service that manages extension version information and handles
@@ -140,7 +146,7 @@ export const applicationUpdateService = (function () {
                 log.info(`Found rules:${rules.length}`);
             }
 
-            adguard.rulesStorage.write(filterId, rules, onTransferCompleted);
+            rulesStorage.write(filterId, rules, onTransferCompleted);
         });
 
         dfd.resolve();
@@ -161,7 +167,7 @@ export const applicationUpdateService = (function () {
                 const key = keys.shift();
                 const lines = items[key] || [];
                 const linesLength = lines.length;
-                adguard.rulesStorageImpl.write(key, lines, () => {
+                rulesStorageImpl.write(key, lines, () => {
                     log.info('Adguard filter "{0}" has been migrated. Rules: {1}', key, linesLength);
                     browser.storage.local.remove(key);
                     writeFilterRules(keys, items);
@@ -184,7 +190,7 @@ export const applicationUpdateService = (function () {
             });
         }
 
-        if (adguard.rulesStorageImpl.isIndexedDB) {
+        if (rulesStorageImpl.isIndexedDB) {
             // Switch implementation to indexedDB
             migrate();
         } else {
@@ -204,7 +210,7 @@ export const applicationUpdateService = (function () {
         const dfd = new utils.Promise();
 
         const fixProperty = `edge-storage-local-fix-build${browserUtils.EDGE_CREATORS_UPDATE}`;
-        if (adguard.localStorage.getItem(fixProperty)) {
+        if (localStorage.getItem(fixProperty)) {
             dfd.resolve();
             return dfd;
         }
@@ -220,7 +226,7 @@ export const applicationUpdateService = (function () {
 
         function writeFilterRules() {
             if (keys.length === 0) {
-                adguard.localStorage.setItem(fixProperty, true);
+                localStorage.setItem(fixProperty, true);
                 dfd.resolve();
             } else {
                 const key = keys.shift();
@@ -229,7 +235,7 @@ export const applicationUpdateService = (function () {
                 if (value) {
                     lines = value.split(/[\r\n]+/);
                 }
-                adguard.rulesStorageImpl.write(key, lines, () => {
+                rulesStorageImpl.write(key, lines, () => {
                     localStorage.removeItem(key);
                     writeFilterRules();
                 });
@@ -244,21 +250,21 @@ export const applicationUpdateService = (function () {
     function handleUndefinedGroupStatuses() {
         const dfd = new utils.Promise();
 
-        const filters = adguard.subscriptions.getFilters();
+        const filters = subscriptions.getFilters();
 
-        const filtersState = adguard.filtersState.getFiltersState();
+        const filtersStateInfo = filtersState.getFiltersState();
 
         const enabledFilters = filters.filter((filter) => {
             const { filterId } = filter;
-            return !!(filtersState[filterId] && filtersState[filterId].enabled);
+            return !!(filtersStateInfo[filterId] && filtersStateInfo[filterId].enabled);
         });
 
-        const groupState = adguard.filtersState.getGroupsState();
+        const groupState = filtersStateInfo.getGroupsState();
 
         enabledFilters.forEach((filter) => {
             const { groupId } = filter;
             if (typeof groupState[groupId] === 'undefined') {
-                adguard.application.enableGroup(filter.groupId);
+                application.enableGroup(filter.groupId);
             }
         });
 
@@ -271,10 +277,10 @@ export const applicationUpdateService = (function () {
         const dfd = new utils.Promise();
         const previousDefaultValue = 48 * 60 * 60 * 1000;
 
-        const currentUpdatePeriod = adguard.settings.getFiltersUpdatePeriod();
+        const currentUpdatePeriod = settings.getFiltersUpdatePeriod();
 
         if (currentUpdatePeriod === previousDefaultValue) {
-            adguard.settings.setFiltersUpdatePeriod(adguard.settings.DEFAULT_FILTERS_UPDATE_PERIOD);
+            settings.setFiltersUpdatePeriod(settings.DEFAULT_FILTERS_UPDATE_PERIOD);
         }
 
         dfd.resolve();
@@ -288,12 +294,12 @@ export const applicationUpdateService = (function () {
     function onUpdateRuleConverter() {
         const dfd = new utils.Promise();
 
-        const filtersStateInfo = adguard.filtersState.getFiltersState();
+        const filtersStateInfo = filtersState.getFiltersState();
         const installedFiltersIds = Object.keys(filtersStateInfo)
             .map(filterId => Number.parseInt(filterId, 10));
 
         const reloadRulesPromises = installedFiltersIds.map(filterId => new Promise((resolve) => {
-            adguard.rulesStorage.read(filterId, (loadedRulesText) => {
+            rulesStorage.read(filterId, (loadedRulesText) => {
                 if (!loadedRulesText) {
                     loadedRulesText = [];
                 }
@@ -303,7 +309,7 @@ export const applicationUpdateService = (function () {
                 const converted = TSUrlFilter.RuleConverter.convertRules(loadedRulesText.join('\n')).split('\n');
 
                 log.debug('Saving {0} rules to filter {1}', converted.length, filterId);
-                adguard.rulesStorage.write(filterId, converted, () => {
+                rulesStorage.write(filterId, converted, () => {
                     resolve();
                 });
             });
@@ -323,8 +329,8 @@ export const applicationUpdateService = (function () {
     function handleObsoleteFiltersRemoval() {
         const dfd = new utils.Promise();
 
-        const filtersStateInfo = adguard.filtersState.getFiltersState();
-        const allFiltersMetadata = adguard.subscriptions.getFilters();
+        const filtersStateInfo = filtersState.getFiltersState();
+        const allFiltersMetadata = subscriptions.getFilters();
 
         const installedFiltersIds = Object.keys(filtersStateInfo)
             .map(filterId => Number.parseInt(filterId, 10));
@@ -337,10 +343,10 @@ export const applicationUpdateService = (function () {
             return !existingFiltersIds.includes(id);
         });
 
-        filtersIdsToRemove.forEach(filterId => adguard.filtersState.removeFilter(filterId));
+        filtersIdsToRemove.forEach(filterId => filtersState.removeFilter(filterId));
 
         const removePromises = filtersIdsToRemove.map(filterId => new Promise((resolve) => {
-            adguard.rulesStorage.remove(filterId, () => {
+            rulesStorage.remove(filterId, () => {
                 log.info(`Filter with id: ${filterId} removed from the storage`);
                 resolve();
             });
@@ -357,7 +363,8 @@ export const applicationUpdateService = (function () {
     /**
      * Async returns extension run info
      *
-     * @param callback Run info callback with passed object {{isFirstRun: boolean, isUpdate: (boolean|*), currentVersion: (Prefs.version|*), prevVersion: *}}
+     * @param callback Run info callback with passed object
+     * {{isFirstRun: boolean, isUpdate: (boolean|*), currentVersion: (Prefs.version|*), prevVersion: *}}
      */
     const getRunInfo = function (callback) {
         const prevVersion = browserUtils.getAppVersion();

@@ -17,6 +17,7 @@
 
 // We use chrome rules storage implementation as fallback as it based on storage.local
 import { rulesStorageImpl } from '../chrome/rules-storage';
+import { log } from '../../utils/log';
 
 /**
  * Filter rules storage implementation. Based on the indexedDB
@@ -33,7 +34,7 @@ const firefoxRulesStorageImpl = (function (initialAPI) {
     let database;
 
     function onError(error) {
-        adguard.console.error('Adguard rulesStorage error: {0}', error.error || error);
+        log.error('Adguard rulesStorage error: {0}', error.error || error);
     }
 
     /**

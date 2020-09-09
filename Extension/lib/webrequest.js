@@ -33,6 +33,7 @@ import { safebrowsing } from './filter/services/safebrowsing-filter';
 import { ui } from './ui-service';
 import { log } from './utils/log';
 import { browserUtils } from './utils/browser-utils';
+import { documentFilterService } from './filter/services/document-filter';
 
 // TODO add description
 const webrequestInit = function () {
@@ -195,7 +196,7 @@ const webrequestInit = function () {
         if (response && response.documentBlockedPage) {
             // Here we do not use redirectUrl because it is not working in firefox without specifying it
             // as the web_accessible_resources.
-            adguard.documentFilterService.showDocumentBlockPage(tabId, response.documentBlockedPage);
+            documentFilterService.showDocumentBlockPage(tabId, response.documentBlockedPage);
             return { cancel: true };
         }
 
@@ -220,7 +221,7 @@ const webrequestInit = function () {
      * @param {number} requestFrameId Id of a frame request was sent from
      * @param {string} requestUrl Request URL
      * @param {string} referrerUrl Referrer URL
-     * @param {string} requestType A member of adguard.RequestTypes
+     * @param {string} requestType A member of RequestTypes
      */
     function collapseElement(tabId, requestFrameId, requestUrl, referrerUrl, requestType) {
         if (!shouldUseInsertCSSAndExecuteScript) {

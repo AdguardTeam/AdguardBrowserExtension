@@ -6,6 +6,9 @@ import { ui } from '../../lib/ui-service';
 import { browser } from '../../lib/browser';
 import { contentMessageHandler } from '../../lib/content-message-handler';
 import { localStorage } from '../../lib/storage';
+import { documentFilterService } from '../../lib/filter/services/document-filter';
+import { safebrowsing } from '../../lib/filter/services/safebrowsing-filter';
+import { tabsApi } from '../../lib/tabs/tabs-api';
 
 // TODO move to separate module
 const browserActionSupported = typeof browser.browserAction.setIcon !== 'undefined';
@@ -22,7 +25,12 @@ requestSanitizer.init();
 localeDetect.init();
 contentMessageHandler.init();
 
-// Exposing for options page
 window.adguard = {
+    // exposed for options page
     localStorage,
+    // exposed for adBlockedPage
+    documentFilterService,
+    // exposed for safebrowsing
+    safebrowsing,
+    tabs: tabsApi.tabs,
 };
