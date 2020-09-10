@@ -13,7 +13,7 @@ fs.readFile(txtPath, 'utf8', (err, data) => {
     if (data) {
         const rules = data.split('\n');
         const json = JSON.stringify(rules);
-        fs.writeFile(jsPath, `var filtersFromTxt = ${json}`, (err) => {
+        fs.writeFile(jsPath, `export const filtersFromTxt = ${json}`, (err) => {
             if (err) {
                 console.log(err);
             }
