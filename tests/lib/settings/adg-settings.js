@@ -1,4 +1,4 @@
-const settingsJsonStr = JSON.stringify({
+export const adgSettings = JSON.stringify({
     'protocol-version': '1.0',
     'general-settings': {
         'app-language': 'en-GB',
