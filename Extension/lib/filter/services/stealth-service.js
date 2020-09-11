@@ -26,7 +26,6 @@ import { listeners } from '../../notifier';
 import { frames } from '../../tabs/frames';
 import { browserUtils } from '../../utils/browser-utils';
 
-// TODO can the line below to be removed?
 // TODO: [TSUrlFilter] Use TSURLFilter stealthService
 
 // TODO add description

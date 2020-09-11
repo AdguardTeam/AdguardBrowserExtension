@@ -27,7 +27,6 @@ export const backgroundPage = (() => {
     const runtime = (function () {
         const onMessage = {
             addListener(callback) {
-                // TODO check this calls adguard.runtimeImpl && adguard.tabsImpl
                 // https://developer.chrome.com/extensions/runtime#event-onMessage
                 runtimeImpl.onMessage.addListener((message, sender, sendResponse) => {
                     const senderOverride = Object.create(null);

@@ -15,11 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { utils } from '../../utils/common';
 import { subscriptions } from './subscription';
 import { listeners } from '../../notifier';
 import { backend } from './service-client';
-// TODO figure out how to fix cycle dependencies
 import { antiBannerService } from '../antibanner';
 import { log } from '../../utils/log';
 import { settings } from '../../settings/user-settings';

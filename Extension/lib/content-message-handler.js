@@ -15,7 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// TODO check if it is possible to import TSUrlFilter as named expression import { TSUrlFilter } from '...
 import * as TSUrlFilter from '@adguard/tsurlfilter';
 import { settingsProvider } from './settings/settings-provider';
 import { backgroundPage } from './api/background-page';

@@ -331,7 +331,7 @@ const webrequestInit = function () {
             filterSafebrowsing(tab, requestUrl);
         }
 
-        // TODO figure out when content filtering wasn't accessible
+        // Content filtering will be undefined for chromium based builds
         if (contentFiltering) {
             const replaceRules = webRequestService.getReplaceRules(tab, requestUrl, referrerUrl, requestType) || [];
             const htmlRules = webRequestService.getContentRules(tab, referrerUrl) || [];

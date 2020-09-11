@@ -17,7 +17,6 @@
 
 import { runtimeImpl } from '../common-script';
 
-// TODO check if strings are translated (i18n)
 export const contentPage = {
     sendMessage: runtimeImpl.sendMessage,
     onMessage: runtimeImpl.onMessage,

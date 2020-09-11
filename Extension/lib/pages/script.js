@@ -15,7 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { i18n } from '../common-script';
 import { contentPage } from '../content-script/content-script';
 
 /**
@@ -83,7 +82,7 @@ export const CheckboxUtils = (function () {
      * @param {boolean} checked
      */
     const updateCheckbox = function (elements, checked) {
-        Array.prototype.forEach.call(elements, function (el) {
+        Array.prototype.forEach.call(elements, (el) => {
             if (!el || el.checked === checked) {
                 return;
             }
@@ -101,30 +100,10 @@ export const CheckboxUtils = (function () {
     };
 
     return {
-        toggleCheckbox: toggleCheckbox,
-        updateCheckbox: updateCheckbox,
+        toggleCheckbox,
+        updateCheckbox,
     };
 })();
-
-// TODO seems that this one can be removed
-export function customizePopupFooter(isMacOs) {
-    // fix title
-    let messageId = isMacOs ? 'thankyou_want_full_protection_mac' : 'thankyou_want_full_protection';
-    let title = document.querySelector('.thanks-prefooter .thanks-prefooter-title');
-    i18n.translateElement(title, messageId);
-
-    // fix title in table
-    messageId = isMacOs ? 'thankyou_compare_full_title_mac' : 'thankyou_compare_full_title';
-    title = document.querySelector('.thanks-prefooter .thanks-prefooter-table .tpt-head-full');
-    i18n.translateElement(title, messageId);
-
-    // hide parental control feature for mac os
-    if (isMacOs) {
-        document.querySelector('.parental-control-feature').style.display = 'none';
-    } else {
-        document.querySelector('.parental-control-feature').style.display = '';
-    }
-}
 
 /**
  * Used to receive notifications from background page
@@ -138,7 +117,7 @@ export function createEventListener(events, callback, onUnloadCallback) {
     }
 
     let listenerId;
-    contentPage.sendMessage({ type: 'addEventListener', events: events }, function (response) {
+    contentPage.sendMessage({ type: 'addEventListener', events }, (response) => {
         listenerId = response.listenerId;
     });
 
@@ -150,7 +129,7 @@ export function createEventListener(events, callback, onUnloadCallback) {
 
     const onUnload = function () {
         if (listenerId) {
-            contentPage.sendMessage({ type: 'removeListener', listenerId: listenerId });
+            contentPage.sendMessage({ type: 'removeListener', listenerId });
             listenerId = null;
             if (typeof onUnloadCallback === 'function') {
                 onUnloadCallback();

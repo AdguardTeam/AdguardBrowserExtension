@@ -542,18 +542,6 @@ export const preload = (function () {
         tryLoadCssAndScripts();
     };
 
-    // TODO check why this function is not used anywhere?
-    /**
-     * Called when document become visible.
-     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/159
-     */
-    const onVisibilityChange = function () {
-        if (document.hidden === false) {
-            document.removeEventListener('visibilitychange', onVisibilityChange);
-            init();
-        }
-    };
-
     return {
         init,
     };

@@ -3,8 +3,6 @@ const errorFunction = () => {
     throw new Error('Seems like webpack didn\'t inject proper rules storage implementation');
 };
 
-const noop = () => {};
-
 export const rulesStorageImpl = (() => {
     return {
         /**

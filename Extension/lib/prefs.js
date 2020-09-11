@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// TODO check work of this module in the firefox
-
 import { adguard } from './adguard';
 import { backgroundPage } from './api/background-page';
 
