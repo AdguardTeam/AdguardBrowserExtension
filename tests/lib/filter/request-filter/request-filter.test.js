@@ -732,9 +732,9 @@ describe('RequestFilter', () => {
             expect(rule).toBeFalsy();
         });
 
-        // // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1534
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1534
         // eslint-disable-next-line max-len
-        it('In case request has "DOCUMENT" type - $domain modifier will match as well request URL hostname', async () => {
+        it('In case request has "DOCUMENT" type - $domain modifier will match as well request URL hostname 2', async () => {
             const urlRuleText = '|http://$third-party,domain=example.org';
             const requestFilter = await createRequestFilterWithRules([urlRuleText]);
 

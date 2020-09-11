@@ -24,10 +24,7 @@ const THANKYOU_PATH = path.resolve(__dirname, '../../Extension/pages/thankyou');
 
 const OUTPUT_PATH = config.outputPath;
 
-// TODO build sample extension with api
 // TODO in dev build use sourcemaps while in prod no
-// TODO fix tests
-// TODO remove gulp
 // TODO prepare zip artifacts
 export const genCommonConfig = (browserConfig) => {
     return {

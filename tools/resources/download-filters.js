@@ -39,8 +39,6 @@ const getUrlsOfFiltersResources = (browser) => {
         file: 'filters_i18n.json',
     });
 
-    // TODO update filters list to download
-    // list of filters is here https://github.com/AdguardTeam/FiltersRegistry/tree/master/filters
     for (let i = 1; i <= LAST_ADGUARD_FILTER_ID; i += 1) {
         filters.push({
             url: FILTER_DOWNLOAD_URL_FORMAT.replace('%browser', browser).replace('%filter', i),
