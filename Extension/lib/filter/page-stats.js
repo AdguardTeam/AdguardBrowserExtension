@@ -18,12 +18,12 @@
 /* eslint-disable max-len */
 
 import { backgroundPage } from '../api/background-page';
-import { adguard } from '../adguard';
 import { localStorage } from '../storage';
 import { utils } from '../utils/common';
 import { subscriptions } from './filters/subscription';
 import { prefs } from '../prefs';
 import { log } from '../utils/log';
+import { lazyGet, lazyGetClear } from '../helpers';
 
 /**
  * Global stats
@@ -48,7 +48,7 @@ export const pageStats = (function () {
          * @private
          */
         get stats() {
-            return adguard.lazyGet(pageStatsHolder, 'stats', () => {
+            return lazyGet(pageStatsHolder, 'stats', () => {
                 let stats;
                 try {
                     const json = localStorage.getItem(pageStatisticProperty);
@@ -68,7 +68,7 @@ export const pageStats = (function () {
 
         clear() {
             localStorage.removeItem(pageStatisticProperty);
-            adguard.lazyGetClear(pageStatsHolder, 'stats');
+            lazyGetClear(pageStatsHolder, 'stats');
         },
     };
 

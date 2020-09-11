@@ -16,9 +16,9 @@
  */
 
 import { backgroundPage } from '../api/background-page';
-import { adguard } from '../adguard';
 import { tabsApi } from '../tabs/tabs-api';
 import { uiService } from '../ui-service';
+import { lazyGet } from '../helpers';
 
 /**
  * Object that manages user settings.
@@ -66,7 +66,7 @@ export const notifications = (function () {
         to: '1 January 2020 00:00:00',
         type: 'animated',
         get icons() {
-            return adguard.lazyGet(newYearNotification, 'icons', () => ({
+            return lazyGet(newYearNotification, 'icons', () => ({
                 ICON_GREEN: {
                     '19': backgroundPage.getURL('icons/green-19-ny.png'),
                     '38': backgroundPage.getURL('icons/green-38-ny.png'),

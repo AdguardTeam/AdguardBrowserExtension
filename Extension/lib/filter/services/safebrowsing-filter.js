@@ -25,7 +25,7 @@ import { backgroundPage } from '../../api/background-page';
 import { backend } from '../filters/service-client';
 import { settings } from '../../settings/user-settings';
 import { LruCache } from '../../utils/lru-cache';
-import { adguard } from '../../adguard';
+import { lazyGet } from '../../helpers';
 
 /**
  * Initializing SafebrowsingFilter.
@@ -36,7 +36,7 @@ export const safebrowsing = (function () {
     // Lazy initialized safebrowsing cache
     const safebrowsingCache = {
         get cache() {
-            return adguard.lazyGet(safebrowsingCache, 'cache', () => new LruCache('sb-lru-cache'));
+            return lazyGet(safebrowsingCache, 'cache', () => new LruCache('sb-lru-cache'));
         },
     };
 

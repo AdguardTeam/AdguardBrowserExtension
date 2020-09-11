@@ -22,8 +22,8 @@ import { prefs } from '../prefs';
 import { listeners } from '../notifier';
 import { log } from '../utils/log';
 import { localStorage } from '../storage';
-import { adguard } from '../adguard';
 import { browserUtils } from '../utils/browser-utils';
+import { lazyGet } from '../helpers';
 
 /**
  * Object that manages user settings.
@@ -69,7 +69,7 @@ export const settings = (() => {
      */
     const defaultProperties = {
         get defaults() {
-            return adguard.lazyGet(this, 'defaults', () => {
+            return lazyGet(this, 'defaults', () => {
                 // Initialize default properties
                 const defaults = Object.create(null);
                 for (const name in settings) {

@@ -17,11 +17,11 @@
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
 import { utils } from '../utils/common';
-import { adguard } from '../adguard';
 import { settings } from '../settings/user-settings';
 import { localStorage } from '../storage';
 import { listeners } from '../notifier';
 import { log } from '../utils/log';
+import { lazyGet, lazyGetClear } from '../helpers';
 
 export const whitelist = (() => {
     const WHITE_LIST_DOMAINS_LS_PROP = 'white-list-domains';
@@ -44,7 +44,7 @@ export const whitelist = (() => {
      */
     const whiteListDomainsHolder = {
         get domains() {
-            return adguard.lazyGet(whiteListDomainsHolder, 'domains', () => {
+            return lazyGet(whiteListDomainsHolder, 'domains', () => {
                 return getDomainsFromLocalStorage(WHITE_LIST_DOMAINS_LS_PROP);
             });
         },
@@ -60,7 +60,7 @@ export const whitelist = (() => {
 
     const blockListDomainsHolder = {
         get domains() {
-            return adguard.lazyGet(blockListDomainsHolder, 'domains', () => {
+            return lazyGet(blockListDomainsHolder, 'domains', () => {
                 return getDomainsFromLocalStorage(BLOCK_LIST_DOMAINS_LS_PROP);
             });
         },
@@ -286,7 +286,7 @@ export const whitelist = (() => {
      */
     var clearWhiteListed = function () {
         localStorage.removeItem(WHITE_LIST_DOMAINS_LS_PROP);
-        adguard.lazyGetClear(whiteListDomainsHolder, 'domains');
+        lazyGetClear(whiteListDomainsHolder, 'domains');
     };
 
     /**
@@ -294,7 +294,7 @@ export const whitelist = (() => {
      */
     var clearBlockListed = function () {
         localStorage.removeItem(BLOCK_LIST_DOMAINS_LS_PROP);
-        adguard.lazyGetClear(blockListDomainsHolder, 'domains');
+        lazyGetClear(blockListDomainsHolder, 'domains');
     };
 
     /**
@@ -345,8 +345,8 @@ export const whitelist = (() => {
          * To prevent it we should clear cached values
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/933
          */
-        adguard.lazyGetClear(whiteListDomainsHolder, 'domains');
-        adguard.lazyGetClear(blockListDomainsHolder, 'domains');
+        lazyGetClear(whiteListDomainsHolder, 'domains');
+        lazyGetClear(blockListDomainsHolder, 'domains');
     };
 
     return {

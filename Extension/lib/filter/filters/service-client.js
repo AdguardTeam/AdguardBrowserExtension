@@ -22,7 +22,7 @@ import { prefs } from '../../prefs';
 import { log } from '../../utils/log';
 import { subscriptions } from './subscription';
 import { browserUtils } from '../../utils/browser-utils';
-import { adguard } from '../../adguard';
+import { lazyGet } from '../../helpers';
 
 export const backend = (function () {
     /**
@@ -47,7 +47,7 @@ export const backend = (function () {
 
         // Url for load filters metadata and rules
         get filtersUrl() {
-            return adguard.lazyGet(this, 'filtersUrl', () => {
+            return lazyGet(this, 'filtersUrl', () => {
                 if (browserUtils.isFirefoxBrowser()) {
                     return 'https://filters.adtidy.org/extension/firefox';
                 } if (browserUtils.isEdgeBrowser()) {

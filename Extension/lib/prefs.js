@@ -15,8 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { adguard } from './adguard';
 import { backgroundPage } from './api/background-page';
+import { lazyGet } from './helpers';
 
 /**
  * Extension global preferences.
@@ -25,13 +25,13 @@ export const prefs = (() => {
     const Prefs = {
 
         get mobile() {
-            return adguard.lazyGet(Prefs, 'mobile', () => navigator.userAgent.indexOf('Android') >= 0);
+            return lazyGet(Prefs, 'mobile', () => navigator.userAgent.indexOf('Android') >= 0);
         },
 
         platform: 'chromium',
 
         get browser() {
-            return adguard.lazyGet(Prefs, 'browser', () => {
+            return lazyGet(Prefs, 'browser', () => {
                 let browser;
                 let { userAgent } = navigator;
                 userAgent = userAgent.toLowerCase();
@@ -54,14 +54,14 @@ export const prefs = (() => {
         },
 
         get chromeVersion() {
-            return adguard.lazyGet(Prefs, 'chromeVersion', () => {
+            return lazyGet(Prefs, 'chromeVersion', () => {
                 const match = /\sChrome\/(\d+)\./.exec(navigator.userAgent);
                 return match === null ? null : Number.parseInt(match[1], 10);
             });
         },
 
         get firefoxVersion() {
-            return adguard.lazyGet(Prefs, 'firefoxVersion', () => {
+            return lazyGet(Prefs, 'firefoxVersion', () => {
                 const match = /\sFirefox\/(\d+)\./.exec(navigator.userAgent);
                 return match === null ? null : Number.parseInt(match[1], 10);
             });
@@ -72,7 +72,7 @@ export const prefs = (() => {
          * @returns {*}
          */
         get edgeVersion() {
-            return adguard.lazyGet(Prefs, 'edgeVersion', function () {
+            return lazyGet(Prefs, 'edgeVersion', function () {
                 if (this.browser === 'Edge') {
                     const { userAgent } = navigator;
                     const i = userAgent.indexOf('Edge/');
@@ -100,7 +100,7 @@ export const prefs = (() => {
         },
 
         get ICONS() {
-            return adguard.lazyGet(Prefs, 'ICONS', () => ({
+            return lazyGet(Prefs, 'ICONS', () => ({
                 ICON_GREEN: {
                     '19': backgroundPage.getURL('assets/icons/green-19.png'),
                     '38': backgroundPage.getURL('assets/icons/green-38.png'),

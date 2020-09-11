@@ -15,13 +15,13 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { adguard } from '../../adguard';
 import { localStorage } from '../../storage';
 import { settings } from '../../settings/user-settings';
 import { application } from '../../application';
 import { backend } from '../filters/service-client';
 import { log } from '../../utils/log';
 import { utils } from '../../utils/common';
+import { lazyGetClear, lazyGet } from '../../helpers';
 
 /**
  * This module is used to store and track ad filters usage stats.
@@ -40,7 +40,7 @@ export const hitStats = (function () {
      */
     var hitStatsHolder = {
         get hitStats() {
-            return adguard.lazyGet(hitStatsHolder, 'hitStats', getHitCountStats);
+            return lazyGet(hitStatsHolder, 'hitStats', getHitCountStats);
         },
     };
 
@@ -173,7 +173,7 @@ export const hitStats = (function () {
      */
     function cleanup() {
         localStorage.removeItem(HITS_COUNT_PROP);
-        adguard.lazyGetClear(hitStatsHolder, 'hitStats');
+        lazyGetClear(hitStatsHolder, 'hitStats');
     }
 
     /**

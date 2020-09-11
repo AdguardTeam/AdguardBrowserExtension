@@ -16,18 +16,18 @@
  */
 
 import { utils } from '../../utils/common';
-import { adguard } from '../../adguard';
 import { backgroundPage } from '../../api/background-page';
 import { tabsApi } from '../../tabs/tabs-api';
 import { uiService } from '../../ui-service';
 import { frames } from '../../tabs/frames';
 import { ExpiringCache } from '../../utils/expiring-cache';
 import { browserUtils } from '../../utils/browser-utils';
+import { lazyGet } from '../../helpers';
 
 export const documentFilterService = (function () {
     const trustedCache = {
         get cache() {
-            return adguard.lazyGet(
+            return lazyGet(
                 trustedCache,
                 'cache',
                 () => new ExpiringCache('document-block-cache')
