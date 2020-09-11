@@ -7,7 +7,6 @@ import { devtools } from '../../lib/content-script/devtools/devtools';
 
 import { startAssistant } from '../../lib/content-script/assistant/start-assistant';
 
-// TODO check work of assistant
 startAssistant();
 
 /* @if devtools == true */

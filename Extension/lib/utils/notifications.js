@@ -18,7 +18,7 @@
 import { backgroundPage } from '../api/background-page';
 import { adguard } from '../adguard';
 import { tabsApi } from '../tabs/tabs-api';
-import { ui } from '../ui-service';
+import { uiService } from '../ui-service';
 
 /**
  * Object that manages user settings.
@@ -181,7 +181,7 @@ export const notifications = (function () {
             if (!viewedNotifications.includes(id)) {
                 viewedNotifications.push(id);
                 localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
-                tabsApi.tabs.getActive(ui.updateTabIconAndContextMenu);
+                tabsApi.tabs.getActive(uiService.updateTabIconAndContextMenu);
                 currentNotification = null;
             }
         }

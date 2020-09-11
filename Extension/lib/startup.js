@@ -20,7 +20,7 @@ import { backgroundPage } from './api/background-page';
 import { rulesStorage, localStorage } from './storage';
 import { whitelist } from './filter/whitelist';
 import { filteringLog } from './filter/filtering-log';
-import { ui } from './ui-service';
+import { uiService } from './ui-service';
 import { application } from './application';
 
 /**
@@ -52,7 +52,7 @@ export const startup = function () {
 
         whitelist.init();
         filteringLog.init();
-        ui.init();
+        uiService.init();
 
         /**
          * Start application
@@ -63,7 +63,7 @@ export const startup = function () {
                 /**
                  * Show UI installation page
                  */
-                ui.openFiltersDownloadPage();
+                uiService.openFiltersDownloadPage();
 
                 // Retrieve filters and install them
                 application.offerFilters((filterIds) => {

@@ -8,4 +8,6 @@ const resources = async () => {
     await updatePublicSuffixes();
 };
 
-resources();
+(async () => {
+    await resources();
+})();

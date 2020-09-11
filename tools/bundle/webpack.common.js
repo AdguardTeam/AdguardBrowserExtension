@@ -2,13 +2,11 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
-import CreateFileWebpack from 'create-file-webpack';
 import path from 'path';
 import { NormalModuleReplacementPlugin } from 'webpack';
 
 import { BROWSERS, BUILD_PATH } from '../constants';
 import { getEnvConf, updateLocalesMSGName } from '../helpers';
-import packageJson from '../../package.json';
 
 const config = getEnvConf(process.env.BUILD_ENV);
 

@@ -19,7 +19,7 @@ import { utils } from '../../utils/common';
 import { adguard } from '../../adguard';
 import { backgroundPage } from '../../api/background-page';
 import { tabsApi } from '../../tabs/tabs-api';
-import { ui } from '../../ui-service';
+import { uiService } from '../../ui-service';
 import { frames } from '../../tabs/frames';
 import { ExpiringCache } from '../../utils/expiring-cache';
 import { browserUtils } from '../../utils/browser-utils';
@@ -98,7 +98,7 @@ export const documentFilterService = (function () {
             // Chrome doesn't allow to show extension pages in incognito mode
             if (browserUtils.isChromium() && incognitoTab) {
                 // Closing tab before opening a new one may lead to browser crash (Chromium)
-                ui.openTab(url, {}, () => {
+                uiService.openTab(url, {}, () => {
                     tabsApi.tabs.remove(tabId);
                 });
             } else {

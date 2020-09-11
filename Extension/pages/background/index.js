@@ -2,7 +2,7 @@ import { start } from '../../lib/start';
 import { webrequest } from '../../lib/webrequest';
 import { requestSanitizer } from '../../lib/filter/request-sanitizer';
 import { localeDetect } from '../../lib/filter/services/locale-detect';
-import { ui } from '../../lib/ui-service';
+import { uiService } from '../../lib/ui-service';
 import { browser } from '../../lib/browser';
 import { contentMessageHandler } from '../../lib/content-message-handler';
 import { localStorage } from '../../lib/storage';
@@ -15,7 +15,7 @@ const browserActionSupported = typeof browser.browserAction.setIcon !== 'undefin
 if (!browserActionSupported && browser.browserAction.onClicked) {
     // Open settings menu
     browser.browserAction.onClicked.addListener(() => {
-        ui.openSettingsTab();
+        uiService.openSettingsTab();
     });
 }
 

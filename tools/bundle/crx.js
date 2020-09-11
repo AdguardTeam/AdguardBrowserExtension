@@ -45,7 +45,6 @@ export const crx = async (browser) => {
     const crxBuffer = await crx.pack();
     const updateXml = await crx.generateUpdateXML();
 
-    // TODO adjust for opera
     const crxBuildPath = path.join(envBuildPath, 'chrome.crx');
     const updateXmlPath = path.join(envBuildPath, 'update.xml');
     await fs.writeFile(crxBuildPath, crxBuffer);

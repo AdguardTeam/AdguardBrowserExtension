@@ -33,8 +33,7 @@ import { browserUtils } from './utils/browser-utils';
 import { log } from './utils/log';
 import { runtimeImpl } from './common-script';
 
-// TODO rename to uiService
-export const ui = (function () {
+export const uiService = (function () {
     const browserActionTitle = backgroundPage.i18n.getMessage('name');
 
     const contextMenuCallbackMappings = {

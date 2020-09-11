@@ -30,12 +30,11 @@ import { webRequestService } from './filter/request-blocking';
 import { stealthService } from './filter/services/stealth-service';
 import { contentFiltering } from './content-filtering';
 import { safebrowsing } from './filter/services/safebrowsing-filter';
-import { ui } from './ui-service';
+import { uiService } from './ui-service';
 import { log } from './utils/log';
 import { browserUtils } from './utils/browser-utils';
 import { documentFilterService } from './filter/services/document-filter';
 
-// TODO add description
 const webrequestInit = function () {
     const CSP_HEADER_NAME = 'Content-Security-Policy';
 
@@ -456,7 +455,7 @@ const webrequestInit = function () {
             // So close current tab and open new
             if (browserUtils.isChromium() && incognitoTab) {
                 // Closing tab before opening a new one may lead to browser crash (Chromium)
-                ui.openTab(safebrowsingUrl, {}, () => {
+                uiService.openTab(safebrowsingUrl, {}, () => {
                     tabsApi.tabs.remove(tab.tabId);
                 });
             } else {

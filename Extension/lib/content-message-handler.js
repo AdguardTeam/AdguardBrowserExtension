@@ -25,7 +25,7 @@ import { userrules } from './filter/userrules';
 import { notifications } from './utils/notifications';
 import { localStorage } from './storage';
 import { tabsApi } from './tabs/tabs-api';
-import { ui } from './ui-service';
+import { uiService } from './ui-service';
 import { browserUtils } from './utils/browser-utils';
 import { frames } from './tabs/frames';
 import { safebrowsing } from './filter/services/safebrowsing-filter';
@@ -215,7 +215,7 @@ const init = () => {
                 userrules.removeRule(message.ruleText);
                 break;
             case 'checkAntiBannerFiltersUpdate':
-                ui.checkFiltersUpdates();
+                uiService.checkFiltersUpdates();
                 break;
             case 'loadCustomFilterInfo':
                 application.loadCustomFilterInfo(message.url, { title: message.title }, (filter) => {
@@ -244,16 +244,16 @@ const init = () => {
                 settings.setFiltersUpdatePeriod(message.updatePeriod);
                 break;
             case 'openThankYouPage':
-                ui.openThankYouPage();
+                uiService.openThankYouPage();
                 break;
             case 'openExtensionStore':
-                ui.openExtensionStore();
+                uiService.openExtensionStore();
                 break;
             case 'openFilteringLog':
-                ui.openFilteringLog(message.tabId);
+                uiService.openFilteringLog(message.tabId);
                 break;
             case 'openExportRulesTab':
-                ui.openExportRulesTab(message.hash);
+                uiService.openExportRulesTab(message.hash);
                 break;
             case 'openSafebrowsingTrusted':
                 safebrowsing.addToSafebrowsingTrusted(message.url);
@@ -262,7 +262,7 @@ const init = () => {
                 });
                 break;
             case 'openTab':
-                ui.openTab(message.url, message.options);
+                uiService.openTab(message.url, message.options);
                 break;
             case 'resetBlockedAdsCount':
                 frames.resetBlockedAdsCount();
@@ -352,37 +352,37 @@ const init = () => {
                     title,
                     url,
                 };
-                ui.openSettingsTab('antibanner0', hashOptions);
+                uiService.openSettingsTab('antibanner0', hashOptions);
                 break;
             }
             case 'showAlertMessagePopup':
-                ui.showAlertMessagePopup(message.title, message.text);
+                uiService.showAlertMessagePopup(message.title, message.text);
                 break;
             // Popup methods
             case 'addWhiteListDomainPopup':
                 tabsApi.tabs.getActive((tab) => {
-                    ui.whiteListTab(tab);
+                    uiService.whiteListTab(tab);
                 });
                 break;
             case 'removeWhiteListDomainPopup':
                 tabsApi.tabs.getActive((tab) => {
-                    ui.unWhiteListTab(tab);
+                    uiService.unWhiteListTab(tab);
                 });
                 break;
             case 'changeApplicationFilteringDisabled':
-                ui.changeApplicationFilteringDisabled(message.disabled);
+                uiService.changeApplicationFilteringDisabled(message.disabled);
                 break;
             case 'openSiteReportTab':
-                ui.openSiteReportTab(message.url);
+                uiService.openSiteReportTab(message.url);
                 break;
             case 'openAbuseTab':
-                ui.openAbuseTab(message.url);
+                uiService.openAbuseTab(message.url);
                 break;
             case 'openSettingsTab':
-                ui.openSettingsTab();
+                uiService.openSettingsTab();
                 break;
             case 'openAssistant':
-                ui.openAssistant();
+                uiService.openAssistant();
                 break;
             case 'getTabInfoForPopup':
                 tabsApi.tabs.getActive((tab) => {
