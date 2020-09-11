@@ -28,7 +28,12 @@ import { browserUtils } from '../../utils/browser-utils';
 
 // TODO: [TSUrlFilter] Use TSURLFilter stealthService
 
-// TODO add description
+/**
+ * Class to apply stealth settings
+ * - Cookie
+ * - Headers
+ * - WebRTC
+ */
 export const stealthService = (() => {
     /**
      * Search engines regexps
