@@ -32,5 +32,5 @@ window.adguard = {
     documentFilterService,
     // exposed for safebrowsing
     safebrowsing,
-    tabs: tabsApi.tabs,
+    tabs: tabsApi,
 };

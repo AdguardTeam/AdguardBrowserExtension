@@ -83,8 +83,8 @@ export const documentFilterService = (function () {
             }
             trustedCache.cache.saveValue(host, { host }, Date.now() + TRUSTED_TTL_MS);
             // Reloads ad-blocked page with trusted url
-            tabsApi.tabs.getActive((tab) => {
-                tabsApi.tabs.reload(tab.tabId, url);
+            tabsApi.getActive((tab) => {
+                tabsApi.reload(tab.tabId, url);
             });
         };
 
@@ -99,10 +99,10 @@ export const documentFilterService = (function () {
             if (browserUtils.isChromium() && incognitoTab) {
                 // Closing tab before opening a new one may lead to browser crash (Chromium)
                 uiService.openTab(url, {}, () => {
-                    tabsApi.tabs.remove(tabId);
+                    tabsApi.remove(tabId);
                 });
             } else {
-                tabsApi.tabs.updateUrl(tabId, url);
+                tabsApi.updateUrl(tabId, url);
             }
         };
 

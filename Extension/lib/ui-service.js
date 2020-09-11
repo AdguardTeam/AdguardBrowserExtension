@@ -44,20 +44,20 @@ export const uiService = (function () {
             openAssistant(true);
         },
         'context_security_report': function () {
-            tabsApi.tabs.getActive((tab) => {
+            tabsApi.getActive((tab) => {
                 openSiteReportTab(tab.url);
             });
         },
         'context_complaint_website': function () {
-            tabsApi.tabs.getActive((tab) => {
+            tabsApi.getActive((tab) => {
                 openAbuseTab(tab.url);
             });
         },
         'context_site_filtering_on': function () {
-            tabsApi.tabs.getActive(unWhiteListTab);
+            tabsApi.getActive(unWhiteListTab);
         },
         'context_site_filtering_off': function () {
-            tabsApi.tabs.getActive(whiteListTab);
+            tabsApi.getActive(whiteListTab);
         },
         'context_enable_protection': function () {
             changeApplicationFilteringDisabled(false);
@@ -365,9 +365,9 @@ export const uiService = (function () {
     }
 
     function closeAllPages() {
-        tabsApi.tabs.forEach((tab) => {
+        tabsApi.forEach((tab) => {
             if (tab.url.indexOf(backgroundPage.getURL('')) >= 0) {
-                tabsApi.tabs.remove(tab.tabId);
+                tabsApi.remove(tab.tabId);
             }
         });
     }
@@ -384,8 +384,8 @@ export const uiService = (function () {
     };
 
     function showAlertMessagePopup(title, text) {
-        tabsApi.tabs.getActive((tab) => {
-            tabsApi.tabs.sendMessage(tab.tabId, {
+        tabsApi.getActive((tab) => {
+            tabsApi.sendMessage(tab.tabId, {
                 type: 'show-alert-popup',
                 isAdguardTab: isAdguardTab(tab),
                 title,
@@ -434,9 +434,9 @@ export const uiService = (function () {
             disableNotificationText: backgroundPage.i18n.getMessage('options_popup_version_update_disable_notification'),
         };
 
-        tabsApi.tabs.getActive((tab) => {
+        tabsApi.getActive((tab) => {
             message.isAdguardTab = isAdguardTab(tab);
-            tabsApi.tabs.sendMessage(tab.tabId, message);
+            tabsApi.sendMessage(tab.tabId, message);
         });
     }
 
@@ -611,7 +611,7 @@ export const uiService = (function () {
     var openFilteringLog = function (tabId) {
         const options = { activateSameTab: true, type: 'popup' };
         if (!tabId) {
-            tabsApi.tabs.getActive((tab) => {
+            tabsApi.getActive((tab) => {
                 const { tabId } = tab;
                 // TODO extract into constants
                 openTab(getPageUrl('filtering-log.html') + (tabId ? `#${tabId}` : ''), options);
@@ -630,16 +630,16 @@ export const uiService = (function () {
         // TODO move url in constants
         const filtersDownloadUrl = getPageUrl('filter-download.html');
 
-        tabsApi.tabs.getAll((tabs) => {
+        tabsApi.getAll((tabs) => {
             // Finds the filter-download page and reload it within the thank-you page URL
             for (let i = 0; i < tabs.length; i++) {
                 const tab = tabs[i];
                 if (tab.url === filtersDownloadUrl) {
                     // In YaBrowser don't activate found page
                     if (!browserUtils.isYaBrowser()) {
-                        tabsApi.tabs.activate(tab.tabId);
+                        tabsApi.activate(tab.tabId);
                     }
-                    tabsApi.tabs.reload(tab.tabId, thankyouUrl);
+                    tabsApi.reload(tab.tabId, thankyouUrl);
                     return;
                 }
             }
@@ -660,21 +660,21 @@ export const uiService = (function () {
         const tabInfo = frames.getFrameInfo(tab);
         whitelist.whiteListUrl(tabInfo.url);
         updateTabIconAndContextMenu(tab, true);
-        tabsApi.tabs.reload(tab.tabId);
+        tabsApi.reload(tab.tabId);
     };
 
     var unWhiteListTab = function (tab) {
         const tabInfo = frames.getFrameInfo(tab);
         userrules.unWhiteListFrame(tabInfo);
         updateTabIconAndContextMenu(tab, true);
-        tabsApi.tabs.reload(tab.tabId);
+        tabsApi.reload(tab.tabId);
     };
 
     var changeApplicationFilteringDisabled = function (disabled) {
         settings.changeFilteringDisabled(disabled);
-        tabsApi.tabs.getActive((tab) => {
+        tabsApi.getActive((tab) => {
             updateTabIconAndContextMenu(tab, true);
-            tabsApi.tabs.reload(tab.tabId);
+            tabsApi.reload(tab.tabId);
         });
     };
 
@@ -717,8 +717,8 @@ export const uiService = (function () {
         };
 
         // init assistant
-        tabsApi.tabs.getActive((tab) => {
-            tabsApi.tabs.sendMessage(tab.tabId, {
+        tabsApi.getActive((tab) => {
+            tabsApi.sendMessage(tab.tabId, {
                 type: 'initAssistant',
                 options,
             });
@@ -740,9 +740,9 @@ export const uiService = (function () {
      * @param {boolean} selectElement - if true select the element on which the Mousedown event was
      */
     const openAssistant = (selectElement) => {
-        if (tabsApi.tabs.executeScriptFile) {
+        if (tabsApi.executeScriptFile) {
             // Load Assistant code to the activate tab immediately
-            tabsApi.tabs.executeScriptFile(null, { file: '/lib/content-script/assistant/assistant.js' }, () => {
+            tabsApi.executeScriptFile(null, { file: '/lib/content-script/assistant/assistant.js' }, () => {
                 initAssistant(selectElement);
             });
         } else {
@@ -801,10 +801,10 @@ export const uiService = (function () {
 
         function onTabFound(tab) {
             if (tab.url !== url) {
-                tabsApi.tabs.reload(tab.tabId, url);
+                tabsApi.reload(tab.tabId, url);
             }
             if (!inBackground) {
-                tabsApi.tabs.activate(tab.tabId);
+                tabsApi.activate(tab.tabId);
             }
             if (callback) {
                 callback(tab);
@@ -812,7 +812,7 @@ export const uiService = (function () {
         }
 
         url = utils.strings.contains(url, '://') ? url : backgroundPage.getURL(url);
-        tabsApi.tabs.getAll((tabs) => {
+        tabsApi.getAll((tabs) => {
             // try to find between opened tabs
             if (activateSameTab) {
                 for (let i = 0; i < tabs.length; i += 1) {
@@ -823,7 +823,7 @@ export const uiService = (function () {
                     }
                 }
             }
-            tabsApi.tabs.create({
+            tabsApi.create({
                 url,
                 type: type || 'normal',
                 active: !inBackground,
@@ -848,11 +848,11 @@ export const uiService = (function () {
         });
 
         // Update tab icon and context menu while loading
-        tabsApi.tabs.onUpdated.addListener((tab) => {
+        tabsApi.onUpdated.addListener((tab) => {
             const { tabId } = tab;
             // BrowserAction is set separately for each tab
             updateTabIcon(tab);
-            tabsApi.tabs.getActive((aTab) => {
+            tabsApi.getActive((aTab) => {
                 if (aTab.tabId !== tabId) {
                     return;
                 }
@@ -862,7 +862,7 @@ export const uiService = (function () {
         });
 
         // Update tab icon and context menu on active tab changed
-        tabsApi.tabs.onActivated.addListener((tab) => {
+        tabsApi.onActivated.addListener((tab) => {
             updateTabIconAndContextMenu(tab, true);
         });
     };
@@ -880,7 +880,7 @@ export const uiService = (function () {
         }
         updateTabIconAsync(tab);
 
-        tabsApi.tabs.getActive((activeTab) => {
+        tabsApi.getActive((activeTab) => {
             if (tab.tabId === activeTab.tabId) {
                 updatePopupStatsAsync(activeTab);
             }
@@ -890,7 +890,7 @@ export const uiService = (function () {
     // Update context menu on change user settings
     settings.onUpdated.addListener((setting) => {
         if (setting === settings.DISABLE_SHOW_CONTEXT_MENU) {
-            tabsApi.tabs.getActive((tab) => {
+            tabsApi.getActive((tab) => {
                 updateTabContextMenu(tab);
             });
         }
@@ -899,7 +899,7 @@ export const uiService = (function () {
     // Update tab icon and context menu on application initialization
     listeners.addListener((event) => {
         if (event === listeners.APPLICATION_INITIALIZED) {
-            tabsApi.tabs.getActive(updateTabIconAndContextMenu);
+            tabsApi.getActive(updateTabIconAndContextMenu);
         }
     });
 

@@ -232,11 +232,11 @@ export const browserUtils = (function () {
 
         getSafebrowsingBackUrl(tab) {
             // https://code.google.com/p/chromium/issues/detail?id=11854
-            const previousUrl = tabsApi.tabs.getTabMetadata(tab.tabId, 'previousUrl');
+            const previousUrl = tabsApi.getTabMetadata(tab.tabId, 'previousUrl');
             if (previousUrl && previousUrl.indexOf('http') === 0) {
                 return previousUrl;
             }
-            const referrerUrl = tabsApi.tabs.getTabMetadata(tab.tabId, 'referrerUrl');
+            const referrerUrl = tabsApi.getTabMetadata(tab.tabId, 'referrerUrl');
             if (referrerUrl && referrerUrl.indexOf('http') === 0) {
                 return referrerUrl;
             }

@@ -487,7 +487,7 @@ export const filteringLog = (function () {
      * @param callback
      */
     const synchronizeOpenTabs = function (callback) {
-        tabsApi.tabs.getAll((tabs) => {
+        tabsApi.getAll((tabs) => {
             // As Object.keys() returns strings we convert them to integers,
             // because tabId is integer in extension API
             const tabIdsToRemove = Object.keys(tabsInfoMap).map(id => parseInt(id, 10));
@@ -529,9 +529,9 @@ export const filteringLog = (function () {
         synchronizeOpenTabs();
 
         // Bind to tab events
-        tabsApi.tabs.onCreated.addListener(addTab);
-        tabsApi.tabs.onUpdated.addListener(updateTab);
-        tabsApi.tabs.onRemoved.addListener((tab) => {
+        tabsApi.onCreated.addListener(addTab);
+        tabsApi.onUpdated.addListener(updateTab);
+        tabsApi.onRemoved.addListener((tab) => {
             removeTabById(tab.tabId);
         });
     };

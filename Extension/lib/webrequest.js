@@ -185,9 +185,9 @@ const webrequestInit = function () {
             && !requestRule.isWhitelist()
             && requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Popup)
             && requestType === RequestTypes.DOCUMENT) {
-            const isNewTab = tabsApi.tabs.isNewPopupTab(tabId);
+            const isNewTab = tabsApi.isNewPopupTab(tabId);
             if (isNewTab) {
-                tabsApi.tabs.remove(tabId);
+                tabsApi.remove(tabId);
                 return { cancel: true };
             }
         }
@@ -254,7 +254,7 @@ const webrequestInit = function () {
             css += `${tagNames[iTagNames]}[src$="${srcUrl}"] ${collapseStyle}\n`;
         }
 
-        tabsApi.tabs.insertCssCode(tabId, requestFrameId, css);
+        tabsApi.insertCssCode(tabId, requestFrameId, css);
     }
 
     /**
@@ -456,10 +456,10 @@ const webrequestInit = function () {
             if (browserUtils.isChromium() && incognitoTab) {
                 // Closing tab before opening a new one may lead to browser crash (Chromium)
                 uiService.openTab(safebrowsingUrl, {}, () => {
-                    tabsApi.tabs.remove(tab.tabId);
+                    tabsApi.remove(tab.tabId);
                 });
             } else {
-                tabsApi.tabs.reload(tab.tabId, safebrowsingUrl);
+                tabsApi.reload(tab.tabId, safebrowsingUrl);
             }
         });
     }
@@ -833,7 +833,7 @@ const webrequestInit = function () {
                 }
                 const injection = injections.get(tabId, frameId);
                 if (injection && injection.jsScriptText) {
-                    tabsApi.tabs.executeScriptCode(tabId, frameId, injection.jsScriptText);
+                    tabsApi.executeScriptCode(tabId, frameId, injection.jsScriptText);
                 }
             }
 
@@ -903,10 +903,10 @@ const webrequestInit = function () {
                 }
 
                 if (injection.jsScriptText) {
-                    tabsApi.tabs.executeScriptCode(tabId, frameId, injection.jsScriptText);
+                    tabsApi.executeScriptCode(tabId, frameId, injection.jsScriptText);
                 }
                 if (injection.cssText) {
-                    tabsApi.tabs.insertCssCode(tabId, frameId, injection.cssText);
+                    tabsApi.insertCssCode(tabId, frameId, injection.cssText);
                 }
 
                 const mainFrameUrl = frames.getMainFrameUrl({ tabId });
@@ -978,10 +978,10 @@ const webrequestInit = function () {
                     const jsScriptText = buildScriptText(result.scripts);
                     const cssText = buildCssText(result.selectors);
                     if (jsScriptText) {
-                        tabsApi.tabs.executeScriptCode(tabId, frameId, jsScriptText);
+                        tabsApi.executeScriptCode(tabId, frameId, jsScriptText);
                     }
                     if (cssText) {
-                        tabsApi.tabs.insertCssCode(tabId, frameId, cssText);
+                        tabsApi.insertCssCode(tabId, frameId, cssText);
                     }
                 }
             }
@@ -1002,7 +1002,7 @@ const webrequestInit = function () {
                 backgroundPage.webRequest.onCompleted.addListener((details) => { tryInject(details, 'onCompleted'); }, ['<all_urls>']);
             }
             // Remove injections when tab is closed
-            tabsApi.tabs.onRemoved.addListener(injections.removeTabInjection);
+            tabsApi.onRemoved.addListener(injections.removeTabInjection);
         })();
     }
 
@@ -1044,7 +1044,7 @@ const webrequestInit = function () {
             return;
         }
         // load subscribe script on dom content load
-        tabsApi.tabs.executeScriptFile(tab.tabId, { file: '/lib/content-script/subscribe.js', frameId });
+        tabsApi.executeScriptFile(tab.tabId, { file: '/lib/content-script/subscribe.js', frameId });
     });
 };
 

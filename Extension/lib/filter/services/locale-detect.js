@@ -201,7 +201,7 @@ export const localeDetect = (function () {
 
     const init = () => {
         // Locale detect
-        tabsApi.tabs.onUpdated.addListener((tab) => {
+        tabsApi.onUpdated.addListener((tab) => {
             if (tab.status === 'complete') {
                 detectTabLanguage(tab, tab.url);
             }

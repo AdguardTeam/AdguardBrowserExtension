@@ -225,7 +225,7 @@ export const adguardApi = (function () {
         const assistantOptions = {
             addRuleCallbackName: 'assistant-create-rule',
         };
-        tabsApi.tabs.sendMessage(tabId, {
+        tabsApi.sendMessage(tabId, {
             type: 'initAssistant',
             options: assistantOptions,
         });
@@ -236,9 +236,9 @@ export const adguardApi = (function () {
      * @param tabId Tab identifier
      */
     const openAssistant = (tabId) => {
-        if (tabsApi.tabs.executeScriptFile) {
+        if (tabsApi.executeScriptFile) {
             // Load Assistant code to the activate tab immediately
-            tabsApi.tabs.executeScriptFile(null, { file: '/adguard/assistant/assistant.js' }, () => {
+            tabsApi.executeScriptFile(null, { file: '/adguard/assistant/assistant.js' }, () => {
                 initAssistant(tabId);
             });
         } else {
@@ -252,7 +252,7 @@ export const adguardApi = (function () {
      * @param tabId Tab identifier
      */
     const closeAssistant = function (tabId) {
-        tabsApi.tabs.sendMessage(tabId, {
+        tabsApi.sendMessage(tabId, {
             type: 'destroyAssistant',
         });
     };

@@ -59,7 +59,7 @@ const init = () => {
         const listenerId = listeners.addSpecifiedListener(message.events, function () {
             const sender = eventListeners[listenerId];
             if (sender) {
-                tabsApi.tabs.sendMessage(sender.tab.tabId, {
+                tabsApi.sendMessage(sender.tab.tabId, {
                     type: 'notifyListeners',
                     args: Array.prototype.slice.call(arguments),
                 });
@@ -256,8 +256,8 @@ const init = () => {
                 break;
             case 'openSafebrowsingTrusted':
                 safebrowsing.addToSafebrowsingTrusted(message.url);
-                tabsApi.tabs.getActive((tab) => {
-                    tabsApi.tabs.reload(tab.tabId, message.url);
+                tabsApi.getActive((tab) => {
+                    tabsApi.reload(tab.tabId, message.url);
                 });
                 break;
             case 'openTab':
@@ -319,7 +319,7 @@ const init = () => {
                 if (!message.preserveLogEnabled) {
                     filteringLog.clearEventsByTabId(message.tabId);
                 }
-                tabsApi.tabs.reload(message.tabId);
+                tabsApi.reload(message.tabId);
                 break;
             case 'clearEventsByTabId':
                 filteringLog.clearEventsByTabId(message.tabId);
@@ -329,7 +329,7 @@ const init = () => {
                     const frameInfo = frames.getFrameInfo({ tabId: message.tabId });
                     return { frameInfo };
                 }
-                tabsApi.tabs.getActive((tab) => {
+                tabsApi.getActive((tab) => {
                     const frameInfo = frames.getFrameInfo(tab);
                     callback({ frameInfo });
                 });
@@ -359,12 +359,12 @@ const init = () => {
                 break;
             // Popup methods
             case 'addWhiteListDomainPopup':
-                tabsApi.tabs.getActive((tab) => {
+                tabsApi.getActive((tab) => {
                     uiService.whiteListTab(tab);
                 });
                 break;
             case 'removeWhiteListDomainPopup':
-                tabsApi.tabs.getActive((tab) => {
+                tabsApi.getActive((tab) => {
                     uiService.unWhiteListTab(tab);
                 });
                 break;
@@ -384,7 +384,7 @@ const init = () => {
                 uiService.openAssistant();
                 break;
             case 'getTabInfoForPopup':
-                tabsApi.tabs.getActive((tab) => {
+                tabsApi.getActive((tab) => {
                     const frameInfo = frames.getFrameInfo(tab);
                     callback({
                         frameInfo,

@@ -181,7 +181,7 @@ export const notifications = (function () {
             if (!viewedNotifications.includes(id)) {
                 viewedNotifications.push(id);
                 localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
-                tabsApi.tabs.getActive(uiService.updateTabIconAndContextMenu);
+                tabsApi.getActive(uiService.updateTabIconAndContextMenu);
                 currentNotification = null;
             }
         }

@@ -39,21 +39,21 @@ export const frames = (function () {
      * @returns Frame data
      */
     const recordFrame = function (tab, frameId, url, type) {
-        const frame = tabsApi.tabs.getTabFrame(tab.tabId, frameId);
+        const frame = tabsApi.getTabFrame(tab.tabId, frameId);
 
         let previousUrl = '';
         if (type === RequestTypes.DOCUMENT) {
-            tabsApi.tabs.clearTabFrames(tab.tabId);
-            tabsApi.tabs.clearTabMetadata(tab.tabId);
+            tabsApi.clearTabFrames(tab.tabId);
+            tabsApi.clearTabMetadata(tab.tabId);
             if (frame) {
                 previousUrl = frame.url;
             }
         }
 
-        tabsApi.tabs.recordTabFrame(tab.tabId, frameId, url, utils.url.getDomainName(url));
+        tabsApi.recordTabFrame(tab.tabId, frameId, url, utils.url.getDomainName(url));
 
         if (type === RequestTypes.DOCUMENT) {
-            tabsApi.tabs.updateTabMetadata(tab.tabId, { previousUrl });
+            tabsApi.updateTabMetadata(tab.tabId, { previousUrl });
             reloadFrameData(tab);
         }
     };
@@ -74,11 +74,11 @@ export const frames = (function () {
 
         const { tabId } = tab;
 
-        const frame = tabsApi.tabs.getTabFrame(tabId, frameId);
+        const frame = tabsApi.getTabFrame(tabId, frameId);
 
         // If no main_frame in tab, than we consider this as a new page load
         if (!frame) {
-            tabsApi.tabs.recordTabFrame(tabId, frameId, url, utils.url.getDomainName(url));
+            tabsApi.recordTabFrame(tabId, frameId, url, utils.url.getDomainName(url));
             reloadFrameData(tab);
             return;
         }
@@ -87,10 +87,10 @@ export const frames = (function () {
         let previousUrl = '';
         if (frame && frame.url !== url) {
             previousUrl = frame.url;
-            tabsApi.tabs.clearTabFrames(tabId);
-            tabsApi.tabs.clearTabMetadata(tabId);
-            tabsApi.tabs.recordTabFrame(tabId, frameId, url, utils.url.getDomainName(url));
-            tabsApi.tabs.updateTabMetadata(tabId, { previousUrl });
+            tabsApi.clearTabFrames(tabId);
+            tabsApi.clearTabMetadata(tabId);
+            tabsApi.recordTabFrame(tabId, frameId, url, utils.url.getDomainName(url));
+            tabsApi.updateTabMetadata(tabId, { previousUrl });
             reloadFrameData(tab);
         }
     };
@@ -103,7 +103,7 @@ export const frames = (function () {
      * @returns Frame URL
      */
     const getFrameUrl = function (tab, frameId) {
-        const frame = tabsApi.tabs.getTabFrame(tab.tabId, frameId);
+        const frame = tabsApi.getTabFrame(tab.tabId, frameId);
         return frame ? frame.url : null;
     };
 
@@ -124,7 +124,7 @@ export const frames = (function () {
      * @returns Frame Domain
      */
     const getFrameDomain = function (tab) {
-        const frame = tabsApi.tabs.getTabFrame(tab.tabId, 0);
+        const frame = tabsApi.getTabFrame(tab.tabId, 0);
         return frame ? frame.domainName : null;
     };
 
@@ -133,7 +133,7 @@ export const frames = (function () {
      * @returns true if Tab have white list rule
      */
     const isTabWhiteListed = function (tab) {
-        const frameWhiteListRule = tabsApi.tabs.getTabMetadata(tab.tabId, 'frameWhiteListRule');
+        const frameWhiteListRule = tabsApi.getTabMetadata(tab.tabId, 'frameWhiteListRule');
         return frameWhiteListRule && frameWhiteListRule.isDocumentWhitelistRule();
     };
 
@@ -150,7 +150,7 @@ export const frames = (function () {
      * @returns true if protection is paused
      */
     const isTabProtectionDisabled = function (tab) {
-        return tabsApi.tabs.getTabMetadata(tab.tabId, 'applicationFilteringDisabled');
+        return tabsApi.getTabMetadata(tab.tabId, 'applicationFilteringDisabled');
     };
 
     /**
@@ -160,7 +160,7 @@ export const frames = (function () {
      * @returns true if Adguard for Windows/Android/Mac is detected and tab in white list
      */
     const isTabAdguardWhiteListed = function (tab) {
-        return tabsApi.tabs.getTabMetadata(tab.tabId, 'adguardDocumentWhiteListed');
+        return tabsApi.getTabMetadata(tab.tabId, 'adguardDocumentWhiteListed');
     };
 
     /**
@@ -168,9 +168,9 @@ export const frames = (function () {
      * @returns Adguard whitelist rule in user filter associated with this tab
      */
     const getTabAdguardUserWhiteListRule = function (tab) {
-        const adguardUserWhiteListed = tabsApi.tabs.getTabMetadata(tab.tabId, 'adguardUserWhiteListed');
+        const adguardUserWhiteListed = tabsApi.getTabMetadata(tab.tabId, 'adguardUserWhiteListed');
         if (adguardUserWhiteListed) {
-            return tabsApi.tabs.getTabMetadata(tab.tabId, 'adguardWhiteListRule');
+            return tabsApi.getTabMetadata(tab.tabId, 'adguardWhiteListRule');
         }
         return null;
     };
@@ -181,7 +181,7 @@ export const frames = (function () {
      * @returns whitelist rule applied to that tab (if any)
      */
     const getFrameWhiteListRule = function (tab) {
-        return tabsApi.tabs.getTabMetadata(tab.tabId, 'frameWhiteListRule');
+        return tabsApi.getTabMetadata(tab.tabId, 'frameWhiteListRule');
     };
 
     /**
@@ -190,7 +190,7 @@ export const frames = (function () {
      * @param tab Tab to reload
      */
     var reloadFrameData = function (tab) {
-        const frame = tabsApi.tabs.getTabFrame(tab.tabId, 0);
+        const frame = tabsApi.getTabFrame(tab.tabId, 0);
         if (frame) {
             const applicationFilteringDisabled = settings.isFilteringDisabled();
             let frameWhiteListRule = null;
@@ -201,7 +201,7 @@ export const frames = (function () {
                     frameWhiteListRule = filteringApi.findWhiteListRule(url, url, RequestTypes.DOCUMENT);
                 }
             }
-            tabsApi.tabs.updateTabMetadata(tab.tabId, {
+            tabsApi.updateTabMetadata(tab.tabId, {
                 frameWhiteListRule,
                 applicationFilteringDisabled,
             });
@@ -216,7 +216,7 @@ export const frames = (function () {
      * @param referrerUrl Referrer to record
      */
     const recordFrameReferrerHeader = function (tab, referrerUrl) {
-        tabsApi.tabs.updateTabMetadata(tab.tabId, { referrerUrl });
+        tabsApi.updateTabMetadata(tab.tabId, { referrerUrl });
     };
 
     /**
@@ -227,7 +227,7 @@ export const frames = (function () {
      */
     const getFrameInfo = function (tab) {
         const { tabId } = tab;
-        const frame = tabsApi.tabs.getTabFrame(tabId);
+        const frame = tabsApi.getTabFrame(tabId);
 
         let { url } = tab;
         if (!url && frame) {
@@ -248,7 +248,7 @@ export const frames = (function () {
         const adguardProductName = '';
 
         const totalBlocked = pageStats.getTotalBlocked() || 0;
-        const totalBlockedTab = tabsApi.tabs.getTabMetadata(tabId, 'blocked') || 0;
+        const totalBlockedTab = tabsApi.getTabMetadata(tabId, 'blocked') || 0;
         const applicationFilteringDisabled = settings.isFilteringDisabled();
 
         if (applicationAvailable) {
@@ -294,8 +294,8 @@ export const frames = (function () {
     const updateBlockedAdsCount = function (tab, blocked) {
         pageStats.updateTotalBlocked(blocked);
 
-        blocked = (tabsApi.tabs.getTabMetadata(tab.tabId, 'blocked') || 0) + blocked;
-        tabsApi.tabs.updateTabMetadata(tab.tabId, { blocked });
+        blocked = (tabsApi.getTabMetadata(tab.tabId, 'blocked') || 0) + blocked;
+        tabsApi.updateTabMetadata(tab.tabId, { blocked });
 
         return blocked;
     };
@@ -306,7 +306,7 @@ export const frames = (function () {
      */
     const resetBlockedAdsCount = function (tab) {
         if (tab) {
-            tabsApi.tabs.updateTabMetadata(tab.tabId, { blocked: 0 });
+            tabsApi.updateTabMetadata(tab.tabId, { blocked: 0 });
         } else {
             pageStats.resetStats();
         }
@@ -317,7 +317,7 @@ export const frames = (function () {
      * @param tab Tab
      */
     const isIncognitoTab = function (tab) {
-        return tabsApi.tabs.isIncognito(tab.tabId);
+        return tabsApi.isIncognito(tab.tabId);
     };
 
     /**
@@ -330,7 +330,7 @@ export const frames = (function () {
     // Records frames on application initialization
     listeners.addListener((event) => {
         if (event === listeners.APPLICATION_INITIALIZED) {
-            tabsApi.tabs.forEach((tab) => {
+            tabsApi.forEach((tab) => {
                 recordFrame(tab, 0, tab.url, RequestTypes.DOCUMENT);
             });
         }
