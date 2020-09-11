@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import FiltersDownloader from '../../libs/filters-downloader';
+import FiltersDownloader from 'filters-downloader';
 import { utils } from '../../utils/common';
 import { backgroundPage } from '../../api/background-page';
 import { prefs } from '../../prefs';
