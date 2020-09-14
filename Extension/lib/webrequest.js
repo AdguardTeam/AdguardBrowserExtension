@@ -452,8 +452,10 @@ const webrequestInit = function () {
 
         safebrowsing.checkSafebrowsingFilter(mainFrameUrl, referrerUrl, (safebrowsingUrl) => {
             // Chrome doesn't allow open extension url in incognito mode
-            // So close current tab and open new
-            if (browserUtils.isChromium() && incognitoTab) {
+            // Firefox allows but browser.runtime.getBackgroundPage() is not working in incognito mode
+            // TODO rewrite scripts for safebrowsing page without browser.runtime.getBackgroundPage()
+            //  and make firefox to open safebrowsing page in the incognito mode
+            if (incognitoTab) {
                 // Closing tab before opening a new one may lead to browser crash (Chromium)
                 uiService.openTab(safebrowsingUrl, {}, () => {
                     tabsApi.remove(tab.tabId);

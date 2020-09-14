@@ -96,7 +96,10 @@ export const documentFilterService = (function () {
         const showDocumentBlockPage = (tabId, url) => {
             const incognitoTab = frames.isIncognitoTab({ tabId });
             // Chrome doesn't allow to show extension pages in incognito mode
-            if (browserUtils.isChromium() && incognitoTab) {
+            // Firefox allows but browser.runtime.getBackgroundPage() is not working in incognito mode
+            // TODO rewrite script for document blocking page without browser.runtime.getBackgroundPage()
+            //  and make firefox to open safebrowsing page in the incognito mode
+            if (incognitoTab) {
                 // Closing tab before opening a new one may lead to browser crash (Chromium)
                 uiService.openTab(url, {}, () => {
                     tabsApi.remove(tabId);
