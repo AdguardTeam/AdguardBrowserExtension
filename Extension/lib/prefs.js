@@ -29,7 +29,7 @@ export const prefs = (() => {
         },
 
         get platform() {
-            return adguard.lazyGet(Prefs, 'platform', () => (window.browser ? 'firefox' : 'chromium'));
+            return lazyGet(Prefs, 'platform', () => (window.browser ? 'firefox' : 'chromium'));
         },
 
         get browser() {
