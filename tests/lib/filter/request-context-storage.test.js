@@ -1,6 +1,8 @@
 import { requestContextStorage } from '../../../Extension/lib/filter/request-context-storage';
 import { RequestTypes } from '../../../Extension/lib/utils/common';
 
+jest.mock('../../../Extension/lib/filter/filtering-log');
+
 describe('requestContextStorage', () => {
     it('Test Record/Remove', () => {
         const requestId = '1';
