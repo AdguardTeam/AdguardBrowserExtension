@@ -16,8 +16,8 @@
  */
 
 // We use chrome rules storage implementation as fallback as it based on storage.local
-import { rulesStorageImpl } from '../chrome/rules-storage';
-import { log } from '../../utils/log';
+import chromeRulesStorageImpl from './rules-storage.chrome';
+import { log } from '../utils/log';
 
 /**
  * Filter rules storage implementation. Based on the indexedDB
@@ -164,7 +164,7 @@ const firefoxRulesStorageImpl = (function (initialAPI) {
     };
 
     return api;
-})(rulesStorageImpl || {});
+})(chromeRulesStorageImpl || {});
 
 
-export { firefoxRulesStorageImpl as rulesStorageImpl };
+export default firefoxRulesStorageImpl;

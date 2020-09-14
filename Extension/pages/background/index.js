@@ -7,7 +7,7 @@ import { browser } from '../../lib/browser';
 import { contentMessageHandler } from '../../lib/content-message-handler';
 import { localStorage } from '../../lib/storage';
 import { documentFilterService } from '../../lib/filter/services/document-filter';
-import { safebrowsing } from '../../lib/filter/services/safebrowsing-filter';
+import { safebrowsing } from '../../lib/filter/services/safebrowsing';
 import { tabsApi } from '../../lib/tabs/tabs-api';
 
 // TODO move to separate module

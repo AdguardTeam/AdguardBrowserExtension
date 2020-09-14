@@ -865,90 +865,90 @@ export const uiService = (function () {
         tabsApi.onActivated.addListener((tab) => {
             updateTabIconAndContextMenu(tab, true);
         });
-    };
 
-    // Update icon and popup stats on ads blocked
-    listeners.addListener((event, rule, tab, blocked) => {
-        if (event !== listeners.ADS_BLOCKED || !tab) {
-            return;
-        }
+        // Update icon and popup stats on ads blocked
+        listeners.addListener((event, rule, tab, blocked) => {
+            if (event !== listeners.ADS_BLOCKED || !tab) {
+                return;
+            }
 
-        pageStats.updateStats(rule.getFilterListId(), blocked, new Date());
-        const tabBlocked = frames.updateBlockedAdsCount(tab, blocked);
-        if (tabBlocked === null) {
-            return;
-        }
-        updateTabIconAsync(tab);
+            pageStats.updateStats(rule.getFilterListId(), blocked, new Date());
+            const tabBlocked = frames.updateBlockedAdsCount(tab, blocked);
+            if (tabBlocked === null) {
+                return;
+            }
+            updateTabIconAsync(tab);
 
-        tabsApi.getActive((activeTab) => {
-            if (tab.tabId === activeTab.tabId) {
-                updatePopupStatsAsync(activeTab);
+            tabsApi.getActive((activeTab) => {
+                if (tab.tabId === activeTab.tabId) {
+                    updatePopupStatsAsync(activeTab);
+                }
+            });
+        });
+
+        // Update context menu on change user settings
+        settings.onUpdated.addListener((setting) => {
+            if (setting === settings.DISABLE_SHOW_CONTEXT_MENU) {
+                tabsApi.getActive((tab) => {
+                    updateTabContextMenu(tab);
+                });
             }
         });
-    });
 
-    // Update context menu on change user settings
-    settings.onUpdated.addListener((setting) => {
-        if (setting === settings.DISABLE_SHOW_CONTEXT_MENU) {
-            tabsApi.getActive((tab) => {
-                updateTabContextMenu(tab);
-            });
-        }
-    });
-
-    // Update tab icon and context menu on application initialization
-    listeners.addListener((event) => {
-        if (event === listeners.APPLICATION_INITIALIZED) {
-            tabsApi.getActive(updateTabIconAndContextMenu);
-        }
-    });
-
-    // on application updated event
-    listeners.addListener((event, info) => {
-        if (event === listeners.APPLICATION_UPDATED) {
-            if (settings.isShowAppUpdatedNotification()) {
-                showVersionUpdatedPopup(info.currentVersion, info.prevVersion);
+        // Update tab icon and context menu on application initialization
+        listeners.addListener((event) => {
+            if (event === listeners.APPLICATION_INITIALIZED) {
+                tabsApi.getActive(updateTabIconAndContextMenu);
             }
-        }
-    });
+        });
 
-    // on filter auto-enabled event
-    listeners.addListener((event, enabledFilters) => {
-        if (event === listeners.ENABLE_FILTER_SHOW_POPUP) {
-            const result = getFiltersEnabledResultMessage(enabledFilters);
-            showAlertMessagePopup(result.title, result.text);
-        }
-    });
-
-    // on filter enabled event
-    listeners.addListener((event, payload) => {
-        switch (event) {
-            case listeners.FILTER_ENABLE_DISABLE:
-                if (payload.enabled) {
-                    checkFiltersUpdates([payload], false);
+        // on application updated event
+        listeners.addListener((event, info) => {
+            if (event === listeners.APPLICATION_UPDATED) {
+                if (settings.isShowAppUpdatedNotification()) {
+                    showVersionUpdatedPopup(info.currentVersion, info.prevVersion);
                 }
-                break;
-            case listeners.FILTER_GROUP_ENABLE_DISABLE:
-                if (payload.enabled && payload.filters) {
-                    const enabledFilters = payload.filters.filter(f => f.enabled);
-                    checkFiltersUpdates(enabledFilters, false);
-                }
-                break;
-            default:
-                break;
-        }
-    });
+            }
+        });
 
-    // on filters updated event
-    listeners.addListener((event, success, updatedFilters) => {
-        if (event === listeners.UPDATE_FILTERS_SHOW_POPUP) {
-            const result = getFiltersUpdateResultMessage(success, updatedFilters);
-            showAlertMessagePopup(result.title, result.text);
-        }
-    });
+        // on filter auto-enabled event
+        listeners.addListener((event, enabledFilters) => {
+            if (event === listeners.ENABLE_FILTER_SHOW_POPUP) {
+                const result = getFiltersEnabledResultMessage(enabledFilters);
+                showAlertMessagePopup(result.title, result.text);
+            }
+        });
 
-    // close all page on unload
-    unload.when(closeAllPages);
+        // on filter enabled event
+        listeners.addListener((event, payload) => {
+            switch (event) {
+                case listeners.FILTER_ENABLE_DISABLE:
+                    if (payload.enabled) {
+                        checkFiltersUpdates([payload], false);
+                    }
+                    break;
+                case listeners.FILTER_GROUP_ENABLE_DISABLE:
+                    if (payload.enabled && payload.filters) {
+                        const enabledFilters = payload.filters.filter(f => f.enabled);
+                        checkFiltersUpdates(enabledFilters, false);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        });
+
+        // on filters updated event
+        listeners.addListener((event, success, updatedFilters) => {
+            if (event === listeners.UPDATE_FILTERS_SHOW_POPUP) {
+                const result = getFiltersUpdateResultMessage(success, updatedFilters);
+                showAlertMessagePopup(result.title, result.text);
+            }
+        });
+
+        // close all page on unload
+        unload.when(closeAllPages);
+    };
 
     return {
         init,

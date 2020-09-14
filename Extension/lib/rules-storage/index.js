@@ -1,6 +1,8 @@
 // !IMPORTANT!
-// './abstract-rules-storage' is replaced during webpack compilation
+// './rules-storage.__ABSTRACT_BROWSER__' is replaced during webpack compilation
 // with NormalModuleReplacementPlugin to proper browser implementation
-// './firefox/rules-storage' or ./chrome/rules-storage
+// './rules-storage.chrome' or ./rules-storage.firefox
 
-export { rulesStorageImpl } from './abstract-rules-storage';
+import rulesStorageImpl from './rules-storage.__ABSTRACT_BROWSERS__';
+
+export { rulesStorageImpl };

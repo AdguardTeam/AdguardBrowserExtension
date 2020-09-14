@@ -15,12 +15,12 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { browser } from '../../browser';
+import { browser } from '../browser';
 
 /**
  * Filter rules storage implementation
  */
-export const rulesStorageImpl = (function () {
+const chromeRulesStorageImpl = (function () {
     /**
      * Checks runtime.lastError and calls "callback" if so.
      *
@@ -77,3 +77,5 @@ export const rulesStorageImpl = (function () {
         remove,
     };
 })();
+
+export default chromeRulesStorageImpl;

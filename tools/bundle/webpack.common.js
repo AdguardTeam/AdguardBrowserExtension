@@ -3,10 +3,10 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import path from 'path';
-import { NormalModuleReplacementPlugin } from 'webpack';
 
-import { BROWSERS, BUILD_PATH } from '../constants';
+import { BUILD_PATH } from '../constants';
 import { getEnvConf, updateLocalesMSGName } from '../helpers';
+import { getModuleReplacements } from './module-replacements';
 
 const config = getEnvConf(process.env.BUILD_ENV);
 
@@ -99,32 +99,7 @@ export const genCommonConfig = (browserConfig) => {
 
         plugins: [
             new CleanWebpackPlugin(),
-            // TODO refactor NormalModuleReplacementPlugin
-            new NormalModuleReplacementPlugin(/\.\/abstract-rules-storage/, ((resource) => {
-                if (browserConfig.browser === BROWSERS.FIREFOX_AMO
-                    || browserConfig.browser === BROWSERS.FIREFOX_STANDALONE) {
-                    resource.request = resource.request.replace(/\.\/abstract-rules-storage/, './firefox/rules-storage');
-                } else if (browserConfig.browser === BROWSERS.CHROME
-                    || browserConfig.browser === BROWSERS.OPERA
-                    || browserConfig.browser === BROWSERS.EDGE
-                ) {
-                    resource.request = resource.request.replace(/\.\/abstract-rules-storage/, './chrome/rules-storage');
-                } else {
-                    throw new Error(`There is no proxy api for browser: ${process.env.BROWSER}`);
-                }
-            })),
-            new NormalModuleReplacementPlugin(/\.\/abstract-content-filtering/, ((resource) => {
-                if (browserConfig.browser === BROWSERS.FIREFOX_AMO
-                    || browserConfig.browser === BROWSERS.FIREFOX_STANDALONE) {
-                    resource.request = resource.request.replace(/\.\/abstract-content-filtering/, './firefox/content-filtering');
-                } else if (browserConfig.browser === BROWSERS.CHROME
-                || browserConfig.browser === BROWSERS.OPERA
-                || browserConfig.browser === BROWSERS.EDGE) {
-                    resource.request = resource.request.replace(/\.\/abstract-content-filtering/, './chrome/content-filtering');
-                } else {
-                    throw new Error(`There is no proxy api for browser: ${process.env.BROWSER}`);
-                }
-            })),
+            ...getModuleReplacements(browserConfig),
             new HtmlWebpackPlugin({
                 template: path.join(BACKGROUND_PATH, 'index.html'),
                 templateParameters: {

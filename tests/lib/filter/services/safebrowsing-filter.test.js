@@ -1,5 +1,5 @@
 import { utils } from '../../../../Extension/lib/utils/common';
-import { safebrowsing } from '../../../../Extension/lib/filter/services/safebrowsing-filter';
+import { safebrowsing } from '../../../../Extension/lib/filter/services/safebrowsing';
 import { backend } from '../../../../Extension/lib/filter/filters/service-client';
 
 describe('safebrowsing', () => {

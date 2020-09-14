@@ -1,6 +1,8 @@
 // !IMPORTANT!
-// './abstract-content-filtering' is replaced during webpack compilation
+// './content-filtering.__ABSTRACT_BROWSERS__' is replaced during webpack compilation
 // with NormalModuleReplacementPlugin to proper browser implementation
-// './firefox/content-filtering' or ./chrome/content-filtering
+// './content-filtering.firefox' or './content-filtering.chrome'
 
-export { contentFiltering } from './abstract-content-filtering';
+import contentFiltering from './content-filtering.__ABSTRACT_BROWSERS__';
+
+export { contentFiltering };

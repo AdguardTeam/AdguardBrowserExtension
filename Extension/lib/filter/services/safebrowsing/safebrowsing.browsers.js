@@ -18,21 +18,21 @@
 import { LRUMap } from 'lru_map';
 
 import SHA256 from 'crypto-js/sha256';
-import { log } from '../../utils/log';
-import { utils } from '../../utils/common';
-import { localStorage } from '../../storage';
-import { backgroundPage } from '../../api/background-page';
-import { backend } from '../filters/service-client';
-import { settings } from '../../settings/user-settings';
-import { LruCache } from '../../utils/lru-cache';
-import { lazyGet } from '../../helpers';
+import { log } from '../../../utils/log';
+import { utils } from '../../../utils/common';
+import { localStorage } from '../../../storage';
+import { backgroundPage } from '../../../api/background-page';
+import { backend } from '../../filters/service-client';
+import { settings } from '../../../settings/user-settings';
+import { LruCache } from '../../../utils/lru-cache';
+import { lazyGet } from '../../../helpers';
 
 /**
  * Initializing SafebrowsingFilter.
  *
  * http://adguard.com/en/how-malware-blocked.html#extension
  */
-export const safebrowsing = (function () {
+const safebrowsing = (function () {
     // Lazy initialized safebrowsing cache
     const safebrowsingCache = {
         get cache() {
@@ -343,3 +343,5 @@ export const safebrowsing = (function () {
         processSbResponse,
     };
 })();
+
+export default safebrowsing;

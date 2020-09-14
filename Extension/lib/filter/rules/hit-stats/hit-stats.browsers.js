@@ -15,34 +15,25 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { localStorage } from '../../storage';
-import { settings } from '../../settings/user-settings';
-import { application } from '../../application';
-import { backend } from '../filters/service-client';
-import { log } from '../../utils/log';
-import { utils } from '../../utils/common';
-import { lazyGetClear, lazyGet } from '../../helpers';
+import { localStorage } from '../../../storage';
+import { settings } from '../../../settings/user-settings';
+import { application } from '../../../application';
+import { backend } from '../../filters/service-client';
+import { log } from '../../../utils/log';
+import { utils } from '../../../utils/common';
+import { lazyGetClear, lazyGet } from '../../../helpers';
 
 /**
  * This module is used to store and track ad filters usage stats.
  * It is used if user has enabled "Send statistics for ad filters usage" option.
  * More info about ad filters stats: http://adguard.com/en/filter-rules-statistics.html
  */
-export const hitStats = (function () {
+const browsersHitStats = (function () {
     const MAX_PAGE_VIEWS_COUNT = 20;
     const HITS_COUNT_PROP = 'filters-hit-count';
     const HITS_PROP = 'h';
 
     let throttleTimeoutId;
-
-    /**
-     * Object for aggregation hit stats (Lazy initialized)
-     */
-    var hitStatsHolder = {
-        get hitStats() {
-            return lazyGet(hitStatsHolder, 'hitStats', getHitCountStats);
-        },
-    };
 
     /**
      * Reads hit stats from local storage
@@ -59,6 +50,23 @@ export const hitStats = (function () {
             log.error('Error retrieve hit count statistic, cause {0}', ex);
         }
         return stats;
+    }
+
+    /**
+     * Object for aggregation hit stats (Lazy initialized)
+     */
+    const hitStatsHolder = {
+        get hitStats() {
+            return lazyGet(hitStatsHolder, 'hitStats', getHitCountStats);
+        },
+    };
+
+    /**
+     * Cleanup stats
+     */
+    function cleanup() {
+        localStorage.removeItem(HITS_COUNT_PROP);
+        lazyGetClear(hitStatsHolder, 'hitStats');
     }
 
     /**
@@ -169,14 +177,6 @@ export const hitStats = (function () {
     };
 
     /**
-     * Cleanup stats
-     */
-    function cleanup() {
-        localStorage.removeItem(HITS_COUNT_PROP);
-        lazyGetClear(hitStatsHolder, 'hitStats');
-    }
-
-    /**
      * Hit stats getter
      */
     const getStats = function () {
@@ -199,3 +199,5 @@ export const hitStats = (function () {
         getStats,
     };
 })();
+
+export default browsersHitStats;

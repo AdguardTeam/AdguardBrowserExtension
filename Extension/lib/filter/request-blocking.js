@@ -21,7 +21,7 @@ import { listeners } from '../notifier';
 import { filteringLog } from './filtering-log';
 import { settings } from '../settings/user-settings';
 import { frames } from '../tabs/frames';
-import { hitStats } from './rules/filters-hit';
+import { hitStats } from './rules/hit-stats';
 import { filteringApi } from './filtering-api';
 import { prefs } from '../prefs';
 import { requestContextStorage } from './request-context-storage';
@@ -119,7 +119,7 @@ export const webRequestService = (function () {
         }
 
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1337
-        result.collectRulesHits = webRequestService.isCollectingCosmeticRulesHits(tab);
+        result.collectRulesHits = isCollectingCosmeticRulesHits(tab);
 
         return result;
     };
@@ -178,7 +178,7 @@ export const webRequestService = (function () {
             return collapseRequests;
         }
 
-        for (let i = 0; i < collapseRequests.length; i++) {
+        for (let i = 0; i < collapseRequests.length; i += 1) {
             const request = collapseRequests[i];
             const requestRule = getRuleForRequest(tab, request.elementUrl, referrerUrl, request.requestType);
             request.collapse = isRequestBlockedByRule(requestRule);
@@ -512,7 +512,7 @@ export const webRequestService = (function () {
         return requestRule;
     };
 
-    const isCollectingCosmeticRulesHits = (tab) => {
+    var isCollectingCosmeticRulesHits = (tab) => {
         /**
          * Edge Legacy browser doesn't support css content attribute for node elements except
          * :before and :after

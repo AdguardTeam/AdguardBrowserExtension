@@ -16,7 +16,7 @@
  */
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
-import { requestContextStorage } from '../../filter/request-context-storage';
+import { requestContextStorage } from '../filter/request-context-storage';
 
 /**
  * Listens content filtering callbacks
@@ -67,4 +67,6 @@ const modificationsListener = {
     },
 };
 
-export const contentFiltering = new TSUrlFilter.ContentFiltering(modificationsListener);
+const firefoxContentFiltering = new TSUrlFilter.ContentFiltering(modificationsListener);
+
+export default firefoxContentFiltering;

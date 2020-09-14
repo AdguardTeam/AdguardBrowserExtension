@@ -3,7 +3,7 @@ const errorFunction = () => {
     throw new Error('Seems like webpack didn\'t inject proper rules storage implementation');
 };
 
-export const rulesStorageImpl = (() => {
+const abstractRulesStorageImpl = (() => {
     return {
         /**
          * Required
@@ -31,3 +31,5 @@ export const rulesStorageImpl = (() => {
         isIndexedDB: errorFunction,
     };
 })();
+
+export default abstractRulesStorageImpl;

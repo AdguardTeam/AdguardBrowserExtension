@@ -27,7 +27,7 @@ import { tabsApi } from './tabs/tabs-api';
 import { uiService } from './ui-service';
 import { browserUtils } from './utils/browser-utils';
 import { frames } from './tabs/frames';
-import { safebrowsing } from './filter/services/safebrowsing-filter';
+import { safebrowsing } from './filter/services/safebrowsing';
 import { utils, RequestTypes } from './utils/common';
 import { application } from './application';
 import { categories } from './filter/filters/filters-categories';

@@ -16,16 +16,16 @@
  */
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
-import { tabsApi } from '../tabs/tabs-api';
-import { BACKGROUND_TAB_ID, utils } from '../utils/common';
-import { backgroundPage } from '../api/background-page';
-import { prefs } from '../prefs';
-import { listeners } from '../notifier';
+import { tabsApi } from '../../tabs/tabs-api';
+import { BACKGROUND_TAB_ID, utils } from '../../utils/common';
+import { backgroundPage } from '../../api/background-page';
+import { prefs } from '../../prefs';
+import { listeners } from '../../notifier';
 
 /**
  * Object for log http requests
  */
-export const filteringLog = (function () {
+const browsersFilteringLog = (function () {
     const REQUESTS_SIZE_PER_TAB = 1000;
 
     const backgroundTabId = BACKGROUND_TAB_ID;
@@ -557,3 +557,5 @@ export const filteringLog = (function () {
         onCloseFilteringLogPage,
     };
 })();
+
+export default browsersFilteringLog;
