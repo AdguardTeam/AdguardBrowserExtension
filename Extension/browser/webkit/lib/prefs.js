@@ -26,7 +26,9 @@ adguard.prefs = (function (adguard) {
             return adguard.lazyGet(Prefs, 'mobile', () => navigator.userAgent.indexOf('Android') >= 0);
         },
 
-        platform: 'chromium',
+        get platform() {
+            return adguard.lazyGet(Prefs, 'platform', () => (window.browser ? 'firefox' : 'chromium'));
+        },
 
         get browser() {
             return adguard.lazyGet(Prefs, 'browser', () => {
