@@ -407,8 +407,8 @@
 
         adguard.safebrowsing.checkSafebrowsingFilter(mainFrameUrl, referrerUrl, (safebrowsingUrl) => {
             // Chrome doesn't allow open extension url in incognito mode
-            // So close current tab and open new
-            if (adguard.utils.browser.isChromium() && incognitoTab) {
+            // Firefox allows, but on private pages do not work browser.runtime.getBackgroundPage()
+            if (incognitoTab) {
                 // Closing tab before opening a new one may lead to browser crash (Chromium)
                 adguard.ui.openTab(safebrowsingUrl, {}, () => {
                     adguard.tabs.remove(tab.tabId);

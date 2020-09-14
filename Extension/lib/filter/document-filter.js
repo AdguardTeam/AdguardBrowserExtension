@@ -90,8 +90,9 @@
          */
         const showDocumentBlockPage = (tabId, url) => {
             const incognitoTab = adguard.frames.isIncognitoTab({ tabId });
-            // Chrome doesn't allow to show extension pages in incognito mode
-            if (adguard.utils.browser.isChromium() && incognitoTab) {
+            // Chromium browsers do not allow to show extension pages in incognito mode
+            // Firefox allows, but on private pages do not work browser.runtime.getBackgroundPage()
+            if (incognitoTab) {
                 // Closing tab before opening a new one may lead to browser crash (Chromium)
                 adguard.ui.openTab(url, {}, () => {
                     adguard.tabs.remove(tabId);
