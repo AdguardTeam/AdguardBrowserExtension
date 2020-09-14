@@ -1,7 +1,9 @@
 import CopyWebpackPlugin from 'copy-webpack-plugin';
-import path from 'path';
-import { merge } from 'webpack-merge';
+import ZipWebpackPlugin from 'zip-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import { merge } from 'webpack-merge';
+import path from 'path';
+
 import { genCommonConfig } from '../webpack.common';
 import { chromeManifest } from './manifest.chrome';
 import { updateManifest } from '../../helpers';
@@ -43,6 +45,10 @@ export const genChromeConfig = (browserConfig) => {
                 template: path.join(DEVTOOLS_PATH, 'devtools-elements-sidebar.html'),
                 filename: 'pages/devtools-elements-sidebar.html',
                 chunks: ['pages/devtools-elements-sidebar'],
+            }),
+            new ZipWebpackPlugin({
+                path: '../',
+                filename: `${browserConfig.browser}.zip`,
             }),
         ],
     };

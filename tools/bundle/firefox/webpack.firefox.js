@@ -1,12 +1,22 @@
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+import ZipWebpackPlugin from 'zip-webpack-plugin';
 import path from 'path';
 import { merge } from 'webpack-merge';
+
 import { genCommonConfig } from '../webpack.common';
 import { firefoxManifest } from './manifest.firefox';
 import { updateManifest } from '../../helpers';
+import { ENVS } from '../../constants';
 
 export const genFirefoxConfig = (browserConfig) => {
     const commonConfig = genCommonConfig(browserConfig);
+
+    let zipFilename = `${browserConfig.browser}.zip`;
+
+    if (process.env.BUILD_ENV === ENVS.BETA
+        || process.env.BUILD_ENV === ENVS.RELEASE) {
+        zipFilename = 'firefox.zip';
+    }
 
     const plugins = [
         new CopyWebpackPlugin({
@@ -22,6 +32,10 @@ export const genFirefoxConfig = (browserConfig) => {
                     to: 'filters',
                 },
             ],
+        }),
+        new ZipWebpackPlugin({
+            path: '../',
+            filename: zipFilename,
         }),
     ];
 

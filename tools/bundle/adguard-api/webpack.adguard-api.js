@@ -1,8 +1,9 @@
 /* eslint-disable max-len */
+import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
-import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import CreateFileWebpack from 'create-file-webpack';
+import ZipWebpackPlugin from 'zip-webpack-plugin';
 import path from 'path';
 import { BUILD_PATH } from '../../constants';
 
@@ -115,6 +116,10 @@ export const genSampleApiConfig = (browserConfig) => {
                 path: OUTPUT_PATH,
                 fileName: 'manifest.json',
                 content: JSON.stringify(adguardApiManifest, null, 4),
+            }),
+            new ZipWebpackPlugin({
+                path: '../',
+                filename: `${browserConfig.browser}.zip`,
             }),
         ],
     };

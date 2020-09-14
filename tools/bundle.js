@@ -1,4 +1,6 @@
 /* eslint-disable no-console,no-restricted-syntax,no-await-in-loop */
+import { program } from 'commander';
+
 import { bundleRunner } from './bundle/bundle-runner';
 import { copyExternals } from './bundle/copy-external';
 import { BROWSERS, ENVS } from './constants';
@@ -6,7 +8,6 @@ import { webpackConfig } from './bundle/webpack-config';
 import { crx } from './bundle/crx';
 import { xpi } from './bundle/xpi';
 import { buildInfo } from './bundle/build-info';
-import { program } from 'commander';
 
 const bundleChrome = () => {
     const config = webpackConfig(BROWSERS.CHROME);
@@ -64,7 +65,6 @@ const betaPlan = [
     bundleFirefoxStandalone,
     bundleFirefoxXpi,
     bundleEdge,
-    bundleOpera,
     bundleAdguardApi,
     buildInfo,
 ];
