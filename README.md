@@ -152,7 +152,7 @@ You will need to put certificate.pem and mozilla_credentials.json files to the `
 
 Run the following command:
 ```
-yarn sample-api
+yarn adguard-api
 ```
 This will create a build directory with unpacked sample extension for chromium browsers:
 

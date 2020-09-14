@@ -1,6 +1,6 @@
 import packageJson from '../../../package.json';
 
-export const sampleApiManifest = {
+export const adguardApiManifest = {
     'manifest_version': 2,
     'name': 'Sample Adguard API',
     'short_name': 'Sample Adguard API',

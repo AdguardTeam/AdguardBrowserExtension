@@ -8,7 +8,7 @@ import { NormalModuleReplacementPlugin } from 'webpack';
 import { BROWSERS, BUILD_PATH } from '../../constants';
 
 import { getEnvConf } from '../../helpers';
-import { sampleApiManifest } from './manifest.sample-api';
+import { adguardApiManifest } from './manifest.adguard-api';
 
 const config = getEnvConf(process.env.BUILD_ENV);
 
@@ -74,7 +74,7 @@ export const genSampleApiConfig = (browserConfig) => {
                 } else if (browserConfig.browser === BROWSERS.CHROME
                     || browserConfig.browser === BROWSERS.OPERA
                     || browserConfig.browser === BROWSERS.EDGE
-                    || browserConfig.browser === BROWSERS.SAMPLE_API
+                    || browserConfig.browser === BROWSERS.ADGUARD_API
                 ) {
                     resource.request = resource.request.replace(/\.\/abstract-rules-storage/, './chrome/rules-storage');
                 } else {
@@ -88,7 +88,7 @@ export const genSampleApiConfig = (browserConfig) => {
                 } else if (browserConfig.browser === BROWSERS.CHROME
                     || browserConfig.browser === BROWSERS.OPERA
                     || browserConfig.browser === BROWSERS.EDGE
-                    || browserConfig.browser === BROWSERS.SAMPLE_API
+                    || browserConfig.browser === BROWSERS.ADGUARD_API
                 ) {
                     resource.request = resource.request.replace(/\.\/abstract-content-filtering/, './chrome/content-filtering');
                 } else {
@@ -141,7 +141,7 @@ export const genSampleApiConfig = (browserConfig) => {
             new CreateFileWebpack({
                 path: OUTPUT_PATH,
                 fileName: 'manifest.json',
-                content: JSON.stringify(sampleApiManifest, null, 4),
+                content: JSON.stringify(adguardApiManifest, null, 4),
             }),
         ],
     };

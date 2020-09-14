@@ -3,7 +3,7 @@ import { genChromeConfig } from './chrome/webpack.chrome';
 import { genFirefoxConfig } from './firefox/webpack.firefox';
 import { genEdgeConfig } from './edge/webpack.edge';
 import { genOperaConfig } from './opera/webpack.opera';
-import { genSampleApiConfig } from './sample-api/webpack.sample-api';
+import { genSampleApiConfig } from './adguard-api/webpack.adguard-api';
 import { getBrowserConf } from '../helpers';
 
 export const webpackConfig = (browser) => {
@@ -23,7 +23,7 @@ export const webpackConfig = (browser) => {
         case BROWSERS.EDGE: {
             return genEdgeConfig(browserConf);
         }
-        case BROWSERS.SAMPLE_API: {
+        case BROWSERS.ADGUARD_API: {
             return genSampleApiConfig(browserConf);
         }
         default: {

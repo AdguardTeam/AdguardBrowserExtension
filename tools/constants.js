@@ -19,7 +19,7 @@ export const BROWSERS = {
     FIREFOX_STANDALONE: 'firefox-standalone',
     OPERA: 'opera',
     EDGE: 'edge',
-    SAMPLE_API: 'sample-api',
+    ADGUARD_API: 'adguard-api',
 };
 
 export const BROWSERS_CONF = {
@@ -53,11 +53,11 @@ export const BROWSERS_CONF = {
         devtools: true,
         buildDir: BROWSERS.EDGE,
     },
-    [BROWSERS.SAMPLE_API]: {
-        browser: BROWSERS.SAMPLE_API,
+    [BROWSERS.ADGUARD_API]: {
+        browser: BROWSERS.ADGUARD_API,
         remoteScripts: true,
         devtools: false,
-        buildDir: BROWSERS.SAMPLE_API,
+        buildDir: BROWSERS.ADGUARD_API,
     },
 };
 

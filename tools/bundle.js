@@ -6,6 +6,7 @@ import { webpackConfig } from './bundle/webpack-config';
 import { crx } from './bundle/crx';
 import { xpi } from './bundle/xpi';
 import { buildInfo } from './bundle/build-info';
+import { program } from 'commander';
 
 const bundleChrome = () => {
     const config = webpackConfig(BROWSERS.CHROME);
@@ -40,8 +41,8 @@ const bundleFirefoxXpi = async () => {
     await xpi(BROWSERS.FIREFOX_STANDALONE);
 };
 
-const bundleSampleApi = async () => {
-    const config = webpackConfig(BROWSERS.SAMPLE_API);
+const bundleAdguardApi = async () => {
+    const config = webpackConfig(BROWSERS.ADGUARD_API);
     return bundleRunner(config);
 };
 
@@ -52,7 +53,7 @@ const devPlan = [
     bundleFirefoxStandalone,
     bundleEdge,
     bundleOpera,
-    bundleSampleApi,
+    bundleAdguardApi,
     buildInfo,
 ];
 
@@ -64,7 +65,7 @@ const betaPlan = [
     bundleFirefoxXpi,
     bundleEdge,
     bundleOpera,
-    bundleSampleApi,
+    bundleAdguardApi,
     buildInfo,
 ];
 
@@ -83,7 +84,7 @@ const runBuild = async (tasks) => {
     }
 };
 
-const main = async () => {
+const mainBuild = async () => {
     switch (process.env.BUILD_ENV) {
         case ENVS.DEV: {
             await runBuild(devPlan);
@@ -102,11 +103,31 @@ const main = async () => {
     }
 };
 
-(async () => {
+const main = async () => {
     try {
-        await main();
+        await mainBuild();
     } catch (e) {
-        console.log(e);
+        console.error(e);
         process.exit(1);
     }
-})();
+};
+
+const adguardApi = async () => {
+    try {
+        await bundleAdguardApi();
+    } catch (e) {
+        console.error(e);
+        process.exit(1);
+    }
+};
+
+program
+    .command('adguard-api')
+    .description('Builds sample extension with adguard api')
+    .action(adguardApi);
+
+program
+    .description('By default builds for all platforms')
+    .action(main);
+
+program.parse(process.argv);
