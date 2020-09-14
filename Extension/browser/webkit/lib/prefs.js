@@ -17,7 +17,6 @@
 
 /**
  * Extension global preferences.
- * (!) Firefox has it's own implementation
  */
 adguard.prefs = (function (adguard) {
     var Prefs = {
