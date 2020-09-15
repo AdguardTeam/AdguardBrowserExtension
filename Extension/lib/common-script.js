@@ -15,7 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 const browserApi = ((self) => {
     /**
      * https://bugs.chromium.org/p/project-zero/issues/detail?id=1225&desc=6
@@ -30,7 +29,7 @@ const browserApi = ((self) => {
     const browserApi = isDefined('browser') && self.browser !== undefined ? self.browser : self.chrome;
 
     return browserApi;
-})(window);
+})(global);
 
 export const runtimeImpl = (() => {
     return {

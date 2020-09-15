@@ -26,6 +26,118 @@ import { browserUtils } from '../utils/browser-utils';
 import { log } from '../utils/log';
 
 /**
+ * !IMPORTANT!
+ * This function also patches browser.windows implementation for Firefox for Android
+ * Chromium windows implementation
+ * @type {{onCreated, onRemoved, onUpdated, create, getLastFocused, forEachNative}}
+ */
+export const windowsImpl = (function () {
+    function toWindowFromChromeWindow(chromeWin) {
+        return {
+            windowId: chromeWin.id,
+            type: chromeWin.type === 'normal' || chromeWin.type === 'popup' ? chromeWin.type : 'other',
+        };
+    }
+
+    // Make compatible with Android WebExt
+    if (typeof browser.windows === 'undefined') {
+        browser.windows = (function () {
+            const defaultWindow = {
+                id: 1,
+                type: 'normal',
+            };
+
+            const emptyListener = {
+                addListener() {
+                    // Doing nothing
+                },
+            };
+
+            const create = function (createData, callback) {
+                callback(defaultWindow);
+            };
+
+            const update = function (windowId, data, callback) {
+                callback();
+            };
+
+            const getAll = function (query, callback) {
+                callback(defaultWindow);
+            };
+
+            const getLastFocused = function (callback) {
+                callback(defaultWindow);
+            };
+
+            return {
+                onCreated: emptyListener,
+                onRemoved: emptyListener,
+                onFocusChanged: emptyListener,
+                create,
+                update,
+                getAll,
+                getLastFocused,
+            };
+        })();
+    }
+
+    const onCreatedChannel = utils.channels.newChannel();
+    const onRemovedChannel = utils.channels.newChannel();
+    const onUpdatedChannel = utils.channels.newChannel();
+
+    // https://developer.chrome.com/extensions/windows#event-onCreated
+    // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/onCreated
+    browser.windows.onCreated.addListener((chromeWin) => {
+        onCreatedChannel.notify(toWindowFromChromeWindow(chromeWin), chromeWin);
+    });
+
+    // https://developer.chrome.com/extensions/windows#event-onRemoved
+    // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/onRemoved
+    browser.windows.onRemoved.addListener((windowId) => {
+        onRemovedChannel.notify(windowId);
+    });
+
+    const create = function (createData, callback) {
+        // https://developer.chrome.com/extensions/windows#method-create
+        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/create
+        browser.windows.create(createData, (chromeWin) => {
+            callback(toWindowFromChromeWindow(chromeWin), chromeWin);
+        });
+    };
+
+    const forEachNative = function (callback) {
+        // https://developer.chrome.com/extensions/windows#method-getAll
+        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/getAll
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/569
+        browser.windows.getAll({}, (chromeWins) => {
+            for (let i = 0; i < chromeWins.length; i++) {
+                const chromeWin = chromeWins[i];
+                callback(chromeWin, toWindowFromChromeWindow(chromeWin));
+            }
+        });
+    };
+
+    const getLastFocused = function (callback) {
+        // https://developer.chrome.com/extensions/windows#method-getLastFocused
+        browser.windows.getLastFocused((chromeWin) => {
+            callback(chromeWin.id);
+        });
+    };
+
+    return {
+
+        onCreated: onCreatedChannel, // callback (adguardWin, nativeWin)
+        onRemoved: onRemovedChannel, // callback (windowId)
+        onUpdated: onUpdatedChannel, // empty
+
+        create,
+        getLastFocused,
+
+        forEachNative,
+    };
+})();
+
+/**
  * Chromium tabs implementation
  * @type {{onCreated, onRemoved, onUpdated, onActivated, create, remove, activate, reload, sendMessage, getAll, getActive, fromChromeTab}}
  */
@@ -154,7 +266,6 @@ export const tabsImpl = (function () {
         // https://developer.chrome.com/extensions/windows#method-getLastFocused
         // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/create
         // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/getLastFocused
-
         browser.windows.getLastFocused((win) => {
             if (isAppropriateWindow(win)) {
                 onWindowFound(win);

@@ -39,6 +39,7 @@ export const xpi = async (browser) => {
     const credentialsContent = await cryptor(process.env.CREDENTIALS_PASSWORD)
         .getDecryptedContent(FIREFOX_CREDENTIALS);
     const { apiKey, apiSecret } = JSON.parse(credentialsContent);
+
     const { downloadedFiles } = await webExt.cmd.sign({
         apiKey,
         apiSecret,
