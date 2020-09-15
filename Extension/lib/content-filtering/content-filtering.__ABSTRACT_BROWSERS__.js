@@ -15,6 +15,10 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * This is an abstract content filtering module with methods throwing errors if used,
+ * because it should be replaced by webpack during compilation
+ */
 const errorFunction = () => {
     throw new Error('Seems like webpack didn\'t inject proper content filtering module');
 };

@@ -15,6 +15,11 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * This is an abstract safebrowsing module with methods throwing errors if used.
+ * It should be replaced by webpack during compilation
+ */
+
 const errorFunction = () => {
     throw new Error('Seems like webpack did not provide proper safebrowsing module');
 };
