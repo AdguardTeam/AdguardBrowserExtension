@@ -19,7 +19,7 @@ import moment from 'moment';
 import * as ace from 'ace-builds';
 import 'ace-builds/src-noconflict/ext-searchbox';
 import 'ace-builds/src-noconflict/theme-textmate';
-import '../libs/ace/mode-adguard';
+import './ace/mode-adguard';
 
 import { contentPage } from '../content-script/content-script';
 import { i18n } from './i18n';
