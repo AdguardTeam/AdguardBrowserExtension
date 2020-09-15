@@ -2215,4 +2215,4 @@ const init = () => {
 
 export const options = {
     init,
-}
+};
