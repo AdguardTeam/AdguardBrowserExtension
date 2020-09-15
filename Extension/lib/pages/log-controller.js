@@ -1375,6 +1375,6 @@ const init = () => {
     });
 };
 
-export const log = {
+export const logController = {
     init,
 };

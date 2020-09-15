@@ -1,4 +1,4 @@
 // TODO rename module log, because we already have three modules with the name log
-import { log } from '../../lib/pages/log';
+import { logController } from '../../lib/pages/log-controller';
 
-log.init();
+logController.init();
