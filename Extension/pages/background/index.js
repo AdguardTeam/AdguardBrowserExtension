@@ -10,7 +10,7 @@ import { documentFilterService } from '../../lib/filter/services/document-filter
 import { safebrowsing } from '../../lib/filter/services/safebrowsing';
 import { tabsApi } from '../../lib/tabs/tabs-api';
 
-// TODO move to separate module
+// TODO where this is used?
 const browserActionSupported = typeof browser.browserAction.setIcon !== 'undefined';
 if (!browserActionSupported && browser.browserAction.onClicked) {
     // Open settings menu

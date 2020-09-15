@@ -25,7 +25,6 @@ import { contentPage } from '../content-script/content-script';
 import { i18n } from './i18n';
 import { CheckboxUtils, htmlToElement, createEventListener } from './script';
 
-
 // Update default date format for zh-cn
 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1442
 moment.updateLocale('zh-cn', {
