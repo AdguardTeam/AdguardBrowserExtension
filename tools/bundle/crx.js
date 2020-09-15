@@ -18,9 +18,6 @@ export const crx = async (browser) => {
     if (browser === BROWSERS.CHROME && buildEnv !== ENVS.BETA) {
         throw new Error('CRX for chrome is built only for beta');
     }
-    if (browser === BROWSERS.OPERA && buildEnv !== ENVS.RELEASE) {
-        throw new Error('CRX for opera is built only for release');
-    }
 
     const envConf = getEnvConf(buildEnv);
     const browserConf = getBrowserConf(browser);
