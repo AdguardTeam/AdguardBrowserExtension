@@ -21,7 +21,7 @@ import { application } from '../../../application';
 import { backend } from '../../filters/service-client';
 import { log } from '../../../utils/log';
 import { utils } from '../../../utils/common';
-import { lazyGetClear, lazyGet } from '../../../helpers';
+import { lazyGet, lazyGetClear } from '../../../utils/lazy';
 
 /**
  * This module is used to store and track ad filters usage stats.

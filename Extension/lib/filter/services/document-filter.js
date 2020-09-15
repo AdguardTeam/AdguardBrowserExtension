@@ -21,8 +21,7 @@ import { tabsApi } from '../../tabs/tabs-api';
 import { uiService } from '../../ui-service';
 import { frames } from '../../tabs/frames';
 import { ExpiringCache } from '../../utils/expiring-cache';
-import { browserUtils } from '../../utils/browser-utils';
-import { lazyGet } from '../../helpers';
+import { lazyGet } from '../../utils/lazy';
 
 export const documentFilterService = (function () {
     const trustedCache = {

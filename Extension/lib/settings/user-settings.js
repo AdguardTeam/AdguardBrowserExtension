@@ -23,7 +23,7 @@ import { listeners } from '../notifier';
 import { log } from '../utils/log';
 import { localStorage } from '../storage';
 import { browserUtils } from '../utils/browser-utils';
-import { lazyGet } from '../helpers';
+import { lazyGet } from '../utils/lazy';
 
 /**
  * Object that manages user settings.

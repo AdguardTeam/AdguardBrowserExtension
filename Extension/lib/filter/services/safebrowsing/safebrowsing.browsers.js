@@ -25,7 +25,7 @@ import { backgroundPage } from '../../../api/background-page';
 import { backend } from '../../filters/service-client';
 import { settings } from '../../../settings/user-settings';
 import { LruCache } from '../../../utils/lru-cache';
-import { lazyGet } from '../../../helpers';
+import { lazyGet } from '../../../utils/lazy';
 
 /**
  * Initializing SafebrowsingFilter.

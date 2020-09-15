@@ -16,7 +16,7 @@
  */
 
 import { backgroundPage } from './api/background-page';
-import { lazyGet } from './helpers';
+import { lazyGet } from './utils/lazy';
 
 /**
  * Extension global preferences.

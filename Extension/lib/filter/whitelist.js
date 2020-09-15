@@ -21,7 +21,7 @@ import { settings } from '../settings/user-settings';
 import { localStorage } from '../storage';
 import { listeners } from '../notifier';
 import { log } from '../utils/log';
-import { lazyGet, lazyGetClear } from '../helpers';
+import { lazyGet, lazyGetClear } from '../utils/lazy';
 
 export const whitelist = (() => {
     const WHITE_LIST_DOMAINS_LS_PROP = 'white-list-domains';

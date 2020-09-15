@@ -18,7 +18,7 @@
 import { backgroundPage } from '../api/background-page';
 import { tabsApi } from '../tabs/tabs-api';
 import { uiService } from '../ui-service';
-import { lazyGet } from '../helpers';
+import { lazyGet } from './lazy';
 
 /**
  * Object that manages user settings.

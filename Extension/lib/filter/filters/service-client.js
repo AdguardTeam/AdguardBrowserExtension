@@ -22,7 +22,7 @@ import { prefs } from '../../prefs';
 import { log } from '../../utils/log';
 import { subscriptions } from './subscription';
 import { browserUtils } from '../../utils/browser-utils';
-import { lazyGet } from '../../helpers';
+import { lazyGet } from '../../utils/lazy';
 
 export const backend = (function () {
     /**
