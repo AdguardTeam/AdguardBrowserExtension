@@ -17,7 +17,8 @@
 
 // TODO: [TSUrlFilter] Use TSURLFilter cookieFiltering
 import { filteringLog } from '../filtering-log';
-import { utils, RequestTypes } from '../../utils/common';
+import { utils } from '../../utils/common';
+import { RequestTypes } from '../../utils/request-types';
 import { frames } from '../../tabs/frames';
 import { requestContextStorage } from '../request-context-storage';
 import { log } from '../../utils/log';

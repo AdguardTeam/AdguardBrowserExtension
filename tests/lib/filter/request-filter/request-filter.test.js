@@ -2,7 +2,7 @@
 import * as TSUrlFilter from '@adguard/tsurlfilter';
 import { RequestFilter } from '../../../../Extension/lib/filter/request-filter';
 import { engine } from '../../../../Extension/lib/filter/engine';
-import { RequestTypes } from '../../../../Extension/lib/utils/common';
+import { RequestTypes } from '../../../../Extension/lib/utils/request-types';
 import { filtersFromTxt } from './test_filter';
 import { redirectService } from '../../../../Extension/lib/filter/services/redirect-service';
 

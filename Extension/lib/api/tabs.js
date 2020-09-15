@@ -19,12 +19,11 @@
 
 import { browser } from '../browser';
 
-import { utils } from '../utils/common';
+import { utils, toTabFromChromeTab } from '../utils/common';
 import { prefs } from '../prefs';
 import { backgroundPage } from './background-page';
 import { browserUtils } from '../utils/browser-utils';
 import { log } from '../utils/log';
-import { toTabFromChromeTab } from '../utils/temp';
 
 /**
  * Chromium tabs implementation

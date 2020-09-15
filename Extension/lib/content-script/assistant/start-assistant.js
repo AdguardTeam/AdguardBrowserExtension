@@ -17,7 +17,6 @@
 
 /* global adguardAssistant */
 
-// TODO fix adguard-assistant library to named export
 import 'adguard-assistant';
 import { contentPage } from '../content-script';
 

@@ -17,7 +17,8 @@
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
 import { engine } from './engine';
-import { utils, RequestTypes } from '../utils/common';
+import { utils } from '../utils/common';
+import { RequestTypes } from '../utils/request-types';
 import { filteringLog } from './filtering-log';
 import { localScriptRulesService } from './rules/local-script-rules';
 import { cssService } from './services/css-service';

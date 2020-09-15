@@ -16,7 +16,8 @@
  */
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
-import { RequestTypes, utils } from '../../utils/common';
+import { utils } from '../../utils/common';
+import { RequestTypes } from '../../utils/request-types';
 import { settings } from '../../settings/user-settings';
 import { log } from '../../utils/log';
 import { requestContextStorage } from '../request-context-storage';

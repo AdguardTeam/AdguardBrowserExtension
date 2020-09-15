@@ -16,7 +16,8 @@
  */
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
-import { BACKGROUND_TAB_ID, RequestTypes, utils } from '../utils/common';
+import { BACKGROUND_TAB_ID, utils } from '../utils/common';
+import { RequestTypes } from '../utils/request-types';
 import { listeners } from '../notifier';
 import { filteringLog } from './filtering-log';
 import { settings } from '../settings/user-settings';

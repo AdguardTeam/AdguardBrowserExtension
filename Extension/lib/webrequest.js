@@ -20,7 +20,8 @@
 import * as TSUrlFilter from '@adguard/tsurlfilter';
 import { requestContextStorage } from './filter/request-context-storage';
 import { tabsApi } from './tabs/tabs-api';
-import { BACKGROUND_TAB_ID, MAIN_FRAME_ID, RequestTypes, utils } from './utils/common';
+import { BACKGROUND_TAB_ID, MAIN_FRAME_ID, utils } from './utils/common';
+import { RequestTypes } from './utils/request-types';
 import { cookieFiltering } from './filter/services/cookie-filtering';
 import { backgroundPage } from './api/background-page';
 import { prefs } from './prefs';

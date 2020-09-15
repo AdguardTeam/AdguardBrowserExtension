@@ -17,7 +17,7 @@
 
 /* eslint-disable max-len */
 
-import { RequestTypes } from '../utils/common';
+import { RequestTypes } from '../utils/request-types';
 import { filteringLog } from './filtering-log';
 import { webRequestService } from './request-blocking';
 

@@ -18,7 +18,7 @@
 import * as TSUrlFilter from '@adguard/tsurlfilter';
 import { log } from '../utils/log';
 import { backgroundPage } from '../api/background-page';
-import { RequestTypes } from '../utils/common';
+import { RequestTypes } from '../utils/request-types';
 
 /**
  * TSUrlFilter Engine wrapper

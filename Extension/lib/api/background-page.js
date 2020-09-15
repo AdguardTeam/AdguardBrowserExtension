@@ -17,11 +17,11 @@
 
 /* eslint-disable max-len */
 
-import { browser } from '../browser';
-import { BACKGROUND_TAB_ID, RequestTypes } from '../utils/common';
-import { prefs } from '../prefs';
-import { parseContentTypeFromUrlPath, toTabFromChromeTab } from '../utils/temp';
+import { RequestTypes, parseContentTypeFromUrlPath } from '../utils/request-types';
+import { BACKGROUND_TAB_ID, toTabFromChromeTab } from '../utils/common';
 import { runtimeImpl } from '../common-script';
+import { browser } from '../browser';
+import { prefs } from '../prefs';
 
 export const backgroundPage = (() => {
     const runtime = (function () {

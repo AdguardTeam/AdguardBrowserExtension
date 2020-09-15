@@ -16,7 +16,8 @@
  */
 
 import { tabsApi } from './tabs-api';
-import { MAIN_FRAME_ID, RequestTypes, utils } from '../utils/common';
+import { MAIN_FRAME_ID, utils } from '../utils/common';
+import { RequestTypes } from '../utils/request-types';
 import { listeners } from '../notifier';
 import { whitelist } from '../filter/whitelist';
 import { settings } from '../settings/user-settings';

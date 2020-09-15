@@ -1,5 +1,5 @@
 import { requestContextStorage } from '../../../Extension/lib/filter/request-context-storage';
-import { RequestTypes } from '../../../Extension/lib/utils/common';
+import { RequestTypes } from '../../../Extension/lib/utils/request-types';
 
 jest.mock('../../../Extension/lib/filter/filtering-log');
 

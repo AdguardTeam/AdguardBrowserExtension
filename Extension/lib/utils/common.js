@@ -15,7 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import * as TSUrlFilter from '@adguard/tsurlfilter';
 import { log } from './log';
 import { cookie } from './cookie';
 import { strings } from './strings';
@@ -28,70 +27,6 @@ import { workaround } from './workaround';
 import { i18n } from './i18n';
 import { filters } from './filters';
 import { url } from './url';
-
-/**
- * Request types enumeration
- */
-export const RequestTypes = {
-    /**
-     * Document that is loaded for a top-level frame
-     */
-    DOCUMENT: 'DOCUMENT',
-
-    /**
-     * Document that is loaded for an embedded frame (iframe)
-     */
-    SUBDOCUMENT: 'SUBDOCUMENT',
-
-    SCRIPT: 'SCRIPT',
-    STYLESHEET: 'STYLESHEET',
-    OBJECT: 'OBJECT',
-    IMAGE: 'IMAGE',
-    XMLHTTPREQUEST: 'XMLHTTPREQUEST',
-    MEDIA: 'MEDIA',
-    FONT: 'FONT',
-    WEBSOCKET: 'WEBSOCKET',
-    WEBRTC: 'WEBRTC',
-    OTHER: 'OTHER',
-    CSP: 'CSP',
-    COOKIE: 'COOKIE',
-    PING: 'PING',
-
-    /**
-     * Transforms to TSUrlFilter.RequestType
-     *
-     * @param requestType
-     * @return {number}
-     */
-    transformRequestType(requestType) {
-        const contentTypes = RequestTypes;
-
-        switch (requestType) {
-            case contentTypes.DOCUMENT:
-                return TSUrlFilter.RequestType.Document;
-            case contentTypes.SUBDOCUMENT:
-                return TSUrlFilter.RequestType.Subdocument;
-            case contentTypes.STYLESHEET:
-                return TSUrlFilter.RequestType.Stylesheet;
-            case contentTypes.FONT:
-                return TSUrlFilter.RequestType.Font;
-            case contentTypes.IMAGE:
-                return TSUrlFilter.RequestType.Image;
-            case contentTypes.MEDIA:
-                return TSUrlFilter.RequestType.Media;
-            case contentTypes.SCRIPT:
-                return TSUrlFilter.RequestType.Script;
-            case contentTypes.XMLHTTPREQUEST:
-                return TSUrlFilter.RequestType.XmlHttpRequest;
-            case contentTypes.WEBSOCKET:
-                return TSUrlFilter.RequestType.Websocket;
-            case contentTypes.PING:
-                return TSUrlFilter.RequestType.Ping;
-            default:
-                return TSUrlFilter.RequestType.Other;
-        }
-    },
-};
 
 /**
  * Background tab id in browsers is defined as -1
@@ -119,6 +54,22 @@ export const utils = {
     filters,
     url,
 };
+
+/**
+ * Converts chrome tabs into tabs
+ * https://developer.chrome.com/extensions/tabs#type-Tab
+ * @param chromeTab
+ * @returns tab
+ */
+export function toTabFromChromeTab(chromeTab) {
+    return {
+        tabId: chromeTab.id,
+        url: chromeTab.url,
+        title: chromeTab.title,
+        incognito: chromeTab.incognito,
+        status: chromeTab.status,
+    };
+}
 
 /**
  * Unload handler. When extension is unload then 'fireUnload' is invoked.
