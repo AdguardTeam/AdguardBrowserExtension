@@ -37,9 +37,6 @@ export const userrules = (function () {
      */
     const addRules = function (rulesText) {
         listeners.notifyListeners(listeners.ADD_RULES, userFilter, rulesText);
-        listeners.notifyListeners(
-            listeners.UPDATE_USER_FILTER_RULES, antiBannerService.getRequestFilterInfo()
-        );
     };
 
     /**
@@ -47,9 +44,6 @@ export const userrules = (function () {
      */
     const clearRules = function () {
         listeners.notifyListeners(listeners.UPDATE_FILTER_RULES, userFilter, []);
-        listeners.notifyListeners(
-            listeners.UPDATE_USER_FILTER_RULES, antiBannerService.getRequestFilterInfo()
-        );
     };
 
     /**
@@ -68,9 +62,6 @@ export const userrules = (function () {
     const updateUserRulesText = function (content) {
         const lines = content.length > 0 ? content.split(/\n/) : [];
         listeners.notifyListeners(listeners.UPDATE_FILTER_RULES, userFilter, lines);
-        listeners.notifyListeners(
-            listeners.UPDATE_USER_FILTER_RULES, antiBannerService.getRequestFilterInfo()
-        );
     };
 
     /**
