@@ -15,7 +15,10 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global i18n, popupPage */
+import c3 from 'c3';
+import { i18n } from './i18n';
+import { popupPage } from '../content-script/popup-script';
+import { htmlToElement } from './script';
 
 /**
  * Controller that manages add-on popup window
@@ -428,38 +431,34 @@ PopupController.prototype = {
         return result.map(val => (val === undefined ? 0 : val));
     },
 
-    DAYS_OF_WEEK: (function () {
-        return this.DAYS_OF_WEEK || [
-            i18n.getMessage('popup_statistics_week_days_mon'),
-            i18n.getMessage('popup_statistics_week_days_tue'),
-            i18n.getMessage('popup_statistics_week_days_wed'),
-            i18n.getMessage('popup_statistics_week_days_thu'),
-            i18n.getMessage('popup_statistics_week_days_fri'),
-            i18n.getMessage('popup_statistics_week_days_sat'),
-            i18n.getMessage('popup_statistics_week_days_sun'),
-        ];
-    })(),
+    DAYS_OF_WEEK: [
+        i18n.getMessage('popup_statistics_week_days_mon'),
+        i18n.getMessage('popup_statistics_week_days_tue'),
+        i18n.getMessage('popup_statistics_week_days_wed'),
+        i18n.getMessage('popup_statistics_week_days_thu'),
+        i18n.getMessage('popup_statistics_week_days_fri'),
+        i18n.getMessage('popup_statistics_week_days_sat'),
+        i18n.getMessage('popup_statistics_week_days_sun'),
+    ],
 
     _dayOfWeekAsString(dayIndex) {
         return this.DAYS_OF_WEEK[dayIndex];
     },
 
-    MONTHS_OF_YEAR: (function () {
-        return this.MONTHS_OF_YEAR || [
-            i18n.getMessage('popup_statistics_months_jan'),
-            i18n.getMessage('popup_statistics_months_feb'),
-            i18n.getMessage('popup_statistics_months_mar'),
-            i18n.getMessage('popup_statistics_months_apr'),
-            i18n.getMessage('popup_statistics_months_may'),
-            i18n.getMessage('popup_statistics_months_jun'),
-            i18n.getMessage('popup_statistics_months_jul'),
-            i18n.getMessage('popup_statistics_months_aug'),
-            i18n.getMessage('popup_statistics_months_sep'),
-            i18n.getMessage('popup_statistics_months_oct'),
-            i18n.getMessage('popup_statistics_months_nov'),
-            i18n.getMessage('popup_statistics_months_dec'),
-        ];
-    })(),
+    MONTHS_OF_YEAR: [
+        i18n.getMessage('popup_statistics_months_jan'),
+        i18n.getMessage('popup_statistics_months_feb'),
+        i18n.getMessage('popup_statistics_months_mar'),
+        i18n.getMessage('popup_statistics_months_apr'),
+        i18n.getMessage('popup_statistics_months_may'),
+        i18n.getMessage('popup_statistics_months_jun'),
+        i18n.getMessage('popup_statistics_months_jul'),
+        i18n.getMessage('popup_statistics_months_aug'),
+        i18n.getMessage('popup_statistics_months_sep'),
+        i18n.getMessage('popup_statistics_months_oct'),
+        i18n.getMessage('popup_statistics_months_nov'),
+        i18n.getMessage('popup_statistics_months_dec'),
+    ],
 
     _monthsAsString(monthIndex) {
         return this.MONTHS_OF_YEAR[monthIndex];
@@ -600,6 +599,7 @@ PopupController.prototype = {
                     const elementCenterPosition = elementRect.left + (elementRect.width / 2);
                     const tooltipHalfWidth = chart.querySelector('.chart__tooltip').clientWidth / 2;
                     const tooltipLeft = elementCenterPosition - tooltipHalfWidth;
+                    // eslint-disable-next-line no-undef
                     const top = d3.mouse(element)[1] - 50;
                     return {
                         top,
@@ -981,7 +981,8 @@ PopupController.prototype = {
     },
 };
 
-(function () {
+
+const init = function () {
     /**
      * TODO: check the following EDGE issue
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/551
@@ -1028,4 +1029,8 @@ PopupController.prototype = {
                 break;
         }
     });
-})();
+};
+
+export const popupController = {
+    init,
+};

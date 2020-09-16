@@ -15,12 +15,13 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { log } from './utils/log';
+
 /**
  * Simple mediator
  */
-adguard.listeners = (function () {
-
-    var EventNotifierTypesMap = {
+export const listeners = (() => {
+    const EventNotifierTypesMap = {
         ADD_RULES: 'event.add.rules',
         REMOVE_RULE: 'event.remove.rule',
         UPDATE_FILTER_RULES: 'event.update.filter.rules',
@@ -54,7 +55,7 @@ adguard.listeners = (function () {
         SETTINGS_UPDATED: 'event.sync.finished',
     };
 
-    var EventNotifierEventsMap = Object.create(null);
+    const EventNotifierEventsMap = Object.create(null);
 
     var EventNotifier = {
 
@@ -69,11 +70,11 @@ adguard.listeners = (function () {
          * @param listener  Listener object
          * @returns Index of the listener
          */
-        addSpecifiedListener: function (events, listener) {
+        addSpecifiedListener(events, listener) {
             if (typeof listener !== 'function') {
                 throw new Error('Illegal listener');
             }
-            var listenerId = this.listenerId++;
+            const listenerId = this.listenerId++;
             this.listenersMap[listenerId] = listener;
             this.listenersEventsMap[listenerId] = events;
             return listenerId;
@@ -85,11 +86,11 @@ adguard.listeners = (function () {
          * @param listener Listener
          * @returns Index of the listener
          */
-        addListener: function (listener) {
+        addListener(listener) {
             if (typeof listener !== 'function') {
                 throw new Error('Illegal listener');
             }
-            var listenerId = this.listenerId++;
+            const listenerId = this.listenerId++;
             this.listenersMap[listenerId] = listener;
             return listenerId;
         },
@@ -98,7 +99,7 @@ adguard.listeners = (function () {
          * Unsubscribe listener
          * @param listenerId Index of listener to unsubscribe
          */
-        removeListener: function (listenerId) {
+        removeListener(listenerId) {
             delete this.listenersMap[listenerId];
             delete this.listenersEventsMap[listenerId];
         },
@@ -106,21 +107,21 @@ adguard.listeners = (function () {
         /**
          * Notifies listeners about the events passed as arguments of this function.
          */
-        notifyListeners: function () {
-            var event = arguments[0];
+        notifyListeners() {
+            const event = arguments[0];
             if (!event || !(event in EventNotifierEventsMap)) {
-                throw new Error('Illegal event: ' + event);
+                throw new Error(`Illegal event: ${event}`);
             }
-            for (var listenerId in this.listenersMap) { // jshint ignore:line
-                var events = this.listenersEventsMap[listenerId];
+            for (const listenerId in this.listenersMap) {
+                const events = this.listenersEventsMap[listenerId];
                 if (events && events.length > 0 && events.indexOf(event) < 0) {
                     continue;
                 }
                 try {
-                    var listener = this.listenersMap[listenerId];
+                    const listener = this.listenersMap[listenerId];
                     listener.apply(listener, arguments);
                 } catch (ex) {
-                    adguard.console.error("Error invoking listener for {0} cause: {1}", event, ex);
+                    log.error('Error invoking listener for {0} cause: {1}', event, ex);
                 }
             }
         },
@@ -130,24 +131,24 @@ adguard.listeners = (function () {
          * Some events should be dispatched asynchronously, for instance this is very important for Safari:
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/251
          */
-        notifyListenersAsync: function () {
-            var args = arguments;
-            setTimeout(function () {
+        notifyListenersAsync() {
+            const args = arguments;
+            setTimeout(() => {
                 EventNotifier.notifyListeners.apply(EventNotifier, args);
             }, 500);
-        }
+        },
     };
 
     // Make accessible only constants without functions. They will be passed to content-page
     EventNotifier.events = EventNotifierTypesMap;
 
     // Copy global properties
-    for (var key in EventNotifierTypesMap) {
+    for (const key in EventNotifierTypesMap) {
         if (EventNotifierTypesMap.hasOwnProperty(key)) {
-            var event = EventNotifierTypesMap[key];
+            const event = EventNotifierTypesMap[key];
             EventNotifier[key] = event;
             if (event in EventNotifierEventsMap) {
-                throw new Error('Duplicate event:  ' + event);
+                throw new Error(`Duplicate event:  ${event}`);
             }
             EventNotifierEventsMap[event] = key;
         }

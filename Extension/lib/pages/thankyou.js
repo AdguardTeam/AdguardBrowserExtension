@@ -15,7 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global contentPage */
+import { contentPage } from '../content-script/content-script';
+
 const PageController = (response) => {
     const {
         userSettings,
@@ -172,13 +173,13 @@ let timeoutId;
 let counter = 0;
 const MAX_WAIT_RETRY = 10;
 const RETRY_TIMEOUT_MS = 100;
-const waitContentPage = () => {
+const init = () => {
     if (typeof contentPage === 'undefined') {
         if (counter > MAX_WAIT_RETRY) {
             clearTimeout(timeoutId);
             return;
         }
-        timeoutId = setTimeout(waitContentPage, RETRY_TIMEOUT_MS);
+        timeoutId = setTimeout(init, RETRY_TIMEOUT_MS);
         counter += 1;
         return;
     }
@@ -197,4 +198,6 @@ const waitContentPage = () => {
     });
 };
 
-waitContentPage();
+export const thankyou = {
+    init,
+}

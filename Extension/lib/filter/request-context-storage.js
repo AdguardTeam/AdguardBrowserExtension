@@ -15,13 +15,19 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* eslint-disable max-len */
+
+import { RequestTypes } from '../utils/request-types';
+import { filteringLog } from './filtering-log';
+import { webRequestService } from './request-blocking';
+
 /**
  * Module for managing requests context.
  *
  * Each request has a context with unique key: requestId
  * Context contains information about this request: id, url, referrer, type, applied rules, original and modified headers
  *
- * This API is exposed via adguard.requestContextStorage:
+ * This API is exposed via requestContextStorage:
  *
  * - get - Get context by key
  * - record - Initialize context for request (uses in onBeforeRequest)
@@ -32,8 +38,7 @@
  * - onRequestCompleted - Finishes request processing on request complete/error event.
  * - onContentModificationFinished - After content modification and applying all rules (replace and content)
  */
-(function (adguard) {
-
+export const requestContextStorage = (function () {
     /**
      * @typedef {object} RequestContext
      * @property {string} requestId - Request identifier
@@ -65,7 +70,7 @@
     const States = {
         NONE: 1,
         PROCESSING: 2,
-        DONE: 3
+        DONE: 3,
     };
 
     /**
@@ -129,23 +134,27 @@
      * @param {object} tab Request tab
      */
     const record = (requestId, requestUrl, referrerUrl, originUrl, requestType, tab) => {
-
         const eventId = getNextEventId();
 
         // Clears filtering log. If contexts map already contains this requests that means that we caught redirect
-        if (requestType === adguard.RequestTypes.DOCUMENT && !contexts.has(requestId)) {
-            adguard.filteringLog.clearEventsByTabId(tab.tabId);
+        if (requestType === RequestTypes.DOCUMENT && !contexts.has(requestId)) {
+            filteringLog.clearEventsByTabId(tab.tabId);
         }
 
         const context = {
-            requestId, requestUrl, referrerUrl, originUrl, requestType, tab,
+            requestId,
+            requestUrl,
+            referrerUrl,
+            originUrl,
+            requestType,
+            tab,
             eventId,
             requestState: States.PROCESSING,
             contentModifyingState: States.NONE,
         };
         contexts.set(requestId, context);
 
-        adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, requestType, null, eventId);
+        filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, requestType, null, eventId);
     };
 
     /**
@@ -158,8 +167,8 @@
      * @param requestRule {object} Request rule
      */
     const recordEmulated = (requestUrl, referrerUrl, requestType, tab, requestRule) => {
-        adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
-        adguard.webRequestService.recordRuleHit(tab, requestRule, requestUrl);
+        filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
+        webRequestService.recordRuleHit(tab, requestRule, requestUrl);
     };
 
     /**
@@ -168,7 +177,6 @@
      * @param {RequestContext} update
      */
     const update = (requestId, update) => {
-
         const context = contexts.get(requestId);
         if (!context) {
             return;
@@ -187,7 +195,7 @@
             context.requestRule = update.requestRule;
             // Some requests may execute for a long time, that's why we update filtering log when
             // we get a request rule
-            adguard.filteringLog.bindRuleToHttpRequestEvent(context.tab,
+            filteringLog.bindRuleToHttpRequestEvent(context.tab,
                 context.requestRule,
                 context.eventId);
         }
@@ -223,7 +231,6 @@
      * @param {object} elementHtml Serialized HTML element
      */
     const bindContentRule = (requestId, rule, elementHtml) => {
-
         const context = contexts.get(requestId);
         if (!context) {
             return;
@@ -255,60 +262,57 @@
      * @param {string} requestId Request identifier
      */
     const remove = (requestId) => {
-
         const context = contexts.get(requestId);
         if (!context) {
             return;
         }
 
-        const tab = context.tab;
-        const requestUrl = context.requestUrl;
-        const referrerUrl = context.referrerUrl;
+        const { tab } = context;
+        const { requestUrl } = context;
+        const { referrerUrl } = context;
 
         let ruleHitsRecords = [];
 
         if (context.requestState === States.DONE) {
-
             context.requestState = States.NONE;
 
-            const requestRule = context.requestRule;
-            const cspRules = context.cspRules;
-            const stealthActions = context.stealthActions;
+            const { requestRule } = context;
+            const { cspRules } = context;
+            const { stealthActions } = context;
 
             if (requestRule) {
-                adguard.filteringLog.bindRuleToHttpRequestEvent(tab, requestRule, context.eventId);
+                filteringLog.bindRuleToHttpRequestEvent(tab, requestRule, context.eventId);
                 ruleHitsRecords.push(requestRule);
             }
 
             if (cspRules) {
-                for (let cspRule of cspRules) {
-                    adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, adguard.RequestTypes.CSP, cspRule);
+                for (const cspRule of cspRules) {
+                    filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, RequestTypes.CSP, cspRule);
                 }
                 ruleHitsRecords = ruleHitsRecords.concat(cspRules);
             }
 
             if (stealthActions) {
-                adguard.filteringLog.bindStealthActionsToHttpRequestEvent(tab, stealthActions, context.eventId);
+                filteringLog.bindStealthActionsToHttpRequestEvent(tab, stealthActions, context.eventId);
             }
         }
 
         if (context.contentModifyingState === States.DONE) {
-
             context.contentModifyingState = States.NONE;
 
-            const replaceRules = context.replaceRules;
-            const contentRules = context.contentRules;
+            const { replaceRules } = context;
+            const { contentRules } = context;
 
             if (replaceRules) {
-                adguard.filteringLog.bindReplaceRulesToHttpRequestEvent(tab, replaceRules, context.eventId);
+                filteringLog.bindReplaceRulesToHttpRequestEvent(tab, replaceRules, context.eventId);
                 ruleHitsRecords = ruleHitsRecords.concat(replaceRules);
             }
 
             if (contentRules) {
-                for (let contentRule of contentRules) {
+                for (const contentRule of contentRules) {
                     const elements = context.elements.get(contentRule) || [];
-                    for (let element of elements) {
-                        adguard.filteringLog.addCosmeticEvent(tab, element, requestUrl, context.requestType, contentRule);
+                    for (const element of elements) {
+                        filteringLog.addCosmeticEvent(tab, element, requestUrl, context.requestType, contentRule);
                     }
                     context.elements.delete(contentRule);
                 }
@@ -317,13 +321,12 @@
         }
 
         for (let i = 0; i < ruleHitsRecords.length; i += 1) {
-            adguard.webRequestService.recordRuleHit(tab, ruleHitsRecords[i], requestUrl);
+            webRequestService.recordRuleHit(tab, ruleHitsRecords[i], requestUrl);
         }
 
         // All processes finished
-        if (context.requestState === States.NONE &&
-            context.contentModifyingState === States.NONE) {
-
+        if (context.requestState === States.NONE
+            && context.contentModifyingState === States.NONE) {
             contexts.delete(requestId);
         }
     };
@@ -358,7 +361,7 @@
     };
 
     // Expose
-    adguard.requestContextStorage = {
+    return {
         get,
         record,
         recordEmulated,
@@ -367,6 +370,5 @@
         onRequestCompleted,
         onContentModificationStarted,
         onContentModificationFinished,
-    }
-
-})(adguard);
+    };
+})();

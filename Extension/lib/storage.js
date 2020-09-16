@@ -15,26 +15,14 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * localStorage interface. Implementation depends on browser
- */
-adguard.localStorageImpl = adguard.localStorageImpl || (function () {
-    function notImplemented() {
-        throw new Error('Not implemented');
-    }
-
-    return {
-        getItem: notImplemented,
-        setItem: notImplemented,
-        removeItem: notImplemented,
-        hasItem: notImplemented,
-    };
-})();
+import { log } from './utils/log';
+import { localStorageImpl } from './utils/local-storage';
+import { rulesStorageImpl } from './rules-storage';
 
 /**
  * This class manages local storage
  */
-adguard.localStorage = (function (adguard, impl) {
+export const localStorage = (function (impl) {
     const getItem = function (key) {
         return impl.getItem(key);
     };
@@ -43,7 +31,7 @@ adguard.localStorage = (function (adguard, impl) {
         try {
             impl.setItem(key, value);
         } catch (ex) {
-            adguard.console.error(`Error while saving item ${key} to the localStorage: ${ex}`);
+            log.error(`Error while saving item ${key} to the localStorage: ${ex}`);
         }
     };
 
@@ -79,26 +67,12 @@ adguard.localStorage = (function (adguard, impl) {
         init,
         isInitialized,
     };
-})(adguard, adguard.localStorageImpl);
-
-/**
- * Rules storage interface. Implementation depends on browser
- */
-adguard.rulesStorageImpl = adguard.rulesStorageImpl || (function () {
-    function notImplemented() {
-        throw new Error('Not implemented');
-    }
-
-    return {
-        read: notImplemented,
-        write: notImplemented,
-    };
-})();
+})(localStorageImpl);
 
 /**
  * This class manages storage for filters.
  */
-adguard.rulesStorage = (function (adguard, impl) {
+export const rulesStorage = (impl => {
     function getFilePath(filterId) {
         return `filterrules_${filterId}.txt`;
     }
@@ -113,7 +87,7 @@ adguard.rulesStorage = (function (adguard, impl) {
         const filePath = getFilePath(filterId);
         impl.read(filePath, (e, rules) => {
             if (e) {
-                adguard.console.error(`Error while reading rules from file ${filePath} cause: ${e}`);
+                log.error(`Error while reading rules from file ${filePath} cause: ${e}`);
             }
             callback(rules);
         });
@@ -130,7 +104,7 @@ adguard.rulesStorage = (function (adguard, impl) {
         const filePath = getFilePath(filterId);
         impl.write(filePath, filterRules, (e) => {
             if (e) {
-                adguard.console.error(`Error writing filters to file ${filePath}. Cause: ${e}`);
+                log.error(`Error writing filters to file ${filePath}. Cause: ${e}`);
             }
             callback();
         });
@@ -145,7 +119,7 @@ adguard.rulesStorage = (function (adguard, impl) {
         const filePath = getFilePath(filterId);
         impl.remove(filePath, (e) => {
             if (e) {
-                adguard.console.error(`Error removing filter ${filePath}. Cause: ${e}`);
+                log.error(`Error removing filter ${filePath}. Cause: ${e}`);
             }
             callback();
         });
@@ -175,4 +149,4 @@ adguard.rulesStorage = (function (adguard, impl) {
         remove,
         init,
     };
-})(adguard, adguard.rulesStorageImpl);
+})(rulesStorageImpl);

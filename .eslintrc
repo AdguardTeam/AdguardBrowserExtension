@@ -1,107 +1,116 @@
 {
-  "env": {
-    "browser": true,
-    "node": true
-  },
-  "extends": "airbnb-base",
-  "globals": {
-    "adguard": true,
-    "chrome": true,
-    "QUnit": true,
-    "browser": true
-  },
-  "rules": {
-    "import/no-extraneous-dependencies": 0,
-    "indent": [
-      "error",
-      4,
-      {
-        "SwitchCase": 1,
-        "VariableDeclarator": 1,
-        "outerIIFEBody": 1,
-        "FunctionDeclaration": {
-          "parameters": 1,
-          "body": 1
-        },
-        "FunctionExpression": {
-          "parameters": 1,
-          "body": 1
-        },
-        "CallExpression": {
-          "arguments": 1
-        },
-        "ArrayExpression": 1,
-        "ObjectExpression": 1,
-        "ImportDeclaration": 1,
-        "flatTernaryExpressions": false,
-        "ignoredNodes": [
-          "JSXElement",
-          "JSXElement > *",
-          "JSXAttribute",
-          "JSXIdentifier",
-          "JSXNamespacedName",
-          "JSXMemberExpression",
-          "JSXSpreadAttribute",
-          "JSXExpressionContainer",
-          "JSXOpeningElement",
-          "JSXClosingElement",
-          "JSXText",
-          "JSXEmptyExpression",
-          "JSXSpreadChild"
+    "env": {
+        "browser": true,
+        "node": true,
+        "jest": true,
+    },
+    "extends": "airbnb-base",
+    "globals": {
+        "adguard": true,
+        "chrome": true,
+        "QUnit": true,
+        "browser": true,
+        "page": true,
+        "context": true,
+        "jestPuppeteer": true
+    },
+    "rules": {
+        "import/no-extraneous-dependencies": 0,
+        "indent": [
+            "error",
+            4,
+            {
+                "SwitchCase": 1,
+                "VariableDeclarator": 1,
+                "outerIIFEBody": 1,
+                "FunctionDeclaration": {
+                    "parameters": 1,
+                    "body": 1
+                },
+                "FunctionExpression": {
+                    "parameters": 1,
+                    "body": 1
+                },
+                "CallExpression": {
+                    "arguments": 1
+                },
+                "ArrayExpression": 1,
+                "ObjectExpression": 1,
+                "ImportDeclaration": 1,
+                "flatTernaryExpressions": false,
+                "ignoredNodes": [
+                    "JSXElement",
+                    "JSXElement > *",
+                    "JSXAttribute",
+                    "JSXIdentifier",
+                    "JSXNamespacedName",
+                    "JSXMemberExpression",
+                    "JSXSpreadAttribute",
+                    "JSXExpressionContainer",
+                    "JSXOpeningElement",
+                    "JSXClosingElement",
+                    "JSXText",
+                    "JSXEmptyExpression",
+                    "JSXSpreadChild"
+                ],
+                "ignoreComments": false
+            }
         ],
-        "ignoreComments": false
-      }
-    ],
-    "comma-dangle": [
-      "error",
-      {
-        "arrays": "always-multiline",
-        "objects": "always-multiline",
-        "imports": "always-multiline",
-        "exports": "always",
-        "functions": "never"
-      }
-    ],
-    "no-useless-escape": "off",
-    "no-param-reassign": "off",
-    "wrap-iife": "off",
-    "func-names": "off",
-    "no-shadow": "off",
-    "no-multi-spaces": [
-      "error",
-      {
-        "ignoreEOLComments": true
-      }
-    ],
-    // Prefer destructuring from arrays and objects
-    // https://eslint.org/docs/rules/prefer-destructuring
-    "prefer-destructuring": [
-      "error",
-      {
-        "VariableDeclarator": {
-          "array": false,
-          "object": true
-        },
-        "AssignmentExpression": {
-          "array": true,
-          "object": false
-        }
-      },
-      {
-        "enforceForRenamedProperties": false
-      }
-    ],
-    "consistent-return": "off",
-    "no-prototype-builtins": "off",
-    "dot-notation": "off",
-    "quote-props": "off",
-    "no-continue": "off",
-    "strict": "off",
-    "no-bitwise": "off",
-    "no-underscore-dangle": "off",
-    "max-len": ["error", {
-      "code": 120
-    }],
-    "arrow-body-style": "off"
-  }
+        "comma-dangle": [
+            "error",
+            {
+                "arrays": "always-multiline",
+                "objects": "always-multiline",
+                "imports": "always-multiline",
+                "exports": "always-multiline",
+                "functions": "never"
+            }
+        ],
+        "no-useless-escape": "off",
+        "no-param-reassign": "off",
+        "wrap-iife": "off",
+        "func-names": "off",
+        "no-shadow": "off",
+        "no-multi-spaces": [
+            "error",
+            {
+                "ignoreEOLComments": true
+            }
+        ],
+        // Prefer destructuring from arrays and objects
+        // https://eslint.org/docs/rules/prefer-destructuring
+        "prefer-destructuring": [
+            "error",
+            {
+                "VariableDeclarator": {
+                    "array": false,
+                    "object": true
+                },
+                "AssignmentExpression": {
+                    "array": true,
+                    "object": false
+                }
+            },
+            {
+                "enforceForRenamedProperties": false
+            }
+        ],
+        "consistent-return": "off",
+        "no-prototype-builtins": "off",
+        "dot-notation": "off",
+        "quote-props": "off",
+        "no-continue": "off",
+        "strict": "off",
+        "no-bitwise": "off",
+        "no-underscore-dangle": "off",
+        "max-len": [
+            "error",
+            {
+                "code": 120
+            }
+        ],
+        "arrow-body-style": "off",
+        "import/prefer-default-export": "off",
+        "arrow-parens": "off"
+    }
 }

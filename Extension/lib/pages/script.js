@@ -15,16 +15,14 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global i18n, contentPage */
+import { contentPage } from '../content-script/content-script';
 
 /**
  * UI checkboxes utils
  *
  * @type {{toggleCheckbox, updateCheckbox}}
  */
-const CheckboxUtils = (function () {
-    'use strict';
-
+export const CheckboxUtils = (function () {
     const updateAreaChecked = (el, checked) => {
         if (el) {
             el.setAttribute('aria-checked', checked);
@@ -84,7 +82,7 @@ const CheckboxUtils = (function () {
      * @param {boolean} checked
      */
     const updateCheckbox = function (elements, checked) {
-        Array.prototype.forEach.call(elements, function (el) {
+        Array.prototype.forEach.call(elements, (el) => {
             if (!el || el.checked === checked) {
                 return;
             }
@@ -102,29 +100,10 @@ const CheckboxUtils = (function () {
     };
 
     return {
-        toggleCheckbox: toggleCheckbox,
-        updateCheckbox: updateCheckbox,
+        toggleCheckbox,
+        updateCheckbox,
     };
 })();
-
-function customizePopupFooter(isMacOs) {
-    // fix title
-    let messageId = isMacOs ? 'thankyou_want_full_protection_mac' : 'thankyou_want_full_protection';
-    let title = document.querySelector('.thanks-prefooter .thanks-prefooter-title');
-    i18n.translateElement(title, messageId);
-
-    // fix title in table
-    messageId = isMacOs ? 'thankyou_compare_full_title_mac' : 'thankyou_compare_full_title';
-    title = document.querySelector('.thanks-prefooter .thanks-prefooter-table .tpt-head-full');
-    i18n.translateElement(title, messageId);
-
-    // hide parental control feature for mac os
-    if (isMacOs) {
-        document.querySelector('.parental-control-feature').style.display = 'none';
-    } else {
-        document.querySelector('.parental-control-feature').style.display = '';
-    }
-}
 
 /**
  * Used to receive notifications from background page
@@ -132,13 +111,13 @@ function customizePopupFooter(isMacOs) {
  * @param callback Event listener callback
  * @param onUnloadCallback Window unload callback
  */
-function createEventListener(events, callback, onUnloadCallback) { // jshint ignore:line
+export function createEventListener(events, callback, onUnloadCallback) {
     function eventListener() {
         callback.apply(null, arguments);
     }
 
     let listenerId;
-    contentPage.sendMessage({ type: 'addEventListener', events: events }, function (response) {
+    contentPage.sendMessage({ type: 'addEventListener', events }, (response) => {
         listenerId = response.listenerId;
     });
 
@@ -150,7 +129,7 @@ function createEventListener(events, callback, onUnloadCallback) { // jshint ign
 
     const onUnload = function () {
         if (listenerId) {
-            contentPage.sendMessage({ type: 'removeListener', listenerId: listenerId });
+            contentPage.sendMessage({ type: 'removeListener', listenerId });
             listenerId = null;
             if (typeof onUnloadCallback === 'function') {
                 onUnloadCallback();
@@ -165,10 +144,10 @@ function createEventListener(events, callback, onUnloadCallback) { // jshint ign
 /**
  * Creates HTMLElement from string
  *
- * @param {String} HTML representing a single element
+ * @param {String} html representing a single element
  * @return {Element}
  */
-function htmlToElement(html) {
+export function htmlToElement(html) {
     const template = document.createElement('template');
     html = html.trim(); // Never return a text node of whitespace as the result
     template.innerHTML = html;

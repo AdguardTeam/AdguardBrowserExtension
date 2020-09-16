@@ -15,44 +15,52 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global adguard, Redirects */
+import { redirects } from 'scriptlets';
+import { log } from '../../utils/log';
+import { resources } from '../../utils/resources';
 
-// TODO: [TSUrlFilter] Use web-accessible-resources
-adguard.redirectFilterService = (function (adguard) {
-    let redirects;
+const { Redirects } = redirects;
 
-    function setRedirectSources(rawYaml) {
+/**
+ * Redirects service class
+ */
+export const redirectService = (function () {
+    let redirects = null;
+
+    /**
+     * Initialize service
+     */
+    const init = (rawYaml) => {
         redirects = new Redirects(rawYaml);
-    }
+    };
 
-    function buildRedirectUrl(title) {
+    /**
+     * Creates url
+     *
+     * @param title
+     * @return string|null
+     */
+    const createRedirectUrl = (title) => {
         if (!title) {
             return null;
         }
 
         const redirectSource = redirects.getRedirect(title);
         if (!redirectSource) {
-            adguard.console.debug(`There is no redirect source with title: "${title}"`);
+            log.debug(`There is no redirect source with title: "${title}"`);
             return null;
         }
-        let { content, contentType } = redirectSource;
-        // if contentType does not include "base64" string we convert it to base64
-        const BASE_64 = 'base64';
-        if (!contentType.includes(BASE_64)) {
-            content = window.btoa(content);
-            contentType = `${contentType};${BASE_64}`;
-        }
 
-        return `data:${contentType},${content}`;
-    }
+        return resources.createRedirectFileUrl(redirectSource.file);
+    };
 
-    function hasRedirect(title) {
+    const hasRedirect = (title) => {
         return !!redirects.getRedirect(title);
-    }
+    };
 
     return {
-        setRedirectSources,
+        init,
         hasRedirect,
-        buildRedirectUrl,
+        createRedirectUrl,
     };
-})(adguard);
+})();

@@ -15,7 +15,15 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global contentPage, i18n, moment, ace, CheckboxUtils */
+import moment from 'moment';
+import * as ace from 'ace-builds';
+import 'ace-builds/src-noconflict/ext-searchbox';
+import 'ace-builds/src-noconflict/theme-textmate';
+import './ace/mode-adguard';
+
+import { contentPage } from '../content-script/content-script';
+import { i18n } from './i18n';
+import { CheckboxUtils, htmlToElement, createEventListener } from './script';
 
 // Update default date format for zh-cn
 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1442
@@ -127,8 +135,6 @@ const Utils = {
 };
 
 const TopMenu = (function () {
-    'use strict';
-
     const GENERAL_SETTINGS = '#general-settings';
     const ANTIBANNER = '#antibanner';
     const WHITELIST = '#whitelist';
@@ -421,8 +427,6 @@ const handleEditorResize = (editor, editorId) => {
 };
 
 const WhiteListFilter = function (options) {
-    'use strict';
-
     const editorId = 'whiteListRules';
     const editor = ace.edit(editorId);
     handleEditorResize(editor, editorId);
@@ -528,8 +532,6 @@ const WhiteListFilter = function (options) {
 };
 
 const UserFilter = function () {
-    'use strict';
-
     const editorId = 'userRules';
     const editor = ace.edit(editorId);
     editor.setShowPrintMargin(false);
@@ -627,8 +629,6 @@ const UserFilter = function () {
 };
 
 const AntiBannerFilters = function (options) {
-    'use strict';
-
     const loadedFiltersInfo = {
         filters: [],
         categories: [],
@@ -896,7 +896,7 @@ const AntiBannerFilters = function (options) {
         return `
             <div class="page-title">
                 <a href="#antibanner">
-                    <img src="images/arrow-left.svg" class="back">
+                    <img src="../assets/images/arrow-left.svg" class="back">
                 </a>
                 ${name}
             </div>`;
@@ -1209,7 +1209,7 @@ const AntiBannerFilters = function (options) {
 
     const searchHtml = `<div class="filters-search">
                             <div class="icon-search">
-                                <img src="images/magnifying-green.svg" alt="">
+                                <img src="../assets/images/magnifying-green.svg" alt="">
                             </div>
                             <input
                                 type="text"
@@ -1228,7 +1228,7 @@ const AntiBannerFilters = function (options) {
                                 </option>
                             </select>
                             <div class="filters-search__cross">
-                                <img src="images/cross.svg" alt="">
+                                <img src="../assets/images/cross.svg" alt="">
                             </div>
                         </div>`;
 
@@ -1623,8 +1623,6 @@ const AntiBannerFilters = function (options) {
 };
 
 const Settings = function () {
-    'use strict';
-
     const Checkbox = function (id, property, options) {
         options = options || {};
         const { negate } = options;
@@ -2205,10 +2203,16 @@ const waitStorageInit = (adguard) => {
     contentPage.sendMessage({ type: 'initializeFrameScript' }, initPage);
 };
 
-backgroundPagePromise
-    .then((page) => {
-        waitStorageInit(page.adguard);
-    })
-    .catch((e) => {
-        console.log(e.message);
-    });
+const init = () => {
+    backgroundPagePromise
+        .then((page) => {
+            waitStorageInit(page.adguard);
+        })
+        .catch((e) => {
+            console.log(e.message);
+        });
+};
+
+export const options = {
+    init,
+};

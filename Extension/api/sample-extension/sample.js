@@ -1,5 +1,6 @@
-/* global adguardApi */
 /* eslint-disable no-console */
+
+/* global adguardApi */
 
 // Init the configuration
 const configuration = {

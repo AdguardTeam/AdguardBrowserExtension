@@ -15,26 +15,29 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global contentPage, WeakSet */
+import { contentPage } from './content-script';
 
 /**
+ * !!! Important do not change function declaration, otherwise it would loose its name,
+ * which is needed in the script
+ *
  * Function for injecting some helper API into page context, that is used by request wrappers.
  *
  * @param scriptName Unique script name
  * @param shouldOverrideWebRTC If true we should override WebRTC objects
- * @param isInjected True means that we've already injected scripts in the contentWindow, i.e. wrapped request objects and passed message channel
+ * @param isInjected True means that we've already injected scripts in the contentWindow,
+ * i.e. wrapped request objects and passed message channel
  */
-function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected) {
-    'use strict';
-
+export function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected) {
     /**
-     * If script have been injected into a frame via contentWindow then we can simply take the copy of messageChannel left for us by parent document
-     * Otherwise creates new message channel that sends a message to the content-script to check if request should be allowed or not.
+     * If script have been injected into a frame via contentWindow then we can simply take
+     * the copy of messageChannel left for us by parent document
+     * Otherwise creates new message channel that sends a message to the content-script
+     * to check if request should be allowed or not.
      */
     const messageChannel = isInjected ? window[scriptName] : (function () {
         // Save original postMessage and addEventListener functions to prevent webpage from tampering both.
-        const postMessage = window.postMessage;
-        const addEventListener = window.addEventListener;
+        const { postMessage, addEventListener } = window;
 
         // Current request ID (incremented every time we send a new message)
         let currentRequestId = 0;
@@ -52,7 +55,7 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected) {
 
             const requestData = requestsMap[event.data.requestId];
             if (requestData) {
-                const wrapper = requestData.wrapper;
+                const { wrapper } = requestData;
                 requestData.onResponseReceived(wrapper, event.data.block);
                 delete requestsMap[event.data.requestId];
             }
@@ -72,16 +75,16 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected) {
 
             const requestId = ++currentRequestId;
             requestsMap[requestId] = {
-                wrapper: wrapper,
-                onResponseReceived: onResponseReceived,
+                wrapper,
+                onResponseReceived,
             };
 
             const message = {
-                requestId: requestId,
+                requestId,
                 direction: 'from-page-script@adguard',
                 elementUrl: url,
                 documentUrl: document.URL,
-                requestType: requestType,
+                requestType,
             };
 
             // Send a message to the background page to check if the request should be blocked
@@ -89,13 +92,14 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected) {
         };
 
         return {
-            sendMessage: sendMessage,
+            sendMessage,
         };
     })();
 
-    /*
+    /**
      * In some case Chrome won't run content scripts inside frames.
-     * So we have to intercept access to contentWindow/contentDocument and manually inject wrapper script into this context
+     * So we have to intercept access to contentWindow/contentDocument and manually
+     * inject wrapper script into this context
      *
      * Based on: https://github.com/adblockplus/adblockpluschrome/commit/1aabfb3346dc0821c52dd9e97f7d61b8c99cd707
      */
@@ -133,6 +137,7 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected) {
                 delete contentWindow[scriptName];
             }
         } catch (e) {
+            // ignore
         }
     }
 
@@ -197,13 +202,14 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected) {
      * @param callback Result callback
      */
     const checkRequest = function (url, type, callback) {
-        messageChannel.sendMessage(url, type, this, function (wrapper, blockConnection) {
+        messageChannel.sendMessage(url, type, this, (wrapper, blockConnection) => {
             callback(blockConnection);
         });
     };
 
     /**
-     * The function overrides window.RTCPeerConnection with our wrapper, that will check ice servers URLs with filters through messaging with content-script.
+     * The function overrides window.RTCPeerConnection with our wrapper,
+     * that will check ice servers URLs with filters through messaging with content-script.
      *
      * IMPORTANT NOTE:
      * This function is first loaded as a content script. The only purpose of it is to call
@@ -232,7 +238,7 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected) {
         const RealArray = Array;
         const RealString = String;
         const createObject = Object.create;
-        const defineProperty = Object.defineProperty;
+        const { defineProperty } = Object;
 
         /**
          * Convert passed url to string
@@ -286,7 +292,7 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected) {
 
             const iceServers = safeCopyArray(
                 configuration.iceServers,
-                function (iceServer) {
+                (iceServer) => {
                     let { url, urls } = iceServer;
 
                     // RTCPeerConnection doesn't iterate through pseudo Arrays of urls.
@@ -327,7 +333,7 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected) {
          * @param url URL to check
          */
         function checkWebRTCRequest(connection, url) {
-            checkRequest(url, 'WEBRTC', function (blocked) {
+            checkRequest(url, 'WEBRTC', (blocked) => {
                 if (blocked) {
                     try {
                         closeRTCPeerConnection(connection);
@@ -350,7 +356,7 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected) {
                 return;
             }
 
-            const iceServers = configuration.iceServers;
+            const { iceServers } = configuration;
             for (let i = 0; i < iceServers.length; i += 1) {
                 const iceServer = iceServers[i];
 
@@ -386,7 +392,6 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected) {
         }
 
         function WrappedRTCPeerConnection(configuration, arg) {
-
             if (!(this instanceof WrappedRTCPeerConnection)) {
                 return RealRTCPeerConnection();
             }
@@ -404,7 +409,11 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected) {
         WrappedRTCPeerConnection.prototype = RealRTCPeerConnection.prototype;
 
         const boundWrappedRTCPeerConnection = WrappedRTCPeerConnection.bind();
-        copyProperties(RealRTCPeerConnection, boundWrappedRTCPeerConnection, ['caller', 'generateCertificate', 'name', 'prototype']);
+        copyProperties(
+            RealRTCPeerConnection,
+            boundWrappedRTCPeerConnection,
+            ['caller', 'generateCertificate', 'name', 'prototype']
+        );
         RealRTCPeerConnection.prototype.constructor = boundWrappedRTCPeerConnection;
 
         if ('RTCPeerConnection' in window) {
@@ -418,14 +427,13 @@ function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected) {
     if (shouldOverrideWebRTC) {
         overrideWebRTC();
     }
-}
+};
 
 /**
- * This function is executed in the content script. It starts listening to events from the page script and passes them further to the background page.
+ * This function is executed in the content script.
+ * It starts listening to events from the page script and passes them further to the background page.
  */
-const initPageMessageListener = function () {
-    'use strict';
-
+export const initPageMessageListener = function () {
     /**
      * Listener for websocket wrapper messages.
      *
@@ -448,7 +456,7 @@ const initPageMessageListener = function () {
             requestId: event.data.requestId,
         };
 
-        contentPage.sendMessage(message, function (response) {
+        contentPage.sendMessage(message, (response) => {
             if (!response) {
                 return;
             }
