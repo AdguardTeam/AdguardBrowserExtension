@@ -15,26 +15,29 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { subscriptions } from './subscription';
+import { application } from '../../application';
+import { tags } from './filters-tags';
+import { prefs } from '../../prefs';
+
 /**
  * Filter categories service
  */
-adguard.categories = (function (adguard) {
-    'use strict';
-
+export const categories = (() => {
     /**
      * @returns {Array.<*>} filters
      */
-    var getFilters = function () {
-        var result = adguard.subscriptions.getFilters().filter(function (f) {
+    const getFilters = function () {
+        const result = subscriptions.getFilters().filter((f) => {
             return !f.removed;
         });
 
-        var tags = adguard.tags.getTags();
+        const filterTags = tags.getTags();
 
-        result.forEach(function (f) {
+        result.forEach((f) => {
             f.tagsDetails = [];
-            f.tags.forEach(function (tagId) {
-                var tagDetails = tags.find(function (tag) {
+            f.tags.forEach((tagId) => {
+                const tagDetails = filterTags.find((tag) => {
                     return tag.tagId === tagId;
                 });
 
@@ -71,21 +74,21 @@ adguard.categories = (function (adguard) {
     /**
      * Constructs filters metadata for options.html page
      */
-    var getFiltersMetadata = function () {
-        var groupsMeta = adguard.subscriptions.getGroups();
-        var filters = getFilters();
+    const getFiltersMetadata = function () {
+        const groupsMeta = subscriptions.getGroups();
+        const filters = getFilters();
 
-        var categories = [];
+        const categories = [];
 
-        for (var i = 0; i < groupsMeta.length; i += 1) {
-            var category = groupsMeta[i];
+        for (let i = 0; i < groupsMeta.length; i += 1) {
+            const category = groupsMeta[i];
             category.filters = selectFiltersByGroupId(category.groupId, filters);
             categories.push(category);
         }
 
         return {
-            filters: filters,
-            categories: categories,
+            filters,
+            categories,
         };
     };
 
@@ -95,8 +98,8 @@ adguard.categories = (function (adguard) {
      * @returns {boolean}
      */
     const doesFilterMatchPlatform = (filter) => {
-        if (adguard.tags.isMobileFilter(filter)) {
-            return !!adguard.prefs.mobile;
+        if (tags.isMobileFilter(filter)) {
+            return !!prefs.mobile;
         }
         return true;
     };
@@ -112,12 +115,12 @@ adguard.categories = (function (adguard) {
     const getRecommendedFilterIdsByGroupId = function (groupId) {
         const metadata = getFiltersMetadata();
         const result = [];
-        const langSuitableFilters = adguard.subscriptions.getLangSuitableFilters();
+        const langSuitableFilters = subscriptions.getLangSuitableFilters();
         for (let i = 0; i < metadata.categories.length; i += 1) {
             const category = metadata.categories[i];
             if (category.groupId === groupId) {
                 category.filters.forEach(filter => {
-                    if (adguard.tags.isRecommendedFilter(filter) && doesFilterMatchPlatform(filter)) {
+                    if (tags.isRecommendedFilter(filter) && doesFilterMatchPlatform(filter)) {
                         // get ids intersection to enable recommended filters matching the lang tag
                         // only if filter has language
                         if (filter.languages && filter.languages.length > 0) {
@@ -142,12 +145,12 @@ adguard.categories = (function (adguard) {
      * @param {number} groupId
      */
     const enableFiltersGroup = function (groupId) {
-        const group = adguard.subscriptions.getGroup(groupId);
+        const group = subscriptions.getGroup(groupId);
         if (group && typeof group.enabled === 'undefined') {
             const recommendedFiltersIds = getRecommendedFilterIdsByGroupId(groupId);
-            adguard.application.addAndEnableFilters(recommendedFiltersIds);
+            application.addAndEnableFilters(recommendedFiltersIds);
         }
-        adguard.application.enableGroup(groupId);
+        application.enableGroup(groupId);
     };
 
     /**
@@ -155,13 +158,12 @@ adguard.categories = (function (adguard) {
      * @param {number} groupId
      */
     const disableFiltersGroup = function (groupId) {
-        adguard.application.disableGroup(groupId);
+        application.disableGroup(groupId);
     };
 
     return {
-        getFiltersMetadata: getFiltersMetadata,
-        enableFiltersGroup: enableFiltersGroup,
-        disableFiltersGroup: disableFiltersGroup,
+        getFiltersMetadata,
+        enableFiltersGroup,
+        disableFiltersGroup,
     };
-})(adguard);
-
+})();

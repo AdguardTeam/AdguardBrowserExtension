@@ -15,24 +15,27 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global TSUrlFilter */
+import * as TSUrlFilter from '@adguard/tsurlfilter';
+import { log } from '../utils/log';
+import { backgroundPage } from '../api/background-page';
+import { RequestTypes } from '../utils/request-types';
 
 /**
  * TSUrlFilter Engine wrapper
  */
-adguard.engine = (function (adguard) {
+export const engine = (function () {
     const ASYNC_LOAD_CHUNK_SIZE = 5000;
 
     let engine;
 
     const startEngine = async (lists) => {
-        adguard.console.info('Starting url filter engine');
+        log.info('Starting url filter engine');
 
         const ruleStorage = new TSUrlFilter.RuleStorage(lists);
 
         const config = {
             engine: 'extension',
-            version: adguard.app && adguard.app.getVersion(),
+            version: backgroundPage.app && backgroundPage.app.getVersion(),
             verbose: true,
         };
 
@@ -40,13 +43,13 @@ adguard.engine = (function (adguard) {
 
         /*
          * UI thread becomes blocked on the options page while request filter is created
-         * that't why we create filter rules using chunks of the specified length
+         * that's why we create filter rules using chunks of the specified length
          * Request filter creation is rather slow operation so we should
          * use setTimeout calls to give UI thread some time.
         */
         await engine.loadRulesAsync(ASYNC_LOAD_CHUNK_SIZE);
 
-        adguard.console.info('Starting url filter engine..ok');
+        log.info('Starting url filter engine..ok');
 
         return engine;
     };
@@ -62,19 +65,19 @@ adguard.engine = (function (adguard) {
      */
     const createMatchingResult = (requestUrl, documentUrl, requestType) => {
         // eslint-disable-next-line max-len
-        adguard.console.debug('Filtering http request for url: {0}, document: {1}, requestType: {2}', requestUrl, documentUrl, requestType);
+        log.debug('Filtering http request for url: {0}, document: {1}, requestType: {2}', requestUrl, documentUrl, requestType);
 
         const request = new TSUrlFilter.Request(
-            requestUrl, documentUrl, adguard.RequestTypes.transformRequestType(requestType)
+            requestUrl, documentUrl, RequestTypes.transformRequestType(requestType)
         );
 
         if (!engine) {
-            adguard.console.warn('Filtering engine is not ready');
+            log.warn('Filtering engine is not ready');
             return null;
         }
 
         const result = engine.matchRequest(request);
-        adguard.console.debug(
+        log.debug(
             'Result {0} found for url: {1}, document: {2}, requestType: {3}',
             result.getBasicResult(),
             requestUrl,
@@ -114,4 +117,4 @@ adguard.engine = (function (adguard) {
         createMatchingResult,
         getCosmeticResult,
     };
-})(adguard);
+})();

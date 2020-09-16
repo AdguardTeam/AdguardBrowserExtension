@@ -1,7 +1,28 @@
 /**
+ * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
+ *
+ * Adguard Browser Extension is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Adguard Browser Extension is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import { localStorage } from '../../storage';
+import { log } from '../../utils/log';
+import { listeners } from '../../notifier';
+
+/**
  * Helper class for working with filters metadata storage (local storage)
  */
-adguard.filtersState = (function (adguard) {
+export const filtersState = (function () {
     const FILTERS_STATE_PROP = 'filters-state';
     const FILTERS_VERSION_PROP = 'filters-version';
     const GROUPS_STATE_PROP = 'groups-state';
@@ -13,12 +34,12 @@ adguard.filtersState = (function (adguard) {
     const getFiltersVersion = function () {
         let filters = Object.create(null);
         try {
-            const json = adguard.localStorage.getItem(FILTERS_VERSION_PROP);
+            const json = localStorage.getItem(FILTERS_VERSION_PROP);
             if (json) {
                 filters = JSON.parse(json);
             }
         } catch (ex) {
-            adguard.console.error('Error retrieve filters version info, cause {0}', ex);
+            log.error('Error retrieve filters version info, cause {0}', ex);
         }
         return filters;
     };
@@ -30,12 +51,12 @@ adguard.filtersState = (function (adguard) {
     const getFiltersState = function () {
         let filters = Object.create(null);
         try {
-            const json = adguard.localStorage.getItem(FILTERS_STATE_PROP);
+            const json = localStorage.getItem(FILTERS_STATE_PROP);
             if (json) {
                 filters = JSON.parse(json);
             }
         } catch (ex) {
-            adguard.console.error('Error retrieve filters state info, cause {0}', ex);
+            log.error('Error retrieve filters state info, cause {0}', ex);
         }
         return filters;
     };
@@ -47,12 +68,12 @@ adguard.filtersState = (function (adguard) {
     const getGroupsState = function () {
         let groups = Object.create(null);
         try {
-            const json = adguard.localStorage.getItem(GROUPS_STATE_PROP);
+            const json = localStorage.getItem(GROUPS_STATE_PROP);
             if (json) {
                 groups = JSON.parse(json);
             }
         } catch (e) {
-            adguard.console.error('Error retrieve groups state info, cause {0}', e);
+            log.error('Error retrieve groups state info, cause {0}', e);
         }
         return groups;
     };
@@ -71,7 +92,7 @@ adguard.filtersState = (function (adguard) {
             expires: filter.expires,
         };
 
-        adguard.localStorage.setItem(FILTERS_VERSION_PROP, JSON.stringify(filters));
+        localStorage.setItem(FILTERS_VERSION_PROP, JSON.stringify(filters));
     };
 
     /**
@@ -86,13 +107,13 @@ adguard.filtersState = (function (adguard) {
             enabled: filter.enabled,
             installed: filter.installed,
         };
-        adguard.localStorage.setItem(FILTERS_STATE_PROP, JSON.stringify(filters));
+        localStorage.setItem(FILTERS_STATE_PROP, JSON.stringify(filters));
     };
 
     const removeFilter = (filterId) => {
         const filters = getFiltersState();
         delete filters[filterId];
-        adguard.localStorage.setItem(FILTERS_STATE_PROP, JSON.stringify(filters));
+        localStorage.setItem(FILTERS_STATE_PROP, JSON.stringify(filters));
     };
 
     /**
@@ -105,21 +126,21 @@ adguard.filtersState = (function (adguard) {
         groups[group.groupId] = {
             enabled: group.enabled,
         };
-        adguard.localStorage.setItem(GROUPS_STATE_PROP, JSON.stringify(groups));
+        localStorage.setItem(GROUPS_STATE_PROP, JSON.stringify(groups));
     };
 
     // Add event listener to persist filter metadata to local storage
-    adguard.listeners.addListener((event, payload) => {
+    listeners.addListener((event, payload) => {
         switch (event) {
-            case adguard.listeners.SUCCESS_DOWNLOAD_FILTER:
+            case listeners.SUCCESS_DOWNLOAD_FILTER:
                 updateFilterState(payload);
                 updateFilterVersion(payload);
                 break;
-            case adguard.listeners.FILTER_ADD_REMOVE:
-            case adguard.listeners.FILTER_ENABLE_DISABLE:
+            case listeners.FILTER_ADD_REMOVE:
+            case listeners.FILTER_ENABLE_DISABLE:
                 updateFilterState(payload);
                 break;
-            case adguard.listeners.FILTER_GROUP_ENABLE_DISABLE:
+            case listeners.FILTER_GROUP_ENABLE_DISABLE:
                 updateGroupState(payload);
                 break;
             default:
@@ -136,4 +157,4 @@ adguard.filtersState = (function (adguard) {
         updateFilterState,
         removeFilter,
     };
-})(adguard);
+})();

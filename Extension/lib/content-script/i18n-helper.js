@@ -14,8 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-const I18nHelper = { // eslint-disable-line
-
+export const I18nHelper = {
     translateElement(element, message) {
         try {
             while (element.lastChild) {

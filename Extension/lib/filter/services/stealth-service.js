@@ -15,14 +15,27 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global adguard, TSUrlFilter */
+import * as TSUrlFilter from '@adguard/tsurlfilter';
+import { utils } from '../../utils/common';
+import { RequestTypes } from '../../utils/request-types';
+import { settings } from '../../settings/user-settings';
+import { log } from '../../utils/log';
+import { requestContextStorage } from '../request-context-storage';
+import { filteringApi } from '../filtering-api';
+import { filteringLog } from '../filtering-log';
+import { listeners } from '../../notifier';
+import { frames } from '../../tabs/frames';
+import { browserUtils } from '../../utils/browser-utils';
 
 // TODO: [TSUrlFilter] Use TSURLFilter stealthService
 
-adguard.stealthService = (function (adguard) {
-
-    'use strict';
-
+/**
+ * Class to apply stealth settings
+ * - Cookie
+ * - Headers
+ * - WebRTC
+ */
+export const stealthService = (() => {
     /**
      * Search engines regexps
      *
@@ -37,7 +50,7 @@ adguard.stealthService = (function (adguard) {
         /https?:\/\/(www\.)?ask\.com/i,
         /https?:\/\/(www\.)?aol\.com/i,
         /https?:\/\/(www\.)?baidu\.com/i,
-        /https?:\/\/(www\.)?seznam\.cz/i
+        /https?:\/\/(www\.)?seznam\.cz/i,
     ];
 
     /**
@@ -55,7 +68,7 @@ adguard.stealthService = (function (adguard) {
     const HEADER_VALUES = {
         DO_NOT_TRACK: {
             name: 'DNT',
-            value: '1'
+            value: '1',
         },
     };
 
@@ -80,7 +93,7 @@ adguard.stealthService = (function (adguard) {
             return false;
         }
 
-        for (let i = 0; i < SEARCH_ENGINES.length; i++) {
+        for (let i = 0; i < SEARCH_ENGINES.length; i += 1) {
             if (SEARCH_ENGINES[i].test(url)) {
                 return true;
             }
@@ -95,8 +108,8 @@ adguard.stealthService = (function (adguard) {
      * @return {string} URL without path
      */
     const getHiddenRefHeaderUrl = (url) => {
-        const host = adguard.utils.url.getHost(url);
-        return (url.indexOf('https') === 0 ? 'https://' : 'http://') + host + '/';
+        const host = utils.url.getHost(url);
+        return `${(url.indexOf('https') === 0 ? 'https://' : 'http://') + host}/`;
     };
 
     /**
@@ -117,8 +130,8 @@ adguard.stealthService = (function (adguard) {
      * @returns {boolean}
      */
     const isStealthModeDisabled = () => {
-        return adguard.settings.getProperty(adguard.settings.DISABLE_STEALTH_MODE)
-            || adguard.settings.isFilteringDisabled();
+        return settings.getProperty(settings.DISABLE_STEALTH_MODE)
+            || settings.isFilteringDisabled();
     };
 
     /**
@@ -130,7 +143,7 @@ adguard.stealthService = (function (adguard) {
         if (isStealthModeDisabled()) {
             return false;
         }
-        return adguard.settings.getProperty(stealthSettingName);
+        return settings.getProperty(stealthSettingName);
     };
 
     /**
@@ -146,94 +159,92 @@ adguard.stealthService = (function (adguard) {
             return false;
         }
 
-        const context = adguard.requestContextStorage.get(requestId);
+        const context = requestContextStorage.get(requestId);
         if (!context) {
             return false;
         }
 
-        const tab = context.tab;
-        const requestUrl = context.requestUrl;
-        const requestType = context.requestType;
+        const { tab } = context;
+        const { requestUrl } = context;
+        const { requestType } = context;
 
-        adguard.console.debug('Stealth service processing request headers for {0}', requestUrl);
+        log.debug('Stealth service processing request headers for {0}', requestUrl);
 
-        if (adguard.frames.shouldStopRequestProcess(tab)) {
-            adguard.console.debug('Tab whitelisted or protection disabled');
+        if (frames.shouldStopRequestProcess(tab)) {
+            log.debug('Tab whitelisted or protection disabled');
             return false;
         }
 
-        let mainFrameUrl = adguard.frames.getMainFrameUrl(tab);
+        const mainFrameUrl = frames.getMainFrameUrl(tab);
         if (!mainFrameUrl) {
             // frame wasn't recorded in onBeforeRequest event
-            adguard.console.debug('Frame was not recorded in onBeforeRequest event');
+            log.debug('Frame was not recorded in onBeforeRequest event');
             return false;
         }
 
-        const whiteListRule = adguard.filteringApi.findWhiteListRule(requestUrl, mainFrameUrl, requestType);
+        const whiteListRule = filteringApi.findWhiteListRule(requestUrl, mainFrameUrl, requestType);
         if (whiteListRule && whiteListRule.isDocumentWhiteList()) {
-            adguard.console.debug('Whitelist rule found');
+            log.debug('Whitelist rule found');
             return false;
         }
 
         const stealthWhiteListRule = findStealthWhitelistRule(requestUrl, mainFrameUrl, requestType);
         if (stealthWhiteListRule) {
-            adguard.console.debug('Whitelist stealth rule found');
-            adguard.requestContextStorage.update(requestId, { requestRule: stealthWhiteListRule });
+            log.debug('Whitelist stealth rule found');
+            requestContextStorage.update(requestId, { requestRule: stealthWhiteListRule });
             return false;
         }
 
         let stealthActions = 0;
 
         // Remove referrer for third-party requests
-        const hideReferrer = getStealthSettingValue(adguard.settings.HIDE_REFERRER);
+        const hideReferrer = getStealthSettingValue(settings.HIDE_REFERRER);
         if (hideReferrer) {
-            adguard.console.debug('Remove referrer for third-party requests');
-            const refHeader = adguard.utils.browser.findHeaderByName(requestHeaders, HEADERS.REFERRER);
-            if (refHeader &&
-                adguard.utils.url.isThirdPartyRequest(requestUrl, refHeader.value)) {
-
+            log.debug('Remove referrer for third-party requests');
+            const refHeader = browserUtils.findHeaderByName(requestHeaders, HEADERS.REFERRER);
+            if (refHeader
+                && utils.url.isThirdPartyRequest(requestUrl, refHeader.value)) {
                 refHeader.value = getHiddenRefHeaderUrl(requestUrl);
                 stealthActions |= STEALTH_ACTIONS.HIDE_REFERRER;
             }
         }
 
         // Hide referrer in case of search engine is referrer
-        const isMainFrame = requestType === adguard.RequestTypes.DOCUMENT;
-        const hideSearchQueries = getStealthSettingValue(adguard.settings.HIDE_SEARCH_QUERIES);
+        const isMainFrame = requestType === RequestTypes.DOCUMENT;
+        const hideSearchQueries = getStealthSettingValue(settings.HIDE_SEARCH_QUERIES);
         if (hideSearchQueries && isMainFrame) {
-            adguard.console.debug('Hide referrer in case of search engine is referrer');
-            const refHeader = adguard.utils.browser.findHeaderByName(requestHeaders, HEADERS.REFERRER);
-            if (refHeader &&
-                isSearchEngine(refHeader.value) &&
-                adguard.utils.url.isThirdPartyRequest(requestUrl, refHeader.value)) {
-
+            log.debug('Hide referrer in case of search engine is referrer');
+            const refHeader = browserUtils.findHeaderByName(requestHeaders, HEADERS.REFERRER);
+            if (refHeader
+                && isSearchEngine(refHeader.value)
+                && utils.url.isThirdPartyRequest(requestUrl, refHeader.value)) {
                 refHeader.value = getHiddenRefHeaderUrl(requestUrl);
                 stealthActions |= STEALTH_ACTIONS.HIDE_SEARCH_QUERIES;
             }
         }
 
         // Remove X-Client-Data header
-        const blockChromeClientData = getStealthSettingValue(adguard.settings.BLOCK_CHROME_CLIENT_DATA);
+        const blockChromeClientData = getStealthSettingValue(settings.BLOCK_CHROME_CLIENT_DATA);
         if (blockChromeClientData) {
-            adguard.console.debug('Remove X-Client-Data header');
-            if (adguard.utils.browser.removeHeader(requestHeaders, HEADERS.X_CLIENT_DATA)) {
+            log.debug('Remove X-Client-Data header');
+            if (browserUtils.removeHeader(requestHeaders, HEADERS.X_CLIENT_DATA)) {
                 stealthActions |= STEALTH_ACTIONS.BLOCK_CHROME_CLIENT_DATA;
             }
         }
 
         // Adding Do-Not-Track (DNT) header
-        const sendDoNotTrack = getStealthSettingValue(adguard.settings.SEND_DO_NOT_TRACK);
+        const sendDoNotTrack = getStealthSettingValue(settings.SEND_DO_NOT_TRACK);
         if (sendDoNotTrack) {
-            adguard.console.debug('Adding Do-Not-Track (DNT) header');
+            log.debug('Adding Do-Not-Track (DNT) header');
             requestHeaders.push(HEADER_VALUES.DO_NOT_TRACK);
             stealthActions |= STEALTH_ACTIONS.SEND_DO_NOT_TRACK;
         }
 
         if (stealthActions > 0) {
-            adguard.requestContextStorage.update(requestId, { stealthActions });
+            requestContextStorage.update(requestId, { stealthActions });
         }
 
-        adguard.console.debug('Stealth service processed request headers for {0}', requestUrl);
+        log.debug('Stealth service processed request headers for {0}', requestUrl);
 
         return stealthActions > 0;
     };
@@ -251,46 +262,46 @@ adguard.stealthService = (function (adguard) {
             return null;
         }
 
-        const whiteListRule = adguard.filteringApi.findWhiteListRule(requestUrl, referrerUrl, requestType);
+        const whiteListRule = filteringApi.findWhiteListRule(requestUrl, referrerUrl, requestType);
         if (whiteListRule && whiteListRule.isDocumentWhiteList()) {
-            adguard.console.debug('Whitelist rule found');
+            log.debug('Whitelist rule found');
             return false;
         }
 
         // If stealth is whitelisted
         const stealthWhiteListRule = findStealthWhitelistRule(requestUrl, referrerUrl, requestType);
         if (stealthWhiteListRule) {
-            adguard.console.debug('Whitelist stealth rule found');
+            log.debug('Whitelist stealth rule found');
             return null;
         }
 
         const result = [];
 
-        adguard.console.debug('Stealth service lookup cookie rules for {0}', requestUrl);
+        log.debug('Stealth service lookup cookie rules for {0}', requestUrl);
 
         // Remove cookie header for first-party requests
-        const blockCookies = getStealthSettingValue(adguard.settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES);
+        const blockCookies = getStealthSettingValue(settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES);
         if (blockCookies) {
-            result.push(generateRemoveRule(adguard.settings.getProperty(adguard.settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME), STEALTH_ACTIONS.FIRST_PARTY_COOKIES));
+            result.push(generateRemoveRule(settings.getProperty(settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME), STEALTH_ACTIONS.FIRST_PARTY_COOKIES));
         }
 
-        const blockThirdPartyCookies = getStealthSettingValue(adguard.settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES);
+        const blockThirdPartyCookies = getStealthSettingValue(settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES);
         if (!blockThirdPartyCookies) {
-            adguard.console.debug('Stealth service processed lookup cookie rules for {0}', requestUrl);
+            log.debug('Stealth service processed lookup cookie rules for {0}', requestUrl);
             return result;
         }
 
         // Marks requests without referrer as first-party.
         // It's important to prevent removing google auth cookies. (for requests in background tab)
-        const thirdParty = referrerUrl && adguard.utils.url.isThirdPartyRequest(requestUrl, referrerUrl);
-        const isMainFrame = requestType === adguard.RequestTypes.DOCUMENT;
+        const thirdParty = referrerUrl && utils.url.isThirdPartyRequest(requestUrl, referrerUrl);
+        const isMainFrame = requestType === RequestTypes.DOCUMENT;
 
         // Remove cookie header for third-party requests
         if (thirdParty && !isMainFrame) {
-            result.push(generateRemoveRule(adguard.settings.getProperty(adguard.settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME), STEALTH_ACTIONS.THIRD_PARTY_COOKIES));
+            result.push(generateRemoveRule(settings.getProperty(settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME), STEALTH_ACTIONS.THIRD_PARTY_COOKIES));
         }
 
-        adguard.console.debug('Stealth service processed lookup cookie rules for {0}', requestUrl);
+        log.debug('Stealth service processed lookup cookie rules for {0}', requestUrl);
 
         return result;
     };
@@ -304,15 +315,15 @@ adguard.stealthService = (function (adguard) {
      * @returns whitelist rule if found
      */
     const findStealthWhitelistRule = function (requestUrl, referrerUrl, requestType) {
-        const stealthDocumentWhitelistRule = adguard.filteringApi.findStealthWhiteListRule(referrerUrl, referrerUrl, requestType);
+        const stealthDocumentWhitelistRule = filteringApi.findStealthWhiteListRule(referrerUrl, referrerUrl, requestType);
         if (stealthDocumentWhitelistRule && stealthDocumentWhitelistRule.isDocumentWhitelistRule()) {
-            adguard.console.debug('Stealth document whitelist rule found.');
+            log.debug('Stealth document whitelist rule found.');
             return stealthDocumentWhitelistRule;
         }
 
-        const stealthWhiteListRule = adguard.filteringApi.findStealthWhiteListRule(requestUrl, referrerUrl, requestType);
+        const stealthWhiteListRule = filteringApi.findStealthWhiteListRule(requestUrl, referrerUrl, requestType);
         if (stealthWhiteListRule) {
-            adguard.console.debug('Stealth whitelist rule found.');
+            log.debug('Stealth whitelist rule found.');
             return stealthWhiteListRule;
         }
 
@@ -332,11 +343,11 @@ adguard.stealthService = (function (adguard) {
         const resetLastError = () => {
             const ex = browser.runtime.lastError;
             if (ex) {
-                adguard.console.error('Error updating privacy.network settings: {0}', ex);
+                log.error('Error updating privacy.network settings: {0}', ex);
             }
         };
 
-        const webRTCDisabled = getStealthSettingValue(adguard.settings.BLOCK_WEBRTC);
+        const webRTCDisabled = getStealthSettingValue(settings.BLOCK_WEBRTC);
 
         // Deprecated since Chrome 48
         if (typeof browser.privacy.network.webRTCMultipleRoutesEnabled === 'object') {
@@ -386,42 +397,41 @@ adguard.stealthService = (function (adguard) {
      * @param requestId
      */
     const removeTrackersFromUrl = (requestId) => {
-
-        if (!getStealthSettingValue(adguard.settings.STRIP_TRACKING_PARAMETERS)) {
+        if (!getStealthSettingValue(settings.STRIP_TRACKING_PARAMETERS)) {
             return null;
         }
 
-        const context = adguard.requestContextStorage.get(requestId);
-        if (!context || context.requestType !== adguard.RequestTypes.DOCUMENT) {
+        const context = requestContextStorage.get(requestId);
+        if (!context || context.requestType !== RequestTypes.DOCUMENT) {
             return null;
         }
 
         const { requestUrl, requestType, tab } = context;
 
-        adguard.console.debug('Stealth service processing request url for {0}', requestUrl);
+        log.debug('Stealth service processing request url for {0}', requestUrl);
 
-        if (adguard.frames.shouldStopRequestProcess(tab)) {
-            adguard.console.debug('Tab whitelisted or protection disabled');
+        if (frames.shouldStopRequestProcess(tab)) {
+            log.debug('Tab whitelisted or protection disabled');
             return null;
         }
 
-        const mainFrameUrl = adguard.frames.getMainFrameUrl(tab);
+        const mainFrameUrl = frames.getMainFrameUrl(tab);
         if (!mainFrameUrl) {
             // frame wasn't recorded in onBeforeRequest event
-            adguard.console.debug('Frame was not recorded in onBeforeRequest event');
+            log.debug('Frame was not recorded in onBeforeRequest event');
             return null;
         }
 
-        const whiteListRule = adguard.filteringApi.findWhiteListRule(requestUrl, mainFrameUrl, requestType);
+        const whiteListRule = filteringApi.findWhiteListRule(requestUrl, mainFrameUrl, requestType);
         if (whiteListRule && whiteListRule.isDocumentWhiteList()) {
-            adguard.console.debug('Whitelist rule found');
+            log.debug('Whitelist rule found');
             return null;
         }
 
         const stealthWhiteListRule = findStealthWhitelistRule(requestUrl, mainFrameUrl, requestType);
         if (stealthWhiteListRule) {
-            adguard.console.debug('Whitelist stealth rule found');
-            adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, mainFrameUrl, requestType, stealthWhiteListRule);
+            log.debug('Whitelist stealth rule found');
+            filteringLog.addHttpRequestEvent(tab, requestUrl, mainFrameUrl, requestType, stealthWhiteListRule);
             return null;
         }
 
@@ -432,12 +442,12 @@ adguard.stealthService = (function (adguard) {
             return null;
         }
 
-        const trackingParameters = adguard.settings.getProperty(adguard.settings.TRACKING_PARAMETERS)
+        const trackingParameters = settings.getProperty(settings.TRACKING_PARAMETERS)
             .trim()
             .split(',')
             .map(x => x.replace('=', '').replace(/\*/g, '[^&#=]*').trim())
             .filter(x => x);
-        const trackingParametersRegExp = new RegExp("((^|&)(" + trackingParameters.join('|') + ")=[^&#]*)", "ig");
+        const trackingParametersRegExp = new RegExp(`((^|&)(${trackingParameters.join('|')})=[^&#]*)`, 'ig');
         urlPieces[1] = urlPieces[1].replace(trackingParametersRegExp, '');
 
         // If we've collapsed the URL to the point where there's an '&' against the '?'
@@ -449,8 +459,12 @@ adguard.stealthService = (function (adguard) {
         const result = urlPieces[1] ? urlPieces.join('?') : urlPieces[0];
 
         if (result !== requestUrl) {
-            adguard.console.debug('Stealth stripped tracking parameters for url: ' + requestUrl);
-            adguard.filteringLog.bindStealthActionsToHttpRequestEvent(tab, STEALTH_ACTIONS.STRIPPED_TRACKING_URL, context.eventId);
+            log.debug(`Stealth stripped tracking parameters for url: ${requestUrl}`);
+            filteringLog.bindStealthActionsToHttpRequestEvent(
+                tab,
+                STEALTH_ACTIONS.STRIPPED_TRACKING_URL,
+                context.eventId
+            );
 
             return result;
         }
@@ -459,39 +473,39 @@ adguard.stealthService = (function (adguard) {
     };
 
     const handleWebRTCEnabling = () => {
-        adguard.utils.browser.containsPermissions(['privacy'])
+        browserUtils.containsPermissions(['privacy'])
             .then(result => {
                 if (result) {
                     return true;
                 }
-                return adguard.utils.browser.requestPermissions(['privacy']);
+                return browserUtils.requestPermissions(['privacy']);
             })
             .then(granted => {
                 if (granted) {
                     handleBlockWebRTC();
                 } else {
                     // If privacy permission is not granted set block webrtc value to false
-                    adguard.settings.setProperty(adguard.settings.BLOCK_WEBRTC, false);
+                    settings.setProperty(settings.BLOCK_WEBRTC, false);
                 }
             })
             .catch(error => {
-                adguard.console.error(error);
+                log.error(error);
             });
     };
 
     const handleWebRTCDisabling = () => {
-        adguard.utils.browser.containsPermissions(['privacy'])
+        browserUtils.containsPermissions(['privacy'])
             .then(result => {
                 if (result) {
                     handleBlockWebRTC();
-                    return adguard.utils.browser.removePermission(['privacy']);
+                    return browserUtils.removePermission(['privacy']);
                 }
                 return true;
             });
     };
 
     const handlePrivacyPermissions = () => {
-        const webRTCEnabled = getStealthSettingValue(adguard.settings.BLOCK_WEBRTC);
+        const webRTCEnabled = getStealthSettingValue(settings.BLOCK_WEBRTC);
         if (webRTCEnabled) {
             handleWebRTCEnabling();
         } else {
@@ -510,7 +524,7 @@ adguard.stealthService = (function (adguard) {
      * @returns {boolean}
      */
     const canBlockWebRTC = () => {
-        return !adguard.utils.browser.isEdgeBrowser();
+        return !browserUtils.isEdgeBrowser();
     };
 
     /**
@@ -520,13 +534,13 @@ adguard.stealthService = (function (adguard) {
      * @returns {boolean}
      */
     const shouldHandlePrivacyPermission = () => {
-        return adguard.utils.browser.isChromium();
+        return browserUtils.isChromium();
     };
 
     if (canBlockWebRTC()) {
-        adguard.settings.onUpdated.addListener(function (setting) {
-            if (setting === adguard.settings.BLOCK_WEBRTC
-                || setting === adguard.settings.DISABLE_STEALTH_MODE) {
+        settings.onUpdated.addListener((setting) => {
+            if (setting === settings.BLOCK_WEBRTC
+                || setting === settings.DISABLE_STEALTH_MODE) {
                 if (shouldHandlePrivacyPermission()) {
                     handlePrivacyPermissions();
                 } else {
@@ -535,10 +549,10 @@ adguard.stealthService = (function (adguard) {
             }
         });
 
-        adguard.listeners.addListener(function (event) {
+        listeners.addListener((event) => {
             switch (event) {
-                case adguard.listeners.APPLICATION_INITIALIZED:
-                    adguard.utils.browser.containsPermissions(['privacy'])
+                case listeners.APPLICATION_INITIALIZED:
+                    browserUtils.containsPermissions(['privacy'])
                         .then(result => {
                             if (result) {
                                 handleBlockWebRTC();
@@ -553,11 +567,10 @@ adguard.stealthService = (function (adguard) {
 
 
     return {
-        processRequestHeaders: processRequestHeaders,
-        getCookieRules: getCookieRules,
-        removeTrackersFromUrl: removeTrackersFromUrl,
-        canBlockWebRTC: canBlockWebRTC,
+        processRequestHeaders,
+        getCookieRules,
+        removeTrackersFromUrl,
+        canBlockWebRTC,
         STEALTH_ACTIONS,
     };
-
-})(adguard);
+})();

@@ -15,17 +15,21 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global adguard */
+import { utils } from '../../utils/common';
+import { backgroundPage } from '../../api/background-page';
+import { tabsApi } from '../../tabs/tabs-api';
+import { uiService } from '../../ui-service';
+import { frames } from '../../tabs/frames';
+import { ExpiringCache } from '../../utils/expiring-cache';
+import { lazyGet } from '../../utils/lazy';
 
-(function (adguard) {
-    const { utils: { url: urlUtils } } = adguard;
-
+export const documentFilterService = (function () {
     const trustedCache = {
         get cache() {
-            return adguard.lazyGet(
+            return lazyGet(
                 trustedCache,
                 'cache',
-                () => new adguard.utils.ExpiringCache('document-block-cache')
+                () => new ExpiringCache('document-block-cache')
             );
         },
     };
@@ -40,7 +44,7 @@
          * @returns {boolean}
          */
         const isTrusted = (url) => {
-            const host = urlUtils.getHost(url);
+            const host = utils.url.getHost(url);
             if (!host) {
                 return false;
             }
@@ -59,7 +63,7 @@
                 return null;
             }
 
-            let blockingUrl = adguard.getURL(DOCUMENT_BLOCKED_URL);
+            let blockingUrl = backgroundPage.getURL(DOCUMENT_BLOCKED_URL);
 
             blockingUrl += `?url=${encodeURIComponent(url)}`;
             blockingUrl += `&rule=${encodeURIComponent(ruleText)}`;
@@ -72,14 +76,14 @@
          * @param url
          */
         const addToTrusted = (url) => {
-            const host = urlUtils.getHost(url);
+            const host = utils.url.getHost(url);
             if (!host) {
                 return;
             }
             trustedCache.cache.saveValue(host, { host }, Date.now() + TRUSTED_TTL_MS);
             // Reloads ad-blocked page with trusted url
-            adguard.tabs.getActive((tab) => {
-                adguard.tabs.reload(tab.tabId, url);
+            tabsApi.getActive((tab) => {
+                tabsApi.reload(tab.tabId, url);
             });
         };
 
@@ -89,15 +93,18 @@
          * @param url
          */
         const showDocumentBlockPage = (tabId, url) => {
-            const incognitoTab = adguard.frames.isIncognitoTab({ tabId });
+            const incognitoTab = frames.isIncognitoTab({ tabId });
             // Chrome doesn't allow to show extension pages in incognito mode
-            if (adguard.utils.browser.isChromium() && incognitoTab) {
+            // Firefox allows but browser.runtime.getBackgroundPage() is not working in incognito mode
+            // TODO rewrite script for document blocking page without browser.runtime.getBackgroundPage()
+            //  and make firefox to open safebrowsing page in the incognito mode
+            if (incognitoTab) {
                 // Closing tab before opening a new one may lead to browser crash (Chromium)
-                adguard.ui.openTab(url, {}, () => {
-                    adguard.tabs.remove(tabId);
+                uiService.openTab(url, {}, () => {
+                    tabsApi.remove(tabId);
                 });
             } else {
-                adguard.tabs.updateUrl(tabId, url);
+                tabsApi.updateUrl(tabId, url);
             }
         };
 
@@ -108,5 +115,5 @@
         };
     }
 
-    adguard.documentFilterService = documentFilterService();
-})(adguard);
+    return documentFilterService();
+})();

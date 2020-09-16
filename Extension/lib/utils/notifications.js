@@ -15,13 +15,16 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { backgroundPage } from '../api/background-page';
+import { tabsApi } from '../tabs/tabs-api';
+import { uiService } from '../ui-service';
+import { lazyGet } from './lazy';
+
 /**
  * Object that manages user settings.
  * @constructor
  */
-adguard.notifications = (function (adguard) {
-    'use strict';
-
+export const notifications = (function () {
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
     const LAST_NOTIFICATION_TIME = 'viewed-notification-time';
 
@@ -63,14 +66,14 @@ adguard.notifications = (function (adguard) {
         to: '1 January 2020 00:00:00',
         type: 'animated',
         get icons() {
-            return adguard.lazyGet(newYearNotification, 'icons', () => ({
+            return lazyGet(newYearNotification, 'icons', () => ({
                 ICON_GREEN: {
-                    '19': adguard.getURL('icons/green-19-ny.png'),
-                    '38': adguard.getURL('icons/green-38-ny.png'),
+                    '19': backgroundPage.getURL('icons/green-19-ny.png'),
+                    '38': backgroundPage.getURL('icons/green-38-ny.png'),
                 },
                 ICON_GRAY: {
-                    '19': adguard.getURL('icons/gray-19-ny.png'),
-                    '38': adguard.getURL('icons/gray-38-ny.png'),
+                    '19': backgroundPage.getURL('icons/gray-19-ny.png'),
+                    '38': backgroundPage.getURL('icons/gray-38-ny.png'),
                 },
             }));
         },
@@ -91,7 +94,7 @@ adguard.notifications = (function (adguard) {
      * @property {string} badgeText;
      * @property {string} type;
      */
-    let notifications = {
+    const notifications = {
         newYear2020: newYearNotification,
     };
 
@@ -100,10 +103,10 @@ adguard.notifications = (function (adguard) {
      * If it was not shown yet, initialized with the current time.
      */
     const getLastNotificationTime = function () {
-        let lastTime = adguard.localStorage.getItem(LAST_NOTIFICATION_TIME) || 0;
+        let lastTime = localStorage.getItem(LAST_NOTIFICATION_TIME) || 0;
         if (lastTime === 0) {
             lastTime = new Date().getTime();
-            adguard.localStorage.setItem(LAST_NOTIFICATION_TIME, lastTime);
+            localStorage.setItem(LAST_NOTIFICATION_TIME, lastTime);
         }
         return lastTime;
     };
@@ -173,12 +176,12 @@ adguard.notifications = (function (adguard) {
         }
 
         if (currentNotification) {
-            const viewedNotifications = adguard.localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
+            const viewedNotifications = localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
             const { id } = currentNotification;
             if (!viewedNotifications.includes(id)) {
                 viewedNotifications.push(id);
-                adguard.localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
-                adguard.tabs.getActive(adguard.ui.updateTabIconAndContextMenu);
+                localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
+                tabsApi.getActive(uiService.updateTabIconAndContextMenu);
                 currentNotification = null;
             }
         }
@@ -187,10 +190,9 @@ adguard.notifications = (function (adguard) {
     /**
      * Finds out notification for current time and checks if notification wasn't shown yet
      *
-     * @param {*} - (optional) frameInfo from `adguard.frames`
      * @returns {void|Notification} - notification
      */
-    const getCurrentNotification = function (frameInfo) {
+    const getCurrentNotification = function () {
         const currentTime = new Date().getTime();
         const timeSinceLastNotification = currentTime - getLastNotificationTime();
         if (timeSinceLastNotification < minPeriod) {
@@ -207,7 +209,7 @@ adguard.notifications = (function (adguard) {
         notificationCheckTime = currentTime;
 
         const notificationsKeys = Object.keys(notifications);
-        const viewedNotifications = adguard.localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
+        const viewedNotifications = localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
 
         for (let i = 0; i < notificationsKeys.length; i += 1) {
             const notificationKey = notificationsKeys[i];
@@ -230,4 +232,4 @@ adguard.notifications = (function (adguard) {
         getCurrentNotification,
         setNotificationViewed,
     };
-})(adguard);
+})();

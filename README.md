@@ -152,7 +152,7 @@ You will need to put certificate.pem and mozilla_credentials.json files to the `
 
 Run the following command:
 ```
-yarn sample-api
+yarn adguard-api
 ```
 This will create a build directory with unpacked sample extension for chromium browsers:
 
@@ -181,6 +181,6 @@ To upload new phrases to crowdin you need the file with phrases `./Extension/_lo
 | Browser                 	| Version 	|
 |-------------------------	|:-------:	|
 | Chromium Based Browsers 	|    55   	|
-| Firefox                 	|    52   	|
+| Firefox                 	|    57   	|
 | Opera                   	|    42   	|
 | Edge                    	|    15.14942/39.14942   	|

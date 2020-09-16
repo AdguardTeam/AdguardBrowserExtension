@@ -15,11 +15,28 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global TSUrlFilter */
+/* eslint-disable max-len */
 
-(function (adguard) {
-    'use strict';
+import * as TSUrlFilter from '@adguard/tsurlfilter';
+import { requestContextStorage } from './filter/request-context-storage';
+import { tabsApi } from './tabs/tabs-api';
+import { BACKGROUND_TAB_ID, MAIN_FRAME_ID, utils } from './utils/common';
+import { RequestTypes } from './utils/request-types';
+import { cookieFiltering } from './filter/services/cookie-filtering';
+import { backgroundPage } from './api/background-page';
+import { prefs } from './prefs';
+import { frames } from './tabs/frames';
+import { listeners } from './notifier';
+import { webRequestService } from './filter/request-blocking';
+import { stealthService } from './filter/services/stealth-service';
+import { contentFiltering } from './content-filtering';
+import { safebrowsing } from './filter/services/safebrowsing';
+import { uiService } from './ui-service';
+import { log } from './utils/log';
+import { browserUtils } from './utils/browser-utils';
+import { documentFilterService } from './filter/services/document-filter';
 
+const webrequestInit = function () {
     const CSP_HEADER_NAME = 'Content-Security-Policy';
 
     /**
@@ -27,8 +44,8 @@
      * In order to do it we need to have a mapping requestType<->tagNames.
      */
     const REQUEST_TYPE_COLLAPSE_TAG_NAMES = {
-        [adguard.RequestTypes.SUBDOCUMENT]: ['frame', 'iframe'],
-        [adguard.RequestTypes.IMAGE]: ['img'],
+        [RequestTypes.SUBDOCUMENT]: ['frame', 'iframe'],
+        [RequestTypes.IMAGE]: ['img'],
     };
 
     /**
@@ -36,7 +53,7 @@
      * using a better approach -- `browser.tabs.insertCSS` and `browser.tabs.executeScript`
      * instead of the traditional one (messaging to the content script).
      */
-    const shouldUseInsertCSSAndExecuteScript = adguard.prefs.features.canUseInsertCSSAndExecuteScript;
+    const shouldUseInsertCSSAndExecuteScript = prefs.features.canUseInsertCSSAndExecuteScript;
 
     /**
      * Retrieve referrer url from request details.
@@ -50,8 +67,8 @@
      */
     function getReferrerUrl(requestDetails) {
         return requestDetails.referrerUrl
-            || adguard.frames.getFrameUrl(requestDetails.tab, requestDetails.requestFrameId)
-            || adguard.frames.getMainFrameUrl(requestDetails.tab);
+            || frames.getFrameUrl(requestDetails.tab, requestDetails.requestFrameId)
+            || frames.getMainFrameUrl(requestDetails.tab);
     }
 
     /**
@@ -61,7 +78,7 @@
      * @returns {boolean|{Object}} False if request must be blocked, object if url was redirected
      */
     function onBeforeRequest(requestDetails) {
-        if (adguard.app.isOwnRequest(requestDetails.referrerUrl)) {
+        if (backgroundPage.app.isOwnRequest(requestDetails.referrerUrl)) {
             return;
         }
 
@@ -77,19 +94,19 @@
         const { tabId } = tab;
         let { requestUrl } = requestDetails;
 
-        if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
-            adguard.frames.recordFrame(tab, frameId, requestUrl, requestType);
+        if (requestType === RequestTypes.DOCUMENT || requestType === RequestTypes.SUBDOCUMENT) {
+            frames.recordFrame(tab, frameId, requestUrl, requestType);
         }
 
-        if (requestType === adguard.RequestTypes.DOCUMENT) {
+        if (requestType === RequestTypes.DOCUMENT) {
             // Reset tab button state
-            adguard.listeners.notifyListeners(adguard.listeners.UPDATE_TAB_BUTTON_STATE, tab, true);
+            listeners.notifyListeners(listeners.UPDATE_TAB_BUTTON_STATE, tab, true);
 
             // Record request context for the main frame
-            adguard.requestContextStorage.record(requestId, requestUrl, requestUrl, originUrl, requestType, tab);
+            requestContextStorage.record(requestId, requestUrl, requestUrl, originUrl, requestType, tab);
 
             // Strip tracking parameters
-            const cleansedUrl = adguard.stealthService.removeTrackersFromUrl(requestId);
+            const cleansedUrl = stealthService.removeTrackersFromUrl(requestId);
             if (cleansedUrl) {
                 return { redirectUrl: cleansedUrl };
             }
@@ -105,13 +122,13 @@
              * Binds rule to the main_frame request
              * In integration mode, rule from the headers will override this value
              */
-            const tabRequestRule = adguard.frames.getFrameWhiteListRule(tab);
+            const tabRequestRule = frames.getFrameWhiteListRule(tab);
             if (tabRequestRule) {
-                adguard.requestContextStorage.update(requestId, { requestRule: tabRequestRule });
+                requestContextStorage.update(requestId, { requestRule: tabRequestRule });
             }
         }
 
-        if (!adguard.utils.url.isHttpOrWsRequest(requestUrl)) {
+        if (!utils.url.isHttpOrWsRequest(requestUrl)) {
             // Do not mess with other extensions
             return;
         }
@@ -126,28 +143,28 @@
         }
 
         // Record request for other types
-        adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, originUrl, requestType, tab);
+        requestContextStorage.record(requestId, requestUrl, referrerUrl, originUrl, requestType, tab);
 
         // Strip tracking parameters
-        let cleansedUrl = adguard.stealthService.removeTrackersFromUrl(requestId);
+        let cleansedUrl = stealthService.removeTrackersFromUrl(requestId);
         if (cleansedUrl) {
             return { redirectUrl: cleansedUrl };
         }
 
         // Strip by removeparam rules
-        cleansedUrl = adguard.webRequestService.removeParamFromUrl(tab, requestUrl, referrerUrl, requestType);
+        cleansedUrl = webRequestService.removeParamFromUrl(tab, requestUrl, referrerUrl, requestType);
         if (cleansedUrl) {
             return { redirectUrl: cleansedUrl };
         }
 
-        let requestRule = adguard.webRequestService.getRuleForRequest(
+        let requestRule = webRequestService.getRuleForRequest(
             tab,
             requestUrl,
             referrerUrl,
             requestType
         );
 
-        requestRule = adguard.webRequestService.postProcessRequest(
+        requestRule = webRequestService.postProcessRequest(
             tab,
             requestUrl,
             referrerUrl,
@@ -156,10 +173,10 @@
         );
 
         if (requestRule) {
-            adguard.requestContextStorage.update(requestId, { requestRule });
+            requestContextStorage.update(requestId, { requestRule });
         }
 
-        const response = adguard.webRequestService.getBlockedResponseByRule(
+        const response = webRequestService.getBlockedResponseByRule(
             requestRule,
             requestType,
             requestUrl
@@ -168,10 +185,10 @@
         if (requestRule
             && !requestRule.isWhitelist()
             && requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Popup)
-            && requestType === adguard.RequestTypes.DOCUMENT) {
-            const isNewTab = adguard.tabs.isNewPopupTab(tabId);
+            && requestType === RequestTypes.DOCUMENT) {
+            const isNewTab = tabsApi.isNewPopupTab(tabId);
             if (isNewTab) {
-                adguard.tabs.remove(tabId);
+                tabsApi.remove(tabId);
                 return { cancel: true };
             }
         }
@@ -179,7 +196,7 @@
         if (response && response.documentBlockedPage) {
             // Here we do not use redirectUrl because it is not working in firefox without specifying it
             // as the web_accessible_resources.
-            adguard.documentFilterService.showDocumentBlockPage(tabId, response.documentBlockedPage);
+            documentFilterService.showDocumentBlockPage(tabId, response.documentBlockedPage);
             return { cancel: true };
         }
 
@@ -204,7 +221,7 @@
      * @param {number} requestFrameId Id of a frame request was sent from
      * @param {string} requestUrl Request URL
      * @param {string} referrerUrl Referrer URL
-     * @param {string} requestType A member of adguard.RequestTypes
+     * @param {string} requestType A member of RequestTypes
      */
     function collapseElement(tabId, requestFrameId, requestUrl, referrerUrl, requestType) {
         if (!shouldUseInsertCSSAndExecuteScript) {
@@ -223,7 +240,7 @@
         }
 
         // Strip the protocol and host name (for first-party requests) from the selector
-        const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrerUrl);
+        const thirdParty = utils.url.isThirdPartyRequest(requestUrl, referrerUrl);
         let srcUrlStartIndex = requestUrl.indexOf('//');
         if (!thirdParty) {
             srcUrlStartIndex = requestUrl.indexOf('/', srcUrlStartIndex + 2);
@@ -238,7 +255,7 @@
             css += `${tagNames[iTagNames]}[src$="${srcUrl}"] ${collapseStyle}\n`;
         }
 
-        adguard.tabs.insertCssCode(tabId, requestFrameId, css);
+        tabsApi.insertCssCode(tabId, requestFrameId, css);
     }
 
     /**
@@ -257,28 +274,28 @@
             requestHeaders,
         } = requestDetails;
 
-        adguard.requestContextStorage.update(requestId, { requestHeaders });
+        requestContextStorage.update(requestId, { requestHeaders });
 
         let requestHeadersModified = false;
 
-        if (requestType === adguard.RequestTypes.DOCUMENT) {
+        if (requestType === RequestTypes.DOCUMENT) {
             // Save ref header
-            const refHeader = adguard.utils.browser.findHeaderByName(requestHeaders, 'Referer');
+            const refHeader = browserUtils.findHeaderByName(requestHeaders, 'Referer');
             if (refHeader) {
-                adguard.frames.recordFrameReferrerHeader(tab, refHeader.value);
+                frames.recordFrameReferrerHeader(tab, refHeader.value);
             }
         }
 
-        if (adguard.cookieFiltering.filterRequestHeaders(requestId, requestHeaders)) {
+        if (cookieFiltering.filterRequestHeaders(requestId, requestHeaders)) {
             requestHeadersModified = true;
         }
 
-        if (adguard.stealthService.processRequestHeaders(requestId, requestHeaders)) {
+        if (stealthService.processRequestHeaders(requestId, requestHeaders)) {
             requestHeadersModified = true;
         }
 
         if (requestHeadersModified) {
-            adguard.requestContextStorage.update(requestId, { modifiedRequestHeaders: requestHeaders });
+            requestContextStorage.update(requestId, { modifiedRequestHeaders: requestHeaders });
             return { requestHeaders };
         }
 
@@ -303,35 +320,36 @@
         const { statusCode } = requestDetails;
         const { method } = requestDetails;
 
-        adguard.requestContextStorage.update(requestId, { responseHeaders });
+        requestContextStorage.update(requestId, { responseHeaders });
 
-        adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
+        webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
 
         // Safebrowsing check
-        if (requestType === adguard.RequestTypes.DOCUMENT
+        if (requestType === RequestTypes.DOCUMENT
             // Don't apply safebrowsing filter in case of redirect
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/995
             && statusCode !== 301 && statusCode !== 302) {
             filterSafebrowsing(tab, requestUrl);
         }
 
-        if (adguard.contentFiltering) {
-            const replaceRules = adguard.webRequestService.getReplaceRules(tab, requestUrl, referrerUrl, requestType) || [];
-            const htmlRules = adguard.webRequestService.getContentRules(tab, referrerUrl) || [];
+        // Content filtering will be undefined for chromium based builds
+        if (contentFiltering) {
+            const replaceRules = webRequestService.getReplaceRules(tab, requestUrl, referrerUrl, requestType) || [];
+            const htmlRules = webRequestService.getContentRules(tab, referrerUrl) || [];
 
             if (replaceRules.length > 0 || htmlRules.length > 0) {
-                const contentType = adguard.utils.browser.getHeaderValueByName(responseHeaders, 'content-type');
+                const contentType = browserUtils.getHeaderValueByName(responseHeaders, 'content-type');
 
                 const request = new TSUrlFilter.Request(
-                    requestUrl, referrerUrl, adguard.RequestTypes.transformRequestType(requestType)
+                    requestUrl, referrerUrl, RequestTypes.transformRequestType(requestType)
                 );
                 request.requestId = requestId;
                 request.tabId = tab.tabId;
                 request.statusCode = statusCode;
                 request.method = method;
 
-                adguard.contentFiltering.apply(
-                    adguard.webRequest.filterResponseData(requestId),
+                contentFiltering.apply(
+                    backgroundPage.webRequest.filterResponseData(requestId),
                     request,
                     contentType,
                     replaceRules || [],
@@ -342,7 +360,7 @@
 
         let responseHeadersModified = false;
 
-        if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
+        if (requestType === RequestTypes.DOCUMENT || requestType === RequestTypes.SUBDOCUMENT) {
             const cspHeaders = getCSPHeaders(requestDetails);
             if (cspHeaders && cspHeaders.length > 0) {
                 responseHeaders = responseHeaders.concat(cspHeaders);
@@ -350,12 +368,12 @@
             }
         }
 
-        if (adguard.cookieFiltering.filterResponseHeaders(requestId, responseHeaders)) {
+        if (cookieFiltering.filterResponseHeaders(requestId, responseHeaders)) {
             responseHeadersModified = true;
         }
 
         if (responseHeadersModified) {
-            adguard.requestContextStorage.update(requestId, { modifiedResponseHeaders: responseHeaders });
+            requestContextStorage.update(requestId, { modifiedResponseHeaders: responseHeaders });
             return { responseHeaders };
         }
     }
@@ -369,7 +387,7 @@
         // Please note, that we do not modify response headers in Edge before Creators update:
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/401
         // https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8796739/
-        if (adguard.utils.browser.isEdgeBeforeCreatorsUpdate()) {
+        if (browserUtils.isEdgeBeforeCreatorsUpdate()) {
             return;
         }
 
@@ -377,7 +395,7 @@
         const { requestId } = requestDetails;
         const { requestUrl } = requestDetails;
         const { requestType } = requestDetails;
-        const frameUrl = adguard.frames.getFrameUrl(tab, requestDetails.frameId);
+        const frameUrl = frames.getFrameUrl(tab, requestDetails.frameId);
 
         const cspHeaders = [];
 
@@ -385,12 +403,12 @@
          * Retrieve $CSP rules specific for the request
          * https://github.com/adguardteam/adguardbrowserextension/issues/685
          */
-        const cspRules = adguard.webRequestService.getCspRules(tab, requestUrl, frameUrl, requestType);
+        const cspRules = webRequestService.getCspRules(tab, requestUrl, frameUrl, requestType);
         if (cspRules) {
             for (let i = 0; i < cspRules.length; i += 1) {
                 const rule = cspRules[i];
                 // Don't forget: getCspRules returns all $csp rules, we must directly check that the rule is blocking.
-                if (adguard.webRequestService.isRequestBlockedByRule(rule)) {
+                if (webRequestService.isRequestBlockedByRule(rule)) {
                     cspHeaders.push({
                         name: CSP_HEADER_NAME,
                         value: rule.getAdvancedModifierValue(),
@@ -398,7 +416,7 @@
                 }
             }
             if (cspRules.length > 0) {
-                adguard.requestContextStorage.update(requestId, { cspRules });
+                requestContextStorage.update(requestId, { cspRules });
             }
         }
 
@@ -425,24 +443,26 @@
      * @param mainFrameUrl
      */
     function filterSafebrowsing(tab, mainFrameUrl) {
-        if (adguard.frames.isTabProtectionDisabled(tab)
-            || adguard.frames.isTabWhiteListedForSafebrowsing(tab)) {
+        if (frames.isTabProtectionDisabled(tab)
+            || frames.isTabWhiteListedForSafebrowsing(tab)) {
             return;
         }
 
-        const referrerUrl = adguard.utils.browser.getSafebrowsingBackUrl(tab);
-        const incognitoTab = adguard.frames.isIncognitoTab(tab);
+        const referrerUrl = browserUtils.getSafebrowsingBackUrl(tab);
+        const incognitoTab = frames.isIncognitoTab(tab);
 
-        adguard.safebrowsing.checkSafebrowsingFilter(mainFrameUrl, referrerUrl, (safebrowsingUrl) => {
+        safebrowsing.checkSafebrowsingFilter(mainFrameUrl, referrerUrl, (safebrowsingUrl) => {
             // Chrome doesn't allow open extension url in incognito mode
-            // So close current tab and open new
-            if (adguard.utils.browser.isChromium() && incognitoTab) {
+            // Firefox allows but browser.runtime.getBackgroundPage() is not working in incognito mode
+            // TODO rewrite scripts for safebrowsing page without browser.runtime.getBackgroundPage()
+            //  and make firefox to open safebrowsing page in the incognito mode
+            if (incognitoTab) {
                 // Closing tab before opening a new one may lead to browser crash (Chromium)
-                adguard.ui.openTab(safebrowsingUrl, {}, () => {
-                    adguard.tabs.remove(tab.tabId);
+                uiService.openTab(safebrowsingUrl, {}, () => {
+                    tabsApi.remove(tab.tabId);
                 });
             } else {
-                adguard.tabs.reload(tab.tabId, safebrowsingUrl);
+                tabsApi.reload(tab.tabId, safebrowsingUrl);
             }
         });
     }
@@ -450,9 +470,9 @@
     /**
      * Add listeners described above.
      */
-    adguard.webRequest.onBeforeRequest.addListener(onBeforeRequest, ['<all_urls>']);
-    adguard.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeaders, ['<all_urls>']);
-    adguard.webRequest.onHeadersReceived.addListener(onHeadersReceived, ['<all_urls>']);
+    backgroundPage.webRequest.onBeforeRequest.addListener(onBeforeRequest, ['<all_urls>']);
+    backgroundPage.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeaders, ['<all_urls>']);
+    backgroundPage.webRequest.onHeadersReceived.addListener(onHeadersReceived, ['<all_urls>']);
 
     /**
      * If page uses service worker then it can do not fire main DOCUMENT request, that's why we check
@@ -469,30 +489,30 @@
             requestUrl,
         } = details;
 
-        if (requestType !== adguard.RequestTypes.DOCUMENT
-            || tab.tabId === adguard.BACKGROUND_TAB_ID) {
+        if (requestType !== RequestTypes.DOCUMENT
+            || tab.tabId === BACKGROUND_TAB_ID) {
             return;
         }
 
-        adguard.frames.checkAndRecordMainFrame(tab, frameId, requestUrl, requestType);
+        frames.checkAndRecordMainFrame(tab, frameId, requestUrl, requestType);
     };
 
-    adguard.webNavigation.onCommitted.addListener(onCommittedCheckFrameUrl);
+    backgroundPage.webNavigation.onCommitted.addListener(onCommittedCheckFrameUrl);
 
     let handlerBehaviorTimeout = null;
-    adguard.listeners.addListener((event) => {
+    listeners.addListener((event) => {
         switch (event) {
-            case adguard.listeners.ADD_RULES:
-            case adguard.listeners.REMOVE_RULE:
-            case adguard.listeners.UPDATE_FILTER_RULES:
-            case adguard.listeners.UPDATE_WHITELIST_FILTER_RULES:
-            case adguard.listeners.FILTER_ENABLE_DISABLE:
+            case listeners.ADD_RULES:
+            case listeners.REMOVE_RULE:
+            case listeners.UPDATE_FILTER_RULES:
+            case listeners.UPDATE_WHITELIST_FILTER_RULES:
+            case listeners.FILTER_ENABLE_DISABLE:
                 if (handlerBehaviorTimeout !== null) {
                     clearTimeout(handlerBehaviorTimeout);
                 }
                 handlerBehaviorTimeout = setTimeout(() => {
                     handlerBehaviorTimeout = null;
-                    adguard.webRequest.handlerBehaviorChanged();
+                    backgroundPage.webRequest.handlerBehaviorChanged();
                 }, 3000);
         }
     });
@@ -588,7 +608,7 @@
                                             |                                    |     remote source
                                             +- ----------------------------------+
          */
-        (function (adguard) {
+        (function () {
             /**
              * This object is used:
              * 1. to save js and css texts when onHeadersReceived event fires
@@ -756,13 +776,13 @@
                  * if onCompleted event fired with requestType DOCUMENT then we skip it, because we
                  * use onCompleted event only for SUBDOCUMENTS
                  */
-                if (eventName === 'onCompleted' && requestType === adguard.RequestTypes.DOCUMENT) {
+                if (eventName === 'onCompleted' && requestType === RequestTypes.DOCUMENT) {
                     return true;
                 }
-                if (tabId === adguard.BACKGROUND_TAB_ID) {
+                if (tabId === BACKGROUND_TAB_ID) {
                     return true;
                 }
-                if (requestType !== adguard.RequestTypes.DOCUMENT && requestType !== adguard.RequestTypes.SUBDOCUMENT) {
+                if (requestType !== RequestTypes.DOCUMENT && requestType !== RequestTypes.SUBDOCUMENT) {
                     return true;
                 }
                 return false;
@@ -782,7 +802,7 @@
                 }
                 const { frameId } = details;
                 const url = details.requestUrl;
-                const result = adguard.webRequestService.processGetSelectorsAndScripts(
+                const result = webRequestService.processGetSelectorsAndScripts(
                     { tabId },
                     url,
                     true
@@ -816,7 +836,7 @@
                 }
                 const injection = injections.get(tabId, frameId);
                 if (injection && injection.jsScriptText) {
-                    adguard.tabs.executeScriptCode(tabId, frameId, injection.jsScriptText);
+                    tabsApi.executeScriptCode(tabId, frameId, injection.jsScriptText);
                 }
             }
 
@@ -870,7 +890,7 @@
                  * also we should check if injection url is correct
                  * so we try to prepare this injection in the onCommit event again
                  */
-                if (requestType === adguard.RequestTypes.DOCUMENT
+                if (requestType === RequestTypes.DOCUMENT
                     && (!injection || !isInjectionForUrl(injection, frameUrl))) {
                     prepareInjection(details);
                     tryInject(details, eventName);
@@ -886,15 +906,15 @@
                 }
 
                 if (injection.jsScriptText) {
-                    adguard.tabs.executeScriptCode(tabId, frameId, injection.jsScriptText);
+                    tabsApi.executeScriptCode(tabId, frameId, injection.jsScriptText);
                 }
                 if (injection.cssText) {
-                    adguard.tabs.insertCssCode(tabId, frameId, injection.cssText);
+                    tabsApi.insertCssCode(tabId, frameId, injection.cssText);
                 }
 
-                const mainFrameUrl = adguard.frames.getMainFrameUrl({ tabId });
+                const mainFrameUrl = frames.getMainFrameUrl({ tabId });
                 if (isIframeWithoutSrc(frameUrl, frameId, mainFrameUrl)) {
-                    adguard.console.warn('Unexpected onCommitted event from this frame - frameId: {0}, frameUrl: {1}. See https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1046', frameId, frameUrl);
+                    log.warn('Unexpected onCommitted event from this frame - frameId: {0}, frameUrl: {1}. See https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1046', frameId, frameUrl);
                 }
 
                 injections.removeTabFrameInjection(tabId, frameId);
@@ -930,7 +950,7 @@
                         || frameUrl === 'about:blank'
                         || frameUrl === 'about:srcdoc'
                         || frameUrl.indexOf('javascript:') > -1)
-                    && frameId !== adguard.MAIN_FRAME_ID;
+                    && frameId !== MAIN_FRAME_ID;
             }
 
             /**
@@ -947,9 +967,9 @@
                 /**
                  * Get url of the tab where iframe exists
                  */
-                const mainFrameUrl = adguard.frames.getMainFrameUrl({ tabId });
+                const mainFrameUrl = frames.getMainFrameUrl({ tabId });
                 if (mainFrameUrl && isIframeWithoutSrc(frameUrl, frameId, mainFrameUrl)) {
-                    const result = adguard.webRequestService.processGetSelectorsAndScripts(
+                    const result = webRequestService.processGetSelectorsAndScripts(
                         { tabId }, mainFrameUrl, true
                     );
                     if (result.requestFilterReady === false) {
@@ -961,10 +981,10 @@
                     const jsScriptText = buildScriptText(result.scripts);
                     const cssText = buildCssText(result.selectors);
                     if (jsScriptText) {
-                        adguard.tabs.executeScriptCode(tabId, frameId, jsScriptText);
+                        tabsApi.executeScriptCode(tabId, frameId, jsScriptText);
                     }
                     if (cssText) {
-                        adguard.tabs.insertCssCode(tabId, frameId, cssText);
+                        tabsApi.insertCssCode(tabId, frameId, cssText);
                     }
                 }
             }
@@ -972,34 +992,34 @@
              * https://developer.chrome.com/extensions/webRequest
              * https://developer.chrome.com/extensions/webNavigation
              */
-            adguard.webRequest.onHeadersReceived.addListener(prepareInjection, ['<all_urls>']);
-            adguard.webRequest.onResponseStarted.addListener(tryInjectOnResponseStarted, ['<all_urls>']);
-            adguard.webNavigation.onCommitted.addListener(tryInject);
-            adguard.webRequest.onErrorOccurred.addListener(removeInjection, ['<all_urls>']);
-            adguard.webNavigation.onDOMContentLoaded.addListener(tryInjectInIframesWithoutSrc);
+            backgroundPage.webRequest.onHeadersReceived.addListener(prepareInjection, ['<all_urls>']);
+            backgroundPage.webRequest.onResponseStarted.addListener(tryInjectOnResponseStarted, ['<all_urls>']);
+            backgroundPage.webNavigation.onCommitted.addListener(tryInject);
+            backgroundPage.webRequest.onErrorOccurred.addListener(removeInjection, ['<all_urls>']);
+            backgroundPage.webNavigation.onDOMContentLoaded.addListener(tryInjectInIframesWithoutSrc);
             // In the current Firefox version (60.0.2), the onCommitted even fires earlier than
             // onHeadersReceived for SUBDOCUMENT requests
             // This is true only for SUBDOCUMENTS i.e. iframes
             // so we inject code when onCompleted event fires
-            if (adguard.utils.browser.isFirefoxBrowser()) {
-                adguard.webRequest.onCompleted.addListener((details) => { tryInject(details, 'onCompleted'); }, ['<all_urls>']);
+            if (browserUtils.isFirefoxBrowser()) {
+                backgroundPage.webRequest.onCompleted.addListener((details) => { tryInject(details, 'onCompleted'); }, ['<all_urls>']);
             }
             // Remove injections when tab is closed
-            adguard.tabs.onRemoved.addListener(injections.removeTabInjection);
-        })(adguard);
+            tabsApi.onRemoved.addListener(injections.removeTabInjection);
+        })();
     }
 
     /**
      * Request context recording
      */
-    adguard.webRequest.onCompleted.addListener(({ requestId }) => {
-        adguard.cookieFiltering.modifyCookies(requestId);
-        adguard.requestContextStorage.onRequestCompleted(requestId);
+    backgroundPage.webRequest.onCompleted.addListener(({ requestId }) => {
+        cookieFiltering.modifyCookies(requestId);
+        requestContextStorage.onRequestCompleted(requestId);
     }, ['<all_urls>']);
 
-    adguard.webRequest.onErrorOccurred.addListener(({ requestId }) => {
-        adguard.cookieFiltering.modifyCookies(requestId);
-        adguard.requestContextStorage.onRequestCompleted(requestId);
+    backgroundPage.webRequest.onErrorOccurred.addListener(({ requestId }) => {
+        cookieFiltering.modifyCookies(requestId);
+        requestContextStorage.onRequestCompleted(requestId);
     }, ['<all_urls>']);
 
     /**
@@ -1007,9 +1027,9 @@
      * If a request is redirected to a data:// URL, onBeforeRedirect is the last reported event.
      * https://developer.chrome.com/extensions/webRequest#life_cycle
      */
-    adguard.webRequest.onBeforeRedirect.addListener(({ requestId, redirectUrl }) => {
+    backgroundPage.webRequest.onBeforeRedirect.addListener(({ requestId, redirectUrl }) => {
         if (redirectUrl && redirectUrl.indexOf('data:') === 0) {
-            adguard.requestContextStorage.onRequestCompleted(requestId);
+            requestContextStorage.onRequestCompleted(requestId);
         }
     }, ['<all_urls>']);
 
@@ -1019,14 +1039,18 @@
      * Subscribe script is executed when onCommitted event fires,
      * because this event is the most reliable
      */
-    adguard.webNavigation.onCommitted.addListener((details) => {
+    backgroundPage.webNavigation.onCommitted.addListener((details) => {
         const { tab, requestType, frameId } = details;
-        if ((requestType !== adguard.RequestTypes.DOCUMENT
-            && requestType !== adguard.RequestTypes.SUBDOCUMENT)
-            || tab.tabId === adguard.BACKGROUND_TAB_ID) {
+        if ((requestType !== RequestTypes.DOCUMENT
+            && requestType !== RequestTypes.SUBDOCUMENT)
+            || tab.tabId === BACKGROUND_TAB_ID) {
             return;
         }
         // load subscribe script on dom content load
-        adguard.tabs.executeScriptFile(tab.tabId, { file: '/lib/content-script/subscribe.js', frameId });
+        tabsApi.executeScriptFile(tab.tabId, { file: '/lib/content-script/subscribe.js', frameId });
     });
-})(adguard);
+};
+
+export const webrequest = {
+    init: webrequestInit,
+};

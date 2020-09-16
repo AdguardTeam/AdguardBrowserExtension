@@ -15,12 +15,16 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global adguard, Redirects */
+import { redirects } from 'scriptlets';
+import { log } from '../../utils/log';
+import { resources } from '../../utils/resources';
+
+const { Redirects } = redirects;
 
 /**
  * Redirects service class
  */
-adguard.redirectFilterService = (function (adguard) {
+export const redirectService = (function () {
     let redirects = null;
 
     /**
@@ -43,11 +47,11 @@ adguard.redirectFilterService = (function (adguard) {
 
         const redirectSource = redirects.getRedirect(title);
         if (!redirectSource) {
-            adguard.console.debug(`There is no redirect source with title: "${title}"`);
+            log.debug(`There is no redirect source with title: "${title}"`);
             return null;
         }
 
-        return adguard.utils.resources.createRedirectFileUrl(redirectSource.file);
+        return resources.createRedirectFileUrl(redirectSource.file);
     };
 
     const hasRedirect = (title) => {
@@ -59,4 +63,4 @@ adguard.redirectFilterService = (function (adguard) {
         hasRedirect,
         createRedirectUrl,
     };
-})(adguard);
+})();

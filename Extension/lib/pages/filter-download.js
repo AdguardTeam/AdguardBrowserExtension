@@ -14,32 +14,44 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global Nanobar, contentPage */
-document.addEventListener('DOMContentLoaded', () => {
-    const nanobar = new Nanobar({
-        classname: 'adg-progress-bar',
-    });
 
-    nanobar.go(15);
+import Nanobar from 'nanobar';
+import { contentPage } from '../content-script/content-script';
 
-    function onLoaded() {
-        nanobar.go(100);
-        setTimeout(() => {
-            if (window) {
-                contentPage.sendMessage({ type: 'openThankYouPage' });
-            }
-        }, 1000);
-    }
+// eslint-disable-next-line no-unused-vars
+import { i18n } from './i18n';
 
-    function checkRequestFilterReady() {
-        contentPage.sendMessage({ type: 'checkRequestFilterReady' }, (response) => {
-            if (response.ready) {
-                onLoaded();
-            } else {
-                setTimeout(checkRequestFilterReady, 500);
-            }
+export const init = () => {
+    document.addEventListener('DOMContentLoaded', () => {
+        const nanobar = new Nanobar({
+            classname: 'adg-progress-bar',
         });
-    }
 
-    checkRequestFilterReady();
-});
+        nanobar.go(15);
+
+        function onLoaded() {
+            nanobar.go(100);
+            setTimeout(() => {
+                if (window) {
+                    contentPage.sendMessage({ type: 'openThankYouPage' });
+                }
+            }, 1000);
+        }
+
+        function checkRequestFilterReady() {
+            contentPage.sendMessage({ type: 'checkRequestFilterReady' }, (response) => {
+                if (response.ready) {
+                    onLoaded();
+                } else {
+                    setTimeout(checkRequestFilterReady, 500);
+                }
+            });
+        }
+
+        checkRequestFilterReady();
+    });
+};
+
+export const filterDownload = {
+    init,
+};

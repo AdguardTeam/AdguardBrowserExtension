@@ -1,0 +1,67 @@
+{
+    "manifest_version": 2,
+    "name": "__MSG_name__",
+    "short_name": "__MSG_short_name__",
+    "author": "Adguard Software Ltd",
+    "default_locale": "en",
+    "description": "__MSG_description__",
+    "icons": {
+        "16": "assets/icons/green-16.png",
+        "128": "assets/icons/green-128.png"
+    },
+    "browser_action": {
+        "default_icon": {
+            "19": "assets/icons/green-19.png",
+            "38": "assets/icons/green-38.png"
+        },
+        "default_title": "__MSG_name__",
+        "default_popup": "pages/popup.html"
+    },
+    "background": {
+        "page": "pages/background.html",
+        "persistent": true
+    },
+    "content_scripts": [
+        {
+            "all_frames": true,
+            "css": [
+                "assets/css/alert-popup.css"
+            ],
+            "js": [
+                "pages/content-script-start.js"
+            ],
+            "matches": [
+                "http://*/*",
+                "https://*/*"
+            ],
+            "match_about_blank": true,
+            "run_at": "document_start"
+        },
+        {
+            "all_frames": true,
+            "js": [
+                "pages/content-script-end.js"
+            ],
+            "matches": [
+                "http://*/*",
+                "https://*/*"
+            ],
+            "match_about_blank": true,
+            "run_at": "document_end"
+        },
+        {
+            "all_frames": false,
+            "js": [
+                "pages/thankyou.js"
+            ],
+            "matches": [
+                "*://*.adguard.com/*/thankyou.html*"
+            ],
+            "run_at": "document_start"
+        }
+    ],
+    "minimum_chrome_version": "55.0",
+    "web_accessible_resources": [
+        "/web-accessible-resources/*"
+    ]
+}

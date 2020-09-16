@@ -15,19 +15,41 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global TSUrlFilter */
+import * as TSUrlFilter from '@adguard/tsurlfilter';
+import { settingsProvider } from './settings/settings-provider';
+import { backgroundPage } from './api/background-page';
+import { settings } from './settings/user-settings';
+import { listeners } from './notifier';
+import { userrules } from './filter/userrules';
+import { notifications } from './utils/notifications';
+import { localStorage } from './storage';
+import { tabsApi } from './tabs/tabs-api';
+import { uiService } from './ui-service';
+import { browserUtils } from './utils/browser-utils';
+import { frames } from './tabs/frames';
+import { safebrowsing } from './filter/services/safebrowsing';
+import { utils } from './utils/common';
+import { RequestTypes } from './utils/request-types';
+import { application } from './application';
+import { categories } from './filter/filters/filters-categories';
+import { webRequestService } from './filter/request-blocking';
+import { filteringLog } from './filter/filtering-log';
+import { pageStats } from './filter/page-stats';
+import { backend } from './filter/filters/service-client';
+import { subscriptions } from './filter/filters/subscription';
+import { filteringApi } from './filter/filtering-api';
+import { stealthService } from './filter/services/stealth-service';
+import { prefs } from './prefs';
+import { whitelist } from './filter/whitelist';
 
 /**
  *  Initialize Content => BackgroundPage messaging
  */
-(function (adguard) {
-
-    'use strict';
-
+const init = () => {
     /**
      * Contains event listeners from content pages
      */
-    var eventListeners = Object.create(null);
+    const eventListeners = Object.create(null);
 
     /**
      * Adds event listener from content page
@@ -35,32 +57,31 @@
      * @param sender
      */
     function processAddEventListener(message, sender) {
-        var listenerId = adguard.listeners.addSpecifiedListener(message.events, function () {
-            var sender = eventListeners[listenerId];
+        const listenerId = listeners.addSpecifiedListener(message.events, function () {
+            const sender = eventListeners[listenerId];
             if (sender) {
-                adguard.tabs.sendMessage(sender.tab.tabId, {
+                tabsApi.sendMessage(sender.tab.tabId, {
                     type: 'notifyListeners',
-                    args: Array.prototype.slice.call(arguments)
+                    args: Array.prototype.slice.call(arguments),
                 });
             }
         });
         eventListeners[listenerId] = sender;
-        return { listenerId: listenerId };
+        return { listenerId };
     }
 
     /**
      * Constructs objects that uses on extension pages, like: options.html, thankyou.html etc
      */
     function processInitializeFrameScriptRequest() {
+        const enabledFilters = Object.create(null);
 
-        var enabledFilters = Object.create(null);
+        const AntiBannerFiltersId = utils.filters.ids;
 
-        var AntiBannerFiltersId = adguard.utils.filters.ids;
-
-        for (var key in AntiBannerFiltersId) {
+        for (const key in AntiBannerFiltersId) {
             if (AntiBannerFiltersId.hasOwnProperty(key)) {
-                var filterId = AntiBannerFiltersId[key];
-                var enabled = adguard.application.isFilterEnabled(filterId);
+                const filterId = AntiBannerFiltersId[key];
+                const enabled = application.isFilterEnabled(filterId);
                 if (enabled) {
                     enabledFilters[filterId] = true;
                 }
@@ -68,23 +89,23 @@
         }
 
         return {
-            userSettings: adguard.settings.getAllSettings(),
-            enabledFilters: enabledFilters,
-            filtersMetadata: adguard.subscriptions.getFilters(),
-            requestFilterInfo: adguard.filteringApi.getRequestFilterInfo(),
+            userSettings: settings.getAllSettings(),
+            enabledFilters,
+            filtersMetadata: subscriptions.getFilters(),
+            requestFilterInfo: filteringApi.getRequestFilterInfo(),
             environmentOptions: {
-                isMacOs: adguard.utils.browser.isMacOs(),
-                canBlockWebRTC: adguard.stealthService.canBlockWebRTC(),
-                isChrome: adguard.utils.browser.isChromeBrowser(),
+                isMacOs: browserUtils.isMacOs(),
+                canBlockWebRTC: stealthService.canBlockWebRTC(),
+                isChrome: browserUtils.isChromeBrowser(),
                 Prefs: {
-                    locale: adguard.app.getLocale(),
-                    mobile: adguard.prefs.mobile || false,
+                    locale: backgroundPage.app.getLocale(),
+                    mobile: prefs.mobile || false,
                 },
-                appVersion: adguard.app.getVersion(),
+                appVersion: backgroundPage.app.getVersion(),
             },
             constants: {
-                AntiBannerFiltersId: adguard.utils.filters.ids,
-                EventNotifierTypes: adguard.listeners.events,
+                AntiBannerFiltersId: utils.filters.ids,
+                EventNotifierTypes: listeners.events,
             },
         };
     }
@@ -96,15 +117,15 @@
      * @param stats
      */
     function processSaveCssHitStats(tab, stats) {
-        if (!adguard.webRequestService.isCollectingCosmeticRulesHits(tab)) {
+        if (!webRequestService.isCollectingCosmeticRulesHits(tab)) {
             return;
         }
-        var frameUrl = adguard.frames.getMainFrameUrl(tab);
+        const frameUrl = frames.getMainFrameUrl(tab);
         for (let i = 0; i < stats.length; i += 1) {
             const stat = stats[i];
             const rule = new TSUrlFilter.CosmeticRule(stat.ruleText, stat.filterId);
-            adguard.webRequestService.recordRuleHit(tab, rule, frameUrl);
-            adguard.filteringLog.addCosmeticEvent(tab, stat.element, tab.url, adguard.RequestTypes.DOCUMENT, rule);
+            webRequestService.recordRuleHit(tab, rule, frameUrl);
+            filteringLog.addCosmeticEvent(tab, stat.element, tab.url, RequestTypes.DOCUMENT, rule);
         }
     }
 
@@ -120,77 +141,84 @@
     function handleMessage(message, sender, callback) {
         switch (message.type) {
             case 'unWhiteListFrame':
-                adguard.userrules.unWhiteListFrame(message.frameInfo);
+                userrules.unWhiteListFrame(message.frameInfo);
                 break;
             case 'addEventListener':
                 return processAddEventListener(message, sender);
-            case 'removeListener':
-                var listenerId = message.listenerId;
-                adguard.listeners.removeListener(listenerId);
+            case 'removeListener': {
+                const { listenerId } = message;
+                listeners.removeListener(listenerId);
                 delete eventListeners[listenerId];
                 break;
+            }
             case 'initializeFrameScript':
                 return processInitializeFrameScriptRequest();
             case 'changeUserSetting':
-                adguard.settings.setProperty(message.key, message.value);
+                settings.setProperty(message.key, message.value);
                 break;
             case 'checkRequestFilterReady':
-                return { ready: adguard.filteringApi.isReady() };
+                return { ready: filteringApi.isReady() };
             case 'addAndEnableFilter':
-                adguard.application.addAndEnableFilters([message.filterId]);
+                application.addAndEnableFilters([message.filterId]);
                 break;
             case 'disableAntiBannerFilter':
                 if (message.remove) {
-                    adguard.application.uninstallFilters([message.filterId]);
+                    application.uninstallFilters([message.filterId]);
                 } else {
-                    adguard.application.disableFilters([message.filterId]);
+                    application.disableFilters([message.filterId]);
                 }
                 break;
             case 'removeAntiBannerFilter':
-                adguard.application.removeFilter(message.filterId);
+                application.removeFilter(message.filterId);
                 break;
             case 'enableFiltersGroup':
-                adguard.categories.enableFiltersGroup(message.groupId);
+                categories.enableFiltersGroup(message.groupId);
                 break;
             case 'disableFiltersGroup':
-                adguard.categories.disableFiltersGroup(message.groupId);
+                categories.disableFiltersGroup(message.groupId);
                 break;
             case 'changeDefaultWhiteListMode':
-                adguard.whitelist.changeDefaultWhiteListMode(message.enabled);
+                whitelist.changeDefaultWhiteListMode(message.enabled);
                 break;
             case 'getWhiteListDomains': {
-                const whiteListDomains = adguard.whitelist.getWhiteListDomains();
-                const appVersion = adguard.app.getVersion();
-                callback({ content: whiteListDomains.join('\r\n'), appVersion });
+                const whiteListDomains = whitelist.getWhiteListDomains();
+                const appVersion = backgroundPage.app.getVersion();
+                callback({
+                    content: whiteListDomains.join('\r\n'),
+                    appVersion,
+                });
                 break;
             }
             case 'saveWhiteListDomains': {
                 const domains = message.content.split(/[\r\n]+/)
                     .map(string => string.trim())
                     .filter(string => string.length > 0);
-                adguard.whitelist.updateWhiteListDomains(domains);
+                whitelist.updateWhiteListDomains(domains);
                 break;
             }
             case 'getUserRules':
-                adguard.userrules.getUserRulesText((content) => {
-                    const appVersion = adguard.app.getVersion();
-                    callback({ content, appVersion });
+                userrules.getUserRulesText((content) => {
+                    const appVersion = backgroundPage.app.getVersion();
+                    callback({
+                        content,
+                        appVersion,
+                    });
                 });
                 return true;
             case 'saveUserRules':
-                adguard.userrules.updateUserRulesText(message.content);
+                userrules.updateUserRulesText(message.content);
                 break;
             case 'addUserRule':
-                adguard.userrules.addRules([message.ruleText]);
+                userrules.addRules([message.ruleText]);
                 break;
             case 'removeUserRule':
-                adguard.userrules.removeRule(message.ruleText);
+                userrules.removeRule(message.ruleText);
                 break;
             case 'checkAntiBannerFiltersUpdate':
-                adguard.ui.checkFiltersUpdates();
+                uiService.checkFiltersUpdates();
                 break;
             case 'loadCustomFilterInfo':
-                adguard.application.loadCustomFilterInfo(message.url, { title: message.title }, (filter) => {
+                application.loadCustomFilterInfo(message.url, { title: message.title }, (filter) => {
                     callback({ filter });
                 }, (error) => {
                     callback({ error });
@@ -198,8 +226,11 @@
                 return true;
             case 'subscribeToCustomFilter': {
                 const { url, title, trusted } = message;
-                adguard.application.loadCustomFilter(url, { title, trusted }, (filter) => {
-                    adguard.application.addAndEnableFilters([filter.filterId], () => {
+                application.loadCustomFilter(url, {
+                    title,
+                    trusted,
+                }, (filter) => {
+                    application.addAndEnableFilters([filter.filterId], () => {
                         callback(filter);
                     });
                 }, () => {
@@ -208,86 +239,110 @@
                 return true;
             }
             case 'getFiltersMetadata':
-                return adguard.categories.getFiltersMetadata();
+                return categories.getFiltersMetadata();
             case 'setFiltersUpdatePeriod':
-                adguard.settings.setFiltersUpdatePeriod(message.updatePeriod);
+                settings.setFiltersUpdatePeriod(message.updatePeriod);
                 break;
             case 'openThankYouPage':
-                adguard.ui.openThankYouPage();
+                uiService.openThankYouPage();
                 break;
             case 'openExtensionStore':
-                adguard.ui.openExtensionStore();
+                uiService.openExtensionStore();
                 break;
             case 'openFilteringLog':
-                adguard.ui.openFilteringLog(message.tabId);
+                uiService.openFilteringLog(message.tabId);
                 break;
             case 'openExportRulesTab':
-                adguard.ui.openExportRulesTab(message.hash);
+                uiService.openExportRulesTab(message.hash);
                 break;
             case 'openSafebrowsingTrusted':
-                adguard.safebrowsing.addToSafebrowsingTrusted(message.url);
-                adguard.tabs.getActive(function (tab) {
-                    adguard.tabs.reload(tab.tabId, message.url);
+                safebrowsing.addToSafebrowsingTrusted(message.url);
+                tabsApi.getActive((tab) => {
+                    tabsApi.reload(tab.tabId, message.url);
                 });
                 break;
             case 'openTab':
-                adguard.ui.openTab(message.url, message.options);
+                uiService.openTab(message.url, message.options);
                 break;
             case 'resetBlockedAdsCount':
-                adguard.frames.resetBlockedAdsCount();
+                frames.resetBlockedAdsCount();
                 break;
             case 'getSelectorsAndScripts': {
                 let urlForSelectors;
                 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1498
                 // when document url for iframe is about:blank then we use tab url
-                if (!adguard.utils.url.isHttpOrWsRequest(message.documentUrl) && sender.frameId !== 0) {
+                if (!utils.url.isHttpOrWsRequest(message.documentUrl) && sender.frameId !== 0) {
                     urlForSelectors = sender.tab.url;
                 } else {
                     urlForSelectors = message.documentUrl;
                 }
-                return adguard.webRequestService.processGetSelectorsAndScripts(sender.tab, urlForSelectors) || {};
+                return webRequestService.processGetSelectorsAndScripts(sender.tab, urlForSelectors) || {};
             }
-            case 'checkPageScriptWrapperRequest':
-                var block = adguard.webRequestService.checkPageScriptWrapperRequest(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
-                return { block: block, requestId: message.requestId };
-            case 'processShouldCollapse':
-                var collapse = adguard.webRequestService.processShouldCollapse(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
-                return { collapse: collapse, requestId: message.requestId };
-            case 'processShouldCollapseMany':
-                var requests = adguard.webRequestService.processShouldCollapseMany(sender.tab, message.documentUrl, message.requests);
-                return { requests: requests };
+            case 'checkPageScriptWrapperRequest': {
+                const block = webRequestService.checkPageScriptWrapperRequest(
+                    sender.tab,
+                    message.elementUrl,
+                    message.documentUrl,
+                    message.requestType
+                );
+                return {
+                    block,
+                    requestId: message.requestId,
+                };
+            }
+            case 'processShouldCollapse': {
+                const collapse = webRequestService.processShouldCollapse(
+                    sender.tab,
+                    message.elementUrl,
+                    message.documentUrl,
+                    message.requestType
+                );
+                return {
+                    collapse,
+                    requestId: message.requestId,
+                };
+            }
+            case 'processShouldCollapseMany': {
+                const requests = webRequestService.processShouldCollapseMany(
+                    sender.tab,
+                    message.documentUrl,
+                    message.requests
+                );
+                return { requests };
+            }
             case 'onOpenFilteringLogPage':
-                adguard.filteringLog.onOpenFilteringLogPage();
+                filteringLog.onOpenFilteringLogPage();
                 break;
             case 'onCloseFilteringLogPage':
-                adguard.filteringLog.onCloseFilteringLogPage();
+                filteringLog.onCloseFilteringLogPage();
                 break;
             case 'reloadTabById':
                 if (!message.preserveLogEnabled) {
-                    adguard.filteringLog.clearEventsByTabId(message.tabId);
+                    filteringLog.clearEventsByTabId(message.tabId);
                 }
-                adguard.tabs.reload(message.tabId);
+                tabsApi.reload(message.tabId);
                 break;
             case 'clearEventsByTabId':
-                adguard.filteringLog.clearEventsByTabId(message.tabId);
+                filteringLog.clearEventsByTabId(message.tabId);
                 break;
             case 'getTabFrameInfoById':
                 if (message.tabId) {
-                    var frameInfo = adguard.frames.getFrameInfo({ tabId: message.tabId });
-                    return { frameInfo: frameInfo };
-                } else {
-                    adguard.tabs.getActive(function (tab) {
-                        var frameInfo = adguard.frames.getFrameInfo(tab);
-                        callback({ frameInfo: frameInfo });
-                    });
-                    return true; // Async
+                    const frameInfo = frames.getFrameInfo({ tabId: message.tabId });
+                    return { frameInfo };
                 }
-            case 'getFilteringInfoByTabId':
-                var filteringInfo = adguard.filteringLog.getFilteringInfoByTabId(message.tabId);
-                return { filteringInfo: filteringInfo };
+                tabsApi.getActive((tab) => {
+                    const frameInfo = frames.getFrameInfo(tab);
+                    callback({ frameInfo });
+                });
+                return true; // Async
+
+            case 'getFilteringInfoByTabId': {
+                const filteringInfo = filteringLog.getFilteringInfoByTabId(message.tabId);
+                return { filteringInfo };
+            }
             case 'synchronizeOpenTabs':
-                adguard.filteringLog.synchronizeOpenTabs(function (tabs) {
-                    callback({ tabs: tabs });
+                filteringLog.synchronizeOpenTabs((tabs) => {
+                    callback({ tabs });
                 });
                 return true; // Async
             case 'addFilterSubscription': {
@@ -297,93 +352,96 @@
                     title,
                     url,
                 };
-                adguard.ui.openSettingsTab('antibanner0', hashOptions);
+                uiService.openSettingsTab('antibanner0', hashOptions);
                 break;
             }
             case 'showAlertMessagePopup':
-                adguard.ui.showAlertMessagePopup(message.title, message.text);
+                uiService.showAlertMessagePopup(message.title, message.text);
                 break;
             // Popup methods
             case 'addWhiteListDomainPopup':
-                adguard.tabs.getActive(function (tab) {
-                    adguard.ui.whiteListTab(tab);
+                tabsApi.getActive((tab) => {
+                    uiService.whiteListTab(tab);
                 });
                 break;
             case 'removeWhiteListDomainPopup':
-                adguard.tabs.getActive(function (tab) {
-                    adguard.ui.unWhiteListTab(tab);
+                tabsApi.getActive((tab) => {
+                    uiService.unWhiteListTab(tab);
                 });
                 break;
             case 'changeApplicationFilteringDisabled':
-                adguard.ui.changeApplicationFilteringDisabled(message.disabled);
+                uiService.changeApplicationFilteringDisabled(message.disabled);
                 break;
             case 'openSiteReportTab':
-                adguard.ui.openSiteReportTab(message.url);
+                uiService.openSiteReportTab(message.url);
                 break;
             case 'openAbuseTab':
-                adguard.ui.openAbuseTab(message.url);
+                uiService.openAbuseTab(message.url);
                 break;
             case 'openSettingsTab':
-                adguard.ui.openSettingsTab();
+                uiService.openSettingsTab();
                 break;
             case 'openAssistant':
-                adguard.ui.openAssistant();
+                uiService.openAssistant();
                 break;
             case 'getTabInfoForPopup':
-                adguard.tabs.getActive((tab) => {
-                    const frameInfo = adguard.frames.getFrameInfo(tab);
+                tabsApi.getActive((tab) => {
+                    const frameInfo = frames.getFrameInfo(tab);
                     callback({
                         frameInfo,
                         options: {
                             showStatsSupported: true,
-                            isFirefoxBrowser: adguard.utils.browser.isFirefoxBrowser(),
-                            showInfoAboutFullVersion: adguard.settings.isShowInfoAboutAdguardFullVersion(),
-                            isMacOs: adguard.utils.browser.isMacOs(),
-                            isEdgeBrowser: adguard.utils.browser.isEdgeBrowser()
-                                || adguard.utils.browser.isEdgeChromiumBrowser(),
-                            notification: adguard.notifications.getCurrentNotification(frameInfo),
-                            isDisableShowAdguardPromoInfo: adguard.settings.isDisableShowAdguardPromoInfo(),
+                            isFirefoxBrowser: browserUtils.isFirefoxBrowser(),
+                            showInfoAboutFullVersion: settings.isShowInfoAboutAdguardFullVersion(),
+                            isMacOs: browserUtils.isMacOs(),
+                            isEdgeBrowser: browserUtils.isEdgeBrowser()
+                                || browserUtils.isEdgeChromiumBrowser(),
+                            notification: notifications.getCurrentNotification(),
+                            isDisableShowAdguardPromoInfo: settings.isDisableShowAdguardPromoInfo(),
                         },
                     });
                 });
                 return true; // Async
             case 'setNotificationViewed':
-                adguard.notifications.setNotificationViewed(message.withDelay);
+                notifications.setNotificationViewed(message.withDelay);
                 break;
             case 'getStatisticsData':
                 // There can't be data till localstorage is initialized
-                if (!adguard.localStorage.isInitialized()) {
+                if (!localStorage.isInitialized()) {
                     return {};
                 }
                 callback({
-                    stats: adguard.pageStats.getStatisticsData(),
+                    stats: pageStats.getStatisticsData(),
                 });
                 return true;
             case 'resizePanelPopup':
-                adguard.browserAction.resize(message.width, message.height);
+                backgroundPage.browserAction.resize(message.width, message.height);
                 break;
             case 'closePanelPopup':
-                adguard.browserAction.close();
+                backgroundPage.browserAction.close();
                 break;
             case 'sendFeedback':
-                adguard.backend.sendUrlReport(message.url, message.topic, message.comment);
+                backend.sendUrlReport(message.url, message.topic, message.comment);
                 break;
             case 'saveCssHitStats':
                 processSaveCssHitStats(sender.tab, message.stats);
                 break;
             case 'loadSettingsJson': {
-                const appVersion = adguard.app.getVersion();
+                const appVersion = backgroundPage.app.getVersion();
                 const settingsCb = (json) => {
-                    callback({ content: json, appVersion });
+                    callback({
+                        content: json,
+                        appVersion,
+                    });
                 };
-                adguard.sync.settingsProvider.loadSettingsBackup(settingsCb);
+                settingsProvider.loadSettingsBackup(settingsCb);
                 return true; // Async
             }
             case 'applySettingsJson':
-                adguard.sync.settingsProvider.applySettingsBackup(message.json);
+                settingsProvider.applySettingsBackup(message.json);
                 break;
             case 'disableGetPremiumNotification':
-                adguard.settings.disableShowAdguardPromoInfo();
+                settings.disableShowAdguardPromoInfo();
                 break;
             default:
                 // Unhandled message
@@ -392,12 +450,9 @@
     }
 
     // Add event listener from content-script messages
-    adguard.runtime.onMessage.addListener(handleMessage);
+    backgroundPage.runtime.onMessage.addListener(handleMessage);
+};
 
-    /**
-     * There is no messaging in Safari popover context,
-     * so we have to expose this method to keep the message-like style that is used in other browsers for communication between popup and background page.
-     */
-    adguard.runtime.onMessageHandler = handleMessage;
-
-})(adguard);
+export const contentMessageHandler = {
+    init,
+};

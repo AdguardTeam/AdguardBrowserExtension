@@ -15,7 +15,14 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-(function (adguard, api) {
+import { prefs } from '../prefs';
+import { localStorage } from '../storage';
+import { collections } from './collections';
+import { tabsApi } from '../tabs/tabs-api';
+import { backgroundPage } from '../api/background-page';
+import { browser } from '../browser';
+
+export const browserUtils = (function () {
     /**
      * Extension version (x.x.x)
      * @param version
@@ -27,13 +34,13 @@
         const parts = String(version || '').split('.');
 
         function parseVersionPart(part) {
-            if (isNaN(part)) {
+            if (Number.isNaN(part)) {
                 return 0;
             }
             return Math.max(part - 0, 0);
         }
 
-        for (let i = 3; i >= 0; i--) {
+        for (let i = 3; i >= 0; i -= 1) {
             this.version[i] = parseVersionPart(parts[i]);
         }
     };
@@ -44,7 +51,7 @@
      * @returns {number}
      */
     Version.prototype.compare = function (o) {
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < 4; i += 1) {
             if (this.version[i] > o.version[i]) {
                 return 1;
             } if (this.version[i] < o.version[i]) {
@@ -54,26 +61,19 @@
         return 0;
     };
 
-    const objectContentTypes = '.jar.swf.';
-    const mediaContentTypes = '.mp4.flv.avi.m3u.webm.mpeg.3gp.3gpp.3g2.3gpp2.ogg.mov.qt.';
-    const fontContentTypes = '.ttf.otf.woff.woff2.eot.';
-    const imageContentTypes = '.ico.png.gif.jpg.jpeg.webp.';
-
-    // noinspection UnnecessaryLocalVariableJS
-    const Utils = {
-
+    const browserUtils = {
         getClientId() {
-            let clientId = adguard.localStorage.getItem('client-id');
+            let clientId = localStorage.getItem('client-id');
             if (!clientId) {
                 const result = [];
                 const suffix = (Date.now()) % 1e8;
                 const symbols = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567890';
-                for (let i = 0; i < 8; i++) {
+                for (let i = 0; i < 8; i += 1) {
                     const symbol = symbols[Math.floor(Math.random() * symbols.length)];
                     result.push(symbol);
                 }
                 clientId = result.join('') + suffix;
-                adguard.localStorage.setItem('client-id', clientId);
+                localStorage.setItem('client-id', clientId);
             }
 
             return clientId;
@@ -118,39 +118,39 @@
          * @returns Extension version
          */
         getAppVersion() {
-            return adguard.localStorage.getItem('app-version');
+            return localStorage.getItem('app-version');
         },
 
         setAppVersion(version) {
-            adguard.localStorage.setItem('app-version', version);
+            localStorage.setItem('app-version', version);
         },
 
         isYaBrowser() {
-            return adguard.prefs.browser === 'YaBrowser';
+            return prefs.browser === 'YaBrowser';
         },
 
         isOperaBrowser() {
-            return adguard.prefs.browser === 'Opera';
+            return prefs.browser === 'Opera';
         },
 
         isEdgeBrowser() {
-            return adguard.prefs.browser === 'Edge';
+            return prefs.browser === 'Edge';
         },
 
         isEdgeChromiumBrowser() {
-            return adguard.prefs.browser === 'EdgeChromium';
+            return prefs.browser === 'EdgeChromium';
         },
 
         isFirefoxBrowser() {
-            return adguard.prefs.browser === 'Firefox';
+            return prefs.browser === 'Firefox';
         },
 
         isChromeBrowser() {
-            return adguard.prefs.browser === 'Chrome';
+            return prefs.browser === 'Chrome';
         },
 
         isChromium() {
-            return adguard.prefs.platform === 'chromium';
+            return prefs.platform === 'chromium';
         },
 
         isWindowsOs() {
@@ -169,7 +169,7 @@
          */
         findHeaderByName(headers, headerName) {
             if (headers) {
-                for (let i = 0; i < headers.length; i++) {
+                for (let i = 0; i < headers.length; i += 1) {
                     const header = headers[i];
                     if (header.name.toLowerCase() === headerName.toLowerCase()) {
                         return header;
@@ -219,7 +219,7 @@
         removeHeader(headers, headerName) {
             let removed = false;
             if (headers) {
-                for (let i = headers.length - 1; i >= 0; i--) {
+                for (let i = headers.length - 1; i >= 0; i -= 1) {
                     const header = headers[i];
                     if (header.name.toLowerCase() === headerName.toLowerCase()) {
                         headers.splice(i, 1);
@@ -232,47 +232,16 @@
 
         getSafebrowsingBackUrl(tab) {
             // https://code.google.com/p/chromium/issues/detail?id=11854
-            const previousUrl = adguard.tabs.getTabMetadata(tab.tabId, 'previousUrl');
+            const previousUrl = tabsApi.getTabMetadata(tab.tabId, 'previousUrl');
             if (previousUrl && previousUrl.indexOf('http') === 0) {
                 return previousUrl;
             }
-            const referrerUrl = adguard.tabs.getTabMetadata(tab.tabId, 'referrerUrl');
+            const referrerUrl = tabsApi.getTabMetadata(tab.tabId, 'referrerUrl');
             if (referrerUrl && referrerUrl.indexOf('http') === 0) {
                 return referrerUrl;
             }
 
             return 'about:newtab';
-        },
-
-        /**
-         * Parse content type from path
-         * @param path Path
-         * @returns {*} content type (adguard.RequestTypes.*) or null
-         */
-        parseContentTypeFromUrlPath(path) {
-            let ext = path.slice(-6);
-            const pos = ext.lastIndexOf('.');
-
-            // Unable to parse extension from url
-            if (pos === -1) {
-                return null;
-            }
-
-            ext = `${ext.slice(pos)}.`;
-            if (objectContentTypes.indexOf(ext) !== -1) {
-                return adguard.RequestTypes.OBJECT;
-            }
-            if (mediaContentTypes.indexOf(ext) !== -1) {
-                return adguard.RequestTypes.MEDIA;
-            }
-            if (fontContentTypes.indexOf(ext) !== -1) {
-                return adguard.RequestTypes.FONT;
-            }
-            if (imageContentTypes.indexOf(ext) !== -1) {
-                return adguard.RequestTypes.IMAGE;
-            }
-
-            return null;
         },
 
         /**
@@ -283,7 +252,7 @@
         getNavigatorLanguages(limit) {
             let languages = [];
             // https://developer.mozilla.org/ru/docs/Web/API/NavigatorLanguage/languages
-            if (adguard.utils.collections.isArray(navigator.languages)) {
+            if (collections.isArray(navigator.languages)) {
                 languages = navigator.languages.slice(0, limit);
             } else if (navigator.language) {
                 languages.push(navigator.language); // .language is first in .languages
@@ -296,13 +265,12 @@
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/602
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/566
          * 'Popup' window
-
          * Creators update is not yet released, so we use Insider build 15063 instead.
          */
         EDGE_CREATORS_UPDATE: 15063,
 
         isEdgeBeforeCreatorsUpdate() {
-            return this.isEdgeBrowser() && adguard.prefs.edgeVersion.build < this.EDGE_CREATORS_UPDATE;
+            return this.isEdgeBrowser() && prefs.edgeVersion.build < this.EDGE_CREATORS_UPDATE;
         },
 
         /**
@@ -310,9 +278,9 @@
          */
         getExtensionParams() {
             const clientId = encodeURIComponent(this.getClientId());
-            const locale = encodeURIComponent(adguard.app.getLocale());
-            const version = encodeURIComponent(adguard.app.getVersion());
-            const id = encodeURIComponent(adguard.app.getId());
+            const locale = encodeURIComponent(backgroundPage.app.getLocale());
+            const version = encodeURIComponent(backgroundPage.app.getVersion());
+            const id = encodeURIComponent(backgroundPage.app.getId());
             const params = [];
             params.push(`v=${version}`);
             params.push(`cid=${clientId}`);
@@ -361,5 +329,5 @@
         }),
     };
 
-    api.browser = Utils;
-})(adguard, adguard.utils);
+    return browserUtils;
+})();

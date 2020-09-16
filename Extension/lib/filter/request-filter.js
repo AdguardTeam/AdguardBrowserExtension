@@ -15,11 +15,17 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global TSUrlFilter */
+import * as TSUrlFilter from '@adguard/tsurlfilter';
+import { engine } from './engine';
+import { utils } from '../utils/common';
+import { RequestTypes } from '../utils/request-types';
+import { filteringLog } from './filtering-log';
+import { localScriptRulesService } from './rules/local-script-rules';
+import { cssService } from './services/css-service';
+import { webRequestService } from './request-blocking';
+import { browserUtils } from '../utils/browser-utils';
 
-(function (adguard) {
-    'use strict';
-
+export const RequestFilter = (() => {
     /**
      * Simple request cache
      * @param requestCacheMaxSize Max cache size
@@ -102,7 +108,7 @@
         requestCacheMaxSize: 1000,
 
         getRulesCount() {
-            return adguard.engine.getRulesCount();
+            return engine.getRulesCount();
         },
 
         /**
@@ -125,9 +131,9 @@
          * @returns {*} CSS and ExtCss data for the webpage
          */
         getSelectorsForUrl(url, options) {
-            const domain = adguard.utils.url.getHost(url);
+            const domain = utils.url.getHost(url);
 
-            const cosmeticResult = adguard.engine.getCosmeticResult(domain, options);
+            const cosmeticResult = engine.getCosmeticResult(domain, options);
 
             const elemhideCss = [...cosmeticResult.elementHiding.generic, ...cosmeticResult.elementHiding.specific];
             const injectCss = [...cosmeticResult.CSS.generic, ...cosmeticResult.CSS.specific];
@@ -141,17 +147,17 @@
                 ...cosmeticResult.CSS.specificExtCss,
             ];
 
-            const collectingCosmeticRulesHits = adguard.webRequestService.isCollectingCosmeticRulesHits();
+            const collectingCosmeticRulesHits = webRequestService.isCollectingCosmeticRulesHits();
             if (collectingCosmeticRulesHits) {
                 return {
-                    css: adguard.cssService.buildStyleSheetHits(elemhideCss, injectCss),
-                    extendedCss: adguard.cssService.buildStyleSheetHits(elemhideExtendedCss, injectExtendedCss),
+                    css: cssService.buildStyleSheetHits(elemhideCss, injectCss),
+                    extendedCss: cssService.buildStyleSheetHits(elemhideExtendedCss, injectExtendedCss),
                 };
             }
 
             return {
-                css: adguard.cssService.buildStyleSheet(elemhideCss, injectCss, true),
-                extendedCss: adguard.cssService.buildStyleSheet(elemhideExtendedCss, injectExtendedCss, false),
+                css: cssService.buildStyleSheet(elemhideCss, injectCss, true),
+                extendedCss: cssService.buildStyleSheet(elemhideExtendedCss, injectExtendedCss, false),
             };
         },
 
@@ -163,8 +169,8 @@
          * @returns {{scriptSource: string, rule: string}[]} Javascript for the specified URL
          */
         getScriptsForUrl(url) {
-            const domain = adguard.utils.url.getHost(url);
-            const cosmeticResult = adguard.engine.getCosmeticResult(
+            const domain = utils.url.getHost(url);
+            const cosmeticResult = engine.getCosmeticResult(
                 domain, TSUrlFilter.CosmeticOption.CosmeticOptionJS
             );
 
@@ -181,14 +187,14 @@
          * @returns {string} Script to be applied
          */
         getScriptsStringForUrl(url, tab) {
-            const debug = adguard.filteringLog && adguard.filteringLog.isOpen();
+            const debug = filteringLog && filteringLog.isOpen();
             const scriptRules = this.getScriptsForUrl(url);
 
-            const isFirefox = adguard.utils.browser.isFirefoxBrowser();
-            const isOpera = adguard.utils.browser.isOperaBrowser();
+            const isFirefox = browserUtils.isFirefoxBrowser();
+            const isOpera = browserUtils.isOperaBrowser();
 
             const selectedScriptRules = scriptRules.filter((scriptRule) => {
-                const isLocal = adguard.LocalScriptRulesService.isLocal(scriptRule.getText());
+                const isLocal = localScriptRulesService.isLocal(scriptRule.getText());
 
                 if (isLocal) {
                     return true;
@@ -199,7 +205,8 @@
                      * Note (!) (Firefox, Opera):
                      * In case of Firefox and Opera add-ons,
                      * JS filtering rules are hardcoded into add-on code.
-                     * Look at LocalScriptRulesService.isLocal to learn more.
+                     * Look at localScriptRulesService.isLocal to learn more.
+                     * Commented instructions would be preprocessed during compilation by webpack
                      */
                     /* @if remoteScripts == false */
                     if (!isFirefox && !isOpera) {
@@ -219,10 +226,10 @@
 
             if (debug) {
                 scriptRules.forEach((scriptRule) => {
-                    adguard.filteringLog.addScriptInjectionEvent(
+                    filteringLog.addScriptInjectionEvent(
                         tab,
                         url,
-                        adguard.RequestTypes.DOCUMENT,
+                        RequestTypes.DOCUMENT,
                         scriptRule
                     );
                 });
@@ -250,11 +257,11 @@
          * @return {null}
          */
         getMatchingResult(requestUrl, referrer, requestType) {
-            const refHost = adguard.utils.url.getHost(referrer);
+            const refHost = utils.url.getHost(referrer);
 
             let result = this.matchingResultsCache.searchRequestCache(requestUrl, refHost, requestType);
             if (!result) {
-                result = adguard.engine.createMatchingResult(requestUrl, referrer, requestType);
+                result = engine.createMatchingResult(requestUrl, referrer, requestType);
 
                 if (!result) {
                     return new TSUrlFilter.MatchingResult([], []);
@@ -317,9 +324,9 @@
          * @returns Collection of content rules
          */
         getContentRulesForUrl(documentUrl) {
-            const hostname = adguard.utils.url.getHost(documentUrl);
+            const hostname = utils.url.getHost(documentUrl);
             // eslint-disable-next-line max-len
-            const cosmeticResult = adguard.engine.getCosmeticResult(hostname, TSUrlFilter.CosmeticOption.CosmeticOptionHtml);
+            const cosmeticResult = engine.getCosmeticResult(hostname, TSUrlFilter.CosmeticOption.CosmeticOptionHtml);
 
             return cosmeticResult.Html.getRules();
         },
@@ -364,5 +371,5 @@
         },
     };
 
-    adguard.RequestFilter = RequestFilter;
-})(adguard);
+    return RequestFilter;
+})();

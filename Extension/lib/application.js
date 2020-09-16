@@ -1,21 +1,42 @@
 /**
+ * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
+ *
+ * Adguard Browser Extension is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Adguard Browser Extension is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import { antiBannerService } from './filter/antibanner';
+import { prefs } from './prefs';
+import { log } from './utils/log';
+import { utils } from './utils/common';
+import { subscriptions } from './filter/filters/subscription';
+import { filtersUpdate } from './filter/filters/filters-update';
+import { listeners } from './notifier';
+
+/**
  * AdGuard application class
  */
-adguard.application = (function (adguard) {
-    'use strict';
-
+export const application = (() => {
     /**
-     * TImeout for recently updated filters and again enabled filters - 5 minutes
+     * Timeout for recently updated filters and again enabled filters - 5 minutes
      */
     const ENABLED_FILTERS_SKIP_TIMEOUT = 5 * 60 * 1000;
 
-    const { antiBannerService } = adguard;
-
-    const start = function (options, callback) {
+    const start = (options, callback) => {
         antiBannerService.start(options, callback);
     };
 
-    const stop = function (callback) {
+    const stop = callback => {
         antiBannerService.stop();
         callback();
     };
@@ -24,9 +45,7 @@ adguard.application = (function (adguard) {
      * Checks application has been initialized
      * @returns {boolean}
      */
-    const isInitialized = function () {
-        return antiBannerService.isInitialized();
-    };
+    const isInitialized = () => antiBannerService.isInitialized();
 
     /**
      * Offer filters on extension install, select default filters and filters by locale and country
@@ -35,13 +54,13 @@ adguard.application = (function (adguard) {
     const offerFilters = (callback) => {
         // These filters are enabled by default
         const filterIds = [
-            adguard.utils.filters.ENGLISH_FILTER_ID,
-            adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID,
+            utils.filters.ENGLISH_FILTER_ID,
+            utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID,
         ];
-        if (adguard.prefs.mobile) {
-            filterIds.push(adguard.utils.filters.MOBILE_ADS_FILTER_ID);
+        if (prefs.mobile) {
+            filterIds.push(utils.filters.MOBILE_ADS_FILTER_ID);
         }
-        filterIds.concat(adguard.subscriptions.getLangSuitableFilters());
+        filterIds.concat(subscriptions.getLangSuitableFilters());
         callback(filterIds);
     };
 
@@ -51,12 +70,12 @@ adguard.application = (function (adguard) {
      *
      * @returns {Array} List of enabled filters
      */
-    const getEnabledFilters = () => adguard.subscriptions.getFilters()
+    const getEnabledFilters = () => subscriptions.getFilters()
         .filter(f => f.installed && f.enabled);
 
     const getEnabledFiltersFromEnabledGroups = () => {
-        const filters = adguard.subscriptions.getFilters();
-        const enabledGroupsIds = adguard.subscriptions.getGroups()
+        const filters = subscriptions.getFilters();
+        const enabledGroupsIds = subscriptions.getGroups()
             .filter(g => g.enabled)
             .map(g => g.groupId);
         return filters.filter(f => f.enabled && enabledGroupsIds.includes(f.groupId));
@@ -69,7 +88,7 @@ adguard.application = (function (adguard) {
      * @returns {*} true if enabled
      */
     const isFilterEnabled = function (filterId) {
-        const filter = adguard.subscriptions.getFilter(filterId);
+        const filter = subscriptions.getFilter(filterId);
         return filter && filter.enabled;
     };
 
@@ -80,7 +99,7 @@ adguard.application = (function (adguard) {
      * @returns {*} true if installed
      */
     const isFilterInstalled = function (filterId) {
-        const filter = adguard.subscriptions.getFilter(filterId);
+        const filter = subscriptions.getFilter(filterId);
         return filter && filter.installed;
     };
 
@@ -99,7 +118,7 @@ adguard.application = (function (adguard) {
                 : true));
 
             if (outdatedFilters.length > 0) {
-                adguard.filtersUpdate.checkAntiBannerFiltersUpdate(
+                filtersUpdate.checkAntiBannerFiltersUpdate(
                     true,
                     successCallback,
                     errorCallback,
@@ -107,7 +126,7 @@ adguard.application = (function (adguard) {
                 );
             }
         } else {
-            adguard.filtersUpdate.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback);
+            filtersUpdate.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback);
         }
     };
 
@@ -116,12 +135,12 @@ adguard.application = (function (adguard) {
      * @param {number} groupId filter group identifier
      */
     const enableGroup = function (groupId) {
-        const group = adguard.subscriptions.getGroup(groupId);
+        const group = subscriptions.getGroup(groupId);
         if (!group || group.enabled) {
             return;
         }
         group.enabled = true;
-        adguard.listeners.notifyListeners(adguard.listeners.FILTER_GROUP_ENABLE_DISABLE, group);
+        listeners.notifyListeners(listeners.FILTER_GROUP_ENABLE_DISABLE, group);
     };
 
     /**
@@ -129,12 +148,12 @@ adguard.application = (function (adguard) {
      * @param {number} groupId filter group identifier
      */
     const disableGroup = function (groupId) {
-        const group = adguard.subscriptions.getGroup(groupId);
+        const group = subscriptions.getGroup(groupId);
         if (!group || !group.enabled) {
             return;
         }
         group.enabled = false;
-        adguard.listeners.notifyListeners(adguard.listeners.FILTER_GROUP_ENABLE_DISABLE, group);
+        listeners.notifyListeners(listeners.FILTER_GROUP_ENABLE_DISABLE, group);
     };
 
     /**
@@ -145,7 +164,7 @@ adguard.application = (function (adguard) {
      * @returns {boolean} true if filter was enabled successfully
      */
     const enableFilter = (filterId, options) => {
-        const filter = adguard.subscriptions.getFilter(filterId);
+        const filter = subscriptions.getFilter(filterId);
         if (!filter || filter.enabled || !filter.installed) {
             return false;
         }
@@ -155,10 +174,10 @@ adguard.application = (function (adguard) {
          */
         const { groupId } = filter;
         const forceGroupEnable = options && options.forceGroupEnable;
-        if (!adguard.subscriptions.groupHasEnabledStatus(groupId) || forceGroupEnable) {
+        if (!subscriptions.groupHasEnabledStatus(groupId) || forceGroupEnable) {
             enableGroup(groupId);
         }
-        adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
+        listeners.notifyListeners(listeners.FILTER_ENABLE_DISABLE, filter);
         return true;
     };
 
@@ -178,7 +197,7 @@ adguard.application = (function (adguard) {
             return;
         }
 
-        filterIds = adguard.utils.collections.removeDuplicates(filterIds.slice(0));
+        filterIds = utils.collections.removeDuplicates(filterIds.slice(0));
         const loadNextFilter = () => {
             if (filterIds.length === 0) {
                 callback(enabledFilters);
@@ -188,7 +207,7 @@ adguard.application = (function (adguard) {
                     if (success) {
                         const changed = enableFilter(filterId, options);
                         if (changed) {
-                            const filter = adguard.subscriptions.getFilter(filterId);
+                            const filter = subscriptions.getFilter(filterId);
                             enabledFilters.push(filter);
                         }
                     }
@@ -208,15 +227,15 @@ adguard.application = (function (adguard) {
      */
     const disableFilters = function (filterIds) {
         // Copy array to prevent parameter mutation
-        filterIds = adguard.utils.collections.removeDuplicates(filterIds.slice(0));
+        filterIds = utils.collections.removeDuplicates(filterIds.slice(0));
         for (let i = 0; i < filterIds.length; i += 1) {
             const filterId = filterIds[i];
-            const filter = adguard.subscriptions.getFilter(filterId);
+            const filter = subscriptions.getFilter(filterId);
             if (!filter || !filter.enabled || !filter.installed) {
                 continue;
             }
             filter.enabled = false;
-            adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
+            listeners.notifyListeners(listeners.FILTER_ENABLE_DISABLE, filter);
         }
     };
 
@@ -228,21 +247,21 @@ adguard.application = (function (adguard) {
      */
     const uninstallFilters = function (filterIds) {
         // Copy array to prevent parameter mutation
-        filterIds = adguard.utils.collections.removeDuplicates(filterIds.slice(0));
+        filterIds = utils.collections.removeDuplicates(filterIds.slice(0));
 
         for (let i = 0; i < filterIds.length; i += 1) {
             const filterId = filterIds[i];
-            const filter = adguard.subscriptions.getFilter(filterId);
+            const filter = subscriptions.getFilter(filterId);
             if (!filter || !filter.installed) {
                 continue;
             }
 
-            adguard.console.debug('Uninstall filter {0}', filter.filterId);
+            log.debug('Uninstall filter {0}', filter.filterId);
 
             filter.enabled = false;
             filter.installed = false;
-            adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
-            adguard.listeners.notifyListeners(adguard.listeners.FILTER_ADD_REMOVE, filter);
+            listeners.notifyListeners(listeners.FILTER_ENABLE_DISABLE, filter);
+            listeners.notifyListeners(listeners.FILTER_ADD_REMOVE, filter);
         }
     };
 
@@ -252,23 +271,23 @@ adguard.application = (function (adguard) {
      * @param {Number} filterId Filter identifier
      */
     const removeFilter = function (filterId) {
-        const filter = adguard.subscriptions.getFilter(filterId);
+        const filter = subscriptions.getFilter(filterId);
         if (!filter || filter.removed) {
             return;
         }
 
         if (!filter.customUrl) {
-            adguard.console.error('Filter {0} is not custom and could not be removed', filter.filterId);
+            log.error('Filter {0} is not custom and could not be removed', filter.filterId);
             return;
         }
 
-        adguard.console.debug('Remove filter {0}', filter.filterId);
+        log.debug('Remove filter {0}', filter.filterId);
 
         filter.enabled = false;
         filter.installed = false;
         filter.removed = true;
-        adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
-        adguard.listeners.notifyListeners(adguard.listeners.FILTER_ADD_REMOVE, filter);
+        listeners.notifyListeners(listeners.FILTER_ENABLE_DISABLE, filter);
+        listeners.notifyListeners(listeners.FILTER_ADD_REMOVE, filter);
     };
 
     /**
@@ -282,18 +301,18 @@ adguard.application = (function (adguard) {
      * @param errorCallback
      */
     const loadCustomFilter = function (url, options, successCallback, errorCallback) {
-        adguard.console.info('Downloading custom filter from {0}', url);
+        log.info('Downloading custom filter from {0}', url);
 
         if (!url) {
             errorCallback();
             return;
         }
 
-        adguard.subscriptions.updateCustomFilter(url, options, (filterId) => {
+        subscriptions.updateCustomFilter(url, options, (filterId) => {
             if (filterId) {
-                adguard.console.info('Custom filter downloaded');
+                log.info('Custom filter downloaded');
 
-                const filter = adguard.subscriptions.getFilter(filterId);
+                const filter = subscriptions.getFilter(filterId);
                 // In case filter is loaded again and was removed before
                 delete filter.removed;
                 successCallback(filter);
@@ -304,16 +323,16 @@ adguard.application = (function (adguard) {
     };
 
     const loadCustomFilterInfo = (url, options, successCallback, errorCallback) => {
-        adguard.console.info(`Downloading custom filter info from ${url}`);
+        log.info(`Downloading custom filter info from ${url}`);
         if (!url) {
             errorCallback();
             return;
         }
 
-        adguard.subscriptions.getCustomFilterInfo(url, options, (result = {}) => {
+        subscriptions.getCustomFilterInfo(url, options, (result = {}) => {
             const { error, filter } = result;
             if (filter) {
-                adguard.console.info('Custom filter data downloaded');
+                log.info('Custom filter data downloaded');
                 successCallback(filter);
                 return;
             }
@@ -348,4 +367,4 @@ adguard.application = (function (adguard) {
         loadCustomFilterInfo,
         getEnabledFiltersFromEnabledGroups,
     };
-})(adguard);
+})();

@@ -15,12 +15,12 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global chrome */
+import { browser } from '../browser';
 
 /**
  * Web accessible resources helper
  */
-(function (adguard, browser) {
+export const resources = (function () {
     /**
      * Resources directory
      *
@@ -97,8 +97,8 @@
     };
 
     // EXPOSE
-    adguard.utils.resources = {
+    return {
         loadResource,
         createRedirectFileUrl,
     };
-})(adguard, window.browser || chrome);
+})();

@@ -15,19 +15,27 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* eslint-disable max-len */
+
+import { backgroundPage } from '../api/background-page';
+import { localStorage } from '../storage';
+import { utils } from '../utils/common';
+import { subscriptions } from './filters/subscription';
+import { prefs } from '../prefs';
+import { log } from '../utils/log';
+import { lazyGet, lazyGetClear } from '../utils/lazy';
+
 /**
  * Global stats
  */
-adguard.pageStats = (function (adguard) {
-    'use strict';
-
+export const pageStats = (function () {
     const MAX_HOURS_HISTORY = 24;
     const MAX_DAYS_HISTORY = 30;
     const MAX_MONTHS_HISTORY = 3;
 
     const TOTAL_GROUP = {
         groupId: 'total',
-        groupName: adguard.i18n ? adguard.i18n.getMessage('popup_statistics_total') : 'Total',
+        groupName: backgroundPage.i18n ? backgroundPage.i18n.getMessage('popup_statistics_total') : 'Total',
     };
 
     const pageStatisticProperty = 'page-statistic';
@@ -40,27 +48,27 @@ adguard.pageStats = (function (adguard) {
          * @private
          */
         get stats() {
-            return adguard.lazyGet(pageStatsHolder, 'stats', () => {
+            return lazyGet(pageStatsHolder, 'stats', () => {
                 let stats;
                 try {
-                    const json = adguard.localStorage.getItem(pageStatisticProperty);
+                    const json = localStorage.getItem(pageStatisticProperty);
                     if (json) {
                         stats = JSON.parse(json);
                     }
                 } catch (ex) {
-                    adguard.console.error('Error retrieve page statistic from storage, cause {0}', ex);
+                    log.error('Error retrieve page statistic from storage, cause {0}', ex);
                 }
                 return stats || Object.create(null);
             });
         },
 
-        save: adguard.utils.concurrent.throttle(function () {
-            adguard.localStorage.setItem(pageStatisticProperty, JSON.stringify(this.stats));
-        }, adguard.prefs.statsSaveInterval),
+        save: utils.concurrent.throttle(function () {
+            localStorage.setItem(pageStatisticProperty, JSON.stringify(this.stats));
+        }, prefs.statsSaveInterval),
 
-        clear: function () {
-            adguard.localStorage.removeItem(pageStatisticProperty);
-            adguard.lazyGetClear(pageStatsHolder, 'stats');
+        clear() {
+            localStorage.removeItem(pageStatisticProperty);
+            lazyGetClear(pageStatsHolder, 'stats');
         },
     };
 
@@ -70,7 +78,7 @@ adguard.pageStats = (function (adguard) {
      * @returns {Number} Count of blocked requests
      */
     const getTotalBlocked = function () {
-        const stats = pageStatsHolder.stats;
+        const { stats } = pageStatsHolder;
         if (!stats) {
             return 0;
         }
@@ -83,7 +91,7 @@ adguard.pageStats = (function (adguard) {
      * @param blocked Count of blocked requests
      */
     const updateTotalBlocked = function (blocked) {
-        const stats = pageStatsHolder.stats;
+        const { stats } = pageStatsHolder;
         stats.totalBlocked = (stats.totalBlocked || 0) + blocked;
         pageStatsHolder.save();
     };
@@ -116,12 +124,12 @@ adguard.pageStats = (function (adguard) {
             return blockedGroup;
         }
 
-        const filter = adguard.subscriptions.getFilter(filterId);
+        const filter = subscriptions.getFilter(filterId);
         if (!filter) {
             return undefined;
         }
 
-        const group = adguard.subscriptions.getGroup(filter.groupId);
+        const group = subscriptions.getGroup(filter.groupId);
         if (!group) {
             return undefined;
         }
@@ -171,22 +179,22 @@ adguard.pageStats = (function (adguard) {
         return result;
     };
 
-    var updateStatsDataItem = function (type, blocked, current) {
+    const updateStatsDataItem = function (type, blocked, current) {
         current[type] = (current[type] || 0) + blocked;
         current[TOTAL_GROUP.groupId] = (current[TOTAL_GROUP.groupId] || 0) + blocked;
 
         return current;
     };
 
-    var updateStatsData = function (now, type, blocked, current) {
+    const updateStatsData = function (now, type, blocked, current) {
         const currentDate = new Date(current.updated);
 
         const result = current;
 
-        if (adguard.utils.dates.isSameHour(now, currentDate) && result.hours.length > 0) {
+        if (utils.dates.isSameHour(now, currentDate) && result.hours.length > 0) {
             result.hours[result.hours.length - 1] = updateStatsDataItem(type, blocked, result.hours[result.hours.length - 1]);
         } else {
-            let diffHours = adguard.utils.dates.getDifferenceInHours(now, currentDate);
+            let diffHours = utils.dates.getDifferenceInHours(now, currentDate);
 
             while (diffHours >= 2) {
                 result.hours.push(createStatsDataItem(null, 0));
@@ -199,10 +207,10 @@ adguard.pageStats = (function (adguard) {
             }
         }
 
-        if (adguard.utils.dates.isSameDay(now, currentDate) && result.days.length > 0) {
+        if (utils.dates.isSameDay(now, currentDate) && result.days.length > 0) {
             result.days[result.days.length - 1] = updateStatsDataItem(type, blocked, result.days[result.days.length - 1]);
         } else {
-            let diffDays = adguard.utils.dates.getDifferenceInDays(now, currentDate);
+            let diffDays = utils.dates.getDifferenceInDays(now, currentDate);
 
             while (diffDays >= 2) {
                 result.days.push(createStatsDataItem(null, 0));
@@ -215,10 +223,10 @@ adguard.pageStats = (function (adguard) {
             }
         }
 
-        if (adguard.utils.dates.isSameMonth(now, currentDate) && result.months.length > 0) {
+        if (utils.dates.isSameMonth(now, currentDate) && result.months.length > 0) {
             result.months[result.months.length - 1] = updateStatsDataItem(type, blocked, result.months[result.months.length - 1]);
         } else {
-            let diffMonths = adguard.utils.dates.getDifferenceInMonths(now, currentDate);
+            let diffMonths = utils.dates.getDifferenceInMonths(now, currentDate);
             while (diffMonths >= 2) {
                 result.months.push(createStatsDataItem(null, 0));
                 diffMonths -= 1;
@@ -262,7 +270,7 @@ adguard.pageStats = (function (adguard) {
         }
 
         const { groupId } = blockedGroup;
-        const stats = pageStatsHolder.stats;
+        const { stats } = pageStatsHolder;
 
         let updated;
 
@@ -277,7 +285,7 @@ adguard.pageStats = (function (adguard) {
     };
 
     const getBlockedGroups = () => {
-        const groups = adguard.subscriptions.getGroups()
+        const groups = subscriptions.getGroups()
             .map(group => {
                 return {
                     groupId: group.groupId,
@@ -296,7 +304,7 @@ adguard.pageStats = (function (adguard) {
      * @param {Date} [date] - used in the tests to provide time of stats object creation
      */
     const getStatisticsData = (date = new Date()) => {
-        let stats = pageStatsHolder.stats;
+        let { stats } = pageStatsHolder;
         if (!stats) {
             stats = {};
         }
@@ -318,10 +326,10 @@ adguard.pageStats = (function (adguard) {
     };
 
     return {
-        resetStats: resetStats,
-        updateTotalBlocked: updateTotalBlocked,
-        updateStats: updateStats,
-        getTotalBlocked: getTotalBlocked,
-        getStatisticsData: getStatisticsData,
+        resetStats,
+        updateTotalBlocked,
+        updateStats,
+        getTotalBlocked,
+        getStatisticsData,
     };
-})(adguard);
+})();

@@ -15,48 +15,59 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global adguard */
+import { log } from './utils/log';
+import { backgroundPage } from './api/background-page';
+import { rulesStorage, localStorage } from './storage';
+import { whitelist } from './filter/whitelist';
+import { filteringLog } from './filter/filtering-log';
+import { uiService } from './ui-service';
+import { application } from './application';
 
 /**
  * Extension initialize logic. Called from start.js
  */
-adguard.initialize = function () {
+export const startup = function () {
     function onLocalStorageLoaded() {
-        adguard.console.info('Starting adguard... Version: {0}. Id: {1}', adguard.app.getVersion(), adguard.app.getId());
+        log.info(
+            'Starting adguard... Version: {0}. Id: {1}',
+            backgroundPage.app.getVersion(),
+            backgroundPage.app.getId()
+        );
 
         // Initialize popup button
-        adguard.browserAction.setPopup({
-            popup: adguard.getURL('pages/popup.html'),
+        backgroundPage.browserAction.setPopup({
+            popup: backgroundPage.getURL('pages/popup.html'),
         });
 
         // Set uninstall page url
+        // eslint-disable-next-line max-len
         const uninstallUrl = 'https://adguard.com/forward.html?action=adguard_uninstal_ext&from=background&app=browser_extension';
-        adguard.runtime.setUninstallURL(uninstallUrl, () => {
-            if (adguard.runtime.lastError) {
-                adguard.console.error(adguard.runtime.lastError);
+        backgroundPage.runtime.setUninstallURL(uninstallUrl, () => {
+            if (backgroundPage.runtime.lastError) {
+                log.error(backgroundPage.runtime.lastError);
                 return;
             }
-            adguard.console.info(`Uninstall url was set to: ${uninstallUrl}`);
+            log.info(`Uninstall url was set to: ${uninstallUrl}`);
         });
 
-        adguard.whitelist.init();
-        adguard.filteringLog.init();
-        adguard.ui.init();
+        whitelist.init();
+        filteringLog.init();
+        uiService.init();
 
         /**
          * Start application
          */
-        adguard.application.start({
+        application.start({
             onInstall(callback) {
                 // Process installation
                 /**
                  * Show UI installation page
                  */
-                adguard.ui.openFiltersDownloadPage();
+                uiService.openFiltersDownloadPage();
 
                 // Retrieve filters and install them
-                adguard.application.offerFilters((filterIds) => {
-                    adguard.application.addAndEnableFilters(filterIds, callback);
+                application.offerFilters((filterIds) => {
+                    application.addAndEnableFilters(filterIds, callback);
                 });
             },
         }, () => {
@@ -64,7 +75,7 @@ adguard.initialize = function () {
         });
     }
 
-    adguard.rulesStorage.init(() => {
-        adguard.localStorage.init(onLocalStorageLoaded);
+    rulesStorage.init(() => {
+        localStorage.init(onLocalStorageLoaded);
     });
 };
