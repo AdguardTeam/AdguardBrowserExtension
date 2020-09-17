@@ -40,92 +40,113 @@ const firefoxRulesStorageImpl = (function (initialAPI) {
     /**
      * Gets value from the database by key
      */
-    function getFromDatabase(key, callback) {
-        const transaction = database.transaction(STORAGE_NAME);
-        const table = transaction.objectStore(STORAGE_NAME);
+    function getFromDatabase(key) {
+        return new Promise((resolve, reject) => {
+            const transaction = database.transaction(STORAGE_NAME);
+            const table = transaction.objectStore(STORAGE_NAME);
 
-        const request = table.get(key);
-        request.onsuccess = callback;
-        request.onerror = callback;
+            const request = table.get(key);
+
+            const eventHandler = (event) => {
+                const request = event.target;
+                if (request.error) {
+                    reject(request.error);
+                    return;
+                }
+                let lines = [];
+                const { result } = request;
+                if (result && result.value) {
+                    lines = result.value.split(/[\r\n]+/);
+                }
+                resolve(lines);
+            };
+
+            request.onsuccess = eventHandler;
+            request.onerror = eventHandler;
+        });
     }
 
     /**
      * Puts key and value to the database
      */
-    function putToDatabase(key, value, callback) {
-        const transaction = database.transaction(STORAGE_NAME, 'readwrite');
-        const table = transaction.objectStore(STORAGE_NAME);
+    function putToDatabase(key, value) {
+        return new Promise((resolve, reject) => {
+            const transaction = database.transaction(STORAGE_NAME, 'readwrite');
+            const table = transaction.objectStore(STORAGE_NAME);
 
-        const request = table.put({
-            key,
-            value: value.join('\n'),
+            const request = table.put({
+                key,
+                value: value.join('\n'),
+            });
+
+            const eventHandler = (event) => {
+                const request = event.target;
+                if (request.error) {
+                    reject(request.error);
+                } else {
+                    resolve();
+                }
+            };
+
+            request.onsuccess = eventHandler;
+            request.onerror = eventHandler;
         });
-        request.onsuccess = callback;
-        request.onerror = callback;
     }
 
     /**
      * Deletes value from the database
      */
-    function deleteFromDatabase(key, callback) {
-        const transaction = database.transaction(STORAGE_NAME, 'readwrite');
-        const table = transaction.objectStore(STORAGE_NAME);
+    function deleteFromDatabase(key) {
+        return new Promise((resolve, reject) => {
+            const transaction = database.transaction(STORAGE_NAME, 'readwrite');
+            const table = transaction.objectStore(STORAGE_NAME);
 
-        const request = table.delete(key);
-        request.onsuccess = callback;
-        request.onerror = callback;
+            const request = table.delete(key);
+
+            const eventHandler = (event) => {
+                const request = event.target;
+                if (request.error) {
+                    reject(request.error);
+                } else {
+                    resolve();
+                }
+            };
+
+            request.onsuccess = eventHandler;
+            request.onerror = eventHandler;
+        });
     }
 
     /**
      * Read rules
      * @param path Path to rules
-     * @param callback
      */
-    const read = function (path, callback) {
-        return getFromDatabase(path, (event) => {
-            const request = event.target;
-            if (request.error) {
-                callback(request.error);
-                return;
-            }
-            let lines = [];
-            const { result } = request;
-            if (result && result.value) {
-                lines = result.value.split(/[\r\n]+/);
-            }
-            callback(null, lines);
-        });
+    const read = async (path) => {
+        const result = await getFromDatabase(path);
+        return result;
     };
 
     /**
      * Writes rules
      * @param path Path to rules
      * @param data Data to write (Array)
-     * @param callback
      */
-    const write = function (path, data, callback) {
-        putToDatabase(path, data, (event) => {
-            const request = event.target;
-            callback(request.error);
-        });
+    const write = async (path, data) => {
+        await putToDatabase(path, data);
     };
 
     /**
      * Removes rules
      * @param path Path to rules
-     * @param callback
      */
-    const remove = function (path, callback) {
-        deleteFromDatabase(path, callback || (() => {
-        }));
+    const remove = async (path) => {
+        await deleteFromDatabase(path);
     };
 
     /**
      * We can detect whether IndexedDB was initialized or not only in an async way
-     *
-     * @param callback
      */
-    const init = function (callback) {
+    const init = () => new Promise((resolve) => {
         // Failed in private browsing mode.
         const request = indexedDB.open(STORAGE_NAME, 1);
 
@@ -140,15 +161,15 @@ const firefoxRulesStorageImpl = (function (initialAPI) {
         request.onsuccess = function (ev) {
             database = ev.target.result;
             database.onerror = database.onabort = onError;
-            callback(api);
+            resolve(api);
         };
 
         request.onerror = request.onblocked = function () {
             onError(this.error);
             // Fallback to the browser.storage API
-            callback(initialAPI);
+            resolve(initialAPI);
         };
-    };
+    });
 
     var api = {
         read,
@@ -164,7 +185,7 @@ const firefoxRulesStorageImpl = (function (initialAPI) {
     };
 
     return api;
-})(chromeRulesStorageImpl || {});
+})(chromeRulesStorageImpl);
 
 
 export default firefoxRulesStorageImpl;
