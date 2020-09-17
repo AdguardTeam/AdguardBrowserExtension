@@ -9,7 +9,11 @@
  *      or from this DEFAULT_SCRIPT_RULES object
  */
 import { promises as fs } from 'fs';
-import { FILTERS_DEST, LAST_ADGUARD_FILTER_ID, LOCAL_SCRIPT_RULES_COMMENT } from '../constants';
+import {
+    ADGUARD_FILTERS_IDS,
+    FILTERS_DEST,
+    LOCAL_SCRIPT_RULES_COMMENT,
+} from '../constants';
 
 /**
  * @param arr - array with elements [{domains: '', script: ''}, ...]
@@ -35,9 +39,10 @@ const updateLocalScriptRulesForBrowser = async (browser) => {
         rules: [],
     };
 
-    for (let i = 1; i <= LAST_ADGUARD_FILTER_ID; i += 1) {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const filterId of ADGUARD_FILTERS_IDS) {
         // eslint-disable-next-line no-await-in-loop
-        const filters = (await fs.readFile(`${folder}/filter_${i}.txt`)).toString();
+        const filters = (await fs.readFile(`${folder}/filter_${filterId}.txt`)).toString();
         const lines = filters.split('\n');
 
         lines.forEach((line) => {
