@@ -4,7 +4,7 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import path from 'path';
 
-import { BUILD_PATH } from '../constants';
+import { BUILD_PATH, ENVS } from '../constants';
 import { getEnvConf, updateLocalesMSGName } from '../helpers';
 import { getModuleReplacements } from './module-replacements';
 
@@ -25,7 +25,7 @@ const OUTPUT_PATH = config.outputPath;
 export const genCommonConfig = (browserConfig) => {
     return {
         mode: config.mode,
-        devtool: false,
+        devtool: process.env.BUILD_ENV === ENVS.DEV ? 'cheap-module-eval-source-map' : false,
         entry: {
             'pages/background': BACKGROUND_PATH,
             'pages/options': OPTIONS_PATH,

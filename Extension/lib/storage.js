@@ -43,9 +43,10 @@ export const localStorage = (function (impl) {
         return impl.hasItem(key);
     };
 
-    const init = function (callback) {
+    const init = async function (callback) {
         if (typeof impl.init === 'function') {
-            impl.init(callback);
+            await impl.init();
+            callback();
         } else {
             callback();
         }

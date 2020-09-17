@@ -27,11 +27,16 @@ export const updateManifest = (env, targetPart, addedPart) => {
     const target = JSON.parse(targetPart.toString());
     const union = merge(target, addedPart);
 
+    const devPolicy = env === ENVS.DEV
+        ? { content_security_policy: "script-src 'self' 'unsafe-eval'; object-src 'self'" }
+        : {};
+
     delete union.version;
 
     const result = {
         version: packageJson.version,
         ...union,
+        ...devPolicy,
     };
 
     return Buffer.from(JSON.stringify(result, null, 4));
