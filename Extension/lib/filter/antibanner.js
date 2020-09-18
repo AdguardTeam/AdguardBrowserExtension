@@ -145,11 +145,11 @@ export const antiBannerService = (() => {
         /**
          * Init extension common info.
          */
-        applicationUpdateService.getRunInfo(async (runInfo) => {
-            // Load subscription from the storage
+        (async () => {
+            const runInfo = await applicationUpdateService.getRunInfo();
             await subscriptions.init();
             onSubscriptionLoaded(runInfo);
-        });
+        })();
     }
 
     /**

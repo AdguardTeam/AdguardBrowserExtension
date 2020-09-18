@@ -16,7 +16,6 @@
  */
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
-import { utils } from './utils/common';
 import { backgroundPage } from './api/background-page';
 import { log } from './utils/log';
 import { browserUtils } from './utils/browser-utils';
@@ -32,127 +31,20 @@ import { settings } from './settings/user-settings';
  */
 export const applicationUpdateService = (function () {
     /**
-     * File storage adapter
-     * @Deprecated Used now only to upgrade from versions older than v2.3.5
-     */
-    const FileStorage = {
-
-        LINE_BREAK: '\n',
-        FILE_PATH: 'filters.ini',
-
-        readFromFile(path, callback) {
-            const successCallback = function (fs, fileEntry) {
-                fileEntry.file((file) => {
-                    const reader = new FileReader();
-                    reader.onloadend = function () {
-                        if (reader.error) {
-                            callback(reader.error);
-                        } else {
-                            let lines = [];
-                            if (reader.result) {
-                                lines = reader.result.split(/[\r\n]+/);
-                            }
-                            callback(null, lines);
-                        }
-                    };
-
-                    reader.onerror = function (e) {
-                        callback(e);
-                    };
-
-                    reader.readAsText(file);
-                }, callback);
-            };
-
-            this._getFile(path, true, successCallback, callback);
-        },
-
-        _getFile(path, create, successCallback, errorCallback) {
-            path = path.replace(/^.*[\/\\]/, '');
-
-            const requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
-            requestFileSystem(window.PERSISTENT, 1024 * 1024 * 1024, (fs) => {
-                fs.root.getFile(path, { create }, (fileEntry) => {
-                    successCallback(fs, fileEntry);
-                }, errorCallback);
-            }, errorCallback);
-        },
-
-        removeFile(path, successCallback, errorCallback) {
-            this._getFile(path, false, (fs, fileEntry) => {
-                fileEntry.remove(successCallback, errorCallback);
-            }, errorCallback);
-        },
-    };
-
-    /**
-     * Helper to execute deferred objects
+     * Helper to execute promises one by one
      *
      * @param methods Methods to execute
-     * @returns {Deferred}
      * @private
      */
-    function executeMethods(methods) {
-        const mainDfd = new utils.Promise();
-
-        var executeNextMethod = function () {
-            if (methods.length === 0) {
-                mainDfd.resolve();
-            } else {
-                const method = methods.shift();
-                const dfd = method();
-                dfd.then(executeNextMethod);
-            }
-        };
-
-        executeNextMethod();
-
-        return mainDfd;
-    }
-
-    /**
-     * Updates filters storage - move from files to the storage API.
-     *
-     * Version 2.3.5
-     * @returns {Promise}
-     * @private
-     */
-    function onUpdateChromiumStorage() {
-        log.info('Call update to version 2.3.5');
-
-        const dfd = new utils.Promise();
-
-        const filterId = utils.filters.USER_FILTER_ID;
-        const filePath = `filterrules_${filterId}.txt`;
-
-        FileStorage.readFromFile(filePath, async (e, rules) => {
-            if (e) {
-                log.error('Error while reading rules from file {0} cause: {1}', filePath, e);
-                return;
-            }
-
-            if (rules) {
-                log.info(`Found rules:${rules.length}`);
-            }
-
-            await rulesStorage.write(filterId, rules);
-
-            log.info('Rules have been transferred to local storage for filter {0}', filterId);
-
-            FileStorage.removeFile(filePath, () => {
-                log.info('File removed for filter {0}', filterId);
-            }, () => {
-                log.error('File remove error for filter {0}', filterId);
-            });
-        });
-
-        dfd.resolve();
-        return dfd;
+    async function executeMethods(methods) {
+        // eslint-disable-next-line no-restricted-syntax
+        for (const method of methods) {
+            // eslint-disable-next-line no-await-in-loop
+            await method();
+        }
     }
 
     function handleUndefinedGroupStatuses() {
-        const dfd = new utils.Promise();
-
         const filters = subscriptions.getFilters();
 
         const filtersStateInfo = filtersState.getFiltersState();
@@ -162,7 +54,7 @@ export const applicationUpdateService = (function () {
             return !!(filtersStateInfo[filterId] && filtersStateInfo[filterId].enabled);
         });
 
-        const groupState = filtersStateInfo.getGroupsState();
+        const groupState = filtersState.getGroupsState();
 
         enabledFilters.forEach((filter) => {
             const { groupId } = filter;
@@ -170,14 +62,9 @@ export const applicationUpdateService = (function () {
                 application.enableGroup(filter.groupId);
             }
         });
-
-        dfd.resolve();
-
-        return dfd;
     }
 
     function handleDefaultUpdatePeriodSetting() {
-        const dfd = new utils.Promise();
         const previousDefaultValue = 48 * 60 * 60 * 1000;
 
         const currentUpdatePeriod = settings.getFiltersUpdatePeriod();
@@ -185,18 +72,12 @@ export const applicationUpdateService = (function () {
         if (currentUpdatePeriod === previousDefaultValue) {
             settings.setFiltersUpdatePeriod(settings.DEFAULT_FILTERS_UPDATE_PERIOD);
         }
-
-        dfd.resolve();
-
-        return dfd;
     }
 
     /**
      * From that version we store already converted rule texts in storage
      */
-    function onUpdateRuleConverter() {
-        const dfd = new utils.Promise();
-
+    async function onUpdateRuleConverter() {
         const filtersStateInfo = filtersState.getFiltersState();
         const installedFiltersIds = Object.keys(filtersStateInfo)
             .map(filterId => Number.parseInt(filterId, 10));
@@ -214,20 +95,14 @@ export const applicationUpdateService = (function () {
             await rulesStorage.write(filterId, converted);
         });
 
-        Promise.all(reloadRulesPromises).then(() => {
-            dfd.resolve();
-        });
-
-        return dfd;
+        await Promise.all(reloadRulesPromises);
     }
 
     /**
      * Function removes obsolete filters from the storage
      * @returns {Promise<any>}
      */
-    function handleObsoleteFiltersRemoval() {
-        const dfd = new utils.Promise();
-
+    async function handleObsoleteFiltersRemoval() {
         const filtersStateInfo = filtersState.getFiltersState();
         const allFiltersMetadata = subscriptions.getFilters();
 
@@ -249,20 +124,15 @@ export const applicationUpdateService = (function () {
             log.info(`Filter with id: ${filterId} removed from the storage`);
         });
 
-        Promise.all(removePromises).then(() => {
-            dfd.resolve();
-        });
-
-        return dfd;
+        await Promise.all(removePromises);
     }
 
     /**
      * Async returns extension run info
      *
-     * @param callback Run info callback with passed object
      * {{isFirstRun: boolean, isUpdate: (boolean|*), currentVersion: (Prefs.version|*), prevVersion: *}}
      */
-    const getRunInfo = function (callback) {
+    const getRunInfo = function () {
         const prevVersion = browserUtils.getAppVersion();
         const currentVersion = backgroundPage.app.getVersion();
         browserUtils.setAppVersion(currentVersion);
@@ -270,7 +140,7 @@ export const applicationUpdateService = (function () {
         const isFirstRun = (currentVersion !== prevVersion && !prevVersion);
         const isUpdate = !!(currentVersion !== prevVersion && prevVersion);
 
-        callback({
+        return ({
             isFirstRun,
             isUpdate,
             currentVersion,
@@ -283,12 +153,9 @@ export const applicationUpdateService = (function () {
      * @param runInfo   Run info
      * @param callback  Called after update was handled
      */
-    const onUpdate = function (runInfo, callback) {
+    const onUpdate = async function (runInfo, callback) {
         const methods = [];
-        if (browserUtils.isGreaterVersion('2.3.5', runInfo.prevVersion)
-            && browserUtils.isChromium()) {
-            methods.push(onUpdateChromiumStorage);
-        }
+
         if (browserUtils.isGreaterVersion('3.0.3', runInfo.prevVersion)) {
             methods.push(handleUndefinedGroupStatuses);
         }
@@ -302,8 +169,8 @@ export const applicationUpdateService = (function () {
         // On every update remove if necessary obsolete filters
         methods.push(handleObsoleteFiltersRemoval);
 
-        const dfd = executeMethods(methods);
-        dfd.then(callback);
+        await executeMethods(methods);
+        callback();
     };
 
     return {
