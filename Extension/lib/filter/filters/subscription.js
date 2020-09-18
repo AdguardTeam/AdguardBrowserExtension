@@ -427,124 +427,53 @@ export const subscriptions = (() => {
      * @param options
      * @param callback
      */
-    const updateCustomFilter = function (url, options, callback) {
+    const updateCustomFilter = async function (url, options, callback) {
         const { title, trusted } = options;
-        backend.loadFilterRulesBySubscriptionUrl(url, (rules) => {
-            const filterId = addFilterId();
-            const parsedData = parseFilterDataFromHeader(rules);
-            let { timeUpdated } = parsedData;
-            const {
-                description,
-                homepage,
-                version,
-                expires,
-            } = parsedData;
-
-            const name = title;
-
-            timeUpdated = timeUpdated || new Date().toISOString();
-            const groupId = CUSTOM_FILTERS_GROUP_ID;
-            const subscriptionUrl = url;
-            const languages = [];
-            const displayNumber = 0;
-            const tags = [0];
-
-            let checksum;
-            if (!version) {
-                checksum = getChecksum(rules);
-            }
-
-            // Check if filter from this url was added before
-            let filter = filters.find(f => f.customUrl === url);
-
-            let updateFilter = true;
-            if (filter) {
-                if (!didFilterUpdate(version, checksum, filter)) {
-                    callback();
-                    updateCustomFilterInfo(filter, { lastCheckTime: Date.now() });
-                    return;
-                }
-            } else {
-                filter = new SubscriptionFilter({
-                    filterId,
-                    groupId,
-                    name,
-                    description,
-                    homepage,
-                    version,
-                    timeUpdated,
-                    displayNumber,
-                    languages,
-                    expires,
-                    subscriptionUrl,
-                    tags,
-                    customUrl: url,
-                    checksum,
-                    trusted,
-                });
-
-                filter.loaded = true;
-                filters.push(filter);
-                filtersMap[filter.filterId] = filter;
-
-                // Save filter in separate storage
-                saveCustomFilterInStorage(filter);
-                updateFilter = false;
-            }
-
-            if (updateFilter) {
-                updateCustomFilterInfo(filter, {
-                    version,
-                    checksum,
-                    timeUpdated,
-                    expires,
-                });
-            }
-
-            updateCustomFilterInfo(filter, { lastCheckTime: Date.now() });
-
-            listeners.notifyListeners(listeners.SUCCESS_DOWNLOAD_FILTER, filter);
-            listeners.notifyListeners(listeners.UPDATE_FILTER_RULES, filter, rules);
-
-            callback(filter.filterId);
-        }, (cause) => {
-            log.error(`Error download filter by url ${url}, cause: ${cause || ''}`);
+        let rules;
+        try {
+            rules = await backend.loadFilterRulesBySubscriptionUrl(url);
+        } catch (e) {
+            log.error(`Error download filter by url ${url}, cause: ${e || ''}`);
             callback();
-        });
-    };
+        }
 
-    const getCustomFilterInfo = (url, options, callback) => {
-        const { title } = options;
+        const filterId = addFilterId();
+        const parsedData = parseFilterDataFromHeader(rules);
+        let { timeUpdated } = parsedData;
+        const {
+            description,
+            homepage,
+            version,
+            expires,
+        } = parsedData;
 
-        backend.loadFilterRulesBySubscriptionUrl(url, (rules) => {
-            const parsedData = parseFilterDataFromHeader(rules);
-            let { name, timeUpdated } = parsedData;
-            const {
-                description,
-                homepage,
-                version,
-                expires,
-            } = parsedData;
+        const name = title;
 
-            name = name || title;
-            timeUpdated = timeUpdated || new Date().toISOString();
+        timeUpdated = timeUpdated || new Date().toISOString();
+        const groupId = CUSTOM_FILTERS_GROUP_ID;
+        const subscriptionUrl = url;
+        const languages = [];
+        const displayNumber = 0;
+        const tags = [0];
 
-            const groupId = CUSTOM_FILTERS_GROUP_ID;
-            const subscriptionUrl = url;
-            const languages = [];
-            const displayNumber = 0;
-            const tags = [0];
-            const rulesCount = rules.filter(rule => rule.trim().indexOf('!') !== 0).length;
+        let checksum;
+        if (!version) {
+            checksum = getChecksum(rules);
+        }
 
-            // Check if filter from this url was added before
-            let filter = filters.find(f => f.customUrl === url);
+        // Check if filter from this url was added before
+        let filter = filters.find(f => f.customUrl === url);
 
-            if (filter) {
-                callback({ error: backgroundPage.i18n.getMessage('options_antibanner_custom_filter_already_exists') });
+        let updateFilter = true;
+        if (filter) {
+            if (!didFilterUpdate(version, checksum, filter)) {
+                callback();
+                updateCustomFilterInfo(filter, { lastCheckTime: Date.now() });
                 return;
             }
-
+        } else {
             filter = new SubscriptionFilter({
+                filterId,
                 groupId,
                 name,
                 description,
@@ -556,18 +485,95 @@ export const subscriptions = (() => {
                 expires,
                 subscriptionUrl,
                 tags,
+                customUrl: url,
+                checksum,
+                trusted,
             });
 
             filter.loaded = true;
-            // custom filters have special fields
-            filter.customUrl = url;
-            filter.rulesCount = rulesCount;
+            filters.push(filter);
+            filtersMap[filter.filterId] = filter;
 
-            callback({ filter });
-        }, (cause) => {
-            log.error(`Error download filter by url ${url}, cause: ${cause || ''}`);
+            // Save filter in separate storage
+            saveCustomFilterInStorage(filter);
+            updateFilter = false;
+        }
+
+        if (updateFilter) {
+            updateCustomFilterInfo(filter, {
+                version,
+                checksum,
+                timeUpdated,
+                expires,
+            });
+        }
+
+        updateCustomFilterInfo(filter, { lastCheckTime: Date.now() });
+
+        listeners.notifyListeners(listeners.SUCCESS_DOWNLOAD_FILTER, filter);
+        listeners.notifyListeners(listeners.UPDATE_FILTER_RULES, filter, rules);
+
+        callback(filter.filterId);
+    };
+
+    const getCustomFilterInfo = async (url, options, callback) => {
+        const { title } = options;
+
+        let rules;
+        try {
+            rules = await backend.loadFilterRulesBySubscriptionUrl(url);
+        } catch (e) {
+            log.error(`Error download filter by url ${url}, cause: ${e || ''}`);
             callback();
+        }
+
+        const parsedData = parseFilterDataFromHeader(rules);
+        let { name, timeUpdated } = parsedData;
+        const {
+            description,
+            homepage,
+            version,
+            expires,
+        } = parsedData;
+
+        name = name || title;
+        timeUpdated = timeUpdated || new Date().toISOString();
+
+        const groupId = CUSTOM_FILTERS_GROUP_ID;
+        const subscriptionUrl = url;
+        const languages = [];
+        const displayNumber = 0;
+        const tags = [0];
+        const rulesCount = rules.filter(rule => rule.trim().indexOf('!') !== 0).length;
+
+        // Check if filter from this url was added before
+        let filter = filters.find(f => f.customUrl === url);
+
+        if (filter) {
+            callback({ error: backgroundPage.i18n.getMessage('options_antibanner_custom_filter_already_exists') });
+            return;
+        }
+
+        filter = new SubscriptionFilter({
+            groupId,
+            name,
+            description,
+            homepage,
+            version,
+            timeUpdated,
+            displayNumber,
+            languages,
+            expires,
+            subscriptionUrl,
+            tags,
         });
+
+        filter.loaded = true;
+        // custom filters have special fields
+        filter.customUrl = url;
+        filter.rulesCount = rulesCount;
+
+        callback({ filter });
     };
 
     /**
@@ -601,7 +607,7 @@ export const subscriptions = (() => {
         const customFiltersGroup = new SubscriptionGroup(
             CUSTOM_FILTERS_GROUP_ID,
             backgroundPage.i18n.getMessage('options_antibanner_custom_group'),
-            CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER
+            CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER,
         );
         groups.push(customFiltersGroup);
         groupsMap[customFiltersGroup.groupId] = customFiltersGroup;

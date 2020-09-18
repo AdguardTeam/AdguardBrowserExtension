@@ -133,36 +133,39 @@ export const backend = (function () {
      * Executes async request
      * @param url Url
      * @param contentType Content type
-     * @param successCallback success callback
-     * @param errorCallback error callback
      */
-    function executeRequestAsync(url, contentType, successCallback, errorCallback) {
-        const request = new XMLHttpRequest();
-        try {
-            request.open('GET', url);
-            request.setRequestHeader('Content-type', contentType);
-            request.setRequestHeader('Pragma', 'no-cache');
-            request.overrideMimeType(contentType);
-            request.mozBackgroundRequest = true;
-            if (successCallback) {
+    function executeRequestAsync(url, contentType) {
+        return new Promise((resolve, reject) => {
+            const request = new XMLHttpRequest();
+            try {
+                request.open('GET', url);
+                request.setRequestHeader('Content-type', contentType);
+                request.setRequestHeader('Pragma', 'no-cache');
+                request.overrideMimeType(contentType);
+                request.mozBackgroundRequest = true;
                 request.onload = function () {
-                    successCallback(request);
+                    resolve(request);
                 };
-            }
-            if (errorCallback) {
-                const errorCallbackWrapper = function () {
-                    errorCallback(request);
+
+                const errorCallbackWrapper = (errorMessage) => {
+                    return (e) => {
+                        let errorText = errorMessage;
+                        if (e?.message) {
+                            errorText = `${errorText}: ${e?.message}`;
+                        }
+                        const error = new Error(`Error: "${errorText}", statusText: ${request.statusText}`);
+                        reject(error);
+                    };
                 };
-                request.onerror = errorCallbackWrapper;
-                request.onabort = errorCallbackWrapper;
-                request.ontimeout = errorCallbackWrapper;
+
+                request.onerror = errorCallbackWrapper('An error occurred');
+                request.onabort = errorCallbackWrapper('Request was aborted');
+                request.ontimeout = errorCallbackWrapper('Request stopped by timeout');
+                request.send(null);
+            } catch (ex) {
+                reject(ex);
             }
-            request.send(null);
-        } catch (ex) {
-            if (errorCallback) {
-                errorCallback(request, ex);
-            }
-        }
+        });
     }
 
     /**
@@ -202,36 +205,34 @@ export const backend = (function () {
      * Load metadata of the specified filters
      *
      * @param filterIds         Filters identifiers
-     * @param successCallback   Called on success
-     * @param errorCallback     Called on error
      */
-    const loadFiltersMetadata = (filterIds, successCallback, errorCallback) => {
+    const loadFiltersMetadata = async (filterIds) => {
         if (!filterIds || filterIds.length === 0) {
-            successCallback([]);
-            return;
+            return [];
         }
 
-        const success = (response) => {
-            if (response && response.responseText) {
-                const metadata = parseJson(response.responseText);
-                if (!metadata) {
-                    errorCallback(response, 'invalid response');
-                    return;
-                }
-                const filterMetadataList = [];
-                for (let i = 0; i < filterIds.length; i += 1) {
-                    const filter = utils.collections.find(metadata.filters, 'filterId', filterIds[i]);
-                    if (filter) {
-                        filterMetadataList.push(subscriptions.createSubscriptionFilterFromJSON(filter));
-                    }
-                }
-                successCallback(filterMetadataList);
-            } else {
-                errorCallback(response, 'empty response');
-            }
-        };
+        const response = await executeRequestAsync(settings.filtersMetadataUrl, 'application/json');
 
-        executeRequestAsync(settings.filtersMetadataUrl, 'application/json', success, errorCallback);
+        if (!response?.responseText) {
+            throw new Error(`Empty response: ${response}`);
+        }
+
+        const metadata = parseJson(response.responseText);
+
+        if (!metadata) {
+            throw new Error(`Invalid response: ${response}`);
+        }
+
+        const filterMetadataList = [];
+
+        for (let i = 0; i < filterIds.length; i += 1) {
+            const filter = utils.collections.find(metadata.filters, 'filterId', filterIds[i]);
+            if (filter) {
+                filterMetadataList.push(subscriptions.createSubscriptionFilterFromJSON(filter));
+            }
+        }
+
+        return filterMetadataList;
     };
 
     /**
@@ -258,20 +259,19 @@ export const backend = (function () {
     };
 
     /**
-     * Downloads filter rules frm url
+     * Downloads filter rules by url
      *
-     * @param url               Subscription url
-     * @param successCallback   Called on success
-     * @param errorCallback     Called on error
+     * @param url - Subscription url
      */
-    const loadFilterRulesBySubscriptionUrl = function (url, successCallback, errorCallback) {
+    const loadFilterRulesBySubscriptionUrl = async (url) => {
         if (url in loadingSubscriptions) {
             return;
         }
 
         loadingSubscriptions[url] = true;
 
-        const success = function (lines) {
+        try {
+            const lines = await FiltersDownloader.download(url, FilterCompilerConditionsConstants);
             delete loadingSubscriptions[url];
 
             if (lines[0].indexOf('[') === 0) {
@@ -279,106 +279,108 @@ export const backend = (function () {
                 lines.shift();
             }
 
-            successCallback(lines);
-        };
-
-        const error = function (cause) {
+            return lines;
+        } catch (e) {
             delete loadingSubscriptions[url];
-            const message = cause instanceof Error ? cause.message : cause;
-            errorCallback(message);
-        };
-
-        FiltersDownloader.download(url, FilterCompilerConditionsConstants).then(success, error);
+            const message = e instanceof Error ? e.message : e;
+            throw new Error(message);
+        }
     };
 
     const createError = (message, url, response) => {
-        const errorMessage = `
-        error:                    ${message}
-        requested url:            ${url}
-        request status text:      ${response.statusText}`;
+        let errorMessage = `
+            error:                    ${message}
+            requested url:            ${url}`;
+
+        if (response) {
+            errorMessage = `
+            error:                    ${message}
+            requested url:            ${url}
+            request status text:      ${response.statusText}`;
+        }
+
         return new Error(errorMessage);
     };
 
     /**
      * Loads filter groups metadata
      */
-    const loadLocalFiltersMetadata = () => new Promise((resolve, reject) => {
+    const loadLocalFiltersMetadata = async () => {
         const url = backgroundPage.getURL(`${settings.localFiltersFolder}/filters.json`);
-        const success = function (response) {
-            if (response && response.responseText) {
-                const metadata = parseJson(response.responseText);
-                if (!metadata) {
-                    reject(createError('invalid response', url, response));
-                    return;
-                }
-                resolve(metadata);
-            } else {
-                reject(createError('empty response', url, response));
-            }
-        };
 
-        const error = (request, ex) => {
-            const exMessage = (ex && ex.message) || 'couldn\'t load local filters metadata';
-            reject(createError(exMessage, url, request));
-        };
+        let response;
 
-        executeRequestAsync(url, 'application/json', success, error);
-    });
+        try {
+            response = await executeRequestAsync(url, 'application/json');
+        } catch (e) {
+            const exMessage = e?.message || 'couldn\'t load local filters metadata';
+            throw createError(exMessage, url);
+        }
+
+        if (!response?.responseText) {
+            throw createError('empty response', url, response);
+        }
+
+        const metadata = parseJson(response.responseText);
+        if (!metadata) {
+            throw createError('invalid response', url, response);
+        }
+
+        return metadata;
+    };
 
     /**
      * Loads filter groups metadata from local file
      * @returns {Promise}
      */
-    const loadLocalFiltersI18Metadata = () => new Promise((resolve, reject) => {
+    const loadLocalFiltersI18Metadata = async () => {
         const url = backgroundPage.getURL(`${settings.localFiltersFolder}/filters_i18n.json`);
-        const success = function (response) {
-            if (response && response.responseText) {
-                const metadata = parseJson(response.responseText);
-                if (!metadata) {
-                    reject(createError('invalid response', url, response));
-                    return;
-                }
-                resolve(metadata);
-            } else {
-                reject(createError('empty response', url, response));
-            }
-        };
 
-        const error = (request, ex) => {
-            const exMessage = (ex && ex.message) || 'couldn\'t load local filters i18n metadata';
-            reject(createError(exMessage, url, request));
-        };
+        let response;
+        try {
+            response = await executeRequestAsync(url, 'application/json');
+        } catch (e) {
+            const exMessage = e?.message || 'couldn\'t load local filters i18n metadata';
+            throw createError(exMessage, url);
+        }
 
-        executeRequestAsync(url, 'application/json', success, error);
-    });
+        if (!response?.responseText) {
+            throw createError('empty response', url, response);
+        }
+
+        const metadata = parseJson(response.responseText);
+        if (!metadata) {
+            throw createError('invalid response', url, response);
+        }
+        return metadata;
+    };
 
     /**
      * Loads script rules from local file
      * @returns {Promise}
      */
-    const loadLocalScriptRules = () => new Promise((resolve, reject) => {
+    const loadLocalScriptRules = async () => {
         const url = backgroundPage.getURL(`${settings.localFiltersFolder}/local_script_rules.json`);
 
-        const success = (response) => {
-            if (response && response.responseText) {
-                const metadata = parseJson(response.responseText);
-                if (!metadata) {
-                    reject(createError('invalid response', url, response));
-                    return;
-                }
-                resolve(metadata);
-            } else {
-                reject(createError('empty response', url, response));
-            }
-        };
+        let response;
+        try {
+            response = await executeRequestAsync(url, 'application/json');
+        } catch (e) {
+            const exMessage = e?.message || 'couldn\'t load local script rules';
+            throw createError(exMessage, url);
+        }
 
-        const error = (request, ex) => {
-            const exMessage = (ex && ex.message) || 'couldn\'t load local script rules';
-            reject(createError(exMessage, url, request));
-        };
+        if (!response?.responseText) {
+            throw createError('empty response', url, response);
+        }
 
-        executeRequestAsync(url, 'application/json', success, error);
-    });
+        const metadata = parseJson(response.responseText);
+        if (!metadata) {
+            throw createError('invalid response', url, response);
+        }
+
+        return metadata;
+    };
 
     // TODO check necessity of this module,
     //  as we already have redirect sources in the webaccessible-resources folder
@@ -386,35 +388,34 @@ export const backend = (function () {
      * Loads redirect sources from local file
      * @returns {Promise}
      */
-    const loadRedirectSources = () => new Promise((resolve, reject) => {
+    const loadRedirectSources = async () => {
         const url = `${backgroundPage.getURL(settings.redirectSourcesFolder)}/redirects.yml`;
 
-        const success = (response) => {
-            if (response && response.responseText) {
-                resolve(response.responseText);
-            } else {
-                reject(createError('empty response', url, response));
-            }
-        };
+        let response;
 
-        const error = (request, ex) => {
-            const exMessage = (ex && ex.message) || 'couldn\'t load redirect sources';
-            reject(createError(exMessage, url, request));
-        };
+        try {
+            response = await executeRequestAsync(url, 'application/x-yaml');
+        } catch (e) {
+            const exMessage = e?.message || 'couldn\'t load redirect sources';
+            throw createError(exMessage, url);
+        }
 
-        executeRequestAsync(url, 'application/x-yaml', success, error);
-    });
+        if (!response?.responseText) {
+            throw createError('empty response', url, response);
+        }
+
+        return response.responseText;
+    };
 
     /**
      * Checks specified host hashes with our safebrowsing service
      *
      * @param hashes                Host hashes
-     * @param successCallback       Called on success
-     * @param errorCallback         Called on error
      */
-    const lookupSafebrowsing = function (hashes, successCallback, errorCallback) {
+    const lookupSafebrowsing = async function (hashes) {
         const url = `${settings.safebrowsingLookupUrl}?prefixes=${encodeURIComponent(hashes.join('/'))}`;
-        executeRequestAsync(url, 'application/json', successCallback, errorCallback);
+        const response = await executeRequestAsync(url, 'application/json');
+        return response;
     };
 
     /**
@@ -463,30 +464,6 @@ export const backend = (function () {
         request.open('POST', settings.ruleStatsUrl);
         request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         request.send(params);
-    };
-
-    /**
-     * Allows to receive response headers from the request to the given URL
-     * @param url URL
-     * @param callback Callback with headers or null in the case of error
-     */
-    const getResponseHeaders = function (url, callback) {
-        executeRequestAsync(url, 'text/plain', (request) => {
-            const arr = request.getAllResponseHeaders().trim().split(/[\r\n]+/);
-            const headers = arr.map((line) => {
-                const parts = line.split(': ');
-                const header = parts.shift();
-                const value = parts.join(': ');
-                return {
-                    name: header,
-                    value,
-                };
-            });
-            callback(headers);
-        }, (request) => {
-            log.error('Error retrieved response from {0}, cause: {1}', url, request.statusText);
-            callback(null);
-        });
     };
 
     /**
@@ -559,8 +536,6 @@ export const backend = (function () {
 
         sendUrlReport,
         sendHitStats,
-
-        getResponseHeaders,
 
         configure,
     };

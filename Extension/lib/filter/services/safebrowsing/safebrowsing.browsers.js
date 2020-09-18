@@ -223,7 +223,7 @@ const safebrowsing = (function () {
      * @param requestUrl        Request URL
      * @param lookupUrlCallback Called on successful check
      */
-    const lookupUrlWithCallback = function (requestUrl, lookupUrlCallback) {
+    const lookupUrlWithCallback = async function (requestUrl, lookupUrlCallback) {
         const host = utils.url.getHost(requestUrl);
         if (!host) {
             return;
@@ -263,31 +263,34 @@ const safebrowsing = (function () {
             safebrowsingCache.cache.saveValue(createHash(host), SB_WHITE_LIST);
             lookupUrlCallback(createResponse(SB_WHITE_LIST));
         } else {
-            backend.lookupSafebrowsing(shortHashes, (response) => {
-                if (response.status >= 500) {
-                    // Error on server side, suspend request
-                    // eslint-disable-next-line max-len
-                    log.error('Error response status {0} received from safebrowsing lookup server.', response.status);
-                    suspendSafebrowsing();
-                    return;
-                }
-                resumeSafebrowsing();
-
-                shortHashes.forEach((x) => {
-                    safebrowsingRequestsCache.set(x, true);
-                });
-
-                let sbList = SB_WHITE_LIST;
-                if (response.status !== 204) {
-                    sbList = processSbResponse(response.responseText, hashesMap) || SB_WHITE_LIST;
-                }
-
-                safebrowsingCache.cache.saveValue(createHash(host), sbList);
-                lookupUrlCallback(createResponse(sbList));
-            }, () => {
+            let response;
+            try {
+                response = await backend.lookupSafebrowsing(shortHashes);
+            } catch (e) {
                 log.error('Error response from safebrowsing lookup server for {0}', host);
                 suspendSafebrowsing();
+            }
+
+            if (response.status >= 500) {
+                // Error on server side, suspend request
+                // eslint-disable-next-line max-len
+                log.error('Error response status {0} received from safebrowsing lookup server.', response.status);
+                suspendSafebrowsing();
+                return;
+            }
+            resumeSafebrowsing();
+
+            shortHashes.forEach((x) => {
+                safebrowsingRequestsCache.set(x, true);
             });
+
+            let sbList = SB_WHITE_LIST;
+            if (response.status !== 204) {
+                sbList = processSbResponse(response.responseText, hashesMap) || SB_WHITE_LIST;
+            }
+
+            safebrowsingCache.cache.saveValue(createHash(host), sbList);
+            lookupUrlCallback(createResponse(sbList));
         }
     };
 
