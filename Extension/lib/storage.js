@@ -22,30 +22,30 @@ import { rulesStorageImpl } from './rules-storage';
 /**
  * This class manages local storage
  */
-export const localStorage = (function (impl) {
+export const localStorage = (function (localStorageImpl) {
     const getItem = function (key) {
-        return impl.getItem(key);
+        return localStorageImpl.getItem(key);
     };
 
     const setItem = function (key, value) {
         try {
-            impl.setItem(key, value);
+            localStorageImpl.setItem(key, value);
         } catch (ex) {
             log.error(`Error while saving item ${key} to the localStorage: ${ex}`);
         }
     };
 
     const removeItem = function (key) {
-        impl.removeItem(key);
+        localStorageImpl.removeItem(key);
     };
 
     const hasItem = function (key) {
-        return impl.hasItem(key);
+        return localStorageImpl.hasItem(key);
     };
 
     const init = async function (callback) {
-        if (typeof impl.init === 'function') {
-            await impl.init();
+        if (typeof localStorageImpl.init === 'function') {
+            await localStorageImpl.init();
             callback();
         } else {
             callback();
@@ -54,8 +54,8 @@ export const localStorage = (function (impl) {
 
     const isInitialized = function () {
         // WebExtension storage has async initialization
-        if (typeof impl.isInitialized === 'function') {
-            return impl.isInitialized();
+        if (typeof localStorageImpl.isInitialized === 'function') {
+            return localStorageImpl.isInitialized();
         }
         return true;
     };
@@ -73,7 +73,7 @@ export const localStorage = (function (impl) {
 /**
  * This class manages storage for filters.
  */
-export const rulesStorage = (impl => {
+export const rulesStorage = (rulesStorageImpl => {
     function getFilePath(filterId) {
         return `filterrules_${filterId}.txt`;
     }
@@ -84,14 +84,15 @@ export const rulesStorage = (impl => {
      * @param filterId  Filter identifier
      * @param callback  Called when file content has been loaded
      */
-    const read = function (filterId, callback) {
+    const read = async (filterId, callback) => {
         const filePath = getFilePath(filterId);
-        impl.read(filePath, (e, rules) => {
-            if (e) {
-                log.error(`Error while reading rules from file ${filePath} cause: ${e}`);
-            }
-            callback(rules);
-        });
+        let rules;
+        try {
+            rules = await rulesStorageImpl.read(filePath);
+        } catch (e) {
+            log.error(`Error while reading rules from file ${filePath} cause: ${e}`);
+        }
+        callback(rules);
     };
 
     /**
@@ -101,14 +102,16 @@ export const rulesStorage = (impl => {
      * @param filterRules   Filter rules
      * @param callback      Called when save operation is finished
      */
-    const write = function (filterId, filterRules, callback) {
+    const write = async (filterId, filterRules, callback) => {
         const filePath = getFilePath(filterId);
-        impl.write(filePath, filterRules, (e) => {
-            if (e) {
-                log.error(`Error writing filters to file ${filePath}. Cause: ${e}`);
-            }
-            callback();
-        });
+
+        try {
+            await rulesStorageImpl.write(filePath, filterRules);
+        } catch (e) {
+            log.error(`Error writing filters to file ${filePath}. Cause: ${e}`);
+        }
+
+        callback();
     };
 
     /**
@@ -116,14 +119,14 @@ export const rulesStorage = (impl => {
      * @param filterId
      * @param callback
      */
-    const remove = (filterId, callback) => {
+    const remove = async (filterId, callback) => {
         const filePath = getFilePath(filterId);
-        impl.remove(filePath, (e) => {
-            if (e) {
-                log.error(`Error removing filter ${filePath}. Cause: ${e}`);
-            }
-            callback();
-        });
+        try {
+            await rulesStorageImpl.remove(filePath);
+        } catch (e) {
+            log.error(`Error removing filter ${filePath}. Cause: ${e}`);
+        }
+        callback();
     };
 
     /**
@@ -133,15 +136,15 @@ export const rulesStorage = (impl => {
      *
      * @param callback
      */
-    const init = function (callback) {
-        if (typeof impl.init === 'function') {
-            impl.init((api) => {
-                impl = api;
-                callback();
-            });
-        } else {
+    const init = async (callback) => {
+        if (typeof rulesStorageImpl.init === 'function') {
+            const api = await rulesStorageImpl.init();
+            rulesStorageImpl = api;
             callback();
+            return;
         }
+
+        callback();
     };
 
     return {

@@ -15,60 +15,29 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { browser } from '../browser';
+import browser from 'webextension-polyfill';
 
 /**
  * Filter rules storage implementation
  */
-const chromeRulesStorageImpl = (function () {
-    /**
-     * Checks runtime.lastError and calls "callback" if so.
-     *
-     * @returns {boolean} true if operation caused error
-     */
-    const checkLastError = function (callback) {
-        if (browser.runtime.lastError) {
-            callback(browser.runtime.lastError);
-            return true;
+const chromeRulesStorageImpl = (() => {
+    const read = async (path) => {
+        const results = await browser.storage.local.get(path);
+        let lines = [];
+        if (results && results[path] instanceof Array) {
+            lines = results[path];
         }
-
-        return false;
+        return lines;
     };
 
-    const read = function (path, callback) {
-        try {
-            browser.storage.local.get(path, (results) => {
-                if (!checkLastError(callback)) {
-                    let lines = [];
-
-                    if (results && results[path] instanceof Array) {
-                        lines = results[path];
-                    }
-
-                    callback(null, lines);
-                }
-            });
-        } catch (ex) {
-            callback(ex);
-        }
-    };
-
-    const write = function (path, data, callback) {
+    const write = async (path, data) => {
         const item = {};
         item[path] = data;
-        try {
-            browser.storage.local.set(item, () => {
-                if (!checkLastError(callback)) {
-                    callback();
-                }
-            });
-        } catch (ex) {
-            callback(ex);
-        }
+        await browser.storage.local.set(item);
     };
 
-    const remove = function (path, successCallback) {
-        browser.storage.local.remove(path, successCallback);
+    const remove = async (path) => {
+        await browser.storage.local.remove(path);
     };
 
     return {

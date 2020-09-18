@@ -22,8 +22,7 @@ import { log } from './utils/log';
 import { browserUtils } from './utils/browser-utils';
 import { filtersState } from './filter/filters/filters-state';
 import { subscriptions } from './filter/filters/subscription';
-import { rulesStorageImpl } from './rules-storage';
-import { localStorage, rulesStorage } from './storage';
+import { rulesStorage } from './storage';
 import { application } from './application';
 import { settings } from './settings/user-settings';
 
@@ -150,100 +149,6 @@ export const applicationUpdateService = (function () {
         });
 
         dfd.resolve();
-        return dfd;
-    }
-
-    /**
-     * Migrates from the storage.local to the indexedDB
-     * Version > 2.7.3
-     */
-    function onUpdateFirefoxWebExtRulesStorage() {
-        const dfd = new utils.Promise();
-
-        function writeFilterRules(keys, items) {
-            if (keys.length === 0) {
-                dfd.resolve();
-            } else {
-                const key = keys.shift();
-                const lines = items[key] || [];
-                const linesLength = lines.length;
-                rulesStorageImpl.write(key, lines, () => {
-                    log.info('Adguard filter "{0}" has been migrated. Rules: {1}', key, linesLength);
-                    browser.storage.local.remove(key);
-                    writeFilterRules(keys, items);
-                });
-            }
-        }
-
-        function migrate() {
-            log.info('Call update to use indexedDB instead of storage.local for Firefox browser');
-
-            browser.storage.local.get(null, (items) => {
-                const keys = [];
-                for (const key in items) {
-                    if (items.hasOwnProperty(key) && key.indexOf('filterrules_') === 0) {
-                        keys.push(key);
-                    }
-                }
-
-                writeFilterRules(keys, items);
-            });
-        }
-
-        if (rulesStorageImpl.isIndexedDB) {
-            // Switch implementation to indexedDB
-            migrate();
-        } else {
-            // indexedDB initialization failed, doing nothing
-            dfd.resolve();
-        }
-
-        return dfd;
-    }
-
-    /**
-     * Edge supports unlimitedStorage since Creators update.
-     * Previously, we keep filter rules in localStorage, and now we have to migrate this rules to browser.storage.local
-     * See https://github.com/AdguardTeam/AdguardBrowserExtension/issues/566
-     */
-    function onUpdateEdgeRulesStorage() {
-        const dfd = new utils.Promise();
-
-        const fixProperty = `edge-storage-local-fix-build${browserUtils.EDGE_CREATORS_UPDATE}`;
-        if (localStorage.getItem(fixProperty)) {
-            dfd.resolve();
-            return dfd;
-        }
-
-        log.info('Call update to use storage.local for Edge browser');
-
-        const keys = [];
-        for (const key in localStorage) {
-            if (localStorage.hasOwnProperty(key) && key.indexOf('filterrules_') === 0) {
-                keys.push(key);
-            }
-        }
-
-        function writeFilterRules() {
-            if (keys.length === 0) {
-                localStorage.setItem(fixProperty, true);
-                dfd.resolve();
-            } else {
-                const key = keys.shift();
-                let lines = [];
-                const value = localStorage.getItem(key);
-                if (value) {
-                    lines = value.split(/[\r\n]+/);
-                }
-                rulesStorageImpl.write(key, lines, () => {
-                    localStorage.removeItem(key);
-                    writeFilterRules();
-                });
-            }
-        }
-
-        writeFilterRules();
-
         return dfd;
     }
 
@@ -392,13 +297,6 @@ export const applicationUpdateService = (function () {
         if (browserUtils.isGreaterVersion('2.3.5', runInfo.prevVersion)
             && browserUtils.isChromium()) {
             methods.push(onUpdateChromiumStorage);
-        }
-        if (browserUtils.isEdgeBrowser() && !browserUtils.isEdgeBeforeCreatorsUpdate()) {
-            methods.push(onUpdateEdgeRulesStorage);
-        }
-        if (browserUtils.isGreaterVersion('2.7.4', runInfo.prevVersion)
-            && browserUtils.isFirefoxBrowser() && typeof browser !== 'undefined') {
-            methods.push(onUpdateFirefoxWebExtRulesStorage);
         }
         if (browserUtils.isGreaterVersion('3.0.3', runInfo.prevVersion)) {
             methods.push(handleUndefinedGroupStatuses);
