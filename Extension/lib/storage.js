@@ -110,16 +110,14 @@ export const rulesStorage = (rulesStorageImpl => {
     /**
      * Removes filter from storage
      * @param filterId
-     * @param callback
      */
-    const remove = async (filterId, callback) => {
+    const remove = async (filterId) => {
         const filePath = getFilePath(filterId);
         try {
             await rulesStorageImpl.remove(filePath);
         } catch (e) {
             log.error(`Error removing filter ${filePath}. Cause: ${e}`);
         }
-        callback();
     };
 
     /**
