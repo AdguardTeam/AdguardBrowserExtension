@@ -68,11 +68,10 @@ export const userrules = (function () {
      * Loads user rules text from storage
      * @param callback Callback function
      */
-    const getUserRulesText = function (callback) {
-        rulesStorage.read(utils.filters.USER_FILTER_ID, (rulesText) => {
-            const content = (rulesText || []).join('\n');
-            callback(content);
-        });
+    const getUserRulesText = async function (callback) {
+        const rulesText = await rulesStorage.read(utils.filters.USER_FILTER_ID);
+        const content = (rulesText || []).join('\n');
+        callback(content);
     };
 
     const unWhiteListFrame = function (frameInfo) {

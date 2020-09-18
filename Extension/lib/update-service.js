@@ -125,27 +125,25 @@ export const applicationUpdateService = (function () {
         const filterId = utils.filters.USER_FILTER_ID;
         const filePath = `filterrules_${filterId}.txt`;
 
-        FileStorage.readFromFile(filePath, (e, rules) => {
+        FileStorage.readFromFile(filePath, async (e, rules) => {
             if (e) {
                 log.error('Error while reading rules from file {0} cause: {1}', filePath, e);
                 return;
             }
 
-            const onTransferCompleted = function () {
-                log.info('Rules have been transferred to local storage for filter {0}', filterId);
-
-                FileStorage.removeFile(filePath, () => {
-                    log.info('File removed for filter {0}', filterId);
-                }, () => {
-                    log.error('File remove error for filter {0}', filterId);
-                });
-            };
-
             if (rules) {
                 log.info(`Found rules:${rules.length}`);
             }
 
-            rulesStorage.write(filterId, rules, onTransferCompleted);
+            await rulesStorage.write(filterId, rules);
+
+            log.info('Rules have been transferred to local storage for filter {0}', filterId);
+
+            FileStorage.removeFile(filePath, () => {
+                log.info('File removed for filter {0}', filterId);
+            }, () => {
+                log.error('File remove error for filter {0}', filterId);
+            });
         });
 
         dfd.resolve();
@@ -203,22 +201,18 @@ export const applicationUpdateService = (function () {
         const installedFiltersIds = Object.keys(filtersStateInfo)
             .map(filterId => Number.parseInt(filterId, 10));
 
-        const reloadRulesPromises = installedFiltersIds.map(filterId => new Promise((resolve) => {
-            rulesStorage.read(filterId, (loadedRulesText) => {
-                if (!loadedRulesText) {
-                    loadedRulesText = [];
-                }
+        const reloadRulesPromises = installedFiltersIds.map(async (filterId) => {
+            let loadedRulesText = await rulesStorage.read(filterId);
+            if (!loadedRulesText) {
+                loadedRulesText = [];
+            }
 
-                // eslint-disable-next-line max-len
-                log.info('Reloading and converting {0} rules for filter {1}', loadedRulesText.length, filterId);
-                const converted = TSUrlFilter.RuleConverter.convertRules(loadedRulesText.join('\n')).split('\n');
+            log.info('Reloading and converting {0} rules for filter {1}', loadedRulesText.length, filterId);
+            const converted = TSUrlFilter.RuleConverter.convertRules(loadedRulesText.join('\n')).split('\n');
 
-                log.debug('Saving {0} rules to filter {1}', converted.length, filterId);
-                rulesStorage.write(filterId, converted, () => {
-                    resolve();
-                });
-            });
-        }));
+            log.debug('Saving {0} rules to filter {1}', converted.length, filterId);
+            await rulesStorage.write(filterId, converted);
+        });
 
         Promise.all(reloadRulesPromises).then(() => {
             dfd.resolve();
@@ -250,13 +244,10 @@ export const applicationUpdateService = (function () {
 
         filtersIdsToRemove.forEach(filterId => filtersState.removeFilter(filterId));
 
-        const removePromises = filtersIdsToRemove.map(filterId => new Promise((resolve) => {
-            rulesStorage.remove(filterId, () => {
-                log.info(`Filter with id: ${filterId} removed from the storage`);
-                resolve();
-            });
-            resolve();
-        }));
+        const removePromises = filtersIdsToRemove.map(async (filterId) => {
+            await rulesStorage.remove(filterId);
+            log.info(`Filter with id: ${filterId} removed from the storage`);
+        });
 
         Promise.all(removePromises).then(() => {
             dfd.resolve();
