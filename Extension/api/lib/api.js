@@ -196,7 +196,7 @@ export const adguardApi = (function () {
      * @param configuration Configuration object
      * @param callback Callback function
      */
-    const start = function (configuration, callback) {
+    const start = async function (configuration, callback) {
         validateConfiguration(configuration);
 
         callback = callback || noopFunc;
@@ -204,12 +204,11 @@ export const adguardApi = (function () {
         // Force apply all configuration fields
         configuration.force = true;
 
-        rulesStorage.init(() => {
-            localStorage.init(() => {
-                application.start({}, () => {
-                    configure(configuration, callback);
-                });
-            });
+        await rulesStorage.init();
+        await localStorage.init();
+
+        application.start({}, () => {
+            configure(configuration, callback);
         });
     };
 

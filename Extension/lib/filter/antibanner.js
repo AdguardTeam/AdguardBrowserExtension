@@ -145,11 +145,11 @@ export const antiBannerService = (() => {
         /**
          * Init extension common info.
          */
-        applicationUpdateService.getRunInfo(async (runInfo) => {
-            // Load subscription from the storage
+        (async () => {
+            const runInfo = await applicationUpdateService.getRunInfo();
             await subscriptions.init();
             onSubscriptionLoaded(runInfo);
-        });
+        })();
     }
 
     /**
@@ -453,14 +453,13 @@ export const antiBannerService = (() => {
          * @param rulesFilterMap Map for loading rules
          * @returns {*} Deferred object
          */
-        const loadFilterRulesFromStorage = (filterId, rulesFilterMap) => new Promise((resolve) => {
-            rulesStorage.read(filterId, (rulesText) => {
-                if (rulesText) {
-                    rulesFilterMap[filterId] = rulesText;
-                }
-                resolve();
-            });
-        });
+        const loadFilterRulesFromStorage = async (filterId, rulesFilterMap) => {
+            const rulesText = await rulesStorage.read(filterId);
+
+            if (rulesText) {
+                rulesFilterMap[filterId] = rulesText;
+            }
+        };
 
         /**
          * STEP 1: load all filters from the storage.
@@ -603,7 +602,9 @@ export const antiBannerService = (() => {
     function processSaveFilterRulesToStorageEvents(filterId, events) {
         const dfd = new utils.Promise();
 
-        rulesStorage.read(filterId, (loadedRulesText) => {
+        (async () => {
+            let loadedRulesText = await rulesStorage.read(filterId);
+
             for (let i = 0; i < events.length; i += 1) {
                 if (!loadedRulesText) {
                     loadedRulesText = [];
@@ -613,16 +614,18 @@ export const antiBannerService = (() => {
                 const eventType = event.event;
                 const eventRules = event.rules;
 
+                // eslint-disable-next-line default-case
                 switch (eventType) {
                     case listeners.ADD_RULES:
                         loadedRulesText = loadedRulesText.concat(eventRules);
                         log.debug('Add {0} rules to filter {1}', eventRules.length, filterId);
                         break;
-                    case listeners.REMOVE_RULE:
-                        var actionRule = eventRules[0];
+                    case listeners.REMOVE_RULE: {
+                        const actionRule = eventRules[0];
                         utils.collections.removeAll(loadedRulesText, actionRule);
                         log.debug('Remove {0} rule from filter {1}', actionRule, filterId);
                         break;
+                    }
                     case listeners.UPDATE_FILTER_RULES:
                         loadedRulesText = eventRules;
                         log.debug('Update filter {0} rules count to {1}', filterId, eventRules.length);
@@ -634,16 +637,17 @@ export const antiBannerService = (() => {
             const converted = TSUrlFilter.RuleConverter.convertRules(loadedRulesText.join('\n')).split('\n');
 
             log.debug('Saving {0} rules to filter {1}', converted.length, filterId);
-            rulesStorage.write(filterId, converted, () => {
-                dfd.resolve();
-                if (filterId === utils.filters.USER_FILTER_ID) {
-                    listeners.notifyListeners(
-                        listeners.UPDATE_USER_FILTER_RULES,
-                        getRequestFilterInfo()
-                    );
-                }
-            });
-        });
+
+            await rulesStorage.write(filterId, converted);
+            dfd.resolve();
+
+            if (filterId === utils.filters.USER_FILTER_ID) {
+                listeners.notifyListeners(
+                    listeners.UPDATE_USER_FILTER_RULES,
+                    getRequestFilterInfo()
+                );
+            }
+        })();
 
         return dfd;
     }

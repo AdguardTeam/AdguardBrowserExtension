@@ -43,12 +43,9 @@ export const localStorage = (function (localStorageImpl) {
         return localStorageImpl.hasItem(key);
     };
 
-    const init = async function (callback) {
+    const init = async function () {
         if (typeof localStorageImpl.init === 'function') {
             await localStorageImpl.init();
-            callback();
-        } else {
-            callback();
         }
     };
 
@@ -82,9 +79,8 @@ export const rulesStorage = (rulesStorageImpl => {
      * Loads filter from the storage
      *
      * @param filterId  Filter identifier
-     * @param callback  Called when file content has been loaded
      */
-    const read = async (filterId, callback) => {
+    const read = async (filterId) => {
         const filePath = getFilePath(filterId);
         let rules;
         try {
@@ -92,7 +88,7 @@ export const rulesStorage = (rulesStorageImpl => {
         } catch (e) {
             log.error(`Error while reading rules from file ${filePath} cause: ${e}`);
         }
-        callback(rules);
+        return rules;
     };
 
     /**
@@ -100,9 +96,8 @@ export const rulesStorage = (rulesStorageImpl => {
      *
      * @param filterId      Filter identifier
      * @param filterRules   Filter rules
-     * @param callback      Called when save operation is finished
      */
-    const write = async (filterId, filterRules, callback) => {
+    const write = async (filterId, filterRules) => {
         const filePath = getFilePath(filterId);
 
         try {
@@ -110,41 +105,31 @@ export const rulesStorage = (rulesStorageImpl => {
         } catch (e) {
             log.error(`Error writing filters to file ${filePath}. Cause: ${e}`);
         }
-
-        callback();
     };
 
     /**
      * Removes filter from storage
      * @param filterId
-     * @param callback
      */
-    const remove = async (filterId, callback) => {
+    const remove = async (filterId) => {
         const filePath = getFilePath(filterId);
         try {
             await rulesStorageImpl.remove(filePath);
         } catch (e) {
             log.error(`Error removing filter ${filePath}. Cause: ${e}`);
         }
-        callback();
     };
 
     /**
      * IndexedDB implementation of the rules storage requires async initialization.
      * Also in some cases IndexedDB isn't supported, so we have to replace implementation
      * with the browser.storage
-     *
-     * @param callback
      */
-    const init = async (callback) => {
+    const init = async () => {
         if (typeof rulesStorageImpl.init === 'function') {
             const api = await rulesStorageImpl.init();
             rulesStorageImpl = api;
-            callback();
-            return;
         }
-
-        callback();
     };
 
     return {

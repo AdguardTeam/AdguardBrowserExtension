@@ -26,7 +26,7 @@ import { application } from './application';
 /**
  * Extension initialize logic. Called from start.js
  */
-export const startup = function () {
+export const startup = async function () {
     function onLocalStorageLoaded() {
         log.info(
             'Starting adguard... Version: {0}. Id: {1}',
@@ -75,7 +75,7 @@ export const startup = function () {
         });
     }
 
-    rulesStorage.init(() => {
-        localStorage.init(onLocalStorageLoaded);
-    });
+    await rulesStorage.init();
+    await localStorage.init();
+    onLocalStorageLoaded();
 };
