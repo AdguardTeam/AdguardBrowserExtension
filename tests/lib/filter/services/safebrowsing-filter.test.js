@@ -30,12 +30,10 @@ describe('safebrowsing', () => {
     it('Test cache', (done) => {
         let counter = 0;
         // Mock backend request
-        jest.spyOn(backend, 'lookupSafebrowsing').mockImplementation((shortHashes, successCallback) => {
+        jest.spyOn(backend, 'lookupSafebrowsing').mockImplementation(() => {
             counter += 1;
 
-            successCallback({
-                status: 204,
-            });
+            return Promise.resolve({ status: 204 });
         });
 
         const testUrl = 'http://google.com';
@@ -57,11 +55,11 @@ describe('safebrowsing', () => {
         let hashesChecked = [];
 
         // Mock backend request
-        jest.spyOn(backend, 'lookupSafebrowsing').mockImplementation((shortHashes, successCallback) => {
+        jest.spyOn(backend, 'lookupSafebrowsing').mockImplementation((shortHashes) => {
             counter += 1;
             hashesChecked = shortHashes;
 
-            successCallback({
+            return Promise.resolve({
                 status: 204,
             });
         });

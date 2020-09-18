@@ -109,7 +109,7 @@ export const filtersUpdate = (() => {
      * @param callback Callback (called when load is finished)
      * @private
      */
-    const loadFiltersMetadataFromBackend = (filterIds, callback) => {
+    const loadFiltersMetadataFromBackend = async (filterIds, callback) => {
         if (filterIds.length === 0) {
             callback(true, []);
             return;
@@ -118,21 +118,27 @@ export const filtersUpdate = (() => {
         const loadSuccess = (filterMetadataList) => {
             log.debug(
                 'Retrieved response from server for {0} filters, result: {1} metadata',
-                filterIds.length, filterMetadataList.length
+                filterIds.length,
+                filterMetadataList.length,
             );
             callback(true, filterMetadataList);
         };
 
-        const loadError = (request, cause) => {
+        const loadError = (e) => {
             log.error(
-                'Error retrieved response from server for filters {0}, cause: {1} {2}',
-                filterIds, request.statusText,
-                cause || ''
+                'Error retrieved response from server for filters {0}, cause: {1}',
+                filterIds,
+                e.message,
             );
             callback(false);
         };
 
-        backend.loadFiltersMetadata(filterIds, loadSuccess, loadError);
+        try {
+            const filterMetadataList = await backend.loadFiltersMetadata(filterIds);
+            loadSuccess(filterMetadataList);
+        } catch (e) {
+            loadError(e);
+        }
     };
 
     /**
@@ -177,9 +183,18 @@ export const filtersUpdate = (() => {
             callback(false);
         };
 
-        backend.loadFilterRules(filter.filterId,
-            forceRemote,
-            settings.isUseOptimizedFiltersEnabled()).then(successCallback, errorCallback);
+        (async () => {
+            try {
+                const filterRules = await backend.loadFilterRules(
+                    filter.filterId,
+                    forceRemote,
+                    settings.isUseOptimizedFiltersEnabled()
+                );
+                successCallback(filterRules);
+            } catch (e) {
+                errorCallback(e);
+            }
+        })();
     }
 
     /**
