@@ -205,21 +205,20 @@ export const application = (() => {
         }
 
         filterIds = utils.collections.removeDuplicates(filterIds.slice(0));
-        const loadNextFilter = () => {
+        const loadNextFilter = async () => {
             if (filterIds.length === 0) {
                 callback(enabledFilters);
             } else {
                 const filterId = filterIds.shift();
-                antiBannerService.addAntiBannerFilter(filterId, (success) => {
-                    if (success) {
-                        const changed = enableFilter(filterId, options);
-                        if (changed) {
-                            const filter = subscriptions.getFilter(filterId);
-                            enabledFilters.push(filter);
-                        }
+                const success = await antiBannerService.addAntiBannerFilter(filterId);
+                if (success) {
+                    const changed = enableFilter(filterId, options);
+                    if (changed) {
+                        const filter = subscriptions.getFilter(filterId);
+                        enabledFilters.push(filter);
                     }
-                    loadNextFilter();
-                });
+                }
+                loadNextFilter();
             }
         };
 

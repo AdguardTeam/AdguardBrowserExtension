@@ -151,9 +151,8 @@ export const applicationUpdateService = (function () {
     /**
      * Handle extension update
      * @param runInfo   Run info
-     * @param callback  Called after update was handled
      */
-    const onUpdate = async function (runInfo, callback) {
+    const onUpdate = async function (runInfo) {
         const methods = [];
 
         if (browserUtils.isGreaterVersion('3.0.3', runInfo.prevVersion)) {
@@ -170,7 +169,6 @@ export const applicationUpdateService = (function () {
         methods.push(handleObsoleteFiltersRemoval);
 
         await executeMethods(methods);
-        callback();
     };
 
     return {

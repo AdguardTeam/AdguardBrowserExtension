@@ -85,12 +85,10 @@ export const antiBannerService = (() => {
     /**
      * AntiBannerService initialize method. Process install, update or simple run.
      * @param options Constructor options
-     * @param callback
      */
-    function initialize(options, callback) {
+    async function initialize(options) {
         /**
          * Waits and notifies listener with application updated event
-         *
          * @param runInfo
          */
         const notifyApplicationUpdated = function (runInfo) {
@@ -103,20 +101,18 @@ export const antiBannerService = (() => {
          * This method is called when filter subscriptions have been loaded from remote server.
          * It is used to recreate RequestFilter object.
          */
-        const initRequestFilter = function () {
+        const initRequestFilter = async function () {
             loadFiltersVersionAndStateInfo();
             loadGroupsStateInfo();
-            createRequestFilter(() => {
-                addFiltersChangeEventListener();
-                callback();
-            });
+            await createRequestFilter();
+            addFiltersChangeEventListener();
         };
 
         /**
          * Callback for subscriptions loaded event
          */
-        const onSubscriptionLoaded = function (runInfo) {
-            // Subscribe to events which lead to update filters (e.g. switсh to optimized and back to default)
+        const onSubscriptionLoaded = async function (runInfo) {
+            // Subscribe to events which lead to update filters (e.g. switch to optimized and back to default)
             subscribeToFiltersChangeEvents();
 
             if (runInfo.isFirstRun) {
@@ -125,18 +121,17 @@ export const antiBannerService = (() => {
                 // Run callback
                 // Request filter will be initialized during install
                 if (typeof options.onInstall === 'function') {
-                    options.onInstall(callback);
-                } else {
-                    callback();
+                    await options.onInstall();
                 }
             } else if (runInfo.isUpdate) {
                 // Updating storage schema on extension update (if needed)
-                applicationUpdateService.onUpdate(runInfo, initRequestFilter);
+                await applicationUpdateService.onUpdate(runInfo);
+                await initRequestFilter();
                 // Show updated version popup
                 notifyApplicationUpdated(runInfo);
             } else {
                 // Init RequestFilter object
-                initRequestFilter();
+                await initRequestFilter();
             }
             // Schedule filters update job
             filtersUpdate.scheduleFiltersUpdate(runInfo.isFirstRun);
@@ -145,32 +140,42 @@ export const antiBannerService = (() => {
         /**
          * Init extension common info.
          */
-        (async () => {
-            const runInfo = await applicationUpdateService.getRunInfo();
-            await subscriptions.init();
-            onSubscriptionLoaded(runInfo);
-        })();
+        const runInfo = await applicationUpdateService.getRunInfo();
+        await subscriptions.init();
+        await onSubscriptionLoaded(runInfo);
     }
 
     /**
      * Initialize application (process install or update) . Create and start request filter
      * @param options
-     * @param callback
      */
-    const start = function (options, callback) {
+    const start = async function (options) {
         if (applicationRunning === true) {
-            callback();
             return;
         }
+
         applicationRunning = true;
 
         if (!applicationInitialized) {
-            initialize(options, callback);
+            await initialize(options);
             applicationInitialized = true;
             return;
         }
 
-        createRequestFilter(callback);
+        await createRequestFilter();
+    };
+
+    /**
+     * Request Filter info
+     */
+    const getRequestFilterInfo = function () {
+        let rulesCount = 0;
+        if (requestFilter) {
+            rulesCount = requestFilter.getRulesCount();
+        }
+        return {
+            rulesCount,
+        };
     };
 
     /**
@@ -198,16 +203,30 @@ export const antiBannerService = (() => {
     };
 
     /**
+     * Gets filter by ID.
+     * Throws exception if filter not found.
+     *
+     * @param filterId Filter identifier
+     * @returns {*} Filter got from subscriptions.getFilter
+     * @private
+     */
+    function getFilterById(filterId) {
+        const filter = subscriptions.getFilter(filterId);
+        if (!filter) {
+            throw new Error(`Filter with id: ${filterId} not found`);
+        }
+        return filter;
+    }
+
+    /**
      * Loads filter from storage (if in extension package) or from backend
      *
      * @param filterId Filter identifier
-     * @param callback Called when operation is finished
      */
-    const addAntiBannerFilter = async (filterId, callback) => {
+    const addAntiBannerFilter = async (filterId) => {
         const filter = getFilterById(filterId);
         if (filter.installed) {
-            callback(true);
-            return;
+            return true;
         }
 
         const onFilterLoaded = (success) => {
@@ -215,12 +234,11 @@ export const antiBannerService = (() => {
                 filter.installed = true;
                 listeners.notifyListeners(listeners.FILTER_ADD_REMOVE, filter);
             }
-            callback(success);
+            return success;
         };
 
         if (filter.loaded) {
-            onFilterLoaded(true);
-            return;
+            return onFilterLoaded(true);
         }
 
         /**
@@ -228,18 +246,8 @@ export const antiBannerService = (() => {
          *  we should retrieve metadata from backend too, but not from local file.
          */
         const result = await filtersUpdate.loadFilterRules(filter, false);
-        onFilterLoaded(result);
+        return onFilterLoaded(result);
     };
-
-    /**
-     * Reloads filters from backend
-     *
-     * @private
-     */
-    function reloadAntiBannerFilters() {
-        resetFiltersVersion();
-        filtersUpdate.checkAntiBannerFiltersUpdate(true);
-    }
 
     /**
      * Resets all filters versions
@@ -252,6 +260,16 @@ export const antiBannerService = (() => {
             const filter = filters[i];
             filter.version = RESET_VERSION;
         }
+    }
+
+    /**
+     * Reloads filters from backend
+     *
+     * @private
+     */
+    async function reloadAntiBannerFilters() {
+        resetFiltersVersion();
+        await filtersUpdate.checkAntiBannerFiltersUpdate(true);
     }
 
     /**
@@ -314,9 +332,8 @@ export const antiBannerService = (() => {
      * Called when filters were loaded from the storage
      *
      * @param rulesFilterMap Map for populating rules (filterId -> rules collection)
-     * @param callback Called when request filter is initialized
      */
-    async function onFiltersLoadedFromStorage(rulesFilterMap, callback) {
+    async function onFiltersLoadedFromStorage(rulesFilterMap) {
         const start = new Date().getTime();
 
         log.info('Starting request filter initialization..');
@@ -342,7 +359,7 @@ export const antiBannerService = (() => {
 
             // User filter is enabled by default, but it may not contain any rules
             const userFilterId = utils.filters.USER_FILTER_ID;
-            if (enabledFilterIds.length === 1 && enabledFilterIds[0] == userFilterId) {
+            if (enabledFilterIds.length === 1 && enabledFilterIds[0] === userFilterId) {
                 const userRules = rulesFilterMap[userFilterId];
                 if (!userRules || userRules.length === 0) {
                     return true;
@@ -359,10 +376,6 @@ export const antiBannerService = (() => {
         const requestFilterInitialized = function () {
             // Request filter is ready
             requestFilter = newRequestFilter;
-
-            if (callback && typeof callback === 'function') {
-                callback();
-            }
 
             listeners.notifyListeners(listeners.REQUEST_FILTER_UPDATED, getRequestFilterInfo());
             log.info(
@@ -417,14 +430,10 @@ export const antiBannerService = (() => {
     /**
      * Create new request filter and add distinct rules from the storage.
      *
-     * @param callback Called after request filter has been created
      * @private
      */
-    function createRequestFilter(callback) {
+    async function createRequestFilter() {
         if (applicationRunning === false) {
-            if (typeof callback === 'function') {
-                callback();
-            }
             return;
         }
 
@@ -440,9 +449,8 @@ export const antiBannerService = (() => {
          * STEP 2: Called when all filter rules have been loaded from storage
          */
         const loadAllFilterRulesDone = async () => {
-            log.info('Finished loading filter rules from the storage in {0} ms',
-                (new Date().getTime() - start));
-            await onFiltersLoadedFromStorage(rulesFilterMap, callback);
+            log.info('Finished loading filter rules from the storage in {0} ms', (new Date().getTime() - start));
+            await onFiltersLoadedFromStorage(rulesFilterMap);
         };
 
         /**
@@ -463,7 +471,7 @@ export const antiBannerService = (() => {
         /**
          * STEP 1: load all filters from the storage.
          */
-        const loadFilterRules = function () {
+        const loadFilterRules = async function () {
             const promises = [];
             const filters = subscriptions.getFilters();
             for (let i = 0; i < filters.length; i += 1) {
@@ -477,24 +485,12 @@ export const antiBannerService = (() => {
             promises.push(loadFilterRulesFromStorage(utils.filters.USER_FILTER_ID, rulesFilterMap));
 
             // Load all filters and then recreate request filter
-            Promise.all(promises).then(loadAllFilterRulesDone);
+            await Promise.all(promises);
+            await loadAllFilterRulesDone();
         };
 
         loadFilterRules();
     }
-
-    /**
-     * Request Filter info
-     */
-    var getRequestFilterInfo = function () {
-        let rulesCount = 0;
-        if (requestFilter) {
-            rulesCount = requestFilter.getRulesCount();
-        }
-        return {
-            rulesCount,
-        };
-    };
 
     /**
      * Adds event listener for filters changes.
@@ -507,7 +503,7 @@ export const antiBannerService = (() => {
         let filterEventsHistory = [];
         let onFilterChangeTimeout = null;
 
-        const processEventsHistory = function () {
+        const processEventsHistory = async function () {
             const filterEvents = filterEventsHistory.slice(0);
             filterEventsHistory = [];
             onFilterChangeTimeout = null;
@@ -528,19 +524,23 @@ export const antiBannerService = (() => {
                 eventsByFilter[filterEvent.filter.filterId].push(filterEvent);
             }
 
-            const dfds = [];
-            for (const filterId in eventsByFilter) {
+            const promises = [];
+            // eslint-disable-next-line no-restricted-syntax
+            for (const filterId of Object.keys(eventsByFilter)) {
                 const needSaveRulesToStorage = eventsByFilter[filterId].some(isSaveRulesToStorageEvent);
                 if (!needSaveRulesToStorage) {
                     continue;
                 }
-                const dfd = processSaveFilterRulesToStorageEvents(filterId, eventsByFilter[filterId]);
-                dfds.push(dfd);
+                // eslint-disable-next-line no-use-before-define
+                const promise = processSaveFilterRulesToStorageEvents(filterId, eventsByFilter[filterId]);
+                promises.push(promise);
             }
 
             if (needCreateRequestFilter) {
-                // Rules will be added to request filter lazy, listeners will be notified about REQUEST_FILTER_UPDATED later
-                utils.Promise.all(dfds).then(createRequestFilter);
+                // Rules will be added to request filter lazy,
+                // listeners will be notified about REQUEST_FILTER_UPDATED later
+                await Promise.all(promises);
+                await createRequestFilter();
             } else {
                 // Rules are already in request filter, notify listeners
                 listeners.notifyListeners(listeners.REQUEST_FILTER_UPDATED, getRequestFilterInfo());
@@ -598,57 +598,47 @@ export const antiBannerService = (() => {
      * @param events Events (what has changed?)
      * @private
      */
-    function processSaveFilterRulesToStorageEvents(filterId, events) {
-        const dfd = new utils.Promise();
+    async function processSaveFilterRulesToStorageEvents(filterId, events) {
+        let loadedRulesText = await rulesStorage.read(filterId);
 
-        (async () => {
-            let loadedRulesText = await rulesStorage.read(filterId);
-
-            for (let i = 0; i < events.length; i += 1) {
-                if (!loadedRulesText) {
-                    loadedRulesText = [];
-                }
-
-                const event = events[i];
-                const eventType = event.event;
-                const eventRules = event.rules;
-
-                // eslint-disable-next-line default-case
-                switch (eventType) {
-                    case listeners.ADD_RULES:
-                        loadedRulesText = loadedRulesText.concat(eventRules);
-                        log.debug('Add {0} rules to filter {1}', eventRules.length, filterId);
-                        break;
-                    case listeners.REMOVE_RULE: {
-                        const actionRule = eventRules[0];
-                        utils.collections.removeAll(loadedRulesText, actionRule);
-                        log.debug('Remove {0} rule from filter {1}', actionRule, filterId);
-                        break;
-                    }
-                    case listeners.UPDATE_FILTER_RULES:
-                        loadedRulesText = eventRules;
-                        log.debug('Update filter {0} rules count to {1}', filterId, eventRules.length);
-                        break;
-                }
+        for (let i = 0; i < events.length; i += 1) {
+            if (!loadedRulesText) {
+                loadedRulesText = [];
             }
 
-            log.debug('Converting {0} rules for filter {1}', loadedRulesText.length, filterId);
-            const converted = TSUrlFilter.RuleConverter.convertRules(loadedRulesText.join('\n')).split('\n');
+            const event = events[i];
+            const eventType = event.event;
+            const eventRules = event.rules;
 
-            log.debug('Saving {0} rules to filter {1}', converted.length, filterId);
-
-            await rulesStorage.write(filterId, converted);
-            dfd.resolve();
-
-            if (filterId === utils.filters.USER_FILTER_ID) {
-                listeners.notifyListeners(
-                    listeners.UPDATE_USER_FILTER_RULES,
-                    getRequestFilterInfo(),
-                );
+            // eslint-disable-next-line default-case
+            switch (eventType) {
+                case listeners.ADD_RULES:
+                    loadedRulesText = loadedRulesText.concat(eventRules);
+                    log.debug('Add {0} rules to filter {1}', eventRules.length, filterId);
+                    break;
+                case listeners.REMOVE_RULE: {
+                    const actionRule = eventRules[0];
+                    utils.collections.removeAll(loadedRulesText, actionRule);
+                    log.debug('Remove {0} rule from filter {1}', actionRule, filterId);
+                    break;
+                }
+                case listeners.UPDATE_FILTER_RULES:
+                    loadedRulesText = eventRules;
+                    log.debug('Update filter {0} rules count to {1}', filterId, eventRules.length);
+                    break;
             }
-        })();
+        }
 
-        return dfd;
+        log.debug('Converting {0} rules for filter {1}', loadedRulesText.length, filterId);
+        const converted = TSUrlFilter.RuleConverter.convertRules(loadedRulesText.join('\n')).split('\n');
+
+        log.debug('Saving {0} rules to filter {1}', converted.length, filterId);
+
+        await rulesStorage.write(filterId, converted);
+
+        if (filterId === utils.filters.USER_FILTER_ID) {
+            listeners.notifyListeners(listeners.UPDATE_USER_FILTER_RULES, getRequestFilterInfo());
+        }
     }
 
     /**
@@ -669,22 +659,6 @@ export const antiBannerService = (() => {
                 filtersUpdate.scheduleFiltersUpdate();
             }
         });
-    }
-
-    /**
-     * Gets filter by ID.
-     * Throws exception if filter not found.
-     *
-     * @param filterId Filter identifier
-     * @returns {*} Filter got from subscriptions.getFilter
-     * @private
-     */
-    function getFilterById(filterId) {
-        const filter = subscriptions.getFilter(filterId);
-        if (!filter) {
-            throw new Error(`Filter with id: ${filterId} not found`);
-        }
-        return filter;
     }
 
     /**
