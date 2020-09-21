@@ -110,7 +110,7 @@ export const application = (() => {
      * @param errorCallback
      * @param {Object[]} [filters] optional list of filters
      */
-    const checkFiltersUpdates = (successCallback, errorCallback, filters) => {
+    const checkFiltersUpdates = async (successCallback, errorCallback, filters) => {
         if (filters) {
             // Skip recently downloaded filters
             const outdatedFilters = filters.filter(f => (f.lastCheckTime
@@ -118,15 +118,22 @@ export const application = (() => {
                 : true));
 
             if (outdatedFilters.length > 0) {
-                filtersUpdate.checkAntiBannerFiltersUpdate(
-                    true,
-                    successCallback,
-                    errorCallback,
-                    outdatedFilters
-                );
+                try {
+                    const filters = await filtersUpdate.checkAntiBannerFiltersUpdate(true, outdatedFilters);
+                    successCallback(filters);
+                } catch (e) {
+                    log.error(e.message);
+                    errorCallback();
+                }
             }
         } else {
-            filtersUpdate.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback);
+            try {
+                const filters = await filtersUpdate.checkAntiBannerFiltersUpdate(true);
+                successCallback(filters);
+            } catch (e) {
+                log.error(e.message);
+                errorCallback();
+            }
         }
     };
 
@@ -300,7 +307,7 @@ export const application = (() => {
      * @param successCallback
      * @param errorCallback
      */
-    const loadCustomFilter = function (url, options, successCallback, errorCallback) {
+    const loadCustomFilter = async function (url, options, successCallback, errorCallback) {
         log.info('Downloading custom filter from {0}', url);
 
         if (!url) {
@@ -308,36 +315,32 @@ export const application = (() => {
             return;
         }
 
-        subscriptions.updateCustomFilter(url, options, (filterId) => {
-            if (filterId) {
-                log.info('Custom filter downloaded');
+        const filterId = await subscriptions.updateCustomFilter(url, options);
+        if (filterId) {
+            log.info('Custom filter downloaded');
 
-                const filter = subscriptions.getFilter(filterId);
-                // In case filter is loaded again and was removed before
-                delete filter.removed;
-                successCallback(filter);
-            } else {
-                errorCallback();
-            }
-        });
+            const filter = subscriptions.getFilter(filterId);
+            // In case filter is loaded again and was removed before
+            delete filter.removed;
+            successCallback(filter);
+        } else {
+            errorCallback();
+        }
     };
 
-    const loadCustomFilterInfo = (url, options, successCallback, errorCallback) => {
+    const loadCustomFilterInfo = async (url, options, successCallback, errorCallback) => {
         log.info(`Downloading custom filter info from ${url}`);
         if (!url) {
             errorCallback();
             return;
         }
-
-        subscriptions.getCustomFilterInfo(url, options, (result = {}) => {
-            const { error, filter } = result;
-            if (filter) {
-                log.info('Custom filter data downloaded');
-                successCallback(filter);
-                return;
-            }
-            errorCallback(error);
-        });
+        const { error, filter } = await subscriptions.getCustomFilterInfo(url, options);
+        if (filter) {
+            log.info('Custom filter data downloaded');
+            successCallback(filter);
+            return;
+        }
+        errorCallback(error);
     };
 
     return {

@@ -106,38 +106,25 @@ export const filtersUpdate = (() => {
      * Loads filter versions from remote server
      *
      * @param filterIds Filter identifiers
-     * @param callback Callback (called when load is finished)
      * @private
      */
-    const loadFiltersMetadataFromBackend = async (filterIds, callback) => {
+    const loadFiltersMetadataFromBackend = async (filterIds) => {
         if (filterIds.length === 0) {
-            callback(true, []);
-            return;
+            return [];
         }
 
-        const loadSuccess = (filterMetadataList) => {
+        try {
+            const filterMetadataList = await backend.loadFiltersMetadata(filterIds);
             log.debug(
                 'Retrieved response from server for {0} filters, result: {1} metadata',
                 filterIds.length,
                 filterMetadataList.length,
             );
-            callback(true, filterMetadataList);
-        };
-
-        const loadError = (e) => {
-            log.error(
-                'Error retrieved response from server for filters {0}, cause: {1}',
-                filterIds,
-                e.message,
-            );
-            callback(false);
-        };
-
-        try {
-            const filterMetadataList = await backend.loadFiltersMetadata(filterIds);
-            loadSuccess(filterMetadataList);
+            return filterMetadataList;
         } catch (e) {
-            loadError(e);
+            const errorMessage = `Error retrieved response from server for filters ${filterIds}, cause: ${e.message}`;
+            log.error(errorMessage);
+            throw new Error(errorMessage);
         }
     };
 
@@ -147,115 +134,95 @@ export const filtersUpdate = (() => {
      * @param filterMetadata Filter metadata
      * @param forceRemote Force download filter rules from remote server
      * (if false try to download local copy of rules if it's possible)
-     * @param callback Called when filter rules have been loaded
      * @private
      */
-    function loadFilterRules(filterMetadata, forceRemote, callback) {
+    async function loadFilterRules(filterMetadata, forceRemote) {
         const filter = subscriptions.getFilter(filterMetadata.filterId);
 
         filter._isDownloading = true;
         listeners.notifyListeners(listeners.START_DOWNLOAD_FILTER, filter);
 
-        const successCallback = (filterRules) => {
-            log.info('Retrieved response from server for filter {0}, rules count: {1}',
+        let filterRules;
+        try {
+            filterRules = await backend.loadFilterRules(
                 filter.filterId,
-                filterRules.length);
-            delete filter._isDownloading;
-            filter.version = filterMetadata.version;
-            filter.lastUpdateTime = filterMetadata.timeUpdated;
-            filter.lastCheckTime = forceRemote ? Date.now() : filterMetadata.timeUpdated;
-            filter.loaded = true;
-            filter.expires = filterMetadata.expires;
-            // notify listeners
-            listeners.notifyListeners(listeners.SUCCESS_DOWNLOAD_FILTER, filter);
-            listeners.notifyListeners(listeners.UPDATE_FILTER_RULES, filter, filterRules);
-            callback(true);
-        };
-
-        const errorCallback = (cause) => {
+                forceRemote,
+                settings.isUseOptimizedFiltersEnabled(),
+            );
+        } catch (e) {
             log.error(
                 'Error retrieving response from the server for filter {0}, cause: {1}:',
                 filter.filterId,
-                cause || ''
+                e || '',
             );
             delete filter._isDownloading;
             listeners.notifyListeners(listeners.ERROR_DOWNLOAD_FILTER, filter);
-            callback(false);
-        };
+            return false;
+        }
 
-        (async () => {
-            try {
-                const filterRules = await backend.loadFilterRules(
-                    filter.filterId,
-                    forceRemote,
-                    settings.isUseOptimizedFiltersEnabled()
-                );
-                successCallback(filterRules);
-            } catch (e) {
-                errorCallback(e);
-            }
-        })();
+        log.info('Retrieved response from server for filter {0}, rules count: {1}',
+            filter.filterId,
+            filterRules.length);
+        delete filter._isDownloading;
+        filter.version = filterMetadata.version;
+        filter.lastUpdateTime = filterMetadata.timeUpdated;
+        filter.lastCheckTime = forceRemote ? Date.now() : filterMetadata.timeUpdated;
+        filter.loaded = true;
+        filter.expires = filterMetadata.expires;
+        // notify listeners
+        listeners.notifyListeners(listeners.SUCCESS_DOWNLOAD_FILTER, filter);
+        listeners.notifyListeners(listeners.UPDATE_FILTER_RULES, filter, filterRules);
+        return true;
     }
 
     /**
      * Loads filters (ony-by-one) from the remote server
      *
      * @param filterMetadataList List of filter metadata to load
-     * @param callback Called when filters have been loaded
      * @private
      */
-    const loadFiltersFromBackend = (filterMetadataList, callback) => {
-        const promises = filterMetadataList
-            .map(filterMetadata => new Promise((resolve, reject) => {
-                loadFilterRules(filterMetadata, true, (success) => {
-                    if (!success) {
-                        return reject();
-                    }
-                    return resolve(filterMetadata.filterId);
-                });
-            }));
+    const loadFiltersFromBackend = async (filterMetadataList) => {
+        const promises = filterMetadataList.map(async (filterMetadata) => {
+            const result = await loadFilterRules(filterMetadata, true);
 
-        Promise.all(promises)
-            .then((filterIds) => {
-                callback(true, filterIds);
-            })
-            .catch(() => {
-                callback(false);
-            });
+            if (result) {
+                return filterMetadata.filterId;
+            }
+
+            throw new Error('An error occurred');
+        });
+
+        const filterIds = await Promise.all(promises);
+        return filterIds;
     };
 
     /**
      * Update filters with custom urls
      *
      * @param customFilterIds
-     * @param callback
      */
-    function updateCustomFilters(customFilterIds, callback) {
+    async function updateCustomFilters(customFilterIds) {
         if (customFilterIds.length === 0) {
-            callback([]);
-            return;
+            return [];
         }
 
-        const promises = customFilterIds.map(filterId => new Promise((resolve) => {
+        const promises = customFilterIds.map(async (filterId) => {
             const filter = subscriptions.getFilter(filterId);
-            const onUpdate = (updatedFilterId) => {
-                if (updatedFilterId) {
-                    return resolve(filter);
-                }
-                return resolve();
-            };
-            subscriptions.updateCustomFilter(filter.customUrl, {}, onUpdate);
-        }));
-
-        Promise.all(promises).then((filters) => {
-            const updatedFilters = filters.filter(f => f);
-            if (updatedFilters.length > 0) {
-                const filterIdsString = updatedFilters.map(f => f.filterId).join(', ');
-                log.info(`Updated custom filters with ids: ${filterIdsString}`);
+            const updatedFilterId = await subscriptions.updateCustomFilter(filter.customUrl, {});
+            if (updatedFilterId) {
+                return filter;
             }
-
-            callback(updatedFilters);
+            return null;
         });
+
+        const filters = await Promise.all(promises);
+        const updatedFilters = filters.filter(f => f);
+        if (updatedFilters.length > 0) {
+            const filterIdsString = updatedFilters.map(f => f.filterId).join(', ');
+            log.info(`Updated custom filters with ids: ${filterIdsString}`);
+        }
+
+        return updatedFilters;
     }
 
     /**
@@ -263,15 +230,9 @@ export const filtersUpdate = (() => {
      *
      * @param forceUpdate Normally we respect filter update period. But if this parameter is
      *                    true - we ignore it and check updates for all filters.
-     * @param successCallback Called if filters were updated successfully
-     * @param errorCallback Called if something gone wrong
      * @param filters     Optional Array of filters to update
      */
-    const checkAntiBannerFiltersUpdate = (forceUpdate, successCallback, errorCallback, filters) => {
-        const noop = () => {}; // empty callback
-        successCallback = successCallback || noop;
-        errorCallback = errorCallback || noop;
-
+    const checkAntiBannerFiltersUpdate = async (forceUpdate, filters) => {
         // Don't update in background if request filter isn't running
         if (!forceUpdate && !antiBannerService.isRunning()) {
             return;
@@ -286,59 +247,57 @@ export const filtersUpdate = (() => {
 
         const totalToUpdate = filterIdsToUpdate.length + customFilterIdsToUpdate.length;
         if (totalToUpdate === 0) {
-            successCallback([]);
             log.info('There is no filters to update');
-            return;
+            return [];
         }
 
         log.info('Checking updates for {0} filters', totalToUpdate);
 
-        // Load filters with changed version
-        const loadFiltersFromBackendCallback = (filterMetadataList) => {
-            loadFiltersFromBackend(filterMetadataList, (success, filterIds) => {
-                if (success) {
-                    const filters = filterIds
-                        .map(subscriptions.getFilter)
-                        .filter(f => f);
+        /**
+         * // Load filters with changed version
+         * @param filterMetadataList
+         */
+        const loadFiltersFromBackendCallback = async (filterMetadataList) => {
+            const filterIds = await loadFiltersFromBackend(filterMetadataList);
+            const filters = filterIds.map(subscriptions.getFilter).filter(f => f);
 
-                    updateCustomFilters(customFilterIdsToUpdate, (customFilters) => {
-                        successCallback(filters.concat(customFilters));
-                    });
-                } else {
-                    errorCallback();
-                }
-            });
+            const customFilters = await updateCustomFilters(customFilterIdsToUpdate);
+            return filters.concat(customFilters);
         };
 
         /**
          * Method is called after we have got server response
          * Now we check filters version and update filter if needed
-         * @param success
          * @param filterMetadataList
          */
-        const onLoadFilterMetadataList = (success, filterMetadataList) => {
-            if (success) {
-                const filterMetadataListToUpdate = [];
-                for (let i = 0; i < filterMetadataList.length; i += 1) {
-                    const filterMetadata = filterMetadataList[i];
-                    const filter = subscriptions.getFilter(filterMetadata.filterId);
-                    // eslint-disable-next-line max-len
-                    if (filter && filterMetadata.version && browserUtils.isGreaterVersion(filterMetadata.version, filter.version)) {
-                        log.info(`Updating filter ${filter.filterId} to version ${filterMetadata.version}`);
-                        filterMetadataListToUpdate.push(filterMetadata);
-                    } else {
-                        // remember that this filter version was checked
-                        filter.lastCheckTime = Date.now();
-                    }
+        const selectFilterMetadataListToUpdate = (filterMetadataList) => {
+            const filterMetadataListToUpdate = [];
+            for (let i = 0; i < filterMetadataList.length; i += 1) {
+                const filterMetadata = filterMetadataList[i];
+                const filter = subscriptions.getFilter(filterMetadata.filterId);
+                if (
+                    filter
+                    && filterMetadata.version
+                    && browserUtils.isGreaterVersion(filterMetadata.version, filter.version)
+                ) {
+                    log.info(`Updating filter ${filter.filterId} to version ${filterMetadata.version}`);
+                    filterMetadataListToUpdate.push(filterMetadata);
+                } else {
+                    // remember that this filter version was checked
+                    filter.lastCheckTime = Date.now();
                 }
-                loadFiltersFromBackendCallback(filterMetadataListToUpdate);
-            } else {
-                errorCallback();
             }
+            return filterMetadataListToUpdate;
         };
 
         // Retrieve current filters metadata for update
-        loadFiltersMetadataFromBackend(filterIdsToUpdate, onLoadFilterMetadataList);
+        const filterMetadataList = await loadFiltersMetadataFromBackend(filterIdsToUpdate);
+
+        const filterMetadataListToUpdate = selectFilterMetadataListToUpdate(filterMetadataList);
+
+        const loadedFilters = await loadFiltersFromBackendCallback(filterMetadataListToUpdate);
+
+        return loadedFilters;
     };
 
     // Scheduling job
@@ -354,9 +313,9 @@ export const filtersUpdate = (() => {
             return;
         }
 
-        scheduleUpdateTimeoutId = setTimeout(() => {
+        scheduleUpdateTimeoutId = setTimeout(async () => {
             try {
-                checkAntiBannerFiltersUpdate();
+                await checkAntiBannerFiltersUpdate();
             } catch (ex) {
                 log.error('Error update filters, cause {0}', ex);
             }

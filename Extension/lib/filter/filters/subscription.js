@@ -425,16 +425,16 @@ export const subscriptions = (() => {
      *
      * @param url subscriptionUrl
      * @param options
-     * @param callback
      */
-    const updateCustomFilter = async function (url, options, callback) {
+    const updateCustomFilter = async function (url, options) {
         const { title, trusted } = options;
+
         let rules;
         try {
             rules = await backend.loadFilterRulesBySubscriptionUrl(url);
         } catch (e) {
             log.error(`Error download filter by url ${url}, cause: ${e || ''}`);
-            callback();
+            return null;
         }
 
         const filterId = addFilterId();
@@ -467,9 +467,8 @@ export const subscriptions = (() => {
         let updateFilter = true;
         if (filter) {
             if (!didFilterUpdate(version, checksum, filter)) {
-                callback();
                 updateCustomFilterInfo(filter, { lastCheckTime: Date.now() });
-                return;
+                return null;
             }
         } else {
             filter = new SubscriptionFilter({
@@ -513,10 +512,16 @@ export const subscriptions = (() => {
         listeners.notifyListeners(listeners.SUCCESS_DOWNLOAD_FILTER, filter);
         listeners.notifyListeners(listeners.UPDATE_FILTER_RULES, filter, rules);
 
-        callback(filter.filterId);
+        return filter.filterId;
     };
 
-    const getCustomFilterInfo = async (url, options, callback) => {
+    /**
+     * Retrieves custom filter information
+     * @param url
+     * @param options
+     * @returns {Promise<{filter: SubscriptionFilter}|{}|{error: *}>}
+     */
+    const getCustomFilterInfo = async (url, options) => {
         const { title } = options;
 
         let rules;
@@ -524,7 +529,7 @@ export const subscriptions = (() => {
             rules = await backend.loadFilterRulesBySubscriptionUrl(url);
         } catch (e) {
             log.error(`Error download filter by url ${url}, cause: ${e || ''}`);
-            callback();
+            return {};
         }
 
         const parsedData = parseFilterDataFromHeader(rules);
@@ -550,8 +555,7 @@ export const subscriptions = (() => {
         let filter = filters.find(f => f.customUrl === url);
 
         if (filter) {
-            callback({ error: backgroundPage.i18n.getMessage('options_antibanner_custom_filter_already_exists') });
-            return;
+            return ({ error: backgroundPage.i18n.getMessage('options_antibanner_custom_filter_already_exists') });
         }
 
         filter = new SubscriptionFilter({
@@ -573,7 +577,7 @@ export const subscriptions = (() => {
         filter.customUrl = url;
         filter.rulesCount = rulesCount;
 
-        callback({ filter });
+        return ({ filter });
     };
 
     /**

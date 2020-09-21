@@ -203,7 +203,7 @@ export const antiBannerService = (() => {
      * @param filterId Filter identifier
      * @param callback Called when operation is finished
      */
-    const addAntiBannerFilter = (filterId, callback) => {
+    const addAntiBannerFilter = async (filterId, callback) => {
         const filter = getFilterById(filterId);
         if (filter.installed) {
             callback(true);
@@ -227,19 +227,18 @@ export const antiBannerService = (() => {
          * TODO: when we want to load filter from backend,
          *  we should retrieve metadata from backend too, but not from local file.
          */
-        filtersUpdate.loadFilterRules(filter, false, onFilterLoaded);
+        const result = await filtersUpdate.loadFilterRules(filter, false);
+        onFilterLoaded(result);
     };
 
     /**
      * Reloads filters from backend
      *
-     * @param successCallback
-     * @param errorCallback
      * @private
      */
-    function reloadAntiBannerFilters(successCallback, errorCallback) {
+    function reloadAntiBannerFilters() {
         resetFiltersVersion();
-        filtersUpdate.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback);
+        filtersUpdate.checkAntiBannerFiltersUpdate(true);
     }
 
     /**
@@ -369,7 +368,7 @@ export const antiBannerService = (() => {
             log.info(
                 'Finished request filter initialization in {0} ms. Rules count: {1}',
                 (new Date().getTime() - start),
-                newRequestFilter.getRulesCount()
+                newRequestFilter.getRulesCount(),
             );
 
             /**
@@ -644,7 +643,7 @@ export const antiBannerService = (() => {
             if (filterId === utils.filters.USER_FILTER_ID) {
                 listeners.notifyListeners(
                     listeners.UPDATE_USER_FILTER_RULES,
-                    getRequestFilterInfo()
+                    getRequestFilterInfo(),
                 );
             }
         })();
@@ -660,7 +659,7 @@ export const antiBannerService = (() => {
         // on USE_OPTIMIZED_FILTERS setting change we need to reload filters
         const onUsedOptimizedFiltersChange = utils.concurrent.debounce(
             reloadAntiBannerFilters,
-            RELOAD_FILTERS_DEBOUNCE_PERIOD
+            RELOAD_FILTERS_DEBOUNCE_PERIOD,
         );
 
         settings.onUpdated.addListener((setting) => {
