@@ -176,7 +176,7 @@ export const filtersUpdate = (() => {
             log.error(
                 'Error retrieving response from the server for filter {0}, cause: {1}:',
                 filter.filterId,
-                cause || ''
+                cause || '',
             );
             delete filter._isDownloading;
             listeners.notifyListeners(listeners.ERROR_DOWNLOAD_FILTER, filter);
@@ -188,7 +188,7 @@ export const filtersUpdate = (() => {
                 const filterRules = await backend.loadFilterRules(
                     filter.filterId,
                     forceRemote,
-                    settings.isUseOptimizedFiltersEnabled()
+                    settings.isUseOptimizedFiltersEnabled(),
                 );
                 successCallback(filterRules);
             } catch (e) {
@@ -236,16 +236,14 @@ export const filtersUpdate = (() => {
             return;
         }
 
-        const promises = customFilterIds.map(filterId => new Promise((resolve) => {
+        const promises = customFilterIds.map(async (filterId) => {
             const filter = subscriptions.getFilter(filterId);
-            const onUpdate = (updatedFilterId) => {
-                if (updatedFilterId) {
-                    return resolve(filter);
-                }
-                return resolve();
-            };
-            subscriptions.updateCustomFilter(filter.customUrl, {}, onUpdate);
-        }));
+            const updatedFilterId = await subscriptions.updateCustomFilter(filter.customUrl, {});
+            if (updatedFilterId) {
+                return filter;
+            }
+            return null;
+        });
 
         Promise.all(promises).then((filters) => {
             const updatedFilters = filters.filter(f => f);

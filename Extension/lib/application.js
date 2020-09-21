@@ -300,7 +300,7 @@ export const application = (() => {
      * @param successCallback
      * @param errorCallback
      */
-    const loadCustomFilter = function (url, options, successCallback, errorCallback) {
+    const loadCustomFilter = async function (url, options, successCallback, errorCallback) {
         log.info('Downloading custom filter from {0}', url);
 
         if (!url) {
@@ -308,36 +308,32 @@ export const application = (() => {
             return;
         }
 
-        subscriptions.updateCustomFilter(url, options, (filterId) => {
-            if (filterId) {
-                log.info('Custom filter downloaded');
+        const filterId = await subscriptions.updateCustomFilter(url, options);
+        if (filterId) {
+            log.info('Custom filter downloaded');
 
-                const filter = subscriptions.getFilter(filterId);
-                // In case filter is loaded again and was removed before
-                delete filter.removed;
-                successCallback(filter);
-            } else {
-                errorCallback();
-            }
-        });
+            const filter = subscriptions.getFilter(filterId);
+            // In case filter is loaded again and was removed before
+            delete filter.removed;
+            successCallback(filter);
+        } else {
+            errorCallback();
+        }
     };
 
-    const loadCustomFilterInfo = (url, options, successCallback, errorCallback) => {
+    const loadCustomFilterInfo = async (url, options, successCallback, errorCallback) => {
         log.info(`Downloading custom filter info from ${url}`);
         if (!url) {
             errorCallback();
             return;
         }
-
-        subscriptions.getCustomFilterInfo(url, options, (result = {}) => {
-            const { error, filter } = result;
-            if (filter) {
-                log.info('Custom filter data downloaded');
-                successCallback(filter);
-                return;
-            }
-            errorCallback(error);
-        });
+        const { error, filter } = await subscriptions.getCustomFilterInfo(url, options);
+        if (filter) {
+            log.info('Custom filter data downloaded');
+            successCallback(filter);
+            return;
+        }
+        errorCallback(error);
     };
 
     return {
