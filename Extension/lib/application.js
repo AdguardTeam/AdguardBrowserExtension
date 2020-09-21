@@ -110,7 +110,7 @@ export const application = (() => {
      * @param errorCallback
      * @param {Object[]} [filters] optional list of filters
      */
-    const checkFiltersUpdates = (successCallback, errorCallback, filters) => {
+    const checkFiltersUpdates = async (successCallback, errorCallback, filters) => {
         if (filters) {
             // Skip recently downloaded filters
             const outdatedFilters = filters.filter(f => (f.lastCheckTime
@@ -118,15 +118,22 @@ export const application = (() => {
                 : true));
 
             if (outdatedFilters.length > 0) {
-                filtersUpdate.checkAntiBannerFiltersUpdate(
-                    true,
-                    successCallback,
-                    errorCallback,
-                    outdatedFilters
-                );
+                try {
+                    const filters = await filtersUpdate.checkAntiBannerFiltersUpdate(true, outdatedFilters);
+                    successCallback(filters);
+                } catch (e) {
+                    log.error(e.message);
+                    errorCallback();
+                }
             }
         } else {
-            filtersUpdate.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback);
+            try {
+                const filters = await filtersUpdate.checkAntiBannerFiltersUpdate(true);
+                successCallback(filters);
+            } catch (e) {
+                log.error(e.message);
+                errorCallback();
+            }
         }
     };
 
