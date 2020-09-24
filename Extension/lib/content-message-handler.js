@@ -383,6 +383,9 @@
             case 'disableGetPremiumNotification':
                 adguard.settings.disableShowAdguardPromoInfo();
                 break;
+            case 'addToTrusted':
+                adguard.rules.documentFilterService.addToTrusted(message.url, message.rule);
+                break;
             default:
                 // Unhandled message
                 return true;
