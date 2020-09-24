@@ -32,13 +32,12 @@ export const application = (() => {
      */
     const ENABLED_FILTERS_SKIP_TIMEOUT = 5 * 60 * 1000;
 
-    const start = (options, callback) => {
-        antiBannerService.start(options, callback);
+    const start = async (options) => {
+        await antiBannerService.start(options);
     };
 
-    const stop = callback => {
+    const stop = () => {
         antiBannerService.stop();
-        callback();
     };
 
     /**
@@ -49,19 +48,20 @@ export const application = (() => {
 
     /**
      * Offer filters on extension install, select default filters and filters by locale and country
-     * @param callback
      */
-    const offerFilters = (callback) => {
+    const offerFilters = () => {
         // These filters are enabled by default
         const filterIds = [
             utils.filters.ENGLISH_FILTER_ID,
             utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID,
         ];
+
         if (prefs.mobile) {
             filterIds.push(utils.filters.MOBILE_ADS_FILTER_ID);
         }
+
         filterIds.concat(subscriptions.getLangSuitableFilters());
-        callback(filterIds);
+        return filterIds;
     };
 
     /**
@@ -106,11 +106,9 @@ export const application = (() => {
     /**
      * Force checks updates for filters if specified or all filters
      *
-     * @param successCallback
-     * @param errorCallback
      * @param {Object[]} [filters] optional list of filters
      */
-    const checkFiltersUpdates = async (successCallback, errorCallback, filters) => {
+    const checkFiltersUpdates = async (filters) => {
         if (filters) {
             // Skip recently downloaded filters
             const outdatedFilters = filters.filter(f => (f.lastCheckTime
@@ -120,19 +118,19 @@ export const application = (() => {
             if (outdatedFilters.length > 0) {
                 try {
                     const filters = await filtersUpdate.checkAntiBannerFiltersUpdate(true, outdatedFilters);
-                    successCallback(filters);
+                    return filters;
                 } catch (e) {
                     log.error(e.message);
-                    errorCallback();
+                    throw e;
                 }
             }
         } else {
             try {
                 const filters = await filtersUpdate.checkAntiBannerFiltersUpdate(true);
-                successCallback(filters);
+                return filters;
             } catch (e) {
                 log.error(e.message);
-                errorCallback();
+                throw e;
             }
         }
     };
@@ -192,37 +190,30 @@ export const application = (() => {
      * Successively add filters from filterIds and then enable successfully added filters
      * @param filterIds Filter identifiers
      * @param {{forceGroupEnable: boolean}} [options]
-     * @param callback We pass list of enabled filter identifiers to the callback
      */
-    const addAndEnableFilters = (filterIds, callback, options) => {
-        callback = callback || function noop() {}; // empty callback
-
+    const addAndEnableFilters = async (filterIds, options) => {
         const enabledFilters = [];
 
         if (!filterIds || filterIds.length === 0) {
-            callback(enabledFilters);
-            return;
+            return enabledFilters;
         }
 
         filterIds = utils.collections.removeDuplicates(filterIds.slice(0));
-        const loadNextFilter = async () => {
-            if (filterIds.length === 0) {
-                callback(enabledFilters);
-            } else {
-                const filterId = filterIds.shift();
-                const success = await antiBannerService.addAntiBannerFilter(filterId);
-                if (success) {
-                    const changed = enableFilter(filterId, options);
-                    if (changed) {
-                        const filter = subscriptions.getFilter(filterId);
-                        enabledFilters.push(filter);
-                    }
-                }
-                loadNextFilter();
-            }
-        };
 
-        loadNextFilter();
+        for (let i = 0; i < filterIds.length; i += 1) {
+            const filterId = filterIds[0];
+            // eslint-disable-next-line no-await-in-loop
+            const success = await antiBannerService.addAntiBannerFilter(filterId);
+            if (success) {
+                const changed = enableFilter(filterId, options);
+                if (changed) {
+                    const filter = subscriptions.getFilter(filterId);
+                    enabledFilters.push(filter);
+                }
+            }
+        }
+
+        return enabledFilters;
     };
 
     /**
@@ -303,43 +294,47 @@ export const application = (() => {
      *
      * @param url custom url, there rules are
      * @param options object containing title of custom filter
-     * @param successCallback
-     * @param errorCallback
      */
-    const loadCustomFilter = async function (url, options, successCallback, errorCallback) {
+    const loadCustomFilter = async function (url, options) {
         log.info('Downloading custom filter from {0}', url);
 
         if (!url) {
-            errorCallback();
-            return;
+            throw new Error('No url provided');
         }
 
         const filterId = await subscriptions.updateCustomFilter(url, options);
+
         if (filterId) {
             log.info('Custom filter downloaded');
 
             const filter = subscriptions.getFilter(filterId);
             // In case filter is loaded again and was removed before
             delete filter.removed;
-            successCallback(filter);
-        } else {
-            errorCallback();
+            return filter;
         }
+
+        throw new Error('No filter downloaded');
     };
 
-    const loadCustomFilterInfo = async (url, options, successCallback, errorCallback) => {
+    const loadCustomFilterInfo = async (url, options) => {
         log.info(`Downloading custom filter info from ${url}`);
+
         if (!url) {
-            errorCallback();
-            return;
+            throw new Error('No url provided');
         }
-        const { error, filter } = await subscriptions.getCustomFilterInfo(url, options);
-        if (filter) {
+
+        const res = await subscriptions.getCustomFilterInfo(url, options);
+
+        if (res?.filter) {
             log.info('Custom filter data downloaded');
-            successCallback(filter);
-            return;
+            return res;
         }
-        errorCallback(error);
+        if (res?.error) {
+            log.error('Error occurred', res.error);
+            return res;
+        }
+
+        throw new Error('Error occurred during custom filter download');
     };
 
     return {

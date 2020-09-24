@@ -196,15 +196,17 @@ const init = () => {
                 whitelist.updateWhiteListDomains(domains);
                 break;
             }
-            case 'getUserRules':
-                userrules.getUserRulesText((content) => {
+            case 'getUserRules': {
+                (async () => {
+                    const content = await userrules.getUserRulesText();
                     const appVersion = backgroundPage.app.getVersion();
                     callback({
                         content,
                         appVersion,
                     });
-                });
+                })();
                 return true;
+            }
             case 'saveUserRules':
                 userrules.updateUserRulesText(message.content);
                 break;
@@ -218,24 +220,27 @@ const init = () => {
                 uiService.checkFiltersUpdates();
                 break;
             case 'loadCustomFilterInfo':
-                application.loadCustomFilterInfo(message.url, { title: message.title }, (filter) => {
-                    callback({ filter });
-                }, (error) => {
-                    callback({ error });
-                });
+                (async () => {
+                    try {
+                        const res = await application.loadCustomFilterInfo(message.url, { title: message.title });
+                        callback(res);
+                    } catch (e) {
+                        callback({});
+                    }
+                })();
                 return true;
+            // TODO check if works correctly
             case 'subscribeToCustomFilter': {
                 const { url, title, trusted } = message;
-                application.loadCustomFilter(url, {
-                    title,
-                    trusted,
-                }, (filter) => {
-                    application.addAndEnableFilters([filter.filterId], () => {
-                        callback(filter);
-                    });
-                }, () => {
-                    callback();
-                });
+                (async () => {
+                    try {
+                        const filter = await application.loadCustomFilter(url, { title, trusted });
+                        await application.addAndEnableFilters([filter.filterId]);
+                        return filter;
+                    } catch (e) {
+                        // do nothing
+                    }
+                })();
                 return true;
             }
             case 'getFiltersMetadata':
@@ -283,7 +288,7 @@ const init = () => {
                     sender.tab,
                     message.elementUrl,
                     message.documentUrl,
-                    message.requestType
+                    message.requestType,
                 );
                 return {
                     block,
@@ -295,7 +300,7 @@ const init = () => {
                     sender.tab,
                     message.elementUrl,
                     message.documentUrl,
-                    message.requestType
+                    message.requestType,
                 );
                 return {
                     collapse,
@@ -306,7 +311,7 @@ const init = () => {
                 const requests = webRequestService.processShouldCollapseMany(
                     sender.tab,
                     message.documentUrl,
-                    message.requests
+                    message.requests,
                 );
                 return { requests };
             }
