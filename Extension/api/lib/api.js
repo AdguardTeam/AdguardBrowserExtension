@@ -110,7 +110,7 @@ export const adguardApi = (function () {
      * @param configuration Configuration object: {filters: [...]}
      * @param callback
      */
-    function configureFilters(configuration, callback) {
+    async function configureFilters(configuration, callback) {
         if (!configuration.force && !configuration.filters) {
             callback();
             return;
@@ -126,21 +126,22 @@ export const adguardApi = (function () {
             }
         }
 
-        application.addAndEnableFilters(filterIds, () => {
-            const enabledFilters = application.getEnabledFilters();
-            for (let i = 0; i < enabledFilters.length; i += 1) {
-                const filter = enabledFilters[i];
-                if (filterIds.indexOf(filter.filterId) < 0) {
-                    application.disableFilters([filter.filterId]);
-                }
-            }
+        await application.addAndEnableFilters(filterIds);
 
-            const listenerId = listeners.addListener((event) => {
-                if (event === listeners.REQUEST_FILTER_UPDATED) {
-                    listeners.removeListener(listenerId);
-                    callback();
-                }
-            });
+        const enabledFilters = application.getEnabledFilters();
+
+        for (let i = 0; i < enabledFilters.length; i += 1) {
+            const filter = enabledFilters[i];
+            if (filterIds.indexOf(filter.filterId) < 0) {
+                application.disableFilters([filter.filterId]);
+            }
+        }
+
+        const listenerId = listeners.addListener((event) => {
+            if (event === listeners.REQUEST_FILTER_UPDATED) {
+                listeners.removeListener(listenerId);
+                callback();
+            }
         });
     }
 
@@ -207,9 +208,8 @@ export const adguardApi = (function () {
         await rulesStorage.init();
         await localStorage.init();
 
-        application.start({}, () => {
-            configure(configuration, callback);
-        });
+        await application.start({});
+        configure(configuration, callback);
     };
 
     /**
@@ -217,7 +217,10 @@ export const adguardApi = (function () {
      * @param callback Callback function
      */
     const stop = function (callback) {
-        application.stop(callback || noopFunc);
+        application.stop();
+        if (callback) {
+            callback();
+        }
     };
 
     const initAssistant = function (tabId) {

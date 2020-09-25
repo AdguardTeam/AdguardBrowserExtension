@@ -14,9 +14,7 @@ jest.mock('../../../Extension/lib/application', () => {
                     customUrl: 'https://example.org/custom_url',
                 },
             ],
-            addAndEnableFilters: (filters, cb) => {
-                cb(true);
-            },
+            addAndEnableFilters: async () => {},
             removeFilter: () => {},
             disableFilters: () => {},
             enableGroup: () => {},
@@ -62,7 +60,7 @@ jest.mock('../../../Extension/lib/filter/userrules', () => {
     return {
         __esModule: true,
         userrules: {
-            getUserRulesText: cb => cb(''),
+            getUserRulesText: async () => '',
             updateUserRulesText: () => {},
         },
     };

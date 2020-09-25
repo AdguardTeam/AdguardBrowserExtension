@@ -67,7 +67,7 @@ export const settingsProvider = (function () {
      * Loads filters settings section
      * @param callback
      */
-    const loadFiltersSection = (callback) => {
+    const loadFiltersSection = async (callback) => {
         const enabledFilterIds = collectEnabledFilterIds();
         const enabledGroupIds = collectEnabledGroupIds();
         const customFiltersData = collectCustomFiltersData();
@@ -78,26 +78,25 @@ export const settingsProvider = (function () {
         const defaultWhiteListMode = !!whitelist.isDefaultMode();
 
         // Collect user rules
-        userrules.getUserRulesText((content) => {
-            const section = {
-                'filters': {
-                    'enabled-groups': enabledGroupIds,
-                    'enabled-filters': enabledFilterIds,
-                    'custom-filters': customFiltersData,
-                    'user-filter': {
-                        'rules': content,
-                        'disabled-rules': '',
-                    },
-                    'whitelist': {
-                        'inverted': !defaultWhiteListMode,
-                        'domains': whiteListDomains,
-                        'inverted-domains': blockListDomains,
-                    },
+        const content = await userrules.getUserRulesText();
+        const section = {
+            'filters': {
+                'enabled-groups': enabledGroupIds,
+                'enabled-filters': enabledFilterIds,
+                'custom-filters': customFiltersData,
+                'user-filter': {
+                    'rules': content,
+                    'disabled-rules': '',
                 },
-            };
+                'whitelist': {
+                    'inverted': !defaultWhiteListMode,
+                    'domains': whiteListDomains,
+                    'inverted-domains': blockListDomains,
+                },
+            },
+        };
 
-            callback(section);
-        });
+        callback(section);
     };
 
     /**
@@ -146,7 +145,7 @@ export const settingsProvider = (function () {
      * @param section Section
      * @param callback Finish callback
      */
-    const applyGeneralSettingsSection = function (section, callback) {
+    const applyGeneralSettingsSection = async function (section, callback) {
         const set = section['general-settings'];
 
         settings.changeShowPageStatistic(!!set['show-blocked-ads-count']);
@@ -155,9 +154,8 @@ export const settingsProvider = (function () {
         settings.setFiltersUpdatePeriod(set['filters-update-period']);
 
         if (set['allow-acceptable-ads']) {
-            application.addAndEnableFilters([utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID], () => {
-                callback(true);
-            });
+            await application.addAndEnableFilters([utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID]);
+            callback(true);
         } else {
             application.disableFilters([utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID]);
             callback(true);
@@ -196,24 +194,14 @@ export const settingsProvider = (function () {
      * @param {CustomFilterInitial} customFilterData - initial data of imported custom filter
      * @returns {Promise<any>} SubscriptionFilter
      */
-    const addCustomFilter = (customFilterData) => {
+    const addCustomFilter = async (customFilterData) => {
         const {
             customUrl, title, trusted,
         } = customFilterData;
 
-        return new Promise((resolve, reject) => {
-            const options = { title, trusted };
-            application.loadCustomFilter(
-                customUrl,
-                options,
-                (filter) => {
-                    resolve(filter);
-                },
-                () => {
-                    reject();
-                }
-            );
-        });
+        const options = { title, trusted };
+        const filter = await application.loadCustomFilter(customUrl, options);
+        return filter;
     };
 
     const addCustomFilters = absentCustomFiltersInitials => absentCustomFiltersInitials
@@ -300,16 +288,14 @@ export const settingsProvider = (function () {
      * @param {array<number>} filterIds - ids to enable
      * @returns {Promise<any>}
      */
-    const syncEnabledFilters = filterIds => new Promise((resolve) => {
-        application.addAndEnableFilters(filterIds, () => {
-            const enabledFilters = application.getEnabledFilters();
-            const filtersToDisable = enabledFilters
-                .filter(enabledFilter => !filterIds.includes(enabledFilter.filterId))
-                .map(filter => filter.filterId);
-            application.disableFilters(filtersToDisable);
-            resolve();
-        });
-    });
+    const syncEnabledFilters = async (filterIds) => {
+        await application.addAndEnableFilters(filterIds);
+        const enabledFilters = application.getEnabledFilters();
+        const filtersToDisable = enabledFilters
+            .filter(enabledFilter => !filterIds.includes(enabledFilter.filterId))
+            .map(filter => filter.filterId);
+        application.disableFilters(filtersToDisable);
+    };
 
     /**
      * Enables groups by groupId and disable those groups which were not in the list

@@ -144,11 +144,11 @@ export const categories = (() => {
      * On the next calls we just enable group
      * @param {number} groupId
      */
-    const enableFiltersGroup = function (groupId) {
+    const enableFiltersGroup = async function (groupId) {
         const group = subscriptions.getGroup(groupId);
         if (group && typeof group.enabled === 'undefined') {
             const recommendedFiltersIds = getRecommendedFilterIdsByGroupId(groupId);
-            application.addAndEnableFilters(recommendedFiltersIds);
+            await application.addAndEnableFilters(recommendedFiltersIds);
         }
         application.enableGroup(groupId);
     };

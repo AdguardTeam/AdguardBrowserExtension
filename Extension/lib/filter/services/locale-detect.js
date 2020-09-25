@@ -103,21 +103,16 @@ export const localeDetect = (function () {
      * @param filterIds List of detected language-specific filters identifiers
      * @private
      */
-    function onFilterDetectedByLocale(filterIds) {
+    async function onFilterDetectedByLocale(filterIds) {
         if (!filterIds) {
             return;
         }
 
-        const onSuccess = (enabledFilters) => {
-            if (enabledFilters.length > 0) {
-                listeners.notifyListeners(
-                    listeners.ENABLE_FILTER_SHOW_POPUP,
-                    enabledFilters
-                );
-            }
-        };
+        const enabledFilters = await application.addAndEnableFilters(filterIds, { forceGroupEnable: true });
 
-        application.addAndEnableFilters(filterIds, onSuccess, { forceGroupEnable: true });
+        if (enabledFilters.length > 0) {
+            listeners.notifyListeners(listeners.ENABLE_FILTER_SHOW_POPUP, enabledFilters);
+        }
     }
 
     /**

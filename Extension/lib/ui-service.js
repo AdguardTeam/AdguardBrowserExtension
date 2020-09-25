@@ -483,7 +483,7 @@ export const uiService = (function () {
             const filter = enabledFilters[i];
             text.push(
                 backgroundPage.i18n.getMessage('alert_popup_filter_enabled_text',
-                    [filter.name]).replace('$1', filter.name)
+                    [filter.name]).replace('$1', filter.name),
             );
         }
         return {
@@ -683,30 +683,23 @@ export const uiService = (function () {
      * @param {Object[]} [filters] optional list of filters
      * @param {boolean} [showPopup = true] show update filters popup
      */
-    const checkFiltersUpdates = (filters, showPopup = true) => {
+    const checkFiltersUpdates = async (filters, showPopup = true) => {
         const showPopupEvent = listeners.UPDATE_FILTERS_SHOW_POPUP;
-        const successCallback = showPopup
-            ? (updatedFilters) => {
+
+        try {
+            const updatedFilters = await application.checkFiltersUpdates(filters);
+            if (showPopup) {
                 listeners.notifyListeners(showPopupEvent, true, updatedFilters);
                 listeners.notifyListeners(listeners.FILTERS_UPDATE_CHECK_READY);
+            } else if (updatedFilters && updatedFilters.length > 0) {
+                const updatedFilterStr = updatedFilters.map(f => `Filter ID: ${f.filterId}`).join(', ');
+                log.info(`Filters were auto updated: ${updatedFilterStr}`);
             }
-            : (updatedFilters) => {
-                if (updatedFilters && updatedFilters.length > 0) {
-                    const updatedFilterStr = updatedFilters.map(f => `Filter ID: ${f.filterId}`).join(', ');
-                    log.info(`Filters were auto updated: ${updatedFilterStr}`);
-                }
-            };
-        const errorCallback = showPopup
-            ? () => {
+        } catch (e) {
+            if (showPopup) {
                 listeners.notifyListeners(showPopupEvent, false);
                 listeners.notifyListeners(listeners.FILTERS_UPDATE_CHECK_READY);
             }
-            : () => { };
-
-        if (filters) {
-            application.checkFiltersUpdates(successCallback, errorCallback, filters);
-        } else {
-            application.checkFiltersUpdates(successCallback, errorCallback);
         }
     };
 

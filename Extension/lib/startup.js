@@ -58,7 +58,7 @@ export const startup = async function () {
          * Start application
          */
         application.start({
-            onInstall(callback) {
+            async onInstall() {
                 // Process installation
                 /**
                  * Show UI installation page
@@ -66,12 +66,9 @@ export const startup = async function () {
                 uiService.openFiltersDownloadPage();
 
                 // Retrieve filters and install them
-                application.offerFilters((filterIds) => {
-                    application.addAndEnableFilters(filterIds, callback);
-                });
+                const filterIds = application.offerFilters();
+                await application.addAndEnableFilters(filterIds);
             },
-        }, () => {
-            // Doing nothing
         });
     }
 
