@@ -15,6 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global adguardApi */
+
 /**
  *  Initialize Content => BackgroundPage messaging
  */
@@ -401,6 +403,9 @@
                 break;
             case 'waitLocalStorageInitialized':
                 return waitLocalStorageInitialized();
+            case 'openAssistantInTab':
+                adguardApi.openAssistant(message.tabId);
+                break;
             default:
                 // Unhandled message
                 return true;
