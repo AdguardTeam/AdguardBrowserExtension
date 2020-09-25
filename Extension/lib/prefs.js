@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { backgroundPage } from './api/background-page';
+import { browser } from './api/browser';
 import { lazyGet } from './utils/lazy';
 
 /**
@@ -104,12 +104,12 @@ export const prefs = (() => {
         get ICONS() {
             return lazyGet(Prefs, 'ICONS', () => ({
                 ICON_GREEN: {
-                    '19': backgroundPage.getURL('assets/icons/green-19.png'),
-                    '38': backgroundPage.getURL('assets/icons/green-38.png'),
+                    '19': browser.runtime.getURL('assets/icons/green-19.png'),
+                    '38': browser.runtime.getURL('assets/icons/green-38.png'),
                 },
                 ICON_GRAY: {
-                    '19': backgroundPage.getURL('assets/icons/gray-19.png'),
-                    '38': backgroundPage.getURL('assets/icons/gray-38.png'),
+                    '19': browser.runtime.getURL('assets/icons/gray-19.png'),
+                    '38': browser.runtime.getURL('assets/icons/gray-38.png'),
                 },
             }));
         },

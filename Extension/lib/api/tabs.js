@@ -17,125 +17,11 @@
 
 /* eslint-disable max-len */
 
-import { browser } from '../browser';
-
+import { browser } from './browser';
 import { utils, toTabFromChromeTab } from '../utils/common';
 import { prefs } from '../prefs';
-import { backgroundPage } from './background-page';
 import { browserUtils } from '../utils/browser-utils';
 import { log } from '../utils/log';
-
-/**
- * !IMPORTANT!
- * This function also patches browser.windows implementation for Firefox for Android
- * Chromium windows implementation
- * @type {{onCreated, onRemoved, onUpdated, create, getLastFocused, forEachNative}}
- */
-export const windowsImpl = (function () {
-    function toWindowFromChromeWindow(chromeWin) {
-        return {
-            windowId: chromeWin.id,
-            type: chromeWin.type === 'normal' || chromeWin.type === 'popup' ? chromeWin.type : 'other',
-        };
-    }
-
-    // Make compatible with Android WebExt
-    if (typeof browser.windows === 'undefined') {
-        browser.windows = (function () {
-            const defaultWindow = {
-                id: 1,
-                type: 'normal',
-            };
-
-            const emptyListener = {
-                addListener() {
-                    // Doing nothing
-                },
-            };
-
-            const create = function (createData, callback) {
-                callback(defaultWindow);
-            };
-
-            const update = function (windowId, data, callback) {
-                callback();
-            };
-
-            const getAll = function (query, callback) {
-                callback(defaultWindow);
-            };
-
-            const getLastFocused = function (callback) {
-                callback(defaultWindow);
-            };
-
-            return {
-                onCreated: emptyListener,
-                onRemoved: emptyListener,
-                onFocusChanged: emptyListener,
-                create,
-                update,
-                getAll,
-                getLastFocused,
-            };
-        })();
-    }
-
-    const onCreatedChannel = utils.channels.newChannel();
-    const onRemovedChannel = utils.channels.newChannel();
-    const onUpdatedChannel = utils.channels.newChannel();
-
-    // https://developer.chrome.com/extensions/windows#event-onCreated
-    // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/onCreated
-    browser.windows.onCreated.addListener((chromeWin) => {
-        onCreatedChannel.notify(toWindowFromChromeWindow(chromeWin), chromeWin);
-    });
-
-    // https://developer.chrome.com/extensions/windows#event-onRemoved
-    // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/onRemoved
-    browser.windows.onRemoved.addListener((windowId) => {
-        onRemovedChannel.notify(windowId);
-    });
-
-    const create = function (createData, callback) {
-        // https://developer.chrome.com/extensions/windows#method-create
-        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/create
-        browser.windows.create(createData, (chromeWin) => {
-            callback(toWindowFromChromeWindow(chromeWin), chromeWin);
-        });
-    };
-
-    const forEachNative = function (callback) {
-        // https://developer.chrome.com/extensions/windows#method-getAll
-        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/getAll
-        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/569
-        browser.windows.getAll({}, (chromeWins) => {
-            for (let i = 0; i < chromeWins.length; i++) {
-                const chromeWin = chromeWins[i];
-                callback(chromeWin, toWindowFromChromeWindow(chromeWin));
-            }
-        });
-    };
-
-    const getLastFocused = function (callback) {
-        // https://developer.chrome.com/extensions/windows#method-getLastFocused
-        browser.windows.getLastFocused((chromeWin) => {
-            callback(chromeWin.id);
-        });
-    };
-
-    return {
-
-        onCreated: onCreatedChannel, // callback (adguardWin, nativeWin)
-        onRemoved: onRemovedChannel, // callback (windowId)
-        onUpdated: onUpdatedChannel, // empty
-
-        create,
-        getLastFocused,
-
-        forEachNative,
-    };
-})();
 
 /**
  * Chromium tabs implementation
@@ -157,6 +43,28 @@ export const tabsImpl = (function () {
         }
         return ex;
     }
+
+    /**
+     * Returns id of active tab
+     * @returns {Promise<number|null>}
+     */
+    const getActive = async function () {
+        /**
+         * lastFocusedWindow parameter isn't supported by Opera
+         * But seems currentWindow has the same effect in our case.
+         * See for details:
+         * https://developer.chrome.com/extensions/windows#current-window
+         * https://dev.opera.com/extensions/tab-window/#accessing-the-current-tab
+         * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/query
+         */
+        const tabs = await browser.tabs.query({ currentWindow: true, active: true });
+
+        if (tabs && tabs.length > 0) {
+            return tabs[0].id;
+        }
+
+        return null;
+    };
 
     // https://developer.chrome.com/extensions/tabs#event-onCreated
     const onCreatedChannel = utils.channels.newChannel();
@@ -183,39 +91,42 @@ export const tabsImpl = (function () {
     });
 
     // https://developer.chrome.com/extensions/windows#event-onFocusChanged
-    browser.windows.onFocusChanged.addListener((windowId) => {
+    browser.windows.onFocusChanged.addListener(async (windowId) => {
         if (windowId === browser.windows.WINDOW_ID_NONE) {
             return;
         }
-        getActive(onActivatedChannel.notify);
+        const tabId = await getActive();
+        if (tabId) {
+            onActivatedChannel.notify(tabId);
+        }
     });
 
     /**
      * Give focus to a window
      * @param tabId Tab identifier
      * @param windowId Window identifier
-     * @param callback Callback
      */
-    function focusWindow(tabId, windowId, callback) {
+    async function focusWindow(tabId, windowId) {
         /**
          * Updating already focused window produces bug in Edge browser
-         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/675
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/675 // TODO check if bug is correctly handled
          */
-        getActive((activeTabId) => {
-            if (tabId !== activeTabId) {
-                // Focus window
-                browser.windows.update(windowId, { focused: true }, () => {
-                    if (checkLastError(`Update window ${windowId}`)) {
-                        return;
-                    }
-                    callback();
-                });
+        const activeTabId = await getActive();
+        if (activeTabId && tabId !== activeTabId) {
+            // Focus window
+            try {
+                await browser.windows.update(windowId, { focused: true });
+            } catch (e) {
+                checkLastError(`Update window ${windowId}`);
             }
-            callback();
-        });
+        }
     }
 
-    const create = function (createData, callback) {
+    /**
+     * Creates new tab
+     * @param createData
+     */
+    const create = async function (createData) {
         const { url } = createData;
         const active = createData.active === true;
 
@@ -226,35 +137,35 @@ export const tabsImpl = (function () {
             && !prefs.mobile) {
             // https://developer.chrome.com/extensions/windows#method-create
             // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/create
-            browser.windows.create({
+            await browser.windows.create({
                 url,
                 type: 'popup',
                 width: 1230,
                 height: 630,
-            }, callback);
+            });
             return;
         }
 
         const isHttp = url.indexOf('http') === 0;
 
-        function onWindowFound(win) {
+        async function onWindowFound(win) {
             // https://developer.chrome.com/extensions/tabs#method-create
-            browser.tabs.create({
+            const chromeTab = await browser.tabs.create({
                 /**
                  * In the Firefox browser for Android there is not concept of windows
                  * There is only one window whole time
-                 * Thats why if we try to provide windowId, method fails with error.
+                 * That's why if we try to provide windowId, method fails with error.
                  */
                 windowId: !prefs.mobile ? win.id : undefined,
                 url,
                 active,
-            }, (chromeTab) => {
-                if (active) {
-                    focusWindow(chromeTab.id, chromeTab.windowId, () => {
-                    });
-                }
-                callback(toTabFromChromeTab(chromeTab));
             });
+
+            if (active) {
+                await focusWindow(chromeTab.id, chromeTab.windowId);
+            }
+
+            return toTabFromChromeTab(chromeTab);
         }
 
         function isAppropriateWindow(win) {
@@ -266,54 +177,66 @@ export const tabsImpl = (function () {
         // https://developer.chrome.com/extensions/windows#method-getLastFocused
         // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/create
         // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/getLastFocused
-        browser.windows.getLastFocused((win) => {
-            if (isAppropriateWindow(win)) {
-                onWindowFound(win);
-                return;
-            }
+        const win = await browser.windows.getLastFocused();
 
-            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/569
-            browser.windows.getAll({}, (wins) => {
-                if (wins) {
-                    for (let i = 0; i < wins.length; i++) {
-                        const win = wins[i];
-                        if (isAppropriateWindow(win)) {
-                            onWindowFound(win);
-                            return;
-                        }
-                    }
+        if (isAppropriateWindow(win)) {
+            return onWindowFound(win);
+        }
+
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/569
+        const wins = await browser.windows.getAll({});
+
+        if (wins) {
+            for (let i = 0; i < wins.length; i += 1) {
+                const win = wins[i];
+                if (isAppropriateWindow(win)) {
+                    return onWindowFound(win);
                 }
+            }
+        }
 
-                // Create new window
-                browser.windows.create({}, onWindowFound);
-            });
-        });
+        // Create new window
+        const newWin = await browser.windows.create({});
+        return onWindowFound(newWin);
     };
 
-    const remove = function (tabId, callback) {
+    const remove = async (tabId) => {
         // https://developer.chrome.com/extensions/tabs#method-remove
         // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/remove
-        browser.tabs.remove(tabIdToInt(tabId), () => {
+        try {
+            await browser.tabs.remove(tabIdToInt(tabId));
+        } catch (e) {
+            // TODO check this errors handling
             if (checkLastError()) {
                 return;
             }
-            callback(tabId);
-        });
+        }
+        return tabId;
     };
 
-    const activate = function (tabId, callback) {
-        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/update
-        browser.tabs.update(tabIdToInt(tabId), { active: true }, (chromeTab) => {
-            if (checkLastError('Before tab update')) {
-                return;
-            }
-            focusWindow(tabId, chromeTab.windowId, () => {
-                callback(tabId);
-            });
-        });
+    const activate = async function (tabId) {
+        try {
+            // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/update
+            const chromeTab = await browser.tabs.update(tabIdToInt(tabId), { active: true });
+            await focusWindow(tabId, chromeTab.windowId);
+            return tabId;
+        } catch (e) {
+            // TODO check this error handling is useful with async/await
+            checkLastError('Before tab update');
+        }
     };
 
-    const reload = function (tabId, url) {
+    const sendMessage = function (tabId, message, responseCallback, options) {
+        // https://developer.chrome.com/extensions/tabs#method-sendMessage
+        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/sendMessage
+        if (typeof options === 'object' && browser.tabs.sendMessage) {
+            browser.tabs.sendMessage(tabIdToInt(tabId), message, options, responseCallback);
+            return;
+        }
+        browser.tabs.sendMessage(tabIdToInt(tabId), message, responseCallback);
+    };
+
+    const reload = async (tabId, url) => {
         if (url) {
             if (browserUtils.isEdgeBrowser()) {
                 /**
@@ -336,13 +259,21 @@ export const tabsImpl = (function () {
                     sendMessage(tabId, { type: 'update-tab-url', url });
                 }, 100);
             } else {
-                browser.tabs.update(tabIdToInt(tabId), { url }, checkLastError);
+                try {
+                    await browser.tabs.update(tabIdToInt(tabId), { url });
+                } catch (e) {
+                    checkLastError('Tab update');
+                }
             }
         } else {
             // https://developer.chrome.com/extensions/tabs#method-reload
             // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/reload#Browser_compatibility
             if (browser.tabs.reload) {
-                browser.tabs.reload(tabIdToInt(tabId), { bypassCache: true }, checkLastError);
+                try {
+                    browser.tabs.reload(tabIdToInt(tabId), { bypassCache: true });
+                } catch (e) {
+                    checkLastError('Tab reload');
+                }
             } else {
                 // Reload page without cache via content script
                 sendMessage(tabId, { type: 'no-cache-reload' });
@@ -350,57 +281,31 @@ export const tabsImpl = (function () {
         }
     };
 
-    var sendMessage = function (tabId, message, responseCallback, options) {
-        // https://developer.chrome.com/extensions/tabs#method-sendMessage
-        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/sendMessage
-        if (typeof options === 'object' && browser.tabs.sendMessage) {
-            browser.tabs.sendMessage(tabIdToInt(tabId), message, options, responseCallback);
-            return;
-        }
-        (browser.tabs.sendMessage || browser.tabs.sendRequest)(tabIdToInt(tabId), message, responseCallback);
-    };
-
-    const getAll = function (callback) {
+    const getAll = async () => {
         // https://developer.chrome.com/extensions/tabs#method-query
         // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/query
-        browser.tabs.query({}, (chromeTabs) => {
-            const result = [];
-            for (let i = 0; i < chromeTabs.length; i++) {
-                const chromeTab = chromeTabs[i];
-                result.push(toTabFromChromeTab(chromeTab));
-            }
-            callback(result);
-        });
-    };
-
-    var getActive = function (callback) {
-        /**
-         * lastFocusedWindow parameter isn't supported by Opera
-         * But seems currentWindow has the same effect in our case.
-         * See for details:
-         * https://developer.chrome.com/extensions/windows#current-window
-         * https://dev.opera.com/extensions/tab-window/#accessing-the-current-tab
-         * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/query
-         */
-        browser.tabs.query({ currentWindow: true, active: true }, (tabs) => {
-            if (tabs && tabs.length > 0) {
-                callback(tabs[0].id);
-            }
-        });
+        const chromeTabs = await browser.tabs.query({});
+        const result = [];
+        for (let i = 0; i < chromeTabs.length; i += 1) {
+            const chromeTab = chromeTabs[i];
+            result.push(toTabFromChromeTab(chromeTab));
+        }
+        return result;
     };
 
     /**
      * Gets tab by id
      * @param tabId Tab identifier
-     * @param callback
      */
-    const get = function (tabId, callback) {
-        browser.tabs.get(tabIdToInt(tabId), (chromeTab) => {
-            if (browser.runtime.lastError) {
-                return;
-            }
-            callback(toTabFromChromeTab(chromeTab));
-        });
+    const get = async (tabId) => {
+        console.log(tabId);
+        try {
+            const chromeTab = await browser.tabs.get(tabIdToInt(tabId));
+            return toTabFromChromeTab(chromeTab);
+        } catch (e) {
+            // TODO check if runtime.lastError is visible in this check
+            checkLastError('Get tab');
+        }
     };
 
     /**
@@ -408,8 +313,9 @@ export const tabsImpl = (function () {
      * unnecessary console warnings (can happen with Chrome preloaded tabs).
      * See https://stackoverflow.com/questions/43665470/cannot-call-chrome-tabs-executescript-into-preloaded-tab-is-this-a-bug-in-chr
      */
-    const noopCallback = function () {
-        backgroundPage.runtime.lastError;
+    const noopCallback = () => {
+        // eslint-disable-next-line no-unused-expressions
+        browser.runtime.lastError;
     };
 
     /**
@@ -417,11 +323,16 @@ export const tabsImpl = (function () {
      * @param {number} tabId
      * @param {string} url
      */
-    const updateUrl = (tabId, url) => {
+    const updateUrl = async (tabId, url) => {
         if (tabId === 0) {
             return;
         }
-        browser.tabs.update(tabId, { url }, noopCallback);
+        try {
+            await browser.tabs.update(tabId, { url });
+        } catch (e) {
+            // TODO check if this error handling worth it
+            noopCallback();
+        }
     };
 
     /**
@@ -437,7 +348,7 @@ export const tabsImpl = (function () {
      * @param {number} requestFrameId Target frame id (CSS will be inserted into that frame)
      * @param {number} code CSS code to insert
      */
-    const insertCssCode = !browser.tabs.insertCSS ? undefined : function (tabId, requestFrameId, code) {
+    const insertCssCode = !browser.tabs.insertCSS ? undefined : async (tabId, requestFrameId, code) => {
         const injectDetails = {
             code,
             runAt: 'document_start',
@@ -451,11 +362,11 @@ export const tabsImpl = (function () {
         }
 
         try {
-            browser.tabs.insertCSS(tabId, injectDetails, noopCallback);
+            await browser.tabs.insertCSS(tabId, injectDetails);
         } catch (e) {
             // e.message in edge is undefined
             const errorMessage = e.message || e;
-            // Some browsers do not support user css origin
+            // Some browsers do not support user css origin // TODO which one?
             if (/\bcssOrigin\b/.test(errorMessage)) {
                 userCSSSupport = false;
             }
@@ -470,13 +381,18 @@ export const tabsImpl = (function () {
      * @param {requestFrameId} requestFrameId Target frame id (script will be injected into that frame)
      * @param {requestFrameId} code Javascript code to execute
      */
-    const executeScriptCode = !browser.tabs.executeScript ? undefined : function (tabId, requestFrameId, code) {
-        browser.tabs.executeScript(tabId, {
-            code,
-            frameId: requestFrameId,
-            runAt: 'document_start',
-            matchAboutBlank: true,
-        }, noopCallback);
+    const executeScriptCode = !browser.tabs.executeScript ? undefined : async (tabId, requestFrameId, code) => {
+        try {
+            await browser.tabs.executeScript(tabId, {
+                code,
+                frameId: requestFrameId,
+                runAt: 'document_start',
+                matchAboutBlank: true,
+            });
+        } catch (e) {
+            // TODO May be worth to remove
+            noopCallback();
+        }
     };
 
     /**
@@ -489,28 +405,25 @@ export const tabsImpl = (function () {
      * @param {number} [options.frameId=0] - id of the frame, default to the 0;
      * @param {function} callback Called when the script injection is complete
      */
-    const executeScriptFile = !browser.tabs.executeScript
-        ? undefined
-        : (tabId, options, callback) => {
-            const { file, frameId = 0 } = options;
-            const executeScriptOptions = {
-                file,
-                runAt: 'document_start',
-            };
-
-            // Chrome 49 throws an exception if browser.tabs.executeScript is called
-            // with a frameId equal to 0
-            if (frameId !== 0) {
-                executeScriptOptions.frameId = frameId;
-            }
-
-            browser.tabs.executeScript(tabId, executeScriptOptions, () => {
-                noopCallback();
-                if (callback) {
-                    callback();
-                }
-            });
+    const executeScriptFile = !browser.tabs.executeScript ? undefined : async (tabId, options) => {
+        const { file, frameId = 0 } = options;
+        const executeScriptOptions = {
+            file,
+            runAt: 'document_start',
         };
+
+        // Chrome 49 throws an exception if browser.tabs.executeScript is called
+        // with a frameId equal to 0
+        if (frameId !== 0) {
+            executeScriptOptions.frameId = frameId;
+        }
+
+        try {
+            await browser.tabs.executeScript(tabId, executeScriptOptions);
+        } catch (e) {
+            noopCallback();
+        }
+    };
 
     return {
 

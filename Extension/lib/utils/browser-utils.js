@@ -20,7 +20,7 @@ import { localStorage } from '../storage';
 import { collections } from './collections';
 import { tabsApi } from '../tabs/tabs-api';
 import { backgroundPage } from '../api/background-page';
-import { browser } from '../browser';
+import { browser } from '../api/browser';
 
 export const browserUtils = (function () {
     /**
@@ -295,12 +295,12 @@ export const browserUtils = (function () {
          * @param {Array<string>} [origins]
          * @returns {Promise<boolean>}
          */
-        containsPermissions: (permissions, origins) => new Promise((resolve) => {
-            browser.permissions.contains({
+        containsPermissions: (permissions, origins) => {
+            return browser.permissions.contains({
                 permissions,
                 origins,
-            }, resolve);
-        }),
+            });
+        },
 
         /**
          * Requests required permission
@@ -308,12 +308,12 @@ export const browserUtils = (function () {
          * @param {Array<string>} [origins]
          * @returns {Promise<any>}
          */
-        requestPermissions: (permissions, origins) => new Promise((resolve) => {
-            browser.permissions.request({
+        requestPermissions: (permissions, origins) => {
+            return browser.permissions.request({
                 permissions,
                 origins,
-            }, resolve);
-        }),
+            });
+        },
 
         /**
          * Removes unused permissions
@@ -321,12 +321,12 @@ export const browserUtils = (function () {
          * @param {Array<string>} [origins]
          * @returns {Promise<any>}
          */
-        removePermission: (permissions, origins) => new Promise((resolve) => {
-            browser.permissions.remove({
+        removePermission: (permissions, origins) => {
+            return browser.permissions.remove({
                 permissions,
                 origins,
-            }, resolve);
-        }),
+            });
+        },
     };
 
     return browserUtils;

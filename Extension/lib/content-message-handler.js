@@ -262,9 +262,12 @@ const init = () => {
                 break;
             case 'openSafebrowsingTrusted':
                 safebrowsing.addToSafebrowsingTrusted(message.url);
-                tabsApi.getActive((tab) => {
-                    tabsApi.reload(tab.tabId, message.url);
-                });
+                (async () => {
+                    const tab = await tabsApi.getActive();
+                    if (tab) {
+                        tabsApi.reload(tab.tabId, message.url);
+                    }
+                })();
                 break;
             case 'openTab':
                 uiService.openTab(message.url, message.options);
@@ -335,10 +338,13 @@ const init = () => {
                     const frameInfo = frames.getFrameInfo({ tabId: message.tabId });
                     return { frameInfo };
                 }
-                tabsApi.getActive((tab) => {
-                    const frameInfo = frames.getFrameInfo(tab);
-                    callback({ frameInfo });
-                });
+                (async () => {
+                    const tab = await tabsApi.getActive();
+                    if (tab) {
+                        const frameInfo = frames.getFrameInfo(tab);
+                        callback({ frameInfo });
+                    }
+                })();
                 return true; // Async
 
             case 'getFilteringInfoByTabId': {
@@ -365,14 +371,21 @@ const init = () => {
                 break;
             // Popup methods
             case 'addWhiteListDomainPopup':
-                tabsApi.getActive((tab) => {
-                    uiService.whiteListTab(tab);
-                });
+                (async () => {
+                    const tab = await tabsApi.getActive();
+                    if (tab) {
+                        uiService.whiteListTab(tab);
+                    }
+                })();
                 break;
             case 'removeWhiteListDomainPopup':
-                tabsApi.getActive((tab) => {
-                    uiService.unWhiteListTab(tab);
-                });
+                (async () => {
+                    const tab = tabsApi.getActive();
+                    if (tab) {
+                        uiService.unWhiteListTab(tab);
+                    }
+                })();
+
                 break;
             case 'changeApplicationFilteringDisabled':
                 uiService.changeApplicationFilteringDisabled(message.disabled);
@@ -390,22 +403,25 @@ const init = () => {
                 uiService.openAssistant();
                 break;
             case 'getTabInfoForPopup':
-                tabsApi.getActive((tab) => {
-                    const frameInfo = frames.getFrameInfo(tab);
-                    callback({
-                        frameInfo,
-                        options: {
-                            showStatsSupported: true,
-                            isFirefoxBrowser: browserUtils.isFirefoxBrowser(),
-                            showInfoAboutFullVersion: settings.isShowInfoAboutAdguardFullVersion(),
-                            isMacOs: browserUtils.isMacOs(),
-                            isEdgeBrowser: browserUtils.isEdgeBrowser()
-                                || browserUtils.isEdgeChromiumBrowser(),
-                            notification: notifications.getCurrentNotification(),
-                            isDisableShowAdguardPromoInfo: settings.isDisableShowAdguardPromoInfo(),
-                        },
-                    });
-                });
+                (async () => {
+                    const tab = tabsApi.getActive();
+                    if (tab) {
+                        const frameInfo = frames.getFrameInfo(tab);
+                        callback({
+                            frameInfo,
+                            options: {
+                                showStatsSupported: true,
+                                isFirefoxBrowser: browserUtils.isFirefoxBrowser(),
+                                showInfoAboutFullVersion: settings.isShowInfoAboutAdguardFullVersion(),
+                                isMacOs: browserUtils.isMacOs(),
+                                isEdgeBrowser: browserUtils.isEdgeBrowser()
+                                    || browserUtils.isEdgeChromiumBrowser(),
+                                notification: notifications.getCurrentNotification(),
+                                isDisableShowAdguardPromoInfo: settings.isDisableShowAdguardPromoInfo(),
+                            },
+                        });
+                    }
+                })();
                 return true; // Async
             case 'setNotificationViewed':
                 notifications.setNotificationViewed(message.withDelay);

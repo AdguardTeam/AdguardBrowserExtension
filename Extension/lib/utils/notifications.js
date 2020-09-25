@@ -166,7 +166,7 @@ export const notifications = (function () {
      * Marks current notification as viewed
      * @param {boolean} withDelay if true, do this after a 30 sec delay
      */
-    const setNotificationViewed = function (withDelay) {
+    const setNotificationViewed = async function (withDelay) {
         if (withDelay) {
             clearTimeout(timeoutId);
             timeoutId = setTimeout(() => {
@@ -181,7 +181,10 @@ export const notifications = (function () {
             if (!viewedNotifications.includes(id)) {
                 viewedNotifications.push(id);
                 localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
-                tabsApi.getActive(uiService.updateTabIconAndContextMenu);
+                const tab = await tabsApi.getActive();
+                if (tab) {
+                    uiService.updateTabIconAndContextMenu(tab);
+                }
                 currentNotification = null;
             }
         }

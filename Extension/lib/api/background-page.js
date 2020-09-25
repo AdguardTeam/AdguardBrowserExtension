@@ -20,7 +20,7 @@
 import { RequestTypes, parseContentTypeFromUrlPath } from '../utils/request-types';
 import { BACKGROUND_TAB_ID, toTabFromChromeTab } from '../utils/common';
 import { runtimeImpl } from '../common-script';
-import { browser } from '../browser';
+import { browser } from './browser';
 import { prefs } from '../prefs';
 
 export const backgroundPage = (() => {
@@ -561,7 +561,7 @@ export const backgroundPage = (() => {
 
     const browserAction = {
         /* eslint-disable-next-line no-unused-vars */
-        setBrowserAction(tab, icon, badge, badgeColor, title) {
+        async setBrowserAction(tab, icon, badge, badgeColor, title) {
             if (!browserActionSupported) {
                 return;
             }
@@ -596,7 +596,13 @@ export const backgroundPage = (() => {
                 return;
             }
 
-            browser.browserAction.setIcon({ tabId, path: icon }, onIconReady);
+            try {
+                await browser.browserAction.setIcon({ tabId, path: icon });
+            } catch (e) {
+                console.log(browser.runtime.lastError);
+                console.log(e);
+            }
+            onIconReady();
         },
         setPopup() {
             // Do nothing. Popup is already installed in manifest file
