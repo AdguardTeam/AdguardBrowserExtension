@@ -221,9 +221,8 @@ const safebrowsing = (function () {
      * Performs lookup to safebrowsing service
      *
      * @param requestUrl        Request URL
-     * @param lookupUrlCallback Called on successful check
      */
-    const lookupUrlWithCallback = async function (requestUrl, lookupUrlCallback) {
+    const lookupUrlWithCallback = async function (requestUrl) {
         const host = utils.url.getHost(requestUrl);
         if (!host) {
             return;
@@ -235,10 +234,9 @@ const safebrowsing = (function () {
         }
 
         // try find request url in cache
-        const sbList = checkHostsInSbCache(hosts);
+        let sbList = checkHostsInSbCache(hosts);
         if (sbList) {
-            lookupUrlCallback(createResponse(sbList));
-            return;
+            return createResponse(sbList);
         }
 
         // check safebrowsing is active
@@ -261,37 +259,37 @@ const safebrowsing = (function () {
             // In case we have not found anything in safebrowsingCache and all short hashes have been checked in
             // safebrowsingRequestsCache - means that there is no need to request backend again
             safebrowsingCache.cache.saveValue(createHash(host), SB_WHITE_LIST);
-            lookupUrlCallback(createResponse(SB_WHITE_LIST));
-        } else {
-            let response;
-            try {
-                response = await backend.lookupSafebrowsing(shortHashes);
-            } catch (e) {
-                log.error('Error response from safebrowsing lookup server for {0}', host);
-                suspendSafebrowsing();
-            }
-
-            if (response.status >= 500) {
-                // Error on server side, suspend request
-                // eslint-disable-next-line max-len
-                log.error('Error response status {0} received from safebrowsing lookup server.', response.status);
-                suspendSafebrowsing();
-                return;
-            }
-            resumeSafebrowsing();
-
-            shortHashes.forEach((x) => {
-                safebrowsingRequestsCache.set(x, true);
-            });
-
-            let sbList = SB_WHITE_LIST;
-            if (response.status !== 204) {
-                sbList = processSbResponse(response.responseText, hashesMap) || SB_WHITE_LIST;
-            }
-
-            safebrowsingCache.cache.saveValue(createHash(host), sbList);
-            lookupUrlCallback(createResponse(sbList));
+            return createResponse(SB_WHITE_LIST);
         }
+
+        let response;
+        try {
+            response = await backend.lookupSafebrowsing(shortHashes);
+        } catch (e) {
+            log.error('Error response from safebrowsing lookup server for {0}', host);
+            suspendSafebrowsing();
+        }
+
+        if (response.status >= 500) {
+            // Error on server side, suspend request
+            // eslint-disable-next-line max-len
+            log.error('Error response status {0} received from safebrowsing lookup server.', response.status);
+            suspendSafebrowsing();
+            return;
+        }
+        resumeSafebrowsing();
+
+        shortHashes.forEach((x) => {
+            safebrowsingRequestsCache.set(x, true);
+        });
+
+        sbList = SB_WHITE_LIST;
+        if (response.status !== 204) {
+            sbList = processSbResponse(response.responseText, hashesMap) || SB_WHITE_LIST;
+        }
+
+        safebrowsingCache.cache.saveValue(createHash(host), sbList);
+        return createResponse(sbList);
     };
 
     /**
@@ -300,25 +298,23 @@ const safebrowsing = (function () {
      *
      * @param requestUrl Request URL
      * @param referrerUrl Referrer URL
-     * @param safebrowsingCallback Called when check has been finished
      */
-    const checkSafebrowsingFilter = function (requestUrl, referrerUrl, safebrowsingCallback) {
+    const checkSafebrowsingFilter = async function (requestUrl, referrerUrl) {
         if (!settings.safebrowsingInfoEnabled()) {
             return;
         }
 
         log.debug('Checking safebrowsing filter for {0}', requestUrl);
 
-        const callback = function (sbList) {
-            if (!sbList) {
-                log.debug('No safebrowsing rule found');
-                return;
-            }
-            log.debug('Following safebrowsing filter has been fired: {0}', sbList);
-            safebrowsingCallback(getErrorPageURL(requestUrl, referrerUrl, sbList));
-        };
+        const sbList = await lookupUrlWithCallback(requestUrl);
 
-        lookupUrlWithCallback(requestUrl, callback);
+        if (!sbList) {
+            log.debug('No safebrowsing rule found');
+            return;
+        }
+
+        log.debug('Following safebrowsing filter has been fired: {0}', sbList);
+        return getErrorPageURL(requestUrl, referrerUrl, sbList);
     };
 
     /**

@@ -27,7 +27,7 @@ describe('safebrowsing', () => {
         expect(sbList).toBe('adguard-phishing-shavar');
     });
 
-    it('Test cache', (done) => {
+    it('Test cache', async () => {
         let counter = 0;
         // Mock backend request
         jest.spyOn(backend, 'lookupSafebrowsing').mockImplementation(() => {
@@ -37,20 +37,17 @@ describe('safebrowsing', () => {
         });
 
         const testUrl = 'http://google.com';
-        safebrowsing.lookupUrlWithCallback(testUrl, (response) => {
-            expect(response).toBeFalsy();
-            expect(counter).toBe(1);
+        const response = await safebrowsing.lookupUrlWithCallback(testUrl);
+        expect(response).toBeFalsy();
+        expect(counter).toBe(1);
 
-            safebrowsing.lookupUrlWithCallback(testUrl, (response) => {
-                expect(response).toBeFalsy();
-                // Check there was only one request to backend
-                expect(counter).toBe(1);
-                done();
-            });
-        });
+        const response2 = await safebrowsing.lookupUrlWithCallback(testUrl);
+        expect(response2).toBeFalsy();
+        // Check there was only one request to backend
+        expect(counter).toBe(1);
     });
 
-    it('Test requests cache', (done) => {
+    it('Test requests cache', async () => {
         let counter = 0;
         let hashesChecked = [];
 
@@ -67,33 +64,29 @@ describe('safebrowsing', () => {
         const testUrlOne = 'http://google.co.jp';
         const testUrlTwo = 'http://yahoo.co.jp';
         const testUrlThree = 'http://co.jp';
-        safebrowsing.lookupUrlWithCallback(testUrlOne, (response) => {
-            expect(!response).toBeTruthy();
-            expect(counter).toBe(1);
-            expect(hashesChecked.length).toBe(2);
-            expect(hashesChecked[0]).toBe('6830');
-            expect(hashesChecked[1]).toBe('D617');
+        let response = await safebrowsing.lookupUrlWithCallback(testUrlOne);
 
-            hashesChecked = [];
+        expect(!response).toBeTruthy();
+        expect(counter).toBe(1);
+        expect(hashesChecked.length).toBe(2);
+        expect(hashesChecked[0]).toBe('6830');
+        expect(hashesChecked[1]).toBe('D617');
 
-            safebrowsing.lookupUrlWithCallback(testUrlTwo, (response) => {
-                expect(!response).toBeTruthy();
-                // One new hash added
-                expect(counter).toBe(2);
-                expect(hashesChecked.length).toBe(1);
-                expect(hashesChecked[0]).toBe('20E4');
+        hashesChecked = [];
 
-                hashesChecked = [];
+        response = await safebrowsing.lookupUrlWithCallback(testUrlTwo);
+        expect(!response).toBeTruthy();
+        // One new hash added
+        expect(counter).toBe(2);
+        expect(hashesChecked.length).toBe(1);
+        expect(hashesChecked[0]).toBe('20E4');
 
-                safebrowsing.lookupUrlWithCallback(testUrlThree, (response) => {
-                    expect(!response).toBeTruthy();
-                    // All hashes have been checked already - so there was no request to backend
-                    expect(counter).toBe(2);
-                    expect(hashesChecked.length).toBe(0);
+        hashesChecked = [];
 
-                    done();
-                });
-            });
-        });
+        response = await safebrowsing.lookupUrlWithCallback(testUrlThree);
+        expect(!response).toBeTruthy();
+        // All hashes have been checked already - so there was no request to backend
+        expect(counter).toBe(2);
+        expect(hashesChecked.length).toBe(0);
     });
 });
