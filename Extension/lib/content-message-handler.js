@@ -106,6 +106,19 @@
         }
     }
 
+    /**
+     * Waits for localStorage to be initialized
+     */
+    const waitLocalStorageInitialized = () => {
+        const result = adguard.localStorage.isInitialized();
+        if (result) {
+            return result;
+        }
+        setTimeout(() => {
+            waitLocalStorageInitialized();
+        }, 500);
+    };
+
 
     /**
      * Main function for processing messages from content-scripts
@@ -386,6 +399,8 @@
             case 'addToTrusted':
                 adguard.rules.documentFilterService.addToTrusted(message.url, message.rule);
                 break;
+            case 'waitLocalStorageInitialized':
+                return waitLocalStorageInitialized();
             default:
                 // Unhandled message
                 return true;
