@@ -2178,39 +2178,12 @@ const initPage = function (response) {
     }
 };
 
-const browser = window.browser || chrome;
-
-const backgroundPagePromise = new Promise((resolve, reject) => {
-    browser.runtime.getBackgroundPage((page) => {
-        if (browser.runtime.lastError) {
-            return reject(browser.runtime.lastError);
-        }
-        if (page) {
-            return resolve(page);
-        }
-        return reject(new Error('Runtime was unable to get background page'));
-    });
-});
-
-const waitStorageInit = (adguard) => {
-    const timeoutMs = 500;
-    if (!adguard.localStorage.isInitialized()) {
-        setTimeout(() => {
-            waitStorageInit(adguard);
-        }, timeoutMs);
-        return;
-    }
-    contentPage.sendMessage({ type: 'initializeFrameScript' }, initPage);
-};
-
 const init = () => {
-    backgroundPagePromise
-        .then((page) => {
-            waitStorageInit(page.adguard);
-        })
-        .catch((e) => {
-            console.log(e.message);
-        });
+    contentPage.sendMessage({ type: 'waitLocalStorageInitialized' }, (response) => {
+        if (response) {
+            contentPage.sendMessage({ type: 'initializeFrameScript' }, initPage);
+        }
+    });
 };
 
 export const options = {
