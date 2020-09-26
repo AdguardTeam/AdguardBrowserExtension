@@ -15,6 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global adguardApi */
+
 import * as TSUrlFilter from '@adguard/tsurlfilter';
 import { settingsProvider } from './settings/settings-provider';
 import { backgroundPage } from './api/background-page';
@@ -128,6 +130,19 @@ const init = () => {
             filteringLog.addCosmeticEvent(tab, stat.element, tab.url, RequestTypes.DOCUMENT, rule);
         }
     }
+
+    /**
+     * Waits for localStorage to be initialized
+     */
+    const waitLocalStorageInitialized = () => {
+        const result = adguard.localStorage.isInitialized();
+        if (result) {
+            return result;
+        }
+        setTimeout(() => {
+            waitLocalStorageInitialized();
+        }, 500);
+    };
 
 
     /**
@@ -447,6 +462,14 @@ const init = () => {
                 break;
             case 'disableGetPremiumNotification':
                 settings.disableShowAdguardPromoInfo();
+                break;
+            case 'addUrlToTrusted':
+                adguard.rules.documentFilterService.addToTrusted(message.url);
+                break;
+            case 'waitLocalStorageInitialized':
+                return waitLocalStorageInitialized();
+            case 'openAssistantInTab':
+                adguardApi.openAssistant(message.tabId);
                 break;
             default:
                 // Unhandled message
