@@ -132,20 +132,6 @@ const init = () => {
     }
 
     /**
-     * Waits for localStorage to be initialized
-     */
-    const waitLocalStorageInitialized = () => {
-        const result = adguard.localStorage.isInitialized();
-        if (result) {
-            return result;
-        }
-        setTimeout(() => {
-            waitLocalStorageInitialized();
-        }, 500);
-    };
-
-
-    /**
      * Main function for processing messages from content-scripts
      *
      * @param message
@@ -466,8 +452,8 @@ const init = () => {
             case 'addUrlToTrusted':
                 adguard.rules.documentFilterService.addToTrusted(message.url);
                 break;
-            case 'waitLocalStorageInitialized':
-                return waitLocalStorageInitialized();
+            case 'isLocalStorageInitialized':
+                return { isLocalStorageInitialized: localStorage.isInitialized() };
             case 'openAssistantInTab':
                 adguardApi.openAssistant(message.tabId);
                 break;

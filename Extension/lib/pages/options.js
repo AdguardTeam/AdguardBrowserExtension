@@ -2179,9 +2179,13 @@ const initPage = function (response) {
 };
 
 const init = () => {
-    contentPage.sendMessage({ type: 'waitLocalStorageInitialized' }, (response) => {
-        if (response) {
+    contentPage.sendMessage({ type: 'isLocalStorageInitialized' }, (response) => {
+        if (response.isLocalStorageInitialized) {
             contentPage.sendMessage({ type: 'initializeFrameScript' }, initPage);
+        } else {
+            setTimeout(() => {
+                init();
+            }, 500);
         }
     });
 };
