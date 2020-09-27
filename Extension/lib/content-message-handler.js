@@ -450,7 +450,7 @@ const init = () => {
                 settings.disableShowAdguardPromoInfo();
                 break;
             case 'addUrlToTrusted':
-                adguard.rules.documentFilterService.addToTrusted(message.url);
+                adguard.documentFilterService.addToTrusted(message.url);
                 break;
             case 'isLocalStorageInitialized':
                 return { isLocalStorageInitialized: localStorage.isInitialized() };
