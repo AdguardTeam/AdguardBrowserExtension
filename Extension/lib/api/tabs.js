@@ -36,12 +36,8 @@ export const tabsImpl = (function () {
         return Number.parseInt(tabId, 10);
     }
 
-    function checkLastError(operation) {
-        const ex = browser.runtime.lastError;
-        if (ex) {
-            log.error('Error while executing operation{1}: {0}', ex, operation ? ` '${operation}'` : '');
-        }
-        return ex;
+    function logOperationError(operation, e) {
+        log.error('Error while executing operation{1}: {0}', e, operation ? ` '${operation}'` : '');
     }
 
     /**
@@ -117,7 +113,7 @@ export const tabsImpl = (function () {
             try {
                 await browser.windows.update(windowId, { focused: true });
             } catch (e) {
-                checkLastError(`Update window ${windowId}`);
+                logOperationError(`Update window ${windowId}`, e);
             }
         }
     }
@@ -206,10 +202,7 @@ export const tabsImpl = (function () {
         try {
             await browser.tabs.remove(tabIdToInt(tabId));
         } catch (e) {
-            // TODO check this errors handling
-            if (checkLastError()) {
-                return;
-            }
+            return;
         }
         return tabId;
     };
@@ -221,8 +214,7 @@ export const tabsImpl = (function () {
             await focusWindow(tabId, chromeTab.windowId);
             return tabId;
         } catch (e) {
-            // TODO check this error handling is useful with async/await
-            checkLastError('Before tab update');
+            logOperationError('Before tab update', e);
         }
     };
 
@@ -262,7 +254,7 @@ export const tabsImpl = (function () {
                 try {
                     await browser.tabs.update(tabIdToInt(tabId), { url });
                 } catch (e) {
-                    checkLastError('Tab update');
+                    logOperationError('Tab update', e);
                 }
             }
         } else {
@@ -272,7 +264,7 @@ export const tabsImpl = (function () {
                 try {
                     browser.tabs.reload(tabIdToInt(tabId), { bypassCache: true });
                 } catch (e) {
-                    checkLastError('Tab reload');
+                    logOperationError('Tab reload', e);
                 }
             } else {
                 // Reload page without cache via content script
@@ -298,13 +290,11 @@ export const tabsImpl = (function () {
      * @param tabId Tab identifier
      */
     const get = async (tabId) => {
-        console.log(tabId);
         try {
             const chromeTab = await browser.tabs.get(tabIdToInt(tabId));
             return toTabFromChromeTab(chromeTab);
         } catch (e) {
-            // TODO check if runtime.lastError is visible in this check
-            checkLastError('Get tab');
+            logOperationError('Get tab', e);
         }
     };
 

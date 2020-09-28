@@ -380,7 +380,7 @@ const init = () => {
                 break;
             case 'removeWhiteListDomainPopup':
                 (async () => {
-                    const tab = tabsApi.getActive();
+                    const tab = await tabsApi.getActive();
                     if (tab) {
                         uiService.unWhiteListTab(tab);
                     }
@@ -404,7 +404,7 @@ const init = () => {
                 break;
             case 'getTabInfoForPopup':
                 (async () => {
-                    const tab = tabsApi.getActive();
+                    const tab = await tabsApi.getActive();
                     if (tab) {
                         const frameInfo = frames.getFrameInfo(tab);
                         callback({
