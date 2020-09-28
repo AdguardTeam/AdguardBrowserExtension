@@ -826,12 +826,11 @@ export const uiService = (function () {
      *
      * @param {boolean} selectElement - if true select the element on which the Mousedown event was
      */
-    const openAssistant = (selectElement) => {
+    const openAssistant = async (selectElement) => {
         if (tabsApi.executeScriptFile) {
             // Load Assistant code to the activate tab immediately
-            tabsApi.executeScriptFile(null, { file: '/lib/content-script/assistant/assistant.js' }, () => {
-                initAssistant(selectElement);
-            });
+            await tabsApi.executeScriptFile(null, { file: '/lib/content-script/assistant/assistant.js' });
+            initAssistant(selectElement);
         } else {
             // Manually start assistant
             initAssistant(selectElement);
