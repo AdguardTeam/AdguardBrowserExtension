@@ -299,16 +299,6 @@ export const tabsImpl = (function () {
     };
 
     /**
-     * The only purpose of this callback is to read `lastError` and prevent
-     * unnecessary console warnings (can happen with Chrome preloaded tabs).
-     * See https://stackoverflow.com/questions/43665470/cannot-call-chrome-tabs-executescript-into-preloaded-tab-is-this-a-bug-in-chr
-     */
-    const noopCallback = () => {
-        // eslint-disable-next-line no-unused-expressions
-        browser.runtime.lastError;
-    };
-
-    /**
      * Updates tab url
      * @param {number} tabId
      * @param {string} url
@@ -320,8 +310,7 @@ export const tabsImpl = (function () {
         try {
             await browser.tabs.update(tabId, { url });
         } catch (e) {
-            // TODO check if this error handling worth it
-            noopCallback();
+            log.error(e);
         }
     };
 
@@ -380,8 +369,7 @@ export const tabsImpl = (function () {
                 matchAboutBlank: true,
             });
         } catch (e) {
-            // TODO May be worth to remove
-            noopCallback();
+            log.error(e);
         }
     };
 
@@ -411,7 +399,7 @@ export const tabsImpl = (function () {
         try {
             await browser.tabs.executeScript(tabId, executeScriptOptions);
         } catch (e) {
-            noopCallback();
+            log.error(e);
         }
     };
 

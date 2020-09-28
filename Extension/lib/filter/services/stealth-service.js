@@ -502,7 +502,7 @@ export const stealthService = (() => {
                 }
                 return browserUtils.requestPermissions(['privacy']);
             })
-            .then(async granted => {
+            .then(async (granted) => {
                 if (granted) {
                     await handleBlockWebRTC();
                 } else {
