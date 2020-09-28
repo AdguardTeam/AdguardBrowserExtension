@@ -161,7 +161,7 @@ const webrequestInit = function () {
             tab,
             requestUrl,
             referrerUrl,
-            requestType
+            requestType,
         );
 
         requestRule = webRequestService.postProcessRequest(
@@ -169,7 +169,7 @@ const webrequestInit = function () {
             requestUrl,
             referrerUrl,
             requestType,
-            requestRule
+            requestRule,
         );
 
         if (requestRule) {
@@ -179,7 +179,7 @@ const webrequestInit = function () {
         const response = webRequestService.getBlockedResponseByRule(
             requestRule,
             requestType,
-            requestUrl
+            requestUrl,
         );
 
         if (requestRule
@@ -303,6 +303,41 @@ const webrequestInit = function () {
     }
 
     /**
+     * Safebrowsing check
+     *
+     * @param tab
+     * @param mainFrameUrl
+     */
+    async function filterSafebrowsing(tab, mainFrameUrl) {
+        if (frames.isTabProtectionDisabled(tab)
+            || frames.isTabWhiteListedForSafebrowsing(tab)) {
+            return;
+        }
+
+        const referrerUrl = browserUtils.getSafebrowsingBackUrl(tab);
+        const incognitoTab = frames.isIncognitoTab(tab);
+
+        const safebrowsingUrl = await safebrowsing.checkSafebrowsingFilter(mainFrameUrl, referrerUrl);
+
+        if (!safebrowsingUrl) {
+            return;
+        }
+
+        // Chrome doesn't allow open extension url in incognito mode
+        // Firefox allows but browser.runtime.getBackgroundPage() is not working in incognito mode
+        // TODO rewrite scripts for safebrowsing page without browser.runtime.getBackgroundPage()
+        //  and make firefox to open safebrowsing page in the incognito mode
+        if (incognitoTab) {
+            // Closing tab before opening a new one may lead to browser crash (Chromium)
+            uiService.openTab(safebrowsingUrl, {}, () => {
+                tabsApi.remove(tab.tabId);
+            });
+        } else {
+            tabsApi.reload(tab.tabId, safebrowsingUrl);
+        }
+    }
+
+    /**
      * On headers received callback function.
      * We do check request for safebrowsing
      * and check if websocket connections should be blocked.
@@ -310,7 +345,7 @@ const webrequestInit = function () {
      * @param requestDetails Request details
      * @returns {{responseHeaders: *}} Headers to send
      */
-    function onHeadersReceived(requestDetails) {
+    async function onHeadersReceived(requestDetails) {
         const { tab } = requestDetails;
         const { requestUrl } = requestDetails;
         let responseHeaders = requestDetails.responseHeaders || [];
@@ -329,7 +364,7 @@ const webrequestInit = function () {
             // Don't apply safebrowsing filter in case of redirect
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/995
             && statusCode !== 301 && statusCode !== 302) {
-            filterSafebrowsing(tab, requestUrl);
+            await filterSafebrowsing(tab, requestUrl);
         }
 
         // Content filtering will be undefined for chromium based builds
@@ -341,7 +376,7 @@ const webrequestInit = function () {
                 const contentType = browserUtils.getHeaderValueByName(responseHeaders, 'content-type');
 
                 const request = new TSUrlFilter.Request(
-                    requestUrl, referrerUrl, RequestTypes.transformRequestType(requestType)
+                    requestUrl, referrerUrl, RequestTypes.transformRequestType(requestType),
                 );
                 request.requestId = requestId;
                 request.tabId = tab.tabId;
@@ -353,7 +388,7 @@ const webrequestInit = function () {
                     request,
                     contentType,
                     replaceRules || [],
-                    htmlRules || []
+                    htmlRules || [],
                 );
             }
         }
@@ -434,37 +469,6 @@ const webrequestInit = function () {
          * https://bugs.chromium.org/p/chromium/issues/detail?id=513860
          */
         return cspHeaders;
-    }
-
-    /**
-     * Safebrowsing check
-     *
-     * @param tab
-     * @param mainFrameUrl
-     */
-    function filterSafebrowsing(tab, mainFrameUrl) {
-        if (frames.isTabProtectionDisabled(tab)
-            || frames.isTabWhiteListedForSafebrowsing(tab)) {
-            return;
-        }
-
-        const referrerUrl = browserUtils.getSafebrowsingBackUrl(tab);
-        const incognitoTab = frames.isIncognitoTab(tab);
-
-        safebrowsing.checkSafebrowsingFilter(mainFrameUrl, referrerUrl, (safebrowsingUrl) => {
-            // Chrome doesn't allow open extension url in incognito mode
-            // Firefox allows but browser.runtime.getBackgroundPage() is not working in incognito mode
-            // TODO rewrite scripts for safebrowsing page without browser.runtime.getBackgroundPage()
-            //  and make firefox to open safebrowsing page in the incognito mode
-            if (incognitoTab) {
-                // Closing tab before opening a new one may lead to browser crash (Chromium)
-                uiService.openTab(safebrowsingUrl, {}, () => {
-                    tabsApi.remove(tab.tabId);
-                });
-            } else {
-                tabsApi.reload(tab.tabId, safebrowsingUrl);
-            }
-        });
     }
 
     /**
@@ -805,7 +809,7 @@ const webrequestInit = function () {
                 const result = webRequestService.processGetSelectorsAndScripts(
                     { tabId },
                     url,
-                    true
+                    true,
                 );
 
                 if (result.requestFilterReady === false) {
@@ -970,7 +974,7 @@ const webrequestInit = function () {
                 const mainFrameUrl = frames.getMainFrameUrl({ tabId });
                 if (mainFrameUrl && isIframeWithoutSrc(frameUrl, frameId, mainFrameUrl)) {
                     const result = webRequestService.processGetSelectorsAndScripts(
-                        { tabId }, mainFrameUrl, true
+                        { tabId }, mainFrameUrl, true,
                     );
                     if (result.requestFilterReady === false) {
                         setTimeout((details) => {
