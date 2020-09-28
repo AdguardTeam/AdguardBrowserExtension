@@ -262,7 +262,7 @@ export const tabsImpl = (function () {
             // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/reload#Browser_compatibility
             if (browser.tabs.reload) {
                 try {
-                    browser.tabs.reload(tabIdToInt(tabId), { bypassCache: true });
+                    await browser.tabs.reload(tabIdToInt(tabId), { bypassCache: true });
                 } catch (e) {
                     logOperationError('Tab reload', e);
                 }
