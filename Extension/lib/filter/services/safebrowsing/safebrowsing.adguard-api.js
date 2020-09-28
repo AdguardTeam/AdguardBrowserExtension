@@ -21,7 +21,7 @@ const falseNoop = () => {
 
 const abstractSafebrowsing = {
     checkSafebrowsingFilter: falseNoop,
-    lookupUrlWithCallback: falseNoop,
+    lookupUrl: falseNoop,
     addToSafebrowsingTrusted: falseNoop,
     getErrorPageURL: falseNoop,
     extractHosts: falseNoop,

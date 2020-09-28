@@ -222,7 +222,7 @@ const safebrowsing = (function () {
      *
      * @param requestUrl        Request URL
      */
-    const lookupUrlWithCallback = async function (requestUrl) {
+    const lookupUrl = async function (requestUrl) {
         const host = utils.url.getHost(requestUrl);
         if (!host) {
             return;
@@ -306,7 +306,7 @@ const safebrowsing = (function () {
 
         log.debug('Checking safebrowsing filter for {0}', requestUrl);
 
-        const sbList = await lookupUrlWithCallback(requestUrl);
+        const sbList = await lookupUrl(requestUrl);
 
         if (!sbList) {
             log.debug('No safebrowsing rule found');
@@ -334,7 +334,7 @@ const safebrowsing = (function () {
 
     return {
         checkSafebrowsingFilter,
-        lookupUrlWithCallback,
+        lookupUrl,
         addToSafebrowsingTrusted,
         getErrorPageURL,
         extractHosts,
