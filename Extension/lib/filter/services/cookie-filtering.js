@@ -175,8 +175,6 @@ export const cookieFiltering = (() => {
      * @return {Promise<any>}
      */
     const apiRemoveCookie = async (name, url) => {
-        console.log(name, url);
-        // TODO check error handling
         try {
             await browser.cookies.remove({ url, name });
         } catch (e) {
@@ -191,7 +189,7 @@ export const cookieFiltering = (() => {
      * @param {string} url Cookie url
      * @return {Promise<any>}
      */
-    const apiUpdateCookie = (apiCookie, url) => {
+    const apiUpdateCookie = async (apiCookie, url) => {
         const update = {
             url,
             name: apiCookie.name,
@@ -211,15 +209,16 @@ export const cookieFiltering = (() => {
         if (apiCookie.hostOnly) {
             delete update.domain;
         }
-        return new Promise((resolve) => {
-            browser.cookies.set(update, () => {
-                const ex = browser.runtime.lastError;
-                if (ex) {
-                    log.error('Error update cookie {0} - {1}: {2}', apiCookie.name, url, ex);
-                }
-                resolve();
-            });
-        });
+
+        let result;
+
+        try {
+            result = await browser.cookies.set(update);
+        } catch (e) {
+            log.error('Error update cookie {0} - {1}: {2}', apiCookie.name, url, e);
+        }
+
+        return result;
     };
 
     /**

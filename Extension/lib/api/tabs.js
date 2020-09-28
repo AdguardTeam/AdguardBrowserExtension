@@ -109,7 +109,7 @@ export const tabsImpl = (function () {
     async function focusWindow(tabId, windowId) {
         /**
          * Updating already focused window produces bug in Edge browser
-         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/675 // TODO check if bug is correctly handled
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/675
          */
         const activeTabId = await getActive();
         if (activeTabId && tabId !== activeTabId) {

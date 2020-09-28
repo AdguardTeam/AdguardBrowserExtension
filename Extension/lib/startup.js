@@ -47,9 +47,6 @@ export const startup = async function () {
             await browser.runtime.setUninstallURL(uninstallUrl);
         } catch (e) {
             log.error(e);
-            if (backgroundPage.runtime.lastError) {
-                log.error(backgroundPage.runtime.lastError);
-            }
         }
 
         whitelist.init();

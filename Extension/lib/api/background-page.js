@@ -22,6 +22,7 @@ import { BACKGROUND_TAB_ID, toTabFromChromeTab } from '../utils/common';
 import { runtimeImpl } from '../common-script';
 import { browser } from './browser';
 import { prefs } from '../prefs';
+import { log } from '../utils/log';
 
 export const backgroundPage = (() => {
     const runtime = (function () {
@@ -568,17 +569,20 @@ export const backgroundPage = (() => {
 
             const { tabId } = tab;
 
-            const onIconReady = function () {
-                if (browser.runtime.lastError) {
+            const onIconReady = async () => {
+                try {
+                    await browser.browserAction.setBadgeText({ tabId, text: badge });
+                } catch (e) {
+                    log.debug(new Error(e.message));
                     return;
                 }
-                browser.browserAction.setBadgeText({ tabId, text: badge });
 
-                if (browser.runtime.lastError) {
-                    return;
-                }
                 if (badge) {
-                    browser.browserAction.setBadgeBackgroundColor({ tabId, color: badgeColor });
+                    try {
+                        await browser.browserAction.setBadgeBackgroundColor({ tabId, color: badgeColor });
+                    } catch (e) {
+                        log.debug(new Error(e.message));
+                    }
                 }
 
                 // title setup via manifest.json file
@@ -599,9 +603,10 @@ export const backgroundPage = (() => {
             try {
                 await browser.browserAction.setIcon({ tabId, path: icon });
             } catch (e) {
-                console.log(browser.runtime.lastError);
-                console.log(e);
+                log.debug(new Error(e.message));
+                return;
             }
+
             onIconReady();
         },
         setPopup() {

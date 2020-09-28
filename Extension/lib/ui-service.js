@@ -124,7 +124,7 @@ export const uiService = (function () {
      * @param tab Tab
      * @param options Options for icon or badge values
      */
-    function updateTabIcon(tab, options) {
+    async function updateTabIcon(tab, options) {
         let icon;
         let badge;
         let badgeColor = '#555';
@@ -177,7 +177,7 @@ export const uiService = (function () {
                 }
             }
 
-            backgroundPage.browserAction.setBrowserAction(tab, icon, badge, badgeColor, browserActionTitle);
+            await backgroundPage.browserAction.setBrowserAction(tab, icon, badge, badgeColor, browserActionTitle);
         } catch (ex) {
             log.error('Error while updating icon for tab {0}: {1}', tab.tabId, new Error(ex));
         }
