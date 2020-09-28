@@ -37,11 +37,11 @@ describe('safebrowsing', () => {
         });
 
         const testUrl = 'http://google.com';
-        const response = await safebrowsing.lookupUrlWithCallback(testUrl);
+        const response = await safebrowsing.lookupUrl(testUrl);
         expect(response).toBeFalsy();
         expect(counter).toBe(1);
 
-        const response2 = await safebrowsing.lookupUrlWithCallback(testUrl);
+        const response2 = await safebrowsing.lookupUrl(testUrl);
         expect(response2).toBeFalsy();
         // Check there was only one request to backend
         expect(counter).toBe(1);
@@ -64,7 +64,7 @@ describe('safebrowsing', () => {
         const testUrlOne = 'http://google.co.jp';
         const testUrlTwo = 'http://yahoo.co.jp';
         const testUrlThree = 'http://co.jp';
-        let response = await safebrowsing.lookupUrlWithCallback(testUrlOne);
+        let response = await safebrowsing.lookupUrl(testUrlOne);
 
         expect(!response).toBeTruthy();
         expect(counter).toBe(1);
@@ -74,7 +74,7 @@ describe('safebrowsing', () => {
 
         hashesChecked = [];
 
-        response = await safebrowsing.lookupUrlWithCallback(testUrlTwo);
+        response = await safebrowsing.lookupUrl(testUrlTwo);
         expect(!response).toBeTruthy();
         // One new hash added
         expect(counter).toBe(2);
@@ -83,7 +83,7 @@ describe('safebrowsing', () => {
 
         hashesChecked = [];
 
-        response = await safebrowsing.lookupUrlWithCallback(testUrlThree);
+        response = await safebrowsing.lookupUrl(testUrlThree);
         expect(!response).toBeTruthy();
         // All hashes have been checked already - so there was no request to backend
         expect(counter).toBe(2);
