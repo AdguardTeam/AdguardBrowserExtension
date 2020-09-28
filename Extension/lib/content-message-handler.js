@@ -15,7 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global adguardApi */
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
 import { settingsProvider } from './settings/settings-provider';
@@ -43,6 +42,7 @@ import { filteringApi } from './filter/filtering-api';
 import { stealthService } from './filter/services/stealth-service';
 import { prefs } from './prefs';
 import { whitelist } from './filter/whitelist';
+import { openAssistant } from '../api/lib/assistant-manager';
 
 /**
  *  Initialize Content => BackgroundPage messaging
@@ -455,7 +455,7 @@ const init = () => {
             case 'isLocalStorageInitialized':
                 return { isLocalStorageInitialized: localStorage.isInitialized() };
             case 'openAssistantInTab':
-                adguardApi.openAssistant(message.tabId);
+                openAssistant(message.tabId);
                 break;
             default:
                 // Unhandled message

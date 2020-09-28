@@ -16,7 +16,6 @@
  */
 
 import { backend } from '../../lib/filter/filters/service-client';
-import { tabsApi } from '../../lib/tabs/tabs-api';
 import { webRequestService } from '../../lib/filter/request-blocking';
 import { whitelist } from '../../lib/filter/whitelist';
 import { subscriptions } from '../../lib/filter/filters/subscription';
@@ -29,6 +28,7 @@ import { webrequest } from '../../lib/webrequest';
 import { requestSanitizer } from '../../lib/filter/request-sanitizer';
 import { localeDetect } from '../../lib/filter/services/locale-detect';
 import { contentMessageHandler } from '../../lib/content-message-handler';
+import { openAssistant, closeAssistant } from './assistant-manager';
 
 /**
  * Adguard simple api
@@ -221,42 +221,6 @@ export const adguardApi = (function () {
         if (callback) {
             callback();
         }
-    };
-
-    const initAssistant = function (tabId) {
-        const assistantOptions = {
-            addRuleCallbackName: 'assistant-create-rule',
-        };
-        tabsApi.sendMessage(tabId, {
-            type: 'initAssistant',
-            options: assistantOptions,
-        });
-    };
-
-    /**
-     * Opens assistant dialog in the specified tab
-     * @param tabId Tab identifier
-     */
-    const openAssistant = (tabId) => {
-        if (tabsApi.executeScriptFile) {
-            // Load Assistant code to the activate tab immediately
-            tabsApi.executeScriptFile(null, { file: '/adguard/assistant/assistant.js' }, () => {
-                initAssistant(tabId);
-            });
-        } else {
-            // Manually start assistant
-            initAssistant(tabId);
-        }
-    };
-
-    /**
-     * Closes assistant dialog in the specified tab
-     * @param tabId Tab identifier
-     */
-    const closeAssistant = function (tabId) {
-        tabsApi.sendMessage(tabId, {
-            type: 'destroyAssistant',
-        });
     };
 
     backend.configure({
