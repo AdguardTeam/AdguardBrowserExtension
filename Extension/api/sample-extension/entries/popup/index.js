@@ -7,8 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const { url } = currentTab;
             // eslint-disable-next-line no-console
             console.log(`Opening Assistant UI for tab id=${currentTab.id} url=${url}`);
-            const browser = window.browser || chrome;
-            browser.runtime.sendMessage({ type: 'openAssistantInTab', tabId: currentTab.id });
+            chrome.runtime.sendMessage({ type: 'openAssistantInTab', tabId: currentTab.id });
             window.close();
         });
     });

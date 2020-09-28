@@ -2183,9 +2183,10 @@ const init = () => {
         if (response.isLocalStorageInitialized) {
             contentPage.sendMessage({ type: 'initializeFrameScript' }, initPage);
         } else {
+            const timeoutMs = 500;
             setTimeout(() => {
                 init();
-            }, 500);
+            }, timeoutMs);
         }
     });
 };
