@@ -60,7 +60,7 @@ const showSaveFunc = (function () {
     return showSave;
 })();
 
-const onDomContentLoaded = () => {
+const onDomContentLoaded = async () => {
     const exportTypeMap = {
         '#uf': {
             title: 'user_filter',
@@ -117,7 +117,7 @@ const onDomContentLoaded = () => {
         }
     };
 
-    contentPage.sendMessage({ type: exportType.messageType }, callback);
+    callback(await contentPage.sendMessage({ type: exportType.messageType }));
 };
 
 const init = () => {

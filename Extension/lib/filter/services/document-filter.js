@@ -75,16 +75,17 @@ export const documentFilterService = (function () {
          * Gets url host and adds it to the cache of trusted domains
          * @param url
          */
-        const addToTrusted = (url) => {
+        const addToTrusted = async (url) => {
             const host = utils.url.getHost(url);
             if (!host) {
                 return;
             }
             trustedCache.cache.saveValue(host, { host }, Date.now() + TRUSTED_TTL_MS);
             // Reloads ad-blocked page with trusted url
-            tabsApi.getActive((tab) => {
+            const tab = await tabsApi.getActive();
+            if (tab) {
                 tabsApi.reload(tab.tabId, url);
-            });
+            }
         };
 
         /**
@@ -100,7 +101,7 @@ export const documentFilterService = (function () {
             //  and make firefox to open safebrowsing page in the incognito mode
             if (incognitoTab) {
                 // Closing tab before opening a new one may lead to browser crash (Chromium)
-                uiService.openTab(url, {}, () => {
+                uiService.openTab(url, {}, async () => {
                     tabsApi.remove(tabId);
                 });
             } else {

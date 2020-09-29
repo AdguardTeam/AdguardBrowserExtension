@@ -173,7 +173,7 @@ let timeoutId;
 let counter = 0;
 const MAX_WAIT_RETRY = 10;
 const RETRY_TIMEOUT_MS = 100;
-const init = () => {
+const init = async () => {
     if (typeof contentPage === 'undefined') {
         if (counter > MAX_WAIT_RETRY) {
             clearTimeout(timeoutId);
@@ -186,18 +186,17 @@ const init = () => {
 
     clearTimeout(timeoutId);
 
-    contentPage.sendMessage({ type: 'initializeFrameScript' }, (response) => {
-        const controller = PageController(response);
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                controller.init();
-            });
-        } else {
+    const response = await contentPage.sendMessage({ type: 'initializeFrameScript' });
+    const controller = PageController(response);
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
             controller.init();
-        }
-    });
+        });
+    } else {
+        controller.init();
+    }
 };
 
 export const thankyou = {
     init,
-}
+};

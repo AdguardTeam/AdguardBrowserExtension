@@ -22,16 +22,17 @@ import { whitelist } from './filter/whitelist';
 import { filteringLog } from './filter/filtering-log';
 import { uiService } from './ui-service';
 import { application } from './application';
+import { browser } from './api/browser';
 
 /**
  * Extension initialize logic. Called from start.js
  */
 export const startup = async function () {
-    function onLocalStorageLoaded() {
+    async function onLocalStorageLoaded() {
         log.info(
             'Starting adguard... Version: {0}. Id: {1}',
             backgroundPage.app.getVersion(),
-            backgroundPage.app.getId()
+            backgroundPage.app.getId(),
         );
 
         // Initialize popup button
@@ -42,13 +43,11 @@ export const startup = async function () {
         // Set uninstall page url
         // eslint-disable-next-line max-len
         const uninstallUrl = 'https://adguard.com/forward.html?action=adguard_uninstal_ext&from=background&app=browser_extension';
-        backgroundPage.runtime.setUninstallURL(uninstallUrl, () => {
-            if (backgroundPage.runtime.lastError) {
-                log.error(backgroundPage.runtime.lastError);
-                return;
-            }
-            log.info(`Uninstall url was set to: ${uninstallUrl}`);
-        });
+        try {
+            await browser.runtime.setUninstallURL(uninstallUrl);
+        } catch (e) {
+            log.error(e);
+        }
 
         whitelist.init();
         filteringLog.init();

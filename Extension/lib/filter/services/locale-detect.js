@@ -22,6 +22,7 @@ import { subscriptions } from '../filters/subscription';
 import { settings } from '../../settings/user-settings';
 import { utils } from '../../utils/common';
 import { browserUtils } from '../../utils/browser-utils';
+import { browser } from '../../api/browser';
 
 /**
  * Initialize LocaleDetectService.
@@ -155,7 +156,7 @@ export const localeDetect = (function () {
      * @param tab    Tab
      * @param url    Page URL
      */
-    function detectTabLanguage(tab, url) {
+    async function detectTabLanguage(tab, url) {
         if (!settings.isAutodetectFilters() || settings.isFilteringDisabled()) {
             return;
         }
@@ -168,15 +169,14 @@ export const localeDetect = (function () {
         // tabs.detectLanguage doesn't work in Opera
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/997
         if (!browserUtils.isOperaBrowser()) {
-            /* global browser */
-            if (tab.tabId && typeof browser !== 'undefined' && browser.tabs && browser.tabs.detectLanguage) {
+            if (tab.tabId && browser.tabs && browser.tabs.detectLanguage) {
                 // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/detectLanguage
-                browser.tabs.detectLanguage(tab.tabId, (language) => {
-                    if (browser.runtime.lastError) {
-                        return;
-                    }
+                try {
+                    const language = await browser.tabs.detectLanguage(tab.tabId);
                     detectLanguage(language);
-                });
+                } catch (e) {
+                    // do nothing
+                }
                 return;
             }
         }

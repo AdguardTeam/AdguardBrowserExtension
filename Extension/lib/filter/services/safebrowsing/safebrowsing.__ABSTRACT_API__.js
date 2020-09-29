@@ -26,7 +26,7 @@ const errorFunction = () => {
 
 const abstractSafebrowsing = {
     checkSafebrowsingFilter: errorFunction,
-    lookupUrlWithCallback: errorFunction,
+    lookupUrl: errorFunction,
     addToSafebrowsingTrusted: errorFunction,
     getErrorPageURL: errorFunction,
     extractHosts: errorFunction,

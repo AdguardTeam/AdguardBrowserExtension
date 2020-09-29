@@ -20,30 +20,27 @@
 import { RequestTypes, parseContentTypeFromUrlPath } from '../utils/request-types';
 import { BACKGROUND_TAB_ID, toTabFromChromeTab } from '../utils/common';
 import { runtimeImpl } from '../common-script';
-import { browser } from '../browser';
+import { browser } from './browser';
 import { prefs } from '../prefs';
+import { log } from '../utils/log';
 
 export const backgroundPage = (() => {
     const runtime = (function () {
         const onMessage = {
             addListener(callback) {
                 // https://developer.chrome.com/extensions/runtime#event-onMessage
-                runtimeImpl.onMessage.addListener((message, sender, sendResponse) => {
+                runtimeImpl.onMessage.addListener((message, sender) => {
                     const senderOverride = Object.create(null);
+
                     if (sender.tab) {
                         senderOverride.tab = toTabFromChromeTab(sender.tab);
                     }
+
                     if (typeof sender.frameId !== 'undefined') {
                         senderOverride.frameId = sender.frameId;
                     }
-                    const response = callback(message, senderOverride, sendResponse);
-                    const async = response === true;
-                    // If async sendResponse will be invoked later
-                    if (!async) {
-                        sendResponse(response);
-                    }
-                    // Don't forget return callback result for asynchronous message passing
-                    return async;
+
+                    return callback(message, senderOverride);
                 });
             },
         };
@@ -561,24 +558,27 @@ export const backgroundPage = (() => {
 
     const browserAction = {
         /* eslint-disable-next-line no-unused-vars */
-        setBrowserAction(tab, icon, badge, badgeColor, title) {
+        async setBrowserAction(tab, icon, badge, badgeColor, title) {
             if (!browserActionSupported) {
                 return;
             }
 
             const { tabId } = tab;
 
-            const onIconReady = function () {
-                if (browser.runtime.lastError) {
+            const onIconReady = async () => {
+                try {
+                    await browser.browserAction.setBadgeText({ tabId, text: badge });
+                } catch (e) {
+                    log.debug(new Error(e.message));
                     return;
                 }
-                browser.browserAction.setBadgeText({ tabId, text: badge });
 
-                if (browser.runtime.lastError) {
-                    return;
-                }
                 if (badge) {
-                    browser.browserAction.setBadgeBackgroundColor({ tabId, color: badgeColor });
+                    try {
+                        await browser.browserAction.setBadgeBackgroundColor({ tabId, color: badgeColor });
+                    } catch (e) {
+                        log.debug(new Error(e.message));
+                    }
                 }
 
                 // title setup via manifest.json file
@@ -596,7 +596,14 @@ export const backgroundPage = (() => {
                 return;
             }
 
-            browser.browserAction.setIcon({ tabId, path: icon }, onIconReady);
+            try {
+                await browser.browserAction.setIcon({ tabId, path: icon });
+            } catch (e) {
+                log.debug(new Error(e.message));
+                return;
+            }
+
+            onIconReady();
         },
         setPopup() {
             // Do nothing. Popup is already installed in manifest file

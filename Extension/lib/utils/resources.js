@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { browser } from '../browser';
+import { browser } from '../api/browser';
 
 /**
  * Web accessible resources helper
@@ -56,7 +56,7 @@ export const resources = (function () {
             {
                 urls: [`${root}${WEB_ACCESSIBLE_RESOURCES}/*`],
             },
-            ['blocking']
+            ['blocking'],
         );
 
         return () => {

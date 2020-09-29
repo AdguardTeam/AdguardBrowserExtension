@@ -497,12 +497,12 @@ const RequestWizard = (function () {
         if (ruleText.indexOf(FilterRule.MASK_CSS_EXTENDED_CSS_RULE) > -1) {
             return domainPart + generateExceptionRule(
                 ruleText,
-                FilterRule.MASK_CSS_EXTENDED_CSS_RULE
+                FilterRule.MASK_CSS_EXTENDED_CSS_RULE,
             );
         }
         if (ruleText.indexOf(FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE) > -1) {
             return domainPart + generateExceptionRule(
-                ruleText, FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE
+                ruleText, FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE,
             );
         }
         if (ruleText.indexOf(FilterRule.MASK_CSS_RULE) > -1) {
@@ -537,7 +537,7 @@ const RequestWizard = (function () {
             patterns = splitToPatterns(
                 filteringEvent.requestUrl,
                 filteringEvent.requestDomain,
-                true
+                true,
             ).reverse();
         }
         if (filteringEvent.requestUrl === 'content-security-policy-check') {
@@ -900,13 +900,14 @@ PageController.prototype = {
         this._updateTabIdFromHash();
 
         // Synchronize opened tabs
-        contentPage.sendMessage({ type: 'synchronizeOpenTabs' }, (response) => {
+        (async () => {
+            const response = await contentPage.sendMessage({ type: 'synchronizeOpenTabs' });
             const { tabs } = response;
             for (let i = 0; i < tabs.length; i += 1) {
                 this.onTabUpdated(tabs[i]);
             }
             this.onSelectedTabChange();
-        });
+        })();
 
         document.addEventListener('keyup', (e) => {
             if (e.keyCode === 27) {
@@ -915,7 +916,7 @@ PageController.prototype = {
         });
 
         // On click to event row show RequestInfoModal
-        this.logTable.addEventListener('click', (e) => {
+        this.logTable.addEventListener('click', async (e) => {
             e.preventDefault();
             let element = e.target;
             let foundEventRow = false;
@@ -928,13 +929,16 @@ PageController.prototype = {
             }
             const filteringEvent = foundEventRow && element.data;
             if (filteringEvent) {
-                contentPage.sendMessage({ type: 'getTabFrameInfoById', tabId: this.currentTabId }, (response) => {
-                    const { frameInfo } = response;
-                    if (!frameInfo) {
-                        return;
-                    }
-                    RequestWizard.showRequestInfoModal(frameInfo, filteringEvent);
+                const response = await contentPage.sendMessage({
+                    type: 'getTabFrameInfoById',
+                    tabId: this.currentTabId,
                 });
+
+                const { frameInfo } = response;
+                if (!frameInfo) {
+                    return;
+                }
+                RequestWizard.showRequestInfoModal(frameInfo, filteringEvent);
             }
         });
     },
@@ -1069,11 +1073,10 @@ PageController.prototype = {
         RequestWizard.closeModal();
     },
 
-    _updateLogoIcon() {
-        contentPage.sendMessage({ type: 'getTabFrameInfoById', tabId: this.currentTabId }, () => {
-            const src = '../assets/images/shield.svg';
-            this.logoIcon.setAttribute('src', src);
-        });
+    async _updateLogoIcon() {
+        await contentPage.sendMessage({ type: 'getTabFrameInfoById', tabId: this.currentTabId });
+        const src = '../assets/images/shield.svg';
+        this.logoIcon.setAttribute('src', src);
     },
 
     removeClass(elements, className) {
@@ -1160,19 +1163,18 @@ PageController.prototype = {
         }
     },
 
-    _renderEventsForTab(tabId) {
+    async _renderEventsForTab(tabId) {
         this.emptyLogTable();
 
-        contentPage.sendMessage({ type: 'getFilteringInfoByTabId', tabId }, (response) => {
-            const { filteringInfo } = response;
+        const response = await contentPage.sendMessage({ type: 'getFilteringInfoByTabId', tabId });
+        const { filteringInfo } = response;
 
-            let filteringEvents = [];
-            if (filteringInfo) {
-                filteringEvents = filteringInfo.filteringEvents || [];
-            }
+        let filteringEvents = [];
+        if (filteringInfo) {
+            filteringEvents = filteringInfo.filteringEvents || [];
+        }
 
-            this._renderEvents(filteringEvents);
-        });
+        this._renderEvents(filteringEvents);
     },
 
     _renderEvents(events) {
@@ -1318,61 +1320,62 @@ PageController.prototype = {
     },
 };
 
-const init = () => {
-    contentPage.sendMessage({ type: 'initializeFrameScript' }, (response) => {
-        filtersMetadata = response.filtersMetadata;
-        AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
-        EventNotifierTypes = response.constants.EventNotifierTypes;
+const init = async () => {
+    const response = await contentPage.sendMessage({ type: 'initializeFrameScript' });
 
-        const onDocumentReady = function () {
-            const pageController = new PageController();
-            pageController.init();
 
-            const events = [
-                EventNotifierTypes.TAB_ADDED,
-                EventNotifierTypes.TAB_UPDATE,
-                EventNotifierTypes.TAB_CLOSE,
-                EventNotifierTypes.TAB_RESET,
-                EventNotifierTypes.LOG_EVENT_ADDED,
-                EventNotifierTypes.LOG_EVENT_UPDATED,
-            ];
+    filtersMetadata = response.filtersMetadata;
+    AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
+    EventNotifierTypes = response.constants.EventNotifierTypes;
 
-            // set log is open
-            contentPage.sendMessage({ type: 'onOpenFilteringLogPage' });
+    const onDocumentReady = function () {
+        const pageController = new PageController();
+        pageController.init();
 
-            createEventListener(events, (event, tabInfo, filteringEvent) => {
-                switch (event) {
-                    case EventNotifierTypes.TAB_ADDED:
-                    case EventNotifierTypes.TAB_UPDATE:
-                        pageController.onTabUpdated(tabInfo);
-                        break;
-                    case EventNotifierTypes.TAB_CLOSE:
-                        pageController.onTabClose(tabInfo);
-                        break;
-                    case EventNotifierTypes.TAB_RESET:
-                        pageController.onTabReset(tabInfo);
-                        break;
-                    case EventNotifierTypes.LOG_EVENT_ADDED:
-                        pageController.onEventAdded(tabInfo, filteringEvent);
-                        break;
-                    case EventNotifierTypes.LOG_EVENT_UPDATED:
-                        pageController.onEventUpdated(tabInfo, filteringEvent);
-                        break;
-                    default:
-                        break;
-                }
-            }, () => {
-                // set log is closed
-                contentPage.sendMessage({ type: 'onCloseFilteringLogPage' });
-            });
-        };
+        const events = [
+            EventNotifierTypes.TAB_ADDED,
+            EventNotifierTypes.TAB_UPDATE,
+            EventNotifierTypes.TAB_CLOSE,
+            EventNotifierTypes.TAB_RESET,
+            EventNotifierTypes.LOG_EVENT_ADDED,
+            EventNotifierTypes.LOG_EVENT_UPDATED,
+        ];
 
-        if (document.attachEvent ? document.readyState === 'complete' : document.readyState !== 'loading') {
-            onDocumentReady();
-        } else {
-            document.addEventListener('DOMContentLoaded', onDocumentReady);
-        }
-    });
+        // set log is open
+        contentPage.sendMessage({ type: 'onOpenFilteringLogPage' });
+
+        createEventListener(events, (event, tabInfo, filteringEvent) => {
+            switch (event) {
+                case EventNotifierTypes.TAB_ADDED:
+                case EventNotifierTypes.TAB_UPDATE:
+                    pageController.onTabUpdated(tabInfo);
+                    break;
+                case EventNotifierTypes.TAB_CLOSE:
+                    pageController.onTabClose(tabInfo);
+                    break;
+                case EventNotifierTypes.TAB_RESET:
+                    pageController.onTabReset(tabInfo);
+                    break;
+                case EventNotifierTypes.LOG_EVENT_ADDED:
+                    pageController.onEventAdded(tabInfo, filteringEvent);
+                    break;
+                case EventNotifierTypes.LOG_EVENT_UPDATED:
+                    pageController.onEventUpdated(tabInfo, filteringEvent);
+                    break;
+                default:
+                    break;
+            }
+        }, () => {
+            // set log is closed
+            contentPage.sendMessage({ type: 'onCloseFilteringLogPage' });
+        });
+    };
+
+    if (document.attachEvent ? document.readyState === 'complete' : document.readyState !== 'loading') {
+        onDocumentReady();
+    } else {
+        document.addEventListener('DOMContentLoaded', onDocumentReady);
+    }
 };
 
 export const logController = {

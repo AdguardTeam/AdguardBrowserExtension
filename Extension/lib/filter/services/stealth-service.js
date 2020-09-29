@@ -26,6 +26,7 @@ import { filteringLog } from '../filtering-log';
 import { listeners } from '../../notifier';
 import { frames } from '../../tabs/frames';
 import { browserUtils } from '../../utils/browser-utils';
+import { browser } from '../../api/browser';
 
 // TODO: [TSUrlFilter] Use TSURLFilter stealthService
 
@@ -333,60 +334,69 @@ export const stealthService = (() => {
     /**
      * Updates browser privacy.network settings depending on blocking WebRTC or not
      */
-    const handleBlockWebRTC = () => {
+    const handleBlockWebRTC = async () => {
         // Edge doesn't support privacy api
         // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/privacy
         if (!browser.privacy) {
             return;
         }
 
-        const resetLastError = () => {
-            const ex = browser.runtime.lastError;
-            if (ex) {
-                log.error('Error updating privacy.network settings: {0}', ex);
-            }
+        const logError = (e) => {
+            log.error('Error updating privacy.network settings: {0}', e);
         };
 
         const webRTCDisabled = getStealthSettingValue(settings.BLOCK_WEBRTC);
 
         // Deprecated since Chrome 48
         if (typeof browser.privacy.network.webRTCMultipleRoutesEnabled === 'object') {
-            if (webRTCDisabled) {
-                browser.privacy.network.webRTCMultipleRoutesEnabled.set({
-                    value: false,
-                    scope: 'regular',
-                }, resetLastError);
-            } else {
-                browser.privacy.network.webRTCMultipleRoutesEnabled.clear({
-                    scope: 'regular',
-                }, resetLastError);
+            try {
+                if (webRTCDisabled) {
+                    await browser.privacy.network.webRTCMultipleRoutesEnabled.set({
+                        value: false,
+                        scope: 'regular',
+                    });
+                } else {
+                    await browser.privacy.network.webRTCMultipleRoutesEnabled.clear({
+                        scope: 'regular',
+                    });
+                }
+            } catch (e) {
+                logError(e);
             }
         }
 
         // Since chromium 48
         if (typeof browser.privacy.network.webRTCIPHandlingPolicy === 'object') {
-            if (webRTCDisabled) {
-                browser.privacy.network.webRTCIPHandlingPolicy.set({
-                    value: 'disable_non_proxied_udp',
-                    scope: 'regular',
-                }, resetLastError);
-            } else {
-                browser.privacy.network.webRTCIPHandlingPolicy.clear({
-                    scope: 'regular',
-                }, resetLastError);
+            try {
+                if (webRTCDisabled) {
+                    await browser.privacy.network.webRTCIPHandlingPolicy.set({
+                        value: 'disable_non_proxied_udp',
+                        scope: 'regular',
+                    });
+                } else {
+                    await browser.privacy.network.webRTCIPHandlingPolicy.clear({
+                        scope: 'regular',
+                    });
+                }
+            } catch (e) {
+                logError(e);
             }
         }
 
         if (typeof browser.privacy.network.peerConnectionEnabled === 'object') {
-            if (webRTCDisabled) {
-                browser.privacy.network.peerConnectionEnabled.set({
-                    value: false,
-                    scope: 'regular',
-                }, resetLastError);
-            } else {
-                browser.privacy.network.peerConnectionEnabled.clear({
-                    scope: 'regular',
-                }, resetLastError);
+            try {
+                if (webRTCDisabled) {
+                    browser.privacy.network.peerConnectionEnabled.set({
+                        value: false,
+                        scope: 'regular',
+                    });
+                } else {
+                    browser.privacy.network.peerConnectionEnabled.clear({
+                        scope: 'regular',
+                    });
+                }
+            } catch (e) {
+                logError(e);
             }
         }
     };
@@ -463,7 +473,7 @@ export const stealthService = (() => {
             filteringLog.bindStealthActionsToHttpRequestEvent(
                 tab,
                 STEALTH_ACTIONS.STRIPPED_TRACKING_URL,
-                context.eventId
+                context.eventId,
             );
 
             return result;
@@ -480,9 +490,9 @@ export const stealthService = (() => {
                 }
                 return browserUtils.requestPermissions(['privacy']);
             })
-            .then(granted => {
+            .then(async (granted) => {
                 if (granted) {
-                    handleBlockWebRTC();
+                    await handleBlockWebRTC();
                 } else {
                     // If privacy permission is not granted set block webrtc value to false
                     settings.setProperty(settings.BLOCK_WEBRTC, false);
@@ -495,9 +505,9 @@ export const stealthService = (() => {
 
     const handleWebRTCDisabling = () => {
         browserUtils.containsPermissions(['privacy'])
-            .then(result => {
+            .then(async (result) => {
                 if (result) {
-                    handleBlockWebRTC();
+                    await handleBlockWebRTC();
                     return browserUtils.removePermission(['privacy']);
                 }
                 return true;
@@ -538,13 +548,13 @@ export const stealthService = (() => {
     };
 
     if (canBlockWebRTC()) {
-        settings.onUpdated.addListener((setting) => {
+        settings.onUpdated.addListener(async (setting) => {
             if (setting === settings.BLOCK_WEBRTC
                 || setting === settings.DISABLE_STEALTH_MODE) {
                 if (shouldHandlePrivacyPermission()) {
                     handlePrivacyPermissions();
                 } else {
-                    handleBlockWebRTC();
+                    await handleBlockWebRTC();
                 }
             }
         });
@@ -553,9 +563,9 @@ export const stealthService = (() => {
             switch (event) {
                 case listeners.APPLICATION_INITIALIZED:
                     browserUtils.containsPermissions(['privacy'])
-                        .then(result => {
+                        .then(async (result) => {
                             if (result) {
-                                handleBlockWebRTC();
+                                await handleBlockWebRTC();
                             }
                         });
                     break;
