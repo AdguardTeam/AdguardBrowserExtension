@@ -65,9 +65,8 @@ export const settingsProvider = (function () {
 
     /**
      * Loads filters settings section
-     * @param callback
      */
-    const loadFiltersSection = async (callback) => {
+    const loadFiltersSection = async () => {
         const enabledFilterIds = collectEnabledFilterIds();
         const enabledGroupIds = collectEnabledGroupIds();
         const customFiltersData = collectCustomFiltersData();
@@ -96,14 +95,13 @@ export const settingsProvider = (function () {
             },
         };
 
-        callback(section);
+        return section;
     };
 
     /**
      * Loads general settings section
-     * @param callback
      */
-    const loadGeneralSettingsSection = function (callback) {
+    const loadGeneralSettingsSection = function () {
         const enabledFilterIds = collectEnabledFilterIds();
         // TODO update self search settings on filter status change
         const allowAcceptableAds = enabledFilterIds.indexOf(utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID) >= 0;
@@ -119,14 +117,13 @@ export const settingsProvider = (function () {
             },
         };
 
-        callback(section);
+        return section;
     };
 
     /**
      * Loads extension specific settings section
-     * @param callback
      */
-    const loadExtensionSpecificSettingsSection = function (callback) {
+    const loadExtensionSpecificSettingsSection = function () {
         const section = {
             'extension-specific-settings': {
                 'use-optimized-filters': settings.isUseOptimizedFiltersEnabled(),
@@ -137,7 +134,7 @@ export const settingsProvider = (function () {
             },
         };
 
-        callback(section);
+        return section;
     };
 
     /**
@@ -376,24 +373,21 @@ export const settingsProvider = (function () {
     /**
      * Exports settings set in json format
      */
-    const loadSettingsBackupJson = function (callback) {
+    const loadSettingsBackupJson = async function () {
         const result = {
             'protocol-version': BACKUP_PROTOCOL_VERSION,
         };
 
-        loadGeneralSettingsSection((section) => {
-            result['general-settings'] = section['general-settings'];
+        const generalSettingsSection = loadGeneralSettingsSection();
+        result['general-settings'] = generalSettingsSection['general-settings'];
 
-            loadExtensionSpecificSettingsSection((section) => {
-                result['extension-specific-settings'] = section['extension-specific-settings'];
+        const extensionSpecificSettingsSection = loadExtensionSpecificSettingsSection();
+        result['extension-specific-settings'] = extensionSpecificSettingsSection['extension-specific-settings'];
 
-                loadFiltersSection((section) => {
-                    result['filters'] = section['filters'];
+        const filtersSection = await loadFiltersSection();
+        result['filters'] = filtersSection['filters'];
 
-                    callback(JSON.stringify(result));
-                });
-            });
-        });
+        return JSON.stringify(result);
     };
 
     /**

@@ -37,18 +37,6 @@ export const preload = (function () {
     let cssHitsCounter;
 
     /**
-     * Unexpectedly global variable contentPage could become undefined in FF,
-     * in this case we redefine it.
-     *
-     * More details:
-     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/924
-     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/880
-     */
-    const getContentPage = function () {
-        return contentPage;
-    };
-
-    /**
      * Checks if it is html document
      *
      * @returns {boolean}
@@ -96,7 +84,7 @@ export const preload = (function () {
      * It allows us to execute script as soon as possible, because runtime.messaging makes huge overhead
      * If onCommitted event doesn't occur for the frame, scripts will be applied in usual way.
      */
-    getContentPage().onMessage.addListener((response, sender, sendResponse) => {
+    contentPage.onMessage.addListener((response, sender, sendResponse) => {
         if (response.type === 'injectScripts') {
             // Notify background-page that content-script was received scripts
             sendResponse({ applied: true });
@@ -223,7 +211,7 @@ export const preload = (function () {
      * Checks if element is blocked by AG and should be hidden
      * @param element Element to check
      */
-    const checkShouldCollapseElement = function (element) {
+    const checkShouldCollapseElement = async function (element) {
         const requestType = requestTypeMap[element.localName];
         if (!requestType) {
             return;
@@ -250,7 +238,8 @@ export const preload = (function () {
             requestId,
         };
 
-        getContentPage().sendMessage(message, onProcessShouldCollapseResponse);
+        const response = await contentPage.sendMessage(message);
+        onProcessShouldCollapseResponse(response);
     };
 
     /**
@@ -422,7 +411,7 @@ export const preload = (function () {
     /**
      * Collects all elements from the page and checks if we should hide them.
      */
-    const checkBatchShouldCollapse = function () {
+    const checkBatchShouldCollapse = async () => {
         const requests = [];
 
         // Collect collapse requests
@@ -456,7 +445,7 @@ export const preload = (function () {
         };
 
         // Send all prepared requests in one message
-        getContentPage().sendMessage(message, onProcessShouldCollapseManyResponse);
+        onProcessShouldCollapseManyResponse(await contentPage.sendMessage(message));
     };
 
     /**
@@ -493,7 +482,7 @@ export const preload = (function () {
 
         if (response.collectRulesHits) {
             cssHitsCounter = new TSUrlFilter.CssHitsCounter((stats) => {
-                getContentPage().sendMessage({ type: 'saveCssHitStats', stats });
+                contentPage.sendMessage({ type: 'saveCssHitStats', stats });
             });
         }
 
@@ -516,7 +505,7 @@ export const preload = (function () {
     /**
      * Loads CSS and JS injections
      */
-    const tryLoadCssAndScripts = function () {
+    const tryLoadCssAndScripts = async () => {
         const message = {
             type: 'getSelectorsAndScripts',
             documentUrl: window.location.href,
@@ -525,7 +514,7 @@ export const preload = (function () {
         /**
          * Sending message to background page and passing a callback function
          */
-        getContentPage().sendMessage(message, processCssAndScriptsResponse);
+        processCssAndScriptsResponse(await contentPage.sendMessage(message));
     };
 
     /**

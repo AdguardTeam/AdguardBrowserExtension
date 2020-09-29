@@ -29,22 +29,18 @@ export const backgroundPage = (() => {
         const onMessage = {
             addListener(callback) {
                 // https://developer.chrome.com/extensions/runtime#event-onMessage
-                runtimeImpl.onMessage.addListener((message, sender, sendResponse) => {
+                runtimeImpl.onMessage.addListener((message, sender) => {
                     const senderOverride = Object.create(null);
+
                     if (sender.tab) {
                         senderOverride.tab = toTabFromChromeTab(sender.tab);
                     }
+
                     if (typeof sender.frameId !== 'undefined') {
                         senderOverride.frameId = sender.frameId;
                     }
-                    const response = callback(message, senderOverride, sendResponse);
-                    const async = response === true;
-                    // If async sendResponse will be invoked later
-                    if (!async) {
-                        sendResponse(response);
-                    }
-                    // Don't forget return callback result for asynchronous message passing
-                    return async;
+
+                    return callback(message, senderOverride);
                 });
             },
         };

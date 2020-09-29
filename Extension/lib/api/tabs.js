@@ -399,7 +399,7 @@ export const tabsImpl = (function () {
         try {
             await browser.tabs.executeScript(tabId, executeScriptOptions);
         } catch (e) {
-            log.error(e);
+            log.error(new Error(e.message));
         }
     };
 

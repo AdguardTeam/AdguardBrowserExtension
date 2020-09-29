@@ -67,16 +67,15 @@ jest.mock('../../../Extension/lib/filter/userrules', () => {
 });
 
 describe('settingsProvider', () => {
-    it('exports settings in json', (done) => {
-        settingsProvider.loadSettingsBackup((json) => {
-            const settings = JSON.parse(json);
+    it('exports settings in json', async () => {
+        const json = await settingsProvider.loadSettingsBackup();
 
-            expect(settings['protocol-version']).toEqual('1.0');
-            expect(settings['extension-specific-settings']).toBeTruthy();
-            expect(settings['general-settings']).toBeTruthy();
-            expect(settings['filters']).toBeTruthy();
-            done();
-        });
+        const settings = JSON.parse(json);
+
+        expect(settings['protocol-version']).toEqual('1.0');
+        expect(settings['extension-specific-settings']).toBeTruthy();
+        expect(settings['general-settings']).toBeTruthy();
+        expect(settings['filters']).toBeTruthy();
     });
 
     it('updates settings from json', async (done) => {

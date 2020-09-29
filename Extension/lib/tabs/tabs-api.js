@@ -19,21 +19,6 @@ import { utils } from '../utils/common';
 import { tabsImpl } from '../api/tabs';
 
 const tabsApi = ((tabsImpl) => {
-    // const AdguardTab = {
-    //     tabId: 1,
-    //     url: 'url',
-    //     title: 'Title',
-    //     incognito: false,
-    //     status: null,   // 'loading' or 'complete'
-    //     frames: null,   // Collection of frames inside tab
-    //     metadata: null,  // Contains info about white list rule is applied to tab.
-    // };
-    //
-    // const AdguardTabFrame = {
-    //     frameId: 1,
-    //     url: 'url',
-    //     domainName: 'domainName',
-    // };
 
     const tabs = Object.create(null);
 

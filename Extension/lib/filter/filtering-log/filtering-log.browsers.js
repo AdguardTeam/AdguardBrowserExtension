@@ -484,9 +484,8 @@ const browsersFilteringLog = (function () {
 
     /**
      * Synchronize currently opened tabs with out state
-     * @param callback
      */
-    const synchronizeOpenTabs = async function (callback) {
+    const synchronizeOpenTabs = async function () {
         const tabs = await tabsApi.getAll();
         // As Object.keys() returns strings we convert them to integers,
         // because tabId is integer in extension API
@@ -509,13 +508,14 @@ const browsersFilteringLog = (function () {
         for (let j = 0; j < tabIdsToRemove.length; j += 1) {
             removeTabById(tabIdsToRemove[j]);
         }
-        if (typeof callback === 'function') {
-            const syncTabs = [];
-            Object.keys(tabsInfoMap).forEach((tabId) => {
-                syncTabs.push(tabsInfoMap[tabId]);
-            });
-            callback(syncTabs);
-        }
+
+        const syncTabs = [];
+
+        Object.keys(tabsInfoMap).forEach((tabId) => {
+            syncTabs.push(tabsInfoMap[tabId]);
+        });
+
+        return syncTabs;
     };
 
     /**

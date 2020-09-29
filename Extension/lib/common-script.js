@@ -15,28 +15,14 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-const browserApi = ((self) => {
-    /**
-     * https://bugs.chromium.org/p/project-zero/issues/detail?id=1225&desc=6
-     * Page script can inject global variables into the DOM,
-     * so content script isolation doesn't work as expected
-     * So we have to make additional check before accessing a global variable.
-     */
-    function isDefined(property) {
-        return Object.prototype.hasOwnProperty.call(self, property);
-    }
-
-    const browserApi = isDefined('browser') && self.browser !== undefined ? self.browser : self.chrome;
-
-    return browserApi;
-})(global);
+import { browser } from './api/browser';
 
 export const runtimeImpl = (() => {
     return {
-        onMessage: browserApi.runtime.onMessage,
-        sendMessage: browserApi.runtime.sendMessage,
+        onMessage: browser.runtime.onMessage,
+        sendMessage: browser.runtime.sendMessage,
     };
 })();
 
 // eslint-disable-next-line prefer-destructuring
-export const i18n = browserApi.i18n;
+export const i18n = browser.i18n;

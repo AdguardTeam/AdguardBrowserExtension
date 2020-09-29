@@ -24,6 +24,14 @@ import './ace/mode-adguard';
 import { contentPage } from '../content-script/content-script';
 import { i18n } from './i18n';
 import { CheckboxUtils, htmlToElement, createEventListener } from './script';
+import { log } from '../utils/log';
+
+let userSettings;
+let enabledFilters;
+let environmentOptions;
+let AntiBannerFiltersId;
+let EventNotifierTypes;
+let requestFilterInfo;
 
 // Update default date format for zh-cn
 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1442
@@ -355,7 +363,7 @@ const Saver = function (options) {
         contentPage.sendMessage({
             type: this.saveEventType,
             content: text,
-        }, () => {});
+        });
     };
 
     const setDirty = () => {
@@ -450,13 +458,13 @@ const WhiteListFilter = function (options) {
     const changeDefaultWhiteListModeCheckbox = document.querySelector('#changeDefaultWhiteListMode');
 
     let hasContent = false;
-    function loadWhiteListDomains() {
-        contentPage.sendMessage({
+    async function loadWhiteListDomains() {
+        const response = await contentPage.sendMessage({
             type: 'getWhiteListDomains',
-        }, (response) => {
-            hasContent = !!response.content;
-            editor.setValue(response.content || '');
         });
+
+        hasContent = !!response.content;
+        editor.setValue(response.content || '');
     }
 
     function updateWhiteListDomains() {
@@ -549,15 +557,13 @@ const UserFilter = function () {
     });
 
     let hasContent = false;
-    function loadUserRules() {
-        contentPage.sendMessage({
-            type: 'getUserRules',
-        }, (response) => {
-            hasContent = !!response.content;
-            if (editor.getValue() !== response.content) {
-                editor.setValue(response.content || '');
-            }
-        });
+    async function loadUserRules() {
+        const response = await contentPage.sendMessage({ type: 'getUserRules' });
+
+        hasContent = !!response.content;
+        if (editor.getValue() !== response.content) {
+            editor.setValue(response.content || '');
+        }
     }
 
     const DEFFER_TIMEOUT_MS = 200;
@@ -759,14 +765,14 @@ const AntiBannerFilters = function (options) {
             const displayNamesString = enabledFiltersNames.slice(0, namesDisplayCount).join(', ');
             enabledFiltersNamesString = i18n.getMessage(
                 'options_filters_enabled_and_more_divider',
-                [displayNamesString, (length - namesDisplayCount).toString()]
+                [displayNamesString, (length - namesDisplayCount).toString()],
             );
         } else if (length > 1) {
             const lastName = enabledFiltersNames.slice(length - 1)[0];
             const firstNames = enabledFiltersNames.slice(0, length - 1);
             enabledFiltersNamesString = i18n.getMessage(
                 'options_filters_enabled_and_divider',
-                [firstNames.join(', '), lastName]
+                [firstNames.join(', '), lastName],
             );
         } else if (length === 1) {
             enabledFiltersNamesString = enabledFiltersNames[0];
@@ -1292,35 +1298,35 @@ const AntiBannerFilters = function (options) {
         });
     };
 
-    function renderCategoriesAndFilters() {
+    async function renderCategoriesAndFilters() {
         const settingsBody = document.querySelector('#antibanner .settings-body');
         const searchComponent = mountSearchComponent(settingsBody);
         const searchDataSources = getSearchDataSources(searchComponent);
         bindSearchControls(searchDataSources);
 
-        contentPage.sendMessage({ type: 'getFiltersMetadata' }, (response) => {
-            loadedFiltersInfo.initLoadedFilters(response.filters, response.categories);
-            setLastUpdatedTimeText(loadedFiltersInfo.lastUpdateTime);
+        const response = await contentPage.sendMessage({ type: 'getFiltersMetadata' });
 
-            const { categories, filters } = loadedFiltersInfo;
+        loadedFiltersInfo.initLoadedFilters(response.filters, response.categories);
+        setLastUpdatedTimeText(loadedFiltersInfo.lastUpdateTime);
 
-            categories.forEach((category) => {
-                renderFilterCategory(category);
-                const groupSearchDataSources = initSearchInCategory(category);
-                renderFiltersInCategory(category.groupId, filters, groupSearchDataSources);
-            });
+        const { categories, filters } = loadedFiltersInfo;
 
-            renderCommonFiltersList(filters, searchDataSources);
-
-            bindControls();
-            CheckboxUtils.toggleCheckbox(document.querySelectorAll('.opt-state input[type=checkbox]'));
-
-            // check document hash
-            const { hash } = document.location;
-            if (hash && hash.indexOf('#antibanner') === 0) {
-                TopMenu.toggleTab();
-            }
+        categories.forEach((category) => {
+            renderFilterCategory(category);
+            const groupSearchDataSources = initSearchInCategory(category);
+            renderFiltersInCategory(category.groupId, filters, groupSearchDataSources);
         });
+
+        renderCommonFiltersList(filters, searchDataSources);
+
+        bindControls();
+        CheckboxUtils.toggleCheckbox(document.querySelectorAll('.opt-state input[type=checkbox]'));
+
+        // check document hash
+        const { hash } = document.location;
+        if (hash && hash.indexOf('#antibanner') === 0) {
+            TopMenu.toggleTab();
+        }
     }
 
     function toggleFilterState() {
@@ -1341,12 +1347,11 @@ const AntiBannerFilters = function (options) {
         }
     }
 
-    function updateAntiBannerFilters(e) {
+    async function updateAntiBannerFilters(e) {
         e.preventDefault();
         document.querySelector('.settings-actions__update-button').classList.add('settings-actions__update-button--spinning');
-        contentPage.sendMessage({ type: 'checkAntiBannerFiltersUpdate' }, () => {
-            setLastUpdatedTimeText(Date.now());
-        });
+        await contentPage.sendMessage({ type: 'checkAntiBannerFiltersUpdate' });
+        setLastUpdatedTimeText(Date.now());
     }
 
     function addCustomFilter(e) {
@@ -1356,7 +1361,7 @@ const AntiBannerFilters = function (options) {
     }
 
     let customFilterInitialized = false;
-    function renderCustomFilterPopup(filterOptions = {}) {
+    async function renderCustomFilterPopup(filterOptions = {}) {
         const { isFilterSubscription, title, url } = filterOptions;
         const POPUP_ACTIVE_CLASS = 'option-popup__step--active';
         const customFilterPopup = document.querySelector('#add-custom-filter-popup');
@@ -1461,36 +1466,41 @@ const AntiBannerFilters = function (options) {
 
         function bindEvents() {
             // step one events
-            document.querySelector('.custom-filter-popup-next').addEventListener('click', (e) => {
+            document.querySelector('.custom-filter-popup-next').addEventListener('click', async (e) => {
                 e.preventDefault();
 
                 const searchInputValue = searchInput.value && searchInput.value.trim();
 
-                contentPage.sendMessage({ type: 'loadCustomFilterInfo', url: searchInputValue }, (result) => {
-                    const { filter, error } = result;
-                    if (filter) {
-                        renderStepFour(filter);
-                    } else {
-                        renderStepThree(error);
-                    }
+                renderStepTwo();
+
+                const response = await contentPage.sendMessage({
+                    type: 'loadCustomFilterInfo',
+                    url: searchInputValue,
                 });
 
-                renderStepTwo();
+                const { filter, error } = response;
+                if (filter) {
+                    renderStepFour(filter);
+                } else {
+                    renderStepThree(error);
+                }
             });
 
-            subscribeButton.addEventListener('click', (e) => {
+            subscribeButton.addEventListener('click', async (e) => {
                 e.preventDefault();
+
                 const url = document.querySelector('#custom-filter-popup-added-url').href;
                 const title = document.querySelector('#custom-filter-popup-added-title').value || '';
-                contentPage.sendMessage({
+
+                const response = await contentPage.sendMessage({
                     type: 'subscribeToCustomFilter',
                     url,
                     title: title.trim(),
                     trusted: checkboxInput.checked,
-                }, (filter) => {
-                    console.log('filter added successfully', filter);
-                    closePopup();
                 });
+
+                log.info('Filter added successfully', response);
+                closePopup();
             });
 
             // render step 3 events
@@ -1519,15 +1529,15 @@ const AntiBannerFilters = function (options) {
         customFilterPopup.classList.add('option-popup--active');
 
         if (isFilterSubscription) {
-            contentPage.sendMessage({ type: 'loadCustomFilterInfo', url, title }, (result) => {
-                const { filter, error } = result;
-                if (filter) {
-                    renderStepFour(filter);
-                } else {
-                    renderStepThree(error);
-                }
-            });
             renderStepTwo();
+
+            const response = await contentPage.sendMessage({ type: 'loadCustomFilterInfo', url, title });
+            const { filter, error } = response;
+            if (filter) {
+                renderStepFour(filter);
+            } else {
+                renderStepThree(error);
+            }
         } else {
             renderStepOne();
         }
@@ -1734,7 +1744,7 @@ const Settings = function () {
         contentPage.sendMessage({
             type: 'setFiltersUpdatePeriod',
             updatePeriod: updatePeriodString,
-        }, () => {});
+        });
     }
 
     const filtersUpdatePeriodSelect = document.querySelector('#filtersUpdatePeriodSelect');
@@ -1899,20 +1909,21 @@ PageController.prototype = {
         });
     },
 
-    onSettingsImported(success) {
+    async onSettingsImported(success) {
         if (success) {
             Utils.showPopup(i18n.getMessage('options_popup_import_success_title'));
 
-            const self = this;
-            contentPage.sendMessage({ type: 'initializeFrameScript' }, (response) => {
-                userSettings = response.userSettings;
-                enabledFilters = response.enabledFilters;
-                requestFilterInfo = response.requestFilterInfo;
+            const response = await contentPage.sendMessage({ type: 'initializeFrameScript' });
+            userSettings = response.userSettings;
+            enabledFilters = response.enabledFilters;
+            requestFilterInfo = response.requestFilterInfo;
 
-                self._render();
-            });
+            this._render();
         } else {
-            Utils.showPopup(i18n.getMessage('options_popup_import_error_title'), i18n.getMessage('options_popup_import_error_description'));
+            Utils.showPopup(
+                i18n.getMessage('options_popup_import_error_title'),
+                i18n.getMessage('options_popup_import_error_description'),
+            );
         }
     },
 
@@ -1981,11 +1992,10 @@ PageController.prototype = {
         }
     },
 
-    onResetStatsClicked(e) {
+    async onResetStatsClicked(e) {
         e.preventDefault();
-        contentPage.sendMessage({ type: 'resetBlockedAdsCount' }, () => {
-            Utils.showPopup(i18n.getMessage('options_reset_stats_done'));
-        });
+        await contentPage.sendMessage({ type: 'resetBlockedAdsCount' });
+        Utils.showPopup(i18n.getMessage('options_reset_stats_done'));
     },
 
     importSettingsFile(e) {
@@ -2009,13 +2019,6 @@ PageController.prototype = {
         this.antiBannerFilters.renderCustomFilterPopup({ isFilterSubscription: true, url, title });
     },
 };
-
-let userSettings;
-let enabledFilters;
-let environmentOptions;
-let AntiBannerFiltersId;
-let EventNotifierTypes;
-let requestFilterInfo;
 
 /**
  * Parses hash string
@@ -2192,7 +2195,7 @@ const backgroundPagePromise = new Promise((resolve, reject) => {
     });
 });
 
-const waitStorageInit = (adguard) => {
+const waitStorageInit = async (adguard) => {
     const timeoutMs = 500;
     if (!adguard.localStorage.isInitialized()) {
         setTimeout(() => {
@@ -2200,7 +2203,8 @@ const waitStorageInit = (adguard) => {
         }, timeoutMs);
         return;
     }
-    contentPage.sendMessage({ type: 'initializeFrameScript' }, initPage);
+    const response = await contentPage.sendMessage({ type: 'initializeFrameScript' });
+    initPage(response);
 };
 
 const init = () => {
