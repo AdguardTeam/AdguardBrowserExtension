@@ -25,7 +25,7 @@ import { log } from '../../utils/log';
 import { webRequestService } from '../request-blocking';
 import { stealthService } from './stealth-service';
 import { browserUtils } from '../../utils/browser-utils';
-import { browser } from '../../browser';
+import { browser } from '../../api/browser';
 
 /**
  * Cookie filtering module
@@ -174,15 +174,13 @@ export const cookieFiltering = (() => {
      * @param {string} url Cookie url
      * @return {Promise<any>}
      */
-    const apiRemoveCookie = (name, url) => new Promise((resolve) => {
-        browser.cookies.remove({ url, name }, () => {
-            const ex = browser.runtime.lastError;
-            if (ex) {
-                log.error('Error remove cookie {0} - {1}: {2}', name, url, ex);
-            }
-            resolve();
-        });
-    });
+    const apiRemoveCookie = async (name, url) => {
+        try {
+            await browser.cookies.remove({ url, name });
+        } catch (e) {
+            log.error('Error remove cookie {0} - {1}: {2}', name, url, e);
+        }
+    };
 
     /**
      * Updates cookie
@@ -191,7 +189,7 @@ export const cookieFiltering = (() => {
      * @param {string} url Cookie url
      * @return {Promise<any>}
      */
-    const apiUpdateCookie = (apiCookie, url) => {
+    const apiUpdateCookie = async (apiCookie, url) => {
         const update = {
             url,
             name: apiCookie.name,
@@ -211,15 +209,16 @@ export const cookieFiltering = (() => {
         if (apiCookie.hostOnly) {
             delete update.domain;
         }
-        return new Promise((resolve) => {
-            browser.cookies.set(update, () => {
-                const ex = browser.runtime.lastError;
-                if (ex) {
-                    log.error('Error update cookie {0} - {1}: {2}', apiCookie.name, url, ex);
-                }
-                resolve();
-            });
-        });
+
+        let result;
+
+        try {
+            result = await browser.cookies.set(update);
+        } catch (e) {
+            log.error('Error update cookie {0} - {1}: {2}', apiCookie.name, url, e);
+        }
+
+        return result;
     };
 
     /**
@@ -229,12 +228,10 @@ export const cookieFiltering = (() => {
      * @param {string} url Cookie url
      * @return {Promise<Array.<BrowserApiCookie>>} array of cookies
      */
-    const apiGetCookies = (name, url) => new Promise((resolve) => {
-        browser.cookies.getAll({ name, url }, (cookies) => {
-            resolve(cookies || []);
-        });
-    });
-
+    const apiGetCookies = async (name, url) => {
+        const cookies = await browser.cookies.getAll({ name, url });
+        return cookies || [];
+    };
 
     /**
      * Retrieves all cookies by name and url and removes its

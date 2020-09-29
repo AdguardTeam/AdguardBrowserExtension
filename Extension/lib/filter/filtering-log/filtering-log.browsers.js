@@ -367,7 +367,7 @@ const browsersFilteringLog = (function () {
      * @param {boolean} thirdParty
      */
     const addCookieEvent = function (
-        tab, cookieName, cookieValue, cookieDomain, requestType, cookieRule, isModifyingCookieRule, thirdParty
+        tab, cookieName, cookieValue, cookieDomain, requestType, cookieRule, isModifyingCookieRule, thirdParty,
     ) {
         if (!canAddEvent(tab)) {
             return;
@@ -484,39 +484,38 @@ const browsersFilteringLog = (function () {
 
     /**
      * Synchronize currently opened tabs with out state
-     * @param callback
      */
-    const synchronizeOpenTabs = function (callback) {
-        tabsApi.getAll((tabs) => {
-            // As Object.keys() returns strings we convert them to integers,
-            // because tabId is integer in extension API
-            const tabIdsToRemove = Object.keys(tabsInfoMap).map(id => parseInt(id, 10));
-            for (let i = 0; i < tabs.length; i += 1) {
-                const openTab = tabs[i];
-                const tabInfo = tabsInfoMap[openTab.tabId];
-                if (!tabInfo) {
-                    // add tab
-                    addTab(openTab);
-                } else {
-                    // update tab
-                    updateTab(openTab);
-                }
-                const index = tabIdsToRemove.indexOf(openTab.tabId);
-                if (index >= 0) {
-                    tabIdsToRemove.splice(index, 1);
-                }
+    const synchronizeOpenTabs = async function () {
+        const tabs = await tabsApi.getAll();
+        // As Object.keys() returns strings we convert them to integers,
+        // because tabId is integer in extension API
+        const tabIdsToRemove = Object.keys(tabsInfoMap).map(id => parseInt(id, 10));
+        for (let i = 0; i < tabs.length; i += 1) {
+            const openTab = tabs[i];
+            const tabInfo = tabsInfoMap[openTab.tabId];
+            if (!tabInfo) {
+                // add tab
+                addTab(openTab);
+            } else {
+                // update tab
+                updateTab(openTab);
             }
-            for (let j = 0; j < tabIdsToRemove.length; j += 1) {
-                removeTabById(tabIdsToRemove[j]);
+            const index = tabIdsToRemove.indexOf(openTab.tabId);
+            if (index >= 0) {
+                tabIdsToRemove.splice(index, 1);
             }
-            if (typeof callback === 'function') {
-                const syncTabs = [];
-                Object.keys(tabsInfoMap).forEach((tabId) => {
-                    syncTabs.push(tabsInfoMap[tabId]);
-                });
-                callback(syncTabs);
-            }
+        }
+        for (let j = 0; j < tabIdsToRemove.length; j += 1) {
+            removeTabById(tabIdsToRemove[j]);
+        }
+
+        const syncTabs = [];
+
+        Object.keys(tabsInfoMap).forEach((tabId) => {
+            syncTabs.push(tabsInfoMap[tabId]);
         });
+
+        return syncTabs;
     };
 
     /**

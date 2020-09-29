@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import browser from 'webextension-polyfill';
+import { browser } from '../api/browser';
 import { log } from './log';
 
 /**

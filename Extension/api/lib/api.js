@@ -237,12 +237,11 @@ export const adguardApi = (function () {
      * Opens assistant dialog in the specified tab
      * @param tabId Tab identifier
      */
-    const openAssistant = (tabId) => {
+    const openAssistant = async (tabId) => {
         if (tabsApi.executeScriptFile) {
             // Load Assistant code to the activate tab immediately
-            tabsApi.executeScriptFile(null, { file: '/adguard/assistant/assistant.js' }, () => {
-                initAssistant(tabId);
-            });
+            await tabsApi.executeScriptFile(null, { file: '/adguard/assistant/assistant.js' });
+            initAssistant(tabId);
         } else {
             // Manually start assistant
             initAssistant(tabId);

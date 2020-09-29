@@ -18,27 +18,7 @@
 import { utils } from '../utils/common';
 import { tabsImpl } from '../api/tabs';
 
-const tabsApi = (tabsImpl => {
-    // eslint-disable-next-line no-unused-vars
-    const AdguardTab = {
-        tabId: 1,
-        url: 'url',
-        title: 'Title',
-        incognito: false,
-        status: null,   // 'loading' or 'complete'
-        frames: null,   // Collection of frames inside tab
-        metadata: null,  // Contains info about white list rule is applied to tab.
-    };
-
-    // eslint-disable-next-line no-unused-vars
-    const AdguardTabFrame = {
-        frameId: 1,
-        url: 'url',
-        domainName: 'domainName',
-    };
-
-    function noOpFunc() {
-    }
+const tabsApi = ((tabsImpl) => {
 
     const tabs = Object.create(null);
 
@@ -70,12 +50,13 @@ const tabsApi = (tabsImpl => {
     }
 
     // Synchronize opened tabs
-    tabsImpl.getAll((aTabs) => {
-        for (let i = 0; i < aTabs.length; i++) {
+    (async () => {
+        const aTabs = await tabsImpl.getAll();
+        for (let i = 0; i < aTabs.length; i += 1) {
             const aTab = aTabs[i];
             tabs[aTab.tabId] = aTab;
         }
-    });
+    })();
 
     tabsImpl.onCreated.addListener(onTabCreated);
 
@@ -109,18 +90,18 @@ const tabsApi = (tabsImpl => {
     // --------- Actions ---------
 
     // Creates a new tab.
-    const create = function (details, callback) {
-        tabsImpl.create(details, callback || noOpFunc);
+    const create = async (details) => {
+        return tabsImpl.create(details);
     };
 
     // Closes tab.
-    const remove = function (tabId, callback) {
-        tabsImpl.remove(tabId, callback || noOpFunc);
+    const remove = async (tabId) => {
+        return tabsImpl.remove(tabId);
     };
 
     // Activates tab (Also makes tab's window in focus).
-    const activate = function (tabId, callback) {
-        tabsImpl.activate(tabId, callback || noOpFunc);
+    const activate = function (tabId) {
+        return tabsImpl.activate(tabId);
     };
 
     // Reloads tab.
@@ -139,51 +120,57 @@ const tabsApi = (tabsImpl => {
     };
 
     // Gets all opened tabs
-    const getAll = function (callback) {
-        tabsImpl.getAll((aTabs) => {
-            const result = [];
-            for (let i = 0; i < aTabs.length; i++) {
-                const aTab = aTabs[i];
-                let tab = tabs[aTab.tabId];
-                if (!tab) {
-                    // Synchronize state
-                    tabs[aTab.tabId] = tab = aTab;
-                }
-                result.push(tab);
+    const getAll = async () => {
+        const aTabs = await tabsImpl.getAll();
+        const result = [];
+        for (let i = 0; i < aTabs.length; i += 1) {
+            const aTab = aTabs[i];
+            let tab = tabs[aTab.tabId];
+            if (!tab) {
+                // Synchronize state
+                tabs[aTab.tabId] = aTab;
+                tab = aTab;
             }
-            callback(result);
-        });
+            result.push(tab);
+        }
+        return result;
     };
 
+    // Calls callback with each tab
     const forEach = function (callback) {
-        tabsImpl.getAll((aTabs) => {
-            for (let i = 0; i < aTabs.length; i++) {
+        (async () => {
+            const aTabs = await tabsImpl.getAll();
+            for (let i = 0; i < aTabs.length; i += 1) {
                 const aTab = aTabs[i];
                 let tab = tabs[aTab.tabId];
                 if (!tab) {
                     // Synchronize state
-                    tabs[aTab.tabId] = tab = aTab;
+                    tabs[aTab.tabId] = aTab;
+                    tab = aTab;
                 }
                 callback(tab);
             }
-        });
+        })();
     };
 
     // Gets active tab
-    const getActive = function (callback) {
-        tabsImpl.getActive((tabId) => {
-            const tab = tabs[tabId];
-            if (tab) {
-                callback(tab);
-            } else {
-                // Tab not found in the local state, but we are sure that this tab exists. Sync...
-                // TODO[Edge]: Relates to Edge Bug https://github.com/AdguardTeam/AdguardBrowserExtension/issues/481
-                tabsImpl.get(tabId, (tab) => {
-                    onTabCreated(tab);
-                    callback(tab);
-                });
-            }
-        });
+    const getActive = async () => {
+        const tabId = await tabsImpl.getActive();
+        if (!tabId) {
+            return null;
+        }
+
+        let tab = tabs[tabId];
+
+        if (tab) {
+            return tab;
+        }
+
+        // Tab not found in the local state, but we are sure that this tab exists. Sync...
+        // TODO[Edge]: Relates to Edge Bug https://github.com/AdguardTeam/AdguardBrowserExtension/issues/481
+        tab = await tabsImpl.get(tabId);
+        onTabCreated(tab);
+        return tab;
     };
 
     const isIncognito = function (tabId) {
@@ -254,6 +241,7 @@ const tabsApi = (tabsImpl => {
             if (!tab.metadata) {
                 tab.metadata = Object.create(null);
             }
+            // eslint-disable-next-line no-restricted-syntax
             for (const key in values) {
                 if (values.hasOwnProperty && values.hasOwnProperty(key)) {
                     tab.metadata[key] = values[key];
@@ -263,7 +251,7 @@ const tabsApi = (tabsImpl => {
     };
 
     // Gets tab metadata
-    const getTabMetadata = function (tabId, key) {
+    const getTabMetadata = (tabId, key) => {
         const tab = tabs[tabId];
         if (tab && tab.metadata) {
             return tab.metadata[key];
@@ -271,7 +259,7 @@ const tabsApi = (tabsImpl => {
         return null;
     };
 
-    const clearTabMetadata = function (tabId) {
+    const clearTabMetadata = tabId => {
         const tab = tabs[tabId];
         if (tab) {
             tab.metadata = null;
@@ -318,4 +306,5 @@ const tabsApi = (tabsImpl => {
         executeScriptFile,
     };
 })(tabsImpl);
+
 export { tabsApi };

@@ -18,7 +18,7 @@
 import { BACKGROUND_TAB_ID } from '../utils/common';
 import { backgroundPage } from '../api/background-page';
 import { browserUtils } from '../utils/browser-utils';
-import { browser } from '../browser';
+import { browser } from '../api/browser';
 
 /**
  * Request sanitizer helper

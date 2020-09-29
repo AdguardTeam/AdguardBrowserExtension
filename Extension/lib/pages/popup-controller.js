@@ -16,6 +16,7 @@
  */
 
 import c3 from 'c3';
+
 import { i18n } from './i18n';
 import { popupPage } from '../content-script/popup-script';
 import { htmlToElement } from './script';
@@ -647,15 +648,14 @@ PopupController.prototype = {
         this._renderAnalyticsBlock(stats, range);
     },
 
-    _renderStatsBlock(stats) {
+    async _renderStatsBlock(stats) {
         const timeRange = document.querySelector('.statistics-select-time').value;
         const typeData = document.querySelector('.statistics-select-type').value;
 
         if (!stats) {
             const self = this;
-            popupPage.sendMessage({ type: 'getStatisticsData' }, (message) => {
-                self._renderStatsGraphs(message.stats, timeRange, typeData);
-            });
+            const message = await popupPage.sendMessage({ type: 'getStatisticsData' });
+            self._renderStatsGraphs(message.stats, timeRange, typeData);
         } else {
             this._renderStatsGraphs(stats, timeRange, typeData);
         }
@@ -687,18 +687,17 @@ PopupController.prototype = {
         });
     },
 
-    _renderStats(container) {
+    async _renderStats(container) {
         const template = this.filteringStatisticsTemplate;
         this._appendTemplate(container, template);
 
         const self = this;
 
-        popupPage.sendMessage({ type: 'getStatisticsData' }, (message) => {
-            const { stats } = message;
+        const message = await popupPage.sendMessage({ type: 'getStatisticsData' });
+        const { stats } = message;
 
-            self._renderBlockedGroups(container, stats);
-            self._renderStatsBlock(stats);
-        });
+        self._renderBlockedGroups(container, stats);
+        self._renderStatsBlock(stats);
     },
 
     _renderActions(container, tabInfo) {
@@ -982,7 +981,7 @@ PopupController.prototype = {
 };
 
 
-const init = function () {
+const init = async function () {
     /**
      * TODO: check the following EDGE issue
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/551
@@ -1006,17 +1005,17 @@ const init = function () {
         controller.resizePopupWindow();
     });
 
-    popupPage.sendMessage({ type: 'getTabInfoForPopup' }, (message) => {
-        const onDocumentReady = () => {
-            controller.render(message.frameInfo, message.options);
-        };
+    const message = await popupPage.sendMessage({ type: 'getTabInfoForPopup' });
 
-        if (document.attachEvent ? document.readyState === 'complete' : document.readyState !== 'loading') {
-            onDocumentReady();
-        } else {
-            document.addEventListener('DOMContentLoaded', onDocumentReady);
-        }
-    });
+    const onDocumentReady = () => {
+        controller.render(message.frameInfo, message.options);
+    };
+
+    if (document.attachEvent ? document.readyState === 'complete' : document.readyState !== 'loading') {
+        onDocumentReady();
+    } else {
+        document.addEventListener('DOMContentLoaded', onDocumentReady);
+    }
 
     popupPage.onMessage.addListener((message) => {
         switch (message.type) {
