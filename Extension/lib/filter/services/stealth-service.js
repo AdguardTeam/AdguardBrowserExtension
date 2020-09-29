@@ -349,66 +349,54 @@ export const stealthService = (() => {
 
         // Deprecated since Chrome 48
         if (typeof browser.privacy.network.webRTCMultipleRoutesEnabled === 'object') {
-            if (webRTCDisabled) {
-                try {
+            try {
+                if (webRTCDisabled) {
                     await browser.privacy.network.webRTCMultipleRoutesEnabled.set({
                         value: false,
                         scope: 'regular',
                     });
-                } catch (e) {
-                    logError(e);
-                }
-            } else {
-                try {
+                } else {
                     await browser.privacy.network.webRTCMultipleRoutesEnabled.clear({
                         scope: 'regular',
                     });
-                } catch (e) {
-                    logError(e);
                 }
+            } catch (e) {
+                logError(e);
             }
         }
 
         // Since chromium 48
         if (typeof browser.privacy.network.webRTCIPHandlingPolicy === 'object') {
-            if (webRTCDisabled) {
-                try {
+            try {
+                if (webRTCDisabled) {
                     await browser.privacy.network.webRTCIPHandlingPolicy.set({
                         value: 'disable_non_proxied_udp',
                         scope: 'regular',
                     });
-                } catch (e) {
-                    logError(e);
-                }
-            } else {
-                try {
+                } else {
                     await browser.privacy.network.webRTCIPHandlingPolicy.clear({
                         scope: 'regular',
                     });
-                } catch (e) {
-                    logError(e);
                 }
+            } catch (e) {
+                logError(e);
             }
         }
 
         if (typeof browser.privacy.network.peerConnectionEnabled === 'object') {
-            if (webRTCDisabled) {
-                try {
+            try {
+                if (webRTCDisabled) {
                     browser.privacy.network.peerConnectionEnabled.set({
                         value: false,
                         scope: 'regular',
                     });
-                } catch (e) {
-                    logError(e);
-                }
-            } else {
-                try {
+                } else {
                     browser.privacy.network.peerConnectionEnabled.clear({
                         scope: 'regular',
                     });
-                } catch (e) {
-                    logError(e);
                 }
+            } catch (e) {
+                logError(e);
             }
         }
     };
@@ -485,7 +473,7 @@ export const stealthService = (() => {
             filteringLog.bindStealthActionsToHttpRequestEvent(
                 tab,
                 STEALTH_ACTIONS.STRIPPED_TRACKING_URL,
-                context.eventId
+                context.eventId,
             );
 
             return result;

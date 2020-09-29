@@ -175,7 +175,7 @@ export const localeDetect = (function () {
                     const language = await browser.tabs.detectLanguage(tab.tabId);
                     detectLanguage(language);
                 } catch (e) {
-                    return;
+                    // do nothing
                 }
                 return;
             }
