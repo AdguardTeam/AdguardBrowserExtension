@@ -43,6 +43,7 @@ import { stealthService } from './filter/services/stealth-service';
 import { prefs } from './prefs';
 import { whitelist } from './filter/whitelist';
 import { openAssistant } from '../api/lib/assistant-manager';
+import { documentFilterService } from './filter/services/document-filter';
 
 /**
  *  Initialize Content => BackgroundPage messaging
@@ -449,7 +450,7 @@ const init = () => {
                 settings.disableShowAdguardPromoInfo();
                 break;
             case 'addUrlToTrusted':
-                adguard.documentFilterService.addToTrusted(message.url);
+                await documentFilterService.addToTrusted(message.url);
                 break;
             case 'isLocalStorageInitialized':
                 return { isLocalStorageInitialized: localStorage.isInitialized() };
