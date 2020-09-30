@@ -42,7 +42,6 @@ import { filteringApi } from './filter/filtering-api';
 import { stealthService } from './filter/services/stealth-service';
 import { prefs } from './prefs';
 import { whitelist } from './filter/whitelist';
-import { openAssistant } from '../api/lib/assistant-manager';
 import { documentFilterService } from './filter/services/document-filter';
 
 /**
@@ -454,9 +453,6 @@ const init = () => {
                 break;
             case 'isLocalStorageInitialized':
                 return { isLocalStorageInitialized: localStorage.isInitialized() };
-            case 'openAssistantInTab':
-                openAssistant(message.tabId);
-                break;
             default:
                 // Unhandled message
                 throw new Error(`There is no such message type ${message.type}`);
