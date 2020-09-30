@@ -2181,17 +2181,17 @@ const initPage = function (response) {
     }
 };
 
-const init = () => {
-    contentPage.sendMessage({ type: 'isLocalStorageInitialized' }, (response) => {
-        if (response.isLocalStorageInitialized) {
-            contentPage.sendMessage({ type: 'initializeFrameScript' }, initPage);
-        } else {
-            const timeoutMs = 500;
-            setTimeout(() => {
-                init();
-            }, timeoutMs);
-        }
-    });
+const init = async () => {
+    const timeoutMs = 500;
+    const response = await contentPage.sendMessage({ type: 'isLocalStorageInitialized' });
+    if (response.isLocalStorageInitialized) {
+        const data = await contentPage.sendMessage({ type: 'initializeFrameScript' });
+        initPage(data);
+    } else {
+        setTimeout(() => {
+            init();
+        }, timeoutMs);
+    }
 };
 
 export const options = {
