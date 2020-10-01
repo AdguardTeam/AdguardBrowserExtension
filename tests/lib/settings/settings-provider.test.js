@@ -78,10 +78,8 @@ describe('settingsProvider', () => {
         expect(settings['filters']).toBeTruthy();
     });
 
-    it('updates settings from json', async (done) => {
-        settingsProvider.applySettingsBackup(adgSettings, (success) => {
-            expect(success).toBeTruthy();
-            done();
-        });
+    it('updates settings from json', async () => {
+        const success = await settingsProvider.applySettingsBackup(adgSettings);
+        expect(success).toBeTruthy();
     });
 });

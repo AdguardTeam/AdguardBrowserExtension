@@ -430,15 +430,11 @@ const init = () => {
                 break;
             case 'loadSettingsJson': {
                 const appVersion = backgroundPage.app.getVersion();
-                const settingsCb = (json) => {
-                    return {
-                        content: json,
-                        appVersion,
-                    };
+                const json = await settingsProvider.loadSettingsBackup();
+                return {
+                    content: json,
+                    appVersion,
                 };
-
-                const json = await settingsProvider.loadSettingsBackup(settingsCb);
-                return json;
             }
             case 'applySettingsJson':
                 settingsProvider.applySettingsBackup(message.json);
