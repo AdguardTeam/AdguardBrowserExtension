@@ -108,15 +108,15 @@ export const webRequestService = (function () {
         }
 
         const cosmeticOptions = filteringApi.getCosmeticOption(
-            documentUrl, documentUrl, RequestTypes.DOCUMENT
+            documentUrl, documentUrl, RequestTypes.DOCUMENT,
         );
 
         result.collapseAllElements = filteringApi.shouldCollapseAllElements();
         result.selectors = filteringApi.getSelectorsForUrl(documentUrl, cosmeticOptions);
 
-        const canUseInsertCSSAndExecuteScript = prefs.features.canUseInsertCSSAndExecuteScript;
+        const { canUseInsertCSSAndExecuteScript } = prefs.features;
         if (retrieveScripts || !canUseInsertCSSAndExecuteScript) {
-            result.scripts = filteringApi.getScriptsStringForUrl(documentUrl, tab);
+            result.scripts = filteringApi.getScriptsStringForUrl(documentUrl, tab, cosmeticOptions);
         }
 
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1337
@@ -241,7 +241,7 @@ export const webRequestService = (function () {
             if (isDocumentLevel && isDocumentBlockingRule(requestRule)) {
                 const documentBlockedPage = documentFilterService.getDocumentBlockPageUrl(
                     requestUrl,
-                    requestRule.getText()
+                    requestRule.getText(),
                 );
 
                 if (documentBlockedPage) {
@@ -299,7 +299,7 @@ export const webRequestService = (function () {
             // Frame is whitelisted by the main frame's $document rule
             // We do nothing more in this case - return the rule.
             return whitelistRule;
-        } else if (!whitelistRule) {
+        } if (!whitelistRule) {
             // If whitelist rule is not found for the main frame, we check it for referrer
             whitelistRule = filteringApi.findWhiteListRule(requestUrl, referrerUrl, RequestTypes.DOCUMENT);
         }
@@ -413,7 +413,7 @@ export const webRequestService = (function () {
         }
 
         const whitelistRule = filteringApi.findWhiteListRule(
-            requestUrl, referrerUrl, RequestTypes.DOCUMENT
+            requestUrl, referrerUrl, RequestTypes.DOCUMENT,
         );
         if (whitelistRule && whitelistRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.RemoveParam)) {
             return null;

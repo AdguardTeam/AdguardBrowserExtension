@@ -166,12 +166,14 @@ export const RequestFilter = (() => {
          * http://adguard.com/en/filterrules.html#javascriptInjection
          *
          * @param url Page URL
+         * @param {number} options bitmask
          * @returns {{scriptSource: string, rule: string}[]} Javascript for the specified URL
          */
-        getScriptsForUrl(url) {
+        getScriptsForUrl(url, options) {
             const domain = utils.url.getHost(url);
             const cosmeticResult = engine.getCosmeticResult(
-                domain, TSUrlFilter.CosmeticOption.CosmeticOptionJS
+                domain,
+                options,
             );
 
             return cosmeticResult.getScriptRules();
@@ -184,11 +186,12 @@ export const RequestFilter = (() => {
          *
          * @param {string} url Page URL
          * @param {Object} tab tab
+         * @param {number} options bitmask
          * @returns {string} Script to be applied
          */
-        getScriptsStringForUrl(url, tab) {
+        getScriptsStringForUrl(url, tab, options) {
             const debug = filteringLog && filteringLog.isOpen();
-            const scriptRules = this.getScriptsForUrl(url);
+            const scriptRules = this.getScriptsForUrl(url, options);
 
             const isFirefox = browserUtils.isFirefoxBrowser();
             const isOpera = browserUtils.isOperaBrowser();
@@ -230,7 +233,7 @@ export const RequestFilter = (() => {
                         tab,
                         url,
                         RequestTypes.DOCUMENT,
-                        scriptRule
+                        scriptRule,
                     );
                 });
             }

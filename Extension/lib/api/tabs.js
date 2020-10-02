@@ -369,7 +369,7 @@ export const tabsImpl = (function () {
                 matchAboutBlank: true,
             });
         } catch (e) {
-            log.error(e);
+            log.error(new Error(e.message));
         }
     };
 
