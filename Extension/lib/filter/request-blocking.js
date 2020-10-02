@@ -114,8 +114,7 @@ export const webRequestService = (function () {
         result.collapseAllElements = filteringApi.shouldCollapseAllElements();
         result.selectors = filteringApi.getSelectorsForUrl(documentUrl, cosmeticOptions);
 
-        const { canUseInsertCSSAndExecuteScript } = prefs.features;
-        if (retrieveScripts || !canUseInsertCSSAndExecuteScript) {
+        if (retrieveScripts || !prefs.features.canUseInsertCSSAndExecuteScript) {
             result.scripts = filteringApi.getScriptsStringForUrl(documentUrl, tab, cosmeticOptions);
         }
 
