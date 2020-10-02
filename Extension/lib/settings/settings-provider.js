@@ -140,9 +140,8 @@ export const settingsProvider = (function () {
     /**
      * Applies general section settings to application
      * @param section Section
-     * @param callback Finish callback
      */
-    const applyGeneralSettingsSection = async function (section, callback) {
+    const applyGeneralSettingsSection = async function (section) {
         const set = section['general-settings'];
 
         settings.changeShowPageStatistic(!!set['show-blocked-ads-count']);
@@ -152,19 +151,16 @@ export const settingsProvider = (function () {
 
         if (set['allow-acceptable-ads']) {
             await application.addAndEnableFilters([utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID]);
-            callback(true);
         } else {
             application.disableFilters([utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID]);
-            callback(true);
         }
     };
 
     /**
      * Applies extension specific section settings to application
      * @param section
-     * @param callback
      */
-    const applyExtensionSpecificSettingsSection = function (section, callback) {
+    const applyExtensionSpecificSettingsSection = function (section) {
         const set = section['extension-specific-settings'];
 
         settings.changeUseOptimizedFiltersEnabled(!!set['use-optimized-filters']);
@@ -172,8 +168,6 @@ export const settingsProvider = (function () {
         settings.changeShowContextMenu(!!set['show-context-menu']);
         settings.changeShowInfoAboutAdguardFullVersion(!!set['show-info-about-adguard']);
         settings.changeShowAppUpdatedNotification(!!set['show-app-updated-info']);
-
-        callback(true);
     };
 
     /**
@@ -201,19 +195,24 @@ export const settingsProvider = (function () {
         return filter;
     };
 
-    const addCustomFilters = absentCustomFiltersInitials => absentCustomFiltersInitials
-        .reduce((promiseAcc, customFilterInitial) => promiseAcc
-            .then(acc => addCustomFilter(customFilterInitial)
-                .then((customFilter) => {
-                    log.info(`Settings sync: Was added custom filter: ${customFilter.customUrl}`);
-                    return [...acc, { error: null, filter: customFilter }];
-                })
-                .catch(() => {
-                    const { customUrl } = customFilterInitial;
-                    const message = `Settings sync: Some error happened while downloading: ${customUrl}`;
-                    log.info(message);
-                    return [...acc, { error: message }];
-                })), Promise.resolve([]));
+    const addCustomFilters = async (absentCustomFiltersInitials) => {
+        const result = [];
+        // eslint-disable-next-line no-restricted-syntax
+        for (const customFilterInitial of absentCustomFiltersInitials) {
+            try {
+                // eslint-disable-next-line no-await-in-loop
+                const customFilter = await addCustomFilter(customFilterInitial);
+                log.info(`Settings sync: Custom filter was added: ${customFilter.customUrl}`);
+                result.push({ error: null, filter: customFilter });
+            } catch (e) {
+                const { customUrl } = customFilterInitial;
+                const message = `Settings sync: Error occurred while downloading: ${customUrl} - ${e.message}`;
+                log.info(message);
+                result.push({ error: message });
+            }
+        }
+        return result;
+    };
 
     /**
      * Remove existing custom filters before adding new custom filters
@@ -242,7 +241,7 @@ export const settingsProvider = (function () {
      * @param {Array<CustomFilterInitial>} customFiltersInitials
      * @returns {Promise<any>} Promise object which represents array with filters
      */
-    const syncCustomFilters = (customFiltersInitials) => {
+    const syncCustomFilters = async (customFiltersInitials) => {
         const presentCustomFilters = subscriptions.getCustomFilters();
 
         const enrichedFiltersInitials = customFiltersInitials.map((filterToAdd) => {
@@ -263,21 +262,20 @@ export const settingsProvider = (function () {
         }
 
         if (customFiltersToAdd.length === 0) {
-            return Promise.resolve(enrichedFiltersInitials);
+            return enrichedFiltersInitials;
         }
 
-        return addCustomFilters(customFiltersToAdd)
-            .then((customFiltersAddResult) => {
-                // get results without errors, in order to do not enable filters with errors
-                const addedCustomFiltersWithoutError = customFiltersAddResult
-                    .filter(f => f.error === null)
-                    .map(f => f.filter);
+        const customFiltersAddResult = await addCustomFilters(customFiltersToAdd);
 
-                const addedCustomFiltersIds = addedCustomFiltersWithoutError.map(f => f.filterId);
-                log.info(`Settings sync: Were added custom filters: ${addedCustomFiltersIds}`);
+        // get results without errors, in order to do not enable filters with errors
+        const addedCustomFiltersWithoutError = customFiltersAddResult
+            .filter(f => f.error === null)
+            .map(f => f.filter);
 
-                return [...existingCustomFilters, ...addedCustomFiltersWithoutError];
-            });
+        const addedCustomFiltersIds = addedCustomFiltersWithoutError.map(f => f.filterId);
+        log.info(`Settings sync: Were added custom filters: ${addedCustomFiltersIds}`);
+
+        return [...existingCustomFilters, ...addedCustomFiltersWithoutError];
     };
 
     /**
@@ -319,9 +317,8 @@ export const settingsProvider = (function () {
     /**
      * Applies filters section settings to application
      * @param section Section
-     * @param callback Finish callback
      */
-    const applyFiltersSection = function (section, callback) {
+    const applyFiltersSection = async function (section) {
         const whiteListSection = section.filters['whitelist'] || {};
         const whitelistDomains = whiteListSection.domains || [];
         const blacklistDomains = whiteListSection['inverted-domains'] || [];
@@ -339,35 +336,30 @@ export const settingsProvider = (function () {
         const customFiltersData = section.filters['custom-filters'] || [];
 
         // STEP 1 sync custom filters
-        syncCustomFilters(customFiltersData)
-            .then((availableCustomFilters) => {
-                // STEP 2 get filters with enabled flag from export data
-                const customFilterIdsToEnable = availableCustomFilters
-                    .filter((availableCustomFilter) => {
-                        const filterData = customFiltersData
-                            .find((filter) => {
-                                if (!filter.customUrl) {
-                                    // eslint-disable-next-line max-len
-                                    throw new Error(`Custom filter should always have custom URL: ${JSON.stringify(filter)}`);
-                                }
-                                return filter.customUrl === availableCustomFilter.customUrl;
-                            });
-                        return filterData && filterData.enabled;
-                    })
-                    .map(filter => filter.filterId);
-                // STEP 3 sync enabled filters
-                const enabledFilterIds = section.filters['enabled-filters'] || [];
-                return syncEnabledFilters([...enabledFilterIds, ...customFilterIdsToEnable]);
+        const availableCustomFilters = await syncCustomFilters(customFiltersData);
+
+        // STEP 2 get filters with enabled flag from export data
+        const customFilterIdsToEnable = availableCustomFilters
+            .filter((availableCustomFilter) => {
+                const filterData = customFiltersData
+                    .find((filter) => {
+                        if (!filter.customUrl) {
+                            // eslint-disable-next-line max-len
+                            throw new Error(`Custom filter should always have custom URL: ${JSON.stringify(filter)}`);
+                        }
+                        return filter.customUrl === availableCustomFilter.customUrl;
+                    });
+                return filterData && filterData.enabled;
             })
-            .then(() => {
-                // STEP 4 sync enabled groups
-                const enabledGroups = section.filters['enabled-groups'] || [];
-                syncEnabledGroups(enabledGroups);
-                callback(true);
-            })
-            .catch((err) => {
-                log.error(err);
-            });
+            .map(filter => filter.filterId);
+
+        // STEP 3 sync enabled filters
+        const enabledFilterIds = section.filters['enabled-filters'] || [];
+        await syncEnabledFilters([...enabledFilterIds, ...customFilterIdsToEnable]);
+
+        // STEP 4 sync enabled groups
+        const enabledGroups = section.filters['enabled-groups'] || [];
+        syncEnabledGroups(enabledGroups);
     };
 
     /**
@@ -393,9 +385,8 @@ export const settingsProvider = (function () {
     /**
      * Imports settings set from json format
      * @param {string} json
-     * @param {function} cb
      */
-    const applySettingsBackupJson = function (json, cb) {
+    const applySettingsBackupJson = async function (json) {
         function onFinished(success) {
             if (success) {
                 log.info('Settings import finished successfully');
@@ -404,10 +395,6 @@ export const settingsProvider = (function () {
             }
 
             listeners.notifyListeners(listeners.SETTINGS_UPDATED, success);
-
-            if (cb) {
-                cb(success);
-            }
         }
 
         let input = null;
@@ -417,32 +404,25 @@ export const settingsProvider = (function () {
         } catch (ex) {
             log.error('Error parsing input json {0}, {1}', json, ex);
             onFinished(false);
-            return;
+            return false;
         }
 
         if (!input || input['protocol-version'] !== BACKUP_PROTOCOL_VERSION) {
             log.error('Json input is invalid {0}', json);
             onFinished(false);
-            return;
+            return false;
         }
 
-        applyGeneralSettingsSection(input, (success) => {
-            if (!success) {
-                onFinished(false);
-                return;
-            }
-
-            applyExtensionSpecificSettingsSection(input, (success) => {
-                if (!success) {
-                    onFinished(false);
-                    return;
-                }
-
-                applyFiltersSection(input, (success) => {
-                    onFinished(success);
-                });
-            });
-        });
+        try {
+            await applyGeneralSettingsSection(input);
+            applyExtensionSpecificSettingsSection(input);
+            await applyFiltersSection(input);
+            onFinished(true);
+            return true;
+        } catch (e) {
+            onFinished(false);
+            return false;
+        }
     };
 
     // EXPOSE

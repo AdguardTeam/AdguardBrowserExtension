@@ -201,7 +201,7 @@ export const application = (() => {
         filterIds = utils.collections.removeDuplicates(filterIds.slice(0));
 
         for (let i = 0; i < filterIds.length; i += 1) {
-            const filterId = filterIds[0];
+            const filterId = filterIds[i];
             // eslint-disable-next-line no-await-in-loop
             const success = await antiBannerService.addAntiBannerFilter(filterId);
             if (success) {
