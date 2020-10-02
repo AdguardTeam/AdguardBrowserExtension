@@ -15,13 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global HTMLDocument, contentPage */
+import { contentPage } from './content-script';
 
-(function () {
-    if (!(document instanceof HTMLDocument)) {
-        return;
-    }
-
+export const subscribe = (function () {
     const getSubscriptionParams = (urlParams) => {
         let title = null;
         let url = null;
@@ -103,5 +99,14 @@
         });
     };
 
-    document.addEventListener('click', onLinkClicked);
+    const init = () => {
+        if (!(document instanceof HTMLDocument)) {
+            return;
+        }
+        document.addEventListener('click', onLinkClicked);
+    };
+
+    return {
+        init,
+    };
 })();

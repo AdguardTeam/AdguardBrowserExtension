@@ -1036,23 +1036,6 @@ const webrequestInit = function () {
             requestContextStorage.onRequestCompleted(requestId);
         }
     }, ['<all_urls>']);
-
-    // Subscribe script is executed when onCommitted event fires,
-    // because this event is the most reliable
-    /**
-     * Subscribe script is executed when onCommitted event fires,
-     * because this event is the most reliable
-     */
-    backgroundPage.webNavigation.onCommitted.addListener((details) => {
-        const { tab, requestType, frameId } = details;
-        if ((requestType !== RequestTypes.DOCUMENT
-            && requestType !== RequestTypes.SUBDOCUMENT)
-            || tab.tabId === BACKGROUND_TAB_ID) {
-            return;
-        }
-        // load subscribe script on dom content load
-        tabsApi.executeScriptFile(tab.tabId, { file: '/lib/content-script/subscribe.js', frameId });
-    });
 };
 
 export const webrequest = {
