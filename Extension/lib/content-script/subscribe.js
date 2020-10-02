@@ -15,9 +15,16 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { contentPage } from './content-script';
+/* global contentPage */
 
-export const subscribe = (function () {
+/**
+ * Script used to subscribe to filters clicking to links with specified format
+ */
+(function () {
+    if (!(document instanceof HTMLDocument)) {
+        return;
+    }
+
     const getSubscriptionParams = (urlParams) => {
         let title = null;
         let url = null;
@@ -85,7 +92,7 @@ export const subscribe = (function () {
         }
 
         const subParams = getSubscriptionParams(urlParams);
-        const url = (subParams.url).trim();
+        const url = subParams.url.trim();
         const title = (subParams.title || url).trim();
 
         if (!url) {
@@ -99,14 +106,5 @@ export const subscribe = (function () {
         });
     };
 
-    const init = () => {
-        if (!(document instanceof HTMLDocument)) {
-            return;
-        }
-        document.addEventListener('click', onLinkClicked);
-    };
-
-    return {
-        init,
-    };
+    document.addEventListener('click', onLinkClicked);
 })();
