@@ -15,8 +15,11 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global HTMLDocument, contentPage */
+/* global contentPage */
 
+/**
+ * Script used to subscribe to filters clicking to links with specified format
+ */
 (function () {
     if (!(document instanceof HTMLDocument)) {
         return;
@@ -89,7 +92,7 @@
         }
 
         const subParams = getSubscriptionParams(urlParams);
-        const url = (subParams.url).trim();
+        const url = subParams.url.trim();
         const title = (subParams.title || url).trim();
 
         if (!url) {

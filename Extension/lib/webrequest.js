@@ -1037,8 +1037,6 @@ const webrequestInit = function () {
         }
     }, ['<all_urls>']);
 
-    // Subscribe script is executed when onCommitted event fires,
-    // because this event is the most reliable
     /**
      * Subscribe script is executed when onCommitted event fires,
      * because this event is the most reliable
@@ -1051,7 +1049,7 @@ const webrequestInit = function () {
             return;
         }
         // load subscribe script on dom content load
-        tabsApi.executeScriptFile(tab.tabId, { file: '/lib/content-script/subscribe.js', frameId });
+        tabsApi.executeScriptFile(tab.tabId, { file: '/content-script/subscribe.js', frameId });
     });
 };
 
