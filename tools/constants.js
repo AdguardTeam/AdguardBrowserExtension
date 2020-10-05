@@ -85,7 +85,7 @@ So what we do:
 
 // public suffixes list constants
 export const PUBLIC_SUFFIXES_URL = 'https://publicsuffix.org/list/public_suffix_list.dat';
-export const PUBLIC_SUFFIXES_FILE = '../../Extension/lib/utils/public-suffixes.js';
+export const PUBLIC_SUFFIXES_FILE = '../../Extension/src/utils/public-suffixes.js';
 
 // locales constants
 const LOCALES_BASE_URL = 'https://twosky.adtidy.org/api/v1';

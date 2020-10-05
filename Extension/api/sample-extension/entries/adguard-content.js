@@ -1,3 +1,3 @@
-import { preload } from '../../../lib/content-script/preload';
+import { preload } from '../../../src/content-script/preload';
 
 preload.init();

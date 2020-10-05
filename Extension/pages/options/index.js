@@ -1,5 +1,5 @@
-import { options } from '../../lib/pages/options';
-import { contentUtils } from '../../lib/content-script/content-utils';
+import { options } from '../../src/pages/options/options';
+import { contentUtils } from '../../src/content-script/content-utils';
 
 options.init();
 contentUtils.init();

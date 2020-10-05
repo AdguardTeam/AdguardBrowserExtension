@@ -1,3 +1,3 @@
-import { exportPage } from '../../lib/pages/export';
+import { exportPage } from '../../src/pages/export';
 
 exportPage.init();
