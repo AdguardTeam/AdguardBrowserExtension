@@ -68,7 +68,9 @@ export const engine = (function () {
         log.debug('Filtering http request for url: {0}, document: {1}, requestType: {2}', requestUrl, documentUrl, requestType);
 
         const request = new TSUrlFilter.Request(
-            requestUrl, documentUrl, RequestTypes.transformRequestType(requestType)
+            requestUrl,
+            documentUrl,
+            RequestTypes.transformRequestType(requestType),
         );
 
         if (!engine) {
@@ -82,7 +84,7 @@ export const engine = (function () {
             result.getBasicResult(),
             requestUrl,
             documentUrl,
-            requestType
+            requestType,
         );
 
         return result;

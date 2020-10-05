@@ -184,7 +184,7 @@ export const stealthService = (() => {
         }
 
         const whiteListRule = filteringApi.findWhiteListRule(requestUrl, mainFrameUrl, requestType);
-        if (whiteListRule && whiteListRule.isDocumentWhiteList()) {
+        if (whiteListRule && whiteListRule.isDocumentWhitelistRule()) {
             log.debug('Whitelist rule found');
             return false;
         }
@@ -264,7 +264,7 @@ export const stealthService = (() => {
         }
 
         const whiteListRule = filteringApi.findWhiteListRule(requestUrl, referrerUrl, requestType);
-        if (whiteListRule && whiteListRule.isDocumentWhiteList()) {
+        if (whiteListRule && whiteListRule.isDocumentWhitelistRule()) {
             log.debug('Whitelist rule found');
             return false;
         }
@@ -433,7 +433,7 @@ export const stealthService = (() => {
         }
 
         const whiteListRule = filteringApi.findWhiteListRule(requestUrl, mainFrameUrl, requestType);
-        if (whiteListRule && whiteListRule.isDocumentWhiteList()) {
+        if (whiteListRule && whiteListRule.isDocumentWhitelistRule()) {
             log.debug('Whitelist rule found');
             return null;
         }

@@ -139,7 +139,7 @@ describe('RequestFilter', () => {
         const rules = requestFilter.findCookieRules(
             'https://nop.xpanama.net/if.html?adflag=1&cb=kq4iOggNyP',
             'https://www.merriam-webster.com/',
-            RequestTypes.DOCUMENT
+            RequestTypes.DOCUMENT,
         );
 
         expect(rules).toHaveLength(1);
@@ -169,13 +169,13 @@ describe('RequestFilter', () => {
         const requestFilter = await createRequestFilterWithRules([redirectRule, blockRedirectRule]);
 
         const rule = requestFilter.findRuleForRequest(
-            'http://example.org/ads.js', 'http://example.org/', RequestTypes.SCRIPT
+            'http://example.org/ads.js', 'http://example.org/', RequestTypes.SCRIPT,
         );
         expect(rule).toBeTruthy();
         expect(rule.getText()).toBe(redirectRule);
 
         const imgRule = requestFilter.findRuleForRequest(
-            'http://example.org/ad.png', 'http://example.org/', RequestTypes.IMAGE
+            'http://example.org/ad.png', 'http://example.org/', RequestTypes.IMAGE,
         );
         expect(imgRule).toBeTruthy();
         expect(imgRule.getText()).toBe(blockRedirectRule);
@@ -353,7 +353,7 @@ describe('RequestFilter', () => {
             result = requestFilter.findCspRules(
                 'https://nop.xpanama.net/if.html?adflag=1&cb=kq4iOggNyP',
                 'https://www.merriam-webster.com/',
-                RequestTypes.DOCUMENT
+                RequestTypes.DOCUMENT,
             );
             expect(result).toHaveLength(1);
             expect(result[0].getText()).toBe(cspRule);
@@ -361,7 +361,7 @@ describe('RequestFilter', () => {
             result = requestFilter.findCspRules(
                 'https://xpanama.net',
                 'https://example.org',
-                RequestTypes.DOCUMENT
+                RequestTypes.DOCUMENT,
             );
             expect(!result || result.length === 0).toBeTruthy();
 
@@ -371,7 +371,7 @@ describe('RequestFilter', () => {
             result = requestFilter.findCspRules(
                 'https://xpanama.net',
                 'https://www.merriam-webster.com/',
-                RequestTypes.DOCUMENT
+                RequestTypes.DOCUMENT,
             );
             // Specific whitelist rule should be returned
             expect(result).toHaveLength(1);
@@ -381,7 +381,7 @@ describe('RequestFilter', () => {
             const globalWhiteListRule = '@@||xpanama.net^$csp';
             requestFilter = await createRequestFilterWithRules([cspRule, directiveWhiteListRule, globalWhiteListRule]);
             result = requestFilter.findCspRules(
-                'https://xpanama.net', 'https://www.merriam-webster.com/', RequestTypes.DOCUMENT
+                'https://xpanama.net', 'https://www.merriam-webster.com/', RequestTypes.DOCUMENT,
             );
             // Global whitelist rule should be returned
             expect(result).toHaveLength(1);
@@ -391,7 +391,7 @@ describe('RequestFilter', () => {
             const directiveMissWhiteListRule = '@@||xpanama.net^$csp=frame-src \'none\'';
             requestFilter = await createRequestFilterWithRules([cspRule, directiveMissWhiteListRule]);
             result = requestFilter.findCspRules(
-                'https://xpanama.net', 'https://www.merriam-webster.com/', RequestTypes.DOCUMENT
+                'https://xpanama.net', 'https://www.merriam-webster.com/', RequestTypes.DOCUMENT,
             );
             expect(result).toHaveLength(1);
             expect(result[0].getText()).toBe(cspRule);
@@ -400,7 +400,7 @@ describe('RequestFilter', () => {
             const duplicateCspRule = '||xpanama.net^$third-party,csp=connect-src \'none\'';
             requestFilter = await createRequestFilterWithRules([cspRule, directiveMissWhiteListRule, duplicateCspRule]);
             result = requestFilter.findCspRules(
-                'https://xpanama.net', 'https://www.merriam-webster.com/', RequestTypes.DOCUMENT
+                'https://xpanama.net', 'https://www.merriam-webster.com/', RequestTypes.DOCUMENT,
             );
             expect(result).toHaveLength(1);
             expect(result[0].getText() === cspRule || result[0].getText() === duplicateCspRule).toBeTruthy();
@@ -414,7 +414,7 @@ describe('RequestFilter', () => {
             result = requestFilter.findCspRules(
                 'https://nop.xpanama.net/if.html?adflag=1&cb=kq4iOggNyP',
                 'https://www.merriam-webster.com/',
-                RequestTypes.DOCUMENT
+                RequestTypes.DOCUMENT,
             );
             expect(result).toHaveLength(2);
             expect(result[0].getText() === cspRuleAny || result[0].getText() === cspRuleNotSubDocument).toBeTruthy();
@@ -423,7 +423,7 @@ describe('RequestFilter', () => {
             result = requestFilter.findCspRules(
                 'https://nop.xpanama.net/if.html?adflag=1&cb=kq4iOggNyP',
                 'https://www.merriam-webster.com/',
-                RequestTypes.SUBDOCUMENT
+                RequestTypes.SUBDOCUMENT,
             );
             expect(result).toHaveLength(2);
             expect(result[0].getText() === cspRuleAny || result[0].getText() === cspRuleSubDocument).toBeTruthy();
@@ -445,7 +445,7 @@ describe('RequestFilter', () => {
             function checkCspRules(expected) {
                 rules = requestFilter.findCspRules(
                     'https://nop.xpanama.net/if.html?adflag=1&cb=kq4iOggNyP',
-                    'https://www.merriam-webster.com/', RequestTypes.DOCUMENT
+                    'https://www.merriam-webster.com/', RequestTypes.DOCUMENT,
                 );
                 expect(rules).toHaveLength(1);
                 expect(rules[0].getText()).toBe(expected);
@@ -634,7 +634,7 @@ describe('RequestFilter', () => {
             expect(requestFilter.findRuleForRequest(
                 'https://example.org',
                 'https://example.org',
-                RequestTypes.DOCUMENT
+                RequestTypes.DOCUMENT,
             )).toBeTruthy();
         });
 
@@ -674,7 +674,7 @@ describe('RequestFilter', () => {
             const rule = requestFilter.findRuleForRequest(
                 'http://cdn.benchmark.pl/assets/css/mainPage.min.css',
                 'http://www.benchmark.pl./',
-                RequestTypes.STYLESHEET
+                RequestTypes.STYLESHEET,
             );
 
             expect(rule.getText()).toBe(urlRuleText);
@@ -690,7 +690,7 @@ describe('RequestFilter', () => {
             let rule = requestFilter.findRuleForRequest(
                 'http://check.com/url',
                 'http://www.example.org/',
-                RequestTypes.DOCUMENT
+                RequestTypes.DOCUMENT,
             );
 
             expect(rule.getText()).toBe(urlRuleText);
@@ -699,7 +699,7 @@ describe('RequestFilter', () => {
             rule = requestFilter.findRuleForRequest(
                 'http://another.org/url',
                 'http://www.example.org/',
-                RequestTypes.DOCUMENT
+                RequestTypes.DOCUMENT,
             );
 
             expect(rule).toBeFalsy();
@@ -708,7 +708,7 @@ describe('RequestFilter', () => {
             rule = requestFilter.findRuleForRequest(
                 'http://check.com/url',
                 'http://test.com/',
-                RequestTypes.DOCUMENT
+                RequestTypes.DOCUMENT,
             );
 
             expect(rule.getText()).toBe(urlRuleText);
@@ -717,7 +717,7 @@ describe('RequestFilter', () => {
             rule = requestFilter.findRuleForRequest(
                 'http://check.com/url',
                 'http://test.com/',
-                RequestTypes.SUBDOCUMENT
+                RequestTypes.SUBDOCUMENT,
             );
 
             expect(rule.getText()).toBe(urlRuleText);
@@ -726,7 +726,7 @@ describe('RequestFilter', () => {
             rule = requestFilter.findRuleForRequest(
                 'http://check.com/url',
                 'http://test.com/',
-                RequestTypes.IMAGE
+                RequestTypes.IMAGE,
             );
 
             expect(rule).toBeFalsy();
@@ -742,7 +742,7 @@ describe('RequestFilter', () => {
             let rule = requestFilter.findRuleForRequest(
                 'http://check.com/url',
                 'http://www.example.org/',
-                RequestTypes.DOCUMENT
+                RequestTypes.DOCUMENT,
             );
 
             expect(rule.getText()).toBe(urlRuleText);
@@ -760,7 +760,7 @@ describe('RequestFilter', () => {
             rule = requestFilter.findRuleForRequest(
                 'http://check.com/url',
                 'http://test.com/',
-                RequestTypes.SUBDOCUMENT
+                RequestTypes.SUBDOCUMENT,
             );
 
             expect(rule).toBeFalsy();
@@ -769,7 +769,7 @@ describe('RequestFilter', () => {
             rule = requestFilter.findRuleForRequest(
                 'http://check.com/url',
                 'http://test.com/',
-                RequestTypes.IMAGE
+                RequestTypes.IMAGE,
             );
 
             expect(rule).toBeFalsy();
@@ -780,13 +780,10 @@ describe('RequestFilter', () => {
             const invalidScriptletRuleText = 'example.org#%#//scriptlet("adjust-setTimeout-invalid", "example", "400")';
 
             const requestFilter = await createRequestFilterWithRules([validScriptletRuleText, invalidScriptletRuleText]);
-            const scripts = requestFilter.getScriptsForUrl('https://example.org');
+            const scripts = requestFilter.getScriptsForUrl('https://example.org', TSUrlFilter.CosmeticOption.CosmeticOptionAll);
 
-            // TODO fix commented tests, why here should be two scripts?
-            // expect(scripts).toHaveLength(2);
             expect(scripts).toHaveLength(1);
             expect(scripts[0].script).toBeTruthy();
-            // expect(scripts[1].script).toBeFalsy();
         });
     });
 });
