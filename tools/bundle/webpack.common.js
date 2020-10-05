@@ -156,6 +156,11 @@ export const genCommonConfig = (browserConfig) => {
                         from: 'pages/blocking-pages',
                         to: 'pages/blocking-pages',
                     },
+                    {
+                        context: 'Extension',
+                        from: 'lib/content-script/subscribe.js',
+                        to: 'content-script/subscribe.js',
+                    },
                 ],
             }),
         ],
