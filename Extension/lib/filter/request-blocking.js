@@ -298,7 +298,9 @@ export const webRequestService = (function () {
             // Frame is whitelisted by the main frame's $document rule
             // We do nothing more in this case - return the rule.
             return whitelistRule;
-        } if (!whitelistRule) {
+        }
+
+        if (!whitelistRule) {
             // If whitelist rule is not found for the main frame, we check it for referrer
             whitelistRule = filteringApi.findWhiteListRule(requestUrl, referrerUrl, RequestTypes.DOCUMENT);
         }
