@@ -68,8 +68,8 @@ export const filteringApi = (function () {
         return getRequestFilter().getScriptsForUrl(documentUrl);
     };
 
-    const getScriptsStringForUrl = function (documentUrl, tab) {
-        return getRequestFilter().getScriptsStringForUrl(documentUrl, tab);
+    const getScriptsStringForUrl = function (documentUrl, tab, cosmeticOptions) {
+        return getRequestFilter().getScriptsStringForUrl(documentUrl, tab, cosmeticOptions);
     };
 
     const getContentRulesForUrl = function (documentUrl) {
