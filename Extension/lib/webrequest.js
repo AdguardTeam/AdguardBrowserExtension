@@ -324,7 +324,7 @@ const webrequestInit = function () {
         }
 
         // Chrome doesn't allow open extension url in incognito mode
-        if (incognitoTab && !window.browser) {
+        if (incognitoTab && browserUtils.isChromium()) {
             // Closing tab before opening a new one may lead to browser crash (Chromium)
             uiService.openTab(safebrowsingUrl, {}, () => {
                 tabsApi.remove(tab.tabId);

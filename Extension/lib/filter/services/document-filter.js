@@ -22,6 +22,7 @@ import { uiService } from '../../ui-service';
 import { frames } from '../../tabs/frames';
 import { ExpiringCache } from '../../utils/expiring-cache';
 import { lazyGet } from '../../utils/lazy';
+import { browserUtils } from '../../utils/browser-utils';
 
 export const documentFilterService = (function () {
     const trustedCache = {
@@ -96,7 +97,7 @@ export const documentFilterService = (function () {
         const showDocumentBlockPage = (tabId, url) => {
             const incognitoTab = frames.isIncognitoTab({ tabId });
             // Chrome doesn't allow to show extension pages in incognito mode
-            if (incognitoTab && !window.browser) {
+            if (incognitoTab && browserUtils.isChromium()) {
                 // Closing tab before opening a new one may lead to browser crash (Chromium)
                 uiService.openTab(url, {}, async () => {
                     tabsApi.remove(tabId);
