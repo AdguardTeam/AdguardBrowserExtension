@@ -1,7 +1,7 @@
-import { requestContextStorage } from '../../../Extension/src/background/filter/request-context-storage';
-import { RequestTypes } from '../../../Extension/src/background/utils/request-types';
+import { requestContextStorage } from '../../../../Extension/src/background/filter/request-context-storage';
+import { RequestTypes } from '../../../../Extension/src/background/utils/request-types';
 
-jest.mock('../../../Extension/src/background/filter/filtering-log');
+jest.mock('../../../../Extension/src/background/filter/filtering-log');
 
 describe('requestContextStorage', () => {
     it('Test Record/Remove', () => {

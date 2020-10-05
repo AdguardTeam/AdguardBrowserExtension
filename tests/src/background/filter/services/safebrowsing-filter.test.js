@@ -1,6 +1,6 @@
-import { utils } from '../../../../Extension/src/background/utils/common';
-import safebrowsing from '../../../../Extension/src/background/filter/services/safebrowsing/safebrowsing.browsers';
-import { backend } from '../../../../Extension/src/background/filter/filters/service-client';
+import { utils } from '../../../../../Extension/src/background/utils/common';
+import safebrowsing from '../../../../../Extension/src/background/filter/services/safebrowsing/safebrowsing.browsers';
+import { backend } from '../../../../../Extension/src/background/filter/filters/service-client';
 
 describe('safebrowsing', () => {
     it('Calculate hash', () => {

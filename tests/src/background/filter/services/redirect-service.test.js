@@ -1,4 +1,4 @@
-import { redirectService } from '../../../../Extension/src/background/filter/services/redirect-service';
+import { redirectService } from '../../../../../Extension/src/background/filter/services/redirect-service';
 
 describe('Redirect service', () => {
     it('works', () => {

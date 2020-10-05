@@ -1,5 +1,5 @@
-import { documentFilterService } from '../../../../Extension/src/background/filter/services/document-filter';
-import { backgroundPage } from '../../../../Extension/src/background/extension-api/background-page';
+import { documentFilterService } from '../../../../../Extension/src/background/filter/services/document-filter';
+import { backgroundPage } from '../../../../../Extension/src/background/extension-api/background-page';
 
 jest.spyOn(backgroundPage, 'getURL').mockImplementation(url => url);
 

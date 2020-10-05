@@ -1,12 +1,12 @@
 /* eslint-disable no-console,max-len */
 import * as TSUrlFilter from '@adguard/tsurlfilter';
-import { RequestFilter } from '../../../../Extension/src/background/filter/request-filter';
-import { engine } from '../../../../Extension/src/background/filter/engine';
-import { RequestTypes } from '../../../../Extension/src/background/utils/request-types';
+import { RequestFilter } from '../../../../../Extension/src/background/filter/request-filter';
+import { engine } from '../../../../../Extension/src/background/filter/engine';
+import { RequestTypes } from '../../../../../Extension/src/background/utils/request-types';
 import { filtersFromTxt } from './test_filter';
-import { redirectService } from '../../../../Extension/src/background/filter/services/redirect-service';
+import { redirectService } from '../../../../../Extension/src/background/filter/services/redirect-service';
 
-jest.mock('../../../../Extension/src/background/filter/request-blocking', () => {
+jest.mock('../../../../../Extension/src/background/filter/request-blocking', () => {
     return {
         __esModule: true,
         webRequestService: {
@@ -15,7 +15,7 @@ jest.mock('../../../../Extension/src/background/filter/request-blocking', () => 
     };
 });
 
-jest.mock('../../../../Extension/src/background/utils/log');
+jest.mock('../../../../../Extension/src/background/utils/log');
 
 const createRequestFilter = async (rulesText) => {
     const lists = [new TSUrlFilter.StringRuleList(1, rulesText, false, false)];

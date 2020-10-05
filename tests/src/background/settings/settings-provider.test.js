@@ -1,9 +1,9 @@
-import { settingsProvider } from '../../../Extension/src/background/settings/settings-provider';
+import { settingsProvider } from '../../../../Extension/src/background/settings/settings-provider';
 import { adgSettings } from './adg-settings';
 
-jest.mock('../../../Extension/src/background/utils/log');
+jest.mock('../../../../Extension/src/background/utils/log');
 
-jest.mock('../../../Extension/src/background/application', () => {
+jest.mock('../../../../Extension/src/background/application', () => {
     return {
         __esModule: true,
         application: {
@@ -23,7 +23,7 @@ jest.mock('../../../Extension/src/background/application', () => {
     };
 });
 
-jest.mock('../../../Extension/src/background/filter/filters/subscription', () => {
+jest.mock('../../../../Extension/src/background/filter/filters/subscription', () => {
     const groupsMap = {
         1: { groupId: 1, groupName: 'Ad Blocking', displayNumber: 1 },
         2: { groupId: 2, groupName: 'Privacy', displayNumber: 2 },
@@ -56,7 +56,7 @@ jest.mock('../../../Extension/src/background/filter/filters/subscription', () =>
     };
 });
 
-jest.mock('../../../Extension/src/background/filter/userrules', () => {
+jest.mock('../../../../Extension/src/background/filter/userrules', () => {
     return {
         __esModule: true,
         userrules: {

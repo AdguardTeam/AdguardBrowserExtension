@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { cookie } from '../../../Extension/src/background/utils/cookie';
+import { cookie } from '../../../../Extension/src/background/utils/cookie';
 
 describe('cookie', () => {
     it('parses invalid Set-Cookie', () => {

@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import * as TSUrlFilter from '@adguard/tsurlfilter';
-import { cssService } from '../../../../Extension/src/background/filter/services/css-service';
+import { cssService } from '../../../../../Extension/src/background/filter/services/css-service';
 
 describe('cssService', () => {
     it('General', () => {

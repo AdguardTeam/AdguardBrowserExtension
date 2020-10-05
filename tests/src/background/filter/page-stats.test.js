@@ -1,7 +1,7 @@
-import { pageStats } from '../../../Extension/src/background/filter/page-stats';
-import { subscriptions } from '../../../Extension/src/background/filter/filters/subscription';
+import { pageStats } from '../../../../Extension/src/background/filter/page-stats';
+import { subscriptions } from '../../../../Extension/src/background/filter/filters/subscription';
 
-jest.mock('../../../Extension/src/background/utils/local-storage', () => {
+jest.mock('../../../../Extension/src/background/utils/local-storage', () => {
     const getItem = function (key) {
         return global.localStorage.getItem(key);
     };
