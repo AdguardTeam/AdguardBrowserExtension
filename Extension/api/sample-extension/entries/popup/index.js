@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const currentTab = tabs[0];
             const { url } = currentTab;
             log(`Opening Assistant UI for tab id=${currentTab.id} url=${url}`);
-            browser.runtime.sendMessage({ type: 'openAssistantInTab', tabId: currentTab.id });
+            await browser.runtime.sendMessage({ type: 'openAssistantInTab', tabId: currentTab.id });
             window.close();
         });
     });
