@@ -15,21 +15,21 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { backend } from '../../lib/filter/filters/service-client';
+import { backend } from '../../src/background/filter/filters/service-client';
 import { tabsApi } from '../../src/background/tabs/tabs-api';
-import { webRequestService } from '../../lib/filter/request-blocking';
-import { whitelist } from '../../lib/filter/whitelist';
-import { subscriptions } from '../../lib/filter/filters/subscription';
-import { log } from '../../lib/utils/log';
-import { application } from '../../lib/application';
-import { rulesStorage, localStorage } from '../../lib/storage';
-import { listeners } from '../../lib/notifier';
-import { userrules } from '../../lib/filter/userrules';
-import { webrequest } from '../../lib/webrequest';
-import { requestSanitizer } from '../../lib/filter/request-sanitizer';
-import { localeDetect } from '../../lib/filter/services/locale-detect';
-import { contentMessageHandler } from '../../lib/content-message-handler';
-import { backgroundPage } from '../../lib/api/background-page';
+import { webRequestService } from '../../src/background/filter/request-blocking';
+import { whitelist } from '../../src/background/filter/whitelist';
+import { subscriptions } from '../../src/background/filter/filters/subscription';
+import { log } from '../../src/background/utils/log';
+import { application } from '../../src/background/application';
+import { rulesStorage, localStorage } from '../../src/background/storage';
+import { listeners } from '../../src/background/notifier';
+import { userrules } from '../../src/background/filter/userrules';
+import { webrequest } from '../../src/background/webrequest';
+import { requestSanitizer } from '../../src/background/filter/request-sanitizer';
+import { localeDetect } from '../../src/background/filter/services/locale-detect';
+import { contentMessageHandler } from '../../src/background/content-message-handler';
+import { backgroundPage } from '../../src/background/extension-api/background-page';
 
 /**
  * Adguard simple api

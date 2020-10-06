@@ -1,9 +1,9 @@
-import { start } from '../../lib/start';
-import { webrequest } from '../../lib/webrequest';
-import { requestSanitizer } from '../../lib/filter/request-sanitizer';
-import { localeDetect } from '../../lib/filter/services/locale-detect';
-import { contentMessageHandler } from '../../lib/content-message-handler';
-import { tabsApi } from '../../lib/tabs/tabs-api';
+import { start } from '../../src/background/start';
+import { webrequest } from '../../src/background/webrequest';
+import { requestSanitizer } from '../../src/background/filter/request-sanitizer';
+import { localeDetect } from '../../src/background/filter/services/locale-detect';
+import { contentMessageHandler } from '../../src/background/content-message-handler';
+import { tabsApi } from '../../src/background/tabs/tabs-api';
 
 start();
 webrequest.init();
