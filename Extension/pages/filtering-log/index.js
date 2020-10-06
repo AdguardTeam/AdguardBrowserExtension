@@ -1,3 +1,3 @@
-import { logController } from '../../lib/pages/log-controller';
+import { logController } from '../../src/pages/log-controller';
 
 logController.init();

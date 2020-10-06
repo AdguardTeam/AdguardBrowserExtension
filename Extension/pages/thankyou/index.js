@@ -1,3 +1,3 @@
-import { thankyou } from '../../lib/pages/thankyou';
+import { thankyou } from '../../src/pages/thankyou';
 
 thankyou.init();

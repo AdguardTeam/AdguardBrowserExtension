@@ -2,10 +2,10 @@
  * !IMPORTANT Only chrome based browsers support devtools, we cut off devtools for other browsers
  */
 /* @if devtools == true */
-import { devtools } from '../../lib/content-script/devtools/devtools';
+import { devtools } from '../../src/content-script/devtools/devtools';
 /* @endif */
 
-import { startAssistant } from '../../lib/content-script/assistant/start-assistant';
+import { startAssistant } from '../../src/content-script/assistant/start-assistant';
 
 startAssistant();
 

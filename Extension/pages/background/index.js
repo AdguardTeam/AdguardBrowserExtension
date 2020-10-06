@@ -1,12 +1,12 @@
-import { start } from '../../lib/start';
-import { webrequest } from '../../lib/webrequest';
-import { requestSanitizer } from '../../lib/filter/request-sanitizer';
-import { localeDetect } from '../../lib/filter/services/locale-detect';
-import { contentMessageHandler } from '../../lib/content-message-handler';
-import { localStorage } from '../../lib/storage';
-import { documentFilterService } from '../../lib/filter/services/document-filter';
-import { safebrowsing } from '../../lib/filter/services/safebrowsing';
-import { tabsApi } from '../../lib/tabs/tabs-api';
+import { start } from '../../src/background/start';
+import { webrequest } from '../../src/background/webrequest';
+import { requestSanitizer } from '../../src/background/filter/request-sanitizer';
+import { localeDetect } from '../../src/background/filter/services/locale-detect';
+import { contentMessageHandler } from '../../src/background/content-message-handler';
+import { localStorage } from '../../src/background/storage';
+import { documentFilterService } from '../../src/background/filter/services/document-filter';
+import { safebrowsing } from '../../src/background/filter/services/safebrowsing';
+import { tabsApi } from '../../src/background/tabs/tabs-api';
 
 start();
 webrequest.init();
