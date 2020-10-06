@@ -48,7 +48,7 @@ export const genCommonConfig = (browserConfig) => {
             rules: [
                 {
                     include: [
-                        path.resolve(__dirname, '../../Extension/lib/filter/request-filter.js'),
+                        path.resolve(__dirname, '../../Extension/src/filter/request-filter.js'),
                         path.resolve(__dirname, '../../Extension/pages/content-script-end/index.js'),
                     ],
                     use: [{
@@ -155,6 +155,11 @@ export const genCommonConfig = (browserConfig) => {
                         context: 'Extension',
                         from: 'pages/blocking-pages',
                         to: 'pages/blocking-pages',
+                    },
+                    {
+                        context: 'Extension',
+                        from: 'src/content-script/subscribe.js',
+                        to: 'content-script/subscribe.js',
                     },
                 ],
             }),

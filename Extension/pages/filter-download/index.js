@@ -1,3 +1,3 @@
-import { filterDownload } from '../../lib/pages/filter-download';
+import { filterDownload } from '../../src/pages/filter-download';
 
 filterDownload.init();

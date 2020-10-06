@@ -1,3 +1,3 @@
-import '../../../lib/api';
+import '../../../src/api';
 
 import '../../sample';
