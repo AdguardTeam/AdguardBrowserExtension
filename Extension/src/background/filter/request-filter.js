@@ -166,14 +166,13 @@ export const RequestFilter = (() => {
          * http://adguard.com/en/filterrules.html#javascriptInjection
          *
          * @param url Page URL
-         * @param {number} options bitmask
          * @returns {{scriptSource: string, rule: string}[]} Javascript for the specified URL
          */
-        getScriptsForUrl(url, options) {
+        getScriptsForUrl(url) {
             const domain = utils.url.getHost(url);
             const cosmeticResult = engine.getCosmeticResult(
                 domain,
-                options,
+                TSUrlFilter.CosmeticOption.CosmeticOptionJS,
             );
 
             return cosmeticResult.getScriptRules();
@@ -229,6 +228,7 @@ export const RequestFilter = (() => {
 
             if (debug) {
                 scriptRules.forEach((scriptRule) => {
+                    // FIXME hide generic rules
                     filteringLog.addScriptInjectionEvent(
                         tab,
                         url,
@@ -238,7 +238,12 @@ export const RequestFilter = (() => {
                 });
             }
 
-            const scriptsCode = selectedScriptRules.map(scriptRule => scriptRule.getScript(debug)).join('\r\n');
+            // FIXME inject only unique scripts
+            const scriptsCodes = selectedScriptRules.map(scriptRule => scriptRule.getScript(debug));
+
+            const uniqScriptsCode = Array.from(new Set(scriptsCodes)); // FIXME add tests
+
+            const scriptsCode = uniqScriptsCode.join('\r\n');
 
             return `
             (function () {

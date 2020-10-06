@@ -780,7 +780,7 @@ describe('RequestFilter', () => {
             const invalidScriptletRuleText = 'example.org#%#//scriptlet("adjust-setTimeout-invalid", "example", "400")';
 
             const requestFilter = await createRequestFilterWithRules([validScriptletRuleText, invalidScriptletRuleText]);
-            const scripts = requestFilter.getScriptsForUrl('https://example.org', TSUrlFilter.CosmeticOption.CosmeticOptionAll);
+            const scripts = requestFilter.getScriptsForUrl('https://example.org');
 
             expect(scripts).toHaveLength(1);
             expect(scripts[0].script).toBeTruthy();
