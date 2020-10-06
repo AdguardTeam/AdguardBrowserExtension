@@ -1,5 +1,3 @@
-import { openAssistant } from '../../../lib/assistant-manager';
-
 const { log } = console;
 document.addEventListener('DOMContentLoaded', () => {
     // Init
@@ -9,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const currentTab = tabs[0];
             const { url } = currentTab;
             log(`Opening Assistant UI for tab id=${currentTab.id} url=${url}`);
-            await openAssistant(currentTab.id);
+            browser.runtime.sendMessage({ type: 'openAssistantInTab', tabId: currentTab.id });
             window.close();
         });
     });

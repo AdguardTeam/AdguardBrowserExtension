@@ -29,6 +29,7 @@ import { requestSanitizer } from '../../lib/filter/request-sanitizer';
 import { localeDetect } from '../../lib/filter/services/locale-detect';
 import { contentMessageHandler } from '../../lib/content-message-handler';
 import { openAssistant, closeAssistant } from './assistant-manager';
+import { backgroundPage } from '../../lib/api/background-page';
 
 /**
  * Adguard simple api
@@ -234,6 +235,15 @@ export const adguardApi = (function () {
     requestSanitizer.init();
     localeDetect.init();
     contentMessageHandler.init();
+
+    const handleMessage = async (message) => {
+        if (message.type === 'openAssistantInTab') {
+            await openAssistant(message.tabId);
+        }
+        return Promise.resolve();
+    };
+
+    backgroundPage.runtime.onMessage.addListener(handleMessage);
 
     return {
         start,
