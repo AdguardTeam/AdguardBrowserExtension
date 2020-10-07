@@ -17,27 +17,17 @@
 
 /* global chrome */
 
-let adguard;
-
-const getAdguard = () => new Promise((resolve) => {
-    const api = window.browser || chrome;
-    api.runtime.getBackgroundPage((bgPage) => {
-        resolve(bgPage.adguard);
-    });
-});
-
 const fillBlockRule = (blockRule) => {
     const blockRuleNode = document.querySelector('#blockRule');
     blockRuleNode.textContent = blockRule;
 };
 
-const handleProceedAnyway = (url, rule) => {
-    adguard.documentFilterService.addToTrusted(url, rule);
+const handleProceedAnyway = (url) => {
+    const browser = window.browser || chrome;
+    browser.runtime.sendMessage({ type: 'addUrlToTrusted', url });
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
-    adguard = await getAdguard();
-
     const urlParams = new URLSearchParams(document.location.search);
     const blockRule = urlParams.get('rule');
     const url = urlParams.get('url');
@@ -47,6 +37,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const proceedBtn = document.querySelector('#btnProceed');
     proceedBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        handleProceedAnyway(url, blockRule);
+        handleProceedAnyway(url);
     });
 });

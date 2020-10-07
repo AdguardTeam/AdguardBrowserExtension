@@ -17,16 +17,6 @@
 
 /* global chrome */
 
-const api = window.browser || chrome;
-
-let adguard;
-
-const getAdguard = () => new Promise((resolve) => {
-    api.runtime.getBackgroundPage((bgPage) => {
-        resolve(bgPage.adguard);
-    });
-});
-
 function hideNodes(nodes) {
     nodes.forEach((node) => {
         node.style.display = 'none';
@@ -51,7 +41,6 @@ const replaceHostTemplates = (nodes, host) => {
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
-    adguard = await getAdguard();
 
     const advancedBtn = document.getElementById('advancedButton');
     const moreInfoBtn = document.getElementById('moreInfoButton');
@@ -82,10 +71,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (url && isValid(url)) {
         btnProceed.addEventListener('click', (e) => {
             e.preventDefault();
-            adguard.safebrowsing.addToSafebrowsingTrusted(url);
-            adguard.tabs.getActive((tab) => {
-                adguard.tabs.reload(tab.tabId, url);
-            });
+            const browser = window.browser || chrome;
+            browser.runtime.sendMessage({ type: 'openSafebrowsingTrusted', url });
         });
     }
 

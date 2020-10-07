@@ -15,6 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 import * as TSUrlFilter from '@adguard/tsurlfilter';
 import { settingsProvider } from './settings/settings-provider';
 import { backgroundPage } from './extension-api/background-page';
@@ -41,6 +42,7 @@ import { filteringApi } from './filter/filtering-api';
 import { stealthService } from './filter/services/stealth-service';
 import { prefs } from './prefs';
 import { whitelist } from './filter/whitelist';
+import { documentFilterService } from './filter/services/document-filter';
 
 /**
  *  Initialize Content => BackgroundPage messaging
@@ -442,6 +444,11 @@ const init = () => {
             case 'disableGetPremiumNotification':
                 settings.disableShowAdguardPromoInfo();
                 break;
+            case 'addUrlToTrusted':
+                await documentFilterService.addToTrusted(message.url);
+                break;
+            case 'isLocalStorageInitialized':
+                return { isLocalStorageInitialized: localStorage.isInitialized() };
             default:
                 // Unhandled message
                 throw new Error(`There is no such message type ${message.type}`);
