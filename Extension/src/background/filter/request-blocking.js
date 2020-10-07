@@ -115,7 +115,7 @@ export const webRequestService = (function () {
         result.selectors = filteringApi.getSelectorsForUrl(documentUrl, cosmeticOptions);
 
         if (retrieveScripts || !prefs.features.canUseInsertCSSAndExecuteScript) {
-            result.scripts = filteringApi.getScriptsStringForUrl(documentUrl, tab, cosmeticOptions);
+            result.scripts = filteringApi.getScriptsStringForUrl(documentUrl, tab);
         }
 
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1337

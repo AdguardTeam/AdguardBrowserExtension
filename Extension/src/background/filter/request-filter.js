@@ -166,14 +166,13 @@ export const RequestFilter = (() => {
          * http://adguard.com/en/filterrules.html#javascriptInjection
          *
          * @param url Page URL
-         * @param {number} options bitmask
          * @returns {{scriptSource: string, rule: string}[]} Javascript for the specified URL
          */
-        getScriptsForUrl(url, options) {
+        getScriptsForUrl(url) {
             const domain = utils.url.getHost(url);
             const cosmeticResult = engine.getCosmeticResult(
                 domain,
-                options,
+                TSUrlFilter.CosmeticOption.CosmeticOptionJS,
             );
 
             return cosmeticResult.getScriptRules();
@@ -186,12 +185,11 @@ export const RequestFilter = (() => {
          *
          * @param {string} url Page URL
          * @param {Object} tab tab
-         * @param {number} options bitmask
          * @returns {string} Script to be applied
          */
-        getScriptsStringForUrl(url, tab, options) {
+        getScriptsStringForUrl(url, tab) {
             const debug = filteringLog && filteringLog.isOpen();
-            const scriptRules = this.getScriptsForUrl(url, options);
+            const scriptRules = this.getScriptsForUrl(url);
 
             const isFirefox = browserUtils.isFirefoxBrowser();
             const isOpera = browserUtils.isOperaBrowser();
@@ -229,16 +227,21 @@ export const RequestFilter = (() => {
 
             if (debug) {
                 scriptRules.forEach((scriptRule) => {
-                    filteringLog.addScriptInjectionEvent(
-                        tab,
-                        url,
-                        RequestTypes.DOCUMENT,
-                        scriptRule,
-                    );
+                    if (!scriptRule.isGeneric()) {
+                        filteringLog.addScriptInjectionEvent(
+                            tab,
+                            url,
+                            RequestTypes.DOCUMENT,
+                            scriptRule,
+                        );
+                    }
                 });
             }
 
-            const scriptsCode = selectedScriptRules.map(scriptRule => scriptRule.getScript(debug)).join('\r\n');
+            const scripts = selectedScriptRules.map(scriptRule => scriptRule.getScript(debug));
+
+            // remove repeating scripts
+            const scriptsCode = [...new Set(scripts)].join('\r\n');
 
             return `
             (function () {
