@@ -316,10 +316,12 @@ export const stealthService = (() => {
      * @returns whitelist rule if found
      */
     const findStealthWhitelistRule = function (requestUrl, referrerUrl, requestType) {
-        const stealthDocumentWhitelistRule = filteringApi.findStealthWhiteListRule(referrerUrl, referrerUrl, requestType);
-        if (stealthDocumentWhitelistRule && stealthDocumentWhitelistRule.isDocumentWhitelistRule()) {
-            log.debug('Stealth document whitelist rule found.');
-            return stealthDocumentWhitelistRule;
+        if (referrerUrl) {
+            const stealthDocumentWhitelistRule = filteringApi.findStealthWhiteListRule(referrerUrl, referrerUrl, requestType);
+            if (stealthDocumentWhitelistRule && stealthDocumentWhitelistRule.isDocumentWhitelistRule()) {
+                log.debug('Stealth document whitelist rule found.');
+                return stealthDocumentWhitelistRule;
+            }
         }
 
         const stealthWhiteListRule = filteringApi.findStealthWhiteListRule(requestUrl, referrerUrl, requestType);
