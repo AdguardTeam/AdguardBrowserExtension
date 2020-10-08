@@ -1,0 +1,122 @@
+.modal {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: 330px;
+
+    &__title {
+        font-size: 26px;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    &__close {
+        background-image: url(../../assets/icons/cross.svg);
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        top: 30px;
+        right: 30px;
+    }
+
+    &__content {
+        width: 100%;
+        margin: auto 0;
+
+        &--center-text {
+            text-align: center;
+        }
+    }
+
+    &__input {
+        width: 100%;
+        border: 0;
+        line-height: 22px;
+        font-size: 14px;
+        border-bottom: 2px solid var(--green74);
+        margin-bottom: 22px;
+        padding: 7px 8px;
+        outline: none;
+    }
+
+    &__desc {
+        font-size: 14px;
+        line-height: 22px;
+        color: rgba(27, 27, 27, 0.9);
+    }
+
+    &__btn {
+        margin: 0 auto;
+        margin-top: 15px;
+        min-width: 175px;
+    }
+
+    &__row {
+        display: flex;
+        margin-bottom: 7px;
+
+        &--info {
+            color: var(--grayd8);
+            font-size: 12px;
+            line-height: 15px;
+        }
+    }
+
+    &__cell {
+        font-size: 14px;
+        line-height: 22px;
+
+        &:first-child {
+            width: 130px;
+            padding-right: 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex-grow: 0;
+            flex-shrink: 0;
+        }
+
+        &--url {
+            word-break: break-all;
+        }
+    }
+
+    &__checkbox {
+        display: none;
+
+        &:checked + .modal__checkbox-label:before {
+            background-color: var(--green74);
+            background-image: url(../../assets/icons/checked.svg);
+            background-repeat: no-repeat;
+            background-position: 50%;
+            background-size: 70%;
+        }
+    }
+
+    &__checkbox-label {
+        position: relative;
+        padding-left: 40px;
+        font-size: 14px;
+        font-weight: 600;
+
+        &:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 1px;
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border-radius: 2px;
+            background-color: rgba(216, 216, 216, .7);
+            cursor: pointer;
+            transition: var(--t3) background-color, var(--t3) background-image;
+        }
+    }
+
+    &__subtitle {
+        font-size: 17px;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+}

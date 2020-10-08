@@ -1,0 +1,51 @@
+.footer {
+    &__in {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 100%;
+    }
+    &__rate {
+        height: 80px;
+        background-color: var(--greyf7);
+    }
+
+    &__nav {
+        color: #fff;
+        height: 100px;
+        background-color: var(--grey78);
+
+        &-item {
+            margin-right: 50px;
+            color: inherit;
+            opacity: 0.7;
+            text-decoration: none;
+            transition: var(--t3) opacity;
+            @mixin weight-regular;
+
+            &:hover {
+                opacity: 1;
+                text-decoration: underline;
+            }
+
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+    }
+
+    &__logo {
+        display: inline-block;
+        vertical-align: middle;
+        width: 30px;
+        height: 30px;
+        margin-right: 20px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-image: url("../../../assets/icons/logo-footer.svg");
+    }
+    &__copyright-label {
+        display: inline-block;
+        vertical-align: middle;
+    }
+}

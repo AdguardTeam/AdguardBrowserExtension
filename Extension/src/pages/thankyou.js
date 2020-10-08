@@ -44,13 +44,17 @@ const PageController = (response) => {
         if (checkbox.checked) {
             contentPage.sendMessage({
                 type: 'addAndEnableFilter',
-                filterId: AntiBannerFiltersId.TRACKING_FILTER_ID,
+                data: {
+                    filterId: AntiBannerFiltersId.TRACKING_FILTER_ID,
+                },
             });
         } else {
             contentPage.sendMessage({
                 type: 'disableAntiBannerFilter',
-                filterId: AntiBannerFiltersId.TRACKING_FILTER_ID,
-                remove: true,
+                data: {
+                    filterId: AntiBannerFiltersId.TRACKING_FILTER_ID,
+                    remove: true,
+                },
             });
         }
     };
@@ -60,13 +64,17 @@ const PageController = (response) => {
         if (checkbox.checked) {
             contentPage.sendMessage({
                 type: 'addAndEnableFilter',
-                filterId: AntiBannerFiltersId.SOCIAL_FILTER_ID,
+                data: {
+                    filterId: AntiBannerFiltersId.SOCIAL_FILTER_ID,
+                },
             });
         } else {
             contentPage.sendMessage({
                 type: 'disableAntiBannerFilter',
-                filterId: AntiBannerFiltersId.SOCIAL_FILTER_ID,
-                remove: true,
+                data: {
+                    filterId: AntiBannerFiltersId.SOCIAL_FILTER_ID,
+                    remove: true,
+                },
             });
         }
     };
@@ -85,13 +93,17 @@ const PageController = (response) => {
         if (checkbox.checked) {
             contentPage.sendMessage({
                 type: 'addAndEnableFilter',
-                filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID,
+                data: {
+                    filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID,
+                },
             });
         } else {
             contentPage.sendMessage({
                 type: 'disableAntiBannerFilter',
-                filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID,
-                remove: true,
+                data: {
+                    filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID,
+                    remove: true,
+                },
             });
         }
     };
