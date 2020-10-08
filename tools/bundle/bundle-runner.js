@@ -4,8 +4,6 @@ import webpack from 'webpack';
 export const bundleRunner = (webpackConfig, watch = false) => {
     const compiler = webpack(webpackConfig);
 
-    console.log({ watch });
-
     const run = watch
         ? (cb) => compiler.watch({}, cb)
         : (cb) => compiler.run(cb);
