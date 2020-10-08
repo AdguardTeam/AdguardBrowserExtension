@@ -4,7 +4,11 @@ import webpack from 'webpack';
 export const bundleRunner = (webpackConfig, watch = false) => {
     const compiler = webpack(webpackConfig);
 
-    const run = watch ? (cb) => compiler.watch({}, cb) : compiler.run;
+    console.log({ watch });
+
+    const run = watch
+        ? (cb) => compiler.watch({}, cb)
+        : (cb) => compiler.run(cb);
 
     return new Promise((resolve, reject) => {
         run((err, stats) => {
