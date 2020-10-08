@@ -37,14 +37,13 @@ export const init = () => {
             }, 1000);
         }
 
-        function checkRequestFilterReady() {
-            contentPage.sendMessage({ type: 'checkRequestFilterReady' }, (response) => {
-                if (response.ready) {
-                    onLoaded();
-                } else {
-                    setTimeout(checkRequestFilterReady, 500);
-                }
-            });
+        async function checkRequestFilterReady() {
+            const response = await contentPage.sendMessage({ type: 'checkRequestFilterReady' });
+            if (response.ready) {
+                onLoaded();
+            } else {
+                setTimeout(checkRequestFilterReady, 500);
+            }
         }
 
         checkRequestFilterReady();
