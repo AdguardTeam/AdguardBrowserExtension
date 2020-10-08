@@ -1,5 +1,5 @@
 import {
-    action, isObservable,
+    action,
     observable,
     runInAction,
     makeObservable,
@@ -64,7 +64,6 @@ class SettingsStore {
                 await messenger.disableFilter(SEARCH_AND_SELF_PROMO_FILTER_ID);
             }
         } catch (e) {
-            console.log(e.message);
             runInAction(() => {
                 this.allowAcceptableAds = prevValue;
             });
