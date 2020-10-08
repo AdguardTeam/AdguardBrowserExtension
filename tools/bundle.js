@@ -4,34 +4,34 @@ import { program } from 'commander';
 import { bundleRunner } from './bundle/bundle-runner';
 import { copyExternals } from './bundle/copy-external';
 import { BROWSERS, ENVS } from './constants';
-import { webpackConfig } from './bundle/webpack-config';
+import { getWebpackConfig } from './bundle/webpack-config';
 import { crx } from './bundle/crx';
 import { xpi } from './bundle/xpi';
 import { buildInfo } from './bundle/build-info';
 
-const bundleChrome = () => {
-    const config = webpackConfig(BROWSERS.CHROME);
-    return bundleRunner(config);
+const bundleChrome = (watch) => {
+    const webpackConfig = getWebpackConfig(BROWSERS.CHROME);
+    return bundleRunner(webpackConfig, watch);
 };
 
 const bundleFirefoxAmo = () => {
-    const config = webpackConfig(BROWSERS.FIREFOX_AMO);
-    return bundleRunner(config);
+    const webpackConfig = getWebpackConfig(BROWSERS.FIREFOX_AMO);
+    return bundleRunner(webpackConfig);
 };
 
 const bundleFirefoxStandalone = () => {
-    const config = webpackConfig(BROWSERS.FIREFOX_STANDALONE);
-    return bundleRunner(config);
+    const webpackConfig = getWebpackConfig(BROWSERS.FIREFOX_STANDALONE);
+    return bundleRunner(webpackConfig);
 };
 
 const bundleEdge = () => {
-    const config = webpackConfig(BROWSERS.EDGE);
-    return bundleRunner(config);
+    const webpackConfig = getWebpackConfig(BROWSERS.EDGE);
+    return bundleRunner(webpackConfig);
 };
 
 const bundleOpera = () => {
-    const config = webpackConfig(BROWSERS.OPERA);
-    return bundleRunner(config);
+    const webpackConfig = getWebpackConfig(BROWSERS.OPERA);
+    return bundleRunner(webpackConfig);
 };
 
 const bundleChromeCrx = async () => {
@@ -43,19 +43,19 @@ const bundleFirefoxXpi = async () => {
 };
 
 const bundleAdguardApi = async () => {
-    const config = webpackConfig(BROWSERS.ADGUARD_API);
-    return bundleRunner(config);
+    const webpackConfig = getWebpackConfig(BROWSERS.ADGUARD_API);
+    return bundleRunner(webpackConfig);
 };
 
 const devPlan = [
     copyExternals,
     bundleChrome,
-    bundleFirefoxAmo,
-    bundleFirefoxStandalone,
-    bundleEdge,
-    bundleOpera,
-    bundleAdguardApi,
-    buildInfo,
+    // bundleFirefoxAmo,
+    // bundleFirefoxStandalone,
+    // bundleEdge,
+    // bundleOpera,
+    // bundleAdguardApi,
+    // buildInfo,
 ];
 
 const betaPlan = [
@@ -120,6 +120,25 @@ const adguardApi = async () => {
         process.exit(1);
     }
 };
+
+const chrome = async (watch) => {
+    try {
+        await bundleChrome(watch);
+    } catch (e) {
+        console.error(e);
+        process.exit(1);
+    }
+};
+
+program
+    .option('--watch', 'Builds in watch mode', false);
+
+program
+    .command('chrome')
+    .description('Builds extension for chrome browser')
+    .action(() => {
+        chrome(program.watch);
+    });
 
 program
     .command('adguard-api')

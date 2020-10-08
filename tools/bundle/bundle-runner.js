@@ -1,11 +1,15 @@
 /* eslint-disable no-console */
 import webpack from 'webpack';
 
-export const bundleRunner = (webpackConfig) => {
-    const bundler = webpack(webpackConfig);
+export const bundleRunner = (webpackConfig, watch = false) => {
+    const compiler = webpack(webpackConfig);
+
+    const run = watch
+        ? (cb) => compiler.watch({}, cb)
+        : (cb) => compiler.run(cb);
 
     return new Promise((resolve, reject) => {
-        bundler.run((err, stats) => {
+        run((err, stats) => {
             if (err) {
                 console.error(err.stack || err);
                 if (err.details) {

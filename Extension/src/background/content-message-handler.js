@@ -131,6 +131,17 @@ const init = () => {
         }
     }
 
+    const processGetOptionsData = () => {
+        return {
+            settings: settings.getAllSettings(),
+            appVersion: backgroundPage.app.getVersion(),
+            filtersMetadata: categories.getFiltersMetadata(),
+            constants: {
+                AntiBannerFiltersId: utils.filters.ids,
+            },
+        };
+    };
+
     /**
      * Main function for processing messages from content-scripts
      *
@@ -139,7 +150,13 @@ const init = () => {
      * @returns {*}
      */
     const handleMessage = async (message, sender) => {
-        switch (message.type) {
+        const { data, type } = message;
+
+        switch (type) {
+            case 'getOptionsData': {
+                const result = await processGetOptionsData();
+                return result;
+            }
             case 'unWhiteListFrame':
                 userrules.unWhiteListFrame(message.frameInfo);
                 break;
@@ -158,16 +175,20 @@ const init = () => {
                 break;
             case 'checkRequestFilterReady':
                 return { ready: filteringApi.isReady() };
-            case 'addAndEnableFilter':
-                application.addAndEnableFilters([message.filterId]);
-                break;
-            case 'disableAntiBannerFilter':
-                if (message.remove) {
-                    application.uninstallFilters([message.filterId]);
+            case 'addAndEnableFilter': {
+                const { filterId } = data;
+                await application.addAndEnableFilters([filterId]);
+                return;
+            }
+            case 'disableAntiBannerFilter': {
+                const { filterId, remove } = data;
+                if (remove) {
+                    application.uninstallFilters([filterId]);
                 } else {
-                    application.disableFilters([message.filterId]);
+                    application.disableFilters([filterId]);
                 }
                 break;
+            }
             case 'removeAntiBannerFilter':
                 application.removeFilter(message.filterId);
                 break;

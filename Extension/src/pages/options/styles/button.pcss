@@ -1,0 +1,67 @@
+.button {
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    display: inline-block;
+    border: 0;
+    outline: none;
+    background-color: transparent;
+    padding: 0;
+
+    &--m {
+        padding: 0 35px;
+        height: 40px;
+        border-radius: 4px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    &--green {
+        color: #fff;
+        background-color: var(--green86);
+        transition: 0.3s ease background-color;
+
+        &:hover {
+            background-color: var(--green75);
+        }
+    }
+
+    &--green-bd {
+        color: var(--green86);
+        box-shadow: inset 0 0 0 1px var(--green86);
+        transition: 0.3s ease background-color;
+
+        &:hover {
+            background-color: var(--gray05);
+        }
+    }
+
+    &--transparent {
+        box-shadow: 0 0 0 1px rgba(216, 216, 216, .7);
+        background-color: transparent;
+
+        &:hover {
+            background-color: rgba(0, 0, 0, .05);
+        }
+    }
+
+    &--back {
+        width: 10px;
+        height: 18px;
+        background-image: url(../../assets/icons/arrow-left.svg);
+        position: absolute;
+        top: 13px;
+    }
+
+    &--rate {
+        font-size: 14px;
+        color: var(--grey78);
+        border: 2px solid var(--greye7);
+        border-radius: 6px;
+        padding: 9px 30px 9px 56px;
+        background-size: 17px;
+        background-position: 25px 50%;
+        background-repeat: no-repeat;
+        background-image: url(../../assets/icons/icon-like.svg);
+    }
+}

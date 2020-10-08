@@ -6,7 +6,7 @@ import { genOperaConfig } from './opera/webpack.opera';
 import { genSampleApiConfig } from './adguard-api/webpack.adguard-api';
 import { getBrowserConf } from '../helpers';
 
-export const webpackConfig = (browser) => {
+export const getWebpackConfig = (browser) => {
     const browserConf = getBrowserConf(browser);
 
     switch (browser) {

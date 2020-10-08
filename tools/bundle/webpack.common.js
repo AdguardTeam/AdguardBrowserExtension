@@ -105,31 +105,37 @@ export const genCommonConfig = (browserConfig) => {
                 },
                 filename: 'pages/background.html',
                 chunks: ['pages/background'],
+                cache: false,
             }),
             new HtmlWebpackPlugin({
                 template: path.join(OPTIONS_PATH, 'index.html'),
                 filename: 'pages/options.html',
                 chunks: ['pages/options'],
+                cache: false,
             }),
             new HtmlWebpackPlugin({
                 template: path.join(POPUP_PATH, 'index.html'),
                 filename: 'pages/popup.html',
                 chunks: ['pages/popup'],
+                cache: false,
             }),
             new HtmlWebpackPlugin({
                 template: path.join(FILTERING_LOG_PATH, 'index.html'),
                 filename: 'pages/filtering-log.html',
                 chunks: ['pages/filtering-log'],
+                cache: false,
             }),
             new HtmlWebpackPlugin({
                 template: path.join(FILTER_DOWNLOAD_PATH, 'index.html'),
                 filename: 'pages/filter-download.html',
                 chunks: ['pages/filter-download'],
+                cache: false,
             }),
             new HtmlWebpackPlugin({
                 template: path.join(EXPORT_PATH, 'index.html'),
                 filename: 'pages/export.html',
                 chunks: ['pages/export'],
+                cache: false,
             }),
             new CopyWebpackPlugin({
                 patterns: [
