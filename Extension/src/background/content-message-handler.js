@@ -193,7 +193,7 @@ const init = () => {
                 application.removeFilter(message.filterId);
                 break;
             case 'enableFiltersGroup':
-                categories.enableFiltersGroup(message.groupId);
+                await categories.enableFiltersGroup(message.groupId);
                 break;
             case 'disableFiltersGroup':
                 categories.disableFiltersGroup(message.groupId);

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './checkbox.pcss';
 
-function Checkbox(props) {
+const Checkbox = (props) => {
     const {
         id, handler, inverted,
     } = props;
@@ -12,7 +12,6 @@ function Checkbox(props) {
     value = inverted ? !value : value;
 
     const changeHandler = (e) => {
-        // eslint-disable-next-line no-shadow
         const { target: { name: id, checked: data } } = e;
         handler({ id, data: inverted ? !data : data });
     };
@@ -36,7 +35,7 @@ function Checkbox(props) {
             />
         </div>
     );
-}
+};
 
 Checkbox.defaultProps = {
     value: false,

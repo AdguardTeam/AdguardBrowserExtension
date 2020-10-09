@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './filters-update.pcss';
 
-function FiltersUpdate(props) {
+const FiltersUpdate = (props) => {
     const {
         handler,
         rulesCount,
@@ -21,7 +21,7 @@ function FiltersUpdate(props) {
     const dateObj = new Date(lastUpdateDate);
 
     return (
-        <button className="filters-update" type="button" onClick={handler}>
+        <div className="filters-update">
             <div className="filters-update__info">
                 <div className="filters-update__title">
                     {`Filter rules count: ${rulesCount}`}
@@ -32,11 +32,12 @@ function FiltersUpdate(props) {
             </div>
             <button
                 type="button"
+                onClick={handler}
                 className={`button filters-update__btn filters-update__btn--${buttonClass}`}
             />
-        </button>
+        </div>
     );
-}
+};
 
 FiltersUpdate.defaultProps = {
     rulesCount: null,
@@ -47,7 +48,7 @@ FiltersUpdate.propTypes = {
     handler: PropTypes.func.isRequired,
     rulesCount: PropTypes.number,
     buttonClass: PropTypes.string.isRequired,
-    lastUpdateDate: PropTypes.string,
+    lastUpdateDate: PropTypes.number,
 };
 
 export default FiltersUpdate;

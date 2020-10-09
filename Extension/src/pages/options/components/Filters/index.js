@@ -1,171 +1,113 @@
-import React, { Component } from 'react';
+import React, { useContext, useState } from 'react';
+import { observer } from 'mobx-react';
 import sortBy from 'lodash/sortBy';
 import Group from './Group';
 import Checkbox from '../Settings/Checkbox';
 import Filter from './Filter';
 import EmptyCustom from './EmptyCustom/EmptyCustom';
 import Search from './Search/Search';
-import messenger from '../../../services/messenger';
 import FiltersUpdate from './FiltersUpdate/FiltersUpdate';
-import { log } from '../../../../background/utils/log';
+import rootStore from '../../stores';
+import i18n from '../../../services/i18n';
 
-// TODO convert to functional component
-class Filters extends Component {
-    // eslint-disable-next-line react/state-in-constructor
-    state = {
-        searchInput: '',
-        searchSelect: 'all',
-        filtersData: {},
-        showFiltersByGroup: false,
-        filtersInfo: {},
-        filtersUpdating: false,
+const Filters = observer(() => {
+    const [showFiltersByGroup, setShowFiltersByGroup] = useState(false);
+    const [searchInput, setSearchInput] = useState('');
+    const [searchSelect, setSearchSelect] = useState('all');
+
+    const { settingsStore, uiStore } = useContext(rootStore);
+
+    const {
+        categories,
+        filters,
+        rulesCount,
+        lastUpdateTime,
+        filtersUpdating,
+    } = settingsStore;
+
+    const handleGroupSwitch = async ({ id, data }) => {
+        await settingsStore.updateGroupSetting(id, data);
     };
 
-    async componentDidMount() {
-        let filtersData;
-        let filtersInfo;
-        try {
-            filtersData = await messenger.getFiltersData();
-            filtersInfo = await messenger.getFiltersInfo();
-        } catch (e) {
-            log.error(e);
-        }
-        if (filtersData) {
-            this.setState((state) => ({
-                ...state, ...filtersData, ...filtersInfo,
-            }));
-        }
-    }
-
-    handleGroupSwitch = async ({ id, data }) => {
-        const { groups } = this.state;
-
-        try {
-            await messenger.updateGroupStatus(id, data);
-        } catch (e) {
-            log.error(e);
-        }
-
-        const group = groups[id];
-        this.setState((state) => ({
-            ...state,
-            groups: {
-                ...groups,
-                [id]: {
-                    ...group,
-                    enabled: data,
-                },
-            },
-        }));
-    };
-
-    groupClickHandler = (groupId) => (e) => {
+    const groupClickHandler = (groupId) => (e) => {
         if (!e.target.closest('.checkbox')) {
-            this.setState({ showFiltersByGroup: groupId });
+            setShowFiltersByGroup(groupId);
         }
     };
 
-    getEnabledFiltersByGroup = (group) => {
-        const { filters } = this.state;
-        return group.filters.map((filterId) => {
-            const { enabled, name } = filters[filterId];
-            return enabled && name;
-        })
-            .filter((name) => !!name);
+    const getEnabledFiltersByGroup = (group) => {
+        return filters.filter((filter) => filter.groupId === group.groupId && filter.enabled);
     };
 
-    renderGroups = (groups) => {
-        const sortedGroups = sortBy(Object.values(groups), 'order');
+    const renderGroups = (groups) => {
+        const sortedGroups = sortBy(groups, 'displayNumber');
         return sortedGroups.map((group) => {
-            const enabledFilters = this.getEnabledFiltersByGroup(group);
+            const enabledFilters = getEnabledFiltersByGroup(group);
             return (
                 <Group
-                    key={group.id}
+                    key={group.groupId}
                     // eslint-disable-next-line react/jsx-props-no-spreading
                     {...group}
                     enabledFilters={enabledFilters}
-                    groupClickHandler={this.groupClickHandler(group.id)}
+                    groupClickHandler={groupClickHandler(group.groupId)}
                 >
                     <Checkbox
-                        id={group.id}
-                        value={group.enabled}
-                        handler={this.handleGroupSwitch}
+                        id={group.groupId}
+                        handler={handleGroupSwitch}
+                        value={!!(group.enabled)}
                     />
                 </Group>
             );
         });
     };
 
-    handleFilterSwitch = async ({ id, data }) => {
-        const { filters } = this.state;
-
-        try {
-            await messenger.updateFilterStatus(id, data);
-        } catch (e) {
-            log.error(e);
-        }
-
-        const filter = filters[id];
-        this.setState((state) => ({
-            ...state,
-            filters: {
-                ...filters,
-                [id]: {
-                    ...filter,
-                    enabled: data,
-                },
-            },
-        }));
+    const handleFilterSwitch = async ({ id, data }) => {
+        await settingsStore.updateFilterSetting(id, data);
     };
 
-    renderFilters = (filters) => Object.values(filters)
-        .sort((filterA, filterB) => filterA.id - filterB.id)
-        .map((filter) => {
-            const tags = filter.tags
-                .map((tagId) => this.state.tags[tagId])
-                .filter((entity) => entity);
-            return (
-                <Filter key={filter.id} filter={filter} tags={tags}>
-                    <Checkbox
-                        id={filter.id}
-                        value={filter.enabled}
-                        handler={this.handleFilterSwitch}
-                    />
-                </Filter>
-            );
-        });
+    const renderFilters = (filtersList) => filtersList.map((filter) => {
+        return (
+            <Filter
+                key={filter.filterId}
+                filter={filter}
+                tags={filter.tagsDetails}
+            >
+                <Checkbox
+                    id={filter.filterId}
+                    value={filter.enabled}
+                    handler={handleFilterSwitch}
+                />
+            </Filter>
+        );
+    });
 
-    handleReturnToGroups = () => {
-        this.setState({ showFiltersByGroup: false });
+    const handleReturnToGroups = () => {
+        setShowFiltersByGroup(false);
     };
 
     // TODO add validation
-    searchInputHandler = (e) => {
+    const searchInputHandler = (e) => {
         const { value } = e.target;
-        this.setState({ searchInput: value });
+        setSearchInput(value);
     };
 
-    searchCloseHandler = () => {
-        this.setState({
-            searchInput: '',
-            searchSelect: 'all',
-        });
+    const searchCloseHandler = () => {
+        setSearchInput('');
+        setSearchSelect('all');
     };
 
-    searchSelectHandler = (e) => {
+    const searchSelectHandler = (e) => {
         const { value } = e.target;
-        this.setState({ searchSelect: value });
+        setSearchSelect(value);
     };
 
-    renderSearchResult = (filters = this.state.filters) => {
-        const { searchInput, searchSelect } = this.state;
-        const filtersValues = Object.values(filters);
+    const renderSearchResult = () => {
         const searchQuery = new RegExp(searchInput, 'ig');
+        const searchFilters = showFiltersByGroup
+            ? filters.filter((filter) => filter.groupId === showFiltersByGroup)
+            : filters;
 
-        return filtersValues.map((filter) => {
-            const tags = filter.tags
-                .map((tagId) => this.state.tags[tagId])
-                .filter((entity) => entity);
+        return searchFilters.map((filter) => {
             let searchMod;
             switch (searchSelect) {
             case 'enabled':
@@ -180,11 +122,15 @@ class Filters extends Component {
 
             if (filter.name.match(searchQuery) && searchMod) {
                 return (
-                    <Filter key={filter.id} filter={filter} tags={tags}>
+                    <Filter
+                        key={filter.filterId}
+                        filter={filter}
+                        tags={filter.tagsDetails}
+                    >
                         <Checkbox
-                            id={filter.id}
+                            id={filter.filterId}
                             value={filter.enabled}
-                            handler={this.handleFilterSwitch}
+                            handler={handleFilterSwitch}
                         />
                     </Filter>
                 );
@@ -193,114 +139,86 @@ class Filters extends Component {
         });
     };
 
-    updateFiltersHandler = async () => {
-        this.setState({ filtersUpdating: true });
-        try {
-            await messenger.updateFilters();
-        } catch (e) {
-            log.error(e);
-            this.setState({ filtersUpdating: false });
-            return;
-        }
-        let filtersInfo;
-        try {
-            filtersInfo = await messenger.getFiltersInfo();
-        } catch (e) {
-            log.error(e);
-        }
-        this.setState({
-            ...filtersInfo,
-            filtersUpdating: false,
-        });
+    const updateFiltersHandler = async () => {
+        const updates = await settingsStore.updateFilters();
+        uiStore.addNotification({ description: updates});
     };
 
-    renderSearch() {
-        const { searchSelect, searchInput } = this.state;
+    const renderSearch = () => {
         return (
             <Search
-                searchInputHandler={this.searchInputHandler}
-                searchSelectHandler={this.searchSelectHandler}
+                searchInputHandler={searchInputHandler}
+                searchSelectHandler={searchSelectHandler}
                 searchInput={searchInput}
                 searchSelect={searchSelect}
-                searchCloseHandler={this.searchCloseHandler}
+                searchCloseHandler={searchCloseHandler}
             />
         );
-    }
+    };
 
-    renderFiltersUpdate = () => {
-        const { rulesCount, lastUpdateDate, filtersUpdating } = this.state;
+    const renderFiltersUpdate = () => {
         const buttonClass = filtersUpdating ? 'loading' : 'loaded';
         return (
             <FiltersUpdate
-                handler={this.updateFiltersHandler}
+                handler={updateFiltersHandler}
                 rulesCount={rulesCount}
                 buttonClass={buttonClass}
-                lastUpdateDate={lastUpdateDate}
+                lastUpdateDate={lastUpdateTime}
             />
         );
     };
 
-    render() {
-        const {
-            groups,
-            showFiltersByGroup,
-            searchInput,
-        } = this.state;
-
-        if (showFiltersByGroup !== false) {
-            const { filters } = this.state;
-            const group = groups[showFiltersByGroup];
-            const groupFilters = group.filters.map((filterId) => filters[filterId]);
-
-            if (group.id === 0 && groupFilters.length === 0) {
-                return (
-                    <>
-                        <div className="title-btn">
-                            <button
-                                type="button"
-                                className="button button--back"
-                                onClick={this.handleReturnToGroups}
-                            />
-                            <h2 className="title title--back-btn">{group.name}</h2>
-                        </div>
-                        <EmptyCustom />
-                    </>
-                );
-            }
+    if (showFiltersByGroup !== false) {
+        const groupFilters = filters.filter((filter) => filter.groupId === showFiltersByGroup);
+        const groupName = categories.filter(group => group.groupId === showFiltersByGroup)[0].groupName;
+        if (showFiltersByGroup === 0 && groupFilters.length === 0) {
             return (
                 <>
                     <div className="title-btn">
                         <button
                             type="button"
                             className="button button--back"
-                            onClick={this.handleReturnToGroups}
+                            onClick={handleReturnToGroups}
                         />
-                        <h2 className="title title--back-btn">{group.name}</h2>
+                        <h2 className="title title--back-btn">{groupName}</h2>
                     </div>
-                    {this.renderSearch()}
-                    {
-                        !searchInput
-                            ? filters && this.renderFilters(groupFilters)
-                            : this.renderSearchResult(groupFilters)
-                    }
+                    <EmptyCustom/>
                 </>
             );
         }
         return (
             <>
                 <div className="title-btn">
-                    {this.renderFiltersUpdate()}
-                    <h2 className="title title--filters-up">Filters</h2>
+                    <button
+                        type="button"
+                        className="button button--back"
+                        onClick={handleReturnToGroups}
+                    />
+                    <h2 className="title title--back-btn">{groupName}</h2>
                 </div>
-                {this.renderSearch()}
+                {renderSearch()}
                 {
-                    !searchInput
-                        ? groups && this.renderGroups(groups)
-                        : this.renderSearchResult()
+                    searchInput
+                        ? renderSearchResult()
+                        : filters && renderFilters(groupFilters)
                 }
             </>
         );
     }
-}
+    return (
+        <>
+            <div className="title-btn">
+                {renderFiltersUpdate()}
+                <h2 className="title title--filters-up">{i18n.translate('options_antibanner')}</h2>
+            </div>
+            {renderSearch()}
+            {
+                searchInput
+                    ? renderSearchResult()
+                    : categories && renderGroups(categories)
+            }
+        </>
+    );
+});
 
 export default Filters;

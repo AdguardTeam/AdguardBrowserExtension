@@ -1,6 +1,7 @@
 import {
     action,
     observable,
+    computed,
     runInAction,
     makeObservable,
 } from 'mobx';
@@ -14,9 +15,15 @@ class SettingsStore {
 
     @observable version = null;
 
-    @observable filtersMetadata = {};
+    @observable filters = {};
+
+    @observable categories = {};
+
+    @observable rulesCount = 0;
 
     @observable allowAcceptableAds = null;
+
+    @observable filtersUpdating = false;
 
     constructor(rootStore) {
         makeObservable(this);
@@ -28,7 +35,9 @@ class SettingsStore {
         const data = await messenger.getOptionsData();
         runInAction(() => {
             this.settings = data.settings;
-            this.filtersMetadata = data.filtersMetadata;
+            this.filters = data.filtersMetadata.filters;
+            this.categories = data.filtersMetadata.categories;
+            // this.rulesCount = data.filtersStats.rulesCount;
             this.version = data.appVersion;
             this.constants = data.constants;
             this.optionsReadyToRender = true;
@@ -67,6 +76,51 @@ class SettingsStore {
             runInAction(() => {
                 this.allowAcceptableAds = prevValue;
             });
+        }
+    }
+
+    @computed
+    get lastUpdateTime() {
+        return Math.max(...this.filters.map((filter) => filter.lastUpdateTime || 0));
+    }
+
+    @action
+    async updateGroupSetting(id, data) {
+        await messenger.updateGroupStatus(id, data);
+        // console.log(JSON.stringify(this.categories, null, 4));
+        runInAction(() => {
+            this.categories.forEach((group) => {
+                if (group.groupId === id - 0) {
+                    // eslint-disable-next-line no-unused-expressions, no-param-reassign
+                    data ? group.enabled = true : delete group.enabled;
+                }
+            });
+        });
+    }
+
+    @action
+    async updateFilterSetting(id, data) {
+        await messenger.updateFilterStatus(id, data);
+        runInAction(() => {
+            this.filters.forEach((filter) => {
+                if (filter.filterId === id - 0) {
+                    // eslint-disable-next-line no-unused-expressions, no-param-reassign
+                    data ? filter.enabled = true : delete filter.enabled;
+                }
+            });
+        });
+    }
+
+    @action
+    async updateFilters() {
+        this.filtersUpdating = true;
+        try {
+            const filtersUpdates = await messenger.updateFilters();
+            this.filtersUpdating = false;
+            return filtersUpdates;
+        } catch (error) {
+            this.filtersUpdating = false;
+            return false;
         }
     }
 }

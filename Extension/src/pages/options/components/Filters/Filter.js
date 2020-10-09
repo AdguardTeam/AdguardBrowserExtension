@@ -22,39 +22,45 @@ const renderTags = (tags) => {
         const tagString = `#${tag.keyword}`;
         return (
             <div
-                key={tag.id}
+                key={tag.tagId}
                 data-tooltip={tag.description}
-                className="setting__tag"
+                className="filter__tag"
             >
                 {tagString}
             </div>
         );
     });
     return (
-        <div className="setting__tags">
+        <div className="filter__tags">
             {tagsNodes}
         </div>
     );
 };
 
-function Filter(props) {
+const Filter = (props) => {
     const {
         filter, children, tags,
     } = props;
     const {
-        name, description, version, timeUpdated,
+        name, description, version, timeUpdated, homepage,
     } = filter;
     return (
-        <div className="setting" role="presentation">
-            <div className="setting__info">
-                <div className="setting__title">
+        <div className="filter" role="presentation">
+            <div className="filter__info">
+                <div className="filter__title">
                     {name}
                 </div>
-                <div className="setting__desc">
-                    <div className="setting__desc-item">
+                <a
+                    className="filter__link"
+                    href={homepage}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                />
+                <div className="filter__desc">
+                    <div className="filter__desc-item">
                         {description}
                     </div>
-                    <div className="setting__desc-item">
+                    <div className="filter__desc-item">
                         {`version: ${version} updated: ${formatDate(timeUpdated)}`}
                     </div>
                 </div>
@@ -63,7 +69,7 @@ function Filter(props) {
             </div>
         </div>
     );
-}
+};
 
 Filter.defaultProps = {
     tags: [],
