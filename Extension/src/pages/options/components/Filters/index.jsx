@@ -35,9 +35,9 @@ const Filters = observer(() => {
         }
     };
 
-    const getEnabledFiltersByGroup = (group) => {
-        return filters.filter((filter) => filter.groupId === group.groupId && filter.enabled);
-    };
+    const getEnabledFiltersByGroup = (group) => (
+        filters.filter((filter) => filter.groupId === group.groupId && filter.enabled)
+    );
 
     const renderGroups = (groups) => {
         const sortedGroups = sortBy(groups, 'displayNumber');
@@ -65,21 +65,19 @@ const Filters = observer(() => {
         await settingsStore.updateFilterSetting(id, data);
     };
 
-    const renderFilters = (filtersList) => filtersList.map((filter) => {
-        return (
-            <Filter
-                key={filter.filterId}
-                filter={filter}
-                tags={filter.tagsDetails}
-            >
-                <Checkbox
-                    id={filter.filterId}
-                    value={filter.enabled}
-                    handler={handleFilterSwitch}
-                />
-            </Filter>
-        );
-    });
+    const renderFilters = (filtersList) => filtersList.map((filter) => (
+        <Filter
+            key={filter.filterId}
+            filter={filter}
+            tags={filter.tagsDetails}
+        >
+            <Checkbox
+                id={filter.filterId}
+                value={filter.enabled}
+                handler={handleFilterSwitch}
+            />
+        </Filter>
+    ));
 
     const handleReturnToGroups = () => {
         setShowFiltersByGroup(false);
@@ -144,17 +142,15 @@ const Filters = observer(() => {
         uiStore.addNotification({ description: updates });
     };
 
-    const renderSearch = () => {
-        return (
-            <Search
-                searchInputHandler={searchInputHandler}
-                searchSelectHandler={searchSelectHandler}
-                searchInput={searchInput}
-                searchSelect={searchSelect}
-                searchCloseHandler={searchCloseHandler}
-            />
-        );
-    };
+    const renderSearch = () => (
+        <Search
+            searchInputHandler={searchInputHandler}
+            searchSelectHandler={searchSelectHandler}
+            searchInput={searchInput}
+            searchSelect={searchSelect}
+            searchCloseHandler={searchCloseHandler}
+        />
+    );
 
     const renderFiltersUpdate = () => {
         const buttonClass = filtersUpdating ? 'loading' : 'loaded';
@@ -170,7 +166,7 @@ const Filters = observer(() => {
 
     if (showFiltersByGroup !== false) {
         const groupFilters = filters.filter((filter) => filter.groupId === showFiltersByGroup);
-        const groupName = categories.filter(group => group.groupId === showFiltersByGroup)[0].groupName;
+        const { groupName } = categories.filter((group) => group.groupId === showFiltersByGroup)[0];
         if (showFiltersByGroup === 0 && groupFilters.length === 0) {
             return (
                 <>
