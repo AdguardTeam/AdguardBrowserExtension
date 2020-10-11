@@ -43,6 +43,7 @@ import { stealthService } from './filter/services/stealth-service';
 import { prefs } from './prefs';
 import { whitelist } from './filter/whitelist';
 import { documentFilterService } from './filter/services/document-filter';
+import { antiBannerService } from './filter/antibanner';
 
 /**
  *  Initialize Content => BackgroundPage messaging
@@ -136,6 +137,7 @@ const init = () => {
             settings: settings.getAllSettings(),
             appVersion: backgroundPage.app.getVersion(),
             filtersMetadata: categories.getFiltersMetadata(),
+            filtersStats: antiBannerService.getRequestFilterInfo(),
             constants: {
                 AntiBannerFiltersId: utils.filters.ids,
             },
@@ -238,7 +240,7 @@ const init = () => {
                 userrules.removeRule(message.ruleText);
                 break;
             case 'checkAntiBannerFiltersUpdate':
-                uiService.checkFiltersUpdates();
+                await uiService.checkFiltersUpdates();
                 break;
             case 'loadCustomFilterInfo':
                 try {

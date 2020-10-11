@@ -254,7 +254,7 @@ export const filtersUpdate = (() => {
         log.info('Checking updates for {0} filters', totalToUpdate);
 
         /**
-         * // Load filters with changed version
+         * Loads filters with changed version
          * @param filterMetadataList
          */
         const loadFiltersFromBackendCallback = async (filterMetadataList) => {

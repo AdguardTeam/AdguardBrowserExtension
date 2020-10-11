@@ -37,7 +37,7 @@ class SettingsStore {
             this.settings = data.settings;
             this.filters = data.filtersMetadata.filters;
             this.categories = data.filtersMetadata.categories;
-            // this.rulesCount = data.filtersStats.rulesCount;
+            this.rulesCount = data.filtersStats.rulesCount;
             this.version = data.appVersion;
             this.constants = data.constants;
             this.optionsReadyToRender = true;
@@ -111,14 +111,19 @@ class SettingsStore {
     }
 
     @action
+    setFiltersUpdating(value) {
+        this.filtersUpdating = value;
+    }
+
+    @action
     async updateFilters() {
-        this.filtersUpdating = true;
+        this.setFiltersUpdating(true);
         try {
             const filtersUpdates = await messenger.updateFilters();
-            this.filtersUpdating = false;
+            this.setFiltersUpdating(false);
             return filtersUpdates;
         } catch (error) {
-            this.filtersUpdating = false;
+            this.setFiltersUpdating(false);
             return false;
         }
     }
