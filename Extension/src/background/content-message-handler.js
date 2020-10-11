@@ -192,12 +192,16 @@ const init = () => {
             case 'removeAntiBannerFilter':
                 application.removeFilter(message.filterId);
                 break;
-            case 'enableFiltersGroup':
-                await categories.enableFiltersGroup(message.groupId);
+            case 'enableFiltersGroup': {
+                const { groupId } = data;
+                await categories.enableFiltersGroup(groupId);
                 break;
-            case 'disableFiltersGroup':
-                categories.disableFiltersGroup(message.groupId);
+            }
+            case 'disableFiltersGroup': {
+                const { groupId } = data;
+                categories.disableFiltersGroup(groupId);
                 break;
+            }
             case 'changeDefaultWhiteListMode':
                 whitelist.changeDefaultWhiteListMode(message.enabled);
                 break;

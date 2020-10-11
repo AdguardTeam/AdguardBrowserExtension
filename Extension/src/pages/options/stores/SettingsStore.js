@@ -87,7 +87,6 @@ class SettingsStore {
     @action
     async updateGroupSetting(id, data) {
         await messenger.updateGroupStatus(id, data);
-        // console.log(JSON.stringify(this.categories, null, 4));
         runInAction(() => {
             this.categories.forEach((group) => {
                 if (group.groupId === id - 0) {
