@@ -141,7 +141,7 @@ const Filters = observer(() => {
 
     const updateFiltersHandler = async () => {
         const updates = await settingsStore.updateFilters();
-        uiStore.addNotification({ description: updates});
+        uiStore.addNotification({ description: updates });
     };
 
     const renderSearch = () => {
@@ -182,7 +182,7 @@ const Filters = observer(() => {
                         />
                         <h2 className="title title--back-btn">{groupName}</h2>
                     </div>
-                    <EmptyCustom/>
+                    <EmptyCustom />
                 </>
             );
         }
