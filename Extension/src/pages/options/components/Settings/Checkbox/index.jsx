@@ -13,7 +13,7 @@ const Checkbox = (props) => {
 
     const changeHandler = (e) => {
         const { target: { name: id, checked: data } } = e;
-        handler({ id, data: inverted ? !data : data });
+        handler({ id, enabled: inverted ? !data : data });
     };
 
     return (

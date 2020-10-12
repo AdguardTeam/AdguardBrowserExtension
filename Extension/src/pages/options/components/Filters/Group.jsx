@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Checkbox from '../Settings/Checkbox';
 
 const renderEnabledFilters = (enabledFilters) => {
     const enabledFiltersNames = enabledFilters.map((filter) => filter.name);
@@ -8,11 +9,13 @@ const renderEnabledFilters = (enabledFilters) => {
     const countable = enabledFiltersNames.slice(SLICE_POINT);
 
     if (countable.length > 0) {
+        // ToDo: add localization
         return `Enabled: ${displayable.join(', ')} and ${countable.length} more`;
     }
 
     if (displayable.length > 1) {
         const [last, ...rest] = displayable.reverse();
+        // ToDo: add localization
         return `Enabled: ${rest.join(', ')} and ${last}`;
     }
 
@@ -25,7 +28,12 @@ const renderEnabledFilters = (enabledFilters) => {
 
 const Group = (props) => {
     const {
-        groupName, children, enabledFilters, groupClickHandler,
+        groupName,
+        groupId,
+        enabledFilters,
+        groupClickHandler,
+        checkboxHandler,
+        checkboxValue,
     } = props;
     return (
         <div className="setting" role="presentation" onClick={groupClickHandler}>
@@ -39,7 +47,11 @@ const Group = (props) => {
                 <div className="setting__desc">
                     {renderEnabledFilters(enabledFilters)}
                 </div>
-                {children}
+                <Checkbox
+                    id={groupId}
+                    handler={checkboxHandler}
+                    value={checkboxValue}
+                />
             </div>
         </div>
     );
@@ -51,7 +63,9 @@ Group.defaultProps = {
 
 Group.propTypes = {
     groupName: PropTypes.string.isRequired,
-    children: PropTypes.oneOfType([PropTypes.node]).isRequired,
+    groupId: PropTypes.number.isRequired,
+    checkboxHandler: PropTypes.func.isRequired,
+    checkboxValue: PropTypes.bool.isRequired,
     enabledFilters: PropTypes.arrayOf(PropTypes.object),
     groupClickHandler: PropTypes.func.isRequired,
 };

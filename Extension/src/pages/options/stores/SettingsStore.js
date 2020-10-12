@@ -81,30 +81,30 @@ class SettingsStore {
 
     @computed
     get lastUpdateTime() {
-        return Math.max(...this.filters.map((filter) => filter.lastUpdateTime || 0));
+        return Math.max(...this.filters.map((filter) => filter.lastCheckTime || 0));
     }
 
     @action
-    async updateGroupSetting(id, data) {
-        await messenger.updateGroupStatus(id, data);
+    async updateGroupSetting(id, enabled) {
+        await messenger.updateGroupStatus(id, enabled);
         runInAction(() => {
             this.categories.forEach((group) => {
                 if (group.groupId === id - 0) {
                     // eslint-disable-next-line no-unused-expressions, no-param-reassign
-                    data ? group.enabled = true : delete group.enabled;
+                    enabled ? group.enabled = true : delete group.enabled;
                 }
             });
         });
     }
 
     @action
-    async updateFilterSetting(id, data) {
-        await messenger.updateFilterStatus(id, data);
+    async updateFilterSetting(id, enabled) {
+        await messenger.updateFilterStatus(id, enabled);
         runInAction(() => {
             this.filters.forEach((filter) => {
                 if (filter.filterId === id - 0) {
                     // eslint-disable-next-line no-unused-expressions, no-param-reassign
-                    data ? filter.enabled = true : delete filter.enabled;
+                    enabled ? filter.enabled = true : delete filter.enabled;
                 }
             });
         });

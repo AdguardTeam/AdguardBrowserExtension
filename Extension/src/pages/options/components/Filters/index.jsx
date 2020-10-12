@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react';
 import sortBy from 'lodash/sortBy';
 import Group from './Group';
-import Checkbox from '../Settings/Checkbox';
 import Filter from './Filter';
 import EmptyCustom from './EmptyCustom/EmptyCustom';
 import Search from './Search/Search';
@@ -25,8 +24,8 @@ const Filters = observer(() => {
         filtersUpdating,
     } = settingsStore;
 
-    const handleGroupSwitch = async ({ id, data }) => {
-        await settingsStore.updateGroupSetting(id, data);
+    const handleGroupSwitch = async ({ id, enabled }) => {
+        await settingsStore.updateGroupSetting(id, enabled);
     };
 
     const groupClickHandler = (groupId) => (e) => {
@@ -47,21 +46,18 @@ const Filters = observer(() => {
                 <Group
                     key={group.groupId}
                     groupName={group.groupName}
+                    groupId={group.groupId}
                     enabledFilters={enabledFilters}
                     groupClickHandler={groupClickHandler(group.groupId)}
-                >
-                    <Checkbox
-                        id={group.groupId}
-                        handler={handleGroupSwitch}
-                        value={!!(group.enabled)}
-                    />
-                </Group>
+                    checkboxHandler={handleGroupSwitch}
+                    checkboxValue={!!group.enabled}
+                />
             );
         });
     };
 
-    const handleFilterSwitch = async ({ id, data }) => {
-        await settingsStore.updateFilterSetting(id, data);
+    const handleFilterSwitch = async ({ id, enabled }) => {
+        await settingsStore.updateFilterSetting(id, enabled);
     };
 
     const renderFilters = (filtersList) => filtersList.map((filter) => (
@@ -69,13 +65,9 @@ const Filters = observer(() => {
             key={filter.filterId}
             filter={filter}
             tags={filter.tagsDetails}
-        >
-            <Checkbox
-                id={filter.filterId}
-                value={filter.enabled}
-                handler={handleFilterSwitch}
-            />
-        </Filter>
+            checkboxHandler={handleFilterSwitch}
+            checkboxValue={!!filter.enabled}
+        />
     ));
 
     const handleReturnToGroups = () => {
@@ -123,13 +115,9 @@ const Filters = observer(() => {
                         key={filter.filterId}
                         filter={filter}
                         tags={filter.tagsDetails}
-                    >
-                        <Checkbox
-                            id={filter.filterId}
-                            value={filter.enabled}
-                            handler={handleFilterSwitch}
-                        />
-                    </Filter>
+                        checkboxHandler={handleFilterSwitch}
+                        checkboxValue={!!filter.enabled}
+                    />
                 );
             }
             return null;

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import './filter.pcss';
+import Checkbox from '../Settings/Checkbox';
 
 const formatDate = (date) => {
     const dateObj = new Date(date);
@@ -39,10 +40,10 @@ const renderTags = (tags) => {
 
 const Filter = (props) => {
     const {
-        filter, children, tags,
+        filter, tags, checkboxHandler, checkboxValue,
     } = props;
     const {
-        name, description, version, timeUpdated, homepage,
+        name, filterId, description, version, timeUpdated, homepage,
     } = filter;
     return (
         <div className="filter" role="presentation">
@@ -65,7 +66,11 @@ const Filter = (props) => {
                     </div>
                 </div>
                 {renderTags(tags)}
-                {children}
+                <Checkbox
+                    id={filterId}
+                    value={checkboxValue}
+                    handler={checkboxHandler}
+                />
             </div>
         </div>
     );
@@ -78,7 +83,8 @@ Filter.defaultProps = {
 Filter.propTypes = {
     // eslint-disable-next-line react/forbid-prop-types
     filter: PropTypes.object.isRequired,
-    children: PropTypes.node.isRequired,
+    checkboxValue: PropTypes.bool.isRequired,
+    checkboxHandler: PropTypes.func.isRequired,
     tags: PropTypes.arrayOf(PropTypes.object),
 };
 
