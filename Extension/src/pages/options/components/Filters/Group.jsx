@@ -30,7 +30,8 @@ const Group = (props) => {
     return (
         <div className="setting" role="presentation" onClick={groupClickHandler}>
             <div className={`setting__icon setting__icon--${groupName.toLowerCase()
-                .split(' ')[0]}`}/>
+                .split(' ')[0]}`}
+            />
             <div className="setting__info">
                 <div className="setting__title">
                     {groupName}

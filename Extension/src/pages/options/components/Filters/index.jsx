@@ -46,8 +46,7 @@ const Filters = observer(() => {
             return (
                 <Group
                     key={group.groupId}
-                    // eslint-disable-next-line react/jsx-props-no-spreading
-                    {...group}
+                    groupName={group.groupName}
                     enabledFilters={enabledFilters}
                     groupClickHandler={groupClickHandler(group.groupId)}
                 >

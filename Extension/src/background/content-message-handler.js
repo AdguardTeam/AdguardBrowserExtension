@@ -137,7 +137,7 @@ const init = () => {
             settings: settings.getAllSettings(),
             appVersion: backgroundPage.app.getVersion(),
             filtersMetadata: categories.getFiltersMetadata(),
-            filtersStats: antiBannerService.getRequestFilterInfo(),
+            filtersInfo: antiBannerService.getRequestFilterInfo(),
             constants: {
                 AntiBannerFiltersId: utils.filters.ids,
             },

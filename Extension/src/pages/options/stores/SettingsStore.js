@@ -37,7 +37,7 @@ class SettingsStore {
             this.settings = data.settings;
             this.filters = data.filtersMetadata.filters;
             this.categories = data.filtersMetadata.categories;
-            this.rulesCount = data.filtersStats.rulesCount;
+            this.rulesCount = data.filtersInfo.rulesCount;
             this.version = data.appVersion;
             this.constants = data.constants;
             this.optionsReadyToRender = true;
