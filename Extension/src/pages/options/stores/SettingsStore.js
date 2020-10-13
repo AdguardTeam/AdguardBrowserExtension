@@ -124,7 +124,8 @@ class SettingsStore {
             return filtersUpdates;
         } catch (error) {
             this.setFiltersUpdating(false);
-            return false;
+            // ToDo: add localization
+            return 'Filters update error';
         }
     }
 }
