@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Checkbox from '../Settings/Checkbox';
+import Checkbox from '../Settings/Checkbox/Checkbox';
 
 const renderEnabledFilters = (enabledFilters) => {
     const enabledFiltersNames = enabledFilters.map((filter) => filter.name);
