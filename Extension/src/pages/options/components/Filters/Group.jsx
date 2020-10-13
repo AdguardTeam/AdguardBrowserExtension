@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import Checkbox from '../Settings/Checkbox/Checkbox';
 
 const renderEnabledFilters = (enabledFilters) => {
@@ -37,8 +38,12 @@ const Group = (props) => {
     } = props;
     return (
         <div className="setting" role="presentation" onClick={groupClickHandler}>
-            <div className={`setting__icon setting__icon--${groupName.toLowerCase()
-                .split(' ')[0]}`}
+            <div className={
+                classNames(
+                    'setting__icon',
+                    `setting__icon--${groupName.toLowerCase().split(' ')[0]}`,
+                )
+            }
             />
             <div className="setting__info">
                 <div className="setting__title">
