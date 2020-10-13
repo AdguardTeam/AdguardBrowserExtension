@@ -6,18 +6,18 @@ import { HashRouter, Route, Switch } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import '../../styles/styles.pcss';
 
-import General from '../General/General';
-import Sidebar from '../Sidebar/Sidebar';
-import Filters from '../Filters/Filters';
-import Stealth from '../Stealth/Stealth';
-import Whitelist from '../Whitelist/Whitelist';
-import UserFilter from '../UserFilter/UserFilter';
-import Miscellaneous from '../Miscellaneous/Miscellaneous';
-import About from '../About/About';
-import Footer from '../Footer/Footer';
+import General from '../General';
+import Sidebar from '../Sidebar';
+import Filters from '../Filters';
+import Stealth from '../Stealth';
+import Whitelist from '../Whitelist';
+import UserFilter from '../UserFilter';
+import Miscellaneous from '../Miscellaneous';
+import About from '../About';
+import Footer from '../Footer';
 
 import rootStore from '../../stores';
-import { Notifications } from '../Notifications/Notifications';
+import { Notifications } from '../Notifications';
 
 const App = observer(() => {
     const { settingsStore } = useContext(rootStore);

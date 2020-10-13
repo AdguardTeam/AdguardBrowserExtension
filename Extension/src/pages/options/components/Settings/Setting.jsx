@@ -1,8 +1,8 @@
 import React from 'react';
-import Checkbox from './Checkbox/Checkbox';
-import Select from './Select/Select';
-import TextInput from './TextInput/TextInput';
-import Textarea from './Textarea/Textarea';
+import Checkbox from './Checkbox';
+import Select from './Select';
+import TextInput from './TextInput';
+import Textarea from './Textarea';
 
 export const SETTINGS_TYPES = {
     CHECKBOX: 'checkbox',

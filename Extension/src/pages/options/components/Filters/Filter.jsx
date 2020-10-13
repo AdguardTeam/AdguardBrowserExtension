@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import './filter.pcss';
-import Checkbox from '../Settings/Checkbox/Checkbox';
+import Checkbox from '../Settings/Checkbox';
 
 const formatDate = (date) => {
     const dateObj = new Date(date);
