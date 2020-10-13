@@ -11,7 +11,7 @@ import Sidebar from '../Sidebar/Sidebar';
 import Filters from '../Filters';
 import Stealth from '../Stealth';
 import Whitelist from '../Whitelist';
-import UserFilter from '../UserFilter';
+import { UserRules } from '../UserRules';
 import Miscellaneous from '../Miscellaneous';
 import About from '../About';
 import Footer from '../Footer/Footer';
@@ -42,7 +42,7 @@ const App = observer(() => {
                         <Route path="/filters" component={Filters} />
                         <Route path="/stealth" component={Stealth} />
                         <Route path="/whitelist" component={Whitelist} />
-                        <Route path="/user-filter" component={UserFilter} />
+                        <Route path="/user-filter" component={UserRules} />
                         <Route path="/miscellaneous" component={Miscellaneous} />
                         <Route path="/about" component={About} />
                         <Route component={General} />

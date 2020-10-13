@@ -9,11 +9,11 @@ import './mode-adguard';
 
 import './editor.pcss';
 
-function onChange(newValue) {
+const onChange = (newValue) => {
     console.log('change', newValue);
-}
+};
 
-function Editor() {
+const Editor = () => {
     const reactAceComponent = React.createRef();
 
     const editorStorageSize = localStorage.getItem('editorSize');
@@ -25,10 +25,10 @@ function Editor() {
         height: editorSize ? editorSize.height : 'auto',
     };
 
-    function onResize(width, height) {
+    const onResize = (width, height) => {
         localStorage.setItem('editorSize', JSON.stringify({ width, height }));
         reactAceComponent.current.editor.resize();
-    }
+    };
 
     return (
         <div style={editorStyles} className="editor">
@@ -51,6 +51,6 @@ function Editor() {
             />
         </div>
     );
-}
+};
 
 export default Editor;
