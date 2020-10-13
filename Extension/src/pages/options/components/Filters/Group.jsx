@@ -27,40 +27,37 @@ const renderEnabledFilters = (enabledFilters) => {
     return 'No filters enabled';
 };
 
-const Group = (props) => {
-    const {
-        groupName,
-        groupId,
-        enabledFilters,
-        groupClickHandler,
-        checkboxHandler,
-        checkboxValue,
-    } = props;
-    return (
-        <div className="setting" role="presentation" onClick={groupClickHandler}>
-            <div className={
-                classNames(
-                    'setting__icon',
-                    `setting__icon--${groupName.toLowerCase().split(' ')[0]}`,
-                )
-            }
-            />
-            <div className="setting__info">
-                <div className="setting__title">
-                    {groupName}
-                </div>
-                <div className="setting__desc">
-                    {renderEnabledFilters(enabledFilters)}
-                </div>
-                <Checkbox
-                    id={groupId}
-                    handler={checkboxHandler}
-                    value={checkboxValue}
-                />
+const Group = ({
+    groupName,
+    groupId,
+    enabledFilters,
+    groupClickHandler,
+    checkboxHandler,
+    checkboxValue,
+}) => (
+    <div className="setting" role="presentation" onClick={groupClickHandler}>
+        <div className={
+            classNames(
+                'setting__icon',
+                `setting__icon--${groupName.toLowerCase().split(' ')[0]}`,
+            )
+        }
+        />
+        <div className="setting__info">
+            <div className="setting__title">
+                {groupName}
             </div>
+            <div className="setting__desc">
+                {renderEnabledFilters(enabledFilters)}
+            </div>
+            <Checkbox
+                id={groupId}
+                handler={checkboxHandler}
+                value={checkboxValue}
+            />
         </div>
-    );
-};
+    </div>
+);
 
 Group.defaultProps = {
     enabledFilters: [],

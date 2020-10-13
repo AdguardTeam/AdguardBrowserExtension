@@ -38,10 +38,9 @@ const renderTags = (tags) => {
     );
 };
 
-const Filter = (props) => {
-    const {
-        filter, tags, checkboxHandler, checkboxValue,
-    } = props;
+const Filter = ({
+    filter, tags, checkboxHandler, checkboxValue,
+}) => {
     const {
         name, filterId, description, version, timeUpdated, homepage,
     } = filter;
