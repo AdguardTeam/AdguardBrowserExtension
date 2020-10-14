@@ -64,17 +64,17 @@ const General = observer(() => {
         const file = event.target.files[0];
 
         try {
-            const content = await uploadFile(file);
+            const content = await uploadFile(file, 'json');
             await messenger.applySettingsJson(content);
-        } catch (ex) {
-            uiStore.addNotification({ description: ex.message });
+        } catch (e) {
+            uiStore.addNotification({ description: e.message });
         }
 
         // eslint-disable-next-line no-param-reassign
         event.target.value = '';
     };
 
-    const handleImportSettings = async (e) => {
+    const handleImportSettings = (e) => {
         e.preventDefault();
         inputEl.current.click();
     };

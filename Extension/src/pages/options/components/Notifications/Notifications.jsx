@@ -11,10 +11,9 @@ export const Notifications = observer(() => {
     const { notifications } = uiStore;
 
     if (notifications.length === 0) {
-        return;
+        return null;
     }
 
-    // eslint-disable-next-line consistent-return
     return (
         <div className="notifications">
             {notifications.map((notification) => {

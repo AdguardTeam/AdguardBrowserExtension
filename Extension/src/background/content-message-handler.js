@@ -218,9 +218,8 @@ const init = () => {
             }
             case 'getUserRules': {
                 const content = await userrules.getUserRulesText();
-                // FIXME check necessity of appVersion field, may be it was used to import/export settings
-                // const appVersion = backgroundPage.app.getVersion();
-                return content;
+                const appVersion = backgroundPage.app.getVersion();
+                return { content, appVersion };
             }
             case 'saveUserRules': {
                 const { value } = data;

@@ -81,8 +81,8 @@ class SettingsStore {
     @action
     async getUserRules() {
         try {
-            const userRules = await messenger.getUserRules();
-            this.setUserRules(userRules);
+            const { content } = await messenger.getUserRules();
+            this.setUserRules(content);
         } catch (e) {
             log.debug(e);
         }
