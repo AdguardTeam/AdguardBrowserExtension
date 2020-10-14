@@ -10,13 +10,13 @@ const renderEnabledFilters = (enabledFilters) => {
     const countable = enabledFiltersNames.slice(SLICE_POINT);
 
     if (countable.length > 0) {
-        // ToDo: add localization
+        // TODO: add localization
         return `Enabled: ${displayable.join(', ')} and ${countable.length} more`;
     }
 
     if (displayable.length > 1) {
         const [last, ...rest] = displayable.reverse();
-        // ToDo: add localization
+        // TODO: add localization
         return `Enabled: ${rest.join(', ')} and ${last}`;
     }
 

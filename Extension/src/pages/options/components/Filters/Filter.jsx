@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import './filter.pcss';
 import Checkbox from '../Settings/Checkbox';
+import rootStore from '../../stores';
 
 const formatDate = (date) => {
     const dateObj = new Date(date);
@@ -41,9 +42,15 @@ const renderTags = (tags) => {
 const Filter = ({
     filter, tags, checkboxHandler, checkboxValue,
 }) => {
+    const { settingsStore } = useContext(rootStore);
     const {
         name, filterId, description, version, timeUpdated, homepage,
     } = filter;
+
+    const removeCustomFilter = async () => {
+        await settingsStore.removeCustomFilter(filterId);
+    };
+
     return (
         <div className="filter" role="presentation">
             <div className="filter__info">
@@ -55,6 +62,10 @@ const Filter = ({
                     href={homepage}
                     target="_blank"
                     rel="noopener noreferrer"
+                />
+                <a
+                    className="filter__remove"
+                    onClick={removeCustomFilter}
                 />
                 <div className="filter__desc">
                     <div className="filter__desc-item">

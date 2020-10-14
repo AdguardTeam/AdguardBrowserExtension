@@ -36,6 +36,6 @@ const EmptyCustom = () => {
             )}
         </div>
     );
-}
+};
 
 export default EmptyCustom;

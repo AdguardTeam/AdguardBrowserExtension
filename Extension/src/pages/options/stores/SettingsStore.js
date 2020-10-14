@@ -124,9 +124,25 @@ class SettingsStore {
             return filtersUpdates;
         } catch (error) {
             this.setFiltersUpdating(false);
-            // ToDo: add localization
+            // TODO: add localization
             return 'Filters update error';
         }
+    }
+
+    @action
+    async addCustomFilter(filter) {
+        const newFilter = await messenger.addCustomFilter(filter);
+        runInAction(() => {
+            this.filters.push(newFilter);
+        });
+    }
+
+    @action
+    async removeCustomFilter(filterId) {
+        await messenger.removeCustomFilter(filterId);
+        runInAction(() => {
+            this.filters = this.filters.filter((filter) => filter.filterId !== filterId);
+        });
     }
 }
 

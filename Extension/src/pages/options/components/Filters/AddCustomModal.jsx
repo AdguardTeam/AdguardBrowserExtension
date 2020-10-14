@@ -1,9 +1,11 @@
-import React, { Component } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'react-modal';
 import messenger from '../../../services/messenger';
 import { log } from '../../../../background/utils/log';
 import i18n from '../../../services/i18n';
+import ModalContentWrapper from './ModalContentWrapper';
+import rootStore from '../../stores';
 
 Modal.setAppElement('#root');
 
@@ -26,67 +28,32 @@ const customStyles = {
     },
 };
 
-// TODO [maximtop] consider move this component in the separate file
-function ModalContentWrapper(props) {
-    const { closeModalHandler, children, title } = props;
-    return (
-        <div className="modal">
-            <button
-                type="button"
-                className="button modal__close"
-                onClick={closeModalHandler}
-            />
-            <div className="modal__title">
-                {title}
-            </div>
-            {children}
-        </div>
-    );
-}
+const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
+    const [customUrlToAdd, setCustomUrlToAdd] = useState('');
+    const [stepToRender, setStepToRender] = useState('input');
+    const [filterToAdd, setFilterToAdd] = useState({});
 
-ModalContentWrapper.propTypes = {
-    closeModalHandler: PropTypes.func.isRequired,
-    children: PropTypes.arrayOf(PropTypes.node).isRequired,
-    title: PropTypes.string.isRequired,
-};
+    const { settingsStore } = useContext(rootStore);
 
-const defaultState = {
-    customUrlToAdd: '',
-    stepToRender: 'input',
-    filterToAdd: {},
-};
-
-// TODO rewrite to functional component
-class AddCustomModal extends Component {
-    // eslint-disable-next-line react/state-in-constructor
-    state = {
-        ...defaultState,
-    };
-
-    handleInputChange = (e) => {
+    const handleInputChange = (e) => {
         const { value } = e.target;
-        this.setState({ customUrlToAdd: value });
+        setCustomUrlToAdd(value);
     };
 
-    handleSendUrlToCheck = async () => {
-        const { customUrlToAdd } = this.state;
-        this.setState({ stepToRender: 'checking' });
+    const handleSendUrlToCheck = async (e) => {
+        setStepToRender('checking');
         let result;
         try {
             result = await messenger.checkCustomUrl(customUrlToAdd);
+            setFilterToAdd(result);
+            setStepToRender('approve');
         } catch (e) {
             log.error(e);
-            this.setState({ stepToRender: 'error' });
+            setStepToRender('error');
         }
-        this.setState({
-            filterToAdd: result,
-            stepToRender: 'approve',
-        });
     };
 
-    renderInputStep = () => {
-        const { closeModalHandler } = this.props;
-        const { customUrlToAdd } = this.state;
+    const renderInputStep = () => {
         // TODO [maximtop] add enter key press handler
         return (
             <>
@@ -98,7 +65,7 @@ class AddCustomModal extends Component {
                         <input
                             type="text"
                             placeholder="Enter URL or path"
-                            onChange={this.handleInputChange}
+                            onChange={handleInputChange}
                             className="modal__input"
                             value={customUrlToAdd}
                         />
@@ -112,7 +79,7 @@ class AddCustomModal extends Component {
                     <button
                         className="button button--m button--green modal__btn"
                         type="button"
-                        onClick={this.handleSendUrlToCheck}
+                        onClick={handleSendUrlToCheck}
                     >
                         Next
                     </button>
@@ -121,34 +88,21 @@ class AddCustomModal extends Component {
         );
     };
 
-    handleApprove = () => {
-        this.setState(async (state, props) => {
-            const { filterToAdd } = state;
-            const { closeModalHandler } = props;
-            if (!filterToAdd) {
-                return null;
-            }
-            try {
-                await messenger.addCustomFilter(filterToAdd);
-            } catch (e) {
-                log.error(e);
-            }
-            closeModalHandler();
-            return {
-                ...state,
-                ...defaultState,
-            };
-        });
+    const handleApprove = async () => {
+        try {
+            await settingsStore.addCustomFilter(filterToAdd);
+        } catch (e) {
+            log.error(e);
+        }
+        closeModalHandler();
     };
 
-    renderApproveStep = () => {
+    const renderApproveStep = () => {
         const {
-            filterToAdd: {
-                title, description, version, ruleCount, homepage, url,
-            },
-        } = this.state;
+            name, description, version, rulesCount, homepage, customUrl,
+        } = filterToAdd.filter;
+
         // TODO [maximtop] next line is used quite often, needs DRY refactoring
-        const { closeModalHandler } = this.props;
         return (
             <>
                 <ModalContentWrapper
@@ -161,7 +115,7 @@ class AddCustomModal extends Component {
                             <input
                                 className="modal__input"
                                 type="text"
-                                value={title}
+                                value={name}
                             />
                         </div>
                         <div className="modal__row">
@@ -174,7 +128,7 @@ class AddCustomModal extends Component {
                         </div>
                         <div className="modal__row">
                             <div className="modal__cell">Rules count:</div>
-                            <div className="modal__cell">{ruleCount}</div>
+                            <div className="modal__cell">{rulesCount}</div>
                         </div>
                         <div className="modal__row">
                             <div className="modal__cell">Homepage:</div>
@@ -182,7 +136,7 @@ class AddCustomModal extends Component {
                         </div>
                         <div className="modal__row">
                             <div className="modal__cell">URL:</div>
-                            <div className="modal__cell modal__cell--url">{url}</div>
+                            <div className="modal__cell modal__cell--url">{customUrl}</div>
                         </div>
                         <div className="modal__row">
                             <input
@@ -203,7 +157,7 @@ class AddCustomModal extends Component {
                     </div>
                     <button
                         type="button"
-                        onClick={this.handleApprove}
+                        onClick={handleApprove}
                         className="button button--m button--green modal__btn"
                     >
                         Subscribe
@@ -213,8 +167,8 @@ class AddCustomModal extends Component {
         );
     };
 
-    renderCheckingStep = () => {
-        const { closeModalHandler } = this.props;
+    const renderCheckingStep = () => {
+        // TODO: add localization
         return (
             <>
                 <ModalContentWrapper closeModalHandler={closeModalHandler}>
@@ -228,13 +182,13 @@ class AddCustomModal extends Component {
         );
     };
 
-    tryAgainHandler = () => {
-        this.setState({ stepToRender: 'first' });
+    const tryAgainHandler = () => {
+        setStepToRender('first');
     };
 
     // TODO [maximtop] here we can show detailed error message than in the current version
-    renderErrorStep = () => {
-        const { closeModalHandler } = this.props;
+    const renderErrorStep = () => {
+        // TODO add localization
         return (
             <>
                 <ModalContentWrapper closeModalHandler={closeModalHandler}>
@@ -248,7 +202,7 @@ class AddCustomModal extends Component {
                     </div>
                     <button
                         type="button"
-                        onClick={this.tryAgainHandler}
+                        onClick={tryAgainHandler}
                         className="button button--m button--transparent modal__btn"
                     >
                         Try again
@@ -258,38 +212,34 @@ class AddCustomModal extends Component {
         );
     };
 
-    renderStep = () => {
-        const { stepToRender } = this.state;
+    const renderStep = () => {
         switch (stepToRender) {
         case 'input': {
-            return this.renderInputStep();
+            return renderInputStep();
         }
         case 'checking': {
-            return this.renderCheckingStep();
+            return renderCheckingStep();
         }
         case 'error': {
-            return this.renderErrorStep();
+            return renderErrorStep();
         }
         case 'approve': {
-            return this.renderApproveStep();
+            return renderApproveStep();
         }
         default:
             throw new Error(`there is no such step: ${stepToRender}`);
         }
     };
 
-    render() {
-        const { modalIsOpen } = this.props;
-        return (
-            <Modal
-                isOpen={modalIsOpen}
-                style={customStyles}
-            >
-                {this.renderStep(this.state, this.props)}
-            </Modal>
-        );
-    }
-}
+    return (
+        <Modal
+            isOpen={modalIsOpen}
+            style={customStyles}
+        >
+            {renderStep()}
+        </Modal>
+    );
+};
 
 AddCustomModal.propTypes = {
     closeModalHandler: PropTypes.func.isRequired,

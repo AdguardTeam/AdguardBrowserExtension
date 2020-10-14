@@ -322,9 +322,10 @@ export const application = (() => {
         if (!url) {
             throw new Error('No url provided');
         }
-
+        console.log('%%%1');
         const res = await subscriptions.getCustomFilterInfo(url, options);
-
+        console.log('%%%2');
+        console.log(res);
         if (res?.filter) {
             log.info('Custom filter data downloaded');
             return res;

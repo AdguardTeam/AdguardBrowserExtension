@@ -191,9 +191,11 @@ const init = () => {
                 }
                 break;
             }
-            case 'removeAntiBannerFilter':
-                application.removeFilter(message.filterId);
+            case 'removeAntiBannerFilter': {
+                const { filterId } = data;
+                application.removeFilter(filterId);
                 break;
+            }
             case 'enableFiltersGroup': {
                 const { groupId } = data;
                 await categories.enableFiltersGroup(groupId);
@@ -244,15 +246,20 @@ const init = () => {
                 break;
             case 'loadCustomFilterInfo':
                 try {
-                    const res = await application.loadCustomFilterInfo(message.url, { title: message.title });
+                    const { url, title } = data;
+                    const res = await application.loadCustomFilterInfo(url, { title });
                     return res;
                 } catch (e) {
                     return {};
                 }
             case 'subscribeToCustomFilter': {
-                const { url, title, trusted } = message;
+                const { customUrl, name, trusted } = data.filter.filter;
+                // console.log('%%%');
+                // console.log(data.filter.filter);
+                // console.log(name);
                 try {
-                    const filter = await application.loadCustomFilter(url, { title, trusted });
+                    const title = name;
+                    const filter = await application.loadCustomFilter(customUrl, { title, trusted });
                     await application.addAndEnableFilters([filter.filterId]);
                     return filter;
                 } catch (e) {

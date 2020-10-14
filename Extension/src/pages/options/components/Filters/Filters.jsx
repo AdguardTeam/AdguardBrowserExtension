@@ -8,6 +8,7 @@ import Search from './Search/Search';
 import FiltersUpdate from './FiltersUpdate/FiltersUpdate';
 import rootStore from '../../stores';
 import i18n from '../../../services/i18n';
+import AddCustomModal from './AddCustomModal';
 
 const Filters = observer(() => {
     const [showFiltersByGroup, setShowFiltersByGroup] = useState(false);
@@ -154,6 +155,29 @@ const Filters = observer(() => {
         );
     };
 
+    // const addCustom = () => {
+    //     return (
+    //         <AddCustomModal
+    //             closeModalHandler={() => {}}
+    //             modalIsOpen
+    //         />
+    //     );
+    // };
+
+    const renderAddFilterBtn = () => {
+        // if (showFiltersByGroup === 0) {
+        //     return (
+        //         <button
+        //             type="button"
+        //             onClick={addCustom}
+        //             className="button button--m button--green"
+        //         >
+        //             {i18n.translate('options_add_custom_filter')}
+        //         </button>
+        //     );
+        // }
+    };
+
     if (showFiltersByGroup !== false) {
         const groupFilters = filters.filter((filter) => filter.groupId === showFiltersByGroup);
         const { groupName } = categories.filter((group) => group.groupId === showFiltersByGroup)[0];
@@ -188,6 +212,7 @@ const Filters = observer(() => {
                         ? renderSearchResult()
                         : filters && renderFilters(groupFilters)
                 }
+                {renderAddFilterBtn()}
             </>
         );
     }

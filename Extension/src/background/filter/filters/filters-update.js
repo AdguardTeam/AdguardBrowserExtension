@@ -294,6 +294,8 @@ export const filtersUpdate = (() => {
         const filterMetadataList = await loadFiltersMetadataFromBackend(filterIdsToUpdate);
 
         const filterMetadataListToUpdate = selectFilterMetadataListToUpdate(filterMetadataList);
+        console.log('filterMetadataListToUpdate:');
+        console.log(filterMetadataListToUpdate);
 
         const loadedFilters = await loadFiltersFromBackendCallback(filterMetadataListToUpdate);
 

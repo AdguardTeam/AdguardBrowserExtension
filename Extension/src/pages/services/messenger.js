@@ -85,6 +85,24 @@ class Messenger {
         const type = data ? 'addAndEnableFilter' : 'disableAntiBannerFilter';
         await this.sendMessage(type, { filterId });
     }
+
+    async checkCustomUrl(url) {
+        // TODO use common message types in the constants
+        const type = 'loadCustomFilterInfo';
+        return this.sendMessage(type, { url });
+    }
+
+    async addCustomFilter(filter) {
+        // TODO use common message types in the constants
+        const type = 'subscribeToCustomFilter';
+        return this.sendMessage(type, { filter });
+    }
+
+    async removeCustomFilter(filterId) {
+        // TODO use common message types in the constants
+        const type = 'removeAntiBannerFilter';
+        await this.sendMessage(type, { filterId });
+    }
 }
 
 const messenger = new Messenger();
