@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import SettingsSection from '../Settings/SettingsSection';
 import SettingsSet from '../Settings/SettingsSet';
 import Setting, { SETTINGS_TYPES } from '../Settings/Setting';
-import rootStore from '../../stores';
+import { rootStore } from '../../stores/RootStore';
 import i18n from '../../../services/i18n';
 import messenger from '../../../services/messenger';
 import { hoursToMs, uploadFile } from '../../../helpers';

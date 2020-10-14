@@ -218,15 +218,15 @@ const init = () => {
             }
             case 'getUserRules': {
                 const content = await userrules.getUserRulesText();
-                const appVersion = backgroundPage.app.getVersion();
-                return {
-                    content,
-                    appVersion,
-                };
+                // FIXME check necessity of appVersion field, may be it was used to import/export settings
+                // const appVersion = backgroundPage.app.getVersion();
+                return content;
             }
-            case 'saveUserRules':
-                userrules.updateUserRulesText(message.content);
+            case 'saveUserRules': {
+                const { value } = data;
+                userrules.updateUserRulesText(value);
                 break;
+            }
             case 'addUserRule':
                 userrules.addRules([message.ruleText]);
                 break;

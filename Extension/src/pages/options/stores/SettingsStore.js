@@ -5,6 +5,7 @@ import {
     makeObservable,
 } from 'mobx';
 
+import { log } from '../../../background/utils/log';
 import messenger from '../../services/messenger';
 
 class SettingsStore {
@@ -17,6 +18,8 @@ class SettingsStore {
     @observable filtersMetadata = {};
 
     @observable allowAcceptableAds = null;
+
+    @observable userRules = '';
 
     constructor(rootStore) {
         makeObservable(this);
@@ -67,6 +70,31 @@ class SettingsStore {
             runInAction(() => {
                 this.allowAcceptableAds = prevValue;
             });
+        }
+    }
+
+    @action
+    setUserRules = (userRules) => {
+        this.userRules = userRules;
+    }
+
+    @action
+    async getUserRules() {
+        try {
+            const userRules = await messenger.getUserRules();
+            this.setUserRules(userRules);
+        } catch (e) {
+            log.debug(e);
+        }
+    }
+
+    @action
+    // eslint-disable-next-line class-methods-use-this
+    async saveUserRules(value) {
+        try {
+            await messenger.saveUserRules(value);
+        } catch (e) {
+            log.debug(e);
         }
     }
 }

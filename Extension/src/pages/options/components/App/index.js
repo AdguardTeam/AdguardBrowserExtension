@@ -16,7 +16,7 @@ import Miscellaneous from '../Miscellaneous';
 import About from '../About';
 import Footer from '../Footer/Footer';
 
-import rootStore from '../../stores';
+import { rootStore } from '../../stores/RootStore';
 import { Notifications } from '../Notifications';
 
 const App = observer(() => {

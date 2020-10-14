@@ -66,6 +66,18 @@ class Messenger {
         const type = 'resetBlockedAdsCount';
         return this.sendMessage(type);
     }
+
+    async getUserRules() {
+        // TODO use common message types in the constants
+        const type = 'getUserRules';
+        return this.sendMessage(type);
+    }
+
+    async saveUserRules(value) {
+        // TODO use common message types in the constants
+        const type = 'saveUserRules';
+        await this.sendMessage(type, { value });
+    }
 }
 
 const messenger = new Messenger();
