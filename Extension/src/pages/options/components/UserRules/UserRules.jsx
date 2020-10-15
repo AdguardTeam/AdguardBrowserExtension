@@ -6,8 +6,7 @@ import { uploadFile } from '../../../helpers';
 import { log } from '../../../../background/utils/log';
 
 // FIXME update editor when user rules are added to the editor outside of editor
-// FIXME extract message types into common constants
-// FIXME introduce translations
+// TODO add shortcut for comments
 const UserRules = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);
 
@@ -41,6 +40,14 @@ const UserRules = observer(() => {
         await settingsStore.saveUserRules(value);
     };
 
+    const shortcuts = [{
+        name: 'save',
+        bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
+        exec: async () => {
+            await saveClickHandler();
+        },
+    }];
+
     const exportClickHandler = async () => {
         window.open('/pages/export.html#uf', '_blank');
     };
@@ -73,6 +80,7 @@ const UserRules = observer(() => {
                 name="user-rules"
                 value={settingsStore.userRules}
                 editorRef={editorRef}
+                shortcuts={shortcuts}
             />
             <div className="actions">
                 <div>
