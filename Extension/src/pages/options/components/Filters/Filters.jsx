@@ -14,6 +14,7 @@ const Filters = observer(() => {
     const [showFiltersByGroup, setShowFiltersByGroup] = useState(false);
     const [searchInput, setSearchInput] = useState('');
     const [searchSelect, setSearchSelect] = useState('all');
+    const [modalIsOpen, setModalIsOpen] = useState(false);
 
     const { settingsStore, uiStore } = useContext(rootStore);
 
@@ -155,27 +156,34 @@ const Filters = observer(() => {
         );
     };
 
-    // const addCustom = () => {
-    //     return (
-    //         <AddCustomModal
-    //             closeModalHandler={() => {}}
-    //             modalIsOpen
-    //         />
-    //     );
-    // };
+    const openModalHandler = () => {
+        setModalIsOpen(true);
+    };
+
+    const closeModalHandler = () => {
+        setModalIsOpen(false);
+    };
 
     const renderAddFilterBtn = () => {
-        // if (showFiltersByGroup === 0) {
-        //     return (
-        //         <button
-        //             type="button"
-        //             onClick={addCustom}
-        //             className="button button--m button--green"
-        //         >
-        //             {i18n.translate('options_add_custom_filter')}
-        //         </button>
-        //     );
-        // }
+        if (showFiltersByGroup === 0) {
+            return (
+                <div>
+                    <button
+                        type="button"
+                        onClick={openModalHandler}
+                        className="button button--add-custom-filter button--m button--green"
+                    >
+                        {i18n.translate('options_add_custom_filter')}
+                    </button>
+                    {modalIsOpen && (
+                        <AddCustomModal
+                            closeModalHandler={closeModalHandler}
+                            modalIsOpen={modalIsOpen}
+                        />
+                    )}
+                </div>
+            );
+        }
     };
 
     if (showFiltersByGroup !== false) {
@@ -207,11 +215,13 @@ const Filters = observer(() => {
                     <h2 className="title title--back-btn">{groupName}</h2>
                 </div>
                 {renderSearch()}
-                {
-                    searchInput
-                        ? renderSearchResult()
-                        : filters && renderFilters(groupFilters)
-                }
+                <div>
+                    {
+                        searchInput
+                            ? renderSearchResult()
+                            : filters && renderFilters(groupFilters)
+                    }
+                </div>
                 {renderAddFilterBtn()}
             </>
         );

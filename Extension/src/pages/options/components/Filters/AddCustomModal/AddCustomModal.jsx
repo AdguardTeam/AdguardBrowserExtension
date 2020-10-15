@@ -1,11 +1,11 @@
 import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'react-modal';
-import messenger from '../../../services/messenger';
-import { log } from '../../../../background/utils/log';
-import i18n from '../../../services/i18n';
-import ModalContentWrapper from './ModalContentWrapper';
-import rootStore from '../../stores';
+import messenger from '../../../../services/messenger';
+import { log } from '../../../../../background/utils/log';
+import i18n from '../../../../services/i18n';
+import ModalContentWrapper from '../ModalContentWrapper';
+import rootStore from '../../../stores';
 
 Modal.setAppElement('#root');
 
@@ -40,7 +40,7 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
         setCustomUrlToAdd(value);
     };
 
-    const handleSendUrlToCheck = async (e) => {
+    const handleSendUrlToCheck = async () => {
         setStepToRender('checking');
         let result;
         try {
@@ -115,6 +115,7 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
                             <input
                                 className="modal__input"
                                 type="text"
+                                // TODO add handler
                                 value={name}
                             />
                         </div>

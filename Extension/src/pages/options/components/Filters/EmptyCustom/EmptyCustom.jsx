@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import AddCustomModal from '../AddCustomModal';
+import AddCustomModal from '../AddCustomModal/AddCustomModal';
 import i18n from '../../../../services/i18n';
 import './empty-custom.pcss';
 

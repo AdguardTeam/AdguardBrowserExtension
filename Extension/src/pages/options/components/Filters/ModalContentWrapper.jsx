@@ -23,7 +23,7 @@ ModalContentWrapper.defaultProps = {
 
 ModalContentWrapper.propTypes = {
     closeModalHandler: PropTypes.func.isRequired,
-    children: PropTypes.arrayOf(PropTypes.object).isRequired,
+    children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
     title: PropTypes.string,
 };
 
