@@ -1,9 +1,13 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { observer } from 'mobx-react';
+import classnames from 'classnames';
 import { rootStore } from '../../stores/RootStore';
 import { Editor } from '../Editor';
 import { uploadFile } from '../../../helpers';
 import { log } from '../../../../background/utils/log';
+import { STATES as SAVING_RULES_STATES } from './savingRulesFSM';
+
+import './styles.pcss';
 
 // FIXME update editor when user rules are added to the editor outside of editor
 // TODO add shortcut for comments
@@ -12,6 +16,32 @@ const UserRules = observer(() => {
 
     const editorRef = useRef(null);
     const inputRef = useRef(null);
+
+    const { savingRulesState } = settingsStore;
+
+    const renderSavingState = () => {
+        const indicatorTextMap = {
+            [SAVING_RULES_STATES.IDLE]: '',
+            [SAVING_RULES_STATES.SAVED]: 'Saved',
+            [SAVING_RULES_STATES.SAVING]: 'Saving...',
+        };
+
+        const indicatorText = indicatorTextMap[savingRulesState];
+
+        if (savingRulesState === SAVING_RULES_STATES.IDLE) {
+            return null;
+        }
+
+        const indicatorClassnames = classnames('editor__label', {
+            'editor__label--saved': savingRulesState === SAVING_RULES_STATES.SAVED,
+        });
+
+        return (
+            <div className={indicatorClassnames}>
+                {indicatorText}
+            </div>
+        );
+    };
 
     const inputChangeHandler = async (event) => {
         event.persist();
@@ -58,9 +88,9 @@ const UserRules = observer(() => {
         })();
     }, []);
 
+    // TODO fix translations
     return (
         <>
-            {/* TODO fix translations */}
             <h2 className="title">User rules</h2>
             <div className="desc">
                 You can add your own rules here. This option is recommended for advanced users familiar
@@ -82,8 +112,8 @@ const UserRules = observer(() => {
                 editorRef={editorRef}
                 shortcuts={shortcuts}
             />
-            <div className="actions">
-                <div>
+            <div className="actions actions--divided">
+                <div className="actions__group">
                     <input
                         type="file"
                         id="inputEl"
@@ -98,21 +128,24 @@ const UserRules = observer(() => {
                     >
                         Import
                     </button>
+                    <button
+                        type="button"
+                        className="button button--m button--green-bd actions__btn"
+                        onClick={exportClickHandler}
+                    >
+                        Export
+                    </button>
                 </div>
-                <button
-                    type="button"
-                    className="button button--m button--green-bd actions__btn"
-                    onClick={exportClickHandler}
-                >
-                    Export
-                </button>
-                <button
-                    type="button"
-                    className="button button--m button--green actions__btn"
-                    onClick={saveClickHandler}
-                >
-                    Save
-                </button>
+                <div className="actions__group">
+                    {renderSavingState()}
+                    <button
+                        type="button"
+                        className="button button--m button--green actions__btn"
+                        onClick={saveClickHandler}
+                    >
+                        Save
+                    </button>
+                </div>
             </div>
         </>
     );

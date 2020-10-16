@@ -7,6 +7,7 @@ import {
 
 import { log } from '../../../background/utils/log';
 import messenger from '../../services/messenger';
+import { savingRulesService, EVENTS as SAVING_RULES_FSM_EVENTS } from '../components/UserRules/savingRulesFSM';
 
 class SettingsStore {
     @observable settings = null;
@@ -21,9 +22,17 @@ class SettingsStore {
 
     @observable userRules = '';
 
+    @observable savingRulesState = savingRulesService.initialState.value;
+
     constructor(rootStore) {
         makeObservable(this);
         this.rootStore = rootStore;
+
+        savingRulesService.onTransition((state) => {
+            runInAction(() => {
+                this.savingRulesState = state.value;
+            });
+        });
     }
 
     @action
@@ -91,11 +100,7 @@ class SettingsStore {
     @action
     // eslint-disable-next-line class-methods-use-this
     async saveUserRules(value) {
-        try {
-            await messenger.saveUserRules(value);
-        } catch (e) {
-            log.debug(e);
-        }
+        savingRulesService.send(SAVING_RULES_FSM_EVENTS.SAVE, { value });
     }
 }
 

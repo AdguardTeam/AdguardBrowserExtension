@@ -224,7 +224,15 @@ const init = () => {
             case 'saveUserRules': {
                 const { value } = data;
                 userrules.updateUserRulesText(value);
-                break;
+                // We are waiting until request filter is updated
+                return new Promise((resolve) => {
+                    const listenerId = listeners.addListener((event) => {
+                        if (event === listeners.REQUEST_FILTER_UPDATED) {
+                            listeners.removeListener(listenerId);
+                            resolve();
+                        }
+                    });
+                });
             }
             case 'addUserRule':
                 userrules.addRules([message.ruleText]);
