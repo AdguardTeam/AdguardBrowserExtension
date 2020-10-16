@@ -55,16 +55,16 @@ const init = () => {
 
     /**
      * Adds event listener from content page
-     * @param message
+     * @param events
      * @param sender
      */
-    function processAddEventListener(message, sender) {
-        const listenerId = listeners.addSpecifiedListener(message.events, function () {
+    function processAddEventListener(events, sender) {
+        const listenerId = listeners.addSpecifiedListener(events, (...args) => {
             const sender = eventListeners[listenerId];
             if (sender) {
                 tabsApi.sendMessage(sender.tab.tabId, {
                     type: 'notifyListeners',
-                    args: Array.prototype.slice.call(arguments),
+                    data: args,
                 });
             }
         });
@@ -160,8 +160,10 @@ const init = () => {
             case 'unWhiteListFrame':
                 userrules.unWhiteListFrame(message.frameInfo);
                 break;
-            case 'addEventListener':
-                return processAddEventListener(message, sender);
+            case 'createEventListener': {
+                const { events } = data;
+                return processAddEventListener(events, sender);
+            }
             case 'removeListener': {
                 const { listenerId } = message;
                 listeners.removeListener(listenerId);

@@ -112,12 +112,12 @@ export const CheckboxUtils = (function () {
  * @param onUnloadCallback Window unload callback
  */
 export async function createEventListener(events, callback, onUnloadCallback) {
-    function eventListener() {
-        callback.apply(null, arguments);
+    function eventListener(...args) {
+        callback(...args);
     }
 
-    const response = await runtimeImpl.sendMessage({ type: 'addEventListener', events });
-    let listenerId = response.listenerId;
+    const response = await runtimeImpl.sendMessage({ type: 'createEventListener', events });
+    let { listenerId } = response;
 
     runtimeImpl.onMessage.addListener(function (message) {
         if (message.type === 'notifyListeners') {
