@@ -10,7 +10,7 @@ import General from '../General';
 import Sidebar from '../Sidebar/Sidebar';
 import Filters from '../Filters';
 import Stealth from '../Stealth';
-import Whitelist from '../Whitelist';
+import { Whitelist } from '../Whitelist';
 import { UserRules } from '../UserRules';
 import Miscellaneous from '../Miscellaneous';
 import About from '../About';
