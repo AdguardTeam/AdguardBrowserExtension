@@ -103,9 +103,14 @@ const Filters = observer(() => {
 
     const renderSearchResult = () => {
         const searchQuery = new RegExp(searchInput, 'ig');
-        const searchFilters = showFiltersByGroup
-            ? filters.filter((filter) => filter.groupId === showFiltersByGroup)
-            : filters;
+        // const searchFilters = showFiltersByGroup !== false
+        //     ? filters.filter((filter) => filter.groupId === showFiltersByGroup)
+        //     : filters;
+
+        let searchFilters = filters;
+        if (showFiltersByGroup !== false) {
+            searchFilters = filters.filter((filter) => filter.groupId === showFiltersByGroup);
+        }
 
         return searchFilters.map((filter) => {
             let searchMod;
@@ -120,7 +125,7 @@ const Filters = observer(() => {
                 searchMod = true;
             }
 
-            if (filter.name.match(searchQuery) && searchMod) {
+            if ((filter.name.match(searchQuery) && searchMod) || searchMod) {
                 return (
                     <Filter
                         key={filter.filterId}
@@ -223,7 +228,7 @@ const Filters = observer(() => {
                 {renderSearch()}
                 <div>
                     {
-                        searchInput
+                        searchInput || searchSelect !== SEARCH_FILTERS.ALL
                             ? renderSearchResult()
                             : filters && renderFilters(groupFilters)
                     }
@@ -240,7 +245,7 @@ const Filters = observer(() => {
             </div>
             {renderSearch()}
             {
-                searchInput
+                searchInput || searchSelect !== SEARCH_FILTERS.ALL
                     ? renderSearchResult()
                     : categories && renderGroups(categories)
             }
