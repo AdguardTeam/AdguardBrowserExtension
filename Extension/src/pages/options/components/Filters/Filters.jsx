@@ -11,9 +11,15 @@ import i18n from '../../../services/i18n';
 import AddCustomModal from './AddCustomModal';
 
 const Filters = observer(() => {
+    const SEARCH_FILTERS = {
+        ALL: 'all',
+        ENABLED: 'enabled',
+        DISABLED: 'disabled',
+    };
+
     const [showFiltersByGroup, setShowFiltersByGroup] = useState(false);
     const [searchInput, setSearchInput] = useState('');
-    const [searchSelect, setSearchSelect] = useState('all');
+    const [searchSelect, setSearchSelect] = useState(SEARCH_FILTERS.ALL);
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
     const { settingsStore, uiStore } = useContext(rootStore);
@@ -104,10 +110,10 @@ const Filters = observer(() => {
         return searchFilters.map((filter) => {
             let searchMod;
             switch (searchSelect) {
-            case 'enabled':
+            case SEARCH_FILTERS.ENABLED:
                 searchMod = filter.enabled;
                 break;
-            case 'disabled':
+            case SEARCH_FILTERS.DISABLED:
                 searchMod = !filter.enabled;
                 break;
             default:
