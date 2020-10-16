@@ -42,11 +42,15 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
 
     const handleSendUrlToCheck = async () => {
         setStepToRender('checking');
-        let result;
+        let result = {};
         try {
             result = await messenger.checkCustomUrl(customUrlToAdd);
-            setFilterToAdd(result);
-            setStepToRender('approve');
+            if (!result.filter) {
+                setStepToRender('error');
+            } else {
+                setFilterToAdd(result);
+                setStepToRender('approve');
+            }
         } catch (e) {
             log.error(e);
             setStepToRender('error');
@@ -184,7 +188,7 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
     };
 
     const tryAgainHandler = () => {
-        setStepToRender('first');
+        setStepToRender('input');
     };
 
     // TODO [maximtop] here we can show detailed error message than in the current version
