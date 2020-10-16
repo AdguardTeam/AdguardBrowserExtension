@@ -9,7 +9,6 @@ import { STATES as SAVING_RULES_STATES } from './savingRulesFSM';
 
 import './styles.pcss';
 
-// FIXME update editor when user rules are added to the editor outside of editor
 // TODO add shortcut for comments
 const UserRules = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);

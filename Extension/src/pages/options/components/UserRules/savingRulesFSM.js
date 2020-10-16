@@ -15,6 +15,8 @@ export const EVENTS = {
     TIMEOUT: 'timeout',
 };
 
+const SAVED_DISPLAY_TIMEOUT_MS = 1000;
+
 const savingRulesFSM = Machine({
     id: 'savingRulesFSM',
     initial: 'idle',
@@ -45,7 +47,7 @@ const savingRulesFSM = Machine({
         },
         [STATES.SAVED]: {
             after: [{
-                delay: 1000, target: STATES.IDLE,
+                delay: SAVED_DISPLAY_TIMEOUT_MS, target: STATES.IDLE,
             }],
         },
     },
