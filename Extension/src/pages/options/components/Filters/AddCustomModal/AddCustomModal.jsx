@@ -92,6 +92,10 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
         );
     };
 
+    const handleTrustedCheckbox = (event) => {
+        filterToAdd.filter.trusted = !!event.target.checked;
+    };
+
     const handleApprove = async () => {
         try {
             await settingsStore.addCustomFilter(filterToAdd);
@@ -106,7 +110,6 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
             name, description, version, rulesCount, homepage, customUrl,
         } = filterToAdd.filter;
 
-        // TODO [maximtop] next line is used quite often, needs DRY refactoring
         return (
             <>
                 <ModalContentWrapper
@@ -148,6 +151,7 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
                                 className="modal__checkbox"
                                 id="trusted"
                                 type="checkbox"
+                                onChange={handleTrustedCheckbox}
                             />
                             <label
                                 className="modal__checkbox-label"

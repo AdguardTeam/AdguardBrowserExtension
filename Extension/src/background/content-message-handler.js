@@ -254,9 +254,6 @@ const init = () => {
                 }
             case 'subscribeToCustomFilter': {
                 const { customUrl, name, trusted } = data.filter.filter;
-                // console.log('%%%');
-                // console.log(data.filter.filter);
-                // console.log(name);
                 try {
                     const title = name;
                     const filter = await application.loadCustomFilter(customUrl, { title, trusted });

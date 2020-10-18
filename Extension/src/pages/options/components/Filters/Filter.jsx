@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import './filter.pcss';
 import Checkbox from '../Settings/Checkbox';
 import rootStore from '../../stores';
+import i18n from '../../../services/i18n';
 
 const formatDate = (date) => {
     const dateObj = new Date(date);
@@ -16,7 +17,17 @@ const formatDate = (date) => {
     return dateObj.toLocaleDateString('default', formatOptions);
 };
 
-const renderTags = (tags) => {
+const renderTags = (tags, trusted) => {
+    if (trusted) {
+        const tagString = `#${i18n.translate('options_filters_filter_trusted_tag')}`;
+        return (
+            <div className="filter__tags">
+                <div className="filter__tag">
+                    {tagString}
+                </div>
+            </div>
+        );
+    }
     if (tags.length <= 0) {
         return '';
     }
@@ -44,7 +55,7 @@ const Filter = ({
 }) => {
     const { settingsStore } = useContext(rootStore);
     const {
-        name, filterId, description, version, timeUpdated, homepage,
+        name, filterId, description, version, timeUpdated, homepage, trusted,
     } = filter;
 
     const removeCustomFilter = async () => {
@@ -72,10 +83,11 @@ const Filter = ({
                         {description}
                     </div>
                     <div className="filter__desc-item">
-                        {`version: ${version} updated: ${formatDate(timeUpdated)}`}
+                        {version ? `version: ${version} ` : ''}
+                        {`updated: ${formatDate(timeUpdated)}`}
                     </div>
                 </div>
-                {renderTags(tags)}
+                {renderTags(tags, trusted)}
                 <Checkbox
                     id={filterId}
                     value={checkboxValue}
