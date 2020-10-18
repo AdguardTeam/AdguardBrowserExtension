@@ -59,7 +59,10 @@ const Filter = ({
     } = filter;
 
     const removeCustomFilter = async () => {
-        await settingsStore.removeCustomFilter(filterId);
+        const result = confirm(i18n.translate('options_delete_filter_confirm'));
+        if (result) {
+            await settingsStore.removeCustomFilter(filterId);
+        }
     };
 
     return (
