@@ -99,11 +99,7 @@ class SettingsStore {
 
     @action
     async updateFilterSetting(id, enabled) {
-        const updatedFilter = await messenger.updateFilterStatus(id, enabled);
-        if (enabled) {
-            console.log('%%%%%% updatedFilter:');
-            console.log(updatedFilter);
-        }
+        await messenger.updateFilterStatus(id, enabled);
         runInAction(() => {
             this.filters.forEach((filter) => {
                 if (filter.filterId === parseInt(id, 10)) {
