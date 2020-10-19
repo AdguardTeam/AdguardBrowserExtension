@@ -18,7 +18,7 @@ const Filters = observer(() => {
         DISABLED: 'disabled',
     };
 
-    const [showFiltersByGroup, setShowFiltersByGroup] = useState(false);
+    const [selectedGroupId, setSelectedGroupId] = useState(null);
     const [searchInput, setSearchInput] = useState('');
     const [searchSelect, setSearchSelect] = useState(SEARCH_FILTERS.ALL);
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -39,7 +39,7 @@ const Filters = observer(() => {
 
     const groupClickHandler = (groupId) => (e) => {
         if (!e.target.closest('.checkbox')) {
-            setShowFiltersByGroup(groupId);
+            setSelectedGroupId(groupId);
         }
     };
 
@@ -80,7 +80,7 @@ const Filters = observer(() => {
     ));
 
     const handleReturnToGroups = () => {
-        setShowFiltersByGroup(false);
+        setSelectedGroupId(null);
     };
 
     // TODO add validation
@@ -103,8 +103,8 @@ const Filters = observer(() => {
         const searchQuery = new RegExp(searchInput, 'ig');
 
         let searchFilters = filters;
-        if (showFiltersByGroup !== false) {
-            searchFilters = filters.filter((filter) => filter.groupId === showFiltersByGroup);
+        if (Number.isInteger(selectedGroupId)) {
+            searchFilters = filters.filter((filter) => filter.groupId === selectedGroupId);
         }
 
         return searchFilters.map((filter) => {
@@ -171,7 +171,7 @@ const Filters = observer(() => {
     };
 
     const renderAddFilterBtn = () => {
-        if (showFiltersByGroup === CUSTOM_FILTERS_GROUP_ID) {
+        if (selectedGroupId === CUSTOM_FILTERS_GROUP_ID) {
             return (
                 <div>
                     <button
@@ -192,10 +192,10 @@ const Filters = observer(() => {
         }
     };
 
-    if (showFiltersByGroup !== false) {
-        const groupFilters = filters.filter((filter) => filter.groupId === showFiltersByGroup);
-        const { groupName } = categories.find((group) => group.groupId === showFiltersByGroup);
-        if (showFiltersByGroup === CUSTOM_FILTERS_GROUP_ID && groupFilters.length === 0) {
+    if (Number.isInteger(selectedGroupId)) {
+        const groupFilters = filters.filter((filter) => filter.groupId === selectedGroupId);
+        const { groupName } = categories.find((group) => group.groupId === selectedGroupId);
+        if (selectedGroupId === CUSTOM_FILTERS_GROUP_ID && groupFilters.length === 0) {
             return (
                 <>
                     <div className="title-btn">
