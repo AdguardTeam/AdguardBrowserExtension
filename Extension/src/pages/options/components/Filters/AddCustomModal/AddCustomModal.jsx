@@ -107,6 +107,7 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
         try {
             await settingsStore.addCustomFilter(filterToAdd);
         } catch (e) {
+            setStepToRender(STEPS.ERROR);
             log.error(e);
         }
         closeModalHandler();
@@ -230,20 +231,20 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
 
     const renderStep = () => {
         switch (stepToRender) {
-        case STEPS.INPUT: {
-            return renderInputStep();
-        }
-        case STEPS.CHECKING: {
-            return renderCheckingStep();
-        }
-        case STEPS.ERROR: {
-            return renderErrorStep();
-        }
-        case STEPS.APPROVE: {
-            return renderApproveStep();
-        }
-        default:
-            throw new Error(`there is no such step: ${stepToRender}`);
+            case STEPS.INPUT: {
+                return renderInputStep();
+            }
+            case STEPS.CHECKING: {
+                return renderCheckingStep();
+            }
+            case STEPS.ERROR: {
+                return renderErrorStep();
+            }
+            case STEPS.APPROVE: {
+                return renderApproveStep();
+            }
+            default:
+                throw new Error(`there is no such step: ${stepToRender}`);
         }
     };
 
