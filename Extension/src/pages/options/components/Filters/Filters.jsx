@@ -194,7 +194,7 @@ const Filters = observer(() => {
 
     if (showFiltersByGroup !== false) {
         const groupFilters = filters.filter((filter) => filter.groupId === showFiltersByGroup);
-        const { groupName } = categories.filter((group) => group.groupId === showFiltersByGroup)[0];
+        const { groupName } = categories.find((group) => group.groupId === showFiltersByGroup)[0];
         if (showFiltersByGroup === CUSTOM_FILTERS_GROUP_ID && groupFilters.length === 0) {
             return (
                 <>

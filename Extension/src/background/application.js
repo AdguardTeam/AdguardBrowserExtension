@@ -121,6 +121,7 @@ export const application = (() => {
             const outdatedFilters = filters.filter(f => (f.lastCheckTime
                 ? Date.now() - f.lastCheckTime > ENABLED_FILTERS_SKIP_TIMEOUT
                 : true)
+                // but always check for updates for custom filters
                 || f.groupId === CUSTOM_FILTERS_GROUP_ID);
 
             if (outdatedFilters.length > 0) {
