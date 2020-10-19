@@ -19,7 +19,6 @@ import { utils } from '../utils/common';
 import { whitelist } from './whitelist';
 import { rulesStorage } from '../storage';
 import { listeners } from '../notifier';
-import { antiBannerService } from './antibanner';
 
 /**
  * Class for manage user rules

@@ -56,16 +56,16 @@ const init = () => {
 
     /**
      * Adds event listener from content page
-     * @param message
+     * @param events
      * @param sender
      */
-    function processAddEventListener(message, sender) {
-        const listenerId = listeners.addSpecifiedListener(message.events, function () {
+    function processAddEventListener(events, sender) {
+        const listenerId = listeners.addSpecifiedListener(events, (...args) => {
             const sender = eventListeners[listenerId];
             if (sender) {
                 tabsApi.sendMessage(sender.tab.tabId, {
                     type: 'notifyListeners',
-                    args: Array.prototype.slice.call(arguments),
+                    data: args,
                 });
             }
         });
@@ -162,8 +162,10 @@ const init = () => {
             case 'unWhiteListFrame':
                 userrules.unWhiteListFrame(message.frameInfo);
                 break;
-            case 'addEventListener':
-                return processAddEventListener(message, sender);
+            case 'createEventListener': {
+                const { events } = data;
+                return processAddEventListener(events, sender);
+            }
             case 'removeListener': {
                 const { listenerId } = message;
                 listeners.removeListener(listenerId);
@@ -226,14 +228,21 @@ const init = () => {
             case 'getUserRules': {
                 const content = await userrules.getUserRulesText();
                 const appVersion = backgroundPage.app.getVersion();
-                return {
-                    content,
-                    appVersion,
-                };
+                return { content, appVersion };
             }
-            case 'saveUserRules':
-                userrules.updateUserRulesText(message.content);
-                break;
+            case 'saveUserRules': {
+                const { value } = data;
+                userrules.updateUserRulesText(value);
+                // We are waiting until request filter is updated
+                return new Promise((resolve) => {
+                    const listenerId = listeners.addListener((event) => {
+                        if (event === listeners.REQUEST_FILTER_UPDATED) {
+                            listeners.removeListener(listenerId);
+                            resolve();
+                        }
+                    });
+                });
+            }
             case 'addUserRule':
                 userrules.addRules([message.ruleText]);
                 break;

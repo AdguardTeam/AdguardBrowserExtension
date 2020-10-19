@@ -11,9 +11,13 @@ export const getExtension = (filename) => {
     return parts[parts.length - 1];
 };
 
-export const uploadFile = (file) => new Promise((resolve, reject) => {
-    if (getExtension(file.name) !== 'json') {
-        reject(new Error(i18n.translate('options_popup_import_settings_wrong_file_extension')));
+export const uploadFile = (file, requiredExtension) => new Promise((resolve, reject) => {
+    if (getExtension(file.name) !== requiredExtension) {
+        // FIXME translation with extension
+        reject(new Error(i18n.translate(
+            'options_popup_import_settings_wrong_file_extension',
+            { extension: requiredExtension },
+        )));
     }
     const reader = new FileReader();
     reader.readAsText(file, 'UTF-8');

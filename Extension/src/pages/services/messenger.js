@@ -1,6 +1,7 @@
 import browser from 'webextension-polyfill';
 // TODO move log to the common directory
 import { log } from '../../background/utils/log';
+import { runtimeImpl } from '../../common/common-script';
 
 class Messenger {
     // eslint-disable-next-line class-methods-use-this
@@ -66,6 +67,48 @@ class Messenger {
         const type = 'resetBlockedAdsCount';
         return this.sendMessage(type);
     }
+
+    async getUserRules() {
+        // TODO use common message types in the constants
+        const type = 'getUserRules';
+        return this.sendMessage(type);
+    }
+
+    async saveUserRules(value) {
+        // TODO use common message types in the constants
+        const type = 'saveUserRules';
+        await this.sendMessage(type, { value });
+    }
+
+    createEventListener = async (events, callback) => {
+        const eventListener = (...args) => {
+            callback(...args);
+        };
+
+        let listenerId;
+        const type = 'createEventListener';
+        listenerId = await this.sendMessage(type, { events });
+
+        browser.runtime.onMessage.addListener((message) => {
+            if (message.type === 'notifyListeners') {
+                const [type, data] = message.data;
+                eventListener({ type, data });
+            }
+        });
+
+        const onUnload = async () => {
+            if (listenerId) {
+                const type = 'removeListener';
+                await this.sendMessage(type, { listenerId });
+                listenerId = null;
+            }
+        };
+
+        window.addEventListener('beforeunload', onUnload);
+        window.addEventListener('unload', onUnload);
+
+        return onUnload;
+    };
 
     async updateFilters(filters) {
         // TODO use common message types in the constants

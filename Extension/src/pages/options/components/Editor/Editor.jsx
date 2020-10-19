@@ -2,46 +2,58 @@ import React from 'react';
 import ReactResizeDetector from 'react-resize-detector';
 import AceEditor from 'react-ace';
 
-import 'brace/ext/searchbox';
-import 'brace/theme/textmate';
+import 'ace-builds/src-noconflict/ext-searchbox';
+import 'ace-builds/src-noconflict/theme-textmate';
 
+import { log } from '../../../../background/utils/log';
 import './mode-adguard';
 
 import './editor.pcss';
 
-function onChange(newValue) {
-    console.log('change', newValue);
-}
+const Editor = ({ name, value, editorRef, shortcuts }) => {
+    const SIZE_STORAGE_KEY = `${name}_editor-size`;
 
-function Editor() {
-    const reactAceComponent = React.createRef();
-
-    const editorStorageSize = localStorage.getItem('editorSize');
-
-    const editorSize = editorStorageSize ? JSON.parse(editorStorageSize) : false;
-
-    const editorStyles = {
-        width: editorSize ? editorSize.width : 'auto',
-        height: editorSize ? editorSize.height : 'auto',
+    const DEFAULT_EDITOR_SIZE = {
+        width: '100%',
+        height: '300px',
     };
 
-    function onResize(width, height) {
-        localStorage.setItem('editorSize', JSON.stringify({ width, height }));
-        reactAceComponent.current.editor.resize();
+    let editorSize = DEFAULT_EDITOR_SIZE;
+
+    const editorStorageSize = localStorage.getItem(SIZE_STORAGE_KEY);
+
+    if (editorStorageSize) {
+        try {
+            editorSize = JSON.parse(editorStorageSize);
+        } catch (e) {
+            editorSize = DEFAULT_EDITOR_SIZE;
+            log.debug(e.message);
+        }
     }
+
+    const editorStyles = {
+        width: editorSize.width,
+        height: editorSize.height,
+    };
+
+    const onResize = (width, height) => {
+        localStorage.setItem(SIZE_STORAGE_KEY, JSON.stringify({ width, height }));
+        editorRef.current.editor.resize();
+    };
 
     return (
         <div style={editorStyles} className="editor">
             <AceEditor
-                ref={reactAceComponent}
+                ref={editorRef}
                 width="100%"
                 height="100%"
                 mode="adguard"
                 theme="textmate"
-                onChange={onChange}
-                name="user-filter"
+                name={name}
                 showPrintMargin={false}
                 editorProps={{ $blockScrolling: true }}
+                value={value}
+                commands={shortcuts}
             />
             <ReactResizeDetector
                 skipOnMount
@@ -51,6 +63,6 @@ function Editor() {
             />
         </div>
     );
-}
+};
 
-export default Editor;
+export { Editor };

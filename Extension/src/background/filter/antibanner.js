@@ -636,7 +636,7 @@ export const antiBannerService = (() => {
 
         await rulesStorage.write(filterId, converted);
 
-        if (filterId === utils.filters.USER_FILTER_ID) {
+        if (Number.parseInt(filterId, 10) === utils.filters.USER_FILTER_ID) {
             listeners.notifyListeners(listeners.UPDATE_USER_FILTER_RULES, getRequestFilterInfo());
         }
     }
