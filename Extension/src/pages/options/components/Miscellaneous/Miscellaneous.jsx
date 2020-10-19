@@ -24,9 +24,9 @@ const Miscellaneous = observer(() => {
     // eslint-disable-next-line max-len
     const OPEN_CHANGELOG_URL = 'https://adguard.com/forward.html?action=github_version_popup&from=version_popup&app=browser_extension';
 
-    const settingChangeHandler = async ({ id, data }) => {
-        log.info(`Setting ${id} set to ${data}`);
-        await settingsStore.updateSetting(id, data);
+    const settingChangeHandler = async ({ id, enabled }) => {
+        log.info(`Setting ${id} set to ${enabled}`);
+        await settingsStore.updateSetting(id, enabled);
     };
 
     const handleFilteringLogClick = async () => {

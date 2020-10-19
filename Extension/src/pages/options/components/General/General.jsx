@@ -79,12 +79,12 @@ const General = observer(() => {
         inputEl.current.click();
     };
 
-    const allowAcceptableAdsChangeHandler = async ({ data }) => {
-        await settingsStore.setAllowAcceptableAdsValue(data);
+    const allowAcceptableAdsChangeHandler = async ({ enabled }) => {
+        await settingsStore.setAllowAcceptableAdsValue(enabled);
     };
 
-    const settingChangeHandler = async ({ id, data }) => {
-        await settingsStore.updateSetting(id, data);
+    const settingChangeHandler = async ({ id, enabled }) => {
+        await settingsStore.updateSetting(id, enabled);
     };
 
     const {
