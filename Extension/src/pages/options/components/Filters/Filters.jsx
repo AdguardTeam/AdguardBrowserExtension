@@ -37,11 +37,8 @@ const Filters = observer(() => {
     };
 
     const groupClickHandler = (groupId) => (e) => {
-        if (e.target && !e.target.type !== 'checkbox') {
-            console.log(e.currentTarget);
+        if (!e.target.closest('.checkbox')) {
             setShowFiltersByGroup(groupId);
-        } else {
-            console.log(e.target.type);
         }
     };
 
