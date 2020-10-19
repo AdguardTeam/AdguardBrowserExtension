@@ -5,7 +5,9 @@ import {
     makeObservable,
 } from 'mobx';
 
+import { log } from '../../../background/utils/log';
 import messenger from '../../services/messenger';
+import { savingRulesService, EVENTS as SAVING_RULES_FSM_EVENTS } from '../components/UserRules/savingRulesFSM';
 
 class SettingsStore {
     @observable settings = null;
@@ -18,9 +20,19 @@ class SettingsStore {
 
     @observable allowAcceptableAds = null;
 
+    @observable userRules = '';
+
+    @observable savingRulesState = savingRulesService.initialState.value;
+
     constructor(rootStore) {
         makeObservable(this);
         this.rootStore = rootStore;
+
+        savingRulesService.onTransition((state) => {
+            runInAction(() => {
+                this.savingRulesState = state.value;
+            });
+        });
     }
 
     @action
@@ -68,6 +80,27 @@ class SettingsStore {
                 this.allowAcceptableAds = prevValue;
             });
         }
+    }
+
+    @action
+    setUserRules = (userRules) => {
+        this.userRules = userRules;
+    }
+
+    @action
+    async getUserRules() {
+        try {
+            const { content } = await messenger.getUserRules();
+            this.setUserRules(content);
+        } catch (e) {
+            log.debug(e);
+        }
+    }
+
+    @action
+    async saveUserRules(value) {
+        this.userRules = value;
+        savingRulesService.send(SAVING_RULES_FSM_EVENTS.SAVE, { value });
     }
 }
 

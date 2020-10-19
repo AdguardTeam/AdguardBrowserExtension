@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 import './about-page.pcss';
-import rootStore from '../../stores';
+import { rootStore } from '../../stores/RootStore';
 import {
     ACKNOWLEDGMENTS_URL,
     EULA_URL,

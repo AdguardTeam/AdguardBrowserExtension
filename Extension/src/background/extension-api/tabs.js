@@ -310,7 +310,7 @@ export const tabsImpl = (function () {
         try {
             await browser.tabs.update(tabId, { url });
         } catch (e) {
-            log.error(e);
+            log.error(new Error(e.message));
         }
     };
 

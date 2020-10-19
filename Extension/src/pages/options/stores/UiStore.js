@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx';
+import { observable, action, makeObservable } from 'mobx';
 import { nanoid } from 'nanoid';
 
 class UiStore {
@@ -6,6 +6,7 @@ class UiStore {
 
     constructor(rootStore) {
         this.rootStore = rootStore;
+        makeObservable(this);
     }
 
     @action
