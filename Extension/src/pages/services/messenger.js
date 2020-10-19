@@ -67,10 +67,10 @@ class Messenger {
         return this.sendMessage(type);
     }
 
-    async updateFilters() {
+    async updateFilters(filters) {
         // TODO use common message types in the constants
         const type = 'checkAntiBannerFiltersUpdate';
-        return this.sendMessage(type);
+        return this.sendMessage(type, { filters });
     }
 
     async updateGroupStatus(id, data) {
@@ -83,7 +83,7 @@ class Messenger {
     async updateFilterStatus(filterId, data) {
         // TODO use common message types in constants;
         const type = data ? 'addAndEnableFilter' : 'disableAntiBannerFilter';
-        await this.sendMessage(type, { filterId });
+        return this.sendMessage(type, { filterId });
     }
 
     async checkCustomUrl(url) {

@@ -99,12 +99,19 @@ class SettingsStore {
 
     @action
     async updateFilterSetting(id, enabled) {
-        await messenger.updateFilterStatus(id, enabled);
+        const updatedFilter = await messenger.updateFilterStatus(id, enabled);
+        if (enabled) {
+            console.log('%%%%%% updatedFilter:');
+            console.log(updatedFilter);
+        }
         runInAction(() => {
             this.filters.forEach((filter) => {
-                if (filter.filterId === id - 0) {
-                    // eslint-disable-next-line no-unused-expressions, no-param-reassign
-                    enabled ? filter.enabled = true : delete filter.enabled;
+                if (filter.filterId === parseInt(id, 10)) {
+                    if (enabled) {
+                        filter.enabled = true;
+                    } else {
+                        delete filter.enabled;
+                    }
                 }
             });
         });
@@ -119,7 +126,7 @@ class SettingsStore {
     async updateFilters() {
         this.setFiltersUpdating(true);
         try {
-            const filtersUpdates = await messenger.updateFilters();
+            const filtersUpdates = await messenger.updateFilters(this.filters);
             this.setFiltersUpdating(false);
             return filtersUpdates;
         } catch (error) {

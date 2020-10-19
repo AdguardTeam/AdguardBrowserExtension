@@ -29,8 +29,15 @@ const customStyles = {
 };
 
 const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
+    const STEPS = {
+        INPUT: 'input',
+        CHECKING: 'checking',
+        APPROVE: 'approve',
+        ERROR: 'error',
+    };
+
     const [customUrlToAdd, setCustomUrlToAdd] = useState('');
-    const [stepToRender, setStepToRender] = useState('input');
+    const [stepToRender, setStepToRender] = useState(STEPS.INPUT);
     const [filterToAdd, setFilterToAdd] = useState({});
 
     const { settingsStore } = useContext(rootStore);
@@ -41,19 +48,19 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
     };
 
     const handleSendUrlToCheck = async () => {
-        setStepToRender('checking');
+        setStepToRender(STEPS.CHECKING);
         let result = {};
         try {
             result = await messenger.checkCustomUrl(customUrlToAdd);
             if (!result.filter) {
-                setStepToRender('error');
+                setStepToRender(STEPS.ERROR);
             } else {
                 setFilterToAdd(result);
-                setStepToRender('approve');
+                setStepToRender(STEPS.APPROVE);
             }
         } catch (e) {
             log.error(e);
-            setStepToRender('error');
+            setStepToRender(STEPS.ERROR);
         }
     };
 
@@ -192,7 +199,7 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
     };
 
     const tryAgainHandler = () => {
-        setStepToRender('input');
+        setStepToRender(STEPS.INPUT);
     };
 
     // TODO [maximtop] here we can show detailed error message than in the current version
@@ -223,16 +230,16 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
 
     const renderStep = () => {
         switch (stepToRender) {
-        case 'input': {
+        case STEPS.INPUT: {
             return renderInputStep();
         }
-        case 'checking': {
+        case STEPS.CHECKING: {
             return renderCheckingStep();
         }
-        case 'error': {
+        case STEPS.ERROR: {
             return renderErrorStep();
         }
-        case 'approve': {
+        case STEPS.APPROVE: {
             return renderApproveStep();
         }
         default:

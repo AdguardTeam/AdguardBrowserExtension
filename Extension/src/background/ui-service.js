@@ -787,6 +787,7 @@ export const uiService = (function () {
             } else if (updatedFilters && updatedFilters.length > 0) {
                 const updatedFilterStr = updatedFilters.map(f => `Filter ID: ${f.filterId}`).join(', ');
                 log.info(`Filters were auto updated: ${updatedFilterStr}`);
+                return updatedFilters;
             }
         } catch (e) {
             if (showPopup) {

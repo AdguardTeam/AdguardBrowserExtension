@@ -179,8 +179,7 @@ const init = () => {
                 return { ready: filteringApi.isReady() };
             case 'addAndEnableFilter': {
                 const { filterId } = data;
-                await application.addAndEnableFilters([filterId]);
-                return;
+                return application.addAndEnableFilters([filterId]);
             }
             case 'disableAntiBannerFilter': {
                 const { filterId, remove } = data;
@@ -241,9 +240,10 @@ const init = () => {
             case 'removeUserRule':
                 userrules.removeRule(message.ruleText);
                 break;
-            case 'checkAntiBannerFiltersUpdate':
-                await uiService.checkFiltersUpdates();
-                break;
+            case 'checkAntiBannerFiltersUpdate': {
+                const { filters } = data;
+                return uiService.checkFiltersUpdates(filters);
+            }
             case 'loadCustomFilterInfo':
                 try {
                     const { url, title } = data;

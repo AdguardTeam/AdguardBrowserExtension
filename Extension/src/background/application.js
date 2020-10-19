@@ -82,6 +82,12 @@ export const application = (() => {
     };
 
     /**
+     * Gets filter data
+     * @param filterId
+     */
+    const getFilterData = (filterId) => subscriptions.getFilters().filter((f) => f.filterId === filterId);
+
+    /**
      * Checks if specified filter is enabled
      *
      * @param filterId Filter identifier
@@ -113,7 +119,8 @@ export const application = (() => {
             // Skip recently downloaded filters
             const outdatedFilters = filters.filter(f => (f.lastCheckTime
                 ? Date.now() - f.lastCheckTime > ENABLED_FILTERS_SKIP_TIMEOUT
-                : true));
+                : true)
+                || f.groupId === 0);
 
             if (outdatedFilters.length > 0) {
                 try {
@@ -322,10 +329,8 @@ export const application = (() => {
         if (!url) {
             throw new Error('No url provided');
         }
-        console.log('%%%1');
         const res = await subscriptions.getCustomFilterInfo(url, options);
-        console.log('%%%2');
-        console.log(res);
+
         if (res?.filter) {
             log.info('Custom filter data downloaded');
             return res;
@@ -347,6 +352,7 @@ export const application = (() => {
         offerFilters,
 
         getEnabledFilters,
+        getFilterData,
 
         isFilterEnabled,
         isFilterInstalled,
