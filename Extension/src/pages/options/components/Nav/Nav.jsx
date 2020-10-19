@@ -15,4 +15,4 @@ const Nav = () => (
     </div>
 );
 
-export default Nav;
+export { Nav };

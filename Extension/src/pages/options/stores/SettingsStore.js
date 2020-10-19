@@ -7,7 +7,7 @@ import {
 } from 'mobx';
 
 import { log } from '../../../background/utils/log';
-import messenger from '../../services/messenger';
+import { messenger } from '../../services';
 import { savingRulesService, EVENTS as SAVING_RULES_FSM_EVENTS } from '../components/UserRules/savingRulesFSM';
 
 class SettingsStore {

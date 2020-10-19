@@ -150,4 +150,4 @@ class Messenger {
 
 const messenger = new Messenger();
 
-export default messenger;
+export { messenger };

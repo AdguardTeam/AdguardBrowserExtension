@@ -51,4 +51,4 @@ FiltersUpdate.propTypes = {
     lastUpdateDate: PropTypes.number,
 };
 
-export default FiltersUpdate;
+export { FiltersUpdate };

@@ -1,9 +1,8 @@
 import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'react-modal';
-import messenger from '../../../../services/messenger';
+import { messenger, i18n } from '../../../../services';
 import { log } from '../../../../../background/utils/log';
-import i18n from '../../../../services/i18n';
 import ModalContentWrapper from '../ModalContentWrapper';
 import { rootStore } from '../../../stores/RootStore';
 
@@ -263,4 +262,4 @@ AddCustomModal.propTypes = {
     modalIsOpen: PropTypes.bool.isRequired,
 };
 
-export default AddCustomModal;
+export { AddCustomModal };

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import Checkbox from '../Settings/Checkbox';
+import { Checkbox } from '../Settings/Checkbox';
 
 const renderEnabledFilters = (enabledFilters) => {
     const enabledFiltersNames = enabledFilters.map((filter) => filter.name);
@@ -72,4 +72,4 @@ Group.propTypes = {
     groupClickHandler: PropTypes.func.isRequired,
 };
 
-export default Group;
+export { Group };

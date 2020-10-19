@@ -49,4 +49,4 @@ Checkbox.propTypes = {
     handler: PropTypes.func.isRequired,
 };
 
-export default Checkbox;
+export { Checkbox };

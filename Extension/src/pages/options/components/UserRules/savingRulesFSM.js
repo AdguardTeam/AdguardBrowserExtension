@@ -1,6 +1,6 @@
 import { interpret, Machine } from 'xstate';
 import { log } from '../../../../background/utils/log';
-import messenger from '../../../services/messenger';
+import { messenger } from '../../../services';
 
 export const STATES = {
     IDLE: 'idle',

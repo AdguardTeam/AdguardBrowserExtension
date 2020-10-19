@@ -1,5 +1,5 @@
 import React from 'react';
-import Checkbox from './Checkbox';
+import { Checkbox } from './Checkbox';
 import Select from './Select';
 import TextInput from './TextInput';
 import Textarea from './Textarea';

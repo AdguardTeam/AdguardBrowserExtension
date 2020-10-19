@@ -79,4 +79,4 @@ const About = observer(() => {
     );
 });
 
-export default About;
+export { About };

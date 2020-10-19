@@ -5,7 +5,7 @@ import SettingsSet from '../Settings/SettingsSet';
 import Setting, { SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { log } from '../../../../background/utils/log';
-import i18n from '../../../services/i18n';
+import { i18n } from '../../../services';
 
 const Stealth = observer(() => {
     const { settingsStore } = useContext(rootStore);
@@ -178,4 +178,4 @@ const Stealth = observer(() => {
     );
 });
 
-export default Stealth;
+export { Stealth };

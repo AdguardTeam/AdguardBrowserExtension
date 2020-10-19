@@ -1,1 +1,1 @@
-export { default } from './AddCustomModal';
+export { AddCustomModal } from './AddCustomModal';

@@ -1,14 +1,14 @@
 import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react';
 import sortBy from 'lodash/sortBy';
-import Group from './Group';
-import Filter from './Filter';
-import EmptyCustom from './EmptyCustom/EmptyCustom';
-import Search from './Search/Search';
-import FiltersUpdate from './FiltersUpdate/FiltersUpdate';
+import { Group } from './Group';
+import { Filter } from './Filter';
+import { EmptyCustom } from './EmptyCustom';
+import { Search } from './Search';
+import { FiltersUpdate } from './FiltersUpdate';
 import { rootStore } from '../../stores/RootStore';
-import i18n from '../../../services/i18n';
-import AddCustomModal from './AddCustomModal';
+import { i18n } from '../../../services';
+import { AddCustomModal } from './AddCustomModal';
 import { CUSTOM_FILTERS_GROUP_ID } from '../../../../common/constants';
 
 const Filters = observer(() => {
@@ -248,4 +248,4 @@ const Filters = observer(() => {
     );
 });
 
-export default Filters;
+export { Filters };

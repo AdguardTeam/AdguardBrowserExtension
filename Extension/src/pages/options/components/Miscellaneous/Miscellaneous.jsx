@@ -3,10 +3,9 @@ import { observer } from 'mobx-react';
 import SettingsSection from '../Settings/SettingsSection';
 import SettingsSet from '../Settings/SettingsSet';
 import Setting, { SETTINGS_TYPES } from '../Settings/Setting';
-import messenger from '../../../services/messenger';
+import { messenger, i18n } from '../../../services';
 import { rootStore } from '../../stores/RootStore';
 import { log } from '../../../../background/utils/log';
-import i18n from '../../../services/i18n';
 
 const Miscellaneous = observer(() => {
     const {
@@ -155,4 +154,4 @@ const Miscellaneous = observer(() => {
     );
 });
 
-export default Miscellaneous;
+export { Miscellaneous };

@@ -1,1 +1,1 @@
-export { default } from './Stealth';
+export { Stealth } from './Stealth';

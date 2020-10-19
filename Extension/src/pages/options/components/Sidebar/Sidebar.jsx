@@ -1,5 +1,5 @@
 import React from 'react';
-import Nav from '../Nav';
+import { Nav } from '../Nav';
 import './sidebar.pcss';
 
 const Sidebar = () => (
@@ -9,4 +9,4 @@ const Sidebar = () => (
     </div>
 );
 
-export default Sidebar;
+export { Sidebar };
