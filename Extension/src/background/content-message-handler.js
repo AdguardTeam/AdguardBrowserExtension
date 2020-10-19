@@ -262,7 +262,7 @@ const init = () => {
                     return {};
                 }
             case 'subscribeToCustomFilter': {
-                const { customUrl, name, trusted } = data.filter.filter;
+                const { customUrl, name, trusted } = data.filter;
                 try {
                     const title = name;
                     const filter = await application.loadCustomFilter(customUrl, { title, trusted });

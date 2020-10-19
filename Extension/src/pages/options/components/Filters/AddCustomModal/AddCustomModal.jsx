@@ -55,7 +55,7 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
             if (!result.filter) {
                 setStepToRender(STEPS.ERROR);
             } else {
-                setFilterToAdd(result);
+                setFilterToAdd(result.filter);
                 setStepToRender(STEPS.APPROVE);
             }
         } catch (e) {
@@ -100,7 +100,7 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
     };
 
     const handleTrustedCheckbox = (event) => {
-        filterToAdd.filter.trusted = !!event.target.checked;
+        filterToAdd.trusted = !!event.target.checked;
     };
 
     const handleApprove = async () => {
@@ -116,7 +116,7 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
     const renderApproveStep = () => {
         const {
             name, description, version, rulesCount, homepage, customUrl,
-        } = filterToAdd.filter;
+        } = filterToAdd;
 
         return (
             <>
