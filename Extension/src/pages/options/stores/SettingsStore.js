@@ -98,8 +98,8 @@ class SettingsStore {
     }
 
     @action
-    // eslint-disable-next-line class-methods-use-this
     async saveUserRules(value) {
+        this.userRules = value;
         savingRulesService.send(SAVING_RULES_FSM_EVENTS.SAVE, { value });
     }
 }

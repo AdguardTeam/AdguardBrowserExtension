@@ -62,8 +62,6 @@ export const antiBannerService = (() => {
         listeners.FILTER_ENABLE_DISABLE,
         listeners.FILTER_GROUP_ENABLE_DISABLE,
         listeners.UPDATE_USER_FILTER_RULES,
-        listeners.ADD_RULES, // TODO why we shouldnt create request filter when rules where added?
-        listeners.REMOVE_RULE, // TODO why we shouldnt create request filter when rules where removed?
     ];
 
     const isUpdateRequestFilterEvent = el => UPDATE_REQUEST_FILTER_EVENTS.indexOf(el.event) >= 0;
@@ -638,7 +636,7 @@ export const antiBannerService = (() => {
 
         await rulesStorage.write(filterId, converted);
 
-        if (filterId === utils.filters.USER_FILTER_ID) {
+        if (Number.parseInt(filterId, 10) === utils.filters.USER_FILTER_ID) {
             listeners.notifyListeners(listeners.UPDATE_USER_FILTER_RULES, getRequestFilterInfo());
         }
     }

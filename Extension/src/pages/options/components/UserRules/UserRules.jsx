@@ -9,7 +9,7 @@ import { STATES as SAVING_RULES_STATES } from './savingRulesFSM';
 
 import './styles.pcss';
 
-// TODO add shortcut for comments
+// TODO add shortcut to wrap lines in comments
 const UserRules = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);
 
