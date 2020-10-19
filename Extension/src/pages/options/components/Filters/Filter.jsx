@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import './filter.pcss';
 import Checkbox from '../Settings/Checkbox';
-import rootStore from '../../stores';
+import { rootStore } from '../../stores/RootStore';
 import i18n from '../../../services/i18n';
 
 const formatDate = (date) => {

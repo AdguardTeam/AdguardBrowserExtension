@@ -6,7 +6,7 @@ import Filter from './Filter';
 import EmptyCustom from './EmptyCustom/EmptyCustom';
 import Search from './Search/Search';
 import FiltersUpdate from './FiltersUpdate/FiltersUpdate';
-import rootStore from '../../stores';
+import { rootStore } from '../../stores/RootStore';
 import i18n from '../../../services/i18n';
 import AddCustomModal from './AddCustomModal';
 import { CUSTOM_FILTERS_GROUP_ID } from '../../../../common/constants';
@@ -110,14 +110,14 @@ const Filters = observer(() => {
         return searchFilters.map((filter) => {
             let searchMod;
             switch (searchSelect) {
-            case SEARCH_FILTERS.ENABLED:
-                searchMod = filter.enabled;
-                break;
-            case SEARCH_FILTERS.DISABLED:
-                searchMod = !filter.enabled;
-                break;
-            default:
-                searchMod = true;
+                case SEARCH_FILTERS.ENABLED:
+                    searchMod = filter.enabled;
+                    break;
+                case SEARCH_FILTERS.DISABLED:
+                    searchMod = !filter.enabled;
+                    break;
+                default:
+                    searchMod = true;
             }
 
             if ((filter.name.match(searchQuery) && searchMod) || searchMod) {
@@ -194,7 +194,7 @@ const Filters = observer(() => {
 
     if (showFiltersByGroup !== false) {
         const groupFilters = filters.filter((filter) => filter.groupId === showFiltersByGroup);
-        const { groupName } = categories.find((group) => group.groupId === showFiltersByGroup)[0];
+        const { groupName } = categories.find((group) => group.groupId === showFiltersByGroup);
         if (showFiltersByGroup === CUSTOM_FILTERS_GROUP_ID && groupFilters.length === 0) {
             return (
                 <>

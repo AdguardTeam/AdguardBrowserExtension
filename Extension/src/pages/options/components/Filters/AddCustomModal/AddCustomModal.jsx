@@ -5,7 +5,7 @@ import messenger from '../../../../services/messenger';
 import { log } from '../../../../../background/utils/log';
 import i18n from '../../../../services/i18n';
 import ModalContentWrapper from '../ModalContentWrapper';
-import rootStore from '../../../stores';
+import { rootStore } from '../../../stores/RootStore';
 
 Modal.setAppElement('#root');
 
