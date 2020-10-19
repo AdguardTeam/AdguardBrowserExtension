@@ -22,6 +22,7 @@ import { utils } from './utils/common';
 import { subscriptions } from './filter/filters/subscription';
 import { filtersUpdate } from './filter/filters/filters-update';
 import { listeners } from './notifier';
+import { CUSTOM_FILTERS_GROUP_ID } from '../common/constants';
 
 /**
  * AdGuard application class
@@ -120,7 +121,7 @@ export const application = (() => {
             const outdatedFilters = filters.filter(f => (f.lastCheckTime
                 ? Date.now() - f.lastCheckTime > ENABLED_FILTERS_SKIP_TIMEOUT
                 : true)
-                || f.groupId === 0);
+                || f.groupId === CUSTOM_FILTERS_GROUP_ID);
 
             if (outdatedFilters.length > 0) {
                 try {

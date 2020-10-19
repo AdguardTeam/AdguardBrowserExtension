@@ -9,6 +9,7 @@ import FiltersUpdate from './FiltersUpdate/FiltersUpdate';
 import rootStore from '../../stores';
 import i18n from '../../../services/i18n';
 import AddCustomModal from './AddCustomModal';
+import { CUSTOM_FILTERS_GROUP_ID } from '../../../../common/constants';
 
 const Filters = observer(() => {
     const SEARCH_FILTERS = {
@@ -100,9 +101,6 @@ const Filters = observer(() => {
 
     const renderSearchResult = () => {
         const searchQuery = new RegExp(searchInput, 'ig');
-        // const searchFilters = showFiltersByGroup !== false
-        //     ? filters.filter((filter) => filter.groupId === showFiltersByGroup)
-        //     : filters;
 
         let searchFilters = filters;
         if (showFiltersByGroup !== false) {
@@ -173,7 +171,7 @@ const Filters = observer(() => {
     };
 
     const renderAddFilterBtn = () => {
-        if (showFiltersByGroup === 0) {
+        if (showFiltersByGroup === CUSTOM_FILTERS_GROUP_ID) {
             return (
                 <div>
                     <button
@@ -197,7 +195,7 @@ const Filters = observer(() => {
     if (showFiltersByGroup !== false) {
         const groupFilters = filters.filter((filter) => filter.groupId === showFiltersByGroup);
         const { groupName } = categories.filter((group) => group.groupId === showFiltersByGroup)[0];
-        if (showFiltersByGroup === 0 && groupFilters.length === 0) {
+        if (showFiltersByGroup === CUSTOM_FILTERS_GROUP_ID && groupFilters.length === 0) {
             return (
                 <>
                     <div className="title-btn">

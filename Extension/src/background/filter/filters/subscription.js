@@ -25,6 +25,7 @@ import { utils } from '../../utils/common';
 import { localScriptRulesService } from '../rules/local-script-rules';
 import { redirectService } from '../services/redirect-service';
 import { browserUtils } from '../../utils/browser-utils';
+import { CUSTOM_FILTERS_GROUP_ID } from '../../../common/constants';
 
 /**
  * Service that loads and parses filters metadata from backend server.
@@ -32,13 +33,6 @@ import { browserUtils } from '../../utils/browser-utils';
  * In future we'll add an opportunity to update metadata along with filter rules update.
  */
 export const subscriptions = (() => {
-    /**
-     * Custom filters group identifier
-     *
-     * @type {number}
-     */
-    const CUSTOM_FILTERS_GROUP_ID = 0;
-
     /**
      * Custom filters group display number
      *
