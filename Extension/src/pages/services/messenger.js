@@ -10,7 +10,6 @@ class Messenger {
         if (data) {
             log.debug('Request data:', data);
         }
-
         const response = await browser.runtime.sendMessage({
             type,
             data,
@@ -126,9 +125,7 @@ class Messenger {
     async updateFilterStatus(filterId, data) {
         // TODO use common message types in constants;
         const type = data ? 'addAndEnableFilter' : 'disableAntiBannerFilter';
-        const filters = await this.sendMessage(type, { filterId });
-        console.log('%%%%% filters came to frontend: ');
-        console.log(filters);
+        await this.sendMessage(type, { filterId });
     }
 
     async checkCustomUrl(url) {

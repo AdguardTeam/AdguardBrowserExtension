@@ -9,6 +9,7 @@ import {
 import { log } from '../../../background/utils/log';
 import { messenger } from '../../services';
 import { savingRulesService, EVENTS as SAVING_RULES_FSM_EVENTS } from '../components/UserRules/savingRulesFSM';
+import { listeners } from '../../../background/notifier';
 
 class SettingsStore {
     @observable settings = null;
@@ -109,16 +110,26 @@ class SettingsStore {
         });
     }
 
+    refreshFilters(data) {
+        console.log(data);
+    }
+
     @action
     async updateFilterSetting(id, enabled) {
-        await messenger.updateFilterStatus(id, enabled);
+        await messenger.createEventListener(listeners.FILTERS_UPDATE_CHECK_READY, this.refreshFilters);
+        const filter = this.filters.find((f) => f.filterId === id);
+        await this.updateFilters([filter]);
+        // await messenger.updateFilterStatus(id, enabled);
+        // if (enabled) {
+        //     await this.updateFilters();
+        // }
         runInAction(() => {
-            this.filters.forEach((filter) => {
-                if (filter.filterId === parseInt(id, 10)) {
+            this.filters.forEach((f) => {
+                if (f.filterId === parseInt(id, 10)) {
                     if (enabled) {
-                        filter.enabled = true;
-                    } else {
-                        delete filter.enabled;
+                        f.enabled = true;
+                    } else {x
+                        delete f.enabled;
                     }
                 }
             });
@@ -131,10 +142,13 @@ class SettingsStore {
     }
 
     @action
-    async updateFilters() {
+    async updateFilters(filters) {
         this.setFiltersUpdating(true);
         try {
-            const filtersUpdates = await messenger.updateFilters(this.filters);
+            if (!filters || !filters.length) {
+                filters = this.filters;
+            }
+            const filtersUpdates = await messenger.updateFilters(filters);
             this.setFiltersUpdating(false);
             return filtersUpdates;
         } catch (error) {
