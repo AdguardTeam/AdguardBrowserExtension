@@ -75,7 +75,7 @@ export const whitelist = (() => {
     };
 
     function notifyWhitelistUpdated() {
-        listeners.notifyListeners(listeners.UPDATE_WHITELIST_FILTER_RULES);
+        listeners.notifyListeners(listeners.UPDATE_ALLOWLIST_FILTER_RULES);
     }
 
     /**

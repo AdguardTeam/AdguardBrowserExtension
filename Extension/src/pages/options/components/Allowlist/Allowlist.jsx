@@ -11,26 +11,25 @@ import { uploadFile } from '../../../helpers';
 import { log } from '../../../../background/utils/log';
 import { STATES as SAVING_STATES } from '../Editor/savingFSM';
 
-// TODO SHOULD WE CHANGE WHITELIST TO ALLOWLIST?
-const Whitelist = observer(() => {
+const Allowlist = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);
 
     useEffect(() => {
         (async () => {
-            await settingsStore.getWhitelist();
+            await settingsStore.getAllowlist();
         })();
     }, []);
 
     const editorRef = useRef(null);
     const inputRef = useRef(null);
 
-    const { settings, savingWhitelistState } = settingsStore;
+    const { settings, savingAllowlistState } = settingsStore;
 
     const { DEFAULT_WHITE_LIST_MODE } = settings.names;
 
     const settingChangeHandler = async ({ id, data }) => {
         await settingsStore.updateSetting(id, data);
-        await settingsStore.getWhitelist();
+        await settingsStore.getAllowlist();
     };
 
     const importClickHandler = (e) => {
@@ -48,7 +47,7 @@ const Whitelist = observer(() => {
 
         try {
             const content = await uploadFile(file, 'txt');
-            await settingsStore.saveWhitelist(content);
+            await settingsStore.saveAllowlist(content);
         } catch (e) {
             log.debug(e.message);
             uiStore.addNotification({ description: e.message });
@@ -84,7 +83,7 @@ const Whitelist = observer(() => {
 
     const saveClickHandler = async () => {
         const value = editorRef.current.editor.getValue();
-        await settingsStore.saveWhitelist(value);
+        await settingsStore.saveAllowlist(value);
     };
 
     const shortcuts = [{
@@ -99,15 +98,15 @@ const Whitelist = observer(() => {
     return (
         <>
             <h2 className="title">
-                Whitelist
+                Allowlist
             </h2>
             <div className="desc">
-                AdGuard does not filter websites from the whitelist.
+                AdGuard does not filter websites from the allowlist.
             </div>
             <SettingsSection>
                 <SettingsSet
-                    title="Invert whitelist"
-                    description="Unblock ads everywhere except for the whitelist"
+                    title="Invert allowlist"
+                    description="Unblock ads everywhere except for the allowlist"
                 >
                     <Setting
                         id={DEFAULT_WHITE_LIST_MODE}
@@ -119,8 +118,8 @@ const Whitelist = observer(() => {
                 </SettingsSet>
             </SettingsSection>
             <Editor
-                name="whitelist"
-                value={settingsStore.whitelist}
+                name="allowlist"
+                value={settingsStore.allowlist}
                 editorRef={editorRef}
                 shortcuts={shortcuts}
             />
@@ -149,7 +148,7 @@ const Whitelist = observer(() => {
                     </button>
                 </div>
                 <div className="actions__group">
-                    {renderSavingState(savingWhitelistState)}
+                    {renderSavingState(savingAllowlistState)}
                     <button
                         type="button"
                         className="button button--m button--green actions__btn"
@@ -163,4 +162,4 @@ const Whitelist = observer(() => {
     );
 });
 
-export { Whitelist };
+export { Allowlist };

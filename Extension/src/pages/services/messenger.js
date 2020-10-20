@@ -109,12 +109,12 @@ class Messenger {
         await this.sendMessage(type, { value });
     }
 
-    async getWhitelist() {
+    async getAllowlist() {
         const type = 'getWhitelistDomains';
         return this.sendMessage(type);
     }
 
-    async saveWhitelist(value) {
+    async saveAllowlist(value) {
         // TODO use common message types in the constants
         const type = 'saveWhitelistDomains';
         await this.sendMessage(type, { value });

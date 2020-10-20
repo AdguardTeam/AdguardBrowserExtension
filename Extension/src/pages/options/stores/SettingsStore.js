@@ -21,16 +21,16 @@ const savingUserRulesService = createSavingService({
 });
 
 const savingWhitelistService = createSavingService({
-    id: 'whitelist',
+    id: 'allowlist',
     services: {
         saveData: async (_, e) => {
             /**
-             * If saveWhitelist executes faster than MIN_EXECUTION_TIME_REQUIRED_MS we increase
+             * If saveAllowlist executes faster than MIN_EXECUTION_TIME_REQUIRED_MS we increase
              * execution time for smoother user experience
              */
             const MIN_EXECUTION_TIME_REQUIRED_MS = 500;
             const start = Date.now();
-            await messenger.saveWhitelist(e.value);
+            await messenger.saveAllowlist(e.value);
             const end = Date.now();
             const timePassed = end - start;
             if (timePassed < MIN_EXECUTION_TIME_REQUIRED_MS) {
@@ -53,11 +53,11 @@ class SettingsStore {
 
     @observable userRules = '';
 
-    @observable whitelist = '';
+    @observable allowlist = '';
 
     @observable savingRulesState = savingUserRulesService.initialState.value;
 
-    @observable savingWhitelistState = savingWhitelistService.initialState.value;
+    @observable savingAllowlistState = savingWhitelistService.initialState.value;
 
     constructor(rootStore) {
         makeObservable(this);
@@ -71,7 +71,7 @@ class SettingsStore {
 
         savingWhitelistService.onTransition((state) => {
             runInAction(() => {
-                this.savingWhitelistState = state.value;
+                this.savingAllowlistState = state.value;
             });
         });
     }
@@ -145,16 +145,16 @@ class SettingsStore {
     }
 
     @action
-    setWhitelist = (whitelist) => {
-        this.whitelist = whitelist;
+    setAllowlist = (allowlist) => {
+        this.allowlist = allowlist;
     }
 
     @action
-    async getWhitelist() {
+    async getAllowlist() {
         try {
-            const { content } = await messenger.getWhitelist();
+            const { content } = await messenger.getAllowlist();
             runInAction(() => {
-                this.whitelist = content;
+                this.allowlist = content;
             });
         } catch (e) {
             log.debug(e);
@@ -162,9 +162,9 @@ class SettingsStore {
     }
 
     @action
-    saveWhitelist = (whitelist) => {
-        this.whitelist = whitelist;
-        savingWhitelistService.send(SAVING_FSM_EVENTS.SAVE, { value: whitelist });
+    saveAllowlist = (allowlist) => {
+        this.allowlist = allowlist;
+        savingWhitelistService.send(SAVING_FSM_EVENTS.SAVE, { value: allowlist });
     }
 }
 

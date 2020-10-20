@@ -506,7 +506,7 @@ const webrequestInit = function () {
             case listeners.ADD_RULES:
             case listeners.REMOVE_RULE:
             case listeners.UPDATE_FILTER_RULES:
-            case listeners.UPDATE_WHITELIST_FILTER_RULES:
+            case listeners.UPDATE_ALLOWLIST_FILTER_RULES:
             case listeners.FILTER_ENABLE_DISABLE:
                 if (handlerBehaviorTimeout !== null) {
                     clearTimeout(handlerBehaviorTimeout);

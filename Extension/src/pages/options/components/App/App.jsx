@@ -10,7 +10,7 @@ import General from '../General';
 import Sidebar from '../Sidebar/Sidebar';
 import Filters from '../Filters';
 import Stealth from '../Stealth';
-import { Whitelist } from '../Whitelist';
+import { Allowlist } from '../Allowlist';
 import { UserRules } from '../UserRules';
 import Miscellaneous from '../Miscellaneous';
 import About from '../About';
@@ -32,11 +32,11 @@ const App = observer(() => {
 
             // TODO put constants in common directory
             const REQUEST_FILTER_UPDATED = 'event.request.filter.updated';
-            const UPDATE_WHITELIST_FILTER_RULES = 'event.update.whitelist.filter.rules';
+            const UPDATE_ALLOWLIST_FILTER_RULES = 'event.update.allowlist.filter.rules';
 
             const events = [
                 REQUEST_FILTER_UPDATED,
-                UPDATE_WHITELIST_FILTER_RULES,
+                UPDATE_ALLOWLIST_FILTER_RULES,
             ];
 
             removeListenerCallback = await messenger.createEventListener(
@@ -49,8 +49,8 @@ const App = observer(() => {
                             await settingsStore.getUserRules();
                             break;
                         }
-                        case UPDATE_WHITELIST_FILTER_RULES: {
-                            await settingsStore.getWhitelist();
+                        case UPDATE_ALLOWLIST_FILTER_RULES: {
+                            await settingsStore.getAllowlist();
                             break;
                         }
                         default: {
@@ -80,7 +80,7 @@ const App = observer(() => {
                         <Route path="/" exact component={General} />
                         <Route path="/filters" component={Filters} />
                         <Route path="/stealth" component={Stealth} />
-                        <Route path="/whitelist" component={Whitelist} />
+                        <Route path="/allowlist" component={Allowlist} />
                         <Route path="/user-filter" component={UserRules} />
                         <Route path="/miscellaneous" component={Miscellaneous} />
                         <Route path="/about" component={About} />
