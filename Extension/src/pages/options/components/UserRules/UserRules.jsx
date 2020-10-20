@@ -1,11 +1,14 @@
+/* eslint-disable react/jsx-no-target-blank */
 import React, { useContext, useEffect, useRef } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
+
 import { rootStore } from '../../stores/RootStore';
 import { Editor } from '../Editor';
 import { uploadFile } from '../../../helpers';
 import { log } from '../../../../background/utils/log';
 import { STATES as SAVING_STATES } from '../Editor/savingFSM';
+import { reactTranslator } from '../../../reactCommon/reactTranslator';
 
 import './styles.pcss';
 
@@ -21,8 +24,8 @@ const UserRules = observer(() => {
     const renderSavingState = () => {
         const indicatorTextMap = {
             [SAVING_STATES.IDLE]: '',
-            [SAVING_STATES.SAVED]: 'Saved',
-            [SAVING_STATES.SAVING]: 'Saving...',
+            [SAVING_STATES.SAVED]: reactTranslator.translate('options_editor_indicator_saved'),
+            [SAVING_STATES.SAVING]: reactTranslator.translate('options_editor_indicator_saving'),
         };
 
         const indicatorText = indicatorTextMap[savingRulesState];
@@ -87,23 +90,21 @@ const UserRules = observer(() => {
         })();
     }, []);
 
-    // TODO fix translations
     return (
         <>
-            <h2 className="title">User rules</h2>
+            <h2 className="title">{reactTranslator.translate('options_userfilter')}</h2>
             <div className="desc">
-                You can add your own rules here. This option is recommended for advanced users familiar
-                with HTML/CSS. Read the
-                {' '}
-                <a
-                    className="desc--link"
-                    href="https://adguard.com/forward.html?action=userfilter_description&from=options&app=browser_extension"
-                >
-                    filter
-                    rules tutorial
-                </a>
-                {' '}
-                to learn how to write your own filter rules.
+                {reactTranslator.translate('options_userfilter_description', {
+                    a: (chunks) => (
+                        <a
+                            className="desc--link"
+                            href="https://adguard.com/forward.html?action=userfilter_description&from=options&app=browser_extension"
+                            target="_blank"
+                        >
+                            {chunks}
+                        </a>
+                    ),
+                })}
             </div>
             <Editor
                 name="user-rules"
@@ -125,14 +126,14 @@ const UserRules = observer(() => {
                         className="button button--m button--green actions__btn"
                         onClick={importClickHandler}
                     >
-                        Import
+                        {reactTranslator.translate('options_userfilter_import')}
                     </button>
                     <button
                         type="button"
                         className="button button--m button--green-bd actions__btn"
                         onClick={exportClickHandler}
                     >
-                        Export
+                        {reactTranslator.translate('options_userfilter_export')}
                     </button>
                 </div>
                 <div className="actions__group">
@@ -142,7 +143,7 @@ const UserRules = observer(() => {
                         className="button button--m button--green actions__btn"
                         onClick={saveClickHandler}
                     >
-                        Save
+                        {reactTranslator.translate('options_editor_save')}
                     </button>
                 </div>
             </div>
