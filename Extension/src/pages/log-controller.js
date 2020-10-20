@@ -26,7 +26,7 @@ let filtersMetadata;
 
 const Messages = {
     OPTIONS_USERFILTER: i18n.getMessage('options_userfilter'),
-    OPTIONS_WHITELIST: i18n.getMessage('options_whitelist'),
+    OPTIONS_WHITELIST: i18n.getMessage('options_allowlist'),
     IN_WHITELIST: i18n.getMessage('filtering_log_in_whitelist'),
 };
 

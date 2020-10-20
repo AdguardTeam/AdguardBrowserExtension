@@ -32,9 +32,9 @@ const Nav = () => (
         <NavLink
             className="nav__item"
             activeClassName="nav__item--active"
-            to="/whitelist"
+            to="/allowlist"
         >
-            {reactTranslator.translate('options_whitelist')}
+            {reactTranslator.translate('options_allowlist')}
         </NavLink>
         <NavLink
             className="nav__item"
