@@ -30,4 +30,4 @@ Textarea.propTypes = {
     handler: PropTypes.func.isRequired,
 };
 
-export default Textarea;
+export { Textarea };

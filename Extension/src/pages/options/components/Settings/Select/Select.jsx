@@ -37,4 +37,4 @@ Select.propTypes = {
     value: PropTypes.number.isRequired,
 };
 
-export default Select;
+export { Select };

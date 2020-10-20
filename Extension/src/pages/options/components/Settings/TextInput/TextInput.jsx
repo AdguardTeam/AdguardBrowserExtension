@@ -33,4 +33,4 @@ TextInput.propTypes = {
     handler: PropTypes.func.isRequired,
 };
 
-export default TextInput;
+export { TextInput };
