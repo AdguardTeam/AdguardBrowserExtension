@@ -91,7 +91,7 @@ const Filters = observer(() => {
 
     const searchCloseHandler = () => {
         setSearchInput('');
-        setSearchSelect('all');
+        setSearchSelect(SEARCH_FILTERS.ALL);
     };
 
     const searchSelectHandler = (e) => {
@@ -120,7 +120,7 @@ const Filters = observer(() => {
                     searchMod = true;
             }
 
-            if ((filter.name.match(searchQuery) && searchMod) || searchMod) {
+            if (filter.name.match(searchQuery) && searchMod) {
                 return (
                     <Filter
                         key={filter.filterId}
@@ -192,6 +192,9 @@ const Filters = observer(() => {
         }
     };
 
+    // search by input data or by enabled/disabled filters
+    const isSearching = searchInput || searchSelect !== SEARCH_FILTERS.ALL;
+
     if (Number.isInteger(selectedGroupId)) {
         const groupFilters = filters.filter((filter) => filter.groupId === selectedGroupId);
         const { groupName } = categories.find((group) => group.groupId === selectedGroupId);
@@ -223,7 +226,7 @@ const Filters = observer(() => {
                 {renderSearch()}
                 <div>
                     {
-                        searchInput || searchSelect !== SEARCH_FILTERS.ALL
+                        isSearching
                             ? renderSearchResult()
                             : filters && renderFilters(groupFilters)
                     }
@@ -240,7 +243,7 @@ const Filters = observer(() => {
             </div>
             {renderSearch()}
             {
-                searchInput || searchSelect !== SEARCH_FILTERS.ALL
+                isSearching
                     ? renderSearchResult()
                     : categories && renderGroups(categories)
             }
