@@ -7,7 +7,7 @@ import {
 } from 'mobx';
 
 import { log } from '../../../background/utils/log';
-import { messenger } from '../../services';
+import { messenger } from '../../services/messenger';
 import { savingRulesService, EVENTS as SAVING_RULES_FSM_EVENTS } from '../components/UserRules/savingRulesFSM';
 import { listeners } from '../../../background/notifier';
 
@@ -128,7 +128,7 @@ class SettingsStore {
                 if (f.filterId === parseInt(id, 10)) {
                     if (enabled) {
                         f.enabled = true;
-                    } else {x
+                    } else {
                         delete f.enabled;
                     }
                 }

@@ -1,7 +1,8 @@
 import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'react-modal';
-import { messenger, i18n } from '../../../../services';
+import { messenger } from '../../../../services/messenger';
+import { i18n } from '../../../../services/i18n';
 import { log } from '../../../../../background/utils/log';
 import ModalContentWrapper from '../ModalContentWrapper';
 import { rootStore } from '../../../stores/RootStore';

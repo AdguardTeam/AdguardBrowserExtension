@@ -18,7 +18,7 @@ import { Footer } from '../Footer';
 
 import { rootStore } from '../../stores/RootStore';
 import { Notifications } from '../Notifications';
-import { messenger } from '../../../services';
+import { messenger } from '../../../services/messenger';
 import { log } from '../../../../background/utils/log';
 
 const App = observer(() => {

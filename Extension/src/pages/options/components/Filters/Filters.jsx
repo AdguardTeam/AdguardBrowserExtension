@@ -7,7 +7,7 @@ import { EmptyCustom } from './EmptyCustom';
 import { Search } from './Search';
 import { FiltersUpdate } from './FiltersUpdate';
 import { rootStore } from '../../stores/RootStore';
-import { i18n } from '../../../services';
+import { i18n } from '../../../services/i18n';
 import { AddCustomModal } from './AddCustomModal';
 import { CUSTOM_FILTERS_GROUP_ID } from '../../../../common/constants';
 

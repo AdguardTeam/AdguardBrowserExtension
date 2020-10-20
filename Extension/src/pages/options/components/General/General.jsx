@@ -4,7 +4,8 @@ import SettingsSection from '../Settings/SettingsSection';
 import SettingsSet from '../Settings/SettingsSet';
 import Setting, { SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
-import { i18n, messenger } from '../../../services';
+import { messenger } from '../../../services/messenger';
+import { i18n } from '../../../services/i18n';
 import { hoursToMs, uploadFile } from '../../../helpers';
 
 const filtersUpdatePeriodOptions = [

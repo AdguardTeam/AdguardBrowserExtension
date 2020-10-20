@@ -1,7 +1,7 @@
 import React from 'react';
 import './footer.pcss';
 import { FORUM_URL, GITHUB_URL, WEBSITE_URL } from '../../../constants';
-import { i18n } from '../../../services';
+import { i18n } from '../../../services/i18n';
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();

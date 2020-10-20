@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AddCustomModal } from '../AddCustomModal';
-import { i18n } from '../../../../services';
+import { i18n } from '../../../../services/i18n';
 import './empty-custom.pcss';
 
 const EmptyCustom = () => {

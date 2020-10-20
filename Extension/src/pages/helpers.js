@@ -1,4 +1,4 @@
-import { i18n } from './services';
+import { i18n } from './services/i18n';
 
 export const getExtension = (filename) => {
     if (!filename) {
