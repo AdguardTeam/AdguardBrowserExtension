@@ -20,7 +20,7 @@ const savingUserRulesService = createSavingService({
     },
 });
 
-const savingWhitelistService = createSavingService({
+const savingAllowlistService = createSavingService({
     id: 'allowlist',
     services: {
         saveData: async (_, e) => {
@@ -57,7 +57,7 @@ class SettingsStore {
 
     @observable savingRulesState = savingUserRulesService.initialState.value;
 
-    @observable savingAllowlistState = savingWhitelistService.initialState.value;
+    @observable savingAllowlistState = savingAllowlistService.initialState.value;
 
     constructor(rootStore) {
         makeObservable(this);
@@ -69,7 +69,7 @@ class SettingsStore {
             });
         });
 
-        savingWhitelistService.onTransition((state) => {
+        savingAllowlistService.onTransition((state) => {
             runInAction(() => {
                 this.savingAllowlistState = state.value;
             });
@@ -164,7 +164,7 @@ class SettingsStore {
     @action
     saveAllowlist = (allowlist) => {
         this.allowlist = allowlist;
-        savingWhitelistService.send(SAVING_FSM_EVENTS.SAVE, { value: allowlist });
+        savingAllowlistService.send(SAVING_FSM_EVENTS.SAVE, { value: allowlist });
     }
 }
 
