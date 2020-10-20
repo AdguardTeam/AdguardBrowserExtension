@@ -5,7 +5,7 @@ import { rootStore } from '../../stores/RootStore';
 import { Editor } from '../Editor';
 import { uploadFile } from '../../../helpers';
 import { log } from '../../../../background/utils/log';
-import { STATES as SAVING_RULES_STATES } from '../Editor/savingFSM';
+import { STATES as SAVING_STATES } from '../Editor/savingFSM';
 
 import './styles.pcss';
 
@@ -20,19 +20,19 @@ const UserRules = observer(() => {
 
     const renderSavingState = () => {
         const indicatorTextMap = {
-            [SAVING_RULES_STATES.IDLE]: '',
-            [SAVING_RULES_STATES.SAVED]: 'Saved',
-            [SAVING_RULES_STATES.SAVING]: 'Saving...',
+            [SAVING_STATES.IDLE]: '',
+            [SAVING_STATES.SAVED]: 'Saved',
+            [SAVING_STATES.SAVING]: 'Saving...',
         };
 
         const indicatorText = indicatorTextMap[savingRulesState];
 
-        if (savingRulesState === SAVING_RULES_STATES.IDLE) {
+        if (savingRulesState === SAVING_STATES.IDLE) {
             return null;
         }
 
         const indicatorClassnames = classnames('editor__label', {
-            'editor__label--saved': savingRulesState === SAVING_RULES_STATES.SAVED,
+            'editor__label--saved': savingRulesState === SAVING_STATES.SAVED,
         });
 
         return (
