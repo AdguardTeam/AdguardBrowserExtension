@@ -126,7 +126,9 @@ class Messenger {
     async updateFilterStatus(filterId, data) {
         // TODO use common message types in constants;
         const type = data ? 'addAndEnableFilter' : 'disableAntiBannerFilter';
-        return this.sendMessage(type, { filterId });
+        const filters = await this.sendMessage(type, { filterId });
+        console.log('%%%%% filters came to frontend: ');
+        console.log(filters);
     }
 
     async checkCustomUrl(url) {
