@@ -35,27 +35,29 @@ const Group = ({
     checkboxHandler,
     checkboxValue,
 }) => (
-    <div className="setting" role="presentation" onClick={groupClickHandler}>
-        <div className={
-            classNames(
-                'setting__icon',
-                `setting__icon--${groupName.toLowerCase().split(' ')[0]}`,
-            )
-        }
-        />
-        <div className="setting__info">
-            <div className="setting__title">
-                {groupName}
-            </div>
-            <div className="setting__desc">
-                {renderEnabledFilters(enabledFilters)}
-            </div>
-            <Checkbox
-                id={groupId}
-                handler={checkboxHandler}
-                value={checkboxValue}
+    <div className="setting">
+        <div className="setting__area" role="presentation" onClick={groupClickHandler}>
+            <div className={
+                classNames(
+                    'setting__icon',
+                    `setting__icon--${groupName.toLowerCase().split(' ')[0]}`,
+                )
+            }
             />
+            <div className="setting__info">
+                <div className="setting__title">
+                    {groupName}
+                </div>
+                <div className="setting__desc">
+                    {renderEnabledFilters(enabledFilters)}
+                </div>
+            </div>
         </div>
+        <Checkbox
+            id={groupId}
+            handler={checkboxHandler}
+            value={checkboxValue}
+        />
     </div>
 );
 

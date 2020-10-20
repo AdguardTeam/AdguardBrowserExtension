@@ -37,10 +37,8 @@ const Filters = observer(() => {
         await settingsStore.updateGroupSetting(id, enabled);
     };
 
-    const groupClickHandler = (groupId) => (e) => {
-        if (!e.target.closest('.checkbox')) {
-            setSelectedGroupId(groupId);
-        }
+    const groupClickHandler = (groupId) => () => {
+        setSelectedGroupId(groupId);
     };
 
     const getEnabledFiltersByGroup = (group) => (
