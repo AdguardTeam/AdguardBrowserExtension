@@ -30,10 +30,13 @@ const App = observer(() => {
         (async () => {
             await settingsStore.requestOptionsData();
 
+            // TODO put constants in common directory
             const REQUEST_FILTER_UPDATED = 'event.request.filter.updated';
+            const UPDATE_WHITELIST_FILTER_RULES = 'event.update.whitelist.filter.rules';
 
             const events = [
                 REQUEST_FILTER_UPDATED,
+                UPDATE_WHITELIST_FILTER_RULES,
             ];
 
             removeListenerCallback = await messenger.createEventListener(
@@ -44,6 +47,10 @@ const App = observer(() => {
                     switch (type) {
                         case REQUEST_FILTER_UPDATED: {
                             await settingsStore.getUserRules();
+                            break;
+                        }
+                        case UPDATE_WHITELIST_FILTER_RULES: {
+                            await settingsStore.getWhitelist();
                             break;
                         }
                         default: {

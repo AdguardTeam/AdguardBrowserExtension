@@ -72,10 +72,10 @@ export const userrules = (function () {
         return content;
     };
 
-    const unWhiteListFrame = function (frameInfo) {
+    const unWhitelistFrame = function (frameInfo) {
         if (frameInfo.frameRule) {
             if (frameInfo.frameRule.filterId === utils.filters.WHITE_LIST_FILTER_ID) {
-                whitelist.unWhiteListUrl(frameInfo.url);
+                whitelist.unWhitelistUrl(frameInfo.url);
             } else {
                 removeRule(frameInfo.frameRule.ruleText);
             }
@@ -88,6 +88,6 @@ export const userrules = (function () {
         removeRule,
         updateUserRulesText,
         getUserRulesText,
-        unWhiteListFrame,
+        unWhitelistFrame,
     };
 })();

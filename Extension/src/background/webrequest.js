@@ -122,7 +122,7 @@ const webrequestInit = function () {
              * Binds rule to the main_frame request
              * In integration mode, rule from the headers will override this value
              */
-            const tabRequestRule = frames.getFrameWhiteListRule(tab);
+            const tabRequestRule = frames.getFrameWhitelistRule(tab);
             if (tabRequestRule) {
                 requestContextStorage.update(requestId, { requestRule: tabRequestRule });
             }
@@ -310,7 +310,7 @@ const webrequestInit = function () {
      */
     async function filterSafebrowsing(tab, mainFrameUrl) {
         if (frames.isTabProtectionDisabled(tab)
-            || frames.isTabWhiteListedForSafebrowsing(tab)) {
+            || frames.isTabWhitelistedForSafebrowsing(tab)) {
             return;
         }
 

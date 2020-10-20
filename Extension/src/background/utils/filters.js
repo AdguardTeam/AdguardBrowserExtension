@@ -23,7 +23,7 @@ export const filters = (() => {
             return rule.getFilterListId() === AntiBannerFiltersId.USER_FILTER_ID;
         },
 
-        isWhiteListFilterRule(rule) {
+        isWhitelistFilterRule(rule) {
             return rule.getFilterListId() === AntiBannerFiltersId.WHITE_LIST_FILTER_ID;
         },
     };

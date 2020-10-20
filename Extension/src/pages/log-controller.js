@@ -348,7 +348,7 @@ const RequestWizard = (function () {
         ruleImportantCheckbox.setAttribute('id', 'ruleImportant');
         ruleImportantCheckbox.parentNode.querySelector('label').setAttribute('for', 'ruleImportant');
         if (filteringEvent.requestRule
-            && (filteringEvent.requestRule.whiteListRule || filteringEvent.requestRule.isImportant)) {
+            && (filteringEvent.requestRule.whitelistRule || filteringEvent.requestRule.isImportant)) {
             ruleImportantCheckbox.setAttribute('checked', 'checked');
         }
 
@@ -739,7 +739,7 @@ const RequestWizard = (function () {
         const openRequestButton = template.querySelector('#openRequestNewTab');
         const blockRequestButton = template.querySelector('#blockRequest');
         const unblockRequestButton = template.querySelector('#unblockRequest');
-        const removeWhiteListDomainButton = template.querySelector('#removeWhiteListDomain');
+        const removeWhitelistDomainButton = template.querySelector('#removeWhitelistDomain');
         const removeUserFilterRuleButton = template.querySelector('#removeUserFilterRule');
 
         openRequestButton.addEventListener('click', (e) => {
@@ -770,9 +770,9 @@ const RequestWizard = (function () {
             showCreateExceptionRuleModal(frameInfo, filteringEvent);
         });
 
-        removeWhiteListDomainButton.addEventListener('click', (e) => {
+        removeWhitelistDomainButton.addEventListener('click', (e) => {
             e.preventDefault();
-            contentPage.sendMessage({ type: 'unWhiteListFrame', frameInfo });
+            contentPage.sendMessage({ type: 'unWhitelistFrame', frameInfo });
             closeModal();
         });
 
@@ -790,14 +790,14 @@ const RequestWizard = (function () {
             blockRequestButton.classList.remove('hidden');
         } else if (requestRule.filterId === AntiBannerFiltersId.USER_FILTER_ID) {
             removeUserFilterRuleButton.classList.remove('hidden');
-            if (requestRule.whiteListRule) {
+            if (requestRule.whitelistRule) {
                 blockRequestButton.classList.remove('hidden');
             }
         } else if (requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
-            removeWhiteListDomainButton.classList.remove('hidden');
-        } else if (!requestRule.whiteListRule) {
+            removeWhitelistDomainButton.classList.remove('hidden');
+        } else if (!requestRule.whitelistRule) {
             unblockRequestButton.classList.remove('hidden');
-        } else if (requestRule.whiteListRule) {
+        } else if (requestRule.whitelistRule) {
             blockRequestButton.classList.remove('hidden');
         }
 
@@ -1218,7 +1218,7 @@ PageController.prototype = {
         }
 
         if (event.requestRule && !event.replaceRules) {
-            if (event.requestRule.whiteListRule) {
+            if (event.requestRule.whitelistRule) {
                 metadata.class += ' green';
             } else if (event.requestRule.cssRule || event.requestRule.scriptRule || event.removeParam) {
                 metadata.class += ' yellow';
@@ -1307,8 +1307,8 @@ PageController.prototype = {
         show &= this.searchTypes.length === 0 || this.searchTypes.indexOf(filterData.requestType) >= 0;
 
         let checkboxes = true;
-        checkboxes &= !this.searchWhitelisted || (filterData.requestRule && filterData.requestRule.whiteListRule);
-        checkboxes &= !this.searchBlocked || (filterData.requestRule && !filterData.requestRule.whiteListRule);
+        checkboxes &= !this.searchWhitelisted || (filterData.requestRule && filterData.requestRule.whitelistRule);
+        checkboxes &= !this.searchBlocked || (filterData.requestRule && !filterData.requestRule.whitelistRule);
         checkboxes &= !this.searchThirdParty || filterData.requestThirdParty;
         show &= !(this.searchWhitelisted || this.searchBlocked || this.searchThirdParty) || checkboxes;
 

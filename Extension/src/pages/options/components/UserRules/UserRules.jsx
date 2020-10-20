@@ -5,7 +5,7 @@ import { rootStore } from '../../stores/RootStore';
 import { Editor } from '../Editor';
 import { uploadFile } from '../../../helpers';
 import { log } from '../../../../background/utils/log';
-import { STATES as SAVING_RULES_STATES } from './savingRulesFSM';
+import { STATES as SAVING_RULES_STATES } from '../Editor/savingFSM';
 
 import './styles.pcss';
 

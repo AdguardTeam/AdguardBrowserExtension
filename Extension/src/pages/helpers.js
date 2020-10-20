@@ -34,3 +34,14 @@ export const hoursToMs = (hours) => {
     const MS_IN_HOUR = 1000 * 60 * 60;
     return hours * MS_IN_HOUR;
 };
+
+/**
+ * Awaits required period of time
+ * @param timeoutMs
+ * @returns {Promise<unknown>}
+ */
+export const sleep = (timeoutMs) => {
+    return new Promise(resolve => {
+        setTimeout(resolve, timeoutMs);
+    });
+};

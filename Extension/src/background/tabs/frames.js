@@ -133,17 +133,17 @@ export const frames = (function () {
      * @param tab Tab
      * @returns true if Tab have white list rule
      */
-    const isTabWhiteListed = function (tab) {
-        const frameWhiteListRule = tabsApi.getTabMetadata(tab.tabId, 'frameWhiteListRule');
-        return frameWhiteListRule && frameWhiteListRule.isDocumentWhitelistRule();
+    const isTabWhitelisted = function (tab) {
+        const frameWhitelistRule = tabsApi.getTabMetadata(tab.tabId, 'frameWhitelistRule');
+        return frameWhitelistRule && frameWhitelistRule.isDocumentWhitelistRule();
     };
 
     /**
      * @param tab Tab
      * @returns true if Tab have white list rule and white list isn't invert
      */
-    const isTabWhiteListedForSafebrowsing = function (tab) {
-        return isTabWhiteListed(tab) && whitelist.isDefaultMode();
+    const isTabWhitelistedForSafebrowsing = function (tab) {
+        return isTabWhitelisted(tab) && whitelist.isDefaultMode();
     };
 
     /**
@@ -160,18 +160,18 @@ export const frames = (function () {
      * @param tab Tab
      * @returns true if Adguard for Windows/Android/Mac is detected and tab in white list
      */
-    const isTabAdguardWhiteListed = function (tab) {
-        return tabsApi.getTabMetadata(tab.tabId, 'adguardDocumentWhiteListed');
+    const isTabAdguardWhitelisted = function (tab) {
+        return tabsApi.getTabMetadata(tab.tabId, 'adguardDocumentWhitelisted');
     };
 
     /**
      * @param tab   Tab
      * @returns Adguard whitelist rule in user filter associated with this tab
      */
-    const getTabAdguardUserWhiteListRule = function (tab) {
-        const adguardUserWhiteListed = tabsApi.getTabMetadata(tab.tabId, 'adguardUserWhiteListed');
-        if (adguardUserWhiteListed) {
-            return tabsApi.getTabMetadata(tab.tabId, 'adguardWhiteListRule');
+    const getTabAdguardUserWhitelistRule = function (tab) {
+        const adguardUserWhitelisted = tabsApi.getTabMetadata(tab.tabId, 'adguardUserWhitelisted');
+        if (adguardUserWhitelisted) {
+            return tabsApi.getTabMetadata(tab.tabId, 'adguardWhitelistRule');
         }
         return null;
     };
@@ -181,8 +181,8 @@ export const frames = (function () {
      * @param tab Tab to check
      * @returns whitelist rule applied to that tab (if any)
      */
-    const getFrameWhiteListRule = function (tab) {
-        return tabsApi.getTabMetadata(tab.tabId, 'frameWhiteListRule');
+    const getFrameWhitelistRule = function (tab) {
+        return tabsApi.getTabMetadata(tab.tabId, 'frameWhitelistRule');
     };
 
     /**
@@ -194,16 +194,16 @@ export const frames = (function () {
         const frame = tabsApi.getTabFrame(tab.tabId, 0);
         if (frame) {
             const applicationFilteringDisabled = settings.isFilteringDisabled();
-            let frameWhiteListRule = null;
+            let frameWhitelistRule = null;
             if (!applicationFilteringDisabled) {
                 const { url } = frame;
-                frameWhiteListRule = whitelist.findWhiteListRule(url);
-                if (!frameWhiteListRule) {
-                    frameWhiteListRule = filteringApi.findWhiteListRule(url, url, RequestTypes.DOCUMENT);
+                frameWhitelistRule = whitelist.findWhitelistRule(url);
+                if (!frameWhitelistRule) {
+                    frameWhitelistRule = filteringApi.findWhitelistRule(url, url, RequestTypes.DOCUMENT);
                 }
             }
             tabsApi.updateTabMetadata(tab.tabId, {
-                frameWhiteListRule,
+                frameWhitelistRule,
                 applicationFilteringDisabled,
             });
         }
@@ -241,8 +241,8 @@ export const frames = (function () {
         // application is available for tabs where url is with http schema
         // and when localstorage is initialized
         const applicationAvailable = localStorageInitialized && !urlFilteringDisabled;
-        let documentWhiteListed = false;
-        let userWhiteListed = false;
+        let documentWhitelisted = false;
+        let userWhitelisted = false;
         let canAddRemoveRule = false;
         let frameRule;
 
@@ -253,10 +253,10 @@ export const frames = (function () {
         const applicationFilteringDisabled = settings.isFilteringDisabled();
 
         if (applicationAvailable) {
-            documentWhiteListed = isTabWhiteListed(tab);
-            if (documentWhiteListed) {
-                const rule = getFrameWhiteListRule(tab);
-                userWhiteListed = utils.filters.isWhiteListFilterRule(rule)
+            documentWhitelisted = isTabWhitelisted(tab);
+            if (documentWhitelisted) {
+                const rule = getFrameWhitelistRule(tab);
+                userWhitelisted = utils.filters.isWhitelistFilterRule(rule)
                         || utils.filters.isUserFilterRule(rule);
                 frameRule = {
                     filterId: rule.getFilterListId(),
@@ -264,7 +264,7 @@ export const frames = (function () {
                 };
             }
             // It means site in exception
-            canAddRemoveRule = !(documentWhiteListed && !userWhiteListed);
+            canAddRemoveRule = !(documentWhitelisted && !userWhitelisted);
         }
 
         const domainName = getFrameDomain(tab);
@@ -275,8 +275,8 @@ export const frames = (function () {
             domainName,
             applicationFilteringDisabled,
             urlFilteringDisabled,
-            documentWhiteListed,
-            userWhiteListed,
+            documentWhitelisted,
+            userWhitelisted,
             canAddRemoveRule,
             frameRule,
             adguardProductName,
@@ -326,7 +326,7 @@ export const frames = (function () {
      * @param {object} tab
      * @returns {boolean}
      */
-    const shouldStopRequestProcess = tab => isTabProtectionDisabled(tab) || isTabWhiteListed(tab);
+    const shouldStopRequestProcess = tab => isTabProtectionDisabled(tab) || isTabWhitelisted(tab);
 
     // Records frames on application initialization
     listeners.addListener((event) => {
@@ -342,12 +342,12 @@ export const frames = (function () {
         getFrameUrl,
         getMainFrameUrl,
         getFrameDomain,
-        isTabWhiteListed,
-        isTabWhiteListedForSafebrowsing,
+        isTabWhitelisted,
+        isTabWhitelistedForSafebrowsing,
         isTabProtectionDisabled,
-        isTabAdguardWhiteListed,
-        getTabAdguardUserWhiteListRule,
-        getFrameWhiteListRule,
+        isTabAdguardWhitelisted,
+        getTabAdguardUserWhitelistRule,
+        getFrameWhitelistRule,
         reloadFrameData,
         recordFrameReferrerHeader,
         getFrameInfo,

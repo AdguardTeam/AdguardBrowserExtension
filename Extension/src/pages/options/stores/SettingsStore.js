@@ -7,7 +7,38 @@ import {
 
 import { log } from '../../../background/utils/log';
 import messenger from '../../services/messenger';
-import { savingRulesService, EVENTS as SAVING_RULES_FSM_EVENTS } from '../components/UserRules/savingRulesFSM';
+import {
+    EVENTS as SAVING_FSM_EVENTS,
+    createSavingService,
+} from '../components/Editor/savingFSM';
+import { sleep } from '../../helpers';
+
+const savingUserRulesService = createSavingService({
+    id: 'userRules',
+    services: {
+        saveData: (_, e) => messenger.saveUserRules(e.value),
+    },
+});
+
+const savingWhitelistService = createSavingService({
+    id: 'whitelist',
+    services: {
+        saveData: async (_, e) => {
+            /**
+             * If saveWhitelist executes faster than MIN_EXECUTION_TIME_REQUIRED_MS we increase
+             * execution time for smoother user experience
+             */
+            const MIN_EXECUTION_TIME_REQUIRED_MS = 500;
+            const start = Date.now();
+            await messenger.saveWhitelist(e.value);
+            const end = Date.now();
+            const timePassed = end - start;
+            if (timePassed < MIN_EXECUTION_TIME_REQUIRED_MS) {
+                await sleep(MIN_EXECUTION_TIME_REQUIRED_MS - timePassed);
+            }
+        },
+    },
+});
 
 class SettingsStore {
     @observable settings = null;
@@ -22,15 +53,25 @@ class SettingsStore {
 
     @observable userRules = '';
 
-    @observable savingRulesState = savingRulesService.initialState.value;
+    @observable whitelist = '';
+
+    @observable savingRulesState = savingUserRulesService.initialState.value;
+
+    @observable savingWhitelistState = savingWhitelistService.initialState.value;
 
     constructor(rootStore) {
         makeObservable(this);
         this.rootStore = rootStore;
 
-        savingRulesService.onTransition((state) => {
+        savingUserRulesService.onTransition((state) => {
             runInAction(() => {
                 this.savingRulesState = state.value;
+            });
+        });
+
+        savingWhitelistService.onTransition((state) => {
+            runInAction(() => {
+                this.savingWhitelistState = state.value;
             });
         });
     }
@@ -100,7 +141,30 @@ class SettingsStore {
     @action
     async saveUserRules(value) {
         this.userRules = value;
-        savingRulesService.send(SAVING_RULES_FSM_EVENTS.SAVE, { value });
+        savingUserRulesService.send(SAVING_FSM_EVENTS.SAVE, { value });
+    }
+
+    @action
+    setWhitelist = (whitelist) => {
+        this.whitelist = whitelist;
+    }
+
+    @action
+    async getWhitelist() {
+        try {
+            const { content } = await messenger.getWhitelist();
+            runInAction(() => {
+                this.whitelist = content;
+            });
+        } catch (e) {
+            log.debug(e);
+        }
+    }
+
+    @action
+    saveWhitelist = (whitelist) => {
+        this.whitelist = whitelist;
+        savingWhitelistService.send(SAVING_FSM_EVENTS.SAVE, { value: whitelist });
     }
 }
 

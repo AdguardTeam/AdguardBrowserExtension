@@ -97,13 +97,13 @@ export const adguardApi = (function () {
 
         let domains;
         if (configuration.blacklist) {
-            whitelist.changeDefaultWhiteListMode(false);
+            whitelist.changeDefaultWhitelistMode(false);
             domains = configuration.blacklist;
         } else {
-            whitelist.changeDefaultWhiteListMode(true);
+            whitelist.changeDefaultWhitelistMode(true);
             domains = configuration.whitelist;
         }
-        whitelist.updateWhiteListDomains(domains || []);
+        whitelist.updateWhitelistDomains(domains || []);
     }
 
     /**
