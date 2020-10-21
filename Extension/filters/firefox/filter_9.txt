@@ -1,11 +1,11 @@
-! Checksum: 2PVgUZPsiQXO910/iPHOBQ
+! Checksum: sWufJKaB5W4pL3hiPwM5Zg
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish and Portuguese languages.
-! Version: 2.0.6.92
-! TimeUpdated: 2020-08-10T23:32:06+03:00
+! Version: 2.0.7.38
+! TimeUpdated: 2020-10-20T16:04:20+03:00
 ! Expires: 4 days (update frequency)
-! Homepage: http://adguard.com/filters.html#spanish
-! License: http://creativecommons.org/licenses/by-sa/3.0/
+! Homepage: https://github.com/AdguardTeam/AdGuardFilters
+! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
 !
 !---------------------------------------------------------------------------!
 !-------------- General JS API ---------------------------------------------!
@@ -83,6 +83,7 @@
 ! https://forum.adguard.com/index.php?threads/ivoox-com-podcasts-issues.29530/
 ! ||addevweb.com^$third-party
 !
+||pregnancydiscreditbee.com^$third-party
 ||adsrv.eacdn.com^$third-party
 ||videoo.tv^$third-party
 ||eru5tdmbuwxm.com^
@@ -273,6 +274,31 @@ tunovelaligera.com#@#.AdSense
 tunovelaligera.com#@#iframe[width="728"][height="90"]
 tunovelaligera.com#@#img[width="728"][height="90"]
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/65937
+animetw.xyz#@#.afs_ads
+! https://github.com/AdguardTeam/AdguardFilters/issues/65649
+applesfera.com,bebesymas.com,compradiccion.com,diariodelviajero.com,directoalpaladar.com,elblogsalmon.com,espinof.com,genbeta.com,motorpasion.com,motorpasionmoto.com,pymesyautonomos.com,trendencias.com,trendenciashombre.com,vidaextra.com,vitonica.com,xataka.com,xatakaciencia.com,xatakafoto.com,xatakahome.com,xatakamovil.com,xatakandroid.com,xatakawindows.com#%#//scriptlet("set-constant", "WSL2.config.enableAdblockEcommerce", "0")
+! https://github.com/AdguardTeam/AdguardFilters/issues/65579
+docero.com.br#$?#iframe#doublebillboard-1 { remove: true; }
+docero.com.br#%#//scriptlet("set-constant", "ads_unblocked", "true")
+! https://github.com/AdguardTeam/AdguardFilters/issues/64208
+@@||tags.premiumads.com.br/ads/advertisement.js$domain=outerspace.com.br
+outerspace.com.br#%#//scriptlet("abort-on-property-read", "ppAdblocks")
+! https://github.com/AdguardTeam/AdguardFilters/issues/63889
+||googletagmanager.com/gtm.js$domain=lapatilla.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/64046
+@@||assistiranime.biz/css/adsplay.css
+@@||assistiranime.biz/player/jwp/*?
+! https://github.com/AdguardTeam/AdguardFilters/issues/63856
+@@||animeshd.online/css/adsplay.css
+@@||animeshd.online/jwp/*?
+! https://github.com/AdguardTeam/AdguardFilters/issues/63149
+formulatv.com#%#//scriptlet("abort-current-inline-script", "checkAds")
+@@||ecartelera.com/js/gpt.js
+ecartelera.com#%#//scriptlet("abort-current-inline-script", "$", "Adblock")
+! https://github.com/AdguardTeam/AdguardFilters/issues/61476
+animeshouse.net#@#.afs_ads
+@@||arnett-frz.ml/popads.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/60205
 meuwindows.com#%#//scriptlet("abort-on-property-write", "ai_front")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/60999
@@ -316,7 +342,7 @@ lacapital.com.ar###prestitial_layer
 anicchan.net#@#afs_ads
 @@||anicchan.net/popad/popads.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/54366
-@@||tunovelaligera.com/wp-content/plugins/holaNodeJS/js/ads1.min.js
+@@||tunovelaligera.com/wp-content/plugins/*/js/ads*.min.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/54450
 mangahost.site#%#//scriptlet("set-constant", "kkwoiNI", "noopFunc")
 mangahost.site#%#//scriptlet("set-constant", "yUIlOsT", "noopFunc")
@@ -362,7 +388,7 @@ minhasdelicias.com#%#//scriptlet("set-constant", "canRunAds", "true")
 @@||mastercoria.com/js/ad_serve.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/47555
 !+ PLATFORM(windows, mac, android, ext_chromium, ext_ff, ext_opera)
-||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$empty,important,domain=profesor10demates.com
+||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$script,redirect=noopjs,important,domain=profesor10demates.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/58375
 ! https://github.com/AdguardTeam/AdguardFilters/issues/47337
 @@||anitube.*/*advert*.js
@@ -422,7 +448,7 @@ radiotormentamx.com#$##adsdiv  { position: absolute!important; left: -3000px!imp
 @@||radiotormentamx.com/images/*.jpg#
 @@.png#$domain=radiotormentamx.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/34267
-||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$empty,important,domain=g1novelas.online
+||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$script,redirect=noopjs,important,domain=g1novelas.online
 ! https://github.com/AdguardTeam/AdguardFilters/issues/34221
 iptvvall.com#$#div#ad { position: absolute!important; left: -3000px!important; }
 @@||iptvvall.com^$generichide
@@ -445,7 +471,7 @@ despistaos.es#@#.adsbygoogle
 despistaos.es#$#.adsbygoogle { display: block!important; position: absolute!important; left: -3000px!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/33432
 !+ NOT_PLATFORM(ios, ext_android_cb, ext_safari, ext_ublock)
-||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$empty,important,domain=tabonitobrasil.video
+||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$script,redirect=noopjs,important,domain=tabonitobrasil.video
 ! https://github.com/AdguardTeam/AdguardFilters/issues/32595
 animesonline.cz#@#.afs_ads
 ! https://github.com/AdguardTeam/AdguardFilters/issues/32516
@@ -476,11 +502,11 @@ animeshouse.net#@#.afs_ads
 ! https://github.com/AdguardTeam/AdguardFilters/issues/32439
 ||buenamusica.com/js/noadsblock.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/32132
-||static.criteo.net/js/px.js?ch=$empty,important,domain=jovempan.uol.com.br
-||cas.criteo.com/delivery/ajs.php$empty,important,domain=jovempan.uol.com.br
+||static.criteo.net/js/px.js?ch=$redirect=nooptext,important,domain=jovempan.uol.com.br
+||cas.criteo.com/delivery/ajs.php$redirect=nooptext,important,domain=jovempan.uol.com.br
 ||jacksonburghomosassa.lampeleoti.com^$domain=jovempan.uol.com.br
 ! https://github.com/AdguardTeam/AdguardFilters/issues/32170
-||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$empty,important,domain=g1novelas.org
+||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$script,redirect=noopjs,important,domain=g1novelas.org
 ! https://github.com/AdguardTeam/AdguardFilters/issues/31876
 @@||eldaryasolutiongame.blogspot.com^$generichide
 @@.jpg#$domain=eldaryasolutiongame.blogspot.com
@@ -501,8 +527,8 @@ anitube.cz#@#.afs_ads
 @@||animesonline.cz^$~third-party,script
 @@||anitube.cz/*advert*.js
 @@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=anitube.cz|animesonline.cz
-||cdn.adtrue.com/rtb/async.js$empty,important,domain=anitube.cz|animesonline.cz
-||cdn.onesignal.com/sdks/OneSignalSDK.js$empty,important,domain=anitube.cz|animesonline.cz
+||cdn.adtrue.com/rtb/async.js$script,redirect=noopjs,important,domain=anitube.cz|animesonline.cz
+||cdn.onesignal.com/sdks/OneSignalSDK.js$script,redirect=noopjs,important,domain=anitube.cz|animesonline.cz
 ||anitube.cz^$replace=/window\.location\.href = "https:\/\/anitube\.cz\/adblock\.php";//,~script,~stylesheet,~xmlhttprequest
 ||animesonline.cz^$replace=/window\.location\.href = "https:\/\/www\.animesonline\.cz\/adblock\.php";//,~script,~stylesheet,~xmlhttprequest
 !+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_safari, ext_ublock)
@@ -587,7 +613,7 @@ pokyun.tv#@#.afs_ads
 ! https://github.com/AdguardTeam/AdguardFilters/issues/57518
 ! https://github.com/AdguardTeam/AdguardFilters/issues/25455
 mundodonghua.com#%#//scriptlet("prevent-setTimeout", "/Tamamo_Blocker|aadb_recheck/")
-@@||mundodonghua.com/*banner.gif?$domain=mundodonghua.com
+@@||mundodonghua.com/*banner.gif
 @@||mundodonghua.com/js/adsbygoogle.js
 mundodonghua.com#%#window.loadingAds = true;
 ! https://github.com/AdguardTeam/AdguardFilters/issues/25057
@@ -817,8 +843,6 @@ animeflv.net#%#window.loadingAds = true;
 !+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
 @@||parasitipedia.net^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/15842
-! https://github.com/AdguardTeam/AdguardFilters/issues/15333
-@@||static.vodgc.net/player/*/showads.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/15404
 @@||fantasy.li^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/15630
@@ -951,7 +975,6 @@ universoformulas.com#%#window.UFads = true;
 @@||novelasd.com^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/33396
 ! https://github.com/AdguardTeam/AdguardFilters/issues/11279
-@@||playview.io/themes/pv/js/showads.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/11255
 @@||nmn900.com/js/adsbygoogle.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/11045
@@ -1027,9 +1050,8 @@ letras.mus.br#%#window.canAds = true;
 ||skidrow-games.com/wp-content/plugins/pause-adblocker/inc/pause-front.js
 ! https://forum.adguard.com/index.php?threads/25793/
 @@||adshort.co/js/ads.js
-! https://github.com/AdguardTeam/AdguardFilters/issues/6881
-muyinteresante.es#%#window.ads = true;
-@@||estaticos.muyinteresante.es/js/ads.js
+! https://github.com/AdguardTeam/AdguardFilters/issues/65422
+@@||adservice.google.es/adsid/integrator.js$domain=muyinteresante.es
 ! https://forum.adguard.com/index.php?threads/25538/
 !+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
 @@||latinohentai.com^$generichide
@@ -1061,7 +1083,6 @@ lne.es#%#window.pr_okAd = true;
 ! https://forum.adguard.com/index.php?threads/24933/
 @@||seriesgato.com^$generichide
 ! https://forum.adguard.com/index.php?threads/24934/
-@@||animextre.me/js/showads.js
 @@||animextre.me/js/fuckadblock.js
 ! https://forum.adguard.com/index.php?threads/iptvbin.24706/
 @@||iptvbin.com^$generichide
@@ -1221,6 +1242,9 @@ jokerfansub.com#@##adsense
 ! https://github.com/AdguardTeam/AdguardFilters/issues/24801
 yahoo.com#?#ul[class^="Mb(0)"] > li.js-stream-content:has(> div > a[rel="nofollow noopener noreferrer"]+div:contains(Patrocinado))
 !
+animetw.net#?#.container > h2.section__header:has(> span:contains(/^ANUNCIOS$/))
+forum.politz.com.br#?#.p-sidebar-inner > div.block:has(> div > h3:contains(/Patrocínio|Publicidade/))
+forum.politz.com.br#?#.p-body-inner > div.block:has(> div > h3:contains(/Patrocínio|Publicidade/))
 fcporto.ws#?#.uix_sidebarInner div.widget_text:has(> div.widget_text h3:contains(Publicidade))
 economiasc.com#?#.sidebar > div.widget:has(> div.section-heading > span:contains(Publicidade))
 correiobraziliense.com.br#?#div[data-tb-region-item]:has(> div.news-box > a > span > strong > em:contains(conteúdo patrocinado))
@@ -1372,6 +1396,8 @@ maisgasolina.com#?##main [id$="Block"][-ext-has='.adsbygoogle']
 !------- JS rules ---------------------!
 !--------------------------------------!
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/61966
+lectulandia.eu#%#//scriptlet("adjust-setTimeout", "redirect", "11000", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/60106
 compartiendofull.net#%#//scriptlet("remove-attr", "href", ".leaving-message center > a.btn[onclick^='window.open'][href*='/ads.html']")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/59587
@@ -1511,7 +1537,7 @@ shortn-me.com#%#(function() { window.open_ = window.open; var w_open = window.op
 ! https://forum.adguard.com/index.php?threads/identi-li-pop-up.27296/
 identi.li#%#AG_abortOnPropertyRead('Identili');
 identi.li#%#document.cookie = "ads_accepted=1; path=/";
-removedor.net#%#(function() { window.open_ = window.open; var w_open = window.open, regex = /removedor\.net\/index\.php\?redirect=/; window.open = function(a, b) { if (typeof a !== 'string' || !regex.test(a)) { w_open(a, b); } }; })();$
+removedor.net#%#(function() { window.open_ = window.open; var w_open = window.open, regex = /removedor\.net\/index\.php\?redirect=/; window.open = function(a, b) { if (typeof a !== 'string' || !regex.test(a)) { w_open(a, b); } }; })();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/7559
 !+ NOT_PLATFORM(windows, mac, android)
 animalog.biz#%#window.open = function() {};
@@ -1526,6 +1552,10 @@ repelis.net#%#Object.defineProperty(window,'adbClick',{value:function(){}});
 !------- CSS fixes --------------------!
 !--------------------------------------!
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/63149
+formulatv.com#$#.col-anu + div.col-cnt > div.columna { width: 34% !important; }
+! https://github.com/AdguardTeam/AdguardFilters/issues/62906
+tecnoblog.net#$#body #fullbanner-container { height: 1px !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/58103
 expressodaspraias.com.br#$#.gafancybox-overlay { display: none!important; }
 expressodaspraias.com.br#$#html { overflow: visible !important; }
@@ -1704,6 +1734,43 @@ http://adw.
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
 !
+! For URL shorteners or simple sites with frequently changed ad servers.
+! Incorrectly blocked domains can be excluded usig regex
+/^(?!.*(google\.com|gstatic\.com|googleapis\.com|recaptcha\.net|cdn\.ampproject\.org|fluidplayer\.com|facebook\.net|fbcdn\.net|cloudflare\.com|ebacdn\.com|vk\.com|jquery\.com|jsdelivr\.net|yastatic\.net|yandex\.net|ytimg\.com|fontawesome\.com|dmca\.com|disqus\.com|twitter\.com|vidazoo\.com|disquscdn\.com|jwpcdn\.com|shrink\.pe|zencdn\.net|unpkg\.com|github\.io|ulogin\.ru|jwplatform\.com|bootstrapcdn\.com|player)).*$/$third-party,script,domain=thepiratefilmestorrent.biz
+!
+||animetw.net/js/atag.js
+||animetw.xyz/asset/bann.js
+noticiasaominuto.com,noticiasaominuto.com.br##.pub-container
+trendencias.com,vidaextra.com##.sticky-sidebar-container .m-desvio-ecommerce
+tuhentaionline.com###nuevo_publi
+||tuhentaionline.com/publi/
+tuhentaionline.com##iframe[src^="https://www.tuhentaionline.com/publi/"]
+wikicharlie.cl###mw-panel > .advertisements
+forodecostarica.com##div[class^="contenedorPublicidad"]
+tn.com.ar##div[id^="parent-arcAds-"]
+letras.mus.br##.cnt-space-top
+letras.mus.br##div[id^="pub_"]
+hipertextual.com##.wrapperBanner
+||cdn.romanews.com.br/upload/dn_banner/
+||app.upee.online/ad/
+criptonizando.com##.adupee
+formulatv.com##.col-anu
+folhaonline.es##div[class^="angwp_"]
+zdescargas.org##center > a[href][target="_blank"]
+gazetadopovo.com.br##div[class^="box-ads-header"]
+emedemujer.com##.box-intext-ad
+||thepiratefilmestorrent.uk/random.js
+tecmundo.com.br##.tec--ad
+lectulandia.eu###rightPromo
+lectulandia.eu##a[href^="https://lectulandia.eu/descarga-"]
+canalporno.com##.publis-bottom
+canalporno.com##div[class^="right-player-"]
+verpornocomic.com###sidebar > #custom_html-2
+verpornocomic.com##iframe[src^="https://a.adtng.com/"]
+chochox.com##.adsGeek
+||chochox.com/wp-content/uploads/*/RealPornStar.$media
+||chochox.com/wp-content/uploads/*/ProjectQTCandleGirl.$media
+||chochox.com/wp-content/uploads/*/BootyFarmHarley.$media
 ||taxofcnym.com.ar/wp-content/cache/*/plus/bg.htm
 taxofcnym.com.ar##.wallpaper
 animesvision.biz###sidebar > .discord-image > center > a[href^="https://bit.ly/"][target="_blank"] > img
@@ -1785,7 +1852,7 @@ pornocarioca.com##.list > #postnativesingle
 xnalgas.com##.container > .native
 xnalgas.com##.sectionWrapper > .container > .media.sidebar.visible-lg
 adslayuda.com##body ins.adsbygoogle
-colegialasreales.com##.happy-inside-player
+xvideos-español.com,colegialasreales.com##.happy-inside-player
 download3k.es###dl_google_1
 followmanga.com##.jumbotron
 niusdiario.es##div[class^="cards__card_ad-"]
@@ -1832,7 +1899,6 @@ terra.com.br###advRuller2--wrapper
 luchaonline.com##.Anuncios
 13.cl##.center-banner
 online-dvdrip.com##.mvic-btn > a.btn-successful[target="_blank"]
-onyxplay.com###ad
 ||hoy21.com^$domain=animeflv.net
 repelisplus.vip###adxx
 ||descargaranimehentai.com/unrmnewzpt.php
@@ -2811,7 +2877,7 @@ infobolsa.es##.Web_Banner
 animeflv.net,animeid.com##.a160
 animeflv.net##.a300x250
 animeflv.net,animeid.com##.a728
-xatakandroid.com,abril.com.br##.ad
+xataka.com,onyxplay.com,genbeta.com,vagalume.com.br,xatakandroid.com,abril.com.br##.ad
 letras.mus.br##.ad-full
 telecinco.es##.ad-top
 ondacero.es##.adContainer1
@@ -3600,6 +3666,12 @@ urlcloud.us##.banner
 !
 ! White list. Fixing filtration errors (false-positive)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/65425
+@@||img.wikicharlie.cl^$~third-party
+! https://github.com/AdguardTeam/AdguardFilters/issues/63720
+@@||laprovincia.es/elementosWeb/*/multimedia/player/videojs-contrib-ads/videojs.ads.min.js
+! https://github.com/AdguardTeam/AdguardFilters/issues/62524
+charmingescortsamsterdam.com#@#.bannerBox
 ! https://github.com/AdguardTeam/AdguardFilters/issues/61205
 @@||sascdn.com/diff/video/current/libs/js/controller.js$domain=ubeat.tv
 ! https://github.com/AdguardTeam/AdguardFilters/issues/59034
