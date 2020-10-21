@@ -207,6 +207,7 @@ const init = () => {
                 const { groupId } = data;
                 categories.disableFiltersGroup(groupId);
                 break;
+            }
             case 'changeDefaultWhitelistMode':
                 whitelist.changeDefaultWhitelistMode(message.enabled);
                 break;
