@@ -11,14 +11,14 @@ import { i18n } from '../../../services/i18n';
 import { AddCustomModal } from './AddCustomModal';
 import { CUSTOM_FILTERS_GROUP_ID } from '../../../../common/constants';
 
-const Filters = observer(() => {
+const Filters = observer(({ selectedGroup }) => {
     const SEARCH_FILTERS = {
         ALL: 'all',
         ENABLED: 'enabled',
         DISABLED: 'disabled',
     };
 
-    const [selectedGroupId, setSelectedGroupId] = useState(null);
+    const [selectedGroupId, setSelectedGroupId] = useState(selectedGroup);
     const [searchInput, setSearchInput] = useState('');
     const [searchSelect, setSearchSelect] = useState(SEARCH_FILTERS.ALL);
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -67,15 +67,18 @@ const Filters = observer(() => {
         await settingsStore.updateFilterSetting(id, enabled);
     };
 
-    const renderFilters = (filtersList) => filtersList.map((filter) => (
-        <Filter
-            key={filter.filterId}
-            filter={filter}
-            tags={filter.tagsDetails}
-            checkboxHandler={handleFilterSwitch}
-            checkboxValue={!!filter.enabled}
-        />
-    ));
+    const renderFilters = (filtersList, groupPath) => {
+        history.pushState(null, null, `#${groupPath}`);
+        return filtersList.map((filter) => (
+            <Filter
+                key={filter.filterId}
+                filter={filter}
+                tags={filter.tagsDetails}
+                checkboxHandler={handleFilterSwitch}
+                checkboxValue={!!filter.enabled}
+            />
+        ));
+    };
 
     const handleReturnToGroups = () => {
         setSelectedGroupId(null);
@@ -196,6 +199,7 @@ const Filters = observer(() => {
     if (Number.isInteger(selectedGroupId)) {
         const groupFilters = filters.filter((filter) => filter.groupId === selectedGroupId);
         const { groupName } = categories.find((group) => group.groupId === selectedGroupId);
+        const groupPath = groupName.replace(' ', '-').toLowerCase();
         if (selectedGroupId === CUSTOM_FILTERS_GROUP_ID && groupFilters.length === 0) {
             return (
                 <>
@@ -226,7 +230,7 @@ const Filters = observer(() => {
                     {
                         isSearching
                             ? renderSearchResult()
-                            : filters && renderFilters(groupFilters)
+                            : filters && renderFilters(groupFilters, groupPath)
                     }
                 </div>
                 {renderAddFilterBtn()}
