@@ -159,8 +159,8 @@ const init = () => {
                 const result = await processGetOptionsData();
                 return result;
             }
-            case 'unWhiteListFrame':
-                userrules.unWhiteListFrame(message.frameInfo);
+            case 'unWhitelistFrame':
+                userrules.unWhitelistFrame(message.frameInfo);
                 break;
             case 'createEventListener': {
                 const { events } = data;
@@ -207,23 +207,23 @@ const init = () => {
                 const { groupId } = data;
                 categories.disableFiltersGroup(groupId);
                 break;
-            }
-            case 'changeDefaultWhiteListMode':
-                whitelist.changeDefaultWhiteListMode(message.enabled);
+            case 'changeDefaultWhitelistMode':
+                whitelist.changeDefaultWhitelistMode(message.enabled);
                 break;
-            case 'getWhiteListDomains': {
-                const whiteListDomains = whitelist.getWhiteListDomains();
+            case 'getWhitelistDomains': {
+                const whitelistDomains = whitelist.getWhitelistDomains();
                 const appVersion = backgroundPage.app.getVersion();
                 return {
-                    content: whiteListDomains.join('\r\n'),
+                    content: whitelistDomains.join('\r\n'),
                     appVersion,
                 };
             }
-            case 'saveWhiteListDomains': {
-                const domains = message.content.split(/[\r\n]+/)
+            case 'saveWhitelistDomains': {
+                const { value } = data;
+                const domains = value.split(/[\r\n]+/)
                     .map(string => string.trim())
                     .filter(string => string.length > 0);
-                whitelist.updateWhiteListDomains(domains);
+                whitelist.updateWhitelistDomains(domains);
                 break;
             }
             case 'getUserRules': {
@@ -398,17 +398,17 @@ const init = () => {
                 uiService.showAlertMessagePopup(message.title, message.text);
                 break;
             // Popup methods
-            case 'addWhiteListDomainPopup': {
+            case 'addWhitelistDomainPopup': {
                 const tab = await tabsApi.getActive();
                 if (tab) {
-                    uiService.whiteListTab(tab);
+                    uiService.whitelistTab(tab);
                 }
                 break;
             }
-            case 'removeWhiteListDomainPopup': {
+            case 'removeWhitelistDomainPopup': {
                 const tab = await tabsApi.getActive();
                 if (tab) {
-                    uiService.unWhiteListTab(tab);
+                    uiService.unWhitelistTab(tab);
                 }
                 break;
             }

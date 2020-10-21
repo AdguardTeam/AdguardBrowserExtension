@@ -72,9 +72,9 @@ export const settingsProvider = (function () {
         const customFiltersData = collectCustomFiltersData();
 
         // Collect whitelist/blacklist domains and whitelist mode
-        const whiteListDomains = whitelist.getWhiteListedDomains() || [];
+        const whitelistDomains = whitelist.getWhitelistedDomains() || [];
         const blockListDomains = whitelist.getBlockListedDomains() || [];
-        const defaultWhiteListMode = !!whitelist.isDefaultMode();
+        const defaultWhitelistMode = !!whitelist.isDefaultMode();
 
         // Collect user rules
         const content = await userrules.getUserRulesText();
@@ -88,8 +88,8 @@ export const settingsProvider = (function () {
                     'disabled-rules': '',
                 },
                 'whitelist': {
-                    'inverted': !defaultWhiteListMode,
-                    'domains': whiteListDomains,
+                    'inverted': !defaultWhitelistMode,
+                    'domains': whitelistDomains,
                     'inverted-domains': blockListDomains,
                 },
             },
@@ -319,12 +319,12 @@ export const settingsProvider = (function () {
      * @param section Section
      */
     const applyFiltersSection = async function (section) {
-        const whiteListSection = section.filters['whitelist'] || {};
-        const whitelistDomains = whiteListSection.domains || [];
-        const blacklistDomains = whiteListSection['inverted-domains'] || [];
+        const whitelistSection = section.filters['whitelist'] || {};
+        const whitelistDomains = whitelistSection.domains || [];
+        const blacklistDomains = whitelistSection['inverted-domains'] || [];
 
         // Apply whitelist/blacklist domains and whitelist mode
-        whitelist.configure(whitelistDomains, blacklistDomains, !whiteListSection.inverted);
+        whitelist.configure(whitelistDomains, blacklistDomains, !whitelistSection.inverted);
 
         const userFilterSection = section.filters['user-filter'] || {};
         const userRules = userFilterSection.rules || '';

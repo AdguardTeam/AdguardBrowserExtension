@@ -59,12 +59,12 @@ PopupController.prototype = {
         // Should be overwritten
     },
 
-    addWhiteListDomain(url) {
-        popupPage.sendMessage({ type: 'addWhiteListDomainPopup', url });
+    addWhitelistDomain(url) {
+        popupPage.sendMessage({ type: 'addWhitelistDomainPopup', url });
     },
 
-    removeWhiteListDomain(url) {
-        popupPage.sendMessage({ type: 'removeWhiteListDomainPopup', url });
+    removeWhitelistDomain(url) {
+        popupPage.sendMessage({ type: 'removeWhitelistDomainPopup', url });
     },
 
     changeApplicationFilteringDisabled(disabled) {
@@ -169,7 +169,7 @@ PopupController.prototype = {
         } else if (!tabInfo.canAddRemoveRule) {
             stack.classList.add('status-error');
             parent.classList.add('status-checkmark');
-        } else if (tabInfo.documentWhiteListed) {
+        } else if (tabInfo.documentWhitelisted) {
             stack.classList.add('status-cross');
             parent.classList.add('status-cross');
             switcher.setAttribute('aria-checked', 'false');
@@ -324,11 +324,11 @@ PopupController.prototype = {
         let messageKey = '';
         if (!tabInfo.applicationAvailable) {
             messageKey = 'popup_site_filtering_state_secure_page';
-        } else if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
+        } else if (tabInfo.documentWhitelisted && !tabInfo.userWhitelisted) {
             messageKey = '';
         } else if (tabInfo.applicationFilteringDisabled) {
             messageKey = 'popup_site_filtering_state_paused';
-        } else if (tabInfo.documentWhiteListed) {
+        } else if (tabInfo.documentWhitelisted) {
             messageKey = 'popup_site_filtering_state_disabled';
         } else {
             messageKey = 'popup_site_filtering_state_enabled';
@@ -355,7 +355,7 @@ PopupController.prototype = {
         let messageKey;
         if (!tabInfo.applicationAvailable) {
             messageKey = '';
-        } else if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
+        } else if (tabInfo.documentWhitelisted && !tabInfo.userWhitelisted) {
             messageKey = 'popup_site_exception_info';
         }
 
@@ -706,7 +706,7 @@ PopupController.prototype = {
 
         this._appendTemplate(el, this.actionOpenAssistant);
         this._appendTemplate(el, this.actionOpenFilteringLog);
-        if (tabInfo.applicationFilteringDisabled || tabInfo.documentWhiteListed) {
+        if (tabInfo.applicationFilteringDisabled || tabInfo.documentWhitelisted) {
             // May be shown later
             this.actionOpenAssistant.style.display = 'none';
         }
@@ -878,7 +878,7 @@ PopupController.prototype = {
         });
 
         // checkbox
-        this._bindAction(parent, '.changeDocumentWhiteListed', 'click', (e) => {
+        this._bindAction(parent, '.changeDocumentWhitelisted', 'click', (e) => {
             e.preventDefault();
             const { tabInfo } = self;
             if (!tabInfo.applicationAvailable || tabInfo.applicationFilteringDisabled) {
@@ -887,16 +887,16 @@ PopupController.prototype = {
             if (!tabInfo.canAddRemoveRule) {
                 return;
             }
-            let isWhiteListed = tabInfo.documentWhiteListed;
-            if (isWhiteListed) {
-                self.removeWhiteListDomain(tabInfo.url);
-                isWhiteListed = false;
+            let isWhitelisted = tabInfo.documentWhitelisted;
+            if (isWhitelisted) {
+                self.removeWhitelistDomain(tabInfo.url);
+                isWhitelisted = false;
             } else {
-                self.addWhiteListDomain(tabInfo.url);
-                isWhiteListed = true;
+                self.addWhitelistDomain(tabInfo.url);
+                isWhitelisted = true;
             }
-            tabInfo.documentWhiteListed = isWhiteListed;
-            tabInfo.userWhiteListed = isWhiteListed;
+            tabInfo.documentWhitelisted = isWhitelisted;
+            tabInfo.userWhitelisted = isWhitelisted;
             tabInfo.totalBlockedTab = 0;
             self._renderPopup(tabInfo);
             self._bindActions();

@@ -7,9 +7,40 @@ import {
 } from 'mobx';
 
 import { log } from '../../../background/utils/log';
+import {
+    EVENTS as SAVING_FSM_EVENTS,
+    createSavingService,
+} from '../components/Editor/savingFSM';
+import { sleep } from '../../helpers';
 import { messenger } from '../../services/messenger';
-import { savingRulesService, EVENTS as SAVING_RULES_FSM_EVENTS } from '../components/UserRules/savingRulesFSM';
 import { listeners } from '../../../background/notifier';
+
+const savingUserRulesService = createSavingService({
+    id: 'userRules',
+    services: {
+        saveData: (_, e) => messenger.saveUserRules(e.value),
+    },
+});
+
+const savingAllowlistService = createSavingService({
+    id: 'allowlist',
+    services: {
+        saveData: async (_, e) => {
+            /**
+             * If saveAllowlist executes faster than MIN_EXECUTION_TIME_REQUIRED_MS we increase
+             * execution time for smoother user experience
+             */
+            const MIN_EXECUTION_TIME_REQUIRED_MS = 500;
+            const start = Date.now();
+            await messenger.saveAllowlist(e.value);
+            const end = Date.now();
+            const timePassed = end - start;
+            if (timePassed < MIN_EXECUTION_TIME_REQUIRED_MS) {
+                await sleep(MIN_EXECUTION_TIME_REQUIRED_MS - timePassed);
+            }
+        },
+    },
+});
 
 class SettingsStore {
     @observable settings = null;
@@ -28,7 +59,11 @@ class SettingsStore {
 
     @observable userRules = '';
 
-    @observable savingRulesState = savingRulesService.initialState.value;
+    @observable allowlist = '';
+
+    @observable savingRulesState = savingUserRulesService.initialState.value;
+
+    @observable savingAllowlistState = savingAllowlistService.initialState.value;
 
     @observable filtersUpdating = false;
 
@@ -36,9 +71,15 @@ class SettingsStore {
         makeObservable(this);
         this.rootStore = rootStore;
 
-        savingRulesService.onTransition((state) => {
+        savingUserRulesService.onTransition((state) => {
             runInAction(() => {
                 this.savingRulesState = state.value;
+            });
+        });
+
+        savingAllowlistService.onTransition((state) => {
+            runInAction(() => {
+                this.savingAllowlistState = state.value;
             });
         });
     }
@@ -194,7 +235,30 @@ class SettingsStore {
     @action
     async saveUserRules(value) {
         this.userRules = value;
-        savingRulesService.send(SAVING_RULES_FSM_EVENTS.SAVE, { value });
+        savingUserRulesService.send(SAVING_FSM_EVENTS.SAVE, { value });
+    }
+
+    @action
+    setAllowlist = (allowlist) => {
+        this.allowlist = allowlist;
+    }
+
+    @action
+    async getAllowlist() {
+        try {
+            const { content } = await messenger.getAllowlist();
+            runInAction(() => {
+                this.allowlist = content;
+            });
+        } catch (e) {
+            log.debug(e);
+        }
+    }
+
+    @action
+    saveAllowlist = (allowlist) => {
+        this.allowlist = allowlist;
+        savingAllowlistService.send(SAVING_FSM_EVENTS.SAVE, { value: allowlist });
     }
 }
 

@@ -70,7 +70,7 @@ const onDomContentLoaded = async () => {
         },
         '#wl': {
             title: 'whitelist',
-            messageType: 'getWhiteListDomains',
+            messageType: 'getWhitelistDomains',
             filename: 'whitelist',
             ext: 'txt',
         },
