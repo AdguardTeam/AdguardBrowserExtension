@@ -1,11 +1,12 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
+
 import SettingsSection from '../Settings/SettingsSection';
 import SettingsSet from '../Settings/SettingsSet';
 import Setting, { SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { log } from '../../../../background/utils/log';
-import { i18n } from '../../../services/i18n';
+import { reactTranslator } from '../../../reactCommon/reactTranslator';
 
 const Stealth = observer(() => {
     const { settingsStore } = useContext(rootStore);
@@ -38,12 +39,12 @@ const Stealth = observer(() => {
 
     return (
         <>
-            <h2 className="title">{i18n.translate('options_privacy_title')}</h2>
+            <h2 className="title">{reactTranslator.translate('options_privacy_title')}</h2>
 
             <SettingsSection>
                 <SettingsSet
-                    title={i18n.translate('options_privacy_title')}
-                    description={i18n.translate('options_privacy_desc')}
+                    title={reactTranslator.translate('options_privacy_title')}
+                    description={reactTranslator.translate('options_privacy_desc')}
                     disabled={settings.values[DISABLE_STEALTH_MODE]}
                 >
                     <Setting
@@ -57,12 +58,12 @@ const Stealth = observer(() => {
             </SettingsSection>
 
             <SettingsSection
-                title={i18n.translate('options_cookies_title')}
+                title={reactTranslator.translate('options_cookies_title')}
                 disabled={isStealthModeDisabled}
             >
                 <SettingsSet
-                    title={i18n.translate('options_third_party_title')}
-                    description={i18n.translate('options_third_party_desc')}
+                    title={reactTranslator.translate('options_third_party_title')}
+                    description={reactTranslator.translate('options_third_party_desc')}
                     disabled={!settings.values[SELF_DESTRUCT_THIRD_PARTY_COOKIES]}
                 >
                     <Setting
@@ -80,8 +81,8 @@ const Stealth = observer(() => {
                 </SettingsSet>
 
                 <SettingsSet
-                    title={i18n.translate('options_first_party_title')}
-                    description={i18n.translate('options_first_party_desc')}
+                    title={reactTranslator.translate('options_first_party_title')}
+                    description={reactTranslator.translate('options_first_party_desc')}
                     disabled={!settings.values[SELF_DESTRUCT_FIRST_PARTY_COOKIES]}
                 >
                     <Setting
@@ -100,12 +101,12 @@ const Stealth = observer(() => {
             </SettingsSection>
 
             <SettingsSection
-                title={i18n.translate('context_miscellaneous_settings')}
+                title={reactTranslator.translate('context_miscellaneous_settings')}
                 disabled={isStealthModeDisabled}
             >
                 <SettingsSet
-                    title={i18n.translate('options_hide_referrer_title')}
-                    description={i18n.translate('options_hide_referrer_desc')}
+                    title={reactTranslator.translate('options_hide_referrer_title')}
+                    description={reactTranslator.translate('options_hide_referrer_desc')}
                     disabled={!settings.values[HIDE_REFERRER]}
                 >
                     <Setting
@@ -117,8 +118,8 @@ const Stealth = observer(() => {
                 </SettingsSet>
 
                 <SettingsSet
-                    title={i18n.translate('options_hide_search_queries_title')}
-                    description={i18n.translate('options_hide_search_queries_desc')}
+                    title={reactTranslator.translate('options_hide_search_queries_title')}
+                    description={reactTranslator.translate('options_hide_search_queries_desc')}
                     disabled={!settings.values[HIDE_SEARCH_QUERIES]}
                 >
                     <Setting
@@ -130,8 +131,8 @@ const Stealth = observer(() => {
                 </SettingsSet>
 
                 <SettingsSet
-                    title={i18n.translate('options_send_not_track_title')}
-                    description={i18n.translate('options_send_not_track_desc')}
+                    title={reactTranslator.translate('options_send_not_track_title')}
+                    description={reactTranslator.translate('options_send_not_track_desc')}
                     disabled={!settings.values[SEND_DO_NOT_TRACK]}
                 >
                     <Setting
@@ -143,8 +144,8 @@ const Stealth = observer(() => {
                 </SettingsSet>
 
                 <SettingsSet
-                    title={i18n.translate('options_disable_webrtc_title')}
-                    description={i18n.translate('options_disable_webrtc_desc')}
+                    title={reactTranslator.translate('options_disable_webrtc_title')}
+                    description={reactTranslator.translate('options_disable_webrtc_desc')}
                     disabled={!settings.values[BLOCK_WEBRTC]}
                 >
                     <Setting
@@ -156,8 +157,8 @@ const Stealth = observer(() => {
                 </SettingsSet>
 
                 <SettingsSet
-                    title={i18n.translate('options_strip_tracking_params_title')}
-                    description={i18n.translate('options_strip_tracking_params_desc')}
+                    title={reactTranslator.translate('options_strip_tracking_params_title')}
+                    description={reactTranslator.translate('options_strip_tracking_params_desc')}
                     disabled={!settings.values[STRIP_TRACKING_PARAMETERS]}
                 >
                     <Setting

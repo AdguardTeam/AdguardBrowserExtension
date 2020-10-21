@@ -1,18 +1,20 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
+
 import SettingsSection from '../Settings/SettingsSection';
 import SettingsSet from '../Settings/SettingsSet';
 import Setting, { SETTINGS_TYPES } from '../Settings/Setting';
-import { messenger } from '../../../services/messenger';
-import { i18n } from '../../../services/i18n';
+import messenger from '../../../services/messenger';
 import { rootStore } from '../../stores/RootStore';
 import { log } from '../../../../background/utils/log';
+import { reactTranslator } from '../../../reactCommon/reactTranslator';
 
 const Miscellaneous = observer(() => {
     const {
         settingsStore,
         uiStore,
     } = useContext(rootStore);
+
     const { settings } = settingsStore;
 
     if (!settings) {
@@ -24,9 +26,9 @@ const Miscellaneous = observer(() => {
     // eslint-disable-next-line max-len
     const OPEN_CHANGELOG_URL = 'https://adguard.com/forward.html?action=github_version_popup&from=version_popup&app=browser_extension';
 
-    const settingChangeHandler = async ({ id, enabled }) => {
-        log.info(`Setting ${id} set to ${enabled}`);
-        await settingsStore.updateSetting(id, enabled);
+    const settingChangeHandler = async ({ id, data }) => {
+        log.info(`Setting ${id} set to ${data}`);
+        await settingsStore.updateSetting(id, data);
     };
 
     const handleFilteringLogClick = async () => {
@@ -35,7 +37,7 @@ const Miscellaneous = observer(() => {
 
     const handleResetStatisticsClick = async () => {
         await messenger.resetStatistics();
-        uiStore.addNotification({ description: i18n.translate('options_reset_stats_done') });
+        uiStore.addNotification({ description: reactTranslator.translate('options_reset_stats_done') });
     };
 
     const handleOpenChangelog = () => {
@@ -44,7 +46,6 @@ const Miscellaneous = observer(() => {
 
     const {
         USE_OPTIMIZED_FILTERS,
-        DISABLE_INTEGRATION_MODE,
         DISABLE_COLLECT_HITS,
         DISABLE_SHOW_CONTEXT_MENU,
         DISABLE_SHOW_ADGUARD_PROMO_INFO,
@@ -56,8 +57,8 @@ const Miscellaneous = observer(() => {
             <h2 className="title">Miscellaneous</h2>
             <SettingsSection>
                 <SettingsSet
-                    title={i18n.translate('options_use_optimized_filters')}
-                    description={i18n.translate('options_use_optimized_filters_desc')}
+                    title={reactTranslator.translate('options_use_optimized_filters')}
+                    description={reactTranslator.translate('options_use_optimized_filters_desc')}
                     disabled={!settings.values[USE_OPTIMIZED_FILTERS]}
                 >
                     <Setting
@@ -69,14 +70,14 @@ const Miscellaneous = observer(() => {
                 </SettingsSet>
 
                 <SettingsSet
-                    title={i18n.translate('options_collect_hit_stats')}
+                    title={reactTranslator.translate('options_collect_hit_stats')}
                     description={(
                         <a
                             href={COLLECT_HITS_LEARN_MORE_URL}
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            {i18n.translate('options_learn_more')}
+                            {reactTranslator.translate('options_learn_more')}
                         </a>
                     )}
                     disabled={settings.values[DISABLE_COLLECT_HITS]}
@@ -91,7 +92,7 @@ const Miscellaneous = observer(() => {
                 </SettingsSet>
 
                 <SettingsSet
-                    title={i18n.translate('options_show_context_menu')}
+                    title={reactTranslator.translate('options_show_context_menu')}
                     disabled={settings.values[DISABLE_SHOW_CONTEXT_MENU]}
                 >
                     <Setting
@@ -104,7 +105,7 @@ const Miscellaneous = observer(() => {
                 </SettingsSet>
 
                 <SettingsSet
-                    title={i18n.translate('options_show_adguard_full_version')}
+                    title={reactTranslator.translate('options_show_adguard_full_version')}
                     disabled={settings.values[DISABLE_SHOW_ADGUARD_PROMO_INFO]}
                 >
                     <Setting
@@ -117,7 +118,7 @@ const Miscellaneous = observer(() => {
                 </SettingsSet>
 
                 <SettingsSet
-                    title={i18n.translate('options_show_app_updated_notification')}
+                    title={reactTranslator.translate('options_show_app_updated_notification')}
                     disabled={settings.values[DISABLE_SHOW_APP_UPDATED_NOTIFICATION]}
                 >
                     <Setting
@@ -135,21 +136,21 @@ const Miscellaneous = observer(() => {
                 className="button button--m button--green content__btn"
                 onClick={handleFilteringLogClick}
             >
-                {i18n.translate('options_open_log')}
+                {reactTranslator.translate('options_open_log')}
             </button>
             <button
                 type="button"
                 className="button button--m button--green-bd content__btn"
                 onClick={handleResetStatisticsClick}
             >
-                {i18n.translate('options_reset_stats')}
+                {reactTranslator.translate('options_reset_stats')}
             </button>
             <button
                 type="button"
                 className="button button--m button--green-bd content__btn"
                 onClick={handleOpenChangelog}
             >
-                {i18n.translate('options_open_changelog')}
+                {reactTranslator.translate('options_open_changelog')}
             </button>
         </>
     );

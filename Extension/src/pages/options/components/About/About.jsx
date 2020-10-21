@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
-import './about-page.pcss';
+
 import { rootStore } from '../../stores/RootStore';
 import {
     ACKNOWLEDGMENTS_URL,
@@ -8,6 +8,9 @@ import {
     GITHUB_URL,
     PRIVACY_URL,
 } from '../../../constants';
+import { reactTranslator } from '../../../reactCommon/reactTranslator';
+
+import './about-page.pcss';
 
 const About = observer(() => {
     const { settingsStore } = useContext(rootStore);
@@ -21,14 +24,13 @@ const About = observer(() => {
     const currentYear = new Date().getFullYear();
     const copyRightText = `© 2009-${currentYear} AdGuard Software Ltd.`;
 
-    // TODO add translations to every string
     return (
         <>
-            <h2 className="title">About</h2>
+            <h2 className="title">{reactTranslator.translate('options_about')}</h2>
             <div className="about">
                 <div className="logo about__logo" />
                 <div className="about__version">
-                    Version
+                    {reactTranslator.translate('options_about_version')}
                     {' '}
                     {version}
                 </div>
@@ -37,7 +39,7 @@ const About = observer(() => {
                         {copyRightText}
                     </div>
                     <div className="about__copyright-item">
-                        All rights reserved.
+                        {reactTranslator.translate('options_copyright')}
                     </div>
                 </div>
                 <div className="about__menu">
@@ -47,7 +49,7 @@ const About = observer(() => {
                         href={EULA_URL}
                         className="about__menu-item"
                     >
-                        End-User License Agreement
+                        {reactTranslator.translate('options_license_agreement')}
                     </a>
                     <a
                         target="_blank"
@@ -55,7 +57,7 @@ const About = observer(() => {
                         href={PRIVACY_URL}
                         className="about__menu-item"
                     >
-                        Privacy Policy
+                        {reactTranslator.translate('options_privacy_policy')}
                     </a>
                     <a
                         target="_blank"
@@ -63,7 +65,7 @@ const About = observer(() => {
                         href={ACKNOWLEDGMENTS_URL}
                         className="about__menu-item"
                     >
-                        Acknowledgments
+                        {reactTranslator.translate('options_acknowledgment')}
                     </a>
                     <a
                         target="_blank"
@@ -71,7 +73,7 @@ const About = observer(() => {
                         href={GITHUB_URL}
                         className="about__menu-item"
                     >
-                        Github
+                        {reactTranslator.translate('options_github')}
                     </a>
                 </div>
             </div>

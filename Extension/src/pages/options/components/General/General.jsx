@@ -1,41 +1,42 @@
 import React, { useContext, useRef } from 'react';
 import { observer } from 'mobx-react';
+
 import SettingsSection from '../Settings/SettingsSection';
 import SettingsSet from '../Settings/SettingsSet';
 import Setting, { SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
-import { messenger } from '../../../services/messenger';
-import { i18n } from '../../../services/i18n';
+import messenger from '../../../services/messenger';
 import { hoursToMs, uploadFile } from '../../../helpers';
+import { reactTranslator } from '../../../reactCommon/reactTranslator';
 
 const filtersUpdatePeriodOptions = [
     {
         value: -1,
-        title: i18n.translate('options_select_update_period_default'),
+        title: reactTranslator.translate('options_select_update_period_default'),
     },
     {
         value: hoursToMs(48),
-        title: i18n.translate('options_select_update_period_48h'),
+        title: reactTranslator.translate('options_select_update_period_48h'),
     },
     {
         value: hoursToMs(24),
-        title: i18n.translate('options_select_update_period_24h'),
+        title: reactTranslator.translate('options_select_update_period_24h'),
     },
     {
         value: hoursToMs(12),
-        title: i18n.translate('options_select_update_period_12h'),
+        title: reactTranslator.translate('options_select_update_period_12h'),
     },
     {
         value: hoursToMs(6),
-        title: i18n.translate('options_select_update_period_6h'),
+        title: reactTranslator.translate('options_select_update_period_6h'),
     },
     {
         value: hoursToMs(1),
-        title: i18n.translate('options_select_update_period_1h'),
+        title: reactTranslator.translate('options_select_update_period_1h'),
     },
     {
         value: 0,
-        title: i18n.translate('options_select_update_period_disabled'),
+        title: reactTranslator.translate('options_select_update_period_disabled'),
     },
 ];
 
@@ -64,27 +65,27 @@ const General = observer(() => {
         const file = event.target.files[0];
 
         try {
-            const content = await uploadFile(file);
+            const content = await uploadFile(file, 'json');
             await messenger.applySettingsJson(content);
-        } catch (ex) {
-            uiStore.addNotification({ description: ex.message });
+        } catch (e) {
+            uiStore.addNotification({ description: e.message });
         }
 
         // eslint-disable-next-line no-param-reassign
         event.target.value = '';
     };
 
-    const handleImportSettings = async (e) => {
+    const handleImportSettings = (e) => {
         e.preventDefault();
         inputEl.current.click();
     };
 
-    const allowAcceptableAdsChangeHandler = async ({ enabled }) => {
-        await settingsStore.setAllowAcceptableAdsValue(enabled);
+    const allowAcceptableAdsChangeHandler = async ({ data }) => {
+        await settingsStore.setAllowAcceptableAdsValue(data);
     };
 
-    const settingChangeHandler = async ({ id, enabled }) => {
-        await settingsStore.updateSetting(id, enabled);
+    const settingChangeHandler = async ({ id, data }) => {
+        await settingsStore.updateSetting(id, data);
     };
 
     const {
@@ -103,17 +104,17 @@ const General = observer(() => {
         <>
             <h2 className="title">Settings</h2>
             <SettingsSection
-                title={i18n.translate('context_general_settings')}
+                title={reactTranslator.translate('context_general_settings')}
             >
                 <SettingsSet
-                    title={i18n.translate('options_allow_acceptable_ads')}
+                    title={reactTranslator.translate('options_allow_acceptable_ads')}
                     description={(
                         <a
                             href={ALLOW_ACCEPTABLE_ADS_LEARN_MORE_URL}
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            {i18n.translate('options_learn_more')}
+                            {reactTranslator.translate('options_learn_more')}
                         </a>
                     )}
                 >
@@ -125,14 +126,14 @@ const General = observer(() => {
                     />
                 </SettingsSet>
                 <SettingsSet
-                    title={i18n.translate('options_safebrowsing_enabled')}
+                    title={reactTranslator.translate('options_safebrowsing_enabled')}
                     description={(
                         <a
                             href={SAFEBROWSING_LEARN_MORE_URL}
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            {i18n.translate('options_learn_more')}
+                            {reactTranslator.translate('options_learn_more')}
                         </a>
                     )}
                 >
@@ -145,7 +146,7 @@ const General = observer(() => {
                     />
                 </SettingsSet>
                 <SettingsSet
-                    title={i18n.translate('options_enable_autodetect_filter')}
+                    title={reactTranslator.translate('options_enable_autodetect_filter')}
                 >
                     <Setting
                         id={DISABLE_DETECT_FILTERS}
@@ -156,7 +157,7 @@ const General = observer(() => {
                     />
                 </SettingsSet>
                 <SettingsSet
-                    title={i18n.translate('options_set_update_interval')}
+                    title={reactTranslator.translate('options_set_update_interval')}
                 >
                     <Setting
                         id={FILTERS_UPDATE_PERIOD}
@@ -173,7 +174,7 @@ const General = observer(() => {
                     className="button button--m button--green content__btn"
                     onClick={handleExportSettings}
                 >
-                    {i18n.translate('options_export_settings')}
+                    {reactTranslator.translate('options_export_settings')}
                 </button>
                 <div>
                     <input
@@ -188,7 +189,7 @@ const General = observer(() => {
                         className="button button--m button--green-bd content__btn"
                         onClick={handleImportSettings}
                     >
-                        {i18n.translate('options_import_settings')}
+                        {reactTranslator.translate('options_import_settings')}
                     </button>
                 </div>
             </div>
