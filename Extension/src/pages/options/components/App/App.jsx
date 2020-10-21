@@ -7,7 +7,7 @@ import { observer } from 'mobx-react';
 import '../../styles/styles.pcss';
 
 import { General } from '../General';
-import { Sidebar } from '../Sidebar/Sidebar';
+import { Sidebar } from '../Sidebar';
 import { Filters } from '../Filters';
 import { Stealth } from '../Stealth';
 import { Allowlist } from '../Allowlist';

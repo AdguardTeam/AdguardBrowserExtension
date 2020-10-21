@@ -781,9 +781,9 @@ export const uiService = (function () {
 
         try {
             const updatedFilters = await application.checkFiltersUpdates(filters);
+            listeners.notifyListeners(listeners.FILTERS_UPDATE_CHECK_READY, updatedFilters);
             if (showPopup) {
                 listeners.notifyListeners(showPopupEvent, true, updatedFilters);
-                listeners.notifyListeners(listeners.FILTERS_UPDATE_CHECK_READY, updatedFilters);
             } else if (updatedFilters && updatedFilters.length > 0) {
                 const updatedFilterStr = updatedFilters.map(f => `Filter ID: ${f.filterId}`).join(', ');
                 log.info(`Filters were auto updated: ${updatedFilterStr}`);

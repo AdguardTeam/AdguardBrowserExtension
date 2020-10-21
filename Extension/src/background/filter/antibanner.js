@@ -245,7 +245,7 @@ export const antiBannerService = (() => {
          * TODO: when we want to load filter from backend,
          *  we should retrieve metadata from backend too, but not from local file.
          */
-        const result = await filtersUpdate.loadFilterRules(filter, true);
+        const result = await filtersUpdate.loadFilterRules(filter, false);
         return onFilterLoaded(result);
     };
 

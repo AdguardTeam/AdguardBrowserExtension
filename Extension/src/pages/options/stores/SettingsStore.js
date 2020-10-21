@@ -1,19 +1,15 @@
 import {
     action,
-    observable,
     computed,
-    runInAction,
     makeObservable,
+    observable,
+    runInAction,
 } from 'mobx';
 
 import { log } from '../../../background/utils/log';
-import {
-    EVENTS as SAVING_FSM_EVENTS,
-    createSavingService,
-} from '../components/Editor/savingFSM';
+import { createSavingService, EVENTS as SAVING_FSM_EVENTS } from '../components/Editor/savingFSM';
 import { sleep } from '../../helpers';
 import { messenger } from '../../services/messenger';
-import { listeners } from '../../../background/notifier';
 
 const savingUserRulesService = createSavingService({
     id: 'userRules',
@@ -152,30 +148,36 @@ class SettingsStore {
     }
 
     @action
-    refreshFilters(data) {
-        // TODO update filters
-        // console.log(data);
-        // this.filters = data.data.updatedFilters;
+    refreshFilters(updatedFilters) {
+        runInAction(() => {
+            updatedFilters.forEach((filter) => this.refreshFilter(filter));
+        });
+    }
+
+    @action
+    refreshFilter(filter) {
+        runInAction(() => {
+            const filterToUpdate = this.filters.find((f) => f.filterId === filter.filterId);
+            const index = this.filters.indexOf(filterToUpdate);
+            if (index !== -1) {
+                this.filters[index] = filter;
+            }
+        });
     }
 
     @action
     async updateFilterSetting(id, enabled) {
-        if (enabled) {
-            await messenger.createEventListener(listeners.FILTERS_UPDATE_CHECK_READY, this.refreshFilters);
-            const filter = this.filters.find((f) => f.filterId === id);
-            await this.updateFilters([filter]);
-        }
-
-        runInAction(() => {
-            this.filters.forEach((f) => {
-                if (f.filterId === parseInt(id, 10)) {
+        await runInAction(async () => {
+            for (const filter of this.filters) {
+                if (filter.filterId === parseInt(id, 10)) {
                     if (enabled) {
-                        f.enabled = true;
+                        filter.enabled = true;
+                        await this.updateFilters([filter]);
                     } else {
-                        delete f.enabled;
+                        delete filter.enabled;
                     }
                 }
-            });
+            }
         });
     }
 
