@@ -783,7 +783,7 @@ export const uiService = (function () {
             const updatedFilters = await application.checkFiltersUpdates(filters);
             if (showPopup) {
                 listeners.notifyListeners(showPopupEvent, true, updatedFilters);
-                listeners.notifyListeners(listeners.FILTERS_UPDATE_CHECK_READY);
+                listeners.notifyListeners(listeners.FILTERS_UPDATE_CHECK_READY, updatedFilters);
             } else if (updatedFilters && updatedFilters.length > 0) {
                 const updatedFilterStr = updatedFilters.map(f => `Filter ID: ${f.filterId}`).join(', ');
                 log.info(`Filters were auto updated: ${updatedFilterStr}`);

@@ -110,19 +110,21 @@ class SettingsStore {
         });
     }
 
+    @action
     refreshFilters(data) {
-        console.log(data);
+        // TODO update filters
+        // console.log(data);
+        // this.filters = data.data.updatedFilters;
     }
 
     @action
     async updateFilterSetting(id, enabled) {
-        await messenger.createEventListener(listeners.FILTERS_UPDATE_CHECK_READY, this.refreshFilters);
-        const filter = this.filters.find((f) => f.filterId === id);
-        await this.updateFilters([filter]);
-        // await messenger.updateFilterStatus(id, enabled);
-        // if (enabled) {
-        //     await this.updateFilters();
-        // }
+        if (enabled) {
+            await messenger.createEventListener(listeners.FILTERS_UPDATE_CHECK_READY, this.refreshFilters);
+            const filter = this.filters.find((f) => f.filterId === id);
+            await this.updateFilters([filter]);
+        }
+
         runInAction(() => {
             this.filters.forEach((f) => {
                 if (f.filterId === parseInt(id, 10)) {

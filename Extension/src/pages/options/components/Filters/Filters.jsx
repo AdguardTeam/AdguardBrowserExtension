@@ -81,6 +81,7 @@ const Filters = observer(({ selectedGroup }) => {
     };
 
     const handleReturnToGroups = () => {
+        history.back();
         setSelectedGroupId(null);
     };
 
