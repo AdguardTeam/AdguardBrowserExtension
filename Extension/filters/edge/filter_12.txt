@@ -1,11 +1,11 @@
-! Checksum: XYTdy0FpTUM5p5q1JcF+QA
+! Checksum: IstVLMarz71nvR6naM+HPQ
 ! Title: AdGuard Safari filter
 ! Description: Special filter for Safari 9+ on iOS and Mac OS. We need a separate filter for Safari browser because it does not fully support our rules syntax. Already included in AdGuard Base filter.
-! Version: 2.0.1.66
-! TimeUpdated: 2020-08-07T22:30:14+03:00
+! Version: 2.0.1.69
+! TimeUpdated: 2020-09-01T23:30:14+03:00
 ! Expires: 4 days (update frequency)
-! Homepage: http://adguard.com/filters.html#safari
-! License: http://creativecommons.org/licenses/by-sa/3.0/
+! Homepage: https://github.com/AdguardTeam/AdGuardFilters
+! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
 !
 !---------------------------------------------------------------------------!
 !-------------- Advertising networks ---------------------------------------!
@@ -539,7 +539,6 @@ ad4msan.com#@##adsense
 ||vip.sc386.com^$third-party
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1542
 ||adfox.ru^$third-party
-||i-vengo.com^$empty
 ||partner.mediametrics.ru^$third-party
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1286
 http://*.*.space/v/$third-party
@@ -643,8 +642,6 @@ iculture.nl##.ad-container
 ! https://github.com/AdguardTeam/AdguardFilters/issues/23443
 ! https://github.com/AdguardTeam/AdguardFilters/issues/22664
 blogtamsu.video,m.blogtamsu.vn##iframe[src^="http://m.blogtamsu.vn/wp-content/themes/news/ads/"]
-! https://github.com/AdguardTeam/AdguardFilters/issues/21077
-kissanime.ru###overlay
 ! https://github.com/AdguardTeam/AdguardFilters/issues/19405
 ||ltn.hitomi.la/thlYeSta6.js$important
 ||ltn.hitomi.la/RaCtICanTi24.js$important
@@ -805,9 +802,6 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 @@||cdn*.porn300.com^
 ! https://github.com/AdguardTeam/AdguardFilters/issues/22168
 @@||games.tiscali.cz^$subdocument,domain=games.tiscali.cz
-! https://github.com/AdguardTeam/AdguardFilters/issues/21077
-@@||mp4upload.com^$domain=kissanime.ru
-@@||lh3.googleusercontent.com^$domain=kissanime.ru
 ! https://github.com/AdguardTeam/AdguardFilters/issues/20990
 @@||finn.no/*ad.html?
 ! https://github.com/AdguardTeam/AdguardFilters/issues/19405
@@ -851,10 +845,6 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 @@||vidbom.com^$domain=anyanime.com
 @@||mp4upload.com^$domain=anyanime.com
 @@||dmcdn.net^$domain=anyanime.com
-! https://github.com/AdguardTeam/AdguardFilters/issues/12580
-@@||playercdn.net/*.mp4$domain=kissanime.ru
-@@||p.jwpcdn.com/player/$domain=kissanime.ru
-@@||video-*.*.fbcdn.net/*.mp4$domain=kissanime.ru
 ! https://github.com/AdguardTeam/AdguardFilters/issues/13144
 @@||b.cdn13.com/*.mp4?$domain=xhamster.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/12707
