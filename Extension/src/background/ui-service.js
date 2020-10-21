@@ -772,9 +772,10 @@ export const uiService = (function () {
     };
 
     /**
-     * Checks filters updates
+     * Checks filters updates and returns updated filter
      * @param {Object[]} [filters] optional list of filters
      * @param {boolean} [showPopup = true] show update filters popup
+     * @return {Object[]} [filters] list of updated filters
      */
     const checkFiltersUpdates = async (filters, showPopup = true) => {
         const showPopupEvent = listeners.UPDATE_FILTERS_SHOW_POPUP;
@@ -787,8 +788,8 @@ export const uiService = (function () {
             } else if (updatedFilters && updatedFilters.length > 0) {
                 const updatedFilterStr = updatedFilters.map(f => `Filter ID: ${f.filterId}`).join(', ');
                 log.info(`Filters were auto updated: ${updatedFilterStr}`);
-                return updatedFilters;
             }
+            return updatedFilters;
         } catch (e) {
             if (showPopup) {
                 listeners.notifyListeners(showPopupEvent, false);
