@@ -1,6 +1,5 @@
 import { interpret, Machine } from 'xstate';
 import { log } from '../../../../background/utils/log';
-import messenger from '../../../services/messenger';
 
 export const STATES = {
     IDLE: 'idle',
@@ -17,8 +16,7 @@ export const EVENTS = {
 
 const SAVED_DISPLAY_TIMEOUT_MS = 1000;
 
-const savingRulesFSM = Machine({
-    id: 'savingRulesFSM',
+const savingStateMachine = {
     initial: 'idle',
     states: {
         [STATES.IDLE]: {
@@ -28,11 +26,7 @@ const savingRulesFSM = Machine({
         },
         [STATES.SAVING]: {
             invoke: {
-                id: 'saveUserRules',
-                src: (context, event) => {
-                    const { value } = event;
-                    return messenger.saveUserRules(value);
-                },
+                src: 'saveData',
                 onDone: {
                     target: STATES.SAVED,
                 },
@@ -51,11 +45,15 @@ const savingRulesFSM = Machine({
             }],
         },
     },
-});
+};
 
-export const savingRulesService = interpret(savingRulesFSM)
-    .start()
-    .onEvent((event) => log.debug(event))
-    .onTransition((state) => {
-        log.debug({ currentState: state.value });
-    });
+export const createSavingService = ({ id, services }) => {
+    return interpret(Machine({ ...savingStateMachine, id }, { services }))
+        .start()
+        .onEvent((event) => {
+            log.debug(id, event);
+        })
+        .onTransition((state) => {
+            log.debug(id, { currentState: state.value });
+        });
+};

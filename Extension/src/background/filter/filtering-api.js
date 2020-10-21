@@ -52,12 +52,12 @@ export const filteringApi = (function () {
         return getRequestFilter().findRuleForRequest(requestUrl, documentUrl, requestType, documentWhitelistRule);
     };
 
-    const findWhiteListRule = function (requestUrl, referrer, requestType) {
-        return getRequestFilter().findWhiteListRule(requestUrl, referrer, requestType);
+    const findWhitelistRule = function (requestUrl, referrer, requestType) {
+        return getRequestFilter().findWhitelistRule(requestUrl, referrer, requestType);
     };
 
-    const findStealthWhiteListRule = function (requestUrl, referrer, requestType) {
-        return getRequestFilter().findStealthWhiteListRule(requestUrl, referrer, requestType);
+    const findStealthWhitelistRule = function (requestUrl, referrer, requestType) {
+        return getRequestFilter().findStealthWhitelistRule(requestUrl, referrer, requestType);
     };
 
     const getSelectorsForUrl = function (documentUrl, genericHideFlag) {
@@ -106,7 +106,7 @@ export const filteringApi = (function () {
         shouldCollapseAllElements,
 
         findRuleForRequest,
-        findWhiteListRule,
+        findWhitelistRule,
 
         getSelectorsForUrl,
         getScriptsForUrl,
@@ -116,7 +116,7 @@ export const filteringApi = (function () {
         getCookieRules,
         getReplaceRules,
         getRemoveParamRules,
-        findStealthWhiteListRule,
+        findStealthWhitelistRule,
         getCosmeticOption,
 
         getRequestFilterInfo,

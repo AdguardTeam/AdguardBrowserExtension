@@ -41,7 +41,7 @@ export const listeners = (() => {
         CHANGE_PREFS: 'event.change.prefs',
         UPDATE_FILTERS_SHOW_POPUP: 'event.update.filters.show.popup',
         UPDATE_USER_FILTER_RULES: 'event.update.user.filter.rules',
-        UPDATE_WHITELIST_FILTER_RULES: 'event.update.whitelist.filter.rules',
+        UPDATE_ALLOWLIST_FILTER_RULES: 'event.update.allowlist.filter.rules',
         SETTING_UPDATED: 'event.update.setting.value',
         FILTERS_UPDATE_CHECK_READY: 'event.update.filters.check',
         // Log events

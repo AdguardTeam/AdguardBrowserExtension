@@ -226,7 +226,7 @@ export const settings = (() => {
         setProperty(settings.DISABLE_SHOW_CONTEXT_MENU, !enabled, options);
     };
 
-    const isDefaultWhiteListMode = function () {
+    const isDefaultWhitelistMode = function () {
         return getProperty(settings.DEFAULT_WHITE_LIST_MODE);
     };
 
@@ -238,7 +238,7 @@ export const settings = (() => {
         setProperty(settings.USE_OPTIMIZED_FILTERS, !!enabled, options);
     };
 
-    const changeDefaultWhiteListMode = function (enabled) {
+    const changeDefaultWhitelistMode = function (enabled) {
         setProperty(settings.DEFAULT_WHITE_LIST_MODE, enabled);
     };
 
@@ -310,10 +310,10 @@ export const settings = (() => {
     api.changeCollectHitsCount = changeCollectHitsCount;
     api.showContextMenu = showContextMenu;
     api.changeShowContextMenu = changeShowContextMenu;
-    api.isDefaultWhiteListMode = isDefaultWhiteListMode;
+    api.isDefaultWhitelistMode = isDefaultWhitelistMode;
     api.isUseOptimizedFiltersEnabled = isUseOptimizedFiltersEnabled;
     api.changeUseOptimizedFiltersEnabled = changeUseOptimizedFiltersEnabled;
-    api.changeDefaultWhiteListMode = changeDefaultWhiteListMode;
+    api.changeDefaultWhitelistMode = changeDefaultWhitelistMode;
     api.getFiltersUpdatePeriod = getFiltersUpdatePeriod;
     api.setFiltersUpdatePeriod = setFiltersUpdatePeriod;
     api.isWebRTCDisabled = isWebRTCDisabled;

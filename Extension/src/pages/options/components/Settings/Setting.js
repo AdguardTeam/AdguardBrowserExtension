@@ -14,54 +14,54 @@ export const SETTINGS_TYPES = {
 export default function Setting(props) {
     const { type } = props;
     switch (type) {
-    case SETTINGS_TYPES.CHECKBOX: {
-        const {
-            id, handler, inverted, value,
-        } = props;
-        return (
-            <Checkbox
-                id={id}
-                handler={handler}
-                inverted={inverted}
-                value={value}
-            />
-        );
-    }
-    case SETTINGS_TYPES.SELECT: {
-        const {
-            id, handler, options, value,
-        } = props;
-        return (
-            <Select
-                id={id}
-                handler={handler}
-                options={options}
-                value={value}
-            />
-        );
-    }
-    case SETTINGS_TYPES.INPUT: {
-        const { id, value, handler } = props;
-        return (
-            <TextInput
-                id={id}
-                value={value}
-                handler={handler}
-            />
-        );
-    }
-    case SETTINGS_TYPES.TEXTAREA: {
-        const { id, value, handler } = props;
-        return (
-            <Textarea
-                id={id}
-                value={value}
-                handler={handler}
-            />
-        );
-    }
-    default:
-        throw new Error(`
+        case SETTINGS_TYPES.CHECKBOX: {
+            const {
+                id, handler, inverted, value,
+            } = props;
+            return (
+                <Checkbox
+                    id={id}
+                    handler={handler}
+                    inverted={inverted}
+                    value={value}
+                />
+            );
+        }
+        case SETTINGS_TYPES.SELECT: {
+            const {
+                id, handler, options, value,
+            } = props;
+            return (
+                <Select
+                    id={id}
+                    handler={handler}
+                    options={options}
+                    value={value}
+                />
+            );
+        }
+        case SETTINGS_TYPES.INPUT: {
+            const { id, value, handler } = props;
+            return (
+                <TextInput
+                    id={id}
+                    value={value}
+                    handler={handler}
+                />
+            );
+        }
+        case SETTINGS_TYPES.TEXTAREA: {
+            const { id, value, handler } = props;
+            return (
+                <Textarea
+                    id={id}
+                    value={value}
+                    handler={handler}
+                />
+            );
+        }
+        default:
+            throw new Error(`
                 There is no right component for a type: "${type}".
                 Available types: ${Object.values(SETTINGS_TYPES).join(', ')}
             `);

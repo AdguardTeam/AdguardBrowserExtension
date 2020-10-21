@@ -183,16 +183,16 @@ export const stealthService = (() => {
             return false;
         }
 
-        const whiteListRule = filteringApi.findWhiteListRule(requestUrl, mainFrameUrl, requestType);
-        if (whiteListRule && whiteListRule.isDocumentWhitelistRule()) {
+        const whitelistRule = filteringApi.findWhitelistRule(requestUrl, mainFrameUrl, requestType);
+        if (whitelistRule && whitelistRule.isDocumentWhitelistRule()) {
             log.debug('Whitelist rule found');
             return false;
         }
 
-        const stealthWhiteListRule = findStealthWhitelistRule(requestUrl, mainFrameUrl, requestType);
-        if (stealthWhiteListRule) {
+        const stealthWhitelistRule = findStealthWhitelistRule(requestUrl, mainFrameUrl, requestType);
+        if (stealthWhitelistRule) {
             log.debug('Whitelist stealth rule found');
-            requestContextStorage.update(requestId, { requestRule: stealthWhiteListRule });
+            requestContextStorage.update(requestId, { requestRule: stealthWhitelistRule });
             return false;
         }
 
@@ -263,15 +263,15 @@ export const stealthService = (() => {
             return null;
         }
 
-        const whiteListRule = filteringApi.findWhiteListRule(requestUrl, referrerUrl, requestType);
-        if (whiteListRule && whiteListRule.isDocumentWhitelistRule()) {
+        const whitelistRule = filteringApi.findWhitelistRule(requestUrl, referrerUrl, requestType);
+        if (whitelistRule && whitelistRule.isDocumentWhitelistRule()) {
             log.debug('Whitelist rule found');
             return false;
         }
 
         // If stealth is whitelisted
-        const stealthWhiteListRule = findStealthWhitelistRule(requestUrl, referrerUrl, requestType);
-        if (stealthWhiteListRule) {
+        const stealthWhitelistRule = findStealthWhitelistRule(requestUrl, referrerUrl, requestType);
+        if (stealthWhitelistRule) {
             log.debug('Whitelist stealth rule found');
             return null;
         }
@@ -317,17 +317,17 @@ export const stealthService = (() => {
      */
     const findStealthWhitelistRule = function (requestUrl, referrerUrl, requestType) {
         if (referrerUrl) {
-            const stealthDocumentWhitelistRule = filteringApi.findStealthWhiteListRule(referrerUrl, referrerUrl, requestType);
+            const stealthDocumentWhitelistRule = filteringApi.findStealthWhitelistRule(referrerUrl, referrerUrl, requestType);
             if (stealthDocumentWhitelistRule && stealthDocumentWhitelistRule.isDocumentWhitelistRule()) {
                 log.debug('Stealth document whitelist rule found.');
                 return stealthDocumentWhitelistRule;
             }
         }
 
-        const stealthWhiteListRule = filteringApi.findStealthWhiteListRule(requestUrl, referrerUrl, requestType);
-        if (stealthWhiteListRule) {
+        const stealthWhitelistRule = filteringApi.findStealthWhitelistRule(requestUrl, referrerUrl, requestType);
+        if (stealthWhitelistRule) {
             log.debug('Stealth whitelist rule found.');
-            return stealthWhiteListRule;
+            return stealthWhitelistRule;
         }
 
         return null;
@@ -434,16 +434,16 @@ export const stealthService = (() => {
             return null;
         }
 
-        const whiteListRule = filteringApi.findWhiteListRule(requestUrl, mainFrameUrl, requestType);
-        if (whiteListRule && whiteListRule.isDocumentWhitelistRule()) {
+        const whitelistRule = filteringApi.findWhitelistRule(requestUrl, mainFrameUrl, requestType);
+        if (whitelistRule && whitelistRule.isDocumentWhitelistRule()) {
             log.debug('Whitelist rule found');
             return null;
         }
 
-        const stealthWhiteListRule = findStealthWhitelistRule(requestUrl, mainFrameUrl, requestType);
-        if (stealthWhiteListRule) {
+        const stealthWhitelistRule = findStealthWhitelistRule(requestUrl, mainFrameUrl, requestType);
+        if (stealthWhitelistRule) {
             log.debug('Whitelist stealth rule found');
-            filteringLog.addHttpRequestEvent(tab, requestUrl, mainFrameUrl, requestType, stealthWhiteListRule);
+            filteringLog.addHttpRequestEvent(tab, requestUrl, mainFrameUrl, requestType, stealthWhitelistRule);
             return null;
         }
 

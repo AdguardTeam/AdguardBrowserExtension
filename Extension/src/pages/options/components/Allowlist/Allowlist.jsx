@@ -1,48 +1,44 @@
-/* eslint-disable react/jsx-no-target-blank */
 import React, { useContext, useEffect, useRef } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 
-import { rootStore } from '../../stores/RootStore';
+import SettingsSection from '../Settings/SettingsSection';
+import SettingsSet from '../Settings/SettingsSet';
+import Setting, { SETTINGS_TYPES } from '../Settings/Setting';
 import { Editor } from '../Editor';
+import { rootStore } from '../../stores/RootStore';
 import { uploadFile } from '../../../helpers';
 import { log } from '../../../../background/utils/log';
 import { STATES as SAVING_STATES } from '../Editor/savingFSM';
-import { reactTranslator } from '../../../reactCommon/reactTranslator';
 
-import './styles.pcss';
-
-// TODO add shortcut to wrap lines in comments
-const UserRules = observer(() => {
+const Allowlist = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);
+
+    useEffect(() => {
+        (async () => {
+            await settingsStore.getAllowlist();
+        })();
+    }, []);
 
     const editorRef = useRef(null);
     const inputRef = useRef(null);
 
-    const { savingRulesState } = settingsStore;
+    const { settings, savingAllowlistState } = settingsStore;
 
-    const renderSavingState = () => {
-        const indicatorTextMap = {
-            [SAVING_STATES.IDLE]: '',
-            [SAVING_STATES.SAVED]: reactTranslator.translate('options_editor_indicator_saved'),
-            [SAVING_STATES.SAVING]: reactTranslator.translate('options_editor_indicator_saving'),
-        };
+    const { DEFAULT_WHITE_LIST_MODE } = settings.names;
 
-        const indicatorText = indicatorTextMap[savingRulesState];
+    const settingChangeHandler = async ({ id, data }) => {
+        await settingsStore.updateSetting(id, data);
+        await settingsStore.getAllowlist();
+    };
 
-        if (savingRulesState === SAVING_STATES.IDLE) {
-            return null;
-        }
+    const importClickHandler = (e) => {
+        e.preventDefault();
+        inputRef.current.click();
+    };
 
-        const indicatorClassnames = classnames('editor__label', {
-            'editor__label--saved': savingRulesState === SAVING_STATES.SAVED,
-        });
-
-        return (
-            <div className={indicatorClassnames}>
-                {indicatorText}
-            </div>
-        );
+    const exportClickHandler = async () => {
+        window.open('/pages/export.html#wl', '_blank');
     };
 
     const inputChangeHandler = async (event) => {
@@ -51,8 +47,7 @@ const UserRules = observer(() => {
 
         try {
             const content = await uploadFile(file, 'txt');
-            editorRef.current.editor.setValue(content);
-            await settingsStore.saveUserRules(content);
+            await settingsStore.saveAllowlist(content);
         } catch (e) {
             log.debug(e.message);
             uiStore.addNotification({ description: e.message });
@@ -62,14 +57,33 @@ const UserRules = observer(() => {
         event.target.value = '';
     };
 
-    const importClickHandler = (e) => {
-        e.preventDefault();
-        inputRef.current.click();
+    const renderSavingState = (savingState) => {
+        const indicatorTextMap = {
+            [SAVING_STATES.IDLE]: '',
+            [SAVING_STATES.SAVED]: 'Saved',
+            [SAVING_STATES.SAVING]: 'Saving...',
+        };
+
+        const indicatorText = indicatorTextMap[savingState];
+
+        if (savingState === SAVING_STATES.IDLE) {
+            return null;
+        }
+
+        const indicatorClassnames = classnames('editor__label', {
+            'editor__label--saved': savingState === SAVING_STATES.SAVED,
+        });
+
+        return (
+            <div className={indicatorClassnames}>
+                {indicatorText}
+            </div>
+        );
     };
 
     const saveClickHandler = async () => {
         const value = editorRef.current.editor.getValue();
-        await settingsStore.saveUserRules(value);
+        await settingsStore.saveAllowlist(value);
     };
 
     const shortcuts = [{
@@ -80,35 +94,32 @@ const UserRules = observer(() => {
         },
     }];
 
-    const exportClickHandler = async () => {
-        window.open('/pages/export.html#uf', '_blank');
-    };
-
-    useEffect(() => {
-        (async () => {
-            await settingsStore.getUserRules();
-        })();
-    }, []);
-
+    // TODO fix translations
     return (
         <>
-            <h2 className="title">{reactTranslator.translate('options_userfilter')}</h2>
+            <h2 className="title">
+                Allowlist
+            </h2>
             <div className="desc">
-                {reactTranslator.translate('options_userfilter_description', {
-                    a: (chunks) => (
-                        <a
-                            className="desc--link"
-                            href="https://adguard.com/forward.html?action=userfilter_description&from=options&app=browser_extension"
-                            target="_blank"
-                        >
-                            {chunks}
-                        </a>
-                    ),
-                })}
+                AdGuard does not filter websites from the allowlist.
             </div>
+            <SettingsSection>
+                <SettingsSet
+                    title="Invert allowlist"
+                    description="Unblock ads everywhere except for the allowlist"
+                >
+                    <Setting
+                        id={DEFAULT_WHITE_LIST_MODE}
+                        type={SETTINGS_TYPES.CHECKBOX}
+                        value={settings.values[DEFAULT_WHITE_LIST_MODE]}
+                        handler={settingChangeHandler}
+                        inverted
+                    />
+                </SettingsSet>
+            </SettingsSection>
             <Editor
-                name="user-rules"
-                value={settingsStore.userRules}
+                name="allowlist"
+                value={settingsStore.allowlist}
                 editorRef={editorRef}
                 shortcuts={shortcuts}
             />
@@ -126,24 +137,24 @@ const UserRules = observer(() => {
                         className="button button--m button--green actions__btn"
                         onClick={importClickHandler}
                     >
-                        {reactTranslator.translate('options_userfilter_import')}
+                        Import
                     </button>
                     <button
                         type="button"
                         className="button button--m button--green-bd actions__btn"
                         onClick={exportClickHandler}
                     >
-                        {reactTranslator.translate('options_userfilter_export')}
+                        Export
                     </button>
                 </div>
                 <div className="actions__group">
-                    {renderSavingState()}
+                    {renderSavingState(savingAllowlistState)}
                     <button
                         type="button"
                         className="button button--m button--green actions__btn"
                         onClick={saveClickHandler}
                     >
-                        {reactTranslator.translate('options_editor_save')}
+                        Save
                     </button>
                 </div>
             </div>
@@ -151,4 +162,4 @@ const UserRules = observer(() => {
     );
 });
 
-export { UserRules };
+export { Allowlist };

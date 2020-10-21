@@ -162,7 +162,7 @@ const browsersFilteringLog = (function () {
                 destinationRuleDTO.documentLevelRule = true;
             }
 
-            destinationRuleDTO.whiteListRule = sourceRule.isWhitelist();
+            destinationRuleDTO.whitelistRule = sourceRule.isWhitelist();
             destinationRuleDTO.cspRule = sourceRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Csp);
             destinationRuleDTO.cspDirective = sourceRule.getAdvancedModifierValue();
             destinationRuleDTO.cookieRule = sourceRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Cookie);

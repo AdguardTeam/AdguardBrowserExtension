@@ -34,5 +34,6 @@ module.exports = {
         'react/jsx-indent-props': ['error', 4],
         'import/prefer-default-export': 'off',
         'react/prop-types': 'off', // TODO enable prop-types validation
+        'arrow-body-style': 'off',
     },
 };

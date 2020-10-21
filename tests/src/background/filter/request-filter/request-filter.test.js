@@ -255,7 +255,7 @@ describe('RequestFilter', () => {
                 rule, whitelist,
             ]);
 
-            result = requestFilter.findWhiteListRule(url, referrer, RequestTypes.SUBDOCUMENT);
+            result = requestFilter.findWhitelistRule(url, referrer, RequestTypes.SUBDOCUMENT);
             expect(result).toBeTruthy();
             expect(result.getText()).toEqual(whitelist);
 
@@ -267,7 +267,7 @@ describe('RequestFilter', () => {
                 rule, whitelist, badFilterRule,
             ]);
 
-            result = requestFilter.findWhiteListRule(url, referrer, RequestTypes.SUBDOCUMENT);
+            result = requestFilter.findWhitelistRule(url, referrer, RequestTypes.SUBDOCUMENT);
             expect(result).toBeFalsy();
 
             result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT);
@@ -366,8 +366,8 @@ describe('RequestFilter', () => {
             expect(!result || result.length === 0).toBeTruthy();
 
             // Add matching directive whitelist rule
-            const directiveWhiteListRule = '@@||xpanama.net^$csp=connect-src \'none\'';
-            requestFilter = await createRequestFilterWithRules([cspRule, directiveWhiteListRule]);
+            const directiveWhitelistRule = '@@||xpanama.net^$csp=connect-src \'none\'';
+            requestFilter = await createRequestFilterWithRules([cspRule, directiveWhitelistRule]);
             result = requestFilter.findCspRules(
                 'https://xpanama.net',
                 'https://www.merriam-webster.com/',
@@ -375,21 +375,21 @@ describe('RequestFilter', () => {
             );
             // Specific whitelist rule should be returned
             expect(result).toHaveLength(1);
-            expect(result[0].getText()).toBe(directiveWhiteListRule);
+            expect(result[0].getText()).toBe(directiveWhitelistRule);
 
             // Add global whitelist rule
-            const globalWhiteListRule = '@@||xpanama.net^$csp';
-            requestFilter = await createRequestFilterWithRules([cspRule, directiveWhiteListRule, globalWhiteListRule]);
+            const globalWhitelistRule = '@@||xpanama.net^$csp';
+            requestFilter = await createRequestFilterWithRules([cspRule, directiveWhitelistRule, globalWhitelistRule]);
             result = requestFilter.findCspRules(
                 'https://xpanama.net', 'https://www.merriam-webster.com/', RequestTypes.DOCUMENT,
             );
             // Global whitelist rule should be returned
             expect(result).toHaveLength(1);
-            expect(result[0].getText()).toBe(globalWhiteListRule);
+            expect(result[0].getText()).toBe(globalWhitelistRule);
 
             // Add whitelist rule, but with not matched directive
-            const directiveMissWhiteListRule = '@@||xpanama.net^$csp=frame-src \'none\'';
-            requestFilter = await createRequestFilterWithRules([cspRule, directiveMissWhiteListRule]);
+            const directiveMissWhitelistRule = '@@||xpanama.net^$csp=frame-src \'none\'';
+            requestFilter = await createRequestFilterWithRules([cspRule, directiveMissWhitelistRule]);
             result = requestFilter.findCspRules(
                 'https://xpanama.net', 'https://www.merriam-webster.com/', RequestTypes.DOCUMENT,
             );
@@ -398,7 +398,7 @@ describe('RequestFilter', () => {
 
             // Add CSP rule with duplicated directive
             const duplicateCspRule = '||xpanama.net^$third-party,csp=connect-src \'none\'';
-            requestFilter = await createRequestFilterWithRules([cspRule, directiveMissWhiteListRule, duplicateCspRule]);
+            requestFilter = await createRequestFilterWithRules([cspRule, directiveMissWhitelistRule, duplicateCspRule]);
             result = requestFilter.findCspRules(
                 'https://xpanama.net', 'https://www.merriam-webster.com/', RequestTypes.DOCUMENT,
             );
@@ -435,10 +435,10 @@ describe('RequestFilter', () => {
             let rules;
 
             // Test important rules
-            const globalWhiteListRule = '@@||xpanama.net^$csp,domain=merriam-webster.com';
-            const directiveWhiteListRule = '@@||xpanama.net^$csp=frame-src \'none\',domain=merriam-webster.com';
+            const globalWhitelistRule = '@@||xpanama.net^$csp,domain=merriam-webster.com';
+            const directiveWhitelistRule = '@@||xpanama.net^$csp=frame-src \'none\',domain=merriam-webster.com';
             // eslint-disable-next-line max-len
-            const importantDirectiveWhiteListRule = '@@||xpanama.net^$csp=frame-src \'none\',domain=merriam-webster.com,important';
+            const importantDirectiveWhitelistRule = '@@||xpanama.net^$csp=frame-src \'none\',domain=merriam-webster.com,important';
             const defaultCspRule = '||xpanama.net^$csp=frame-src \'none\',domain=merriam-webster.com';
             const importantCspRule = '||xpanama.net^$csp=frame-src \'none\',domain=merriam-webster.com,important';
 
@@ -452,35 +452,35 @@ describe('RequestFilter', () => {
             }
 
             requestFilter = await createRequestFilterWithRules([
-                globalWhiteListRule,
-                directiveWhiteListRule,
-                importantDirectiveWhiteListRule,
+                globalWhitelistRule,
+                directiveWhitelistRule,
+                importantDirectiveWhitelistRule,
                 defaultCspRule,
                 importantCspRule,
             ]);
 
-            checkCspRules(globalWhiteListRule);
+            checkCspRules(globalWhitelistRule);
 
             requestFilter = await createRequestFilterWithRules([
-                directiveWhiteListRule,
-                importantDirectiveWhiteListRule,
+                directiveWhitelistRule,
+                importantDirectiveWhitelistRule,
                 defaultCspRule,
                 importantCspRule,
             ]);
-            checkCspRules(importantDirectiveWhiteListRule);
+            checkCspRules(importantDirectiveWhitelistRule);
 
             requestFilter = await createRequestFilterWithRules([
-                directiveWhiteListRule,
+                directiveWhitelistRule,
                 defaultCspRule,
                 importantCspRule,
             ]);
             checkCspRules(importantCspRule);
 
             requestFilter = await createRequestFilterWithRules([
-                directiveWhiteListRule,
+                directiveWhitelistRule,
                 defaultCspRule,
             ]);
-            checkCspRules(directiveWhiteListRule);
+            checkCspRules(directiveWhitelistRule);
 
             requestFilter = await createRequestFilterWithRules([
                 defaultCspRule,

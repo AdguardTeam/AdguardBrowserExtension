@@ -287,7 +287,7 @@ export const RequestFilter = (() => {
          * @param requestType Request type
          * @returns Filter rule found or null
          */
-        findWhiteListRule(requestUrl, referrer, requestType) {
+        findWhitelistRule(requestUrl, referrer, requestType) {
             const result = this.getMatchingResult(requestUrl, referrer, requestType);
 
             const basicResult = result.getBasicResult();
@@ -306,7 +306,7 @@ export const RequestFilter = (() => {
          * @param requestType Request type
          * @returns Filter rule found or null
          */
-        findStealthWhiteListRule(requestUrl, referrer, requestType) {
+        findStealthWhitelistRule(requestUrl, referrer, requestType) {
             const result = this.getMatchingResult(requestUrl, referrer, requestType);
             return result.stealthRule;
         },

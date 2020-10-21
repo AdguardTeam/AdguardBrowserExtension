@@ -58,13 +58,13 @@ export const uiService = (function () {
         'context_site_filtering_on': async function () {
             const tab = await tabsApi.getActive();
             if (tab) {
-                unWhiteListTab(tab);
+                unWhitelistTab(tab);
             }
         },
         'context_site_filtering_off': async function () {
             const tab = await tabsApi.getActive();
             if (tab) {
-                whiteListTab(tab);
+                whitelistTab(tab);
             }
         },
         'context_enable_protection': function () {
@@ -143,7 +143,7 @@ export const uiService = (function () {
 
                 const tabInfo = frames.getFrameInfo(tab);
                 disabled = tabInfo.applicationFilteringDisabled;
-                disabled = disabled || tabInfo.documentWhiteListed;
+                disabled = disabled || tabInfo.documentWhitelisted;
 
                 if (!disabled && settings.showPageStatistic()) {
                     blocked = tabInfo.totalBlockedTab.toString();
@@ -273,10 +273,10 @@ export const uiService = (function () {
             addMenu('context_open_settings');
             addMenu('context_update_antibanner_filters');
         } else {
-            if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
+            if (tabInfo.documentWhitelisted && !tabInfo.userWhitelisted) {
                 addMenu('context_site_exception');
             } else if (tabInfo.canAddRemoveRule) {
-                if (tabInfo.documentWhiteListed) {
+                if (tabInfo.documentWhitelisted) {
                     addMenu('context_site_filtering_on');
                 } else {
                     addMenu('context_site_filtering_off');
@@ -284,7 +284,7 @@ export const uiService = (function () {
             }
             addSeparator();
 
-            if (!tabInfo.documentWhiteListed) {
+            if (!tabInfo.documentWhitelisted) {
                 addMenu('context_block_site_ads');
                 addMenu('context_block_site_element', { contexts: ['image', 'video', 'audio'] });
             }
@@ -321,10 +321,10 @@ export const uiService = (function () {
                 checked: false,
                 checkable: true,
             });
-            if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
+            if (tabInfo.documentWhitelisted && !tabInfo.userWhitelisted) {
                 addMenu('popup_in_white_list_android');
             } else if (tabInfo.canAddRemoveRule) {
-                if (tabInfo.documentWhiteListed) {
+                if (tabInfo.documentWhitelisted) {
                     addMenu('popup_site_filtering_state', {
                         action: 'context_site_filtering_on',
                         checkable: true,
@@ -339,7 +339,7 @@ export const uiService = (function () {
                 }
             }
 
-            if (!tabInfo.documentWhiteListed) {
+            if (!tabInfo.documentWhitelisted) {
                 addMenu('popup_block_site_ads_android', { action: 'context_block_site_ads' });
             }
             addMenu('popup_open_log_android', { action: 'context_open_log' });
@@ -748,16 +748,16 @@ export const uiService = (function () {
         openTab(getPageUrl('filter-download.html'), { inBackground: browserUtils.isYaBrowser() });
     };
 
-    var whiteListTab = function (tab) {
+    var whitelistTab = function (tab) {
         const tabInfo = frames.getFrameInfo(tab);
-        whitelist.whiteListUrl(tabInfo.url);
+        whitelist.whitelistUrl(tabInfo.url);
         updateTabIconAndContextMenu(tab, true);
         tabsApi.reload(tab.tabId);
     };
 
-    var unWhiteListTab = function (tab) {
+    var unWhitelistTab = function (tab) {
         const tabInfo = frames.getFrameInfo(tab);
-        userrules.unWhiteListFrame(tabInfo);
+        userrules.unWhitelistFrame(tabInfo);
         updateTabIconAndContextMenu(tab, true);
         tabsApi.reload(tab.tabId);
     };
@@ -974,8 +974,8 @@ export const uiService = (function () {
 
         updateTabIconAndContextMenu,
 
-        whiteListTab,
-        unWhiteListTab,
+        whitelistTab,
+        unWhitelistTab,
 
         changeApplicationFilteringDisabled,
         checkFiltersUpdates,

@@ -60,7 +60,7 @@ export const webRequestService = (function () {
     const recordRuleHit = function (tab, requestRule, requestUrl) {
         if (requestRule
             && !utils.filters.isUserFilterRule(requestRule)
-            && !utils.filters.isWhiteListFilterRule(requestRule)
+            && !utils.filters.isWhitelistFilterRule(requestRule)
             && canCollectHitStatsForTab(tab)) {
             const domain = frames.getFrameDomain(tab);
             hitStats.addRuleHit(domain, requestRule.getText(), requestRule.getFilterListId(), requestUrl);
@@ -103,7 +103,7 @@ export const webRequestService = (function () {
             return result;
         }
 
-        if (frames.isTabWhiteListed(tab)) {
+        if (frames.isTabWhitelisted(tab)) {
             return result;
         }
 
@@ -289,9 +289,9 @@ export const webRequestService = (function () {
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1032
          */
         if (tab.tabId === BACKGROUND_TAB_ID) {
-            whitelistRule = whitelist.findWhiteListRule(referrerUrl);
+            whitelistRule = whitelist.findWhitelistRule(referrerUrl);
         } else {
-            whitelistRule = frames.getFrameWhiteListRule(tab);
+            whitelistRule = frames.getFrameWhitelistRule(tab);
         }
 
         if (whitelistRule && whitelistRule.isDocumentWhitelistRule()) {
@@ -302,7 +302,7 @@ export const webRequestService = (function () {
 
         if (!whitelistRule) {
             // If whitelist rule is not found for the main frame, we check it for referrer
-            whitelistRule = filteringApi.findWhiteListRule(requestUrl, referrerUrl, RequestTypes.DOCUMENT);
+            whitelistRule = filteringApi.findWhitelistRule(requestUrl, referrerUrl, RequestTypes.DOCUMENT);
         }
 
         return filteringApi.findRuleForRequest(requestUrl, referrerUrl, requestType, whitelistRule);
@@ -320,7 +320,7 @@ export const webRequestService = (function () {
             return null;
         }
 
-        const whitelistRule = filteringApi.findWhiteListRule(documentUrl, documentUrl, RequestTypes.DOCUMENT);
+        const whitelistRule = filteringApi.findWhitelistRule(documentUrl, documentUrl, RequestTypes.DOCUMENT);
         if (whitelistRule && whitelistRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Content)) {
             return null;
         }
@@ -345,7 +345,7 @@ export const webRequestService = (function () {
         // @@||example.org^$document or @@||example.org^$urlblock —
         // disables all the $csp rules on all the pages matching the rule pattern.
         // eslint-disable-next-line max-len
-        const whitelistRule = filteringApi.findWhiteListRule(requestUrl, referrerUrl, RequestTypes.DOCUMENT);
+        const whitelistRule = filteringApi.findWhitelistRule(requestUrl, referrerUrl, RequestTypes.DOCUMENT);
         if (whitelistRule && whitelistRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Urlblock)) {
             return null;
         }
@@ -367,7 +367,7 @@ export const webRequestService = (function () {
             return null;
         }
 
-        const whitelistRule = filteringApi.findWhiteListRule(requestUrl, referrerUrl, RequestTypes.DOCUMENT);
+        const whitelistRule = filteringApi.findWhitelistRule(requestUrl, referrerUrl, RequestTypes.DOCUMENT);
         if (whitelistRule && whitelistRule.isDocumentWhitelistRule()) {
             // $cookie rules are not affected by regular exception rules (@@) unless it's a $document exception.
             return null;
@@ -391,7 +391,7 @@ export const webRequestService = (function () {
             return null;
         }
 
-        const whitelistRule = filteringApi.findWhiteListRule(requestUrl, referrerUrl, RequestTypes.DOCUMENT);
+        const whitelistRule = filteringApi.findWhitelistRule(requestUrl, referrerUrl, RequestTypes.DOCUMENT);
         if (whitelistRule && whitelistRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Content)) {
             return null;
         }
@@ -413,7 +413,7 @@ export const webRequestService = (function () {
             return null;
         }
 
-        const whitelistRule = filteringApi.findWhiteListRule(
+        const whitelistRule = filteringApi.findWhitelistRule(
             requestUrl, referrerUrl, RequestTypes.DOCUMENT,
         );
         if (whitelistRule && whitelistRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.RemoveParam)) {
@@ -474,7 +474,7 @@ export const webRequestService = (function () {
      * @return {object} Request rule if suitable by its own type and request type or null
      */
     const postProcessRequest = function (tab, requestUrl, referrerUrl, requestType, requestRule) {
-        if (requestRule && !requestRule.whiteListRule) {
+        if (requestRule && !requestRule.whitelistRule) {
             const isRequestBlockingRule = isRequestBlockedByRule(requestRule);
             const isReplaceRule = requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Replace);
 

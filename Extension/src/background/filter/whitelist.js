@@ -28,23 +28,23 @@ export const whitelist = (() => {
     const BLOCK_LIST_DOMAINS_LS_PROP = 'block-list-domains';
 
     // eslint-disable-next-line max-len
-    const allowAllWhiteListRule = new TSUrlFilter.NetworkRule('@@whitelist-all$document', utils.filters.WHITE_LIST_FILTER_ID);
+    const allowAllWhitelistRule = new TSUrlFilter.NetworkRule('@@whitelist-all$document', utils.filters.WHITE_LIST_FILTER_ID);
 
     /**
      * Returns whitelist mode
      * In default mode filtration is enabled for all sites
      * In inverted model filtration is disabled for all sites
      */
-    function isDefaultWhiteListMode() {
-        return settings.isDefaultWhiteListMode();
+    function isDefaultWhitelistMode() {
+        return settings.isDefaultWhitelistMode();
     }
 
     /**
      * Read domains and initialize filters lazy
      */
-    const whiteListDomainsHolder = {
+    const whitelistDomainsHolder = {
         get domains() {
-            return lazyGet(whiteListDomainsHolder, 'domains', () => {
+            return lazyGet(whitelistDomainsHolder, 'domains', () => {
                 return getDomainsFromLocalStorage(WHITE_LIST_DOMAINS_LS_PROP);
             });
         },
@@ -74,8 +74,8 @@ export const whitelist = (() => {
         },
     };
 
-    function notifyWhiteListUpdated() {
-        listeners.notifyListeners(listeners.UPDATE_WHITELIST_FILTER_RULES);
+    function notifyWhitelistUpdated() {
+        listeners.notifyListeners(listeners.UPDATE_ALLOWLIST_FILTER_RULES);
     }
 
     /**
@@ -84,7 +84,7 @@ export const whitelist = (() => {
      * @returns {*}
      * @private
      */
-    function createWhiteListRule(domain) {
+    function createWhitelistRule(domain) {
         if (utils.strings.isEmpty(domain)) {
             return null;
         }
@@ -96,12 +96,12 @@ export const whitelist = (() => {
      * Adds domain to array of whitelist domains
      * @param domain
      */
-    function addDomainToWhiteList(domain) {
+    function addDomainToWhitelist(domain) {
         if (!domain) {
             return;
         }
-        if (isDefaultWhiteListMode()) {
-            whiteListDomainsHolder.add(domain);
+        if (isDefaultWhitelistMode()) {
+            whitelistDomainsHolder.add(domain);
         } else {
             blockListDomainsHolder.add(domain);
         }
@@ -111,12 +111,12 @@ export const whitelist = (() => {
      * Remove domain form whitelist domains
      * @param domain
      */
-    function removeDomainFromWhiteList(domain) {
+    function removeDomainFromWhitelist(domain) {
         if (!domain) {
             return;
         }
-        if (isDefaultWhiteListMode()) {
-            utils.collections.removeAll(whiteListDomainsHolder.domains, domain);
+        if (isDefaultWhitelistMode()) {
+            utils.collections.removeAll(whitelistDomainsHolder.domains, domain);
         } else {
             utils.collections.removeAll(blockListDomainsHolder.domains, domain);
         }
@@ -126,10 +126,10 @@ export const whitelist = (() => {
      * Remove domain from whitelist
      * @param domain
      */
-    function removeFromWhiteList(domain) {
-        removeDomainFromWhiteList(domain);
+    function removeFromWhitelist(domain) {
+        removeDomainFromWhitelist(domain);
         saveDomainsToLocalStorage();
-        notifyWhiteListUpdated();
+        notifyWhitelistUpdated();
     }
 
     /**
@@ -137,7 +137,7 @@ export const whitelist = (() => {
      */
     function saveDomainsToLocalStorage() {
         localStorage.setItem(WHITE_LIST_DOMAINS_LS_PROP,
-            JSON.stringify(whiteListDomainsHolder.domains));
+            JSON.stringify(whitelistDomainsHolder.domains));
         localStorage.setItem(BLOCK_LIST_DOMAINS_LS_PROP,
             JSON.stringify(blockListDomainsHolder.domains));
     }
@@ -164,29 +164,29 @@ export const whitelist = (() => {
      * Adds domain to whitelist
      * @param domain
      */
-    function addToWhiteList(domain) {
+    function addToWhitelist(domain) {
         if (utils.strings.isEmpty(domain)) {
             return;
         }
 
-        addDomainToWhiteList(domain);
+        addDomainToWhitelist(domain);
         saveDomainsToLocalStorage();
-        notifyWhiteListUpdated();
+        notifyWhitelistUpdated();
     }
 
     /**
      * Search for whitelist rule by url.
      */
-    const findWhiteListRule = function (url) {
+    const findWhitelistRule = function (url) {
         if (!url) {
             return null;
         }
 
         const host = utils.url.getHost(url);
 
-        if (isDefaultWhiteListMode()) {
-            if (whiteListDomainsHolder.includes(host)) {
-                return createWhiteListRule(host);
+        if (isDefaultWhitelistMode()) {
+            if (whitelistDomainsHolder.includes(host)) {
+                return createWhitelistRule(host);
             }
 
             return null;
@@ -197,28 +197,28 @@ export const whitelist = (() => {
             return null;
         }
 
-        return allowAllWhiteListRule;
+        return allowAllWhitelistRule;
     };
 
     /**
      * Changes whitelist mode
      * @param defaultMode
      */
-    const changeDefaultWhiteListMode = function (defaultMode) {
-        settings.changeDefaultWhiteListMode(defaultMode);
-        notifyWhiteListUpdated();
+    const changeDefaultWhitelistMode = function (defaultMode) {
+        settings.changeDefaultWhitelistMode(defaultMode);
+        notifyWhitelistUpdated();
     };
 
     /**
      * Stop (or start in case of inverted mode) filtration for url
      * @param url
      */
-    const whiteListUrl = function (url) {
+    const whitelistUrl = function (url) {
         const domain = utils.url.getHost(url);
-        if (isDefaultWhiteListMode()) {
-            addToWhiteList(domain);
+        if (isDefaultWhitelistMode()) {
+            addToWhitelist(domain);
         } else {
-            removeFromWhiteList(domain);
+            removeFromWhitelist(domain);
         }
     };
 
@@ -226,12 +226,12 @@ export const whitelist = (() => {
      * Start (or stop in case of inverted mode) filtration for url
      * @param url
      */
-    const unWhiteListUrl = function (url) {
+    const unWhitelistUrl = function (url) {
         const domain = utils.url.getHost(url);
-        if (isDefaultWhiteListMode()) {
-            removeFromWhiteList(domain);
+        if (isDefaultWhitelistMode()) {
+            removeFromWhitelist(domain);
         } else {
-            addToWhiteList(domain);
+            addToWhitelist(domain);
         }
     };
 
@@ -239,29 +239,29 @@ export const whitelist = (() => {
      * Updates domains in whitelist
      * @param domains
      */
-    const updateWhiteListDomains = function (domains) {
+    const updateWhitelistDomains = function (domains) {
         domains = domains || [];
-        if (isDefaultWhiteListMode()) {
-            clearWhiteListed();
-            addWhiteListed(domains);
+        if (isDefaultWhitelistMode()) {
+            clearWhitelisted();
+            addWhitelisted(domains);
         } else {
             clearBlockListed();
             addBlockListed(domains);
         }
-        notifyWhiteListUpdated();
+        notifyWhitelistUpdated();
     };
 
     /**
      * Add domains to whitelist
      * @param domains
      */
-    var addWhiteListed = function (domains) {
+    var addWhitelisted = function (domains) {
         if (!domains) {
             return;
         }
         for (let i = 0; i < domains.length; i++) {
             const domain = domains[i];
-            whiteListDomainsHolder.add(domain);
+            whitelistDomainsHolder.add(domain);
         }
         saveDomainsToLocalStorage();
     };
@@ -284,9 +284,9 @@ export const whitelist = (() => {
     /**
      * Clear whitelisted only
      */
-    var clearWhiteListed = function () {
+    var clearWhitelisted = function () {
         localStorage.removeItem(WHITE_LIST_DOMAINS_LS_PROP);
-        lazyGetClear(whiteListDomainsHolder, 'domains');
+        lazyGetClear(whitelistDomainsHolder, 'domains');
     };
 
     /**
@@ -301,23 +301,23 @@ export const whitelist = (() => {
      * Configures whitelist service
      * @param whitelist Whitelist domains
      * @param blocklist Blocklist domains
-     * @param whiteListMode Whitelist mode
+     * @param whitelistMode Whitelist mode
      */
-    const configure = function (whitelist, blocklist, whiteListMode) {
-        clearWhiteListed();
+    const configure = function (whitelist, blocklist, whitelistMode) {
+        clearWhitelisted();
         clearBlockListed();
-        addWhiteListed(whitelist || []);
+        addWhitelisted(whitelist || []);
         addBlockListed(blocklist || []);
-        settings.changeDefaultWhiteListMode(whiteListMode);
-        notifyWhiteListUpdated();
+        settings.changeDefaultWhitelistMode(whitelistMode);
+        notifyWhitelistUpdated();
     };
 
     /**
      * Returns the array of whitelist domains
      */
-    const getWhiteListDomains = function () {
-        if (isDefaultWhiteListMode()) {
-            return whiteListDomainsHolder.domains;
+    const getWhitelistDomains = function () {
+        if (isDefaultWhitelistMode()) {
+            return whitelistDomainsHolder.domains;
         }
         return blockListDomainsHolder.domains;
     };
@@ -325,8 +325,8 @@ export const whitelist = (() => {
     /**
      * Returns the array of whitelisted domains
      */
-    const getWhiteListedDomains = function () {
-        return whiteListDomainsHolder.domains;
+    const getWhitelistedDomains = function () {
+        return whitelistDomainsHolder.domains;
     };
 
     /**
@@ -345,7 +345,7 @@ export const whitelist = (() => {
          * To prevent it we should clear cached values
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/933
          */
-        lazyGetClear(whiteListDomainsHolder, 'domains');
+        lazyGetClear(whitelistDomainsHolder, 'domains');
         lazyGetClear(blockListDomainsHolder, 'domains');
     };
 
@@ -354,17 +354,17 @@ export const whitelist = (() => {
         init,
         configure,
 
-        getWhiteListDomains,
-        getWhiteListedDomains,
+        getWhitelistDomains,
+        getWhitelistedDomains,
         getBlockListedDomains,
-        updateWhiteListDomains,
+        updateWhitelistDomains,
 
-        findWhiteListRule,
+        findWhitelistRule,
 
-        whiteListUrl,
-        unWhiteListUrl,
+        whitelistUrl,
+        unWhitelistUrl,
 
-        isDefaultMode: isDefaultWhiteListMode,
-        changeDefaultWhiteListMode,
+        isDefaultMode: isDefaultWhitelistMode,
+        changeDefaultWhitelistMode,
     };
 })();
