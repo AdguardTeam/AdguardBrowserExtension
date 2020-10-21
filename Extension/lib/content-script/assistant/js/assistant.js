@@ -384,7 +384,7 @@ module.exports = code;
 /* 17 */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"a\":\"4.3.31\"}");
+module.exports = JSON.parse("{\"a\":\"4.3.33\"}");
 
 /***/ }),
 /* 18 */
@@ -1167,8 +1167,9 @@ function ProtectedApi() {
 
 
   var checkShadowDomSupport = function checkShadowDomSupport() {
-    var safari = /^((?!chrome|android).)*safari/i;
-    return typeof originalAttachShadow !== 'undefined' && !safari.test(navigator.userAgent);
+    var SAFARI_UA_REGEX = /^((?!chrome|android).)*safari/i;
+    var isSafari = window.safari !== undefined || SAFARI_UA_REGEX.test(navigator.userAgent);
+    return typeof originalAttachShadow !== 'undefined' && !isSafari;
   };
 
   return {
@@ -2130,12 +2131,6 @@ var locales = Object.keys(LANGUAGES).reduce(function (acc, language) {
 // CONCATENATED MODULE: ./src/localization.js
 function localization_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { localization_typeof = function _typeof(obj) { return typeof obj; }; } else { localization_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return localization_typeof(obj); }
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 function localization_slicedToArray(arr, i) { return localization_arrayWithHoles(arr) || localization_iterableToArrayLimit(arr, i) || localization_unsupportedIterableToArray(arr, i) || localization_nonIterableRest(); }
 
 function localization_nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -2164,9 +2159,13 @@ var localization_require = __webpack_require__(3),
 
 function Localization() {
   var currentLocale = null;
-  var locale;
+  var locale; // convert locales keys to lower case
 
-  var supportedLocales = _objectSpread({}, locales_0);
+  var supportedLocales = Object.keys(locales_0).reduce(function (acc, key) {
+    var lowerCasedKey = key.toLowerCase();
+    acc[lowerCasedKey] = locales_0[key];
+    return acc;
+  }, {});
   /*
    * In Edge, there is undocumented behavior. When you run the script
    * through `executeScript`, the Edge browser blocks access to the
@@ -2177,7 +2176,6 @@ function Localization() {
    * it is necessary to check `typeof navigator.languages !== 'undefined'`.
    * issue: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/983
    */
-
 
   if (typeof AdguardSettings !== 'undefined') {
     // eslint-disable-next-line prefer-destructuring
@@ -2195,6 +2193,8 @@ function Localization() {
 
   if (supportedLocales[locale]) {
     currentLocale = locale;
+  } else if (supportedLocales[locale.toLowerCase()]) {
+    currentLocale = locale.toLowerCase();
   } else {
     var langSplit = locale.split('-')[0];
 
@@ -5725,11 +5725,11 @@ function SliderMenuControllerMobile(addRule, iframe) {
 var package_0 = __webpack_require__(17);
 
 // CONCATENATED MODULE: ./src/iframe.mobile.js
-function iframe_mobile_ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function iframe_mobile_objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { iframe_mobile_ownKeys(Object(source), true).forEach(function (key) { iframe_mobile_defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { iframe_mobile_ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-function iframe_mobile_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
 
@@ -5778,7 +5778,7 @@ function IframeControllerMobile() {
     iframe.removeAttribute('style');
     iframe.removeAttribute('height');
 
-    var attributes = iframe_mobile_objectSpread({}, defaultAttributes, {}, attrs);
+    var attributes = _objectSpread({}, defaultAttributes, {}, attrs);
 
     Object.keys(attributes).forEach(function (item) {
       iframe.setAttribute(item, attributes[item]);
@@ -5786,7 +5786,7 @@ function IframeControllerMobile() {
   };
 
   var updateIframeStyles = function updateIframeStyles(styles) {
-    var css = iframe_mobile_objectSpread({}, defaultCSS, {}, styles);
+    var css = _objectSpread({}, defaultCSS, {}, styles);
 
     Object.keys(css).forEach(function (item) {
       iframe.style[item] = css[item];
