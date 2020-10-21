@@ -76,6 +76,54 @@ adguard.notifications = (function (adguard) {
         },
     };
 
+    // TODO fix
+    //  dates
+    //  translations
+    //  url
+    const halloweenNotification = {
+        id: 'halloween2020',
+        locales: {
+            en: {
+                btn: 'Halloween deal',
+            },
+            de: {
+                btn: 'Halloween-Deal',
+            },
+            ko: {
+                btn: '할로윈 거래',
+            },
+            ru: {
+                btn: 'Хэллоуин сделка',
+            },
+            ja: {
+                btn: 'ハロウィーンの取引',
+            },
+            fr: {
+                btn: 'Offre Halloween',
+            },
+            it: {
+                btn: 'Affare di Halloween',
+            },
+        },
+        text: '',
+        url: 'https://adguard.com/forward.html?action=ny2020_notify&from=popup&app=browser_extension',
+        from: '21 October 2020 00:00:00',
+        to: '1 January 2021 00:00:00',
+        type: 'animated',
+        get icons() {
+            return adguard.lazyGet(halloweenNotification, 'icons', () => ({
+                ICON_GREEN: {
+                    '19': adguard.getURL('icons/green-19-halloween.png'),
+                    '38': adguard.getURL('icons/green-38-halloween.png'),
+                },
+                ICON_GRAY: {
+                    '19': adguard.getURL('icons/gray-19-halloween.png'),
+                    '38': adguard.getURL('icons/gray-38-halloween.png'),
+                },
+            }));
+        },
+    };
+
     /**
      * @typedef Notification
      * @type object
@@ -91,8 +139,9 @@ adguard.notifications = (function (adguard) {
      * @property {string} badgeText;
      * @property {string} type;
      */
-    let notifications = {
+    const notifications = {
         newYear2020: newYearNotification,
+        halloween2020: halloweenNotification,
     };
 
     /**
@@ -187,10 +236,14 @@ adguard.notifications = (function (adguard) {
     /**
      * Finds out notification for current time and checks if notification wasn't shown yet
      *
-     * @param {*} - (optional) frameInfo from `adguard.frames`
      * @returns {void|Notification} - notification
      */
-    const getCurrentNotification = function (frameInfo) {
+    const getCurrentNotification = function () {
+        // Do not display notification on Firefox
+        if (adguard.utils.browser.isFirefoxBrowser()) {
+            return null;
+        }
+
         const currentTime = new Date().getTime();
         const timeSinceLastNotification = currentTime - getLastNotificationTime();
         if (timeSinceLastNotification < minPeriod) {

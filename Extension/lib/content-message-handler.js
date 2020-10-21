@@ -339,7 +339,7 @@
                             isMacOs: adguard.utils.browser.isMacOs(),
                             isEdgeBrowser: adguard.utils.browser.isEdgeBrowser()
                                 || adguard.utils.browser.isEdgeChromiumBrowser(),
-                            notification: adguard.notifications.getCurrentNotification(frameInfo),
+                            notification: adguard.notifications.getCurrentNotification(),
                             isDisableShowAdguardPromoInfo: adguard.settings.isDisableShowAdguardPromoInfo(),
                         },
                     });
