@@ -4,7 +4,7 @@ import Modal from 'react-modal';
 import { messenger } from '../../../../services/messenger';
 import { i18n } from '../../../../services/i18n';
 import { log } from '../../../../../background/utils/log';
-import ModalContentWrapper from '../ModalContentWrapper';
+import { ModalContentWrapper } from './ModalContentWrapper';
 import { rootStore } from '../../../stores/RootStore';
 
 Modal.setAppElement('#root');

@@ -27,4 +27,4 @@ ModalContentWrapper.propTypes = {
     title: PropTypes.string,
 };
 
-export default ModalContentWrapper;
+export { ModalContentWrapper };
