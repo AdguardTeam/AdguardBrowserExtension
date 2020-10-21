@@ -67,8 +67,8 @@ const Filters = observer(({ selectedGroup }) => {
         await settingsStore.updateFilterSetting(id, enabled);
     };
 
-    const renderFilters = (filtersList, groupPath) => {
-        history.pushState(null, null, `#${groupPath}`);
+    const renderFilters = (filtersList, groupId) => {
+        history.pushState(null, null, `#filters-${groupId}`);
         return filtersList.map((filter) => (
             <Filter
                 key={filter.filterId}
@@ -200,7 +200,6 @@ const Filters = observer(({ selectedGroup }) => {
     if (Number.isInteger(selectedGroupId)) {
         const groupFilters = filters.filter((filter) => filter.groupId === selectedGroupId);
         const { groupName } = categories.find((group) => group.groupId === selectedGroupId);
-        const groupPath = groupName.replace(' ', '-').toLowerCase();
         if (selectedGroupId === CUSTOM_FILTERS_GROUP_ID && groupFilters.length === 0) {
             return (
                 <>
@@ -231,7 +230,7 @@ const Filters = observer(({ selectedGroup }) => {
                     {
                         isSearching
                             ? renderSearchResult()
-                            : filters && renderFilters(groupFilters, groupPath)
+                            : filters && renderFilters(groupFilters, selectedGroupId)
                     }
                 </div>
                 {renderAddFilterBtn()}

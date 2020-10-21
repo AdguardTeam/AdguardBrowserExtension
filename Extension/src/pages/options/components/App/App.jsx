@@ -65,7 +65,7 @@ const App = observer(() => {
     }
 
     const groupsLinks = () => settingsStore.categories.map((cat) => {
-        const groupPath = `/${cat.groupName.replace(' ', '-').toLowerCase()}`;
+        const groupPath = `/filters-${cat.groupId}`;
         return (
             <Route
                 key={cat.groupId}
