@@ -23,4 +23,6 @@ ScrollToTop.propTypes = {
     children: PropTypes.arrayOf(PropTypes.node).isRequired,
 };
 
-export default withRouter(ScrollToTop);
+const scrollToTop = withRouter(ScrollToTop);
+
+export { scrollToTop };
