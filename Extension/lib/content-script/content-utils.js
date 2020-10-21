@@ -238,9 +238,12 @@
                             });
                         }
                         // Remove iframe after click event fire on link
+                        // NOTICE: if here is used value equal to 0,
+                        // then iframe is closed early than link is clicked
+                        const REMOVE_FRAMEWORK_TIMEOUT_MS = 10;
                         setTimeout(() => {
                             iframe.parentNode.removeChild(iframe);
-                        }, 0);
+                        }, REMOVE_FRAMEWORK_TIMEOUT_MS);
                     });
                 });
                 return true;
