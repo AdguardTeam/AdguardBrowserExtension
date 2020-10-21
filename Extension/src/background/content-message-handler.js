@@ -264,9 +264,9 @@ const init = () => {
                     return {};
                 }
             case 'subscribeToCustomFilter': {
-                const { customUrl, name: title, trusted } = data.filter;
+                const { customUrl, name, trusted } = data.filter;
                 try {
-                    const filter = await application.loadCustomFilter(customUrl, { title, trusted });
+                    const filter = await application.loadCustomFilter(customUrl, { title: name, trusted });
                     await application.addAndEnableFilters([filter.filterId]);
                     return filter;
                 } catch (e) {
