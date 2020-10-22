@@ -149,6 +149,8 @@ class SettingsStore {
 
     @action
     refreshFilters(updatedFilters) {
+        console.log('REFRESHING FILTERS:');
+        console.log(updatedFilters);
         if (updatedFilters && updatedFilters.length) {
             runInAction(() => {
                 updatedFilters.forEach((filter) => this.refreshFilter(filter));
