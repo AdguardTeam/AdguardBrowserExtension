@@ -76,45 +76,44 @@ adguard.notifications = (function (adguard) {
         },
     };
 
-    // TODO fix
-    //  dates
-    //  translations
-    //  url
     const halloweenNotification = {
         id: 'halloween2020',
         locales: {
             en: {
-                btn: 'Halloween deal',
+                btn: 'Get the deal',
             },
             de: {
-                btn: 'Halloween-Deal',
+                btn: 'Angebot holen',
             },
             ko: {
-                btn: '할로윈 거래',
+                btn: '할인 받기',
             },
             ru: {
-                btn: 'Хэллоуин сделка',
+                btn: 'Получить скидку',
             },
-            ja: {
-                btn: 'ハロウィーンの取引',
-            },
+            // TODO fix ja
+            // ja: {
+            //     btn: 'ハロウィーンの取引',
+            // },
             fr: {
-                btn: 'Offre Halloween',
+                btn: 'Prix promo',
             },
             it: {
-                btn: 'Affare di Halloween',
+                btn: 'Offerta speciale',
             },
         },
         text: '',
-        url: 'https://adguard.com/forward.html?action=ny2020_notify&from=popup&app=browser_extension',
+        url: 'https://adguard.com/forward.html?action=halloween2020_notify&from=popup&app=browser_extension',
+        // TODO replace with commented line
+        // from: '30 October 2020 00:00:01',
         from: '21 October 2020 00:00:00',
-        to: '1 January 2021 00:00:00',
+        to: '3 November 2020 23:59:00',
         type: 'animated',
         get icons() {
             return adguard.lazyGet(halloweenNotification, 'icons', () => ({
                 ICON_GREEN: {
-                    '19': adguard.getURL('icons/green-19-halloween.png'),
-                    '38': adguard.getURL('icons/green-38-halloween.png'),
+                    '19': adguard.getURL('icons/yellow-19-halloween.png'),
+                    '38': adguard.getURL('icons/yellow-38-halloween.png'),
                 },
                 ICON_GRAY: {
                     '19': adguard.getURL('icons/gray-19-halloween.png'),
@@ -246,10 +245,10 @@ adguard.notifications = (function (adguard) {
 
         const currentTime = new Date().getTime();
         const timeSinceLastNotification = currentTime - getLastNotificationTime();
-        if (timeSinceLastNotification < minPeriod) {
-            // Just a check to not show the notification too often
-            return null;
-        }
+        // if (timeSinceLastNotification < minPeriod) {
+        //     // Just a check to not show the notification too often
+        //     return null;
+        // }
 
         // Check not often than once in 10 minutes
         const timeSinceLastCheck = currentTime - notificationCheckTime;
@@ -269,7 +268,7 @@ adguard.notifications = (function (adguard) {
             const to = new Date(notification.to).getTime();
             if (from < currentTime
                 && to > currentTime
-                && !viewedNotifications.includes(notification.id)
+                // && !viewedNotifications.includes(notification.id)
             ) {
                 currentNotification = notification;
                 return currentNotification;

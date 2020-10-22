@@ -243,10 +243,15 @@ PopupController.prototype = {
             return;
         }
 
-        const title = this.animatedNotification.querySelector('.holiday-notify__title');
-        const button = this.animatedNotification.querySelector('.holiday-notify__btn');
-        title.innerText = notification.text.title;
-        button.innerText = notification.text.btn;
+        if (notification.text.title) {
+            const title = this.animatedNotification.querySelector('.holiday-notify__title');
+            title.innerText = notification.text.title;
+        }
+
+        if (notification.text.btn) {
+            const button = this.animatedNotification.querySelector('.holiday-notify__btn');
+            button.innerText = notification.text.btn;
+        }
 
         this._appendTemplate(container, this.animatedNotification);
 
