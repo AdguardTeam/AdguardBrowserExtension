@@ -25,52 +25,51 @@ adguard.notifications = (function (adguard) {
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
     const LAST_NOTIFICATION_TIME = 'viewed-notification-time';
 
-    const newYearNotification = {
-        id: 'newYear2020',
+    const halloweenNotification = {
+        id: 'halloween2020',
         locales: {
             en: {
-                title: 'AdGuard wishes you happy holidays',
-                btn: 'Get your present',
+                btn: 'Get a treat',
             },
             de: {
-                title: 'AdGuard wünscht Ihnen frohe Festtage!',
-                btn: 'HOLEN SIE SICH IHR GESCHENK',
+                btn: 'Angebot holen',
             },
             ko: {
-                title: 'AdGuard는 행복한 크리스마스가 되길 바랍니다',
-                btn: '선물 받기',
+                btn: '더 읽기',
             },
             ru: {
-                title: 'AdGuard поздравляет вас с праздниками',
-                btn: 'Получить подарок!',
+                btn: 'Кое-что для вас',
             },
             ja: {
-                title: 'AdGuardからのクリスマスプレゼント',
-                btn: 'プレゼントをGET',
+                btn: '秘密の◯◯はこちら',
+            },
+            zh_cn: {
+                btn: '万圣节的魔法',
+            },
+            zh_tw: {
+                btn: '萬聖節的魔法',
             },
             fr: {
-                title: 'AdGuard vous souhaite de joyeuses fêtes !',
-                btn: 'VOIR CADEAU',
+                btn: 'Prix promo',
             },
             it: {
-                title: 'AdGuard vi augura buone feste!',
-                btn: 'VEDERE IL REGALO',
+                btn: 'Offerta speciale',
             },
         },
         text: '',
-        url: 'https://adguard.com/forward.html?action=ny2020_notify&from=popup&app=browser_extension',
-        from: '24 December 2019 00:00:00',
-        to: '1 January 2020 00:00:00',
+        url: 'https://adguard.com/forward.html?action=halloween2020_notify&from=popup&app=browser_extension',
+        from: '30 October 2020 00:00:01',
+        to: '3 November 2020 23:59:00',
         type: 'animated',
         get icons() {
-            return adguard.lazyGet(newYearNotification, 'icons', () => ({
+            return adguard.lazyGet(halloweenNotification, 'icons', () => ({
                 ICON_GREEN: {
-                    '19': adguard.getURL('icons/green-19-ny.png'),
-                    '38': adguard.getURL('icons/green-38-ny.png'),
+                    '19': adguard.getURL('icons/yellow-19-halloween.png'),
+                    '38': adguard.getURL('icons/yellow-38-halloween.png'),
                 },
                 ICON_GRAY: {
-                    '19': adguard.getURL('icons/gray-19-ny.png'),
-                    '38': adguard.getURL('icons/gray-38-ny.png'),
+                    '19': adguard.getURL('icons/gray-19-halloween.png'),
+                    '38': adguard.getURL('icons/gray-38-halloween.png'),
                 },
             }));
         },
@@ -91,8 +90,8 @@ adguard.notifications = (function (adguard) {
      * @property {string} badgeText;
      * @property {string} type;
      */
-    let notifications = {
-        newYear2020: newYearNotification,
+    const notifications = {
+        halloween2020: halloweenNotification,
     };
 
     /**
@@ -108,18 +107,28 @@ adguard.notifications = (function (adguard) {
         return lastTime;
     };
 
+    const normalizeLanguage = (locale) => {
+        if (!locale) {
+            return null;
+        }
+
+        return locale.toLowerCase().replace('-', '_');
+    };
+
     /**
      * Scans notification locales and returns the one matching navigator.language
      * @param {*} notification notification object
      * @returns {string} matching text or null
      */
     const getNotificationText = function (notification) {
-        const { language } = navigator;
+        const browser = window.browser || chrome;
+        const language = normalizeLanguage(browser.i18n.getUILanguage());
+
         if (!language) {
             return null;
         }
 
-        const languageCode = language.split('-')[0];
+        const languageCode = language.split('_')[0];
         if (!languageCode) {
             return null;
         }
@@ -187,10 +196,14 @@ adguard.notifications = (function (adguard) {
     /**
      * Finds out notification for current time and checks if notification wasn't shown yet
      *
-     * @param {*} - (optional) frameInfo from `adguard.frames`
-     * @returns {void|Notification} - notification
+     * @returns {null|Notification} - notification
      */
-    const getCurrentNotification = function (frameInfo) {
+    const getCurrentNotification = function () {
+        // Do not display notification on Firefox
+        if (adguard.utils.browser.isFirefoxBrowser()) {
+            return null;
+        }
+
         const currentTime = new Date().getTime();
         const timeSinceLastNotification = currentTime - getLastNotificationTime();
         if (timeSinceLastNotification < minPeriod) {

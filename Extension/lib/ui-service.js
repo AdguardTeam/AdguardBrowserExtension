@@ -134,7 +134,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                 badge = adguard.utils.workaround.getBlockedCountText(blocked);
 
                 // If there's an active notification, indicate it on the badge
-                const notification = adguard.notifications.getCurrentNotification(tabInfo);
+                const notification = adguard.notifications.getCurrentNotification();
                 if (notification) {
                     badge = notification.badgeText || badge;
                     badgeColor = notification.badgeBgColor || badgeColor;
