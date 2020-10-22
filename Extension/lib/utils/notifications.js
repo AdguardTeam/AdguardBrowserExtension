@@ -29,25 +29,25 @@ adguard.notifications = (function (adguard) {
         id: 'halloween2020',
         locales: {
             en: {
-                btn: 'Get up to 40% off',
+                btn: 'Get a treat',
             },
             de: {
                 btn: 'Angebot holen',
             },
             ko: {
-                btn: '할인 받기',
+                btn: '더 읽기',
             },
             ru: {
-                btn: 'Получить скидку',
+                btn: 'Кое-что для вас',
             },
             ja: {
-                btn: '秘密の割引をGET',
+                btn: '秘密の◯◯はこちら',
             },
             zh_cn: {
-                btn: '获取折扣',
+                btn: '万圣节的魔法',
             },
             zh_tw: {
-                btn: '獲得折扣',
+                btn: '萬聖節的魔法',
             },
             fr: {
                 btn: 'Prix promo',
