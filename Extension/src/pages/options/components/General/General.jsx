@@ -176,22 +176,20 @@ const General = observer(() => {
                 >
                     {reactTranslator.translate('options_export_settings')}
                 </button>
-                <div>
-                    <input
-                        type="file"
-                        id="inputEl"
-                        ref={inputEl}
-                        onChange={inputChangeHandler}
-                        style={{ display: 'none' }}
-                    />
-                    <button
-                        type="button"
-                        className="button button--m button--green-bd content__btn"
-                        onClick={handleImportSettings}
-                    >
-                        {reactTranslator.translate('options_import_settings')}
-                    </button>
-                </div>
+                <input
+                    type="file"
+                    id="inputEl"
+                    ref={inputEl}
+                    onChange={inputChangeHandler}
+                    style={{ display: 'none' }}
+                />
+                <button
+                    type="button"
+                    className="button button--m button--green-bd content__btn"
+                    onClick={handleImportSettings}
+                >
+                    {reactTranslator.translate('options_import_settings')}
+                </button>
             </div>
         </>
     );
