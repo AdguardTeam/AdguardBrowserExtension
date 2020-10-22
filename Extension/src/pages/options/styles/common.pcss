@@ -11,7 +11,6 @@ body {
     margin: 0;
     overflow-y: scroll;
     height: 100%;
-    min-width: 990px;
     font-size: 16px;
     color: var(--gray-base);
 }
@@ -22,12 +21,28 @@ h2 {
 }
 
 .container {
-    width: 960px;
+    max-width: 960px;
     margin: 0 auto;
+
+    @media (max-width: 640px){
+        max-width: 576px;
+    };
+
+    @media (max-width: 360px){
+        max-width: 360px;
+    };
 }
 
 .content {
     width: 640px;
+
+    @media (max-width: 640px){
+        width: 360px;
+    };
+
+    @media (max-width: 360px){
+        width: 360px;
+    };
 
     &__btn {
         margin-left: 15px;
