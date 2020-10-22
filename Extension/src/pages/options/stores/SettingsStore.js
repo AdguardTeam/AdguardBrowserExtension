@@ -149,9 +149,11 @@ class SettingsStore {
 
     @action
     refreshFilters(updatedFilters) {
-        runInAction(() => {
-            updatedFilters.forEach((filter) => this.refreshFilter(filter));
-        });
+        if (updatedFilters && updatedFilters.length) {
+            runInAction(() => {
+                updatedFilters.forEach((filter) => this.refreshFilter(filter));
+            });
+        }
     }
 
     @action

@@ -92,6 +92,7 @@ const Filter = ({
                                 : ''
                         }
                         {reactTranslator.translate('options_filters_filter_updated')}
+                        {' '}
                         {formatDate(timeUpdated)}
                     </div>
                 </div>

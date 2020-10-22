@@ -33,10 +33,12 @@ const App = observer(() => {
             // TODO put constants in common directory
             const REQUEST_FILTER_UPDATED = 'event.request.filter.updated';
             const UPDATE_ALLOWLIST_FILTER_RULES = 'event.update.allowlist.filter.rules';
+            const FILTERS_UPDATE_CHECK_READY = 'event.update.filters.check';
 
             const events = [
                 REQUEST_FILTER_UPDATED,
                 UPDATE_ALLOWLIST_FILTER_RULES,
+                FILTERS_UPDATE_CHECK_READY,
             ];
 
             removeListenerCallback = await messenger.createEventListener(
@@ -51,6 +53,11 @@ const App = observer(() => {
                         }
                         case UPDATE_ALLOWLIST_FILTER_RULES: {
                             await settingsStore.getAllowlist();
+                            break;
+                        }
+                        case FILTERS_UPDATE_CHECK_READY: {
+                            const { data: updatedFilters } = message;
+                            settingsStore.refreshFilters(updatedFilters);
                             break;
                         }
                         default: {

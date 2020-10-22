@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react';
 import sortBy from 'lodash/sortBy';
 import { Group } from './Group';
@@ -10,7 +10,6 @@ import { rootStore } from '../../stores/RootStore';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
 import { AddCustomModal } from './AddCustomModal';
 import { CUSTOM_FILTERS_GROUP_ID } from '../../../../common/constants';
-import { messenger } from '../../../services/messenger';
 
 const Filters = observer(({ selectedGroup }) => {
     const SEARCH_FILTERS = {
@@ -33,29 +32,6 @@ const Filters = observer(({ selectedGroup }) => {
         lastUpdateTime,
         filtersUpdating,
     } = settingsStore;
-
-    useEffect(() => {
-        let removeListenerCallback = () => {};
-
-        // TODO put constants in common directory
-        const FILTERS_UPDATE_CHECK_READY = 'event.update.filters.check';
-
-        (async () => {
-            removeListenerCallback = await messenger.createEventListener(
-                [FILTERS_UPDATE_CHECK_READY],
-                (message) => {
-                    const { type, data } = message;
-                    if (type === FILTERS_UPDATE_CHECK_READY) {
-                        settingsStore.refreshFilters(data);
-                    }
-                },
-            );
-        })();
-
-        return () => {
-            removeListenerCallback();
-        };
-    }, []);
 
     const handleGroupSwitch = async ({ id, enabled }) => {
         await settingsStore.updateGroupSetting(id, enabled);
