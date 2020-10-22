@@ -138,8 +138,24 @@ const Filters = observer(({ selectedGroup }) => {
     };
 
     const updateFiltersHandler = async () => {
-        const updates = await settingsStore.updateFilters();
-        uiStore.addNotification({ description: updates });
+        try {
+            const updates = await settingsStore.updateFilters();
+            const filterNames = updates.map((filter) => filter.name).join(', ');
+            let description;
+            if (updates.length === 0) {
+                description = `${filterNames} ${reactTranslator.translate('options_popup_update_not_found')}`;
+            } else if (updates.length === 1) {
+                description = `${filterNames} ${reactTranslator.translate('options_popup_update_filter')}`;
+            } else if (updates.length > 1) {
+                description = `${filterNames} ${reactTranslator.translate('options_popup_update_filters')}`;
+            }
+            uiStore.addNotification({ description });
+        } catch (error) {
+            uiStore.addNotification({
+                title: reactTranslator.translate('options_popup_update_title_error'),
+                description: reactTranslator.translate('options_popup_update_error'),
+            });
+        }
     };
 
     const renderSearch = () => (

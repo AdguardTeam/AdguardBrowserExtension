@@ -149,8 +149,6 @@ class SettingsStore {
 
     @action
     refreshFilters(updatedFilters) {
-        console.log('REFRESHING FILTERS:');
-        console.log(updatedFilters);
         if (updatedFilters && updatedFilters.length) {
             runInAction(() => {
                 updatedFilters.forEach((filter) => this.refreshFilter(filter));
@@ -204,8 +202,7 @@ class SettingsStore {
             return filtersUpdates;
         } catch (error) {
             this.setFiltersUpdating(false);
-            // TODO: add localization
-            return 'Filters update error';
+            throw error;
         }
     }
 
