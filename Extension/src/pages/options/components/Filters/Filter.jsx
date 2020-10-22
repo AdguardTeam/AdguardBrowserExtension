@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import './filter.pcss';
 import { Checkbox } from '../Settings/Checkbox';
 import { rootStore } from '../../stores/RootStore';
-import { i18n } from '../../../services/i18n';
+import { reactTranslator } from '../../../reactCommon/reactTranslator';
 
 const formatDate = (date) => {
     const dateObj = new Date(date);
@@ -19,7 +19,7 @@ const formatDate = (date) => {
 
 const renderTags = (tags, trusted) => {
     if (trusted) {
-        const tagString = `#${i18n.translate('options_filters_filter_trusted_tag')}`;
+        const tagString = `#${reactTranslator.translate('options_filters_filter_trusted_tag')}`;
         return (
             <div className="filter__tags">
                 <div className="filter__tag">
@@ -59,7 +59,7 @@ const Filter = ({
     } = filter;
 
     const removeCustomFilter = async () => {
-        const result = confirm(i18n.translate('options_delete_filter_confirm'));
+        const result = confirm(reactTranslator.translate('options_delete_filter_confirm'));
         if (result) {
             await settingsStore.removeCustomFilter(filterId);
         }
@@ -86,8 +86,13 @@ const Filter = ({
                         {description}
                     </div>
                     <div className="filter__desc-item">
-                        {version ? `version: ${version} ` : ''}
-                        {`updated: ${formatDate(timeUpdated)}`}
+                        {
+                            version
+                                ? `${reactTranslator.translate('options_filters_filter_version')} ${version} `
+                                : ''
+                        }
+                        {reactTranslator.translate('options_filters_filter_updated')}
+                        {formatDate(timeUpdated)}
                     </div>
                 </div>
                 {renderTags(tags, trusted)}

@@ -7,7 +7,7 @@ import { EmptyCustom } from './EmptyCustom';
 import { Search } from './Search';
 import { FiltersUpdate } from './FiltersUpdate';
 import { rootStore } from '../../stores/RootStore';
-import { i18n } from '../../../services/i18n';
+import { reactTranslator } from '../../../reactCommon/reactTranslator';
 import { AddCustomModal } from './AddCustomModal';
 import { CUSTOM_FILTERS_GROUP_ID } from '../../../../common/constants';
 import { messenger } from '../../../services/messenger';
@@ -205,7 +205,7 @@ const Filters = observer(({ selectedGroup }) => {
                         onClick={openModalHandler}
                         className="button button--add-custom-filter button--m button--green"
                     >
-                        {i18n.translate('options_add_custom_filter')}
+                        {reactTranslator.translate('options_add_custom_filter')}
                     </button>
                     {modalIsOpen && (
                         <AddCustomModal
@@ -265,7 +265,7 @@ const Filters = observer(({ selectedGroup }) => {
         <>
             <div className="title-btn">
                 {renderFiltersUpdate()}
-                <h2 className="title title--filters-up">{i18n.translate('options_antibanner')}</h2>
+                <h2 className="title title--filters-up">{reactTranslator.translate('options_antibanner')}</h2>
             </div>
             {renderSearch()}
             {

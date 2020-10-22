@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'react-modal';
 import { messenger } from '../../../../services/messenger';
-import { i18n } from '../../../../services/i18n';
+import { reactTranslator } from '../../../../reactCommon/reactTranslator';
 import { log } from '../../../../../background/utils/log';
 import { ModalContentWrapper } from './ModalContentWrapper';
 import { rootStore } from '../../../stores/RootStore';
@@ -85,10 +85,10 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
                             value={customUrlToAdd}
                         />
                         <div className="modal__desc">
-                            Enter valid URL or file path of the filter into field above.
+                            {reactTranslator.translate('options_popup_call_to_action')}
                         </div>
                         <div className="modal__desc">
-                            You will be subscribed to that filter.
+                            {reactTranslator.translate('options_popup_description')}
                         </div>
                     </div>
                     <button
@@ -96,7 +96,7 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
                         type="button"
                         onClick={handleSendUrlToCheck}
                     >
-                        Next
+                        {reactTranslator.translate('options_popup_next_button')}
                     </button>
                 </ModalContentWrapper>
             </>
@@ -130,7 +130,7 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
                 >
                     <div className="modal__content">
                         <div className="modal__row">
-                            <div className="modal__cell">Title:</div>
+                            <div className="modal__cell">{reactTranslator.translate('options_popup_filter_title')}</div>
                             <input
                                 className="modal__input"
                                 type="text"
@@ -139,23 +139,23 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
                             />
                         </div>
                         <div className="modal__row">
-                            <div className="modal__cell">Description:</div>
+                            <div className="modal__cell">{reactTranslator.translate('options_popup_filter_description')}</div>
                             <div className="modal__cell">{description}</div>
                         </div>
                         <div className="modal__row">
-                            <div className="modal__cell">Version:</div>
+                            <div className="modal__cell">{reactTranslator.translate('options_popup_filter_version')}</div>
                             <div className="modal__cell">{version}</div>
                         </div>
                         <div className="modal__row">
-                            <div className="modal__cell">Rules count:</div>
+                            <div className="modal__cell">{reactTranslator.translate('options_popup_filter_rules_count')}</div>
                             <div className="modal__cell">{rulesCount}</div>
                         </div>
                         <div className="modal__row">
-                            <div className="modal__cell">Homepage:</div>
+                            <div className="modal__cell">{reactTranslator.translate('options_popup_filter_homepage')}</div>
                             <div className="modal__cell modal__cell--url">{homepage}</div>
                         </div>
                         <div className="modal__row">
-                            <div className="modal__cell">URL:</div>
+                            <div className="modal__cell">{reactTranslator.translate('options_popup_filter_url')}</div>
                             <div className="modal__cell modal__cell--url">{customUrl}</div>
                         </div>
                         <div className="modal__row">
@@ -169,12 +169,12 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
                                 className="modal__checkbox-label"
                                 htmlFor="trusted"
                             >
-                                Trusted
+                                {reactTranslator.translate('options_popup_trusted_filter_title')}
                             </label>
                         </div>
                     </div>
                     <div className="modal__row modal__row--info">
-                        {i18n.translate('options_popup_trusted_filter_description')}
+                        {reactTranslator.translate('options_popup_trusted_filter_description')}
                     </div>
                     <button
                         type="button"
@@ -189,13 +189,12 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
     };
 
     const renderCheckingStep = () => {
-        // TODO: add localization
         return (
             <>
                 <ModalContentWrapper closeModalHandler={closeModalHandler}>
                     <div className="modal__content modal__content--center-text">
                         <div className="modal__desc">
-                            We are checking your url
+                            {reactTranslator.translate('options_popup_checking_filter')}
                         </div>
                     </div>
                 </ModalContentWrapper>
@@ -209,16 +208,15 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
 
     // TODO [maximtop] here we can show detailed error message than in the current version
     const renderErrorStep = () => {
-        // TODO add localization
         return (
             <>
                 <ModalContentWrapper closeModalHandler={closeModalHandler}>
                     <div className="modal__content modal__content--center-text">
                         <div className="modal__subtitle">
-                            Error
+                            {reactTranslator.translate('options_popup_check_false_title')}
                         </div>
                         <div className="modal__desc">
-                            Error while adding your custom filter
+                            {reactTranslator.translate('options_popup_check_false_description')}
                         </div>
                     </div>
                     <button
@@ -226,7 +224,7 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
                         onClick={tryAgainHandler}
                         className="button button--m button--transparent modal__btn"
                     >
-                        Try again
+                        {reactTranslator.translate('options_popup_try_again_button')}
                     </button>
                 </ModalContentWrapper>
             </>

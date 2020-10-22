@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AddCustomModal } from '../AddCustomModal';
-import { i18n } from '../../../../services/i18n';
+import { reactTranslator } from '../../../../reactCommon/reactTranslator';
 import './empty-custom.pcss';
 
 const EmptyCustom = () => {
@@ -14,7 +14,7 @@ const EmptyCustom = () => {
         setModalIsOpen(false);
     };
 
-    const text = i18n.translate('options_empty_custom_filter');
+    const text = reactTranslator.translate('options_empty_custom_filter');
     return (
         <div className="empty-custom">
             <div className="empty-custom__ico" />
@@ -26,7 +26,7 @@ const EmptyCustom = () => {
                 onClick={openModalHandler}
                 className="button button--m button--green"
             >
-                {i18n.translate('options_add_custom_filter')}
+                {reactTranslator.translate('options_add_custom_filter')}
             </button>
             {modalIsOpen && (
                 <AddCustomModal

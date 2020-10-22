@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { reactTranslator } from '../../../../reactCommon/reactTranslator';
 import './filters-update.pcss';
 
 const FiltersUpdate = (props) => {
@@ -24,7 +25,8 @@ const FiltersUpdate = (props) => {
         <div className="filters-update">
             <div className="filters-update__info">
                 <div className="filters-update__title">
-                    {`Filter rules count: ${rulesCount}`}
+                    {reactTranslator.translate('options_antibanner_info')}
+                    {rulesCount}
                 </div>
                 <div className="filters-update__desc">
                     {dateObj.toLocaleDateString('default', formatOptions)}

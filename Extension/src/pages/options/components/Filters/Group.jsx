@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Checkbox } from '../Settings/Checkbox';
+import { reactTranslator } from '../../../reactCommon/reactTranslator';
 
 const renderEnabledFilters = (enabledFilters) => {
     const enabledFiltersNames = enabledFilters.map((filter) => filter.name);

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import './search.pcss';
+import { reactTranslator } from '../../../../reactCommon/reactTranslator';
 
 const Search = ({
     searchInputHandler,
@@ -24,13 +25,13 @@ const Search = ({
             onChange={searchSelectHandler}
         >
             <option value="all">
-                All
+                {reactTranslator.translate('options_filters_list_search_display_option_all')}
             </option>
             <option value="enabled">
-                Enabled
+                {reactTranslator.translate('options_filters_list_search_display_option_enabled')}
             </option>
             <option value="disabled">
-                Disabled
+                {reactTranslator.translate('options_filters_list_search_display_option_disabled')}
             </option>
         </select>
         <button
