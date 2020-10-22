@@ -167,6 +167,7 @@ class SettingsStore {
 
     @action
     async updateFilterSetting(id, enabled) {
+        await messenger.updateFilterStatus(id, enabled);
         await runInAction(async () => {
             for (const filter of this.filters) {
                 if (filter.filterId === parseInt(id, 10)) {
@@ -194,6 +195,7 @@ class SettingsStore {
                 filters = this.filters;
             }
             const filtersUpdates = await messenger.updateFilters(filters);
+            this.refreshFilters(filtersUpdates);
             this.setFiltersUpdating(false);
             return filtersUpdates;
         } catch (error) {
