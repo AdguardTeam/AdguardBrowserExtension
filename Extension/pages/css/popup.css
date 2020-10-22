@@ -843,16 +843,17 @@ img .footer .platforms:first-child {
 
 .holiday-notify__content {
   width: 100%;
-  padding: 30px 5px;
+  height: 138px;
   font-weight: bold;
-  text-align: center;
   position: relative;
   overflow: hidden;
-  background-size: contain;
+  background-size: cover;
+  background-position: -22px;
   background-image: url(../images/halloween2020-bg.svg);
 }
 
 .holiday-notify__title {
+  display: none;
   font-size: 24px;
   line-height: 26px;
   color: #fff;
@@ -862,22 +863,45 @@ img .footer .platforms:first-child {
 .holiday-notify__desc {
   font-size: 24px;
   line-height: 32px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   color: #fff;
 }
 
 .holiday-notify__btn {
+  position: absolute;
+  bottom: 24px;
+  left: 16px;
   display: inline-block;
   text-align: center;
-  padding: 0 15px;
-  min-width: 255px;
-  line-height: 44px;
+  padding: 11px 8px 10px 42px;
+  line-height: 20px;
   font-size: 16px;
   border: 0;
   cursor: pointer;
-  border-radius: 25px;
-  background: linear-gradient(to bottom, #e14355 0%,#dd4161 100%);
+  border-radius: 23px;
+  background: #de6800;
   color: #fff;
   font-weight: bold;
-  text-transform: uppercase;
+}
+
+.holiday-notify__btn:before {
+  content: '';
+  width: 10px;
+  height: 11px;
+  position: absolute;
+  top: -8px;
+  left: 17px;
+  background-repeat: no-repeat;
+  background-image: url(../images/pumpkin_tail.svg);
+}
+
+.holiday-notify__btn:after {
+  content: '';
+  width: 27px;
+  height: 18px;
+  position: absolute;
+  top: 10px;
+  left: 9px;
+  background-repeat: no-repeat;
+  background-image: url(../images/pumpkin_face.svg);
 }
