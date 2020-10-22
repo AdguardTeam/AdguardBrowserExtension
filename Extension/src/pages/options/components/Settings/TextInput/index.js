@@ -4,7 +4,7 @@ import './input.pcss';
 
 function TextInput(props) {
     const {
-        id, value, handler,
+        id, value, handler, placeholder,
     } = props;
 
     const changeHandler = (e) => {
@@ -22,6 +22,7 @@ function TextInput(props) {
                 onChange={changeHandler}
                 id={id}
                 className="input__in"
+                placeholder={placeholder}
             />
         </div>
     );
@@ -31,6 +32,7 @@ TextInput.propTypes = {
     id: PropTypes.string.isRequired,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     handler: PropTypes.func.isRequired,
+    placeholder: PropTypes.string,
 };
 
 export default TextInput;

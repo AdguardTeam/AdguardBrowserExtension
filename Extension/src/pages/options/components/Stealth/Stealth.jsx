@@ -77,6 +77,7 @@ const Stealth = observer(() => {
                         type={SETTINGS_TYPES.INPUT}
                         value={settings.values[SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME]}
                         handler={settingChangeHandler}
+                        placeholder={reactTranslator.translate('options_third_cookie_placeholder')}
                     />
                 </SettingsSet>
 
@@ -96,6 +97,7 @@ const Stealth = observer(() => {
                         type={SETTINGS_TYPES.INPUT}
                         value={settings.values[SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME]}
                         handler={settingChangeHandler}
+                        placeholder={reactTranslator.translate('options_third_cookie_placeholder')}
                     />
                 </SettingsSet>
             </SettingsSection>
@@ -172,6 +174,7 @@ const Stealth = observer(() => {
                         type={SETTINGS_TYPES.TEXTAREA}
                         value={settings.values[TRACKING_PARAMETERS]}
                         handler={settingChangeHandler}
+                        placeholder={reactTranslator.translate('options_strip_tracking_params_input_placeholder')}
                     />
                 </SettingsSet>
             </SettingsSection>
