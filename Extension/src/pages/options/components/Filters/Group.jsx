@@ -11,21 +11,43 @@ const renderEnabledFilters = (enabledFilters) => {
     const countable = enabledFiltersNames.slice(SLICE_POINT);
 
     if (countable.length > 0) {
-        // TODO: add localization
-        return `Enabled: ${displayable.join(', ')} and ${countable.length} more`;
+        return (
+            <>
+                {reactTranslator.translate('options_filters_enabled')}
+                {' '}
+                {reactTranslator.translate(
+                    'options_filters_enabled_and_more_divider',
+                    { enabled: displayable.join(', '), more: countable.length },
+                )}
+            </>
+        );
     }
 
     if (displayable.length > 1) {
         const [last, ...rest] = displayable.reverse();
-        // TODO: add localization
-        return `Enabled: ${rest.join(', ')} and ${last}`;
+        return (
+            <>
+                {reactTranslator.translate('options_filters_enabled')}
+                {' '}
+                {reactTranslator.translate(
+                    'options_filters_enabled_and_divider',
+                    { enabled: rest.join(', '), last },
+                )}
+            </>
+        );
     }
 
     if (displayable.length === 1) {
-        return `Enabled: ${displayable[0]}`;
+        return (
+            <>
+                {reactTranslator.translate('options_filters_enabled')}
+                {' '}
+                {displayable[0]}
+            </>
+        );
     }
 
-    return 'No filters enabled';
+    return reactTranslator.translate('options_filters_no_enabled');
 };
 
 const Group = ({
