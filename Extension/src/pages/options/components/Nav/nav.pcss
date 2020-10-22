@@ -4,12 +4,11 @@
     align-items: flex-start;
 
     &__item {
-        min-height: 35px;
-        line-height: 25px;
+        line-height: 22px;
         color: var(--gray-base);
         text-decoration: none;
         display: inline-block;
-        margin-bottom: 30px;
+        margin: 16px 0;
         font-size: 16px;
         cursor: pointer;
         transition: var(--t3) box-shadow;
@@ -19,8 +18,20 @@
         }
 
         &--active {
-            box-shadow: 0 4px 0 0 var(--green86);
             font-weight: 600;
+            margin-left: -4px;
+
+            &:before {
+                content: "";
+                position: relative;
+                left: -13.5px;
+                border-left: 4px solid var(--green86);
+                border-radius: 10px;
+            }
+        }
+
+        &:last-child {
+            margin-bottom: 40px;
         }
     }
 }
