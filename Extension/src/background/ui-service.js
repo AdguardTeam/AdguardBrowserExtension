@@ -454,7 +454,7 @@ export const uiService = (function () {
         let title = '';
         let text = '';
         if (success) {
-            if (updatedFilters.length === 0) {
+            if (updatedFilters && updatedFilters.length === 0) {
                 title = '';
                 text = backgroundPage.i18n.getMessage('options_popup_update_not_found');
             } else {
