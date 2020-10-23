@@ -10,11 +10,28 @@
         display: none;
     }
 
+    &__logo {
+        margin-bottom: 24px;
+    }
+
+    &__overlay {
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        z-index: var(--z-idx5);
+        left: 0;
+        top: 0;
+        background-color: var(--overlay-gray);
+        overflow-x: hidden;
+    }
+
     @media (max-width: 360px) {
         position: absolute;
         background: var(--white);
         z-index: var(--z-idx6);
         display: none;
+        margin: 0;
+        width: 248px;
 
         &__menu {
             display: block;
@@ -30,15 +47,20 @@
             line-height: 18px;
         }
 
+        &__logo {
+            margin: 32px 102px 0 37px;
+        }
+
         &__button {
             margin: 6px 9px;
             width: 24px;
             height: 26px;
-            background-image: url('../../../../../assets/images/sandwich.svg');
+            background-image: url('../../../../../assets/images/menu-sandwich.svg');
             background-size: 24px 26px;
             border: 0;
             background-position: center center;
             background-repeat: no-repeat;
+            background-color: transparent;
         }
 
         &--open {
@@ -47,21 +69,7 @@
             position: fixed;
             left: 0;
             top: 0;
-
-            & ~ .overlay {
-                height: 100%;
-                width: 100%;
-                position: fixed;
-                z-index: var(--z-idx5);
-                left: 0;
-                top: 0;
-                background-color: var(--overlay-gray);
-                overflow-x: hidden;
-            }
         }
     };
 
-    &__logo {
-        margin-bottom: 24px;
-    }
 }

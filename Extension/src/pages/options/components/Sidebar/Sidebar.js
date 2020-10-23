@@ -1,3 +1,6 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions,
+jsx-a11y/click-events-have-key-events,
+jsx-a11y/control-has-associated-label */
 import React, { useState } from 'react';
 import classNames from 'classnames';
 import { Nav } from '../Nav';
@@ -16,14 +19,17 @@ const Sidebar = () => {
 
     return (
         <>
-            <div className="sidebar__menu">
-                <button onClick={openSidebar} className="sidebar__button" />
-            </div>
+            {isOpen
+                ? <div onClick={closeSidebar} className="sidebar__overlay" />
+                : (
+                    <div className="sidebar__menu" role="menu">
+                        <button onClick={openSidebar} className="sidebar__button" type="button" />
+                    </div>
+                )}
             <div className={className}>
                 <div className="logo sidebar__logo" />
                 <Nav closeSidebar={closeSidebar} />
             </div>
-            <div onClick={closeSidebar} className="overlay" />
         </>
     );
 };
