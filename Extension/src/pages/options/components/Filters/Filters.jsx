@@ -85,7 +85,6 @@ const Filters = observer(({ selectedGroup }) => {
         setSelectedGroupId(null);
     };
 
-    // TODO add validation
     const searchInputHandler = (e) => {
         const { value } = e.target;
         setSearchInput(value);
@@ -102,6 +101,9 @@ const Filters = observer(({ selectedGroup }) => {
     };
 
     const renderSearchResult = () => {
+        if (searchInput.match(/^[\[|\]|\?|\*|\.|\(|\)|\+|\=|\\\/].*/)) {
+            return;
+        }
         const searchQuery = new RegExp(searchInput, 'ig');
 
         let searchFilters = filters;
