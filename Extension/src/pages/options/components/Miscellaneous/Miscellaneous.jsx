@@ -131,27 +131,29 @@ const Miscellaneous = observer(() => {
                 </SettingsSet>
             </SettingsSection>
 
-            <button
-                type="button"
-                className="button button--m button--green content__btn"
-                onClick={handleFilteringLogClick}
-            >
-                {reactTranslator.translate('options_open_log')}
-            </button>
-            <button
-                type="button"
-                className="button button--m button--green-bd content__btn"
-                onClick={handleResetStatisticsClick}
-            >
-                {reactTranslator.translate('options_reset_stats')}
-            </button>
-            <button
-                type="button"
-                className="button button--m button--green-bd content__btn"
-                onClick={handleOpenChangelog}
-            >
-                {reactTranslator.translate('options_open_changelog')}
-            </button>
+            <div className="actions actions__misc">
+                <button
+                    type="button"
+                    className="button button--m button--green actions__btn"
+                    onClick={handleFilteringLogClick}
+                >
+                    {reactTranslator.translate('options_open_log')}
+                </button>
+                <button
+                    type="button"
+                    className="button button--m button--green-bd actions__btn"
+                    onClick={handleResetStatisticsClick}
+                >
+                    {reactTranslator.translate('options_reset_stats')}
+                </button>
+                <button
+                    type="button"
+                    className="button button--m button--green-bd actions__btn"
+                    onClick={handleOpenChangelog}
+                >
+                    {reactTranslator.translate('options_open_changelog')}
+                </button>
+            </div>
         </>
     );
 });

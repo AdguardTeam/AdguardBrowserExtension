@@ -1,7 +1,6 @@
 .editor {
     width: 100%;
     height: 300px;
-    min-width: 680px;
     min-height: 300px;
     max-width: 900px;
     max-height: 100%;
@@ -10,6 +9,10 @@
     position: relative;
     overflow: hidden;
     padding-right: 10px;
+
+    @media (min-width: 1024px) {
+        min-width: 680px;
+    }
 
     & .ace_editor {
         width: 100%;

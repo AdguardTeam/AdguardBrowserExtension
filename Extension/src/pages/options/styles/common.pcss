@@ -131,4 +131,19 @@ h2 {
     &__btn {
         margin: 0 0 15px 15px;
     }
+
+    @media (max-width: 360px) {
+        &__btn {
+            margin: 0 0 15px 0;
+        }
+
+        &__port &__btn:nth-of-type(1) {
+            margin-right: 15px;
+        }
+
+        &__misc, &__settings {
+            padding-top: 0;
+            flex-direction: column;
+        }
+    }
 }

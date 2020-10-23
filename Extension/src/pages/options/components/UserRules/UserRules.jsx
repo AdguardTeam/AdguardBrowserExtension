@@ -113,7 +113,7 @@ const UserRules = observer(() => {
                 shortcuts={shortcuts}
             />
             <div className="actions actions--divided">
-                <div className="actions__group">
+                <div className="actions__group actions__port">
                     <input
                         type="file"
                         id="inputEl"
