@@ -181,7 +181,7 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
                         onClick={handleApprove}
                         className="button button--m button--green modal__btn"
                     >
-                        Subscribe
+                        {reactTranslator.translate('options_popup_subscribe_button')}
                     </button>
                 </ModalContentWrapper>
             </>
@@ -206,7 +206,6 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
         setStepToRender(STEPS.INPUT);
     };
 
-    // TODO [maximtop] here we can show detailed error message than in the current version
     const renderErrorStep = () => {
         return (
             <>
