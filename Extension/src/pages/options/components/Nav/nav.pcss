@@ -8,7 +8,7 @@
         color: var(--gray-base);
         text-decoration: none;
         display: inline-block;
-        padding: 16px 16px 16px 40px;
+        padding: 16px 0;
         font-size: 16px;
         cursor: pointer;
         transition: var(--t3) box-shadow;
@@ -23,6 +23,8 @@
         &--active {
             font-weight: 600;
             margin-left: -4px;
+            padding-right: 20px;
+            overflow: visible;
 
             &:before {
                 content: "";
@@ -39,6 +41,10 @@
     }
 
     @media (max-width: 360px) {
-        padding: 40px 0
+        padding: 40px 0;
+
+        &__item {
+            padding: 16px 16px 16px 40px;
+        }
     }
 }

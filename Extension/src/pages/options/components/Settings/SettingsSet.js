@@ -10,18 +10,12 @@ const SettingsSet = (props) => {
         setting: true,
         'setting--disabled': disabled,
     });
+    /* TODO: separate checkbox and select row controls */
     return (
         <div className={settingClassName}>
             <div className="setting__info">
-                <div className="setting__title">
-                    {title}
-                </div>
-                { description
-                        && (
-                            <div className="setting__desc">
-                                {description}
-                            </div>
-                        )}
+                <div className="setting__title">{title}</div>
+                {description && <div className="setting__desc">{description}</div>}
                 {children}
             </div>
         </div>

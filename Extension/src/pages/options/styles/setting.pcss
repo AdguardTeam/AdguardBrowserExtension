@@ -3,8 +3,11 @@
     align-items: center;
     position: relative;
     padding: 16px 16px 20px;
-    box-shadow: 0 1px 0 0 var(--greye7);
-    min-height: 80px;
+
+    &__container {
+        min-height: 80px;
+        box-shadow: 0 1px 0 0 var(--greye7);
+    }
 
     &--disabled {
         & .setting__title {
@@ -18,10 +21,6 @@
 
     &__info {
         max-width: 600px;
-
-        @media (max-width: 640px) {
-            max-width: 250px;
-        };
     }
 
     &__title {
