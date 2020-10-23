@@ -23,7 +23,7 @@ const Sidebar = () => {
                 ? <div onClick={closeSidebar} className="sidebar__overlay" />
                 : (
                     <div className="sidebar__menu" role="menu">
-                        <button onClick={openSidebar} className="sidebar__button" type="button" />
+                        <button onClick={openSidebar} className="sidebar__open-button" type="button" />
                     </div>
                 )}
             <div className={className}>
