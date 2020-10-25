@@ -43,12 +43,19 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
     const [customUrlToAdd, setCustomUrlToAdd] = useState('');
     const [stepToRender, setStepToRender] = useState(STEPS.INPUT);
     const [filterToAdd, setFilterToAdd] = useState({});
+    const [filterToAddName, setFilterToAddName] = useState('');
 
     const { settingsStore } = useContext(rootStore);
 
     const handleInputChange = (e) => {
         const { value } = e.target;
         setCustomUrlToAdd(value);
+    };
+
+    const handleChangeFilterName = (e) => {
+        const { value } = e.target;
+        setFilterToAddName(value);
+        filterToAdd.name = value;
     };
 
     const handleSendUrlToCheck = async () => {
@@ -59,6 +66,7 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
                 setStepToRender(STEPS.ERROR);
             } else {
                 setFilterToAdd(result.filter);
+                setFilterToAddName(result.filter.name);
                 setStepToRender(STEPS.APPROVE);
             }
         } catch (e) {
@@ -78,7 +86,7 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
                     <div className="modal__content">
                         <input
                             type="text"
-                            placeholder="Enter URL or path"
+                            placeholder={reactTranslator.translate('options_popup_url_placeholder')}
                             onChange={handleInputChange}
                             className="modal__input"
                             value={customUrlToAdd}
@@ -133,8 +141,8 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
                             <input
                                 className="modal__input"
                                 type="text"
-                                // TODO add handler
-                                value={name}
+                                onChange={handleChangeFilterName}
+                                value={filterToAddName}
                             />
                         </div>
                         <div className="modal__row">
