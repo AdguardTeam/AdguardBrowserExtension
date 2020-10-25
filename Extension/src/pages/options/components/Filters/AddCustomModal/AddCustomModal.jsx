@@ -53,9 +53,8 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
 
     const handleSendUrlToCheck = async () => {
         setStepToRender(STEPS.CHECKING);
-        let result = {};
         try {
-            result = await messenger.checkCustomUrl(customUrlToAdd);
+            const result = await messenger.checkCustomUrl(customUrlToAdd);
             if (!result.filter) {
                 setStepToRender(STEPS.ERROR);
             } else {
