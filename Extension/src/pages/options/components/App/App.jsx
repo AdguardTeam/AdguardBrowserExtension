@@ -85,13 +85,16 @@ const App = observer(() => {
                 <div className="content">
                     <Switch>
                         <Route path="/" exact component={General} />
-                        <Route path="/filters" component={Filters} />
+                        <Route
+                            path="/filters:id?"
+                            component={Filters}
+                            render={() => { settingsStore.setSelectedGroupId(null); }}
+                        />
                         <Route path="/stealth" component={Stealth} />
                         <Route path="/allowlist" component={Allowlist} />
                         <Route path="/user-filter" component={UserRules} />
                         <Route path="/miscellaneous" component={Miscellaneous} />
                         <Route path="/about" component={About} />
-                        <Route path="/filters-:id" children={<Filters />} />
                         <Route component={General} />
                     </Switch>
                 </div>

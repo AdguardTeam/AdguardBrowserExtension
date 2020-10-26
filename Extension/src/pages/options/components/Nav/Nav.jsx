@@ -19,6 +19,7 @@ const Nav = () => (
             className="nav__item"
             activeClassName="nav__item--active"
             to="/filters"
+            isActive={(match, location) => match || !isNaN(location.pathname.slice(-1))}
         >
             {reactTranslator.translate('options_antibanner')}
         </NavLink>

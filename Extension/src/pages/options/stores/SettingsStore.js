@@ -63,6 +63,8 @@ class SettingsStore {
 
     @observable filtersUpdating = false;
 
+    @observable selectedGroupId = null;
+
     constructor(rootStore) {
         makeObservable(this);
         this.rootStore = rootStore;
@@ -92,6 +94,13 @@ class SettingsStore {
             this.constants = data.constants;
             this.optionsReadyToRender = true;
             this.setAllowAcceptableAds(data.filtersMetadata.filters);
+        });
+    }
+
+    @action
+    setSelectedGroupId(groupId) {
+        runInAction(() => {
+            this.selectedGroupId = groupId;
         });
     }
 

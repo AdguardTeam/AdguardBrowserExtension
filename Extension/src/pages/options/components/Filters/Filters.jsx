@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import sortBy from 'lodash/sortBy';
 import { Group } from './Group';
@@ -19,9 +19,9 @@ const Filters = observer(() => {
         DISABLED: 'disabled',
     };
 
+    const history = useHistory();
     const { id } = useParams();
 
-    const [selectedGroupId, setSelectedGroupId] = useState(parseInt(id, 10));
     const [searchInput, setSearchInput] = useState('');
     const [searchSelect, setSearchSelect] = useState(SEARCH_FILTERS.ALL);
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -36,13 +36,18 @@ const Filters = observer(() => {
         filtersUpdating,
     } = settingsStore;
 
+    settingsStore.setSelectedGroupId(parseInt(id, 10));
+
     const handleGroupSwitch = async ({ id, enabled }) => {
         await settingsStore.updateGroupSetting(id, enabled);
     };
 
     const groupClickHandler = (groupId) => () => {
-        setSelectedGroupId(groupId);
+        settingsStore.setSelectedGroupId(groupId);
+        history.push(`/filters${groupId}`);
     };
+
+    // console.log(selectedGroupId);
 
     const getEnabledFiltersByGroup = (group) => (
         filters.filter((filter) => filter.groupId === group.groupId && filter.enabled)
@@ -70,8 +75,7 @@ const Filters = observer(() => {
         await settingsStore.updateFilterSetting(id, enabled);
     };
 
-    const renderFilters = (filtersList, groupId) => {
-        history.pushState(null, null, `#filters-${groupId}`);
+    const renderFilters = (filtersList) => {
         return filtersList.map((filter) => (
             <Filter
                 key={filter.filterId}
@@ -84,8 +88,8 @@ const Filters = observer(() => {
     };
 
     const handleReturnToGroups = () => {
-        history.pushState(null, null, '#filters');
-        setSelectedGroupId(null);
+        history.push('/filters');
+        settingsStore.setSelectedGroupId(null);
     };
 
     const searchInputHandler = (e) => {
@@ -108,8 +112,10 @@ const Filters = observer(() => {
         const searchQuery = new RegExp(searchInputString, 'ig');
 
         let searchFilters = filters;
-        if (Number.isInteger(selectedGroupId)) {
-            searchFilters = filters.filter((filter) => filter.groupId === selectedGroupId);
+        if (Number.isInteger(settingsStore.selectedGroupId)) {
+            searchFilters = filters.filter((filter) => (
+                filter.groupId === settingsStore.selectedGroupId
+            ));
         }
 
         return searchFilters.map((filter) => {
@@ -192,7 +198,7 @@ const Filters = observer(() => {
     };
 
     const renderAddFilterBtn = () => {
-        if (selectedGroupId === CUSTOM_FILTERS_GROUP_ID) {
+        if (settingsStore.selectedGroupId === CUSTOM_FILTERS_GROUP_ID) {
             return (
                 <div>
                     <button
@@ -216,10 +222,10 @@ const Filters = observer(() => {
     // search by input data or by enabled/disabled filters
     const isSearching = searchInput || searchSelect !== SEARCH_FILTERS.ALL;
 
-    if (Number.isInteger(selectedGroupId)) {
-        const groupFilters = filters.filter((filter) => filter.groupId === selectedGroupId);
-        const { groupName } = categories.find((group) => group.groupId === selectedGroupId);
-        if (selectedGroupId === CUSTOM_FILTERS_GROUP_ID && groupFilters.length === 0) {
+    if (Number.isInteger(settingsStore.selectedGroupId)) {
+        const groupFilters = filters.filter((filter) => filter.groupId === settingsStore.selectedGroupId);
+        const { groupName } = categories.find((group) => group.groupId === settingsStore.selectedGroupId);
+        if (settingsStore.selectedGroupId === CUSTOM_FILTERS_GROUP_ID && groupFilters.length === 0) {
             return (
                 <>
                     <div className="title-btn">
@@ -249,7 +255,7 @@ const Filters = observer(() => {
                     {
                         isSearching
                             ? renderSearchResult()
-                            : filters && renderFilters(groupFilters, selectedGroupId)
+                            : filters && renderFilters(groupFilters)
                     }
                 </div>
                 {renderAddFilterBtn()}
