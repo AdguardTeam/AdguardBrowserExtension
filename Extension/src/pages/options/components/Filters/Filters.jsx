@@ -101,10 +101,8 @@ const Filters = observer(({ selectedGroup }) => {
     };
 
     const renderSearchResult = () => {
-        if (searchInput.match(/^[[|\]|?|*|.|(|)|+|=|\\/].*/)) {
-            return;
-        }
-        const searchQuery = new RegExp(searchInput, 'ig');
+        const searchInputString = searchInput.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const searchQuery = new RegExp(searchInputString, 'ig');
 
         let searchFilters = filters;
         if (Number.isInteger(selectedGroupId)) {
