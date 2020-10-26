@@ -101,7 +101,7 @@ const Filters = observer(({ selectedGroup }) => {
     };
 
     const renderSearchResult = () => {
-        if (searchInput.match(/^[\[|\]|\?|\*|\.|\(|\)|\+|\=|\\\/].*/)) {
+        if (searchInput.match(/^[[|\]|?|*|.|(|)|+|=|\\/].*/)) {
             return;
         }
         const searchQuery = new RegExp(searchInput, 'ig');

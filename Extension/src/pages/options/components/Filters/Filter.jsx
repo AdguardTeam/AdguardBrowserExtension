@@ -55,7 +55,7 @@ const Filter = ({
 }) => {
     const { settingsStore } = useContext(rootStore);
     const {
-        name, filterId, description, version, timeUpdated, homepage, trusted,
+        name, filterId, description, version, lastUpdateTime, timeUpdated, homepage, trusted,
     } = filter;
 
     const removeCustomFilter = async () => {
@@ -93,7 +93,9 @@ const Filter = ({
                         }
                         {reactTranslator.translate('options_filters_filter_updated')}
                         {' '}
-                        {formatDate(timeUpdated)}
+                        {lastUpdateTime
+                            ? formatDate(lastUpdateTime)
+                            : formatDate(timeUpdated)}
                     </div>
                 </div>
                 {renderTags(tags, trusted)}

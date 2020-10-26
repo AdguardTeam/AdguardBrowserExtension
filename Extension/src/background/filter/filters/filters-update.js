@@ -281,7 +281,7 @@ export const filtersUpdate = (() => {
                     && browserUtils.isGreaterVersion(filterMetadata.version, filter.version)
                 ) {
                     log.info(`Updating filter ${filter.filterId} to version ${filterMetadata.version}`);
-                    filter.timeUpdated = Date.now();
+                    filter.lastUpdateTime = Date.now();
                     filterMetadataListToUpdate.push(filterMetadata);
                 } else {
                     // remember that this filter version was checked
