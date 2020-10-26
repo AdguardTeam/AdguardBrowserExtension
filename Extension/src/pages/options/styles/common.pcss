@@ -20,19 +20,6 @@ h2 {
     font-size: inherit;
 }
 
-.container {
-    max-width: 874px;
-    margin: 0 auto;
-
-    @media (max-width: 640px){
-        max-width: 576px;
-    };
-
-    @media (max-width: 360px){
-        max-width: 360px;
-    };
-}
-
 .content {
     width: 100%;
     max-width: 640px;
@@ -52,9 +39,18 @@ h2 {
     height: 100%;
 }
 .page {
-    padding: 54px 0 48px;
+    padding: 54px 0 48px 24px;
     flex: 1 0 auto;
     display: flex;
+    justify-content: center;
+
+    @media (max-width: 640px) {
+        padding-left: 20px;
+    }
+
+    @media (max-width: 360px) {
+        padding-left: 0;
+    }
 }
 .logo {
     background-image: url("../../assets/icons/logo.svg");

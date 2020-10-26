@@ -73,7 +73,7 @@ const App = observer(() => {
 
     return (
         <HashRouter hashType="noslash">
-            <div className="page container">
+            <div className="page">
                 <Sidebar />
                 <div className="content">
                     <Switch>
