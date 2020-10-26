@@ -186,7 +186,9 @@ class SettingsStore {
 
     @action
     setFiltersUpdating(value) {
-        this.filtersUpdating = value;
+        runInAction(() => {
+            this.filtersUpdating = value;
+        });
     }
 
     @action
@@ -198,7 +200,9 @@ class SettingsStore {
             }
             const filtersUpdates = await messenger.updateFilters(filters);
             this.refreshFilters(filtersUpdates);
-            this.setFiltersUpdating(false);
+            setTimeout(() => {
+                this.setFiltersUpdating(false);
+            }, 2000);
             return filtersUpdates;
         } catch (error) {
             this.setFiltersUpdating(false);
