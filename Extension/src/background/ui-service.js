@@ -453,8 +453,8 @@ export const uiService = (function () {
     function getFiltersUpdateResultMessage(success, updatedFilters) {
         let title = '';
         let text = '';
-        if (success) {
-            if (updatedFilters && updatedFilters.length === 0) {
+        if (success && updatedFilters) {
+            if (updatedFilters.length === 0) {
                 title = '';
                 text = backgroundPage.i18n.getMessage('options_popup_update_not_found');
             } else {
