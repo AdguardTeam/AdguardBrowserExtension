@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom';
 import { App } from './components/App';
 import { reactTranslator } from '../reactCommon/reactTranslator';
 
-export const optionsPage = {
+export const filteringLog = {
     init: () => {
-        document.title = reactTranslator.translate('options_settings');
+        document.title = reactTranslator.translate('filtering_log_title');
 
         ReactDOM.render(
             <App />,
