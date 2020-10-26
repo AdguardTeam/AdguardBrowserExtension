@@ -78,17 +78,6 @@ const App = observer(() => {
         return null;
     }
 
-    const groupsLinks = () => settingsStore.categories.map((cat) => {
-        const groupPath = `/filters-${cat.groupId}`;
-        return (
-            <Route
-                key={cat.groupId}
-                path={groupPath}
-                render={() => <Filters selectedGroup={cat.groupId} />}
-            />
-        );
-    });
-
     return (
         <HashRouter hashType="noslash">
             <div className="page container">
@@ -102,7 +91,7 @@ const App = observer(() => {
                         <Route path="/user-filter" component={UserRules} />
                         <Route path="/miscellaneous" component={Miscellaneous} />
                         <Route path="/about" component={About} />
-                        {groupsLinks()}
+                        <Route path="/filters-:id" children={<Filters />} />
                         <Route component={General} />
                     </Switch>
                 </div>

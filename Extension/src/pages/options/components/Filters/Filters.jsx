@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import sortBy from 'lodash/sortBy';
 import { Group } from './Group';
@@ -11,14 +12,16 @@ import { reactTranslator } from '../../../reactCommon/reactTranslator';
 import { AddCustomModal } from './AddCustomModal';
 import { CUSTOM_FILTERS_GROUP_ID } from '../../../../common/constants';
 
-const Filters = observer(({ selectedGroup }) => {
+const Filters = observer(() => {
     const SEARCH_FILTERS = {
         ALL: 'all',
         ENABLED: 'enabled',
         DISABLED: 'disabled',
     };
 
-    const [selectedGroupId, setSelectedGroupId] = useState(selectedGroup);
+    const { id } = useParams();
+
+    const [selectedGroupId, setSelectedGroupId] = useState(parseInt(id, 10));
     const [searchInput, setSearchInput] = useState('');
     const [searchSelect, setSearchSelect] = useState(SEARCH_FILTERS.ALL);
     const [modalIsOpen, setModalIsOpen] = useState(false);
