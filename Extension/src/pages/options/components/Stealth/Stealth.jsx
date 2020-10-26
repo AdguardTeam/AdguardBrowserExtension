@@ -46,15 +46,16 @@ const Stealth = observer(() => {
                     title={reactTranslator.translate('options_privacy_title')}
                     description={reactTranslator.translate('options_privacy_desc')}
                     disabled={settings.values[DISABLE_STEALTH_MODE]}
-                >
-                    <Setting
-                        id={DISABLE_STEALTH_MODE}
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        inverted
-                        value={settings.values[DISABLE_STEALTH_MODE]}
-                        handler={settingChangeHandler}
-                    />
-                </SettingsSet>
+                    inlineControl={(
+                        <Setting
+                            id={DISABLE_STEALTH_MODE}
+                            type={SETTINGS_TYPES.CHECKBOX}
+                            inverted
+                            value={settings.values[DISABLE_STEALTH_MODE]}
+                            handler={settingChangeHandler}
+                        />
+                    )}
+                />
             </SettingsSection>
 
             <SettingsSection
@@ -65,13 +66,15 @@ const Stealth = observer(() => {
                     title={reactTranslator.translate('options_third_party_title')}
                     description={reactTranslator.translate('options_third_party_desc')}
                     disabled={!settings.values[SELF_DESTRUCT_THIRD_PARTY_COOKIES]}
+                    inlineControl={(
+                        <Setting
+                            id={SELF_DESTRUCT_THIRD_PARTY_COOKIES}
+                            type={SETTINGS_TYPES.CHECKBOX}
+                            value={settings.values[SELF_DESTRUCT_THIRD_PARTY_COOKIES]}
+                            handler={settingChangeHandler}
+                        />
+                    )}
                 >
-                    <Setting
-                        id={SELF_DESTRUCT_THIRD_PARTY_COOKIES}
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        value={settings.values[SELF_DESTRUCT_THIRD_PARTY_COOKIES]}
-                        handler={settingChangeHandler}
-                    />
                     <Setting
                         id={SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME}
                         type={SETTINGS_TYPES.INPUT}
@@ -85,13 +88,15 @@ const Stealth = observer(() => {
                     title={reactTranslator.translate('options_first_party_title')}
                     description={reactTranslator.translate('options_first_party_desc')}
                     disabled={!settings.values[SELF_DESTRUCT_FIRST_PARTY_COOKIES]}
+                    inlineControl={(
+                        <Setting
+                            id={SELF_DESTRUCT_FIRST_PARTY_COOKIES}
+                            type={SETTINGS_TYPES.CHECKBOX}
+                            value={settings.values[SELF_DESTRUCT_FIRST_PARTY_COOKIES]}
+                            handler={settingChangeHandler}
+                        />
+                    )}
                 >
-                    <Setting
-                        id={SELF_DESTRUCT_FIRST_PARTY_COOKIES}
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        value={settings.values[SELF_DESTRUCT_FIRST_PARTY_COOKIES]}
-                        handler={settingChangeHandler}
-                    />
                     <Setting
                         id={SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME}
                         type={SETTINGS_TYPES.INPUT}
@@ -110,65 +115,71 @@ const Stealth = observer(() => {
                     title={reactTranslator.translate('options_hide_referrer_title')}
                     description={reactTranslator.translate('options_hide_referrer_desc')}
                     disabled={!settings.values[HIDE_REFERRER]}
-                >
-                    <Setting
-                        id={HIDE_REFERRER}
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        value={settings.values[HIDE_REFERRER]}
-                        handler={settingChangeHandler}
-                    />
-                </SettingsSet>
+                    inlineControl={(
+                        <Setting
+                            id={HIDE_REFERRER}
+                            type={SETTINGS_TYPES.CHECKBOX}
+                            value={settings.values[HIDE_REFERRER]}
+                            handler={settingChangeHandler}
+                        />
+                    )}
+                />
 
                 <SettingsSet
                     title={reactTranslator.translate('options_hide_search_queries_title')}
                     description={reactTranslator.translate('options_hide_search_queries_desc')}
                     disabled={!settings.values[HIDE_SEARCH_QUERIES]}
-                >
-                    <Setting
-                        id={HIDE_SEARCH_QUERIES}
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        value={settings.values[HIDE_SEARCH_QUERIES]}
-                        handler={settingChangeHandler}
-                    />
-                </SettingsSet>
+                    inlineControl={(
+                        <Setting
+                            id={HIDE_SEARCH_QUERIES}
+                            type={SETTINGS_TYPES.CHECKBOX}
+                            value={settings.values[HIDE_SEARCH_QUERIES]}
+                            handler={settingChangeHandler}
+                        />
+                    )}
+                />
 
                 <SettingsSet
                     title={reactTranslator.translate('options_send_not_track_title')}
                     description={reactTranslator.translate('options_send_not_track_desc')}
                     disabled={!settings.values[SEND_DO_NOT_TRACK]}
-                >
-                    <Setting
-                        id={SEND_DO_NOT_TRACK}
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        value={settings.values[SEND_DO_NOT_TRACK]}
-                        handler={settingChangeHandler}
-                    />
-                </SettingsSet>
+                    inlineControl={(
+                        <Setting
+                            id={SEND_DO_NOT_TRACK}
+                            type={SETTINGS_TYPES.CHECKBOX}
+                            value={settings.values[SEND_DO_NOT_TRACK]}
+                            handler={settingChangeHandler}
+                        />
+                    )}
+                />
 
                 <SettingsSet
                     title={reactTranslator.translate('options_disable_webrtc_title')}
                     description={reactTranslator.translate('options_disable_webrtc_desc')}
                     disabled={!settings.values[BLOCK_WEBRTC]}
-                >
-                    <Setting
-                        id={BLOCK_WEBRTC}
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        value={settings.values[BLOCK_WEBRTC]}
-                        handler={settingChangeHandler}
-                    />
-                </SettingsSet>
+                    inlineControl={(
+                        <Setting
+                            id={BLOCK_WEBRTC}
+                            type={SETTINGS_TYPES.CHECKBOX}
+                            value={settings.values[BLOCK_WEBRTC]}
+                            handler={settingChangeHandler}
+                        />
+                    )}
+                />
 
                 <SettingsSet
                     title={reactTranslator.translate('options_strip_tracking_params_title')}
                     description={reactTranslator.translate('options_strip_tracking_params_desc')}
                     disabled={!settings.values[STRIP_TRACKING_PARAMETERS]}
+                    inlineControl={(
+                        <Setting
+                            id={STRIP_TRACKING_PARAMETERS}
+                            type={SETTINGS_TYPES.CHECKBOX}
+                            value={settings.values[STRIP_TRACKING_PARAMETERS]}
+                            handler={settingChangeHandler}
+                        />
+                    )}
                 >
-                    <Setting
-                        id={STRIP_TRACKING_PARAMETERS}
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        value={settings.values[STRIP_TRACKING_PARAMETERS]}
-                        handler={settingChangeHandler}
-                    />
                     <Setting
                         id={TRACKING_PARAMETERS}
                         type={SETTINGS_TYPES.TEXTAREA}

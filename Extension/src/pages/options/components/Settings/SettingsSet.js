@@ -4,18 +4,23 @@ import classNames from 'classnames';
 
 const SettingsSet = (props) => {
     const {
-        title, description, children, disabled,
+        title, description, children, disabled, inlineControl,
     } = props;
     const settingClassName = classNames({
         setting: true,
         'setting--disabled': disabled,
     });
-    /* TODO: separate checkbox and select row controls */
+
     return (
         <div className={settingClassName}>
-            <div className="setting__info">
-                <div className="setting__title">{title}</div>
-                {description && <div className="setting__desc">{description}</div>}
+            <div className="setting__container--vertical">
+                <div className="setting__container--horizontal">
+                    <div className="setting__info">
+                        <div className="setting__title">{title}</div>
+                        {description && <div className="setting__desc">{description}</div>}
+                    </div>
+                    {inlineControl && <div className="setting__container--inline">{inlineControl}</div>}
+                </div>
                 {children}
             </div>
         </div>
@@ -23,9 +28,11 @@ const SettingsSet = (props) => {
 };
 
 SettingsSet.defaultProps = {
-    description: '',
     title: '',
+    description: '',
+    children: null,
     disabled: false,
+    inlineControl: null,
 };
 
 SettingsSet.propTypes = {
@@ -34,8 +41,9 @@ SettingsSet.propTypes = {
     children: PropTypes.oneOfType([
         PropTypes.element,
         PropTypes.arrayOf(PropTypes.element),
-    ]).isRequired,
+    ]),
     disabled: PropTypes.bool,
+    inlineControl: PropTypes.element,
 };
 
 export default SettingsSet;

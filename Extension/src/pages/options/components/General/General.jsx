@@ -117,14 +117,15 @@ const General = observer(() => {
                             {reactTranslator.translate('options_learn_more')}
                         </a>
                     )}
-                >
-                    <Setting
-                        id={ALLOW_ACCEPTABLE_ADS}
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        value={allowAcceptableAds}
-                        handler={allowAcceptableAdsChangeHandler}
-                    />
-                </SettingsSet>
+                    inlineControl={(
+                        <Setting
+                            id={ALLOW_ACCEPTABLE_ADS}
+                            type={SETTINGS_TYPES.CHECKBOX}
+                            value={allowAcceptableAds}
+                            handler={allowAcceptableAdsChangeHandler}
+                        />
+                    )}
+                />
                 <SettingsSet
                     title={reactTranslator.translate('options_safebrowsing_enabled')}
                     description={(
@@ -136,37 +137,40 @@ const General = observer(() => {
                             {reactTranslator.translate('options_learn_more')}
                         </a>
                     )}
-                >
-                    <Setting
-                        id={DISABLE_SAFEBROWSING}
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        inverted
-                        value={settings.values[DISABLE_SAFEBROWSING]}
-                        handler={settingChangeHandler}
-                    />
-                </SettingsSet>
+                    inlineControl={(
+                        <Setting
+                            id={DISABLE_SAFEBROWSING}
+                            type={SETTINGS_TYPES.CHECKBOX}
+                            inverted
+                            value={settings.values[DISABLE_SAFEBROWSING]}
+                            handler={settingChangeHandler}
+                        />
+                    )}
+                />
                 <SettingsSet
                     title={reactTranslator.translate('options_enable_autodetect_filter')}
-                >
-                    <Setting
-                        id={DISABLE_DETECT_FILTERS}
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        inverted
-                        handler={settingChangeHandler}
-                        value={settings.values[DISABLE_DETECT_FILTERS]}
-                    />
-                </SettingsSet>
+                    inlineControl={(
+                        <Setting
+                            id={DISABLE_DETECT_FILTERS}
+                            type={SETTINGS_TYPES.CHECKBOX}
+                            inverted
+                            handler={settingChangeHandler}
+                            value={settings.values[DISABLE_DETECT_FILTERS]}
+                        />
+                    )}
+                />
                 <SettingsSet
                     title={reactTranslator.translate('options_set_update_interval')}
-                >
-                    <Setting
-                        id={FILTERS_UPDATE_PERIOD}
-                        type={SETTINGS_TYPES.SELECT}
-                        options={filtersUpdatePeriodOptions}
-                        value={settings.values[FILTERS_UPDATE_PERIOD]}
-                        handler={settingChangeHandler}
-                    />
-                </SettingsSet>
+                    inlineControl={(
+                        <Setting
+                            id={FILTERS_UPDATE_PERIOD}
+                            type={SETTINGS_TYPES.SELECT}
+                            options={filtersUpdatePeriodOptions}
+                            value={settings.values[FILTERS_UPDATE_PERIOD]}
+                            handler={settingChangeHandler}
+                        />
+                    )}
+                />
             </SettingsSection>
             <div className="actions actions__settings">
                 <button

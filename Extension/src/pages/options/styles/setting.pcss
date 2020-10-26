@@ -4,9 +4,31 @@
     position: relative;
     padding: 16px 16px 20px;
 
+    &:not(:last-child){
+        border: 1px solid var(--greye7);
+        border-width: 0 0 1px 0;
+    }
+
     &__container {
         min-height: 80px;
         box-shadow: 0 1px 0 0 var(--greye7);
+
+        &--vertical {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        &--horizontal {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        &--inline {
+            margin: 8px 0 0 12px;
+        }
     }
 
     &--disabled {

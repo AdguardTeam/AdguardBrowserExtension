@@ -60,14 +60,15 @@ const Miscellaneous = observer(() => {
                     title={reactTranslator.translate('options_use_optimized_filters')}
                     description={reactTranslator.translate('options_use_optimized_filters_desc')}
                     disabled={!settings.values[USE_OPTIMIZED_FILTERS]}
-                >
-                    <Setting
-                        id={USE_OPTIMIZED_FILTERS}
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        value={settings.values[USE_OPTIMIZED_FILTERS]}
-                        handler={settingChangeHandler}
-                    />
-                </SettingsSet>
+                    inlineControl={(
+                        <Setting
+                            id={USE_OPTIMIZED_FILTERS}
+                            type={SETTINGS_TYPES.CHECKBOX}
+                            value={settings.values[USE_OPTIMIZED_FILTERS]}
+                            handler={settingChangeHandler}
+                        />
+                    )}
+                />
 
                 <SettingsSet
                     title={reactTranslator.translate('options_collect_hit_stats')}
@@ -81,54 +82,58 @@ const Miscellaneous = observer(() => {
                         </a>
                     )}
                     disabled={settings.values[DISABLE_COLLECT_HITS]}
-                >
-                    <Setting
-                        id={DISABLE_COLLECT_HITS}
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        inverted
-                        value={settings.values[DISABLE_COLLECT_HITS]}
-                        handler={settingChangeHandler}
-                    />
-                </SettingsSet>
+                    inlineControl={(
+                        <Setting
+                            id={DISABLE_COLLECT_HITS}
+                            type={SETTINGS_TYPES.CHECKBOX}
+                            inverted
+                            value={settings.values[DISABLE_COLLECT_HITS]}
+                            handler={settingChangeHandler}
+                        />
+                    )}
+                />
 
                 <SettingsSet
                     title={reactTranslator.translate('options_show_context_menu')}
                     disabled={settings.values[DISABLE_SHOW_CONTEXT_MENU]}
-                >
-                    <Setting
-                        id={DISABLE_SHOW_CONTEXT_MENU}
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        inverted
-                        value={settings.values[DISABLE_SHOW_CONTEXT_MENU]}
-                        handler={settingChangeHandler}
-                    />
-                </SettingsSet>
+                    inlineControl={(
+                        <Setting
+                            id={DISABLE_SHOW_CONTEXT_MENU}
+                            type={SETTINGS_TYPES.CHECKBOX}
+                            inverted
+                            value={settings.values[DISABLE_SHOW_CONTEXT_MENU]}
+                            handler={settingChangeHandler}
+                        />
+                    )}
+                />
 
                 <SettingsSet
                     title={reactTranslator.translate('options_show_adguard_full_version')}
                     disabled={settings.values[DISABLE_SHOW_ADGUARD_PROMO_INFO]}
-                >
-                    <Setting
-                        id={DISABLE_SHOW_ADGUARD_PROMO_INFO}
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        inverted
-                        value={settings.values[DISABLE_SHOW_ADGUARD_PROMO_INFO]}
-                        handler={settingChangeHandler}
-                    />
-                </SettingsSet>
+                    inlineControl={(
+                        <Setting
+                            id={DISABLE_SHOW_ADGUARD_PROMO_INFO}
+                            type={SETTINGS_TYPES.CHECKBOX}
+                            inverted
+                            value={settings.values[DISABLE_SHOW_ADGUARD_PROMO_INFO]}
+                            handler={settingChangeHandler}
+                        />
+                    )}
+                />
 
                 <SettingsSet
                     title={reactTranslator.translate('options_show_app_updated_notification')}
                     disabled={settings.values[DISABLE_SHOW_APP_UPDATED_NOTIFICATION]}
-                >
-                    <Setting
-                        id={DISABLE_SHOW_APP_UPDATED_NOTIFICATION}
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        inverted
-                        value={settings.values[DISABLE_SHOW_APP_UPDATED_NOTIFICATION]}
-                        handler={settingChangeHandler}
-                    />
-                </SettingsSet>
+                    inlineControl={(
+                        <Setting
+                            id={DISABLE_SHOW_APP_UPDATED_NOTIFICATION}
+                            type={SETTINGS_TYPES.CHECKBOX}
+                            inverted
+                            value={settings.values[DISABLE_SHOW_APP_UPDATED_NOTIFICATION]}
+                            handler={settingChangeHandler}
+                        />
+                    )}
+                />
             </SettingsSection>
 
             <div className="actions actions__misc">

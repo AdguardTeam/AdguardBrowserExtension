@@ -107,15 +107,16 @@ const Allowlist = observer(() => {
                 <SettingsSet
                     title="Invert allowlist"
                     description="Unblock ads everywhere except for the allowlist"
-                >
-                    <Setting
-                        id={DEFAULT_WHITE_LIST_MODE}
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        value={settings.values[DEFAULT_WHITE_LIST_MODE]}
-                        handler={settingChangeHandler}
-                        inverted
-                    />
-                </SettingsSet>
+                    inlineControl={(
+                        <Setting
+                            id={DEFAULT_WHITE_LIST_MODE}
+                            type={SETTINGS_TYPES.CHECKBOX}
+                            value={settings.values[DEFAULT_WHITE_LIST_MODE]}
+                            handler={settingChangeHandler}
+                            inverted
+                        />
+                    )}
+                />
             </SettingsSection>
             <Editor
                 name="allowlist"
