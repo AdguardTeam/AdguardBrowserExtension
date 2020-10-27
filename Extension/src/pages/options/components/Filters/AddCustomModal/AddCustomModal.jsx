@@ -42,7 +42,7 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
 
     const [customUrlToAdd, setCustomUrlToAdd] = useState('');
     const [stepToRender, setStepToRender] = useState(STEPS.INPUT);
-    const [filterToAdd, setFilterToAdd] = useState({});
+    const [filterToAdd, setFilterToAdd] = useState(null);
     const [filterToAddName, setFilterToAddName] = useState('');
 
     const { settingsStore } = useContext(rootStore);
