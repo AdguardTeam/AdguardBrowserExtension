@@ -204,9 +204,6 @@ class SettingsStore {
     async updateFilters(filters) {
         this.setFiltersUpdating(true);
         try {
-            if (!filters || !filters.length) {
-                filters = this.filters;
-            }
             const filtersUpdates = await messenger.updateFilters(filters);
             this.refreshFilters(filtersUpdates);
             setTimeout(() => {
