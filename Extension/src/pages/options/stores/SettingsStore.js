@@ -159,27 +159,23 @@ class SettingsStore {
     @action
     refreshFilters(updatedFilters) {
         if (updatedFilters && updatedFilters.length) {
-            runInAction(() => {
-                updatedFilters.forEach((filter) => this.refreshFilter(filter));
-            });
+            updatedFilters.forEach((filter) => this.refreshFilter(filter));
         }
     }
 
     @action
     refreshFilter(filter) {
-        runInAction(() => {
-            const filterToUpdate = this.filters.find((f) => f.filterId === filter.filterId);
-            const index = this.filters.indexOf(filterToUpdate);
-            if (index !== -1) {
-                this.filters[index] = filter;
-            }
-        });
+        const filterToUpdate = this.filters.find((f) => f.filterId === filter.filterId);
+        const index = this.filters.indexOf(filterToUpdate);
+        if (index !== -1) {
+            this.filters[index] = filter;
+        }
     }
 
     @action
     async updateFilterSetting(id, enabled) {
         await messenger.updateFilterStatus(id, enabled);
-        await runInAction(async () => {
+        runInAction(async () => {
             for (const filter of this.filters) {
                 if (filter.filterId === parseInt(id, 10)) {
                     if (enabled) {
@@ -195,9 +191,7 @@ class SettingsStore {
 
     @action
     setFiltersUpdating(value) {
-        runInAction(() => {
-            this.filtersUpdating = value;
-        });
+        this.filtersUpdating = value;
     }
 
     @action
