@@ -156,6 +156,13 @@ class Messenger {
         const type = 'removeAntiBannerFilter';
         await this.sendMessage(type, { filterId });
     }
+
+    async getRulesCount() {
+        // TODO use common message types in the constants
+        const type = 'getRulesCount';
+        const count = await this.sendMessage(type);
+        return count;
+    }
 }
 
 const messenger = new Messenger();

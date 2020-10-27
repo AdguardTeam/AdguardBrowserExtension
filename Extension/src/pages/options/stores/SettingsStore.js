@@ -98,6 +98,14 @@ class SettingsStore {
     }
 
     @action
+    async updateRulesCount() {
+        const { rulesCount } = await messenger.getRulesCount();
+        runInAction(() => {
+            this.rulesCount = rulesCount;
+        });
+    }
+
+    @action
     setSelectedGroupId(groupId) {
         runInAction(() => {
             this.selectedGroupId = groupId;
@@ -154,6 +162,9 @@ class SettingsStore {
                 }
             });
         });
+        setTimeout(() => {
+            this.updateRulesCount();
+        }, 2000);
     }
 
     @action
@@ -187,6 +198,9 @@ class SettingsStore {
                 }
             }
         });
+        setTimeout(() => {
+            this.updateRulesCount();
+        }, 2000);
     }
 
     @action

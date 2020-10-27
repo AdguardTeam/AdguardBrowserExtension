@@ -255,6 +255,10 @@ const init = () => {
                 const { filters } = data;
                 return uiService.checkFiltersUpdates(filters);
             }
+            case 'getRulesCount': {
+                const count = await antiBannerService.getRequestFilterInfo();
+                return count;
+            }
             case 'loadCustomFilterInfo':
                 try {
                     const { url, title } = data;
