@@ -181,8 +181,7 @@ const init = () => {
                 return { ready: filteringApi.isReady() };
             case 'addAndEnableFilter': {
                 const { filterId } = data;
-                await application.addAndEnableFilters([filterId]);
-                break;
+                return application.addAndEnableFilters([filterId]);
             }
             case 'disableAntiBannerFilter': {
                 const { filterId, remove } = data;

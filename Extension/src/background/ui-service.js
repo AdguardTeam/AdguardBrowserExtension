@@ -937,7 +937,7 @@ export const uiService = (function () {
             switch (event) {
                 case listeners.FILTER_ENABLE_DISABLE:
                     if (payload.enabled) {
-                        checkFiltersUpdates([payload], false);
+                        checkFiltersUpdates([payload], true);
                     }
                     break;
                 case listeners.FILTER_GROUP_ENABLE_DISABLE:

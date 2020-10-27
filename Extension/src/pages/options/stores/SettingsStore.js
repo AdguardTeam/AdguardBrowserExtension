@@ -107,9 +107,7 @@ class SettingsStore {
 
     @action
     setSelectedGroupId(groupId) {
-        runInAction(() => {
-            this.selectedGroupId = groupId;
-        });
+        this.selectedGroupId = groupId;
     }
 
     @action
@@ -182,18 +180,18 @@ class SettingsStore {
 
     @action
     async updateFilterSetting(id, enabled) {
-        await messenger.updateFilterStatus(id, enabled);
-        runInAction(async () => {
-            for (const filter of this.filters) {
+        const filters = await messenger.updateFilterStatus(id, enabled);
+        this.refreshFilters(filters);
+        runInAction(() => {
+            this.filters.forEach((filter) => {
                 if (filter.filterId === parseInt(id, 10)) {
                     if (enabled) {
                         filter.enabled = true;
-                        await this.updateFilters([filter]);
                     } else {
                         delete filter.enabled;
                     }
                 }
-            }
+            });
         });
     }
 
