@@ -47,8 +47,6 @@ const Filters = observer(() => {
         history.push(`/filters${groupId}`);
     };
 
-    // console.log(selectedGroupId);
-
     const getEnabledFiltersByGroup = (group) => (
         filters.filter((filter) => filter.groupId === group.groupId && filter.enabled)
     );
