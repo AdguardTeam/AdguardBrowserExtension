@@ -49,6 +49,7 @@ const App = observer(() => {
                     switch (type) {
                         case REQUEST_FILTER_UPDATED: {
                             await settingsStore.getUserRules();
+                            await settingsStore.updateRulesCount();
                             break;
                         }
                         case UPDATE_ALLOWLIST_FILTER_RULES: {

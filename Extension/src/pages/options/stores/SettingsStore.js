@@ -162,9 +162,6 @@ class SettingsStore {
                 }
             });
         });
-        setTimeout(() => {
-            this.updateRulesCount();
-        }, 2000);
     }
 
     @action
@@ -198,9 +195,6 @@ class SettingsStore {
                 }
             }
         });
-        setTimeout(() => {
-            this.updateRulesCount();
-        }, 2000);
     }
 
     @action
