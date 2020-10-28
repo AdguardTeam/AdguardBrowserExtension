@@ -55,7 +55,15 @@ const Filter = ({
 }) => {
     const { settingsStore } = useContext(rootStore);
     const {
-        name, filterId, description, version, lastUpdateTime, timeUpdated, homepage, trusted,
+        name,
+        filterId,
+        description,
+        version,
+        lastUpdateTime,
+        timeUpdated,
+        homepage,
+        trusted,
+        customUrl,
     } = filter;
 
     const removeCustomFilter = async () => {
@@ -63,6 +71,18 @@ const Filter = ({
         if (result) {
             await settingsStore.removeCustomFilter(filterId);
         }
+    };
+
+    const renderRemoveButton = () => {
+        if (customUrl) {
+            return (
+                <a
+                    className="filter__remove"
+                    onClick={removeCustomFilter}
+                />
+            );
+        }
+        return null;
     };
 
     return (
@@ -77,10 +97,7 @@ const Filter = ({
                     target="_blank"
                     rel="noopener noreferrer"
                 />
-                <a
-                    className="filter__remove"
-                    onClick={removeCustomFilter}
-                />
+                {renderRemoveButton()}
                 <div className="filter__desc">
                     <div className="filter__desc-item">
                         {description}
