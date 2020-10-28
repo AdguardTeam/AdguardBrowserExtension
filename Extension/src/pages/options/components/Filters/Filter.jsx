@@ -93,7 +93,7 @@ const Filter = ({
                 </div>
                 <a
                     className="filter__link"
-                    href={homepage}
+                    href={homepage || customUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                 />
