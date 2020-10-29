@@ -43,6 +43,7 @@ import { stealthService } from './filter/services/stealth-service';
 import { prefs } from './prefs';
 import { whitelist } from './filter/whitelist';
 import { documentFilterService } from './filter/services/document-filter';
+import { antiBannerService } from './filter/antibanner';
 
 /**
  *  Initialize Content => BackgroundPage messaging
@@ -136,6 +137,7 @@ const init = () => {
             settings: settings.getAllSettings(),
             appVersion: backgroundPage.app.getVersion(),
             filtersMetadata: categories.getFiltersMetadata(),
+            filtersInfo: antiBannerService.getRequestFilterInfo(),
             constants: {
                 AntiBannerFiltersId: utils.filters.ids,
             },
@@ -179,8 +181,7 @@ const init = () => {
                 return { ready: filteringApi.isReady() };
             case 'addAndEnableFilter': {
                 const { filterId } = data;
-                await application.addAndEnableFilters([filterId]);
-                return;
+                return application.addAndEnableFilters([filterId]);
             }
             case 'disableAntiBannerFilter': {
                 const { filterId, remove } = data;
@@ -191,15 +192,21 @@ const init = () => {
                 }
                 break;
             }
-            case 'removeAntiBannerFilter':
-                application.removeFilter(message.filterId);
+            case 'removeAntiBannerFilter': {
+                const { filterId } = data;
+                application.removeFilter(filterId);
                 break;
-            case 'enableFiltersGroup':
-                categories.enableFiltersGroup(message.groupId);
+            }
+            case 'enableFiltersGroup': {
+                const { groupId } = data;
+                await categories.enableFiltersGroup(groupId);
                 break;
-            case 'disableFiltersGroup':
-                categories.disableFiltersGroup(message.groupId);
+            }
+            case 'disableFiltersGroup': {
+                const { groupId } = data;
+                categories.disableFiltersGroup(groupId);
                 break;
+            }
             case 'changeDefaultWhitelistMode':
                 whitelist.changeDefaultWhitelistMode(message.enabled);
                 break;
@@ -243,20 +250,22 @@ const init = () => {
             case 'removeUserRule':
                 userrules.removeRule(message.ruleText);
                 break;
-            case 'checkAntiBannerFiltersUpdate':
-                uiService.checkFiltersUpdates();
-                break;
+            case 'checkAntiBannerFiltersUpdate': {
+                const { filters } = data;
+                return uiService.checkFiltersUpdates(filters);
+            }
             case 'loadCustomFilterInfo':
                 try {
-                    const res = await application.loadCustomFilterInfo(message.url, { title: message.title });
+                    const { url, title } = data;
+                    const res = await application.loadCustomFilterInfo(url, { title });
                     return res;
                 } catch (e) {
                     return {};
                 }
             case 'subscribeToCustomFilter': {
-                const { url, title, trusted } = message;
+                const { customUrl, name, trusted } = data.filter;
                 try {
-                    const filter = await application.loadCustomFilter(url, { title, trusted });
+                    const filter = await application.loadCustomFilter(customUrl, { title: name, trusted });
                     await application.addAndEnableFilters([filter.filterId]);
                     return filter;
                 } catch (e) {

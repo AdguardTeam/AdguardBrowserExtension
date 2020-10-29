@@ -6,4 +6,4 @@ const i18n = {
     translate,
 };
 
-export default i18n;
+export { i18n };

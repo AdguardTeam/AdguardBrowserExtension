@@ -7,8 +7,8 @@ import { observer } from 'mobx-react';
 import '../../styles/styles.pcss';
 
 import { General } from '../General';
-import Sidebar from '../Sidebar/Sidebar';
-import Filters from '../Filters';
+import { Sidebar } from '../Sidebar';
+import { Filters } from '../Filters';
 import { Stealth } from '../Stealth';
 import { Allowlist } from '../Allowlist';
 import { UserRules } from '../UserRules';
@@ -18,7 +18,7 @@ import { Footer } from '../Footer';
 
 import { rootStore } from '../../stores/RootStore';
 import { Notifications } from '../Notifications';
-import messenger from '../../../services/messenger';
+import { messenger } from '../../../services/messenger';
 import { log } from '../../../../background/utils/log';
 
 const App = observer(() => {
@@ -33,10 +33,12 @@ const App = observer(() => {
             // TODO put constants in common directory
             const REQUEST_FILTER_UPDATED = 'event.request.filter.updated';
             const UPDATE_ALLOWLIST_FILTER_RULES = 'event.update.allowlist.filter.rules';
+            const FILTERS_UPDATE_CHECK_READY = 'event.update.filters.check';
 
             const events = [
                 REQUEST_FILTER_UPDATED,
                 UPDATE_ALLOWLIST_FILTER_RULES,
+                FILTERS_UPDATE_CHECK_READY,
             ];
 
             removeListenerCallback = await messenger.createEventListener(
@@ -47,10 +49,17 @@ const App = observer(() => {
                     switch (type) {
                         case REQUEST_FILTER_UPDATED: {
                             await settingsStore.getUserRules();
+                            const { rulesCount } = message.data;
+                            await settingsStore.updateRulesCount(rulesCount);
                             break;
                         }
                         case UPDATE_ALLOWLIST_FILTER_RULES: {
                             await settingsStore.getAllowlist();
+                            break;
+                        }
+                        case FILTERS_UPDATE_CHECK_READY: {
+                            const { data: updatedFilters } = message;
+                            settingsStore.refreshFilters(updatedFilters);
                             break;
                         }
                         default: {
@@ -78,7 +87,11 @@ const App = observer(() => {
                 <div className="content">
                     <Switch>
                         <Route path="/" exact component={General} />
-                        <Route path="/filters" component={Filters} />
+                        <Route
+                            path="/filters:id?"
+                            component={Filters}
+                            render={() => { settingsStore.setSelectedGroupId(null); }}
+                        />
                         <Route path="/stealth" component={Stealth} />
                         <Route path="/allowlist" component={Allowlist} />
                         <Route path="/user-filter" component={UserRules} />

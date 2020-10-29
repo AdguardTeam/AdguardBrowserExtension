@@ -2,9 +2,17 @@
     display: flex;
     align-items: center;
     position: relative;
-    padding: 20px 15px;
+    padding: 5px 15px;
     box-shadow: 0 1px 0 0 var(--greye7);
     min-height: 70px;
+    cursor: pointer;
+
+    &__area {
+        display: flex;
+        align-items: center;
+        width: 90%;
+        padding: 15px 0;
+    }
 
     &--disabled {
         & .setting__title {
@@ -16,8 +24,12 @@
         box-shadow: none;
     }
 
+    &:hover .setting__title {
+        text-decoration: underline;
+    }
+
     &__info {
-        max-width: 600px;
+        max-width: 500px;
     }
 
     &__desc {
