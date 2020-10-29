@@ -83,12 +83,6 @@ export const application = (() => {
     };
 
     /**
-     * Gets filter data
-     * @param filterId
-     */
-    const getFilterData = (filterId) => subscriptions.getFilters().filter((f) => f.filterId === filterId);
-
-    /**
      * Checks if specified filter is enabled
      *
      * @param filterId Filter identifier
@@ -354,7 +348,6 @@ export const application = (() => {
         offerFilters,
 
         getEnabledFilters,
-        getFilterData,
 
         isFilterEnabled,
         isFilterInstalled,
