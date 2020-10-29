@@ -22,7 +22,7 @@ import { utils } from './utils/common';
 import { subscriptions } from './filter/filters/subscription';
 import { filtersUpdate } from './filter/filters/filters-update';
 import { listeners } from './notifier';
-import { CUSTOM_FILTERS_GROUP_ID } from '../common/constants';
+import { CUSTOM_FILTERS_GROUP_ID } from '../../../tools/constants';
 
 /**
  * AdGuard application class
@@ -81,12 +81,6 @@ export const application = (() => {
             .map(g => g.groupId);
         return filters.filter(f => f.enabled && enabledGroupsIds.includes(f.groupId));
     };
-
-    /**
-     * Gets filter data
-     * @param filterId
-     */
-    const getFilterData = (filterId) => subscriptions.getFilters().filter((f) => f.filterId === filterId);
 
     /**
      * Checks if specified filter is enabled
@@ -354,7 +348,6 @@ export const application = (() => {
         offerFilters,
 
         getEnabledFilters,
-        getFilterData,
 
         isFilterEnabled,
         isFilterInstalled,

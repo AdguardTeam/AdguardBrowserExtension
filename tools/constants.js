@@ -100,3 +100,6 @@ export const CHROME_CODEBASE_URL = 'https://static.adguard.com/extensions/adguar
 export const FIREFOX_CREDENTIALS = path.resolve(__dirname, '../private/AdguardBrowserExtension/mozilla_credentials.json');
 export const FIREFOX_UPDATE_TEMPLATE = path.resolve(__dirname, './bundle/firefox/update_template.json');
 export const FIREFOX_WEBEXT_UPDATE_URL = 'https://static.adguard.com/extensions/adguardadblocker/beta/update.json';
+
+// custom filters group identifier
+export const CUSTOM_FILTERS_GROUP_ID = 0;
