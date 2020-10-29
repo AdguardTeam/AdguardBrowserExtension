@@ -98,11 +98,8 @@ class SettingsStore {
     }
 
     @action
-    async updateRulesCount() {
-        const { rulesCount } = await messenger.getRulesCount();
-        runInAction(() => {
-            this.rulesCount = rulesCount;
-        });
+    async updateRulesCount(rulesCount) {
+        this.rulesCount = rulesCount;
     }
 
     @action
