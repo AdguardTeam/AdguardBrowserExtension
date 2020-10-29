@@ -10,7 +10,7 @@ import { FiltersUpdate } from './FiltersUpdate';
 import { rootStore } from '../../stores/RootStore';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
 import { AddCustomModal } from './AddCustomModal';
-import { CUSTOM_FILTERS_GROUP_ID } from '../../../../common/constants';
+import { CUSTOM_FILTERS_GROUP_ID } from '../../../../../../tools/constants';
 
 const Filters = observer(() => {
     const SEARCH_FILTERS = {

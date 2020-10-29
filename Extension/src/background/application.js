@@ -22,7 +22,7 @@ import { utils } from './utils/common';
 import { subscriptions } from './filter/filters/subscription';
 import { filtersUpdate } from './filter/filters/filters-update';
 import { listeners } from './notifier';
-import { CUSTOM_FILTERS_GROUP_ID } from '../common/constants';
+import { CUSTOM_FILTERS_GROUP_ID } from '../../../tools/constants';
 
 /**
  * AdGuard application class

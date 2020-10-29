@@ -25,7 +25,7 @@ import { utils } from '../../utils/common';
 import { localScriptRulesService } from '../rules/local-script-rules';
 import { redirectService } from '../services/redirect-service';
 import { browserUtils } from '../../utils/browser-utils';
-import { CUSTOM_FILTERS_GROUP_ID } from '../../../common/constants';
+import { CUSTOM_FILTERS_GROUP_ID } from '../../../../../tools/constants';
 
 /**
  * Service that loads and parses filters metadata from backend server.
