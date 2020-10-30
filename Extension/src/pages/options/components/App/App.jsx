@@ -21,6 +21,12 @@ import { Notifications } from '../Notifications';
 import { messenger } from '../../../services/messenger';
 import { log } from '../../../../background/utils/log';
 
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    require('../../styles/dark-mode.pcss');
+} else {
+    require('../../styles/light-mode.pcss');
+}
+
 const App = observer(() => {
     const { settingsStore } = useContext(rootStore);
 
