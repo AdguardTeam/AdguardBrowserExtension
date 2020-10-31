@@ -10,6 +10,7 @@ import { log } from '../../../background/utils/log';
 import { createSavingService, EVENTS as SAVING_FSM_EVENTS } from '../components/Editor/savingFSM';
 import { sleep } from '../../helpers';
 import { messenger } from '../../services/messenger';
+import { OTHER_FILTERS_GROUP_ID } from '../../../../../tools/constants';
 
 const savingUserRulesService = createSavingService({
     id: 'userRules',
@@ -148,6 +149,13 @@ class SettingsStore {
         }
     }
 
+    isAllowAcceptableAdsFilterEnabled() {
+        const { SEARCH_AND_SELF_PROMO_FILTER_ID } = this.constants.AntiBannerFiltersId;
+        const allowAcceptableAdsFilter = this.filters
+            .find((f) => f.filterId === SEARCH_AND_SELF_PROMO_FILTER_ID);
+        return allowAcceptableAdsFilter.enabled;
+    }
+
     @computed
     get lastUpdateTime() {
         return Math.max(...this.filters.map((filter) => filter.lastCheckTime || 0));
@@ -157,8 +165,12 @@ class SettingsStore {
     async updateGroupSetting(id, enabled) {
         await messenger.updateGroupStatus(id, enabled);
         runInAction(() => {
+            const nId = parseInt(id, 10);
+            if (nId === OTHER_FILTERS_GROUP_ID && this.isAllowAcceptableAdsFilterEnabled()) {
+                this.allowAcceptableAds = enabled;
+            }
             this.categories.forEach((group) => {
-                if (group.groupId === id - 0) {
+                if (group.groupId === nId) {
                     // eslint-disable-next-line no-unused-expressions, no-param-reassign
                     enabled ? group.enabled = true : delete group.enabled;
                 }
@@ -187,16 +199,16 @@ class SettingsStore {
         const filters = await messenger.updateFilterStatus(id, enabled);
         this.refreshFilters(filters);
         runInAction(() => {
-            id = parseInt(id, 10);
+            const nId = parseInt(id, 10);
             this.filters.forEach((filter) => {
-                if (filter.filterId === id) {
+                if (filter.filterId === nId) {
                     enabled
                         ? filter.enabled = true
                         : delete filter.enabled;
                 }
             });
             const { SEARCH_AND_SELF_PROMO_FILTER_ID } = this.constants.AntiBannerFiltersId;
-            if (id === SEARCH_AND_SELF_PROMO_FILTER_ID) {
+            if (nId === SEARCH_AND_SELF_PROMO_FILTER_ID) {
                 this.allowAcceptableAds = enabled;
             }
         });
