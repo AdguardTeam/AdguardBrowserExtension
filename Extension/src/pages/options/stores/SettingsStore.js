@@ -129,11 +129,18 @@ class SettingsStore {
         const prevValue = this.allowAcceptableAds;
         this.allowAcceptableAds = value;
         try {
+            const allowAcceptableAdsFilter = this.filters
+                .find((f) => f.filterId === SEARCH_AND_SELF_PROMO_FILTER_ID);
+
             if (value) {
                 await messenger.enableFilter(SEARCH_AND_SELF_PROMO_FILTER_ID);
+                await this.updateGroupSetting(allowAcceptableAdsFilter.groupId, value);
             } else {
                 await messenger.disableFilter(SEARCH_AND_SELF_PROMO_FILTER_ID);
             }
+
+            allowAcceptableAdsFilter.enabled = value;
+            this.refreshFilter(allowAcceptableAdsFilter);
         } catch (e) {
             runInAction(() => {
                 this.allowAcceptableAds = prevValue;
@@ -180,15 +187,18 @@ class SettingsStore {
         const filters = await messenger.updateFilterStatus(id, enabled);
         this.refreshFilters(filters);
         runInAction(() => {
+            id = parseInt(id, 10);
             this.filters.forEach((filter) => {
-                if (filter.filterId === parseInt(id, 10)) {
-                    if (enabled) {
-                        filter.enabled = true;
-                    } else {
-                        delete filter.enabled;
-                    }
+                if (filter.filterId === id) {
+                    enabled
+                        ? filter.enabled = true
+                        : delete filter.enabled;
                 }
             });
+            const { SEARCH_AND_SELF_PROMO_FILTER_ID } = this.constants.AntiBannerFiltersId;
+            if (id === SEARCH_AND_SELF_PROMO_FILTER_ID) {
+                this.allowAcceptableAds = enabled;
+            }
         });
     }
 
