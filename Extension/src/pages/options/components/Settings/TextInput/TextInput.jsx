@@ -10,7 +10,7 @@ function TextInput(props) {
     const changeHandler = (e) => {
         // eslint-disable-next-line no-shadow
         const { target: { name: id, value: data } } = e;
-        handler({ id, data });
+        handler({ id, enabled: data });
     };
 
     return (

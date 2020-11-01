@@ -15,7 +15,7 @@ function Select(props) {
     const changeHandler = (e) => {
         // eslint-disable-next-line no-shadow
         const { target: { id, value: data } } = e;
-        handler({ id, data: parseInt(data, 10) });
+        handler({ id, enabled: parseInt(data, 10) });
     };
 
     return (

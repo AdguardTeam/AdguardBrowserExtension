@@ -117,6 +117,7 @@ const General = observer(() => {
                             {reactTranslator.translate('options_learn_more')}
                         </a>
                     )}
+                    disabled={!allowAcceptableAds}
                 >
                     <Setting
                         id={ALLOW_ACCEPTABLE_ADS}
@@ -136,6 +137,7 @@ const General = observer(() => {
                             {reactTranslator.translate('options_learn_more')}
                         </a>
                     )}
+                    disabled={settings.values[DISABLE_SAFEBROWSING]}
                 >
                     <Setting
                         id={DISABLE_SAFEBROWSING}
@@ -147,6 +149,7 @@ const General = observer(() => {
                 </SettingsSet>
                 <SettingsSet
                     title={reactTranslator.translate('options_enable_autodetect_filter')}
+                    disabled={settings.values[DISABLE_DETECT_FILTERS]}
                 >
                     <Setting
                         id={DISABLE_DETECT_FILTERS}
@@ -158,6 +161,7 @@ const General = observer(() => {
                 </SettingsSet>
                 <SettingsSet
                     title={reactTranslator.translate('options_set_update_interval')}
+                    disabled={!!(settings.values[FILTERS_UPDATE_PERIOD])}
                 >
                     <Setting
                         id={FILTERS_UPDATE_PERIOD}
