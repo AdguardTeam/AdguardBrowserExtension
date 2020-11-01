@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Checkbox } from '../Settings/Checkbox';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
+import './group.pcss';
 
 const renderEnabledFilters = (enabledFilters) => {
     const enabledFiltersNames = enabledFilters.map((filter) => filter.name);
@@ -58,7 +59,7 @@ const Group = ({
     checkboxHandler,
     checkboxValue,
 }) => (
-    <div className="setting">
+    <div className="setting group">
         <div className="setting__area" role="presentation" onClick={groupClickHandler}>
             <div className={
                 classNames(
@@ -68,7 +69,7 @@ const Group = ({
             }
             />
             <div className="setting__info">
-                <div className="setting__title">
+                <div className="setting__title group__title">
                     {groupName}
                 </div>
                 <div className="setting__desc">
