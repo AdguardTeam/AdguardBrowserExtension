@@ -165,12 +165,12 @@ class SettingsStore {
     async updateGroupSetting(id, enabled) {
         await messenger.updateGroupStatus(id, enabled);
         runInAction(() => {
-            const nId = parseInt(id, 10);
-            if (nId === OTHER_FILTERS_GROUP_ID && this.isAllowAcceptableAdsFilterEnabled()) {
+            const groupId = parseInt(id, 10);
+            if (groupId === OTHER_FILTERS_GROUP_ID && this.isAllowAcceptableAdsFilterEnabled()) {
                 this.allowAcceptableAds = enabled;
             }
             this.categories.forEach((group) => {
-                if (group.groupId === nId) {
+                if (group.groupId === groupId) {
                     // eslint-disable-next-line no-unused-expressions, no-param-reassign
                     enabled ? group.enabled = true : delete group.enabled;
                 }
@@ -199,12 +199,14 @@ class SettingsStore {
         const filters = await messenger.updateFilterStatus(id, enabled);
         this.refreshFilters(filters);
         runInAction(() => {
-            const nId = parseInt(id, 10);
+            const filterId = parseInt(id, 10);
             this.filters.forEach((filter) => {
-                if (filter.filterId === nId) {
-                    enabled
-                        ? filter.enabled = true
-                        : delete filter.enabled;
+                if (filter.filterId === filterId) {
+                    if (enabled) {
+                        filter.enabled = true;
+                    } else {
+                        delete filter.enabled;
+                    }
                 }
             });
             const { SEARCH_AND_SELF_PROMO_FILTER_ID } = this.constants.AntiBannerFiltersId;
