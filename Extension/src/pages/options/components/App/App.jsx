@@ -79,7 +79,7 @@ const App = observer(() => {
     if (!settingsStore.optionsReadyToRender) {
         return null;
     }
-
+    /* todo make adaptive input on resize */
     return (
         <HashRouter hashType="noslash">
             <div className="page">

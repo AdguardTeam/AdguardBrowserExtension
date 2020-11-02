@@ -136,7 +136,7 @@ const Miscellaneous = observer(() => {
                 />
             </SettingsSection>
 
-            <div className="actions actions__misc">
+            <div className="actions">
                 <button
                     type="button"
                     className="button button--m button--green actions__btn"

@@ -172,7 +172,7 @@ const General = observer(() => {
                     )}
                 />
             </SettingsSection>
-            <div className="actions actions__settings">
+            <div className="actions">
                 <button
                     type="button"
                     className="button button--m button--green actions__btn"
