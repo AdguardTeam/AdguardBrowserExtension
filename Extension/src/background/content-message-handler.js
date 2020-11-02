@@ -377,12 +377,11 @@ const init = () => {
                 break;
             }
             case 'getFilteringInfoByTabId': {
-                const filteringInfo = filteringLog.getFilteringInfoByTabId(message.tabId);
-                return { filteringInfo };
+                const { tabId } = data;
+                return filteringLog.getFilteringInfoByTabId(tabId);
             }
             case 'synchronizeOpenTabs': {
-                const tabs = await filteringLog.synchronizeOpenTabs();
-                return { tabs };
+                return filteringLog.synchronizeOpenTabs();
             }
             case 'addFilterSubscription': {
                 const { url, title } = message;

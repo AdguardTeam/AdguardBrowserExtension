@@ -524,6 +524,7 @@ export const webRequestService = (function () {
             return false;
         }
 
+        return false;
         return canCollectHitStatsForTab(tab) || filteringLog.isOpen();
     };
 

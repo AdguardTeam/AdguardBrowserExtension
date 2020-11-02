@@ -1,6 +1,7 @@
 import browser from 'webextension-polyfill';
 // TODO move log to the common directory
 import { log } from '../../background/utils/log';
+import { contentPage } from '../../content-script/content-script';
 
 class Messenger {
     // eslint-disable-next-line class-methods-use-this
@@ -155,6 +156,26 @@ class Messenger {
         // TODO use common message types in the constants
         const type = 'removeAntiBannerFilter';
         await this.sendMessage(type, { filterId });
+    }
+
+    async onOpenFilteringLogPage() {
+        const type = 'onOpenFilteringLogPage';
+        await this.sendMessage(type);
+    }
+
+    async onCloseFilteringLogPage() {
+        const type = 'onCloseFilteringLogPage';
+        await this.sendMessage(type);
+    }
+
+    async getFilteringInfoByTabId(tabId) {
+        const type = 'getFilteringInfoByTabId';
+        return this.sendMessage(type, { tabId });
+    }
+
+    async synchronizeOpenTabs() {
+        const type = 'synchronizeOpenTabs';
+        return this.sendMessage(type);
     }
 }
 
