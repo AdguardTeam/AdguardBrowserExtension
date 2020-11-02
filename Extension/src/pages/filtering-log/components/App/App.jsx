@@ -1,8 +1,16 @@
 import React from 'react';
 
+import { Actions } from '../Actions';
+import { Filters } from '../Filters';
+import { Requests } from '../Requests';
+
 const App = () => {
     return (
-        <div>Filtering log</div>
+        <>
+            <Actions />
+            <Filters />
+            <Requests />
+        </>
     );
 };
 
