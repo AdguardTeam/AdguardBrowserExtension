@@ -1,17 +1,15 @@
 import {
     action,
+    computed,
+    makeObservable,
     observable,
     runInAction,
-    makeObservable,
 } from 'mobx';
 
 import { log } from '../../../background/utils/log';
-import messenger from '../../services/messenger';
-import {
-    EVENTS as SAVING_FSM_EVENTS,
-    createSavingService,
-} from '../components/Editor/savingFSM';
+import { createSavingService, EVENTS as SAVING_FSM_EVENTS } from '../components/Editor/savingFSM';
 import { sleep } from '../../helpers';
+import { messenger } from '../../services/messenger';
 
 const savingUserRulesService = createSavingService({
     id: 'userRules',
@@ -47,7 +45,11 @@ class SettingsStore {
 
     @observable version = null;
 
-    @observable filtersMetadata = {};
+    @observable filters = {};
+
+    @observable categories = {};
+
+    @observable rulesCount = 0;
 
     @observable allowAcceptableAds = null;
 
@@ -58,6 +60,10 @@ class SettingsStore {
     @observable savingRulesState = savingUserRulesService.initialState.value;
 
     @observable savingAllowlistState = savingAllowlistService.initialState.value;
+
+    @observable filtersUpdating = false;
+
+    @observable selectedGroupId = null;
 
     constructor(rootStore) {
         makeObservable(this);
@@ -81,12 +87,24 @@ class SettingsStore {
         const data = await messenger.getOptionsData();
         runInAction(() => {
             this.settings = data.settings;
-            this.filtersMetadata = data.filtersMetadata;
+            this.filters = data.filtersMetadata.filters;
+            this.categories = data.filtersMetadata.categories;
+            this.rulesCount = data.filtersInfo.rulesCount;
             this.version = data.appVersion;
             this.constants = data.constants;
             this.optionsReadyToRender = true;
             this.setAllowAcceptableAds(data.filtersMetadata.filters);
         });
+    }
+
+    @action
+    async updateRulesCount(rulesCount) {
+        this.rulesCount = rulesCount;
+    }
+
+    @action
+    setSelectedGroupId(groupId) {
+        this.selectedGroupId = groupId;
     }
 
     @action
@@ -121,6 +139,94 @@ class SettingsStore {
                 this.allowAcceptableAds = prevValue;
             });
         }
+    }
+
+    @computed
+    get lastUpdateTime() {
+        return Math.max(...this.filters.map((filter) => filter.lastCheckTime || 0));
+    }
+
+    @action
+    async updateGroupSetting(id, enabled) {
+        await messenger.updateGroupStatus(id, enabled);
+        runInAction(() => {
+            this.categories.forEach((group) => {
+                if (group.groupId === id - 0) {
+                    // eslint-disable-next-line no-unused-expressions, no-param-reassign
+                    enabled ? group.enabled = true : delete group.enabled;
+                }
+            });
+        });
+    }
+
+    @action
+    refreshFilters(updatedFilters) {
+        if (updatedFilters && updatedFilters.length) {
+            updatedFilters.forEach((filter) => this.refreshFilter(filter));
+        }
+    }
+
+    @action
+    refreshFilter(filter) {
+        const filterToUpdate = this.filters.find((f) => f.filterId === filter.filterId);
+        const index = this.filters.indexOf(filterToUpdate);
+        if (index !== -1) {
+            this.filters[index] = filter;
+        }
+    }
+
+    @action
+    async updateFilterSetting(id, enabled) {
+        const filters = await messenger.updateFilterStatus(id, enabled);
+        this.refreshFilters(filters);
+        runInAction(() => {
+            this.filters.forEach((filter) => {
+                if (filter.filterId === parseInt(id, 10)) {
+                    if (enabled) {
+                        filter.enabled = true;
+                    } else {
+                        delete filter.enabled;
+                    }
+                }
+            });
+        });
+    }
+
+    @action
+    setFiltersUpdating(value) {
+        this.filtersUpdating = value;
+    }
+
+    @action
+    async updateFilters(filters) {
+        this.setFiltersUpdating(true);
+        try {
+            const filtersUpdates = await messenger.updateFilters(filters);
+            this.refreshFilters(filtersUpdates);
+            setTimeout(() => {
+                this.setFiltersUpdating(false);
+            }, 2000);
+            return filtersUpdates;
+        } catch (error) {
+            this.setFiltersUpdating(false);
+            throw error;
+        }
+    }
+
+    @action
+    async addCustomFilter(filter) {
+        const newFilter = await messenger.addCustomFilter(filter);
+        runInAction(() => {
+            this.filters.push(newFilter);
+        });
+    }
+
+    @action
+    async removeCustomFilter(filterId) {
+        await messenger.removeCustomFilter(filterId);
+        runInAction(() => {
+            this.filters = this.filters.filter((filter) => filter.filterId !== filterId);
+        });
     }
 
     @action

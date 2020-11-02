@@ -3,10 +3,18 @@
     align-items: center;
     position: relative;
     padding: 16px 16px 20px;
+    min-height: 70px;
+    cursor: pointer;
 
-    &:not(:last-child){
-        border: 1px solid var(--greye7);
-        border-width: 0 0 1px 0;
+    &__area {
+        display: flex;
+        align-items: center;
+        width: 90%;
+        padding: 15px 0;
+    }
+
+    &:not(:last-child) {
+        box-shadow: 0 1px 0 0 var(--greye7);
     }
 
     &__container {
@@ -39,6 +47,10 @@
 
     &:last-child {
         box-shadow: none;
+    }
+
+    &:hover .setting__title {
+        text-decoration: underline;
     }
 
     &__info {

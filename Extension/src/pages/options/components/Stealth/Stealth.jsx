@@ -16,9 +16,9 @@ const Stealth = observer(() => {
         return null;
     }
 
-    const settingChangeHandler = async ({ id, data }) => {
-        log.info(`Setting ${id} set to ${data}`);
-        await settingsStore.updateSetting(id, data);
+    const settingChangeHandler = async ({ id, enabled }) => {
+        log.info(`Setting ${id} set to ${enabled}`);
+        await settingsStore.updateSetting(id, enabled);
     };
 
     const {

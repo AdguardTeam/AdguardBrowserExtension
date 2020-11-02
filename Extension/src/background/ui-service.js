@@ -453,7 +453,7 @@ export const uiService = (function () {
     function getFiltersUpdateResultMessage(success, updatedFilters) {
         let title = '';
         let text = '';
-        if (success) {
+        if (success && updatedFilters) {
             if (updatedFilters.length === 0) {
                 title = '';
                 text = backgroundPage.i18n.getMessage('options_popup_update_not_found');
@@ -772,9 +772,10 @@ export const uiService = (function () {
     };
 
     /**
-     * Checks filters updates
+     * Checks filters updates and returns updated filter
      * @param {Object[]} [filters] optional list of filters
      * @param {boolean} [showPopup = true] show update filters popup
+     * @return {Object[]} [filters] list of updated filters
      */
     const checkFiltersUpdates = async (filters, showPopup = true) => {
         const showPopupEvent = listeners.UPDATE_FILTERS_SHOW_POPUP;
@@ -783,11 +784,12 @@ export const uiService = (function () {
             const updatedFilters = await application.checkFiltersUpdates(filters);
             if (showPopup) {
                 listeners.notifyListeners(showPopupEvent, true, updatedFilters);
-                listeners.notifyListeners(listeners.FILTERS_UPDATE_CHECK_READY);
+                listeners.notifyListeners(listeners.FILTERS_UPDATE_CHECK_READY, updatedFilters);
             } else if (updatedFilters && updatedFilters.length > 0) {
                 const updatedFilterStr = updatedFilters.map(f => `Filter ID: ${f.filterId}`).join(', ');
                 log.info(`Filters were auto updated: ${updatedFilterStr}`);
             }
+            return updatedFilters;
         } catch (e) {
             if (showPopup) {
                 listeners.notifyListeners(showPopupEvent, false);
@@ -935,7 +937,7 @@ export const uiService = (function () {
             switch (event) {
                 case listeners.FILTER_ENABLE_DISABLE:
                     if (payload.enabled) {
-                        checkFiltersUpdates([payload], false);
+                        checkFiltersUpdates([payload], true);
                     }
                     break;
                 case listeners.FILTER_GROUP_ENABLE_DISABLE:
