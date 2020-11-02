@@ -125,22 +125,22 @@ class SettingsStore {
     }
 
     @action
-    async setAllowAcceptableAdsValue(value) {
+    async setAllowAcceptableAdsState(enabled) {
         const { SEARCH_AND_SELF_PROMO_FILTER_ID } = this.constants.AntiBannerFiltersId;
         const prevValue = this.allowAcceptableAds;
-        this.allowAcceptableAds = value;
+        this.allowAcceptableAds = enabled;
         try {
             const allowAcceptableAdsFilter = this.filters
                 .find((f) => f.filterId === SEARCH_AND_SELF_PROMO_FILTER_ID);
 
-            if (value) {
+            if (enabled) {
                 await messenger.enableFilter(SEARCH_AND_SELF_PROMO_FILTER_ID);
-                await this.updateGroupSetting(allowAcceptableAdsFilter.groupId, value);
+                await this.updateGroupSetting(allowAcceptableAdsFilter.groupId, enabled);
             } else {
                 await messenger.disableFilter(SEARCH_AND_SELF_PROMO_FILTER_ID);
             }
 
-            allowAcceptableAdsFilter.enabled = value;
+            allowAcceptableAdsFilter.enabled = enabled;
             this.refreshFilter(allowAcceptableAdsFilter);
         } catch (e) {
             runInAction(() => {
