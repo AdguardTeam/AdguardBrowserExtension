@@ -81,7 +81,7 @@ const General = observer(() => {
     };
 
     const allowAcceptableAdsChangeHandler = async ({ data }) => {
-        await settingsStore.setAllowAcceptableAdsValue(data);
+        await settingsStore.setAllowAcceptableAdsState(data);
     };
 
     const settingChangeHandler = async ({ id, data }) => {
