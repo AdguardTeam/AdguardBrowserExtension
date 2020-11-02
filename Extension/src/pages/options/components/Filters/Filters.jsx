@@ -38,8 +38,8 @@ const Filters = observer(() => {
 
     settingsStore.setSelectedGroupId(parseInt(id, 10));
 
-    const handleGroupSwitch = async ({ id, enabled }) => {
-        await settingsStore.updateGroupSetting(id, enabled);
+    const handleGroupSwitch = async ({ id, data }) => {
+        await settingsStore.updateGroupSetting(id, data);
     };
 
     const groupClickHandler = (groupId) => () => {
@@ -69,8 +69,8 @@ const Filters = observer(() => {
         });
     };
 
-    const handleFilterSwitch = async ({ id, enabled }) => {
-        await settingsStore.updateFilterSetting(id, enabled);
+    const handleFilterSwitch = async ({ id, data }) => {
+        await settingsStore.updateFilterSetting(id, data);
     };
 
     const renderFilters = (filtersList) => {

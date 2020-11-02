@@ -80,12 +80,12 @@ const General = observer(() => {
         inputEl.current.click();
     };
 
-    const allowAcceptableAdsChangeHandler = async ({ enabled }) => {
-        await settingsStore.setAllowAcceptableAdsValue(enabled);
+    const allowAcceptableAdsChangeHandler = async ({ data }) => {
+        await settingsStore.setAllowAcceptableAdsValue(data);
     };
 
-    const settingChangeHandler = async ({ id, enabled }) => {
-        await settingsStore.updateSetting(id, enabled);
+    const settingChangeHandler = async ({ id, data }) => {
+        await settingsStore.updateSetting(id, data);
     };
 
     const {
@@ -161,7 +161,6 @@ const General = observer(() => {
                 </SettingsSet>
                 <SettingsSet
                     title={reactTranslator.translate('options_set_update_interval')}
-                    disabled={!!(settings.values[FILTERS_UPDATE_PERIOD])}
                 >
                     <Setting
                         id={FILTERS_UPDATE_PERIOD}

@@ -10,7 +10,7 @@ function Textarea(props) {
     const changeHandler = (e) => {
         // eslint-disable-next-line no-shadow
         const { target: { name: id, value: data } } = e;
-        handler({ id, enabled: data });
+        handler({ id, data });
     };
 
     return (
