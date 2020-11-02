@@ -22,6 +22,7 @@ import { utils } from './utils/common';
 import { subscriptions } from './filter/filters/subscription';
 import { filtersUpdate } from './filter/filters/filters-update';
 import { listeners } from './notifier';
+import { CUSTOM_FILTERS_GROUP_ID } from '../../../tools/constants';
 
 /**
  * AdGuard application class
@@ -113,7 +114,9 @@ export const application = (() => {
             // Skip recently downloaded filters
             const outdatedFilters = filters.filter(f => (f.lastCheckTime
                 ? Date.now() - f.lastCheckTime > ENABLED_FILTERS_SKIP_TIMEOUT
-                : true));
+                : true)
+                // but always check for updates for custom filters
+                || f.groupId === CUSTOM_FILTERS_GROUP_ID);
 
             if (outdatedFilters.length > 0) {
                 try {
@@ -322,7 +325,6 @@ export const application = (() => {
         if (!url) {
             throw new Error('No url provided');
         }
-
         const res = await subscriptions.getCustomFilterInfo(url, options);
 
         if (res?.filter) {

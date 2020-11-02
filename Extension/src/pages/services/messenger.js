@@ -119,8 +119,45 @@ class Messenger {
         const type = 'saveWhitelistDomains';
         await this.sendMessage(type, { value });
     }
+
+    async updateFilters(filters) {
+        // TODO use common message types in the constants
+        const type = 'checkAntiBannerFiltersUpdate';
+        return this.sendMessage(type, { filters });
+    }
+
+    async updateGroupStatus(id, data) {
+        // TODO use common message types in the constants
+        const type = data ? 'enableFiltersGroup' : 'disableFiltersGroup';
+        const groupId = id - 0;
+        await this.sendMessage(type, { groupId });
+    }
+
+    async updateFilterStatus(filterId, data) {
+        // TODO use common message types in constants;
+        const type = data ? 'addAndEnableFilter' : 'disableAntiBannerFilter';
+        await this.sendMessage(type, { filterId });
+    }
+
+    async checkCustomUrl(url) {
+        // TODO use common message types in the constants
+        const type = 'loadCustomFilterInfo';
+        return this.sendMessage(type, { url });
+    }
+
+    async addCustomFilter(filter) {
+        // TODO use common message types in the constants
+        const type = 'subscribeToCustomFilter';
+        return this.sendMessage(type, { filter });
+    }
+
+    async removeCustomFilter(filterId) {
+        // TODO use common message types in the constants
+        const type = 'removeAntiBannerFilter';
+        await this.sendMessage(type, { filterId });
+    }
 }
 
 const messenger = new Messenger();
 
-export default messenger;
+export { messenger };

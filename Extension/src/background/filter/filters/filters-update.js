@@ -254,7 +254,7 @@ export const filtersUpdate = (() => {
         log.info('Checking updates for {0} filters', totalToUpdate);
 
         /**
-         * // Load filters with changed version
+         * Loads filters with changed version
          * @param filterMetadataList
          */
         const loadFiltersFromBackendCallback = async (filterMetadataList) => {
@@ -281,6 +281,7 @@ export const filtersUpdate = (() => {
                     && browserUtils.isGreaterVersion(filterMetadata.version, filter.version)
                 ) {
                     log.info(`Updating filter ${filter.filterId} to version ${filterMetadata.version}`);
+                    filter.lastUpdateTime = Date.now();
                     filterMetadataListToUpdate.push(filterMetadata);
                 } else {
                     // remember that this filter version was checked

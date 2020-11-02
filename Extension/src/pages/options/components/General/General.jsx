@@ -5,7 +5,7 @@ import SettingsSection from '../Settings/SettingsSection';
 import SettingsSet from '../Settings/SettingsSet';
 import Setting, { SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
-import messenger from '../../../services/messenger';
+import { messenger } from '../../../services/messenger';
 import { hoursToMs, uploadFile } from '../../../helpers';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
 
@@ -80,12 +80,12 @@ const General = observer(() => {
         inputEl.current.click();
     };
 
-    const allowAcceptableAdsChangeHandler = async ({ data }) => {
-        await settingsStore.setAllowAcceptableAdsValue(data);
+    const allowAcceptableAdsChangeHandler = async ({ enabled }) => {
+        await settingsStore.setAllowAcceptableAdsValue(enabled);
     };
 
-    const settingChangeHandler = async ({ id, data }) => {
-        await settingsStore.updateSetting(id, data);
+    const settingChangeHandler = async ({ id, enabled }) => {
+        await settingsStore.updateSetting(id, enabled);
     };
 
     const {
@@ -176,22 +176,20 @@ const General = observer(() => {
                 >
                     {reactTranslator.translate('options_export_settings')}
                 </button>
-                <div>
-                    <input
-                        type="file"
-                        id="inputEl"
-                        ref={inputEl}
-                        onChange={inputChangeHandler}
-                        style={{ display: 'none' }}
-                    />
-                    <button
-                        type="button"
-                        className="button button--m button--green-bd content__btn"
-                        onClick={handleImportSettings}
-                    >
-                        {reactTranslator.translate('options_import_settings')}
-                    </button>
-                </div>
+                <input
+                    type="file"
+                    id="inputEl"
+                    ref={inputEl}
+                    onChange={inputChangeHandler}
+                    style={{ display: 'none' }}
+                />
+                <button
+                    type="button"
+                    className="button button--m button--green-bd content__btn"
+                    onClick={handleImportSettings}
+                >
+                    {reactTranslator.translate('options_import_settings')}
+                </button>
             </div>
         </>
     );
