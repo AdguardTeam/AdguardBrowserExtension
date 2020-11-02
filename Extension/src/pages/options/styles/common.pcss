@@ -25,7 +25,7 @@ h2 {
     max-width: 640px;
 
     @media (max-width: 640px) {
-        max-width: 360px;
+        max-width: 100%;
     };
 
     &__btn {
@@ -39,17 +39,14 @@ h2 {
     height: 100%;
 }
 .page {
-    padding: 54px 0 48px 24px;
+    padding: 54px 32px 48px;
     flex: 1 0 auto;
     display: flex;
     justify-content: center;
 
     @media (max-width: 640px) {
-        padding-left: 20px;
-    }
-
-    @media (max-width: 360px) {
         padding-left: 0;
+        padding-right: 0;
     }
 }
 .logo {
@@ -75,6 +72,10 @@ h2 {
     margin-top: -5px;
     line-height: 30px;
     font-weight: 300;
+
+    @media (max-width: 640px) {
+        padding-top: 32px;
+    }
 
     &--back-btn {
         padding-left: 30px;
@@ -103,7 +104,7 @@ h2 {
 }
 
 .settings__group {
-    margin-bottom: 28px;
+    margin-bottom: 32px;
 
     &--disabled {
         opacity: .5;
@@ -127,7 +128,7 @@ h2 {
         margin: 0 0 15px 15px;
     }
 
-    @media (max-width: 360px) {
+    @media (max-width: 640px) {
         &__btn {
             margin: 0 0 15px 0;
         }
