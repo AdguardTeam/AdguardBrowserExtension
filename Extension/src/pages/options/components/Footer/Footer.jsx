@@ -10,7 +10,7 @@ const Footer = () => {
     const copyright = `© Adguard, 2009-${currentYear}`;
     return (
         <div className="footer">
-            <div className="footer__rate">
+            <div className="footer__layer footer__rate">
                 <div className="footer__in container">
                     <div className="footer__rate-desc">
                         {reactTranslator.translate('options_do_you_like')}
@@ -20,23 +20,15 @@ const Footer = () => {
                     </button>
                 </div>
             </div>
-            <div className="footer__nav">
+            <div className="footer__layer footer__nav">
                 <div className="footer__in container">
-                    <div className="footer__copyright">
-                        <div className="footer__logo" />
-                        <div className="footer__copyright-label">
-                            {copyright}
-                        </div>
-                    </div>
+                    <div className="footer__copyright">{copyright}</div>
                     <div className="footer__nav-in">
                         <a href={WEBSITE_URL} className="footer__nav-item">
                             {reactTranslator.translate('options_site')}
                         </a>
                         <a href={FORUM_URL} className="footer__nav-item">
                             {reactTranslator.translate('options_discuss')}
-                        </a>
-                        <a href={GITHUB_URL} className="footer__nav-item">
-                            {reactTranslator.translate('options_github')}
                         </a>
                     </div>
                 </div>

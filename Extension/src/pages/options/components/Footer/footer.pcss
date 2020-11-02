@@ -4,24 +4,59 @@
         justify-content: space-between;
         align-items: center;
         height: 100%;
+        width: 100%;
+        max-width: calc(170px + 64px + 640px);
+
+        @media (max-width: 1024px) {
+            max-width: calc(170px + 32px + 640px);
+        }
+
+        @media (max-width: 640px) {
+            flex-direction: column;
+            align-items: flex-start;
+            max-width: 100%;
+        }
     }
+
+    &__layer {
+        padding: 0 32px;
+        display: flex;
+        justify-content: center;
+
+        @media (max-width: 640px) {
+            padding: 32px 32px 40px;
+        }
+    }
+
     &__rate {
         height: 80px;
         background-color: var(--greyf7);
+
+        @media (max-width: 640px) {
+            height: 158px;
+        }
     }
 
     &__nav {
-        color: #fff;
-        height: 100px;
-        background-color: var(--grey78);
+        color: var(--white);
+        height: 96px;
+        background-color: var(--gray-base);
+
+        @media (max-width: 640px) {
+            height: 140px;
+        }
 
         &-item {
-            margin-right: 50px;
+            margin-right: 48px;
             color: inherit;
             opacity: 0.7;
             text-decoration: none;
             transition: var(--t3) opacity;
             @mixin weight-regular;
+
+            @media (max-width: 360px) {
+                margin-right: 12px;
+            }
 
             &:hover {
                 opacity: 1;
@@ -32,20 +67,25 @@
                 margin-right: 0;
             }
         }
+
+        &-in {
+            font-size: 16px;
+            color: var(--white);
+            line-height: 22px;
+
+            @media (max-width: 360px) {
+                display: flex;
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
     }
 
-    &__logo {
+    &__copyright {
         display: inline-block;
         vertical-align: middle;
-        width: 30px;
-        height: 30px;
-        margin-right: 20px;
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-image: url("../../../assets/icons/logo-footer.svg");
-    }
-    &__copyright-label {
-        display: inline-block;
-        vertical-align: middle;
+        font-size: 16px;
+        color: var(--white);
+        line-height: 22px;
     }
 }

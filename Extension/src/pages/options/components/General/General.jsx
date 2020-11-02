@@ -185,7 +185,7 @@ const General = observer(() => {
                     id="inputEl"
                     ref={inputEl}
                     onChange={inputChangeHandler}
-                    style={{display: 'none'}}
+                    style={{ display: 'none' }}
                 />
                 <button
                     type="button"
