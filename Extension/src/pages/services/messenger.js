@@ -34,7 +34,7 @@ class Messenger {
 
         browser.runtime.onMessage.addListener((message) => {
             if (message.type === 'notifyListeners') {
-                const [type, data] = message.data;
+                const [type, ...data] = message.data;
                 eventListener({ type, data });
             }
         });

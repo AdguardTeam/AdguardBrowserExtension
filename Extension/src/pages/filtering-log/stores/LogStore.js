@@ -29,6 +29,25 @@ class LogStore {
         this.tabsMap[tabId] = tabInfo;
     }
 
+    @action
+    onEventAdded(tabInfo, filteringEvent) {
+        const { tabId } = tabInfo;
+        if (tabId !== this.selectedTabId) {
+            return;
+        }
+
+        // clear events
+        if (filteringEvent.requestType === 'DOCUMENT'
+            && !filteringEvent.element
+            && !filteringEvent.script) {
+            // TODO preserve log
+            // && !this.preserveLogEnabled) {
+            this.filteringEvents = [];
+        }
+
+        this.filteringEvents.push(filteringEvent);
+    }
+
     @computed
     get tabs() {
         return Object.values(this.tabsMap)
@@ -45,7 +64,7 @@ class LogStore {
 
     @action
     setSelectedTabId = async (tabId) => {
-        this.selectedTabId = tabId;
+        this.selectedTabId = Number.parseInt(tabId, 10);
         await this.getEventsByTabId(tabId);
     }
 

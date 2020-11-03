@@ -36,13 +36,12 @@ const App = () => {
             removeListenerCallback = await messenger.createEventListener(
                 events,
                 async (message) => {
-                    const { type } = message;
+                    const { type, data } = message;
 
                     switch (type) {
                         case TAB_ADDED:
                         case TAB_UPDATE: {
-                            const { data } = message;
-                            logStore.onTabUpdate(data);
+                            logStore.onTabUpdate(...data);
                             break;
                         }
                         case TAB_CLOSE:
@@ -53,10 +52,11 @@ const App = () => {
                             // console.log(message);
                             // logStore.onTabReset();
                             break;
-                        case LOG_EVENT_ADDED:
-                            // console.log(message);
-                            // logStore.onEventAdded();
+                        case LOG_EVENT_ADDED: {
+                            const [tabInfo, event] = data;
+                            logStore.onEventAdded(tabInfo, event);
                             break;
+                        }
                         case LOG_EVENT_UPDATED:
                             // console.log(message);
                             // logStore.onEventUpdated();
