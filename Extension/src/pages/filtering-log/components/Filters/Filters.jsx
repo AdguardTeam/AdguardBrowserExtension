@@ -1,7 +1,9 @@
 import React from 'react';
 
-import './filters.pcss';
 import { TabSelector } from './TabSelector';
+import { EventsSearch } from './EventsSearch';
+
+import './filters.pcss';
 
 const Filters = () => {
     return (
@@ -10,7 +12,7 @@ const Filters = () => {
                 <div className="filters-item">
                     <TabSelector />
                 </div>
-                <div className="filters-item">Search</div>
+                <div className="filters-item"><EventsSearch /></div>
             </div>
             <div className="filters-group">
                 <div className="filters-item">Request type filters</div>

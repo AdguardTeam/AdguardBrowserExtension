@@ -5,7 +5,9 @@ import {
     computed,
     runInAction,
 } from 'mobx';
+
 import { messenger } from '../../services/messenger';
+import { containsIgnoreCase } from '../../helpers';
 
 class LogStore {
     @observable filteringEvents = [];
@@ -13,6 +15,8 @@ class LogStore {
     @observable tabsMap = {};
 
     @observable selectedTabId = null;
+
+    @observable eventsSearchValue = '';
 
     constructor(rootStore) {
         this.rootStore = rootStore;
@@ -27,7 +31,8 @@ class LogStore {
 
     @computed
     get tabs() {
-        return Object.values(this.tabsMap).filter((tab) => !tab.isExtensionTab);
+        return Object.values(this.tabsMap)
+            .filter((tab) => !tab.isExtensionTab);
     }
 
     @action
@@ -57,7 +62,27 @@ class LogStore {
 
     @computed
     get events() {
-        const events = this.filteringEvents.map((filteringEvent) => {
+        const filteredEvents = this.filteringEvents.filter((filteringEvent) => {
+            let show = !this.eventsSearchValue
+                || containsIgnoreCase(filteringEvent.requestUrl, this.eventsSearchValue)
+                || containsIgnoreCase(filteringEvent.element, this.eventsSearchValue)
+                || containsIgnoreCase(filteringEvent.cookieName, this.eventsSearchValue)
+                || containsIgnoreCase(filteringEvent.cookieValue, this.eventsSearchValue);
+
+            const ruleText = filteringEvent?.requestRule?.ruleText;
+            if (ruleText) {
+                show = show || containsIgnoreCase(ruleText, this.eventsSearchValue);
+            }
+
+            if (filteringEvent.filterName) {
+                show = show
+                    || containsIgnoreCase(filteringEvent.filterName, this.eventsSearchValue);
+            }
+
+            return show;
+        });
+
+        const events = filteredEvents.map((filteringEvent) => {
             const {
                 requestUrl: url,
                 requestType: type,
@@ -84,6 +109,11 @@ class LogStore {
             this.filteringEvents = [];
         });
     }
+
+    @action
+    setEventsSearchValue = (value) => {
+        this.eventsSearchValue = value;
+    };
 }
 
 export { LogStore };
