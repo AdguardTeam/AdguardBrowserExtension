@@ -4,6 +4,7 @@ import './filter.pcss';
 import { Checkbox } from '../Settings/Checkbox';
 import { rootStore } from '../../stores/RootStore';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
+import classNames from "classnames";
 
 const formatDate = (date) => {
     const dateObj = new Date(date);
@@ -85,8 +86,13 @@ const Filter = ({
         return null;
     };
 
+    const filterClassName = classNames({
+        filter: true,
+        'filter--disabled': !checkboxValue,
+    });
+
     return (
-        <div className="filter" role="presentation">
+        <div className={filterClassName} role="presentation">
             <div className="filter__info">
                 <div className="filter__title">
                     {name}
