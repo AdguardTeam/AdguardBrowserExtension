@@ -5,3 +5,5 @@ export const ACKNOWLEDGMENTS_URL = 'https://adguard.com/forward.html?action=ackn
 export const GITHUB_URL = 'https://adguard.com/forward.html?action=github_options&from=options_screen&app=browser_extension';
 export const WEBSITE_URL = 'https://adguard.com/forward.html?action=adguard_site&from=options_screen_footer&app=browser_extension';
 export const FORUM_URL = 'https://adguard.com/forward.html?action=discuss&from=options_screen&app=browser_extension';
+export const DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN = 4320;
+export const DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN = 2880;
