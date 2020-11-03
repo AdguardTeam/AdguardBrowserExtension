@@ -177,6 +177,11 @@ class Messenger {
         const type = 'synchronizeOpenTabs';
         return this.sendMessage(type);
     }
+
+    async clearEventsByTabId(tabId) {
+        const type = 'clearEventsByTabId';
+        return this.sendMessage(type, { tabId });
+    }
 }
 
 const messenger = new Messenger();

@@ -360,7 +360,7 @@ const init = () => {
                 tabsApi.reload(message.tabId);
                 break;
             case 'clearEventsByTabId':
-                filteringLog.clearEventsByTabId(message.tabId);
+                filteringLog.clearEventsByTabId(data.tabId);
                 break;
             case 'getTabFrameInfoById': {
                 if (message.tabId) {

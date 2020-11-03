@@ -2,7 +2,8 @@ import {
     observable,
     makeObservable,
     action,
-    computed, runInAction,
+    computed,
+    runInAction,
 } from 'mobx';
 import { messenger } from '../../services/messenger';
 
@@ -24,14 +25,14 @@ class LogStore {
 
     @computed
     get tabs() {
-        return Object.values(this.tabsMap);
+        return Object.values(this.tabsMap).filter((tab) => !tab.isExtensionTab);
     }
 
     @action
     getEventsByTabId = async (tabId) => {
         const filteringInfo = await messenger.getFilteringInfoByTabId(tabId);
         runInAction(() => {
-            this.filteringEvents = filteringInfo.filteringEvents;
+            this.filteringEvents = filteringInfo?.filteringEvents || [];
         });
     }
 
@@ -44,9 +45,11 @@ class LogStore {
     @action
     synchronizeOpenTabs = async () => {
         const tabsInfo = await messenger.synchronizeOpenTabs();
-        tabsInfo.forEach((tabInfo) => {
-            const { tabId } = tabInfo;
-            this.tabsMap[tabId] = tabInfo;
+        runInAction(() => {
+            tabsInfo.forEach((tabInfo) => {
+                const { tabId } = tabInfo;
+                this.tabsMap[tabId] = tabInfo;
+            });
         });
     }
 
@@ -70,6 +73,14 @@ class LogStore {
         });
 
         return events;
+    }
+
+    @action
+    clearFilteringEvents = async () => {
+        await messenger.clearEventsByTabId(this.selectedTabId);
+        runInAction(() => {
+            this.filteringEvents = [];
+        });
     }
 }
 
