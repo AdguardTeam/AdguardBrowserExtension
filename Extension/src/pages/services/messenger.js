@@ -181,6 +181,11 @@ class Messenger {
         const type = 'clearEventsByTabId';
         return this.sendMessage(type, { tabId });
     }
+
+    async refreshPage(tabId) {
+        const type = 'refreshPage';
+        return this.sendMessage(type, { tabId });
+    }
 }
 
 const messenger = new Messenger();

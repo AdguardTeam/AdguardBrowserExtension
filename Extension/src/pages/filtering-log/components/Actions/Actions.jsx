@@ -11,10 +11,21 @@ const Actions = () => {
         await logStore.clearFilteringEvents();
     };
 
+    const refreshPage = async (e) => {
+        e.preventDefault();
+        await logStore.refreshPage();
+    };
+
     // TODO check accessibility
     return (
         <div className="actions">
-            <div className="action">Refresh page</div>
+            <button
+                className="action"
+                type="button"
+                onClick={refreshPage}
+            >
+                Refresh page
+            </button>
             <div className="action action--clear" onClick={clearLogHandler}>Clear log</div>
             <div className="action">Save logs after refreshing</div>
         </div>

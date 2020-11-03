@@ -133,6 +133,11 @@ class LogStore {
     setEventsSearchValue = (value) => {
         this.eventsSearchValue = value;
     };
+
+    @action
+    refreshPage = async () => {
+        await messenger.refreshPage(this.selectedTabId);
+    }
 }
 
 export { LogStore };
