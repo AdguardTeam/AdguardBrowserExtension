@@ -1,7 +1,6 @@
 import browser from 'webextension-polyfill';
 // TODO move log to the common directory
 import { log } from '../../background/utils/log';
-import { contentPage } from '../../content-script/content-script';
 
 class Messenger {
     // eslint-disable-next-line class-methods-use-this

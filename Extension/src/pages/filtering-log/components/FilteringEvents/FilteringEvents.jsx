@@ -4,6 +4,8 @@ import { observer } from 'mobx-react';
 import { useTable } from 'react-table';
 import { rootStore } from '../../stores/RootStore';
 
+import './filtering-events.pcss';
+
 const FilteringEvents = observer(() => {
     const { logStore } = useContext(rootStore);
 
@@ -41,7 +43,7 @@ const FilteringEvents = observer(() => {
     } = useTable({ columns, data: events });
 
     return (
-        <table {...getTableProps()}>
+        <table {...getTableProps()} className="filtering-log">
             <thead>
                 {
                     headerGroups.map((headerGroup) => (

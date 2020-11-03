@@ -45,3 +45,7 @@ export const sleep = (timeoutMs) => {
         setTimeout(resolve, timeoutMs);
     });
 };
+
+export const containsIgnoreCase = (str, searchString) => {
+    return !!(str && searchString && str.toLowerCase().indexOf(searchString.toLowerCase()) >= 0);
+};
