@@ -1,7 +1,7 @@
 import React from 'react';
 
 import './filters.pcss';
-import { TabSelector } from './TabSelector/TabSelector';
+import { TabSelector } from './TabSelector';
 
 const Filters = () => {
     return (

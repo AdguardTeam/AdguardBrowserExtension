@@ -21,9 +21,9 @@ const TabSelector = observer(() => {
         });
     };
 
-    const selectionHandler = (e) => {
+    const selectionHandler = async (e) => {
         e.preventDefault();
-        logStore.setSelectedTabId(e.target.value);
+        await logStore.setSelectedTabId(e.target.value);
     };
 
     return (
@@ -40,7 +40,7 @@ const TabSelector = observer(() => {
                 name="tab-selector"
                 id="tab-selector"
                 onChange={selectionHandler}
-                value={selectedTabId}
+                value={selectedTabId || ''}
             >
                 {renderOptions(tabs)}
             </select>

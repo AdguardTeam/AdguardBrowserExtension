@@ -12,6 +12,8 @@ class LogStore {
 
     @observable tabsMap = {};
 
+    @observable selectedTabId = null;
+
     constructor(rootStore) {
         this.rootStore = rootStore;
         makeObservable(this);

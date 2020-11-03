@@ -14,7 +14,6 @@ const App = () => {
         let removeListenerCallback = async () => {};
 
         (async () => {
-            // TODO revert later
             await logStore.synchronizeOpenTabs();
             await messenger.onOpenFilteringLogPage();
 
