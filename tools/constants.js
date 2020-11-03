@@ -103,3 +103,6 @@ export const FIREFOX_WEBEXT_UPDATE_URL = 'https://static.adguard.com/extensions/
 
 // custom filters group identifier
 export const CUSTOM_FILTERS_GROUP_ID = 0;
+
+// Others filters group identifier
+export const OTHER_FILTERS_GROUP_ID = 6;
