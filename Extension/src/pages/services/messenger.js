@@ -184,7 +184,7 @@ class Messenger {
 
     async refreshPage(tabId) {
         const type = 'refreshPage';
-        return this.sendMessage(type, { tabId });
+        await this.sendMessage(type, { tabId });
     }
 }
 
