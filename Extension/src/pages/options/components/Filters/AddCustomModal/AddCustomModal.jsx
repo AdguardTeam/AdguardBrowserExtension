@@ -32,7 +32,7 @@ const customStyles = {
     },
 };
 
-const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
+const AddCustomModal = ({ closeModalHandler, modalIsOpen, initialUrl }) => {
     const STEPS = {
         INPUT: 'input',
         CHECKING: 'checking',
@@ -40,7 +40,7 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
         ERROR: 'error',
     };
 
-    const [customUrlToAdd, setCustomUrlToAdd] = useState('');
+    const [customUrlToAdd, setCustomUrlToAdd] = useState(initialUrl);
     const [stepToRender, setStepToRender] = useState(STEPS.INPUT);
     const [filterToAdd, setFilterToAdd] = useState(null);
     const [filterToAddName, setFilterToAddName] = useState('');

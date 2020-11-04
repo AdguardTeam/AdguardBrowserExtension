@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import sortBy from 'lodash/sortBy';
@@ -20,11 +20,12 @@ const Filters = observer(() => {
     };
 
     const history = useHistory();
-    const { id } = useParams();
+    const { id, url } = useParams();
 
     const [searchInput, setSearchInput] = useState('');
     const [searchSelect, setSearchSelect] = useState(SEARCH_FILTERS.ALL);
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [urlToSubscribe, setUrlToSubscribe] = useState(decodeURIComponent(url || ''));
 
     const { settingsStore, uiStore } = useContext(rootStore);
 
@@ -195,6 +196,30 @@ const Filters = observer(() => {
         setModalIsOpen(false);
     };
 
+    useEffect(() => {
+        if (urlToSubscribe) {
+            openModalHandler();
+        }
+    });
+
+    const renderModal = () => {
+        return (
+            modalIsOpen && (
+                <AddCustomModal
+                    closeModalHandler={closeModalHandler}
+                    modalIsOpen={modalIsOpen}
+                    initialUrl={urlToSubscribe}
+                />
+            )
+        );
+    };
+
+    useEffect(() => {
+        if (modalIsOpen) {
+            setUrlToSubscribe('');
+        }
+    });
+
     const renderAddFilterBtn = () => {
         if (settingsStore.selectedGroupId === CUSTOM_FILTERS_GROUP_ID) {
             return (
@@ -206,12 +231,6 @@ const Filters = observer(() => {
                     >
                         {reactTranslator.translate('options_add_custom_filter')}
                     </button>
-                    {modalIsOpen && (
-                        <AddCustomModal
-                            closeModalHandler={closeModalHandler}
-                            modalIsOpen={modalIsOpen}
-                        />
-                    )}
                 </div>
             );
         }
@@ -257,6 +276,7 @@ const Filters = observer(() => {
                     }
                 </div>
                 {renderAddFilterBtn()}
+                {renderModal()}
             </>
         );
     }
