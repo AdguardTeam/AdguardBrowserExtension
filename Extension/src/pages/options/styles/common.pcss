@@ -22,10 +22,10 @@ h2 {
 
 .content {
     width: 100%;
-    max-width: 640px;
+    max-width: 100%;
 
-    @media (max-width: 640px) {
-        max-width: 100%;
+    @media (min-width: 640px) {
+        max-width: 640px;
     };
 
     &__btn {
@@ -39,14 +39,13 @@ h2 {
     height: 100%;
 }
 .page {
-    padding: 54px 32px 48px;
+    padding: 54px 0 48px 0;
     flex: 1 0 auto;
     display: flex;
     justify-content: center;
 
-    @media (max-width: 640px) {
-        padding-left: 0;
-        padding-right: 0;
+    @media (min-width: 640px) {
+        padding: 54px 32px 48px 32px;
     }
 }
 .logo {
@@ -68,13 +67,13 @@ h2 {
 .title {
     color: var(--gray-base);
     font-size: 28px;
-    padding: 0 15px 24px;
+    padding: 32px 16px 24px;
     margin-top: -5px;
     line-height: 30px;
     font-weight: 300;
 
-    @media (max-width: 640px) {
-        padding-top: 32px;
+    @media (min-width: 640px) {
+        padding-top: 0;
     }
 
     &--back-btn {
@@ -117,11 +116,11 @@ h2 {
     display: inline-block;
 
     &--divided {
-        display: flex;
-        justify-content: space-between;
+        display: inline-block;
 
-        @media (max-width: 400px) {
-            display: inline-block;
+        @media (min-width: 400px) {
+            display: flex;
+            justify-content: space-between;
         }
     }
 

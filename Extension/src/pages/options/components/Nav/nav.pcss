@@ -2,13 +2,14 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    padding: 24px 0;
 
     &__item {
+        padding: 16px 16px 16px 40px;
         line-height: 22px;
         color: var(--gray-base);
         text-decoration: none;
         display: inline-block;
-        padding: 16px 0;
         font-size: 16px;
         cursor: pointer;
         transition: var(--t3) box-shadow;
@@ -40,11 +41,11 @@
         }
     }
 
-    @media (max-width: 640px) {
-        padding: 40px 0;
+    @media (min-width: 640px) {
+        padding: 0;
 
         &__item {
-            padding: 16px 16px 16px 40px;
+            padding: 16px 0;
         }
     }
 }
