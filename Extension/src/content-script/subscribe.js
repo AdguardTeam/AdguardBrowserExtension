@@ -93,7 +93,7 @@
 
         const subParams = getSubscriptionParams(urlParams);
         const url = subParams.url.trim();
-        const title = subParams.title?.trim() || '';
+        const title = (subParams.title || url).trim();
 
         if (!url) {
             return;
