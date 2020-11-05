@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Checkbox } from '../Settings/Checkbox';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
+import './group.pcss';
 
 const renderEnabledFilters = (enabledFilters) => {
     const enabledFiltersNames = enabledFilters.map((filter) => filter.name);
@@ -57,32 +58,39 @@ const Group = ({
     groupClickHandler,
     checkboxHandler,
     checkboxValue,
-}) => (
-    <div className="setting">
-        <div className="setting__area" role="presentation" onClick={groupClickHandler}>
-            <div className={
-                classNames(
-                    'setting__icon',
-                    `setting__icon--${groupName.toLowerCase().split(' ')[0]}`,
-                )
-            }
-            />
-            <div className="setting__info">
-                <div className="setting__title">
-                    {groupName}
-                </div>
-                <div className="setting__desc">
-                    {renderEnabledFilters(enabledFilters)}
+}) => {
+    const groupClassName = classNames({
+        setting: true,
+        group: true,
+        'group--disabled': !checkboxValue,
+    });
+    return (
+        <div className={groupClassName}>
+            <div className="setting__area" role="presentation" onClick={groupClickHandler}>
+                <div className={
+                    classNames(
+                        'setting__icon',
+                        `setting__icon--${groupName.toLowerCase().split(' ')[0]}`,
+                    )
+                }
+                />
+                <div className="setting__info">
+                    <div className="setting__title group__title">
+                        {groupName}
+                    </div>
+                    <div className="setting__desc">
+                        {renderEnabledFilters(enabledFilters)}
+                    </div>
                 </div>
             </div>
+            <Checkbox
+                id={groupId}
+                handler={checkboxHandler}
+                value={checkboxValue}
+            />
         </div>
-        <Checkbox
-            id={groupId}
-            handler={checkboxHandler}
-            value={checkboxValue}
-        />
-    </div>
-);
+    );
+};
 
 Group.defaultProps = {
     enabledFilters: [],
