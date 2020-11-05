@@ -27,8 +27,8 @@ const Allowlist = observer(() => {
 
     const { DEFAULT_WHITE_LIST_MODE } = settings.names;
 
-    const settingChangeHandler = async ({ id, enabled }) => {
-        await settingsStore.updateSetting(id, enabled);
+    const settingChangeHandler = async ({ id, data }) => {
+        await settingsStore.updateSetting(id, data);
         await settingsStore.getAllowlist();
     };
 

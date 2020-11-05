@@ -80,12 +80,12 @@ const General = observer(() => {
         inputEl.current.click();
     };
 
-    const allowAcceptableAdsChangeHandler = async ({ enabled }) => {
-        await settingsStore.setAllowAcceptableAdsValue(enabled);
+    const allowAcceptableAdsChangeHandler = async ({ data }) => {
+        await settingsStore.setAllowAcceptableAdsState(data);
     };
 
-    const settingChangeHandler = async ({ id, enabled }) => {
-        await settingsStore.updateSetting(id, enabled);
+    const settingChangeHandler = async ({ id, data }) => {
+        await settingsStore.updateSetting(id, data);
     };
 
     const {
@@ -117,6 +117,7 @@ const General = observer(() => {
                             {reactTranslator.translate('options_learn_more')}
                         </a>
                     )}
+                    disabled={!allowAcceptableAds}
                     inlineControl={(
                         <Setting
                             id={ALLOW_ACCEPTABLE_ADS}
@@ -137,6 +138,7 @@ const General = observer(() => {
                             {reactTranslator.translate('options_learn_more')}
                         </a>
                     )}
+                    disabled={settings.values[DISABLE_SAFEBROWSING]}
                     inlineControl={(
                         <Setting
                             id={DISABLE_SAFEBROWSING}
@@ -149,6 +151,7 @@ const General = observer(() => {
                 />
                 <SettingsSet
                     title={reactTranslator.translate('options_enable_autodetect_filter')}
+                    disabled={settings.values[DISABLE_DETECT_FILTERS]}
                     inlineControl={(
                         <Setting
                             id={DISABLE_DETECT_FILTERS}
