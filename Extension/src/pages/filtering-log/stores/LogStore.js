@@ -137,6 +137,13 @@ class LogStore {
 
     @action
     refreshPage = async () => {
+        if (this.selectedTabId === -1) {
+            if (this.preserveLogEnabled) {
+                return;
+            }
+            await messenger.clearEventsByTabId(this.selectedTabId);
+            return;
+        }
         await messenger.refreshPage(this.selectedTabId);
     }
 
