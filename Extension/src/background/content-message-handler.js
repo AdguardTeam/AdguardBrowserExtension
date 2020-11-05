@@ -385,8 +385,8 @@ const init = () => {
                 return { tabs };
             }
             case 'addFilterSubscription': {
-                const { url } = message;
-                await uiService.openCustomFiltersModal(url);
+                const { url, title } = message;
+                await uiService.openCustomFiltersModal(url, title);
                 break;
             }
             case 'showAlertMessagePopup':

@@ -32,7 +32,12 @@ const customStyles = {
     },
 };
 
-const AddCustomModal = ({ closeModalHandler, modalIsOpen, initialUrl }) => {
+const AddCustomModal = ({
+    closeModalHandler,
+    modalIsOpen,
+    initialUrl,
+    initialTitle,
+}) => {
     const STEPS = {
         INPUT: 'input',
         CHECKING: 'checking',
@@ -43,7 +48,7 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen, initialUrl }) => {
     const [customUrlToAdd, setCustomUrlToAdd] = useState(initialUrl);
     const [stepToRender, setStepToRender] = useState(STEPS.INPUT);
     const [filterToAdd, setFilterToAdd] = useState(null);
-    const [filterToAddName, setFilterToAddName] = useState('');
+    const [filterToAddName, setFilterToAddName] = useState(initialTitle);
 
     const { settingsStore } = useContext(rootStore);
 
@@ -66,7 +71,9 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen, initialUrl }) => {
                 setStepToRender(STEPS.ERROR);
             } else {
                 setFilterToAdd(result.filter);
-                setFilterToAddName(result.filter.name);
+                if (!filterToAddName) {
+                    setFilterToAddName(result.filter.name);
+                }
                 setStepToRender(STEPS.APPROVE);
             }
         } catch (e) {
@@ -116,6 +123,7 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen, initialUrl }) => {
 
     const handleApprove = async () => {
         try {
+            filterToAdd.name = filterToAddName;
             await settingsStore.addCustomFilter(filterToAdd);
         } catch (e) {
             setStepToRender(STEPS.ERROR);
@@ -126,7 +134,7 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen, initialUrl }) => {
 
     const renderApproveStep = () => {
         const {
-            name, description, version, rulesCount, homepage, customUrl,
+            description, version, rulesCount, homepage, customUrl,
         } = filterToAdd;
 
         return (

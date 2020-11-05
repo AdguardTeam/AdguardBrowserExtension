@@ -748,9 +748,14 @@ export const uiService = (function () {
         openTab(getPageUrl('filter-download.html'), { inBackground: browserUtils.isYaBrowser() });
     };
 
-    const openCustomFiltersModal = async (url) => {
+    const openCustomFiltersModal = async (url, title) => {
         // TODO move url in constants
-        await openTab(getPageUrl(`options.html#filter0&subscribe=${encodeURIComponent(url)}`), { activateSameTab: true });
+        let path = 'options.html#filter0';
+        if (title) {
+            path += `/title=${title}`;
+        }
+        path += `/subscribe=${encodeURIComponent(url)}`;
+        await openTab(getPageUrl(path), { activateSameTab: true });
         const tab = await tabsApi.getActive();
         tabsApi.reload(tab.tabId);
     };

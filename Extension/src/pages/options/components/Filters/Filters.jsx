@@ -20,12 +20,13 @@ const Filters = observer(() => {
     };
 
     const history = useHistory();
-    const { id, url } = useParams();
+    const { id, url, title } = useParams();
 
     const [searchInput, setSearchInput] = useState('');
     const [searchSelect, setSearchSelect] = useState(SEARCH_FILTERS.ALL);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [urlToSubscribe, setUrlToSubscribe] = useState(decodeURIComponent(url || ''));
+    const [customFilterTitle, setCustomFilterTitle] = useState(title);
 
     const { settingsStore, uiStore } = useContext(rootStore);
 
@@ -209,6 +210,7 @@ const Filters = observer(() => {
                     closeModalHandler={closeModalHandler}
                     modalIsOpen={modalIsOpen}
                     initialUrl={urlToSubscribe}
+                    initialTitle={customFilterTitle}
                 />
             )
         );
@@ -217,6 +219,7 @@ const Filters = observer(() => {
     useEffect(() => {
         if (modalIsOpen) {
             setUrlToSubscribe('');
+            setCustomFilterTitle('');
         }
     });
 
@@ -254,6 +257,7 @@ const Filters = observer(() => {
                         <h2 className="title title--back-btn">{groupName}</h2>
                     </div>
                     <EmptyCustom />
+                    {renderModal()}
                 </>
             );
         }

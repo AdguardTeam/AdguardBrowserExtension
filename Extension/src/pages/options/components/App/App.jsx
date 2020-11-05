@@ -88,7 +88,8 @@ const App = observer(() => {
                     <Switch>
                         <Route path="/" exact component={General} />
                         <Route path="/filters:id?" component={Filters} />
-                        <Route path="/filter:id?&subscribe=:url" component={Filters} />
+                        <Route path="/filter:id/subscribe=:url" component={Filters} />
+                        <Route path="/filter:id/title=:title/subscribe=:url" component={Filters} />
                         <Route path="/stealth" component={Stealth} />
                         <Route path="/allowlist" component={Allowlist} />
                         <Route path="/user-filter" component={UserRules} />
