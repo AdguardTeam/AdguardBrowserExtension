@@ -182,9 +182,9 @@ class Messenger {
         return this.sendMessage(type, { tabId });
     }
 
-    async refreshPage(tabId) {
+    async refreshPage(tabId, preserveLogEnabled) {
         const type = 'refreshPage';
-        await this.sendMessage(type, { tabId });
+        await this.sendMessage(type, { tabId, preserveLogEnabled });
     }
 }
 
