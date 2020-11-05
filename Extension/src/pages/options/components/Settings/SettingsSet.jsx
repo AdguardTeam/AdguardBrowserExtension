@@ -13,13 +13,13 @@ const SettingsSet = (props) => {
 
     return (
         <div className={settingClassName}>
-            <div className="setting__container--vertical">
-                <div className="setting__container--horizontal">
+            <div className="setting__container setting__container--vertical">
+                <div className="setting__container setting__container--horizontal">
                     <div className="setting__info">
                         <div className="setting__title">{title}</div>
                         {description && <div className="setting__desc">{description}</div>}
                     </div>
-                    {inlineControl && <div className="setting__container--inline">{inlineControl}</div>}
+                    {inlineControl && <div className="setting__container setting__container--inline">{inlineControl}</div>}
                 </div>
                 {children}
             </div>

@@ -10,6 +10,7 @@ import { reactTranslator } from '../../../reactCommon/reactTranslator';
 import {
     DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN,
     DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN,
+    DEFAULT_TRACKING_PARAMETERS,
 } from '../../../constants';
 
 const Stealth = observer(() => {
@@ -189,7 +190,7 @@ const Stealth = observer(() => {
                         type={SETTINGS_TYPES.TEXTAREA}
                         value={settings.values[TRACKING_PARAMETERS]}
                         handler={settingChangeHandler}
-                        placeholder="utm_*=, fb_ref="
+                        placeholder={DEFAULT_TRACKING_PARAMETERS}
                     />
                 </SettingsSet>
             </SettingsSection>
