@@ -9,13 +9,18 @@
         flex-grow: 1;
         border: 0;
         background: none;
-        padding: 5px 0 5px 25px;
+        padding: 5px 0 5px 5px;
         font-size: 14px;
         outline: none;
+
+        @media (min-width: 341px) {
+            padding: 5px 0 5px 25px;
+        }
     }
 
     &__ico {
         width: 24px;
+        min-width: 24px;
         height: 24px;
         background-size: cover;
         background-image: url(../../../../assets/icons/magnifying.svg);
@@ -39,10 +44,12 @@
 
     &__cross {
         width: 12px;
+        min-width: 12px;
         height: 12px;
         margin-left: 15px;
         position: relative;
         top: 1px;
         background-image: url(../../../../assets/icons/cross.svg);
+        background-repeat: no-repeat;
     }
 }
