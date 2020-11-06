@@ -362,6 +362,12 @@ const init = () => {
             case 'clearEventsByTabId':
                 filteringLog.clearEventsByTabId(data.tabId);
                 break;
+            case 'refreshPage':
+                if (!data.preserveLogEnabled) {
+                    filteringLog.clearEventsByTabId(data.tabId);
+                }
+                await tabsApi.reload(data.tabId);
+                break;
             case 'getTabFrameInfoById': {
                 if (message.tabId) {
                     const frameInfo = frames.getFrameInfo({ tabId: message.tabId });

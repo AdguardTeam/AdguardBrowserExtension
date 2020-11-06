@@ -32,6 +32,8 @@ class LogStore {
         Other: RequestTypes.OTHER,
     };
 
+    @observable preserveLogEnabled = false;
+
     constructor(rootStore) {
         this.rootStore = rootStore;
         makeObservable(this);
@@ -53,9 +55,8 @@ class LogStore {
         // clear events
         if (filteringEvent.requestType === 'DOCUMENT'
             && !filteringEvent.element
-            && !filteringEvent.script) {
-            // TODO preserve log
-            // && !this.preserveLogEnabled) {
+            && !filteringEvent.script
+            && !this.preserveLogEnabled) {
             this.filteringEvents = [];
         }
 
@@ -156,6 +157,23 @@ class LogStore {
     setFilterEventType = (type) => {
         this.filterByEventType = this.eventTypes[type];
     };
+
+    @action
+    refreshPage = async () => {
+        if (this.selectedTabId === -1) {
+            if (this.preserveLogEnabled) {
+                return;
+            }
+            await messenger.clearEventsByTabId(this.selectedTabId);
+            return;
+        }
+        await messenger.refreshPage(this.selectedTabId, this.preserveLogEnabled);
+    }
+
+    @action
+    setPreserveLog = (value) => {
+        this.preserveLogEnabled = value;
+    }
 }
 
 export { LogStore };
