@@ -8,6 +8,7 @@ import {
 
 import { messenger } from '../../services/messenger';
 import { containsIgnoreCase } from '../../helpers';
+import { RequestTypes } from '../../../background/utils/request-types';
 
 class LogStore {
     @observable filteringEvents = [];
@@ -17,6 +18,19 @@ class LogStore {
     @observable selectedTabId = null;
 
     @observable eventsSearchValue = '';
+
+    @observable filterByEventType = null;
+
+    eventTypes = {
+        All: null,
+        HTML: RequestTypes.DOCUMENT,
+        CSS: RequestTypes.STYLESHEET,
+        JavaScript: RequestTypes.SCRIPT,
+        Ajax: RequestTypes.XMLHTTPREQUEST,
+        Image: RequestTypes.IMAGE,
+        Media: RequestTypes.MEDIA,
+        Other: RequestTypes.OTHER,
+    };
 
     constructor(rootStore) {
         this.rootStore = rootStore;
@@ -98,6 +112,10 @@ class LogStore {
                     || containsIgnoreCase(filteringEvent.filterName, this.eventsSearchValue);
             }
 
+            if (this.filterByEventType && filteringEvent.requestType !== this.filterByEventType) {
+                show = false;
+            }
+
             return show;
         });
 
@@ -132,6 +150,11 @@ class LogStore {
     @action
     setEventsSearchValue = (value) => {
         this.eventsSearchValue = value;
+    };
+
+    @action
+    setFilterEventType = (type) => {
+        this.filterByEventType = this.eventTypes[type];
     };
 }
 
