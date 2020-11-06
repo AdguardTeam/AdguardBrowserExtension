@@ -54,22 +54,35 @@
 
     &--rate {
         height: 40px;
-        width: 121px;
+        min-width: 121px;
         font-size: 14px;
         color: var(--gray-base);
         border: 1px solid var(--gray-base);
         border-radius: 6px;
-        padding: 7px 24px 7px 48px;
+        padding: 7px 16px;
         background-size: 20px;
         background-position: 25px 50%;
         background-repeat: no-repeat;
-        /* todo make icon as image */
-        background-image: url(../../assets/icons/thumbsup.svg);
         letter-spacing: 0;
         line-height: 22px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
     }
 
     &--add-custom-filter {
         margin: 20px 0 0 15px;
+    }
+
+    &__img {
+        padding: 1px;
+        margin-right: 7px;
+        line-height: 24px;
+    }
+
+    &__label {
+        line-height: 26px;
+        max-height: 26px;
+        overflow: hidden;
     }
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { FORUM_URL, GITHUB_URL, WEBSITE_URL } from '../../../constants';
+import { FORUM_URL, WEBSITE_URL } from '../../../constants';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
 
 import './footer.pcss';
@@ -16,7 +16,9 @@ const Footer = () => {
                         {reactTranslator.translate('options_do_you_like')}
                     </div>
                     <button type="button" className="button button--rate">
-                        {reactTranslator.translate('options_footer_like_us')}
+                        {/* TODO: setup webpack to handle image import */}
+                        <img id="thumbsup" className="button__img" src="../../../assets/images/thumbsup.svg" alt="" />
+                        <label htmlFor="thumbsup" className="button__label">{reactTranslator.translate('options_footer_like_us')}</label>
                     </button>
                 </div>
             </div>
