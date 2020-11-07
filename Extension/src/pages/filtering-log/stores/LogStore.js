@@ -21,6 +21,12 @@ class LogStore {
 
     @observable filterByEventType = null;
 
+    @observable searchBlocked = false;
+
+    @observable searchThirdParty = false;
+
+    @observable searchWhitelisted = false;
+
     eventTypes = {
         All: null,
         HTML: RequestTypes.DOCUMENT,
@@ -113,10 +119,12 @@ class LogStore {
                     || containsIgnoreCase(filteringEvent.filterName, this.eventsSearchValue);
             }
 
-            if (this.filterByEventType && filteringEvent.requestType !== this.filterByEventType) {
-                show = false;
+            if ((this.filterByEventType && filteringEvent.requestType !== this.filterByEventType)
+                || (this.searchWhitelisted && !filteringEvent.requestRule?.whitelistRule)
+                || (this.searchBlocked && (!filteringEvent.requestRule || filteringEvent.requestRule?.whitelistRule))
+                || (this.searchThirdParty && !filteringEvent.requestThirdParty)) {
+                return false;
             }
-
             return show;
         });
 
@@ -173,6 +181,21 @@ class LogStore {
     @action
     setPreserveLog = (value) => {
         this.preserveLogEnabled = value;
+    }
+
+    @action
+    setSearchBlocked = (enabled) => {
+        this.searchBlocked = enabled;
+    }
+
+    @action
+    setSearchThirdParty = (enabled) => {
+        this.searchThirdParty = enabled;
+    }
+
+    @action
+    setSearchWhitelisted = (enabled) => {
+        this.searchWhitelisted = enabled;
     }
 }
 
