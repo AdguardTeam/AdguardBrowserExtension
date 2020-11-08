@@ -6,6 +6,8 @@ import { messenger } from '../../../services/messenger';
 import { log } from '../../../../background/utils/log';
 import { rootStore } from '../../stores/RootStore';
 
+import './app.pcss';
+
 const App = () => {
     const { logStore } = useContext(rootStore);
 

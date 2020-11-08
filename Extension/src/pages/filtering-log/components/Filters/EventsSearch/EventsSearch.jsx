@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
+import './events-search.pcss';
+
 import { rootStore } from '../../../stores/RootStore';
 
 const EventsSearch = observer(() => {
@@ -18,21 +20,22 @@ const EventsSearch = observer(() => {
     };
 
     return (
-        <form>
+        <form className="events-search">
+            <img src="../assets/images/magnifier.svg" alt="search-icon" className="events-search__icon" />
             <input
                 type="text"
                 id="events-search"
                 name="events-search"
-                placeholder="Search"
+                placeholder="Enter the search string"
                 onChange={changeHandler}
                 value={logStore.eventsSearchValue}
             />
             <button
                 type="button"
-                className="button"
+                className="events-search__clear"
                 onClick={handleClear}
             >
-                clear
+                Clear search
             </button>
         </form>
     );

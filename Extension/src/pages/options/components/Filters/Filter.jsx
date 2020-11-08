@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import './filter.pcss';
+import classNames from 'classnames';
 import { Checkbox } from '../Settings/Checkbox';
 import { rootStore } from '../../stores/RootStore';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
-import classNames from "classnames";
 
 const formatDate = (date) => {
     const dateObj = new Date(date);

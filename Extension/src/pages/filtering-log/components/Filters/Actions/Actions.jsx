@@ -1,10 +1,14 @@
 import React, { useContext } from 'react';
+import { observer } from 'mobx-react';
+import classNames from 'classnames';
 import { rootStore } from '../../../stores/RootStore';
 
 import './actions.pcss';
 
-const Actions = () => {
+const Actions = observer(() => {
     const { logStore } = useContext(rootStore);
+
+    const { preserveLogEnabled } = logStore;
 
     const clearLogHandler = async (e) => {
         e.preventDefault();
@@ -20,31 +24,40 @@ const Actions = () => {
         logStore.setPreserveLog(e.target.checked);
     };
 
+    const preserveLogClassName = classNames({
+        'custom-checkbox': true,
+        active: preserveLogEnabled,
+    });
+
     // TODO check accessibility
     return (
         <div className="actions">
-            <button
-                className="action"
-                type="button"
-                onClick={refreshPage}
-            >
-                Refresh page
-            </button>
-
-            <div className="action action--clear" onClick={clearLogHandler}>Clear log</div>
-
-            <label htmlFor="preserveLog">
-                <input
-                    type="checkbox"
-                    className="action"
-                    name="preserveLog"
-                    id="preserveLog"
-                    onChange={preserveLogHandler}
-                />
-                Preserve log
-            </label>
+            <div className="action">
+                <button
+                    className="green-button"
+                    type="button"
+                    onClick={refreshPage}
+                >
+                    Refresh page
+                </button>
+            </div>
+            <div className="action">
+                <a className="action__clear" href="#" onClick={clearLogHandler}>Clear</a>
+            </div>
+            <div className="action">
+                <label className="checkbox-label" htmlFor="preserveLog">
+                    <input
+                        type="checkbox"
+                        name="preserveLog"
+                        id="preserveLog"
+                        onChange={preserveLogHandler}
+                    />
+                    <div className={preserveLogClassName} />
+                    Preserve log
+                </label>
+            </div>
         </div>
     );
-};
+});
 
 export { Actions };

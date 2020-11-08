@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
+import classNames from 'classnames';
 
 import { rootStore } from '../../../stores/RootStore';
 
@@ -21,9 +22,24 @@ const MiscellaneousFilters = observer(() => {
         logStore.setSearchWhitelisted(e.target.checked);
     };
 
+    const thirdPartyClassName = classNames({
+        'custom-checkbox': true,
+        active: searchThirdParty,
+    });
+
+    const blockedClassName = classNames({
+        'custom-checkbox': true,
+        active: searchBlocked,
+    });
+
+    const whitelistedClassName = classNames({
+        'custom-checkbox': true,
+        active: searchWhitelisted,
+    });
+
     return (
         <div className="miscellaneous-filters">
-            <label htmlFor="third-party">
+            <label className="checkbox-label" htmlFor="third-party">
                 <input
                     type="checkbox"
                     id="third-party"
@@ -31,10 +47,11 @@ const MiscellaneousFilters = observer(() => {
                     onClick={thirdPartyCheckboxHandler}
                     value={searchThirdParty}
                 />
+                <div className={thirdPartyClassName} />
                 Third party
             </label>
 
-            <label htmlFor="blocked">
+            <label className="checkbox-label" htmlFor="blocked">
                 <input
                     type="checkbox"
                     id="blocked"
@@ -42,10 +59,11 @@ const MiscellaneousFilters = observer(() => {
                     onClick={blockedCheckboxHandler}
                     value={searchBlocked}
                 />
+                <div className={blockedClassName} />
                 Blocked
             </label>
 
-            <label htmlFor="whitelisted">
+            <label className="checkbox-label" htmlFor="whitelisted">
                 <input
                     type="checkbox"
                     id="whitelisted"
@@ -53,6 +71,7 @@ const MiscellaneousFilters = observer(() => {
                     onClick={whitelistedCheckboxHandler}
                     value={searchWhitelisted}
                 />
+                <div className={whitelistedClassName} />
                 Whitelisted
             </label>
         </div>

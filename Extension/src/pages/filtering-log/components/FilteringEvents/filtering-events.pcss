@@ -3,8 +3,37 @@
     border-collapse: collapse;
     width: 100%;
 
-    td {
-        overflow-y: auto;
-        border: 1px solid;
+    & tr {
+        &:hover {
+            cursor: pointer;
+            background: rgba(234, 182, 117, .1);
+        }
+    }
+
+    & th {
+        background-color: #f7f7f7;
+        text-align: left;
+        padding: 13px 0 13px 13px;
+        color: #ababab;
+        font-weight: normal;
+        font-size: 11px;
+
+        &:first-child {
+            width: 45%;
+        }
+    }
+
+    & td {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding: 13px 0 13px 13px;
+        border-bottom: 1px solid #ececec;
+        color: #4d4d4d;
+
+        &:first-child {
+            color: #1d1d1d;
+            font-weight: 600;
+        }
     }
 }

@@ -2,6 +2,8 @@ import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 import { rootStore } from '../../../stores/RootStore';
 
+import './tab-selector.pcss';
+
 const TabSelector = observer(() => {
     const { logStore } = useContext(rootStore);
 
@@ -27,13 +29,13 @@ const TabSelector = observer(() => {
     };
 
     return (
-        <>
+        <div className="tab-selector">
             {/* TODO check accessibility */}
             {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
             <label
                 htmlFor="tab-selector"
             >
-                Selected tab:
+                Tab:
             </label>
 
             <select
@@ -44,7 +46,7 @@ const TabSelector = observer(() => {
             >
                 {renderOptions(tabs)}
             </select>
-        </>
+        </div>
     );
 });
 
