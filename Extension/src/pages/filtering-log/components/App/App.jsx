@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from 'react';
 
-import { Actions } from '../Actions';
 import { Filters } from '../Filters';
 import { FilteringEvents } from '../FilteringEvents';
 import { messenger } from '../../../services/messenger';
@@ -78,7 +77,6 @@ const App = () => {
 
     return (
         <>
-            <Actions />
             <Filters />
             <FilteringEvents />
         </>

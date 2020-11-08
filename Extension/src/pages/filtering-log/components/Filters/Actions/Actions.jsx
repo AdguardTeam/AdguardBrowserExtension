@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { rootStore } from '../../stores/RootStore';
+import { rootStore } from '../../../stores/RootStore';
 
 import './actions.pcss';
 

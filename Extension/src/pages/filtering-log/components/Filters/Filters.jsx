@@ -2,6 +2,7 @@ import React from 'react';
 
 import { TabSelector } from './TabSelector';
 import { EventsSearch } from './EventsSearch';
+import { Actions } from './Actions';
 import { EventsTypeFilter } from './EventsTypeFilter';
 import { MiscellaneousFilters } from './MiscellaneousFilters';
 
@@ -15,10 +16,13 @@ const Filters = () => {
                     <TabSelector />
                 </div>
                 <div className="filters-item">
-                    <EventsSearch />
+                    <Actions />
                 </div>
             </div>
             <div className="filters-group">
+                <div className="filters-item">
+                    <EventsSearch />
+                </div>
                 <div className="filters-item">
                     <EventsTypeFilter />
                 </div>
