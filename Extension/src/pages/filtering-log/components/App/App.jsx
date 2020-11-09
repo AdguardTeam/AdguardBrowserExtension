@@ -59,10 +59,11 @@ const App = () => {
                             logStore.onEventAdded(tabInfo, event);
                             break;
                         }
-                        case LOG_EVENT_UPDATED:
-                            // console.log(message);
-                            // logStore.onEventUpdated();
+                        case LOG_EVENT_UPDATED: {
+                            const [tabInfo, event] = data;
+                            logStore.onEventUpdated(tabInfo, event);
                             break;
+                        }
                         default: {
                             log.debug('There is no listener for type:', type);
                             break;
