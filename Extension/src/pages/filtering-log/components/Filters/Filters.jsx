@@ -2,7 +2,6 @@ import React from 'react';
 
 import { TabSelector } from './TabSelector';
 import { EventsSearch } from './EventsSearch';
-import { Actions } from './Actions';
 import { EventsTypeFilter } from './EventsTypeFilter';
 import { MiscellaneousFilters } from './MiscellaneousFilters';
 
@@ -16,7 +15,7 @@ const Filters = () => {
                 <TabSelector />
             </div>
             <div className="filters__filters-col col-right">
-                <Actions />
+
             </div>
             <div className="filters__filters-col col-left col-thin">
                 <EventsSearch />

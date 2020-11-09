@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
-import { rootStore } from '../../../stores/RootStore';
+import { rootStore } from '../../stores/RootStore';
 
 import './actions.pcss';
 
@@ -32,20 +32,26 @@ const Actions = observer(() => {
     // TODO check accessibility
     return (
         <div className="actions">
-            <div className="action">
+            <div className="actions__action">
                 <button
-                    className="green-button"
+                    className="actions__refresh"
                     type="button"
                     onClick={refreshPage}
                 >
                     Refresh page
                 </button>
             </div>
-            <div className="action">
-                <a className="action__clear" href="#" onClick={clearLogHandler}>Clear</a>
+            <div className="actions__action">
+                <button
+                    className="actions__clear"
+                    type="button"
+                    onClick={clearLogHandler}
+                >
+                    Clear log
+                </button>
             </div>
-            <div className="action">
-                <label className="checkbox-label" htmlFor="preserveLog">
+            <div className="actions__action">
+                <label className="checkbox-label actions__preserve" htmlFor="preserveLog">
                     <input
                         type="checkbox"
                         name="preserveLog"
@@ -53,7 +59,7 @@ const Actions = observer(() => {
                         onChange={preserveLogHandler}
                     />
                     <div className={preserveLogClassName} />
-                    Preserve log
+                    Save logs after refreshing
                 </label>
             </div>
         </div>
