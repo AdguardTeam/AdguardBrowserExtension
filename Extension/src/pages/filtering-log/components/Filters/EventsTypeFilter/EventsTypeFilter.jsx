@@ -14,10 +14,10 @@ const EventsTypeFilter = observer(() => {
         logStore.setFilterEventType(e.target.value);
     };
 
-    const eventsTypesButtonClassName = (type) => classNames({
-        'events-types__type': true,
-        active: eventTypes[type] === filterByEventType,
-    });
+    const eventsTypesButtonClassName = (type) => classNames(
+        'events-types__type',
+        { active: eventTypes[type] === filterByEventType },
+    );
 
     const renderTypes = () => {
         const types = Object.keys(eventTypes);

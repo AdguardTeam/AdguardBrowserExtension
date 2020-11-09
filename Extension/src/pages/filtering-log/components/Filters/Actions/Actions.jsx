@@ -24,10 +24,10 @@ const Actions = observer(() => {
         logStore.setPreserveLog(e.target.checked);
     };
 
-    const preserveLogClassName = classNames({
-        'custom-checkbox': true,
-        active: preserveLogEnabled,
-    });
+    const preserveLogClassName = classNames(
+        'custom-checkbox',
+        { active: preserveLogEnabled },
+    );
 
     // TODO check accessibility
     return (

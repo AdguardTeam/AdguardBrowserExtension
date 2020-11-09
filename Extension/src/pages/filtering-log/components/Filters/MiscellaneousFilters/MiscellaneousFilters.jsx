@@ -22,20 +22,20 @@ const MiscellaneousFilters = observer(() => {
         logStore.setSearchWhitelisted(e.target.checked);
     };
 
-    const thirdPartyClassName = classNames({
-        'custom-checkbox': true,
-        active: searchThirdParty,
-    });
+    const thirdPartyClassName = classNames(
+        'custom-checkbox',
+        { active: searchThirdParty },
+    );
 
-    const blockedClassName = classNames({
-        'custom-checkbox': true,
-        active: searchBlocked,
-    });
+    const blockedClassName = classNames(
+        'custom-checkbox',
+        { active: searchBlocked },
+    );
 
-    const whitelistedClassName = classNames({
-        'custom-checkbox': true,
-        active: searchWhitelisted,
-    });
+    const whitelistedClassName = classNames(
+        'custom-checkbox',
+        { active: searchWhitelisted },
+    );
 
     return (
         <div className="miscellaneous-filters">
