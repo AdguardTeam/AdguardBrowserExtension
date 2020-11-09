@@ -750,11 +750,12 @@ export const uiService = (function () {
 
     const openCustomFiltersModal = async (url, title) => {
         // TODO move url in constants
-        let path = 'options.html#filter0';
+        let path = 'options.html#filters?group=0';
         if (title) {
-            path += `/title=${title}`;
+            path += `&title=${title}`;
         }
-        path += `/subscribe=${encodeURIComponent(url)}`;
+        path += `&subscribe=${encodeURIComponent(url)}`;
+
         await openTab(getPageUrl(path), { activateSameTab: true });
         const tab = await tabsApi.getActive();
         tabsApi.reload(tab.tabId);

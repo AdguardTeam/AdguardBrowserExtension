@@ -71,9 +71,6 @@ const AddCustomModal = ({
                 setStepToRender(STEPS.ERROR);
             } else {
                 setFilterToAdd(result.filter);
-                if (!filterToAddName) {
-                    setFilterToAddName(result.filter.name);
-                }
                 setStepToRender(STEPS.APPROVE);
             }
         } catch (e) {
@@ -123,7 +120,9 @@ const AddCustomModal = ({
 
     const handleApprove = async () => {
         try {
-            filterToAdd.name = filterToAddName;
+            if (!filterToAdd.name) {
+                filterToAdd.name = filterToAddName || customUrlToAdd;
+            }
             await settingsStore.addCustomFilter(filterToAdd);
         } catch (e) {
             setStepToRender(STEPS.ERROR);
@@ -134,7 +133,7 @@ const AddCustomModal = ({
 
     const renderApproveStep = () => {
         const {
-            description, version, rulesCount, homepage, customUrl,
+            name, description, version, rulesCount, homepage, customUrl,
         } = filterToAdd;
 
         return (
@@ -150,7 +149,7 @@ const AddCustomModal = ({
                                 className="modal__input"
                                 type="text"
                                 onChange={handleChangeFilterName}
-                                value={filterToAddName}
+                                value={name || filterToAddName || customUrlToAdd}
                             />
                         </div>
                         <div className="modal__row">

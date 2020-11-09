@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import sortBy from 'lodash/sortBy';
 import { Group } from './Group';
@@ -20,13 +20,17 @@ const Filters = observer(() => {
     };
 
     const history = useHistory();
-    const { id, url, title } = useParams();
+    const useQuery = () => {
+        return new URLSearchParams(useLocation().search);
+    };
+
+    const query = useQuery();
 
     const [searchInput, setSearchInput] = useState('');
     const [searchSelect, setSearchSelect] = useState(SEARCH_FILTERS.ALL);
     const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [urlToSubscribe, setUrlToSubscribe] = useState(decodeURIComponent(url || ''));
-    const [customFilterTitle, setCustomFilterTitle] = useState(title);
+    const [urlToSubscribe, setUrlToSubscribe] = useState(decodeURIComponent(query.get('subscribe') || ''));
+    const [customFilterTitle, setCustomFilterTitle] = useState(query.get('title'));
 
     const { settingsStore, uiStore } = useContext(rootStore);
 
@@ -38,7 +42,7 @@ const Filters = observer(() => {
         filtersUpdating,
     } = settingsStore;
 
-    settingsStore.setSelectedGroupId(parseInt(id, 10));
+    settingsStore.setSelectedGroupId(parseInt(query.get('group'), 10));
 
     const handleGroupSwitch = async ({ id, data }) => {
         await settingsStore.updateGroupSetting(id, data);
@@ -46,7 +50,7 @@ const Filters = observer(() => {
 
     const groupClickHandler = (groupId) => () => {
         settingsStore.setSelectedGroupId(groupId);
-        history.push(`/filters${groupId}`);
+        history.push(`/filters?group=${groupId}`);
     };
 
     const getEnabledFiltersByGroup = (group) => (
