@@ -41,22 +41,28 @@ export default function Setting(props) {
             );
         }
         case SETTINGS_TYPES.INPUT: {
-            const { id, value, handler } = props;
+            const {
+                id, value, handler, placeholder,
+            } = props;
             return (
                 <TextInput
                     id={id}
                     value={value}
                     handler={handler}
+                    placeholder={placeholder}
                 />
             );
         }
         case SETTINGS_TYPES.TEXTAREA: {
-            const { id, value, handler } = props;
+            const {
+                id, value, handler, placeholder,
+            } = props;
             return (
                 <Textarea
                     id={id}
                     value={value}
                     handler={handler}
+                    placeholder={placeholder}
                 />
             );
         }

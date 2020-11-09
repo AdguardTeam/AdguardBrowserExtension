@@ -10,7 +10,7 @@
 }
 .settings-wrap {
   min-height: 100%;
-  padding-top: 80px;
+  padding-top: 54px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -25,11 +25,11 @@
   padding-bottom: 50px;
 }
 .settings-wrap .page-title {
-  font-weight: 700;
-  font-size: 30px;
-  color: #454545;
-  line-height: 1.4;
+  font-size: 28px;
+  color: #4D4D4D;
+  line-height: 30px;
   padding: 0 15px;
+  letter-spacing: 0;
 }
 .settings-wrap .page-title a {
   text-decoration: none;
@@ -53,33 +53,39 @@
   margin-top: 5px;
 }
 .settings-body-subtitle {
-  font-weight: 700;
-  font-size: 18px;
-  color: #4d4d4d;
-  margin-bottom: 15px;
-  padding: 0 15px;
+  font-size: 20px;
+  color: #4A4A4A;
+  padding: 0 16px 8px;
+  letter-spacing: 0;
+  line-height: 28px;
 }
 .settings-body {
-  margin-top: 52px;
+  margin-top: 24px;
 }
 .settings-sidebar {
-  width: 280px;
+  width: 170px;
+  margin-right: 64px;
 }
 .settings-sidebar .logo img {
-  width: 160px;
+  width: 109px;
 }
 .settings-sidebar .nav {
   padding: 0;
   margin: 0;
   list-style: none;
-  width: 280px;
+  width: 100%;
 }
 .settings-sidebar .nav li {
   list-style: none;
   padding: 0;
-  margin: 0;
-  margin-top: 22px;
+  margin: 32px 0 0;
 }
+
+.settings-sidebar .nav li:last-child {
+  padding-bottom: 40px;
+  border-bottom: 1px solid #E7E7E7;
+}
+
 .settings-sidebar .nav span {
   display: inline-block;
   font-size: 16px;
@@ -89,8 +95,7 @@
 }
 .nav__item {
   position: relative;
-  min-height: 45px;
-  line-height: 25px;
+  line-height: 22px;
   text-decoration: none;
   display: flex;
   flex-direction: column;
@@ -113,8 +118,7 @@
   bottom: -12px;
 }
 .settings-sidebar .logo {
-  margin-bottom: 37px;
-  margin-top: 7px;
+  margin-bottom: 40px;
 }
 .settings-content.tab-pane {
   width: 740px;
@@ -208,9 +212,7 @@
   font-size: 14px;
   border: 1px solid #E7E7E7;
   border-width: 0 0 1px 0;
-  margin-top: 24px;
-  padding: 0 15px;
-  padding-bottom: 24px;
+  padding: 16px 16px 20px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -370,12 +372,11 @@ li.active .block-type__desc-title {
 }
 .opts-list .opt-state .desc {
   color: #888888;
-  font-size: 12px;
-  line-height: 15px;
-  font-weight: 400;
-  padding-right: 25px;
+  font-size: 14px;
+  line-height: 18px;
   margin-left: 0;
-  margin-top: 10px;
+  margin-top: 4px;
+  max-width: 480px;
 }
 .icon-home {
   width: 14px;
@@ -439,18 +440,18 @@ li.active .block-type__desc-title {
   height: 12px;
 }
 .opts-list + .subtitle {
-  margin-top: 40px;
+  margin-top: 32px;
 }
 .toggler {
   width: 42px;
   height: 20px;
   margin-left: 20px;
   position: relative;
-  border-radius: 4px;
+  border-radius: 10px;
   -webkit-transition: background-color 0.2s;
   -o-transition: background-color 0.2s;
   transition: background-color 0.2s;
-  background-color: #F56F23;
+  background-color: #888888;
   cursor: pointer;
 }
 .toggler:before {
@@ -458,7 +459,7 @@ li.active .block-type__desc-title {
   position: absolute;
   height: 16px;
   width: 16px;
-  border-radius: 2px;
+  border-radius: 50%;
   background-color: #fff;
   margin-top: 2px;
   left: 2px;
@@ -473,12 +474,12 @@ li.active .block-type__desc-title {
   height: 20px;
   background-position: 4px 50%;
   background-repeat: no-repeat;
-  background-image: url(../images/toggler-bg.svg);
+  /*background-image: url(../images/toggler-bg.svg);*/
 }
 
 .toggler.on,
 li.active .toggler {
-  background-color: #62c162;
+  background-color: #67B279;
 }
 .toggler.on:before,
 li.active .toggler:before {
@@ -1355,7 +1356,9 @@ li.active .toggler:before {
 
 .opts-list li .title {
   font-size: 16px;
-  color: #888888;
+  line-height: 20px;
+  color: #4D4D4D;
+  letter-spacing: 0;
 }
 
 .opts-list li.active .title {
@@ -1449,4 +1452,29 @@ li.active .toggler:before {
 
 .opts-list.opts-list--disabled li .title {
   color: #888888;
+}
+
+.compare_title {
+  margin: 24px 0 8px;
+  font-size: 16px;
+  color: #4D4D4D;
+  letter-spacing: 0;
+  line-height: 22px;
+}
+
+.compare_link {
+  font-size: 16px;
+  color: #67B279;
+  letter-spacing: 0;
+  line-height: 22px;
+}
+
+.compare_hide {
+  margin-top: 24px;
+  padding: 0;
+  font-size: 14px;
+  color: #888888;
+  line-height: 18px;
+  background-color: transparent;
+  border: none;
 }
