@@ -167,7 +167,7 @@ const init = () => {
                 return processAddEventListener(events, sender);
             }
             case 'removeListener': {
-                const { listenerId } = message;
+                const { listenerId } = data;
                 listeners.removeListener(listenerId);
                 delete eventListeners[listenerId];
                 break;

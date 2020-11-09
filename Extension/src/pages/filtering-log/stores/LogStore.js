@@ -32,6 +32,20 @@ class LogStore {
     }
 
     @action
+    async onTabClose(tabInfo) {
+        delete this.tabsMap[tabInfo.tabId];
+        const [firstTabInfo] = Object.values(this.tabsMap);
+        await this.setSelectedTabId(firstTabInfo.tabId);
+    }
+
+    @action
+    onTabReset(tabInfo) {
+        if (this.selectedTabId === tabInfo.tabId && !this.preserveLogEnabled) {
+            this.filteringEvents = [];
+        }
+    }
+
+    @action
     onEventAdded(tabInfo, filteringEvent) {
         const { tabId } = tabInfo;
         if (tabId !== this.selectedTabId) {

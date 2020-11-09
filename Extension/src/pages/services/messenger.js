@@ -23,14 +23,14 @@ class Messenger {
         return response;
     }
 
-    createEventListener = async (events, callback) => {
+    createEventListener = async (events, callback, onUnloadCallback) => {
         const eventListener = (...args) => {
             callback(...args);
         };
 
         let listenerId;
         const type = 'createEventListener';
-        listenerId = await this.sendMessage(type, { events });
+        ({ listenerId } = await this.sendMessage(type, { events }));
 
         browser.runtime.onMessage.addListener((message) => {
             if (message.type === 'notifyListeners') {
@@ -42,8 +42,11 @@ class Messenger {
         const onUnload = async () => {
             if (listenerId) {
                 const type = 'removeListener';
-                await this.sendMessage(type, { listenerId });
+                this.sendMessage(type, { listenerId });
                 listenerId = null;
+                if (typeof onUnloadCallback === 'function') {
+                    onUnloadCallback();
+                }
             }
         };
 

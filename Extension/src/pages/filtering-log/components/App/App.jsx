@@ -44,14 +44,16 @@ const App = () => {
                             logStore.onTabUpdate(...data);
                             break;
                         }
-                        case TAB_CLOSE:
-                            // console.log(message);
-                            // logStore.onTabClose();
+                        case TAB_CLOSE: {
+                            const [tabInfo] = data;
+                            await logStore.onTabClose(tabInfo);
                             break;
-                        case TAB_RESET:
-                            // console.log(message);
-                            // logStore.onTabReset();
+                        }
+                        case TAB_RESET: {
+                            const [tabInfo] = data;
+                            logStore.onTabReset(tabInfo);
                             break;
+                        }
                         case LOG_EVENT_ADDED: {
                             const [tabInfo, event] = data;
                             logStore.onEventAdded(tabInfo, event);
@@ -67,11 +69,13 @@ const App = () => {
                         }
                     }
                 },
+                () => {
+                    messenger.onCloseFilteringLogPage();
+                },
             );
         })();
 
         return () => {
-            messenger.onCloseFilteringLogPage();
             removeListenerCallback();
         };
     }, []);
