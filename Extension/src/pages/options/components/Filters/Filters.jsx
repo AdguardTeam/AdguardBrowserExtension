@@ -241,12 +241,14 @@ const Filters = observer(() => {
         return (
             <>
                 <div className="title-btn">
-                    <button
-                        type="button"
-                        className="button button--back"
-                        onClick={handleReturnToGroups}
-                    />
-                    <h2 className="title title--back-btn">{groupName}</h2>
+                    <h2 className="title title--back-btn">
+                        <button
+                            type="button"
+                            className="button button--back"
+                            onClick={handleReturnToGroups}
+                        />
+                        {groupName}
+                    </h2>
                 </div>
                 {renderSearch()}
                 <div>
