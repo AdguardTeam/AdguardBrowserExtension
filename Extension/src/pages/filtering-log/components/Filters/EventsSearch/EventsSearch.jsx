@@ -21,12 +21,11 @@ const EventsSearch = observer(() => {
 
     return (
         <form className="events-search">
-            <img src="../assets/images/magnifier.svg" alt="search-icon" className="events-search__icon" />
             <input
                 type="text"
                 id="events-search"
                 name="events-search"
-                placeholder="Enter the search string"
+                placeholder="Search"
                 onChange={changeHandler}
                 value={logStore.eventsSearchValue}
             />
@@ -34,9 +33,7 @@ const EventsSearch = observer(() => {
                 type="button"
                 className="events-search__clear"
                 onClick={handleClear}
-            >
-                Clear search
-            </button>
+            />
         </form>
     );
 });

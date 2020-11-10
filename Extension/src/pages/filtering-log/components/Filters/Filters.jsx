@@ -10,19 +10,18 @@ import './filters.pcss';
 const Filters = () => {
     return (
         <div className="filters">
-            <div className="filters__filters-col col-left">
-                <img src="../assets/images/shield.svg" alt="logo" className="logo-icon" />
+            <div className="filters__tab-selector">
                 <TabSelector />
             </div>
-            <div className="filters__filters-col col-right">
-
-            </div>
-            <div className="filters__filters-col col-left col-thin">
+            <div className="filters__events-search">
                 <EventsSearch />
             </div>
-            <div className="filters__filters-col col-right col-thin">
+            <div className="filters__events-filters">
                 <EventsTypeFilter />
-                <MiscellaneousFilters />
+                <div className="filters__miscellaneous-filters">
+                    Filters
+                    {/*<MiscellaneousFilters />*/}
+                </div>
             </div>
         </div>
     );

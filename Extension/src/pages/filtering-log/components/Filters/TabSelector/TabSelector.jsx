@@ -35,7 +35,7 @@ const TabSelector = observer(() => {
             <label
                 htmlFor="tab-selector"
             >
-                Tab:
+                Selected tab:
             </label>
 
             <select
