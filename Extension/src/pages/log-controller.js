@@ -666,7 +666,7 @@ const RequestWizard = (function () {
         }
 
         const cookieNode = template.querySelector('[attr-text="cookie"]');
-        if (filteringEvent.cookieName) {
+            if (filteringEvent.cookieName) {
             cookieNode.textContent = `${filteringEvent.cookieName} = ${filteringEvent.cookieValue}`;
         } else {
             cookieNode.parentNode.style.display = 'none';

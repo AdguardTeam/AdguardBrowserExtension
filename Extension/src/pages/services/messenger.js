@@ -165,6 +165,11 @@ class Messenger {
         await this.sendMessage(type);
     }
 
+    async getLogInitData() {
+        const type = 'initializeFrameScript';
+        return this.sendMessage(type);
+    }
+
     async onCloseFilteringLogPage() {
         const type = 'onCloseFilteringLogPage';
         await this.sendMessage(type);

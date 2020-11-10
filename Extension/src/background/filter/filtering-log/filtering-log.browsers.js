@@ -76,7 +76,9 @@ const browsersFilteringLog = (function () {
      * Get filtering info for tab
      * @param tabId
      */
-    const getFilteringInfoByTabId = tabId => tabsInfoMap[tabId];
+    const getFilteringInfoByTabId = tabId => {
+        return tabsInfoMap[tabId];
+    };
 
     /**
      * Updates tab info (title and url)

@@ -11,6 +11,11 @@ const FilteringEvents = observer(() => {
 
     const { events } = logStore;
 
+    const handleEventClick = (row) => (e) => {
+        e.preventDefault();
+        logStore.setSelectedEventById(row.eventId);
+    };
+
     const columns = useMemo(() => [
         {
             Header: 'URL',
@@ -66,7 +71,7 @@ const FilteringEvents = observer(() => {
                     rows.map((row) => {
                         prepareRow(row);
                         return (
-                            <tr {...row.getRowProps()}>
+                            <tr {...row.getRowProps()} onClick={handleEventClick(row.original)}>
                                 {
                                     row.cells.map((cell) => {
                                         return (

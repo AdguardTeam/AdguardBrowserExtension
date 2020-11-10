@@ -3,7 +3,7 @@ import {
     makeObservable,
     action,
     computed,
-    runInAction,
+    runInAction, toJS,
 } from 'mobx';
 import _ from 'lodash';
 
@@ -20,6 +20,10 @@ class LogStore {
     @observable eventsSearchValue = '';
 
     @observable preserveLogEnabled = false;
+
+    @observable selectedEvent = null;
+
+    @observable filtersMetadata = null;
 
     constructor(rootStore) {
         this.rootStore = rootStore;
@@ -106,6 +110,16 @@ class LogStore {
         });
     }
 
+    @action
+    getLogInitData = async () => {
+        const initData = await messenger.getLogInitData();
+        const { filtersMetadata } = initData;
+
+        runInAction(() => {
+            this.filtersMetadata = filtersMetadata;
+        });
+    }
+
     @computed
     get events() {
         const filteredEvents = this.filteringEvents.filter((filteringEvent) => {
@@ -130,6 +144,7 @@ class LogStore {
 
         const events = filteredEvents.map((filteringEvent) => {
             const {
+                eventId,
                 requestUrl: url,
                 requestType: type,
                 requestRule: rule,
@@ -137,6 +152,7 @@ class LogStore {
             } = filteringEvent;
 
             return {
+                eventId,
                 url,
                 type,
                 rule: rule?.ruleText,
@@ -177,6 +193,12 @@ class LogStore {
     setPreserveLog = (value) => {
         this.preserveLogEnabled = value;
     }
+
+    @action
+    setSelectedEventById = (eventId) => {
+        this.selectedEvent = _.find(this.filteringEvents, { eventId });
+        this.rootStore.uiStore.openModal();
+    };
 }
 
 export { LogStore };
