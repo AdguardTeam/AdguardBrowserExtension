@@ -13,6 +13,8 @@ import './request-info.pcss';
 // FIXME provide cookie rules id, otherwise it is impossible to search them,
 //  or append all data as data attributes
 
+// FIXME add close button of modal window
+
 // TODO move into constants
 const STEALTH_ACTIONS = {
     HIDE_REFERRER: 1 << 0,
@@ -89,7 +91,7 @@ const getFilterName = (filterId, filtersMetadata) => {
 };
 
 const RequestInfo = observer(() => {
-    const { logStore } = useContext(rootStore);
+    const { logStore, uiStore } = useContext(rootStore);
 
     const { selectedEvent, filtersMetadata } = logStore;
 
@@ -155,15 +157,7 @@ const RequestInfo = observer(() => {
         );
     });
 
-    const shouldRenderOpenInNewTab = !(
-        selectedEvent.element
-        || selectedEvent.cookieName
-        || selectedEvent.script
-    );
-
-    const openInNewTabHandler = async (e) => {
-        e.preventDefault();
-
+    const openInNewTabHandler = async () => {
         let url = selectedEvent.requestUrl;
 
         if (url === 'content-security-policy-check') {
@@ -173,14 +167,56 @@ const RequestInfo = observer(() => {
         await messenger.openTab(url, { inNewWindow: true });
     };
 
+    const renderOpenInNewTab = (event) => {
+        const showButton = !(
+            event.element
+            || event.cookieName
+            || event.script
+        );
+
+        if (!showButton) {
+            return null;
+        }
+
+        return (
+            <button
+                className="control"
+                type="button"
+                onClick={openInNewTabHandler}
+            >
+                Open in new tab
+            </button>
+        );
+    };
+
+    const blockHandler = () => {
+        uiStore.setBlockState();
+    };
+
+    const renderBlockRequest = (event) => {
+        if (event.requestRule) {
+            return null;
+        }
+
+        return (
+            <button
+                className="control"
+                type="button"
+                onClick={blockHandler}
+            >
+                Block
+            </button>
+        );
+    };
+
     return (
         <>
             <div>Request details</div>
             {renderedInfo}
             {renderImageIfNecessary(selectedEvent)}
             <div className="controls">
-                {shouldRenderOpenInNewTab
-                    && <button className="control" type="button" onClick={openInNewTabHandler}>Open in new tab</button>}
+                {renderOpenInNewTab(selectedEvent)}
+                {renderBlockRequest(selectedEvent)}
             </div>
         </>
     );

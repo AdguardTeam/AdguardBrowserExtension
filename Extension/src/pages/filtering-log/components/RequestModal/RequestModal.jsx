@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import { rootStore } from '../../stores/RootStore';
 import { RequestInfo } from '../RequestInfo';
 import { REQUEST_WIZARD_STATES } from '../../stores/UiStore';
+import { RequestBlock } from '../RequestBlock';
 
 Modal.setAppElement('#root');
 
@@ -17,6 +18,10 @@ const RequestModal = observer(() => {
     switch (requestModalState) {
         case REQUEST_WIZARD_STATES.VIEW_REQUEST: {
             modalContent = <RequestInfo />;
+            break;
+        }
+        case REQUEST_WIZARD_STATES.BLOCK_REQUEST: {
+            modalContent = <RequestBlock />;
             break;
         }
         default:
