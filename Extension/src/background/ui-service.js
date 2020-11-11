@@ -748,6 +748,19 @@ export const uiService = (function () {
         openTab(getPageUrl('filter-download.html'), { inBackground: browserUtils.isYaBrowser() });
     };
 
+    const openCustomFiltersModal = async (url, title) => {
+        // TODO move url in constants
+        let path = 'options.html#filters?group=0';
+        if (title) {
+            path += `&title=${title}`;
+        }
+        path += `&subscribe=${encodeURIComponent(url)}`;
+
+        await openTab(getPageUrl(path), { activateSameTab: true });
+        const tab = await tabsApi.getActive();
+        tabsApi.reload(tab.tabId);
+    };
+
     var whitelistTab = function (tab) {
         const tabInfo = frames.getFrameInfo(tab);
         whitelist.whitelistUrl(tabInfo.url);
@@ -972,6 +985,7 @@ export const uiService = (function () {
         openThankYouPage,
         openExtensionStore,
         openFiltersDownloadPage,
+        openCustomFiltersModal,
         openAbuseTab,
 
         updateTabIconAndContextMenu,

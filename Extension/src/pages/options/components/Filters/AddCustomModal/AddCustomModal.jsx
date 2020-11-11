@@ -32,7 +32,12 @@ const customStyles = {
     },
 };
 
-const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
+const AddCustomModal = ({
+    closeModalHandler,
+    modalIsOpen,
+    initialUrl,
+    initialTitle,
+}) => {
     const STEPS = {
         INPUT: 'input',
         CHECKING: 'checking',
@@ -40,10 +45,10 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
         ERROR: 'error',
     };
 
-    const [customUrlToAdd, setCustomUrlToAdd] = useState('');
+    const [customUrlToAdd, setCustomUrlToAdd] = useState(initialUrl);
     const [stepToRender, setStepToRender] = useState(STEPS.INPUT);
     const [filterToAdd, setFilterToAdd] = useState(null);
-    const [filterToAddName, setFilterToAddName] = useState('');
+    const [filterToAddName, setFilterToAddName] = useState(initialTitle);
 
     const { settingsStore } = useContext(rootStore);
 
@@ -66,7 +71,6 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
                 setStepToRender(STEPS.ERROR);
             } else {
                 setFilterToAdd(result.filter);
-                setFilterToAddName(result.filter.name);
                 setStepToRender(STEPS.APPROVE);
             }
         } catch (e) {
@@ -116,6 +120,9 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
 
     const handleApprove = async () => {
         try {
+            if (!filterToAdd.name) {
+                filterToAdd.name = filterToAddName || customUrlToAdd;
+            }
             await settingsStore.addCustomFilter(filterToAdd);
         } catch (e) {
             setStepToRender(STEPS.ERROR);
@@ -142,7 +149,7 @@ const AddCustomModal = ({ closeModalHandler, modalIsOpen }) => {
                                 className="modal__input"
                                 type="text"
                                 onChange={handleChangeFilterName}
-                                value={filterToAddName}
+                                value={name || filterToAddName || customUrlToAdd}
                             />
                         </div>
                         <div className="modal__row">
