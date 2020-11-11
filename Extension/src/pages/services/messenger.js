@@ -194,6 +194,11 @@ class Messenger {
         const type = 'refreshPage';
         await this.sendMessage(type, { tabId, preserveLogEnabled });
     }
+
+    async openTab(url, options) {
+        const type = 'openTab';
+        await this.sendMessage(type, { url, options });
+    }
 }
 
 const messenger = new Messenger();

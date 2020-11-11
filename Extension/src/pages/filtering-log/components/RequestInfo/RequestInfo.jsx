@@ -2,10 +2,11 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 import { rootStore } from '../../stores/RootStore';
+import { messenger } from '../../../services/messenger';
+import { RequestImage } from './RequestImage';
 
 // FIXME replace with react translator
 import { i18n } from '../../../../common/i18n';
-import { RequestImage } from './RequestImage';
 
 import './request-info.pcss';
 
@@ -154,10 +155,33 @@ const RequestInfo = observer(() => {
         );
     });
 
+    const shouldRenderOpenInNewTab = !(
+        selectedEvent.element
+        || selectedEvent.cookieName
+        || selectedEvent.script
+    );
+
+    const openInNewTabHandler = async (e) => {
+        e.preventDefault();
+
+        let url = selectedEvent.requestUrl;
+
+        if (url === 'content-security-policy-check') {
+            url = selectedEvent.frameUrl;
+        }
+
+        await messenger.openTab(url, { inNewWindow: true });
+    };
+
     return (
         <>
+            <div>Request details</div>
             {renderedInfo}
             {renderImageIfNecessary(selectedEvent)}
+            <div className="controls">
+                {shouldRenderOpenInNewTab
+                    && <button className="control" type="button" onClick={openInNewTabHandler}>Open in new tab</button>}
+            </div>
         </>
     );
 });

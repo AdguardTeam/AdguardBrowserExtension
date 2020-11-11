@@ -298,9 +298,16 @@ const init = () => {
                 }
                 break;
             }
-            case 'openTab':
-                uiService.openTab(message.url, message.options);
+            case 'openTab': {
+                if (data) {
+                    const { url, options } = data;
+                    await uiService.openTab(url, options);
+                } else {
+                    // TODO remove when popup page will be refactored
+                    await uiService.openTab(message.url, message.options);
+                }
                 break;
+            }
             case 'resetBlockedAdsCount':
                 frames.resetBlockedAdsCount();
                 break;
