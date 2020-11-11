@@ -82,16 +82,12 @@ const App = observer(() => {
 
     return (
         <HashRouter hashType="noslash">
-            <div className="page container">
+            <div className="page">
                 <Sidebar />
                 <div className="content">
                     <Switch>
                         <Route path="/" exact component={General} />
-                        <Route
-                            path="/filters:id?"
-                            component={Filters}
-                            render={() => { settingsStore.setSelectedGroupId(null); }}
-                        />
+                        <Route path="/filters" component={Filters} />
                         <Route path="/stealth" component={Stealth} />
                         <Route path="/allowlist" component={Allowlist} />
                         <Route path="/user-filter" component={UserRules} />

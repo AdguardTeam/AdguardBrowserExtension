@@ -167,7 +167,7 @@ const init = () => {
                 return processAddEventListener(events, sender);
             }
             case 'removeListener': {
-                const { listenerId } = message;
+                const { listenerId } = data;
                 listeners.removeListener(listenerId);
                 delete eventListeners[listenerId];
                 break;
@@ -391,12 +391,7 @@ const init = () => {
             }
             case 'addFilterSubscription': {
                 const { url, title } = message;
-                const hashOptions = {
-                    action: 'add_filter_subscription',
-                    title,
-                    url,
-                };
-                uiService.openSettingsTab('antibanner0', hashOptions);
+                await uiService.openCustomFiltersModal(url, title);
                 break;
             }
             case 'showAlertMessagePopup':

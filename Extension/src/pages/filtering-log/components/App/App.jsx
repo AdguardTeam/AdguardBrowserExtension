@@ -46,34 +46,39 @@ const App = () => {
                             logStore.onTabUpdate(...data);
                             break;
                         }
-                        case TAB_CLOSE:
-                            // console.log(message);
-                            // logStore.onTabClose();
+                        case TAB_CLOSE: {
+                            const [tabInfo] = data;
+                            await logStore.onTabClose(tabInfo);
                             break;
-                        case TAB_RESET:
-                            // console.log(message);
-                            // logStore.onTabReset();
+                        }
+                        case TAB_RESET: {
+                            const [tabInfo] = data;
+                            logStore.onTabReset(tabInfo);
                             break;
+                        }
                         case LOG_EVENT_ADDED: {
                             const [tabInfo, event] = data;
                             logStore.onEventAdded(tabInfo, event);
                             break;
                         }
-                        case LOG_EVENT_UPDATED:
-                            // console.log(message);
-                            // logStore.onEventUpdated();
+                        case LOG_EVENT_UPDATED: {
+                            const [tabInfo, event] = data;
+                            logStore.onEventUpdated(tabInfo, event);
                             break;
+                        }
                         default: {
                             log.debug('There is no listener for type:', type);
                             break;
                         }
                     }
                 },
+                () => {
+                    messenger.onCloseFilteringLogPage();
+                },
             );
         })();
 
         return () => {
-            messenger.onCloseFilteringLogPage();
             removeListenerCallback();
         };
     }, []);

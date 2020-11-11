@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import './filter.pcss';
 import classNames from 'classnames';
+import './filter.pcss';
+import Setting, { SETTINGS_TYPES } from '../Settings/Setting';
 import { Checkbox } from '../Settings/Checkbox';
 import { rootStore } from '../../stores/RootStore';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
@@ -68,7 +69,7 @@ const Filter = ({
     } = filter;
 
     const removeCustomFilter = async () => {
-        const result = confirm(reactTranslator.translate('options_delete_filter_confirm'));
+        const result = window.confirm(reactTranslator.translate('options_delete_filter_confirm'));
         if (result) {
             await settingsStore.removeCustomFilter(filterId);
         }
@@ -94,15 +95,25 @@ const Filter = ({
     return (
         <div className={filterClassName} role="presentation">
             <div className="filter__info">
-                <div className="filter__title">
-                    {name}
+                <div className="setting__container setting__container--horizontal">
+                    <div className="filter__title">
+                        {name}
+                        <a
+                            className="filter__link"
+                            href={homepage || customUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        />
+                    </div>
+                    <div className="setting__inline-control">
+                        <Setting
+                            id={filterId}
+                            type={SETTINGS_TYPES.CHECKBOX}
+                            value={checkboxValue}
+                            handler={checkboxHandler}
+                        />
+                    </div>
                 </div>
-                <a
-                    className="filter__link"
-                    href={homepage || customUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                />
                 {renderRemoveButton()}
                 <div className="filter__desc">
                     <div className="filter__desc-item">

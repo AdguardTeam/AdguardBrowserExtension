@@ -4,7 +4,7 @@ import './textarea.pcss';
 
 function Textarea(props) {
     const {
-        id, value, handler,
+        id, value, handler, placeholder,
     } = props;
 
     const changeHandler = (e) => {
@@ -20,14 +20,20 @@ function Textarea(props) {
             aria-label={id}
             className="textarea"
             defaultValue={value}
+            placeholder={placeholder}
         />
     );
 }
+
+Textarea.defaultProps = {
+    placeholder: '',
+};
 
 Textarea.propTypes = {
     id: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
     handler: PropTypes.func.isRequired,
+    placeholder: PropTypes.string,
 };
 
 export { Textarea };

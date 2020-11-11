@@ -5,6 +5,7 @@ import {
     computed,
     runInAction,
 } from 'mobx';
+import _ from 'lodash';
 
 import { messenger } from '../../services/messenger';
 import { containsIgnoreCase } from '../../helpers';
@@ -59,6 +60,31 @@ class LogStore {
     onTabUpdate(tabInfo) {
         const { tabId } = tabInfo;
         this.tabsMap[tabId] = tabInfo;
+    }
+
+    @action
+    async onTabClose(tabInfo) {
+        delete this.tabsMap[tabInfo.tabId];
+        const [firstTabInfo] = Object.values(this.tabsMap);
+        await this.setSelectedTabId(firstTabInfo.tabId);
+    }
+
+    @action
+    onTabReset(tabInfo) {
+        if (this.selectedTabId === tabInfo.tabId && !this.preserveLogEnabled) {
+            this.filteringEvents = [];
+        }
+    }
+
+    @action
+    onEventUpdated(tabInfo, filteringEvent) {
+        if (tabInfo.tabId !== this.selectedTabId) {
+            return;
+        }
+        const { eventId } = filteringEvent;
+        let eventIdx = _.findIndex(this.filteringEvents, { eventId });
+        eventIdx = eventIdx === -1 ? this.filteringEvents.length : eventIdx;
+        this.filteringEvents.splice(eventIdx, 1, filteringEvent);
     }
 
     @action

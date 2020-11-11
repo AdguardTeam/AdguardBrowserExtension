@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { Checkbox } from '../Settings/Checkbox';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
 import './group.pcss';
+import Setting, { SETTINGS_TYPES } from "../Settings/Setting";
 
 const renderEnabledFilters = (enabledFilters) => {
     const enabledFiltersNames = enabledFilters.map((filter) => filter.name);
@@ -83,11 +84,14 @@ const Group = ({
                     </div>
                 </div>
             </div>
-            <Checkbox
-                id={groupId}
-                handler={checkboxHandler}
-                value={checkboxValue}
-            />
+            <div className="setting__inline-control">
+                <Setting
+                    id={groupId}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    value={checkboxValue}
+                    handler={checkboxHandler}
+                />
+            </div>
         </div>
     );
 };
