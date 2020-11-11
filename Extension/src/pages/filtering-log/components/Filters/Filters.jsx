@@ -19,8 +19,7 @@ const Filters = () => {
             <div className="filters__events-filters">
                 <EventsTypeFilter />
                 <div className="filters__miscellaneous-filters">
-                    Filters
-                    {/*<MiscellaneousFilters />*/}
+                    <MiscellaneousFilters />
                 </div>
             </div>
         </div>

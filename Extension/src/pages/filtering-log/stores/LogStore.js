@@ -21,9 +21,19 @@ class LogStore {
 
     @observable filterByEventType = null;
 
+    @observable searchRegular = false;
+
     @observable searchBlocked = false;
 
+    @observable searchModified = false;
+
+    @observable searchUserFilter = false;
+
     @observable searchThirdParty = false;
+
+    @observable searchFirstParty = false;
+
+    @observable searchFirstThirdParty = false;
 
     @observable searchWhitelisted = false;
 
@@ -119,10 +129,16 @@ class LogStore {
                     || containsIgnoreCase(filteringEvent.filterName, this.eventsSearchValue);
             }
 
+            // console.log(JSON.stringify(filteringEvent.requestRule, null, 4));
+
             if ((this.filterByEventType && filteringEvent.requestType !== this.filterByEventType)
                 || (this.searchWhitelisted && !filteringEvent.requestRule?.whitelistRule)
                 || (this.searchBlocked && (!filteringEvent.requestRule || filteringEvent.requestRule?.whitelistRule))
-                || (this.searchThirdParty && !filteringEvent.requestThirdParty)) {
+                || (this.searchThirdParty && !filteringEvent.requestThirdParty)
+                || (this.searchFirstParty && filteringEvent.requestThirdParty)
+                || (this.searchModified && !filteringEvent.requestRule?.isModifyingCookieRule)
+                // TODO add condition for regular rules
+                || (this.searchUserFilter && (!filteringEvent.requestRule || filteringEvent.requestRule?.filterId !== 0))) {
                 return false;
             }
             return show;
@@ -184,13 +200,38 @@ class LogStore {
     }
 
     @action
+    setSearchRegular = (enabled) => {
+        this.searchRegular = enabled;
+    }
+
+    @action
     setSearchBlocked = (enabled) => {
         this.searchBlocked = enabled;
     }
 
     @action
+    setSearchModified = (enabled) => {
+        this.searchModified = enabled;
+    }
+
+    @action
+    setSearchUserFilter = (enabled) => {
+        this.searchUserFilter = enabled;
+    }
+
+    @action
+    setSearchFirstParty = (enabled) => {
+        this.searchFirstParty = enabled;
+    }
+
+    @action
     setSearchThirdParty = (enabled) => {
         this.searchThirdParty = enabled;
+    }
+
+    @action
+    setSearchFirstThirdParty = (enabled) => {
+        this.searchFirstThirdParty = enabled;
     }
 
     @action

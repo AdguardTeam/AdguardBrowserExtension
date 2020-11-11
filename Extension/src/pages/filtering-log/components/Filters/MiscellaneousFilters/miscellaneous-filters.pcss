@@ -1,9 +1,83 @@
 .miscellaneous-filters {
     margin-left: auto;
     display: flex;
+    position: relative;
+
+    &__section {
+        padding: 20px;
+    }
+
+    &__filters {
+        display: none;
+        width: 160px;
+        position: absolute;
+        right: 30px;
+        top: 10px;
+        background: #fff;
+        box-shadow: 2px 2px 10px #cccccc;
+        font-size: 13px;
+
+        &.active {
+            display: block;
+        }
+    }
 
     & label {
-        margin: 10px;
-        font-size: 12px;
+        margin-bottom: 18px;
+        font-size: 14px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    &__button {
+        border: 0;
+        background-color: transparent;
+        background-image: url(../../../../assets/icons/filters-ico.svg), url(../../../../assets/icons/arrow-down-grey.svg);
+        background-position:  0 50%, 100% 50%;
+        background-repeat: no-repeat, no-repeat;
+        background-size: 14px 14px, 11px 9px;
+        padding: 0 20px 0 25px;
+        font-size: 14px;
+        cursor: pointer;
+
+        &:focus {
+            outline: none;
+        }
+    }
+}
+
+.hr {
+    width: 100%;
+    height: 1px;
+    background: #ddd;
+}
+
+/* custom radio-button */
+label.radio-button-label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+
+    & input[type="radio"] {
+        display: none;
+    }
+
+    & .radio-button {
+        width: 17px;
+        height: 17px;
+        background-color: transparent;
+        border: 2px solid #999;
+        border-radius: 17px;
+        margin-right: 10px;
+
+        &.active {
+            background-image: url(../../../../assets/icons/circle.svg);
+            background-position: center;
+            background-size: 12px 12px;
+            background-repeat: no-repeat;
+            border: 2px solid #66b574;
+        }
     }
 }
