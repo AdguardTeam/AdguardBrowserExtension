@@ -398,12 +398,7 @@ const init = () => {
             }
             case 'addFilterSubscription': {
                 const { url, title } = message;
-                const hashOptions = {
-                    action: 'add_filter_subscription',
-                    title,
-                    url,
-                };
-                uiService.openSettingsTab('antibanner0', hashOptions);
+                await uiService.openCustomFiltersModal(url, title);
                 break;
             }
             case 'showAlertMessagePopup':
