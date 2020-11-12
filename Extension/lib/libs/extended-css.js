@@ -1,4 +1,4 @@
-/*! extended-css - v1.3.3 - Fri Oct 16 2020
+/*! extended-css - v1.3.4 - Thu Nov 12 2020
 * https://github.com/AdguardTeam/ExtendedCss
 * Copyright (c) 2020 AdGuard. Licensed LGPL-3.0
 */
@@ -4228,7 +4228,18 @@ var ExtendedCss = (function () {
      */
 
     function XpathSelector(selectorText, xpath, debug) {
-      BaseLastArgumentSelector.call(this, selectorText, xpath, debug);
+      var NO_SELECTOR_MARKER = ':xpath(//';
+      var BODY_SELECTOR_REPLACER = 'body:xpath(//';
+      var modifiedSelectorText = selectorText; // Normally, a pseudo-class is applied to nodes selected by a selector -- selector:xpath(...).
+      // However, :xpath is special as the selector can be ommited.
+      // For any other pseudo-class that would mean "apply to ALL DOM nodes",
+      // but in case of :xpath it just means "apply me to the document".
+
+      if (utils.startsWith(selectorText, NO_SELECTOR_MARKER)) {
+        modifiedSelectorText = selectorText.replace(NO_SELECTOR_MARKER, BODY_SELECTOR_REPLACER);
+      }
+
+      BaseLastArgumentSelector.call(this, modifiedSelectorText, xpath, debug);
     }
 
     XpathSelector.prototype = Object.create(BaseLastArgumentSelector.prototype);
