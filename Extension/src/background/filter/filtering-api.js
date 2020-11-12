@@ -60,8 +60,8 @@ export const filteringApi = (function () {
         return getRequestFilter().findStealthWhitelistRule(requestUrl, referrer, requestType);
     };
 
-    const getSelectorsForUrl = function (documentUrl, genericHideFlag) {
-        return getRequestFilter().getSelectorsForUrl(documentUrl, genericHideFlag);
+    const getSelectorsForUrl = function (documentUrl, cosmeticOptions, traditionalCss, extCss) {
+        return getRequestFilter().getSelectorsForUrl(documentUrl, cosmeticOptions, traditionalCss, extCss);
     };
 
     const getScriptsForUrl = function (documentUrl) {

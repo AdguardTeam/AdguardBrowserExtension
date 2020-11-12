@@ -128,9 +128,11 @@ export const RequestFilter = (() => {
          *
          * @param {string} url Page URL
          * @param {number} options bitmask
+         * @param {boolean} traditionalCss flag
+         * @param {boolean} extCss flag
          * @returns {*} CSS and ExtCss data for the webpage
          */
-        getSelectorsForUrl(url, options) {
+        getSelectorsForUrl(url, options, traditionalCss, extCss) {
             const domain = utils.url.getHost(url);
 
             const cosmeticResult = engine.getCosmeticResult(domain, options);
@@ -138,26 +140,30 @@ export const RequestFilter = (() => {
             const elemhideCss = [...cosmeticResult.elementHiding.generic, ...cosmeticResult.elementHiding.specific];
             const injectCss = [...cosmeticResult.CSS.generic, ...cosmeticResult.CSS.specific];
 
-            const elemhideExtendedCss = [
+            const elemhideExtCss = [
                 ...cosmeticResult.elementHiding.genericExtCss,
                 ...cosmeticResult.elementHiding.specificExtCss,
             ];
-            const injectExtendedCss = [
+            const injectExtCss = [
                 ...cosmeticResult.CSS.genericExtCss,
                 ...cosmeticResult.CSS.specificExtCss,
             ];
 
             const collectingCosmeticRulesHits = webRequestService.isCollectingCosmeticRulesHits();
             if (collectingCosmeticRulesHits) {
+                const styles = traditionalCss ? cssService.buildStyleSheetHits(elemhideCss, injectCss) : [];
+                const extStyles = extCss ? cssService.buildStyleSheetHits(elemhideExtCss, injectExtCss) : [];
                 return {
-                    css: cssService.buildStyleSheetHits(elemhideCss, injectCss),
-                    extendedCss: cssService.buildStyleSheetHits(elemhideExtendedCss, injectExtendedCss),
+                    css: styles,
+                    extendedCss: extStyles,
                 };
             }
 
+            const styles = traditionalCss ? cssService.buildStyleSheet(elemhideCss, injectCss, true) : [];
+            const extStyles = extCss ? cssService.buildStyleSheet(elemhideExtCss, injectExtCss, false) : [];
             return {
-                css: cssService.buildStyleSheet(elemhideCss, injectCss, true),
-                extendedCss: cssService.buildStyleSheet(elemhideExtendedCss, injectExtendedCss, false),
+                css: styles,
+                extendedCss: extStyles,
             };
         },
 

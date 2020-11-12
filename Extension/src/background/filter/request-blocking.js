@@ -80,14 +80,14 @@ export const webRequestService = (function () {
      *
      * @param tab                       Tab data
      * @param documentUrl               Document URL
-     * @param {boolean} retrieveScripts Indicates whether to retrieve JS rules or not
+     * @param {boolean} force           Indicates whether to retrieve JS and Css selectors, used in 'webrequest' call
      *
-     * When cssFilterOptions and retrieveScripts are undefined, we handle it in a special way
+     * When cssFilterOptions and force are undefined, we handle it in a special way
      * that depends on whether the browser supports inserting CSS and scripts from the background page
      *
      * @returns {SelectorsAndScripts} an object with the selectors and scripts to be injected into the page
      */
-    const processGetSelectorsAndScripts = function (tab, documentUrl, retrieveScripts) {
+    const processGetSelectorsAndScripts = function (tab, documentUrl, force) {
         const result = Object.create(null);
 
         if (!tab) {
@@ -111,15 +111,23 @@ export const webRequestService = (function () {
             documentUrl, documentUrl, RequestTypes.DOCUMENT,
         );
 
-        result.collapseAllElements = filteringApi.shouldCollapseAllElements();
-        result.selectors = filteringApi.getSelectorsForUrl(documentUrl, cosmeticOptions);
-
-        if (retrieveScripts || !prefs.features.canUseInsertCSSAndExecuteScript) {
+        if (force || !prefs.features.canUseInsertCSSAndExecuteScript) {
+            // Retrieve ExtendedCss selectors only if canUseInsertCSSAndExecuteScript in unavailable
+            result.selectors = filteringApi.getSelectorsForUrl(
+                documentUrl, cosmeticOptions, true, !prefs.features.canUseInsertCSSAndExecuteScript,
+            );
             result.scripts = filteringApi.getScriptsStringForUrl(documentUrl, tab);
+        } else {
+            // In preload content script only ExtendedCss selectors are necessary.
+            // Traditional css selectors would be injected via tabs.injectCss.
+            result.selectors = filteringApi.getSelectorsForUrl(
+                documentUrl, cosmeticOptions, false, true,
+            );
         }
 
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1337
         result.collectRulesHits = isCollectingCosmeticRulesHits(tab);
+        result.collapseAllElements = filteringApi.shouldCollapseAllElements();
 
         return result;
     };
