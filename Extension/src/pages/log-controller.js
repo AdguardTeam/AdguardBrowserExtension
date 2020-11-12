@@ -31,7 +31,7 @@ const Messages = {
 };
 
 const FilterRule = {
-    MASK_WHITE_LIST: '@@',
+    MASK_ALLOWLIST: '@@',
     MASK_CSS_RULE: '##',
     MASK_CSS_INJECT_RULE: '#$#',
     MASK_CSS_EXTENDED_CSS_RULE: '#?#',
@@ -227,7 +227,7 @@ const RequestWizard = (function () {
         }
 
         if (whitelist) {
-            prefix = FilterRule.MASK_WHITE_LIST + prefix;
+            prefix = FilterRule.MASK_ALLOWLIST + prefix;
         }
 
         const patterns = [];
@@ -526,7 +526,7 @@ const RequestWizard = (function () {
         if (domain[0] === '.') {
             domain = domain.substring(1);
         }
-        return FilterRule.MASK_WHITE_LIST + UrlFilterRule.MASK_START_URL + domain;
+        return FilterRule.MASK_ALLOWLIST + UrlFilterRule.MASK_START_URL + domain;
     };
 
     const showCreateExceptionRuleModal = function (frameInfo, filteringEvent) {
@@ -541,7 +541,7 @@ const RequestWizard = (function () {
             ).reverse();
         }
         if (filteringEvent.requestUrl === 'content-security-policy-check') {
-            patterns = [FilterRule.MASK_WHITE_LIST];
+            patterns = [FilterRule.MASK_ALLOWLIST];
         }
 
         if (filteringEvent.element) {

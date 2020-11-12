@@ -6,7 +6,6 @@ import { FilterRule, UrlFilterRule } from './constants';
  * @type {{substringAfter, containsIgnoreCase, substringBefore, startWith}}
  */
 export const StringUtils = {
-
     startWith(str, prefix) {
         return !!(str && str.indexOf(prefix) === 0);
     },
@@ -94,7 +93,7 @@ export const splitToPatterns = (requestUrl, domain, whitelist) => {
     }
 
     if (whitelist) {
-        prefix = FilterRule.MASK_WHITE_LIST + prefix;
+        prefix = FilterRule.MASK_ALLOWLIST + prefix;
     }
 
     const patterns = [];
