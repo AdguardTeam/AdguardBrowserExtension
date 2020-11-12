@@ -6,9 +6,9 @@ import { rootStore } from '../../../stores/RootStore';
 import { RULE_OPTIONS } from '../constants';
 import { messenger } from '../../../../services/messenger';
 
+// TODO localize messages
 const RequestBlock = observer(() => {
     const { wizardStore } = useContext(rootStore);
-    const { rulePatterns } = wizardStore;
 
     const RULE_OPTIONS_MAP = {
         [RULE_OPTIONS.RULE_DOMAIN]: {
@@ -95,8 +95,11 @@ const RequestBlock = observer(() => {
         wizardStore.closeModal();
     };
 
-    // FIXME make possible to edit rule
-    // FIXME add "add a rule" button
+    const handleRuleChange = (e) => {
+        const { value } = e.currentTarget;
+        wizardStore.setRuleText(value);
+    };
+
     return (
         <>
             <button
@@ -107,11 +110,16 @@ const RequestBlock = observer(() => {
             </button>
             <div className="rule-text">
                 <div>Rule text:</div>
-                <div>{wizardStore.rule}</div>
+                <input
+                    type="text"
+                    name="rule-text"
+                    value={wizardStore.rule}
+                    onChange={handleRuleChange}
+                />
             </div>
             <div className="patterns">
                 <div>Patterns:</div>
-                {renderPatterns(rulePatterns)}
+                {renderPatterns(wizardStore.rulePatterns)}
             </div>
             <div className="options">
                 <div>Options:</div>

@@ -15,8 +15,7 @@ const RequestImage = (props) => {
         };
     });
 
-    // eslint-disable-next-line jsx-a11y/alt-text
-    return (shouldRenderImage && <img src={url} />);
+    return (shouldRenderImage && <img src={url} alt="request" />);
 };
 
 export { RequestImage };

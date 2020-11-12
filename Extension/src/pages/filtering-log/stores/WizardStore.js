@@ -7,7 +7,6 @@ import {
 
 import { RULE_OPTIONS, UrlFilterRule } from '../components/RequestWizard/constants';
 import { splitToPatterns } from '../components/RequestWizard/utils';
-import { messenger } from '../../services/messenger';
 
 export const WIZARD_STATES = {
     VIEW_REQUEST: 'view.request',
@@ -21,6 +20,9 @@ class WizardStore {
 
     @observable
     requestModalState = WIZARD_STATES.VIEW_REQUEST;
+
+    @observable
+    ruleText = null;
 
     @observable
     rulePattern = '';
@@ -42,7 +44,7 @@ class WizardStore {
     openModal() {
         this.isModalOpen = true;
         this.requestModalState = WIZARD_STATES.VIEW_REQUEST;
-        // FIXME update ruleOptions checkboxes respectively, set all for example false
+        // FIXME update ruleOptions checkboxes respectively, set all false, for example
     }
 
     @action
@@ -63,10 +65,24 @@ class WizardStore {
 
     @action
     setRulePattern(rulePattern) {
+        // on every rule pattern change we reset rule text inserted manually
+        this.ruleText = null;
         this.rulePattern = rulePattern;
     }
 
-    createRuleFromParams = (urlPattern, urlDomain, matchCase, thirdParty, important, mandatoryOptions) => {
+    @action
+    setRuleText(ruleText) {
+        this.ruleText = ruleText;
+    }
+
+    createRuleFromParams = (
+        urlPattern,
+        urlDomain,
+        matchCase,
+        thirdParty,
+        important,
+        mandatoryOptions,
+    ) => {
         let ruleText = urlPattern;
 
         let options = [];
@@ -107,6 +123,10 @@ class WizardStore {
     };
 
     getRuleText(selectedEvent, rulePattern, ruleOptions) {
+        if (this.ruleText !== null) {
+            return this.ruleText;
+        }
+
         const {
             ruleDomain,
             ruleImportant,
@@ -185,6 +205,8 @@ class WizardStore {
 
     @action
     setRuleOptionState(optionId, checked) {
+        // on every rule pattern change we reset rule text inserted manually
+        this.ruleText = null;
         this.ruleOptions[optionId].checked = checked;
     }
 }
