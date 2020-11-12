@@ -77,7 +77,7 @@ const RequestBlock = observer(() => {
         });
 
         return (
-            <form onChange={handleOptionsChange}>
+            <form>
                 <ul>
                     {renderedOptions}
                 </ul>
@@ -90,6 +90,7 @@ const RequestBlock = observer(() => {
     };
 
     // FIXME make possible to edit rule
+    // FIXME add "add a rule" button
     return (
         <>
             <button
