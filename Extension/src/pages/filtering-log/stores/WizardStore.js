@@ -133,6 +133,11 @@ class WizardStore {
     }
 
     @action
+    setViewState() {
+        this.requestModalState = WIZARD_STATES.VIEW_REQUEST;
+    }
+
+    @action
     setRulePattern(rulePattern) {
         this.rulePattern = rulePattern;
     }

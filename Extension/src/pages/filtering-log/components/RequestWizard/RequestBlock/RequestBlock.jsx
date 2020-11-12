@@ -5,7 +5,6 @@ import { observer } from 'mobx-react';
 import { rootStore } from '../../../stores/RootStore';
 import { RULE_OPTIONS } from '../constants';
 
-// FIXME add back button
 // FIXME when selected event is changed return to the request info screen
 const RequestBlock = observer(() => {
     const { wizardStore } = useContext(rootStore);
@@ -87,9 +86,19 @@ const RequestBlock = observer(() => {
         );
     };
 
+    const handleBackClick = () => {
+        wizardStore.setViewState();
+    };
+
     // FIXME make possible to edit rule
     return (
         <>
+            <button
+                type="button"
+                onClick={handleBackClick}
+            >
+                back
+            </button>
             <div className="rule-text">
                 <div>Rule text:</div>
                 <div>{wizardStore.rule}</div>
