@@ -82,7 +82,7 @@ class LogStore {
     }
 
     @action
-    setEventTypesFiltersValue = (name) => {
+    toogleEventTypesFilter = (name) => {
         this.eventTypesFilters.forEach((filter) => {
             if (filter.name === name) {
                 filter.value = !filter.value;

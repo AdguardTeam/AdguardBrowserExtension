@@ -11,7 +11,7 @@ const EventsTypeFilter = observer(() => {
     const { eventTypesFilters } = logStore;
 
     const btnTypeHandler = (e) => {
-        logStore.setEventTypesFiltersValue(e.target.value);
+        logStore.toogleEventTypesFilter(e.target.value);
     };
 
     const eventsTypesButtonClassName = (name) => classNames(
