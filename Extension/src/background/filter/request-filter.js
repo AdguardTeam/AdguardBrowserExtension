@@ -128,11 +128,11 @@ export const RequestFilter = (() => {
          *
          * @param {string} url Page URL
          * @param {number} options bitmask
-         * @param {boolean} traditionalCss flag
-         * @param {boolean} extCss flag
+         * @param {boolean} ignoreTraditionalCss flag
+         * @param {boolean} ignoreExtCss flag
          * @returns {*} CSS and ExtCss data for the webpage
          */
-        getSelectorsForUrl(url, options, traditionalCss, extCss) {
+        getSelectorsForUrl(url, options, ignoreTraditionalCss, ignoreExtCss) {
             const domain = utils.url.getHost(url);
 
             const cosmeticResult = engine.getCosmeticResult(domain, options);
@@ -151,16 +151,16 @@ export const RequestFilter = (() => {
 
             const collectingCosmeticRulesHits = webRequestService.isCollectingCosmeticRulesHits();
             if (collectingCosmeticRulesHits) {
-                const styles = traditionalCss ? cssService.buildStyleSheetHits(elemhideCss, injectCss) : [];
-                const extStyles = extCss ? cssService.buildStyleSheetHits(elemhideExtCss, injectExtCss) : [];
+                const styles = !ignoreTraditionalCss ? cssService.buildStyleSheetHits(elemhideCss, injectCss) : [];
+                const extStyles = !ignoreExtCss ? cssService.buildStyleSheetHits(elemhideExtCss, injectExtCss) : [];
                 return {
                     css: styles,
                     extendedCss: extStyles,
                 };
             }
 
-            const styles = traditionalCss ? cssService.buildStyleSheet(elemhideCss, injectCss, true) : [];
-            const extStyles = extCss ? cssService.buildStyleSheet(elemhideExtCss, injectExtCss, false) : [];
+            const styles = !ignoreTraditionalCss ? cssService.buildStyleSheet(elemhideCss, injectCss, true) : [];
+            const extStyles = !ignoreExtCss ? cssService.buildStyleSheet(elemhideExtCss, injectExtCss, false) : [];
             return {
                 css: styles,
                 extendedCss: extStyles,
