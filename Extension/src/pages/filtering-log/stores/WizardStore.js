@@ -44,7 +44,7 @@ class WizardStore {
     }
 
     @action
-    closeModal() {
+    closeModal = () => {
         this.isModalOpen = false;
         this.requestModalState = WIZARD_STATES.VIEW_REQUEST;
     }

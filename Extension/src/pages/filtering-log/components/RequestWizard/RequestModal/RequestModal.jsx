@@ -46,6 +46,12 @@ const RequestModal = observer(() => {
                 },
             }}
         >
+            <button
+                type="button"
+                onClick={closeModal}
+            >
+                close
+            </button>
             {modalContent}
         </Modal>
     );

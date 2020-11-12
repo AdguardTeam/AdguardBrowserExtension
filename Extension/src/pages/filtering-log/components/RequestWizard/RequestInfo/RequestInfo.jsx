@@ -68,7 +68,6 @@ const RequestInfo = observer(() => {
         return null;
     }
 
-    // FIXME render image if available
     const infoElements = [
         {
             title: 'URL:',
