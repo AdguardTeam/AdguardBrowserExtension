@@ -28,41 +28,48 @@ class LogStore {
         searchBlocked: false,
         searchModified: false,
         searchUserFilter: false,
-        searchFirstThirdParty: false,
+        searchFirstThirdParty: true,
         searchFirstParty: false,
         searchThirdParty: false,
     };
 
-    @observable eventTypesFilters = {
-        HTML: {
+    @observable eventTypesFilters = [
+        {
+            name: 'HTML',
             type: RequestTypes.DOCUMENT,
             value: true,
         },
-        CSS: {
+        {
+            name: 'CSS',
             type: RequestTypes.STYLESHEET,
             value: true,
         },
-        JavaScript: {
+        {
+            name: 'JavaScript',
             type: RequestTypes.SCRIPT,
             value: true,
         },
-        Ajax: {
+        {
+            name: 'Ajax',
             type: RequestTypes.XMLHTTPREQUEST,
             value: true,
         },
-        Image: {
+        {
+            name: 'Image',
             type: RequestTypes.IMAGE,
             value: true,
         },
-        Media: {
+        {
+            name: 'Media',
             type: RequestTypes.MEDIA,
             value: true,
         },
-        Other: {
+        {
+            name: 'Other',
             type: RequestTypes.OTHER,
             value: true,
         },
-    };
+    ];
 
     constructor(rootStore) {
         this.rootStore = rootStore;
@@ -75,8 +82,12 @@ class LogStore {
     }
 
     @action
-    setEventTypesFiltersValue = (type) => {
-        this.eventTypesFilters[type].value = !this.eventTypesFilters[type].value;
+    setEventTypesFiltersValue = (name) => {
+        this.eventTypesFilters.forEach((filter) => {
+            if (filter.name === name) {
+                filter.value = !filter.value;
+            }
+        });
     }
 
     @action
@@ -178,9 +189,9 @@ class LogStore {
                     || containsIgnoreCase(filteringEvent.filterName, this.eventsSearchValue);
             }
 
-            const eventTypesFilterValue = Object.values(this.eventTypesFilters)
+            const eventTypesFilterValue = this.eventTypesFilters
                 .find((filter) => filter.type === filteringEvent.requestType)
-                .value;
+                ?.value;
             if (!eventTypesFilterValue) {
                 return false;
             }

@@ -14,23 +14,23 @@ const EventsTypeFilter = observer(() => {
         logStore.setEventTypesFiltersValue(e.target.value);
     };
 
-    const eventsTypesButtonClassName = (type) => classNames(
+    const eventsTypesButtonClassName = (name) => classNames(
         'events-types__type',
-        { active: eventTypesFilters[type].value },
+        { active: eventTypesFilters.find((filter) => filter.name === name).value },
     );
 
     const renderTypes = () => {
-        const types = Object.keys(eventTypesFilters);
+        const filters = eventTypesFilters.map((filter) => filter.name);
 
-        return types.map((type) => (
+        return filters.map((name) => (
             <button
-                className={eventsTypesButtonClassName(type)}
+                className={eventsTypesButtonClassName(name)}
                 type="button"
                 onClick={btnTypeHandler}
-                value={type}
-                key={type}
+                value={name}
+                key={name}
             >
-                {type}
+                {name}
             </button>
         ));
     };

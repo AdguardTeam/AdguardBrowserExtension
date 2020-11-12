@@ -25,10 +25,10 @@ const MiscellaneousFilters = observer(() => {
         logStore.setMiscellaneousFilterValue(filter, e.target.checked);
     };
 
-    const filtersRadioButtonHandler = (setValue) => () => {
-        logStore.setSearchFirstThirdParty(setValue === logStore.setSearchFirstThirdParty);
-        logStore.setSearchFirstParty(setValue === logStore.setSearchFirstParty);
-        logStore.setSearchThirdParty(setValue === logStore.setSearchThirdParty);
+    const filtersRadioButtonHandler = (filter) => () => {
+        logStore.setMiscellaneousFilterValue('searchFirstThirdParty', filter === 'searchFirstThirdParty');
+        logStore.setMiscellaneousFilterValue('searchFirstParty', filter === 'searchFirstParty');
+        logStore.setMiscellaneousFilterValue('searchThirdParty', filter === 'searchThirdParty');
     };
 
     const hidePopup = (event) => {
@@ -130,7 +130,7 @@ const MiscellaneousFilters = observer(() => {
                             type="radio"
                             id="first-third-party"
                             name="first-third-party"
-                            onClick={filtersRadioButtonHandler(logStore.setSearchFirstThirdParty)}
+                            onClick={filtersRadioButtonHandler('searchFirstThirdParty')}
                             value={searchFirstThirdParty}
                         />
                         <div className={filtersClassNames('radio-button', searchFirstThirdParty)} />
@@ -142,7 +142,7 @@ const MiscellaneousFilters = observer(() => {
                             type="radio"
                             id="third-party"
                             name="first-third-party"
-                            onClick={filtersRadioButtonHandler(logStore.setSearchThirdParty)}
+                            onClick={filtersRadioButtonHandler('searchThirdParty')}
                             value={searchThirdParty}
                         />
                         <div className={filtersClassNames('radio-button', searchThirdParty)} />
@@ -154,7 +154,7 @@ const MiscellaneousFilters = observer(() => {
                             type="radio"
                             id="first-party"
                             name="first-third-party"
-                            onClick={filtersRadioButtonHandler(logStore.setSearchFirstParty)}
+                            onClick={filtersRadioButtonHandler('searchFirstParty')}
                             value={searchFirstParty}
                         />
                         <div className={filtersClassNames('radio-button', searchFirstParty)} />
