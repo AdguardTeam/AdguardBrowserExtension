@@ -16,19 +16,21 @@ const MiscellaneousFilters = observer(() => {
         searchBlocked,
         searchModified,
         searchUserFilter,
-        searchThirdParty,
-        searchFirstParty,
-        searchFirstThirdParty,
+        searchParty,
     } = logStore.miscellaneousFilters;
+
+    const {
+        SEARCH_FIRST_PARTY,
+        SEARCH_THIRD_PARTY,
+        SEARCH_ALL,
+    } = logStore.searchPartyFilter;
 
     const filtersCheckboxHandler = (filter) => (e) => {
         logStore.setMiscellaneousFilterValue(filter, e.target.checked);
     };
 
-    const filtersRadioButtonHandler = (filter) => () => {
-        logStore.setMiscellaneousFilterValue('searchFirstThirdParty', filter === 'searchFirstThirdParty');
-        logStore.setMiscellaneousFilterValue('searchFirstParty', filter === 'searchFirstParty');
-        logStore.setMiscellaneousFilterValue('searchThirdParty', filter === 'searchThirdParty');
+    const radioHandler = (e) => {
+        logStore.setMiscellaneousFilterValue('searchParty', e.target.value);
     };
 
     const hidePopup = (event) => {
@@ -130,23 +132,11 @@ const MiscellaneousFilters = observer(() => {
                             type="radio"
                             id="first-third-party"
                             name="first-third-party"
-                            onClick={filtersRadioButtonHandler('searchFirstThirdParty')}
-                            value={searchFirstThirdParty}
+                            onClick={radioHandler}
+                            value={SEARCH_ALL}
                         />
-                        <div className={filtersClassNames('radio-button', searchFirstThirdParty)} />
+                        <div className={filtersClassNames('radio-button', searchParty === SEARCH_ALL)} />
                         All
-                    </label>
-
-                    <label className="radio-button-label" htmlFor="third-party">
-                        <input
-                            type="radio"
-                            id="third-party"
-                            name="first-third-party"
-                            onClick={filtersRadioButtonHandler('searchThirdParty')}
-                            value={searchThirdParty}
-                        />
-                        <div className={filtersClassNames('radio-button', searchThirdParty)} />
-                        Third party
                     </label>
 
                     <label className="radio-button-label" htmlFor="first-party">
@@ -154,11 +144,23 @@ const MiscellaneousFilters = observer(() => {
                             type="radio"
                             id="first-party"
                             name="first-third-party"
-                            onClick={filtersRadioButtonHandler('searchFirstParty')}
-                            value={searchFirstParty}
+                            onClick={radioHandler}
+                            value={SEARCH_FIRST_PARTY}
                         />
-                        <div className={filtersClassNames('radio-button', searchFirstParty)} />
+                        <div className={filtersClassNames('radio-button', searchParty === SEARCH_FIRST_PARTY)} />
                         First party
+                    </label>
+
+                    <label className="radio-button-label" htmlFor="third-party">
+                        <input
+                            type="radio"
+                            id="third-party"
+                            name="first-third-party"
+                            onClick={radioHandler}
+                            value={SEARCH_THIRD_PARTY}
+                        />
+                        <div className={filtersClassNames('radio-button', searchParty === SEARCH_THIRD_PARTY)} />
+                        Third party
                     </label>
                 </div>
             </div>

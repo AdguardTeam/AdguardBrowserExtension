@@ -22,15 +22,21 @@ class LogStore {
 
     @observable preserveLogEnabled = false;
 
+    searchPartyFilter = {
+        SEARCH_FIRST_PARTY: 'searchFirstParty',
+
+        SEARCH_THIRD_PARTY: 'searchThirdParty',
+
+        SEARCH_ALL: 'searchAll',
+    }
+
     @observable miscellaneousFilters = {
         searchRegular: false,
         searchWhitelisted: false,
         searchBlocked: false,
         searchModified: false,
         searchUserFilter: false,
-        searchFirstThirdParty: true,
-        searchFirstParty: false,
-        searchThirdParty: false,
+        searchParty: this.searchPartyFilter.SEARCH_ALL,
     };
 
     @observable eventTypesFilters = [
@@ -196,12 +202,18 @@ class LogStore {
                 return false;
             }
 
+            // TODO add condition for regular rules
+            // whitelisted events filter
             if ((this.miscellaneousFilters.searchWhitelisted && !filteringEvent.requestRule?.whitelistRule)
+                // blocked events filter
                 || (this.miscellaneousFilters.searchBlocked && (!filteringEvent.requestRule || filteringEvent.requestRule?.whitelistRule))
-                || (this.miscellaneousFilters.searchThirdParty && !filteringEvent.requestThirdParty)
-                || (this.miscellaneousFilters.searchFirstParty && filteringEvent.requestThirdParty)
+                // first party events filter
+                || (this.miscellaneousFilters.searchParty === this.searchPartyFilter.SEARCH_FIRST_PARTY && filteringEvent.requestThirdParty)
+                // third party events filter
+                || (this.miscellaneousFilters.searchParty === this.searchPartyFilter.SEARCH_THIRD_PARTY && !filteringEvent.requestThirdParty)
+                // modifying cookie events filter
                 || (this.miscellaneousFilters.searchModified && !filteringEvent.requestRule?.isModifyingCookieRule)
-                // TODO add condition for regular rules
+                // user rules events filter
                 || (this.miscellaneousFilters.searchUserFilter && (!filteringEvent.requestRule || filteringEvent.requestRule?.filterId !== 0))) {
                 return false;
             }
