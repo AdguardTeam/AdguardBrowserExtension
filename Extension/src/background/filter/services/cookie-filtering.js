@@ -23,7 +23,7 @@ import { frames } from '../../tabs/frames';
 import { requestContextStorage } from '../request-context-storage';
 import { log } from '../../utils/log';
 import { webRequestService } from '../request-blocking';
-import { stealthService } from './stealth-service';
+import { stealthService } from './stealth-service/stealth-service';
 import { browserUtils } from '../../utils/browser-utils';
 import { browser } from '../../extension-api/browser';
 

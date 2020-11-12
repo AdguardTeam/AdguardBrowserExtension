@@ -12,22 +12,10 @@ import { i18n } from '../../../../../common/i18n';
 
 import './request-info.pcss';
 import { getFilterName } from '../utils';
+import { STEALTH_ACTIONS } from '../../../../../background/filter/services/stealth-service/stealth-service-constants';
 
 // FIXME provide cookie rules id, otherwise it is impossible to search them,
 //  or append all data as data attributes
-
-// FIXME add close button of modal window
-
-// TODO move into constants
-const STEALTH_ACTIONS = {
-    HIDE_REFERRER: 1 << 0,
-    HIDE_SEARCH_QUERIES: 1 << 1,
-    BLOCK_CHROME_CLIENT_DATA: 1 << 2,
-    SEND_DO_NOT_TRACK: 1 << 3,
-    STRIPPED_TRACKING_URL: 1 << 4,
-    FIRST_PARTY_COOKIES: 1 << 5,
-    THIRD_PARTY_COOKIES: 1 << 6,
-};
 
 const STEALTH_ACTIONS_NAMES = {
     HIDE_REFERRER: i18n.getMessage('filtering_log_hide_referrer'),
