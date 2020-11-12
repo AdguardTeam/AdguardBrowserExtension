@@ -7,6 +7,7 @@ import {
 
 import { RULE_OPTIONS, UrlFilterRule } from '../components/RequestWizard/constants';
 import { splitToPatterns } from '../components/RequestWizard/utils';
+import { messenger } from '../../services/messenger';
 
 export const WIZARD_STATES = {
     VIEW_REQUEST: 'view.request',

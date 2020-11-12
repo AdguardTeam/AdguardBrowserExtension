@@ -4,6 +4,7 @@ import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 import { rootStore } from '../../../stores/RootStore';
 import { RULE_OPTIONS } from '../constants';
+import { messenger } from '../../../../services/messenger';
 
 const RequestBlock = observer(() => {
     const { wizardStore } = useContext(rootStore);
@@ -89,6 +90,11 @@ const RequestBlock = observer(() => {
         wizardStore.setViewState();
     };
 
+    const handleAddRuleClick = async () => {
+        await messenger.addUserRule(wizardStore.rule);
+        wizardStore.closeModal();
+    };
+
     // FIXME make possible to edit rule
     // FIXME add "add a rule" button
     return (
@@ -111,6 +117,12 @@ const RequestBlock = observer(() => {
                 <div>Options:</div>
                 {renderOptions()}
             </div>
+            <button
+                type="button"
+                onClick={handleAddRuleClick}
+            >
+                Add rule
+            </button>
         </>
     );
 });

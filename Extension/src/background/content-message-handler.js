@@ -244,9 +244,16 @@ const init = () => {
                     });
                 });
             }
-            case 'addUserRule':
-                userrules.addRules([message.ruleText]);
+            case 'addUserRule': {
+                if (data) {
+                    const { rule } = data;
+                    userrules.addRules([rule]);
+                } else {
+                    // TODO adjust message types for all callers
+                    userrules.addRules([message.ruleText]);
+                }
                 break;
+            }
             case 'removeUserRule':
                 userrules.removeRule(message.ruleText);
                 break;

@@ -199,6 +199,11 @@ class Messenger {
         const type = 'openTab';
         await this.sendMessage(type, { url, options });
     }
+
+    async addUserRule(rule) {
+        const type = 'addUserRule';
+        await this.sendMessage(type, { rule });
+    }
 }
 
 const messenger = new Messenger();
