@@ -45,9 +45,9 @@ const MiscellaneousFilters = observer(() => {
         }
     };
 
-    const filtersClassNames = (name, vale) => classNames(
+    const filtersClassNames = (name, value) => classNames(
         name,
-        { active: vale },
+        { active: value },
     );
 
     return (
