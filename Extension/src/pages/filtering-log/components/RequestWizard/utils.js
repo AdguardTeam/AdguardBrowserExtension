@@ -1,4 +1,6 @@
 /* eslint-disable no-param-reassign */
+import { FilterRule, UrlFilterRule } from './constants';
+
 /**
  * String utils
  * @type {{substringAfter, containsIgnoreCase, substringBefore, startWith}}
@@ -75,4 +77,56 @@ export const UrlUtils = {
     isHierarchicUrl(url) {
         return url.indexOf('//') !== -1;
     },
+};
+
+// FIXME whitelist rule
+export const splitToPatterns = (requestUrl, domain, whitelist) => {
+    const PATTERNS_COUNT = 2;
+
+    const hierarchicUrl = UrlUtils.isHierarchicUrl(requestUrl);
+    const protocol = UrlUtils.getProtocol(requestUrl);
+
+    let prefix;
+    if (hierarchicUrl) {
+        prefix = UrlFilterRule.MASK_START_URL; // Covers default protocols: http, ws
+    } else {
+        prefix = `${protocol}:`; // Covers non-default protocols: stun, turn
+    }
+
+    if (whitelist) {
+        prefix = FilterRule.MASK_WHITE_LIST + prefix;
+    }
+
+    const patterns = [];
+
+    const relative = StringUtils.substringAfter(requestUrl, `${domain}/`);
+
+    const path = StringUtils.substringBefore(relative, '?');
+    if (path) {
+        const parts = path.split('/');
+
+        let pattern = `${domain}/`;
+        for (let i = 0; i < Math.min(parts.length - 1, PATTERNS_COUNT); i += 1) {
+            pattern += `${parts[i]}/`;
+            patterns.push(prefix + pattern + UrlFilterRule.MASK_ANY_SYMBOL);
+        }
+        const file = parts[parts.length - 1];
+        if (file && patterns.length < PATTERNS_COUNT) {
+            pattern += file;
+            patterns.push(prefix + pattern);
+        }
+    }
+
+    // add domain pattern to start
+    patterns.unshift(prefix + domain + UrlFilterRule.MASK_SEPARATOR);
+
+    // push full url pattern
+    const url = UrlUtils.getUrlWithoutScheme(requestUrl);
+    if (`${domain}/` !== url) { // Don't duplicate: ||example.com/ and ||example.com^
+        if (patterns.indexOf(prefix + url) < 0) {
+            patterns.push(prefix + url);
+        }
+    }
+
+    return patterns.reverse();
 };
