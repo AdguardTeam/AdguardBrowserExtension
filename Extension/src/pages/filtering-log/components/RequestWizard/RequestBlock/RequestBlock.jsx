@@ -5,7 +5,6 @@ import { observer } from 'mobx-react';
 import { rootStore } from '../../../stores/RootStore';
 import { RULE_OPTIONS } from '../constants';
 
-// FIXME when selected event is changed return to the request info screen
 const RequestBlock = observer(() => {
     const { wizardStore } = useContext(rootStore);
     const { rulePatterns } = wizardStore;

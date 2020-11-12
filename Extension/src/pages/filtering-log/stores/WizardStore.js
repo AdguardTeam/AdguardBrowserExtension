@@ -119,6 +119,7 @@ class WizardStore {
     @action
     openModal() {
         this.isModalOpen = true;
+        this.requestModalState = WIZARD_STATES.VIEW_REQUEST;
     }
 
     @action
