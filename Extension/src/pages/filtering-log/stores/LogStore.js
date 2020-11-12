@@ -3,7 +3,7 @@ import {
     makeObservable,
     action,
     computed,
-    runInAction, toJS,
+    runInAction,
 } from 'mobx';
 import _ from 'lodash';
 
@@ -197,7 +197,7 @@ class LogStore {
     @action
     setSelectedEventById = (eventId) => {
         this.selectedEvent = _.find(this.filteringEvents, { eventId });
-        this.rootStore.uiStore.openModal();
+        this.rootStore.wizardStore.openModal();
     };
 }
 

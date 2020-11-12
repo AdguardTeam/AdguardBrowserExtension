@@ -1,12 +1,12 @@
 /* eslint-disable no-bitwise */
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
-import { rootStore } from '../../stores/RootStore';
-import { messenger } from '../../../services/messenger';
+import { rootStore } from '../../../stores/RootStore';
+import { messenger } from '../../../../services/messenger';
 import { RequestImage } from './RequestImage';
 
 // FIXME replace with react translator
-import { i18n } from '../../../../common/i18n';
+import { i18n } from '../../../../../common/i18n';
 
 import './request-info.pcss';
 
@@ -91,7 +91,7 @@ const getFilterName = (filterId, filtersMetadata) => {
 };
 
 const RequestInfo = observer(() => {
-    const { logStore, uiStore } = useContext(rootStore);
+    const { logStore, wizardStore } = useContext(rootStore);
 
     const { selectedEvent, filtersMetadata } = logStore;
 
@@ -190,7 +190,7 @@ const RequestInfo = observer(() => {
     };
 
     const blockHandler = () => {
-        uiStore.setBlockState();
+        wizardStore.setBlockState();
     };
 
     const renderBlockRequest = (event) => {

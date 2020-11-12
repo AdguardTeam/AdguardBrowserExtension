@@ -6,7 +6,7 @@ import { FilteringEvents } from '../FilteringEvents';
 import { messenger } from '../../../services/messenger';
 import { log } from '../../../../background/utils/log';
 import { rootStore } from '../../stores/RootStore';
-import { RequestModal } from '../RequestModal';
+import { RequestModal } from '../RequestWizard/RequestModal';
 
 const App = () => {
     const { logStore } = useContext(rootStore);

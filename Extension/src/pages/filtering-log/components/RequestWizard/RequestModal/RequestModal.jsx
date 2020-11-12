@@ -1,26 +1,26 @@
 import React, { useContext } from 'react';
 import Modal from 'react-modal';
 import { observer } from 'mobx-react';
-import { rootStore } from '../../stores/RootStore';
+import { rootStore } from '../../../stores/RootStore';
 import { RequestInfo } from '../RequestInfo';
-import { REQUEST_WIZARD_STATES } from '../../stores/UiStore';
+import { WIZARD_STATES } from '../../../stores/WizardStore';
 import { RequestBlock } from '../RequestBlock';
 
 Modal.setAppElement('#root');
 
 const RequestModal = observer(() => {
-    const { uiStore } = useContext(rootStore);
+    const { wizardStore } = useContext(rootStore);
 
-    const { requestModalIsOpen, closeModal, requestModalState } = uiStore;
+    const { isModalOpen, closeModal, requestModalState } = wizardStore;
 
     let modalContent;
 
     switch (requestModalState) {
-        case REQUEST_WIZARD_STATES.VIEW_REQUEST: {
+        case WIZARD_STATES.VIEW_REQUEST: {
             modalContent = <RequestInfo />;
             break;
         }
-        case REQUEST_WIZARD_STATES.BLOCK_REQUEST: {
+        case WIZARD_STATES.BLOCK_REQUEST: {
             modalContent = <RequestBlock />;
             break;
         }
@@ -30,7 +30,7 @@ const RequestModal = observer(() => {
 
     return (
         <Modal
-            isOpen={requestModalIsOpen}
+            isOpen={isModalOpen}
             onRequestClose={closeModal}
             style={{
                 overlay: {
