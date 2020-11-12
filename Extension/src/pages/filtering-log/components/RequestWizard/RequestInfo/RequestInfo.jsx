@@ -1,6 +1,8 @@
 /* eslint-disable no-bitwise */
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
+import { identity } from 'lodash';
+
 import { rootStore } from '../../../stores/RootStore';
 import { messenger } from '../../../../services/messenger';
 import { RequestImage } from './RequestImage';
@@ -9,6 +11,7 @@ import { RequestImage } from './RequestImage';
 import { i18n } from '../../../../../common/i18n';
 
 import './request-info.pcss';
+import { getFilterName } from '../utils';
 
 // FIXME provide cookie rules id, otherwise it is impossible to search them,
 //  or append all data as data attributes
@@ -36,9 +39,6 @@ const STEALTH_ACTIONS_NAMES = {
     THIRD_PARTY_COOKIES: i18n.getMessage('options_modified_third_party_cookie'),
 };
 
-// FIXME move into helpers
-const identity = (i) => i;
-
 /**
  * Returns stealth actions names
  * @param actions
@@ -56,38 +56,6 @@ const getStealthActionsNames = (actions) => {
         .filter(identity);
 
     return result.length > 0 ? result.join(', ') : null;
-};
-
-// FIXME move into separate file
-const USER_FILTER_ID = 0;
-
-// FIXME rename WHITE_LIST_FILTER_ID to ALLOWLIST_FILTER_ID and move to the constants
-const ALLOWLIST_FILTER_ID = 100;
-
-const MESSAGES = {
-    OPTIONS_USERFILTER: i18n.getMessage('options_user_filter'),
-    OPTIONS_ALLOWLIST: i18n.getMessage('options_allowlist'),
-    IN_ALLOWLIST: i18n.getMessage('filtering_log_in_allowlist'),
-};
-
-/**
- * Filter's name for filterId
- *
- * @param {Number} filterId
- * @param filtersMetadata
- * @returns {String}
- */
-const getFilterName = (filterId, filtersMetadata) => {
-    if (filterId === USER_FILTER_ID) {
-        return MESSAGES.OPTIONS_USERFILTER;
-    }
-    if (filterId === ALLOWLIST_FILTER_ID) {
-        return MESSAGES.OPTIONS_ALLOWLIST;
-    }
-
-    const filterMetadata = filtersMetadata.filter((el) => el.filterId === filterId)[0];
-
-    return filterMetadata ? filterMetadata.name : null;
 };
 
 const RequestInfo = observer(() => {
@@ -124,7 +92,7 @@ const RequestInfo = observer(() => {
         },
         {
             title: 'Rule:',
-            data: selectedEvent?.requestRule?.ruleText, // FIXME add info about converted rule
+            data: selectedEvent?.requestRule?.ruleText,
         },
         // TODO add converted rule text
         {

@@ -9,6 +9,7 @@ import _ from 'lodash';
 
 import { messenger } from '../../services/messenger';
 import { containsIgnoreCase } from '../../helpers';
+import { getFilterName } from '../components/RequestWizard/utils';
 
 class LogStore {
     @observable filteringEvents = [];
@@ -156,7 +157,7 @@ class LogStore {
                 url,
                 type,
                 rule: rule?.ruleText,
-                filter: rule?.filterId, // TODO get filter title,
+                filter: getFilterName(rule?.filterId, this.filtersMetadata),
                 source,
             };
         });

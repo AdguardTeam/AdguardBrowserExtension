@@ -33,3 +33,9 @@ export const FilterRule = {
     MASK_CSS_EXTENDED_CSS_RULE: '#?#',
     MASK_CSS_INJECT_EXTENDED_CSS_RULE: '#$?#',
 };
+
+// FIXME move into separate file
+export const USER_FILTER_ID = 0;
+
+// FIXME rename WHITE_LIST_FILTER_ID to ALLOWLIST_FILTER_ID and move to the constants
+export const ALLOWLIST_FILTER_ID = 100;

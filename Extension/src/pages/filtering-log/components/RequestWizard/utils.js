@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
-import { FilterRule, UrlFilterRule } from './constants';
+import { ALLOWLIST_FILTER_ID, FilterRule, UrlFilterRule, USER_FILTER_ID } from './constants';
+import { i18n } from '../../../../common/i18n';
 
 /**
  * String utils
@@ -128,4 +129,31 @@ export const splitToPatterns = (requestUrl, domain, whitelist) => {
     }
 
     return patterns.reverse();
+};
+
+const MESSAGES = {
+    OPTIONS_USERFILTER: i18n.getMessage('options_user_filter'),
+    OPTIONS_ALLOWLIST: i18n.getMessage('options_allowlist'),
+    IN_ALLOWLIST: i18n.getMessage('filtering_log_in_allowlist'),
+};
+
+/**
+ * Filter's name for filterId
+ *
+ * @param {Number} filterId
+ * @param filtersMetadata
+ * @returns {String}
+ */
+export const getFilterName = (filterId, filtersMetadata) => {
+    if (filterId === USER_FILTER_ID) {
+        return MESSAGES.OPTIONS_USERFILTER;
+    }
+
+    if (filterId === ALLOWLIST_FILTER_ID) {
+        return MESSAGES.OPTIONS_ALLOWLIST;
+    }
+
+    const filterMetadata = filtersMetadata.filter((el) => el.filterId === filterId)[0];
+
+    return filterMetadata ? filterMetadata.name : null;
 };
