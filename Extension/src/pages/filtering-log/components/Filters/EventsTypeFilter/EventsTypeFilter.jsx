@@ -11,12 +11,21 @@ const EventsTypeFilter = observer(() => {
     const { eventTypesFilters } = logStore;
 
     const btnTypeHandler = (e) => {
-        logStore.toogleEventTypesFilter(e.target.value);
+        logStore.toggleEventTypesFilter(e.target.value);
+    };
+
+    const btnAllTypesHandler = () => {
+        logStore.toggleAllEventTypesFilters(eventTypesFilters.some((filter) => !filter.enabled));
     };
 
     const eventsTypesButtonClassName = (name) => classNames(
         'events-types__type',
-        { active: eventTypesFilters.find((filter) => filter.name === name).value },
+        { active: eventTypesFilters.find((filter) => filter.name === name).enabled },
+    );
+
+    const eventsAllTypesButtonClassName = classNames(
+        'events-types__type',
+        { active: !eventTypesFilters.some((filter) => !filter.enabled) },
     );
 
     const renderTypes = () => {
@@ -38,6 +47,14 @@ const EventsTypeFilter = observer(() => {
     return (
         <>
             <div className="events-types">
+                <button
+                    className={eventsAllTypesButtonClassName}
+                    type="button"
+                    onClick={btnAllTypesHandler}
+                    value="All"
+                >
+                    All
+                </button>
                 {renderTypes()}
             </div>
         </>

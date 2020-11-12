@@ -24,9 +24,7 @@ class LogStore {
 
     searchPartyFilter = {
         SEARCH_FIRST_PARTY: 'searchFirstParty',
-
         SEARCH_THIRD_PARTY: 'searchThirdParty',
-
         SEARCH_ALL: 'searchAll',
     }
 
@@ -43,37 +41,37 @@ class LogStore {
         {
             name: 'HTML',
             type: RequestTypes.DOCUMENT,
-            value: true,
+            enabled: true,
         },
         {
             name: 'CSS',
             type: RequestTypes.STYLESHEET,
-            value: true,
+            enabled: true,
         },
         {
             name: 'JavaScript',
             type: RequestTypes.SCRIPT,
-            value: true,
+            enabled: true,
         },
         {
             name: 'Ajax',
             type: RequestTypes.XMLHTTPREQUEST,
-            value: true,
+            enabled: true,
         },
         {
             name: 'Image',
             type: RequestTypes.IMAGE,
-            value: true,
+            enabled: true,
         },
         {
             name: 'Media',
             type: RequestTypes.MEDIA,
-            value: true,
+            enabled: true,
         },
         {
             name: 'Other',
             type: RequestTypes.OTHER,
-            value: true,
+            enabled: true,
         },
     ];
 
@@ -88,12 +86,17 @@ class LogStore {
     }
 
     @action
-    toogleEventTypesFilter = (name) => {
+    toggleEventTypesFilter = (name) => {
         this.eventTypesFilters.forEach((filter) => {
             if (filter.name === name) {
-                filter.value = !filter.value;
+                filter.enabled = !filter.enabled;
             }
         });
+    }
+
+    @action
+    toggleAllEventTypesFilters = (enabled) => {
+        this.eventTypesFilters.forEach((filter) => { filter.enabled = enabled; });
     }
 
     @action
@@ -197,7 +200,7 @@ class LogStore {
 
             const eventTypesFilterValue = this.eventTypesFilters
                 .find((filter) => filter.type === filteringEvent.requestType)
-                ?.value;
+                ?.enabled;
             if (!eventTypesFilterValue) {
                 return false;
             }
