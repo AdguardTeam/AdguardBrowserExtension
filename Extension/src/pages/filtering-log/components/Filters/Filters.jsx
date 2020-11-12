@@ -13,15 +13,22 @@ const Filters = () => {
             <div className="filters__tab-selector">
                 <TabSelector />
             </div>
+
             <div className="filters__events-search">
                 <EventsSearch />
             </div>
+
+            <div className="hr" />
+
             <div className="filters__events-filters">
                 <EventsTypeFilter />
-                <div className="filters__miscellaneous-filters">
-                    <MiscellaneousFilters />
-                </div>
             </div>
+
+            <div className="filters__miscellaneous-filters">
+                <MiscellaneousFilters />
+            </div>
+
+            <div className="hr" />
         </div>
     );
 };
