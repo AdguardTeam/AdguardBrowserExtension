@@ -3,28 +3,25 @@ import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 import { identity } from 'lodash';
 
+import { getFilterName } from '../utils';
+import { RequestImage } from './RequestImage';
 import { rootStore } from '../../../stores/RootStore';
 import { messenger } from '../../../../services/messenger';
-import { RequestImage } from './RequestImage';
-
-// FIXME replace with react translator
-import { i18n } from '../../../../../common/i18n';
+import { reactTranslator } from '../../../../reactCommon/reactTranslator';
+import { STEALTH_ACTIONS } from '../../../../../background/filter/services/stealth-service/stealth-service-constants';
 
 import './request-info.pcss';
-import { getFilterName } from '../utils';
-import { STEALTH_ACTIONS } from '../../../../../background/filter/services/stealth-service/stealth-service-constants';
 
 // FIXME provide cookie rules id, otherwise it is impossible to search them,
 //  or append all data as data attributes
-
 const STEALTH_ACTIONS_NAMES = {
-    HIDE_REFERRER: i18n.getMessage('filtering_log_hide_referrer'),
-    HIDE_SEARCH_QUERIES: i18n.getMessage('filtering_log_hide_search_queries'),
-    BLOCK_CHROME_CLIENT_DATA: i18n.getMessage('filtering_log_remove_client_data'),
-    SEND_DO_NOT_TRACK: i18n.getMessage('filtering_log_send_not_track'),
-    STRIPPED_TRACKING_URL: i18n.getMessage('options_stripped_tracking_parameters'),
-    FIRST_PARTY_COOKIES: i18n.getMessage('options_modified_first_party_cookie'),
-    THIRD_PARTY_COOKIES: i18n.getMessage('options_modified_third_party_cookie'),
+    HIDE_REFERRER: reactTranslator.translate('filtering_log_hide_referrer'),
+    SEND_DO_NOT_TRACK: reactTranslator.translate('filtering_log_send_not_track'),
+    HIDE_SEARCH_QUERIES: reactTranslator.translate('filtering_log_hide_search_queries'),
+    FIRST_PARTY_COOKIES: reactTranslator.translate('options_modified_first_party_cookie'),
+    THIRD_PARTY_COOKIES: reactTranslator.translate('options_modified_third_party_cookie'),
+    BLOCK_CHROME_CLIENT_DATA: reactTranslator.translate('filtering_log_remove_client_data'),
+    STRIPPED_TRACKING_URL: reactTranslator.translate('options_stripped_tracking_parameters'),
 };
 
 /**
@@ -58,42 +55,41 @@ const RequestInfo = observer(() => {
 
     const infoElements = [
         {
-            title: 'URL:',
+            title: reactTranslator.translate('options_popup_filter_url'),
             data: selectedEvent.requestUrl,
         },
         {
-            title: 'Element:',
+            title: reactTranslator.translate('filtering_modal_element'),
             data: selectedEvent.element,
         },
         {
-            title: 'Cookie:',
+            title: 'Cookie:', // TODO add to locale messages
             data: selectedEvent.cookieName,
         },
         {
-            title: 'Type:',
+            title: reactTranslator.translate('filtering_modal_type'),
             data: selectedEvent.requestType,
         },
         {
-            title: 'Source:',
+            title: reactTranslator.translate('filtering_modal_source'),
             data: selectedEvent.frameDomain,
         },
         {
-            title: 'Rule:',
+            title: reactTranslator.translate('filtering_modal_rule'),
             data: selectedEvent?.requestRule?.ruleText,
         },
         // TODO add converted rule text
         {
-            title: 'Filter:',
+            title: reactTranslator.translate('filtering_modal_filter'),
             data: getFilterName(selectedEvent.requestRule?.filterId, filtersMetadata),
         },
         {
-            title: 'Stealth mode:',
+            title: reactTranslator.translate('filtering_modal_privacy'),
             data: getStealthActionsNames(selectedEvent.stealthActions),
         },
     ];
 
     const renderImageIfNecessary = (event) => {
-        // FIXME magic "IMAGE" to the constants
         if (event.requestType !== 'IMAGE') {
             return null;
         }

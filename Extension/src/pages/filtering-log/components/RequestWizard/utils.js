@@ -1,5 +1,10 @@
 /* eslint-disable no-param-reassign */
-import { ALLOWLIST_FILTER_ID, FilterRule, UrlFilterRule, USER_FILTER_ID } from './constants';
+import {
+    ALLOWLIST_FILTER_ID,
+    FilterRule,
+    USER_FILTER_ID,
+    UrlFilterRule,
+} from './constants';
 import { i18n } from '../../../../common/i18n';
 
 /**
