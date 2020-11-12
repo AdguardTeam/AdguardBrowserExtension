@@ -8,19 +8,19 @@ import './events-type-filter.pcss';
 
 const EventsTypeFilter = observer(() => {
     const { logStore } = useContext(rootStore);
-    const { eventTypes, filterByEventType } = logStore;
+    const { eventTypesFilters } = logStore;
 
     const btnTypeHandler = (e) => {
-        logStore.setFilterEventType(e.target.value);
+        logStore.setEventTypesFiltersValue(e.target.value);
     };
 
     const eventsTypesButtonClassName = (type) => classNames(
         'events-types__type',
-        { active: eventTypes[type] === filterByEventType },
+        { active: eventTypesFilters[type].value },
     );
 
     const renderTypes = () => {
-        const types = Object.keys(eventTypes);
+        const types = Object.keys(eventTypesFilters);
 
         return types.map((type) => (
             <button

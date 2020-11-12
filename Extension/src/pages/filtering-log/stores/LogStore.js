@@ -20,40 +20,63 @@ class LogStore {
 
     @observable eventsSearchValue = '';
 
-    @observable filterByEventType = null;
+    @observable preserveLogEnabled = false;
 
-    @observable searchRegular = false;
-
-    @observable searchBlocked = false;
-
-    @observable searchModified = false;
-
-    @observable searchUserFilter = false;
-
-    @observable searchThirdParty = false;
-
-    @observable searchFirstParty = false;
-
-    @observable searchFirstThirdParty = false;
-
-    @observable searchWhitelisted = false;
-
-    eventTypes = {
-        All: null,
-        HTML: RequestTypes.DOCUMENT,
-        CSS: RequestTypes.STYLESHEET,
-        JavaScript: RequestTypes.SCRIPT,
-        Ajax: RequestTypes.XMLHTTPREQUEST,
-        Image: RequestTypes.IMAGE,
-        Media: RequestTypes.MEDIA,
-        Other: RequestTypes.OTHER,
+    @observable miscellaneousFilters = {
+        searchRegular: false,
+        searchWhitelisted: false,
+        searchBlocked: false,
+        searchModified: false,
+        searchUserFilter: false,
+        searchFirstThirdParty: false,
+        searchFirstParty: false,
+        searchThirdParty: false,
     };
 
-    @observable preserveLogEnabled = false;
+    @observable eventTypesFilters = {
+        HTML: {
+            type: RequestTypes.DOCUMENT,
+            value: true,
+        },
+        CSS: {
+            type: RequestTypes.STYLESHEET,
+            value: true,
+        },
+        JavaScript: {
+            type: RequestTypes.SCRIPT,
+            value: true,
+        },
+        Ajax: {
+            type: RequestTypes.XMLHTTPREQUEST,
+            value: true,
+        },
+        Image: {
+            type: RequestTypes.IMAGE,
+            value: true,
+        },
+        Media: {
+            type: RequestTypes.MEDIA,
+            value: true,
+        },
+        Other: {
+            type: RequestTypes.OTHER,
+            value: true,
+        },
+    };
 
     constructor(rootStore) {
         this.rootStore = rootStore;
         makeObservable(this);
+    }
+
+    @action
+    setMiscellaneousFilterValue = (filter, value) => {
+        this.miscellaneousFilters[filter] = value;
+    }
+
+    @action
+    setEventTypesFiltersValue = (type) => {
+        this.eventTypesFilters[type].value = !this.eventTypesFilters[type].value;
     }
 
     @action
@@ -155,16 +178,20 @@ class LogStore {
                     || containsIgnoreCase(filteringEvent.filterName, this.eventsSearchValue);
             }
 
-            // console.log(JSON.stringify(filteringEvent.requestRule, null, 4));
+            const eventTypesFilterValue = Object.values(this.eventTypesFilters)
+                .find((filter) => filter.type === filteringEvent.requestType)
+                .value;
+            if (!eventTypesFilterValue) {
+                return false;
+            }
 
-            if ((this.filterByEventType && filteringEvent.requestType !== this.filterByEventType)
-                || (this.searchWhitelisted && !filteringEvent.requestRule?.whitelistRule)
-                || (this.searchBlocked && (!filteringEvent.requestRule || filteringEvent.requestRule?.whitelistRule))
-                || (this.searchThirdParty && !filteringEvent.requestThirdParty)
-                || (this.searchFirstParty && filteringEvent.requestThirdParty)
-                || (this.searchModified && !filteringEvent.requestRule?.isModifyingCookieRule)
+            if ((this.miscellaneousFilters.searchWhitelisted && !filteringEvent.requestRule?.whitelistRule)
+                || (this.miscellaneousFilters.searchBlocked && (!filteringEvent.requestRule || filteringEvent.requestRule?.whitelistRule))
+                || (this.miscellaneousFilters.searchThirdParty && !filteringEvent.requestThirdParty)
+                || (this.miscellaneousFilters.searchFirstParty && filteringEvent.requestThirdParty)
+                || (this.miscellaneousFilters.searchModified && !filteringEvent.requestRule?.isModifyingCookieRule)
                 // TODO add condition for regular rules
-                || (this.searchUserFilter && (!filteringEvent.requestRule || filteringEvent.requestRule?.filterId !== 0))) {
+                || (this.miscellaneousFilters.searchUserFilter && (!filteringEvent.requestRule || filteringEvent.requestRule?.filterId !== 0))) {
                 return false;
             }
             return show;
@@ -204,11 +231,6 @@ class LogStore {
     };
 
     @action
-    setFilterEventType = (type) => {
-        this.filterByEventType = this.eventTypes[type];
-    };
-
-    @action
     refreshPage = async () => {
         if (this.selectedTabId === -1) {
             if (this.preserveLogEnabled) {
@@ -223,46 +245,6 @@ class LogStore {
     @action
     setPreserveLog = (value) => {
         this.preserveLogEnabled = value;
-    }
-
-    @action
-    setSearchRegular = (enabled) => {
-        this.searchRegular = enabled;
-    }
-
-    @action
-    setSearchBlocked = (enabled) => {
-        this.searchBlocked = enabled;
-    }
-
-    @action
-    setSearchModified = (enabled) => {
-        this.searchModified = enabled;
-    }
-
-    @action
-    setSearchUserFilter = (enabled) => {
-        this.searchUserFilter = enabled;
-    }
-
-    @action
-    setSearchFirstParty = (enabled) => {
-        this.searchFirstParty = enabled;
-    }
-
-    @action
-    setSearchThirdParty = (enabled) => {
-        this.searchThirdParty = enabled;
-    }
-
-    @action
-    setSearchFirstThirdParty = (enabled) => {
-        this.searchFirstThirdParty = enabled;
-    }
-
-    @action
-    setSearchWhitelisted = (enabled) => {
-        this.searchWhitelisted = enabled;
     }
 }
 

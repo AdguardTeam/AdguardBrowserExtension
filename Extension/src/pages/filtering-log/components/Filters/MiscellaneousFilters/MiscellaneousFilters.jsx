@@ -19,10 +19,10 @@ const MiscellaneousFilters = observer(() => {
         searchThirdParty,
         searchFirstParty,
         searchFirstThirdParty,
-    } = logStore;
+    } = logStore.miscellaneousFilters;
 
-    const filtersCheckboxHandler = (setValue) => (e) => {
-        setValue(e.target.checked);
+    const filtersCheckboxHandler = (filter) => (e) => {
+        logStore.setMiscellaneousFilterValue(filter, e.target.checked);
     };
 
     const filtersRadioButtonHandler = (setValue) => () => {
@@ -66,7 +66,7 @@ const MiscellaneousFilters = observer(() => {
                             type="checkbox"
                             id="regular"
                             name="regular"
-                            onClick={filtersCheckboxHandler(logStore.setSearchRegular)}
+                            onClick={filtersCheckboxHandler('searchRegular')}
                             value={searchRegular}
                         />
                         <div className={filtersClassNames('custom-checkbox', searchRegular)} />
@@ -78,7 +78,7 @@ const MiscellaneousFilters = observer(() => {
                             type="checkbox"
                             id="whitelisted"
                             name="whitelisted"
-                            onClick={filtersCheckboxHandler(logStore.setSearchWhitelisted)}
+                            onClick={filtersCheckboxHandler('searchWhitelisted')}
                             value={searchWhitelisted}
                         />
                         <div className={filtersClassNames('custom-checkbox', searchWhitelisted)} />
@@ -90,7 +90,7 @@ const MiscellaneousFilters = observer(() => {
                             type="checkbox"
                             id="blocked"
                             name="blocked"
-                            onClick={filtersCheckboxHandler(logStore.setSearchBlocked)}
+                            onClick={filtersCheckboxHandler('searchBlocked')}
                             value={searchBlocked}
                         />
                         <div className={filtersClassNames('custom-checkbox', searchBlocked)} />
@@ -102,7 +102,7 @@ const MiscellaneousFilters = observer(() => {
                             type="checkbox"
                             id="modified"
                             name="modified"
-                            onClick={filtersCheckboxHandler(logStore.setSearchModified)}
+                            onClick={filtersCheckboxHandler('searchModified')}
                             value={searchModified}
                         />
                         <div className={filtersClassNames('custom-checkbox', searchModified)} />
@@ -114,7 +114,7 @@ const MiscellaneousFilters = observer(() => {
                             type="checkbox"
                             id="user-filter"
                             name="user-filter"
-                            onClick={filtersCheckboxHandler(logStore.setSearchUserFilter)}
+                            onClick={filtersCheckboxHandler('searchUserFilter')}
                             value={searchUserFilter}
                         />
                         <div className={filtersClassNames('custom-checkbox', searchUserFilter)} />
