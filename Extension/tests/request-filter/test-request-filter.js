@@ -679,6 +679,9 @@ QUnit.test('Rule with extension modifier should be omitted in request filter', (
 QUnit.test('requestFilter.findRuleForRequest performance', (assert) => {
     // eslint-disable-next-line no-undef
     const rules = filtersFromTxt; // variable filtersFromTxt is from 'test_filter.js'
+
+    const initStartTime = new Date().getTime();
+
     const requestFilter = new adguard.RequestFilter();
     for (let i = 0; i < rules.length; i += 1) {
         const rule = adguard.rules.builder.createRule(rules[i], adguard.utils.filters.USER_FILTER_ID);
@@ -686,6 +689,8 @@ QUnit.test('requestFilter.findRuleForRequest performance', (assert) => {
             requestFilter.addRule(rule);
         }
     }
+
+    const elapsedOnInit = new Date().getTime() - initStartTime;
 
     const url = 'https://www.youtube.com/gaming';
     const referrer = 'http://example.org';
@@ -700,6 +705,7 @@ QUnit.test('requestFilter.findRuleForRequest performance', (assert) => {
     assert.ok(elapsed > 0);
 
     console.log('------------------------------------START TEST PERFORMANCE-----------------------------------');
+    console.log(`Init: ${elapsedOnInit} ms`);
     console.log(`Total: ${elapsed} ms`);
     console.log(`Average: ${elapsed / count} ms`);
     console.log('------------------------------------END TEST PERFORMANCE-----------------------------------');
