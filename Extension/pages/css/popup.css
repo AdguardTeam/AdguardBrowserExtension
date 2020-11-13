@@ -829,35 +829,39 @@ img .footer .platforms:first-child {
 
 .holiday-notify__close {
   top: 5px;
-  right: 5px;
+  right: 2px;
   position: absolute;
   z-index: 2;
-  width: 15px;
-  height: 15px;
+  width: 24px;
+  height: 24px;
   background-repeat: no-repeat;
-  background-position: 50%;
-  background-size: 15px;
-  background-image: url(../images/cross.svg);
+  background-size: cover;
+  background-image: url(../images/double-cross.svg);
   cursor: pointer;
+}
+
+.holiday-notify__close:before {
+  color: #13fc85;
 }
 
 .holiday-notify__content {
   width: 100%;
-  height: 138px;
+  height: 75px;
   font-weight: bold;
   position: relative;
   overflow: hidden;
   background-size: cover;
-  background-position: -22px;
-  background-image: url(../images/halloween2020-bg.svg);
+  background-image: url(../images/black-friday-bg.svg);
 }
 
 .holiday-notify__title {
-  display: none;
-  font-size: 24px;
-  line-height: 26px;
+  max-width: 110px;
+  padding-top: 14px;
+  padding-left: 22px;
+  font-size: 18px;
+  line-height: 18px;
   color: #fff;
-  margin-bottom: 25px;
+  font-weight: bold;
 }
 
 .holiday-notify__desc {
@@ -869,39 +873,18 @@ img .footer .platforms:first-child {
 
 .holiday-notify__btn {
   position: absolute;
-  bottom: 24px;
-  left: 16px;
+  bottom: 15px;
+  right: 34px;
+  width: 157px;
   display: inline-block;
   text-align: center;
-  padding: 11px 8px 10px 42px;
   line-height: 20px;
-  font-size: 16px;
+  padding: 8px 0;
+  font-size: 13px;
   border: 0;
   cursor: pointer;
-  border-radius: 23px;
-  background: #de6800;
-  color: #fff;
+  color: #000000;
   font-weight: bold;
-}
-
-.holiday-notify__btn:before {
-  content: '';
-  width: 10px;
-  height: 11px;
-  position: absolute;
-  top: -8px;
-  left: 17px;
-  background-repeat: no-repeat;
-  background-image: url(../images/pumpkin_tail.svg);
-}
-
-.holiday-notify__btn:after {
-  content: '';
-  width: 27px;
-  height: 18px;
-  position: absolute;
-  top: 10px;
-  left: 9px;
-  background-repeat: no-repeat;
-  background-image: url(../images/pumpkin_face.svg);
+  text-transform: uppercase;
+  background-color: transparent;
 }
