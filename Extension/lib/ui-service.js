@@ -400,19 +400,35 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     function showVersionUpdatedPopup(currentVersion, previousVersion) {
         // Suppress for v3.0 hotfix
         // TODO: Remove this in the next update
-        // if (adguard.utils.browser.getMajorVersionNumber(currentVersion) == adguard.utils.browser.getMajorVersionNumber(previousVersion)
-        //     && adguard.utils.browser.getMinorVersionNumber(currentVersion) == adguard.utils.browser.getMinorVersionNumber(previousVersion)) {
-        //     return;
-        // }
+
+        const notification = adguard.notifications.getCurrentNotification();
+
+        if (!notification
+            && adguard.utils.browser.getMajorVersionNumber(currentVersion) == adguard.utils.browser.getMajorVersionNumber(previousVersion)
+            && adguard.utils.browser.getMinorVersionNumber(currentVersion) == adguard.utils.browser.getMinorVersionNumber(previousVersion)) {
+            return;
+        }
+
+        let offer = adguard.i18n.getMessage('options_popup_version_update_offer');
+        let offerButtonHref = 'https://adguard.com/forward.html?action=learn_about_adguard&from=version_popup&app=browser_extension';
+        let offerButtonText = adguard.i18n.getMessage('options_popup_version_update_offer_button_text');
+
+        if (notification) {
+            offer = notification.text.title;
+            offerButtonText = notification.text.btn;
+            offerButtonHref = notification.url;
+        }
+
         const message = {
             type: 'show-version-updated-popup',
             title: adguard.i18n.getMessage('options_popup_version_update_title', currentVersion),
             description: getUpdateDescriptionMessage(currentVersion, previousVersion),
             changelogHref: 'https://adguard.com/forward.html?action=github_version_popup&from=version_popup&app=browser_extension',
             changelogText: adguard.i18n.getMessage('options_popup_version_update_changelog_text'),
-            offer: adguard.i18n.getMessage('options_popup_version_update_offer'),
-            offerButtonHref: 'https://adguard.com/forward.html?action=learn_about_adguard&from=version_popup&app=browser_extension',
-            offerButtonText: adguard.i18n.getMessage('options_popup_version_update_offer_button_text'),
+            showPromoNotification: !!notification,
+            offer,
+            offerButtonHref,
+            offerButtonText,
             disableNotificationText: adguard.i18n.getMessage('options_popup_version_update_disable_notification'),
         };
 

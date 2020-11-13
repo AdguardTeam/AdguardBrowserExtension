@@ -181,30 +181,17 @@
      * @param {{title,description, changelogHref, changelogText, offer, offerButtonHref, offerButtonText}} message
      */
     function showVersionUpdatedPopup(message) {
-        // FIXME remove
-        message = {
-            changelogHref: 'https://adguard.com/forward.html?action=github_version_popup&from=version_popup&app=browser_extension',
-            changelogText: 'What\'s new in this version?',
-            description: 'This version contains mostly bugfixes and minor improvements.',
-            disableNotificationText: 'Disable notifications',
-            isAdguardTab: false,
-            offer: 'Did you know that AdGuard capabilities are not limited to this browser?',
-            offerButtonHref: 'https://adguard.com/forward.html?action=learn_about_adguard&from=version_popup&app=browser_extension',
-            offerButtonText: 'LEARN MORE',
-            title: 'AdGuard extension has been updated to version 3.5.20',
-            type: 'show-version-updated-popup',
-        };
-
         const {
             title,
+            offer,
             description,
+            isAdguardTab,
             changelogHref,
             changelogText,
-            offer,
             offerButtonHref,
             offerButtonText,
+            showPromoNotification,
             disableNotificationText,
-            isAdguardTab,
         } = message;
 
         const updateIframeHtml = `<head></head>
@@ -229,7 +216,7 @@
                                 <div class="adguard-update-popup__offer">
                                     ${offer}
                                 </div>
-                                <a href="${offerButtonHref}" class="adguard-update-popup__btn close-iframe" target="_blank">
+                                <a href="${offerButtonHref}" class="adguard-update-popup__btn close-iframe set-notification-viewed" target="_blank">
                                     ${offerButtonText}
                                 </a>
                             </div>
@@ -249,6 +236,13 @@
                                 type: 'changeUserSetting',
                                 key: 'show-app-updated-disabled',
                                 value: true,
+                            });
+                        }
+                        if (showPromoNotification
+                            && element.classList.contains('set-notification-viewed')) {
+                            contentPage.sendMessage({
+                                type: 'setNotificationViewed',
+                                withDelay: false,
                             });
                         }
                         // Remove iframe after click event fire on link
@@ -288,9 +282,6 @@
 
         appendPopup(0);
     }
-
-    // FIXME remove
-    showVersionUpdatedPopup();
 
     /**
      * Reload page without cache
