@@ -34,7 +34,7 @@ const MiscellaneousFilters = observer(() => {
     };
 
     const hidePopup = (event) => {
-        if (!document.querySelector('.miscellaneous-filters__filters').contains(event.target)) {
+        if (!event.path.some((p) => p.className === 'filters__miscellaneous-filters')) {
             setShowPopup(false);
             document.removeEventListener('click', hidePopup);
         }
