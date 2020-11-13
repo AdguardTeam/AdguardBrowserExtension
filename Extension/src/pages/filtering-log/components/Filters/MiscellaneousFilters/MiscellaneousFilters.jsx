@@ -124,7 +124,7 @@ const MiscellaneousFilters = observer(() => {
                     </label>
                 </div>
 
-                <div className="hr" />
+                <div className="hrow" />
 
                 <div className="miscellaneous-filters__section">
                     <label className="radio-button-label" htmlFor="first-third-party">
