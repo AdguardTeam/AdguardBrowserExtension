@@ -74,7 +74,7 @@ export const userrules = (function () {
 
     const unWhitelistFrame = function (frameInfo) {
         if (frameInfo.frameRule) {
-            if (frameInfo.frameRule.filterId === utils.filters.WHITE_LIST_FILTER_ID) {
+            if (frameInfo.frameRule.filterId === utils.filters.ALLOWLIST_FILTER_ID) {
                 whitelist.unWhitelistUrl(frameInfo.url);
             } else {
                 removeRule(frameInfo.frameRule.ruleText);

@@ -618,7 +618,7 @@ const RequestWizard = (function () {
         if (filterId === AntiBannerFiltersId.USER_FILTER_ID) {
             return Messages.OPTIONS_USERFILTER;
         }
-        if (filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+        if (filterId === AntiBannerFiltersId.ALLOWLIST_FILTER_ID) {
             return Messages.OPTIONS_WHITELIST;
         }
 
@@ -681,7 +681,7 @@ const RequestWizard = (function () {
         if (requestRule
             && !requestRule.replaceRule
             && typeof requestRule.filterId !== 'undefined') {
-            if (requestRule.filterId !== AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+            if (requestRule.filterId !== AntiBannerFiltersId.ALLOWLIST_FILTER_ID) {
                 const requestRuleNode = template.querySelector('[attr-text="requestRule"]');
                 requestRuleNode.textContent = requestRule.ruleText;
                 if (requestRule.convertedRuleText) {
@@ -793,7 +793,7 @@ const RequestWizard = (function () {
             if (requestRule.whitelistRule) {
                 blockRequestButton.classList.remove('hidden');
             }
-        } else if (requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+        } else if (requestRule.filterId === AntiBannerFiltersId.ALLOWLIST_FILTER_ID) {
             removeWhitelistDomainButton.classList.remove('hidden');
         } else if (!requestRule.whitelistRule) {
             unblockRequestButton.classList.remove('hidden');
@@ -1249,7 +1249,7 @@ PageController.prototype = {
         // Get rule text for requestRule or replaceRules
         let ruleText = '';
         if (event.requestRule) {
-            if (event.requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+            if (event.requestRule.filterId === AntiBannerFiltersId.ALLOWLIST_FILTER_ID) {
                 ruleText = Messages.IN_WHITELIST;
             } else {
                 ruleText = event.requestRule.ruleText;

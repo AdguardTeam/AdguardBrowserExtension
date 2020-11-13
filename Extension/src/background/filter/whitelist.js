@@ -28,7 +28,7 @@ export const whitelist = (() => {
     const BLOCK_LIST_DOMAINS_LS_PROP = 'block-list-domains';
 
     // eslint-disable-next-line max-len
-    const allowAllWhitelistRule = new TSUrlFilter.NetworkRule('@@whitelist-all$document', utils.filters.WHITE_LIST_FILTER_ID);
+    const allowAllWhitelistRule = new TSUrlFilter.NetworkRule('@@whitelist-all$document', utils.filters.ALLOWLIST_FILTER_ID);
 
     /**
      * Returns whitelist mode
@@ -89,7 +89,7 @@ export const whitelist = (() => {
             return null;
         }
 
-        return new TSUrlFilter.NetworkRule(`@@//${domain}$document`, utils.filters.WHITE_LIST_FILTER_ID);
+        return new TSUrlFilter.NetworkRule(`@@//${domain}$document`, utils.filters.ALLOWLIST_FILTER_ID);
     }
 
     /**

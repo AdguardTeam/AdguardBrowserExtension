@@ -46,11 +46,6 @@ const RequestInfo = observer(() => {
 
     const { selectedEvent, filtersMetadata } = logStore;
 
-    // FIXME figure out why this could be undefined
-    if (!selectedEvent) {
-        return null;
-    }
-
     const infoElements = [
         {
             title: reactTranslator.translate('options_popup_filter_url'),

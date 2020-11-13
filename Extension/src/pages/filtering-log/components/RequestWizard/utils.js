@@ -1,11 +1,10 @@
 /* eslint-disable no-param-reassign */
 import {
-    ALLOWLIST_FILTER_ID,
     FilterRule,
-    USER_FILTER_ID,
     UrlFilterRule,
 } from './constants';
 import { i18n } from '../../../../common/i18n';
+import { ANTIBANNER_FILTERS_ID } from '../../../../common/constants';
 
 /**
  * String utils
@@ -150,11 +149,11 @@ const MESSAGES = {
  * @returns {String}
  */
 export const getFilterName = (filterId, filtersMetadata) => {
-    if (filterId === USER_FILTER_ID) {
+    if (filterId === ANTIBANNER_FILTERS_ID.USER_FILTER_ID) {
         return MESSAGES.OPTIONS_USERFILTER;
     }
 
-    if (filterId === ALLOWLIST_FILTER_ID) {
+    if (filterId === ANTIBANNER_FILTERS_ID.ALLOWLIST_FILTER_ID) {
         return MESSAGES.OPTIONS_ALLOWLIST;
     }
 
