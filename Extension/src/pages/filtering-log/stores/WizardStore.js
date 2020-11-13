@@ -198,7 +198,11 @@ class WizardStore {
     @computed
     get rulePatterns() {
         const { selectedEvent } = this.rootStore.logStore;
-        const patterns = splitToPatterns(selectedEvent.requestUrl, selectedEvent.frameDomain);
+        const patterns = splitToPatterns(
+            selectedEvent.requestUrl,
+            selectedEvent.frameDomain,
+            false,
+        );
         this.setRulePattern(patterns[0]);
         return patterns;
     }

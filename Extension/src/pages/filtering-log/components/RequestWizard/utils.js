@@ -83,7 +83,6 @@ export const UrlUtils = {
     },
 };
 
-// FIXME whitelist rule
 export const splitToPatterns = (requestUrl, domain, whitelist) => {
     const PATTERNS_COUNT = 2;
 
