@@ -213,10 +213,10 @@
                                         ${disableNotificationText}
                                     </a>
                                 </div>
-                                <div class="adguard-update-popup__offer">
+                                <div class="adguard-update-popup__offer${showPromoNotification ? ' adguard-update-popup__offer--promo' : ''}">
                                     ${offer}
                                 </div>
-                                <a href="${offerButtonHref}" class="adguard-update-popup__btn close-iframe set-notification-viewed" target="_blank">
+                                <a href="${offerButtonHref}" class="adguard-update-popup__btn close-iframe set-notification-viewed${showPromoNotification ? ' adguard-update-popup__btn--promo' : ''}" target="_blank">
                                     ${offerButtonText}
                                 </a>
                             </div>
