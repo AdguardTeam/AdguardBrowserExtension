@@ -12,8 +12,6 @@ import { STEALTH_ACTIONS } from '../../../../../background/filter/services/steal
 
 import './request-info.pcss';
 
-// FIXME provide cookie rules id, otherwise it is impossible to search them,
-//  or append all data as data attributes
 const STEALTH_ACTIONS_NAMES = {
     HIDE_REFERRER: reactTranslator.translate('filtering_log_hide_referrer'),
     SEND_DO_NOT_TRACK: reactTranslator.translate('filtering_log_send_not_track'),

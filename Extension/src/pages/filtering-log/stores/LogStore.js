@@ -150,12 +150,16 @@ class LogStore {
                 requestType: type,
                 requestRule: rule,
                 frameDomain: source,
+                cookieName,
+                cookieValue,
             } = filteringEvent;
 
             return {
                 eventId,
                 url,
                 type,
+                cookieName,
+                cookieValue,
                 rule: rule?.ruleText,
                 filter: getFilterName(rule?.filterId, this.filtersMetadata),
                 source,

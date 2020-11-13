@@ -16,6 +16,7 @@
  */
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
+import { nanoid } from 'nanoid';
 import { tabsApi } from '../../tabs/tabs-api';
 import { BACKGROUND_TAB_ID, utils } from '../../utils/common';
 import { backgroundPage } from '../../extension-api/background-page';
@@ -220,6 +221,11 @@ const browsersFilteringLog = (function () {
 
         if (!tabInfo.filteringEvents) {
             tabInfo.filteringEvents = [];
+        }
+
+        // if not eventId we generate it manually to manage filtering events on the filtering log page later
+        if (!filteringEvent.eventId) {
+            filteringEvent.eventId = nanoid();
         }
 
         tabInfo.filteringEvents.push(filteringEvent);
