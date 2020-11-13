@@ -6,8 +6,13 @@ import { FilteringEvents } from '../FilteringEvents';
 import { messenger } from '../../../services/messenger';
 import { log } from '../../../../background/utils/log';
 import { rootStore } from '../../stores/RootStore';
-
 import '../../styles/styles.pcss';
+
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    require('../../styles/dark-mode.pcss');
+} else {
+    require('../../styles/light-mode.pcss');
+}
 
 const App = () => {
     const { logStore } = useContext(rootStore);
