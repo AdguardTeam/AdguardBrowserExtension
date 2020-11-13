@@ -136,7 +136,7 @@ export const tabsImpl = (function () {
             await browser.windows.create({
                 url,
                 type: 'popup',
-                width: 800,
+                width: 1000,
                 height: 650,
             });
             return;
