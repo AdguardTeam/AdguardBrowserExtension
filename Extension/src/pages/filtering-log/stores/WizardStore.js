@@ -41,9 +41,35 @@ class WizardStore {
     }
 
     @action
+    updateRuleOptions() {
+        const { selectedEvent } = this.rootStore.logStore;
+        const { isThirdPartyRequest, frameDomain } = selectedEvent;
+
+        // set rule options to defaults
+        Object.values(RULE_OPTIONS).forEach((option) => {
+            this.ruleOptions[option].checked = false;
+        });
+
+        if (selectedEvent.requestRule
+            && (selectedEvent.requestRule.whitelistRule || selectedEvent.requestRule.isImportant)) {
+            this.ruleOptions[RULE_OPTIONS.RULE_IMPORTANT].checked = true;
+        }
+
+        if (isThirdPartyRequest && !frameDomain) {
+            this.ruleOptions[RULE_OPTIONS.RULE_THIRD_PARTY].checked = true;
+        }
+
+        if (selectedEvent.requestRule && selectedEvent.requestRule.documentLevelRule) {
+            this.ruleOptions[RULE_OPTIONS.RULE_DOMAIN].checked = true;
+            this.ruleOptions[RULE_OPTIONS.RULE_IMPORTANT].checked = false;
+        }
+    }
+
+    @action
     openModal() {
         this.isModalOpen = true;
         this.requestModalState = WIZARD_STATES.VIEW_REQUEST;
+        this.updateRuleOptions();
         // FIXME update ruleOptions checkboxes respectively, set all false, for example
     }
 
