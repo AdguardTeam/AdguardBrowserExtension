@@ -45,15 +45,15 @@ adguard.notifications = (function (adguard) {
                 btn: '最大割引を手に入れる',
             },
             ko: {
-                title: '블랙 프라이데이 세일',
+                title: '블랙 \n프라이데이 \n세일',
                 btn: '"최대 할인!',
             },
             zh_cn: {
-                title: '黑5 全球 狂欢',
+                title: '黑5 \n全球 \n狂欢',
                 btn: '疯狂购',
             },
             zh_tw: {
-                title: '黑五 狂歡 購物節',
+                title: '黑五 \n狂歡 \n購物節',
                 btn: '瘋狂大減價',
             },
             fr: {
