@@ -66,9 +66,8 @@ adguard.notifications = (function (adguard) {
             },
         },
         text: '',
-        url: 'https://agrd.io/bf2020', // FIXME add url to the tds
-        // from: '27 November 2020 12:00:01', // FIXME uncomment
-        from: '13 November 2020 09:00:01', // FIXME remove
+        url: 'https://adguard.com/forward.html?action=bf2020_notify&app=browser_extension',
+        from: '27 November 2020 12:00:01',
         to: '1 December 2020 23:59:00',
         type: 'animated',
         get icons() {
@@ -230,9 +229,7 @@ adguard.notifications = (function (adguard) {
         notificationCheckTime = currentTime;
 
         const notificationsKeys = Object.keys(notifications);
-        const viewedNotifications = []; // FIXME remove
-        // FIXME uncomment
-        // const viewedNotifications = adguard.localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
+        const viewedNotifications = adguard.localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
 
         for (let i = 0; i < notificationsKeys.length; i += 1) {
             const notificationKey = notificationsKeys[i];

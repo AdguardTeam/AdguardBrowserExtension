@@ -418,7 +418,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             // while on popup page in two or more
             offer = notification.text.title.replace('\n', '');
             offerButtonText = notification.text.btn.replace('\n', '');
-            offerButtonHref = notification.url;
+            offerButtonHref = `${notification.url}&from=version_popup`;
         }
 
         const message = {
