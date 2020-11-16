@@ -116,8 +116,6 @@ adguard.antiBannerService = (function (adguard) {
             // Subscribe to events which lead to update filters (e.g. switсh to optimized and back to default)
             subscribeToFiltersChangeEvents();
 
-            notifyApplicationUpdated(runInfo); // FIXME remove
-
             if (runInfo.isFirstRun) {
                 // Add event listener for filters change
                 addFiltersChangeEventListener();
