@@ -15,7 +15,7 @@ const EventsTypeFilter = observer(() => {
     };
 
     const handleAllClick = () => {
-        logStore.toggleAllEventTypesFilters(eventTypesFilters.some((filter) => !filter.enabled));
+        logStore.toggleAllEventTypesFilters();
     };
 
     const eventsTypesButtonClassName = (name) => classNames(

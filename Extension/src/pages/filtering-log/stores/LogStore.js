@@ -95,7 +95,10 @@ class LogStore {
     }
 
     @action
-    toggleAllEventTypesFilters = (enabled) => {
+    toggleAllEventTypesFilters = () => {
+        // enable all filters if any filter disabled
+        // or disable all filters if all filters enabled
+        const enabled = this.eventTypesFilters.some((filter) => !filter.enabled);
         this.eventTypesFilters.forEach((filter) => { filter.enabled = enabled; });
     }
 
