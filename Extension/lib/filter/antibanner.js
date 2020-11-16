@@ -46,8 +46,7 @@ adguard.antiBannerService = (function (adguard) {
     /**
      * Delay on application updated event
      */
-    // const APP_UPDATED_NOTIFICATION_DELAY = 60 * 1000; // FIXME uncomment
-    const APP_UPDATED_NOTIFICATION_DELAY = 10 * 1000; // FIXME remove
+    const APP_UPDATED_NOTIFICATION_DELAY = 60 * 1000;
 
     const FILTERS_CHANGE_DEBOUNCE_PERIOD = 1000;
     const RELOAD_FILTERS_DEBOUNCE_PERIOD = 1000;
