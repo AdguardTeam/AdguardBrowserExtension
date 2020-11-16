@@ -414,8 +414,10 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         let offerButtonText = adguard.i18n.getMessage('options_popup_version_update_offer_button_text');
 
         if (notification) {
-            offer = notification.text.title;
-            offerButtonText = notification.text.btn;
+            // we replace \n because in update popup lines are displayed in one row,
+            // while on popup page in two or more
+            offer = notification.text.title.replace('\n', '');
+            offerButtonText = notification.text.btn.replace('\n', '');
             offerButtonHref = notification.url;
         }
 
