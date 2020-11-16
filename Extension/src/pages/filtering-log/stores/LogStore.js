@@ -208,21 +208,31 @@ class LogStore {
                 return false;
             }
 
-            // TODO add condition for regular rules
-            // whitelisted events filter
-            if ((this.miscellaneousFilters.searchWhitelisted && !filteringEvent.requestRule?.whitelistRule)
-                // blocked events filter
-                || (this.miscellaneousFilters.searchBlocked && (!filteringEvent.requestRule || filteringEvent.requestRule?.whitelistRule))
-                // first party events filter
-                || (this.miscellaneousFilters.searchParty === this.searchPartyFilter.SEARCH_FIRST_PARTY && filteringEvent.requestThirdParty)
-                // third party events filter
-                || (this.miscellaneousFilters.searchParty === this.searchPartyFilter.SEARCH_THIRD_PARTY && !filteringEvent.requestThirdParty)
-                // modifying cookie events filter
-                || (this.miscellaneousFilters.searchModified && !filteringEvent.requestRule?.isModifyingCookieRule)
-                // user rules events filter
-                || (this.miscellaneousFilters.searchUserFilter && (!filteringEvent.requestRule || filteringEvent.requestRule?.filterId !== 0))) {
+            const isWhitelisted = (event) => event.requestRule?.whitelistRule;
+            const isBlocked = (event) => event.requestRule && !event.requestRule?.whitelistRule;
+            const isModified = (event) => event.requestRule?.isModifyingCookieRule;
+            const isUserFilter = (event) => event.requestRule?.filterId === 0;
+            const isFirstParty = (event) => !event.requestThirdParty;
+            const isThirdParty = (event) => event.requestThirdParty;
+            const isRegular = (event) => !isWhitelisted(event) && !isBlocked(event) && !isModified(event);
+
+            // filter regular events
+            if ((this.miscellaneousFilters.searchRegular && !isRegular(filteringEvent))
+                // filter whitelisted events
+                || (this.miscellaneousFilters.searchWhitelisted && !isWhitelisted(filteringEvent))
+                // filter blocked events
+                || (this.miscellaneousFilters.searchBlocked && !isBlocked(filteringEvent))
+                // filter modified events
+                || (this.miscellaneousFilters.searchModified && !isModified(filteringEvent))
+                // filter user filter events
+                || (this.miscellaneousFilters.searchUserFilter && !isUserFilter(filteringEvent))
+                // filter first party events
+                || (this.miscellaneousFilters.searchParty === this.searchPartyFilter.SEARCH_FIRST_PARTY && !isFirstParty(filteringEvent))
+                // filter third party events
+                || (this.miscellaneousFilters.searchParty === this.searchPartyFilter.SEARCH_THIRD_PARTY && !isThirdParty(filteringEvent))) {
                 return false;
             }
+
             return show;
         });
 
