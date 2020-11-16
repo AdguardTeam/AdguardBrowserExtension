@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useRef } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
 
@@ -8,6 +8,8 @@ import './miscellaneous-filters.pcss';
 
 const MiscellaneousFilters = observer(() => {
     const [showPopup, setShowPopup] = useState(false);
+
+    const ref = useRef(null);
 
     const { logStore } = useContext(rootStore);
     const {
@@ -34,7 +36,7 @@ const MiscellaneousFilters = observer(() => {
     };
 
     const hidePopup = (event) => {
-        if (!event.path.some((p) => p.className === 'filters__miscellaneous-filters')) {
+        if (ref.current && !ref.current.contains(event.target)) {
             setShowPopup(false);
             document.removeEventListener('click', hidePopup);
         }
@@ -61,7 +63,7 @@ const MiscellaneousFilters = observer(() => {
             >
                 Filters
             </button>
-            <div className={filtersClassNames('miscellaneous-filters__filters', showPopup)}>
+            <div className={filtersClassNames('miscellaneous-filters__filters', showPopup)} ref={ref}>
                 <div className="miscellaneous-filters__section">
                     <label className="checkbox-label" htmlFor="regular">
                         <input
