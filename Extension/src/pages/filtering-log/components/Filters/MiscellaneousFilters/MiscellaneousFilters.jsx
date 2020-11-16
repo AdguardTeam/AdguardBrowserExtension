@@ -131,7 +131,7 @@ const MiscellaneousFilters = observer(() => {
                         <input
                             type="radio"
                             id="first-third-party"
-                            name="first-third-party"
+                            name="party-filter"
                             onClick={radioHandler}
                             value={SEARCH_ALL}
                         />
@@ -143,7 +143,7 @@ const MiscellaneousFilters = observer(() => {
                         <input
                             type="radio"
                             id="first-party"
-                            name="first-third-party"
+                            name="party-filter"
                             onClick={radioHandler}
                             value={SEARCH_FIRST_PARTY}
                         />
@@ -155,7 +155,7 @@ const MiscellaneousFilters = observer(() => {
                         <input
                             type="radio"
                             id="third-party"
-                            name="first-third-party"
+                            name="party-filter"
                             onClick={radioHandler}
                             value={SEARCH_THIRD_PARTY}
                         />

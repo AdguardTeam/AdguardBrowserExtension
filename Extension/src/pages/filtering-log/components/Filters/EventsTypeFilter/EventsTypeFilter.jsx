@@ -10,11 +10,11 @@ const EventsTypeFilter = observer(() => {
     const { logStore } = useContext(rootStore);
     const { eventTypesFilters } = logStore;
 
-    const btnTypeHandler = (e) => {
+    const handleTypeClick = (e) => {
         logStore.toggleEventTypesFilter(e.target.value);
     };
 
-    const btnAllTypesHandler = () => {
+    const handleAllClick = () => {
         logStore.toggleAllEventTypesFilters(eventTypesFilters.some((filter) => !filter.enabled));
     };
 
@@ -35,7 +35,7 @@ const EventsTypeFilter = observer(() => {
             <button
                 className={eventsTypesButtonClassName(name)}
                 type="button"
-                onClick={btnTypeHandler}
+                onClick={handleTypeClick}
                 value={name}
                 key={name}
             >
@@ -50,7 +50,7 @@ const EventsTypeFilter = observer(() => {
                 <button
                     className={eventsAllTypesButtonClassName}
                     type="button"
-                    onClick={btnAllTypesHandler}
+                    onClick={handleAllClick}
                     value="All"
                 >
                     All
