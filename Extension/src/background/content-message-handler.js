@@ -39,7 +39,7 @@ import { pageStats } from './filter/page-stats';
 import { backend } from './filter/filters/service-client';
 import { subscriptions } from './filter/filters/subscription';
 import { filteringApi } from './filter/filtering-api';
-import { stealthService } from './filter/services/stealth-service/stealth-service';
+import { stealthService } from './filter/services/stealth-service';
 import { prefs } from './prefs';
 import { whitelist } from './filter/whitelist';
 import { documentFilterService } from './filter/services/document-filter';

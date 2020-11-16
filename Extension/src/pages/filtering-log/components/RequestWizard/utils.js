@@ -3,8 +3,8 @@ import {
     FilterRule,
     UrlFilterRule,
 } from './constants';
-import { i18n } from '../../../../common/i18n';
 import { ANTIBANNER_FILTERS_ID } from '../../../../common/constants';
+import { reactTranslator } from '../../../reactCommon/reactTranslator';
 
 /**
  * String utils
@@ -135,9 +135,9 @@ export const splitToPatterns = (requestUrl, domain, whitelist) => {
 };
 
 const MESSAGES = {
-    OPTIONS_USERFILTER: i18n.getMessage('options_user_filter'),
-    OPTIONS_ALLOWLIST: i18n.getMessage('options_allowlist'),
-    IN_ALLOWLIST: i18n.getMessage('filtering_log_in_allowlist'),
+    OPTIONS_USERFILTER: reactTranslator.translate('options_user_filter'),
+    OPTIONS_ALLOWLIST: reactTranslator.translate('options_allowlist'),
+    IN_ALLOWLIST: reactTranslator.translate('filtering_log_in_allowlist'),
 };
 
 /**

@@ -8,7 +8,7 @@ import { RequestImage } from './RequestImage';
 import { rootStore } from '../../../stores/RootStore';
 import { messenger } from '../../../../services/messenger';
 import { reactTranslator } from '../../../../reactCommon/reactTranslator';
-import { STEALTH_ACTIONS } from '../../../../../background/filter/services/stealth-service/stealth-service-constants';
+import { STEALTH_ACTIONS } from '../../../../../common/constants';
 
 import './request-info.pcss';
 

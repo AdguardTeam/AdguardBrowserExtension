@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+// TODO remove this module when all functionality would be reimplemented with react
 
 import { contentPage } from '../content-script/content-script';
 import { i18n } from '../common/i18n';

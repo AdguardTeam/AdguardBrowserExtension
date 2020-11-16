@@ -223,7 +223,8 @@ const browsersFilteringLog = (function () {
             tabInfo.filteringEvents = [];
         }
 
-        // if not eventId we generate it manually to manage filtering events on the filtering log page later
+        // if event doesn't have eventId, generate it manually
+        // to manage filtering events on the filtering log page later
         if (!filteringEvent.eventId) {
             filteringEvent.eventId = nanoid();
         }

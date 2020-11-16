@@ -17,6 +17,7 @@ const FilteringEvents = observer(() => {
     const columns = useMemo(() => [
         {
             Header: 'URL',
+            // TODO display elements, scripts
             accessor: (props) => {
                 const { url, cookieName, cookieValue } = props;
                 if (url) {

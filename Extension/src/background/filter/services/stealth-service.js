@@ -16,18 +16,18 @@
  */
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
-import { utils } from '../../../utils/common';
-import { RequestTypes } from '../../../utils/request-types';
-import { settings } from '../../../settings/user-settings';
-import { log } from '../../../utils/log';
-import { requestContextStorage } from '../../request-context-storage';
-import { filteringApi } from '../../filtering-api';
-import { filteringLog } from '../../filtering-log';
-import { listeners } from '../../../notifier';
-import { frames } from '../../../tabs/frames';
-import { browserUtils } from '../../../utils/browser-utils';
-import { browser } from '../../../extension-api/browser';
-import { STEALTH_ACTIONS } from './stealth-service-constants';
+import { utils } from '../../utils/common';
+import { RequestTypes } from '../../utils/request-types';
+import { settings } from '../../settings/user-settings';
+import { log } from '../../utils/log';
+import { requestContextStorage } from '../request-context-storage';
+import { filteringApi } from '../filtering-api';
+import { filteringLog } from '../filtering-log';
+import { listeners } from '../../notifier';
+import { frames } from '../../tabs/frames';
+import { browserUtils } from '../../utils/browser-utils';
+import { browser } from '../../extension-api/browser';
+import { STEALTH_ACTIONS } from '../../../common/constants';
 
 // TODO: [TSUrlFilter] Use TSURLFilter stealthService
 

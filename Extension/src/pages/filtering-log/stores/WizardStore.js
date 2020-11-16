@@ -70,7 +70,6 @@ class WizardStore {
         this.isModalOpen = true;
         this.requestModalState = WIZARD_STATES.VIEW_REQUEST;
         this.updateRuleOptions();
-        // FIXME update ruleOptions checkboxes respectively, set all false, for example
     }
 
     @action
