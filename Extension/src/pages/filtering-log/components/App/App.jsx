@@ -6,6 +6,7 @@ import { FilteringEvents } from '../FilteringEvents';
 import { messenger } from '../../../services/messenger';
 import { log } from '../../../../background/utils/log';
 import { rootStore } from '../../stores/RootStore';
+import { RequestModal } from '../RequestWizard/RequestModal';
 import '../../styles/styles.pcss';
 
 if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -22,6 +23,7 @@ const App = () => {
 
         (async () => {
             await logStore.synchronizeOpenTabs();
+            await logStore.getLogInitData();
             await messenger.onOpenFilteringLogPage();
 
             const TAB_ADDED = 'log.tab.added';
@@ -90,6 +92,7 @@ const App = () => {
 
     return (
         <>
+            <RequestModal />
             <Actions />
             <Filters />
             <FilteringEvents />
