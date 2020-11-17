@@ -896,8 +896,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         }
     });
 
-
-
     // on application updated event
     adguard.listeners.addListener((event, info) => {
         if (event === adguard.listeners.APPLICATION_UPDATED) {
