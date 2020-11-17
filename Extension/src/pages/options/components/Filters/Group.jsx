@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { Checkbox } from '../Settings/Checkbox';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
 import './group.pcss';
-import Setting, { SETTINGS_TYPES } from "../Settings/Setting";
+import Setting, { SETTINGS_TYPES } from '../Settings/Setting';
 
 const renderEnabledFilters = (enabledFilters) => {
     const enabledFiltersNames = enabledFilters.map((filter) => filter.name);
@@ -71,7 +71,7 @@ const Group = ({
                 <div className={
                     classNames(
                         'setting__icon',
-                        `setting__icon--${groupName.toLowerCase().split(' ')[0]}`,
+                        `setting__icon--${groupId}`,
                     )
                 }
                 />
