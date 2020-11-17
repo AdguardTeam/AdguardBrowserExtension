@@ -1,7 +1,7 @@
 
 /**
  * AdGuard Scriptlets
- * Version 1.3.9
+ * Version 1.3.12
  */
 
 (function () {
@@ -3398,42 +3398,75 @@
 
         return shouldProcess;
       }
+      /**
+       * Prunes properties of 'root' object
+       * @param {Object} root
+       */
 
-      var nativeParse = JSON.parse;
 
-      var parseWrapper = function parseWrapper() {
+      var jsonPruner = function jsonPruner(root) {
+        if (prunePaths.length === 0) {
+          log(window.location.hostname, root);
+          return root;
+        }
+
+        try {
+          if (isPruningNeeded(root) === false) {
+            return root;
+          } // if pruning is needed, we check every input pathToRemove
+          // and delete it if root has it
+
+
+          prunePaths.forEach(function (path) {
+            var ownerObjArr = getWildcardPropertyInChain(root, path, true);
+            ownerObjArr.forEach(function (ownerObj) {
+              if (ownerObj !== undefined && ownerObj.base) {
+                delete ownerObj.base[ownerObj.prop];
+                hit(source);
+              }
+            });
+          });
+        } catch (e) {
+          log(e.toString());
+        }
+
+        return root;
+      };
+
+      var nativeJSONParse = JSON.parse;
+
+      var jsonParseWrapper = function jsonParseWrapper() {
         for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
           args[_key] = arguments[_key];
         }
 
-        log(args);
-        var root = nativeParse.apply(window, args);
-
-        if (prunePaths.length === 0) {
-          log(root);
-          return root;
-        }
-
-        if (!isPruningNeeded(root)) {
-          return root;
-        } // if pruning is needed, we check every input pathToRemove
-        // and delete it if root has it
+        // dealing with stringified json in args, which should be parsed.
+        // so we call nativeJSONParse as JSON.parse which is bound to JSON object
+        var root = nativeJSONParse.apply(JSON, args);
+        return jsonPruner(root);
+      }; // JSON.parse mocking
 
 
-        prunePaths.forEach(function (path) {
-          var ownerObjArr = getWildcardPropertyInChain(root, path, true);
-          ownerObjArr.forEach(function (ownerObj) {
-            if (ownerObj !== undefined && ownerObj.base) {
-              delete ownerObj.base[ownerObj.prop];
-              hit(source);
-            }
-          });
+      jsonParseWrapper.toString = nativeJSONParse.toString.bind(nativeJSONParse);
+      JSON.parse = jsonParseWrapper; // eslint-disable-next-line compat/compat
+
+      var nativeResponseJson = Response.prototype.json; // eslint-disable-next-line func-names
+
+      var responseJsonWrapper = function responseJsonWrapper() {
+        var promise = nativeResponseJson.apply(this);
+        return promise.then(function (obj) {
+          return jsonPruner(obj);
         });
-        return root;
-      };
+      }; // do nothing if browser does not support Response (e.g. Internet Explorer)
+      // https://developer.mozilla.org/en-US/docs/Web/API/Response
 
-      parseWrapper.toString = nativeParse.toString.bind(nativeParse);
-      JSON.parse = parseWrapper;
+
+      if (typeof Response === 'undefined') {
+        return;
+      } // eslint-disable-next-line compat/compat
+
+
+      Response.prototype.json = responseJsonWrapper;
     }
     jsonPrune.names = ['json-prune', // aliases are needed for matching the related scriptlet converted into our syntax
     'json-prune.js', 'ubo-json-prune.js', 'ubo-json-prune', 'abp-json-prune'];
@@ -4263,7 +4296,14 @@
         template = ADGUARD_SCRIPTLET_TEMPLATE;
       }
 
-      var args = getStringInBraces(rule).split(/, /g).map(function (arg, index) {
+      var parsedArgs = getStringInBraces(rule).split(/,\s/g);
+
+      if (parsedArgs.length === 1) {
+        // Most probably this is not correct separator, in this case we use ','
+        parsedArgs = getStringInBraces(rule).split(/,/g);
+      }
+
+      var args = parsedArgs.map(function (arg, index) {
         var outputArg;
 
         if (index === 0) {
