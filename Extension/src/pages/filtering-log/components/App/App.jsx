@@ -19,6 +19,11 @@ const App = () => {
             await logStore.getLogInitData();
             await messenger.onOpenFilteringLogPage();
 
+            // Set current tab id as selected, background page provides it with hash value
+            // eslint-disable-next-line no-restricted-globals
+            const currentTabId = location.hash.slice(1);
+            await logStore.setSelectedTabId(currentTabId);
+
             const TAB_ADDED = 'log.tab.added';
             const TAB_UPDATE = 'log.tab.update';
             const TAB_CLOSE = 'log.tab.close';

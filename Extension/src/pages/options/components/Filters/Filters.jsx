@@ -20,6 +20,7 @@ const Filters = observer(() => {
     };
 
     const history = useHistory();
+
     const useQuery = () => {
         return new URLSearchParams(useLocation().search);
     };
