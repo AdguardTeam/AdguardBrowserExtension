@@ -1,0 +1,84 @@
+body {
+    margin: 0;
+    background-color: var(--bgColor);
+}
+
+/* custom checkbox */
+label.checkbox-label {
+    cursor: pointer;
+    color: var(--textColor);
+    display: flex;
+    align-items: center;
+
+    & input[type="checkbox"] {
+        display: none;
+    }
+
+    & .custom-checkbox {
+        width: 16px;
+        height: 16px;
+        background-color: transparent;
+        background-position: 50%;
+        background-repeat: no-repeat;
+        background-size: 13px 12px;
+        border: 2px solid var(--inputsBorder);
+        border-radius: 2px;
+        margin-right: 10px;
+
+        &.active {
+            background-color: var(--mainGreen);
+            background-image: url(../../assets/icons/checked.svg);
+            border-color: var(--mainGreen);
+        }
+    }
+}
+
+/* custom radio-button */
+label.radio-button-label {
+    cursor: pointer;
+    color: var(--textColor);
+    display: flex;
+    align-items: center;
+
+    & input[type="radio"] {
+        display: none;
+    }
+
+    & .radio-button {
+        width: 17px;
+        height: 17px;
+        background-color: transparent;
+        border: 2px solid var(--inputsBorder);
+        border-radius: 17px;
+        margin-right: 10px;
+
+        &.active {
+            background-image: url(../../assets/icons/circle.svg);
+            background-position: center;
+            background-size: 12px 12px;
+            background-repeat: no-repeat;
+            border: 2px solid var(--mainGreen);
+        }
+    }
+}
+
+/* green button */
+button.green-button {
+    cursor: pointer;
+    padding: 0.713em 1em;
+    border: none;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--bgColor);
+    background-color: var(--mainGreen);
+    transition: 0.3s ease background-color;
+
+    &:focus {
+        outline: none;
+    }
+
+    &:hover {
+        background-color: var(--darkGreen);
+    }
+}

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import './filter.pcss';
 import Setting, { SETTINGS_TYPES } from '../Settings/Setting';
+import { Checkbox } from '../Settings/Checkbox';
 import { rootStore } from '../../stores/RootStore';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
 
@@ -132,6 +133,11 @@ const Filter = ({
                     </div>
                 </div>
                 {renderTags(tags, trusted)}
+                <Checkbox
+                    id={filterId}
+                    value={checkboxValue}
+                    handler={checkboxHandler}
+                />
             </div>
         </div>
     );
