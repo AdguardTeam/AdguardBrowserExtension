@@ -2,23 +2,34 @@ import React from 'react';
 
 import { TabSelector } from './TabSelector';
 import { EventsSearch } from './EventsSearch';
+import { EventsTypeFilter } from './EventsTypeFilter';
+import { MiscellaneousFilters } from './MiscellaneousFilters';
 
 import './filters.pcss';
 
 const Filters = () => {
     return (
-        <>
-            <div className="filters-group">
-                <div className="filters-item">
-                    <TabSelector />
-                </div>
-                <div className="filters-item"><EventsSearch /></div>
+        <div className="filters">
+            <div className="filters__tab-selector">
+                <TabSelector />
             </div>
-            <div className="filters-group">
-                <div className="filters-item">Request type filters</div>
-                <div className="filters-item">Miscellaneous filters</div>
+
+            <div className="filters__events-search">
+                <EventsSearch />
             </div>
-        </>
+
+            <div className="hr" />
+
+            <div className="filters__events-filters">
+                <EventsTypeFilter />
+            </div>
+
+            <div className="filters__miscellaneous-filters">
+                <MiscellaneousFilters />
+            </div>
+
+            <div className="hr" />
+        </div>
     );
 };
 

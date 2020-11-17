@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
+import './events-search.pcss';
+
 import { rootStore } from '../../../stores/RootStore';
 
 const EventsSearch = observer(() => {
@@ -18,7 +20,7 @@ const EventsSearch = observer(() => {
     };
 
     return (
-        <form>
+        <form className="events-search">
             <input
                 type="text"
                 id="events-search"
@@ -29,11 +31,9 @@ const EventsSearch = observer(() => {
             />
             <button
                 type="button"
-                className="button"
+                className="events-search__clear"
                 onClick={handleClear}
-            >
-                clear
-            </button>
+            />
         </form>
     );
 });

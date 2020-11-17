@@ -3,8 +3,40 @@
     border-collapse: collapse;
     width: 100%;
 
-    td {
-        overflow-y: auto;
-        border: 1px solid;
+    & tr {
+        &:hover {
+            cursor: pointer;
+            background: var(--trHover);
+        }
+    }
+
+    & th {
+        text-align: left;
+        padding: 7px 25px;
+        font-weight: normal;
+        font-size: 13px;
+        color: var(--darkText);
+        border-right: 1px solid var(--thColor);
+        border-bottom: 1px solid var(--thColor);
+
+        &:first-child {
+            width: 25%;
+        }
+    }
+
+    & td {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding: 8px 25px;
+        border-top: 1px solid var(--borderColor);
+        border-left: 1px solid var(--borderColor);
+        color: var(--textColor);
+        font-size: 12px;
+
+        &:first-child {
+            color: var(--darkText);
+            border-left: none;
+        }
     }
 }
