@@ -209,7 +209,7 @@ class LogStore {
             }
 
             const isWhitelisted = (event) => event.requestRule?.whitelistRule;
-            const isBlocked = (event) => event.requestRule && !event.requestRule?.whitelistRule;
+            const isBlocked = (event) => event.requestRule && !event.requestRule.whitelistRule;
             const isModified = (event) => event.requestRule?.isModifyingCookieRule;
             const isUserFilter = (event) => event.requestRule?.filterId === 0;
             const isFirstParty = (event) => !event.requestThirdParty;
