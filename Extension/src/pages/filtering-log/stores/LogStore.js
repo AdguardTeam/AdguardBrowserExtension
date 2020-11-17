@@ -9,6 +9,7 @@ import _ from 'lodash';
 
 import { messenger } from '../../services/messenger';
 import { containsIgnoreCase } from '../../helpers';
+import { getFilterName } from '../components/RequestWizard/utils';
 
 class LogStore {
     @observable filteringEvents = [];
@@ -20,6 +21,10 @@ class LogStore {
     @observable eventsSearchValue = '';
 
     @observable preserveLogEnabled = false;
+
+    @observable selectedEvent = null;
+
+    @observable filtersMetadata = null;
 
     constructor(rootStore) {
         this.rootStore = rootStore;
@@ -106,6 +111,16 @@ class LogStore {
         });
     }
 
+    @action
+    getLogInitData = async () => {
+        const initData = await messenger.getLogInitData();
+        const { filtersMetadata } = initData;
+
+        runInAction(() => {
+            this.filtersMetadata = filtersMetadata;
+        });
+    }
+
     @computed
     get events() {
         const filteredEvents = this.filteringEvents.filter((filteringEvent) => {
@@ -130,17 +145,23 @@ class LogStore {
 
         const events = filteredEvents.map((filteringEvent) => {
             const {
+                eventId,
                 requestUrl: url,
                 requestType: type,
                 requestRule: rule,
                 frameDomain: source,
+                cookieName,
+                cookieValue,
             } = filteringEvent;
 
             return {
+                eventId,
                 url,
                 type,
+                cookieName,
+                cookieValue,
                 rule: rule?.ruleText,
-                filter: rule?.filterId, // TODO get filter title,
+                filter: getFilterName(rule?.filterId, this.filtersMetadata),
                 source,
             };
         });
@@ -177,6 +198,12 @@ class LogStore {
     setPreserveLog = (value) => {
         this.preserveLogEnabled = value;
     }
+
+    @action
+    setSelectedEventById = (eventId) => {
+        this.selectedEvent = _.find(this.filteringEvents, { eventId });
+        this.rootStore.wizardStore.openModal();
+    };
 }
 
 export { LogStore };

@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+// TODO remove this module when all functionality would be reimplemented with react
 
 import { contentPage } from '../content-script/content-script';
 import { i18n } from '../common/i18n';
@@ -31,7 +32,7 @@ const Messages = {
 };
 
 const FilterRule = {
-    MASK_WHITE_LIST: '@@',
+    MASK_ALLOWLIST: '@@',
     MASK_CSS_RULE: '##',
     MASK_CSS_INJECT_RULE: '#$#',
     MASK_CSS_EXTENDED_CSS_RULE: '#?#',
@@ -227,7 +228,7 @@ const RequestWizard = (function () {
         }
 
         if (whitelist) {
-            prefix = FilterRule.MASK_WHITE_LIST + prefix;
+            prefix = FilterRule.MASK_ALLOWLIST + prefix;
         }
 
         const patterns = [];
@@ -526,7 +527,7 @@ const RequestWizard = (function () {
         if (domain[0] === '.') {
             domain = domain.substring(1);
         }
-        return FilterRule.MASK_WHITE_LIST + UrlFilterRule.MASK_START_URL + domain;
+        return FilterRule.MASK_ALLOWLIST + UrlFilterRule.MASK_START_URL + domain;
     };
 
     const showCreateExceptionRuleModal = function (frameInfo, filteringEvent) {
@@ -541,7 +542,7 @@ const RequestWizard = (function () {
             ).reverse();
         }
         if (filteringEvent.requestUrl === 'content-security-policy-check') {
-            patterns = [FilterRule.MASK_WHITE_LIST];
+            patterns = [FilterRule.MASK_ALLOWLIST];
         }
 
         if (filteringEvent.element) {
@@ -618,7 +619,7 @@ const RequestWizard = (function () {
         if (filterId === AntiBannerFiltersId.USER_FILTER_ID) {
             return Messages.OPTIONS_USERFILTER;
         }
-        if (filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+        if (filterId === AntiBannerFiltersId.ALLOWLIST_FILTER_ID) {
             return Messages.OPTIONS_WHITELIST;
         }
 
@@ -666,7 +667,7 @@ const RequestWizard = (function () {
         }
 
         const cookieNode = template.querySelector('[attr-text="cookie"]');
-        if (filteringEvent.cookieName) {
+            if (filteringEvent.cookieName) {
             cookieNode.textContent = `${filteringEvent.cookieName} = ${filteringEvent.cookieValue}`;
         } else {
             cookieNode.parentNode.style.display = 'none';
@@ -681,7 +682,7 @@ const RequestWizard = (function () {
         if (requestRule
             && !requestRule.replaceRule
             && typeof requestRule.filterId !== 'undefined') {
-            if (requestRule.filterId !== AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+            if (requestRule.filterId !== AntiBannerFiltersId.ALLOWLIST_FILTER_ID) {
                 const requestRuleNode = template.querySelector('[attr-text="requestRule"]');
                 requestRuleNode.textContent = requestRule.ruleText;
                 if (requestRule.convertedRuleText) {
@@ -793,7 +794,7 @@ const RequestWizard = (function () {
             if (requestRule.whitelistRule) {
                 blockRequestButton.classList.remove('hidden');
             }
-        } else if (requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+        } else if (requestRule.filterId === AntiBannerFiltersId.ALLOWLIST_FILTER_ID) {
             removeWhitelistDomainButton.classList.remove('hidden');
         } else if (!requestRule.whitelistRule) {
             unblockRequestButton.classList.remove('hidden');
@@ -1249,7 +1250,7 @@ PageController.prototype = {
         // Get rule text for requestRule or replaceRules
         let ruleText = '';
         if (event.requestRule) {
-            if (event.requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+            if (event.requestRule.filterId === AntiBannerFiltersId.ALLOWLIST_FILTER_ID) {
                 ruleText = Messages.IN_WHITELIST;
             } else {
                 ruleText = event.requestRule.ruleText;

@@ -244,9 +244,16 @@ const init = () => {
                     });
                 });
             }
-            case 'addUserRule':
-                userrules.addRules([message.ruleText]);
+            case 'addUserRule': {
+                if (data) {
+                    const { rule } = data;
+                    userrules.addRules([rule]);
+                } else {
+                    // TODO adjust message types for all callers
+                    userrules.addRules([message.ruleText]);
+                }
                 break;
+            }
             case 'removeUserRule':
                 userrules.removeRule(message.ruleText);
                 break;
@@ -298,9 +305,16 @@ const init = () => {
                 }
                 break;
             }
-            case 'openTab':
-                uiService.openTab(message.url, message.options);
+            case 'openTab': {
+                if (data) {
+                    const { url, options } = data;
+                    await uiService.openTab(url, options);
+                } else {
+                    // TODO remove when popup page will be refactored
+                    await uiService.openTab(message.url, message.options);
+                }
                 break;
+            }
             case 'resetBlockedAdsCount':
                 frames.resetBlockedAdsCount();
                 break;

@@ -165,6 +165,11 @@ class Messenger {
         await this.sendMessage(type);
     }
 
+    async getLogInitData() {
+        const type = 'initializeFrameScript';
+        return this.sendMessage(type);
+    }
+
     async onCloseFilteringLogPage() {
         const type = 'onCloseFilteringLogPage';
         await this.sendMessage(type);
@@ -188,6 +193,16 @@ class Messenger {
     async refreshPage(tabId, preserveLogEnabled) {
         const type = 'refreshPage';
         await this.sendMessage(type, { tabId, preserveLogEnabled });
+    }
+
+    async openTab(url, options) {
+        const type = 'openTab';
+        await this.sendMessage(type, { url, options });
+    }
+
+    async addUserRule(rule) {
+        const type = 'addUserRule';
+        await this.sendMessage(type, { rule });
     }
 }
 

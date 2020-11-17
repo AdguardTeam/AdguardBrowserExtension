@@ -9,12 +9,25 @@ import './filtering-events.pcss';
 const FilteringEvents = observer(() => {
     const { logStore } = useContext(rootStore);
 
-    const { events } = logStore;
+    const handleEventClick = (row) => (e) => {
+        e.preventDefault();
+        logStore.setSelectedEventById(row.eventId);
+    };
 
     const columns = useMemo(() => [
         {
             Header: 'URL',
-            accessor: 'url',
+            // TODO display elements, scripts
+            accessor: (props) => {
+                const { url, cookieName, cookieValue } = props;
+                if (url) {
+                    return url;
+                }
+                if (cookieName) {
+                    return `${cookieName} = ${cookieValue}`;
+                }
+                return null;
+            },
         },
         {
             Header: 'Type',
@@ -40,7 +53,7 @@ const FilteringEvents = observer(() => {
         headerGroups,
         rows,
         prepareRow,
-    } = useTable({ columns, data: events });
+    } = useTable({ columns, data: logStore.events });
 
     return (
         <table {...getTableProps()} className="filtering-log">
@@ -66,7 +79,7 @@ const FilteringEvents = observer(() => {
                     rows.map((row) => {
                         prepareRow(row);
                         return (
-                            <tr {...row.getRowProps()}>
+                            <tr {...row.getRowProps()} onClick={handleEventClick(row.original)}>
                                 {
                                     row.cells.map((cell) => {
                                         return (

@@ -27,6 +27,7 @@ import { listeners } from '../../notifier';
 import { frames } from '../../tabs/frames';
 import { browserUtils } from '../../utils/browser-utils';
 import { browser } from '../../extension-api/browser';
+import { STEALTH_ACTIONS } from '../../../common/constants';
 
 // TODO: [TSUrlFilter] Use TSURLFilter stealthService
 
@@ -71,16 +72,6 @@ export const stealthService = (() => {
             name: 'DNT',
             value: '1',
         },
-    };
-
-    const STEALTH_ACTIONS = {
-        HIDE_REFERRER: 1 << 0,
-        HIDE_SEARCH_QUERIES: 1 << 1,
-        BLOCK_CHROME_CLIENT_DATA: 1 << 2,
-        SEND_DO_NOT_TRACK: 1 << 3,
-        STRIPPED_TRACKING_URL: 1 << 4,
-        FIRST_PARTY_COOKIES: 1 << 5,
-        THIRD_PARTY_COOKIES: 1 << 6,
     };
 
     /**
