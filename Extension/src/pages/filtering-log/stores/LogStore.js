@@ -260,6 +260,8 @@ class LogStore {
                 frameDomain: source,
                 cookieName,
                 cookieValue,
+                element,
+                requestThirdParty,
             } = filteringEvent;
 
             return {
@@ -271,6 +273,8 @@ class LogStore {
                 rule: rule?.ruleText,
                 filter: getFilterName(rule?.filterId, this.filtersMetadata),
                 source,
+                element,
+                requestThirdParty,
             };
         });
 

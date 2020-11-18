@@ -14,24 +14,51 @@ const FilteringEvents = observer(() => {
         logStore.setSelectedEventById(row.eventId);
     };
 
+    // FIXME display element escaped, waits when css hits counter would be fixed
+    // TODO color blocked requests, elements, cookies
     const columns = useMemo(() => [
         {
             Header: 'URL',
             // TODO display elements, scripts
             accessor: (props) => {
-                const { url, cookieName, cookieValue } = props;
-                if (url) {
-                    return url;
-                }
+                const {
+                    url,
+                    cookieName,
+                    cookieValue,
+                    element,
+                } = props;
+
                 if (cookieName) {
                     return `${cookieName} = ${cookieValue}`;
                 }
-                return null;
+
+                // TODO check work of element
+                if (element) {
+                    return element;
+                }
+
+                return url;
             },
         },
         {
             Header: 'Type',
-            accessor: 'type',
+            accessor: (props) => {
+                const { type, requestThirdParty } = props;
+
+                console.log(requestThirdParty);
+
+                if (requestThirdParty) {
+                    // TODO waits for design
+                    return (
+                        <>
+                            {type}
+                            <small>Third party</small>
+                        </>
+                    );
+                }
+
+                return type;
+            },
         },
         {
             Header: 'Filtering  rule',
