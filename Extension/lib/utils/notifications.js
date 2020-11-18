@@ -25,51 +25,60 @@ adguard.notifications = (function (adguard) {
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
     const LAST_NOTIFICATION_TIME = 'viewed-notification-time';
 
-    const halloweenNotification = {
-        id: 'halloween2020',
+    const blackFridayNotification = {
+        id: 'blackFriday2020',
         locales: {
             en: {
-                btn: 'Get a treat',
-            },
-            de: {
-                btn: 'Angebot holen',
-            },
-            ko: {
-                btn: '더 읽기',
+                title: 'Black Friday at AdGuard',
+                btn: 'It\'s a big deal',
             },
             ru: {
-                btn: 'Кое-что для вас',
+                title: 'Скидки к Чёрной пятнице',
+                btn: 'Ого, для меня?',
+            },
+            de: {
+                title: 'Black Friday Deal',
+                btn: 'Zum Angebot',
             },
             ja: {
-                btn: '秘密の◯◯はこちら',
+                title: 'AdGuard BLACK FRIDAY',
+                btn: '最大割引を手に入れる',
+            },
+            ko: {
+                title: '블랙 \n프라이데이 \n세일',
+                btn: '최대 할인!',
             },
             zh_cn: {
-                btn: '万圣节的魔法',
+                title: '黑5 \n全球 \n狂欢',
+                btn: '疯狂购',
             },
             zh_tw: {
-                btn: '萬聖節的魔法',
+                title: '黑五 \n狂歡 \n購物節',
+                btn: '瘋狂大減價',
             },
             fr: {
-                btn: 'Prix promo',
+                title: 'Promo Black Friday',
+                btn: 'Ah, je veux voir !',
             },
             it: {
-                btn: 'Offerta speciale',
+                title: 'Sconti Black Friday',
+                btn: 'Vediamo un po\'',
             },
         },
         text: '',
-        url: 'https://adguard.com/forward.html?action=halloween2020_notify&from=popup&app=browser_extension',
-        from: '30 October 2020 00:00:01',
-        to: '3 November 2020 23:59:00',
+        url: 'https://adguard.com/forward.html?action=bf2020_notify&app=browser_extension',
+        from: '27 November 2020 12:00:01',
+        to: '1 December 2020 23:59:00',
         type: 'animated',
         get icons() {
-            return adguard.lazyGet(halloweenNotification, 'icons', () => ({
+            return adguard.lazyGet(blackFridayNotification, 'icons', () => ({
                 ICON_GREEN: {
-                    '19': adguard.getURL('icons/yellow-19-halloween.png'),
-                    '38': adguard.getURL('icons/yellow-38-halloween.png'),
+                    '19': adguard.getURL('icons/black-19-black-friday.png'),
+                    '38': adguard.getURL('icons/black-38-black-friday.png'),
                 },
                 ICON_GRAY: {
-                    '19': adguard.getURL('icons/gray-19-halloween.png'),
-                    '38': adguard.getURL('icons/gray-38-halloween.png'),
+                    '19': adguard.getURL('icons/gray-19.png'),
+                    '38': adguard.getURL('icons/gray-38.png'),
                 },
             }));
         },
@@ -91,7 +100,7 @@ adguard.notifications = (function (adguard) {
      * @property {string} type;
      */
     const notifications = {
-        halloween2020: halloweenNotification,
+        blackFriday2020: blackFridayNotification,
     };
 
     /**

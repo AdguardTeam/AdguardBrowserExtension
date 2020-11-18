@@ -805,7 +805,7 @@ PopupController.prototype = {
             e.preventDefault();
             const { url } = self.options.notification;
             if (url) {
-                self.openLink(url);
+                self.openLink(`${url}&from=popup`);
                 popupPage.sendMessage({ type: 'setNotificationViewed', withDelay: false });
                 popupPage.closePopup();
             }
