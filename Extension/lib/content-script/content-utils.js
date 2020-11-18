@@ -183,14 +183,15 @@
     function showVersionUpdatedPopup(message) {
         const {
             title,
+            offer,
             description,
+            isAdguardTab,
             changelogHref,
             changelogText,
-            offer,
             offerButtonHref,
             offerButtonText,
+            showPromoNotification,
             disableNotificationText,
-            isAdguardTab,
         } = message;
 
         const updateIframeHtml = `<head></head>
@@ -212,10 +213,10 @@
                                         ${disableNotificationText}
                                     </a>
                                 </div>
-                                <div class="adguard-update-popup__offer">
+                                <div class="adguard-update-popup__offer${showPromoNotification ? ' adguard-update-popup__offer--promo' : ''}">
                                     ${offer}
                                 </div>
-                                <a href="${offerButtonHref}" class="adguard-update-popup__btn close-iframe" target="_blank">
+                                <a href="${offerButtonHref}" class="adguard-update-popup__btn close-iframe set-notification-viewed${showPromoNotification ? ' adguard-update-popup__btn--promo' : ''}" target="_blank">
                                     ${offerButtonText}
                                 </a>
                             </div>
@@ -235,6 +236,13 @@
                                 type: 'changeUserSetting',
                                 key: 'show-app-updated-disabled',
                                 value: true,
+                            });
+                        }
+                        if (showPromoNotification
+                            && element.classList.contains('set-notification-viewed')) {
+                            contentPage.sendMessage({
+                                type: 'setNotificationViewed',
+                                withDelay: false,
                             });
                         }
                         // Remove iframe after click event fire on link
