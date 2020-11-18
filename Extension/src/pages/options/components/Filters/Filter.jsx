@@ -86,8 +86,7 @@ const Filter = ({
         return null;
     };
 
-    const filterClassName = classNames({
-        filter: true,
+    const filterClassName = classNames('filter', {
         'filter--disabled': !checkboxValue,
     });
 
@@ -103,6 +102,7 @@ const Filter = ({
                             target="_blank"
                             rel="noopener noreferrer"
                         />
+                        {renderRemoveButton()}
                     </div>
                     <div className="setting__inline-control">
                         <Setting
@@ -113,7 +113,6 @@ const Filter = ({
                         />
                     </div>
                 </div>
-                {renderRemoveButton()}
                 <div className="filter__desc">
                     <div className="filter__desc-item">
                         {description}

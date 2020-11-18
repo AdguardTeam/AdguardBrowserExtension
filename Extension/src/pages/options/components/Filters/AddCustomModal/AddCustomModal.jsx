@@ -17,6 +17,7 @@ const customStyles = {
         backgroundColor: 'rgba(0, 0, 0, .1)',
         width: '100%',
         height: '100%',
+        zIndex: 7,
     },
     content: {
         border: 0,
@@ -267,6 +268,7 @@ const AddCustomModal = ({
         <Modal
             isOpen={modalIsOpen}
             style={customStyles}
+            onRequestClose={closeModalHandler}
         >
             {renderStep()}
         </Modal>

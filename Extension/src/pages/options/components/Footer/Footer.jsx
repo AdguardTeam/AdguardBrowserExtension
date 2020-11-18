@@ -3,7 +3,22 @@ import React from 'react';
 import { FORUM_URL, WEBSITE_URL } from '../../../constants';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
 
+import { prefs } from '../../../../background/prefs';
 import './footer.pcss';
+
+const extensionStoreLink = (function () {
+    const browserNameMap = {
+        Opera: 'opera',
+        Firefox: 'firefox',
+        Edge: 'edge',
+        Chrome: 'chrome',
+    };
+
+    const browser = browserNameMap[prefs.browser] || browserNameMap.Chrome;
+    const action = `${browser}_store`;
+
+    return `https://adguard.com/forward.html?action=${action}&from=options_screen&app=browser_extension`;
+}());
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
@@ -15,11 +30,21 @@ const Footer = () => {
                     <div className="footer__rate-desc">
                         {reactTranslator.translate('options_do_you_like')}
                     </div>
-                    <button type="button" className="button button--rate">
-                        {/* TODO: setup webpack to handle image import */}
+                    <a
+                        type="button"
+                        className="button button--rate"
+                        href={extensionStoreLink}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                    >
                         <img id="thumbsup" className="button__img" src="../../../assets/images/thumbsup.svg" alt="" />
-                        <label htmlFor="thumbsup" className="button__label">{reactTranslator.translate('options_footer_like_us')}</label>
-                    </button>
+                        <label
+                            htmlFor="thumbsup"
+                            className="button__label button__label--rate"
+                        >
+                            {reactTranslator.translate('options_footer_like_us')}
+                        </label>
+                    </a>
                 </div>
             </div>
             <div className="footer__nav">
