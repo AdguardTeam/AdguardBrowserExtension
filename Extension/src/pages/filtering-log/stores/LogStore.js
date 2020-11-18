@@ -253,28 +253,13 @@ class LogStore {
 
         const events = filteredEvents.map((filteringEvent) => {
             const {
-                eventId,
-                requestUrl: url,
-                requestType: type,
-                requestRule: rule,
-                frameDomain: source,
-                cookieName,
-                cookieValue,
-                element,
-                requestThirdParty,
+                requestRule,
             } = filteringEvent;
 
             return {
-                eventId,
-                url,
-                type,
-                cookieName,
-                cookieValue,
-                rule: rule?.ruleText,
-                filter: getFilterName(rule?.filterId, this.filtersMetadata),
-                source,
-                element,
-                requestThirdParty,
+                ...filteringEvent,
+                ruleText: requestRule?.ruleText,
+                filterName: getFilterName(requestRule?.filterId, this.filtersMetadata),
             };
         });
 

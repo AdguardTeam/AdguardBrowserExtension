@@ -22,7 +22,7 @@ const FilteringEvents = observer(() => {
             // TODO display elements, scripts
             accessor: (props) => {
                 const {
-                    url,
+                    requestUrl,
                     cookieName,
                     cookieValue,
                     element,
@@ -37,40 +37,38 @@ const FilteringEvents = observer(() => {
                     return element;
                 }
 
-                return url;
+                return requestUrl;
             },
         },
         {
             Header: 'Type',
             accessor: (props) => {
-                const { type, requestThirdParty } = props;
-
-                console.log(requestThirdParty);
+                const { requestType, requestThirdParty } = props;
 
                 if (requestThirdParty) {
                     // TODO waits for design
                     return (
                         <>
-                            {type}
+                            {requestType}
                             <small>Third party</small>
                         </>
                     );
                 }
 
-                return type;
+                return requestType;
             },
         },
         {
             Header: 'Filtering  rule',
-            accessor: 'rule',
+            accessor: 'ruleText',
         },
         {
             Header: 'Filter',
-            accessor: 'filter',
+            accessor: 'filterName',
         },
         {
             Header: 'Source',
-            accessor: 'source',
+            accessor: 'frameDomain',
         },
     ], []);
 
