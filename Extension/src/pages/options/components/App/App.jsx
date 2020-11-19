@@ -21,6 +21,7 @@ import { Notifications } from '../Notifications';
 import { messenger } from '../../../services/messenger';
 import { log } from '../../../../background/utils/log';
 
+// TODO rename to options
 const App = observer(() => {
     const { settingsStore } = useContext(rootStore);
 

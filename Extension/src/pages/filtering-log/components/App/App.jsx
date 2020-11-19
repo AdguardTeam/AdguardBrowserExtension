@@ -15,22 +15,42 @@ if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').match
     require('../../styles/light-mode.pcss');
 }
 
+// TODO rename to filtering log
 const App = () => {
     const { logStore } = useContext(rootStore);
 
+    // init
     useEffect(() => {
-        let removeListenerCallback = async () => {};
-
         (async () => {
             await logStore.synchronizeOpenTabs();
             await logStore.getLogInitData();
             await messenger.onOpenFilteringLogPage();
+        })();
+    }, []);
 
+    // listen for hash change
+    useEffect(() => {
+        const handleHashChange = async () => {
             // Set current tab id as selected, background page provides it with hash value
             // eslint-disable-next-line no-restricted-globals
             const currentTabId = location.hash.slice(1);
             await logStore.setSelectedTabId(currentTabId);
+        };
 
+        handleHashChange();
+
+        window.addEventListener('hashchange', handleHashChange);
+
+        return function onUnmount() {
+            window.removeEventListener('hashchange', handleHashChange);
+        };
+    }, []);
+
+    // append message listeners
+    useEffect(() => {
+        let removeListenerCallback = async () => {};
+
+        (async () => {
             const TAB_ADDED = 'log.tab.added';
             const TAB_UPDATE = 'log.tab.update';
             const TAB_CLOSE = 'log.tab.close';
