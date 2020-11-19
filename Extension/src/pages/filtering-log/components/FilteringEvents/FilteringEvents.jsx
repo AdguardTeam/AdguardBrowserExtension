@@ -80,6 +80,37 @@ const FilteringEvents = observer(() => {
         prepareRow,
     } = useTable({ columns, data: logStore.events });
 
+    const getRowProps = (row) => {
+        const event = row.original;
+
+        let className = null;
+
+        if (event.replaceRules) {
+            className = 'yellow';
+        }
+
+        if (event.requestRule && !event.replaceRules) {
+            if (event.requestRule.whitelistRule) {
+                className = 'green';
+            // eslint-disable-next-line max-len
+            } else if (event.requestRule.cssRule || event.requestRule.scriptRule || event.removeParam) {
+                className = 'yellow';
+            } else if (event.requestRule.cookieRule) {
+                if (event.requestRule.isModifyingCookieRule) {
+                    className = 'yellow';
+                } else {
+                    className = 'red';
+                }
+            } else {
+                className = 'red';
+            }
+        }
+
+        return ({
+            className,
+        });
+    };
+
     return (
         <table {...getTableProps()} className="filtering-log">
             <thead>
@@ -104,7 +135,7 @@ const FilteringEvents = observer(() => {
                     rows.map((row) => {
                         prepareRow(row);
                         return (
-                            <tr {...row.getRowProps()} onClick={handleEventClick(row.original)}>
+                            <tr {...row.getRowProps(getRowProps(row))} onClick={handleEventClick(row.original)}>
                                 {
                                     row.cells.map((cell) => {
                                         return (
