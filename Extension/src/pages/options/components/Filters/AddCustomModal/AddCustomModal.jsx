@@ -81,6 +81,12 @@ const AddCustomModal = ({
     };
 
     const renderInputStep = () => {
+        const onKeyEnterPress = (e) => {
+            if (e.key === 'Enter') {
+                handleSendUrlToCheck();
+            }
+        };
+
         // TODO [maximtop] add enter key press handler
         return (
             <>
@@ -95,6 +101,7 @@ const AddCustomModal = ({
                             onChange={handleInputChange}
                             className="modal__input"
                             value={customUrlToAdd}
+                            onKeyPress={onKeyEnterPress}
                         />
                         <div className="modal__desc">
                             {reactTranslator.translate('options_popup_call_to_action')}
@@ -137,6 +144,12 @@ const AddCustomModal = ({
             name, description, version, rulesCount, homepage, customUrl,
         } = filterToAdd;
 
+        const onKeyEnterPress = (e) => {
+            if (e.key === 'Enter') {
+                handleApprove();
+            }
+        };
+
         return (
             <>
                 <ModalContentWrapper
@@ -151,6 +164,7 @@ const AddCustomModal = ({
                                 type="text"
                                 onChange={handleChangeFilterName}
                                 value={name || filterToAddName || customUrlToAdd}
+                                onKeyPress={onKeyEnterPress}
                             />
                         </div>
                         <div className="modal__row">
