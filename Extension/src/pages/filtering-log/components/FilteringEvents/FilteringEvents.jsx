@@ -15,11 +15,9 @@ const FilteringEvents = observer(() => {
     };
 
     // FIXME display element escaped, waits when css hits counter would be fixed
-    // TODO color blocked requests, elements, cookies
     const columns = useMemo(() => [
         {
             Header: 'URL',
-            // TODO display elements, scripts
             accessor: (props) => {
                 const {
                     requestUrl,
@@ -32,7 +30,6 @@ const FilteringEvents = observer(() => {
                     return `${cookieName} = ${cookieValue}`;
                 }
 
-                // TODO check work of element
                 if (element) {
                     return element;
                 }
@@ -135,7 +132,10 @@ const FilteringEvents = observer(() => {
                     rows.map((row) => {
                         prepareRow(row);
                         return (
-                            <tr {...row.getRowProps(getRowProps(row))} onClick={handleEventClick(row.original)}>
+                            <tr
+                                {...row.getRowProps(getRowProps(row))}
+                                onClick={handleEventClick(row.original)}
+                            >
                                 {
                                     row.cells.map((cell) => {
                                         return (
