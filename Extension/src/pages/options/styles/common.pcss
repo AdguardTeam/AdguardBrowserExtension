@@ -114,15 +114,20 @@ h2 {
 }
 
 .actions {
-    padding: 22px 15px 0;
+    padding: 22px 0 0;
     display: inline-block;
 
     &--divided {
         display: inline-block;
 
+        @media (min-width: 1024px) {
+            width: 680px;
+        }
+
         @media (min-width: 500px) {
             display: flex;
             justify-content: space-between;
+            padding: 22px 15px 0;
         }
     }
 

@@ -3,22 +3,8 @@ import React from 'react';
 import { FORUM_URL, WEBSITE_URL } from '../../../constants';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
 
-import { prefs } from '../../../../background/prefs';
 import './footer.pcss';
-
-const extensionStoreLink = (function () {
-    const browserNameMap = {
-        Opera: 'opera',
-        Firefox: 'firefox',
-        Edge: 'edge',
-        Chrome: 'chrome',
-    };
-
-    const browser = browserNameMap[prefs.browser] || browserNameMap.Chrome;
-    const action = `${browser}_store`;
-
-    return `https://adguard.com/forward.html?action=${action}&from=options_screen&app=browser_extension`;
-}());
+import { messenger } from '../../../services/messenger';
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
@@ -30,12 +16,10 @@ const Footer = () => {
                     <div className="footer__rate-desc">
                         {reactTranslator.translate('options_do_you_like')}
                     </div>
-                    <a
+                    <button
                         type="button"
                         className="button button--rate"
-                        href={extensionStoreLink}
-                        rel="noopener noreferrer"
-                        target="_blank"
+                        onClick={messenger.openExtensionStore}
                     >
                         <img id="thumbsup" className="button__img" src="../../../assets/images/thumbsup.svg" alt="" />
                         <label
@@ -44,7 +28,7 @@ const Footer = () => {
                         >
                             {reactTranslator.translate('options_footer_like_us')}
                         </label>
-                    </a>
+                    </button>
                 </div>
             </div>
             <div className="footer__nav">
