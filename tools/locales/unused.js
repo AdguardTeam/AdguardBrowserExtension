@@ -1,10 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 
-import {
-    log,
-    getLocaleTranslations,
-} from '../helpers';
+import { cliLog } from '../cli-log';
+import { getLocaleTranslations } from '../helpers';
 
 import {
     BASE_LOCALE,
@@ -77,11 +75,11 @@ export const checkUnusedMessages = async () => {
     const unusedMessages = baseMessages.filter(isMessageUsed);
 
     if (unusedMessages.length === 0) {
-        log.success('There are no unused messages');
+        cliLog.success('There are no unused messages');
     } else {
-        log.warning('Unused messages:');
+        cliLog.warningRed('Unused messages:');
         unusedMessages.forEach((key) => {
-            log.warning(`  ${key}`);
+            cliLog.warning(`  ${key}`);
         });
     }
 };

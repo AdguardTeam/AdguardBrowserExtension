@@ -6,7 +6,7 @@ import { renewLocales } from './locales/renew-locales';
 import { checkTranslations } from './locales/validate';
 import { checkUnusedMessages } from './locales/unused';
 
-import { log } from './helpers';
+import { cliLog } from './cli-log';
 
 import {
     LANGUAGES,
@@ -18,10 +18,10 @@ const LOCALES = Object.keys(LANGUAGES);
 const download = async (locales) => {
     try {
         await downloadAndSave(locales);
-        log.success('Download was successful');
+        cliLog.success('Download was successful');
         await checkTranslations(REQUIRED_LOCALES);
     } catch (e) {
-        log.error(e.message);
+        cliLog.error(e.message);
         process.exit(1);
     }
 };
@@ -31,9 +31,9 @@ const upload = async () => {
         // check for unused base-locale strings before uploading
         await checkUnusedMessages();
         const result = await uploadLocales();
-        log.success(`Upload was successful with response: ${JSON.stringify(result)}`);
+        cliLog.success(`Upload was successful with response: ${JSON.stringify(result)}`);
     } catch (e) {
-        log.error(e.message);
+        cliLog.error(e.message);
         process.exit(1);
     }
 };
@@ -42,7 +42,7 @@ const renew = async () => {
     try {
         await renewLocales();
     } catch (e) {
-        log.error(e.message);
+        cliLog.error(e.message);
         process.exit(1);
     }
 };
@@ -51,7 +51,7 @@ const validate = async (locales) => {
     try {
         await checkTranslations(locales);
     } catch (e) {
-        log.error(e.message);
+        cliLog.error(e.message);
         process.exit(1);
     }
 };
@@ -60,7 +60,7 @@ const summary = async (isInfo) => {
     try {
         await checkTranslations(LOCALES, isInfo);
     } catch (e) {
-        log.error(e.message);
+        cliLog.error(e.message);
         process.exit(1);
     }
 };
@@ -69,7 +69,7 @@ const unused = async () => {
     try {
         await checkUnusedMessages();
     } catch (e) {
-        log.error(e.message);
+        cliLog.error(e.message);
         process.exit(1);
     }
 };

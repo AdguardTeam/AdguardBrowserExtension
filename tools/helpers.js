@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { merge } from 'webpack-merge';
 import fs from 'fs';
 import path from 'path';
@@ -98,21 +97,6 @@ export const chunkArray = (arr, size) => arr.reduce((chunks, el, idx) => {
     }
     return chunks;
 }, []);
-
-export const log = {
-    info: (str) => {
-        console.log(str);
-    },
-    success: (str) => {
-        console.log(chalk.green.bgBlack(str));
-    },
-    warning: (str) => {
-        console.log(chalk.black.bgYellowBright(str));
-    },
-    error: (str) => {
-        console.log(chalk.bold.yellow.bgRed(str));
-    },
-};
 
 /**
  * Gets strings for certain locale

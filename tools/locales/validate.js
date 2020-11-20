@@ -1,7 +1,8 @@
 import path from 'path';
 
+import { cliLog } from '../cli-log';
+
 import {
-    log,
     getLocaleTranslations,
     areArraysEqual,
 } from '../helpers';
@@ -30,16 +31,16 @@ const LOCALES_DIR = path.resolve(__dirname, LOCALES_RELATIVE_PATH);
  * @param {Result[]} results
  */
 const printTranslationsResults = (results) => {
-    log.info('Translations readiness:');
+    cliLog.info('Translations readiness:');
     results.forEach((res) => {
         const record = `${res.locale} -- ${res.level}%`;
         if (res.level < THRESHOLD_PERCENTAGE) {
-            log.error(record);
+            cliLog.warningRed(record);
             res.untranslatedStrings.forEach((str) => {
-                log.warning(`  ${str}`);
+                cliLog.warning(`  ${str}`);
             });
         } else {
-            log.success(record);
+            cliLog.success(record);
         }
     });
 };
@@ -91,7 +92,7 @@ export const checkTranslations = async (locales, isInfo = false) => {
         } else if (areArraysEqual(locales, REQUIRED_LOCALES)) {
             message = 'Our locales have required level of translations';
         }
-        log.success(message);
+        cliLog.success(message);
     } else {
         printTranslationsResults(filteredResults);
         throw new Error('Locales above should be done for 100%');

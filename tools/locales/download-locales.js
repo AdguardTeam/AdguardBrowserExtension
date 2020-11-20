@@ -6,7 +6,7 @@ import path from 'path';
 import fs from 'fs';
 import querystring from 'querystring';
 import { cliLog } from '../cli-log';
-import { chunkArray } from '../helpers';
+import { chunkArray, getLocaleTranslations } from '../helpers';
 
 import {
     PROJECT_ID,
@@ -122,17 +122,18 @@ const checkRequiredFields = (locale, messages, baseMessages) => {
     requiredFields.forEach((requiredField) => {
         const fieldData = resultMessages[requiredField];
         if (!fieldData) {
-            cliLog.info(`"${locale}" locale does't have required field: "${requiredField}"`);
-            cliLog.info('Will be added message from base locale');
+            cliLog.info(` - "${locale}" locale does't have required field: "${requiredField}"`);
+            cliLog.info('   Will be added message from base locale');
             resultMessages[requiredField] = baseMessages[requiredField];
         }
     });
     return resultMessages;
 };
 
-const validateLocales = async () => {
-    const baseLocalePath = path.join(LOCALES_DIR, BASE_LOCALE, LOCALE_DATA_FILENAME);
-    const baseMessages = JSON.parse(await fs.promises.readFile(baseLocalePath, 'utf-8'));
+const validateRequiredFields = async () => {
+    const baseMessages = await getLocaleTranslations(
+        LOCALES_DIR, BASE_LOCALE, LOCALE_DATA_FILENAME,
+    );
     const promises = locales.map(async (locale) => {
         const pathToLocale = path.join(LOCALES_DIR, locale, LOCALE_DATA_FILENAME);
         const messages = JSON.parse(await fs.promises.readFile(pathToLocale, 'utf-8'));
@@ -148,5 +149,5 @@ const validateLocales = async () => {
 export const downloadAndSave = async (locales) => {
     const localeDataPairs = await downloadLocales(locales);
     await saveLocales(localeDataPairs);
-    await validateLocales();
+    await validateRequiredFields();
 };

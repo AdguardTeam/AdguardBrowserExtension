@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import _ from 'lodash';
 
+import { cliLog } from '../cli-log'
 import { getLocaleTranslations } from '../helpers';
 
 import {
@@ -138,17 +139,21 @@ export const renewLocales = async () => {
             resultMessages.forEach((key) => {
                 result[key] = source[key];
             });
-            console.log('existing keys number: ', resultMessages.length);
-            console.log('old keys number: ', oldKeys.length);
             const removedKeys = _.xor(resultMessages, oldKeys);
-            console.log('removed keys number: ', removedKeys.length);
-            console.log('removed keys: ', removedKeys);
+            if (removedKeys.length === 0) {
+                cliLog.info('There is nothing to renew');
+            } else {
+                cliLog.info(`existing keys number: ${resultMessages.length}`);
+                cliLog.info(`old keys number: ${oldKeys.length}`);
+                cliLog.warningRed(`${removedKeys.length} keys have been removed:`)
+                cliLog.warning(` - ${removedKeys.join('\n - ')}`);
+            }
             return writeInFile(output, result);
         })
         .then(() => {
-            console.log('Success');
+            cliLog.success('Success!');
         })
         .catch((err) => {
-            console.error(err);
+            cliLog.error(err);
         });
 };
