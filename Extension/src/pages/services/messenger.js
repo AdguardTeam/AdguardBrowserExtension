@@ -67,6 +67,11 @@ class Messenger {
         });
     }
 
+    openExtensionStore = async () => {
+        const type = 'openExtensionStore';
+        return this.sendMessage(type);
+    }
+
     async enableFilter(filterId) {
         // TODO use common message types in constants;
         const type = 'addAndEnableFilter';

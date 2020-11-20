@@ -210,7 +210,7 @@ class SettingsStore {
                 }
             });
             const { SEARCH_AND_SELF_PROMO_FILTER_ID } = this.constants.AntiBannerFiltersId;
-            if (nId === SEARCH_AND_SELF_PROMO_FILTER_ID) {
+            if (filterId === SEARCH_AND_SELF_PROMO_FILTER_ID) {
                 this.allowAcceptableAds = enabled;
             }
         });
