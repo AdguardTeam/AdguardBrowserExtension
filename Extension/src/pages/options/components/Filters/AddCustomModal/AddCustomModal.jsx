@@ -17,6 +17,7 @@ const customStyles = {
         backgroundColor: 'rgba(0, 0, 0, .1)',
         width: '100%',
         height: '100%',
+        zIndex: 7,
     },
     content: {
         border: 0,
@@ -79,40 +80,35 @@ const AddCustomModal = ({
         }
     };
 
-    const renderInputStep = () => {
-        // TODO [maximtop] add enter key press handler
-        return (
-            <>
-                <ModalContentWrapper
-                    closeModalHandler={closeModalHandler}
-                    title="New filter subscription"
-                >
-                    <div className="modal__content">
-                        <input
-                            type="text"
-                            placeholder={reactTranslator.translate('options_popup_url_placeholder')}
-                            onChange={handleInputChange}
-                            className="modal__input"
-                            value={customUrlToAdd}
-                        />
-                        <div className="modal__desc">
-                            {reactTranslator.translate('options_popup_call_to_action')}
-                        </div>
-                        <div className="modal__desc">
-                            {reactTranslator.translate('options_popup_description')}
-                        </div>
-                    </div>
-                    <button
-                        className="button button--m button--green modal__btn"
-                        type="button"
-                        onClick={handleSendUrlToCheck}
-                    >
-                        {reactTranslator.translate('options_popup_next_button')}
-                    </button>
-                </ModalContentWrapper>
-            </>
-        );
-    };
+    const renderInputStep = () => (
+        <ModalContentWrapper
+            closeModalHandler={closeModalHandler}
+            title="New filter subscription"
+        >
+            <form className="modal__content" onSubmit={handleSendUrlToCheck}>
+                <input
+                    type="text"
+                    placeholder={reactTranslator.translate('options_popup_url_placeholder')}
+                    onChange={handleInputChange}
+                    className="modal__input"
+                    value={customUrlToAdd}
+                />
+                <div className="modal__desc">
+                    {reactTranslator.translate('options_popup_call_to_action')}
+                </div>
+                <div className="modal__desc">
+                    {reactTranslator.translate('options_popup_description')}
+                </div>
+            </form>
+            <button
+                className="button button--m button--green modal__btn"
+                type="button"
+                onClick={handleSendUrlToCheck}
+            >
+                {reactTranslator.translate('options_popup_next_button')}
+            </button>
+        </ModalContentWrapper>
+    );
 
     const handleTrustedCheckbox = (event) => {
         filterToAdd.trusted = !!event.target.checked;
@@ -137,68 +133,66 @@ const AddCustomModal = ({
         } = filterToAdd;
 
         return (
-            <>
-                <ModalContentWrapper
-                    closeModalHandler={closeModalHandler}
-                    title="New filter subscription"
+            <ModalContentWrapper
+                closeModalHandler={closeModalHandler}
+                title="New filter subscription"
+            >
+                <form className="modal__content" onSubmit={handleApprove}>
+                    <div className="modal__row">
+                        <div className="modal__cell">{reactTranslator.translate('options_popup_filter_title')}</div>
+                        <input
+                            className="modal__input"
+                            type="text"
+                            onChange={handleChangeFilterName}
+                            value={name || filterToAddName || customUrlToAdd}
+                        />
+                    </div>
+                    <div className="modal__row">
+                        <div className="modal__cell">{reactTranslator.translate('options_popup_filter_description')}</div>
+                        <div className="modal__cell">{description}</div>
+                    </div>
+                    <div className="modal__row">
+                        <div className="modal__cell">{reactTranslator.translate('options_popup_filter_version')}</div>
+                        <div className="modal__cell">{version}</div>
+                    </div>
+                    <div className="modal__row">
+                        <div className="modal__cell">{reactTranslator.translate('options_popup_filter_rules_count')}</div>
+                        <div className="modal__cell">{rulesCount}</div>
+                    </div>
+                    <div className="modal__row">
+                        <div className="modal__cell">{reactTranslator.translate('options_popup_filter_homepage')}</div>
+                        <div className="modal__cell modal__cell--url">{homepage}</div>
+                    </div>
+                    <div className="modal__row">
+                        <div className="modal__cell">{reactTranslator.translate('options_popup_filter_url')}</div>
+                        <div className="modal__cell modal__cell--url">{customUrl}</div>
+                    </div>
+                    <div className="modal__row">
+                        <input
+                            className="modal__checkbox"
+                            id="trusted"
+                            type="checkbox"
+                            onChange={handleTrustedCheckbox}
+                        />
+                        <label
+                            className="modal__checkbox-label"
+                            htmlFor="trusted"
+                        >
+                            {reactTranslator.translate('options_popup_trusted_filter_title')}
+                        </label>
+                    </div>
+                </form>
+                <div className="modal__row modal__row--info">
+                    {reactTranslator.translate('options_popup_trusted_filter_description')}
+                </div>
+                <button
+                    type="button"
+                    onClick={handleApprove}
+                    className="button button--m button--green modal__btn"
                 >
-                    <div className="modal__content">
-                        <div className="modal__row">
-                            <div className="modal__cell">{reactTranslator.translate('options_popup_filter_title')}</div>
-                            <input
-                                className="modal__input"
-                                type="text"
-                                onChange={handleChangeFilterName}
-                                value={name || filterToAddName || customUrlToAdd}
-                            />
-                        </div>
-                        <div className="modal__row">
-                            <div className="modal__cell">{reactTranslator.translate('options_popup_filter_description')}</div>
-                            <div className="modal__cell">{description}</div>
-                        </div>
-                        <div className="modal__row">
-                            <div className="modal__cell">{reactTranslator.translate('options_popup_filter_version')}</div>
-                            <div className="modal__cell">{version}</div>
-                        </div>
-                        <div className="modal__row">
-                            <div className="modal__cell">{reactTranslator.translate('options_popup_filter_rules_count')}</div>
-                            <div className="modal__cell">{rulesCount}</div>
-                        </div>
-                        <div className="modal__row">
-                            <div className="modal__cell">{reactTranslator.translate('options_popup_filter_homepage')}</div>
-                            <div className="modal__cell modal__cell--url">{homepage}</div>
-                        </div>
-                        <div className="modal__row">
-                            <div className="modal__cell">{reactTranslator.translate('options_popup_filter_url')}</div>
-                            <div className="modal__cell modal__cell--url">{customUrl}</div>
-                        </div>
-                        <div className="modal__row">
-                            <input
-                                className="modal__checkbox"
-                                id="trusted"
-                                type="checkbox"
-                                onChange={handleTrustedCheckbox}
-                            />
-                            <label
-                                className="modal__checkbox-label"
-                                htmlFor="trusted"
-                            >
-                                {reactTranslator.translate('options_popup_trusted_filter_title')}
-                            </label>
-                        </div>
-                    </div>
-                    <div className="modal__row modal__row--info">
-                        {reactTranslator.translate('options_popup_trusted_filter_description')}
-                    </div>
-                    <button
-                        type="button"
-                        onClick={handleApprove}
-                        className="button button--m button--green modal__btn"
-                    >
-                        {reactTranslator.translate('options_popup_subscribe_button')}
-                    </button>
-                </ModalContentWrapper>
-            </>
+                    {reactTranslator.translate('options_popup_subscribe_button')}
+                </button>
+            </ModalContentWrapper>
         );
     };
 
@@ -206,11 +200,11 @@ const AddCustomModal = ({
         return (
             <>
                 <ModalContentWrapper closeModalHandler={closeModalHandler}>
-                    <div className="modal__content modal__content--center-text">
+                    <form className="modal__content modal__content--center-text">
                         <div className="modal__desc">
                             {reactTranslator.translate('options_popup_checking_filter')}
                         </div>
-                    </div>
+                    </form>
                 </ModalContentWrapper>
             </>
         );
@@ -224,14 +218,14 @@ const AddCustomModal = ({
         return (
             <>
                 <ModalContentWrapper closeModalHandler={closeModalHandler}>
-                    <div className="modal__content modal__content--center-text">
+                    <form className="modal__content modal__content--center-text">
                         <div className="modal__subtitle">
                             {reactTranslator.translate('options_popup_check_false_title')}
                         </div>
                         <div className="modal__desc">
                             {reactTranslator.translate('options_popup_check_false_description')}
                         </div>
-                    </div>
+                    </form>
                     <button
                         type="button"
                         onClick={tryAgainHandler}
@@ -267,6 +261,7 @@ const AddCustomModal = ({
         <Modal
             isOpen={modalIsOpen}
             style={customStyles}
+            onRequestClose={closeModalHandler}
         >
             {renderStep()}
         </Modal>

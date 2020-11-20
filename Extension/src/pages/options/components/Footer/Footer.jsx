@@ -4,6 +4,7 @@ import { FORUM_URL, WEBSITE_URL } from '../../../constants';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
 
 import './footer.pcss';
+import { messenger } from '../../../services/messenger';
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
@@ -15,10 +16,18 @@ const Footer = () => {
                     <div className="footer__rate-desc">
                         {reactTranslator.translate('options_do_you_like')}
                     </div>
-                    <button type="button" className="button button--rate">
-                        {/* TODO: setup webpack to handle image import */}
+                    <button
+                        type="button"
+                        className="button button--rate"
+                        onClick={messenger.openExtensionStore}
+                    >
                         <img id="thumbsup" className="button__img" src="../../../assets/images/thumbsup.svg" alt="" />
-                        <label htmlFor="thumbsup" className="button__label">{reactTranslator.translate('options_footer_like_us')}</label>
+                        <label
+                            htmlFor="thumbsup"
+                            className="button__label button__label--rate"
+                        >
+                            {reactTranslator.translate('options_footer_like_us')}
+                        </label>
                     </button>
                 </div>
             </div>

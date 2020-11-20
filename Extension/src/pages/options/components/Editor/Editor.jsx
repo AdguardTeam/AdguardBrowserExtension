@@ -10,7 +10,9 @@ import './mode-adguard';
 
 import './editor.pcss';
 
-const Editor = ({ name, value, editorRef, shortcuts }) => {
+const Editor = ({
+    name, value, editorRef, shortcuts,
+}) => {
     const SIZE_STORAGE_KEY = `${name}_editor-size`;
 
     const DEFAULT_EDITOR_SIZE = {
