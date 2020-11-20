@@ -1,19 +1,32 @@
 /* eslint-disable no-await-in-loop,no-restricted-syntax,no-console */
-const fs = require('fs').promises;
-const path = require('path');
-const _ = require('lodash');
-const { LOCALES_DIR } = require('../constants');
+import fs from 'fs/promises';
+import path from 'path';
+import _ from 'lodash';
+
+import { getLocaleTranslations } from '../helpers';
+
+import {
+    BASE_LOCALE,
+    LOCALES_RELATIVE_PATH,
+    LOCALE_DATA_FILENAME,
+    SRC_RELATIVE_PATH,
+    SRC_FILENAME_EXTENSIONS,
+    PERSISTENT_MESSAGES,
+} from './locales-constants';
+
+const LOCALES_DIR = path.resolve(__dirname, LOCALES_RELATIVE_PATH);
+const SRC_DIR = path.resolve(__dirname, SRC_RELATIVE_PATH);
 
 /**
  * Search configuration
  */
 const configuration = {
-    src: path.join(LOCALES_DIR, 'en/messages.json'), // Base language json
-    targets: ['./Extension/'], // Directory to search occurrences
-    output: path.join(LOCALES_DIR, 'en/messages.json'), // Place to put result
-    filesReg: '(.js|.html)$',
+    src: path.join(LOCALES_DIR, `${BASE_LOCALE}/${LOCALE_DATA_FILENAME}`), // Base language json
+    targets: [SRC_DIR], // Directory to search occurrences
+    output: path.join(LOCALES_DIR, `${BASE_LOCALE}/${LOCALE_DATA_FILENAME}`), // Place to put result
+    filesReg: `(${SRC_FILENAME_EXTENSIONS.join('|')})$`,
     // messages used in extensions localisations e.g. __MSG_short_name__
-    persistedMessages: ['name', 'short_name', 'description'],
+    persistedMessages: PERSISTENT_MESSAGES,
 };
 
 /**
@@ -113,8 +126,9 @@ export const renewLocales = async () => {
         targets = [targets];
     }
 
-    // eslint-disable-next-line global-require,import/no-dynamic-require
-    const source = require(src);
+    const source = await getLocaleTranslations(
+        LOCALES_DIR, BASE_LOCALE, LOCALE_DATA_FILENAME,
+    );
     const oldKeys = Object.keys({ ...source });
 
     chooseMessagesFromFiles(oldKeys, targets, filesReg)

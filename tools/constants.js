@@ -87,12 +87,6 @@ So what we do:
 export const PUBLIC_SUFFIXES_URL = 'https://publicsuffix.org/list/public_suffix_list.dat';
 export const PUBLIC_SUFFIXES_FILE = '../../Extension/src/utils/public-suffixes.js';
 
-// locales constants
-const LOCALES_BASE_URL = 'https://twosky.adtidy.org/api/v1';
-export const LOCALES_DOWNLOAD_URL = `${LOCALES_BASE_URL}/download`;
-export const LOCALES_UPLOAD_URL = `${LOCALES_BASE_URL}/upload`;
-export const LOCALES_DIR = path.resolve(__dirname, '../Extension/_locales/');
-
 // artifacts constants
 export const CHROME_UPDATE_URL = 'https://static.adguard.com/extensions/adguardadblocker/beta/update.xml';
 export const CHROME_CERT = path.resolve(__dirname, '../private/AdguardBrowserExtension/certificate.pem');
