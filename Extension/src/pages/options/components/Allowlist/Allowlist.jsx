@@ -144,6 +144,7 @@ const Allowlist = observer(() => {
                         type="button"
                         className="button button--m button--green-bd actions__btn"
                         onClick={exportClickHandler}
+                        disabled={!settingsStore.allowlist}
                     >
                         Export
                     </button>

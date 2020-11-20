@@ -2,12 +2,12 @@ import { observable, action, makeObservable } from 'mobx';
 import { nanoid } from 'nanoid';
 
 class UiStore {
-    @observable notifications = [];
-
     constructor(rootStore) {
         this.rootStore = rootStore;
         makeObservable(this);
     }
+
+    @observable notifications = [];
 
     @action
     addNotification({ title = '', description }) {

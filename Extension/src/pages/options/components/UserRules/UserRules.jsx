@@ -132,6 +132,7 @@ const UserRules = observer(() => {
                         type="button"
                         className="button button--m button--green-bd actions__btn"
                         onClick={exportClickHandler}
+                        disabled={!settingsStore.userRules}
                     >
                         {reactTranslator.translate('options_userfilter_export')}
                     </button>
