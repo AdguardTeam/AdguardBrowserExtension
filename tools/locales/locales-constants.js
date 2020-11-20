@@ -41,7 +41,6 @@ const LOCALE_PAIRS = {
     es_419: 'es',
 };
 
-// module.exports = {
 export {
     BASE_LOCALE,
     LANGUAGES,
