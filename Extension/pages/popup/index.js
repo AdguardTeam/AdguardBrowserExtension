@@ -1,3 +1,3 @@
-import { popupController } from '../../src/pages/popup/popup-controller';
+import { popupPage } from '../../src/pages/popup';
 
-popupController.init();
+popupPage.init();

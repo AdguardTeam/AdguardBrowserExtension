@@ -1,3 +1,4 @@
+// FIXME remove this module when popup with React will be ready
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
