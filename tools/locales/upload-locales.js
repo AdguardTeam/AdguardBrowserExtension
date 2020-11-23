@@ -1,21 +1,29 @@
 import path from 'path';
 import fs from 'fs';
 import axios from 'axios';
-import { LOCALES_DIR, LOCALES_UPLOAD_URL } from '../constants';
-import { LOCALE_PAIRS } from './locales-constants';
+
+import {
+    PROJECT_ID,
+    BASE_LOCALE,
+    LOCALE_PAIRS,
+    API_URL,
+    LOCALES_RELATIVE_PATH,
+    FORMAT,
+    LOCALE_DATA_FILENAME,
+} from './locales-constants';
+
+const LOCALES_UPLOAD_URL = `${API_URL}/upload`;
+const LOCALES_DIR = path.resolve(__dirname, LOCALES_RELATIVE_PATH);
 
 const FormData = require('form-data');
-const twoskyConfig = require('../../.twosky.json')[0];
-
-const { base_locale: baseLocale, project_id: projectId } = twoskyConfig;
 
 const prepare = (locale) => {
     const formData = new FormData();
-    formData.append('format', 'json');
+    formData.append('format', FORMAT);
     formData.append('language', LOCALE_PAIRS[locale] || locale);
-    formData.append('filename', 'messages.json');
-    formData.append('project', projectId);
-    formData.append('file', fs.createReadStream(path.join(LOCALES_DIR, `${locale}/messages.json`)));
+    formData.append('filename', LOCALE_DATA_FILENAME);
+    formData.append('project', PROJECT_ID);
+    formData.append('file', fs.createReadStream(path.join(LOCALES_DIR, `${locale}/${LOCALE_DATA_FILENAME}`)));
     const headers = {
         ...formData.getHeaders(),
     };
@@ -29,5 +37,5 @@ const uploadLocale = async (locale) => {
 };
 
 export const uploadLocales = async () => {
-    return uploadLocale(baseLocale);
+    return uploadLocale(BASE_LOCALE);
 };

@@ -6,16 +6,24 @@ import path from 'path';
 import fs from 'fs';
 import querystring from 'querystring';
 import { cliLog } from '../cli-log';
-import { chunkArray } from '../helpers';
-import { LOCALES_DIR, LOCALES_DOWNLOAD_URL } from '../constants';
-import { LOCALE_PAIRS } from './locales-constants';
+import { chunkArray, getLocaleTranslations } from '../helpers';
 
-const [twoskyConfig] = require('../../.twosky.json');
+import {
+    PROJECT_ID,
+    BASE_LOCALE,
+    LANGUAGES,
+    LOCALE_PAIRS,
+    API_URL,
+    LOCALES_RELATIVE_PATH,
+    FORMAT,
+    LOCALE_DATA_FILENAME,
+    PERSISTENT_MESSAGES,
+} from './locales-constants';
 
-const { project_id: projectId, languages, base_locale: baseLocale } = twoskyConfig;
-const locales = Object.keys(languages);
+const LOCALES_DOWNLOAD_URL = `${API_URL}/download`;
+const LOCALES_DIR = path.resolve(__dirname, LOCALES_RELATIVE_PATH);
 
-const FILE_NAME = 'messages.json';
+const locales = Object.keys(LANGUAGES);
 
 const downloadMessagesByUrl = async (url) => {
     let response;
@@ -38,10 +46,10 @@ const downloadMessagesByUrl = async (url) => {
 
 const getQueryString = (lang) => {
     const options = {
-        project: projectId,
+        project: PROJECT_ID,
         language: lang,
-        format: 'json',
-        filename: FILE_NAME,
+        format: FORMAT,
+        filename: LOCALE_DATA_FILENAME,
     };
     return querystring.stringify(options);
 };
@@ -62,7 +70,7 @@ const promiseBatchMap = async (arr, batchSize, handler) => {
     return result.flat(Infinity);
 };
 
-const downloadAllLocales = async () => {
+const downloadLocales = async (locales) => {
     const localeUrlPairs = locales.map((locale) => {
         const crowdinLocale = LOCALE_PAIRS[locale] || locale;
         const downloadUrl = `${LOCALES_DOWNLOAD_URL}?${getQueryString(crowdinLocale)}`;
@@ -91,7 +99,7 @@ const saveFile = async (path, data) => {
 const saveLocales = async (localeDataPairs) => {
     const promises = localeDataPairs.map((localeDataPair) => {
         const { locale, data } = localeDataPair;
-        const localeFilePath = path.join(LOCALES_DIR, locale, FILE_NAME);
+        const localeFilePath = path.join(LOCALES_DIR, locale, LOCALE_DATA_FILENAME);
         const localeDirPath = path.join(LOCALES_DIR, locale);
         if (!fs.existsSync(localeDirPath)) {
             fs.mkdirSync(localeDirPath);
@@ -109,24 +117,25 @@ const saveLocales = async (localeDataPairs) => {
  * @param {Object} baseMessages - base locale messages
  */
 const checkRequiredFields = (locale, messages, baseMessages) => {
-    const requiredFields = ['name', 'short_name', 'description'];
+    const requiredFields = PERSISTENT_MESSAGES;
     const resultMessages = { ...messages };
     requiredFields.forEach((requiredField) => {
         const fieldData = resultMessages[requiredField];
         if (!fieldData) {
-            cliLog.info(`"${locale}" locale does't have required field: "${requiredField}"`);
-            cliLog.info('Will be added message from base locale');
+            cliLog.info(` - "${locale}" locale does't have required field: "${requiredField}"`);
+            cliLog.info('   Will be added message from base locale');
             resultMessages[requiredField] = baseMessages[requiredField];
         }
     });
     return resultMessages;
 };
 
-const validateLocales = async () => {
-    const baseLocalePath = path.join(LOCALES_DIR, baseLocale, FILE_NAME);
-    const baseMessages = JSON.parse(await fs.promises.readFile(baseLocalePath, 'utf-8'));
+const validateRequiredFields = async () => {
+    const baseMessages = await getLocaleTranslations(
+        LOCALES_DIR, BASE_LOCALE, LOCALE_DATA_FILENAME,
+    );
     const promises = locales.map(async (locale) => {
-        const pathToLocale = path.join(LOCALES_DIR, locale, FILE_NAME);
+        const pathToLocale = path.join(LOCALES_DIR, locale, LOCALE_DATA_FILENAME);
         const messages = JSON.parse(await fs.promises.readFile(pathToLocale, 'utf-8'));
         const checkedMessages = checkRequiredFields(locale, messages, baseMessages);
         const checkedMessagesString = JSON.stringify(checkedMessages, null, 4).replace(/\//g, '\\/');
@@ -137,8 +146,8 @@ const validateLocales = async () => {
     });
 };
 
-export const downloadLocales = async () => {
-    const localeDataPairs = await downloadAllLocales();
+export const downloadAndSave = async (locales) => {
+    const localeDataPairs = await downloadLocales(locales);
     await saveLocales(localeDataPairs);
-    await validateLocales();
+    await validateRequiredFields();
 };
