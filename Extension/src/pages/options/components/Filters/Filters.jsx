@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import sortBy from 'lodash/sortBy';
+import classNames from 'classnames';
 import { Group } from './Group';
 import { Filter } from './Filter';
 import { EmptyCustom } from './EmptyCustom';
@@ -11,6 +12,7 @@ import { rootStore } from '../../stores/RootStore';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
 import { AddCustomModal } from './AddCustomModal';
 import { CUSTOM_FILTERS_GROUP_ID } from '../../../../../../tools/constants';
+import SettingsSection from '../Settings/SettingsSection';
 
 const Filters = observer(() => {
     const SEARCH_FILTERS = {
@@ -79,16 +81,18 @@ const Filters = observer(() => {
         await settingsStore.updateFilterSetting(id, data);
     };
 
+    const renderFiler = (filter) => (
+        <Filter
+            key={filter.filterId}
+            filter={filter}
+            tags={filter.tagsDetails}
+            checkboxHandler={handleFilterSwitch}
+            checkboxValue={!!filter.enabled}
+        />
+    );
+
     const renderFilters = (filtersList) => {
-        return filtersList.map((filter) => (
-            <Filter
-                key={filter.filterId}
-                filter={filter}
-                tags={filter.tagsDetails}
-                checkboxHandler={handleFilterSwitch}
-                checkboxValue={!!filter.enabled}
-            />
-        ));
+        return filtersList.map(renderFiler);
     };
 
     const handleReturnToGroups = () => {
@@ -136,15 +140,7 @@ const Filters = observer(() => {
             }
 
             if (filter.name.match(searchQuery) && searchMod) {
-                return (
-                    <Filter
-                        key={filter.filterId}
-                        filter={filter}
-                        tags={filter.tagsDetails}
-                        checkboxHandler={handleFilterSwitch}
-                        checkboxValue={!!filter.enabled}
-                    />
-                );
+                return renderFiler(filter);
             }
             return null;
         });
@@ -227,84 +223,74 @@ const Filters = observer(() => {
         }
     });
 
-    const renderAddFilterBtn = () => {
-        if (settingsStore.selectedGroupId === CUSTOM_FILTERS_GROUP_ID) {
-            return (
-                <div>
-                    <button
-                        type="button"
-                        onClick={openModalHandler}
-                        className="button button--add-custom-filter button--m button--green"
-                    >
-                        {reactTranslator.translate('options_add_custom_filter')}
-                    </button>
-                </div>
-            );
-        }
+    const renderAddFilterBtn = (isEmpty) => {
+        const buttonClass = classNames('button button--m button--green', {
+            'button--empty-custom-filter': isEmpty,
+            'button--add-custom-filter': !isEmpty,
+        });
+
+        return (
+            <button
+                type="button"
+                onClick={openModalHandler}
+                className={buttonClass}
+            >
+                {reactTranslator.translate('options_add_custom_filter')}
+            </button>
+        );
     };
 
     // search by input data or by enabled/disabled filters
     const isSearching = searchInput || searchSelect !== SEARCH_FILTERS.ALL;
 
+    const renderBackButton = () => (
+        <button
+            type="button"
+            className="button button--back"
+            onClick={handleReturnToGroups}
+        />
+    );
+
     if (Number.isInteger(settingsStore.selectedGroupId)) {
         const groupFilters = filters.filter((filter) => filter.groupId === settingsStore.selectedGroupId);
         const { groupName } = categories.find((group) => group.groupId === settingsStore.selectedGroupId);
-        if (settingsStore.selectedGroupId === CUSTOM_FILTERS_GROUP_ID && groupFilters.length === 0) {
-            return (
-                <>
-                    <div className="title-btn">
-                        <h2 className="title title--back-btn">
-                            <button
-                                type="button"
-                                className="button button--back"
-                                onClick={handleReturnToGroups}
-                            />
-                            {groupName}
-                        </h2>
-                    </div>
-                    <EmptyCustom />
-                    {renderModal()}
-                </>
-            );
-        }
+
+        const isCustom = settingsStore.selectedGroupId === CUSTOM_FILTERS_GROUP_ID;
+        const isEmpty = groupFilters.length === 0;
+
         return (
-            <>
-                <div className="title-btn">
-                    <h2 className="title title--back-btn">
-                        <button
-                            type="button"
-                            className="button button--back"
-                            onClick={handleReturnToGroups}
-                        />
-                        {groupName}
-                    </h2>
-                </div>
-                {renderSearch()}
-                <div>
-                    {
-                        isSearching
-                            ? renderSearchResult()
-                            : filters && renderFilters(groupFilters)
-                    }
-                </div>
-                {renderAddFilterBtn()}
-                {renderModal()}
-            </>
+            <SettingsSection
+                title={groupName}
+                renderBackButton={renderBackButton}
+            >
+                {isEmpty && isCustom ? <EmptyCustom />
+                    : (
+                        <>
+                            {renderSearch()}
+                            {isSearching
+                                ? renderSearchResult()
+                                : filters && renderFilters(groupFilters)}
+                        </>
+                    )}
+                {isCustom && (
+                    <>
+                        {renderAddFilterBtn(isEmpty)}
+                        {renderModal()}
+                    </>
+                )}
+            </SettingsSection>
         );
     }
     return (
-        <>
-            <div className="title-btn">
-                {renderFiltersUpdate()}
-                <h2 className="title title--filters-up">{reactTranslator.translate('options_antibanner')}</h2>
-            </div>
+        <SettingsSection
+            title={reactTranslator.translate('options_antibanner')}
+            renderInlineControl={renderFiltersUpdate}
+        >
             {renderSearch()}
-            {
-                isSearching
-                    ? renderSearchResult()
-                    : categories && renderGroups(categories)
-            }
-        </>
+            {isSearching
+                ? renderSearchResult()
+                : categories && renderGroups(categories)}
+        </SettingsSection>
     );
 });
 

@@ -10,6 +10,7 @@ import { rootStore } from '../../stores/RootStore';
 import { uploadFile } from '../../../helpers';
 import { log } from '../../../../background/utils/log';
 import { STATES as SAVING_STATES } from '../Editor/savingFSM';
+import { reactTranslator } from '../../../reactCommon/reactTranslator';
 
 const Allowlist = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);
@@ -94,19 +95,15 @@ const Allowlist = observer(() => {
         },
     }];
 
-    // TODO fix translations
     return (
         <>
-            <h2 className="title">
-                Allowlist
-            </h2>
-            <div className="desc">
-                AdGuard does not filter websites from the allowlist.
-            </div>
-            <SettingsSection>
+            <SettingsSection
+                title={reactTranslator.translate('options_allowlist')}
+                description={reactTranslator.translate('options_allowlist_desc')}
+            >
                 <SettingsSet
-                    title="Invert allowlist"
-                    description="Unblock ads everywhere except for the allowlist"
+                    title={reactTranslator.translate('options_allowlist_invert')}
+                    description={reactTranslator.translate('options_allowlist_invert_desc')}
                     inlineControl={(
                         <Setting
                             id={DEFAULT_WHITE_LIST_MODE}
