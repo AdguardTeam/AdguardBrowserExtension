@@ -407,9 +407,16 @@ const init = () => {
                 }
                 break;
             }
-            case 'changeApplicationFilteringDisabled':
-                uiService.changeApplicationFilteringDisabled(message.disabled);
-                break;
+            case 'changeApplicationFilteringDisabled': {
+                // FIXME make all messages to send state with data
+                if (data) {
+                    const { state } = data;
+                    uiService.changeApplicationFilteringDisabled(state);
+                } else {
+                    uiService.changeApplicationFilteringDisabled(message.disabled);
+                }
+            }
+
             case 'openSiteReportTab':
                 uiService.openSiteReportTab(message.url);
                 break;
@@ -423,7 +430,7 @@ const init = () => {
                 uiService.openAssistant();
                 break;
             case 'getTabInfoForPopup': {
-                const tab = await tabsApi.getActive();
+                const tab = await tabsApi.getActive(data.tabId);
                 if (tab) {
                     const frameInfo = frames.getFrameInfo(tab);
                     return {
