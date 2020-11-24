@@ -161,6 +161,21 @@ class Messenger {
         const type = 'removeAntiBannerFilter';
         await this.sendMessage(type, { filterId });
     }
+
+    async getTabInfoForPopup(tabId) {
+        const type = 'getTabInfoForPopup';
+        return this.sendMessage(type, { tabId });
+    }
+
+    async changeApplicationFilteringDisabled(state) {
+        const type = 'changeApplicationFilteringDisabled';
+        return this.sendMessage(type, { state });
+    }
+
+    async openSettingsTab() {
+        const type = 'openSettingsTab';
+        return this.sendMessage(type);
+    }
 }
 
 const messenger = new Messenger();

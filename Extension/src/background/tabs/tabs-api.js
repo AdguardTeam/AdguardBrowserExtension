@@ -154,8 +154,11 @@ const tabsApi = ((tabsImpl) => {
     };
 
     // Gets active tab
-    const getActive = async () => {
-        const tabId = await tabsImpl.getActive();
+    const getActive = async (tabId) => {
+        if (!tabId) {
+            tabId = await tabsImpl.getActive();
+        }
+
         if (!tabId) {
             return null;
         }
