@@ -7,6 +7,7 @@ import {
 
 import { RULE_OPTIONS, UrlFilterRule } from '../components/RequestWizard/constants';
 import { splitToPatterns } from '../components/RequestWizard/utils';
+import { contentPage } from '../../../content-script/content-script';
 
 export const WIZARD_STATES = {
     VIEW_REQUEST: 'view.request',
@@ -81,6 +82,31 @@ class WizardStore {
     @action
     setBlockState() {
         this.requestModalState = WIZARD_STATES.BLOCK_REQUEST;
+    }
+
+    @action
+    setUnblockState() {
+        this.requestModalState = WIZARD_STATES.UNBLOCK_REQUEST;
+    }
+
+    @action
+    removeFromAllowlistHandler = async () => {
+        /* TODO: rename methods, extract messaging in separate module */
+        const { frameInfo } = await contentPage.sendMessage({ type: 'getTabFrameInfoById', tabId: this.rootStore.logStore.selectedTabId });
+        if (!frameInfo) {
+            return;
+        }
+
+        contentPage.sendMessage({ type: 'unWhitelistFrame', frameInfo });
+        this.closeModal();
+    }
+
+    @action
+    removeFromUserFilterHandler = (filteringEvent) => {
+        const { requestRule } = filteringEvent;
+
+        contentPage.sendMessage({ type: 'removeUserRule', ruleText: requestRule.ruleText });
+        this.closeModal();
     }
 
     @action

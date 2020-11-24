@@ -24,6 +24,8 @@ const RequestModal = observer(() => {
             modalContent = <RequestBlock />;
             break;
         }
+        /* TODO: handle unblock request modal */
+        case WIZARD_STATES.UNBLOCK_REQUEST:
         default:
             modalContent = <RequestInfo />;
     }

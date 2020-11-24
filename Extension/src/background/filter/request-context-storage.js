@@ -89,7 +89,7 @@ export const requestContextStorage = (function () {
     /**
      * Append rules to the current rules
      * @param {Array} original - Original value
-     * @param {Array}toAppend - Value to append
+     * @param {Array} toAppend - Value to append
      * @returns {Array} concatenated value
      */
     const appendRules = (original, toAppend) => {

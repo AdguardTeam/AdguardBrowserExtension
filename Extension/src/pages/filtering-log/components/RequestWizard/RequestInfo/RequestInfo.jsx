@@ -8,7 +8,7 @@ import { RequestImage } from './RequestImage';
 import { rootStore } from '../../../stores/RootStore';
 import { messenger } from '../../../../services/messenger';
 import { reactTranslator } from '../../../../reactCommon/reactTranslator';
-import { STEALTH_ACTIONS } from '../../../../../common/constants';
+import { ANTIBANNER_FILTERS_ID, STEALTH_ACTIONS } from '../../../../../common/constants';
 
 import './request-info.pcss';
 
@@ -137,18 +137,53 @@ const RequestInfo = observer(() => {
         wizardStore.setBlockState();
     };
 
+    const unblockHandler = () => {
+        wizardStore.setUnblockState();
+    };
+
+    const removeFromUserFilterHandler = (requestInfo) => {
+        wizardStore.removeFromUserFilterHandler(requestInfo);
+    };
+
+    const removeFromAllowlistHandler = () => {
+        wizardStore.removeFromAllowlistHandler();
+    };
+
+    /* TODO: refactor */
     const renderBlockRequest = (event) => {
-        if (event.requestRule) {
-            return null;
+        const { requestRule } = event;
+
+        let type;
+        let onClick;
+
+        if (!requestRule) {
+            type = 'Block';
+            onClick = blockHandler;
+        } else if (requestRule.filterId === ANTIBANNER_FILTERS_ID.USER_FILTER_ID) {
+            type = 'Remove from User Filter';
+            onClick = () => removeFromUserFilterHandler(event);
+            if (requestRule.whitelistRule) {
+                type = 'Block';
+                onClick = blockHandler;
+            }
+        } else if (requestRule.filterId === ANTIBANNER_FILTERS_ID.ALLOWLIST_FILTER_ID) {
+            type = 'Remove from Allowlist';
+            onClick = removeFromAllowlistHandler;
+        } else if (!requestRule.whitelistRule) {
+            type = 'Unblock';
+            onClick = unblockHandler;
+        } else if (requestRule.whitelistRule) {
+            type = 'Block';
+            onClick = blockHandler;
         }
 
         return (
             <button
                 className="control"
                 type="button"
-                onClick={blockHandler}
+                onClick={onClick}
             >
-                Block
+                {type}
             </button>
         );
     };
