@@ -60,24 +60,34 @@ h2 {
     flex: 0 0 auto;
 }
 
-.title-btn {
-    position: relative;
-}
-
 .title {
     color: var(--gray-base);
     font-size: 28px;
-    padding: 32px 16px 24px;
+    padding-right: 8px;
     margin-top: -5px;
     line-height: 30px;
     font-weight: 300;
 
+    &__container {
+        display: flex;
+        justify-content: space-between;
+        padding: 32px 16px 24px;
+
+        &--navigation-back {
+            justify-content: flex-start;
+        }
+    }
+
     @media (min-width: 640px) {
-        padding-top: 0;
+        padding-right: 16px;
+
+        &__container {
+            padding: 0 16px 24px;
+        }
     }
 
     &--back-btn {
-        padding-left: 30px;
+        padding-left: 15px;
         display: flex;
         align-items: center;
     }

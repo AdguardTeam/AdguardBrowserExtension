@@ -44,9 +44,7 @@ const Stealth = observer(() => {
 
     return (
         <>
-            <h2 className="title">{reactTranslator.translate('options_privacy_title')}</h2>
-
-            <SettingsSection>
+            <SettingsSection title={reactTranslator.translate('options_privacy_title')}>
                 <SettingsSet
                     title={reactTranslator.translate('options_privacy_title')}
                     description={reactTranslator.translate('options_privacy_desc')}

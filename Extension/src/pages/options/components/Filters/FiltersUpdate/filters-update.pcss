@@ -1,16 +1,16 @@
 .filters-update {
-    position: absolute;
-    right: 0;
-    top: 0;
-    background-color: transparent;
     border: 0;
     outline: none;
+    height: 100%;
+    display: flex;
 
     &__info {
-        padding-right: 50px;
         text-align: right;
         font-size: 13px;
         font-weight: 600;
+        display: flex;
+        flex-direction: column;
+        margin-right: 8px;
     }
 
     &__desc {
@@ -19,12 +19,10 @@
     }
 
     &__btn {
-        position: absolute;
-        right: 10px;
-        top: calc(50% - 11px);
         width: 22px;
         height: 18px;
         background-image: url(../../../../assets/icons/reload-ico.svg);
+        align-self: center;
 
         &--loading {
             animation: spin 2s linear infinite;

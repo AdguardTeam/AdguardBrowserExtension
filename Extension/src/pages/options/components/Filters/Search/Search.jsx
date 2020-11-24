@@ -18,6 +18,13 @@ const Search = ({
             onChange={searchInputHandler}
             value={searchInput}
         />
+        {searchInput && (
+            <button
+                type="button"
+                className="button search__cross"
+                onClick={searchCloseHandler}
+            />
+        )}
         <select
             name="select_time"
             className="search__select"
@@ -34,11 +41,6 @@ const Search = ({
                 {reactTranslator.translate('options_filters_list_search_display_option_disabled')}
             </option>
         </select>
-        <button
-            type="button"
-            className="button search__cross"
-            onClick={searchCloseHandler}
-        />
     </div>
 );
 

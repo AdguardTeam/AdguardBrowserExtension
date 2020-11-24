@@ -54,8 +54,7 @@ const Miscellaneous = observer(() => {
 
     return (
         <>
-            <h2 className="title">Miscellaneous</h2>
-            <SettingsSection>
+            <SettingsSection title={reactTranslator.translate('context_miscellaneous_settings')}>
                 <SettingsSet
                     title={reactTranslator.translate('options_use_optimized_filters')}
                     description={reactTranslator.translate('options_use_optimized_filters_desc')}

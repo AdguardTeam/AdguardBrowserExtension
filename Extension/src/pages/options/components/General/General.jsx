@@ -102,10 +102,7 @@ const General = observer(() => {
 
     return (
         <>
-            <h2 className="title">Settings</h2>
-            <SettingsSection
-                title={reactTranslator.translate('context_general_settings')}
-            >
+            <SettingsSection title={reactTranslator.translate('context_general_settings')}>
                 <SettingsSet
                     title={reactTranslator.translate('options_allow_acceptable_ads')}
                     description={(
