@@ -393,14 +393,14 @@ const init = () => {
                 uiService.showAlertMessagePopup(message.title, message.text);
                 break;
             // Popup methods
-            case 'addWhitelistDomainPopup': {
+            case 'addAllowlistDomainPopup': {
                 const tab = await tabsApi.getActive();
                 if (tab) {
                     uiService.whitelistTab(tab);
                 }
                 break;
             }
-            case 'removeWhitelistDomainPopup': {
+            case 'removeAllowlistDomainPopup': {
                 const tab = await tabsApi.getActive();
                 if (tab) {
                     uiService.unWhitelistTab(tab);

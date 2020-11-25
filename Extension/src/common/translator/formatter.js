@@ -108,14 +108,14 @@ const format = (ast = [], values = {}) => {
             }
         } else if (isVoidTagNode(currentNode)) {
             const value = tmplValues[currentNode.value];
-            if (value) {
+            if (value !== undefined) {
                 result.push(value);
             } else {
                 throw new Error(`Value ${currentNode.value} wasn't provided`);
             }
         } else if (isPlaceholderNode(currentNode)) {
             const value = tmplValues[currentNode.value];
-            if (value) {
+            if (value !== undefined) {
                 result.push(value);
             } else {
                 throw new Error(`Value ${currentNode.value} wasn't provided`);

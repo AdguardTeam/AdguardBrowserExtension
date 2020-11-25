@@ -739,7 +739,7 @@ const RequestWizard = (function () {
         const openRequestButton = template.querySelector('#openRequestNewTab');
         const blockRequestButton = template.querySelector('#blockRequest');
         const unblockRequestButton = template.querySelector('#unblockRequest');
-        const removeWhitelistDomainButton = template.querySelector('#removeWhitelistDomain');
+        const removeAllowlistDomainButton = template.querySelector('#removeAllowlistDomain');
         const removeUserFilterRuleButton = template.querySelector('#removeUserFilterRule');
 
         openRequestButton.addEventListener('click', (e) => {
@@ -770,7 +770,7 @@ const RequestWizard = (function () {
             showCreateExceptionRuleModal(frameInfo, filteringEvent);
         });
 
-        removeWhitelistDomainButton.addEventListener('click', (e) => {
+        removeAllowlistDomainButton.addEventListener('click', (e) => {
             e.preventDefault();
             contentPage.sendMessage({ type: 'unWhitelistFrame', frameInfo });
             closeModal();
@@ -794,7 +794,7 @@ const RequestWizard = (function () {
                 blockRequestButton.classList.remove('hidden');
             }
         } else if (requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
-            removeWhitelistDomainButton.classList.remove('hidden');
+            removeAllowlistDomainButton.classList.remove('hidden');
         } else if (!requestRule.whitelistRule) {
             unblockRequestButton.classList.remove('hidden');
         } else if (requestRule.whitelistRule) {
