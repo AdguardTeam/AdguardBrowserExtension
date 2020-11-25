@@ -123,7 +123,7 @@ class PopupStore {
     }
 
     @action
-    toggleWhitelisted = () => {
+    toggleAllowlisted = () => {
         if (!this.applicationAvailable || this.applicationFilteringDisabled) {
             return;
         }
@@ -163,7 +163,7 @@ class PopupStore {
         }
 
         if (this.documentAllowlisted) {
-            return POPUP_STATES.SITE_WHITELISTED;
+            return POPUP_STATES.SITE_ALLOWLISTED;
         }
 
         return POPUP_STATES.APPLICATION_ENABLED;

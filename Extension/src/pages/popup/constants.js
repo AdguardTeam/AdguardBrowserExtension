@@ -8,5 +8,5 @@ export const POPUP_STATES = {
     APPLICATION_FILTERING_DISABLED: 'application.filtering.disabled',
     APPLICATION_UNAVAILABLE: 'application.unavailable',
     SITE_IN_EXCEPTION: 'site.in.exception',
-    SITE_WHITELISTED: 'site.whitelisted',
+    SITE_ALLOWLISTED: 'site.allowlisted',
 };

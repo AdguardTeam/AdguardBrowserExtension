@@ -1,20 +1,19 @@
 import React, { useContext } from 'react';
 
-import './main.pcss';
 import { observer } from 'mobx-react';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
 import { popupStore } from '../../stores/PopupStore';
 import { POPUP_STATES } from '../../constants';
 
+import './main.pcss';
+
 export const Main = observer(() => {
     const store = useContext(popupStore);
-
-    console.log(store.popupState);
 
     const switchersMap = {
         [POPUP_STATES.APPLICATION_ENABLED]: {
             handler: () => {
-                store.toggleWhitelisted();
+                store.toggleAllowlisted();
             },
             text: 'enabled',
         },
@@ -30,11 +29,11 @@ export const Main = observer(() => {
         [POPUP_STATES.SITE_IN_EXCEPTION]: {
             text: 'in exception',
         },
-        [POPUP_STATES.SITE_WHITELISTED]: {
+        [POPUP_STATES.SITE_ALLOWLISTED]: {
             handler: () => {
-                store.toggleWhitelisted();
+                store.toggleAllowlisted();
             },
-            text: 'whitelisted',
+            text: 'allowlisted',
         },
     };
 

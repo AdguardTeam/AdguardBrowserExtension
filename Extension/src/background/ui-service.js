@@ -58,13 +58,13 @@ export const uiService = (function () {
         'context_site_filtering_on': async function () {
             const tab = await tabsApi.getActive();
             if (tab) {
-                unWhitelistTab(tab);
+                unAllowlistTab(tab);
             }
         },
         'context_site_filtering_off': async function () {
             const tab = await tabsApi.getActive();
             if (tab) {
-                whitelistTab(tab);
+                allowlistTab(tab);
             }
         },
         'context_enable_protection': function () {
@@ -761,14 +761,14 @@ export const uiService = (function () {
         tabsApi.reload(tab.tabId);
     };
 
-    var whitelistTab = function (tab) {
+    var allowlistTab = function (tab) {
         const tabInfo = frames.getFrameInfo(tab);
         whitelist.whitelistUrl(tabInfo.url);
         updateTabIconAndContextMenu(tab, true);
         tabsApi.reload(tab.tabId);
     };
 
-    var unWhitelistTab = function (tab) {
+    var unAllowlistTab = function (tab) {
         const tabInfo = frames.getFrameInfo(tab);
         userrules.unWhitelistFrame(tabInfo);
         updateTabIconAndContextMenu(tab, true);
@@ -990,8 +990,8 @@ export const uiService = (function () {
 
         updateTabIconAndContextMenu,
 
-        whitelistTab,
-        unWhitelistTab,
+        allowlistTab,
+        unAllowlistTab,
 
         changeApplicationFilteringDisabled,
         checkFiltersUpdates,

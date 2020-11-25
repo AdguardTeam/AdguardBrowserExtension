@@ -396,14 +396,14 @@ const init = () => {
             case 'addAllowlistDomainPopup': {
                 const tab = await tabsApi.getActive();
                 if (tab) {
-                    uiService.whitelistTab(tab);
+                    uiService.allowlistTab(tab);
                 }
                 break;
             }
             case 'removeAllowlistDomainPopup': {
                 const tab = await tabsApi.getActive();
                 if (tab) {
-                    uiService.unWhitelistTab(tab);
+                    uiService.unAllowlistTab(tab);
                 }
                 break;
             }
