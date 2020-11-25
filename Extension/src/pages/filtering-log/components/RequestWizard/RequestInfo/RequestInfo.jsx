@@ -112,6 +112,7 @@ const RequestInfo = observer(() => {
     };
 
     const renderOpenInNewTab = (event) => {
+        // there is nothing to open if log event reveals blocked element or cookie
         const showButton = !(
             event.element
             || event.cookieName

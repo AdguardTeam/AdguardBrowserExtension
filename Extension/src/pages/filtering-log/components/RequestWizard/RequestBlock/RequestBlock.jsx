@@ -8,7 +8,7 @@ import { messenger } from '../../../../services/messenger';
 
 // TODO localize messages
 const RequestBlock = observer(() => {
-    const { wizardStore } = useContext(rootStore);
+    const { wizardStore, logStore } = useContext(rootStore);
 
     const RULE_OPTIONS_MAP = {
         [RULE_OPTIONS.RULE_DOMAIN]: {
@@ -62,6 +62,10 @@ const RequestBlock = observer(() => {
     const renderOptions = () => {
         const options = Object.entries(RULE_OPTIONS_MAP);
         const renderedOptions = options.map(([id, { label }]) => {
+            if (id === RULE_OPTIONS.RULE_DOMAIN && !logStore.selectedEvent.frameDomain) {
+                return null;
+            }
+
             return (
                 <li key={id}>
                     <input
@@ -100,6 +104,11 @@ const RequestBlock = observer(() => {
         wizardStore.setRuleText(value);
     };
 
+    const flag1 = logStore.selectedEvent.element || logStore.selectedEvent.script;
+    const flag2 = logStore.selectedEvent.requestRule
+        && logStore.selectedEvent.requestRule.documentLevelRule;
+    const flag3 = logStore.selectedEvent.cookieName;
+
     return (
         <>
             <button
@@ -117,14 +126,18 @@ const RequestBlock = observer(() => {
                     onChange={handleRuleChange}
                 />
             </div>
-            <div className="patterns">
-                <div>Patterns:</div>
-                {renderPatterns(wizardStore.rulePatterns)}
-            </div>
-            <div className="options">
-                <div>Options:</div>
-                {renderOptions()}
-            </div>
+            {!flag1 && !flag3 && (
+                <div className="patterns">
+                    <div>Patterns:</div>
+                    {renderPatterns(wizardStore.rulePatterns)}
+                </div>
+            )}
+            {!flag1 && !flag2 && (
+                <div className="options">
+                    <div>Options:</div>
+                    {renderOptions()}
+                </div>
+            )}
             <button
                 type="button"
                 onClick={handleAddRuleClick}
