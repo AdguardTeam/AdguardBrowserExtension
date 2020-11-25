@@ -176,6 +176,21 @@ class Messenger {
         const type = 'openSettingsTab';
         return this.sendMessage(type);
     }
+
+    async openAssistant() {
+        const type = 'openAssistant';
+        return this.sendMessage(type);
+    }
+
+    async openAbuseSite(url) {
+        const type = 'openAbuseTab';
+        return this.sendMessage(type, { url });
+    }
+
+    async checkSiteSecurity(url) {
+        const type = 'openSiteReportTab';
+        return this.sendMessage(type, { url });
+    }
 }
 
 const messenger = new Messenger();
