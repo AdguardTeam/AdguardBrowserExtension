@@ -415,13 +415,24 @@ const init = () => {
                 } else {
                     uiService.changeApplicationFilteringDisabled(message.disabled);
                 }
-            }
-
-            case 'openSiteReportTab':
-                uiService.openSiteReportTab(message.url);
                 break;
+            }
+            case 'openSiteReportTab': {
+                if (data) {
+                    const { url } = data;
+                    uiService.openSiteReportTab(url);
+                } else {
+                    uiService.openSiteReportTab(message.url);
+                }
+                break;
+            }
             case 'openAbuseTab':
-                uiService.openAbuseTab(message.url);
+                if (data) {
+                    const { url } = data;
+                    uiService.openAbuseTab(url);
+                } else {
+                    uiService.openAbuseTab(message.url);
+                }
                 break;
             case 'openSettingsTab':
                 uiService.openSettingsTab();

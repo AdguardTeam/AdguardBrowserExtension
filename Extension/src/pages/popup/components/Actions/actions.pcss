@@ -1,0 +1,41 @@
+.actions {
+    height: 168px;
+    padding-top: 13px;
+    padding-bottom: 13px;
+    width: 100%;
+
+    .action {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 9px 20px;
+        cursor: pointer;
+        transition: 0.3s ease background-color;
+        max-height: 35px;
+
+        &:hover {
+            /* TODO use colors from variables */
+            background-color: #f3f3f3;
+        }
+
+        &_disabled {
+            cursor: initial;
+            opacity: 0.3;
+
+            &:hover {
+                background-color: inherit;
+            }
+        }
+
+        .action-title {
+            padding-left: 15px;
+            font-size: 13px;
+            /* TODO use color from variables */
+            color: #4d4d4d;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+    }
+}
