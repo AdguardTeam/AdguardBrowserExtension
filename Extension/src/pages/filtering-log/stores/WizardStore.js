@@ -11,9 +11,10 @@ import {
     createExceptionCookieRule,
     createExceptionCssRule,
     createExceptionScriptRule,
-    splitToPatterns
+    splitToPatterns,
 } from '../components/RequestWizard/utils';
 import { messenger } from '../../services/messenger';
+import { contentPage } from '../../../content-script/content-script';
 
 export const WIZARD_STATES = {
     VIEW_REQUEST: 'view.request',
@@ -97,9 +98,8 @@ class WizardStore {
 
     @action
     removeFromAllowlistHandler = async () => {
-        const {
-            frameInfo,
-        } = await messenger.getTabFrameInfoById(this.rootStore.logStore.selectedTabId);
+        const { selectedTabId } = this.rootStore.logStore;
+        const { frameInfo } = await contentPage.getTabFrameInfoById(selectedTabId);
 
         if (!frameInfo) {
             return;

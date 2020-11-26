@@ -159,9 +159,11 @@ const init = () => {
                 const result = await processGetOptionsData();
                 return result;
             }
-            case 'unWhitelistFrame':
-                userrules.unWhitelistFrame(message.frameInfo);
+            case 'unWhitelistFrame': {
+                const { frameInfo } = data;
+                userrules.unWhitelistFrame(frameInfo);
                 break;
+            }
             case 'createEventListener': {
                 const { events } = data;
                 return processAddEventListener(events, sender);
@@ -254,8 +256,10 @@ const init = () => {
                 }
                 break;
             }
-            case 'removeUserRule':
-                userrules.removeRule(message.ruleText);
+            case 'removeUserRule': {
+                const { ruleText } = data;
+                userrules.removeRule(ruleText);
+            }
                 break;
             case 'checkAntiBannerFiltersUpdate': {
                 const { filters } = data;

@@ -20,4 +20,7 @@ import { runtimeImpl } from '../common/common-script';
 export const contentPage = {
     sendMessage: runtimeImpl.sendMessage,
     onMessage: runtimeImpl.onMessage,
+    getTabFrameInfoById(tabId) {
+        return this.sendMessage({ type: 'getTabFrameInfoById', tabId });
+    },
 };
