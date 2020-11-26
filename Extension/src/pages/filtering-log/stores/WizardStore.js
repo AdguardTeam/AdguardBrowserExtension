@@ -6,15 +6,14 @@ import {
 } from 'mobx';
 
 import { RULE_OPTIONS, UrlFilterRule, FilterRule } from '../components/RequestWizard/constants';
-import { splitToPatterns } from '../components/RequestWizard/utils';
-import { contentPage } from '../../../content-script/content-script';
-
 import {
     createDocumentLevelBlockRule,
-    createExceptionCssRule,
     createExceptionCookieRule,
+    createExceptionCssRule,
     createExceptionScriptRule,
-} from '../helpers/helpers';
+    splitToPatterns
+} from '../components/RequestWizard/utils';
+import { messenger } from '../../services/messenger';
 
 export const WIZARD_STATES = {
     VIEW_REQUEST: 'view.request',
@@ -98,21 +97,25 @@ class WizardStore {
 
     @action
     removeFromAllowlistHandler = async () => {
-        /* TODO: rename methods, extract messaging in separate module */
-        const { frameInfo } = await contentPage.sendMessage({ type: 'getTabFrameInfoById', tabId: this.rootStore.logStore.selectedTabId });
+        const {
+            frameInfo,
+        } = await messenger.getTabFrameInfoById(this.rootStore.logStore.selectedTabId);
+
         if (!frameInfo) {
             return;
         }
 
-        contentPage.sendMessage({ type: 'unWhitelistFrame', frameInfo });
+        await messenger.unWhitelistFrame(frameInfo);
+
         this.closeModal();
     }
 
     @action
-    removeFromUserFilterHandler = (filteringEvent) => {
+    removeFromUserFilterHandler = async (filteringEvent) => {
         const { requestRule } = filteringEvent;
 
-        contentPage.sendMessage({ type: 'removeUserRule', ruleText: requestRule.ruleText });
+        await messenger.removeUserRule(requestRule.ruleText);
+
         this.closeModal();
     }
 

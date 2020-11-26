@@ -180,6 +180,11 @@ class Messenger {
         return this.sendMessage(type, { tabId });
     }
 
+    async getTabFrameInfoById(tabId) {
+        const type = 'getTabFrameInfoById';
+        return this.sendMessage(type, { tabId });
+    }
+
     async synchronizeOpenTabs() {
         const type = 'synchronizeOpenTabs';
         return this.sendMessage(type);
@@ -203,6 +208,16 @@ class Messenger {
     async addUserRule(rule) {
         const type = 'addUserRule';
         await this.sendMessage(type, { rule });
+    }
+
+    async unWhitelistFrame(frameInfo) {
+        const type = 'unWhitelistFrame';
+        await this.sendMessage(type, { frameInfo });
+    }
+
+    async removeUserRule(ruleText) {
+        const type = 'unWhitelistFrame';
+        await this.sendMessage(type, { ruleText });
     }
 }
 

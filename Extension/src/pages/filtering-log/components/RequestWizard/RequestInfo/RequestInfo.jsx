@@ -56,7 +56,7 @@ const RequestInfo = observer(() => {
             data: selectedEvent.element,
         },
         {
-            title: 'Cookie:', // TODO add to locale messages
+            title: reactTranslator.translate('filtering_modal_cookie'),
             data: selectedEvent.cookieName,
         },
         {
@@ -96,7 +96,7 @@ const RequestInfo = observer(() => {
         return (
             <div key={title} className="request-info">
                 <div>{title}</div>
-                <div>{data}</div>
+                <div>{reactTranslator.translate(data)}</div>
             </div>
         );
     });
@@ -150,33 +150,46 @@ const RequestInfo = observer(() => {
         wizardStore.removeFromAllowlistHandler();
     };
 
-    /* TODO: refactor */
     const renderBlockRequest = (event) => {
         const { requestRule } = event;
 
-        let type;
-        let onClick;
+        const PROPS_MAP = {
+            BLOCK: {
+                buttonTitle: 'filtering_modal_block',
+                onClick: blockHandler,
+            },
+            UNBLOCK: {
+                buttonTitle: 'filtering_modal_unblock',
+                onClick: unblockHandler,
+            },
+            ALLOWLIST: {
+                buttonTitle: 'filtering_modal_remove_whitelist',
+                onClick: removeFromAllowlistHandler,
+            },
+            USER_FILTER: {
+                buttonTitle: 'filtering_modal_remove_user',
+                onClick: () => removeFromUserFilterHandler(event),
+            },
+        };
+
+        let props = PROPS_MAP.BLOCK;
 
         if (!requestRule) {
-            type = 'Block';
-            onClick = blockHandler;
+            props = PROPS_MAP.BLOCK;
         } else if (requestRule.filterId === ANTIBANNER_FILTERS_ID.USER_FILTER_ID) {
-            type = 'Remove from User Filter';
-            onClick = () => removeFromUserFilterHandler(event);
+            props = PROPS_MAP.USER_FILTER;
             if (requestRule.whitelistRule) {
-                type = 'Block';
-                onClick = blockHandler;
+                props = PROPS_MAP.BLOCK;
             }
         } else if (requestRule.filterId === ANTIBANNER_FILTERS_ID.ALLOWLIST_FILTER_ID) {
-            type = 'Remove from Allowlist';
-            onClick = removeFromAllowlistHandler;
+            props = PROPS_MAP.ALLOWLIST;
         } else if (!requestRule.whitelistRule) {
-            type = 'Unblock';
-            onClick = unblockHandler;
+            props = PROPS_MAP.UNBLOCK;
         } else if (requestRule.whitelistRule) {
-            type = 'Block';
-            onClick = blockHandler;
+            props = PROPS_MAP.BLOCK;
         }
+
+        const { buttonTitle, onClick } = props;
 
         return (
             <button
@@ -184,7 +197,7 @@ const RequestInfo = observer(() => {
                 type="button"
                 onClick={onClick}
             >
-                {type}
+                {reactTranslator.translate(buttonTitle)}
             </button>
         );
     };

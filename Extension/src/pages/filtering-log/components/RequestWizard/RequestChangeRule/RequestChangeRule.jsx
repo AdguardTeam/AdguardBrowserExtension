@@ -7,7 +7,7 @@ import { RULE_OPTIONS } from '../constants';
 import { messenger } from '../../../../services/messenger';
 
 // TODO localize messages
-const RequestBlock = observer(() => {
+const RequestChangeRule = observer(() => {
     const { wizardStore, logStore } = useContext(rootStore);
 
     const RULE_OPTIONS_MAP = {
@@ -104,10 +104,12 @@ const RequestBlock = observer(() => {
         wizardStore.setRuleText(value);
     };
 
-    const flag1 = logStore.selectedEvent.element || logStore.selectedEvent.script;
-    const flag2 = logStore.selectedEvent.requestRule
-        && logStore.selectedEvent.requestRule.documentLevelRule;
-    const flag3 = logStore.selectedEvent.cookieName;
+    const {
+        element,
+        script,
+        requestRule,
+        cookieName,
+    } = logStore.selectedEvent;
 
     return (
         <>
@@ -126,13 +128,13 @@ const RequestBlock = observer(() => {
                     onChange={handleRuleChange}
                 />
             </div>
-            {!flag1 && !flag3 && (
+            {!(element || script) && !cookieName && (
                 <div className="patterns">
                     <div>Patterns:</div>
                     {renderPatterns(wizardStore.rulePatterns)}
                 </div>
             )}
-            {!flag1 && !flag2 && (
+            {!(element || script) && !requestRule?.documentLevelRule && (
                 <div className="options">
                     <div>Options:</div>
                     {renderOptions()}
@@ -148,4 +150,4 @@ const RequestBlock = observer(() => {
     );
 });
 
-export { RequestBlock };
+export { RequestChangeRule };

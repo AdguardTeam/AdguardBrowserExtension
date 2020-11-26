@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import { rootStore } from '../../../stores/RootStore';
 import { RequestInfo } from '../RequestInfo';
 import { WIZARD_STATES } from '../../../stores/WizardStore';
-import { RequestBlock } from '../RequestBlock';
+import { RequestChangeRule } from '../RequestChangeRule';
 
 Modal.setAppElement('#root');
 
@@ -20,13 +20,10 @@ const RequestModal = observer(() => {
             modalContent = <RequestInfo />;
             break;
         }
-        case WIZARD_STATES.BLOCK_REQUEST: {
-            modalContent = <RequestBlock />;
-            break;
-        }
 
+        case WIZARD_STATES.BLOCK_REQUEST:
         case WIZARD_STATES.UNBLOCK_REQUEST: {
-            modalContent = <RequestBlock />;
+            modalContent = <RequestChangeRule />;
             break;
         }
 
