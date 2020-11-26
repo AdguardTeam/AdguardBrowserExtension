@@ -219,3 +219,42 @@ export const createExceptionScriptRule = (rule, event) => {
         return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_SCRIPT_RULE_UBO);
     }
 };
+
+/**
+ * Request type map
+ *
+ * @param {String} requestType
+ * @returns {String}
+ */
+export const getRequestType = (requestType) => {
+    switch (requestType) {
+        case 'DOCUMENT':
+        case 'SUBDOCUMENT':
+            return 'HTML';
+        case 'STYLESHEET':
+            return 'CSS';
+        case 'SCRIPT':
+            return 'JavaScript';
+        case 'XMLHTTPREQUEST':
+            return 'Ajax';
+        case 'IMAGE':
+            return 'Image';
+        case 'OBJECT':
+        case 'MEDIA':
+            return 'Media';
+        case 'FONT':
+            return 'Font';
+        case 'WEBSOCKET':
+            return 'WebSocket';
+        case 'WEBRTC':
+            return 'WebRTC';
+        case 'CSP':
+            return 'CSP';
+        case 'COOKIE':
+            return 'Cookie';
+        case 'OTHER':
+            return 'Other';
+        default:
+            return '';
+    }
+};

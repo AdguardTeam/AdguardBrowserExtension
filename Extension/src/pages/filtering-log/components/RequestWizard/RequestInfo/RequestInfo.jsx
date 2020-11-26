@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 import { identity } from 'lodash';
 
-import { getFilterName } from '../utils';
+import { getFilterName, getRequestType } from '../utils';
 import { RequestImage } from './RequestImage';
 import { rootStore } from '../../../stores/RootStore';
 import { messenger } from '../../../../services/messenger';
@@ -61,7 +61,7 @@ const RequestInfo = observer(() => {
         },
         {
             title: reactTranslator.translate('filtering_modal_type'),
-            data: selectedEvent.requestType,
+            data: getRequestType(selectedEvent.requestType),
         },
         {
             title: reactTranslator.translate('filtering_modal_source'),

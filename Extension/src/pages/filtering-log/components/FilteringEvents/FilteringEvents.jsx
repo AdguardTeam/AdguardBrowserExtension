@@ -5,6 +5,15 @@ import { useTable } from 'react-table';
 import { rootStore } from '../../stores/RootStore';
 
 import './filtering-events.pcss';
+import { getRequestType } from '../RequestWizard/utils';
+import { reactTranslator } from '../../../reactCommon/reactTranslator';
+import { ANTIBANNER_FILTERS_ID } from "../../../../common/constants";
+
+const Messages = {
+    OPTIONS_USERFILTER: reactTranslator.translate('options_userfilter'),
+    OPTIONS_WHITELIST: reactTranslator.translate('options_whitelist'),
+    IN_WHITELIST: reactTranslator.translate('filtering_log_in_whitelist'),
+};
 
 const FilteringEvents = observer(() => {
     const { logStore } = useContext(rootStore);
@@ -42,22 +51,41 @@ const FilteringEvents = observer(() => {
             accessor: (props) => {
                 const { requestType, requestThirdParty } = props;
 
+                const formattedRequestType = getRequestType(requestType);
+
                 if (requestThirdParty) {
                     // TODO waits for design
                     return (
                         <>
-                            {requestType}
+                            {formattedRequestType}
                             <small>Third party</small>
                         </>
                     );
                 }
 
-                return requestType;
+                return formattedRequestType;
             },
         },
         {
             Header: 'Filtering  rule',
-            accessor: 'ruleText',
+            accessor: (props) => {
+                const { requestRule, replaceRules } = props;
+
+                let ruleText = '';
+                if (requestRule) {
+                    if (requestRule.filterId === ANTIBANNER_FILTERS_ID.ALLOWLIST_FILTER_ID) {
+                        ruleText = Messages.IN_WHITELIST;
+                    } else {
+                        ruleText = requestRule.ruleText;
+                    }
+                }
+
+                if (replaceRules) {
+                    const rulesCount = replaceRules.length;
+                    ruleText = `${reactTranslator.translate('filtering_log_modified_rules')} ${rulesCount}`;
+                }
+                return ruleText;
+            },
         },
         {
             Header: 'Filter',
