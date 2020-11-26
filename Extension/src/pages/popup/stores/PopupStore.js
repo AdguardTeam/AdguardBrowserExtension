@@ -43,6 +43,9 @@ class PopupStore {
     @observable
     showInfoAboutFullVersion = true;
 
+    @observable
+    isEdgeBrowser = false;
+
     constructor() {
         makeObservable(this);
     }
@@ -74,6 +77,7 @@ class PopupStore {
 
             // options
             this.showInfoAboutFullVersion = options.showInfoAboutFullVersion;
+            this.isEdgeBrowser = options.isEdgeBrowser;
         });
     };
 
