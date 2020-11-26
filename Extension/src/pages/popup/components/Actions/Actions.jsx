@@ -25,12 +25,12 @@ export const Actions = observer(() => {
     };
 
     const handleAbuseSite = () => {
-        messenger.openAbuseSite(store.tabUrl);
+        messenger.openAbuseSite(store.url);
         window.close();
     };
 
     const handleCheckSiteSecurity = () => {
-        messenger.checkSiteSecurity(store.tabUrl);
+        messenger.checkSiteSecurity(store.url);
         window.close();
     };
 

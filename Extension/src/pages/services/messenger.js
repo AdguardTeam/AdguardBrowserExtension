@@ -187,8 +187,18 @@ class Messenger {
         return this.sendMessage(type, { url });
     }
 
-    async checkSiteSecurity(url) {
+    async checkSiteSecurity() {
         const type = 'openSiteReportTab';
+        return this.sendMessage(type);
+    }
+
+    async removeAllowlistDomain() {
+        const type = 'removeAllowlistDomainPopup';
+        return this.sendMessage(type);
+    }
+
+    async addAllowlistDomain(url) {
+        const type = 'addAllowlistDomainPopup';
         return this.sendMessage(type, { url });
     }
 }

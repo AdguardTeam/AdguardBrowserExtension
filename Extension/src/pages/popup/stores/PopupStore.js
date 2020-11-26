@@ -5,11 +5,12 @@ import {
     configure,
     observable,
     runInAction,
-    makeObservable,
+    makeObservable, computed,
 } from 'mobx';
 
 import { messenger } from '../../services/messenger';
-import { VIEW_STATES } from '../constants';
+import { POPUP_STATES, VIEW_STATES } from '../constants';
+import { reactTranslator } from '../../reactCommon/reactTranslator';
 
 // Do not allow property change outside of store actions
 configure({ enforceActions: 'observed' });
@@ -22,10 +23,25 @@ class PopupStore {
     applicationAvailable = true;
 
     @observable
-    tabUrl = null;
+    url = null;
 
     @observable
     viewState = VIEW_STATES.ACTIONS;
+
+    @observable
+    totalBlocked = 0;
+
+    @observable
+    totalBlockedTab = 0;
+
+    @observable
+    documentAllowlisted = null;
+
+    @observable
+    userAllowlisted = null;
+
+    @observable
+    showInfoAboutFullVersion = true;
 
     constructor() {
         makeObservable(this);
@@ -43,10 +59,21 @@ class PopupStore {
         const response = await messenger.getTabInfoForPopup(currentTab?.id);
 
         runInAction(() => {
-            const { frameInfo } = response;
+            const { frameInfo, options } = response;
+
+            // frame info
             this.applicationFilteringDisabled = frameInfo.applicationFilteringDisabled;
             this.applicationAvailable = frameInfo.applicationAvailable;
-            this.tabUrl = frameInfo.url;
+            this.url = frameInfo.url;
+            this.totalBlocked = frameInfo.totalBlocked;
+            this.totalBlockedTab = frameInfo.totalBlockedTab;
+            this.domainName = frameInfo.domainName;
+            this.documentAllowlisted = frameInfo.documentAllowlisted;
+            this.userAllowlisted = frameInfo.userAllowlisted;
+            this.canAddRemoveRule = frameInfo.canAddRemoveRule;
+
+            // options
+            this.showInfoAboutFullVersion = options.showInfoAboutFullVersion;
         });
     };
 
@@ -63,6 +90,84 @@ class PopupStore {
     setViewState = (state) => {
         this.viewState = state;
     };
+
+    @computed
+    get currentSite() {
+        if (this.applicationAvailable) {
+            return this.domainName ? this.domainName : this.url;
+        }
+        return this.url;
+    }
+
+    @computed
+    get currentStatusMessage() {
+        let messageKey = '';
+
+        if (!this.applicationAvailable) {
+            messageKey = 'popup_site_filtering_state_secure_page';
+        } else if (this.documentAllowlisted && !this.userAllowlisted) {
+            messageKey = '';
+        } else if (this.applicationFilteringDisabled) {
+            messageKey = 'popup_site_filtering_state_paused';
+        } else if (this.documentAllowlisted) {
+            messageKey = 'popup_site_filtering_state_disabled';
+        } else {
+            messageKey = 'popup_site_filtering_state_enabled';
+        }
+
+        if (messageKey) {
+            return reactTranslator.translate(messageKey);
+        }
+
+        return null;
+    }
+
+    @action
+    toggleAllowlisted = () => {
+        if (!this.applicationAvailable || this.applicationFilteringDisabled) {
+            return;
+        }
+        if (!this.canAddRemoveRule) {
+            return;
+        }
+
+        let isAllowlisted = this.documentAllowlisted;
+
+        if (isAllowlisted) {
+            messenger.removeAllowlistDomain();
+            isAllowlisted = false;
+        } else {
+            messenger.addAllowlistDomain();
+            isAllowlisted = true;
+        }
+
+        runInAction(() => {
+            this.documentAllowlisted = isAllowlisted;
+            this.userAllowlisted = isAllowlisted;
+            this.totalBlockedTab = 0;
+        });
+    }
+
+    @computed
+    get popupState() {
+        if (this.applicationFilteringDisabled) {
+            return POPUP_STATES.APPLICATION_FILTERING_DISABLED;
+        }
+
+        if (!this.applicationAvailable) {
+            return POPUP_STATES.APPLICATION_UNAVAILABLE;
+        }
+
+        if (!this.canAddRemoveRule) {
+            return POPUP_STATES.SITE_IN_EXCEPTION;
+        }
+
+        if (this.documentAllowlisted) {
+            return POPUP_STATES.SITE_ALLOWLISTED;
+        }
+
+        return POPUP_STATES.APPLICATION_ENABLED;
+    }
 }
 
 export const popupStore = createContext(new PopupStore());

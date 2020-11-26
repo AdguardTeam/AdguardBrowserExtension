@@ -60,12 +60,12 @@ PopupController.prototype = {
         // Should be overwritten
     },
 
-    addWhitelistDomain(url) {
-        popupPage.sendMessage({ type: 'addWhitelistDomainPopup', url });
+    addAllowlistDomain(url) {
+        popupPage.sendMessage({ type: 'addAllowlistDomainPopup', url });
     },
 
-    removeWhitelistDomain(url) {
-        popupPage.sendMessage({ type: 'removeWhitelistDomainPopup', url });
+    removeAllowlistDomain(url) {
+        popupPage.sendMessage({ type: 'removeAllowlistDomainPopup', url });
     },
 
     changeApplicationFilteringDisabled(disabled) {
@@ -170,7 +170,7 @@ PopupController.prototype = {
         } else if (!tabInfo.canAddRemoveRule) {
             stack.classList.add('status-error');
             parent.classList.add('status-checkmark');
-        } else if (tabInfo.documentWhitelisted) {
+        } else if (tabInfo.documentAllowlisted) {
             stack.classList.add('status-cross');
             parent.classList.add('status-cross');
             switcher.setAttribute('aria-checked', 'false');
@@ -325,11 +325,11 @@ PopupController.prototype = {
         let messageKey = '';
         if (!tabInfo.applicationAvailable) {
             messageKey = 'popup_site_filtering_state_secure_page';
-        } else if (tabInfo.documentWhitelisted && !tabInfo.userWhitelisted) {
+        } else if (tabInfo.documentAllowlisted && !tabInfo.userAllowlisted) {
             messageKey = '';
         } else if (tabInfo.applicationFilteringDisabled) {
             messageKey = 'popup_site_filtering_state_paused';
-        } else if (tabInfo.documentWhitelisted) {
+        } else if (tabInfo.documentAllowlisted) {
             messageKey = 'popup_site_filtering_state_disabled';
         } else {
             messageKey = 'popup_site_filtering_state_enabled';
@@ -356,7 +356,7 @@ PopupController.prototype = {
         let messageKey;
         if (!tabInfo.applicationAvailable) {
             messageKey = '';
-        } else if (tabInfo.documentWhitelisted && !tabInfo.userWhitelisted) {
+        } else if (tabInfo.documentAllowlisted && !tabInfo.userAllowlisted) {
             messageKey = 'popup_site_exception_info';
         }
 
@@ -707,7 +707,7 @@ PopupController.prototype = {
 
         this._appendTemplate(el, this.actionOpenAssistant);
         this._appendTemplate(el, this.actionOpenFilteringLog);
-        if (tabInfo.applicationFilteringDisabled || tabInfo.documentWhitelisted) {
+        if (tabInfo.applicationFilteringDisabled || tabInfo.documentAllowlisted) {
             // May be shown later
             this.actionOpenAssistant.style.display = 'none';
         }
@@ -888,16 +888,16 @@ PopupController.prototype = {
             if (!tabInfo.canAddRemoveRule) {
                 return;
             }
-            let isWhitelisted = tabInfo.documentWhitelisted;
+            let isWhitelisted = tabInfo.documentAllowlisted;
             if (isWhitelisted) {
-                self.removeWhitelistDomain(tabInfo.url);
+                self.removeAllowlistDomain(tabInfo.url);
                 isWhitelisted = false;
             } else {
-                self.addWhitelistDomain(tabInfo.url);
+                self.addAllowlistDomain(tabInfo.url);
                 isWhitelisted = true;
             }
-            tabInfo.documentWhitelisted = isWhitelisted;
-            tabInfo.userWhitelisted = isWhitelisted;
+            tabInfo.documentAllowlisted = isWhitelisted;
+            tabInfo.userAllowlisted = isWhitelisted;
             tabInfo.totalBlockedTab = 0;
             self._renderPopup(tabInfo);
             self._bindActions();

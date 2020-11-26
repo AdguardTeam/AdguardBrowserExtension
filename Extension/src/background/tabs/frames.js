@@ -241,8 +241,8 @@ export const frames = (function () {
         // application is available for tabs where url is with http schema
         // and when localstorage is initialized
         const applicationAvailable = localStorageInitialized && !urlFilteringDisabled;
-        let documentWhitelisted = false;
-        let userWhitelisted = false;
+        let documentAllowlisted = false;
+        let userAllowlisted = false;
         let canAddRemoveRule = false;
         let frameRule;
 
@@ -253,10 +253,10 @@ export const frames = (function () {
         const applicationFilteringDisabled = settings.isFilteringDisabled();
 
         if (applicationAvailable) {
-            documentWhitelisted = isTabWhitelisted(tab);
-            if (documentWhitelisted) {
+            documentAllowlisted = isTabWhitelisted(tab);
+            if (documentAllowlisted) {
                 const rule = getFrameWhitelistRule(tab);
-                userWhitelisted = utils.filters.isWhitelistFilterRule(rule)
+                userAllowlisted = utils.filters.isWhitelistFilterRule(rule)
                         || utils.filters.isUserFilterRule(rule);
                 frameRule = {
                     filterId: rule.getFilterListId(),
@@ -264,7 +264,7 @@ export const frames = (function () {
                 };
             }
             // It means site in exception
-            canAddRemoveRule = !(documentWhitelisted && !userWhitelisted);
+            canAddRemoveRule = !(documentAllowlisted && !userAllowlisted);
         }
 
         const domainName = getFrameDomain(tab);
@@ -275,8 +275,8 @@ export const frames = (function () {
             domainName,
             applicationFilteringDisabled,
             urlFilteringDisabled,
-            documentWhitelisted,
-            userWhitelisted,
+            documentAllowlisted,
+            userAllowlisted,
             canAddRemoveRule,
             frameRule,
             adguardProductName,

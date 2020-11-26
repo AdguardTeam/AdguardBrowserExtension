@@ -1,6 +1,48 @@
 .main {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
     min-height: 230px;
+    /*TODO use colors from variables*/
+    background-image: radial-gradient(circle at 50% 54%, #326e7a, #253440);
+    color: white;
+
+    &__cta-link {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    &__total-blocked-tab {
+        font-weight: bold;
+        text-align: center;
+        font-size: 24px;
+    }
+
+    &__total-blocked-all {
+        text-align: center;
+        font-size: 16px;
+    }
+
+    .current-site {
+        font-size: 16px;
+        max-width: 260px;
+        text-align: center;
+        margin: 0 auto;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-weight: bold;
+    }
+
+    .current-status {
+        font-size: 14px;
+        text-align: center;
+    }
+}
+
+.switcher {
+    &:hover {
+        cursor: pointer;
+    }
 }
