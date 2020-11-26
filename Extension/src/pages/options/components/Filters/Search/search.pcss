@@ -3,25 +3,26 @@
     justify-content: flex-start;
     align-items: center;
     border-bottom: 1px solid var(--greye7);
-    padding: 0 15px 10px 15px;
+    padding: 16px 15px 10px 15px;
 
     &__input {
         flex-grow: 1;
         border: 0;
         background: none;
-        padding: 5px 0 5px 5px;
+        padding: 5px 0 5px 10px;
         font-size: 14px;
         outline: none;
 
         @media (min-width: 341px) {
-            padding: 5px 0 5px 25px;
+            padding: 5px 0 5px 15px;
         }
     }
 
     &__ico {
-        width: 24px;
-        min-width: 24px;
-        height: 24px;
+        --size: 20px;
+        width: var(--size);
+        min-width: var(--size);
+        height: var(--size);
         background-size: cover;
         background-image: url(../../../../assets/icons/magnifying.svg);
     }
@@ -46,7 +47,7 @@
         width: 12px;
         min-width: 12px;
         height: 12px;
-        margin-left: 15px;
+        margin-right: 15px;
         position: relative;
         top: 1px;
         background-image: url(../../../../assets/icons/cross.svg);
