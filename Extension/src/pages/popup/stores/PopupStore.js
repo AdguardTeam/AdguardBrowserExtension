@@ -2,14 +2,15 @@ import { createContext } from 'react';
 import browser from 'webextension-polyfill';
 import {
     action,
+    computed,
     configure,
     observable,
     runInAction,
-    makeObservable, computed,
+    makeObservable,
 } from 'mobx';
 
 import { messenger } from '../../services/messenger';
-import { POPUP_STATES, VIEW_STATES } from '../constants';
+import { POPUP_STATES, TIME_RANGES, VIEW_STATES } from '../constants';
 import { reactTranslator } from '../../reactCommon/reactTranslator';
 
 // Do not allow property change outside of store actions
@@ -46,6 +47,12 @@ class PopupStore {
     @observable
     isEdgeBrowser = false;
 
+    @observable
+    stats = null;
+
+    @observable
+    range = TIME_RANGES.WEEK
+
     constructor() {
         makeObservable(this);
     }
@@ -60,6 +67,7 @@ class PopupStore {
         const currentTab = tabs?.[0];
 
         const response = await messenger.getTabInfoForPopup(currentTab?.id);
+        const { stats } = await messenger.getStatisticsData();
 
         runInAction(() => {
             const { frameInfo, options } = response;
@@ -78,6 +86,9 @@ class PopupStore {
             // options
             this.showInfoAboutFullVersion = options.showInfoAboutFullVersion;
             this.isEdgeBrowser = options.isEdgeBrowser;
+
+            // stats
+            this.stats = stats;
         });
     };
 
@@ -171,6 +182,74 @@ class PopupStore {
         }
 
         return POPUP_STATES.APPLICATION_ENABLED;
+    }
+
+    @action
+    getStatisticsData = async () => {
+        const { stats } = await messenger.getStatisticsData();
+        runInAction(() => {
+            this.stats = stats;
+        });
+    }
+
+    @computed
+    get statsDataByType() {
+        const { stats } = this;
+
+        if (!stats) {
+            return null;
+        }
+
+        let result = {};
+
+        switch (this.range) {
+            case TIME_RANGES.DAY:
+                result = stats.lastMonth[stats.lastMonth.length - 1];
+                break;
+            case TIME_RANGES.WEEK: {
+                for (let i = 0; i < stats.lastWeek.length; i += 1) {
+                    const day = stats.lastWeek[i];
+                    // eslint-disable-next-line no-restricted-syntax
+                    for (const type in Object.keys(day)) {
+                        if (day[type]) {
+                            result[type] = (result[type] ? result[type] : 0) + day[type];
+                        }
+                    }
+                }
+                break;
+            }
+            case TIME_RANGES.MONTH:
+                result = stats.lastYear[stats.lastYear.length - 1];
+                break;
+            case TIME_RANGES.YEAR: {
+                for (let i = 0; i < stats.lastYear.length; i += 1) {
+                    const month = stats.lastYear[i];
+                    // eslint-disable-next-line no-restricted-syntax
+                    for (const type in Object.keys(month)) {
+                        if (month[type]) {
+                            result[type] = (result[type] ? result[type] : 0) + month[type];
+                        }
+                    }
+                }
+                break;
+            }
+            default:
+                throw new Error('There is no such time range type');
+        }
+
+        const { blockedGroups } = stats;
+
+        return blockedGroups
+            .slice()
+            .sort((groupA, groupB) => groupA.displayNumber - groupB.displayNumber)
+            .map((group) => {
+                const { groupId, groupName } = group;
+                const blocked = result[group.groupId];
+                return {
+                    groupId, blocked, groupName,
+                };
+            })
+            .filter((group) => group.blocked > 0);
     }
 }
 

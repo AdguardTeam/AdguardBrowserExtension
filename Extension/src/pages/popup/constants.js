@@ -10,3 +10,10 @@ export const POPUP_STATES = {
     SITE_IN_EXCEPTION: 'site.in.exception',
     SITE_ALLOWLISTED: 'site.allowlisted',
 };
+
+export const TIME_RANGES = {
+    DAY: 'day',
+    WEEK: 'week',
+    MONTH: 'month',
+    YEAR: 'year',
+};
