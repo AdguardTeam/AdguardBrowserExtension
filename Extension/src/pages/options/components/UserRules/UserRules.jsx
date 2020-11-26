@@ -11,6 +11,7 @@ import { STATES as SAVING_STATES } from '../Editor/savingFSM';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
 
 import './styles.pcss';
+import SettingsSection from '../Settings/SettingsSection';
 
 // TODO add shortcut to wrap lines in comments
 const UserRules = observer(() => {
@@ -92,9 +93,9 @@ const UserRules = observer(() => {
 
     return (
         <>
-            <h2 className="title">{reactTranslator.translate('options_userfilter')}</h2>
-            <div className="desc">
-                {reactTranslator.translate('options_userfilter_description', {
+            <SettingsSection
+                title={reactTranslator.translate('options_userfilter')}
+                description={reactTranslator.translate('options_userfilter_description', {
                     a: (chunks) => (
                         <a
                             className="desc--link"
@@ -105,7 +106,7 @@ const UserRules = observer(() => {
                         </a>
                     ),
                 })}
-            </div>
+            />
             <Editor
                 name="user-rules"
                 value={settingsStore.userRules}
