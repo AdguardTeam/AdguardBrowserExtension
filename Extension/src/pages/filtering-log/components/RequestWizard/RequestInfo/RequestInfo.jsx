@@ -120,6 +120,8 @@ const RequestInfo = observer(() => {
         );
 
         if (!showButton) {
+            /* TODO: set only last rule */
+            wizardStore.setRulePattern(event.requestRule.ruleText);
             return null;
         }
 
