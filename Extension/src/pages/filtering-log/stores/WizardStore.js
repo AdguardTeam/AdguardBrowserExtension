@@ -3,7 +3,6 @@ import {
     computed,
     observable,
     makeObservable,
-    autorun,
 } from 'mobx';
 
 import { RULE_OPTIONS, UrlFilterRule, FilterRule } from '../components/RequestWizard/constants';
