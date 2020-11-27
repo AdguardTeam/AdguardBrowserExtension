@@ -111,10 +111,14 @@ const RequestCreateRule = observer(() => {
         cookieName,
     } = logStore.selectedEvent;
 
+    // Must invoke wizardStore.rulePatterns unconditionally to trigger wizardStore.rule computation
     const rulePatterns = renderPatterns(wizardStore.rulePatterns);
     const options = renderOptions();
 
     const isElementOrScript = element || script;
+    const showPatterns = !isElementOrScript && !cookieName;
+    const showOptions = !isElementOrScript && !requestRule?.documentLevelRule;
+
     return (
         <>
             <button
@@ -132,13 +136,13 @@ const RequestCreateRule = observer(() => {
                     onChange={handleRuleChange}
                 />
             </div>
-            {!isElementOrScript && !cookieName && (
+            {showPatterns && (
                 <div className="patterns">
                     <div>Patterns:</div>
                     {rulePatterns}
                 </div>
             )}
-            {!isElementOrScript && !requestRule?.documentLevelRule && (
+            {showOptions && (
                 <div className="options">
                     <div>Options:</div>
                     {options}
