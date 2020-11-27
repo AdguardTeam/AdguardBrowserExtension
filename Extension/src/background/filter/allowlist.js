@@ -23,7 +23,7 @@ import { listeners } from '../notifier';
 import { log } from '../utils/log';
 import { lazyGet, lazyGetClear } from '../utils/lazy';
 
-export const whitelist = (() => {
+export const allowlist = (() => {
     const WHITE_LIST_DOMAINS_LS_PROP = 'white-list-domains';
     const BLOCK_LIST_DOMAINS_LS_PROP = 'block-list-domains';
 

@@ -18,7 +18,7 @@
 import { log } from './utils/log';
 import { backgroundPage } from './extension-api/background-page';
 import { rulesStorage, localStorage } from './storage';
-import { whitelist } from './filter/whitelist';
+import { allowlist } from './filter/allowlist';
 import { filteringLog } from './filter/filtering-log';
 import { uiService } from './ui-service';
 import { application } from './application';
@@ -49,7 +49,7 @@ export const startup = async function () {
             log.error(e);
         }
 
-        whitelist.init();
+        allowlist.init();
         filteringLog.init();
         uiService.init();
 

@@ -12,7 +12,7 @@ import { ANTIBANNER_FILTERS_ID } from "../../../../common/constants";
 const Messages = {
     OPTIONS_USERFILTER: reactTranslator.translate('options_userfilter'),
     OPTIONS_WHITELIST: reactTranslator.translate('options_whitelist'),
-    IN_WHITELIST: reactTranslator.translate('filtering_log_in_whitelist'),
+    IN_ALLOWLIST: reactTranslator.translate('filtering_log_in_whitelist'),
 };
 
 const FilteringEvents = observer(() => {
@@ -74,7 +74,7 @@ const FilteringEvents = observer(() => {
                 let ruleText = '';
                 if (requestRule) {
                     if (requestRule.filterId === ANTIBANNER_FILTERS_ID.ALLOWLIST_FILTER_ID) {
-                        ruleText = Messages.IN_WHITELIST;
+                        ruleText = Messages.IN_ALLOWLIST;
                     } else {
                         ruleText = requestRule.ruleText;
                     }

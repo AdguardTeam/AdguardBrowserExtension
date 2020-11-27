@@ -19,7 +19,7 @@ import { tabsApi } from './tabs-api';
 import { MAIN_FRAME_ID, utils } from '../utils/common';
 import { RequestTypes } from '../utils/request-types';
 import { listeners } from '../notifier';
-import { whitelist } from '../filter/whitelist';
+import { allowlist } from '../filter/allowlist';
 import { settings } from '../settings/user-settings';
 import { pageStats } from '../filter/page-stats';
 import { filteringApi } from '../filter/filtering-api';
@@ -143,7 +143,7 @@ export const frames = (function () {
      * @returns true if Tab have white list rule and white list isn't invert
      */
     const isTabWhitelistedForSafebrowsing = function (tab) {
-        return isTabWhitelisted(tab) && whitelist.isDefaultMode();
+        return isTabWhitelisted(tab) && allowlist.isDefaultMode();
     };
 
     /**
@@ -179,7 +179,7 @@ export const frames = (function () {
     /**
      * Gets whitelist rule for the specified tab
      * @param tab Tab to check
-     * @returns whitelist rule applied to that tab (if any)
+     * @returns allowlist rule applied to that tab (if any)
      */
     const getFrameWhitelistRule = function (tab) {
         return tabsApi.getTabMetadata(tab.tabId, 'frameWhitelistRule');
@@ -197,7 +197,7 @@ export const frames = (function () {
             let frameWhitelistRule = null;
             if (!applicationFilteringDisabled) {
                 const { url } = frame;
-                frameWhitelistRule = whitelist.findWhitelistRule(url);
+                frameWhitelistRule = allowlist.findWhitelistRule(url);
                 if (!frameWhitelistRule) {
                     frameWhitelistRule = filteringApi.findWhitelistRule(url, url, RequestTypes.DOCUMENT);
                 }

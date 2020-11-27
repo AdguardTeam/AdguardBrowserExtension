@@ -205,8 +205,8 @@ class Messenger {
         await this.sendMessage(type, { rule });
     }
 
-    async unWhitelistFrame(frameInfo) {
-        const type = 'unWhitelistFrame';
+    async unAllowlistFrame(frameInfo) {
+        const type = 'unAllowlistFrame';
         await this.sendMessage(type, { frameInfo });
     }
 

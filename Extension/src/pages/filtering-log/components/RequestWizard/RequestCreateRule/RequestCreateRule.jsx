@@ -7,7 +7,7 @@ import { RULE_OPTIONS } from '../constants';
 import { messenger } from '../../../../services/messenger';
 
 // TODO localize messages
-const RequestChangeRule = observer(() => {
+const RequestCreateRule = observer(() => {
     const { wizardStore, logStore } = useContext(rootStore);
 
     const RULE_OPTIONS_MAP = {
@@ -111,6 +111,7 @@ const RequestChangeRule = observer(() => {
         cookieName,
     } = logStore.selectedEvent;
 
+    const isElementOrScript = element || script;
     return (
         <>
             <button
@@ -128,13 +129,13 @@ const RequestChangeRule = observer(() => {
                     onChange={handleRuleChange}
                 />
             </div>
-            {!(element || script) && !cookieName && (
+            {!isElementOrScript && !cookieName && (
                 <div className="patterns">
                     <div>Patterns:</div>
                     {renderPatterns(wizardStore.rulePatterns)}
                 </div>
             )}
-            {!(element || script) && !requestRule?.documentLevelRule && (
+            {!isElementOrScript && !requestRule?.documentLevelRule && (
                 <div className="options">
                     <div>Options:</div>
                     {renderOptions()}
@@ -150,4 +151,4 @@ const RequestChangeRule = observer(() => {
     );
 });
 
-export { RequestChangeRule };
+export { RequestCreateRule };

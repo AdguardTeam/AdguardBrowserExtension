@@ -132,7 +132,7 @@ export const splitToPatterns = (requestUrl, domain, whitelist) => {
 };
 
 const MESSAGES = {
-    OPTIONS_USERFILTER: reactTranslator.translate('options_user_filter'),
+    OPTIONS_USERFILTER: reactTranslator.translate('options_userfilter'),
     OPTIONS_ALLOWLIST: reactTranslator.translate('options_allowlist'),
     IN_ALLOWLIST: reactTranslator.translate('filtering_log_in_allowlist'),
 };

@@ -105,7 +105,7 @@ class WizardStore {
             return;
         }
 
-        await messenger.unWhitelistFrame(frameInfo);
+        await messenger.unAllowlistFrame(frameInfo);
 
         this.closeModal();
     }

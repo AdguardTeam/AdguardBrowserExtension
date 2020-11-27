@@ -27,7 +27,7 @@ import { prefs } from './prefs';
 import { pageStats } from './filter/page-stats';
 import { frames } from './tabs/frames';
 import { notifications } from './utils/notifications';
-import { whitelist } from './filter/whitelist';
+import { allowlist } from './filter/allowlist';
 import { userrules } from './filter/userrules';
 import { browserUtils } from './utils/browser-utils';
 import { log } from './utils/log';
@@ -763,14 +763,14 @@ export const uiService = (function () {
 
     var whitelistTab = function (tab) {
         const tabInfo = frames.getFrameInfo(tab);
-        whitelist.whitelistUrl(tabInfo.url);
+        allowlist.whitelistUrl(tabInfo.url);
         updateTabIconAndContextMenu(tab, true);
         tabsApi.reload(tab.tabId);
     };
 
     var unWhitelistTab = function (tab) {
         const tabInfo = frames.getFrameInfo(tab);
-        userrules.unWhitelistFrame(tabInfo);
+        userrules.unAllowlistFrame(tabInfo);
         updateTabIconAndContextMenu(tab, true);
         tabsApi.reload(tab.tabId);
     };

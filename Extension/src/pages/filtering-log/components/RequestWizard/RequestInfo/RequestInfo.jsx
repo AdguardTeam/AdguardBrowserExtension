@@ -96,7 +96,7 @@ const RequestInfo = observer(() => {
         return (
             <div key={title} className="request-info">
                 <div>{title}</div>
-                <div>{reactTranslator.translate(data)}</div>
+                <div>{data}</div>
             </div>
         );
     });
@@ -155,7 +155,7 @@ const RequestInfo = observer(() => {
     const renderBlockRequest = (event) => {
         const { requestRule } = event;
 
-        const PROPS_MAP = {
+        const BUTTON_MAP = {
             BLOCK: {
                 buttonTitle: 'filtering_modal_block',
                 onClick: blockHandler,
@@ -165,7 +165,7 @@ const RequestInfo = observer(() => {
                 onClick: unblockHandler,
             },
             ALLOWLIST: {
-                buttonTitle: 'filtering_modal_remove_whitelist',
+                buttonTitle: 'filtering_modal_remove_allowlist',
                 onClick: removeFromAllowlistHandler,
             },
             USER_FILTER: {
@@ -174,21 +174,21 @@ const RequestInfo = observer(() => {
             },
         };
 
-        let props = PROPS_MAP.BLOCK;
+        let props = BUTTON_MAP.BLOCK;
 
         if (!requestRule) {
-            props = PROPS_MAP.BLOCK;
+            props = BUTTON_MAP.BLOCK;
         } else if (requestRule.filterId === ANTIBANNER_FILTERS_ID.USER_FILTER_ID) {
-            props = PROPS_MAP.USER_FILTER;
+            props = BUTTON_MAP.USER_FILTER;
             if (requestRule.whitelistRule) {
-                props = PROPS_MAP.BLOCK;
+                props = BUTTON_MAP.BLOCK;
             }
         } else if (requestRule.filterId === ANTIBANNER_FILTERS_ID.ALLOWLIST_FILTER_ID) {
-            props = PROPS_MAP.ALLOWLIST;
+            props = BUTTON_MAP.ALLOWLIST;
         } else if (!requestRule.whitelistRule) {
-            props = PROPS_MAP.UNBLOCK;
+            props = BUTTON_MAP.UNBLOCK;
         } else if (requestRule.whitelistRule) {
-            props = PROPS_MAP.BLOCK;
+            props = BUTTON_MAP.BLOCK;
         }
 
         const { buttonTitle, onClick } = props;
