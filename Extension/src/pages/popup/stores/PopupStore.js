@@ -27,7 +27,7 @@ class PopupStore {
     url = null;
 
     @observable
-    viewState = VIEW_STATES.ACTIONS;
+    viewState = VIEW_STATES.STATS; // FIXME change to VIEW_STATES.ACTIONS
 
     @observable
     totalBlocked = 0;
@@ -51,7 +51,10 @@ class PopupStore {
     stats = null;
 
     @observable
-    range = TIME_RANGES.WEEK
+    selectedTimeRange = TIME_RANGES.WEEK;
+
+    @observable
+    selectedBlockedType = 'total';
 
     constructor() {
         makeObservable(this);
@@ -161,7 +164,7 @@ class PopupStore {
             this.userAllowlisted = isAllowlisted;
             this.totalBlockedTab = 0;
         });
-    }
+    };
 
     @computed
     get popupState() {
@@ -190,7 +193,7 @@ class PopupStore {
         runInAction(() => {
             this.stats = stats;
         });
-    }
+    };
 
     @computed
     get statsDataByType() {
@@ -202,7 +205,7 @@ class PopupStore {
 
         let result = {};
 
-        switch (this.range) {
+        switch (this.selectedTimeRange) {
             case TIME_RANGES.DAY:
                 result = stats.lastMonth[stats.lastMonth.length - 1];
                 break;
@@ -210,10 +213,8 @@ class PopupStore {
                 for (let i = 0; i < stats.lastWeek.length; i += 1) {
                     const day = stats.lastWeek[i];
                     // eslint-disable-next-line no-restricted-syntax
-                    for (const type in Object.keys(day)) {
-                        if (day[type]) {
-                            result[type] = (result[type] ? result[type] : 0) + day[type];
-                        }
+                    for (const type of Object.keys(day)) {
+                        result[type] = (result[type] ? result[type] : 0) + day[type];
                     }
                 }
                 break;
@@ -225,10 +226,8 @@ class PopupStore {
                 for (let i = 0; i < stats.lastYear.length; i += 1) {
                     const month = stats.lastYear[i];
                     // eslint-disable-next-line no-restricted-syntax
-                    for (const type in Object.keys(month)) {
-                        if (month[type]) {
-                            result[type] = (result[type] ? result[type] : 0) + month[type];
-                        }
+                    for (const type of Object.keys(month)) {
+                        result[type] = (result[type] ? result[type] : 0) + month[type];
                     }
                 }
                 break;
@@ -246,11 +245,23 @@ class PopupStore {
                 const { groupId, groupName } = group;
                 const blocked = result[group.groupId];
                 return {
-                    groupId, blocked, groupName,
+                    groupId,
+                    blocked,
+                    groupName,
                 };
             })
             .filter((group) => group.blocked > 0);
     }
+
+    @action
+    setSelectedBlockedType = (value) => {
+        this.selectedBlockedType = value;
+    };
+
+    @action
+    setSelectedTimeRange = (value) => {
+        this.selectedTimeRange = value;
+    };
 }
 
 export const popupStore = createContext(new PopupStore());
