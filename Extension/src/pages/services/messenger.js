@@ -209,6 +209,21 @@ class Messenger {
         const type = 'addUserRule';
         await this.sendMessage(type, { rule });
     }
+
+    async unAllowlistFrame(frameInfo) {
+        const type = 'unAllowlistFrame';
+        await this.sendMessage(type, { frameInfo });
+    }
+
+    async removeUserRule(ruleText) {
+        const type = 'removeUserRule';
+        await this.sendMessage(type, { ruleText });
+    }
+
+    async getTabFrameInfoById(tabId) {
+        const type = 'getTabFrameInfoById';
+        await this.sendMessage(type, { tabId });
+    }
 }
 
 const messenger = new Messenger();

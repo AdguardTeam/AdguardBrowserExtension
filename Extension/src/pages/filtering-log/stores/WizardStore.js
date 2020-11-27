@@ -5,8 +5,15 @@ import {
     makeObservable,
 } from 'mobx';
 
-import { RULE_OPTIONS, UrlFilterRule } from '../components/RequestWizard/constants';
-import { splitToPatterns } from '../components/RequestWizard/utils';
+import { RULE_OPTIONS, UrlFilterRule, FilterRule } from '../components/RequestWizard/constants';
+import {
+    createDocumentLevelBlockRule,
+    createExceptionCookieRule,
+    createExceptionCssRule,
+    createExceptionScriptRule,
+    splitToPatterns,
+} from '../components/RequestWizard/utils';
+import { messenger } from '../../services/messenger';
 
 export const WIZARD_STATES = {
     VIEW_REQUEST: 'view.request',
@@ -81,6 +88,34 @@ class WizardStore {
     @action
     setBlockState() {
         this.requestModalState = WIZARD_STATES.BLOCK_REQUEST;
+    }
+
+    @action
+    setUnblockState() {
+        this.requestModalState = WIZARD_STATES.UNBLOCK_REQUEST;
+    }
+
+    @action
+    removeFromAllowlistHandler = async () => {
+        const { selectedTabId } = this.rootStore.logStore;
+        const { frameInfo } = await messenger.getTabFrameInfoById(selectedTabId);
+
+        if (!frameInfo) {
+            return;
+        }
+
+        await messenger.unAllowlistFrame(frameInfo);
+
+        this.closeModal();
+    }
+
+    @action
+    removeFromUserFilterHandler = async (filteringEvent) => {
+        const { requestRule } = filteringEvent;
+
+        await messenger.removeUserRule(requestRule.ruleText);
+
+        this.closeModal();
     }
 
     @action
@@ -223,11 +258,47 @@ class WizardStore {
     @computed
     get rulePatterns() {
         const { selectedEvent } = this.rootStore.logStore;
-        const patterns = splitToPatterns(
+        if (this.requestModalState === WIZARD_STATES.UNBLOCK_REQUEST) {
+            let patterns;
+            if (selectedEvent.requestUrl) {
+                patterns = splitToPatterns(
+                    selectedEvent.requestUrl,
+                    selectedEvent.requestDomain,
+                    true,
+                );
+            }
+
+            if (selectedEvent.requestUrl === 'content-security-policy-check') {
+                patterns = [FilterRule.MASK_ALLOWLIST];
+            }
+
+            if (selectedEvent.element) {
+                patterns = [createExceptionCssRule(selectedEvent.requestRule, selectedEvent)];
+            }
+
+            if (selectedEvent.cookieName) {
+                patterns = [createExceptionCookieRule(selectedEvent.requestRule, selectedEvent)];
+            }
+
+            if (selectedEvent.script) {
+                patterns = [createExceptionScriptRule(selectedEvent.requestRule, selectedEvent)];
+            }
+
+            this.setRulePattern(patterns[0]);
+
+            return patterns;
+        }
+
+        let patterns = splitToPatterns(
             selectedEvent.requestUrl,
-            selectedEvent.frameDomain,
+            selectedEvent.requestDomain,
             false,
         );
+
+        if (selectedEvent.requestRule && selectedEvent.requestRule.documentLevelRule) {
+            patterns = [createDocumentLevelBlockRule(selectedEvent.requestRule)];
+        }
+
         this.setRulePattern(patterns[0]);
         return patterns;
     }

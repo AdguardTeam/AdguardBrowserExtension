@@ -18,7 +18,7 @@
 import { backend } from '../../src/background/filter/filters/service-client';
 import { tabsApi } from '../../src/background/tabs/tabs-api';
 import { webRequestService } from '../../src/background/filter/request-blocking';
-import { whitelist } from '../../src/background/filter/whitelist';
+import { allowlist } from '../../src/background/filter/allowlist';
 import { subscriptions } from '../../src/background/filter/filters/subscription';
 import { log } from '../../src/background/utils/log';
 import { application } from '../../src/background/application';
@@ -97,13 +97,13 @@ export const adguardApi = (function () {
 
         let domains;
         if (configuration.blacklist) {
-            whitelist.changeDefaultWhitelistMode(false);
+            allowlist.changeDefaultWhitelistMode(false);
             domains = configuration.blacklist;
         } else {
-            whitelist.changeDefaultWhitelistMode(true);
+            allowlist.changeDefaultWhitelistMode(true);
             domains = configuration.whitelist;
         }
-        whitelist.updateWhitelistDomains(domains || []);
+        allowlist.updateWhitelistDomains(domains || []);
     }
 
     /**

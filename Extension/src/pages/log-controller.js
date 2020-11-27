@@ -28,7 +28,7 @@ let filtersMetadata;
 const Messages = {
     OPTIONS_USERFILTER: i18n.getMessage('options_userfilter'),
     OPTIONS_WHITELIST: i18n.getMessage('options_allowlist'),
-    IN_WHITELIST: i18n.getMessage('filtering_log_in_whitelist'),
+    IN_ALLOWLIST: i18n.getMessage('filtering_log_in_whitelist'),
 };
 
 const FilterRule = {
@@ -773,7 +773,7 @@ const RequestWizard = (function () {
 
         removeWhitelistDomainButton.addEventListener('click', (e) => {
             e.preventDefault();
-            contentPage.sendMessage({ type: 'unWhitelistFrame', frameInfo });
+            contentPage.sendMessage({ type: 'unAllowlistFrame', frameInfo });
             closeModal();
         });
 
@@ -1251,7 +1251,7 @@ PageController.prototype = {
         let ruleText = '';
         if (event.requestRule) {
             if (event.requestRule.filterId === AntiBannerFiltersId.ALLOWLIST_FILTER_ID) {
-                ruleText = Messages.IN_WHITELIST;
+                ruleText = Messages.IN_ALLOWLIST;
             } else {
                 ruleText = event.requestRule.ruleText;
             }

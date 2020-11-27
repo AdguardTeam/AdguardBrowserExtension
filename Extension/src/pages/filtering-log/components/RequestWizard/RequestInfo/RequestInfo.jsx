@@ -3,12 +3,12 @@ import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 import { identity } from 'lodash';
 
-import { getFilterName } from '../utils';
+import { getFilterName, getRequestType } from '../utils';
 import { RequestImage } from './RequestImage';
 import { rootStore } from '../../../stores/RootStore';
 import { messenger } from '../../../../services/messenger';
 import { reactTranslator } from '../../../../reactCommon/reactTranslator';
-import { STEALTH_ACTIONS } from '../../../../../common/constants';
+import { ANTIBANNER_FILTERS_ID, STEALTH_ACTIONS } from '../../../../../common/constants';
 
 import './request-info.pcss';
 
@@ -56,12 +56,12 @@ const RequestInfo = observer(() => {
             data: selectedEvent.element,
         },
         {
-            title: 'Cookie:', // TODO add to locale messages
+            title: reactTranslator.translate('filtering_modal_cookie'),
             data: selectedEvent.cookieName,
         },
         {
             title: reactTranslator.translate('filtering_modal_type'),
-            data: selectedEvent.requestType,
+            data: getRequestType(selectedEvent.requestType),
         },
         {
             title: reactTranslator.translate('filtering_modal_source'),
@@ -112,6 +112,7 @@ const RequestInfo = observer(() => {
     };
 
     const renderOpenInNewTab = (event) => {
+        // there is nothing to open if log event reveals blocked element or cookie
         const showButton = !(
             event.element
             || event.cookieName
@@ -137,18 +138,66 @@ const RequestInfo = observer(() => {
         wizardStore.setBlockState();
     };
 
+    const unblockHandler = () => {
+        wizardStore.setUnblockState();
+    };
+
+    const removeFromUserFilterHandler = (requestInfo) => {
+        wizardStore.removeFromUserFilterHandler(requestInfo);
+    };
+
+    const removeFromAllowlistHandler = () => {
+        wizardStore.removeFromAllowlistHandler();
+    };
+
     const renderBlockRequest = (event) => {
-        if (event.requestRule) {
-            return null;
+        const { requestRule } = event;
+
+        const BUTTON_MAP = {
+            BLOCK: {
+                buttonTitleKey: 'filtering_modal_block',
+                onClick: blockHandler,
+            },
+            UNBLOCK: {
+                buttonTitleKey: 'filtering_modal_unblock',
+                onClick: unblockHandler,
+            },
+            ALLOWLIST: {
+                buttonTitleKey: 'filtering_modal_remove_allowlist',
+                onClick: removeFromAllowlistHandler,
+            },
+            USER_FILTER: {
+                buttonTitleKey: 'filtering_modal_remove_user',
+                onClick: () => removeFromUserFilterHandler(event),
+            },
+        };
+
+        let props = BUTTON_MAP.BLOCK;
+
+        if (!requestRule) {
+            props = BUTTON_MAP.BLOCK;
+        } else if (requestRule.filterId === ANTIBANNER_FILTERS_ID.USER_FILTER_ID) {
+            props = BUTTON_MAP.USER_FILTER;
+            if (requestRule.whitelistRule) {
+                props = BUTTON_MAP.BLOCK;
+            }
+        } else if (requestRule.filterId === ANTIBANNER_FILTERS_ID.ALLOWLIST_FILTER_ID) {
+            props = BUTTON_MAP.ALLOWLIST;
+        } else if (!requestRule.whitelistRule) {
+            props = BUTTON_MAP.UNBLOCK;
+        } else if (requestRule.whitelistRule) {
+            props = BUTTON_MAP.BLOCK;
         }
+
+        const { buttonTitleKey, onClick } = props;
 
         return (
             <button
                 className="control"
                 type="button"
-                onClick={blockHandler}
+                onClick={onClick}
             >
-                Block
+                {reactTranslator.translate(buttonTitleKey)}
             </button>
         );
     };

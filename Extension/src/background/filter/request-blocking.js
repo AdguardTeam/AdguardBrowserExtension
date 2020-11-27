@@ -28,7 +28,7 @@ import { prefs } from '../prefs';
 import { requestContextStorage } from './request-context-storage';
 import { documentFilterService } from './services/document-filter';
 import { redirectService } from './services/redirect-service';
-import { whitelist } from './whitelist';
+import { allowlist } from './allowlist';
 import { browserUtils } from '../utils/browser-utils';
 
 export const webRequestService = (function () {
@@ -297,7 +297,7 @@ export const webRequestService = (function () {
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1032
          */
         if (tab.tabId === BACKGROUND_TAB_ID) {
-            whitelistRule = whitelist.findWhitelistRule(referrerUrl);
+            whitelistRule = allowlist.findWhitelistRule(referrerUrl);
         } else {
             whitelistRule = frames.getFrameWhitelistRule(tab);
         }

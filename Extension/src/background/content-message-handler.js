@@ -41,7 +41,7 @@ import { subscriptions } from './filter/filters/subscription';
 import { filteringApi } from './filter/filtering-api';
 import { stealthService } from './filter/services/stealth-service';
 import { prefs } from './prefs';
-import { whitelist } from './filter/whitelist';
+import { allowlist } from './filter/allowlist';
 import { documentFilterService } from './filter/services/document-filter';
 import { antiBannerService } from './filter/antibanner';
 
@@ -159,9 +159,11 @@ const init = () => {
                 const result = await processGetOptionsData();
                 return result;
             }
-            case 'unWhitelistFrame':
-                userrules.unWhitelistFrame(message.frameInfo);
+            case 'unAllowlistFrame': {
+                const { frameInfo } = data;
+                userrules.unAllowlistFrame(frameInfo);
                 break;
+            }
             case 'createEventListener': {
                 const { events } = data;
                 return processAddEventListener(events, sender);
@@ -208,10 +210,10 @@ const init = () => {
                 break;
             }
             case 'changeDefaultWhitelistMode':
-                whitelist.changeDefaultWhitelistMode(message.enabled);
+                allowlist.changeDefaultWhitelistMode(message.enabled);
                 break;
             case 'getWhitelistDomains': {
-                const whitelistDomains = whitelist.getWhitelistDomains();
+                const whitelistDomains = allowlist.getWhitelistDomains();
                 const appVersion = backgroundPage.app.getVersion();
                 return {
                     content: whitelistDomains.join('\r\n'),
@@ -223,7 +225,7 @@ const init = () => {
                 const domains = value.split(/[\r\n]+/)
                     .map(string => string.trim())
                     .filter(string => string.length > 0);
-                whitelist.updateWhitelistDomains(domains);
+                allowlist.updateWhitelistDomains(domains);
                 break;
             }
             case 'getUserRules': {
@@ -254,8 +256,10 @@ const init = () => {
                 }
                 break;
             }
-            case 'removeUserRule':
-                userrules.removeRule(message.ruleText);
+            case 'removeUserRule': {
+                const { ruleText } = data;
+                userrules.removeRule(ruleText);
+            }
                 break;
             case 'checkAntiBannerFiltersUpdate': {
                 const { filters } = data;

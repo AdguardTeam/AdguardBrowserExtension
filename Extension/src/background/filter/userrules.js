@@ -16,7 +16,7 @@
  */
 
 import { utils } from '../utils/common';
-import { whitelist } from './whitelist';
+import { allowlist } from './allowlist';
 import { rulesStorage } from '../storage';
 import { listeners } from '../notifier';
 
@@ -72,10 +72,10 @@ export const userrules = (function () {
         return content;
     };
 
-    const unWhitelistFrame = function (frameInfo) {
+    const unAllowlistFrame = function (frameInfo) {
         if (frameInfo.frameRule) {
             if (frameInfo.frameRule.filterId === utils.filters.ALLOWLIST_FILTER_ID) {
-                whitelist.unWhitelistUrl(frameInfo.url);
+                allowlist.unWhitelistUrl(frameInfo.url);
             } else {
                 removeRule(frameInfo.frameRule.ruleText);
             }
@@ -88,6 +88,6 @@ export const userrules = (function () {
         removeRule,
         updateUserRulesText,
         getUserRulesText,
-        unWhitelistFrame,
+        unAllowlistFrame,
     };
 })();

@@ -7,8 +7,8 @@ import { RULE_OPTIONS } from '../constants';
 import { messenger } from '../../../../services/messenger';
 
 // TODO localize messages
-const RequestBlock = observer(() => {
-    const { wizardStore } = useContext(rootStore);
+const RequestCreateRule = observer(() => {
+    const { wizardStore, logStore } = useContext(rootStore);
 
     const RULE_OPTIONS_MAP = {
         [RULE_OPTIONS.RULE_DOMAIN]: {
@@ -62,6 +62,10 @@ const RequestBlock = observer(() => {
     const renderOptions = () => {
         const options = Object.entries(RULE_OPTIONS_MAP);
         const renderedOptions = options.map(([id, { label }]) => {
+            if (id === RULE_OPTIONS.RULE_DOMAIN && !logStore.selectedEvent.frameDomain) {
+                return null;
+            }
+
             return (
                 <li key={id}>
                     <input
@@ -100,6 +104,21 @@ const RequestBlock = observer(() => {
         wizardStore.setRuleText(value);
     };
 
+    const {
+        element,
+        script,
+        requestRule,
+        cookieName,
+    } = logStore.selectedEvent;
+
+    // Must invoke wizardStore.rulePatterns unconditionally to trigger wizardStore.rule computation
+    const rulePatterns = renderPatterns(wizardStore.rulePatterns);
+    const options = renderOptions();
+
+    const isElementOrScript = element || script;
+    const showPatterns = !isElementOrScript && !cookieName;
+    const showOptions = !isElementOrScript && !requestRule?.documentLevelRule;
+
     return (
         <>
             <button
@@ -117,14 +136,18 @@ const RequestBlock = observer(() => {
                     onChange={handleRuleChange}
                 />
             </div>
-            <div className="patterns">
-                <div>Patterns:</div>
-                {renderPatterns(wizardStore.rulePatterns)}
-            </div>
-            <div className="options">
-                <div>Options:</div>
-                {renderOptions()}
-            </div>
+            {showPatterns && (
+                <div className="patterns">
+                    <div>Patterns:</div>
+                    {rulePatterns}
+                </div>
+            )}
+            {showOptions && (
+                <div className="options">
+                    <div>Options:</div>
+                    {options}
+                </div>
+            )}
             <button
                 type="button"
                 onClick={handleAddRuleClick}
@@ -135,4 +158,4 @@ const RequestBlock = observer(() => {
     );
 });
 
-export { RequestBlock };
+export { RequestCreateRule };
