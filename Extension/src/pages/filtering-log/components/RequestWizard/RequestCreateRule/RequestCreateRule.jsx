@@ -2,6 +2,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control,react/no-array-index-key,no-shadow */
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
+import { autorun } from 'mobx';
 import { rootStore } from '../../../stores/RootStore';
 import { RULE_OPTIONS } from '../constants';
 import { messenger } from '../../../../services/messenger';
@@ -110,6 +111,9 @@ const RequestCreateRule = observer(() => {
         requestRule,
         cookieName,
     } = logStore.selectedEvent;
+
+    /* TODO: find a way to compute wizardStore.rule without rendering wizardStore.rulePatterns */
+    autorun(() => wizardStore.rulePatterns);
 
     const isElementOrScript = element || script;
     return (

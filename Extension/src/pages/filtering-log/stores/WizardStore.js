@@ -3,6 +3,7 @@ import {
     computed,
     observable,
     makeObservable,
+    autorun,
 } from 'mobx';
 
 import { RULE_OPTIONS, UrlFilterRule, FilterRule } from '../components/RequestWizard/constants';
@@ -258,7 +259,6 @@ class WizardStore {
     @computed
     get rulePatterns() {
         const { selectedEvent } = this.rootStore.logStore;
-        /* TODO fix */
         if (this.requestModalState === WIZARD_STATES.UNBLOCK_REQUEST) {
             let patterns;
             if (selectedEvent.requestUrl) {
