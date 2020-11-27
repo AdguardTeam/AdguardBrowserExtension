@@ -27,7 +27,7 @@ class PopupStore {
     url = null;
 
     @observable
-    viewState = VIEW_STATES.STATS; // FIXME change to VIEW_STATES.ACTIONS
+    viewState = VIEW_STATES.ACTIONS;
 
     @observable
     totalBlocked = 0;
