@@ -20,7 +20,6 @@ export const Tabs = observer(() => {
     const tabContent = contentMap[store.viewState];
 
     const handleTabClick = (viewState) => () => {
-        console.log(viewState);
         store.setViewState(viewState);
     };
 

@@ -201,6 +201,11 @@ class Messenger {
         const type = 'addAllowlistDomainPopup';
         return this.sendMessage(type, { url });
     }
+
+    async getStatisticsData() {
+        const type = 'getStatisticsData';
+        return this.sendMessage(type);
+    }
 }
 
 const messenger = new Messenger();
