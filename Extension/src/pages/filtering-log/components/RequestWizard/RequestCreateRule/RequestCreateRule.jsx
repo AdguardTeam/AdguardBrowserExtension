@@ -2,7 +2,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control,react/no-array-index-key,no-shadow */
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
-import { autorun } from 'mobx';
 import { rootStore } from '../../../stores/RootStore';
 import { RULE_OPTIONS } from '../constants';
 import { messenger } from '../../../../services/messenger';
@@ -112,8 +111,8 @@ const RequestCreateRule = observer(() => {
         cookieName,
     } = logStore.selectedEvent;
 
-    /* TODO: find a way to compute wizardStore.rule without rendering wizardStore.rulePatterns */
-    autorun(() => wizardStore.rulePatterns);
+    const rulePatterns = renderPatterns(wizardStore.rulePatterns);
+    const options = renderOptions();
 
     const isElementOrScript = element || script;
     return (
@@ -136,13 +135,13 @@ const RequestCreateRule = observer(() => {
             {!isElementOrScript && !cookieName && (
                 <div className="patterns">
                     <div>Patterns:</div>
-                    {renderPatterns(wizardStore.rulePatterns)}
+                    {rulePatterns}
                 </div>
             )}
             {!isElementOrScript && !requestRule?.documentLevelRule && (
                 <div className="options">
                     <div>Options:</div>
-                    {renderOptions()}
+                    {options}
                 </div>
             )}
             <button
