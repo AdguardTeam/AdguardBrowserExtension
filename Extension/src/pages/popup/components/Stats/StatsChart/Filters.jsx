@@ -5,7 +5,7 @@ import { popupStore } from '../../../stores/PopupStore';
 import { TIME_RANGES } from '../../../constants';
 import { reactTranslator } from '../../../../reactCommon/reactTranslator';
 
-export const StatsGraph = observer(() => {
+export const Filters = observer(() => {
     const store = useContext(popupStore);
 
     const { stats } = store;
@@ -48,43 +48,41 @@ export const StatsGraph = observer(() => {
     };
 
     return (
-        <div className="stats-graph">
-            <div className="filters">
-                <select
-                    name="blocked-type"
-                    id="blocked-type"
-                    onChange={handleBlockedTypeChange}
-                    value={store.selectedBlockedType}
-                >
-                    {existingGroups.map((group) => {
-                        return (
-                            <option
-                                key={group.groupId}
-                                value={group.groupId}
-                            >
-                                {group.groupName}
-                            </option>
-                        );
-                    })}
-                </select>
-                <select
-                    name="time-range"
-                    id="time-range"
-                    onChange={handleTimeRangeChange}
-                    value={store.selectedTimeRange}
-                >
-                    {Object.values(timeRangeOptions).map((timeRange) => {
-                        return (
-                            <option
-                                key={timeRange.id}
-                                value={timeRange.id}
-                            >
-                                {timeRange.title}
-                            </option>
-                        );
-                    })}
-                </select>
-            </div>
+        <div className="filters">
+            <select
+                name="blocked-type"
+                id="blocked-type"
+                onChange={handleBlockedTypeChange}
+                value={store.selectedBlockedType}
+            >
+                {existingGroups.map((group) => {
+                    return (
+                        <option
+                            key={group.groupId}
+                            value={group.groupId}
+                        >
+                            {group.groupName}
+                        </option>
+                    );
+                })}
+            </select>
+            <select
+                name="time-range"
+                id="time-range"
+                onChange={handleTimeRangeChange}
+                value={store.selectedTimeRange}
+            >
+                {Object.values(timeRangeOptions).map((timeRange) => {
+                    return (
+                        <option
+                            key={timeRange.id}
+                            value={timeRange.id}
+                        >
+                            {timeRange.title}
+                        </option>
+                    );
+                })}
+            </select>
         </div>
     );
 });

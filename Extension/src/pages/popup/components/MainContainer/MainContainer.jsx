@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 
 import { Main } from '../Main';
 import { VIEW_STATES } from '../../constants';
-import { StatsGraph } from '../Stats/StatsGraph';
+import { StatsChart } from '../Stats/StatsChart';
 import { popupStore } from '../../stores/PopupStore';
 
 import './main-container.pcss';
@@ -13,7 +13,7 @@ export const MainContainer = observer(() => {
 
     const contentMap = {
         [VIEW_STATES.ACTIONS]: <Main />,
-        [VIEW_STATES.STATS]: <StatsGraph />,
+        [VIEW_STATES.STATS]: <StatsChart />,
     };
 
     const content = contentMap[store.viewState];

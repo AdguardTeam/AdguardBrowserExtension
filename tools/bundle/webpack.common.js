@@ -72,7 +72,6 @@ export const genCommonConfig = (browserConfig) => {
                 },
                 {
                     test: /\.(css|pcss)$/,
-                    exclude: /node_modules/,
                     use: [
                         'style-loader',
                         {
