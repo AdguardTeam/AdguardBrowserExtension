@@ -214,6 +214,11 @@ class Messenger {
         const type = 'removeUserRule';
         await this.sendMessage(type, { ruleText });
     }
+
+    async getTabFrameInfoById(tabId) {
+        const type = 'getTabFrameInfoById';
+        await this.sendMessage(type, { tabId });
+    }
 }
 
 const messenger = new Messenger();

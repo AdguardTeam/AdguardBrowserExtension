@@ -177,7 +177,6 @@ const generateExceptionRule = (ruleText, mask) => {
     return exceptionMask + rulePart;
 };
 
-// eslint-disable-next-line consistent-return
 export const createExceptionCssRule = (rule, event) => {
     const { ruleText } = rule;
     const domainPart = event.frameDomain;
@@ -198,6 +197,8 @@ export const createExceptionCssRule = (rule, event) => {
     if (ruleText.indexOf(FilterRule.MASK_CSS_RULE) > -1) {
         return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_CSS_RULE);
     }
+
+    return '';
 };
 
 export const createExceptionCookieRule = (rule, event) => {
@@ -208,7 +209,6 @@ export const createExceptionCookieRule = (rule, event) => {
     return FilterRule.MASK_ALLOWLIST + UrlFilterRule.MASK_START_URL + domain;
 };
 
-// eslint-disable-next-line consistent-return
 export const createExceptionScriptRule = (rule, event) => {
     const { ruleText } = rule;
     const domainPart = event.frameDomain;
@@ -218,6 +218,8 @@ export const createExceptionScriptRule = (rule, event) => {
     if (ruleText.indexOf(FilterRule.MASK_SCRIPT_RULE_UBO) > -1) {
         return domainPart + generateExceptionRule(ruleText, FilterRule.MASK_SCRIPT_RULE_UBO);
     }
+
+    return '';
 };
 
 /**

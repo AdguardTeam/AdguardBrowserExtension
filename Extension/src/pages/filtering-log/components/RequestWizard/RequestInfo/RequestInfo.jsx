@@ -157,19 +157,19 @@ const RequestInfo = observer(() => {
 
         const BUTTON_MAP = {
             BLOCK: {
-                buttonTitle: 'filtering_modal_block',
+                buttonTitleKey: 'filtering_modal_block',
                 onClick: blockHandler,
             },
             UNBLOCK: {
-                buttonTitle: 'filtering_modal_unblock',
+                buttonTitleKey: 'filtering_modal_unblock',
                 onClick: unblockHandler,
             },
             ALLOWLIST: {
-                buttonTitle: 'filtering_modal_remove_allowlist',
+                buttonTitleKey: 'filtering_modal_remove_allowlist',
                 onClick: removeFromAllowlistHandler,
             },
             USER_FILTER: {
-                buttonTitle: 'filtering_modal_remove_user',
+                buttonTitleKey: 'filtering_modal_remove_user',
                 onClick: () => removeFromUserFilterHandler(event),
             },
         };
@@ -191,7 +191,7 @@ const RequestInfo = observer(() => {
             props = BUTTON_MAP.BLOCK;
         }
 
-        const { buttonTitle, onClick } = props;
+        const { buttonTitleKey, onClick } = props;
 
         return (
             <button
@@ -199,7 +199,7 @@ const RequestInfo = observer(() => {
                 type="button"
                 onClick={onClick}
             >
-                {reactTranslator.translate(buttonTitle)}
+                {reactTranslator.translate(buttonTitleKey)}
             </button>
         );
     };

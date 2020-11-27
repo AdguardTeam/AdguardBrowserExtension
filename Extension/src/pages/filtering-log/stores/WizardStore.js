@@ -14,7 +14,6 @@ import {
     splitToPatterns,
 } from '../components/RequestWizard/utils';
 import { messenger } from '../../services/messenger';
-import { contentPage } from '../../../content-script/content-script';
 
 export const WIZARD_STATES = {
     VIEW_REQUEST: 'view.request',
@@ -99,7 +98,7 @@ class WizardStore {
     @action
     removeFromAllowlistHandler = async () => {
         const { selectedTabId } = this.rootStore.logStore;
-        const { frameInfo } = await contentPage.getTabFrameInfoById(selectedTabId);
+        const { frameInfo } = await messenger.getTabFrameInfoById(selectedTabId);
 
         if (!frameInfo) {
             return;
