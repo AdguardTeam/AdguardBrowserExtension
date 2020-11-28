@@ -46,7 +46,7 @@ adguard.notifications = (function (adguard) {
             },
             ko: {
                 title: '블랙 \n프라이데이 \n세일',
-                btn: '"최대 할인!',
+                btn: '최대 할인!',
             },
             zh_cn: {
                 title: '黑5 \n全球 \n狂欢',
