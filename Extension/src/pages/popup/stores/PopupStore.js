@@ -58,6 +58,9 @@ class PopupStore {
     @observable
     selectedBlockedType = this.TOTAL_BLOCKED_GROUP_ID;
 
+    @observable
+    promoNotification = null;
+
     constructor() {
         makeObservable(this);
     }
@@ -91,6 +94,7 @@ class PopupStore {
             // options
             this.showInfoAboutFullVersion = options.showInfoAboutFullVersion;
             this.isEdgeBrowser = options.isEdgeBrowser;
+            this.promoNotification = options.notification;
 
             // stats
             this.stats = stats;
@@ -266,6 +270,22 @@ class PopupStore {
     setSelectedTimeRange = (value) => {
         this.selectedTimeRange = value;
     };
+
+    @action
+    closePromoNotification = async () => {
+        this.promoNotification = null;
+        await messenger.sendMessage('setNotificationViewed', { withDelay: false });
+    }
+
+    @action
+    openPromoNotificationUrl = async () => {
+        const { url } = this.promoNotification;
+        runInAction(() => {
+            this.promoNotification = null;
+        });
+        await messenger.sendMessage('setNotificationViewed', { withDelay: false });
+        await messenger.sendMessage('openTab', { url });
+    }
 }
 
 export const popupStore = createContext(new PopupStore());
