@@ -2,9 +2,9 @@ import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
 
-import translator from '../../../../common/translator/translator';
 import { messenger } from '../../../services/messenger';
 import { popupStore } from '../../stores/PopupStore';
+import { reactTranslator } from '../../../reactCommon/reactTranslator';
 
 import './actions.pcss';
 
@@ -46,7 +46,7 @@ export const Actions = observer(() => {
                     <use xlinkHref="#block-ad" />
                 </svg>
                 <div className="action-title">
-                    {translator.translate('popup_block_site_ads')}
+                    {reactTranslator.translate('popup_block_site_ads')}
                 </div>
             </div>
             <div
@@ -57,7 +57,7 @@ export const Actions = observer(() => {
                     <use xlinkHref="#sandwich" />
                 </svg>
                 <div className="action-title">
-                    {translator.translate('popup_open_filtering_log')}
+                    {reactTranslator.translate('popup_open_filtering_log')}
                 </div>
             </div>
             <div
@@ -68,7 +68,7 @@ export const Actions = observer(() => {
                     <use xlinkHref="#thumb-down" />
                 </svg>
                 <div className="action-title">
-                    {translator.translate('popup_abuse_site')}
+                    {reactTranslator.translate('popup_abuse_site')}
                 </div>
             </div>
             <div
@@ -79,7 +79,7 @@ export const Actions = observer(() => {
                     <use xlinkHref="#shield" />
                 </svg>
                 <div className="action-title">
-                    {translator.translate('popup_security_report')}
+                    {reactTranslator.translate('popup_security_report')}
                 </div>
             </div>
         </div>

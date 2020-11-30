@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-
 import { observer } from 'mobx-react';
+
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
 import { popupStore } from '../../stores/PopupStore';
 import { POPUP_STATES } from '../../constants';
@@ -15,24 +15,29 @@ export const Main = observer(() => {
             handler: () => {
                 store.toggleAllowlisted();
             },
+            // FIXME replace with icon classname
             text: 'enabled',
         },
         [POPUP_STATES.APPLICATION_FILTERING_DISABLED]: {
-            text: 'disabled',
             handler: () => {
                 store.changeApplicationFilteringDisabled(false);
             },
+            // FIXME replace with icon classname
+            text: 'disabled',
         },
         [POPUP_STATES.APPLICATION_UNAVAILABLE]: {
+            // FIXME replace with icon classname
             text: 'unavailable',
         },
         [POPUP_STATES.SITE_IN_EXCEPTION]: {
+            // FIXME replace with icon classname
             text: 'in exception',
         },
         [POPUP_STATES.SITE_ALLOWLISTED]: {
             handler: () => {
                 store.toggleAllowlisted();
             },
+            // FIXME replace with icon classname
             text: 'allowlisted',
         },
     };

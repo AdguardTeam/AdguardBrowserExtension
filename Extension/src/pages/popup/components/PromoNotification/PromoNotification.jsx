@@ -37,7 +37,15 @@ export const PromoNotification = observer(() => {
                 {text.title
                         && <div className="promo-notification__title">{text.title}</div>}
                 {text.btn
-                    && <button className="promo-notification__btn" onClick={handleNotificationClick}>{text.btn}</button>}
+                    && (
+                        <button
+                            type="button"
+                            className="promo-notification__btn"
+                            onClick={handleNotificationClick}
+                        >
+                            {text.btn}
+                        </button>
+                    )}
             </div>
         </div>
     );

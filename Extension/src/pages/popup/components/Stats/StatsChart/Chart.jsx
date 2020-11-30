@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
 import c3 from 'c3';
+import 'c3/c3.css';
 
 import { reactTranslator } from '../../../../reactCommon/reactTranslator';
 import { TIME_RANGES } from '../../../constants';
-
-import 'c3/c3.css';
 
 const DAYS_OF_WEEK = [
     reactTranslator.translate('popup_statistics_week_days_mon'),
@@ -42,22 +41,22 @@ const monthsAsString = (monthIndex) => {
 const selectRequestsStatsData = (stats, range, type) => {
     const result = [];
     switch (range) {
-        case 'day':
+        case TIME_RANGES.DAY:
             stats.today.forEach((d) => {
                 result.push(d[type]);
             });
             break;
-        case 'week':
+        case TIME_RANGES.WEEK:
             stats.lastWeek.forEach((d) => {
                 result.push(d[type]);
             });
             break;
-        case 'month':
+        case TIME_RANGES.MONTH:
             stats.lastMonth.forEach((d) => {
                 result.push(d[type]);
             });
             break;
-        case 'year':
+        case TIME_RANGES.YEAR:
             stats.lastYear.forEach((d) => {
                 result.push(d[type]);
             });
