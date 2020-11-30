@@ -1,4 +1,4 @@
-/*! extended-css - v1.3.5 - Wed Nov 25 2020
+/*! extended-css - v1.3.6 - Fri Nov 27 2020
 * https://github.com/AdguardTeam/ExtendedCss
 * Copyright (c) 2020 AdGuard. Licensed LGPL-3.0
 */
@@ -3044,9 +3044,18 @@ var ExtendedCss = (function () {
 
 
     var addUrlQuotes = function addUrlQuotes(pattern) {
+      // for regex patterns
+      if (pattern[0] === '/' && pattern[pattern.length - 1] === '/' && pattern.indexOf('\\"') < 10) {
+        // e.g. /^url\\([a-z]{4}:[a-z]{5}/
+        // or /^url\\(data\\:\\image\\/gif;base64.+/
+        var re = /(\^)?url(\\)?\\\((\w|\[\w)/g;
+        return pattern.replace(re, '$1url$2\\\(\\"?$3');
+      } // for non-regex patterns
+
+
       if (pattern.indexOf('url("') === -1) {
-        var re = /url\((.*?)\)/g;
-        return pattern.replace(re, 'url("$1")');
+        var _re = /url\((.*?)\)/g;
+        return pattern.replace(_re, 'url("$1")');
       }
 
       return pattern;
