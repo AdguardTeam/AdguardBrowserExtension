@@ -4,10 +4,11 @@ import { observer } from 'mobx-react';
 import { useTable } from 'react-table';
 import { rootStore } from '../../stores/RootStore';
 
-import './filtering-events.pcss';
 import { getRequestType } from '../RequestWizard/utils';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
-import { ANTIBANNER_FILTERS_ID } from "../../../../common/constants";
+import { ANTIBANNER_FILTERS_ID } from '../../../../common/constants';
+
+import './filtering-events.pcss';
 
 const Messages = {
     OPTIONS_USERFILTER: reactTranslator.translate('options_userfilter'),
@@ -47,7 +48,7 @@ const FilteringEvents = observer(() => {
             },
         },
         {
-            Header: 'Type',
+            Header: `${reactTranslator.translate('filtering_table_type')}`,
             accessor: (props) => {
                 const { requestType, requestThirdParty } = props;
 
@@ -67,7 +68,7 @@ const FilteringEvents = observer(() => {
             },
         },
         {
-            Header: 'Filtering  rule',
+            Header: `${reactTranslator.translate('filtering_table_rule')}`,
             accessor: (props) => {
                 const { requestRule, replaceRules } = props;
 
@@ -88,11 +89,11 @@ const FilteringEvents = observer(() => {
             },
         },
         {
-            Header: 'Filter',
+            Header: `${reactTranslator.translate('filtering_table_filter')}`,
             accessor: 'filterName',
         },
         {
-            Header: 'Source',
+            Header: `${reactTranslator.translate('filtering_table_source')}`,
             accessor: 'frameDomain',
         },
     ], []);

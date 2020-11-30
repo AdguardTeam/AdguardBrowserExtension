@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { App } from './components/App';
+import { FilteringLog } from './components/FilteringLog';
 import { reactTranslator } from '../reactCommon/reactTranslator';
 
 export const filteringLog = {
@@ -8,7 +8,7 @@ export const filteringLog = {
         document.title = reactTranslator.translate('filtering_log_title');
 
         ReactDOM.render(
-            <App />,
+            <FilteringLog />,
             document.getElementById('root'),
         );
     },

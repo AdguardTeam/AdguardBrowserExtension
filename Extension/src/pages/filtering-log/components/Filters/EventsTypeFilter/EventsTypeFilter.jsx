@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import classNames from 'classnames';
 
 import { rootStore } from '../../../stores/RootStore';
+import { reactTranslator } from '../../../../reactCommon/reactTranslator';
 
 import './events-type-filter.pcss';
 
@@ -51,9 +52,8 @@ const EventsTypeFilter = observer(() => {
                     className={eventsAllTypesButtonClassName}
                     type="button"
                     onClick={handleAllClick}
-                    value="All"
                 >
-                    All
+                    {reactTranslator.translate('filtering_type_all')}
                 </button>
                 {renderTypes()}
             </div>

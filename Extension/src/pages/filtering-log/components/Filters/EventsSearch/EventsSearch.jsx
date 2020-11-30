@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
-import './events-search.pcss';
-
 import { rootStore } from '../../../stores/RootStore';
+
+import './events-search.pcss';
 
 const EventsSearch = observer(() => {
     const { logStore } = useContext(rootStore);

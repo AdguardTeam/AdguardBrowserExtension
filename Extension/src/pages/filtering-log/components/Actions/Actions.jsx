@@ -1,7 +1,9 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
+
 import { rootStore } from '../../stores/RootStore';
+import { reactTranslator } from '../../../reactCommon/reactTranslator';
 
 import './actions.pcss';
 
@@ -38,7 +40,7 @@ const Actions = observer(() => {
                     type="button"
                     onClick={refreshPage}
                 >
-                    Refresh page
+                    {reactTranslator.translate('filtering_refresh_tab')}
                 </button>
             </div>
             <div className="actions__action">
@@ -47,7 +49,7 @@ const Actions = observer(() => {
                     type="button"
                     onClick={clearLogHandler}
                 >
-                    Clear log
+                    {reactTranslator.translate('filtering_clear_tab_events')}
                 </button>
             </div>
             <div className="actions__action">
@@ -59,7 +61,7 @@ const Actions = observer(() => {
                         onChange={preserveLogHandler}
                     />
                     <div className={preserveLogClassName} />
-                    Save logs after refreshing
+                    {reactTranslator.translate('filtering_log_preserve_log')}
                 </label>
             </div>
         </div>

@@ -129,7 +129,7 @@ const RequestInfo = observer(() => {
                 type="button"
                 onClick={openInNewTabHandler}
             >
-                Open in new tab
+                {reactTranslator.translate('filtering_modal_open_in_new_tab')}
             </button>
         );
     };

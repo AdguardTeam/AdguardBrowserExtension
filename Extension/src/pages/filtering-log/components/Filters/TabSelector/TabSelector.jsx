@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
+
 import { rootStore } from '../../../stores/RootStore';
+import { reactTranslator } from '../../../../reactCommon/reactTranslator';
 
 import './tab-selector.pcss';
 
@@ -30,12 +32,10 @@ const TabSelector = observer(() => {
 
     return (
         <div className="tab-selector">
-            {/* TODO check accessibility */}
-            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
             <label
                 htmlFor="tab-selector"
             >
-                Selected tab:
+                {reactTranslator.translate('filtering_log_tab')}
             </label>
 
             <select

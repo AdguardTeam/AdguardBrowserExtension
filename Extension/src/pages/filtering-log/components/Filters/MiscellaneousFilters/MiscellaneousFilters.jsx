@@ -54,6 +54,7 @@ const MiscellaneousFilters = observer(() => {
         { active: value },
     );
 
+    // FIXME add new messages to translations
     return (
         <div className="miscellaneous-filters">
             <button

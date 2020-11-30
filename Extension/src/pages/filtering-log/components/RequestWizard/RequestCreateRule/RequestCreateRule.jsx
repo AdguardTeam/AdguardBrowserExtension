@@ -1,27 +1,26 @@
-// TODO check accessibility
-/* eslint-disable jsx-a11y/label-has-associated-control,react/no-array-index-key,no-shadow */
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
+
 import { rootStore } from '../../../stores/RootStore';
 import { RULE_OPTIONS } from '../constants';
 import { messenger } from '../../../../services/messenger';
+import { reactTranslator } from '../../../../reactCommon/reactTranslator';
 
-// TODO localize messages
 const RequestCreateRule = observer(() => {
     const { wizardStore, logStore } = useContext(rootStore);
 
     const RULE_OPTIONS_MAP = {
         [RULE_OPTIONS.RULE_DOMAIN]: {
-            label: 'Apply the rule to all websites',
+            label: `${reactTranslator.translate('filtering_modal_apply_domains')}`,
         },
         [RULE_OPTIONS.RULE_MATCH_CASE]: {
-            label: 'Enable case-sensitive',
+            label: `${reactTranslator.translate('filtering_modal_match_case')}`,
         },
         [RULE_OPTIONS.RULE_THIRD_PARTY]: {
-            label: 'Apply to third-party requests only',
+            label: `${reactTranslator.translate('filtering_modal_third_party')}`,
         },
         [RULE_OPTIONS.RULE_IMPORTANT]: {
-            label: 'Give a higher priority to the rule',
+            label: `${reactTranslator.translate('filtering_modal_important')}`,
         },
     };
 
@@ -32,6 +31,7 @@ const RequestCreateRule = observer(() => {
     const renderPatterns = (patterns) => {
         const patternItems = patterns.map((pattern, idx) => {
             return (
+                // eslint-disable-next-line react/no-array-index-key
                 <li key={`pattern${idx}`}>
                     <input
                         type="radio"
@@ -121,6 +121,7 @@ const RequestCreateRule = observer(() => {
 
     return (
         <>
+            {/* TODO style button and remove text */}
             <button
                 type="button"
                 onClick={handleBackClick}
@@ -128,7 +129,7 @@ const RequestCreateRule = observer(() => {
                 back
             </button>
             <div className="rule-text">
-                <div>Rule text:</div>
+                <div>{reactTranslator.translate('filtering_modal_rule_text')}</div>
                 <input
                     type="text"
                     name="rule-text"
@@ -138,13 +139,13 @@ const RequestCreateRule = observer(() => {
             </div>
             {showPatterns && (
                 <div className="patterns">
-                    <div>Patterns:</div>
+                    <div>{reactTranslator.translate('filtering_modal_patterns')}</div>
                     {rulePatterns}
                 </div>
             )}
             {showOptions && (
                 <div className="options">
-                    <div>Options:</div>
+                    <div>{reactTranslator.translate('filtering_modal_options')}</div>
                     {options}
                 </div>
             )}
@@ -152,7 +153,7 @@ const RequestCreateRule = observer(() => {
                 type="button"
                 onClick={handleAddRuleClick}
             >
-                Add rule
+                {reactTranslator.translate('filtering_modal_add_rule')}
             </button>
         </>
     );
