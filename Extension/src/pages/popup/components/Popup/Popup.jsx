@@ -1,10 +1,11 @@
 import React, { useContext, useEffect } from 'react';
 
+import { Tabs } from '../Tabs';
 import { Header } from '../Header';
 import { Footer } from '../Footer';
 import { Icons } from '../ui/Icons';
-import { Tabs } from '../Tabs';
 import { MainContainer } from '../MainContainer';
+import { PromoNotification } from '../PromoNotification';
 import { popupStore } from '../../stores/PopupStore';
 import { messenger } from '../../../services/messenger';
 
@@ -48,6 +49,7 @@ export const Popup = () => {
             <MainContainer />
             <Tabs />
             <Footer />
+            <PromoNotification />
         </div>
     );
 };
