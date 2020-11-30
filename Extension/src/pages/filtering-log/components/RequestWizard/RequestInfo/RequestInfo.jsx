@@ -44,6 +44,8 @@ const getStealthActionsNames = (actions) => {
 const RequestInfo = observer(() => {
     const { logStore, wizardStore } = useContext(rootStore);
 
+    const { closeModal } = wizardStore;
+
     const { selectedEvent, filtersMetadata } = logStore;
 
     const infoElements = [
@@ -95,8 +97,8 @@ const RequestInfo = observer(() => {
         }
         return (
             <div key={title} className="request-info">
-                <div>{title}</div>
-                <div>{data}</div>
+                <div className="request-info__key">{title}</div>
+                <div className="request-info__value">{data}</div>
             </div>
         );
     });
@@ -125,7 +127,7 @@ const RequestInfo = observer(() => {
 
         return (
             <button
-                className="control"
+                className="request-modal__button"
                 type="button"
                 onClick={openInNewTabHandler}
             >
@@ -193,7 +195,7 @@ const RequestInfo = observer(() => {
 
         return (
             <button
-                className="control"
+                className="request-modal__button request-modal__button--white"
                 type="button"
                 onClick={onClick}
             >
@@ -202,12 +204,20 @@ const RequestInfo = observer(() => {
         );
     };
 
+    /* todo - make position fixed on overflow y */
     return (
         <>
-            <div>Request details</div>
+            <div className="request-modal__title">
+                <button
+                    type="button"
+                    onClick={closeModal}
+                    className="request-modal__close-icon"
+                />
+                <span className="request-modal__header">{reactTranslator.translate('filtering_modal_info_title')}</span>
+            </div>
             {renderedInfo}
             {renderImageIfNecessary(selectedEvent)}
-            <div className="controls">
+            <div className="request-modal__controls">
                 {renderOpenInNewTab(selectedEvent)}
                 {renderBlockRequest(selectedEvent)}
             </div>

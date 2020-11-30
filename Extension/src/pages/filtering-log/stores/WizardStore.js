@@ -22,6 +22,11 @@ export const WIZARD_STATES = {
 };
 
 class WizardStore {
+    constructor(rootStore) {
+        this.rootStore = rootStore;
+        makeObservable(this);
+    }
+
     @observable
     isModalOpen = false;
 
@@ -42,9 +47,14 @@ class WizardStore {
         [RULE_OPTIONS.RULE_IMPORTANT]: { checked: false },
     }
 
-    constructor(rootStore) {
-        this.rootStore = rootStore;
-        makeObservable(this);
+    @computed
+    get requestModalStateEnum() {
+        /* should have only one true value */
+        return {
+            isBlock: this.requestModalState === WIZARD_STATES.BLOCK_REQUEST,
+            isUnblock: this.requestModalState === WIZARD_STATES.UNBLOCK_REQUEST,
+            isView: this.requestModalState === WIZARD_STATES.VIEW_REQUEST,
+        };
     }
 
     @action

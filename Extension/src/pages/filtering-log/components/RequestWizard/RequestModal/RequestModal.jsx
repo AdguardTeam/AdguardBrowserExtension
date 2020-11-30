@@ -5,6 +5,7 @@ import { rootStore } from '../../../stores/RootStore';
 import { RequestInfo } from '../RequestInfo';
 import { WIZARD_STATES } from '../../../stores/WizardStore';
 import { RequestCreateRule } from '../RequestCreateRule';
+import './RequestModal.pcss';
 
 Modal.setAppElement('#root');
 
@@ -35,26 +36,9 @@ const RequestModal = observer(() => {
         <Modal
             isOpen={isModalOpen}
             onRequestClose={closeModal}
-            style={{
-                overlay: {
-                    position: 'static',
-                },
-                content: {
-                    position: 'fixed',
-                    width: '500px', // TODO make responsive
-                    right: '0px',
-                    top: '0px',
-                    bottom: '0px',
-                    left: 'auto',
-                },
-            }}
+            className="ReactModal__Content request-modal"
+            overlayClassName="ReactModal__Overlay reqeust-modal__overlay"
         >
-            <button
-                type="button"
-                onClick={closeModal}
-            >
-                close
-            </button>
             {modalContent}
         </Modal>
     );
