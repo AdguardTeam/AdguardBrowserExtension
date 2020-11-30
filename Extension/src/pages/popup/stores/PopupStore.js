@@ -266,6 +266,12 @@ class PopupStore {
     setSelectedTimeRange = (value) => {
         this.selectedTimeRange = value;
     };
+
+    @action
+    updateBlockedStats = (tabInfo) => {
+        this.totalBlocked = tabInfo.totalBlocked;
+        this.totalBlockedTab = tabInfo.totalBlockedTab;
+    }
 }
 
 export const popupStore = createContext(new PopupStore());

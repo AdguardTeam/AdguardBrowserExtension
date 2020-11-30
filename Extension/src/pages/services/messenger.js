@@ -3,6 +3,8 @@ import browser from 'webextension-polyfill';
 import { log } from '../../background/utils/log';
 
 class Messenger {
+    onMessage = browser.runtime.onMessage;
+
     // eslint-disable-next-line class-methods-use-this
     async sendMessage(type, data) {
         log.debug('Request type:', type);
