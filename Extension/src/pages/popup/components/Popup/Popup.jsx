@@ -1,13 +1,13 @@
 import React, { useContext, useEffect } from 'react';
 
 import { Header } from '../Header';
-import { Main } from '../Main';
 import { Footer } from '../Footer';
-import { popupStore } from '../../stores/PopupStore';
 import { Icons } from '../ui/Icons';
+import { Tabs } from '../Tabs';
+import { MainContainer } from '../MainContainer';
+import { popupStore } from '../../stores/PopupStore';
 
 import '../../styles/main.pcss';
-import { Tabs } from '../Tabs';
 
 export const Popup = () => {
     const store = useContext(popupStore);
@@ -25,7 +25,7 @@ export const Popup = () => {
         <div className="popup">
             <Icons />
             <Header />
-            <Main />
+            <MainContainer />
             <Tabs />
             <Footer />
         </div>
