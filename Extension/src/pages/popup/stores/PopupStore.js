@@ -17,6 +17,8 @@ import { reactTranslator } from '../../reactCommon/reactTranslator';
 configure({ enforceActions: 'observed' });
 
 class PopupStore {
+    TOTAL_BLOCKED_GROUP_ID = 'total';
+
     @observable
     applicationFilteringDisabled = null;
 
@@ -54,7 +56,7 @@ class PopupStore {
     selectedTimeRange = TIME_RANGES.WEEK;
 
     @observable
-    selectedBlockedType = 'total';
+    selectedBlockedType = this.TOTAL_BLOCKED_GROUP_ID;
 
     constructor() {
         makeObservable(this);
@@ -195,6 +197,39 @@ class PopupStore {
         });
     };
 
+    getDataByRange = (stats, range) => {
+        switch (range) {
+            case TIME_RANGES.DAY:
+                return stats.lastMonth[stats.lastMonth.length - 1];
+            case TIME_RANGES.WEEK: {
+                const result = {};
+                for (let i = 0; i < stats.lastWeek.length; i += 1) {
+                    const day = stats.lastWeek[i];
+                    // eslint-disable-next-line no-restricted-syntax
+                    for (const type of Object.keys(day)) {
+                        result[type] = (result[type] || 0) + day[type];
+                    }
+                }
+                return result;
+            }
+            case TIME_RANGES.MONTH:
+                return stats.lastYear[stats.lastYear.length - 1];
+            case TIME_RANGES.YEAR: {
+                const result = {};
+                for (let i = 0; i < stats.lastYear.length; i += 1) {
+                    const month = stats.lastYear[i];
+                    // eslint-disable-next-line no-restricted-syntax
+                    for (const type of Object.keys(month)) {
+                        result[type] = (result[type] || 0) + month[type];
+                    }
+                }
+                return result;
+            }
+            default:
+                throw new Error('There is no such time range type');
+        }
+    }
+
     @computed
     get statsDataByType() {
         const { stats } = this;
@@ -203,38 +238,7 @@ class PopupStore {
             return null;
         }
 
-        let result = {};
-
-        switch (this.selectedTimeRange) {
-            case TIME_RANGES.DAY:
-                result = stats.lastMonth[stats.lastMonth.length - 1];
-                break;
-            case TIME_RANGES.WEEK: {
-                for (let i = 0; i < stats.lastWeek.length; i += 1) {
-                    const day = stats.lastWeek[i];
-                    // eslint-disable-next-line no-restricted-syntax
-                    for (const type of Object.keys(day)) {
-                        result[type] = (result[type] ? result[type] : 0) + day[type];
-                    }
-                }
-                break;
-            }
-            case TIME_RANGES.MONTH:
-                result = stats.lastYear[stats.lastYear.length - 1];
-                break;
-            case TIME_RANGES.YEAR: {
-                for (let i = 0; i < stats.lastYear.length; i += 1) {
-                    const month = stats.lastYear[i];
-                    // eslint-disable-next-line no-restricted-syntax
-                    for (const type of Object.keys(month)) {
-                        result[type] = (result[type] ? result[type] : 0) + month[type];
-                    }
-                }
-                break;
-            }
-            default:
-                throw new Error('There is no such time range type');
-        }
+        const statsDataForCurrentRange = this.getDataByRange(stats, this.selectedTimeRange);
 
         const { blockedGroups } = stats;
 
@@ -243,14 +247,14 @@ class PopupStore {
             .sort((groupA, groupB) => groupA.displayNumber - groupB.displayNumber)
             .map((group) => {
                 const { groupId, groupName } = group;
-                const blocked = result[group.groupId];
+                const blocked = statsDataForCurrentRange[group.groupId];
                 return {
                     groupId,
                     blocked,
                     groupName,
                 };
             })
-            .filter((group) => group.blocked > 0);
+            .filter((group) => group.blocked > 0 || group.groupId === this.TOTAL_BLOCKED_GROUP_ID);
     }
 
     @action

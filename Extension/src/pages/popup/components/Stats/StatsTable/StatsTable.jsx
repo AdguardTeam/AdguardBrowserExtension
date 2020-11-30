@@ -14,7 +14,14 @@ export const StatsTable = observer(() => {
         return null;
     }
 
-    const renderStatsByType = statsDataByType.map((stats) => {
+    const statsDataByTypeWithoutTotal = statsDataByType
+        .filter((group) => group.groupId !== store.TOTAL_BLOCKED_GROUP_ID);
+
+    if (statsDataByTypeWithoutTotal.length === 0) {
+        return null;
+    }
+
+    const renderStatsByType = statsDataByTypeWithoutTotal.map((stats) => {
         return (
             <li key={stats.groupId}>
                 <span className="group-name">{stats.groupName}</span>

@@ -2,19 +2,18 @@ import React, { useEffect } from 'react';
 import c3 from 'c3';
 
 import { reactTranslator } from '../../../../reactCommon/reactTranslator';
-import { i18n } from '../../../../../common/i18n';
 import { TIME_RANGES } from '../../../constants';
 
 import 'c3/c3.css';
 
 const DAYS_OF_WEEK = [
-    i18n.getMessage('popup_statistics_week_days_mon'),
-    i18n.getMessage('popup_statistics_week_days_tue'),
-    i18n.getMessage('popup_statistics_week_days_wed'),
-    i18n.getMessage('popup_statistics_week_days_thu'),
-    i18n.getMessage('popup_statistics_week_days_fri'),
-    i18n.getMessage('popup_statistics_week_days_sat'),
-    i18n.getMessage('popup_statistics_week_days_sun'),
+    reactTranslator.translate('popup_statistics_week_days_mon'),
+    reactTranslator.translate('popup_statistics_week_days_tue'),
+    reactTranslator.translate('popup_statistics_week_days_wed'),
+    reactTranslator.translate('popup_statistics_week_days_thu'),
+    reactTranslator.translate('popup_statistics_week_days_fri'),
+    reactTranslator.translate('popup_statistics_week_days_sat'),
+    reactTranslator.translate('popup_statistics_week_days_sun'),
 ];
 
 const dayOfWeekAsString = (dayIndex) => {
@@ -77,11 +76,17 @@ const getCategoriesLines = (statsData, range) => {
 
     let categories = [];
     const lines = [];
+
+    const HOURS_PER_DAY = 24;
+    const DAYS_PER_WEEK = 7;
+    const DAYS_PER_MONTH = 30;
+    const MONTHS_PER_YEAR = 12;
+
     switch (range) {
         case TIME_RANGES.DAY:
-            for (let i = 1; i < 25; i += 1) {
+            for (let i = 1; i <= HOURS_PER_DAY; i += 1) {
                 if (i % 3 === 0) {
-                    const hour = (i + now.getHours()) % 24;
+                    const hour = (i + now.getHours()) % HOURS_PER_DAY;
                     categories.push(hour.toString());
                     lines.push({
                         value: i - 1,
@@ -90,21 +95,19 @@ const getCategoriesLines = (statsData, range) => {
                     categories.push('');
                 }
             }
-
             break;
         case TIME_RANGES.WEEK:
-            for (let i = 0; i < 7; i += 1) {
-                categories.push(dayOfWeekAsString((day + i) % 7));
+            for (let i = 0; i < DAYS_PER_WEEK; i += 1) {
+                categories.push(dayOfWeekAsString((day + i) % DAYS_PER_WEEK));
                 lines.push({
                     value: i,
                 });
             }
-
             break;
         case TIME_RANGES.MONTH:
-            for (let i = 0; i < 31; i += 1) {
+            for (let i = 0; i <= DAYS_PER_MONTH; i += 1) {
                 if (i % 3 === 0) {
-                    const c = (i + now.getDate()) % lastDayOfPrevMonth + 1;
+                    const c = ((i + now.getDate()) % lastDayOfPrevMonth) + 1;
                     categories.push(c.toString());
                     lines.push({
                         value: i,
@@ -113,17 +116,15 @@ const getCategoriesLines = (statsData, range) => {
                     categories.push('');
                 }
             }
-
             break;
         case TIME_RANGES.YEAR:
-            for (let i = 0; i < 13; i += 1) {
-                categories.push(monthsAsString((month + i) % 12));
+            for (let i = 0; i <= MONTHS_PER_YEAR; i += 1) {
+                categories.push(monthsAsString((month + i) % MONTHS_PER_YEAR));
                 categories = categories.slice(-statsData.length);
                 lines.push({
                     value: i,
                 });
             }
-
             break;
         default:
             throw new Error(`Wrong range type: ${range}`);
@@ -216,7 +217,7 @@ export const Chart = ({ stats, range, type }) => {
                     };
                 },
                 contents(d) {
-                    const { value } = d[0];
+                    const [{ value }] = d;
                     return `<div id="tooltip" class="chart__tooltip">${value}</div>`;
                 },
             },
