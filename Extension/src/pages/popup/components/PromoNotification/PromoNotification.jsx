@@ -9,7 +9,9 @@ export const PromoNotification = observer(() => {
 
     // schedule notification removal
     useEffect(() => {
-        messenger.sendMessage('setNotificationViewed', { withDelay: true });
+        if (store.promoNotification) {
+            messenger.sendMessage('setNotificationViewed', { withDelay: true });
+        }
     }, []);
 
     if (!store.promoNotification) {
