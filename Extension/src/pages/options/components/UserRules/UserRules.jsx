@@ -93,7 +93,7 @@ const UserRules = observer(() => {
                 const rowsToToggle = ranges
                     .map((range) => {
                         const [start, end] = [range.start.row, range.end.row];
-                        return new Array(end - start + 1).fill().map((_, idx) => idx + start);
+                        return Array.from({ length: end - start + 1 }, (_, idx) => idx + start);
                     })
                     .flat();
 
