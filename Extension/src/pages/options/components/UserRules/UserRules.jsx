@@ -2,6 +2,7 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
+import { Range } from 'ace-builds';
 
 import { rootStore } from '../../stores/RootStore';
 import { Editor } from '../Editor';
@@ -9,11 +10,10 @@ import { uploadFile } from '../../../helpers';
 import { log } from '../../../../background/utils/log';
 import { STATES as SAVING_STATES } from '../Editor/savingFSM';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
-
-import './styles.pcss';
 import SettingsSection from '../Settings/SettingsSection';
 
-// TODO add shortcut to wrap lines in comments
+import './styles.pcss';
+
 const UserRules = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);
 
@@ -73,13 +73,44 @@ const UserRules = observer(() => {
         await settingsStore.saveUserRules(value);
     };
 
-    const shortcuts = [{
-        name: 'save',
-        bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
-        exec: async () => {
-            await saveClickHandler();
+    const shortcuts = [
+        {
+            name: 'save',
+            bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
+            exec: async () => {
+                await saveClickHandler();
+            },
         },
-    }];
+        {
+            name: 'togglecomment',
+            bindKey: { win: 'Ctrl-/', mac: 'Command-/' },
+            exec: (editor) => {
+                const COMMENT_MARK = '!';
+
+                const selection = editor.getSelection();
+                const ranges = selection.getAllRanges();
+
+                const rowsToToggle = ranges
+                    .map((range) => {
+                        const [start, end] = [range.start.row, range.end.row];
+                        return new Array(end - start + 1).fill().map((_, idx) => idx + start);
+                    })
+                    .flat();
+
+                rowsToToggle.forEach((row) => {
+                    const rawLine = editor.session.getLine(row);
+                    // if line starts with comment mark we remove it
+                    if (rawLine.trim().startsWith(COMMENT_MARK)) {
+                        const lineWithRemovedComment = rawLine.replace(COMMENT_MARK, '');
+                        editor.session.replace(new Range(row, 0, row), lineWithRemovedComment);
+                    // otherwise we add it
+                    } else {
+                        editor.session.insert({ row, column: 0 }, COMMENT_MARK);
+                    }
+                });
+            },
+        },
+    ];
 
     const exportClickHandler = async () => {
         window.open('/pages/export.html#uf', '_blank');

@@ -4,7 +4,6 @@ import React, {
 } from 'react';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 import { observer } from 'mobx-react';
-import '../../styles/styles.pcss';
 
 import { General } from '../General';
 import { Sidebar } from '../Sidebar';
@@ -15,13 +14,14 @@ import { UserRules } from '../UserRules';
 import { Miscellaneous } from '../Miscellaneous';
 import { About } from '../About';
 import { Footer } from '../Footer';
-
 import { rootStore } from '../../stores/RootStore';
 import { Notifications } from '../Notifications';
 import { messenger } from '../../../services/messenger';
 import { log } from '../../../../background/utils/log';
 
-const App = observer(() => {
+import '../../styles/styles.pcss';
+
+const Options = observer(() => {
     const { settingsStore } = useContext(rootStore);
 
     useEffect(() => {
@@ -103,4 +103,4 @@ const App = observer(() => {
     );
 });
 
-export { App };
+export { Options };
