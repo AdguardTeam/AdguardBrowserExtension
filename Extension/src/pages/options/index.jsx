@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import { Options } from './components/Options';
 import { i18n } from '../services/i18n';
 

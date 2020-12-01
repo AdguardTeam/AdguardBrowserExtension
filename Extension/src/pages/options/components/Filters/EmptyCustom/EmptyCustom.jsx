@@ -1,5 +1,7 @@
 import React from 'react';
+
 import { reactTranslator } from '../../../../reactCommon/reactTranslator';
+
 import './empty-custom.pcss';
 
 const EmptyCustom = () => (

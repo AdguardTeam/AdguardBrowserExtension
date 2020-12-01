@@ -1,10 +1,12 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import './filter.pcss';
-import Setting, { SETTINGS_TYPES } from '../Settings/Setting';
+
+import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
+
+import './filter.pcss';
 
 const formatDate = (date) => {
     const dateObj = new Date(date);

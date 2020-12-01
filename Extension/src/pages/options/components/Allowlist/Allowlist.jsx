@@ -2,9 +2,9 @@ import React, { useContext, useEffect, useRef } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 
-import SettingsSection from '../Settings/SettingsSection';
-import SettingsSet from '../Settings/SettingsSet';
-import Setting, { SETTINGS_TYPES } from '../Settings/Setting';
+import { SettingsSection } from '../Settings/SettingsSection';
+import { SettingsSet } from '../Settings/SettingsSet';
+import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { Editor } from '../Editor';
 import { rootStore } from '../../stores/RootStore';
 import { uploadFile } from '../../../helpers';

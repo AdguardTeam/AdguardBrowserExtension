@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import './select.pcss';
 
 const renderOptions = (options) => options.map((option) => {
@@ -7,7 +8,7 @@ const renderOptions = (options) => options.map((option) => {
     return <option key={value} value={value}>{title}</option>;
 });
 
-function Select(props) {
+const Select = (props) => {
     const {
         id, handler, options, value,
     } = props;
@@ -28,7 +29,7 @@ function Select(props) {
             {renderOptions(options)}
         </select>
     );
-}
+};
 
 Select.propTypes = {
     id: PropTypes.string.isRequired,

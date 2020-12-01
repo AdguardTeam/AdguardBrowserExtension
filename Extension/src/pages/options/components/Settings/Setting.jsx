@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Checkbox } from './Checkbox';
 import { Select } from './Select';
 import { TextInput } from './TextInput';
@@ -11,7 +12,7 @@ export const SETTINGS_TYPES = {
     TEXTAREA: 'textarea',
 };
 
-export default function Setting(props) {
+export const Setting = (props) => {
     const { type } = props;
     switch (type) {
         case SETTINGS_TYPES.CHECKBOX: {
@@ -72,4 +73,4 @@ export default function Setting(props) {
                 Available types: ${Object.values(SETTINGS_TYPES).join(', ')}
             `);
     }
-}
+};

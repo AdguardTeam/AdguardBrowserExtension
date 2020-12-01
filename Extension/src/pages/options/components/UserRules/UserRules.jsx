@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-target-blank */
 import React, { useContext, useEffect, useRef } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -10,7 +9,7 @@ import { uploadFile } from '../../../helpers';
 import { log } from '../../../../background/utils/log';
 import { STATES as SAVING_STATES } from '../Editor/savingFSM';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
-import SettingsSection from '../Settings/SettingsSection';
+import { SettingsSection } from '../Settings/SettingsSection';
 
 import './styles.pcss';
 
@@ -132,6 +131,7 @@ const UserRules = observer(() => {
                             className="desc--link"
                             href="https://adguard.com/forward.html?action=userfilter_description&from=options&app=browser_extension"
                             target="_blank"
+                            rel="noreferrer"
                         >
                             {chunks}
                         </a>

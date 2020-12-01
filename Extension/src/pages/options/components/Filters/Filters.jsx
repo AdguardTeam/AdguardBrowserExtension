@@ -3,6 +3,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import sortBy from 'lodash/sortBy';
 import classNames from 'classnames';
+
 import { Group } from './Group';
 import { Filter } from './Filter';
 import { EmptyCustom } from './EmptyCustom';
@@ -12,7 +13,7 @@ import { rootStore } from '../../stores/RootStore';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
 import { AddCustomModal } from './AddCustomModal';
 import { CUSTOM_FILTERS_GROUP_ID } from '../../../../../../tools/constants';
-import SettingsSection from '../Settings/SettingsSection';
+import { SettingsSection } from '../Settings/SettingsSection';
 
 const Filters = observer(() => {
     const SEARCH_FILTERS = {
