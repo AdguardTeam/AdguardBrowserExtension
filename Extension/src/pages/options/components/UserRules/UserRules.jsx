@@ -84,6 +84,7 @@ const UserRules = observer(() => {
             name: 'togglecomment',
             bindKey: { win: 'Ctrl-/', mac: 'Command-/' },
             exec: (editor) => {
+                // TODO get this mark from TSUrlFilter
                 const COMMENT_MARK = '!';
 
                 const selection = editor.getSelection();
