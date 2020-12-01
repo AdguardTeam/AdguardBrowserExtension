@@ -1,11 +1,14 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
+
 import { rootStore } from '../../../stores/RootStore';
 import { RULE_OPTIONS } from '../constants';
 import { messenger } from '../../../../services/messenger';
 import { reactTranslator } from '../../../../reactCommon/reactTranslator';
 import './request-create-rule.pcss';
+
+const getTitleI18nKey = classnames;
 
 const RequestCreateRule = observer(() => {
     const { wizardStore, logStore } = useContext(rootStore);
@@ -31,16 +34,16 @@ const RequestCreateRule = observer(() => {
 
     const renderPatterns = (patterns) => {
         const patternItems = patterns.map((pattern, idx) => {
-            /* todo - use checked selector instead,
-                 fix markup for multiple lines,*/
-            const className = classnames('radio-button', {
+            /* FIXME - use checked selector instead,
+                 fix markup for multiple lines, */
+            const patternClass = classnames('radio-button', {
                 active: pattern === wizardStore.rulePattern,
             });
 
             return (
-                // eslint-disable-next-line react/no-array-index-key
                 <label
-                    key={idx}
+                    /* eslint-disable-next-line react/no-array-index-key */
+                    key={`pattern${idx}`}
                     className="radio-button-label"
                     htmlFor={pattern}
                 >
@@ -52,12 +55,12 @@ const RequestCreateRule = observer(() => {
                         checked={pattern === wizardStore.rulePattern}
                         onChange={handlePatternChange(pattern)}
                     />
-                    <label className={className} />
+                    <label className={patternClass} />
                     {pattern}
                 </label>
             );
         });
-        /* todo - rename classes, change padding */
+        /* FIXME - rename classes, change padding */
         return (
             <div className="miscellaneous-filters__section">
                 {patternItems}
@@ -78,8 +81,8 @@ const RequestCreateRule = observer(() => {
                 return null;
             }
 
-            /* todo - use checked selector instead */
-            const className = classnames('custom-checkbox', {
+            /* FIXME - use checked selector instead */
+            const optionClass = classnames('custom-checkbox', {
                 active: wizardStore.ruleOptions[id].checked,
             });
 
@@ -92,7 +95,7 @@ const RequestCreateRule = observer(() => {
                         onChange={handleOptionsChange(id)}
                         checked={wizardStore.ruleOptions[id].checked}
                     />
-                    <div className={className} />
+                    <div className={optionClass} />
                     {label}
                 </label>
             );
@@ -136,12 +139,12 @@ const RequestCreateRule = observer(() => {
     const showPatterns = !isElementOrScript && !cookieName;
     const showOptions = !isElementOrScript && !requestRule?.documentLevelRule;
 
-    const titleI18nKey = classnames({
+    const titleI18nKey = getTitleI18nKey({
         filtering_modal_block: wizardStore.requestModalStateEnum.isBlock,
         filtering_modal_unblock: wizardStore.requestModalStateEnum.isUnblock,
     });
 
-    /* todo - find out colors */
+    /* FIXME - find out colors */
     const buttonClass = classnames('request-modal__button', {
         'request-modal__button--red': wizardStore.requestModalStateEnum.isBlock,
         'request-modal__button--white': wizardStore.requestModalStateEnum.isUnblock,
@@ -151,11 +154,16 @@ const RequestCreateRule = observer(() => {
         <>
             {/* TODO style button and remove text */}
             <div className="request-modal__title">
+                {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
                 <button
                     type="button"
                     onClick={handleBackClick}
-                    className="request-modal__close-icon"
-                />
+                    className="request-modal__navigation request-modal__navigation--back"
+                >
+                    <svg className="icon">
+                        <use xlinkHref="#arrow-left" />
+                    </svg>
+                </button>
                 <span className="request-modal__header">{reactTranslator.translate(titleI18nKey)}</span>
             </div>
             <div className="request-info__key request-modal__rule-text">
@@ -168,7 +176,7 @@ const RequestCreateRule = observer(() => {
                     onChange={handleRuleChange}
                 />
             </div>
-            {/* todo - handle overflow */}
+            {/* FIXME - handle overflow */}
             {showPatterns && (
                 <div className="patterns">
                     <div>{reactTranslator.translate('filtering_modal_patterns')}</div>

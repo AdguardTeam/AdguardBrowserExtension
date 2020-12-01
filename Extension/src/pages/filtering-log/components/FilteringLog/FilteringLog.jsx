@@ -7,6 +7,7 @@ import { messenger } from '../../../services/messenger';
 import { log } from '../../../../background/utils/log';
 import { rootStore } from '../../stores/RootStore';
 import { RequestModal } from '../RequestWizard/RequestModal';
+import { Icons } from '../../../../common/components/ui/Icons';
 
 import '../../styles/styles.pcss';
 
@@ -119,6 +120,7 @@ const FilteringLog = () => {
 
     return (
         <>
+            <Icons />
             <RequestModal />
             <Actions />
             <Filters />

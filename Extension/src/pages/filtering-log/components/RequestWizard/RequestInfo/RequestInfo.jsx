@@ -204,15 +204,19 @@ const RequestInfo = observer(() => {
         );
     };
 
-    /* todo - make position fixed on overflow y */
+    /* FIXME - make position fixed on overflow y */
     return (
         <>
             <div className="request-modal__title">
                 <button
                     type="button"
                     onClick={closeModal}
-                    className="request-modal__close-icon"
-                />
+                    className="request-modal__navigation request-modal__navigation--close"
+                >
+                    <svg className="icon">
+                        <use xlinkHref="#cross" />
+                    </svg>
+                </button>
                 <span className="request-modal__header">{reactTranslator.translate('filtering_modal_info_title')}</span>
             </div>
             {renderedInfo}
