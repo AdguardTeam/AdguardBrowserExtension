@@ -154,12 +154,12 @@ const RequestCreateRule = observer(() => {
                 <span className="request-modal__header">{reactTranslator.translate(titleI18nKey)}</span>
             </div>
             <div className="request-modal__content">
-                <div className="request-info__key request-modal__rule-text">
+                <div className="request-info request-modal__rule-text">
                     <div className="request-info__key">{reactTranslator.translate('filtering_modal_rule_text')}</div>
                     <div
                         /* eslint-disable-next-line jsx-a11y/aria-role */
                         role="textarea"
-                        className="request-modal__rule-text"
+                        className="request-info__value request-modal__rule-text"
                         contentEditable
                         suppressContentEditableWarning
                         onChange={handleRuleChange}
@@ -168,25 +168,25 @@ const RequestCreateRule = observer(() => {
                     </div>
                 </div>
                 {showPatterns && (
-                    <div className="patterns">
+                    <div className="request-info patterns">
                         <div className="request-info__key">{reactTranslator.translate('filtering_modal_patterns')}</div>
                         {rulePatterns}
                     </div>
                 )}
                 {showOptions && (
-                    <div className="options">
+                    <div className="request-info options">
                         <div className="request-info__key">{reactTranslator.translate('filtering_modal_options')}</div>
                         {options}
                     </div>
                 )}
-                <button
-                    type="button"
-                    className={buttonClass}
-                    onClick={handleAddRuleClick}
-                >
-                    {reactTranslator.translate(titleI18nKey)}
-                </button>
             </div>
+            <button
+                type="button"
+                className={buttonClass}
+                onClick={handleAddRuleClick}
+            >
+                {reactTranslator.translate(titleI18nKey)}
+            </button>
         </>
     );
 });

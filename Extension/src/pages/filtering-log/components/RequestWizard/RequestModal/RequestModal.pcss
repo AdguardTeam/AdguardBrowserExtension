@@ -13,7 +13,10 @@
     box-shadow: 2px 2px 10px var(--shadow);
     overflow-y: scroll;
 
-/*  FIXME: use
+    @media (max-width: 640px) {
+        width: 100%;
+    }
+    /*  FIXME: use
     https://lea.verou.me/2012/04/background-attachment-local/
     background: linear-gradient(var(--white) 33%, rgba(111, 117, 206, 0)),
     linear-gradient(rgba(111, 117, 206, 0), var(--white) 66%) 0 100%,
@@ -33,13 +36,16 @@
         align-items: center;
         padding: 32px 38px 32px;
         position: fixed;
-        /* FIXME */
-        width: 460px;
+        width: 100%;
         background: var(--white);
+
+        @media (max-width: 640px) {
+            padding: 24px 16px 32px;
+        }
     }
 
     &__content {
-        margin: 96px 38px 32px;
+        margin: 96px 0 32px;
     }
 
     &__header {
