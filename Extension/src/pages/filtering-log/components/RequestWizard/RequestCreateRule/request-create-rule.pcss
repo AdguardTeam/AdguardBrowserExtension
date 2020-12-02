@@ -21,15 +21,38 @@
     }
 }
 
-.patterns {
-    font-family: var(--font-mono);
-    font-size: 16px;
-    color: var(--gray900);
-    word-break: break-all;
-}
-
+.patterns,
 .options {
     font-family: var(--font-mono);
     font-size: 16px;
     color: var(--gray900);
+    word-break: break-all;
+
+    & > .request-info__key {
+        margin-bottom: 16px;
+    }
+
+    &__content {
+        & > .radio-button-label {
+            margin-bottom: 22px;
+        }
+
+        & > .checkbox-label {
+            margin-bottom: 16px;
+        }
+
+        .custom-checkbox,
+        .radio-button {
+            margin-right: 8px;
+        }
+    }
+}
+
+.patterns {
+    word-break: break-all;
+    margin: 24px 0 32px;
+}
+
+.options {
+    margin: 32px 0;
 }

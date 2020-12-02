@@ -53,9 +53,8 @@ const RequestCreateRule = observer(() => {
             </label>
         ));
 
-        /* FIXME - rename classes, change padding */
         return (
-            <div className="miscellaneous-filters__section">
+            <div className="patterns__content">
                 {patternItems}
             </div>
         );
@@ -91,7 +90,7 @@ const RequestCreateRule = observer(() => {
 
         return (
             <form>
-                <div className="miscellaneous-filters__section">
+                <div className="options__content">
                     {renderedOptions}
                 </div>
             </form>
@@ -156,7 +155,7 @@ const RequestCreateRule = observer(() => {
             </div>
             <div className="request-modal__content">
                 <div className="request-info__key request-modal__rule-text">
-                    <div>{reactTranslator.translate('filtering_modal_rule_text')}</div>
+                    <div className="request-info__key">{reactTranslator.translate('filtering_modal_rule_text')}</div>
                     <div
                         /* eslint-disable-next-line jsx-a11y/aria-role */
                         role="textarea"
@@ -170,13 +169,13 @@ const RequestCreateRule = observer(() => {
                 </div>
                 {showPatterns && (
                     <div className="patterns">
-                        <div>{reactTranslator.translate('filtering_modal_patterns')}</div>
+                        <div className="request-info__key">{reactTranslator.translate('filtering_modal_patterns')}</div>
                         {rulePatterns}
                     </div>
                 )}
                 {showOptions && (
                     <div className="options">
-                        <div>{reactTranslator.translate('filtering_modal_options')}</div>
+                        <div className="request-info__key">{reactTranslator.translate('filtering_modal_options')}</div>
                         {options}
                     </div>
                 )}
