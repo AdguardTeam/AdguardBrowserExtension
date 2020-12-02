@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
+
 import { rootStore } from '../../stores/RootStore';
 
 export const Notification = (props) => {

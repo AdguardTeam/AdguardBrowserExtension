@@ -1,9 +1,8 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions,
-jsx-a11y/click-events-have-key-events,
-jsx-a11y/control-has-associated-label */
 import React, { useState } from 'react';
 import classNames from 'classnames';
+
 import { Nav } from '../Nav';
+
 import './sidebar.pcss';
 
 const Sidebar = () => {

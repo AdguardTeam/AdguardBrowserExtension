@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import { reactTranslator } from '../../../../reactCommon/reactTranslator';
+
 import './filters-update.pcss';
 
 const FiltersUpdate = (props) => {

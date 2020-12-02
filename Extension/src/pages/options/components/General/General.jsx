@@ -1,9 +1,9 @@
 import React, { useContext, useRef } from 'react';
 import { observer } from 'mobx-react';
 
-import SettingsSection from '../Settings/SettingsSection';
-import SettingsSet from '../Settings/SettingsSet';
-import Setting, { SETTINGS_TYPES } from '../Settings/Setting';
+import { SettingsSection } from '../Settings/SettingsSection';
+import { SettingsSet } from '../Settings/SettingsSet';
+import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
 import { hoursToMs, uploadFile } from '../../../helpers';

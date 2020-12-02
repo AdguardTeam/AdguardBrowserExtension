@@ -1,7 +1,7 @@
-/* eslint-disable react/jsx-no-target-blank */
 import React, { useContext, useEffect, useRef } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
+import { Range } from 'ace-builds';
 
 import { rootStore } from '../../stores/RootStore';
 import { Editor } from '../Editor';
@@ -9,11 +9,10 @@ import { uploadFile } from '../../../helpers';
 import { log } from '../../../../background/utils/log';
 import { STATES as SAVING_STATES } from '../Editor/savingFSM';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
+import { SettingsSection } from '../Settings/SettingsSection';
 
 import './styles.pcss';
-import SettingsSection from '../Settings/SettingsSection';
 
-// TODO add shortcut to wrap lines in comments
 const UserRules = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);
 
@@ -73,13 +72,45 @@ const UserRules = observer(() => {
         await settingsStore.saveUserRules(value);
     };
 
-    const shortcuts = [{
-        name: 'save',
-        bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
-        exec: async () => {
-            await saveClickHandler();
+    const shortcuts = [
+        {
+            name: 'save',
+            bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
+            exec: async () => {
+                await saveClickHandler();
+            },
         },
-    }];
+        {
+            name: 'togglecomment',
+            bindKey: { win: 'Ctrl-/', mac: 'Command-/' },
+            exec: (editor) => {
+                // TODO get this mark from TSUrlFilter
+                const COMMENT_MARK = '!';
+
+                const selection = editor.getSelection();
+                const ranges = selection.getAllRanges();
+
+                const rowsToToggle = ranges
+                    .map((range) => {
+                        const [start, end] = [range.start.row, range.end.row];
+                        return Array.from({ length: end - start + 1 }, (_, idx) => idx + start);
+                    })
+                    .flat();
+
+                rowsToToggle.forEach((row) => {
+                    const rawLine = editor.session.getLine(row);
+                    // if line starts with comment mark we remove it
+                    if (rawLine.trim().startsWith(COMMENT_MARK)) {
+                        const lineWithRemovedComment = rawLine.replace(COMMENT_MARK, '');
+                        editor.session.replace(new Range(row, 0, row), lineWithRemovedComment);
+                    // otherwise we add it
+                    } else {
+                        editor.session.insert({ row, column: 0 }, COMMENT_MARK);
+                    }
+                });
+            },
+        },
+    ];
 
     const exportClickHandler = async () => {
         window.open('/pages/export.html#uf', '_blank');
@@ -101,6 +132,7 @@ const UserRules = observer(() => {
                             className="desc--link"
                             href="https://adguard.com/forward.html?action=userfilter_description&from=options&app=browser_extension"
                             target="_blank"
+                            rel="noreferrer"
                         >
                             {chunks}
                         </a>

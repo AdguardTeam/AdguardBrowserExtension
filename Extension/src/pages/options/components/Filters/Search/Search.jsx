@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './search.pcss';
+
 import { reactTranslator } from '../../../../reactCommon/reactTranslator';
+
+import './search.pcss';
 
 const Search = ({
     searchInputHandler,

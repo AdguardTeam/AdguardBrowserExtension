@@ -2,9 +2,9 @@ import React from 'react';
 
 import { FORUM_URL, WEBSITE_URL } from '../../../constants';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
+import { messenger } from '../../../services/messenger';
 
 import './footer.pcss';
-import { messenger } from '../../../services/messenger';
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
