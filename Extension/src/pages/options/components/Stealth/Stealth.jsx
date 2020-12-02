@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
-import SettingsSection from '../Settings/SettingsSection';
-import SettingsSet from '../Settings/SettingsSet';
-import Setting, { SETTINGS_TYPES } from '../Settings/Setting';
+import { SettingsSection } from '../Settings/SettingsSection';
+import { SettingsSet } from '../Settings/SettingsSet';
+import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { log } from '../../../../background/utils/log';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';

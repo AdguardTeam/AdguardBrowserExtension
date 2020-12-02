@@ -1,6 +1,6 @@
 import React from 'react';
-
 import { NavLink } from 'react-router-dom';
+
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
 
 import './nav.pcss';
@@ -20,7 +20,7 @@ const Nav = ({ closeSidebar }) => (
             className="nav__item"
             activeClassName="nav__item--active"
             to="/filters"
-            isActive={(match, location) => match || !isNaN(location.pathname.slice(-1))}
+            isActive={(match, location) => match || !Number.isNaN(location.pathname.slice(-1))}
             onClick={closeSidebar}
         >
             {reactTranslator.translate('options_antibanner')}

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import './checkbox.pcss';
 
 const Checkbox = (props) => {
@@ -12,6 +13,7 @@ const Checkbox = (props) => {
     value = inverted ? !value : value;
 
     const changeHandler = (e) => {
+        // eslint-disable-next-line no-shadow
         const { target: { name: id, checked: data } } = e;
         handler({ id, data: inverted ? !data : data });
     };
@@ -28,7 +30,6 @@ const Checkbox = (props) => {
                 id={id}
                 className="checkbox__in"
             />
-            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
             <label
                 htmlFor={id}
                 className="checkbox__label"

@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { Checkbox } from '../Settings/Checkbox';
+
+import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
+
 import './group.pcss';
-import Setting, { SETTINGS_TYPES } from '../Settings/Setting';
 
 const renderEnabledFilters = (enabledFilters) => {
     const enabledFiltersNames = enabledFilters.map((filter) => filter.name);

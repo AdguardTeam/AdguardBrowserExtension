@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import './input.pcss';
 
-function TextInput(props) {
+const TextInput = (props) => {
     const {
         id, value, handler, placeholder,
     } = props;
@@ -26,7 +27,7 @@ function TextInput(props) {
             />
         </div>
     );
-}
+};
 
 TextInput.defaultProps = {
     placeholder: '',

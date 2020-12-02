@@ -1,4 +1,5 @@
 import { interpret, Machine } from 'xstate';
+
 import { log } from '../../../../background/utils/log';
 
 export const STATES = {

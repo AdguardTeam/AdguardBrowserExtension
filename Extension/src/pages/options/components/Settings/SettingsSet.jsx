@@ -46,4 +46,4 @@ SettingsSet.propTypes = {
     inlineControl: PropTypes.element,
 };
 
-export default SettingsSet;
+export { SettingsSet };

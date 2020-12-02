@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-function SettingsSection(props) {
+const SettingsSection = (props) => {
     const {
         title, subtitle, description, renderBackButton, renderInlineControl, children, disabled,
     } = props;
@@ -33,7 +33,7 @@ function SettingsSection(props) {
             </div>
         </div>
     );
-}
+};
 
 SettingsSection.defaultProps = {
     title: '',
@@ -57,4 +57,4 @@ SettingsSection.propTypes = {
     disabled: PropTypes.bool,
 };
 
-export default SettingsSection;
+export { SettingsSection };
