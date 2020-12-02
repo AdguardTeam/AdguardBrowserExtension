@@ -16,46 +16,48 @@ export const Main = observer(() => {
                 store.toggleAllowlisted();
             },
             // FIXME replace with icon classname
-            text: 'enabled',
+            mod: 'enabled',
         },
         [POPUP_STATES.APPLICATION_FILTERING_DISABLED]: {
             handler: () => {
                 store.changeApplicationFilteringDisabled(false);
             },
             // FIXME replace with icon classname
-            text: 'disabled',
+            mod: 'disabled',
         },
         [POPUP_STATES.APPLICATION_UNAVAILABLE]: {
             // FIXME replace with icon classname
-            text: 'unavailable',
+            mod: 'unavailable',
         },
         [POPUP_STATES.SITE_IN_EXCEPTION]: {
             // FIXME replace with icon classname
-            text: 'in exception',
+            mod: 'in exception',
         },
         [POPUP_STATES.SITE_ALLOWLISTED]: {
             handler: () => {
                 store.toggleAllowlisted();
             },
             // FIXME replace with icon classname
-            text: 'allowlisted',
+            mod: 'allowlisted',
         },
     };
 
     const switcher = switchersMap[store.popupState];
 
+    console.log(store);
+
     return (
-        <div className="main">
+        <div className={`main main--${switcher.mod}`}>
             <div className="main__header">
                 {store.showInfoAboutFullVersion && (
                     <div className="main__cta-link">
-                        <a
+                        <amod
                             href="https://adguard.com/forward.html?action=compare&from=popup&app=browser_extension"
                             target="_blank"
                             rel="noreferrer"
                         >
                             {reactTranslator.translate('popup_header_cta_link')}
-                        </a>
+                        </amod>
                     </div>
                 )}
                 <div className="main__stats">
@@ -76,7 +78,8 @@ export const Main = observer(() => {
                 className="switcher"
                 onClick={switcher.handler}
             >
-                {switcher.text}
+                <div className="switcher__center" />
+                <div className="switcher__btn" />
             </button>
             <div className="current-site">
                 {store.currentSite}

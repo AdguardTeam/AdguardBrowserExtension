@@ -1,4 +1,36 @@
 .footer {
     display: flex;
+    align-items: center;
     height: 40px;
+    padding: 0 20px;
+    box-shadow: 0 -2px 0 0 #f3f3f3;
+    font-size: 13px;
+    color: #4d4d4d;
+
+    &__text {
+        max-width: 215px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__platforms {
+        flex-grow: 1;
+        flex-shrink: 0;
+        text-align: right;
+    }
+
+    &__link {
+        margin-left: 15px;
+        opacity: 0.3;
+        transition: 0.3s ease opacity;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    &__icon {
+        width: 17px;
+    }
 }

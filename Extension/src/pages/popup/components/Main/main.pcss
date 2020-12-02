@@ -3,7 +3,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
-    min-height: 230px;
+    height: 300px;
     /*TODO use colors from variables*/
     background-image: radial-gradient(circle at 50% 54%, #326e7a, #253440);
     color: white;
@@ -39,10 +39,99 @@
         font-size: 14px;
         text-align: center;
     }
+
+    &--allowlisted {
+        background-image: radial-gradient(circle at 50% 54%, #7A3232, #253440);
+
+        & .switcher__btn {
+            right: 32px;
+
+            &:before {
+                background-image: linear-gradient(to bottom, #eba122, #eb6422);
+            }
+
+            &:after {
+                background-size: 15px 15px;
+                background-position: 13px 14px;
+                background-image: url(../../../assets/icons/cross-white.svg);
+            }
+        }
+    }
+
+    &--disabled {
+        background-image: radial-gradient(circle at 50% 54%, #848484, #253440);
+
+        & .switcher__center {
+            opacity: 0;
+        }
+
+        & .switcher__btn {
+            right: 18px;
+
+            &:before {
+                background: linear-gradient(to bottom, #a8a8a8 0%,#4a4a4a 100%);
+            }
+
+            &:after {
+                background-image: url(../../../assets/icons/play.svg);
+                background-size: 16px 18px;
+                background-position: 15px 50%;
+            }
+        }
+    }
 }
 
 .switcher {
+    position: relative;
+    cursor: pointer;
+
     &:hover {
+        & .switcher__btn {
+            transform: scale(1.03);
+        }
+    }
+
+    &__center {
+        width: 74px;
+        height: 26px;
+        border-radius: 100px;
+        background-color: #2a4b57;
+        box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.28);
+    }
+
+    &__btn {
+        position: absolute;
+        width: 48px;
+        height: 48px;
+        right: 6px;
+        top: -11px;
+        border-radius: 50%;
+        box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.7);
+        background-image: linear-gradient(to bottom, #ffffff, #ebebeb);
+        padding: 4px;
         cursor: pointer;
+        transition: 0.3s ease transform;
+
+        &:before {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-image: linear-gradient(to bottom, #64beb0, #74be64);
+        }
+
+        &:after {
+            content: '';
+            width: 44px;
+            height: 44px;
+            display: block;
+            position: absolute;
+            left: 3px;
+            top: 3px;
+            background-repeat: no-repeat;
+            background-position: 50% 50%;
+            background-image: url(../../../assets/icons/checkmark.svg);
+        }
     }
 }
