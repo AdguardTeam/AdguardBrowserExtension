@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import Modal from 'react-modal';
 import { observer } from 'mobx-react';
+
 import { rootStore } from '../../../stores/RootStore';
 import { RequestInfo } from '../RequestInfo';
 import { WIZARD_STATES } from '../../../stores/WizardStore';
@@ -37,7 +38,7 @@ const RequestModal = observer(() => {
             isOpen={isModalOpen}
             onRequestClose={closeModal}
             className="ReactModal__Content request-modal"
-            overlayClassName="ReactModal__Overlay reqeust-modal__overlay"
+            overlayClassName="ReactModal__Overlay request-modal__overlay"
         >
             {modalContent}
         </Modal>

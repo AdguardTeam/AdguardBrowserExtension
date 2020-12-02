@@ -1,34 +1,35 @@
 .radio-button-label, .checkbox-label {
     margin-bottom: 18px;
+    word-break: inherit;
 }
 
 .radio-button {
     min-width: 17px;
+    align-self: flex-start;
 }
 
 .request-modal {
+    outline: none;
+
     &__rule-text {
-        /* FIXME - extract fonts and add fallbacks */
-        /* FIXME - multiline input */
-        font-family: PTMono-Regular;
+        font-family: var(--font-mono);
         font-size: 16px;
         color: var(--gray900);
         width: 100%;
         border: none;
-        margin-bottom: 24px;
+        margin: 4px 0 24px 0;
     }
 }
 
 .patterns {
-    /* FIXME - extract fonts and add fallbacks */
-    font-family: PTMono-Regular;
+    font-family: var(--font-mono);
     font-size: 16px;
     color: var(--gray900);
+    word-break: break-all;
 }
 
 .options {
-    /* FIXME - extract fonts and add fallbacks */
-    font-family: Roboto-Regular;
+    font-family: var(--font-mono);
     font-size: 16px;
     color: var(--gray900);
 }

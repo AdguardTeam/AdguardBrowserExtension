@@ -204,7 +204,6 @@ const RequestInfo = observer(() => {
         );
     };
 
-    /* FIXME - make position fixed on overflow y */
     return (
         <>
             <div className="request-modal__title">
@@ -219,11 +218,13 @@ const RequestInfo = observer(() => {
                 </button>
                 <span className="request-modal__header">{reactTranslator.translate('filtering_modal_info_title')}</span>
             </div>
-            {renderedInfo}
-            {renderImageIfNecessary(selectedEvent)}
-            <div className="request-modal__controls">
-                {renderOpenInNewTab(selectedEvent)}
-                {renderBlockRequest(selectedEvent)}
+            <div className="request-modal__content">
+                {renderedInfo}
+                {renderImageIfNecessary(selectedEvent)}
+                <div className="request-modal__controls">
+                    {renderOpenInNewTab(selectedEvent)}
+                    {renderBlockRequest(selectedEvent)}
+                </div>
             </div>
         </>
     );

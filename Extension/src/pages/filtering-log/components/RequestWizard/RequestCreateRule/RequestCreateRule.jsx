@@ -33,33 +33,26 @@ const RequestCreateRule = observer(() => {
     };
 
     const renderPatterns = (patterns) => {
-        const patternItems = patterns.map((pattern, idx) => {
-            /* FIXME - use checked selector instead,
-                 fix markup for multiple lines, */
-            const patternClass = classnames('radio-button', {
-                active: pattern === wizardStore.rulePattern,
-            });
+        const patternItems = patterns.map((pattern, idx) => (
+            <label
+                /* eslint-disable-next-line react/no-array-index-key */
+                key={`pattern${idx}`}
+                className="radio-button-label"
+                htmlFor={pattern}
+            >
+                <input
+                    type="radio"
+                    id={pattern}
+                    name="rulePattern"
+                    value={pattern}
+                    checked={pattern === wizardStore.rulePattern}
+                    onChange={handlePatternChange(pattern)}
+                />
+                <label className="radio-button" />
+                {pattern}
+            </label>
+        ));
 
-            return (
-                <label
-                    /* eslint-disable-next-line react/no-array-index-key */
-                    key={`pattern${idx}`}
-                    className="radio-button-label"
-                    htmlFor={pattern}
-                >
-                    <input
-                        type="radio"
-                        id={pattern}
-                        name="rulePattern"
-                        value={pattern}
-                        checked={pattern === wizardStore.rulePattern}
-                        onChange={handlePatternChange(pattern)}
-                    />
-                    <label className={patternClass} />
-                    {pattern}
-                </label>
-            );
-        });
         /* FIXME - rename classes, change padding */
         return (
             <div className="miscellaneous-filters__section">
@@ -81,11 +74,6 @@ const RequestCreateRule = observer(() => {
                 return null;
             }
 
-            /* FIXME - use checked selector instead */
-            const optionClass = classnames('custom-checkbox', {
-                active: wizardStore.ruleOptions[id].checked,
-            });
-
             return (
                 <label className="checkbox-label" key={id}>
                     <input
@@ -95,7 +83,7 @@ const RequestCreateRule = observer(() => {
                         onChange={handleOptionsChange(id)}
                         checked={wizardStore.ruleOptions[id].checked}
                     />
-                    <div className={optionClass} />
+                    <div className="custom-checkbox" />
                     {label}
                 </label>
             );
@@ -166,36 +154,40 @@ const RequestCreateRule = observer(() => {
                 </button>
                 <span className="request-modal__header">{reactTranslator.translate(titleI18nKey)}</span>
             </div>
-            <div className="request-info__key request-modal__rule-text">
-                <div>{reactTranslator.translate('filtering_modal_rule_text')}</div>
-                <input
-                    type="text"
-                    name="rule-text"
-                    className="request-modal__rule-text"
-                    value={wizardStore.rule}
-                    onChange={handleRuleChange}
-                />
+            <div className="request-modal__content">
+                <div className="request-info__key request-modal__rule-text">
+                    <div>{reactTranslator.translate('filtering_modal_rule_text')}</div>
+                    <div
+                        /* eslint-disable-next-line jsx-a11y/aria-role */
+                        role="textarea"
+                        className="request-modal__rule-text"
+                        contentEditable
+                        suppressContentEditableWarning
+                        onChange={handleRuleChange}
+                    >
+                        {wizardStore.rule}
+                    </div>
+                </div>
+                {showPatterns && (
+                    <div className="patterns">
+                        <div>{reactTranslator.translate('filtering_modal_patterns')}</div>
+                        {rulePatterns}
+                    </div>
+                )}
+                {showOptions && (
+                    <div className="options">
+                        <div>{reactTranslator.translate('filtering_modal_options')}</div>
+                        {options}
+                    </div>
+                )}
+                <button
+                    type="button"
+                    className={buttonClass}
+                    onClick={handleAddRuleClick}
+                >
+                    {reactTranslator.translate(titleI18nKey)}
+                </button>
             </div>
-            {/* FIXME - handle overflow */}
-            {showPatterns && (
-                <div className="patterns">
-                    <div>{reactTranslator.translate('filtering_modal_patterns')}</div>
-                    {rulePatterns}
-                </div>
-            )}
-            {showOptions && (
-                <div className="options">
-                    <div>{reactTranslator.translate('filtering_modal_options')}</div>
-                    {options}
-                </div>
-            )}
-            <button
-                type="button"
-                className={buttonClass}
-                onClick={handleAddRuleClick}
-            >
-                {reactTranslator.translate(titleI18nKey)}
-            </button>
         </>
     );
 });

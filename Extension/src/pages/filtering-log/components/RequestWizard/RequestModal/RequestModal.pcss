@@ -9,9 +9,20 @@
     font-size: 14px;
     box-sizing: border-box;
     width: 460px;
-    padding: 32px 38px 87px;
+    padding-bottom: 87px;
     box-shadow: 2px 2px 10px var(--shadow);
     overflow-y: scroll;
+
+/*  FIXME: use
+    https://lea.verou.me/2012/04/background-attachment-local/
+    background: linear-gradient(var(--white) 33%, rgba(111, 117, 206, 0)),
+    linear-gradient(rgba(111, 117, 206, 0), var(--white) 66%) 0 100%,
+    radial-gradient(farthest-side at 50% 0, rgba(34, 34, 34, 0.5), rgba(0, 0, 0, 0)),
+    radial-gradient(farthest-side at 50% 100%, rgba(34, 34, 34, 0.5), rgba(0, 0, 0, 0)) 0 100%;
+    background-color: var(--white);
+    background-repeat: no-repeat;
+    background-attachment: local, local, scroll, scroll;
+    background-size: 100% 45px, 100% 45px, 100% 15px, 100% 15px;*/
 
     &__overlay {
         position: static;
@@ -20,7 +31,15 @@
     &__title {
         display: flex;
         align-items: center;
-        margin-bottom: 32px;
+        padding: 32px 38px 32px;
+        position: fixed;
+        /* FIXME */
+        width: 460px;
+        background: var(--white);
+    }
+
+    &__content {
+        margin: 96px 38px 32px;
     }
 
     &__header {
