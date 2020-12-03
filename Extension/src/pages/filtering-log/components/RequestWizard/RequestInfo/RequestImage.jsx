@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import './request-image.css';
 
 const RequestImage = (props) => {
     const { url } = props;
@@ -22,7 +23,7 @@ const RequestImage = (props) => {
         };
     }, []);
 
-    return (shouldRenderImage && <img src={url} alt="request" />);
+    return (shouldRenderImage && <img src={url} className="request-image" alt="request" />);
 };
 
 export { RequestImage };

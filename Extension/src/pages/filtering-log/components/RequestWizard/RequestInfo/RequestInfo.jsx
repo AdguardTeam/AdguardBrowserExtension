@@ -2,6 +2,7 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 import { identity } from 'lodash';
+import classnames from 'classnames';
 
 import { getFilterName, getRequestType } from '../utils';
 import { RequestImage } from './RequestImage';
@@ -127,9 +128,10 @@ const RequestInfo = observer(() => {
 
         return (
             <button
-                className="request-modal__button"
+                className="request-modal__button request-modal__button--white"
                 type="button"
                 onClick={openInNewTabHandler}
+                title={reactTranslator.translate('filtering_modal_open_in_new_tab')}
             >
                 {reactTranslator.translate('filtering_modal_open_in_new_tab')}
             </button>
@@ -193,11 +195,16 @@ const RequestInfo = observer(() => {
 
         const { buttonTitleKey, onClick } = props;
 
+        const buttonClass = classnames('request-modal__button', {
+            'request-modal__button--red': buttonTitleKey === BUTTON_MAP.BLOCK.buttonTitleKey,
+        });
+
         return (
             <button
-                className="request-modal__button request-modal__button--white"
+                className={buttonClass}
                 type="button"
                 onClick={onClick}
+                title={reactTranslator.translate(buttonTitleKey)}
             >
                 {reactTranslator.translate(buttonTitleKey)}
             </button>

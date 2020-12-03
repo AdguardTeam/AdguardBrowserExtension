@@ -131,12 +131,6 @@ const RequestCreateRule = observer(() => {
         filtering_modal_unblock: wizardStore.requestModalStateEnum.isUnblock,
     });
 
-    /* FIXME - find out colors */
-    const buttonClass = classnames('request-modal__button', {
-        'request-modal__button--red': wizardStore.requestModalStateEnum.isBlock,
-        'request-modal__button--white': wizardStore.requestModalStateEnum.isUnblock,
-    });
-
     return (
         <>
             {/* TODO style button and remove text */}
@@ -182,8 +176,9 @@ const RequestCreateRule = observer(() => {
             </div>
             <button
                 type="button"
-                className={buttonClass}
+                className="request-modal__button request-modal__button--red"
                 onClick={handleAddRuleClick}
+                title={reactTranslator.translate(titleI18nKey)}
             >
                 {reactTranslator.translate(titleI18nKey)}
             </button>

@@ -13,19 +13,21 @@
     box-shadow: 2px 2px 10px var(--shadow);
     overflow-y: scroll;
 
+    &__view {
+
+    }
+
+    &__block {
+
+    }
+
+    &__unblock {
+
+    }
+
     @media (max-width: 640px) {
         width: 100%;
     }
-    /*  FIXME: use
-    https://lea.verou.me/2012/04/background-attachment-local/
-    background: linear-gradient(var(--white) 33%, rgba(111, 117, 206, 0)),
-    linear-gradient(rgba(111, 117, 206, 0), var(--white) 66%) 0 100%,
-    radial-gradient(farthest-side at 50% 0, rgba(34, 34, 34, 0.5), rgba(0, 0, 0, 0)),
-    radial-gradient(farthest-side at 50% 100%, rgba(34, 34, 34, 0.5), rgba(0, 0, 0, 0)) 0 100%;
-    background-color: var(--white);
-    background-repeat: no-repeat;
-    background-attachment: local, local, scroll, scroll;
-    background-size: 100% 45px, 100% 45px, 100% 15px, 100% 15px;*/
 
     &__overlay {
         position: static;
@@ -45,7 +47,7 @@
     }
 
     &__content {
-        margin: 96px 0 32px;
+        margin: 80px 0 0;
     }
 
     &__header {
@@ -87,7 +89,11 @@
     &__controls {
         display: flex;
         justify-content: space-between;
-        margin-top: 24px;
+
+        @media (max-width: 640px) {
+            flex-direction: column;
+            margin-top: 28px;
+        }
     }
 
     &__button {
@@ -102,8 +108,29 @@
         height: 48px;
         text-transform: uppercase;
         width: 183px;
+        margin: 24px 32px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
 
-        &--white {
+        @media (min-width: 641px) {
+            &:first-child {
+                margin-left: 32px;
+                margin-right: 24px;
+            }
+
+            &:nth-child(2) {
+                margin-left: 0;
+                margin-right: 38px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            width: calc(100% - 48px);
+            margin: 8px 24px;
+        }
+
+            &--white {
             background-color: var(--white);
             color: var(--gray900);
             border: 1px solid var(--gray700);
