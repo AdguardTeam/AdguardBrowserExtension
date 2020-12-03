@@ -10,6 +10,7 @@ import { popupStore } from '../../stores/PopupStore';
 import { messenger } from '../../../services/messenger';
 
 import '../../styles/main.pcss';
+import './popup.pcss';
 
 export const Popup = () => {
     const store = useContext(popupStore);
