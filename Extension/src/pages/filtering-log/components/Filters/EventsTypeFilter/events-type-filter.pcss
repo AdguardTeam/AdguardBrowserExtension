@@ -20,4 +20,61 @@
             color: var(--bgColor);
         }
     }
+
+    &__content {
+        &--desktop {
+            @media (max-width: 640px) {
+                display: none;
+            }
+        }
+
+        &--mobile {
+            @media (min-width: 641px) {
+                display: none;
+            }
+        }
+    }
+
+    &__icon {
+        margin-left: auto;
+        display: flex;
+        position: relative;
+
+        border: 0;
+        background-color: transparent;
+        background-image: url(../../../../assets/icons/code.svg), url(../../../../assets/icons/arrow-down-grey.svg);
+        background-position: 0 50%, 100% 50%;
+        background-repeat: no-repeat, no-repeat;
+        background-size: 24px 24px, 11px 9px;
+        padding: 0 20px 0 25px;
+        font-size: 14px;
+        color: var(--textColor);
+        cursor: pointer;
+
+        &:focus {
+            outline: none;
+        }
+    }
+}
+
+.content-type {
+    /* FIXME - change modal position */
+    &__modal {
+        width: 156px;
+        outline: none;
+        background: var(--white);
+        box-shadow: 2px 2px 10px var(--shadow);
+        align-items: flex-start;
+        padding: 11px 16px 18px;
+        display: flex;
+        flex-direction: column;
+
+        & > .events-types__type {
+            margin: 5px;
+        }
+    }
+
+    &__overlay {
+        background-color: transparent;
+    }
 }
