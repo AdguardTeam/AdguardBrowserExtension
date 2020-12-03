@@ -25,7 +25,7 @@ export const Tabs = observer(() => {
 
     return (
         <div className="tabs">
-            <div className="tabs-panel">
+            <div className="tabs__panel">
                 <Tab
                     title="Actions"
                     active={store.viewState === VIEW_STATES.ACTIONS}
@@ -37,7 +37,7 @@ export const Tabs = observer(() => {
                     onClick={handleTabClick(VIEW_STATES.STATS)}
                 />
             </div>
-            <div className="tab-content">{tabContent}</div>
+            <div className="tabs__content">{tabContent}</div>
         </div>
     );
 });

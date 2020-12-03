@@ -5,10 +5,10 @@
     justify-content: space-around;
     height: 300px;
     /*TODO use colors from variables*/
-    background-image: radial-gradient(circle at 50% 54%, #326e7a, #253440);
     color: white;
 
     &__cta-link {
+        text-align: center;
         font-size: 12px;
         color: rgba(255, 255, 255, 0.6);
     }
@@ -43,17 +43,21 @@
     &--allowlisted {
         background-image: radial-gradient(circle at 50% 54%, #7A3232, #253440);
 
-        & .switcher__btn {
-            right: 32px;
+        & .switcher {
+            opacity: 1;
 
-            &:before {
-                background-image: linear-gradient(to bottom, #eba122, #eb6422);
-            }
+            &__btn {
+                right: 32px;
 
-            &:after {
-                background-size: 15px 15px;
-                background-position: 13px 14px;
-                background-image: url(../../../assets/icons/cross-white.svg);
+                &:before {
+                    background-image: linear-gradient(to bottom, #eba122, #eb6422);
+                }
+
+                &:after {
+                    background-size: 15px 15px;
+                    background-position: 13px 14px;
+                    background-image: url(../../../assets/icons/cross-white.svg);
+                }
             }
         }
     }
@@ -61,27 +65,40 @@
     &--disabled {
         background-image: radial-gradient(circle at 50% 54%, #848484, #253440);
 
-        & .switcher__center {
-            opacity: 0;
+        & .switcher {
+            opacity: 1;
+
+            &__center {
+                opacity: 0;
+            }
+
+            &__btn {
+                right: 18px;
+
+                &:before {
+                    background: linear-gradient(to bottom, #a8a8a8 0%,#4a4a4a 100%);
+                }
+
+                &:after {
+                    background-image: url(../../../assets/icons/play.svg);
+                    background-size: 16px 18px;
+                    background-position: 15px 50%;
+                }
+            }
         }
+    }
 
-        & .switcher__btn {
-            right: 18px;
+    &--enabled {
+        background-image: radial-gradient(circle at 50% 54%, #326e7a, #253440);
 
-            &:before {
-                background: linear-gradient(to bottom, #a8a8a8 0%,#4a4a4a 100%);
-            }
-
-            &:after {
-                background-image: url(../../../assets/icons/play.svg);
-                background-size: 16px 18px;
-                background-position: 15px 50%;
-            }
+        & .switcher {
+            opacity: 1;
         }
     }
 }
 
 .switcher {
+    opacity: 0;
     position: relative;
     cursor: pointer;
 
