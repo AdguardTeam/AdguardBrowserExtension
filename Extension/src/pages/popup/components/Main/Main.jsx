@@ -15,30 +15,25 @@ export const Main = observer(() => {
             handler: () => {
                 store.toggleAllowlisted();
             },
-            // FIXME replace with icon classname
-            mod: 'enabled',
+            mode: 'enabled',
         },
         [POPUP_STATES.APPLICATION_FILTERING_DISABLED]: {
             handler: () => {
                 store.changeApplicationFilteringDisabled(false);
             },
-            // FIXME replace with icon classname
-            mod: 'disabled',
+            mode: 'disabled',
         },
         [POPUP_STATES.APPLICATION_UNAVAILABLE]: {
-            // FIXME replace with icon classname
-            mod: 'unavailable',
+            mode: 'unavailable',
         },
         [POPUP_STATES.SITE_IN_EXCEPTION]: {
-            // FIXME replace with icon classname
-            mod: 'in exception',
+            mode: 'in exception',
         },
         [POPUP_STATES.SITE_ALLOWLISTED]: {
             handler: () => {
                 store.toggleAllowlisted();
             },
-            // FIXME replace with icon classname
-            mod: 'allowlisted',
+            mode: 'allowlisted',
         },
     };
 
@@ -47,7 +42,7 @@ export const Main = observer(() => {
     console.log(store);
 
     return (
-        <div className={`main main--${switcher.mod}`}>
+        <div className={`main main--${switcher.mode}`}>
             <div className="main__header">
                 {store.showInfoAboutFullVersion && (
                     <div className="main__cta-link">

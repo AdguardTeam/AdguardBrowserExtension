@@ -23,12 +23,10 @@ export const StatsTable = observer(() => {
 
     const renderStatsByType = statsDataByTypeWithoutTotal.map((stats) => {
         return (
-            <>
-                <li className="stats__item" key={stats.groupId}>
-                    <span className="stats__name">{stats.groupName}</span>
-                    <span className="stats__value">{stats.blocked}</span>
-                </li>
-            </>
+            <li className="stats__item" key={stats.groupId}>
+                <span className="stats__name">{stats.groupName}</span>
+                <span className="stats__value">{stats.blocked}</span>
+            </li>
         );
     });
 
