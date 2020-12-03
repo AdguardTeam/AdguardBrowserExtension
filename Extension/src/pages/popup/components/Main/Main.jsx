@@ -51,13 +51,13 @@ export const Main = observer(() => {
             <div className="main__header">
                 {store.showInfoAboutFullVersion && (
                     <div className="main__cta-link">
-                        <amod
+                        <a
                             href="https://adguard.com/forward.html?action=compare&from=popup&app=browser_extension"
                             target="_blank"
                             rel="noreferrer"
                         >
                             {reactTranslator.translate('popup_header_cta_link')}
-                        </amod>
+                        </a>
                     </div>
                 )}
                 <div className="main__stats">
