@@ -4,13 +4,12 @@
     align-items: center;
     justify-content: space-around;
     height: 300px;
-    /*TODO use colors from variables*/
     color: white;
 
     &__cta-link {
         text-align: center;
         font-size: 12px;
-        color: rgba(255, 255, 255, 0.6);
+        opacity: 0.6;
     }
 
     &__total-blocked-tab {
@@ -41,7 +40,7 @@
     }
 
     &--allowlisted {
-        background-image: radial-gradient(circle at 50% 54%, #7A3232, #253440);
+        background-image: var(--allowlisted-bg);
 
         & .switcher {
             opacity: 1;
@@ -50,7 +49,7 @@
                 right: 32px;
 
                 &:before {
-                    background-image: linear-gradient(to bottom, #eba122, #eb6422);
+                    background-image: var(--allowlisted-btn);
                 }
 
                 &:after {
@@ -63,7 +62,7 @@
     }
 
     &--disabled {
-        background-image: radial-gradient(circle at 50% 54%, #848484, #253440);
+        background-image: var(--disabled-bg);
 
         & .switcher {
             opacity: 1;
@@ -76,7 +75,7 @@
                 right: 18px;
 
                 &:before {
-                    background: linear-gradient(to bottom, #a8a8a8 0%,#4a4a4a 100%);
+                    background: var(--disabled-btn);
                 }
 
                 &:after {
@@ -90,7 +89,7 @@
 
     &--enabled,
     &--unavailable {
-        background-image: radial-gradient(circle at 50% 54%, #326e7a, #253440);
+        background-image: var(--enabled-bg);
 
         & .switcher {
             opacity: 1;
@@ -127,8 +126,8 @@
         width: 74px;
         height: 26px;
         border-radius: 100px;
-        background-color: #2a4b57;
-        box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.28);
+        background-color: var(--switch-field);
+        box-shadow: var(--switch-field-shadow);
     }
 
     &__btn {
@@ -138,8 +137,8 @@
         right: 6px;
         top: -11px;
         border-radius: 50%;
-        box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.7);
-        background-image: linear-gradient(to bottom, #ffffff, #ebebeb);
+        box-shadow: var(--switch-btn-shadow);
+        background-image: var(--switch-ring);
         padding: 4px;
         cursor: pointer;
         transition: 0.3s ease transform;
@@ -150,7 +149,7 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background-image: linear-gradient(to bottom, #64beb0, #74be64);
+            background-image: var(--enabled-btn);
         }
 
         &:after {
