@@ -63,12 +63,12 @@ export const Main = observer(() => {
                 <div className="main__stats">
                     <div className="main__total-blocked-tab">
                         {reactTranslator.translate('popup_tab_blocked', {
-                            num: store.totalBlockedTab.toLocaleString(),
+                            value: store.totalBlockedTab.toLocaleString(),
                         })}
                     </div>
                     <div className="main__total-blocked-all">
                         {reactTranslator.translate('popup_tab_blocked_all', {
-                            num: store.totalBlocked.toLocaleString(),
+                            value: store.totalBlocked.toLocaleString(),
                         })}
                     </div>
                 </div>
