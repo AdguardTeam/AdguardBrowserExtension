@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import './request-image.css';
+
+import './request-image.pcss';
 
 const RequestImage = (props) => {
     const { url } = props;
