@@ -24,7 +24,11 @@ const RequestImage = (props) => {
         };
     }, []);
 
-    return (shouldRenderImage && <img src={url} className="request-image" alt="request" />);
+    if (!shouldRenderImage) {
+        return null;
+    }
+
+    return <img src={url} className="request-image" alt="request" />;
 };
 
 export { RequestImage };

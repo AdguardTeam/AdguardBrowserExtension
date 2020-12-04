@@ -8,9 +8,11 @@ import './events-search.pcss';
 const EventsSearch = observer(() => {
     const { logStore } = useContext(rootStore);
 
-    const changeHandler = (e) => {
+    const onSubmit = (e) => {
         e.preventDefault();
+    };
 
+    const changeHandler = (e) => {
         const trimmed = e.currentTarget.value.trim();
         logStore.setEventsSearchValue(trimmed);
     };
@@ -20,7 +22,10 @@ const EventsSearch = observer(() => {
     };
 
     return (
-        <form className="events-search">
+        <form
+            className="events-search"
+            onSubmit={onSubmit}
+        >
             <input
                 type="text"
                 id="events-search"
@@ -29,11 +34,14 @@ const EventsSearch = observer(() => {
                 onChange={changeHandler}
                 value={logStore.eventsSearchValue}
             />
-            <button
-                type="button"
-                className="events-search__clear"
-                onClick={handleClear}
-            />
+            {logStore.eventsSearchValue
+            && (
+                <button
+                    type="button"
+                    className="events-search__clear"
+                    onClick={handleClear}
+                />
+            )}
         </form>
     );
 });

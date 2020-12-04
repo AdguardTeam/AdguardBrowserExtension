@@ -55,11 +55,13 @@ const FilteringEvents = observer(() => {
                 const formattedRequestType = getRequestType(requestType);
 
                 if (requestThirdParty) {
-                    // TODO waits for design
                     return (
                         <>
                             {formattedRequestType}
-                            <small>Third party</small>
+                            <svg className="icon--24 third-party__icon icon--green">
+                                <use xlinkHref="#chain" />
+                            </svg>
+                            <span className="third-party__label">Third party</span>
                         </>
                     );
                 }

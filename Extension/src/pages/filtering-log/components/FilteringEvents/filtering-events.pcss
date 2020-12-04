@@ -3,7 +3,7 @@
     border-collapse: collapse;
     width: 100%;
 
-    & tr {
+    & tbody > tr {
         &:hover {
             cursor: pointer;
             background: var(--trHover);
@@ -40,10 +40,11 @@
         text-align: left;
         padding: 7px 25px;
         font-weight: normal;
-        font-size: 13px;
+        font-size: 14px;
         color: var(--darkText);
         border-right: 1px solid var(--thColor);
         border-bottom: 1px solid var(--thColor);
+        font-family: var(--font-roboto);
 
         &:first-child {
             width: 25%;
@@ -64,5 +65,17 @@
             color: var(--darkText);
             border-left: none;
         }
+    }
+}
+
+.third-party {
+    &__label {
+        font-family: var(--font-roboto);
+        color: var(--gray400);
+        font-size: 14px;
+    }
+
+    &__icon {
+        margin: -3px 4px -5px 8px;
     }
 }
