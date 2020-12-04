@@ -408,13 +408,8 @@ const init = () => {
                 break;
             }
             case 'changeApplicationFilteringDisabled': {
-                // FIXME make all messages to send state with data
-                if (data) {
-                    const { state } = data;
-                    uiService.changeApplicationFilteringDisabled(state);
-                } else {
-                    uiService.changeApplicationFilteringDisabled(message.disabled);
-                }
+                const { state } = data;
+                uiService.changeApplicationFilteringDisabled(state);
                 break;
             }
             case 'openSiteReportTab': {
