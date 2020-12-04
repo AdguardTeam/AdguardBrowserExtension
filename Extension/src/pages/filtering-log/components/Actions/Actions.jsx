@@ -52,8 +52,8 @@ const Actions = observer(() => {
                     {reactTranslator.translate('filtering_clear_tab_events')}
                 </button>
             </div>
-            <div className="actions__action">
-                <label className="checkbox-label actions__preserve" htmlFor="preserveLog">
+            <div className="actions__action actions__preserve">
+                <label className="checkbox-label" htmlFor="preserveLog">
                     <input
                         type="checkbox"
                         name="preserveLog"

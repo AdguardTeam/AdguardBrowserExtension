@@ -1,10 +1,16 @@
 .actions {
-    display: flex;
-    align-items: center;
-    padding: 20px 25px;
+    display: inline-block;
+    padding: 16px 24px;
+    position: relative;
 
     &__action {
-        margin-right: 30px;
+        margin-right: 24px;
+        display: inline-block;
+        vertical-align: middle;
+
+        & > .checkbox-label {
+            margin-bottom: 0;
+        }
     }
 
     &__refresh {
@@ -46,5 +52,10 @@
     &__preserve {
         font-size: 15px;
         margin-left: 10px;
+
+        @media (max-width: 640px) {
+            width: 100%;
+            margin: 16px 0 0 0;
+        }
     }
 }
