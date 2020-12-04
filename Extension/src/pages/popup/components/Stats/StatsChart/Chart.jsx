@@ -5,6 +5,8 @@ import 'c3/c3.css';
 import { reactTranslator } from '../../../../reactCommon/reactTranslator';
 import { TIME_RANGES } from '../../../constants';
 
+import './chart.pcss';
+
 const DAYS_OF_WEEK = [
     reactTranslator.translate('popup_statistics_week_days_mon'),
     reactTranslator.translate('popup_statistics_week_days_tue'),

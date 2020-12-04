@@ -48,8 +48,9 @@ export const Filters = observer(() => {
     };
 
     return (
-        <div className="filters">
+        <div className="stats-chart__filters">
             <select
+                className="stats-chart__select"
                 name="blocked-type"
                 id="blocked-type"
                 onChange={handleBlockedTypeChange}
@@ -67,6 +68,7 @@ export const Filters = observer(() => {
                 })}
             </select>
             <select
+                className="stats-chart__select"
                 name="time-range"
                 id="time-range"
                 onChange={handleTimeRangeChange}

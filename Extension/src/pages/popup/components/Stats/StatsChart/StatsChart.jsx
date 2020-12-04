@@ -5,6 +5,8 @@ import { popupStore } from '../../../stores/PopupStore';
 import { Filters } from './Filters';
 import { Chart } from './Chart';
 
+import './stats-chart.pcss';
+
 export const StatsChart = observer(() => {
     const store = useContext(popupStore);
 

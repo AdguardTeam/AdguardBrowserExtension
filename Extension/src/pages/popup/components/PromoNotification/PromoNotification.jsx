@@ -1,11 +1,16 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
+import classnames from 'classnames';
 
 import { popupStore } from '../../stores/PopupStore';
 import { messenger } from '../../../services/messenger';
 
+import './promo-notification.pcss';
+
 export const PromoNotification = observer(() => {
     const store = useContext(popupStore);
+
+    const [notificationOnClose, setNotificationOnClose] = useState(false);
 
     // schedule notification removal
     useEffect(() => {
@@ -18,9 +23,14 @@ export const PromoNotification = observer(() => {
         return null;
     }
 
+    const closeTimeoutMs = 300;
+
     const handleNotificationClose = (e) => {
-        e.preventDefault();
-        store.closePromoNotification();
+        setNotificationOnClose(true);
+        setTimeout(() => {
+            e.preventDefault();
+            store.closePromoNotification();
+        }, closeTimeoutMs);
     };
 
     const handleNotificationClick = (e) => {
@@ -30,9 +40,13 @@ export const PromoNotification = observer(() => {
 
     const { text } = store.promoNotification;
 
+    const notificationClassnames = classnames('promo-notification', {
+        'promo-notification--close': notificationOnClose,
+    });
+
     return (
-        <div className="promo-notification">
-            <div className="promo-notification__close" onClick={handleNotificationClose} />
+        <div className={notificationClassnames}>
+            <bitton className="promo-notification__close" onClick={handleNotificationClose} />
             <div className="promo-notification__content">
                 {text.title
                         && <div className="promo-notification__title">{text.title}</div>}

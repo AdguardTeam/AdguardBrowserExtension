@@ -17,8 +17,9 @@ export const Footer = observer(() => {
                     href="https://adguard.com/forward.html?action=ios_about&from=popup&app=browser_extension"
                     target="_blank"
                     rel="noreferrer"
+                    className="footer__link"
                 >
-                    <svg className="icon icon--button">
+                    <svg className="icon footer__icon">
                         <use xlinkHref="#apple" />
                     </svg>
                 </a>
@@ -26,8 +27,9 @@ export const Footer = observer(() => {
                     href="https://adguard.com/forward.html?action=android_about&from=popup&app=browser_extension"
                     target="_blank"
                     rel="noreferrer"
+                    className="footer__link"
                 >
-                    <svg className="icon icon--button">
+                    <svg className="icon footer__icon">
                         <use xlinkHref="#android" />
                     </svg>
                 </a>

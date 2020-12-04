@@ -15,37 +15,32 @@ export const Main = observer(() => {
             handler: () => {
                 store.toggleAllowlisted();
             },
-            // FIXME replace with icon classname
-            text: 'enabled',
+            mode: 'enabled',
         },
         [POPUP_STATES.APPLICATION_FILTERING_DISABLED]: {
             handler: () => {
                 store.changeApplicationFilteringDisabled(false);
             },
-            // FIXME replace with icon classname
-            text: 'disabled',
+            mode: 'disabled',
         },
         [POPUP_STATES.APPLICATION_UNAVAILABLE]: {
-            // FIXME replace with icon classname
-            text: 'unavailable',
+            mode: 'unavailable',
         },
         [POPUP_STATES.SITE_IN_EXCEPTION]: {
-            // FIXME replace with icon classname
-            text: 'in exception',
+            mode: 'in exception',
         },
         [POPUP_STATES.SITE_ALLOWLISTED]: {
             handler: () => {
                 store.toggleAllowlisted();
             },
-            // FIXME replace with icon classname
-            text: 'allowlisted',
+            mode: 'allowlisted',
         },
     };
 
     const switcher = switchersMap[store.popupState];
 
     return (
-        <div className="main">
+        <div className={`main main--${switcher.mode}`}>
             <div className="main__header">
                 {store.showInfoAboutFullVersion && (
                     <div className="main__cta-link">
@@ -76,7 +71,8 @@ export const Main = observer(() => {
                 className="switcher"
                 onClick={switcher.handler}
             >
-                {switcher.text}
+                <div className="switcher__center" />
+                <div className="switcher__btn" />
             </button>
             <div className="current-site">
                 {store.currentSite}

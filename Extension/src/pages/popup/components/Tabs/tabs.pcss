@@ -1,18 +1,27 @@
-.tabs-panel {
-    display: flex;
+.tabs {
+    &__panel {
+        display: flex;
+    }
 
-    .tab {
+    &__content {
+        height: 168px;
+        overflow: auto;
+    }
+
+    &__tab {
+        font-size: 16px;
         width: 50%;
         height: 40px;
         border: 0;
-        /* TODO use colors from variables */
-        background-color: grey;
+        background-color: var(--gray300);
+        color: var(--gray700);
         cursor: pointer;
         text-align: center;
         line-height: 40px;
 
         &_active {
-            background-color: white;
+            background-color: var(--white);
+            color: var(--gray900);
         }
     }
 }

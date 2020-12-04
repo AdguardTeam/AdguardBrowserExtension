@@ -6,6 +6,7 @@ import { Actions } from '../Actions';
 import { StatsTable } from '../Stats/StatsTable';
 import { VIEW_STATES } from '../../constants';
 import { popupStore } from '../../stores/PopupStore';
+import { reactTranslator } from '../../../reactCommon/reactTranslator';
 
 import './tabs.pcss';
 
@@ -25,19 +26,19 @@ export const Tabs = observer(() => {
 
     return (
         <div className="tabs">
-            <div className="tabs-panel">
+            <div className="tabs__panel">
                 <Tab
-                    title="Actions"
+                    title={reactTranslator.translate('popup_tab_actions')}
                     active={store.viewState === VIEW_STATES.ACTIONS}
                     onClick={handleTabClick(VIEW_STATES.ACTIONS)}
                 />
                 <Tab
-                    title="Statistics"
+                    title={reactTranslator.translate('popup_tab_statistics')}
                     active={store.viewState === VIEW_STATES.STATS}
                     onClick={handleTabClick(VIEW_STATES.STATS)}
                 />
             </div>
-            <div className="tab-content">{tabContent}</div>
+            <div className="tabs__content">{tabContent}</div>
         </div>
     );
 });
