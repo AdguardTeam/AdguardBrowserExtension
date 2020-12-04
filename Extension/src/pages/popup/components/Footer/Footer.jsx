@@ -25,7 +25,7 @@ export const Footer = observer(() => {
                 >
                     <Icon
                         id="#apple"
-                        extraClassnames="footer__icon"
+                        className="footer__icon"
                     />
                 </a>
                 <a
@@ -36,7 +36,7 @@ export const Footer = observer(() => {
                 >
                     <Icon
                         id="#android"
-                        extraClassnames="footer__icon"
+                        className="footer__icon"
                     />
                 </a>
             </div>

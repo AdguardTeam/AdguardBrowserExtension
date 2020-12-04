@@ -31,7 +31,7 @@ export const Header = observer(() => {
             <div className="popup-header__logo">
                 <Icon
                     id="#logo"
-                    extraClassnames="icon--logo"
+                    className="icon--logo"
                 />
             </div>
             <div className="popup-header__buttons">
@@ -44,7 +44,7 @@ export const Header = observer(() => {
                     >
                         <Icon
                             id="#pause"
-                            extraClassnames="icon--button"
+                            className="icon--button"
                         />
                     </button>
                 )}
@@ -57,7 +57,7 @@ export const Header = observer(() => {
                     >
                         <Icon
                             id="start"
-                            extraClassnames="icon--button"
+                            className="icon--button"
                         />
                     </button>
                 )}
@@ -68,7 +68,7 @@ export const Header = observer(() => {
                 >
                     <Icon
                         id="#settings"
-                        extraClassnames="icon--button"
+                        className="icon--button"
                     />
                 </button>
             </div>

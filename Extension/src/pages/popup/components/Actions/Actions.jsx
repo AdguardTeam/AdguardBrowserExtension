@@ -45,7 +45,7 @@ export const Actions = observer(() => {
             >
                 <Icon
                     id="#block-ad"
-                    extraClassnames="icon--action"
+                    className="icon--action"
                 />
                 <div className="action-title">
                     {reactTranslator.translate('popup_block_site_ads')}
@@ -57,7 +57,7 @@ export const Actions = observer(() => {
             >
                 <Icon
                     id="#sandwich"
-                    extraClassnames="icon--action"
+                    className="icon--action"
                 />
                 <div className="action-title">
                     {reactTranslator.translate('popup_open_filtering_log')}
@@ -69,7 +69,7 @@ export const Actions = observer(() => {
             >
                 <Icon
                     id="#thumb-down"
-                    extraClassnames="icon--action"
+                    className="icon--action"
                 />
                 <div className="action-title">
                     {reactTranslator.translate('popup_abuse_site')}
@@ -81,7 +81,7 @@ export const Actions = observer(() => {
             >
                 <Icon
                     id="#shield"
-                    extraClassnames="icon--action"
+                    className="icon--action"
                 />
                 <div className="action-title">
                     {reactTranslator.translate('popup_security_report')}
