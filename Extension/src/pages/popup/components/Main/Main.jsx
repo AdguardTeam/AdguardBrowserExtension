@@ -55,12 +55,12 @@ export const Main = observer(() => {
                 )}
                 <div className="main__stats">
                     <div className="main__total-blocked-tab">
-                        {reactTranslator.translate('popup_tab_blocked', {
+                        {reactTranslator.translate('popup_tab_blocked_count', {
                             num: store.totalBlockedTab.toLocaleString(),
                         })}
                     </div>
                     <div className="main__total-blocked-all">
-                        {reactTranslator.translate('popup_tab_blocked_all', {
+                        {reactTranslator.translate('popup_tab_blocked_all_count', {
                             num: store.totalBlocked.toLocaleString(),
                         })}
                     </div>

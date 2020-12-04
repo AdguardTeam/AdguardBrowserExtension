@@ -5,6 +5,7 @@ import cs from 'classnames';
 import { messenger } from '../../../services/messenger';
 import { popupStore } from '../../stores/PopupStore';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
+import { Icon } from '../ui/Icon';
 
 import './actions.pcss';
 
@@ -42,9 +43,10 @@ export const Actions = observer(() => {
                 className={actionChangingClassname}
                 onClick={handleBlockAds}
             >
-                <svg className="icon icon--action">
-                    <use xlinkHref="#block-ad" />
-                </svg>
+                <Icon
+                    id="#block-ad"
+                    extraClassnames="icon--action"
+                />
                 <div className="action-title">
                     {reactTranslator.translate('popup_block_site_ads')}
                 </div>
@@ -53,9 +55,10 @@ export const Actions = observer(() => {
                 className="action"
                 onClick={handleOpenFilteringLog}
             >
-                <svg className="icon icon--action">
-                    <use xlinkHref="#sandwich" />
-                </svg>
+                <Icon
+                    id="#sandwich"
+                    extraClassnames="icon--action"
+                />
                 <div className="action-title">
                     {reactTranslator.translate('popup_open_filtering_log')}
                 </div>
@@ -64,9 +67,10 @@ export const Actions = observer(() => {
                 className={actionChangingClassname}
                 onClick={handleAbuseSite}
             >
-                <svg className="icon icon--action">
-                    <use xlinkHref="#thumb-down" />
-                </svg>
+                <Icon
+                    id="#thumb-down"
+                    extraClassnames="icon--action"
+                />
                 <div className="action-title">
                     {reactTranslator.translate('popup_abuse_site')}
                 </div>
@@ -75,9 +79,10 @@ export const Actions = observer(() => {
                 className={actionChangingClassname}
                 onClick={handleCheckSiteSecurity}
             >
-                <svg className="icon icon--action">
-                    <use xlinkHref="#shield" />
-                </svg>
+                <Icon
+                    id="#shield"
+                    extraClassnames="icon--action"
+                />
                 <div className="action-title">
                     {reactTranslator.translate('popup_security_report')}
                 </div>

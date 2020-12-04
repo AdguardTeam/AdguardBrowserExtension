@@ -12,15 +12,15 @@ export const MainContainer = observer(() => {
     const store = useContext(popupStore);
 
     const contentMap = {
-        [VIEW_STATES.ACTIONS]: <Main />,
-        [VIEW_STATES.STATS]: <StatsChart />,
+        [VIEW_STATES.ACTIONS]: Main,
+        [VIEW_STATES.STATS]: StatsChart,
     };
 
-    const content = contentMap[store.viewState];
+    const Content = contentMap[store.viewState];
 
     return (
         <div className="main-container">
-            {content}
+            <Content />
         </div>
     );
 });

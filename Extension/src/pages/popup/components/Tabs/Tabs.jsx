@@ -14,11 +14,11 @@ export const Tabs = observer(() => {
     const store = useContext(popupStore);
 
     const contentMap = {
-        [VIEW_STATES.ACTIONS]: <Actions />,
-        [VIEW_STATES.STATS]: <StatsTable />,
+        [VIEW_STATES.ACTIONS]: Actions,
+        [VIEW_STATES.STATS]: StatsTable,
     };
 
-    const tabContent = contentMap[store.viewState];
+    const TabContent = contentMap[store.viewState];
 
     const handleTabClick = (viewState) => () => {
         store.setViewState(viewState);
@@ -38,7 +38,9 @@ export const Tabs = observer(() => {
                     onClick={handleTabClick(VIEW_STATES.STATS)}
                 />
             </div>
-            <div className="tabs__content">{tabContent}</div>
+            <div className="tabs__content">
+                <TabContent />
+            </div>
         </div>
     );
 });

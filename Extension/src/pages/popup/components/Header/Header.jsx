@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 
 import { popupStore } from '../../stores/PopupStore';
 import { messenger } from '../../../services/messenger';
+import { Icon } from '../ui/Icon';
 
 import './header.pcss';
 
@@ -28,9 +29,10 @@ export const Header = observer(() => {
     return (
         <div className="popup-header">
             <div className="popup-header__logo">
-                <svg className="icon icon--logo">
-                    <use xlinkHref="#logo" />
-                </svg>
+                <Icon
+                    id="#logo"
+                    extraClassnames="icon--logo"
+                />
             </div>
             <div className="popup-header__buttons">
                 {!applicationFilteringDisabled
@@ -40,9 +42,10 @@ export const Header = observer(() => {
                         type="button"
                         onClick={handlePauseClick}
                     >
-                        <svg className="icon icon--button">
-                            <use xlinkHref="#pause" />
-                        </svg>
+                        <Icon
+                            id="#pause"
+                            extraClassnames="icon--button"
+                        />
                     </button>
                 )}
                 {applicationFilteringDisabled
@@ -52,9 +55,10 @@ export const Header = observer(() => {
                         type="button"
                         onClick={handleEnableClick}
                     >
-                        <svg className="icon icon--button">
-                            <use xlinkHref="#start" />
-                        </svg>
+                        <Icon
+                            id="start"
+                            extraClassnames="icon--button"
+                        />
                     </button>
                 )}
                 <button
@@ -62,9 +66,10 @@ export const Header = observer(() => {
                     type="button"
                     onClick={handleSettingsClick}
                 >
-                    <svg className="icon icon--button">
-                        <use xlinkHref="#settings" />
-                    </svg>
+                    <Icon
+                        id="#settings"
+                        extraClassnames="icon--button"
+                    />
                 </button>
             </div>
         </div>
