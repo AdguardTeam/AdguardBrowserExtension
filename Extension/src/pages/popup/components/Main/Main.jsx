@@ -39,8 +39,6 @@ export const Main = observer(() => {
 
     const switcher = switchersMap[store.popupState];
 
-    console.log(store);
-
     return (
         <div className={`main main--${switcher.mode}`}>
             <div className="main__header">
@@ -58,12 +56,12 @@ export const Main = observer(() => {
                 <div className="main__stats">
                     <div className="main__total-blocked-tab">
                         {reactTranslator.translate('popup_tab_blocked', {
-                            value: store.totalBlockedTab.toLocaleString(),
+                            num: store.totalBlockedTab.toLocaleString(),
                         })}
                     </div>
                     <div className="main__total-blocked-all">
                         {reactTranslator.translate('popup_tab_blocked_all', {
-                            value: store.totalBlocked.toLocaleString(),
+                            num: store.totalBlocked.toLocaleString(),
                         })}
                     </div>
                 </div>
