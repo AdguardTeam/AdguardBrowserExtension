@@ -1,6 +1,6 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
-import { toJS } from 'mobx';
+import classnames from 'classnames';
 
 import { popupStore } from '../../stores/PopupStore';
 import { messenger } from '../../../services/messenger';
@@ -10,7 +10,7 @@ import './notification.pcss';
 export const PromoNotification = observer(() => {
     const store = useContext(popupStore);
 
-    console.log(toJS(store.promoNotification));
+    const [notificationOnClose, setNotificationOnClose] = useState(false);
 
     // schedule notification removal
     useEffect(() => {
@@ -23,9 +23,14 @@ export const PromoNotification = observer(() => {
         return null;
     }
 
+    const closeTimeoutMs = 300;
+
     const handleNotificationClose = (e) => {
-        e.preventDefault();
-        store.closePromoNotification();
+        setNotificationOnClose(true);
+        setTimeout(() => {
+            e.preventDefault();
+            store.closePromoNotification();
+        }, closeTimeoutMs);
     };
 
     const handleNotificationClick = (e) => {
@@ -35,8 +40,12 @@ export const PromoNotification = observer(() => {
 
     const { text } = store.promoNotification;
 
+    const notificationClassnames = classnames('notification', {
+        'notification--close': notificationOnClose,
+    });
+
     return (
-        <div className="notification">
+        <div className={notificationClassnames}>
             <bitton className="notification__close" onClick={handleNotificationClose} />
             <div className="notification__content">
                 {text.title
