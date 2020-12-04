@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import { popupStore } from '../../stores/PopupStore';
 import { messenger } from '../../../services/messenger';
 
-import './notification.pcss';
+import './promo-notification.pcss';
 
 export const PromoNotification = observer(() => {
     const store = useContext(popupStore);
@@ -40,21 +40,21 @@ export const PromoNotification = observer(() => {
 
     const { text } = store.promoNotification;
 
-    const notificationClassnames = classnames('notification', {
-        'notification--close': notificationOnClose,
+    const notificationClassnames = classnames('promo-notification', {
+        'promo-notification--close': notificationOnClose,
     });
 
     return (
         <div className={notificationClassnames}>
-            <bitton className="notification__close" onClick={handleNotificationClose} />
-            <div className="notification__content">
+            <bitton className="promo-notification__close" onClick={handleNotificationClose} />
+            <div className="promo-notification__content">
                 {text.title
-                        && <div className="notification__title">{text.title}</div>}
+                        && <div className="promo-notification__title">{text.title}</div>}
                 {text.btn
                     && (
                         <button
                             type="button"
-                            className="notification__btn"
+                            className="promo-notification__btn"
                             onClick={handleNotificationClick}
                         >
                             {text.btn}
