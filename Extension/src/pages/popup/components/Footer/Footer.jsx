@@ -10,12 +10,15 @@ import './footer.pcss';
 export const Footer = observer(() => {
     const store = useContext(popupStore);
 
+    const LINK_TO_IOS = 'https://adguard.com/forward.html?action=ios_about&from=popup&app=browser_extension';
+    const LINK_TO_ANDROID = 'https://adguard.com/forward.html?action=android_about&from=popup&app=browser_extension';
+
     let footerContent = (
         <>
             <div className="footer__text">{reactTranslator.translate('popup_adguard_footer_title')}</div>
             <div className="footer__platforms">
                 <a
-                    href="https://adguard.com/forward.html?action=ios_about&from=popup&app=browser_extension"
+                    href={LINK_TO_IOS}
                     target="_blank"
                     rel="noreferrer"
                     className="footer__link"
@@ -26,7 +29,7 @@ export const Footer = observer(() => {
                     />
                 </a>
                 <a
-                    href="https://adguard.com/forward.html?action=android_about&from=popup&app=browser_extension"
+                    href={LINK_TO_ANDROID}
                     target="_blank"
                     rel="noreferrer"
                     className="footer__link"
