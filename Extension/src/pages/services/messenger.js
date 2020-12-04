@@ -3,6 +3,8 @@ import browser from 'webextension-polyfill';
 import { log } from '../../background/utils/log';
 
 class Messenger {
+    onMessage = browser.runtime.onMessage;
+
     // eslint-disable-next-line class-methods-use-this
     async sendMessage(type, data) {
         log.debug('Request type:', type);
@@ -160,6 +162,51 @@ class Messenger {
         // TODO use common message types in the constants
         const type = 'removeAntiBannerFilter';
         await this.sendMessage(type, { filterId });
+    }
+
+    async getTabInfoForPopup(tabId) {
+        const type = 'getTabInfoForPopup';
+        return this.sendMessage(type, { tabId });
+    }
+
+    async changeApplicationFilteringDisabled(state) {
+        const type = 'changeApplicationFilteringDisabled';
+        return this.sendMessage(type, { state });
+    }
+
+    async openSettingsTab() {
+        const type = 'openSettingsTab';
+        return this.sendMessage(type);
+    }
+
+    async openAssistant() {
+        const type = 'openAssistant';
+        return this.sendMessage(type);
+    }
+
+    async openAbuseSite(url) {
+        const type = 'openAbuseTab';
+        return this.sendMessage(type, { url });
+    }
+
+    async checkSiteSecurity() {
+        const type = 'openSiteReportTab';
+        return this.sendMessage(type);
+    }
+
+    async removeAllowlistDomain() {
+        const type = 'removeAllowlistDomainPopup';
+        return this.sendMessage(type);
+    }
+
+    async addAllowlistDomain(url) {
+        const type = 'addAllowlistDomainPopup';
+        return this.sendMessage(type, { url });
+    }
+
+    async getStatisticsData() {
+        const type = 'getStatisticsData';
+        return this.sendMessage(type);
     }
 }
 

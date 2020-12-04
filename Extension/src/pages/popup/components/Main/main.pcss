@@ -1,0 +1,168 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    height: 300px;
+    color: white;
+
+    &__cta-link {
+        text-align: center;
+        font-size: 12px;
+        opacity: 0.6;
+    }
+
+    &__total-blocked-tab {
+        font-weight: bold;
+        text-align: center;
+        font-size: 24px;
+    }
+
+    &__total-blocked-all {
+        text-align: center;
+        font-size: 16px;
+    }
+
+    .current-site {
+        font-size: 16px;
+        max-width: 260px;
+        text-align: center;
+        margin: 0 auto;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-weight: bold;
+    }
+
+    .current-status {
+        font-size: 14px;
+        text-align: center;
+    }
+
+    &--allowlisted {
+        background-image: var(--allowlisted-bg);
+
+        & .switcher {
+            opacity: 1;
+
+            &__btn {
+                right: 32px;
+
+                &:before {
+                    background-image: var(--allowlisted-btn);
+                }
+
+                &:after {
+                    background-size: 15px 15px;
+                    background-position: 13px 14px;
+                    background-image: url(../../../assets/icons/cross-white.svg);
+                }
+            }
+        }
+    }
+
+    &--disabled {
+        background-image: var(--disabled-bg);
+
+        & .switcher {
+            opacity: 1;
+
+            &__center {
+                opacity: 0;
+            }
+
+            &__btn {
+                right: 18px;
+
+                &:before {
+                    background: var(--disabled-btn);
+                }
+
+                &:after {
+                    background-image: url(../../../assets/icons/play.svg);
+                    background-size: 16px 18px;
+                    background-position: 15px 50%;
+                }
+            }
+        }
+    }
+
+    &--enabled,
+    &--unavailable {
+        background-image: var(--enabled-bg);
+
+        & .switcher {
+            opacity: 1;
+        }
+    }
+
+    &--unavailable {
+        & .switcher {
+            pointer-events: none;
+
+            &__center {
+                opacity: 0;
+            }
+
+            &__btn {
+                right: 18px;
+            }
+        }
+    }
+}
+
+.switcher {
+    opacity: 0;
+    position: relative;
+    cursor: pointer;
+
+    &:hover {
+        & .switcher__btn {
+            transform: scale(1.03);
+        }
+    }
+
+    &__center {
+        width: 74px;
+        height: 26px;
+        border-radius: 100px;
+        background-color: var(--switch-field);
+        box-shadow: var(--switch-field-shadow);
+    }
+
+    &__btn {
+        position: absolute;
+        width: 48px;
+        height: 48px;
+        right: 6px;
+        top: -11px;
+        border-radius: 50%;
+        box-shadow: var(--switch-btn-shadow);
+        background-image: var(--switch-ring);
+        padding: 4px;
+        cursor: pointer;
+        transition: 0.3s ease transform;
+
+        &:before {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-image: var(--enabled-btn);
+        }
+
+        &:after {
+            content: '';
+            width: 44px;
+            height: 44px;
+            display: block;
+            position: absolute;
+            left: 3px;
+            top: 3px;
+            background-repeat: no-repeat;
+            background-position: 50% 50%;
+            background-image: url(../../../assets/icons/checkmark.svg);
+        }
+    }
+}

@@ -393,28 +393,41 @@ const init = () => {
                 uiService.showAlertMessagePopup(message.title, message.text);
                 break;
             // Popup methods
-            case 'addWhitelistDomainPopup': {
+            case 'addAllowlistDomainPopup': {
                 const tab = await tabsApi.getActive();
                 if (tab) {
-                    uiService.whitelistTab(tab);
+                    uiService.allowlistTab(tab);
                 }
                 break;
             }
-            case 'removeWhitelistDomainPopup': {
+            case 'removeAllowlistDomainPopup': {
                 const tab = await tabsApi.getActive();
                 if (tab) {
-                    uiService.unWhitelistTab(tab);
+                    uiService.unAllowlistTab(tab);
                 }
                 break;
             }
-            case 'changeApplicationFilteringDisabled':
-                uiService.changeApplicationFilteringDisabled(message.disabled);
+            case 'changeApplicationFilteringDisabled': {
+                const { state } = data;
+                uiService.changeApplicationFilteringDisabled(state);
                 break;
-            case 'openSiteReportTab':
-                uiService.openSiteReportTab(message.url);
+            }
+            case 'openSiteReportTab': {
+                if (data) {
+                    const { url } = data;
+                    uiService.openSiteReportTab(url);
+                } else {
+                    uiService.openSiteReportTab(message.url);
+                }
                 break;
+            }
             case 'openAbuseTab':
-                uiService.openAbuseTab(message.url);
+                if (data) {
+                    const { url } = data;
+                    uiService.openAbuseTab(url);
+                } else {
+                    uiService.openAbuseTab(message.url);
+                }
                 break;
             case 'openSettingsTab':
                 uiService.openSettingsTab();
@@ -423,7 +436,7 @@ const init = () => {
                 uiService.openAssistant();
                 break;
             case 'getTabInfoForPopup': {
-                const tab = await tabsApi.getActive();
+                const tab = await tabsApi.getActive(data.tabId);
                 if (tab) {
                     const frameInfo = frames.getFrameInfo(tab);
                     return {

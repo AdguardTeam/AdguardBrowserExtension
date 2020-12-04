@@ -1,0 +1,37 @@
+.actions {
+    height: 168px;
+    padding-top: 13px;
+    padding-bottom: 13px;
+    width: 100%;
+
+    .action {
+        display: flex;
+        padding: 9px 20px;
+        cursor: pointer;
+        transition: 0.3s ease background-color;
+        max-height: 35px;
+
+        &:hover {
+            background-color: var(--gray100);
+        }
+
+        &_disabled {
+            cursor: initial;
+            opacity: 0.3;
+
+            &:hover {
+                background-color: inherit;
+            }
+        }
+
+        .action-title {
+            padding-left: 15px;
+            font-size: 13px;
+            color: var(--gray900);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+    }
+}

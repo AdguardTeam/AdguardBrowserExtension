@@ -58,13 +58,13 @@ export const uiService = (function () {
         'context_site_filtering_on': async function () {
             const tab = await tabsApi.getActive();
             if (tab) {
-                unWhitelistTab(tab);
+                unAllowlistTab(tab);
             }
         },
         'context_site_filtering_off': async function () {
             const tab = await tabsApi.getActive();
             if (tab) {
-                whitelistTab(tab);
+                allowlistTab(tab);
             }
         },
         'context_enable_protection': function () {
@@ -143,7 +143,7 @@ export const uiService = (function () {
 
                 const tabInfo = frames.getFrameInfo(tab);
                 disabled = tabInfo.applicationFilteringDisabled;
-                disabled = disabled || tabInfo.documentWhitelisted;
+                disabled = disabled || tabInfo.documentAllowlisted;
 
                 if (!disabled && settings.showPageStatistic()) {
                     blocked = tabInfo.totalBlockedTab.toString();
@@ -273,10 +273,10 @@ export const uiService = (function () {
             addMenu('context_open_settings');
             addMenu('context_update_antibanner_filters');
         } else {
-            if (tabInfo.documentWhitelisted && !tabInfo.userWhitelisted) {
+            if (tabInfo.documentAllowlisted && !tabInfo.userAllowlisted) {
                 addMenu('context_site_exception');
             } else if (tabInfo.canAddRemoveRule) {
-                if (tabInfo.documentWhitelisted) {
+                if (tabInfo.documentAllowlisted) {
                     addMenu('context_site_filtering_on');
                 } else {
                     addMenu('context_site_filtering_off');
@@ -284,7 +284,7 @@ export const uiService = (function () {
             }
             addSeparator();
 
-            if (!tabInfo.documentWhitelisted) {
+            if (!tabInfo.documentAllowlisted) {
                 addMenu('context_block_site_ads');
                 addMenu('context_block_site_element', { contexts: ['image', 'video', 'audio'] });
             }
@@ -321,10 +321,10 @@ export const uiService = (function () {
                 checked: false,
                 checkable: true,
             });
-            if (tabInfo.documentWhitelisted && !tabInfo.userWhitelisted) {
+            if (tabInfo.documentAllowlisted && !tabInfo.userAllowlisted) {
                 addMenu('popup_in_white_list_android');
             } else if (tabInfo.canAddRemoveRule) {
-                if (tabInfo.documentWhitelisted) {
+                if (tabInfo.documentAllowlisted) {
                     addMenu('popup_site_filtering_state', {
                         action: 'context_site_filtering_on',
                         checkable: true,
@@ -339,7 +339,7 @@ export const uiService = (function () {
                 }
             }
 
-            if (!tabInfo.documentWhitelisted) {
+            if (!tabInfo.documentAllowlisted) {
                 addMenu('popup_block_site_ads_android', { action: 'context_block_site_ads' });
             }
             addMenu('popup_open_log_android', { action: 'context_open_log' });
@@ -761,14 +761,14 @@ export const uiService = (function () {
         tabsApi.reload(tab.tabId);
     };
 
-    var whitelistTab = function (tab) {
+    var allowlistTab = function (tab) {
         const tabInfo = frames.getFrameInfo(tab);
         whitelist.whitelistUrl(tabInfo.url);
         updateTabIconAndContextMenu(tab, true);
         tabsApi.reload(tab.tabId);
     };
 
-    var unWhitelistTab = function (tab) {
+    var unAllowlistTab = function (tab) {
         const tabInfo = frames.getFrameInfo(tab);
         userrules.unWhitelistFrame(tabInfo);
         updateTabIconAndContextMenu(tab, true);
@@ -990,8 +990,8 @@ export const uiService = (function () {
 
         updateTabIconAndContextMenu,
 
-        whitelistTab,
-        unWhitelistTab,
+        allowlistTab,
+        unAllowlistTab,
 
         changeApplicationFilteringDisabled,
         checkFiltersUpdates,

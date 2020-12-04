@@ -1,0 +1,42 @@
+.chart {
+    & .tick text {
+        fill: var(--gray300);
+    }
+
+    & .c3-line-data1 {
+        stroke-width: 4px;
+    }
+
+    & .c3-axis {
+        & line,
+        & path {
+            stroke: rgba(0, 0, 0, 0);
+        }
+    }
+
+    &__tooltip {
+        font-size: 13px;
+        position: relative;
+        padding: 10px 20px;
+        font-weight: 600;
+        color: #fff;
+        border-radius: 8px;
+        background-color: var(--swamp);
+        filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
+    }
+
+    &__tooltip:before {
+        content: "";
+        top: 99%;
+        left: 50%;
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+        border: solid transparent;
+        border-color: rgba(255, 255, 255, 0);
+        border-top-color: var(--swamp);
+        border-width: 8px;
+        margin-left: -8px;
+    }
+}
