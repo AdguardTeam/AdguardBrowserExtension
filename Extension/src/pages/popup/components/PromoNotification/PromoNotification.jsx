@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { observer } from 'mobx-react';
+import { toJS } from 'mobx';
 
 import { popupStore } from '../../stores/PopupStore';
 import { messenger } from '../../../services/messenger';
@@ -8,6 +9,8 @@ import './notification.pcss';
 
 export const PromoNotification = observer(() => {
     const store = useContext(popupStore);
+
+    console.log(toJS(store.promoNotification));
 
     // schedule notification removal
     useEffect(() => {
