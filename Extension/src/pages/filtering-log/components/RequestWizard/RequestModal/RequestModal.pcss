@@ -25,7 +25,6 @@
         display: flex;
         align-items: center;
         padding: 32px 38px 32px;
-        position: fixed;
         width: 100%;
         background: var(--white);
 
@@ -35,7 +34,13 @@
     }
 
     &__content {
-        margin: 80px 0 0;
+        overflow: auto;
+        max-height: 100%;
+        background: linear-gradient(white 30%, rgba(255, 255, 255, 0)), radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, .2), rgba(0, 0, 0, 0));
+        background-repeat: no-repeat;
+        background-color: white;
+        background-size: 100% 40px, 100% 14px;
+        background-attachment: local, scroll;
     }
 
     &__header {

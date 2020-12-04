@@ -228,10 +228,10 @@ const RequestInfo = observer(() => {
             <div className="request-modal__content">
                 {renderedInfo}
                 {renderImageIfNecessary(selectedEvent)}
-            </div>
-            <div className="request-modal__controls">
-                {renderOpenInNewTab(selectedEvent)}
-                {renderBlockRequest(selectedEvent)}
+                <div className="request-modal__controls">
+                    {renderOpenInNewTab(selectedEvent)}
+                    {renderBlockRequest(selectedEvent)}
+                </div>
             </div>
         </>
     );
