@@ -62,8 +62,8 @@ export const notifications = (function () {
         },
         text: '',
         url: 'https://adguard.com/forward.html?action=ny2020_notify&from=popup&app=browser_extension',
-        from: '4 December 2020 00:00:00',
-        to: '1 January 2021 00:00:00',
+        from: '24 December 2019 00:00:00',
+        to: '1 January 2020 00:00:00',
         type: 'animated',
         get icons() {
             return lazyGet(newYearNotification, 'icons', () => ({
@@ -197,23 +197,22 @@ export const notifications = (function () {
      */
     const getCurrentNotification = function () {
         const currentTime = new Date().getTime();
-        // const timeSinceLastNotification = currentTime - getLastNotificationTime();
-        // if (timeSinceLastNotification < minPeriod) {
-        //     // Just a check to not show the notification too often
-        //     return null;
-        // }
+        const timeSinceLastNotification = currentTime - getLastNotificationTime();
+        if (timeSinceLastNotification < minPeriod) {
+            // Just a check to not show the notification too often
+            return null;
+        }
 
         // Check not often than once in 10 minutes
-        // const timeSinceLastCheck = currentTime - notificationCheckTime;
-        // if (notificationCheckTime > 0 && timeSinceLastCheck <= checkTimeoutMs) {
-        //     return currentNotification;
-        // }
+        const timeSinceLastCheck = currentTime - notificationCheckTime;
+        if (notificationCheckTime > 0 && timeSinceLastCheck <= checkTimeoutMs) {
+            return currentNotification;
+        }
         // Update the last notification check time
-        // notificationCheckTime = currentTime;
+        notificationCheckTime = currentTime;
 
         const notificationsKeys = Object.keys(notifications);
-        // const viewedNotifications = localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
-        const viewedNotifications = [];
+        const viewedNotifications = localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
 
         for (let i = 0; i < notificationsKeys.length; i += 1) {
             const notificationKey = notificationsKeys[i];
