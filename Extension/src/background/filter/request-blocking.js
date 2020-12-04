@@ -482,7 +482,7 @@ export const webRequestService = (function () {
      * @return {object} Request rule if suitable by its own type and request type or null
      */
     const postProcessRequest = function (tab, requestUrl, referrerUrl, requestType, requestRule) {
-        if (requestRule && !requestRule.whitelistRule) {
+        if (requestRule && !requestRule.isWhitelist()) {
             const isRequestBlockingRule = isRequestBlockedByRule(requestRule);
             const isReplaceRule = requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Replace);
 
