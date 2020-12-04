@@ -1,0 +1,32 @@
+.notification {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 55px;
+    padding-top: 15px;
+
+    &__close {
+        cursor: pointer;
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        top: 0;
+        right: 10px;
+        background-size: 10px;
+        background-image: url(../../../assets/icons/cross.svg);
+    }
+
+    &__content {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        justify-content: center;
+        background-color: var(--black);
+    }
+
+    &__title,
+    &__btn {
+        color: var(--white);
+    }
+}

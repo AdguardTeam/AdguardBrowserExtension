@@ -4,6 +4,8 @@ import { observer } from 'mobx-react';
 import { popupStore } from '../../stores/PopupStore';
 import { messenger } from '../../../services/messenger';
 
+import './notification.pcss';
+
 export const PromoNotification = observer(() => {
     const store = useContext(popupStore);
 
@@ -31,16 +33,16 @@ export const PromoNotification = observer(() => {
     const { text } = store.promoNotification;
 
     return (
-        <div className="promo-notification">
-            <div className="promo-notification__close" onClick={handleNotificationClose} />
-            <div className="promo-notification__content">
+        <div className="notification">
+            <bitton className="notification__close" onClick={handleNotificationClose} />
+            <div className="notification__content">
                 {text.title
-                        && <div className="promo-notification__title">{text.title}</div>}
+                        && <div className="notification__title">{text.title}</div>}
                 {text.btn
                     && (
                         <button
                             type="button"
-                            className="promo-notification__btn"
+                            className="notification__btn"
                             onClick={handleNotificationClick}
                         >
                             {text.btn}
