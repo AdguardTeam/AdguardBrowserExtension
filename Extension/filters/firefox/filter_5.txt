@@ -1,8 +1,8 @@
-! Checksum: UzzMD52YBKsOKEISVK677Q
+! Checksum: swzBWNgNEhC2MVixBDAgTw
 ! Title: AdGuard Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.0.76
-! TimeUpdated: 2020-10-12T19:32:51+03:00
+! Version: 2.0.0.77
+! TimeUpdated: 2020-12-04T21:31:36+03:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -267,6 +267,7 @@
 !
 !################## For advertisement ##################
 !
+! VAST video ads
 ! https://github.com/AdguardTeam/AdguardFilters/issues/64754
 ||video-weaver.*.hls.ttvnw.net/v*/playlist/*.m3u8$replace=/#EXT-X-DATERANGE:ID="stitched-ad[\s\S]*(#EXT-X-PROGRAM-DATE-TIME)(?![\s\S]*?#EXTINF:\d\.\d+\,live)[\s\S]*|(#EXT-X-DATERANGE:ID="stitched-ad[\s\S]*?(#EXT-X-PROGRAM-DATE-TIME)([\s\S]*?(#EXTINF:\d\.\d+\,live)))/\$5/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/63128
