@@ -1,8 +1,8 @@
-! Checksum: 3KgjT821YoeReOiw7mCxFw
+! Checksum: 8duNoeH2E9eju4AuFdQyJg
 ! Title: AdGuard Dutch filter (Optimized)
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.0.98
-! TimeUpdated: 2020-10-30T00:31:55+03:00
+! Version: 2.0.0.99
+! TimeUpdated: 2020-12-01T12:06:44+03:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -1366,6 +1366,7 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 ||v.fwmrm.net/ad/g/1?$replace=/(tv\.freewheel\.SDK\._instanceQueue\['Context_[\s\S]*?'\][\s\S]*?\.requestComplete\(\{)[\s\S]*\}\);/\$1\}\);/,domain=q2.be,important
 ||tv2.no/*/homadConfig*.json$replace=/"enabled": true\,/"enabled":false\,/i,important
 ||svonm.com/*config.json$replace=/"enabled": true\,/"enabled":false\,/i,important
+||widget.vpnnederland.nl/VPNNederland-widget.js$domain=nzbserver.com
 zeelandnet.nl##.article-bnr-first
 gfcnieuws.com###secondary > section.widget:not(.widget_search)
 gfcnieuws.com###home-banners
