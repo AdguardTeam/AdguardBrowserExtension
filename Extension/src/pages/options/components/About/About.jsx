@@ -26,7 +26,11 @@ const About = observer(() => {
 
     return (
         <>
-            <h2 className="title">{reactTranslator.translate('options_about')}</h2>
+            <div className="title__container">
+                <h2 className="title">
+                    {reactTranslator.translate('options_about')}
+                </h2>
+            </div>
             <div className="about">
                 <div className="logo about__logo" />
                 <div className="about__version">
