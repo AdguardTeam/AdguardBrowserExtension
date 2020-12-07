@@ -4,6 +4,7 @@
         padding: 32px 32px 40px;
         display: flex;
         justify-content: center;
+        align-items: center;
 
         @media (min-width: 640px) {
             padding: 0 32px;
@@ -43,11 +44,11 @@
 
     &__nav {
         color: var(--white);
-        height: 140px;
+        min-height: 140px;
         background-color: var(--gray-base);
 
         @media (min-width: 640px) {
-            height: 96px;
+            min-height: 96px;
         }
     }
 
@@ -93,5 +94,10 @@
         font-size: 16px;
         color: var(--white);
         line-height: 22px;
+        margin-bottom: 24px;
+
+        @media (min-width: 640px) {
+            margin: 0;
+        }
     }
 }
