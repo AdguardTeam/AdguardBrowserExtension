@@ -1,4 +1,4 @@
-/*! extended-css - v1.3.4 - Thu Nov 12 2020
+/*! extended-css - v1.3.6 - Fri Nov 27 2020
 * https://github.com/AdguardTeam/ExtendedCss
 * Copyright (c) 2020 AdGuard. Licensed LGPL-3.0
 */
@@ -2991,20 +2991,6 @@ var ExtendedCss = (function () {
 
       return value;
     };
-    /**
-     * Unlike Safari, Chrome and FF doublequotes url() property value.
-     * I suppose it would be better to leave it unquoted.
-     */
-
-
-    var removeUrlQuotes = function removeUrlQuotes(value) {
-      if (typeof value !== 'string' || value.indexOf('url("') < 0) {
-        return value;
-      }
-
-      var re = /url\(\"(.*?)\"\)/g;
-      return value.replace(re, 'url($1)');
-    };
 
     var getComputedStyle = window.getComputedStyle.bind(window);
     var getMatchedCSSRules = useFallback ? window.getMatchedCSSRules.bind(window) : null;
@@ -3045,13 +3031,34 @@ var ExtendedCss = (function () {
         }
       }
 
-      value = removeUrlQuotes(value);
-
       if (propertyName === 'content') {
         value = removeContentQuotes(value);
       }
 
       return value;
+    };
+    /**
+     * Adds url parameter quotes for non-regex pattern
+     * @param {string} pattern
+     */
+
+
+    var addUrlQuotes = function addUrlQuotes(pattern) {
+      // for regex patterns
+      if (pattern[0] === '/' && pattern[pattern.length - 1] === '/' && pattern.indexOf('\\"') < 10) {
+        // e.g. /^url\\([a-z]{4}:[a-z]{5}/
+        // or /^url\\(data\\:\\image\\/gif;base64.+/
+        var re = /(\^)?url(\\)?\\\((\w|\[\w)/g;
+        return pattern.replace(re, '$1url$2\\\(\\"?$3');
+      } // for non-regex patterns
+
+
+      if (pattern.indexOf('url("') === -1) {
+        var _re = /url\((.*?)\)/g;
+        return pattern.replace(_re, 'url("$1")');
+      }
+
+      return pattern;
     };
     /**
      * Class that matches element style against the specified expression
@@ -3067,7 +3074,8 @@ var ExtendedCss = (function () {
       try {
         var index = propertyFilter.indexOf(':');
         this.propertyName = propertyFilter.substring(0, index).trim();
-        var pattern = propertyFilter.substring(index + 1).trim(); // Unescaping pattern
+        var pattern = propertyFilter.substring(index + 1).trim();
+        pattern = addUrlQuotes(pattern); // Unescaping pattern
         // For non-regex patterns, (,),[,] should be unescaped, because we require escaping them in filter rules.
         // For regex patterns, ",\ should be escaped, because we manually escape those in extended-css-selector.js.
 
