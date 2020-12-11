@@ -17,7 +17,7 @@
 
 import { LRUMap } from 'lru_map';
 import { localStorage } from '../storage';
-import { log } from './log';
+import { log } from '../../common/log';
 
 /**
  * Cache with maxCacheSize stored in local storage, which automatically clears less recently used entries

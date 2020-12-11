@@ -5,7 +5,7 @@ import { SettingsSection } from '../Settings/SettingsSection';
 import { SettingsSet } from '../Settings/SettingsSet';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
-import { log } from '../../../../background/utils/log';
+import { log } from '../../../../common/log';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
 import {
     DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN,

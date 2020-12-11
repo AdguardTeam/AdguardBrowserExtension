@@ -17,7 +17,7 @@
 
 import { antiBannerService } from './filter/antibanner';
 import { prefs } from './prefs';
-import { log } from './utils/log';
+import { log } from '../common/log';
 import { utils } from './utils/common';
 import { subscriptions } from './filter/filters/subscription';
 import { filtersUpdate } from './filter/filters/filters-update';

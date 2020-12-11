@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
+import { Icon } from '../../../common/components/ui/Icon';
 
 import './filter.pcss';
 
@@ -82,7 +83,9 @@ const Filter = ({
                 <a
                     className="filter__remove"
                     onClick={removeCustomFilter}
-                />
+                >
+                    <Icon id="#trash" classname="icon--trash" />
+                </a>
             );
         }
         return null;
@@ -103,7 +106,9 @@ const Filter = ({
                             href={homepage || customUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                        />
+                        >
+                            <Icon id="#link" classname="icon--link" />
+                        </a>
                         {renderRemoveButton()}
                     </div>
                     <div className="setting__inline-control">

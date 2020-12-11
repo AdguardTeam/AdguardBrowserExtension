@@ -17,7 +17,7 @@
 
 /* eslint-disable prefer-template */
 
-import { strings } from './strings';
+import { strings } from '../../common/strings';
 
 /**
  * Helper methods for parsing and extracting browser cookies from headers (both Set-Cookie and Cookie).

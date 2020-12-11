@@ -16,7 +16,7 @@
  */
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
-import { log } from '../utils/log';
+import { log } from '../../common/log';
 import { backgroundPage } from '../extension-api/background-page';
 import { RequestTypes } from '../utils/request-types';
 

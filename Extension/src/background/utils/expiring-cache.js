@@ -16,7 +16,7 @@
  */
 
 import { localStorage } from '../storage';
-import { log } from './log';
+import { log } from '../../common/log';
 
 export const ExpiringCache = (() => {
     /**

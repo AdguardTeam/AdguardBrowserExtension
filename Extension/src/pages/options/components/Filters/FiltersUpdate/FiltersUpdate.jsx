@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { reactTranslator } from '../../../../reactCommon/reactTranslator';
+import { Icon } from '../../../../common/components/ui/Icon';
 
 import './filters-update.pcss';
 
@@ -38,7 +39,9 @@ const FiltersUpdate = (props) => {
                 type="button"
                 onClick={handler}
                 className={`button filters-update__btn filters-update__btn--${buttonClass}`}
-            />
+            >
+                <Icon id="#reload" classname="icon--reload" />
+            </button>
         </div>
     );
 };

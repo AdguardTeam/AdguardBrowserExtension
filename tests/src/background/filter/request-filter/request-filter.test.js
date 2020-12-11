@@ -15,7 +15,7 @@ jest.mock('../../../../../Extension/src/background/filter/request-blocking', () 
     };
 });
 
-jest.mock('../../../../../Extension/src/background/utils/log');
+jest.mock('../../../../../Extension/src/common/log');
 
 const createRequestFilter = async (rulesText) => {
     const lists = [new TSUrlFilter.StringRuleList(1, rulesText, false, false)];

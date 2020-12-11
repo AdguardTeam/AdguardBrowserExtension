@@ -3,6 +3,7 @@ import React from 'react';
 import { FORUM_URL, WEBSITE_URL } from '../../../constants';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
 import { messenger } from '../../../services/messenger';
+import { Icon } from '../../../common/components/ui/Icon';
 
 import './footer.pcss';
 
@@ -21,7 +22,7 @@ const Footer = () => {
                         className="button button--rate"
                         onClick={messenger.openExtensionStore}
                     >
-                        <img id="thumbsup" className="button__img" src="../../../assets/images/thumbsup.svg" alt="" />
+                        <Icon id="#like" classname="icon--24 button__img" />
                         <label
                             htmlFor="thumbsup"
                             className="button__label button__label--rate"

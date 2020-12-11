@@ -65,7 +65,7 @@ export const startAssistant = () => {
                 }
 
                 assistant.start(selectedElement, (rules) => {
-                    contentPage.sendMessage({ type: addRuleCallbackName, ruleText: rules });
+                    contentPage.sendMessage({ type: addRuleCallbackName, data: { ruleText: rules } });
                 });
                 break;
             }

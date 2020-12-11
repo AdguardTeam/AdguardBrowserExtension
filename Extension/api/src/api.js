@@ -18,9 +18,9 @@
 import { backend } from '../../src/background/filter/filters/service-client';
 import { tabsApi } from '../../src/background/tabs/tabs-api';
 import { webRequestService } from '../../src/background/filter/request-blocking';
-import { whitelist } from '../../src/background/filter/whitelist';
+import { allowlist } from '../../src/background/filter/allowlist';
 import { subscriptions } from '../../src/background/filter/filters/subscription';
-import { log } from '../../src/background/utils/log';
+import { log } from '../../src/common/log';
 import { application } from '../../src/background/application';
 import { rulesStorage, localStorage } from '../../src/background/storage';
 import { listeners } from '../../src/background/notifier';
@@ -28,7 +28,7 @@ import { userrules } from '../../src/background/filter/userrules';
 import { webrequest } from '../../src/background/webrequest';
 import { requestSanitizer } from '../../src/background/filter/request-sanitizer';
 import { localeDetect } from '../../src/background/filter/services/locale-detect';
-import { contentMessageHandler } from '../../src/background/content-message-handler';
+import { messageHandler } from '../../src/background/message-handler';
 import { backgroundPage } from '../../src/background/extension-api/background-page';
 
 /**
@@ -97,13 +97,13 @@ export const adguardApi = (function () {
 
         let domains;
         if (configuration.blacklist) {
-            whitelist.changeDefaultWhitelistMode(false);
+            allowlist.changeDefaultAllowlistMode(false);
             domains = configuration.blacklist;
         } else {
-            whitelist.changeDefaultWhitelistMode(true);
+            allowlist.changeDefaultAllowlistMode(true);
             domains = configuration.whitelist;
         }
-        whitelist.updateWhitelistDomains(domains || []);
+        allowlist.updateAllowlistDomains(domains || []);
     }
 
     /**
@@ -269,7 +269,7 @@ export const adguardApi = (function () {
     webrequest.init();
     requestSanitizer.init();
     localeDetect.init();
-    contentMessageHandler.init();
+    messageHandler.init();
 
     const handleMessage = async (message) => {
         if (message.type === 'openAssistantInTab') {

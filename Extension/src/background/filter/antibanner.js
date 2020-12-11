@@ -23,7 +23,7 @@ import { subscriptions } from './filters/subscription';
 import { utils } from '../utils/common';
 import { settings } from '../settings/user-settings';
 import { filtersState } from './filters/filters-state';
-import { log } from '../utils/log';
+import { log } from '../../common/log';
 import { rulesStorage } from '../storage';
 import { filtersUpdate } from './filters/filters-update';
 import { engine } from './engine';
@@ -61,7 +61,8 @@ export const antiBannerService = (() => {
         listeners.UPDATE_FILTER_RULES,
         listeners.FILTER_ENABLE_DISABLE,
         listeners.FILTER_GROUP_ENABLE_DISABLE,
-        listeners.UPDATE_USER_FILTER_RULES,
+        listeners.ADD_RULES,
+        listeners.REMOVE_RULE,
     ];
 
     const isUpdateRequestFilterEvent = el => UPDATE_REQUEST_FILTER_EVENTS.indexOf(el.event) >= 0;
@@ -573,7 +574,6 @@ export const antiBannerService = (() => {
                 case listeners.REMOVE_RULE:
                 case listeners.UPDATE_FILTER_RULES:
                 case listeners.FILTER_ENABLE_DISABLE:
-                case listeners.UPDATE_USER_FILTER_RULES:
                     processFilterEvent(event, filter, rules);
                     break;
                 default: break;
@@ -635,10 +635,6 @@ export const antiBannerService = (() => {
         log.debug('Saving {0} rules to filter {1}', converted.length, filterId);
 
         await rulesStorage.write(filterId, converted);
-
-        if (Number.parseInt(filterId, 10) === utils.filters.USER_FILTER_ID) {
-            listeners.notifyListeners(listeners.UPDATE_USER_FILTER_RULES, getRequestFilterInfo());
-        }
     }
 
     /**

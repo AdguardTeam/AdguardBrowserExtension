@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import { popupStore } from '../../../stores/PopupStore';
 import { TIME_RANGES } from '../../../constants';
 import { reactTranslator } from '../../../../reactCommon/reactTranslator';
+import { Icon } from '../../../../common/components/ui/Icon';
 
 export const Filters = observer(() => {
     const store = useContext(popupStore);
@@ -49,42 +50,48 @@ export const Filters = observer(() => {
 
     return (
         <div className="stats-chart__filters">
-            <select
-                className="stats-chart__select"
-                name="blocked-type"
-                id="blocked-type"
-                onChange={handleBlockedTypeChange}
-                value={store.selectedBlockedType}
-            >
-                {existingGroups.map((group) => {
-                    return (
-                        <option
-                            key={group.groupId}
-                            value={group.groupId}
-                        >
-                            {group.groupName}
-                        </option>
-                    );
-                })}
-            </select>
-            <select
-                className="stats-chart__select"
-                name="time-range"
-                id="time-range"
-                onChange={handleTimeRangeChange}
-                value={store.selectedTimeRange}
-            >
-                {Object.values(timeRangeOptions).map((timeRange) => {
-                    return (
-                        <option
-                            key={timeRange.id}
-                            value={timeRange.id}
-                        >
-                            {timeRange.title}
-                        </option>
-                    );
-                })}
-            </select>
+            <div className="stats-chart__select">
+                <select
+                    className="stats-chart__select-in"
+                    name="blocked-type"
+                    id="blocked-type"
+                    onChange={handleBlockedTypeChange}
+                    value={store.selectedBlockedType}
+                >
+                    {existingGroups.map((group) => {
+                        return (
+                            <option
+                                key={group.groupId}
+                                value={group.groupId}
+                            >
+                                {group.groupName}
+                            </option>
+                        );
+                    })}
+                </select>
+                <Icon id="#select" classname="icon--select stats-chart__icon" />
+            </div>
+            <div className="stats-chart__select">
+                <select
+                    className="stats-chart__select-in"
+                    name="time-range"
+                    id="time-range"
+                    onChange={handleTimeRangeChange}
+                    value={store.selectedTimeRange}
+                >
+                    {Object.values(timeRangeOptions).map((timeRange) => {
+                        return (
+                            <option
+                                key={timeRange.id}
+                                value={timeRange.id}
+                            >
+                                {timeRange.title}
+                            </option>
+                        );
+                    })}
+                </select>
+                <Icon id="#select" classname="icon--select stats-chart__icon" />
+            </div>
         </div>
     );
 });

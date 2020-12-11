@@ -1,0 +1,30 @@
+.request-info {
+    padding: 12px 38px 12px 32px;
+    word-break: break-all;
+
+    &:last-child {
+        padding-bottom: 0;
+    }
+
+        @media (max-width: 640px) {
+        padding: 12px 24px 12px 24px;
+
+            .request-modal__block.&:not(:last-child) {
+                border-bottom: 1px solid var(--gray100);
+            }
+    }
+
+    &__key {
+        color: var(--gray700);
+        line-height: 16px;
+        margin-bottom: 4px;
+        font-family: var(--font-roboto);
+        font-size: 14px;
+    }
+
+    &__value {
+        color: var(--gray900);
+        line-height: 19px;
+        margin-top: 4px;
+    }
+}

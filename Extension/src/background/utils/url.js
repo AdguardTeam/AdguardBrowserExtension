@@ -18,7 +18,7 @@
 /* eslint-disable camelcase, no-control-regex, max-len */
 
 import punycode from 'punycode';
-import { strings } from './strings';
+import { strings } from '../../common/strings';
 import { publicSuffixes } from './public-suffixes';
 
 export const url = (function () {

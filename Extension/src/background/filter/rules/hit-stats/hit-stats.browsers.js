@@ -19,7 +19,7 @@ import { localStorage } from '../../../storage';
 import { settings } from '../../../settings/user-settings';
 import { application } from '../../../application';
 import { backend } from '../../filters/service-client';
-import { log } from '../../../utils/log';
+import { log } from '../../../../common/log';
 import { utils } from '../../../utils/common';
 import { lazyGet, lazyGetClear } from '../../../utils/lazy';
 

@@ -21,6 +21,43 @@ h2 {
     font-size: inherit;
 }
 
+/* custom checkbox */
+label.checkbox-label {
+    cursor: pointer;
+    color: var(--gray900);
+    display: flex;
+    align-items: center;
+
+    & input[type="checkbox"] {
+        display: none;
+
+        &:checked + .custom-checkbox {
+            background-color: var(--green400);
+            border-color: var(--green400);
+
+            & .icon {
+                display: block;
+            }
+        }
+    }
+
+    & .custom-checkbox {
+        width: 16px;
+        height: 16px;
+        background-color: transparent;
+        border: 2px solid var(--gray700);
+        border-radius: 2px;
+        margin-right: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        & .icon {
+            display: none;
+        }
+    }
+}
+
 .content {
     width: 100%;
     max-width: 100%;
@@ -49,15 +86,6 @@ h2 {
     @media (min-width: 640px) {
         padding: 54px 32px 48px 32px;
     }
-}
-
-.logo {
-    background-image: url("../../assets/icons/logo.svg");
-    width: 109px;
-    height: 24px;
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
 }
 
 .footer {

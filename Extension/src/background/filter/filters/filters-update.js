@@ -19,7 +19,7 @@ import { subscriptions } from './subscription';
 import { listeners } from '../../notifier';
 import { backend } from './service-client';
 import { antiBannerService } from '../antibanner';
-import { log } from '../../utils/log';
+import { log } from '../../../common/log';
 import { settings } from '../../settings/user-settings';
 import { browserUtils } from '../../utils/browser-utils';
 

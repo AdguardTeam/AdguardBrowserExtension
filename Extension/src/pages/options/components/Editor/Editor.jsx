@@ -5,7 +5,7 @@ import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/ext-searchbox';
 import 'ace-builds/src-noconflict/theme-textmate';
 
-import { log } from '../../../../background/utils/log';
+import { log } from '../../../../common/log';
 import './mode-adguard';
 
 import './editor.pcss';

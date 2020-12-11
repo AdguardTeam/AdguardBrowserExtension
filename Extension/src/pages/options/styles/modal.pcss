@@ -11,12 +11,12 @@
     }
 
     &__close {
-        background-image: url(../../assets/icons/cross.svg);
         position: absolute;
         width: 15px;
         height: 15px;
         top: 30px;
         right: 30px;
+        color: var(--gray700);
     }
 
     &__content {
@@ -78,39 +78,6 @@
 
         &--url {
             word-break: break-all;
-        }
-    }
-
-    &__checkbox {
-        display: none;
-
-        &:checked + .modal__checkbox-label:before {
-            background-color: var(--green74);
-            background-image: url(../../assets/icons/checked.svg);
-            background-repeat: no-repeat;
-            background-position: 50%;
-            background-size: 70%;
-        }
-    }
-
-    &__checkbox-label {
-        position: relative;
-        padding-left: 40px;
-        font-size: 14px;
-        font-weight: 600;
-
-        &:before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 1px;
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border-radius: 2px;
-            background-color: rgba(216, 216, 216, .7);
-            cursor: pointer;
-            transition: var(--t3) background-color, var(--t3) background-image;
         }
     }
 

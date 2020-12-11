@@ -17,6 +17,7 @@
 
 import { DevToolsRulesConstructor } from './devtools-rules-constructor';
 import { runtimeImpl } from '../../common/common-script';
+import { MESSAGE_TYPES } from '../../common/constants';
 
 /**
  * Helper object that provides methods used in devtools panel's code
@@ -32,7 +33,7 @@ export const DevToolsHelper = (function () {
      * @param options Object {ruleText: 'ruleText'}
      */
     const addRule = function (options) {
-        runtimeImpl.sendMessage({ type: 'addUserRule', ruleText: options.ruleText });
+        runtimeImpl.sendMessage({ type: MESSAGE_TYPES.ADD_USER_RULE, data: { ruleText: options.ruleText } });
     };
 
     /**

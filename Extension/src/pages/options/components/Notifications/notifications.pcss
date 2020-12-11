@@ -1,5 +1,4 @@
-.notifications {
-    /* TODO add animations */
+.notification {
     position: fixed;
     top: 0;
     left: 0;
@@ -12,9 +11,13 @@
     color: var(--white);
     min-height: 50px;
     z-index: var(--z-idx8);
-}
+    animation: notify-show 0.3s ease-in;
 
-.notification {
+    &--close {
+        animation: notify-show-reverse 0.3s ease-out;
+        animation-fill-mode: forwards;
+    }
+
     &__title {
         font-size: 16px;
     }
@@ -22,5 +25,25 @@
     &__description {
         font-size: 12px;
         max-width: 960px;
+    }
+}
+
+@keyframes notify-show {
+    0% {
+        transform: translateY(-50px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes notify-show-reverse {
+    0% {
+        transform: translateY(0);
+    }
+
+    100% {
+        transform: translateY(-50px);
     }
 }

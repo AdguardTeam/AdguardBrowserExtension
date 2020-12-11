@@ -16,6 +16,7 @@
  */
 
 import { runtimeImpl } from '../common/common-script';
+import { MESSAGE_TYPES } from '../common/constants';
 
 const showSaveFunc = (function () {
     let showSave;
@@ -64,19 +65,19 @@ const onDomContentLoaded = async () => {
     const exportTypeMap = {
         '#uf': {
             title: 'user_filter',
-            messageType: 'getUserRules',
+            messageType: MESSAGE_TYPES.GET_USER_RULES,
             filename: 'rules',
             ext: 'txt',
         },
         '#wl': {
             title: 'whitelist',
-            messageType: 'getWhitelistDomains',
+            messageType: MESSAGE_TYPES.GET_ALLOWLIST_DOMAINS,
             filename: 'whitelist',
             ext: 'txt',
         },
         '#exs': {
             title: 'settings',
-            messageType: 'loadSettingsJson',
+            messageType: MESSAGE_TYPES.LOAD_SETTINGS_JSON,
             filename: 'settings',
             ext: 'json',
         },

@@ -16,7 +16,7 @@ const ScrollToTop = ({ children, location }) => {
         if (location !== prevLocation) {
             window.scrollTo(0, 0);
         }
-    });
+    }, [location]);
 
     return (
         <>

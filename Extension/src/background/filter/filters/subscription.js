@@ -17,7 +17,7 @@
 
 import MD5 from 'crypto-js/md5';
 import { listeners } from '../../notifier';
-import { log } from '../../utils/log';
+import { log } from '../../../common/log';
 import { backend } from './service-client';
 import { backgroundPage } from '../../extension-api/background-page';
 import { localStorage } from '../../storage';

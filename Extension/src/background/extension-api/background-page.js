@@ -22,7 +22,7 @@ import { BACKGROUND_TAB_ID, toTabFromChromeTab } from '../utils/common';
 import { runtimeImpl } from '../../common/common-script';
 import { browser } from './browser';
 import { prefs } from '../prefs';
-import { log } from '../utils/log';
+import { log } from '../../common/log';
 
 export const backgroundPage = (() => {
     const runtime = (function () {

@@ -9,8 +9,13 @@
     }
 
     &__select {
-        outline: none;
+        position: relative;
         max-width: 50%;
+        display: inline-block;
+    }
+
+    &__select-in {
+        outline: none;
         height: 33px;
         padding: 0 25px 0 10px;
         font-weight: 500;
@@ -18,11 +23,13 @@
         color: var(--white);
         border: 0;
         background-color: transparent;
-        background-image: url(../../../../assets/icons/arrow-down-grey.svg);
-        background-repeat: no-repeat;
-        background-position: right 5px bottom 11px;
-        background-size: 12px 10px;
         appearance: none;
         cursor: pointer;
+    }
+
+    &__icon {
+        position: absolute;
+        right: 6px;
+        top: 13px;
     }
 }

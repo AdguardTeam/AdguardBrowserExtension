@@ -4,6 +4,8 @@ import classnames from 'classnames';
 
 import { popupStore } from '../../stores/PopupStore';
 import { messenger } from '../../../services/messenger';
+import { MESSAGE_TYPES } from '../../../../common/constants';
+import { Icon } from '../../../common/components/ui/Icon';
 
 import './promo-notification.pcss';
 
@@ -15,7 +17,7 @@ export const PromoNotification = observer(() => {
     // schedule notification removal
     useEffect(() => {
         if (store.promoNotification) {
-            messenger.sendMessage('setNotificationViewed', { withDelay: true });
+            messenger.sendMessage(MESSAGE_TYPES.SET_NOTIFICATION_VIEWED, { withDelay: true });
         }
     }, []);
 
@@ -46,7 +48,9 @@ export const PromoNotification = observer(() => {
 
     return (
         <div className={notificationClassnames}>
-            <bitton className="promo-notification__close" onClick={handleNotificationClose} />
+            <bitton className="promo-notification__close" onClick={handleNotificationClose}>
+                <Icon id="#cross" classname="icon--cross" />
+            </bitton>
             <div className="promo-notification__content">
                 {text.title
                         && <div className="promo-notification__title">{text.title}</div>}

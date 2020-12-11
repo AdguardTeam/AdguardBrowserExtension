@@ -14,18 +14,18 @@
         padding-left: 12px;
     }
 
+    & .editor__icon {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 4px;
+    }
+
     &--saved {
         padding-right: 20px;
 
-        &:after {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 4px;
-            background-image: url("../../../assets/icons/tick.svg");
-            background-size: cover;
-            width: 12px;
-            height: 12px;
+        & .editor__icon {
+            display: block;
         }
     }
 }

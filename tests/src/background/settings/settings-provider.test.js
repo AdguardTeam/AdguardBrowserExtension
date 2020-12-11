@@ -1,7 +1,7 @@
 import { settingsProvider } from '../../../../Extension/src/background/settings/settings-provider';
 import { adgSettings } from './adg-settings';
 
-jest.mock('../../../../Extension/src/background/utils/log');
+jest.mock('../../../../Extension/src/common/log');
 
 jest.mock('../../../../Extension/src/background/application', () => {
     return {

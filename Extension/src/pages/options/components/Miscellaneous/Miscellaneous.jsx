@@ -6,7 +6,7 @@ import { SettingsSet } from '../Settings/SettingsSet';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { messenger } from '../../../services/messenger';
 import { rootStore } from '../../stores/RootStore';
-import { log } from '../../../../background/utils/log';
+import { log } from '../../../../common/log';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
 
 const Miscellaneous = observer(() => {

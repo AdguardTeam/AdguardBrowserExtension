@@ -1,0 +1,73 @@
+.actions {
+    display: inline-block;
+    padding: 16px;
+    position: relative;
+
+    @media (max-width: 640px) {
+        padding: 16px 24px;
+    }
+
+    &__action {
+        margin-right: 24px;
+        display: inline-block;
+        vertical-align: middle;
+
+        &:last-child {
+            margin-right: 0;
+        }
+
+        & > .checkbox-label {
+            margin-bottom: 0;
+        }
+    }
+
+    &__refresh {
+        color: var(--btnGreen);
+        border: 0;
+        padding: 5px 0;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 400;
+        background-color: transparent;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    &__refresh-ico {
+        margin-right: 5px;
+    }
+
+    &__clear {
+        color: var(--btnRed);
+        cursor: pointer;
+        border: 0;
+        font-size: 14px;
+        font-weight: 400;
+        padding: 0 10px;
+        background-color: transparent;
+        display: flex;
+        align-items: center;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    &__cross {
+        width: 13px;
+        height: 13px;
+        margin-right: 5px;
+    }
+
+    &__preserve {
+        font-size: 15px;
+        margin-left: 10px;
+
+        @media (max-width: 640px) {
+            width: 100%;
+            margin: 16px 0 0 0;
+        }
+    }
+}

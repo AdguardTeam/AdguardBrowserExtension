@@ -18,7 +18,7 @@
 import { LRUMap } from 'lru_map';
 
 import SHA256 from 'crypto-js/sha256';
-import { log } from '../../../utils/log';
+import { log } from '../../../../common/log';
 import { utils } from '../../../utils/common';
 import { localStorage } from '../../../storage';
 import { backgroundPage } from '../../../extension-api/background-page';

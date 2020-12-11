@@ -16,7 +16,7 @@
  */
 
 import { browser } from '../extension-api/browser';
-import { log } from './log';
+import { log } from '../../common/log';
 
 /**
  * Local storage implementation for chromium-based browsers

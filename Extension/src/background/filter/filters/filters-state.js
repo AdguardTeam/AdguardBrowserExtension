@@ -16,7 +16,7 @@
  */
 
 import { localStorage } from '../../storage';
-import { log } from '../../utils/log';
+import { log } from '../../../common/log';
 import { listeners } from '../../notifier';
 
 /**

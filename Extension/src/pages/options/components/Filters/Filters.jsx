@@ -14,6 +14,7 @@ import { reactTranslator } from '../../../reactCommon/reactTranslator';
 import { AddCustomModal } from './AddCustomModal';
 import { CUSTOM_FILTERS_GROUP_ID } from '../../../../../../tools/constants';
 import { SettingsSection } from '../Settings/SettingsSection';
+import { Icon } from '../../../common/components/ui/Icon';
 
 const Filters = observer(() => {
     const SEARCH_FILTERS = {
@@ -23,6 +24,7 @@ const Filters = observer(() => {
     };
 
     const history = useHistory();
+
     const useQuery = () => {
         return new URLSearchParams(useLocation().search);
     };
@@ -202,7 +204,7 @@ const Filters = observer(() => {
         if (urlToSubscribe) {
             openModalHandler();
         }
-    });
+    }, [urlToSubscribe]);
 
     const renderModal = () => {
         return (
@@ -222,7 +224,7 @@ const Filters = observer(() => {
             setUrlToSubscribe('');
             setCustomFilterTitle('');
         }
-    });
+    }, [modalIsOpen]);
 
     const renderAddFilterBtn = (isEmpty) => {
         const buttonClass = classNames('button button--m button--green', {
@@ -247,9 +249,11 @@ const Filters = observer(() => {
     const renderBackButton = () => (
         <button
             type="button"
-            className="button button--back"
+            className="button"
             onClick={handleReturnToGroups}
-        />
+        >
+            <Icon id="#arrow-back" classname="icon--back" />
+        </button>
     );
 
     if (Number.isInteger(settingsStore.selectedGroupId)) {

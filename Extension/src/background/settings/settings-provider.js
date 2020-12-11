@@ -16,9 +16,9 @@
  */
 
 import { application } from '../application';
-import { log } from '../utils/log';
+import { log } from '../../common/log';
 import { subscriptions } from '../filter/filters/subscription';
-import { whitelist } from '../filter/whitelist';
+import { allowlist } from '../filter/allowlist';
 import { userrules } from '../filter/userrules';
 import { listeners } from '../notifier';
 import { utils } from '../utils/common';
@@ -72,9 +72,9 @@ export const settingsProvider = (function () {
         const customFiltersData = collectCustomFiltersData();
 
         // Collect whitelist/blacklist domains and whitelist mode
-        const whitelistDomains = whitelist.getWhitelistedDomains() || [];
-        const blockListDomains = whitelist.getBlockListedDomains() || [];
-        const defaultWhitelistMode = !!whitelist.isDefaultMode();
+        const whitelistDomains = allowlist.getAllowlistedDomains() || [];
+        const blockListDomains = allowlist.getBlocklistedDomains() || [];
+        const defaultWhitelistMode = !!allowlist.isDefaultMode();
 
         // Collect user rules
         const content = await userrules.getUserRulesText();
@@ -324,7 +324,7 @@ export const settingsProvider = (function () {
         const blacklistDomains = whitelistSection['inverted-domains'] || [];
 
         // Apply whitelist/blacklist domains and whitelist mode
-        whitelist.configure(whitelistDomains, blacklistDomains, !whitelistSection.inverted);
+        allowlist.configure(whitelistDomains, blacklistDomains, !whitelistSection.inverted);
 
         const userFilterSection = section.filters['user-filter'] || {};
         const userRules = userFilterSection.rules || '';

@@ -2,14 +2,15 @@ import React, { useContext, useEffect, useRef } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { Range } from 'ace-builds';
-
+import { SimpleRegex } from '@adguard/tsurlfilter';
 import { rootStore } from '../../stores/RootStore';
 import { Editor } from '../Editor';
 import { uploadFile } from '../../../helpers';
-import { log } from '../../../../background/utils/log';
+import { log } from '../../../../common/log';
 import { STATES as SAVING_STATES } from '../Editor/savingFSM';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
 import { SettingsSection } from '../Settings/SettingsSection';
+import { Icon } from '../../../common/components/ui/Icon';
 
 import './styles.pcss';
 
@@ -40,6 +41,7 @@ const UserRules = observer(() => {
 
         return (
             <div className={indicatorClassnames}>
+                <Icon id="#tick" classname="icon--checked editor__icon" />
                 {indicatorText}
             </div>
         );
@@ -84,9 +86,6 @@ const UserRules = observer(() => {
             name: 'togglecomment',
             bindKey: { win: 'Ctrl-/', mac: 'Command-/' },
             exec: (editor) => {
-                // TODO get this mark from TSUrlFilter
-                const COMMENT_MARK = '!';
-
                 const selection = editor.getSelection();
                 const ranges = selection.getAllRanges();
 
@@ -100,12 +99,12 @@ const UserRules = observer(() => {
                 rowsToToggle.forEach((row) => {
                     const rawLine = editor.session.getLine(row);
                     // if line starts with comment mark we remove it
-                    if (rawLine.trim().startsWith(COMMENT_MARK)) {
-                        const lineWithRemovedComment = rawLine.replace(COMMENT_MARK, '');
+                    if (rawLine.trim().startsWith(SimpleRegex.MASK_COMMENT)) {
+                        const lineWithRemovedComment = rawLine.replace(SimpleRegex.MASK_COMMENT, '');
                         editor.session.replace(new Range(row, 0, row), lineWithRemovedComment);
                     // otherwise we add it
                     } else {
-                        editor.session.insert({ row, column: 0 }, COMMENT_MARK);
+                        editor.session.insert({ row, column: 0 }, SimpleRegex.MASK_COMMENT);
                     }
                 });
             },

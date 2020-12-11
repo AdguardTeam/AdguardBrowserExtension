@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
-import cs from 'classnames';
+import cn from 'classnames';
 
 import { messenger } from '../../../services/messenger';
 import { popupStore } from '../../stores/PopupStore';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
-import { Icon } from '../ui/Icon';
+import { Icon } from '../../../common/components/ui/Icon';
 
 import './actions.pcss';
 
@@ -26,16 +26,22 @@ export const Actions = observer(() => {
     };
 
     const handleAbuseSite = () => {
+        if (!store.applicationAvailable) {
+            return;
+        }
         messenger.openAbuseSite(store.url);
         window.close();
     };
 
     const handleCheckSiteSecurity = () => {
+        if (!store.applicationAvailable) {
+            return;
+        }
         messenger.checkSiteSecurity(store.url);
         window.close();
     };
 
-    const actionChangingClassname = cs('action', { action_disabled: !store.applicationAvailable });
+    const actionChangingClassname = cn('action', { action_disabled: !store.applicationAvailable });
 
     return (
         <div className="actions">
@@ -45,7 +51,7 @@ export const Actions = observer(() => {
             >
                 <Icon
                     id="#block-ad"
-                    className="icon--action"
+                    classname="icon--action"
                 />
                 <div className="action-title">
                     {reactTranslator.translate('popup_block_site_ads')}
@@ -57,7 +63,7 @@ export const Actions = observer(() => {
             >
                 <Icon
                     id="#sandwich"
-                    className="icon--action"
+                    classname="icon--action"
                 />
                 <div className="action-title">
                     {reactTranslator.translate('popup_open_filtering_log')}
@@ -69,7 +75,7 @@ export const Actions = observer(() => {
             >
                 <Icon
                     id="#thumb-down"
-                    className="icon--action"
+                    classname="icon--action"
                 />
                 <div className="action-title">
                     {reactTranslator.translate('popup_abuse_site')}
@@ -81,7 +87,7 @@ export const Actions = observer(() => {
             >
                 <Icon
                     id="#shield"
-                    className="icon--action"
+                    classname="icon--action"
                 />
                 <div className="action-title">
                     {reactTranslator.translate('popup_security_report')}

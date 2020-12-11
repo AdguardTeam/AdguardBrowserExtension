@@ -16,6 +16,7 @@
  */
 
 import { contentPage } from './content-script';
+import { MESSAGE_TYPES } from '../common/constants';
 
 /**
  * !!! Important do not change function declaration, otherwise it would loose its name,
@@ -449,7 +450,7 @@ export const initPageMessageListener = function () {
         }
 
         const message = {
-            type: 'checkPageScriptWrapperRequest',
+            type: MESSAGE_TYPES.CHECK_PAGE_SCRIPT_WRAPPER_REQUEST,
             elementUrl: event.data.elementUrl,
             documentUrl: event.data.documentUrl,
             requestType: event.data.requestType,

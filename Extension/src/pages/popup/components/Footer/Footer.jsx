@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
 import { popupStore } from '../../stores/PopupStore';
-import { Icon } from '../ui/Icon';
+import { Icon } from '../../../common/components/ui/Icon';
 
 import './footer.pcss';
 
@@ -25,7 +25,7 @@ export const Footer = observer(() => {
                 >
                     <Icon
                         id="#apple"
-                        className="footer__icon"
+                        classname="footer__icon"
                     />
                 </a>
                 <a
@@ -36,7 +36,7 @@ export const Footer = observer(() => {
                 >
                     <Icon
                         id="#android"
-                        className="footer__icon"
+                        classname="footer__icon"
                     />
                 </a>
             </div>

@@ -16,6 +16,7 @@
  */
 
 import { contentPage } from './content-script';
+import { MESSAGE_TYPES } from '../common/constants';
 
 export const contentUtils = (function () {
     const MAX_Z_INDEX = '2147483647';
@@ -216,7 +217,7 @@ export const contentUtils = (function () {
                         if (element.classList.contains('disable-notifications')) {
                             // disable update notifications
                             contentPage.sendMessage({
-                                type: 'changeUserSetting',
+                                type: MESSAGE_TYPES.CHANGE_USER_SETTING,
                                 key: 'show-app-updated-disabled',
                                 value: true,
                             });

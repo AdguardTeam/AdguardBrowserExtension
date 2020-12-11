@@ -32,7 +32,7 @@ import { stealthService } from './filter/services/stealth-service';
 import { contentFiltering } from './content-filtering';
 import { safebrowsing } from './filter/services/safebrowsing';
 import { uiService } from './ui-service';
-import { log } from './utils/log';
+import { log } from '../common/log';
 import { browserUtils } from './utils/browser-utils';
 import { documentFilterService } from './filter/services/document-filter';
 

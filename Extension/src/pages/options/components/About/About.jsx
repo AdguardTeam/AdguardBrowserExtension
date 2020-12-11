@@ -9,6 +9,7 @@ import {
     PRIVACY_URL,
 } from '../../../constants';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
+import { Icon } from '../../../common/components/ui/Icon';
 
 import './about-page.pcss';
 
@@ -32,7 +33,7 @@ const About = observer(() => {
                 </h2>
             </div>
             <div className="about">
-                <div className="logo about__logo" />
+                <Icon id="#logo" classname="icon--logo about__logo" />
                 <div className="about__version">
                     {reactTranslator.translate('options_about_version')}
                     {' '}

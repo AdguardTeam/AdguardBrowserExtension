@@ -1,0 +1,39 @@
+.events-search {
+    display: flex;
+    align-items: center;
+
+    & input {
+        border: none;
+        width: 100%;
+        background: var(--searchBg);
+        border-radius: 5px;
+        height: 40px;
+        padding: 0 15px;
+
+        &::placeholder {
+            color: var(--gey6a);
+        }
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    &__clear {
+        border: none;
+        background-color: transparent;
+        cursor: pointer;
+        position: absolute;
+        right: 35px;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    &__cross {
+        width: 13px;
+        height: 13px;
+        color: var(--gray700);
+    }
+}

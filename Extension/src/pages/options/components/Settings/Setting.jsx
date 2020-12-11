@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Checkbox } from './Checkbox';
-import { Select } from './Select';
+import { Select } from '../../../common/components/ui/Select';
 import { TextInput } from './TextInput';
 import { Textarea } from './Textarea';
 
@@ -14,6 +14,7 @@ export const SETTINGS_TYPES = {
 
 export const Setting = (props) => {
     const { type } = props;
+
     switch (type) {
         case SETTINGS_TYPES.CHECKBOX: {
             const {
@@ -32,10 +33,14 @@ export const Setting = (props) => {
             const {
                 id, handler, options, value,
             } = props;
+            const changeHandler = (e) => {
+                const { target: { value: data } } = e;
+                handler({ id, data: parseInt(data, 10) });
+            };
             return (
                 <Select
                     id={id}
-                    handler={handler}
+                    handler={changeHandler}
                     options={options}
                     value={value}
                 />

@@ -4,9 +4,10 @@ import Modal from 'react-modal';
 
 import { messenger } from '../../../../services/messenger';
 import { reactTranslator } from '../../../../reactCommon/reactTranslator';
-import { log } from '../../../../../background/utils/log';
+import { log } from '../../../../../common/log';
 import { ModalContentWrapper } from './ModalContentWrapper';
 import { rootStore } from '../../../stores/RootStore';
+import { Icon } from '../../../../common/components/ui/Icon';
 
 Modal.setAppElement('#root');
 
@@ -169,16 +170,15 @@ const AddCustomModal = ({
                         <div className="modal__cell modal__cell--url">{customUrl}</div>
                     </div>
                     <div className="modal__row">
-                        <input
-                            className="modal__checkbox"
-                            id="trusted"
-                            type="checkbox"
-                            onChange={handleTrustedCheckbox}
-                        />
-                        <label
-                            className="modal__checkbox-label"
-                            htmlFor="trusted"
-                        >
+                        <label className="checkbox-label" htmlFor="trusted">
+                            <input
+                                id="trusted"
+                                type="checkbox"
+                                onChange={handleTrustedCheckbox}
+                            />
+                            <div className="custom-checkbox">
+                                <Icon id="#checked" classname="icon--checked" />
+                            </div>
                             {reactTranslator.translate('options_popup_trusted_filter_title')}
                         </label>
                     </div>

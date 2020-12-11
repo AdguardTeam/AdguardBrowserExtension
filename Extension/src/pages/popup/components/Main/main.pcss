@@ -52,10 +52,16 @@
                     background-image: var(--allowlisted-btn);
                 }
 
-                &:after {
-                    background-size: 15px 15px;
-                    background-position: 13px 14px;
-                    background-image: url(../../../assets/icons/cross-white.svg);
+                & .switcher__icon--play {
+                    display: none;
+                }
+
+                & .switcher__icon--checkmark {
+                    display: none;
+                }
+
+                & .switcher__icon--cross {
+                    display: block;
                 }
             }
         }
@@ -78,10 +84,16 @@
                     background: var(--disabled-btn);
                 }
 
-                &:after {
-                    background-image: url(../../../assets/icons/play.svg);
-                    background-size: 16px 18px;
-                    background-position: 15px 50%;
+                & .switcher__icon--play {
+                    display: block;
+                }
+
+                & .switcher__icon--checkmark {
+                    display: none;
+                }
+
+                & .switcher__icon--cross {
+                    display: none;
                 }
             }
         }
@@ -151,18 +163,28 @@
             border-radius: 50%;
             background-image: var(--enabled-btn);
         }
+    }
 
-        &:after {
-            content: '';
-            width: 44px;
-            height: 44px;
+    &__icon {
+        position: absolute;
+
+        &--play {
+            display: none;
+            left: 18px;
+            top: 16px
+        }
+
+        &--checkmark {
             display: block;
-            position: absolute;
-            left: 3px;
-            top: 3px;
-            background-repeat: no-repeat;
-            background-position: 50% 50%;
-            background-image: url(../../../assets/icons/checkmark.svg);
+            left: 14px;
+            top: 17px;
+        }
+
+        &--cross {
+            color: var(--white);
+            display: none;
+            left: 17px;
+            top: 17px;
         }
     }
 }

@@ -21,7 +21,7 @@ import { browser } from './browser';
 import { utils, toTabFromChromeTab } from '../utils/common';
 import { prefs } from '../prefs';
 import { browserUtils } from '../utils/browser-utils';
-import { log } from '../utils/log';
+import { log } from '../../common/log';
 
 /**
  * Chromium tabs implementation
@@ -136,8 +136,8 @@ export const tabsImpl = (function () {
             await browser.windows.create({
                 url,
                 type: 'popup',
-                width: 1230,
-                height: 630,
+                width: 1000,
+                height: 650,
             });
             return;
         }

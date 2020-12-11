@@ -1,6 +1,7 @@
 import browser from 'webextension-polyfill';
-// TODO move log to the common directory
-import { log } from '../../background/utils/log';
+
+import { log } from '../../common/log';
+import { MESSAGE_TYPES } from '../../common/constants';
 
 class Messenger {
     onMessage = browser.runtime.onMessage;
@@ -25,27 +26,35 @@ class Messenger {
         return response;
     }
 
-    createEventListener = async (events, callback) => {
+    /**
+     * Method subscribes to notifier module events
+     * @param events - list of events to which subscribe
+     * @param callback - callback called when event fires
+     * @param onUnloadCallback - callback used to remove listener on unload
+     * @returns {Promise<function(): Promise<void>>}
+     */
+    createEventListener = async (events, callback, onUnloadCallback) => {
         const eventListener = (...args) => {
             callback(...args);
         };
 
-        let listenerId;
-        const type = 'createEventListener';
-        listenerId = await this.sendMessage(type, { events });
+        let { listenerId } = await this.sendMessage(MESSAGE_TYPES.CREATE_EVENT_LISTENER, { events });
 
         browser.runtime.onMessage.addListener((message) => {
-            if (message.type === 'notifyListeners') {
-                const [type, data] = message.data;
+            if (message.type === MESSAGE_TYPES.NOTIFY_LISTENERS) {
+                const [type, ...data] = message.data;
                 eventListener({ type, data });
             }
         });
 
         const onUnload = async () => {
             if (listenerId) {
-                const type = 'removeListener';
-                await this.sendMessage(type, { listenerId });
+                const type = MESSAGE_TYPES.REMOVE_LISTENER;
+                this.sendMessage(type, { listenerId });
                 listenerId = null;
+                if (typeof onUnloadCallback === 'function') {
+                    onUnloadCallback();
+                }
             }
         };
 
@@ -56,157 +65,168 @@ class Messenger {
     };
 
     async getOptionsData() {
-        return this.sendMessage('getOptionsData');
+        return this.sendMessage(MESSAGE_TYPES.GET_OPTIONS_DATA);
     }
 
     // eslint-disable-next-line class-methods-use-this
     async changeUserSetting(settingId, value) {
-        // TODO refactor message handler to use common message format { type, data }
+        // FIXME refactor message handler to use common message format { type, data }
         await browser.runtime.sendMessage({
-            type: 'changeUserSetting',
+            type: MESSAGE_TYPES.CHANGE_USER_SETTING,
             key: settingId,
             value,
         });
     }
 
     openExtensionStore = async () => {
-        const type = 'openExtensionStore';
-        return this.sendMessage(type);
+        return this.sendMessage(MESSAGE_TYPES.OPEN_EXTENSION_STORE);
     }
 
     async enableFilter(filterId) {
-        // TODO use common message types in constants;
-        const type = 'addAndEnableFilter';
-        return this.sendMessage(type, { filterId });
+        return this.sendMessage(MESSAGE_TYPES.ADD_AND_ENABLE_FILTER, { filterId });
     }
 
     async disableFilter(filterId) {
-        // TODO use common message types in constants;
-        const type = 'disableAntiBannerFilter';
-        return this.sendMessage(type, { filterId });
+        return this.sendMessage(MESSAGE_TYPES.DISABLE_ANTIBANNER_FILTER, { filterId });
     }
 
     async applySettingsJson(json) {
-        // TODO use common message types in the constants
-        const type = 'applySettingsJson';
-        return this.sendMessage(type, { json });
+        return this.sendMessage(MESSAGE_TYPES.APPLY_SETTINGS_JSON, { json });
     }
 
     async openFilteringLog() {
-        // TODO use common message types in the constants
-        const type = 'openFilteringLog';
-        return this.sendMessage(type);
+        return this.sendMessage(MESSAGE_TYPES.OPEN_FILTERING_LOG);
     }
 
     async resetStatistics() {
-        // TODO use common message types in the constants
-        const type = 'resetBlockedAdsCount';
-        return this.sendMessage(type);
+        return this.sendMessage(MESSAGE_TYPES.RESET_BLOCKED_ADS_COUNT);
     }
 
     async getUserRules() {
-        // TODO use common message types in the constants
-        const type = 'getUserRules';
-        return this.sendMessage(type);
+        return this.sendMessage(MESSAGE_TYPES.GET_USER_RULES);
     }
 
     async saveUserRules(value) {
-        // TODO use common message types in the constants
-        const type = 'saveUserRules';
-        await this.sendMessage(type, { value });
+        await this.sendMessage(MESSAGE_TYPES.SAVE_USER_RULES, { value });
     }
 
     async getAllowlist() {
-        const type = 'getWhitelistDomains';
-        return this.sendMessage(type);
+        return this.sendMessage(MESSAGE_TYPES.GET_ALLOWLIST_DOMAINS);
     }
 
     async saveAllowlist(value) {
-        // TODO use common message types in the constants
-        const type = 'saveWhitelistDomains';
-        await this.sendMessage(type, { value });
+        await this.sendMessage(MESSAGE_TYPES.SAVE_ALLOWLIST_DOMAINS, { value });
     }
 
     async updateFilters(filters) {
-        // TODO use common message types in the constants
-        const type = 'checkAntiBannerFiltersUpdate';
-        return this.sendMessage(type, { filters });
+        return this.sendMessage(MESSAGE_TYPES.CHECK_ANTIBANNER_FILTERS_UPDATE, { filters });
     }
 
     async updateGroupStatus(id, data) {
-        // TODO use common message types in the constants
-        const type = data ? 'enableFiltersGroup' : 'disableFiltersGroup';
+        const type = data ? MESSAGE_TYPES.ENABLE_FILTERS_GROUP : MESSAGE_TYPES.DISABLE_FILTERS_GROUP;
         const groupId = id - 0;
         await this.sendMessage(type, { groupId });
     }
 
     async updateFilterStatus(filterId, data) {
-        // TODO use common message types in constants;
-        const type = data ? 'addAndEnableFilter' : 'disableAntiBannerFilter';
+        const type = data ? MESSAGE_TYPES.ADD_AND_ENABLE_FILTER : MESSAGE_TYPES.DISABLE_ANTIBANNER_FILTER;
         await this.sendMessage(type, { filterId });
     }
 
     async checkCustomUrl(url) {
-        // TODO use common message types in the constants
-        const type = 'loadCustomFilterInfo';
-        return this.sendMessage(type, { url });
+        return this.sendMessage(MESSAGE_TYPES.LOAD_CUSTOM_FILTER_INFO, { url });
     }
 
     async addCustomFilter(filter) {
-        // TODO use common message types in the constants
-        const type = 'subscribeToCustomFilter';
-        return this.sendMessage(type, { filter });
+        return this.sendMessage(MESSAGE_TYPES.SUBSCRIBE_TO_CUSTOM_FILTER, { filter });
     }
 
     async removeCustomFilter(filterId) {
-        // TODO use common message types in the constants
-        const type = 'removeAntiBannerFilter';
-        await this.sendMessage(type, { filterId });
+        await this.sendMessage(MESSAGE_TYPES.REMOVE_ANTIBANNER_FILTER, { filterId });
     }
 
     async getTabInfoForPopup(tabId) {
-        const type = 'getTabInfoForPopup';
-        return this.sendMessage(type, { tabId });
+        return this.sendMessage(MESSAGE_TYPES.GET_TAB_INFO_FOR_POPUP, { tabId });
     }
 
     async changeApplicationFilteringDisabled(state) {
-        const type = 'changeApplicationFilteringDisabled';
-        return this.sendMessage(type, { state });
+        return this.sendMessage(MESSAGE_TYPES.CHANGE_APPLICATION_FILTERING_DISABLED, { state });
     }
 
     async openSettingsTab() {
-        const type = 'openSettingsTab';
-        return this.sendMessage(type);
+        return this.sendMessage(MESSAGE_TYPES.OPEN_SETTINGS_TAB);
     }
 
     async openAssistant() {
-        const type = 'openAssistant';
-        return this.sendMessage(type);
+        return this.sendMessage(MESSAGE_TYPES.OPEN_ASSISTANT);
     }
 
     async openAbuseSite(url) {
-        const type = 'openAbuseTab';
-        return this.sendMessage(type, { url });
+        return this.sendMessage(MESSAGE_TYPES.OPEN_ABUSE_TAB, { url });
     }
 
     async checkSiteSecurity() {
-        const type = 'openSiteReportTab';
-        return this.sendMessage(type);
+        return this.sendMessage(MESSAGE_TYPES.OPEN_SITE_REPORT_TAB);
     }
 
     async removeAllowlistDomain() {
-        const type = 'removeAllowlistDomainPopup';
-        return this.sendMessage(type);
+        return this.sendMessage(MESSAGE_TYPES.REMOVE_ALLOWLIST_DOMAIN);
     }
 
     async addAllowlistDomain(url) {
-        const type = 'addAllowlistDomainPopup';
-        return this.sendMessage(type, { url });
+        return this.sendMessage(MESSAGE_TYPES.ADD_ALLOWLIST_DOMAIN_POPUP, { url });
     }
 
     async getStatisticsData() {
-        const type = 'getStatisticsData';
-        return this.sendMessage(type);
+        return this.sendMessage(MESSAGE_TYPES.GET_STATISTICS_DATA);
+    }
+
+    async onOpenFilteringLogPage() {
+        await this.sendMessage(MESSAGE_TYPES.ON_OPEN_FILTERING_LOG_PAGE);
+    }
+
+    async getLogInitData() {
+        return this.sendMessage(MESSAGE_TYPES.INITIALIZE_FRAME_SCRIPT);
+    }
+
+    async onCloseFilteringLogPage() {
+        await this.sendMessage(MESSAGE_TYPES.ON_CLOSE_FILTERING_LOG_PAGE);
+    }
+
+    async getFilteringInfoByTabId(tabId) {
+        return this.sendMessage(MESSAGE_TYPES.GET_FILTERING_INFO_BY_TAB_ID, { tabId });
+    }
+
+    async synchronizeOpenTabs() {
+        return this.sendMessage(MESSAGE_TYPES.SYNCHRONIZE_OPEN_TABS);
+    }
+
+    async clearEventsByTabId(tabId) {
+        return this.sendMessage(MESSAGE_TYPES.CLEAR_EVENTS_BY_TAB_ID, { tabId });
+    }
+
+    async refreshPage(tabId, preserveLogEnabled) {
+        await this.sendMessage(MESSAGE_TYPES.REFRESH_PAGE, { tabId, preserveLogEnabled });
+    }
+
+    async openTab(url, options) {
+        await this.sendMessage(MESSAGE_TYPES.OPEN_TAB, { url, options });
+    }
+
+    async addUserRule(ruleText) {
+        await this.sendMessage(MESSAGE_TYPES.ADD_USER_RULE, { ruleText });
+    }
+
+    async unAllowlistFrame(frameInfo) {
+        await this.sendMessage(MESSAGE_TYPES.UN_ALLOWLIST_FRAME, { frameInfo });
+    }
+
+    async removeUserRule(ruleText) {
+        await this.sendMessage(MESSAGE_TYPES.REMOVE_USER_RULE, { ruleText });
+    }
+
+    async getTabFrameInfoById(tabId) {
+        return this.sendMessage(MESSAGE_TYPES.GET_TAB_FRAME_INFO_BY_ID, { tabId });
     }
 }
 

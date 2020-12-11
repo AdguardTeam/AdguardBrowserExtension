@@ -19,7 +19,7 @@ import FiltersDownloader from 'filters-downloader';
 import { utils } from '../../utils/common';
 import { backgroundPage } from '../../extension-api/background-page';
 import { prefs } from '../../prefs';
-import { log } from '../../utils/log';
+import { log } from '../../../common/log';
 import { subscriptions } from './subscription';
 import { browserUtils } from '../../utils/browser-utils';
 import { lazyGet } from '../../utils/lazy';

@@ -17,7 +17,7 @@
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
 import { backgroundPage } from './extension-api/background-page';
-import { log } from './utils/log';
+import { log } from '../common/log';
 import { browserUtils } from './utils/browser-utils';
 import { filtersState } from './filter/filters/filters-state';
 import { subscriptions } from './filter/filters/subscription';

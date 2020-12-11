@@ -4,6 +4,7 @@ import classNames from 'classnames';
 
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { reactTranslator } from '../../../reactCommon/reactTranslator';
+import { Icon } from '../../../common/components/ui/Icon';
 
 import './group.pcss';
 
@@ -69,12 +70,9 @@ const Group = ({
     return (
         <div className={groupClassName}>
             <div className="setting__area" role="presentation" onClick={groupClickHandler}>
-                <div className={
-                    classNames(
-                        'setting__icon',
-                        `setting__icon--${groupId}`,
-                    )
-                }
+                <Icon
+                    id={`#setting-${groupId}`}
+                    classname="icon--setting setting__icon"
                 />
                 <div className="setting__info">
                     <div className="setting__title group__title">

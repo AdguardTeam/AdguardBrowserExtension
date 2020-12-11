@@ -17,7 +17,7 @@
 
 // We use chrome rules storage implementation as fallback as it based on storage.local
 import chromeRulesStorageImpl from './rules-storage.chrome';
-import { log } from '../utils/log';
+import { log } from '../../common/log';
 
 /**
  * Filter rules storage implementation. Based on the indexedDB

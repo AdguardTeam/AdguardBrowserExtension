@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 
 import { popupStore } from '../../stores/PopupStore';
 import { messenger } from '../../../services/messenger';
-import { Icon } from '../ui/Icon';
+import { Icon } from '../../../common/components/ui/Icon';
 
 import './header.pcss';
 
@@ -31,7 +31,7 @@ export const Header = observer(() => {
             <div className="popup-header__logo">
                 <Icon
                     id="#logo"
-                    className="icon--logo"
+                    classname="icon--logo"
                 />
             </div>
             <div className="popup-header__buttons">
@@ -44,7 +44,7 @@ export const Header = observer(() => {
                     >
                         <Icon
                             id="#pause"
-                            className="icon--button"
+                            classname="icon--button"
                         />
                     </button>
                 )}
@@ -57,7 +57,7 @@ export const Header = observer(() => {
                     >
                         <Icon
                             id="start"
-                            className="icon--button"
+                            classname="icon--button"
                         />
                     </button>
                 )}
@@ -68,7 +68,7 @@ export const Header = observer(() => {
                 >
                     <Icon
                         id="#settings"
-                        className="icon--button"
+                        classname="icon--button"
                     />
                 </button>
             </div>

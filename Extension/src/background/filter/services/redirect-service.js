@@ -16,7 +16,7 @@
  */
 
 import { redirects } from 'scriptlets';
-import { log } from '../../utils/log';
+import { log } from '../../../common/log';
 import { resources } from '../../utils/resources';
 
 const { Redirects } = redirects;

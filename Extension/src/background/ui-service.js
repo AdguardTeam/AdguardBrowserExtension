@@ -27,11 +27,12 @@ import { prefs } from './prefs';
 import { pageStats } from './filter/page-stats';
 import { frames } from './tabs/frames';
 import { notifications } from './utils/notifications';
-import { whitelist } from './filter/whitelist';
+import { allowlist } from './filter/allowlist';
 import { userrules } from './filter/userrules';
 import { browserUtils } from './utils/browser-utils';
-import { log } from './utils/log';
+import { log } from '../common/log';
 import { runtimeImpl } from '../common/common-script';
+import { MESSAGE_TYPES } from '../common/constants';
 
 export const uiService = (function () {
     const browserActionTitle = backgroundPage.i18n.getMessage('name');
@@ -85,7 +86,7 @@ export const uiService = (function () {
         'context_safebrowsing': function () {
             openSettingsTab('safebrowsing');
         },
-        'context_whitelist': function () {
+        'context_allowlist': function () {
             openSettingsTab('whitelist');
         },
         'context_userfilter': function () {
@@ -322,7 +323,7 @@ export const uiService = (function () {
                 checkable: true,
             });
             if (tabInfo.documentAllowlisted && !tabInfo.userAllowlisted) {
-                addMenu('popup_in_white_list_android');
+                addMenu('popup_in_allowlist_android');
             } else if (tabInfo.canAddRemoveRule) {
                 if (tabInfo.documentAllowlisted) {
                     addMenu('popup_site_filtering_state', {
@@ -763,14 +764,14 @@ export const uiService = (function () {
 
     var allowlistTab = function (tab) {
         const tabInfo = frames.getFrameInfo(tab);
-        whitelist.whitelistUrl(tabInfo.url);
+        allowlist.allowlistUrl(tabInfo.url);
         updateTabIconAndContextMenu(tab, true);
         tabsApi.reload(tab.tabId);
     };
 
     var unAllowlistTab = function (tab) {
         const tabInfo = frames.getFrameInfo(tab);
-        userrules.unWhitelistFrame(tabInfo);
+        userrules.unAllowlistFrame(tabInfo);
         updateTabIconAndContextMenu(tab, true);
         tabsApi.reload(tab.tabId);
     };
@@ -813,7 +814,7 @@ export const uiService = (function () {
 
     const initAssistant = async (selectElement) => {
         const options = {
-            addRuleCallbackName: 'addUserRule',
+            addRuleCallbackName: MESSAGE_TYPES.ADD_USER_RULE,
             selectElement,
         };
 

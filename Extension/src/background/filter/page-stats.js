@@ -22,7 +22,7 @@ import { localStorage } from '../storage';
 import { utils } from '../utils/common';
 import { subscriptions } from './filters/subscription';
 import { prefs } from '../prefs';
-import { log } from '../utils/log';
+import { log } from '../../common/log';
 import { lazyGet, lazyGetClear } from '../utils/lazy';
 
 /**

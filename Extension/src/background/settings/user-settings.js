@@ -20,7 +20,7 @@
 import { utils } from '../utils/common';
 import { prefs } from '../prefs';
 import { listeners } from '../notifier';
-import { log } from '../utils/log';
+import { log } from '../../common/log';
 import { localStorage } from '../storage';
 import { browserUtils } from '../utils/browser-utils';
 import { lazyGet } from '../utils/lazy';
@@ -46,7 +46,7 @@ export const settings = (() => {
         DISABLE_COLLECT_HITS: 'hits-count-disabled',
         DISABLE_SHOW_CONTEXT_MENU: 'context-menu-disabled',
         USE_OPTIMIZED_FILTERS: 'use-optimized-filters',
-        DEFAULT_WHITE_LIST_MODE: 'default-whitelist-mode',
+        DEFAULT_ALLOWLIST_MODE: 'default-whitelist-mode',
         DISABLE_SHOW_APP_UPDATED_NOTIFICATION: 'show-app-updated-disabled',
         FILTERS_UPDATE_PERIOD: 'filters-update-period',
         DISABLE_STEALTH_MODE: 'stealth_disable_stealth_mode',
@@ -82,7 +82,7 @@ export const settings = (() => {
                 defaults[settings.DISABLE_SHOW_ADGUARD_PROMO_INFO] = (!browserUtils.isWindowsOs() && !browserUtils.isMacOs()) || browserUtils.isEdgeBrowser();
                 defaults[settings.DISABLE_SAFEBROWSING] = true;
                 defaults[settings.DISABLE_COLLECT_HITS] = true;
-                defaults[settings.DEFAULT_WHITE_LIST_MODE] = true;
+                defaults[settings.DEFAULT_ALLOWLIST_MODE] = true;
                 defaults[settings.USE_OPTIMIZED_FILTERS] = prefs.mobile;
                 defaults[settings.DISABLE_DETECT_FILTERS] = false;
                 defaults[settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION] = false;
@@ -228,8 +228,8 @@ export const settings = (() => {
         setProperty(settings.DISABLE_SHOW_CONTEXT_MENU, !enabled, options);
     };
 
-    const isDefaultWhitelistMode = function () {
-        return getProperty(settings.DEFAULT_WHITE_LIST_MODE);
+    const isDefaultAllowlistMode = function () {
+        return getProperty(settings.DEFAULT_ALLOWLIST_MODE);
     };
 
     const isUseOptimizedFiltersEnabled = function () {
@@ -240,8 +240,8 @@ export const settings = (() => {
         setProperty(settings.USE_OPTIMIZED_FILTERS, !!enabled, options);
     };
 
-    const changeDefaultWhitelistMode = function (enabled) {
-        setProperty(settings.DEFAULT_WHITE_LIST_MODE, enabled);
+    const changeDefaultAllowlistMode = function (enabled) {
+        setProperty(settings.DEFAULT_ALLOWLIST_MODE, enabled);
     };
 
     /**
@@ -312,10 +312,10 @@ export const settings = (() => {
     api.changeCollectHitsCount = changeCollectHitsCount;
     api.showContextMenu = showContextMenu;
     api.changeShowContextMenu = changeShowContextMenu;
-    api.isDefaultWhitelistMode = isDefaultWhitelistMode;
+    api.isDefaultAllowlistMode = isDefaultAllowlistMode;
     api.isUseOptimizedFiltersEnabled = isUseOptimizedFiltersEnabled;
     api.changeUseOptimizedFiltersEnabled = changeUseOptimizedFiltersEnabled;
-    api.changeDefaultWhitelistMode = changeDefaultWhitelistMode;
+    api.changeDefaultAllowlistMode = changeDefaultAllowlistMode;
     api.getFiltersUpdatePeriod = getFiltersUpdatePeriod;
     api.setFiltersUpdatePeriod = setFiltersUpdatePeriod;
     api.isWebRTCDisabled = isWebRTCDisabled;

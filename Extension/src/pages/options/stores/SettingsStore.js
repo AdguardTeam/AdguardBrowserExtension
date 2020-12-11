@@ -6,7 +6,7 @@ import {
     runInAction,
 } from 'mobx';
 
-import { log } from '../../../background/utils/log';
+import { log } from '../../../common/log';
 import { createSavingService, EVENTS as SAVING_FSM_EVENTS } from '../components/Editor/savingFSM';
 import { sleep } from '../../helpers';
 import { messenger } from '../../services/messenger';

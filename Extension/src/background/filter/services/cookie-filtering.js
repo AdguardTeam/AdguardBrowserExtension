@@ -21,7 +21,7 @@ import { utils } from '../../utils/common';
 import { RequestTypes } from '../../utils/request-types';
 import { frames } from '../../tabs/frames';
 import { requestContextStorage } from '../request-context-storage';
-import { log } from '../../utils/log';
+import { log } from '../../../common/log';
 import { webRequestService } from '../request-blocking';
 import { stealthService } from './stealth-service';
 import { browserUtils } from '../../utils/browser-utils';
