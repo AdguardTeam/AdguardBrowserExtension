@@ -62,6 +62,7 @@ const Miscellaneous = observer(() => {
                     inlineControl={(
                         <Setting
                             id={USE_OPTIMIZED_FILTERS}
+                            label={reactTranslator.translate('options_use_optimized_filters')}
                             type={SETTINGS_TYPES.CHECKBOX}
                             value={settings.values[USE_OPTIMIZED_FILTERS]}
                             handler={settingChangeHandler}
@@ -85,6 +86,7 @@ const Miscellaneous = observer(() => {
                         <Setting
                             id={DISABLE_COLLECT_HITS}
                             type={SETTINGS_TYPES.CHECKBOX}
+                            label={reactTranslator.translate('options_collect_hit_stats')}
                             inverted
                             value={settings.values[DISABLE_COLLECT_HITS]}
                             handler={settingChangeHandler}
@@ -99,6 +101,7 @@ const Miscellaneous = observer(() => {
                         <Setting
                             id={DISABLE_SHOW_CONTEXT_MENU}
                             type={SETTINGS_TYPES.CHECKBOX}
+                            label={reactTranslator.translate('options_show_context_menu')}
                             inverted
                             value={settings.values[DISABLE_SHOW_CONTEXT_MENU]}
                             handler={settingChangeHandler}
@@ -113,6 +116,7 @@ const Miscellaneous = observer(() => {
                         <Setting
                             id={DISABLE_SHOW_ADGUARD_PROMO_INFO}
                             type={SETTINGS_TYPES.CHECKBOX}
+                            label={reactTranslator.translate('options_show_adguard_full_version')}
                             inverted
                             value={settings.values[DISABLE_SHOW_ADGUARD_PROMO_INFO]}
                             handler={settingChangeHandler}
@@ -127,6 +131,7 @@ const Miscellaneous = observer(() => {
                         <Setting
                             id={DISABLE_SHOW_APP_UPDATED_NOTIFICATION}
                             type={SETTINGS_TYPES.CHECKBOX}
+                            label={reactTranslator.translate('options_show_app_updated_notification')}
                             inverted
                             value={settings.values[DISABLE_SHOW_APP_UPDATED_NOTIFICATION]}
                             handler={settingChangeHandler}

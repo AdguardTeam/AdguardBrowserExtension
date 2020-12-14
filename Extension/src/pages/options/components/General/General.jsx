@@ -120,6 +120,7 @@ const General = observer(() => {
                             id={ALLOW_ACCEPTABLE_ADS}
                             type={SETTINGS_TYPES.CHECKBOX}
                             value={allowAcceptableAds}
+                            label={reactTranslator.translate('options_allow_acceptable_ads')}
                             handler={allowAcceptableAdsChangeHandler}
                         />
                     )}
@@ -141,6 +142,7 @@ const General = observer(() => {
                             id={DISABLE_SAFEBROWSING}
                             type={SETTINGS_TYPES.CHECKBOX}
                             inverted
+                            label={reactTranslator.translate('options_safebrowsing_enabled')}
                             value={settings.values[DISABLE_SAFEBROWSING]}
                             handler={settingChangeHandler}
                         />
@@ -154,6 +156,7 @@ const General = observer(() => {
                             id={DISABLE_DETECT_FILTERS}
                             type={SETTINGS_TYPES.CHECKBOX}
                             inverted
+                            label={reactTranslator.translate('options_enable_autodetect_filter')}
                             handler={settingChangeHandler}
                             value={settings.values[DISABLE_DETECT_FILTERS]}
                         />
@@ -165,6 +168,7 @@ const General = observer(() => {
                         <Setting
                             id={FILTERS_UPDATE_PERIOD}
                             type={SETTINGS_TYPES.SELECT}
+                            label={reactTranslator.translate('options_set_update_interval')}
                             options={filtersUpdatePeriodOptions}
                             value={settings.values[FILTERS_UPDATE_PERIOD]}
                             handler={settingChangeHandler}

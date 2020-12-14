@@ -107,6 +107,7 @@ const Allowlist = observer(() => {
                     inlineControl={(
                         <Setting
                             id={DEFAULT_ALLOWLIST_MODE}
+                            label={reactTranslator.translate('options_allowlist_invert')}
                             type={SETTINGS_TYPES.CHECKBOX}
                             value={settings.values[DEFAULT_ALLOWLIST_MODE]}
                             handler={settingChangeHandler}

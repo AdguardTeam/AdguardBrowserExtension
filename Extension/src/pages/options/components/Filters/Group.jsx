@@ -87,6 +87,7 @@ const Group = ({
                 <Setting
                     id={groupId}
                     type={SETTINGS_TYPES.CHECKBOX}
+                    label={groupName}
                     value={checkboxValue}
                     handler={checkboxHandler}
                 />
