@@ -188,10 +188,10 @@
         ":focus", ":has", ":has-text", ":hover", ":if", ":if-not", ":in-range", ":invalid", ":lang",
         ":last-child", ":last-of-type", ":link", ":matches-css", ":matches-css-before", ":matches-css-after",
         ":not", ":nth-child", ":nth-last-child", ":nth-last-of-type", ":nth-of-type",
-        ":only-child", ":only-of-type", ":optional", ":out-of-range", ":properties", ":read-only",
+        ":only-child", ":only-of-type", ":optional", ":out-of-range", ":read-only",
         ":read-write", ":required", ":root", ":target", ":valid", ":visited",
-        ":-abp-has", ":-abp-contains", ":-abp-properties", ":xpath", ":nth-ancestor", ":upward", ":remove",
-        ":matches-attr", ":matches-property"];
+        ":-abp-has", ":-abp-contains", ":xpath", ":nth-ancestor", ":upward", ":remove",
+        ":matches-attr", ":matches-property", ":is"];
 
     /**
      * The problem with it is that ":has" and ":contains" pseudo classes are not a valid pseudo classes,
@@ -200,8 +200,8 @@
     CssFilterRule.EXTENDED_CSS_MARKERS = ["[-ext-has=", "[-ext-contains=", "[-ext-has-text=", "[-ext-matches-css=",
         "[-ext-matches-css-before=", "[-ext-matches-css-after=", ":has(", ":has-text(", ":contains(",
         ":matches-css(", ":matches-css-before(", ":matches-css-after(", ":-abp-has(", ":-abp-contains(",
-        ":if(", ":if-not(", ":properties(", ":-abp-properties(", ":xpath(", ":nth-ancestor(", ":upward(", ":remove(",
-        ":matches-attr(", ":matches-property("];
+        ":if(", ":if-not(", ":xpath(", ":nth-ancestor(", ":upward(", ":remove(",
+        ":matches-attr(", ":matches-property(", ":is("];
 
     /**
      * All CSS rules markers start with this character
