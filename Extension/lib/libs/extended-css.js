@@ -1,4 +1,4 @@
-/*! extended-css - v1.3.6 - Fri Nov 27 2020
+/*! extended-css - v1.3.8 - Fri Dec 11 2020
 * https://github.com/AdguardTeam/ExtendedCss
 * Copyright (c) 2020 AdGuard. Licensed LGPL-3.0
 */
@@ -112,11 +112,28 @@ var ExtendedCss = (function () {
   /* eslint-disable no-console */
   var utils = {};
   utils.MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+
+  utils.isSafariBrowser = function () {
+    var isChrome = navigator.userAgent.indexOf('Chrome') > -1;
+    var isSafari = navigator.userAgent.indexOf('Safari') > -1;
+
+    if (isSafari) {
+      if (isChrome) {
+        // Chrome seems to have both Chrome and Safari userAgents
+        return false;
+      }
+
+      return true;
+    }
+
+    return false;
+  }();
   /**
    * Converts regular expressions passed as pseudo class arguments into RegExp instances.
    * Have to unescape doublequote " as well, because we escape them while enclosing such
    * arguments with doublequotes, and sizzle does not automatically unescapes them.
    */
+
 
   utils.pseudoArgToRegex = function (regexSrc, flag) {
     flag = flag || 'i';
@@ -710,8 +727,19 @@ var ExtendedCss = (function () {
       return cssText;
     };
 
+    var isSimpleSelectorValid = function isSimpleSelectorValid(selector) {
+      try {
+        document.querySelectorAll(selector);
+      } catch (e) {
+        return false;
+      }
+
+      return true;
+    };
+
     return {
-      normalize: normalize
+      normalize: normalize,
+      isSimpleSelectorValid: isSimpleSelectorValid
     };
   }();
 
@@ -2975,7 +3003,6 @@ var ExtendedCss = (function () {
    */
 
   var StylePropertyMatcher = function (window) {
-    var isSafari = navigator.vendor && navigator.vendor.indexOf('Apple') > -1 && navigator.userAgent && !navigator.userAgent.match('CriOS');
     var isPhantom = !!window._phantom;
     var useFallback = isPhantom && !!window.getMatchedCSSRules;
     /**
@@ -3025,7 +3052,7 @@ var ExtendedCss = (function () {
         if (style) {
           value = style.getPropertyValue(propertyName); // https://bugs.webkit.org/show_bug.cgi?id=93445
 
-          if (propertyName === 'opacity' && isSafari) {
+          if (propertyName === 'opacity' && utils.isSafariBrowser) {
             value = (Math.round(parseFloat(value) * 100) / 100).toString();
           }
         }
@@ -3652,6 +3679,89 @@ var ExtendedCss = (function () {
   }();
 
   /**
+   * Copyright 2020 Adguard Software Ltd
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+  /**
+   * Class that extends Sizzle and adds support for :is() pseudo element.
+   */
+
+  var IsAnyMatcher = function () {
+    /**
+     * Class that matches element by one of the selectors
+     * https://developer.mozilla.org/en-US/docs/Web/CSS/:is
+     * @param {Array} selectors
+     * @param {string} pseudoElement
+     * @constructor
+     */
+    var IsMatcher = function IsMatcher(selectors, pseudoElement) {
+      this.selectors = selectors;
+      this.pseudoElement = pseudoElement;
+    };
+    /**
+     * Function to check if element can be matched by any passed selector
+     * @param {Element} element to check
+     */
+
+
+    IsMatcher.prototype.matches = function (element) {
+      var isMatched = !!this.selectors.find(function (selector) {
+        var nodes = document.querySelectorAll(selector);
+        return Array.from(nodes).find(function (node) {
+          return node === element;
+        });
+      });
+      return isMatched;
+    };
+    /**
+     * Creates a new pseudo-class and registers it in Sizzle
+     */
+
+
+    var extendSizzle = function extendSizzle(sizzle) {
+      // First of all we should prepare Sizzle engine
+      sizzle.selectors.pseudos['is'] = sizzle.selectors.createPseudo(function (input) {
+        if (input === '') {
+          throw new Error("Invalid argument of :is pseudo-class: ".concat(input));
+        }
+
+        var selectors = input.split(',').map(function (s) {
+          return s.trim();
+        }); // collect valid selectors and log about invalid ones
+
+        var validSelectors = selectors.reduce(function (acc, selector) {
+          if (cssUtils.isSimpleSelectorValid(selector)) {
+            acc.push(selector);
+          } else {
+            utils.logInfo("Invalid selector passed to :is() pseudo-class: '".concat(selector, "'"));
+          }
+
+          return acc;
+        }, []);
+        var matcher = new IsMatcher(validSelectors);
+        return function (element) {
+          return matcher.matches(element);
+        };
+      });
+    };
+
+    return {
+      extendSizzle: extendSizzle
+    };
+  }();
+
+  /**
    * Copyright 2016 Adguard Software Ltd
    *
    * Licensed under the Apache License, Version 2.0 (the "License");
@@ -3674,10 +3784,10 @@ var ExtendedCss = (function () {
    */
 
   var ExtendedSelectorFactory = function () {
-    // while adding new markers, AdGuard extension code also should be corrected:
-    // 'CssFilterRule.SUPPORTED_PSEUDO_CLASSES' and 'CssFilterRule.EXTENDED_CSS_MARKERS'
-    // at Extension/lib/filter/rules/css-filter-rule.js
-    var PSEUDO_EXTENSIONS_MARKERS = [':has', ':contains', ':has-text', ':matches-css', ':-abp-has', ':-abp-has-text', ':if', ':if-not', ':xpath', ':nth-ancestor', ':upward', ':remove', ':matches-attr', ':matches-property', ':-abp-contains'];
+    // while adding new markers, constants in other AdGuard repos should be corrected
+    // AdGuard browser extension : CssFilterRule.SUPPORTED_PSEUDO_CLASSES and CssFilterRule.EXTENDED_CSS_MARKERS
+    // tsurlfilter, SafariConverterLib : EXT_CSS_PSEUDO_INDICATORS
+    var PSEUDO_EXTENSIONS_MARKERS = [':has', ':contains', ':has-text', ':matches-css', ':-abp-has', ':-abp-has-text', ':if', ':if-not', ':xpath', ':nth-ancestor', ':upward', ':remove', ':matches-attr', ':matches-property', ':-abp-contains', ':is'];
     var initialized = false;
     var Sizzle;
     /**
@@ -3698,7 +3808,9 @@ var ExtendedCss = (function () {
 
       AttributesMatcher.extendSizzle(Sizzle); // Add :matches-property() support
 
-      ElementPropertyMatcher.extendSizzle(Sizzle); // Add :contains, :has-text, :-abp-contains support
+      ElementPropertyMatcher.extendSizzle(Sizzle); // Add :is() support
+
+      IsAnyMatcher.extendSizzle(Sizzle); // Add :contains, :has-text, :-abp-contains support
 
       var containsPseudo = Sizzle.selectors.createPseudo(function (text) {
         if (/^\s*\/.*\/[gmisuy]*\s*$/.test(text)) {
@@ -4718,9 +4830,15 @@ var ExtendedCss = (function () {
     var EventTracker = function () {
       var ignoredEventTypes = ['mouseover', 'mouseleave', 'mouseenter', 'mouseout'];
       var LAST_EVENT_TIMEOUT_MS = 10;
-      var TRACKED_EVENTS = [// keyboard events
+      var EVENTS = [// keyboard events
       'keydown', 'keypress', 'keyup', // mouse events
-      'auxclick', 'click', 'contextmenu', 'dblclick', 'mousedown', 'mouseenter', 'mouseleave', 'mousemove', 'mouseover', 'mouseout', 'mouseup', 'pointerlockchange', 'pointerlockerror', 'select', 'wheel'];
+      'auxclick', 'click', 'contextmenu', 'dblclick', 'mousedown', 'mouseenter', 'mouseleave', 'mousemove', 'mouseover', 'mouseout', 'mouseup', 'pointerlockchange', 'pointerlockerror', 'select', 'wheel']; // 'wheel' event makes scrolling in Safari twitchy
+      // https://github.com/AdguardTeam/ExtendedCss/issues/120
+
+      var safariProblematicEvents = ['wheel'];
+      var trackedEvents = utils.isSafariBrowser ? EVENTS.filter(function (el) {
+        return !(safariProblematicEvents.indexOf(el) > -1);
+      }) : EVENTS;
       var lastEventType;
       var lastEventTime;
 
@@ -4729,7 +4847,7 @@ var ExtendedCss = (function () {
         lastEventTime = Date.now();
       };
 
-      TRACKED_EVENTS.forEach(function (evName) {
+      trackedEvents.forEach(function (evName) {
         document.documentElement.addEventListener(evName, trackEvent, true);
       });
 
