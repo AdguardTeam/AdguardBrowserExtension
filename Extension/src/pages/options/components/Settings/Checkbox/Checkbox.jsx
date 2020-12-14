@@ -33,6 +33,10 @@ const Checkbox = (props) => {
             <label
                 htmlFor={id}
                 className="checkbox__label"
+                tabIndex="0"
+                role="checkbox"
+                aria-checked={value}
+                aria-labelledby={id}
             />
         </div>
     );
