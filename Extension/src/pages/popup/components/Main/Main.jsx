@@ -71,6 +71,7 @@ export const Main = observer(() => {
                 type="button"
                 className="switcher"
                 onClick={switcher.handler}
+                title={reactTranslator.translate('popup_switch_button')}
             >
                 <div className="switcher__center" />
                 <div className="switcher__btn">

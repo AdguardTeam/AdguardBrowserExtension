@@ -22,6 +22,7 @@ export const Footer = observer(() => {
                     target="_blank"
                     rel="noreferrer"
                     className="footer__link"
+                    title={reactTranslator.translate('popup_adguard_for_ios')}
                 >
                     <Icon
                         id="#apple"
@@ -33,6 +34,7 @@ export const Footer = observer(() => {
                     target="_blank"
                     rel="noreferrer"
                     className="footer__link"
+                    title={reactTranslator.translate('popup_adguard_for_android')}
                 >
                     <Icon
                         id="#android"
