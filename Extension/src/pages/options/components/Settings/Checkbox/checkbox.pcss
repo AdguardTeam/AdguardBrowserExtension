@@ -1,6 +1,12 @@
 .checkbox {
+    position: relative;
+
     &__in {
-        display: none;
+        position: absolute;
+        height: 20px;
+        width: 40px;
+        overflow: hidden;
+        clip: rect(1px, 1px, 1px, 1px);
 
         &:checked + .checkbox__label {
             background-color: var(--green74);
@@ -14,6 +20,7 @@
     }
 
     &__label {
+        font-size: 0;
         position: relative;
         display: block;
         width: 40px;

@@ -53,6 +53,7 @@ const Stealth = observer(() => {
                         <Setting
                             id={DISABLE_STEALTH_MODE}
                             type={SETTINGS_TYPES.CHECKBOX}
+                            label={reactTranslator.translate('options_privacy_title')}
                             inverted
                             value={settings.values[DISABLE_STEALTH_MODE]}
                             handler={settingChangeHandler}
@@ -73,6 +74,7 @@ const Stealth = observer(() => {
                         <Setting
                             id={SELF_DESTRUCT_THIRD_PARTY_COOKIES}
                             type={SETTINGS_TYPES.CHECKBOX}
+                            label={reactTranslator.translate('options_third_party_title')}
                             value={settings.values[SELF_DESTRUCT_THIRD_PARTY_COOKIES]}
                             handler={settingChangeHandler}
                         />
@@ -95,6 +97,7 @@ const Stealth = observer(() => {
                         <Setting
                             id={SELF_DESTRUCT_FIRST_PARTY_COOKIES}
                             type={SETTINGS_TYPES.CHECKBOX}
+                            label={reactTranslator.translate('options_first_party_title')}
                             value={settings.values[SELF_DESTRUCT_FIRST_PARTY_COOKIES]}
                             handler={settingChangeHandler}
                         />
@@ -122,6 +125,7 @@ const Stealth = observer(() => {
                         <Setting
                             id={HIDE_REFERRER}
                             type={SETTINGS_TYPES.CHECKBOX}
+                            label={reactTranslator.translate('options_hide_referrer_title')}
                             value={settings.values[HIDE_REFERRER]}
                             handler={settingChangeHandler}
                         />
@@ -136,6 +140,7 @@ const Stealth = observer(() => {
                         <Setting
                             id={HIDE_SEARCH_QUERIES}
                             type={SETTINGS_TYPES.CHECKBOX}
+                            label={reactTranslator.translate('options_hide_search_queries_title')}
                             value={settings.values[HIDE_SEARCH_QUERIES]}
                             handler={settingChangeHandler}
                         />
@@ -150,6 +155,7 @@ const Stealth = observer(() => {
                         <Setting
                             id={SEND_DO_NOT_TRACK}
                             type={SETTINGS_TYPES.CHECKBOX}
+                            label={reactTranslator.translate('options_send_not_track_title')}
                             value={settings.values[SEND_DO_NOT_TRACK]}
                             handler={settingChangeHandler}
                         />
@@ -164,6 +170,7 @@ const Stealth = observer(() => {
                         <Setting
                             id={BLOCK_WEBRTC}
                             type={SETTINGS_TYPES.CHECKBOX}
+                            label={reactTranslator.translate('options_disable_webrtc_title')}
                             value={settings.values[BLOCK_WEBRTC]}
                             handler={settingChangeHandler}
                         />
@@ -178,6 +185,7 @@ const Stealth = observer(() => {
                         <Setting
                             id={STRIP_TRACKING_PARAMETERS}
                             type={SETTINGS_TYPES.CHECKBOX}
+                            label={reactTranslator.translate('options_strip_tracking_params_title')}
                             value={settings.values[STRIP_TRACKING_PARAMETERS]}
                             handler={settingChangeHandler}
                         />

@@ -115,6 +115,7 @@ const Filter = ({
                         <Setting
                             id={filterId}
                             type={SETTINGS_TYPES.CHECKBOX}
+                            label={name}
                             value={checkboxValue}
                             handler={checkboxHandler}
                         />

@@ -69,7 +69,7 @@ const Group = ({
     });
     return (
         <div className={groupClassName}>
-            <div className="setting__area" role="presentation" onClick={groupClickHandler}>
+            <button type="button" className="setting__area" onClick={groupClickHandler}>
                 <Icon
                     id={`#setting-${groupId}`}
                     classname="icon--setting setting__icon"
@@ -82,11 +82,12 @@ const Group = ({
                         {renderEnabledFilters(enabledFilters)}
                     </div>
                 </div>
-            </div>
+            </button>
             <div className="setting__inline-control">
                 <Setting
                     id={groupId}
                     type={SETTINGS_TYPES.CHECKBOX}
+                    label={groupName}
                     value={checkboxValue}
                     handler={checkboxHandler}
                 />

@@ -18,7 +18,7 @@ export const Setting = (props) => {
     switch (type) {
         case SETTINGS_TYPES.CHECKBOX: {
             const {
-                id, handler, inverted, value,
+                id, handler, inverted, value, label,
             } = props;
             return (
                 <Checkbox
@@ -26,6 +26,7 @@ export const Setting = (props) => {
                     handler={handler}
                     inverted={inverted}
                     value={value}
+                    label={label}
                 />
             );
         }

@@ -45,7 +45,8 @@ export const Actions = observer(() => {
 
     return (
         <div className="actions">
-            <div
+            <button
+                type="button"
                 className={actionChangingClassname}
                 onClick={handleBlockAds}
             >
@@ -56,8 +57,9 @@ export const Actions = observer(() => {
                 <div className="action-title">
                     {reactTranslator.translate('popup_block_site_ads')}
                 </div>
-            </div>
-            <div
+            </button>
+            <button
+                type="button"
                 className="action"
                 onClick={handleOpenFilteringLog}
             >
@@ -68,8 +70,9 @@ export const Actions = observer(() => {
                 <div className="action-title">
                     {reactTranslator.translate('popup_open_filtering_log')}
                 </div>
-            </div>
-            <div
+            </button>
+            <button
+                type="button"
                 className={actionChangingClassname}
                 onClick={handleAbuseSite}
             >
@@ -80,8 +83,9 @@ export const Actions = observer(() => {
                 <div className="action-title">
                     {reactTranslator.translate('popup_abuse_site')}
                 </div>
-            </div>
-            <div
+            </button>
+            <button
+                type="button"
                 className={actionChangingClassname}
                 onClick={handleCheckSiteSecurity}
             >
@@ -92,7 +96,7 @@ export const Actions = observer(() => {
                 <div className="action-title">
                     {reactTranslator.translate('popup_security_report')}
                 </div>
-            </div>
+            </button>
         </div>
     );
 });
