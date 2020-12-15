@@ -445,22 +445,6 @@ QUnit.test('Valid Pseudo Class', (assert) => {
     assert.notOk(cssFilterRule.isInjectRule);
     assert.notOk(cssFilterRule.whiteListRule);
     assert.equal(selector, cssFilterRule.cssSelector);
-
-    selector = '.todaystripe:properties(background-color: rgb\(0, 0, 0\))';
-    ruleText = `w3schools.com##${selector}`;
-    cssFilterRule = new adguard.rules.CssFilterRule(ruleText);
-    assert.ok(cssFilterRule != null);
-    assert.notOk(cssFilterRule.isInjectRule);
-    assert.notOk(cssFilterRule.whiteListRule);
-    assert.equal(selector, cssFilterRule.cssSelector);
-
-    selector = '.todaystripe:-abp-properties(background-color: rgb\(0, 0, 0\))';
-    ruleText = `w3schools.com##${selector}`;
-    cssFilterRule = new adguard.rules.CssFilterRule(ruleText);
-    assert.ok(cssFilterRule != null);
-    assert.notOk(cssFilterRule.isInjectRule);
-    assert.notOk(cssFilterRule.whiteListRule);
-    assert.equal(selector, cssFilterRule.cssSelector);
 });
 
 QUnit.test('Filter Rule With Colon', (assert) => {
@@ -482,12 +466,34 @@ QUnit.test('Filter Rule With Colon', (assert) => {
 });
 
 QUnit.test('Invalid Pseudo Class', (assert) => {
+    let selector;
+    let ruleText;
+
+    selector = 'test:matches(.whatisthis)'
     try {
-        const ruleText = 'yandex.ru##test:matches(.whatisthis)';
+        ruleText = `yandex.ru##${selector}`;
         new adguard.rules.CssFilterRule(ruleText);
         throw new Error('Rule should not be parsed successfully');
     } catch (ex) {
-        assert.equal(ex.message, 'Unknown pseudo class: test:matches(.whatisthis)');
+        assert.equal(ex.message, `Unknown pseudo class: ${selector}`);
+    }
+
+    selector = '.todaystripe:properties(background-color: rgb\(0, 0, 0\))';
+    try {
+        ruleText = `w3schools.com##${selector}`;
+        new adguard.rules.CssFilterRule(ruleText);
+        throw new Error('Rule should not be parsed successfully');
+    } catch (ex) {
+        assert.equal(ex.message, `Unknown pseudo class: ${selector}`);
+    }
+
+    selector = '.todaystripe:-abp-properties(background-color: rgb\(0, 0, 0\))';
+    try {
+        ruleText = `w3schools.com##${selector}`;
+        new adguard.rules.CssFilterRule(ruleText);
+        throw new Error('Rule should not be parsed successfully');
+    } catch (ex) {
+        assert.equal(ex.message, `Unknown pseudo class: ${selector}`);
     }
 });
 
@@ -593,16 +599,6 @@ QUnit.test('Extended Css Rules Pseudo Classes', (assert) => {
 
     // :if-not
     selector = '.todaystripe:if-not(.banner)';
-    ruleText = `w3schools.com##${selector}`;
-    cssFilterRule = new adguard.rules.CssFilterRule(ruleText);
-    assert.ok(cssFilterRule);
-    assert.ok(cssFilterRule.extendedCss);
-    assert.notOk(cssFilterRule.isInjectRule);
-    assert.notOk(cssFilterRule.whiteListRule);
-    assert.equal(selector, cssFilterRule.cssSelector);
-
-    // :properties
-    selector = '.todaystripe::properties(background-color: rgb\(0, 0, 0\))';
     ruleText = `w3schools.com##${selector}`;
     cssFilterRule = new adguard.rules.CssFilterRule(ruleText);
     assert.ok(cssFilterRule);
