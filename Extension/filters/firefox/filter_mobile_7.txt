@@ -1,8 +1,8 @@
-! Checksum: P8O2DhbBBN2YhGPizsBgMA
+! Checksum: 607Gp3Jh/v+WorybDSvaCg
 ! Title: AdGuard Japanese filter (Optimized)
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.4.77
-! TimeUpdated: 2020-12-06T20:31:40+03:00
+! Version: 2.0.4.88
+! TimeUpdated: 2020-12-17T13:32:04+03:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -309,13 +309,15 @@
 ||widget-view.dmm.com^
 ||widget.zenback.jp^$third-party
 ||w.zenback.jp^$third-party
+||manga1000.com/atba.js
+||manga1001.com/atba.js
 @@/assets/scripts/fab.js$domain=life-n.jp|point-news.jp
 ||freemen.jp/wp-content/uploads/gftpkzd.js
 @@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=freemen.jp
 ||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$script,redirect=googlesyndication-adsbygoogle,important,domain=freemen.jp
 manga1000.com#$##dsaxdsf2 { height: 1px!important; }
 @@||my0nio.seesaa.net^$generichide
-/modal-dist/index.js$script,domain=diamond.jp|iza.ne.jp|lifehacker.jp|newsweekjapan.jp
+/modal-dist/index.js$script,domain=ananweb.jp|diamond.jp|iza.ne.jp|lifehacker.jp|newsweekjapan.jp
 @@||pointservice.com/res/media/common/ad/adframe.js$script,domain=goldencocco.jp|mottonoutore.jp
 goldencocco.jp#%#//scriptlet("set-constant", "adblock", "false")
 mottonoutore.jp#%#//scriptlet("set-constant", "adblock", "false")
@@ -327,7 +329,6 @@ ad-contents.jp#%#//scriptlet("prevent-addEventListener", "load", "ad blocker")
 ad-contents.jp#$#.ui-wrapper { display: block !important; }
 !+ NOT_PLATFORM(ext_safari)
 ad-contents.jp#$#.mid-rectangle { display: none !important; }
-@@||popjav.tv^$generichide
 ap-siken.com,db-siken.com,fe-siken.com,itpassportsiken.com,nw-siken.com,pm-siken.com,sc-siken.com,sg-siken.com#%#//scriptlet("prevent-setTimeout", "/(ad|_0x)/")
 server-setting.info#@#.adsbygoogle
 applion.jp#@#.ads-ad
@@ -337,7 +338,6 @@ gigaho.com#$#.entry-content { display: block!important; }
 gigaho.com#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links { display:block!important; }
 gigaho.com#%#AG_onLoad(function() { var el=document.querySelector('ins.adsbygoogle'); var ce=document.createElement('iframe'); ce.style = 'width: 0px !important; border: none !important;'; if(el) { el.appendChild(ce); } });
 gigaho.com$$script[wildcard="*window.onload*document.getElementsByClassName*adsbygoogle*"][min-length="600"][max-length="1200"]
-manga1001.com#%#//scriptlet("abort-current-inline-script", "onload", "checkads")
 @@||helpsupport.blog.fc2.com^$generichide
 @@||imasdk.googleapis.com/pal/sdkloader/pal.js$domain=dplay.jp
 @@||v.fwmrm.net/ad/g/1?$domain=dplay.jp
@@ -375,7 +375,6 @@ avgle.com#@#a[href^="http://bongacams.com/track?"]
 @@||*.info/sc?u=
 @@||*.club/sc?u=
 socom.yokohama#@#.an-advert-banner
-socom.yokohama#@##adsense
 socom.yokohama#@#.an-sponsored
 !+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
 @@||jinseinokiduki.com^$generichide
@@ -424,13 +423,12 @@ weathernews.jp#?#.block:has(script[src$="/yads.js"])
 xtech.nikkei.com#?#.l-main_primary > section[class="l-section"]:has(> div.c-iconAd)
 xtech.nikkei.com#?#.p-article_footer > section[class="l-section"]:has(> div.c-iconAd)
 xtech.nikkei.com#?#.p-article_footer > section[class="l-section"]:has(> #recommend > .p-articlePanel_item > div[id^="div-gpt-ad"])
-solomon-review.net###right_folder > div.textwidget:has(ins.adsbygoogle)
-solomon-review.net###right_folder > div.textwidget:has(> a[rel^="nofollow"] > img)
+solomon-review.net#?##right_folder > div.textwidget:has(ins.adsbygoogle)
+solomon-review.net#?##right_folder > div.textwidget:has(> a[rel^="nofollow"] > img)
 mainichi.jp#?#.section.ad:has(> div[id^="insertAdSpaceBeforeThis"])
 asahi.com#?##SubInner > div[class]:has(> div.Pr)
 asahi.com#?##SubInner > div[class]:has(> div.Ad)
 fod.fujitv.co.jp#?##video_container > div[style*="position: absolute; overflow: hidden;"]:has(> img[src="/plus7/web/imgs/animation_spinner.gif"])
-popjav.tv#$?#.releated_video_list > li.releated_video:has(> div.releatedadsholder) { visibility: hidden !important; }
 himasoku.com#?#.article-body > center:has(> a[href^="https://wu."] > img)
 helpsupport.blog.fc2.com#?#.mdl-quigo > div[style^="height:"][style*="margin-bottom:"]:not([class]):not([id]):has(> script:first-child:contains(amzn_assoc_ad_type))
 hosyusokuhou.jp#?##side > div.sidewrapper:has(> div.sidetitle:contains(★スポンサー))
@@ -576,6 +574,7 @@ gotouchi.jp#%#//scriptlet("set-constant", "sec", "0")
 cmnw.jp#%#//scriptlet("set-constant", "sec", "0")
 xbooks.to#%#document.cookie = "pop=1";
 avgle.com#%#AG_onLoad(function() { closeAd(); });
+realtime-chart.info#$#div[class="澑掎呵狎ﾞl踪孳湮l"] > div[style="height:334px;width:100%;background:#000;font-size:38px"] { height: auto !important; }
 sp.jp.wazap.com#$#.gmoam_outer_wrapper { display: none !important; }
 sp.jp.wazap.com#$#body[style="position: fixed;"] { position: static !important }
 tv-asahi.co.jp#$##common-header > div[class^="common-header-pc-"] { padding-top: 0 !important; }
@@ -631,8 +630,9 @@ iza.ne.jp#$#.sideFixedWrapper { position: relative!important; }
 /RankingLogging.
 /TextAD1.
 /top/head_bnr
-/^(?!.*(bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yandex.net|yastatic.net|ytimg.com|zencdn.net|player|youtube.com)).*$/$third-party,script,domain=9tsu.net|jshow.tv
+/^(?!.*(bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yandex.net|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com)).*$/$third-party,script,domain=9tsu.net|jshow.tv
 ||feed.mikle.com^$domain=blog.livedoor.jp|crx7601.com|fate-rpg.jp|gadgetlife2ch.blomaga.jp|gtoys.blog.fc2.com|h1g.jp|hdouga.com|ibarakinews.jp|obutu.com|totalwar.doorblog.jp|xn--bckadddb2a0d4dnc8dwhngdtb58aya0l4a2om843g5npczp7dwh5g.com|xn--cckea5a6cidcbh6ce7ghug17a2ge3aht3nwigef51658aw7kd.com
+media.moneyforward.com##div[data-ads]
 ||news.2chblog.jp/headline1.htm
 ||news.2chblog.jp/headline2.htm
 news.2chblog.jp##.article-body-inner > table[width="750"][height="320"]
@@ -641,6 +641,7 @@ cinematoday.jp##.col-sidebar > div[style="min-height:100px"]
 dailyanime.news##.advTable
 dailyanime.news##.side-layoutLMovable
 dailyanime.news##.side-layoutRMovable
+milcow.com##.adaida
 eikaiwamastery.blogspot.jp###HTML2
 manga-comic-netabare.com,omansoku.com,sakasa-panty.com,shibukoi.com##.home_widget
 smhn.info###text-22
@@ -1046,7 +1047,6 @@ kuron-zero.com###kuron_ad_td
 ufret.jp###float-bnr
 5ch.net##.ADVERTISE_AREA
 5ch.net##body > div[style*="margin-top:10px;margin-bottom:10px;width:100%;text-align:center;"] > div[style*="background-color:#ccffcc"]
-popjav.tv##.poplayer
 jump.5ch.net##a[href*="myshopify.com"]
 eromanga-time.com###spwrapper
 limo.media##div[class^="affi-"]
@@ -1390,6 +1390,8 @@ itest.5ch.net##.ranking > div[style^="height: 320px;"]
 itest.5ch.net##.res_ad
 itest.5ch.net##div[class^="sproutad_"]
 itest.5ch.net##[class*="js-ads-content-top_"]
+avgle.com##.footer-banner
+avgle.com##iframe[src^="//ads.adxadserv.com/"]
 avgle.com###exo-native
 avgle.com##.hide-me-please2
 ||adserver.juicyads.com/js/jads.js$domain=avgle.com
@@ -1421,6 +1423,7 @@ gtoys.blog.fc2.com###adleft
 !+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
 gtoys.blog.fc2.com###adright
 @@||identity.mparticle.com/*/login$xmlhttprequest,domain=dplay.jp
+@@||myfigure.jp/banner/$image,domain=milcow.com
 @@||picrew.me/player/api/ads?$xmlhttprequest,~third-party
 @@||proto2ad.durasite.net/A-affiliate2/mobile$script,domain=ok.goo-net.com
 lifehacker.jp#@#.is-sponsored

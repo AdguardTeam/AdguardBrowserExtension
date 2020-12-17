@@ -1,8 +1,8 @@
-! Checksum: mdxp7wnva9pqd717q4v2UA
+! Checksum: 03VsPpaTV1Hmy07lH9PD7g
 ! Title: Filter unblocking search ads and self-promotion (Optimized)
 ! Description: Filter that unblocks search (Duckduckgo, Google, Bing, Yahoo) and self-promo ads. Self-promotion definition: when an ad on a website is promoting this very website or other websites/social media/etc closely related to it, such ad is considered a self-promoting one.
-! Version: 2.0.1.22
-! TimeUpdated: 2020-11-19T23:30:08+03:00
+! Version: 2.0.1.24
+! TimeUpdated: 2020-12-16T01:30:06+03:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -94,6 +94,8 @@ amazon.de#@?##content > .a-spacing-top-large > .a-section:has(> .a-section > div
 amazon.de#@##productAlert_feature_div
 amazon.de#@#span[class*="widget=loom-desktop-inline-slot"]
 amazon.de#@?#div[data-asin]:has(> div.sg-col-inner > span[class*="widget=loom-desktop-inline-slot"])
+amazon.de#@#.sbx-mobile
+amazon.de#@#.s-result-list > div[data-asin=""][data-index="0"]:not([data-uuid])
 mediafire.com#@##upsellBox
 @@||startpage.com/adsense/search/async-ads.js$domain=startpage.com
 @@||startpage.com^$elemhide,content

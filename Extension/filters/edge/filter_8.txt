@@ -1,8 +1,8 @@
-! Checksum: Yq3z8u/Q/hffLUjSQNwbtg
+! Checksum: 1cAYOweovbecXA5CF6TkCw
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.0.99
-! TimeUpdated: 2020-12-01T12:06:44+03:00
+! Version: 2.0.1.2
+! TimeUpdated: 2020-12-14T20:04:23+03:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -75,14 +75,13 @@
 ! JS API FINISH
 !---------------------------------------------------------------------------!
 -reclameplaatjes/
-.be/ads/
 /adbron.
 /adtwee/*
 /adv_tekstlinks.
 /adverteerders/*
 /advertentie-banner-
 /advertentie.$domain=~2dehands.be|~anzeigen-aufgabe-alpha.de|~anzeigen-aufgabe-beta.de|~anzeigen-aufgabe-test.de|~rd.nl|~tweedehands.nl
-/advertentie/*$domain=~2dehands.be|~anzeigen-aufgabe-alpha.de|~anzeigen-aufgabe-beta.de|~anzeigen-aufgabe-test.de|~tweedehands.nl~rd.nl
+/advertentie/*$domain=~2dehands.be|~anzeigen-aufgabe-alpha.de|~anzeigen-aufgabe-beta.de|~anzeigen-aufgabe-test.de|~tweedehands.nl|~rd.nl
 /advertentie1.
 /advertentie2/*
 /advertentie_head.
@@ -114,7 +113,6 @@ _advertentieleaderboardhome.
 ||ad-skills-copy.nl^$third-party
 ||admatcher.videostrip.com^$domain=q-music.nl|radioveronica.nl|skoften.net|sport1.nl|vi.nl
 ||admerize.be^$third-party
-||adrcdn.com^$third-party
 ||affiliatepartners.com^$third-party
 ||am.seoptics.nl^$third-party
 ||asp.unitedconsumers.com^$third-party
@@ -159,7 +157,6 @@ _advertentieleaderboardhome.
 ||partnerclicks.nl^$third-party
 ||partnerprogramma.bol.com^$third-party
 ||partnerwebsites.financereview.nl^$third-party
-||pebblemedia.be^$third-party
 ||pics.obedo.nl^$third-party
 ||promotions.teasemedia.nl^$third-party
 ||qads6.nl^$third-party
@@ -711,7 +708,6 @@ _advertentieleaderboardhome.
 ||xmissymedia.com/galleries/*/banners/
 ||youreon.nl/banners/
 ||z24.nl^*/ad_panel.css
-||z24.nl^*/ads.css
 ||zdnet.be/css/1/wallpaper_style_
 ||zideo.nl/scripts/banner/
 ||zoomin.tv/video/590x332_
@@ -891,7 +887,6 @@ _advertentieleaderboardhome.
 ##.ad_list_row_normal2_no_border
 ##.admarkt_bottom_list_header
 ##.admarkt_gallery_info
-##.adsense-csa
 ##.adstekst
 ##.advertentie
 ##.advertenties
@@ -1079,7 +1074,6 @@ welingelichtekringen.nl##.artblok:nth-child(-2n+6)
 rechtennieuws.nl##.artikel_informatie > div[style="clear: both; float: left; position: relative; margin: 5px 0px 15px 0px; padding: 0px; text-align: center; width: 280px; color: #cccccc; font-size: 10px;"]
 2xklikken.nl,at5.nl,belgie.fm,camping-frankrijk.nl,ed.nl,elkspel.nl,express.be,fd.nl,hetkrantje-online.nl,koopplein.nl,mensenlinq.nl,nederland.fm,nederlandmobiel.nl,nieuws.nl,privesexopname.nl,startbewijs.nl,studenten.nl,telegraaf.nl,toeto.com,waldnet.nl,westlanders.nu,zappsite.nl##.banner
 weeronline.nl##.banner + .specialBlockDiv
-at5.nl##.banner-300-100
 tvgids.nl##.banner-custom
 tvgids.nl##.banner-rectangle
 tvgids.nl##.banner-skyscraper
@@ -1273,7 +1267,6 @@ motor-forum.nl##div[id$="_banner"]
 ongein.nl##div[id$="_divAdNL"]
 songteksten.net##div[id$="banner"]
 zie.nl##div[id^="advertisement_"]
-marktplaats.nl##div[id^="google_ads_iframe_"]
 hababam.nl##div[id^="had"]
 binaries4all.nl##div[id^="payserver"]
 weertdegekste.nl##div[id^="sidebar"] a[target="_blank"] > img
@@ -1354,7 +1347,6 @@ telegraaf.nl#@#.imgad
 ad.nl#@#.nav_ad
 bokt.nl#@#.node-ad
 landleven.nl#@#.post-ad
-amonis.be#@#.text-ad
 kamernet.nl#@#.topAdd
 voetbalnieuws.be#@#a[href^="http://adserving.unibet.com/"]
 tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
@@ -1379,6 +1371,8 @@ tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
 @@||content.hwigroup.net/images^$domain=hardware.info
 hardware.info,tweakers.net#@#.AdBar
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/69783
+vier.be#@#.googleAd
 ! https://github.com/AdguardTeam/AdguardFilters/issues/64292
 ! https://github.com/AdguardTeam/AdguardFilters/issues/62479
 ! https://github.com/AdguardTeam/AdguardFilters/issues/56379
@@ -1400,7 +1394,6 @@ indeleiderstrui.nl#%#AG_abortInlineScript(/Flags\.newInject/, 'window.Math');
 @@||looopings.nl/ad*.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/18487
 windowstechblog.nl#@#.an-advert-banner
-windowstechblog.nl#@##adsense
 windowstechblog.nl#@#.an-sponsored
 ! https://github.com/AdguardTeam/AdguardFilters/issues/17023
 icttipsandtricks.nl##body > div[style^="position: fixed; top:"][style*="z-index: 9999"]:not([class]):not([id])
