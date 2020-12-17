@@ -25,60 +25,52 @@ adguard.notifications = (function (adguard) {
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
     const LAST_NOTIFICATION_TIME = 'viewed-notification-time';
 
-    const blackFridayNotification = {
-        id: 'blackFriday2020',
+    const newYear2021Notification = {
+        id: 'newYear2021',
         locales: {
             en: {
-                title: 'Black Friday at AdGuard',
-                btn: 'It\'s a big deal',
+                title: 'Holiday Sale and Giveaway',
+                btn: 'Unwrap your gift',
             },
             ru: {
-                title: 'Скидки к Чёрной пятнице',
-                btn: 'Ого, для меня?',
-            },
-            de: {
-                title: 'Black Friday Deal',
-                btn: 'Zum Angebot',
+                title: 'Новогодние скидки и призы',
+                btn: 'Открыть подарок',
             },
             ja: {
-                title: 'AdGuard BLACK FRIDAY',
-                btn: '最大割引を手に入れる',
+                title: 'AdGuardでクリスマス',
+                btn: 'プレゼントをもらう',
             },
             ko: {
-                title: '블랙 \n프라이데이 \n세일',
-                btn: '최대 할인!',
+                title: '크리스마스 및 새해 맞이 할인 행사',
+                btn: '선물 받기',
             },
             zh_cn: {
-                title: '黑5 \n全球 \n狂欢',
-                btn: '疯狂购',
+                title: 'AdGuard 送礼送好运',
+                btn: '抓个礼物',
             },
             zh_tw: {
-                title: '黑五 \n狂歡 \n購物節',
-                btn: '瘋狂大減價',
+                title: 'AdGuard $ 暖心年終送禮',
+                btn: '享好禮',
             },
             fr: {
-                title: 'Promo Black Friday',
-                btn: 'Ah, je veux voir !',
-            },
-            it: {
-                title: 'Sconti Black Friday',
-                btn: 'Vediamo un po\'',
+                title: 'Promo : AdGuard fête Noël !',
+                btn: 'Ouvrir mon cadeau',
             },
         },
         text: '',
-        url: 'https://adguard.com/forward.html?action=bf2020_notify&app=browser_extension',
-        from: '27 November 2020 12:00:01',
-        to: '1 December 2020 23:59:00',
+        url: 'https://adguard.com/forward.html?action=ny2021_notify&app=browser_extension',
+        from: '24 December 2020 12:00:00',
+        to: '31 December 2020 12:00:00',
         type: 'animated',
         get icons() {
-            return adguard.lazyGet(blackFridayNotification, 'icons', () => ({
+            return adguard.lazyGet(newYear2021Notification, 'icons', () => ({
                 ICON_GREEN: {
-                    '19': adguard.getURL('icons/black-19-black-friday.png'),
-                    '38': adguard.getURL('icons/black-38-black-friday.png'),
+                    '19': adguard.getURL('icons/gold-19-new-year.png'),
+                    '38': adguard.getURL('icons/gold-38-new-year.png'),
                 },
                 ICON_GRAY: {
-                    '19': adguard.getURL('icons/gray-19.png'),
-                    '38': adguard.getURL('icons/gray-38.png'),
+                    '19': adguard.getURL('icons/gray-19-new-year.png'),
+                    '38': adguard.getURL('icons/gray-38-new-year.png'),
                 },
             }));
         },
@@ -100,7 +92,7 @@ adguard.notifications = (function (adguard) {
      * @property {string} type;
      */
     const notifications = {
-        blackFriday2020: blackFridayNotification,
+        newYear2021: newYear2021Notification,
     };
 
     /**

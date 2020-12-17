@@ -213,12 +213,14 @@
                                         ${disableNotificationText}
                                     </a>
                                 </div>
-                                <div class="adguard-update-popup__offer${showPromoNotification ? ' adguard-update-popup__offer--promo' : ''}">
-                                    ${offer}
+                                <div class="adguard-update-popup__offer${showPromoNotification ? ' adguard-update-popup__offer--show' : ''}">
+                                    <div class="adguard-update-popup__offer-desc">
+                                        ${offer}
+                                    </div>
+                                    <a href="${offerButtonHref}" class="adguard-update-popup__btn close-iframe set-notification-viewed${showPromoNotification ? ' adguard-update-popup__btn--promo' : ''}" target="_blank">
+                                        ${offerButtonText}
+                                    </a>
                                 </div>
-                                <a href="${offerButtonHref}" class="adguard-update-popup__btn close-iframe set-notification-viewed${showPromoNotification ? ' adguard-update-popup__btn--promo' : ''}" target="_blank">
-                                    ${offerButtonText}
-                                </a>
                             </div>
                             </body>`;
 
