@@ -1,8 +1,8 @@
-! Checksum: WJ+95raMgNJDefDEac8PHg
+! Checksum: qrJdQ5Y590nKIkkBti2VSQ
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.4.77
-! TimeUpdated: 2020-12-06T20:31:40+03:00
+! Version: 2.0.4.88
+! TimeUpdated: 2020-12-17T13:32:04+03:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -403,6 +403,10 @@
 !
 ! These rules are against all kinds of ad blocking reinjection/circumvention scripts
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/69361
+||manga1000.com/atba.js
+! https://github.com/AdguardTeam/AdguardFilters/issues/69603
+||manga1001.com/atba.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/67394
 @@/assets/scripts/fab.js$domain=life-n.jp|point-news.jp
 ! https://github.com/AdguardTeam/AdguardFilters/issues/65807
@@ -415,7 +419,7 @@ manga1000.com#$##dsaxdsf2 { height: 1px!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/pull/61513/
 @@||my0nio.seesaa.net^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/60864
-/modal-dist/index.js$script,domain=diamond.jp|iza.ne.jp|lifehacker.jp|newsweekjapan.jp
+/modal-dist/index.js$script,domain=ananweb.jp|diamond.jp|iza.ne.jp|lifehacker.jp|newsweekjapan.jp
 ! https://github.com/AdguardTeam/AdguardFilters/issues/54027
 @@||pointservice.com/res/media/common/ad/adframe.js$script,domain=goldencocco.jp|mottonoutore.jp
 goldencocco.jp#%#//scriptlet("set-constant", "adblock", "false")
@@ -431,8 +435,6 @@ ad-contents.jp#%#//scriptlet("prevent-addEventListener", "load", "ad blocker")
 ad-contents.jp#$#.ui-wrapper { display: block !important; }
 !+ NOT_PLATFORM(ext_safari)
 ad-contents.jp#$#.mid-rectangle { display: none !important; }
-! https://github.com/AdguardTeam/AdguardFilters/issues/51663
-@@||popjav.tv^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/51076
 ap-siken.com,db-siken.com,fe-siken.com,itpassportsiken.com,nw-siken.com,pm-siken.com,sc-siken.com,sg-siken.com#%#//scriptlet("prevent-setTimeout", "/(ad|_0x)/")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/50977
@@ -445,8 +447,6 @@ gigaho.com#$##unblk { display: none!important; }
 gigaho.com#$#.entry-content { display: block!important; }
 gigaho.com#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links { display:block!important; }
 gigaho.com#%#AG_onLoad(function() { var el=document.querySelector('ins.adsbygoogle'); var ce=document.createElement('iframe'); ce.style = 'width: 0px !important; border: none !important;'; if(el) { el.appendChild(ce); } });
-! https://github.com/AdguardTeam/AdguardFilters/issues/46430
-manga1001.com#%#//scriptlet("abort-current-inline-script", "onload", "checkads")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/45195
 @@||helpsupport.blog.fc2.com^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/44504
@@ -514,7 +514,6 @@ avgle.com#@#a[href^="http://bongacams.com/track?"]
 @@||*.club/sc?u=
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9125
 socom.yokohama#@#.an-advert-banner
-socom.yokohama#@##adsense
 socom.yokohama#@#.an-sponsored
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9097
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9094
@@ -572,8 +571,8 @@ xtech.nikkei.com#?#.l-main_primary > section[class="l-section"]:has(> div.c-icon
 xtech.nikkei.com#?#.p-article_footer > section[class="l-section"]:has(> div.c-iconAd)
 xtech.nikkei.com#?#.p-article_footer > section[class="l-section"]:has(> #recommend > .p-articlePanel_item > div[id^="div-gpt-ad"])
 ! https://github.com/AdguardTeam/AdguardFilters/issues/56110
-solomon-review.net###right_folder > div.textwidget:has(ins.adsbygoogle)
-solomon-review.net###right_folder > div.textwidget:has(> a[rel^="nofollow"] > img)
+solomon-review.net#?##right_folder > div.textwidget:has(ins.adsbygoogle)
+solomon-review.net#?##right_folder > div.textwidget:has(> a[rel^="nofollow"] > img)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/55907
 mainichi.jp#?#.section.ad:has(> div[id^="insertAdSpaceBeforeThis"])
 ! https://github.com/AdguardTeam/AdguardFilters/issues/55632#issuecomment-632715123
@@ -581,8 +580,6 @@ asahi.com#?##SubInner > div[class]:has(> div.Pr)
 asahi.com#?##SubInner > div[class]:has(> div.Ad)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/54361
 fod.fujitv.co.jp#?##video_container > div[style*="position: absolute; overflow: hidden;"]:has(> img[src="/plus7/web/imgs/animation_spinner.gif"])
-! https://github.com/AdguardTeam/AdguardFilters/issues/51663
-popjav.tv#$?#.releated_video_list > li.releated_video:has(> div.releatedadsholder) { visibility: hidden !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/47356
 himasoku.com#?#.article-body > center:has(> a[href^="https://wu."] > img)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/45195
@@ -773,6 +770,8 @@ avgle.com#%#AG_onLoad(function() { closeAd(); });
 !-------CSS---------
 !-------------------
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/69736
+realtime-chart.info#$#div[class="澑掎呵狎ﾞl踪孳湮l"] > div[style="height:334px;width:100%;background:#000;font-size:38px"] { height: auto !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/60234
 sp.jp.wazap.com#$#.gmoam_outer_wrapper { display: none !important; }
 sp.jp.wazap.com#$#body[style="position: fixed;"] { position: static !important }
@@ -861,10 +860,11 @@ iza.ne.jp#$#.sideFixedWrapper { position: relative!important; }
 !
 ! For URL shorteners or simple sites with frequently changed ad servers.
 ! Incorrectly blocked domains can be excluded using regex(synchronize this regexp in all filters)
-/^(?!.*(bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yandex.net|yastatic.net|ytimg.com|zencdn.net|player|youtube.com)).*$/$third-party,script,domain=9tsu.net|jshow.tv
+/^(?!.*(bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yandex.net|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com)).*$/$third-party,script,domain=9tsu.net|jshow.tv
 !
 ||feed.mikle.com^$domain=blog.livedoor.jp|crx7601.com|fate-rpg.jp|gadgetlife2ch.blomaga.jp|gtoys.blog.fc2.com|h1g.jp|hdouga.com|ibarakinews.jp|obutu.com|totalwar.doorblog.jp|xn--bckadddb2a0d4dnc8dwhngdtb58aya0l4a2om843g5npczp7dwh5g.com|xn--cckea5a6cidcbh6ce7ghug17a2ge3aht3nwigef51658aw7kd.com
 !
+media.moneyforward.com##div[data-ads]
 ||news.2chblog.jp/headline1.htm
 ||news.2chblog.jp/headline2.htm
 news.2chblog.jp##.article-body-inner > table[width="750"][height="320"]
@@ -873,6 +873,7 @@ cinematoday.jp##.col-sidebar > div[style="min-height:100px"]
 dailyanime.news##.advTable
 dailyanime.news##.side-layoutLMovable
 dailyanime.news##.side-layoutRMovable
+milcow.com##.adaida
 eikaiwamastery.blogspot.jp###HTML2
 manga-comic-netabare.com,omansoku.com,sakasa-panty.com,shibukoi.com##.home_widget
 smhn.info###text-22
@@ -1278,7 +1279,6 @@ kuron-zero.com###kuron_ad_td
 ufret.jp###float-bnr
 5ch.net##.ADVERTISE_AREA
 5ch.net##body > div[style*="margin-top:10px;margin-bottom:10px;width:100%;text-align:center;"] > div[style*="background-color:#ccffcc"]
-popjav.tv##.poplayer
 jump.5ch.net##a[href*="myshopify.com"]
 eromanga-time.com###spwrapper
 limo.media##div[class^="affi-"]
@@ -1625,6 +1625,8 @@ itest.5ch.net##.res_ad
 itest.5ch.net##div[class^="sproutad_"]
 itest.5ch.net##[class*="js-ads-content-top_"]
 !
+avgle.com##.footer-banner
+avgle.com##iframe[src^="//ads.adxadserv.com/"]
 avgle.com###exo-native
 avgle.com##.hide-me-please2
 ||adserver.juicyads.com/js/jads.js$domain=avgle.com
@@ -1661,6 +1663,8 @@ avgle.com##body > div[style*="z-index"]:not([id]):not([class])
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/66610
 @@||identity.mparticle.com/*/login$xmlhttprequest,domain=dplay.jp
+! https://github.com/AdguardTeam/AdguardFilters/issues/69810
+@@||myfigure.jp/banner/$image,domain=milcow.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/66531
 @@||picrew.me/player/api/ads?$xmlhttprequest,~third-party
 ! https://github.com/AdguardTeam/AdguardFilters/issues/62583
