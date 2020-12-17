@@ -1,8 +1,8 @@
-! Checksum: wCj6dokOorGAdk2IXQEAWQ
+! Checksum: oprgPCTa1ZuGYxBz+Mt4qA
 ! Title: AdGuard Spanish/Portuguese filter (Optimized)
 ! Description: Filter list that specifically removes ads on websites in Spanish and Portuguese languages.
-! Version: 2.0.7.96
-! TimeUpdated: 2020-12-04T14:32:33+03:00
+! Version: 2.0.8.10
+! TimeUpdated: 2020-12-15T19:32:00+03:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -194,6 +194,7 @@
 ||zebestof.com^$third-party
 tunovelaligera.com#%#AG_abortOnPropertyWrite(`adregain_wall`);
 tunovelaligera.com#%#AG_abortOnPropertyRead(`ad_nodes`);
+||atlantapictures.net/f10-1.js
 @@||kuork.org/wordpress/wp-content/themes/novelpiper_theme/assets/js/libs/ads.js
 @@||affiliate.api.espn.com/affiliateApi/$domain=espn.com.mx
 yayanimes.net#@#.afs_ads
@@ -243,6 +244,7 @@ globalnoticias.online#$##framed { display: block!important; }
 @@||outerspace.com.br/js/siropu/am/ads.min.js
 @@||libremercado.com/*_.ad.json
 @@||libertaddigital.com/*_.ad.json
+modagamers.com#@#.afs_ads
 @@||animeshd.biz/css/adsplay.css
 @@||animeshd.biz/player/$domain=animeshd.biz
 ggames.com.br#@#.adsbygoogle
@@ -266,7 +268,6 @@ hobba.tv#@##ad-block
 hobba.tv#@##ad-box
 @@||estaticos.serpadres.es/bundles/nogoffrontend/js/custom/ads.js
 yayanimes.net#@##banner_ad
-emu-games.com#@##adsense
 premiumtvchannels.com###divadblock
 @@||cdnjs.cloudflare.com/ajax/libs/fuckadblock/3.2.1/fuckadblock.min.js$domain=premiumtvchannels.com
 @@||cdnjs.cloudflare.com/ajax/libs/fuckadblock/3.2.1/fuckadblock.min.js$domain=animeyt2.tv
@@ -370,7 +371,6 @@ gamersboard.com.br#@#.adsbygoogle
 gamersboard.com.br#$#.adsbygoogle { position: absolute!important; left: -3000px!important; }
 animesync.tv#%#Object.defineProperty(window, 'blockAdBlock', { get: function() { return; } });
 allsoftwarefull.com#@#.an-advert-banner
-allsoftwarefull.com#@##adsense
 allsoftwarefull.com#@#.an-sponsored
 @@||gamersboard.com.br/uploads/*adframe.js
 @@||progamingstudio.com/js/siropu/am/ads.min.js
@@ -384,7 +384,6 @@ allsoftwarefull.com#@#.an-sponsored
 !+ NOT_PLATFORM(windows, mac, android)
 @@||tv-onlinehd.com^$generichide
 @@/advert.js$domain=gamevicio.com
-tugaanimado.net#@##adsense
 tugaanimado.net#@#.an-sponsored
 tugaanimado.net#@#.an-advert-banner
 mangahost-br.cc#%#Object.defineProperty(window, 'testDisplay', { value: false });
@@ -415,7 +414,6 @@ animeflv.net#%#window.loadingAds = true;
 globo.com###detecta-adblock
 noticias.mrpiracy.xyz#@#.an-sponsored
 noticias.mrpiracy.xyz#@#.an-advert-banner
-noticias.mrpiracy.xyz#@##adsense
 @@||acienciasgalilei.com^$generichide
 @@||sakuraanimes.com/ANAD/advertisement.js
 @@||cdnjs.cloudflare.com/ajax/libs/fuckadblock/3.2.1/fuckadblock.min.js$domain=mangahosted.com|mangahost1.com
@@ -442,7 +440,6 @@ mangahost.cc#%#Object.defineProperty(window, 'testDisplay', { value: false });
 ||baixarsoftware.com/wp-content/plugins/pause-adblocker^
 chaturbacumgirls.net#@#.an-sponsored
 chaturbacumgirls.net#@#.an-advert-banner
-chaturbacumgirls.net#@##adsense
 @@||comando-filmes.org^$generichide
 @@||minhatec.com/noticiadestaque/adsense.js
 @@||ads.clubedohardware.com.br/
@@ -488,7 +485,6 @@ vsports.pt#%#window.adblockDetecter = true;
 @@||inmanga.com/Scripts/fuckadblock.js
 @@||cdnjs.cloudflare.com/ajax/libs/fuckadblock^$domain=inmanga.com
 @@||habboin.net/public/js/fuckadblock.js
-tinano.com.br#@##adsense
 tinano.com.br#@#.an-advert-banner
 tinano.com.br#@#.an-sponsored
 bmwfaq.org#%#AG_onLoad(function() { XenForo.rellect.AdBlockDetectorParams = {}; XenForo.rellect.AdBlockDetectorParams.loadScript = function() {}; });
@@ -553,10 +549,10 @@ peru21.pe#@#.adstop
 ||static.folha.com.br/paywall/
 ||tugahd.com/modules/mod_adblockdetector/
 @@||elgoles.net^$generichide
-jokerfansub.com#@##adsense
 @@||autonocion.com/js/advertisement.js
 @@||subedlc.com^$elemhide
 yahoo.com#?#ul[class^="Mb(0)"] > li.js-stream-content:has(> div > a[rel="nofollow noopener noreferrer"]+div:contains(Patrocinado))
+verdragonball.online#?#.main-posts > .general-content > div[id^="container-ac"]:only-child:upward(1)
 pornolandia.xxx#?#a[href^="https://www.pornolandia.xxx/webmaster/ref/"]:upward(1)
 hentaiporno.xxx#?#.sidebar-content-inner > div.widget:has(> div.widget_text > div.textwidget > iframe[name^="spot_id"])
 hentaiporno.xxx#?#.sidebar-content-inner > div.widget:has(> div.widget-item-wrap > h2.widget-title > span.title-wrap:contains(Publicidad))
@@ -605,8 +601,6 @@ jornaldestaquebaixada.com#?#.sidebar > .widget:has(> div > .adsbygoogle)
 nsctotal.com.br#?#.StyledDiv > .Title:contains(publicidade)
 craftmybox.com#?#.table-wrapper > .table > tbody > tr.has-background-light:has(> th > a > span.is-warning:contains(Anúncio))
 em.com.br#?#div[class*="col-"]:has(> div.ads)
-rl-hackers.net#?#.pageContent > div[align="center"]:has(.adsbygoogle)
-rl-hackers.net#?#.mainContent > div[align="center"]:has(.adsbygoogle)
 gamersboard.com.br#?#.ipsList_reset > .ipsWidget.ipsWidget_horizontal[data-blocktitle="Custom Blocks"]:has(> h3.ipsType_reset:contains(Publicidade))
 tudotv.tv#?##Lateral > .Titulo:contains(Publicidade)
 superanimes.site#?##lateral > .conteudoBox:has(> .sideBarAds)
@@ -894,7 +888,22 @@ _publicidade.
 _publicidade_
 _publicitario.
 http://adw.
-/^(?!.*(bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yandex.net|yastatic.net|ytimg.com|zencdn.net|player|youtube.com)).*$/$third-party,script,domain=thepiratefilmestorrent.biz
+/^(?!.*(bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yandex.net|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com)).*$/$third-party,script,domain=thepiratefilmestorrent.biz
+d.arede.info##div[id^="publicidade-"]
+d.arede.info##.cont-publicidade-cat
+d.arede.info##.container-autosImoveis
+d.arede.info##.container-editoria-maisLidas
+d.arede.info##article[class$="-pub"]
+d.arede.info##.container-post-pub-comentarios
+d.arede.info##[class^="container-publicidade"]
+d.arede.info##div[class^="publicidade-"]
+d.arede.info##.topo-banner
+||d.arede.info/themes/*/img/FundoTopBanner.jpg
+||goku.mx/wp-content/plugins/all-click/public/js/allclick-functions.js
+||hentaila.com/files/functions.js
+puraciudad.com.ar##.hlymgdwv
+puraciudad.com.ar##.widget_hlymgdwv
+animefenix.com###radioisekai
 meucarronovo.com.br##[class^="container banner"]
 kbb.com.br##div[data-adloc-par="1"]
 buscape.com.br##div[class^="Advertisement"]
@@ -950,6 +959,7 @@ xanimu.com##.gofollow
 ||animetw.xyz/asset/bann.js
 noticiasaominuto.com,noticiasaominuto.com.br##.pub-container
 trendencias.com,vidaextra.com##.sticky-sidebar-container .m-desvio-ecommerce
+tuhentaionline.com###banner_deslizante
 tuhentaionline.com###nuevo_publi
 ||tuhentaionline.com/publi/
 tuhentaionline.com##iframe[src^="https://www.tuhentaionline.com/publi/"]
@@ -1384,8 +1394,8 @@ meutimao.com.br##.adsense_colado
 meutimao.com.br##.publicidade_970x90
 animeplus.org##.adsBody
 animeplus.org##.adstopo
-file4go.net,file4go.me,file4go.biz##body > #divbox[style^="position:"]
-file4go.net,file4go.me,file4go.biz##body > #divmodal[style^="position:"]
+file4go.net,file4go.biz##body > #divbox[style^="position:"]
+file4go.net,file4go.biz##body > #divmodal[style^="position:"]
 peruanazotv.com,futbol-envivohd.com,vercanalestv1.com,tv-onlinehd.com###capa1
 peruanazotv.com,futbol-envivohd.com,vercanalestv1.com,tv-onlinehd.com###closeX1
 ||tv-onlinehd.com/publi/publi
