@@ -99,7 +99,7 @@ class SettingsStore {
     }
 
     @action
-    async updateRulesCount(rulesCount) {
+    updateRulesCount(rulesCount) {
         this.rulesCount = rulesCount;
     }
 
@@ -171,8 +171,13 @@ class SettingsStore {
             }
             this.categories.forEach((group) => {
                 if (group.groupId === groupId) {
-                    // eslint-disable-next-line no-unused-expressions, no-param-reassign
-                    enabled ? group.enabled = true : delete group.enabled;
+                    if (enabled) {
+                        // eslint-disable-next-line no-param-reassign
+                        group.enabled = true;
+                    } else {
+                        // eslint-disable-next-line no-param-reassign
+                        delete group.enabled;
+                    }
                 }
             });
         });
@@ -187,6 +192,9 @@ class SettingsStore {
 
     @action
     refreshFilter(filter) {
+        if (!filter) {
+            return;
+        }
         const filterToUpdate = this.filters.find((f) => f.filterId === filter.filterId);
         const index = this.filters.indexOf(filterToUpdate);
         if (index !== -1) {
@@ -256,7 +264,7 @@ class SettingsStore {
     @action
     setUserRules = (userRules) => {
         this.userRules = userRules;
-    }
+    };
 
     @action
     async getUserRules() {
@@ -277,7 +285,7 @@ class SettingsStore {
     @action
     setAllowlist = (allowlist) => {
         this.allowlist = allowlist;
-    }
+    };
 
     @action
     async getAllowlist() {
@@ -295,7 +303,7 @@ class SettingsStore {
     saveAllowlist = (allowlist) => {
         this.allowlist = allowlist;
         savingAllowlistService.send(SAVING_FSM_EVENTS.SAVE, { value: allowlist });
-    }
+    };
 }
 
 export default SettingsStore;
