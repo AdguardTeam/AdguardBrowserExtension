@@ -12,6 +12,20 @@ import { containsIgnoreCase } from '../../helpers';
 import { RequestTypes } from '../../../background/utils/request-types';
 import { getFilterName } from '../components/RequestWizard/utils';
 
+export const MISCELLANEOUS_FILTERS = {
+    REGULAR: 'regular',
+    ALLOWLISTED: 'allowlisted',
+    BLOCKED: 'blocked',
+    MODIFIED: 'modified',
+    USER_FILTER: 'user_filter',
+};
+
+export const REQUEST_SOURCE_FILTERS = {
+    FIRST_PARTY: 'first_party',
+    THIRD_PARTY: 'third_party',
+    ALL: 'all',
+};
+
 class LogStore {
     @observable filteringEvents = [];
 
@@ -27,20 +41,15 @@ class LogStore {
 
     @observable filtersMetadata = null;
 
-    searchPartyFilter = {
-        SEARCH_FIRST_PARTY: 'searchFirstParty',
-        SEARCH_THIRD_PARTY: 'searchThirdParty',
-        SEARCH_ALL: 'searchAll',
+    @observable miscellaneousFilters = {
+        [MISCELLANEOUS_FILTERS.REGULAR]: false,
+        [MISCELLANEOUS_FILTERS.ALLOWLISTED]: false,
+        [MISCELLANEOUS_FILTERS.BLOCKED]: false,
+        [MISCELLANEOUS_FILTERS.MODIFIED]: false,
+        [MISCELLANEOUS_FILTERS.USER_FILTER]: false,
     };
 
-    @observable miscellaneousFilters = {
-        searchRegular: false,
-        searchWhitelisted: false,
-        searchBlocked: false,
-        searchModified: false,
-        searchUserFilter: false,
-        searchParty: this.searchPartyFilter.SEARCH_ALL,
-    };
+    @observable requestSourceFilter = REQUEST_SOURCE_FILTERS.ALL;
 
     @observable eventTypesFilters = [
         {
@@ -91,9 +100,15 @@ class LogStore {
     };
 
     @action
+    setRequestSourceFilterValue = (value) => {
+        this.requestSourceFilter = value;
+    };
+
+    @action
     toggleEventTypesFilter = (name) => {
         this.eventTypesFilters.forEach((filter) => {
             if (filter.name === name) {
+                // eslint-disable-next-line no-param-reassign
                 filter.enabled = !filter.enabled;
             }
         });
@@ -104,7 +119,10 @@ class LogStore {
         // enable all filters if any filter disabled
         // or disable all filters if all filters enabled
         const enabled = this.eventTypesFilters.some((filter) => !filter.enabled);
-        this.eventTypesFilters.forEach((filter) => { filter.enabled = enabled; });
+        this.eventTypesFilters.forEach((filter) => {
+            // eslint-disable-next-line no-param-reassign
+            filter.enabled = enabled;
+        });
     };
 
     @action
@@ -224,28 +242,31 @@ class LogStore {
                 return false;
             }
 
-            const isWhitelisted = filteringEvent.requestRule?.whitelistRule;
-            const isBlocked = filteringEvent.requestRule && !filteringEvent.requestRule.whitelistRule;
+            const isAllowlisted = filteringEvent.requestRule?.whitelistRule;
+            const isBlocked = filteringEvent.requestRule
+                && !filteringEvent.requestRule.whitelistRule;
             const isModified = filteringEvent.requestRule?.isModifyingCookieRule;
             const isUserFilter = filteringEvent.requestRule?.filterId === 0;
             const isFirstParty = !filteringEvent.requestThirdParty;
             const isThirdParty = filteringEvent.requestThirdParty;
-            const isRegular = !isWhitelisted && !isBlocked && !isModified;
+            const isRegular = !isAllowlisted && !isBlocked && !isModified;
 
-            // filter regular events
-            if ((this.miscellaneousFilters.searchRegular && !isRegular)
-                // filter whitelisted events
-                || (this.miscellaneousFilters.searchWhitelisted && !isWhitelisted)
-                // filter blocked events
-                || (this.miscellaneousFilters.searchBlocked && !isBlocked)
-                // filter modified events
-                || (this.miscellaneousFilters.searchModified && !isModified)
-                // filter user filter events
-                || (this.miscellaneousFilters.searchUserFilter && !isUserFilter)
-                // filter first party events
-                || (this.miscellaneousFilters.searchParty === this.searchPartyFilter.SEARCH_FIRST_PARTY && !isFirstParty)
-                // filter third party events
-                || (this.miscellaneousFilters.searchParty === this.searchPartyFilter.SEARCH_THIRD_PARTY && !isThirdParty)) {
+            // filter by miscellaneous filters
+            const showByMiscellaneous = !Object.values(this.miscellaneousFilters).some(_.identity)
+                || (this.miscellaneousFilters[MISCELLANEOUS_FILTERS.REGULAR] && isRegular)
+                || (this.miscellaneousFilters[MISCELLANEOUS_FILTERS.ALLOWLISTED] && isAllowlisted)
+                || (this.miscellaneousFilters[MISCELLANEOUS_FILTERS.BLOCKED] && isBlocked)
+                || (this.miscellaneousFilters[MISCELLANEOUS_FILTERS.MODIFIED] && isModified)
+                || (this.miscellaneousFilters[MISCELLANEOUS_FILTERS.USER_FILTER] && isUserFilter);
+
+            if (!showByMiscellaneous) {
+                return false;
+            }
+
+            // filter by request source filter
+            if ((this.requestSourceFilter === REQUEST_SOURCE_FILTERS.FIRST_PARTY && !isFirstParty)
+                // eslint-disable-next-line max-len
+                || (this.requestSourceFilter === REQUEST_SOURCE_FILTERS.THIRD_PARTY && !isThirdParty)) {
                 return false;
             }
 
