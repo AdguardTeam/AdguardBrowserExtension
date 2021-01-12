@@ -53,8 +53,11 @@ const FilteringEvents = observer(() => {
                     return (
                         <>
                             {formattedRequestType}
-                            <Icon id="#chain" classname="icon--24 third-party__icon icon--green" />
-                            <span className="third-party__label">Third party</span>
+                            <Icon
+                                id="#chain"
+                                title="Third party"
+                                classname="icon--24 third-party__icon icon--green"
+                            />
                         </>
                     );
                 }
