@@ -37,7 +37,7 @@ TextInput.propTypes = {
     id: PropTypes.string.isRequired,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     handler: PropTypes.func.isRequired,
-    placeholder: PropTypes.string,
+    placeholder: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 export { TextInput };
