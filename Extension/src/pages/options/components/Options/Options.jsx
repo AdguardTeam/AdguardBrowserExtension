@@ -19,6 +19,7 @@ import { Notifications } from '../Notifications';
 import { messenger } from '../../../services/messenger';
 import { log } from '../../../../common/log';
 import { Icons } from '../../../common/components/ui/Icons';
+import { NOTIFIER_TYPES } from '../../../../common/constants';
 
 import '../../styles/styles.pcss';
 
@@ -31,15 +32,11 @@ const Options = observer(() => {
         (async () => {
             await settingsStore.requestOptionsData();
 
-            // TODO put constants in common directory
-            const REQUEST_FILTER_UPDATED = 'event.request.filter.updated';
-            const UPDATE_ALLOWLIST_FILTER_RULES = 'event.update.allowlist.filter.rules';
-            const FILTERS_UPDATE_CHECK_READY = 'event.update.filters.check';
-
             const events = [
-                REQUEST_FILTER_UPDATED,
-                UPDATE_ALLOWLIST_FILTER_RULES,
-                FILTERS_UPDATE_CHECK_READY,
+                NOTIFIER_TYPES.REQUEST_FILTER_UPDATED,
+                NOTIFIER_TYPES.UPDATE_ALLOWLIST_FILTER_RULES,
+                NOTIFIER_TYPES.FILTERS_UPDATE_CHECK_READY,
+                NOTIFIER_TYPES.SETTING_UPDATED,
             ];
 
             removeListenerCallback = await messenger.createEventListener(
@@ -48,19 +45,22 @@ const Options = observer(() => {
                     const { type } = message;
 
                     switch (type) {
-                        case REQUEST_FILTER_UPDATED: {
+                        case NOTIFIER_TYPES.REQUEST_FILTER_UPDATED: {
                             await settingsStore.getUserRules();
-                            const [{ rulesCount }] = message.data;
-                            await settingsStore.updateRulesCount(rulesCount);
+                            await settingsStore.requestOptionsData();
                             break;
                         }
-                        case UPDATE_ALLOWLIST_FILTER_RULES: {
+                        case NOTIFIER_TYPES.UPDATE_ALLOWLIST_FILTER_RULES: {
                             await settingsStore.getAllowlist();
                             break;
                         }
-                        case FILTERS_UPDATE_CHECK_READY: {
+                        case NOTIFIER_TYPES.FILTERS_UPDATE_CHECK_READY: {
                             const { data: updatedFilters } = message;
                             settingsStore.refreshFilters(updatedFilters);
+                            break;
+                        }
+                        case NOTIFIER_TYPES.SETTING_UPDATED: {
+                            await settingsStore.requestOptionsData();
                             break;
                         }
                         default: {
