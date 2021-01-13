@@ -4,9 +4,13 @@ import cn from 'classnames';
 export const Icon = ({
     id,
     classname,
+    title,
 }) => {
     const iconClassname = cn('icon', classname);
-    return <svg className={iconClassname}>
-        <use xlinkHref={id} />
-    </svg>;
+    return (
+        <svg className={iconClassname}>
+            {title && <title>{title}</title>}
+            <use xlinkHref={id} />
+        </svg>
+    );
 };
