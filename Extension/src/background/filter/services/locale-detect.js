@@ -184,7 +184,7 @@ export const localeDetect = (function () {
         // Detecting language by top-level domain if extension API language detection is unavailable
         // Ignore hostnames which length is less or equal to 8
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1354
-        const host = utils.url.getHost(url);
+        const host = utils.url.getDomainName(url);
         if (host && host.length > 8) {
             const parts = host ? host.split('.') : [];
             const tld = parts[parts.length - 1];
