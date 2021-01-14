@@ -105,8 +105,8 @@ const tabsApi = ((tabsImpl) => {
     };
 
     // Reloads tab.
-    const reload = function (tabId, url) {
-        tabsImpl.reload(tabId, url);
+    const reload = async (tabId, url) => {
+        await tabsImpl.reload(tabId, url);
     };
 
     // Updates tab url

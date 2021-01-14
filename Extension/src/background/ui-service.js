@@ -638,15 +638,15 @@ export const uiService = (function () {
 
         url = appendHashParameters(url, hashParameters);
 
-        function onTabFound(tab) {
+        const onTabFound = async (tab) => {
             if (tab.url !== url) {
-                tabsApi.reload(tab.tabId, url);
+                await tabsApi.reload(tab.tabId, url);
             }
             if (!inBackground) {
-                tabsApi.activate(tab.tabId);
+                await tabsApi.activate(tab.tabId);
             }
             return tab;
-        }
+        };
 
         url = utils.strings.contains(url, '://') ? url : backgroundPage.getURL(url);
         const tabs = await tabsApi.getAll();
@@ -745,21 +745,18 @@ export const uiService = (function () {
     };
 
     const openFiltersDownloadPage = function () {
-        // TODO move url in constants
         openTab(getPageUrl('filter-download.html'), { inBackground: browserUtils.isYaBrowser() });
     };
 
     const openCustomFiltersModal = async (url, title) => {
-        // TODO move url in constants
         let path = 'options.html#filters?group=0';
         if (title) {
             path += `&title=${title}`;
         }
         path += `&subscribe=${encodeURIComponent(url)}`;
 
-        await openTab(getPageUrl(path), { activateSameTab: true });
-        const tab = await tabsApi.getActive();
-        tabsApi.reload(tab.tabId);
+        const tab = await openTab(getPageUrl(path), { activateSameTab: true });
+        await tabsApi.reload(tab.tabId);
     };
 
     var allowlistTab = function (tab) {
