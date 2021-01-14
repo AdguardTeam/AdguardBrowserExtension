@@ -660,7 +660,7 @@ describe('RequestFilter', () => {
 
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1586
         it('Request filter finds rules for domains with "." in the end', async () => {
-            const cssRuleText = 'www.benchmark.pl##body';
+            const cssRuleText = 'benchmark.pl##body';
             let requestFilter = await createRequestFilterWithRules([cssRuleText]);
 
             // eslint-disable-next-line max-len
