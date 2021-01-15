@@ -467,9 +467,11 @@ const init = () => {
                     appVersion,
                 };
             }
-            case MESSAGE_TYPES.APPLY_SETTINGS_JSON:
-                settingsProvider.applySettingsBackup(message.json);
+            case MESSAGE_TYPES.APPLY_SETTINGS_JSON: {
+                const { json } = data;
+                settingsProvider.applySettingsBackup(json);
                 break;
+            }
             case MESSAGE_TYPES.ADD_URL_TO_TRUSTED:
                 await documentFilterService.addToTrusted(message.url);
                 break;
