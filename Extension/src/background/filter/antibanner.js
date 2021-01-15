@@ -251,25 +251,11 @@ export const antiBannerService = (() => {
     };
 
     /**
-     * Resets all filters versions
-     */
-    function resetFiltersVersion() {
-        const RESET_VERSION = '0.0.0.0';
-
-        const filters = subscriptions.getFilters();
-        for (let i = 0; i < filters.length; i += 1) {
-            const filter = filters[i];
-            filter.version = RESET_VERSION;
-        }
-    }
-
-    /**
      * Reloads filters from backend
      *
      * @private
      */
     async function reloadAntiBannerFilters() {
-        resetFiltersVersion();
         await filtersUpdate.checkAntiBannerFiltersUpdate(true);
     }
 
