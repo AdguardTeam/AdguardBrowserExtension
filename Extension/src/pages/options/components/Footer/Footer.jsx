@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { FORUM_URL, WEBSITE_URL } from '../../../constants';
-import { reactTranslator } from '../../../reactCommon/reactTranslator';
+import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { messenger } from '../../../services/messenger';
 import { Icon } from '../../../common/components/ui/Icon';
 
@@ -15,7 +15,7 @@ const Footer = () => {
             <div className="footer__rate">
                 <div className="footer__in container">
                     <div className="footer__rate-desc">
-                        {reactTranslator.translate('options_do_you_like')}
+                        {reactTranslator.getMessage('options_do_you_like')}
                     </div>
                     <button
                         type="button"
@@ -27,7 +27,7 @@ const Footer = () => {
                             htmlFor="thumbsup"
                             className="button__label button__label--rate"
                         >
-                            {reactTranslator.translate('options_footer_like_us')}
+                            {reactTranslator.getMessage('options_footer_like_us')}
                         </label>
                     </button>
                 </div>
@@ -37,10 +37,10 @@ const Footer = () => {
                     <div className="footer__copyright">{copyright}</div>
                     <div className="footer__nav-in">
                         <a href={WEBSITE_URL} className="footer__nav-item">
-                            {reactTranslator.translate('options_site')}
+                            {reactTranslator.getMessage('options_site')}
                         </a>
                         <a href={FORUM_URL} className="footer__nav-item">
-                            {reactTranslator.translate('options_discuss')}
+                            {reactTranslator.getMessage('options_discuss')}
                         </a>
                     </div>
                 </div>

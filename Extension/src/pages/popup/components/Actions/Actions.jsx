@@ -4,7 +4,7 @@ import cn from 'classnames';
 
 import { messenger } from '../../../services/messenger';
 import { popupStore } from '../../stores/PopupStore';
-import { reactTranslator } from '../../../reactCommon/reactTranslator';
+import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { Icon } from '../../../common/components/ui/Icon';
 
 import './actions.pcss';
@@ -55,7 +55,7 @@ export const Actions = observer(() => {
                     classname="icon--action"
                 />
                 <div className="action-title">
-                    {reactTranslator.translate('popup_block_site_ads')}
+                    {reactTranslator.getMessage('popup_block_site_ads')}
                 </div>
             </button>
             <button
@@ -68,7 +68,7 @@ export const Actions = observer(() => {
                     classname="icon--action"
                 />
                 <div className="action-title">
-                    {reactTranslator.translate('popup_open_filtering_log')}
+                    {reactTranslator.getMessage('popup_open_filtering_log')}
                 </div>
             </button>
             <button
@@ -81,7 +81,7 @@ export const Actions = observer(() => {
                     classname="icon--action"
                 />
                 <div className="action-title">
-                    {reactTranslator.translate('popup_abuse_site')}
+                    {reactTranslator.getMessage('popup_abuse_site')}
                 </div>
             </button>
             <button
@@ -94,7 +94,7 @@ export const Actions = observer(() => {
                     classname="icon--action"
                 />
                 <div className="action-title">
-                    {reactTranslator.translate('popup_security_report')}
+                    {reactTranslator.getMessage('popup_security_report')}
                 </div>
             </button>
         </div>

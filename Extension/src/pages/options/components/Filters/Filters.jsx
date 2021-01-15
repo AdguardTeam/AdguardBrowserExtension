@@ -10,7 +10,7 @@ import { EmptyCustom } from './EmptyCustom';
 import { Search } from './Search';
 import { FiltersUpdate } from './FiltersUpdate';
 import { rootStore } from '../../stores/RootStore';
-import { reactTranslator } from '../../../reactCommon/reactTranslator';
+import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { AddCustomModal } from './AddCustomModal';
 import { CUSTOM_FILTERS_GROUP_ID } from '../../../../../../tools/constants';
 import { SettingsSection } from '../Settings/SettingsSection';
@@ -155,17 +155,17 @@ const Filters = observer(() => {
             const filterNames = updates.map((filter) => filter.name).join(', ');
             let description;
             if (updates.length === 0) {
-                description = `${filterNames} ${reactTranslator.translate('options_popup_update_not_found')}`;
+                description = `${filterNames} ${reactTranslator.getMessage('options_popup_update_not_found')}`;
             } else if (updates.length === 1) {
-                description = `${filterNames} ${reactTranslator.translate('options_popup_update_filter')}`;
+                description = `${filterNames} ${reactTranslator.getMessage('options_popup_update_filter')}`;
             } else if (updates.length > 1) {
-                description = `${filterNames} ${reactTranslator.translate('options_popup_update_filters')}`;
+                description = `${filterNames} ${reactTranslator.getMessage('options_popup_update_filters')}`;
             }
             uiStore.addNotification({ description });
         } catch (error) {
             uiStore.addNotification({
-                title: reactTranslator.translate('options_popup_update_title_error'),
-                description: reactTranslator.translate('options_popup_update_error'),
+                title: reactTranslator.getMessage('options_popup_update_title_error'),
+                description: reactTranslator.getMessage('options_popup_update_error'),
             });
         }
     };
@@ -238,7 +238,7 @@ const Filters = observer(() => {
                 onClick={openModalHandler}
                 className={buttonClass}
             >
-                {reactTranslator.translate('options_add_custom_filter')}
+                {reactTranslator.getMessage('options_add_custom_filter')}
             </button>
         );
     };
@@ -288,7 +288,7 @@ const Filters = observer(() => {
     }
     return (
         <SettingsSection
-            title={reactTranslator.translate('options_antibanner')}
+            title={reactTranslator.getMessage('options_antibanner')}
             renderInlineControl={renderFiltersUpdate}
         >
             {renderSearch()}

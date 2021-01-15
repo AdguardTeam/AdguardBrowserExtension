@@ -22,6 +22,7 @@ import { BACKGROUND_TAB_ID, utils } from '../../utils/common';
 import { backgroundPage } from '../../extension-api/background-page';
 import { prefs } from '../../prefs';
 import { listeners } from '../../notifier';
+import { translator } from '../../../common/translators/translator';
 
 /**
  * Object for log http requests
@@ -33,7 +34,7 @@ const browsersFilteringLog = (function () {
 
     const backgroundTab = {
         tabId: backgroundTabId,
-        title: backgroundPage.i18n.getMessage('background_tab_title'),
+        title: translator.getMessage('background_tab_title'),
     };
 
     const tabsInfoMap = Object.create(null);

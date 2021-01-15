@@ -8,7 +8,7 @@ import { Editor } from '../Editor';
 import { uploadFile } from '../../../helpers';
 import { log } from '../../../../common/log';
 import { STATES as SAVING_STATES } from '../Editor/savingFSM';
-import { reactTranslator } from '../../../reactCommon/reactTranslator';
+import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { Icon } from '../../../common/components/ui/Icon';
 
@@ -25,8 +25,8 @@ const UserRules = observer(() => {
     const renderSavingState = () => {
         const indicatorTextMap = {
             [SAVING_STATES.IDLE]: '',
-            [SAVING_STATES.SAVED]: reactTranslator.translate('options_editor_indicator_saved'),
-            [SAVING_STATES.SAVING]: reactTranslator.translate('options_editor_indicator_saving'),
+            [SAVING_STATES.SAVED]: reactTranslator.getMessage('options_editor_indicator_saved'),
+            [SAVING_STATES.SAVING]: reactTranslator.getMessage('options_editor_indicator_saving'),
         };
 
         const indicatorText = indicatorTextMap[savingRulesState];
@@ -124,8 +124,8 @@ const UserRules = observer(() => {
     return (
         <>
             <SettingsSection
-                title={reactTranslator.translate('options_userfilter')}
-                description={reactTranslator.translate('options_userfilter_description', {
+                title={reactTranslator.getMessage('options_userfilter')}
+                description={reactTranslator.getMessage('options_userfilter_description', {
                     a: (chunks) => (
                         <a
                             className="desc--link"
@@ -158,7 +158,7 @@ const UserRules = observer(() => {
                         className="button button--m button--green actions__btn"
                         onClick={importClickHandler}
                     >
-                        {reactTranslator.translate('options_userfilter_import')}
+                        {reactTranslator.getMessage('options_userfilter_import')}
                     </button>
                     <button
                         type="button"
@@ -166,7 +166,7 @@ const UserRules = observer(() => {
                         onClick={exportClickHandler}
                         disabled={!settingsStore.userRules}
                     >
-                        {reactTranslator.translate('options_userfilter_export')}
+                        {reactTranslator.getMessage('options_userfilter_export')}
                     </button>
                 </div>
                 <div className="actions__group">
@@ -176,7 +176,7 @@ const UserRules = observer(() => {
                         className="button button--m button--green actions__btn"
                         onClick={saveClickHandler}
                     >
-                        {reactTranslator.translate('options_editor_save')}
+                        {reactTranslator.getMessage('options_editor_save')}
                     </button>
                 </div>
             </div>

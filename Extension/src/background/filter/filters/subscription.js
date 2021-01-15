@@ -26,6 +26,7 @@ import { localScriptRulesService } from '../rules/local-script-rules';
 import { redirectService } from '../services/redirect-service';
 import { browserUtils } from '../../utils/browser-utils';
 import { CUSTOM_FILTERS_GROUP_ID } from '../../../../../tools/constants';
+import { translator } from '../../../common/translators/translator';
 
 /**
  * Service that loads and parses filters metadata from backend server.
@@ -549,7 +550,7 @@ export const subscriptions = (() => {
         let filter = filters.find(f => f.customUrl === url);
 
         if (filter) {
-            return ({ error: backgroundPage.i18n.getMessage('options_antibanner_custom_filter_already_exists') });
+            return ({ error: translator.getMessage('options_antibanner_custom_filter_already_exists') });
         }
 
         filter = new SubscriptionFilter({
@@ -604,7 +605,7 @@ export const subscriptions = (() => {
 
         const customFiltersGroup = new SubscriptionGroup(
             CUSTOM_FILTERS_GROUP_ID,
-            backgroundPage.i18n.getMessage('options_antibanner_custom_group'),
+            translator.getMessage('options_antibanner_custom_group'),
             CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER,
         );
         groups.push(customFiltersGroup);

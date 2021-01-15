@@ -7,36 +7,36 @@ import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
 import { hoursToMs, uploadFile } from '../../../helpers';
-import { reactTranslator } from '../../../reactCommon/reactTranslator';
+import { reactTranslator } from '../../../../common/translators/reactTranslator';
 
 const filtersUpdatePeriodOptions = [
     {
         value: -1,
-        title: reactTranslator.translate('options_select_update_period_default'),
+        title: reactTranslator.getMessage('options_select_update_period_default'),
     },
     {
         value: hoursToMs(48),
-        title: reactTranslator.translate('options_select_update_period_48h'),
+        title: reactTranslator.getMessage('options_select_update_period_48h'),
     },
     {
         value: hoursToMs(24),
-        title: reactTranslator.translate('options_select_update_period_24h'),
+        title: reactTranslator.getMessage('options_select_update_period_24h'),
     },
     {
         value: hoursToMs(12),
-        title: reactTranslator.translate('options_select_update_period_12h'),
+        title: reactTranslator.getMessage('options_select_update_period_12h'),
     },
     {
         value: hoursToMs(6),
-        title: reactTranslator.translate('options_select_update_period_6h'),
+        title: reactTranslator.getMessage('options_select_update_period_6h'),
     },
     {
         value: hoursToMs(1),
-        title: reactTranslator.translate('options_select_update_period_1h'),
+        title: reactTranslator.getMessage('options_select_update_period_1h'),
     },
     {
         value: 0,
-        title: reactTranslator.translate('options_select_update_period_disabled'),
+        title: reactTranslator.getMessage('options_select_update_period_disabled'),
     },
 ];
 
@@ -102,16 +102,16 @@ const General = observer(() => {
 
     return (
         <>
-            <SettingsSection title={reactTranslator.translate('context_general_settings')}>
+            <SettingsSection title={reactTranslator.getMessage('context_general_settings')}>
                 <SettingsSet
-                    title={reactTranslator.translate('options_allow_acceptable_ads')}
+                    title={reactTranslator.getMessage('options_allow_acceptable_ads')}
                     description={(
                         <a
                             href={ALLOW_ACCEPTABLE_ADS_LEARN_MORE_URL}
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            {reactTranslator.translate('options_learn_more')}
+                            {reactTranslator.getMessage('options_learn_more')}
                         </a>
                     )}
                     disabled={!allowAcceptableAds}
@@ -120,20 +120,20 @@ const General = observer(() => {
                             id={ALLOW_ACCEPTABLE_ADS}
                             type={SETTINGS_TYPES.CHECKBOX}
                             value={allowAcceptableAds}
-                            label={reactTranslator.translate('options_allow_acceptable_ads')}
+                            label={reactTranslator.getMessage('options_allow_acceptable_ads')}
                             handler={allowAcceptableAdsChangeHandler}
                         />
                     )}
                 />
                 <SettingsSet
-                    title={reactTranslator.translate('options_safebrowsing_enabled')}
+                    title={reactTranslator.getMessage('options_safebrowsing_enabled')}
                     description={(
                         <a
                             href={SAFEBROWSING_LEARN_MORE_URL}
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            {reactTranslator.translate('options_learn_more')}
+                            {reactTranslator.getMessage('options_learn_more')}
                         </a>
                     )}
                     disabled={settings.values[DISABLE_SAFEBROWSING]}
@@ -142,33 +142,33 @@ const General = observer(() => {
                             id={DISABLE_SAFEBROWSING}
                             type={SETTINGS_TYPES.CHECKBOX}
                             inverted
-                            label={reactTranslator.translate('options_safebrowsing_enabled')}
+                            label={reactTranslator.getMessage('options_safebrowsing_enabled')}
                             value={settings.values[DISABLE_SAFEBROWSING]}
                             handler={settingChangeHandler}
                         />
                     )}
                 />
                 <SettingsSet
-                    title={reactTranslator.translate('options_enable_autodetect_filter')}
+                    title={reactTranslator.getMessage('options_enable_autodetect_filter')}
                     disabled={settings.values[DISABLE_DETECT_FILTERS]}
                     inlineControl={(
                         <Setting
                             id={DISABLE_DETECT_FILTERS}
                             type={SETTINGS_TYPES.CHECKBOX}
                             inverted
-                            label={reactTranslator.translate('options_enable_autodetect_filter')}
+                            label={reactTranslator.getMessage('options_enable_autodetect_filter')}
                             handler={settingChangeHandler}
                             value={settings.values[DISABLE_DETECT_FILTERS]}
                         />
                     )}
                 />
                 <SettingsSet
-                    title={reactTranslator.translate('options_set_update_interval')}
+                    title={reactTranslator.getMessage('options_set_update_interval')}
                     inlineControl={(
                         <Setting
                             id={FILTERS_UPDATE_PERIOD}
                             type={SETTINGS_TYPES.SELECT}
-                            label={reactTranslator.translate('options_set_update_interval')}
+                            label={reactTranslator.getMessage('options_set_update_interval')}
                             options={filtersUpdatePeriodOptions}
                             value={settings.values[FILTERS_UPDATE_PERIOD]}
                             handler={settingChangeHandler}
@@ -182,7 +182,7 @@ const General = observer(() => {
                     className="button button--m button--green actions__btn"
                     onClick={handleExportSettings}
                 >
-                    {reactTranslator.translate('options_export_settings')}
+                    {reactTranslator.getMessage('options_export_settings')}
                 </button>
                 <input
                     type="file"
@@ -196,7 +196,7 @@ const General = observer(() => {
                     className="button button--m button--green-bd actions__btn"
                     onClick={handleImportSettings}
                 >
-                    {reactTranslator.translate('options_import_settings')}
+                    {reactTranslator.getMessage('options_import_settings')}
                 </button>
             </div>
         </>

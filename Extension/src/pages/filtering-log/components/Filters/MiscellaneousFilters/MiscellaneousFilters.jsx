@@ -4,7 +4,7 @@ import cn from 'classnames';
 
 import { Icon } from '../../../../common/components/ui/Icon';
 import { rootStore } from '../../../stores/RootStore';
-import { reactTranslator } from '../../../../reactCommon/reactTranslator';
+import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { MISCELLANEOUS_FILTERS, REQUEST_SOURCE_FILTERS } from '../../../stores/LogStore';
 
 import './miscellaneous-filters.pcss';
@@ -47,23 +47,23 @@ const MiscellaneousFilters = observer(() => {
     const checkboxFilters = [
         {
             id: MISCELLANEOUS_FILTERS.REGULAR,
-            text: reactTranslator.translate('filtering_log_filter_regular'),
+            text: reactTranslator.getMessage('filtering_log_filter_regular'),
         },
         {
             id: MISCELLANEOUS_FILTERS.ALLOWLISTED,
-            text: reactTranslator.translate('filtering_log_filter_allowlisted'),
+            text: reactTranslator.getMessage('filtering_log_filter_allowlisted'),
         },
         {
             id: MISCELLANEOUS_FILTERS.BLOCKED,
-            text: reactTranslator.translate('filtering_log_filter_blocked'),
+            text: reactTranslator.getMessage('filtering_log_filter_blocked'),
         },
         {
             id: MISCELLANEOUS_FILTERS.MODIFIED,
-            text: reactTranslator.translate('filtering_log_filter_modified'),
+            text: reactTranslator.getMessage('filtering_log_filter_modified'),
         },
         {
             id: MISCELLANEOUS_FILTERS.USER_FILTER,
-            text: reactTranslator.translate('filtering_log_filter_user_rule'),
+            text: reactTranslator.getMessage('filtering_log_filter_user_rule'),
         },
     ];
 
@@ -91,15 +91,15 @@ const MiscellaneousFilters = observer(() => {
     const requestSourceFilters = [
         {
             id: REQUEST_SOURCE_FILTERS.ALL,
-            text: reactTranslator.translate('filtering_log_filter_all'),
+            text: reactTranslator.getMessage('filtering_log_filter_all'),
         },
         {
             id: REQUEST_SOURCE_FILTERS.FIRST_PARTY,
-            text: reactTranslator.translate('filtering_log_filter_first_party'),
+            text: reactTranslator.getMessage('filtering_log_filter_first_party'),
         },
         {
             id: REQUEST_SOURCE_FILTERS.THIRD_PARTY,
-            text: reactTranslator.translate('filtering_log_filter_third_party'),
+            text: reactTranslator.getMessage('filtering_log_filter_third_party'),
         },
     ];
 
@@ -130,7 +130,7 @@ const MiscellaneousFilters = observer(() => {
                 onClick={miscellaneousFiltersButtonHandler}
             >
                 <Icon id="#filters" classname="icon--filters miscellaneous-filters__filters-ico" />
-                {reactTranslator.translate('filtering_log_filter_title')}
+                {reactTranslator.getMessage('filtering_log_filter_title')}
                 <Icon id="#select" classname="icon--select miscellaneous-filters__select-ico" />
             </button>
             <div className={filtersClassNames('miscellaneous-filters__filters', showPopup)} ref={ref}>
