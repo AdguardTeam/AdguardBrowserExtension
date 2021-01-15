@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 const SettingsSection = (props) => {
@@ -33,28 +32,6 @@ const SettingsSection = (props) => {
             </div>
         </div>
     );
-};
-
-SettingsSection.defaultProps = {
-    title: '',
-    subtitle: '',
-    description: '',
-    renderInlineControl: undefined,
-    renderBackButton: undefined,
-    disabled: false,
-};
-
-SettingsSection.propTypes = {
-    title: PropTypes.string,
-    subtitle: PropTypes.string,
-    description: PropTypes.string,
-    renderInlineControl: PropTypes.func,
-    renderBackButton: PropTypes.func,
-    children: PropTypes.oneOfType([
-        PropTypes.object,
-        PropTypes.arrayOf(PropTypes.node),
-    ]).isRequired,
-    disabled: PropTypes.bool,
 };
 
 export { SettingsSection };
