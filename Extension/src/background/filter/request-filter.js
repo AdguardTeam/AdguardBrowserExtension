@@ -133,7 +133,7 @@ export const RequestFilter = (() => {
          * @returns {*} CSS and ExtCss data for the webpage
          */
         getSelectorsForUrl(url, options, ignoreTraditionalCss, ignoreExtCss) {
-            const domain = utils.url.getHost(url);
+            const domain = utils.url.getDomainName(url);
 
             const cosmeticResult = engine.getCosmeticResult(domain, options);
 
@@ -175,7 +175,7 @@ export const RequestFilter = (() => {
          * @returns {{scriptSource: string, rule: string}[]} Javascript for the specified URL
          */
         getScriptsForUrl(url) {
-            const domain = utils.url.getHost(url);
+            const domain = utils.url.getDomainName(url);
             const cosmeticResult = engine.getCosmeticResult(
                 domain,
                 TSUrlFilter.CosmeticOption.CosmeticOptionJS,
@@ -269,7 +269,7 @@ export const RequestFilter = (() => {
          * @return {null}
          */
         getMatchingResult(requestUrl, referrer, requestType) {
-            const refHost = utils.url.getHost(referrer);
+            const refHost = utils.url.getDomainName(referrer);
 
             let result = this.matchingResultsCache.searchRequestCache(requestUrl, refHost, requestType);
             if (!result) {
@@ -336,7 +336,7 @@ export const RequestFilter = (() => {
          * @returns Collection of content rules
          */
         getContentRulesForUrl(documentUrl) {
-            const hostname = utils.url.getHost(documentUrl);
+            const hostname = utils.url.getDomainName(documentUrl);
             // eslint-disable-next-line max-len
             const cosmeticResult = engine.getCosmeticResult(hostname, TSUrlFilter.CosmeticOption.CosmeticOptionHtml);
 
