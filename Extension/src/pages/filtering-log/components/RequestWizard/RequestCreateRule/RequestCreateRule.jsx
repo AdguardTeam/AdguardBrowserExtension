@@ -48,7 +48,7 @@ const RequestCreateRule = observer(() => {
                     onChange={handlePatternChange(pattern)}
                 />
                 {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                <label className="radio-button" />
+                <div className="radio-button" />
                 {pattern}
             </label>
         ));
@@ -136,7 +136,7 @@ const RequestCreateRule = observer(() => {
                     onClick={handleBackClick}
                     className="request-modal__navigation request-modal__navigation--back"
                 >
-                    <Icon classname="icon--24" id="#arrow-left" />
+                    <Icon classname="icon--contain" id="#arrow-left" />
                 </button>
                 <span className="request-modal__header">{reactTranslator.translate('filtering_modal_add_title')}</span>
             </div>
