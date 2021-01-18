@@ -59,7 +59,6 @@ const RequestModal = observer(() => {
         setModalWidth(newWidth);
     };
 
-    // FIXME adjust width of modal on window resize
     const mouseDownHandler = () => {
         const cleaner = () => {
             document.removeEventListener('mousemove', drag);
