@@ -14,6 +14,11 @@ body {
     height: 100%;
     font-size: 16px;
     color: var(--gray-base);
+
+    @media (prefers-color-scheme: dark) {
+        background-color: var(--black);
+        color: var(--gray300)
+    }
 }
 
 h2 {
@@ -27,6 +32,10 @@ label.checkbox-label {
     color: var(--gray900);
     display: flex;
     align-items: center;
+
+    @media (prefers-color-scheme: dark) {
+        color: var(--gray300);
+    }
 
     & input[type="checkbox"] {
         display: none;
@@ -99,6 +108,10 @@ label.checkbox-label {
     margin-top: -5px;
     line-height: 30px;
     font-weight: 300;
+
+    @media (prefers-color-scheme: dark) {
+        color: var(--gray300)
+    }
 
     &__container {
         display: flex;
