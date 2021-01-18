@@ -15,15 +15,13 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* eslint-disable max-len */
-
-import { backgroundPage } from '../extension-api/background-page';
 import { localStorage } from '../storage';
 import { utils } from '../utils/common';
 import { subscriptions } from './filters/subscription';
 import { prefs } from '../prefs';
 import { log } from '../../common/log';
 import { lazyGet, lazyGetClear } from '../utils/lazy';
+import { translator } from '../../common/translators/translator';
 
 /**
  * Global stats
@@ -35,7 +33,7 @@ export const pageStats = (function () {
 
     const TOTAL_GROUP = {
         groupId: 'total',
-        groupName: backgroundPage.i18n ? backgroundPage.i18n.getMessage('popup_statistics_total') : 'Total',
+        groupName: translator.getMessage('popup_statistics_total'),
     };
 
     const pageStatisticProperty = 'page-statistic';
@@ -192,7 +190,11 @@ export const pageStats = (function () {
         const result = current;
 
         if (utils.dates.isSameHour(now, currentDate) && result.hours.length > 0) {
-            result.hours[result.hours.length - 1] = updateStatsDataItem(type, blocked, result.hours[result.hours.length - 1]);
+            result.hours[result.hours.length - 1] = updateStatsDataItem(
+                type,
+                blocked,
+                result.hours[result.hours.length - 1],
+            );
         } else {
             let diffHours = utils.dates.getDifferenceInHours(now, currentDate);
 
@@ -208,7 +210,11 @@ export const pageStats = (function () {
         }
 
         if (utils.dates.isSameDay(now, currentDate) && result.days.length > 0) {
-            result.days[result.days.length - 1] = updateStatsDataItem(type, blocked, result.days[result.days.length - 1]);
+            result.days[result.days.length - 1] = updateStatsDataItem(
+                type,
+                blocked,
+                result.days[result.days.length - 1],
+            );
         } else {
             let diffDays = utils.dates.getDifferenceInDays(now, currentDate);
 
@@ -224,7 +230,11 @@ export const pageStats = (function () {
         }
 
         if (utils.dates.isSameMonth(now, currentDate) && result.months.length > 0) {
-            result.months[result.months.length - 1] = updateStatsDataItem(type, blocked, result.months[result.months.length - 1]);
+            result.months[result.months.length - 1] = updateStatsDataItem(
+                type,
+                blocked,
+                result.months[result.months.length - 1],
+            );
         } else {
             let diffMonths = utils.dates.getDifferenceInMonths(now, currentDate);
             while (diffMonths >= 2) {

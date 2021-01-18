@@ -8,7 +8,7 @@ import {
     GITHUB_URL,
     PRIVACY_URL,
 } from '../../../constants';
-import { reactTranslator } from '../../../reactCommon/reactTranslator';
+import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { Icon } from '../../../common/components/ui/Icon';
 
 import './about-page.pcss';
@@ -29,13 +29,13 @@ const About = observer(() => {
         <>
             <div className="title__container">
                 <h2 className="title">
-                    {reactTranslator.translate('options_about')}
+                    {reactTranslator.getMessage('options_about')}
                 </h2>
             </div>
             <div className="about">
                 <Icon id="#logo" classname="icon--logo about__logo" />
                 <div className="about__version">
-                    {reactTranslator.translate('options_about_version')}
+                    {reactTranslator.getMessage('options_about_version')}
                     {' '}
                     {version}
                 </div>
@@ -44,7 +44,7 @@ const About = observer(() => {
                         {copyRightText}
                     </div>
                     <div className="about__copyright-item">
-                        {reactTranslator.translate('options_copyright')}
+                        {reactTranslator.getMessage('options_copyright')}
                     </div>
                 </div>
                 <div className="about__menu">
@@ -54,7 +54,7 @@ const About = observer(() => {
                         href={EULA_URL}
                         className="about__menu-item"
                     >
-                        {reactTranslator.translate('options_license_agreement')}
+                        {reactTranslator.getMessage('options_license_agreement')}
                     </a>
                     <a
                         target="_blank"
@@ -62,7 +62,7 @@ const About = observer(() => {
                         href={PRIVACY_URL}
                         className="about__menu-item"
                     >
-                        {reactTranslator.translate('options_privacy_policy')}
+                        {reactTranslator.getMessage('options_privacy_policy')}
                     </a>
                     <a
                         target="_blank"
@@ -70,7 +70,7 @@ const About = observer(() => {
                         href={ACKNOWLEDGMENTS_URL}
                         className="about__menu-item"
                     >
-                        {reactTranslator.translate('options_acknowledgment')}
+                        {reactTranslator.getMessage('options_acknowledgment')}
                     </a>
                     <a
                         target="_blank"
@@ -78,7 +78,7 @@ const About = observer(() => {
                         href={GITHUB_URL}
                         className="about__menu-item"
                     >
-                        {reactTranslator.translate('options_github')}
+                        {reactTranslator.getMessage('options_github')}
                     </a>
                 </div>
             </div>

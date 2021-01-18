@@ -11,7 +11,7 @@ import {
 
 import { messenger } from '../../services/messenger';
 import { POPUP_STATES, TIME_RANGES, VIEW_STATES } from '../constants';
-import { reactTranslator } from '../../reactCommon/reactTranslator';
+import { reactTranslator } from '../../../common/translators/reactTranslator';
 import { MESSAGE_TYPES } from '../../../common/constants';
 
 // Do not allow property change outside of store actions
@@ -141,7 +141,7 @@ class PopupStore {
         }
 
         if (messageKey) {
-            return reactTranslator.translate(messageKey);
+            return reactTranslator.getMessage(messageKey);
         }
 
         return null;

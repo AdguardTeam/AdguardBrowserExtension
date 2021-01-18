@@ -1,4 +1,4 @@
-import { i18n } from './services/i18n';
+import { translator } from '../common/translators/translator';
 
 export const getExtension = (filename) => {
     if (!filename) {
@@ -13,8 +13,7 @@ export const getExtension = (filename) => {
 
 export const uploadFile = (file, requiredExtension) => new Promise((resolve, reject) => {
     if (getExtension(file.name) !== requiredExtension) {
-        // FIXME translation with extension
-        reject(new Error(i18n.translate(
+        reject(new Error(translator.getMessage(
             'options_popup_import_settings_wrong_file_extension',
             { extension: requiredExtension },
         )));
@@ -25,10 +24,9 @@ export const uploadFile = (file, requiredExtension) => new Promise((resolve, rej
         resolve(evt.target.result);
     };
     reader.onerror = () => {
-        reject(new Error(i18n.translate('options_popup_import_error_file_description')));
+        reject(new Error(translator.getMessage('options_popup_import_error_file_description')));
     };
 });
-
 
 export const hoursToMs = (hours) => {
     const MS_IN_HOUR = 1000 * 60 * 60;
@@ -41,7 +39,7 @@ export const hoursToMs = (hours) => {
  * @returns {Promise<unknown>}
  */
 export const sleep = (timeoutMs) => {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         setTimeout(resolve, timeoutMs);
     });
 };

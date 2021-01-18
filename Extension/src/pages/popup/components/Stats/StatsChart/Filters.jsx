@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 
 import { popupStore } from '../../../stores/PopupStore';
 import { TIME_RANGES } from '../../../constants';
-import { reactTranslator } from '../../../../reactCommon/reactTranslator';
+import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { Icon } from '../../../../common/components/ui/Icon';
 
 export const Filters = observer(() => {
@@ -32,19 +32,19 @@ export const Filters = observer(() => {
     const timeRangeOptions = {
         [TIME_RANGES.DAY]: {
             id: TIME_RANGES.DAY,
-            title: reactTranslator.translate('popup_statistics_time_day'),
+            title: reactTranslator.getMessage('popup_statistics_time_day'),
         },
         [TIME_RANGES.WEEK]: {
             id: TIME_RANGES.WEEK,
-            title: reactTranslator.translate('popup_statistics_time_week'),
+            title: reactTranslator.getMessage('popup_statistics_time_week'),
         },
         [TIME_RANGES.MONTH]: {
             id: TIME_RANGES.MONTH,
-            title: reactTranslator.translate('popup_statistics_time_month'),
+            title: reactTranslator.getMessage('popup_statistics_time_month'),
         },
         [TIME_RANGES.YEAR]: {
             id: TIME_RANGES.YEAR,
-            title: reactTranslator.translate('popup_statistics_time_year'),
+            title: reactTranslator.getMessage('popup_statistics_time_year'),
         },
     };
 

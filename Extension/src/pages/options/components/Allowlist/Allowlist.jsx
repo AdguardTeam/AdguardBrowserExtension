@@ -10,7 +10,7 @@ import { rootStore } from '../../stores/RootStore';
 import { uploadFile } from '../../../helpers';
 import { log } from '../../../../common/log';
 import { STATES as SAVING_STATES } from '../Editor/savingFSM';
-import { reactTranslator } from '../../../reactCommon/reactTranslator';
+import { reactTranslator } from '../../../../common/translators/reactTranslator';
 
 const Allowlist = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);
@@ -98,16 +98,16 @@ const Allowlist = observer(() => {
     return (
         <>
             <SettingsSection
-                title={reactTranslator.translate('options_allowlist')}
-                description={reactTranslator.translate('options_allowlist_desc')}
+                title={reactTranslator.getMessage('options_allowlist')}
+                description={reactTranslator.getMessage('options_allowlist_desc')}
             >
                 <SettingsSet
-                    title={reactTranslator.translate('options_allowlist_invert')}
-                    description={reactTranslator.translate('options_allowlist_invert_desc')}
+                    title={reactTranslator.getMessage('options_allowlist_invert')}
+                    description={reactTranslator.getMessage('options_allowlist_invert_desc')}
                     inlineControl={(
                         <Setting
                             id={DEFAULT_ALLOWLIST_MODE}
-                            label={reactTranslator.translate('options_allowlist_invert')}
+                            label={reactTranslator.getMessage('options_allowlist_invert')}
                             type={SETTINGS_TYPES.CHECKBOX}
                             value={settings.values[DEFAULT_ALLOWLIST_MODE]}
                             handler={settingChangeHandler}

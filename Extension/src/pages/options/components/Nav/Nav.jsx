@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
-import { reactTranslator } from '../../../reactCommon/reactTranslator';
+import { reactTranslator } from '../../../../common/translators/reactTranslator';
 
 import './nav.pcss';
 
@@ -14,7 +14,7 @@ const Nav = ({ closeSidebar }) => (
             to="/"
             onClick={closeSidebar}
         >
-            {reactTranslator.translate('options_general_settings')}
+            {reactTranslator.getMessage('options_general_settings')}
         </NavLink>
         <NavLink
             className="nav__item"
@@ -22,7 +22,7 @@ const Nav = ({ closeSidebar }) => (
             to="/filters"
             onClick={closeSidebar}
         >
-            {reactTranslator.translate('options_antibanner')}
+            {reactTranslator.getMessage('options_antibanner')}
         </NavLink>
         <NavLink
             className="nav__item"
@@ -30,7 +30,7 @@ const Nav = ({ closeSidebar }) => (
             to="/stealth"
             onClick={closeSidebar}
         >
-            {reactTranslator.translate('options_privacy')}
+            {reactTranslator.getMessage('options_privacy')}
         </NavLink>
         <NavLink
             className="nav__item"
@@ -38,7 +38,7 @@ const Nav = ({ closeSidebar }) => (
             to="/allowlist"
             onClick={closeSidebar}
         >
-            {reactTranslator.translate('options_allowlist')}
+            {reactTranslator.getMessage('options_allowlist')}
         </NavLink>
         <NavLink
             className="nav__item"
@@ -46,7 +46,7 @@ const Nav = ({ closeSidebar }) => (
             to="/user-filter"
             onClick={closeSidebar}
         >
-            {reactTranslator.translate('options_userfilter')}
+            {reactTranslator.getMessage('options_userfilter')}
         </NavLink>
         <NavLink
             className="nav__item"
@@ -54,7 +54,7 @@ const Nav = ({ closeSidebar }) => (
             to="/miscellaneous"
             onClick={closeSidebar}
         >
-            {reactTranslator.translate('options_miscellaneous_settings')}
+            {reactTranslator.getMessage('options_miscellaneous_settings')}
         </NavLink>
         <NavLink
             className="nav__item"
@@ -62,7 +62,7 @@ const Nav = ({ closeSidebar }) => (
             to="/about"
             onClick={closeSidebar}
         >
-            {reactTranslator.translate('options_about')}
+            {reactTranslator.getMessage('options_about')}
         </NavLink>
     </div>
 );

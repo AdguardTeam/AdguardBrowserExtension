@@ -1,12 +1,12 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
-import { reactTranslator } from '../../../reactCommon/reactTranslator';
+import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { popupStore } from '../../stores/PopupStore';
 import { POPUP_STATES } from '../../constants';
+import { Icon } from '../../../common/components/ui/Icon';
 
 import './main.pcss';
-import { Icon } from '../../../common/components/ui/Icon';
 
 export const Main = observer(() => {
     const store = useContext(popupStore);
@@ -50,18 +50,18 @@ export const Main = observer(() => {
                             target="_blank"
                             rel="noreferrer"
                         >
-                            {reactTranslator.translate('popup_header_cta_link')}
+                            {reactTranslator.getMessage('popup_header_cta_link')}
                         </a>
                     </div>
                 )}
                 <div className="main__stats">
                     <div className="main__total-blocked-tab">
-                        {reactTranslator.translate('popup_tab_blocked_count', {
+                        {reactTranslator.getMessage('popup_tab_blocked_count', {
                             num: store.totalBlockedTab.toLocaleString(),
                         })}
                     </div>
                     <div className="main__total-blocked-all">
-                        {reactTranslator.translate('popup_tab_blocked_all_count', {
+                        {reactTranslator.getMessage('popup_tab_blocked_all_count', {
                             num: store.totalBlocked.toLocaleString(),
                         })}
                     </div>
@@ -71,7 +71,7 @@ export const Main = observer(() => {
                 type="button"
                 className="switcher"
                 onClick={switcher.handler}
-                title={reactTranslator.translate('popup_switch_button')}
+                title={reactTranslator.getMessage('popup_switch_button')}
             >
                 <div className="switcher__center" />
                 <div className="switcher__btn">

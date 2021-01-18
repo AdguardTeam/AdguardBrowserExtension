@@ -4,7 +4,7 @@ import classNames from 'classnames';
 
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
-import { reactTranslator } from '../../../reactCommon/reactTranslator';
+import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { Icon } from '../../../common/components/ui/Icon';
 
 import './filter.pcss';
@@ -23,7 +23,7 @@ const formatDate = (date) => {
 
 const renderTags = (tags, trusted) => {
     if (trusted) {
-        const tagString = `#${reactTranslator.translate('options_filters_filter_trusted_tag')}`;
+        const tagString = `#${reactTranslator.getMessage('options_filters_filter_trusted_tag')}`;
         return (
             <div className="filter__tags">
                 <div className="filter__tag">
@@ -71,7 +71,7 @@ const Filter = ({
     } = filter;
 
     const removeCustomFilter = async () => {
-        const result = window.confirm(reactTranslator.translate('options_delete_filter_confirm'));
+        const result = window.confirm(reactTranslator.getMessage('options_delete_filter_confirm'));
         if (result) {
             await settingsStore.removeCustomFilter(filterId);
         }
@@ -128,10 +128,10 @@ const Filter = ({
                     <div className="filter__desc-item">
                         {
                             version
-                                ? `${reactTranslator.translate('options_filters_filter_version')} ${version} `
+                                ? `${reactTranslator.getMessage('options_filters_filter_version')} ${version} `
                                 : ''
                         }
-                        {reactTranslator.translate('options_filters_filter_updated')}
+                        {reactTranslator.getMessage('options_filters_filter_updated')}
                         {' '}
                         {lastUpdateTime
                             ? formatDate(lastUpdateTime)

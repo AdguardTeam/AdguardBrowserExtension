@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
-import { reactTranslator } from '../../../reactCommon/reactTranslator';
+import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { popupStore } from '../../stores/PopupStore';
 import { Icon } from '../../../common/components/ui/Icon';
 
@@ -15,14 +15,14 @@ export const Footer = observer(() => {
 
     let footerContent = (
         <>
-            <div className="footer__text">{reactTranslator.translate('popup_adguard_footer_title')}</div>
+            <div className="footer__text">{reactTranslator.getMessage('popup_adguard_footer_title')}</div>
             <div className="footer__platforms">
                 <a
                     href={LINK_TO_IOS}
                     target="_blank"
                     rel="noreferrer"
                     className="footer__link"
-                    title={reactTranslator.translate('popup_adguard_for_ios')}
+                    title={reactTranslator.getMessage('popup_adguard_for_ios')}
                 >
                     <Icon
                         id="#apple"
@@ -34,7 +34,7 @@ export const Footer = observer(() => {
                     target="_blank"
                     rel="noreferrer"
                     className="footer__link"
-                    title={reactTranslator.translate('popup_adguard_for_android')}
+                    title={reactTranslator.getMessage('popup_adguard_for_android')}
                 >
                     <Icon
                         id="#android"

@@ -6,7 +6,7 @@ import { messenger } from '../../../services/messenger';
 import { Icon } from '../../../common/components/ui/Icon';
 
 import './header.pcss';
-import { reactTranslator } from '../../../reactCommon/reactTranslator';
+import { reactTranslator } from '../../../../common/translators/reactTranslator';
 
 export const Header = observer(() => {
     const store = useContext(popupStore);
@@ -42,7 +42,7 @@ export const Header = observer(() => {
                         className="button"
                         type="button"
                         onClick={handlePauseClick}
-                        title={reactTranslator.translate('context_disable_protection')}
+                        title={reactTranslator.getMessage('context_disable_protection')}
                     >
                         <Icon
                             id="#pause"
@@ -56,7 +56,7 @@ export const Header = observer(() => {
                         className="button"
                         type="button"
                         onClick={handleEnableClick}
-                        title={reactTranslator.translate('context_enable_protection')}
+                        title={reactTranslator.getMessage('context_enable_protection')}
                     >
                         <Icon
                             id="#start"
@@ -68,7 +68,7 @@ export const Header = observer(() => {
                     className="button"
                     type="button"
                     onClick={handleSettingsClick}
-                    title={reactTranslator.translate('options_settings')}
+                    title={reactTranslator.getMessage('options_settings')}
                 >
                     <Icon
                         id="#settings"

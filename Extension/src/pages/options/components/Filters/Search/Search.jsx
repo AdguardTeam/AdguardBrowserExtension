@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { reactTranslator } from '../../../../reactCommon/reactTranslator';
+import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { Select } from '../../../../common/components/ui/Select';
 
@@ -17,15 +17,15 @@ const Search = ({
     const options = [
         {
             value: 'all',
-            title: reactTranslator.translate('options_filters_list_search_display_option_all'),
+            title: reactTranslator.getMessage('options_filters_list_search_display_option_all'),
         },
         {
             value: 'enabled',
-            title: reactTranslator.translate('options_filters_list_search_display_option_enabled'),
+            title: reactTranslator.getMessage('options_filters_list_search_display_option_enabled'),
         },
         {
             value: 'disabled',
-            title: reactTranslator.translate('options_filters_list_search_display_option_disabled'),
+            title: reactTranslator.getMessage('options_filters_list_search_display_option_disabled'),
         },
     ];
     return (

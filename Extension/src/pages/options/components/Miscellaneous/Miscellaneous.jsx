@@ -7,7 +7,7 @@ import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { messenger } from '../../../services/messenger';
 import { rootStore } from '../../stores/RootStore';
 import { log } from '../../../../common/log';
-import { reactTranslator } from '../../../reactCommon/reactTranslator';
+import { reactTranslator } from '../../../../common/translators/reactTranslator';
 
 const Miscellaneous = observer(() => {
     const {
@@ -37,7 +37,7 @@ const Miscellaneous = observer(() => {
 
     const handleResetStatisticsClick = async () => {
         await messenger.resetStatistics();
-        uiStore.addNotification({ description: reactTranslator.translate('options_reset_stats_done') });
+        uiStore.addNotification({ description: reactTranslator.getMessage('options_reset_stats_done') });
     };
 
     const handleOpenChangelog = () => {
@@ -54,15 +54,15 @@ const Miscellaneous = observer(() => {
 
     return (
         <>
-            <SettingsSection title={reactTranslator.translate('context_miscellaneous_settings')}>
+            <SettingsSection title={reactTranslator.getMessage('context_miscellaneous_settings')}>
                 <SettingsSet
-                    title={reactTranslator.translate('options_use_optimized_filters')}
-                    description={reactTranslator.translate('options_use_optimized_filters_desc')}
+                    title={reactTranslator.getMessage('options_use_optimized_filters')}
+                    description={reactTranslator.getMessage('options_use_optimized_filters_desc')}
                     disabled={!settings.values[USE_OPTIMIZED_FILTERS]}
                     inlineControl={(
                         <Setting
                             id={USE_OPTIMIZED_FILTERS}
-                            label={reactTranslator.translate('options_use_optimized_filters')}
+                            label={reactTranslator.getMessage('options_use_optimized_filters')}
                             type={SETTINGS_TYPES.CHECKBOX}
                             value={settings.values[USE_OPTIMIZED_FILTERS]}
                             handler={settingChangeHandler}
@@ -71,14 +71,14 @@ const Miscellaneous = observer(() => {
                 />
 
                 <SettingsSet
-                    title={reactTranslator.translate('options_collect_hit_stats')}
+                    title={reactTranslator.getMessage('options_collect_hit_stats')}
                     description={(
                         <a
                             href={COLLECT_HITS_LEARN_MORE_URL}
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            {reactTranslator.translate('options_learn_more')}
+                            {reactTranslator.getMessage('options_learn_more')}
                         </a>
                     )}
                     disabled={settings.values[DISABLE_COLLECT_HITS]}
@@ -86,7 +86,7 @@ const Miscellaneous = observer(() => {
                         <Setting
                             id={DISABLE_COLLECT_HITS}
                             type={SETTINGS_TYPES.CHECKBOX}
-                            label={reactTranslator.translate('options_collect_hit_stats')}
+                            label={reactTranslator.getMessage('options_collect_hit_stats')}
                             inverted
                             value={settings.values[DISABLE_COLLECT_HITS]}
                             handler={settingChangeHandler}
@@ -95,13 +95,13 @@ const Miscellaneous = observer(() => {
                 />
 
                 <SettingsSet
-                    title={reactTranslator.translate('options_show_context_menu')}
+                    title={reactTranslator.getMessage('options_show_context_menu')}
                     disabled={settings.values[DISABLE_SHOW_CONTEXT_MENU]}
                     inlineControl={(
                         <Setting
                             id={DISABLE_SHOW_CONTEXT_MENU}
                             type={SETTINGS_TYPES.CHECKBOX}
-                            label={reactTranslator.translate('options_show_context_menu')}
+                            label={reactTranslator.getMessage('options_show_context_menu')}
                             inverted
                             value={settings.values[DISABLE_SHOW_CONTEXT_MENU]}
                             handler={settingChangeHandler}
@@ -110,13 +110,13 @@ const Miscellaneous = observer(() => {
                 />
 
                 <SettingsSet
-                    title={reactTranslator.translate('options_show_adguard_full_version')}
+                    title={reactTranslator.getMessage('options_show_adguard_full_version')}
                     disabled={settings.values[DISABLE_SHOW_ADGUARD_PROMO_INFO]}
                     inlineControl={(
                         <Setting
                             id={DISABLE_SHOW_ADGUARD_PROMO_INFO}
                             type={SETTINGS_TYPES.CHECKBOX}
-                            label={reactTranslator.translate('options_show_adguard_full_version')}
+                            label={reactTranslator.getMessage('options_show_adguard_full_version')}
                             inverted
                             value={settings.values[DISABLE_SHOW_ADGUARD_PROMO_INFO]}
                             handler={settingChangeHandler}
@@ -125,13 +125,13 @@ const Miscellaneous = observer(() => {
                 />
 
                 <SettingsSet
-                    title={reactTranslator.translate('options_show_app_updated_notification')}
+                    title={reactTranslator.getMessage('options_show_app_updated_notification')}
                     disabled={settings.values[DISABLE_SHOW_APP_UPDATED_NOTIFICATION]}
                     inlineControl={(
                         <Setting
                             id={DISABLE_SHOW_APP_UPDATED_NOTIFICATION}
                             type={SETTINGS_TYPES.CHECKBOX}
-                            label={reactTranslator.translate('options_show_app_updated_notification')}
+                            label={reactTranslator.getMessage('options_show_app_updated_notification')}
                             inverted
                             value={settings.values[DISABLE_SHOW_APP_UPDATED_NOTIFICATION]}
                             handler={settingChangeHandler}
@@ -146,21 +146,21 @@ const Miscellaneous = observer(() => {
                     className="button button--m button--green actions__btn"
                     onClick={handleFilteringLogClick}
                 >
-                    {reactTranslator.translate('options_open_log')}
+                    {reactTranslator.getMessage('options_open_log')}
                 </button>
                 <button
                     type="button"
                     className="button button--m button--green-bd actions__btn"
                     onClick={handleResetStatisticsClick}
                 >
-                    {reactTranslator.translate('options_reset_stats')}
+                    {reactTranslator.getMessage('options_reset_stats')}
                 </button>
                 <button
                     type="button"
                     className="button button--m button--green-bd actions__btn"
                     onClick={handleOpenChangelog}
                 >
-                    {reactTranslator.translate('options_open_changelog')}
+                    {reactTranslator.getMessage('options_open_changelog')}
                 </button>
             </div>
         </>

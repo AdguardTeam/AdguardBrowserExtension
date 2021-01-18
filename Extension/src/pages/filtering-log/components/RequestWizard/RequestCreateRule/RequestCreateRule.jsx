@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import { rootStore } from '../../../stores/RootStore';
 import { RULE_OPTIONS } from '../constants';
 import { messenger } from '../../../../services/messenger';
-import { reactTranslator } from '../../../../reactCommon/reactTranslator';
+import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { Icon } from '../../../../common/components/ui/Icon';
 
 import './request-create-rule.pcss';
@@ -14,16 +14,16 @@ const RequestCreateRule = observer(() => {
 
     const RULE_OPTIONS_MAP = {
         [RULE_OPTIONS.RULE_DOMAIN]: {
-            label: `${reactTranslator.translate('filtering_modal_apply_domains')}`,
+            label: `${reactTranslator.getMessage('filtering_modal_apply_domains')}`,
         },
         [RULE_OPTIONS.RULE_MATCH_CASE]: {
-            label: `${reactTranslator.translate('filtering_modal_match_case')}`,
+            label: `${reactTranslator.getMessage('filtering_modal_match_case')}`,
         },
         [RULE_OPTIONS.RULE_THIRD_PARTY]: {
-            label: `${reactTranslator.translate('filtering_modal_third_party')}`,
+            label: `${reactTranslator.getMessage('filtering_modal_third_party')}`,
         },
         [RULE_OPTIONS.RULE_IMPORTANT]: {
-            label: `${reactTranslator.translate('filtering_modal_important')}`,
+            label: `${reactTranslator.getMessage('filtering_modal_important')}`,
         },
     };
 
@@ -138,11 +138,11 @@ const RequestCreateRule = observer(() => {
                 >
                     <Icon classname="icon--contain" id="#arrow-left" />
                 </button>
-                <span className="request-modal__header">{reactTranslator.translate('filtering_modal_add_title')}</span>
+                <span className="request-modal__header">{reactTranslator.getMessage('filtering_modal_add_title')}</span>
             </div>
             <div className="request-modal__content">
                 <div className="request-info request-modal__rule-text">
-                    <div className="request-info__key">{reactTranslator.translate('filtering_modal_rule_text')}</div>
+                    <div className="request-info__key">{reactTranslator.getMessage('filtering_modal_rule_text')}</div>
                     <div
                         /* eslint-disable-next-line jsx-a11y/aria-role */
                         role="textarea"
@@ -156,13 +156,13 @@ const RequestCreateRule = observer(() => {
                 </div>
                 {showPatterns && (
                     <div className="request-info patterns">
-                        <div className="request-info__key">{reactTranslator.translate('filtering_modal_patterns')}</div>
+                        <div className="request-info__key">{reactTranslator.getMessage('filtering_modal_patterns')}</div>
                         {rulePatterns}
                     </div>
                 )}
                 {showOptions && (
                     <div className="request-info options">
-                        <div className="request-info__key">{reactTranslator.translate('filtering_modal_options')}</div>
+                        <div className="request-info__key">{reactTranslator.getMessage('filtering_modal_options')}</div>
                         {options}
                     </div>
                 )}
@@ -171,9 +171,9 @@ const RequestCreateRule = observer(() => {
                 type="button"
                 className="request-modal__button"
                 onClick={handleAddRuleClick}
-                title={reactTranslator.translate('filtering_modal_add_rule')}
+                title={reactTranslator.getMessage('filtering_modal_add_rule')}
             >
-                {reactTranslator.translate('filtering_modal_add_rule')}
+                {reactTranslator.getMessage('filtering_modal_add_rule')}
             </button>
         </>
     );
