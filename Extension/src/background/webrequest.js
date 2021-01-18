@@ -338,11 +338,12 @@ const webrequestInit = function () {
      * On headers received callback function.
      * We do check request for safebrowsing
      * and check if websocket connections should be blocked.
+     * Do not make this function async, otherwise csp rules won't apply in time
      *
      * @param requestDetails Request details
      * @returns {{responseHeaders: *}} Headers to send
      */
-    async function onHeadersReceived(requestDetails) {
+    function onHeadersReceived(requestDetails) {
         const { tab } = requestDetails;
         const { requestUrl } = requestDetails;
         let responseHeaders = requestDetails.responseHeaders || [];
@@ -361,7 +362,9 @@ const webrequestInit = function () {
             // Don't apply safebrowsing filter in case of redirect
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/995
             && statusCode !== 301 && statusCode !== 302) {
-            await filterSafebrowsing(tab, requestUrl);
+            // Do not await function bellow, otherwise csp rules won't apply in time
+            // Issue AG-6230
+            filterSafebrowsing(tab, requestUrl);
         }
 
         // Content filtering will be undefined for chromium based builds
