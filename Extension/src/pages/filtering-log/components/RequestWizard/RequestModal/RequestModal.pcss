@@ -21,6 +21,11 @@
     background-attachment: local, scroll;
     background-position-y: var(--title-height);
 
+    @media (prefers-color-scheme: dark) {
+        background-color: var(--black);
+        color: var(--gray400);
+    }
+
     @media (max-width: 640px) {
         width: 100%;
     }
@@ -36,6 +41,10 @@
         width: 100%;
         background: var(--white);
         position: fixed;
+
+        @media (prefers-color-scheme: dark) {
+            background: var(--black);
+        }
 
         @media (max-width: 640px) {
             padding: 24px 16px 32px;
@@ -78,6 +87,10 @@
 
         &--back {
             color: var(--gray700);
+
+            @media (prefers-color-scheme: dark) {
+                color: var(--gray400);
+            }
         }
 
         &:hover {
@@ -113,6 +126,10 @@
         overflow: hidden;
         text-overflow: ellipsis;
 
+        @media (prefers-color-scheme: dark) {
+            color: var(--black);
+        }
+
         @media (min-width: 641px) {
             &:first-child {
                 margin-right: 24px;
@@ -140,12 +157,18 @@
 
             @media (prefers-color-scheme: dark) {
                 color: var(--gray300);
+                background-color: var(--black);
+                border: 1px solid var(--gray400);
             }
         }
 
         &--red {
             background-color: var(--red400);
             color: var(--white);
+
+            @media (prefers-color-scheme: dark) {
+                color: var(--black);
+            }
         }
 
         &:focus {

@@ -19,11 +19,17 @@
         text-align: center;
         line-height: 40px;
 
+        @media (prefers-color-scheme: dark) {
+            background-color: var(--gray900);
+            color: var(--gray400);
+        }
+
         &_active {
             background-color: var(--white);
             color: var(--gray900);
 
             @media (prefers-color-scheme: dark) {
+                background-color: var(--black);
                 color: var(--gray300);
             }
         }

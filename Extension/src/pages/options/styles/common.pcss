@@ -44,6 +44,11 @@ label.checkbox-label {
             background-color: var(--green400);
             border-color: var(--green400);
 
+            @media (prefers-color-scheme: dark) {
+                background-color: var(--green700);
+                border-color: var(--green700);
+            }
+
             & .icon {
                 display: block;
             }
@@ -60,6 +65,10 @@ label.checkbox-label {
         display: flex;
         align-items: center;
         justify-content: center;
+
+        @media (prefers-color-scheme: dark) {
+            border: 2px solid var(--gray400);
+        }
 
         & .icon {
             display: none;
@@ -198,4 +207,17 @@ label.checkbox-label {
 
 select:focus {
     outline: none;
+}
+
+.ReactModal__Content--after-open {
+    @media (prefers-color-scheme: dark) {
+        background-color: var(--black)!important;
+    }
+}
+
+.ace_content {
+    @media (prefers-color-scheme: dark) {
+        background-color: var(--black)!important;
+        color: var(--gray300)!important;
+    }
 }
