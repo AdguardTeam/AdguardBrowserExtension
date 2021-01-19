@@ -64,12 +64,8 @@ export const filteringApi = (function () {
         return getRequestFilter().getSelectorsForUrl(documentUrl, cosmeticOptions, !traditionalCss, !extCss);
     };
 
-    const getScriptsForUrl = function (documentUrl) {
-        return getRequestFilter().getScriptsForUrl(documentUrl);
-    };
-
-    const getScriptsStringForUrl = function (documentUrl, tab) {
-        return getRequestFilter().getScriptsStringForUrl(documentUrl, tab);
+    const getScriptsStringForUrl = function (documentUrl, tab, cosmeticOptions) {
+        return getRequestFilter().getScriptsStringForUrl(documentUrl, tab, cosmeticOptions);
     };
 
     const getContentRulesForUrl = function (documentUrl) {
@@ -109,7 +105,6 @@ export const filteringApi = (function () {
         findWhitelistRule,
 
         getSelectorsForUrl,
-        getScriptsForUrl,
         getScriptsStringForUrl,
         getContentRulesForUrl,
         getCspRules,

@@ -116,7 +116,7 @@ export const webRequestService = (function () {
             result.selectors = filteringApi.getSelectorsForUrl(
                 documentUrl, cosmeticOptions, true, !prefs.features.canUseInsertCSSAndExecuteScript,
             );
-            result.scripts = filteringApi.getScriptsStringForUrl(documentUrl, tab);
+            result.scripts = filteringApi.getScriptsStringForUrl(documentUrl, tab, cosmeticOptions);
         } else {
             // In preload content script only ExtendedCss selectors are necessary.
             // Traditional css selectors would be injected via tabs.injectCss.
