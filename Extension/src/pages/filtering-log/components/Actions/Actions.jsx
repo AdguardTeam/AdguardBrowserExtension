@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import cn from 'classnames';
 
 import { rootStore } from '../../stores/RootStore';
-import { reactTranslator } from '../../../reactCommon/reactTranslator';
+import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { Icon } from '../../../common/components/ui/Icon';
 
 import './actions.pcss';
@@ -41,7 +41,7 @@ const Actions = observer(() => {
                     onClick={refreshPage}
                 >
                     <Icon id="#reload" classname="icon--reload actions__refresh-ico" />
-                    {reactTranslator.translate('filtering_refresh_tab')}
+                    {reactTranslator.getMessage('filtering_refresh_tab')}
                 </button>
             </div>
             <div className="actions__action">
@@ -51,7 +51,7 @@ const Actions = observer(() => {
                     onClick={clearLogHandler}
                 >
                     <Icon id="#cross" classname="actions__cross" />
-                    {reactTranslator.translate('filtering_clear_tab_events')}
+                    {reactTranslator.getMessage('filtering_clear_tab_events')}
                 </button>
             </div>
             <div className="actions__action actions__preserve">
@@ -65,7 +65,7 @@ const Actions = observer(() => {
                     <div className={preserveLogClassName}>
                         <Icon id="#checked" classname="icon--checked" />
                     </div>
-                    {reactTranslator.translate('filtering_log_preserve_log')}
+                    {reactTranslator.getMessage('filtering_log_preserve_log')}
                 </label>
             </div>
         </div>

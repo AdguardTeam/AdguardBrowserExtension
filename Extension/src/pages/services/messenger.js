@@ -165,8 +165,8 @@ class Messenger {
         return this.sendMessage(MESSAGE_TYPES.OPEN_ABUSE_TAB, { url });
     }
 
-    async checkSiteSecurity() {
-        return this.sendMessage(MESSAGE_TYPES.OPEN_SITE_REPORT_TAB);
+    async checkSiteSecurity(url) {
+        return this.sendMessage(MESSAGE_TYPES.OPEN_SITE_REPORT_TAB, { url });
     }
 
     async removeAllowlistDomain() {

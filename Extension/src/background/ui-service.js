@@ -33,9 +33,10 @@ import { browserUtils } from './utils/browser-utils';
 import { log } from '../common/log';
 import { runtimeImpl } from '../common/common-script';
 import { MESSAGE_TYPES } from '../common/constants';
+import { translator } from '../common/translators/translator';
 
 export const uiService = (function () {
-    const browserActionTitle = backgroundPage.i18n.getMessage('name');
+    const browserActionTitle = translator.getMessage('name');
 
     const contextMenuCallbackMappings = {
         'context_block_site_ads': function () {
@@ -215,7 +216,7 @@ export const uiService = (function () {
     function addMenu(title, options) {
         const createProperties = {
             contexts: ['all'],
-            title: backgroundPage.i18n.getMessage(title),
+            title: translator.getMessage(title),
         };
         if (options) {
             if (options.id) {
@@ -228,7 +229,7 @@ export const uiService = (function () {
                 createProperties.enabled = false;
             }
             if (options.messageArgs) {
-                createProperties.title = backgroundPage.i18n.getMessage(title, options.messageArgs);
+                createProperties.title = translator.getMessage(title, options.messageArgs);
             }
             if (options.contexts) {
                 createProperties.contexts = options.contexts;
@@ -413,10 +414,10 @@ export const uiService = (function () {
     function getUpdateDescriptionMessage(currentVersion, previousVersion) {
         if (browserUtils.getMajorVersionNumber(currentVersion) > browserUtils.getMajorVersionNumber(previousVersion)
             || browserUtils.getMinorVersionNumber(currentVersion) > browserUtils.getMinorVersionNumber(previousVersion)) {
-            return backgroundPage.i18n.getMessage('options_popup_version_update_description_major');
+            return translator.getMessage('options_popup_version_update_description_major');
         }
 
-        return backgroundPage.i18n.getMessage('options_popup_version_update_description_minor');
+        return translator.getMessage('options_popup_version_update_description_minor');
     }
 
     /**
@@ -434,14 +435,14 @@ export const uiService = (function () {
         }
         const message = {
             type: 'show-version-updated-popup',
-            title: backgroundPage.i18n.getMessage('options_popup_version_update_title', currentVersion),
+            title: translator.getMessage('options_popup_version_update_title', currentVersion),
             description: getUpdateDescriptionMessage(currentVersion, previousVersion),
             changelogHref: 'https://adguard.com/forward.html?action=github_version_popup&from=version_popup&app=browser_extension',
-            changelogText: backgroundPage.i18n.getMessage('options_popup_version_update_changelog_text'),
-            offer: backgroundPage.i18n.getMessage('options_popup_version_update_offer'),
+            changelogText: translator.getMessage('options_popup_version_update_changelog_text'),
+            offer: translator.getMessage('options_popup_version_update_offer'),
             offerButtonHref: 'https://adguard.com/forward.html?action=learn_about_adguard&from=version_popup&app=browser_extension',
-            offerButtonText: backgroundPage.i18n.getMessage('options_popup_version_update_offer_button_text'),
-            disableNotificationText: backgroundPage.i18n.getMessage('options_popup_version_update_disable_notification'),
+            offerButtonText: translator.getMessage('options_popup_version_update_offer_button_text'),
+            disableNotificationText: translator.getMessage('options_popup_version_update_disable_notification'),
         };
 
         const tab = await tabsApi.getActive();
@@ -457,7 +458,7 @@ export const uiService = (function () {
         if (success && updatedFilters) {
             if (updatedFilters.length === 0) {
                 title = '';
-                text = backgroundPage.i18n.getMessage('options_popup_update_not_found');
+                text = translator.getMessage('options_popup_update_not_found');
             } else {
                 title = '';
                 text = updatedFilters
@@ -470,14 +471,14 @@ export const uiService = (function () {
                     .map(filter => `"${filter.name}"`)
                     .join(', ');
                 if (updatedFilters.length > 1) {
-                    text += ` ${backgroundPage.i18n.getMessage('options_popup_update_filters')}`;
+                    text += ` ${translator.getMessage('options_popup_update_filters')}`;
                 } else {
-                    text += ` ${backgroundPage.i18n.getMessage('options_popup_update_filter')}`;
+                    text += ` ${translator.getMessage('options_popup_update_filter')}`;
                 }
             }
         } else {
-            title = backgroundPage.i18n.getMessage('options_popup_update_title_error');
-            text = backgroundPage.i18n.getMessage('options_popup_update_error');
+            title = translator.getMessage('options_popup_update_title_error');
+            text = translator.getMessage('options_popup_update_error');
         }
 
         return {
@@ -487,13 +488,13 @@ export const uiService = (function () {
     }
 
     function getFiltersEnabledResultMessage(enabledFilters) {
-        const title = backgroundPage.i18n.getMessage('alert_popup_filter_enabled_title');
+        const title = translator.getMessage('alert_popup_filter_enabled_title');
         const text = [];
         enabledFilters.sort((a, b) => a.displayNumber - b.displayNumber);
         for (let i = 0; i < enabledFilters.length; i += 1) {
             const filter = enabledFilters[i];
             text.push(
-                backgroundPage.i18n.getMessage('alert_popup_filter_enabled_text',
+                translator.getMessage('alert_popup_filter_enabled_text',
                     [filter.name]).replace('$1', filter.name),
             );
         }

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
-import { reactTranslator } from '../../../reactCommon/reactTranslator';
+import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { Icon } from '../../../common/components/ui/Icon';
 
 import './group.pcss';
@@ -17,9 +17,9 @@ const renderEnabledFilters = (enabledFilters) => {
     if (countable.length > 0) {
         return (
             <>
-                {reactTranslator.translate('options_filters_enabled')}
+                {reactTranslator.getMessage('options_filters_enabled')}
                 {' '}
-                {reactTranslator.translate(
+                {reactTranslator.getMessage(
                     'options_filters_enabled_and_more_divider',
                     { enabled: displayable.join(', '), more: countable.length },
                 )}
@@ -31,9 +31,9 @@ const renderEnabledFilters = (enabledFilters) => {
         const [last, ...rest] = displayable.reverse();
         return (
             <>
-                {reactTranslator.translate('options_filters_enabled')}
+                {reactTranslator.getMessage('options_filters_enabled')}
                 {' '}
-                {reactTranslator.translate(
+                {reactTranslator.getMessage(
                     'options_filters_enabled_and_divider',
                     { enabled: rest.join(', '), last },
                 )}
@@ -44,14 +44,14 @@ const renderEnabledFilters = (enabledFilters) => {
     if (displayable.length === 1) {
         return (
             <>
-                {reactTranslator.translate('options_filters_enabled')}
+                {reactTranslator.getMessage('options_filters_enabled')}
                 {' '}
                 {displayable[0]}
             </>
         );
     }
 
-    return reactTranslator.translate('options_filters_no_enabled');
+    return reactTranslator.getMessage('options_filters_no_enabled');
 };
 
 const Group = ({

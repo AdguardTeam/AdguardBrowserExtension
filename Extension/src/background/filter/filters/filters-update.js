@@ -269,23 +269,27 @@ export const filtersUpdate = (() => {
          * Method is called after we have got server response
          * Now we check filters version and update filter if needed
          * @param filterMetadataList
+         * @param forceUpdate
          */
-        const selectFilterMetadataListToUpdate = (filterMetadataList) => {
+        const selectFilterMetadataListToUpdate = (filterMetadataList, forceUpdate) => {
             const filterMetadataListToUpdate = [];
             for (let i = 0; i < filterMetadataList.length; i += 1) {
                 const filterMetadata = filterMetadataList[i];
                 const filter = subscriptions.getFilter(filterMetadata.filterId);
-                if (
-                    filter
-                    && filterMetadata.version
-                    && browserUtils.isGreaterVersion(filterMetadata.version, filter.version)
-                ) {
-                    log.info(`Updating filter ${filter.filterId} to version ${filterMetadata.version}`);
-                    filter.lastUpdateTime = Date.now();
-                    filterMetadataListToUpdate.push(filterMetadata);
-                } else {
-                    // remember that this filter version was checked
-                    filter.lastCheckTime = Date.now();
+                if (filter && filterMetadata) {
+                    if (forceUpdate
+                        || (filterMetadata.version
+                            && browserUtils.isGreaterVersion(
+                                filterMetadata.version,
+                                filter.version,
+                            ))) {
+                        log.info(`Updating filter ${filter.filterId} to version ${filterMetadata.version}`);
+                        filter.lastUpdateTime = Date.now();
+                        filterMetadataListToUpdate.push(filterMetadata);
+                    } else {
+                        // remember that this filter version was checked
+                        filter.lastCheckTime = Date.now();
+                    }
                 }
             }
             return filterMetadataListToUpdate;
@@ -294,7 +298,7 @@ export const filtersUpdate = (() => {
         // Retrieve current filters metadata for update
         const filterMetadataList = await loadFiltersMetadataFromBackend(filterIdsToUpdate);
 
-        const filterMetadataListToUpdate = selectFilterMetadataListToUpdate(filterMetadataList);
+        const filterMetadataListToUpdate = selectFilterMetadataListToUpdate(filterMetadataList, forceUpdate);
 
         const loadedFilters = await loadFiltersFromBackendCallback(filterMetadataListToUpdate);
 

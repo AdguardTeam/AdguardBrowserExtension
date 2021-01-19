@@ -13,6 +13,13 @@
         width: 100%;
         min-width: 810px;
 
+        & thead th {
+            position: sticky;
+            top: 0;
+            background-color: var(--white);
+            box-shadow: 0 1px 0 0 var(--thColor);
+        }
+
         & tbody > tr {
             &:hover {
                 cursor: pointer;
@@ -52,10 +59,13 @@
             color: var(--darkText);
             border-right: 1px solid var(--thColor);
             border-bottom: 1px solid var(--thColor);
-            font-family: var(--font-roboto);
 
             &:first-child {
                 width: 25%;
+            }
+
+            &:last-child {
+                border-right: 0;
             }
         }
 

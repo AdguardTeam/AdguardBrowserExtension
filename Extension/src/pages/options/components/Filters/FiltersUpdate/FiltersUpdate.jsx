@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { reactTranslator } from '../../../../reactCommon/reactTranslator';
+import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { Icon } from '../../../../common/components/ui/Icon';
 
 import './filters-update.pcss';
@@ -28,7 +28,7 @@ const FiltersUpdate = (props) => {
         <div className="filters-update">
             <div className="filters-update__info">
                 <div className="filters-update__title">
-                    {reactTranslator.translate('options_antibanner_info')}
+                    {reactTranslator.getMessage('options_antibanner_info')}
                     {rulesCount}
                 </div>
                 <div className="filters-update__desc">

@@ -183,7 +183,7 @@ export const allowlist = (() => {
             return null;
         }
 
-        const host = utils.url.getHost(url);
+        const host = utils.url.getDomainName(url);
 
         if (isDefaultAllowlistMode()) {
             if (allowlistDomainsHolder.includes(host)) {
@@ -215,7 +215,7 @@ export const allowlist = (() => {
      * @param url
      */
     const allowlistUrl = function (url) {
-        const domain = utils.url.getHost(url);
+        const domain = utils.url.getDomainName(url);
         if (isDefaultAllowlistMode()) {
             addToAllowlist(domain);
         } else {
@@ -228,7 +228,7 @@ export const allowlist = (() => {
      * @param url
      */
     const unAllowlistUrl = function (url) {
-        const domain = utils.url.getHost(url);
+        const domain = utils.url.getDomainName(url);
         if (isDefaultAllowlistMode()) {
             removeFromAllowlist(domain);
         } else {

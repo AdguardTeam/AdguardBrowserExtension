@@ -8,20 +8,20 @@ import { getFilterName, getRequestType } from '../utils';
 import { RequestImage } from './RequestImage';
 import { rootStore } from '../../../stores/RootStore';
 import { messenger } from '../../../../services/messenger';
-import { reactTranslator } from '../../../../reactCommon/reactTranslator';
+import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { ANTIBANNER_FILTERS_ID, STEALTH_ACTIONS } from '../../../../../common/constants';
 import { Icon } from '../../../../common/components/ui/Icon';
 
 import './request-info.pcss';
 
 const STEALTH_ACTIONS_NAMES = {
-    HIDE_REFERRER: reactTranslator.translate('filtering_log_hide_referrer'),
-    SEND_DO_NOT_TRACK: reactTranslator.translate('filtering_log_send_not_track'),
-    HIDE_SEARCH_QUERIES: reactTranslator.translate('filtering_log_hide_search_queries'),
-    FIRST_PARTY_COOKIES: reactTranslator.translate('options_modified_first_party_cookie'),
-    THIRD_PARTY_COOKIES: reactTranslator.translate('options_modified_third_party_cookie'),
-    BLOCK_CHROME_CLIENT_DATA: reactTranslator.translate('filtering_log_remove_client_data'),
-    STRIPPED_TRACKING_URL: reactTranslator.translate('options_stripped_tracking_parameters'),
+    HIDE_REFERRER: reactTranslator.getMessage('filtering_log_hide_referrer'),
+    SEND_DO_NOT_TRACK: reactTranslator.getMessage('filtering_log_send_not_track'),
+    HIDE_SEARCH_QUERIES: reactTranslator.getMessage('filtering_log_hide_search_queries'),
+    FIRST_PARTY_COOKIES: reactTranslator.getMessage('options_modified_first_party_cookie'),
+    THIRD_PARTY_COOKIES: reactTranslator.getMessage('options_modified_third_party_cookie'),
+    BLOCK_CHROME_CLIENT_DATA: reactTranslator.getMessage('filtering_log_remove_client_data'),
+    STRIPPED_TRACKING_URL: reactTranslator.getMessage('options_stripped_tracking_parameters'),
 };
 
 /**
@@ -52,36 +52,36 @@ const RequestInfo = observer(() => {
 
     const infoElements = [
         {
-            title: reactTranslator.translate('options_popup_filter_url'),
+            title: reactTranslator.getMessage('options_popup_filter_url'),
             data: selectedEvent.requestUrl,
         },
         {
-            title: reactTranslator.translate('filtering_modal_element'),
+            title: reactTranslator.getMessage('filtering_modal_element'),
             data: selectedEvent.element,
         },
         {
-            title: reactTranslator.translate('filtering_modal_cookie'),
+            title: reactTranslator.getMessage('filtering_modal_cookie'),
             data: selectedEvent.cookieName,
         },
         {
-            title: reactTranslator.translate('filtering_modal_type'),
+            title: reactTranslator.getMessage('filtering_modal_type'),
             data: getRequestType(selectedEvent.requestType),
         },
         {
-            title: reactTranslator.translate('filtering_modal_source'),
+            title: reactTranslator.getMessage('filtering_modal_source'),
             data: selectedEvent.frameDomain,
         },
         {
-            title: reactTranslator.translate('filtering_modal_rule'),
+            title: reactTranslator.getMessage('filtering_modal_rule'),
             data: selectedEvent?.requestRule?.ruleText,
         },
         // TODO add converted rule text
         {
-            title: reactTranslator.translate('filtering_modal_filter'),
+            title: reactTranslator.getMessage('filtering_modal_filter'),
             data: getFilterName(selectedEvent.requestRule?.filterId, filtersMetadata),
         },
         {
-            title: reactTranslator.translate('filtering_modal_privacy'),
+            title: reactTranslator.getMessage('filtering_modal_privacy'),
             data: getStealthActionsNames(selectedEvent.stealthActions),
         },
     ];
@@ -132,9 +132,9 @@ const RequestInfo = observer(() => {
                 className="request-modal__button request-modal__button--white"
                 type="button"
                 onClick={openInNewTabHandler}
-                title={reactTranslator.translate('filtering_modal_open_in_new_tab')}
+                title={reactTranslator.getMessage('filtering_modal_open_in_new_tab')}
             >
-                {reactTranslator.translate('filtering_modal_open_in_new_tab')}
+                {reactTranslator.getMessage('filtering_modal_open_in_new_tab')}
             </button>
         );
     };
@@ -158,7 +158,7 @@ const RequestInfo = observer(() => {
     const renderButton = ({ buttonTitleKey, onClick, className }) => {
         const buttonClass = cn('request-modal__button', className);
 
-        const title = reactTranslator.translate(buttonTitleKey);
+        const title = reactTranslator.getMessage(buttonTitleKey);
 
         return (
             <button
@@ -228,9 +228,9 @@ const RequestInfo = observer(() => {
                     onClick={closeModal}
                     className="request-modal__navigation request-modal__navigation--close"
                 >
-                    <Icon id="#cross" classname="icon--24" />
+                    <Icon id="#cross" classname="icon--contain" />
                 </button>
-                <span className="request-modal__header">{reactTranslator.translate('filtering_modal_info_title')}</span>
+                <span className="request-modal__header">{reactTranslator.getMessage('filtering_modal_info_title')}</span>
             </div>
             <div className="request-modal__content">
                 {renderedInfo}

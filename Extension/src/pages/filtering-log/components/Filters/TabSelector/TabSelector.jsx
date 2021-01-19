@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
 import { rootStore } from '../../../stores/RootStore';
-import { reactTranslator } from '../../../../reactCommon/reactTranslator';
+import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { Icon } from '../../../../common/components/ui/Icon';
 
 import './tab-selector.pcss';
@@ -36,7 +36,7 @@ const TabSelector = observer(() => {
             <label
                 htmlFor="tab-selector"
             >
-                {reactTranslator.translate('filtering_log_tab')}
+                {reactTranslator.getMessage('filtering_log_tab')}
             </label>
 
             <div className="tab-selector__select">

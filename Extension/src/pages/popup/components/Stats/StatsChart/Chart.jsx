@@ -2,19 +2,19 @@ import React, { useEffect } from 'react';
 import c3 from 'c3';
 import 'c3/c3.css';
 
-import { reactTranslator } from '../../../../reactCommon/reactTranslator';
+import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { TIME_RANGES } from '../../../constants';
 
 import './chart.pcss';
 
 const DAYS_OF_WEEK = [
-    reactTranslator.translate('popup_statistics_week_days_mon'),
-    reactTranslator.translate('popup_statistics_week_days_tue'),
-    reactTranslator.translate('popup_statistics_week_days_wed'),
-    reactTranslator.translate('popup_statistics_week_days_thu'),
-    reactTranslator.translate('popup_statistics_week_days_fri'),
-    reactTranslator.translate('popup_statistics_week_days_sat'),
-    reactTranslator.translate('popup_statistics_week_days_sun'),
+    reactTranslator.getMessage('popup_statistics_week_days_mon'),
+    reactTranslator.getMessage('popup_statistics_week_days_tue'),
+    reactTranslator.getMessage('popup_statistics_week_days_wed'),
+    reactTranslator.getMessage('popup_statistics_week_days_thu'),
+    reactTranslator.getMessage('popup_statistics_week_days_fri'),
+    reactTranslator.getMessage('popup_statistics_week_days_sat'),
+    reactTranslator.getMessage('popup_statistics_week_days_sun'),
 ];
 
 const dayOfWeekAsString = (dayIndex) => {
@@ -22,18 +22,18 @@ const dayOfWeekAsString = (dayIndex) => {
 };
 
 const MONTHS_OF_YEAR = [
-    reactTranslator.translate('popup_statistics_months_jan'),
-    reactTranslator.translate('popup_statistics_months_feb'),
-    reactTranslator.translate('popup_statistics_months_mar'),
-    reactTranslator.translate('popup_statistics_months_apr'),
-    reactTranslator.translate('popup_statistics_months_may'),
-    reactTranslator.translate('popup_statistics_months_jun'),
-    reactTranslator.translate('popup_statistics_months_jul'),
-    reactTranslator.translate('popup_statistics_months_aug'),
-    reactTranslator.translate('popup_statistics_months_sep'),
-    reactTranslator.translate('popup_statistics_months_oct'),
-    reactTranslator.translate('popup_statistics_months_nov'),
-    reactTranslator.translate('popup_statistics_months_dec'),
+    reactTranslator.getMessage('popup_statistics_months_jan'),
+    reactTranslator.getMessage('popup_statistics_months_feb'),
+    reactTranslator.getMessage('popup_statistics_months_mar'),
+    reactTranslator.getMessage('popup_statistics_months_apr'),
+    reactTranslator.getMessage('popup_statistics_months_may'),
+    reactTranslator.getMessage('popup_statistics_months_jun'),
+    reactTranslator.getMessage('popup_statistics_months_jul'),
+    reactTranslator.getMessage('popup_statistics_months_aug'),
+    reactTranslator.getMessage('popup_statistics_months_sep'),
+    reactTranslator.getMessage('popup_statistics_months_oct'),
+    reactTranslator.getMessage('popup_statistics_months_nov'),
+    reactTranslator.getMessage('popup_statistics_months_dec'),
 ];
 
 const monthsAsString = (monthIndex) => {

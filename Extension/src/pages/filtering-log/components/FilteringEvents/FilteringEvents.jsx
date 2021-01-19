@@ -5,7 +5,7 @@ import { useTable } from 'react-table';
 
 import { rootStore } from '../../stores/RootStore';
 import { getRequestType } from '../RequestWizard/utils';
-import { reactTranslator } from '../../../reactCommon/reactTranslator';
+import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { ANTIBANNER_FILTERS_ID } from '../../../../common/constants';
 import { Icon } from '../../../common/components/ui/Icon';
 
@@ -43,7 +43,7 @@ const FilteringEvents = observer(() => {
             },
         },
         {
-            Header: `${reactTranslator.translate('filtering_table_type')}`,
+            Header: `${reactTranslator.getMessage('filtering_table_type')}`,
             accessor: (props) => {
                 const { requestType, requestThirdParty } = props;
 
@@ -66,14 +66,14 @@ const FilteringEvents = observer(() => {
             },
         },
         {
-            Header: `${reactTranslator.translate('filtering_table_rule')}`,
+            Header: `${reactTranslator.getMessage('filtering_table_rule')}`,
             accessor: (props) => {
                 const { requestRule, replaceRules } = props;
 
                 let ruleText = '';
                 if (requestRule) {
                     if (requestRule.filterId === ANTIBANNER_FILTERS_ID.ALLOWLIST_FILTER_ID) {
-                        ruleText = reactTranslator.translate('filtering_log_in_allowlist');
+                        ruleText = reactTranslator.getMessage('filtering_log_in_allowlist');
                     } else {
                         ruleText = requestRule.ruleText;
                     }
@@ -81,17 +81,17 @@ const FilteringEvents = observer(() => {
 
                 if (replaceRules) {
                     const rulesCount = replaceRules.length;
-                    ruleText = `${reactTranslator.translate('filtering_log_modified_rules')} ${rulesCount}`;
+                    ruleText = `${reactTranslator.getMessage('filtering_log_modified_rules')} ${rulesCount}`;
                 }
                 return ruleText;
             },
         },
         {
-            Header: `${reactTranslator.translate('filtering_table_filter')}`,
+            Header: `${reactTranslator.getMessage('filtering_table_filter')}`,
             accessor: 'filterName',
         },
         {
-            Header: `${reactTranslator.translate('filtering_table_source')}`,
+            Header: `${reactTranslator.getMessage('filtering_table_source')}`,
             accessor: 'frameDomain',
         },
     ], []);
@@ -194,7 +194,7 @@ const FilteringEvents = observer(() => {
                     <div className="filtering-log__empty-in">
                         <Icon id="#magnifying" classname="filtering-log__empty-img" />
                         <div className="filtering-log__desc">
-                            {reactTranslator.translate('filtering_table_empty_reload_page_desc', {
+                            {reactTranslator.getMessage('filtering_table_empty_reload_page_desc', {
                                 a: (chunks) => (
                                     <button
                                         className="filtering-log__refresh"
