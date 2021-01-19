@@ -469,8 +469,7 @@ const init = () => {
             }
             case MESSAGE_TYPES.APPLY_SETTINGS_JSON: {
                 const { json } = data;
-                settingsProvider.applySettingsBackup(json);
-                break;
+                return settingsProvider.applySettingsBackup(json);
             }
             case MESSAGE_TYPES.ADD_URL_TO_TRUSTED:
                 await documentFilterService.addToTrusted(message.url);
