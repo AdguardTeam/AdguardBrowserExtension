@@ -435,7 +435,7 @@ export const uiService = (function () {
         }
         const message = {
             type: 'show-version-updated-popup',
-            title: translator.getMessage('options_popup_version_update_title', currentVersion),
+            title: translator.getMessage('options_popup_version_update_title', { current_version: currentVersion }),
             description: getUpdateDescriptionMessage(currentVersion, previousVersion),
             changelogHref: 'https://adguard.com/forward.html?action=github_version_popup&from=version_popup&app=browser_extension',
             changelogText: translator.getMessage('options_popup_version_update_changelog_text'),

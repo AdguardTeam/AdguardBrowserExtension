@@ -28,8 +28,7 @@ const FiltersUpdate = (props) => {
         <div className="filters-update">
             <div className="filters-update__info">
                 <div className="filters-update__title">
-                    {reactTranslator.getMessage('options_antibanner_info')}
-                    {rulesCount}
+                    {reactTranslator.getMessage('options_antibanner_info', { current_version: rulesCount })}
                 </div>
                 <div className="filters-update__desc">
                     {dateObj.toLocaleDateString('default', formatOptions)}
