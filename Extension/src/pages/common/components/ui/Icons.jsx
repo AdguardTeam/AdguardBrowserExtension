@@ -137,7 +137,6 @@ export const Icons = () => {
 
             <symbol id="code" viewBox="0 0 24 24">
                 <g fill="none" fillRule="evenodd">
-                    <path d="m-24-310h360v667h-360z" fill="#fff" />
                     <g transform="matrix(1 0 0 -1 0 24)">
                         <path d="m0 0h24v24h-24z" fill="#878787" fillOpacity=".01" fillRule="evenodd" />
                         <path d="m9 19 5-13m3 10 2-3.5-2-3.5m-10.5 7-2-3.5 2-3.5" stroke="#67b279" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
