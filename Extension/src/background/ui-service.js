@@ -493,10 +493,10 @@ export const uiService = (function () {
         enabledFilters.sort((a, b) => a.displayNumber - b.displayNumber);
         for (let i = 0; i < enabledFilters.length; i += 1) {
             const filter = enabledFilters[i];
-            text.push(
-                translator.getMessage('alert_popup_filter_enabled_text',
-                    [filter.name]).replace('$1', filter.name),
-            );
+            text.push(translator.getMessage(
+                'alert_popup_filter_enabled_text',
+                { filter_name: filter.name },
+            ));
         }
         return {
             title,
