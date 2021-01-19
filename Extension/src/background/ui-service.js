@@ -435,7 +435,7 @@ export const uiService = (function () {
         }
         const message = {
             type: 'show-version-updated-popup',
-            title: translator.getMessage('options_popup_version_update_title', currentVersion),
+            title: translator.getMessage('options_popup_version_update_title', { current_version: currentVersion }),
             description: getUpdateDescriptionMessage(currentVersion, previousVersion),
             changelogHref: 'https://adguard.com/forward.html?action=github_version_popup&from=version_popup&app=browser_extension',
             changelogText: translator.getMessage('options_popup_version_update_changelog_text'),
@@ -493,10 +493,10 @@ export const uiService = (function () {
         enabledFilters.sort((a, b) => a.displayNumber - b.displayNumber);
         for (let i = 0; i < enabledFilters.length; i += 1) {
             const filter = enabledFilters[i];
-            text.push(
-                translator.getMessage('alert_popup_filter_enabled_text',
-                    [filter.name]).replace('$1', filter.name),
-            );
+            text.push(translator.getMessage(
+                'alert_popup_filter_enabled_text',
+                { filter_name: filter.name },
+            ));
         }
         return {
             title,
