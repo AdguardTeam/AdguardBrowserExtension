@@ -683,7 +683,7 @@ describe('RequestFilter', () => {
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1534
         // eslint-disable-next-line max-len
         it('In case request has "DOCUMENT" type - $domain modifier will match as well request URL hostname', async () => {
-            const urlRuleText = '||check.com/url$domain=example.org|check.com';
+            const urlRuleText = 'check.com/url$domain=example.org|check.com';
             const requestFilter = await createRequestFilterWithRules([urlRuleText]);
 
             // Will match document url host
