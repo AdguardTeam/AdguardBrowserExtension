@@ -12,14 +12,6 @@ import { NOTIFIER_TYPES } from '../../../../common/constants';
 
 import '../../styles/styles.pcss';
 
-// TODO set dark-mode and light mode in the same file
-//  e.g. https://medium.com/@haxzie/dark-and-light-theme-switcher-using-css-variables-and-pure-javascript-zocada-dd0059d72fa2
-if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    require('../../styles/dark-mode.pcss');
-} else {
-    require('../../styles/light-mode.pcss');
-}
-
 const FilteringLog = () => {
     const { logStore } = useContext(rootStore);
 

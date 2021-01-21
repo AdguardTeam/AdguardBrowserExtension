@@ -22,7 +22,7 @@ const Footer = () => {
                         className="button button--rate"
                         onClick={messenger.openExtensionStore}
                     >
-                        <Icon id="#like" classname="icon--24 button__img" />
+                        <Icon id="#like" classname="icon--24 icon--like button__img" />
                         <label
                             htmlFor="thumbsup"
                             className="button__label button__label--rate"
