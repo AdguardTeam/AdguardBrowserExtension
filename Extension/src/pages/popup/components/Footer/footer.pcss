@@ -8,6 +8,12 @@
     font-size: 13px;
     color: var(--gray900);
 
+    @media (prefers-color-scheme: dark) {
+        color: var(--gray300);
+        background-color: var(--black);
+        box-shadow: 0 -2px 0 0 var(--grayDark);
+    }
+
     &__text {
         max-width: 215px;
         overflow: hidden;
@@ -34,5 +40,10 @@
     &__icon {
         width: 17px;
         height: 17px;
+        color: #888;
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray300);
+        }
     }
 }

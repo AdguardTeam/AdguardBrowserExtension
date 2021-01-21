@@ -6,6 +6,10 @@
     padding-bottom: 13px;
     width: 100%;
 
+    @media (prefers-color-scheme: dark) {
+        background-color: var(--black);
+    }
+
     .action {
         width: 100%;
         display: flex;
@@ -16,6 +20,10 @@
 
         &:hover {
             background-color: var(--gray100);
+
+            @media (prefers-color-scheme: dark) {
+                background-color: var(--grayDark);
+            }
         }
 
         &_disabled {
@@ -35,6 +43,10 @@
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 100%;
+
+            @media (prefers-color-scheme: dark) {
+                color: var(--gray300);
+            }
         }
     }
 }

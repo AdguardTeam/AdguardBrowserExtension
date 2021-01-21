@@ -6,6 +6,10 @@
     &__content {
         height: 168px;
         overflow: auto;
+
+        @media (prefers-color-scheme: dark) {
+            background-color: var(--black);
+        }
     }
 
     &__tab {
@@ -19,9 +23,19 @@
         text-align: center;
         line-height: 40px;
 
+        @media (prefers-color-scheme: dark) {
+            background-color: var(--grayDark);
+            color: var(--gray400);
+        }
+
         &_active {
             background-color: var(--white);
             color: var(--gray900);
+
+            @media (prefers-color-scheme: dark) {
+                background-color: var(--black);
+                color: var(--gray300);
+            }
         }
     }
 }

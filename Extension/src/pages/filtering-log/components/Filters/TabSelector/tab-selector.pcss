@@ -20,7 +20,7 @@
     }
 
     &__select-in {
-        width: 100%;
+        max-width: 100%;
         color: var(--textColor);
         height: 30px;
         line-height: 30px;
@@ -32,6 +32,12 @@
         cursor: pointer;
         appearance: none;
         margin-left: 8px;
+
+        @media (prefers-color-scheme: dark) {
+            background-color: var(--bgColor);
+            color: var(--gray300);
+            border-bottom: 1px solid var(--gray400);
+        }
 
         @media (max-width: 640px) {
             margin-left: 0;

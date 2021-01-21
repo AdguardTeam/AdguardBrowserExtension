@@ -11,6 +11,10 @@
     transform: translateX(-100%);
     transition: transform var(--sidebar-transition);
 
+    @media (prefers-color-scheme: dark) {
+        background: var(--black);
+    }
+
     &__menu {
         display: block;
         position: fixed;
@@ -23,6 +27,11 @@
         font-size: 14px;
         color: var(--gray-base);
         line-height: 18px;
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray300);
+            background-color: var(--black);
+        }
     }
 
     &__logo {

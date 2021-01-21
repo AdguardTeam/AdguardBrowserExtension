@@ -25,6 +25,10 @@
         background-color: var(--green86);
         transition: 0.3s ease background-color;
 
+        @media (prefers-color-scheme: dark) {
+            color: var(--black);
+        }
+
         &:hover {
             background-color: var(--green75);
         }
@@ -66,6 +70,11 @@
         justify-content: flex-start;
         align-items: center;
         cursor: pointer;
+
+        @media (prefers-color-scheme: dark) {
+            border: 1px solid var(--gray300);
+            color: var(--gray300);
+        }
     }
 
     &--add-custom-filter {

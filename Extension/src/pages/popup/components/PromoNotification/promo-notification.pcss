@@ -41,6 +41,10 @@
         position: absolute;
         top: -10px;
         right: 15px;
+
+        @media (prefers-color-scheme: dark) {
+            color: 2px solid var(--gray400);
+        }
     }
 
     &__content {
@@ -51,10 +55,18 @@
         background-color: var(--black);
         padding: 10px;
         font-size: 13px;
+
+        @media (prefers-color-scheme: dark) {
+            background-color: var(--gray100);
+        }
     }
 
     &__title,
     &__btn {
         color: var(--white);
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--black);
+        }
     }
 }

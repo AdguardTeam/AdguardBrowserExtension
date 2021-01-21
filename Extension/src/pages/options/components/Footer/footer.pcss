@@ -37,6 +37,10 @@
         height: 158px;
         background-color: var(--greyf7);
 
+        @media (prefers-color-scheme: dark) {
+            background-color: var(--grayDark);
+        }
+
         @media (min-width: 640px) {
             height: 80px;
         }
@@ -47,8 +51,17 @@
         min-height: 140px;
         background-color: var(--gray-base);
 
+        @media (prefers-color-scheme: dark) {
+            background-color: var(--gray300);
+            color: var(--black);
+        }
+
         @media (min-width: 640px) {
             min-height: 96px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            background-color: var(--gray300);
         }
     }
 
@@ -63,6 +76,10 @@
         @media (min-width: 360px) {
             display: block;
             width: auto;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--black);
         }
     }
 
@@ -98,6 +115,10 @@
 
         @media (min-width: 640px) {
             margin: 0;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--black);
         }
     }
 }

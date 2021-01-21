@@ -6,6 +6,7 @@
     --gray400: #a4a4a4;
     --gray700: #888888;
     --gray900: #4d4d4d;
+    --grayDark: #2a2a2a;
     --black: #131313;
     /*FEEDBACK*/
     --red400: #c23814;
@@ -61,4 +62,10 @@
     --z-idx8: 8;
 
     --shadow-dark: rgba(0,0,0,0.20);
+
+    @media (prefers-color-scheme: dark) {
+        --enabled-bg: radial-gradient(circle at 50% 54%, #326e7a, var(--black));
+        --allowlisted-bg: radial-gradient(circle at 50% 54%, #7A3232, var(--black));
+        --disabled-bg: radial-gradient(circle at 50% 54%, #848484, var(--black));
+    }
 }

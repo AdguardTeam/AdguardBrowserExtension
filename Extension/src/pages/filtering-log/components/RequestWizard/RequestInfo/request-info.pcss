@@ -11,6 +11,10 @@
 
             .request-modal__block.&:not(:last-child) {
                 border-bottom: 1px solid var(--gray100);
+
+                @media (prefers-color-scheme: dark) {
+                    border-bottom: 1px solid var(--grayDark);
+                }
             }
     }
 
@@ -19,11 +23,19 @@
         line-height: 16px;
         margin-bottom: 4px;
         font-size: 14px;
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray400);
+        }
     }
 
     &__value {
         color: var(--gray900);
         line-height: 19px;
         margin-top: 4px;
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray300);
+        }
     }
 }
