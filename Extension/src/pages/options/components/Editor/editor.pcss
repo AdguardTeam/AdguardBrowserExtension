@@ -29,5 +29,23 @@
         height: 100%;
         border-top: 1px solid var(--gray05);
         border-bottom: 1px solid var(--gray05);
+
+        @media (prefers-color-scheme: dark) {
+            border-top: 1px solid var(--gray900);
+            border-bottom: 1px solid var(--gray900);
+        }
+    }
+
+    & .ace_gutter {
+        @media (prefers-color-scheme: dark) {
+            background: var(--gray900);
+        }
+    }
+
+    & .ace_gutter-active-line {
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray300);
+            background: var(--grayDark);
+        }
     }
 }

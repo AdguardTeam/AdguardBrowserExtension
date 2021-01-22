@@ -72,7 +72,7 @@ export const Header = observer(() => {
                 >
                     <Icon
                         id="#settings"
-                        classname="icon--button"
+                        classname="icon--button icon--settings"
                     />
                 </button>
             </div>
