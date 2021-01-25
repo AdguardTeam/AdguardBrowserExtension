@@ -50,6 +50,7 @@ const Miscellaneous = observer(() => {
         DISABLE_SHOW_CONTEXT_MENU,
         DISABLE_SHOW_ADGUARD_PROMO_INFO,
         DISABLE_SHOW_APP_UPDATED_NOTIFICATION,
+        DISABLE_SHOW_PAGE_STATS,
     } = settings.names;
 
     return (
@@ -89,6 +90,21 @@ const Miscellaneous = observer(() => {
                             label={reactTranslator.getMessage('options_collect_hit_stats')}
                             inverted
                             value={settings.values[DISABLE_COLLECT_HITS]}
+                            handler={settingChangeHandler}
+                        />
+                    )}
+                />
+
+                <SettingsSet
+                    title={reactTranslator.getMessage('options_show_blocked_ads_count')}
+                    disabled={settings.values[DISABLE_SHOW_PAGE_STATS]}
+                    inlineControl={(
+                        <Setting
+                            id={DISABLE_SHOW_PAGE_STATS}
+                            type={SETTINGS_TYPES.CHECKBOX}
+                            label={reactTranslator.getMessage('options_show_blocked_ads_count')}
+                            inverted
+                            value={settings.values[DISABLE_SHOW_PAGE_STATS]}
                             handler={settingChangeHandler}
                         />
                     )}
