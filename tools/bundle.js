@@ -50,12 +50,12 @@ const bundleAdguardApi = async () => {
 const devPlan = [
     copyExternals,
     bundleChrome,
-    // bundleFirefoxAmo,
-    // bundleFirefoxStandalone,
-    // bundleEdge,
-    // bundleOpera,
-    // bundleAdguardApi,
-    // buildInfo,
+    bundleFirefoxAmo,
+    bundleFirefoxStandalone,
+    bundleEdge,
+    bundleOpera,
+    bundleAdguardApi,
+    buildInfo,
 ];
 
 const betaPlan = [
