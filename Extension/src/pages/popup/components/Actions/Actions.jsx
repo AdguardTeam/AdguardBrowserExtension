@@ -41,6 +41,14 @@ export const Actions = observer(() => {
         window.close();
     };
 
+    const resetCustomRulesForPage = () => {
+        if (!store.applicationAvailable) {
+            return;
+        }
+        messenger.resetCustomRulesForPage(store.url);
+        window.close();
+    };
+
     const actionChangingClassname = cn('action', { action_disabled: !store.applicationAvailable });
 
     return (
@@ -97,6 +105,22 @@ export const Actions = observer(() => {
                     {reactTranslator.getMessage('popup_security_report')}
                 </div>
             </button>
+            { store.hasCustomRulesToReset
+            && (
+                <button
+                    type="button"
+                    className={actionChangingClassname}
+                    onClick={resetCustomRulesForPage}
+                >
+                    <Icon
+                        id="#cross"
+                        classname="icon--action"
+                    />
+                    <div className="action-title">
+                        {reactTranslator.getMessage('popup_reset_custom_rules')}
+                    </div>
+                </button>
+            )}
         </div>
     );
 });

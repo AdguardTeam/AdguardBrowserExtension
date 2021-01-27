@@ -80,7 +80,7 @@ class Messenger {
 
     openExtensionStore = async () => {
         return this.sendMessage(MESSAGE_TYPES.OPEN_EXTENSION_STORE);
-    }
+    };
 
     async enableFilter(filterId) {
         return this.sendMessage(MESSAGE_TYPES.ADD_AND_ENABLE_FILTER, { filterId });
@@ -167,6 +167,10 @@ class Messenger {
 
     async checkSiteSecurity(url) {
         return this.sendMessage(MESSAGE_TYPES.OPEN_SITE_REPORT_TAB, { url });
+    }
+
+    async resetCustomRulesForPage(url) {
+        return this.sendMessage(MESSAGE_TYPES.RESET_CUSTOM_RULES_FOR_PAGE, { url });
     }
 
     async removeAllowlistDomain() {
