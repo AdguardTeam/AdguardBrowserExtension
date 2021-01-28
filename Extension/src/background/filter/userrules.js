@@ -15,6 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import * as TSUrlFilter from '@adguard/tsurlfilter';
+
 import { utils } from '../utils/common';
 import { allowlist } from './allowlist';
 import { rulesStorage } from '../storage';
@@ -82,6 +84,40 @@ export const userrules = (function () {
         }
     };
 
+    /**
+     * Removes user rules by url
+     * @param {string} url
+     * @return {Promise<void>}
+     */
+    const removeRulesByUrl = async (url) => {
+        const userRulesText = await getUserRulesText();
+        const userRulesStrings = userRulesText.split('\n');
+        const updatedUserRulesText = userRulesStrings
+            .filter((userRuleString) => {
+                return !TSUrlFilter.RuleSyntaxUtils.isRuleForUrl(
+                    userRuleString,
+                    url,
+                );
+            })
+            .join('\n');
+        updateUserRulesText(updatedUserRulesText);
+    };
+
+    /**
+     * Checks if user rules have rules matching by url
+     * @param {string} url
+     * @return {Promise<boolean>}
+     */
+    const hasRulesForUrl = async (url) => {
+        const userRulesText = await getUserRulesText();
+        const userRulesStrings = userRulesText.split('\n');
+        return userRulesStrings
+            .some(userRuleString => TSUrlFilter.RuleSyntaxUtils.isRuleForUrl(
+                userRuleString,
+                url,
+            ));
+    };
+
     return {
         addRules,
         clearRules,
@@ -89,5 +125,7 @@ export const userrules = (function () {
         updateUserRulesText,
         getUserRulesText,
         unAllowlistFrame,
+        removeRulesByUrl,
+        hasRulesForUrl,
     };
 })();

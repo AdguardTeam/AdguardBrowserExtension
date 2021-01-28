@@ -16,6 +16,7 @@
  */
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
+
 import { settingsProvider } from './settings/settings-provider';
 import { backgroundPage } from './extension-api/background-page';
 import { settings } from './settings/user-settings';
@@ -71,20 +72,6 @@ const init = () => {
         eventListeners[listenerId] = sender;
         return { listenerId };
     }
-
-    const handleCustomRulesReset = async (url) => {
-        const userRulesText = await userrules.getUserRulesText();
-        const updatedUserRuleText = TSUrlFilter.RulesRemover.clearRules(url, userRulesText);
-
-        userrules.updateUserRulesText(updatedUserRuleText);
-    };
-
-    const hasCustomRulesToReset = async (url) => {
-        const userRulesText = await userrules.getUserRulesText();
-        const updatedUserRuleText = TSUrlFilter.RulesRemover.clearRules(url, userRulesText);
-
-        return userRulesText !== updatedUserRuleText;
-    };
 
     /**
      * Constructs objects that uses on extension pages, like: options.html, thankyou.html etc
@@ -453,7 +440,7 @@ const init = () => {
                                 || browserUtils.isEdgeChromiumBrowser(),
                             notification: notifications.getCurrentNotification(),
                             isDisableShowAdguardPromoInfo: settings.isDisableShowAdguardPromoInfo(),
-                            hasCustomRulesToReset: await hasCustomRulesToReset(frameInfo.url),
+                            hasCustomRulesToReset: await userrules.hasRulesForUrl(frameInfo.url),
                         },
                     };
                 }
@@ -490,7 +477,7 @@ const init = () => {
                 break;
             case MESSAGE_TYPES.RESET_CUSTOM_RULES_FOR_PAGE: {
                 const { url } = data;
-                handleCustomRulesReset(url);
+                userrules.removeRulesByUrl(url);
                 break;
             }
             default:
