@@ -113,7 +113,7 @@ export const Actions = observer(() => {
                     onClick={resetCustomRulesForPage}
                 >
                     <Icon
-                        id="#cross"
+                        id="#small-cross"
                         classname="icon--action"
                     />
                     <div className="action-title">
