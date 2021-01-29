@@ -41,12 +41,17 @@ export const Actions = observer(() => {
         window.close();
     };
 
-    const resetCustomRulesForPage = () => {
+    const resetCustomRulesForPage = async () => {
         if (!store.applicationAvailable) {
             return;
         }
-        messenger.resetCustomRulesForPage(store.url);
-        window.close();
+        // eslint-disable-next-line no-alert
+        const result = window.confirm('It will remove user rules for current page. Are you sure?');
+
+        if (result) {
+            await messenger.resetCustomRulesForPage(store.url);
+            window.close();
+        }
     };
 
     const actionChangingClassname = cn('action', { action_disabled: !store.applicationAvailable });

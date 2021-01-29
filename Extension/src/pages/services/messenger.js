@@ -170,7 +170,11 @@ class Messenger {
     }
 
     async resetCustomRulesForPage(url) {
-        return this.sendMessage(MESSAGE_TYPES.RESET_CUSTOM_RULES_FOR_PAGE, { url });
+        const [currentTab] = await browser.tabs.query({ active: true, currentWindow: true });
+        return this.sendMessage(
+            MESSAGE_TYPES.RESET_CUSTOM_RULES_FOR_PAGE,
+            { url, tabId: currentTab?.id },
+        );
     }
 
     async removeAllowlistDomain() {

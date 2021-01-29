@@ -476,8 +476,19 @@ const init = () => {
                 await documentFilterService.addToTrusted(message.url);
                 break;
             case MESSAGE_TYPES.RESET_CUSTOM_RULES_FOR_PAGE: {
-                const { url } = data;
-                userrules.removeRulesByUrl(url);
+                const { url, tabId } = data;
+                await userrules.removeRulesByUrl(url);
+                // wait until request filter is updated
+                await new Promise((resolve) => {
+                    const listenerId = listeners.addListener((event) => {
+                        if (event === listeners.REQUEST_FILTER_UPDATED) {
+                            listeners.removeListener(listenerId);
+                            resolve();
+                        }
+                    });
+                });
+                // reload tab
+                await tabsApi.reload(tabId, url);
                 break;
             }
             default:
