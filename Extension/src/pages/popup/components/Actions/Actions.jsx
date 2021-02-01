@@ -45,13 +45,9 @@ export const Actions = observer(() => {
         if (!store.applicationAvailable) {
             return;
         }
-        // eslint-disable-next-line no-alert
-        const result = window.confirm('It will remove user rules for current page. Are you sure?');
 
-        if (result) {
-            await messenger.resetCustomRulesForPage(store.url);
-            window.close();
-        }
+        await messenger.resetCustomRulesForPage(store.url);
+        window.close();
     };
 
     const actionChangingClassname = cn('action', { action_disabled: !store.applicationAvailable });
