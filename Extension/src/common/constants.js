@@ -57,6 +57,7 @@ export const MESSAGE_TYPES = {
     OPEN_ASSISTANT: 'openAssistant',
     OPEN_ABUSE_TAB: 'openAbuseTab',
     OPEN_SITE_REPORT_TAB: 'openSiteReportTab',
+    RESET_CUSTOM_RULES_FOR_PAGE: 'resetCustomRulesForPage',
     REMOVE_ALLOWLIST_DOMAIN: 'removeAllowlistDomainPopup',
     ADD_ALLOWLIST_DOMAIN_POPUP: 'addAllowlistDomainPopup',
     GET_STATISTICS_DATA: 'getStatisticsData',

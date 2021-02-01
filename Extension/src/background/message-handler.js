@@ -15,8 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 import * as TSUrlFilter from '@adguard/tsurlfilter';
+
 import { settingsProvider } from './settings/settings-provider';
 import { backgroundPage } from './extension-api/background-page';
 import { settings } from './settings/user-settings';
@@ -440,6 +440,7 @@ const init = () => {
                                 || browserUtils.isEdgeChromiumBrowser(),
                             notification: notifications.getCurrentNotification(),
                             isDisableShowAdguardPromoInfo: settings.isDisableShowAdguardPromoInfo(),
+                            hasCustomRulesToReset: await userrules.hasRulesForUrl(frameInfo.url),
                         },
                     };
                 }
@@ -474,6 +475,22 @@ const init = () => {
             case MESSAGE_TYPES.ADD_URL_TO_TRUSTED:
                 await documentFilterService.addToTrusted(message.url);
                 break;
+            case MESSAGE_TYPES.RESET_CUSTOM_RULES_FOR_PAGE: {
+                const { url, tabId } = data;
+                await userrules.removeRulesByUrl(url);
+                // wait until request filter is updated
+                await new Promise((resolve) => {
+                    const listenerId = listeners.addListener((event) => {
+                        if (event === listeners.REQUEST_FILTER_UPDATED) {
+                            listeners.removeListener(listenerId);
+                            resolve();
+                        }
+                    });
+                });
+                // reload tab
+                await tabsApi.reload(tabId, url);
+                break;
+            }
             default:
                 // Unhandled message
                 throw new Error(`There is no such message type ${message.type}`);

@@ -187,5 +187,4 @@ const firefoxRulesStorageImpl = (function (initialAPI) {
     return api;
 })(chromeRulesStorageImpl);
 
-
 export default firefoxRulesStorageImpl;
