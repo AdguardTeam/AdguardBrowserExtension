@@ -54,7 +54,6 @@ const RequestInfo = observer(() => {
         {
             title: reactTranslator.getMessage('options_popup_filter_url'),
             data: selectedEvent.requestUrl,
-            url: true,
         },
         {
             title: reactTranslator.getMessage('filtering_modal_element'),
@@ -128,7 +127,7 @@ const RequestInfo = observer(() => {
         );
     };
 
-    const renderedInfo = infoElements.map(({ data, title, url = false }) => {
+    const renderedInfo = infoElements.map(({ data, title }) => {
         if (!data) {
             return null;
         }
@@ -137,7 +136,7 @@ const RequestInfo = observer(() => {
                 <div className="request-info__key">{title}</div>
                 <div className="request-info__value">
                     {data}
-                    {url && renderOpenInNewTab(selectedEvent)}
+                    {data === selectedEvent.requestUrl && renderOpenInNewTab(selectedEvent)}
                 </div>
             </div>
         );
