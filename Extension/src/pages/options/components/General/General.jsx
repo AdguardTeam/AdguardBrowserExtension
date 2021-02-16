@@ -191,6 +191,7 @@ const General = observer(() => {
                 <input
                     type="file"
                     id="inputEl"
+                    accept="application/json"
                     ref={inputEl}
                     onChange={inputChangeHandler}
                     style={{ display: 'none' }}

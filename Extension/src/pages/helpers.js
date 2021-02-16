@@ -1,6 +1,6 @@
 import { translator } from '../common/translators/translator';
 
-export const getExtension = (filename) => {
+export const getFilenameExtension = (filename) => {
     if (!filename) {
         return undefined;
     }
@@ -12,7 +12,7 @@ export const getExtension = (filename) => {
 };
 
 export const uploadFile = (file, requiredExtension) => new Promise((resolve, reject) => {
-    if (getExtension(file.name) !== requiredExtension) {
+    if (getFilenameExtension(file.name) !== requiredExtension) {
         reject(new Error(translator.getMessage(
             'options_popup_import_settings_wrong_file_extension',
             { extension: requiredExtension },

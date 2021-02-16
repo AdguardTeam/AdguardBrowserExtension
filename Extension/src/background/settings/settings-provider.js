@@ -99,6 +99,28 @@ export const settingsProvider = (function () {
     };
 
     /**
+     * Loads stealth mode settings section
+     */
+    const loadStealthModeSection = () => {
+        const section = {
+            stealth: {
+                'stealth_disable_stealth_mode': settings.getDisableStealthMode(),
+                'stealth-hide-referrer': settings.getHideReferrer(),
+                'stealth-hide-search-queries': settings.getHideSearchQueries(),
+                'stealth-send-do-not-track': settings.getSendDoNotTrack(),
+                'stealth-block-webrtc': settings.isWebRTCDisabled(),
+                'stealth-block-third-party-cookies': settings.getSelfDestructThirdPartyCookies(),
+                'stealth-block-third-party-cookies-time': settings.getSelfDestructThirdPartyCookiesTime(),
+                'stealth-block-first-party-cookies': settings.getSelfDestructFirstPartyCookies(),
+                'stealth-block-first-party-cookies-time': settings.getSelfDestructFirstPartyCookiesTime(),
+                'strip-tracking-parameters': settings.getStripTrackingParameters(),
+                'tracking-parameters': settings.getTrackingParameters(),
+            },
+        };
+        return section;
+    };
+
+    /**
      * Loads general settings section
      */
     const loadGeneralSettingsSection = function () {
@@ -168,6 +190,26 @@ export const settingsProvider = (function () {
         settings.changeShowContextMenu(!!set['show-context-menu']);
         settings.changeShowInfoAboutAdguardFullVersion(!!set['show-info-about-adguard']);
         settings.changeShowAppUpdatedNotification(!!set['show-app-updated-info']);
+    };
+
+    /**
+     * Applies stealth mode section settings to application
+     * @param section
+     */
+    const applyStealthModeSection = (section) => {
+        const set = section['stealth'];
+
+        settings.setDisableStealthMode(!!set['stealth_disable_stealth_mode']);
+        settings.setHideReferrer(!!set['stealth-hide-referrer']);
+        settings.setHideSearchQueries(!!set['stealth-hide-search-queries']);
+        settings.setSendDoNotTrack(!!set['stealth-send-do-not-track']);
+        settings.setWebRTCDisabled(!!set['stealth-block-webrtc']);
+        settings.setSelfDestructThirdPartyCookies(!!set['stealth-block-third-party-cookies']);
+        settings.setSelfDestructThirdPartyCookiesTime(set['stealth-block-third-party-cookies-time']);
+        settings.setSelfDestructFirstPartyCookies(!!set['stealth-block-first-party-cookies']);
+        settings.setSelfDestructFirstPartyCookiesTime(set['stealth-block-first-party-cookies-time']);
+        settings.setStripTrackingParameters(!!set['strip-tracking-parameters']);
+        settings.setTrackingParameters(set['tracking-parameters']);
     };
 
     /**
@@ -379,6 +421,9 @@ export const settingsProvider = (function () {
         const filtersSection = await loadFiltersSection();
         result['filters'] = filtersSection['filters'];
 
+        const stealthSection = loadStealthModeSection();
+        result['stealth'] = stealthSection['stealth'];
+
         return JSON.stringify(result);
     };
 
@@ -417,6 +462,7 @@ export const settingsProvider = (function () {
             await applyGeneralSettingsSection(input);
             applyExtensionSpecificSettingsSection(input);
             await applyFiltersSection(input);
+            applyStealthModeSection(input);
             onFinished(true);
             return true;
         } catch (e) {
