@@ -76,6 +76,7 @@ describe('settingsProvider', () => {
         expect(settings['extension-specific-settings']).toBeTruthy();
         expect(settings['general-settings']).toBeTruthy();
         expect(settings['filters']).toBeTruthy();
+        expect(settings['stealth']).toBeTruthy();
     });
 
     it('updates settings from json', async () => {
