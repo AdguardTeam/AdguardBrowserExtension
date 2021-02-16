@@ -23,7 +23,6 @@ export const MISCELLANEOUS_FILTERS = {
 export const REQUEST_SOURCE_FILTERS = {
     FIRST_PARTY: 'first_party',
     THIRD_PARTY: 'third_party',
-    ALL: 'all',
 };
 
 class LogStore {
@@ -49,7 +48,10 @@ class LogStore {
         [MISCELLANEOUS_FILTERS.USER_FILTER]: false,
     };
 
-    @observable requestSourceFilter = REQUEST_SOURCE_FILTERS.ALL;
+    @observable requestSourceFilters = {
+        [REQUEST_SOURCE_FILTERS.FIRST_PARTY]: false,
+        [REQUEST_SOURCE_FILTERS.FIRST_PARTY]: false,
+    };
 
     @observable eventTypesFilters = [
         {
@@ -100,8 +102,8 @@ class LogStore {
     };
 
     @action
-    setRequestSourceFilterValue = (value) => {
-        this.requestSourceFilter = value;
+    setRequestSourceFilterValue = (filter, value) => {
+        this.requestSourceFilters[filter] = value;
     };
 
     @action
@@ -264,9 +266,11 @@ class LogStore {
             }
 
             // filter by request source filter
-            if ((this.requestSourceFilter === REQUEST_SOURCE_FILTERS.FIRST_PARTY && !isFirstParty)
-                // eslint-disable-next-line max-len
-                || (this.requestSourceFilter === REQUEST_SOURCE_FILTERS.THIRD_PARTY && !isThirdParty)) {
+            const showByRequestSource = !Object.values(this.requestSourceFilters).some(_.identity)
+            || (this.requestSourceFilters[REQUEST_SOURCE_FILTERS.FIRST_PARTY] && isFirstParty)
+            || (this.requestSourceFilters[REQUEST_SOURCE_FILTERS.THIRD_PARTY] && isThirdParty);
+
+            if (!showByRequestSource) {
                 return false;
             }
 
