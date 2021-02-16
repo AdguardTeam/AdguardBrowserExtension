@@ -90,10 +90,6 @@ const MiscellaneousFilters = observer(() => {
 
     const requestSourceFilters = [
         {
-            id: REQUEST_SOURCE_FILTERS.ALL,
-            text: reactTranslator.getMessage('filtering_log_filter_all'),
-        },
-        {
             id: REQUEST_SOURCE_FILTERS.FIRST_PARTY,
             text: reactTranslator.getMessage('filtering_log_filter_first_party'),
         },
@@ -106,16 +102,18 @@ const MiscellaneousFilters = observer(() => {
     const renderRequestSourceFilters = () => {
         return requestSourceFilters.map(({ id, text }) => {
             return (
-                <label key={id} className="radio-button-label" htmlFor={id}>
+                <label key={id} className="checkbox-label" htmlFor={id}>
                     <input
-                        type="radio"
+                        type="checkbox"
                         id={id}
                         name="request-source-filter"
                         onClick={requestSourceFilterClickHandler}
                         value={id}
-                        checked={requestSourceFilter === id}
+                        checked={requestSourceFilter[id]}
                     />
-                    <div className="radio-button" />
+                    <div className="custom-checkbox">
+                        <Icon id="#checked" classname="icon--checked" />
+                    </div>
                     {text}
                 </label>
             );
