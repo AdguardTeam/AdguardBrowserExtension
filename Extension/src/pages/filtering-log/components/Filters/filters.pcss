@@ -3,9 +3,16 @@
     flex-wrap: wrap;
 
     &__tab-selector {
-        width: 55%;
         padding: 10px 24px 0;
         box-sizing: border-box;
+        transform: translateY(9px);
+        width: 360px;
+
+
+        @media (max-width: 1200px) {
+            transform: translateY(0);
+            width: 55%;
+        }
 
         @media (max-width: 640px) {
             padding: 0 24px 10px;
@@ -15,9 +22,14 @@
 
 
     &__events-search {
-        width: 45%;
-        padding: 0 20px 0 15px;
+        padding: 16px 20px 0 15px;
         box-sizing: border-box;
+        width: 400px;
+
+        @media (max-width: 1579px) {
+            padding: 0 20px 0 15px;
+            width: 45%;
+        }
 
         @media (max-width: 640px) {
             width: 100%;

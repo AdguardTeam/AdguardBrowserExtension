@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { Actions } from '../Actions';
 import { TabSelector } from './TabSelector';
 import { EventsSearch } from './EventsSearch';
 import { EventsTypeFilter } from './EventsTypeFilter';
@@ -10,6 +11,7 @@ import './filters.pcss';
 const Filters = () => {
     return (
         <div className="filters">
+            <Actions />
             <div className="filters__tab-selector">
                 <TabSelector />
             </div>
