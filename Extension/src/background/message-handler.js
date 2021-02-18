@@ -44,6 +44,7 @@ import { allowlist } from './filter/allowlist';
 import { documentFilterService } from './filter/services/document-filter';
 import { antiBannerService } from './filter/antibanner';
 import { MESSAGE_TYPES } from '../common/constants';
+import { getCookieRulesDataForContentScript } from './filter/services/cookie-service';
 
 /**
  *  Initialize Content => BackgroundPage messaging
@@ -308,6 +309,29 @@ const init = () => {
                     urlForSelectors = message.documentUrl;
                 }
                 return webRequestService.processGetSelectorsAndScripts(sender.tab, urlForSelectors) || {};
+            }
+            case MESSAGE_TYPES.GET_COOKIE_RULES: {
+                if (!utils.url.isHttpOrWsRequest(message.documentUrl) && sender.frameId !== 0) {
+                    return {};
+                }
+
+                return {
+                    rulesData: getCookieRulesDataForContentScript(message.documentUrl, sender.tab.url),
+                };
+            }
+            case MESSAGE_TYPES.SAVE_COOKIE_LOG_EVENT: {
+                console.log(message.rule);
+                // TODO: Fill params
+                // filteringLog.addCookieEvent(
+                //     sender.tab.tabId,
+                //     message.cookieName,
+                //     cookieValue,
+                //     cookieDomain,
+                //     requestType,
+                //     message.rule,
+                //     false,
+                //     thirdParty);
+                break;
             }
             case MESSAGE_TYPES.CHECK_PAGE_SCRIPT_WRAPPER_REQUEST: {
                 const block = webRequestService.checkPageScriptWrapperRequest(

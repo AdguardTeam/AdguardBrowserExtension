@@ -87,6 +87,8 @@ export const MESSAGE_TYPES = {
     ADD_FILTERING_SUBSCRIPTION: 'addFilterSubscription',
     SET_NOTIFICATION_VIEWED: 'setNotificationViewed',
     SAVE_CSS_HITS_STATS: 'saveCssHitStats',
+    GET_COOKIE_RULES: 'getCookieRules',
+    SAVE_COOKIE_LOG_EVENT: 'saveCookieRuleEvent',
     LOAD_SETTINGS_JSON: 'loadSettingsJson',
     ADD_URL_TO_TRUSTED: 'addUrlToTrusted',
 };

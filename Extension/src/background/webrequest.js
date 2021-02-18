@@ -22,7 +22,7 @@ import { requestContextStorage } from './filter/request-context-storage';
 import { tabsApi } from './tabs/tabs-api';
 import { BACKGROUND_TAB_ID, MAIN_FRAME_ID, utils } from './utils/common';
 import { RequestTypes } from './utils/request-types';
-import { cookieFiltering } from './filter/services/cookie-filtering';
+import { cookieService, getCookieRules } from './filter/services/cookie-service';
 import { backgroundPage } from './extension-api/background-page';
 import { prefs } from './prefs';
 import { frames } from './tabs/frames';
@@ -157,6 +157,8 @@ const webrequestInit = function () {
             return { redirectUrl: cleansedUrl };
         }
 
+        cookieService.onBeforeRequest(requestDetails, getCookieRules(requestUrl, referrerUrl));
+
         let requestRule = webRequestService.getRuleForRequest(
             tab,
             requestUrl,
@@ -286,9 +288,7 @@ const webrequestInit = function () {
             }
         }
 
-        if (cookieFiltering.filterRequestHeaders(requestId, requestHeaders)) {
-            requestHeadersModified = true;
-        }
+        cookieService.onBeforeSendHeaders(requestDetails);
 
         if (stealthService.processRequestHeaders(requestId, requestHeaders)) {
             requestHeadersModified = true;
@@ -403,9 +403,7 @@ const webrequestInit = function () {
             }
         }
 
-        if (cookieFiltering.filterResponseHeaders(requestId, responseHeaders)) {
-            responseHeadersModified = true;
-        }
+        cookieService.onHeadersReceived(requestDetails);
 
         if (responseHeadersModified) {
             requestContextStorage.update(requestId, { modifiedResponseHeaders: responseHeaders });
@@ -562,7 +560,6 @@ const webrequestInit = function () {
                                             | webRequest.onErrorOccured    |     Remove injections on error
                                             |                              |
                                             +------------------------------+
-
 
                                                 Firefox flow description
 
@@ -1016,14 +1013,20 @@ const webrequestInit = function () {
     /**
      * Request context recording
      */
-    backgroundPage.webRequest.onCompleted.addListener(({ requestId }) => {
-        cookieFiltering.modifyCookies(requestId);
+    backgroundPage.webRequest.onCompleted.addListener((requestDetails) => {
+        const {
+            requestId,
+        } = requestDetails;
+
+        cookieService.onCompleted(requestDetails);
+
         requestContextStorage.onRequestCompleted(requestId);
     }, ['<all_urls>']);
 
-    backgroundPage.webRequest.onErrorOccurred.addListener(({ requestId }) => {
-        cookieFiltering.modifyCookies(requestId);
-        requestContextStorage.onRequestCompleted(requestId);
+    backgroundPage.webRequest.onErrorOccurred.addListener((requestDetails) => {
+        cookieService.onErrorOccurred(requestDetails);
+
+        requestContextStorage.onRequestCompleted(requestDetails.requestId);
     }, ['<all_urls>']);
 
     /**

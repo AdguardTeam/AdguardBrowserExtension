@@ -520,6 +520,38 @@ export const preload = (function () {
     };
 
     /**
+     * Initializes cookie content script
+     *
+     * @return {Promise<void>}
+     */
+    const initCookieController = async () => {
+        const response = await contentPage.sendMessage({
+            type: MESSAGE_TYPES.GET_COOKIE_RULES,
+            documentUrl: window.location.href,
+        });
+
+        if (!response) {
+            return;
+        }
+
+        if (response.rulesData) {
+            const cookieController = new TSUrlFilter.CookieController((rule, cookieName) => {
+                // TODO: Remove debugging
+
+                console.debug('Cookie rule applied');
+                console.debug(rule);
+                console.debug(cookieName);
+
+                contentPage.sendMessage({ type: MESSAGE_TYPES.SAVE_COOKIE_LOG_EVENT, data: { rule, cookieName } });
+            });
+
+            cookieController.apply(response.rulesData);
+
+            console.debug('CookieController initialized');
+        }
+    };
+
+    /**
      * Initializing content script
      */
     const init = function () {
@@ -531,6 +563,7 @@ export const preload = (function () {
 
         initCollapseEventListeners();
         tryLoadCssAndScripts();
+        initCookieController();
     };
 
     return {
