@@ -537,12 +537,6 @@ export const preload = (function () {
         if (response.rulesData) {
             const cookieController = new TSUrlFilter.CookieController(
                 (cookieName, cookieDomain, ruleText, thirdParty, filterId) => {
-                    // TODO: Remove debugging
-
-                    console.debug('Cookie rule applied');
-                    console.debug(ruleText);
-                    console.debug(cookieName);
-
                     contentPage.sendMessage({
                         type: MESSAGE_TYPES.SAVE_COOKIE_LOG_EVENT,
                         data: {
@@ -553,8 +547,6 @@ export const preload = (function () {
             );
 
             cookieController.apply(response.rulesData);
-
-            console.debug('CookieController initialized');
         }
     };
 
