@@ -320,17 +320,16 @@ const init = () => {
                 };
             }
             case MESSAGE_TYPES.SAVE_COOKIE_LOG_EVENT: {
-                console.log(message.rule);
-                // TODO: Fill params
-                // filteringLog.addCookieEvent(
-                //     sender.tab.tabId,
-                //     message.cookieName,
-                //     cookieValue,
-                //     cookieDomain,
-                //     requestType,
-                //     message.rule,
-                //     false,
-                //     thirdParty);
+                filteringLog.addCookieEvent(
+                    sender.tab,
+                    message.cookieName,
+                    null,
+                    message.cookieDomain,
+                    RequestTypes.DOCUMENT,
+                    new TSUrlFilter.NetworkRule(message.ruleText, message.filterId),
+                    false,
+                    message.thirdParty,
+                );
                 break;
             }
             case MESSAGE_TYPES.CHECK_PAGE_SCRIPT_WRAPPER_REQUEST: {

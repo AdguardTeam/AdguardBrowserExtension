@@ -535,15 +535,22 @@ export const preload = (function () {
         }
 
         if (response.rulesData) {
-            const cookieController = new TSUrlFilter.CookieController((rule, cookieName) => {
-                // TODO: Remove debugging
+            const cookieController = new TSUrlFilter.CookieController(
+                (cookieName, cookieDomain, ruleText, thirdParty, filterId) => {
+                    // TODO: Remove debugging
 
-                console.debug('Cookie rule applied');
-                console.debug(rule);
-                console.debug(cookieName);
+                    console.debug('Cookie rule applied');
+                    console.debug(ruleText);
+                    console.debug(cookieName);
 
-                contentPage.sendMessage({ type: MESSAGE_TYPES.SAVE_COOKIE_LOG_EVENT, data: { rule, cookieName } });
-            });
+                    contentPage.sendMessage({
+                        type: MESSAGE_TYPES.SAVE_COOKIE_LOG_EVENT,
+                        data: {
+                            cookieName, cookieDomain, ruleText, thirdParty, filterId,
+                        },
+                    });
+                },
+            );
 
             cookieController.apply(response.rulesData);
 

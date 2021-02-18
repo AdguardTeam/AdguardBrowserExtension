@@ -67,6 +67,7 @@ export const getCookieRulesDataForContentScript = (url, referrer) => {
             ruleText: rule.getText(),
             match: rule.getAdvancedModifierValue(),
             isThirdParty: rule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.ThirdParty),
+            filterId: rule.getFilterListId(),
         };
     });
 };
@@ -74,6 +75,4 @@ export const getCookieRulesDataForContentScript = (url, referrer) => {
 /**
  * Cookie filtering service
  */
-const cookieService = new TSUrlFilter.CookieFiltering(filteringLog);
-
-export default cookieService;
+export const cookieService = new TSUrlFilter.CookieFiltering(filteringLog);

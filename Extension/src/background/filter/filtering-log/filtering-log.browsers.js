@@ -185,14 +185,14 @@ const browsersFilteringLog = (function () {
 
     /**
      * Checks if event can be added
-     * @param tab
+     * @param tabId
      */
-    const canAddEvent = (tab) => {
+    const canAddEvent = (tabId) => {
         if (!isOpen()) {
             return false;
         }
 
-        return !!getFilteringInfoByTabId(tab.tabId);
+        return !!getFilteringInfoByTabId(tabId);
     };
 
     /**
@@ -211,11 +211,11 @@ const browsersFilteringLog = (function () {
 
     /**
      * Adds filtering event to log
-     * @param tab Tab
+     * @param tabId Tab id
      * @param filteringEvent Event to add
      */
-    const pushFilteringEvent = (tab, filteringEvent) => {
-        const tabInfo = getFilteringInfoByTabId(tab.tabId);
+    const pushFilteringEvent = (tabId, filteringEvent) => {
+        const tabInfo = getFilteringInfoByTabId(tabId);
         if (!tabInfo) {
             return;
         }
@@ -250,7 +250,7 @@ const browsersFilteringLog = (function () {
      * @param eventId
      */
     const addHttpRequestEvent = function (tab, requestUrl, frameUrl, requestType, requestRule, eventId) {
-        if (!canAddEvent(tab)) {
+        if (!canAddEvent(tab.tabId)) {
             return;
         }
 
@@ -268,7 +268,7 @@ const browsersFilteringLog = (function () {
         };
 
         addRuleToFilteringEvent(filteringEvent, requestRule);
-        pushFilteringEvent(tab, filteringEvent);
+        pushFilteringEvent(tab.tabId, filteringEvent);
     };
 
     /**
@@ -280,7 +280,7 @@ const browsersFilteringLog = (function () {
      * @param {{ruleText: String, filterId: Number, isInjectRule: Boolean}} requestRule - Request rule
      */
     const addCosmeticEvent = function (tab, element, frameUrl, requestType, requestRule) {
-        if (!requestRule || !canAddEvent(tab)) {
+        if (!requestRule || !canAddEvent(tab.tabId)) {
             return;
         }
 
@@ -293,7 +293,7 @@ const browsersFilteringLog = (function () {
         };
 
         addRuleToFilteringEvent(filteringEvent, requestRule);
-        pushFilteringEvent(tab, filteringEvent);
+        pushFilteringEvent(tab.tabId, filteringEvent);
     };
 
     /**
@@ -304,7 +304,7 @@ const browsersFilteringLog = (function () {
      * @param {Object} rule - script rule
      */
     const addScriptInjectionEvent = (tab, frameUrl, requestType, rule) => {
-        if (!rule || !canAddEvent(tab)) {
+        if (!rule || !canAddEvent(tab.tabId)) {
             return;
         }
 
@@ -318,7 +318,7 @@ const browsersFilteringLog = (function () {
         };
 
         addRuleToFilteringEvent(filteringEvent, rule);
-        pushFilteringEvent(tab, filteringEvent);
+        pushFilteringEvent(tab.tabId, filteringEvent);
     };
 
     /**
@@ -330,7 +330,7 @@ const browsersFilteringLog = (function () {
      * @param {Object} rule - removeparam rule
      */
     const addRemoveParamEvent = (tab, frameUrl, requestType, rule) => {
-        if (!rule || !canAddEvent(tab)) {
+        if (!rule || !canAddEvent(tab.tabId)) {
             return;
         }
 
@@ -344,7 +344,7 @@ const browsersFilteringLog = (function () {
         };
 
         addRuleToFilteringEvent(filteringEvent, rule);
-        pushFilteringEvent(tab, filteringEvent);
+        pushFilteringEvent(tab.tabId, filteringEvent);
     };
 
     /**
@@ -367,7 +367,7 @@ const browsersFilteringLog = (function () {
     /**
      * Adds cookie rule event
      *
-     * @param {object} tab
+     * @param {object} tabId
      * @param {string} cookieName
      * @param {string} cookieValue
      * @param {string} cookieDomain
@@ -377,9 +377,9 @@ const browsersFilteringLog = (function () {
      * @param {boolean} thirdParty
      */
     const addCookieEvent = function (
-        tab, cookieName, cookieValue, cookieDomain, requestType, cookieRule, isModifyingCookieRule, thirdParty,
+        tabId, cookieName, cookieValue, cookieDomain, requestType, cookieRule, isModifyingCookieRule, thirdParty,
     ) {
-        if (!canAddEvent(tab)) {
+        if (!canAddEvent(tabId)) {
             return;
         }
 
@@ -400,7 +400,7 @@ const browsersFilteringLog = (function () {
             }
         }
 
-        pushFilteringEvent(tab, filteringEvent);
+        pushFilteringEvent(tabId, filteringEvent);
     };
 
     /**
@@ -410,7 +410,7 @@ const browsersFilteringLog = (function () {
      * @param eventId Event identifier
      */
     const bindRuleToHttpRequestEvent = function (tab, requestRule, eventId) {
-        if (!canAddEvent(tab)) {
+        if (!canAddEvent(tab.tabId)) {
             return;
         }
 
@@ -436,7 +436,7 @@ const browsersFilteringLog = (function () {
      * @param eventId
      */
     const bindReplaceRulesToHttpRequestEvent = function (tab, replaceRules, eventId) {
-        if (!canAddEvent(tab)) {
+        if (!canAddEvent(tab.tabId)) {
             return;
         }
 
@@ -462,7 +462,7 @@ const browsersFilteringLog = (function () {
      * @param {number} eventId Event identifier
      */
     const bindStealthActionsToHttpRequestEvent = (tab, actions, eventId) => {
-        if (!canAddEvent(tab)) {
+        if (!canAddEvent(tab.tabId)) {
             return;
         }
 
