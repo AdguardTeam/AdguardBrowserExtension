@@ -93,18 +93,6 @@ const RequestInfo = observer(() => {
         return <RequestImage url={event.requestUrl} />;
     };
 
-    const renderedInfo = infoElements.map(({ data, title }) => {
-        if (!data) {
-            return null;
-        }
-        return (
-            <div key={title} className="request-info">
-                <div className="request-info__key">{title}</div>
-                <div className="request-info__value">{data}</div>
-            </div>
-        );
-    });
-
     const openInNewTabHandler = async () => {
         let url = selectedEvent.requestUrl;
 
@@ -129,15 +117,30 @@ const RequestInfo = observer(() => {
 
         return (
             <button
-                className="request-modal__button request-modal__button--white"
+                className="request-modal__navigation request-modal__navigation--new-tab"
                 type="button"
                 onClick={openInNewTabHandler}
                 title={reactTranslator.getMessage('filtering_modal_open_in_new_tab')}
             >
-                {reactTranslator.getMessage('filtering_modal_open_in_new_tab')}
+                <Icon id="#link" classname="icon--link" />
             </button>
         );
     };
+
+    const renderedInfo = infoElements.map(({ data, title }) => {
+        if (!data) {
+            return null;
+        }
+        return (
+            <div key={title} className="request-info">
+                <div className="request-info__key">{title}</div>
+                <div className="request-info__value">
+                    {data}
+                    {data === selectedEvent.requestUrl && renderOpenInNewTab(selectedEvent)}
+                </div>
+            </div>
+        );
+    });
 
     const blockHandler = () => {
         wizardStore.setBlockState();
@@ -236,7 +239,6 @@ const RequestInfo = observer(() => {
                 {renderedInfo}
                 {renderImageIfNecessary(selectedEvent)}
                 <div className="request-modal__controls">
-                    {renderOpenInNewTab(selectedEvent)}
                     {renderBlockRequest(selectedEvent)}
                 </div>
             </div>

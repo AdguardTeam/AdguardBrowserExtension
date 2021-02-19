@@ -33,12 +33,6 @@ const TabSelector = observer(() => {
 
     return (
         <div className="tab-selector">
-            <label
-                htmlFor="tab-selector"
-            >
-                {reactTranslator.getMessage('filtering_log_tab')}
-            </label>
-
             <div className="tab-selector__select">
                 <Icon id="#select" classname="icon--select tab-selector__select-ico" />
                 <select
