@@ -119,6 +119,15 @@ export const createExceptionCssRule = (rule, event) => {
         return domainPart + generateExceptionRule(ruleText, CosmeticRuleMarker.ElementHiding);
     }
 
+    // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#html-filtering-rules
+    // TODO add to @adguard/tsurlfilter
+    const HtmlFilteringRuleMarker = '$$';
+    if (ruleText.indexOf(HtmlFilteringRuleMarker) > -1) {
+        return domainPart + generateExceptionRule(ruleText, HtmlFilteringRuleMarker);
+    }
+
+    console.error('Cannot createExceptionCssRule for the rule:', rule);
+
     return '';
 };
 
