@@ -149,6 +149,7 @@ const UserRules = observer(() => {
                     <input
                         type="file"
                         id="inputEl"
+                        accept="text/plain"
                         ref={inputRef}
                         onChange={inputChangeHandler}
                         style={{ display: 'none' }}
