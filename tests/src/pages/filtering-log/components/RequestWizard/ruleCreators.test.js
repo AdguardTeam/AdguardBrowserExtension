@@ -80,6 +80,15 @@ describe('ruleCreators', () => {
             const result = createExceptionCssRule(rule, event);
             expect(result).toBe('example.org#@$?#h3:contains(cookies) { display: none!important; }');
         });
+
+        it('creates exception rule for html filtering rules', () => {
+            const rule = {
+                ruleText: 'example.org$$script[data-src="banner"]',
+            };
+            const event = { frameDomain: 'example.org' };
+            const result = createExceptionCssRule(rule, event);
+            expect(result).toBe('example.org$@$script[data-src="banner"]');
+        });
     });
 
     describe('createExceptionCookieRule', () => {

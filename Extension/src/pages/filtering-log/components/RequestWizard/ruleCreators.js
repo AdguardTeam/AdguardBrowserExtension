@@ -2,6 +2,7 @@ import { SimpleRegex, NetworkRule, CosmeticRuleMarker } from '@adguard/tsurlfilt
 
 import { strings } from '../../../../common/strings';
 import { UrlUtils } from './utils';
+import { log } from '../../../../common/log';
 
 /**
  * Splits request url by backslash to block or allow patterns
@@ -118,6 +119,12 @@ export const createExceptionCssRule = (rule, event) => {
     if (ruleText.indexOf(CosmeticRuleMarker.ElementHiding) > -1) {
         return domainPart + generateExceptionRule(ruleText, CosmeticRuleMarker.ElementHiding);
     }
+
+    if (ruleText.indexOf(CosmeticRuleMarker.Html) > -1) {
+        return domainPart + generateExceptionRule(ruleText, CosmeticRuleMarker.Html);
+    }
+
+    log.error('Cannot createExceptionCssRule for the rule:', rule);
 
     return '';
 };
