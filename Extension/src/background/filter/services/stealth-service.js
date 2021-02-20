@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -35,10 +36,6 @@ import { STEALTH_ACTIONS } from '../../../common/constants';
  * - WebRTC
  */
 export const stealthService = (() => {
-
-    // TODO: Fill config
-    const stealthServiceProcessor = new TSUrlFilter.StealthService();
-
     /**
      * Processes request headers
      *
@@ -59,7 +56,7 @@ export const stealthService = (() => {
             return false;
         }
 
-        let stealthActions = stealthServiceProcessor.processRequestHeaders(requestUrl, requestType, requestHeaders);
+        const stealthActions = engine.processRequestHeaders(requestUrl, requestType, requestHeaders);
         if (stealthActions > 0) {
             requestContextStorage.update(requestId, { stealthActions });
         }
@@ -83,7 +80,7 @@ export const stealthService = (() => {
 
         log.debug('Stealth service lookup cookie rules for {0}', requestUrl);
 
-        const result = stealthServiceProcessor.getCookieRules(new TSUrlFilter.Request(requestUrl, referrerUrl, requestType));
+        const result = engine.getCookieRules(new TSUrlFilter.Request(requestUrl, referrerUrl, requestType));
 
         log.debug('Stealth service processed lookup cookie rules for {0}', requestUrl);
 
@@ -107,7 +104,7 @@ export const stealthService = (() => {
             return null;
         }
 
-        const result = stealthServiceProcessor.removeTrackersFromUrl(context.requestUrl);
+        const result = engine.removeTrackersFromUrl(context.requestUrl);
         if (result) {
             log.debug(`Stealth stripped tracking parameters for url: ${context.requestUrl}`);
             filteringLog.bindStealthActionsToHttpRequestEvent(
@@ -133,7 +130,7 @@ export const stealthService = (() => {
 
         if (frames.shouldStopRequestProcess(tab)) {
             log.debug('Tab whitelisted or protection disabled');
-            return false
+            return false;
         }
 
         const mainFrameUrl = frames.getMainFrameUrl(tab);
@@ -186,7 +183,9 @@ export const stealthService = (() => {
      */
     const findStealthWhitelistRule = function (requestUrl, referrerUrl, requestType) {
         if (referrerUrl) {
-            const stealthDocumentWhitelistRule = filteringApi.findStealthWhitelistRule(referrerUrl, referrerUrl, requestType);
+            const stealthDocumentWhitelistRule = filteringApi.findStealthWhitelistRule(
+                referrerUrl, referrerUrl, requestType,
+            );
             if (stealthDocumentWhitelistRule && stealthDocumentWhitelistRule.isDocumentWhitelistRule()) {
                 log.debug('Stealth document whitelist rule found.');
                 return stealthDocumentWhitelistRule;
@@ -222,7 +221,6 @@ export const stealthService = (() => {
         }
         return settings.getProperty(stealthSettingName);
     };
-
 
     /**
      * Updates browser privacy.network settings depending on blocking WebRTC or not
@@ -359,6 +357,48 @@ export const stealthService = (() => {
         return browserUtils.isChromium();
     };
 
+    /**
+     * Returns stealth service configuration object
+     */
+    const getConfig = () => {
+        return {
+            blockChromeClientData: getStealthSettingValue(settings.BLOCK_CHROME_CLIENT_DATA),
+            hideReferrer: getStealthSettingValue(settings.HIDE_REFERRER),
+            hideSearchQueries: getStealthSettingValue(settings.HIDE_SEARCH_QUERIES),
+            sendDoNotTrack: getStealthSettingValue(settings.SEND_DO_NOT_TRACK),
+            stripTrackingParameters: getStealthSettingValue(settings.STRIP_TRACKING_PARAMETERS),
+            trackingParameters: settings.getProperty(settings.TRACKING_PARAMETERS),
+            selfDestructThirdPartyCookies: getStealthSettingValue(settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES),
+            selfDestructThirdPartyCookiesTime: settings.getProperty(settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME),
+            selfDestructFirstPartyCookies: getStealthSettingValue(settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES),
+            selfDestructFirstPartyCookiesTime: settings.getProperty(settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME),
+        };
+    };
+
+    const STEALTH_SETTINGS = [
+        settings.DISABLE_STEALTH_MODE,
+        settings.BLOCK_CHROME_CLIENT_DATA,
+        settings.HIDE_REFERRER,
+        settings.HIDE_SEARCH_QUERIES,
+        settings.SEND_DO_NOT_TRACK,
+        settings.STRIP_TRACKING_PARAMETERS,
+        settings.TRACKING_PARAMETERS,
+        settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES,
+        settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME,
+        settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES,
+        settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME,
+        settings.BLOCK_WEBRTC,
+    ];
+
+    let engine = new TSUrlFilter.StealthService(getConfig());
+
+    settings.onUpdated.addListener((setting) => {
+        if (STEALTH_SETTINGS.includes(setting)) {
+            // Rebuild engine on settings update
+            engine = new TSUrlFilter.StealthService(getConfig());
+        }
+    });
+
     if (canBlockWebRTC()) {
         settings.onUpdated.addListener(async (setting) => {
             if (setting === settings.BLOCK_WEBRTC
@@ -386,9 +426,6 @@ export const stealthService = (() => {
             }
         });
     }
-
-
-    // TODO: Listen to settings updates and rebuild ts stealth
 
     return {
         processRequestHeaders,
