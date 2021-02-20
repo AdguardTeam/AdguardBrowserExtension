@@ -34,7 +34,7 @@ export const getCookieRules = (url, referrer) => {
         return cookieRules;
     }
 
-    // If cookie rules not found - apply stealth rules
+    // If cookie rules not found - apply cookie rules built in stealth service
     return stealthService.getCookieRules(url, referrer, RequestTypes.DOCUMENT);
 };
 
