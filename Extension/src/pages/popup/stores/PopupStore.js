@@ -134,8 +134,8 @@ class PopupStore {
 
         if (!this.applicationAvailable) {
             messageKey = 'popup_site_filtering_state_secure_page';
-        } else if (this.documentAllowlisted && !this.userAllowlisted) {
-            messageKey = '';
+        } else if (!this.canAddRemoveRule) {
+            messageKey = 'popup_site_exception_information';
         } else if (this.applicationFilteringDisabled) {
             messageKey = 'popup_site_filtering_state_paused';
         } else if (this.documentAllowlisted) {
