@@ -142,7 +142,9 @@ const RequestCreateRule = observer(() => {
             </div>
             <div className="request-modal__content">
                 <div className="request-info request-modal__rule-text">
-                    <div className="request-info__key">{reactTranslator.getMessage('filtering_modal_rule_text')}</div>
+                    <div className="request-info__key">
+                        {reactTranslator.getMessage('filtering_modal_rule_text_desc')}
+                    </div>
                     <div
                         /* eslint-disable-next-line jsx-a11y/aria-role */
                         role="textarea"
@@ -156,13 +158,17 @@ const RequestCreateRule = observer(() => {
                 </div>
                 {showPatterns && (
                     <div className="request-info patterns">
-                        <div className="request-info__key">{reactTranslator.getMessage('filtering_modal_patterns')}</div>
+                        <div className="request-info__key">
+                            {reactTranslator.getMessage('filtering_modal_patterns_desc')}
+                        </div>
                         {rulePatterns}
                     </div>
                 )}
                 {showOptions && (
                     <div className="request-info options">
-                        <div className="request-info__key">{reactTranslator.getMessage('filtering_modal_options')}</div>
+                        <div className="request-info__key">
+                            {reactTranslator.getMessage('filtering_modal_options_desc')}
+                        </div>
                         {options}
                     </div>
                 )}

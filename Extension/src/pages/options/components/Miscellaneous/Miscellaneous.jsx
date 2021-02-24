@@ -72,7 +72,7 @@ const Miscellaneous = observer(() => {
                 />
 
                 <SettingsSet
-                    title={reactTranslator.getMessage('options_collect_hit_stats')}
+                    title={reactTranslator.getMessage('options_collect_hit_stats_title')}
                     description={(
                         <a
                             href={COLLECT_HITS_LEARN_MORE_URL}
@@ -87,7 +87,7 @@ const Miscellaneous = observer(() => {
                         <Setting
                             id={DISABLE_COLLECT_HITS}
                             type={SETTINGS_TYPES.CHECKBOX}
-                            label={reactTranslator.getMessage('options_collect_hit_stats')}
+                            label={reactTranslator.getMessage('options_collect_hit_stats_title')}
                             inverted
                             value={settings.values[DISABLE_COLLECT_HITS]}
                             handler={settingChangeHandler}
@@ -96,13 +96,13 @@ const Miscellaneous = observer(() => {
                 />
 
                 <SettingsSet
-                    title={reactTranslator.getMessage('options_show_blocked_ads_count')}
+                    title={reactTranslator.getMessage('options_show_blocked_ads_count_title')}
                     disabled={settings.values[DISABLE_SHOW_PAGE_STATS]}
                     inlineControl={(
                         <Setting
                             id={DISABLE_SHOW_PAGE_STATS}
                             type={SETTINGS_TYPES.CHECKBOX}
-                            label={reactTranslator.getMessage('options_show_blocked_ads_count')}
+                            label={reactTranslator.getMessage('options_show_blocked_ads_count_title')}
                             inverted
                             value={settings.values[DISABLE_SHOW_PAGE_STATS]}
                             handler={settingChangeHandler}
@@ -111,13 +111,13 @@ const Miscellaneous = observer(() => {
                 />
 
                 <SettingsSet
-                    title={reactTranslator.getMessage('options_show_context_menu')}
+                    title={reactTranslator.getMessage('options_show_context_menu_title')}
                     disabled={settings.values[DISABLE_SHOW_CONTEXT_MENU]}
                     inlineControl={(
                         <Setting
                             id={DISABLE_SHOW_CONTEXT_MENU}
                             type={SETTINGS_TYPES.CHECKBOX}
-                            label={reactTranslator.getMessage('options_show_context_menu')}
+                            label={reactTranslator.getMessage('options_show_context_menu_title')}
                             inverted
                             value={settings.values[DISABLE_SHOW_CONTEXT_MENU]}
                             handler={settingChangeHandler}
@@ -126,13 +126,13 @@ const Miscellaneous = observer(() => {
                 />
 
                 <SettingsSet
-                    title={reactTranslator.getMessage('options_show_adguard_full_version')}
+                    title={reactTranslator.getMessage('options_show_adguard_full_version_title')}
                     disabled={settings.values[DISABLE_SHOW_ADGUARD_PROMO_INFO]}
                     inlineControl={(
                         <Setting
                             id={DISABLE_SHOW_ADGUARD_PROMO_INFO}
                             type={SETTINGS_TYPES.CHECKBOX}
-                            label={reactTranslator.getMessage('options_show_adguard_full_version')}
+                            label={reactTranslator.getMessage('options_show_adguard_full_version_title')}
                             inverted
                             value={settings.values[DISABLE_SHOW_ADGUARD_PROMO_INFO]}
                             handler={settingChangeHandler}

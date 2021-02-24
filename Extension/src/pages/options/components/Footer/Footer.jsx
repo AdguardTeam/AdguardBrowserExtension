@@ -15,7 +15,7 @@ const Footer = () => {
             <div className="footer__rate">
                 <div className="footer__in container">
                     <div className="footer__rate-desc">
-                        {reactTranslator.getMessage('options_do_you_like')}
+                        {reactTranslator.getMessage('options_do_you_like_question')}
                     </div>
                     <button
                         type="button"
@@ -27,7 +27,7 @@ const Footer = () => {
                             htmlFor="thumbsup"
                             className="button__label button__label--rate"
                         >
-                            {reactTranslator.getMessage('options_footer_like_us')}
+                            {reactTranslator.getMessage('options_footer_like_us_cta')}
                         </label>
                     </button>
                 </div>

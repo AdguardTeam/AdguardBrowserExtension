@@ -64,7 +64,7 @@ export const Actions = observer(() => {
                     classname="icon--action"
                 />
                 <div className="action-title">
-                    {reactTranslator.getMessage('popup_block_site_ads')}
+                    {reactTranslator.getMessage('popup_block_site_ads_option')}
                 </div>
             </button>
             <button

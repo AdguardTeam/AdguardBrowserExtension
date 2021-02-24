@@ -1,9 +1,9 @@
 /* eslint-disable no-await-in-loop,no-restricted-syntax,no-console */
-import fs from 'fs/promises';
+import { promises as fs } from 'fs';
 import path from 'path';
 import _ from 'lodash';
 
-import { cliLog } from '../cli-log'
+import { cliLog } from '../cli-log';
 import { getLocaleTranslations } from '../helpers';
 
 import {
@@ -145,7 +145,7 @@ export const renewLocales = async () => {
             } else {
                 cliLog.info(`existing keys number: ${resultMessages.length}`);
                 cliLog.info(`old keys number: ${oldKeys.length}`);
-                cliLog.warningRed(`${removedKeys.length} keys have been removed:`)
+                cliLog.warningRed(`${removedKeys.length} keys have been removed:`);
                 cliLog.warning(` - ${removedKeys.join('\n - ')}`);
             }
             return writeInFile(output, result);

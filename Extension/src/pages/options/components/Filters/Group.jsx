@@ -20,7 +20,7 @@ const renderEnabledFilters = (enabledFilters) => {
                 {reactTranslator.getMessage('options_filters_enabled')}
                 {' '}
                 {reactTranslator.getMessage(
-                    'options_filters_enabled_and_more_divider',
+                    'options_filters_enabled_and_more',
                     { enabled: displayable.join(', '), more: countable.length },
                 )}
             </>
@@ -34,7 +34,7 @@ const renderEnabledFilters = (enabledFilters) => {
                 {reactTranslator.getMessage('options_filters_enabled')}
                 {' '}
                 {reactTranslator.getMessage(
-                    'options_filters_enabled_and_divider',
+                    'options_filters_enabled_and_last',
                     { enabled: rest.join(', '), last },
                 )}
             </>
