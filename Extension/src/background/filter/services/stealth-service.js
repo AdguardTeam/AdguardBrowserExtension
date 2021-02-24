@@ -348,6 +348,13 @@ export const stealthService = (() => {
     };
 
     /**
+     * Initializes service
+     */
+    const init = () => {
+        engine = new TSUrlFilter.StealthService(getConfig());
+    };
+
+    /**
      * We handle privacy permission only for chromium browsers
      * In the Firefox privacy permission is available by default
      * because they can't be optional there
@@ -428,6 +435,7 @@ export const stealthService = (() => {
     }
 
     return {
+        init,
         processRequestHeaders,
         getCookieRules,
         removeTrackersFromUrl,
