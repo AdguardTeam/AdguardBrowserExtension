@@ -41,6 +41,7 @@
     .current-status {
         font-size: 14px;
         text-align: center;
+        max-width: 280px;
     }
 
     &--allowlisted {
@@ -104,7 +105,8 @@
     }
 
     &--enabled,
-    &--unavailable {
+    &--unavailable,
+    &--in-exception {
         background-image: var(--enabled-bg);
 
         & .switcher {
@@ -123,6 +125,20 @@
             &__btn {
                 right: 18px;
             }
+        }
+    }
+
+    &--in-exception {
+        & .switcher__btn {
+            right: 32px;
+
+            &:before {
+                display: none;
+            }
+        }
+
+        & .switcher__icon--checkmark {
+            display: none;
         }
     }
 }
