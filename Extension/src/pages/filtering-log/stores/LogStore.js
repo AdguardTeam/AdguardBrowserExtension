@@ -9,6 +9,7 @@ import _ from 'lodash';
 
 import { messenger } from '../../services/messenger';
 import { containsIgnoreCase } from '../../helpers';
+// TODO we should separate RequestTypes from tsurlfilter because such imports pull whole tsurlfilter
 import { RequestTypes } from '../../../background/utils/request-types';
 import { getFilterName } from '../components/RequestWizard/utils';
 
@@ -235,11 +236,22 @@ class LogStore {
                     || containsIgnoreCase(filteringEvent.filterName, this.eventsSearchValue);
             }
 
-            const eventTypesFilterValue = this.eventTypesFilters
-                .find((filter) => filter.type === filteringEvent.requestType)
-                ?.enabled;
-            if (!eventTypesFilterValue) {
-                return false;
+            // Filter by requestType
+            const { requestType } = filteringEvent;
+            // check if request type is in eventTypesFilters
+            const filterForRequestType = this.eventTypesFilters
+                .find((filter) => filter.type === requestType);
+            if (filterForRequestType) {
+                if (!filterForRequestType.enabled) {
+                    return false;
+                }
+            } else {
+                // else check if other filter is enabled
+                const otherFilter = this.eventTypesFilters
+                    .find((filter) => filter.type === RequestTypes.OTHER);
+                if (!otherFilter.enabled) {
+                    return false;
+                }
             }
 
             const isAllowlisted = filteringEvent.requestRule?.whitelistRule;
@@ -273,13 +285,11 @@ class LogStore {
             return show;
         });
 
-        const events = filteredEvents.map((filteringEvent) => {
-            const {
-                requestRule,
-            } = filteringEvent;
+        const events = filteredEvents.map((event) => {
+            const { requestRule } = event;
 
             return {
-                ...filteringEvent,
+                ...event,
                 ruleText: requestRule?.ruleText,
                 filterName: getFilterName(requestRule?.filterId, this.filtersMetadata),
             };

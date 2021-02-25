@@ -376,9 +376,16 @@ const browsersFilteringLog = (function () {
      * @param {boolean} isModifyingCookieRule
      * @param {boolean} thirdParty
      */
-    const addCookieEvent = function (
-        tabId, cookieName, cookieValue, cookieDomain, requestType, cookieRule, isModifyingCookieRule, thirdParty,
-    ) {
+    const addCookieEvent = (
+        tabId,
+        cookieName,
+        cookieValue,
+        cookieDomain,
+        requestType,
+        cookieRule,
+        isModifyingCookieRule,
+        thirdParty,
+    ) => {
         if (!canAddEvent(tabId)) {
             return;
         }
