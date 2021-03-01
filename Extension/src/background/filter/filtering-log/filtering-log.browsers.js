@@ -165,6 +165,9 @@ const browsersFilteringLog = (function () {
             if (sourceRule.isDocumentWhitelistRule()) {
                 destinationRuleDTO.documentLevelRule = true;
             }
+            if (sourceRule.isStealthModeRule) {
+                destinationRuleDTO.isStealthModeRule = true;
+            }
 
             destinationRuleDTO.whitelistRule = sourceRule.isWhitelist();
             destinationRuleDTO.cspRule = sourceRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Csp);

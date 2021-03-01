@@ -11,6 +11,20 @@ import { Icon } from '../../../common/components/ui/Icon';
 
 import './filtering-events.pcss';
 
+const filterNameAccessor = (props) => {
+    const { requestRule, filterName, stealthActions } = props;
+
+    if (requestRule && requestRule.isStealthModeRule) {
+        return reactTranslator.getMessage('filtering_log_privacy_applied_rules');
+    }
+
+    if (!filterName && stealthActions) {
+        return reactTranslator.getMessage('filtering_log_privacy_applied_rules');
+    }
+
+    return props.filterName;
+};
+
 const FilteringEvents = observer(() => {
     const { logStore } = useContext(rootStore);
 
@@ -88,7 +102,7 @@ const FilteringEvents = observer(() => {
         },
         {
             Header: `${reactTranslator.getMessage('filtering_table_filter')}`,
-            accessor: 'filterName',
+            accessor: filterNameAccessor,
         },
         {
             Header: `${reactTranslator.getMessage('filtering_table_source')}`,
