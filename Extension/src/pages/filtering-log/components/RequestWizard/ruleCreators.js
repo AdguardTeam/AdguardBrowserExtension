@@ -1,4 +1,6 @@
-import { SimpleRegex, NetworkRule, CosmeticRuleMarker } from '@adguard/tsurlfilter';
+import { SimpleRegex } from '@adguard/tsurlfilter/simple-regex';
+import { NetworkRule } from '@adguard/tsurlfilter/network-rule';
+import { CosmeticRuleMarker } from '@adguard/tsurlfilter/cosmetic-rule-marker';
 
 import { strings } from '../../../../common/strings';
 import { UrlUtils } from './utils';
