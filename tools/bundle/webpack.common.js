@@ -44,6 +44,11 @@ export const genCommonConfig = (browserConfig) => {
         },
         resolve: {
             extensions: ['*', '.js', '.jsx'],
+            fallback: {
+                'url': false,
+                'crypto': false,
+                'process': false,
+            },
         },
         module: {
             rules: [
