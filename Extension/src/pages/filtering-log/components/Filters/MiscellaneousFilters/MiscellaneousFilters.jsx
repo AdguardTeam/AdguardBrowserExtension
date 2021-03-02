@@ -15,14 +15,14 @@ const MiscellaneousFilters = observer(() => {
     const ref = useRef(null);
 
     const { logStore } = useContext(rootStore);
-    const { miscellaneousFilters, requestSourceFilter } = logStore;
+    const { miscellaneousFilters, requestSourceFilters } = logStore;
 
     const filtersCheckboxHandler = (filter) => (e) => {
         logStore.setMiscellaneousFilterValue(filter, e.target.checked);
     };
 
     const requestSourceFilterClickHandler = (e) => {
-        logStore.setRequestSourceFilterValue(e.target.value);
+        logStore.setRequestSourceFilterValue(e.target.value, e.target.checked);
     };
 
     const hidePopup = (event) => {
@@ -77,7 +77,7 @@ const MiscellaneousFilters = observer(() => {
                         name={id}
                         onClick={filtersCheckboxHandler(id)}
                         value={miscellaneousFilters[id]}
-                        checked={miscellaneousFilters[id]}
+                        defaultChecked={miscellaneousFilters[id]}
                     />
                     <div className="custom-checkbox">
                         <Icon id="#checked" classname="icon--checked" />
@@ -88,11 +88,7 @@ const MiscellaneousFilters = observer(() => {
         });
     };
 
-    const requestSourceFilters = [
-        {
-            id: REQUEST_SOURCE_FILTERS.ALL,
-            text: reactTranslator.getMessage('filtering_log_filter_all'),
-        },
+    const requestSourceCheckboxes = [
         {
             id: REQUEST_SOURCE_FILTERS.FIRST_PARTY,
             text: reactTranslator.getMessage('filtering_log_filter_first_party'),
@@ -104,18 +100,20 @@ const MiscellaneousFilters = observer(() => {
     ];
 
     const renderRequestSourceFilters = () => {
-        return requestSourceFilters.map(({ id, text }) => {
+        return requestSourceCheckboxes.map(({ id, text }) => {
             return (
-                <label key={id} className="radio-button-label" htmlFor={id}>
+                <label key={id} className="checkbox-label" htmlFor={id}>
                     <input
-                        type="radio"
+                        type="checkbox"
                         id={id}
                         name="request-source-filter"
                         onClick={requestSourceFilterClickHandler}
                         value={id}
-                        checked={requestSourceFilter === id}
+                        defaultChecked={requestSourceFilters[id]}
                     />
-                    <div className="radio-button" />
+                    <div className="custom-checkbox">
+                        <Icon id="#checked" classname="icon--checked" />
+                    </div>
                     {text}
                 </label>
             );

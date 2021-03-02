@@ -14,9 +14,9 @@ const bundleChrome = (watch) => {
     return bundleRunner(webpackConfig, watch);
 };
 
-const bundleFirefoxAmo = () => {
+const bundleFirefoxAmo = (watch) => {
     const webpackConfig = getWebpackConfig(BROWSERS.FIREFOX_AMO);
-    return bundleRunner(webpackConfig);
+    return bundleRunner(webpackConfig, watch);
 };
 
 const bundleFirefoxStandalone = () => {
@@ -130,6 +130,15 @@ const chrome = async (watch) => {
     }
 };
 
+const firefox = async (watch) => {
+    try {
+        await bundleFirefoxAmo(watch);
+    } catch (e) {
+        console.error(e);
+        process.exit(1);
+    }
+};
+
 program
     .option('--watch', 'Builds in watch mode', false);
 
@@ -138,6 +147,13 @@ program
     .description('Builds extension for chrome browser')
     .action(() => {
         chrome(program.watch);
+    });
+
+program
+    .command('firefox')
+    .description('Builds extension for firefox browser')
+    .action(() => {
+        firefox(program.watch);
     });
 
 program

@@ -2,9 +2,15 @@
     display: inline-block;
     padding: 16px;
     position: relative;
+    transform: translateY(4px);
 
     @media (max-width: 640px) {
         padding: 16px 24px;
+    }
+
+    @media (max-width: 1200px) {
+        width: 100%;
+        transform: translateY(0);
     }
 
     &__action {
@@ -45,7 +51,6 @@
         border: 0;
         font-size: 14px;
         font-weight: 400;
-        padding: 0 10px;
         background-color: transparent;
         display: flex;
         align-items: center;

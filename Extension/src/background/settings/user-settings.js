@@ -49,6 +49,8 @@ export const settings = (() => {
         DEFAULT_ALLOWLIST_MODE: 'default-whitelist-mode',
         DISABLE_SHOW_APP_UPDATED_NOTIFICATION: 'show-app-updated-disabled',
         FILTERS_UPDATE_PERIOD: 'filters-update-period',
+
+        /* STEALTH MODE */
         DISABLE_STEALTH_MODE: 'stealth_disable_stealth_mode',
         HIDE_REFERRER: 'stealth-hide-referrer',
         HIDE_SEARCH_QUERIES: 'stealth-hide-search-queries',
@@ -269,16 +271,58 @@ export const settings = (() => {
         return parsed;
     };
 
-    const isWebRTCDisabled = function () {
-        return getProperty(settings.BLOCK_WEBRTC);
-    };
-
     const disableShowAdguardPromoInfo = function () {
         setProperty(settings.DISABLE_SHOW_ADGUARD_PROMO_INFO, true);
     };
 
     const isDisableShowAdguardPromoInfo = function () {
         return getProperty(settings.DISABLE_SHOW_ADGUARD_PROMO_INFO);
+    };
+
+    const getDisableStealthMode = () => getProperty(settings.DISABLE_STEALTH_MODE);
+    const getSelfDestructThirdPartyCookies = () => getProperty(settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES);
+    const getSelfDestructThirdPartyCookiesTime = () => getProperty(settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME);
+    const getSelfDestructFirstPartyCookies = () => getProperty(settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES);
+    const getSelfDestructFirstPartyCookiesTime = () => getProperty(settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME);
+    const getHideReferrer = () => getProperty(settings.HIDE_REFERRER);
+    const getHideSearchQueries = () => getProperty(settings.HIDE_SEARCH_QUERIES);
+    const getSendDoNotTrack = () => getProperty(settings.SEND_DO_NOT_TRACK);
+    const isWebRTCDisabled = () => getProperty(settings.BLOCK_WEBRTC);
+    const getStripTrackingParameters = () => getProperty(settings.STRIP_TRACKING_PARAMETERS);
+    const getTrackingParameters = () => getProperty(settings.TRACKING_PARAMETERS);
+
+    const setDisableStealthMode = (value) => {
+        setProperty(settings.DISABLE_STEALTH_MODE, value);
+    };
+    const setSelfDestructThirdPartyCookies = (value) => {
+        setProperty(settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES, value);
+    };
+    const setSelfDestructThirdPartyCookiesTime = (value) => {
+        setProperty(settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME, value);
+    };
+    const setSelfDestructFirstPartyCookies = (value) => {
+        setProperty(settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES, value);
+    };
+    const setSelfDestructFirstPartyCookiesTime = (value) => {
+        setProperty(settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME, value);
+    };
+    const setHideReferrer = (value) => {
+        setProperty(settings.HIDE_REFERRER, value);
+    };
+    const setHideSearchQueries = (value) => {
+        setProperty(settings.HIDE_SEARCH_QUERIES, value);
+    };
+    const setSendDoNotTrack = (value) => {
+        setProperty(settings.SEND_DO_NOT_TRACK, value);
+    };
+    const setWebRTCDisabled = (value) => {
+        setProperty(settings.BLOCK_WEBRTC, value);
+    };
+    const setStripTrackingParameters = (value) => {
+        setProperty(settings.STRIP_TRACKING_PARAMETERS, value);
+    };
+    const setTrackingParameters = (value) => {
+        setProperty(settings.TRACKING_PARAMETERS, value);
     };
 
     const api = {};
@@ -318,10 +362,33 @@ export const settings = (() => {
     api.changeDefaultAllowlistMode = changeDefaultAllowlistMode;
     api.getFiltersUpdatePeriod = getFiltersUpdatePeriod;
     api.setFiltersUpdatePeriod = setFiltersUpdatePeriod;
-    api.isWebRTCDisabled = isWebRTCDisabled;
     api.disableShowAdguardPromoInfo = disableShowAdguardPromoInfo;
     api.isDisableShowAdguardPromoInfo = isDisableShowAdguardPromoInfo;
     api.DEFAULT_FILTERS_UPDATE_PERIOD = DEFAULT_FILTERS_UPDATE_PERIOD;
+
+    api.getDisableStealthMode = getDisableStealthMode;
+    api.getSelfDestructThirdPartyCookies = getSelfDestructThirdPartyCookies;
+    api.getSelfDestructThirdPartyCookiesTime = getSelfDestructThirdPartyCookiesTime;
+    api.getSelfDestructFirstPartyCookies = getSelfDestructFirstPartyCookies;
+    api.getSelfDestructFirstPartyCookiesTime = getSelfDestructFirstPartyCookiesTime;
+    api.getHideReferrer = getHideReferrer;
+    api.getHideSearchQueries = getHideSearchQueries;
+    api.getSendDoNotTrack = getSendDoNotTrack;
+    api.isWebRTCDisabled = isWebRTCDisabled;
+    api.getStripTrackingParameters = getStripTrackingParameters;
+    api.getTrackingParameters = getTrackingParameters;
+
+    api.setDisableStealthMode = setDisableStealthMode;
+    api.setSelfDestructThirdPartyCookies = setSelfDestructThirdPartyCookies;
+    api.setSelfDestructThirdPartyCookiesTime = setSelfDestructThirdPartyCookiesTime;
+    api.setSelfDestructFirstPartyCookies = setSelfDestructFirstPartyCookies;
+    api.setSelfDestructFirstPartyCookiesTime = setSelfDestructFirstPartyCookiesTime;
+    api.setHideReferrer = setHideReferrer;
+    api.setHideSearchQueries = setHideSearchQueries;
+    api.setSendDoNotTrack = setSendDoNotTrack;
+    api.setWebRTCDisabled = setWebRTCDisabled;
+    api.setStripTrackingParameters = setStripTrackingParameters;
+    api.setTrackingParameters = setTrackingParameters;
 
     return api;
 })();
