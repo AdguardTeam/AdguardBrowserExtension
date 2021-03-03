@@ -3,7 +3,6 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import path from 'path';
-import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
 import { BUILD_PATH, ENVS } from '../constants';
 import { getEnvConf, updateLocalesMSGName } from '../helpers';
@@ -44,11 +43,6 @@ export const genCommonConfig = (browserConfig) => {
         },
         resolve: {
             extensions: ['*', '.js', '.jsx'],
-            fallback: {
-                'url': false,
-                'crypto': false,
-                'process': false,
-            },
         },
         module: {
             rules: [
@@ -71,7 +65,7 @@ export const genCommonConfig = (browserConfig) => {
                 {
                     test: /\.(js|jsx)$/,
                     exclude: /node_modules/,
-                    use: [{
+                    use: ['cache-loader', {
                         loader: 'babel-loader',
                         options: { babelrc: true },
                     }],
@@ -101,7 +95,6 @@ export const genCommonConfig = (browserConfig) => {
         },
 
         plugins: [
-            new BundleAnalyzerPlugin(),
             new CleanWebpackPlugin(),
             ...getModuleReplacements(browserConfig),
             new HtmlWebpackPlugin({

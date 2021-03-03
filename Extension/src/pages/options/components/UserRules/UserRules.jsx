@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { Range } from 'ace-builds';
-import { SimpleRegex } from '@adguard/tsurlfilter/simple-regex';
+import { SimpleRegex } from '@adguard/tsurlfilter/dist/es/simple-regex';
 
 import { rootStore } from '../../stores/RootStore';
 import { Editor } from '../Editor';

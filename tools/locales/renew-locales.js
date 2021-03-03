@@ -1,9 +1,10 @@
 /* eslint-disable no-await-in-loop,no-restricted-syntax,no-console */
 import fs from 'fs/promises';
 import path from 'path';
-import _ from 'lodash';
+import { uniq } from 'lodash/uniq';
+import { xor } from 'lodash/xor';
 
-import { cliLog } from '../cli-log'
+import { cliLog } from '../cli-log';
 import { getLocaleTranslations } from '../helpers';
 
 import {
@@ -135,17 +136,17 @@ export const renewLocales = async () => {
     chooseMessagesFromFiles(oldKeys, targets, filesReg)
         .then((chosenKeys) => {
             const result = {};
-            const resultMessages = _.uniq([...chosenKeys, ...persistedMessages]);
+            const resultMessages = uniq([...chosenKeys, ...persistedMessages]);
             resultMessages.forEach((key) => {
                 result[key] = source[key];
             });
-            const removedKeys = _.xor(resultMessages, oldKeys);
+            const removedKeys = xor(resultMessages, oldKeys);
             if (removedKeys.length === 0) {
                 cliLog.info('There is nothing to renew');
             } else {
                 cliLog.info(`existing keys number: ${resultMessages.length}`);
                 cliLog.info(`old keys number: ${oldKeys.length}`);
-                cliLog.warningRed(`${removedKeys.length} keys have been removed:`)
+                cliLog.warningRed(`${removedKeys.length} keys have been removed:`);
                 cliLog.warning(` - ${removedKeys.join('\n - ')}`);
             }
             return writeInFile(output, result);

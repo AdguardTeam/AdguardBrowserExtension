@@ -1,6 +1,10 @@
-import { SimpleRegex } from '@adguard/tsurlfilter/simple-regex';
-import { NetworkRule } from '@adguard/tsurlfilter/network-rule';
-import { CosmeticRuleMarker } from '@adguard/tsurlfilter/cosmetic-rule-marker';
+import { SimpleRegex } from '@adguard/tsurlfilter/dist/es/simple-regex';
+import {
+    MASK_ALLOWLIST,
+    OPTIONS_DELIMITER,
+    NETWORK_RULE_OPTIONS,
+} from '@adguard/tsurlfilter/dist/es/network-rule-options';
+import { CosmeticRuleMarker } from '@adguard/tsurlfilter/dist/es/cosmetic-rule-marker';
 
 import { strings } from '../../../../common/strings';
 import { UrlUtils } from './utils';
@@ -26,7 +30,7 @@ export const splitToPatterns = (requestUrl, domain, isAllowlist) => {
     }
 
     if (isAllowlist) {
-        prefix = NetworkRule.MASK_ALLOWLIST + prefix;
+        prefix = MASK_ALLOWLIST + prefix;
     }
 
     const patterns = [];
@@ -72,10 +76,10 @@ export const splitToPatterns = (requestUrl, domain, isAllowlist) => {
  */
 export const createDocumentLevelBlockRule = (rule) => {
     const { ruleText } = rule;
-    if (ruleText.indexOf(NetworkRule.OPTIONS_DELIMITER) > -1) {
-        return `${ruleText},${NetworkRule.OPTIONS.BADFILTER}`;
+    if (ruleText.indexOf(OPTIONS_DELIMITER) > -1) {
+        return `${ruleText},${NETWORK_RULE_OPTIONS.BADFILTER}`;
     }
-    return ruleText + NetworkRule.OPTIONS_DELIMITER + NetworkRule.OPTIONS.BADFILTER;
+    return ruleText + OPTIONS_DELIMITER + NETWORK_RULE_OPTIONS.BADFILTER;
 };
 
 /**
@@ -142,7 +146,7 @@ export const createExceptionCookieRule = (rule, event) => {
     if (domain[0] === '.') {
         domain = domain.substring(1);
     }
-    return NetworkRule.MASK_ALLOWLIST + SimpleRegex.MASK_START_URL + domain;
+    return MASK_ALLOWLIST + SimpleRegex.MASK_START_URL + domain;
 };
 
 /**

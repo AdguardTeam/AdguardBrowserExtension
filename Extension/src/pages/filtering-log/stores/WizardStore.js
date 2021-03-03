@@ -4,7 +4,11 @@ import {
     observable,
     makeObservable,
 } from 'mobx';
-import { NetworkRule } from '@adguard/tsurlfilter';
+import {
+    NETWORK_RULE_OPTIONS,
+    MASK_ALLOWLIST,
+    OPTIONS_DELIMITER,
+} from '@adguard/tsurlfilter/dist/es/network-rule-options';
 
 import { RULE_OPTIONS } from '../components/RequestWizard/constants';
 import {
@@ -46,7 +50,7 @@ class WizardStore {
         [RULE_OPTIONS.RULE_MATCH_CASE]: { checked: false },
         [RULE_OPTIONS.RULE_THIRD_PARTY]: { checked: false },
         [RULE_OPTIONS.RULE_IMPORTANT]: { checked: false },
-    }
+    };
 
     @computed
     get requestModalStateEnum() {
@@ -61,12 +65,16 @@ class WizardStore {
     @action
     updateRuleOptions() {
         const { selectedEvent } = this.rootStore.logStore;
-        const { isThirdPartyRequest, frameDomain } = selectedEvent;
+        const {
+            isThirdPartyRequest,
+            frameDomain,
+        } = selectedEvent;
 
         // set rule options to defaults
-        Object.values(RULE_OPTIONS).forEach((option) => {
-            this.ruleOptions[option].checked = false;
-        });
+        Object.values(RULE_OPTIONS)
+            .forEach((option) => {
+                this.ruleOptions[option].checked = false;
+            });
 
         if (selectedEvent.requestRule
             && (selectedEvent.requestRule.whitelistRule || selectedEvent.requestRule.isImportant)) {
@@ -94,7 +102,7 @@ class WizardStore {
     closeModal = () => {
         this.isModalOpen = false;
         this.requestModalState = WIZARD_STATES.VIEW_REQUEST;
-    }
+    };
 
     @action
     setBlockState() {
@@ -118,7 +126,7 @@ class WizardStore {
         await messenger.unAllowlistFrame(frameInfo);
 
         this.closeModal();
-    }
+    };
 
     @action
     removeFromUserFilterHandler = async (filteringEvent) => {
@@ -127,7 +135,7 @@ class WizardStore {
         await messenger.removeUserRule(requestRule.ruleText);
 
         this.closeModal();
-    }
+    };
 
     @action
     setViewState() {
@@ -158,29 +166,27 @@ class WizardStore {
 
         let options = [];
 
-        const { OPTIONS } = NetworkRule;
-
         // add domain option
         if (urlDomain) {
-            options.push(`${OPTIONS.DOMAIN}=${urlDomain}`);
+            options.push(`${NETWORK_RULE_OPTIONS.DOMAIN}=${urlDomain}`);
         }
         // add important option
         if (important) {
-            options.push(OPTIONS.IMPORTANT);
+            options.push(NETWORK_RULE_OPTIONS.IMPORTANT);
         }
         // add match case option
         if (matchCase) {
-            options.push(OPTIONS.MATCH_CASE);
+            options.push(NETWORK_RULE_OPTIONS.MATCH_CASE);
         }
         // add third party option
         if (thirdParty) {
-            options.push(OPTIONS.THIRD_PARTY);
+            options.push(NETWORK_RULE_OPTIONS.THIRD_PARTY);
         }
         if (mandatoryOptions) {
             options = options.concat(mandatoryOptions);
         }
         if (options.length > 0) {
-            ruleText += NetworkRule.OPTIONS_DELIMITER + options.join(',');
+            ruleText += OPTIONS_DELIMITER + options.join(',');
         }
 
         return ruleText;
@@ -220,19 +226,19 @@ class WizardStore {
         // Deal with csp rule
         const { requestRule } = selectedEvent;
         if (requestRule && requestRule.cspRule) {
-            mandatoryOptions = [NetworkRule.OPTIONS.CSP];
+            mandatoryOptions = [NETWORK_RULE_OPTIONS.CSP];
         }
 
         if (requestRule && requestRule.cookieRule) {
-            mandatoryOptions = [NetworkRule.OPTIONS.COOKIE];
+            mandatoryOptions = [NETWORK_RULE_OPTIONS.COOKIE];
         }
 
         if (selectedEvent.requestUrl === 'content-security-policy-check') {
-            mandatoryOptions = [NetworkRule.OPTIONS.WEBRTC, NetworkRule.OPTIONS.WEBSOCKET];
+            mandatoryOptions = [NETWORK_RULE_OPTIONS.WEBRTC, NETWORK_RULE_OPTIONS.WEBSOCKET];
         }
 
         if (selectedEvent.replaceRules) {
-            mandatoryOptions = [NetworkRule.OPTIONS.REPLACE];
+            mandatoryOptions = [NETWORK_RULE_OPTIONS.REPLACE];
         }
 
         let ruleText;
@@ -283,7 +289,7 @@ class WizardStore {
             }
 
             if (selectedEvent.requestUrl === 'content-security-policy-check') {
-                patterns = [NetworkRule.MASK_ALLOWLIST];
+                patterns = [MASK_ALLOWLIST];
             }
 
             if (selectedEvent.element) {
