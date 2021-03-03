@@ -11,6 +11,7 @@ import { messenger } from '../../services/messenger';
 import { containsIgnoreCase } from '../../helpers';
 import { RequestTypes } from '../../../background/utils/request-types';
 import { getFilterName } from '../components/RequestWizard/utils';
+import { reactTranslator } from '../../../common/translators/reactTranslator';
 
 export const MISCELLANEOUS_FILTERS = {
     REGULAR: 'regular',
@@ -56,36 +57,43 @@ class LogStore {
     @observable eventTypesFilters = [
         {
             name: 'HTML',
+            title: 'HTML',
             type: RequestTypes.DOCUMENT,
             enabled: true,
         },
         {
             name: 'CSS',
+            title: 'CSS',
             type: RequestTypes.STYLESHEET,
             enabled: true,
         },
         {
             name: 'JavaScript',
+            title: 'JavaScript',
             type: RequestTypes.SCRIPT,
             enabled: true,
         },
         {
             name: 'Ajax',
+            title: 'Ajax',
             type: RequestTypes.XMLHTTPREQUEST,
             enabled: true,
         },
         {
             name: 'Image',
+            title: reactTranslator.getMessage('filtering_type_image'),
             type: RequestTypes.IMAGE,
             enabled: true,
         },
         {
             name: 'Media',
+            title: reactTranslator.getMessage('filtering_type_media'),
             type: RequestTypes.MEDIA,
             enabled: true,
         },
         {
             name: 'Other',
+            title: reactTranslator.getMessage('filtering_type_other'),
             type: RequestTypes.OTHER,
             enabled: true,
         },
