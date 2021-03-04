@@ -23,6 +23,7 @@ import { filteringLog } from './filter/filtering-log';
 import { uiService } from './ui-service';
 import { application } from './application';
 import { browser } from './extension-api/browser';
+import { stealthService } from './filter/services/stealth-service';
 
 /**
  * Extension initialize logic. Called from start.js
@@ -52,6 +53,7 @@ export const startup = async function () {
         allowlist.init();
         filteringLog.init();
         uiService.init();
+        stealthService.init();
 
         /**
          * Start application

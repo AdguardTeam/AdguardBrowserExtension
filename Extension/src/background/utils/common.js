@@ -16,7 +16,6 @@
  */
 
 import { log } from '../../common/log';
-import { cookie } from './cookie';
 import { strings } from '../../common/strings';
 import { dates } from './dates';
 import { collections } from './collections';
@@ -48,7 +47,6 @@ export const utils = {
     channels,
     workaround,
     i18n,
-    cookie,
     filters,
     url,
 };
