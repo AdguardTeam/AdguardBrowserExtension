@@ -5,7 +5,9 @@ import {
     computed,
     runInAction,
 } from 'mobx';
-import _ from 'lodash';
+import { findIndex } from 'lodash/findIndex';
+import { find } from 'lodash/find';
+import { identity } from 'lodash/identity';
 
 import { messenger } from '../../services/messenger';
 import { containsIgnoreCase } from '../../helpers';
@@ -156,7 +158,7 @@ class LogStore {
             return;
         }
         const { eventId } = filteringEvent;
-        let eventIdx = _.findIndex(this.filteringEvents, { eventId });
+        let eventIdx = findIndex(this.filteringEvents, { eventId });
         eventIdx = eventIdx === -1 ? this.filteringEvents.length : eventIdx;
         this.filteringEvents.splice(eventIdx, 1, filteringEvent);
     }
@@ -266,7 +268,7 @@ class LogStore {
             const isRegular = !isAllowlisted && !isBlocked && !isModified;
 
             // filter by miscellaneous filters
-            const showByMiscellaneous = !Object.values(this.miscellaneousFilters).some(_.identity)
+            const showByMiscellaneous = !Object.values(this.miscellaneousFilters).some(identity)
                 || (this.miscellaneousFilters[MISCELLANEOUS_FILTERS.REGULAR] && isRegular)
                 || (this.miscellaneousFilters[MISCELLANEOUS_FILTERS.ALLOWLISTED] && isAllowlisted)
                 || (this.miscellaneousFilters[MISCELLANEOUS_FILTERS.BLOCKED] && isBlocked)
@@ -278,7 +280,7 @@ class LogStore {
             }
 
             // filter by request source filter
-            const showByRequestSource = !Object.values(this.requestSourceFilters).some(_.identity)
+            const showByRequestSource = !Object.values(this.requestSourceFilters).some(identity)
             || (this.requestSourceFilters[REQUEST_SOURCE_FILTERS.FIRST_PARTY] && isFirstParty)
             || (this.requestSourceFilters[REQUEST_SOURCE_FILTERS.THIRD_PARTY] && isThirdParty);
 
@@ -334,7 +336,7 @@ class LogStore {
 
     @action
     setSelectedEventById = (eventId) => {
-        this.selectedEvent = _.find(this.filteringEvents, { eventId });
+        this.selectedEvent = find(this.filteringEvents, { eventId });
         this.rootStore.wizardStore.openModal();
     };
 }
