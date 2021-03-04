@@ -25,7 +25,7 @@ const OUTPUT_PATH = config.outputPath;
 export const genCommonConfig = (browserConfig) => {
     return {
         mode: config.mode,
-        devtool: process.env.BUILD_ENV === ENVS.DEV ? 'cheap-module-eval-source-map' : false,
+        devtool: process.env.BUILD_ENV === ENVS.DEV ? 'eval-source-map' : false,
         entry: {
             'pages/background': BACKGROUND_PATH,
             'pages/options': OPTIONS_PATH,

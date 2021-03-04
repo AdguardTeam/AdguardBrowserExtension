@@ -1,4 +1,4 @@
-import * as TSUrlFilter from '@adguard/tsurlfilter';
+import { RequestType } from '@adguard/tsurlfilter/dist/es/request-type';
 
 /**
  * Request types enumeration
@@ -39,27 +39,27 @@ export const RequestTypes = {
 
         switch (requestType) {
             case contentTypes.DOCUMENT:
-                return TSUrlFilter.RequestType.Document;
+                return RequestType.Document;
             case contentTypes.SUBDOCUMENT:
-                return TSUrlFilter.RequestType.Subdocument;
+                return RequestType.Subdocument;
             case contentTypes.STYLESHEET:
-                return TSUrlFilter.RequestType.Stylesheet;
+                return RequestType.Stylesheet;
             case contentTypes.FONT:
-                return TSUrlFilter.RequestType.Font;
+                return RequestType.Font;
             case contentTypes.IMAGE:
-                return TSUrlFilter.RequestType.Image;
+                return RequestType.Image;
             case contentTypes.MEDIA:
-                return TSUrlFilter.RequestType.Media;
+                return RequestType.Media;
             case contentTypes.SCRIPT:
-                return TSUrlFilter.RequestType.Script;
+                return RequestType.Script;
             case contentTypes.XMLHTTPREQUEST:
-                return TSUrlFilter.RequestType.XmlHttpRequest;
+                return RequestType.XmlHttpRequest;
             case contentTypes.WEBSOCKET:
-                return TSUrlFilter.RequestType.Websocket;
+                return RequestType.Websocket;
             case contentTypes.PING:
-                return TSUrlFilter.RequestType.Ping;
+                return RequestType.Ping;
             default:
-                return TSUrlFilter.RequestType.Other;
+                return RequestType.Other;
         }
     },
 };
