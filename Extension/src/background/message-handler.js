@@ -138,6 +138,9 @@ const init = () => {
             appVersion: backgroundPage.app.getVersion(),
             filtersMetadata: categories.getFiltersMetadata(),
             filtersInfo: antiBannerService.getRequestFilterInfo(),
+            environmentOptions: {
+                isChrome: browserUtils.isChromeBrowser(),
+            },
             constants: {
                 AntiBannerFiltersId: utils.filters.ids,
             },
