@@ -26,7 +26,10 @@ const renderTags = (tags, trusted) => {
         const tagString = `#${reactTranslator.getMessage('options_filters_filter_trusted_tag')}`;
         return (
             <div className="filter__tags">
-                <div className="filter__tag">
+                <div
+                    data-tooltip={reactTranslator.getMessage('options_filters_filter_trusted_tag_desc')}
+                    className="filter__tag"
+                >
                     {tagString}
                 </div>
             </div>
