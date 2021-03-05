@@ -27,6 +27,9 @@ class PopupStore {
     applicationAvailable = true;
 
     @observable
+    canAddRemoveRule = true;
+
+    @observable
     url = null;
 
     @observable

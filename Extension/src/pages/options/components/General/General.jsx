@@ -67,12 +67,14 @@ const General = observer(() => {
         try {
             const content = await uploadFile(file, 'json');
             const result = await messenger.applySettingsJson(content);
+            uiStore.addNotification({ description: reactTranslator.getMessage('options_popup_import_success_title') });
             if (!result) {
                 const errorMessage = reactTranslator.getMessage('options_popup_import_error_file_description');
                 uiStore.addNotification({ description: errorMessage });
             }
         } catch (e) {
-            uiStore.addNotification({ description: e.message });
+            const message = e.message || reactTranslator.getMessage('options_popup_import_error_title');
+            uiStore.addNotification({ description: message });
         }
 
         // eslint-disable-next-line no-param-reassign

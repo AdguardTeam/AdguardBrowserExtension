@@ -8,6 +8,7 @@ import { reactTranslator } from '../../../../../common/translators/reactTranslat
 import { Icon } from '../../../../common/components/ui/Icon';
 
 import './request-create-rule.pcss';
+import { WIZARD_STATES } from '../../../stores/WizardStore';
 
 const RequestCreateRule = observer(() => {
     const { wizardStore, logStore } = useContext(rootStore);
@@ -128,6 +129,11 @@ const RequestCreateRule = observer(() => {
     const showPatterns = !isElementOrScript && !cookieName;
     const showOptions = !isElementOrScript && !requestRule?.documentLevelRule;
 
+    let title = reactTranslator.getMessage('filtering_modal_add_title');
+    if (wizardStore.requestModalState === WIZARD_STATES.UNBLOCK_REQUEST) {
+        title = reactTranslator.getMessage('filtering_modal_exception_title');
+    }
+
     return (
         <>
             <div className="request-modal__title">
@@ -138,7 +144,7 @@ const RequestCreateRule = observer(() => {
                 >
                     <Icon classname="icon--contain" id="#arrow-left" />
                 </button>
-                <span className="request-modal__header">{reactTranslator.getMessage('filtering_modal_add_title')}</span>
+                <span className="request-modal__header">{title}</span>
             </div>
             <div className="request-modal__content">
                 <div className="request-info request-modal__rule-text">

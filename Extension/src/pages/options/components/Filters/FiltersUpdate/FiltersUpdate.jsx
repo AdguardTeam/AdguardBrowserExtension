@@ -38,6 +38,7 @@ const FiltersUpdate = (props) => {
                 type="button"
                 onClick={handler}
                 className={`button filters-update__btn filters-update__btn--${buttonClass}`}
+                title={reactTranslator.getMessage('options_update_antibanner_filters')}
             >
                 <Icon id="#reload" classname="icon--reload" />
             </button>
