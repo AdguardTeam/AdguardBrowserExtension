@@ -11,6 +11,7 @@ import { createSavingService, EVENTS as SAVING_FSM_EVENTS } from '../components/
 import { sleep } from '../../helpers';
 import { messenger } from '../../services/messenger';
 import { OTHER_FILTERS_GROUP_ID } from '../../../../../tools/constants';
+import { browserUtils } from '../../../background/utils/browser-utils';
 
 const savingUserRulesService = createSavingService({
     id: 'userRules',
@@ -66,6 +67,8 @@ class SettingsStore {
 
     @observable selectedGroupId = null;
 
+    @observable isChrome = null;
+
     constructor(rootStore) {
         makeObservable(this);
         this.rootStore = rootStore;
@@ -95,6 +98,7 @@ class SettingsStore {
             this.constants = data.constants;
             this.optionsReadyToRender = true;
             this.setAllowAcceptableAds(data.filtersMetadata.filters);
+            this.isChrome = data.environmentOptions.isChrome;
         });
     }
 

@@ -28,7 +28,7 @@ export const Main = observer(() => {
             mode: 'unavailable',
         },
         [POPUP_STATES.SITE_IN_EXCEPTION]: {
-            mode: 'in exception',
+            mode: 'in-exception',
         },
         [POPUP_STATES.SITE_ALLOWLISTED]: {
             handler: () => {

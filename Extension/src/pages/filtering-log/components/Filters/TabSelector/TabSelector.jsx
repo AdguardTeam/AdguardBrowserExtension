@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
 import { rootStore } from '../../../stores/RootStore';
-import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { Icon } from '../../../../common/components/ui/Icon';
 
 import './tab-selector.pcss';

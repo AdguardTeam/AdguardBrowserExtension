@@ -5,10 +5,13 @@ import {
     computed,
     runInAction,
 } from 'mobx';
-import _ from 'lodash';
+import { findIndex } from 'lodash/findIndex';
+import { find } from 'lodash/find';
+import { identity } from 'lodash/identity';
 
 import { messenger } from '../../services/messenger';
 import { containsIgnoreCase } from '../../helpers';
+// TODO we should separate RequestTypes from tsurlfilter because such imports pull whole tsurlfilter
 import { RequestTypes } from '../../../background/utils/request-types';
 import { getFilterName } from '../components/RequestWizard/utils';
 import { reactTranslator } from '../../../common/translators/reactTranslator';
@@ -163,7 +166,7 @@ class LogStore {
             return;
         }
         const { eventId } = filteringEvent;
-        let eventIdx = _.findIndex(this.filteringEvents, { eventId });
+        let eventIdx = findIndex(this.filteringEvents, { eventId });
         eventIdx = eventIdx === -1 ? this.filteringEvents.length : eventIdx;
         this.filteringEvents.splice(eventIdx, 1, filteringEvent);
     }
@@ -245,11 +248,22 @@ class LogStore {
                     || containsIgnoreCase(filteringEvent.filterName, this.eventsSearchValue);
             }
 
-            const eventTypesFilterValue = this.eventTypesFilters
-                .find((filter) => filter.type === filteringEvent.requestType)
-                ?.enabled;
-            if (!eventTypesFilterValue) {
-                return false;
+            // Filter by requestType
+            const { requestType } = filteringEvent;
+            // check if request type is in eventTypesFilters
+            const filterForRequestType = this.eventTypesFilters
+                .find((filter) => filter.type === requestType);
+            if (filterForRequestType) {
+                if (!filterForRequestType.enabled) {
+                    return false;
+                }
+            } else {
+                // else check if other filter is enabled
+                const otherFilter = this.eventTypesFilters
+                    .find((filter) => filter.type === RequestTypes.OTHER);
+                if (!otherFilter.enabled) {
+                    return false;
+                }
             }
 
             const isAllowlisted = filteringEvent.requestRule?.whitelistRule;
@@ -262,7 +276,7 @@ class LogStore {
             const isRegular = !isAllowlisted && !isBlocked && !isModified;
 
             // filter by miscellaneous filters
-            const showByMiscellaneous = !Object.values(this.miscellaneousFilters).some(_.identity)
+            const showByMiscellaneous = !Object.values(this.miscellaneousFilters).some(identity)
                 || (this.miscellaneousFilters[MISCELLANEOUS_FILTERS.REGULAR] && isRegular)
                 || (this.miscellaneousFilters[MISCELLANEOUS_FILTERS.ALLOWLISTED] && isAllowlisted)
                 || (this.miscellaneousFilters[MISCELLANEOUS_FILTERS.BLOCKED] && isBlocked)
@@ -274,7 +288,7 @@ class LogStore {
             }
 
             // filter by request source filter
-            const showByRequestSource = !Object.values(this.requestSourceFilters).some(_.identity)
+            const showByRequestSource = !Object.values(this.requestSourceFilters).some(identity)
             || (this.requestSourceFilters[REQUEST_SOURCE_FILTERS.FIRST_PARTY] && isFirstParty)
             || (this.requestSourceFilters[REQUEST_SOURCE_FILTERS.THIRD_PARTY] && isThirdParty);
 
@@ -285,13 +299,11 @@ class LogStore {
             return show;
         });
 
-        const events = filteredEvents.map((filteringEvent) => {
-            const {
-                requestRule,
-            } = filteringEvent;
+        const events = filteredEvents.map((event) => {
+            const { requestRule } = event;
 
             return {
-                ...filteringEvent,
+                ...event,
                 ruleText: requestRule?.ruleText,
                 filterName: getFilterName(requestRule?.filterId, this.filtersMetadata),
             };
@@ -332,7 +344,7 @@ class LogStore {
 
     @action
     setSelectedEventById = (eventId) => {
-        this.selectedEvent = _.find(this.filteringEvents, { eventId });
+        this.selectedEvent = find(this.filteringEvents, { eventId });
         this.rootStore.wizardStore.openModal();
     };
 }

@@ -145,8 +145,9 @@ const AddCustomModal = ({
                         <input
                             className="modal__input"
                             type="text"
+                            placeholder={reactTranslator.getMessage('options_popup_title_placeholder')}
                             onChange={handleChangeFilterName}
-                            value={name || filterToAddName || customUrlToAdd}
+                            defaultValue={name || filterToAddName || customUrlToAdd}
                         />
                     </div>
                     <div className="modal__row">

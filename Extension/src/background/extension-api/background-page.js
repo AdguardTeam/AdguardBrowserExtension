@@ -154,7 +154,9 @@ export const backgroundPage = (() => {
         // https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
         const requestDetails = {
             requestUrl: details.url,    // request url
+            url: details.url,
             tab,                        // request tab,
+            tabId: details.tabId,
             requestId: details.requestId,
             statusCode: details.statusCode,
             method: details.method,

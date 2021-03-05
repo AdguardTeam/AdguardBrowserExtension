@@ -38,6 +38,7 @@ const Stealth = observer(() => {
         BLOCK_WEBRTC,
         STRIP_TRACKING_PARAMETERS,
         TRACKING_PARAMETERS,
+        BLOCK_CHROME_CLIENT_DATA,
     } = settings.names;
 
     const isStealthModeDisabled = settings.values[DISABLE_STEALTH_MODE];
@@ -161,6 +162,23 @@ const Stealth = observer(() => {
                         />
                     )}
                 />
+
+                {settingsStore.isChrome && (
+                    <SettingsSet
+                        title={reactTranslator.getMessage('options_remove_client_data_title')}
+                        description={reactTranslator.getMessage('options_remove_client_data_desc')}
+                        disabled={!settings.values[BLOCK_CHROME_CLIENT_DATA]}
+                        inlineControl={(
+                            <Setting
+                                id={BLOCK_CHROME_CLIENT_DATA}
+                                type={SETTINGS_TYPES.CHECKBOX}
+                                label={reactTranslator.getMessage('options_remove_client_data_title')}
+                                value={settings.values[BLOCK_CHROME_CLIENT_DATA]}
+                                handler={settingChangeHandler}
+                            />
+                        )}
+                    />
+                )}
 
                 <SettingsSet
                     title={reactTranslator.getMessage('options_disable_webrtc_title')}
