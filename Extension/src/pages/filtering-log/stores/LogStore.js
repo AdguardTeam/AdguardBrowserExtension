@@ -5,9 +5,9 @@ import {
     computed,
     runInAction,
 } from 'mobx';
-import { findIndex } from 'lodash/findIndex';
-import { find } from 'lodash/find';
-import { identity } from 'lodash/identity';
+import findIndex from 'lodash/findIndex';
+import find from 'lodash/find';
+import identity from 'lodash/identity';
 
 import { messenger } from '../../services/messenger';
 import { containsIgnoreCase } from '../../helpers';
