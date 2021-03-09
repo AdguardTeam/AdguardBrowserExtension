@@ -1,3 +1,4 @@
+import { validator } from '@adguard/translate'
 import path from 'path';
 
 import { cliLog } from '../cli-log';
@@ -32,13 +33,22 @@ const LOCALES_DIR = path.resolve(__dirname, LOCALES_RELATIVE_PATH);
  */
 const printTranslationsResults = (results) => {
     cliLog.info('Translations readiness:');
-    results.forEach((res) => {
-        const record = `${res.locale} -- ${res.level}%`;
-        if (res.level < THRESHOLD_PERCENTAGE) {
+    results.forEach((r) => {
+        const record = `${r.locale} -- ${r.level}%`;
+        if (r.level < THRESHOLD_PERCENTAGE) {
             cliLog.warningRed(record);
-            res.untranslatedStrings.forEach((str) => {
-                cliLog.warning(`  ${str}`);
-            });
+            if (r.untranslatedStrings.length > 0) {
+                cliLog.warning(`  untranslated:`);
+                r.untranslatedStrings.forEach((str) => {
+                    cliLog.warning(`    - ${str}`);
+                });
+            }
+            if (r.invalidTranslations.length > 0) {
+                cliLog.warning(`  invalid:`);
+                r.invalidTranslations.forEach((obj) => {
+                    cliLog.warning(`    - ${obj.key} -- ${obj.error}`);
+                });
+            }
         } else {
             cliLog.success(record);
         }
@@ -66,17 +76,29 @@ export const checkTranslations = async (locales, isInfo = false) => {
         const localeMessages = Object.keys(localeTranslations);
         const localeMessagesCount = localeMessages.length;
 
-        const strictLevel = ((localeMessagesCount / baseMessagesCount) * 100);
-        const level = Math.round((strictLevel + Number.EPSILON) * 100) / 100;
-
         const untranslatedStrings = [];
-        baseMessages.forEach((baseStr) => {
-            if (!localeMessages.includes(baseStr)) {
-                untranslatedStrings.push(baseStr);
+        const invalidTranslations = [];
+        baseMessages.forEach((baseKey) => {
+            if (!localeMessages.includes(baseKey)) {
+                untranslatedStrings.push(baseKey);
+            } else {
+                // validate available translations
+                const baseMessageValue = baseLocaleTranslations[baseKey].message;
+                const localeMessageValue = localeTranslations[baseKey].message;
+                try {
+                    validator.isTranslationValid(baseMessageValue, localeMessageValue);
+                } catch (error) {
+                    invalidTranslations.push({ key: baseKey, error });
+                }
             }
         });
 
-        return { locale, level, untranslatedStrings };
+        const validLocaleMessagesCount = localeMessagesCount - invalidTranslations.length;
+
+        const strictLevel = ((validLocaleMessagesCount / baseMessagesCount) * 100);
+        const level = Math.round((strictLevel + Number.EPSILON) * 100) / 100;
+
+        return { locale, level, untranslatedStrings, invalidTranslations };
     }));
 
     const filteredResults = results.filter((result) => {
