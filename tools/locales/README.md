@@ -5,7 +5,7 @@
 yarn locales:[download | upload | renew | validate | info]
 ```
 
-- `download` — download and save translations; defaults to **all** locales but can be specified
+- `download` — download, save and validate translations; defaults to download **all** locales and `validate --min`; locales can be specified:
   - **-l**, **--locales** — for specific list of space-separated locales
     - **<list_of_locales>...** — locales to download
 
@@ -14,8 +14,8 @@ yarn locales:[download | upload | renew | validate | info]
 - `renew` — renew base locale
 
 - `validate` — validate locales translations (defaults to **all** locales):
-  - **-R**, **--min** — for only our required locales
-  - **-l**, **--locales** — for specific list of space-separated locales
+  - **-R**, **--min** — check _untranslated and invalid_ strings for our required locales and _only invalid_ ones for all other languages
+  - **-l**, **--locales** — full validation (untranslated + invalid) for specific list of space-separated locales
     - **<list_of_locales>...** — locales to validate
 
 - `info` — shows info about unused base-lang strings and all locales translations readiness; in other words, defaults to `-N -s` which can be used separately:

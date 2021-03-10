@@ -14,12 +14,15 @@ import {
 } from './locales/locales-constants';
 
 const LOCALES = Object.keys(LANGUAGES);
+const NON_REQUIRED_LOCALES = LOCALES.filter((l) => !REQUIRED_LOCALES.includes(l));
 
-const download = async (locales) => {
+const download = async (locales, isInfo, extraLocales) => {
     try {
         await downloadAndSave(locales);
         cliLog.success('Download was successful');
-        await checkTranslations(REQUIRED_LOCALES);
+        // do full validation of our languages after download (no matter what locales)
+        // and find invalid translations for other languages (non-required OR list_of_locales)
+        await checkTranslations(REQUIRED_LOCALES, isInfo, extraLocales);
     } catch (e) {
         cliLog.error(e.message);
         process.exit(1);
@@ -47,9 +50,9 @@ const renew = async () => {
     }
 };
 
-const validate = async (locales) => {
+const validate = async (locales, isInfo, extraLocales) => {
     try {
-        await checkTranslations(locales);
+        await checkTranslations(locales, isInfo, extraLocales);
     } catch (e) {
         cliLog.error(e.message);
         process.exit(1);
@@ -79,8 +82,19 @@ program
     .description('Downloads messages from localization service')
     .option('-l,--locales [list...]', 'specific list of space-separated locales')
     .action((opts) => {
-        const locales = opts.locales && opts.locales.length > 0 ? opts.locales : LOCALES;
-        download(locales);
+        const IS_INFO = false;
+        let locales;
+        let extraLocales;
+        // if list_of_locales specified, use them as extraLocales for invalid strings checking
+        // otherwise use non-required locales
+        if (opts.locales && opts.locales.length > 0) {
+            locales = opts.locales;
+            extraLocales = opts.locales;
+        } else {
+            locales = LOCALES;
+            extraLocales = NON_REQUIRED_LOCALES;
+        }
+        download(locales, IS_INFO, extraLocales);
     });
 
 program
@@ -99,16 +113,19 @@ program
     .option('-R,--min', 'for only our required locales')
     .option('-l,--locales [list...]', 'for specific list of space-separated locales')
     .action((opts) => {
+        const IS_INFO = false;
         let locales;
+        let extraLocales;
         if (opts.min) {
             locales = REQUIRED_LOCALES;
+            extraLocales = NON_REQUIRED_LOCALES;
         } else if (opts.locales && opts.locales.length > 0) {
             locales = opts.locales;
         } else {
-            // defaults to validate all locales
+            // defaults to fully validate all locales
             locales = LOCALES;
         }
-        validate(locales);
+        validate(locales, IS_INFO, extraLocales);
     });
 
 program
