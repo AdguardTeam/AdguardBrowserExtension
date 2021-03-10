@@ -5,6 +5,7 @@ import { rootStore } from '../../../stores/RootStore';
 import { Icon } from '../../../../common/components/ui/Icon';
 
 import './events-search.pcss';
+import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 
 const EventsSearch = observer(() => {
     const { logStore } = useContext(rootStore);
@@ -31,7 +32,7 @@ const EventsSearch = observer(() => {
                 type="text"
                 id="events-search"
                 name="events-search"
-                placeholder="Search"
+                placeholder={reactTranslator.getMessage('filtering_log_search_string')}
                 onChange={changeHandler}
                 value={logStore.eventsSearchValue}
             />

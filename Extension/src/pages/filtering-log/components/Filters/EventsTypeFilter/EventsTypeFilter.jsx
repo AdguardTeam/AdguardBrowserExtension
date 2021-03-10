@@ -36,19 +36,20 @@ const EventsTypeFilter = observer(() => {
     );
 
     const renderTypes = () => {
-        const filters = eventTypesFilters.map((filter) => filter.name);
-
-        return filters.map((name) => (
-            <button
-                className={eventsTypesButtonClassName(name)}
-                type="button"
-                onClick={handleTypeClick}
-                value={name}
-                key={name}
-            >
-                {name}
-            </button>
-        ));
+        return eventTypesFilters.map((eventTypeFilter) => {
+            const { name, title } = eventTypeFilter;
+            return (
+                <button
+                    className={eventsTypesButtonClassName(name)}
+                    type="button"
+                    onClick={handleTypeClick}
+                    value={name}
+                    key={name}
+                >
+                    {title}
+                </button>
+            );
+        });
     };
 
     const renderContent = () => (

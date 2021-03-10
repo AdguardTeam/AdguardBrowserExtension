@@ -51,7 +51,7 @@ const Actions = observer(() => {
                     onClick={clearLogHandler}
                 >
                     <Icon id="#cross" classname="actions__cross" />
-                    {reactTranslator.getMessage('filtering_clear_tab_events')}
+                    {reactTranslator.getMessage('filtering_clear_log_events')}
                 </button>
             </div>
             <div className="actions__action actions__preserve">

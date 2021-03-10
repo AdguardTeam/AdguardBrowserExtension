@@ -126,7 +126,7 @@ const UserRules = observer(() => {
         <>
             <SettingsSection
                 title={reactTranslator.getMessage('options_userfilter')}
-                description={reactTranslator.getMessage('options_userfilter_description', {
+                description={reactTranslator.getMessage('options_userfilter_description_key', {
                     a: (chunks) => (
                         <a
                             className="desc--link"

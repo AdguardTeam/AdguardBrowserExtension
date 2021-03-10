@@ -61,8 +61,8 @@ const Allowlist = observer(() => {
     const renderSavingState = (savingState) => {
         const indicatorTextMap = {
             [SAVING_STATES.IDLE]: '',
-            [SAVING_STATES.SAVED]: 'Saved',
-            [SAVING_STATES.SAVING]: 'Saving...',
+            [SAVING_STATES.SAVED]: reactTranslator.getMessage('options_editor_indicator_saved'),
+            [SAVING_STATES.SAVING]: reactTranslator.getMessage('options_editor_indicator_saving'),
         };
 
         const indicatorText = indicatorTextMap[savingState];
@@ -137,7 +137,7 @@ const Allowlist = observer(() => {
                         className="button button--m button--green actions__btn"
                         onClick={importClickHandler}
                     >
-                        Import
+                        {reactTranslator.getMessage('options_userfilter_import')}
                     </button>
                     <button
                         type="button"
@@ -145,7 +145,7 @@ const Allowlist = observer(() => {
                         onClick={exportClickHandler}
                         disabled={!settingsStore.allowlist}
                     >
-                        Export
+                        {reactTranslator.getMessage('options_userfilter_export')}
                     </button>
                 </div>
                 <div className="actions__group">
@@ -155,7 +155,7 @@ const Allowlist = observer(() => {
                         className="button button--m button--green actions__btn"
                         onClick={saveClickHandler}
                     >
-                        Save
+                        {reactTranslator.getMessage('options_editor_save')}
                     </button>
                 </div>
             </div>

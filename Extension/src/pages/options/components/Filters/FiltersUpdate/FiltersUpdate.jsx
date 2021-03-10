@@ -28,7 +28,7 @@ const FiltersUpdate = (props) => {
         <div className="filters-update">
             <div className="filters-update__info">
                 <div className="filters-update__title">
-                    {reactTranslator.getMessage('options_antibanner_info', { rules_count: rulesCount })}
+                    {reactTranslator.getMessage('options_antibanner_rules_count', { rules_count: rulesCount })}
                 </div>
                 <div className="filters-update__desc">
                     {dateObj.toLocaleDateString('default', formatOptions)}
@@ -38,6 +38,7 @@ const FiltersUpdate = (props) => {
                 type="button"
                 onClick={handler}
                 className={`button filters-update__btn filters-update__btn--${buttonClass}`}
+                title={reactTranslator.getMessage('options_update_antibanner_filters')}
             >
                 <Icon id="#reload" classname="icon--reload" />
             </button>

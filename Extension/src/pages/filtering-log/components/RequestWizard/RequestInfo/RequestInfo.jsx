@@ -1,7 +1,7 @@
 /* eslint-disable no-bitwise */
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
-import { identity } from 'lodash/identity';
+import identity from 'lodash/identity';
 import cn from 'classnames';
 
 import { getFilterName, getRequestType } from '../utils';
