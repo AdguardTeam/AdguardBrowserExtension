@@ -110,8 +110,7 @@ const RequestCreateRule = observer(() => {
     };
 
     const handleRuleChange = (e) => {
-        const { value } = e.currentTarget;
-        wizardStore.setRuleText(value);
+        wizardStore.setRuleText(e.currentTarget.value);
     };
 
     const {
@@ -151,16 +150,12 @@ const RequestCreateRule = observer(() => {
                     <div className="request-info__key">
                         {reactTranslator.getMessage('filtering_modal_rule_text_desc')}
                     </div>
-                    <div
-                        /* eslint-disable-next-line jsx-a11y/aria-role */
-                        role="textarea"
+                    <textarea
                         className="request-info__value request-modal__rule-text"
-                        contentEditable
-                        suppressContentEditableWarning
                         onChange={handleRuleChange}
+                        defaultValue={wizardStore.rule}
                     >
-                        {wizardStore.rule}
-                    </div>
+                    </textarea>
                 </div>
                 {showPatterns && (
                     <div className="request-info patterns">
