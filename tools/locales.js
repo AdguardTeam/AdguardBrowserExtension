@@ -14,7 +14,6 @@ import {
 } from './locales/locales-constants';
 
 const LOCALES = Object.keys(LANGUAGES);
-// const NON_REQUIRED_LOCALES = LOCALES.filter((l) => !REQUIRED_LOCALES.includes(l));
 
 const download = async (locales) => {
     try {
@@ -49,9 +48,13 @@ const renew = async () => {
     }
 };
 
-const validate = async (locales) => {
+const validate = async (locales, isCritical = false) => {
     try {
-        await checkTranslations(locales);
+        if (isCritical) {
+            await checkCriticals(locales);
+        } else {
+            await checkTranslations(locales);
+        }
     } catch (e) {
         cliLog.error(e.message);
         process.exit(1);
@@ -81,18 +84,14 @@ program
     .description('Downloads messages from localization service')
     .option('-l,--locales [list...]', 'specific list of space-separated locales')
     .action(async (opts) => {
-        let localesToDownload;
-        let localesToValidate;
-        // if list_of_locales specified, use them for download and validation
-        // otherwise (default) download all locales and validate our ones
+        // defaults to download all locales and validate our ones
+        let localesToDownload = LOCALES;
+        let localesToValidate = REQUIRED_LOCALES;
+        // but if list_of_locales is specified, use them for download and validation
         if (opts.locales && opts.locales.length > 0) {
             localesToDownload = opts.locales;
             localesToValidate = opts.locales;
-        } else {
-            localesToDownload = LOCALES;
-            localesToValidate = REQUIRED_LOCALES;
         }
-        // const locales = opts.locales && opts.locales.length > 0 ? opts.locales : LOCALES;
         await download(localesToDownload);
         await validate(localesToValidate);
     });
@@ -112,17 +111,20 @@ program
     .description('Validates translations')
     .option('-R,--min', 'for only our required locales')
     .option('-l,--locales [list...]', 'for specific list of space-separated locales')
+    .option('-X,--critical', 'for critical errors of all locales')
     .action((opts) => {
-        let locales;
-        if (opts.min) {
+        // defaults to validate all locales
+        let locales = LOCALES;
+        let isCritical;
+        if (opts.critical) {
+            isCritical = true;
+            // check all locales while critical validation
+        } else if (opts.min) {
             locales = REQUIRED_LOCALES;
         } else if (opts.locales && opts.locales.length > 0) {
             locales = opts.locales;
-        } else {
-            // defaults to validate all locales
-            locales = LOCALES;
         }
-        validate(locales);
+        validate(locales, isCritical);
     });
 
 program

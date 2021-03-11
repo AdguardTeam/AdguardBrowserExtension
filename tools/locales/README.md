@@ -17,6 +17,7 @@ yarn locales:[download | upload | renew | validate | info]
   - **-R**, **--min** — for only our required locales
   - **-l**, **--locales** — for specific list of space-separated locales
     - **<list_of_locales>...** — locales to validate
+  - **-X**, **--critical** — check **all** locales for critical errors
 
 - `info` — shows info about unused base-lang strings and all locales translations readiness; in other words, defaults to `-N -s` which can be used separately:
   - **-N**, **--unused** — for unused base-lang strings
@@ -41,6 +42,8 @@ yarn locales:validate
 yarn locales:validate --min
 // or just 'es', 'ja' and 'ru' locales
 yarn locales:validate -l es ja ru
+// critical errors validation
+yarn locales:validate -X
 
 // show info about translations readiness and unused strings
 yarn locales:info
