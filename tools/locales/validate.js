@@ -118,9 +118,9 @@ export const checkTranslations = async (locales, isInfo = false, localesForCriti
             if (!localeMessages.includes(baseKey)) {
                 untranslatedStrings.push(baseKey);
             } else {
-                const validMessage = validateMessage(baseKey, baseLocaleTranslations, localeTranslations);
-                if (typeof validMessage !== 'undefined') {
-                    invalidTranslations.push(validMessage);
+                const validationError = validateMessage(baseKey, baseLocaleTranslations, localeTranslations);
+                if (typeof validationError !== 'undefined') {
+                    invalidTranslations.push(validationError);
                 }
             }
         });
@@ -145,9 +145,9 @@ export const checkTranslations = async (locales, isInfo = false, localesForCriti
         baseMessages.forEach((baseKey) => {
             // check existing translations
             if (extraLocaleMessages.includes(baseKey)) {
-                const validMessage = validateMessage(baseKey, baseLocaleTranslations, extraLocaleTranslations);
-                if (typeof validMessage !== 'undefined') {
-                    invalidTranslations.push(validMessage);
+                const validationError = validateMessage(baseKey, baseLocaleTranslations, extraLocaleTranslations);
+                if (typeof validationError !== 'undefined') {
+                    invalidTranslations.push(validationError);
                 }
             }
         });
