@@ -96,9 +96,6 @@ const validateMessage = (baseKey, baseLocaleTranslations, localeTranslations) =>
  * locale, level of translation readiness, untranslated strings array and array of invalid translations
  */
 export const checkTranslations = async (locales, isInfo = false, localesForCriticalCheck = []) => {
-    // console.log('locales - ', locales);
-    // console.log('isInfo - ', isInfo);
-    // console.log('localesForCriticalCheck - ', localesForCriticalCheck);
     const baseLocaleTranslations = await getLocaleTranslations(
         LOCALES_DIR, BASE_LOCALE, LOCALE_DATA_FILENAME,
     );
