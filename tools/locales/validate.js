@@ -1,5 +1,4 @@
 import { validator } from '@adguard/translate';
-import path from 'path';
 
 import { cliLog } from '../cli-log';
 
@@ -11,14 +10,11 @@ import {
 import {
     BASE_LOCALE,
     LANGUAGES,
-    LOCALES_RELATIVE_PATH,
-    LOCALE_DATA_FILENAME,
     REQUIRED_LOCALES,
     THRESHOLD_PERCENTAGE,
 } from './locales-constants';
 
 const LOCALES = Object.keys(LANGUAGES);
-const LOCALES_DIR = path.resolve(__dirname, LOCALES_RELATIVE_PATH);
 
 /**
  * @typedef Result
@@ -96,16 +92,12 @@ const validateMessage = (baseKey, baseLocaleTranslations, localeTranslations) =>
  * locale, level of translation readiness, untranslated strings array and array of invalid translations
  */
 export const checkTranslations = async (locales, isInfo = false, localesForCriticalCheck = []) => {
-    const baseLocaleTranslations = await getLocaleTranslations(
-        LOCALES_DIR, BASE_LOCALE, LOCALE_DATA_FILENAME,
-    );
+    const baseLocaleTranslations = await getLocaleTranslations(BASE_LOCALE);
     const baseMessages = Object.keys(baseLocaleTranslations);
     const baseMessagesCount = baseMessages.length;
 
     const mainResults = await Promise.all(locales.map(async (locale) => {
-        const localeTranslations = await getLocaleTranslations(
-            LOCALES_DIR, locale, LOCALE_DATA_FILENAME,
-        );
+        const localeTranslations = await getLocaleTranslations(locale);
         const localeMessages = Object.keys(localeTranslations);
         const localeMessagesCount = localeMessages.length;
 
@@ -133,9 +125,7 @@ export const checkTranslations = async (locales, isInfo = false, localesForCriti
     }));
 
     const criticalCheckResults = await Promise.all(localesForCriticalCheck.map(async (extraLocale) => {
-        const extraLocaleTranslations = await getLocaleTranslations(
-            LOCALES_DIR, extraLocale, LOCALE_DATA_FILENAME,
-        );
+        const extraLocaleTranslations = await getLocaleTranslations(extraLocale);
         const extraLocaleMessages = Object.keys(extraLocaleTranslations);
 
         const invalidTranslations = [];

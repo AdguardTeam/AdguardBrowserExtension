@@ -25,6 +25,8 @@ const {
     project_id: PROJECT_ID,
 } = twoskyConfig;
 
+const LOCALES_ABSOLUTE_PATH = path.join(__dirname, LOCALES_RELATIVE_PATH);
+
 /**
  * We use this pairs because we have different locale codes in the crowdin and the extension
  */
@@ -52,6 +54,7 @@ export {
     LOCALE_PAIRS,
     PERSISTENT_MESSAGES,
     LOCALES_RELATIVE_PATH,
+    LOCALES_ABSOLUTE_PATH,
     FORMAT,
     LOCALE_DATA_FILENAME,
     REQUIRED_LOCALES,
