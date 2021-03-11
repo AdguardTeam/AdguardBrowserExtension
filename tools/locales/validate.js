@@ -108,7 +108,7 @@ export const checkTranslations = async (locales, isInfo = false, localesForCriti
                 untranslatedStrings.push(baseKey);
             } else {
                 const validationError = validateMessage(baseKey, baseLocaleTranslations, localeTranslations);
-                if (typeof validationError !== 'undefined') {
+                if (validationError) {
                     invalidTranslations.push(validationError);
                 }
             }
@@ -133,7 +133,7 @@ export const checkTranslations = async (locales, isInfo = false, localesForCriti
             // check existing translations
             if (extraLocaleMessages.includes(baseKey)) {
                 const validationError = validateMessage(baseKey, baseLocaleTranslations, extraLocaleTranslations);
-                if (typeof validationError !== 'undefined') {
+                if (validationError) {
                     invalidTranslations.push(validationError);
                 }
             }
