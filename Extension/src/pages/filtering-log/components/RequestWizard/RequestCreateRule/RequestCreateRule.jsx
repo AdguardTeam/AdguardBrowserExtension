@@ -146,7 +146,7 @@ const RequestCreateRule = observer(() => {
                 <span className="request-modal__header">{title}</span>
             </div>
             <div className="request-modal__content">
-                <div className="request-info request-modal__rule-text">
+                <div className="request-info">
                     <div className="request-info__key">
                         {reactTranslator.getMessage('filtering_modal_rule_text_desc')}
                     </div>
@@ -154,8 +154,7 @@ const RequestCreateRule = observer(() => {
                         className="request-info__value request-modal__rule-text"
                         onChange={handleRuleChange}
                         defaultValue={wizardStore.rule}
-                    >
-                    </textarea>
+                    />
                 </div>
                 {showPatterns && (
                     <div className="request-info patterns">
