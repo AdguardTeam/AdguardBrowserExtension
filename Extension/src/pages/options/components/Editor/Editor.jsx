@@ -11,7 +11,11 @@ import './mode-adguard';
 import './editor.pcss';
 
 const Editor = ({
-    name, value, editorRef, shortcuts,
+    name,
+    value,
+    editorRef,
+    shortcuts,
+    onChange,
 }) => {
     const SIZE_STORAGE_KEY = `${name}_editor-size`;
 
@@ -56,6 +60,7 @@ const Editor = ({
                 editorProps={{ $blockScrolling: true }}
                 value={value}
                 commands={shortcuts}
+                onChange={onChange}
             />
             <ReactResizeDetector
                 skipOnMount
