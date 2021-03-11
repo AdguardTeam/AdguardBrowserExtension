@@ -1,4 +1,9 @@
-import React, { useContext, useState, useRef } from 'react';
+import React, {
+    useContext,
+    useState,
+    useRef,
+    useEffect,
+} from 'react';
 import { observer } from 'mobx-react';
 import cn from 'classnames';
 
@@ -25,17 +30,23 @@ const MiscellaneousFilters = observer(() => {
         logStore.setRequestSourceFilterValue(e.target.value, e.target.checked);
     };
 
-    const hidePopup = (event) => {
-        if (ref.current && !ref.current.contains(event.target)) {
+    const hidePopup = (e) => {
+        if (ref.current && !ref.current.contains(e.target) && showPopup) {
             setShowPopup(false);
-            document.removeEventListener('click', hidePopup);
         }
     };
+
+    useEffect(() => {
+        document.addEventListener('click', hidePopup);
+
+        return () => {
+            document.removeEventListener('click', hidePopup);
+        };
+    });
 
     const miscellaneousFiltersButtonHandler = () => {
         if (!showPopup) {
             setShowPopup(true);
-            document.addEventListener('click', hidePopup);
         }
     };
 
