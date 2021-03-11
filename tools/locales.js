@@ -3,7 +3,7 @@ import { program } from 'commander';
 import { downloadAndSave } from './locales/download-locales';
 import { uploadLocales } from './locales/upload-locales';
 import { renewLocales } from './locales/renew-locales';
-import { checkTranslations } from './locales/validate';
+import { checkTranslations, checkCriticals } from './locales/validate';
 import { checkUnusedMessages } from './locales/unused';
 
 import { cliLog } from './cli-log';
@@ -14,15 +14,14 @@ import {
 } from './locales/locales-constants';
 
 const LOCALES = Object.keys(LANGUAGES);
-const NON_REQUIRED_LOCALES = LOCALES.filter((l) => !REQUIRED_LOCALES.includes(l));
+// const NON_REQUIRED_LOCALES = LOCALES.filter((l) => !REQUIRED_LOCALES.includes(l));
 
-const download = async (locales, isInfo, extraLocales) => {
+const download = async (locales) => {
     try {
         await downloadAndSave(locales);
         cliLog.success('Download was successful');
-        // do full validation of our languages after download (no matter what locales)
-        // and find invalid translations for other languages (non-required OR list_of_locales)
-        await checkTranslations(REQUIRED_LOCALES, isInfo, extraLocales);
+        // check downloaded locales for critical errors
+        await checkCriticals(locales);
     } catch (e) {
         cliLog.error(e.message);
         process.exit(1);
@@ -50,9 +49,9 @@ const renew = async () => {
     }
 };
 
-const validate = async (locales, isInfo, extraLocales) => {
+const validate = async (locales) => {
     try {
-        await checkTranslations(locales, isInfo, extraLocales);
+        await checkTranslations(locales);
     } catch (e) {
         cliLog.error(e.message);
         process.exit(1);
@@ -81,20 +80,21 @@ program
     .command('download')
     .description('Downloads messages from localization service')
     .option('-l,--locales [list...]', 'specific list of space-separated locales')
-    .action((opts) => {
-        const IS_INFO = false;
-        let locales;
-        let extraLocales;
-        // if list_of_locales specified, use them as extraLocales for invalid strings checking
-        // otherwise use non-required locales
+    .action(async (opts) => {
+        let localesToDownload;
+        let localesToValidate;
+        // if list_of_locales specified, use them for download and validation
+        // otherwise (default) download all locales and validate our ones
         if (opts.locales && opts.locales.length > 0) {
-            locales = opts.locales;
-            extraLocales = opts.locales;
+            localesToDownload = opts.locales;
+            localesToValidate = opts.locales;
         } else {
-            locales = LOCALES;
-            extraLocales = NON_REQUIRED_LOCALES;
+            localesToDownload = LOCALES;
+            localesToValidate = REQUIRED_LOCALES;
         }
-        download(locales, IS_INFO, extraLocales);
+        // const locales = opts.locales && opts.locales.length > 0 ? opts.locales : LOCALES;
+        await download(localesToDownload);
+        await validate(localesToValidate);
     });
 
 program
@@ -113,19 +113,16 @@ program
     .option('-R,--min', 'for only our required locales')
     .option('-l,--locales [list...]', 'for specific list of space-separated locales')
     .action((opts) => {
-        const IS_INFO = false;
         let locales;
-        let extraLocales;
         if (opts.min) {
             locales = REQUIRED_LOCALES;
-            extraLocales = NON_REQUIRED_LOCALES;
         } else if (opts.locales && opts.locales.length > 0) {
             locales = opts.locales;
         } else {
-            // defaults to fully validate all locales
+            // defaults to validate all locales
             locales = LOCALES;
         }
-        validate(locales, IS_INFO, extraLocales);
+        validate(locales);
     });
 
 program
