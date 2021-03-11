@@ -1,4 +1,4 @@
-import { validator } from '@adguard/translate'
+import { validator } from '@adguard/translate';
 import path from 'path';
 
 import { cliLog } from '../cli-log';
@@ -28,7 +28,7 @@ const LOCALES_DIR = path.resolve(__dirname, LOCALES_RELATIVE_PATH);
  * @property {Array} invalidTranslations
  */
 
- /**
+/**
  * @typedef CriticalResult
  * @property {string} locale
  * @property {Array} invalidTranslations
@@ -45,13 +45,13 @@ const printTranslationsResults = (results) => {
         if (r.level < THRESHOLD_PERCENTAGE) {
             cliLog.warningRed(record);
             if (r.untranslatedStrings.length > 0) {
-                cliLog.warning(`  untranslated:`);
+                cliLog.warning('  untranslated:');
                 r.untranslatedStrings.forEach((str) => {
                     cliLog.warning(`    - ${str}`);
                 });
             }
             if (r.invalidTranslations.length > 0) {
-                cliLog.warning(`  invalid:`);
+                cliLog.warning('  invalid:');
                 r.invalidTranslations.forEach((obj) => {
                     cliLog.warning(`    - ${obj.key} -- ${obj.error}`);
                 });
@@ -84,7 +84,7 @@ const validateMessage = (baseKey, baseLocaleTranslations, localeTranslations) =>
     } catch (error) {
         return { key: baseKey, error };
     }
-}
+};
 
 /**
  * Checks locales translations readiness
@@ -130,7 +130,9 @@ export const checkTranslations = async (locales, isInfo = false, localesForCriti
         const strictLevel = ((validLocaleMessagesCount / baseMessagesCount) * 100);
         const level = Math.round((strictLevel + Number.EPSILON) * 100) / 100;
 
-        return { locale, level, untranslatedStrings, invalidTranslations };
+        return {
+            locale, level, untranslatedStrings, invalidTranslations,
+        };
     }));
 
     const criticalCheckResults = await Promise.all(localesForCriticalCheck.map(async (extraLocale) => {
@@ -180,7 +182,7 @@ export const checkTranslations = async (locales, isInfo = false, localesForCriti
 
     if (isCriticalCheck) {
         if (filteredCriticalResults.length === 0) {
-            const message = 'No invalid translations found'
+            const message = 'No invalid translations found';
             cliLog.success(message);
         } else {
             printCriticalResults(filteredCriticalResults);
