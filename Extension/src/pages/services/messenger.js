@@ -118,8 +118,8 @@ class Messenger {
         await this.sendMessage(MESSAGE_TYPES.SAVE_ALLOWLIST_DOMAINS, { value });
     }
 
-    async updateFilters(filters) {
-        return this.sendMessage(MESSAGE_TYPES.CHECK_ANTIBANNER_FILTERS_UPDATE, { filters });
+    async updateFilters() {
+        return this.sendMessage(MESSAGE_TYPES.CHECK_ANTIBANNER_FILTERS_UPDATE);
     }
 
     async updateGroupStatus(id, data) {

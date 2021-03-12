@@ -257,8 +257,8 @@ const init = () => {
             }
                 break;
             case MESSAGE_TYPES.CHECK_ANTIBANNER_FILTERS_UPDATE: {
-                const { filters } = data;
-                return uiService.checkFiltersUpdates(filters);
+                const filters = await uiService.checkFiltersUpdates();
+                return filters;
             }
             case MESSAGE_TYPES.LOAD_CUSTOM_FILTER_INFO:
                 try {

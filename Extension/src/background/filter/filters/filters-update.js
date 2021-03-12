@@ -226,16 +226,22 @@ export const filtersUpdate = (() => {
     }
 
     /**
+     * Filters update options
+     * @typedef {Object} UpdateProps
+     * @property [boolean] forceUpdate - if should ignore update period
+     * @property [boolean] ignoreVersion - if should ignore filter version, used on switch of optimized filters
+     * @property [Filter[]] filters - array of filters to update
+     */
+
+    /**
      * Checks filters updates.
      *
-     * @param forceUpdate Normally we respect filter update period. But if this parameter is
-     *                    true - we ignore it and check updates for all filters.
-     * @param filters     Optional Array of filters to update
+     * @param [UpdateProps]
      */
-    const checkAntiBannerFiltersUpdate = async (forceUpdate, filters) => {
+    const checkAntiBannerFiltersUpdate = async ({ forceUpdate, ignoreVersion, filters } = {}) => {
         // Don't update in background if request filter isn't running
         if (!forceUpdate && !antiBannerService.isRunning()) {
-            return;
+            return [];
         }
 
         log.info('Start checking filters updates');
@@ -298,7 +304,7 @@ export const filtersUpdate = (() => {
         // Retrieve current filters metadata for update
         const filterMetadataList = await loadFiltersMetadataFromBackend(filterIdsToUpdate);
 
-        const filterMetadataListToUpdate = selectFilterMetadataListToUpdate(filterMetadataList, forceUpdate);
+        const filterMetadataListToUpdate = selectFilterMetadataListToUpdate(filterMetadataList, ignoreVersion);
 
         const loadedFilters = await loadFiltersFromBackendCallback(filterMetadataListToUpdate);
 
@@ -338,7 +344,7 @@ export const filtersUpdate = (() => {
         filtersUpdatePeriod = settings.getFiltersUpdatePeriod();
         // First run delay
         if (isFirstRun) {
-            setTimeout(checkAntiBannerFiltersUpdate, UPDATE_FILTERS_DELAY, isFirstRun);
+            setTimeout(checkAntiBannerFiltersUpdate, UPDATE_FILTERS_DELAY, { forceUpdate: isFirstRun });
         }
 
         scheduleUpdate();
