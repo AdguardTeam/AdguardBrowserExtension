@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { observer } from 'mobx-react';
-import classnames from 'classnames';
 
 import { SettingsSection } from '../Settings/SettingsSection';
 import { SettingsSet } from '../Settings/SettingsSet';
@@ -9,8 +8,8 @@ import { Editor } from '../Editor';
 import { rootStore } from '../../stores/RootStore';
 import { uploadFile } from '../../../helpers';
 import { log } from '../../../../common/log';
-import { STATES as SAVING_STATES } from '../Editor/savingFSM';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { AllowlistSavingButton } from './AllowlistSavingButton';
 
 const Allowlist = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);
@@ -24,7 +23,7 @@ const Allowlist = observer(() => {
     const editorRef = useRef(null);
     const inputRef = useRef(null);
 
-    const { settings, savingAllowlistState } = settingsStore;
+    const { settings } = settingsStore;
 
     const { DEFAULT_ALLOWLIST_MODE } = settings.names;
 
@@ -58,33 +57,15 @@ const Allowlist = observer(() => {
         event.target.value = '';
     };
 
-    const renderSavingState = (savingState) => {
-        const indicatorTextMap = {
-            [SAVING_STATES.IDLE]: '',
-            [SAVING_STATES.SAVED]: reactTranslator.getMessage('options_editor_indicator_saved'),
-            [SAVING_STATES.SAVING]: reactTranslator.getMessage('options_editor_indicator_saving'),
-        };
-
-        const indicatorText = indicatorTextMap[savingState];
-
-        if (savingState === SAVING_STATES.IDLE) {
-            return null;
+    const saveClickHandler = async () => {
+        if (settingsStore.allowlistEditorContentChanged) {
+            const value = editorRef.current.editor.getValue();
+            await settingsStore.saveAllowlist(value);
         }
-
-        const indicatorClassnames = classnames('editor__label', {
-            'editor__label--saved': savingState === SAVING_STATES.SAVED,
-        });
-
-        return (
-            <div className={indicatorClassnames}>
-                {indicatorText}
-            </div>
-        );
     };
 
-    const saveClickHandler = async () => {
-        const value = editorRef.current.editor.getValue();
-        await settingsStore.saveAllowlist(value);
+    const editorChangeHandler = () => {
+        settingsStore.setAllowlistEditorContentChangedState(true);
     };
 
     const shortcuts = [{
@@ -121,6 +102,7 @@ const Allowlist = observer(() => {
                 value={settingsStore.allowlist}
                 editorRef={editorRef}
                 shortcuts={shortcuts}
+                onChange={editorChangeHandler}
             />
             <div className="actions actions--divided">
                 <div className="actions__group">
@@ -149,14 +131,7 @@ const Allowlist = observer(() => {
                     </button>
                 </div>
                 <div className="actions__group">
-                    {renderSavingState(savingAllowlistState)}
-                    <button
-                        type="button"
-                        className="button button--m button--green actions__btn"
-                        onClick={saveClickHandler}
-                    >
-                        {reactTranslator.getMessage('options_editor_save')}
-                    </button>
+                    <AllowlistSavingButton onClick={saveClickHandler} />
                 </div>
             </div>
         </>
