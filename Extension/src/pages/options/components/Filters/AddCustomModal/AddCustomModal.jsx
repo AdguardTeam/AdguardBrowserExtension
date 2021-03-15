@@ -40,12 +40,14 @@ const AddCustomModal = ({
     modalIsOpen,
     initialUrl,
     initialTitle,
+    filterUrls,
 }) => {
     const STEPS = {
         INPUT: 'input',
         CHECKING: 'checking',
         APPROVE: 'approve',
         ERROR: 'error',
+        DUPLICATE: 'duplicate',
     };
 
     const [customUrlToAdd, setCustomUrlToAdd] = useState(initialUrl);
@@ -68,6 +70,12 @@ const AddCustomModal = ({
 
     const handleSendUrlToCheck = async () => {
         setStepToRender(STEPS.CHECKING);
+
+        if (filterUrls.includes(customUrlToAdd)) {
+            setStepToRender(STEPS.DUPLICATE);
+            return;
+        }
+
         try {
             const result = await messenger.checkCustomUrl(customUrlToAdd);
             if (!result.filter) {
@@ -240,6 +248,30 @@ const AddCustomModal = ({
         );
     };
 
+    const renderDuplicateStep = () => {
+        return (
+            <>
+                <ModalContentWrapper closeModalHandler={closeModalHandler}>
+                    <form className="modal__content modal__content--center-text">
+                        <div className="modal__subtitle">
+                            {reactTranslator.getMessage('options_popup_check_duplicate_title')}
+                        </div>
+                        <div className="modal__desc">
+                            {reactTranslator.getMessage('options_popup_check_duplicate_description')}
+                        </div>
+                    </form>
+                    <button
+                        type="button"
+                        onClick={tryAgainHandler}
+                        className="button button--m button--transparent modal__btn"
+                    >
+                        {reactTranslator.getMessage('options_popup_add_another_filter_button')}
+                    </button>
+                </ModalContentWrapper>
+            </>
+        );
+    };
+
     const renderStep = () => {
         switch (stepToRender) {
             case STEPS.INPUT: {
@@ -250,6 +282,9 @@ const AddCustomModal = ({
             }
             case STEPS.ERROR: {
                 return renderErrorStep();
+            }
+            case STEPS.DUPLICATE: {
+                return renderDuplicateStep();
             }
             case STEPS.APPROVE: {
                 return renderApproveStep();

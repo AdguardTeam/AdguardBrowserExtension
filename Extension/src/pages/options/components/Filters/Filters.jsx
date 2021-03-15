@@ -206,19 +206,6 @@ const Filters = observer(() => {
         }
     }, [urlToSubscribe]);
 
-    const renderModal = () => {
-        return (
-            modalIsOpen && (
-                <AddCustomModal
-                    closeModalHandler={closeModalHandler}
-                    modalIsOpen={modalIsOpen}
-                    initialUrl={urlToSubscribe}
-                    initialTitle={customFilterTitle}
-                />
-            )
-        );
-    };
-
     useEffect(() => {
         if (modalIsOpen) {
             setUrlToSubscribe('');
@@ -280,7 +267,13 @@ const Filters = observer(() => {
                 {isCustom && (
                     <>
                         {renderAddFilterBtn(isEmpty)}
-                        {renderModal()}
+                        <AddCustomModal
+                            closeModalHandler={closeModalHandler}
+                            modalIsOpen={modalIsOpen}
+                            initialUrl={urlToSubscribe}
+                            initialTitle={customFilterTitle}
+                            filterUrls={groupFilters.map(({customUrl}) => customUrl)}
+                        />
                     </>
                 )}
             </SettingsSection>
