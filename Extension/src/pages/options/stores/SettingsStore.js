@@ -7,11 +7,10 @@ import {
 } from 'mobx';
 
 import { log } from '../../../common/log';
-import { createSavingService, EVENTS as SAVING_FSM_EVENTS } from '../components/Editor/savingFSM';
+import { createSavingService, EVENTS as SAVING_FSM_EVENTS, STATES } from '../components/Editor/savingFSM';
 import { sleep } from '../../helpers';
 import { messenger } from '../../services/messenger';
 import { OTHER_FILTERS_GROUP_ID } from '../../../../../tools/constants';
-import { browserUtils } from '../../../background/utils/browser-utils';
 
 const savingUserRulesService = createSavingService({
     id: 'userRules',
@@ -69,6 +68,10 @@ class SettingsStore {
 
     @observable isChrome = null;
 
+    @observable userRulesEditorContentChanged = false;
+
+    @observable allowlistEditorContentChanged = false;
+
     constructor(rootStore) {
         makeObservable(this);
         this.rootStore = rootStore;
@@ -76,12 +79,18 @@ class SettingsStore {
         savingUserRulesService.onTransition((state) => {
             runInAction(() => {
                 this.savingRulesState = state.value;
+                if (state.value === STATES.SAVING) {
+                    this.userRulesEditorContentChanged = false;
+                }
             });
         });
 
         savingAllowlistService.onTransition((state) => {
             runInAction(() => {
                 this.savingAllowlistState = state.value;
+                if (state.value === STATES.SAVING) {
+                    this.allowlistEditorContentChanged = false;
+                }
             });
         });
     }
@@ -307,6 +316,16 @@ class SettingsStore {
     saveAllowlist = (allowlist) => {
         this.allowlist = allowlist;
         savingAllowlistService.send(SAVING_FSM_EVENTS.SAVE, { value: allowlist });
+    };
+
+    @action
+    setUserRulesEditorContentChangedState = (state) => {
+        this.userRulesEditorContentChanged = state;
+    };
+
+    @action
+    setAllowlistEditorContentChangedState = (state) => {
+        this.allowlistEditorContentChanged = state;
     };
 }
 
