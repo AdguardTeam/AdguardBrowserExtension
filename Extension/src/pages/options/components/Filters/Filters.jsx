@@ -15,13 +15,10 @@ import { AddCustomModal } from './AddCustomModal';
 import { CUSTOM_FILTERS_GROUP_ID } from '../../../../../../tools/constants';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { Icon } from '../../../common/components/ui/Icon';
+import { SEARCH_FILTERS } from './Search/constants';
 
 const Filters = observer(() => {
-    const SEARCH_FILTERS = {
-        ALL: 'all',
-        ENABLED: 'enabled',
-        DISABLED: 'disabled',
-    };
+    const { settingsStore } = useContext(rootStore);
 
     const history = useHistory();
 
@@ -31,23 +28,23 @@ const Filters = observer(() => {
 
     const query = useQuery();
 
-    const [searchInput, setSearchInput] = useState('');
-    const [searchSelect, setSearchSelect] = useState(SEARCH_FILTERS.ALL);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [urlToSubscribe, setUrlToSubscribe] = useState(decodeURIComponent(query.get('subscribe') || ''));
     const [customFilterTitle, setCustomFilterTitle] = useState(query.get('title'));
 
-    const { settingsStore, uiStore } = useContext(rootStore);
+    // This state used to remove blinking while filters to render were not selected
+    const [groupDetermined, setGroupDetermined] = useState(false);
 
     const {
         categories,
         filters,
-        rulesCount,
-        lastUpdateTime,
-        filtersUpdating,
+        filtersToRender,
     } = settingsStore;
 
-    settingsStore.setSelectedGroupId(parseInt(query.get('group'), 10));
+    useEffect(() => {
+        settingsStore.setSelectedGroupId(query.get('group'));
+        setGroupDetermined(true);
+    }, []);
 
     const handleGroupSwitch = async ({ id, data }) => {
         await settingsStore.updateGroupSetting(id, data);
@@ -80,116 +77,17 @@ const Filters = observer(() => {
         });
     };
 
-    const handleFilterSwitch = async ({ id, data }) => {
-        await settingsStore.updateFilterSetting(id, data);
-    };
-
-    const renderFiler = (filter) => (
-        <Filter
-            key={filter.filterId}
-            filter={filter}
-            tags={filter.tagsDetails}
-            checkboxHandler={handleFilterSwitch}
-            checkboxValue={!!filter.enabled}
-        />
-    );
-
-    const renderFilters = (filtersList) => {
-        return filtersList.map(renderFiler);
-    };
-
     const handleReturnToGroups = () => {
         history.push('/filters');
         settingsStore.setSelectedGroupId(null);
+        settingsStore.setSearchInput('');
+        settingsStore.setSearchSelect(SEARCH_FILTERS.ALL);
+        settingsStore.sortFilters();
     };
 
-    const searchInputHandler = (e) => {
-        const { value } = e.target;
-        setSearchInput(value);
-    };
-
-    const searchCloseHandler = () => {
-        setSearchInput('');
-        setSearchSelect(SEARCH_FILTERS.ALL);
-    };
-
-    const searchSelectHandler = (e) => {
-        const { value } = e.target;
-        setSearchSelect(value);
-    };
-
-    const renderSearchResult = () => {
-        const searchInputString = searchInput.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const searchQuery = new RegExp(searchInputString, 'ig');
-
-        let searchFilters = filters;
-        if (Number.isInteger(settingsStore.selectedGroupId)) {
-            searchFilters = filters.filter((filter) => (
-                filter.groupId === settingsStore.selectedGroupId
-            ));
-        }
-
-        return searchFilters.map((filter) => {
-            let searchMod;
-            switch (searchSelect) {
-                case SEARCH_FILTERS.ENABLED:
-                    searchMod = filter.enabled;
-                    break;
-                case SEARCH_FILTERS.DISABLED:
-                    searchMod = !filter.enabled;
-                    break;
-                default:
-                    searchMod = true;
-            }
-
-            if (filter.name.match(searchQuery) && searchMod) {
-                return renderFiler(filter);
-            }
-            return null;
-        });
-    };
-
-    const updateFiltersHandler = async () => {
-        try {
-            const updates = await settingsStore.updateFilters();
-            const filterNames = updates.map((filter) => filter.name).join(', ');
-            let description;
-            if (updates.length === 0) {
-                description = `${filterNames} ${reactTranslator.getMessage('options_popup_update_not_found')}`;
-            } else if (updates.length === 1) {
-                description = `${filterNames} ${reactTranslator.getMessage('options_popup_update_filter')}`;
-            } else if (updates.length > 1) {
-                description = `${filterNames} ${reactTranslator.getMessage('options_popup_update_filters')}`;
-            }
-            uiStore.addNotification({ description });
-        } catch (error) {
-            uiStore.addNotification({
-                title: reactTranslator.getMessage('options_popup_update_title_error'),
-                description: reactTranslator.getMessage('options_popup_update_error'),
-            });
-        }
-    };
-
-    const renderSearch = () => (
-        <Search
-            searchInputHandler={searchInputHandler}
-            searchSelectHandler={searchSelectHandler}
-            searchInput={searchInput}
-            searchSelect={searchSelect}
-            searchCloseHandler={searchCloseHandler}
-        />
-    );
-
-    const renderFiltersUpdate = () => {
-        const buttonClass = filtersUpdating ? 'loading' : 'loaded';
-        return (
-            <FiltersUpdate
-                handler={updateFiltersHandler}
-                rulesCount={rulesCount}
-                buttonClass={buttonClass}
-                lastUpdateDate={lastUpdateTime}
-            />
-        );
+    const renderFilters = (filtersList) => {
+        return filtersList
+            .map((filter) => <Filter key={filter.filterId} filter={filter} />);
     };
 
     const openModalHandler = () => {
@@ -243,9 +141,6 @@ const Filters = observer(() => {
         );
     };
 
-    // search by input data or by enabled/disabled filters
-    const isSearching = searchInput || searchSelect !== SEARCH_FILTERS.ALL;
-
     const renderBackButton = () => (
         <button
             type="button"
@@ -256,25 +151,29 @@ const Filters = observer(() => {
         </button>
     );
 
+    if (!groupDetermined) {
+        return null;
+    }
+
     if (Number.isInteger(settingsStore.selectedGroupId)) {
-        const groupFilters = filters.filter((filter) => filter.groupId === settingsStore.selectedGroupId);
-        const { groupName } = categories.find((group) => group.groupId === settingsStore.selectedGroupId);
+        const selectedGroup = categories.find((group) => {
+            return group.groupId === settingsStore.selectedGroupId;
+        });
 
         const isCustom = settingsStore.selectedGroupId === CUSTOM_FILTERS_GROUP_ID;
-        const isEmpty = groupFilters.length === 0;
+        const isEmpty = filtersToRender.length === 0;
 
         return (
             <SettingsSection
-                title={groupName}
+                title={selectedGroup.groupName}
                 renderBackButton={renderBackButton}
             >
-                {isEmpty && isCustom ? <EmptyCustom />
+                {isEmpty && isCustom
+                    ? <EmptyCustom />
                     : (
                         <>
-                            {renderSearch()}
-                            {isSearching
-                                ? renderSearchResult()
-                                : filters && renderFilters(groupFilters)}
+                            <Search />
+                            {renderFilters(filtersToRender)}
                         </>
                     )}
                 {isCustom && (
@@ -286,15 +185,16 @@ const Filters = observer(() => {
             </SettingsSection>
         );
     }
+
     return (
         <SettingsSection
             title={reactTranslator.getMessage('options_antibanner')}
-            renderInlineControl={renderFiltersUpdate}
+            renderInlineControl={() => <FiltersUpdate />}
         >
-            {renderSearch()}
-            {isSearching
-                ? renderSearchResult()
-                : categories && renderGroups(categories)}
+            <Search />
+            {settingsStore.isSearching
+                ? renderFilters(filtersToRender)
+                : renderGroups(categories)}
         </SettingsSection>
     );
 });
