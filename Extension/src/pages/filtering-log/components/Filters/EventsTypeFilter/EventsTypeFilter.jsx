@@ -6,6 +6,7 @@ import Modal from 'react-modal';
 import { rootStore } from '../../../stores/RootStore';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { Icon } from '../../../../common/components/ui/Icon';
+import { browserUtils } from '../../../../../background/utils/browser-utils';
 
 import './events-type-filter.pcss';
 
@@ -18,7 +19,11 @@ const EventsTypeFilter = observer(() => {
     const { eventTypesFilters } = logStore;
 
     const handleTypeClick = (e) => {
-        logStore.toggleEventTypesFilter(e.target.value);
+        if (browserUtils.isMacOs() ? e.metaKey : e.ctrlKey) {
+            logStore.toggleEventTypesFilter(e.target.value);
+        } else {
+            logStore.selectOneEventTypesFilter(e.target.value);
+        }
     };
 
     const handleAllClick = () => {
