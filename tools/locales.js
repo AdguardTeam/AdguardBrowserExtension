@@ -3,15 +3,12 @@ import { program } from 'commander';
 import { downloadAndSave } from './locales/download-locales';
 import { uploadLocales } from './locales/upload-locales';
 import { renewLocales } from './locales/renew-locales';
-import { checkTranslations, checkCriticals } from './locales/validate';
+import { checkTranslations } from './locales/validate';
 import { checkUnusedMessages } from './locales/unused';
 
 import { cliLog } from './cli-log';
 
-import {
-    LANGUAGES,
-    REQUIRED_LOCALES,
-} from './locales/locales-constants';
+import { LANGUAGES } from './locales/locales-constants';
 
 const LOCALES = Object.keys(LANGUAGES);
 
@@ -19,8 +16,6 @@ const download = async (locales) => {
     try {
         await downloadAndSave(locales);
         cliLog.success('Download was successful');
-        // check downloaded locales for critical errors
-        await checkCriticals(locales);
     } catch (e) {
         cliLog.error(e.message);
         process.exit(1);
@@ -48,13 +43,9 @@ const renew = async () => {
     }
 };
 
-const validate = async (locales, isCritical = false) => {
+const validate = async (locales, isMinimum) => {
     try {
-        if (isCritical) {
-            await checkCriticals(locales);
-        } else {
-            await checkTranslations(locales);
-        }
+        await checkTranslations(locales, { isMinimum });
     } catch (e) {
         cliLog.error(e.message);
         process.exit(1);
@@ -63,7 +54,7 @@ const validate = async (locales, isCritical = false) => {
 
 const summary = async (isInfo) => {
     try {
-        await checkTranslations(LOCALES, isInfo);
+        await checkTranslations(LOCALES, { isInfo });
     } catch (e) {
         cliLog.error(e.message);
         process.exit(1);
@@ -84,16 +75,17 @@ program
     .description('Downloads messages from localization service')
     .option('-l,--locales [list...]', 'specific list of space-separated locales')
     .action(async (opts) => {
-        // defaults to download all locales and validate our ones
-        let localesToDownload = LOCALES;
-        let localesToValidate = REQUIRED_LOCALES;
+        // defaults to download all locales
+        // and validate: all for critical errors and ours for full translations readiness
+        let locales = LOCALES;
+        let isMinimum = true;
         // but if list_of_locales is specified, use them for download and validation
         if (opts.locales && opts.locales.length > 0) {
-            localesToDownload = opts.locales;
-            localesToValidate = opts.locales;
+            locales = opts.locales;
+            isMinimum = false;
         }
-        await download(localesToDownload);
-        await validate(localesToValidate);
+        await download(locales);
+        await validate(locales, isMinimum);
     });
 
 program
@@ -109,22 +101,18 @@ program
 program
     .command('validate')
     .description('Validates translations')
-    .option('-R,--min', 'for only our required locales')
+    .option('-R,--min', 'for critical errors of all locales and translations readiness of ours')
     .option('-l,--locales [list...]', 'for specific list of space-separated locales')
-    .option('-X,--critical', 'for critical errors of all locales')
     .action((opts) => {
         // defaults to validate all locales
         let locales = LOCALES;
-        let isCritical;
-        if (opts.critical) {
-            isCritical = true;
-            // check all locales while critical validation
-        } else if (opts.min) {
-            locales = REQUIRED_LOCALES;
+        let isMinimum;
+        if (opts.min) {
+            isMinimum = true;
         } else if (opts.locales && opts.locales.length > 0) {
             locales = opts.locales;
         }
-        validate(locales, isCritical);
+        validate(locales, isMinimum);
     });
 
 program

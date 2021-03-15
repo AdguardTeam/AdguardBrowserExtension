@@ -25,10 +25,11 @@ const LOCALES = Object.keys(LANGUAGES);
  */
 
 /**
- * Logs translations readiness (for main part of validation process)
+ * Logs translations readiness (default validation process)
  * @param {Result[]} results
+ * @param {boolean} [isMinimum=false]
  */
-const printTranslationsResults = (results) => {
+const printTranslationsResults = (results, isMinimum = false) => {
     cliLog.info('Translations readiness:');
     results.forEach((r) => {
         const record = `${r.locale} -- ${r.level}%`;
@@ -40,11 +41,13 @@ const printTranslationsResults = (results) => {
                     cliLog.warning(`    - ${str}`);
                 });
             }
-            if (r.invalidTranslations.length > 0) {
-                cliLog.warning('  invalid:');
-                r.invalidTranslations.forEach((obj) => {
-                    cliLog.warning(`    - ${obj.key} -- ${obj.error}`);
-                });
+            if (!isMinimum) {
+                if (r.invalidTranslations.length > 0) {
+                    cliLog.warning('  invalid:');
+                    r.invalidTranslations.forEach((obj) => {
+                        cliLog.warning(`    - ${obj.key} -- ${obj.error}`);
+                    });
+                }
             }
         } else {
             cliLog.success(record);
@@ -53,20 +56,8 @@ const printTranslationsResults = (results) => {
 };
 
 /**
- * @typedef InvalidTranslation
- * @property {string} key
- * @property {Error} error
- */
-
-/**
- * @typedef CriticalResult
- * @property {string} locale
- * @property {InvalidTranslation[]} invalidTranslations
- */
-
-/**
- * Logs invalid translations (for extra part of validation process)
- * @param {CriticalResult[]} criticals
+ * Logs invalid translations (critical errors)
+ * @param {Result[]} criticals
  */
 const printCriticalResults = (criticals) => {
     cliLog.warning('Invalid translated string:');
@@ -89,13 +80,20 @@ const validateMessage = (baseKey, baseLocaleTranslations, localeTranslations) =>
 };
 
 /**
+ * @typedef ValidationFlags
+ * @property {boolean} [isMinimum=false]
+ * @property {boolean} [isInfo=false]
+ */
+
+/**
  * Checks locales translations readiness
  * @param {string[]} locales - list of locales
- * @param {boolean} [isInfo=false] flag for info script
+ * @param {ValidationFlags} flags
  * @returns {Result[]} array of object with such properties:
  * locale, level of translation readiness, untranslated strings array and array of invalid translations
  */
-export const checkTranslations = async (locales, isInfo = false) => {
+export const checkTranslations = async (locales, flags) => {
+    const { isMinimum = false, isInfo = false } = flags;
     const baseLocaleTranslations = await getLocaleTranslations(BASE_LOCALE);
     const baseMessages = Object.keys(baseLocaleTranslations);
     const baseMessagesCount = baseMessages.length;
@@ -128,67 +126,55 @@ export const checkTranslations = async (locales, isInfo = false) => {
         };
     }));
 
-    const filteredResults = translationResults.filter((result) => {
-        return result.level < THRESHOLD_PERCENTAGE;
+    const filteredCriticalResults = translationResults.filter((result) => {
+        return result.invalidTranslations.length > 0;
+    });
+
+    const filteredReadinessResults = translationResults.filter((result) => {
+        return isMinimum
+            ? result.level < THRESHOLD_PERCENTAGE && REQUIRED_LOCALES.includes(result.locale)
+            : result.level < THRESHOLD_PERCENTAGE;
     });
 
     if (isInfo) {
         printTranslationsResults(translationResults);
-    } else if (filteredResults.length === 0) {
-        let message = `Level of translations is required for locales: ${locales.join(', ')}`;
-        if (areArraysEqual(locales, LOCALES)) {
-            message = 'All locales have required level of translations';
-        } else if (areArraysEqual(locales, REQUIRED_LOCALES)) {
-            message = 'Our locales have required level of translations';
-        }
-        cliLog.success(message);
     } else {
-        printTranslationsResults(filteredResults);
-        throw new Error('Locales above should be done for 100%');
+        // critical errors and required locales translations levels check
+        if (isMinimum) {
+            let isSuccess = true;
+            // check for invalid strings
+            if (filteredCriticalResults.length === 0) {
+                cliLog.success('No invalid translations found');
+            } else {
+                isSuccess = false;
+                printCriticalResults(filteredCriticalResults);
+                cliLog.warningRed('Locales above should not have invalid strings');
+            }
+            // check for translations readiness for required locales
+            if (filteredReadinessResults.length === 0) {
+                cliLog.success('Our locales have required level of translations');
+            } else {
+                isSuccess = false;
+                printTranslationsResults(filteredReadinessResults, isMinimum);
+                cliLog.warningRed('Our locales should be done for 100%');
+            }
+            if (!isSuccess) {
+                // throw error finally
+                throw new Error('Locales validation failed!');
+            }
+        }
+        // common translations check
+        if (filteredReadinessResults.length === 0) {
+            let message = `Level of translations is required for locales: ${locales.join(', ')}`;
+            if (areArraysEqual(locales, LOCALES)) {
+                message = 'All locales have required level of translations';
+            }
+            cliLog.success(message);
+        } else {
+            printTranslationsResults(filteredReadinessResults);
+            throw new Error('Locales above should be done for 100%');
+        }
     }
 
     return translationResults;
-};
-
-/**
- * Checks locales translations for critical errors
- * @param {string[]} locales - list of locales
- * @returns {CriticalResult[]} array of object with such properties:
- * locale and array of invalid translations
- */
-export const checkCriticals = async (locales) => {
-    const baseLocaleTranslations = await getLocaleTranslations(BASE_LOCALE);
-    const baseMessages = Object.keys(baseLocaleTranslations);
-
-    const criticalCheckResults = await Promise.all(locales.map(async (locale) => {
-        const extraLocaleTranslations = await getLocaleTranslations(locale);
-        const extraLocaleMessages = Object.keys(extraLocaleTranslations);
-
-        const invalidTranslations = [];
-        baseMessages.forEach((baseKey) => {
-            // check existing translations
-            if (extraLocaleMessages.includes(baseKey)) {
-                const validationError = validateMessage(baseKey, baseLocaleTranslations, extraLocaleTranslations);
-                if (validationError) {
-                    invalidTranslations.push(validationError);
-                }
-            }
-        });
-
-        return { locale, invalidTranslations };
-    }));
-
-    const filteredCriticalResults = criticalCheckResults.filter((result) => {
-        return result.invalidTranslations.length > 0;
-    });
-
-    if (filteredCriticalResults.length === 0) {
-        const message = 'No invalid translations found';
-        cliLog.success(message);
-    } else {
-        printCriticalResults(filteredCriticalResults);
-        throw new Error('Locales above should not have invalid strings');
-    }
-
-    return filteredCriticalResults;
 };
