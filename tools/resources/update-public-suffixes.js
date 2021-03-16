@@ -38,7 +38,7 @@ const updateSuffixes = async () => {
     const data = await fs.readFile(path.join(__dirname, PUBLIC_SUFFIXES_FILE), 'utf-8');
     const updatedData = data.replace(
         /(\/\/\%START_RESERVED_DOMAINS\%)[\s\S]*?(\/\/\%END_RESERVED_DOMAINS\%)/g,
-        `$1\n${jsonString}\n  $2`
+        `$1\n${jsonString}\n  $2`,
     );
     await fs.writeFile(path.join(__dirname, PUBLIC_SUFFIXES_FILE), updatedData);
 };

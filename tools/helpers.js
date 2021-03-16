@@ -1,13 +1,16 @@
 import { merge } from 'webpack-merge';
 import fs from 'fs';
 import path from 'path';
-import chalk from 'chalk';
 import {
     ENVS,
     ENV_CONF,
     BROWSERS,
     BROWSERS_CONF,
 } from './constants';
+import {
+    LOCALES_ABSOLUTE_PATH,
+    LOCALE_DATA_FILENAME,
+} from './locales/locales-constants';
 import packageJson from '../package.json';
 
 export const getEnvConf = (env) => {
@@ -100,13 +103,11 @@ export const chunkArray = (arr, size) => arr.reduce((chunks, el, idx) => {
 
 /**
  * Gets strings for certain locale
- * @param {string} localesDir
  * @param {string} locale
- * @param {string} localesDataFilename
  * @returns {Object}
  */
-export const getLocaleTranslations = async (localesDir, locale, localesDataFilename) => {
-    const filePath = path.join(localesDir, locale, localesDataFilename);
+export const getLocaleTranslations = async (locale) => {
+    const filePath = path.join(LOCALES_ABSOLUTE_PATH, locale, LOCALE_DATA_FILENAME);
     const fileContent = await fs.promises.readFile(filePath, 'utf-8');
     return JSON.parse(fileContent);
 };

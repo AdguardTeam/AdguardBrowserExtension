@@ -128,9 +128,7 @@ export const renewLocales = async () => {
         targets = [targets];
     }
 
-    const source = await getLocaleTranslations(
-        LOCALES_DIR, BASE_LOCALE, LOCALE_DATA_FILENAME,
-    );
+    const source = await getLocaleTranslations(BASE_LOCALE);
     const oldKeys = Object.keys({ ...source });
 
     chooseMessagesFromFiles(oldKeys, targets, filesReg)
