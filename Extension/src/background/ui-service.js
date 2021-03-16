@@ -807,6 +807,7 @@ export const uiService = (function () {
                 listeners.notifyListeners(showPopupEvent, false);
                 listeners.notifyListeners(listeners.FILTERS_UPDATE_CHECK_READY);
             }
+            return [];
         }
     };
 
