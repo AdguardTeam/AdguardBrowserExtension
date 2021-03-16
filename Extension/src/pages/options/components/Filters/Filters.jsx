@@ -272,7 +272,6 @@ const Filters = observer(() => {
                             modalIsOpen={modalIsOpen}
                             initialUrl={urlToSubscribe}
                             initialTitle={customFilterTitle}
-                            filterUrls={groupFilters.map(({customUrl}) => customUrl)}
                         />
                     </>
                 )}

@@ -40,18 +40,17 @@ const AddCustomModal = ({
     modalIsOpen,
     initialUrl,
     initialTitle,
-    filterUrls,
 }) => {
     const STEPS = {
         INPUT: 'input',
         CHECKING: 'checking',
         APPROVE: 'approve',
         ERROR: 'error',
-        DUPLICATE: 'duplicate',
     };
 
     const [customUrlToAdd, setCustomUrlToAdd] = useState(initialUrl);
     const [stepToRender, setStepToRender] = useState(STEPS.INPUT);
+    const [error, setError] = useState(reactTranslator.getMessage('options_popup_check_false_description'));
     const [filterToAdd, setFilterToAdd] = useState(null);
     const [filterToAddName, setFilterToAddName] = useState(initialTitle);
 
@@ -71,14 +70,12 @@ const AddCustomModal = ({
     const handleSendUrlToCheck = async () => {
         setStepToRender(STEPS.CHECKING);
 
-        if (filterUrls.includes(customUrlToAdd)) {
-            setStepToRender(STEPS.DUPLICATE);
-            return;
-        }
-
         try {
             const result = await messenger.checkCustomUrl(customUrlToAdd);
-            if (!result.filter) {
+            if (result.error) {
+                setError(result.error);
+                setStepToRender(STEPS.ERROR);
+            } else if (!result.filter) {
                 setStepToRender(STEPS.ERROR);
             } else {
                 setFilterToAdd(result.filter);
@@ -222,6 +219,7 @@ const AddCustomModal = ({
 
     const tryAgainHandler = () => {
         setStepToRender(STEPS.INPUT);
+        setError('');
     };
 
     const renderErrorStep = () => {
@@ -233,7 +231,7 @@ const AddCustomModal = ({
                             {reactTranslator.getMessage('options_popup_check_false_title')}
                         </div>
                         <div className="modal__desc">
-                            {reactTranslator.getMessage('options_popup_check_false_description')}
+                            {error || reactTranslator.getMessage('options_popup_check_false_description')}
                         </div>
                     </form>
                     <button
@@ -242,30 +240,6 @@ const AddCustomModal = ({
                         className="button button--m button--transparent modal__btn"
                     >
                         {reactTranslator.getMessage('options_popup_try_again_button')}
-                    </button>
-                </ModalContentWrapper>
-            </>
-        );
-    };
-
-    const renderDuplicateStep = () => {
-        return (
-            <>
-                <ModalContentWrapper closeModalHandler={closeModalHandler}>
-                    <form className="modal__content modal__content--center-text">
-                        <div className="modal__subtitle">
-                            {reactTranslator.getMessage('options_popup_check_duplicate_title')}
-                        </div>
-                        <div className="modal__desc">
-                            {reactTranslator.getMessage('options_popup_check_duplicate_description')}
-                        </div>
-                    </form>
-                    <button
-                        type="button"
-                        onClick={tryAgainHandler}
-                        className="button button--m button--transparent modal__btn"
-                    >
-                        {reactTranslator.getMessage('options_popup_add_another_filter_button')}
                     </button>
                 </ModalContentWrapper>
             </>
@@ -282,9 +256,6 @@ const AddCustomModal = ({
             }
             case STEPS.ERROR: {
                 return renderErrorStep();
-            }
-            case STEPS.DUPLICATE: {
-                return renderDuplicateStep();
             }
             case STEPS.APPROVE: {
                 return renderApproveStep();
