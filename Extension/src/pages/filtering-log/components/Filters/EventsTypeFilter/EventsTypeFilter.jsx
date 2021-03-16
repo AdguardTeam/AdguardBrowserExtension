@@ -17,6 +17,7 @@ const EventsTypeFilter = observer(() => {
 
     const { logStore } = useContext(rootStore);
     const { eventTypesFilters } = logStore;
+    const everyFilterTypeEnabled = eventTypesFilters.every((filter) => filter.enabled);
 
     const handleTypeClick = (e) => {
         if (browserUtils.isMacOs() ? e.metaKey : e.ctrlKey) {
@@ -30,22 +31,12 @@ const EventsTypeFilter = observer(() => {
         logStore.toggleAllEventTypesFilters();
     };
 
-    const eventsTypesButtonClassName = (name) => classNames(
-        'events-types__type',
-        { active: eventTypesFilters.find((filter) => filter.name === name).enabled },
-    );
-
-    const eventsAllTypesButtonClassName = classNames(
-        'events-types__type',
-        { active: !eventTypesFilters.some((filter) => !filter.enabled) },
-    );
-
     const renderTypes = () => {
         return eventTypesFilters.map((eventTypeFilter) => {
-            const { name, title } = eventTypeFilter;
+            const { name, title, enabled } = eventTypeFilter;
             return (
                 <button
-                    className={eventsTypesButtonClassName(name)}
+                    className={classNames('events-types__type', { active: !everyFilterTypeEnabled && enabled })}
                     type="button"
                     onClick={handleTypeClick}
                     value={name}
@@ -60,7 +51,7 @@ const EventsTypeFilter = observer(() => {
     const renderContent = () => (
         <>
             <button
-                className={eventsAllTypesButtonClassName}
+                className={classNames('events-types__type', { active: everyFilterTypeEnabled })}
                 type="button"
                 onClick={handleAllClick}
             >

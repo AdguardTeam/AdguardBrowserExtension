@@ -129,13 +129,13 @@ class LogStore {
 
     @action
     selectOneEventTypesFilter = (name) => {
-        const isMultipleFilersSelected = this.eventTypesFilters
+        const isMultipleFiltersSelected = this.eventTypesFilters
             .filter((filter) => filter.enabled).length > 1;
 
         this.eventTypesFilters.forEach((filter) => {
             if (filter.name === name) {
                 // eslint-disable-next-line no-param-reassign
-                filter.enabled = isMultipleFilersSelected ? true : !filter.enabled;
+                filter.enabled = isMultipleFiltersSelected ? true : !filter.enabled;
             } else {
                 // eslint-disable-next-line no-param-reassign
                 filter.enabled = false;
