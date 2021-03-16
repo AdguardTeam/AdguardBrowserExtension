@@ -44,6 +44,8 @@ const Filters = observer(() => {
     useEffect(() => {
         settingsStore.setSelectedGroupId(query.get('group'));
         setGroupDetermined(true);
+        settingsStore.setSearchInput('');
+        settingsStore.setSearchSelect(SEARCH_FILTERS.ALL);
     }, []);
 
     const handleGroupSwitch = async ({ id, data }) => {
