@@ -81,8 +81,9 @@ const validateMessage = (baseKey, baseLocaleTranslations, localeTranslations) =>
 
 /**
  * @typedef ValidationFlags
- * @property {boolean} [isMinimum=false]
- * @property {boolean} [isInfo=false]
+ * @property {boolean} [isMinimum=false] for minimum level of validation:
+ * critical errors for all and full translations level for our locales
+ * @property {boolean} [isInfo=false] for logging translations info without throwing the error
  */
 
 /**
