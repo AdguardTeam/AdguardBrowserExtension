@@ -14,14 +14,18 @@ import { AllowlistSavingButton } from './AllowlistSavingButton';
 const Allowlist = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);
 
+    const editorRef = useRef(null);
+    const inputRef = useRef(null);
+
     useEffect(() => {
         (async () => {
             await settingsStore.getAllowlist();
         })();
     }, []);
 
-    const editorRef = useRef(null);
-    const inputRef = useRef(null);
+    useEffect(() => {
+        editorRef.current.editor.session.setValue(settingsStore.allowlist);
+    }, [settingsStore.allowlist]);
 
     const { settings } = settingsStore;
 
@@ -59,7 +63,7 @@ const Allowlist = observer(() => {
 
     const saveClickHandler = async () => {
         if (settingsStore.allowlistEditorContentChanged) {
-            const value = editorRef.current.editor.getValue();
+            const value = editorRef.current.editor.session.getValue();
             await settingsStore.saveAllowlist(value);
         }
     };
@@ -99,7 +103,6 @@ const Allowlist = observer(() => {
             </SettingsSection>
             <Editor
                 name="allowlist"
-                value={settingsStore.allowlist}
                 editorRef={editorRef}
                 shortcuts={shortcuts}
                 onChange={editorChangeHandler}
