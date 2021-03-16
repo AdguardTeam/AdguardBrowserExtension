@@ -252,6 +252,12 @@ class SettingsStore {
                 filter.enabled = !!enabled;
             }
         });
+        this.visibleFilters.forEach((filter) => {
+            if (filter.filterId === filterId) {
+                // eslint-disable-next-line no-param-reassign
+                filter.enabled = !!enabled;
+            }
+        });
     };
 
     @action
