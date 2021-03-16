@@ -11,7 +11,6 @@ import {
 import { getBrowserConf, getEnvConf } from '../helpers';
 import { version } from '../../package.json';
 
-
 // IMPORTANT!!!
 // Signing artifacts for Mozilla publishes build to the store simultaneously
 // We sign only beta build, because we do not publish it the AMO store
@@ -34,7 +33,7 @@ export const xpi = async (browser) => {
     await fs.writeFile(manifestPath, JSON.stringify(updatedManifest, null, 4));
 
     // require called here in order to escape errors, until this module is really necessary
-    // eslint-disable-next-line global-require
+    // eslint-disable-next-line global-require, import/no-unresolved
     const cryptor = require('../../private/cryptor/dist');
     const credentialsContent = await cryptor(process.env.CREDENTIALS_PASSWORD)
         .getDecryptedContent(FIREFOX_CREDENTIALS);
