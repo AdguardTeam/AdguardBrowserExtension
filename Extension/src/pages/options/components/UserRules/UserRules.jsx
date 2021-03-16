@@ -29,7 +29,7 @@ const UserRules = observer(() => {
 
         try {
             const content = await uploadFile(file, 'txt');
-            editorRef.current.editor.setValue(content);
+            editorRef.current.editor.session.setValue(content);
             await settingsStore.saveUserRules(content);
         } catch (e) {
             log.debug(e.message);
@@ -47,7 +47,7 @@ const UserRules = observer(() => {
 
     const saveClickHandler = async () => {
         if (settingsStore.userRulesEditorContentChanged) {
-            const value = editorRef.current.editor.getValue();
+            const value = editorRef.current.editor.session.getValue();
             await settingsStore.saveUserRules(value);
         }
     };
@@ -97,6 +97,10 @@ const UserRules = observer(() => {
         })();
     }, []);
 
+    useEffect(() => {
+        editorRef.current.editor.session.setValue(settingsStore.userRules);
+    }, [settingsStore.userRules]);
+
     const onChange = () => {
         settingsStore.setUserRulesEditorContentChangedState(true);
     };
@@ -120,7 +124,6 @@ const UserRules = observer(() => {
             />
             <Editor
                 name="user-rules"
-                value={settingsStore.userRules}
                 editorRef={editorRef}
                 shortcuts={shortcuts}
                 onChange={onChange}
