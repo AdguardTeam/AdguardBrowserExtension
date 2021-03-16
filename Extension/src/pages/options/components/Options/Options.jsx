@@ -30,7 +30,7 @@ const Options = observer(() => {
         let removeListenerCallback = () => {};
 
         (async () => {
-            await settingsStore.requestOptionsData();
+            await settingsStore.requestOptionsData(true);
 
             const events = [
                 NOTIFIER_TYPES.REQUEST_FILTER_UPDATED,
@@ -55,7 +55,7 @@ const Options = observer(() => {
                             break;
                         }
                         case NOTIFIER_TYPES.FILTERS_UPDATE_CHECK_READY: {
-                            const { data: updatedFilters } = message;
+                            const [updatedFilters] = message.data;
                             settingsStore.refreshFilters(updatedFilters);
                             break;
                         }
