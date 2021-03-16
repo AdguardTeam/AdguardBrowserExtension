@@ -54,6 +54,15 @@ const AddCustomModal = ({
     const [filterToAdd, setFilterToAdd] = useState(null);
     const [filterToAddName, setFilterToAddName] = useState(initialTitle);
 
+    const closeModal = () => {
+        closeModalHandler();
+        setCustomUrlToAdd('');
+        setStepToRender(STEPS.INPUT);
+        setError('');
+        setFilterToAdd(null);
+        setFilterToAddName(initialTitle);
+    };
+
     const { settingsStore } = useContext(rootStore);
 
     const handleInputChange = (e) => {
@@ -89,7 +98,7 @@ const AddCustomModal = ({
 
     const renderInputStep = () => (
         <ModalContentWrapper
-            closeModalHandler={closeModalHandler}
+            closeModalHandler={closeModal}
             title="New filter subscription"
         >
             <form className="modal__content" onSubmit={handleSendUrlToCheck}>
@@ -131,7 +140,7 @@ const AddCustomModal = ({
             setStepToRender(STEPS.ERROR);
             log.error(e);
         }
-        closeModalHandler();
+        closeModal();
     };
 
     const renderApproveStep = () => {
@@ -141,7 +150,7 @@ const AddCustomModal = ({
 
         return (
             <ModalContentWrapper
-                closeModalHandler={closeModalHandler}
+                closeModalHandler={closeModal}
                 title="New filter subscription"
             >
                 <form className="modal__content" onSubmit={handleApprove}>
@@ -206,7 +215,7 @@ const AddCustomModal = ({
     const renderCheckingStep = () => {
         return (
             <>
-                <ModalContentWrapper closeModalHandler={closeModalHandler}>
+                <ModalContentWrapper closeModalHandler={closeModal}>
                     <form className="modal__content modal__content--center-text">
                         <div className="modal__desc">
                             {reactTranslator.getMessage('options_popup_checking_filter')}
@@ -225,7 +234,7 @@ const AddCustomModal = ({
     const renderErrorStep = () => {
         return (
             <>
-                <ModalContentWrapper closeModalHandler={closeModalHandler}>
+                <ModalContentWrapper closeModalHandler={closeModal}>
                     <form className="modal__content modal__content--center-text">
                         <div className="modal__subtitle">
                             {reactTranslator.getMessage('options_popup_check_false_title')}
@@ -269,7 +278,7 @@ const AddCustomModal = ({
         <Modal
             isOpen={modalIsOpen}
             style={customStyles}
-            onRequestClose={closeModalHandler}
+            onRequestClose={closeModal}
         >
             {renderStep()}
         </Modal>
