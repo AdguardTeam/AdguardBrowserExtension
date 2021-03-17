@@ -102,7 +102,8 @@ export const engine = (function () {
             return new TSUrlFilter.CosmeticResult();
         }
 
-        return engine.getCosmeticResult(hostname, option);
+        const request = new TSUrlFilter.Request(hostname, null, TSUrlFilter.RequestType.Document);
+        return engine.getCosmeticResult(request, option);
     };
 
     /**
