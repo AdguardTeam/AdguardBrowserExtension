@@ -1,17 +1,19 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, {
+    useContext,
+    useEffect,
+    useRef,
+} from 'react';
 import { observer } from 'mobx-react';
-import classnames from 'classnames';
 import { Range } from 'ace-builds';
 import { SimpleRegex } from '@adguard/tsurlfilter/dist/es/simple-regex';
 
-import { rootStore } from '../../stores/RootStore';
 import { Editor } from '../Editor';
-import { uploadFile } from '../../../helpers';
-import { log } from '../../../../common/log';
-import { STATES as SAVING_STATES } from '../Editor/savingFSM';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { SettingsSection } from '../Settings/SettingsSection';
-import { Icon } from '../../../common/components/ui/Icon';
+import { uploadFile } from '../../../helpers';
+import { rootStore } from '../../stores/RootStore';
+import { log } from '../../../../common/log';
+import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { UserRulesSavingButton } from './UserRulesSavingButton';
 
 import './styles.pcss';
 
@@ -21,40 +23,13 @@ const UserRules = observer(() => {
     const editorRef = useRef(null);
     const inputRef = useRef(null);
 
-    const { savingRulesState } = settingsStore;
-
-    const renderSavingState = () => {
-        const indicatorTextMap = {
-            [SAVING_STATES.IDLE]: '',
-            [SAVING_STATES.SAVED]: reactTranslator.getMessage('options_editor_indicator_saved'),
-            [SAVING_STATES.SAVING]: reactTranslator.getMessage('options_editor_indicator_saving'),
-        };
-
-        const indicatorText = indicatorTextMap[savingRulesState];
-
-        if (savingRulesState === SAVING_STATES.IDLE) {
-            return null;
-        }
-
-        const indicatorClassnames = classnames('editor__label', {
-            'editor__label--saved': savingRulesState === SAVING_STATES.SAVED,
-        });
-
-        return (
-            <div className={indicatorClassnames}>
-                <Icon id="#tick" classname="icon--checked editor__icon" />
-                {indicatorText}
-            </div>
-        );
-    };
-
     const inputChangeHandler = async (event) => {
         event.persist();
         const file = event.target.files[0];
 
         try {
             const content = await uploadFile(file, 'txt');
-            editorRef.current.editor.setValue(content);
+            editorRef.current.editor.session.setValue(content);
             await settingsStore.saveUserRules(content);
         } catch (e) {
             log.debug(e.message);
@@ -71,17 +46,17 @@ const UserRules = observer(() => {
     };
 
     const saveClickHandler = async () => {
-        const value = editorRef.current.editor.getValue();
-        await settingsStore.saveUserRules(value);
+        if (settingsStore.userRulesEditorContentChanged) {
+            const value = editorRef.current.editor.session.getValue();
+            await settingsStore.saveUserRules(value);
+        }
     };
 
     const shortcuts = [
         {
             name: 'save',
             bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
-            exec: async () => {
-                await saveClickHandler();
-            },
+            exec: saveClickHandler,
         },
         {
             name: 'togglecomment',
@@ -122,6 +97,14 @@ const UserRules = observer(() => {
         })();
     }, []);
 
+    useEffect(() => {
+        editorRef.current.editor.session.setValue(settingsStore.userRules);
+    }, [settingsStore.userRules]);
+
+    const onChange = () => {
+        settingsStore.setUserRulesEditorContentChangedState(true);
+    };
+
     return (
         <>
             <SettingsSection
@@ -141,9 +124,9 @@ const UserRules = observer(() => {
             />
             <Editor
                 name="user-rules"
-                value={settingsStore.userRules}
                 editorRef={editorRef}
                 shortcuts={shortcuts}
+                onChange={onChange}
             />
             <div className="actions actions--divided">
                 <div className="actions__group">
@@ -172,14 +155,7 @@ const UserRules = observer(() => {
                     </button>
                 </div>
                 <div className="actions__group">
-                    {renderSavingState()}
-                    <button
-                        type="button"
-                        className="button button--m button--green actions__btn"
-                        onClick={saveClickHandler}
-                    >
-                        {reactTranslator.getMessage('options_editor_save')}
-                    </button>
+                    <UserRulesSavingButton onClick={saveClickHandler} />
                 </div>
             </div>
         </>

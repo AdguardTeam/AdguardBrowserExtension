@@ -63,7 +63,7 @@ const updateLocalScriptRulesForBrowser = async (browser) => {
 
     await fs.writeFile(
         `${FILTERS_DEST.replace('%browser', browser)}/local_script_rules.json`,
-        JSON.stringify(rules, null, 4)
+        JSON.stringify(rules, null, 4),
     );
 };
 

@@ -72,10 +72,11 @@ export const stealthService = (() => {
      * @param requestUrl
      * @param referrerUrl
      * @param requestType
+     * @returns CookieRules[]
      */
     const getCookieRules = function (requestUrl, referrerUrl, requestType) {
         if (!canApplyStealthActions(requestUrl, referrerUrl, requestType)) {
-            return null;
+            return [];
         }
 
         log.debug('Stealth service lookup cookie rules for {0}', requestUrl);

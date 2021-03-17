@@ -6,9 +6,9 @@ import { RULE_OPTIONS } from '../constants';
 import { messenger } from '../../../../services/messenger';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { Icon } from '../../../../common/components/ui/Icon';
+import { WIZARD_STATES } from '../../../stores/WizardStore';
 
 import './request-create-rule.pcss';
-import { WIZARD_STATES } from '../../../stores/WizardStore';
 
 const RequestCreateRule = observer(() => {
     const { wizardStore, logStore } = useContext(rootStore);
@@ -153,7 +153,7 @@ const RequestCreateRule = observer(() => {
                     <textarea
                         className="request-info__value request-modal__rule-text"
                         onChange={handleRuleChange}
-                        defaultValue={wizardStore.rule}
+                        value={wizardStore.rule}
                     />
                 </div>
                 {showPatterns && (

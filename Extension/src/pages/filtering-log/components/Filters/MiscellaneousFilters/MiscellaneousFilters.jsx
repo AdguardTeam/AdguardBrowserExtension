@@ -1,4 +1,8 @@
-import React, { useContext, useState, useRef } from 'react';
+import React, {
+    useContext,
+    useState,
+    useRef,
+} from 'react';
 import { observer } from 'mobx-react';
 import cn from 'classnames';
 
@@ -6,6 +10,7 @@ import { Icon } from '../../../../common/components/ui/Icon';
 import { rootStore } from '../../../stores/RootStore';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { MISCELLANEOUS_FILTERS, REQUEST_SOURCE_FILTERS } from '../../../stores/LogStore';
+import { useOutsideClick } from '../../../../common/hooks/useOutsideClick';
 
 import './miscellaneous-filters.pcss';
 
@@ -25,17 +30,15 @@ const MiscellaneousFilters = observer(() => {
         logStore.setRequestSourceFilterValue(e.target.value, e.target.checked);
     };
 
-    const hidePopup = (event) => {
-        if (ref.current && !ref.current.contains(event.target)) {
+    useOutsideClick(ref, () => {
+        if (showPopup) {
             setShowPopup(false);
-            document.removeEventListener('click', hidePopup);
         }
-    };
+    });
 
     const miscellaneousFiltersButtonHandler = () => {
         if (!showPopup) {
             setShowPopup(true);
-            document.addEventListener('click', hidePopup);
         }
     };
 
