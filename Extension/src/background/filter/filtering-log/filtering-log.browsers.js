@@ -267,7 +267,7 @@ const browsersFilteringLog = (function () {
             frameUrl,
             frameDomain,
             requestType,
-            requestThirdParty: utils.url.isThirdPartyRequest(requestUrl, frameUrl),
+            requestThirdParty: TSUrlFilter.isThirdPartyRequest(requestUrl, frameUrl),
         };
 
         addRuleToFilteringEvent(filteringEvent, requestRule);
