@@ -85,7 +85,7 @@ So what we do:
 
 // public suffixes list constants
 export const PUBLIC_SUFFIXES_URL = 'https://publicsuffix.org/list/public_suffix_list.dat';
-export const PUBLIC_SUFFIXES_FILE = '../../Extension/src/utils/public-suffixes.js';
+export const PUBLIC_SUFFIXES_FILE = '../../Extension/src/background/utils/public-suffixes.js';
 
 // artifacts constants
 export const CHROME_UPDATE_URL = 'https://static.adguard.com/extensions/adguardadblocker/beta/update.xml';

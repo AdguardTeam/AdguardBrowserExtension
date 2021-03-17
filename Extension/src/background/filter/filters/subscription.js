@@ -654,6 +654,9 @@ export const subscriptions = (() => {
     function applyFilterLocalization(filter, i18nMetadata) {
         const { filterId } = filter;
         const localizations = i18nMetadata[filterId];
+        console.log(filterId);
+        console.log(localizations);
+        console.log(backgroundPage.app.getLocale());
         if (localizations) {
             const locale = utils.i18n.normalize(localizations, backgroundPage.app.getLocale());
             const localization = localizations[locale];
