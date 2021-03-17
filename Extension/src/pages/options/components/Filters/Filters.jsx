@@ -200,6 +200,13 @@ const Filters = observer(() => {
 
     const openModalHandler = () => {
         setModalIsOpen(true);
+        setUrlToSubscribe('');
+        setCustomFilterTitle('');
+        if (query.has(QUERY_PARAM_NAMES.TITLE) || query.has(QUERY_PARAM_NAMES.SUBSCRIBE)) {
+            query.delete(QUERY_PARAM_NAMES.TITLE);
+            query.delete(QUERY_PARAM_NAMES.SUBSCRIBE);
+            history.push(`${history.location.pathname}?${decodeURIComponent(query.toString())}`);
+        }
     };
 
     const closeModalHandler = () => {
@@ -211,16 +218,6 @@ const Filters = observer(() => {
             openModalHandler();
         }
     }, [urlToSubscribe]);
-
-    useEffect(() => {
-        if (modalIsOpen) {
-            setUrlToSubscribe('');
-            setCustomFilterTitle('');
-            query.delete(QUERY_PARAM_NAMES.TITLE);
-            query.delete(QUERY_PARAM_NAMES.SUBSCRIBE);
-            history.push(`${history.location.pathname}?${decodeURIComponent(query.toString())}`);
-        }
-    }, [modalIsOpen, history.location.pathname, query.toString()]);
 
     const renderAddFilterBtn = (isEmpty) => {
         const buttonClass = classNames('button button--m button--green', {
