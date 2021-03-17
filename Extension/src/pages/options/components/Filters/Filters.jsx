@@ -16,6 +16,12 @@ import { CUSTOM_FILTERS_GROUP_ID } from '../../../../../../tools/constants';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { Icon } from '../../../common/components/ui/Icon';
 
+const QUERY_PARAM_NAMES = {
+    GROUP: 'group',
+    TITLE: 'title',
+    SUBSCRIBE: 'subscribe'
+}
+
 const Filters = observer(() => {
     const SEARCH_FILTERS = {
         ALL: 'all',
@@ -34,8 +40,8 @@ const Filters = observer(() => {
     const [searchInput, setSearchInput] = useState('');
     const [searchSelect, setSearchSelect] = useState(SEARCH_FILTERS.ALL);
     const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [urlToSubscribe, setUrlToSubscribe] = useState(decodeURIComponent(query.get('subscribe') || ''));
-    const [customFilterTitle, setCustomFilterTitle] = useState(query.get('title'));
+    const [urlToSubscribe, setUrlToSubscribe] = useState(decodeURIComponent(query.get(QUERY_PARAM_NAMES.SUBSCRIBE) || ''));
+    const [customFilterTitle, setCustomFilterTitle] = useState(query.get(QUERY_PARAM_NAMES.TITLE));
 
     const { settingsStore, uiStore } = useContext(rootStore);
 
@@ -47,7 +53,7 @@ const Filters = observer(() => {
         filtersUpdating,
     } = settingsStore;
 
-    settingsStore.setSelectedGroupId(parseInt(query.get('group'), 10));
+    settingsStore.setSelectedGroupId(parseInt(query.get(QUERY_PARAM_NAMES.GROUP), 10));
 
     const handleGroupSwitch = async ({ id, data }) => {
         await settingsStore.updateGroupSetting(id, data);
@@ -210,8 +216,11 @@ const Filters = observer(() => {
         if (modalIsOpen) {
             setUrlToSubscribe('');
             setCustomFilterTitle('');
+            query.delete(QUERY_PARAM_NAMES.TITLE);
+            query.delete(QUERY_PARAM_NAMES.SUBSCRIBE);
+            history.push(`${history.location.pathname}?${decodeURIComponent(query.toString())}`);
         }
-    }, [modalIsOpen]);
+    }, [modalIsOpen, history.location.pathname, query.toString()]);
 
     const renderAddFilterBtn = (isEmpty) => {
         const buttonClass = classNames('button button--m button--green', {
