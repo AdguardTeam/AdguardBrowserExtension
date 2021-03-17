@@ -11,6 +11,8 @@ import { createSavingService, EVENTS as SAVING_FSM_EVENTS, STATES } from '../com
 import { sleep } from '../../helpers';
 import { messenger } from '../../services/messenger';
 import { OTHER_FILTERS_GROUP_ID } from '../../../../../tools/constants';
+import { SEARCH_FILTERS } from '../components/Filters/Search/constants';
+import { sortFilters, updateFilters } from '../components/Filters/helpers';
 
 const savingUserRulesService = createSavingService({
     id: 'userRules',
@@ -46,9 +48,11 @@ class SettingsStore {
 
     @observable version = null;
 
-    @observable filters = {};
+    @observable filters = [];
 
-    @observable categories = {};
+    @observable categories = [];
+
+    @observable visibleFilters = [];
 
     @observable rulesCount = 0;
 
@@ -67,6 +71,10 @@ class SettingsStore {
     @observable selectedGroupId = null;
 
     @observable isChrome = null;
+
+    @observable searchInput = '';
+
+    @observable searchSelect = SEARCH_FILTERS.ALL;
 
     @observable userRulesEditorContentChanged = false;
 
@@ -96,18 +104,25 @@ class SettingsStore {
     }
 
     @action
-    async requestOptionsData() {
+    async requestOptionsData(firstRender) {
         const data = await messenger.getOptionsData();
         runInAction(() => {
             this.settings = data.settings;
-            this.filters = data.filtersMetadata.filters;
+            // on first render we sort filters to show enabled on the top
+            // filter should remain on the same place event after being enabled or disabled
+            if (firstRender) {
+                this.setFilters(sortFilters(data.filtersMetadata.filters));
+            } else {
+                // on the next filters updates, we update filters keeping order
+                this.setFilters(updateFilters(this.filters, data.filtersMetadata.filters));
+            }
             this.categories = data.filtersMetadata.categories;
             this.rulesCount = data.filtersInfo.rulesCount;
             this.version = data.appVersion;
             this.constants = data.constants;
-            this.optionsReadyToRender = true;
             this.setAllowAcceptableAds(data.filtersMetadata.filters);
             this.isChrome = data.environmentOptions.isChrome;
+            this.optionsReadyToRender = true;
         });
     }
 
@@ -117,8 +132,19 @@ class SettingsStore {
     }
 
     @action
-    setSelectedGroupId(groupId) {
-        this.selectedGroupId = groupId;
+    setSelectedGroupId(dirtyGroupId) {
+        const groupId = Number.parseInt(dirtyGroupId, 10);
+
+        if (Number.isNaN(groupId)) {
+            this.selectedGroupId = null;
+        } else {
+            const groupExists = this.categories.find((category) => category.groupId === groupId);
+            if (groupExists) {
+                this.selectedGroupId = groupId;
+            } else {
+                this.selectedGroupId = null;
+            }
+        }
     }
 
     @action
@@ -208,33 +234,47 @@ class SettingsStore {
         if (!filter) {
             return;
         }
-        const filterToUpdate = this.filters.find((f) => f.filterId === filter.filterId);
-        const index = this.filters.indexOf(filterToUpdate);
-        if (index !== -1) {
-            this.filters[index] = filter;
+
+        const idx = this.filters.findIndex((f) => f.filterId === filter.filterId);
+        if (idx !== -1) {
+            Object.keys(filter).forEach((key) => {
+                this.filters[idx][key] = filter[key];
+            });
         }
     }
 
     @action
-    async updateFilterSetting(id, enabled) {
-        const filters = await messenger.updateFilterStatus(id, enabled);
-        this.refreshFilters(filters);
-        runInAction(() => {
-            const filterId = parseInt(id, 10);
-            this.filters.forEach((filter) => {
-                if (filter.filterId === filterId) {
-                    if (enabled) {
-                        filter.enabled = true;
-                    } else {
-                        delete filter.enabled;
-                    }
-                }
-            });
-            const { SEARCH_AND_SELF_PROMO_FILTER_ID } = this.constants.AntiBannerFiltersId;
-            if (filterId === SEARCH_AND_SELF_PROMO_FILTER_ID) {
-                this.allowAcceptableAds = enabled;
+    setFilterEnabledState = (rawFilterId, enabled) => {
+        const filterId = parseInt(rawFilterId, 10);
+        this.filters.forEach((filter) => {
+            if (filter.filterId === filterId) {
+                // eslint-disable-next-line no-param-reassign
+                filter.enabled = !!enabled;
             }
         });
+        this.visibleFilters.forEach((filter) => {
+            if (filter.filterId === filterId) {
+                // eslint-disable-next-line no-param-reassign
+                filter.enabled = !!enabled;
+            }
+        });
+    };
+
+    @action
+    async updateFilterSetting(rawFilterId, enabled) {
+        const filterId = Number.parseInt(rawFilterId, 10);
+        this.setFilterEnabledState(filterId, enabled);
+        try {
+            const filters = await messenger.updateFilterStatus(filterId, enabled);
+            this.refreshFilters(filters);
+            // update allow acceptable ads setting
+            if (filterId === this.constants.AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID) {
+                this.allowAcceptableAds = enabled;
+            }
+        } catch (e) {
+            log.error(e);
+            this.setFilterEnabledState(filterId, !enabled);
+        }
     }
 
     @action
@@ -270,7 +310,7 @@ class SettingsStore {
     async removeCustomFilter(filterId) {
         await messenger.removeCustomFilter(filterId);
         runInAction(() => {
-            this.filters = this.filters.filter((filter) => filter.filterId !== filterId);
+            this.setFilters(this.filters.filter((filter) => filter.filterId !== filterId));
         });
     }
 
@@ -327,6 +367,88 @@ class SettingsStore {
     setAllowlistEditorContentChangedState = (state) => {
         this.allowlistEditorContentChanged = state;
     };
+
+    @action
+    setSearchInput = (value) => {
+        this.searchInput = value;
+        this.sortFilters();
+        this.selectVisibleFilters();
+    };
+
+    @action
+    setSearchSelect = (value) => {
+        this.searchSelect = value;
+        this.sortFilters();
+        this.selectVisibleFilters();
+    };
+
+    @computed
+    get isSearching() {
+        return this.searchSelect !== SEARCH_FILTERS.ALL || this.searchInput;
+    }
+
+    /**
+     * We do not sort filters on every filters data update for better UI experience
+     * Filters sort happens when user exits from filters group, or changes search filters
+     */
+    @action
+    sortFilters = () => {
+        this.setFilters(sortFilters(this.filters));
+    };
+
+    @action
+    setFilters = (filters) => {
+        this.filters = filters;
+    };
+
+    /**
+     * We use visibleFilters for better UI experience, in order not to hide filter
+     * when user enables/disables filter when he has chosen search filters
+     * We update visibleFilters when search filters are updated
+     *
+     */
+    @action
+    selectVisibleFilters = () => {
+        this.visibleFilters = this.filters.filter((filter) => {
+            let searchMod;
+            switch (this.searchSelect) {
+                case SEARCH_FILTERS.ENABLED:
+                    searchMod = filter.enabled;
+                    break;
+                case SEARCH_FILTERS.DISABLED:
+                    searchMod = !filter.enabled;
+                    break;
+                default:
+                    searchMod = true;
+            }
+
+            return searchMod;
+        });
+    };
+
+    @computed
+    get filtersToRender() {
+        const searchInputString = this.searchInput.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const searchQuery = new RegExp(searchInputString, 'ig');
+
+        let selectedFilters;
+        if (this.isSearching) {
+            selectedFilters = this.visibleFilters;
+        } else {
+            selectedFilters = this.filters;
+        }
+
+        return selectedFilters
+            .filter((filter) => {
+                if (Number.isInteger(this.selectedGroupId)) {
+                    return filter.groupId === this.selectedGroupId;
+                }
+                return true;
+            })
+            .filter((filter) => {
+                return filter.name.match(searchQuery);
+            });
+    }
 }
 
 export default SettingsStore;
