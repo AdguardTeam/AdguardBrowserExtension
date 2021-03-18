@@ -61,43 +61,43 @@ class LogStore {
         {
             name: 'HTML',
             title: 'HTML',
-            type: RequestTypes.DOCUMENT,
+            types: [RequestTypes.DOCUMENT, RequestTypes.SUBDOCUMENT],
             enabled: true,
         },
         {
             name: 'CSS',
             title: 'CSS',
-            type: RequestTypes.STYLESHEET,
+            types: RequestTypes.STYLESHEET,
             enabled: true,
         },
         {
             name: 'JavaScript',
             title: 'JavaScript',
-            type: RequestTypes.SCRIPT,
+            types: RequestTypes.SCRIPT,
             enabled: true,
         },
         {
             name: 'Ajax',
             title: 'Ajax',
-            type: RequestTypes.XMLHTTPREQUEST,
+            types: RequestTypes.XMLHTTPREQUEST,
             enabled: true,
         },
         {
             name: 'Image',
             title: reactTranslator.getMessage('filtering_type_image'),
-            type: RequestTypes.IMAGE,
+            types: RequestTypes.IMAGE,
             enabled: true,
         },
         {
             name: 'Media',
             title: reactTranslator.getMessage('filtering_type_media'),
-            type: RequestTypes.MEDIA,
+            types: [RequestTypes.OBJECT, RequestTypes.MEDIA],
             enabled: true,
         },
         {
             name: 'Other',
             title: reactTranslator.getMessage('filtering_type_other'),
-            type: RequestTypes.OTHER,
+            types: [RequestTypes.OTHER, RequestTypes.FONT, RequestTypes.WEBSOCKET, RequestTypes.CSP, RequestTypes.COOKIE, RequestTypes.PING, RequestTypes.WEBRTC],
             enabled: true,
         },
     ];
@@ -267,19 +267,18 @@ class LogStore {
             // Filter by requestType
             const { requestType } = filteringEvent;
             // check if request type is in eventTypesFilters
-            const filterForRequestType = this.eventTypesFilters
-                .find((filter) => filter.type === requestType);
+            const filterForRequestType = this.eventTypesFilters.find(
+                (filter) => Array.isArray(filter.types)
+                    ? filter.types.includes(requestType)
+                    : filter.types === requestType
+            );
+
             if (filterForRequestType) {
                 if (!filterForRequestType.enabled) {
                     return false;
                 }
             } else {
-                // else check if other filter is enabled
-                const otherFilter = this.eventTypesFilters
-                    .find((filter) => filter.type === RequestTypes.OTHER);
-                if (!otherFilter.enabled) {
-                    return false;
-                }
+                return false;
             }
 
             const isAllowlisted = filteringEvent.requestRule?.whitelistRule;
