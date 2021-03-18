@@ -18,7 +18,7 @@
 /* eslint-disable max-len */
 
 import { RequestTypes, parseContentTypeFromUrlPath } from '../utils/request-types';
-import { BACKGROUND_TAB_ID, toTabFromChromeTab } from '../utils/common';
+import { BACKGROUND_TAB_ID, toTabFromChromeTab, utils } from '../utils/common';
 import { runtimeImpl } from '../../common/common-script';
 import { browser } from './browser';
 import { prefs } from '../prefs';
@@ -223,6 +223,7 @@ export const backgroundPage = (() => {
             requestDetails.referrerUrl = details.originUrl || details.initiator;
         }
         requestDetails.originUrl = details.originUrl || details.initiator;
+        requestDetails.thirdParty = utils.url.isThirdPartyRequest(requestDetails.requestUrl, requestDetails.originUrl);
 
         return requestDetails;
     }

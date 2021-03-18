@@ -120,16 +120,21 @@ export const application = (() => {
 
             if (outdatedFilters.length > 0) {
                 try {
-                    const filters = await filtersUpdate.checkAntiBannerFiltersUpdate(true, outdatedFilters);
+                    const filters = await filtersUpdate.checkAntiBannerFiltersUpdate({
+                        forceUpdate: true,
+                        filters: outdatedFilters,
+                    });
                     return filters;
                 } catch (e) {
                     log.error(e.message);
                     throw e;
                 }
+            } else {
+                return [];
             }
         } else {
             try {
-                const filters = await filtersUpdate.checkAntiBannerFiltersUpdate(true);
+                const filters = await filtersUpdate.checkAntiBannerFiltersUpdate({ forceUpdate: true });
                 return filters;
             } catch (e) {
                 log.error(e.message);

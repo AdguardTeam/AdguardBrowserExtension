@@ -535,18 +535,22 @@ export const preload = (function () {
         }
 
         if (response.rulesData) {
-            const cookieController = new TSUrlFilter.CookieController(
-                (cookieName, cookieDomain, ruleText, thirdParty, filterId) => {
-                    contentPage.sendMessage({
-                        type: MESSAGE_TYPES.SAVE_COOKIE_LOG_EVENT,
-                        data: {
-                            cookieName, cookieDomain, ruleText, thirdParty, filterId,
-                        },
-                    });
-                },
-            );
+            try {
+                const cookieController = new TSUrlFilter.CookieController(
+                    (cookieName, cookieDomain, ruleText, thirdParty, filterId) => {
+                        contentPage.sendMessage({
+                            type: MESSAGE_TYPES.SAVE_COOKIE_LOG_EVENT,
+                            data: {
+                                cookieName, cookieDomain, ruleText, thirdParty, filterId,
+                            },
+                        });
+                    },
+                );
 
-            cookieController.apply(response.rulesData);
+                cookieController.apply(response.rulesData);
+            } catch (e) {
+                // Ignore exceptions
+            }
         }
     };
 

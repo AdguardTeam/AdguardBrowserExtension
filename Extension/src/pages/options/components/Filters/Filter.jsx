@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import { observer } from 'mobx-react';
+import cn from 'classnames';
 
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
@@ -35,7 +35,7 @@ const renderTags = (tags, trusted) => {
             </div>
         );
     }
-    if (tags.length <= 0) {
+    if (tags?.length <= 0) {
         return '';
     }
     const tagsNodes = tags.map((tag) => {
@@ -57,10 +57,9 @@ const renderTags = (tags, trusted) => {
     );
 };
 
-const Filter = ({
-    filter, tags, checkboxHandler, checkboxValue,
-}) => {
+const Filter = observer(({ filter }) => {
     const { settingsStore } = useContext(rootStore);
+
     const {
         name,
         filterId,
@@ -71,7 +70,13 @@ const Filter = ({
         homepage,
         trusted,
         customUrl,
+        enabled,
+        tagsDetails,
     } = filter;
+
+    const handleFilterSwitch = async ({ id, data }) => {
+        await settingsStore.updateFilterSetting(id, data);
+    };
 
     const removeCustomFilter = async () => {
         const result = window.confirm(reactTranslator.getMessage('options_delete_filter_confirm'));
@@ -94,8 +99,8 @@ const Filter = ({
         return null;
     };
 
-    const filterClassName = classNames('filter', {
-        'filter--disabled': !checkboxValue,
+    const filterClassName = cn('filter', {
+        'filter--disabled': !enabled,
     });
 
     return (
@@ -119,8 +124,8 @@ const Filter = ({
                             id={filterId}
                             type={SETTINGS_TYPES.CHECKBOX}
                             label={name}
-                            value={checkboxValue}
-                            handler={checkboxHandler}
+                            value={!!enabled}
+                            handler={handleFilterSwitch}
                         />
                     </div>
                 </div>
@@ -141,22 +146,10 @@ const Filter = ({
                             : formatDate(timeUpdated)}
                     </div>
                 </div>
-                {renderTags(tags, trusted)}
+                {renderTags(tagsDetails, trusted)}
             </div>
         </div>
     );
-};
-
-Filter.defaultProps = {
-    tags: [],
-};
-
-Filter.propTypes = {
-    // eslint-disable-next-line react/forbid-prop-types
-    filter: PropTypes.object.isRequired,
-    checkboxValue: PropTypes.bool.isRequired,
-    checkboxHandler: PropTypes.func.isRequired,
-    tags: PropTypes.arrayOf(PropTypes.object),
-};
+});
 
 export { Filter };

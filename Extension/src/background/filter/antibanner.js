@@ -256,7 +256,7 @@ export const antiBannerService = (() => {
      * @private
      */
     async function reloadAntiBannerFilters() {
-        await filtersUpdate.checkAntiBannerFiltersUpdate(true);
+        await filtersUpdate.checkAntiBannerFiltersUpdate({ forceUpdate: true, ignoreVersion: true });
     }
 
     /**

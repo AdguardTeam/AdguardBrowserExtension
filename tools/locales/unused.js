@@ -10,7 +10,6 @@ import {
     SRC_FILENAME_EXTENSIONS,
     PERSISTENT_MESSAGES,
     LOCALES_RELATIVE_PATH,
-    LOCALE_DATA_FILENAME,
 } from './locales-constants';
 
 const LOCALES_DIR = path.resolve(__dirname, LOCALES_RELATIVE_PATH);
@@ -56,9 +55,7 @@ const getSrcFilesContents = (dirPath, contents = []) => {
  * Checks if there are unused base-locale strings in source files
  */
 export const checkUnusedMessages = async () => {
-    const baseLocaleTranslations = await getLocaleTranslations(
-        LOCALES_DIR, BASE_LOCALE, LOCALE_DATA_FILENAME,
-    );
+    const baseLocaleTranslations = await getLocaleTranslations(BASE_LOCALE);
     const baseMessages = Object.keys(baseLocaleTranslations);
 
     const filesContents = getSrcFilesContents(SRC_DIR);

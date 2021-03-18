@@ -131,9 +131,7 @@ const checkRequiredFields = (locale, messages, baseMessages) => {
 };
 
 const validateRequiredFields = async () => {
-    const baseMessages = await getLocaleTranslations(
-        LOCALES_DIR, BASE_LOCALE, LOCALE_DATA_FILENAME,
-    );
+    const baseMessages = await getLocaleTranslations(BASE_LOCALE);
     const promises = locales.map(async (locale) => {
         const pathToLocale = path.join(LOCALES_DIR, locale, LOCALE_DATA_FILENAME);
         const messages = JSON.parse(await fs.promises.readFile(pathToLocale, 'utf-8'));
