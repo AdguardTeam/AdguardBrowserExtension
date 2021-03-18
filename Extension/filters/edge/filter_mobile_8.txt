@@ -1,8 +1,8 @@
-! Checksum: DtWjEQJNdLOz8+eXJ2lbBg
+! Checksum: vnL5qHY9Xu3oQfUTiPvlOg
 ! Title: AdGuard Dutch filter (Optimized)
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.0.87
-! TimeUpdated: 2020-07-22T16:32:12+03:00
+! Version: 2.0.1.8
+! TimeUpdated: 2021-03-11T14:32:14+03:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -16,14 +16,13 @@
 #%#var AG_abortInlineScript=function(g,b,c){var d=function(){if("currentScript"in document)return document.currentScript;var a=document.getElementsByTagName("script");return a[a.length-1]},e=Math.random().toString(36).substr(2,8),h=d();AG_defineProperty(b,{beforeGet:function(){var a=d();if(a instanceof HTMLScriptElement&&a!==h&&""===a.src&&g.test(a.textContent))throw c&&console.warn("AdGuard aborted execution of an inline script"),new ReferenceError(e);}});var f=window.onerror;window.onerror=function(a){if("string"===typeof a&&-1!==a.indexOf(e))return c&&console.warn("AdGuard has caught window.onerror: "+b),!0;if(f instanceof Function)return f.apply(this,arguments)}};
 #%#var AG_setConstant=function(e,a){if("undefined"===a)a=void 0;else if("false"===a)a=!1;else if("true"===a)a=!0;else if("noopFunc"===a)a=function(){};else if("trueFunc"===a)a=function(){return!0};else if("falseFunc"===a)a=function(){return!1};else if(/^\d+$/.test(a)){if(a=parseFloat(a),isNaN(a)||32767<Math.abs(a))return}else return;var b=!1;AG_defineProperty(e,{get:function(){return a},set:function(c){if(b)var d=!0;else void 0!==c&&void 0!==a&&typeof c!==typeof a&&(b=!0),d=b;d&&(a=c)}})};
 -reclameplaatjes/
-.be/ads/
 /adbron.
 /adtwee/*
 /adv_tekstlinks.
 /adverteerders/*
 /advertentie-banner-
 /advertentie.$domain=~2dehands.be|~anzeigen-aufgabe-alpha.de|~anzeigen-aufgabe-beta.de|~anzeigen-aufgabe-test.de|~rd.nl|~tweedehands.nl
-/advertentie/*$domain=~2dehands.be|~anzeigen-aufgabe-alpha.de|~anzeigen-aufgabe-beta.de|~anzeigen-aufgabe-test.de|~tweedehands.nl~rd.nl
+/advertentie/*$domain=~2dehands.be|~anzeigen-aufgabe-alpha.de|~anzeigen-aufgabe-beta.de|~anzeigen-aufgabe-test.de|~tweedehands.nl|~rd.nl
 /advertentie1.
 /advertentie2/*
 /advertentie_head.
@@ -55,7 +54,6 @@ _advertentieleaderboardhome.
 ||ad-skills-copy.nl^$third-party
 ||admatcher.videostrip.com^$domain=q-music.nl|radioveronica.nl|skoften.net|sport1.nl|vi.nl
 ||admerize.be^$third-party
-||adrcdn.com^$third-party
 ||affiliatepartners.com^$third-party
 ||am.seoptics.nl^$third-party
 ||asp.unitedconsumers.com^$third-party
@@ -100,7 +98,6 @@ _advertentieleaderboardhome.
 ||partnerclicks.nl^$third-party
 ||partnerprogramma.bol.com^$third-party
 ||partnerwebsites.financereview.nl^$third-party
-||pebblemedia.be^$third-party
 ||pics.obedo.nl^$third-party
 ||promotions.teasemedia.nl^$third-party
 ||qads6.nl^$third-party
@@ -245,7 +242,7 @@ _advertentieleaderboardhome.
 ||static2-voetbalzone.nl/images/uni_header.
 ||stcm.nl/otla/
 ||strandmeisjes.nl/banners/
-||streaming.orbisvideo.com^*.mp4$object-subrequest,domain=rtlxl.nl
+||streaming.orbisvideo.com^*.mp4$object,domain=rtlxl.nl
 ||sunjets.be/banners/
 ||thisislive.com/promo/
 ||tienerorgies.be/promo/
@@ -274,7 +271,7 @@ _advertentieleaderboardhome.
 ||xingo.nl/bannermanagement/
 ||xxxsmsjes.nl/banners/
 ||youtube.com/embed/*?rel=0&autoplay=1&showinfo=0$subdocument,domain=kavelplatform.nl
-||youtube.com/yva_video?adformat=$object-subrequest,domain=vtm.be
+||youtube.com/yva_video?adformat=$object,domain=vtm.be
 ||zideo.nl/player/plugins/ova/ova.swf
 ||zimmo.be/api2/ticker_h.php?
 ||zimmo.be/api4/promobox.php?
@@ -469,7 +466,7 @@ _advertentieleaderboardhome.
 ||marktnet.nl/bs/loadBanner.aspx?
 ||marktplaats.com/css/adminis-min.css
 ||media*.biertijd.com/galleries/*/banners/
-||media.rtl.nl/web/components/service/streamspots/*.mp4$object-subrequest
+||media.rtl.nl/web/components/service/streamspots/*.mp4$object
 ||meppelercourant.nl/data/banners/
 ||meteovista.be/go/banner/
 ||metliefs.nl/banner_
@@ -652,7 +649,6 @@ _advertentieleaderboardhome.
 ||xmissymedia.com/galleries/*/banners/
 ||youreon.nl/banners/
 ||z24.nl^*/ad_panel.css
-||z24.nl^*/ads.css
 ||zdnet.be/css/1/wallpaper_style_
 ||zideo.nl/scripts/banner/
 ||zoomin.tv/video/590x332_
@@ -665,7 +661,7 @@ _advertentieleaderboardhome.
 ||zalando.nl/pop/$popup
 @@||advertentieplanet.nl/public/advertenties/
 @@||ds1.nl/c/?$domain=opproef.nl
-@@||media.rtl.nl/web/components/service/streamspots/*.mp4$object-subrequest,domain=538.nl|rtl7darts.nl
+@@||media.rtl.nl/web/components/service/streamspots/*.mp4$object,domain=538.nl|rtl7darts.nl
 @@||muziekspot.nl/rest/Advertentie/$xmlhttprequest,domain=muziekspot.nl
 @@||staticfinancereview.nl/advertenties/$image,domain=rente.nl
 @@||ad.360yield.com/adj?$script,domain=girlsgogames.nl|spel.nl|spelletjes.nl
@@ -674,9 +670,9 @@ _advertentieleaderboardhome.
 @@||adform.net/banners/scripts/bootstrap/Adform.Bootstrap.js?$domain=spel.nl
 @@||adform.net/Banners/scripts/rmb/Adform.RMB.js?$domain=spel.nl
 @@||adhese.be/tag/tagv1.js$domain=nieuwsblad.be
-@@||admatcher.videostrip.com/?format=mp4,$object-subrequest,domain=herhaling.nl|myradio.nl|radioveronica.nl|tvgids.tv|voetbalprimeur.nl
+@@||admatcher.videostrip.com/?format=mp4,$object,domain=herhaling.nl|myradio.nl|radioveronica.nl|tvgids.tv|voetbalprimeur.nl
 @@||admatcher.videostrip.com/?format=mp4,$xmlhttprequest,domain=nederland.fm|ongein.nl|radio10.nl|radioluisteren.fm|twentefans.nl
-@@||admatcher.videostrip.com/crossdomain.xml$object-subrequest,domain=herhaling.nl|myradio.nl|radioveronica.nl|tvgids.tv|voetbalprimeur.nl
+@@||admatcher.videostrip.com/crossdomain.xml$object,domain=herhaling.nl|myradio.nl|radioveronica.nl|tvgids.tv|voetbalprimeur.nl
 @@||ads.spilgames.com/ad/pb/1/*/*?$script,domain=spel.nl|spelletjes.nl
 @@||adserver.adtech.de/addyn/3.0/$script,domain=girlsgogames.nl|spel.nl|spelletjes.nl
 @@||adserver.adtech.de/addyn|3.0^$script,domain=9292.nl
@@ -686,7 +682,7 @@ _advertentieleaderboardhome.
 @@||blackbird.zoomin.tv/adhandler/$domain=standaard.be
 @@||cdn.adnxs.com/blank.js?$domain=9292.nl
 @@||cdn.adnxs.com/megatag.js$domain=9292.nl
-@@||cdn.eyewonder.com/*/video/$object-subrequest,domain=radioveronica.nl
+@@||cdn.eyewonder.com/*/video/$object,domain=radioveronica.nl
 @@||cdnservices.com/webads_smarttags.v2.js$domain=vi.nl
 @@||doubleclick.net^*;tile=$script,domain=syndication.vmma.be|vtm.be
 @@||doubleclick.net^*adj/hbvl/homepage;tile=15;sz=160x600;$script,domain=hbvl.be
@@ -698,22 +694,22 @@ _advertentieleaderboardhome.
 @@||google.com/ads/search/module/ads/*/search.js$domain=zoover.be|zoover.nl
 @@||google.com/adsense/$subdocument,domain=sedo.nl
 @@||google.com/adsense/search/ads.js$domain=zoover.be|zoover.nl
-@@||googleads.g.doubleclick.net/pagead/ads?ad_type=video_flash_text_image&$object-subrequest,domain=kinderspelletjes.nl
+@@||googleads.g.doubleclick.net/pagead/ads?ad_type=video_flash_text_image&$object,domain=kinderspelletjes.nl
 @@||googletagservices.com/tag/js/gpt.js$domain=telegraaf.nl
 @@||ib.adnxs.com/ab?$script,domain=9292.nl
 @@||ib.adnxs.com/mtj?$script,domain=9292.nl
 @@||imageceu1.247realmedia.com/0/Player/Player_NL_Home/342x204_mensuel_NLnew.jpg
 @@||images.marktnet.eu/adimg/
-@@||imasdk.googleapis.com/flash/core/*/adsapi.swf$object-subrequest,domain=538.nl|slamfm.nl
+@@||imasdk.googleapis.com/flash/core/*/adsapi.swf$object,domain=538.nl|slamfm.nl
 @@||imasdk.googleapis.com/js/core/bridge*.html$subdocument,domain=nos.nl
 @@||imasdk.googleapis.com/js/core/bridge3.*.html#goog_$subdocument,domain=2be.be|syndication.vmma.be|vitaya.be|vtm.be|vtmkzoom.be
 @@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=2be.be|syndication.vmma.be|vitaya.be|vtmkzoom.be
-@@||longtailvideo.com/5/ova/ova-jw.swf$object-subrequest,domain=538.nl
+@@||longtailvideo.com/5/ova/ova-jw.swf$object,domain=538.nl
 @@||maps.gstatic.com/maps-api-*/adsense.js$domain=opentot.nl
 @@||media.adrcdn.com/ads/Mini/*/vast.xml$xmlhttprequest,domain=radio10.nl
 @@||media.ztat.net/media/teaser/$image,domain=zalando.nl
-@@||nl.gmads.net/crossdomain.xml$object-subrequest,domain=radioveronica.nl
-@@||nl.gmads.net/r?gmtr=$object-subrequest,domain=radioveronica.nl
+@@||nl.gmads.net/crossdomain.xml$object,domain=radioveronica.nl
+@@||nl.gmads.net/r?gmtr=$object,domain=radioveronica.nl
 @@||openad.tf1.fr/RealMedia/ads/adstream_mjx.ads/www.eurosportplayer.nl/home/$script,domain=eurosportplayer.nl
 @@||pagead2.googlesyndication.com/pagead/show_ads.js$domain=spel.nl|spelletjes.nl|wereldklokken.nl
 @@||partner.googleadservices.com/gampad/$domain=jaggle.nl
@@ -725,20 +721,20 @@ _advertentieleaderboardhome.
 @@||track.adform.net/adfscript/?$script,domain=spel.nl
 @@||track.adform.net/adfserve/?$script,domain=spel.nl
 @@||vtm.be/vmmaplayer/embed?videoUrl=*&adZone=$subdocument,domain=knack.be|zita.be
-@@||g.doubleclick.net/gampad/ads?env=vp&gdfp_req=1&impl=s&output=xml_vast$object-subrequest,domain=rtl.nl|rtlxl.nl
-@@||g.doubleclick.net/pagead/adview?ai=$object-subrequest,domain=rtlxl.nl
-@@||g.doubleclick.net/pagead/conversion/?ai=*&label=vast_creativeview$object-subrequest,domain=rtlxl.nl
-@@||ima3vpaid.appspot.com/?adTagUrl=$object-subrequest,domain=rtlxl.nl
-@@||ima3vpaid.appspot.com/crossdomain.xml$object-subrequest,domain=rtlxl.nl
-@@||imasdk.googleapis.com/flash/core/3.*/adsapi.swf$object-subrequest,domain=2be.be|jim.be|vitaya.be|vtm.be|vtmkzoom.be
+@@||g.doubleclick.net/gampad/ads?env=vp&gdfp_req=1&impl=s&output=xml_vast$object,domain=rtl.nl|rtlxl.nl
+@@||g.doubleclick.net/pagead/adview?ai=$object,domain=rtlxl.nl
+@@||g.doubleclick.net/pagead/conversion/?ai=*&label=vast_creativeview$object,domain=rtlxl.nl
+@@||ima3vpaid.appspot.com/?adTagUrl=$object,domain=rtlxl.nl
+@@||ima3vpaid.appspot.com/crossdomain.xml$object,domain=rtlxl.nl
+@@||imasdk.googleapis.com/flash/core/3.*/adsapi.swf$object,domain=2be.be|jim.be|vitaya.be|vtm.be|vtmkzoom.be
 @@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=vtm.be
 @@||libs.medialaancdn.be/data/freewheel/*//admanager/checkup.js$domain=watch.stievie.be
 @@||pagead2.googlesyndication.com/pagead/show_ads.js$domain=alfaforum.nl
 @@||partner.googleadservices.com/gpt/pubads_impl_$script,domain=vtm.be
-@@||pubads.g.doubleclick.net/gampad/ads?$object-subrequest,domain=vtm.be
-@@||pubads.g.doubleclick.net/gampad/ads?ad_rule=1&$object-subrequest,domain=2be.be|jim.be|syndication.vmma.be|vitaya.be|vtmkzoom.be
-@@||serving-sys.com/BurstingPipe/adServer.bs?*&pl=VAST&$object-subrequest,domain=rtlxl.nl
-@@||serving-sys.com/crossdomain.xml$object-subrequest,domain=rtlxl.nl
+@@||pubads.g.doubleclick.net/gampad/ads?$object,domain=vtm.be
+@@||pubads.g.doubleclick.net/gampad/ads?ad_rule=1&$object,domain=2be.be|jim.be|syndication.vmma.be|vitaya.be|vtmkzoom.be
+@@||serving-sys.com/BurstingPipe/adServer.bs?*&pl=VAST&$object,domain=rtlxl.nl
+@@||serving-sys.com/crossdomain.xml$object,domain=rtlxl.nl
 @@||staticfiles.rtl.nl/lib/rtl.jsapi/pubads_impl_70r.js$domain=rtlxl.nl
 @@||2cv.nl/markt/advertenties/$image,subdocument
 @@||2dehandskleertjes.nl/uploads/advertenties/
@@ -779,7 +775,7 @@ _advertentieleaderboardhome.
 @@||media.shopvip.com/banners/$image,domain=shopvip.com
 @@||metdehand.nl/var/ads/$~third-party
 @@||milkinc.be/ad.php|$subdocument
-@@||myradio.nl/sounds/reclame/*/commercial-$object-subrequest
+@@||myradio.nl/sounds/reclame/*/commercial-$object
 @@||nu.nl/images/advertorial_backgrounds.png
 @@||openx.kinepolis.com/delivery/spcjs.php?id=$script,domain=kinepolis.be|kinepolis.com
 @@||optimaalfm.nl/upload/optimaalfm/Image/reclame/$image
@@ -832,7 +828,6 @@ _advertentieleaderboardhome.
 ##.ad_list_row_normal2_no_border
 ##.admarkt_bottom_list_header
 ##.admarkt_gallery_info
-##.adsense-csa
 ##.adstekst
 ##.advertentie
 ##.advertenties
@@ -1020,7 +1015,6 @@ welingelichtekringen.nl##.artblok:nth-child(-2n+6)
 rechtennieuws.nl##.artikel_informatie > div[style="clear: both; float: left; position: relative; margin: 5px 0px 15px 0px; padding: 0px; text-align: center; width: 280px; color: #cccccc; font-size: 10px;"]
 2xklikken.nl,at5.nl,belgie.fm,camping-frankrijk.nl,ed.nl,elkspel.nl,express.be,fd.nl,hetkrantje-online.nl,koopplein.nl,mensenlinq.nl,nederland.fm,nederlandmobiel.nl,nieuws.nl,privesexopname.nl,startbewijs.nl,studenten.nl,telegraaf.nl,toeto.com,waldnet.nl,westlanders.nu,zappsite.nl##.banner
 weeronline.nl##.banner + .specialBlockDiv
-at5.nl##.banner-300-100
 tvgids.nl##.banner-custom
 tvgids.nl##.banner-rectangle
 tvgids.nl##.banner-skyscraper
@@ -1098,6 +1092,8 @@ nieuws.nl##.lokaal_banner_right
 woordenlijst.eu##.maincontents > center a[target="_blank"]
 allesamerika.com##.menu > p > a[target="_blank"]
 checkcams.com##.mfoot
+marktplaats.nl##.mp-Listing--cas
+marktplaats.nl##.mp-Listings__admarktTitle
 wiebetaaltwat.nl##.mr-miller-leaderboard-footer
 nu.nl##.nu-blendle-widget
 yasni.nl##.offerbox
@@ -1212,7 +1208,6 @@ motor-forum.nl##div[id$="_banner"]
 ongein.nl##div[id$="_divAdNL"]
 songteksten.net##div[id$="banner"]
 zie.nl##div[id^="advertisement_"]
-marktplaats.nl##div[id^="google_ads_iframe_"]
 hababam.nl##div[id^="had"]
 binaries4all.nl##div[id^="payserver"]
 weertdegekste.nl##div[id^="sidebar"] a[target="_blank"] > img
@@ -1293,17 +1288,18 @@ telegraaf.nl#@#.imgad
 ad.nl#@#.nav_ad
 bokt.nl#@#.node-ad
 landleven.nl#@#.post-ad
-amonis.be#@#.text-ad
 kamernet.nl#@#.topAdd
 voetbalnieuws.be#@#a[href^="http://adserving.unibet.com/"]
 tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
+||pexi.nl^$third-party
 ||adconfigproxy.azurewebsites.net^$third-party
-||widget.igcdn.nl^$third-party
-||wwa.pacific-yield.com^$third-party
 @@/ad_pics/*$image,domain=computerworld.nl|webwereld.nl
 @@||tweakers.net/i^
 @@||content.hwigroup.net/images^$domain=hardware.info
 hardware.info,tweakers.net#@#.AdBar
+||goplay.be/js/sourcepoint/msg?v=
+vier.be#@#.googleAd
+@@||videoplayer.dpgmedia.net/*/ad_smartads_.js$domain=vtm.be
 ||knack.be/js/responsive/rmgAdCheck.js
 indeleiderstrui.nl#%#Object.defineProperty(Object.prototype, 'disableAb', { get: function() { throw null; }, set: function() { throw null; } });
 indeleiderstrui.nl#%#AG_abortInlineScript(/Flags\.newInject/, 'window.Math');
@@ -1313,7 +1309,6 @@ indeleiderstrui.nl#%#AG_abortInlineScript(/Flags\.newInject/, 'window.Math');
 @@||embed.kijk.nl/talpa-jw-skin/js/adsbygoogle.js$script,domain=embed.kijk.nl
 @@||looopings.nl/ad*.js
 windowstechblog.nl#@#.an-advert-banner
-windowstechblog.nl#@##adsense
 windowstechblog.nl#@#.an-sponsored
 icttipsandtricks.nl##body > div[style^="position: fixed; top:"][style*="z-index: 9999"]:not([class]):not([id])
 icttipsandtricks.nl#%#Object.defineProperty(window, 'ai_adb_detected', { get: function() { return function() {}; } });
@@ -1335,19 +1330,29 @@ marktplaats.nl#?#.mp-Page-element > .mp-Listings + div:not([class]):not([id]):ha
 marktplaats.nl#?#ul.mp-Listings > li.mp-Listing:has(> .mp-Listing-coverLink > .mp-Listing-group > .mp-Listing-group--price-date-feature > span.mp-Listing-priority > span:contains(/^Topadvertentie$/))
 turksemedia.nl#$?#div[class="sidebar_item"][style="padding-bottom: 16px;"]:has(> a > img[width="276"]) { remove: true; }
 appletips.nl#?#.padnoshow > div[class^="block"][-ext-has='#kpwrfeatured']
-sceptr.net#?#.td-main-sidebar > .td-ss-main-sidebar > .widget_text:has(> h4.block-title > span:contains(ADVERTENTIE))
 androidplanet.nl#?#.sidebar > .widget_static_device_widget:has(.device-ad)
 androidplanet.nl#?#.pd-results-container > .results-inner > .pd-advisor-offer-container:first-child:has(> .pd-advisor-offer > .result-badge:contains(Adv.))
 pcmweb.nl#?#.site__sidebar > .block[-ext-has='div.banner']
 pcmweb.nl#?#.site__sidebar > .block[-ext-has='div#marketingcarrousseluitingen']
 computertotaal.nl#?##sidebar > .sidebarBlock[-ext-has='div#marketingcarrousseluitingen']
 computertotaal.nl#?##sidebar > .sidebarBlock[-ext-has='div.banner']
+gfcnieuws.com#?#.entry-content div[class]:has(> ins.adsbygoogle)
 ad.nl#?#.tile[-ext-has=">.ankeiler--advertisement"]
 gelderlander.nl#?#.page-content > .theme-default[-ext-has='div.ad']
 klusidee.nl#?#tr.table-row[-ext-has=".td-ad"]
 omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3000px!important; }
 handbalstartpunt.nl#$##advertentie-top { height: 0!important; }
 omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
+ad.nl##.advertising-container-top
+focus-wtv.be##a[href^="https://ads.focus-wtv.be/"]
+||widget.vpnnederland.nl/VPNNederland-widget.js$domain=nzbserver.com
+zeelandnet.nl##.article-bnr-first
+gfcnieuws.com###secondary > section.widget:not(.widget_search)
+gfcnieuws.com###home-banners
+gfcnieuws.com##div[id^="meteor-"]
+nos.nl##.teletekst__banner
+buienradar.nl###adholderContainerHeader
+trouw.nl,parool.nl##.ad--section
 nnieuws.be##.banner-silver
 ah.nl##.ad-lane
 forum.fok.nl###wa_web_headertofloor
@@ -1394,7 +1399,6 @@ hln.be##div[data-url*="trackuity.com"]
 hln.be##.ktsjing-row--leader
 hln.be##.ktsjing-row--sky
 hln.be##aside[data-prefix="Advertentie"]
-sceptr.net##.td-main-sidebar > .td-ss-main-sidebar > .widget_sp_image
 androidplanet.nl##.dynamic-content[data-nosnippet]
 androidplanet.nl###featured-header[data-campaign]
 androidplanet.nl##.sidebar > .widget_ad_html
@@ -1426,8 +1430,6 @@ iphoned.nl###featured-header
 tvgids.nl###ligatus_under_content
 afkortingen.nu###link_unit
 fok.nl###mainContent > div.ad
-vlinderscrime.nl###top-banner
-vlinderscrime.nl##.a-single > a[class="gofollow"] > img
 gelderlander.nl##.ad
 iphoned.nl##.advert-sidebar
 afkortingen.nu##.banner
@@ -1444,8 +1446,6 @@ gelderlander.nl##.sidelane-filling > a > img
 iculture.nl##.site-header__compare
 iphoned.nl##.widget.widget_static_device_widget
 iphoned.nl##.widget_ad_html
-vlinderscrime.nl##a[href="http://mariska-o.nl/"]
-vlinderscrime.nl##a[href="http://www.fashioncarmen.nl"]
 klusidee.nl##td > .hide-mobile[style*="728px; height:"]
 klusidee.nl##td.td-ad
 ||bs.serving-sys.com/BurstingPipe/adServer.bs$domain=kijk.nl
@@ -1454,10 +1454,8 @@ klusidee.nl##td.td-ad
 ||diomerc.com/baner/
 ||m.telegraaf.nl/static/lib/bva-widget.html?without-raid
 ||pcnltelecom.tdsapi.com/portal/iframe.js
-||servedby.rtbiddingplatform.com^$domain=media.zie.nl
 ||serving-sys.com/*.mp4^$domain=kijk.nl
 ||totaaltv.nl/upload/Banner-sep-astrasat.gif
-||vlinderscrime.nl/wp-content/uploads/*/*banner*.
 @@||markup.nieuwsblad.be/extra/assets/advertising/dfp-setup.js
 @@||markup.nieuwsblad.be/extra/assets/advertising/prebid.js
 @@||securepubads.g.doubleclick.net/gpt/pubads_impl_*.js$domain=standaard.be
