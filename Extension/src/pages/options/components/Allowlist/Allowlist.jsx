@@ -27,6 +27,7 @@ const Allowlist = observer(() => {
 
     useEffect(() => {
         if (prevAllowlist === '') {
+            // reset undo manager, otherwise ctrl+z after initial load removes all content
             editorRef.current.editor.session.getUndoManager().reset();
         }
     }, [settingsStore.allowlist]);

@@ -101,6 +101,7 @@ const UserRules = observer(() => {
 
     useEffect(() => {
         if (prevUserRules === '') {
+            // reset undo manager, otherwise ctrl+z after initial load removes all content
             editorRef.current.editor.session.getUndoManager().reset();
         }
     }, [settingsStore.userRules]);
