@@ -10,12 +10,14 @@ import { uploadFile } from '../../../helpers';
 import { log } from '../../../../common/log';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { AllowlistSavingButton } from './AllowlistSavingButton';
+import { usePrevious } from '../../../common/hooks/usePrevious';
 
 const Allowlist = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);
 
     const editorRef = useRef(null);
     const inputRef = useRef(null);
+    const prevAllowlist = usePrevious(settingsStore.allowlist);
 
     useEffect(() => {
         (async () => {
@@ -24,7 +26,9 @@ const Allowlist = observer(() => {
     }, []);
 
     useEffect(() => {
-        editorRef.current.editor.session.setValue(settingsStore.allowlist);
+        if (prevAllowlist === '') {
+            editorRef.current.editor.session.getUndoManager().reset();
+        }
     }, [settingsStore.allowlist]);
 
     const { settings } = settingsStore;
@@ -63,7 +67,7 @@ const Allowlist = observer(() => {
 
     const saveClickHandler = async () => {
         if (settingsStore.allowlistEditorContentChanged) {
-            const value = editorRef.current.editor.session.getValue();
+            const value = editorRef.current.editor.getValue();
             await settingsStore.saveAllowlist(value);
         }
     };
@@ -106,6 +110,7 @@ const Allowlist = observer(() => {
                 editorRef={editorRef}
                 shortcuts={shortcuts}
                 onChange={editorChangeHandler}
+                value={settingsStore.allowlist}
             />
             <div className="actions actions--divided">
                 <div className="actions__group">

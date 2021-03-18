@@ -14,6 +14,7 @@ import { rootStore } from '../../stores/RootStore';
 import { log } from '../../../../common/log';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { UserRulesSavingButton } from './UserRulesSavingButton';
+import { usePrevious } from '../../../common/hooks/usePrevious';
 
 import './styles.pcss';
 
@@ -22,6 +23,7 @@ const UserRules = observer(() => {
 
     const editorRef = useRef(null);
     const inputRef = useRef(null);
+    const prevUserRules = usePrevious(settingsStore.userRules);
 
     const inputChangeHandler = async (event) => {
         event.persist();
@@ -29,7 +31,7 @@ const UserRules = observer(() => {
 
         try {
             const content = await uploadFile(file, 'txt');
-            editorRef.current.editor.session.setValue(content);
+            editorRef.current.editor.setValue(content, 1);
             await settingsStore.saveUserRules(content);
         } catch (e) {
             log.debug(e.message);
@@ -47,7 +49,7 @@ const UserRules = observer(() => {
 
     const saveClickHandler = async () => {
         if (settingsStore.userRulesEditorContentChanged) {
-            const value = editorRef.current.editor.session.getValue();
+            const value = editorRef.current.editor.getValue();
             await settingsStore.saveUserRules(value);
         }
     };
@@ -98,7 +100,9 @@ const UserRules = observer(() => {
     }, []);
 
     useEffect(() => {
-        editorRef.current.editor.session.setValue(settingsStore.userRules);
+        if (prevUserRules === '') {
+            editorRef.current.editor.session.getUndoManager().reset();
+        }
     }, [settingsStore.userRules]);
 
     const onChange = () => {
@@ -127,6 +131,7 @@ const UserRules = observer(() => {
                 editorRef={editorRef}
                 shortcuts={shortcuts}
                 onChange={onChange}
+                value={settingsStore.userRules}
             />
             <div className="actions actions--divided">
                 <div className="actions__group">
