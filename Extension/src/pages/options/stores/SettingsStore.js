@@ -341,16 +341,19 @@ class SettingsStore {
     };
 
     @action
-    async getAllowlist() {
+    getAllowlist = async () => {
         try {
             const { content } = await messenger.getAllowlist();
-            runInAction(() => {
-                this.allowlist = content;
-            });
+            this.setAllowlist(content);
         } catch (e) {
             log.debug(e);
         }
     }
+
+    @action
+    appendAllowlist = (allowlist) => {
+        this.saveAllowlist(this.allowlist.concat(allowlist));
+    };
 
     @action
     saveAllowlist = (allowlist) => {

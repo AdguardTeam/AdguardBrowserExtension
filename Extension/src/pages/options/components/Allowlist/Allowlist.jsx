@@ -51,7 +51,7 @@ const Allowlist = observer(() => {
 
         try {
             const content = await uploadFile(file, 'txt');
-            await settingsStore.saveAllowlist(content);
+            await settingsStore.appendAllowlist(content);
         } catch (e) {
             log.debug(e.message);
             uiStore.addNotification({ description: e.message });
