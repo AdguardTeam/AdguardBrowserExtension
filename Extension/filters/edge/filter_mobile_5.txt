@@ -1,8 +1,8 @@
-! Checksum: eqMvW+c0gUYAQ/vYXNSLtA
+! Checksum: 74+ZjAN2p1e8DvcDtOInTA
 ! Title: AdGuard Experimental filter (Optimized)
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.0.77
-! TimeUpdated: 2020-12-04T21:31:36+03:00
+! Version: 2.0.0.80
+! TimeUpdated: 2021-03-16T16:04:13+03:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -19,6 +19,7 @@
 /ads/beacon-
 /AppMeasurement-$script,domain=~mlb.com
 ||chrome.test.filter.com^$third-party
+reddit.com##.CommentsPage > article[id][class][style*="z-index: 1;"]
 !#######################################################
 !######### The list of dangerous rules #################
 !#######################################################
