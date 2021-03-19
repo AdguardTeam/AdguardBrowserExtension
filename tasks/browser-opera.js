@@ -11,7 +11,11 @@ import modifyFile from 'gulp-modify-file';
 import zip from 'gulp-zip';
 import Crx from 'crx';
 import {
-    BUILD_DIR, BRANCH_RELEASE, PRIVATE_FILES, BRANCH_DEV, BRANCH_BETA,
+    BUILD_DIR,
+    BRANCH_RELEASE,
+    PRIVATE_FILES,
+    BRANCH_DEV,
+    BRANCH_BETA,
 } from './consts';
 
 // set current type of build
