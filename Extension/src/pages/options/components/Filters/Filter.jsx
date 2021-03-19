@@ -35,7 +35,7 @@ const renderTags = (tags, trusted) => {
             </div>
         );
     }
-    if (tags.length <= 0) {
+    if (tags?.length <= 0) {
         return '';
     }
     const tagsNodes = tags.map((tag) => {
