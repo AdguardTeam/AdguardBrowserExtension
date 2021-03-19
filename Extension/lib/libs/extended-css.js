@@ -1,6 +1,6 @@
-/*! extended-css - v1.3.8 - Fri Dec 11 2020
+/*! extended-css - v1.3.10 - Mon Feb 15 2021
 * https://github.com/AdguardTeam/ExtendedCss
-* Copyright (c) 2020 AdGuard. Licensed LGPL-3.0
+* Copyright (c) 2021 AdGuard. Licensed LGPL-3.0
 */
 var ExtendedCss = (function () {
   'use strict';
@@ -720,11 +720,8 @@ var ExtendedCss = (function () {
      */
 
     var normalize = function normalize(cssText) {
-      cssText = cssText.replace(reAttrFallback, evaluateMatch);
-      cssText = cssText.replace(reMatchesCss, addQuotes);
-      cssText = cssText.replace(reContains, addQuotes);
-      cssText = cssText.replace(reScope, SCOPE_REPLACER);
-      return cssText;
+      var normalizedCssText = cssText.replace(reAttrFallback, evaluateMatch).replace(reMatchesCss, addQuotes).replace(reContains, addQuotes).replace(reScope, SCOPE_REPLACER);
+      return normalizedCssText;
     };
 
     var isSimpleSelectorValid = function isSimpleSelectorValid(selector) {
