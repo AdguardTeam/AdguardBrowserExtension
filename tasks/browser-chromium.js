@@ -76,7 +76,11 @@ const updateManifest = (done) => {
     return done();
 };
 
-const createArchive = () => {
+const createArchive = (done) => {
+    if (BRANCH !== BRANCH_BETA && BRANCH !== BRANCH_RELEASE && BRANCH !== BRANCH_DEV) {
+        return done();
+    }
+
     if (BRANCH === BRANCH_DEV) {
         return gulp.src(dest.inner)
             .pipe(zip('chrome.zip'))

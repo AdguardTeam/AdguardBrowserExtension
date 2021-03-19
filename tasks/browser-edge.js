@@ -14,7 +14,9 @@ import path from 'path';
 import gulp from 'gulp';
 import zip from 'gulp-zip';
 import {
-    BUILD_DIR, BRANCH_BETA, BRANCH_RELEASE, BRANCH_DEV,
+    BUILD_DIR,
+    BRANCH_BETA,
+    BRANCH_RELEASE,
 } from './consts';
 import { version } from './parse-package';
 import { updateLocalesMSGName, preprocessAll } from './helpers';
@@ -62,11 +64,9 @@ const updateManifest = (done) => {
     return done();
 };
 
-const createArchive = () => {
-    if (BRANCH === BRANCH_DEV) {
-        gulp.src(dest.inner)
-            .pipe(zip('edge.zip'))
-            .pipe(gulp.dest(dest.buildDir));
+const createArchive = (done) => {
+    if (BRANCH !== BRANCH_BETA && BRANCH !== BRANCH_RELEASE) {
+        return done();
     }
 
     return gulp.src(dest.inner)
