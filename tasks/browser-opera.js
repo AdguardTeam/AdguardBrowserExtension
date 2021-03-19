@@ -11,7 +11,11 @@ import modifyFile from 'gulp-modify-file';
 import zip from 'gulp-zip';
 import Crx from 'crx';
 import {
-    BUILD_DIR, BRANCH_RELEASE, PRIVATE_FILES,
+    BUILD_DIR,
+    BRANCH_RELEASE,
+    PRIVATE_FILES,
+    BRANCH_DEV,
+    BRANCH_BETA,
 } from './consts';
 
 // set current type of build
@@ -40,7 +44,7 @@ const copyFiltersOpera = () => gulp.src(paths.filtersOpera).pipe(gulp.dest(dest.
 // copy chromium manifest, and update it
 const modifyManifest = () => gulp
     .src(paths.chromiumManifest)
-    .pipe(modifyFile((content, path, file) => {
+    .pipe(modifyFile((content) => {
         const manifest = JSON.parse(content);
         const updatedManifest = {
             ...manifest,
@@ -50,9 +54,21 @@ const modifyManifest = () => gulp
     }))
     .pipe(gulp.dest(paths.dest));
 
-const createArtifactBuild = () => gulp.src(dest.inner)
-    .pipe(zip('opera.zip'))
-    .pipe(gulp.dest(BUILD_DIR));
+const createArtifactBuild = (done) => {
+    if (BRANCH !== BRANCH_BETA && BRANCH !== BRANCH_RELEASE && BRANCH !== BRANCH_DEV) {
+        return done();
+    }
+
+    if (BRANCH === BRANCH_DEV) {
+        return gulp.src(dest.inner)
+            .pipe(zip('opera.zip'))
+            .pipe(gulp.dest(dest.buildDir));
+    }
+
+    return gulp.src(dest.inner)
+        .pipe(zip('opera.zip'))
+        .pipe(gulp.dest(BUILD_DIR));
+};
 
 const crxPack = async (done) => {
     if (BRANCH !== BRANCH_RELEASE) {

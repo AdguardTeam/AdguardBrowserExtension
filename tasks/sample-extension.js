@@ -15,7 +15,7 @@ import gulp from 'gulp';
 import concatFiles from 'gulp-concat';
 import zip from 'gulp-zip';
 import rename from 'gulp-rename';
-import { BUILD_DIR, LOCALES_DIR, BRANCH_BETA } from './consts';
+import { BUILD_DIR, LOCALES_DIR, BRANCH_BETA, BRANCH_DEV } from './consts';
 import { version } from './parse-package';
 
 const API_SCRIPTS = [
@@ -184,8 +184,14 @@ const updateManifest = (done) => {
 };
 
 const createArchive = (done) => {
-    if (BRANCH !== BRANCH_BETA) {
+    if (BRANCH !== BRANCH_BETA && BRANCH !== BRANCH_DEV) {
         return done();
+    }
+
+    if (BRANCH === BRANCH_DEV) {
+        return gulp.src(dest.inner)
+            .pipe(zip('adguard-api.zip'))
+            .pipe(gulp.dest(dest.buildDir));
     }
 
     return gulp.src(dest.inner)
