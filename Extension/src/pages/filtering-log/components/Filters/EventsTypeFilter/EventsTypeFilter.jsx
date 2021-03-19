@@ -6,6 +6,7 @@ import Modal from 'react-modal';
 import { rootStore } from '../../../stores/RootStore';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { Icon } from '../../../../common/components/ui/Icon';
+import { browserUtils } from '../../../../../background/utils/browser-utils';
 
 import './events-type-filter.pcss';
 
@@ -16,31 +17,26 @@ const EventsTypeFilter = observer(() => {
 
     const { logStore } = useContext(rootStore);
     const { eventTypesFilters } = logStore;
+    const everyFilterTypeEnabled = eventTypesFilters.every((filter) => filter.enabled);
 
     const handleTypeClick = (e) => {
-        logStore.toggleEventTypesFilter(e.target.value);
+        if (browserUtils.isMacOs() ? e.metaKey : e.ctrlKey) {
+            logStore.toggleEventTypesFilter(e.target.value);
+        } else {
+            logStore.selectOneEventTypesFilter(e.target.value);
+        }
     };
 
     const handleAllClick = () => {
         logStore.toggleAllEventTypesFilters();
     };
 
-    const eventsTypesButtonClassName = (name) => classNames(
-        'events-types__type',
-        { active: eventTypesFilters.find((filter) => filter.name === name).enabled },
-    );
-
-    const eventsAllTypesButtonClassName = classNames(
-        'events-types__type',
-        { active: !eventTypesFilters.some((filter) => !filter.enabled) },
-    );
-
     const renderTypes = () => {
         return eventTypesFilters.map((eventTypeFilter) => {
-            const { name, title } = eventTypeFilter;
+            const { name, title, enabled } = eventTypeFilter;
             return (
                 <button
-                    className={eventsTypesButtonClassName(name)}
+                    className={classNames('events-types__type', { active: !everyFilterTypeEnabled && enabled })}
                     type="button"
                     onClick={handleTypeClick}
                     value={name}
@@ -55,7 +51,7 @@ const EventsTypeFilter = observer(() => {
     const renderContent = () => (
         <>
             <button
-                className={eventsAllTypesButtonClassName}
+                className={classNames('events-types__type', { active: everyFilterTypeEnabled })}
                 type="button"
                 onClick={handleAllClick}
             >
