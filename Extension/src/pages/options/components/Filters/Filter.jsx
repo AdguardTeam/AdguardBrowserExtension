@@ -108,16 +108,20 @@ const Filter = observer(({ filter }) => {
             <div className="filter__info">
                 <div className="setting__container setting__container--horizontal">
                     <div className="filter__title">
-                        {name}
-                        <a
-                            className="filter__link"
-                            href={homepage || customUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            <Icon id="#link" classname="icon--link" />
-                        </a>
-                        {renderRemoveButton()}
+                        <span className="filter__title-in">
+                            {name}
+                        </span>
+                        <span className="filter__controls">
+                            <a
+                                className="filter__link"
+                                href={homepage || customUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <Icon id="#link" classname="icon--link" />
+                            </a>
+                            {renderRemoveButton()}
+                        </span>
                     </div>
                     <div className="setting__inline-control">
                         <Setting
