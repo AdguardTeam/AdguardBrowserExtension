@@ -97,9 +97,16 @@ const updateManifest = (done) => {
 };
 
 const createArtifactBuild = (done) => {
-    if (BRANCH !== BRANCH_BETA && BRANCH !== BRANCH_RELEASE) {
+    if (BRANCH !== BRANCH_BETA && BRANCH !== BRANCH_RELEASE && BRANCH !== BRANCH_DEV) {
         return done();
     }
+
+    if (BRANCH === BRANCH_DEV) {
+        return gulp.src(dest.inner)
+            .pipe(zip('firefox-amo.zip'))
+            .pipe(gulp.dest(dest.buildDir));
+    }
+
     return gulp.src(dest.inner)
         .pipe(zip('firefox.zip'))
         .pipe(gulp.dest(BUILD_DIR));

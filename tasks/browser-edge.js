@@ -13,7 +13,11 @@ import fs from 'fs';
 import path from 'path';
 import gulp from 'gulp';
 import zip from 'gulp-zip';
-import { BUILD_DIR, BRANCH_BETA, BRANCH_RELEASE } from './consts';
+import {
+    BUILD_DIR,
+    BRANCH_BETA,
+    BRANCH_RELEASE,
+} from './consts';
 import { version } from './parse-package';
 import { updateLocalesMSGName, preprocessAll } from './helpers';
 import copyCommonFiles from './copy-common';
