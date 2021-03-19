@@ -351,14 +351,13 @@ class SettingsStore {
     }
 
     @action
-    appendAllowlist = (allowlist) => {
-        this.saveAllowlist(this.allowlist.concat(allowlist));
+    appendAllowlist = async (allowlist) => {
+        await this.saveAllowlist(this.allowlist.concat('\n', allowlist));
     };
 
     @action
-    saveAllowlist = (allowlist) => {
-        this.allowlist = allowlist;
-        savingAllowlistService.send(SAVING_FSM_EVENTS.SAVE, { value: allowlist });
+    saveAllowlist = async (allowlist) => {
+        await savingAllowlistService.send(SAVING_FSM_EVENTS.SAVE, { value: allowlist });
     };
 
     @action
