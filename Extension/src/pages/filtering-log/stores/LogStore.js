@@ -67,25 +67,25 @@ class LogStore {
         {
             name: 'CSS',
             title: 'CSS',
-            types: RequestTypes.STYLESHEET,
+            types: [RequestTypes.STYLESHEET],
             enabled: true,
         },
         {
             name: 'JavaScript',
             title: 'JavaScript',
-            types: RequestTypes.SCRIPT,
+            types: [RequestTypes.SCRIPT],
             enabled: true,
         },
         {
             name: 'Ajax',
             title: 'Ajax',
-            types: RequestTypes.XMLHTTPREQUEST,
+            types: [RequestTypes.XMLHTTPREQUEST],
             enabled: true,
         },
         {
             name: 'Image',
             title: reactTranslator.getMessage('filtering_type_image'),
-            types: RequestTypes.IMAGE,
+            types: [RequestTypes.IMAGE],
             enabled: true,
         },
         {
@@ -268,9 +268,7 @@ class LogStore {
             const { requestType } = filteringEvent;
             // check if request type is in eventTypesFilters
             const filterForRequestType = this.eventTypesFilters.find(
-                (filter) => Array.isArray(filter.types)
-                    ? filter.types.includes(requestType)
-                    : filter.types === requestType
+                (filter) => filter.types.includes(requestType)
             );
 
             if (filterForRequestType) {
