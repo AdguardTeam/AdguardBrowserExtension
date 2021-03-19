@@ -32,7 +32,7 @@ export const runTests = gulp.series(tests, done => done());
 export const buildUpdatesFilesStream = gulp.series(buildUpdatesFiles, done => done());
 
 // dev build
-export const buildDev = gulp.series(chromium, firefoxAmo, firefoxWebext, edge, api, done => done());
+export const buildDev = gulp.series(chromium, firefoxAmo, firefoxWebext, opera, api, done => done());
 
 // beta build
 export const buildBeta = gulp.series(chromium, firefoxWebext, edge, api, updateBuildInfo, clean, done => done());
