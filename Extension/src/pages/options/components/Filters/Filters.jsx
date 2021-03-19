@@ -17,6 +17,12 @@ import { SettingsSection } from '../Settings/SettingsSection';
 import { Icon } from '../../../common/components/ui/Icon';
 import { SEARCH_FILTERS } from './Search/constants';
 
+const QUERY_PARAM_NAMES = {
+    GROUP: 'group',
+    TITLE: 'title',
+    SUBSCRIBE: 'subscribe'
+}
+
 const Filters = observer(() => {
     const { settingsStore } = useContext(rootStore);
 
@@ -29,8 +35,8 @@ const Filters = observer(() => {
     const query = useQuery();
 
     const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [urlToSubscribe, setUrlToSubscribe] = useState(decodeURIComponent(query.get('subscribe') || ''));
-    const [customFilterTitle, setCustomFilterTitle] = useState(query.get('title'));
+    const [urlToSubscribe, setUrlToSubscribe] = useState(decodeURIComponent(query.get(QUERY_PARAM_NAMES.SUBSCRIBE) || ''));
+    const [customFilterTitle, setCustomFilterTitle] = useState(query.get(QUERY_PARAM_NAMES.TITLE));
 
     // This state used to remove blinking while filters to render were not selected
     const [groupDetermined, setGroupDetermined] = useState(false);
@@ -42,7 +48,7 @@ const Filters = observer(() => {
     } = settingsStore;
 
     useEffect(() => {
-        settingsStore.setSelectedGroupId(query.get('group'));
+        settingsStore.setSelectedGroupId(query.get(QUERY_PARAM_NAMES.GROUP));
         setGroupDetermined(true);
         settingsStore.setSearchInput('');
         settingsStore.setSearchSelect(SEARCH_FILTERS.ALL);
@@ -94,10 +100,17 @@ const Filters = observer(() => {
 
     const openModalHandler = () => {
         setModalIsOpen(true);
+        if (query.has(QUERY_PARAM_NAMES.TITLE) || query.has(QUERY_PARAM_NAMES.SUBSCRIBE)) {
+            query.delete(QUERY_PARAM_NAMES.TITLE);
+            query.delete(QUERY_PARAM_NAMES.SUBSCRIBE);
+            history.push(`${history.location.pathname}?${decodeURIComponent(query.toString())}`);
+        }
     };
 
     const closeModalHandler = () => {
         setModalIsOpen(false);
+        setUrlToSubscribe('');
+        setCustomFilterTitle('');
     };
 
     useEffect(() => {
@@ -105,26 +118,6 @@ const Filters = observer(() => {
             openModalHandler();
         }
     }, [urlToSubscribe]);
-
-    const renderModal = () => {
-        return (
-            modalIsOpen && (
-                <AddCustomModal
-                    closeModalHandler={closeModalHandler}
-                    modalIsOpen={modalIsOpen}
-                    initialUrl={urlToSubscribe}
-                    initialTitle={customFilterTitle}
-                />
-            )
-        );
-    };
-
-    useEffect(() => {
-        if (modalIsOpen) {
-            setUrlToSubscribe('');
-            setCustomFilterTitle('');
-        }
-    }, [modalIsOpen]);
 
     const renderAddFilterBtn = (isEmpty) => {
         const buttonClass = classNames('button button--m button--green', {
@@ -181,7 +174,12 @@ const Filters = observer(() => {
                 {isCustom && (
                     <>
                         {renderAddFilterBtn(isEmpty)}
-                        {renderModal()}
+                        <AddCustomModal
+                            closeModalHandler={closeModalHandler}
+                            modalIsOpen={modalIsOpen}
+                            initialUrl={urlToSubscribe}
+                            initialTitle={customFilterTitle}
+                        />
                     </>
                 )}
             </SettingsSection>

@@ -242,7 +242,7 @@ const webrequestInit = function () {
         }
 
         // Strip the protocol and host name (for first-party requests) from the selector
-        const thirdParty = utils.url.isThirdPartyRequest(requestUrl, referrerUrl);
+        const thirdParty = TSUrlFilter.isThirdPartyRequest(requestUrl, referrerUrl);
         let srcUrlStartIndex = requestUrl.indexOf('//');
         if (!thirdParty) {
             srcUrlStartIndex = requestUrl.indexOf('/', srcUrlStartIndex + 2);

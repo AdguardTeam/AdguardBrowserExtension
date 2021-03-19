@@ -83,10 +83,6 @@ So what we do:
     2. We disable JS rules got from remote server
     3. We allow only custom rules got from the User filter (which user creates manually) or from this DEFAULT_SCRIPT_RULES object`;
 
-// public suffixes list constants
-export const PUBLIC_SUFFIXES_URL = 'https://publicsuffix.org/list/public_suffix_list.dat';
-export const PUBLIC_SUFFIXES_FILE = '../../Extension/src/utils/public-suffixes.js';
-
 // artifacts constants
 export const CHROME_UPDATE_URL = 'https://static.adguard.com/extensions/adguardadblocker/beta/update.xml';
 export const CHROME_CERT = path.resolve(__dirname, '../private/AdguardBrowserExtension/certificate.pem');

@@ -1,11 +1,11 @@
-! Checksum: vF/XkenPGqCq5YPurOxMWQ
+! Checksum: PhHHPZoQMuaX49/OhrVeJg
 ! Title: AdGuard Safari filter
 ! Description: Special filter for Safari 9+ on iOS and Mac OS. We need a separate filter for Safari browser because it does not fully support our rules syntax. Already included in AdGuard Base filter.
-! Version: 2.0.1.66
-! TimeUpdated: 2020-08-07T22:30:14+03:00
+! Version: 2.0.1.76
+! TimeUpdated: 2021-03-01T16:30:42+03:00
 ! Expires: 4 days (update frequency)
-! Homepage: http://adguard.com/filters.html#safari
-! License: http://creativecommons.org/licenses/by-sa/3.0/
+! Homepage: https://github.com/AdguardTeam/AdGuardFilters
+! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
 !
 !---------------------------------------------------------------------------!
 !-------------- Advertising networks ---------------------------------------!
@@ -109,13 +109,8 @@ sevenangel.id##.adsbygoogle
 @@||sevenangel.id^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/10683
 @@||bludv.com^$generichide
-! https://github.com/AdguardTeam/AdguardFilters/issues/10484
-@@||mylink.nu^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9970
 @@||alts4free.com^$generichide
-! https://github.com/AdguardTeam/AdguardFilters/issues/9966
-@@||darkcomet.net^$generichide
-darkcomet.net##.adsbygoogle
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9965
 @@||firmgoogle.com^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9832
@@ -402,8 +397,6 @@ televisaofutebol.com#@#iframe[width="300"][height="250"]
 ! https://forum.adguard.com/index.php?threads/camiris-com-nsfw-anti-adblock.20650/
 @@||camiris.com^$generichide
 @@/fuckadblock.js$domain=camiris.com
-! https://forum.adguard.com/index.php?threads/antiadblock-cat3movie-us-nsfw.20574/
-@@||cat3movie.us^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4665
 @@||inside-digital.de^$generichide
 ! https://forum.adguard.com/index.php?threads/19012/
@@ -512,7 +505,6 @@ ad4msan.com#@##adver5
 ad4msan.com#@##googleAdwordsModule
 ad4msan.com#@##iframeTopAd
 ad4msan.com#@##multi_ad
-ad4msan.com#@##adsense
 !---------------------------------------------------------------------------!
 !-------------- Extended CSS rules -----------------------------------------!
 !---------------------------------------------------------------------------!
@@ -539,7 +531,7 @@ ad4msan.com#@##adsense
 ||vip.sc386.com^$third-party
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1542
 ||adfox.ru^$third-party
-||i-vengo.com^$empty
+||i-vengo.com^$redirect=nooptext
 ||partner.mediametrics.ru^$third-party
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1286
 http://*.*.space/v/$third-party
@@ -643,15 +635,13 @@ iculture.nl##.ad-container
 ! https://github.com/AdguardTeam/AdguardFilters/issues/23443
 ! https://github.com/AdguardTeam/AdguardFilters/issues/22664
 blogtamsu.video,m.blogtamsu.vn##iframe[src^="http://m.blogtamsu.vn/wp-content/themes/news/ads/"]
-! https://github.com/AdguardTeam/AdguardFilters/issues/21077
-kissanime.ru###overlay
 ! https://github.com/AdguardTeam/AdguardFilters/issues/19405
 ||ltn.hitomi.la/thlYeSta6.js$important
 ||ltn.hitomi.la/RaCtICanTi24.js$important
 ! https://github.com/AdguardTeam/AdguardFilters/issues/19579
 ! https://github.com/AdguardTeam/AdguardFilters/issues/15017
 ! https://github.com/AdguardTeam/AdguardFilters/issues/13114
-cmovieshd.bz,9anime.is,vidstreaming.io##body > div[style^="z-index: 9999"]
+cmovieshd.bz,vidstreaming.io##body > div[style^="z-index: 9999"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/13064
 forbes.com##.top-ad-container
 forbes.com##div[id^="google_ads_iframe_"]
@@ -805,9 +795,6 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 @@||cdn*.porn300.com^
 ! https://github.com/AdguardTeam/AdguardFilters/issues/22168
 @@||games.tiscali.cz^$subdocument,domain=games.tiscali.cz
-! https://github.com/AdguardTeam/AdguardFilters/issues/21077
-@@||mp4upload.com^$domain=kissanime.ru
-@@||lh3.googleusercontent.com^$domain=kissanime.ru
 ! https://github.com/AdguardTeam/AdguardFilters/issues/20990
 @@||finn.no/*ad.html?
 ! https://github.com/AdguardTeam/AdguardFilters/issues/19405
@@ -816,8 +803,6 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 @@||bleachernation.com/headerprebid/bn_prebid_logic_*.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/19823
 @@||ilovecreatives.com/ads?
-! https://github.com/AdguardTeam/AdguardFilters/issues/19879
-@@||ulink.adjust.com/*adjust_iredirect
 ! https://github.com/AdguardTeam/AdguardFilters/issues/19575
 @@||github.com/*adblock
 ! https://github.com/AdguardTeam/AdguardFilters/issues/14567
@@ -832,9 +817,6 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 @@||217.23.10.62^$image,domain=kissmanga.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/15218
 @@||parcelapp.net/webtrack.php?
-! https://github.com/AdguardTeam/AdguardFilters/issues/15017
-@@||rapidvideo.com^$domain=9anime.is
-@@||cdnjs.cloudflare.com/ajax/libs/$domain=9anime.is
 ! https://github.com/AdguardTeam/AdguardFilters/issues/14943
 @@||gannettdigital.com/universal-web-client/$domain=greenvilleonline.com
 @@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=greenvilleonline.com
@@ -851,10 +833,6 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 @@||vidbom.com^$domain=anyanime.com
 @@||mp4upload.com^$domain=anyanime.com
 @@||dmcdn.net^$domain=anyanime.com
-! https://github.com/AdguardTeam/AdguardFilters/issues/12580
-@@||playercdn.net/*.mp4$domain=kissanime.ru
-@@||p.jwpcdn.com/player/$domain=kissanime.ru
-@@||video-*.*.fbcdn.net/*.mp4$domain=kissanime.ru
 ! https://github.com/AdguardTeam/AdguardFilters/issues/13144
 @@||b.cdn13.com/*.mp4?$domain=xhamster.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/12707
@@ -871,10 +849,9 @@ fxporn.net#@#.video_ads
 @@||tracking.asosconnect.com/aff_c?offer_id=*&aff_id=*&aff_sub=clickref&*&url=http%3a%2f%2fwww.asos.de%2fasos%2f
 ! https://github.com/AdguardTeam/AdguardFilters/issues/10883
 ! https://github.com/AdguardTeam/AdguardFilters/issues/7125
-@@||mcloud.to^$script,stylesheet,media,xmlhttprequest,domain=9anime.is
 @@||googleusercontent.com/download/$domain=9anime.to
-@@||p.jwpcdn.com/player/$domain=9anime.to|9anime.is
-@@||playercdn.net/*.mp4$domain=9anime.to|9anime.is
+@@||p.jwpcdn.com/player/$domain=9anime.to
+@@||playercdn.net/*.mp4$domain=9anime.to
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6760
 @@||ahcdn.com/*.mp4$domain=xhamster.com
 @@||xhcdn.com/*.mp4$domain=xhamster.com
@@ -1011,7 +988,6 @@ rt.com#@##offers
 @@||xg4ken.com/trk/*&adgroupid=
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2751
 @@||analytics.edgesuite.net^$domain=foxnews.com
-@@||global.fncstatic.com/static/v/all/js/ads.js$domain=foxnews.com
 @@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=foxnews.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2707
 @@/google-adwords$domain=t3n.de,~third-party

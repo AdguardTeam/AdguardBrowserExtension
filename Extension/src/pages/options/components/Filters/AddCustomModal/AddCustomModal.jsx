@@ -50,8 +50,18 @@ const AddCustomModal = ({
 
     const [customUrlToAdd, setCustomUrlToAdd] = useState(initialUrl);
     const [stepToRender, setStepToRender] = useState(STEPS.INPUT);
+    const [error, setError] = useState(reactTranslator.getMessage('options_popup_check_false_description'));
     const [filterToAdd, setFilterToAdd] = useState(null);
     const [filterToAddName, setFilterToAddName] = useState(initialTitle);
+
+    const closeModal = () => {
+        closeModalHandler();
+        setCustomUrlToAdd('');
+        setStepToRender(STEPS.INPUT);
+        setError('');
+        setFilterToAdd(null);
+        setFilterToAddName(initialTitle);
+    };
 
     const { settingsStore } = useContext(rootStore);
 
@@ -68,9 +78,13 @@ const AddCustomModal = ({
 
     const handleSendUrlToCheck = async () => {
         setStepToRender(STEPS.CHECKING);
+
         try {
             const result = await messenger.checkCustomUrl(customUrlToAdd);
-            if (!result.filter) {
+            if (result.error) {
+                setError(result.error);
+                setStepToRender(STEPS.ERROR);
+            } else if (!result.filter) {
                 setStepToRender(STEPS.ERROR);
             } else {
                 setFilterToAdd(result.filter);
@@ -84,7 +98,7 @@ const AddCustomModal = ({
 
     const renderInputStep = () => (
         <ModalContentWrapper
-            closeModalHandler={closeModalHandler}
+            closeModalHandler={closeModal}
             title="New filter subscription"
         >
             <form className="modal__content" onSubmit={handleSendUrlToCheck}>
@@ -126,7 +140,7 @@ const AddCustomModal = ({
             setStepToRender(STEPS.ERROR);
             log.error(e);
         }
-        closeModalHandler();
+        closeModal();
     };
 
     const renderApproveStep = () => {
@@ -136,7 +150,7 @@ const AddCustomModal = ({
 
         return (
             <ModalContentWrapper
-                closeModalHandler={closeModalHandler}
+                closeModalHandler={closeModal}
                 title="New filter subscription"
             >
                 <form className="modal__content" onSubmit={handleApprove}>
@@ -201,7 +215,7 @@ const AddCustomModal = ({
     const renderCheckingStep = () => {
         return (
             <>
-                <ModalContentWrapper closeModalHandler={closeModalHandler}>
+                <ModalContentWrapper closeModalHandler={closeModal}>
                     <form className="modal__content modal__content--center-text">
                         <div className="modal__desc">
                             {reactTranslator.getMessage('options_popup_checking_filter')}
@@ -214,18 +228,19 @@ const AddCustomModal = ({
 
     const tryAgainHandler = () => {
         setStepToRender(STEPS.INPUT);
+        setError('');
     };
 
     const renderErrorStep = () => {
         return (
             <>
-                <ModalContentWrapper closeModalHandler={closeModalHandler}>
+                <ModalContentWrapper closeModalHandler={closeModal}>
                     <form className="modal__content modal__content--center-text">
                         <div className="modal__subtitle">
                             {reactTranslator.getMessage('options_popup_check_false_title')}
                         </div>
                         <div className="modal__desc">
-                            {reactTranslator.getMessage('options_popup_check_false_description')}
+                            {error || reactTranslator.getMessage('options_popup_check_false_description')}
                         </div>
                     </form>
                     <button
@@ -263,7 +278,7 @@ const AddCustomModal = ({
         <Modal
             isOpen={modalIsOpen}
             style={customStyles}
-            onRequestClose={closeModalHandler}
+            onRequestClose={closeModal}
         >
             {renderStep()}
         </Modal>
