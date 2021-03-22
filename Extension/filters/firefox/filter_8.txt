@@ -1,8 +1,8 @@
-! Checksum: Ikq4UHEZYLjI0iYDzFFwcg
+! Checksum: vlZgQWNHnu/vc+TGkMs2uQ
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.1.2
-! TimeUpdated: 2020-12-14T20:04:23+03:00
+! Version: 2.0.1.8
+! TimeUpdated: 2021-03-11T14:32:14+03:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1356,9 +1356,8 @@ tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
 !
 ! Section contains list of advertising networks
 !
+||pexi.nl^$third-party
 ||adconfigproxy.azurewebsites.net^$third-party
-||widget.igcdn.nl^$third-party
-||wwa.pacific-yield.com^$third-party
 !---------------------------------------------------------------------------!
 !-------------- Anti-adblock rules -----------------------------------------!
 !---------------------------------------------------------------------------!
@@ -1371,6 +1370,8 @@ tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
 @@||content.hwigroup.net/images^$domain=hardware.info
 hardware.info,tweakers.net#@#.AdBar
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/74633
+||goplay.be/js/sourcepoint/msg?v=
 ! https://github.com/AdguardTeam/AdguardFilters/issues/69783
 vier.be#@#.googleAd
 ! https://github.com/AdguardTeam/AdguardFilters/issues/64292
@@ -1449,8 +1450,6 @@ marktplaats.nl#?#ul.mp-Listings > li.mp-Listing:has(> .mp-Listing-coverLink > .m
 turksemedia.nl#$?#div[class="sidebar_item"][style="padding-bottom: 16px;"]:has(> a > img[width="276"]) { remove: true; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/21777
 appletips.nl#?#.padnoshow > div[class^="block"][-ext-has='#kpwrfeatured']
-! https://github.com/AdguardTeam/AdguardFilters/issues/20572
-sceptr.net#?#.td-main-sidebar > .td-ss-main-sidebar > .widget_text:has(> h4.block-title > span:contains(ADVERTENTIE))
 ! https://github.com/AdguardTeam/AdguardFilters/issues/16658
 androidplanet.nl#?#.sidebar > .widget_static_device_widget:has(.device-ad)
 androidplanet.nl#?#.pd-results-container > .results-inner > .pd-advisor-offer-container:first-child:has(> .pd-advisor-offer > .result-badge:contains(Adv.))
@@ -1503,8 +1502,6 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6938
 ||v.fwmrm.net/ad/g/1?$replace=/(tv\.freewheel\.SDK\._instanceQueue\['Context_[\s\S]*?'\][\s\S]*?\.requestComplete\(\{)[\s\S]*\}\);/\$1\}\);/,domain=q2.be,important
-! https://forum.adguard.com/index.php?threads/tv2-no.22252/
-||tv2.no/*/homadConfig*.json$replace=/"enabled": true\,/"enabled":false\,/i,important
 ||svonm.com/*config.json$replace=/"enabled": true\,/"enabled":false\,/i,important
 !---------------------------------------------------------------------------!
 !-------------- Rules for specific websites --------------------------------!
@@ -1513,6 +1510,8 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
 !
+ad.nl##.advertising-container-top
+focus-wtv.be##a[href^="https://ads.focus-wtv.be/"]
 ||widget.vpnnederland.nl/VPNNederland-widget.js$domain=nzbserver.com
 zeelandnet.nl##.article-bnr-first
 gfcnieuws.com###secondary > section.widget:not(.widget_search)
@@ -1567,7 +1566,6 @@ hln.be##div[data-url*="trackuity.com"]
 hln.be##.ktsjing-row--leader
 hln.be##.ktsjing-row--sky
 hln.be##aside[data-prefix="Advertentie"]
-sceptr.net##.td-main-sidebar > .td-ss-main-sidebar > .widget_sp_image
 androidplanet.nl##.dynamic-content[data-nosnippet]
 androidplanet.nl###featured-header[data-campaign]
 androidplanet.nl##.sidebar > .widget_ad_html
@@ -1599,8 +1597,6 @@ iphoned.nl###featured-header
 tvgids.nl###ligatus_under_content
 afkortingen.nu###link_unit
 fok.nl###mainContent > div.ad
-vlinderscrime.nl###top-banner
-vlinderscrime.nl##.a-single > a[class="gofollow"] > img
 gelderlander.nl##.ad
 iphoned.nl##.advert-sidebar
 afkortingen.nu##.banner
@@ -1617,8 +1613,6 @@ gelderlander.nl##.sidelane-filling > a > img
 iculture.nl##.site-header__compare
 iphoned.nl##.widget.widget_static_device_widget
 iphoned.nl##.widget_ad_html
-vlinderscrime.nl##a[href="http://mariska-o.nl/"]
-vlinderscrime.nl##a[href="http://www.fashioncarmen.nl"]
 klusidee.nl##td > .hide-mobile[style*="728px; height:"]
 klusidee.nl##td.td-ad
 ||bs.serving-sys.com/BurstingPipe/adServer.bs$domain=kijk.nl
@@ -1627,10 +1621,8 @@ klusidee.nl##td.td-ad
 ||diomerc.com/baner/
 ||m.telegraaf.nl/static/lib/bva-widget.html?without-raid
 ||pcnltelecom.tdsapi.com/portal/iframe.js
-||servedby.rtbiddingplatform.com^$domain=media.zie.nl
 ||serving-sys.com/*.mp4^$domain=kijk.nl
 ||totaaltv.nl/upload/Banner-sep-astrasat.gif
-||vlinderscrime.nl/wp-content/uploads/*/*banner*.
 ! https://github.com/AdguardTeam/AdguardFilters/issues/10738
 !+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
 voipsipclient.blogspot.nl##.adsbygoogle
@@ -1640,6 +1632,7 @@ voipsipclient.blogspot.nl##.adsbygoogle
 !
 ! White list. Fixing filtration errors (false-positive)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/71460
 ! https://github.com/AdguardTeam/AdguardFilters/issues/54225
 @@||markup.nieuwsblad.be/extra/assets/advertising/dfp-setup.js
 @@||markup.nieuwsblad.be/extra/assets/advertising/prebid.js
